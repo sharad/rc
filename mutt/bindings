@@ -1,0 +1,59 @@
+#KEY BINDINGS
+bind generic	"#"	tag-entry
+bind generic 	<left>  previous-entry
+bind generic 	<right> next-entry
+bind index	"c"	copy-message
+bind index   "\Cx\Cf" change-folder
+bind pager	"c"	copy-message
+bind pager	"#"	tag-message
+bind pager	<up>     previous-line
+bind pager	<down>   next-line
+bind pager   "<"      top
+bind pager   ">"      bottom
+bind pager   <home>   top
+bind pager   <end>    bottom
+bind pager   "{"      previous-thread
+bind pager   "}"      next-thread
+bind pager   "\Cx\Cf"   change-folder
+bind browser "e"	check-new
+bind editor "\e\t"      complete-query
+
+
+macro index "\Cx\Cb" "<change-folder>?"	     # Folder list.
+macro index "w" "<change-folder>?"	     # Folder list.
+macro index "\Cx\Cs" "|cat > ~/"	     # Save message
+macro pager "\Cx\Cb" "<change-folder>?"	     # Folder list.
+macro pager "w" "<change-folder>?"	     # Folder list.
+macro pager "\Cx\Cs" "|cat > ~/"	     # Save message
+
+# from http://tim.stoakes.net/remind/ for Outlook -> remind addition
+# macro index ",c" "<pipe-message>~/bin/parse_add_remind <enter>"
+# macro index ",c" "<pipe-message>~/bin/parse_add_remind <enter>"
+macro index ",c" "<pipe-message>~/bin/parse_remind <enter>"
+
+## I am not using pop fecility of mutt, but relying on fetchmail
+# macro index "G" "!fetchmail"        # fetch mail using fetchmail
+# macro pager "G" "!fetchmail"        # fetch mail using fetchmail
+
+
+
+# bind generic	"\C<up>"	sidebar-scroll-up   
+# bind generic	"\C<down>"	sidebar-scroll-down 
+# bind generic	"\e<up>"        sidebar-next        
+# bind generic	"\e<up>"        sidebar-prev        
+# bind generic	"\e<enter>"     sidebar-open        
+
+
+# bind index	"\C<up>"	sidebar-scroll-up   
+# bind index	"\C<down>"	sidebar-scroll-down 
+
+# bind index	"\Cn"        sidebar-next        
+# bind index      "\Cp"        sidebar-prev        
+# bind index      "\Co"        sidebar-open
+
+
+# bind index "\Cj"     sidebar-open        
+
+bind editor <Tab> complete-query
+bind editor ^T complete
+

@@ -1,0 +1,16 @@
+# This file contains sound configuration for centerim
+# Every line should look like: <id> <event> <command>
+#
+# <id>	id of a contact; can be one of the following
+# *	means default sound for all the contacts
+# icq_<uin>	for icq contacts (e.g. icq_123)
+# yahoo_<nickname>	for yahoo (e.g. yahoo_thekonst)
+# .. etc. Similar for the other protocols
+#
+# <event>	can be: msg, sms, url, online, offline, email
+# <command>	command line to be executed to play a sound
+
+*	msg	!spk1
+*	url	!spk2
+*	sms	!spk3
+*	email	!spk5

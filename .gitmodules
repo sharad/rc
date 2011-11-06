@@ -1,0 +1,21 @@
+[submodule "xemacs/packages/mingus"]
+	path = xemacs/packages/mingus
+	url = git://github.com/pft/mingus.git
+[submodule "xemacs/elpa/rinari"]
+	path = xemacs/elpa/rinari
+	url = git://github.com/eschulte/rinari.git
+[submodule "xemacs/packages/yasnippet"]
+	path = xemacs/packages/yasnippet
+	url = git@github.com:sharad/yasnippet.git
+[submodule "xemacs/packages/drag-stuff"]
+	path = xemacs/packages/drag-stuff
+	url = git://github.com/rejeep/drag-stuff.git
+[submodule "xemacs/packages/auto-complete"]
+	path = xemacs/packages/auto-complete
+	url = git://github.com/m2ym/auto-complete
+[submodule "xemacs/packages/BlogMax"]
+	path = xemacs/packages/BlogMax
+	url = https://github.com/billstclair/BlogMax
+[submodule "xemacs/packages/slime-proxy"]
+	path = xemacs/packages/slime-proxy
+	url = https://github.com/3b/slime-proxy.git

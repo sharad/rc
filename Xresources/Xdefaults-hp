@@ -1,0 +1,19 @@
+! .Xdefaults-hp					-*- xrdb -*-
+!
+! last modified:   22-Jun-1998  Mon  17:51
+
+XTerm*font:			9x15
+XTerm*boldFont:			9x15bold
+
+XTerm*vt100.translations: #override\n\
+	!Shift<Key>Up:		scroll-back(1,line)\n\
+	!Shift<Key>Down:	scroll-forw(1,line)\n\
+	!Shift<Key>Prior:	scroll-back(1,page)\n\
+	!Shift<Key>Next:	scroll-forw(1,page)\n\
+	!<Key>Prior:		string("\033[3~")\n\
+	!<Key>Next:		string("\033[6~")\n\
+	!<Key>Home:		string("\033[2~")\n\
+	!<Key>End:		string("\033[5~")
+
+Emacs*EmacsFrame.geometry:	80x46-0-0
+Emacs*leftFrame.geometry:	80x40+0-0

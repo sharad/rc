@@ -1,0 +1,147 @@
+..              -*- restructuredtext -*-
+
+=======================
+ README for pydoc-info
+=======================
+
+pydoc-info is an Emacs package for searching and browsing the new
+Python documentation in the Info browser.
+
+
+Features
+--------
+
+Improved Info-lookup support:
+  Allows you to quickly find the relevant documentation using the
+  standard command ``info-lookup-symbol`` (``C-h S``).
+
+Hide superfluous ``*note: references``:
+  Prevent Info from displaying ``*note:`` or ``see`` in front of
+  cross-references when browsing the Python documentation.  This
+  does not affect other Info documents.
+
+
+Python Info Documents
+---------------------
+
+This package is designed to work with Info files produced from the
+"new" Python documentation.  The "new" documentation is used to
+distinguish the current documents written in RestructedText and built
+using Sphinx to the older versions written in Latex (circa python 2.4).
+
+Support for generating the necessary Info files is currently limited
+to the development branch of Sphinx.  Thus they are not yet available
+at the Python download site nor can they built from source without
+making a few modifications.
+
+
+Setup and Install
+-----------------
+
+Before using this package, you may need to download and install the
+necessary Info files::
+
+    wget https://bitbucket.org/jonwaltman/pydoc-info/downloads/python.info.gz
+    gunzip python.info
+    sudo cp python.info /usr/share/info
+    sudo install-info --info-dir=/usr/share/info python.info
+
+
+Then add the following to your ~/.emacs.d/init.el::
+
+    (add-to-list 'load-path "~/path/to/pydoc-info")
+    (require 'pydoc-info)
+
+
+Using Info-lookup with other Sphinx-based Documents
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Info-lookup support provided by this package is not limited to the
+standard Python documentation.  It can easily be extended to work with
+other Sphinx-based documents that have been compiled to Info files.
+
+For example, the documentation for the development version of Sphinx
+can be compiled to the Info file "sphinx.info".  By adding the
+following code to your ``.emacs``, you can enable
+``info-lookup-symbol`` to work for both the standard Python modules
+and Sphinx::
+
+  (info-lookup-add-help
+   :mode 'python-mode
+   :parse-rule 'pydoc-info-python-symbol-at-point
+   :doc-spec
+   '(("(python)Index" pydoc-info-lookup-transform-entry)
+     ("(sphinx)Index" pydoc-info-lookup-transform-entry)))
+
+
+Building the Python Documentation
+---------------------------------
+
+If you want to build the Python documentation yourself, follow these steps:
+
+#. Download and install the development version of Sphinx (virtualenv
+   may be useful)::
+
+      hg clone https://bitbucket.org/jonwaltman/sphinx-info
+      cd sphinx-info
+      sudo python setup.py install
+
+#. Install some libraries::
+
+      pip install docutils jinja2 pygments
+
+#. Download the Python source::
+
+      wget http://www.python.org/ftp/python/2.7.1/Python-2.7.1.tar.bz2
+      tar xf Python-2.7.1.tar.bz2
+
+#. Modify the configuration file ``conf.py``::
+
+      cd Python-2.7.1/Doc
+      cat >> conf.py
+
+      texinfo_documents = [
+          ('contents', 'python', 'Python Documentation', _stdauthor,
+           'Python', 'The Python Documentation', 'Software Development'),
+      ]
+
+
+#. Generate the Texinfo::
+
+      mkdir -p build/texinfo build/doctrees
+      sphinx-build -b texinfo -d build/doctrees . build/texinfo
+
+#. Build the Info files::
+
+      cd build/texinfo
+      makeinfo --no-split python.texi
+
+#. Install the Info file (optional)::
+
+      sudo cp python.info /usr/share/info
+      sudo install-info --info-dir=/usr/share/info python.info
+
+
+Links
+-----
+
+https://bitbucket.org/jonwaltman/pydoc-info
+  pydoc-info Mercurial repository
+
+https://bitbucket.org/birkenfeld/sphinx/
+  Main Sphinx devolopment repository
+
+https://bitbucket.org/jonwaltman/sphinx-info/
+  Fork of the main Sphinx repository for development on the Texinfo builder
+
+
+Notes
+-----
+
+pydoc-info is hosted and developed on Bitbucket
+https://bitbucket.org/jonwaltman/pydoc-info/.
+
+Any problems, suggestions, criticisms, or comments can be reported on
+Bitbucket or sent to jonathan.waltman@gmail.com.
+
+Copyright (C) 2011, and GNU GPL'd, by Jonathan Waltman.

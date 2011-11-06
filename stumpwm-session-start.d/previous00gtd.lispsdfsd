@@ -1,0 +1,197 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; My previous work
+;;
+;;(define-window-slot "gtd")
+;;(window-gtd )
+
+;; (defun string-ignore= (char string1 string2)
+;;   (apply #'string= (mapcar #'(lambda (s)
+;;                       (remove char s))
+;;                     (list string1 string2))))
+
+;; (defun string-ignore-space= (s1 s2)
+;;   (string-ignore= #\Space s1 s2))
+
+;; ;;(defun run-or-raise-tag )
+
+
+;;  (run-prog *shell-program* :args (list "-c" cmd) :wait nil))
+
+;; (add-hook *new-window-hook* #'(lambda (w) (tag-window (remove #\Space *last-cmd*) w)))
+
+;; (defcommand-alias texec run-command-tag)
+
+;; ;; get the parent process id
+;; ;; ps  -o ppid= -p pid
+
+;; (defun wpid (w)
+;;   (let ((pid (xlib:get-property (window-xwin w) :_NET_WM_PID)))
+;;     (message (format nil "~a" pid))))
+
+;; (defun my-window-name (w)
+;;   (message (xwin-name (window-xwin w))))
+
+;; ;; (add-hook *new-window-hook* #'my-window-name)
+;; ;; (add-hook *new-window-hook* #'wpid)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;; (defun clear-tags-if (clearp &optional (argwin nil))
+;;   "Remove tags matched by predicate"
+;;   (let*
+;;     ((win (or argwin (current-window)))
+;;      (new-tags (remove-if clearp (window-tags win))))
+;;     (setf (window-tags win) new-tags)))
+
+;; ; Commands for basic operations
+
+;; (defcommand clear-tags (&optional (argtags nil) (argwin nil)) (:rest :rest)
+;; 	    "Remove specified or all tags"
+;; 	    (let*
+;; 	      ((tags (string-split-by-spaces argtags))
+;; 	       (condition (if tags (lambda(x) (find x tags :test 'equalp)) (lambda (x) t)))) 
+;; 	      (clear-tags-if condition argwin)))
+
+;; (defcommand clear-all-tags () ()
+;; 	    "Remove all tags and start afresh"
+;; 	    (mapcar (lambda(x) (clear-tags nil x)) (screen-windows (current-screen))))
+
+;; (defcommand tag-window (argtag &optional (argwin nil)) ((:rest "Tag to set: ") :rest)
+;; 	    "Add a tag to current window"
+;; 	    (let*
+;; 	      ((win (or argwin (current-window)))
+;; 	       (tag (string-split-by-spaces argtag)))
+;; 	      (setf (window-tags win) (union tag (window-tags win) :test 'equalp))))
+
+;; (defcommand all-tags () ()
+;; 	    "List all windows with their tags"
+;; 	    (let ((*suppress-echo-timeout* t))
+;; 	      (message 
+;; 		"Window list: ~{~%~{[ ~a ] ( ~a | ~a | ~a ) ~% ->~{~a, ~}~}~}"
+;; 		(mapcar
+;; 		  (lambda(x)
+;; 		    (list
+;; 		      (window-title x)
+;; 		      (window-class x)
+;; 		      (window-res x)
+;; 		      (window-role x)
+;; 		      (window-tags x)))
+;; 		  (screen-windows (current-screen))))))
+
+;; ; Selection of tags and windows by tags
+
+;; (defun tags-from (argtags &optional (argwindow nil))
+;;   "Check whether (current) window has one of the specified tags.
+;;   Tag T is implicitly assigned to all windows."
+;;   (let*
+;;     ((tags (string-split-by-spaces argtags))
+;;      (window (or argwindow (current-window)))
+;;      (wtags (union (list "T") (window-tags window) :test 'equalp)))
+;;     (intersection tags wtags :test 'equalp)))
+
+;; (defun select-by-tags (argtags &optional (without nil))
+;;   "Select windows with (without) one of the specified tags 
+;;   (any of the specified tags) from current screen. Tag T
+;;   is implicitly assigned to every window"
+;;   (let*
+;;     ((tags (string-split-by-spaces argtags))
+;;      (condition (lambda(w) (tags-from tags w)))
+;;      (windows (screen-windows (current-screen))))
+;;     (if without 
+;;       (remove-if condition windows)
+;;       (remove-if-not condition windows))))
+
+;; ; Window manipulations using tags
+
+;; ; General function
+
+;; (defun move-windows-to-group (windows &optional (arggroup nil))
+;;   "Move all windows from the list to the group"
+;;   (let*
+;;     ((group 
+;;        (if (stringp arggroup) 
+;; 	 (or 
+;; 	   (find-group (current-screen) arggroup) 
+;; 	   (add-group (current-screen) arggroup))
+;; 	 (or arggroup (current-group)))))
+;;     (mapcar (lambda (w) (move-window-to-group w group)) windows)))
+
+;; ; And convenient instances
+
+;; (defcommand pull-tag (argtag) ((:rest "Tag(s) to pull: "))
+;; 	    "Pull all windows with the tag (any of the tags) to current group"
+;; 	    (move-windows-to-group (select-by-tags (string-split-by-spaces argtag))))
+
+;; (defcommand push-without-tag (argtag) ((:rest "Tag(s) needed to stay in the group: "))
+;; 	    "Push windows not having the tag (any of the tags) to .tag-store"
+;; 	    (move-windows-to-group (select-by-tags (string-split-by-spaces argtag) T) ".tag-store"))
+
+;; (defcommand push-tag (argtag) ((:rest "Tag(s) to push: "))
+;; 	    "Push windows having the tag (any of the tags) to .tag-store"
+;; 	    (move-windows-to-group (select-by-tags (string-split-by-spaces argtag)) ".tag-store"))
+
+;; (defcommand pull+push (argtag) ((:rest "Tag(s) to select: "))
+;; 	    "Pull all windows with the tag, push all without"
+;; 	    (pull-tag argtag)
+;; 	    (push-without-tag argtag))
+
+;; (defcommand push-window () ()
+;; 	    "Push window to tag store"
+;; 	    (move-windows-to-group (list (current-window)) ".tag-store"))
+
+;; ; Manage window numbers by tags..
+
+;; (defun window-number-from-tag (window)
+;;   "Find a numeric tag, if any, and parse it"
+;;   (let*
+;;     ((tags (window-tags window))
+;;      (numtag (find-if (lambda(x) (cl-ppcre:scan "^[0-9]+$" x)) tags))
+;;      (num (and numtag (parse-integer numtag))))
+;;     num))
+
+;; (defcommand number-by-tags () ()
+;; 	    "Every window tagged <number> will have a chance to have that number. 
+;; 	    The remaining windows will have packed numbers"
+
+;; 	    ; First, assign impossible numbers.
+;; 	    (mapcar
+;; 	      (lambda(x)
+;; 		(setf (window-number x) -1))
+;; 	      (group-windows (current-group)))
+;; 	    ; Now try to assign numbers to windows holding corresponding tags.
+;; 	    (mapcar
+;; 	      (lambda (x) 
+;; 		(let* 
+;; 		  ((num (window-number-from-tag x))
+;; 		   (occupied (mapcar 'window-number (group-windows (current-group)))))
+;; 		  (if (and num (not (find num occupied)))
+;; 		    (setf (window-number x) num))))
+;; 	      (group-windows (current-group)))
+;; 	    ; Give up and give smallest numbers possible
+;; 	    (repack-window-numbers 
+;; 	      (mapcar 'window-number
+;; 		      (remove-if-not 
+;; 			(lambda(x) (equalp (window-number x) (window-number-from-tag x)))
+;; 			(group-windows (current-group))))))
+
+;; (defcommand tag-visible (&optional (argtags nil)) (:rest)
+;; 	    "IN-CURRENT-GROUP or another specified tag will be assigned to all windows 
+;; 	    in current group and only to them"
+;; 	    (let* 
+;; 	      (
+;; 	       (tags (if (or (equalp argtags "") (not argtags)) "IN-CURRENT-GROUP" argtags)))
+;; 	      (mapcar (lambda (x) (clear-tags tags x)) (screen-windows (current-screen)))
+;; 	      (mapcar (lambda (x) (tag-window tags x)) (group-windows (current-group)))))
+
+;; (defcommand raise-tag (tag) ((:rest "Tag to pull: "))
+;; 	    "Make window current by tag"
+;; 	    (let*
+;; 	      ((window (car (select-by-tags tag))))
+;; 	      (if window
+;; 		(progn
+;; 		  (move-window-to-group window (current-group))
+;; 		  (really-raise-window window)
+;; 		  window)
+;; 		nil)))

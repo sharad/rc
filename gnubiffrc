@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<configuration-file>
+  <mailbox>
+    <parameter name="address"                 value="exgz02.sasken.com"/>
+    <parameter name="authentication"          value="user_pass"/>
+    <parameter name="certificate"             value=""/>
+    <parameter name="delay"                   value="5"/>
+    <parameter name="error_reset_msgs"        value="false"/>
+    <parameter name="file_restore_atime"      value="false"/>
+    <parameter name="local_fam_enable"        value="true"/>
+    <parameter name="name"                    value="for Sharad"/>
+    <parameter name="other_folder"            value="INBOX"/>
+    <parameter name="other_port"              value="110"/>
+    <parameter name="password_aes"            value="A9182F9777C9844291DE40C33EA9CA66"/>
+    <parameter name="protocol"                value="pop3"/>
+    <parameter name="seen"                    value=""/>
+    <parameter name="use_idle"                value="true"/>
+    <parameter name="use_other_folder"        value="false"/>
+    <parameter name="use_other_port"          value="true"/>
+    <parameter name="username"                value="c_sharad"/>
+  </mailbox>
+  <mailbox>
+    <parameter name="address"                 value="/var/spool/mail/c_sharad"/>
+    <parameter name="authentication"          value="autodetect"/>
+    <parameter name="certificate"             value=""/>
+    <parameter name="delay"                   value="180"/>
+    <parameter name="error_reset_msgs"        value="false"/>
+    <parameter name="file_restore_atime"      value="false"/>
+    <parameter name="local_fam_enable"        value="true"/>
+    <parameter name="name"                    value="var/spool/mail/c_sharad"/>
+    <parameter name="other_folder"            value="INBOX"/>
+    <parameter name="other_port"              value="0"/>
+    <parameter name="password_aes"            value="6465D6E35C37052ED89C27D6B999B403"/>
+    <parameter name="protocol"                value="file"/>
+    <parameter name="seen"                    value=""/>
+    <parameter name="use_idle"                value="true"/>
+    <parameter name="use_other_folder"        value="false"/>
+    <parameter name="use_other_port"          value="false"/>
+    <parameter name="username"                value="c_sharad"/>
+  </mailbox>
+  <mailbox>
+    <parameter name="address"                 value="/home/c_sharad/Mail/group"/>
+    <parameter name="authentication"          value="user_pass"/>
+    <parameter name="certificate"             value=""/>
+    <parameter name="delay"                   value="180"/>
+    <parameter name="error_reset_msgs"        value="false"/>
+    <parameter name="file_restore_atime"      value="false"/>
+    <parameter name="local_fam_enable"        value="true"/>
+    <parameter name="name"                    value="group"/>
+    <parameter name="other_folder"            value="INBOX"/>
+    <parameter name="other_port"              value="0"/>
+    <parameter name="password_aes"            value="6465D6E35C37052ED89C27D6B999B403"/>
+    <parameter name="protocol"                value="file"/>
+    <parameter name="seen"                    value=""/>
+    <parameter name="use_idle"                value="true"/>
+    <parameter name="use_other_folder"        value="false"/>
+    <parameter name="use_other_port"          value="false"/>
+    <parameter name="username"                value="c_sharad"/>
+  </mailbox>
+  <mailbox>
+    <parameter name="address"                 value="/home/c_sharad/Mail/PerforceBugzilla"/>
+    <parameter name="authentication"          value="user_pass"/>
+    <parameter name="certificate"             value=""/>
+    <parameter name="delay"                   value="180"/>
+    <parameter name="error_reset_msgs"        value="false"/>
+    <parameter name="file_restore_atime"      value="false"/>
+    <parameter name="local_fam_enable"        value="true"/>
+    <parameter name="name"                    value="PerforceBugzilla"/>
+    <parameter name="other_folder"            value="INBOX"/>
+    <parameter name="other_port"              value="0"/>
+    <parameter name="password_aes"            value="6465D6E35C37052ED89C27D6B999B403"/>
+    <parameter name="protocol"                value="file"/>
+    <parameter name="seen"                    value=""/>
+    <parameter name="use_idle"                value="true"/>
+    <parameter name="use_other_folder"        value="false"/>
+    <parameter name="use_other_port"          value="false"/>
+    <parameter name="username"                value="c_sharad"/>
+  </mailbox>
+  <mailbox>
+    <parameter name="address"                 value="/home/c_sharad/Mail/ehelpline"/>
+    <parameter name="authentication"          value="autodetect"/>
+    <parameter name="certificate"             value=""/>
+    <parameter name="delay"                   value="180"/>
+    <parameter name="error_reset_msgs"        value="false"/>
+    <parameter name="file_restore_atime"      value="false"/>
+    <parameter name="local_fam_enable"        value="true"/>
+    <parameter name="name"                    value="ehelpline"/>
+    <parameter name="other_folder"            value="INBOX"/>
+    <parameter name="other_port"              value="0"/>
+    <parameter name="password_aes"            value="6465D6E35C37052ED89C27D6B999B403"/>
+    <parameter name="protocol"                value="file"/>
+    <parameter name="seen"                    value=""/>
+    <parameter name="use_idle"                value="true"/>
+    <parameter name="use_other_folder"        value="false"/>
+    <parameter name="use_other_port"          value="false"/>
+    <parameter name="username"                value="c_sharad"/>
+  </mailbox>
+  <general>
+    <parameter name="dir_certificates"        value="/etc/ssl/certs/"/>
+    <parameter name="double_command"          value="xterm -rv -font 10x20 -e  mutt -Z -y"/>
+    <parameter name="expert_edit_options"     value="true"/>
+    <parameter name="expert_hilite_changed"   value="true"/>
+    <parameter name="expert_search_values"    value="false"/>
+    <parameter name="expert_show_fixed"       value="true"/>
+    <parameter name="expert_show_tab"         value="true"/>
+    <parameter name="filter_global_first"     value="-^Status:\ R -^X-Mozilla-Status:\ 0001 I-^x-spam-flag:\ yes -^Subject:.*DON&apos;T\ DELETE\ THIS\ MESSAGE\ --\ FOLDER\ INTERNAL\ DATA"/>
+    <parameter name="filter_global_last"      value=""/>
+    <parameter name="min_body_lines"          value="25"/>
+    <parameter name="newmail_command"         value="play /usr/share/gnubiff/coin.wav"/>
+    <parameter name="pref_allow_resize"       value="false"/>
+    <parameter name="signal_sigusr1"          value="mark_as_read"/>
+    <parameter name="signal_sigusr2"          value="none"/>
+    <parameter name="startup_preferences"     value="true"/>
+    <parameter name="use_double_command"      value="true"/>
+    <parameter name="use_newmail_command"     value="true"/>
+  </general>
+  <applet>
+    <parameter name="applet_be_sticky"        value="false"/>
+    <parameter name="applet_font"             value="sans 10"/>
+    <parameter name="applet_geometry"         value="+950+0"/>
+    <parameter name="applet_keep_above"       value="false"/>
+    <parameter name="applet_pager"            value="false"/>
+    <parameter name="applet_use_decoration"   value="false"/>
+    <parameter name="applet_use_geometry"     value="true"/>
+    <parameter name="newmail_image"           value="/usr/share/gnubiff/tux-awake.png"/>
+    <parameter name="newmail_text"            value="%d"/>
+    <parameter name="nomail_image"            value="/usr/share/gnubiff/tux-sleep.png"/>
+    <parameter name="nomail_text"             value="no mail"/>
+    <parameter name="use_newmail_image"       value="true"/>
+    <parameter name="use_newmail_text"        value="true"/>
+    <parameter name="use_nomail_image"        value="true"/>
+    <parameter name="use_nomail_text"         value="true"/>
+  </applet>
+  <popup>
+    <parameter name="applet_taskbar"          value="true"/>
+    <parameter name="popup_be_sticky"         value="false"/>
+    <parameter name="popup_body_lines"        value="10"/>
+    <parameter name="popup_convert_retries"   value="5"/>
+    <parameter name="popup_delay"             value="2"/>
+    <parameter name="popup_font"              value="sans 10"/>
+    <parameter name="popup_format"            value="50:50:50"/>
+    <parameter name="popup_geometry"          value="-0+0"/>
+    <parameter name="popup_keep_above"        value="false"/>
+    <parameter name="popup_pager"             value="false"/>
+    <parameter name="popup_size"              value="40"/>
+    <parameter name="popup_sort_by"           value="!position mailbox"/>
+    <parameter name="popup_taskbar"           value="false"/>
+    <parameter name="popup_use_decoration"    value="false"/>
+    <parameter name="popup_use_format"        value="true"/>
+    <parameter name="popup_use_geometry"      value="true"/>
+    <parameter name="popup_use_size"          value="true"/>
+    <parameter name="use_popup"               value="true"/>
+  </popup>
+  <information>
+    <parameter name="version"                 value="2.2.10"/>
+  </information>
+  <security>
+    <parameter name="max_mail"                value="99"/>
+    <parameter name="pop3_max_uid_length"     value="70"/>
+    <parameter name="prevdos_additional_lines"value="16"/>
+    <parameter name="prevdos_close_socket"    value="64"/>
+    <parameter name="prevdos_header_lines"    value="2048"/>
+    <parameter name="prevdos_ignore_info"     value="32"/>
+    <parameter name="prevdos_imap4_multiline" value="8"/>
+    <parameter name="prevdos_line_length"     value="16384"/>
+    <parameter name="use_max_mail"            value="true"/>
+  </security>
+</configuration-file>

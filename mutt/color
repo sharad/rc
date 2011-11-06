@@ -1,0 +1,92 @@
+## =================
+## Color definitions
+## =================
+
+## Format:
+## color object      foreground   background
+## Objects names for mutt 0.90 are:
+## attachment, body, bold, error, header, hdrdefault, indicator,
+## markers, message, normal, quoted, quoted1, ..., quotedN,
+## search, signature, status, subject, tilde, tree, underline.
+
+## Color names:
+## white black green magenta blue cyan yellow red default colorx
+
+#COLORS
+color normal default default
+color hdrdefault brightcyan default
+color signature green default
+color attachment brightyellow default
+color indicator brightblack  brightcyan
+color quoted	green	default
+color quoted1	white	default
+color tilde	blue	default
+color quoted2	cyan	default
+color quoted3	white	default
+color quoted4	red	default
+color quoted5	green	default
+color quoted6	cyan	default
+color quoted7	white	default
+color quoted8	red	default
+color quoted9	green	default
+color body brightcyan  default "[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
+color body brightwhite  default "(http|ftp|news|telnet|finger)://[^ \">\t\r\n]*"
+color body brightwhite  default "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+color header brightmagenta default ^(Date):
+color header brightyellow default ^Subject:
+color body brightred default " [;:]-*[)>(<|]"       # :-) etc...
+
+# another
+
+#
+# pager-coloring
+#
+
+# color to            yellow  black  # pager header      WISH!
+# color subject       yellow  black  # pager header      WISH!
+# color cc            yellow  black  # pager header
+# color date          yellow  black  # pager header
+# color From          red     black  # pager header
+color hdrdefault    green   black  # pager header
+# color header        blue    black  "^cc: "
+# color header        yellow  black  "^date: "
+color header        red     black  "^from: "
+# color header        red     black  "^reply-to: "
+color header        red     black  "^subject: "
+# color header        yellow  black  "^to: "
+# color header        magenta black  "^x-mailer: "
+# color header        black   black  "^message-id: .*pine"
+
+# color body          white   black  # pager body
+color attachment    green   black  # pager body
+color normal        white   black  # pager body
+color quoted        yellow  black  # pager body
+color quoted1       yellow  black  # pager body
+color quoted2       yellow  black  # pager body
+color quoted3       yellow  black  # pager body
+color signature     blue    black  # pager body
+color tilde         blue    black  # pager body
+
+## Emphasis
+color bold          red    black  # ..
+color underline     yellow black  #
+
+#
+# index-coloring
+#
+
+color error         red    white  # global
+
+color indicator     white  blue   # index
+color markers       red    black  # index
+color message       white  blue   # index
+color status        white  blue   # index status bar default: black white
+color tree          red    black  # index
+
+# mail to myself
+# color index	green	black	'~p'
+
+# colors
+color index white   black   '~c name@domain.tld'
+color index white   black   '~t name@domain.tld'
+color index white   black   '~f name@domain.tld'

@@ -1,0 +1,36 @@
+# http://www.gnu.org/software/mailutils/manual/html_node/Mailbox-Statement.html#Mailbox-Statement
+
+# account myisp {
+#         # set folder=imaps://mylogin@imap.myisp.example
+#         set record=+Sent
+#         set from="sharad.pratap@sasken.com (Sharad Pratap)"
+#         set smtp=erelay.sasken.com
+#     }
+
+# mailer {
+#        url smtp://erelay.sasken.com:25;
+#      }
+
+
+## mailbox {
+##   # Use specified url as a mailspool.
+##   # mail-spool url;
+##   # Create mailbox url using pattern.
+##   # mailbox-pattern maildir:///home/s/hell/Maildir;
+##   # Default mailbox type.
+##   # mailbox-type type;
+##   # Default user mail folder.
+##   # folder 
+## }
+
+
+mailbox {
+  # Use specified url as a mailspool.
+  mail-spool imap://s@localhost;
+  # Create mailbox url using pattern.
+  # mailbox-pattern maildir:///home/s/hell/Maildir;
+  # Default mailbox type.
+  # mailbox-type type;
+  # Default user mail folder.
+  # folder 
+}

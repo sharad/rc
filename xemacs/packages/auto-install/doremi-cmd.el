@@ -1,0 +1,1 @@
+../doremi/doremi-cmd.el

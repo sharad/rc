@@ -1,0 +1,305 @@
+#!/bin/bash
+# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+
+# # http://gaoithe.livejournal.com/2009/09/03/
+# #INVOCATION:
+# #$ bt-sync-mobile.sh [device [dir]]
+# #$ bt-sync-mobile.sh Pooky 'C:\Data\Images\' 2>&1 |tee .btsync/bt_sync_images.log
+# #Stuff is synched to ~/.btsync/`echo $dir |sed 's/[\/ \\"]/_/g'`
+# #wami*.gpx and *.jpg files are cleared off device if synced successfully
+# #
+# #REQUIREMENTS:
+# #linux with bluetooth hardware
+# #various bluetooth linux utils, these ubuntu packages:
+# #bluez bluez-utils(?) obexftp openobex-apps
+# #
+# # some of these come by default, and some are not needed, but this is on the system the script was tested on
+# #$ dpkg -l |egrep "bluez|hci|obex" |sed 's/  */ /g'
+# #ii bluez 4.32-0ubuntu4.1 Bluetooth tools and daemons
+# #ii bluez-alsa 4.32-0ubuntu4.1 Bluetooth audio support
+# #ii bluez-cups 4.32-0ubuntu4.1 Bluetooth printer driver for CUPS
+# #ii bluez-gnome 1.8-0ubuntu5 Bluetooth utilities for GNOME
+# #ii bluez-gstreamer 4.32-0ubuntu4.1 Bluetooth gstreamer support
+# #ii bluez-utils 4.32-0ubuntu4.1 Transitional package
+# #ii gnome-vfs-obexftp 0.4-1build1 GNOME VFS module for OBEX FTP
+# #ii libopenobex1 1.5-1 OBEX protocol library
+# #ii libopenobex1-dev 1.5-1 OBEX protocol library - development files
+# #ii obex-data-server 0.4.4-0ubuntu1 D-Bus service for OBEX client and server sid
+# #ii obexftp 0.19-7ubuntu2 file transfer utility for devices that use t
+# #ii openobex-apps 1.5-1 Applications for OpenOBEX
+# #ii python-bluez 0.16-1ubuntu1 Python wrappers around BlueZ for rapid bluet
+# #
+# #NOTES:
+# #The bluetooth connect seems to fail sometimes.
+# #Files with funny chars in name could cause a problem. maybe. () are okay
+# #Files to clear out are hardcoded.
+# #It's simple - just syncs files up if they don't exist on host.
+# #There are various other TODOs
+
+# DEVICENAME=$1
+# #echo all is $*
+# BTSYNCHOME=~/.btsync
+
+# # DEVICENAME can be blank (scans all devices)
+# HCISCAN=`hcitool scan |grep "$DEVICENAME" |grep -v ^Scanning `
+# #Scanning ...
+# #	00:1F:5D:BF:29:39	Nokia 3120 mmfa
+# #	00:17:E5:EE:29:18	Pooky
+# #check for duplicates
+# DEVCOUNT=`echo "$HCISCAN" |wc -l`
+# HCISCAN_S=`echo "$HCISCAN" |sed 's/[\t ][\t ]*/ /g;s/^ *//;'`
+# BTADDR=`echo "$HCISCAN_S" |cut -d' ' -f1`
+# DEVNAME=`echo "$HCISCAN_S" |cut -d' ' -f2-`
+
+# #echo "DEVCOUNT=$DEVCOUNT HCISCAN=$HCISCAN
+# #BTADDR=$BTADDR DEVNAME=$DEVNAME"
+
+# if [[ $DEVCOUNT -ne 1 ]] ; then
+#     echo "usage: $0
+#   e.g. $0 42:54:41:44:44:52 \"C:/Data/\"
+# Which device?
+# $HCISCAN
+# "
+#     exit;
+# fi
+
+# echo "BTADDR=$BTADDR DEVNAME=$DEVNAME"
+# #sudo hcitool info $BTADDR
+
+# DIRTOSYNC=$2
+# # TODO pass in dir/file to sync on cmd line in $2
+# if [[ -z $DIRTOSYNC ]] ; then
+#     echo "usage: $0
+#   e.g. $0 42:54:41:44:44:52 \"C:/Data/\"
+#   e.g. $0 \$BTADDR \"C:/Data/Images/\"
+#   e.g. $0 $BTADDR \"C:/Data/Videos/\"
+#   e.g. $0 42:54:41:44:44:52 \"C:/Data/Sounds/\"
+# "
+#     DIRTOSYNC="C:/Data/"
+#     #exit;
+# fi
+
+# mkdir -p $BTSYNCHOME
+
+# DIRTOSYNC_HASH=`echo "$DIRTOSYNC" |sed 's/[\/ \\"]/_/g'`
+# #obexftp -b $BTADDR -v -l ""
+# #obexftp -b $BTADDR -v -l "C:/"
+# echo DIRTOSYNC=$DIRTOSYNC DIRTOSYNC_HASH=$DIRTOSYNC_HASH
+# obexftp -b $BTADDR -v -l "$DIRTOSYNC" |tee $BTSYNCHOME/$DIRTOSYNC_HASH.list
+
+
+# # cd to where we are getting files
+# mkdir -p $BTSYNCHOME/$DIRTOSYNC_HASH
+# cd /tmp
+# cd  $BTSYNCHOME/$DIRTOSYNC_HASH
+# pwd
+
+
+# echo get list of all files
+# echo TODO: parse xml safely/properly
+# #
+# #
+# FILES=`grep "
+
+# [Error: Irreparable invalid markup ('<file [...] newer/different>') in entry. Owner must fix manually. Raw contents below.]
+
+# Let's all sing the "let's automate" song!
+
+# Incidentally started new job with Intune http://www.intunenetworks.com Monday.
+# Finished with Sun http://www.sun.com Friday!
+# Kids all started back to school Tue.
+
+# script created just now: bt-sync-mobile.sh
+
+# TODO: cron job to daily sync phone
+
+# <pre>
+#!/bin/bash
+
+#INVOCATION:
+#$ bt-sync-mobile.sh [device [dir]]
+#$ bt-sync-mobile.sh Pooky 'C:\Data\Images\' 2>&1 |tee .btsync/bt_sync_images.log
+#Stuff is synched to ~/.btsync/`echo $dir |sed 's/[\/ \\"]/_/g'`
+#wami*.gpx and *.jpg files are cleared off device if synced successfully
+#
+#REQUIREMENTS:
+#linux with bluetooth hardware
+#various bluetooth linux utils, these ubuntu packages:
+#bluez bluez-utils(?) obexftp openobex-apps
+#
+# some of these come by default, and some are not needed, but this is on the system the script was tested on
+#$ dpkg -l |egrep "bluez|hci|obex" |sed 's/ */ /g'
+#ii bluez 4.32-0ubuntu4.1 Bluetooth tools and daemons
+#ii bluez-alsa 4.32-0ubuntu4.1 Bluetooth audio support
+#ii bluez-cups 4.32-0ubuntu4.1 Bluetooth printer driver for CUPS
+#ii bluez-gnome 1.8-0ubuntu5 Bluetooth utilities for GNOME
+#ii bluez-gstreamer 4.32-0ubuntu4.1 Bluetooth gstreamer support
+#ii bluez-utils 4.32-0ubuntu4.1 Transitional package
+#ii gnome-vfs-obexftp 0.4-1build1 GNOME VFS module for OBEX FTP
+#ii libopenobex1 1.5-1 OBEX protocol library
+#ii libopenobex1-dev 1.5-1 OBEX protocol library - development files
+#ii obex-data-server 0.4.4-0ubuntu1 D-Bus service for OBEX client and server sid
+#ii obexftp 0.19-7ubuntu2 file transfer utility for devices that use t
+#ii openobex-apps 1.5-1 Applications for OpenOBEX
+#ii python-bluez 0.16-1ubuntu1 Python wrappers around BlueZ for rapid bluet
+#
+#NOTES:
+#The bluetooth connect seems to fail sometimes.
+#Files with funny chars in name could cause a problem. maybe. () are okay
+#Files to clear out are hardcoded.
+#It's simple - just syncs files up if they don't exist on host.
+#There are various other TODOs
+
+DEVICENAME=$1
+#echo all is $*
+BTSYNCHOME=~/.btsync
+
+# DEVICENAME can be blank (scans all devices)
+HCISCAN=`hcitool scan |grep "$DEVICENAME" |grep -v ^Scanning `
+#Scanning ...
+# 00:1F:5D:BF:29:39 Nokia 3120 mmfa
+# 00:17:E5:EE:29:18 Pooky
+#check for duplicates
+DEVCOUNT=`echo "$HCISCAN" |wc -l`
+HCISCAN_S=`echo "$HCISCAN" |sed 's/[\t ][\t ]*/ /g;s/^ *//;'`
+BTADDR=`echo "$HCISCAN_S" |cut -d' ' -f1`
+DEVNAME=`echo "$HCISCAN_S" |cut -d' ' -f2-`
+
+#echo "DEVCOUNT=$DEVCOUNT HCISCAN=$HCISCAN
+#BTADDR=$BTADDR DEVNAME=$DEVNAME"
+
+if [[ $DEVCOUNT -ne 1 ]] ; then
+echo "usage: $0 <devicename> <dir_to_sync>
+e.g. $0 42:54:41:44:44:52 \"C:/Data/\"
+Which device?
+$HCISCAN
+"
+exit;
+fi
+
+echo "BTADDR=$BTADDR DEVNAME=$DEVNAME"
+#sudo hcitool info $BTADDR
+
+DIRTOSYNC=$2
+# TODO pass in dir/file to sync on cmd line in $2
+if [[ -z $DIRTOSYNC ]] ; then
+echo "usage: $0 <devicename> <dir_to_sync>
+e.g. $0 42:54:41:44:44:52 \"C:/Data/\"
+e.g. $0 \$BTADDR \"C:/Data/Images/\"
+e.g. $0 $BTADDR \"C:/Data/Videos/\"
+e.g. $0 42:54:41:44:44:52 \"C:/Data/Sounds/\"
+"
+DIRTOSYNC="C:/Data/"
+#exit;
+fi
+
+mkdir -p $BTSYNCHOME
+
+DIRTOSYNC_HASH=`echo "$DIRTOSYNC" |sed 's/[\/ \\"]/_/g'`
+#obexftp -b $BTADDR -v -l ""
+#obexftp -b $BTADDR -v -l "C:/"
+echo DIRTOSYNC=$DIRTOSYNC DIRTOSYNC_HASH=$DIRTOSYNC_HASH
+obexftp -b $BTADDR -v -l "$DIRTOSYNC" |tee $BTSYNCHOME/$DIRTOSYNC_HASH.list
+
+
+# cd to where we are getting files
+mkdir -p $BTSYNCHOME/$DIRTOSYNC_HASH
+cd /tmp
+cd $BTSYNCHOME/$DIRTOSYNC_HASH
+pwd
+
+
+echo get list of all files
+echo TODO: parse xml safely/properly
+# <folder name="whereami" modified="20080825T144716Z" user-perm="RWD" mem-type="DEV"/>
+# <file name="CapsOff.sisx" size="25568" modified="20080331T131250Z" user-perm="RWD"/>
+FILES=`grep "<file name=" $BTSYNCHOME/$DIRTOSYNC_HASH.list |cut -d'"' -f2 `
+echo FILES=$FILES
+
+## forget about first retrieve or not, just check files on each system
+#if [[ -f $BTSYNCHOME/$DIRTOSYNC_HASH.success ]] ; then
+#echo for second/.. retrieve just get differences
+
+echo TODO: recurse into directories
+
+echo TODO get updated files, now we get new files only
+
+
+function wipe_existing_files_from_list () {
+echo for now we check if file exists already and wipe from list
+##file list to retrieve by eliminating ones already retrieved
+FILESTOGET=
+for F in $FILES ; do
+if [[ ! -f $F ]] ; then
+FILESTOGET="$FILESTOGET $F"
+fi
+done
+FILES="$FILESTOGET"
+#diff $BTSYNCHOME/$DIRTOSYNC_HASH $BTSYNCHOME/$DIRTOSYNC_HASH.success
+#mv $BTSYNCHOME/$DIRTOSYNC_HASH $BTSYNCHOME/$DIRTOSYNC_HASH.success
+}
+
+function get_the_files () {
+if [[ ! -z $FILES ]] ; then
+echo get the files
+obexftp -b $BTADDR -v -c "$DIRTOSYNC" -g $FILES |tee $BTSYNCHOME/$DIRTOSYNC_HASH.get
+# can obexftp do a dir? would be handy.
+#obexftp -b $BTADDR -v -g "$DIRTOSYNC" |tee $BTSYNCHOME/$DIRTOSYNC_HASH.getdir
+# also -G (get and delete) could be used for some files
+fi
+}
+
+
+
+# TODO/half DONE track and check each file seperately
+# TODO maybe if we got the file, store the associated line then in .success file
+# use size/date in xml and on file system.
+# ideally we want commands: GET[and remove] if newer/different
+
+function track_the_files () {
+#CHECKFILES=`echo $FILES |sed 's/ / && -f /g'`
+#if [[ $CHECKFILES ]] ; then
+# mv $BTSYNCHOME/$DIRTOSYNC_HASH $BTSYNCHOME/$DIRTOSYNC_HASH.success
+for F in $FILES ; do
+if [[ -f $F ]] ; then
+# a file name which is part of others will cause problems
+FILEINFO=`grep "<file name=" $BTSYNCHOME/$DIRTOSYNC_HASH.list |grep $F`
+echo "$FILEINFO" >> $BTSYNCHOME/$DIRTOSYNC_HASH.success
+fi
+done
+}
+
+
+## TODO cleanup all files on mobile retrieved this time or previous
+## allows syncing as soon as possible but cleaning after longer (keep recent photos, traces, ...)
+
+# cleanup files matching certain patterns on mobile if they were successfully retrieved
+# we could use -G earlier (get and delete)
+function clean_the_files () {
+for F in $FILES ; do
+###if [[ -f bin/eirkey.pl && ( -n ${FG#wami} || -n ${F%gpx} ) ]] ; then echo yep; fi
+
+if [[ -f $F && ( -n ${F#wami*.gpx} || -n ${F#*.jpg} ) ]] ; then
+obexftp -b $BTADDR -v -c "$DIRTOSYNC" -k $F |tee -a $BTSYNCHOME/$DIRTOSYNC_HASH.clean
+fi
+done
+}
+
+wipe_existing_files_from_list
+echo files to get FILES=$FILES
+
+get_the_files
+
+track_the_files
+
+clean_the_files
+
+# </pre>
+# Tags: automate, bash, bluetooth, download, linux, sync, transfer
+
+# 1 comment | Leave a comment
+
+
+# Previous Day | Next Day
+
+

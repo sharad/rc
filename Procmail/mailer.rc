@@ -1,0 +1,12 @@
+
+
+
+:0: # moving annoying mail to postm.
+* ^FROM_MAILER
+postm
+
+:0: #
+* !^TO_sharad.pratap@sasken.com
+* ^TO_postmaster@sasken.com
+postm
+

@@ -1,0 +1,6 @@
+
+designfile=/usr/local/share/boxes
+
+boxes -d $(grep BOX  ${designfile} | cut -d' ' -f2 | sed -n $(expr ${RANDOM} % $(grep BOX  ${designfile} | wc -l )  + 1 )p ) $@
+
+echo -n $RANDOM > /dev/null

@@ -1,0 +1,1 @@
+../gnus-exts/gnus-summary-stripe.el

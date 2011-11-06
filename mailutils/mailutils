@@ -1,0 +1,47 @@
+# http://ftp.gnu.org/old-gnu/Manuals/mailutils-0.2/html_node/configuration.html#configuration
+# http://ftp.gnu.org/old-gnu/Manuals/mailutils-0.2/html_node/config-sample.html#config%20sample
+# http://www.gnu.org/software/mailutils/manual/html_node/configuration.html#configuration
+
+# account myisp {
+#         # set folder=imaps://mylogin@imap.myisp.example
+#         set record=+Sent
+#         set from="sharad.pratap@sasken.com (Sharad Pratap)"
+#         set smtp=erelay.sasken.com
+#     }
+
+
+mailer {
+       # url smtp:///erelay.sasken.com:25;
+       # url sendmail://msmtp
+       url sendmail://sendmail
+     }
+
+## mailbox {
+##   # Use specified url as a mailspool.
+##   # mail-spool url;
+##   # Create mailbox url using pattern.
+##   mailbox-pattern maildir:///home/s/hell/Maildir;
+##   # Default mailbox type.
+##   # mailbox-type type;
+##   # Default user mail folder.
+##   # folder 
+## }
+## 
+account myisp {
+        # set folder=imaps://s@localhost
+        set record=+Sent
+        set from="sharad.pratap@sasken.com (Sharad Pratap)"
+        # set smtp=erelay.sasken.com
+    }
+
+
+mailbox {
+  # Use specified url as a mailspool.
+  # mail-spool "imap://s@localhost";
+  # Create mailbox url using pattern.
+  mailbox-pattern "imap://{user}@localhost/INBOX";
+  # Default mailbox type.
+  # mailbox-type type;
+  # Default user mail folder.
+  # Bfolder 
+}

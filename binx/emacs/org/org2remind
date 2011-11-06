@@ -1,0 +1,26 @@
+#! /usr/bin/emacs --script
+
+
+(load-file "~/.emacs")
+(require 'org2rem)
+
+(defun org2remind ()
+  "batch org2rem function"
+  (setq org2rem-scheduled-reminders nil)
+  (setq org2rem-deadline-reminders nil)
+  (setq org2rem-pure-timestamps-string nil)
+  (save-window-excursion
+    (find-file "~/my/test.org")
+    (org2rem-list-reminders org-scheduled-string)
+    (org2rem-list-reminders org-deadline-string)
+    (org2rem-list-reminders org2rem-pure-timestamps-string)
+
+    (org2rem-write-file org2rem-scheduled-remind-file ;"~/.reminders.org.scheduled" 
+			org2rem-scheduled-reminders)
+    (org2rem-write-file org2rem-deadline-remind-file ;"~/.reminders.org.deadline"
+			org2rem-deadline-reminders)
+    (org2rem-write-file org2rem-pure-timestamps-remind-file ;"~/.reminders.org.pure-timestamps"
+			org2rem-pure-timestamps-reminders)
+    ))
+
+(org2remind)

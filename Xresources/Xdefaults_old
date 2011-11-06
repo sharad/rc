@@ -1,0 +1,85 @@
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!                                                                             !
+!  The Basics:                                                                !
+!                                                                             !
+!  Each entry in the .Xdefaults file is called a "resource".  Each x-client   !
+!  has a number of "application resources" associated with it which control   !
+!  how its default behavior.  The system application defaults for most oft-   !
+!  used x-clients are traditionally kept in the system directory              !
+!                                                                             !
+!  /usr/lib/X11/app-defaults                                                  !
+!                                                                             !
+!  You can cd to this directory and look around if you like.  You will see    !
+!  things like Xgopher, Mosaic, XTerm, etc.  These contain the default        !
+!  application resources for the associated programs.  X-window system        !
+!  is infinitely customizable in that it allows each user to change the way   !
+!  each x-client has been configured by your system administrator.  This is   !
+!  done via the .Xdefaults file in your home directory.                       !
+!                                                                             !
+!       The format of resource specification is as follows:                   !
+!                                                                             !
+!       <prog>|<class>*<resource>:  <value>                                   !
+!                                                                             !
+!       where:                                                                !
+!                                                                             !
+!             <prog>         program name  (X or GL)                          !
+!             <class>        instance name of program                         !
+!             <resource>     resource name                                    !
+!             <value>        value assigned to resource                       !
+!                                                                             !
+!  REFERENCES                                                                 !
+!                                                                             !
+!      For a full description of resource settings (there's a LOT more),      !
+!      see the 4Dwm(1X) and mwm(1X) man pages, as well the two books,         !
+!      "OSF/Motif Programmer's Guide" (especially Part II, Motif Window       !
+!      Manager, Chapter 5, Managing Menus, Mouse Buttons, and Keyboard        !
+!      Bindings), and O'Reilly, Vol. 3, "X Window System User's Guide."       !
+!                                                                             !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! The following defaults change the behavior of clients using the
+! X libraries (including xv, everything):
+
+!*background:    black
+!*foreground:    grey90
+
+
+!  Xterm, rxvt, etc.
+! XTerm*geometry: 100x28
+XTerm*geometry: 86x28
+
+
+!  If you use the following "Foreground" (ie. capitalized) it over-rides
+!  all other colours!
+
+xterm*foreground:       light grey
+xterm*background:       black
+! xterm*font:             9x15
+xterm*font:             10x20
+xterm*saveLines:        1500
+!xterm*Border:           dark blue
+!xterm*Border:           off
+!! causing display of menu.
+!xterm*ScrollBar:        on 
+!xterm*TitleBar:         on
+!xterm*TextUnderIcon:    on
+!xterm*AutoRaise:        on
+!xterm*termtype:         vt100
+xterm*ttyModes:         intr ^c erase ^h susp ^@ dsusp ^@ kill ^u eof ^d
+
+!  Xman
+
+!xman*manualFontNormal: 8x16
+
+
+!  Emacs (like I ever use it - but the info might be worthwhile if I do)
+
+emacs*Background: DarkSlateGray
+emacs*Foreground: Wheat
+emacs*pointerColor: Orchid
+emacs*cursorColor: Orchid
+emacs*bitmapIcon: on
+emacs*font: fixed
+emacs.geometry: 80x25

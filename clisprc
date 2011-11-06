@@ -1,0 +1,11 @@
+
+;; * add to your init file:
+;;   ~/.clisprc for CLISP,
+;;   ~/.cmucl-init.lisp for CMUCL or
+;;   ~/.clinit.cl for Allegro
+(setq *clocc-root* "/home/s/hell/SCRATCH/clocc/")
+(load (concatenate 'string *clocc-root* "clocc"))
+(load (translate-logical-pathname "clocc:src;cllib;base"))
+(load (translate-logical-pathname "clocc:src;cllib;elisp")) 
+
+

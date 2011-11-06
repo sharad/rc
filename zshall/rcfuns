@@ -1,0 +1,152 @@
+# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+
+# My Custom Functions	     #
+
+# set c dir
+chome () {
+    my_homes=(`\ls -N ~/..`)
+    read -s -t 5 -p "`\ls -Nm ~/..`
+	dir: " MYHINDX
+    export MYHOME=${my_homes[$MYHINDX]}
+    unset my_homes MYHINDX
+}
+
+if [ $HOME:t = hell ] ; then
+    foreach subdir ( ~/../* ) {
+        if [ -r $subdir -a -d $subdir ] ; then
+            vsubdir=$(basename $subdir | tr '[[:upper:]]' '[[:lower:]]' | tr -d '+')
+            eval $vsubdir=$subdir;
+            eval : ~"$vsubdir"
+        fi
+    }
+fi
+
+if [ -d ~/SCRATCH ] ; then
+    scratch=~/SCRATCH
+elif [ -d ~/SCRATCHES/main ] ; then
+    scratch=~/SCRATCHES/main
+elif [ -d ~/SCRATCHES/small ] ; then
+    scratch=~/SCRATCHES/small
+fi
+
+
+if [ $scratch ] ; then
+    if [ -d ~/SCRATCH/shortlive/ ] ; then
+        short=~/SCRATCH/shortlive ; : ~short
+    fi
+    if [ -d ~/SCRATCH/internet/download/ ] ; then
+        download=~/SCRATCH/internet/download/ ; : ~download
+    fi
+    : ~scratch
+fi
+
+
+if [ -d ~/Documents/ ] ; then
+    doc=~/Documents ; : ~doc
+    if [ -d ~/Documents/pdfs/ ] ; then
+        pdfs=~/pdfs ; : ~pdfs
+    fi
+fi
+
+
+# 	function c () {
+# 	    if [ $# -eq 1 ]; then
+# 		cd $@ && ls -A -F
+# 	    else
+# 		cd $MYHOME &&  ls -A -F
+# 	    fi
+# 	}
+
+# not used now but good concept.
+#	getcddb () {
+#			echo =================== >> ~/.cddb;
+#			du -a	/mnt/cdrom	>>  ~/.cddb ;
+#			echo ============================== >> ~/.cddb
+#	}
+
+# ad () { for i in ~/.dates/*.lst; do dates $@ $i ; done }
+
+# defining setcursor
+function setcursor {
+
+    if [[ $TERM == xterm || $TERM == screen ]] ; then
+        :
+        	# echo -ne "\033]12;ivory\007"
+        	# echo -ne "\033]12;cyan\007"
+        	# echo -ne "\033]12;LightCoral\007"
+        	# echo -ne "\033]12;Coral\007"
+    elif [[ $TERM == screen.linux ]] ; then
+                echo -n \\033\[\?17\;0\;60c ;		# for zshell
+    elif [[ $TERM == linux ]] ; then
+        if [ -r /usr/share/consolefonts/t850b.psf.gz ] ; then
+            if which consolechars > /dev/null 2>&1 ; then
+                # consolechars -f /usr/share/consolefonts/t850b.psf.gz
+            elif which setfont    > /dev/null 2>&1 ; then
+                # setfont /usr/share/consolefonts/t850b.psf.gz -u xyz
+                # setfont /usr/share/consolefonts/Lat15-Terminus14.psf.gz
+
+            fi
+        else
+            :
+        fi
+    fi
+}
+
+# defining q
+if [ -x /usr/games/fortune ] ; then
+    qf () {
+	tput clear;
+	tput cup 9 0;
+	/usr/games/fortune $*;
+	tput cup 37 0
+	whence setcursor >/dev/null 2>&1 && setcursor
+
+    }
+elif which fortune > /dev/null 2>&1 ; then
+    qf () {
+	tput clear;
+	tput cup 9 0;
+	fortune $*;
+	tput cup 37 0
+	whence setcursor >/dev/null 2>&1 && setcursor
+    }
+else
+    qf () {
+	tput clear;
+	whence setcursor >/dev/null 2>&1 && setcursor
+    }
+fi
+
+function vacation () {
+    if [ $# != 1 ] || [ $1 != "on" -a $1 != "off" ] ; then
+        echo "Error not doing any thing" >&2
+        cat <<EOF
+$0: usage
+$0 on|off
+EOF
+    else
+        mutt -s 'vacation '$1' qwe123' sharad.pratap@sasken.com
+    fi
+}
+
+function suedit () {
+    local pathx="$1"
+    local filex=`basename $1`
+    cp $pathx /tmp/$filex
+    emacsclient -d $DISPLAY -n /tmp/$filex
+    sudo cp /tmp/$filex $pathx
+}
+
+function wiki() { dig +short txt $1.wp.dg.cx; }
+
+function mkcd() { mkdir "$@"; eval cd \$$# }
+
+## XML functions
+
+function mkxhtml() {
+    curl "$1" | \
+        tidy -i -asxml - 2>/dev/null | \
+        xmllint - | \
+        sed -e 's/&[nm]dash;//g' -e 's|xmlns="http://www.w3.org/1999/xhtml"||'
+}
+

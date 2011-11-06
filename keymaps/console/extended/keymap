@@ -1,0 +1,12 @@
+# this only works for console!
+# allow control tab
+control keycode 15 = Macro
+# control up down left right home end
+control keycode 103 = Meta_p
+control keycode 108 = Meta_n
+control keycode 105 = Meta_Control_b
+control keycode 106 = Meta_Control_f
+control keycode 102 = Meta_less
+control keycode 107 = Meta_greater
+
+

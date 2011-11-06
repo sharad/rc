@@ -1,0 +1,129 @@
+{
+  tool_options.Gimp = {
+    AlwaysUserIcon = Yes;
+    Icon = "wmaker-gimp-tooloption.tif";
+  };
+  Logo.WMClip = {
+    Icon = clip.tiff;
+  };
+  image_window.Gimp = {
+    AlwaysUserIcon = Yes;
+    Icon = "wmaker-gimp-work.tif";
+  };
+  "Mozilla-bin" = {
+    Icon = "wmaker-nav.tif";
+  };
+  WMSoundServer = {
+    Icon = Sound.tiff;
+  };
+  KTerm = {
+    Icon = GNUterm.tiff;
+  };
+  Logo.WMPanel = {
+    Icon = GNUstep.tiff;
+  };
+  patternselection.Gimp = {
+    AlwaysUserIcon = Yes;
+    Icon = "wmaker-gimp-patterns.tif";
+  };
+  preferences.Gimp = {
+    AlwaysUserIcon = Yes;
+    Icon = "wmaker-gimp-prefs.tif";
+  };
+  Dockit = {
+    Icon = GNUstep.tiff;
+  };
+  tip_of_the_day.Gimp = {
+    NoResizebar = Yes;
+    AlwaysUserIcon = Yes;
+    Icon = "wmaker-gimp2.tif";
+    KeepOnTop = Yes;
+    NoCloseButton = Yes;
+    NoMiniaturizeButton = Yes;
+  };
+  color_palette.Gimp = {
+    NoResizebar = Yes;
+    AlwaysUserIcon = Yes;
+    Icon = "wmaker-gimp-palette.tif";
+  };
+  brushselection.Gimp = {
+    AlwaysUserIcon = Yes;
+    Icon = "wmaker-gimp-brushes.tif";
+  };
+  gradient_editor.Gimp = {
+    AlwaysUserIcon = Yes;
+    Icon = "wmaker-gimp-gradient.tif";
+  };
+  gimp_startup.Gimp = {
+    NoResizebar = Yes;
+    AlwaysUserIcon = Yes;
+    NotMiniaturizable = Yes;
+    NotClosable = Yes;
+    Icon = "wmaker-gimp2.tif";
+    NoTitlebar = Yes;
+  };
+  "gnome-help.Gnome-help" = {
+    Icon = "/home/s/hell/GNUstep/Library/WindowMaker/CachedPixmaps/gnome-help.Gnome-help.xpm";
+  };
+  WPrefs = {
+    Icon = "/usr/lib/GNUstep/System/Applications/WPrefs.app/WPrefs.tiff";
+  };
+  Tile.WMClip = {
+    Icon = clip.tiff;
+  };
+  XTerm = {
+    Icon = GNUterm.tiff;
+  };
+  "Script-fu" = {
+    Icon = "wmaker-gimp-script-fu.tif";
+  };
+  Rxvt = {
+    Icon = GNUterm.tiff;
+  };
+  Netscape = {
+    Icon = "wmaker-netscape.tif";
+  };
+  NXTerm = {
+    Icon = GNUterm.tiff;
+  };
+  gmc = {
+    NoAppIcon = Yes;
+    SkipWindowList = Yes;
+    Omnipresent = Yes;
+  };
+  layers_and_channels.Gimp = {
+    AlwaysUserIcon = Yes;
+    Icon = "wmaker-gimp-layers.tif";
+  };
+  "script-fu.Script-fu" = {
+    Icon = "wmaker-gimp-script-fu.tif";
+  };
+  Logo.WMDock = {
+    Icon = GNUstep.tiff;
+  };
+  toolbox.Gimp = {
+    NoAppIcon = Yes;
+    Icon = "wmaker-gimp2.tif";
+  };
+  panel = {
+    NoAppIcon = Yes;
+  };
+  "gnome-terminal.Gnome-terminal" = {
+    Icon = "/home/s/hell/GNUstep/Library/WindowMaker/CachedPixmaps/gnome-terminal.Gnome-terminal.xpm";
+  };
+  emacs = {
+    Icon = "wmaker-emacs.tif";
+  };
+  indexed_color_palette.Gimp = {
+    NoResizebar = Yes;
+    AlwaysUserIcon = Yes;
+    Icon = "wmaker-gimp-palette.tif";
+  };
+  "*" = {
+    Icon = defaultAppIcon.tiff;
+  };
+  Gimp = {
+    AlwaysUserIcon = Yes;
+    Icon = "wmaker-gimp2.tif";
+  };
+}

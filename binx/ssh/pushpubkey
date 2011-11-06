@@ -1,0 +1,151 @@
+#!/usr/bin/env bash
+### pushpubkey --- push the pubkey to remotehost
+
+## Copyright 2008 Sharad Pratap
+##
+## Author: c_sharad@pcz-c-sharad
+## Version: $Id: cppub.sh,v 0.0 2008/10/16 05:32:20 c_sharad Exp $
+## Keywords: 
+## X-URL: not distributed yet
+
+## Time-stamp: <>
+
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2, or (at your option)
+## any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+### Commentary:
+
+## 
+
+##   (require 'cppub)
+
+### Code:
+
+  function main {
+      set_check "$@"
+      scp -q $pubfile ${remoteuser}@${remotehost}:$tmp_pubfile
+      ssh -q ${remoteuser}@${remotehost} <<EOF
+	mkdir -p ~/.ssh
+	if [ -f ~/.ssh/authorized_keys ] ; then
+	  if [ \`uname\` == Linux ] ; then
+	    sed   -i '/ ${localuser}@${localhost}$/d' ~/.ssh/authorized_keys
+	    cat $tmp_pubfile >> ~/.ssh/authorized_keys
+	  else
+	    sed   '/ ${localuser}@${localhost}$/d' ~/.ssh/authorized_keys > $tmp_authfile
+	    cp -f $tmp_authfile ~/.ssh/authorized_keys
+            rm -f $tmp_authfile
+	    cat $tmp_pubfile >> ~/.ssh/authorized_keys
+	  fi
+	else
+	    cp $tmp_pubfile ~/.ssh/authorized_keys
+	fi
+        rm -f $tmp_pubfile
+EOF
+      cleanup
+  } # end main
+
+
+##############################################################################
+####  User Options, Variables
+##############################################################################
+
+  function set_check {
+
+      myself=`basename $0`
+      tmp_pubfile=/tmp/pubfile.$$
+      tmp_authfile=/tmp/authfile.$$
+
+      localuser=`whoami`
+      localhost=`uname -n`
+      log=nolog
+
+      opt=$1
+      while shift ; do
+          case $opt in
+              -debug) debug=yes		                ;;
+              -l)     remoteuser=$1             ; shift ;;
+              -p)     pubfile="$1"              ; shift ;;
+              -h)
+                  helpmssg                                      >&2
+                  exit 0 ;;
+              *)
+                  if [ $remotehost ] ; then
+                      echo unrecognized: $opt option.           >&2
+                      echo -e try ${0} -h		        >&2
+                      echo See you again....                    >&2
+                      exit -1
+                  else
+                      if [[ $opt == *@* ]] ; then
+                          remoteuser=${opt%@*}
+                          remotehost=${opt#*@}
+                      else
+                          remotehost=${opt}
+                      fi
+                  fi
+                  ;;
+          esac
+          opt=$1
+      done
+
+      if   [ ! "$remotehost" ] ; then
+          echo -e ${myself}: specify remotehost. "\n"exiting ...          >&2
+          exit -1
+      fi
+      if   [ ! "$remoteuser" ] ; then
+          remoteuser=$localuser
+      fi
+
+      if   [ ! "$pubfile" ] ; then
+          pubfile=~/.ssh/id_dsa.pub
+          if [ ! -r $pubfile ] ; then
+              echo -e $pubfile not exist or readable "\n" exiting ... >&2
+              exit -1
+          fi
+      fi
+
+#       if   [ ! "$x-opt-arg"     ] ; then
+#           echo -e $0: specify x-opt-arg with -a x-opt-arg. "\n"exiting ...          >&2
+#           exit -1
+#       fi
+
+      : chmod u+w $log
+
+  } # end set_check
+
+  function cleanup {
+  # make it not writable.
+      : chmod -w $log
+  } # end cleanup
+
+  function helpmssg {
+
+      cat <<EOF
+	$myself: [[-p ~/.ssh/id_dsa.pub] [-l remoteuser remotehost] [remoteuser@remotehost]]
+
+        -debug,                 option for debug.
+	-h,                     this help.
+        -p ~/.ssh/id_dsa.pub,
+	-l remoteuser,		
+	long long story............
+	..............................
+EOF
+  } # end helpmssg
+
+
+
+
+  main "$@"
+
+### cppub.sh ends here
+

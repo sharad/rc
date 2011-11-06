@@ -1,0 +1,143 @@
+# Uncomment the lines below if you need log output for testing.
+#
+LOGFILE=~/.Procmail/procmailvacation.log
+VERBOSE=on
+
+# vim: ft=procmail
+
+# User-managed vacation recipe for procmail
+# Written by Jason Thaxter
+#  (http://www.google.com/search?q=jason+thaxter)
+
+#   * Include this file in the procmail file.
+#   * Set $VACATION_PASSWORD. (for security, this is mandatory)
+#   * Define $VACATION_SENDER in your procmail recipe: it will be "from" this
+#     address.
+#   * E-mail a message with $VACATION_PASSWORD and $VACATION_ON in the subject
+#     line. The body of the message becomes the vacation message. $VACATION_ON
+#     can be set prior to the INCLUDERC, but it defaults to "vacation on".
+#   * To turn it off, e-mail a message with $VACATION_PASSWORD and $VACATION_OFF
+#     in the subject line. Likewise, $VACATION_OFF defaults to "vacation off".
+
+# Note that you probably want this to execute *after* any mailing list or spam
+# delivery recipes. You can set $VACATION_SKIP to disable vacation processing
+# if it's inconvenient to skip this recipe.
+
+# -----------------------------------------------------------------------------
+# Configurable variables: These variables allow you to use this vacation recipe
+# as an include and customize it from your main procmail file.
+#
+# lockfile:
+VACATION_LOCK=$HOME/${VACATION_LOCK:-".vacation$LOCKEXT"}
+# cache file:
+VACATION_CACHE=$HOME/${VACATION_CACHE:-".vacation_cache"}
+# cache size:
+VACATION_CACHE_SZ=${VACATION_CACHE_SZ:-8192}
+# message file
+VACATION_MSG=$HOME/${VACATION_MSG:-".vacation_mesg"}
+# what to use as the xloop header
+HOSTNAME=${HOSTNAME:-`hostname`}
+VACATION_XLOOP=${VACATION_XLOOP:-"$LOGNAME@$HOSTNAME"}
+# base token for default $VACATION_ON and $VACATION_OFF
+# so you could set this and not those individually
+VACATION_COOKIE=${VACATION_COOKIE:-"vacation"}
+VACATION_ON=${VACATION_ON:-"$VACATION_COOKIE on"}
+VACATION_OFF=${VACATION_OFF:-"$VACATION_COOKIE off"}
+
+#
+#Change these variables
+#
+VACATION_FROM_ANYADD=true
+VACATION_PASSWORD=qwe123
+VACATION_FROM_ANYDOMAIN=true
+VACATION_DOMAIN_NAME=sasken.com
+
+VACATION_SENDER=$LOGNAME@$VACATION_DOMAIN_NAME
+VACATION_SENDMAILFROM=${VACATION_SENDMAILFROM:-"-f$VACATION_SENDER"}
+VACATION_SENDMAILFLAGS="-oi -t $VACATION_SENDMAILFROM"
+# -----------------------------------------------------------------------------
+
+SENDMAIL_CMD="$SENDMAIL $VACATION_SENDMAILFLAGS"
+SHELL=/bin/sh
+
+# check if we should send vacation message, add user to cache
+:0 Whc: $VACATION_LOCK
+# if i haven't been instructed to skip processing
+* ? test -z $VACATION_SKIP
+# if i have a vacation message file
+* ? test -f $VACATION_MSG
+# and the message is not from a daemon or mailer
+* !^FROM_DAEMON
+* !^FROM_MAILER
+# not declared spam by spamassassin
+* !^X-Spam-Flag: YES
+# not discernably in a mailing list
+* !^List-
+* !^(Mailing-List|Approved-By|BestServHost|Resent-(Message-ID|Sender)):
+* !^X-[^:]*-List:
+* !^X-(Sent-To|(Listprocessor|Mailman)-Version):
+# and not x-loop
+* !^X-Loop: $VACATION_XLOOP
+# add it to the cache
+| formail -rD $VACATION_CACHE_SZ $VACATION_CACHE
+
+:0 ehc
+# if the name was not in the cache
+# if we can find who we're sending it to
+# and who we are sending this "From"
+* ? test -n ${VACATION_MSG_SEND_TO}
+* ? test -n ${VACATION_SENDER}
+*$ !^From:.*$VACATION_SENDER
+| (formail -r \
+	-I"Precedence: junk" \
+	-A"From: $VACATION_SENDER" \
+	-A"X-Loop: $VACATION_XLOOP"; \
+	cat  $VACATION_MSG ) | \
+	$SENDMAIL_CMD
+
+
+# Add/remove vacation message
+:0
+# First make sure that the sender has
+# the correct username
+* ^TO_\/[-\.a-z_]+@
+*$ ^From:.*$\MATCH
+# the correct email domain
+*$ ^From:.*$\VACATION_DOMAIN_NAME
+# only do this if we have a password set
+* ? test -n $VACATION_PASSWORD
+# and it's in the subject line
+* $^Subject:.*${VACATION_PASSWORD}
+{
+
+	# VACATION ON
+	# if subject line matches magic cookie for ON:
+	:0
+	* $^Subject:.*${VACATION_ON}
+	{
+		# pipe the body into the vacation message file
+		:0c:$VACATION_LOCK
+		| formail -I "" > $VACATION_MSG
+
+		# add message to the body
+		:0f
+		| cat - ; \
+		  echo; \
+		  echo '---------- VACATION -----------------'; \
+		  echo 'The above text was installed as your vacation message'
+	}
+
+	# VACATION OFF
+	# if subject line matches magic cookie for OFF:
+	# delete the vacation file and notify
+	:0f
+	* $^Subject:.*${VACATION_OFF}
+	| cat -;  \
+		echo '---------- VACATION -----------------'; \
+		echo 'Removing message and cache: '; \
+		rm -vf $VACATION_MSG; \
+		rm -vf $VACATION_CACHE; \
+		echo ; \
+		echo "Removed vacation message."
+
+}

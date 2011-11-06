@@ -1,0 +1,1 @@
+../mingus/libmpdee.el

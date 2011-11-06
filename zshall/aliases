@@ -1,0 +1,150 @@
+# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+
+# enable color support of ls and also add handy aliases
+	if [ "$TERM" != "dumb" ]; then
+	    if [ `uname -s` != "SunOS" ] ; then
+		eval "`dircolors -b`"
+	    fi
+	    alias ls='command ls -F --color=auto --human-readable --quoting-style=shell'
+            if whence -p sl > /dev/null ; then
+                alias sl='command sl -e'
+            else
+                alias sl='command ls -F --color=auto --human-readable --quoting-style=shell'
+            fi
+	    #alias dir='command ls --color=auto --format=vertical'
+	    #alias vls='command ls --color=auto --format=long'
+	fi
+
+# some more ls aliases
+	alias ll='command ls -l -F --color=auto --human-readable --quoting-style=shell'
+	alias la='command ls -A -F --color=auto --human-readable --quoting-style=shell'
+# printing double side
+# for more
+# see http://www.sun.com/bigadmin/content/submitted/duplex_printing.html
+        alias df='df -hx tmpfs'
+	alias lp='command lp -m -o sides=two-sided-long-edge '
+	alias lpr='command lpr -o sides=two-sided-long-edge '
+	alias j='jobs -l'
+	alias jd='jobs -ld'
+        alias cp='cp --remove-destination'
+	#alias l='command ls -CF --color=auto'
+	alias still='echo [?17\;0\;60c'
+	alias devil='dict -d devil'
+	alias dictwn='dict -d wn'
+	alias pr='pr -F'
+	#alias l=less
+	#alias dict='less /home/paradise/books/wb1913_Complete.txt'
+	#alias brw='links http://large.org'
+	alias brw='links /pacific/weblarge/var/www/html/index.html'
+	alias x='xinit'
+	alias ps='command ps f'
+	alias psu='command ps -u $USER f'
+	alias ups='command ps -u $USER f'
+	alias pstreeu='command pstree -u $USER'
+        alias pgrep='command pgrep -l'
+	alias aumix="( unset DISPLAY && aumix )"
+	#alias comic='command consolechars -f /usr/share/consolefonts/t850b.psf.gz'
+	#c /qutm/home/paradise/cflowgraph/c2vcg3
+	alias oo=openoffice.org-2.0
+	alias rmail='command mutt -y -R'
+	alias tdrun='command ssh -qX td-cm-req@sunm21'
+        alias xlock='_reptime=$REPORTTIME; unset REPORTTIME; xlock ; REPORTTIME=10 ; REPORTTIME=$_reptime'
+        alias gtalk=empathy
+        # alias which='alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde'
+        alias rem='command rem -aqh | less -REX'
+        alias remind='command remind -aqh'
+        alias fetchmail='builtin :'
+        alias care='exec screen'
+        alias music='mp3blaster    ~/Music/{misc,ASHA.KISHORE/*}/*'
+        alias msuspend='pmi action suspend '
+        alias mhibernate='pmi action hibernate'
+        # GNUEmacs aliases
+        alias zz='python   /usr/lib/command-not-found  -- '
+        alias emacs='emacsclient -t'
+        alias e='emacsclient -t'
+        alias edit='emacsclient -t'
+        alias xemacs='emacsclient -n -d $DISPLAY'
+        alias xe='emacsclient -n -d $DISPLAY'
+        alias xedit='emacsclient -n -d $DISPLAY -f ~/.emacs.d/server/general'
+        # alias plan='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp nil)'\'''
+        # alias noteit='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp 4)'\'''
+        # alias onote='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp 1)'\'' '
+        # alias mynote='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp 2)'\'''
+        # alias agenda='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'\''org-agenda-mode-hook  '\''\'\'\''delete-other-windows)'\'' --eval '\''(org-agenda-list)'\''  --eval '\''(toggle-read-only)'\'''
+        alias plan='emacsclient  -nw -t --eval '\''(oremp nil)'\'''
+        alias noteit='emacsclient  -nw -t --eval '\''(oremp 4)'\'''
+        alias onote='emacsclient  -nw -t --eval '\''(oremp 1)'\'' '
+        alias mynote='emacsclient  -nw -t --eval '\''(oremp 2)'\'''
+        alias agenda='emacsclient  -nw -t --eval '\''(org-agenda-list)'\''  --eval '\''(toggle-read-only)'\'''
+        alias gnus='emacsclient  -nw -t --eval '\''(gnus)'\'''
+        alias bbdb='emacsclient  -nw -t --eval '\''(bbdb)'\'''
+        alias vncviewer='vncviewer -shared'
+        alias mancolor="TERMINFO=~/.terminfo/ LESS=C TERM=mostlike PAGER=less man"
+
+        #volume
+        alias palsactrl=pavucontrol
+
+        # netcat alias
+        alias nsearch='sudo netstat -lnp | grep :6600'
+
+        if [ "${SSH_AUTH_SOCK}x" = "x" ]; then
+            # if we dont have an auth sock, dont use pub key identification
+            alias ssh='command ssh -qX -o PubkeyAuthentication=no'
+            alias scp='command scp -q  -o PubkeyAuthentication=no'
+        else
+            # We do have an auth sock, use auth forwarding
+            alias ssh='command ssh -qXA'
+            alias scp='command scp -q'
+        fi
+
+        ## XML aliases
+        alias xml=xmlstarlet
+        alias makeitxhtml='tidy -asxml 2>/dev/null | xmllint - | sed -e '\''s/&ndash;//g'\'' -e '\''s|xmlns="http://www.w3.org/1999/xhtml"||'\'' '
+
+
+
+
+# Suffix aliases
+# see for more http://grml.org/zsh/zsh-lovers.html
+
+# 	alias -s tex='command emacsclient  -nw -t'
+# 	alias -s c='command emacsclient  -nw -t'
+# 	alias -s pl='command emacsclient  -nw -t'
+# 	alias -s cgi='command emacsclient  -nw -t'
+ 	alias -s txt='command emacsclient  -nw -t'
+	alias -s html='command w3m'
+	alias -s org='command w3m'
+        foreach reader (acroread evince) {
+            if whence -p $reader > /dev/null ; then
+	        alias -s pdf='command '$reader
+                break
+            fi
+        }
+        foreach writer (abiword ooffice) {
+            if whence -p $writer > /dev/null ; then
+	        alias -s doc='command '${writer}' -nologo'
+	        alias -s ppt='command '${writer}' -nologo'
+	        alias -s odt='command '${writer}' -nologo'
+	        alias -s Xls='command '${writer}' -nologo'
+	        alias -s xls='command '${writer}' -nologo'
+	        alias -s XLS='command '${writer}' -nologo'
+                break
+            fi
+        }
+	alias -s ps='command evince'
+	#alias -s jpg=gthumb
+	alias -s jpg=eog
+	alias -s jpeg=eog
+	alias -s dvi=xdvi
+        alias -s djvu=djview
+
+# Urxvt change font, backgrounf image
+
+alias fontset='printf '\''\33]50;%s\007'\'' 9x15,xft:Kochi" Mincho"'
+
+
+
+
+# Man info
+alias mm='man man-pages intro hier keymaps(5)'
+alias ii='info '\''File permissions'\'' '\''Coreutils'\'' '\''File permissions'\'' '\''Common options'\'''

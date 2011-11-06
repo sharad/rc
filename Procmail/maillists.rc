@@ -1,0 +1,104 @@
+
+######
+# Mailing Lists messages
+######
+
+:0: # add to check sharad.pratap@sasken.com not here
+* !^TO_sharad.pratap@sasken.com
+* ^TO_td-cm-req@sasken.com
+PerforceBugzilla
+
+
+:0: # move all ehelpline mail to ehelpline
+* ^TO_sharad.pratap@sasken.com
+* ^From.*ehelpline@sasken.com
+ehelpline
+
+:0: # add to check sharad.pratap@sasken.com not here
+* !^TO_sharad.pratap@sasken.com
+* ^TO_team-sasnokia-wv@sasken.com
+allusers
+
+:0: # add to check sharad.pratap@sasken.com not here
+* !^TO_sharad.pratap@sasken.com
+* ^From.*(team.wellbeing|fmsnews|CSR)@sasken.com
+allusers
+
+:0: # add to check sharad.pratap@sasken.com not here
+* !^TO_sharad.pratap@sasken.com
+* ^From.*(fmsnews)@sasken.com
+news
+
+:0: # add to check sharad.pratap@sasken.com not here
+* !^TO_sharad.pratap@sasken.com
+* ^From.*(PMS|IJP)@sasken.com
+useful
+
+:0: # add to check sharad.pratap@sasken.com not here
+* !^TO_sharad.pratap@sasken.com
+* ^From.*payroll@rajofficesolutions.com
+useful
+paycheck
+
+:0: # move all ehelpline mail to ehelpline
+* !^TO_sharad.pratap@sasken.com
+* ^TO_allusers@sasken.com
+allusers
+
+:0: # move all fac-(m|w|z|b) to fac
+* !^To.*sharad.pratap@sasken.com
+* ^TO_fac-(m|w|b|z)@sasken.com
+fac
+
+:0: # move all ehelpline mail to ehelpline
+* !^TO_sharad.pratap@sasken.com
+* ^TO_group-(it|cm)@sasken.com
+group
+
+:0: # move all ehelpline mail to ehelpline
+* ^TO_support-bugzilla@lists.mozilla.org
+support-bugzilla
+
+:0: # add to check sharad.pratap@sasken.com not here
+* !^TO_sharad.pratap@sasken.com
+* ^TO_phones@sasken.com
+allusers
+phones
+
+EXEMP_SENDMAILFLAGS="-oi -t "
+
+# :0 c
+# * ^Subject: Exits:.*
+# | exemployee | $SENDMAIL $EXEMP_SENDMAILFLAGS
+
+:0:  # save in exemp folder.
+* ^Subject.*Exit(s)?:.*
+exemp
+
+:0:  # save in exemp folder.
+* ^Subject.*(RE|Re): Exits.*
+exemp
+
+
+:0:  # save in exemp folder.
+* ^Subject: Perforce: inqury to delete perforce user
+p4inactive
+
+:0:  # save in exemp folder.
+* ^Subject: Perforce: perforce user id .* not used from .* days
+prob2freelic
+
+:0:  # save in exemp folder.
+* ^Subject: p4 user id .* have been deleted.
+prob2freelic
+
+:0: # move all phone mail
+* ^TO_sharad.pratap@sasken.com
+* ^From.*phones@sasken.com
+* ^Subject: phone call:
+phone
+
+
+#####
+# end
+#####

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ $# = 1 ] ; then 
+   cd "$1"
+   emacs --batch \
+       --eval "(add-to-list 'load-path (expand-file-name \"~/emacs-files\"))" \
+       --eval "(add-to-list 'load-path (expand-file-name \"~/emacs-files/org-xxx\"))" \
+       --eval "(batch-byte-compile-if-not-done)" *.el
+fi

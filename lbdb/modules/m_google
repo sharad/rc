@@ -1,0 +1,8 @@
+#!/bin/bash -posix
+
+m_google_query ()
+{
+
+  which goobook > /dev/null 2>&1 && goobook query "$@" 2>/dev/null | grep -v '^$' | sed -e 's/$/\tgoogle/'
+
+}

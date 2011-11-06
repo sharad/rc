@@ -1,0 +1,15 @@
+
+
+[ -r ~/.rsetup/sh/env.d/${HOST} ] && . ~/.rsetup/sh/env.d/${HOST}
+
+EDITOR='emacsclient -t -c -f ~/.emacs.d/server/general '
+VISUAL='emacsclient -t -c -f ~/.emacs.d/server/general '
+
+EDITOR=$HOME/bin/general-editor
+VISUAL=$EDITOR
+
+BROWSER=w3m
+
+export EDITOR
+export VISUAL
+export BROWSER

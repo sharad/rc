@@ -1,0 +1,34 @@
+# Mode: -*- cperl -*-
+
+
+use lib $ENV{'HOME'} . "/.osetup/info/common/perl";
+
+use Setup;
+
+
+
+%ldap_server_db =
+  (
+   'ldap1'          => [$Setup::info->{"adhost"},
+                        $Setup::info->{"adbase"},
+                        'givenname sn cn mail',
+                        'givenname cn sn mail telephonenumber mobile o',
+                        '${mail}',
+                        '${givenname} ${sn}',
+                        '${o} ${telephonenumber} ${mobile}',
+                        0],
+  );
+
+
+$ldap_server           = $Setup::info->{"adhost"};
+$search_base           = $Setup::info->{"adbase"};
+$ldap_search_fields    = 'givenname sn cn mail';
+$ldap_expected_answers = 'givenname sn cn mail telephonenumber mobile';
+$ldap_result_email     = '${mail}';
+$ldap_result_realname  = '${givenname} ${sn}';
+$ldap_result_comment   = '(LDAP)  ${telephonenumber} ${mobile}';
+$ignorant              = 0;
+
+$prefix                = '/usr/lib/lbdb';
+
+

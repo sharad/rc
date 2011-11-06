@@ -1,0 +1,1 @@
+../../../../osetup/share/pydoc-info/python.texi

@@ -1,0 +1,13 @@
+# This file contains external actions configuration for centerim
+# Every line should look like: <action> <command>
+# Possible actions are: openurl, detectmusic
+
+openurl \
+    (if test ! -z "`ps x | grep /mozilla | grep -v grep`"; \
+	then DISPLAY=0:0 mozilla -remote 'openURL($url$, new-window)'; \
+	else DISPLAY=0:0 mozilla '$url$'; \
+    fi) >/dev/null 2>&1 &
+detectmusic \
+     if test ! -z "`ps x | grep orpheus | grep -v grep`"; \
+	then cat ~/.orpheus/currently_playing; \
+     fi

@@ -1,0 +1,1 @@
+../abook/external-abook.el

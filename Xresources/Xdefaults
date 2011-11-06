@@ -1,0 +1,427 @@
+!
+! # processing with m4
+! # changequote(`[', `]')
+!-------------------------------------------------------------------
+!
+! .Xresources
+!
+!
+! Uses: This file provides default values for colors, fonts, and other
+! aspects of client appearance and behavior.
+! Resources is the X buzzword for properties or attributes of an
+! application. !
+!! <<Edit this file your hearts content - there is no accounting for taste.>>
+!
+! Color options are in /usr/lib/X11/rgb.txt ! Font options are in /usr/lib/X11/fonts directory.
+! Bitmaps are in /usr/include/X11/bitmaps !
+! after making changes do a: xrdb -merge .Xresources
+!
+! For users doing remote connections into the account.
+! The following command should be first in .xinitrc
+! xrdb -load $HOME/.Xresources
+!
+! vt100 XTerm users will need numlock on and export TERM=vt100
+!
+!-------------------------------------------------------------------
+!
+!Turn on error messages
+
+*StringConversionWarnings: on
+#ifdef COLOR
+*customization: -color
+#endif
+Seyon.modems: /dev/modem
+
+! The following defaults change the behavior of clients using the
+! X libraries (including xv, everything):
+!*background:    black
+!*foreground:    grey90
+
+
+
+! -----------------[ XTERM ]-----------------------
+! XTerm*ttyModes: erase ^?
+xterm*ttyModes:         intr ^c erase  susp ^@ dsusp ^@ kill ^u eof ^d
+XTerm*ttyModes:         intr ^c erase  susp ^@ dsusp ^@ kill ^u eof ^d
+xterm*ScrollBar:        off
+XTerm*ScrollBar:        off
+xterm*TitleBar:         on
+XTerm*TitleBar:         on
+xterm*TextUnderIcon:    on
+XTerm*TextUnderIcon:    on
+xterm*AutoRaise:        on
+XTerm*AutoRaise:        on
+xterm*termtype:         vt100
+XTerm*termtype:         vt100
+xterm*metaSendsEscape: True
+XTerm*VT100.metaSendsEscape: True
+!! from http://osdir.com/ml/window-managers.stumpwm.devel/2007-07/msg00022.html
+XTerm*allowSendEvents: True
+
+!
+! XTERM resources
+!
+XTerm*applicationKeypadMode: True
+XTerm*c132: True
+XTerm*cursorColor: Red
+! XTerm*font: 9x15
+! xterm*font:             9x15
+xterm*VT100*font9: -*-terminal-*-*-*-*-*-*-*-*-*-*-*-*
+xterm*font:             10x20
+
+!  If you use the following "Foreground" (ie. capitalized) it over-rides
+!  all other colours!
+!! need black background good for eyes.
+! xterm*foreground: light grey
+! XTerm*foreground: DarkSlateGray4
+
+!! bg: Black, DarkSlateGray4 (nice color, not for work),
+xterm*background: Black
+XTerm*background: Black
+XTerm_color*background: Black
+
+!! fg: white, light grey
+xterm*foreground: light grey
+XTerm*foreground: light grey
+XTerm_color*foreground: light grey
+
+XTerm_color*cursorColor: Orchid
+XTerm*fullCursor: true
+XTerm*jumpScroll: on
+XTerm*pointerColor: Black
+XTerm*pointerShape: XTerm
+XTerm*reverseVideo: false
+XTerm*reverseWrap: false
+XTerm*autoWrap: true
+xterm*autoWrap: true
+! XTerm*rightScrollBar: true
+XTerm*saveLines: 4096
+XTerm*scrollBar: true
+XTerm*scrollKey: on
+XTerm*scrollTtyOutput: off
+XTerm*titleBar: false
+XTerm_color*reverseVideo: false
+XTerm*fontMenu.Label: VT Fonts
+XTerm*fontMenu*fontdefault*Label: Default
+XTerm*fontMenu*font1*Label: Unreadable
+XTerm*VT100*font1: nil2
+
+! !! added from http://gigo.com/archives/blog/apples-x11app-and-xterm-copypa.html
+! ! xterm*trimSelection: true
+! ! xterm*printerCommand: cat >> /home/c_sharad/xterm-print-output
+
+! ! XTerm*VT100.Translations: #override \
+! ! <KeyPress> Prior: scroll-back(1,page) \n\
+! ! <KeyPress> Next: scroll-forw(1,page) \n\
+! ! Meta <KeyPress> W: quit() \n\
+! ! Meta <KeyPress> V: insert-selection(CLIPBOARD,PRIMARY,CUT_BUFFER0) \n\
+! ! <BtnUp>: select-end(CLIPBOARD,PRIMARY,CUT_BUFFER0) \n\
+
+!---------------------------------------------
+!  Xterm, rxvt, etc.
+!! setting XTerm*geometry cause C-Mouse-Button menu not to be displayed.
+! XTerm*geometry: 100x28
+! XTerm*geometry: 86x28
+!  If you use the following "Foreground" (ie. capitalized) it over-rides
+!  all other colours!
+!! need black background good for eyes.
+! xterm*font:             9x15
+! xterm*VT100*font9: -*-terminal-*-*-*-*-*-*-*-*-*-*-*-*
+!! huge size good for eyes.
+!! Xterm*cursorColor: Blue
+! xterm*Border:           dark blue
+! xterm*Border:           off
+! xterm*Border:           white
+! xterm*ttyModes:         intr ^c erase ^h susp ^@ dsusp ^@ kill ^u eof ^d
+
+!! ------------------------------------------------
+
+
+!  Xman
+
+xman*manualFontNormal: 8x16
+
+!  Emacs (like I ever use it - but the info might be worthwhile if I do)
+
+!emacs*Background: DarkSlateGray
+emacs*Background: black
+! emacs*Background: DarkSlateGray
+!emacs*Foreground: Wheat
+!emacs*Foreground: white
+!emacs*Foreground: FloralWhite
+!emacs*Foreground: GhostWhite
+!emacs*Foreground: Honeydew
+!emacs*Foreground: Ivory
+!emacs*Foreground: LemonChiffon
+!emacs*Foreground: LightGoldenrodYellow
+!emacs*Foreground: LightYellow
+!emacs*Foreground: Linen
+!emacs*Foreground: MintCream
+!emacs*Foreground: OldLace
+!emacs*Foreground: PapayaWhip
+!emacs*Foreground: Seashell
+!emacs*Foreground: Snow
+!emacs*Foreground: White
+!emacs*Foreground: WhiteSmoke
+
+!emacs*pointerColor: Orchid
+!emacs*cursorColor: Orchid
+!emacs*bitmapIcon: on
+!emacs*font: fixed
+! emacs*font: 9x15
+! emacs.geometry: 85x40
+emacs*ttyModes:         intr ^c erase  susp ^@ dsusp ^@ kill ^u eof ^d
+
+
+!! Xautolock
+! xautolock*locker:
+Xautolock.locker: alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=away&message='
+xautolock*locker: alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=away&message='
+!! Xautolock.locker: xlock -mode blank -mousemotion
+!! options are xtrlock xdaliclock xlock slock xnlock
+!! timeout of 3 mins before locking
+!! Xautolock.time: 10
+Xautolock.time: 7
+xautolock*time: 7
+! Active corner = bottom right
+Xautolock.corners: 0000
+xautolock.corners: 0000
+! Corner timeout = 1 second
+!! Xautolock.cornerdelay: 1
+!! Xautolock.cornerdelay: 1
+!! xautolock*cornerdelay: 1
+!! Xautolock.cornerredelay: 0
+!! xautolock*cornerredelay: 0
+Xautolock.noclose: true
+xautolock*noclose: true
+! notify
+Xautolock.notify: 60
+xautolock*notify: 60
+! Xautolock.notifier: [ HOST = taj ] && xdaliclock
+! xautolock*notifier: [ HOST = taj ] && xdaliclock
+Xautolock.notifier: [ HOST = taj ]
+xautolock*notifier: [ HOST = taj ]
+
+
+
+Xlock.mode: blank
+Xlock.mousemotion: on
+
+Xft.dpi: 97
+Xft.hinting: 1
+Xft.hintstyle: hintmedium
+
+! !! from: http://www.fifi.org/doc/xterm/xterm.faq.html
+! XTerm*vt100.translations:     #override \n\
+! 		<Key>Insert:            string(\001) \n\
+! 		Shift <Key>Up:          scroll-back(1,lines) \n\
+! 		Shift <Key>Down:        scroll-forw(1,lines) \n\
+! 		Shift <Key>Right:       string(0x1b) string("f") \n\
+! 		Shift <Key>Left:        string(0x1b) string("b") \n\
+! 		Shift <Key>Delete:      string(0x1b) string(0x08) \n\
+! 		Shift <Key>Tab:         string(0x1b) string("*") \n\
+! 		<Key>0x1000FF0D:        scroll-back(1,page) \n\
+! 		<Key>0x1000FF0E:        scroll-forw(1,page) \n\
+! 		<Key>0x1000FF09:        string(\010) \n\
+! 		<Key>0x1000FF0A:        string(\005) \n\
+! 		<Key>BackSpace:         string(0xff) \n\
+! 		<Key>Select:            select-start() \n\
+! 		<Key>0x1000FF02:        select-end(PRIMARY,CUT_BUFFER0) \n\
+! 		Meta <Key>0x1000FF02:   select-end(CLIPBOARD) \n\
+! 		<Key>0x1000FF04:        insert-selection(PRIMARY,CUT_BUFFER0) \n\
+! 		Meta <Key>0x1000FF04:   insert-selection(CLIPBOARD) \n\
+! 		<Key>F1:                string(0x1b) string("OP") \n\
+! 		<Key>F2:                string(0x1b) string("OQ") \n\
+! 		<Key>F3:                string(0x1b) string("OR") \n\
+! 		<Key>F4:                string(0x1b) string("OS") \n\
+! 		<Key>F5:                string(0x1b) string("OA") \n\
+! 		<Key>F11:               string(0x1b) string("[23~") \n\
+! 		<Key>F12:               string(0x1b) string("[24~") \n\
+! 		<Key>KP_0:              string(0x1b) string("Op") \n\
+! 		<Key>KP_1:              string(0x1b) string("Oq") \n\
+! 		<Key>KP_2:              string(0x1b) string("Or") \n\
+! 		<Key>KP_3:              string(0x1b) string("Os") \n\
+! 		<Key>KP_4:              string(0x1b) string("Ot") \n\
+! 		<Key>KP_5:              string(0x1b) string("Ou") \n\
+! 		<Key>KP_Divide:         string(0x1b) string("OP") \n\
+! 		<Key>KP_Multiply:       string(0x1b) string("[29~") \n\
+! 		<Key>KP_Enter:          string(0x1b) string("OM") \n\
+! 		<Key>KP_Subtract:       string(0x1b) string("Om") \n\
+! 		<Key>KP_Add:            string(0x1b) string("Ol") \n\
+! 		<Key>KP_Decimal:        string(0x1b) string("On") \n\
+! 		<Btn1Down>:             select-start() \n\
+! 		<Btn1Motion>:           select-extend() \n\
+! 		<Btn1Up>:               select-end(PRIMARY,CUT_BUFFER0) \n\
+! 		Button1<Btn2Down>:      select-end(CLIPBOARD) \n\
+! 		Button1<Btn2Up>:        ignore()
+
+
+
+URxvt.searchable-scrollback: CM-s
+Rxvt.searchable-scrollback: CM-s
+!! http://www.jukie.net/~bart/blog/urxvt-url-yank
+URxvt.keysym.CM-u: perl:mark-yank-urls:activate_mark_mode
+URxvt.underlineURLs: true
+URxvt.perl-lib: /home/s/hell/.urxvt/
+URxvt.urlLauncher: conkeror
+
+! rxvt-unicode
+!URxvt*tintColor: #999
+URxvt*shading: -100
+URxvt*scrollstyle: xterm
+URxvt*scrollBar: False
+URxvt*scrollTtyOutput: True
+URxvt*saveLines: 5000
+URxvt*borderLess: False
+!URxvt*inheritPixmap: True
+URxvt*background: Black
+URxvt*background: Black
+URxvt_color*background: Black
+
+!! fg: white, light grey
+URxvt*foreground: light grey
+URxvt*foreground: light grey
+URxvt_color*foreground: light grey
+
+!! from http://ubuntuforums.org/showthread.php?t=1227973
+!! XFT with rxvt
+!! http://ubuntuforums.org/showthread.php?t=690532
+!! http://www.google.co.in/search?q=%20X%20listing%20xft%20font%20&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai=
+!! http://ubuntuforums.org/showthread.php?t=1227973
+!!
+! URxvt*font: xft:Mono-ifelse(WIDTH, 1280, 10, 12)
+! URxvt.font: xft:DejaVu Sans Mono:size=ifelse(WIDTH, 1280, 10, 12)
+URxvt.font: xft:DejaVu Sans Mono
+URxvt.xftAntialias:      false
+!!                                                              digital-clock
+URxvt.perl-ext:        selection,mark-yank-urls,readline,tabbed
+!! check http://mina86.com/2009/05/16/tabbed-urxvt-extension/
+URxvt.new-button:       yes
+!! URxvt.perl-ext-common: default,matcher,digital-clock,grab
+URxvt.perl-ext-common: default,matcher
+
+!!start: from: http://christarnowski.wordpress.com/2009/08/22/urxvt/
+URxvt.jumpScroll: true
+
+!! Urxvt Print very much necessary.....
+URxvt.print-pipe: cat > $(TMPDIR=$HOME mktemp urxvt.XXXXXX)
+URxvt.loginShell: false
+
+## Fonts
+!! URxvt.font: xft:terminus:pixelsize=8
+!! URxvt.xftAntialias: true
+## Transparency (works with Compiz)
+!! urxvt*depth: 32
+!! urxvt*foreground: rgba:dddd/dddd/dddd/dddd
+!! urxvt*background: rgba:0000/0000/0000/dddd
+
+## Colors
+*color0: rgb:00/00/00
+*color1: rgb:aa/00/00
+*color2: rgb:00/aa/00
+*color3: rgb:aa/55/00
+*color4: rgb:00/00/aa
+*color5: rgb:aa/00/aa
+*color6: rgb:00/aa/aa
+*color7: rgb:aa/aa/aa
+*color8: rgb:55/55/55
+*color9: rgb:ff/55/55
+*color10: rgb:55/ff/55
+*color11: rgb:ff/ff/55
+*color12: rgb:55/55/ff
+*color13: rgb:ff/55/ff
+*color14: rgb:55/ff/ff
+*color15: rgb:ff/ff/ff
+
+!!! from: http://movingparts.net/2008/10/22/bringin-sexy-urxvt-back/
+!! urxvt.background: rgba:0000/0000/0000/ccdd
+!! urxvt.foreground: white
+!! !urxvt.font: -artwiz-fkp-medium-r-normal–16-160-75-75-m-80-iso8859-1
+!! !urxvt.boldfont: -artwiz-fkp-medium-r-normal–16-160-75-75-m-80-iso8859-1
+!! urxvt.font: xft:Terminus:pixelsize=14
+!! urxvt.scrollBar_right: 1
+!! urxvt.scrollBar_floating: 1
+!! urxvt.saveLines: 10000
+!! urxvt.internalBorder: 5
+!! urxvt.depth: 32
+!! urxvt.scrollTtyOutput: 0
+!! urxvt.scrollTtyKeypress: 1
+!! urxvt.color12: rgba:6666/6666/ffff/ffff
+!! urxvt.color12: rgba:6666/6666/ffff/ffff
+!! … should make “bright blue” actually readable :)
+!! And, you can also use TrueType fonts, like the Terminus font (which is really great for console usage, imo):
+!! urxvt.font: xft:Terminus:pixelsize=11
+!!!
+
+!! end
+
+!! !! start: http://www.linuxquestions.org/questions/linux-software-2/problem-with-rxvt-unicode-602760/
+!! URxvt.scrollBar: rxvt
+!! URxvt.secondaryScroll: true
+!! URxvt.saveLines: 5000
+!! URxvt.cursorBlink: true
+!! URxvt.geometry: 90x25
+!! URxvt.fading: 50%
+!! URxvt.font: xft:Monospace:pixelsize=11
+!! URxvt.background: rgba:0000/0000/0000/bbbb
+!! URxvt.foreground:  #f0f0f0
+!! URxvt.cursorColor: #f0f0f0
+!! URxvt.depth: 32
+!! URxvt.inheritPixmap: true
+!! URxvt.tintColor: #4A6A9A
+!! URxvt.internalBorder: 0
+!! URxvt.utf8: true
+!! #URxvt.perl-lib: /usr/local/lib/urxvt/perl
+!! #URxvt.perl-ext-common: default,matcher,searchable-scrollback
+!! URxvt.urlLauncher: firefox
+!!
+!! Xft.dpi:96
+!! Xft.hinting:true
+!! Xft.hintstyle:hintslight
+!! !! end
+
+!! start: YeahConsole
+!! 40 lines tall
+!! yeahconsole*consoleHeight: 40
+!! to make it appear more quickly
+!! yeahconsole*aniDelay: 10
+!! Control+Alt+l
+!! yeahconsole*toggleKey: None+F12
+!! yeahconsole setup
+yeahconsole*term: urxvtc
+yeahconsole*consoleHeight: 20
+!! yeahconsole*toggleKey: None+F12
+yeahconsole*keyFull: Control+F11
+yeahconsole*aniDelay: 1
+yeahconsole*stepSize: 20
+!!! from: http://www.sourcefiles.org/Utilities/Miscellaneous/yeahconsole-0.3.4.tar.gz.shtml
+!! restart:        0 (default) or 1 should the terminal restart?
+!! term:           terminal to use (valid:urxvt, urxvtc, xterm(default))
+!! screenWidth: width (defaults to display width) consoleHeight: number of lines (defaults to 10)
+!!
+!! xOffset:        x position (defaults to 0)
+!! aniDelay:       delay for the slide animation (defaults to 40)
+!! stepSize:           step size for the animation (defaults to 1)
+!!
+!! handleWidth: width for the resize handle (defaults to 3) handleColor: color for the handle (defaults to grey70)
+!!
+!! Keycombos are specified as follows:
+!!
+!! [any combination of "Win" "Alt" "Control" or "None"]+[name of key]
+!!
+!! eg. ControlAlt+y, Control+asciitilde, Win+c, ControlAltWin+y ,None+Menu,.... (the order of modifiers doesn't matter)
+!!
+!! toggleKey:      key combo that toggles yeahconsole (defaults to ControlAlt+y)
+!! keyBigger:      increase  height of yeahconsole (default: Control+KP_Add)
+!! keySmaller:     decrease height of yeahconsole (default: Control+KP_Subtract)
+!! keyFull:            toggle fullscreenmode (default: Alt+F11)
+!!
+!! xOffset and screenWidth are useful if you use a xinerama setup. Here is what mine looks like:
+!!
+!! yeahconsolebackground:black
+!! yeahconsoleforeground:green
+!! yeahconsolescreenWidth:1152
+!! yeahconsoleaniDelay:30
+!! yeahconsole*toggleKey:None+Menu
+yeadconsole.restart: 1
+!! end

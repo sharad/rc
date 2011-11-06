@@ -1,0 +1,84 @@
+#!/usr/bin/env zsh
+# give access to mpd
+whence -p xhost && xhost +local:mpd
+
+
+
+if [ $DISPLAY ] ; then
+    :
+# Why don't the message windows disappear?
+# mit-clx, used with clisp, doesn't support timeouts. Use new-clx
+# instead. Alternatively, the problem can be worked around by
+# periodically sending meaningless X events, thereby breaking
+# mit-clx's blocking read and returning control to StumpWM (to do
+# things like unmap those message windows.)
+# Put the following in your ~/.xinitrc file, before the call to stumpwm:
+    # if [[ $WM -eq "stumpwm" ]] ; then
+    #     (while sleep 1; do xprop -root -f FOO 8s -set FOO foo; done )&
+    # fi
+fi
+
+if [ $DISPLAY ] ; then
+
+    whence -p urxvtd &&
+    pgrep urxvtd ||
+    urxvtd \
+        --quiet \
+        --opendisplay \
+        --fork &!
+
+    # DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
+
+    # which  gnubiff &&  gnubiff  -n &
+    # xmodmap ~/.xmodmaprc	# excellent, why i was not knowing it before.
+
+    whence -p xmodmap &&
+    xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
+
+    whence -p xrdb &&
+    xrdb \
+        -cpp m4 \
+        -merge ~/.Xdefaults # should use m4
+
+    whence -p xautolock &&
+    xautolock -detectsleep &!
+
+    whence -p conky &&
+    conky &!
+
+    synclient  TapButton1=1
+
+    whence -p xmodmap &&
+    xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
+
+    # stop this bell.
+    whence -p xset && xset b off                  # peace
+
+    # set fonts
+    if [  -r ~/.emacs.d/server/general ] ; then
+        # emacsclient -n -d $DISPLAY -f ~/.emacs.d/server/general -e '(mycustom-face-set)'
+    fi
+
+
+    osdsh -n 10 &!
+
+
+    whence -p keynav && keynav &!
+
+
+    pgrep gnome-keyr || gnome-keyring-daemon --start
+
+fi
+
+if [ -e ~/.stumpwm.d/debug-output.txt ] ; then
+    command rm -f ~/.stumpwm.d/debug-output.txt
+fi
+
+
+# gconftool -s /apps/mail-notification/commands/new-mail/command "$EDITOR -e '(gnus)'"
+# gconftool -s /apps/mail-notification/commands/new-mail/enabled true
+
+
+[ -r ~/.rsetup/x/run.d/${HOST//.*} ] &&
+~/.rsetup/x/run.d/${HOST//.*}
+

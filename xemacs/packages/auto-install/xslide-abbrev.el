@@ -1,0 +1,1 @@
+../xslide/xslide-abbrev.el

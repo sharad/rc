@@ -1,0 +1,68 @@
+#!/bin/bash
+
+in=$1
+out=$2
+
+outdpi=72
+
+passw=1.5
+passh=2
+
+border_percent=5
+
+indpi=`identify -format '%x'  $in | cut -d' ' -f1`
+
+if [ $indpi -ne $outdpi ] ; then
+
+    ((percent = ( 100 * outdpi ) / indpi ))
+
+    convert $in -density $outdpi -geometry  ${percent}% tmp1$$.jpeg
+
+    in=tmp1$$.jpeg
+
+fi
+
+# convert -size `echo $passw \* $outdpi \*  |bc `x`echo $passh \* $outdpi |bc ` \
+#     -density $outdpi $in tmp2$$.jpeg
+
+# in=tmp2$$.jpeg
+
+# # make it big
+# increase_percent=`echo '10000 / ( 100 + ' $border_percent ')'`
+
+convert -density $outdpi $in tmp2$$.jpeg
+
+in=tmp2$$.jpeg
+
+# add norder
+convert -border ${border_percent}\%x${border_percent}\% -bordercolor white \
+    $in tmp3$$.jpeg
+in=tmp3$$.jpeg
+
+
+# convert -size `echo $passw \* $outdpi |bc `x`echo $passh \* $outdpi | bc ` \
+#      -density $outdpi \
+#     $in tmp4$$.jpeg
+
+
+## try this laso
+# cp x.jpg y.jpg ; mogrify -crop %100x%100+0-450  y.jpg ; mogrify -crop %100x%100+0+150  y.jpg ;  gqview y.jpg
+
+echo convert -resize `echo $passw \* $outdpi |bc `x`echo $passh \* $outdpi | bc ` \
+     -density $outdpi \
+    $in tmp4$$.jpeg
+
+convert -resize `echo $passw \* $outdpi | bc `x`echo $passh \* $outdpi | bc ` \
+     -density $outdpi \
+    $in tmp4$$.jpeg
+
+convert -resize 108x144 \
+     -density $outdpi \
+    $in tmp4$$.jpeg
+
+
+in=tmp4$$.jpeg
+
+montage -mode concatenate -tile 4x   $in $in $in $in $in $in $in $in \
+$out
+

@@ -1,0 +1,1 @@
+../erchat/bitlbee.el

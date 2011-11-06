@@ -1,0 +1,42 @@
+[user]
+	name = Sharad Pratap
+	email = sh4r4d@gmail.com
+[github]
+	name = Sharad
+	token = c5b94a1dfb834edb16654290b4bf0c0d
+
+# http://stackoverflow.com/questions/1817370/ediff-as-mergetool
+[mergetool.ediff]
+    cmd = emacsclient -f ~/.emacs.d/server/general -d :0.0 \
+                      --eval "\"(progn \
+  (setq ;; ediff-quit-hook 'kill-emacs \
+        ediff-quit-merge-hook 'ediff-write-merge-buffer) \
+  (ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\" \
+                                   \\\"$BASE\\\" nil \\\"$MERGED\\\"))\""
+
+[mergetool.edifflaunch]
+    cmd = ~/bin/edifflaunch
+
+
+[mergetool.ediff1]
+    cmd = emacsclient -f ~/.emacs.d/server/general -d :0.0 \
+                      --eval    \"(git-mergetool-emacsclient-ediff \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" \\\"$MERGED\\\")\"
+
+
+[mergetool.test]
+        cmd = echo LOCAL $LOCAL REMOTE $REMOTE BASE $BASE MERGED $MERGED
+
+
+
+# [merge]
+# 	tool = [tool]
+
+
+
+  # (defun ediff-write-merge-buffer () \
+  #   (let ((file ediff-merge-store-file)) \
+  #     (set-buffer ediff-buffer-C) \
+  #     (write-region (point-min) (point-max) file) \
+  #     (message \\\"Merge buffer saved in: %s\\\" file) \
+  #     (set-buffer-modified-p nil) \
+  #     (sit-for 1))) \

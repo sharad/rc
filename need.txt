@@ -1,0 +1,15 @@
+zsh
+wmi-3
+advsh
+figlet222
+boxes-SNAP-latest
+windowmaker
+grepmail
+devilspie
+wmctrl
+mutt
+
+tdl-1.5.1
+remind
+session-2.2a.tar.gz
+template-3.1c.tar.gz

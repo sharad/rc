@@ -1,0 +1,154 @@
+{
+  Dock = {
+    Applications768 = (
+      {
+        Name = Logo.WMDock;
+        Command = "-";
+        AutoLaunch = No;
+        Lock = No;
+        Position = "0,0";
+        Forced = No;
+        BuggyApplication = No;
+      },
+      {
+        Name = xterm.XTerm;
+        Command = xterm;
+        AutoLaunch = No;
+        Lock = No;
+        Position = "0,1";
+        Forced = No;
+        BuggyApplication = No;
+      },
+      {
+        Name = groupLeader.WPrefs;
+        Command = "/usr/lib/GNUstep/Applications/WPrefs.app/WPrefs";
+        AutoLaunch = No;
+        Lock = Yes;
+        Position = "0,2";
+        Forced = No;
+        BuggyApplication = No;
+      }
+    );
+    Lowered = Yes;
+    Position = "-56,0";
+    Applications = (
+      {
+        Name = Logo.WMDock;
+        Command = "-";
+        AutoLaunch = No;
+        Lock = No;
+        Position = "0,0";
+        Forced = No;
+        BuggyApplication = No;
+      },
+      {
+        Name = xterm.XTerm;
+        Command = xterm;
+        AutoLaunch = No;
+        Lock = No;
+        Position = "0,1";
+        Forced = No;
+        BuggyApplication = No;
+      },
+      {
+        Name = groupLeader.WPrefs;
+        Command = "/usr/lib/GNUstep/Applications/WPrefs.app/WPrefs";
+        AutoLaunch = No;
+        Lock = Yes;
+        Position = "0,2";
+        Forced = No;
+        BuggyApplication = No;
+      }
+    );
+  };
+  Clip = {
+    Name = Logo.WMClip;
+    Lock = No;
+    AutoLaunch = No;
+    Command = "-";
+    Position = "0,0";
+    Forced = No;
+    BuggyApplication = No;
+  };
+  Workspace = Perforce;
+  Workspaces = (
+    {
+      Clip = {
+        AutoAttractIcons = No;
+        AutoCollapse = No;
+        Lowered = Yes;
+        Collapsed = No;
+        AutoRaiseLower = No;
+        Applications = ();
+      };
+      Name = Perforce;
+    },
+    {
+      Clip = {
+        AutoAttractIcons = No;
+        AutoCollapse = No;
+        Lowered = Yes;
+        Collapsed = No;
+        AutoRaiseLower = No;
+        Applications = ();
+      };
+      Name = Bugzilla;
+    },
+    {
+      Clip = {
+        AutoAttractIcons = No;
+        AutoCollapse = No;
+        Lowered = Yes;
+        Collapsed = No;
+        AutoRaiseLower = No;
+        Applications = ();
+      };
+      Name = Internet;
+    },
+    {
+      Clip = {
+        AutoAttractIcons = Yes;
+        AutoCollapse = Yes;
+        Lowered = Yes;
+        Collapsed = Yes;
+        AutoRaiseLower = No;
+        Applications = ();
+      };
+      Name = dash;
+    },
+    {
+      Clip = {
+        AutoAttractIcons = No;
+        AutoCollapse = No;
+        Lowered = Yes;
+        Collapsed = No;
+        AutoRaiseLower = No;
+        Applications = ();
+      };
+      Name = "Workspace 5";
+    },
+    {
+      Clip = {
+        AutoAttractIcons = No;
+        AutoCollapse = No;
+        Lowered = Yes;
+        Collapsed = No;
+        AutoRaiseLower = No;
+        Applications = ();
+      };
+      Name = "Workspace 6";
+    }
+  );
+  Applications = (
+    {
+      Hidden = No;
+      ShortcutMask = 0;
+      Name = xterm.XTerm;
+      Geometry = "804x484+4+0";
+      Workspace = Perforce;
+      Shaded = No;
+      Miniaturized = No;
+      Command = "xterm -rv";
+    }
+  );
+}

@@ -1,0 +1,6 @@
+#!/usr/bin/wish
+wm withdraw .
+after 15000 { destroy . ; exit }
+tk_dialog .d { Message } $argv warning 0 { OK } 
+destroy .
+exit

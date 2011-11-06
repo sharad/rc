@@ -1,0 +1,64 @@
+
+
+zmodload zsh/attr
+zmodload zsh/cap
+zmodload zsh/clone
+zmodload zsh/compctl
+zmodload zsh/complete
+zmodload zsh/complist
+zmodload zsh/computil
+zmodload zsh/curses
+zmodload zsh/datetime
+
+# zmodload zsh/db  # dir
+zmodload zsh/db/gdbm  # dir
+
+
+zmodload zsh/deltochar
+zmodload zsh/example
+zmodload zsh/files
+zmodload zsh/langinfo
+zmodload zsh/mapfile
+zmodload zsh/mathfunc
+
+# zmodload zsh/net # dir
+zmodload zsh/net/socket # dir
+zmodload zsh/net/tcp # dir
+
+zmodload zsh/newuser
+zmodload zsh/parameter
+zmodload zsh/pcre
+zmodload zsh/regex
+zmodload zsh/rlimits
+zmodload zsh/sched
+zmodload zsh/stat
+zmodload zsh/system
+zmodload zsh/termcap
+zmodload zsh/terminfo
+zmodload zsh/zftp
+zmodload zsh/zle
+zmodload zsh/zleparameter
+zmodload zsh/zprof
+zmodload zsh/zselect
+zmodload zsh/zutil
+
+zmodload zsh/zpty
+
+# try commands syserror
+
+# http://www.zsh.org/mla/users/2010/msg00882.html
+autoload -Uz sticky-note
+# notes to retain:
+#   zstyle :sticky-note notefile ~/.zsticky
+#   zstyle :sticky-note maxnotes 1000
+
+autoload -U zsh-mime-setup
+
+autoload -U pick-web-browser
+zstyle ':mime:.htm(|l):' handler 'pick-web-browser %s'
+zstyle ':mime:.htm(|l):' flags ''
+zstyle :mime: mailcap ~/.mailcap /usr/local/etc/mailcap /etc/mailcap
+zstyle :mime: mime-types ~/.mime.types /usr/local/etc/mime.types /etc/mime.types
+
+zsh-mime-setup
+

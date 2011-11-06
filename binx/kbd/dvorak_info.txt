@@ -1,0 +1,528 @@
+Newsgroups: comp.human-factors,comp.misc,comp.unix.misc
+From: drw@myrias.ab.ca (David Watters)
+Subject: Here is some Dvorak keyboard info.
+Organization: Myrias Computer Technologies Inc.
+Date: Thu, 9 Sep 93 16:53:55 GMT
+
+Thonks for everybodies recent replies, re the Dvorak Keyboard.
+
+Some of the replies should make it to the Typing Injuries FAQ.
+
+Dave.
+
+Here are some of the replies I got [edited]:
+
+================================================================================
+================================================================================
+
+~From: Randy <72246.172@CompuServe.COM>
+
+     A friend called me on the phone and read me your message
+about the Dvorak keyboard.  I don't (yet!) have direct internet
+access, so I'm sending you this via my Compuserve mailbox.
+
+     There are indeed many people using the Dvorak.  *Briefly*,
+the Dvorak was designed via ergonomic proceedures to be easy to
+learn and use for "touch" (10-finger) typing.  "Qwerty" was
+designed in the 1870s to overcome the mechanical limitations of
+early typewriters (specifically, the first Remington model).
+Touch typing was thought of long after these "modern" typewriters
+came on the market.  Dvorak typists tend to be much faster, both
+because of ease of typing (70% of keying is on the home row, vs
+32% on Qwerty) and because of the reduced error rate on Dvorak
+due to its ergonomics, but the ease in learning and typing is its
+greatest advantage.
+
+     A number of products are available to help learn the Dvorak
+layout.  Both "Mavis Beacon Teaches Typing" and "Typing Tutor"
+come with Dvorak lessons, for instance.
+
+     The primary source of Dvorak information is Freelance
+Communications.  Among other products, they carry my book, The
+Dvorak Keyboard, which will help to get you started (the only
+book on the subject; 96 pp trade softcover; $12.95+ship).  A
+packet of information (including the book) is available for US$12
+postpaid to north America from Freelance Communications, PO Box
+1895, Upland CA 91785 USA.  Fax: 818 791-0405.  If you send me
+your fax number, they will fax you a sheet of ordering
+information.
+
+
+================================================================================
+================================================================================
+
+~From: jmb@spatial.com (Joe M. Biegelsen)
+
+Way back in my typing carrer I remapped my keyboard and used the 'Typing
+Tutor' program that IBM used to sell for almost nothing.  This was when
+I bought my first computer in '82 or so.
+
+I was able to get speed equal to a normal keyboard in fairly short order,
+but that is not saying much, as I didn't not type well on either keyboard
+at the time.  This even tho the early excercises concentrated on words 
+easy on the normal keyboard.  That is the letters a, s, d, f, j, k, l.
+
+I gave it up when I realized that:
+
+	*	I probably could not as fast on two keyboards as I could on either
+		one, even if the one was poorly designed.
+
+	*	I probably could not ensure availability of dvorak.  What if I
+		had to sit at a coworkers station for a few minutes to demonstrate
+		something?  What if I had to used a mechanical typewriter or other
+		non remappable keyboard?
+
+So go for it, but realize that it may not save you any time or frustration
+in the end.  It is to bad, sometimes, that these standards can get so
+much momentum.
+
+================================================================================
+================================================================================
+
+~From: mcampbel@schubert.sbi.com (Mike Campbell)
+
+I'm attempting.
+
+I'm finding the change difficult, but I'm sticking with it.
+
+Let me know what you find out.  Thanks
+
+================================================================================
+================================================================================
+
+~From: m1fxt00@fed.FRB.GOV (Fernando Trias)
+
+> I have got the dvorak program that makes my x keyboard behave as if
+> it is a dvorak keyboard.
+
+Where did you get this program?  I tried to learn the keyboard a while
+back but had to stop because I couldn't use it on Unix.  My technique
+for learning was simple.  Just type all my papers, letters, etc.  Type
+a few pages a day.  The only problem is that once you start, you will
+probably not type as fast in QWERTY for a while.  It took me about
+a year to undo four months of Dvorak.
+
+Good luck!
+
+Fernando
+
+================================================================================
+================================================================================
+
+~From: stojcs93@karajan.anu.edu.au (J.STONEY 9306045)
+
+Dear David,
+   I recently converted a keyboard to a Dvorak layout but have not as yet got around to using Mavis for the practice to achive touch typing confidence.
+
+   Simply popping the keys out and swapping them around works only on a few boards (HoneyWells?) as most have different profiles for different rows - the home row etc.  Presumably yours didn't or you are using the alternative of stickers?  The former has one draw back - {} [] are located on different keys on a qwerty board whereas the dvorak accesses them by a shift on the same key.  I think the dvorak wins for speed (on that combination anyway).
+
+   Dispite many attempts in the past, especially in the '60s, by some very powerful players it is most unlike qwerty boards will ever be replaced.  Therefore you must realize that using your board will be for ease at home.  The only other alternative is to become so proficient that you are able to use a board without looking (at all!) and import your driver (or carry a disk with it on around).
+
+   Problems I have noticed: the layout in WinMavis didn't seem to change on screen in the version I saw but did on the original?  If you are using a PC the driver that comes in the Dos 6 Supplementary disk is ignored by Windows.  Microsoft have done it again...
+  
+   Could you please tell me which driver you are using and where you obtained it from?  Do you know of any others? 
+
+
+
+Regards,
+
+James Stoney.
+
+
+Please reply to: stojcs93@karajan.anu.edu.au  
+
+
+================================================================================
+================================================================================
+
+~From: "B. Anne Rowe" <arowe@vdoe386.vak12ed.edu>
+
+Despite all the research on the ease of learning DVORAK and the
+efficient use of the system, it is my opinion that because the
+majority of the population would have to re-learn a new system
+and because of the future impact of voice technology, most
+persons do not want to bother with a new system at this time.
+Also, even though many keyboards can be switched to either
+DVORAK or QWERTY by the computer system or by software, there
+is no guarantee that DVORAK will be available in every
+available worksite.  For these reasons, I have not agressively
+sought a change to DVORAK in keyboarding instruction in VA
+public schools (we are having a hard enough time convincing
+earlier grade levels that a touch system of keyboarding is
+necessary for effective interaction with a keyboard, especially
+in writing).
+
+Recently, one of our business teachers in Frederick Co., Linda
+Wilson of James Wood High School, 161 Apple Pie Ridge Rd.,
+Winchester, VA 22603 (Phone 703/667-5226), asked for
+information for instructional materials for DVORAK.  I
+referred her to our Virginia Vocational Curriculum and Resource
+Center to conduct a computer search for information.  I have
+not heard of Linda's results, but you may want to contact her.
+I do not know whether she has a va.pen/internet account.
+
+The only other suggestion I have is to contact major keboarding
+publishers such as Southwestern Publishing Co. and Glencoe,
+Macmillan/McGraw-Hill, and others. 
+
+I would be interested in your findings.
+
+Anne Rowe, VA Dept. of Education, Business Education
+arowe@vdoe386.vak12ed.edu
+
+================================================================================
+================================================================================
+
+~From: linshih@nextnet.ccs.csus.edu (shih han lin)
+
+	Hi, I was wondering what kind of program is it? Where can I get a copy
+of it? Also does the program come with a doc that tells you the layout of the
+keyboard? I've heard about this type of keyboard, and it's adventages. You see
+on a regular keyboard, the most common keys are located on the left hand. In
+this new keyboard layout, the most common keys will be on the right hand. ALso
+the distrubtion of keys will be equal on both hands when you are typing.
+
+-----------------------------------------------------------------------------
+Don't ask me why, I just work here -- Joe Gunchy
+
+internet e-mail linshih@nextnet.ccs.csus.edu
+
+================================================================================
+================================================================================
+
+~From: roland@email.tuwien.ac.at (Roland Bauer)
+
+>I am interested in learning to type using a dvorak keyboard.
+
+Hi Dave, please tell me, if you get any informations.
+
+Thanks, Roland
+
+
+================================================================================
+
+~From: davew@cs.UMD.EDU (David G. Wonnacott)
+
+I have been using a Dvorak keyboard for about 2 years now.  I used to
+touch-type on a QWERTY, and the first few days after I switched were
+far more disoriented than I had imagined they would be.  The next few
+weeks were incredibly frustrating.  I would say it was 8-10 months
+before I could equal the speed I used to get with a QWERTY keyboard,
+but its hard to say for sure because I never really measured either
+one.
+
+Now that I have gotten really familiar with the Dvorak keyboard, I
+really like it.  It even serves as an interesting security device for
+times when one of my officemates tries to type something when I'm
+logged in :-)  I did not have a book to learn from - I just started
+typing and learned by practice, assuming the basic "home positions"
+and ideas about which fingers should hit which keys are independent of
+the mapping from keys to letters.
+
+Unfortunately, as I type as much C code as text, I don't get nearly as
+much of a speedup as one might hope for, as the numbers and symbols
+are hard to get at on either keyboard.
+
+Dave Wonnacott
+davew@cs.umd.edu
+
+================================================================================
+================================================================================
+
+~From: jfieber@sophia.smith.edu (J Fieber)
+
+In article <747106128.17667@myrias.ab.ca> you write:
+>I wonder if there's anybody out there who can give me any
+>pointers to a good book, etc ... or a program to teach me.
+
+I just made a small printout of the layout and taped it to the
+bottom edge of my monitor.  It worked fine an finally cured me of
+looking at the keyboard since looking there din't help!
+
+>Does anybody actually use a dvorak - I'd appreciate any comments you
+>have on its use.
+
+I've been using it for about 10 years and have no desire to give
+it up.  :)   I'm not particulary quick with my fingers so even
+with dvorak, my typing speed is short of amazing.  The critical
+factor is that I find it *much* quicker and *much* less tiring to
+type dvorak.  
+
+Spend a couple weeks learning and you will never want to go back.
+Thanks to computers, the occasions that you do are rare.  Even on
+a dumb terminal you can have dvorak if you use GNU emacs!
+
+Many people feel that if they learn dvorak, they will forget
+qwerty.  I have not found that to be true and switching back and
+forth does not cause too much greif.  I often have to jump
+between a computer and typewriter and have not had problems.
+I've talked with others who have the same experience.
+
+Happy typing!
+
+-john
+-- 
+
+================================================================================
+================================================================================
+
+~From: Will Rawls <rawls@xi.cs.fsu.edu>
+
+Dave,
+
+   I also have been very interested in this prospect. I'm able to type
+between 60-70 words a minute now, but I understand that I could conceivably
+TRIPLE that by using a Dv keyboard. 
+
+   Would you be interested in starting a communication with me to form kind
+of a "support" group for learning it? We could encourage each other and
+exchange information about Dving. Anyways. Would you know of a good keyboard
+that would be available for the IBM (Dv, of course). 
+
+   Good luck one way or the other though!
+
+William Rawls
+rawls@xi.cs.fsu.edu
+
+
+================================================================================
+================================================================================
+
+~From: Leon Garretson <garretso@girch301.med.uth.tmc.edu>
+
+	If you haven't already gotten 500 replies, the same MAVIS
+	program you mention has the Dvorak layout as an option.
+	I tried it and gave up.
+
+	Good Luck.
+
+
+================================================================================
+================================================================================
+
+~From: jgm@cs.brown.edu (Jonathan Monsarrat)
+
+Hi!
+
+> Does anybody actually use a dvorak - I'd appreciate any comments you
+> have on its use.
+
+I use the dvorak keyboard, although I have not gained as much speed
+with it as the american standard. I think that the dvorak keyboard is
+worth learning. However, you must have patience.
+
+Below are two xmodmap files which convert dvorak to qwerty and back
+again. The xdvorak program never worked for me, so I use these
+instead.
+
+Good luck!
+
+-Jon
+
+#! /bin/sh
+# This is a shell archive.  Remove anything before this line, then unpack
+# it by saving it into a file and typing "sh file".  To overwrite existing
+# files, type "sh file -c".  You can also feed this as standard input via
+# unshar, or by typing "sh <file", e.g..  If this archive is complete, you
+# will see the following message at the end:
+#		"End of shell archive."
+# Contents:  .xmodmaprc.qwerty2dv .xmodmaprc.revert
+# Wrapped by jgm@vegas on Sat Sep  4 08:14:22 1993
+PATH=/bin:/usr/bin:/usr/ucb ; export PATH
+if test -f '.xmodmaprc.qwerty2dv' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'.xmodmaprc.qwerty2dv'\"
+else
+echo shar: Extracting \"'.xmodmaprc.qwerty2dv'\" \(621 characters\)
+sed "s/^X//" >'.xmodmaprc.qwerty2dv' <<'END_OF_FILE'
+Xkeysym equal = bracketright braceright
+Xkeysym minus = bracketleft braceleft
+Xkeysym q = apostrophe quotedbl
+Xkeysym w = comma less
+Xkeysym e = period greater
+Xkeysym r = p
+Xkeysym t = y
+Xkeysym y = f
+Xkeysym u = g
+Xkeysym i = c
+Xkeysym o = r
+Xkeysym p = l
+Xkeysym bracketleft = slash question
+Xkeysym bracketright = equal plus
+Xkeysym s = o
+Xkeysym d = e
+Xkeysym f = u
+Xkeysym g = i
+Xkeysym h = d
+Xkeysym j = h
+Xkeysym k = t
+Xkeysym l = n
+Xkeysym semicolon = s
+Xkeysym apostrophe = minus underscore
+Xkeysym z = semicolon colon
+Xkeysym x = q
+Xkeysym c = j
+Xkeysym v = k
+Xkeysym b = x
+Xkeysym n = b
+Xkeysym comma = w
+Xkeysym period = v
+Xkeysym slash = z
+END_OF_FILE
+if test 621 -ne `wc -c <'.xmodmaprc.qwerty2dv'`; then
+    echo shar: \"'.xmodmaprc.qwerty2dv'\" unpacked with wrong size!
+fi
+# end of '.xmodmaprc.qwerty2dv'
+fi
+if test -f '.xmodmaprc.revert' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'.xmodmaprc.revert'\"
+else
+echo shar: Extracting \"'.xmodmaprc.revert'\" \(655 characters\)
+sed "s/^X//" >'.xmodmaprc.revert' <<'END_OF_FILE'
+Xkeysym bracketright = equal plus
+Xkeysym bracketright = equal plus
+Xkeysym bracketleft = minus underscore
+Xkeysym apostrophe = q
+Xkeysym comma = w
+Xkeysym period = e
+Xkeysym p = r
+Xkeysym y = t
+Xkeysym f = y
+Xkeysym g = u
+Xkeysym c = i
+Xkeysym r = o
+Xkeysym l = p
+Xkeysym slash = bracketleft braceleft
+Xkeysym equal = bracketright braceright
+Xkeysym o = s
+Xkeysym e = d
+Xkeysym u = f
+Xkeysym i = g
+Xkeysym d = h
+Xkeysym h = j
+Xkeysym t = k
+Xkeysym n = l
+Xkeysym s = semicolon colon
+Xkeysym minus = apostrophe quotedbl
+Xkeysym semicolon = z
+Xkeysym q = x
+Xkeysym j = c
+Xkeysym k = v
+Xkeysym x = b
+Xkeysym b = n
+Xkeysym w = comma less
+Xkeysym v = period greater
+Xkeysym z = slash question
+X
+END_OF_FILE
+if test 655 -ne `wc -c <'.xmodmaprc.revert'`; then
+    echo shar: \"'.xmodmaprc.revert'\" unpacked with wrong size!
+fi
+# end of '.xmodmaprc.revert'
+fi
+echo shar: End of shell archive.
+exit 0
+
+================================================================================
+================================================================================
+
+~From: starfox@eskimo.com (Joe Deskiewicz)
+ 
+You wrote:
+ 
+:> I wonder if there's anybody out there who can give me any
+:> pointers to a good book, etc ... or a program to teach me.
+ 
+I wrote a report on the DVORAK keyboard in school.  I got my reasearch
+~from:
+ 
+   1.  The University Bookstore
+   2.  Various books on Typing.
+   3.  A REAL dvorak keyboard.
+ 
+However, this was two years ago.  I'm not sure if theese sources are
+still available.  But, I hope I'm some help. 2=^) 
+ 
+(P.S.  The keyboard was in an old thift store.  It's gone TRUST ME!)
+
+================================================================================
+================================================================================
+
+~From: Doug.Landauer@Eng.Sun.COM (Doug Landauer)
+
+I've been using a Dvorak-like layout for about 11 years now.
+The speed increase is real but negligible (5% to 10%).  The
+more important advantage (IMHO) is the lower likelihood of
+wrist nerve damage and carpal tunnel syndrome.  Here in SunPro,
+several people in my building alone have gotten CTS or its
+precursors or related problems since SPARCstations, with their
+awful keyboard layout, became prevalent.  I think that my use
+of the Dvorak-like layout has been part of the reason that I
+have so far escaped this problem, and it is despite the fact that
+I've been putting in lots of long hours for about the past year.
+
+I didn't use anything to teach me it -- I just tried things, and
+typed sorta slowly for about a month.
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+Doug.Landauer@sun.com				 "Sukkiri ga ii."
+
+================================================================================
+================================================================================
+
+~From: sos@oz.plymouth.edu (Steffan O'Sullivan)
+
+In article <747106128.17667@myrias.ab.ca> you write:
+>I am interested in learning to type using a dvorak keyboard.
+>
+>I wonder if there's anybody out there who can give me any
+>pointers to a good book, etc ... or a program to teach me.
+>
+>ala Mavis Beacon :-) for the PC.
+
+Yes, Typing Tutor IV is programmed to use the Dvorak keyboard - that is,
+teach the home row first, then the farther letters.  It's how I learned.
+
+>I have got the dvorak program that makes my x keyboard behave as if
+>it is a dvorak keyboard.
+>
+>Does anybody actually use a dvorak - I'd appreciate any comments you
+>have on its use.
+
+My only comment is that you're in trouble when you have to do a lot of
+typing on other machines.  I learned Dvorak keyboard 5 years ago, before
+I knew I'd have to type a lot at work.  My own desk computer is a PC, so
+I can handle that, but the main computers shared with others is a
+mainframe, with no Dvorak capability.  Likewise with the occasions I have
+to use a typewriter.
+
+Still, I now type 55 wpm, whereas with the QWERTY layout, the max I ever
+did was 13!
+
+================================================================================
+================================================================================
+
+~From: "Jeff Nelson" <nelson@math.arizona.edu>
+
+I'm also interested in learning to use a Dvorak keymap.
+Any good ideas??  I've heard that people have been known
+to double their typing speed by switching to a Dvorak keymap/board.
+
+				- Jeff
+
+================================================================================
+================================================================================
+
+~From: gasior@ltpsun.gsfc.nasa.gov (Eric Gasior)
+
+I been using a Dvorak keyboard on my Mac for a couple of months. The
+biggest problem I have is that my typing speed hasn't recovered, but that's
+partly because the key caps are still for a standard keyboard.
+
+It is more comfortable than a qwerty keyboard - my fingers and wrists move
+less. Adapting to the new punctuation positions is wierd. The only serious
+complaint that I have with the design is that the "f" key should be easier
+to reach.
+
+================================================================================
+================================================================================
+End of replies .................................................................
+

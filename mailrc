@@ -1,0 +1,81 @@
+# http://www.gnu.org/software/mailutils/manual/html_node/Mail-Configuration-Files.html#Mail-Configuration-Files
+
+# sendmail="smtp://erelay.sasken.com"
+
+
+set verbose
+
+## `mbox [MSGLIST]'
+## `mb [MSGLIST]'
+## `touch [MSGLIST]'
+## `tou [MSGLIST]'
+##      Mark list of messages to be saved in the user's mailbox
+##      (`$HOME/mbox') upon exiting via `quit' command. This is the
+##      default action for all read messages, unless you have variable
+##      `hold' set.
+set hold
+
+## `save [[MSGLIST] FILE]'
+## `s [[MSGLIST] FILE]'
+##      Takes a message list and a file name and appends each message in
+##      turn to the end of the file. The name of file and number of
+##      characters appended to it is echoed on the terminal. Each saved
+##      message is marked for deletion as if with `delete' command, unless
+##      the variable `keepsave' is set.
+set keepsave
+
+# set sendmail=sendmail://usr/sbin/sendmail
+
+
+# folder "imap://spratap@localhost"
+
+
+# folder "imap://spratap@localhost/"
+
+## {{ from: http://jaya.homelinux.org/linux/mail.php
+# set folder="Maildir/"
+# set MBOX="Maildir"
+# set record="~/Maildir/sent-mail/"
+
+# folder="imap://spratap@localhost"
+# MBOX="imap://spratap@localhost"
+# record="imap://spratap@localhost/sent-mail"
+
+## }}
+
+
+##{{ from https://bitbucket.org/emg/etc/src/3a8942c35688/mailrc
+
+# set folder="imaps://user@gmail.com@imap.gmail.com"
+# set from="user@gmail.com (Neme Second)"
+# set smtp-auth=login
+# set smtp-auth-user=user@gmail.com
+# set smtp-use-starttls
+# set smtp="smtp.gmail.com:587"
+# set imap-cache=~/.mail
+
+# set ask
+# set autothread
+# set dot
+# set editheaders
+# set emptybox
+# set emptystart
+# set hold
+# set keepsave
+# set markanswered
+# set newmail
+# set nosave
+# set searchheaders
+# set showlast
+# set showname
+
+# set attrlist="NU     *rdx+-$"
+# set crt
+# set escape=":"
+# set pipe-text/html="w3m -dump -T text/html"
+# set pipe-application/pdf="cat > /tmp/mailx$$.pdf; zathura /tmp/mailx$$.pdf; \
+# 	rm /tmp/mailx$$.pdf"
+
+# retain subject date from to
+# fwdretain subject date from to
+##}}

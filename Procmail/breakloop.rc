@@ -1,0 +1,6 @@
+
+
+:0: # find something in forward to remove loop.
+* ^From.*sharad.pratap@sasken.com
+* ^(TO_|CC_)td-cm-req@sasken.com
+loopback

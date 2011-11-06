@@ -1,0 +1,5 @@
+# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+
+if whence -p dwdiff >& /dev/null; then
+   export P4DIFF='dwdiff -c -C3 '
+fi

@@ -1,0 +1,142 @@
+#!/bin/bash
+# http://www.aasan.org/download/man2pdf
+#############################################################################
+#                                                                           #
+# man2pdf                                                                   #
+#   a simple bash script to convert a man page to pdf                       #
+#                                                                           #
+# Copyright (C) 2003-2004  Trond Aasan                                      #
+#                                                                           #
+# This program is free software; you can redistribute it and/or modify      #
+# it under the terms of the GNU General Public License as published by      #
+# the Free Software Foundation; either version 2 of the License, or         #
+# (at your option) any later version.                                       #
+#                                                                           #
+# This program is distributed in the hope that it will be useful,           #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of            #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             #
+# GNU General Public License for more details.                              #
+#                                                                           #
+# You should have received a copy of the GNU General Public License         #
+# along with this program; if not, write to the Free Software               #
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA #
+#                                                                           #
+# If you find this useful in any way, or if you find a bug,                 #
+# feel free to e-mail me.                                                   #
+#                                                                           #
+# Trond Aasan <trond@aasan.org>                                             #
+# http://www.aasan.org/                                                     #
+#                                                                           #
+#############################################################################
+
+# $Id: man2pdf,v 1.6 2004/01/23 18:35:41 trondaas Exp $
+
+MAN=$(which man)
+if [ -z "$MAN" ]; then
+    echo "man executable not found in path" >&2
+    exit 1;
+fi
+
+GROFF=$(which groff)
+if [ -z "$GROFF" ]; then
+    echo "groff executable not found in path" >&2
+    exit 1;
+fi
+
+GS=$(which gs)
+if [ -z "$GS" ]; then
+    echo "gs executable not found in path" >&2
+    exit 1;
+fi
+
+USAGE="Usage: $0 [options] <name> [outfile]
+Options:
+  -n SECTION                  man section
+  -h                          Print this help message
+
+If no section is specified, use first hit.
+
+If outfile is not specified, write output to <name>.<section>.pdf in
+current directory.
+"
+
+unset MANSECT
+
+while getopts 'n:h' opt; do
+    case $opt in
+        n )
+            export MANSECT="$OPTARG"
+            ;;
+        h )
+            echo "$USAGE"
+            exit
+            ;;
+        \? )
+            exit 1
+            ;;
+        * )
+            echo "Error"
+            exit 1
+            ;;
+    esac
+done
+
+shift $(($OPTIND - 1))
+
+if [ -z "$1" ]; then
+    echo "$USAGE"
+    exit 1
+fi
+
+infile=$("$MAN" -w -- "$1") || exit $?
+
+if [ -z "$MANSECT" ]; then
+    AWK=$(which awk)
+    if [ -z "$AWK" ]; then
+        echo "awk executable not found in path. Will not guess man"\
+            "section" >&2
+    else
+        BASENAME=$(which basename)
+        if [ -z "$BASENAME" ]; then
+            echo "basename executable not found in path. Will not guess man"\
+                "section" >&2
+        else
+            basename=$("$BASENAME" "$infile")
+            section=$(echo "$basename" | "$AWK" -F . \
+                "/$(echo "$1" | tr . '\.')\.([0-9a-zA-Z])(\.gz)?$/{print \$2}")
+        fi
+    fi
+fi
+
+case "$infile" in
+    *.gz | *.Z)
+        CAT=$(which zcat)
+        ;;
+    *.bz)
+        CAT=$(which bzcat)
+        ;;
+    *.bz2)
+        CAT=$(which bzcat)
+        ;;
+    *)
+        CAT=$(which cat)
+        ;;
+esac
+
+if [ -z "$CAT" ]; then
+    exit 1
+fi
+
+if [ -n "$2" ]; then
+    outfile="$2"
+else
+    if [ -n "$section" ]; then
+        outfile="$1.$section.pdf"
+    else
+        outfile="$1.pdf"
+    fi
+fi
+
+"$CAT" -- "$infile" | "$GROFF" -t -E -Tps -mandoc -ma4 \
+    | "$GS" -q -sDEVICE=pdfwrite -sOutputFile="$outfile" -dNOPAUSE -dBATCH -sPAPERSIZE='a4' -
+

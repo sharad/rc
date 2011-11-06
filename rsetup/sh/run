@@ -1,0 +1,10 @@
+#!/bin/zsh
+
+## put commands only
+
+
+~/bin/syncimap -a $OFFLINEIMAPACCOUNT &!
+
+[ -r ~/.rsetup/sh/run.d/${HOST//.*} ] &&
+~/.rsetup/sh/run.d/${HOST//.*}
+

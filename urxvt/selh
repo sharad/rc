@@ -1,0 +1,38 @@
+# Mode: -*- cperl -*-
+# from: http://consttype.blogspot.com/2007/10/urxvt-perl.html
+# One of the good things with it is that it's fully scriptable in
+# Perl. Here's my first attempt, a small plugin that adds an item in the
+# popup menu (given by the standard Perl plugin selection-popup) to draw
+# in bold font whatever matches the selection. It's not extremely
+# useful, but that's a start.
+
+
+our $selection_hilight_qr;
+
+sub on_start {
+    my ($self) = @_;
+    $self->{term}{selection_popup_hook} ||= [];
+    push @{ $self->{term}{selection_popup_hook} },
+        sub { hilight => sub { $selection_hilight_qr = qr/\Q$_/ } },
+        sub { 'remove hilight' => sub { undef $selection_hilight_qr } };
+    ();
+}
+
+sub on_line_update {
+    if (defined $selection_hilight_qr) {
+        my ($self, $row) = @_;
+        my $line = $self->line($row);
+        my $text = $line->t;
+        while ($text =~ /$selection_hilight_qr/g) {
+            my $rend = $line->r;
+            for (@{$rend}[$-[0] .. $+[0] - 1]) {
+                $_ |= urxvt::RS_Bold;
+            }
+            $line->r($rend);
+        }
+    }
+    ();
+}
+
+
+

@@ -1,0 +1,1 @@
+../mozrepl/javascript.el

@@ -1,0 +1,55 @@
+# This file contains keybinding configuration for centerim
+# Every line should look like: bind <section> <key> <command>
+
+bind contact	?	info
+bind contact	q	quit
+bind contact	<F3>	change_status
+bind contact	s	change_status
+bind contact	h	history
+bind contact	f	fetch_away_message
+bind contact	<F2>	user_menu
+bind contact	m	user_menu
+bind contact	<F4>	general_menu
+bind contact	g	general_menu
+bind contact	<F5>	hide_offline
+bind contact	<F6>	contact_external_action
+bind contact	a	add
+bind contact	<delete> remove
+bind contact	<enter> compose
+bind contact	c	send_contact
+bind contact	c	rss_check
+bind contact	u	send_url
+bind contact	r	rename
+bind contact	v	version
+bind contact	e	edit
+bind contact	i	ignore
+bind contact	\as	quickfind
+bind contact	/	quickfind
+
+bind contact	\cn	next_chat
+bind contact	\cb	prev_chat
+bind contact	[	left_panel_move_left
+bind contact	]	left_panel_move_right
+bind contact	{	log_panel_move_up
+bind contact	}	log_panel_move_down
+bind history	/	search
+bind history	s	search
+bind history	n	search_again
+bind history	<F2>	show_urls
+bind history	<F9>	fullscreen
+
+bind editor	\cx	send_message
+bind editor	<esc>	quit
+bind editor	\cp	multiple_recipients
+bind editor	\co	history
+bind editor	\cn	next_chat
+bind editor	\cb	prev_chat
+bind editor	\cv	out_chat
+bind editor	\a?	info
+bind editor	<F2>	show_urls
+bind editor	<F9>	fullscreen
+
+bind editor	<F4>	chat_panel_move_up
+bind editor	<F5>	chat_panel_move_down
+bind info	<F2>	show_urls
+bind info	<F6>	user_external_action

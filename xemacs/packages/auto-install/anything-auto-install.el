@@ -1,0 +1,1 @@
+../anything/anything-auto-install.el

@@ -1,0 +1,30 @@
+# m h  dom mon dow   command
+
+SHELL=/bin/zsh
+# MAILTO=$MAILTO variable set
+
+*/2 * * * * DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/syncimap -a $OFFLINEIMAPACCOUNT > /dev/null 2>&1
+
+0 0 * * * /aruba/utils/cm/bin/p4bkup --puthere ~/.p4bkup --copies 10
+
+# try waking up at 7.30 to 7.45
+30 06 * * * mpc play
+31 06 * * * mpc volume 100
+45 06 * * * spd-say -C
+
+00 07 * * * mpc play
+01 07 * * * mpc volume 100
+
+# try waking up at 7.30 to 7.45
+30 07 * * * mpc play
+31 07 * * * mpc volume 100
+45 07 * * * spd-say -C
+
+# try waking up at 8.00 to 8.15
+00 08 * * * mpc play
+15 08 * * * spd-say -C
+
+# try waking up at 8.30 to 8.45
+30 08 * * * mpc play
+45 08 * * * spd-say -C
+

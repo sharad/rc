@@ -1,0 +1,74 @@
+#!/usr/bin/env perl
+
+use POSIX qw(strftime);
+use Time::Local;
+use Date::Parse;
+
+my @ds = ( 'DTSTART', 'DTEND' );
+
+# The list of keys (in this order) we are interested in seeing in the output.
+my @ks = ( 'SUMMARY', 'DESCRIPTION', 'ORGANIZER', 'DTSTART', 'DTEND' );
+
+# Map the above keys to a more descriptive tag.
+my %kl = ( 'DTSTART' => 'Start',
+           'DTEND' => 'End',
+           'DESCRIPTION' => 'Description',
+           'ORGANIZER' => 'Organizer',
+           'SUMMARY' => 'Summary' );
+
+# Slurp in the entire body and get rid of obvious envelope tags.
+while( <> ) {
+  chomp;
+  if( /BEGIN:VEVENT/ .. /END:VEVENT/ ) {
+    $body .= "$_\n";
+  }
+}
+
+# Cleanup the embedded \n and trailing slash characters in the description field.
+# Also, get rid of all the MAILTO: tags. Just gimme the email address in text form.
+  while( $body =~ /([A-Z]+):(.*?)(?=^[A-Z]+:)/gism ) {
+    $k = $1;
+    $d = $2;
+    $d =~ s/\\n/ /g;
+    $d =~ s/\\//g;
+    $d =~ s/(.*?)MAILTO://g;
+
+    $data{$k} = $d;
+  }
+
+# Convert to human readable start/end dates.
+foreach my $d( @ds ) {
+  if( defined $data{$d} ) {
+    $dstr = $data{$d};
+    $ddate = str2time($dstr);
+    $dt = strftime( "%A %m/%d/%Y %I:%M %p", localtime($ddate) );
+    $data{$d} = $dt;
+  }
+}
+
+# Print out the fields we are interested in.
+foreach my $k( @ks ) {
+  print $kl{$k}, " : " . $data{$k} . "\n";
+}
+
+__END__
+
+This gives something like:
+
+Summary : Team Meeting
+
+  Description : When: Friday, March 17, 2006 3:00 PM-4:00 PM (GMT-08:00)
+  Pacific Time (US & Canada); Tijuana. Where:
+Conference Room *~*~*~*~*~*~*~*~*~*  Hi, This is the weekly team meeting.
+
+  Organizer : bigboss@yourcompany.com
+
+  Start : Friday 03/17/2006 03:00 PM
+  End : Friday 03/17/2006 04:00 PM
+
+  Wednesday March 29, 2006 - 08:32am (PST)
+
+  Next Post: Dumb Internet
+  Sites<http://blog.360.yahoo.com/blog-3w_f7TIherNFrQi9PkBhiFrdwInP?p=148>
+  Previous
+ Post: Really CRAPPY!!!<http://blog.360.yahoo.com/blog-3w_f7TIherNFrQi9PkBhiFrdwInP?p=138>

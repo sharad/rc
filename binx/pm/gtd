@@ -1,0 +1,773 @@
+#! /bin/zsh
+function usage {
+cat << EOF
+--- $0 --- GNU Todo
+Properties:
+   -s status
+   -i importance
+   -t timestamp
+   -p project
+   -c context
+   -l label
+Options:
+   -T todo file
+Actions:
+   -a add
+   -e edit (index)
+   -d done (index)
+   -r remove (index)
+   -C cleanup todo
+   -h help
+EOF
+   exit
+}
+
+TS0=`date +%m%S%N`
+function TS { echo $(( (`date +%m%S%N`-$TS0)/1000000 )) $@ ; } #date +%H:%m:%S.%N; }
+
+BASEDIR=~/doc/org/gtd/own/
+TODO=$BASEDIR/todo.txt
+TMPFILE=/tmp/gtd.tmp.`cat /dev/urandom | tr -cd a-z0-9 | head -c 5`
+STATES=""; PROJECTS=""; CONTEXTS=""; KEYS="";
+TIMESTAMP_DEFAULT=99999999 #9999
+TIMESTAMP_NOW=`date +%Y%m%d` #%H%m`
+
+#SHELL_DEBUG=1
+
+
+#-------
+#ASCII <-> CGI encoded
+#---
+[[ $SHELL_DEBUG == 1 ]] && TS ascii - cgi
+function STR2CGI {
+   sed '
+      s/ä/%E4/g;
+      s/Ä/%C4/g;
+      s/ö/%F6/g;
+      s/Ö/%D6/g;
+      s/ü/%FC/g;
+      s/Ü/%DC/g;
+      s/ß/%DF/g;
+      s/?/%3F/g;
+      s/&/%26/g;
+      s/+/%2B/g;
+      s/ /+/g;
+      s/"/%22/g;
+      s/=/%3D/g;
+      s/!/%21/g;
+      s/#/%23/g;
+      s/,/%2C/g;
+      s/:/%3A/g;
+      s/;/%3B/g;
+      s/@/%40/g;
+      s/\\/%5C/g;
+      s/\//%2F/g;
+      s/§/%A7/g;
+      s/\&/%26/g;
+      '
+}
+
+function CGI2STR {
+   sed '
+      s/%E4/ä/g;
+      s/%C4/Ä/g;
+      s/%F6/ö/g;
+      s/%D6/Ö/g;
+      s/%FC/ü/g;
+      s/%DC/Ü/g;
+      s/%DF/ß/g;
+      s/%3F/?/g;
+      s/%26/&/g;
+      s/+/ /g;
+      s/%22/"/g;
+      s/%3D/=/g;
+      s/%2B/+/g;
+      s/%21/!/g;
+      s/%23/#/g;
+      s/%2C/,/g;
+      s/%3A/:/g;
+      s/%3B/;/g;
+      s/%40/@/g;
+      s/%5C/\\/g;
+      s/%2F/\//g;
+      s/%A7/§/g;
+      s/%26/\&/g;
+      '
+}
+
+
+#-------
+#Todo File Handling
+#---
+[[ $SHELL_DEBUG == 1 ]] && TS todo file handling
+function MK_IDX { awk '{printf("I:%.3d ",NR);print$0;}'; }
+function RM_IDX { sed 's/I:[0-9]* //g'; }
+function CK_IDX { echo $1 | awk '{printf("%.3d",$1)}'; }
+function SHOWENTRY {  cat $TODO | MK_IDX | grep "^I:$1" | RM_IDX ; }
+function RM_ENTRY { cat $TODO | MK_IDX | grep -v "^I:$1" | RM_IDX ; }
+
+function COMPLETE_TIMESTAMP { 
+   awk '
+      length($0)==4{print"'`date +%Y`'"$0;exit;}  
+      length($0)==2{print"'`date +%Y%m`'"$0;exit;}  
+      length($0)==7{yearmonth=$0;day=$0;gsub(".$","",yearmonth);gsub("^......","",day);print yearmonth"0"day}
+      length($0)==8{print;exit;}
+      ' ; 
+}
+
+function getval { 
+   TAG=$1; 
+   shift; 
+   if [[ $TAG == INDEX ]]; then
+      echo "$@" | sed 's/&/ /g;s/%/_percent_/g' | awk '{for(i=1;i<=NF;i++){if($i~/'$TAG'/){gsub("'$TAG'=","",$i);printf $i" "}}}' | sed 's/ $//;s/_percent_/%/g;' 
+   elif [[ $TAG == projects ]]; then
+      echo "$@" | sed 's/&/ /g;s/%/_percent_/g' | awk '{for(i=1;i<=NF;i++){if($i~/'$TAG'/){gsub("'$TAG'=","",$i);printf $i" "}}}' | sed 's/ $//;s/_percent_/%/g;'  
+   elif [[ $TAG == contexts ]]; then
+      echo "$@" | sed 's/&/ /g;s/%/_percent_/g' | awk '{for(i=1;i<=NF;i++){if($i~/'$TAG'/){gsub("'$TAG'=","",$i);printf $i" "}}}' | sed 's/ $//;s/_percent_/%/g;' 
+   else 
+      echo "$@" | grep "$TAG" | sed 's/\&/ /g' | grep "$TAG" | sed -r -e 's/\&/ /g;s/.*'$TAG'=([^ ]*).*/\1/'; 
+   fi
+}
+
+
+#-------
+#General GTD Operations
+#---
+[[ $SHELL_DEBUG == 1 ]] && TS general gtd operations
+function SHOW {
+   [[ -z $STATES ]] && local STATES=aw
+   [[ -z $IMPORTANCE ]] && local IMPORTANCE=0
+   [[ -z $TIMESTAMP ]] && local TIMESTAMP=$TIMESTAMP_DEFAULT
+   REGEX_PROJ="`echo "($PROJECTS)" | sed 's/ /|/g;s/|)/)/;'`";
+   REGEX_CONT="`echo "($CONTEXTS)" | sed 's/ /|/g;s/|)/)/;'`";
+         
+   cat $TODO | MK_IDX | egrep "$REGEX_PROJ" | egrep "$REGEX_CONT" | awk -v timestamp=$TIMESTAMP -v states=$STATES -v importance=$IMPORTANCE '
+      /status=[states]/ {
+         flag=0;
+         entry=$0;
+         for(i=1;i<=NF;i++) {
+            if ($i ~ /timestamp/) { gsub("timestamp=","",$i); if ($i > timestamp) { flag=1; } }
+         else if ($i ~ /importance/) { gsub("importance=","",$i); if ($i<importance) { flag=1; } }
+      }
+      if (flag == 0) { print entry; }
+   }' | sort -k 4.11,4.19 -k 3.12r # FIXME: Magic Numerz!
+   [[  $SHELL_DEBUG == 1 ]] && TS show >&2
+}
+
+function ADD {
+   ( [[ -z $STATES ]] || [[ ${#STATES} -gt 1 ]] ) && STATES=a
+   [[ -z $IMPORTANCE ]] && local IMPORTANCE=0
+   [[ -z $TIMESTAMP ]] && local TIMESTAMP=$TIMESTAMP_DEFAULT
+   [[ -z $LABEL ]] && [[ -n $ARGS ]] && LABEL="`echo $ARGS | STR2CGI`"
+   local ITEM="status=$STATES importance=$IMPORTANCE timestamp=$TIMESTAMP project=$PROJECTS context=$CONTEXTS label=$LABEL"
+   echo "Adding: $ITEM"
+   echo "$ITEM" >> $TODO
+}
+
+function EDIT {
+   local INDEX=$1; shift;
+   local ENTRY="`SHOWENTRY $INDEX`"
+   echo "Editing $INDEX: $ENTRY"
+   ( [[ -z $STATES ]] || [[ ${#STATES} -gt 1 ]] ) && local STATES="`getval status $ENTRY`"
+   [[ -z $IMPORTANCE ]] && local IMPORTANCE="`getval importance $ENTRY`"
+   [[ -z $TIMESTAMP ]] && local TIMESTAMP="`getval timestamp $ENTRY`"
+   [[ -z $PROJECTS ]] && local PROJECTS="`getval project $ENTRY`"
+   [[ -z $CONTEXTS ]] && local CONTEXTS="`getval context $ENTRY`"
+   [[ -z $LABEL ]] && local LABEL="`getval label $ENTRY`"
+   local ITEM="status=$STATES importance=$IMPORTANCE timestamp=$TIMESTAMP project=$PROJECTS context=$CONTEXTS label=$LABEL"
+   RM_ENTRY $INDEX > $TMPFILE
+   echo "$ITEM" >> $TMPFILE
+   mv $TMPFILE $TODO
+   echo "  Now: $ITEM"
+}
+
+function DONE {
+   local INDEX=$1; shift;
+   local ENTRY="`SHOWENTRY $INDEX`"
+   local ITEM="`echo "$ENTRY" | sed 's/status=[aw]/status=d/g'`"
+   RM_ENTRY $INDEX > $TMPFILE
+   echo "$ITEM" >> $TMPFILE
+   mv $TMPFILE $TODO
+   echo "Done $INDEX: $ENTRY"
+}
+
+function REMOVE {
+   local INDEX=$1; shift;
+   local ENTRY="`SHOWENTRY $INDEX`"
+   echo "Remove $INDEX: $ENTRY"
+   RM_ENTRY $INDEX > $TMPFILE
+   mv $TMPFILE $TODO
+}
+
+function LIST_PROJ { cat $TODO | sed -r -e 's/\&/ /g;s/.*project=([^ ]*).*/\1/' | awk '! a[$0]++&&!/^$/' | sed -e :a -e '$!N;s/\n/ /;ta' ; }
+function LIST_CONT { cat $TODO | sed -r -e 's/\&/ /g;s/.*context=([^ ]*).*/\1/' | awk '! a[$0]++&&!/^$/' | sed -e :a -e '$!N;s/\n/ /;ta' ; }
+
+
+#-------
+#Archiving
+#---
+[[ $SHELL_DEBUG == 1 ]] && TS archiving
+function CLEANUP_TODO {
+   echo "Cleaning up $TODO"
+   cat $TODO | awk '/status=d/' > $TMPFILE.done
+   cat $TODO | awk '!/status=d/' > $TMPFILE.clean
+   cat $TMPFILE.done | gzip > $BASEDIR/todo.$TIMESTAMP_NOW.gz && rm $TMPFILE.done && echo "Created: todo.$TIMESTAMP_NOW.gz"
+   mv $TMPFILE.clean $TODO && echo "Created clean $TODO"
+}
+
+
+#-------
+#Shell Functionality
+#---
+[[ $SHELL_DEBUG == 1 ]] && TS shell functionality
+function SHELL_PARSE {
+   while getopts "s:i:t:p:c:l:ae:d:r:CT:h" opt; do
+      case $opt in
+         s) STATES=$STATES$OPTARG; ;;
+         i) IMPORTANCE=$OPTARG; ;;
+         t) TIMESTAMP="`echo $OPTARG | COMPLETE_TIMESTAMP`"; ;;
+         p) PROJECTS=${PROJECTS}"`echo $OPTARG | STR2CGI` "; ;;
+         c) CONTEXTS=${CONTEXTS}"`echo $OPTARG | STR2CGI` "; ;;
+         l) LABEL="`echo $OPTARG | STR2CGI`"; ;;
+   
+         a) ACTION="ADD"; ;;
+         e) ACTION="EDIT"; INDEX=$INDEX"`CK_IDX $OPTARG` "; ;;
+         d) ACTION="DONE"; INDEX=$INDEX"`CK_IDX $OPTARG` "; ;;
+         r) ACTION="REMOVE"; INDEX=$INDEX"`CK_IDX $OPTARG` "; ;;
+         C) ACTION="CLEANUP_TODO"; ;;
+
+         T) TODO="$OPTARG"; ;;
+
+         h) usage ;;
+         *) usage ;;
+      esac
+   done
+   shift $(( $OPTIND - 1 ))
+   ARGS="$@"
+}
+
+
+function SHELL_OUTPUT {
+   local fg_blue="\033[0;34m"
+   local fg_green_lt="\033[1;32m"
+   local fg_cyan="\033[36m"
+   local fg_purple="\033[0;35m"
+   local fg_black="\033[30m"
+   local fg_white="\033[37m"
+   local fg_gray="\033[1;30m"
+   local bg_red="\033[41m"
+   local bg_yellow="\033[43m"
+   local bg_green="\033[42m"
+   local bg_white="\033[47m"
+   local bg_black="\033[40m"
+   local none="\033[0m"
+
+   local TS_RED=0
+   local TS_YELLOW=1
+   local TS_GREEN=3
+
+   echo "${fg_green_lt}     .:| GNU-ToDo |:.     ${none}"
+   echo "${fg_purple}  Contexts: ${fg_cyan}`LIST_CONT | CGI2STR`${none}"
+   echo "${fg_blue}  Projects: ${fg_cyan}`LIST_PROJ | CGI2STR`${none}"
+
+   SHOW | awk -v timestamp_ref=$TIMESTAMP -v timestamp_def=$TIMESTAMP_DEFAULT -v columns=$COLUMNS \
+      -v fg_gray=$fg_gray -v none=$none '
+      {
+         for (i=1;i<=NF;i++) {
+            if ($i ~ /I\:/) {
+               gsub("I:","",$i);
+               ind="'${fg_cyan}'"$i"'${none}'";
+            } else if ($i ~ /status/) {
+               gsub("status=","",$i)i;
+               if ($i == "a") { status=">"; }
+               else if ($i == "w") { status="<"; }
+            } else if ($i ~ /importance/) {
+               gsub("importance=","",$i);
+               if ($i == 0) { importance="."; }
+               else if ($i == 1) { importance="o"; }
+               else if ($i >= 1) { importance="O"; }
+            } else if ($i ~ /timestamp/) {
+               gsub("timestamp=","",$i);
+               if ($i == timestamp_def) { timestamp="'${fg_white}${bg_black}'-'${none}'"; }
+               else if ($i-timestamp_ref < 0) { timestamp="'${bg_red}${fg_black}'"$i"'${none}'"; }
+               else if ($i-timestamp_ref < '${TS_YELLOW}') { timestamp="'${bg_yellow}${fg_black}'"$i"'${none}'"; }
+               else if ($i-timestamp_ref < '${TS_GREEN}') { timestamp="'${bg_green}${fg_black}'"$i"'${none}'"; }
+               else if ($i-timestamp_ref >= '${TS_GREEN}') { timestamp="'${bg_white}${fg_black}'"$i"'${none}'"; }
+            } else if ($i ~ /project/) {
+               gsub("project=","",$i);
+               project="'${fg_blue}'"$i"'${none}'";
+            } else if ($i ~ /context/) {
+               gsub("context=","",$i);
+               context="'${fg_purple}'"$i"'${none}'";
+            } else if ($i ~ /label/) {
+               gsub("label=","",$i);
+               label=$i;
+            }
+         }
+         wdth=columns-16-10-10-10
+         printf (fg_gray"%1s%1s %s"fg_gray"%.1s"none" % -"wdth"s %.20s %.20s\n",
+            importance, timestamp, ind, status, label, project, context);
+      }' | CGI2STR 
+      [[ $SHELL_DEBUG == 1 ]] && TS eof
+}
+
+
+#-------
+#Webinterface
+#---
+[[ $SHELL_DEBUG == 1 ]] && TS webinterface
+if [[ -z ${QUERY_STRING} ]]; then
+   SHELL_PARSE "$@"
+   [[ -z $ACTION ]] && ACTION="SHOW"
+   if [[ -n $INDEX ]]; then
+      for i in `echo $INDEX | sed 's/ /\n/g' | sort -nr`; do $ACTION $i; done
+      exit
+   fi
+   if [[ $ACTION == "SHOW" ]]; then SHELL_OUTPUT;
+   else $ACTION; fi;  
+   exit
+fi
+
+
+function HTML_HEADER { 
+cat << __EOF__
+Content-type: text/html
+
+
+<html>
+
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <base target="_top">
+   <style>
+         BODY {
+            background-color: #f0f0f0; 
+            COLOR: #404040; 
+            WIDTH: 99%;	
+            font-size: 14px;
+            font-family: Verdana;
+         }
+
+         A:link { TEXT-DECORATION: none	}
+         A:visited { COLOR: #606060; TEXT-DECORATION: none }
+         A:active { COLOR: #888888; TEXT-DECORATION: none; }
+         A:hover { BACKGROUND-COLOR: #ffffff; COLOR: #ff0000; TEXT-DECORATION: none }
+
+         td { font-family: Verdana; font-size: 11px; text-decoration: none }
+         tr { font-family: Verdana; font-size: 11px; text-decoration: none }
+
+         h1 { font-family: Times; font-size: 38px; font-weight: normal; padding:2px; background: #999; }
+         h2 { font-family: Times; font-size: 30px; font-weight: normal; padding:2px; background: #999}
+         h3 { font-family: Times; font-size: 22px; font-weight: normal; padding:2px;}
+
+         .red { background: #f00; padding: 1px; }
+         .amber { background: #ff6600; padding: 1px; }
+         .yellow { background: #FFD700; padding: 1px; }
+         .orange { background: #FFA500; padding: 1px; }
+         .green { background: #33cc00; padding: 1px; }
+         .grey { background: #e0e0e0; padding: 1px; }
+         .button { color: #202020; background: #b0b0b0; padding: 1px; }
+         .project { color: #404040; background: #D0D0D0; padding: 1px; margin-botton: 20px; }
+         .context { color: #404040; background: #D0D0D0; padding: 1px; }
+         .selected { color: #fff; background: #FFA500; padding: 1px; }
+         .date { color: #404040; }
+         .inputfield { color: #404040; background: #D0D0D0; padding: 1px; } 
+         .active { }
+         .waiting { background: #e0e0e0; padding: 1px; }
+         .done { background: #e0e0e0; padding: 1px; }
+         .action { background: #ff6600; padding: 1px; }
+
+   </style>
+
+   <SCRIPT LANGUAGE="JavaScript">
+         // Checker
+         function checkAll(field) {
+            for (i = 0; i < field.length; i++)
+            field[i].checked = true ;
+         }
+
+         function uncheckAll(field) {
+            for (i = 0; i < field.length; i++)
+               field[i].checked = false ;
+         }
+
+         // Timestamp
+         function set_timestamp (ts) {
+            document.gtd.timestamp.value=ts;
+         }
+
+         // Key Processing
+         var inNav = navigator.appVersion.indexOf("MSIE") < 0;
+         function print_key (event, what) {
+            var key = (inNav==1) ? event.which : event.keyCode;
+            document.data.keyspressed.value = what + ":" + key + "=" + String.fromCharCode(key) + "\n" + document.data.keyspressed.value;
+            alert(String.fromCharCode(key));
+         }
+
+         function eval_key (event) {
+            key=String.fromCharCode((inNav==1) ? event.which : event.keyCode);
+            if (event.keyCode == 13) {
+               document.gtd.submit();
+            } else if (event.keyCode == 27) {
+               document.gtd.reset();
+            }
+         }
+
+         function fkt_chk(val) {
+            n_checked = 0;
+            for (i = 0; i < document.gtd.INDEX.length; i++) 
+               if (document.gtd.INDEX[i].checked == true) 
+                  n_checked++;
+            if (n_checked == 0) {
+            } else if (n_checked == 1) {
+            } else {
+            }
+         }
+
+         // Hiding 
+         function switchdiv(id){ 
+            if (document.getElementById) { // DOM3 = IE5, NS6
+               if (document.getElementById(id).style.display == 'none') {
+                  showdiv(id);
+               } else { hidediv(id); }
+            } else if (document.layers) { // Netscape 4
+               if (document.id.display == 'none') {
+                  showdiv(id);
+               } else { hidediv(id); }
+            } else {
+               if (document.all.id.style.display == 'none') {
+                  showdiv(id);
+               } else { hidediv(id); }
+            }
+         }
+
+         function hidediv(id) {
+            //safe function to hide an element with a specified id
+            if (document.getElementById) { // DOM3 = IE5, NS6
+               document.getElementById(id).style.display = 'none';
+            } else {
+               if (document.layers) { // Netscape 4
+                  document.id.display = 'none';
+               } else { // IE 4
+                  document.all.id.style.display = 'none';
+               }
+            }
+         }
+
+         function showdiv(id) {
+            //safe function to show an element with a specified id
+            if (document.getElementById) { // DOM3 = IE5, NS6
+               document.getElementById(id).style.display = 'block';
+            } else {
+               if (document.layers) { // Netscape 4
+                  document.id.display = 'block';
+               } else { // IE 4
+                  document.all.id.style.display = 'block';
+               }
+            }
+         }
+   </script>
+</head>
+
+<body onkeypress="eval_key(event)">
+__EOF__
+}
+
+function HTML_PARSE {
+   CONTEXTS="`getval contexts ${QUERY_STRING} | awk 'NF>0{print $NF}'`"
+   PROJECTS="`getval projects ${QUERY_STRING} | awk 'NF>0{print $NF}'`"
+   TIMESTAMP="`getval timestamp ${QUERY_STRING} | awk 'NF>0{print $NF}'`"
+   IMPORTANCE="`getval importance ${QUERY_STRING} | awk 'NF>0{print $NF}'`"
+   STATES="`getval states ${QUERY_STRING}`"
+   ACTION="`getval ACTION ${QUERY_STRING} | awk 'NF>0{print $NF}'`"
+   INDEX="`getval INDEX ${QUERY_STRING}`"
+   LABEL="`getval LABEL ${QUERY_STRING}`"
+
+   if [[ -z $ACTION ]]; then
+      if [[ -z $INDEX ]]; then 
+         [[ -n $LABEL ]] && ACTION="ADD"
+      else
+         if ( [[ -n $LABEL ]] || [[ -n $PROJECTS ]] || [[ -n $CONTEXTS ]] || [[ -n $TIMESTAMP ]] || [[ -n $IMPORTANCE ]] ); then
+            ACTION="EDIT"
+         else
+            ACTION="DONE"
+         fi
+      fi
+      ACTION="SHOW"
+   elif [[ $ACTION != SHOW ]]; then
+      echo "<span id='ACTION' class='action'>"
+      DELAY=5000
+      if [[ $ACTION == ADD ]]; then
+         $ACTION 
+      elif [[ $ACTION != SHOW ]]; then
+         for i in `echo $INDEX | sed 's/ /\n/g' | sort -nr`; do
+            $ACTION $i 
+         done
+      fi
+      LABEL=""
+      IMPORTANCE=""
+      STATUS=""
+      TIMESTAMP=$TIMESTAMP_DEFAULT
+      INDEX=""
+      sync; sync; sync;
+      echo "</span>"
+   fi
+
+   [[ -z $TIMESTAMP ]] && TIMESTAMP=$TIMESTAMP_DEFAULT
+   
+}
+
+function NICE_DATE {
+   echo "<pre>"
+   local YEAR="`date +%Y`"
+   local MONTH="`date +%m`"
+   local NEXTMONTH=`echo $(( $MONTH+1 )) | awk '{printf("%.2d",$1)}'`
+   [[ $1 == "CURRENT" ]] && cal -m | sed -r -e 's/\n//g;s/([^ ]*) '$YEAR'/  \1/;s/[0-9]*/<a href=\"javascript:set_timestamp('$YEAR$MONTH'&)\" class=\"date\">&<\/a>/g'
+   [[ $1 == "NEXT" ]] && cal -m -3 | sed -r -e 's/^.{44}//g;s/\n//g;s/([^ ]*) '$YEAR'/  \1/;s/[0-9]*/<a href=\"javascript:set_timestamp('$YEAR$NEXTMONTH'&)\" class=\"date\">&<\/a>/g'
+   echo "</pre>"
+}
+
+function SHOW_CONTEXTS {
+cat << __EOF__
+   <SCRIPT LANGUAGE="JavaScript">window.setTimeout("hidediv('ACTION')",$DELAY)</script>
+
+   <table width="100%">
+      <colgroup>
+         <col width="85%">
+         <col width="15%">
+      </colgroup>                         
+      <tr>
+         <td style="border-bottom:1px solid;">
+            <table width="100%">
+               <tr>
+                  <td>
+__EOF__
+
+LIST_CONT | awk '
+   { 
+      for (i=1;i<=NF;i++){ 
+         print "<a href=\"'${BASE_URL}'&contexts="$i"&projects='${PROJECTS}'\" class=\"context\">"$i"</a>&nbsp;&nbsp;&nbsp;" 
+      } 
+   }' | CGI2STR
+
+cat << __EOF__
+                  </td>
+                  <td align="right">
+                     <a href="${BASE_URL}&contexts=&projects=${PROJECTS}" class="context">All</a>&nbsp;   
+                  </td>
+               </tr>
+            </table>
+          </td>
+          <td style="border-bottom:1px solid; border-left:1px solid">
+            <a href="${BASE_URL}&projects=&contexts=" class="context project">All</a>&nbsp;&nbsp;
+            <a href="#">Today</a>&nbsp;&nbsp;
+            <a href="#">Statistics</a>&nbsp;&nbsp;
+         </td>
+      </tr>
+      <tr>
+         <td valign=top>
+            <table>
+               <form name="gtd" ACTION="${FULL_URL}" method=get>
+__EOF__
+}
+
+function SHOW_PROJECTS {
+cat << __EOF__
+            </table>
+         </td>
+         <td valign=top style="border-left:1px solid; line-height: 2;">
+            <a href="${BASE_URL}&projects=&contexts=${CONTEXTS}" class="project">All</a><br class="project"><br class="project">
+__EOF__
+
+LIST_PROJ | awk '
+   { 
+      for (i=1;i<=NF;i++){ 
+         print "<a href=\"'${BASE_URL}'&projects="$i"&contexts='${CONTEXTS}'\" class=\"project\">"$i"</a><br class=\"project\">" 
+      } 
+   }' | CGI2STR
+
+cat << __EOF__
+         </td>
+      </tr>
+   </table>
+__EOF__
+}
+
+function SHOW_ACTIONS {
+   SHOW | awk -v timestamp_ref=`date +%Y%m%d` '
+   {
+      print "<tr>"
+      for (i=1;i<=NF;i++) {
+         if ($i ~ /I\:/) {
+            gsub("I:","",$i);
+            ind="<td><input onclick=\"fkt_chk("$i")\" type=\"checkbox\" name=\"INDEX\" value=\""$i"\"></td>";
+         } else if ($i ~ /status/) {
+            gsub("status=","",$i); 
+            if ($i ~ /a/) { status="<td><span class=active>></span></td>"; }
+            else if ($i == "w") { status="<td><span class=waiting><</span></td>"; }
+            else { status="<td></td>"; }
+         } else if ($i ~ /importance/) {
+            gsub("importance=","",$i);
+         } else if ($i ~ /timestamp/) {
+            gsub("timestamp=","",$i);
+            if ($i == $TIMESTAMP_DEFAULT) { timestamp="<td></td>"; class="grey"; }
+            else if ($i-timestamp_ref < 0) { timestamp="<td><span class=red>"$i"</span></td>"; class="red"; }
+            else if ($i-timestamp_ref < 1) { timestamp="<td><span class=yellow>"$i"</span></td>"; class="yellow"; }
+            else if ($i-timestamp_ref < 3) { timestamp="<td><span class=green>"$i"</span></td>"; class="green"; }
+            else if ($i-timestamp_ref >= 3) { timestamp="<td><span class=gray>"$i"</span></td>"; class="grey"; }
+         } else if ($i ~ /label/) {
+            gsub("label=","",$i);
+            label="<td><span class=\""class"\">"$i"</span></td>";
+         }
+      }
+      print ind"\n"status"\n"timestamp"\n"label"\n</tr>"
+   }
+   ' | CGI2STR
+}
+
+function SHOW_INPUT {
+cat << __EOF__
+   <hr>
+      <table style="border:2px solid">
+         <tr>
+            <td align="center" class="inputfield">
+               <a href="javascript:checkAll(document.gtd.INDEX)" class=button>Check All</a>&nbsp;&nbsp;&nbsp;
+               <a href="javascript:uncheckAll(document.gtd.INDEX)" class=button>Uncheck All</a>
+            </td>
+            <td>Selection</td>
+         </tr>
+         <tr>
+            <td class="inputfield"><input type="text" size="50" name="LABEL" value="`echo ${LABEL} | CGI2STR | sed 's/^ //'`"></td>
+            <td>Label</td>
+         </tr>
+         <tr>
+            <td class="inputfield">
+	       <input type="text" size="20" name="projects" value="`echo ${PROJECTS} | CGI2STR | sed 's/^ //'`">
+               <select name="projects">
+               <option selected></option>
+__EOF__
+
+LIST_PROJ | awk '
+   { 
+      for (i=1;i<=NF;i++){ 
+         # if ($i ~ /'${PROJECTS}'/) { printf "<option selected>"; }
+         printf "<option>";
+         print $i"</option>"} 
+   }' | CGI2STR
+
+cat << __EOF__
+               </select>
+            </td>
+            <td>Project</td>
+         </tr>
+         <tr>
+            <td class="inputfield">
+               <input type="text" size="20" name="contexts" value="`echo ${CONTEXTS} | CGI2STR | sed 's/^ //'`">
+               <select name="contexts">
+                  <option></option>
+__EOF__
+
+LIST_CONT | awk '
+   {
+      for (i=1;i<=NF;i++){ 
+         printf "<option>";
+         print $i"</option>"} 
+   }' | CGI2STR
+
+cat << __EOF__
+               </select>
+            </td>
+            <td>Context</td>
+         </tr>
+         <tr>
+            <td class="inputfield">
+               <table width="100%">
+                  <tr>
+                     <td>
+__EOF__
+
+NICE_DATE CURRENT
+echo "</td><td>"
+NICE_DATE NEXT
+
+cat << __EOF__
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="2" align="center">
+                        <input type="text" size="20" name="timestamp" value="">
+                     </td>
+                  </tr>
+               </table>
+            </td>
+            <td>Date</td>
+         </tr>
+         <tr>
+            <td>
+               <table width="100%">
+                  <tr>
+                     <td class="inputfield">
+                        <select name="importance">
+                           <option selected></option>
+                           <option>0</option>
+                           <option>1</option>
+                           <option>3</option>
+                        </select>
+                     </td>
+                     <td>Importance</td>
+                     <td class="inputfield">
+                        <select name="status">
+                           <option selected></option>
+                           <option>a</option>
+                           <option>w</option>
+                           <option>d</option>
+                        </select>
+                     </td>
+                     <td>Status</td>
+                   </tr>
+                </table>
+            </td>
+         </tr>
+         <tr>
+            <td align="center" class="inputfield">
+               <input type="hidden" name="ACTION" />
+               <a href="javascript:document.gtd.ACTION.value='ADD';document.gtd.submit();" class=button>Add</a>&nbsp;&nbsp;&nbsp;
+               <a href="javascript:document.gtd.ACTION.value='DONE';document.gtd.submit();" class=button>Done</a>&nbsp;&nbsp;&nbsp;
+               <a href="javascript:document.gtd.ACTION.value='EDIT';document.gtd.submit();" class=button>Edit</a>&nbsp;&nbsp;&nbsp;
+               <a href="javascript:document.gtd.ACTION.value='REMOVE';document.gtd.submit();" class=button>Remove</a>&nbsp;&nbsp;&nbsp;
+               <a href="javascript:document.gtd.reset();" class=button>Reset</a>
+            </td>
+            <td>Action</td>
+         </tr>
+      </table>
+   </form>
+   <script language="JavaScript">document.gtd.LABEL.focus();</script>
+__EOF__
+}
+
+function HTML_TRAILER {
+cat << __EOF__
+</body>
+
+</html>
+__EOF__
+}
+
+
+HTML_HEADER
+HTML_PARSE
+
+BASE_URL="`basename $0`?"
+FULL_URL="`basename $0`?contexts=`echo $CONTEXTS | STR2CGI`&projects=`echo $PROJECTS | STR2CGI`"
+
+SHOW_CONTEXTS
+SHOW_ACTIONS
+SHOW_PROJECTS
+SHOW_INPUT
+
+HTML_TRAILER
+
+
+
+
+[[ $SHELL_DEBUG == 1 ]] && TS eof

@@ -1,0 +1,128 @@
+# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+
+## see http://www.nparikh.org/unix/prompt.php
+
+if [ $SSH_CONNECTION ] ; then
+    if ! ps1_ssh_from_host=${$(resolveip -s ${${(z)SSH_CONNECTION}[1]})//.*/} 2>/dev/null ; then
+        ps1_ssh_from_host=${${(z)SSH_CONNECTION}[1]}
+    fi
+    if ! ps1_ssh_to_host=${$(resolveip -s ${${(z)SSH_CONNECTION}[3]})//.*/} 2>/dev/null ; then
+        ps1_ssh_to_host=${${(z)SSH_CONNECTION}[3]}
+    fi
+    ps1ssh_connection=%{$fg[green]%}%B${ps1_ssh_from_host}%b%{$reset_color%}'>'
+fi
+
+local ps1_user_default=s
+local ps1_host_default=taj
+
+        # come first
+if [[  $TERM == "screen" ]] ; then
+    local ps1shlv="%L"
+else
+    local ps1shlv="%{$fg[magenta]%}%L%{${reset_color}%}"
+fi
+        # comes second
+local slash_b4_ps1screen="%(2L./.)"
+        # some changes done in it, for getting it correct, any of these below two will work.
+if [[  $TERM == "XYZ" ]] ; then
+    [ $WINDOW ] && local ps1screen="${WINDOW+${slash_b4_ps1screen}$WINDOW}"
+else
+    [ $WINDOW ] && local ps1screen="${WINDOW+${slash_b4_ps1screen}%{${fg[yellow]}$WINDOW%}\%{$reset_color%}"
+fi
+unset slash_b4_ps1screen
+        #local ps1_screen=${WINDOW:+/%{$fg[yellow]%}${WINDOW}%{${reset_color}%}}
+
+        # %(1j./.)  # 1 job then place / else noting
+        # %(1j.. )  # 1 job then nothing else a space
+
+        # comes third
+if [ $WINDOW ] ; then
+    local slash_b4_ps1job="/"
+else
+    local slash_b4_ps1job="%(2L./.)"
+fi
+        # %(1j.%{$fg[green]%}%j%{${reset_color}%}%(2L.. ).)
+          # >= 1 job then put %{$fg[green]%}%j%{${reset_color}%}%(2L.. ) else nothing
+          # %(2L.. ) # shell level >= 2 then nothing else a space.
+        # local ps1job="%(1j./%{$fg[green]%}%j%{${reset_color}%}%(2L.. ).)"
+if [[  $TERM == "XYZ" ]] ; then
+    local ps1job="${slash_b4_ps1job}%j"
+else
+    local ps1job="${slash_b4_ps1job}%{$fg[green]%}%j%{${reset_color}%}"
+fi
+unset slash_b4_ps1job
+
+if [[  $TERM == "XYZ" ]] ; then
+    local ps1shlv_n_screen_n_job="%(2L.${ps1shlv}.)${ps1screen}%(1j.${ps1job}.)"
+else
+    local ps1shlv_n_screen_n_job="%(2L.${ps1shlv}.)${ps1screen}%(1j.${ps1job}.)"
+fi
+
+if [[ $USER != $ps1_user_default && $USER != "spratap" ]] ; then
+    local ps1_user_at_host="%U%n%u"
+fi
+
+        # if [[ $HOST != $ps1_host_default && $HOST != "pcz-c-sharad" ]] ; then
+if [ $ps1_ssh_to_host ] ; then
+    if [ $ps1_user_at_host ] ; then
+        local ps1_user_at_host="${ps1_user_at_host}@"
+    fi
+    if [[  $TERM == "XYZ" ]] ; then
+                # local ps1_user_at_host="${ps1_user_at_host}%B%m%b"
+        local ps1_user_at_host="${ps1_user_at_host}%B${ps1_ssh_to_host}%b"
+    else
+                # local ps1_user_at_host="${ps1_user_at_host}%{$fg[yellow]%}%B%m%b%{$reset_color%}"
+        local ps1_user_at_host="${ps1_user_at_host}%{$fg[yellow]%}%B${ps1_ssh_to_host}%b%{$reset_color%}"
+    fi
+fi
+
+if [ "$ps1_user_at_host" -o "$WINDOW" ] ; then
+    local spacing_b4_ps1status="%(2L..%(1j.. ))"
+fi
+        # will have both side space
+if [[  $TERM == "XYZ" ]] ; then
+    local ps1status="%(?..%S%?%s )"
+else
+    local ps1status="%(?..%S%{$fg[red]%}%?%{$reset_color%}%s )"
+fi
+
+	# time at next hour
+if [[  $TERM == "XYZ" ]] ; then
+    local ps1_time_at_hour="%(0t.%t .)"
+else
+    local ps1_time_at_hour="%(0t.%{$fg[red]%}%t%{$reset_color%} .)"
+fi
+
+local ps1_dir='%2~'
+        # local ps1_dir='%(1~.%2~.)'
+local ps1_prompt_char='%(!.%B#%b.%%)'
+
+if [ $WINDOW ] ; then
+    local spacing=" "
+else
+    local spacing="%(2L.%(1j. .) .%(1j. .))"
+fi
+
+if [ ! $SUDO_USER ] ; then
+    PS1="${ps1ssh_connection}${ps1shlv_n_screen_n_job}${spacing}${ps1_user_at_host:+${ps1_user_at_host} }${ps1_time_at_hour}${spacing_b4_ps1status}${ps1status}${ps1_dir}${ps1_prompt_char} "
+else
+    PS1='$ '
+fi
+
+unset ps1shlv_n_screen_n_job spacing ps1_user_at_host \
+    ps1_user_at_host ps1_time_at_hour spacing_b4_ps1status \
+    ps1status ps1_dir ps1_prompt_char ps1_ssh_to_host \
+    ps1_ssh_from_host ps1ssh_connection
+
+
+autoload -U promptinit; promptinit
+
+
+#         periodic_functions=( show_agenda )
+#         function show_agenda {
+#             if (( TTYIDLE > 2 )) ; then
+#                 echo Hi
+#             fi
+#         }
+#         PERIOD=1
+

@@ -1,0 +1,142 @@
+{
+  HighlightColor = "#bdf78c";
+  IconSize = 56;
+  LowerKey = "Mod4+Down";
+  MenuTextFont = "lucidasans-10";
+  MenuTitleExtendSpace = "-1";
+  DisableDock = YES;
+  UTitleBack = (vgradient, "#4A4121", "#191410");
+  MoveResizeKey = "Mod4+R";
+  VirtualEdgeDownKey = "Mod4+Down";
+  VirtualEdgeLeftKey = "Mod4+Left";
+  NormalCursor = (builtin, left_ptr);
+  PTitleBack = (vgradient, "#4A4121", "#191410");
+  WindowShortcut10Key = None;
+  PixmapPath = (
+    "/home/c_sharad/GNUstep/Library/WindowMaker/Pixmaps",
+    "/home/c_sharad/GNUstep/Library/WindowMaker/Backgrounds",
+    "/usr/share/WindowMaker/Pixmaps",
+    "/usr/share/WindowMaker/Backgrounds",
+    "/usr/X11R6/include/X11/pixmaps",
+    "/usr/local/share/pixmaps",
+    "/usr/share/pixmaps"
+  );
+  MoveCursor = (
+    bitmap,
+    "/usr/share/WindowMaker/Themes/Aqua Strawberry.themed/dot_move.xbm",
+    "/usr/share/WindowMaker/Themes/Aqua Strawberry.themed/dot_move_mask.xbm"
+  );
+  MenuDisabledColor = gray40;
+  MenuTextBack = (vgradient, "#4A4121", "#191410");
+  MenuStyle = flat;
+  MenuTitleBack = (vgradient, "#94CA73", "#BDF78C");
+  IconBack = (dgradient, "#191410", "#4A4121");
+  FTitleBack = (vgradient, "#94CA73", "#BDF78C");
+  IconificationStyle = flip;
+  MiniaturizeKey = "Mod3+I";
+  UseSaveUnders = YES;
+  ToggleKbdModeKey = None;
+  ResizebarBack = (vgradient, "#191410", "#4A4121");
+  MenuTextColor = "#aaeeaa";
+  HighlightTextColor = "#4A4121";
+  WaitCursor = (
+    bitmap,
+    "/usr/share/WindowMaker/Themes/Aqua Strawberry.themed/dot_wait.xbm",
+    "/usr/share/WindowMaker/Themes/Aqua Strawberry.themed/dot_wait_mask.xbm"
+  );
+  MenuTitleColor = "#000000";
+  WorkspaceNameDisplayPosition = center;
+  AppIconBalloons = NO;
+  FTitleColor = "#000000";
+  WorkspaceBack = (
+    spixmap,
+    "/usr/share/WindowMaker/Themes/Blair River.themed/river1600x1200.jpg",
+    black
+  );
+  HideOthersKey = "Mod3+O";
+  IconTitleFont = "helvetica:pixelsize=8";
+  NextWorkspaceKey = "Control+Mod4+Right";
+  VirtualEdgeRightKey = "Mod4+Right";
+  IconPath = (
+    "/home/c_sharad/GNUstep/Library/Icons",
+    "/usr/share/WindowMaker/Icons",
+    "/usr/share/WindowMaker/Pixmaps",
+    "/usr/X11R6/include/X11/pixmaps",
+    "/home/c_sharad/GNUstep/Library/WindowMaker/Pixmaps",
+    "/usr/share/icons",
+    "/usr/local/share/pixmaps",
+    "/usr/share/pixmaps"
+  );
+  UTitleColor = "#889988";
+  PTitleColor = "#889988";
+  Attraction = NO;
+  NewStyle = new;
+  RaiseDelay = 800;
+  KbdModeLock = YES;
+  DontLinkWorkspaces = NO;
+  WindowTitleBalloons = NO;
+  HelpBalloons = NO;
+  SingleClickLaunch = NO;
+  WindowPlacement = smart;
+  CClipTitleColor = "#d9d9d9";
+  WindowShortcut8Key = None;
+  ClipTitleColor = "#889988";
+  WindowShortcut9Key = None;
+  IconTitleColor = "#000000";
+  DisableBlinking = NO;
+  Workspace10Key = "Mod4+0";
+  DontConfirmKill = YES;
+  CycleWorkspaces = YES;
+  RaiseKey = "Mod4+Up";
+  AntialiasedText = NO;
+  HideKey = "Mod3+H";
+  PrevWorkspaceKey = "Control+Mod4+Left";
+  MiniwindowTitleBalloons = NO;
+  WindowTitleFont = "lucidasans-10";
+  NoWindowOverDock = NO;
+  ClipTitleFont = "helvetica:bold:pixelsize=10";
+  CloseKey = "Control+Mod4+W";
+  FocusNextKey = "Mod4+Tab";
+  DisplayFont = "helvetica:pixelsize=12";
+  WindowShortcut1Key = None;
+  WindowShortcut2Key = None;
+  MenuTrance = NO;
+  WindowTitleExtendSpace = "-1";
+  WindowShortcut3Key = None;
+  WindowShortcut4Key = None;
+  WindowShortcut5Key = None;
+  MaximizeKey = "Mod4+M";
+  AutoArrangeIcons = YES;
+  MenuTitleFont = "lucidasans-10";
+  WindowShortcut6Key = None;
+  RootMenuKey = "Mod4+Z";
+  LargeDisplayFont = "courier-24:bold";
+  MenuTextExtendSpace = "-1";
+  WindowShortcut7Key = None;
+  VirtualEdgeUpKey = "Mod4+Up";
+  TranceAmount = 5;
+  Workspace7Key = "Mod4+7";
+  VMaximizeKey = "Mod4+V";
+  Workspace6Key = "Mod4+6";
+  Workspace5Key = "Mod4+5";
+  Workspace4Key = "Mod4+4";
+  ResizeCursor = (
+    bitmap,
+    "/usr/share/WindowMaker/Themes/Aqua Strawberry.themed/dot_resize.xbm",
+    "/usr/share/WindowMaker/Themes/Aqua Strawberry.themed/dot_resize_mask.xbm"
+  );
+  Workspace3Key = "Mod4+3";
+  Workspace2Key = "Mod4+2";
+  FocusPrevKey = "Shift+Mod4+Tab";
+  Workspace1Key = "Mod4+1";
+  CirculateRaise = NO;
+  TitleJustify = right;
+  ScreenSwitchKey = None;
+  WindowListKey = "Mod4+W";
+  IconPosition = blv;
+  IconTitleBack = "#BDf78C";
+  Workspace9Key = "Mod4+9";
+  OpenTransientOnOwnerWorkspace = YES;
+  Workspace8Key = "Mod4+8";
+  HMaximizeKey = "Mod4+H";
+}

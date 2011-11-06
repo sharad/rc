@@ -1,0 +1,16 @@
+#!/bin/zsh
+
+if [ $DISPLAY ] ; then
+    # zenity --question --title "reminder" --text $1 &
+    echo $1 | aosd_cat -f 3000 -u 180000 -o 3000 &
+    notify-send "Reminder for You" $1 &
+fi
+
+spd-say $1 &
+
+echo $1
+
+pgrep osdsh && osdctl -s $1
+
+exit 0
+

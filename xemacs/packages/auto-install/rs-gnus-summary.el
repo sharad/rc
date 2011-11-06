@@ -1,0 +1,1 @@
+../gnus-exts/rs-gnus-summary.el

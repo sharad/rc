@@ -1,0 +1,10 @@
+# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+
+
+# TRAPALRM () {
+#     emacsclient -t \
+#         -e '(org-agenda-list)'
+#     rem
+
+# #   --eval '(add-hook '\''org-agenda-mode-hook  '\''delete-other-windows '\''toggle-read-only)'
+# }

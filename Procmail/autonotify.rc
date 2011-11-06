@@ -1,0 +1,17 @@
+
+
+#####
+# All automatic mail, like generated from zmonitor.
+#####
+
+:0: # 
+* ^From.*sharad.pratap@sasken.com
+* ^TO_c_sharad@sasken.com
+* ^Subject.*zmonitor
+autonotify
+
+
+# :0: # 
+# * ^From.*sharad.pratap@sasken.com
+# * ^Subject.*Perforce: perforce user id
+# autonotify

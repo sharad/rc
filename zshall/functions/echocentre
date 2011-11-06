@@ -1,0 +1,8 @@
+msg=$1
+
+if (( $#msg =< $COLUMNS )) ; then
+        tput cup $LINENO $( expr \( $COLUMNS - $#msg \) / 2 )
+        echo $msg
+else
+        echo $msg
+fi

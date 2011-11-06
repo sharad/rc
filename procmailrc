@@ -1,0 +1,43 @@
+
+SHELL=/bin/sh
+LINEBUF=4096
+VERBOSE=off
+# DEFAULT=/var/spool/mail
+MAILDIR=$HOME/Mail
+FORMAIL=/sas/bin/formail
+# SENDMAIL=/usr/lib/sendmail
+SENDMAIL=/usr/bin/msmtp
+PMDIR=$HOME/.Procmail
+LOGFILE=$PMDIR/log
+
+# :0 c
+# ! payel.mahata@sasken.com
+
+# # forward to friend
+# :0 c
+# * !^From.*payel.mahata@sasken.com
+# * !^From.*payel@sasken.com
+# ! payel@sasken.com
+
+
+# INCLUDERC=$PMDIR/exemail.rc
+
+INCLUDERC=$PMDIR/vacation.rc
+
+INCLUDERC=$PMDIR/autonotify.rc
+
+INCLUDERC=$PMDIR/mailer.rc
+
+INCLUDERC=$PMDIR/dust.rc
+
+INCLUDERC=$PMDIR/maillists.rc
+
+INCLUDERC=$PMDIR/outoff.rc
+
+INCLUDERC=$PMDIR/breakloop.rc
+
+INCLUDERC=$PMDIR/catch-all.rc
+
+
+
+

@@ -1,0 +1,205 @@
+{
+  Dock = {
+    Applications768 = (
+      {
+        Name = Logo.WMDock;
+        Lock = No;
+        AutoLaunch = No;
+        Command = "-";
+        Position = "0,0";
+        Forced = No;
+        BuggyApplication = No;
+      },
+      {
+        Name = xterm.XTerm;
+        Lock = No;
+        AutoLaunch = No;
+        Command = xterm;
+        Position = "0,1";
+        Forced = No;
+        BuggyApplication = No;
+      },
+      {
+        Name = groupLeader.WPrefs;
+        Lock = Yes;
+        AutoLaunch = No;
+        Command = "/usr/lib/GNUstep/Applications/WPrefs.app/WPrefs";
+        Position = "0,2";
+        Forced = No;
+        BuggyApplication = No;
+      }
+    );
+    Lowered = Yes;
+    Position = "-56,0";
+    Applications = (
+      {
+        Name = Logo.WMDock;
+        Lock = No;
+        AutoLaunch = No;
+        Command = "-";
+        Position = "0,0";
+        Forced = No;
+        BuggyApplication = No;
+      },
+      {
+        Name = xterm.XTerm;
+        Lock = No;
+        AutoLaunch = No;
+        Command = xterm;
+        Position = "0,1";
+        Forced = No;
+        BuggyApplication = No;
+      },
+      {
+        Name = groupLeader.WPrefs;
+        Lock = Yes;
+        AutoLaunch = No;
+        Command = "/usr/lib/GNUstep/Applications/WPrefs.app/WPrefs";
+        Position = "0,2";
+        Forced = No;
+        BuggyApplication = No;
+      }
+    );
+  };
+  Clip = {
+    Name = Logo.WMClip;
+    Lock = No;
+    AutoLaunch = No;
+    Command = "-";
+    Position = "0,0";
+    Forced = No;
+    BuggyApplication = No;
+  };
+  Workspace = dash;
+  Workspaces = (
+    {
+      Clip = {
+        AutoAttractIcons = No;
+        AutoCollapse = No;
+        Lowered = Yes;
+        Collapsed = No;
+        AutoRaiseLower = No;
+        Applications = ();
+      };
+      Name = Perforce;
+    },
+    {
+      Clip = {
+        AutoAttractIcons = No;
+        AutoCollapse = No;
+        Lowered = Yes;
+        Collapsed = No;
+        AutoRaiseLower = No;
+        Applications = ();
+      };
+      Name = Bugzilla;
+    },
+    {
+      Clip = {
+        AutoAttractIcons = No;
+        AutoCollapse = No;
+        Lowered = Yes;
+        Collapsed = No;
+        AutoRaiseLower = No;
+        Applications = ();
+      };
+      Name = Internet;
+    },
+    {
+      Clip = {
+        AutoAttractIcons = Yes;
+        AutoCollapse = Yes;
+        Lowered = Yes;
+        Collapsed = Yes;
+        AutoRaiseLower = No;
+        Applications = ();
+      };
+      Name = dash;
+    },
+    {
+      Clip = {
+        AutoAttractIcons = No;
+        AutoCollapse = No;
+        Lowered = Yes;
+        Collapsed = No;
+        AutoRaiseLower = No;
+        Applications = ();
+      };
+      Name = "Workspace 5";
+    },
+    {
+      Clip = {
+        AutoAttractIcons = No;
+        AutoCollapse = No;
+        Lowered = Yes;
+        Collapsed = No;
+        AutoRaiseLower = No;
+        Applications = ();
+      };
+      Name = "Workspace 6";
+    }
+  );
+  Applications = (
+    {
+      Hidden = Yes;
+      ShortcutMask = 0;
+      Name = xterm.XTerm;
+      Geometry = "804x484+64+0";
+      Workspace = Perforce;
+      Shaded = No;
+      Miniaturized = No;
+      Command = "xterm -rv";
+    },
+    {
+      Hidden = Yes;
+      ShortcutMask = 0;
+      Name = xterm.XTerm;
+      Geometry = "804x484+64+0";
+      Workspace = Bugzilla;
+      Shaded = No;
+      Miniaturized = No;
+      Command = "xterm -rv";
+    },
+    {
+      Hidden = Yes;
+      ShortcutMask = 0;
+      Name = "mozilla-bin.Mozilla-bin";
+      Geometry = "1022x734+2+0";
+      Workspace = Bugzilla;
+      Shaded = No;
+      Miniaturized = No;
+      Command = "mozilla http://ext1-bugzilla/";
+    },
+    {
+      Hidden = Yes;
+      ShortcutMask = 0;
+      Name = xterm.XTerm;
+      Geometry = "804x484+64+0";
+      Workspace = Internet;
+      Shaded = No;
+      Miniaturized = No;
+      Command = "xterm -rv";
+    },
+    {
+      Hidden = Yes;
+      ShortcutMask = 0;
+      Name = "mozilla-bin.Mozilla-bin";
+      Geometry = "1022x734+2+0";
+      Workspace = Internet;
+      Shaded = No;
+      Miniaturized = No;
+      Command = "mozilla http://www.bloglines.com";
+    },
+    {
+      Hidden = Yes;
+      ShortcutMask = 0;
+      Name = xterm.XTerm;
+      Geometry = "804x484+64+0";
+      Workspace = dash;
+      Shaded = No;
+      Miniaturized = No;
+      Command = "xterm -rv";
+    }
+  );
+}
+

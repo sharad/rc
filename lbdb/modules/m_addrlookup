@@ -1,0 +1,8 @@
+#!/bin/bash -posix
+
+m_addrlookup_query ()
+{
+
+  which addrlookup > /dev/null 2>&1 && addrlookup "$@" | grep -v '^$' | sed -e 's/$/\taddrlookup/'
+
+}

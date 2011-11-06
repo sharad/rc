@@ -1,0 +1,26 @@
+
+
+
+
+
+#{{ from: http://fragglet.livejournal.com/9666.html
+# eval "`gnome-keyring-daemon`"
+export GNOME_KEYRING_PID
+export GNOME_KEYRING_SOCKET
+[ -r ~/.rsetup/x/env.d/${HOST} ] && . ~/.rsetup/x/env.d/${HOST}
+#}}
+
+
+
+EDITOR="emacsclient -d $DISPLAY -c -f ~/.emacs.d/server/general "
+VISUAL="emacsclient -d $DISPLAY -c -f ~/.emacs.d/server/general "
+
+EDITOR=$HOME/bin/general-xeditor
+VISUAL=$EDITOR
+
+BROWSER="conkeror"
+
+export EDITOR
+export VISUAL
+export BROWSER
+

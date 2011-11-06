@@ -1,0 +1,7 @@
+#!/bin/zsh
+
+## put commands only
+
+[ -r ~/.rsetup/rc/run.d/${HOST//.*} ] &&
+~/.rsetup/rc/run.d/${HOST//.*}
+

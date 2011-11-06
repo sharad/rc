@@ -1,0 +1,117 @@
+# Uncomment the lines below if you need log output for testing.
+#
+LOGFILE=~/.Procmail/exemail.log
+VERBOSE=on
+
+# vim: ft=procmail
+
+# User-managed exemail recipe for procmail
+# Written by Jason Thaxter
+#  (http://www.google.com/search?q=jason+thaxter)
+
+#   * Include this file in the procmail file.
+#   * Set $EXECMAIL_PASSWORD. (for security, this is mandatory)
+#   * Define $EXECMAIL_SENDER in your procmail recipe: it will be "from" this
+#     address.
+#   * E-mail a message with $EXECMAIL_PASSWORD and $EXECMAIL_ON in the subject
+#     line. The body of the message becomes the exemail message. $EXECMAIL_ON
+#     can be set prior to the INCLUDERC, but it defaults to "exemail on".
+#   * To turn it off, e-mail a message with $EXECMAIL_PASSWORD and $EXECMAIL_OFF
+#     in the subject line. Likewise, $EXECMAIL_OFF defaults to "exemail off".
+
+# Note that you probably want this to execute *after* any mailing list or spam
+# delivery recipes. You can set $EXECMAIL_SKIP to disable exemail processing
+# if it's inconvenient to skip this recipe.
+
+# -----------------------------------------------------------------------------
+# Configurable variables: These variables allow you to use this exemail recipe
+# as an include and customize it from your main procmail file.
+#
+# lockfile:
+EXECMAIL_LOCK=$HOME/${EXECMAIL_LOCK:-".exemail$LOCKEXT"}
+# cache file:
+EXECMAIL_CACHE=$HOME/${EXECMAIL_CACHE:-".exemail_cache"}
+# cache size:
+EXECMAIL_CACHE_SZ=${EXECMAIL_CACHE_SZ:-8192}
+# message file
+EXECMAIL_MSG=$HOME/${EXECMAIL_MSG:-".exemail_mesg"}
+# what to use as the xloop header
+HOSTNAME=${HOSTNAME:-`hostname`}
+EXECMAIL_XLOOP=${EXECMAIL_XLOOP:-"$LOGNAME@$HOSTNAME"}
+# base token for default $EXECMAIL_ON and $EXECMAIL_OFF
+# so you could set this and not those individually
+EXECMAIL_COOKIE=${EXECMAIL_COOKIE:-"getme"}
+EXECMAIL_ON=${EXECMAIL_ON:-"$EXECMAIL_COOKIE for"}
+#EXECMAIL_OFF=${EXECMAIL_OFF:-"$EXECMAIL_COOKIE off"}
+
+#
+#Change these variables
+#
+EXECMAIL_FROM_ANYADD=true
+EXECMAIL_PASSWORD=${EXECMAILPASSWD}
+EXECMAIL_FROM_ANYDOMAIN=true
+EXECMAIL_DOMAIN_NAME=sasken.com
+
+EXECMAIL_SENDER=$LOGNAME@$EXECMAIL_DOMAIN_NAME
+EXECMAIL_SENDMAILFROM=${EXECMAIL_SENDMAILFROM:-"-f$EXECMAIL_SENDER"}
+EXECMAIL_SENDMAILFLAGS="-oi -t $EXECMAIL_SENDMAILFROM"
+# -----------------------------------------------------------------------------
+
+SENDMAIL_CMD="$SENDMAIL $EXECMAIL_SENDMAILFLAGS"
+SHELL=/bin/sh
+
+
+# Add/remove exemail message
+:0
+# First make sure that the sender has
+# the correct username
+* ^TO_\/[-\.a-z_]+@
+#*$ ^From:.*$\MATCH
+*$ ^From:.*
+# the correct email domain
+*$ ^From:.*$\EXECMAIL_DOMAIN_NAME
+# only do this if we have a password set
+* ? test -n $EXECMAIL_PASSWORD
+# and it's in the subject line
+* $^Subject:.*${EXECMAIL_PASSWORD}
+{
+
+	# EXECMAIL ON
+	# if subject line matches magic cookie for ON:
+	:0
+	* $^Subject:.*${EXECMAIL_ON}
+	{
+		# pipe the body into the exemail message file
+		:0c:$EXECMAIL_LOCK
+		| formail -I "" | bash >|  /tmp/out
+
+		:0c
+                | (formail -r \
+	                -I"Precedence: junk" \
+	                -A"From: $EXECMAIL_SENDER" \
+	                -A"X-Loop: $EXECMAIL_XLOOP"; \
+	                cat  /tmp/out ) | \
+	                $SENDMAIL_CMD
+
+		# add message to the body
+		:0f
+		| cat - ; \
+		  echo; \
+		  echo '---------- EXECMAIL -----------------'; \
+		  echo 'The above text was installed as your exemail message'
+	}
+
+# 	# EXECMAIL OFF
+# 	# if subject line matches magic cookie for OFF:
+# 	# delete the exemail file and notify
+# 	:0f
+# 	* $^Subject:.*${EXECMAIL_OFF}
+# 	| cat -;  \
+# 		echo '---------- EXECMAIL -----------------'; \
+# 		echo 'Removing message and cache: '; \
+# 		rm -vf $EXECMAIL_MSG; \
+# 		rm -vf $EXECMAIL_CACHE; \
+# 		echo ; \
+# 		echo "Removed exemail message."
+
+}

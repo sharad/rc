@@ -1,0 +1,6 @@
+#HOW MUTT BEHAVES
+unset mark_old				     # unread old messages are still unread after quitting
+set auto_tag				     # when tag articles, actions are default for all tagged messages
+#set quit=ask-no				     # ask me to quit. default no
+unset confirmappend			     # don't ask me about appending messages to other boxes
+

@@ -1,0 +1,28 @@
+
+
+
+
+# "#" or ";" at the start of a line makes it a comment.
+
+[DEFAULT]
+# pythonfile = ~/bin/offlineimap.py
+# If not given here, email and password is taken from .netrc using
+# machine google.com
+# email:    get_username("imap.gmail.com")
+# password: get_password("imap.gmail.com")
+# The following are optional, defaults are shown
+
+email:    sh4r4d@gmail.com
+
+# http://pypi.python.org/pypi/goobook/1.4alpha3
+# $ python
+# >>> import keyring
+# >>> keyring.set_keyring(keyring.backend.GnomeKeyring())
+# >>> keyring.set_password("gmail", "me@example.com", "secret")
+# password:
+
+
+# password:
+
+cache_filename: ~/.goobook_cache
+cache_expiry_hours: 24

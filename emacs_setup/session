@@ -1,0 +1,34 @@
+;;; Automatically generated on Sat Mar 28 21:54:17 2009
+;;; Invoked by s@taj using 23.0.60.1
+(setq-default kill-ring '("    (defun shell-command (command) \"Run a shell command and display output to screen.
+    This must be used in a functional side-effects-free style! If a program does not
+    exit of its own accord, Stumpwm might hang!\"
+           (check-type command string)
+           (echo-string (current-screen) (run-shell-command command t)))
+
+    (define-stumpwm-command \"shell-command\" ((command :string \"sh: \" :string))
+      (check-type command string)
+      (shell-command command))
+
+    (defun cat (&rest strings) \"Concatenates strings, like the Unix command 'cat'.
+    A shortcut for (concatenate 'string foo bar).\"
+           (apply 'concatenate 'string strings))" #("TODO" 0 4 (face font-lock-string-face fontified t)) "org-remind-append-passed-remaining-time-warnning" #("deadline-over-scheduled" 0 23 (face font-lock-variable-name-face fontified t)) #("scheduled present" 0 17 (face font-lock-doc-face fontified t)) #("deadline as target when both deadline and" 0 41 (face font-lock-doc-face fontified t)) #("
+(defcustom org-remind-deadline-over-scheduled t
+  \"Non-nil means, use deadline as target when both deadline and
+scheduled present, vice-versa. Default is Non-nil.\"
+  :group 'org2rem
+  :type 'boolean)
+" 0 2 (fontified t) 2 11 (face font-lock-keyword-face fontified t) 11 12 (fontified t) 12 46 (face font-lock-variable-name-face fontified t) 46 51 (fontified t) 51 164 (face font-lock-doc-face fontified t) 164 201 (fontified t)) "/usr/share/emacs/23.0.60/lisp/calendar/" "~/.Xmodmaps/xmodmaprc-" "keycode 204 = Control_L NoSymbol Control_L NoSymbol Control_L
+" ...))
+(setq-default session-file-alist '(("~/setup-trunk/stumpwm-session-start.d/rat.lisp" 907 1 1 nil nil 2 (overwrite-mode)) ("~/setup-trunk/bin/remind/ical2rem.pl" 6587 4577 1 nil nil 6451 (overwrite-mode)) ("~/osetup/lib/elisp/org/org2rem.el" 21003 21465 1 nil nil 21465 (overwrite-mode)) ("~/setup-trunk/bin/etc/xhook" 570 nil 1 nil nil 570 (overwrite-mode)) ("~/setup-trunk/Xmodmaps/xmodmaprc-swap-alt-ctrl" 2555 1 1 nil nil 2555 (overwrite-mode)) ("~/setup-trunk/Xmodmaps/xmodmaprc-nochange" 3221 1 1 nil nil 2493 (overwrite-mode)) ("~/setup-trunk/Organize/emacs/plan/Plans/TasksByProject.muse" 119 nil 1 nil nil 417 (overwrite-mode)) ("~/setup-trunk/Organize/emacs/plan/Plans/GNUEmacs.muse" 119 nil 1 nil nil 417 (overwrite-mode)) ("~/setup-trunk/Organize/emacs/plan/Plans/2009.03.29.muse" 10 nil 1 nil nil 122 (overwrite-mode)) ("~/setup-trunk/Organize/emacs/plan/Plans/MyMIS.muse" 10 nil 1 nil nil 13 (overwrite-mode)) ...))
+(setq-default file-name-history '("/home/s/hell/.stumpwm-session-start.d/rat.lisp" "~/.stumpwm-session-start.d/rat.lisp" "/home/s/hell/setup/bin/remind/ical2rem.pl" "~/setup/bin/remind/ical2rem.pl" "/home/s/hell/setup/bin/remind/parse_remind.pl" "~/setup/pi.gpg" "~/.xemacs/packages/org/org2rem.el" "~/.Organize/emacs/org/myself/work.rem" "~/.Organize/emacs/org/myself/waiting4.rem" "~/.Organize/emacs/org/myself/todo.rem" ...))
+(setq-default bookmark-history '("Diary" "Task Numbering" "File permissions"))
+(setq-default buffer-name-history '("pi.gpg" "2009.03.26.muse" "*info*" "*Customize Group: Planner Accomplishments*" "*Bookmark List*"))
+(setq-default command-history '((find-file "/home/s/hell/.stumpwm-session-start.d/rat.lisp" t) (comment-region (region-beginning) (region-end) nil) (shell-command-on-region (region-beginning) (region-end) "stumpish  eval" (quote (4)) (quote (4)) nil t) (find-file "~/.stumpwm-session-start.d/rat.lisp" t) (find-file "~/setup/bin/remind/ical2rem.pl" t) (kill-emacs nil) (kill-buffer "pi.gpg") (find-file "~/setup/pi.gpg" t) (find-file "~/.xemacs/packages/org/org2rem.el" t) (insert-register 103 (quote (4))) ...))
+(setq-default extended-command-history '("comment-region" "kill-emacs" "planner-goto-tomorrow" "plan" "planner-accomplishments-update" "planner-accomplishments-show" "uncomment-region" "planner-goto-today" "planner-goto-yesterday" "bbdb" ...))
+(setq-default global-mark-ring 'nil)
+(setq-default iswitchb-history '("mess" "mes" "*m" "*M" "me" "d" "in" "plan" ".el" "info" ...))
+(setq-default minibuffer-history '("   " "icalendar-export-file" "    " "+1" "Work on icalendar.el remind.el" "ddd" "Learn Common Lisp" "planner" "planner-diary-insinuate" "fancy-schedule-display-desk-calendar" ...))
+(setq-default org-tags-history '("HOME" "MIS" "COMPUTER" "COMPUTER:PHONE"))
+(setq-default search-ring '("label" "$heading" "204" "alt_l" "control_l" "37 " "caps" "66" "alt_r" "36" ...))
+(setq-default shell-command-history '("stumpish  eval"))

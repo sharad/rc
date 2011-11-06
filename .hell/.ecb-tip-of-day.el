@@ -1,0 +1,1 @@
+.setup/ecb-tip-of-day.el

@@ -1,0 +1,7 @@
+
+case "$TERM" in
+    rxvt-256color)
+        TERM=rxvt-unicode
+        ;;
+esac
+

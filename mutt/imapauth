@@ -1,0 +1,11 @@
+
+
+set folder = "imap://localhost:143/"
+set spoolfile = +INBOX
+set imap_user = `echo $USER`
+# set imap_pass = `~/bin/get-imap-pass | sed -e 's/\(.\)/\\\1/g'`
+set imap_pass = `~/bin/get-imap-pass | sed -e 's@\(.\)@\1@g'`
+set imap_authenticators="plain:login:ntlm:gssapi:digest-md5:cram-md5"
+set mail_check=90
+set timeout=15
+

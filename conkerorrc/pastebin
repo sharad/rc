@@ -1,0 +1,152 @@
+// -*- mode: js2 -*-
+
+// from: http://pastebin.com/m234367ec
+
+ititle_format_fn = function (window) {return "Conkeror"; };
+
+url_remoting_fn = load_url_in_new_buffer;
+
+browser_relationship_patterns[RELATIONSHIP_NEXT] =
+    [/^next$/i,
+     new RegExp("^>$","i"),
+     new RegExp("^(>>|»)$","i"),
+     new RegExp("^(>|»)","i"),
+     new RegExp("(>|»)$","i"),
+     new RegExp("\\bnext","i"),
+     new RegExp("\u6b21")
+    ];
+
+browser_relationship_patterns[RELATIONSHIP_PREVIOUS] =
+    [/^(prev|previous)$/i,
+     new RegExp("^<$","i"),
+     new RegExp("^(<<|«)$","i"),
+     new RegExp("^(<|«)","i"),
+     new RegExp("(<|«)$","i"),
+     new RegExp("\\bprev|previous\\b","i"),
+     new RegExp("\u524d")
+    ];
+
+//Page modes
+
+require("page-modes/gmail.js");
+
+xkcd_add_title = true;
+
+
+//end page modes
+
+
+
+/**
+*mozrepl
+*/
+
+
+if ('@hyperstruct.net/mozlab/mozrepl;1' in Components.classes)
+    {
+	var mozrepl = Cc['@hyperstruct.net/mozlab/mozrepl;1']
+	    .getService(Components.interfaces.nsIMozRepl);
+	if (! mozrepl.isActive())
+	    mozrepl.start(4242);
+    }
+
+
+function repl_context() {
+    var ctx = {};
+    ctx.__proto__ = conkeror;
+    ctx.conkeror = conkeror;
+    ctx.window = window_watcher.activeWindow;
+    ctx.buffer = ctx.window.buffers.current;
+    ctx.document = ctx.buffer.document;
+    return ctx;
+}
+
+//end mozrepl
+
+
+
+
+
+//you giant fucking Q
+define_key(content_buffer_normal_keymap, "q", "quote-next-input-mode");
+//session
+define_key(content_buffer_normal_keymap, "C-x C-s", "save-session");
+
+//Previous  thing key whatever
+define_key(content_buffer_normal_keymap, "p", "go-back");
+
+
+//meta
+modifiers.M = new modifier(
+    function (event) { return event.metaKey; },
+    function (event) { event.metaKey = true; });
+modifier_order = ['C', 'M', 'A', 'S'];
+
+/**
+ * Creates a keyboard-shortcut that takes you directly to a specified
+ * URL. Creates a command in the process. (define_key only accepts
+ * commands as actions). Can be used without specifying a key-sequence.
+ */
+define_key(content_buffer_normal_keymap, "A-q", interactive("open-gmail", "Go to gmail", "follow",
+            $browser_object = "http://gmail.com/"));
+
+define_key(content_buffer_normal_keymap, "A-w", interactive("open-gzeustube", "Go to TheGZeus Youtube", "follow",
+            $browser_object = "http://www.youtube.com/thegzeus"));
+
+define_key(content_buffer_normal_keymap, "A-e", interactive("open-mymyspace", "Go to Personal Myspace", "follow",
+            $browser_object = "http://home.myspace.com/index.cfm?fuseaction=user"));
+
+define_key(content_buffer_normal_keymap, "A-r", interactive("open-windbags", "Go to Myspace Windbags", "follow",
+            $browser_object = "http://groups.myspace.com/index.cfm?fuseaction=groups.groupProfile&groupid=106180218&Mytoken=375441FB-8A7A-437B-A5EAEA53A9B2E42B76009372"));
+
+define_key(content_buffer_normal_keymap, "A-t", interactive("open-dansface", "Go to Dan Stumbleupon", "follow",
+            $browser_object = "http://www.stumbleupon.com/user.php?mode=0&stumbler=droe82"));
+
+define_key(content_buffer_normal_keymap, "A-a", interactive("open-lispforum", "Go to LispForum", "follow",
+            $browser_object = "http://www.lispforum.com"));
+
+define_key(content_buffer_normal_keymap, "A-s", interactive("open-lse-pipe", "Go to Lisp/Scheme/Emacs Pipe", "follow",
+            $browser_object = "http://pipes.yahoo.com/pipes/pipe.info?_id=3PHwctj52xGg02vB6kjTQA"));
+
+define_key(content_buffer_normal_keymap, "A-d", interactive("open-xkcd", "Go to xkcd", "follow",
+							     $browser_object = "http://www.xkcd.com/"));
+
+define_key(content_buffer_normal_keymap, "A-f", interactive("open-quecon", "Go to Questionable Content", "follow",
+							     $browser_object = "http://www.questionablecontent.net/"));
+
+define_key(content_buffer_normal_keymap, "A-g", interactive("open-fanboys", "Go to Fanboys", "follow",
+							     $browser_object = "http://fanboys-online.com/"));
+
+define_key(content_buffer_normal_keymap, "A-z", interactive("open-gizmodo", "Go to Gizmodo", "follow",
+							     $browser_object = "http://www.gizmodo.com"));
+
+define_key(content_buffer_normal_keymap, "A-x", interactive("open-engadget", "Go to Engadget", "follow",
+							     $browser_object = "http://www.engadget.com/"));
+
+define_key(content_buffer_normal_keymap, "A-c", interactive("open-colbert", "Go to The Colbert Report", "follow",
+            $browser_object = "http://www.comedycentral.com/colbertreport/full-episodes/index.jhtml")); //fix this to follow full eps player
+
+
+add_delicious_webjumps ("thegzeus");
+
+
+
+
+/**
+ * Meh, trying to get fonts pretty.
+ */
+
+//session-pref("font.name.monospace.x-western", "Bitstream Vera Sans Mono");
+
+//session-pref("font.name.monospace.ja", "Bitstream Vera Sans Mono");
+
+
+
+//unfocus all frames.
+interactive("unfocus-all", null, function (I) {
+    for_each_window(function (w) {
+        w.buffers.for_each(function (b) {
+            unfocus(w, b);
+        });
+    });
+});

@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+emacsclient -c -f ~/.emacs.d/server/general "$@"
+
+

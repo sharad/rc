@@ -1,0 +1,5 @@
+! .xmodmaprc-pc -- customize PC keyboards with the extra Windows keys
+!
+! last modified:   21-Dec-1998  Mon  21:11
+
+keycode 115 = L5

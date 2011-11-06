@@ -1,0 +1,96 @@
+;; -*- mode: Lisp; fill-column: 75; comment-column: 50; -*-
+
+
+
+
+(in-package #:cl-user)
+#+(or sbcl ecl) (require :asdf)
+#-(or sbcl ecl) (load #p"/usr/share/common-lisp/source/asdf/asdf.lisp")
+
+;; (push
+;;  #p"/usr/local/share/common-lisp/systems/"
+;;  asdf:*central-registry*)
+
+;; (push
+;;   #p"/etc/"
+;;  asdf:*central-registry*)
+
+
+;; (asdf:oos 'asdf:load-op :asdf-binary-locations)
+
+;; (setf asdf:*centralize-lisp-binaries* t)
+;; (setf asdf:*centralize-lisp-binaries* nil)
+;; (setf asdf:*source-to-target-mappings*
+;;       '((#p"/usr/lib/sbcl/" nil)
+;;         (#p"/usr/lib64/sbcl/" nil)))
+
+
+;;;; QuickLisp --
+;;; The following lines added by ql:add-to-init-file:
+#-quicklisp
+(let* ((qlisp-parent-dir
+        (if (not (string=  (machine-instance) "lispm.genera.net"))
+            #p"/atlantic/home/s/res/share/common-lisp/"
+            #p"/all/res/share/common-lisp/"
+            ))
+      (quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+                                       qlisp-parent-dir)))
+  (when (probe-file quicklisp-init)
+    (load quicklisp-init)))
+;;;; QuickLisp
+
+
+(asdf:clear-source-registry)
+
+
+;;;;;; ASDF2 ;;;;;;
+;; see: http://xach.livejournal.com/278047.html?thread=674335
+;; Second, Quicklisp includes ASDF2. I like to set up ASDF2 to scan a
+;; particular directory tree, ~/src/lisp/, for local systems. To do
+;; that, I create a config file named
+;; ~/.config/common-lisp/source-registry.conf.d/projects.conf that has
+;; this in it:
+
+;; (:tree (:home "src/lisp/"))
+
+;; With that file in place, I can add new projects to that directory
+;; tree, and after an (asdf:initialize-source-registry) the project's
+;; systems will be loadable with asdf:load-system. I can unpack
+;; tarballs, check things out from source control systems, or create
+;; new projects and they'll all be easily available for loading.
+
+;; ASDF2's default setup also scans a directory called
+;; ~/.local/share/common-lisp/source/, so if you don't mind putting
+;; projects there, you can use that without any additional
+;; configuration.
+
+;; With Quicklisp installed and ASDF2 configured, here are the steps I
+;; follow when I get an idea and I want to explore it in Common Lisp.
+
+(asdf:initialize-source-registry)
+
+;;;;;; ASDF2 ;;;;;;
+
+(ql:quickload "quicklisp-slime-helper")
+
+
+
+;;; LineEdit
+;;; http://www.reddit.com/r/lisp/comments/gzip8/linedit_adds_history_completion_and_editing_to/
+;;; Check for --no-linedit command-line option.
+#+quicklisp
+(if (member "--no-linedit" sb-ext:*posix-argv* :test 'equal)
+  (setf sb-ext:*posix-argv*
+        (remove "--no-linedit" sb-ext:*posix-argv* :test 'equal))
+  (when (interactive-stream-p *terminal-io*)
+    (require :sb-aclrepl)
+    (ql:quickload "linedit")
+    (funcall (intern "INSTALL-REPL" :linedit)
+             :wrap-current t)))
+;;; LineEdit
+
+
+;; load my utils
+(if (member "SHARAD-UTILS" (mapcar #'package-name (list-all-packages)) :test #'string=)
+    (require :sharad-utils))
+

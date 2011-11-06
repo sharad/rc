@@ -1,0 +1,9 @@
+#!/bin/zsh
+
+whence -p urxvtd > /dev/null &&
+pgrep urxvtd ||
+urxvtd \
+    --quiet \
+    --opendisplay \
+    --fork &!
+

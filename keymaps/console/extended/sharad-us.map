@@ -1,0 +1,21 @@
+##################################
+## keycode  58      caps
+## keycode  42      shift-l
+## keycode  29      ctrl-l
+## keycode 125      win-l
+## keycode  56      alt-l
+## keycode 100      alt-r
+## keycode 127      menu
+## keycode  97      ctrl-r
+## keycode  54      shift-r
+
+
+
+ keycode  97 = AltGr
+         alt     keycode  97 = Compose
+ keycode  29 = Alt
+#         shift   keycode  29 = Caps_Lock
+ keycode  56 = Control
+ keycode  58 = Alt
+         altgr   keycode  58 = Caps_Lock
+ keycode  100 = Control

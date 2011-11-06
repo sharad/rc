@@ -1,0 +1,75 @@
+! .Xdefaults-sun				-*- xrdb -*-
+!
+! last modified:   22-Dec-1998  Tue  21:25
+
+Vim.font:			9x15
+Vim.boldfont:			9x15bold
+
+XTerm*font:			9x15
+XTerm*boldFont:			9x15bold
+
+! Change `^?' to `^h' if your BackSpace is more convenient to use than Delete.
+XTerm*ttyModes:			erase ^? susp ^z
+
+! The first geometry spec is the default, for the XTerm on the
+! right.  The second one is for smaller XTerm on the left.
+! .openwin-menu creates the left XTerm with name leftXTerm so that
+! it picks up the right resource.
+!
+XTerm*vt100.geometry:		80x57-0-0
+leftXTerm*vt100.geometry:	80x52+0-0
+
+! Use both PRIMARY and CLIPBOARD for selections to allow copy/paste
+! between xterm and cmdtool/mailtool.
+!
+! Scroll up one page:	Shift+PgUp or keypad -
+! Scroll down one page:	Shift+PgDn or keypad +
+! Scroll up one line:	Shift+UpArrow or Ctrl+keypad -
+! Scroll down one line:	Shift+DownArrow or Ctrl+keypad +
+!
+! To get the keysym for any key, run xev, press the key, and see what keysym
+! it reports.  Note that Home, End, Prior and Next are not the original Sun
+! keysyms for those keys; they are the new names given by ~/.xmodmaprc-sun.
+! Home and End are translated because by default they send \e[H and \e[F
+! respectively, instead of the escape sequences for khome and kend listed
+! in the terminfo entry for xterm.  I don't know why.
+!
+! If you are used to using the Copy key to copy the selection, you
+! may want to add
+!	!<Key>F16:		ignore()\n\
+! to the translation table.  F16 (Copy) is ignored because BtnUp
+! has already copied the selection.  F18 is the Paste key.
+
+XTerm*vt100.translations: #override\n\
+	~Ctrl ~Meta<Btn2Up>:	insert-selection(PRIMARY, CLIPBOARD)\n\
+	<BtnUp>:		select-end(PRIMARY, CLIPBOARD)\n\
+	!<Key>F18:		insert-selection(PRIMARY, CLIPBOARD)\n\
+	!Shift<Key>Up:		scroll-back(1,line)\n\
+	!Shift<Key>Down:	scroll-forw(1,line)\n\
+	!Shift<Key>Prior:	scroll-back(1,page)\n\
+	!Shift<Key>Next:	scroll-forw(1,page)\n\
+	!<Key>KP_Subtract:	scroll-back(1,page)\n\
+	!<Key>KP_Add:		scroll-forw(1,page)\n\
+	!Ctrl<Key>KP_Subtract:	scroll-back(1,line)\n\
+	!Ctrl<Key>KP_Add:	scroll-forw(1,line)\n\
+	!<Key>Home:		string("\033OH")\n\
+	!<Key>End:		string("\033OF")
+
+
+! My .emacs creates the second emacs frame with the name "leftFrame" so
+! that it is sized and positioned appropriately.
+
+Emacs*EmacsFrame.geometry:	80x54-0-0
+Emacs*leftFrame.geometry:	80x49+0-0
+
+
+! The default font for the text area of XEmacs is chosen at run-time
+! by lisp code which tries a number of different possibilities in order
+! of preference.  If you wish to override it, use this:
+! 
+Emacs.default.attributeFont:	 -*-fixed-medium-r-normal-*-*-140-*-*-*-*-iso8859-1
+Emacs.italic.attributeFont:	 -*-fixed-bold-r-normal-*-*-140-*-*-*-*-iso8859-1
+Emacs.bold-italic.attributeFont: -*-fixed-bold-r-normal-*-*-140-*-*-*-*-iso8859-1
+
+
+Netscape.Navigator.geometry:	750x870-0-0

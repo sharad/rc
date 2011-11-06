@@ -1,0 +1,13 @@
+#!/usr/bin/env zsh
+
+# DBUS_SESSION_BUS_ADDRESS='unix:abstract=/tmp/dbus-wdq57kBhEE,guid=2b1a9edf5e697f6c6fdad0194b3324f1'
+# DBUS_SESSION_BUS_ADDRESS='unix:abstract=/tmp/dbus-t2LDLjfLm4,guid=fff8ee5a6df461bf15cc419f4b3326d2'
+export DISPLAY=:0.0
+DBUS_SESSION_BUS_ADDRESS='unix:abstract=/tmp/dbus-lYjTmFV3uT,guid=c855b983f9b39bac466a80954b3317d9'
+export DBUS_SESSION_BUS_ADDRESS
+
+notify-send "$@"
+
+dbus-launch \
+     --autolaunch=7da291c428ada51c810593e249758b10 \
+     notify-send "$@"

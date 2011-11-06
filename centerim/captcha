@@ -1,0 +1,21 @@
+# This file contains sample configuration for captcha engine.
+# Every line should look like: <param> <value>
+# Possible params are: greeting, quest, success, failure, timeout (min)
+# Quest fomat is: quest <question>//<answer>[::answer[...]]
+
+greeting I'm using a test to determine if you are a computer or not. If you would please answer the question correctly, you will be added to my contact list automatically.
+
+quest How many legs does a dog have?//4::four
+quest What is the first word of this sentence?//what
+quest What is the sum of 1 and 1?//2::two
+quest What is not a fruit: lettuce, apple or banana?//lettuce
+quest How many fingers are there on one hand?//5::five
+quest How many wheels does a normal bicycle have?//2::two
+quest What colour does a banana have?//yellow::yelow
+quest What does a chicken lay?//eggs::egg
+quest What is the value of PI, accurate to 2 digits?//3.14::3,14
+quest Is a wheel round or not (yes or no)?//yes
+
+success You answered the question correctly, you are now added to my contact list. Thank you for your patience.
+failure You answered the question incorrectly, you can try again by answering the next question.
+timeout 30

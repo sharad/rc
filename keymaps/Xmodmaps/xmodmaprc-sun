@@ -1,0 +1,40 @@
+! .xmodmaprc-sun -- customize the Sun Type-4 keyboard
+!
+! last modified:   19-Sep-1998  Sat  22:13
+
+! Turn Alt Graph into Control
+clear mod2
+keysym Mode_switch = Control_R
+add control = Control_R
+
+! Turn Compose into Alt
+keysym Multi_key = Alt_R
+add mod4 = Alt_R
+
+! Rename the Home, End, PgUp, PgDn, F11 and F12 keys sensibly.
+! Sun's keysyms for those are weird: F27, F29, F33, F35, SunF36 
+! and SunF37 respectively.  Note that the F11 and F12 keysyms
+! are already being used (by the keys labelled Stop and Again)
+! so we rename those first.  XKeysymDB contains two keysyms SunStop
+! and SunAgain, but the values are the same as for Cancel and Redo.
+! (If all this leaves you hopelessly confused, don't worry:
+! you're not alone.)
+
+keysym F11 = Cancel
+keysym F12 = Redo
+keysym F27 = Home
+keysym F29 = Prior
+keysym F33 = End
+keysym F35 = Next
+keysym SunF36 = F11
+keysym SunF37 = F12
+
+! This is the key labelled PrSc.  There is a keysym called Sun_PrintScreen,
+! but it's better to use a generic name.
+keysym F22 = Print
+
+! On a Type 4 keyboard the keys labelled - and + on the keypad are
+! KP_Subtract and KP_Add respectively, but on a Type 5 keyboard
+! (the one like a PC's) they are F24 and KP_Add.  So if you have
+! a Type 5 keyboard you may want to uncomment the line below.
+!keysym F24 = KP_Subtract

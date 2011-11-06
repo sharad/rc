@@ -1,0 +1,257 @@
+
+NoGrabServer
+#NoDefaults
+RestartPreviousState
+DecorateTransients
+TitleFont "-adobe-helvetica-bold-r-normal--*-120-*-*-*-*-*-*"
+ResizeFont "-adobe-helvetica-bold-r-normal--*-120-*-*-*-*-*-*"
+MenuFont "-adobe-helvetica-bold-r-normal--*-120-*-*-*-*-*-*"
+IconFont "-adobe-helvetica-bold-r-normal--*-100-*-*-*-*-*-*"
+IconManagerFont "-adobe-helvetica-bold-r-normal--*-100-*-*-*"
+#ClientBorderWidth 2
+BorderWidth 3
+ButtonIndent 2
+NoHighlight
+AutoRelativeResize
+#DefaultBackground
+FramePadding 0
+#ForceIcons
+#NoRaiseOnMove
+OpaqueMove
+#Zoom 500
+#AutoRaise { "XTerm" }
+
+
+# This is for hiding the ugly menubar in windows who dont need em.
+NoTitle
+{
+     "x11amp"         # x11amp, the winamp lookalike, http://x11amp.ml.org.
+     "xlogo"          # a must have :)
+     "xosview"
+}
+
+Color
+{
+    BorderColor "gray85"
+    DefaultBackground "black"
+    DefaultForeground "gray85"
+    TitleBackground "black"
+    TitleForeground "gray85"
+    MenuBackground "black"
+    MenuForeground "gray85"
+    MenuTitleBackground "gray65"
+    MenuTitleForeground "black"
+    IconBackground "black"
+    IconForeground "white"
+    IconBorderColor "black"
+    IconManagerBackground "black"
+    IconManagerForeground "gray85"
+    PointerForeground "black"
+    PointerBackground "white"
+
+}
+
+#
+# Define some useful functions for motion-based actions.
+#
+MoveDelta 1
+Function "move-or-lower" { f.move f.deltastop f.lower }
+Function "move-or-raise" { f.move f.deltastop f.raise }
+Function "move-or-iconify" { f.move f.deltastop f.iconify }
+
+#
+# Set some useful bindings.  Sort of uwm-ish, sort of
+# simple-button-ish
+#
+Button1 = : root : f.menu "prg"
+Button2 = : root : f.delete
+Button3 = : root : f.menu "window"
+
+Button1 = m : window|icon : f.function "move-or-lower"
+Button2 = m : window|icon : f.iconify
+Button3 = m : window|icon : f.function "move-or-raise"
+
+Button1 =   : frame : f.resize
+Button3 =   : frame : f.function "move-or-raise"
+
+Button1 = : title : f.function "move-or-raise"
+Button2 = : title : f.raiselower
+Button3 = : title : f.iconify
+
+Button1 = : icon : f.function "move-or-iconify"
+#Button2 = : icon : f.destroy
+Button3 = : icon : f.iconify
+
+Button1 = : iconmgr : f.iconify
+Button2 = : iconmgr : f.destroy
+Button3 = : iconmgr : f.iconify
+
+# This is for the window bar
+#LeftTitleButton  "/usr/X11/include/bitmaps/checkmark.xbm"  = f.delete
+LeftTitleButton  "/usr/include/X11/bitmaps/xm_noenter16" = f.delete
+#RightTitleButton "/usr/X11/include/bitmaps/menu12"  = f.resize
+
+
+#
+# And a menus with the usual things
+#
+menu "prg"
+{
+"TWM"           f.title
+#""             f.nop
+"Xterm"         f.exec "xterm &"
+"Xterm_3s"       f.exec "rsh sunms3 xterm -ls -display $DISPLAY &"
+"Xterm_13L"      f.exec "rsh pcms13  xterm -ls -display $DISPLAY &"
+"Xterm_101L"     f.exec "rsh pcms101 xterm -ls -display $DISPLAY &"
+"Xterm_102L"     f.exec "rsh pcms102 xterm -ls -display $DISPLAY &"
+"Xterm_103L"     f.exec "rsh pcms103 xterm -ls -display $DISPLAY &"
+"Xterm_104L"     f.exec "rsh pcms104 xterm -ls -display $DISPLAY &"
+"Xterm_105L"     f.exec "rsh pcms105 xterm -ls -display $DISPLAY &"
+"Xterm_106L"     f.exec "rsh pcms106 xterm -ls -display $DISPLAY &"
+"Xterm_107L"     f.exec "rsh pcms107 xterm -ls -display $DISPLAY &"
+"Xterm_108L"     f.exec "rsh pcms108 xterm -ls -display $DISPLAY &"
+
+#"Midc"         f.exec "xterm -sl 255 -bg black -fg white -e midc -b &"
+#"Netscape"      f.exec "netscape &"
+#"Xosview"      f.exec "xosview &"
+""              f.nop
+"Files"         f.menu "files"
+"Editors"       f.menu "editors"
+"Internet"       f.menu "internet"
+"Graphics"      f.menu "graphics"
+"Viewers"       f.menu "viewers"
+"Music"         f.menu "music"
+"Games"         f.menu "games"
+"Utilities"     f.menu "utilities"
+"System"        f.menu "system"
+}
+
+menu "files"
+{
+"Files"         f.title
+"Midc"          f.exec "xterm -sl 255 -bg black -fg white -e midc -b &"
+}
+
+menu "editors"
+{
+"Editors"       f.title 
+"Xemacs"        f.exec "xemacs &"
+"StarOffice"    f.exec "/usr/local/office52/soffice &"
+}
+
+menu "system"
+{
+"System"        f.title
+"Xosview"       f.exec "xosview &"
+"Top"           f.exec "xterm -bg black -fg white -e top &"
+"Gkrellm"       f.exec "gkrellm &"
+}
+
+menu "viewers"
+{
+"Viewers"       f.title
+"Ghostview"     f.exec "gv &"
+"Xdvi"          f.exec "xdvi -rv -fg black -bg white -geometry 800x700 &"
+"Acrobat"       f.exec "acroread4 -geometry 800x700 &"  
+}
+menu "internet"
+{
+"Internet"    f.title
+"Netscape"      f.exec "netscape -geometry 800x700 &"
+"Lynx"       f.exec "xterm -bg black -fg white -e lynx &"
+}
+
+menu "graphics"
+{
+"Graphics"      f.title
+"XV"            f.exec "xv &"
+"Gimp"          f.exec "gimp &"
+"Xpaint"        f.exec "xpaint"
+}
+
+menu "music"
+{
+"Music"         f.title
+"CdPlayer"      f.exec "xterm -e cd-console &"
+"Mp3Blaster"    f.exec "xterm  -e mp3blaster &"
+"Xmovie"        f.exec "xmovie &"
+}
+
+menu "games"
+{
+"Games"         f.title
+"Xboard"        f.exec "xboard -rv &"
+}
+
+menu "utilities"
+{
+"Utilities"      f.title
+"Xman"          f.exec "xman -rv &"
+"Xclock"        f.exec "xclock -rv -analog &"
+"Xcalc"         f.exec "xcalc -rv &"
+}
+
+menu "window"
+{
+"X Windows"      f.title
+"Kill Window"    f.destroy
+"Delete Window"  f.delete
+""               f.nop
+"Maximize"       f.fullzoom
+"Minimize"       f.iconify
+#"Resize"         f.resize
+"Move"           f.move
+#"Raise"          f.raise
+#"Lower"          f.lower
+""               f.nop
+"Focus"          f.focus
+"Unfocus"        f.unfocus
+"Show Iconmgr"   f.showiconmgr
+"Hide Iconmgr"   f.hideiconmgr
+""               f.nop
+"Screensaver"    f.menu "screensaver" 
+"Redraw"         f.refresh
+"Restart"        f.restart
+"Quit"           f.menu "quit"
+}
+
+menu "quit"
+{
+"Really Quit?"     f.title
+"No"               f.nop
+"Yes"              f.quit
+}
+
+menu "screensaver"
+{
+"ZZzz..."        f.title
+"Laser"          f.exec "xlock -nolock -mode laser &"
+"Qix"            f.exec "xlock -nolock -mode qix &"
+"Star trek"      f.exec "xlock -nolock -mode star &"
+"Galaxy"         f.exec "xlock -nolock -mode galaxy -wireframe&"
+"Pyrotechnical"  f.exec "xlock -nolock -mode pyro -wireframe &"
+"Swarm"          f.exec "xlock -nolock -mode swarm &"
+"Linux"          f.exec "xlock -nolock -mode flag &"
+}
+
+Icons
+{
+     "XTerm"   "/usr/X11R6/include/X11/bitmaps/Term"
+     "x11amp"  "/usr/include/X11/bitmaps/xfm_au.xbm"
+}
+
+Cursors
+{
+                         Frame     "left_ptr"
+                         Title     "left_ptr"
+                         Icon      "left_ptr"
+                         IconMgr   "left_ptr"
+                         Move      "fleur"
+                         Resize    "fleur"
+                         Menu      "hand1"
+                         Button    "hand2"
+                         Wait      "clock"
+                         Select    "dot"
+                         Destroy   "pirate"
+}
+

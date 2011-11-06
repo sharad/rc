@@ -1,0 +1,2 @@
+export XBPROFILE=cm
+export XBROWSER="conkeror -P $XBPROFILE"

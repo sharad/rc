@@ -1,0 +1,86 @@
+{
+  Dock = {
+    Lowered = No;
+    Applications800 = (
+      {
+        Name = Logo.WMDock;
+        Lock = No;
+        AutoLaunch = No;
+        Command = "-";
+        Position = "0,0";
+        Forced = No;
+        BuggyApplication = No;
+      },
+      {
+        Name = "x-terminal-emulator.XTerm";
+        Lock = No;
+        AutoLaunch = No;
+        Command = "x-terminal-emulator";
+        Position = "0,1";
+        Forced = No;
+        BuggyApplication = No;
+      },
+      {
+        Name = groupLeader.WPrefs;
+        Lock = Yes;
+        AutoLaunch = No;
+        Command = "/usr/lib/GNUstep/System/Applications/WPrefs.app/WPrefs";
+        Position = "0,2";
+        Forced = No;
+        BuggyApplication = No;
+      }
+    );
+    Position = "-64,0";
+    Applications = (
+      {
+        Name = Logo.WMDock;
+        Lock = No;
+        AutoLaunch = No;
+        Command = "-";
+        Position = "0,0";
+        Forced = No;
+        BuggyApplication = No;
+      },
+      {
+        Name = "x-terminal-emulator.XTerm";
+        Lock = No;
+        AutoLaunch = No;
+        Command = "x-terminal-emulator";
+        Position = "0,1";
+        Forced = No;
+        BuggyApplication = No;
+      },
+      {
+        Name = groupLeader.WPrefs;
+        Lock = Yes;
+        AutoLaunch = No;
+        Command = "/usr/lib/GNUstep/System/Applications/WPrefs.app/WPrefs";
+        Position = "0,2";
+        Forced = No;
+        BuggyApplication = No;
+      }
+    );
+  };
+  Clip = {
+    Name = Logo.WMClip;
+    Lock = No;
+    AutoLaunch = No;
+    Command = "-";
+    Position = "0,0";
+    Forced = No;
+    BuggyApplication = No;
+  };
+  Workspaces = (
+    {
+      Clip = {
+        AutoAttractIcons = No;
+        AutoCollapse = No;
+        Lowered = Yes;
+        Collapsed = No;
+        AutoRaiseLower = No;
+        Applications = ();
+      };
+      Name = Main;
+    }
+  );
+}

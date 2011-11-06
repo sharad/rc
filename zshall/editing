@@ -1,0 +1,265 @@
+# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+
+my_extended_wordchars='*?_-+./[]~=&;!#$%^(){}<>:@,\\';
+
+if [ -r ~/.zkbd/$HOST/$TERM-${DISPLAY:-$VENDOR-$OSTYPE} ] ;  then
+    termzdef=~/.zkbd/$HOST/$TERM-${DISPLAY:-$VENDOR-$OSTYPE}
+elif [ -r ~/.zkbd/$TERM-${DISPLAY:-$VENDOR-$OSTYPE} ] ; then
+    termzdef=~/.zkbd/$TERM-${DISPLAY:-$VENDOR-$OSTYPE}
+fi
+
+[ $termzdef ] && source $termzdef && unset termzdef
+
+[[ -n ${key[Left]} ]] && bindkey "${key[Left]}" backward-char
+[[ -n ${key[Right]} ]] && bindkey "${key[Right]}" forward-char
+
+# is the current position \-quoted ?
+
+function is_quoted(){
+ test "${BUFFER[$CURSOR-1,CURSOR-1]}" = "\\"
+}
+
+custom_unquote-forward-word(){
+    while is_quoted
+      do zle .forward-word
+    done
+}
+
+custom_unquote-backward-word(){
+    while  is_quoted
+      do zle .backward-word
+    done
+}
+
+custom_unquote-kill-word(){
+    while  is_quoted
+      do zle .kill-word
+    done
+}
+
+custom_unquote-backward-kill-word(){
+    while  is_quoted
+      do zle .backward-kill-word
+    done
+}
+
+custom_unquote-backward-delete-word(){
+    while  is_quoted
+      do zle .backward-delete-word
+    done
+}
+
+custom_unquote-transpose-words(){
+    while is_quoted
+      do zle .transpose-words
+    done
+}
+
+custom_bash-backward-word() {
+    local WORDCHARS=${my_extended_wordchars//\.\///}
+    zle .backward-word
+    custom_unquote-backward-word
+}
+
+custom_bash-forward-word() {
+    local WORDCHARS=${my_extended_wordchars//\.\///}
+    zle .forward-word
+    custom_unquote-forward-word
+}
+
+custom_bash-kill-word() {
+    local WORDCHARS=${my_extended_wordchars//\.\///}
+    zle .kill-word
+    custom_unquote-kill-word
+}
+
+custom_bash-backward-kill-word(){
+    local WORDCHARS=${my_extended_wordchars//\.\///}
+    zle .backward-kill-word
+    custom_unquote-backward-kill-word
+}
+
+custom_bash-transpose-words() {
+    local WORDCHARS=${my_extended_wordchars//\.\///}
+    zle .transpose-words
+    custom_unquote-transpose-words
+}
+
+
+backward-to-space() {
+    local WORDCHARS=${my_extended_wordchars}
+    zle .backward-word
+    custom_unquote-backward-word
+}
+
+forward-to-space() {
+     local WORDCHARS=${my_extended_wordchars}
+     zle .forward-word
+     custom_unquote-forward-word
+}
+
+backward-delete-to-space() {
+    local WORDCHARS="${my_extended_wordchars}"
+    zle .backward-delete-word
+    custom_unquote-backward-delete-word
+}
+
+
+backward-kill-to-space() {
+    local WORDCHARS="${my_extended_wordchars}"
+    zle .backward-kill-word
+    custom_unquote-backward-kill-word
+}
+
+backward-to-/ () {
+    local WORDCHARS=${my_extended_wordchars//\///}
+    zle .backward-word
+    custom_unquote-backward-word
+}
+
+forward-to-/ () {
+    local WORDCHARS=${my_extended_wordchars//\///}
+    zle .forward-word
+    custom_unquote-forward-word
+}
+
+custom_bash-backward-delete-to-sol () {
+    local WORDCHARS=${my_extended_wordchars}'| `"'"'"
+    zle .backward-delete-word
+    custom_unquote-backward-delete-word
+}
+
+custom_bash-backward-kill-to-sol () {
+    local WORDCHARS=${my_extended_wordchars}'| `"'"'"
+    zle .backward-kill-word
+    custom_unquote-backward-kill-word
+}
+
+
+zle	-N	custom_bash-backward-word
+zle	-N	custom_bash-forward-word
+zle	-N	custom_bash-kill-word
+zle	-N	custom_bash-backward-kill-word
+zle	-N	custom_bash-transpose-words
+zle	-N	custom_bash-backward-delete-to-sol
+zle	-N	custom_bash-backward-kill-to-sol
+
+zle	-N	backward-to-space
+zle	-N	forward-to-space
+zle	-N	backward-delete-to-space
+zle	-N	backward-kill-to-space
+zle	-N	backward-to-/
+zle	-N	forward-to-/
+
+# games
+zle	-N	tetris
+
+# create mymap out of emacs map
+bindkey	-N	mymap	emacs
+
+# bindkey -M mymap
+
+#bindkey	-M	mymap	'\eb'	custom_bash-backward-word
+#bindkey	-M	mymap	'\ef'	custom_bash-forward-word
+#bindkey	-M	mymap	'\ed'	custom_bash-kill-word
+#bindkey	-M	mymap	'\eD'	custom_bash-kill-word
+#bindkey	-M	mymap	'\e'	custom_bash-backward-kill-word
+bindkey -M	mymap		'\e'	backward-kill-word
+#bindkey	-M	mymap	'\et'		custom_bash-transpose-words
+#bindkey	-M	mymap	'\eT'		custom_bash-transpose-words
+#bindkey	-M	mymap	'\C-x'	custom_bash-backward-delete-to-sol
+#bindkey	-M	mymap	'\C-x\C-h'	custom_bash-backward-delete-to-sol
+
+# history !!
+bindkey	-M	mymap	'\C-xs'	history-incremental-search-forward
+bindkey	-M	mymap	'\en'	history-search-forward
+bindkey	-M	mymap	'\ep'	history-search-backword
+bindkey	-M	mymap	'\C-xp'	history-beginning-search-backward
+bindkey	-M	mymap	'\C-xn'	history-beginning-search-forward
+
+# Delete and Kill !!
+bindkey	-M	mymap	'\e\C-b'	backward-to-space
+bindkey	-M	mymap	'\e\C-f'	forward-to-space
+# ensuring it always work in any case.
+# bindkey	-M	mymap	'\C-w'		kill-region
+bindkey	-M	mymap	'\C-w'		backward-kill-to-space
+bindkey	-M	mymap	'\C-xw'		kill-region
+
+bindkey	-M	mymap	'\C-x'	custom_bash-backward-kill-to-sol
+bindkey	-M	mymap	'\C-x\C-h'	custom_bash-backward-kill-to-sol
+bindkey	-M	mymap	'\e[3~'		delete-char
+bindkey	-M	mymap	'\e[3;3~'	delete-word
+
+# Copy
+bindkey	-M	mymap	'\ew'	        copy-region-as-kill
+
+# Move  # used for _most_recent_history widget
+# bindkey	-M	mymap	'\e/'	        forward-to-/
+# bindkey	-M	mymap	'\e\\'	        backward-to-/
+
+# the convention where the `[' is replaced by an `O' (uppercase letter `O').
+# bindkey	-M	mymap	'\e[A'	        up-line-or-history             # up arrow
+# bindkey	-M	mymap	'\e[B'	        down-line-or-history           # down arrow
+# bindkey -M	mymap	'\e[C'	        forward-char                   # right arrow
+# bindkey	-M	mymap	'\e[D'	        backward-char                  # left arrow
+# bindkey -M      mymap   '\e[5~'		beginning-of-buffer-or-history # page up
+# bindkey -M      mymap   '\e[6~'		end-of-buffer-or-history       # page down
+
+bindkey	-M	mymap	$key[Up]         up-line-or-history             # up arrow
+bindkey	-M	mymap	$key[Down]       down-line-or-history           # down arrow
+# bindkey -M      mymap   'C-x'$key[Up]         up-line-history
+# bindkey -M      mymap   'C-x'$key[Down]       down-line-history
+bindkey -M      mymap   $key[Shift-Up]     up-line-or-search              # cursor up
+bindkey -M      mymap   $key[Shift-Down]   down-line-or-search            # <ESC>-
+bindkey -M	mymap	$key[Right]      forward-char                   # right arrow
+bindkey	-M	mymap	$key[Left]       backward-char                  # left arrow
+bindkey -M      mymap   $key[PageUp]	 beginning-of-buffer-or-history # page up
+bindkey -M      mymap   $key[PageDown]	 end-of-buffer-or-history       # page down
+
+
+# Copy
+bindkey	-M	mymap	'\e\C-_'        copy-prev-shell-word
+bindkey	-M	mymap	'\e='		copy-prev-word
+
+# Multi-line editing
+bindkey	-M	mymap	'\eq'		push-line-or-edit
+bindkey	-M	mymap	'\eQ'		push-line-or-edit
+bindkey	-M	mymap	'\C-xq'		push-line
+
+# Completion
+bindkey	-M	mymap	'\C-i'		complete-word
+bindkey	-M	mymap	'\e\C-i'	expand-or-complete
+
+
+
+# games
+bindkey	-M	mymap	'\e\C-g'	tetris
+
+# use it
+bindkey	-A	mymap	main
+
+# menu
+# There is one other additional feature when using menu selection. The
+# zle command accept-and-infer-next-history has a different meaning
+# here; it accepts a completion, and then tries to complete again using
+# menu selection. This is very useful with directory hierarchies, and in
+# combination with undo gives you a simple file browser. You need to
+# bind it in the special keymap menuselect; for example, I use
+
+bindkey -M menuselect '^o' accept-and-infer-next-history
+
+
+
+#######################################################3
+#if [[ "$TERM" == screen ]] ; then
+bindkey '\e[1~' beginning-of-line       # home
+bindkey '\e[4~' end-of-line             # end
+
+bindkey '^xp'   history-beginning-search-backward
+bindkey '^xP'   history-beginning-search-forward
+# bindkey -s '^L' "|less\n"             # ctrl-L pipes to less
+# bindkey -s '^B' " &\n"                # ctrl-B runs it in the background
+# if terminal type is set to 'rxvt':
+bindkey '\e[7~' beginning-of-line       # home
+bindkey '\e[8~' end-of-line             # end
+#fi

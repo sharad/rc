@@ -1,0 +1,11 @@
+
+
+#####
+# All Out of Office AutoReply
+#####
+
+:0: # 
+* ^Subject.*Out of Office AutoReply
+outoff
+
+
