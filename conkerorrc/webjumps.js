@@ -628,3 +628,9 @@ define_webjump("stock",
 define_webjump("trade",
                "https://us.etrade.com/e/t/home");
 
+define_webjump("book/flipkart",
+               "http://www.flipkart.com/search/a/books?query=%s&vertical=books&dd=0&autosuggest%5Bas%5D=off&autosuggest%5Bas-submittype%5D=default-search&autosuggest%5Bas-grouprank%5D=0&autosuggest%5Bas-overallrank%5D=0&Search=%C2%A0&_r=n_2yuAC4xgh0SZTuulvAtw--&_l=Tnndui8JdMVk7CZmDKIfXQ--&ref=7f487d10-54d7-493d-a35e-a1517d505577&selmitem=Books");
+
+define_webjump("book/sapna",
+               "http://sapnaonline.com/index.php?option=com_payment&view=search&filter=any&q=%s&search=Search");
+

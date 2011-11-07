@@ -17,6 +17,3 @@ define_webjump("sapna",
 
 
 
-
-define_webjump("sapna",
-               "http://sapnaonline.com/index.php?option=com_payment&view=search&filter=any&q=%s&search=Search");
