@@ -117,6 +117,10 @@ and puts spaces between the elements."
   (let ((output (emacs-eval estring t seconds)))
     (if (string= "" output) "nil" output)))
 
+(defun emacs-eval-nooutput (estring &optional (seconds *emacs-eval-timeout*))
+  (emacs-eval estring nil seconds))
+
+
 (defun read-from-emacs-eval (estring &optional (seconds *emacs-eval-timeout*))
   (let ((*read-eval* nil))
     ;; see http://groups.google.com/group/comp.lang.lisp/msg/69f60e759b9d7e06?pli=1
@@ -192,8 +196,8 @@ and puts spaces between the elements."
              (get-emacs-plan-tasks-element
               *emacs-planner-current-plan*
               (group-name (current-group)))))
-        (emacs-eval (join-string-list "(co-task" (prin1-to-string (group-name last)) ")") 2)
-        (emacs-eval (join-string-list "(ci-task" (prin1-to-string (group-name current)) ")") 2)
+        (emacs-eval-nooutput (join-string-list "(co-task" (prin1-to-string (group-name last)) ")"))
+        (emacs-eval-nooutput (join-string-list "(ci-task" (prin1-to-string (group-name current)) ")"))
         (echo-string
          (current-screen)
          (message "~{~%~a~}" apps))
