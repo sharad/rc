@@ -291,7 +291,25 @@ URxvt_color*foreground: light grey
 !!
 ! URxvt*font: xft:Mono-ifelse(WIDTH, 1280, 10, 12)
 ! URxvt.font: xft:DejaVu Sans Mono:size=ifelse(WIDTH, 1280, 10, 12)
-URxvt.font: xft:DejaVu Sans Mono
+URxvt.font: xft:DejaVu Sans Mono,\
+          Lohit Nepali:style=Regular,\
+          Lohit Konkani:style=Regular,\
+          Sarai:style=Regular,\
+          Lohit Marathi:style=Regular,\
+          Samanata:style=Regular,\
+          gargi:style=Medium,\
+          Samyak Devanagari:style=Regular,\
+          Nakula:style=Regular,\
+          Lohit Kashmiri:style=Regular,\
+          Chandas:style=Regular,\
+          Lohit Maithili:style=Regular,\
+          Lohit Hindi:style=Regular,\
+          FreeSans:style=Medium,нормален,obyčejné,normal,Mittel,µεσαία,Normaali,Normál,Medio,Gemiddeld,Odmiana Zwykła,Обычный,Normálne,menengah,прямій,Navadno,vidējs,normalusis,vừa,Arrunta,\
+          FreeSerif:style=Medium,нормален,obyčejné,normal,Mittel,µεσαία,Normaali,Normál,Normale,Gemiddeld,odmiana zwykła,Обычный,Normálne,ปกติ,menengah,прямій,Navadno,vidējs,normalusis,vừa,Arrunta,\
+          Sahadeva:style=Regular,\
+          Lohit Sindhi:style=Regular
+
+
 URxvt.xftAntialias:      false
 !!                                                              digital-clock
 URxvt.perl-ext:        selection,mark-yank-urls,readline,tabbed
