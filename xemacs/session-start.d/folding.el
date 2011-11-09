@@ -52,8 +52,7 @@
 ;; Finally, set up key bindings and automatically activate
 ;; hs-minor-mode for the desired major modes:
 
-(global-set-key (kbd "C-+") 'toggle-hiding)
-(global-set-key (kbd "C-\\") 'toggle-selective-display)
+;; see binding.el
 
 ;; Now we have (rudimentary) code folding for all modes, not just the
 ;; ones listed above.  Automatically Activating

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2011-07-21 22:37:00 s>
+;; Time-stamp: <2011-11-09 13:23:06 spratap>
 ;;
 
 (deh-section "Hyper Super etc"
@@ -216,6 +216,12 @@ and their terminal equivalents.")
   (global-set-key [C-kp-multiply] 'inline-arithmetic-multiply)
   (global-set-key [C-kp-subtract] 'inline-arithmetic-subtract)
 )
+
+
+(deh-require-maybe 'folding
+  (global-set-key-if-unbind (kbd "C-+") 'toggle-hiding)
+  (global-set-key-if-unbind (kbd "C-\\") 'toggle-selective-display))
+
 
 (user-provide 'binding)
 

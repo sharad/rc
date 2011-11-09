@@ -1,5 +1,14 @@
 # -*- Mode: shell-script; indent-tabs-mode: nil -*-
 
+
+
+
+# msmtp  -d -a msmtp-account-name   -f fromemail toemail <<'EOF'
+# To: toemail
+# Subject: Hi 2
+# Test
+# EOF
+
 include(defs)
 
 
@@ -19,6 +28,8 @@ account SETUP_msmtprc_account1
 	host SETUP_msmtprc_account1_host
 	port 25
 	from SETUP_msmtprc_account1_from
+        auto_from on
+        maildomain SETUP_msmtprc_account1_maildomain
 	auth off
         ntlmdomain SETUP_msmtprc_account1_ntlmdomain
 	protocol smtp
@@ -35,7 +46,8 @@ account SETUP_msmtprc_account1-tls :SETUP_msmtprc_account1
         tls_starttls on
         tls_key_file  /home/spratap/.ssl/private/sharad-key.pem
         tls_cert_file /home/spratap/.ssl/certs/sharad-cert.pem
-	tls_trust_file /usr/share/ca-certificates/mozilla/Equifax_Secure_CA.crt
+	# tls_trust_file /usr/share/ca-certificates/mozilla/Equifax_Secure_CA.crt
+        tls_trust_file /etc/ssl/certs/ca-certificates.crt
         tls_force_sslv3 on
 
 account SETUP_msmtprc_account1-ssl  :SETUP_msmtprc_account1-tls
