@@ -223,7 +223,7 @@ interactive("delicious-post",
                 var xsendurl = 'https://api.del.icio.us/v1/posts/suggest?&url='+encodeURIComponent(I.buffer.display_uri_string);
                 var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
                 var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
-                I.window.alert(xcontent.responseText);
+                // I.window.alert(xcontent.responseText);
                 var completions = new Array();
                 var sug = cc.getElementsByTagName('recommended');
                 var pop = cc.getElementsByTagName('popular');
