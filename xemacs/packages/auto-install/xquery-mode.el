@@ -1,0 +1,1 @@
+../misc/xquery-mode.el
