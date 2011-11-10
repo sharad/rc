@@ -225,10 +225,15 @@ interactive("delicious-post",
                 var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
                 I.window.alert(xcontent.responseText);
                 var completions = new Array();
-                var eles = cc.getElementsByTagName('recommended');
-                for (i=0; i< eles.length; i++) {
-                    I.window.alert(eles[i].text);
-                    completions.push(eles[i].text);
+                var sug = cc.getElementsByTagName('recommended');
+                var pop = cc.getElementsByTagName('popular');
+                for (i=0; i< sug.length; i++) {
+                    // I.window.alert(sug[i].attributes[0].textContent);
+                    completions.push(sug[i].attributes[0].textContent);
+                }
+                for (i=0; i< pop.length; i++) {
+                    // I.window.alert(pop[i].attributes[0].textContent);
+                    completions.push(pop[i].attributes[0].textContent);
                 }
                 var completer = prefix_completer($completions = completions);
                 // }}
