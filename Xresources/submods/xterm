@@ -1,0 +1,140 @@
+! -----------------[ XTERM ]-----------------------
+! XTerm*ttyModes: erase ^?
+xterm*ttyModes:         intr ^c erase  susp ^@ dsusp ^@ kill ^u eof ^d
+XTerm*ttyModes:         intr ^c erase  susp ^@ dsusp ^@ kill ^u eof ^d
+xterm*ScrollBar:        off
+XTerm*ScrollBar:        off
+xterm*TitleBar:         on
+XTerm*TitleBar:         on
+xterm*TextUnderIcon:    on
+XTerm*TextUnderIcon:    on
+xterm*AutoRaise:        on
+XTerm*AutoRaise:        on
+xterm*termtype:         vt100
+XTerm*termtype:         vt100
+xterm*metaSendsEscape: True
+XTerm*VT100.metaSendsEscape: True
+!! from http://osdir.com/ml/window-managers.stumpwm.devel/2007-07/msg00022.html
+XTerm*allowSendEvents: True
+
+!
+! XTERM resources
+!
+XTerm*applicationKeypadMode: True
+XTerm*c132: True
+XTerm*cursorColor: Red
+! XTerm*font: 9x15
+! xterm*font:             9x15
+xterm*VT100*font9: -*-terminal-*-*-*-*-*-*-*-*-*-*-*-*
+xterm*font:             10x20
+
+!  If you use the following "Foreground" (ie. capitalized) it over-rides
+!  all other colours!
+!! need black background good for eyes.
+! xterm*foreground: light grey
+! XTerm*foreground: DarkSlateGray4
+
+!! bg: Black, DarkSlateGray4 (nice color, not for work),
+xterm*background: Black
+XTerm*background: Black
+XTerm_color*background: Black
+
+!! fg: white, light grey
+xterm*foreground: light grey
+XTerm*foreground: light grey
+XTerm_color*foreground: light grey
+
+XTerm_color*cursorColor: Orchid
+XTerm*fullCursor: true
+XTerm*jumpScroll: on
+XTerm*pointerColor: Black
+XTerm*pointerShape: XTerm
+XTerm*reverseVideo: false
+XTerm*reverseWrap: false
+XTerm*autoWrap: true
+xterm*autoWrap: true
+! XTerm*rightScrollBar: true
+XTerm*saveLines: 4096
+XTerm*scrollBar: true
+XTerm*scrollKey: on
+XTerm*scrollTtyOutput: off
+XTerm*titleBar: false
+XTerm_color*reverseVideo: false
+XTerm*fontMenu.Label: VT Fonts
+XTerm*fontMenu*fontdefault*Label: Default
+XTerm*fontMenu*font1*Label: Unreadable
+XTerm*VT100*font1: nil2
+
+! !! added from http://gigo.com/archives/blog/apples-x11app-and-xterm-copypa.html
+! ! xterm*trimSelection: true
+! ! xterm*printerCommand: cat >> /home/c_sharad/xterm-print-output
+
+! ! XTerm*VT100.Translations: #override \
+! ! <KeyPress> Prior: scroll-back(1,page) \n\
+! ! <KeyPress> Next: scroll-forw(1,page) \n\
+! ! Meta <KeyPress> W: quit() \n\
+! ! Meta <KeyPress> V: insert-selection(CLIPBOARD,PRIMARY,CUT_BUFFER0) \n\
+! ! <BtnUp>: select-end(CLIPBOARD,PRIMARY,CUT_BUFFER0) \n\
+
+!---------------------------------------------
+!  Xterm, rxvt, etc.
+!! setting XTerm*geometry cause C-Mouse-Button menu not to be displayed.
+! XTerm*geometry: 100x28
+! XTerm*geometry: 86x28
+!  If you use the following "Foreground" (ie. capitalized) it over-rides
+!  all other colours!
+!! need black background good for eyes.
+! xterm*font:             9x15
+! xterm*VT100*font9: -*-terminal-*-*-*-*-*-*-*-*-*-*-*-*
+!! huge size good for eyes.
+!! Xterm*cursorColor: Blue
+! xterm*Border:           dark blue
+! xterm*Border:           off
+! xterm*Border:           white
+! xterm*ttyModes:         intr ^c erase ^h susp ^@ dsusp ^@ kill ^u eof ^d
+
+!! ------------------------------------------------
+
+! !! from: http://www.fifi.org/doc/xterm/xterm.faq.html
+! XTerm*vt100.translations:     #override \n\
+! 		<Key>Insert:            string(\001) \n\
+! 		Shift <Key>Up:          scroll-back(1,lines) \n\
+! 		Shift <Key>Down:        scroll-forw(1,lines) \n\
+! 		Shift <Key>Right:       string(0x1b) string("f") \n\
+! 		Shift <Key>Left:        string(0x1b) string("b") \n\
+! 		Shift <Key>Delete:      string(0x1b) string(0x08) \n\
+! 		Shift <Key>Tab:         string(0x1b) string("*") \n\
+! 		<Key>0x1000FF0D:        scroll-back(1,page) \n\
+! 		<Key>0x1000FF0E:        scroll-forw(1,page) \n\
+! 		<Key>0x1000FF09:        string(\010) \n\
+! 		<Key>0x1000FF0A:        string(\005) \n\
+! 		<Key>BackSpace:         string(0xff) \n\
+! 		<Key>Select:            select-start() \n\
+! 		<Key>0x1000FF02:        select-end(PRIMARY,CUT_BUFFER0) \n\
+! 		Meta <Key>0x1000FF02:   select-end(CLIPBOARD) \n\
+! 		<Key>0x1000FF04:        insert-selection(PRIMARY,CUT_BUFFER0) \n\
+! 		Meta <Key>0x1000FF04:   insert-selection(CLIPBOARD) \n\
+! 		<Key>F1:                string(0x1b) string("OP") \n\
+! 		<Key>F2:                string(0x1b) string("OQ") \n\
+! 		<Key>F3:                string(0x1b) string("OR") \n\
+! 		<Key>F4:                string(0x1b) string("OS") \n\
+! 		<Key>F5:                string(0x1b) string("OA") \n\
+! 		<Key>F11:               string(0x1b) string("LQ23~") \n\
+! 		<Key>F12:               string(0x1b) string("LQ24~") \n\
+! 		<Key>KP_0:              string(0x1b) string("Op") \n\
+! 		<Key>KP_1:              string(0x1b) string("Oq") \n\
+! 		<Key>KP_2:              string(0x1b) string("Or") \n\
+! 		<Key>KP_3:              string(0x1b) string("Os") \n\
+! 		<Key>KP_4:              string(0x1b) string("Ot") \n\
+! 		<Key>KP_5:              string(0x1b) string("Ou") \n\
+! 		<Key>KP_Divide:         string(0x1b) string("OP") \n\
+! 		<Key>KP_Multiply:       string(0x1b) string("LQ29~") \n\
+! 		<Key>KP_Enter:          string(0x1b) string("OM") \n\
+! 		<Key>KP_Subtract:       string(0x1b) string("Om") \n\
+! 		<Key>KP_Add:            string(0x1b) string("Ol") \n\
+! 		<Key>KP_Decimal:        string(0x1b) string("On") \n\
+! 		<Btn1Down>:             select-start() \n\
+! 		<Btn1Motion>:           select-extend() \n\
+! 		<Btn1Up>:               select-end(PRIMARY,CUT_BUFFER0) \n\
+! 		Button1<Btn2Down>:      select-end(CLIPBOARD) \n\
+! 		Button1<Btn2Up>:        ignore()

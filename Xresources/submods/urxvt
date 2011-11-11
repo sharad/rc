@@ -1,0 +1,253 @@
+
+
+URxvt.searchable-scrollback: CM-s
+Rxvt.searchable-scrollback: CM-s
+!! http://www.jukie.net/~bart/blog/urxvt-url-yank
+URxvt.keysym.CM-u: perl:mark-yank-urls:activate_mark_mode
+URxvt.underlineURLs: true
+URxvt.perl-lib: /home/s/hell/.urxvt/
+URxvt.urlLauncher: conkeror
+
+! rxvt-unicode
+!URxvt*tintColor: #999
+URxvt*shading: -100
+URxvt*scrollstyle: xterm
+URxvt*scrollBar: False
+URxvt*scrollTtyOutput: True
+URxvt*saveLines: 5000
+URxvt*borderLess: False
+!URxvt*inheritPixmap: True
+URxvt*background: Black
+URxvt*background: Black
+URxvt_color*background: Black
+
+!! fg: white, light grey
+URxvt*foreground: light grey
+URxvt*foreground: light grey
+URxvt_color*foreground: light grey
+
+!! from http://ubuntuforums.org/showthread.php?t=1227973
+!! XFT with rxvt
+!! http://ubuntuforums.org/showthread.php?t=690532
+!! http://www.google.co.in/search?q=%20X%20listing%20xft%20font%20&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai=
+!! http://ubuntuforums.org/showthread.php?t=1227973
+!!
+! URxvt*font: xft:Mono-ifelse(WIDTH, 1280, 10, 12)
+! URxvt.font: xft:DejaVu Sans Mono:size=ifelse(WIDTH, 1280, 10, 12)
+URxvt.font: xft:DejaVu Sans Mono,\
+          Lohit Nepali:style=Regular,\
+          Lohit Konkani:style=Regular,\
+          Sarai:style=Regular,\
+          Lohit Marathi:style=Regular,\
+          Samanata:style=Regular,\
+          gargi:style=Medium,\
+          Samyak Devanagari:style=Regular,\
+          Nakula:style=Regular,\
+          Lohit Kashmiri:style=Regular,\
+          Chandas:style=Regular,\
+          Lohit Maithili:style=Regular,\
+          Lohit Hindi:style=Regular,\
+          FreeSans:style=Medium,нормален,obyčejné,normal,Mittel,µεσαία,Normaali,Normál,Medio,Gemiddeld,Odmiana Zwykła,Обычный,Normálne,menengah,прямій,Navadno,vidējs,normalusis,vừa,Arrunta,\
+          FreeSerif:style=Medium,нормален,obyčejné,normal,Mittel,µεσαία,Normaali,Normál,Normale,Gemiddeld,odmiana zwykła,Обычный,Normálne,ปกติ,menengah,прямій,Navadno,vidējs,normalusis,vừa,Arrunta,\
+          Sahadeva:style=Regular,\
+          Lohit Sindhi:style=Regular
+
+
+URxvt.xftAntialias:      false
+!!                                                              digital-clock
+!! URxvt.perl-ext:        selection,mark-yank-urls,readline,tabbed
+URxvt.perl-ext:        selection,mark-yank-urls,readline
+URxvt.keysym.C-M-r: perl:selection:rot13
+
+!! check http://mina86.com/2009/05/16/tabbed-urxvt-extension/
+URxvt.new-button:       yes
+!! URxvt.perl-ext-common: default,matcher,digital-clock,grab
+URxvt.perl-ext-common: default,matcher,keyboard-select,url-select,clipboard,tabbedex
+
+!!start: from: http://christarnowski.wordpress.com/2009/08/22/urxvt/
+URxvt.jumpScroll: true
+
+!! Urxvt Print very much necessary.....
+URxvt.print-pipe: cat > $(TMPDIR=$HOME mktemp urxvt.XXXXXX)
+URxvt.loginShell: false
+
+!!# Fonts
+!! URxvt.font: xft:terminus:pixelsize=8
+!! URxvt.xftAntialias: true
+!! Transparency (works with Compiz)
+!! urxvt*depth: 32
+!! urxvt*foreground: rgba:dddd/dddd/dddd/dddd
+!! urxvt*background: rgba:0000/0000/0000/dddd
+
+!!# Colors
+*color0: rgb:00/00/00
+*color1: rgb:aa/00/00
+*color2: rgb:00/aa/00
+*color3: rgb:aa/55/00
+*color4: rgb:00/00/aa
+*color5: rgb:aa/00/aa
+*color6: rgb:00/aa/aa
+*color7: rgb:aa/aa/aa
+*color8: rgb:55/55/55
+*color9: rgb:ff/55/55
+*color10: rgb:55/ff/55
+*color11: rgb:ff/ff/55
+*color12: rgb:55/55/ff
+*color13: rgb:ff/55/ff
+*color14: rgb:55/ff/ff
+*color15: rgb:ff/ff/ff
+
+!!! from: http://movingparts.net/2008/10/22/bringin-sexy-urxvt-back/
+!! urxvt.background: rgba:0000/0000/0000/ccdd
+!! urxvt.foreground: white
+!! !urxvt.font: -artwiz-fkp-medium-r-normal–16-160-75-75-m-80-iso8859-1
+!! !urxvt.boldfont: -artwiz-fkp-medium-r-normal–16-160-75-75-m-80-iso8859-1
+!! urxvt.font: xft:Terminus:pixelsize=14
+!! urxvt.scrollBar_right: 1
+!! urxvt.scrollBar_floating: 1
+!! urxvt.saveLines: 10000
+!! urxvt.internalBorder: 5
+!! urxvt.depth: 32
+!! urxvt.scrollTtyOutput: 0
+!! urxvt.scrollTtyKeypress: 1
+!! urxvt.color12: rgba:6666/6666/ffff/ffff
+!! urxvt.color12: rgba:6666/6666/ffff/ffff
+!! … should make “bright blue” actually readable :)
+!! And, you can also use TrueType fonts, like the Terminus font (which is really great for console usage, imo):
+!! urxvt.font: xft:Terminus:pixelsize=11
+!!!
+
+!! end
+
+!! !! start: http://www.linuxquestions.org/questions/linux-software-2/problem-with-rxvt-unicode-602760/
+!! URxvt.scrollBar: rxvt
+!! URxvt.secondaryScroll: true
+!! URxvt.saveLines: 5000
+!! URxvt.cursorBlink: true
+!! URxvt.geometry: 90x25
+!! URxvt.fading: 50%
+!! URxvt.font: xft:Monospace:pixelsize=11
+!! URxvt.background: rgba:0000/0000/0000/bbbb
+!! URxvt.foreground:  #f0f0f0
+!! URxvt.cursorColor: #f0f0f0
+!! URxvt.depth: 32
+!! URxvt.inheritPixmap: true
+!! URxvt.tintColor: #4A6A9A
+!! URxvt.internalBorder: 0
+!! URxvt.utf8: true
+!! #URxvt.perl-lib: /usr/local/lib/urxvt/perl
+!! #URxvt.perl-ext-common: default,matcher,searchable-scrollback
+!! URxvt.urlLauncher: firefox
+!!
+!! Xft.dpi:96
+!! Xft.hinting:true
+!! Xft.hintstyle:hintslight
+!! !! end
+
+
+!!!! START:  keyboard-select: start
+!! https://github.com/muennich/urxvt-perls
+!! keyboard-select
+
+!! Use keyboard shortcuts to select and copy text.
+
+!! After installing, put the following lines in your .Xdefaults/.Xresources:
+
+!! URxvt.perl-ext-common: keyboard-select
+URxvt.keysym.M-Escape: perl:keyboard-select:activate
+
+!! The following line overwrites the default Meta-s binding and allows
+!! to activate keyboard-select directly in backward search mode:
+
+URxvt.keysym.M-s: perl:keyboard-select:search
+
+!! Use Meta-Escape to activate selection mode, then use the following keys:
+
+! h/j/k/l:    Move cursor left/down/up/right (also with arrow keys)
+! g/G/0/^/$/H/M/L/f/F/;/,/w/W/b/B/e/E: More vi-like cursor movement keys
+! '/'/?:      Start forward/backward search
+! n/N:        Repeat last search, N: in reverse direction
+! Ctrl-f/b:   Scroll down/up one screen
+! Ctrl-d/u:   Scroll down/up half a screen
+! v/V/Ctrl-v: Toggle normal/linewise/blockwise selection
+! y/Return:   Copy selection to primary buffer, Return: deactivate afterwards
+! q/Escape:   Deactivate keyboard selection mode
+!!
+!! END
+
+
+!! START
+!! url-select
+!! Use keyboard shortcuts to select URLs.
+
+!! This should be used as a replacement for the default matcher
+!! extension, it also makes URLs clickable with the middle mouse
+!! button.
+
+!! After installing, put the following lines in your
+!! .Xdefaults/.Xresources:
+
+!! URxvt.perl-ext-common: ...,url-select
+URxvt.keysym.M-u: perl:url-select:select_next
+
+!! Use Meta-u to activate URL selection mode, then use the following
+!! keys:
+
+! j/k:      Select next downward/upward URL (also with arrow keys)
+! g/G:      Select first/last URL (also with home/end key)
+! o/Return: Open selected URL in browser, Return: deactivate afterwards
+! y:        Copy (yank) selected URL and deactivate selection mode
+! q/Escape: Deactivate URL selection mode
+
+! Options:
+
+URxvt.urlLauncher:   browser/command to open selected URL with
+URxvt.underlineURLs: if set to true, all URLs get underlined
+URvxt.urlButton:     mouse button to click-open URLs (default: 2)
+
+!! END
+
+
+
+!! START
+!! clipboard
+
+!! Use keyboard shortcuts to copy the selection to the clipboard and
+!! to paste the clipboard contents (optionally escaping all special
+!! characters).
+
+!! After installing, put the following lines in your
+!! .Xdefaults/.Xresources:
+
+!! URxvt.perl-ext-common: ...,clipboard
+URxvt.keysym.M-c:   perl:clipboard:copy
+URxvt.keysym.M-v:   perl:clipboard:paste
+URxvt.keysym.M-C-v: perl:clipboard:paste_escaped
+
+!! You can also overwrite the system commands to use for copying/pasting. The default ones are:
+
+URxvt.copyCommand:  xsel -ib
+URxvt.pasteCommand: xsel -ob
+
+!! If you prefer xclip, then put these lines in your .Xdefaults/.Xresources:
+
+URxvt.copyCommand:  xclip -i -selection clipboard
+URxvt.pasteCommand: xclip -o -selection clipboard
+
+!! On Mac OS X, put these lines in your .Xdefaults/.Xresources:
+
+!! URxvt.copyCommand:  pbcopy
+!! URxvt.pasteCommand: pbpaste
+
+
+!! The use of the functions should be self-explanatory!
+!! END
+
+
+!! START
+!! from:
+!! tabbedex
+!! https://github.com/stepb/urxvt-tabbedex
+
+URxvt.keysym.M-t: perl:tabbedex:new_tab
+!! END

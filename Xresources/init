@@ -1,0 +1,75 @@
+!
+! # processing with m4
+! # changequote(`[', `]')
+!-------------------------------------------------------------------
+!
+! .Xresources
+!
+!
+! Uses: This file provides default values for colors, fonts, and other
+! aspects of client appearance and behavior.
+! Resources is the X buzzword for properties or attributes of an
+! application. !
+!! <<Edit this file your hearts content - there is no accounting for taste.>>
+!
+! Color options are in /usr/lib/X11/rgb.txt ! Font options are in /usr/lib/X11/fonts directory.
+! Bitmaps are in /usr/include/X11/bitmaps !
+! after making changes do a: xrdb -merge .Xresources
+!
+! For users doing remote connections into the account.
+! The following command should be first in .xinitrc
+! xrdb -load $HOME/.Xresources
+!
+! vt100 XTerm users will need numlock on and export TERM=vt100
+!
+!-------------------------------------------------------------------
+!
+!Turn on error messages
+
+
+! # processing with m4
+changequote(`[', `]')
+
+define([LQ],[changequote(<,>)[dnl]
+changequote[]])
+define([RQ],[changequote(<,>)dnl[
+]changequote[]])
+
+*StringConversionWarnings: on
+
+ifdef([COLOR],[*customization: -color])
+
+Seyon.modems: /dev/modem
+
+! The following defaults change the behavior of clients using the
+! X libraries (including xv, everything):
+!*background:    black
+!*foreground:    grey90
+
+
+
+
+
+!  Xman
+xman*manualFontNormal: 8x16
+
+Xft.dpi: 97
+Xft.hinting: 1
+Xft.hintstyle: hintmedium
+
+!! Emacs
+include(submods/emacs)
+
+!! Xterm
+include(submods/xterm)
+
+!! Xlock
+include(submods/xlock)
+
+!! Urxvt
+include(submods/urxvt)
+
+!! YeahConsole
+include(submods/yeahconsole)
+
+

@@ -37,8 +37,8 @@ if [ $DISPLAY ] ; then
 
     whence -p xrdb &&
     xrdb \
-        -cpp m4 \
-        -merge ~/.Xdefaults # should use m4
+        -cpp 'm4 -I ~/.Xresources' \
+        -merge ~/.Xresource/init  # should use m4
 
     whence -p xautolock &&
     xautolock -detectsleep &!
