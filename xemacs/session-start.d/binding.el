@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2011-11-09 13:23:06 spratap>
+;; Time-stamp: <2011-11-12 01:03:01 s>
 ;;
 
 (deh-section "Hyper Super etc"
@@ -222,6 +222,9 @@ and their terminal equivalents.")
   (global-set-key-if-unbind (kbd "C-+") 'toggle-hiding)
   (global-set-key-if-unbind (kbd "C-\\") 'toggle-selective-display))
 
+
+(when (user-require 'db)
+  (global-set-key [f12] 'enter-db-mode))
 
 (user-provide 'binding)
 

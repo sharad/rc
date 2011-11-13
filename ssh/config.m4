@@ -21,7 +21,6 @@ Host SETUP_h2_name
 Host SETUP_h3_name
   User SETUP_h3_user
 
-
 Host SETUP_h4_name
   User SETUP_h4_user
 

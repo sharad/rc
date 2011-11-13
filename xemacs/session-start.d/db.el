@@ -259,7 +259,8 @@ Special commands:
   (db-connect-to-db)
   (db-set-window-layout))
 
-(global-set-key [f12] 'enter-db-mode)
+;; binding in binding.el
+
 
 
 

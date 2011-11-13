@@ -1,0 +1,30 @@
+!  Emacs (like I ever use it - but the info might be worthwhile if I do)
+
+!emacs*Background: DarkSlateGray
+emacs*Background: black
+! emacs*Background: DarkSlateGray
+!emacs*Foreground: Wheat
+!emacs*Foreground: white
+!emacs*Foreground: FloralWhite
+!emacs*Foreground: GhostWhite
+!emacs*Foreground: Honeydew
+!emacs*Foreground: Ivory
+!emacs*Foreground: LemonChiffon
+!emacs*Foreground: LightGoldenrodYellow
+!emacs*Foreground: LightYellow
+!emacs*Foreground: Linen
+!emacs*Foreground: MintCream
+!emacs*Foreground: OldLace
+!emacs*Foreground: PapayaWhip
+!emacs*Foreground: Seashell
+!emacs*Foreground: Snow
+!emacs*Foreground: White
+!emacs*Foreground: WhiteSmoke
+
+!emacs*pointerColor: Orchid
+!emacs*cursorColor: Orchid
+!emacs*bitmapIcon: on
+!emacs*font: fixed
+! emacs*font: 9x15
+! emacs.geometry: 85x40
+emacs*ttyModes:         intr ^c erase  susp ^@ dsusp ^@ kill ^u eof ^d

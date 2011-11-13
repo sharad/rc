@@ -1,0 +1,36 @@
+
+!! Xautolock
+! xautolock*locker:
+Xautolock.locker: alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=away&message='
+xautolock*locker: alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=away&message='
+!! Xautolock.locker: xlock -mode blank -mousemotion
+!! options are xtrlock xdaliclock xlock slock xnlock
+!! timeout of 3 mins before locking
+!! Xautolock.time: 10
+Xautolock.time: 7
+xautolock*time: 7
+! Active corner = bottom right
+Xautolock.corners: 0000
+xautolock.corners: 0000
+! Corner timeout = 1 second
+!! Xautolock.cornerdelay: 1
+!! Xautolock.cornerdelay: 1
+!! xautolock*cornerdelay: 1
+!! Xautolock.cornerredelay: 0
+!! xautolock*cornerredelay: 0
+Xautolock.noclose: true
+xautolock*noclose: true
+! notify
+Xautolock.notify: 60
+xautolock*notify: 60
+! Xautolock.notifier: [ HOST = taj ] && xdaliclock
+! xautolock*notifier: [ HOST = taj ] && xdaliclock
+Xautolock.notifier: [ HOST = taj ]
+xautolock*notifier: [ HOST = taj ]
+
+
+
+Xlock.mode: blank
+Xlock.mousemotion: on
+
+

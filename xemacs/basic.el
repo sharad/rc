@@ -134,7 +134,9 @@ alkready should not exist.")
 
     (if file-to-load
         (load file-to-load)
-        (message "no such file to load."))))
+        (progn
+          (message "no such file to load.")
+          nil))))
 
 
 
