@@ -35,10 +35,13 @@ if [ $DISPLAY ] ; then
     whence -p xmodmap &&
     xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
 
+    # whence -p xrdb &&
+    # xrdb \
+    #     -cpp 'm4 -I ~/.Xresources' \
+    #     -merge ~/.Xresource/init  # should use m4
+
     whence -p xrdb &&
-    xrdb \
-        -cpp 'm4 -I ~/.Xresources' \
-        -merge ~/.Xresource/init  # should use m4
+    m4 -I ~/.Xresources ~/.Xresources/init | xrdb -merge -
 
     whence -p xautolock &&
     xautolock -detectsleep &!

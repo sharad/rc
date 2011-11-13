@@ -57,10 +57,10 @@ URxvt.xftAntialias:      false
 !!                                                              digital-clock
 !! URxvt.perl-ext:        selection,mark-yank-urls,readline,tabbed
 URxvt.perl-ext:        selection,mark-yank-urls,readline
-URxvt.keysym.C-M-r: perl:selection:rot13
+!! URxvt.keysym.C-M-r: perl:selection:rot13
 
 !! check http://mina86.com/2009/05/16/tabbed-urxvt-extension/
-URxvt.new-button:       yes
+!! URxvt.new-button:       yes
 !! URxvt.perl-ext-common: default,matcher,digital-clock,grab
 URxvt.perl-ext-common: default,matcher,keyboard-select,url-select,clipboard,tabbedex
 
@@ -201,9 +201,9 @@ URxvt.keysym.M-u: perl:url-select:select_next
 
 ! Options:
 
-URxvt.urlLauncher:   browser/command to open selected URL with
-URxvt.underlineURLs: if set to true, all URLs get underlined
-URvxt.urlButton:     mouse button to click-open URLs (default: 2)
+! URxvt.urlLauncher:   browser/command to open selected URL with
+! URxvt.underlineURLs: if set to true, all URLs get underlined
+! URvxt.urlButton:     mouse button to click-open URLs (default: 2)
 
 !! END
 

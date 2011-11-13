@@ -27,7 +27,7 @@ yeahconsole*stepSize: 20
 !!
 !! [any combination of "Win" "Alt" "Control" or "None"]+[name of key]
 !!
-!! eg. ControlAlt+y, Control+asciitilde, Win+c, ControlAltWin+y ,None+Menu,.... (the order of modifiers doesn't matter)
+!! eg. ControlAlt+y, Control+asciitilde, Win+c, ControlAltWin+y ,None+Menu,.... (the order of modifiers does not matter)
 !!
 !! toggleKey:      key combo that toggles yeahconsole (defaults to ControlAlt+y)
 !! keyBigger:      increase  height of yeahconsole (default: Control+KP_Add)
