@@ -5,7 +5,7 @@ Rxvt.searchable-scrollback: CM-s
 !! http://www.jukie.net/~bart/blog/urxvt-url-yank
 URxvt.keysym.CM-u: perl:mark-yank-urls:activate_mark_mode
 URxvt.underlineURLs: true
-URxvt.perl-lib: /home/s/hell/.urxvt/
+URxvt.perl-lib: esyscmd(echo -n $HOME)/.urxvt/
 URxvt.urlLauncher: conkeror
 
 ! rxvt-unicode

@@ -20,15 +20,6 @@ fi
 
 if [ $DISPLAY ] ; then
 
-    whence -p urxvtd &&
-    pgrep urxvtd ||
-    urxvtd \
-        --quiet \
-        --opendisplay \
-        --fork &!
-
-    # DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
-
     # which  gnubiff &&  gnubiff  -n &
     # xmodmap ~/.xmodmaprc	# excellent, why i was not knowing it before.
 
@@ -42,6 +33,16 @@ if [ $DISPLAY ] ; then
 
     whence -p xrdb &&
     m4 -I ~/.Xresources ~/.Xresources/init | xrdb -merge -
+
+    whence -p urxvtd &&
+    pgrep urxvtd ||
+    urxvtd \
+        --quiet \
+        --opendisplay \
+        --fork &!
+
+    # DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
+
 
     whence -p xautolock &&
     xautolock -detectsleep &!
