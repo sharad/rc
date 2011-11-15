@@ -8,7 +8,7 @@ use warnings;
 # use Net::LDAP qw(:all);
 use Net::LDAP;
 
-use lib $ENV{'HOME'} . ".osetup/info/common/perl"
+use lib $ENV{'HOME'} . "/.osetup/info/common/perl";
 use Setup;
 
 
