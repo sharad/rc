@@ -48,7 +48,7 @@
     (setq inferior-lisp-program "sbcl"
       ;; I am setting up port other than 4005 so stumpwm will not be interfered with
       ;; other slime invokation.
-      slime-port 4010
+      slime-port 4005
       slime-backend (get-slime-config 'slime-backend)
       slime-path (get-slime-config 'slime-path)
       swank-loader-full-path

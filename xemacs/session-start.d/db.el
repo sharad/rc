@@ -28,14 +28,30 @@
 
 
 ;; Emacs Database Mode | A New Emacs Mode For Working With Databases
-;; Emacs is a text editor, but more than that, it is a framework that enables you to develop applications that can manipulate text in a variety of ways. For example, when I am working with databases, I want to create queries and send them to the database. I'll need a text editor to create the query in the first place so it makes sense that should add functionality to emacs that can easily send my query straight to the database.
+;; Emacs is a text editor, but more than that, it is a framework that
+;; enables you to develop applications that can manipulate text in a
+;; variety of ways. For example, when I am working with databases, I
+;; want to create queries and send them to the database. I'll need a
+;; text editor to create the query in the first place so it makes
+;; sense that should add functionality to emacs that can easily send
+;; my query straight to the database.
 
-;; Let me demonstrate with a fairly substantial example that mimics typical usage of comint mode. Normally comint is used for interacting with an interpreter. I do a lot of database work with Sybase so a new emacs mode that helped with that would be great. Adapting this for other databases should be fairly straightforward.
+;; Let me demonstrate with a fairly substantial example that mimics
+;; typical usage of comint mode. Normally comint is used for
+;; interacting with an interpreter. I do a lot of database work with
+;; Sybase so a new emacs mode that helped with that would be
+;; great. Adapting this for other databases should be fairly
+;; straightforward.
 
-;; I can leverage off the useful sql-mode that already provides syntax highlighting and database interaction. However, as far as I know, it doesn't really help me with my favourite usage style where I have a command window containing my queries and a separate results window.
+;; I can leverage off the useful sql-mode that already provides syntax
+;; highlighting and database interaction. However, as far as I know,
+;; it doesn't really help me with my favourite usage style where I
+;; have a command window containing my queries and a separate results
+;; window.
 
-;; When you have finished looking at this lens, have a look at the db-mode extension for working with multiple databases.
-;; Contents at a Glance
+;; When you have finished looking at this lens, have a look at the
+;; db-mode extension for working with multiple databases.  Contents at
+;; a Glance
 
 ;;     Emacs Core Libraries
 ;;     Constants

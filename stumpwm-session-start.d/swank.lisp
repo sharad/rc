@@ -26,7 +26,9 @@
 ;; (if (functionp 'swank-loader::init)
 ;;     (swank-loader::init))
 
-(swank-loader::init)
+;; (swank-loader::init)
+;; from http://lists.common-lisp.net/pipermail/slime-devel/2008-August/015346.html
+(swank-loader::init :setup nil)
 
 
 ;; (if (and
@@ -38,7 +40,7 @@
 
 (defcommand swank () ()
   (setf stumpwm:*top-level-error-action* :break)
-  (if (swank:create-server :port 4007
+  (if (swank:create-server :port 4005
                            :style swank:*communication-style*
                            :dont-close t)
       (when nil

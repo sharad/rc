@@ -33,14 +33,14 @@
             #p"/atlantic/home/s/res/share/common-lisp/"
             #p"/all/res/share/common-lisp/"
             ))
-      (quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
-                                       qlisp-parent-dir)))
+       (quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+                                        qlisp-parent-dir)))
   (when (probe-file quicklisp-init)
     (load quicklisp-init)))
 ;;;; QuickLisp
 
 
-(asdf:clear-source-registry)
+;; (asdf:clear-source-registry)
 
 
 ;;;;;; ASDF2 ;;;;;;
