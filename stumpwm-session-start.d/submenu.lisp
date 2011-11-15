@@ -33,8 +33,8 @@
       (run-shell-command choice))))
 
 
-(defvar *menu-selection-timeout* 2 "menu selection timeout")
-(defvar *menu-selection-file* #p"/tmp/sel" "menu selection timeout")
+(defvar *menu-selection-timeout* 7 "menu selection timeout")
+(defvar *menu-selection-file* (data-dir-file "selections" "dump") "menu selection timeout")
 
 (defun save-db (filename db)
   (with-open-file (out filename
@@ -44,31 +44,47 @@
       (print db out))))
 
 (defun load-db (filename)
-  (with-open-file (in filename)
-    (with-standard-io-syntax
-      (read in))))
+  (if (if (probe-path filename)
+          t
+          (save-db filename nil))
+      (with-open-file (in filename)
+        (with-standard-io-syntax
+          (read in)))))
 
 (let (db)
-  (defun get-sel (options &optional (storage *menu-selection-file*))
+  (defun db ()
+    db)
+
+  (defun reset-db ()
+    (setf db nil))
+
+  (defun get-sel (options storage)
     (unless db
       (setf db (load-db storage)))
-    (assoc options db :test #'equal))
+    (cdr (assoc options db :test #'equal)))
 
-  (defun set-sel (selection options &optional (storage *menu-selection-file*))
+  (defun set-sel (selection options storage)
     (unless db
       (setf db (load-db storage)))
-    (if (acons options selection db :test #'equal)
-        (save-db storage db))))
+    (if (setf db (acons options selection db))
+        (save-db storage db)))
 
-(defun timed-selection (options &optional (seconds *menu-selection-timeout*))
+  (defun save-storage (&optional (storage *menu-selection-file*))
+    (save-db storage db)))
+
+(defun timed-selection (options seconds prompt)
   (handler-case
       (sb-ext:with-timeout seconds            ;so it will not hang to wait for forever.
-        (let ((selection (stumpwm::select-from-menu (current-screen) options "")))
+        (let ((selection (stumpwm::select-from-menu (current-screen) options prompt)))
           selection))
         (sb-ext:timeout ()
           nil)))
 
-(defun menu-with-timeout (options &optional (seconds *menu-selection-timeout*) storage default)
+(defun menu-with-timeout (options &key
+                          (default 0)
+                          (storage *menu-selection-file*)
+                          (seconds *menu-selection-timeout*)
+                          (prompt "sel:"))
   (let ((automatic-selection
          (or (get-sel options storage)
              (if default
@@ -83,13 +99,17 @@
                      (if (member default options :test #'equal)
                          default))
                  (car options))))
-        (selection (timed-selection options seconds)))
+        (selection (timed-selection options seconds prompt)))
     (if selection
         (progn
-         (unless (equal selection automatic-selection)
-           (set-sel selection options storage))
-         selection)
+          ;; (unless (equal selection automatic-selection)
+          (when selection
+            (set-sel selection options storage))
+          selection)
         automatic-selection)))
 
 
-;; (menu-with-timeout '("x" "y" "z") 2 #p"/tmp/x")
+;; (menu-with-timeout '("x" "y" "z") :seconds 2 :storage #p"/tmp/x")
+;; (menu-with-timeout '(("x") ("y") ("z")) :storage #p"/tmp/x")
+;; (menu-with-timeout *app-menu* :storage #p"/tmp/x" :prompt "asfdsf:")
+
