@@ -33,8 +33,17 @@
       (run-shell-command choice))))
 
 
+
+
 (defvar *menu-selection-timeout* 7 "menu selection timeout")
 (defvar *menu-selection-file* (data-dir-file "selections" "dump") "menu selection timeout")
+
+
+(defun strip-cdr (list)
+  (mapcar #'(lambda (e)
+              (if (consp e)
+                  (car e)
+                  e)) list))
 
 (defun save-db (filename db)
   (with-open-file (out filename
@@ -61,13 +70,13 @@
   (defun get-sel (options storage)
     (unless db
       (setf db (load-db storage)))
-    (cdr (assoc options db :test #'equal)))
+    (cdr (assoc (strip-cdr options) db :test #'equal)))
 
   (defun set-sel (selection options storage)
-    (unless db
-      (setf db (load-db storage)))
-    (if (setf db (acons options selection db))
-        (save-db storage db)))
+    (setf db (acons (strip-cdr options)
+                    (if (consp selection) (car selection) selection) db))
+    (show-dbg "in set-sel")
+    (save-db storage db))
 
   (defun save-storage (&optional (storage *menu-selection-file*))
     (save-db storage db)))
@@ -103,10 +112,11 @@
     (if selection
         (progn
           ;; (unless (equal selection automatic-selection)
-          (when selection
-            (set-sel selection options storage))
+          (show-dbg "in menu-with-timeout")
+          (set-sel selection options storage)
           selection)
-        automatic-selection)))
+        (car (member automatic-selection options
+                     :key #'(lambda (e) (if (consp e) (car e) e)) :test #'equal)))))
 
 
 ;; (menu-with-timeout '("x" "y" "z") :seconds 2 :storage #p"/tmp/x")

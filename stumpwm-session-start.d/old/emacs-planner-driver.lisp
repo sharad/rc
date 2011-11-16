@@ -273,10 +273,22 @@ and puts spaces between the elements."
   (dolist (g groups)
     (kill-group g to-group)))
 
+(defcommand grouplist-to (&optional (fmt *group-format*)) (:rest)
+  "Allow the user to select a group from a list, like windowlist but
+  for groups"
+  (let ((group (second (menu-with-timeout
+                        (mapcar (lambda (g)
+                                  (list (format-expand *group-formatters* fmt g) g))
+                                (screen-groups (current-screen)))))))
+    (when group
+      (switch-to-group group))))
+
+
 (defcommand select-plan-task () ()
   (let* ((*message-window-gravity* :center)
          (selection
-          (select-from-menu (current-screen) (get-emacs-plans-today) "Which Plan u want to work ?")))
+          (menu-with-timeout (get-emacs-plans-today) :prompt "Which Plan u want to work ?")))
+          ;; (select-from-menu (current-screen) (get-emacs-plans-today) "Which Plan u want to work ?")))
     (if (null selection)
         (throw 'stumpwm::error "Abort.")
         (progn
@@ -292,7 +304,7 @@ and puts spaces between the elements."
             (setf *emacs-planner-current-plan* selection)
             (dolist (task (get-emacs-tasks  selection))
                     (add-group (current-screen) task :background t)))
-          (grouplist)))))
+          (grouplist-to)))))
 
 
 

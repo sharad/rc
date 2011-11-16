@@ -100,6 +100,15 @@
 
 ;;}}}
 
+
+;;{{{
+(defvar *interactive-debug* 0 "Interactive debug.")
+
+(defun show-dbg (msg &key (prompt "test:"))
+  (if (> *interactive-debug* 0)
+      (read-one-line (current-screen) prompt :initial-input (or msg "NOTHING"))))
+;;}}}
+
 (defun run-on-screen (screen cmd props)
   (switch-to-screen screen)
   (run-or-raise cmd props))
