@@ -202,38 +202,61 @@
 ;;    (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "DISPLAY") "/emacs.d/server/general"))
 ;;    '(:class "Emacs")))
 
+(defun wait-for-program (pgm)
+    (dotimes (v 10 nil)
+      (let ((c (read-from-string (run-shell-command (concat "pgrep " pgm " | wc -l") t))))
+        (if (< c 1)
+            (return t)
+            (progn
+              (message "~a ~a ~a" c pgm v)
+              (sleep 2))))))
+
+(defun wait-for-nwprogram (pgm)
+  (or (member pgm (get-all-clis)
+                  :test #'equal
+                  :key #'(lambda (s)
+                           (subseq (string-left-trim " " s) 0 (min (length pgm) (length s)))))
+      (wait-for-program pgm)))
+
 (defcommand emacsclient () ()
-  (run-wcli-command
-   (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general"))
-   '(:class "Emacs")))
+  (if (wait-for-nwprogram "emacsclient")
+      (run-wcli-command
+       (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general"))
+       '(:class "Emacs"))))
 
 (defcommand gnus () ()
+  (if (wait-for-nwprogram "emacsclient")
   (run-wcli-command
    (concat "emacsclient -d " (getenv "DISPLAY")  "-f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus)'"))
-   '(:class "EmacsGNU")))
+   '(:class "EmacsGNU"))))
 
 (defcommand editor () ()
+  (if (wait-for-nwprogram "emacsclient")
   (run-wcli-command
-   (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general"))))
+   (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general")))))
 
 (defcommand mail-reader () ()
+  (if (wait-for-program "emacsclient")
   (run-wcli-command
-   (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus)'"))))
+   (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus)'")))))
 
 (defcommand new-mail () ()
+  (if (wait-for-program "emacsclient")
   (run-wcli-command
-   (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus-group-mail)'"))))
+   (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus-group-mail)'")))))
 
 (defcommand gnusclient () ()
+  (if (wait-for-program "emacsclient")
   (run-or-pull
    (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(gnus)'")
-   '(:class "EmacsGNUS")))
+   '(:class "EmacsGNUS"))))
 
 ;; run-wcli-command
 
 (defcommand gnusclient () ()
+  (if (wait-for-program "emacsclient")
   (run-wcli-command
-   (concat "emacsclient -d " (getenv "DISPLAY") " -f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(gnus)'")))
+   (concat "emacsclient -d " (getenv "DISPLAY") " -f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(gnus)'"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; from window.lisp
