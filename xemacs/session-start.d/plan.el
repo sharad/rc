@@ -245,7 +245,13 @@
     (planner-save-buffers))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; (plan)
-  )
+
+  ;; http://lists.gnu.org/archive/html/emacs-wiki-discuss/2005-08/msg00168.html
+  (defun planner-create-note-this-page ()
+    (interactive)
+    (planner-create-note (planner-page-name)))
+
+  (define-key planner-mode-map (kbd "C-c n") 'planner-create-note-this-page))
 
 ;; Call M-x plan to start planning!
 ;; end

@@ -168,18 +168,53 @@
         (planner-task-done)
         (save-buffer)))))
 
+(defun stumpwm/find-task-in-page (task page)
+  "return t if able to find task in page and leave in that page."
+  (let ((task (normalize-task task)))
+    ;; (save-window-excursion
+    ;; (save-excursion
+    ;; (save-restriction
+    ;; required
+    (if (find-file
+         (concat planner-directory "/" page ".muse"))
+        (goto-char 0))
+        (if (re-search-forward "^*\s\+Tasks")
+            (let ((start (point))
+                  (end (if (re-search-forward "^*\s\+\\w\+") (point))))
+              (when (and end (not (equal end start)))
+                (goto-char start)
+                (re-search-forward task)
+                ;; (read-from-minibuffer "sfddsf: " (format "%d %d eq %s" end start (not (equal end start))))
+                t)))))
 
 (defun stumpwm/planner-create-note-from-task (task)
-    (let ((task (normalize-task task)))
-    ;;   (save-window-excursion
-    ;; (save-excursion
-      (save-restriction
-        (progn
-          (find-file
-           (concat planner-directory "/" (planner-today-ensure-exists) ".muse"))
-          (goto-char 0)
-          (re-search-forward task)
-          (planner-create-note-from-task)))))
+  (if (stumpwm/find-task-in-page task (planner-today-ensure-exists))
+      (planner-create-note-from-task t)
+      ;; ((inform in wm task not found)
+      ;;  (return back the state of emacs.))
+      ))
+
+(defun stumpwm/planner-goto-task (task)
+  (stumpwm/find-task-in-page task (planner-today-ensure-exists)))
+
+;; (defun stumpwm/planner-create-note-from-task (task)
+;;     (let ((task (normalize-task task))
+;;           start end)
+;;     ;;   (save-window-excursion
+;;     ;; (save-excursion
+;;       ;;(save-restriction
+;;        ;; required
+;;       (if (find-file
+;;               (concat planner-directory "/" (planner-today-ensure-exists) ".muse"))
+;;           (goto-char 0)
+;;           (if (re-search-forward "^* Tasks")
+;;               (let ((start (point))
+;;                     (end (and (re-search-forward "^* \\w\+") (point))))
+;;                 (if end
+;;                     (re-search-forward task end t)
+;;                     (planner-create-note-from-task t))))
+;;           ))) ;;)
+
 ;;))
 
 

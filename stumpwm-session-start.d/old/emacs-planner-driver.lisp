@@ -205,6 +205,19 @@ and puts spaces between the elements."
                   (run-wcli-command cmd t)) apps)
         (echo-windows))))
 
+(defcommand planner/create-note-from-task () ()
+   (emacs-eval-nooutput
+    (join-string-list "(stumpwm/planner-create-note-from-task" (prin1-to-string (group-name (current-group))) ")")))
+
+(defcommand-alias planner-note planner/create-note-from-task)
+
+(defcommand planner/goto-task () ()
+   (emacs-eval-nooutput
+    (join-string-list "(stumpwm/planner-goto-task" (prin1-to-string (group-name (current-group))) ")")))
+
+(defcommand-alias goto-task planner/goto-task)
+
+
 ;; (mapc #'run-wcli-command
 ;;       (make-list-from-emacs-eval
 ;;           (concat "(planner-page-get-env \""
@@ -225,16 +238,6 @@ and puts spaces between the elements."
 ;;               "\" \""
 ;;               (group-name (current-group))
 ;;               "\")"))))
-
-(defcommand planner/create-note-from-tast () ()
-  (run-or-pull
-   (concat "emacsclient -d " (getenv "DISPLAY") " -c ")
-   '(:class "Emacs"))
-  (emacs-eval
-   (join-string-list
-    "(stumpwm/planner-create-note-from-task"
-    (prin1-to-string (group-name (current-group)))
-    ")")))
 
 (add-hook *focus-group-hook* 'get-group-time)
 

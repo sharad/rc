@@ -161,3 +161,12 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
 
 ;; (defun shell-parse (string &optional (seperator ))
 ;;   ())
+
+
+
+;; (defun prefixcommand () ()
+;; support both number and symbol (gnus) prefix.
+;;        ;; read prefix
+;;        ;; pass it by dynamix variable
+;;        ;; call actual function.
+;;        )
