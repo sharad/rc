@@ -32,7 +32,7 @@ if [ $DISPLAY ] ; then
     #     -merge ~/.Xresource/init  # should use m4
 
     whence -p xrdb &&
-    m4 -I ~/.Xresources ~/.Xresources/init | xrdb -merge -
+    m4 -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init | xrdb -merge -
 
     whence -p urxvtd &&
     pgrep urxvtd ||

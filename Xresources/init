@@ -27,8 +27,12 @@
 !Turn on error messages
 
 
+
+
 ! # processing with m4
-changequote(`[', `]')
+
+include(defs)
+
 
 define([LQ],[changequote(<,>)[dnl]
 changequote[]])

@@ -38,7 +38,7 @@ ldap_version 3
 
 binddn SETUP_ldaprc_binddn
 
-bindpw "SETUP_ldaprc_bindpw "
+bindpw "SETUP_ldaprc_bindpw"
 
 [##] in SETUP_ldaprc_host this below line only get me results sometime.
 sasl_mech DIGEST-MD5

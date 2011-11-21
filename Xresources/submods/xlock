@@ -1,8 +1,11 @@
 
 !! Xautolock
 ! xautolock*locker:
-Xautolock.locker: alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=away&message='
-xautolock*locker: alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=away&message='
+
+
+
+Xautolock.locker: alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=ifelse(esyscmd(echo -n $HOST),SETUP_office_hostname,available,away)&message='
+xautolock*locker: alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=ifelse(esyscmd(echo -n $HOST),SETUP_office_hostname,available,away)&message='
 !! Xautolock.locker: xlock -mode blank -mousemotion
 !! options are xtrlock xdaliclock xlock slock xnlock
 !! timeout of 3 mins before locking

@@ -178,6 +178,7 @@ interactive("delicious-post-sel",
                 var xsendurl = 'https://api.del.icio.us/v1/posts/suggest?&url='+encodeURIComponent(I.buffer.top_frame.getSelection());
                 var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
                 var c = domParser.parseFromString(xcontent.responseText, "text/xml");
+
                 // I.window.alert(xcontent.responseText);
                 var completions = new Array();
                 var eles = c.getElementsByTagName('recommended');
@@ -186,6 +187,7 @@ interactive("delicious-post-sel",
                     completions.push(eles[i].text);
                 }
                 var completer = prefix_completer($completions = completions);
+
                 var sendurl = 'https://api.del.icio.us/v1/posts/add?&url='+
                 // var sendurl = 'https://api.del.icio.us/v2/posts/add?&url='+
                     encodeURIComponent((yield I.minibuffer.read(
@@ -238,7 +240,7 @@ interactive("delicious-post",
                 var completer = prefix_completer($completions = completions);
                 // }}
 
-                // {{
+                // {{ initial value
                 var tsendurl = 'https://api.del.icio.us/v1/posts/get?url=' + encodeURIComponent(I.buffer.display_uri_string);
                 var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
                 // I.window.alert(tagcontent.responseText);
@@ -246,6 +248,8 @@ interactive("delicious-post",
                 var post = tc.getElementsByTagName('post');
                 var tags  = (post.length > 0)  ? post[0].attributes[6].textContent : "";
                 // }}
+
+
                 var sendurl = 'https://api.del.icio.us/v1/posts/add?&url='+
                 // var sendurl = 'https://api.del.icio.us/v2/posts/add?&url='+
                     encodeURIComponent(I.buffer.display_uri_string)+
@@ -274,8 +278,29 @@ interactive("delicious-post-link",
                 check_buffer(I.buffer, content_buffer);
 
                 var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
-                // {{
-                var tsendurl = 'https://api.del.icio.us/v1/posts/get?url=' + encodeURIComponent(I.buffer.display_uri_string);
+
+
+                // {{ completer
+                var xsendurl = 'https://api.del.icio.us/v1/posts/suggest?&url='+mylink;
+                var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
+                var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
+                // I.window.alert(xcontent.responseText);
+                var completions = new Array();
+                var sug = cc.getElementsByTagName('recommended');
+                var pop = cc.getElementsByTagName('popular');
+                for (i=0; i< sug.length; i++) {
+                    // I.window.alert(sug[i].attributes[0].textContent);
+                    completions.push(sug[i].attributes[0].textContent);
+                }
+                for (i=0; i< pop.length; i++) {
+                    // I.window.alert(pop[i].attributes[0].textContent);
+                    completions.push(pop[i].attributes[0].textContent);
+                }
+                var completer = prefix_completer($completions = completions);
+                // }}
+
+                // {{ initial value
+                var tsendurl = 'https://api.del.icio.us/v1/posts/get?url=' + mylink;
                 var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
                 // I.window.alert(tagcontent.responseText);
                 var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
@@ -284,12 +309,15 @@ interactive("delicious-post-link",
                 // }}
 
 
-
                 let sendurl = 'https://api.del.icio.us/v1/posts/add?&url=' +
                     mylink +
                     '&description=' +
                     encodeURIComponent((yield I.minibuffer.read($prompt = "name (required): " , $initial_value = bo.textContent))) +
-                    '&tags=' + encodeURIComponent((yield I.minibuffer.read($prompt = "tags (space delimited): ", $initial_value = tags)).replace(new RegExp(/\s+/g), ',')) +
+                    '&tags=' + encodeURIComponent((yield I.minibuffer.read(
+                                                       $prompt = "tags (space delimited): ",
+                                                       $completer = completer,
+                                                       $initial_value = tags
+                                                   )).replace(new RegExp(/\s+/g), ',')) +
                     '&extended=' + encodeURIComponent((yield I.minibuffer.read($prompt = "extended description: ")));
                 var content = yield send_http_request(
                     load_spec({uri: sendurl}));
