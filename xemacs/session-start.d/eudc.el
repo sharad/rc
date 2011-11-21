@@ -37,16 +37,17 @@
 
     (setq ldap-default-base "ou=addressbook,dc=your_dc_here,dc=fr")
 
-    (setq eudc-default-return-attributes nil
+    (setq ;; eudc-default-return-attributes nil
+     eudc-default-return-attributes 'all
           eudc-strict-return-matches nil
-          ldap-ldapsearch-args (quote ("-tt" "-LLL" "-x"))
-          eudc-inline-query-format '((name)
+          ldap-ldapsearch-args '("-tt" "-LLL" "-x")
+          eudc-inline-query-format '(
                                      (givenName)
-                                     (givenName name)
                                      (sn)
-                                     ;; (firstname)
-                                     ;; (firstname name)
-                                     (email))
+                                     (givenName sn)
+                                     (email)
+                                     )
+          ;; eudc-inline-query-format nil
           eudc-inline-expansion-format '("%s %s <%s>" givenName name email)
           ;; eudc-inline-expansion-format '("%s <%s>" givenName email)
 
@@ -89,25 +90,37 @@
           (backward-delete-char-untabify 1))))
 
 
-    (eudc-protocol-set 'eudc-attribute-display-method-alist
-                       '(("jpegphoto" . eudc-display-jpeg-inline)
-                         ("thumbnailPhoto" . eudc-display-jpeg-inline)
-                         ("labeledurl" . eudc-display-url)
-                         ("audio" . eudc-display-sound)
-                         ("labeleduri" . eudc-display-url)
-                         ("mail" . eudc-display-mail)
-                         ("url" . eudc-display-url))
-                       'ldap)
+(defun eudc-select (choices beg end)
+  "Choose one from CHOICES using a completion.
+BEG and END delimit the text which is to be replaced."
+  ;; (message choices)
+  (let ((replacement))
+   (setq replacement
+	 (completing-read "Multiple matches found; choose one: "
+			  (mapcar 'list choices)))
+   (delete-region beg end)
+   (insert replacement)))
+
+
+;; (eudc-protocol-set 'eudc-attribute-display-method-alist
+;;                    '(("jpegphoto" . eudc-display-jpeg-inline)
+;;                      ("thumbnailPhoto" . eudc-display-jpeg-inline)
+;;                      ("labeledurl" . eudc-display-url)
+;;                      ("audio" . eudc-display-sound)
+;;                      ("labeleduri" . eudc-display-url)
+;;                      ("mail" . eudc-display-mail)
+;;                      ("url" . eudc-display-url))
+;;                    'ldap)
 
 
     ;; Adds some hooks
 
-    (eval-after-load "message"
-      '(define-key message-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))
-    (eval-after-load "sendmail"
-      '(define-key mail-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))
-    (eval-after-load "post"
-      '(define-key post-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))))
+(eval-after-load "message"
+  '(define-key message-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))
+(eval-after-load "sendmail"
+  '(define-key mail-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))
+(eval-after-load "post"
+  '(define-key post-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))))
 
 
 ;; (eudc-display-jpeg-inline
