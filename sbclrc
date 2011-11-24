@@ -91,6 +91,6 @@
 
 
 ;; load my utils
-(if (member "SHARAD-UTILS" (mapcar #'package-name (list-all-packages)) :test #'string=)
-    (require :sharad-utils))
+(if (member "IN.NET.SHARAD.UTILS" (mapcar #'package-name (list-all-packages)) :test #'string=)
+    (require :in.net.sharad.utils))
 

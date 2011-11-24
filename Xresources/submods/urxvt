@@ -62,7 +62,7 @@ URxvt.perl-ext:        selection,mark-yank-urls,readline
 !! check http://mina86.com/2009/05/16/tabbed-urxvt-extension/
 !! URxvt.new-button:       yes
 !! URxvt.perl-ext-common: default,matcher,digital-clock,grab
-URxvt.perl-ext-common: default,matcher,keyboard-select,url-select,clipboard,tabbedex
+URxvt.perl-ext-common: default,matcher,keyboard-select,url-select,clipboard,tabbedex,font
 
 !!start: from: http://christarnowski.wordpress.com/2009/08/22/urxvt/
 URxvt.jumpScroll: true
@@ -251,3 +251,8 @@ URxvt.pasteCommand: xclip -o -selection clipboard
 
 URxvt.keysym.M-t: perl:tabbedex:new_tab
 !! END
+
+!! font extentoin
+urxvt.keysym.Control-Shift-Up:      perl:font:increment
+urxvt.keysym.Control-Shift-Down:    perl:font:decrement
+

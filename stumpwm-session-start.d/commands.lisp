@@ -218,22 +218,28 @@
                            (subseq (string-left-trim " " s) 0 (min (length pgm) (length s)))))
       (wait-for-program pgm)))
 
-(defcommand emacsclient () ()
+(defcommand editor () ()
   (if (wait-for-nwprogram "emacsclient")
       (run-wcli-command
        (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general"))
-       '(:class "Emacs"))))
+   ;; '(:class "Emacs")
+       )))
+
+;; (defcommand emacsclient () ()
+;;   (if (wait-for-nwprogram "emacsclient")
+;;       (run-wcli-command
+;;        (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general"))
+;;        ;; '(:class "Emacs")
+;;        )))
+
+(defcommand-alias editor emacsclient)
 
 (defcommand gnus () ()
   (if (wait-for-nwprogram "emacsclient")
-  (run-wcli-command
-   (concat "emacsclient -d " (getenv "DISPLAY")  "-f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus)'"))
-   '(:class "EmacsGNU"))))
+      (run-wcli-command
+       (concat "emacsclient -d " (getenv "DISPLAY")  "-f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus)'"))
+       '(:class "EmacsGNU"))))
 
-(defcommand editor () ()
-  (if (wait-for-nwprogram "emacsclient")
-  (run-wcli-command
-   (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general")))))
 
 (defcommand mail-reader () ()
   (if (wait-for-program "emacsclient")

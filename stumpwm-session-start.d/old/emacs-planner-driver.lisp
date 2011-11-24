@@ -25,7 +25,7 @@ if there were an empty string between them."
 and puts spaces between the elements."
   (format nil "~{~A~^ ~}" string-list))
 
-(in-package :stumpwm)                   ;I have to have it, else thng will not run in stumpwm.
+(in-package :stumpwm)                   ;I have to have it, else thing will not run in stumpwm.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Emacs connection ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar *emacsclient-command* (join-string-list "emacsclient -f" (concat (getenv "HOME") "/.emacs.d/server/general") "-e")
   "Emacs client command")
@@ -206,16 +206,43 @@ and puts spaces between the elements."
         (echo-windows))))
 
 (defcommand planner/create-note-from-task () ()
+   (emacsclient)
    (emacs-eval-nooutput
     (join-string-list "(stumpwm/planner-create-note-from-task" (prin1-to-string (group-name (current-group))) ")")))
 
 (defcommand-alias planner-note planner/create-note-from-task)
 
 (defcommand planner/goto-task () ()
+   (emacsclient)
    (emacs-eval-nooutput
     (join-string-list "(stumpwm/planner-goto-task" (prin1-to-string (group-name (current-group))) ")")))
 
 (defcommand-alias goto-task planner/goto-task)
+
+
+(let ((status
+       '((cancel
+          (onsuccess . nil)
+          (onerror . nil)
+          (verify . nil)
+          (planner-fun . "planner-task-cancel"))
+         )))
+
+  (defmacro defstatus (status )
+    )
+
+  (defmacro defstatus ()
+    )
+
+  (defun planner-task-change-status (task status)
+    (let ((fns (assoc status)))
+      (emacs-eval-nooutput
+       (join-string-list "(stumpwm/planner-task-change-status" task planner-fun ")"))
+      (if (funcall verify task)
+          (funcall onsuccess task)
+          (funcall onerror task)))))
+
+
 
 
 ;; (mapc #'run-wcli-command
@@ -285,7 +312,6 @@ and puts spaces between the elements."
                                 (screen-groups (current-screen)))))))
     (when group
       (switch-to-group group))))
-
 
 (defcommand select-plan-task () ()
   (let* ((*message-window-gravity* :center)

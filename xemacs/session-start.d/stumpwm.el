@@ -80,12 +80,19 @@
    (member (concat "[[" plan "]]") (nth 5 task))
    (member (nth 3 task) status)))
 
+(defun extract-task-name (task)
+  (if (string-match "^\\(.\+\}\}\\)\s\+[[][[]" task)
+      (match-string 1 task)))
+
+(defun extract-task-name-from-list (task-list)
+  (extract-task-name (nth 4 task-list)))
+
 (defun planner-tasks-of-plan-from-page (page plan status) ;should be fault tolrent.
   (planner-task-lists-if                         ;else face lot of time waste.
    '(lambda (task)
       (task-lists-of-plan-with-status-p task plan status))
    (planner-task-lists page)
-   :fun '(lambda (task-list) (nth 4 task-list))))
+   :fun #'extract-task-name-from-list))
 ;;end
 
 ;;test
@@ -93,7 +100,7 @@
  (planner-task-lists-if
   '(lambda (task) (task-list-of-plan-with-status-p task (planner-today-ensure-exists) '("_" "o")))
   (planner-task-lists (planner-today-ensure-exists))
-  :fun '(lambda (task-list) (nth 4 task-list))))
+  :fun #'extract-task-name-from-list))
 
 ;;start: another way to get tasks of plan from one page
 (defun task-lists-with-status-p (task status)
@@ -116,8 +123,7 @@
 (testing
  (planner-tasks-of-plan-from-page (planner-today-ensure-exists) "MyMIS" '("_" "o")))
 
-
-;should be fault tolrent. else face lot of time waste.
+;;should be fault tolrent. else face lot of time waste.
 (defun planner-tasks-of-plan-today (plan status)
   (planner-tasks-of-plan-from-page
    (planner-today-ensure-exists) plan '("_" "o")))
@@ -126,96 +132,92 @@
 (testing
  (planner-tasks-of-plan-today (planner-today-ensure-exists) '("_" "o")))
 
-
-
 (defun normalize-task (task)
   (replace-regexp-in-string
    "\\([]\\[]\\)" "\\\\\\1" task))
 
-(defun ci-task (task)
-  (let ((task (normalize-task task)))
-    (save-excursion
-      (save-window-excursion
-        (let (buf)
-          (setq buf (find-file (concat planner-directory "/" (planner-today-ensure-exists) ".muse")))
-          (goto-char 0)
-          (re-search-forward task)
-          (planner-task-in-progress)
-          (save-buffer)
-          (bury-buffer buf)
-          (kill-buffer buf))))))
-
-(defun co-task (task)
-  (let ((task (normalize-task task)))
-    (save-excursion
-      (save-window-excursion
-        (let (buf)
-          (setq buf (find-file (concat planner-directory "/" (planner-today-ensure-exists) ".muse")))
-          (goto-char 0)
-          (re-search-forward task)
-          (timeclock-out)
-          (save-buffer)
-          (bury-buffer buf)
-          (kill-buffer buf))))))
-
-(defun stumpwm/planner-task-done (task)
-  (let ((task (normalize-task task)))
-    (save-excursion
-      (save-window-excursion
-        (find-file (concat planner-directory "/" (planner-today-ensure-exists) ".muse"))
-        (goto-char 0)
-        (re-search-forward task)
-        (planner-task-done)
-        (save-buffer)))))
-
-(defun stumpwm/find-task-in-page (task page)
+(defun stumpwm/find-task-in-page-main (task page &optional buf-op)
   "return t if able to find task in page and leave in that page."
-  (let ((task (normalize-task task)))
-    ;; (save-window-excursion
-    ;; (save-excursion
-    ;; (save-restriction
-    ;; required
-    (if (find-file
-         (concat planner-directory "/" page ".muse"))
-        (goto-char 0))
-        (if (re-search-forward "^*\s\+Tasks")
-            (let ((start (point))
-                  (end (if (re-search-forward "^*\s\+\\w\+") (point))))
-              (when (and end (not (equal end start)))
-                (goto-char start)
-                (re-search-forward task)
-                ;; (read-from-minibuffer "sfddsf: " (format "%d %d eq %s" end start (not (equal end start))))
-                t)))))
+  (let ((task (normalize-task task))
+        (buf (find-file
+              (concat planner-directory "/" page ".muse"))))
+    (when buf
+      (goto-char 0)
+      (if (re-search-forward "^*\s\+Tasks")
+          (let ((start (point))
+                (end (if (re-search-forward "^*\s\+\\w\+")
+                         (point))))
+            (when (and end (not (equal end start)))
+              (goto-char start)
+              (re-search-forward task)
+              ;; (read-from-minibuffer "sfddsf: " (format "%d %d eq %s" end start (not (equal end start))))
+              (if (functionp buf-op) (funcall buf-op buf))
+              t))))))
 
-(defun stumpwm/planner-create-note-from-task (task)
-  (if (stumpwm/find-task-in-page task (planner-today-ensure-exists))
+(defun stumpwm/find-task-in-page (task page &optional restore buf-op)
+  "return t if able to find task in page and leave in that page."
+  (if restore
+      (save-window-excursion
+        (save-excursion
+          (save-restriction
+            (stumpwm/find-task-in-page-main task page &optional buf-op))))
+      (stumpwm/find-task-in-page-main task page buf-op)))
+
+(defun stumpwm/planner-create-note-from-task (task &optional page)
+  (if (stumpwm/find-task-in-page task (or page (planner-today-ensure-exists)))
       (planner-create-note-from-task t)
       ;; ((inform in wm task not found)
       ;;  (return back the state of emacs.))
       ))
 
-(defun stumpwm/planner-goto-task (task)
-  (stumpwm/find-task-in-page task (planner-today-ensure-exists)))
+(defun stumpwm/planner-goto-task (task &optional page)
+  (stumpwm/find-task-in-page task (or page (planner-today-ensure-exists))))
 
-;; (defun stumpwm/planner-create-note-from-task (task)
-;;     (let ((task (normalize-task task))
-;;           start end)
-;;     ;;   (save-window-excursion
-;;     ;; (save-excursion
-;;       ;;(save-restriction
-;;        ;; required
-;;       (if (find-file
-;;               (concat planner-directory "/" (planner-today-ensure-exists) ".muse"))
-;;           (goto-char 0)
-;;           (if (re-search-forward "^* Tasks")
-;;               (let ((start (point))
-;;                     (end (and (re-search-forward "^* \\w\+") (point))))
-;;                 (if end
-;;                     (re-search-forward task end t)
-;;                     (planner-create-note-from-task t))))
-;;           ))) ;;)
+(defun ci-task (task &optional page)
+  (stumpwm/find-task-in-page task (or page (planner-today-ensure-exists))
+                             t
+                             #'(lambda (b)
+                                 ;; (timeclock-in)
+                                 (planner-task-in-progress)
+                                 (save-buffer)
+                                 (bury-buffer buf)
+                                 ;; (kill-buffer buf)
+                                 )))
 
-;;))
+(defun co-task (task &optional page)
+  (stumpwm/find-task-in-page task (or page (planner-today-ensure-exists))
+                             t
+                             #'(lambda (b)
+                                 ;; (timeclock-in)
+                                 (timeclock-out)
+                                 (save-buffer)
+                                 (bury-buffer buf)
+                                 ;; (kill-buffer buf)
+                                 )))
+
+(defun stumpwm/planner-task-done (task &optional page)
+  (stumpwm/find-task-in-page task (or page (planner-today-ensure-exists))
+                             t
+                             #'(lambda (b)
+                                 ;; (timeclock-in)
+                                 (planner-task-done)
+                                 (save-buffer)
+                                 (bury-buffer buf)
+                                 ;; (kill-buffer buf)
+                                 )))
+
+
+(defun stumpwm/planner-task-change-status (task status &optional page)
+  (stumpwm/find-task-in-page task (or page (planner-today-ensure-exists))
+                             t
+                             #'(lambda (b)
+                                 ;; (timeclock-in)
+                                 (if (functionp status) (funcall status))
+                                 (save-buffer)
+                                 (bury-buffer buf)
+                                 ;; (kill-buffer buf)
+                                 )))
+
 
 
 ;; start: http://www.emacswiki.org/emacs/.emacs-thierry.el
