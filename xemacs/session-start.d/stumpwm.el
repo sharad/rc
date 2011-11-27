@@ -81,7 +81,9 @@
    (member (nth 3 task) status)))
 
 (defun extract-task-name (task)
-  (if (string-match "^\\(.\+\}\}\\)\s\+[[][[]" task)
+  ;; (if (string-match "^\\(.\+\}\}\\)\s\+[[][[]" task)
+  ;; (if (string-match "^\\(.\+\}\}\\)\s\+" task)
+  (if (string-match "^\\(.\+\}\}\\)\\(\s\+[[][[]\\)\?" task)
       (match-string 1 task)))
 
 (defun extract-task-name-from-list (task-list)

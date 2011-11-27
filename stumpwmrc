@@ -283,41 +283,42 @@
       (pa-fnstumpwm::initpa)
       (pa-fnstumpwm::select-plan-task))
 
-    (progn
 ;;{{ Old
-      (dformat 5 "~a" "Hello...........!!")
-      (dolist (x (directory (concat *session-dir* "old/*.lisp")))
-        (load x)
-        (message "Loaded ~a" x))
 
-      ;; load all file in session dir
-      (dolist (x (directory (concat *session-dir* "*.lisp")))
-        (load x)
-        (message "Loaded ~a" x))
+    ;; (progn
+    ;;   (dformat 5 "~a" "Hello...........!!")
+    ;;   (dolist (x (directory (concat *session-dir* "old/*.lisp")))
+    ;;     (load x)
+    ;;     (message "Loaded ~a" x))
 
-      (message "H1")
-      (defvar *emacs-planner-plans* (get-emacs-plans-today) "Emacs Planner Plans today")
-      (message "H2")
-      (defvar *emacs-planner-current-plan* (first *emacs-planner-plans*) "Emacs Planner Plans today")
-      (message "H3")
+    ;;   ;; load all file in session dir
+    ;;   (dolist (x (directory (concat *session-dir* "*.lisp")))
+    ;;     (load x)
+    ;;     (message "Loaded ~a" x))
 
-      (defvar *emacs-planner-tasks*
-        (if (and (boundp '*emacs-planner-current-plan*)
-                 *emacs-planner-current-plan*)
-            (get-emacs-tasks *emacs-planner-current-plan*)) "Emacs Planner tasks")
-      (message "H4")
+    ;;   (message "H1")
+    ;;   (defvar *emacs-planner-plans* (get-emacs-plans-today) "Emacs Planner Plans today")
+    ;;   (message "H2")
+    ;;   (defvar *emacs-planner-current-plan* (first *emacs-planner-plans*) "Emacs Planner Plans today")
+    ;;   (message "H3")
 
-      (groups-create-from-tasks t)
+    ;;   (defvar *emacs-planner-tasks*
+    ;;     (if (and (boundp '*emacs-planner-current-plan*)
+    ;;              *emacs-planner-current-plan*)
+    ;;         (get-emacs-tasks *emacs-planner-current-plan*)) "Emacs Planner tasks")
+    ;;   (message "H4")
 
-      (run-commands
-       ;; "groups-create-from-tasks"
-       "groups-number")
+    ;;   (groups-create-from-tasks t)
 
-      ;; ask user on what he wanted to start work.
-      (select-plan-task)
+    ;;   (run-commands
+    ;;    ;; "groups-create-from-tasks"
+    ;;    "groups-number")
+
+    ;;   ;; ask user on what he wanted to start work.
+    ;;   (select-plan-task))
 
 ;;}}
-      ))
+      )
 
 (start-gnome-components)
 
