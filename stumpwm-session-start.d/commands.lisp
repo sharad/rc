@@ -453,7 +453,7 @@
 ;;                                           (if title (format nil " -T ~a" title)))))
 (defcommand urxvt () ()
             (run-wcli-command (concatenate 'string "urxvtc"
-                                           (format nil " -T '~a'"
+                                           (format nil " -T ~a"
                                                    (substitute #\_ #\Space (group-name (current-group)))))))
 
 (defcommand mrxvt (&optional title) ((:rest "title: "))
