@@ -224,7 +224,7 @@
 (defun usepa ()
   (string-equal (getenv "STUMPWMPA") "yes"))
 
-(if (usepa)
+(if (or t (usepa))
   (import 'pa-fnstumpwm::run-wcli-command)
   (import 'pa-fnstumpwm::run-cli-command))
 
@@ -275,7 +275,7 @@
 
 
 
-(if (usepa)
+(if (or t (usepa))
     (progn
       (dolist (x (directory (concat *session-dir* "*.lisp")))
         (load x)

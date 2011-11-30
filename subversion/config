@@ -13,7 +13,7 @@
 ###   kwallet              (Unix-like systems)
 ###   keychain             (Mac OS X)
 ###   windows-cryptoapi    (Windows)
-password-stores = gnome-keyring,kwallet
+# password-stores = gnome-keyring,kwallet
 ###
 ### The rest of this section in this file has been deprecated.
 ### Both 'store-passwords' and 'store-auth-creds' can now be

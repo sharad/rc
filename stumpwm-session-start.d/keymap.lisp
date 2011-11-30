@@ -324,6 +324,7 @@
 (fill-keymap *window-commands-map*
              (kbd "t") "urxvt"
              (kbd "b") "xbrowser"
+             (kbd "f") "firefox"
              (kbd "e") "editor"
              (kbd "m") "mail-reader"
              (kbd "n") "new-mail")

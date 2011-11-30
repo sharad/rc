@@ -39,6 +39,8 @@ changequote[]])
 define([RQ],[changequote(<,>)dnl[
 ]changequote[]])
 
+
+
 *StringConversionWarnings: on
 
 ifdef([COLOR],[*customization: -color])
