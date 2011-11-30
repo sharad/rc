@@ -1,0 +1,4 @@
+
+STUMPWMPA=yes
+export STUMPWMPA
+
