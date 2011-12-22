@@ -11,7 +11,7 @@ macrodir      = ../.osetup/info/common/m4.d
 
 M4            = m4 -I /usr/share/doc/m4/examples -I $(macrodir) -I $(host_macrodir)
 
-all: ../.ldaprc ../.msmtprc ssh/config ../.offlineimaprc
+all: ../.ldaprc ../.msmtprc ssh/config ../.offlineimaprc ../.notmuch-config
 
 ../.ldaprc: ldaprc.m4
 	$(M4) ldaprc.m4 > ../.ldaprc
@@ -27,3 +27,7 @@ ssh/config: ssh/config.m4 | ../.ssh
 
 ../.offlineimaprc: offlineimaprc.m4
 	$(M4) offlineimaprc.m4 > ../.offlineimaprc
+
+../.notmuch-config: notmuch-config.m4
+	$(M4) notmuch-config.m4 > ../.notmuch-config
+
