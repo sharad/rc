@@ -90,16 +90,22 @@
           (backward-delete-char-untabify 1))))
 
 
-(defun eudc-select (choices beg end)
-  "Choose one from CHOICES using a completion.
+
+    (defun sharad/eudc-show-at-point ()
+      (ietf-drums-parse-address ) ;; from .gnus.d/article.el
+      (eudc-display-records (eudc-query '((mail . "spratap@arubanetworks.com")) ) t) )
+
+
+    (defun eudc-select (choices beg end)
+      "Choose one from CHOICES using a completion.
 BEG and END delimit the text which is to be replaced."
-  ;; (message choices)
-  (let ((replacement))
-   (setq replacement
-	 (completing-read "Multiple matches found; choose one: "
-			  (mapcar 'list choices)))
-   (delete-region beg end)
-   (insert replacement)))
+      ;; (message choices)
+      (let ((replacement))
+        (setq replacement
+              (completing-read "Multiple matches found; choose one: "
+                               (mapcar 'list choices)))
+        (delete-region beg end)
+        (insert replacement)))
 
 
 ;; (eudc-protocol-set 'eudc-attribute-display-method-alist
