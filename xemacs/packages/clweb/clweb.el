@@ -1,5 +1,8 @@
 ;;;; A major-mode for editing CLWEB programs.
 
+
+(provide 'clweb)
+
 (defvar *start-section-regexp* "^@[ *\nTt]")
 (defvar *start-non-test-section-regexp* "^@[ *\n]")
 

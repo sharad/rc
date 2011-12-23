@@ -10,8 +10,11 @@
 # Notmuch will store its database within a sub-directory of the path
 # configured here named ".notmuch".
 #
-[database]
-path=/home/s/hell/.maildir
+
+include(defs)
+
+[[database]]
+path=esyscmd(echo -n $HOME)/.maildir
 
 # User configuration
 #
@@ -28,10 +31,10 @@ path=/home/s/hell/.maildir
 # recipient list of replies, and will set the From address based on the
 # address to which the original email was addressed.
 #
-[user]
-name=Sharad Pratap
-primary_email=sh4r4d@gmail.com
-other_email=sharad@pratap.net.in;sh4r4d@yahoo.com;s@lispm.net;z_x@rediffmail.com;
+[[user]]
+name=SETUP_notmuch_config_name
+primary_email=SETUP_notmuch_config_primary_email
+other_email=SETUP_notmuch_config_other_email
 
 # Configuration for "notmuch new"
 #
@@ -40,7 +43,7 @@ other_email=sharad@pratap.net.in;sh4r4d@yahoo.com;s@lispm.net;z_x@rediffmail.com
 #	tags	A list (separated by ';') of the tags that will be
 #		added to all messages incorporated by "notmuch new".
 #
-[new]
+[[new]]
 tags=unread;inbox;
 
 # Maildir compatibility configuration
@@ -64,5 +67,5 @@ tags=unread;inbox;
 #	and update tags, while the "notmuch tag" and "notmuch restore"
 #	commands will notice tag changes and update flags in filenames
 #
-[maildir]
+[[maildir]]
 synchronize_flags=true

@@ -61,5 +61,9 @@
                 (set (make-local-variable 'eldoc-documentation-function)
                      'my-cperl-eldoc-documentation-function)))))
 
+
+(deh-require-maybe 'clweb
+  "good")
+
 (user-provide 'doc)
 
