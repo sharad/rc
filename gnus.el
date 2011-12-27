@@ -520,11 +520,11 @@
             (set (make-local-variable 'gnus-message-archive-group) "sent-news"))))
 
         ("Gmail.*"
-         (name myname)
+         (name ,myname)
          (signature "Regards,\n-sharad")
          (address ,email-addr))
         ("Office.*"
-         (name myname)
+         (name ,myname)
          (signature "Regards,\n-sharad")
          (address ,office-email)
          (eval (set (make-local-variable 'gnus-message-archive-group)

@@ -197,7 +197,9 @@
 ;;
 ;;; Code:
 
-(require 'thingatpt) ;; bounds-of-thing-at-point, form-at-point
+(require 'thingatpt)
+
+;; bounds-of-thing-at-point, form-at-point
 
 ;;;;;;;;;;;;;;;;;;;;;;
 

@@ -1,0 +1,1 @@
+../misc/hide-comnt.el

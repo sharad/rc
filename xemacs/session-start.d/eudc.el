@@ -99,7 +99,7 @@
     (defun eudc-select (choices beg end)
       "Choose one from CHOICES using a completion.
 BEG and END delimit the text which is to be replaced."
-      ;; (message choices)
+      (message choices)
       (let ((replacement))
         (setq replacement
               (completing-read "Multiple matches found; choose one: "
