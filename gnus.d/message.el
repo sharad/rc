@@ -26,9 +26,8 @@
 
 (defvar *use-msmtp-for-senmail* nil "msmtp to use")
 
-(if (equal (system-name) "spratap") ;; where I am using msmtp
-    (setq *use-msmtp-for-senmail* t))
-
+;; where I am using msmtp
+(setq *use-msmtp-for-senmail* (equal (system-name) "asfsdspratap"))
 
 (if *use-msmtp-for-senmail* ;; where I am using msmtp
     (setq  ;; for msmtp
@@ -39,6 +38,22 @@
      ;; see http://www.gnus.org/manual/message_36.html
      message-sendmail-f-is-evil nil
      message-sendmail-envelope-from 'head))
+
+
+;;{{ For SMTP msmtp
+
+;; (if (equal (system-name) office-host-name)
+(unless (equal (system-name) office-host-name)
+    (setq message-send-mail-function 'message-send-mail-with-sendmail
+          sendmail-program "/usr/bin/msmtp" ;; we substitute sendmail with msmtp
+          ; message-sendmail-extra-argouments "--tls-certcheck off"
+          message-sendmail-extra-argouments nil
+          message-sendmail-f-is-evil t
+          message-sendmail-envelope-from 'header
+          message-alternative-emails (regexp-opt (list email-addr office-email) )))
+
+;;}} For SMTP msmtp
+
 
 
 (gnus-registry-initialize)

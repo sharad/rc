@@ -102,7 +102,6 @@
     (defun eudc-select (choices beg end)
       "Choose one from CHOICES using a completion.
 BEG and END delimit the text which is to be replaced."
-      (message choices)
       (let ((replacement))
         (setq replacement
               (completing-read "Multiple matches found; choose one: "
@@ -142,9 +141,9 @@ BEG and END delimit the text which is to be replaced."
   '(define-key post-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))))
 
 
-(eudc-display-jpeg-inline
- (cdaar (remove-if 'null (eudc-query '(("givenName" . "Sharad")) '(thumbnailPhoto)))))
-
+(testing
+ (eudc-display-jpeg-inline
+  (cdaar (remove-if 'null (eudc-query '(("givenName" . "Sharad")) '(thumbnailPhoto))))))
 
 
 
@@ -197,6 +196,140 @@ BEG and END delimit the text which is to be replaced."
 ;; 		  (gnus-add-image 'face image)
 ;; 		  (gnus-put-image image nil 'face))))))))))
 
+
+
+
+(defun eudc-expand-inline (&optional replace)
+  "Query the directory server, and expand the query string before point.
+The query string consists of the buffer substring from the point back to
+the preceding comma, colon or beginning of line.
+The variable `eudc-inline-query-format' controls how to associate the
+individual inline query words with directory attribute names.
+After querying the server for the given string, the expansion specified by
+`eudc-inline-expansion-format' is inserted in the buffer at point.
+If REPLACE is non-nil, then this expansion replaces the name in the buffer.
+`eudc-expansion-overwrites-query' being non-nil inverts the meaning of REPLACE.
+Multiple servers can be tried with the same query until one finds a match,
+see `eudc-inline-expansion-servers'"
+  (interactive)
+  (if (memq eudc-inline-expansion-servers
+	    '(current-server server-then-hotlist))
+      (or eudc-server
+	  (call-interactively 'eudc-set-server))
+    (or eudc-server-hotlist
+	(error "No server in the hotlist")))
+  (let* ((end (point))
+	 (beg (save-excursion
+		(if (re-search-backward "\\([:,]\\|^\\)[ \t]*"
+					(save-excursion
+					  (beginning-of-line)
+					  (point))
+					'move)
+		    (goto-char (match-end 0)))
+		(point)))
+	 (query-words (split-string (buffer-substring beg end) "[ \t]+"))
+	 query-formats
+	 response
+	 response-string
+	 response-strings
+	 (eudc-former-server eudc-server)
+	 (eudc-former-protocol eudc-protocol)
+	 servers)
+
+    ;; Prepare the list of servers to query
+    (setq servers (copy-sequence eudc-server-hotlist))
+    (setq servers
+	  (cond
+	   ((eq eudc-inline-expansion-servers 'hotlist)
+	    eudc-server-hotlist)
+	   ((eq eudc-inline-expansion-servers 'server-then-hotlist)
+	    (cons (cons eudc-server eudc-protocol)
+		  (delete (cons eudc-server eudc-protocol) servers)))
+	   ((eq eudc-inline-expansion-servers 'current-server)
+	    (list (cons eudc-server eudc-protocol)))
+	   (t
+	    (error "Wrong value for `eudc-inline-expansion-servers': %S"
+		   eudc-inline-expansion-servers))))
+    (if (and eudc-max-servers-to-query
+	     (> (length servers) eudc-max-servers-to-query))
+	(setcdr (nthcdr (1- eudc-max-servers-to-query) servers) nil))
+
+    (condition-case signal
+	(progn
+	  (setq response
+		(remove-if
+                 #'null
+                 (catch 'found
+                   ;; Loop on the servers
+                   (while servers
+                     (eudc-set-server (eudc-caar servers) (eudc-cdar servers) t)
+
+                     ;; Determine which formats apply in the query-format list
+                     (setq query-formats
+                           (or
+                            (eudc-extract-n-word-formats eudc-inline-query-format
+                                                         (length query-words))
+                            (if (null eudc-protocol-has-default-query-attributes)
+                                '(name))))
+
+                     ;; Loop on query-formats
+                     (while query-formats
+                       (setq response
+                             (eudc-query
+                              (eudc-format-query query-words (car query-formats))
+                              (eudc-translate-attribute-list
+                               (cdr eudc-inline-expansion-format))))
+                       (if response
+                           (throw 'found response))
+                       (setq query-formats (cdr query-formats)))
+                     (setq servers (cdr servers)))
+                   ;; No more servers to try... no match found
+                   nil)))
+
+
+	  (if (null response)
+	      (error "No match")
+
+	    ;; Process response through eudc-inline-expansion-format
+	    (while response
+	      (setq response-string (apply 'format
+					   (car eudc-inline-expansion-format)
+					   (mapcar (function
+						    (lambda (field)
+						      (or (cdr (assq field (car response)))
+							  "")))
+						   (eudc-translate-attribute-list
+						    (cdr eudc-inline-expansion-format)))))
+	      (if (> (length response-string) 0)
+		  (setq response-strings
+			(cons response-string response-strings)))
+	      (setq response (cdr response)))
+
+	    (if (or
+		 (and replace (not eudc-expansion-overwrites-query))
+		 (and (not replace) eudc-expansion-overwrites-query))
+		(kill-ring-save beg end))
+	    (cond
+	     ((or (= (length response-strings) 1)
+		  (null eudc-multiple-match-handling-method)
+		  (eq eudc-multiple-match-handling-method 'first))
+	      (delete-region beg end)
+	      (insert (car response-strings)))
+	     ((eq eudc-multiple-match-handling-method 'select)
+	      (eudc-select response-strings beg end))
+	     ((eq eudc-multiple-match-handling-method 'all)
+	      (delete-region beg end)
+	      (insert (mapconcat 'identity response-strings ", ")))
+	     ((eq eudc-multiple-match-handling-method 'abort)
+	      (error "There is more than one match for the query"))))
+	  (or (and (equal eudc-server eudc-former-server)
+		   (equal eudc-protocol eudc-former-protocol))
+	      (eudc-set-server eudc-former-server eudc-former-protocol t)))
+      (t
+       (or (and (equal eudc-server eudc-former-server)
+		(equal eudc-protocol eudc-former-protocol))
+	   (eudc-set-server eudc-former-server eudc-former-protocol t))
+       (signal (car signal) (cdr signal))))))
 
 (user-provide 'eudc)
 ;;; eudc.el ends here
