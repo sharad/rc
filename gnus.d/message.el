@@ -43,7 +43,7 @@
 ;;{{ For SMTP msmtp
 
 ;; (if (equal (system-name) office-host-name)
-(unless (equal (system-name) office-host-name)
+(if nil ;(equal (system-name) office-host-name)
     (setq message-send-mail-function 'message-send-mail-with-sendmail
           sendmail-program "/usr/bin/msmtp" ;; we substitute sendmail with msmtp
           ; message-sendmail-extra-argouments "--tls-certcheck off"

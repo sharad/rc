@@ -2,7 +2,7 @@ include(defs)
 
 [[general]]
 metadata = ~/.offlineimap
-accounts = Gmail
+accounts = esyscmd(echo -n $OFFLINEIMAPACCOUNT)
 maxsyncaccounts = 1
 ui = Curses.Blinkenlights, TTY.TTYUI,
      Noninteractive.Basic, Noninteractive.Quiet
