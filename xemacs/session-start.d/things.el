@@ -27,9 +27,9 @@
 
 
 (deh-require-maybe 'thingatpt
- ;;   Email addresses
+  ;;   Email addresses
   (defvar thing-at-point-fullemail-regexp
-    "<?[-+_.~a-zA-Z][-+_.~:a-zA-Z0-9]*@[-.a-zA-Z0-9]+>?"
+    "\\([a-zA-Z]+ \\)\\{1,2\\}<?[-+_.~a-zA-Z][-+_.~:a-zA-Z0-9]*@[-.a-zA-Z0-9]+>?"
     "A regular expression probably matching an email address.
 This does not match the real name portion, only the address, optionally
 with angle brackets.")
@@ -41,7 +41,7 @@ with angle brackets.")
 
   (put 'fullemail 'bounds-of-thing-at-point
        (lambda ()
-         (let ((thing (thing-at-point-looking-at thing-at-point-email-regexp)))
+         (let ((thing (thing-at-point-looking-at thing-at-point-fullemail-regexp)))
            (if thing
                (let ((beginning (match-beginning 0))
                      (end (match-end 0)))
@@ -49,12 +49,13 @@ with angle brackets.")
 
   (put 'fullemail 'thing-at-point
        (lambda ()
-         (let ((boundary-pair (bounds-of-thing-at-point 'email)))
+         (let ((boundary-pair (bounds-of-thing-at-point 'fullemail)))
            (if boundary-pair
                (buffer-substring-no-properties
                 (car boundary-pair) (cdr boundary-pair)))))))
 
 
+;; Sharad Pratap <spratap@arubanetworks.com>
 
 
 (provide 'things)

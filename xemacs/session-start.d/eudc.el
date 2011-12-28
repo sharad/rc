@@ -91,10 +91,13 @@
 
 
 
-    (defun sharad/eudc-show-at-point ()
-      (ietf-drums-parse-address ) ;; from .gnus.d/article.el
-      (eudc-display-records (eudc-query '((mail . "spratap@arubanetworks.com")) ) t) )
-
+    (defun sharad/eudc-show-at-point (arg)
+      (interactive "P")
+      ;; from .gnus.d/article.el
+      (let ((email (thing-at-point 'fullemail)))
+        (if email
+            (eudc-display-records (eudc-query (list (cons 'mail (car (ietf-drums-parse-address email)))) ) arg)
+            (message "Not able to parse any email at point."))))
 
     (defun eudc-select (choices beg end)
       "Choose one from CHOICES using a completion.
@@ -108,15 +111,25 @@ BEG and END delimit the text which is to be replaced."
         (insert replacement)))
 
 
-;; (eudc-protocol-set 'eudc-attribute-display-method-alist
-;;                    '(("jpegphoto" . eudc-display-jpeg-inline)
-;;                      ("thumbnailPhoto" . eudc-display-jpeg-inline)
-;;                      ("labeledurl" . eudc-display-url)
-;;                      ("audio" . eudc-display-sound)
-;;                      ("labeleduri" . eudc-display-url)
-;;                      ("mail" . eudc-display-mail)
-;;                      ("url" . eudc-display-url))
-;;                    'ldap)
+(eudc-protocol-set 'eudc-attribute-display-method-alist
+                   '(("jpegphoto" . eudc-display-jpeg-inline)
+                     ("thumbnailphoto" . eudc-display-jpeg-inline)
+                     ("labeledurl" . eudc-display-url)
+                     ("audio" . eudc-display-sound)
+                     ("labeleduri" . eudc-display-url)
+                     ("mail" . eudc-display-mail)
+                     ("url" . eudc-display-url))
+                   'ldap)
+
+(eudc-protocol-set 'eudc-attribute-display-method-alist
+                   '(("jpegphoto" . eudc-display-jpeg-inline)
+                     ("thumbnailphoto" . eudc-display-jpeg-inline)
+                     ("labeledurl" . eudc-display-url)
+                     ("audio" . eudc-display-sound)
+                     ("labeleduri" . eudc-display-url)
+                     ("mail" . eudc-display-mail)
+                     ("url" . eudc-display-url))
+                   )
 
 
     ;; Adds some hooks
@@ -129,8 +142,8 @@ BEG and END delimit the text which is to be replaced."
   '(define-key post-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))))
 
 
-;; (eudc-display-jpeg-inline
-;;  (cdaar (remove-if 'null (eudc-query '(("givenName" . "Sharad")) '(thumbnailPhoto)))))
+(eudc-display-jpeg-inline
+ (cdaar (remove-if 'null (eudc-query '(("givenName" . "Sharad")) '(thumbnailPhoto)))))
 
 
 
