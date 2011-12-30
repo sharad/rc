@@ -56,10 +56,33 @@
 (setq
  gnus-treat-date-lapsed 'head
  gnus-treat-display-x-face 'head
- ;; gnus-treat-date-original 'head
- ;; gnus-treat-date-local 'head
+ gnus-treat-strip-cr 2
+ gnus-treat-strip-leading-blank-lines t
+ gnus-treat-strip-multiple-blank-lines t
+ gnus-treat-strip-trailing-blank-lines t
+ gnus-treat-unsplit-urls t
+
+ gnus-treat-date-english 'head
+ gnus-treat-date-iso8601 'head
+ gnus-treat-date-lapsed 'head
+ gnus-treat-date-local 'head
+ gnus-treat-date-original 'head
+ gnus-treat-date-user-defined 'head
+ gnus-treat-date-ut 'head
+ gnus-treat-date-original 'head
  ;; Make sure Gnus doesn't display smiley graphics.
- gnus-treat-display-smileys t)
+ gnus-treat-display-smileys t
+ gnus-treat-hide-boring-headers 'head
+ gnus-treat-hide-signature 'last
+ gnus-treat-strip-banner t
+
+
+ )
+
+(setq gnus-article-date-lapsed-new-header t)
+(add-hook 'gnus-part-display-hook 'gnus-article-date-lapsed)
+(add-hook 'gnus-part-display-hook 'gnus-article-date-local)
+
 ;;}}
 
 
