@@ -83,6 +83,21 @@
 (add-hook 'gnus-part-display-hook 'gnus-article-date-lapsed)
 (add-hook 'gnus-part-display-hook 'gnus-article-date-local)
 
+(add-hook 'gnus-article-prepare-hook
+          '(lambda ()
+;; 	     (gnus-article-de-quoted-unreadable)
+	     (gnus-article-emphasize)
+	     (gnus-article-hide-boring-headers)
+	     (gnus-article-hide-headers-if-wanted)
+;; 	     (gnus-article-hide-pgp)
+	     (gnus-article-highlight)
+	     (gnus-article-highlight-citation)
+	     (gnus-article-date-local)              ; will actually convert timestamp from other timezones to yours
+             (gnus-article-strip-trailing-space)
+;;              (gnus-article-fill-cited-article)
+             ))
+
+
 ;;}}
 
 
