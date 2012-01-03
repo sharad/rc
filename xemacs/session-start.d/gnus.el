@@ -21,6 +21,15 @@
 ;;
 
 
+;;{{
+
+(add-to-list 'load-path "/atlantic/home/s/res/share/elisp/gnus/lisp")
+(require 'gnus-util "/atlantic/home/s/res/share/elisp/gnus/lisp/gnus-util.el")
+(require 'gnus-load)
+
+;;}}
+
+
 ;;{{ Good :: Excellent beautiful Great!! Thanks XSteve
 ;; Use the keybinding M-F7 to toggle between the gnus window configuration and your normal editing windows.
 (defun xsteve-gnus ()

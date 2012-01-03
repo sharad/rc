@@ -24,7 +24,8 @@
    ;; (nnimap-server-port 993)
    ;; (nnimap-server-port 443)
    (nnimap-server-port 143)
-   ;; (nnimap-stream ssl)
+   (nnimap-stream network)
+   (nnimap-authenticator login)
    (nnimap-authinfo-file "~/.authinfo.gpg")
    (nnir-search-engin imap)))
 
@@ -1103,4 +1104,8 @@
 
 
 ;; (directory-files *gnus-session-file-dir* t "^[a-zA-Z0-9-]+\.elc$")
+
+(setq gnus-registry-install t
+      nnmail-crosspost t
+      gnus-agent nil)
 
