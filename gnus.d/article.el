@@ -92,6 +92,7 @@
 ;; 	     (gnus-article-hide-pgp)
 	     (gnus-article-highlight)
 	     (gnus-article-highlight-citation)
+            (gnus-article-date-lapsed)
 	     (gnus-article-date-local)              ; will actually convert timestamp from other timezones to yours
              (gnus-article-strip-trailing-space)
 ;;              (gnus-article-fill-cited-article)

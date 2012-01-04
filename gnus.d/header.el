@@ -33,6 +33,8 @@
    nnmail-extra-headers        '(To Newsgroups Content-Type Date)
    gnus-ignored-from-addresses "Sharad Pratap\\|sh4r4d.*\\|spratap.*")
 
+;; (string-match gnus-ignored-from-addresses "spratapfd@arubanetwork" )
+
 ;; from http://www.ichimusai.org/pub/dot-gnus
 (setq gnus-visible-headers
       '(

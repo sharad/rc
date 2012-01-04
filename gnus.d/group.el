@@ -46,7 +46,7 @@
              (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
                                         ;"Gnus: %g [%A] %Z"
              (gnus-extra-headers '(To Newsgroups X-Newsreader))
-             (gnus-ignored-from-addresses "Sharad Pratap\\|sh4r4d.*"))))))
+             (gnus-ignored-from-addresses "Sharad Pratap\\|sh4r4d.*\\|spratap.*"))))))
 
 ;; ("mail\\..*"
 ;;  (gnus-show-threads nil)
