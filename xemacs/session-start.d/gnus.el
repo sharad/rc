@@ -23,9 +23,13 @@
 
 ;;{{
 
-(add-to-list 'load-path "/atlantic/home/s/res/share/elisp/gnus/lisp")
-(require 'gnus-util "/atlantic/home/s/res/share/elisp/gnus/lisp/gnus-util.el")
-(require 'gnus-load)
+
+(when (and gnus-lib-path (file-directory-p gnus-lib-path))
+  (add-to-list 'load-path gnus-lib-path)
+  (require 'gnus-util (concat gnus-lib-path "/gnus-util.el"))
+  (load-file (concat gnus-lib-path "/gnus-util.el"))
+  (require 'gnus-util (concat gnus-lib-path "/gnus-util.el"))
+  (load-file (concat gnus-lib-path "/gnus-util.el")))
 
 ;;}}
 
