@@ -34,7 +34,10 @@
     (if (or (get-buffer "localhost:6667")	;; ERC already active?
             (get-buffer "irc.freenode.net:6667"))
         (erc-track-switch-buffer 1)  ;; yes: switch to last active
-        (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
+        (when (or t (y-or-n-p "Start ERC? ")) ;; no: maybe start ERC
+          (let ((logdir (concat (getenv "HOME") "/.logs/chat/erc")))
+            (when (file-directory-p logdir)
+              (make-directory logdir t)))
           (erc-freenode)
           (sleep-for 0 500)
           (erc-bitlbee)
@@ -220,7 +223,7 @@ while loading configuration every 60s, though"
               (string-match "localhost has changed mode for" msg))
       (setq erc-insert-this nil)))
 
-  
+
 ;;;--------------------------------------------------------------------------------
 ;;; Facebook-chat/bitlbee interaction stuff
 ;;;

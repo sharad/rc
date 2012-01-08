@@ -82,7 +82,6 @@
             (bury-buffer)
           (bury-buffer buf))))))
 
-(global-set-key [(meta f7)] 'xsteve-gnus)
 ;;}}
 
 ;;{{

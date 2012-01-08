@@ -39,10 +39,31 @@
   (add-hook 'follow-mode-hook 'my-follow-mode-hook))
 
 
+(testing
+ ;; do hack
+ (setq bufs (buffer-list))
 
+ (let* ((bufs (buffer-list))
+        (blist (ibuffer-filter-buffers
+                (current-buffer)
+                (if (and
+                     (cadr bufs)
+                     (eq ibuffer-always-show-last-buffer
+                         :nomini)
+                     (minibufferp (cadr bufs)))
+                    (caddr bufs)
+                    (cadr bufs))
+                nil
+                ;; (ibuffer-current-buffers-with-marks bufs)
+                ibuffer-display-maybe-show-predicates)))
+   blist))
 
 
 (deh-require-maybe 'ibuffer
+
+  ;; https://github.com/purcell/ibuffer-vc/blob/master/ibuffer-vc.el
+  (xrequire 'ibuffer-vc)
+
   (global-set-key (kbd "C-x C-b") 'ibuffer) ;force
   ;; (autoload 'ibuffer "ibuffer" "List buffers." t)
   (setq ibuffer-saved-filter-groups
@@ -103,4 +124,107 @@
         (switch-to-buffer found)))))
 
 (user-provide 'buffer)
+
+
+
+
+
+
+
+(testing
+ ;;;###autoload
+ (defun sharad/ibuffer-included-in-filters-p (buf filters)
+   (not
+    (memq nil ;; a filter will return nil if it failed
+          (mapcar
+           ;; filter should be like (TYPE . QUALIFIER), or
+           ;; (or (TYPE . QUALIFIER) (TYPE . QUALIFIER) ...)
+           #'(lambda (qual)
+               (ibuffer-included-in-filter-p buf qual))
+           filters))))
+
+ (defun sharad/ibuffer-included-in-filter-p (buf filter)
+   (if (eq (car filter) 'not)
+       (not (ibuffer-included-in-filter-p-1 buf (cdr filter)))
+       (ibuffer-included-in-filter-p-1 buf filter)))
+
+ (defun sharad/ibuffer-included-in-filter-p-1 (buf filter)
+   (not
+    (not
+     (case (car filter)
+       (or
+        (memq t (mapcar #'(lambda (x)
+                            (ibuffer-included-in-filter-p buf x))
+                        (cdr filter))))
+       (saved
+        (let ((data
+               (assoc (cdr filter)
+                      ibuffer-saved-filters)))
+          (unless data
+            (ibuffer-filter-disable)
+            (error "Unknown saved filter %s" (cdr filter)))
+          (ibuffer-included-in-filters-p buf (cadr data))))
+       (t
+        (let ((filterdat (assq (car filter)
+                               ibuffer-filtering-alist)))
+          ;; filterdat should be like (TYPE DESCRIPTION FUNC)
+          ;; just a sanity check
+          (unless filterdat
+            (ibuffer-filter-disable)
+            (error "Undefined filter %s" (car filter)))
+          (not
+           (not
+            (funcall (caddr filterdat)
+                     buf
+                     (cdr filter))))))))))
+
+ (defun sharad/ibuffer-generate-filter-groups (bmarklist &optional noempty nodefault)
+   (let ((filter-group-alist (if nodefault
+                                 ibuffer-filter-groups
+                                 (append ibuffer-filter-groups
+                                         (list (cons "Default" nil))))))
+     ;;     (dolist (hidden ibuffer-hidden-filter-groups)
+     ;;       (setq filter-group-alist (ibuffer-delete-alist
+     ;; 				   hidden filter-group-alist)))
+     (let ((vec (make-vector (length filter-group-alist) nil))
+           (i 0))
+       (dolist (filtergroup filter-group-alist)
+         (let ((filterset (cdr filtergroup)))
+           (multiple-value-bind (hip-crowd lamers)
+               (values-list
+                (ibuffer-split-list (lambda (bufmark)
+                                      (ibuffer-included-in-filters-p (car bufmark)
+                                                                     filterset))
+                                    bmarklist))
+             (aset vec i hip-crowd)
+             (incf i)
+             (setq bmarklist lamers))))
+       (let (ret)
+         (dotimes (j i ret)
+           (let ((bufs (aref vec j)))
+             (unless (and noempty (null bufs))
+               (push (cons (car (nth j filter-group-alist))
+                           bufs)
+                     ret))))))))
+
+ ;;;; todo:
+
+ (ibuffer-included-in-filter-p (get-buffer "irc.freenode.net:6667") '("erc" (mode . erc-mode)))
+
+
+
+
+ ibuffer-saved-filters ==
+
+ (("gnus" ((or (mode . message-mode) (mode . mail-mode) (mode
+. gnus-group-mode) (mode . gnus-summary-mode) (mode
+. gnus-article-mode)))) ("programming" ((or (mode
+. emacs-lisp-mode) (mode . cperl-mode) (mode . c-mode) (mode
+. java-mode) (mode . idl-mode) (mode . lisp-mode)))))
+
+
+
+ )
+
+
 

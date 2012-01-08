@@ -9,9 +9,9 @@
  * For more information, see http://www.mozilla.org/unix/customizing.html#prefs
  */
 
-user_pref("app.update.lastUpdateTime.addon-background-update-timer", 1325734175);
-user_pref("app.update.lastUpdateTime.background-update-timer", 1325734175);
-user_pref("app.update.lastUpdateTime.blocklist-background-update-timer", 1325734175);
+user_pref("app.update.lastUpdateTime.addon-background-update-timer", 1326032347);
+user_pref("app.update.lastUpdateTime.background-update-timer", 1326032347);
+user_pref("app.update.lastUpdateTime.blocklist-background-update-timer", 1326032347);
 user_pref("browser.display.background_color", "#669933");
 user_pref("browser.display.foreground_color", "#003333");
 user_pref("browser.visited_color", "#660033");

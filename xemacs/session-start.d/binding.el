@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2011-11-12 01:03:01 s>
+;; Time-stamp: <2012-01-08 19:43:25 s>
 ;;
 
 (deh-section "Hyper Super etc"
@@ -225,6 +225,15 @@ and their terminal equivalents.")
 
 (when (user-require 'db)
   (global-set-key [f12] 'enter-db-mode))
+
+
+
+(when (user-require 'gnus)
+ (global-set-key-if-unbind [(meta f7)] 'xsteve-gnus))
+
+(when (user-require 'erc)
+  (global-set-key-if-unbind [(meta f6)] 'sharad/erc-start-or-switch))
+
 
 (user-provide 'binding)
 
