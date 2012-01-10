@@ -24,7 +24,7 @@
 ;;{{
 
 
-(when (and gnus-lib-path (file-directory-p gnus-lib-path))
+(when (and (boundp 'gnus-lib-path) gnus-lib-path (file-directory-p gnus-lib-path))
   (add-to-list 'load-path gnus-lib-path)
   (require 'gnus-util (concat gnus-lib-path "/gnus-util.el"))
   (load-file (concat gnus-lib-path "/gnus-util.el"))

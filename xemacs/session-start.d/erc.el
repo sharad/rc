@@ -36,7 +36,7 @@
         (erc-track-switch-buffer 1)  ;; yes: switch to last active
         (when (or t (y-or-n-p "Start ERC? ")) ;; no: maybe start ERC
           (let ((logdir (concat (getenv "HOME") "/.logs/chat/erc")))
-            (when (file-directory-p logdir)
+            (unless (file-directory-p logdir)
               (make-directory logdir t)))
           (erc-freenode)
           (sleep-for 0 500)
