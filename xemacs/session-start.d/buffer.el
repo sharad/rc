@@ -39,25 +39,6 @@
   (add-hook 'follow-mode-hook 'my-follow-mode-hook))
 
 
-(testing
- ;; do hack
- (setq bufs (buffer-list))
-
- (let* ((bufs (buffer-list))
-        (blist (ibuffer-filter-buffers
-                (current-buffer)
-                (if (and
-                     (cadr bufs)
-                     (eq ibuffer-always-show-last-buffer
-                         :nomini)
-                     (minibufferp (cadr bufs)))
-                    (caddr bufs)
-                    (cadr bufs))
-                nil
-                ;; (ibuffer-current-buffers-with-marks bufs)
-                ibuffer-display-maybe-show-predicates)))
-   blist))
-
 
 (deh-require-maybe 'ibuffer
 
@@ -66,6 +47,25 @@
 
   (global-set-key (kbd "C-x C-b") 'ibuffer) ;force
   ;; (autoload 'ibuffer "ibuffer" "List buffers." t)
+
+
+
+  ;; It looks as though the default filterings are as follows:
+  ;;
+  ;;     predicate
+  ;;     content
+  ;;     size-lt
+  ;;     size-gt
+  ;;     filename
+  ;;     name
+  ;;     used-mode
+  ;;     mode
+  ;;
+  ;; Since filename can work for any part of the path, if you filter on a partial (or complete) directory, anything you have open from the directory is now grouped:
+  ;;
+  ;;     ("journal" (filename . "/personal/journal/"))
+
+
   (setq ibuffer-saved-filter-groups
         '(("default"
            ("dired" (mode . dired-mode))
@@ -86,11 +86,106 @@
                     (mode . gnus-summary-mode)
                     (mode . gnus-article-mode)
                     (name . "^\\.bbdb$")
-                    (name . "^\\.newsrc-dribble"))))))
+                    (name . "^\\.newsrc-dribble")))
+
+           ("programming" (or
+                           (mode . emacs-lisp-mode)
+                           (mode . cperl-mode)
+                           (mode . c-mode)
+                           (mode . java-mode)
+                           (mode . idl-mode)
+                           (mode . lisp-mode))))))
+
+
+
+  ;; nomaclature for `ibuffer-saved-filter-groups'
+
+  '(("groups1"
+     ("group1.1" filterset = (or filters))
+     ("group1.2" filterset = (filter)))
+
+    ("groups2"
+     ("group2.1" filterset = (or filters))
+     ("group2.2" filterset = (filter))
+     ))
+
 
   (add-hook 'ibuffer-mode-hook
             (lambda ()
-              (ibuffer-switch-to-saved-filter-groups "default"))))
+              (ibuffer-switch-to-saved-filter-groups "default")))
+
+
+  ;; http://www.emacswiki.org/emacs/IbufferMode
+  ;;When used with ElScreen, Ibuffer tends to remove it’s header line with tabs.
+  ;;To prevent it, set ibuffer-use-header-line to nil and use the following:
+
+  (defadvice ibuffer-update (around ibuffer-preserve-prev-header activate)
+    "Preserve line-header used before Ibuffer if it doesn't set one"
+    (let ((prev-line-header header-line-format))
+      ad-do-it
+      (unless header-line-format
+        (setq header-line-format prev-line-header))))
+
+  ;;IvanKorotkov
+
+
+
+  (deh-require-maybe 'ibuf-ext
+    (defun sharad/ibuffer-included-in-group-p (buf group &optional nodefault)
+      (let* ((filter-group-alist (if nodefault
+                                     ibuffer-filter-groups
+                                     (append ibuffer-filter-groups
+                                             (list (cons "Default" nil)))))
+             (group-with-filterset (assoc group filter-group-alist))
+             (filterset (cdr group-with-filterset)))
+        (if (null group-with-filterset)
+            (error "no such group: %s" group)
+            (ibuffer-included-in-filters-p buf filterset))))
+
+    (defun sharad/ibuffer-included-in-groups-p (buf &rest groups)
+      (let (ret)
+        (while (and (not ret) groups)
+          (setq ret (sharad/ibuffer-included-in-group-p buf (car groups))
+                groups (cdr groups)))
+        ret))
+
+    (defun sharad/ibuffer-containing-group-of-buffer (buf &optional default)
+      (let (ret
+            (filter-group-alist (if (not default)
+                                    ibuffer-filter-groups
+                                    (append ibuffer-filter-groups
+                                            (list (cons "Default" nil))))))
+        (while (and (not ret) filter-group-alist)
+          (setq ret (if (sharad/ibuffer-included-in-group-p buf (caar filter-group-alist))
+                        (caar filter-group-alist))
+                filter-group-alist (cdr filter-group-alist)))
+        ret))
+
+    (defun sharad/ibuffer-get-group-buffers (group)
+      (let* ((filter-group-alist (append ibuffer-filter-groups
+                                         (list (cons "Default" nil))))
+             (group-with-filterset (assoc group filter-group-alist))
+             (filterset (cdr group-with-filterset))
+             (buffers (buffer-list)))
+        (if (null group-with-filterset)
+            (error "no such group: %s" group)
+            (remove-if-not #'(lambda (buf)
+                               (ibuffer-included-in-filters-p buf filterset)) buffers))))
+
+    (testing
+     (sharad/ibuffer-included-in-groups-p (current-buffer) "gnus" "Default")
+     (sharad/ibuffer-containing-group-of-buffer (current-buffer) t)
+     (sharad/ibuffer-get-group-buffers "Default")
+     (sharad/ibuffer-included-in-group-p (current-buffer) "Default"))
+
+
+    (defun sharad/context-switch-buffer ()
+      (interactive)
+      (let ((group (sharad/ibuffer-containing-group-of-buffer (current-buffer) t)))
+        (switch-to-buffer
+         (ido-completing-read
+          (format "Buffer from %s group: " group)
+          (mapcar #'buffer-name (sharad/ibuffer-get-group-buffers group)))))) )  )
 
 
 (deh-require-maybe 'uniquify
@@ -128,103 +223,6 @@
 
 
 
-
-
-
-(testing
- ;;;###autoload
- (defun sharad/ibuffer-included-in-filters-p (buf filters)
-   (not
-    (memq nil ;; a filter will return nil if it failed
-          (mapcar
-           ;; filter should be like (TYPE . QUALIFIER), or
-           ;; (or (TYPE . QUALIFIER) (TYPE . QUALIFIER) ...)
-           #'(lambda (qual)
-               (ibuffer-included-in-filter-p buf qual))
-           filters))))
-
- (defun sharad/ibuffer-included-in-filter-p (buf filter)
-   (if (eq (car filter) 'not)
-       (not (ibuffer-included-in-filter-p-1 buf (cdr filter)))
-       (ibuffer-included-in-filter-p-1 buf filter)))
-
- (defun sharad/ibuffer-included-in-filter-p-1 (buf filter)
-   (not
-    (not
-     (case (car filter)
-       (or
-        (memq t (mapcar #'(lambda (x)
-                            (ibuffer-included-in-filter-p buf x))
-                        (cdr filter))))
-       (saved
-        (let ((data
-               (assoc (cdr filter)
-                      ibuffer-saved-filters)))
-          (unless data
-            (ibuffer-filter-disable)
-            (error "Unknown saved filter %s" (cdr filter)))
-          (ibuffer-included-in-filters-p buf (cadr data))))
-       (t
-        (let ((filterdat (assq (car filter)
-                               ibuffer-filtering-alist)))
-          ;; filterdat should be like (TYPE DESCRIPTION FUNC)
-          ;; just a sanity check
-          (unless filterdat
-            (ibuffer-filter-disable)
-            (error "Undefined filter %s" (car filter)))
-          (not
-           (not
-            (funcall (caddr filterdat)
-                     buf
-                     (cdr filter))))))))))
-
- (defun sharad/ibuffer-generate-filter-groups (bmarklist &optional noempty nodefault)
-   (let ((filter-group-alist (if nodefault
-                                 ibuffer-filter-groups
-                                 (append ibuffer-filter-groups
-                                         (list (cons "Default" nil))))))
-     ;;     (dolist (hidden ibuffer-hidden-filter-groups)
-     ;;       (setq filter-group-alist (ibuffer-delete-alist
-     ;; 				   hidden filter-group-alist)))
-     (let ((vec (make-vector (length filter-group-alist) nil))
-           (i 0))
-       (dolist (filtergroup filter-group-alist)
-         (let ((filterset (cdr filtergroup)))
-           (multiple-value-bind (hip-crowd lamers)
-               (values-list
-                (ibuffer-split-list (lambda (bufmark)
-                                      (ibuffer-included-in-filters-p (car bufmark)
-                                                                     filterset))
-                                    bmarklist))
-             (aset vec i hip-crowd)
-             (incf i)
-             (setq bmarklist lamers))))
-       (let (ret)
-         (dotimes (j i ret)
-           (let ((bufs (aref vec j)))
-             (unless (and noempty (null bufs))
-               (push (cons (car (nth j filter-group-alist))
-                           bufs)
-                     ret))))))))
-
- ;;;; todo:
-
- (ibuffer-included-in-filter-p (get-buffer "irc.freenode.net:6667") '("erc" (mode . erc-mode)))
-
-
-
-
- ibuffer-saved-filters ==
-
- (("gnus" ((or (mode . message-mode) (mode . mail-mode) (mode
-. gnus-group-mode) (mode . gnus-summary-mode) (mode
-. gnus-article-mode)))) ("programming" ((or (mode
-. emacs-lisp-mode) (mode . cperl-mode) (mode . c-mode) (mode
-. java-mode) (mode . idl-mode) (mode . lisp-mode)))))
-
-
-
- )
 
 
 

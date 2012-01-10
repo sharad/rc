@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-01-08 19:43:25 s>
+;; Time-stamp: <2012-01-11 01:16:44 s>
 ;;
 
 (deh-section "Hyper Super etc"
@@ -234,6 +234,10 @@ and their terminal equivalents.")
 (when (user-require 'erc)
   (global-set-key-if-unbind [(meta f6)] 'sharad/erc-start-or-switch))
 
+
+(when (xrequire 'ibuffer)
+  (global-set-key (kbd "C-x C-b") 'ibuffer) ;force
+  )
 
 (user-provide 'binding)
 
