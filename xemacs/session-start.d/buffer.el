@@ -185,7 +185,66 @@
         (switch-to-buffer
          (ido-completing-read
           (format "Buffer from %s group: " group)
-          (mapcar #'buffer-name (sharad/ibuffer-get-group-buffers group)))))) )  )
+          (mapcar #'buffer-name (sharad/ibuffer-get-group-buffers group)))))) )
+
+
+
+
+
+;;{{ Good :: Excellent beautiful Great!! Thanks XSteve
+;; Use the keybinding M-F7 to toggle between the gnus window configuration and your normal editing windows.
+(defun xsteve-gnus ()
+  (interactive)
+  (let ((bufname (buffer-name)))
+    (if (or
+         (string-equal "*Group*" bufname)
+         (string-equal "*BBDB*" bufname)
+         (string-match "\*Summary" bufname)
+         (string-match "\*Article" bufname))
+        (progn
+          (xsteve-bury-gnus))
+                                        ;unbury
+        (if (get-buffer "*Group*")
+            (unless (xsteve-unbury-gnus)
+              (gnus-plugged))
+              ; (gnus-unplugged))
+            ;; (progn
+            ;;   (xsteve-unbury-gnus)
+            ;;   (if (functionp 'gnus-summary-rescan-group)
+            ;;       (gnus-summary-rescan-group)))
+            (gnus-plugged)))))
+            ;;(gnus-unplugged)))))
+
+(defun xsteve-unbury-gnus ()
+  (interactive)
+  (when (and (boundp 'gnus-bury-window-configuration) gnus-bury-window-configuration)
+    (set-window-configuration gnus-bury-window-configuration)))
+
+(defun xsteve-bury-gnus ()
+  (interactive)
+  (setq gnus-bury-window-configuration nil)
+  (let ((buf nil)
+        (bufname nil))
+    (dolist (buf (buffer-list))
+      (setq bufname (buffer-name buf))
+      (when (or
+             (string-equal "*Group*" bufname)
+             (string-equal "*BBDB*" bufname)
+             (string-match "\*Summary" bufname)
+             (string-match "\*Article" bufname))
+        (unless gnus-bury-window-configuration
+          (setq gnus-bury-window-configuration (current-window-configuration)))
+        (delete-other-windows)
+        (if (eq (current-buffer) buf)
+            (bury-buffer)
+          (bury-buffer buf))))))
+
+;;}}
+
+
+
+
+  )
 
 
 (deh-require-maybe 'uniquify
@@ -217,6 +276,11 @@
                 (setq found buffer)))
           (setq list (cdr list)))
         (switch-to-buffer found)))))
+
+
+
+
+;; (setq debug-on-error t)
 
 (user-provide 'buffer)
 
