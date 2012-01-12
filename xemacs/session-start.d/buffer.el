@@ -131,10 +131,27 @@
 
 
   (deh-require-maybe 'ibuf-ext
+
+    (defun sharad/get-ibuffer-filter-groups ()
+      (cdr (assoc "default" ibuffer-saved-filter-groups)))
+
+
+    (defun get-ibuffer-group (&optional default-group)
+      (ido-completing-read "iBuffer Group: "
+                           (mapcar #'car (sharad/get-ibuffer-filter-groups))
+                           nil
+                           nil
+                           nil
+                           nil
+                           (or (if (stringp default-group) default-group)
+                               (sharad/ibuffer-containing-group-of-buffer (current-buffer)))))
+
+
+
     (defun sharad/ibuffer-included-in-group-p (buf group &optional nodefault)
       (let* ((filter-group-alist (if nodefault
-                                     ibuffer-filter-groups
-                                     (append ibuffer-filter-groups
+                                     (sharad/get-ibuffer-filter-groups)
+                                     (append (sharad/get-ibuffer-filter-groups)
                                              (list (cons "Default" nil)))))
              (group-with-filterset (assoc group filter-group-alist))
              (filterset (cdr group-with-filterset)))
@@ -152,8 +169,8 @@
     (defun sharad/ibuffer-containing-group-of-buffer (buf &optional default)
       (let (ret
             (filter-group-alist (if (not default)
-                                    ibuffer-filter-groups
-                                    (append ibuffer-filter-groups
+                                    (sharad/get-ibuffer-filter-groups)
+                                    (append (sharad/get-ibuffer-filter-groups)
                                             (list (cons "Default" nil))))))
         (while (and (not ret) filter-group-alist)
           (setq ret (if (sharad/ibuffer-included-in-group-p buf (caar filter-group-alist))
@@ -162,7 +179,7 @@
         ret))
 
     (defun sharad/ibuffer-get-group-buffers (group)
-      (let* ((filter-group-alist (append ibuffer-filter-groups
+      (let* ((filter-group-alist (append (sharad/get-ibuffer-filter-groups)
                                          (list (cons "Default" nil))))
              (group-with-filterset (assoc group filter-group-alist))
              (filterset (cdr group-with-filterset))
@@ -175,7 +192,7 @@
     (testing
      (sharad/ibuffer-included-in-groups-p (current-buffer) "gnus" "Default")
      (sharad/ibuffer-containing-group-of-buffer (current-buffer) t)
-     (sharad/ibuffer-get-group-buffers "Default")
+     (sharad/ibuffer-get-group-buffers "gnus")
      (sharad/ibuffer-included-in-group-p (current-buffer) "Default"))
 
 
@@ -185,59 +202,79 @@
         (switch-to-buffer
          (ido-completing-read
           (format "Buffer from %s group: " group)
-          (mapcar #'buffer-name (sharad/ibuffer-get-group-buffers group)))))) )
+          (mapcar #'buffer-name (sharad/ibuffer-get-group-buffers group))))))
+
+  (defmacro set-assoc (key val alist)
+    `(progn
+       (when (null (assoc ,key ,alist))
+         (setq ,alist (acons ,key nil ,alist)))
+       (setcdr (assoc ,key ,alist) ,val)))
 
 
+  (defvar group-window-configuration-alist nil "group and window-configuration alist")
 
+  (defvar group-start-fun-alist nil "group start fun alist")
 
+  (setq
+   group-start-fun-alist
+   '(("gnus" . gnus-unplugged)
+     ("erc" . sharad/erc-start-or-switch)))
+
+  (defun sharad/ibuffer-bury-group (group &optional buflist)
+    ;; Should use current buffer's group
+    (interactive)
+    (dolist (buf (or buflist (sharad/ibuffer-get-group-buffers group))
+              (bury-buffer buf))))
+
+  (defun sharad/hide-group (&optional group)
+    ;; Should use current buffer's group
+    (interactive)
+    (let* ((group (get-ibuffer-group))
+           (buflist (sharad/ibuffer-get-group-buffers group)))
+      (when buflist
+        (set-assoc group (current-window-configuration) group-window-configuration-alist)
+        (sharad/ibuffer-bury-group group buflist)
+        (delete-other-windows))))
+
+  (defun sharad/ibuffer-unbury-group (group &optional buflist)
+    ;; should ask for group.
+    (interactive))
+    ;; (dolist (buf (or buflist (sharad/ibuffer-get-group-buffers group))
+    ;;          (unbury-buffer buf))))
+
+  (defun sharad/unhide-group (&optional group)
+    ;; should ask for group.
+    (interactive)
+    (let* ((group (or group (get-ibuffer-group)))
+           (buflist (sharad/ibuffer-get-group-buffers group)))
+      (if buflist
+          (progn
+            (sharad/ibuffer-unbury-group group buflist)
+            (switch-to-buffer (car buflist))
+            (if (assoc group group-window-configuration-alist)
+                (set-window-configuration (cdr (assoc group group-window-configuration-alist)))))
+          (if (assoc group group-start-fun-alist)
+              (funcall (cdr (assoc group group-start-fun-alist)))
+              (message "No startup command associated with: `%s' group" group)))))
+
+  (testing
+   (defvar xx nil "asfds")
+   (set-assoc "qq" "pp" xx)
+   (macroexpand '(set-assoc "qwewq" "pp" xx))
+   (set-assoc "qwewq" "pp" xx)
+   (progn (when (null (assoc "qq" xx)) (setq xx (acons "qq" nil xx))) (setcdr (assoc "qq" xx) "pp")))
 
 ;;{{ Good :: Excellent beautiful Great!! Thanks XSteve
 ;; Use the keybinding M-F7 to toggle between the gnus window configuration and your normal editing windows.
-(defun xsteve-gnus ()
-  (interactive)
-  (let ((bufname (buffer-name)))
-    (if (or
-         (string-equal "*Group*" bufname)
-         (string-equal "*BBDB*" bufname)
-         (string-match "\*Summary" bufname)
-         (string-match "\*Article" bufname))
-        (progn
-          (xsteve-bury-gnus))
-                                        ;unbury
-        (if (get-buffer "*Group*")
-            (unless (xsteve-unbury-gnus)
-              (gnus-plugged))
-              ; (gnus-unplugged))
-            ;; (progn
-            ;;   (xsteve-unbury-gnus)
-            ;;   (if (functionp 'gnus-summary-rescan-group)
-            ;;       (gnus-summary-rescan-group)))
-            (gnus-plugged)))))
-            ;;(gnus-unplugged)))))
 
-(defun xsteve-unbury-gnus ()
-  (interactive)
-  (when (and (boundp 'gnus-bury-window-configuration) gnus-bury-window-configuration)
-    (set-window-configuration gnus-bury-window-configuration)))
+  (defun toggle-ibuffer-group (&optional group)
+    ;; Should use current buffer's group
+    (interactive)
+    (let ((group (or group (get-ibuffer-group))))
+      (if (sharad/ibuffer-included-in-group-p (current-buffer) group)
+          (sharad/hide-group group)
+          (sharad/unhide-group group)))))
 
-(defun xsteve-bury-gnus ()
-  (interactive)
-  (setq gnus-bury-window-configuration nil)
-  (let ((buf nil)
-        (bufname nil))
-    (dolist (buf (buffer-list))
-      (setq bufname (buffer-name buf))
-      (when (or
-             (string-equal "*Group*" bufname)
-             (string-equal "*BBDB*" bufname)
-             (string-match "\*Summary" bufname)
-             (string-match "\*Article" bufname))
-        (unless gnus-bury-window-configuration
-          (setq gnus-bury-window-configuration (current-window-configuration)))
-        (delete-other-windows)
-        (if (eq (current-buffer) buf)
-            (bury-buffer)
-          (bury-buffer buf))))))
 
 ;;}}
 
