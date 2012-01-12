@@ -24,6 +24,7 @@
 
 (deh-require-maybe 'erc
 
+  (user-require 'passwds)
 
   ;; help
   ;; This is an example of how to make a new command.  Type "/uptime" to
@@ -424,6 +425,9 @@ waiting for responses from the server"
 
 
 (deh-require-maybe 'erc-services
+
+  (user-require 'passwds)
+
   (erc-services-mode 1)
 
   (setq erc-auto-query 'frame
