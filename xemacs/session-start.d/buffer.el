@@ -218,7 +218,8 @@
   (setq
    group-start-fun-alist
    '(("gnus" . gnus-unplugged)
-     ("erc" . sharad/erc-start-or-switch)))
+     ("erc" . sharad/erc-start-or-switch)
+     ("planner" . plan)))
 
   (defun sharad/ibuffer-bury-group (group &optional buflist)
     ;; Should use current buffer's group

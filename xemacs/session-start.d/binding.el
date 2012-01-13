@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-01-11 01:16:44 s>
+;; Time-stamp: <2012-01-13 02:28:45 s>
 ;;
 
 (deh-section "Hyper Super etc"
@@ -228,11 +228,9 @@ and their terminal equivalents.")
 
 
 
-(when (user-require 'gnus)
- (global-set-key-if-unbind [(meta f7)] 'xsteve-gnus))
+;; not 'xsteve-gnus
+(global-set-key-if-unbind [(meta f7)] 'toggle-ibuffer-group)
 
-(when (user-require 'erc)
-  (global-set-key-if-unbind [(meta f6)] 'sharad/erc-start-or-switch))
 
 
 (when (xrequire 'ibuffer)
