@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-01-13 02:28:45 s>
+;; Time-stamp: <2012-01-14 01:25:43 s>
 ;;
 
 (deh-section "Hyper Super etc"
@@ -226,10 +226,23 @@ and their terminal equivalents.")
 (when (user-require 'db)
   (global-set-key [f12] 'enter-db-mode))
 
+(deh-require-maybe 'org
+  ;; (global-set-key "\C-cl" 'org-store-link)
+  ;; (global-set-key "\C-ca" 'org-agenda)
+  ;; (global-set-key "\C-cb" 'org-iswitchb)
+  ;;;       (define-key org-mode-map [S-right] 'forward-word)
+  ;;;       (define-key org-mode-map [S-left] 'backward-word)
+  ;;;       (define-key org-mode-map [S-down] 'scroll-one-line-up)
+  ;;;       (define-key org-mode-map [S-up] 'scroll-one-line-down)
+)
+
+
 
 
 ;; not 'xsteve-gnus
-(global-set-key-if-unbind [(meta f7)] 'toggle-ibuffer-group)
+(deh-require-maybe 'ibuf-ext
+  (global-set-key-if-unbind [(meta f7)] 'toggle-ibuffer-group)
+  (global-set-key-if-unbind (kbd "C-c b") 'sharad/context-switch-buffer))
 
 
 

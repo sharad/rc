@@ -22,13 +22,7 @@
                   (add-hook 'after-save-hook 'org-agenda-to-appt t t)))
 
       (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-      (global-set-key "\C-cl" 'org-store-link)
-      (global-set-key "\C-ca" 'org-agenda)
-      (global-set-key "\C-cb" 'org-iswitchb)
-;;;       (define-key org-mode-map [S-right] 'forward-word)
-;;;       (define-key org-mode-map [S-left] 'backward-word)
-;;;       (define-key org-mode-map [S-down] 'scroll-one-line-up)
-;;;       (define-key org-mode-map [S-up] 'scroll-one-line-down)
+      ;; see key binding in binding.el
 
       (defun gtd ()
         (interactive)

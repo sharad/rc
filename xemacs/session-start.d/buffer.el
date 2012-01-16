@@ -1,3 +1,4 @@
+
 ;;
 ;; buffer.el
 ;; Login : <s@taj>
@@ -39,6 +40,11 @@
   (add-hook 'follow-mode-hook 'my-follow-mode-hook))
 
 
+(defmacro set-assoc (key val alist)
+  `(progn
+     (when (null (assoc ,key ,alist))
+       (setq ,alist (acons ,key nil ,alist)))
+     (setcdr (assoc ,key ,alist) ,val)))
 
 (deh-require-maybe 'ibuffer
 
@@ -178,12 +184,15 @@
                 filter-group-alist (cdr filter-group-alist)))
         ret))
 
-    (defun sharad/ibuffer-get-group-buffers (group)
+    (defun sharad/ibuffer-get-group-buffers (group &optional current-last)
       (let* ((filter-group-alist (append (sharad/get-ibuffer-filter-groups)
                                          (list (cons "Default" nil))))
              (group-with-filterset (assoc group filter-group-alist))
              (filterset (cdr group-with-filterset))
-             (buffers (buffer-list)))
+             (buffers
+              (if current-last
+                  (reverse (buffer-list))
+                  (buffer-list))))
         (if (null group-with-filterset)
             (error "no such group: %s" group)
             (remove-if-not #'(lambda (buf)
@@ -196,19 +205,14 @@
      (sharad/ibuffer-included-in-group-p (current-buffer) "Default"))
 
 
-    (defun sharad/context-switch-buffer ()
-      (interactive)
+    (defun sharad/context-switch-buffer (&optional arg)
+      (interactive "P")
       (let ((group (sharad/ibuffer-containing-group-of-buffer (current-buffer) t)))
         (switch-to-buffer
          (ido-completing-read
           (format "Buffer from %s group: " group)
-          (mapcar #'buffer-name (sharad/ibuffer-get-group-buffers group))))))
+          (mapcar #'buffer-name (sharad/ibuffer-get-group-buffers group t))))))
 
-  (defmacro set-assoc (key val alist)
-    `(progn
-       (when (null (assoc ,key ,alist))
-         (setq ,alist (acons ,key nil ,alist)))
-       (setcdr (assoc ,key ,alist) ,val)))
 
 
   (defvar group-window-configuration-alist nil "group and window-configuration alist")
@@ -217,9 +221,9 @@
 
   (setq
    group-start-fun-alist
-   '(("gnus" . gnus-unplugged)
-     ("erc" . sharad/erc-start-or-switch)
-     ("planner" . plan)))
+   '(("gnus" . (gnus-unplugged . gnus-group-exit))
+     ("erc" . (sharad/erc-start-or-switch))
+     ("planner" . (plan))))
 
   (defun sharad/ibuffer-bury-group (group &optional buflist)
     ;; Should use current buffer's group
@@ -227,15 +231,41 @@
     (dolist (buf (or buflist (sharad/ibuffer-get-group-buffers group))
               (bury-buffer buf))))
 
-  (defun sharad/hide-group (&optional group)
+  (defun sharad/hide-group (&optional group call-stop-up-cmd)
     ;; Should use current buffer's group
-    (interactive)
-    (let* ((group (get-ibuffer-group))
+    (interactive "P")
+    (when (or call-stop-up-cmd
+            (if (called-interactively-p) group))
+        (call-group-start-stop-alist-cmd group 'stop)
+        ;; correct it
+        (setq group-window-configuration-alist
+              (remove-if #'(lambda (gc)
+                             (string-equal group (car gc)))
+                         group-window-configuration-alist)))
+    (let* ((call-stop-up-cmd
+            (or call-stop-up-cmd
+                (if (called-interactively-p) group)))
+           (group (or
+                   (unless (called-interactively-p) group)
+                   (get-ibuffer-group)))
            (buflist (sharad/ibuffer-get-group-buffers group)))
       (when buflist
-        (set-assoc group (current-window-configuration) group-window-configuration-alist)
+        (when (equal group (sharad/ibuffer-containing-group-of-buffer (current-buffer)))
+          (set-assoc group (current-window-configuration) group-window-configuration-alist))
         (sharad/ibuffer-bury-group group buflist)
         (delete-other-windows))))
+
+
+  (defun call-group-start-stop-alist-cmd (group start-or-stop)
+    (let ((fun (if (equal start-or-stop 'start)
+                   (cadr (assoc group group-start-fun-alist))
+                   (cddr (assoc group group-start-fun-alist))))
+          (cmd-type (if (equal start-or-stop 'start)
+                        "startup"
+                        "stop")))
+      (if fun
+          (funcall fun)
+          (message "No %s command associated with: `%s' group" cmd-type group))))
 
   (defun sharad/ibuffer-unbury-group (group &optional buflist)
     ;; should ask for group.
@@ -243,20 +273,25 @@
     ;; (dolist (buf (or buflist (sharad/ibuffer-get-group-buffers group))
     ;;          (unbury-buffer buf))))
 
-  (defun sharad/unhide-group (&optional group)
+  (defun sharad/unhide-group (&optional group call-start-up-cmd)
     ;; should ask for group.
-    (interactive)
-    (let* ((group (or group (get-ibuffer-group)))
+    (interactive "P")
+    (let* ((call-start-up-cmd
+            (or call-start-up-cmd
+                (if (called-interactively-p) group)))
+           (group (or
+                   (unless (called-interactively-p) group)
+                   (get-ibuffer-group)))
            (buflist (sharad/ibuffer-get-group-buffers group)))
       (if buflist
           (progn
             (sharad/ibuffer-unbury-group group buflist)
             (switch-to-buffer (car buflist))
             (if (assoc group group-window-configuration-alist)
-                (set-window-configuration (cdr (assoc group group-window-configuration-alist)))))
-          (if (assoc group group-start-fun-alist)
-              (funcall (cdr (assoc group group-start-fun-alist)))
-              (message "No startup command associated with: `%s' group" group)))))
+                (set-window-configuration (cdr (assoc group group-window-configuration-alist))))
+            (if call-start-up-cmd
+                (call-group-start-stop-alist-cmd group 'start)))
+          (call-group-start-stop-alist-cmd group 'start))))
 
   (testing
    (defvar xx nil "asfds")
@@ -268,19 +303,21 @@
 ;;{{ Good :: Excellent beautiful Great!! Thanks XSteve
 ;; Use the keybinding M-F7 to toggle between the gnus window configuration and your normal editing windows.
 
-  (defun toggle-ibuffer-group (&optional group)
+  (defun toggle-ibuffer-group (&optional group force-call-cmd)
     ;; Should use current buffer's group
-    (interactive)
-    (let ((group (or group (get-ibuffer-group))))
+    (interactive "P")
+    (let ((force-call-cmd
+           (or force-call-cmd
+               (if (called-interactively-p) group)))
+           (group (or
+                   (unless (called-interactively-p) group)
+                   (get-ibuffer-group))))
       (if (sharad/ibuffer-included-in-group-p (current-buffer) group)
-          (sharad/hide-group group)
-          (sharad/unhide-group group)))))
+          (sharad/hide-group group force-call-cmd)
+          (sharad/unhide-group group force-call-cmd)))))
 
 
 ;;}}
-
-
-
 
   )
 
