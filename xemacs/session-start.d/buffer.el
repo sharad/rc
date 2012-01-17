@@ -251,7 +251,7 @@
            (buflist (sharad/ibuffer-get-group-buffers group)))
       (when buflist
         (when (equal group (sharad/ibuffer-containing-group-of-buffer (current-buffer)))
-          (set-assoc group (current-window-configuration) group-window-configuration-alist))
+          (set-assoc group (elscreen-current-window-configuration) group-window-configuration-alist))
         (sharad/ibuffer-bury-group group buflist)
         (delete-other-windows))))
 
@@ -288,7 +288,9 @@
             (sharad/ibuffer-unbury-group group buflist)
             (switch-to-buffer (car buflist))
             (if (assoc group group-window-configuration-alist)
-                (set-window-configuration (cdr (assoc group group-window-configuration-alist))))
+                ;;                 (set-window-configuration (cdr (assoc group group-window-configuration-alist)))
+                (elscreen-apply-window-configuration (cdr (assoc group group-window-configuration-alist)))
+                )
             (if call-start-up-cmd
                 (call-group-start-stop-alist-cmd group 'start)))
           (call-group-start-stop-alist-cmd group 'start))))

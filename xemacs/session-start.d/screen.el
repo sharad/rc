@@ -29,7 +29,21 @@
 
 
 ;; I need it badly
-(xrequire 'elscreen-server)
+(deh-require-maybe 'elscreen-server
+
+  ;; (defun elscreen-swap-right ()
+  ;;   (interactive)
+  ;;   (elscreen-swap)
+  ;;   (elscreen-next)
+  ;;   (elscreen-notify-screen-modification))
+
+  ;; (defun elscreen-swap-left ()
+  ;;   (interactive)
+  ;;   (elscreen-previous)
+  ;;   (elscreen-swap)
+  ;;   (elscreen-next))
+  )
+
 ;; thanks http://www.emacswiki.org/emacs-pt/EmacsLispScreen ElScreen-server
 
 
