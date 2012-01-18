@@ -142,9 +142,17 @@
       (cdr (assoc "default" ibuffer-saved-filter-groups)))
 
 
-    (defun get-ibuffer-group (&optional default-group)
+    (defun get-ibuffer-group (&optional default-group cmd)
       (ido-completing-read "iBuffer Group: "
-                           (mapcar #'car (sharad/get-ibuffer-filter-groups))
+                           (remove-if-not
+                            '(lambda (g)
+                              (funcall (cond
+                                       ((eq cmd 'start) #'car)
+                                       ((eq cmd 'stop) #'cdr)
+                                       ((eq cmd nil) #'(lambda (x) t))
+                                       (t #'identity))
+                               (cdr (assoc g group-start-fun-alist))))
+                            (mapcar #'car (sharad/get-ibuffer-filter-groups)))
                            nil
                            nil
                            nil
@@ -247,7 +255,7 @@
                 (if (called-interactively-p) group)))
            (group (or
                    (unless (called-interactively-p) group)
-                   (get-ibuffer-group)))
+                   (get-ibuffer-group nil (if call-stop-up-cmd 'stop))))
            (buflist (sharad/ibuffer-get-group-buffers group)))
       (when buflist
         (when (equal group (sharad/ibuffer-containing-group-of-buffer (current-buffer)))
@@ -281,7 +289,7 @@
                 (if (called-interactively-p) group)))
            (group (or
                    (unless (called-interactively-p) group)
-                   (get-ibuffer-group)))
+                   (get-ibuffer-group nil (if call-start-up-cmd 'start))))
            (buflist (sharad/ibuffer-get-group-buffers group)))
       (if buflist
           (progn
@@ -308,12 +316,12 @@
   (defun toggle-ibuffer-group (&optional group force-call-cmd)
     ;; Should use current buffer's group
     (interactive "P")
-    (let ((force-call-cmd
+    (let* ((force-call-cmd
            (or force-call-cmd
                (if (called-interactively-p) group)))
            (group (or
                    (unless (called-interactively-p) group)
-                   (get-ibuffer-group))))
+                   (get-ibuffer-group nil (if force-call-cmd 'any)))))
       (if (sharad/ibuffer-included-in-group-p (current-buffer) group)
           (sharad/hide-group group force-call-cmd)
           (sharad/unhide-group group force-call-cmd)))))

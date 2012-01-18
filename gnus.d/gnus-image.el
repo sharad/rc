@@ -73,11 +73,12 @@ If nil, default to `image-size'."
 				(and name
 				     (string-match gnus-image-too-ugly
 						   name))))))
-	  (ignore-errors
+	  ;; (ignore-errors
 	    (funcall fun
 	     (cadr address)
 	     'gnus-image-insert
-	     (list header address category))))))))
+	     (list header address category)))))))
+;;)
 
 ;; (image-retrieve)
 ;; (gravatar-retrieve)
@@ -156,7 +157,8 @@ If images are already displayed, remove them."
 (testing
 
  (eudc-display-jpeg-inline
-  (cdaar (remove-if 'null (eudc-query '((mail . "spratap@arubanetworks.com")) '(thumbnailPhoto)))))
+  (with-temp-buffer
+    (cdaar (remove-if 'null (eudc-query '((mail . "spratap@arubanetworks.com")) '(thumbnailPhoto))))))
 
  (cdaar (remove-if 'null (eudc-query '((mail . "spratap@arubanetworks.com")) '(thumbnailPhoto))))
 
@@ -187,22 +189,92 @@ You can provide a list of argument to pass to CB in CBARGS."
                  (gravatar-data->image))
                cbargs)))))
 
+
+;; (defun image-dired-create-thumb (original-file thumbnail-file)
+
+;; (defmacro with-string-as-temp-file (str if &optional of &body body)
+;;   `(let ((if ,(make-temp-file "thumb"))
+;;          (of ,(make-temp-file "thumb")))
+;;      (append-to-file ,str nil if)
+;;      (
+;;           (find-file of)
+;;        )
+;;      ))
+
+;; (defun image-dired-create-thumb (original-file thumbnail-file)
+
+
+
 (defun eudc-ldap-retrieve (mail-address cb &optional cbargs)
   "Retrieve MAIL-ADDRESS gravatar and call CB on retrieval.
 You can provide a list of argument to pass to CB in CBARGS."
-  (read-minibuffer mail-address "safdsf")
   (apply cb
-         (cdaar (remove-if 'null (eudc-query (list (cons 'mail mail-address)) '(thumbnailPhoto))))
+         (create-image
+          (cdaar (remove-if 'null (eudc-query (list (cons 'mail mail-address)) '(thumbnailPhoto) t)))
+          'jpeg t)
          cbargs))
 
 (add-to-list 'gnus-image-display-funcs #'eudc-ldap-retrieve)
 (add-to-list 'gnus-image-display-funcs #'gravatar-retrieve)
+
+;; (defun image-dired-create-thumb (original-file thumbnail-file)
+
 
 
 
 (user-provide 'gnus-image)
 
 ;;; gnus-image.el ends here
+
+
+
+(testing
+
+ (gnus-with-article-headers
+   (let* ((mail-extr-disable-voodoo t)
+          (mail-extr-ignore-realname-equals-mailbox-name nil)
+          (addresses (mail-extract-address-components
+                      (or (mail-fetch-field "from") "") t))
+          (image-size (or gnus-image-size gravatar-size))
+          name)
+     (dolist (address addresses)
+       (when (and (setq name (car address))
+                  (string-match "\\` +" name))
+         (setcar address (setq name (substring name (match-end 0)))))
+       (when (or t
+                 (not (and gnus-image-too-ugly
+                           (or (string-match gnus-image-too-ugly
+                                             (or (cadr address) ""))
+                               (and name
+                                    (string-match gnus-image-too-ugly
+                                                  name))))))
+         (gravatar-retrieve
+          ;; (cadr address)
+          ;; nil
+          "sh4r4d@gmail.com"
+          'gnus-image-insert
+          (list "to"
+                '(nil "sh4r4d@gmail.com")
+                'from-image))))))
+
+ (gravatar-retrieve "sh4r4d@gmail.com" #'identity)
+
+
+
+ (gnus-image-insert (gravatar-retrieve "sh4r4d@gmail.com" #'identity)
+                    "to" '(nil "sh4r4d@gmail.com") 'from-image)
+
+
+ (gnus-image-insert
+  (list 'image :type 'jpeg :data
+        (cdaar (remove-if 'null (eudc-query '((mail . "spratap@arubanetworks.com")) '(thumbnailPhoto)))))
+  "from" '(nil "nrapaka@arubanetworks.com") 'from-image)
+
+ "Nagendra Babu. Rapaka" <nrapaka@arubanetworks.com>
+ (list 'image :type 'jpeg :data
+       (cdaar (remove-if 'null (eudc-query '((mail . "spratap@arubanetworks.com")) '(thumbnailPhoto))))) )
+
+
 
 
 
