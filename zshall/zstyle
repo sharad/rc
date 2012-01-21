@@ -167,8 +167,12 @@ zstyle ':completion:*:*:$command:*:$tag'  list-colors "=(#b) =$zshregex_with_bra
 
 # Allow zsh to complete on hostnames found in common config files.
 local _myhosts;                 # beautiful
-_myhosts=( ${${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
+# _myhosts=( ${${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
+#            ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} )
+
+_myhosts=( ${${=${${(f)"$(cat {/etc/ssh_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
            ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} )
+
 zstyle ':completion:*' hosts $_myhosts;
 
 ## With commands like `rm' it's annoying if one gets offered the same filename
@@ -177,7 +181,8 @@ zstyle ':completion:*' hosts $_myhosts;
 zstyle ':completion:*:rm:*' ignore-line yes
 
 ## Load the completion module.
-zstyle :compinstall filename '/home/$LOGNAME/.zshrc'
+# zstyle :compinstall filename '/home/$LOGNAME/.zshrc'
+zstyle :compinstall filename '$HOME/.zshrc'
 autoload -U compinit
 compinit
 

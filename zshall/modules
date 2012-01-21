@@ -15,10 +15,10 @@ zmodload zsh/db/gdbm  # dir
 
 
 zmodload zsh/deltochar
-zmodload zsh/example
+zmodload zsh/example >& /dev/null  # The example module has now been set up.
 zmodload zsh/files
 zmodload zsh/langinfo
-zmodload zsh/mapfile
+zmodload -ap zsh/mapfile mapfile
 zmodload zsh/mathfunc
 
 # zmodload zsh/net # dir
@@ -43,6 +43,8 @@ zmodload zsh/zselect
 zmodload zsh/zutil
 
 zmodload zsh/zpty
+
+#
 
 # try commands syserror
 
