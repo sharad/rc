@@ -12,9 +12,12 @@
 user_pref("app.update.lastUpdateTime.addon-background-update-timer", 1290846548);
 user_pref("app.update.lastUpdateTime.background-update-timer", 1290846548);
 user_pref("app.update.lastUpdateTime.blocklist-background-update-timer", 1290846548);
-user_pref("browser.display.background_color", "#669933");
-user_pref("browser.display.foreground_color", "#003333");
-user_pref("browser.visited_color", "#660033");
+user_pref("browser.active_color", "#EE0000");
+user_pref("browser.anchor_color", "#0000EE");
+user_pref("browser.display.background_color", "#FFFFFF");
+user_pref("browser.display.foreground_color", "#000000");
+user_pref("browser.display.use_system_colors", false);
+user_pref("browser.visited_color", "#551A8B");
 user_pref("extensions.enabledItems", "{6f9d85e0-794d-11dd-ad8b-0800200c9a66}:0.4,mozrepl@hyperstruct.net:2009122217");
 user_pref("extensions.lastAppVersion", "0.9.3 (Debian-0.9.3+git101015-1ubuntu1~maverick1)");
 user_pref("extensions.mozrepl.autoStart", true);

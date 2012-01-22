@@ -23,9 +23,13 @@ if [ $DISPLAY ] ; then
     # which  gnubiff &&  gnubiff  -n &
     # xmodmap ~/.xmodmaprc	# excellent, why i was not knowing it before.
 
-    whence -p xmodmap &&
-    xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
-
+    if whence -p xmodmap ; then
+        if [ -e ~/.xmodmaprc  ] ; then
+            xmodmap ~/.xmodmaprc
+        else
+            xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
+        fi
+    fi
     # whence -p xrdb &&
     # xrdb \
     #     -cpp 'm4 -I ~/.Xresources' \
