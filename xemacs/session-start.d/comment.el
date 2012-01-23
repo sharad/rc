@@ -40,6 +40,8 @@
 ;(define-key global-map [(shift up)] 'uncomment-and-go-up)
 
 
+(xrequire 'hide-comnt)
+
 
 (user-provide 'comment)
 ;;; comment.el ends here

@@ -55,7 +55,14 @@
 (deh-require-maybe 'weekly-view
   ;; http://www.emacswiki.org/emacs/CalendarWeeklyView
   ;; (remove-hook 'diary-display-hook 'fancy-diary-display-week-graph))
-  (add-hook 'diary-display-function 'fancy-diary-display-week-graph-if-appt))
+  (add-hook 'diary-display-function 'fancy-diary-display-week-graph-if-appt)
+
+
+  (defun toggle-fancy-diary-display-week-graph ()
+    (interactive)
+    (if (memq 'fancy-diary-display-week-graph-if-appt diary-display-function)
+        (remove-hook 'diary-display-hook 'fancy-diary-display-week-graph-if-appt)
+        (add-hook 'diary-display-function 'fancy-diary-display-week-graph-if-appt))))
 
 
 
