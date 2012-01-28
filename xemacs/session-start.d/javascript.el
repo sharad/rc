@@ -47,13 +47,32 @@
 (deh-require-maybe 'flymake
 
   (deh-require-maybe 'flymake-js
-    (setq flymake-jslint-command "jsl")
 
+
+;; http://lapin-bleu.net/riviera/?p=191
+
+
+  ;; (setq flymake-err-line-patterns
+  ;;       (cons '("Error:\\([[:digit:]]+\\):\\([[:digit:]]+\\):\\(.*\\)$"
+  ;;       	nil 1 2 3)
+  ;;             flymake-err-line-patterns))
 
     (defun flymake-jslint-init ()
       "Construct a command that flymake can use to check javascript source."
-      (list flymake-jslint-command (list (flymake-init-create-temp-buffer-copy
-                                                 'flymake-jslint--create-temp-in-system-tempdir))))
+      (list flymake-jslint-command (list ;; "-process"
+                                         (flymake-init-create-temp-buffer-copy
+                                          'flymake-jslint--create-temp-in-system-tempdir))))
+
+
+  (setq flymake-jslint-command "jslint"
+        flymake-jslint-err-line-patterns
+        '(("Error:\\([[:digit:]]+\\):\\([[:digit:]]+\\):\\(.*\\)$" nil 1 2 3)
+          ("^\\(.+\\)\:\\([0-9]+\\)\: \\(SyntaxError\:.+\\)\:$" nil 2 nil 3)
+          ("^\\(.+\\)(\\([0-9]+\\)): \\(SyntaxError:.+\\)$" nil 2 nil 3)
+          ("^\\(.+\\)(\\([0-9]+\\)): \\(lint \\)?\\(warning:.+\\)$" nil 2 nil 4)
+          )
+        flymake-jslint-trailing-comma-err-line-pattern
+        '("^\\(.+\\)\:\\([0-9]+\\)\: strict \\(warning: trailing comma.+\\)\:$" nil 2 nil 3))
 
     )
 
@@ -134,6 +153,7 @@
 ;; the error reporting format, breaking the pattern regexp above
 ;; and, even worse, reporting errors on two lines. See
 ;; http://lapin-bleu.net/riviera/?p=191
+
 
 ;; You can do
 
