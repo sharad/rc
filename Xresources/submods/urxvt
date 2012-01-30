@@ -1,9 +1,9 @@
 
 
-URxvt.searchable-scrollback: CM-s
-Rxvt.searchable-scrollback: CM-s
+URxvt.searchable-scrollback: C-3-s
+Rxvt.searchable-scrollback: C-3-s
 !! http://www.jukie.net/~bart/blog/urxvt-url-yank
-URxvt.keysym.CM-u: perl:mark-yank-urls:activate_mark_mode
+URxvt.keysym.C-3-u: perl:mark-yank-urls:activate_mark_mode
 URxvt.underlineURLs: true
 URxvt.perl-lib: esyscmd(echo -n $HOME)/.urxvt/
 URxvt.urlLauncher: conkeror
@@ -57,7 +57,7 @@ URxvt.xftAntialias:      false
 !!                                                              digital-clock
 !! URxvt.perl-ext:        selection,mark-yank-urls,readline,tabbed
 URxvt.perl-ext:        selection,mark-yank-urls,readline
-!! URxvt.keysym.C-M-r: perl:selection:rot13
+!! URxvt.keysym.C-3-r: perl:selection:rot13
 
 !! check http://mina86.com/2009/05/16/tabbed-urxvt-extension/
 !! URxvt.new-button:       yes
@@ -154,12 +154,12 @@ URxvt.loginShell: false
 !! After installing, put the following lines in your .Xdefaults/.Xresources:
 
 !! URxvt.perl-ext-common: keyboard-select
-URxvt.keysym.M-Escape: perl:keyboard-select:activate
+URxvt.keysym.3-Escape: perl:keyboard-select:activate
 
 !! The following line overwrites the default Meta-s binding and allows
 !! to activate keyboard-select directly in backward search mode:
 
-URxvt.keysym.M-s: perl:keyboard-select:search
+URxvt.keysym.3-s: perl:keyboard-select:search
 
 !! Use Meta-Escape to activate selection mode, then use the following keys:
 
@@ -188,7 +188,7 @@ URxvt.keysym.M-s: perl:keyboard-select:search
 !! .Xdefaults/.Xresources:
 
 !! URxvt.perl-ext-common: ...,url-select
-URxvt.keysym.M-u: perl:url-select:select_next
+URxvt.keysym.3-u: perl:url-select:select_next
 
 !! Use Meta-u to activate URL selection mode, then use the following
 !! keys:
@@ -220,9 +220,9 @@ URxvt.keysym.M-u: perl:url-select:select_next
 !! .Xdefaults/.Xresources:
 
 !! URxvt.perl-ext-common: ...,clipboard
-URxvt.keysym.M-c:   perl:clipboard:copy
-URxvt.keysym.M-v:   perl:clipboard:paste
-URxvt.keysym.M-C-v: perl:clipboard:paste_escaped
+URxvt.keysym.3-c:   perl:clipboard:copy
+URxvt.keysym.3-v:   perl:clipboard:paste
+URxvt.keysym.3-C-v: perl:clipboard:paste_escaped
 
 !! You can also overwrite the system commands to use for copying/pasting. The default ones are:
 
@@ -249,7 +249,13 @@ URxvt.pasteCommand: xclip -o -selection clipboard
 !! tabbedex
 !! https://github.com/stepb/urxvt-tabbedex
 
-URxvt.keysym.M-t: perl:tabbedex:new_tab
+!! check: https://raw.github.com/unkie/urxvt-tabbedex/master/tabbedex
+URxvt.keysym.C-4-Left: perl:tabbedex:move_tab_left
+URxvt.keysym.C-4-Right: perl:tabbedex:move_tab_right
+URxvt.keysym.4-Right: perl:tabbedex:next_tab
+URxvt.keysym.4-Left: perl:tabbedex:prev_tab
+URxvt.keysym.4-Down: perl:tabbedex:new_tab
+!! URxvt.keysym.3-t: perl:tabbedex:new_tab
 !! END
 
 !! font extentoin

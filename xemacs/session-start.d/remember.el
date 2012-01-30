@@ -15,29 +15,29 @@
       ;; start
       ;; from: http://members.optusnet.com.au/~charles57/GTD/remember.html
 
-      (defun oremp (arg)
-        "Display the value of the raw prefix arg."
-        (interactive "P")
-        (if arg
-            (progn
-              (setq org-remember-templates
-                    (cond
-                     ((= (prefix-numeric-value arg) 1) org-remtpl-office)
-                     ((= (prefix-numeric-value arg) 2) org-remtpl-myself)
-                     ((= (prefix-numeric-value arg) 4) org-remtpl-default)))
+      ;; (defun oremp (arg)
+      ;;   "Display the value of the raw prefix arg."
+      ;;   (interactive "P")
+      ;;   (if arg
+      ;;       (progn
+      ;;         (setq org-remember-templates
+      ;;               (cond
+      ;;                ((= (prefix-numeric-value arg) 1) org-remtpl-office)
+      ;;                ((= (prefix-numeric-value arg) 2) org-remtpl-myself)
+      ;;                ((= (prefix-numeric-value arg) 4) org-remtpl-default)))
 
-              (if (functionp 'org-remember-insinuate)
-                (org-remember-insinuate)
-              (setq remember-annotation-functions '(org-remember-annotation)
-                    remember-handler-functions '(org-remember-handler))
-              (add-hook 'remember-mode-hook 'org-remember-apply-template))
-              (remember))
-         ;;      (define-key global-map "\C-cr" 'org-remember)
-          (progn
-            (remove-hook 'remember-mode-hook 'org-remember-apply-template)
-            (setq remember-handler-functions '(remember-planner-append)
-                  remember-annotation-functions planner-annotation-functions)
-            (remember))))
+      ;;         (if (functionp 'org-remember-insinuate)
+      ;;           (org-remember-insinuate)
+      ;;         (setq remember-annotation-functions '(org-remember-annotation)
+      ;;               remember-handler-functions '(org-remember-handler))
+      ;;         (add-hook 'remember-mode-hook 'org-remember-apply-template))
+      ;;         (remember))
+      ;;    ;;      (define-key global-map "\C-cr" 'org-remember)
+      ;;     (progn
+      ;;       (remove-hook 'remember-mode-hook 'org-remember-apply-template)
+      ;;       (setq remember-handler-functions '(remember-planner-append)
+      ;;             remember-annotation-functions planner-annotation-functions)
+      ;;       (remember))))
 
       (define-key global-map "\C-cr" 'oremp)
 
@@ -198,5 +198,120 @@
 ;; End
 ;; from http://www.emacswiki.org/emacs/RememberMode#toc7
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(deh-section "My Remember"
+  (defvar sharad/remember-functions-alist nil "")
+
+
+  (setq sharad/remember-functions-alist
+        `((planner .
+                   ((annotation . ,planner-annotation-functions)
+                    (handler . (remember-planner-append))))
+          (org .
+               ((annotation . (org-remember-annotation))
+                (handler . (org-remember-handler))
+                (hook . (org-remember-apply-template))))))
+
+  (defmacro cdr-assoc-cdr-assoc (key1 key2 alist)
+    `(cdr (assoc
+           ,key2
+           (cdr (assoc
+                 ,key1
+                 ,alist)))))
+
+  ;; (testing
+  ;;  (cdr-assoc-cdr-assoc 'planner 'annotation sharad/remember-functions-alist)
+
+  ;;  (add-hook (cdr-assoc-cdr-assoc 'org 'hook sharad/remember-functions-alist)
+  ;;            'org-remember-apply-template)
+
+  ;;  (setf (cdr-assoc-cdr-assoc 'org 'hook sharad/remember-functions-alist)
+  ;;            '(org-remember-apply-template)))
+
+  (defun sharad/remember-org ()
+    (interactive)
+    (sharad/remember 'org))
+
+  (defun sharad/remember-planner ()
+    (interactive)
+    (sharad/remember 'planner))
+
+
+  (defun run-list-until-success (flist)
+    ())
+
+  (defun sharad/remember (organizer &optional initial)
+    "Remember an arbitrary piece of data.
+With a prefix, uses the region as INITIAL."
+    (interactive
+     (list (when current-prefix-arg
+             (buffer-substring (point) (mark)))))
+    (window-configuration-to-register remember-register)
+    (let* ((remember-annotation-functions
+            (cdr-assoc-cdr-assoc organizer 'annotation sharad/remember-functions-alist))
+           (annotation
+            (if remember-run-all-annotation-functions-flag
+                (mapconcat 'identity
+                           (delq nil (mapcar 'funcall remember-annotation-functions))
+                           "\n")
+                (run-hook-with-args-until-success
+                 'remember-annotation-functions)))
+           (buf (get-buffer-create remember-buffer)))
+      (mapc 'funcall remember-before-remember-hook)
+      (switch-to-buffer-other-window buf)
+      (sharad/remember-mode organizer)
+      (when (= (point-max) (point-min))
+        (when initial (insert initial))
+        (setq remember-annotation annotation)
+        (when remember-initial-contents (insert remember-initial-contents))
+        (when (and (stringp annotation)
+                   (not (equal annotation "")))
+          (insert "\n\n" annotation))
+        (setq remember-initial-contents nil)
+        (goto-char (point-min)))
+      (message "Use C-c C-c to remember the data.")))
+
+
+  (defun sharad/remember-region (organizer &optional beg end)
+    "Remember the data from BEG to END.
+If called from within the remember buffer, BEG and END are ignored,
+and the entire buffer will be remembered.
+
+This function is meant to be called from the *Remember* buffer.
+If you want to remember a region, supply a universal prefix to
+`remember' instead. For example: C-u M-x remember."
+    ;; Sacha: I have no idea where remember.el gets this context information, but
+    ;; you can just use remember-annotation-functions.
+    (interactive)
+    (let ((remember-handler-functions
+           (cdr-assoc-cdr-assoc organizer 'handler sharad/remember-functions-alist))
+          (b (or beg (min (point) (or (mark) (point-min)))))
+          (e (or end (max (point) (or (mark) (point-max))))))
+      (save-restriction
+        (narrow-to-region b e)
+        (if remember-all-handler-functions
+            (mapc 'funcall remember-handler-functions)
+            (run-hook-with-args-until-success remember-handler-functions))
+        (remember-destroy))))
+
+
+  (defun sharad/remember-mode (organizer)
+    "Major mode for output from \\[remember].
+\\<remember-mode-map>This buffer is used to collect data that you want
+remember.  Just hit \\[remember-region] when you're done entering, and
+it will go ahead and file the data for latter retrieval, and possible
+indexing.  \\{remember-mode-map}"
+    (interactive)
+    (kill-all-local-variables)
+    (indented-text-mode)
+    (use-local-map remember-mode-map)
+    (setq major-mode 'remember-mode
+          mode-name "Remember")
+    (mapc 'funcall (cdr-assoc-cdr-assoc organizer 'hook sharad/remember-functions-alist))
+    ;; (run-hooks 'remember-mode-hook)
+    ))
+
+(mapc 'funcall '(forward-char ))
 
 (user-provide 'remember)

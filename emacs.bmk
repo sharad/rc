@@ -112,9 +112,9 @@
   (handler . Info-bookmark-jump))
  ("org-remember-last-stored"
   (filename . "~/.Organize/emacs/org/myself/todo.org")
-  (front-context-string . "** TODO fsdfgdgf")
-  (rear-context-string . "4-03 Fri 17:00>\n")
-  (position . 968))
+  (front-context-string . "** TODO correct ")
+  (rear-context-string)
+  (position . 9))
  ("Diary"
   (front-context-string . "\n   If you want ")
   (rear-context-string . "diary entries.\n\n")
