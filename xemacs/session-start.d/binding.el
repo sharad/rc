@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-01-14 01:25:43 s>
+;; Time-stamp: <2012-01-31 02:29:47 s>
 ;;
 
 (deh-section "Hyper Super etc"
@@ -237,7 +237,10 @@ and their terminal equivalents.")
 )
 
 
-
+(deh-section "compile"
+  ;; (global-set-key (kbd "C-c s") 'compile-dwim-compile)
+  ;; (global-set-key (kbd "C-c r") 'compile-dwim-run)
+  )
 
 ;; not 'xsteve-gnus
 (deh-require-maybe 'ibuf-ext
@@ -245,6 +248,9 @@ and their terminal equivalents.")
   (global-set-key-if-unbind (kbd "C-c b") 'sharad/context-switch-buffer))
 
 
+(deh-require-maybe 'remember
+  (global-set-key-if-unbind (kbd "C-c r p") 'sharad/remember-planner)
+  (global-set-key-if-unbind (kbd "C-c r o") 'sharad/remember-org))
 
 (when (xrequire 'ibuffer)
   (global-set-key (kbd "C-x C-b") 'ibuffer) ;force

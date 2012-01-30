@@ -129,8 +129,6 @@
 ;; script. The library executable provide a solution for automatic chmod
 ;; when saving file.
 
-(global-set-key (kbd "C-c s") 'compile-dwim-compile)
-(global-set-key (kbd "C-c r") 'compile-dwim-run)
 (setq compilation-buffer-name-function 'pde-compilation-buffer-name)
 (autoload 'compile-dwim-run "compile-dwim" "Build and run" t)
 (autoload 'compile-dwim-compile "compile-dwim" "Compile or check syntax" t)

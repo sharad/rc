@@ -13,9 +13,12 @@
       ;;           (lambda() (add-hook 'before-save-hook 'org-agenda-to-appt t t)))
       ;;;; from http://www.djcbsoftware.nl/dot-emacs.html
       (deh-require-maybe 'org2rem
+        ;; (add-hook 'org-mode-hook
+        ;;           (lambda()
+        ;;             (add-hook 'after-save-hook 'org2rem-all-agenda-files t t)))
         (add-hook 'org-mode-hook
                   (lambda()
-                    (add-hook 'after-save-hook 'org2rem-all-agenda-files t t))))
+                    (add-hook 'after-save-hook 'org2rem-this-file t t))))
 
       (add-hook 'org-mode-hook
                 (lambda()

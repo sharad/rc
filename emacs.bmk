@@ -111,10 +111,10 @@
   (info-node . "Writing Calendar Files")
   (handler . Info-bookmark-jump))
  ("org-remember-last-stored"
-  (filename . "~/.Organize/emacs/org/myself/todo.org")
-  (front-context-string . "** TODO correct ")
-  (rear-context-string)
-  (position . 9))
+  (filename . "~/.Organize/emacs/org/myself/privnotes.org")
+  (front-context-string . "** Ram          ")
+  (rear-context-string . "\nasfdsf\nsadfdsf\n")
+  (position . 383))
  ("Diary"
   (front-context-string . "\n   If you want ")
   (rear-context-string . "diary entries.\n\n")
