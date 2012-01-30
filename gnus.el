@@ -1081,15 +1081,15 @@
 
 ;;{{
 
-(defconst *gnus-session-file-dir* "~/\.gnus\.d")
+;; (when (file-directory-p *gnus-session-file-dir*)
+;;   (byte-recompile-directory *gnus-session-file-dir* 0)
+;;   (mapc '(lambda (file)
+;;           (user-require
+;;            (intern (file-name-sans-extension
+;;                     (file-name-nondirectory file)))))
+;;         (directory-files *gnus-session-file-dir* t "^[a-zA-Z0-9-]+\.elc$")))
 
-(when (file-directory-p *gnus-session-file-dir*)
-  (byte-recompile-directory *gnus-session-file-dir* 0)
-  (mapc '(lambda (file)
-          (user-require
-           (intern (file-name-sans-extension
-                    (file-name-nondirectory file)))))
-        (directory-files *gnus-session-file-dir* t "^[a-zA-Z0-9-]+\.elc$")))
+(load-dir-files "~/\.gnus\.d")
 
 ;;}}
 

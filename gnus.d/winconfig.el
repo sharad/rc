@@ -57,12 +57,14 @@
 
   (defun toggle-article-window ()
     (interactive)
-    (if (get-buffer-window "*Article*" nil)
-        (gnus-configure-windows 'summary 'force)
-        (gnus-configure-windows 'article 'force))))
-
-
-
+    (let
+        ((article-buffer (car
+                         (remove-if-not '(lambda (bn)
+                                          (string-match "*Article" bn 0)) (mapcar #'buffer-name (buffer-list))))))
+      (if (and article-buffer
+               (get-buffer-window article-buffer nil))
+          (gnus-configure-windows 'summary 'force)
+          (gnus-configure-windows 'article 'force)))))
 
 (user-provide 'winconfig)
 ;;; winconfig.el ends here

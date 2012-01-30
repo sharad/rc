@@ -158,9 +158,9 @@ If images are already displayed, remove them."
 
  (eudc-display-jpeg-inline
   (with-temp-buffer
-    (cdaar (remove-if 'null (eudc-query '((mail . "spratap@arubanetworks.com")) '(thumbnailPhoto))))))
+    (cdaar (remove-if 'null (eudc-query `((mail . ,email-office)) '(thumbnailPhoto))))))
 
- (cdaar (remove-if 'null (eudc-query '((mail . "spratap@arubanetworks.com")) '(thumbnailPhoto))))
+ (cdaar (remove-if 'null (eudc-query `((mail . ,email-office)) '(thumbnailPhoto))))
 
  )
 
@@ -251,28 +251,28 @@ You can provide a list of argument to pass to CB in CBARGS."
          (gravatar-retrieve
           ;; (cadr address)
           ;; nil
-          "sh4r4d@gmail.com"
+          email-personal
           'gnus-image-insert
           (list "to"
-                '(nil "sh4r4d@gmail.com")
+                `(nil ,email-personal)
                 'from-image))))))
 
- (gravatar-retrieve "sh4r4d@gmail.com" #'identity)
+ (gravatar-retrieve email-personal #'identity)
 
 
 
- (gnus-image-insert (gravatar-retrieve "sh4r4d@gmail.com" #'identity)
-                    "to" '(nil "sh4r4d@gmail.com") 'from-image)
+ (gnus-image-insert (gravatar-retrieve email-personal #'identity)
+                    "to" `(nil email-personal) 'from-image)
 
 
  (gnus-image-insert
   (list 'image :type 'jpeg :data
-        (cdaar (remove-if 'null (eudc-query '((mail . "spratap@arubanetworks.com")) '(thumbnailPhoto)))))
-  "from" '(nil "nrapaka@arubanetworks.com") 'from-image)
+        (cdaar (remove-if 'null (eudc-query `((mail . ,email-office )) '(thumbnailPhoto)))))
+  "from" `(nil ,email-friend) 'from-image)
 
- "Nagendra Babu. Rapaka" <nrapaka@arubanetworks.com>
+ "Name Sur" <email@host.com>
  (list 'image :type 'jpeg :data
-       (cdaar (remove-if 'null (eudc-query '((mail . "spratap@arubanetworks.com")) '(thumbnailPhoto))))) )
+       (cdaar (remove-if 'null (eudc-query `((mail . ,email-office)) '(thumbnailPhoto))))) )
 
 
 

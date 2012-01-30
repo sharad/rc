@@ -58,20 +58,6 @@
           (require feature nil t)
           (require feature nil))))
 
-;; create it ASAP
-;(defun srlib (sym path)
-;  ( if path
-;      (if (file-exists-p
-;	   ( concat ( car load-path ) (symbol-name sym )))
-;	  t
-;	(srlib sym (cdr path))
-;	)
-;    nil
-;    )
-;  )
-
-;(file-exists-p 'asdasdf )
-
 
 ;;}}}
 
@@ -158,36 +144,16 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; load all files present in ~/\.xemacs/session-start\.d directory.
-(defconst *session-file-dir* "~/\.xemacs/session-start\.d")
 (defconst *work-dir* "~/\.\./paradise")
 
-;; (defconst *session-file-dir*
-;;   (if (file-directory-p (concat "~/.xemacs/" server-name ".d"))
-;; 	(concat "~/.xemacs/" server-name ".d")
-;;     "~/\.xemacs/session-start\.d"))
-
-(when (file-directory-p *session-file-dir*)
-  (byte-recompile-directory *session-file-dir* 0)
-  (mapc 'load-file
-        (directory-files *session-file-dir* t "^[a-zA-Z0-9-]+\.elc$")))
+(load-dir-files "~/\.xemacs/session-start\.d")
 
 
-;; (when (file-directory-p *session-file-dir*)
-;;  (byte-recompile-directory *session-file-dir* 0)
-;;  (mapc '(lambda (file)
-;;          (user-require
-;;           (intern (file-name-sans-extension
-;;                    (file-name-nondirectory file)))
-;;           "~/.xemacs/session-start.d"))
-;;        (directory-files *session-file-dir* t "^[a-zA-Z0-9-]+\.elc$")))
 
 
 
 ;;end
 
-
-;; (file-name-sans-extension
-;;  (file-name-nondirectory "~/.xemacs/basic.el"))
 
 
 (put 'scroll-left 'disabled nil)

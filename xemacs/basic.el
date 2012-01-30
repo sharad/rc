@@ -93,6 +93,19 @@ alkready should not exist.")
 (defvar *user-module-loaded* nil "sadfsd")
 (defvar *user-load-path* '("~/.xemacs/session-start.d" "~/.gnus.d" "~/.xemacs/secure" "~/.xemacs/info") "sadfsd")
 
+(defun load-dir-files (dir)
+  (let (load-file-with-errors)
+   (when (file-directory-p dir)
+     (byte-recompile-directory dir 0)
+     (mapc '(lambda (f)
+             (if (not (ignore-errors (load-file f)))
+                 (push f load-file-with-errors)))
+           (directory-files dir t "^[a-zA-Z0-9-]+\.elc$"))
+     (if load-file-with-errors
+         (mapc 'load-file
+               load-file-with-errors)
+         t))))
+
 (defun afind-if (fun list) ;; anaphoric
   (let ((result
          (funcall fun (car list))))
