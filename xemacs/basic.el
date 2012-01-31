@@ -239,11 +239,12 @@ alkready should not exist.")
         sh
         ))
 
-;;{{
+;;{{ Testing
 
 (defvar testing nil "Set it to true when you want to enable test code.")
 
 (defmacro testing (&rest forms)
+  "For the purpose of testing."
   (if (and (boundp 'testing)
            testing)
       `(progn ,@forms)))
