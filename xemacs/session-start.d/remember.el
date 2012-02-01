@@ -232,7 +232,6 @@ application."
       (sharad/remember-region organizer-for-remember-region (point-min) (point-max)))))
 
 
-;; org-remember.el
 (defun org-remember-finalize ()
   "Finalize the remember process."
   (interactive)

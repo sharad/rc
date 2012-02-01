@@ -44,9 +44,7 @@
 
 ;; Next you will want to create a file called flymake-jslint.el on your LoadPath like the following
 
-(deh-require-maybe 'flymake
-
-  (deh-require-maybe 'flymake-js
+(deh-require-maybe 'flymake-js
 
 
 ;; http://lapin-bleu.net/riviera/?p=191
@@ -73,8 +71,6 @@
             )
           flymake-jslint-trailing-comma-err-line-pattern
           '("^\\(.+\\)\:\\([0-9]+\\)\: strict \\(warning: trailing comma.+\\)\:$" nil 2 nil 3))
-
-    )
 
 
 

@@ -39,7 +39,14 @@
   ;; Add this function to `gnus-article-prepare-hook' to notice appointments
   ;; automatically.
 
-  (add-hook 'gnus-article-prepare-hook 'diary-from-outlook-gnus))
+  (defun diary-from-outlook-gnus-safe ()
+    (ignore-errors
+     (diary-from-outlook-gnus)))
+  (remove-hook 'gnus-article-prepare-hook 'diary-from-outlook-gnus)
+  ;; this function `diary-from-outlook-gnus'
+  ;; when failed with error "no buffer name with multipart/related"
+  ;; it left article in the end, so I have to remove it.
+  (add-hook 'gnus-article-prepare-hook 'diary-from-outlook-gnus-safe))
 
 
 
