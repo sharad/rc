@@ -106,6 +106,15 @@ alkready should not exist.")
                load-file-with-errors)
          t))))
 
+(defun package-dir-setup (package-dir)
+    (when (file-directory-p package-dir)
+      (mapc #'(lambda (path)
+                (add-to-list 'load-path path))
+            (directory-files package-dir t "[a-zA-Z]+"))
+      (mapc #'byte-recompile-directory
+            (directory-files package-dir t "[a-zA-Z]+"))))
+
+
 (defun afind-if (fun list) ;; anaphoric
   (let ((result
          (funcall fun (car list))))

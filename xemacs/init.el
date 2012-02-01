@@ -107,26 +107,24 @@
 ;; 	     (file-expand-wildcards "~/.xemacs/packages/*")
 ;; 	     )
 
+(load-file "~/.xemacs/basic.el")
+(load-file "~/.xemacs/utils.el")
+(load-file "~/.xemacs/macros.el")
+
 
 (defconst *package-dir* "~/.xemacs/pkgrepos/world")
 
-(when (file-directory-p *package-dir*)
-  (mapc #'(lambda (path)
-            (add-to-list 'load-path path))
-        (directory-files *package-dir* t "[a-zA-Z]+"))
-  (mapc #'byte-recompile-directory
-        (directory-files *package-dir* t "[a-zA-Z]+")))
+(package-dir-setup "~/.xemacs/pkgrepos/world")
+(package-dir-setup "~/.xemacs/pkgrepos/mypkgs")
+(package-dir-setup "~/.xemacs/pkgrepos/elpa")
+
 
 ;; (add-to-list 'load-path
 ;;              (concat *package-dir* "/auto-install"))
 
-(add-to-list 'load-path
-             (concat *package-dir* "/pde"))
+;; (add-to-list 'load-path
+;;              (concat *package-dir* "/pde"))
 
-
-(load-file "~/.xemacs/basic.el")
-(load-file "~/.xemacs/utils.el")
-(load-file "~/.xemacs/macros.el")
 
 (user-require 'common-info)
 
