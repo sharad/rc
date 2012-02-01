@@ -108,7 +108,7 @@
 ;; 	     )
 
 
-(defconst *package-dir* "~/.xemacs/packages")
+(defconst *package-dir* "~/.xemacs/pkgrepos/world")
 
 (when (file-directory-p *package-dir*)
   (mapc #'(lambda (path)

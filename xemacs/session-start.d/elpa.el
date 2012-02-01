@@ -34,7 +34,7 @@
 
 (deh-require-maybe 'package
   (setq package-user-dir
-        (expand-file-name (convert-standard-filename "~/.xemacs/elpa")))
+        (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa")))
   (package-initialize)
 
   (defconst *elpa-package-dir* "~/.xemacs/elpa")
