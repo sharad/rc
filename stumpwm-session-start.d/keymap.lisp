@@ -97,10 +97,12 @@
 
 ;;Window Management
 (define-key *root-map* (kbd "eacute") "mark")
+(define-key *root-map* (kbd "=") "balance-frames")
 (define-key *root-map* (kbd "C-=") "next-in-frame")
 (define-key *root-map* (kbd "C-p") "prev-in-frame")
-(define-key *root-map* (kbd "=") "pull-hidden-next")
+(define-key *root-map* (kbd "n") "pull-hidden-next")
 (define-key *root-map* (kbd "p") "pull-hidden-previous")
+(define-key *root-map* (kbd "C-SPC") "pull-hidden-other")
 (define-key *root-map* (kbd "M-=") "next")
 (define-key *root-map* (kbd "M-p") "prev")
 (define-key *root-map* (kbd "M-w") "windows")
@@ -110,7 +112,6 @@
 (define-key *root-map* (kbd "a") "time")
 (define-key *root-map* (kbd "'") "select")
 (define-key *root-map* (kbd "\"") "windowlist")
-(define-key *root-map* (kbd "C-SPC") "pull-hidden-other")
 (define-key *root-map* (kbd "M-SPC") "other-in-frame")
 (define-key *root-map* (kbd "!") "exec")
 (define-key *root-map* (kbd "C-g") "abort")

@@ -9,6 +9,7 @@
 (defcommand fprev () ()
   (focus-prev-frame (current-group)))
 
+;; Aquasole
 ;; OSD text
 (defcommand osd-echo () ()
   (let* ((screen (current-screen))
@@ -18,6 +19,13 @@
                     (screen-bg-color screen)
                     "Test de l'osd"))
     (xlib:display-finish-output *display*))
+
+(defcommand hsbalance-frames () ()
+            "sdfdsf"
+            (only)
+            (dotimes (c (1- (length (group-windows (current-group))))
+                      (balance-frames))
+              (hsplit)))
 
 ;; menu test
 (defcommand test-menu () ()

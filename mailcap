@@ -1,49 +1,49 @@
-application/excel;                              /usr/bin/soffice -nologo %s
-application/msexcel;                            /usr/bin/soffice -nologo %s
-application/mspowerpoint;                       /usr/bin/soffice -nologo %s
-application/msword;                             /usr/bin/soffice -nologo %s
-application/doc;                             /usr/bin/soffice -nologo %s
-application/vnd.ms-word.document.12;                             /usr/bin/soffice -nologo %s
+application/excel;                              /usr/bin/soffice --nologo %s
+application/msexcel;                            /usr/bin/soffice --nologo %s
+application/mspowerpoint;                       /usr/bin/soffice --nologo %s
+application/msword;                             /usr/bin/soffice --nologo %s
+application/doc;                                /usr/bin/soffice --nologo %s
+application/vnd.ms-word.document.12;            /usr/bin/soffice --nologo %s
 application/pdf;                                evince %s
 application/pdf;                                xapp.sh xpdf /dev/stdin
 application/pdf;                                pdftotext -layout /dev/stdin -; copiousoutput
-application/powerpoint;                         /usr/bin/soffice -nologo %s
+application/powerpoint;                         /usr/bin/soffice --nologo %s
 application/sdp;                                /usr/local/RealPlayer8/realplay "%u"
 application/smil;                               /usr/local/RealPlayer8/realplay "%u"
 application/vnd.ms-asf;                         /usr/bin/gxine    %s
-application/vnd.ms-excel;                       /usr/bin/soffice -nologo %s
-application/vnd.ms-powerpoint;                  /usr/bin/soffice -nologo %s
+application/vnd.ms-excel;                       /usr/bin/soffice --nologo %s
+application/vnd.ms-powerpoint;                  /usr/bin/soffice --nologo %s
 application/vnd.rn-realmedia;                   /usr/local/RealPlayer8/realplay "%u"
-application/vnd.stardivision.calc;              /usr/bin/soffice -nologo %s
-application/vnd.stardivision.draw;              /usr/bin/soffice -nologo %s
-application/vnd.stardivision.impress-packed;    /usr/bin/soffice -nologo %s
-application/vnd.stardivision.impress;           /usr/bin/soffice -nologo %s
-application/vnd.stardivision.math;              /usr/bin/soffice -nologo %s
-application/vnd.stardivision.writer-global;     /usr/bin/soffice -nologo %s
-application/vnd.stardivision.writer;            /usr/bin/soffice -nologo %s
-application/vnd.sun.xml.calc.template;          /usr/bin/soffice -nologo %s
-application/vnd.sun.xml.calc;                   /usr/bin/soffice -nologo %s
-application/vnd.sun.xml.draw.template;          /usr/bin/soffice -nologo %s
-application/vnd.sun.xml.draw;                   /usr/bin/soffice -nologo %s
-application/vnd.sun.xml.impress.template;       /usr/bin/soffice -nologo %s
-application/vnd.sun.xml.impress;                /usr/bin/soffice -nologo %s
-application/vnd.sun.xml.math;                   /usr/bin/soffice -nologo %s
-application/vnd.sun.xml.writer.global;          /usr/bin/soffice -nologo %s
-application/vnd.sun.xml.writer.template;        /usr/bin/soffice -nologo %s
-application/vnd.sun.xml.writer;                 /usr/bin/soffice -nologo %s
+application/vnd.stardivision.calc;              /usr/bin/soffice --nologo %s
+application/vnd.stardivision.draw;              /usr/bin/soffice --nologo %s
+application/vnd.stardivision.impress-packed;    /usr/bin/soffice --nologo %s
+application/vnd.stardivision.impress;           /usr/bin/soffice --nologo %s
+application/vnd.stardivision.math;              /usr/bin/soffice --nologo %s
+application/vnd.stardivision.writer-global;     /usr/bin/soffice --nologo %s
+application/vnd.stardivision.writer;            /usr/bin/soffice --nologo %s
+application/vnd.sun.xml.calc.template;          /usr/bin/soffice --nologo %s
+application/vnd.sun.xml.calc;                   /usr/bin/soffice --nologo %s
+application/vnd.sun.xml.draw.template;          /usr/bin/soffice --nologo %s
+application/vnd.sun.xml.draw;                   /usr/bin/soffice --nologo %s
+application/vnd.sun.xml.impress.template;       /usr/bin/soffice --nologo %s
+application/vnd.sun.xml.impress;                /usr/bin/soffice --nologo %s
+application/vnd.sun.xml.math;                   /usr/bin/soffice --nologo %s
+application/vnd.sun.xml.writer.global;          /usr/bin/soffice --nologo %s
+application/vnd.sun.xml.writer.template;        /usr/bin/soffice --nologo %s
+application/vnd.sun.xml.writer;                 /usr/bin/soffice --nologo %s
 application/x-annodex;                          /usr/bin/gxine    %s
 application/x-mplayer2;                         /usr/bin/gxine    %s
-application/x-msexcel;                          /usr/bin/soffice -nologo %s
-application/x-mspowerpoint;                     /usr/bin/soffice -nologo %s
+application/x-msexcel;                          /usr/bin/soffice --nologo %s
+application/x-mspowerpoint;                     /usr/bin/soffice --nologo %s
 application/x-ogg;                              /usr/bin/gxine    %s
 application/x-quicktimeplayer;                  /usr/bin/gxine    %s
 application/x-sdp;                              /usr/local/RealPlayer8/realplay "%u"
 application/x-shockwave-flash2-preview;         /usr/local/RealPlayer8/realplay "%u"
-application/x-starcalc;                         /usr/bin/soffice -nologo %s
-application/x-stardraw;                         /usr/bin/soffice -nologo %s
-application/x-starimpress;                      /usr/bin/soffice -nologo %s
-application/x-starmath;                         /usr/bin/soffice -nologo %s
-application/x-starwriter;                       /usr/bin/soffice -nologo %s
+application/x-starcalc;                         /usr/bin/soffice --nologo %s
+application/x-stardraw;                         /usr/bin/soffice --nologo %s
+application/x-starimpress;                      /usr/bin/soffice --nologo %s
+application/x-starmath;                         /usr/bin/soffice --nologo %s
+application/x-starwriter;                       /usr/bin/soffice --nologo %s
 audio/168sv;                                    /usr/bin/gxine    %s
 audio/8svx;                                     /usr/bin/gxine    %s
 audio/aiff;                                     /usr/local/RealPlayer8/realplay "%u"

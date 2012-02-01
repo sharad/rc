@@ -19,3 +19,6 @@
 [submodule "xemacs/packages/slime-proxy"]
 	path = xemacs/packages/slime-proxy
 	url = https://github.com/3b/slime-proxy.git
+[submodule "xemacs/packages/worklog"]
+	path = xemacs/packages/worklog
+	url = https://github.com/vvv/work-log.git
