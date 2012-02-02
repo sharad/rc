@@ -106,13 +106,13 @@ alkready should not exist.")
                load-file-with-errors)
          t))))
 
-(defun package-dir-setup (package-dir)
-    (when (file-directory-p package-dir)
-      (mapc #'(lambda (path)
-                (add-to-list 'load-path path))
-            (directory-files package-dir t "[a-zA-Z]+"))
-      (mapc #'byte-recompile-directory
-            (directory-files package-dir t "[a-zA-Z]+"))))
+;; (defun package-dir-setup (package-dir)
+;;     (when (file-directory-p package-dir)
+;;       (mapc #'(lambda (path)
+;;                 (add-to-list 'load-path path))
+;;             (directory-files package-dir t "[a-zA-Z]+"))
+;;       (mapc #'byte-recompile-directory
+;;             (directory-files package-dir t "[a-zA-Z]+"))))
 
 
 (defun afind-if (fun list) ;; anaphoric
@@ -214,6 +214,8 @@ alkready should not exist.")
 
 ;;{{{ http://www.emacswiki.org/emacs/dot-emacs-helper.el
 ;; Excellent
+;; (add-to-list 'load-path "~/.xemacs/pkgrepos/world/deh")
+
 (unless (require 'dot-emacs-helper nil t)
   (defmacro deh-require-maybe (feature &rest forms)
     (declare (indent 1))
@@ -248,20 +250,6 @@ alkready should not exist.")
         sh
         ))
 
-;;{{ Testing
-
-(defvar testing nil "Set it to true when you want to enable test code.")
-
-(defmacro testing (&rest forms)
-  "For the purpose of testing."
-  (if (and (boundp 'testing)
-           testing)
-      `(progn ,@forms)))
-
-
-(testing (message "asdfsdf"))
-
-;;}}
 
 
 ;;{{ Pathname Utilities
@@ -280,8 +268,9 @@ alkready should not exist.")
     (apply #'string-equal
            (mapcar #'pathname-delete-trailing-/ p1 p2)))
 
-  (testing
-   (pathname-delete-trailing-/ "/sdfsd/sdgfdg////")))
+  ;; (testing
+  ;;  (pathname-delete-trailing-/ "/sdfsd/sdgfdg////"))
+  )
 
 ;;}}
 

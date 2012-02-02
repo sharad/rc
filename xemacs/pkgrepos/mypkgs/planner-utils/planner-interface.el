@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+(require 'general-testing)
+
 (defun planner-today-ensure-exists ()
   (unless (file-exists-p (concat planner-directory (planner-today) ".muse"))
                         (save-excursion
