@@ -34,25 +34,37 @@ interactive("colors-toggle", "toggle between document and forced colors",
             });
 define_key(content_buffer_normal_keymap, "f6", "colors-toggle");
 
+user_pref(   "browser.display.use_system_colors",   false);
+session_pref("browser.display.use_document_colors", false);
+
+
 // Next issue is with input elements. To override it's colors you have to use this CSS hack.
 // Create a file ~/.conkeror.css with this content
 
 // To put this file in use, load this file in the .conkerorrc like this
 
-register_user_stylesheet('file:///home/s/hell/.conkeror.css');
+let (mycss = get_home_directory().path + "/.conkerorrc/conkeror.css") {
 
-// To toggle the style sheet's' active state:
+    register_user_stylesheet('file://' + mycss);
+    // To toggle the style sheet's' active state:
 
-var global_css_registered=true;
-register_user_stylesheet('file:///home/s/hell/.conkeror.css');
-function toggle_global_css(I){
-    global_css_registered=global_css_registered ? false : true;
-    if(global_css_registered){
-        register_user_stylesheet('file:///home/s/hell/.conkeror.css');
-    }else{
-        unregister_user_stylesheet('file:///home/s/hell/.conkeror.css');
+    var global_css_registered=true;
+
+    function toggle_global_css(I){
+        global_css_registered=global_css_registered ? false : true;
+        if(global_css_registered){
+            register_user_stylesheet('file://' + mycss);
+        }else{
+            unregister_user_stylesheet('file://' + mycss);
+        }
     }
+    interactive("toggle-global-css", "Toggle global.css", toggle_global_css);
+    define_key(default_global_keymap, "C-t", "toggle-global-css");
 }
-interactive("toggle-global-css", "Toggle global.css", toggle_global_css);
-define_key(default_global_keymap, "C-t", "toggle-global-css");
+
+// add_hook("window_initialize_late_hook",function(){session_pref("browser.display.use_document_colors", false);});
+
+
+
+
 

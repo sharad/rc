@@ -25,14 +25,13 @@ user_pref("spellchecker.dictionary", "en-US");
 
 
 // get color at http://www.webmonkey.com/2010/02/color_charts/
-user_pref("browser.display.use_system_colors", false);
-user_pref("browser.active_color", "#EE0000");
-user_pref("browser.anchor_color", "#0000EE");
+// user_pref("browser.active_color", "#EE0000");
+// user_pref("browser.anchor_color", "#0000EE");
 // user_pref("browser.display.background_color", "#99CC99");
-user_pref("browser.display.background_color", "#669933");
+// user_pref("browser.display.background_color", "#669933");
 // user_pref("browser.display.foreground_color", "#000000");
-user_pref("browser.display.foreground_color", "#003333");
+// user_pref("browser.display.foreground_color", "#003333");
 
 // user_pref("browser.visited_color", "#551A8B");
-user_pref("browser.visited_color", "#660033");
+// user_pref("browser.visited_color", "#660033");
 

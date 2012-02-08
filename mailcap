@@ -4,7 +4,7 @@ application/mspowerpoint;                       /usr/bin/soffice --nologo %s
 application/msword;                             /usr/bin/soffice --nologo %s
 application/doc;                                /usr/bin/soffice --nologo %s
 application/vnd.ms-word.document.12;            /usr/bin/soffice --nologo %s
-application/pdf;                                evince %s
+application/pdf;                                /usr/bin/evince '%s'
 application/pdf;                                xapp.sh xpdf /dev/stdin
 application/pdf;                                pdftotext -layout /dev/stdin -; copiousoutput
 application/powerpoint;                         /usr/bin/soffice --nologo %s
@@ -82,7 +82,7 @@ image/vnd.rn-realpix;                           /usr/local/RealPlayer8/realplay 
 image/x-ilbm;                                   /usr/bin/gxine    %s
 image/x-png;                                    /usr/bin/gxine    %s
 text/calendar;	                                ~/bin/meeting; copiousoutput
-text/calendar;	                                ~/bin/addreminder
+text/calendar;	                                ~/bin/add\reminder
 text/html;                                      links -dump %s; nametemplate=%s.html; copiousoutput
 text/vnd.rn-realtext;                           /usr/local/RealPlayer8/realplay "%u"
 video/anim;                                     /usr/bin/gxine    %s

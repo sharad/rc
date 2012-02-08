@@ -26,12 +26,47 @@
 
 (require 'general-testing)
 
+(defvar task-status-mappings
+  '((open . ((planner . "_")))
+    (inprogress . ((planner . "o")))
+    (completed . ((planner . "C")))
+    (cancelled . ((planner . "X")))
+    (delegated . ((planner . "D")))
+    (pending . ((planner . "P"))))
+  "Status Mapping")
+
+(defun task-status-map (sys status)
+  (cdr (assoc sys (cdr (assoc status status-mappings)))))
+
+(defmacro task-status-map-add (sys status sysstatus)
+  `(pushnew (cons ',sys ',sysstatus)
+         (cdr (assoc ',status status-mappings)) :test #'equal))
+
+(defmacro task-status-maps-add (sys maps)
+  `(progn
+     ,@(mapcar
+        (lambda (m)
+          `(planner-add-task-status-map ,sys ,(car m) ,(cdr m)))
+        maps)))
+
+(testing
+
+ (add-task-status-maps-add bugz ((pending ."ASSIGNED")))
+ (macroexpand '(task-status-maps-add bugz ((pending ."ASSIGNED"))))
+
+ (task-status-map-add 'bugz '(completed . ("CLOSED")))
+ (task-status-map-add bugz completed ("CLOSED"))
+
+ (macroexpand '(task-status-map-add bugz completed ("CLOSED")))
+ (cdr (assoc 'open status-mappings))
+ (planner-task-status-map 'planner 'openned))
+
 (defun planner-today-ensure-exists ()
   (unless (file-exists-p (concat planner-directory (planner-today) ".muse"))
-                        (save-excursion
-                          (save-window-excursion
-                            (plan))))
-    (planner-today))
+    (save-excursion
+      (save-window-excursion
+        (plan))))
+  (planner-today))
 
 (defun planner-task-lists (plan)
   (planner-extract-tasks
@@ -150,7 +185,8 @@
 
 ;;test
 (testing
- (planner-tasks-of-plan-from-page (planner-today-ensure-exists) "MyMIS" '("_" "o")))
+ (planner-tasks-of-plan-from-page
+  (planner-today-ensure-exists) "MyMIS" '("_" "o")))
 
 ;;should be fault tolrent. else face lot of time waste.
 (defun planner-tasks-of-plan-today (plan status)
@@ -164,6 +200,14 @@
 (defun normalize-task (task)
   (replace-regexp-in-string
    "\\([]\\[]\\)" "\\\\\\1" task))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; bugz ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+
+
 
 
 (provide 'planner-interface)
