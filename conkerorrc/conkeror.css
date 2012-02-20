@@ -8,15 +8,15 @@ color: black;
 
 textarea {
 border: 1px inset gray;
-background-color: white;
-color: black;
+background-color: black;
+color: white;
 -moz-appearance: none !important;
 }
 
 select {
 border: 1px inset gray;
-background-color: white;
-color: black;
+background-color: black;
+color: white;
 -moz-appearance: none !important;
 }
 
@@ -43,11 +43,20 @@ color: black;
 -moz-appearance: none !important;
 }
 
+
+input[type="text"] {
+                     border: 1px inset gray;
+                     background-color: Orange;
+                     color: black;
+                     moz-appearance: none !important;
+                     }
+
 button:hover,
 input[type="reset"]:hover,
 input[type="button"]:hover,
 input[type="submit"]:hover {
 background-color: lightgray !important;
+color: black;
 -moz-appearance: none !important;
 }
 
@@ -62,5 +71,11 @@ background: Black;
 color: grey;
 -moz-appearance: none !important;
 }
+
+/* :link, :link * { color: #4986dd !important }; */
+/* :visited, :visited * { color: #d75047 !important }; */
+
+:link, :link * { color: Green !important };
+:visited, :visited * { color: #d75047 !important };
 
 }

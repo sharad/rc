@@ -349,6 +349,10 @@
     ;'(:class "Conkeror")
     ))
 
+(defcommand virt-manager () ()
+            "virt-manager"
+  (run-wcli-command "virt-manager"))
+
 (defcommand w3m () ()
    (run-or-raise
     "xterm -title w3m -tn xterm -e w3m -cookie -config /home/m0rg/.w3m/config -N http://www.google.fr"

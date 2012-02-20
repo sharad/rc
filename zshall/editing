@@ -6,6 +6,8 @@ if [ -r ~/.zkbd/$HOST/$TERM-${DISPLAY:-$VENDOR-$OSTYPE} ] ;  then
     termzdef=~/.zkbd/$HOST/$TERM-${DISPLAY:-$VENDOR-$OSTYPE}
 elif [ -r ~/.zkbd/$TERM-${DISPLAY:-$VENDOR-$OSTYPE} ] ; then
     termzdef=~/.zkbd/$TERM-${DISPLAY:-$VENDOR-$OSTYPE}
+elif [ -r ~/.zkbd/_general/$TERM-${DISPLAY:-$VENDOR-$OSTYPE} ] ; then
+    termzdef=~/.zkbd/_general/$TERM-${DISPLAY:-$VENDOR-$OSTYPE}
 fi
 
 [ $termzdef ] && source $termzdef && unset termzdef

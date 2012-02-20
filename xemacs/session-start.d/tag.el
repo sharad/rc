@@ -38,11 +38,12 @@
 ;; Or to build the tags file within emacs, put this in your .emacs file:
 
 (defvar *etag-cmd-fmt* "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS - 2>/dev/null")
+(defvar *gtag-cmd-fmt* "find %s  -path '*.svn*'  -prune -o -type f | gtags -f - 2>/dev/null")
 
 (defun create-tags (dir-name)
   "Create tags file."
   (interactive "DDirectory: ")
-  (let ((cmd (read-from-minibuffer "tag cmd: " (format *etag-cmd-fmt* dir-name))))
+  (let ((cmd (read-from-minibuffer "tag cmd: " (format *gtag-cmd-fmt* dir-name))))
     (eshell-command cmd)))
 
 ;; (defun create-c-tags (dir-name)
