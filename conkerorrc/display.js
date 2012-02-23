@@ -19,8 +19,8 @@
 user_pref("browser.display.use_system_colors", false);
 user_pref("browser.active_color", "#EE0000");
 user_pref("browser.anchor_color", "#0000EE");
-user_pref("browser.display.background_color", "#FFFFFF");
-user_pref("browser.display.foreground_color", "#000000");
+// user_pref("browser.display.background_color", "#000000");
+// user_pref("browser.display.foreground_color", "#FFFFFF");
 user_pref("browser.visited_color", "#551A8B");
 
 // And you can have make it possible to toggle between default and document colors:
@@ -43,6 +43,10 @@ session_pref("browser.display.use_document_colors", false);
 // Create a file ~/.conkeror.css with this content
 
 // To put this file in use, load this file in the .conkerorrc like this
+
+
+
+// register_user_stylesheet('file://' + get_home_directory().path + "/.conkerorrc/conkeror.css");
 
 let (mycss = get_home_directory().path + "/.conkerorrc/conkeror.css") {
 
