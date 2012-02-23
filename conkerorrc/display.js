@@ -36,6 +36,7 @@ define_key(content_buffer_normal_keymap, "f6", "colors-toggle");
 
 user_pref(   "browser.display.use_system_colors",   false);
 session_pref("browser.display.use_document_colors", false);
+// user_pref("browser.display.background_color", "#000000"); // BLACK
 
 
 // Next issue is with input elements. To override it's colors you have to use this CSS hack.
@@ -64,6 +65,13 @@ let (mycss = get_home_directory().path + "/.conkerorrc/conkeror.css") {
 
 // add_hook("window_initialize_late_hook",function(){session_pref("browser.display.use_document_colors", false);});
 
+
+function saveeyes() {
+    session_pref("browser.display.use_document_colors", false);
+    setTimeout(saveeyes,1000);
+}
+
+setTimeout(saveeyes,1000);
 
 
 

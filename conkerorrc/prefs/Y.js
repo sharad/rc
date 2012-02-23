@@ -35,4 +35,5 @@ user_pref("spellchecker.dictionary", "en-US");
 // user_pref("browser.visited_color", "#660033");
 
 
-// user_pref("browser.display.background_color", "#000000");
+user_pref("browser.display.background_color", "#000000"); // BLACK
+
