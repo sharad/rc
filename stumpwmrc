@@ -96,7 +96,8 @@
  *mode-line-position* :top
  *disk-usage-paths* '("/" "/home" "/usr" "/pacific")
  ;;Debugging
- *debug-level* 10)
+ *debug-level* 10
+ *menu-selection-file* (data-dir-file "selections"))
 
 ;;}}}
 
