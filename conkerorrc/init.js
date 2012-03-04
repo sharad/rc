@@ -58,7 +58,7 @@ define_variable("homepage", "http://www.toodledo.com/views/index.php",
 // COMMENT IT IF FREEZ OCCURS.
 session_pref("signon.rememberSignons", true);
 session_pref("signon.expireMasterPassword", false);
-session_pref("signon.SignonFileName", "signons.txt");
+// session_pref("signon.SignonFileName", "signons.txt");
 
 Components.classes["@mozilla.org/login-manager;1"]
     .getService(Components.interfaces.nsILoginManager);

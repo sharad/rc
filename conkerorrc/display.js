@@ -21,6 +21,8 @@ user_pref("browser.active_color", "#EE0000");
 user_pref("browser.anchor_color", "#0000EE");
 // user_pref("browser.display.background_color", "#000000");
 // user_pref("browser.display.foreground_color", "#FFFFFF");
+user_pref("browser.display.background_color", "#FFFFFF");
+user_pref("browser.display.foreground_color", "#000000");
 user_pref("browser.visited_color", "#551A8B");
 
 // And you can have make it possible to toggle between default and document colors:
@@ -28,9 +30,18 @@ user_pref("browser.visited_color", "#551A8B");
 interactive("colors-toggle", "toggle between document and forced colors",
             function (I) {
                 var p = "browser.display.use_document_colors";
-                if (get_pref(p))
+                if (get_pref(p)) {
+                    session_pref("browser.display.background_color", "#FFFFFF");
+                    session_pref("browser.display.foreground_color", "#000000");
+                    session_pref("browser.display.use_system_colors", false)
                     session_pref(p, false);
-                else session_pref(p, true);
+                }
+                else { // no custom
+                    session_pref("browser.display.background_color", "#000000");
+                    session_pref("browser.display.foreground_color", "#FFFFFF");
+                    session_pref("browser.display.use_system_colors", true)
+                    session_pref(p, true); 
+                }
             });
 define_key(content_buffer_normal_keymap, "f6", "colors-toggle");
 

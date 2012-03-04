@@ -673,9 +673,9 @@ define_key(content_buffer_normal_keymap, "f2", "open-gmail");
 // Useful command to force user defined CSS style attributes.
 // Add the following to your RC or execute in runtime.
 // force scrollable background
-register_user_stylesheet("data:text/css,"+escape ("* {background-attachment: scroll !important;}"));
+// register_user_stylesheet("data:text/css,"+escape ("* {background-attachment: scroll !important;}"));
 // force full opacity (no alpha transparency)
-register_user_stylesheet("data:text/css,"+escape ("* {opacity: 1.0 !important;}"));
+// register_user_stylesheet("data:text/css,"+escape ("* {opacity: 1.0 !important;}"));
 // }}
 
 // from: https://www.squarefree.com/bookmarklets/zap.html
