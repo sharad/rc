@@ -1,5 +1,11 @@
 ;; ensure we elc files.
 
+
+
+;; (add-to-list 'load-path "/usr/share/emacs/23.3/lisp/emacs-lisp")
+;; (add-to-list 'load-path "/usr/share/emacs/23.3/lisp")
+
+
 (progn
  (defconst *package-dir* "~/.xemacs/pkgrepos/world")
  (defun package-dir-setup (package-dir)
@@ -10,6 +16,7 @@
      (mapc #'byte-recompile-directory
            (directory-files package-dir t "[a-zA-Z]+"))))
 
+
  (package-dir-setup "~/.xemacs/pkgrepos/world")
  (package-dir-setup "~/.xemacs/pkgrepos/mypkgs")
  (package-dir-setup "~/.xemacs/pkgrepos/elpa"))
@@ -17,6 +24,8 @@
 (load-file "~/.xemacs/basic.el")
 (load-file "~/.xemacs/utils.el")
 (load-file "~/.xemacs/macros.el")
+
+;;
 
 
 (when (file-exists-p (setq custom-file "~/.xemacs/custom.el"))
@@ -156,7 +165,6 @@
 (defconst *work-dir* "~/\.\./paradise")
 
 (load-dir-files "~/\.xemacs/session-start\.d")
-
 
 
 

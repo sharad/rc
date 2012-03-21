@@ -35,7 +35,9 @@
 (when (and
        (executable-find "p4")
        (xrequire 'vc-p4))
+
   (setq vc-p4-require-p4config t)
+
   (defun office-activate ()
     (let ((file (buffer-file-name)))
       (if (and file
@@ -43,7 +45,10 @@
           ;; if file is handled by perforce than assume it is
           ;; related to office perforce repository.
           (office-mode 1))))
-  (add-element-to-lists 'office-activate pgm-langs))
+
+
+  (if sharad-in-office-with-perforce
+   (add-element-to-lists 'office-activate pgm-langs)))
 
 
 ;;; minor-modes-act.el ends here

@@ -53,6 +53,9 @@ done
 # now
 hour=$(date +%H)
 
+
+# check 'xset q'
+
 if [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep xtrlock; then
 
 # cancel all jobs in queue d
@@ -71,6 +74,7 @@ set-card-profile 0 output:analog-stereo
 ZZZ
 
       xset dpms force on
+      xset dpms 60 80 0
       amixer -- sset  Master   100% unmute
       mpc clear
       mpc load myfavorit
@@ -82,9 +86,12 @@ EOF
     ### after 6 m 25 sec low down volume
     at -q $queue_name now + ${${:-$(( $sleep_hours * 60 + $snooze ))}//./} minutes <<EOF
       xset dpms force on
+      xset dpms 60 80 0
       mpc play
       sleep 2
       mpc volume $volume_low
+      xset dpms 60 80 1800
 EOF
 
 fi
+

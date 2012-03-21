@@ -22,7 +22,7 @@
 
 
 
-(when (xrequire 'vc-p4)
+(when (and sharad-in-office-with-perforce (xrequire 'vc-p4))
   )
 
 

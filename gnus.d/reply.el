@@ -57,11 +57,12 @@
 
 ;; http://www.mail-archive.com/info-gnus-english@gnu.org/msg09033.html
 (setq message-dont-reply-to-names
-      (list
-       user-mail-address
-       email-addr
-       office-email
-                ))
+      (append
+       (list
+        user-mail-address
+        email-addr
+        office-email)
+       user-other-email-addresses))
 
 ;;}}
 

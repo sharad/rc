@@ -91,7 +91,12 @@ alkready should not exist.")
 ;;     (require feature file)))
 
 (defvar *user-module-loaded* nil "sadfsd")
-(defvar *user-load-path* '("~/.xemacs/session-start.d" "~/.gnus.d" "~/.xemacs/secure" "~/.xemacs/info") "sadfsd")
+(defvar *user-load-path* `("~/.xemacs/session-start.d"
+                           "~/.gnus.d"
+                           "~/.xemacs/secure"
+                           "~/.xemacs/info"
+                           "~/.osetup/info/common/elisp"
+                           ,(concat "~/.osetup/info/hosts/" (system-name) "/elisp")) "sadfsd")
 
 (defun load-dir-files (dir)
   (let (load-file-with-errors)

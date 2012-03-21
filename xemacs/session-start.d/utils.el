@@ -10,32 +10,60 @@
       (let ((resume-make-keys (format "make -sC %s resume=%s keys" resume-workdir "sharad")))
         (read-string prompt (shell-command-to-string resume-make-keys)))))
 
-(defun attach-resume (resume)
-    "Attach resume with keys."
-    ;; (interactive "skeys: \nsresume: ")
-    (interactive "sresume: ")
-    (let* ((resume (or resume "sharad"))
-           (resume-make-keys (format "make -sC %s name=%s object=resume keys" resume-workdir resume))
-           (keys (or (read-string "keys: " (shell-command-to-string resume-make-keys)) ".+"))
-           (keys-of-resume-name (mapconcat 'identity (sort (split-string keys) #'string-lessp) "-"))
-           (resume-make-cmd (format "make -C %s name=%s object=resume filter_targets='%s'" resume-workdir resume keys))
-           (resume-attachable-file (format "%s/output/sharad-resume.pdf" resume-workdir))
-           (resume-actual-file (format "%s/output/%s-resume-%s.pdf" resume-workdir resume keys-of-resume-name))
-           (resume-view-cmd (format "%s %s" "evince" resume-actual-file)))
-      (message "preparing resume by: %s" resume-make-cmd)
-      (when (and
-             (shell-command resume-make-cmd)
-             (shell-command resume-view-cmd)
-             (y-or-n-p (format "Should I attach it with message %s: " resume-actual-file))
-             (file-exists-p resume-actual-file))
-        (if (file-exists-p resume-attachable-file)
-            (unless (string-equal (file-symlink-p resume-attachable-file) resume-actual-file)
-              (delete-file resume-attachable-file)
-              (make-symbolic-link resume-actual-file resume-attachable-file))
-            (make-symbolic-link resume-actual-file resume-attachable-file))
-        (mml-attach-file resume-attachable-file "application/pdf" "Sharad Pratap - Résumé" "inline"))
-      (message "Not able to attach resume.")))
 
+
+(defun insert-reply-object (resume object &optional keys attachment type)
+  "Prepare reply object"
+  (interactive
+   (let*
+       ((resume (read-from-minibuffer "who: " "sharad"))
+        (object (read-from-minibuffer "object: " "resume"))
+        (resume-make-keys (format "make -sC %s name=%s object=%s keys" resume-workdir resume object))
+        (keys   (read-string "keys: " (shell-command-to-string resume-make-keys)))
+        (type (or (read-from-minibuffer "type: " "pdf") "txt"))
+        ;(attachment (y-or-n-p (format "make inline: ")))
+        attachment)
+     (list resume object keys attachment type)))
+  (let* ((resume-make-keys (format "make -sC %s name=%s object=%s keys" resume-workdir resume object))
+         (keys (or keys  (read-string "keys: " (shell-command-to-string resume-make-keys))))
+         (keys-of-resume-name (mapconcat 'identity (sort (split-string keys) #'string-lessp) "-"))
+         (resume-make-cmd (format "make -C %s name=%s object=%s filter_targets='%s' %s link%s" resume-workdir resume object keys type type))
+         (resume-attachable-file (format "%s/output/%s-%s.%s" resume-workdir resume object type))
+         (resume-actual-file (format "%s/output/%s-%s-%s.%s" resume-workdir resume object keys-of-resume-name type))
+         (resume-view-cmd (format "%s %s" "evince" resume-actual-file)))
+    (message "preparing %s by: %s" object resume-make-cmd)
+    (if (and
+           (shell-command resume-make-cmd)
+           (if attachment
+               (shell-command resume-view-cmd) t)
+           (file-exists-p resume-actual-file))
+      (if attachment
+          (mml-attach-file
+           resume-attachable-file
+           (mml-minibuffer-read-type resume-attachable-file) ; "application/pdf"
+           "Sharad Pratap - Résumé" "inline")
+          (insert-file-contents resume-actual-file))
+      (message "Not able to %s %s."
+               (if attachment "attach" "insert")
+               cover))))
+
+
+
+
+
+
+
+
+
+;; (interactive
+;;    (let* ((file (mml-minibuffer-read-file "Attach file: "))
+;; 	  (type (mml-minibuffer-read-type file))
+;; 	  (description (mml-minibuffer-read-description))
+;; 	  (disposition (mml-minibuffer-read-disposition type nil file)))
+;;      (list file type description disposition)))
+
+;; (let* ((file (mml-minibuffer-read-file "Attach file: "))
+;;        (type (mml-minibuffer-read-type file))))
 
 
 ;; test

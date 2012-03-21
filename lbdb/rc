@@ -1,7 +1,9 @@
 # Mode; -*- shell-script -*-
 
 # methods to search
-METHODS="m_google m_ldap m_muttalias m_addrlookup"
+# METHODS="m_google m_ldap m_muttalias m_addrlookup"
+METHODS="m_google m_addrlookup"
+
 # modules location
 MODULES_PATH="/usr/lib/lbdb $HOME/.lbdb/modules"
 # ldap nicks

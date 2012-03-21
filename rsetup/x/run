@@ -40,7 +40,7 @@ if [ $DISPLAY ] ; then
 
     whence -p urxvtd &&
     pgrep urxvtd ||
-    urxvtd \
+     urxvtd \
         --quiet \
         --opendisplay \
         --fork &!

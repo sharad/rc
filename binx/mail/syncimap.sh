@@ -17,10 +17,7 @@ function main() {
                 else
                     # wait till 3 min then send SIGINT.
                                                                                                               # put it into some log.
-                    # xwarn="$( timeout -s INT 360 offlineimap -u Noninteractive.Quiet -a ${account:-$OFFLINEIMAPACCOUNT} |& egrep -i 'WARNING|Error' )" &&
-                    # warn "Some problem with OfflineImap\nPlease check as soon as possible.\n${xwarn}"
-
-                    xwarn="$( timeout -s INT 360 offlineimap -u quiet -a ${account:-$OFFLINEIMAPACCOUNT} |& egrep -i 'WARNING|Error' )" &&
+                    xwarn="$( timeout -s INT 360 offlineimap -1 -u quiet -a ${account:-$OFFLINEIMAPACCOUNT} |& egrep -i 'WARNING|Error' )" &&
                     warn "Some problem with OfflineImap\nPlease check as soon as possible.\n${xwarn}"
                 fi
             else

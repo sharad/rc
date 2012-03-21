@@ -1,0 +1,20 @@
+
+
+
+[[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ '
+
+[[ $TERM == "dumb" ]] && unsetopt prompt_cr
+
+
+if [[ "$TERM" == "dumb" ]]
+then
+  unsetopt zle
+  unsetopt prompt_cr
+  unsetopt prompt_subst
+  unfunction precmd
+  unfunction preexec
+  PS1='$ '
+fi
+
+
+

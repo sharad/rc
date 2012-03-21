@@ -321,10 +321,10 @@ fi
 # }}}
 
 
-
-
-
-
+# {{{ *Tramp*
+###################
+[ -r ~/.zshall/tramp ] && source ~/.zshall/tramp
+# }}}
 
 # Stty setting
 stty erase  susp 

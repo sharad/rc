@@ -172,20 +172,7 @@
 ;; ;; ;; (setq gnus-sum-thread-tree-vertical "|")
 ;; ;; ;; (setq gnus-sum-thread-tree-single-leaf "`-> ")
 
-;; Generate the mail headers before you edit your message.
-(setq message-generate-headers-first t)
 
-
-;; The message buffer will be killed after sending a message.
-(setq message-kill-buffer-on-exit t)
-
-
-;; When composing a mail, start the auto-fill-mode.
-(add-hook 'message-mode-hook ;          'turn-on-auto-fill)
-          '(lambda ()
-            (turn-on-auto-fill)
-            (setq fill-column 70)))
-;; (add-hook 'message-mode-hook 'footnote-mode)
 
 
 ;; Increase the score for followups to a sent article.
@@ -206,89 +193,6 @@
 ;; ;; ;;         (gnus-inews-insert-archive-gcc)))))
 ;; ;; ;; (define-key message-mode-map [(control ?c) (control ?f) (control ?g)] 'message-toggle-gcc)
 
-;;{{ XSteve, insert Hi Hello Name
-;; The message-citation-line-function is responsible to display a
-;; message citation. The following Code allows to switch
-
-;; (setq message-citation-line-function #'(lambda () ; was message-insert-citation-line
-;;                                          (message-insert-formatted-citation-line) ; put wrote:
-;;                                          (message-goto-body)
-;;                                          (xsteve-message-citation))) ;put hi
-
-(setq message-citation-line-function 'message-insert-formatted-citation-line
-      message-cite-function 'message-cite-original-without-signature)
-(add-hook 'message-setup-hook 'xsteve-message-citation t)
-;; (setq message-cite-function 'sc-cite-original)
-;;
-
-;; (defun gettoto ()
-;;   (interactive)
-;;   (message message-reply-headers))
-
-(defun xsteve-message-citation ()
-  (interactive)
-  (when message-reply-headers
-    (xsteve-message-citation-delete)
-    (message-goto-body)
-    (let* ((parsed-address (mail-header-parse-address (mail-header-from message-reply-headers)))
-           (my-bbdb-record (bbdb-search-simple (cdr parsed-address) (car parsed-address)))
-           (start-pos (point))
-           (overlay)
-           (anrede (when my-bbdb-record (bbdb-record-getprop my-bbdb-record 'anrede)))
-           (full-name
-            (or (if my-bbdb-record
-                    (bbdb-record-name my-bbdb-record)
-                  (cdr parsed-address))
-                "Sharad Pratap")))
-      (if anrede
-          (insert (format "%s\n\n" anrede))
-        (funcall xsteve-message-citation-function full-name))
-      (unless (eq start-pos (point))
-        (setq overlay (make-overlay start-pos (point)))
-        (overlay-put overlay 'xsteve-message-citation nil)))))
-
-(defun xsteve-message-citation-hallo (full-name)
-  (insert "Hallo " (car (split-string full-name)) "!\n\n"))
-
-(defun xsteve-message-citation-hi (full-name)
-  (insert "Hi " (car (split-string full-name)) "!\n\n"))
-
-(defun xsteve-message-citation-herr (full-name)
-  (insert "Hallo Herr " (cadr (split-string (or full-name "Fred Namenlos "))) "!\n\n"))
-
-(defun xsteve-message-citation-default (full-name)
-  (message-insert-citation-line))
-
-;; correct it
-;; (xsteve-define-alternatives 'xsteve-message-citation-function '(xsteve-message-citation-hallo
-;;                                                                 xsteve-message-citation-herr
-;;                                                                 xsteve-message-citation-hi
-;;                                                                 xsteve-message-citation-default))
-
-(setq xsteve-message-citation-function
-      'xsteve-message-citation-hi)
-
-(defun xsteve-message-citation-delete ()
-  (interactive)                         ;http://www.gnu.org/s/emacs/manual/html_node/elisp/Overlays.html#Overlays
-  (let ((overlay)
-        (start-pos))
-    (goto-char (point-min))
-    (goto-char (next-overlay-change (point)))
-    (setq overlay (car-safe (overlays-at (point)))) ;; do not use car...
-    (when overlay
-      (overlay-get overlay 'xsteve-message-citation)
-      (setq start-pos (point))
-      (goto-char (next-overlay-change (point)))
-      (delete-region start-pos (point)))))
-
-(defun xsteve-message-citation-toggle ()
-  (interactive)
-  (save-excursion
-    ;; (toggle-xsteve-message-citation-function)  ;; implement it
-    (xsteve-message-citation)))
-
-(define-key message-mode-map [f6] 'xsteve-message-citation-toggle)
-;;}}
 
 ;; ;; ;; ;; Bind M-h to a function that shows the latest received mails.
 ;; ;; ;; (defun xsteve-show-nnmail-split-history ()
@@ -429,133 +333,6 @@
 ;; ;; ;; (add-hook 'midnight-hook 'xsteve-gnus-update-namazu-index)
 
 
-;; Display the signatures in a less readable font.
-(xrequire 'sigbegone)
-
-;;{{ For SMTP msmtp
-;; Now, we’d like to use Gnus to send email through msmtp. Add the
-;; following lines to the .gnus.el file.
-;; with Emacs 23.1, you have to set this explicitly (in MS Windows)
-;; otherwise it tries to send through OS associated mail client
-
-;;need to tell msmtp which account we're using
-;; (setq message-sendmail-extra-arguments '("-a" "anderson"))
-;; (setq message-sendmail-extra-arguments '(" -oem -oi"))
-;; (setq user-mail-address office-email)
-
-;; you might want to set the following too
-;; (setq mail-host-address office-host-name)
-;; (setq user-full-name "Sharad Pratap")
-(setq message-cite-reply-above nil)     ;default
-
-(setq gnus-posting-styles
-
-      ;; As you might surmise from this example, this alist consists
-      ;; of several styles. Each style will be applicable if the first
-      ;; element “matches”, in some form or other. The entire alist
-      ;; will be iterated over, from the beginning towards the end,
-      ;; and each match will be applied,
-      ;; _WHICH_MEANS_THAT_ATTRIBUTES_IN_LATER_STYLES_THAT_MATCH_OVERRIDE_THE_SAME_ATTRIBUTES_IN_EARLIER_MATCHING_STYLES. So
-      ;; ‘comp.programming.literate’ will have the ‘Death to
-      ;; everybody’ signature and the ‘What me?’ Organization header.
-
-      ;; based on reply article
-      `(
-        (t                              ;global
-
-         ,@(if (equal (system-name) office-host-name)
-               `(
-                 (name ,myname)
-                 (signature "Regards,\n-sharad")
-                 ;; ("Jabber-ID" ,office-email)
-                 (address ,office-email)
-                 )
-               `((name ,myname)
-                 (signature "Regards,\n-sharad")
-                 ("Jabber-ID" ,jabber-id)
-                 (address ,email-addr)))
-
-
-         ;; Note: about Form header it if it is set it override
-         ;; `address' header that override user-mail-address, so Form
-         ;; > address > user-mail-address
-
-         ;; Rule means that you use the
-         ;; To address as the From address in all your outgoing
-         ;; replies, which might be handy if you fill many roles. You
-         ;; may also use message-alternative-emails instead.
-         (From (if (and message-reply-headers
-                        (get-buffer gnus-article-buffer)) ;check it if it is current buffer
-                   (with-current-buffer gnus-article-buffer
-                     (message-fetch-field "to"))) ;try to get only to address, not all in CC Bcc
-                   ;"sh4r4d@gmail.com")
-          (eval ;; (if (equal (system-name) ,office-host-name)
-           (unless (equal (system-name) ,office-host-name)
-                    (progn
-                      (set (make-local-variable 'message-send-mail-function) 'message-send-mail-with-sendmail)
-                      (set (make-local-variable 'sendmail-program) "/usr/bin/msmtp") ;; we substitute sendmail with msmtp
-                      (set (make-local-variable 'message-sendmail-extra-argouments) nil)
-                      (set (make-local-variable 'message-sendmail-f-is-evil) t)
-                      (set (make-local-variable 'message-sendmail-envelope-from) 'header))))))
-
-        ;; ((equal (system-name) ,office-host-name)
-        ;;  (name myname)
-        ;;  (signature "Regards,\n-sharad")
-        ;;  ("Jabber-ID" ,office-email)
-        ;;  (address ,office-email))
-
-        (message-mail-p
-         ;; message is mail and this is not my system taj then do not save Gcc copy in sent-mail
-         (eval (unless (equal (system-name) "taj")
-                 (set (make-local-variable 'gnus-message-archive-group)
-                      ,(if (equal (system-name) office-host-name)
-                           "Office.Sent Items"
-                           "sent-mail")))))
-
-        (message-news-p
-         (name ,myname)
-         (signature "Regards,\n-sharad")
-         ("Jabber-ID" ,jabber-id)
-         (address ,email-addr)
-         (eval
-          (progn
-            (set (make-local-variable 'gnus-message-archive-group) "sent-news"))))
-
-        ("Gmail.*"
-         (name ,myname)
-         (signature "Regards,\n-sharad")
-         (address ,email-addr))
-        ("Office.*"
-         (name ,myname)
-         (signature "Regards,\n-sharad")
-         (address ,office-email)
-         (eval (set (make-local-variable 'gnus-message-archive-group)
-                           "Office.Sent Items")))
-
-
-        ;; J sites
-        ((header "Received" "monster.co.in\\|naukri.com") ;reply
-         (eval (progn
-                 ;; (set (make-local-variable 'message-cite-function) 'sc-cite-original)
-                 ;; (set (make-local-variable 'message-cite-reply-above) t)
-                 (set (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)))
-         ;; (xsteve-message-citation)))
-         (body :file "~/Documents/Template/j/reply")
-         (signature (concat "Regards,\n" ,myname))
-         ;; (eval (add-hook 'message-setup-hook 'xsteve-message-citation t t)) ;; set in global hook
-         ;; (eval (add-hook 'message-signature-setup-hook 'xsteve-message-citation nil t))
-         ;; (eval (set (make-local-variable 'message-cite-function) 'sc-cite-original))
-         (x-url ,myurl))
-        ((save-excursion
-           (when (member "\*Article\*" (mapcar 'buffer-name (buffer-list)))
-             (set-buffer "\*Article\*")
-             (> (count-lines (point-min) (point-max)) 30)))
-         (eval (progn
-                 (set (make-local-variable 'message-cite-reply-above) t))))))
-
-
-
-;;}} For SMTP msmtp
 
 ;;{{ sendmail
 ;; ;; SENDING MAIL
@@ -747,22 +524,6 @@
          (define-key message-mode-map "\C-c\t" 'external-abook-try-expand))))))
 ;;}}
 
-;;{{ http://www.gnus.org/manual/gnus_401.html
-;; Question 5.9
-;; Sometimes I accidentally hit r instead of f in newsgroups. Can Gnus warn me, when I'm replying by mail in newsgroups?
-;; Answer
-;; Put this in ~/.gnus.el:
-(setq gnus-confirm-mail-reply-to-news t)
-;; People tell me my Message-IDs are not correct, why aren't they
-;; and how to fix it?
-;; Answer
-;; The message-ID is an unique identifier for messages you send. To
-;; make it unique, Gnus need to know which machine name to put after
-;; the "@". If the name of the machine where Gnus is running isn't
-;; suitable (it probably isn't at most private machines) you can tell
-;; Gnus what to use by saying:
-(setq message-user-fqdn (concat "personal.machine.of." myshortname ".com"))
-;;}}
 
 ;;{{Exiting http://www.stanford.edu/~rgm/comp/dotgnus.html
 (setq gnus-interactive-exit t)
@@ -824,35 +585,6 @@
 ;; I don't have to wait for it be downloaded.
 (setq gnus-asynchronous t)
 
-;; Add formalities for me.
-(defadvice gnus-summary-reply (after formalities () activate)
-  (cjb-add-formalities))
-
-(defun cjb-add-formalities ()
-  "Add the sender's first name and my tag to e-mail."
-  ;; Modified from <http://www.repose.cx/conf/.elisp/de-gnus.el>
-  (save-excursion
-    (message-goto-signature)
-    (previous-line 2)
-    (when (not (looking-at "- Sharad."))
-         (insert "\n\n- Sharad.")))
-    (let* ((to (message-fetch-field "To"))
-         (address-comp (mail-extract-address-components to))
-         (name (car address-comp))
-         (first (or (and name (concat "" (car (split-string name)))) "")))
-
-         (when first
-           ;; Go to the first line of the message body.
-           (message-goto-body)
-           (insert "Hi,\n\n")
-           (kill-line)
-           (kill-line)
-           (kill-line)
-           (message-goto-signature)
-           (previous-line 4)
-           (newline)
-	)))
-           ;;(insert (concat (capitalize first) ",\n\n")))))
 
 
 (defun gnus-demon-scan-mail-or-news-and-update ()

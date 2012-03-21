@@ -1,0 +1,7 @@
+# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+
+## http://www.gnu.org/software/tramp/#Remote-shell-setup
+# Reset the prompt for remote Tramp shells.
+if [ "${INSIDE_EMACS/*tramp*/tramp}" == "tramp" ] ; then
+   PS1="[\u@\h \w]$ "
+fi
