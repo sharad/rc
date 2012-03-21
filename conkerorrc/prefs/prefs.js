@@ -9,9 +9,11 @@
  * For more information, see http://www.mozilla.org/unix/customizing.html#prefs
  */
 
-user_pref("app.update.lastUpdateTime.addon-background-update-timer", 1290846548);
+user_pref("app.update.lastUpdateTime.addon-background-update-timer", 1332358554);
 user_pref("app.update.lastUpdateTime.background-update-timer", 1290846548);
-user_pref("app.update.lastUpdateTime.blocklist-background-update-timer", 1290846548);
+user_pref("app.update.lastUpdateTime.blocklist-background-update-timer", 1332358674);
+user_pref("app.update.lastUpdateTime.microsummary-generator-update-timer", 1332358554);
+user_pref("app.update.lastUpdateTime.search-engine-update-timer", 1332358554);
 user_pref("browser.cache.disk.capacity", 1048576);
 user_pref("browser.cache.disk.smart_size.first_run", false);
 user_pref("browser.cache.disk.smart_size_cached_value", 640000);
