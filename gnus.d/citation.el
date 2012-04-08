@@ -73,6 +73,8 @@
     (let* ((parsed-address (mail-header-parse-address (mail-header-from message-reply-headers)))
            (my-bbdb-record (bbdb-search-simple (cdr parsed-address) (car parsed-address)))
            (start-pos (point))
+           following-text
+           (following-newlines 2)
            (overlay)
            (anrede (when my-bbdb-record (bbdb-record-getprop my-bbdb-record 'anrede)))
            (first-name (funcall 'get-proper-citation-name (car parsed-address) (cdr parsed-address)))
@@ -81,25 +83,27 @@
                     (bbdb-record-name my-bbdb-record)
                     first-name)
                 "Sharad Pratap")))
-      (if anrede
-          (insert (format "%s\n\n" anrede))
-        (funcall xsteve-message-citation-function first-name))
+      (progn
+        (if anrede
+            (insert (format "%s\n\n" anrede))
+            (funcall xsteve-message-citation-function first-name))
+        (if following-text (insert following-text))
+        (when following-newlines
+          (dotimes (v following-newlines)
+            (insert "\n"))
+          (forward-line (- following-newlines 1))))
       (unless (eq start-pos (point))
         (setq overlay (make-overlay start-pos (point)))
         (overlay-put overlay 'xsteve-message-citation nil)))))
 
-
-
-
-
 (defun xsteve-message-citation-hallo (name)
-  (insert "Hallo " name "!\n\n"))
+  (insert "Hallo " name "!"))
 
 (defun xsteve-message-citation-hi (name)
-  (insert "Hi " name "!\n\n"))
+  (insert "Hi " name "!"))
 
 (defun xsteve-message-citation-herr (name)
-  (insert "Hallo Herr " (or name "Fred Namenlos ") "!\n\n"))
+  (insert "Hallo Herr " (or name "Fred Namenlos ") "!"))
 
 (defun xsteve-message-citation-default (name)
   (message-insert-citation-line))

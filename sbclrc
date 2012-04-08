@@ -71,7 +71,9 @@
 
 ;;;;;; ASDF2 ;;;;;;
 
-(ql:quickload "quicklisp-slime-helper")
+
+;; Creates problem when imbedded in image.
+;; (ql:quickload "quicklisp-slime-helper")
 
 
 

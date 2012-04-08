@@ -21,7 +21,7 @@
 ;; (let ((swank-loader (make-list-from-emacs-eval "(car (list swank-loader-full-path))")))
 ;;   (load swank-loader))
 
-;; (load "/all/res/share/common-lisp/quicklisp/dists/quicklisp/software/slime-20110619-cvs/swank-loader.lisp")
+;; (load "/all/res/share/common-lisp/quicklisp/dists/quicklisp/software/slime-20120307-cvs/swank-loader.lisp")
 
 ;; (if (functionp 'swank-loader::init)
 ;;     (swank-loader::init))

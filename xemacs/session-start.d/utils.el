@@ -12,7 +12,7 @@
 
 
 
-(defun insert-reply-object (resume object &optional keys attachment type)
+(defun insert-reply-object (resume object &optional keys attachment type discription)
   "Prepare reply object"
   (interactive
    (let*
@@ -22,8 +22,9 @@
         (keys   (read-string "keys: " (shell-command-to-string resume-make-keys)))
         (type (or (read-from-minibuffer "type: " "pdf") "txt"))
         ;(attachment (y-or-n-p (format "make inline: ")))
+        (discription "attachment")
         attachment)
-     (list resume object keys attachment type)))
+     (list resume object keys attachment type disposition)))
   (let* ((resume-make-keys (format "make -sC %s name=%s object=%s keys" resume-workdir resume object))
          (keys (or keys  (read-string "keys: " (shell-command-to-string resume-make-keys))))
          (keys-of-resume-name (mapconcat 'identity (sort (split-string keys) #'string-lessp) "-"))
@@ -40,8 +41,9 @@
       (if attachment
           (mml-attach-file
            resume-attachable-file
-           (mml-minibuffer-read-type resume-attachable-file) ; "application/pdf"
-           "Sharad Pratap - Résumé" "inline")
+           (mm-default-file-encoding resume-attachable-file)
+           ;; (mml-minibuffer-read-type resume-attachable-file) ; "application/pdf"
+           discription "inline")
           (insert-file-contents resume-actual-file))
       (message "Not able to %s %s."
                (if attachment "attach" "insert")

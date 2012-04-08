@@ -31,10 +31,16 @@
     ;; (global-set-key (kbd "C-c C-r") 'sudo-edit-current-file)
 
 
+    ;; remove p4
+    (setq vc-handled-backends '( ;P4
+                                RCS CVS SVN SCCS Bzr Git Hg Mtn Arch))
+
     (defun find-alternative-file-with-sudo () ; put in keybinding.el
       (interactive)
       (let ((fname (or buffer-file-name
-                       dired-directory)))
+                       dired-directory))
+            ;; P4 creating problem.
+            (vc-handled-backends '(RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)))
         (when fname
           (if (string-match "^/sudo:root@localhost:" fname)
               (setq fname (replace-regexp-in-string
@@ -66,7 +72,7 @@
 
 
 
-(progn
+(when nil
  (defun tramp-do-file-attributes-with-stat
      (vec localname &optional id-format)
    "Implement `file-attributes' for Tramp files using stat(1) command."
@@ -109,5 +115,18 @@
      (if (eq id-format 'integer) "%u" "\"%U\"")
      (if (eq id-format 'integer) "%g" "\"%G\"")))))
 
+
+
+
+;; (setq vc-ignore-dir-regexp "\\`\\(?:[\\/][\\/][^\\/]+[\\/]\\|/\\(?:net\\|afs\\|\\.\\.\\.\\)/\\)\\'\\|etc")
+
+
+;; vc-handled-backends is a variable defined in `vc-hooks.el'.
+;; Its value is
+;; (P4 RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
+
+
+
+(autoload 'password-in-cache-p "password-cache")
 
 (user-provide 'tramp)

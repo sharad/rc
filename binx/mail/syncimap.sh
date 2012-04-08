@@ -3,7 +3,15 @@
 function main() {
 
 
+
     process_arg $@
+
+
+    if [ -e $disable_file ] ; then
+        warn "Syncimap is disabled"
+        exit 0
+    fi
+
     if [ ! -e ~/.offlineimaprc ] ; then
         verbose no ~/.offlineimaprc do not exists.
         exit -1
@@ -16,7 +24,6 @@ function main() {
                     offlineimap -a ${account:-$OFFLINEIMAPACCOUNT}
                 else
                     # wait till 3 min then send SIGINT.
-                                                                                                              # put it into some log.
                     xwarn="$( timeout -s INT 360 offlineimap -1 -u quiet -a ${account:-$OFFLINEIMAPACCOUNT} |& egrep -i 'WARNING|Error' )" &&
                     warn "Some problem with OfflineImap\nPlease check as soon as possible.\n${xwarn}"
                 fi
@@ -30,21 +37,46 @@ function main() {
 }
 
 function process_arg() {
-    set -- $(getopt -n $pgm -o ivwea: -- $@)
+
+    disable_file=~/.var/comm/disable/$pgm
+    set -- $(getopt -n $pgm -o hdrivwea: -- $@)
     while [ $# -gt 0 ]
     do
         case $1 in
             (-a) eval account=$2; shift;;
             (-i) interactive=1;;
             (-v) verbose=1;;
+            (-d)
+                 if mkdir -p $(dirname $disable_file); touch $disable_file ; then
+                     echo $pgm disabled;
+                 fi
+                 exit;;
+            (-r) rm -f $disable_file;
+                 echo $pgm enabled;
+                 exit;;
             (-w) warn=1;;
             (-e) error=1;;
+            (-h) help;;
             (--) shift; break;;
-            (-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
+            (-*) echo "$0: error - unrecognized option $1" 1>&2; help; exit 1;;
             (*)  break;;
         esac
         shift
     done
+}
+
+function help() {
+    cat <<'EOF'
+            -a: eval account=$2; shift;;
+            -i: interactive=1;;
+            -v: verbose=1;;
+            -d: touch $disable_file;;
+            -r: rm -f $disable_file;;
+            -w: warn=1;;
+            -e: error=1;;
+            -h: help;;
+EOF
+
 }
 
 function warn() {

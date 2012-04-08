@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+(user-require 'citation)
+
 (defvar *use-msmtp-for-senmail* nil "msmtp to use")
 
 ;; where I am using msmtp
@@ -110,10 +112,13 @@
 ;; Add formalities for me.
 (defadvice gnus-summary-reply (after formalities () activate)
   ;; (cjb-add-formalities)
+  "Thanks."
   (dummy-add-formalities)
   )
 
 (defun dummy-add-formalities ()
+  "Thanks."
+  (message-position-point)
   )
 
 (defun cjb-add-formalities ()
@@ -122,7 +127,7 @@
   (save-excursion
     (message-goto-signature)
     ;; (previous-line 1)
-    (next-line)
+    (forward-line)
     (when (not (looking-at "Sharad"))
          (insert "\n\n- Sharad.")))
     (let* ((to (message-fetch-field "To"))
@@ -138,7 +143,7 @@
            (kill-line)
            (kill-line)
            (message-goto-signature)
-           (previous-line 4)
+           (forward-line -4)
            (newline)
 	)))
 ;;}}
@@ -166,10 +171,18 @@
 ;; (setq mail-host-address office-host-name)
 ;; (setq user-full-name "Sharad Pratap")
 (setq message-cite-reply-above nil
+      message-cite-reply-above t
       ;; http://emacsworld.blogspot.in/2011/11/gnus-tip-customising-position-of-point.html
-      message-cite-reply-position 'traditional)     ;default
+      message-cite-reply-position 'traditional
+      message-cite-reply-position 'above)     ;default
+
+(defun sharad/message-signature-present ()
+  (save-excursion
+    (if (message-goto-signature)
+        (eobp))))
 
 (defun jreply (&optional keys)
+  (interactive )
   ;; "asdfsdgfd"
   (let* ((resume "sharad")
          (resume-make-keys (format "make -sC %s name=%s keys" resume-workdir resume))
@@ -177,12 +190,16 @@
     (if (and (message-goto-body)
              (message-in-body-p))
         (progn
-          (insert-string "\n")
+          ;;(sharad-message-citation-delete)
+          (when (sharad/message-signature-present)
+            (message-kill-to-signature)
+            (message-remove-signature))
+          (insert "\n")
           (insert-reply-object "sharad" "cover" keys nil "txt")
-          (end-of-buffer)
-          (insert-string "\n\n")
-          (insert-reply-object "sharad" "resume" keys t "pdf")
-          (insert-string "\n")
+          (goto-char (point-max))
+          (insert "\n\n")
+          (insert-reply-object "sharad" "resume" keys t "pdf" "Sharad Pratap - Résumé")
+          (insert "\n")
           (message-goto-body)
           (sharad-message-citation-delete)
           (xsteve-message-citation)
@@ -247,7 +264,9 @@
                            (message-fetch-field "to"))))
                  (email (if to (car (mail-header-parse-address to))))
                  (email-name (if email (assoc email sharad/gnus-name-emails-map))))
-            (concat (cdr email-name) " <" (car email-name) ">")))
+            (if email
+                (concat (cdr email-name) " <" (car email-name) ">")
+                "Sharad Pratap <sh4r4d@gmail.com>")))
 
 
                                         ; try to get only to address, not all in CC Bcc)
@@ -281,7 +300,7 @@
             (set (make-local-variable 'gnus-message-archive-group) "sent-news")
             (set (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)
             (set (make-local-variable 'message-cite-reply-above) nil)
-            (set (make-local-variable 'message-cite-reply-position) 'standard))))
+            (set (make-local-variable 'message-cite-reply-position) 'traditional))))
 
         ("Gmail.*"
          (name ,myname)
