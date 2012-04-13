@@ -25,19 +25,19 @@
 ;;         (#p"/usr/lib64/sbcl/" nil)))
 
 
-;;;; QuickLisp --
+;;;; QuickLisp :start --
 ;;; The following lines added by ql:add-to-init-file:
 #-quicklisp
 (let* ((qlisp-parent-dir
-        (if (not (string=  (machine-instance) "lispm.genera.net"))
-            #p"/atlantic/home/s/res/share/common-lisp/"
-            #p"/all/res/share/common-lisp/"
-            ))
-       (quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
-                                        qlisp-parent-dir)))
+        (cond
+          ((string=  (machine-instance) "ubuntu-sharadp") #p"/atlantic/opt/share/common-lisp/")
+          ((not (string=  (machine-instance) "lispm.genera.net")) #p"/atlantic/home/s/res/share/common-lisp/")
+          (t #p"/all/res/share/common-lisp/")
+          ))
+       (quicklisp-init (merge-pathnames "quicklisp/setup.lisp" qlisp-parent-dir)))
   (when (probe-file quicklisp-init)
     (load quicklisp-init)))
-;;;; QuickLisp
+;;;; QuickLisp :end
 
 
 ;; (asdf:clear-source-registry)

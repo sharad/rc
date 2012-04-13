@@ -21,6 +21,7 @@
 ;;
 
 
+(user-require 'host-info)
 
 (when (and sharad-in-office-with-perforce (xrequire 'vc-p4))
   )

@@ -27,8 +27,8 @@
   )
 
 (deh-require-maybe 'semantic
-  (semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion
-  )
+  (if (functionp 'semantic-load-enable-code-helpers)
+      (semantic-load-enable-code-helpers)))      ; Enable prototype help and smart completion
 
 (user-provide 'cedet)
 

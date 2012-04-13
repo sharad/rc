@@ -183,7 +183,7 @@
 
 
   (when t
-    (require 'slime-autoloads))
+    (xrequire 'slime-autoloads))
 
   ;; (let ((slime-autoloads (concat slime-path "slime-autoloads.elc")))
   ;;   (if (file-exists-p slime-autoloads)

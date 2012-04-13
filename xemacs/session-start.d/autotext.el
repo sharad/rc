@@ -81,7 +81,13 @@ General Public License for more details.
    auto-insert-query t)
   (setq auto-insert-alist
         (append '(((muse-mode .  "Muse Mode") . insert-muse-file))
-                auto-insert-alist)))
+                auto-insert-alist))
+  (setq auto-insert-alist
+      (append '(((".planner-registry.el\\'" . "Planner File") . nil))
+              auto-insert-alist)))
+
+
+
 
 
 (user-provide 'autotext)
