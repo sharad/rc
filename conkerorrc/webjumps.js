@@ -634,3 +634,13 @@ define_webjump("book/flipkart",
 define_webjump("book/sapna",
                "http://sapnaonline.com/index.php?option=com_payment&view=search&filter=any&q=%s&search=Search");
 
+// Electronics
+define_webjump("electronics/element14",
+               "http://in.element14.com/jsp/search/browse.jsp?N=0&Ntk=gensearch&Ntt=%s&Ntx=mode+matchallpartial&exposeLevel2Refinement=true&suggestions=false&ref=globalsearch");
+
+
+// Notes
+// http://mozdev.org/pipermail/conkeror/2009-September/001694.html
+define_webjump("clip",
+               "javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title);}})();");
+
