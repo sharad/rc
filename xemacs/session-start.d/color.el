@@ -4,12 +4,16 @@
 
 (when
     (xrequire 'color-theme)
+
+
   ;; (if (not window-system)
   ;;     nil
   ;;   (progn
   (when (functionp 'color-theme-initialize)
     (color-theme-initialize))
-  (setq favorite-color-themes
+  (setq
+   custom-theme-load-path "~/.xemacs/color-themes"
+   favorite-color-themes
         '(color-theme-arjen           ;all time nice
           color-theme-robin-hood      ;green nice
           color-theme-goldenrod

@@ -37,7 +37,7 @@
 			 nil "Parse and browse f90 interfaces" single])
  (ioccur .
 	 [(2 4)
-	  nil "Incremental occur." single])
+	  nil "Incremental occur" single])
  (jgraph-mode .
 	      [(0 0)
 	       nil "Major mode for Jgraph files" single])
@@ -69,7 +69,7 @@
 	 [(0 2)
 	  nil "OAuth 2.0 Authorization Protocol" single])
  (org .
-      [(20120409)
+      [(20120414)
        nil "Outline-based notes management and organizer" tar])
  (quarter-plane .
 		[(0 1)

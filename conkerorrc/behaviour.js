@@ -126,3 +126,8 @@ read_url_handler_list = [read_url_make_default_webjump_handler("google")];
 // 	    $browser_object = browser_object_paste_url);
 
 /////////////////////////////////////////////////////////////////////
+
+
+
+// http://www.surf-proxy.de/index.php?q=http%3A%2F%2Fconkeror.org%2FContentHandlers
+content_handlers.set("application/pdf", content_handler_prompt);

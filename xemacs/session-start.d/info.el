@@ -1,5 +1,10 @@
 
+;; see http://www.emacswiki.org/emacs/TreeMode#toc3
+;; C-c v                                              imenu-tree
+;;                                                    tags-tree
+;;                                                    glade-mode.el
 
+;; glasses-mode Minor mode for making identifiers likeThis readable.
 
 ;; TTT RRR YYY
 ;; scroll-all-mode see http://osdir.com/ml/help-gnu-emacs-gnu/2009-04/msg00660.html

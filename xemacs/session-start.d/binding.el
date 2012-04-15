@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-01-31 02:29:47 s>
+;; Time-stamp: <2012-04-15 11:39:34 s>
 ;;
 
 (deh-section "Hyper Super etc"
@@ -118,7 +118,7 @@ and their terminal equivalents.")
     (when (and (xrequire 'anything-config)
                (xrequire 'anything-match-plugin))
       (global-set-key-if-unbind "\C-ca" 'anything)
-      (global-set-key-if-unbind "\C-ce" 'anything-for-files)))
+      (global-set-key-if-unbind "\C-co" 'anything-for-files)))
 
 (deh-section "Buffer"
   (define-key global-map [?\C-x right] 'next-buffer)
