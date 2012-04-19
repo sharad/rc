@@ -1,0 +1,6 @@
+OFFLINEIMAPACCOUNT=Office
+
+. $HOME/.osetup/info/hosts/$HOST/sh/env.sh
+
+
+

@@ -18,6 +18,7 @@
 # some more ls aliases
 	alias ll='command ls -l -F --color=auto --human-readable --quoting-style=shell'
 	alias la='command ls -A -F --color=auto --human-readable --quoting-style=shell'
+	alias dl='command ls -l -d -A -F --color=auto --human-readable --quoting-style=shell'
 # printing double side
 # for more
 # see http://www.sun.com/bigadmin/content/submitted/duplex_printing.html

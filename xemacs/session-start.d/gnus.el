@@ -30,7 +30,8 @@
   (require 'gnus-util (concat gnus-lib-path "/gnus-util.el"))
   (load-file (concat gnus-lib-path "/gnus-util.el"))
   (require 'gnus-util (concat gnus-lib-path "/gnus-util.el"))
-  (load-file (concat gnus-lib-path "/gnus-util.el")))
+  (load-file (concat gnus-lib-path "/gnus-util.el"))
+  (load-file (concat gnus-lib-path "/mm-util.el")))
 
 ;;}}
 

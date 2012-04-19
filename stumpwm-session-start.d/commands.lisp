@@ -573,7 +573,14 @@
   (run-shell-command
    (concat
     (getenv "HOME")
-    "/.stumpwm-session-start.d/autorun.sh")))
+    "/.stumpwm-session-start.d/stumpwmrc")))
+
+(defcommand bye () ()
+  (run-shell-command
+   (concat
+    (getenv "HOME")
+    "/.stumpwm-session-start.d/stumpwm-logout"))
+  (quit))
 
 
 (defcommand display-root-map () ()

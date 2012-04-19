@@ -33,6 +33,12 @@ define_webjump("search",
                "http://www.google.co.in/search?q=%s&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai=");
 //              "Google");
 
+// I'm Feeling Lucky.
+define_webjump("lucky",
+               "http://www.google.com/search?hl=en&biw=1364&bih=384&sclient=psy-ab&q=%s&oq=%s&aq=f&aqi=g4&aql=&gs_l=hp.9..0l4.0l0l5l1800l0l0l0l0l0l0l0l0ll0l0.frgbld.&pbx=1&btnI=1"
+               // "http://www.google.com/search?btnI=I%27m+Feeling+Lucky&ie=UTF-8&oe=UTF-8&q=%s"
+              )
+
 
 define_webjump("blog",
                "http://blogsearch.google.com/blogsearch/cse?cx=013269018370076798483:gg7jrrhpsy4&cof=FORID:1&q=%s&sa=Search");
@@ -643,4 +649,5 @@ define_webjump("electronics/element14",
 // http://mozdev.org/pipermail/conkeror/2009-September/001694.html
 define_webjump("clip",
                "javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title);}})();");
+
 
