@@ -265,8 +265,10 @@
                  (email (if to (car (mail-header-parse-address to))))
                  (email-name (if email (assoc email sharad/gnus-name-emails-map))))
             (if email
-                (concat (cdr email-name) " <" (car email-name) ">")
-                "Sharad Pratap <sh4r4d@gmail.com>")))
+                (if email-name
+                    (concat (cdr email-name) " <" (car email-name) ">")
+                    email)
+                (concat myname " <" email-addr ">"))))
 
 
                                         ; try to get only to address, not all in CC Bcc)
