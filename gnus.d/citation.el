@@ -56,12 +56,20 @@
 
 (defun get-proper-citation-name (email name)
   "Get proper name."
+  ;; name can be null for "xxxx@xxxxxx.xxx"
+  ;; but email will be there.
+
+  ;; in other case like "Xxxxx Xxxxx <xxxx@xxxxxx.xxx>"
+  ;; name and email both will be there.
   (let ((first-name-in-email
          (if (string-match "^\\(\\w\+\\)" email)
              (match-string 0 email)))
         (first-name-in-name
-         (car (split-string name))))
-    (if (string-caseless-equal first-name-in-email first-name-in-name)
+         (if name (car (split-string name)))))
+
+    (if (and
+         first-name-in-name
+         (string-caseless-equal first-name-in-email first-name-in-name))
         first-name-in-name
         (capitalize first-name-in-email))))
 
@@ -70,7 +78,17 @@
   (when message-reply-headers
     (xsteve-message-citation-delete)
     (message-goto-body)
-    (let* ((parsed-address (mail-header-parse-address (mail-header-from message-reply-headers)))
+    (let* ((from-address
+            (mail-header-parse-address (mail-header-from message-reply-headers)))
+           (parsed-address
+            (if (member (car from-address)
+                        message-dont-reply-to-names)
+                (mail-header-parse-address
+                 (car
+                  (remove-if (lambda (s)
+                               (string-match "^\s*$" s))
+                             (split-string (message-fetch-field "to") "[,;]") )))
+                from-address))
            (my-bbdb-record (bbdb-search-simple (cdr parsed-address) (car parsed-address)))
            (start-pos (point))
            following-text
