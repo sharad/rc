@@ -259,7 +259,8 @@
 
          ;; http://www.gnu.org/software/emacs/manual/html_node/gnus/Posting-Styles.html
          (From
-          (let* ((to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
+          (let* ((default-email (concat myname " <" email-addr ">"))
+                 (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
                          (with-current-buffer gnus-article-buffer
                            (message-fetch-field "to"))))
                  (email (if to (car (mail-header-parse-address to))))
@@ -267,8 +268,8 @@
             (if email
                 (if email-name
                     (concat (cdr email-name) " <" (car email-name) ">")
-                    email)
-                (concat myname " <" email-addr ">"))))
+                    default-email)
+                default-email)))
 
 
                                         ; try to get only to address, not all in CC Bcc)

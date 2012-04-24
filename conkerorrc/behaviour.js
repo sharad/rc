@@ -89,7 +89,7 @@ function possibly_valid_url (str) {
 
 // excellent
 // http://conkeror.org/UserVariables see read_url_handler_list
-read_url_handler_list = [read_url_make_default_webjump_handler("google")];
+read_url_handler_list = [read_url_make_default_webjump_handler("lucky")];
 
 // /////////////////////////////////////////////////////////////////////
 // define_browser_object_class("paste-url",
@@ -131,3 +131,4 @@ read_url_handler_list = [read_url_make_default_webjump_handler("google")];
 
 // http://www.surf-proxy.de/index.php?q=http%3A%2F%2Fconkeror.org%2FContentHandlers
 content_handlers.set("application/pdf", content_handler_prompt);
+
