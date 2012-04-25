@@ -1,4 +1,8 @@
 
+
+;; C-\ 						     toggle-input-method
+;;                  from multilingual mule
+
 ;; see http://www.emacswiki.org/emacs/TreeMode#toc3
 ;; C-c v                                              imenu-tree
 ;;                                                    tags-tree
