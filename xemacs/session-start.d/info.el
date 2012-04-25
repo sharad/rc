@@ -1,4 +1,13 @@
+;; All Expand
+;; C->                                               yas/expand
+;; C-x '           expand-abbrev
+;; M-/             dabbrev-expand
+;; C-;             hippie-expand
+;; C-x a '         expand-abbrev
+;; C-x a e         expand-abbrev;; TAB             pabbrev-expand-maybe
+;; <tab>           pabbrev-expand-maybe
 
+ps
 
 ;; C-\ 						     toggle-input-method
 ;;                  from multilingual mule
