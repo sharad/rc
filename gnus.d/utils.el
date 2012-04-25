@@ -27,13 +27,20 @@
 
 (defun google-lucky (search-str)
   (interactive
-   (let ((search-str "sdfgsd sddsfg"))
+   (let* ((reg-str
+           (if (and (region-active-p)
+                    (not (equal (region-beginning)
+                                (region-end))))
+               (buffer-substring (region-beginning)
+                                 (region-end))))
+          (search-str (read-from-minibuffer "lucky: " (or reg-str (word-at-point) ""))))
      (list search-str)))
   (insert
-   (concat
-    "[http://www.google.com/search?hl=en&&q="
-    (string-replace-match "\s" search-str "+" t t)
-    "&btnI=1]")))
+   (concat search-str
+           " [http://www.google.com/search?hl=en&&q="
+           (string-replace-match "\s" search-str "+" t t)
+           "&btnI=1]")))
+
 
 
 
