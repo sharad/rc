@@ -176,10 +176,10 @@ show_graph_range no
 # ${color 6694B2}${font OpenLogos:size=1} u t
 # ${color BADCDD}${font weather:size=1}${execi 600 ~/scripts/conditions.sh}${color}${font}${voffset -25}  ${execi 1200 ~/scripts/pogodynka.sh}
 
-#    ${font weather:size=1}x ${font}HDD ${execi 1 ~/scripts/hddmonit.sh}°C 
-    
-#    ${font PizzaDude Bullets:size=1}v${font}   Up: ${upspeed eth1} Kb/s 
-#    ${font PizzaDude Bullets:size=1}r${font}   Down: ${downspeed eth1} Kb/s 
+#    ${font weather:size=1}x ${font}HDD ${execi 1 ~/scripts/hddmonit.sh}°C
+
+#    ${font PizzaDude Bullets:size=1}v${font}   Up: ${upspeed eth1} Kb/s
+#    ${font PizzaDude Bullets:size=1}r${font}   Down: ${downspeed eth1} Kb/s
 
 #    ${font PizzaDude Bullets:size=1}M${font}   Upload: ${totalup eth1}
 #    ${font PizzaDude Bullets:size=1}S${font}   Download: ${totaldown eth1}
@@ -203,6 +203,7 @@ show_graph_range no
 
 TEXT
 $nodename - $sysname $kernel on $machine
+${execi 120 python /home/s/hell/bin/stocks arun goog msft aapl}
 $stippled_hr
 ${color lightgrey}Uptime:$color $uptime ${color lightgrey}- Load:$color $loadavg
 ${color lightgrey}CPU Usage:${color #cc2222} $cpu% ${cpubar}
