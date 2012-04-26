@@ -1,3 +1,16 @@
+;; All Expand
+;; C->                                               yas/expand
+;; C-x '           expand-abbrev
+;; M-/             dabbrev-expand
+;; C-;             hippie-expand
+;; C-x a '         expand-abbrev
+;; C-x a e         expand-abbrev;; TAB             pabbrev-expand-maybe
+;; <tab>           pabbrev-expand-maybe
+
+ps
+
+;; C-\ 						     toggle-input-method
+;;                  from multilingual mule
 
 ;; see http://www.emacswiki.org/emacs/TreeMode#toc3
 ;; C-c v                                              imenu-tree
