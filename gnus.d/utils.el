@@ -24,22 +24,31 @@
 
 ;;; Code:
 
-
 (defun google-lucky (search-str)
-  (interactive
-   (let* ((reg-str
-           (if (and (region-active-p)
-                    (not (equal (region-beginning)
-                                (region-end))))
-               (buffer-substring (region-beginning)
-                                 (region-end))))
-          (search-str (read-from-minibuffer "lucky: " (or reg-str (word-at-point) ""))))
-     (list search-str)))
-  (insert
-   (concat search-str
-           " [http://www.google.com/search?hl=en&&q="
-           (string-replace-match "\s" search-str "+" t t)
-           "&btnI=1]")))
+  (concat search-str " [http://www.google.com/search?hl=en&&q="
+          (string-replace-match "\s" search-str "+" t t)
+          "&btnI=1]"))
+
+
+
+
+;; (defun string-apply-fn (search-str &optional fn)
+
+(defun string-apply-fn ()
+  (interactive)
+   (let* ((region-active (and (region-active-p)
+                              (not (equal (region-beginning) (region-end)))))
+          (bound (if region-active
+                     (cons (region-beginning) (region-end))
+                     (bounds-of-thing-at-point 'word)))
+          (search-str (funcall #'buffer-substring (car bound) (cdr bound)))
+          (fn #'google-lucky))
+     ;; (list search-str fn)
+     (funcall #'delete-region (car bound) (cdr bound))
+     ;; (read-from-minibuffer (format "asf %d %d" (car bound)  (car bound)))
+     (insert (funcall fn search-str))
+     ;; (insert  " " (funcall fn search-str))
+     ))
 
 
 
