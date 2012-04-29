@@ -65,7 +65,7 @@ own_window_colour hotpink
 double_buffer yes
 
 # Minimum size of text area
-minimum_size 280 5
+minimum_size 1024 5
 
 # Draw shades?
 draw_shades yes
@@ -203,7 +203,7 @@ show_graph_range no
 
 TEXT
 $nodename - $sysname $kernel on $machine
-${execi 120 python /home/s/hell/bin/stocks arun goog msft aapl}
+${goto -600}${voffset 40}${execi 120 python ~/bin/stocks arun }
 $stippled_hr
 ${color lightgrey}Uptime:$color $uptime ${color lightgrey}- Load:$color $loadavg
 ${color lightgrey}CPU Usage:${color #cc2222} $cpu% ${cpubar}
