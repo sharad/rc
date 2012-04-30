@@ -506,7 +506,8 @@ sub tab_key_press {
          $self->refresh;
          return 1;
       }
-   } elsif ($event->{state} & urxvt::ControlMask) {
+   # } elsif ($event->{state} & urxvt::ControlMask) {
+   } elsif ($event->{state} & urxvt::Mod3Mask) {
       if ($keysym == 0xff51 || $keysym == 0xff53) {
          if (@{ $self->{tabs} } > 1) {
             my $idx1 = 0;
