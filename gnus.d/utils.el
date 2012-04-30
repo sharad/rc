@@ -43,12 +43,8 @@
                      (bounds-of-thing-at-point 'word)))
           (search-str (funcall #'buffer-substring (car bound) (cdr bound)))
           (fn #'google-lucky))
-     ;; (list search-str fn)
      (funcall #'delete-region (car bound) (cdr bound))
-     ;; (read-from-minibuffer (format "asf %d %d" (car bound)  (car bound)))
-     (insert (funcall fn search-str))
-     ;; (insert  " " (funcall fn search-str))
-     ))
+     (insert (funcall fn search-str))))
 
 
 

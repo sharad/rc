@@ -51,7 +51,7 @@
 ##    title is displayed).  This make tab bar look nicer.
 ##
 ## Added by StephenB:
-## 
+##
 ## 7. Tabs can be named with Shift+Up (Enter to confirm, Escape to
 ##    cancel).
 ##
@@ -486,7 +486,7 @@ sub tab_key_press {
       return 1;
    }
 
-   if ($event->{state} & urxvt::ShiftMask) {
+   if ($event->{state} & urxvt::Mod4Mask) {
       if ($keysym == 0xff51 || $keysym == 0xff53) {
          if (@{ $self->{tabs} } > 1) {
             $self->change_tab($tab, $keysym - 0xff52);

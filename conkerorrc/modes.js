@@ -32,7 +32,10 @@ add_hook("mode_line_hook", mode_line_adder(buffer_icon_widget), true);
 read_buffer_show_icons = true;
 
 // add content handlers
-content_handlers.set("application/pdf", content_handler_save); // pdf
+content_handlers.set("application/pdf", content_handler_prompt);
+content_handlers.set("application/torrent", content_handler_save); // pdf
+content_handlers.set("application/mp3", content_handler_save); // pdf
+content_handlers.set("application/ogg", content_handler_save); // pdf
 // torrent
 // mp3
 // ogg
@@ -52,3 +55,4 @@ function enable_scrollbars (buffer) {
     buffer.top_frame.scrollbars.visible = true;
 }
 add_hook("create_buffer_late_hook", enable_scrollbars);
+

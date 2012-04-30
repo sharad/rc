@@ -134,7 +134,7 @@ sub on_button_release {
 	}
 
 	my $mask = $self->ModLevel3Mask | $self->ModMetaMask |
-			urxvt::ShiftMask | urxvt::ControlMask;
+			urxvt::Mod4Mask | urxvt::ControlMask;
 
 	if ($event->{button} == $self->{button} && ($event->{state} & $mask) == 0) {
 		my $col = $event->{col};
@@ -192,7 +192,7 @@ sub select_next {
 			return;
 		}
 	}
-	
+
 	deactivate($self) unless $self->{found};
 
 	()

@@ -107,13 +107,13 @@ sub copy_properties {
    # pass 1: copy over properties different or nonexisting
    for my $atom ($tab->XListProperties ($tab->parent)) {
       my ($type, $format, $items) = $self->XGetWindowProperty ($tab->parent, $atom);
-      
+
       # fix up size hints
       if ($atom == $wm_normal_hints) {
          my (@hints) = unpack "l!*", $items;
-      
+
          $hints[$_] += $self->{tabheight} for (4, 6, 16);
-      
+
          $items = pack "l!*", @hints;
       }
 
@@ -138,15 +138,15 @@ sub make_current {
       $cur->XUnmapWindow ($cur->parent) if $cur->mapped;
       $cur->focus_out;
    }
-   
+
    $self->{cur} = $tab;
 
    $self->configure;
    $self->copy_properties;
-   
+
    $tab->focus_out; # just in case, should be a nop
    $tab->focus_in if $self->focus;
-   
+
    $tab->XMapWindow ($tab->parent);
    delete $tab->{activity};
    $self->refresh;
@@ -306,7 +306,8 @@ sub tab_destroy {
 sub tab_key_press {
    my ($self, $tab, $event, $keysym, $str) = @_;
 
-   if ($event->{state} & urxvt::ShiftMask) {
+   # if ($event->{state} & urxvt::ShiftMask) {
+   if ($event->{state} & urxvt::Mod4Mask) {
       if ($keysym == 0xff51 || $keysym == 0xff53) {
          my ($idx) = grep $self->{tabs}[$_] == $tab, 0 .. $#{ $self->{tabs} };
 
@@ -314,7 +315,7 @@ sub tab_key_press {
          ++$idx if $keysym == 0xff53;
 
          $self->make_current ($self->{tabs}[$idx % @{ $self->{tabs}}]);
-         
+
          return 1;
       } elsif ($keysym == 0xff54) {
          $self->new_tab;
