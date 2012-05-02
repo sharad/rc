@@ -321,6 +321,12 @@
 ;;}}
       )
 
+(cd
+ (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
+   (if (probe-file paradise)
+       (probe-file paradise)
+       (probe-file (getenv "HOME")))))
+
 (start-gnome-components)
 
 ;; Local Variables: **
