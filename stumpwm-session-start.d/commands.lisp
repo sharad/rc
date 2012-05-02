@@ -464,9 +464,36 @@
 ;;             (run-wcli-command (concatenate 'string "urxvtc"
 ;;                                           (if title (format nil " -T ~a" title)))))
 (defcommand urxvt () ()
-            (run-wcli-command (concatenate 'string "urxvtc"
-                                           (format nil " -T ~a"
-                                                   (substitute #\_ #\Space (group-name (current-group)))))))
+  (run-wcli-command (concatenate 'string "urxvtc"
+                                 (format nil " -T ~a"
+                                         (substitute #\_ #\Space (group-name (current-group)))))))
+
+(defcommand urxvt () ()
+  (run-wcli-command (concatenate 'string "urxvtc"
+                                 ;; (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
+                                 ;;   (if (probe-file paradise)
+                                 ;;       (concatenate 'string " -cd " paradise " ")
+                                 ;;       ""))
+                                 (format nil "~a-T ~a"
+                                         (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
+                                           (if (probe-file paradise)
+                                               (concatenate 'string " -cd " paradise " ")
+                                               " "))
+                                         (substitute #\_ #\Space (group-name (current-group)))))))
+
+
+(testing
+  (cl-ppcre:split " " (concatenate 'string "urxvtc"
+                                   ;; (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
+                                   ;;   (if (probe-file paradise)
+                                   ;;       (concatenate 'string " -cd " paradise " ")
+                                   ;;       ""))
+                                   (format nil "~a-T ~a"
+                                           (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
+                                             (if (probe-file paradise)
+                                                 (concatenate 'string " -cd " paradise " ")
+                                                 " "))
+                                           (substitute #\_ #\Space (group-name (current-group)))))))
 
 (defcommand mrxvt (&optional title) ((:rest "title: "))
             (run-wcli-command (concatenate 'string "mrxvt"
