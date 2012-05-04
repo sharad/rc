@@ -7,8 +7,6 @@
 ;; C-x a e         expand-abbrev;; TAB             pabbrev-expand-maybe
 ;; <tab>           pabbrev-expand-maybe
 
-ps
-
 ;; C-\ 						     toggle-input-method
 ;;                  from multilingual mule
 
