@@ -1,0 +1,14 @@
+# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+
+
+# http://grml.org/zsh-pony/#sec-10-3
+
+autoload -Uz vcs_info
+precmd() {
+  psvar=()
+  vcs_info
+  [[ -n $vcs_info_msg_0_ ]] && psvar[1]="$vcs_info_msg_0_"
+}
+
+
+# PS1="%m%(1v.%F{green}%1v%f.)%# "

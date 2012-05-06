@@ -252,11 +252,15 @@ interactive("delicious-post",
 
                 var sendurl = 'https://api.del.icio.us/v1/posts/add?&url='+
                 // var sendurl = 'https://api.del.icio.us/v2/posts/add?&url='+
-                    encodeURIComponent(I.buffer.display_uri_string)+
+                    encodeURIComponent((yield I.minibuffer.read(
+                        $prompt = "url (required): ",
+                        $initial_value = I.buffer.display_uri_string)))
+                    // encodeURIComponent(I.buffer.display_uri_string)
+                    +
                     '&description='+
                     encodeURIComponent((yield I.minibuffer.read(
                         $prompt = "name (required): ",
-                        $initial_value = I.buffer.title)))+
+                        $initial_value = (I.buffer.title == "" ? I.buffer.display_uri_string : I.buffer.title)))) +
                     '&tags='+
                     encodeURIComponent((yield I.minibuffer.read(
                                             $prompt = "tags (space delimited): ",
@@ -310,9 +314,13 @@ interactive("delicious-post-link",
 
 
                 let sendurl = 'https://api.del.icio.us/v1/posts/add?&url=' +
-                    mylink +
+                    // mylink 
+                    encodeURIComponent((yield I.minibuffer.read(
+                        $prompt = "url (required): ",
+                        // $initial_value = decodeURIComponent(mylink)))) +
+                        $initial_value = bo))) +
                     '&description=' +
-                    encodeURIComponent((yield I.minibuffer.read($prompt = "name (required): " , $initial_value = bo.textContent))) +
+                    encodeURIComponent((yield I.minibuffer.read($prompt = "name (required): " , $initial_value = (bo.textContent == "" ? bo : bo.textContent)))) +
                     '&tags=' + encodeURIComponent((yield I.minibuffer.read(
                                                        $prompt = "tags (space delimited): ",
                                                        $completer = completer,
@@ -806,3 +814,4 @@ interactive("acition-link",
 // comment-start: "// "  **
 // comment-end:   "// "  **
 // End: **
+
