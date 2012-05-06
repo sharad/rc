@@ -213,7 +213,16 @@ interactive("delicious-post-sel",
 
 // https://api.del.icio.us/v1/posts/get?url={URL} get all tags for old url 
 
+var delicious_shared = null;
 
+interactive("delicious-shared-set",
+            "bookmark setting delicious shared.",
+            function (I) {
+                delicious_shared = (("y" == (yield I.minibuffer.read_single_character_option(
+                                                 $prompt = "Shared? (y/n)",
+                                                 $initial_value = "y",
+                                                 $options = ["y", "n"]))) ? "yes" : "no");
+            });
 
 interactive("delicious-post",
             "bookmark the page via delicious",
@@ -247,6 +256,18 @@ interactive("delicious-post",
                 var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
                 var post = tc.getElementsByTagName('post');
                 var tags  = (post.length > 0)  ? post[0].attributes[6].textContent : "";
+
+                if ((post.length > 0 && post[0].attributes[0].textContent.length > 0)) {                    
+                    var desc = post[0].attributes[0].textContent;
+                } else {
+                    var desc = (I.buffer.title == "" ? I.buffer.display_uri_string : I.buffer.title);
+                }
+                
+                var shared = null;
+                if (post.length > 0 && post[0].attributes[5].textContent.length > 0) {                    
+                    shared = post[0].attributes[5].textContent;
+                }
+
                 // }}
 
 
@@ -260,7 +281,7 @@ interactive("delicious-post",
                     '&description='+
                     encodeURIComponent((yield I.minibuffer.read(
                         $prompt = "name (required): ",
-                        $initial_value = (I.buffer.title == "" ? I.buffer.display_uri_string : I.buffer.title)))) +
+                        $initial_value = desc))) +
                     '&tags='+
                     encodeURIComponent((yield I.minibuffer.read(
                                             $prompt = "tags (space delimited): ",
@@ -269,9 +290,17 @@ interactive("delicious-post",
                                         )).replace(new RegExp(/\s+/g), ','))+
                     '&extended='+
                     encodeURIComponent((yield I.minibuffer.read(
-                        $prompt = "extended description: ")));
+                        $prompt = "extended description: "))) +
+                    '&shared=' +
+                    (delicious_shared == null ?
+                     (("y" == (yield I.minibuffer.read_single_character_option(
+                                   $prompt = ("Shared? (y/n)" + (shared ? (" [" + shared + "]") : "")),
+                                   $options = ["y", "n"]))) ? "yes" : "no")  : delicious_shared );
+
                 var content = yield send_http_request(load_spec({uri: sendurl}));
                 I.window.minibuffer.message(content.responseText);
+                I.window.minibuffer.message(sendurl);
+
             });
 
 interactive("delicious-post-link",
@@ -310,6 +339,18 @@ interactive("delicious-post-link",
                 var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
                 var post = tc.getElementsByTagName('post');
                 var tags  = (post.length > 0)  ? post[0].attributes[6].textContent : "";
+                if ((post.length > 0 && post[0].attributes[0].textContent.length > 0)) {                    
+                    var desc = post[0].attributes[0].textContent;
+                } else {
+                    var desc = (bo.textContent == "" ? bo : bo.textContent);
+                }
+
+                var shared = null;
+                if ((post.length > 0 && post[0].attributes[5].textContent.length > 0)) {                    
+                    shared = post[0].attributes[5].textContent;
+                }
+
+
                 // }}
 
 
@@ -320,17 +361,25 @@ interactive("delicious-post-link",
                         // $initial_value = decodeURIComponent(mylink)))) +
                         $initial_value = bo))) +
                     '&description=' +
-                    encodeURIComponent((yield I.minibuffer.read($prompt = "name (required): " , $initial_value = (bo.textContent == "" ? bo : bo.textContent)))) +
+                    encodeURIComponent((yield I.minibuffer.read($prompt = "name (required): " , $initial_value = desc))) +
                     '&tags=' + encodeURIComponent((yield I.minibuffer.read(
                                                        $prompt = "tags (space delimited): ",
                                                        $completer = completer,
                                                        $initial_value = tags
                                                    )).replace(new RegExp(/\s+/g), ',')) +
-                    '&extended=' + encodeURIComponent((yield I.minibuffer.read($prompt = "extended description: ")));
+                    '&extended=' + encodeURIComponent((yield I.minibuffer.read($prompt = "extended description: "))) +
+                    '&shared=' +
+                    (delicious_shared == null ?
+                     (("y" == (yield I.minibuffer.read_single_character_option(
+                                   $prompt = ("Shared? (y/n)" + (shared ? (" [" + shared + "]") : "")),
+                                   $options = ["y", "n"]))) ? "yes" : "no")  : delicious_shared );
+
                 var content = yield send_http_request(
                     load_spec({uri: sendurl}));
                 I.window.minibuffer.message(content.responseText);
-            }, $browser_object = browser_object_links);
+                I.window.minibuffer.message(sendurl);
+            },
+            $browser_object = browser_object_links);
 
 define_key(default_global_keymap, "p", "delicious-post");
 define_key(default_global_keymap, "P", "delicious-post-link");
