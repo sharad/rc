@@ -56,7 +56,8 @@ function process_arg() {
                  exit;;
             (-w) warn=1;;
             (-e) error=1;;
-            (-h) help;;
+            (-h) help;
+                 exit;;
             (--) shift; break;;
             (-*) echo "$0: error - unrecognized option $1" 1>&2; help; exit 1;;
             (*)  break;;
