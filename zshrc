@@ -321,10 +321,6 @@ fi
 # }}}
 
 
-# {{{ *Tramp*
-###################
-[ -r ~/.zshall/tramp ] && source ~/.zshall/tramp
-# }}}
 
 # Stty setting
 stty erase  susp 
@@ -403,10 +399,16 @@ echo -n \\033\[\?17\;0\;60c	# for zshell
 # }}}
 
 
+# {{{ *Tramp*
+# For Tramp
+###################
+[ -r ~/.zshall/tramp ] && source ~/.zshall/tramp
+# }}}
 
 
 # {{{ *Display Information*
-if [ ! $SUDO_USER ] ; then # let emacs tramp work.
+# For Tramp
+if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
 {
     cal -3
     # display all people around, reminders and todos.
@@ -436,6 +438,7 @@ fi
 # }}}
 
 
-# Sasken
+# Workplace
 [ -r ~/.$WORKPLACE.zshrc ] && source ~/.$WORKPLACE.zshrc || :
+
 

@@ -1,5 +1,8 @@
 # -*- Mode: shell-script; indent-tabs-mode: nil -*-
 
+mkdir -p ~/.logs/stderr/zshall
+exec 2> ~/.logs/stderr/zshall/editing
+
 my_extended_wordchars='*?_-+./[]~=&;!#$%^(){}<>:@,\\';
 
 if [ -r ~/.zkbd/$HOST/$TERM-${DISPLAY:-$VENDOR-$OSTYPE} ] ;  then
@@ -8,6 +11,8 @@ elif [ -r ~/.zkbd/$TERM-${DISPLAY:-$VENDOR-$OSTYPE} ] ; then
     termzdef=~/.zkbd/$TERM-${DISPLAY:-$VENDOR-$OSTYPE}
 elif [ -r ~/.zkbd/_general/$TERM-${DISPLAY:-$VENDOR-$OSTYPE} ] ; then
     termzdef=~/.zkbd/_general/$TERM-${DISPLAY:-$VENDOR-$OSTYPE}
+elif [ -r ~/.zkbd/_general/$TERM ] ; then
+    termzdef=~/.zkbd/_general/$TERM
 fi
 
 [ $termzdef ] && source $termzdef && unset termzdef
@@ -265,3 +270,6 @@ bindkey '^xP'   history-beginning-search-forward
 bindkey '\e[7~' beginning-of-line       # home
 bindkey '\e[8~' end-of-line             # end
 #fi
+
+exec 2> /dev/tty
+

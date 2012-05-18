@@ -2,7 +2,7 @@
 
 ## put commands only
 
-
+whence ~/bin/syncimap &&
 ~/bin/syncimap -a $OFFLINEIMAPACCOUNT &!
 
 [ -r ~/.rsetup/sh/run.d/${HOST//.*} ] &&

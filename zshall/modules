@@ -1,4 +1,5 @@
-
+mkdir -p ~/.logs/stderr/zshall
+exec 2> ~/.logs/stderr/zshall/module
 
 zmodload zsh/attr
 zmodload zsh/cap
@@ -64,3 +65,4 @@ zstyle :mime: mime-types ~/.mime.types /usr/local/etc/mime.types /etc/mime.types
 
 zsh-mime-setup
 
+exec 2> /dev/tty

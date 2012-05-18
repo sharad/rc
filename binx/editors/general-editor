@@ -3,7 +3,14 @@
 
 # emacsclient -t -n -f ~/.emacs.d/server/general "$@"
 
-emacsclient -t -f ~/.emacs.d/server/general "$@"
+if which emacs && which emacsclient ; then
+    emacsclient -t -f ~/.emacs.d/server/general "$@"
+elif which sensible-editor ; then
+    sensible-editor "$@"
+else
+    vim "$@"
+fi
+
 
 
 

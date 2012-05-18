@@ -50,6 +50,7 @@
 # Clear existing broken ssh-agent environment
 #
 
+[ -r ~/.profile ] &&
 source ~/.profile
 # ~/.login-run
 

@@ -150,3 +150,7 @@ function mkxhtml() {
         sed -e 's/&[nm]dash;//g' -e 's|xmlns="http://www.w3.org/1999/xhtml"||'
 }
 
+function pstreeo {
+    pstree "$@" -p  $(command pgrep -o   '\<'$1'\>')
+}
+
