@@ -12,3 +12,16 @@ precmd() {
 
 
 # PS1="%m%(1v.%F{green}%1v%f.)%# "
+
+
+
+# {{ http://emacswiki.org/emacs/BookMarks#toc8
+# Syncing Bookmarks with zsh
+# zsh has a feature called ‘cd-able-vars’ which is similar to
+# bookmarks but limited to directories on the local machine. Here’s
+# some code to convert emacs’ bookmarks into code for zsh. First add
+# this to your .zshrc:
+
+setopt cd_able_vars
+[[ -r ~/.zsh.bmk ]] && source ~/.zsh.bmk
+# }}

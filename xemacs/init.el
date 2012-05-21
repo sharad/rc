@@ -5,6 +5,7 @@
 ;; (add-to-list 'load-path "/usr/share/emacs/23.3/lisp/emacs-lisp")
 ;; (add-to-list 'load-path "/usr/share/emacs/23.3/lisp")
 
+(add-to-list 'load-path "/usr/local/share/emacs/23.3/site-lisp")
 
 (progn
  (defconst *package-dir* "~/.xemacs/pkgrepos/world")

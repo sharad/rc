@@ -24,7 +24,7 @@
 ;; from: http://www.emacswiki.org/emacs/AutoInstall
 (deh-require-maybe 'auto-install
   (setq auto-install-use-wget t
-        auto-install-directory "~/.xemacs/packages/auto-install/")
+        auto-install-directory "~/.xemacs/pkgrepos/world/auto-install/")
   ; (auto-install-update-emacswiki-package-name t)
   (when (and (xrequire 'anything)
              (xrequire 'anything-auto-install))
