@@ -104,7 +104,8 @@
 
 
 
-
+autoload -U is-at-least
+if is-at-least 4.3.12 ; then
 # Suffix aliases
 # see for more http://grml.org/zsh/zsh-lovers.html
 
@@ -112,32 +113,33 @@
 # 	alias -s c='command emacsclient  -nw -t'
 # 	alias -s pl='command emacsclient  -nw -t'
 # 	alias -s cgi='command emacsclient  -nw -t'
- 	alias -s txt='command emacsclient  -nw -t'
-	alias -s html='command w3m'
-	alias -s org='command w3m'
-        foreach reader (acroread evince) {
-            if whence -p $reader > /dev/null ; then
-	        alias -s pdf='command '$reader
-                break
-            fi
-        }
-        foreach writer (abiword ooffice) {
-            if whence -p $writer > /dev/null ; then
-	        alias -s doc='command '${writer}' -nologo'
-	        alias -s ppt='command '${writer}' -nologo'
-	        alias -s odt='command '${writer}' -nologo'
-	        alias -s Xls='command '${writer}' -nologo'
-	        alias -s xls='command '${writer}' -nologo'
-	        alias -s XLS='command '${writer}' -nologo'
-                break
-            fi
-        }
-	alias -s ps='command evince'
+    alias -s txt='command emacsclient  -nw -t'
+    alias -s html='command w3m'
+    alias -s org='command w3m'
+    foreach reader (acroread evince) {
+        if whence -p $reader > /dev/null ; then
+	    alias -s pdf='command '$reader
+            break
+        fi
+    }
+    foreach writer (abiword ooffice) {
+        if whence -p $writer > /dev/null ; then
+	    alias -s doc='command '${writer}' -nologo'
+	    alias -s ppt='command '${writer}' -nologo'
+	    alias -s odt='command '${writer}' -nologo'
+	    alias -s Xls='command '${writer}' -nologo'
+	    alias -s xls='command '${writer}' -nologo'
+	    alias -s XLS='command '${writer}' -nologo'
+            break
+        fi
+    }
+    alias -s ps='command evince'
 	#alias -s jpg=gthumb
-	alias -s jpg=eog
-	alias -s jpeg=eog
-	alias -s dvi=xdvi
-        alias -s djvu=djview
+    alias -s jpg=eog
+    alias -s jpeg=eog
+    alias -s dvi=xdvi
+    alias -s djvu=djview
+fi
 
 # Urxvt change font, backgrounf image
 
