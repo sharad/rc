@@ -68,7 +68,12 @@
     )
 
 
-
+(defun update-ssh-agent ()
+  (interactive)
+  (let ((agent-file (concat "~/.emacs.d/ssh-agent-" (getenv "HOST") ".el")))
+    (if (file-exists-p agent-file)
+        (load agent-file)
+        (message "Unable to find agent file."))))
 
 
 
