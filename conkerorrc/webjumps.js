@@ -646,6 +646,11 @@ define_webjump("book/flipkart",
 define_webjump("book/sapna",
                "http://sapnaonline.com/index.php?option=com_payment&view=search&filter=any&q=%s&search=Search");
 
+define_webjump("book/shops",
+               "http://www.biblio.com/search.php?author=&title=%skeyisbn=");
+// "http://www.biblio.com/search.php?stage=1&title=art+of+assembly+language&pageper=20&strip_common=1&program=1005&order=priceasc")
+
+
 // Electronics
 define_webjump("electronics/element14",
                "http://in.element14.com/jsp/search/browse.jsp?N=0&Ntk=gensearch&Ntt=%s&Ntx=mode+matchallpartial&exposeLevel2Refinement=true&suggestions=false&ref=globalsearch");
@@ -665,5 +670,6 @@ define_webjump("jabong",
 
 define_webjump("yebhi",
                "http://www.yebhi.com/searchAll.aspx?q=%s");
+
 
 
