@@ -12,6 +12,13 @@ if [ $SSH_CONNECTION ] ; then
     ps1ssh_connection=%{$fg[green]%}%B${ps1_ssh_from_host}%b%{$reset_color%}'>'
 fi
 
+
+if [[  $TERM == "screen" ]] ; then
+    # these color create alignment problem in screen term.
+    fg=()
+    reset_color=
+fi
+
 local ps1_user_default=s
 local ps1_host_default=taj
 
