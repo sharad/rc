@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+
+
+for startup in logout ; do
+    [ -r ~/.rsetup/$startup/env ] && . ~/.rsetup/$startup/env
+done
+for startup in logout ; do
+    [ -r ~/.rsetup/$startup/run ] && ~/.rsetup/$startup/run
+done
+
+
+if [ ${SSH_AGENT_PID+1} == 1 ]; then
+   ssh-add -D
+   ssh-agent -k > /dev/null 2>&1
+   unset SSH_AGENT_PID
+   unset SSH_AUTH_SOCK
+fi
+
