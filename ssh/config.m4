@@ -32,3 +32,9 @@ Host SETUP_h6_name
 
 
 
+
+# host that changes their host-key very offen
+# http://linuxcommando.blogspot.in/2008/10/how-to-disable-ssh-host-key-checking.html
+Host controllers
+   StrictHostKeyChecking no
+   UserKnownHostsFile=/dev/null
