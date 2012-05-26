@@ -7,7 +7,8 @@
 (deh-require-maybe 'tramp
     (setq tramp-default-method "ssh"
           ido-enable-tramp-completion t ;this guy was missing
-          tramp-verbose 8
+          tramp-debug-buffer t
+          tramp-verbose 10
           tramp-default-user 'nil
           tramp-default-host "spratap")
     ;; http://www.gnu.org/software/tramp/#Remote-shell-setup
@@ -65,17 +66,43 @@
     ;; know that the given method is applied on the host which has been
     ;; reached so far. sudo -u root, applied on your local host,
     ;; wouldn't be useful here.
+
+;; {{http://ubuntuforums.org/archive/index.php/t-1375454.html
+;; TRAMP beep when done downloading files
+(defadvice tramp-handle-write-region
+(after tramp-write-beep-advice activate)
+" make tramp beep after writing a file."
+(interactive)
+(beep))
+(defadvice tramp-handle-do-copy-or-rename-file
+(after tramp-copy-beep-advice activate)
+" make tramp beep after copying a file."
+(interactive)
+(beep))
+(defadvice tramp-handle-insert-file-contents
+(after tramp-copy-beep-advice activate)
+" make tramp beep after copying a file."
+(interactive)
+(beep))
+;; }}
     )
 
 
 (defun update-ssh-agent ()
   (interactive)
-  (let ((agent-file (concat "~/.emacs.d/ssh-agent-" (getenv "HOST") ".el")))
-    (if (file-exists-p agent-file)
-        (load agent-file)
-        (message "Unable to find agent file."))))
+  (let ((agent-file (concat "~/.emacs.d/ssh-agent-" (getenv "HOST") ".el"))
+        ;; (agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el"))
+        )
+    (if (and
+         (null (getenv "SSH_AGENT_PID")))
+        (if (file-exists-p agent-file)
+            (load agent-file t t)
+            (message "Unable to find agent file.")))))
 
-
+(defadvice tramp-file-name-handler
+    (before ad-update-ssh-agent-env activate)
+  "Support ssh agent."
+  (update-ssh-agent))
 
 (when nil
  (defun tramp-do-file-attributes-with-stat

@@ -10,14 +10,16 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
     if [ ! -f "${SSH_AUTH_SOCK}" ] ; then
         # export SSH_AUTH_SOCK=""
 
+        # pkill ssh-agent
+
         if ! pgrep -u $USER ssh-agent > /dev/null 2>&1 ; then
             [  -d $HOME/.ssh ] || mkdir $HOME/.ssh
             eval $(ssh-agent | tee $HOME/.ssh/agent-$HOST)
-                    # trap "kill $SSH_AGENT_PID" 0
+            trap "kill $SSH_AGENT_PID" 0
         else
-            if [ -r $HOME/.ssh/agent-$HOST ] ; then
-                . $HOME/.ssh/agent-$HOST > /dev/null
-            fi
+            # if [ -r $HOME/.ssh/agent-$HOST ] ; then
+            #     . $HOME/.ssh/agent-$HOST > /dev/null
+            # fi
         fi
     fi
 
