@@ -71,11 +71,11 @@ if [ "${SSH_AUTH_SOCK}x" != "x" ]; then
 (setenv "SSH_AGENT_PID"  "${SSH_AGENT_PID}" )
 EOF
 
-    cat <<EOF > ~/.ssh/agent-custom-$HOST
-SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
-SSH_AGENT_PID=${SSH_AGENT_PID}
-export SSH_AUTH_SOCK SSH_AGENT_PID
-EOF
+#     cat <<EOF > ~/.ssh/agent-custom-$HOST
+# SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
+# SSH_AGENT_PID=${SSH_AGENT_PID}
+# export SSH_AUTH_SOCK SSH_AGENT_PID
+# EOF
 
 fi
 

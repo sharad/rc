@@ -26,7 +26,7 @@
 
 (require 'general-testing)
 
-(defvar task-status-mappings
+(defvar status-mappings
   '((open . ((planner . "_")))
     (inprogress . ((planner . "o")))
     (completed . ((planner . "C")))
@@ -38,28 +38,45 @@
 (defun task-status-map (sys status)
   (cdr (assoc sys (cdr (assoc status status-mappings)))))
 
-(defmacro task-status-map-add (sys status sysstatus)
+(defmacro task-status-add-map (sys status sysstatus)
   `(pushnew (cons ',sys ',sysstatus)
-         (cdr (assoc ',status status-mappings)) :test #'equal))
+            (cdr (assoc ',status status-mappings))
+            :test #'(lambda (a b)
+                      (equal (car a) (car b)))))
 
-(defmacro task-status-maps-add (sys maps)
+(defmacro task-status-add-maps (sys maps)
   `(progn
      ,@(mapcar
         (lambda (m)
-          `(planner-add-task-status-map ,sys ,(car m) ,(cdr m)))
+          `(task-status-add-map ,sys ,(car m) ,(cdr m)))
         maps)))
+
+
+;; (task-status-add-maps bugz ((pending ."AFSD")))
+
+;; (task-status-add-maps bugz ((completed .("CLOSED" "asdfdsaf"))))
+
 
 (testing
 
- (add-task-status-maps-add bugz ((pending ."ASSIGNED")))
- (macroexpand '(task-status-maps-add bugz ((pending ."ASSIGNED"))))
+ (task-status-add-maps bugz ((pending ."ASSIGNED")))
+ (macroexpand '(task-status-add-maps bugz ((pending ."ASSIGNED"))))
 
- (task-status-map-add 'bugz '(completed . ("CLOSED")))
- (task-status-map-add bugz completed ("CLOSED"))
+ (macroexpand '(task-status-add-maps bugz ((completed . "CLOSED"))))
 
- (macroexpand '(task-status-map-add bugz completed ("CLOSED")))
+
+
+ (task-status-add-map 'bugz '(completed . ("CLOSED")))
+ (task-status-add-map bugz completed ("CLOSED"))
+
+ (macroexpand '(task-status-add-map bugz completed ("CLOSED")))
+
+
+
+
+
  (cdr (assoc 'open status-mappings))
- (planner-task-status-map 'planner 'openned))
+ (task-status-map 'planner 'open))
 
 (defun planner-today-ensure-exists ()
   (unless (file-exists-p (concat planner-directory (planner-today) ".muse"))

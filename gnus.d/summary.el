@@ -139,6 +139,13 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
         ("^image/"                 "I")))
 
 (deh-section "summary line formats"
+
+
+  (defvar sharad/gnus/global-summry-line-format   nil "")
+  (defvar sharad/gnus/bugzilla-summry-line-format nil "")
+  (defvar sharad/gnus/sent-summry-line-format     nil "")
+
+
   ;; Alias for the content-type function:
   (defalias 'gnus-user-format-function-ct 'rs-gnus-summary-line-content-type)
   ;;   You need to add `Content-Type' to `nnmail-extra-headers' and
@@ -152,19 +159,20 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
   (defalias 'gnus-user-format-function-label 'rs-gnus-summary-line-label)
   ;;
   ;; Use them:
-  (setq gnus-balloon-face-0 'rs-gnus-balloon-0)
-  (setq gnus-balloon-face-1 'rs-gnus-balloon-1)
+  (setq gnus-balloon-face-0 'rs-gnus-balloon-0
+        gnus-balloon-face-1 'rs-gnus-balloon-1
+        gnus-face-1 'rs-gnus-face-1)
   ;; Unbold face for UTF arrows: (FIXME: Doesn't work on marauder.)
   (copy-face 'default 'rs-gnus-face-1)
-  (setq gnus-face-1 'rs-gnus-face-1)
   (let* (;;(marks "%0{%«%U%R%z %u&score;%u&ct; %4u&size;%»%}")
          ;; (marks "%0«%U%R%z%u&atch;%u&score;%u&ct;%4u&size;%»")
          (marks "%0«%U%R%z%u&atch;%u&score;%u&ct;%4k%»")
          ;; (marks "%0{%U%R%z%}")
          ;; (attachment "%0{%@%}")
          (pipe "%3{│%}")
-         (date  (concat pipe "%1{%d%}" pipe))
-         (lines " %1{%4,-4L%}: ")
+         ;; (date  (concat pipe "%1{%d%}" pipe))
+         (date  (concat pipe "%1{%&user-date;%}" pipe))
+         (lines " %1{%-4L%}: ")
          (from "%4{%-20,20f%}")
          (thread-mark "%1{%B%}")
          (subject "%s")
@@ -176,7 +184,26 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
      sharad/gnus/global-summry-line-format   (concat marks date lines from sp pipe sp thread-mark subject nl)
    ; sharad/gnus/bugzilla-summry-line-format (concat attachment marks date lines bugzilla-who sp pipe sp thread-mark subject nl)
      sharad/gnus/bugzilla-summry-line-format (concat marks date lines from sp pipe sp thread-mark subject nl)
-     sharad/gnus/sent-summry-line-format     (concat marks date lines from sp pipe sp thread-mark subject nl))))
+     sharad/gnus/sent-summry-line-format     (concat marks date lines from sp pipe sp thread-mark subject nl)))
+
+
+
+;; With a custom date format :
+;; affichage de la date en relatif
+
+  ;; gnus-user-date-format-alist '((t . "%Y-%b-%d %H:%M"))
+
+  (setq gnus-user-date-format-alist
+        '(((gnus-seconds-today) . " %k:%M") ;dans la journée = 14:39
+          ((+ 86400 (gnus-seconds-today)) . "hier %k:%M")
+                                        ;hier = hier 14:39
+          ((+ 604800 (gnus-seconds-today)) . "%a %k:%M")
+                                        ;dans la semaine = sam 14:39
+          ((gnus-seconds-month) . "%a %d") ;ce mois = sam 28
+          ((gnus-seconds-year) . "%b %d") ;durant l'année = mai 28
+          (t . "%b %d '%y"))) ;le reste = mai 28 '05
+
+  )
 
 ;; ;; Specify the order of the header lines
 ;; (setq gnus-sorted-header-list '("^From:" "^Subject:" "^Summary:" "^Keywords:" "^Newsgroups:" "^Followup-To:" "^To:" "^Cc:" "^Date:" "^User-Agent:" "^X-Mailer:" "^X-Newsreader:"))

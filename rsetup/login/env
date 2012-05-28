@@ -7,20 +7,17 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
 
     [ $SHELL = "zsh" ] && emulate sh
 
-    if [ ! -f "${SSH_AUTH_SOCK}" ] ; then
+    if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" -a ! -f "${SSH_AUTH_SOCK}" ] && ! ps -u $USER $SSH_AGENT_PID > /dev/null 2>&1 ; then
         # export SSH_AUTH_SOCK=""
 
         # pkill ssh-agent
-
-        if ! pgrep -u $USER ssh-agent > /dev/null 2>&1 ; then
-            [  -d $HOME/.ssh ] || mkdir $HOME/.ssh
-            eval $(ssh-agent | tee $HOME/.ssh/agent-$HOST)
-            trap "kill $SSH_AGENT_PID" 0
-        else
-            # if [ -r $HOME/.ssh/agent-$HOST ] ; then
-            #     . $HOME/.ssh/agent-$HOST > /dev/null
-            # fi
-        fi
+        [  -d $HOME/.ssh ] || mkdir $HOME/.ssh
+        eval $(ssh-agent | tee $HOME/.ssh/agent-custom-$HOST)
+        trap "kill $SSH_AGENT_PID ; rm -f $HOME/.ssh/agent-custom-$HOST " 0
+    # else
+    #     if [ -r $HOME/.ssh/agent-custom-$HOST ] ; then
+    #         . $HOME/.ssh/agent-custom-$HOST > /dev/null
+    #     fi
     fi
 
 

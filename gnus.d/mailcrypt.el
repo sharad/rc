@@ -56,7 +56,7 @@
   ;; (X)Emacs will ask you if the message is to be signed before sending
   ;; it.
 
-  (add-hook 'message-send-hook 'my-sign-message)
+  ;; (add-hook 'message-send-hook 'my-sign-message)
   (defun my-sign-message ()
     (if (yes-or-no-p "Sign message? ")
         (mc-sign-message))))

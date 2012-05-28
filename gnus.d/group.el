@@ -34,7 +34,8 @@
             (".*"
              (gnus-summary-line-format ,sharad/gnus/global-summry-line-format)
              (gnus-summary-display-arrow t)
-             (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z"))
+             (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
+             (gnus-article-sort-functions '(gnus-article-sort-by-date gnus-article-sort-by-score)))
                                         ;"Gnus: %g [%A] %Z"
 
             ("nnimap.*\\.bugs"
