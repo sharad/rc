@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-04-15 11:39:34 s>
+;; Time-stamp: <2012-05-28 19:09:51 s>
 ;;
 
 (deh-section "Hyper Super etc"
@@ -200,10 +200,37 @@ and their terminal equivalents.")
                                         ;C-x k
   (global-set-key [f4] 'kill-this-buffer))
 
+(defun replace-modifier (keys map)
+  (dolist (v map keys)
+    (setq keys
+          (replace-regexp-in-string (concat (car v) "-")
+                                    (concat (cdr v) "-") keys))))
+
+(defvar replacement-map nil "sadf")
+
+(defmacro global-set-key-replace (keys cmd &optional rep-map)
+  `(let ((rep-map (or ',rep-map ,replacement-map))
+         (prev-cmd (global-key-binding (kbd ,keys))))
+     (if prev-cmd
+         (if (global-set-key (kbd ,(replace-modifier keys rep-map)) prev-cmd)
+             (global-set-key (kbd ,keys) ',cmd))
+         (global-set-key (kbd ,keys) ',cmd))))
+
+
+;; (defmacro nn (x)
+;;   `(global-key-binding (kbd ,x))
+;;     )
+
+;; (nn "M-.")
+
+;; (macroexpand '(global-set-key-replace "M-." 'gtags-find-tag '(("M" . "S"))))
+
+;; (global-set-key-replace "M-." find-tag (("M" . "s")))
+
 
 (deh-require-maybe 'gtags
-  (global-set-key-if-unbind "\M->" 'ww-next-gtag)   ;; M-; cycles to next result, after doing M-. C-M-. or C-M-,
-  (global-set-key-if-unbind "\M-." 'gtags-find-tag) ;; M-. finds tag
+  (global-set-key-replace "M->" 'ww-next-gtag '(("M" . "S")))   ;; M-; cycles to next result, after doing M-. C-M-. or C-M-,
+  (global-set-key-replace "M-." 'gtags-find-tag '(("M" . "S"))) ;; M-. finds tag
   (global-set-key-if-unbind [(control meta .)] 'gtags-find-rtag)   ;; C-M-. find all references of tag
   (global-set-key-if-unbind [(control meta ,)] 'gtags-find-symbol) ;; C-M-, find all usages of symbol.
 )
