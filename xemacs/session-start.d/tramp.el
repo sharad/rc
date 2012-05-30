@@ -5,10 +5,14 @@
 ;; check C-h f require
 
 (deh-require-maybe 'tramp
+
+
+
     (setq tramp-default-method "ssh"
           ido-enable-tramp-completion t ;this guy was missing
           tramp-debug-buffer t
-          tramp-verbose 10
+          ;; tramp-verbose 10
+          tramp-verbose 1
           tramp-default-user 'nil
           tramp-default-host "spratap")
     ;; http://www.gnu.org/software/tramp/#Remote-shell-setup
@@ -32,16 +36,11 @@
     ;; (global-set-key (kbd "C-c C-r") 'sudo-edit-current-file)
 
 
-    ;; remove p4
-    (setq vc-handled-backends '( ;P4
-                                RCS CVS SVN SCCS Bzr Git Hg Mtn Arch))
 
     (defun find-alternative-file-with-sudo () ; put in keybinding.el
       (interactive)
       (let ((fname (or buffer-file-name
-                       dired-directory))
-            ;; P4 creating problem.
-            (vc-handled-backends '(RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)))
+                       dired-directory)))
         (when fname
           (if (string-match "^/sudo:root@localhost:" fname)
               (setq fname (replace-regexp-in-string

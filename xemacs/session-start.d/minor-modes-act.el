@@ -36,7 +36,9 @@
        (executable-find "p4")
        (xrequire 'vc-p4))
 
-  (setq vc-p4-require-p4config t)
+  (if (and (setq vc-p4-require-p4config t)
+           (not (getenv "P4CONFIG")))
+      (setenv "P4CONFIG" ".p4conf"))
 
   (defun office-activate ()
     (let ((file (buffer-file-name)))
