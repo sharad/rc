@@ -28,3 +28,6 @@ SHELL=/bin/zsh
 30 08 * * * mpc play
 45 08 * * * spd-say -C
 
+1  *  * * *  notify-send -i ~/.osetup/images/icons/glass_empty.png "@"
+
+
