@@ -22,3 +22,6 @@
 [submodule "xemacs/pkgrepos/world/worklog"]
 	path = xemacs/pkgrepos/world/worklog
 	url = https://github.com/vvv/work-log.git
+[submodule "xemacs/packages/tea-time"]
+	path = xemacs/packages/tea-time
+	url = git://github.com/krick/tea-time.git
