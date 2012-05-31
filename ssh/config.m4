@@ -2,6 +2,9 @@ include(defs)
 
 # ProxyCommand /usr/bin/corkscrew ipwproxy.sasken.com 3128 %h %p
 
+Host *
+  VisualHostKey=yes
+
 Host github.com
   User git
   # Port 22
@@ -35,6 +38,8 @@ Host SETUP_h6_name
 
 # host that changes their host-key very offen
 # http://linuxcommando.blogspot.in/2008/10/how-to-disable-ssh-host-key-checking.html
-Host controllers
+Host SETUP_controllers
    StrictHostKeyChecking no
    UserKnownHostsFile=/dev/null
+
+
