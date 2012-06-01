@@ -55,12 +55,16 @@
 ;;       ;; url-cookie-file
 ;;       )
 
+
+;;;; core
 (defun bugz-dispatch (method &optional args url)
   (xml-rpc-method-call (or url bugz-url) method args))
 
+;; logout
 (defun bugz/User.logout ()
   (bugz-dispatch 'User.logout))
 
+;; login
 (defun bugz/User.login (&optional opts username password url)
   (let* ((url (or url bugz-url))
          (username (or username
@@ -71,7 +75,7 @@
                      `(("login".,username)
                        ("password".,password)
                         ,@opts))))
-
+;; search
 (defun bugz/Bug.search (criteria)
   (bugz-dispatch 'Bug.search criteria))
 
@@ -85,6 +89,17 @@
           (modify-list (l)
                        (remove-if-not #'first-belong-in-attributesp l)))
     (mapcar #'modify-list bugs)))
+
+;;;;
+
+(defun bugzilla-get (&optional attributes criteria)
+  "get bug @attribute from bugzilla for @criteria."
+  (let ((attributes (or attributes ("summary")))
+        (criteria (or criteria
+                      `(("assigned_to" . ,bugz-default-username)
+                        ("status" . ,status)))))
+    (bugz-bug-get-bugs-attributes attributes (bugz/Bug.search criteria))))
+
 
 (testing
 

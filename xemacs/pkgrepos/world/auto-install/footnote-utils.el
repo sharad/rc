@@ -1,1 +1,1 @@
-../harley/footnote.el
+../harley/footnote-utils.el
