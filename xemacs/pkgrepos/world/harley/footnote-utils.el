@@ -1,4 +1,4 @@
-;;; jhg-footnote.el --- Functions for Footnotes
+;;; footnote-utils.el --- Functions for Footnotes
 ;;
 ;; ~harley/share/emacs/pkg/footnote/footnote.el ---
 ;;
@@ -147,6 +147,6 @@ ARG sets the footnote number."
   (footnote-renumber)
   (footnote-sort))
 
-(provide 'footnote)
+(provide 'footnote-utils)
 
 ;;; footnote.el ends here
