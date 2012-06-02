@@ -36,21 +36,6 @@
   ;; add url username used in bug list.
   )
 
-(defun get-attribute (prompt)
-  (let (retval)
-    (setq retval (read-from-minibuffer prompt))
-    (if (not (string-equal retval ""))
-        retval)))
-
-(defun get-value (prompt)
-  (read-from-minibuffer prompt))
-
-
-(defun planner-bugzilla-make-bug-search-criteria ()
-  (interactive)
-  (let (attribute)
-    (loop until (not (setq attribute (get-attribute "attributes: ")) "")
-         collect (cons attribute (get-value (concat "value for " attribute ": "))))))
 
 
 

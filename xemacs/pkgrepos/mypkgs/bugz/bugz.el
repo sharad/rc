@@ -76,6 +76,36 @@
                        ("password".,password)
                         ,@opts))))
 ;; search
+
+(defun get-attribute (prompt)
+  (let (retval)
+    (setq retval (read-from-minibuffer prompt))
+    (if (not (string-equal retval ""))
+        retval)))
+
+(defun get-value (prompt)
+  (read-from-minibuffer prompt))
+
+(defun bugz-make-bug-search-criteria ()
+  (interactive)
+  (let ((criteria
+         (let (attribute)
+           (loop until (not (setq attribute (get-attribute "attributes: ")))
+              collect (cons attribute (get-value (concat "value for " attribute ": "))))))
+        (name (read-from-minibuffer "Search Name: ")))
+    (if (and name
+             (not (string-equal name "")))
+        (nconc bug-search-criterias (list (cons name criteria))))
+    criteria))
+
+
+;; (setq x '(a))
+
+;; (nconc x '(c))
+
+;; (bugz-make-bug-search-criteria)
+
+
 (defun bugz/Bug.search (criteria)
   (bugz-dispatch 'Bug.search criteria))
 
@@ -92,12 +122,27 @@
 
 ;;;;
 
+;;;; critaria management
+(defvar bug-search-criterias
+  `(("assigned to me and status OPEN" .
+                                      `(("assigned to me and status OPEN" . (
+                                             ,@(if (boundp 'bugz-default-username)
+                                                  (list `("assigned_to" . ,bugz-default-username)))
+                                              ("status" . ,(if (boundp 'bugz-default-status)
+                                                               bugz-default-status
+                                                               "OPNED")))))))
+  "Bug search critarias.")
+
+
+;;;;
+
 (defun bugzilla-get (&optional attributes criteria)
   "get bug @attribute from bugzilla for @criteria."
   (let ((attributes (or attributes ("summary")))
-        (criteria (or criteria
-                      `(("assigned_to" . ,bugz-default-username)
-                        ("status" . ,status)))))
+        (criteria (cond
+                    ((equal criteria t) (bugz-make-bug-search-criteria))
+                    ((null criteria) (cdar bug-search-criterias))
+                    (t criteria))))
     (bugz-bug-get-bugs-attributes attributes (bugz/Bug.search criteria))))
 
 
