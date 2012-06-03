@@ -1,4 +1,7 @@
 ;;; work-timer.el --- A timer so you know when telax, and when to work
+
+(require 'todochiku)
+
 (defconst work-timer-version "0.3")
 ;; Copyright (c)2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
 ;; Author: Jonathan Arkell <jonnay@jonnay.net>
@@ -30,7 +33,7 @@ to actually procrastinate.
 
 For a more detailed explination see:
 http://www.43folders.com/2005/10/11/procrastination-hack-1025")
-  
+
 ;;; Installation:
 ;; make sure you have the todochiku package installed.  You can get it
 ;; from the Emacs wiki:
@@ -83,7 +86,7 @@ http://www.43folders.com/2005/10/11/procrastination-hack-1025")
 ;; work-timer-stop - stop the work timer
 
 ;;; elisp:
-;; 
+;;
 
 ;;; CHANGELOG:
 ;; v 0.3 - Un-stupified the code.  (decoupled interactive functions, etc.)
@@ -141,10 +144,10 @@ Can be one of the following symbols:
   (when (timerp work-timer-timer)
 		(cancel-timer work-timer-timer))
   (setq work-timer-state 'work-time)
-  
+
   (run-hooks 'work-timer-work-hook)
   (todochiku-message "Work Timer" "Time to work." (todochiku-icon 'alarm))
-  
+
   (setq work-timer-work (run-with-timer (* 60 work-timer-working-time) nil 'work-timer--relax)))
 
 ;;* interactive work

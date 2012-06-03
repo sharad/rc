@@ -25,6 +25,7 @@
 ;;; Code:
 
 (require 'general-testing)
+(require 'cl)
 
 (defvar status-mappings
   '((open . ((planner . "_")))
@@ -34,6 +35,8 @@
     (delegated . ((planner . "D")))
     (pending . ((planner . "P"))))
   "Status Mapping")
+
+(defvar task-stati '(open inprogress completed cancelled delegated pending))
 
 (defun task-status-map (sys status)
   (cdr (assoc sys (cdr (assoc status status-mappings)))))
@@ -52,10 +55,61 @@
         maps)))
 
 
-;; (task-status-add-maps bugz ((pending ."AFSD")))
-
 ;; (task-status-add-maps bugz ((completed .("CLOSED" "asdfdsaf"))))
 
+;; single status query
+(defun task-status-of-sys (sys status &optional mappings)
+  (let* ((mappings (or mappings status-mappings))
+         (rstatus (cdr (assoc sys (cdr (assoc status mappings))))))
+    rstatus))
+
+(defun task-map-from-sys-status (sys status &optional mappings)
+  (let* ((mappings (or mappings status-mappings))
+        (map (find status mappings
+                   :key #'(lambda (e)
+                            (cdr (assoc sys (cdr e))))
+                   :test #'(lambda (statusa statusb)
+                             (if (consp statusb)
+                                 (member statusa statusb)
+                                 (string-equal statusa statusb))))))
+    map))
+
+(defun task-status-from-sys-status (sys status &optional mappings)
+  (car (task-map-from-sys-status sys status)))
+
+(defun task-src-status-to-trg-status (src status trg &optional mappings)
+  (cdr (assoc trg (cdr (task-map-from-sys-status src status)))))
+
+;; status list query
+
+(defun task-stati-of-sys (sys stati &optional mappings)
+  (let* ((mappings (or mappings status-mappings))
+         (rstatus
+          (if (consp stati)
+              (loop for s in stati
+                 collect (task-status-of-sys sys s mappings))
+              (task-status-of-sys sys stati mappings))))
+    rstatus))
+
+(defun task-maps-from-sys-stati (sys stati &optional mappings)
+  (let* ((mappings (or mappings status-mappings))
+         (map (if (consp stati)
+                  (loop for s in stati
+                       collect ((task-map-from-sys-status sys s mappings)))
+                  (task-map-from-sys-status sys stati mappings))))
+    map))
+
+(defun task-stati-from-sys-stati (sys stati &optional mappings)
+  (if (consp stati)
+      (car (task-map-from-sys-status sys stati mappings))
+      (mapcar #'car (task-maps-from-sys-stati sys stati mappings))))
+
+(defun task-src-stati-to-trg-stati (src stati trg &optional mappings)
+  (if (consp stati)
+      (mapcar #'(lambda (map)
+                  (cdr (assoc trg (cdr map))))
+              (task-maps-from-sys-stati src stati mappings))
+      (cdr (assoc trg (cdr (task-map-from-sys-status src stati mappings))))))
 
 (testing
 
@@ -187,10 +241,12 @@
 (defun task-lists-with-status-p (task status)
   (member (nth 3 task) status))
 
-(defun planner-tasks-from-page (page status)
+(defun planner-tasks-from-page (page &optional status)
   (planner-task-lists-if
-   '(lambda (task)
-      (task-lists-with-status-p task plan status))
+   (if status
+       '(lambda (task)
+         (task-lists-with-status-p task plan status))
+       'identity)
    (planner-task-lists page)
    :fun '(lambda (task-list) (nth 4 task-list))))
 
@@ -217,6 +273,50 @@
 (defun normalize-task (task)
   (replace-regexp-in-string
    "\\([]\\[]\\)" "\\\\\\1" task))
+
+
+
+;; {{
+(defun planner-find-task-in-page-main (task page &optional buf-op)
+  "return t if able to find task in page and leave in that page."
+  (let ((task (normalize-task task))
+        (buf (find-file
+              (concat planner-directory "/" page ".muse"))))
+    (when buf
+      (goto-char 0)
+      (if (re-search-forward "^*\s\+Tasks")
+          (let ((start (point))
+                (end (if (re-search-forward "^*\s\+\\w\+")
+                         (point))))
+            (when (and end (not (equal end start)))
+              (goto-char start)
+              (re-search-forward task)
+              ;; (read-from-minibuffer "sfddsf: " (format "%d %d eq %s" end start (not (equal end start))))
+              (if (functionp buf-op) (funcall buf-op buf))
+              t))))))
+
+(defun planner-find-task-in-page (task page &optional restore buf-op)
+  "return t if able to find task in page and leave in that page."
+  (if restore
+      (save-window-excursion
+        (save-excursion
+          (save-restriction
+            (planner-find-task-in-page-main task page &optional buf-op))))
+      (planner-find-task-in-page-main task page buf-op)))
+
+(defun planner-task-change-status (task statusfn &optional page)
+  (planner-find-task-in-page task (or page (planner-today-ensure-exists))
+                             t
+                             #'(lambda (b)
+                                 ;; (timeclock-in)
+                                 (if (functionp statusfn) (funcall statusfn))
+                                 (save-buffer)
+                                 (bury-buffer buf)
+                                 ;; (kill-buffer buf)
+                                 )))
+;; }}
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; bugz ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

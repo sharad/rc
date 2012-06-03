@@ -83,8 +83,9 @@ General Public License for more details.
         (append '(((muse-mode .  "Muse Mode") . insert-muse-file))
                 auto-insert-alist))
   (setq auto-insert-alist
-      (append '(((".planner-registry.el\\'" . "Planner File") . nil))
-              auto-insert-alist)))
+        (append '(((".planner-registry.el\\'" . "Planner File") . nil)
+                  ((".ido.last\\'" . "Planner File") . nil))
+                auto-insert-alist)))
 
 
 

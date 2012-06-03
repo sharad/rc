@@ -53,7 +53,7 @@
 ;;       ;; url-cookie-storage
 ;;       ;; url-cookie-save-interval
 ;;       ;; url-cookie-file
-;;       )
+;;       )APL FUNCTIONAL SYMBOL QUAD RIGHTWARDS ARROW
 
 
 ;;;; core
@@ -76,22 +76,57 @@
                        ("password".,password)
                         ,@opts))))
 ;; search
+(defun bugz/Bug.search (criteria)
+  (bugz-dispatch 'Bug.search criteria))
 
-(defun get-attribute (prompt)
+;; fix it.
+;; (defun bugz-bug-search (criteria)
+;;   (nconc
+;;    (cdr (assoc "bugs" (bugz/Bug.search criteria)))
+;;    (list (cons "_bugz-url" bugz-url))))
+
+;; (setq x '( a b))
+
+;; (nconc (cdr x) '(r))
+
+(defun bugz-bug-search (criteria)
+  (cdr (assoc "bugs" (bugz/Bug.search criteria))))
+
+(defun bugz-bug-get-bugs-attributes (attributes bugs)
+  (flet ((first-belong-in-attributesp (e)
+                                      (member (car e) attributes))
+          (modify-list (l)
+                       (remove-if-not #'first-belong-in-attributesp l)))
+    (mapcar #'modify-list bugs)))
+;;;;
+
+;;;; critaria management
+(defvar bug-search-criterias
+  `(("assigned to me and status OPEN" .
+                                      `(("assigned to me and status OPEN" . (
+                                             ,@(if (boundp 'bugz-default-username)
+                                                  (list `("assigned_to" . ,bugz-default-username)))
+                                              ("status" . ,(if (boundp 'bugz-default-status)
+                                                               bugz-default-status
+                                                               "OPEN")))))))
+  "Bug search critarias.")
+
+
+(defun bugz-get-attribute-name ()
   (let (retval)
-    (setq retval (read-from-minibuffer prompt))
+    (setq retval (read-from-minibuffer "attributes: "))
     (if (not (string-equal retval ""))
         retval)))
 
-(defun get-value (prompt)
-  (read-from-minibuffer prompt))
+(defun bugz-get-attribute-value (attribute)
+  (read-from-minibuffer (concat "value for " attribute ": ")))
 
 (defun bugz-make-bug-search-criteria ()
   (interactive)
   (let ((criteria
          (let (attribute)
-           (loop until (not (setq attribute (get-attribute "attributes: ")))
-              collect (cons attribute (get-value (concat "value for " attribute ": "))))))
+           (loop until (not (setq attribute (bugz-get-attribute-name)))
+              collect (cons attribute (bugz-get-attribute-value attribute)))))
         (name (read-from-minibuffer "Search Name: ")))
     (if (and name
              (not (string-equal name "")))
@@ -104,49 +139,28 @@
 ;; (nconc x '(c))
 
 ;; (bugz-make-bug-search-criteria)
-
-
-(defun bugz/Bug.search (criteria)
-  (bugz-dispatch 'Bug.search criteria))
-
-(defun bugz-bug-search (status &optional username)
-  (bugz/Bug.search `(("assigned_to" . ,(or username bugz-default-username))
-                     ("status" . ,status))))
-
-(defun bugz-bug-get-bugs-attributes (attributes bugs)
-  (flet ((first-belong-in-attributesp (e)
-                                      (member (car e) attributes))
-          (modify-list (l)
-                       (remove-if-not #'first-belong-in-attributesp l)))
-    (mapcar #'modify-list bugs)))
-
 ;;;;
 
-;;;; critaria management
-(defvar bug-search-criterias
-  `(("assigned to me and status OPEN" .
-                                      `(("assigned to me and status OPEN" . (
-                                             ,@(if (boundp 'bugz-default-username)
-                                                  (list `("assigned_to" . ,bugz-default-username)))
-                                              ("status" . ,(if (boundp 'bugz-default-status)
-                                                               bugz-default-status
-                                                               "OPNED")))))))
-  "Bug search critarias.")
-
-
-;;;;
-
-(defun bugzilla-get (&optional attributes criteria)
+(defun bugzilla-search-bugs-main (attributes criteria)
   "get bug @attribute from bugzilla for @criteria."
+  (bugz-bug-get-bugs-attributes attributes (bugz-bug-search criteria)))
+
+
+(defun bugzilla-search-bugs (&optional attributes criteria)
   (let ((attributes (or attributes ("summary")))
         (criteria (cond
                     ((equal criteria t) (bugz-make-bug-search-criteria))
                     ((null criteria) (cdar bug-search-criterias))
                     (t criteria))))
-    (bugz-bug-get-bugs-attributes attributes (bugz/Bug.search criteria))))
+    (bugzilla-search-bugs-main attributes criteria)))
+
+
+
 
 
 (testing
+
+ (bugzilla-search-bugs '("summary" "id") '(("id" . 786)))
 
  (bugz/User.login '(("rememberlogin" . 0)))
 
@@ -160,7 +174,7 @@
   '("id" . "summary")
   (cdr (assoc "bugs" (bugz-bug-search '("REOPENED")))))
 
- (bugz-bug-search '("ASSIGNED" "REOPNED" "NEW")))
+ (bugz-bug-search '("ASSIGNED" "REOPENED" "NEW")))
 
 
 (provide 'bugz)

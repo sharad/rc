@@ -27,45 +27,45 @@
 (require 'planner-interface)
 (require 'general-testing)
 
-(defun pa/find-task-in-page-main (task page &optional buf-op)
-  "return t if able to find task in page and leave in that page."
-  (let ((task (normalize-task task))
-        (buf (find-file
-              (concat planner-directory "/" page ".muse"))))
-    (when buf
-      (goto-char 0)
-      (if (re-search-forward "^*\s\+Tasks")
-          (let ((start (point))
-                (end (if (re-search-forward "^*\s\+\\w\+")
-                         (point))))
-            (when (and end (not (equal end start)))
-              (goto-char start)
-              (re-search-forward task)
-              ;; (read-from-minibuffer "sfddsf: " (format "%d %d eq %s" end start (not (equal end start))))
-              (if (functionp buf-op) (funcall buf-op buf))
-              t))))))
+;; (defun pa/find-task-in-page-main (task page &optional buf-op)
+;;   "return t if able to find task in page and leave in that page."
+;;   (let ((task (normalize-task task))
+;;         (buf (find-file
+;;               (concat planner-directory "/" page ".muse"))))
+;;     (when buf
+;;       (goto-char 0)
+;;       (if (re-search-forward "^*\s\+Tasks")
+;;           (let ((start (point))
+;;                 (end (if (re-search-forward "^*\s\+\\w\+")
+;;                          (point))))
+;;             (when (and end (not (equal end start)))
+;;               (goto-char start)
+;;               (re-search-forward task)
+;;               ;; (read-from-minibuffer "sfddsf: " (format "%d %d eq %s" end start (not (equal end start))))
+;;               (if (functionp buf-op) (funcall buf-op buf))
+;;               t))))))
 
-(defun pa/find-task-in-page (task page &optional restore buf-op)
-  "return t if able to find task in page and leave in that page."
-  (if restore
-      (save-window-excursion
-        (save-excursion
-          (save-restriction
-            (pa/find-task-in-page-main task page &optional buf-op))))
-      (pa/find-task-in-page-main task page buf-op)))
+;; (defun pa/find-task-in-page (task page &optional restore buf-op)
+;;   "return t if able to find task in page and leave in that page."
+;;   (if restore
+;;       (save-window-excursion
+;;         (save-excursion
+;;           (save-restriction
+;;             (pa/find-task-in-page-main task page &optional buf-op))))
+;;       (pa/find-task-in-page-main task page buf-op)))
 
 (defun pa/planner-create-note-from-task (task &optional page)
-  (if (pa/find-task-in-page task (or page (planner-today-ensure-exists)))
+  (if (planner-find-task-in-page task (or page (planner-today-ensure-exists)))
       (planner-create-note-from-task t)
       ;; ((inform in wm task not found)
       ;;  (return back the state of emacs.))
       ))
 
 (defun pa/planner-goto-task (task &optional page)
-  (pa/find-task-in-page task (or page (planner-today-ensure-exists))))
+  (planner-find-task-in-page task (or page (planner-today-ensure-exists))))
 
 (defun ci-task (task &optional page)
-  (pa/find-task-in-page task (or page (planner-today-ensure-exists))
+  (planner-find-task-in-page task (or page (planner-today-ensure-exists))
                              t
                              #'(lambda (b)
                                  ;; (timeclock-in)
@@ -76,7 +76,7 @@
                                  )))
 
 (defun co-task (task &optional page)
-  (pa/find-task-in-page task (or page (planner-today-ensure-exists))
+  (planner-find-task-in-page task (or page (planner-today-ensure-exists))
                              t
                              #'(lambda (b)
                                  ;; (timeclock-in)
@@ -87,7 +87,7 @@
                                  )))
 
 (defun pa/planner-task-done (task &optional page)
-  (pa/find-task-in-page task (or page (planner-today-ensure-exists))
+  (planner-find-task-in-page task (or page (planner-today-ensure-exists))
                              t
                              #'(lambda (b)
                                  ;; (timeclock-in)
@@ -98,16 +98,16 @@
                                  )))
 
 
-(defun pa/planner-task-change-status (task status &optional page)
-  (pa/find-task-in-page task (or page (planner-today-ensure-exists))
-                             t
-                             #'(lambda (b)
-                                 ;; (timeclock-in)
-                                 (if (functionp status) (funcall status))
-                                 (save-buffer)
-                                 (bury-buffer buf)
-                                 ;; (kill-buffer buf)
-                                 )))
+;; (defun pa/planner-task-change-status (task status &optional page)
+;;   (planner-find-task-in-page task (or page (planner-today-ensure-exists))
+;;                              t
+;;                              #'(lambda (b)
+;;                                  ;; (timeclock-in)
+;;                                  (if (functionp status) (funcall status))
+;;                                  (save-buffer)
+;;                                  (bury-buffer buf)
+;;                                  ;; (kill-buffer buf)
+;;                                  )))
 
 
 
