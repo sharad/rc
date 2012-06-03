@@ -254,7 +254,8 @@
   (define-key planner-mode-map (kbd "C-c n") 'planner-create-note-this-page)
 
 
-  (xrequire 'planner-bugz))
+  (xrequire 'planner-bugz)
+  (xrequire 'planner-env))
 
 ;; Call M-x plan to start planning!
 ;; end

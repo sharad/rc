@@ -160,7 +160,7 @@ Return non-nil if SECTION was found."
                        (planner-page-name)
                        (not (string-match planner-date-regexp
                                           (planner-page-name))))
-                  
+
                   (planner-page-name)
                 planner-default-page)))
          (planner-read-non-date-page
@@ -236,7 +236,7 @@ the end.  Position point after the anchor."
         ;; (if task-desc
         ;;     (planner-seek-to-first-subsection task-desc 'env)
         ;;   (planner-seek-to-first 'env))
- 
+
         (let (;;(total 0)
               envlist)
           (when (if task-desc
@@ -304,4 +304,4 @@ note on the task's plan page or on the current page."
 ;;                       "(APP)")))))))
 ;;       (insert " " (planner-task-description task-info) "\n\n"))))
 
-(user-provide 'planner-env)
+(provide 'planner-env)
