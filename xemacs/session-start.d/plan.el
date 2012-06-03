@@ -251,7 +251,10 @@
     (interactive)
     (planner-create-note (planner-page-name)))
 
-  (define-key planner-mode-map (kbd "C-c n") 'planner-create-note-this-page))
+  (define-key planner-mode-map (kbd "C-c n") 'planner-create-note-this-page)
+
+
+  (xrequire 'planner-bugz))
 
 ;; Call M-x plan to start planning!
 ;; end

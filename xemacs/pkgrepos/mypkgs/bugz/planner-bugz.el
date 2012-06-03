@@ -81,9 +81,10 @@
      (bugz-to-planner-status (cdr (assoc "status" bug))))))
 
 (defun planner-bugzilla-task-to-bugid (task)
-  (if (string-match planner-bugz-regex (nth 4 task))
-      (list (cons "id" (match-string 2 task)))
-      (message "Not a bugzilla bug.")))
+  (let ((description (nth 4 task)))
+   (if (string-match planner-bugz-regex description)
+      (list (cons "id" (match-string 2 description)))
+      (message "Not a bugzilla bug."))))
 
 ;; bulk.
 
