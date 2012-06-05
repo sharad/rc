@@ -69,30 +69,30 @@
 ;; {{http://ubuntuforums.org/archive/index.php/t-1375454.html
 ;; TRAMP beep when done downloading files
 (defadvice tramp-handle-write-region
-(after tramp-write-beep-advice activate)
-" make tramp beep after writing a file."
-(interactive)
-(beep))
-(defadvice tramp-handle-do-copy-or-rename-file
-(after tramp-copy-beep-advice activate)
-" make tramp beep after copying a file."
-(interactive)
-(beep))
-(defadvice tramp-handle-insert-file-contents
-(after tramp-copy-beep-advice activate)
-" make tramp beep after copying a file."
-(interactive)
-(beep))
-;; }}
-    )
-
-
-(defun update-ssh-agent ()
+    (after tramp-write-beep-advice activate)
+  " make tramp beep after writing a file."
   (interactive)
-  (let ((agent-file (concat "~/.emacs.d/ssh-agent-" (getenv "HOST") ".el"))
-        ;; (agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el"))
+  (beep))
+(defadvice tramp-handle-do-copy-or-rename-file
+    (after tramp-copy-beep-advice activate)
+  " make tramp beep after copying a file."
+  (interactive)
+  (beep))
+(defadvice tramp-handle-insert-file-contents
+    (after tramp-copy-beep-advice activate)
+  " make tramp beep after copying a file."
+  (interactive)
+  (beep))
+;; }}
+
+
+(defun update-ssh-agent (&optional force)
+  (interactive "P")
+  (let (;; (agent-file (concat "~/.emacs.d/ssh-agent-" (getenv "HOST") ".el"))
+        (agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el"))
         )
-    (if (and
+    (if (or
+         force
          (null (getenv "SSH_AGENT_PID")))
         (if (file-exists-p agent-file)
             (progn
@@ -104,6 +104,9 @@
     (before ad-update-ssh-agent-env activate)
   "Support ssh agent."
   (update-ssh-agent))
+
+;; run
+(update-ssh-agent))
 
 (when nil
  (defun tramp-do-file-attributes-with-stat

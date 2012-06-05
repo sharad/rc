@@ -1,8 +1,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-05-29 22:13:12 s>
+;; Time-stamp: <2012-06-05 11:43:50 s>
 ;;
 
+(defmacro global-set-key-replace (keys cmd &optional rep-map)
+  `(let ((rep-map (or ',rep-map ,replacement-map))
+         (prev-cmd (global-key-binding (kbd ,keys))))
+     (if prev-cmd
+         (if (global-set-key (kbd ,(replace-modifier keys rep-map)) prev-cmd)
+             (progn
+               (global-set-key (kbd ,keys) ',cmd)
+               ))
+         (global-set-key (kbd ,keys) ',cmd))))
 
 (deh-section "Key binding utils"
 
@@ -12,17 +21,8 @@
     (dolist (v map keys)
       (setq keys
             (replace-regexp-in-string (concat (car v) "-")
-                                      (concat (cdr v) "-") keys))))
+                                      (concat (cdr v) "-") keys)))))
 
-  (defmacro global-set-key-replace (keys cmd &optional rep-map)
-    `(let ((rep-map (or ',rep-map ,replacement-map))
-           (prev-cmd (global-key-binding (kbd ,keys))))
-       (if prev-cmd
-           (if (global-set-key (kbd ,(replace-modifier keys rep-map)) prev-cmd)
-               (progn
-                 (global-set-key (kbd ,keys) ',cmd)
-                 ))
-           (global-set-key (kbd ,keys) ',cmd)))))
 
 (deh-section "Hyper Super etc"
   ;; http://nex-3.com/posts/45-efficient-window-switching-in-emacs#comments
@@ -234,7 +234,7 @@ and their terminal equivalents.")
 
 
 (deh-require-maybe 'gtags
-  (global-set-key-replace "M->" ww-next-gtag (("M" . "S")))   ;; M-; cycles to next result, after doing M-. C-M-. or C-M-,
+  ;; (global-set-key-replace "M->" ww-next-gtag (("M" . "S")))   ;; M-; cycles to next result, after doing M-. C-M-. or C-M-,
   (global-set-key-replace "M-." gtags-find-tag (("M" . "S"))) ;; M-. finds tag
   (global-set-key-replace "C-M-." gtags-find-rtag (("M" . "S")))   ;; C-M-. find all references of tag
   (global-set-key-replace "C-M-," gtags-find-symbol (("M" . "S"))) ;; C-M-, find all usages of symbol.
