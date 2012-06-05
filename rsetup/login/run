@@ -77,6 +77,10 @@ EOF
 # export SSH_AUTH_SOCK SSH_AGENT_PID
 # EOF
 
+else
+cat <<EOF > ~/.emacs.d/ssh-agent-${HOST}.el
+(message "SSH_AUTH_SOCK is not set.")
+EOF
 fi
 
 

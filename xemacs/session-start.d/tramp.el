@@ -95,7 +95,9 @@
     (if (and
          (null (getenv "SSH_AGENT_PID")))
         (if (file-exists-p agent-file)
-            (load agent-file t t)
+            (progn
+              (tramp-cleanup-all-connections)
+              (load agent-file t t))
             (message "Unable to find agent file.")))))
 
 (defadvice tramp-file-name-handler

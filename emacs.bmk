@@ -2,7 +2,12 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("WncStationMain::UpdateInternalMap"
+(("IP_FORMAT_VALUES"
+ (filename . "/ssh:spratap@susengg-01:/home/spratap/workspaces/5.2/include/meru_debug.h")
+ (front-context-string . "(ip)\n\nextern int")
+ (rear-context-string . "LUES(ip) NIPQUAD")
+ (position . 4098))
+("WncStationMain::UpdateInternalMap"
  (filename . "/ssh:spratap@susengg-01:/home/spratap/workspaces/5.2/src/wnc/nms/WncStationMgr/WncStationMain.cpp")
  (front-context-string . " nms_message_hea")
  (rear-context-string . "dateInternalMap(")
