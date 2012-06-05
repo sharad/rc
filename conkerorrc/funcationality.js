@@ -286,7 +286,7 @@ interactive("delicious-post",
                     encodeURIComponent((yield I.minibuffer.read(
                                             $prompt = "tags (space delimited): ",
                                             $completer = completer,
-                                            $initial_value = tags
+                                            $initial_value = tags + " " + read_from_x_primary_selection()
                                         )).replace(new RegExp(/\s+/g), ','))+
                     '&extended='+
                     encodeURIComponent((yield I.minibuffer.read(
@@ -845,6 +845,27 @@ interactive("acition-link",
 
 
 
+// {{{
+// http://www.mozdev.org/pipermail/conkeror/2009-February/001334.html
+// select text and google it.  See also "**c" for selecting text
+interactive("search-clipboard-contents",
+            "Search in Google the content of the X clipboard (the selected text)",
+            "find-url",
+            $browser_object = function(I) {
+                return "g "+ read_from_x_primary_selection();
+            }
+           );
+interactive("search-clipboard-contents-doublequoted",
+            "Search in Google the content of the X clipboard (the selected text) as a fixed string",
+            "find-url",
+            $browser_object = function(I) {
+                return "g \""+ read_from_x_primary_selection()+"\"";
+            }
+           );
+define_key(content_buffer_normal_keymap, "l", "search-clipboard-contents");
+define_key(content_buffer_normal_keymap, "L", "search-clipboard-contents-doublequoted");
+// Now try "l" and "C-u l" with your copied text.
+// }}}
 
 
 
@@ -866,6 +887,7 @@ interactive("acition-link",
 // comment-start: "// "  **
 // comment-end:   "// "  **
 // End: **
+
 
 
 

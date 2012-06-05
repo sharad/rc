@@ -99,6 +99,7 @@
   (dolist (task (planner-bugzilla-find-bugtasks-in-page page))
     (planner-bugzilla-bugtask-update task page)))
 
+;;;###autoload
 (defun planner-bugzilla-fetch-new-bugtask (&optional page)
   ;; add url username used in bug list.
   (interactive
