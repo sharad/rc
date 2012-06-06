@@ -364,7 +364,9 @@
         ;;   (with-current-buffer gnus-article-buffer
         ;;     (message-fetch-field "to")))
 
-        ))
+        ;; http://www.gnu.org/software/emacs/manual/html_node/gnus/Delayed-Articles.html
+        ;; for delayed reply
+        (gnus-delay-initialize)))
 
 
 

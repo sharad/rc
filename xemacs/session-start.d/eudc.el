@@ -66,8 +66,7 @@
 
           eudc-inline-expansion-servers 'hotlist)
 
-    (eudc-set-server (car
-                      (cdr (assoc 'office (eudc-ldap-datas)))) 'ldap t)
+    (eudc-set-server (car (cdr (assoc 'office (eudc-ldap-datas)))) 'ldap t)
 
     (defun enz-eudc-expand-inline()
       (interactive)

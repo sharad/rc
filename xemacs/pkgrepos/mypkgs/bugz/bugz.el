@@ -27,21 +27,6 @@
 
 (require 'xml-rpc)
 
-;; (defvar traker-default-url "https://bugzilla.mozilla.org/xmlrpc.cgi" "Bugz xmlrpc url.")
-
-;; (defvar trakers-alist nil ""
-
-;; (setfq trackers-alist
-;;        '(
-;;          (username . ((bugz . "login")))
-;;          (password . ((bugz . "password")))))
-
-;; (defun tracker/login (username password &optional url method opts)
-;;   (xml-rpc-method-call
-;;    traker-default-url method '(("login"."login")
-;;                                ("password"."password"))))
-
-
 (defvar bugz-url "https://bugzilla.mozilla.org/xmlrpc.cgi" "Bugz xmlrpc url.")
 (defvar bugz-default-username nil "Bugzilla default username used in search.")
 
