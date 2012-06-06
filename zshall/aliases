@@ -151,3 +151,11 @@ alias fontset='printf '\''\33]50;%s\007'\'' 9x15,xft:Kochi" Mincho"'
 # Man info
 alias mm='man man-pages intro hier keymaps(5)'
 alias ii='info '\''File permissions'\'' '\''Coreutils'\'' '\''File permissions'\'' '\''Common options'\'''
+
+
+# postfix
+# http://ramnik.net/wp/?p=5
+# http://gnufreakz.wordpress.com/2010/06/08/postfix-queue-management/
+alias catmailq="sudo postcat -bheq "
+alias pmailq="sudo postqueue -p "
+alias pmailhold="sudo qshape -s hold"

@@ -364,15 +364,48 @@
         ;;   (with-current-buffer gnus-article-buffer
         ;;     (message-fetch-field "to")))
 
-        ;; http://www.gnu.org/software/emacs/manual/html_node/gnus/Delayed-Articles.html
-        ;; for delayed reply
-        (gnus-delay-initialize)))
-
-
+        ))
+;; {{ http://www.gnu.org/software/emacs/manual/html_node/gnus/Delayed-Articles.html
+;; for delayed reply
+(gnus-delay-initialize)
+;; }}
 
 ;;}} For SMTP msmtp
 
-
+;; {{ Uninteractive sending
+;; gnus-summary-resend-message @ gnus-msg.el
+(defun gnus-mail-send-uninteractive (address n)
+  "Resend the current article to ADDRESS."
+  (interactive
+   (list (message-read-from-minibuffer
+	  "Resend message(s) to: "
+	  (when (and gnus-summary-resend-default-address
+		     (gnus-buffer-live-p gnus-original-article-buffer))
+	    ;; If some other article is currently selected, the
+	    ;; initial-contents is wrong. Whatever, it is just the
+	    ;; initial-contents.
+	    (with-current-buffer gnus-original-article-buffer
+	      (nnmail-fetch-field "to"))))
+	 current-prefix-arg))
+  (let ((message-header-setup-hook (copy-sequence message-header-setup-hook))
+	(message-sent-hook (copy-sequence message-sent-hook)))
+    ;; `gnus-summary-resend-message-insert-gcc' must run last.
+    (add-hook 'message-header-setup-hook
+	      'gnus-summary-resend-message-insert-gcc t)
+    (add-hook 'message-sent-hook
+	      `(lambda ()
+		 (let ((rfc2047-encode-encoded-words nil))
+		   ,(if gnus-agent
+			'(gnus-agent-possibly-do-gcc)
+		      '(gnus-inews-do-gcc)))))
+    (dolist (article (gnus-summary-work-articles n))
+      (gnus-summary-select-article nil nil nil article)
+      (with-current-buffer gnus-original-article-buffer
+	(let ((gnus-gcc-externalize-attachments nil)
+	      (message-inhibit-body-encoding t))
+	  (message-resend address)))
+      (gnus-summary-mark-article-as-forwarded article))))
+;; }}
 
 
 (user-provide 'message)
