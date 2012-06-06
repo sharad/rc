@@ -49,7 +49,7 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
 	        rm -f   \#.ido.last\#
                 pkill emacs ; EMACS_SERVER_NAME=$server command emacs --daemon=$server
             else
-                command emacsclient -n -f ~/.emacs.d/server/${server}  -e '(plan)';
+                command emacsclient -n -f ~/.emacs.d/server/${server}  -e '(progn (update-ssh-agent) (plan))';
             fi
         }
     fi
@@ -63,24 +63,6 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
     #     fi
     # }
 
-fi
-
-if [ "${SSH_AUTH_SOCK}x" != "x" ]; then
-    cat <<EOF > ~/.emacs.d/ssh-agent-${HOST}.el
-(setenv "SSH_AUTH_SOCK"  "${SSH_AUTH_SOCK}" )
-(setenv "SSH_AGENT_PID"  "${SSH_AGENT_PID}" )
-EOF
-
-#     cat <<EOF > ~/.ssh/agent-custom-$HOST
-# SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
-# SSH_AGENT_PID=${SSH_AGENT_PID}
-# export SSH_AUTH_SOCK SSH_AGENT_PID
-# EOF
-
-else
-cat <<EOF > ~/.emacs.d/ssh-agent-${HOST}.el
-(message "SSH_AUTH_SOCK is not set.")
-EOF
 fi
 
 
