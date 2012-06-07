@@ -88,19 +88,21 @@
 ;;        ,@forms)))
 (defmacro deh-require-maybe (feature &rest forms)
   (declare (indent 1))
-  `(progn
-     (if ,load-file-name
-         (add-to-list 'deh-sections (cons ',feature ,load-file-name)))
-     (when ,(if (consp feature)
-                  (cond
-                    ((or (equal (car feature) 'or)
-                         (equal (car feature) 'and))
-                     `(,(car feature) ,@(mapcar (lambda (f) `(require ',f nil t)) (cdr feature))))
-                    (t feature))
-                  `(require ',feature nil t))
+  (labels ((refine (feature)
+             (if (consp feature)
+                 (cond
+                   ((or (equal (car feature) 'or)
+                        (equal (car feature) 'and))
+                    `(,(car feature) ,@(mapcar #'refine (cdr feature))))
+                   (t feature))
+                 `(require ',feature nil t))))
+    `(progn
+       (if ,load-file-name
+           (add-to-list 'deh-sections (cons ',feature ,load-file-name)))
+       (when ,(refine feature)
          ,@(if (stringp (car forms))
                (cdr forms)
-               forms))))
+               forms)))))
 (defalias 'deh-require 'deh-require-maybe)
 (put 'deh-require 'lisp-indent-function 1)
 
