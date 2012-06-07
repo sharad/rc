@@ -26,6 +26,12 @@
 (load-file "~/.xemacs/utils.el")
 (load-file "~/.xemacs/macros.el")
 
+(mapc
+ '(lambda (dir)
+   (add-to-list 'load-path dir))
+ `("~/.osetup/info/common/elisp"
+  ,(concat "~/.osetup/info/hosts/" (system-name) "/elisp")))
+
 ;;
 
 
@@ -85,6 +91,13 @@
       (if (not running-xemacs)
           (require feature nil t)
           (require feature nil))))
+
+(defun irequire (feature)
+  (ignore-errors
+    (unless (member feature exclude-lib)
+      (if (not running-xemacs)
+          (require feature nil t)
+	(require feature nil)))))
 
 
 ;;}}}
@@ -147,7 +160,7 @@
 ;;              (concat *package-dir* "/pde"))
 
 
-(user-require 'common-info)
+(irequire 'common-info)
 
 (when (xrequire 'server)
   (setq server-use-tcp t
@@ -165,8 +178,9 @@
 ;; load all files present in ~/\.xemacs/session-start\.d directory.
 (defconst *work-dir* "~/\.\./paradise")
 
-(load-dir-files "~/\.xemacs/session-start\.d")
+;; (load-dir-files "~/\.xemacs/session-start\.d")
 
+(require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/session-start")
 
 
 

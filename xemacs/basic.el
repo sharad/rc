@@ -111,6 +111,23 @@ alkready should not exist.")
                load-file-with-errors)
          t))))
 
+(defun require-dir-libs (dir)
+  (let (load-lib-with-errors)
+    (when (file-directory-p dir)
+      (byte-recompile-directory dir 0)
+      (mapc (lambda (lib)
+              (let ((feature (if (string-match "\\(.\+\\)\.el" lib)
+                                 (intern (match-string 1 lib)))))
+                (if feature
+                  (unless (ignore-errors (require feature))
+                    (push feature load-lib-with-errors)))))
+            (directory-files dir nil "^[a-zA-Z0-9-]+\.el$"))
+      (if load-lib-with-errors
+          (mapc 'require
+                load-lib-with-errors)
+          t))))
+
+
 ;; (defun package-dir-setup (package-dir)
 ;;     (when (file-directory-p package-dir)
 ;;       (mapc #'(lambda (path)
@@ -232,10 +249,14 @@ alkready should not exist.")
                      `(,(car feature) ,@(mapcar (lambda (f) `(require ',f nil t)) (cdr feature))))
                     (t feature))
                   `(require ',feature nil t))
-         ,@forms)))
+         ,@(if (stringp (car forms))
+               (cdr forms)
+               forms))))
 
   (defalias 'deh-require 'deh-require-maybe)
+
   (put 'deh-require 'lisp-indent-function 1)
+
   (defmacro deh-section (section &rest forms)
     (declare (indent 1))
     `(progn ,@forms)))

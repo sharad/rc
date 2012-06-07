@@ -1,6 +1,0 @@
-
-
-
-
-(user-provide 'emacs-extra)
-

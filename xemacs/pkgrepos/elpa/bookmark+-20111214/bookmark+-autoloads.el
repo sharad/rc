@@ -3,8 +3,8 @@
 ;;; Code:
 
 
-;;;### (autoloads (bmkp-version) "bookmark+" "bookmark+.el" (20362
-;;;;;;  27268))
+;;;### (autoloads (bmkp-version) "bookmark+" "bookmark+.el" (20431
+;;;;;;  34100))
 ;;; Generated autoloads from bookmark+.el
 
 (defconst bmkp-version-number "3.2.2")
@@ -94,7 +94,7 @@ Show version number of library `bookmark+.el'.
 ;;;;;;  bmkp-handle-region-function bmkp-desktop-no-save-vars bmkp-default-handler-associations
 ;;;;;;  bmkp-default-bookmark-name bmkp-crosshairs-flag bmkp-bookmark-name-length-max
 ;;;;;;  bmkp-autotemp-bookmark-predicates bmkp-autoname-format bmkp-autoname-bookmark-function)
-;;;;;;  "bookmark+-1" "bookmark+-1.el" (20362 27268))
+;;;;;;  "bookmark+-1" "bookmark+-1.el" (20431 34101))
 ;;; Generated autoloads from bookmark+-1.el
 
 (defvar bmkp-autoname-bookmark-function 'bmkp-autoname-bookmark-function-default "\
@@ -1944,7 +1944,7 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 ;;;;;;  bookmark-bmenu-list bookmark-bmenu-delete bookmark-bmenu-unmark
 ;;;;;;  bookmark-bmenu-mark bmkp-bmenu-image-bookmark-icon-file bmkp-bmenu-state-file
 ;;;;;;  bmkp-bmenu-commands-file bmkp-bmenu-omitted-bookmarks) "bookmark+-bmu"
-;;;;;;  "bookmark+-bmu.el" (20362 27268))
+;;;;;;  "bookmark+-bmu.el" (20431 34100))
 ;;; Generated autoloads from bookmark+-bmu.el
 
 (defvar bmkp-bmenu-omitted-bookmarks nil "\
@@ -2836,7 +2836,7 @@ Pop-up menu on `mouse-3' for a bookmark listed in `*Bookmark List*'.
 ;;;;;;  bmkp-light-threshold bmkp-light-style-non-autonamed bmkp-light-style-autonamed
 ;;;;;;  bmkp-light-priorities bmkp-auto-light-when-set bmkp-auto-light-when-jump
 ;;;;;;  bmkp-auto-light-relocate-when-jump-flag) "bookmark+-lit"
-;;;;;;  "bookmark+-lit.el" (20362 27268))
+;;;;;;  "bookmark+-lit.el" (20431 34100))
 ;;; Generated autoloads from bookmark+-lit.el
 
 (defvar bmkp-auto-light-relocate-when-jump-flag t "\
@@ -3156,7 +3156,7 @@ See `bmkp-next-lighted-this-buffer-repeat'.
 ;;;### (autoloads (bmkp-menu-bar-make-toggle bmkp-define-file-sort-predicate
 ;;;;;;  bmkp-define-sort-command bmkp-define-next+prev-cycle-commands
 ;;;;;;  bmkp-define-cycle-command) "bookmark+-mac" "bookmark+-mac.el"
-;;;;;;  (20362 27268))
+;;;;;;  (20431 34100))
 ;;; Generated autoloads from bookmark+-mac.el
 
 (autoload 'bmkp-define-cycle-command "bookmark+-mac" "\
@@ -3225,7 +3225,7 @@ setting the variable and displaying a status message (not MESSAGE).
 ;;;***
 
 ;;;### (autoloads nil nil ("bookmark+-chg.el" "bookmark+-doc.el"
-;;;;;;  "bookmark+-key.el" "bookmark+-pkg.el") (20362 27268 637548))
+;;;;;;  "bookmark+-key.el" "bookmark+-pkg.el") (20431 34101 78778))
 
 ;;;***
 
