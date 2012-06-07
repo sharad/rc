@@ -224,7 +224,16 @@ alkready should not exist.")
 (unless (require 'dot-emacs-helper nil t)
   (defmacro deh-require-maybe (feature &rest forms)
     (declare (indent 1))
-    `(progn (when (require ,feature nil t) ,@forms)))
+    `(progn
+       (when ,(if (consp feature)
+                  (cond
+                    ((or (equal (car feature) 'or)
+                         (equal (car feature) 'and))
+                     `(,(car feature) ,@(mapcar (lambda (f) `(require ',f nil t)) (cdr feature))))
+                    (t feature))
+                  `(require ',feature nil t))
+         ,@forms)))
+
   (defalias 'deh-require 'deh-require-maybe)
   (put 'deh-require 'lisp-indent-function 1)
   (defmacro deh-section (section &rest forms)
