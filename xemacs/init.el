@@ -18,7 +18,7 @@
            (directory-files package-dir t "[a-zA-Z]+"))))
 
 
- (package-dir-setup "~/.xemacs/pkgrepos/world")
+ ;; (package-dir-setup "~/.xemacs/pkgrepos/world")
  (package-dir-setup "~/.xemacs/pkgrepos/mypkgs")
  (package-dir-setup "~/.xemacs/pkgrepos/elpa"))
 
@@ -29,7 +29,8 @@
 (mapc
  '(lambda (dir)
    (add-to-list 'load-path dir))
- `("~/.osetup/info/common/elisp"
+ `("~/.xemacs/pkgrepos/world/auto-install"
+   "~/.osetup/info/common/elisp"
   ,(concat "~/.osetup/info/hosts/" (system-name) "/elisp")))
 
 ;;
