@@ -24,110 +24,153 @@
 ;;{{ from: http://www.emacswiki.org/emacs/GnusNotify
 ;; I am using gnus-notify+
 
-;; (defvar gnus-mst-display-new-messages "New Mails" "doc")
-;; (defvar gnus-mst-notify-groups "*" "doc")
+(defvar gnus-mst-display-new-messages "New Mails" "doc")
+(defvar gnus-mst-notify-groups "*" "doc")
 
-;; (when (xrequire 'gnus-notify)
-;;   (setq gnus-mst-display-new-messages "New mails"
-;;         gnus-mst-notify-groups
-;;         (if (equal (system-name) "spratap")
-;;             '("nnimap+localhost:Office.INBOX" "nnimap+localhost:Office.lists.info.india" "nnimap+localhost:Office.lists.info.india-misc")
-;;             '("nnimap+localhost:nnimap+localhost:Gmail.INBOX"))))
+(when (xrequire 'gnus-notify)
+  (setq gnus-mst-display-new-messages "New mails"
+        gnus-mst-notify-groups
+        (if (equal (system-name) "spratap")
+            '("nnimap+localhost:Office.INBOX" "nnimap+localhost:Office.lists.info.india" "nnimap+localhost:Office.lists.info.india-misc")
+            '("nnimap+localhost:nnimap+localhost:Gmail.INBOX"))))
 
-;; (when (xrequire 'gnus-notify+)
-;;   ;; adding (modeline-notify t) to group for gnus-notify+
-;;   (set-or-nconc gnus-parameters           ;check for set-or-nconc in macros.el
-;;                 `((,(mapconcat 'identity gnus-mst-notify-groups "\\|")
-;;                     '(modeline-notify t)))))
+(when (xrequire 'gnus-notify+)
+  ;; adding (modeline-notify t) to group for gnus-notify+
+  (set-or-nconc gnus-parameters           ;check for set-or-nconc in macros.el
+                `((,(mapconcat 'identity gnus-mst-notify-groups "\\|")
+                    '(modeline-notify t)))))
 
-;; ;; (macroexpand `(set-or-nconc xgnus-parameters           ;check for set-or-nconc in macros.el
-;; ;;                             ( ,(mapconcat 'identity gnus-mst-notify-groups "|")
-;; ;;                                (modeline-notify t))))
+;; (macroexpand `(set-or-nconc xgnus-parameters           ;check for set-or-nconc in macros.el
+;;                             ( ,(mapconcat 'identity gnus-mst-notify-groups "|")
+;;                                (modeline-notify t))))
 
-;; ;;}}
+;;}}
 
-;; ;;{{ from: http://www.emacswiki.org/emacs/GnusBiff
-;; ;; biff
-;; (defvar foundnewmbox "")
+;;{{ from: http://www.emacswiki.org/emacs/GnusBiff
+;; biff
+(defvar foundnewmbox "")
 
-;; (defun fmbiff ()
-;;   (interactive)
-;;   (save-excursion
-;;     (set-buffer "*Group*")
-;;     ; (beginning-of-buffer)
-;;     (goto-char (point-min))
-;;     (defvar foundanymbox nil)
-;;     (cond ((re-search-forward "INBOX.ALL" nil t)
-;;            (setq foundanymbox t))
-;;           (t (setq foundanymbox nil)))
-;;     (set-buffer "*Group*")
-;;     ; (beginning-of-buffer)
-;;     (goto-char (point-min))
-;;     (cond ((re-search-forward "0: INBOX.ALL" nil t)
-;;            (setq foundnewmbox ""))
-;;           (t (if foundanymbox (setq foundnewmbox "[M]")
-;;                (setq foundnewmbox ""))))))
+(defun fmbiff ()
+  (interactive)
+  (save-excursion
+    (set-buffer "*Group*")
+    ; (beginning-of-buffer)
+    (goto-char (point-min))
+    (defvar foundanymbox nil)
+    (cond ((re-search-forward "INBOX.ALL" nil t)
+           (setq foundanymbox t))
+          (t (setq foundanymbox nil)))
+    (set-buffer "*Group*")
+    ; (beginning-of-buffer)
+    (goto-char (point-min))
+    (cond ((re-search-forward "0: INBOX.ALL" nil t)
+           (setq foundnewmbox ""))
+          (t (if foundanymbox (setq foundnewmbox "[M]")
+               (setq foundnewmbox ""))))))
 
-;; (unless (member 'foundnewmbox global-mode-string)
-;;    (setq global-mode-string (append global-mode-string
-;;                                     (list 'foundnewmbox))))
+(unless (member 'foundnewmbox global-mode-string)
+   (setq global-mode-string (append global-mode-string
+                                    (list 'foundnewmbox))))
 
-;; (add-hook 'gnus-after-getting-new-news-hook 'fmbiff)
+(add-hook 'gnus-after-getting-new-news-hook 'fmbiff)
 
-;; ;; How about:
+;; How about:
 
-;; (defvar mac-biff-lighter ""
-;;   "Lighter used by `mac-biff-mode'.")
+(defvar mac-biff-lighter ""
+  "Lighter used by `mac-biff-mode'.")
 
-;; (defvar mac-biff-mail-re "\\([[:digit:]]+\\)"
-;;   "Regular expression to match number counts in a Gnus buffer.")
+(defvar mac-biff-mail-re "\\([[:digit:]]+\\)"
+  "Regular expression to match number counts in a Gnus buffer.")
 
-;; (define-minor-mode mac-biff-mode
-;;   "Minor mode to display state of new email."
-;;   nil mac-biff-lighter nil
-;;   (if mac-biff-mode
-;;       (progn (add-hook 'gnus-after-getting-new-news-hook 'mac-biff-update)
-;;              (add-hook 'gnus-exit-group-hook 'mac-biff-update)
-;;              (mac-biff-update))
-;;     (remove-hook 'gnus-after-getting-new-news-hook 'mac-biff-update)
-;;     (remove-hook 'gnus-exit-group-hook 'mac-biff-update)))
+(define-minor-mode mac-biff-mode
+  "Minor mode to display state of new email."
+  nil mac-biff-lighter nil
+  (if mac-biff-mode
+      (progn (add-hook 'gnus-after-getting-new-news-hook 'mac-biff-update)
+             (add-hook 'gnus-exit-group-hook 'mac-biff-update)
+             (mac-biff-update))
+    (remove-hook 'gnus-after-getting-new-news-hook 'mac-biff-update)
+    (remove-hook 'gnus-exit-group-hook 'mac-biff-update)))
 
-;; (defun mac-biff-update1 ()
-;;   "Read the mail count from Gnus."
-;;   (let ((buffer (get-buffer "*Group*"))
-;;         (count 0))
-;;     (when buffer
-;;       (with-current-buffer buffer
-;;         (goto-char (point-min))
-;;         (while (re-search-forward mac-biff-mail-re nil t)
-;;           (setq count (+ count (string-to-number (match-string 1)))))))
-;;     (setq mac-biff-lighter (if (= count 0)
-;;                                ""
-;;                              (format " [%d]" count)))))
-;; ;;}}
+(defun mac-biff-update1 ()
+  "Read the mail count from Gnus."
+  (let ((buffer (get-buffer "*Group*"))
+        (count 0))
+    (when buffer
+      (with-current-buffer buffer
+        (goto-char (point-min))
+        (while (re-search-forward mac-biff-mail-re nil t)
+          (setq count (+ count (string-to-number (match-string 1)))))))
+    (setq mac-biff-lighter (if (= count 0)
+                               ""
+                             (format " [%d]" count)))))
+;;}}
 
 
-;; ;;{{ from: http://stackoverflow.com/questions/1053245/new-mail-notifications-in-gnus-for-emacs
-;; (defun mac-biff-update ()
-;;   "Read the mail count from Gnus."
-;;   (let ((buffer (get-buffer "*Group*"))
-;;         (count 0))
-;;     (when buffer
-;;       (with-current-buffer buffer
-;;         (goto-char (point-min))
-;;         (while (re-search-forward mac-biff-mail-re nil t)
-;;           (setq count (+ count (string-to-number (match-string 1)))))))
-;;     (if (> count 0)
-;;         (if (= 0 (shell-command
-;;                   ;(format "/usr/local/bin/growlnotify -a Emacs.app -m 'You have %d new messages!'" count)))))
-;;                   (format "zenity --question --text 'You have %d new messages!'" count)))
-;;             (make-frame))
-;;         )))
+;;{{ from: http://stackoverflow.com/questions/1053245/new-mail-notifications-in-gnus-for-emacs
+(defun mac-biff-update ()
+  "Read the mail count from Gnus."
+  (let ((buffer (get-buffer "*Group*"))
+        (count 0))
+    (when buffer
+      (with-current-buffer buffer
+        (goto-char (point-min))
+        (while (re-search-forward mac-biff-mail-re nil t)
+          (setq count (+ count (string-to-number (match-string 1)))))))
+    (if (> count 0)
+        (if (= 0 (shell-command
+                  ;(format "/usr/local/bin/growlnotify -a Emacs.app -m 'You have %d new messages!'" count)))))
+                  (format "zenity --question --text 'You have %d new messages!'" count)))
+            (make-frame))
+        )))
 
-;; ;; test
-;; ;; (if (= 0 (shell-command "zenity --question --text Hi"))
-;; ;;     (make-frame))
+;; test
+;; (if (= 0 (shell-command "zenity --question --text Hi"))
+;;     (make-frame))
 
-;; ;;}}
+
+
+;;}}
+
+
+;; {{ http://exal.0x2.org/conf/gnus.html
+;;;
+;;; Get messages automaticaly
+;;;
+
+(if (xrequire 'gnus-demon)
+    (setq gnus-use-demon t)
+    (gnus-demon-add-handler 'gnus-group-get-new-news 5 2)
+    (gnus-demon-init))
+
+(when (xrequire 'gnus-demon)
+  ;; (defvar gnus-scan-man-idle-timer
+  ;;   (progn                                ; Cancel to prevent duplication.
+  ;;     (when (boundp 'gnus-scan-man-idle-timer) (cancel-timer gnus-scan-man-idle-timer))
+  ;;     (run-with-idle-timer gnus-scan-man-idle-interval nil 'hl-line-highlight-now))
+  ;;   "Timer used to turn on `global-hl-line-mode' whenever Emacs is idle.")
+
+  (defun gnus-demon-scan-mail-and-news ()
+    (cancel-timer
+     (run-with-idle-timer 6 nil 'gnus-demon-scan-mail-and-news-now)))
+
+  (defun gnus-demon-scan-mail-and-news-now ()
+    "Scan for new mail/news and update the *Group* buffer."
+    (when (gnus-alive-p)
+      (save-window-excursion
+        (save-excursion
+          (set-buffer gnus-group-buffer)
+          (gnus-group-get-new-news)))))
+
+  (add-hook 'gnus-group-mode-hook 'gnus-demon-init)
+
+  ;; Sort threads by the date of the root node.
+  (setq gnus-thread-sort-functions `(gnus-thread-sort-by-date))
+  ;; Initialize the Gnus daemon, check new mail every six minutes.
+  ;; (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news 1 nil))
+  (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news-now 2 nil))
+
+;;}}
+
 
 (user-provide 'notification)

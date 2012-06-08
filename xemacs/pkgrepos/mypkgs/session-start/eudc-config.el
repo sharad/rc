@@ -1,4 +1,4 @@
-;;; eudc.el --- EUCD setup
+;;; eudc-config.el --- EUCD setup
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -28,8 +28,7 @@
 
 (deh-section "LDAP BBDB backend"
 
-  (when (and (xrequire 'ldap)
-             (xrequire 'eudc))
+  (deh-require-maybe (and ldap eudc passwds)
 
 
     (defun eudc-ldap-datas ()

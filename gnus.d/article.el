@@ -107,6 +107,15 @@
 ;; "^From:\\|^Newsgroups:\\|^Subject:\\|^Date:\\|^Followup-To:\\|^Reply-To:\\|^Organization:\\|^Summary:\\|^Keywords:\\|^To:\\|^[BGF]?Cc:\\|^Posted-To:\\|^Mail-Copies-To:\\|^Mail-Followup-To:\\|^Apparently-To:\\|^Gnus-Warning:\\|^Resent-From:\\|^X-Sent:"
 
 
+;;{{
+(gnus-start-date-timer)
+
+;; Start a timer to update the Date headers in the article buffers.
+;; The numerical prefix says how frequently (in seconds) the function
+;; is to run.
+;;}}
+
+
 
 (user-provide 'article)
 

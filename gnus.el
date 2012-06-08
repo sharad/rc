@@ -470,36 +470,6 @@
 
 
 
-;; {{ http://exal.0x2.org/conf/gnus.html
-;;;
-;;; Get messages automaticaly
-;;;
-(when (xrequire 'gnus-demon)
-  ;; (defvar gnus-scan-man-idle-timer
-  ;;   (progn                                ; Cancel to prevent duplication.
-  ;;     (when (boundp 'gnus-scan-man-idle-timer) (cancel-timer gnus-scan-man-idle-timer))
-  ;;     (run-with-idle-timer gnus-scan-man-idle-interval nil 'hl-line-highlight-now))
-  ;;   "Timer used to turn on `global-hl-line-mode' whenever Emacs is idle.")
-
-  (defun gnus-demon-scan-mail-and-news ()
-    (cancel-timer
-     (run-with-idle-timer 6 nil 'gnus-demon-scan-mail-and-news-now)))
-
-  (defun gnus-demon-scan-mail-and-news-now ()
-    "Scan for new mail/news and update the *Group* buffer."
-    (when (gnus-alive-p)
-      (save-window-excursion
-        (save-excursion
-          (set-buffer gnus-group-buffer)
-          (gnus-group-get-new-news)))))
-
-  (add-hook 'gnus-group-mode-hook 'gnus-demon-init)
-
-  ;; Sort threads by the date of the root node.
-  (setq gnus-thread-sort-functions `(gnus-thread-sort-by-date))
-  ;; Initialize the Gnus daemon, check new mail every six minutes.
-  (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news 1 nil))
-;;}}
 
 ;;{{ http://www.gnus.org/manual/gnus_401.html
 (when (xrequire 'ispell)
@@ -554,12 +524,6 @@
 (add-hook 'gnus-after-exiting-gnus-hook 'my-gnus-after-exiting-gnus-hook-fn)
 ;;}}
 
-;;{{ Daemon
-(if (xrequire 'gnus-demon)
-    (setq gnus-use-demon t)
-    (gnus-demon-add-handler 'gnus-group-get-new-news 5 2)
-    (gnus-demon-init))
-;;}}
 
 
 
