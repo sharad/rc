@@ -22,16 +22,18 @@
  (package-dir-setup "~/.xemacs/pkgrepos/mypkgs")
  (package-dir-setup "~/.xemacs/pkgrepos/elpa"))
 
-(load-file "~/.xemacs/basic.el")
-(load-file "~/.xemacs/utils.el")
-(load-file "~/.xemacs/macros.el")
-
 (mapc
  '(lambda (dir)
    (add-to-list 'load-path dir))
  `("~/.xemacs/pkgrepos/world/auto-install"
    "~/.osetup/info/common/elisp"
   ,(concat "~/.osetup/info/hosts/" (system-name) "/elisp")))
+
+
+(load-file "~/.xemacs/basic.el")
+(load-file "~/.xemacs/utils.el")
+(load-file "~/.xemacs/macros.el")
+
 
 ;;
 
