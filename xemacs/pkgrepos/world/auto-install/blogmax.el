@@ -1,0 +1,1 @@
+../BlogMax/blogmax.el

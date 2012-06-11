@@ -1,0 +1,1 @@
+../evernote-mode-0_41/evernote-mode.el

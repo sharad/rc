@@ -1,0 +1,1 @@
+../smartop/smart-operator.el
