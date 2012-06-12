@@ -23,6 +23,8 @@
 
 ;; save bookmarks
 
+(require 'bookmark+)
+
 (remove-hook 'kill-emacs-hook 'bookmark-bmenu-save)
 
 ;; from http://emacswiki.org/emacs/BookMarks#toc4
