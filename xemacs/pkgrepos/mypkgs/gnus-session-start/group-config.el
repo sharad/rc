@@ -28,7 +28,7 @@
 
 ;;{{ http://www.gnu.org/software/emacs/manual/html_node/gnus/Group-Parameters.html
 (deh-section "GNUS Group Parameters."
-  (when (user-require 'summary)
+  (when (require 'summary-config)
     (setq gnus-parameters
           `(
             (".*"
@@ -70,5 +70,5 @@
 
 ;;}}
 
-(user-provide 'group)
+(provide 'group-config)
 ;;; group.el ends here

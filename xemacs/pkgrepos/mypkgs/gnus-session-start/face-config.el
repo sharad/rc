@@ -17,5 +17,5 @@
 
 
 
-(user-provide 'face)
+(provide 'face-config)
 

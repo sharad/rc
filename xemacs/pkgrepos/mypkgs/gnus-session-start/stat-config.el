@@ -84,5 +84,5 @@
 ;;}}
 
  )
-(user-provide 'stat)
+(provide 'stat-config)
 ;;; stat.el ends here

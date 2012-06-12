@@ -222,7 +222,7 @@ You can provide a list of argument to pass to CB in CBARGS."
 
 
 
-(user-provide 'gnus-image)
+(provide 'gnus-image-config)
 
 ;;; gnus-image.el ends here
 

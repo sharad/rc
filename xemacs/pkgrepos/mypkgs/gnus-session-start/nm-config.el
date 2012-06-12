@@ -105,5 +105,5 @@ when Gnus hangs on network outs or changes."
     (add-hook 'gnus-exit-gnus-hook 'gnus-nm-disable))
 ;;}} (gnus-nm-disable)
 
-(user-provide 'nm)
+(provide 'nm-config)
 

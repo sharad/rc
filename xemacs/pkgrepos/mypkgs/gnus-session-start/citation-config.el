@@ -159,5 +159,5 @@
 
 
 
-(user-provide 'citation)
+(provide 'citation-config)
 ;;; citation.el ends here

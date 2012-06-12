@@ -69,4 +69,4 @@ article."
 
     (define-key notmuch-show-mode-map (kbd "C-c C-c") 'notmuch-goto-message-in-gnus)))
 
-(user-provide 'search)
+(provide 'search-config)

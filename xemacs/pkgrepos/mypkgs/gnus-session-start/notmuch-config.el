@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(deh-require-maybe 'notmuch
+(deh-require-maybe notmuch
 
   (defun sharad/gnu-notmuch-current-message-id ()
     (interactive)
@@ -59,7 +59,7 @@
       (notmuch-call-notmuch-process "tag" (concat "+" "jobapply") (concat "id:" search-id-string)))))
 
 
-(user-provide 'notmuch)
+(provide 'notmuch-config)
 ;;; notmuch.el ends here
 
 (testing

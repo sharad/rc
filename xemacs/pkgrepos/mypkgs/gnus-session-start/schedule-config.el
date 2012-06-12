@@ -26,7 +26,7 @@
 
 
 
-(deh-require-maybe 'diary-lib
+(deh-require-maybe diary-lib
   ;; diary-from-outlook-gnus is an interactive compiled Lisp function in
   ;; `diary-lib.el'.
 
@@ -56,5 +56,5 @@
 
 
 
-(user-provide 'schedule)
+(provide 'schedule-config)
 ;;; schedule.el ends here

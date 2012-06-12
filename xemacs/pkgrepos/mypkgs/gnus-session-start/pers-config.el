@@ -21,7 +21,7 @@
 ;;
 
 
-(deh-require-maybe 'gnus-pers
+(deh-require-maybe gnus-pers
 
   (defvar gnus-personality-activate nil "")
 
@@ -45,4 +45,4 @@
   (gnus-personality-init/sharad))
 
 
-(user-provide 'pers)
+(provide 'pers-config)

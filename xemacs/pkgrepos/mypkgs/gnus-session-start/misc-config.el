@@ -57,4 +57,4 @@
 ;;     (pop-to-buffer "*mail*"))
 ;;   (mail noerase to subject in-reply-to cc replybuffer sendactions))
 
-(user-provide 'misc)
+(provide 'misc-config)

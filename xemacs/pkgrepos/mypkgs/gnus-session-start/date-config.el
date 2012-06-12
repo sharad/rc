@@ -38,6 +38,6 @@
 ;;               "%~(max-right 90)~(pad-right 90)s %-135=%&user-date;\n"))
 
 
-(user-provide 'date)
+(provide 'date-config)
 
 ;;; date.el ends here

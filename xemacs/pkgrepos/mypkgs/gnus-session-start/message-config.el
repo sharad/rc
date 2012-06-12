@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(user-require 'citation)
+(require 'citation-config)
 
 (defvar *use-msmtp-for-senmail* nil "msmtp to use")
 
@@ -408,5 +408,5 @@
 ;; }}
 
 
-(user-provide 'message)
+(provide 'message-config)
 ;;; message.el ends here

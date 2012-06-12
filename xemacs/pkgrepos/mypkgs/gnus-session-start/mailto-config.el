@@ -97,5 +97,5 @@
             (message-goto-body)
             (insert body))))))
 
-(user-provide 'mailto)
+(provide 'mailto-config)
 ;; browse-url-mail

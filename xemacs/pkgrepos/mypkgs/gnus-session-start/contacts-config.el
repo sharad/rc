@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(deh-require-maybe 'bbdb
+(deh-require-maybe bbdb
   (setq bbdb-use-pop-up t) ;; I want it
   (remove-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer)
   (add-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer-for-some-time)
@@ -38,7 +38,7 @@
 
 ;;
 
-(user-provide 'contacts)
+(provide 'contacts-config)
 
 
 ;;; contacts.el ends here

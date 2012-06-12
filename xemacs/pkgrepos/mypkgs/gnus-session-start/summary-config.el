@@ -71,7 +71,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 
 
-  (deh-require-maybe 'rs-gnus-summary
+  (deh-require-maybe rs-gnus-summary
   ;; Setup all:
     ;; (rs-gnus-summary-line-initialize)
 
@@ -81,7 +81,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
     ;; Usage for the balloon face:
 
-    (deh-require-maybe 'gnus-summary-stripe
+    (deh-require-maybe gnus-summary-stripe
       (setq gnus-summary-stripe-regexp "^.+│.+│.+│"))
 
 
@@ -231,5 +231,5 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 
 
-(user-provide 'summary)
+(provide 'summary-config)
 

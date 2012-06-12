@@ -67,5 +67,5 @@
 ;;}}
 
 
-(user-provide 'reply)
+(provide 'reply-config)
 

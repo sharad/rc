@@ -53,5 +53,5 @@
 
 
 
-(user-provide 'utils)
+(provide 'utils-config)
 ;;; utils.el ends here

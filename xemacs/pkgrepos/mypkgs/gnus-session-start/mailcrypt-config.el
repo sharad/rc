@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(deh-require-maybe 'mailcrypt
+(deh-require-maybe mailcrypt
   ;; http://www.suse.de/~garloff/Writings/mutt_gpg/node18.html
   (mc-setversion "gpg")
   (autoload 'mc-install-write-mode "mailcrypt" nil t)
@@ -62,5 +62,5 @@
         (mc-sign-message))))
 
 
-(user-provide 'mailcrypt)
+(provide 'mailcrypt-config)
 ;;; mailcrypt.el ends here

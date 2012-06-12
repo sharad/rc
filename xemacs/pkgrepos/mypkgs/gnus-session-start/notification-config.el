@@ -173,4 +173,4 @@
 ;;}}
 
 
-(user-provide 'notification)
+(provide 'notification-config)

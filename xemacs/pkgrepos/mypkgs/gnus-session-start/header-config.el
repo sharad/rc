@@ -70,5 +70,5 @@
 
 
 
-(user-provide 'header)
+(provide 'header-config)
 ;;; header.el ends here

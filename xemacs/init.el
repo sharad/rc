@@ -181,8 +181,6 @@
 ;; load all files present in ~/\.xemacs/session-start\.d directory.
 (defconst *work-dir* "~/\.\./paradise")
 
-;; (load-dir-files "~/\.xemacs/session-start\.d")
-
 (require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/session-start")
 
 

@@ -66,5 +66,5 @@
           (gnus-configure-windows 'summary 'force)
           (gnus-configure-windows 'article 'force)))))
 
-(user-provide 'winconfig)
+(provide 'winconfig-config)
 ;;; winconfig.el ends here

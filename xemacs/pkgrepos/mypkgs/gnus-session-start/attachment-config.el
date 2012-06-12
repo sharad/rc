@@ -79,7 +79,7 @@
         (error "Message not sent")))))
   (add-hook 'message-send-hook 'check-mail)
 
-(user-provide 'attachment)
+(provide 'attachment-config)
 
 ;;}}
 

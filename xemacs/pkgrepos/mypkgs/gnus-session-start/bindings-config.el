@@ -55,4 +55,4 @@
 
 ;;}}
 
-(user-provide 'bindings)
+(provide 'bindings-config)

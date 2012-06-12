@@ -117,6 +117,6 @@
 
 
 
-(user-provide 'article)
+(provide 'article-config)
 
 ;;; article.el ends here

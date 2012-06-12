@@ -126,5 +126,5 @@
 
 
 
-(user-provide 'color)
+(provide 'color-config)
 
