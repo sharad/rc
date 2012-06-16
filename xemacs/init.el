@@ -8,24 +8,24 @@
 (add-to-list 'load-path "/usr/local/share/emacs/23.3/site-lisp")
 
 (progn
- (defconst *package-dir* "~/.xemacs/pkgrepos/world")
- (defun package-dir-setup (package-dir)
-   (when (file-directory-p package-dir)
-     (mapc #'(lambda (path)
-               (add-to-list 'load-path path))
-           (directory-files package-dir t "[a-zA-Z]+"))
-     (mapc #'byte-recompile-directory
-           (directory-files package-dir t "[a-zA-Z]+"))))
+  (defun package-dir-setup (package-dir)
+    (when (file-directory-p package-dir)
+      (mapc #'(lambda (path)
+                (add-to-list 'load-path path))
+            (directory-files package-dir t "[a-zA-Z]+"))
+      (mapc #'byte-recompile-directory
+            (directory-files package-dir t "[a-zA-Z]+"))))
 
 
  ;; (package-dir-setup "~/.xemacs/pkgrepos/world")
- (package-dir-setup "~/.xemacs/pkgrepos/mypkgs")
- (package-dir-setup "~/.xemacs/pkgrepos/elpa"))
+  (package-dir-setup "~/.xemacs/pkgrepos/mypkgs")
+  (package-dir-setup "~/.xemacs/pkgrepos/elpa")
+  (package-dir-setup "~/.xemacs/pkgrepos/world"))
 
 (mapc
  '(lambda (dir)
    (add-to-list 'load-path dir))
- `("~/.xemacs/pkgrepos/world/auto-install"
+ `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
    "~/.osetup/info/common/elisp"
   ,(concat "~/.osetup/info/hosts/" (system-name) "/elisp")))
 
@@ -155,12 +155,6 @@
 
 
 (require 'general-testing)
-
-;; (add-to-list 'load-path
-;;              (concat *package-dir* "/auto-install"))
-
-;; (add-to-list 'load-path
-;;              (concat *package-dir* "/pde"))
 
 
 (irequire 'common-info)

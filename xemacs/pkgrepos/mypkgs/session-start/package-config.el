@@ -34,31 +34,33 @@
 
 
 (eval-after-load "package"
-  (defvar sharad/package-installed-archive "~/.xemacs/pkgrepos/elpa/installed-archive.el" "Known Installed packages.")
+  '(progn
 
-  (when (file-exists-p sharad/package-installed-archive)
-    (require 'misc-config)
-    (when (not (equal package-alist (sharad/read-file sharad/package-installed-archive)))
-      (message "Your do not have all packages installed.\n install it will sharad/package-install-from-installed-archive.")))
+    (defvar sharad/package-installed-archive "~/.xemacs/pkgrepos/elpa/installed-archive.el" "Known Installed packages.")
 
-  (defun sharad/update-installed-package-archive ()
-    (interactive)
-    (if package-alist
-        (write-region (prin1-to-string package-alist) nil sharad/package-installed-archive)
-        (message "package-alist is not defiend, not doing anything.")))
+    (when (file-exists-p sharad/package-installed-archive)
+      (require 'misc-config)
+      (when (not (equal package-alist (sharad/read-file sharad/package-installed-archive)))
+        (message "Your do not have all packages installed.\n install it will sharad/package-install-from-installed-archive.")))
 
-  (defun sharad/package-install-from-installed-archive ()
-    (interactive)
-    (require 'cl)
-    (let* ((packages-from-installed-archive  (mapcar 'car  (sharad/read-file sharad/package-installed-archive)))
-           (packages-from-package-alist (mapcar 'car package-alist))
-           (packages-missing (set-difference packages-from-installed-archive packages-from-package-alist))
-           ;; (packages-missing (remove-if '(lambda (e)
-           ;;                                (member e packages-from-package-alist))
-           ;;                              packages-from-installed-archive))
-           )
-      (dolist (p packages-missing)
-        (package-install p)))))
+    (defun sharad/update-installed-package-archive ()
+      (interactive)
+      (if package-alist
+          (write-region (prin1-to-string package-alist) nil sharad/package-installed-archive)
+          (message "package-alist is not defiend, not doing anything.")))
+
+    (defun sharad/package-install-from-installed-archive ()
+      (interactive)
+      (require 'cl)
+      (let* ((packages-from-installed-archive  (mapcar 'car  (sharad/read-file sharad/package-installed-archive)))
+             (packages-from-package-alist (mapcar 'car package-alist))
+             (packages-missing (set-difference packages-from-installed-archive packages-from-package-alist))
+             ;; (packages-missing (remove-if '(lambda (e)
+             ;;                                (member e packages-from-package-alist))
+             ;;                              packages-from-installed-archive))
+             )
+        (dolist (p packages-missing)
+          (package-install p))))))
 
 
 (provide 'package-config)

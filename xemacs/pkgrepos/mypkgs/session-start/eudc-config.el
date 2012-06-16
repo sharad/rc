@@ -26,9 +26,9 @@
 
 ;; from http://www.emacswiki.org/emacs/EUDC
 
-(deh-section "LDAP BBDB backend"
 
-  (deh-require-maybe (and ldap eudc passwds)
+  (deh-require-maybe (and eudc ldap passwds)
+    "LDAP BBDB backend"
 
 
     (defun eudc-ldap-datas ()
@@ -136,7 +136,7 @@ BEG and END delimit the text which is to be replaced."
 (eval-after-load "sendmail"
   '(define-key mail-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))
 (eval-after-load "post"
-  '(define-key post-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))))
+  '(define-key post-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline)))
 
 
 (testing
