@@ -296,5 +296,13 @@ The indirect buffer can have another major mode."
 (xrequire 'thingatpt+)
 
 
+;;;###autoload
+(defun sharad/read-file (filename)
+  (when (file-exists-p filename)
+    (with-temp-buffer
+      (insert-file-contents-literally filename)
+      (let ((contents (read (current-buffer))))
+        (cdr contents)))))
+
 (provide 'misc-config)
 
