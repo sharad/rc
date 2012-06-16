@@ -785,7 +785,7 @@
 ;;                     (file-name-nondirectory file)))))
 ;;         (directory-files *gnus-session-file-dir* t "^[a-zA-Z0-9-]+\.elc$")))
 
-(require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/\.gnus-session-start")
+(require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/gnus-session-start")
 
 ;;}}
 
