@@ -35,12 +35,14 @@
 
 (eval-after-load "package"
   '(progn
+    (require 'cl)
+    (require 'misc-config)
 
     (defvar sharad/package-installed-archive "~/.xemacs/pkgrepos/elpa/installed-archive.el" "Known Installed packages.")
 
     (when (file-exists-p sharad/package-installed-archive)
-      (require 'misc-config)
-      (when (not (equal package-alist (sharad/read-file sharad/package-installed-archive)))
+      (when (set-difference (mapcar 'car  (sharad/read-file sharad/package-installed-archive))
+                            (mapcar 'car package-alist))
         (message "Your do not have all packages installed.\n install it will sharad/package-install-from-installed-archive.")))
 
     (defun sharad/update-installed-package-archive ()
@@ -54,11 +56,7 @@
       (require 'cl)
       (let* ((packages-from-installed-archive  (mapcar 'car  (sharad/read-file sharad/package-installed-archive)))
              (packages-from-package-alist (mapcar 'car package-alist))
-             (packages-missing (set-difference packages-from-installed-archive packages-from-package-alist))
-             ;; (packages-missing (remove-if '(lambda (e)
-             ;;                                (member e packages-from-package-alist))
-             ;;                              packages-from-installed-archive))
-             )
+             (packages-missing (set-difference packages-from-installed-archive packages-from-package-alist)))
         (dolist (p packages-missing)
           (package-install p))))))
 
