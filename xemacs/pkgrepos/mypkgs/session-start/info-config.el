@@ -283,7 +283,46 @@
 ;; K |             gnus-article-pipe-part
 
 
+;;Message (GNUS)
 
+;; C-c C-e
+;;     Elide the text between point and mark (message-elide-region). The text is killed and replaced with the contents of the variable message-elide-ellipsis. The default value is to use an ellipsis (`[...]').
+
+;; C-c M-k
+;;     Kill the address under point.
+
+;; C-c C-z
+;;     Kill all the text up to the signature, or if that's missing, up to the end of the message (message-kill-to-signature).
+
+;; C-c C-v
+;;     Delete all text in the body of the message that is outside the region (message-delete-not-region).
+
+;; M-RET
+;;     Insert four newlines, and then reformat if inside quoted text.
+
+;;     Here's an example:
+
+
+
+;;     > This is some quoted text.  And here's more quoted text.
+
+;;     If point is before `And' and you press M-RET, you'll get:
+
+
+
+;;     > This is some quoted text.
+
+;;     *
+
+;;     > And here's more quoted text.
+
+;;     `*' says where point will be placed.
+
+;; C-c M-r
+;;     Rename the buffer (message-rename-buffer). If given a prefix, prompt for a new buffer name.
+
+;; TAB
+;;     If message-tab-body-function is non-nil, execute the function it specifies. Otherwise use the function bound to TAB in text-mode-map or global-map.
 
 (setq Info-directory-list
       '("/usr/share/info/"
