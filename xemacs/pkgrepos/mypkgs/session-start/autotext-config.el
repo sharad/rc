@@ -95,6 +95,7 @@ General Public License for more details.
 
   (add-to-list
    ;; disable nagging update .ido.last
+   ;; http://permalink.gmane.org/gmane.emacs.bugs/31777
    'template-update-buffer-alist
    '(".ido.last" nil nil nil nil))
 
