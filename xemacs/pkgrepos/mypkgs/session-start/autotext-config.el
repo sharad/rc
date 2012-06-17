@@ -90,6 +90,17 @@ General Public License for more details.
 
 
 
+(deh-require-maybe template
+  (template-initialize)
+
+  (add-to-list
+   ;; disable nagging update .ido.last
+   'template-update-buffer-alist
+   '(".ido.last" nil nil nil nil))
+
+  (setq template-auto-update-disable-regexp "\\.ido\\.last"))
+
+
 
 (provide 'autotext-config)
 

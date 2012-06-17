@@ -113,10 +113,6 @@ The indirect buffer can have another major mode."
   (setq session-initialize t))
 ;;  (session-initialize))
 
-(deh-require-maybe template
-  (template-initialize))
-
-
 ;; Make minibuffer larger if there is more to see
 (when (functionp 'resize-minibuffer-mode)
   (resize-minibuffer-mode 1))
