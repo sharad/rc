@@ -27,16 +27,40 @@
 
 
 
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
-(add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
+;;; This was installed by package-install.el.
+;;; This provides support for the package system and
+;;; interfacing with ELPA, the package archive.
+;;; Move this code earlier if you want to reference
+;;; packages in your .emacs.
 
-
+;; (when
+;;     (load
+;;      (expand-file-name "~/.xemacs/elpa/package.el"))
+;;   (package-initialize))
 
 (eval-after-load "package"
   '(progn
+
     (require 'cl)
     (require 'misc-config)
+
+    (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+
+    (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
+
+    (defconst *elpa-package-dir* "~/.xemacs/pkgrepos/elpa")
+
+    (when (file-directory-p *elpa-package-dir*)
+      (mapc #'(lambda (path)
+                (when (file-directory-p path)
+                  (add-to-list 'load-path path)))
+            (directory-files *elpa-package-dir* t "[a-zA-Z]+"))
+      (byte-recompile-directory *elpa-package-dir*))
+
+    (setq package-user-dir
+     (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa")))
+    (package-initialize)
 
     (defvar sharad/package-installed-archive "~/.xemacs/pkgrepos/elpa/installed-archive.el" "Known Installed packages.")
 
