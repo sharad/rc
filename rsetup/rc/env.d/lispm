@@ -1,0 +1,7 @@
+
+
+
+
+PATH=/opt/jdk/bin:$PATH
+
+export PATH
