@@ -13,3 +13,6 @@ BROWSER=w3m
 export EDITOR
 export VISUAL
 export BROWSER
+
+MY_DBUS_SESSION=$(cat /var/lib/dbus/machine-id)
+export MY_DBUS_SESSION
