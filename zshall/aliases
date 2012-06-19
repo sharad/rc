@@ -159,3 +159,5 @@ alias ii='info '\''File permissions'\'' '\''Coreutils'\'' '\''File permissions'\
 alias catmailq="sudo postcat -bheq "
 alias pmailq="sudo postqueue -p "
 alias pmailhold="sudo qshape -s hold"
+alias ldapsearch='ldapsearch -y ~/.ldappass -t -x  -LLL '
+
