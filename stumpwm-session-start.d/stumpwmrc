@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-[ -x /usr/libexec/at-spi-registryd ] && /usr/libexec/at-spi-registryd &!
+[ -x /usr/libexec/at-spi-registryd ] && DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/libexec/at-spi-registryd &!
 
 # whence -p gnome-screensaver &&
 # pgrep gnome-screensaver ||
@@ -8,15 +8,17 @@
 
 if [ -x /usr/libexec/gnome-settings-daemon ] ; then
     pgrep gnome-settings-daemon ||
-    /usr/libexec/gnome-settings-daemon &!
+    DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/libexec/gnome-settings-daemon &!
 else
     whence -p gnome-settings-daemon &&
     pgrep gnome-settings-daemon ||
-    gnome-settings-daemon &!
+    DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION gnome-settings-daemon &!
 fi
 
 pgrep nm-applet ||
 DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION nm-applet --sm-disable &!
+
+pgrep gnome-keyr || DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION gnome-keyring-daemon --start
 
 # pgrep empathy ||
 # DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
@@ -24,6 +26,7 @@ DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION nm-applet --sm-disable &!
 # syndaemon -i 1 -d
 
 synclient TouchpadOff=1
+
 
 
 foreach prog (
@@ -39,7 +42,7 @@ foreach prog (
     ) {
         whence -p $prog &&
         pgrep $prog[0,15] ||
-        $prog &!
+        DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION $prog &!
     }
 
 

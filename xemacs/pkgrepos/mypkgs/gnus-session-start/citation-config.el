@@ -1,4 +1,4 @@
-;;; citation.el --- citation from X Steve
+;;; citation-config.el --- citation from X Steve
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -54,24 +54,26 @@
   (if (looking-at "Hi")
       (kill-line)))
 
-(defun get-proper-citation-name (email name)
-  "Get proper name."
-  ;; name can be null for "xxxx@xxxxxx.xxx"
-  ;; but email will be there.
+(deh-require-maybe gnus-junk
 
-  ;; in other case like "Xxxxx Xxxxx <xxxx@xxxxxx.xxx>"
-  ;; name and email both will be there.
-  (let ((first-name-in-email
-         (if (string-match "^\\(\\w\+\\)" email)
-             (match-string 0 email)))
-        (first-name-in-name
-         (if name (car (split-string name)))))
+  (defun get-proper-citation-name (email name)
+    "Get proper name."
+    ;; name can be null for "xxxx@xxxxxx.xxx"
+    ;; but email will be there.
 
-    (if (and
-         first-name-in-name
-         (string-caseless-equal first-name-in-email first-name-in-name))
-        first-name-in-name
-        (capitalize first-name-in-email))))
+    ;; in other case like "Xxxxx Xxxxx <xxxx@xxxxxx.xxx>"
+    ;; name and email both will be there.
+    (let ((first-name-in-email
+           (if (string-match "^\\(\\w\+\\)" email)
+               (match-string 0 email)))
+          (first-name-in-name
+           (if name (car (split-string name)))))
+
+      (if (and
+           first-name-in-name
+           (string-caseless-equal first-name-in-email first-name-in-name))
+          first-name-in-name
+          (capitalize first-name-in-email)))))
 
 (defun xsteve-message-citation ()
   (interactive)

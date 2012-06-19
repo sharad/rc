@@ -1,4 +1,4 @@
 #!/bin/zsh
 
-pkill gnome-keyri
-
+[  -x ~/.rsetup/xlogout/run ] &&
+~/.rsetup/xlogout/run

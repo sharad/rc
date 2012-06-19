@@ -74,7 +74,7 @@ if [ $DISPLAY ] ; then
     whence -p keynav && keynav &!
 
 
-    pgrep gnome-keyr || gnome-keyring-daemon --start
+
 
 fi
 
