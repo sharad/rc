@@ -7,18 +7,14 @@
 # gnome-screensaver &!
 
 if [ -x /usr/libexec/gnome-settings-daemon ] ; then
-    pgrep gnome-settings-daemon ||
-    DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/libexec/gnome-settings-daemon &!
+    pgrep gnome-settings || /usr/libexec/gnome-settings-daemon &!
 else
     whence -p gnome-settings-daemon &&
-    pgrep gnome-settings-daemon ||
-    DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION gnome-settings-daemon &!
+    pgrep gnome-settings || gnome-settings-daemon &!
 fi
 
-pgrep nm-applet ||
-DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION nm-applet --sm-disable &!
+pgrep nm-applet || nm-applet --sm-disable &!
 
-pgrep gnome-keyr || DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION gnome-keyring-daemon --start
 
 # pgrep empathy ||
 # DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
@@ -40,9 +36,24 @@ foreach prog (
     pidgin
     synergys
     ) {
+        echo A DBUS >&2
+        pgrep -l dbus-daemon >&2
+
+        echo $prog
         whence -p $prog &&
-        pgrep $prog[0,15] ||
-        DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION $prog &!
+        pgrep $prog[0,15] || $prog &!
+
+        echo B DBUS >&2
+        pgrep -l dbus-daemon >&2
+
     }
 
 
+echo 1 DBUS >&2
+pgrep -l dbus-daemon  >&2
+
+pgrep gnome-keyring-d || gnome-keyring-daemon --start
+
+
+echo 2 DBUS >&2
+pgrep -l dbus-daemon  >&2

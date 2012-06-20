@@ -68,7 +68,7 @@ if [ $DISPLAY ] ; then
     fi
 
 
-    osdsh -n 10 &!
+    whence -p osdsh && osdsh -n 10 &!
 
 
     whence -p keynav && keynav &!
