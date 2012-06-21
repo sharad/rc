@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-06-13 00:19:48 s>
+;; Time-stamp: <2012-06-20 14:18:56 s>
 ;;
 
 (deh-section "Key binding utils"
@@ -235,7 +235,7 @@ and their terminal equivalents.")
 (deh-require-maybe gtags
   ;; (global-set-key-replace "M->" ww-next-gtag (("M" . "S")))   ;; M-; cycles to next result, after doing M-. C-M-. or C-M-,
   (global-set-key-replace "M-." gtags-find-tag (("M" . "s"))) ;; M-. finds tag
-  (global-set-key-replace "M-*" gtags-find-rtag (("M" . "s")))
+  (global-set-key-replace "M-*" gtags-pop-stack (("M" . "s")))
   (global-set-key-replace "C-M-." gtags-find-rtag (("M" . "s")))   ;; C-M-. find all references of tag
   (global-set-key-replace "C-M-," gtags-find-symbol (("M" . "s"))) ;; C-M-, find all usages of symbol.
   ;; (global-set-key-if-unbind [(control meta .)] 'gtags-find-rtag)   ;; C-M-. find all references of tag
