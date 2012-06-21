@@ -1,4 +1,50 @@
 #!/bin/zsh
 
+
+
+[ -x /usr/libexec/at-spi-registryd ] && pkill at-spi-registry
+
+# whence -p gnome-screensaver &&
+# pgrep gnome-screensaver ||
+# gnome-screensaver &!
+
+if [ -x /usr/libexec/gnome-settings-daemon ] ; then
+    pgrep gnome-settings && pkill gnome-settings
+else
+    whence -p gnome-settings-daemon &&
+    pgrep gnome-settings && pkill gnome-settings-daemon
+fi
+
+pgrep nm-applet && pkill nm-applet
+
+
+
+pgrep gnome-keyring-d && pkill gnome-keyring-d
+
+foreach prog (
+    ## it is automatically started by gdm, so no need to start it.
+    # gnome-keyring-daemon
+    gnome-power-manager
+    mail-notification
+    blueman-adapters
+    blueman-applet
+    bluetoothd
+    pidgin
+    synergys
+    ) {
+        echo A DBUS >&2
+        pgrep -l dbus-daemon >&2
+
+        echo $prog
+        whence -p $prog &&
+        pgrep $prog[0,15] && pkill $prog[0,15]
+
+        echo B DBUS >&2
+        pgrep -l dbus-daemon >&2
+
+    }
+
+
+
 [  -x ~/.rsetup/xlogout/run ] &&
 ~/.rsetup/xlogout/run
