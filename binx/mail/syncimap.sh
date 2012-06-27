@@ -6,6 +6,7 @@ function main() {
 
     process_arg $@
 
+    eval $(gnome-keyring-attach)
 
     if [ -e $disable_file ] ; then
         warn "Syncimap is disabled"
@@ -104,6 +105,18 @@ function notify() {
 
 function logger() {
     logger -p local1.notice -t ${pgm} -i - $USER : $@
+}
+
+
+function gnome-keyring-attach() {
+    local -a vars=( \
+        DBUS_SESSION_BUS_ADDRESS \
+        SSH_AUTH_SOCK \
+        SSH_AGENT_PID \
+        XDG_SESSION_COOKIE \
+    )
+    local pid=$(ps -C stumpwm -o pid --no-heading)
+    eval "unset ${vars[@]}; $(printf "export %s;" $(sed 's/\x00/\n/g' /proc/${pid//[^0-9]/}/environ | grep $(printf -- "-e ^%s= " "${vars[@]}")) )"
 }
 
 pgm=$(basename $0)
