@@ -27,3 +27,9 @@
        (nconc ,var ,@args)
      (setq ,var ,@args)))
 
+
+(defmacro set-assoc (key val alist)
+  `(progn
+     (when (null (assoc ,key ,alist))
+       (setq ,alist (acons ,key nil ,alist)))
+     (setcdr (assoc ,key ,alist) ,val)))
