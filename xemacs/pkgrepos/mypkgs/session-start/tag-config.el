@@ -219,7 +219,7 @@ See `gtags-global-complete-list-obsolete-flag'."
 
 (deh-require-maybe xcscope
   ;; http://emacswiki.org/emacs/CScopeAndEmacs
- (setq cscope-do-not-update-database t)
+  (setq cscope-do-not-update-database t)
 
 ;; 5. If you intend to use xcscope.el often you can optionally edit your
 ;;    ~/.emacs file to add keybindings that reduce the number of keystrokes

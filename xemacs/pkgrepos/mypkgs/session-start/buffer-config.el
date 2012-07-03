@@ -29,6 +29,10 @@
 ;; get it from: http://www.andersl.com/emacs/follow.html
 
 
+(deh-section "Setting ignore extention for file completion"
+  (setq completion-ignored-extensions
+        (append  completion-ignored-extensions '(".rem"))))
+
 (deh-require-maybe follow-mode
   ;; from http://www.dotemacs.de/dotfiles/DavidJolley.emacs.html
   (autoload 'follow-mode) ;; "follow.el" nil t)
