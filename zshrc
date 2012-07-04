@@ -381,9 +381,6 @@ chpwd() {
 
 # }}}
 
-# For changing cursor to cyan still block.	  #
-#echo \[\?17\;0\;60c		# for bash
-echo -n \\033\[\?17\;0\;60c	# for zshell
 
 [ -r ~/.zshall/editing ] && source ~/.zshall/editing
 
@@ -403,6 +400,14 @@ echo -n \\033\[\?17\;0\;60c	# for zshell
 # For Tramp
 ###################
 [ -r ~/.zshall/tramp ] && source ~/.zshall/tramp
+# }}}
+
+
+# {{{ For changing cursor to cyan still block.	  #
+if [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
+#echo \[\?17\;0\;60c		# for bash
+    echo -n \\033\[\?17\;0\;60c	# for zshell
+fi
 # }}}
 
 

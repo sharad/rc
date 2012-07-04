@@ -107,7 +107,19 @@
   (update-ssh-agent))
 
 ;; run
-(update-ssh-agent))
+(update-ssh-agent)
+
+(defun tramp-output-wash (&optional arg)
+  (interactive)
+  (save-excursion
+    (let ((buffer-read-only nil))
+      (goto-char (point-min))
+      (replace-regexp "\n\\$ " "\n$\n"))))
+
+(add-hook 'grep-mode-hook #'tramp-output-wash)
+(add-hook 'cscope-list-entry-hook #'tramp-output-wash)
+
+)
 
 (when nil
  (defun tramp-do-file-attributes-with-stat

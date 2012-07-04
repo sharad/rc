@@ -29,7 +29,13 @@
 	alias jd='jobs -ld'
         alias cp='cp --remove-destination'
 	#alias l='command ls -CF --color=auto'
-	alias still='echo [?17\;0\;60c'
+
+        # {{{ For changing cursor to cyan still block.	  #
+        if [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
+	    alias still='echo [?17\;0\;60c'
+        fi
+        # }}}
+
 	alias devil='dict -d devil'
 	alias dictwn='dict -d wn'
 	alias pr='pr -F'
