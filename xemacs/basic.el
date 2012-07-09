@@ -238,25 +238,26 @@ alkready should not exist.")
 ;; Excellent
 ;; (add-to-list 'load-path "~/.xemacs/pkgrepos/world/deh")
 
-(unless (require 'dot-emacs-helper nil t)
-  (defmacro deh-require-maybe (feature &rest forms)
-    (declare (indent 1))
-    `(progn
-       (when ,(if (consp feature)
-                  (cond
-                    ((or (equal (car feature) 'or)
-                         (equal (car feature) 'and))
-                     `(,(car feature) ,@(mapcar (lambda (f) `(require ',f nil t)) (cdr feature))))
-                    (t feature))
-                  `(require ',feature nil t))
-         ,@(if (stringp (car forms))
-               (cdr forms)
-               forms))))
+(eval-when-compile
+  (unless (require 'dot-emacs-helper nil t)
+    (defmacro deh-require-maybe (feature &rest forms)
+      (declare (indent 1))
+      `(progn
+         (when ,(if (consp feature)
+                    (cond
+                      ((or (equal (car feature) 'or)
+                           (equal (car feature) 'and))
+                       `(,(car feature) ,@(mapcar (lambda (f) `(require ',f nil t)) (cdr feature))))
+                      (t feature))
+                    `(require ',feature nil t))
+           ,@(if (stringp (car forms))
+                 (cdr forms)
+                 forms))))
 
 
-  (defmacro deh-require-maybe (feature &rest forms)
-    (declare (indent 1))
-    (labels ((refine (feature)
+    (defmacro deh-require-maybe (feature &rest forms)
+      (declare (indent 1))
+      (labels ((refine (feature)
                  (if (consp feature)
                      (cond
                        ((or (equal (car feature) 'or)
@@ -264,19 +265,19 @@ alkready should not exist.")
                         `(,(car feature) ,@(mapcar #'refine (cdr feature))))
                        (t feature))
                      `(require ',feature nil t))))
-           `(progn
-              (when ,(refine feature)
-                ,@(if (stringp (car forms))
-                      (cdr forms)
-                      forms)))))
+        `(progn
+           (when ,(refine feature)
+             ,@(if (stringp (car forms))
+                   (cdr forms)
+                   forms)))))
 
-  (defalias 'deh-require 'deh-require-maybe)
+    (defalias 'deh-require 'deh-require-maybe)
 
-  (put 'deh-require 'lisp-indent-function 1)
+    (put 'deh-require 'lisp-indent-function 1)
 
-  (defmacro deh-section (section &rest forms)
-    (declare (indent 1))
-    `(progn ,@forms)))
+    (defmacro deh-section (section &rest forms)
+      (declare (indent 1))
+      `(progn ,@forms))))
 ;; (deh-require 'feature-name
 ;;   configuration-for-the-feature)
 ;; (deh-section "section-name"
