@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-06-20 14:18:56 s>
+;; Time-stamp: <2012-07-12 18:53:01 s>
 ;;
 
 (deh-section "Key binding utils"
@@ -289,6 +289,9 @@ and their terminal equivalents.")
 (when (xrequire 'ibuffer)
   (global-set-key (kbd "C-x C-b") 'ibuffer) ;force
   )
+
+(deh-require-maybe xcscope
+ (define-key cscope-list-entry-keymap "q" 'bury-buffer))
 
 (provide 'binding-config)
 
