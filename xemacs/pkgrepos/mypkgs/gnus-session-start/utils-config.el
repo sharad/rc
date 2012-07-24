@@ -1,4 +1,4 @@
-;;; utils.el ---
+;;; utils-config.el ---
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -24,34 +24,36 @@
 
 ;;; Code:
 
-(defun google-lucky (search-str)
-  (concat search-str " [http://www.google.com/search?hl=en&&q="
-          (string-replace-match "\s" search-str "+" t t)
+
+
+(require 'thingatpt+)
+
+(defun google-lucky (string)
+  (concat string " [http://www.google.com/search?hl=en&&q="
+          (or (string-replace-match "\s" string "+" t t) string)
           "&btnI=1]"))
 
 
+(defun google (string)
+  (concat string " [http://www.google.com/search?hl=en&&q="
+          (or (string-replace-match "\s" string "+" t t) string)
+          "]"))
 
-
-;; (defun string-apply-fn (search-str &optional fn)
-
-(defun string-apply-fn ()
-  (interactive)
-   (let* ((region-active (and (region-active-p)
-                              (not (equal (region-beginning) (region-end)))))
-          (bound (if region-active
-                     (cons (region-beginning) (region-end))
-                     (bounds-of-thing-at-point 'word)))
-          (search-str (funcall #'buffer-substring (car bound) (cdr bound)))
-          (fn #'google-lucky))
-     (funcall #'delete-region (car bound) (cdr bound))
-     (insert (funcall fn search-str))))
-
-
-
-
-
-
+(defun string-apply-fn (&optional fn)
+  (interactive
+   (let ((fn (symbol-function
+              (intern (ido-completing-read "Modifier to apply: "
+                                           '("google-lucky" "google"))))))
+     (list fn)))
+  (let* ((region-active (and (region-active-p)
+                             (not (equal (region-beginning) (region-end)))))
+         (bound (if region-active
+                    (cons (region-beginning) (region-end))
+                    (bounds-of-thing-at-point 'word)))
+         (search-str (funcall #'buffer-substring (car bound) (cdr bound))))
+    (funcall #'delete-region (car bound) (cdr bound))
+    (insert (funcall fn search-str))))
 
 
 (provide 'utils-config)
-;;; utils.el ends here
+;;; utils-config.el ends here

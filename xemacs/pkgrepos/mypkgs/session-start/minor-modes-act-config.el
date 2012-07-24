@@ -1,4 +1,4 @@
-;;; minor-modes-act.el ---
+;;; minor-modes-act-config.el ---
 
 ;; Copyright 2011 Sharad Pratap
 ;;
@@ -54,6 +54,15 @@
 
 
 ;;; minor-modes-act.el ends here
+
+
+(defun put-file-in-rcs (&optional file)
+  (let ((file (or file
+                  (buffer-file-name (current-buffer)))))
+    (if (not (vc-backend file))
+        (vc-rcs-register (list file))))Aga Abbas Ali Rd, Halasuru, Bengaluru, Karnataka, India)
+
+;; (remove-hook 'after-save-hook 'put-file-in-rcs)
 
 
 (provide 'minor-modes-act-config)

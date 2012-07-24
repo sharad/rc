@@ -12,4 +12,6 @@
 ;;
 ;;end ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/muse-el/experimental")
+
 (provide 'muse-config)
