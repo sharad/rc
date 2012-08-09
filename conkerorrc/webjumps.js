@@ -679,9 +679,9 @@ define_webjump("stock/income-statement",
                "finance.yahoo.com/q/is?s=%s");
 //}} Stock
 
-//{{ PNR
+//{{ Rail
 define_webjump(
-    "pnr",
+    "train/pnr",
     function (term) {
         if (! term)
             return "http://indianrail.gov.in/pnr_Enq.html";
@@ -694,4 +694,20 @@ define_webjump(
     },
     $argument = 'optional')});
 
+define_webjump(
+    "train/schedule",
+    function (term) {
+        if (! term)
+            return "http://www.indianrail.gov.in/train_Schedule.html";
+        return load_spec(
+            { uri: "http://www.indianrail.gov.in/cgi_bin/inet_trnnum_cgi.cgi",
+              post_data: make_post_data([
+                  ['lccp_trnname', term],
+                  ['submit', 'Get Schedule']
+              ])
+    },
+    $argument = 'optional')});
+
+
 //}}
+
