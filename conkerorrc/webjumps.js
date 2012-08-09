@@ -678,3 +678,20 @@ define_webjump("yebhi",
 define_webjump("stock/income-statement",
                "finance.yahoo.com/q/is?s=%s");
 //}} Stock
+
+//{{ PNR
+define_webjump(
+    "pnr",
+    function (term) {
+        if (! term)
+            return "http://indianrail.gov.in/pnr_Enq.html";
+        return load_spec(
+            { uri: "http://www.indianrail.gov.in/cgi_bin/inet_pnrstat_cgi.cgi",
+              post_data: make_post_data([
+                  ['lccp_pnrno1', term],
+                  ['submit', 'Get Status']
+              ])
+    },
+    $argument = 'optional')});
+
+//}}
