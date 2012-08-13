@@ -1,4 +1,7 @@
-#!/bin/zsh
+#!/bin/bash
+
+WM=stumpwm
+
 
 function main() {
 
@@ -6,7 +9,7 @@ function main() {
 
     process_arg $@
 
-    eval $(gnome-keyring-attach)
+    gnome-keyring-attach
 
     if [ -e $disable_file ] ; then
         warn "Syncimap is disabled"
@@ -25,8 +28,9 @@ function main() {
                     offlineimap -a ${account:-$OFFLINEIMAPACCOUNT}
                 else
                     # wait till 3 min then send SIGINT.
-                    xwarn="$( timeout -s INT 360 offlineimap -1 -u quiet -a ${account:-$OFFLINEIMAPACCOUNT} |& egrep -i 'WARNING|Error' )" &&
-                    warn "Some problem with OfflineImap\nPlease check as soon as possible.\n${xwarn}"
+                    # xwarn="$( timeout -s KILL 70 offlineimap -1 -u quiet -a ${account:-$OFFLINEIMAPACCOUNT} |& egrep -i 'WARNING|Error' )" &&
+                    # warn "Some problem with OfflineImap\nPlease check as soon as possible.\n${xwarn}"
+                    timeout -s KILL 70 offlineimap -1 -u quiet -a ${account:-$OFFLINEIMAPACCOUNT}
                 fi
             else
                 verbose already offline map running with pid $(pgrep offlineimap).
@@ -115,10 +119,13 @@ function gnome-keyring-attach() {
         SSH_AGENT_PID \
         XDG_SESSION_COOKIE \
     )
-    local pid=$(ps -C stumpwm -o pid --no-heading)
-    eval "unset ${vars[@]}; $(printf "export %s;" $(sed 's/\x00/\n/g' /proc/${pid//[^0-9]/}/environ | grep $(printf -- "-e ^%s= " "${vars[@]}")) )"
+    if pgrep ${WM} ; then
+        local pid=$(ps -C ${WM} -o pid --no-heading)
+        eval "unset ${vars[@]}; $(printf "export %s;" $(sed 's/\x00/\n/g' /proc/${pid//[^0-9]/}/environ | grep $(printf -- "-e ^%s= " "${vars[@]}")) )"
+    fi
 }
 
 pgm=$(basename $0)
 
 main $@
+
