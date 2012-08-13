@@ -676,7 +676,7 @@ define_webjump("yebhi",
 
 //{{ Stock
 define_webjump("stock/income-statement",
-               "finance.yahoo.com/q/is?s=%s");
+               "http://finance.yahoo.com/q/is?s=%s");
 //}} Stock
 
 //{{ Rail
@@ -710,4 +710,5 @@ define_webjump(
 
 
 //}}
+
 
