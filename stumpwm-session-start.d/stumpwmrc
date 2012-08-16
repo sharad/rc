@@ -57,3 +57,5 @@ pgrep gnome-keyring-d || gnome-keyring-daemon --start
 
 echo 2 DBUS >&2
 pgrep -l dbus-daemon  >&2
+
+~/bin/syncimap -r               # enable

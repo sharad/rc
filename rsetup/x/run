@@ -1,5 +1,9 @@
 #!/usr/bin/env zsh
 # give access to mpd
+
+~/bin/syncimap -d               # disable
+
+
 whence -p xhost && xhost +local:mpd
 
 
@@ -89,4 +93,6 @@ fi
 
 [ -r ~/.rsetup/x/run.d/${HOST//.*} ] &&
 ~/.rsetup/x/run.d/${HOST//.*}
+
+
 
