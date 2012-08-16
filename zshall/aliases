@@ -168,4 +168,3 @@ alias pmailhold="sudo qshape -s hold"
 # alias ldapsearch='ldapsearch -y ~/.ldappass -t -x  -LLL '
 # alias ldapsearch='ldapsearch -y ~/.ldappass -x  -LLL '
 alias ldapsearch='ldapsearch -w $(< ~/.ldappass) -x  -LLL '
-

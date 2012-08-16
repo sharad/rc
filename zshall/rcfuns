@@ -154,3 +154,15 @@ function pstreeo {
     pstree "$@" -p  $(command pgrep -o   '\<'$1'\>')
 }
 
+function ldapsearchor () {
+    arg=$1
+    shift
+    objectClass=person
+    attrs=("givenName" "cn" "mobile" "sn" "physicalDeliveryOfficeName" "homePhone" "mail" "ipPhone" "mailNickname" "department" "telephoneNumber" "title" "whenCreated")
+    if [ "$1" -a "$1" = "all" ] ; then
+        ldapsearch    "(&(|(cn=*"${arg}"*)(sn=*"${arg}"*)(givenName=*"${arg}"*))(objectClass="$objectClass"))"| egrep -v '^#|,DC=com'
+    else
+        ldapsearch    "(&(|(cn=*"${arg}"*)(sn=*"${arg}"*)(givenName=*"${arg}"*))(objectClass="$objectClass"))" $attrs $@ | egrep -v '^#|,DC=com'
+    fi
+}
+
