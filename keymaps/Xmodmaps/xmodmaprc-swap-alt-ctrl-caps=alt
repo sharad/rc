@@ -26,7 +26,7 @@ keycode  18 = 9 parenleft 9 parenleft 9 parenleft
 keycode  19 = 0 parenright 0 parenright 0 parenright
 keycode  20 = minus underscore minus underscore minus underscore
 keycode  21 = equal plus equal plus equal plus
-keycode  22 = BackSpace BackSpace Terminate_Server Terminate_Server BackSpace Terminate_Server
+keycode  22 = BackSpace BackSpace Terminate_Server Terminate_Server BackSpace Terminate_Server Terminate_Server Terminate_Server
 keycode  23 = Tab ISO_Left_Tab Tab ISO_Left_Tab Tab ISO_Left_Tab
 keycode  24 = q Q q Q q Q
 keycode  25 = w W w W w W
@@ -266,6 +266,24 @@ keycode 253 =
 keycode 254 =
 keycode 255 =
 
+
+
+
+keycode  67 = F1 XF86Switch_VT_1 F1 XF86Switch_VT_1 F1 XF86Switch_VT_1   XF86Switch_VT_1
+keycode  68 = F2 XF86Switch_VT_2 F2 XF86Switch_VT_2 F2 XF86Switch_VT_2   XF86Switch_VT_2
+keycode  69 = F3 XF86Switch_VT_3 F3 XF86Switch_VT_3 F3 XF86Switch_VT_3   XF86Switch_VT_3
+keycode  70 = F4 XF86Switch_VT_4 F4 XF86Switch_VT_4 F4 XF86Switch_VT_4   XF86Switch_VT_4
+keycode  71 = F5 XF86Switch_VT_5 F5 XF86Switch_VT_5 F5 XF86Switch_VT_5   XF86Switch_VT_5
+keycode  72 = F6 XF86Switch_VT_6 F6 XF86Switch_VT_6 F6 XF86Switch_VT_6   XF86Switch_VT_6
+keycode  73 = F7 XF86Switch_VT_7 F7 XF86Switch_VT_7 F7 XF86Switch_VT_7   XF86Switch_VT_7
+keycode  74 = F8 XF86Switch_VT_8 F8 XF86Switch_VT_8 F8 XF86Switch_VT_8   XF86Switch_VT_8
+keycode  75 = F9 XF86Switch_VT_9 F9 XF86Switch_VT_9 F9 XF86Switch_VT_9   XF86Switch_VT_9
+keycode  76 = F10 XF86Switch_VT_10 F10 XF86Switch_VT_10 F10 XF86Switch_VT_10   XF86Switch_VT_10
+keycode  95 = F11 XF86Switch_VT_11 F11 XF86Switch_VT_11 F11 XF86Switch_VT_11   XF86Switch_VT_11
+keycode  96 = F12 XF86Switch_VT_12 F12 XF86Switch_VT_12 F12 XF86Switch_VT_12   XF86Switch_VT_12
+
+
+
 clear Shift
 clear Lock
 clear Control
@@ -285,3 +303,7 @@ add    Mod3    = Hyper_L
 add    Mod4    = Super_L
 add    Mod5    = ISO_Level3_Shift Mode_switch
 add    Lock    = Caps_Lock
+
+
+keycode  22 = BackSpace BackSpace Terminate_Server Terminate_Server BackSpace Terminate_Server Terminate_Server Terminate_Server
+

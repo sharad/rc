@@ -24,3 +24,8 @@ key[Left]='^[[D'
 key[Down]='^[[B'
 key[Right]='^[[C'
 key[Menu]='^[[3~'
+key[Control-Left]='^[[D'
+key[Control-Right]='^[[C'
+key[Control-Up]='^[[A'
+key[Control-Down]='^[[B'
+

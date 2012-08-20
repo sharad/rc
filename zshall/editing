@@ -222,6 +222,10 @@ bindkey -M	mymap	$key[Right]      forward-char                   # right arrow
 bindkey	-M	mymap	$key[Left]       backward-char                  # left arrow
 bindkey -M      mymap   $key[PageUp]	 beginning-of-buffer-or-history # page up
 bindkey -M      mymap   $key[PageDown]	 end-of-buffer-or-history       # page down
+bindkey -M      mymap   $key[Control-Left] backward-word
+bindkey -M      mymap   $key[Control-Right] forward-word
+bindkey -M      mymap   $key[Control-Up]    up-line-or-search
+bindkey -M      mymap   $key[Control-Down]  down-line-or-search
 
 
 # Copy

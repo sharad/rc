@@ -16,6 +16,10 @@ function main() {
         exit 0
     fi
 
+    if ! timeout -s KILL 2 ~/bin/get-imap-pass ; then
+        exit 1
+    fi
+
     if [ ! -e ~/.offlineimaprc ] ; then
         verbose no ~/.offlineimaprc do not exists.
         exit -1
@@ -122,6 +126,8 @@ function gnome-keyring-attach() {
     if pgrep ${WM} ; then
         local pid=$(ps -C ${WM} -o pid --no-heading)
         eval "unset ${vars[@]}; $(printf "export %s;" $(sed 's/\x00/\n/g' /proc/${pid//[^0-9]/}/environ | grep $(printf -- "-e ^%s= " "${vars[@]}")) )"
+    else
+        exit 1
     fi
 }
 
