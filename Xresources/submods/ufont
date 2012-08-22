@@ -1,0 +1,132 @@
+*StringConversionWarnings:	on
+*color0:	rgb:00/00/00
+*color1:	rgb:aa/00/00
+*color10:	rgb:55/ff/55
+*color11:	rgb:ff/ff/55
+*color12:	rgb:55/55/ff
+*color13:	rgb:ff/55/ff
+*color14:	rgb:55/ff/ff
+*color15:	rgb:ff/ff/ff
+*color2:	rgb:00/aa/00
+*color3:	rgb:aa/55/00
+*color4:	rgb:00/00/aa
+*color5:	rgb:aa/00/aa
+*color6:	rgb:00/aa/aa
+*color7:	rgb:aa/aa/aa
+*color8:	rgb:55/55/55
+*color9:	rgb:ff/55/55
+*customization:	-color
+Rxvt.searchable-scrollback:	C-3-s
+Seyon.modems:	/dev/modem
+URxvt*background:	Black
+URxvt*borderLess:	False
+URxvt*foreground:	light grey
+URxvt*saveLines:	5000
+URxvt*scrollBar:	False
+URxvt*scrollTtyOutput:	True
+URxvt*scrollstyle:	xterm
+URxvt*shading:	-100
+URxvt.copyCommand:	xclip -i -selection clipboard
+URxvt.font:	xft:DejaVu Sans Mono, Lohit Nepali:style=Regular, Lohit Konkani:style=Regular, Sarai:style=Regular, Lohit Marathi:style=Regular, Samanata:style=Regular, gargi:style=Medium, Samyak Devanagari:style=Regular, Nakula:style=Regular, Lohit Kashmiri:style=Regular, Chandas:style=Regular, Lohit Maithili:style=Regular, Lohit Hindi:style=Regular, FreeSans:style=Medium,нормален,obyčejné,normal,Mittel,µεσαία,Normaali,Normál,Medio,Gemiddeld,Odmiana Zwykła,Обычный,Normálne,menengah,прямій,Navadno,vidējs,normalusis,vừa,Arrunta, FreeSerif:style=Medium,нормален,obyčejné,normal,Mittel,µεσαία,Normaali,Normál,Normale,Gemiddeld,odmiana zwykła,Обычный,Normálne,ปกติ,menengah,прямій,Navadno,vidējs,normalusis,vừa,Arrunta, Sahadeva:style=Regular, Lohit Sindhi:style=Regular
+URxvt.jumpScroll:	true
+URxvt.keysym.3-C-v:	perl:clipboard:paste_escaped
+URxvt.keysym.3-Escape:	perl:keyboard-select:activate
+URxvt.keysym.3-c:	perl:clipboard:copy
+URxvt.keysym.3-s:	perl:keyboard-select:search
+URxvt.keysym.3-u:	perl:url-select:select_next
+URxvt.keysym.3-v:	perl:clipboard:paste
+URxvt.keysym.4-Down:	perl:tabbedex:new_tab
+URxvt.keysym.4-Left:	perl:tabbedex:prev_tab
+URxvt.keysym.4-Right:	perl:tabbedex:next_tab
+URxvt.keysym.C-3-u:	perl:mark-yank-urls:activate_mark_mode
+URxvt.keysym.C-4-Left:	perl:tabbedex:move_tab_left
+URxvt.keysym.C-4-Right:	perl:tabbedex:move_tab_right
+URxvt.loginShell:	false
+URxvt.pasteCommand:	xclip -o -selection clipboard
+URxvt.perl-ext:	selection,mark-yank-urls,readline
+URxvt.perl-ext-common:	default,matcher,keyboard-select,url-select,clipboard,tabbedex,font
+URxvt.perl-lib:	/home/s/hell/.urxvt/
+URxvt.print-pipe:	cat > $(TMPDIR=$HOME mktemp urxvt.XXXXXX)
+URxvt.searchable-scrollback:	C-3-s
+URxvt.underlineURLs:	true
+URxvt.urlLauncher:	conkeror
+URxvt.xftAntialias:	false
+URxvt_color*background:	Black
+URxvt_color*foreground:	light grey
+XTerm*AutoRaise:	on
+XTerm*ScrollBar:	off
+XTerm*TextUnderIcon:	on
+XTerm*TitleBar:	on
+XTerm*VT100*font1:	nil2
+XTerm*VT100.metaSendsEscape:	True
+XTerm*allowSendEvents:	True
+XTerm*applicationKeypadMode:	True
+XTerm*autoWrap:	true
+XTerm*background:	Black
+XTerm*c132:	True
+XTerm*cursorColor:	Red
+XTerm*fontMenu*font1*Label:	Unreadable
+XTerm*fontMenu*fontdefault*Label:	Default
+XTerm*fontMenu.Label:	VT Fonts
+XTerm*foreground:	light grey
+XTerm*fullCursor:	true
+XTerm*jumpScroll:	on
+XTerm*pointerColor:	Black
+XTerm*pointerShape:	XTerm
+XTerm*reverseVideo:	false
+XTerm*reverseWrap:	false
+XTerm*saveLines:	4096
+XTerm*scrollBar:	true
+XTerm*scrollKey:	on
+XTerm*scrollTtyOutput:	off
+XTerm*termtype:	vt100
+XTerm*titleBar:	false
+XTerm*ttyModes:	intr ^c erase  susp ^@ dsusp ^@ kill ^u eof ^d
+XTerm_color*background:	Black
+XTerm_color*cursorColor:	Orchid
+XTerm_color*foreground:	light grey
+XTerm_color*reverseVideo:	false
+Xautolock.corners:	0000
+Xautolock.locker:	alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=away&message='
+Xautolock.noclose:	true
+Xautolock.notifier:	ubuntu-sharad = taj
+Xautolock.notify:	60
+Xautolock.time:	7
+Xft.antialias:	1
+Xft.dpi:	96
+Xft.hinting:	1
+Xft.hintstyle:	hintslight
+Xft.lcdfilter:	lcddefault
+Xft.rgba:	rgb
+Xlock.mode:	blank
+Xlock.mousemotion:	on
+emacs*Background:	black
+emacs*ttyModes:	intr ^c erase  susp ^@ dsusp ^@ kill ^u eof ^d
+urxvt*font:	xft:DejaVu Sans Mono, Lohit Nepali:style=Regular, Lohit Konkani:style=Regular, Sarai:style=Regular, Lohit Marathi:style=Regular, Samanata:style=Regular, gargi:style=Medium, Samyak Devanagari:style=Regular, Nakula:style=Regular, Lohit Kashmiri:style=Regular, Chandas:style=Regular, Lohit Maithili:style=Regular, Lohit Hindi:style=Regular, FreeSans:style=Medium,нормален,obyčejné,normal,Mittel,µεσαία,Normaali,Normál,Medio,Gemiddeld,Odmiana Zwykła,Обычный,Normálne,menengah,прямій,Navadno,vidējs,normalusis,vừa,Arrunta, FreeSerif:style=Medium,нормален,obyčejné,normal,Mittel,µεσαία,Normaali,Normál,Normale,Gemiddeld,odmiana zwykła,Обычный,Normálne,ปกติ,menengah,прямій,Navadno,vidējs,normalusis,vừa,Arrunta, Sahadeva:style=Regular, Lohit Sindhi:style=Regular
+urxvt.keysym.Control-Shift-Down:	perl:font:decrement
+urxvt.keysym.Control-Shift-Up:	perl:font:increment
+xautolock*locker:	alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=away&message='
+xautolock*noclose:	true
+xautolock*notifier:	ubuntu-sharad = taj
+xautolock*notify:	60
+xautolock*time:	7
+xautolock.corners:	0000
+xman*manualFontNormal:	8x16
+xterm*AutoRaise:	on
+xterm*ScrollBar:	off
+xterm*TextUnderIcon:	on
+xterm*TitleBar:	on
+xterm*VT100*font9:	-*-terminal-*-*-*-*-*-*-*-*-*-*-*-*
+xterm*autoWrap:	true
+xterm*background:	Black
+xterm*font:	10x20
+xterm*foreground:	light grey
+xterm*metaSendsEscape:	True
+xterm*termtype:	vt100
+xterm*ttyModes:	intr ^c erase  susp ^@ dsusp ^@ kill ^u eof ^d
+yeadconsole.restart:	1
+yeahconsole*aniDelay:	1
+yeahconsole*consoleHeight:	20
+yeahconsole*keyFull:	Control+F11
+yeahconsole*stepSize:	20
+yeahconsole*term:	urxvtc
