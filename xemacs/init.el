@@ -34,7 +34,9 @@
 (load-file "~/.xemacs/utils.el")
 (load-file "~/.xemacs/macros.el")
 
-
+(deh-require-maybe cl ; a rare necessary use of REQUIRE
+  ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
+  (defvar *emacs-load-start* (current-time)))
 ;;
 
 
@@ -184,5 +186,14 @@
 
 
 (put 'scroll-left 'disabled nil)
+
+;; (when (boundp '*emacs-load-start*)
+;;   ;; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
+;;     (message "My .emacs loaded in %ds"
+;;              (destructuring-bind (hi lo ms) (current-time)
+;;                (- (+ hi lo) (+ (first *emacs-load-start*) (second *emacs-load-start*))))))
+
+
+(message "My .emacs loaded in %s" (emacs-init-time))
 
 

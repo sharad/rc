@@ -45,6 +45,8 @@
                                         ;(define-key py-mode-map [tab] 'yas/expand)
                                         ;(setq yas/after-exit-snippet-hook 'indent-according-to-mode)
               (smart-operator-mode-on)))
+
+  (global-unset-key (kbd "C-x pn"))
   ;; pymacs
   (autoload 'pymacs-apply "pymacs")
   (autoload 'pymacs-call "pymacs")

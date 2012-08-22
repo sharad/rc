@@ -293,6 +293,7 @@ alkready should not exist.")
 (setq pgm-langs
       '(java
         c
+        c++
         perl
         lisp
         emacs-lisp
@@ -301,7 +302,7 @@ alkready should not exist.")
         espresso
         ruby
         sh
-        ))
+        python))
 
 
 
