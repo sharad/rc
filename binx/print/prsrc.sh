@@ -5,21 +5,18 @@ function main() {
 
     blankpage=$(tempfile)
 
-    cat <<'EOF' > ${blankpage}.ps
-/Arial findfont
-12 scalefont
-setfont
-175 700
-showpage
-EOF
-
+    echo -n showpage > ${blankpage}.ps # repforum
     ps2pdf ${blankpage}.ps ${blankpage}.pdf
 
     if [ -d $src ] ; then
         cd $src
         if [ $test ] ; then
+            echo running
+            echo find $rest -type f
             eval find $rest -type f
         else
+            echo running
+            echo find $rest -type f
             files=( ${(f)"$(eval find $rest -type f )"} )
             foreach f ($files) {
                 mkdir -p $dst/$(dirname $f)

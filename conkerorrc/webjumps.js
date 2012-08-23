@@ -712,4 +712,28 @@ define_webjump(
 //}}
 
 
+//{{ People
+define_webjump(
+    "people/123people",
+    "http://www.123people.com/s/%s");
+
+define_webjump(
+    "people/spokeo",
+    "http://www.spokeo.com/search?q=%s");
+
+define_webjump(
+    "train/schedule",
+    function (term) {
+        if (! term)
+            return "http://www.zoominfo.com/";
+        return load_spec(
+            { uri: "http://www.zoominfo.com/",
+              post_data: make_post_data([
+                  ['personName', term],
+                  ['submit', 'find']
+              ])
+    },
+    $argument = 'optional')});
+
+//}}
 
