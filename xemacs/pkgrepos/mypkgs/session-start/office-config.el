@@ -51,4 +51,14 @@
     (set (make-local-variable 'before-save-hook) before-save-hook)
     (remove-hook 'before-save-hook 'delete-trailing-whitespace t)))
 
+
+(defun create-bug (bug)
+  (interactive "nBug number: ")
+  (make-directory (concat "/home/s/paradise/bugs/" (number-to-string bug)) t)
+  (unless (write-region (format "\n\n* Bug %d analysis\n\n" bug) nil
+                        (concat "/home/s/paradise/bugs/" (number-to-string bug) "/an0.org")
+                        nil nil nil t)
+    (find-file (concat "/home/s/paradise/bugs/" (number-to-string bug) "/an0.org"))))
+
 (provide 'office-config)
+

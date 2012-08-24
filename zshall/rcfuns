@@ -166,3 +166,27 @@ function ldapsearchor () {
     fi
 }
 
+DIRLEAVEHOOKFILE=.dirleavehook
+DIRENTERHOOKFILE=.direnterhook
+function _dir_leave_hook() {
+    [ -r ${OLDPWD}/${DIRLEAVEHOOKFILE:-.dirleavehook} ] && source ${OLDPWD}/${DIRLEAVEHOOKFILE:-.dirleavehook}
+}
+function _dir_enter_hook() {
+    [ -r ${PWD}/${DIRENTERHOOKFILE:-.direnterhook} ] && source ${PWD}/${DIRENTERHOOKFILE:-.direnterhook}
+}
+chpwd_functions=(${chpwd_functions[@]} "_dir_leave_hook")
+
+chpwd_functions=(${chpwd_functions[@]} "_dir_enter_hook")
+
+function scrmkcd () {
+    scratchdir=$(mktemp -d -u -p  IIIIIII  --tmpdir=/tmp --suffix=QQQ XXXXXXXXXXXXXXXX)
+    [[ -n $rcdebug ]] && echo $scratchdir >&2
+    if mkdir -p ${scratchdir} && cd ${scratchdir} ; then
+        cat <<EOF > ${DIRLEAVEHOOKFILE:-.dirleavehook}
+        if read -q resp"?Should I delete ${scratchdir}: [n] " ; then
+         sched -o +60:0 rm -rf ${scratchdir} && echo && echo will removed ${scratchdir} after 1 hour. >&2
+        fi
+EOF
+    fi
+}
+
