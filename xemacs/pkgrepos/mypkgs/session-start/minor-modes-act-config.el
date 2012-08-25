@@ -60,7 +60,7 @@
   (let ((file (or file
                   (buffer-file-name (current-buffer)))))
     (if (not (vc-backend file))
-        (vc-rcs-register (list file))))Aga Abbas Ali Rd, Halasuru, Bengaluru, Karnataka, India)
+        (vc-rcs-register (list file)))))
 
 ;; (remove-hook 'after-save-hook 'put-file-in-rcs)
 
