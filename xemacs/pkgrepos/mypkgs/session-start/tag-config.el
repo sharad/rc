@@ -7,7 +7,9 @@
 ;; (defadvice find-tag (before c-tag-file () activate)
 
 ;; (defadvice find-tag (before c-tag-file () disable)
-(defadvice find-tag (before c-tag-file () disable)
+;; (defadvice find-tag (before c-tag-file () preactivate)
+
+(defadvice find-tag (before c-tag-file last () activate)
   "Automatically create tags file."
   (let ((tag-file (concat default-directory "TAGS")))
     (unless (file-exists-p tag-file)

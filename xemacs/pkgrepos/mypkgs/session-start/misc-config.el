@@ -300,5 +300,11 @@ The indirect buffer can have another major mode."
       (let ((contents (read (current-buffer))))
         (cdr contents)))))
 
+
+(add-hook 'delete-frame-hook
+          '(lambda ()
+            (if (< (length (frame-list)) 3)
+                (session-save-sessoin))))
+
 (provide 'misc-config)
 
