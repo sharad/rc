@@ -46,17 +46,16 @@
 (defun task-status-map (sys status)
   (cdr (assoc sys (cdr (assoc status status-mappings)))))
 
+;; (defun task-status-add-map (sys status sysstatus)
+;;   (pushnew-alist ',sys ',sysstatus (cdr (assoc ',status status-mappings))
+;;                  :test #'(lambda (a b)
+;;                            (equal (car a) (car b))))))
+
 (defmacro task-status-add-map (sys status sysstatus)
   `(pushnew (cons ',sys ',sysstatus)
             (cdr (assoc ',status status-mappings))
             :test #'(lambda (a b)
                       (equal (car a) (car b)))))
-
-;; (defmacro task-status-add-map (sys status sysstatus)
-;;   `(pushnew (cons ',sys ',sysstatus)
-;;             (cdr (assoc ',status status-mappings))
-;;             :test #'(lambda (a b)
-;;                       (equal (car a) (car b)))))
 
 (defmacro task-status-add-maps (sys maps)
   `(progn
