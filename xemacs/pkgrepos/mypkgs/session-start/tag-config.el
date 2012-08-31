@@ -11,14 +11,23 @@
 (defvar *dirs-having-tag-files-alist* nil "place to keep dir entries who already have tag/gtag/cscope files.")
 (defvar *tag-systems-files-alist*
   '((etags  . ("TAGS"))
-    (gtags  . ("GTAGS" "GRTAGS" "GPATHS"))
+    (gtags  . ("GTAGS" "GRTAGS" "GPATH"))
     (cscope . ("cscope.out")))
   "Different tag systems files.")
+
+(defun push-dir-in-tag-sys-alist (tag-sys dir)
+    (unless (assoc tag-sys *dirs-having-tag-files-alist*)
+      (pushnew (cons tag-sys nil)
+               *dirs-having-tag-files-alist* :key #'car))
+  (pushnew (file-truename dir)
+           (cdr (assoc tag-sys *dirs-having-tag-files-alist*))
+           :test #'string-equal))
 
 (defun search-upwards (filename starting-path)
   ;; from: https://lists.ubuntu.com/archives/bazaar/2009q2/057669.html
   "Search for `filename' in every directory from `starting-path' up."
   (let ((path (file-name-as-directory starting-path)))
+    (message "path %s" (concat path filename))
     (if (file-exists-p (concat path filename))
         path
         (let ((parent (file-name-directory (directory-file-name path))))
@@ -27,17 +36,21 @@
               (search-upwards filename parent))))))
 
 (defun issubdirp (superdir subdir)
+  (message "issubdirp %s %s" superdir subdir)
   (let ((superdir (file-truename superdir))
         (subdir (file-truename subdir)))
     (string-prefix-p superdir subdir)))
 
 (defun tag-file-existp-main (tag-sys dir)
-  (every '(lambda (file)
-           (search-upwards file dir))
-         (cdr (assoc tag-sys *tag-systems-files-alist*))))
+  (if (every '(lambda (file)
+               (search-upwards file dir))
+             (cdr (assoc tag-sys *tag-systems-files-alist*)))
+      (push-dir-in-tag-sys-alist tag-sys dir)))
 
 (defun tag-file-existp (tag-sys dir)
-  (let (dirs (cdr (assoc 'tag-sys *dirs-having-tag-files-alist*)))
+  (message "tag-file-existp %s %s" tag-sys dir)
+  (let ((dirs (cdr (assoc tag-sys *dirs-having-tag-files-alist*))))
+    (message "tag-file-existp dirs %s" dirs)
     (if (some '(lambda (d)
                     (issubdirp d dir))
                   dirs)
@@ -60,25 +73,28 @@
 
 (defun create-tags (tag-sys dir)
   (let ((dir (ido-read-directory-name (format "Directory to create %s files: " tag-sys) dir dir t)))
-    (funcall (cdr (assoc tag-sys *create-tags-alist*)) dir)))
+    (when (funcall (cdr (assoc tag-sys *create-tags-alist*)) dir)
+      (push-dir-in-tag-sys-alist tag-sys dir))))
 
 (defun create-etags (dir)
   "Create etags file."
-  (let* ((fmt "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS - 2>/dev/null")
+  (let* ((fmt "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
          (cmd (read-from-minibuffer "etag cmd: " (format fmt dir))))
     (eshell-command cmd)))
 
 (defun create-gtags (dir)
   "Create etags file."
-  (let* ((fmt "find %s  -path '*.svn*'  -prune -o -type f | gtags -f - 2>/dev/null")
-         (cmd (read-from-minibuffer "etag cmd: " (format fmt dir))))
-    (eshell-command cmd)))
+  (let* ((fmt "gtags -v 2>/dev/null")
+         (cmd (read-from-minibuffer "gtag cmd: " (format fmt dir))))
+    (let ((default-directory dir))
+      (async-shell-command cmd))))
 
 (defun create-cscope (dir)
   "Create etags file."
-  (let* ((fmt "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS - 2>/dev/null")
-         (cmd (read-from-minibuffer "etag cmd: " (format fmt dir))))
-    (eshell-command cmd)))
+  (let* ((fmt "cscope -Rb - 2>/dev/null")
+         (cmd (read-from-minibuffer "cscope cmd: " (format fmt dir))))
+    (let ((default-directory dir))
+      (async-shell-command cmd))))
 
 ;; (defun create-c-tags (dir-name)
 ;;   "Create tags file."
@@ -197,7 +213,7 @@
                                  (buffer-list)) ))))
       (cond (latest-gtags-buffer
              (switch-to-buffer latest-gtags-buffer)
-             (next-line)
+             (forward-line)
              (gtags-select-it nil)))))
 
   ;; Here’s my key binding for using GNU Global.
