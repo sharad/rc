@@ -351,6 +351,14 @@ define_webjump("trans", "http://translate.google.com/translate_t#auto|en|%s");
 
 define_webjump("urban", "http://www.urbandictionary.com/define.php?term=%s");
 
+// 2.7.8. Acronyms finders
+define_webjump("acronyms/wiktionary", "http://en.wiktionary.org/wiki/%s");
+define_webjump("acronyms/netlingo", "http://www.netlingo.com/word/%s.php");
+define_webjump("acronyms/slang", "http://www.internetslang.com/%s-meaning-definition.asp");
+define_webjump("acronyms/abbreviations", "http://www.abbreviations.com/%s");
+define_webjump("acronyms/acronyms", "http://acronyms.thefreedictionary.com/%s");
+
+
 // 2.8. Network Tools
 
 // 2.8.1. Down for everyone or just me?

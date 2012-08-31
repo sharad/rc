@@ -25,3 +25,9 @@
 [submodule "xemacs/packages/tea-time"]
 	path = xemacs/packages/tea-time
 	url = git://github.com/krick/tea-time.git
+[submodule "xemacs/pkgrepos/world/mk-project"]
+	path = xemacs/pkgrepos/world/mk-project
+	url = https://github.com/mattkeller/mk-project.git
+[submodule "xemacs/pkgrepos/world/eproject-another"]
+	path = xemacs/pkgrepos/world/eproject-another
+	url = https://github.com/jrockway/eproject.git

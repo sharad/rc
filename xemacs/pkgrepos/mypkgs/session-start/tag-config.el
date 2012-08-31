@@ -15,13 +15,13 @@
     (cscope . ("cscope.out")))
   "Different tag systems files.")
 
+(defun pushnew-alist (key value list)
+  (unless (assoc key list)
+    (pushnew (cons key nil) list :key #'car))
+  (pushnew value (cdr (assoc key list)) :test #'string-equal))
+
 (defun push-dir-in-tag-sys-alist (tag-sys dir)
-    (unless (assoc tag-sys *dirs-having-tag-files-alist*)
-      (pushnew (cons tag-sys nil)
-               *dirs-having-tag-files-alist* :key #'car))
-  (pushnew (file-truename dir)
-           (cdr (assoc tag-sys *dirs-having-tag-files-alist*))
-           :test #'string-equal))
+  (pushnew-alist tag-sys dir *dirs-having-tag-files-alist*))
 
 (defun search-upwards (filename starting-path)
   ;; from: https://lists.ubuntu.com/archives/bazaar/2009q2/057669.html
