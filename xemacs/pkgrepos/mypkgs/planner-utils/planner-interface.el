@@ -38,8 +38,18 @@
 
 (defvar task-stati '(open inprogress completed cancelled delegated pending))
 
+(defun pushnew-alist (key value list)
+  (unless (assoc key list)
+    (pushnew (cons key nil) list :key #'car))
+  (pushnew value (cdr (assoc key list)) :test #'string-equal))
+
 (defun task-status-map (sys status)
   (cdr (assoc sys (cdr (assoc status status-mappings)))))
+
+;; (defun task-status-add-map (sys status sysstatus)
+;;   (pushnew-alist ',sys ',sysstatus (cdr (assoc ',status status-mappings))
+;;                  :test #'(lambda (a b)
+;;                            (equal (car a) (car b))))))
 
 (defmacro task-status-add-map (sys status sysstatus)
   `(pushnew (cons ',sys ',sysstatus)

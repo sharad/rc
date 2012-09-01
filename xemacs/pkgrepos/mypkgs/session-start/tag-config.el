@@ -2,29 +2,62 @@
 ;; The following will automatically create a TAGS file from within Emacs
 ;; itself if none exists. Just hit `M-. and youre off.
 
-;; (defadvice find-tag (before c-tag-file () preactivate)
-;; (defadvice find-tag (before c-tag-file () preactivate)
-;; (defadvice find-tag (before c-tag-file () activate)
+(require 'cl)
 
-;; (defadvice find-tag (before c-tag-file () disable)
-(defadvice find-tag (before c-tag-file () disable)
-  "Automatically create tags file."
-  (let ((tag-file (concat default-directory "TAGS")))
-    (unless (file-exists-p tag-file)
-      (create-tags default-directory))
-    (visit-tags-table tag-file)))
+(defvar *create-tags-alist* '((cscope . create-cscope)
+                              (etags  . create-etags)
+                              (gtags  . create-gtags))
+  "Function names.")
+(defvar *dirs-having-tag-files-alist* nil "place to keep dir entries who already have tag/gtag/cscope files.")
+(defvar *tag-systems-files-alist*
+  '((etags  . ("TAGS"))
+    (gtags  . ("GTAGS" "GRTAGS" "GPATH"))
+    (cscope . ("cscope.out")))
+  "Different tag systems files.")
 
+(defun pushnew-alist (key value list)
+  (unless (assoc key list)
+    (pushnew (cons key nil) list :key #'car))
+  (pushnew value (cdr (assoc key list)) :test #'string-equal))
 
-;; ref: http://www.emacswiki.org/cgi-bin/wiki/EmacsTags
-;; Completion
-;; You can use M-x complete-tag to get simple (ie context
-;; free) symbol name Completion. This works like other types of
-;; completion in emacs, if there are multiple possibilities a window will
-;; be opened showing them all. This used to be bound to M-TAB by default
-;; but as many window managers use this to switch between windows, I tend
-;; to use M-RET instead.
-(global-set-key (kbd "M-<return>") 'complete-tag)
+(defun push-dir-in-tag-sys-alist (tag-sys dir)
+  (pushnew-alist tag-sys dir *dirs-having-tag-files-alist*))
 
+(defun search-upwards (filename starting-path)
+  ;; from: https://lists.ubuntu.com/archives/bazaar/2009q2/057669.html
+  "Search for `filename' in every directory from `starting-path' up."
+  (let ((path (file-name-as-directory starting-path)))
+    (message "path %s" (concat path filename))
+    (if (file-exists-p (concat path filename))
+        path
+        (let ((parent (file-name-directory (directory-file-name path))))
+          (if (string= parent path)
+              nil
+              (search-upwards filename parent))))))
+
+(defun issubdirp (superdir subdir)
+  (message "issubdirp %s %s" superdir subdir)
+  (let ((superdir (file-truename superdir))
+        (subdir (file-truename subdir)))
+    (string-prefix-p superdir subdir)))
+
+(defun tag-file-existp-main (tag-sys dir)
+  (if (every '(lambda (file)
+               (search-upwards file dir))
+             (cdr (assoc tag-sys *tag-systems-files-alist*)))
+      (push-dir-in-tag-sys-alist tag-sys dir)))
+
+(defun tag-file-existp (tag-sys dir)
+  (message "tag-file-existp %s %s" tag-sys dir)
+  (let ((dirs (cdr (assoc tag-sys *dirs-having-tag-files-alist*))))
+    (message "tag-file-existp dirs %s" dirs)
+    (if (some '(lambda (d)
+                    (issubdirp d dir))
+                  dirs)
+        t
+        (tag-file-existp-main tag-sys dir))))
+
+;;;;;;;;;;;;;;;;;;
 ;; ref: http://www.emacswiki.org/cgi-bin/wiki/BuildTags
 ;; Or to build a tags file for a source tree (e.g. the linux kernel) you can use something like:
 ;;
@@ -37,14 +70,31 @@
 ;;
 ;; Or to build the tags file within emacs, put this in your .emacs file:
 
-(defvar *etag-cmd-fmt* "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS - 2>/dev/null")
-(defvar *gtag-cmd-fmt* "find %s  -path '*.svn*'  -prune -o -type f | gtags -f - 2>/dev/null")
 
-(defun create-tags (dir-name)
-  "Create tags file."
-  (interactive "DDirectory: ")
-  (let ((cmd (read-from-minibuffer "tag cmd: " (format *gtag-cmd-fmt* dir-name))))
+(defun create-tags (tag-sys dir)
+  (let ((dir (ido-read-directory-name (format "Directory to create %s files: " tag-sys) dir dir t)))
+    (when (funcall (cdr (assoc tag-sys *create-tags-alist*)) dir)
+      (push-dir-in-tag-sys-alist tag-sys dir))))
+
+(defun create-etags (dir)
+  "Create etags file."
+  (let* ((fmt "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
+         (cmd (read-from-minibuffer "etag cmd: " (format fmt dir))))
     (eshell-command cmd)))
+
+(defun create-gtags (dir)
+  "Create etags file."
+  (let* ((fmt "gtags -v 2>/dev/null")
+         (cmd (read-from-minibuffer "gtag cmd: " (format fmt dir))))
+    (let ((default-directory dir))
+      (async-shell-command cmd))))
+
+(defun create-cscope (dir)
+  "Create etags file."
+  (let* ((fmt "cscope -Rb - 2>/dev/null")
+         (cmd (read-from-minibuffer "cscope cmd: " (format fmt dir))))
+    (let ((default-directory dir))
+      (async-shell-command cmd))))
 
 ;; (defun create-c-tags (dir-name)
 ;;   "Create tags file."
@@ -61,6 +111,49 @@
 ;; This package provides a function which rebuilds the TagFile being used
 ;; by the current buffer. You can pre-configure the shell command based
 ;; on the tag file being built.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;; (defadvice find-tag (before c-tag-file () preactivate)
+;; (defadvice find-tag (before c-tag-file () preactivate)
+;; (defadvice find-tag (before c-tag-file () activate)
+;; (defadvice find-tag (before c-tag-file () disable)
+;; (defadvice find-tag (before c-tag-file () preactivate)
+
+;; (defadvice find-tag (before c-tag-file last () disable)
+;;   "Automatically create tags file."
+;;   (let ((tag-file (concat default-directory "TAGS")))
+;;     (unless (tag-file-existp 'etags default-directory)
+;;       (create-tags 'etags default-directory))
+;;     (visit-tags-table tag-file)))
+
+(defmacro create-tags-before (tag-sys find-fun)
+  `(defadvice ,find-fun (before create-tags last () activate)
+     "Automatically create tags file."
+     (unless (tag-file-existp ',tag-sys default-directory)
+       (create-tags ',tag-sys default-directory))))
+
+(create-tags-before etags find-tag)
+(create-tags-before gtags gtags-find-tag)
+(create-tags-before cscope cscope-find-this-symbol)
+
+
+;; (defadvice find-tag (before create-tags last () activate)
+;;   "Automatically create tags file."
+;;   (unless (tag-file-existp 'etags default-directory)
+;;     (create-tags 'etags default-directory)))
+
+
+;; ref: http://www.emacswiki.org/cgi-bin/wiki/EmacsTags
+;; Completion
+;; You can use M-x complete-tag to get simple (ie context
+;; free) symbol name Completion. This works like other types of
+;; completion in emacs, if there are multiple possibilities a window will
+;; be opened showing them all. This used to be bound to M-TAB by default
+;; but as many window managers use this to switch between windows, I tend
+;; to use M-RET instead.
+(global-set-key (kbd "M-<return>") 'complete-tag)
+
 
 
 (deh-require-maybe gtags
@@ -120,7 +213,7 @@
                                  (buffer-list)) ))))
       (cond (latest-gtags-buffer
              (switch-to-buffer latest-gtags-buffer)
-             (next-line)
+             (forward-line)
              (gtags-select-it nil)))))
 
   ;; Here’s my key binding for using GNU Global.

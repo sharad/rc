@@ -21,6 +21,17 @@
 ;;
 
 
+;; breadcrumb
+(deh-require-maybe breadcrumb
+  ;;
+  )
+
+;; bm
+(deh-require-maybe bm
+  ;;
+  )
+
+
 ;; save bookmarks
 
 (require 'bookmark+)

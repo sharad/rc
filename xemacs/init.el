@@ -194,6 +194,6 @@
 ;;                (- (+ hi lo) (+ (first *emacs-load-start*) (second *emacs-load-start*))))))
 
 
-(message "My .emacs loaded in %s" (emacs-init-time))
+;; (message "My .emacs loaded in %s" (emacs-init-time))
 
 
