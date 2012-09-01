@@ -505,13 +505,14 @@ sub tab_key_press {
          $self->update_autohide (1);
          $self->refresh;
          return 1;
-     } # elsif ($keysym == 0x61) { # a
-     #     $tab->{notify_activity} = 1;
-     #     return 1;
-     # } elsif ($keysym == 0x69) { # i
-     #     $tab->{notify_inactivity} = 1;
-     #     return 1;
-     # }
+     } elsif ($keysym == 0x61) { # a
+       # here
+         $tab->{notify_activity} = 1;
+         return 1;
+     } elsif ($keysym == 0x69) { # i
+         $tab->{notify_inactivity} = 1;
+         return 1;
+     }
 
    # } elsif ($event->{state} & urxvt::ControlMask) {
    } elsif ($event->{state} & urxvt::Mod3Mask) {
