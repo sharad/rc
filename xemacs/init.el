@@ -34,7 +34,7 @@
 (load-file "~/.xemacs/utils.el")
 (load-file "~/.xemacs/macros.el")
 
-(deh-require-maybe cl ; a rare necessary use of REQUIRE
+(when (require 'cl nil) ; a rare necessary use of REQUIRE
   ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
   (defvar *emacs-load-start* (current-time)))
 ;;

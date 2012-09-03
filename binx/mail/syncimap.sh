@@ -122,7 +122,14 @@ function gnome-keyring-attach() {
     if pgrep ${WM} ; then
         local pid=$(ps -C ${WM} -o pid --no-heading)
         eval "unset ${vars[@]}; $(printf "export %s;" $(sed 's/\x00/\n/g' /proc/${pid//[^0-9]/}/environ | grep $(printf -- "-e ^%s= " "${vars[@]}")) )"
+
+    else
+        exit 1;
     fi
+
+    if        ! timeout -s KILL 4 ~/bin/get-imap-pass ; then
+	exit 1;
+	fi	
 }
 
 pgm=$(basename $0)

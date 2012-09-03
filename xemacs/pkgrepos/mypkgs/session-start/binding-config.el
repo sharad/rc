@@ -1,17 +1,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-07-12 18:53:01 s>
+;; Time-stamp: <2012-09-03 08:35:33 s>
 ;;
 
 (deh-section "Key binding utils"
 
-  (defvar replacement-map '(("M" . "s")) "default replacement key modifiers.")
+(eval-when-compile
+ (defvar replacement-map '(("M" . "s")) "default replacement key modifiers.")
 
   (defun replace-modifier (keys map)
     (dolist (v map keys)
       (setq keys
             (replace-regexp-in-string (concat (car v) "-")
-                                      (concat (cdr v) "-") keys t)))))
+                                      (concat (cdr v) "-") keys t))))))
 
 (defmacro global-set-key-replace (keys cmd &optional rep-map)
   (let ((rep-map (or rep-map replacement-map)))

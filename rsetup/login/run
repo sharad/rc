@@ -1,6 +1,8 @@
 #!/bin/zsh
 
 
+
+
 if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connection, and when user is root.
 
     if whence -p amixer > /dev/null ; then
