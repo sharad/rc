@@ -138,13 +138,13 @@ column.format:
 	"Destination", "%d",
 	"bssid", "%Cus:wlan.bssid:0:R",
 	"Protocol", "%p",
-	"ssid", "%Cus:wlan_mgt.ssid:0:R:0:R",
-	"aid", "%Cus:wlan.aid:0:R",
-	"Length", "%L",
-	"channel", "%Cus:wlan.channel:0:R",
+	"ssid", "%Cus:wlan_mgt.ssid:0:R",
+	"Info", "%i",
 	"wlanseq", "%Cus:wlan.seq:0:R",
-	"duration", "%Cus:wlan.:0:R",
-	"Info", "%i"
+	"channel", "%Cus:wlan.channel:0:R",
+	"duration", "%Cus:wlan.duration:0:R",
+	"aid", "%Cus:wlan.aid:0:R",
+	"Length", "%L"
 
 ######## User Interface: Font ########
 

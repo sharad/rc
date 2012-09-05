@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-09-03 08:35:33 s>
+;; Time-stamp: <2012-09-05 12:55:14 s>
 ;;
 
 (deh-section "Key binding utils"
@@ -293,6 +293,14 @@ and their terminal equivalents.")
 
 (deh-require-maybe xcscope
  (define-key cscope-list-entry-keymap "q" 'bury-buffer))
+
+
+(deh-require-maybe ido-mode
+  (defun insert-ts ()
+    (interactive)
+    (insert (time-stamp-string "-%:y-%02m-%02d-%02H:%02M:%02S-%u.")))
+
+  (define-key ido-file-completion-map (kbd "C-,") 'insert-ts))
 
 (provide 'binding-config)
 
