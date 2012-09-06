@@ -1,9 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-09-05 12:55:14 s>
+;; Time-stamp: <2012-09-06 17:34:23 s>
 ;;
 
-(deh-section "Key binding utils"
+;; (deh-section "Key binding utils"
+;; )
 
 (eval-when-compile
  (defvar replacement-map '(("M" . "s")) "default replacement key modifiers.")
@@ -12,7 +13,7 @@
     (dolist (v map keys)
       (setq keys
             (replace-regexp-in-string (concat (car v) "-")
-                                      (concat (cdr v) "-") keys t))))))
+                                      (concat (cdr v) "-") keys t)))))
 
 (defmacro global-set-key-replace (keys cmd &optional rep-map)
   (let ((rep-map (or rep-map replacement-map)))
@@ -301,6 +302,12 @@ and their terminal equivalents.")
     (insert (time-stamp-string "-%:y-%02m-%02d-%02H:%02M:%02S-%u.")))
 
   (define-key ido-file-completion-map (kbd "C-,") 'insert-ts))
+
+(deh-require-maybe muse-mode
+  (defun muse-help ()
+    (interactive)
+    (find-file-other-window "/usr/share/doc/muse-el/examples/QuickStart.muse"))
+  (define-key muse-mode-local-map (kbd "C-c C-.") 'muse-help))
 
 (provide 'binding-config)
 

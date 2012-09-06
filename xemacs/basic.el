@@ -151,6 +151,7 @@ alkready should not exist.")
         (if list (afind-if fun (cdr list))))))
 
 (eval-when-compile
+
 (defun user-find-load-file (filename paths)
   (flet ((delete-trailing-slash (path)
            path)
