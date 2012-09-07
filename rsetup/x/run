@@ -1,6 +1,9 @@
 #!/usr/bin/env zsh
 # give access to mpd
 
+
+xterm -e tail -f ~/.xsession-errors &!
+
 ~/bin/syncimap -d               # disable
 
 

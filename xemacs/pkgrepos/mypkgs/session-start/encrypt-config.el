@@ -1,16 +1,23 @@
 ;; from: http://www.emacswiki.org/emacs/GnusEncryptedAuthInfo
+
+(eval-after-load "epa"
+    '(epa-file-disable))
+
 (deh-require-maybe epa-file
-  (epa-file-enable)
+
+
+  ;; (epa-file-enable)
+
   (setq epa-file-cache-passphrase-for-symmetric-encryption t)
 
 ;; now I do not want to disable agent ....
 ;;{{ http://www.enigmacurry.com/2009/01/14/extending-emacs-with-advice/
-  ;; (defadvice epg--start (around advice-epg-disable-agent disable)
-  ;;   "Make epg--start not able to find a gpg-agent"
-  ;;   (let ((agent (getenv "GPG_AGENT_INFO")))
-  ;;     (setenv "GPG_AGENT_INFO" nil)
-  ;;     ad-do-it
-  ;;     (setenv "GPG_AGENT_INFO" agent)))
+  (defadvice epg--start (around advice-epg-disable-agent disable)
+    "Make epg--start not able to find a gpg-agent"
+    (let ((agent (getenv "GPG_AGENT_INFO")))
+      (setenv "GPG_AGENT_INFO" nil)
+      ad-do-it
+      (setenv "GPG_AGENT_INFO" agent)))
   (defun epg-disable-agent ()
     "Make EasyPG bypass any gpg-agent"
     (interactive)

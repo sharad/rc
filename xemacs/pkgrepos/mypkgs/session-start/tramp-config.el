@@ -4,8 +4,15 @@
 ;;(require 'tramp) ;stop error caused by no availability of tramp.
 ;; check C-h f require
 
+(eval-after-load "tramp"
+  '(sharad/disable-startup-inperrupting-feature))
+
 (deh-require-maybe tramp
   ;; (deh-require-maybe tramp
+
+  (setq                                 ;very necessary.
+   tramp-mode nil
+   ido-mode nil)
 
   (deh-require-maybe ido
     (setq
@@ -18,7 +25,7 @@
    tramp-debug-buffer t
    ;; tramp-verbose 10
    tramp-verbose 1
-   tramp-default-user 'nil
+   tramp-default-user nil
    tramp-default-host "spratap")
   ;; http://www.gnu.org/software/tramp/#Remote-shell-setup
   (setenv "ESHELL" "bash")
@@ -187,5 +194,8 @@
 
 
 (autoload 'password-in-cache-p "password-cache")
+
+(sharad/disable-startup-inperrupting-feature)
+
 
 (provide 'tramp-config)

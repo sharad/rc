@@ -334,5 +334,23 @@ alkready should not exist.")
   ;;  (pathname-delete-trailing-/ "/sdfsd/sdgfdg////"))
   )
 
+
+(defun sharad/disable-startup-inperrupting-feature ()
+  (interactive)
+  (setq
+   tramp-mode nil
+   ido-mode nil)
+  (if (fboundp 'epa-file-disable)
+      (epa-file-disable))
+  )
+
+(defun sharad/enable-startup-inperrupting-feature ()
+  (interactive)
+  (setq
+   tramp-mode t
+   ido-mode 'both)
+  (if (fboundp 'epa-file-disable)
+      (epa-file-enable)))
+
 ;;}}
 

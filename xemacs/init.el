@@ -34,6 +34,7 @@
 (load-file "~/.xemacs/utils.el")
 (load-file "~/.xemacs/macros.el")
 
+
 (when (require 'cl nil) ; a rare necessary use of REQUIRE
   ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
   (defvar *emacs-load-start* (current-time)))
@@ -195,5 +196,8 @@
 
 
 ;; (message "My .emacs loaded in %s" (emacs-init-time))
+
+
+(sharad/enable-startup-inperrupting-feature)
 
 
