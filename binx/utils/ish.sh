@@ -1,8 +1,9 @@
 #!/bin/zsh
 
-bash -i <<EOF
-exec < /dev/tty
-$@
+RUNSHELL=bash
+
+exec $RUNSHELL -i <<EOF
+$@ < /dev/tty
 exec <> /dev/tty
 EOF
 

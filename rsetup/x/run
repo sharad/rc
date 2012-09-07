@@ -2,7 +2,7 @@
 # give access to mpd
 
 
-xterm -e tail -f ~/.xsession-errors &!
+xterm -e 'ish less ~/.xsession-errors'
 
 ~/bin/syncimap -d               # disable
 
