@@ -2,6 +2,17 @@
 
 ## see http://www.nparikh.org/unix/prompt.php
 
+if [[  $TERM == "screen" ]] ; then
+    # these color create alignment problem in screen term.
+    fg=()
+    reset_color=
+    x_bold=
+    x_unbold=
+else
+    x_bold="%B"
+    x_unbold="%b"
+fi
+
 if [ $SSH_CONNECTION ] ; then
     if ! ps1_ssh_from_host=${$(resolveip -s ${${(z)SSH_CONNECTION}[1]})//.*/} 2>/dev/null ; then
         ps1_ssh_from_host=${${(z)SSH_CONNECTION}[1]}
@@ -9,15 +20,9 @@ if [ $SSH_CONNECTION ] ; then
     if ! ps1_ssh_to_host=${$(resolveip -s ${${(z)SSH_CONNECTION}[3]})//.*/} 2>/dev/null ; then
         ps1_ssh_to_host=${${(z)SSH_CONNECTION}[3]}
     fi
-    ps1ssh_connection=%{$fg[green]%}%B${ps1_ssh_from_host}%b%{$reset_color%}'>'
+    ps1ssh_connection=%{$fg[green]%}${x_bold}${ps1_ssh_from_host}${x_unbold}%{$reset_color%}'>'
 fi
 
-
-if [[  $TERM == "screen" ]] ; then
-    # these color create alignment problem in screen term.
-    fg=()
-    reset_color=
-fi
 
 local ps1_user_default=s
 local ps1_host_default=taj
@@ -75,11 +80,11 @@ if [ $ps1_ssh_to_host ] ; then
         local ps1_user_at_host="${ps1_user_at_host}@"
     fi
     if [[  $TERM == "XYZ" ]] ; then
-                # local ps1_user_at_host="${ps1_user_at_host}%B%m%b"
-        local ps1_user_at_host="${ps1_user_at_host}%B${ps1_ssh_to_host}%b"
+                # local ps1_user_at_host="${ps1_user_at_host}${x_bold}%m${x_unbold}"
+        local ps1_user_at_host="${ps1_user_at_host}${x_bold}${ps1_ssh_to_host}${x_unbold}"
     else
-                # local ps1_user_at_host="${ps1_user_at_host}%{$fg[yellow]%}%B%m%b%{$reset_color%}"
-        local ps1_user_at_host="${ps1_user_at_host}%{$fg[yellow]%}%B${ps1_ssh_to_host}%b%{$reset_color%}"
+                # local ps1_user_at_host="${ps1_user_at_host}%{$fg[yellow]%}${x_bold}%m${x_unbold}%{$reset_color%}"
+        local ps1_user_at_host="${ps1_user_at_host}%{$fg[yellow]%}${x_bold}${ps1_ssh_to_host}${x_unbold}%{$reset_color%}"
     fi
 fi
 
@@ -102,7 +107,7 @@ fi
 
 local ps1_dir='%2~'
         # local ps1_dir='%(1~.%2~.)'
-local ps1_prompt_char='%(!.%B#%b.%%)'
+local ps1_prompt_char='%(!.${x_bold}#${x_unbold}.%%)'
 
 if [ $WINDOW ] ; then
     local spacing=" "
