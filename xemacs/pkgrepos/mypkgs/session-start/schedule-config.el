@@ -1,4 +1,4 @@
-;;; schedule.el --- Diary, Calendar etc
+;;; schedule-config.el --- Diary, Calendar etc
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -65,7 +65,11 @@
         (add-hook 'diary-display-function 'fancy-diary-display-week-graph-if-appt))))
 
 
-
+(deh-require-maybe diary-lib
+       (setq diary-display-function 'diary-fancy-display)
+       (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+       (add-hook 'diary-list-entries-hook 'diary-mark-included-diary-files)
+       (add-hook 'diary-list-entries-hook 'diary-sort-entries t))
 
 
 (provide 'schedule-config)

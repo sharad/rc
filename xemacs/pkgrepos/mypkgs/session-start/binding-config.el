@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-09-06 17:34:23 s>
+;; Time-stamp: <2012-09-11 17:03:37 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -308,6 +308,38 @@ and their terminal equivalents.")
     (interactive)
     (find-file-other-window "/usr/share/doc/muse-el/examples/QuickStart.muse"))
   (define-key muse-mode-local-map (kbd "C-c C-.") 'muse-help))
+
+
+(deh-require-maybe breadcrumb
+  ;; https://github.com/pheaver/breadcrumb
+  ;; (global-set-key-if-unbind [(shift space)]         'bc-set)            ;; Shift-SPACE for set bookmark
+  (global-set-key-if-unbind (kbd "S-SPC")         'bc-set)            ;; Shift-SPACE for set bookmark
+  ;; (global-set-key-if-unbind [(meta j)]              'bc-previous)       ;; M-j for jump to previous
+  (global-set-key-if-unbind (kbd "M-j")              'bc-previous)       ;; M-j for jump to previous
+  ;; (global-set-key-if-unbind [(shift meta j)]        'bc-next)           ;; Shift-M-j for jump to next
+  (global-set-key-if-unbind (kbd "S-M-j")        'bc-next)           ;; Shift-M-j for jump to next
+  ;; (global-set-key-if-unbind [(meta up)]             'bc-local-previous) ;; M-up-arrow for local previous
+  (global-set-key-if-unbind (kbd "M-<up>")             'bc-local-previous) ;; M-up-arrow for local previous
+  ;; (global-set-key-if-unbind [(meta down)]           'bc-local-next)     ;; M-down-arrow for local next
+  (global-set-key-if-unbind (kbd "M-<down>")           'bc-local-next)     ;; M-down-arrow for local next
+  ;; (global-set-key-if-unbind [(control c)(j)]        'bc-goto-current)   ;; C-c j for jump to current bookmark
+  (global-set-key-if-unbind (kbd "C-c j")        'bc-goto-current)   ;; C-c j for jump to current bookmark
+  ;; (global-set-key-if-unbind [(control x)(meta j)]   'bc-list)           ;; C-x M-j for the bookmark menu list
+  (global-set-key-if-unbind (kbd "C-x M-j")   'bc-list)           ;; C-x M-j for the bookmark menu list
+  )
+
+
+(deh-require-maybe bm
+  ;; https://github.com/joodland/bm
+  ;; http://www.nongnu.org/bm/
+  (global-set-key-if-unbind (kbd "<C-f2>") 'bm-toggle)
+  (global-set-key-if-unbind (kbd "<f2>")   'bm-next)
+  (global-set-key-if-unbind (kbd "<S-f2>") 'bm-previous)
+
+  (global-set-key-if-unbind (kbd "<left-fringe> <mouse-5>") 'bm-next-mouse)
+  (global-set-key-if-unbind (kbd "<left-fringe> <mouse-4>") 'bm-previous-mouse)
+  (global-set-key-if-unbind (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
+  )
 
 (provide 'binding-config)
 

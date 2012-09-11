@@ -23,20 +23,21 @@ function main() {
         # pkill offlineimap
         if nm-tool | egrep -q 'DNS:[[:space:]]+[1-9]' ||
            nm-tool | egrep -q 'State:[[:space:]]+connected'; then
-            if ! pgrep offlineimap >& /dev/null; then
+            if ! pgrep offlineimap ; then
+                echo y
                 if [  $interactive  ] ; then
                     offlineimap -a ${account:-$OFFLINEIMAPACCOUNT}
                 else
-                    # wait till 3 min then send SIGINT.
-                    # xwarn="$( timeout -s KILL 70 offlineimap -1 -u quiet -a ${account:-$OFFLINEIMAPACCOUNT} |& egrep -i 'WARNING|Error' )" &&
-                    # warn "Some problem with OfflineImap\nPlease check as soon as possible.\n${xwarn}"
                     timeout -s KILL 70 offlineimap -1 -u quiet -a ${account:-$OFFLINEIMAPACCOUNT}
                 fi
             else
+                echo n
+                exit 0;
                 verbose already offline map running with pid $(pgrep offlineimap).
             fi
         else
             verbose no network connectivity.
+            exit 0;
         fi
     fi
 }
@@ -129,7 +130,7 @@ function gnome-keyring-attach() {
 
     if        ! timeout -s KILL 4 ~/bin/get-imap-pass ; then
 	exit 1;
-	fi	
+	fi
 }
 
 pgm=$(basename $0)
