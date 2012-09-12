@@ -99,19 +99,22 @@
   ;; }}
 
 
+  (defun ssh-agent-add-key ()
+    ;; (shell-command "ssh-add -l 2>&1 > /dev/null || ssh-add ~/.ssh/login-keys.d/github < /dev/null 2>&1 > /dev/null" nil nil)
+    )
+
   (defun update-ssh-agent (&optional force)
     (interactive "P")
     (let (;; (agent-file (concat "~/.emacs.d/ssh-agent-" (getenv "HOST") ".el"))
-          (agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el"))
-          )
-      (if (or
-           force
-           (null (getenv "SSH_AGENT_PID")))
+          (agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el")))
+      (if (or force (null (getenv "SSH_AGENT_PID")))
           (if (file-exists-p agent-file)
               (progn
                 (tramp-cleanup-all-connections)
-                (load agent-file t t))
-              (message "Unable to find agent file.")))))
+                (load agent-file t t)
+                (ssh-agent-add-key))
+              (message "Unable to find agent file."))
+          (ssh-agent-add-key))))
 
   (defadvice tramp-file-name-handler
       (before ad-update-ssh-agent-env activate)

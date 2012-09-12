@@ -25,7 +25,14 @@
 ;;; Code:
 
 
+(deh-require-maybe eproject
+    )
 
+(deh-require-maybe eproject-ruby
+    )
+
+(deh-require-maybe mk-project
+    )
 
 (eval-after-load "project-buffer-mode"
   '(progn
