@@ -25,7 +25,24 @@
 ;;; Code:
 
 
+(deh-require-maybe find-file-in-project
+  ;; If non-nil, this function is called to determine the project root.
+  (setq
+   ffip-project-root-function nil
+   ;; define suitable functon for it.
+   ffip-project-root "~/"
+   ffip-patterns (append '("*.cpp" "*.h") ffip-patterns)
+   )
 
+  (defun ffip-set-project-root ()
+    (interactive)
+    (setq ffip-project-root (ido-read-directory-name "FFip Root Dir: " ffip-project-root)))
+
+(deh-require-maybe lusty-explorer
+  )
+
+(deh-require-maybe ff-paths
+  (ff-paths-install))
 
 (deh-section "File no writable problem"
   (make-variable-buffer-local

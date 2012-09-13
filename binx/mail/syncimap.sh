@@ -101,15 +101,17 @@ function verbose() {
 }
 
 function notify() {
-    if [ -t 1 ] ; then
-        print ${pgm}: $@
-    else
-        notify-send ${pgm}: $@
-    fi
+    echo ${pgm}: $@
+    # if [ -t 1 ] ; then
+    #     print ${pgm}: $@
+    # else
+    #     notify-send ${pgm}: $@
+    # fi
 }
 
 function logger() {
-    logger -p local1.notice -t ${pgm} -i - $USER : $@
+    #creating prolem
+    : logger -p local1.notice -t ${pgm} -i - $USER : $@
 }
 
 
@@ -128,9 +130,10 @@ function gnome-keyring-attach() {
         exit 1;
     fi
 
-    if        ! timeout -s KILL 4 ~/bin/get-imap-pass ; then
+    if ! timeout -s KILL 2 ~/bin/get-imap-pass ; then
 	exit 1;
-	fi
+    fi
+    echo ~/bin/get-imap-pass
 }
 
 pgm=$(basename $0)

@@ -339,6 +339,7 @@
 
 
 (deh-require-maybe uniquify
+  ;; from https://github.com/purcell/emacs.d/blob/master/init-uniquify.el
   ;; from http://jasonmbaker.com/7-tools-for-working-with-python-in-emacs-and
   (setq uniquify-buffer-name-style 'reverse
         uniquify-separator "/"

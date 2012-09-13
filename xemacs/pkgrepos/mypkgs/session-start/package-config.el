@@ -85,6 +85,9 @@
           (package-install p))))))
 
 
+(autoload 'package-list-packages "package" "Elap Package" t)
+(autoload 'list-packages "package" "Elap Package" t)
+
 (provide 'package-config)
 
 ;;; package.el ends here

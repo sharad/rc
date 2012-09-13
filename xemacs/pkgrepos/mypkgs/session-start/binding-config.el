@@ -1,10 +1,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-09-11 17:03:37 s>
+;; Time-stamp: <2012-09-13 18:33:10 s>
 ;;
 
 ;; (deh-section "Key binding utils"
 ;; )
+
+
+(autoload 'describe-unbound-keys "unbound" "Find Unbound keys" t)
 
 (eval-when-compile
  (defvar replacement-map '(("M" . "s")) "default replacement key modifiers.")
@@ -340,6 +343,16 @@ and their terminal equivalents.")
   (global-set-key-if-unbind (kbd "<left-fringe> <mouse-4>") 'bm-previous-mouse)
   (global-set-key-if-unbind (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
   )
+
+
+(deh-require-maybe lusty-explorer
+  (global-set-key-if-unbind (kbd "s-x s-f") 'lusty-file-explorer)
+  (global-set-key-if-unbind (kbd "s-x s-b") 'lusty-buffer-explorer))
+
+(deh-require-maybe find-file-in-project
+  (global-set-key-if-unbind (kbd "s-x f") 'find-file-in-project))
+
+
 
 (provide 'binding-config)
 

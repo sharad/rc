@@ -13,7 +13,8 @@
       (mapc #'(lambda (path)
                 (add-to-list 'load-path path))
             (directory-files package-dir t "[a-zA-Z]+"))
-      (mapc #'byte-recompile-directory
+      (mapc #'(lambda ()
+                (byte-recompile-directory dir 0))
             (directory-files package-dir t "[a-zA-Z]+"))))
 
 
@@ -24,6 +25,7 @@
 
 (mapc
  '(lambda (dir)
+   (byte-recompile-directory dir 0)
    (add-to-list 'load-path dir))
  `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
    "~/.osetup/info/common/elisp"
