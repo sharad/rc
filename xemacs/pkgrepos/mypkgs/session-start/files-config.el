@@ -36,7 +36,8 @@
 
   (defun ffip-set-project-root ()
     (interactive)
-    (setq ffip-project-root (ido-read-directory-name "FFip Root Dir: " ffip-project-root)))
+    (setq
+     ffip-project-root (ido-read-directory-name "FFip Root Dir: " ffip-project-root))))
 
 (deh-require-maybe lusty-explorer
   )
