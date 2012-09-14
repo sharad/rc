@@ -275,14 +275,19 @@
      :ROLE "MainWindow"))
 
 
+(defun sharad/load-dir-files (dir)
+    (dolist (file (directory (concat dir "*.lisp")))
+        (load file)
+        (message "Loaded ~a" file)))
 
 (if (or t (usepa))
     (progn
-      (dolist (x (directory (concat *session-dir* "*.lisp")))
-        (load x)
-        (message "Loaded ~a" x))
+      (sharad/load-dir-files *session-dir*)
       (pa-fnstumpwm::initpa)
       (pa-fnstumpwm::select-plan-task))
+
+(sharad/load-dir-files (concat *session-dir* "contrib"))
+
 
 ;;{{ Old
 

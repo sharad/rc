@@ -1,0 +1,1 @@
+../pasteonweb/newpaste.el

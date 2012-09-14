@@ -1,0 +1,1 @@
+../pasteonweb/paste2.el

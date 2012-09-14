@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-09-13 18:33:10 s>
+;; Time-stamp: <2012-09-14 11:51:20 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -351,6 +351,9 @@ and their terminal equivalents.")
 
 (deh-require-maybe find-file-in-project
   (global-set-key-if-unbind (kbd "s-x f") 'find-file-in-project))
+
+(deh-require-maybe find-dired
+  (global-set-key-if-unbind (kbd "s-x d") 'find-dired))
 
 
 

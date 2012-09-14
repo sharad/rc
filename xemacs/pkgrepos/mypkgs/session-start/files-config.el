@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+(deh-require-maybe find-dired
+  )
 
 (deh-require-maybe find-file-in-project
   ;; If non-nil, this function is called to determine the project root.
