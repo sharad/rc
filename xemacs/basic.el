@@ -278,6 +278,22 @@ alkready should not exist.")
                    (cdr forms)
                    forms)))))
 
+    (defmacro deh-require-mustbe (feature &rest forms)
+      (declare (indent 1))
+      (labels ((refine (feature)
+                 (if (consp feature)
+                     (cond
+                       ((or (equal (car feature) 'or)
+                            (equal (car feature) 'and))
+                        `(,(car feature) ,@(mapcar #'refine (cdr feature))))
+                       (t feature))
+                     `(require ',feature nil nil))))
+        `(progn
+           (when ,(refine feature)
+             ,@(if (stringp (car forms))
+                   (cdr forms)
+                   forms)))))
+
     (defalias 'deh-require 'deh-require-maybe)
 
     (put 'deh-require 'lisp-indent-function 1)
