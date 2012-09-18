@@ -27,7 +27,9 @@
 
 ;; journal's
 (deh-require-mustbe records
-  )
+  (setq
+   records-init-file (expand-file-name "~/.emacs.d/records")
+   records-directory (expand-file-name "~/.Organize/emacs/records")))
 
 
 

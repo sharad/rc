@@ -123,7 +123,8 @@
   (defadvice tramp-file-name-handler
       (before ad-update-ssh-agent-env activate)
     "Support ssh agent."
-    (update-ssh-agent))
+    (unless (tramp-tramp-file-p default-directory)
+      (update-ssh-agent)))
 
   ;; run
   (update-ssh-agent)

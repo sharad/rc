@@ -347,13 +347,18 @@
 
 ;; Imergency
 (define-key *top-map* (kbd "s-i") '*imergency-map*)
+(define-key *top-map* (kbd "KP_Enter") '*imergency-map*)
 
 ; (undefine-key *top-map* (kbd "s-i"))
 
 (fill-keymap *imergency-map*
-             (kbd "o") "cprofile"
-             (kbd "m") "myprofile"
-             (kbd "i") "meta s-i")
+             (kbd "s") "show-current-profile"
+             (kbd "o") "set-profile cprofile"
+             (kbd "m") "set-profile myprofile"
+             (kbd "i") "meta s-i"
+             (kbd "KP_Enter") "toggle-profile")
+
+
 
 ;; Press C-c RET for slime-macroexpand-1
 

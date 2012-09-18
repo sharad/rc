@@ -369,14 +369,6 @@
    ;'(:class "Mozilla")
    ))
 
-(defcommand cprofile () ()
-   (run-shell-command "xmodmap ~/.Xmodmaps/xmodmaprc-normal-but-super")
-   (run-shell-command "synclient TouchpadOff=0"))
-
-(defcommand myprofile () ()
-   (run-shell-command "xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt")
-   (run-shell-command "synclient TouchpadOff=1"))
-
 (defcommand slrn () ()
    (run-or-raise
     "xterm -title slrn -e slrn -f /home/m0rg/.newsrc"
