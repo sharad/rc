@@ -250,7 +250,11 @@ directory, select directory. Lastly the file is opened."
 (deh-section "Find file in other dirs."
   (defun find-file-in-other-dir (&optional not-same-location)
     (interactive)
-    ()))
+    (let ((dirs
+           (remove* (file-name-directory buffer-file-name)
+                    (cdr (assoc-string (file-name-nondirectory buffer-file-name) file-cache-alist))
+                    :test #'string-equal)))
+      (if dirs (find-file-existing (concat (ido-completing-read "dirs: " dirs) "/" (file-name-nondirectory buffer-file-name)))))))
 
 (provide 'files-config)
 ;;; files-config.el ends here

@@ -127,14 +127,14 @@ alkready should not exist.")
                 (if feature
                   (unless
                       (and
-                       (message "now loading %s" path)
+                       (message "now loading %s.el" feature)
                        (ignore-errors (require feature)))
                     (push feature load-lib-with-errors)))))
             (directory-files dir nil "^[a-zA-Z0-9-]+\.el$"))
       (if load-lib-with-errors
           (mapc '(lambda (f)
-                  (message "now loading file with error %s" path)
-                  (require path))
+                  (message "now loading file with error %s.el" f)
+                  (require f))
                 load-lib-with-errors)
           t))))
 
