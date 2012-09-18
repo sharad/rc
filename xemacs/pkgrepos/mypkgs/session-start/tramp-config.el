@@ -100,7 +100,13 @@
 
 
   (defun ssh-agent-add-key ()
-    ;; (shell-command "ssh-add -l 2>&1 > /dev/null || ssh-add ~/.ssh/login-keys.d/github < /dev/null 2>&1 > /dev/null" nil nil)
+    (unless (eq (shell-command "ssh-add -l " "sfds") 0)
+      ;; (start-process "ssh add" nil "ssh-add" "~/.ssh/login-keys.d/github" " <" " /dev/null")
+
+      (shell-command-to-string "ssh-add ~/.ssh/login-keys.d/github" "sfds" nil)
+      ))
+
+  (defun ssh-agent-add-key ()
     )
 
   (defun update-ssh-agent (&optional force)

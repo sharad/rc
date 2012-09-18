@@ -125,11 +125,16 @@ alkready should not exist.")
               (let ((feature (if (string-match "\\(.\+\\)\.el" lib)
                                  (intern (match-string 1 lib)))))
                 (if feature
-                  (unless (ignore-errors (require feature))
+                  (unless
+                      (and
+                       (message "now loading %s" path)
+                       (ignore-errors (require feature)))
                     (push feature load-lib-with-errors)))))
             (directory-files dir nil "^[a-zA-Z0-9-]+\.el$"))
       (if load-lib-with-errors
-          (mapc 'require
+          (mapc '(lambda (f)
+                  (message "now loading file with error %s" path)
+                  (require path))
                 load-lib-with-errors)
           t))))
 

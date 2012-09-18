@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-09-14 11:51:20 s>
+;; Time-stamp: <2012-09-17 19:29:52 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -8,6 +8,19 @@
 
 
 (autoload 'describe-unbound-keys "unbound" "Find Unbound keys" t)
+
+(defun iglobal-set-key-if-unbind (keys cmd &optional force)
+  (interactive
+   (let* (k
+         (keys1 "")
+         (keys (loop until (equal (setq k (read-key-sequence (concat "keys: [" keys1 "]"))) "")
+                  do (setq keys1 (concat keys1 k))))
+         (cmd (read-command "cmd: "))
+         (force (or current-prefix-arg nil)))
+     (list keys cmd force)))
+  (if force
+      (global-set-key keys cmd)
+      (global-set-key-if-unbind keys cmd)))
 
 (eval-when-compile
  (defvar replacement-map '(("M" . "s")) "default replacement key modifiers.")
@@ -294,6 +307,13 @@ and their terminal equivalents.")
 (when (xrequire 'ibuffer)
   (global-set-key (kbd "C-x C-b") 'ibuffer) ;force
   )
+
+
+(deh-require-maybe calculator
+  (global-set-key-if-unbind (kbd "C-<return>") 'calculator))
+
+(deh-require-maybe calc
+  (global-set-key-if-unbind (kbd "H-<return>") 'calc))
 
 (deh-require-maybe xcscope
  (define-key cscope-list-entry-keymap "q" 'bury-buffer))

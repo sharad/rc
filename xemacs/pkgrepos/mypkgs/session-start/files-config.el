@@ -66,7 +66,7 @@
     (toggle-read-only)))
 
 
-(deh-require-maybe file-cache
+(deh-require-maybe filecache
 
 
 
@@ -99,6 +99,12 @@ For later retrieval using `file-cache-read-cache-from-file'"
       (beginning-of-buffer)
       (setq file-cache-alist (read (current-buffer)))))
 
+  (add-hook 'after-init-hook '(lambda ()
+                               (file-cache-read-cache-from-file "~/.file_cache")))
+
+  (add-hook 'kill-emacs-hook '(lambda ()
+                               (file-cache-save-cache-to-file "~/.file_cache")))
+
   ;;}}
 
 
@@ -107,10 +113,10 @@ For later retrieval using `file-cache-read-cache-from-file'"
     (and buffer-file-name
          (file-exists-p buffer-file-name)
          (file-cache-add-file buffer-file-name)))
-  ;; (add-hook 'kill-buffer-hook 'file-cache-add-this-file)
+  (add-hook 'find-file-hook 'file-cache-add-this-file)
 
 
-  (file-cache-read-cache-from-file "~/.file_cache")
+  ;; (file-cache-read-cache-from-file "~/.file_cache")
 
   (defun file-cache-ido-find-file (file)
     "Using ido, interactively open file from file cache'.
@@ -190,7 +196,7 @@ Bind this command to C-x C-f to get:
 
 (deh-require-maybe iswitchb-fc)
 
-(deh-require-maybe (and file-cache iswitchb)
+(deh-require-maybe (and filecache iswitchb)
   ;; iswitchb-fc: Integrate file-cache with iswitchb
 
   ;; http://tao.uab.es/cgi-bin/archzoom.cgi/jao@gnu.org--2004/unix--emacs--0--patch-23/other/iswitchb-fc.el?download
