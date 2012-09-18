@@ -306,5 +306,10 @@ The indirect buffer can have another major mode."
             (if (< (length (frame-list)) 3)
                 (session-save-sessoin))))
 
+(defun shell-command-no-output (cmd)
+  (if (equal 0 (call-process "/bin/bash" nil nil nil "-c" cmd))
+      t))
+
+
 (provide 'misc-config)
 
