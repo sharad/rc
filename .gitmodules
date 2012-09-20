@@ -31,3 +31,9 @@
 [submodule "xemacs/pkgrepos/world/eproject-another"]
 	path = xemacs/pkgrepos/world/eproject-another
 	url = https://github.com/jrockway/eproject.git
+[submodule "xemacs/pkgrepos/world/eproject"]
+	path = xemacs/pkgrepos/world/eproject
+	url = http://repo.or.cz/r/eproject.git
+[submodule "xemacs/pkgrepos/world/project-buffer-mode"]
+	path = xemacs/pkgrepos/world/project-buffer-mode
+	url = http://repo.or.cz/r/project-buffer-mode.git

@@ -16,10 +16,6 @@ function main() {
         exit 0
     fi
 
-    if ! timeout -s KILL 2 ~/bin/get-imap-pass ; then
-        exit 1
-    fi
-
     if [ ! -e ~/.offlineimaprc ] ; then
         verbose no ~/.offlineimaprc do not exists.
         exit -1
@@ -27,20 +23,21 @@ function main() {
         # pkill offlineimap
         if nm-tool | egrep -q 'DNS:[[:space:]]+[1-9]' ||
            nm-tool | egrep -q 'State:[[:space:]]+connected'; then
-            if ! pgrep offlineimap >& /dev/null; then
+            if ! pgrep offlineimap ; then
+                echo y
                 if [  $interactive  ] ; then
                     offlineimap -a ${account:-$OFFLINEIMAPACCOUNT}
                 else
-                    # wait till 3 min then send SIGINT.
-                    # xwarn="$( timeout -s KILL 70 offlineimap -1 -u quiet -a ${account:-$OFFLINEIMAPACCOUNT} |& egrep -i 'WARNING|Error' )" &&
-                    # warn "Some problem with OfflineImap\nPlease check as soon as possible.\n${xwarn}"
                     timeout -s KILL 70 offlineimap -1 -u quiet -a ${account:-$OFFLINEIMAPACCOUNT}
                 fi
             else
+                echo n
+                exit 0;
                 verbose already offline map running with pid $(pgrep offlineimap).
             fi
         else
             verbose no network connectivity.
+            exit 0;
         fi
     fi
 }
@@ -104,15 +101,17 @@ function verbose() {
 }
 
 function notify() {
-    if [ -t 1 ] ; then
-        print ${pgm}: $@
-    else
-        notify-send ${pgm}: $@
-    fi
+    echo ${pgm}: $@
+    # if [ -t 1 ] ; then
+    #     print ${pgm}: $@
+    # else
+    #     notify-send ${pgm}: $@
+    # fi
 }
 
 function logger() {
-    logger -p local1.notice -t ${pgm} -i - $USER : $@
+    #creating prolem
+    : logger -p local1.notice -t ${pgm} -i - $USER : $@
 }
 
 
@@ -126,9 +125,15 @@ function gnome-keyring-attach() {
     if pgrep ${WM} ; then
         local pid=$(ps -C ${WM} -o pid --no-heading)
         eval "unset ${vars[@]}; $(printf "export %s;" $(sed 's/\x00/\n/g' /proc/${pid//[^0-9]/}/environ | grep $(printf -- "-e ^%s= " "${vars[@]}")) )"
+
     else
-        exit 1
+        exit 1;
     fi
+
+    if ! timeout -s KILL 2 ~/bin/get-imap-pass ; then
+	exit 1;
+    fi
+    echo ~/bin/get-imap-pass
 }
 
 pgm=$(basename $0)

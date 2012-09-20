@@ -31,6 +31,10 @@
 
 
 ;;{{{ start: http://emacs-fu.blogspot.com/2008/12/using-packages-functions-only-if-they.html
+
+(eval-when-compile
+  (require 'cl))
+
 (defmacro require-maybe (feature &optional file)
   "*Try to require FEATURE, but don't signal an error if `require' fails."
   `(require ,feature ,file 'noerror))
@@ -49,13 +53,15 @@
 ;;}}}
 
 
-(defmacro GNUEmacs (&rest x)
+(eval-when-compile
+ (defmacro GNUEmacs (&rest x)
   `(if (string-match "GNU Emacs 20" (version)) x))
+
 (defmacro XEmacs (&rest x)
   (list 'if (string-match "XEmacs 20" (version)) (cons 'progn x)))
 (defmacro Xlaunch (&rest x)
   (list 'if (eq window-system 'x)(cons 'progn x)))
-
+)
 
 ;;;;;;; My loading function ;;;;;;;
 (defvar *desuffix* "sharad"
@@ -119,16 +125,17 @@ alkready should not exist.")
               (let ((feature (if (string-match "\\(.\+\\)\.el" lib)
                                  (intern (match-string 1 lib)))))
                 (if feature
-                  (unless (ignore-errors (require feature))
+                  (unless
+                      (and
+                       (message "now loading %s.el" feature)
+                       (ignore-errors (require feature)))
                     (push feature load-lib-with-errors)))))
             (directory-files dir nil "^[a-zA-Z0-9-]+\.el$"))
       (if load-lib-with-errors
-          (progn
-            (message "\n\nlibs with error %s\n\n" load-lib-with-errors)
-            (mapc '(lambda (lib)
-                    (message "loading %s" lib)
-                    (require lib))
-                  load-lib-with-errors))
+          (mapc '(lambda (f)
+                  (message "now loading file with error %s.el" f)
+                  (require f))
+                load-lib-with-errors)
           t))))
 
 
@@ -148,6 +155,7 @@ alkready should not exist.")
         result
         (if list (afind-if fun (cdr list))))))
 
+(eval-when-compile
 
 (defun user-find-load-file (filename paths)
   (flet ((delete-trailing-slash (path)
@@ -210,7 +218,7 @@ alkready should not exist.")
                        f1 f2))
                files))
       ((some #'file-exists-p files) (car (remove-if-not #'file-exists-p files)))
-      (t nil))))
+      (t nil)))))
 
 ;; (get-latest-file "~/.xemacs/session-start.d/plan")
 
@@ -219,9 +227,9 @@ alkready should not exist.")
 ;;;;;;; My loading function ;;;;;;;
 
 
-(GNUEmacs
- (Xlaunch
-  (define-key global-map [(delete)]    "\C-d") ))
+;; (GNUEmacs
+;;  (Xlaunch
+;;   (define-key global-map [(delete)]    "\C-d") ))
 
 ;; (XEmacs
 ;; (if (eq window-system 'x)
@@ -243,20 +251,20 @@ alkready should not exist.")
 ;; (add-to-list 'load-path "~/.xemacs/pkgrepos/world/deh")
 
 (eval-when-compile
-  (unless (require 'dot-emacs-helper nil t)
-    (defmacro deh-require-maybe (feature &rest forms)
-      (declare (indent 1))
-      `(progn
-         (when ,(if (consp feature)
-                    (cond
-                      ((or (equal (car feature) 'or)
-                           (equal (car feature) 'and))
-                       `(,(car feature) ,@(mapcar (lambda (f) `(require ',f nil t)) (cdr feature))))
-                      (t feature))
-                    `(require ',feature nil t))
-           ,@(if (stringp (car forms))
-                 (cdr forms)
-                 forms))))
+;;   (unless (require 'dot-emacs-helper nil t)
+    ;; (defmacro deh-require-maybe (feature &rest forms)
+    ;;   (declare (indent 1))
+    ;;   `(progn
+    ;;      (when ,(if (consp feature)
+    ;;                 (cond
+    ;;                   ((or (equal (car feature) 'or)
+    ;;                        (equal (car feature) 'and))
+    ;;                    `(,(car feature) ,@(mapcar (lambda (f) `(require ',f nil t)) (cdr feature))))
+    ;;                   (t feature))
+    ;;                 `(require ',feature nil t))
+    ;;        ,@(if (stringp (car forms))
+    ;;              (cdr forms)
+    ;;              forms))))
 
 
     (defmacro deh-require-maybe (feature &rest forms)
@@ -275,13 +283,30 @@ alkready should not exist.")
                    (cdr forms)
                    forms)))))
 
+    (defmacro deh-require-mustbe (feature &rest forms)
+      (declare (indent 1))
+      (labels ((refine (feature)
+                 (if (consp feature)
+                     (cond
+                       ((or (equal (car feature) 'or)
+                            (equal (car feature) 'and))
+                        `(,(car feature) ,@(mapcar #'refine (cdr feature))))
+                       (t feature))
+                     `(require ',feature nil nil))))
+        `(progn
+           (when ,(refine feature)
+             ,@(if (stringp (car forms))
+                   (cdr forms)
+                   forms)))))
+
     (defalias 'deh-require 'deh-require-maybe)
 
     (put 'deh-require 'lisp-indent-function 1)
 
     (defmacro deh-section (section &rest forms)
       (declare (indent 1))
-      `(progn ,@forms))))
+      `(progn ,@forms)))
+;;))
 ;; (deh-require 'feature-name
 ;;   configuration-for-the-feature)
 ;; (deh-section "section-name"
@@ -329,6 +354,26 @@ alkready should not exist.")
   ;; (testing
   ;;  (pathname-delete-trailing-/ "/sdfsd/sdgfdg////"))
   )
+
+
+(defun sharad/disable-startup-inperrupting-feature ()
+  (interactive)
+  (setq
+   enable-p4-login nil
+   tramp-mode nil
+   ido-mode nil)
+  (if (fboundp 'epa-file-disable)
+      (epa-file-disable))
+  )
+
+(defun sharad/enable-startup-inperrupting-feature ()
+  (interactive)
+  (setq
+   enable-p4-login t
+   tramp-mode t
+   ido-mode 'both)
+  (if (fboundp 'epa-file-disable)
+      (epa-file-enable)))
 
 ;;}}
 

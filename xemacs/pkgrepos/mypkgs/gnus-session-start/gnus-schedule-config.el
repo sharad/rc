@@ -1,4 +1,4 @@
-;;; schedule.el --- sched
+;;; gnus-schedule-config.el --- sched
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -46,7 +46,21 @@
   ;; this function `diary-from-outlook-gnus'
   ;; when failed with error "no buffer name with multipart/related"
   ;; it left article in the end, so I have to remove it.
-  (add-hook 'gnus-article-prepare-hook 'diary-from-outlook-gnus-safe))
+  (add-hook 'gnus-article-prepare-hook 'diary-from-outlook-gnus-safe)
+
+  ;; using icalendar.el wotrking
+  (defun my-save-icalendar (handle)
+    (let ((diary "~/.Organize/emacs/diary/outlook)"))
+      (when (and (equal (car (mm-handle-type handle)) "text/calendar")
+                 (gnus-mime-view-part-internally handle)
+                 (mm-with-part handle (icalendar-import-buffer diary)))
+                 (message "Saved calendar entry in %s" diary))))
+
+  (setq gnus-article-mime-part-function 'my-save-icalendar)
+
+  (add-hook
+   'gnus-mime-multipart-functions
+   '("text/calendar" . my-save-icalendar)))
 
 
 
@@ -56,5 +70,5 @@
 
 
 
-(provide 'schedule-config)
+(provide 'gnus-schedule-config)
 ;;; schedule.el ends here

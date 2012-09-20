@@ -12,3 +12,5 @@ pkill dbus-daemon
 
 pkill ssh-agent
 
+~/bin/syncimap -d
+

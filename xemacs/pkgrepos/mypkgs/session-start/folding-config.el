@@ -41,7 +41,9 @@
       (if (condition-case nil
               (hs-toggle-hiding)
             (error t))
-          (hs-show-all))
+          ;; (hs-show-all)
+          (hs-show-block)
+          )
     (toggle-selective-display column)))
 
 ;; This is more robust than the mere hs-toggle-hiding

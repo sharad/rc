@@ -146,6 +146,7 @@
   (unless (file-exists-p (concat planner-directory (planner-today) ".muse"))
     (save-excursion
       (save-window-excursion
+        (calendar)
         (plan))))
   (planner-today))
 

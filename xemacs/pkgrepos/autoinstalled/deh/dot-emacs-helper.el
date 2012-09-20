@@ -86,6 +86,7 @@
 ;;          (add-to-list 'deh-sections (cons ,feature ,load-file-name)))
 ;;      (when (require ,feature nil t)
 ;;        ,@forms)))
+(eval-when-compile
 (defmacro deh-require-maybe (feature &rest forms)
   (declare (indent 1))
   (labels ((refine (feature)
@@ -103,6 +104,25 @@
          ,@(if (stringp (car forms))
                (cdr forms)
                forms)))))
+
+(defmacro deh-require-mustbe (feature &rest forms)
+  (declare (indent 1))
+  (labels ((refine (feature)
+             (if (consp feature)
+                 (cond
+                   ((or (equal (car feature) 'or)
+                        (equal (car feature) 'and))
+                    `(,(car feature) ,@(mapcar #'refine (cdr feature))))
+                   (t feature))
+                 `(require ',feature nil nil))))
+    `(progn
+       (if ,load-file-name
+           (add-to-list 'deh-sections (cons ',feature ,load-file-name)))
+       (when ,(refine feature)
+         ,@(if (stringp (car forms))
+               (cdr forms)
+               forms)))))
+
 (defalias 'deh-require 'deh-require-maybe)
 (put 'deh-require 'lisp-indent-function 1)
 
@@ -111,7 +131,7 @@
   `(progn
      (if ,load-file-name
          (add-to-list 'deh-sections (cons ,section ,load-file-name)))
-     ,@forms))
+     ,@forms)))
 
 (defun deh-customize-inplace (name)
   "Configuration the section directly in file"

@@ -116,4 +116,68 @@
         ;; optional keyboard short-cut
         (global-set-key-if-unbind "\C-xm" 'browse-url-at-point))
 
-(provide 'w3m-config-config)
+
+;; GNOME means of invoking either Mozilla or Netrape.
+(defvar browse-url-conkeror-program "conkeror")
+(defcustom browse-url-conkeror-arguments '( "-Po")
+  "A list of strings passed to the GNOME mozilla viewer as arguments."
+  :version "21.1"
+  :type '(repeat (string :tag "Argument"))
+  :group 'browse-url)
+
+(defun browse-url-default-browser (url &rest args)
+  "Find a suitable browser and ask it to load URL.
+Default to the URL around or before point.
+
+When called interactively, if variable `browse-url-new-window-flag' is
+non-nil, load the document in a new window, if possible, otherwise use
+a random existing one.  A non-nil interactive prefix argument reverses
+the effect of `browse-url-new-window-flag'.
+
+When called non-interactively, optional second argument NEW-WINDOW is
+used instead of `browse-url-new-window-flag'.
+
+The order attempted is gnome-moz-remote, Mozilla, Firefox,
+Galeon, Konqueror, Netscape, Mosaic, Lynx in an xterm, and then W3."
+  (apply
+   (cond
+    ((executable-find browse-url-conkeror-program) 'browse-url-conkeror)
+    ((executable-find browse-url-gnome-moz-program) 'browse-url-gnome-moz)
+    ((executable-find browse-url-mozilla-program) 'browse-url-mozilla)
+    ((executable-find browse-url-firefox-program) 'browse-url-firefox)
+    ((executable-find browse-url-galeon-program) 'browse-url-galeon)
+    ((executable-find browse-url-kde-program) 'browse-url-kde)
+    ((executable-find browse-url-netscape-program) 'browse-url-netscape)
+    ((executable-find browse-url-mosaic-program) 'browse-url-mosaic)
+    ((executable-find browse-url-xterm-program) 'browse-url-text-xterm)
+    ((locate-library "w3") 'browse-url-w3)
+    (t
+     (lambda (&rest ignore) (error "No usable browser found"))))
+   url args))
+
+(eval-after-load "browse-url"
+ '(progn
+   (defun browse-url-conkeror (url &optional new-window)
+     "Ask Mozilla/Netscape to load URL via the GNOME program `gnome-moz-remote'.
+Default to the URL around or before point.  The strings in variable
+`browse-url-gnome-moz-arguments' are also passed.
+
+When called interactively, if variable `browse-url-new-window-flag' is
+non-nil, load the document in a new browser window, otherwise use an
+existing one.  A non-nil interactive prefix argument reverses the
+effect of `browse-url-new-window-flag'.
+
+When called non-interactively, optional second argument NEW-WINDOW is
+used instead of `browse-url-new-window-flag'."
+     (interactive (browse-url-interactive-arg "URL: "))
+     (apply 'start-process (concat "conkeror -Po " url)
+            nil
+            browse-url-conkeror-program
+            (append
+             browse-url-gnome-moz-arguments
+             (if (browse-url-maybe-new-window new-window)
+                 '("--newwin"))
+             (list "--raise" url))))))
+
+(provide 'w3m-config)
+

@@ -1,4 +1,4 @@
-;;; schedule.el --- Diary, Calendar etc
+;;; schedule-config.el --- Diary, Calendar etc
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -39,16 +39,16 @@
                           (mapconcat 'identity holiday-list "; "))))
         (if (<= (length msg) (frame-width))
             (message msg)
-          (set-buffer (get-buffer-create holiday-buffer))
-          (setq buffer-read-only nil)
-          (calendar-set-mode-line date-string)
-          (erase-buffer)
-          (insert (mapconcat 'identity holiday-list "\n"))
-          (goto-char (point-min))
-          (set-buffer-modified-p nil)
-          (setq buffer-read-only t)
-          (display-buffer holiday-buffer)
-          (message  "No diary entries for %s" date-string)))
+            (set-buffer (get-buffer-create holiday-buffer))
+            (setq buffer-read-only nil)
+            (calendar-set-mode-line date-string)
+            (erase-buffer)
+            (insert (mapconcat 'identity holiday-list "\n"))
+            (goto-char (point-min))
+            (set-buffer-modified-p nil)
+            (setq buffer-read-only t)
+            (display-buffer holiday-buffer)
+            (message  "No diary entries for %s" date-string) ))
 
       (fancy-diary-display-week-graph)))
 
@@ -65,8 +65,19 @@
         (add-hook 'diary-display-function 'fancy-diary-display-week-graph-if-appt))))
 
 
+(deh-require-maybe diary-lib
+       (setq diary-display-function 'diary-fancy-display)
+       (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+       (add-hook 'diary-list-entries-hook 'diary-mark-included-diary-files)
+       (add-hook 'diary-list-entries-hook 'diary-sort-entries t))
 
 
+(deh-require-maybe midnight
+  ;; (midnight-delay-set 'midnight-delay 16200) ;; (eq (* 4.5 60 60) "4:30am")
+  (midnight-delay-set 'midnight-delay "4:30am")
+  (add-hook 'midnight-hook '(lambda ()
+                             (save-window-excursion
+                               (plan)))))
 
 (provide 'schedule-config)
 ;;; schedule.el ends here

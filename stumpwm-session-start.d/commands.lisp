@@ -229,7 +229,7 @@
 (defcommand editor () ()
   (if (wait-for-nwprogram "emacsclient")
       (run-wcli-command
-       (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general"))
+       (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(display-about-screen)'")
    ;; '(:class "Emacs")
        )))
 
@@ -368,14 +368,6 @@
    (or (getenv "XBROWSER") "conkeror -P Y")
    ;'(:class "Mozilla")
    ))
-
-(defcommand cprofile () ()
-   (run-shell-command "xmodmap ~/.Xmodmaps/xmodmaprc-normal-but-super")
-   (run-shell-command "synclient TouchpadOff=0"))
-
-(defcommand myprofile () ()
-   (run-shell-command "xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt")
-   (run-shell-command "synclient TouchpadOff=1"))
 
 (defcommand slrn () ()
    (run-or-raise

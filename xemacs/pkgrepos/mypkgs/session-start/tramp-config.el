@@ -4,165 +4,190 @@
 ;;(require 'tramp) ;stop error caused by no availability of tramp.
 ;; check C-h f require
 
+(eval-after-load "tramp"
+  '(sharad/disable-startup-inperrupting-feature))
+
 (deh-require-maybe tramp
+  ;; (deh-require-maybe tramp
+
+  (setq                                 ;very necessary.
+   tramp-mode nil
+   ido-mode nil)
+
+  (deh-require-maybe ido
+    (setq
+     ;; ido-enable-tramp-completion t ;this guy was missing
+     ido-enable-tramp-completion nil ;this guy was missing
+     ))
+
+  (setq ;; tramp-default-method "ssh"
+   ;; tramp-default-method "scpc" <- default
+   tramp-debug-buffer t
+   ;; tramp-verbose 10
+   tramp-verbose 1
+   tramp-default-user nil
+   tramp-default-host "spratap")
+  ;; http://www.gnu.org/software/tramp/#Remote-shell-setup
+  (setenv "ESHELL" "bash")
+
+  (tramp-set-completion-function "ssh"
+                                 '((tramp-parse-sconfig "/etc/ssh_config")
+                                   (tramp-parse-sconfig "~/.ssh/config")))
+
+
+  ;; (defun sudo-edit (&optional arg)
+  ;;   (interactive "p")
+  ;;   (if arg
+  ;;       (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "File: ")))
+  ;;       (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+  ;; (defun sudo-edit-current-file ()
+  ;;   (interactive)
+  ;;   (find-alternate-file (concat "/sudo:root@localhost:" (buffer-file-name (current-buffer)))))
+
+  ;; (global-set-key (kbd "C-c C-r") 'sudo-edit-current-file)
 
 
 
-    (setq tramp-default-method "ssh"
-          ido-enable-tramp-completion t ;this guy was missing
-          tramp-debug-buffer t
-          ;; tramp-verbose 10
-          tramp-verbose 1
-          tramp-default-user 'nil
-          tramp-default-host "spratap")
-    ;; http://www.gnu.org/software/tramp/#Remote-shell-setup
-    (setenv "ESHELL" "bash")
+  (defun find-alternative-file-with-sudo () ; put in keybinding.el
+    (interactive)
+    (let ((fname (or buffer-file-name
+                     dired-directory)))
+      (when fname
+        (if (string-match "^/sudo:root@localhost:" fname)
+            (setq fname (replace-regexp-in-string
+                         "^/sudo:root@localhost:" ""
+                         fname))
+            (setq fname (concat "/sudo:root@localhost:" fname)))
+        (find-alternate-file fname))))
 
-    (tramp-set-completion-function "ssh"
-                                   '((tramp-parse-sconfig "/etc/ssh_config")
-                                     (tramp-parse-sconfig "~/.ssh/config")))
+  ;; http://www.gnu.org/software/tramp/#Multi_002dhops
+  (deh-require-maybe common-info
+    (add-to-list 'tramp-default-proxies-alist
+                 `(,tramp-default-proxie "\\`root\\'" "/ssh:%h:")))
+  ;; If you, for example, wants to work as ‘root’ on hosts in the
+  ;; domain ‘your.domain’, but login as ‘root’ is disabled for
+  ;; non-local access, you might add the following rule:
 
+  ;; (add-to-list 'tramp-default-proxies-alist
+  ;;              '("\\.your\\.domain\\'" "\\`root\\'" "/ssh:%h:"))
 
-    ;; (defun sudo-edit (&optional arg)
-    ;;   (interactive "p")
-    ;;   (if arg
-    ;;       (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "File: ")))
-    ;;       (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+  ;; Opening /sudo:randomhost.your.domain: would connect first
+  ;; ‘randomhost.your.domain’ via ssh under your account name, and
+  ;; perform sudo -u root on that host afterwards. It is important to
+  ;; know that the given method is applied on the host which has been
+  ;; reached so far. sudo -u root, applied on your local host,
+  ;; wouldn't be useful here.
 
-    ;; (defun sudo-edit-current-file ()
-    ;;   (interactive)
-    ;;   (find-alternate-file (concat "/sudo:root@localhost:" (buffer-file-name (current-buffer)))))
-
-    ;; (global-set-key (kbd "C-c C-r") 'sudo-edit-current-file)
-
-
-
-    (defun find-alternative-file-with-sudo () ; put in keybinding.el
-      (interactive)
-      (let ((fname (or buffer-file-name
-                       dired-directory)))
-        (when fname
-          (if (string-match "^/sudo:root@localhost:" fname)
-              (setq fname (replace-regexp-in-string
-                           "^/sudo:root@localhost:" ""
-                           fname))
-              (setq fname (concat "/sudo:root@localhost:" fname)))
-          (find-alternate-file fname))))
-
-    ;; http://www.gnu.org/software/tramp/#Multi_002dhops
-    (deh-require-maybe common-info
-      (add-to-list 'tramp-default-proxies-alist
-                   `(,tramp-default-proxie "\\`root\\'" "/ssh:%h:")))
-    ;; If you, for example, wants to work as ‘root’ on hosts in the
-    ;; domain ‘your.domain’, but login as ‘root’ is disabled for
-    ;; non-local access, you might add the following rule:
-
-    ;; (add-to-list 'tramp-default-proxies-alist
-    ;;              '("\\.your\\.domain\\'" "\\`root\\'" "/ssh:%h:"))
-
-    ;; Opening /sudo:randomhost.your.domain: would connect first
-    ;; ‘randomhost.your.domain’ via ssh under your account name, and
-    ;; perform sudo -u root on that host afterwards. It is important to
-    ;; know that the given method is applied on the host which has been
-    ;; reached so far. sudo -u root, applied on your local host,
-    ;; wouldn't be useful here.
-
-;; {{http://ubuntuforums.org/archive/index.php/t-1375454.html
-;; TRAMP beep when done downloading files
-(defadvice tramp-handle-write-region
-    (after tramp-write-beep-advice activate)
-  " make tramp beep after writing a file."
-  (interactive)
-  (beep))
-(defadvice tramp-handle-do-copy-or-rename-file
-    (after tramp-copy-beep-advice activate)
-  " make tramp beep after copying a file."
-  (interactive)
-  (beep))
-(defadvice tramp-handle-insert-file-contents
-    (after tramp-copy-beep-advice activate)
-  " make tramp beep after copying a file."
-  (interactive)
-  (beep))
-;; }}
+  ;; {{http://ubuntuforums.org/archive/index.php/t-1375454.html
+  ;; TRAMP beep when done downloading files
+  (defadvice tramp-handle-write-region
+      (after tramp-write-beep-advice activate)
+    " make tramp beep after writing a file."
+    (interactive)
+    (beep))
+  (defadvice tramp-handle-do-copy-or-rename-file
+      (after tramp-copy-beep-advice activate)
+    " make tramp beep after copying a file."
+    (interactive)
+    (beep))
+  (defadvice tramp-handle-insert-file-contents
+      (after tramp-copy-beep-advice activate)
+    " make tramp beep after copying a file."
+    (interactive)
+    (beep))
+  ;; }}
 
 
-(defun update-ssh-agent (&optional force)
-  (interactive "P")
-  (let (;; (agent-file (concat "~/.emacs.d/ssh-agent-" (getenv "HOST") ".el"))
-        (agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el"))
-        )
-    (if (or
-         force
-         (null (getenv "SSH_AGENT_PID")))
-        (if (file-exists-p agent-file)
-            (progn
-              (tramp-cleanup-all-connections)
-              (load agent-file t t))
-            (message "Unable to find agent file.")))))
 
-(defadvice tramp-file-name-handler
-    (before ad-update-ssh-agent-env activate)
-  "Support ssh agent."
-  (update-ssh-agent))
+  (defun ssh-agent-add-key ()
+    (require 'misc-config)
+      (unless (shell-command-no-output "ssh-add -l < /dev/null")
+        (shell-command-no-output "ssh-add ~/.ssh/login-keys.d/github < /dev/null")))
 
-;; run
-(update-ssh-agent)
+  (defun update-ssh-agent (&optional force)
+    (interactive "P")
+    (unless (tramp-tramp-file-p default-directory)
+      (let (;; (agent-file (concat "~/.emacs.d/ssh-agent-" (getenv "HOST") ".el"))
+            (agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el")))
+        (if (or force (null (getenv "SSH_AGENT_PID")))
+            (if (file-exists-p agent-file)
+                (progn
+                  ;; (tramp-cleanup-all-connections)
+                  (load agent-file t t)
+                  (ssh-agent-add-key)
+                  )
+                (message "Unable to find agent file."))
+            (ssh-agent-add-key)))))
 
-(defun tramp-output-wash (&optional arg)
-  (interactive)
-  (save-excursion
-    (let ((buffer-read-only nil))
-      (goto-char (point-min))
-      (replace-regexp "\n\\$ " "\n$\n"))))
+  (defadvice tramp-file-name-handler
+      (before ad-update-ssh-agent-env activate)
+    "Support ssh agent."
+    (unless (tramp-tramp-file-p default-directory)
+      (update-ssh-agent)))
 
-(add-hook 'grep-mode-hook #'tramp-output-wash)
-(add-hook 'cscope-list-entry-hook #'tramp-output-wash)
+  ;; run
+  (update-ssh-agent)
 
-)
+  (defun tramp-output-wash (&optional arg)
+    (interactive)
+    (save-excursion
+      (let ((buffer-read-only nil))
+        (goto-char (point-min))
+
+        (while (re-search-forward "\n\\$ " nil t)
+          (replace-match "\n$\n" nil nil))
+
+        ;;(replace-regexp "\n\\$ " "\n$\n")
+        )))
+
+  (add-hook 'grep-mode-hook #'tramp-output-wash)
+  (add-hook 'cscope-list-entry-hook #'tramp-output-wash)
+
+  )
 
 (when nil
- (defun tramp-do-file-attributes-with-stat
-     (vec localname &optional id-format)
-   "Implement `file-attributes' for Tramp files using stat(1) command."
-   (tramp-message vec 5 "file attributes with stat: %s" localname)
-   (tramp-send-command-and-read
-    vec
-    (format
-     ;; "((%s %s || %s -h %s) && %s -c '((\"%%N\") %%h %s %s %%Xe0 %%Ye0 %%Ze0 %%se0 \"%%A\" t %%ie0 -1)' %s || echo nil)"
-     "((%s %s || %s -h %s) && %s -c '((\"%%n\") %%h %s %s %%Xe0 %%Ye0 %%Ze0 %%se0 \"%%A\" t %%ie0 -1)' %s || echo nil)"
-     (tramp-get-file-exists-command vec)
-     (tramp-shell-quote-argument localname)
-     (tramp-get-test-command vec)
-     (tramp-shell-quote-argument localname)
-     (tramp-get-remote-stat vec)
-     (if (eq id-format 'integer) "%u" "\"%U\"")
-     (if (eq id-format 'integer) "%g" "\"%G\"")
-     (tramp-shell-quote-argument localname))))
+  (defun tramp-do-file-attributes-with-stat
+      (vec localname &optional id-format)
+    "Implement `file-attributes' for Tramp files using stat(1) command."
+    (tramp-message vec 5 "file attributes with stat: %s" localname)
+    (tramp-send-command-and-read
+     vec
+     (format
+      ;; "((%s %s || %s -h %s) && %s -c '((\"%%N\") %%h %s %s %%Xe0 %%Ye0 %%Ze0 %%se0 \"%%A\" t %%ie0 -1)' %s || echo nil)"
+      "((%s %s || %s -h %s) && %s -c '((\"%%n\") %%h %s %s %%Xe0 %%Ye0 %%Ze0 %%se0 \"%%A\" t %%ie0 -1)' %s || echo nil)"
+      (tramp-get-file-exists-command vec)
+      (tramp-shell-quote-argument localname)
+      (tramp-get-test-command vec)
+      (tramp-shell-quote-argument localname)
+      (tramp-get-remote-stat vec)
+      (if (eq id-format 'integer) "%u" "\"%U\"")
+      (if (eq id-format 'integer) "%g" "\"%G\"")
+      (tramp-shell-quote-argument localname))))
 
 
 
- (defun tramp-do-directory-files-and-attributes-with-stat
-     (vec localname &optional id-format)
-   "Implement `directory-files-and-attributes' for Tramp files using stat(1) command."
-   (tramp-message vec 5 "directory-files-and-attributes with stat: %s" localname)
-   (tramp-send-command-and-read
-    vec
-    (format
-     (concat
-      ;; We must care about filenames with spaces, or starting with
-      ;; "-"; this would confuse xargs.  "ls -aQ" might be a solution,
-      ;; but it does not work on all remote systems.  Therefore, we
-      ;; quote the filenames via sed.
-      "cd %s; echo \"(\"; (%s -a | sed -e s/\\$/\\\"/g -e s/^/\\\"/g | xargs "
-      ; "%s -c '(\"%%n\" (\"%%N\") %%h %s %s %%Xe0 %%Ye0 %%Ze0 %%se0 \"%%A\" t %%ie0 -1)'); "
-      "%s -c '(\"%%n\" (\"%%n\") %%h %s %s %%Xe0 %%Ye0 %%Ze0 %%se0 \"%%A\" t %%ie0 -1)'); "
-      "echo \")\"")
-     (tramp-shell-quote-argument localname)
-     (tramp-get-ls-command vec)
-     (tramp-get-remote-stat vec)
-     (if (eq id-format 'integer) "%u" "\"%U\"")
-     (if (eq id-format 'integer) "%g" "\"%G\"")))))
+  (defun tramp-do-directory-files-and-attributes-with-stat
+      (vec localname &optional id-format)
+    "Implement `directory-files-and-attributes' for Tramp files using stat(1) command."
+    (tramp-message vec 5 "directory-files-and-attributes with stat: %s" localname)
+    (tramp-send-command-and-read
+     vec
+     (format
+      (concat
+       ;; We must care about filenames with spaces, or starting with
+       ;; "-"; this would confuse xargs.  "ls -aQ" might be a solution,
+       ;; but it does not work on all remote systems.  Therefore, we
+       ;; quote the filenames via sed.
+       "cd %s; echo \"(\"; (%s -a | sed -e s/\\$/\\\"/g -e s/^/\\\"/g | xargs "
+                                        ; "%s -c '(\"%%n\" (\"%%N\") %%h %s %s %%Xe0 %%Ye0 %%Ze0 %%se0 \"%%A\" t %%ie0 -1)'); "
+       "%s -c '(\"%%n\" (\"%%n\") %%h %s %s %%Xe0 %%Ye0 %%Ze0 %%se0 \"%%A\" t %%ie0 -1)'); "
+       "echo \")\"")
+      (tramp-shell-quote-argument localname)
+      (tramp-get-ls-command vec)
+      (tramp-get-remote-stat vec)
+      (if (eq id-format 'integer) "%u" "\"%U\"")
+      (if (eq id-format 'integer) "%g" "\"%G\"")))))
 
 
 
@@ -177,5 +202,8 @@
 
 
 (autoload 'password-in-cache-p "password-cache")
+
+(sharad/disable-startup-inperrupting-feature)
+
 
 (provide 'tramp-config)

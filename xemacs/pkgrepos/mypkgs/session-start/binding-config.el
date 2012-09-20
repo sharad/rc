@@ -1,11 +1,30 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-07-12 18:53:01 s>
+;; Time-stamp: <2012-09-20 13:16:50 s>
 ;;
 
-(deh-section "Key binding utils"
+;; (deh-section "Key binding utils"
+;; )
 
-  (defvar replacement-map '(("M" . "s")) "default replacement key modifiers.")
+
+
+(autoload 'describe-unbound-keys "unbound" "Find Unbound keys" t)
+
+(defun iglobal-set-key-if-unbind (keys cmd &optional force)
+  (interactive
+   (let* (k
+         (keys1 "")
+         (keys (loop until (equal (setq k (read-key-sequence (concat "keys: [" keys1 "]"))) "")
+                  do (setq keys1 (concat keys1 k))))
+         (cmd (read-command "cmd: "))
+         (force (or current-prefix-arg nil)))
+     (list keys cmd force)))
+  (if force
+      (global-set-key keys cmd)
+      (global-set-key-if-unbind keys cmd)))
+
+(eval-when-compile
+ (defvar replacement-map '(("M" . "s")) "default replacement key modifiers.")
 
   (defun replace-modifier (keys map)
     (dolist (v map keys)
@@ -290,8 +309,74 @@ and their terminal equivalents.")
   (global-set-key (kbd "C-x C-b") 'ibuffer) ;force
   )
 
+
+(deh-require-maybe calculator
+  (global-set-key-if-unbind (kbd "C-<return>") 'calculator))
+
+(deh-require-maybe calc
+  (global-set-key-if-unbind (kbd "H-<return>") 'calc))
+
 (deh-require-maybe xcscope
  (define-key cscope-list-entry-keymap "q" 'bury-buffer))
+
+
+(deh-require-maybe ido-mode
+  (defun insert-ts ()
+    (interactive)
+    (insert (time-stamp-string "-%:y-%02m-%02d-%02H:%02M:%02S-%u.")))
+
+  (define-key ido-file-completion-map (kbd "C-,") 'insert-ts))
+
+(deh-require-maybe muse-mode
+  (defun muse-help ()
+    (interactive)
+    (find-file-other-window "/usr/share/doc/muse-el/examples/QuickStart.muse"))
+  (define-key muse-mode-local-map (kbd "C-c C-.") 'muse-help))
+
+
+(deh-require-maybe breadcrumb
+  ;; https://github.com/pheaver/breadcrumb
+  ;; (global-set-key-if-unbind [(shift space)]         'bc-set)            ;; Shift-SPACE for set bookmark
+  (global-set-key-if-unbind (kbd "S-SPC")         'bc-set)            ;; Shift-SPACE for set bookmark
+  ;; (global-set-key-if-unbind [(meta j)]              'bc-previous)       ;; M-j for jump to previous
+  (global-set-key-if-unbind (kbd "M-j")              'bc-previous)       ;; M-j for jump to previous
+  ;; (global-set-key-if-unbind [(shift meta j)]        'bc-next)           ;; Shift-M-j for jump to next
+  (global-set-key-if-unbind (kbd "S-M-j")        'bc-next)           ;; Shift-M-j for jump to next
+  ;; (global-set-key-if-unbind [(meta up)]             'bc-local-previous) ;; M-up-arrow for local previous
+  (global-set-key-if-unbind (kbd "M-<up>")             'bc-local-previous) ;; M-up-arrow for local previous
+  ;; (global-set-key-if-unbind [(meta down)]           'bc-local-next)     ;; M-down-arrow for local next
+  (global-set-key-if-unbind (kbd "M-<down>")           'bc-local-next)     ;; M-down-arrow for local next
+  ;; (global-set-key-if-unbind [(control c)(j)]        'bc-goto-current)   ;; C-c j for jump to current bookmark
+  (global-set-key-if-unbind (kbd "C-c j")        'bc-goto-current)   ;; C-c j for jump to current bookmark
+  ;; (global-set-key-if-unbind [(control x)(meta j)]   'bc-list)           ;; C-x M-j for the bookmark menu list
+  (global-set-key-if-unbind (kbd "C-x M-j")   'bc-list)           ;; C-x M-j for the bookmark menu list
+  )
+
+
+(deh-require-maybe bm
+  ;; https://github.com/joodland/bm
+  ;; http://www.nongnu.org/bm/
+  (global-set-key-if-unbind (kbd "<C-f2>") 'bm-toggle)
+  (global-set-key-if-unbind (kbd "<f2>")   'bm-next)
+  (global-set-key-if-unbind (kbd "<S-f2>") 'bm-previous)
+
+  (global-set-key-if-unbind (kbd "<left-fringe> <mouse-5>") 'bm-next-mouse)
+  (global-set-key-if-unbind (kbd "<left-fringe> <mouse-4>") 'bm-previous-mouse)
+  (global-set-key-if-unbind (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
+  )
+
+
+(deh-require-maybe lusty-explorer
+  (global-set-key-if-unbind (kbd "s-x s-f") 'lusty-file-explorer)
+  (global-set-key-if-unbind (kbd "s-x s-b") 'lusty-buffer-explorer))
+
+(deh-require-maybe find-file-in-project
+  (global-set-key-if-unbind (kbd "s-x f") 'find-file-in-project))
+
+(deh-require-maybe find-dired
+  (global-set-key-if-unbind (kbd "s-x d") 'find-dired))
+
+
 
 (provide 'binding-config)
 

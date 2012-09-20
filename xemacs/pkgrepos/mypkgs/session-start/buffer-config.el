@@ -28,6 +28,8 @@
 ;; half and displayed side by side.  Neat-o.
 ;; get it from: http://www.andersl.com/emacs/follow.html
 
+(eval-after-load "ido"
+  '(sharad/disable-startup-inperrupting-feature))
 
 (deh-section "Setting ignore extention for file completion"
   (setq completion-ignored-extensions
@@ -337,6 +339,7 @@
 
 
 (deh-require-maybe uniquify
+  ;; from https://github.com/purcell/emacs.d/blob/master/init-uniquify.el
   ;; from http://jasonmbaker.com/7-tools-for-working-with-python-in-emacs-and
   (setq uniquify-buffer-name-style 'reverse
         uniquify-separator "/"
@@ -367,7 +370,7 @@
         (switch-to-buffer found)))))
 
 
-
+(sharad/disable-startup-inperrupting-feature)
 
 ;; (setq debug-on-error t)
 
