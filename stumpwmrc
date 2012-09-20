@@ -149,7 +149,7 @@
                            ((:eval
                              (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
                             ;; (:eval (format "Name"))
-                            " - %c (%f) - %B - [^B%n^b ^B%u^b] %W - %m - %D")
+                            " %p - %c (%f) - %B - [^B%n^b ^B%u^b] %W - %m - %D")
 
                             " - %c (%f) - %b %B - [^B%n^b ^B%u^b ] %W - %m - %D"
 

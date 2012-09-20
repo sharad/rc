@@ -36,14 +36,17 @@
                     (executable-find "p4")
                     vc-p4)
 
+  (defvar enable-p4-login nil "test")
+
   (if (and (setq vc-p4-require-p4config t)
            (not (getenv "P4CONFIG")))
       (setenv "P4CONFIG" ".p4conf"))
 
   (defun office-activate ()
     (let ((file (buffer-file-name)))
-      (unless (shell-command-no-output "p4 user -o")
-          (shell-command-no-output "echo -n $(zenity --password) | p4 login"))
+      (if enable-p4-login
+          (unless (shell-command-no-output "p4 user -o")
+            (shell-command-no-output "echo -n $(zenity --password) | p4 login")))
       (if (and file
                (with-timeout (4 nil) (vc-p4-registered file)))
           ;; if file is handled by perforce than assume it is

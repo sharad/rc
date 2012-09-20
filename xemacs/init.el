@@ -200,6 +200,7 @@
 ;; (message "My .emacs loaded in %s" (emacs-init-time))
 
 
-(sharad/enable-startup-inperrupting-feature)
+;; (sharad/enable-startup-inperrupting-feature)
+
 
 

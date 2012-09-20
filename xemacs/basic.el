@@ -250,7 +250,7 @@ alkready should not exist.")
 ;; Excellent
 ;; (add-to-list 'load-path "~/.xemacs/pkgrepos/world/deh")
 
-;; (eval-when-compile
+(eval-when-compile
 ;;   (unless (require 'dot-emacs-helper nil t)
     ;; (defmacro deh-require-maybe (feature &rest forms)
     ;;   (declare (indent 1))
@@ -305,7 +305,7 @@ alkready should not exist.")
 
     (defmacro deh-section (section &rest forms)
       (declare (indent 1))
-      `(progn ,@forms))
+      `(progn ,@forms)))
 ;;))
 ;; (deh-require 'feature-name
 ;;   configuration-for-the-feature)
@@ -359,6 +359,7 @@ alkready should not exist.")
 (defun sharad/disable-startup-inperrupting-feature ()
   (interactive)
   (setq
+   enable-p4-login nil
    tramp-mode nil
    ido-mode nil)
   (if (fboundp 'epa-file-disable)
@@ -368,6 +369,7 @@ alkready should not exist.")
 (defun sharad/enable-startup-inperrupting-feature ()
   (interactive)
   (setq
+   enable-p4-login t
    tramp-mode t
    ido-mode 'both)
   (if (fboundp 'epa-file-disable)

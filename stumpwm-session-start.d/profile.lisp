@@ -1,8 +1,13 @@
 
 (in-package :stumpwm)
 
+
+
 (progn
   ;; Profiles management
+  (dolist (a '((#\p fmt-profile)))
+    (pushnew a *screen-mode-line-formatters* :test 'equal))
+
   (let (current
         (profile-alist nil))
 
@@ -51,7 +56,11 @@
       (show-profile (find current profile-alist :key #'car :test #'equal)))
 
     (defcommand show-fullprofile () ()
-      (message "profile: ~a" profile-alist)))
+      (message "profile: ~a" profile-alist))
+
+    (defun fmt-profile (mil)
+      (declare (ignore ml))
+      (format nil "~a" current)))
 
   (profile-add :cprofile
                '(:map . "~/.Xmodmaps/xmodmaprc-normal-but-super")
@@ -61,5 +70,6 @@
                '(:cmd . "synclient TouchpadOff=1"))
 
   (set-profile :myprofile))
+
 
 

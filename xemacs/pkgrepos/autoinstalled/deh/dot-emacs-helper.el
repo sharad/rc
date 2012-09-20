@@ -86,6 +86,7 @@
 ;;          (add-to-list 'deh-sections (cons ,feature ,load-file-name)))
 ;;      (when (require ,feature nil t)
 ;;        ,@forms)))
+(eval-when-compile
 (defmacro deh-require-maybe (feature &rest forms)
   (declare (indent 1))
   (labels ((refine (feature)
@@ -130,7 +131,7 @@
   `(progn
      (if ,load-file-name
          (add-to-list 'deh-sections (cons ,section ,load-file-name)))
-     ,@forms))
+     ,@forms)))
 
 (defun deh-customize-inplace (name)
   "Configuration the section directly in file"
