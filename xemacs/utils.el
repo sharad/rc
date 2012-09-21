@@ -40,3 +40,23 @@
 
 
 
+;;{{{ define xrequire
+
+(defun xrequire (feature)
+  (unless (member feature exclude-lib)
+      (if (not running-xemacs)
+          (require feature nil t)
+          (require feature nil))))
+
+(defun irequire (feature)
+  (ignore-errors
+    (unless (member feature exclude-lib)
+      (if (not running-xemacs)
+          (require feature nil t)
+	(require feature nil)))))
+
+
+;;}}}
+
+;; Are we running XEmacs or Emacs?
+(defvar running-xemacs (string-match "XEmacs\\|Lucid" emacs-version))

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-09-20 13:16:50 s>
+;; Time-stamp: <2012-09-21 09:39:53 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -376,6 +376,13 @@ and their terminal equivalents.")
 (deh-require-maybe find-dired
   (global-set-key-if-unbind (kbd "s-x d") 'find-dired))
 
+
+(deh-require-maybe smex
+  (smex-initialize)
+  (global-set-key-if-unbind (kbd "H-x") 'smex)
+  (global-set-key-if-unbind (kbd "H-X") 'smex-major-mode-commands)
+  ;; This is your old M-x.
+  (global-set-key (kbd "C-c C-c H-x") 'execute-extended-command))
 
 
 (provide 'binding-config)

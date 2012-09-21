@@ -1,5 +1,30 @@
+;;; hand-custom.el --- Custom Override setings
 
-;; custom.el
+;; Copyright (C) 2012  Sharad Pratap
+
+;; Author: Sharad Pratap <>
+;; Keywords: lisp
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;;
+
+;;; Code:
+
+
 
 
 ;;{{{ custom-set-variables
@@ -38,7 +63,7 @@
  '(ecb-toggle-layout-sequence (quote ("sharad-leftright-analyse" "left9" "left14")))
  '(erc-modules (quote (autoaway autojoin button capab-identify completion hecomplete dcc fill identd irccontrols keep-place list log match menu move-to-prompt netsplit networks noncommands notify page readonly replace ring scrolltobottom services smiley sound stamp spelling track truncate unmorse xdcc)))
  '(global-font-lock-mode t nil (font-lock))
- '(gnus-registry-install t)
+ '(gnus-registry-install t t)
  '(gnus-treat-from-picon (quote head))
  '(gnus-treat-mail-picon (quote head))
  '(gnus-treat-newsgroups-picon (quote head))
@@ -81,7 +106,7 @@
  '(save-place t nil (saveplace))
  '(scroll-conservatively 4)
  '(session-set-file-name-exclude-regexp "/\\.overview\\|.session\\|News/\\|\\.Organize/")
- '(session-use-package t nil (session))
+ '(session-use-package t)
  '(show-paren-mode t nil (paren))
  '(speedbar-directory-unshown-regexp "^\\(CVS\\|RCS\\|SCCS\\|.deps\\)\\'")
  '(speedbar-frame-parameters (quote ((minibuffer) (width . 20) (border-width . 0) (menu-bar-lines . 0) (tool-bar-lines . 0) (unsplittable . t) (set-background-color "black"))))
@@ -146,3 +171,101 @@
 ;;}}}
 
 
+
+;;{{{ setq lot of variables
+(setq
+ case-fold-search t       ; searches and matches should ignore case
+ column-number-mode t     ; display the column number
+ confirm-kill-emacs nil   ; don't confirm when exiting emacs
+                          ; kill-ring-max 20 ;number of remembered
+                          ; cutted texts
+ show-paren-style 'mixed  ; my favorite style of highlighting matching
+                          ; parentheses
+
+ ;;standard-indent 2 ;don't go to fast towards right
+ transient-mark-mode t             ; show the region
+ scroll-preserve-screen-position t ; don't move the cursor when scrolling
+ ;;doxymacs: emacs mode for doxygen, a source code documentation generator
+ european-calendar-style t
+ frame-title-format "%b (%f)"  ; the title-bar displays the filename
+                               ; of the current buffer
+ font-lock-maximum-decoration t         ; as colored as possible
+ ;; visible-bell t                      ; stop beeping
+ show-paren-delay 0                     ;Show the matching immediately
+ default-indicate-empty-lines t ;show me empty lines at the end of the buffer
+ ;; inhibit-startup-message t              ;no startup message
+ ;; next-line-add-newlines t ; for use with comment-and-go-down, see below
+ kill-whole-line t                    ;take the CR when killing a line
+ x-stretch-cursor t      ;when on a TAB, the cursor has the TAB length
+ require-final-newline t ;adds a newline at the end of the file beeing
+                                        ;saved if it doesn't already have one
+ compile-command '"make"
+ ;; version-control t ; Allow numbered backups, enough
+ version-control nil  ; Allow numbered backups, enough
+ time-stamp-active t                    ; update timestamps
+ time-stamp-warn-inactive t             ; warn if unable
+ ispell-dictionary "english" ; check ispell-dictionary-base-alist variable for possible vaules
+ save-abbrevs 'silently
+
+ ;; english british american
+)
+;;}}}
+
+
+(defvar exclude-lib
+  (if (string-equal (system-name) "spratap")
+      '(tramp)))
+
+
+
+
+
+
+;;{{{ Mode line and custom-set-faces
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Mode line
+;; Set a Mode Line that tells me which machine, which directory,
+;; and which line I am on, plus the other customary information.
+;; (setq default-mode-line-format
+;;  (quote
+;;   (#("-" 0 1
+;;      (help-echo
+;;       "mouse-1: select window, mouse-2: delete others ..."))
+;;    mode-line-mule-info
+;;    mode-line-modified
+;;    mode-line-frame-identification
+;;    "    "
+;;    mode-line-buffer-identification
+;;    "    "
+;;    (:eval (substring
+;;            (system-name) 0 (string-match "\\..+" (system-name))))
+;;    ":"
+;;    default-directory
+;;    #(" " 0 1
+;;      (help-echo
+;;       "mouse-1: select window, mouse-2: delete others ..."))
+;;    (line-number-mode " Line %l ")
+;;    global-mode-string
+;;    #("   %[(" 0 6
+;;      (help-echo
+;;       "mouse-1: select window, mouse-2: delete others ..."))
+;;    (:eval (mode-line-mode-name))
+;;    mode-line-process
+;;    minor-mode-alist
+;;    #("%n" 0 2 (help-echo "mouse-2: widen" local-map (keymap ...)))
+;;    ")%] "
+;;    (-3 . "%P")
+;;    ;;   "-%-"
+;;    )))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+
+
+(put 'scroll-left 'disabled nil)
+
+
+(provide 'custom-override)
+;;; custom-override.el ends here

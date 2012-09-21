@@ -227,11 +227,16 @@
       (wait-for-program pgm)))
 
 (defcommand editor () ()
-  (if (wait-for-nwprogram "emacsclient")
+            ;;(if (wait-for-nwprogram "emacsclient")
       (run-wcli-command
-       (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(display-about-screen)'")
+       (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general"))
    ;; '(:class "Emacs")
-       )))
+       ))
+
+(defcommand xeditor () ()
+      (run-wcli-command
+       (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(progn (message \"" (format nil "~a" (substitute #\_ #\Space (group-name (current-group)))) "\"))'")
+       ))
 
 ;; (defcommand emacsclient () ()
 ;;   (if (wait-for-nwprogram "emacsclient")

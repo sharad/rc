@@ -332,5 +332,34 @@
 ;; )
 ;;}}
 
+(eval-after-load "smex"
+  '(smex-initialize))
+
+(deh-require-maybe smex
+  (setq smex-save-file (expand-file-name "~/.emacs.d/.smex-items")))
+
+;; (defun create-mode-buffer (&optional name mjmode)
+;;   (interactive
+;;    (let* ((mjmode (or
+;;                    (ido-completing-read "cmd: " (mapcar 'symbol-name
+;;                                                         (remove-if-not '(lambda (i)
+;;                                                                          (and
+;;                                                                           (commandp i)
+;;                                                                           (string-match "[.-]*-mode" (symbol-name i))))
+;;                                                                        obarray)) )))
+;;           (name (or mjmode)))
+;;      (list mjmode name)))
+;;   (switch-to-buffer name t)
+;;   (funcall (intern mjmode)))
+
+;; (completing-read "Where is command: " obarray 'commandp t)
+
+;; (find 'shell-script-mode obarray)
+
+;; (and
+;;  (commandp 'shell-script-mode)
+;;  (string-match "[.-]*-mode" (symbol-name 'shell-script-mode)))
+
+
 
 (provide 'interactivity-config)
