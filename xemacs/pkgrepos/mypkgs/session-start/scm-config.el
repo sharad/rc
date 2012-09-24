@@ -29,5 +29,13 @@
   )
 
 
+(autoload 'commit-msg-mode "commit-msg-mode" "Major mode for editing commit messages." t)
+
+(deh-require-maybe git-commit
+  ;; http://petereisentraut.blogspot.in/2011/01/git-commit-mode.html
+  (add-hook 'git-commit-mode-hook 'turn-on-flyspell)
+  (add-hook 'git-commit-mode-hook (lambda () (toggle-save-place 0)))
+  (add-to-list 'auto-mode-alist '("COMMIT_EDITMSG$" . commit-msg-mode))
+  (add-to-list 'auto-mode-alist '("hg-editor-.*$" . commit-msg-mode)))
 
 (provide 'scm-config)

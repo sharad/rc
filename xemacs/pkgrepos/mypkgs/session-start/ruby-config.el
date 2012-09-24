@@ -120,8 +120,9 @@ with the result."
   (add-hook 'ruby-mode-hook 'my-ruby-mode-hook)
 ;;}}
 
-  (deh-require-maybe rinari
-    t))
+  ;; (deh-require-maybe rinari
+  ;;   t)
+  )
 
 
 
