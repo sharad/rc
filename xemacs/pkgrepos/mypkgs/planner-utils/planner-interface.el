@@ -38,10 +38,10 @@
 
 (defvar task-stati '(open inprogress completed cancelled delegated pending))
 
-(defun pushnew-alist (key value list)
-  (unless (assoc key list)
-    (pushnew (cons key nil) list :key #'car))
-  (pushnew value (cdr (assoc key list)) :test #'string-equal))
+ (defun pushnew-alist (key value list)
+   (unless (assoc key list)
+     (pushnew (cons key nil) list :key #'car))
+   (pushnew value (cdr (assoc key list)) :test #'string-equal))
 
 (defun task-status-map (sys status)
   (cdr (assoc sys (cdr (assoc status status-mappings)))))
@@ -270,7 +270,7 @@
 ;;test
 (testing
  (planner-tasks-of-plan-from-page
-  (planner-today-ensure-exists) "MyMIS" '("_" "o")))
+  (planner-today-ensure-exists) "LinuxMIS" '("_" "o")))
 
 ;;should be fault tolrent. else face lot of time waste.
 (defun planner-tasks-of-plan-today (plan status)
@@ -279,7 +279,11 @@
 
 ;;test
 (testing
- (planner-tasks-of-plan-today (planner-today-ensure-exists) '("_" "o")))
+ (planner-tasks-of-plan-today (planner-today-ensure-exists) '("_" "o"))
+ (planner-tasks-of-plan-today "LinuxMIS" (task-stati-of-sys 'planner '(open inprogress)))
+ (planner-tasks-of-plan-today (planner-today-ensure-exists) (task-stati-of-sys 'planner '(open inprogress)))
+ (planner-tasks-of-plan-today "TasksByProject" (task-stati-of-sys 'planner '(open inprogress)))
+ )
 
 (defun normalize-task (task)
   (replace-regexp-in-string

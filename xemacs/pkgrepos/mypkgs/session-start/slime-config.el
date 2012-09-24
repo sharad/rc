@@ -24,6 +24,10 @@
             (slime-backend . "/usr/share/common-lisp/source/slime/swank-loader.lisp"))))
   "Available")
 
+(defun load-slime ()
+  (interactive)
+  (load-file (concat (get-slime-config 'slime-path) "/slime.el")))
+
 (setf use-slime-config 'ubuntu)
 
 (testing
