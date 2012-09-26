@@ -1,0 +1,1 @@
+../misc/commit-msg-mode.el

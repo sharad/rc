@@ -31,5 +31,14 @@
  x-select-enable-clipboard t
  x-select-enable-primary t)
 
+(deh-require-maybe light-symbol
+  ;; http://stackoverflow.com/a/385676/341107
+  (light-symbol-mode 1))
+
+
+(deh-require-maybe hilit-chg
+  (highlight-changes-mode t)
+  (highlight-changes-visible-mode t))
+
 (provide 'editing-config)
 

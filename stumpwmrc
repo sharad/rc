@@ -97,7 +97,7 @@
  *disk-usage-paths* '("/" "/home" "/usr" "/pacific")
  ;;Debugging
  *debug-level* 10
- *menu-selection-file* (data-dir-file "selections"))
+ in.net.sharad.pa-frontend-stumpwm:*menu-selection-file* (data-dir-file "selections" "dump"))
 
 ;;}}}
 

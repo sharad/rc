@@ -338,28 +338,73 @@
 (deh-require-maybe smex
   (setq smex-save-file (expand-file-name "~/.emacs.d/.smex-items")))
 
-;; (defun create-mode-buffer (&optional name mjmode)
-;;   (interactive
-;;    (let* ((mjmode (or
-;;                    (ido-completing-read "cmd: " (mapcar 'symbol-name
-;;                                                         (remove-if-not '(lambda (i)
-;;                                                                          (and
-;;                                                                           (commandp i)
-;;                                                                           (string-match "[.-]*-mode" (symbol-name i))))
-;;                                                                        obarray)) )))
-;;           (name (or mjmode)))
-;;      (list mjmode name)))
-;;   (switch-to-buffer name t)
-;;   (funcall (intern mjmode)))
-
-;; (completing-read "Where is command: " obarray 'commandp t)
-
-;; (find 'shell-script-mode obarray)
-
-;; (and
-;;  (commandp 'shell-script-mode)
-;;  (string-match "[.-]*-mode" (symbol-name 'shell-script-mode)))
 
 
+
+
+
+
+
+(deh-section "scratch mode"
+
+
+  (defun create-mode-buffer (&optional name mjmode)
+    (interactive
+     (let* ((mjmode (or
+                     (ido-completing-read "cmd: "
+                                          (all-completions "" obarray '(lambda (i)
+                                                                        (and
+                                                                         (commandp i)
+                                                                         (string-match "[.-]*-mode" (symbol-name i)))))))))
+       (name (or mjmode))
+     (list mjmode name)))
+  (switch-to-buffer name t)
+  (funcall (intern mjmode)))
+
+  (completing-read "Where is command: " obarray 'commandp t)
+  (completing-read "Where is command: " obarray)
+
+
+  (gethash 'shell-script-mode obarray)
+
+  (member 'shell-script-mode obarray)
+
+  (find 'shell-script-mode obarray)
+
+  (and
+   (commandp 'shell-script-mode)
+   (string-match "[.-]*-mode" (symbol-name 'shell-script-mode)))
+
+
+  (defvar slime-scratch-mode-map
+    (let ((map (make-sparse-keymap)))
+      (set-keymap-parent map lisp-mode-map)
+      map))
+
+  (defun slime-scratch ()
+    (interactive)
+    (slime-switch-to-scratch-buffer))
+
+  (defun slime-switch-to-scratch-buffer ()
+    (set-buffer (slime-scratch-buffer))
+    (unless (eq (current-buffer) (window-buffer))
+      (pop-to-buffer (current-buffer) t)))
+
+  (defvar slime-scratch-file nil)
+
+  (defun slime-scratch-buffer ()
+    "Return the scratch buffer, create it if necessary."
+    (or (get-buffer (slime-buffer-name :scratch))
+        (with-current-buffer (if slime-scratch-file
+                                 (find-file slime-scratch-file)
+                                 (get-buffer-create (slime-buffer-name :scratch)))
+          (rename-buffer (slime-buffer-name :scratch))
+          (lisp-mode)
+          (use-local-map slime-scratch-mode-map)
+          (slime-mode t)
+          (current-buffer))))
+
+  (slime-define-keys slime-scratch-mode-map
+    ("\C-j" 'slime-eval-print-last-expression)))
 
 (provide 'interactivity-config)

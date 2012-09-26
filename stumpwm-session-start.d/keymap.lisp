@@ -326,9 +326,10 @@
              (kbd "t") "urxvt"
              (kbd "b") "xbrowser"
              (kbd "f") "firefox"
-             (kbd "e") "editor"
+             (kbd "e") "emacsclient"
              (kbd "m") "mail-reader"
-             (kbd "n") "new-mail")
+             (kbd "n") "new-mail"
+             (kbd "E") "editor")
 
 ;; Handling
 (fill-keymap *window-handling-map*
