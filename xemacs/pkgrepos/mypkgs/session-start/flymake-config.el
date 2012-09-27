@@ -1,4 +1,4 @@
-;;; flymake.el --- Flymake Config
+;;; flymake-config.el --- Flymake Config
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -27,7 +27,11 @@
 (deh-require-maybe flymake
   (setq
    ;; http://stackoverflow.com/questions/2571436/emacs-annoying-flymake-dialog-box
-   flymake-gui-warnings-enabled nil))
+   ;; flymake-gui-warnings-enabled nil       ;need to know.
+   flymake-gui-warnings-enabled t       ;need to know.
+   flymake-run-in-place
+   ;; https://github.com/illusori/emacs-flymake/issues/1
+   t))
 
 
 (provide 'flymake-config)

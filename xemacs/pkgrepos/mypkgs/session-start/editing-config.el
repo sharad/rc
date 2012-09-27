@@ -33,12 +33,18 @@
 
 (deh-require-maybe light-symbol
   ;; http://stackoverflow.com/a/385676/341107
-  (light-symbol-mode 1))
+  (add-element-to-lists 'light-symbol-mode pgm-langs)
+  ;; (light-symbol-mode 1) - not works
+  )
 
 
 (deh-require-maybe hilit-chg
-  (highlight-changes-mode t)
-  (highlight-changes-visible-mode t))
+  (add-element-to-lists '(lambda ()
+                          (highlight-changes-visible-mode t)
+                          (highlight-changes-mode t)) pgm-langs)
+  ;; (highlight-changes-mode t) - not works
+  ;; (highlight-changes-visible-mode t)
+  )
 
 (provide 'editing-config)
 
