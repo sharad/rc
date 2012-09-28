@@ -276,8 +276,9 @@ alkready should not exist.")
    enable-p4-login nil
    tramp-mode nil
    ido-mode nil)
-  (if (fboundp 'epa-file-disable)
-      (epa-file-disable))
+  (deh-featurep epa
+                (if (fboundp 'epa-file-disable)
+                    (epa-file-disable)))
   )
 
 (defun sharad/enable-startup-inperrupting-feature ()
@@ -286,12 +287,16 @@ alkready should not exist.")
    enable-p4-login t
    tramp-mode t
    ido-mode 'both)
-  (if (fboundp 'epa-file-disable)
-      (epa-file-enable))
-  (add-element-to-lists '(lambda ()
-                          (light-symbol-mode 1)
-                          (highlight-changes-visible-mode t)
-                          (highlight-changes-mode t)) pgm-langs))
+
+  (deh-featurep epa
+                (if (fboundp 'epa-file-disable)
+                    (epa-file-enable)))
+
+  (deh-featurep (and light-symbol hilit-chg)
+                (add-element-to-lists '(lambda ()
+                                        (light-symbol-mode 1)
+                                        (highlight-changes-visible-mode t)
+                                        (highlight-changes-mode t)) pgm-langs)))
 
 
 (defun sharad/enable-startup-inperrupting-feature-in-frame-once (frame)

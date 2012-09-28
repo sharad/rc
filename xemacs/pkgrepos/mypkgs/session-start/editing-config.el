@@ -47,5 +47,10 @@
   ;; (highlight-changes-visible-mode t)
   )
 
+
+(deh-require-maybe show-wspace
+  ;; http://emacswiki.org/emacs/ShowWhiteSpace
+    )
+
 (provide 'editing-config)
 

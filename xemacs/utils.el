@@ -28,6 +28,14 @@
         (message "key %s already have binded with command %s. not doing anything." key bindedcmd)
         (global-set-key key cmd))))
 
+(defun keymap-set-key-if-unbind (map key cmd)
+  "Set binding for key if there is no  existing binding for key."
+  ;; (interactive)
+  (let ((bindedcmd (key-binding key t)))
+    (if bindedcmd
+        (message "key %s already have binded with command %s. not doing anything." key bindedcmd)
+        (define-key map key cmd))))
+
 
 
 (defun fprint (dir)

@@ -105,14 +105,6 @@ The indirect buffer can have another major mode."
 ;; peace
 (setq ring-bell-function (lambda () (message "bell !!")))
 
-
-;;For Session
-(deh-require-maybe session ;;
-  (add-hook 'after-init-hook 'session-initialize)
-  (add-hook 'kill-emacs-hook 'session-save-session)
-  (setq session-initialize t))
-;;  (session-initialize))
-
 ;; Make minibuffer larger if there is more to see
 (when (functionp 'resize-minibuffer-mode)
   (resize-minibuffer-mode 1))

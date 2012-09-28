@@ -17,7 +17,20 @@
 ;;;;
 ;;;; ;;in the .emacs
 (deh-require-maybe ido
-  (ido-mode t))
+  (ido-mode t)
+
+  (when nil
+    ;; from: http://www.emacswiki.org/emacs/init-ido.el
+    (ido-mode t)                                        ;开启ido模式
+    (setq ido-enable-flex-matching t)                   ;模糊匹配
+    (setq ido-everywhere nil)                           ;禁用ido everyting, 拷贝操作不方便
+    (add-hook 'ido-make-file-list-hook 'ido-sort-mtime) ;文件的排序方法
+    (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)  ;目录的排序方法
+    )
+
+  (deh-require-maybe idomenu
+    ;; http://emacswiki.org/emacs/ImenuMode
+    ))
 ;;;;
 ;;;;   ;; Mimicking an invocation of ido followed by some keys
 ;;;;
@@ -302,9 +315,6 @@
         (set-window-buffer (funcall selector) this-win)
         (select-window (funcall selector)))
       (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
-
-(define-key global-map [(kbd "C-x4t")] 'transpose-buffers)
-(global-set-key "\C-x4t" 'transpose-buffers)
 
 ;;{{
 ;; http://stud4.tuwien.ac.at/~e0225855/pointback/pointback.html

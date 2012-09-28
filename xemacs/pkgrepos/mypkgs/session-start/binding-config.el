@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-09-28 14:36:20 s>
+;; Time-stamp: <2012-09-28 21:58:00 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -302,8 +302,8 @@ and their terminal equivalents.")
 
 
 (deh-require-maybe remember
-  (global-set-key-if-unbind (kbd "C-c r p") 'sharad/remember-planner)
-  (global-set-key-if-unbind (kbd "C-c r o") 'sharad/remember-org))
+  (global-set-key-if-unbind (kbd "s-s r p") 'sharad/remember-planner)
+  (global-set-key-if-unbind (kbd "s-s r o") 'sharad/remember-org))
 
 (when (xrequire 'ibuffer)
   (global-set-key (kbd "C-x C-b") 'ibuffer) ;force
@@ -365,17 +365,20 @@ and their terminal equivalents.")
   (global-set-key-if-unbind (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
   )
 
-
 (deh-require-maybe lusty-explorer
-  (global-set-key-if-unbind (kbd "s-x s-f") 'lusty-file-explorer)
-  (global-set-key-if-unbind (kbd "s-x s-b") 'lusty-buffer-explorer))
+  (keymap-set-key-if-unbind ff-mode-map (kbd "s-x l") 'lusty-file-explorer)
+  (keymap-set-key-if-unbind ff-mode-map (kbd "s-x b") 'lusty-buffer-explorer))
 
 (deh-require-maybe find-file-in-project
-  (global-set-key-if-unbind (kbd "s-x f") 'find-file-in-project))
+  (keymap-set-key-if-unbind ff-mode-map (kbd "s-x p") 'find-file-in-project))
 
 (deh-require-maybe find-dired
-  (global-set-key-if-unbind (kbd "s-x d") 'find-dired))
+  (keymap-set-key-if-unbind ff-mode-map (kbd "s-x d") 'find-dired)
+  )
 
+(deh-section "ff-map"
+  (keymap-set-key-if-unbind ff-mode-map (kbd "s-x j") 'jcl-file-cache-ido-find-file)
+  (keymap-set-key-if-unbind ff-mode-map (kbd "s-x o") 'find-file-in-other-dir))
 
 (deh-require-maybe smex
   (smex-initialize)
@@ -386,6 +389,9 @@ and their terminal equivalents.")
 
 (deh-require-maybe contentswitch
   (global-set-key-if-unbind (kbd "s-x b") 'contentswitch))
+
+(define-key global-map [(kbd "C-x4t")] 'transpose-buffers)
+  (global-set-key "\C-x4t" 'transpose-buffers)
 
 (provide 'binding-config)
 
