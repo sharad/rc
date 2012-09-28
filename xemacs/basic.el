@@ -229,20 +229,23 @@ alkready should not exist.")
   (dolist (list lists)
           (add-hook (intern (concat (symbol-name list) "-mode-hook")) element)))
 
-(setq pgm-langs
-      '(java
-        c
-        c++
-        perl
-        lisp
-        emacs-lisp
-        cperl
-        js
-        espresso
-        ruby
-        sh
-        python))
+(defvar pgm-langs
+  '(java
+    c
+    c++
+    perl
+    lisp
+    emacs-lisp
+    cperl
+    js
+    espresso
+    ruby
+    sh
+    python) "Langauge modes.")
 
+(defvar mode-used '(org planner)  "Modes used.")
+
+(setq mode-used (append mode-used pgm-langs))
 
 
 ;;{{ Pathname Utilities
@@ -265,6 +268,7 @@ alkready should not exist.")
   ;;  (pathname-delete-trailing-/ "/sdfsd/sdgfdg////"))
   )
 
+(defvar enable-p4-login nil "test")
 
 (defun sharad/disable-startup-inperrupting-feature ()
   (interactive)
@@ -283,7 +287,19 @@ alkready should not exist.")
    tramp-mode t
    ido-mode 'both)
   (if (fboundp 'epa-file-disable)
-      (epa-file-enable)))
+      (epa-file-enable))
+  (add-element-to-lists '(lambda ()
+                          (light-symbol-mode 1)
+                          (highlight-changes-visible-mode t)
+                          (highlight-changes-mode t)) pgm-langs))
+
+
+(defun sharad/enable-startup-inperrupting-feature-in-frame-once (frame)
+  (sharad/enable-startup-inperrupting-feature)
+  (remove-hook 'after-make-frame-functions #'sharad/enable-startup-inperrupting-feature-in-frame-once))
+
+(add-hook 'after-make-frame-functions #'sharad/enable-startup-inperrupting-feature-in-frame-once)
+
 
 ;;}}
 

@@ -345,6 +345,7 @@
 
 
 
+(when nil
 (deh-section "scratch mode"
 
 
@@ -405,6 +406,6 @@
           (current-buffer))))
 
   (slime-define-keys slime-scratch-mode-map
-    ("\C-j" 'slime-eval-print-last-expression)))
+    ("\C-j" 'slime-eval-print-last-expression))))
 
 (provide 'interactivity-config)

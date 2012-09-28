@@ -370,6 +370,9 @@
         (switch-to-buffer found)))))
 
 
+(deh-require-maybe contentswitch
+  )
+
 (sharad/disable-startup-inperrupting-feature)
 
 ;; (setq debug-on-error t)

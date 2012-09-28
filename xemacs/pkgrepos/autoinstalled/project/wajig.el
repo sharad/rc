@@ -299,15 +299,14 @@ pkg is the package name to operate on."
 	    (match-string 0 wajig-commands-string)))
 	 (interactive
 	  (if arglist
-	      (setq interactive
-		    `(interactive
-		      (list
-		       (wajig-completing-read
-			,(format "$ sudo wajig %s " command)
-			,(if (memq wajig-command
-				  wajig-daemons-command-list)
-			    'wajig-daemons
-			  'wajig-installed-pkgs)))))
+              `(interactive
+                (list
+                 (wajig-completing-read
+                  ,(format "$ sudo wajig %s " command)
+                  ,(if (memq wajig-command
+                             wajig-daemons-command-list)
+                       'wajig-daemons
+                       'wajig-installed-pkgs))))
 	    '(interactive))))
     `(defun ,wajig-command ,arglist
        ,docstring

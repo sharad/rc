@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-09-21 09:39:53 s>
+;; Time-stamp: <2012-09-28 14:36:20 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -384,6 +384,8 @@ and their terminal equivalents.")
   ;; This is your old M-x.
   (global-set-key (kbd "C-c C-c H-x") 'execute-extended-command))
 
+(deh-require-maybe contentswitch
+  (global-set-key-if-unbind (kbd "s-x b") 'contentswitch))
 
 (provide 'binding-config)
 

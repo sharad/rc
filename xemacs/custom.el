@@ -76,7 +76,7 @@
  '(planner-renumber-tasks-automatically t)
  '(planner-sections (quote ((tasks . "Tasks") (notes . "Notes") (diary . "Diary") (env . "Environment"))))
  '(planner-tasks-file-behavior (quote close))
- '(safe-local-variable-values (quote ((flymake-run-in-place) (office-mode . t) (auto-save-default) (folded-file . t) (auto-fill-mode))))
+ '(safe-local-variable-values (quote ((flymake-run-in-place) (office-mode . t) (auto-save-default) (eval office-mode 1) (folded-file . t) (auto-fill-mode))))
  '(save-abbrevs t)
  '(save-place t nil (saveplace))
  '(scroll-conservatively 4)

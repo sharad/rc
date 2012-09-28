@@ -46,13 +46,12 @@
     (let ((file (buffer-file-name)))
       (if enable-p4-login
           (unless (shell-command-no-output "p4 user -o")
-            (shell-command-no-output "echo -n $(zenity --password) | p4 login")))
-      (if (or office-mode
-              (and file
-                   (with-timeout (4 nil) (vc-p4-registered file))))
+            (shell-command-no-output "zenity --password | p4 login")))
+      (when (and file
+                 (with-timeout (4 nil) (vc-p4-registered file)))
           ;; if file is handled by perforce than assume it is
           ;; related to office perforce repository.
-          (office-mode 1))))
+        (office-mode 1))))
 
 
   (if sharad-in-office-with-perforce
@@ -72,3 +71,4 @@
 
 
 (provide 'minor-modes-act-config)
+

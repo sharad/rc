@@ -48,6 +48,7 @@
   :lighter " Office"
   :global nil
   (when office-mode
+    (message "calling office mode")
     (set (make-local-variable 'before-save-hook) before-save-hook)
     (remove-hook 'before-save-hook 'delete-trailing-whitespace t)))
 
