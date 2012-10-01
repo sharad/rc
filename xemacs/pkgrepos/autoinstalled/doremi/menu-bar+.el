@@ -4,13 +4,14 @@
 ;; Description: Extensions to `menu-bar.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Jun  4 10:49:23 2010 (-0700)
+;; Last-Updated: Thu Aug 23 16:11:21 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 3358
+;;     Update #: 3552
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
+;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/MenuBarPlus
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
@@ -18,8 +19,9 @@
 ;;
 ;;   `apropos', `apropos+', `avoid', `fit-frame', `frame-fns',
 ;;   `help+20', `info', `info+', `menu-bar', `misc-cmds', `misc-fns',
-;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `naked', `second-sel', `strings', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -32,42 +34,53 @@
 ;;    1. Menus "Search", "Frames" and "Do Re Mi" were added.
 ;;    2. Menus "File", "Edit", & "Help" were changed.
 ;;    3. Menu order was changed.
-;;    3. Buffer-local menus are separated from global menus via "||".
+;;    4. Buffer-local menus are separated from global menus via "||".
 ;;
-;;  Functions defined here:
 ;;
-;;    `describe-menubar', `fill-paragraph-ala-mode',
-;;    `menu-bar-create-directory', `menu-bar-next-tag-other-window',
-;;    `menu-bar-word-search-backward', `menu-bar-word-search-forward',
-;;    `nonincremental-repeat-search-backward',
-;;    `nonincremental-repeat-search-forward'
-;;    `nonincremental-repeat-word-search-backward',
-;;    `nonincremental-repeat-word-search-forward'.
+;;  User options defined here:
+;;
+;;    `menu-barp-select-buffer-function'.
+;;
+;;  Commands defined here:
+;;
+;;    `describe-menubar', `menu-bar-create-directory',
+;;    `menu-bar-next-tag-other-window', `menu-bar-select-frame' (Emacs
+;;    20), `menu-bar-word-search-backward' (Emacs 22+),
+;;    `menu-bar-word-search-forward' (Emacs 22+),
+;;    `nonincremental-repeat-search-backward' (Emacs 22+),
+;;    `nonincremental-repeat-search-forward' (Emacs 22+),
+;;    `nonincremental-repeat-word-search-backward' (Emacs < 22),
+;;    `nonincremental-repeat-word-search-forward' (Emacs < 22),
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `fill-paragraph-ala-mode'.
 ;;
 ;;  Macros defined here:
 ;;
 ;;    `menu-bar-make-toggle-any-version'.
 ;;
-;;  Menu variables defined here:
+;;  Variables defined here:
 ;;
 ;;    `menu-bar-apropos-menu', `menu-bar-describe-menu',
-;;    `menu-bar-divider-menu', `menu-bar-edit-fill-menu',
-;;    `menu-bar-edit-region-menu', `menu-bar-edit-sort-menu',
-;;    `menu-bar-emacs-lisp-manual-menu', `menu-bar-emacs-manual-menu',
-;;    `menu-bar-frames-menu', `menu-bar-print-menu',
+;;    `menu-bar-divider-menu', `menu-bar-doremi-menu',
+;;    `menu-bar-edit-fill-menu', `menu-bar-edit-region-menu',
+;;    `menu-bar-edit-sort-menu', `menu-bar-emacs-lisp-manual-menu',
+;;    `menu-bar-emacs-manual-menu', `menu-bar-frames-menu',
+;;    `menu-bar-i-search-menu' (Emacs < 22), `menu-bar-print-menu',
 ;;    `menu-bar-search-replace-menu', `menu-bar-search-tags-menu',
-;;    `menu-bar-whereami-menu'.
+;;    `menu-bar-whereami-menu', `yank-menu'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `menu-bar.el' have
 ;;              been REDEFINED HERE:
 ;;
-;;  `kill-this-buffer' -        Deletes buffer's windows as well, if
-;;                              `sub-kill-buffer-and-its-windows'.
+;;  `kill-this-buffer' - Deletes buffer's windows as well, if
+;;                       `sub-kill-buffer-and-its-windows'.
+;;
 ;;  `menu-bar-options-save' - Added options are saved (>= Emacs 21).
 ;;
-;;  `menu-bar-select-buffer' -  1. Uses -other-frame.
-;;                              2. defun -> defsubst.
+;;  `menu-bar-select-buffer' (Emacs 20-22) - Uses -other-frame.
 ;;
 ;;  `menu-bar-select-frame' - Use Emacs 22 version for Emacs 20.
 ;;
@@ -87,8 +100,24 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/12/03 dadams
+;;     All region commands: Enable only if region is also nonempty.
+;;     All editing commands: Enable only if buffer is not read-only.
+;; 2011/11/04 dadams
+;;     Wrap (x-get-selection 'SECONDARY) everywhere in condition-case (Emacs 21 bug).
+;; 2011/07/24 dadams
+;;     menu-bar-(edit|sort)-region-menu: Disable these submenus if region is not active.
+;;     Removed old Emacs19 commented code.
+;; 2011/07/01 dadams
+;;     Added: option menu-barp-select-buffer-function.
+;;     Following fix to Emacs bug #8876, use new var menu-bar-select-buffer-function.
+;; 2011/06/15 dadams
+;;     menu-bar-select-buffer: Use pop-to-buffer-other-frame for Emacs 24.
+;; 2011/01/04 dadams
+;;     defsubst -> defun.
+;;     Removed autoload cookies from defvar.  Added for commands.
 ;; 2010/06/04 dadams
 ;;     Frames menu: Handle fit-frame.el and frame-cmds.el separately.  Added Toggle Max stuff.
 ;; 2010/05/28 dadams
@@ -305,8 +334,7 @@
 
 (require 'menu-bar)
 
-(and (< emacs-major-version 21);; dolist (plus, for Emacs <20: when, unless)
-     (eval-when-compile (require 'cl)))
+(eval-when-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist
 (when (eq system-type 'windows-nt)
   (require 'w32browser-dlgopen nil t)) ;; (no error if not found): dlgopen-open-files
                                        ;; `w32browser-dlgopen.el' is based on `dlgopen.el'
@@ -329,14 +357,22 @@
 ;; To quiet the Emacs 20 byte compiler
 (defvar menu-bar-goto-menu)
 (defvar menu-bar-last-search-type)
+(defvar menu-bar-select-buffer-function)
+(unless (> emacs-major-version 23) (defvar menu-barp-select-buffer-function))
 
 ;;;;;;;;;;;;;;;;;;;;
 
 
+(when (> emacs-major-version 23)
+  (defcustom menu-barp-select-buffer-function 'pop-to-buffer-other-frame
+    "*Function to use as `menu-bar-select-buffer-function'."
+    :type 'function :group 'menu))
 
-;; REPLACES ORIGINAL in `menu-bar.el':
-;; Use Emacs 22 definition.
-;; Emacs 20 version fails when last-command-event is the name of the frame.
+
+;; REPLACE ORIGINAL in `menu-bar.el'.
+;;
+;; Use Emacs 22 definition.  Emacs 20 version fails when `last-command-event'
+;; is the name of the frame.
 ;;
 (when (< emacs-major-version 21)
   (defun menu-bar-select-frame ()
@@ -352,18 +388,27 @@
       (select-frame frame))))
 
 
-;; REPLACES ORIGINAL in `menu-bar.el':
-;; Uses -other-frame.  defun -> defsubst.
-(defsubst menu-bar-select-buffer ()
-  "Switch to `last-command-event' buffer in other frame."
-  (interactive) (switch-to-buffer-other-frame last-command-event)) ;`files+.el'
+;; REPLACE ORIGINAL in `menu-bar.el'.
+;;
+;; Use `switch-to-buffer-other-frame' (Emacs 20, 21).
+;;
+;; Note: Starting with Emacs 23, function `menu-bar-select-buffer' is no longer used by
+;;       `menu-bar-update-buffers', so redefining it has no effect on the menu.
+;;       See Emacs bug #8876.  The fix to bug #8876, which is for Emacs 24, uses a new
+;;       variable, `menu-bar-select-buffer-function'.  We provide a user option for this.
+;;
+(if (< emacs-major-version 24)
+    (defun menu-bar-select-buffer ()
+      "Switch to `last-command-event' buffer in other frame."
+      (interactive)
+      (switch-to-buffer-other-frame last-command-event)) ;`files+.el'
+  (setq menu-bar-select-buffer-function  menu-barp-select-buffer-function))
 
 
-;; REPLACES ORIGINAL MENU-BAR.
+;; REPLACE ORIGINAL MENU-BAR -------------------------------------
 
 ;;; Main MENU-BAR entries.
 ;; Divider before standard menus.
-;;;###autoload
 (defvar menu-bar-divider-menu (make-sparse-keymap "Divider"))
 (define-key global-map [menu-bar divider] (cons "||" menu-bar-divider-menu))
 (define-key menu-bar-divider-menu [menu-bar-divider-hint]
@@ -397,13 +442,13 @@ submenu of the \"Help\" menu."))
       (buffer-string))))                ; Return the text we displayed.
 
 
-;; REPLACES ORIGINAL defined in `menu-bar.el'.
+;; REPLACE ORIGINAL defined in `menu-bar.el'.
 (setq menu-bar-edit-menu (make-sparse-keymap "Edit"))
 (define-key global-map [menu-bar edit] (cons "Edit" menu-bar-edit-menu))
 
 
-;; REPLACES ORIGINAL menuus defined in `menu-bar.el'.
-;; These are all moved to new top-level Search menu.
+;; REPLACE ORIGINAL menuus defined in `menu-bar.el'.
+;; These are all moved to new top-level `Search' menu.
 (if (< emacs-major-version 21)
     (global-unset-key [menu-bar search])
   (global-unset-key [menu-bar edit search])
@@ -434,7 +479,7 @@ submenu of the \"Help\" menu."))
               '(help-menu)
               (and (fboundp 'show-tool-bar-for-one-command) '(pop-up-tool-bar))))
 
-;;; FRAMES menu.
+;;; `Frames' menu.
 (when (and (featurep 'fit-frame) (not (featurep 'frame-cmds)) (eq window-system 'w32))
   (define-key menu-bar-frames-menu [maximize-frame]
     '(menu-item "Maximize Frame" maximize-frame :help "Maximize the selected frame")))
@@ -486,7 +531,7 @@ submenu of the \"Help\" menu."))
     '(menu-item "Hide Frames / Show Buffers" show-hide
       :help "Show, if only one frame visible; else hide.")))
 
-;;; DO RE MI menu.
+;;; `Do Re Mi' menu.
 (when (featurep 'doremi-cmd)
   (define-key menu-bar-doremi-menu [doremi-global-marks+]
     '(menu-item "Global Marks" doremi-global-marks+
@@ -596,7 +641,7 @@ submenu of the \"Help\" menu."))
       :enable (not (one-window-p)))))
 
 
-;;; FILES menu.
+;;; `Files' menu.
 ;;
 (when (< emacs-major-version 21)
   ;; Use `dlgopen-open-files' if available; else use `find-file-other-frame'.
@@ -620,6 +665,7 @@ submenu of the \"Help\" menu."))
              (menu-bar-non-minibuffer-window-p))
     :help "Create and edit a new file"))
 
+;;;###autoload
 (defun menu-bar-create-directory (directory)
   "Create a subdirectory of `default-directory' called DIRECTORY."
   (interactive (list (read-file-name "Create directory: ")))
@@ -649,8 +695,11 @@ submenu of the \"Help\" menu."))
     :help "Save unsaved buffers, then exit") 'separator-execute)
 
 
-;; REPLACES ORIGINAL in `menu-bar.el':
-;; Deletes buffer's windows as well.  defun -> defsubst.
+;; REPLACE ORIGINAL in `menu-bar.el'.
+;;
+;; Delete buffer's windows as well.
+;;
+;;;###autoload
 (defun kill-this-buffer ()
 "Delete the current buffer and delete all of its windows."
   (interactive)
@@ -661,7 +710,7 @@ submenu of the \"Help\" menu."))
     (kill-buffer (current-buffer))))    ; <-- original defn.
 
 
-;; EDIFF submenu of TOOLS
+;; `Ediff' submenu of `Tools' menu.
 (when (fboundp 'vc-ediff)
   (define-key menu-bar-tools-menu [compare]
     '(menu-item "Compare" menu-bar-ediff-menu ; Remove "(Ediff)".
@@ -684,12 +733,15 @@ submenu of the \"Help\" menu."))
 (define-key-after menu-bar-edit-menu [separator-edit-cut] '("--") 'undo)
 (define-key-after menu-bar-edit-menu [cut]
   '(menu-item "Cut" kill-region
-    :help "Cut (kill) text in region between mark and current position"
-    :enable (and mark-active (not buffer-read-only))) 'separator-edit-cut)
+    :help "Cut (kill) text in nonempty region between mark and current position"
+    :enable (and (not buffer-read-only) mark-active (> (region-end) (region-beginning))))
+  'separator-edit-cut)
 (define-key-after menu-bar-edit-menu [copy]
   '(menu-item "Copy" menu-bar-kill-ring-save
-    :help "Copy text in region between mark and current position"
-    :enable mark-active :keys "\\[kill-ring-save]") 'cut)
+    :help "Copy text in nonempty region between mark and current position"
+    :enable (and mark-active (> (region-end) (region-beginning)))
+    :keys "\\[kill-ring-save]")
+  'cut)
 
 ;; Use `x-get-selection', not `x-selection-exists-p', because of Emacs bugs on Windows etc.
 ;; See thread "x-selection-exists-p  vs  x-get-selection", emacs-devel@gnu.org, 2008-05-04.
@@ -697,34 +749,45 @@ submenu of the \"Help\" menu."))
   '(menu-item "Paste" yank
     :help "Paste (yank) text most recently cut/copied"
     :enable
-    (and
-     (or
-      (and (fboundp 'x-selection-exists-p) (x-selection-exists-p))
-      (and x-select-enable-clipboard (x-selection-exists-p 'CLIPBOARD)))
-     (not buffer-read-only))) 'copy)
-(when (fboundp 'yank-secondary)
-  (define-key-after menu-bar-edit-menu [yank-secondary] ; In `second-sel.el'
-    '(menu-item "Paste Secondary" yank-secondary
+    (and (not buffer-read-only)
+     (or (and (fboundp 'x-selection-exists-p) (x-selection-exists-p))
+      (and x-select-enable-clipboard (x-selection-exists-p 'CLIPBOARD)))))
+  'copy)
+(when (fboundp 'secondary-dwim)
+  (define-key-after menu-bar-edit-menu [secondary-dwim] ; In `second-sel.el'
+    '(menu-item "Paste Secondary" secondary-dwim
       :help "Paste (yank) secondary selection."
       :enable
-      (and (fboundp 'x-get-selection) (x-get-selection 'SECONDARY) (not buffer-read-only))
+      (and (not buffer-read-only)
+       (fboundp 'x-get-selection)
+       (condition-case nil              ; Need ignore error - Emacs 21 raises error internally.
+           (x-get-selection 'SECONDARY)
+         (error nil)))
       :keys "\\[secondary-dwim]")
     'paste)
   (define-key-after menu-bar-edit-menu [primary-to-secondary] ; In `second-sel.el'
     '(menu-item "Move Secondary to Region" primary-to-secondary
       :help "Make the region in the current buffer into the secondary selection."
       :enable mark-active :keys "C-1 \\[secondary-dwim]")
-    'yank-secondary)
+    'secondary-dwim)
   (define-key-after menu-bar-edit-menu [secondary-swap-region] ; In `second-sel.el'
     '(menu-item "Swap Region and Secondary" secondary-swap-region
       :help "Make region into secondary selection, and vice versa."
-      :enable (and (fboundp 'x-get-selection) (x-get-selection 'SECONDARY))
+      :enable
+      (and (fboundp 'x-get-selection)
+       (condition-case nil              ; Need ignore error - Emacs 21 raises error internally.
+           (x-get-selection 'SECONDARY)
+         (error nil)))
       :keys "C-- \\[secondary-dwim]")
     'primary-to-secondary)
   (define-key-after menu-bar-edit-menu [secondary-to-primary] ; In `second-sel.el'
     '(menu-item "Select Secondary as Region" secondary-to-primary
       :help "Go to the secondary selection and select it as the active region."
-      :enable (and (fboundp 'x-get-selection) (x-get-selection 'SECONDARY))
+      :enable
+      (and (fboundp 'x-get-selection)
+       (condition-case nil              ; Need ignore error - Emacs 21 raises error internally.
+           (x-get-selection 'SECONDARY)
+         (error nil)))
       :keys "C-0 \\[secondary-dwim]")
     'secondary-swap-region))
 
@@ -733,12 +796,13 @@ submenu of the \"Help\" menu."))
 
 (define-key-after menu-bar-edit-menu [select-paste]
   '(menu-item "Select and Paste" yank-menu :help "Paste (yank) text cut or copied earlier"
-    :enable (and (cdr yank-menu) (not buffer-read-only)))
+    :enable (and (not buffer-read-only)  (cdr yank-menu)))
   (if (fboundp 'secondary-to-primary) 'secondary-to-primary 'paste))
 (define-key-after menu-bar-edit-menu [clear]
   '(menu-item "Clear" delete-region
-    :help "Delete the text in region between mark and current position"
-    :enable (and mark-active (not buffer-read-only) (not (mouse-region-match))))
+    :help "Delete the text in nonempty region between mark and current position"
+    :enable (and  (not buffer-read-only)  mark-active  (> (region-end) (region-beginning))
+             (not (mouse-region-match))))
   'select-paste)
 (define-key-after menu-bar-edit-menu [mark-whole-buffer]
   '(menu-item "Select All" mark-whole-buffer
@@ -749,46 +813,57 @@ submenu of the \"Help\" menu."))
 
 (define-key-after menu-bar-edit-menu [flush-lines] ; In `replace+.el' for Emacs 20.
   '(menu-item "Delete Matching Lines..." flush-lines
-    :help "Delete all lines after cursor that match a regular expression")
+    :help "Delete all lines after cursor that match a regular expression"
+    :enable (not buffer-read-only))
   'separator-edit-delete-lines)
 (define-key-after menu-bar-edit-menu [keep-lines] ; In `replace+.el' for Emacs 20.
   '(menu-item "Delete Non-Matching Lines..." keep-lines
-    :help "Delete all lines after cursor that do not match a regular expression")
+    :help "Delete all lines after cursor that do not match a regular expression"
+    :enable (not buffer-read-only))
   'flush-lines)
 ;;--------------------
 (define-key-after menu-bar-edit-menu [separator-edit-select-all] '("--") 'keep-lines)
 
 (defvar menu-bar-edit-fill-menu (make-sparse-keymap "Fill"))
 (define-key-after menu-bar-edit-menu [props]
-  '(menu-item "Text Properties" facemenu-menu :help "Change properties of text in region")
+  '(menu-item "Text Properties" facemenu-menu :help "Change properties of text in region"
+    :enable (not buffer-read-only))
   'separator-edit-select-all)
 (define-key-after menu-bar-edit-menu [fill]
   (cons "Fill" menu-bar-edit-fill-menu) 'props)
+
 (defvar menu-bar-edit-region-menu (make-sparse-keymap "Edit Region"))
 (defalias 'menu-bar-edit-region-menu (symbol-value 'menu-bar-edit-region-menu))
 (define-key-after menu-bar-edit-menu [region]
-  (cons "Edit Region" menu-bar-edit-region-menu) 'fill)
+  '(menu-item "Edit Region" menu-bar-edit-region-menu
+    :help "Edit the nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning))))
+  'fill)
 (defvar menu-bar-edit-sort-menu (make-sparse-keymap "Sort Region"))
 (defalias 'menu-bar-edit-sort-menu (symbol-value 'menu-bar-edit-sort-menu))
 (define-key-after menu-bar-edit-menu [sort]
-  (cons "Sort Region" menu-bar-edit-sort-menu) 'region)
+  '(menu-item "Sort Region" menu-bar-edit-sort-menu
+    :help "Sort the nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning))))
+  'region)
 
-;; EDIT FILL submenu.
+;; `Edit' > `Fill' submenu.
 (define-key menu-bar-edit-fill-menu [fill-nonuniform-para]
   '(menu-item "Fill Non-Uniform ¶s" fill-nonuniform-paragraphs
-    :help "Fill paragraphs in selection, allowing varying indentation"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Fill paragraphs in nonempty region, allowing varying indentation"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-fill-menu [fill-indiv-para]
   '(menu-item "Fill Uniform ¶s" fill-individual-paragraphs
-    :help "Fill paragraphs of uniform indentation within selection"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Fill paragraphs of uniform indentation within nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-fill-menu [fill-region]
   '(menu-item "Fill ¶s" fill-region
-    :help "Fill text in region to fit between left and right margin"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Fill text in the nonempty region to fit between left and right margin"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-fill-menu [fill-para]
   '(menu-item "Fill ¶" fill-paragraph-ala-mode
-    :help "Fill the paragraph, doing what `M-q' does (if bound)"))
+    :help "Fill the paragraph, doing what `M-q' does (if bound)"
+    :enable (not buffer-read-only)))
 
 (defun fill-paragraph-ala-mode (&optional arg)
   "Do whatever `M-q' does, if it is bound.  Else, `fill-paragraph'.
@@ -801,90 +876,95 @@ ARG means justify as well as fill."
         (funcall (lookup-key (current-global-map) "\M-q") arg)
         (fill-paragraph arg))))
 
-;; EDIT REGION submenu.
+;; `Edit' > `Region' submenu.
 (when (fboundp 'unaccent-region)
   (define-key menu-bar-edit-region-menu [unaccent-region]
     '(menu-item "Unaccent" unaccent-region ; Defined in `unaccent'.
-      :help "Replace accented chars in selection by unaccented chars"
-      :enable (and mark-active (not buffer-read-only)))))
+      :help "Replace accented chars in the nonempty region by unaccented chars"
+      :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning))))))
 (define-key menu-bar-edit-region-menu [capitalize-region]
   '(menu-item "Capitalize" capitalize-region
-    :help "Capitalize (initial caps) words in the selection"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Capitalize (initial caps) words in the nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [downcase-region]
-  '(menu-item "Downcase" downcase-region :help "Make words in the selection lower-case"
-    :enable (and mark-active (not buffer-read-only))))
+  '(menu-item "Downcase" downcase-region :help "Make words in the nonempty region lower-case"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [upcase-region]
-  '(menu-item "Upcase" upcase-region :help "Make words in the selection upper-case"
-    :enable (and mark-active (not buffer-read-only))))
+  '(menu-item "Upcase" upcase-region :help "Make words in the nonempty region upper-case"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 ;;--------------------
 (define-key menu-bar-edit-region-menu [separator-chars] '("--"))
 (define-key menu-bar-edit-region-menu [untabifyn]
   '(menu-item "Untabify" untabify
-    :help "Convert all tabs in region (selection) to multiple spaces"
-    :enable mark-active))
+    :help "Convert all tabs in the nonempty region to multiple spaces"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [tabify-region]
-  '(menu-item "Tabify" tabify :help "Convert multiple spaces in region to tabs when possible"
-    :enable mark-active))
+  '(menu-item "Tabify" tabify
+    :help "Convert multiple spaces in the nonempty region to tabs when possible"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [comment-region]
   '(menu-item "(Un)Comment" comment-region
-    :help "Comment or uncomment each line in the selection"
-    :enable (and mark-active comment-start (not buffer-read-only))))
+    :help "Comment or uncomment each line in the nonempty region"
+    :enable (and comment-start  (not buffer-read-only)  mark-active
+             (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [center-region]
   '(menu-item "Center" center-region
-    :help "Center each nonblank line that starts in the selection"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Center each nonblank line that starts in the nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [indent-rigidly-region]
   '(menu-item "Rigid Indent" indent-rigidly
-    :help "Indent each line that starts in the selection"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Indent each line that starts in the nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [indent-region]
   '(menu-item "Column/Mode Indent" indent-region
-    :help "Indent each nonblank line in the selection"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Indent each nonblank line in the nonempty region"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 
 ;;--------------------
 (define-key menu-bar-edit-region-menu [separator-indent] '("--"))
 (define-key menu-bar-edit-region-menu [abbrevs-region]
-  '(menu-item "Expand Abbrevs" expand-region-abbrevs
-    :help "Expand each abbrev in the selection (with confirmation)"
-    :enable (and mark-active (not buffer-read-only))))
+  '(menu-item "Expand Abbrevs..." expand-region-abbrevs
+    :help "Expand each abbrev in the nonempty region (with confirmation)"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-region-menu [macro-region]
   '(menu-item "Exec Keyboard Macro" apply-macro-to-region-lines ; In `macros+.el'.
-    :help "Run keyboard macro at start of each line in selection"
-    :enable (and last-kbd-macro mark-active (not buffer-read-only))))
+    :help "Run keyboard macro at start of each line in the nonempty region"
+    :enable (and last-kbd-macro mark-active  (not buffer-read-only)
+             (> (region-end) (region-beginning)))))
 
-;; EDIT SORT submenu.
+;; `Edit' > `Sort' submenu.
 (define-key menu-bar-edit-sort-menu [sort-regexp-fields]
-  '(menu-item "Regexp Fields..." sort-regexp-fields :help "Sort the selection lexicographically"
-    :enable (and last-kbd-macro mark-active (not buffer-read-only))))
+  '(menu-item "Regexp Fields..." sort-regexp-fields
+    :help "Sort the nonempty region lexicographically"
+    :enable (and last-kbd-macro  (not buffer-read-only)  mark-active
+             (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [sort-pages]
-  '(menu-item "Pages" sort-pages :help "Sort pages in the selection alphabetically"
-    :enable (and mark-active (not buffer-read-only))))
+  '(menu-item "Pages" sort-pages :help "Sort pages in the nonempty region alphabetically"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [sort-paragraphs]
   '(menu-item "Paragraphs" sort-paragraphs
-    :help "Sort paragraphs in the selection alphabetically"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Sort paragraphs in the nonempty region alphabetically"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [sort-numeric-fields]
   '(menu-item "Numeric Field" sort-numeric-fields
-    :help "Sort lines in selection numerically by the Nth field"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Sort lines in the nonempty region numerically by the Nth field"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [sort-fields]
   '(menu-item "Field" sort-fields
-    :help "Sort lines in selection lexicographically by the Nth field"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Sort lines in the nonempty region lexicographically by the Nth field"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [sort-columns]
   '(menu-item "Columns" sort-columns
-    :help "Sort lines in selection alphabetically, by a certain range of columns"
-    :enable (and mark-active (not buffer-read-only))))
+    :help "Sort lines in the nonempty region alphabetically, by a certain range of columns"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [sort-lines]
-  '(menu-item "Lines" sort-lines :help "Sort lines in selection alphabetically"
-    :enable (and mark-active (not buffer-read-only))))
+  '(menu-item "Lines" sort-lines :help "Sort lines in the nonempty region alphabetically"
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 (define-key menu-bar-edit-sort-menu [reverse-region]
   '(menu-item "Reverse" reverse-region :help "Reverse the order of the selected lines"
-    :enable (and mark-active (not buffer-read-only))))
+    :enable (and (not buffer-read-only)  mark-active  (> (region-end) (region-beginning)))))
 
-;;; SEARCH menu.
+;;; `Search' menu.
 (when (< emacs-major-version 22)
   (defun nonincremental-repeat-word-search-forward ()
     "Search forward for the previous search string."
@@ -1082,7 +1162,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
       :help "Search forward for a string")))
 
 
-;;; SEARCH TAGS submenu.
+;;; `Search' > `Tags' submenu.
 (define-key menu-bar-search-tags-menu [set-tags-name]
   '(menu-item "Set Tags File Name..." visit-tags-table
     :help "Tell Tags commands which tag table file to use"))
@@ -1102,6 +1182,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 ;----------------------
 (define-key menu-bar-search-tags-menu [separator-tags-regexp] '("--"))
 
+;;;###autoload
 (defun menu-bar-next-tag-other-window ()
   "Find the next definition of the tag already specified."
   (interactive)
@@ -1115,7 +1196,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
   '(menu-item "Find Tag..." find-tag-other-window
     :help "Find tag whose name matches input string"))
 
-;; REPLACE submenu
+;; `Replace' submenu
 (define-key menu-bar-search-replace-menu [replace-regexp]
   '(menu-item "       Regexp..." replace-regexp
     :help "Replace things after cursor that match regexp"
@@ -1148,7 +1229,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
     :enable (not buffer-read-only)))
 
 
-;;; HELP menu.
+;;; `Help' menu.
 
 ;;; General help
 (define-key menu-bar-help-menu [separator-genl-help] '("--"))
@@ -1178,7 +1259,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 (define-key menu-bar-help-menu [emacs-news] nil)
 
 
-;;; Whoops!? submenu
+;;; `Whoops!?' submenu
 (defvar menu-bar-whereami-menu (make-sparse-keymap "Whoops!?"))
 (define-key menu-bar-help-menu [whereami]
   (cons "Whoops!?" menu-bar-whereami-menu))
@@ -1189,7 +1270,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 (define-key menu-bar-whereami-menu [keyboard-quit]
   '(menu-item "Cancel Current Action" keyboard-quit :help "Quit any operation in progress"))
 
-;;; Apropos submenu
+;;; `Apropos' submenu
 (defvar menu-bar-apropos-menu (make-sparse-keymap "Apropos"))
 (define-key-after menu-bar-help-menu [apropos] (cons "Apropos" menu-bar-apropos-menu)
                   'separator-genl-help)
@@ -1226,7 +1307,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 (define-key menu-bar-apropos-menu [emacs-index-search] nil)
 (define-key menu-bar-apropos-menu [emacs-glossary] nil)
 
-;;; Describe submenu
+;;; `Describe' submenu
 (define-key-after menu-bar-help-menu [describe] (cons "Describe" menu-bar-describe-menu)
                   'apropos)
 (if (not (fboundp 'describe-command))
@@ -1319,11 +1400,12 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
           'describe-current-display-table
         'list-keybindings))))
 
-;;; Manuals submenu.
+;;; `Manuals' submenu.
 
-;; REPLACES ORIGINAL defined in `menu-bar.el'.
-;; Remove some default bindings.
-;; Name changes.
+;; REPLACE ORIGINAL defined in `menu-bar.el'.
+;;
+;; Remove some default bindings.  Name changes.
+;;
 (defconst menu-bar-manuals-menu (make-sparse-keymap "Learn More"))
 (define-key-after menu-bar-help-menu [manuals]
   (cons "Learn More" menu-bar-manuals-menu) 'describe)
@@ -1346,7 +1428,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 (define-key menu-bar-manuals-menu [command] nil)
 
 
-;;; Emacs Lisp submenu of Manuals submenu.
+;;; `Emacs Lisp' submenu of `Manuals' submenu.
 (defvar menu-bar-emacs-lisp-manual-menu (make-sparse-keymap "Emacs Lisp"))
 (define-key menu-bar-manuals-menu [emacs-lisp-manual]
   (cons "Emacs Lisp" menu-bar-emacs-lisp-manual-menu))
@@ -1376,7 +1458,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
       :help "Read an introduction to Emacs Lisp programming")))
 
 
-;;; Emacs submenu of Manuals submenu.
+;;; `Emacs' submenu of `Manuals' submenu.
 (defvar menu-bar-emacs-manual-menu (make-sparse-keymap "Emacs"))
 (define-key menu-bar-manuals-menu [emacs-manual] (cons "Emacs" menu-bar-emacs-manual-menu))
 (when (>= emacs-major-version 21)
@@ -1414,7 +1496,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
     '(menu-item "Manual" info-emacs-manual :help "Read the Emacs manual")))
 
 
-;;; OPTIONS menu.
+;;; `Options' menu.
 
 (defmacro menu-bar-make-toggle-any-version (name variable doc message help &rest body)
   "Return a valid `menu-bar-make-toggle' call in Emacs 20 or later.
@@ -1436,10 +1518,10 @@ setting the variable and displaying a status message (not MESSAGE)."
 (when (boundp 'doremi-push-frame-config-for-cmds-flag)
   (define-key menu-bar-options-menu [doremi-push-frame-config]
     (menu-bar-make-toggle-any-version menu-bar-doremi-push-frame-config
-                          doremi-push-frame-config-for-cmds-flag
-                          "Save Frame Configs (DoReMi)"
-                          "Saving frame configurations is %s for DoReMi commands"
-                          "Saving of frame configurations by DoReMi commands")))
+                                      doremi-push-frame-config-for-cmds-flag
+                                      "Save Frame Configs (DoReMi)"
+                                      "Saving frame configurations is %s for DoReMi commands"
+                                      "Saving of frame configurations by DoReMi commands")))
 (when (boundp 'fit-frame-inhibit-fitting-flag)
   (define-key menu-bar-options-menu [inhibit-fit-frame]
     (menu-bar-make-toggle-any-version menu-bar-inhibit-fit-frame fit-frame-inhibit-fitting-flag
@@ -1544,206 +1626,6 @@ setting the variable and displaying a status message (not MESSAGE)."
            ;; Save if we changed anything.
            (when need-save
              (custom-save-all))))))
-
-
-
-;;;@@@Emacs19 (autoload 'show-calendar "calendar+"
-;;;@@@Emacs19   "Show *Calendar* buffer, generating it if not already present." t)
-;;;@@@Emacs19 (autoload 'calendar "calendar+"
-;;;@@@Emacs19   "Display a 3-month calendar in another window." t)
-;;;@@@Emacs19  ;; Autoloaded from `calendar+.el': calendar, show-calendar
-
-;;; ---------------------------
-
-;;;@@@Emacs19 (defvar menu-bar-help-menu (make-sparse-keymap "Help")) ; Wipe out original.
-;;;@@@Emacs19 (define-key global-map [menu-bar help-menu] (cons "?" menu-bar-help-menu))
-
-
-;;; TOOLS menu.
-;;;@@@Emacs19 ;; Remove some default bindings.
-;;;@@@Emacs19 (global-unset-key [menu-bar tools separator-print])
-;;;@@@Emacs19 (global-unset-key [menu-bar tools ps-print-region])
-;;;@@@Emacs19 (global-unset-key [menu-bar tools ps-print-buffer])
-;;;@@@Emacs19 (global-unset-key [menu-bar tools print-region])
-;;;@@@Emacs19 (global-unset-key [menu-bar tools print-buffer])
-;;;@@@Emacs19
-;;;@@@Emacs19 (defvar menu-bar-print-menu (make-sparse-keymap "Print"))
-;;;@@@Emacs19 (define-key menu-bar-tools-menu [print] (cons "Print" menu-bar-print-menu))
-;;;@@@Emacs19 (define-key-after menu-bar-tools-menu [separator-print] '("--") 'print)
-;;;@@@Emacs19 (define-key-after menu-bar-tools-menu [separator-cal] '("--") 'rmail)
-;;;@@@Emacs19 (define-key-after menu-bar-tools-menu [show-calendar]
-;;;@@@Emacs19                 '("Show Calendar" . show-calendar) 'separator-cal)
-;;;@@@Emacs19 (define-key-after menu-bar-tools-menu [calendar]
-;;;@@@Emacs19                 '("Calendar and Reminders" . calendar) 'calendar)
-
-;;;@@@Emacs19 ;; PRINT submenu of TOOLS
-;;;@@@Emacs19 ;; The `*-declp-*' commands are defined in `misc-cmds.el'.
-;;;@@@Emacs19 (define-key menu-bar-print-menu [ps-print-region]
-;;;@@@Emacs19   '("Region as Postscript" . ps-print-region-with-faces))
-;;;@@@Emacs19 ;(put 'declp-region-w-switches 'menu-enable 'mark-active)
-;;;@@@Emacs19 ;(define-key menu-bar-print-menu [declp-region-w-switches]
-;;;@@@Emacs19 ;  '("Region with Switches..." . declp-region-w-switches))
-;;;@@@Emacs19 ;(put 'pr-declp-region 'menu-enable 'mark-active)
-;;;@@@Emacs19 ;(define-key menu-bar-print-menu [print-paged-region]
-;;;@@@Emacs19 ;  '("Paged Region..." . pr-declp-region))
-;;;@@@Emacs19 ;(put 'declp-region 'menu-enable 'mark-active)
-;;;@@@Emacs19 ;(define-key menu-bar-print-menu [print-region]
-;;;@@@Emacs19 ;  '("Region..." . declp-region))
-;;;@@@Emacs19 ;;--------------------
-;;;@@@Emacs19 (define-key menu-bar-print-menu [separator-print-buffer] '("--"))
-;;;@@@Emacs19 (define-key menu-bar-print-menu [ps-print-buffer]
-;;;@@@Emacs19   '("Buffer as Postscript" . ps-print-buffer-with-faces))
-;;;@@@Emacs19 ;(define-key menu-bar-print-menu [declp-buffer-w-switches]
-;;;@@@Emacs19 ;  '("Buffer with Switches..." . declp-buffer-w-switches))
-;;;@@@Emacs19 ;(define-key menu-bar-print-menu [print-paged-buffer]
-;;;@@@Emacs19 ;  '("Paged Buffer..." . pr-declp-buffer))
-;;;@@@Emacs19 ;(define-key menu-bar-print-menu [print-buffer]
-;;;@@@Emacs19 ;  '("Buffer..." . declp-buffer))
-
-;;;@@@Emacs19 ;;; VERSION CONTROL submenu of TOOLS
-;;;@@@Emacs19 (when (boundp 'vc-menu-map)
-;;;@@@Emacs19 ;; Remove some default bindings.
-;;;@@@Emacs19 (global-unset-key [menu-bar tools vc separator1])
-;;;@@@Emacs19 (global-unset-key [menu-bar tools vc separator2])
-;;;@@@Emacs19 (define-key vc-menu-map [vc-status-here] '("Files Here" . vc-status-here)))
-;;;@@@Emacs19 (define-key-after vc-menu-map [vc-directory] '("Files Below" . vc-directory)
-;;;@@@Emacs19                   'vc-status-here)
-;;;@@@Emacs19 (define-key-after vc-menu-map [vc-dir-separator1] '("--") 'vc-directory)
-;;;@@@Emacs19 (define-key-after vc-menu-map [ediff-revision]
-;;;@@@Emacs19                   '("Compare with Version..." . vc-ediff) 'vc-dir-separator1)
-;;;@@@Emacs19 (define-key-after vc-menu-map [vc-diff]
-;;;@@@Emacs19              '("Compare Last Version using Diff" . vc-diff) 'ediff-revision)
-;;;@@@Emacs19 (define-key-after vc-menu-map [vc-version-other-window]
-;;;@@@Emacs19   '("Show Other Version..." . vc-version-other-window) 'vc-diff)
-;;;@@@Emacs19 (define-key-after vc-menu-map [vc-dir-separator2] '("--")
-;;;@@@Emacs19                   'vc-version-other-window)
-;;;@@@Emacs19 (define-key-after vc-menu-map [vc-rename-file]
-;;;@@@Emacs19                   '("Rename File..." . vc-rename-file)
-;;;@@@Emacs19   'vc-register)
-;;;@@@Emacs19 (define-key vc-menu-map [vc-check-out] '("Check In/Out" . vc-toggle-read-only))
-;;;@@@Emacs19
-;;;@@@Emacs19 (put 'vc-diff 'menu-enable
-;;;@@@Emacs19      '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-ediff 'menu-enable
-;;;@@@Emacs19                '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-version-other-window 'menu-enable
-;;;@@@Emacs19                  '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-toggle-read-only 'menu-enable '(or vc-mode vc-dired-mode))
-;;;@@@Emacs19 (put 'vc-insert-headers 'menu-enable '(or vc-mode vc-dired-mode))
-;;;@@@Emacs19 ;;; vc-dired-mode is OK (e.g. Unregistered).
-;;;@@@Emacs19 (put 'vc-register 'menu-enable '(not vc-mode))
-;;;@@@Emacs19 (put 'vc-rename-file 'menu-enable
-;;;@@@Emacs19                      '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-revert-buffer 'menu-enable
-;;;@@@Emacs19                      '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-cancel-version 'menu-enable
-;;;@@@Emacs19                      '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-print-log 'menu-enable
-;;;@@@Emacs19                      '(or vc-mode vc-dired-mode (eq 'dired-mode major-mode)))
-;;;@@@Emacs19 (put 'vc-update-change-log 'menu-enable
-;;;@@@Emacs19  '(or (eq (vc-buffer-backend) 'RCS) vc-dired-mode (eq 'dired-mode major-mode)))
-
-
-;;; EDIT menu
-;; Remove some default bindings.
-;;;@@@Emacs19 (global-unset-key [menu-bar edit separator-edit])
-
-;;;@@@Emacs19 (define-key menu-bar-edit-menu [undo] '("Undo" . advertised-undo))
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [separator-edit-undo] '("--") 'undo)
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [cut]
-;;;@@@Emacs19                   '("Cut" . kill-region) 'separator-edit-undo)
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [copy]
-;;;@@@Emacs19                   '("Copy" . menu-bar-kill-ring-save) 'cut)
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [paste] '("Paste" . yank) 'copy)
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [select-paste]
-;;;@@@Emacs19                   '("Select and Paste" . yank-menu)
-;;;@@@Emacs19   'paste)
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [clear]
-;;;@@@Emacs19                   '("Clear" . delete-region) 'select-paste)
-
-
-;;;@@@Emacs19 (defalias 'menu-bar-edit-fill-menu (symbol-value 'menu-bar-edit-fill-menu))
-
-;;;@@@Emacs19 (when (fboundp 'start-process)
-;;;@@@Emacs19 (define-key-after menu-bar-edit-menu [spell]
-;;;@@@Emacs19                   '("Spell" . ispell-menu-map) 'sort))
-
-
-;; Remove some default bindings.
-;;;@@@Emacs19 (global-unset-key [menu-bar help emacs-news])
-;;;@@@Emacs19 (global-unset-key [menu-bar help emacs-faq])
-
-;;;@@@Emacs19 (define-key menu-bar-help-menu [help-on-click]
-;;;@@@Emacs19   '("What's This?..." . help-on-click/key))       ; Defined in `help+.el'.
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [help-for-help]
-;;;@@@Emacs19   '("Help on Help..." . help-for-help) 'help-on-click)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [describe-menubar]
-;;;@@@Emacs19   '("Describe Menu Bar" . describe-menubar) 'help-for-help)
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [separator-help-click] '("--")
-;;;@@@Emacs19   'view-lossage)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [describe-mode]
-;;;@@@Emacs19   '("Describe Mode" . describe-mode) 'separator-help-click)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [describe-syntax]
-;;;@@@Emacs19   '("Describe Mode Syntax" . describe-syntax) 'describe-mode)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [describe-variable]
-;;;@@@Emacs19   '("Describe Variable..." . describe-variable) 'describe-syntax)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [edit-options]
-;;;@@@Emacs19   '("Show/Set Variables" . edit-options) 'describe-variable)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [describe-function]
-;;;@@@Emacs19   '("Describe Function..." . describe-function) 'edit-options)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [where-is]
-;;;@@@Emacs19   '("Where is Command..." . where-is) 'describe-function)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [Info-goto-emacs-command-node]
-;;;@@@Emacs19   '("`Info' on Command..." . Info-goto-emacs-command-node) 'where-is)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [describe-key]
-;;;@@@Emacs19   '("Describe Key/Menu..." . describe-key) 'Info-goto-emacs-command-node)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [Info-goto-emacs-key-command-node]
-;;;@@@Emacs19   '("`Info' on Key/Menu..." . Info-goto-emacs-key-command-node) 'describe-key)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [list-keybindings]
-;;;@@@Emacs19   '("Show Key/Menu Bindings" . describe-bindings)
-;;;@@@Emacs19   'Info-goto-emacs-key-command-node)
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [separator-manuals] '("--")
-;;;@@@Emacs19   'apropos-doc%%%%%%%%%%%%%)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [info] '("`Info' (online manuals)" . info)
-;;;@@@Emacs19   'separator-manuals)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [man]
-;;;@@@Emacs19   '("Unix Manual..." . manual-entry) 'info)
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [separator-emacs] '("--") 'man)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [emacs-tutorial]
-;;;@@@Emacs19   '("Emacs Tutorial" . help-with-tutorial) 'separator-emacs)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [emacs-faq]
-;;;@@@Emacs19   '("Emacs FAQ" . view-emacs-FAQ) 'emacs-tutorial)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [emacs-news]
-;;;@@@Emacs19   '("Emacs Changes" . view-emacs-news) 'emacs-faq)
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [separator-lispdoc] '("--")
-;;;@@@Emacs19   'emacs-news)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [finder-by-keyword]
-;;;@@@Emacs19   '("Lisp Libraries by Keyword" . finder-by-keyword) ; Defined in `finder.el'.
-;;;@@@Emacs19   'separator-lispdoc)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [locate-library] ; Defined in `help.el'.
-;;;@@@Emacs19   '("Locate Lisp Library..." . locate-library) 'finder-by-keyword)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [emacs-Lisp-News]
-;;;@@@Emacs19   '("Emacs Lisp Changes" . view-emacs-lisp-news) ; Defined in `help.el'.
-;;;@@@Emacs19   'locate-library)
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [separator-about] '("--")
-;;;@@@Emacs19   'emacs-Lisp-News)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [emacs-version]
-;;;@@@Emacs19   '("Show Version" . emacs-version) 'separator-about)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [report-emacs-bug]
-;;;@@@Emacs19   '("Send Bug Report..." . report-emacs-bug) 'emacs-version)
-;;--------------------
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [separator-help-buffer] '("--")
-;;;@@@Emacs19   'report-emacs-bug)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [save-*Help*-buffer]
-;;;@@@Emacs19   '("Save *Help* Buffer" . save-*Help*-buffer) 'separator-help-buffer)
-;;;@@@Emacs19 (define-key-after menu-bar-help-menu [show-*Help*-buffer]
-;;;@@@Emacs19   '("Show *Help* Buffer" . show-*Help*-buffer) 'save-*Help*-buffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

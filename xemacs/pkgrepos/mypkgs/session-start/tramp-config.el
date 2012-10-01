@@ -102,8 +102,14 @@
 
   (defun ssh-agent-add-key ()
     (require 'misc-config)
-      (unless (shell-command-no-output "ssh-add -l < /dev/null")
-        (shell-command-no-output "ssh-add ~/.ssh/login-keys.d/github < /dev/null")))
+    (provide 'host-info)
+    (if (and
+         (boundp 'ssh-key-file)
+         ssh-key-file)
+        (unless (or (not tramp-mode)
+                    (shell-command-no-output "ssh-add -l < /dev/null"))
+          (shell-command-no-output (concat "ssh-add " ssh-key-file " < /dev/null")))
+        (error "No ssh-key-file defined"))
 
   (defun update-ssh-agent (&optional force)
     (interactive "P")
@@ -126,8 +132,8 @@
     (unless (tramp-tramp-file-p default-directory)
       (update-ssh-agent)))
 
-  ;; run
-  (update-ssh-agent)
+  ;; run, do not run it, it trouble at start-up time.
+  ;; (update-ssh-agent)
 
   (defun tramp-output-wash (&optional arg)
     (interactive)
