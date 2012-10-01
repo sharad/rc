@@ -745,3 +745,10 @@ define_webjump(
 
 //}}
 
+
+//{{ Law
+// IPC
+define_webjump(
+    "law/ipc",
+    "http://indiankanoon.org/search/?formInput=%s");
+//}}

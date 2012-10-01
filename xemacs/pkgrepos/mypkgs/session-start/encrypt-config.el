@@ -36,7 +36,7 @@
 
 
 
-(defun forgetpass (&optional buffer)
+(defun forget-passphrase (&optional buffer)
    "thisandthat."
    (interactive "bbuffer: ")
    (let* ((buffer (or buffer (current-buffer)))
@@ -45,7 +45,32 @@
        (setq epa-file-passphrase-alist (assq-delete-all-test file-name epa-file-passphrase-alist #'string-equal))
        (kill-buffer buffer))))
 
+(defun epa-file-passphrase-cleanup (&optional exceptitions)
+  (interactive)
 
+  (dolist (a epa-file-passphrase-alist)
+    (let* ((file-name (car a))
+           (buffer-of-file (find file-name (buffer-list) :key #'buffer-file-name :test #'string-equal)))
+      (unless (member file-name exceptitions)
+        (setq epa-file-passphrase-alist (assq-delete-all-test file-name epa-file-passphrase-alist #'string-equal))
+        (if buffer-of-file
+            (kill-buffer buffer-of-file)))))
+
+  (dolist (buff (buffer-list))
+    (let ((buff-name (buffer-file-name buff)))
+      (when (and
+             (and buff-name
+                  ;; (file-exists-p buff-name)
+                  (string-match ".gpg\$" buff-name))
+             (not (member buff-name exceptitions)))
+        ;; (message "found %s" buff-name)
+        (kill-buffer buff)
+        ;; (message "killed %s" buff)
+        (setq epa-file-passphrase-alist (assq-delete-all-test buff-name epa-file-passphrase-alist #'string-equal))))))
+
+(defvar epa-file-passphrase-cleanup-exceptitions nil "Epa file passphrase cleanup exceptitions")
+(require 'common-info)
+(run-with-idle-timer 10 t 'epa-file-passphrase-cleanup epa-file-passphrase-cleanup-exceptitions)
 
 ;; test
 ;; (setq epa-file-passphrase-alist nil)
