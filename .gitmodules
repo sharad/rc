@@ -37,3 +37,6 @@
 [submodule "xemacs/pkgrepos/world/project-buffer-mode"]
 	path = xemacs/pkgrepos/world/project-buffer-mode
 	url = http://repo.or.cz/r/project-buffer-mode.git
+[submodule "xemacs/pkgrepos/world/helm"]
+	path = xemacs/pkgrepos/world/helm
+	url = https://github.com/emacs-helm/helm.git
