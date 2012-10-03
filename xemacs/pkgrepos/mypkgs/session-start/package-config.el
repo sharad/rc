@@ -49,6 +49,8 @@
 
     (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
 
+    (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+
     (defconst *elpa-package-dir* "~/.xemacs/pkgrepos/elpa")
 
     (when (file-directory-p *elpa-package-dir*)
