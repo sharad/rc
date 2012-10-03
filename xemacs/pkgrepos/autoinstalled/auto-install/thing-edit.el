@@ -1,0 +1,1 @@
+../thing/thing-edit.el

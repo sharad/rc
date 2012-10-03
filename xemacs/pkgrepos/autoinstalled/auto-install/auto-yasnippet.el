@@ -1,0 +1,1 @@
+../yasnippet/auto-yasnippet.el
