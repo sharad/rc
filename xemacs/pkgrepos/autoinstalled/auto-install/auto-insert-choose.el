@@ -1,0 +1,1 @@
+../misc/auto-insert-choose.el

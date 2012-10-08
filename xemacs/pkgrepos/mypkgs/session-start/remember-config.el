@@ -224,6 +224,10 @@ application."
   (defun sharad/remember-buffer ()
     "Remember the contents of the current buffer."
     (interactive)
+    (unless (get-buffer calendar-buffer)
+      (save-window-excursion
+        (save-excursion
+          (calendar))))
     (let ((organizer-for-remember-region
            (or (if (boundp 'organizer-for-remember-region)
                    organizer-for-remember-region)
