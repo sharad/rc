@@ -8,7 +8,6 @@
   '(sharad/disable-startup-inperrupting-feature))
 
 (deh-require-maybe tramp
-  ;; (deh-require-maybe tramp
 
   (setq                                 ;very necessary.
    tramp-mode nil
@@ -109,7 +108,7 @@
         (unless (or (not tramp-mode)
                     (shell-command-no-output "ssh-add -l < /dev/null"))
           (shell-command-no-output (concat "ssh-add " ssh-key-file " < /dev/null")))
-        (error "No ssh-key-file defined"))
+        (error "No ssh-key-file defined")))
 
   (defun update-ssh-agent (&optional force)
     (interactive "P")
