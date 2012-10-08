@@ -93,7 +93,8 @@
                (if (consp feature)
                    (cond
                      ((or (equal (car feature) 'or)
-                          (equal (car feature) 'and))
+                          (equal (car feature) 'and)
+                          (equal (car feature) 'progn))
                       `(,(car feature) ,@(mapcar #'refine (cdr feature))))
                      (t feature))
                    `(featurep ',feature))))
@@ -109,7 +110,8 @@
                (if (consp feature)
                    (cond
                      ((or (equal (car feature) 'or)
-                          (equal (car feature) 'and))
+                          (equal (car feature) 'and)
+                          (equal (car feature) 'progn))
                       `(,(car feature) ,@(mapcar #'refine (cdr feature))))
                      (t feature))
                    `(require ',feature nil t))))
@@ -127,7 +129,8 @@
                (if (consp feature)
                    (cond
                      ((or (equal (car feature) 'or)
-                          (equal (car feature) 'and))
+                          (equal (car feature) 'and)
+                          (equal (car feature) 'progn))
                       `(,(car feature) ,@(mapcar #'refine (cdr feature))))
                      (t feature))
                    `(require ',feature nil nil))))

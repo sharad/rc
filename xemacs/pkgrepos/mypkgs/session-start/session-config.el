@@ -32,7 +32,36 @@
 (deh-require-maybe session ;;
   (add-hook 'after-init-hook 'session-initialize)
   (add-hook 'kill-emacs-hook 'session-save-session)
-  (setq session-initialize t))
+  (setq session-initialize t)
+
+  ;;{{ http://www.emacswiki.org/emacs/EmacsSession
+
+  ;; There is a function in session that’s not really persistence
+  ;; related – ‘session-jump-to-last-change’ <C-x C-/>. This is the
+  ;; singular most useful function of any Emacs add-on to me. It moves
+  ;; the point to the last modified location. Keep calling it and you
+  ;; will visit all the locations you’ve made
+  ;; modifications. Absolutely brilliant. Unobstrusive, unlike
+  ;; highlight-changes-mode.
+
+  ;; However, it doesn’t automatically reveal folded sections. Here is
+  ;; the fix:
+
+
+  ;; expanded folded secitons as required
+  (defun le::maybe-reveal ()
+    (when (and (or (memq major-mode  '(org-mode outline-mode))
+                   (and (boundp 'outline-minor-mode)
+                        outline-minor-mode))
+               (outline-invisible-p))
+      (if (eq major-mode 'org-mode)
+          (org-reveal)
+          (show-subtree))))
+
+  (add-hook 'session-after-jump-to-last-change-hook
+            'le::maybe-reveal)
+  ;;}}
+  )
 ;;  (session-initialize))
 
 

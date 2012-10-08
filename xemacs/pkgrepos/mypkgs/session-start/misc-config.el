@@ -303,5 +303,11 @@ The indirect buffer can have another major mode."
       t))
 
 
+(deh-require-maybe (progn help+ help-fns+ help-macro+ help-mode+)
+  )
+
+(deh-require-maybe (progn ido-load-library kill-ring-ido kill-ring-search)
+  )
+
 (provide 'misc-config)
 

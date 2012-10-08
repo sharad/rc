@@ -61,6 +61,7 @@
 ;; (add-to-list 'load-path "~/.xemacs/pkgrepos/world/deh")
 
 (eval-when-compile
+  (require 'cl nil nil)
 ;;   (unless (require 'dot-emacs-helper nil t)
     ;; (defmacro deh-require-maybe (feature &rest forms)
     ;;   (declare (indent 1))
@@ -68,7 +69,8 @@
     ;;      (when ,(if (consp feature)
     ;;                 (cond
     ;;                   ((or (equal (car feature) 'or)
-    ;;                        (equal (car feature) 'and))
+    ;;                        (equal (car feature) 'and)
+    ;;                        (equal (car feature) 'progn))
     ;;                    `(,(car feature) ,@(mapcar (lambda (f) `(require ',f nil t)) (cdr feature))))
     ;;                   (t feature))
     ;;                 `(require ',feature nil t))
@@ -82,7 +84,8 @@
                  (if (consp feature)
                      (cond
                        ((or (equal (car feature) 'or)
-                            (equal (car feature) 'and))
+                            (equal (car feature) 'and)
+                            (equal (car feature) 'progn))
                         `(,(car feature) ,@(mapcar #'refine (cdr feature))))
                        (t feature))
                      `(featurep ',feature))))
@@ -99,7 +102,8 @@
                  (if (consp feature)
                      (cond
                        ((or (equal (car feature) 'or)
-                            (equal (car feature) 'and))
+                            (equal (car feature) 'and)
+                            (equal (car feature) 'progn))
                         `(,(car feature) ,@(mapcar #'refine (cdr feature))))
                        (t feature))
                      `(require ',feature nil t))))
@@ -115,7 +119,8 @@
                  (if (consp feature)
                      (cond
                        ((or (equal (car feature) 'or)
-                            (equal (car feature) 'and))
+                            (equal (car feature) 'and)
+                            (equal (car feature) 'progn))
                         `(,(car feature) ,@(mapcar #'refine (cdr feature))))
                        (t feature))
                      `(require ',feature nil nil))))

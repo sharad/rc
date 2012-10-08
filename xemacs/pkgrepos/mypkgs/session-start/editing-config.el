@@ -45,6 +45,47 @@
   ;;                         (highlight-changes-mode t)) pgm-langs)
   ;; (highlight-changes-mode t) - not works
   ;; (highlight-changes-visible-mode t)
+
+  ;;{{
+  ;; http://www.emacswiki.org/emacs/TrackChanges
+  (make-empty-face 'highlight-changes-saved-face)
+  (setq highlight-changes-face-list '(highlight-changes-saved-face))
+
+                                        ; Example: activate highlight changes with rotating faces for C programming
+  (add-hook 'c-mode-hook
+            (function (lambda ()
+              (add-hook 'local-write-file-hooks 'highlight-changes-rotate-faces)
+              (highlight-changes-mode t)
+              (... other stuff for setting up C mode ...))))
+  ;;}}
+
+  ;;{{
+  (defun DE-highlight-changes-rotate-faces ()
+    (let ((toggle (eq highlight-changes-mode 'passive)))
+      (when toggle (highlight-changes-mode t))
+      (highlight-changes-rotate-faces)
+      (when toggle (highlight-changes-mode nil))))
+
+                                        ; Example for c-mode-hook:
+  (add-hook 'c-mode-hook
+            (function (lambda ()
+              (add-hook 'local-write-file-hooks 'DE-highlight-changes-rotate-faces)
+              (highlight-changes-mode t)
+              (highlight-changes-mode nil)
+              (... other stuff for setting up C mode ...))))
+  ;;}}
+
+  ;;{{
+  ;; Following function can make the highlight vanish after save file --coldnew
+  (defun highlight-changes-remove-after-save ()
+    "Remove previous changes after save."
+    (make-local-variable 'after-save-hook)
+    (add-hook 'after-save-hook
+              (lambda ()
+		(highlight-changes-remove-highlight (point-min) (point-max)))))
+
+  ;;}}
+
   )
 
 

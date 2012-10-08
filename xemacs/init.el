@@ -5,7 +5,9 @@
 ;; (add-to-list 'load-path "/usr/share/emacs/23.3/lisp/emacs-lisp")
 ;; (add-to-list 'load-path "/usr/share/emacs/23.3/lisp")
 
-(require 'cl nil nil)
+(eval-when-compile
+  (require 'cl nil nil))
+
 (load-file "~/.xemacs/macros.el")
 (load-file "~/.xemacs/utils.el")
 (load-file "~/.xemacs/basic.el")
@@ -13,30 +15,49 @@
 (add-to-list 'load-path "/usr/local/share/emacs/23.3/site-lisp")
 
 (progn
-  (defun package-dir-setup (package-dir)
-    (when (file-directory-p package-dir)
-      (mapc #'(lambda (path)
-                (add-to-list 'load-path path))
-            (directory-files package-dir t "[a-zA-Z]+"))
-      (mapc #'(lambda (dir)
-                (byte-recompile-directory dir 0))
-            (directory-files package-dir t "[a-zA-Z]+"))))
+  (progn                                ;add to loadpath
+    (defun package-dir-add-to-loadpath (package-dir)
+      (when (file-directory-p package-dir)
+        (mapc #'(lambda (path)
+                  (add-to-list 'load-path path))
+              (directory-files package-dir t "[a-zA-Z]+"))))
 
 
- ;; (package-dir-setup "~/.xemacs/pkgrepos/world")
-  (package-dir-setup "~/.xemacs/pkgrepos/mypkgs")
-  (package-dir-setup "~/.xemacs/pkgrepos/elpa")
-  (package-dir-setup "~/.xemacs/pkgrepos/world"))
 
-(mapc
- '(lambda (dir)
-   (byte-recompile-directory dir 0)
-   (add-to-list 'load-path dir))
- `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
-   "~/.osetup/info/common/elisp"
-  ,(concat "~/.osetup/info/hosts/" (system-name) "/elisp")))
+    ;; (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/world")
+    (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/mypkgs")
+    (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/elpa")
+    (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/world/misc")
+    (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/world/gits")
 
-(deh-require-maybe dot-emacs-helper)
+    (mapc
+     '(lambda (dir)
+       (add-to-list 'load-path dir))
+     `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
+       "~/.osetup/info/common/elisp"
+       ,(concat "~/.osetup/info/hosts/" (system-name) "/elisp"))))
+
+  (progn                                ;byte compile
+    (defun package-dir-byte-compile (package-dir)
+      (when (file-directory-p package-dir)
+        (mapc #'(lambda (dir)
+                  (byte-recompile-directory dir 0))
+              (directory-files package-dir t "[a-zA-Z]+"))))
+
+    ;; (package-dir-byte-compile "~/.xemacs/pkgrepos/world")
+    (package-dir-byte-compile "~/.xemacs/pkgrepos/mypkgs")
+    (package-dir-byte-compile "~/.xemacs/pkgrepos/elpa")
+    (package-dir-byte-compile "~/.xemacs/pkgrepos/world/misc")
+    (package-dir-byte-compile "~/.xemacs/pkgrepos/world/gits")
+
+    (mapc
+     '(lambda (dir)
+       (byte-recompile-directory dir 0))
+     `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
+       "~/.osetup/info/common/elisp"
+       ,(concat "~/.osetup/info/hosts/" (system-name) "/elisp")))))
+
+(require 'dot-emacs-helper nil nil)
 
 (when (require 'cl nil) ; a rare necessary use of REQUIRE
   ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html

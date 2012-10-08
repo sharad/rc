@@ -717,6 +717,36 @@ define_webjump(
     $argument = 'optional')});
 
 
+define_webjump(
+    "train/inquery",
+    function (term) {
+        if (! term)
+            return "http://www.trainenquiry.com/";
+        return load_spec(
+            { uri: "http://www.trainenquiry.com/SearchTrain.aspx",
+              post_data: make_post_data([
+                  ['keywords', term],
+                  ['go-button', 'go']
+              ])
+    },
+    $argument = 'optional')});
+
+
+define_webjump(
+    "train/indiarailinfo",
+    function (term) {
+        if (! term)
+            return "http://indiarailinfo.com/";
+        return load_spec(
+            { uri: "http://indiarailinfo.com/",
+              post_data: make_post_data([
+                  ['keywords', term],
+                  ['go-button', 'go']
+              ])
+    },
+    $argument = 'optional')});
+
+
 //}}
 
 
@@ -730,7 +760,7 @@ define_webjump(
     "http://www.spokeo.com/search?q=%s");
 
 define_webjump(
-    "train/schedule",
+    "people/zoominfo",
     function (term) {
         if (! term)
             return "http://www.zoominfo.com/";
@@ -751,4 +781,11 @@ define_webjump(
 define_webjump(
     "law/ipc",
     "http://indiankanoon.org/search/?formInput=%s");
+//}}
+
+
+//{{ Reviews
+define_webjump(
+    "review/mouthshut",
+    "http://www.mouthshut.com/search/prodsrch.aspx?data=%s&type=&p=0");
 //}}
