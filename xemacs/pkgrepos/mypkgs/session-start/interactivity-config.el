@@ -355,7 +355,6 @@
 
 
 
-(when nil
 (deh-section "scratch mode"
 
 
@@ -366,44 +365,32 @@
                                           (all-completions "" obarray '(lambda (i)
                                                                         (and
                                                                          (commandp i)
-                                                                         (string-match "[.-]*-mode" (symbol-name i)))))))))
-       (name (or mjmode))
-     (list mjmode name)))
-  (switch-to-buffer name t)
-  (funcall (intern mjmode)))
+                                                                         (string-match "[.-]*-mode" (symbol-name i))))))))
+            (name (or (concat
+                       (if (string-match "\\(.+[.-]+.+\\)-mode" mjmode) (match-string 1 mjmode) mjmode)
+                       "-scratch"))))
+       (list name mjmode)))
+    (switch-to-buffer name t)
+    (funcall (intern mjmode)))
 
-  (completing-read "Where is command: " obarray 'commandp t)
-  (completing-read "Where is command: " obarray)
-
-
-  (gethash 'shell-script-mode obarray)
-
-  (member 'shell-script-mode obarray)
-
-  (find 'shell-script-mode obarray)
-
-  (and
-   (commandp 'shell-script-mode)
-   (string-match "[.-]*-mode" (symbol-name 'shell-script-mode)))
-
-
-  (defvar slime-scratch-mode-map
+  (defvar mjmode-scratch-mode-map
     (let ((map (make-sparse-keymap)))
-      (set-keymap-parent map lisp-mode-map)
+      ;; (set-keymap-parent map lisp-mode-map)
+      ;; (set-keymap-parent map mjmode-mode-map)
       map))
 
-  (defun slime-scratch ()
+  (defun mjmode-scratch ()
     (interactive)
     (slime-switch-to-scratch-buffer))
 
-  (defun slime-switch-to-scratch-buffer ()
+  (defun mjmode-switch-to-scratch-buffer ()
     (set-buffer (slime-scratch-buffer))
     (unless (eq (current-buffer) (window-buffer))
       (pop-to-buffer (current-buffer) t)))
 
-  (defvar slime-scratch-file nil)
+  (defvar mjmode-scratch-file nil)
 
-  (defun slime-scratch-buffer ()
+  (defun mjmode-scratch-buffer ()
     "Return the scratch buffer, create it if necessary."
     (or (get-buffer (slime-buffer-name :scratch))
         (with-current-buffer (if slime-scratch-file
@@ -415,7 +402,11 @@
           (slime-mode t)
           (current-buffer))))
 
-  (slime-define-keys slime-scratch-mode-map
-    ("\C-j" 'slime-eval-print-last-expression))))
+  ;; (slime-define-keys slime-scratch-mode-map
+  ;;   ("\C-j" 'slime-eval-print-last-expression))
+  )
+
+
+
 
 (provide 'interactivity-config)
