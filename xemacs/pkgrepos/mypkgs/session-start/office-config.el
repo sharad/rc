@@ -52,14 +52,48 @@
     (set (make-local-variable 'before-save-hook) before-save-hook)
     (remove-hook 'before-save-hook 'delete-trailing-whitespace t)))
 
+(defvar taskdir "/home/s/paradise/tasks" "Task Directory")
 
-(defun create-bug (bug)
-  (interactive "nBug number: ")
-  (make-directory (concat "/home/s/paradise/bugs/" (number-to-string bug)) t)
-  (unless (write-region (format "\n\n* Bug %d analysis\n\n" bug) nil
-                        (concat "/home/s/paradise/bugs/" (number-to-string bug) "/an0.org")
-                        nil nil nil t)
-    (find-file (concat "/home/s/paradise/bugs/" (number-to-string bug) "/an0.org"))))
+(defvar task-alist '(("bugs" (files "todo.org" "notes.org" "an0.org"))
+                     ("features" (files "todo.org" "notes.org" "an0.org"))))
+
+(defun create-task (task name)
+  (interactive
+   (let* ((task (completing-read "what: " (mapcar 'car task-alist) nil t))
+          (name (completing-read "name: " (directory-files (concat taskdir "/" task "/")) nil)))
+     (list task name)))
+  (let ((dir (concat taskdir "/" task "/")))
+    (if (file-directory-p (concat dir name))
+        (find-task (concat dir name))
+        (progn
+          (make-directory (concat dir name "/logs") t)
+          (find-file
+           (concat dir name "/"
+                   (dolist (f (cdr (assoc 'files (cdr (assoc task task-alist))))
+                            (car (cdr (assoc 'files (cdr (assoc task task-alist))))))
+                     (unless (write-region (format "\n\n* %s %s \n\n" (capitalize task) name) nil
+                                           (concat dir name "/" f)
+                                           nil nil nil t)))))))))
+
+(defun find-task (task)
+  (interactive
+   (let ((task (ido-read-directory-name "dir: " taskdir nil t)))
+     (list task)))
+  (with-current-buffer (get-buffer-create (concat "*task*"))
+    (dolist (f (directory-files task t "/*.org$"))
+      (insert-file-contents f))
+    (not-modified)
+    (View-exit-and-edit)
+    (make-local-variable 'view-read-only)
+    (make-local-variable 'buffer-read-only)
+    (setq view-read-only t
+          buffer-read-only t))
+  (switch-to-buffer "*task*")
+  (org-mode))
+
+
+
+
 
 (provide 'office-config)
 

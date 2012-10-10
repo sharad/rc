@@ -358,7 +358,7 @@
 (deh-section "scratch mode"
 
 
-  (defun create-mode-buffer (&optional name mjmode)
+  (defun mjmode-scratch (&optional name mjmode)
     (interactive
      (let* ((mjmode (or
                      (ido-completing-read "cmd: "
@@ -366,9 +366,9 @@
                                                                         (and
                                                                          (commandp i)
                                                                          (string-match "[.-]*-mode" (symbol-name i))))))))
-            (name (or (concat
-                       (if (string-match "\\(.+[.-]+.+\\)-mode" mjmode) (match-string 1 mjmode) mjmode)
-                       "-scratch"))))
+            (name (or (concat "*"
+                              (if (string-match "\\(.+[.-]+.+\\)-mode" mjmode) (match-string 1 mjmode) mjmode)
+                              "-scratch*"))))
        (list name mjmode)))
     (switch-to-buffer name t)
     (funcall (intern mjmode)))
@@ -379,9 +379,9 @@
       ;; (set-keymap-parent map mjmode-mode-map)
       map))
 
-  (defun mjmode-scratch ()
-    (interactive)
-    (slime-switch-to-scratch-buffer))
+  ;; (defun mjmode-scratch ()
+  ;;   (interactive)
+  ;;   (mjmode-switch-to-scratch-buffer))
 
   (defun mjmode-switch-to-scratch-buffer ()
     (set-buffer (slime-scratch-buffer))

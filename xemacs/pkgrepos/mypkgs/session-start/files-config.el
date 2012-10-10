@@ -124,10 +124,7 @@ First select a file, matched using ido-switch-buffer against the contents
 in `file-cache-alist'. If the file exist in more than one
 directory, select directory. Lastly the file is opened."
     (interactive (list (file-cache-ido-read "File: "
-                                            (mapcar
-                                             (lambda (x)
-                                               (car x))
-                                             file-cache-alist))))
+                                            (mapcar car file-cache-alist))))
     (let* ((record (assoc file file-cache-alist)))
       (find-file
        (expand-file-name

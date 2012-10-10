@@ -290,7 +290,7 @@ The indirect buffer can have another major mode."
     (with-temp-buffer
       (insert-file-contents-literally filename)
       (let ((contents (read (current-buffer))))
-        (cdr contents)))))
+        contents))))
 
 
 (add-hook 'delete-frame-hook

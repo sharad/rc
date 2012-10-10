@@ -806,6 +806,7 @@ interactive("zap-style-sheets",
 // http://conkeror.org/BreakingChanges
 add_hook("before_quit_hook",
          function () {
+             cookie_manager.removeAll();
              var w = get_recent_conkeror_window();
              var result = (w == null) ||
                  "y" == (yield w.minibuffer.read_single_character_option(
@@ -887,6 +888,7 @@ define_key(content_buffer_normal_keymap, "L", "search-clipboard-contents-doubleq
 // comment-start: "// "  **
 // comment-end:   "// "  **
 // End: **
+
 
 
 
