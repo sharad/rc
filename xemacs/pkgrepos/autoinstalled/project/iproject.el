@@ -239,7 +239,7 @@ Each project type is a list of the following format:
 (defun iproject-collect-files(root-folder file-filter-list &optional ignore-folders)
   "Parse ROOT-FOLDER and its sub-folder and create a list of full path filename matching one of the regexp of FILE-FILTER-LIST.
 The folder defined inside in IGNORE-FOLDERS will be skipped."
-  (let ((dir-list (directory-files-and-attributes root-folder t))
+  (let ((dir-list (directory-files-and-attributes-only-child root-folder t))
 	(ign-reg  (concat (regexp-opt ignore-folders) "$"))
 	file-list)
     (while dir-list
@@ -255,7 +255,7 @@ The folder defined inside in IGNORE-FOLDERS will be skipped."
 	       (not (string-equal basename ".."))
 	       (or (not ignore-folders)
 		   (not (string-match ign-reg basename))))
-	       (setq dir-list (append dir-list (directory-files-and-attributes fullpath t))))
+	       (setq dir-list (append dir-list (directory-files-and-attributes-only-child fullpath t))))
 	 ;; if the current node is a file
 	 (is-file
 	  ;; check against the file filter, if it succeed: add the file to the file-list

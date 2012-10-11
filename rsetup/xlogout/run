@@ -8,7 +8,7 @@
 
 pkill gnome-keyring
 
-pkill dbus-daemon
+# pkill dbus-daemon
 
 pkill ssh-agent
 

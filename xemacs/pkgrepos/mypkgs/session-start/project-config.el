@@ -32,7 +32,15 @@
     )
 
 (deh-require-maybe mk-project
+  ;; https://github.com/mattkeller/mk-project
     )
+
+(deh-require-maybe projmam
+  ;; http://www.emacswiki.org/emacs/ProjmanMode
+  )
+
+(deh-require-maybe project-root
+  )
 
 (eval-after-load "project-buffer-mode"
   '(progn
@@ -51,11 +59,14 @@
 
     (deh-require-maybe project-buffer-occur
       ;; http://www.emacswiki.org/emacs/ProjectBufferOccur
-      (define-key project-buffer-mode-map [(control ?f)] 'project-buffer-occur))))
+      (define-key project-buffer-mode-map [(control ?f)] 'project-buffer-occur))
 
+    (autoload 'find-sln "sln-mode")))
+
+(deh-require-maybe project-buffer-mode)
 
 (when nil
-  ;; (deh-require-maybe fsproject
+  (deh-require-maybe fsproject
 
   ;; How to use it
 
@@ -77,6 +88,7 @@
                " " make-cmd))))
 
   (autoload 'fsproject-create-project "fsproject")
+
   (defun fsproject-new(root-folder)
     (interactive "sRoot folder: ")
     (let ((regexp-project-name  "[Mm]akefile")
@@ -97,6 +109,7 @@
   ;; And if you want to have only have a source and include folder inside each projects:
 
   (autoload 'fsproject-create-project "fsproject")
+
   (defun fsproject-new(root-folder)
     (interactive "sRoot folder: ")
     (let ((regexp-project-name  "[Mm]akefile")
@@ -113,7 +126,16 @@
                                 ignore-folders
                                 pattern-modifier
                                 build-configurations
-                                platforms))))
+                                platforms)))))
+
+
+
+
+(deh-require-maybe perspective)
+
+(deh-require-maybe workspaces)
+
+(deh-require-maybe ide-skel)
 
 (provide 'project-config)
 ;;; project-config.el ends here

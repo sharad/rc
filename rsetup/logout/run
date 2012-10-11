@@ -1,12 +1,12 @@
 #!/usr/bin/env zsh
 
 
-for startup in logout ; do
-    [ -r ~/.rsetup/$startup/env ] && . ~/.rsetup/$startup/env
-done
-for startup in logout ; do
-    [ -r ~/.rsetup/$startup/run ] && ~/.rsetup/$startup/run
-done
+# for startup in logout ; do
+#    [ -r ~/.rsetup/$startup/env ] && . ~/.rsetup/$startup/env
+# done
+# for startup in logout ; do
+#    [ -r ~/.rsetup/$startup/run ] && ~/.rsetup/$startup/run
+# done
 
 
 if [ ${SSH_AGENT_PID+1} == 1 ]; then

@@ -125,7 +125,7 @@ If IGNORE-FOLDERS is non nil, it should specify a list of folder name to ignore.
 
 The return is a list of two lists: ((project...) (files...))
 Note: the project list is sorted in descending alphabetic order."
-  (let ((dir-list (directory-files-and-attributes root t))
+  (let ((dir-list (directory-files-and-attributes-only-child root t))
 	(ign-reg  (regexp-opt ignore-folders))
 	file-list proj-list)
     (while dir-list
@@ -141,7 +141,7 @@ Note: the project list is sorted in descending alphabetic order."
 	       (not (string-equal basename ".."))
 	       (or (not ignore-folders)
 		   (not (string-match ign-reg basename))))
-	       (setq dir-list (append dir-list (directory-files-and-attributes fullpath t))))
+	       (setq dir-list (append dir-list (directory-files-and-attributes-only-child fullpath t))))
 	 ;; if the current node is a file
 	 (is-file
 	  ;; check against the file filter, if it succeed: add the file to the file-list

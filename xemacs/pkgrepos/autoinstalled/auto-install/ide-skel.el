@@ -1,0 +1,1 @@
+../misc/ide-skel.el

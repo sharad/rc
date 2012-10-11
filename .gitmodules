@@ -37,3 +37,6 @@
 [submodule "xemacs/pkgrepos/world/gits/project-buffer-mode"]
 	path = xemacs/pkgrepos/world/gits/project-buffer-mode
 	url = http://repo.or.cz/r/project-buffer-mode.git
+[submodule "xemacs/pkgrepos/world/gits/perspective-el"]
+	path = xemacs/pkgrepos/world/gits/perspective-el
+	url = https://github.com/nex3/perspective-el.git

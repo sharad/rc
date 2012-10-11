@@ -20,6 +20,7 @@ Host SETUP_h1_name
 Host SETUP_h2_name
   IdentityFile SETUP_h2_IdentityFile
   UserKnownHostsFile ~/.ssh/known_hosts
+  User SETUP_h2_user
 
 Host SETUP_h3_name
   User SETUP_h3_user
