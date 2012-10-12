@@ -25,22 +25,17 @@
 ;;; Code:
 
 
-(deh-require-maybe eproject
-    )
+(deh-require-maybe (progn
+                     eproject
+                     eproject-ruby
+                     eproject-another
+                     mk-project ;; https://github.com/mattkeller/mk-project
+                     projman ;; http://www.emacswiki.org/emacs/ProjmanMode
+                     project-root))
 
-(deh-require-maybe eproject-ruby
-    )
 
-(deh-require-maybe mk-project
-  ;; https://github.com/mattkeller/mk-project
-    )
-
-(deh-require-maybe projmam
-  ;; http://www.emacswiki.org/emacs/ProjmanMode
-  )
-
-(deh-require-maybe project-root
-  )
+(defun directory-files-and-attributes-only-child (dir &optional full)
+  (cddr (directory-files-and-attributes dir full)))
 
 (eval-after-load "project-buffer-mode"
   '(progn
@@ -65,16 +60,13 @@
 
 (deh-require-maybe project-buffer-mode)
 
-(when nil
-  (deh-require-maybe fsproject
+(deh-require-maybe fsproject
 
-  ;; How to use it
-
-  ;; In order to use it, you can either create your own command, or call ‘fsproject-create-project’ from your init.el.
-
-  ;; I haven’t found a satisfied way to create a uniform command for this file, that’s why there is none.
-
-  ;; Here is an example of a command with an implementation of an action handler:
+  ;; How to use it In order to use it, you can either create your own
+  ;; command, or call ‘fsproject-create-project’ from your init.el.  I
+  ;; haven’t found a satisfied way to create a uniform command for
+  ;; this file, that’s why there is none.  Here is an example of a
+  ;; command with an implementation of an action handler:
 
   (defun my-action-handler(action project-name project-path platform configuration)
     "project action handler."
@@ -106,7 +98,8 @@
                                 build-configurations
                                 platforms)))
 
-  ;; And if you want to have only have a source and include folder inside each projects:
+  ;; And if you want to have only have a source and include folder
+  ;; inside each projects:
 
   (autoload 'fsproject-create-project "fsproject")
 
@@ -126,16 +119,57 @@
                                 ignore-folders
                                 pattern-modifier
                                 build-configurations
-                                platforms)))))
+                                platforms))))
 
 
 
 
-(deh-require-maybe perspective)
+(deh-require-maybe (progn
+                     perspective
+                     workspaces
+                     ide-skel))
 
-(deh-require-maybe workspaces)
 
-(deh-require-maybe ide-skel)
+(defun buffer-mode (buffer-or-string)
+  "Returns the major mode associated with a buffer."
+  (with-current-buffer buffer-or-string
+     major-mode))
+
+(defun project-buffer-mode-buffer-list ()
+  (loop for b in (buffer-list)
+       if (eq 'project-buffer-mode (buffer-mode b))
+       collect b))
+
+(defun project-buffer-mode-get-projects (pb)
+  (with-current-buffer pb
+
+    (let ((nodes)
+          (node (ewoc-nth project-buffer-status 0)))
+      (while (and node
+                  (or (not (eq (project-buffer-node->type (ewoc-data node)) 'project))))
+
+        (setq nodes (append nodes (list (project-buffer-node->name (ewoc-data node)))))
+        (setq node (ewoc-next project-buffer-status node)))
+      nodes)))
+
+
+
+(with-current-buffer (car (project-buffer-mode-buffer-list))
+  project-buffer-status)
+
+(project-buffer-mode-get-projects (car (project-buffer-mode-buffer-list)))
+
+;; (defmacro with-current-project-mode-buffer (pmb &rest body)
+;;   `(with-current-buffer ,pmb
+;;      ,body))
+
+
+
+;; (defun
+;;     (project-buffer-get-project-settings-data ))
+
+
+(project-buffer-get-current-project-name)
 
 (provide 'project-config)
 ;;; project-config.el ends here

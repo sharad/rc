@@ -357,7 +357,7 @@ define_webjump("acronyms/netlingo", "http://www.netlingo.com/word/%s.php");
 define_webjump("acronyms/slang", "http://www.internetslang.com/%s-meaning-definition.asp");
 define_webjump("acronyms/abbreviations", "http://www.abbreviations.com/%s");
 define_webjump("acronyms/acronyms", "http://acronyms.thefreedictionary.com/%s");
-
+"acronyms/acronymsfinder", "http://www.acronymfinder.com/~/search/af.aspx?Acronym=%s&Find=find&string=exact"
 
 // 2.8. Network Tools
 
@@ -789,3 +789,4 @@ define_webjump(
     "review/mouthshut",
     "http://www.mouthshut.com/search/prodsrch.aspx?data=%s&type=&p=0");
 //}}
+

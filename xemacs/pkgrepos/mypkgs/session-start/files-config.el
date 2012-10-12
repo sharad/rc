@@ -254,6 +254,12 @@ directory, select directory. Lastly the file is opened."
       (if dirs (find-file-existing (concat (ido-completing-read "dirs: " dirs) "/" (file-name-nondirectory buffer-file-name)))))))
 
 
+(eval-after-load "ifind-mode"
+  '(progn
+    (defvar workspace-dir nil)
+    (setq workspace-dir nil)))
+
+
 ;; definition for your keybinding and menu
 (when (or
        (not (boundp 'ff-mode-map))
@@ -306,6 +312,10 @@ directory, select directory. Lastly the file is opened."
       ))
 
   )
+
+
+
+
 
 (provide 'files-config)
 ;;; files-config.el ends here

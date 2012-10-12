@@ -139,3 +139,5 @@ It's a string with three %s that get replaced by:
          (format ifind-command ifind-dir ifind-excluded-dirs ifind-string)
          "*ifind*"))
     (message "Find files matching: %s" ifind-string)))
+
+(provide 'ifind-mode)
