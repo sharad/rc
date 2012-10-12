@@ -141,23 +141,16 @@
        collect b))
 
 (defun project-buffer-mode-get-projects (pb)
-  (with-current-buffer pb
-
-    (let ((nodes)
-          (node (ewoc-nth project-buffer-status 0)))
-      (while (and node
-                  (or (not (eq (project-buffer-node->type (ewoc-data node)) 'project))))
-
-        (setq nodes (append nodes (list (project-buffer-node->name (ewoc-data node)))))
-        (setq node (ewoc-next project-buffer-status node)))
-      nodes)))
+  (if pb
+      (with-current-buffer pb
+        project-buffer-projects-list)
+      (error "no buffer provided.")))
 
 
 
-(with-current-buffer (car (project-buffer-mode-buffer-list))
-  project-buffer-status)
 
-(project-buffer-mode-get-projects (car (project-buffer-mode-buffer-list)))
+;; (testing
+;;  (project-buffer-mode-get-projects (car (project-buffer-mode-buffer-list))))
 
 ;; (defmacro with-current-project-mode-buffer (pmb &rest body)
 ;;   `(with-current-buffer ,pmb
@@ -168,8 +161,7 @@
 ;; (defun
 ;;     (project-buffer-get-project-settings-data ))
 
-
-(project-buffer-get-current-project-name)
+;; (project-buffer-get-current-project-name)
 
 (provide 'project-config)
 ;;; project-config.el ends here
