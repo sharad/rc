@@ -58,9 +58,10 @@ General Public License for more details.
 
 
 
-(eval-after-load 'autoinsert
+(eval-after-load "autoinsert"
   ;; from http://www.emacswiki.org/emacs/AutoInsertMode
-  '(define-auto-insert
+  '(progn
+    (define-auto-insert
      '("\\.\\(CC?\\|cc\\|cxx\\|cpp\\|c++\\)\\'" . "C++ skeleton")
      '("Short description: "
        "/*" \n
@@ -75,7 +76,7 @@ General Public License for more details.
        "}" > \n))
 
 
-  '(define-auto-insert '("\\.c\\'" . "C skeleton")
+    (define-auto-insert '("\\.c\\'" . "C skeleton")
      '(
        "Short description: "
        "/**\n * "
@@ -95,7 +96,7 @@ General Public License for more details.
        "}" > \n))
 
 
-  '(define-auto-insert '(perl-mode . "Perl skeleton")
+    (define-auto-insert '(perl-mode . "Perl skeleton")
      '("Description: "
        "#!/usr/bin/env perl" \n
        \n
@@ -112,7 +113,7 @@ General Public License for more details.
        (getenv "ORGANIZATION") | (progn user-full-name) "\n\n"
        "This library is free software; you can redistribute it and/or" "\n"
        "modify it under the same terms as Perl itself." "\n\n"
-       "=cut" "\n"))))
+       "=cut" "\n")))))
 
 
 

@@ -201,7 +201,7 @@
                  (project-buffer-select-pbuffer))))
       (switch-to-buffer (car project-buffer-current-buf-project))))
 
-(testing
+(when nil
 
  (project-buffer-mode-get-projects (car (project-buffer-mode-buffer-list)))
 
