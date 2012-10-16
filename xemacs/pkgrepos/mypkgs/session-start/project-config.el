@@ -27,8 +27,8 @@
 
 (deh-require-maybe (progn
                      eproject
-                     eproject-ruby
-                     eproject-another
+                     ;; eproject-ruby
+                     ;; eproject-another
                      mk-project ;; https://github.com/mattkeller/mk-project
                      projman ;; http://www.emacswiki.org/emacs/ProjmanMode
                      project-root))
@@ -127,8 +127,12 @@
 (deh-require-maybe (progn
                      perspective
                      workspaces
-                     ide-skel))
+                     ;; ide-skel
+                     ))
 
+
+
+(defvar project-buffer-current-buf-project nil "current-project-buffer")
 
 (defun buffer-mode (buffer-or-string)
   "Returns the major mode associated with a buffer."
@@ -140,28 +144,109 @@
        if (eq 'project-buffer-mode (buffer-mode b))
        collect b))
 
+
+(defun project-buffer-select-pbuffer ()
+  (let* ((pblist (project-buffer-mode-buffer-list))
+          (pb
+           (cond
+             ((null pblist) (error "No project buffer exists.") nil)
+             ((eq (length pblist) 1) (car pblist))
+             (t (ido-completing-read "project buffer: " (mapcar #'buffer-name pblist))))))
+
+    pb))
+
 (defun project-buffer-mode-get-projects (pb)
   (if pb
       (with-current-buffer pb
         project-buffer-projects-list)
       (error "no buffer provided.")))
 
+(defun project-select (&optional pb)
+  (interactive
+   (let* ((pb (project-buffer-select-pbuffer)))
+     (list pb)))
+  (if pb
+      (let* ((projects (project-buffer-mode-get-projects pb))
+             (project (cond
+                        ((null projects) (error "No project exists.") nil)
+                        ((eq (length projects) 1)
+                         (car projects))
+                        (t (ido-completing-read "project: " projects)))))
+        project)))
+
+
+(defmacro with-project-buffer (pbuf &rest body)
+  `(with-timeout (10 (message "Not able to do it."))
+     (with-current-buffer ,pbuf
+       (if (progn ,@body) t))))
+
+
+(defun project-buffer-set-master-project-no-status (&optional pb)
+  (interactive
+   (let* ((pb (project-buffer-select-pbuffer)))
+     (list pb)))
+  (if pb
+      (let ((project (project-select pb)))
+        (if (with-project-buffer pb
+              (project-buffer-set-master-project project-buffer-status project))
+            (setq project-buffer-current-buf-project (cons pb project))))
+      (error "no buffer provided.")))
+
+
+(defun project-buffer-jump-to-project (&optional force)
+  (interactive "P")
+  (unless (and (or force (null project-buffer-current-buf-project))
+               (null
+                (project-buffer-set-master-project-no-status
+                 (project-buffer-select-pbuffer))))
+      (switch-to-buffer (car project-buffer-current-buf-project))))
+
+(testing
+
+ (project-buffer-mode-get-projects (car (project-buffer-mode-buffer-list)))
+
+ (defmacro with-current-project-mode-buffer (pmb &rest body)
+   `(with-current-buffer ,pmb
+      ,body))
 
 
 
-;; (testing
-;;  (project-buffer-mode-get-projects (car (project-buffer-mode-buffer-list))))
+ (defun
+     (project-buffer-get-project-settings-data ))
 
-;; (defmacro with-current-project-mode-buffer (pmb &rest body)
-;;   `(with-current-buffer ,pmb
-;;      ,body))
+ (project-buffer-get-current-project-name)
+ (save-excursion
+   (with-current-buffer (car (project-buffer-mode-buffer-list))
+     (project-buffer-set-master-project-no-status (project-select))))
+
+
+ (with-current-buffer "*scratch*"
+   test)
+
+ (with-current-buffer (car (project-buffer-mode-buffer-list))
+   (buffer-local-variables))
+
+ (with-current-buffer (car (project-buffer-mode-buffer-list))
+   project-buffer-status)
 
 
 
-;; (defun
-;;     (project-buffer-get-project-settings-data ))
+ (with-current-buffer (car (project-buffer-mode-buffer-list))
+   (project-buffer-mode t)
+   (project-buffer-set-master-project-no-status "Sipfd Over Ssl"))
 
-;; (project-buffer-get-current-project-name)
+ (progn
+   (switch-to-buffer (car (project-buffer-mode-buffer-list)))
+   (project-buffer-mode t)
+   (project-buffer-set-master-project-no-status "Sipfd Over Ssl"))
+
+
+ (with-current-buffer (car (project-buffer-mode-buffer-list))
+   project-buffer-status))
+
+
 
 (provide 'project-config)
 ;;; project-config.el ends here
+
+

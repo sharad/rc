@@ -27,6 +27,9 @@
 ;; http://www.gnu.org/s/emacs/manual/html_node/elisp/Misc-Events.html
 (define-key special-event-map [sigusr1] 'sigusr-handler)
 
+(define-key special-event-map [sigint] 'sigusr-handler)
+
+
 
 ;; To test the signal handler, you can make Emacs send a signal to
 ;; itself:

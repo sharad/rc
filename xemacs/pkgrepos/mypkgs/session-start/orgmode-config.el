@@ -1,28 +1,30 @@
 
 (deh-require-maybe org
     ;; The following lines are always needed.  Choose your own keys.
-      (setq org-remind-escape-percentage nil
-            org-remind-include-todo t
-            org-log-done '(stat)        ;use for prgress logging.
-            org-remind-suppress-last-newline nil)
+  (defvar org2rem-create-remind-file nil "Create remind file on when saving org file.")
+  (setq org-remind-escape-percentage nil
+        org-remind-include-todo t
+        org-log-done '(stat)        ;use for prgress logging.
+        org-remind-suppress-last-newline nil)
 
-      ;; #+SEQ_TODO: TODO ORDERED INVOICE PAYED RECEIVED SENT
-      ;; #+STARTUP: lognotestate
+  ;; #+SEQ_TODO: TODO ORDERED INVOICE PAYED RECEIVED SENT
+  ;; #+STARTUP: lognotestate
+  ;;;; from http://www.djcbsoftware.nl/dot-emacs.html
+  ;; (add-hook 'org-mode-hook
+  ;;           (lambda() (add-hook 'before-save-hook 'org-agenda-to-appt t t)))
       ;;;; from http://www.djcbsoftware.nl/dot-emacs.html
-      ;; (add-hook 'org-mode-hook
-      ;;           (lambda() (add-hook 'before-save-hook 'org-agenda-to-appt t t)))
-      ;;;; from http://www.djcbsoftware.nl/dot-emacs.html
-      (deh-require-maybe org2rem
-        ;; (add-hook 'org-mode-hook
-        ;;           (lambda()
-        ;;             (add-hook 'after-save-hook 'org2rem-all-agenda-files t t)))
-        (add-hook 'org-mode-hook
-                  (lambda()
-                    (add-hook 'after-save-hook 'org2rem-this-file t t))))
+  (deh-require-maybe org2rem
+    ;; (add-hook 'org-mode-hook
+    ;;           (lambda()
+    ;;             (add-hook 'after-save-hook 'org2rem-all-agenda-files t t)))
+    (add-hook 'org-mode-hook
+              (lambda()
+                (if org2rem-create-remind-file
+                    (add-hook 'after-save-hook 'org2rem-this-file t t)))))
 
-      (add-hook 'org-mode-hook
-                (lambda()
-                  (add-hook 'after-save-hook 'org-agenda-to-appt t t)))
+  (add-hook 'org-mode-hook
+            (lambda()
+              (add-hook 'after-save-hook 'org-agenda-to-appt t t)))
 
       (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
       ;; see key binding in binding.el

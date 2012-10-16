@@ -879,7 +879,8 @@ Return the description that was displayed, as a string."
                                             (function-called-at-point)))
          (enable-recursive-minibuffers  t)
          val)
-     (setq val  (completing-read (if current-prefix-arg "Describe command: " "Describe function: ")
+     (setq val  (completing-read (concat (if current-prefix-arg "Describe command" "Describe function")
+                                         (if fn (format " (default %s): " fn) ": "))
                                  obarray (if current-prefix-arg 'commandp 'fboundp) t nil nil
                                  (and fn  (symbol-name fn))))
      (list (if (equal val "") fn (intern val)) current-prefix-arg)))
