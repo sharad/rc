@@ -93,5 +93,12 @@ interactive("reenable-copy",
                 // doc.onselectstart = function(){return true;}
                 I.buffer.document.onselectstart = function() {return true;} // ie
                 I.buffer.document.onmousedown = function() {return true;} // mozilla
+                var All = I.buffer.document.getElementsByTagName('*');
+                for(i=0; i< All.length; i++) {
+                    All[i].onselectstart = function() {return true;} // ie
+                    All[i].onmousedown = function() {return true;} // mozilla
+                }
+
             });
+
 

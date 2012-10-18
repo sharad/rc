@@ -153,7 +153,6 @@ alias fontset='printf '\''\33]50;%s\007'\'' 9x15,xft:Kochi" Mincho"'
 
 
 
-
 # Man info
 alias mm='man man-pages intro hier keymaps(5)'
 alias ii='info '\''File permissions'\'' '\''Coreutils'\'' '\''File permissions'\'' '\''Common options'\'''

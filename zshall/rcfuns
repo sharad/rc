@@ -190,3 +190,60 @@ EOF
     fi
 }
 
+function backupsshkeys() {
+    #from: http://codeblogging.net/blogs/1/16/creating-password-protected-targz-file-command-line
+    if (( ${+1} )) ; then
+        tar czf - --xform s@${HOME##/}/.osetup/@@g ~/.osetup/{secure/ssh/pubkeys.d,nosecure.d/ssh/keys.d} | openssl enc -aes-256-cbc -e > $1
+    else
+        echo no file name
+    fi
+}
+
+
+function restoresshkeys() {
+    #from: http://codeblogging.net/blogs/1/16/creating-password-protected-targz-file-command-line
+    if (( $# == 2 )) ; then
+        openssl enc -in $1 -aes-256-cbc -d | tar -zxvf - -C $2
+    else
+        echo no file name
+    fi
+}
+
+function screenssh {
+    if (( $# >= 1 )) ; then
+        machine=$1
+        session=$2
+        if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub ; then
+
+            if [ ! "$session" ] ; then
+                if ! ssh $machine screen -x $session -ls | grep 'No Sockets' ; then
+                    session=$(ssh $machine screen -x $session -ls | sed -n 2p | awk '{ print $1 }')
+                else
+                    session=default
+                fi
+            fi
+            if [ "$session" ] ; then
+                echo ssh -t $machine screen -x $session
+                ssh -t $machine screen -x $session  ||
+                ssh -t $machine screen -S $session
+            else
+                echo No session
+            fi
+
+        fi
+    else
+        echo no file name
+    fi
+}
+
+function lsscreenssh {
+    if (( $# >= 1 )) ; then
+        machine=$1
+        if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub ; then
+            ssh -t $machine screen -ls
+        fi
+    else
+        echo no file name
+    fi
+}
+
