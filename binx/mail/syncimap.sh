@@ -88,30 +88,29 @@ EOF
 
 function warn() {
     if [ $warn ] ; then
-        notify $@
+        notify "$*"
     fi
-    logger $@
+    logger "$*"
 }
 
 function verbose() {
     if [ $verbose ] ; then
-        notify $@
+        notify "$*"
     fi
-    logger $@
+    logger "$*"
 }
 
 function notify() {
-    echo ${pgm}: $@
-    # if [ -t 1 ] ; then
-    #     print ${pgm}: $@
-    # else
-    #     notify-send ${pgm}: $@
-    # fi
+    if [ -t 1 ] ; then
+        echo -e "${pgm}:" "$*"
+    else
+        notify-send "${pgm}:" "$*"
+    fi
 }
 
 function logger() {
     #creating prolem
-    : logger -p local1.notice -t ${pgm} -i - $USER : $@
+    command logger -p local1.notice -t ${pgm} -i - $USER : "$*"
 }
 
 

@@ -91,14 +91,20 @@ interactive("reenable-copy",
             function(I) {
                 // var doc = I.buffer.document;
                 // doc.onselectstart = function(){return true;}
-                I.buffer.document.onselectstart = function() {return true;} // ie
-                I.buffer.document.onmousedown = function() {return true;} // mozilla
-                var All = I.buffer.document.getElementsByTagName('*');
-                for(i=0; i< All.length; i++) {
-                    All[i].onselectstart = function() {return true;} // ie
-                    All[i].onmousedown = function() {return true;} // mozilla
-                }
+                var returntrue = function() {return true;}
+                I.buffer.document.onselectstart = returntrue // ie
+                I.buffer.document.onmousedown = returntrue // mozilla
+                I.buffer.document.oncontextmenu = returntrue // mozilla
 
+                if (I.prefix_argument == 4) {
+                    var All = I.buffer.document.getElementsByTagName('*');
+                    for(i=0; i< All.length; i++) {
+                        All[i].onselectstart = returntrue // ie
+                        All[i].onmousedown = returntrue // mozilla
+                        All[i].oncontextmenu = returntrue // mozilla
+                    }
+                }
             });
+
 
 

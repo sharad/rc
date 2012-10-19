@@ -247,3 +247,11 @@ function lsscreenssh {
     fi
 }
 
+# function zshexit {
+# }
+
+function _checkscheduls() {
+    command sleep 10s &
+}
+
+zshexit_functions=(${chpwd_functions[@]} "_checkscheduls")
