@@ -790,3 +790,9 @@ define_webjump(
     "http://www.mouthshut.com/search/prodsrch.aspx?data=%s&type=&p=0");
 //}}
 
+
+//{{Phone Stuff
+define_webjump(
+    "dial",
+    "http://www.justdial.com/index.php?city=%swhat=%s");
+//}}

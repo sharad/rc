@@ -67,9 +67,7 @@
                '(:cmd . "synclient TouchpadOff=0"))
   (profile-add :myprofile
                '(:map . "~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt")
-               '(:cmd . "synclient TouchpadOff=1"))
-
-  (set-profile :myprofile))
+               '(:cmd . "synclient TouchpadOff=1")))
 
 
 

@@ -333,6 +333,9 @@
        (probe-file (getenv "HOME")))))
 
 (start-gnome-components)
+(sleep 2)
+(set-profile :myprofile)
+
 
 ;; Local Variables: **
 ;; folded-file:f **

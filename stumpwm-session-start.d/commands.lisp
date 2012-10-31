@@ -300,9 +300,6 @@
   (run-wcli-command
    (concat "gnome-session-save --gui --logout-dialog")))
 
-(defcommand bye () ()
-            (gnome-quit))
-
 ;; no use.
 ;; (defcommand emacsclient-cli () ()
 ;;   (run-wcli-command
@@ -600,11 +597,14 @@
     "/.stumpwm-session-start.d/stumpwmrc")))
 
 (defcommand bye () ()
+  (in.net.sharad.pa-backend-emacs-planner::emacs-eval-nooutput "(close-all-frames)")
+  (sleep 7)
   (run-shell-command
    (concat
     (getenv "HOME")
     "/.stumpwm-session-start.d/stumpwm-logout"))
   (quit))
+
 
 
 (defcommand display-root-map () ()

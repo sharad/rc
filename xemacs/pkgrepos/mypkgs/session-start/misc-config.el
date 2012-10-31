@@ -309,5 +309,12 @@ The indirect buffer can have another major mode."
 (deh-require-maybe (progn ido-load-library kill-ring-ido kill-ring-search)
   )
 
+
+(deh-section "Close all frame"
+  (defun close-all-frames ()
+    (interactive)
+    (dolist (f (frame-list))
+      (delete-frame f t))))
+
 (provide 'misc-config)
 

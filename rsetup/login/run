@@ -48,7 +48,9 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
                 } ; then
             # blow one is not allow gnus to read its ~/.gnus file automatically.
 	        # rm -f   \#.ido.last\#
-                pkill emacs ; EMACS_SERVER_NAME=$server command emacs --daemon=$server
+                pkill emacs
+                EMACS_SERVER_NAME=$server command emacs --daemon=$server
+                disown %emacs
             else
                 command emacsclient -n -f ~/.emacs.d/server/${server}  -e '(progn (update-ssh-agent) (plan))';
             fi
