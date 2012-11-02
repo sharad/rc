@@ -1,9 +1,9 @@
 # it is sourced in /etc/X11/xsession
 
-for startup in sh x login ; do
+for startup in sh login x ; do
     [ -r ~/.rsetup/$startup/env ] && . ~/.rsetup/$startup/env
 done
 
-for startup in sh x login ; do
+for startup in sh login x ; do
     [ -r ~/.rsetup/$startup/run ] && ~/.rsetup/$startup/run
 done

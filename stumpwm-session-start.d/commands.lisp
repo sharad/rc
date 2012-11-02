@@ -598,7 +598,7 @@
 
 (defcommand bye () ()
   (in.net.sharad.pa-backend-emacs-planner::emacs-eval-nooutput "(close-all-frames)")
-  (sleep 7)
+  (sleep 2)
   (run-shell-command
    (concat
     (getenv "HOME")
