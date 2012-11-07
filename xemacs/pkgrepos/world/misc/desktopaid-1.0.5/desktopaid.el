@@ -56,7 +56,7 @@
 
 ;;; ChangeLog
 
-; 2002/04/07 - Fixed conflict with saveplace.el (put point at beginning of 
+; 2002/04/07 - Fixed conflict with saveplace.el (put point at beginning of
 ;              session conifguration buffer before reading anything from it).
 ;            - The default configuration file will now also be adjusted when
 ;              you save a configuration (see also previous change below).
@@ -73,12 +73,12 @@
 ;                           exists
 ; 2001/06/26 - Bug #437442: fixed double slash problem
 ;            - Bug #437441: if the '-unmapped' option is given on the command-
-;                           line then the default desktop configuration is 
+;                           line then the default desktop configuration is
 ;                           loaded.
 ;            - Only save visible frames (needed to fix bug #437441)
 ; 2001/05/06 - Added dta-switch-session which kills all buffers before loading
 ;              a new session
-; 2001/05/01 - Saving of sessions no longer creates backup files.  File name 
+; 2001/05/01 - Saving of sessions no longer creates backup files.  File name
 ;              completion at session save no longer needs a match.
 ; 2001/04/16 - Initial check-in on SF.
 
@@ -110,7 +110,7 @@ be used by the auto save/restore functionality."
   :group 'desktopaid)
 
 (defcustom dta-default-auto t
-  "Enabling this option will make the last loaded configuration file, the 
+  "Enabling this option will make the last loaded configuration file, the
 default one.  When you quit Emacs this file will then be used to save your
 session and when you restart Emacs it will be used to restore your session."
   :type '(boolean)
@@ -144,7 +144,7 @@ The scratch buffer, completion buffers, etc are invalid."
   (interactive (list (dta-get-config)))
   (save-excursion
     (if dta-default-auto
-        (customize-set-variable 'dta-default-cfg 
+        (customize-set-variable 'dta-default-cfg
                                 (file-name-nondirectory file-name)))
     (let ((out (generate-new-buffer "desktopaid.temp")))
       (set-buffer out)
@@ -173,7 +173,7 @@ The given file-name is excluded from the save list."
 ;(defun dta-get-window-list ()
 ;  (interactive)
 ;  (let ((windows nil))
-;    (walk-windows (lambda (window) 
+;    (walk-windows (lambda (window)
 ;                    (setq windows (cons window windows)))
 ;                  "no-mini-buf"
 ;                  'visible)))
@@ -201,7 +201,7 @@ The given file-name is excluded from the save list."
   (print (dta-trim-list dta-max-history-length
                         file-name-history)
          out))
-  
+
 ;; === Loading ===
 
 (defun dta-load-session (file-name)
@@ -211,7 +211,7 @@ The given file-name is excluded from the save list."
       ;; Ok file exists
       (save-excursion
         (if dta-default-auto
-            (customize-set-variable 'dta-default-cfg 
+            (customize-set-variable 'dta-default-cfg
                                      (file-name-nondirectory file-name)))
         (let ((in (find-file file-name)))
           (set-buffer in)
@@ -329,3 +329,5 @@ with the default one."
             (setq args nil)))
       (setq args (cdr args)))
     ask))
+
+(provide 'desktopaid)

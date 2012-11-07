@@ -1,4 +1,4 @@
-;;; note.el --- sdfgsdfg
+;;; note-config.el --- sdfgsdfg
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -41,5 +41,60 @@
 
   (add-to-list 'anything-sources anything-c-source-evernote-title))
 
+
+
+
+(deh-require-maybe dbus
+  ;; from: http://emacs-fu.blogspot.in/2009/01/using-d-bus-example.html
+  (defun djcb-call-tomboy (method &rest args)
+    "call the tomboy method METHOD with ARGS over dbus"
+    (apply 'dbus-call-method
+           :session                            ; use the session (not system) bus
+           "org.gnome.Tomboy"                  ; service name
+           "/org/gnome/Tomboy/RemoteControl"   ; path name
+           "org.gnome.Tomboy.RemoteControl"    ; interface name
+           method args))
+
+  ;; Then, djcb-tomboy-create-note-region creates a new note from the
+  ;; region (selection) use CreateNamedNote and SetNoteContents; it even
+  ;; does some rudimentary error checking:
+
+  (defun djcb-tomboy-create-note-region (b e name)
+    "Create a new note with in the Tomboy notetaker from region"
+    (interactive "r\nsName for new Tomboy note:")
+    (let ((note-uri (djcb-call-tomboy "CreateNamedNote" name)))
+      (if (and note-uri (> (length note-uri) 0))
+          (djcb-call-tomboy "SetNoteContents" note-uri
+                            (concat name "\n" (buffer-substring b e)))
+          (message "hmmm... it did not work. maybe try a different name"))))
+
+  ;; With djcb-tomboy-insert-note-contents we can insert the contents of
+  ;; some tomboy note into the current buffer, using
+  ;; FindNote/GetNoteContents There's auto-completion available for the
+  ;; name of the note, using ListAllNotes:
+
+  (defun djcb-tomboy-insert-note-contents (name)
+    "Insert Tomboy note with NAME"
+    (interactive
+     (list (let ((lst))
+             (dolist (uri (djcb-call-tomboy "ListAllNotes"))
+               (add-to-list 'lst (djcb-call-tomboy "GetNoteTitle" uri)))
+             (completing-read "Name of Tomboy Note:" lst))))
+    (let ((note-uri (djcb-call-tomboy "FindNote" name)))
+      (when note-uri
+        (insert (djcb-call-tomboy "GetNoteContents" note-uri)))))
+
+  (deh-require-maybe 'org
+    ;; from: http://lists.gnu.org/archive/html/emacs-orgmode/2009-05/msg00253.html
+    (org-add-link-type "tomboy" 'org-tomboy-open)
+
+    (defun org-tomboy-open (note)
+      (let ((outbuf (get-buffer-create "*Org Shell Output*"))
+            (cmd (concat "tomboy --open-note " (shell-quote-argument note) " &")))
+        (with-current-buffer outbuf (erase-buffer))
+        (shell-command cmd outbuf outbuf)))))
+
+
+
 (provide 'note-config)
-;;; note.el ends here
+;;; note-config.el ends here

@@ -25,6 +25,8 @@
 ;;; Code:
 
 
+(require 'general-testing)
+
 (deh-require-maybe savehist-20+
   )
 
@@ -65,7 +67,8 @@
 ;;  (session-initialize))
 
 
-(deh-require-maybe desktop
+;; (deh-require-maybe desktop
+(testing
   ;; http://stackoverflow.com/questions/2703743/restore-emacs-session-desktop
   (desktop-save-mode 1)
   ;; (desktop-read)
@@ -234,13 +237,14 @@ Also returns nil if pid is nil."
 (prefer-coding-system 'utf-8)
 
 
-(deh-require-maybe desktop-recover
-  ;; ssee:http://www.emacswiki.org/emacs/DesktopRecover
-  ;; from: https://github.com/doomvox/desktop-recover/blob/master/desktop-recover-setup.el
-  ;; And this brings up the interactive buffer restore menu
-  (desktop-recover-interactive))
+;; (deh-require-maybe desktop-recover
+;;   ;; ssee:http://www.emacswiki.org/emacs/DesktopRecover
+;;   ;; from: https://github.com/doomvox/desktop-recover/blob/master/desktop-recover-setup.el
+;;   ;; And this brings up the interactive buffer restore menu
+;;   (desktop-recover-interactive))
 
-(deh-require-maybe desktopaid
+;; (deh-require-maybe desktopaid
+(testing
   ;; see: http://desktopaid.sourceforge.net/
   (dta-hook-up))
 

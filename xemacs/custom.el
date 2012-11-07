@@ -30,6 +30,7 @@
  '(display-time-mail-face (quote default))
  '(display-time-mail-file nil)
  '(display-time-mode t)
+ '(dta-default-cfg "default.conf")
  '(ecb-auto-activate nil)
  '(ecb-layout-window-sizes (quote (("sharad-leftright-analyse-etc-reverse" (ecb-directories-buffer-name 0.1179245283018868 . 0.4909090909090909) (ecb-analyse-buffer-name 0.1179245283018868 . 0.4909090909090909) (ecb-methods-buffer-name 0.17452830188679244 . 0.38181818181818183) (ecb-sources-buffer-name 0.17452830188679244 . 0.2909090909090909) (ecb-history-buffer-name 0.17452830188679244 . 0.3090909090909091)))))
  '(ecb-major-modes-show-or-hide (quote ((js-mode cperl-mode perl-mode emacs-lisp-mode lisp-mode c-mode shell-script-mode) mail-mode fundamental-mode planner-mode)))
