@@ -68,12 +68,20 @@
         ;; (nnimap-stream ssl)
         (nnimap-authinfo-file "~/.authinfo.gpg")))
 
+;; (setq gnus-message-archive-group        ;even I have handled it in gnus-posting-style
+;;       `((if (message-news-p)
+;;             "sent-news"
+;;             ,(if (equal (system-name) office-host-name)
+;;                  "Office.Sent Items"
+;;                  "sent"))))
+
 (setq gnus-message-archive-group        ;even I have handled it in gnus-posting-style
-      `((if (message-news-p)
-            "sent-news"
-            ,(if (equal (system-name) office-host-name)
-                 "Office.Sent Items"
-                 "sent"))))
+      (if (message-news-p)
+          "sent-news"
+          (if (equal (system-name) office-host-name)
+              "Office.Sent Items"
+              "sent")))
+
 
 ;; http://www.gnus.org/manual/gnus_153.html
 (setq gnus-gcc-mark-as-read t)

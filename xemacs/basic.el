@@ -305,6 +305,16 @@ alkready should not exist.")
 
 (add-hook 'after-make-frame-functions #'sharad/enable-startup-inperrupting-feature-in-frame-once)
 
+(add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once)
+
+(defun sharad/enable-login-session-inperrupting-feature-in-frame-once (frame)
+  (sharad/enable-login-session-inperrupting-feature)
+  (if (lenght (frame-list)))
+  (remove-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once))
+
+(defun sharad/enable-login-session-inperrupting-feature ()
+  (update-ssh-agent t))
+
 
 ;;}}
 

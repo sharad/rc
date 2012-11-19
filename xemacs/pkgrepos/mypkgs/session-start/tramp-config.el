@@ -118,7 +118,9 @@
         (if (or force (null (getenv "SSH_AGENT_PID")))
             (if (file-exists-p agent-file)
                 (progn
-                  ;; (tramp-cleanup-all-connections)
+                  (if force
+                      (tramp-cleanup-all-connections))
+                  (message "loading %s" agent-file)
                   (load agent-file t t)
                   (ssh-agent-add-key)
                   )
@@ -194,6 +196,16 @@
       (if (eq id-format 'integer) "%u" "\"%U\"")
       (if (eq id-format 'integer) "%g" "\"%G\"")))))
 
+
+
+;;{{ from: http://stackoverflow.com/a/4371566
+;; for emacs tramp timeout.
+(defun tramp-find-file-timeout ()
+  (when tramp
+    (with-timeout (4)
+      (keyboard-quit))))
+(add-hook 'find-file-hook 'tramp-find-file-timeout)
+;;}}
 
 
 

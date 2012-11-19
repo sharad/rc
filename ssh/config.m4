@@ -4,6 +4,8 @@ include(defs)
 
 Host *
   VisualHostKey=yes
+  # from: http://stackoverflow.com/a/4378985 for emacs tramp timeout.
+  ServerAliveInterval 5
 
 Host github.com
   User git
