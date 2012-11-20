@@ -199,12 +199,14 @@
 
 
 ;;{{ from: http://stackoverflow.com/a/4371566
+;; throwing error.
 ;; for emacs tramp timeout.
-(defun tramp-find-file-timeout ()
-  (when tramp
-    (with-timeout (4)
-      (keyboard-quit))))
-(add-hook 'find-file-hook 'tramp-find-file-timeout)
+;; (defun tramp-find-file-timeout ()
+;;   ;; (when tramp
+;;   (when tramp-mode
+;;     (with-timeout (4)
+;;       (keyboard-quit))))
+;; (add-hook 'find-file-hook 'tramp-find-file-timeout)
 ;;}}
 
 

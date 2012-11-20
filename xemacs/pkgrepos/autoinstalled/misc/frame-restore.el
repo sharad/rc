@@ -49,6 +49,8 @@
 ;;;Code:
 (require 'cl)
 
+(defvar desktop-enable nil "desktop-enable")
+
 ;this must be global - as that is how desktop-globals-to-save works
 ;(defvar final-frame-params '((frame-parameter (selected-frame) 'font) 50 50 150 50 nil)) ;font, left, top, width, height, maximized
 (defvar final-frame-params '("-adobe-courier-medium-r-normal--*-120-*-*-m-*-iso8859-1" 50 50 150 50 nil)) ;font, left, top, width, height, maximized

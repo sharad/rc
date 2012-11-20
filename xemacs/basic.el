@@ -303,19 +303,30 @@ alkready should not exist.")
   (sharad/enable-startup-inperrupting-feature)
   (remove-hook 'after-make-frame-functions #'sharad/enable-startup-inperrupting-feature-in-frame-once))
 
-;; (add-hook 'after-make-frame-functions #'sharad/enable-startup-inperrupting-feature-in-frame-once)
+(add-hook 'after-make-frame-functions #'sharad/enable-startup-inperrupting-feature-in-frame-once)
 
-;; (add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once)
 
-;; (defun sharad/enable-login-session-inperrupting-feature-in-frame-once (frame)
-;;   (sharad/enable-login-session-inperrupting-feature)
-;;   (if (< (length (frame-list)) 4)
-;;       )
-;;   (remove-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once))
 
-;; (defun sharad/enable-login-session-inperrupting-feature ()
-;;   (update-ssh-agent t))
 
+(defun sharad/enable-login-session-inperrupting-feature ()
+  (interactive)
+  ;; (setenv "DISPLAY" ":1")
+  (unless (shell-command-no-output "p4 user -o")
+            (shell-command-no-output "zenity --password | p4 login"))
+  (update-ssh-agent t))
+
+(defun sharad/enable-login-session-inperrupting-feature-in-frame-once (frame)
+  ;; run and disable.
+  (if (<= (length (frame-list)) 2)
+      (sharad/enable-login-session-inperrupting-feature))
+  (remove-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once))
+
+
+(add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once)
+
+(add-hook 'delete-frame-hook #'(lambda ()
+                               (if (< (length (frame-list)) 3) ;last frame then add.
+                                   (add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once))))
 
 ;;}}
 
