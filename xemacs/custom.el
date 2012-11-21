@@ -13,7 +13,7 @@
  '(bbdb-default-country "INDIA")
  '(bbdb-north-american-phone-numbers-p nil)
  '(blink-cursor-mode t)
- '(bmkp-last-as-first-bookmark-file "/home/s/hell/.emacs.bmk")
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.bmk")
  '(calendar-mark-diary-entries-flag t)
  '(calendar-view-diary-initially-flag t)
  '(canlock-password "93d68f0366b0f7bb850c020c9b41a029023b0526")

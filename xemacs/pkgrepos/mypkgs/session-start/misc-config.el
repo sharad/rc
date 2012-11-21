@@ -293,9 +293,11 @@ The indirect buffer can have another major mode."
         contents))))
 
 
-(add-hook 'delete-frame-hook
-          '(lambda ()
-            (if (< (length (frame-list)) 3)
+(add-hook 'delete-frame-functions
+          '(lambda (frame)
+            (if (and
+                 (< (length (frame-list)) 3)
+                 (functionp 'session-save-sessoin))
                 (session-save-sessoin))))
 
 (defun shell-command-no-output (cmd)

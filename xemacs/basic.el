@@ -317,16 +317,18 @@ alkready should not exist.")
 
 (defun sharad/enable-login-session-inperrupting-feature-in-frame-once (frame)
   ;; run and disable.
-  (if (<= (length (frame-list)) 2)
+  (when (< (length (frame-list)) 3)
       (sharad/enable-login-session-inperrupting-feature))
-  (remove-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once))
+  (remove-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once)
+  (message "removed sharad/enable-login-session-inperrupting-feature-in-frame-once"))
 
+(add-hook 'delete-frame-functions #'(lambda (f)
+                                      (when (< (length (frame-list)) 3) ;last frame then add.
+                                        (add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once)
+                                        (message "added sharad/enable-login-session-inperrupting-feature-in-frame-once"))))
 
 (add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once)
 
-(add-hook 'delete-frame-hook #'(lambda ()
-                               (if (< (length (frame-list)) 3) ;last frame then add.
-                                   (add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once))))
-
 ;;}}
+
 
