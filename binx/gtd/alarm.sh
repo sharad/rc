@@ -24,6 +24,7 @@
 
 
 # defaults
+playlist=myfav
 sleep_hours=7
 snooze=10
 queue_name=d
@@ -38,6 +39,22 @@ set -- $(getopt nh:z:q: "$@")
 while [ $# -gt 0 ]
 do
     case "$1" in
+        (-p) playlist=myfav
+sleep_hours=7
+snooze=10
+queue_name=d
+volume_high=100 # 60
+volume_low=70   # 45
+
+max=
+
+
+# cli arg processing
+set -- $(getopt nh:z:q:p: "$@")
+while [ $# -gt 0 ]
+do
+    case "$1" in
+        (-p) playlist="$2"; shift;;
         (-h) sleep_hours="$2"; shift;;
         (-z) snooze="$2"; shift;;
         (-q) queue_name="$2"; shift;;
@@ -72,12 +89,12 @@ set-card-profile 0 output:analog-stereo
 set-card-profile 0 output:iec958-stereo+input:analog-stereo
 set-card-profile 0 output:analog-stereo
 ZZZ
-
+      DISPLAY=:0.0
       xset dpms force on
       xset dpms 60 80 0
       amixer -- sset  Master   100% unmute
       mpc clear
-      mpc load myfavorit
+      mpc load $playlist
       mpc play
       sleep 2
       mpc volume $volume_high
