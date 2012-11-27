@@ -1,0 +1,1384 @@
+#!/usr/bin/perl
+#
+# This program is copyright (c) 2001 by Daniel Born <dan@danborn.net>
+# and is released under the GNU General Public License Version 2
+# (http://www.fsf.org/copyleft/gpl.txt).  This program is free software;
+# you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation;
+# either version 2 of the License, or (at your option) any later version.
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+# Public License for more details.
+#
+# Dan Born
+# dan@danborn.net
+# http://danborn.net/
+# 11/01/2001
+#
+# See the included sample multicdrc configuration file for usage info.
+#
+# Change Log:
+#  15/01/2001  Fixed bug in command line arg handling.
+#
+## 15/01/2001  Version 1.0 released.
+#
+#  16/01/2001  Fixed bug in get_userconfig() where it wasn't being verified that
+#              image_file1 and image_file2 are absolute paths.
+#  18/01/2001  Fixed bugs.  Disabled use of image_dir and image_dir2, making image_file1
+#              and image_file2 the only way to specify image files. Added noburn option.
+#  19/01/2001  Added first_disc option.
+#  21/01/2001  Made it compatible with perl version 5 or better.  Used to require 5.6.
+#
+## 21/01/2001  Version 1.01 released.
+#
+#  23/01/2001  Bug fix.
+#  31/01/2001  cd_size can now be specified in term of Megs or Kilobytes.
+#  04/02/2001  Added addfiles option.
+#  05/02/2001  Made it so that the modification time and access time of files is preserved
+#              in the backup set.
+#
+## 07/02/2001  Version 1.02 released.
+#
+#  26/04/2001  Made it so it skips files whose size is > $config{cd_size}, that is, files
+#              that are larger than a CD.  This doesn't completely solve the problem,
+#              though.  With a filesystem, the amount of free space on a disc is
+#              significantly less than the size of the disc.
+#  05/05/2001  Added support for global config file.
+#
+## 05/05/2001  Version 1.5 released.
+#
+#  22/05/2001  Added code so that it stores an index, but it doesn't write the index to a
+#              file yet.
+#  04/06/2001  Added some filesystem options for ext2.
+#              Added ability to retry failed burn attempts.
+#              Made it so that the image files and the image mount point are excluded from the
+#              backups automatically.
+#              Added --help and --check_config options.
+#              When read errors occur, the source file is skipped with a warning.
+#              Added ability to create an index file.
+#  05/06/2001  Fixed bug where the access/mod times of directories weren't correct.
+#  06/06/2001  Made it so that "Device full" is not assumed when a write error occurs.
+#
+## 07/06/2001  Version 1.6 released.
+#
+#  16/06/2001  Changed a "die" to a "warn" for a file read error.
+#  24/06/2001  Changed help and check_config options.
+#  03/07/2001  Fixed issue with file names that had spaces in the config file.
+#  03/07/2001  Did some better error checking with the mount command.
+#
+## 03/07/2001  Version 1.6.1 released.
+#
+#  07/07/2001  Fixed bug with chown of symlinks.
+#
+## 07/07/2001  Version 1.6.2 released.
+#
+#  15/07/2001  Fixed security issue.  Image files were created with insecure
+#              permissions.
+#              Automatically create the image_mount directory if it doesn't
+#              exist, and make sure it has secure permissions.
+#              Set defaults for image_file1 and image_file2 that should
+#              automatically work for most people.
+#
+## 15/07/2001  Version 1.6.3 released.
+#
+#  09/07/2002  Fixed the simple prompting bug that the Debian people found.
+#              Changed the mount command for the image files.
+#              Made the error handling for that mount command a little more
+#              user-friendly.
+#
+## 10/07/2002  Version 1.6.4 released.
+#
+#  31/10/2002  Added maxfile_size option to fix the "large files" bug
+#              submitted by the Debian people.
+#
+## 31/10/2002  Version 1.6.5 released.
+#
+#  20/01/2003  Added the ability to compress the files being copied
+#              to the backup set (compress and compress_level options).
+#
+## 20/01/2003  Version 1.7.0 released.
+#
+#  22/01/2003  Fixed a bug that caused a "disk full" error to me
+#              interpreted as some other problem.
+#
+## 22/01/2003  Version 1.7.1 released.
+#
+#  24/01/2003  Fixed a bug in error message.
+#              Changed config file parsing so whitespace at beginning
+#              of lines doesn't cause multicd to error exit.
+#  09/02/2003  Changed format of date in index file names.
+#
+## 30/04/2003  Version 1.7.2 released.
+#
+#  11/12/2004  Convert cd_size and maxfile_size to Math::BigInts.
+#
+#  14/12/2004  Added "since" option to backup only those files that have changed
+#              since a given time.
+#
+## 14/12/2004  Version 1.7.3 released.
+#
+#  13/02/2005  Add --no-dereference to chown for symlinks.
+#
+## 13/02/2005  Version 1.7.4 released.
+#
+## 02/07/2005  Changed chown syntax from uid.gid to uid:gid.
+#
+## 02/07/2005  Version 1.7.5 released.
+#
+
+require 5;
+
+use strict;
+use warnings;
+use integer;
+use Fcntl;
+use Cwd qw(chdir cwd);
+use FileHandle qw(autoflush);
+use Math::BigInt;
+
+# Configuration file locations.
+#
+my $global_cf_file = '/etc/multicdrc';
+my $local_cf_file = "$ENV{HOME}/.multicdrc";
+
+# Constants related to the values returned by the stat function.
+#
+my $MODE_I = 2;
+my $UID_I = 4;
+my $GID_I = 5;
+my $SIZE_I = 7;
+my $ATIME_I = 8;
+my $MTIME_I = 9;
+my $BLKSIZE = 11;
+my $TYPE_MASK = 0770000;
+my $MODE_MASK = 0007777;
+my $TYPE_DIR = 04;
+my $TYPE_FILE = 010;
+my $TYPE_SYMLINK = 012;
+
+my $old_umask = umask;
+$ENV{PATH} = "$ENV{PATH}:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin";
+
+my %config;
+
+if ((-e "$ENV{HOME}/.multiCDrc") and (not (-e $local_cf_file))) {
+    die "You must change the name of your configuration file .multiCDrc to ".
+      ".multicdrc. Exiting...\n";
+}
+
+if (get_userconfig(\%config)) {
+    if ($config{check_config}) {
+        print "Configuration was valid.  Exiting...\n";
+        exit 0;
+    }
+} else {
+    die "Invalid configuration.  Check $global_cf_file, $local_cf_file, or\n" .
+      "command line options.  Exiting...\n";
+}
+if ($config{help}) {
+    print "See the $global_cf_file configuration file for information on how to use\n",
+      "this program.\n";
+    exit 0;
+}
+
+STDOUT->autoflush(1);
+STDERR->autoflush(1);
+
+# A tree node is represented by a hash ref and looks like:
+#
+# {
+#   name => filename
+#   uid  => user id of owner
+#   gid  => group id of owner
+#   type => type of file
+#   mode => permissions of file
+#   atime => access time
+#   mtime => modification time
+#   parent => parent of this node
+#   kids => reference to an array of the children of this node
+# }
+#
+
+# The image currently being used.
+my $cur_image;
+if ($config{noburn}) {
+    $cur_image = "$config{image_file1}1";
+    push @{$config{exclude}}, $cur_image;
+} else {
+    $cur_image = $config{image_file1};
+}
+
+# $disc_ready is true if a disc is in the writer and ready to be used.
+my $disc_ready;
+if ($config{first_disc} or $config{only_one}) {
+    $disc_ready = 1;
+} else {
+    $disc_ready = 0;
+}
+
+# Process id of the child process used to run cdrecord.  Used when multi is enabled.
+my $pid;
+
+my $image_count = 0;
+
+# @path stores part of the directory tree.  I backup files by going depth first
+# through the directory tree.  The leftmost node at every level of the tree is
+# descended into, until all the leaf nodes (which are files) are backed up.
+# Once all the children of a node, along with the node itself, are backed up,
+# that node can be deleted from the tree.  @path is like a stack.  It stores
+# the current path from the root to a leaf for the current tree to backup.  The
+# elements of @path are treenodes (which are hash references as described above).
+#
+my @path;
+
+my $index_file;
+if (defined $config{index_file}) {
+    open $index_file, "> $config{index_file}" or die "couldn't create index file: $!\n";
+}
+
+# Each item in this array is a reference to an array of files in a path.  For example,
+# the entry to exclude /usr/local/bin would look like [qw(usr local bin)].
+my @excludes;
+foreach (@{$config{exclude}}) {
+    push @excludes, ['/', grep $_, split m|/|, $_];
+}
+
+# Check to see if an image file is already mounted.  If so, umount it.
+open MTAB, '/etc/mtab' or die "no /etc/mtab: $!\n";
+my $mtab;
+while (<MTAB>) {    
+    ($mtab) = (split)[1];
+    if ($mtab eq $config{image_mount} or ($mtab . '/') eq $config{image_mount}) {
+        system 'umount', $config{image_mount}
+          and print "couldn't umount $config{image_mount}: $!", exit 1;
+    }
+    if ($config{addfiles} and ($mtab eq $config{cd_mount} or ($mtab . '/') eq
+                               $config{cd_mount})) {
+        system 'umount', $config{cd_mount}
+          and print "couldn't umount $config{cd_mount}: $!", exit 1;
+    }
+}
+close MTAB;
+umask 0;
+
+my($type_mode, $uid, $gid, $type, $mode, $size, $atime, $mtime, $pref_blk);
+
+# Ensure that the image_mount directory exists and has secure permissions.
+if (not(-d $config{image_mount})) {
+    mkdir $config{image_mount}, 0700
+      or die "Couldn't create the image_mount directory $config{image_mount}: $!\n";
+} elsif ( ((lstat $config{image_mount})[$MODE_I] & $MODE_MASK) != 0700 ) {
+    chmod 0700, $config{image_mount} or die
+      "Couldn't put secure permissions on image_mount directory $config{image_mount}: $!\n";
+}
+
+# Each iteration of this CD loop creates/burns a new CD.  @path stores the directorty
+# tree currently being worked on.  Users can specify more than one directory tree
+# that they want backed up, and this list of trees is stored as an array ref in
+# $config{files}.
+CD:
+while (@{$config{files}} or @path) {
+    if (defined $index_file) {
+        print $index_file "\n" if $image_count > 0;
+        print $index_file "CD number ", ($image_count + 1), ":\n";
+    }
+
+    # Create a new file system on the image file.
+    check_image($cur_image, $config{cd_size}) or die "problem creating image file $cur_image: $!\n";
+
+    print "Creating $config{fs_type} filesystem on image file...\n";
+    my $mkfsopts;
+    if (defined $config{mkfs_opts}) {
+        $mkfsopts = $config{mkfs_opts};
+    } else {
+        $mkfsopts = '';
+    }
+    system "mkfs -t '$config{fs_type}' $mkfsopts '$cur_image' 1>&2"
+      and print "couldn't mkfs: $!\n", exit 1;
+
+    system 'mount', '-t', $config{fs_type}, $cur_image, '-o', 'loop', $config{image_mount}
+      and print "Could not mount image file $cur_image on $config{image_mount} using loop device.\n" .
+        "Is loop back device support (in the block devices section) enabled in\n".
+          "the kernel?\n", exit 1;
+
+    # If addfiles is enabled, then we want to copy the files from a disc to the
+    # image file.
+    if ($config{addfiles}) {
+        unless($disc_ready) {
+            print "In order to add files, the CD must be in the burner.  Press enter ",
+              "when it is ready. \n";
+            $_ = <STDIN>;
+            $disc_ready = 1;
+        }
+        # Mount the disc.
+        system 'mount', '-o', 'ro', '-t', $config{fs_type}, $config{cd_dev}, $config{cd_mount}
+          and print "couldn't mount CD: $!\n", exit 1;
+    
+        print "Saving current CD contents...\n";
+
+        ## Fork start
+        # If you try to copy files from the CD in the current process, you will get
+        # device busy errors when you try to unmount the CD.  The workaround: copy
+        # the files in a subprocess, and then exit the subprocess before trying to do the
+        # unmount.
+
+        my $tarforkpid = fork();
+        unless(defined $tarforkpid) {
+            die "can't fork: $!\n";
+        }
+        if ($tarforkpid == 0) { # If child process
+            chdir $config{cd_mount} or die "couldn't chdir: $!\n";
+            # Only try to copy files if the CD has any.  I use tar to copy the files
+            # because tar preserves special file attributes, e.g., permissions,
+            # ownership, access/mod times, symlinks, etc.
+            if (opendir(DIR, '.') and (grep !/^\.\.?$/, readdir DIR)) {
+                open TARIN, 'tar cf - * |' or
+                  print "couldn't save old files from CD: $!\n", exit 1;
+                chdir $config{image_mount} or die "no chdir: $!\n";
+                open TAROUT, '| tar xf -' or
+                  print "couldn't save old files from CD: $!\n", exit 1;
+                my($buf, $bytes_read);
+                my $try_read = 16384;
+                while (1) {
+                    $buf = '';
+                    $bytes_read = read(TARIN, $buf, $try_read);
+                    if (not defined $bytes_read) {
+                        print "Error saving old files from CD: $!\n";
+                        exit 1;
+                    }
+                    unless(print TAROUT $buf) {
+                        close TARIN;
+                        close TAROUT;
+                        print "Error saving old files from CD: $!\n";
+                        exit 1;
+                    }
+                    last if $bytes_read < $try_read;
+                }
+                close TARIN;
+                close TAROUT;
+            }
+            chdir '/' or die "couldn't chdir: $!\n";
+            exit 0;             # Exit from child process.
+        }
+
+        ## Fork end
+
+        waitpid $tarforkpid, 0;
+        my $status = $? >> 8;
+        if ($status != 0) {
+            die "Error saving old files from CD: $!\n";
+        }
+
+        # Unmount the disc.
+        system 'umount', $config{cd_mount}
+          and die "couldn't unmount rewriteable CD: $!\n";
+    }
+
+    print "Copying files to CD image...\n";
+
+    # Each iteration of this COPY_FILE loop copies one file to the backup
+    # set.  The loop exits when copying a file results in a "device full"
+    # error, or if there are no more files to backup.  When the target CD
+    # is full, it is burned, and we start over where we left off with the
+    # file that got the "device full" error.
+  COPY_FILE:
+    while (1) {
+        # If the current tree is empty (which is in @path), then get the
+        # next one.
+        if (not @path) {
+            unless (@{$config{files}}) {
+                last COPY_FILE;
+            }
+            @path = map{ {name => $_} } grep $_, split m|/|, shift @{$config{files}};
+            unshift @path, {name => '/'};
+            if (@path > 1) {
+                $path[0]{kids} = [$path[1]];
+            }
+            for (my $i = 1; $i < @path; $i++) {
+                $path[$i]{parent} = $path[$i - 1];
+                $path[$i - 1]{kids} = [$path[$i]];
+            }
+            my $oldfile;
+            for (my $i = 0; $i < @path - 1; $i++) {
+                if ($i == 0) {
+                    $oldfile = $path[0]{name};
+                    if (substr($oldfile, -1, 1) ne '/') {
+                        $oldfile .= '/';
+                    }
+                } else {
+                    $oldfile .= $path[$i]{name} . '/';
+                }
+                unless(($type_mode, $uid, $gid, $atime, $mtime) =
+                       (lstat $oldfile)[$MODE_I, $UID_I, $GID_I, $ATIME_I,
+                                        $MTIME_I])
+                  {
+                      warn "couldn't lstat $oldfile: $!  Skipping this tree\n";
+                      @path = ();
+                      next COPY_FILE;
+                  }
+                unless((($type_mode & $TYPE_MASK) / ($MODE_MASK + 1)) ==
+                       $TYPE_DIR)
+                  {
+                      warn "$oldfile in a backup path was not a directory.\n";
+                      @path = ();
+                      next COPY_FILE;
+                  }
+                $path[$i]{uid} = $uid;
+                $path[$i]{gid} = $gid;
+                $path[$i]{type} = $TYPE_DIR;
+                $path[$i]{mode} = $type_mode & $MODE_MASK;
+                $path[$i]{atime} = $atime;
+                $path[$i]{mtime} = $mtime;
+            }
+        }
+
+        ### Print the tree for debugging
+        #print STDERR '-' x 40, "\n";
+        #print_treepath($path[0], \@path);
+        #print STDERR '-' x 40, "\n";
+        ###
+
+        # Remove from the tree the files that the user asked to exclude.
+        for (my $j = 0; $j < @excludes; $j++) {
+            next if @{$excludes[$j]} != @path;
+            my $i;
+            for ($i = 0; $i < @path; $i++) {        
+                if ($excludes[$j][$i] ne $path[$i]{name}) {
+                    last;
+                }
+            }
+            if ($i == @path) {
+                splice @excludes, $j, 1;
+                delete_tos(\@path, $config{image_mount});
+                next COPY_FILE;
+            }
+        }
+
+        my $oldfile = get_fullpath(\@path);
+        my $newfile = $config{image_mount} . $oldfile;
+
+        unless(($type_mode, $uid, $gid, $size, $atime, $mtime, $pref_blk) =
+               (lstat $oldfile)[$MODE_I, $UID_I, $GID_I, $SIZE_I, $ATIME_I,
+                                $MTIME_I, $BLKSIZE])
+          {
+              warn "couldn't lstat $oldfile: $!\n";
+              delete_tos(\@path, $config{image_mount});
+              next COPY_FILE;
+          }
+        if ($config{maxfile_size}->bcmp($size) < 0) {
+            warn "$oldfile is too big - $size bytes - skipping\n";
+            delete_tos(\@path, $config{image_mount});
+            next COPY_FILE;
+        }
+        $type = ($type_mode & $TYPE_MASK) / ($MODE_MASK + 1);
+        if (defined $config{since} and $type == $TYPE_FILE and
+            $config{since} > $mtime) {
+            # Skip a file that is too old if "since" is defined.
+            delete_tos(\@path, $config{image_mount});
+            next COPY_FILE;
+        }
+
+        $mode = ($type_mode & $MODE_MASK);
+        $path[$#path]{type} = $type;
+        $path[$#path]{mode} = $mode;
+        $path[$#path]{uid}  = $uid;
+        $path[$#path]{gid}  = $gid;
+        $path[$#path]{atime} = $atime;
+        $path[$#path]{mtime} = $mtime;
+
+        if ($type == $TYPE_FILE or $type == $TYPE_SYMLINK or $type == $TYPE_DIR) {
+            unless (check_path(\@path, $config{image_mount})) {
+                # Don't change stack. Device is full.
+                writeerror(\@path, $config{image_mount}, $!);
+                last COPY_FILE;
+            }
+            if ($type == $TYPE_FILE) { ## Handle a regular file.
+                # If compression is disabled, or if $oldfile is already compressed,
+                # then just copy it.
+                if ($config{compress} == 0 or $oldfile =~ /\.(bz2|gz|z)$/i) {
+                    # Open FROM as a regular filehandle.
+                    unless(sysopen FROM, $oldfile, 0) {
+                        warn "Error reading, skipping $oldfile: $!\n";
+                        delete_tos(\@path, $config{image_mount});
+                        next COPY_FILE;
+                    }
+                } else {
+                    # Open FROM as a pipe from a compression program.
+                    my $prog;
+                    if ($config{compress} == 1) {
+                        $prog = 'gzip';
+                        $newfile .= '.gz';
+                    } elsif ($config{compress} == 2) {
+                        $prog = 'bzip2';
+                        $newfile .= '.bz2';
+                    } else {
+                        $prog = 'compress';
+                        $newfile .= '.z';
+                    }
+                    my $pid;
+                    defined($pid = open(FROM, '-|')) or die "fork: $!";
+                    if ($pid == 0) { # If child process
+                        if (defined($config{compress_level})) {
+                            exec $prog, '-c', '-' . $config{compress_level},
+                              $oldfile;
+                        } else {
+                            exec $prog, '-c', $oldfile;
+                        }
+                        die "gzip failed: $!\n";
+                    }
+                }
+                unless(sysopen TO, $newfile, O_WRONLY | O_CREAT | O_TRUNC, $mode) {
+                    # Don't change stack. Device is full.
+                    writeerror(\@path, $config{image_mount}, $!);
+                    close FROM;
+                    last COPY_FILE;
+                }
+                my($buf, $bytes_read);
+                my $try_read = $pref_blk;
+                # Try to get the preferred blocksize from stat.  Using the preferred
+                # block size as the buffer size will probably speed up the copy.
+                #($try_read) = (lstat _)[11];
+                unless($try_read) {
+                    $try_read = 16384;
+                }
+                while (1) {
+                    $buf = '';
+                    $bytes_read = read(FROM, $buf, $try_read);
+                    if (not defined $bytes_read) {
+                        warn "Error reading, skipping $oldfile: $!\n";
+                        close FROM;
+                        close TO;
+                        unlink $newfile;
+                        delete_tos(\@path, $config{image_mount});
+                        next COPY_FILE;
+                    }
+                    unless(print TO $buf) {
+                        my $errno = $!;
+                        close FROM;
+                        close TO;
+                        unlink $newfile;
+                        #warn "couldn't write to $newfile: $!";
+                        # Don't change stack. Device is full.
+                        writeerror(\@path, $config{image_mount}, $errno);
+                        last COPY_FILE;
+                    }
+                    last if $bytes_read < $try_read;
+                }
+                close FROM;
+                close TO;
+                filedone($oldfile, $newfile, $uid, $gid, $atime, $mtime, $index_file);
+                delete_tos(\@path, $config{image_mount});
+            } elsif ($type == $TYPE_DIR) { ## Handle a directory.
+                if ($oldfile ne '/' and not (-d $newfile)) {
+                    unless(mkdir $newfile, $mode) {
+                        #warn "couldn't mkdir $newfile: $!";
+                        # Don't change stack. Device is full.
+                        writeerror(\@path, $config{image_mount}, $!);
+                        last COPY_FILE;
+                    }
+                }
+                filedone($oldfile, $newfile, $uid, $gid, $atime, $mtime, $index_file);
+
+                # Add the contents of this directory to our tree path.  The contents
+                # of a directory are it's child nodes.
+                if (opendir DIR, $oldfile) {
+                    my @dir = map{{name => $_, parent => $path[$#path]}}
+                      grep !/^\.\.?$/, readdir DIR;
+                    closedir DIR;
+                    if (@dir) {
+                        $path[$#path]{kids} = \@dir;
+                        push @path, $dir[0];
+                    } else {
+                        delete_tos(\@path, $config{image_mount});
+                    }
+                } else {
+                    warn "couldn't read directory $oldfile: $!\n";
+                    delete_tos(\@path, $config{image_mount});
+                    next COPY_FILE;
+                }
+            } elsif ($type == $TYPE_SYMLINK) { ## Handle a symbolic link.
+                my $readlink;
+                unless($readlink = readlink $oldfile) {
+                    warn "couldn't read $oldfile, skipping symlink: $!\n";
+                    delete_tos(\@path, $config{image_mount});
+                    next COPY_FILE;
+                }
+                unlink $newfile;
+                unless(symlink $readlink, $newfile) {
+                    #warn "couldn't create symlink $newfile --> $readlink: $!";
+                    # Don't change stack. Device is full.
+                    writeerror(\@path, $config{image_mount}, $!);
+                    last COPY_FILE;
+                }
+                if (defined $index_file) {
+                    print $index_file "  $oldfile\n";
+                }
+
+                # The perl chown function will change the file that a
+                # symlink points to and not the symlink itself.  Command
+                # line chown works the way it should.
+                system 'chown', '--no-dereference', "$uid:$gid", $newfile
+                  and die "couldn't chown symlink $newfile: $!\n";
+
+                # As it turns out, there is no way to change the access/mod
+                # times of a symlink.  All attempts to do this result in
+                # changing the file that the symlink points to.
+
+                delete_tos(\@path, $config{image_mount});
+            }
+        }
+        ## All other types of files are not saved to the backup set.
+        else {
+            warn "skipping file $oldfile because type not recognized\n";
+            delete_tos(\@path, $config{image_mount});
+            next COPY_FILE;
+        }
+    }
+
+    ### Done copying files.
+
+    system 'umount', $config{image_mount}
+      and die "couldn't umount $config{image_mount}\n";
+    if ($config{noburn}) {
+        $cur_image = $config{image_file1} . ($image_count + 2);
+        push @excludes, ['/', grep $_, split m|/|, $cur_image];
+    } else {
+        print "Ready to burn CD number " . ($image_count + 1) . ".\n";
+
+        # Wait for the previous burn to finish if another process was
+        # forked off the last time around.
+        if (defined $pid) {
+            print "Waiting for previous burn process (CD number ", $image_count,
+              ") to finish...\n";
+            waitpid $pid, 0;
+            my $status = $? >> 8;
+            my $err = undef;
+            while ($status != 0) {
+                my $cont = cont_prompt($image_count, $err);
+                if ($cont eq 's') {
+                    last;
+                } elsif ($cont eq 'q') {
+                    last CD;
+                } elsif ($cont eq 'r') {
+                    my $image;
+                    if ($cur_image eq $config{image_file1}) {
+                        $image = $config{image_file2};
+                    } elsif ($cur_image eq $config{image_file2}) {
+                        $image = $config{image_file1};
+                    } else {
+                        die "This should never happen.  Program is broken!\n";
+                    }
+                    $status = system "$config{cdrecord} '$image'";
+                    $err = $!;
+                }
+            }
+            if ($status == 0) {
+                print "Previous CD (number ", $image_count, ") created successfully.\n\n";
+            }
+        }
+
+        # Prepare to run cdrecord.
+        my $cdrecord = "$config{cdrecord} '$cur_image'";
+        unless($disc_ready) {
+            {
+                print "*** Make sure a CD is in the drive. ***\n",
+                  "About to run cdrecord like this:\n",
+                    "$cdrecord\n";
+                print "\n";
+                print "(s)kip CD, (q)uit program, or (c)ontinue? ";
+                $_ = <STDIN>;
+                chomp;
+                if (/^\s*s\s*$/i) {
+                    next CD;
+                } elsif (/^\s*q\s*$/i) {
+                    last CD;
+                } elsif (not /^\s*c\s*$/i) {
+                    redo;
+                }
+            }
+            $disc_ready = 1;
+        }
+
+        # Run cdrecord.  If multi is on, run cdrecord in a child process.
+        # If no more CDs need to be created, then there is no need to fork
+        # another process, and so the parent process can run cdrecord.
+        if ($config{multi} and (@{$config{files}} or @path)) {
+            # Change the current image file so the parent process can add files to a
+            # new one while the child burns the other to cd.
+            if ($cur_image eq $config{image_file1}) {
+                $cur_image = $config{image_file2};
+            } elsif ($cur_image eq $config{image_file2}) {
+                $cur_image = $config{image_file1};
+            } else {
+                die "Never happen.  Unless the code is screwed up.\n";
+            }
+
+            # Creating a new image file tends to bog the system down, and cdrecord will
+            # choke if we try running it at the same time, so create the new image file
+            # before forking if one needs to be created.
+            print "Checking for an extra image file before the burn starts...\n";
+            check_image($cur_image, $config{cd_size})
+              or die "problem creating image file $cur_image: $!\n";
+
+            print "Burning your CD...\n";
+            $pid = fork();
+            unless(defined $pid) {
+                die "can't fork: $!\n";
+            }
+            if ($pid == 0) {
+                # Child process here.
+                STDOUT->autoflush(1);
+                STDERR->autoflush(1);
+                open STDOUT, ">&STDERR"; # Make all the cdrecord output go to stderr.
+                my $status = system $cdrecord;
+                if (defined $config{cd_done}) {
+                    system $config{cd_done};
+                }
+                # Exit code of child process depends on success of the cdrecord command.
+                if ($status != 0) {
+                    exit 1;
+                } else {
+                    exit 0;
+                }
+            }
+            # Parent process still going out here.
+        } else {
+            # If running without multi, burn the cd here.
+            print "Burning your CD...\n";
+            open SAVEOUT, ">&STDOUT";
+            open STDOUT, ">&STDERR";
+            my $status = system $cdrecord;
+            open STDOUT, ">&SAVEOUT";
+            close SAVEOUT;
+            if (defined $config{cd_done}) {
+                system $config{cd_done};
+            }
+            if ($status != 0) {
+                if ($config{only_one}) {
+                    print "CD burn failed: $!";
+                } else {
+                    while ($status != 0) {
+                        my $cont = cont_prompt($image_count + 1, $!);
+                        if ($cont eq 's') {
+                            last;
+                        } elsif ($cont eq 'q') {
+                            last CD;
+                        } elsif ($cont eq 'r') {
+                            $status = system "$config{cdrecord} '$cur_image'";
+                        }
+                    }
+                }
+            }
+            if ($status == 0) {
+                print "CD number " . ($image_count + 1) . " created successfully.\n\n";
+            }
+        }
+    }
+    $disc_ready = 0;
+    last CD if $config{only_one};
+} continue {
+    $image_count++;
+}
+
+  close $index_file if defined $index_file;
+print "\nAll done.\n";
+#
+# End main program.
+#
+
+
+##
+# boolean get_userconfig(\%config)
+#
+# Get the configuration info for this user and put it in the hash
+# referenced by $cfg.
+#
+# Configuration can come from any of three places:
+# A global configuration file: /etc/multicdrc
+# A config file in a user's home directory: $HOME/.multicdrc
+# The command line.
+# Options given on the command line have the same name as the ones in
+# the config files.  If the same option is specified in more than one
+# place, then options in the home directory file override the options
+# in the global file, and the command line options override the other
+# two.
+#
+# Returns true if successful.
+#
+sub get_userconfig {
+    my($cfg) = @_;
+
+    my @optnames   = qw(multi only_one image_file1 image_file2 image_mount
+                        cd_size fs_type files exclude cdrecord cd_done noburn
+                        image_dir image_dir2 first_disc addfiles cd_dev cd_mount
+                        mkfs_opts index_file help check_config maxfile_size
+                        compress compress_level files_list exclude_list since);
+    my @booleans   = qw(multi only_one noburn first_disc addfiles help
+                        check_config);
+    my @listvalues = qw(files exclude);
+
+    my %optnames;
+    @optnames{@optnames} = (1) x @optnames;
+    my %booleans;
+    @booleans{@booleans} = (1) x @booleans;
+    my %listvalues;
+    @listvalues{@listvalues} = (1) x @listvalues;
+
+    my $key;
+
+    # Load things from the global file, and then override those with whatever is
+    # found in a local file.
+    my $config_file;
+    foreach $config_file ($global_cf_file, $local_cf_file) {
+        open CF, $config_file or next;
+        while (<CF>) {
+            if (/^(.*?)\#/) {   # Strip away comments.
+                $_ = $1;
+            }
+            next if /^\s*$/;    # Skip blank lines.
+            if (/^\s*(.*?)\s*$/) { # Trim whitespace off the ends of the line.
+                $_ = $1;
+            }
+            my $value;
+            ($key, $value) = split /\s*=\s*/, $_, 2;
+            unless ($optnames{$key}) {
+                print "Unknown option: '$key'.  Check your $config_file file.\n";
+                close CF;
+                return 0;
+            }
+            if ($listvalues{$key}) {
+                $cfg->{$key} = get_listvalue($value);
+            } else {
+                $cfg->{$key} = $value;
+            }
+        }
+        close CF;
+    }
+
+    # Handle command line args.  Command line args override values from the two
+    # config files.
+    while (@ARGV) {
+        $_ = shift @ARGV;
+        unless(/^--/) {
+            print "Bad command line arg: '$_'\n";
+            return 0;
+        }
+        my $value;
+        $key = '';
+        substr($_, 0, 2) = '';
+        if (/=/) {
+            ($key, $value) = split /=/, $_, 2;
+            if ($listvalues{$key}) {
+                $value = [$value];
+            }
+        } else {
+            $key = $_;
+            while (@ARGV) {
+                $_ = shift @ARGV;
+                if (/^--/) {
+                    unshift @ARGV, $_;
+                    last;
+                }
+                if ($listvalues{$key}) {
+                    push @{$value}, $_;
+                } else {
+                    $value = $_;
+                    last;
+                }
+            }
+        }
+        unless ($optnames{$key}) {
+            print "Unknown command line option: '$key'.\n";
+            return 0;
+        }
+        if (not defined $value) {
+            if ($booleans{$key}) {
+                $cfg->{$key} = 1;
+            } elsif ($key eq 'exclude') {
+                delete $cfg->{exclude};
+            } elsif ($cfg->{$key} != 1) {
+                print "Value for command line option '$key' not specified.\n";
+                return 0;
+            }
+        } else {
+            $cfg->{$key} = $value;
+        }
+    }
+
+    if (defined $cfg->{image_dir} or defined $cfg->{image_dir2}) {
+        print "The use of options image_dir and image_dir2 is no longer supported.\n",
+          "You must specify image file locations with the image_file1\n",
+            "and image_file2 options.\n";
+        return 0;
+    }
+
+    # Required fields
+    foreach (qw(cd_size maxfile_size image_file1 image_mount fs_type cdrecord)) {
+        unless (defined $cfg->{$_}) {
+            print "Required option '$_' not found.\n";
+            return 0;
+        }
+    }
+    if (not (defined $cfg->{files} or defined $cfg->{files_list})) {
+        print "Must specify one of either 'files' or 'files_list'.\n";
+        return 0;
+    }
+    if (not (defined $cfg->{exclude} or
+             defined $cfg->{exclude_list})) {
+        print "Must specify one of either 'exclude' or 'exclude_list'.\n";
+        return 0;
+    }
+
+    # Compute "since" time.
+    if (defined $cfg->{since}) {
+        my %t = (d => 86400, h => 3600, m => 60, s => 1);
+        my $time = time();
+        foreach my $unit (split /\s+/, $cfg->{since}) {
+            if ($unit =~ /^(\d+)([dhms])$/i) {
+                $time -= $1 * $t{$2};
+            }
+        }
+        $cfg->{since} = $time;
+    }
+
+    addtolist($cfg, 'files_list', 'files') or return 0;
+    addtolist($cfg, 'exclude_list', 'exclude') or return 0;
+
+    # Make sure all path values are absolute.
+    foreach (@{$cfg->{files}}, @{$cfg->{exclude}},
+             @{$cfg}{qw(image_mount image_file1 image_file2 index_file)}) {
+        next unless defined $_;
+        if (/\.\./ or not m|^/|) {
+            print "$_: Relative paths are bad.  Absolute paths only.\n";
+            print "Bad option.\n";
+            return 0;
+        }
+    }
+    push @{$cfg->{exclude}}, $cfg->{image_mount}, $cfg->{image_file1};
+    if (defined $cfg->{image_file2}) {
+        push @{$cfg->{exclude}}, $cfg->{image_file2};
+    }
+    if (defined $cfg->{index_file}) {
+        my($min, $hour, $mday, $mon, $year) = (localtime)[1, 2, 3, 4, 5];
+        $year -= 100;
+        $mon++;
+        foreach ($min, $hour) {
+            if ($_ < 10) {
+                $_ = "0$_";
+            }
+        }
+        my $date = "$year-$mon-$mday" . "_$hour:$min";
+        $cfg->{index_file} =~ s/%d/$date/g;
+    }
+    if (defined $cfg->{image_mount}) {
+        $cfg->{image_mount} .= '/'
+          unless substr($cfg->{image_mount}, -1, 1) eq '/';
+    }
+    if ($cfg->{only_one} or $cfg->{noburn}) {
+        $cfg->{multi} = 0;
+    }
+    if ($cfg->{multi} and not defined($cfg->{image_file2})) {
+        print "When multi is enabled, image_file2 must be specified.\n";
+        return 0;
+    }
+    if ($cfg->{addfiles} and not (defined $cfg->{cd_dev} and
+                                  defined $cfg->{cd_mount})) {
+        print "When addfiles is enabled, both cd_dev and cd_mount must ",
+          "be specified.\n";
+        return 0;
+    }
+    # Allow users to specify cd_size and maxfile_size in terms of Megs
+    # or Kilobytes, and then convert to bytes.
+    foreach ($cfg->{cd_size}, $cfg->{maxfile_size}) {
+        if (/^(.+?)([KMG])$/i) {
+            $_ = Math::BigInt->new($1);
+            my $mult = uc($2);
+            if ($mult eq 'K') {
+                $_->bmul(2**10);
+            } elsif ($mult eq 'M') {
+                $_->bmul(2**20);
+            } elsif ($mult eq 'G') {
+                $_->bmul(2**30);
+            }
+        }
+    }
+    # Compression
+    # compress: 0 for none, 1 for gzip, 2 for bzip2, 3 for compress
+    # compress_level: Defaults to 6 for gzip and compress, 9 for bzip2
+    if (not defined($cfg->{compress})) {
+        $cfg->{compress} = 0;
+    } else {
+        if ($cfg->{compress} < 0 or $cfg->{compress} > 3) {
+            print "Invalid value for compress option.\n";
+            return 0;
+        }
+        if (defined($cfg->{compress_level}) and
+            ($cfg->{compress_level} < 1 or
+             $cfg->{compress_level} > 9)) {
+            print "Invalid value for compress_level option.\n";
+            return 0;
+        }
+    }
+    show_options($cfg);
+    return 1;
+}
+
+
+# void show_options(\%config)
+#
+# Prints all the options to stderr.
+#
+sub show_options {
+    my($cfg) = @_;
+
+    print STDERR "-- Options --\n";
+    print STDERR "Files to backup:\n", map{ "  '$_'\n" } @{$cfg->{files}};
+    print STDERR "\n";
+    print STDERR "Files to exclude:\n", map{ "  '$_'\n" } @{$cfg->{exclude}};
+    print STDERR "\n";
+    print STDERR "All the rest:\n", map{ "  $_: '$cfg->{$_}'\n" }
+      sort grep {defined $cfg->{$_} and $_ ne 'files' and $_ ne 'exclude'}
+        keys %{$cfg};
+    print STDERR "-- Options --\n";
+}
+
+
+sub addtolist {
+    my($cfg, $filekey, $listkey) = @_;
+
+    if (defined $cfg->{$filekey}) {
+        unless (sysopen LIST, $cfg->{$filekey}, 0) {
+            print "Error opening '$filekey' file '$cfg->{$filekey}': $!\n";
+            return 0;
+        }
+        while (<LIST>) {
+            chomp;
+            push @{$cfg->{$listkey}}, $_;
+        }
+        close LIST;
+    }
+    return 1;
+}
+
+
+##
+# boolean create_imagefile($image_file, $size)
+#
+# Creates the image file named in the parameter.
+#
+# $size - Math::BigInt object
+#
+sub create_imagefile {
+    my($image_file, $size) = @_;
+
+    my($blksize, $buf);
+    # Get preferred block size.
+    ($blksize) = (stat $image_file)[11];
+    unless($blksize) {
+        $blksize = 16384;
+    }
+    $buf = "\0" x $blksize;
+    sysopen IMAGE, $image_file, O_WRONLY | O_CREAT | O_TRUNC, 0600 or return 0;
+    my $tmp = $size->copy;
+    while (not $tmp->is_zero) {
+        if ($tmp->bcmp($blksize) < 0) {
+            print IMAGE "\0" x $tmp->numify or close IMAGE, return 0;
+            $tmp->bzero;
+        } else {
+            print IMAGE $buf or close IMAGE, return 0;
+            $tmp->bsub($blksize);
+        }
+    }
+    close IMAGE;
+    return 1;
+}
+
+
+##
+# void delete_tos(\@path, $image_mount)
+#
+# Deletes the last item in one of my path structures and replaces it with a new one.
+#
+sub delete_tos {
+    my($path_ref, $image_mount) = @_;
+
+    # Go to a sibling if available, otherwise go up the tree.
+    my($kids, $file, $last);
+    while (defined $$path_ref[$#path]{parent}) {
+        $kids = $$path_ref[$#path]{parent}{kids};
+        pop @$path_ref;
+        if (@$kids > 1) {       # If the top of stack node has a sibling
+            shift @$kids;
+            push @$path_ref, $$kids[0];
+            last;
+        } else {
+            # Set the access/mod times on a directory as soon as we are done adding
+            # things to the directory.
+            $file = $image_mount . get_fullpath(\@path);
+            $last = @$path_ref - 1;
+            utime $$path_ref[$last]{atime}, $$path_ref[$last]{mtime}, $file
+              or warn "couldn't change access/modification times for file $file: $!\n";
+        }
+    }
+
+    # If we have come back to the root node, then the tree is empty.
+    if (not defined($$path_ref[$#path]{parent})) {
+        utime $$path_ref[0]{atime}, $$path_ref[0]{mtime}, $image_mount or warn
+          "couldn't change access/modification times for file $image_mount: $!\n";
+        @$path_ref = ();
+    }
+}
+
+
+##
+# boolean check_path(\@path, $prefix)
+#
+# Check to see if all of the directories leading up to the last item in the given
+# path structure have been created, and create any directories that are missing.
+# $prefix is typically the mount point for the backup filesystem.
+# Returns false if there is an error creating directories, true otherwise.
+#
+sub check_path {
+    my($path_ref, $prefix) = @_;
+
+    my($node, $name);
+    my $old_dir = cwd();
+    chdir $prefix or die "couldn't chdir to $prefix: $!\n";
+    for (my $i = 0; $i < @$path_ref - 1; $i++) {
+        $node = $$path_ref[$i];
+        $name = $$node{name};
+        if ($name ne '/' and $name =~ m|^/|) {
+            substr($name, 0, 1) = '';
+        }
+        unless(-e $name) {
+            if ($name ne '/') {
+                mkdir $name, $$node{mode} or chdir $old_dir, return 0;
+            }
+            chown $$node{uid}, $$node{gid}, $name or die "couldn't chown $name: $!";
+        }
+        if ($name ne '/') {
+            chdir $name or die "couldn't chdir $name: $!\n";
+        }
+    }
+
+    chdir $old_dir;
+    return 1;
+}
+
+
+##
+# $fullpath get_fullpath(\@path)
+#
+# Return the full path name of the file at the end of the given path structure.
+#
+sub get_fullpath {
+    my($path_ref) = @_;
+
+    my $fullpath = $$path_ref[0]{name};
+    if (substr($fullpath, -1, 1) ne '/') {
+        $fullpath .= '/';
+    }
+    for (my $i = 1; $i < @$path_ref; $i++) {
+        $fullpath .= $$path_ref[$i]{name} . '/';
+    }
+    substr($fullpath, -1, 1) = '' unless $fullpath eq '/';
+
+    return $fullpath;
+}
+
+
+##
+# void print_treepath($root, \@path)
+#
+# Useful for debugging.  This will print out the tree rooted at $root, and
+# will highlight the path through the tree indicated by @path.
+#
+# Implementation: Since @path contains references to the nodes in $tree, go
+# through the nodes listed in @path and add a special field called in_path
+# that has the name at that node highligted.  Then just print the tree,
+# checking for in_path.  The in_path fields are deleted before the function
+# returns.
+#
+sub print_treepath {
+    my($root, $path_ref) = @_;
+
+    foreach (@$path_ref) {
+        $$_{in_path} = 1;
+    }
+    print_tree($root);
+    foreach (@$path_ref) {
+        delete $$_{in_path};
+    }
+}
+
+
+##
+# void print_tree($root, $depth)
+#
+# Useful for debugging.  Prints the tree at the given root.  $depth is the
+# depth in the tree of the current $root node.  $depth is used to format the
+# output a little better.
+#
+sub print_tree {
+    my($root, $depth) = @_;
+    $depth = 0 if not defined $depth;
+
+    my $child;
+    foreach $child (@{$$root{kids}}) {
+        print_tree($child, $depth + 1);
+    }
+
+    print STDERR ' ' x ($depth * 3);
+    if ($$root{in_path}) {
+        print STDERR "*$$root{name}*";
+    } else {
+        print STDERR $$root{name};
+    }
+    print STDERR "\n";
+}
+
+
+##
+# $code cont_prompt($num[, $errormsg])
+#
+# Prompts the user to continue after a burn has failed.  Returns true if user wants
+# to continue, false otherwise.  The parameters should be the number of the CD to
+# use in the print statements, and the error message if any.  The error message
+# is an optional parameter.
+#
+sub cont_prompt {
+    my($num, $errormsg) = @_;
+
+    if ($errormsg) {
+        print "Burn of CD number $num failed: $errormsg.\n";
+    } else {
+        print "Burn of CD number $num failed.\n";
+    }
+
+    {
+        print "(s)kip CD, (q)uit program, or (r)etry? ";
+        $_ = <STDIN>;
+        chomp;
+        if (/([sqr])/i) {
+            return lc($1);
+        } else {
+            redo;
+        }
+    }
+}
+
+
+##
+# boolean check_image($image_file, $cd_size)
+#
+# Checks to see if the given image file exists, is readable, and is writeable.  If
+# not, create a new one.  Creating image files takes a while, so we avoid doing
+# it if it's not necessary.
+#
+# $cd_size - Math::BigInt object
+#
+sub check_image {
+    my($image_file, $cd_size) = @_;
+
+    unless(-r $image_file and -w $image_file and
+           $cd_size->bcmp((stat _)[7]) == 0)
+      {
+          print "Creating a new image file.  This takes a while...\n";
+          umask $old_umask;
+          create_imagefile($image_file, $cd_size) or return 0;
+          umask 0;
+      }
+
+    return 1;
+}
+
+
+##
+# void filedone
+#
+sub filedone {
+    my($oldfile, $newfile, $uid, $gid, $atime, $mtime, $index_file) = @_;
+
+    if (defined $index_file) {
+        print $index_file "  $oldfile\n";
+    }
+    chown $uid, $gid, $newfile
+      or die "couldn't chown $newfile: $!\n";
+    utime $atime, $mtime, $newfile
+      or warn "couldn't change access/modification times for file $newfile: $!\n";
+}
+
+
+##
+# void writeerror(\@path)
+#
+# This is called when an error occurs while writing a file to a CD image.
+#
+sub writeerror {
+    my($path_ref, $image_mount, $errno) = @_;
+
+    # If a write error occured because the CD image is full, then that means
+    # we should go onto the next CD.  Any other error should cause the
+    # program to die.
+    if ($errno != 28) { # 28 is the error code for the "No space left on device" error.
+        die "Error writing file $image_mount" . get_fullpath($path_ref) . "\n";
+    }
+
+    # Set the access/mod times on the directory (or parent) containing the
+    # file that is currently at the top of the stack.
+    my $tmp = pop @$path_ref;
+    my $file = $image_mount . get_fullpath($path_ref);
+    push @$path_ref, $tmp;
+    my $i = $#path - 1;
+    utime $$path_ref[$i]{atime}, $$path_ref[$i]{mtime}, $file
+      or warn "couldn't change access/modification times for file $file: $!\n";
+}
+
+
+##
+# \@list get_listvalue($value)
+#
+# This sub will take a list of values as a string, where the seperate values
+# are delimited by either whitespace or double quotes, and return a reference
+# to an array of these values.  Example:
+# Given a string like this: "value one" value2 "value3"
+# will return an array of strings like this: ["value one", "value2", "value3"]
+# If the list is empty, undef is returned.
+#
+sub get_listvalue {
+    my($value) = @_;
+
+    my @value = map chr $_, unpack 'C*', $value;
+    my(@list, $i, $cur, $dq);
+    $dq = 0;
+    for ($i = 0; $i < @value; $i++) {
+        if ($value[$i] eq '"') {
+            if (not $dq) {
+                $dq = 1;
+            } else {
+                push @list, $cur if defined $cur;
+                $cur = undef;
+                $dq = 0;
+            }
+        } elsif ($value[$i] eq '\\') {
+            if (($i +1) < @value and $value[$i + 1] eq '"') {
+                $cur .= '\\"';
+                $i++;
+            } else {
+                $cur .= '\\';
+            }
+        } elsif (($value[$i] =~ /\s/ and $dq) or $value[$i] !~ /\s/) {
+            $cur .= $value[$i];
+        } elsif ($value[$i] =~ /\s/) {
+            push @list, $cur if defined $cur;
+            $cur = undef;
+        }
+    }
+    push @list, $cur if defined $cur;
+    if (@list) {
+        return \@list;
+    } else {
+        return undef;
+    }
+}
