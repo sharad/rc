@@ -265,14 +265,19 @@
 ;; (setf *window-placement-rules* nil)
 
 (define-frame-preference
+    ;; frame raise lock (lock AND raise == jumpto)
     ".scratchpad"
-    ; (0 T T :CLASS "Empathy" :INSTANCE "empathy" :TITLE nil ;"Contact List"
-    ;    :ROLE nil)
-    (0 T T :CLASS "Pidgin"  :INSTANCE "Pidgin"  :TITLE "Buddy List"   :ROLE "buddy_list")
-    (2 T T :CLASS "Pidgin" :INSTANCE "Pidgin" :TITLE  nil ;"FN LN"
-     :ROLE "conversation")
-    (2 T T :CLASS "Skype" :INSTANCE "skype" :TITLE    nil ;"skypeid - Skype? Beta"
-     :ROLE "MainWindow"))
+
+
+    ;; (0 t t :class "Empathy" :instance "empathy" :title nil ;"Contact List"
+    ;;    :role nil)
+    ;; (0 nil t ::title "xterm") ;; test
+
+    (0 nil t :class "Pidgin"  :instance "Pidgin"  :title "Buddy List"   :role "buddy_list")
+    (2 t nil :class "Pidgin" :instance "Pidgin" :title  nil ;"FN LN"
+     :role "conversation")
+    (2 nil t :class "Skype" :instance "skype" :title    nil ;"skypeid - Skype? Beta"
+     :role "MainWindow"))
 
 
 (defun sharad/load-dir-files (dir)

@@ -610,3 +610,7 @@
 (defcommand display-root-map () ()
     (display-bindings-for-keymaps  nil *top-map*))
 
+(defun xwin-kill (window)
+  "Kill the client associated with window."
+  (dformat 3 "Kill client~%")
+  (xlib:kill-client *display* (xlib:window-id window)))

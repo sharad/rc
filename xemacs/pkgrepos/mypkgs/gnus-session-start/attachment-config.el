@@ -53,6 +53,7 @@
               ;; attachment?
               (unless
                   (or (re-search-forward "^<#/" limit t)
+                      (re-search-forward "^<#/" nil t)
                       (y-or-n-p
                        "Found the word `attach' but no MIME attachment: send anyway? "
                       )
@@ -66,6 +67,7 @@
 ;;{{ from: http://www.emacswiki.org/emacs/GnusAndPine
 (defvar my-message-attachment-regexp
   "attach\\|\Wfiles?\W\\|enclose\\|\Wdraft\\|\Wversion")
+
 (defun check-mail ()
   "ask for confirmation before sending a mail. Scan for possible attachment"
   (save-excursion
@@ -78,6 +80,36 @@
       (unless (message-y-or-n-p (concat warning "Send the message ? ") nil nil)
         (error "Message not sent")))))
   (add-hook 'message-send-hook 'check-mail)
+
+
+
+
+
+
+(defun message-attach-all-files-from-folder(&optional disposition dir-to-attach)
+  ;; from: http://www.emacswiki.org/emacs/MessageMode#toc5
+  "create the mml code to attach all files found in a given directory"
+  (interactive)
+
+  (if (eq disposition nil)
+      (setq disposition (completing-read "Enter default disposition to use: " '(("attachment" 1) ("inline" 2)) nil t)))
+
+  (if (eq dir-to-attach nil)
+      (setq dir-to-attach (read-directory-name "Select a folder to attach: ")))
+
+  (if (not (string-match "/$" dir-to-attach))
+      (setq dir-to-attach (concat dir-to-attach "/")))
+
+  (dolist (file (directory-files dir-to-attach))
+    (when (and (not (string= "." file)) (not (string= ".." file)))
+      (let (full-file-path mime-type)
+        (setq full-file-path (concat dir-to-attach file))
+        (if (file-readable-p full-file-path)
+            (if (file-directory-p full-file-path)
+                (message-attach-all-files-from-folder disposition full-file-path)
+
+                (setq mime-type (substring (shell-command-to-string (concat "file --mime-type --brief " (shell-quote-argument (expand-file-name full-file-path)))) 0 -1))
+                (insert-string (concat "<#part type=\"" mime-type "\" filename=\"" full-file-path "\" disposition=" disposition ">\n"))))))))
 
 (provide 'attachment-config)
 
