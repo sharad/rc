@@ -1,4 +1,4 @@
-# m h  dom mon dow   command
+]# m h  dom mon dow   command
 
 SHELL=/bin/zsh
 # MAILTO=$MAILTO variable set
@@ -14,6 +14,7 @@ SHELL=/bin/zsh
 
 # try waking up at 7.30 to 7.45
 00 06 * * * ~/bin/alarm -h .2 -p myfav
+
 
 29 06 * * * mpc load myfav
 30 06 * * * mpc play
