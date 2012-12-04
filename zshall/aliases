@@ -22,7 +22,8 @@
 # printing double side
 # for more
 # see http://www.sun.com/bigadmin/content/submitted/duplex_printing.html
-        alias df='df -hx tmpfs'
+        alias df='command df -hx tmpfs -x devtmpfs'
+        alias sdf='command df -hx tmpfs -x devtmpfs /dev/mapper/*~*ubuntu*'
 	alias lp='command lp -m -o sides=two-sided-long-edge '
 	alias lpr='command lpr -o sides=two-sided-long-edge '
 	alias j='jobs -l'
