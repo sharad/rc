@@ -1,0 +1,10 @@
+# anamarcos.anacron.crontab: configuration file for anamarcos.anacron.cron
+
+# See anamarcos.anacron.cron(8) and anamarcos.anacron.crontab(5) for details.
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+1       5       marcos.anacron.cron.daily       nice run-parts --report $HOME/.anacron/cron.daily
+7       10      marcos.anacron.cron.weekly      nice run-parts --report $HOME/.anacron/cron.weekly
+@monthly        15      marcos.anacron.cron.monthly nice run-parts --report $HOME/.anacron/cron.monthly
