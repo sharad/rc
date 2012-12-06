@@ -5,6 +5,6 @@
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
-1       5       marcos.anacron.cron.daily       nice run-parts --report $HOME/.anacron/cron.daily
+1       30      marcos.anacron.cron.daily       nice run-parts --report $HOME/.anacron/cron.daily
 7       10      marcos.anacron.cron.weekly      nice run-parts --report $HOME/.anacron/cron.weekly
 @monthly        15      marcos.anacron.cron.monthly nice run-parts --report $HOME/.anacron/cron.monthly
