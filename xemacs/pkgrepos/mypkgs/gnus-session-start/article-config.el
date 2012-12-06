@@ -1,4 +1,4 @@
-;;; article.el --- Article related setting
+;;; article-config.el --- Article related setting
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -54,6 +54,7 @@
 ;; Show the time since the article came in.
 ;; see http://www.gnu.org/software/emacs/manual/html_node/gnus/Customizing-Articles.html#Customizing-Articles
 (setq
+ gnus-treat-body-boundary 'head
  gnus-treat-date-lapsed 'head
  gnus-treat-display-x-face 'head
  gnus-treat-strip-cr 2
@@ -117,6 +118,50 @@
 
 
 
+
+
+
+
+;;{{
+(defun article-show-attachment (&optional arg)
+  "Hide the signature in the current article.
+If given a negative prefix, always show; if given a positive prefix,
+always hide."
+  (interactive (gnus-show-attachment-arg))
+  (unless (gnus-article-check-hidden-text 'signature arg)
+    (save-excursion
+      (save-restriction
+	(let ((inhibit-read-only t))
+	  (when (gnus-article-narrow-to-signature)
+	    (gnus-article-hide-text-type
+	     (point-min) (point-max) 'signature))))))
+  (gnus-set-mode-line 'article))
+
+(defun gnus-show-attachment-arg ()
+  'head)
+
+;; (defun article-show-attachment (&optional arg)
+(defun article-show-attachment ()
+  "Translate article using an online translation service."
+  ;; (interactive (gnus-show-attachment-arg))
+  (interactive)
+  (gnus-with-article-buffer
+    (when (article-goto-body)
+      (let* ((start (point))
+	     (end (point-max))
+	     (orig (buffer-substring start end)))
+	     ;; (trans (babel-as-string orig)))
+
+             (insert "\nArticle has attachment\n")
+	;; (save-restriction
+	;;   (narrow-to-region start end)
+	;;   (delete-region start end)
+	;;   (insert trans))
+        ))))
+
+
+;;}}
+
 (provide 'article-config)
 
-;;; article.el ends here
+;;; article-config.el ends here

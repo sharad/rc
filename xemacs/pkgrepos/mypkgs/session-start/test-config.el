@@ -68,4 +68,35 @@
 ;;   call-interactively(ido-find-file nil nil)
 
 
+
+
+
+
+;; ;; http://stackoverflow.com/questions/2001485/how-do-i-keep-emacs-server-running-when-the-current-window-is-closed-x-on-wind
+
+;; (defvar bnb/really-kill-emacs nil)
+
+;; (defadvice kill-emacs (around bnb/really-exit activate)
+;;     "Only kill emacs if the variable is true"
+;;     (if bnb/really-kill-emacs
+;;         ad-do-it)
+;;       (bnb/exit))
+
+;; ;; The bnb/exit function just makes the frame invisible like what you have bound to C-x C-c.
+
+;; ;; I then have an additional function to properly exit emacs if that is ever necessary. That will set the variable and call kill-emacs as follows.
+
+;; (defun bnb/really-kill-emacs ()
+;;     (interactive)
+;;     (setq bnb/really-kill-emacs t)
+;;     (kill-emacs))
+
+
+
+
+(defadvice kill-emacs (around sharad/noexit activate)
+    "Only kill emacs if the variable is true"
+    (message "Getting killed"))
+
+
 (provide 'test-config)
