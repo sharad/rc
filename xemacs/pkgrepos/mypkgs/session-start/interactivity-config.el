@@ -408,5 +408,28 @@
 
 
 
+(defun run-current-buffer (&optional arg)
+  "Runs the compilation of the current file.
+Assumes it has the same name, but without an extension"
+  (interactive "P")
+  (let* ((file
+          (or buffer-file-name
+              (let ((tf (make-temp-file (symbol-name major-mode) nil ".c")))
+                (write-region nil nil tf)
+                tf)))
+         (default-directory (file-name-directory file))
+         (exe (file-name-sans-extension file))
+         (output (concat (symbol-name major-mode) "-output")))
+    (when (compile (concat "g++ -std=gnu++0x -o " exe " " file))
+      (sleep-for 0 1000)
+      (if (file-exists-p exe)
+          (progn
+            (unless buffer-file-name (delete-file file))
+            (shell-command exe output output)
+            (if (bufferp (get-buffer output))
+                (switch-to-buffer-other-window output))
+            (unless arg (delete-file exe)))
+          (message "file %s not got created" exe)))))
+
 
 (provide 'interactivity-config)
