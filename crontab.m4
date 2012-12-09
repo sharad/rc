@@ -1,4 +1,4 @@
-]# m h  dom mon dow   command
+# m h  dom mon dow   command
 
 SHELL=/bin/zsh
 # MAILTO=$MAILTO variable set

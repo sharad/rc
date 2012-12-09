@@ -113,7 +113,7 @@ General Public License for more details.
        (getenv "ORGANIZATION") | (progn user-full-name) "\n\n"
        "This library is free software; you can redistribute it and/or" "\n"
        "modify it under the same terms as Perl itself." "\n\n"
-       "=cut" "\n")))))
+       "=cut" "\n"))))
 
 
 
@@ -190,4 +190,3 @@ General Public License for more details.
 
 
 (provide 'autotext-config)
-

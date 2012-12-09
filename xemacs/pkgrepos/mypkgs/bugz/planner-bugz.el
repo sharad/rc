@@ -29,7 +29,7 @@
 (require 'bugz)
 
 
-'(open inprogress completed cancelled delegated pending )
+;; '(open inprogress completed cancelled delegated pending )
 
 (task-status-add-maps bugz
                       ((inprogress . "ASSIGNED")
@@ -112,15 +112,3 @@
 
 (provide 'planner-bugz)
 ;;; planner-bugz.el ends here
-
-
-;; (nth 4 (car (planner-task-lists "MyMIS")))
-
-
-;; (planner-tasks-from-page "MyMIS")
-
-
-;; ("MyMIS" "B" "1" "_" "Test {{Tasks:16}}" (" *temp*" "[[2012.06.02]]" "[[MyMIS]]" "[[TasksByProject]]") "[[2012.06.02]],[[MyMIS]],[[TasksByProject]]" "MyMIS" "2012.06.02")
-
-
-
