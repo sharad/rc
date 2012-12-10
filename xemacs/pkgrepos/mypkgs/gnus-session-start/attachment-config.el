@@ -65,11 +65,14 @@
 ;;}}
 
 ;;{{ from: http://www.emacswiki.org/emacs/GnusAndPine
+(require 'message)
+
 (defvar my-message-attachment-regexp
   "attach\\|\Wfiles?\W\\|enclose\\|\Wdraft\\|\Wversion")
 
 (defun check-mail ()
   "ask for confirmation before sending a mail. Scan for possible attachment"
+  (require 'message)
   (save-excursion
     (message-goto-body)
     (let ((warning ""))
@@ -109,7 +112,7 @@
                 (message-attach-all-files-from-folder disposition full-file-path)
 
                 (setq mime-type (substring (shell-command-to-string (concat "file --mime-type --brief " (shell-quote-argument (expand-file-name full-file-path)))) 0 -1))
-                (insert-string (concat "<#part type=\"" mime-type "\" filename=\"" full-file-path "\" disposition=" disposition ">\n"))))))))
+                (insert (concat "<#part type=\"" mime-type "\" filename=\"" full-file-path "\" disposition=" disposition ">\n"))))))))
 
 (provide 'attachment-config)
 

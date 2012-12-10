@@ -139,7 +139,7 @@ function suedit () {
 
 function wiki() { dig +short txt $1.wp.dg.cx; }
 
-function mkcd() { mkdir "$@"; eval cd \$$# }
+function mkcd() { mkdir -p "$@"; eval cd \$$# }
 
 ## XML functions
 
