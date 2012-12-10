@@ -331,4 +331,4 @@ alkready should not exist.")
 
 ;;}}
 
-
+ (defalias 'make-local-hook 'ignore)

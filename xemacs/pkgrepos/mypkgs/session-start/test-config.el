@@ -96,7 +96,9 @@
 
 (defadvice kill-emacs (around sharad/noexit activate)
     "Only kill emacs if the variable is true"
-    (message "Getting killed"))
+    ad-do-it
+    ;; (message "Getting killed")
+    )
 
 
 (provide 'test-config)

@@ -30,6 +30,9 @@
 (deh-require-maybe savehist-20+
   )
 
+(deh-require-maybe workspaces
+  )
+
 ;;For Session
 (deh-require-maybe session ;;
   (add-hook 'after-init-hook 'session-initialize)
