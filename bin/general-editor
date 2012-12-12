@@ -1,1 +1,35 @@
-../binx/editors/general-editor
+#!/bin/zsh
+
+# emacsclient -n -f ~/.emacs.d/server/general "$@"
+
+prog=$(basename $0)
+
+typeset -A args
+
+args[-f]="~/.emacs.d/server/general"
+
+if [[ $prog =~ .*n$ ]]  ; then
+    args[-n]=""
+fi
+
+
+if [ $# -eq 0 ] ; then
+    args[-c]=""
+fi
+
+case "$prog" in
+    (general-editor*|editor*|ed*)
+        args[-t]="";;
+    (general-xeditor*|xeditor*|xed*)
+        args[-d]="$DISPLAY";;
+    (*)  ;;
+esac
+
+
+if which emacs && which emacsclient ; then
+    eval emacsclient ${(kv)args} -c "$@"
+elif which sensible-editor ; then
+    sensible-editor "$@"
+else
+    vim "$@"
+fi

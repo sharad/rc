@@ -2,8 +2,8 @@
 
 parttable=~/.backup/sda.gpt
 
-mkdir -p $(dirname ~/.backup/)
-sudo sgdisk -b ~/.backup/sda.gpt /dev/sda
+mkdir -p $(dirname $parttable )
+sudo sgdisk -b $parttable /dev/sda
 mail $MAILTO -s 'part table' <<EOF
 a $parttable
 EOF
