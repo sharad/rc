@@ -229,13 +229,13 @@
 (defcommand editor () ()
             ;;(if (wait-for-nwprogram "emacsclient")
       (run-wcli-command
-       (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/general"))
+       (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(setq spec-id \"main\")")
    ;; '(:class "Emacs")
        ))
 
 (defcommand xeditor () ()
       (run-wcli-command
-       (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(progn (message \"" (format nil "~a" (substitute #\_ #\Space (group-name (current-group)))) "\"))'")
+       (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(progn (setq spec-id \"" (format nil "~a" (substitute #\_ #\Space (group-name (current-group)))) "\"))'")
        ))
 
 ;; (defcommand emacsclient () ()

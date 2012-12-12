@@ -27,6 +27,62 @@
 
 (require 'general-testing)
 
+(deh-section "session per frames"
+  ;;{{ http://stackoverflow.com/a/13711234
+  ;; from: http://stackoverflow.com/questions/847962/what-alternate-session-managers-are-available-for-emacs
+  (defvar emacs-frame-session-directory
+    "~/.emacs.d/session/frames/"
+    "The directory where the emacs configuration files are stored.")
+
+  (defvar elscreen-tab-configuration-store-filename
+    "elscreen"
+    "The file where the elscreen tab configuration is stored.")
+
+  (defun elscreen-store (frame-id)
+    "Store the elscreen tab configuration."
+    (interactive)
+    (let* ((session-dir (concat emacs-frame-session-directory (or
+                                                               frame-id
+                                                               (completing-read "session name: " nil))))
+           (elscreen-session (concat session-dir "/" elscreen-tab-configuration-store-filename) ))
+      (if (progn
+            (make-directory session-dir t)
+            (desktop-save session-dir))
+          (with-temp-file elscreen-session
+            (insert (prin1-to-string (elscreen-get-screen-to-name-alist)))))))
+
+  ;; (push #'elscreen-store kill-emacs-hook)
+
+  (defun elscreen-restore (frame-id)
+    "Restore the elscreen tab configuration."
+    (interactive)
+    (let* ((session-dir (concat emacs-frame-session-directory (or
+                                                               frame-id
+                                                               (completing-read "session name: " nil))))
+           (elscreen-session (concat session-dir "/" elscreen-tab-configuration-store-filename))
+           (desktop-load-locked-desktop t))
+      (if (eq (type-of (desktop-read session-dir)) 'symbol)
+          (let ((screens (reverse
+                          (read
+                           (with-temp-buffer
+                             (insert-file-contents elscreen-session)
+                             (buffer-string))))))
+            (while screens
+              (setq screen (car (car screens)))
+              (setq buffers (split-string (cdr (car screens)) ":"))
+              (if (eq screen 0)
+                  (switch-to-buffer (car buffers))
+                  (elscreen-find-and-goto-by-buffer (car buffers) t t))
+              (while (cdr buffers)
+                (switch-to-buffer-other-window (car (cdr buffers)))
+                (setq buffers (cdr buffers)))
+              (setq screens (cdr screens)))))))
+
+  ;; (elscreen-restore)
+  ;;}}
+
+  )
+
 (deh-require-maybe savehist-20+
   )
 
@@ -332,8 +388,6 @@ Also returns nil if pid is nil."
 
 ;; }}
 )
-
-
 
 (provide 'session-config)
 ;;; session-config.el ends here
