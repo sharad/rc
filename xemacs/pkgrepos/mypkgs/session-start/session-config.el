@@ -40,7 +40,7 @@
 
   (defun elscreen-store (frame-id)
     "Store the elscreen tab configuration."
-    (interactive)
+    (interactive "ssession-name:")
     (let* ((session-dir (concat emacs-frame-session-directory (or
                                                                frame-id
                                                                (completing-read "session name: " nil))))
@@ -54,6 +54,7 @@
   ;; (push #'elscreen-store kill-emacs-hook)
 
   (defun elscreen-restore (frame-id)
+    (interactive "ssession-name:")
     "Restore the elscreen tab configuration."
     (interactive)
     (let* ((session-dir (concat emacs-frame-session-directory (or
