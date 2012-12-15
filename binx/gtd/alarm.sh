@@ -25,6 +25,7 @@
 
 # defaults
 playlist=myfav
+playlist="$( mpc lsplaylists | sed -n $(( $RANDOM % $(mpc lsplaylists | wc -l ) + 1 ))p )"
 sleep_hours=7
 snooze=10
 queue_name=d
@@ -111,4 +112,3 @@ EOF
 EOF
 
 fi
-
