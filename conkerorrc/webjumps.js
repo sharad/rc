@@ -796,3 +796,12 @@ define_webjump(
     "dial",
     "http://www.justdial.com/index.php?city=%swhat=%s");
 //}}
+
+//{{ Search in site
+// Search in site
+
+define_webjump("sitesearch", function (term) {
+    return "javascript:window.location.href='http://www.google.co.in/search?q=site:' + window.location.href + "' " + term + " &hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai='";
+}, $argument = "optional");
+
+//}}
