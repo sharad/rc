@@ -6,12 +6,16 @@
 # pgrep gnome-screensaver ||
 # gnome-screensaver &!
 
-if [ -x /usr/libexec/gnome-settings-daemon ] ; then
+if [ -x /usr/lib/gnome-settings-daemon/gnome-settings-daemon ] ; then
+    pgrep gnome-settings || /usr/lib/gnome-settings-daemon/gnome-settings-daemon &!
+elif [ -x /usr/libexec/gnome-settings-daemon ] ; then
     pgrep gnome-settings || /usr/libexec/gnome-settings-daemon &!
 else
     whence -p gnome-settings-daemon &&
     pgrep gnome-settings || gnome-settings-daemon &!
 fi
+
+
 
 pgrep nm-applet || nm-applet --sm-disable &!
 
@@ -22,7 +26,6 @@ pgrep nm-applet || nm-applet --sm-disable &!
 # syndaemon -i 1 -d
 
 synclient TouchpadOff=1
-
 
 
 foreach prog (
@@ -53,6 +56,8 @@ echo 1 DBUS >&2
 pgrep -l dbus-daemon  >&2
 
 pgrep gnome-keyring-d || gnome-keyring-daemon --start
+
+DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/lib/gnome-online-accounts/goa-daemon
 
 
 echo 2 DBUS >&2
