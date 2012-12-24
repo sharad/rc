@@ -801,7 +801,51 @@ define_webjump(
 // Search in site
 
 define_webjump("sitesearch", function (term) {
-    return "javascript:window.location.href='http://www.google.co.in/search?q=site:' + window.location.href + "' " + term + " &hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai='";
+    return "javascript:window.location.href='http://www.google.co.in/search?q=site:'+window.location.hostname+'%20"+encodeURIComponent(term)+"&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai='";
+}, $argument = "optional");
+
+
+define_webjump("sitesearch", function (term) {
+    return "javascript:window.location.href='http://www.google.com/search?sitesearch='+window.location.hostname+'&as_q=" + encodeURIComponent(term) + "';";
 }, $argument = "optional");
 
 //}}
+
+
+
+// homepage = "http://www.google.com";
+
+// set default webjump
+read_url_handler_list = [read_url_make_default_webjump_handler("google")];
+// possibly valid URL
+function possibly_valid_url (str) {
+    return (/[\.\/:]/.test(str)) &&
+        !(/\S\s+\S/.test(str)) &&
+        !(/^\s*$/.test(str));
+}
+
+// page modes
+require("page-modes/google-search-results.js"); // google search results
+require("page-modes/wikipedia.js");     // wikipedia mode
+
+// webjumps
+define_webjump("gmail", "https://mail.google.com"); // gmail inbox
+define_webjump("twitter", "http://twitter.com/#!/search/%s", $alternative = "https://twitter.com/");  // twitter
+define_webjump("w3schools", "http://www.w3schools.com"); // w3schools site
+define_webjump("w3search", "http://www.google.com/search?sitesearch=www.w3schools.com&as_q=%s"); // w3schools search
+define_webjump("jquery", "http://docs.jquery.com/Special:Search?ns0=1&search=%s"); // jquery
+define_webjump("archwiki", "https://wiki.archlinux.org/index.php?search=%s"); // arch wiki
+define_webjump("stackoverflow", "http://stackoverflow.com/search?q=%s", $alternative = "http://stackoverflow.com/"); // stackoverflow
+define_webjump("sor", "http://stackoverflow.com/search?q=[r]+%s", $alternative = "http://stackoverflow.com/questions/tagged/r"); // stackoverflow R section
+define_webjump("stats", "http://stats.stackexchange.com/search?q=%s"); // stats
+define_webjump("torrentz", "http://torrentz.eu/search?q=%s"); // torrentz
+define_webjump("avaxsearch", "http://avaxsearch.com/avaxhome_search?q=%s&a=&c=&l=&sort_by=&commit=Search"); // avaxsearch
+define_webjump("imdb", "http://www.imdb.com/find?s=all;q=%s"); // imdb
+define_webjump("duckgo", "http://duckduckgo.com/?q=%s", $alternative = "http://duckduckgo.com"); // duckduckgo
+define_webjump("blekko", "http://blekko.com/ws/%s", $alternative = "http://blekko.com/"); // blekko
+define_webjump("youtube", "http://www.youtube.com/results?search_query=%s&aq=f", $alternative = "http://www.youtube.com"); // youtube
+define_webjump("duckgossl", "https://duckduckgo.com/?q=%s"); // duckduckgo SSL
+define_webjump("downforeveryoneorjustme", "http://www.downforeveryoneorjustme.com/%s"); // downforeveryoneorjustme
+define_webjump("urbandictionary", "http://www.urbandictionary.com/define.php?term=%s"); // urban dictionary
+define_webjump("rts", "http://rts.rs");             // RTS
+define_webjump("facebook", "http://www.facebook.com");      // facebook homepage
