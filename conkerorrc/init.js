@@ -21,7 +21,7 @@ require("tab-bar.js");
 
 
 let (conkerorhome = get_home_directory().path + "/.conkerorrc/") {
-    for (f in ["custom.js", "display.js", "webjumps.js", "proxy.js", "misc.js", "office.js", "extention.js", "repl.js", "utils.js", "commands.js", "utils1.js", "behaviour.js", "modes.js"]) {
+    for (f in ["custom.js", "display.js", "webjumps.js", "proxy.js", "misc.js", "office.js", "extention.js", "repl.js", "utils.js", "commands.js", "utils1.js", "behaviour.js", "modes.js", "gsearch.js"]) {
         if (typeof load_rc_file == 'function') {
             load_rc_file(conkerorhome + f);
         } else if (typeof load_rc == 'function') {
