@@ -14,3 +14,19 @@ pkill ssh-agent
 
 ~/bin/syncimap -d
 
+foreach prog (
+    ## it is automatically started by gdm, so no need to start it.
+    # gnome-keyring-daemon
+    xautolock
+    ) {
+        echo A DBUS >&2
+        pgrep -l dbus-daemon >&2
+
+        echo $prog
+        whence -p $prog &&
+        pgrep $prog[0,15] && pkill $prog[0,15]
+
+        echo B DBUS >&2
+        pgrep -l dbus-daemon >&2
+
+    }

@@ -25,7 +25,9 @@
 
 # defaults
 playlist=myfav
-playlist="$( mpc lsplaylists | sed -n $(( $RANDOM % $(mpc lsplaylists | wc -l ) + 1 ))p )"
+if whence mpc >& /dev/null ; then
+    playlist="$( mpc lsplaylists | sed -n $(( $RANDOM % $(mpc lsplaylists | wc -l ) + 1 ))p )"
+fi
 sleep_hours=7
 snooze=10
 queue_name=d
@@ -70,7 +72,7 @@ hour=$(date +%H)
 
 # check 'xset q'
 
-if [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep xtrlock ; then
+if whence mpc >&/dev/null && [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep xtrlock ; then
 
 # cancel all jobs in queue d
     jobs=($(atq -q $queue_name | cut -d'	' -f1 ))
@@ -110,3 +112,6 @@ EOF
 XYEOF
 
 fi
+
+true
+
