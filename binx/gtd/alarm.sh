@@ -37,10 +37,6 @@ max=
 
 # cli arg processing
 set -- $(getopt nh:z:q: "$@")
-while [ $# -gt 0 ]
-do
-    case "$1" in
-        (-p) playlist=myfav
 sleep_hours=7
 snooze=10
 queue_name=d
@@ -74,7 +70,7 @@ hour=$(date +%H)
 
 # check 'xset q'
 
-if [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep xtrlock; then
+if [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep xtrlock ; then
 
 # cancel all jobs in queue d
     jobs=($(atq -q $queue_name | cut -d'	' -f1 ))
@@ -82,7 +78,9 @@ if [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep xtrlock; then
     if (($#jobs)) ; then
         atrm $jobs
     fi
+
     command="at -q $queue_name now + ${${:-$(( $sleep_hours * 60 ))}//./} minutes"
+
     at -q $queue_name now + ${${:-$(( $sleep_hours * 60 ))}//./} minutes <<EOF
 
 pacmd <<'ZZZ'
@@ -102,13 +100,13 @@ ZZZ
 EOF
 
     ### after 6 m 25 sec low down volume
-    at -q $queue_name now + ${${:-$(( $sleep_hours * 60 + $snooze ))}//./} minutes <<EOF
+    at -q $queue_name now + ${${:-$(( $sleep_hours * 60 + $snooze ))}//./} minutes <<'XYEOF'
       xset dpms force on
       xset dpms 60 80 0
       mpc play
       sleep 2
       mpc volume $volume_low
       xset dpms 60 80 1800
-EOF
+XYEOF
 
 fi
