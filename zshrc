@@ -415,6 +415,7 @@ fi
 # For Tramp
 if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
 {
+    cat ~/.logs/stderr/zshall/*
     cal -3
     # display all people around, reminders and todos.
     # See who all are present and what they are doing.
