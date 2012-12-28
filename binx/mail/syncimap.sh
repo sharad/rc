@@ -12,7 +12,7 @@ function main() {
     gnome-keyring-attach
 
     if [ -e $disable_file ] ; then
-        warn "Syncimap is disabled"
+        notify "Syncimap is disabled"
         exit 0
     fi
 
@@ -23,8 +23,7 @@ function main() {
         # pkill offlineimap
         if nm-tool | egrep -q 'DNS:[[:space:]]+[1-9]' ||
            nm-tool | egrep -q 'State:[[:space:]]+connected'; then
-            if ! pgrep offlineimap ; then
-                echo y
+            if ! pgrep offlineimap 2>&1 > /dev/null ; then
                 if [  $interactive  ] ; then
                     offlineimap -a ${account:-$OFFLINEIMAPACCOUNT}
                 else
@@ -45,21 +44,38 @@ function main() {
 function process_arg() {
 
     disable_file=~/.var/comm/disable/$pgm
-    set -- $(getopt -n $pgm -o hdrivwea: -- $@)
+    set -- $(getopt -n $pgm -o hdrsivwea: -- $@)
     while [ $# -gt 0 ]
     do
         case $1 in
             (-a) eval account=$2; shift;;
             (-i) interactive=1;;
             (-v) verbose=1;;
+            (-s)
+                if [ -f $disable_file ] ; then
+                     notify $pgm is disabled;
+                     exit -1;
+                else
+                    notify $pgm is enabled;
+                    exit 0;
+                fi
+                ;;
             (-d)
+                if [ -f $disable_file ] ; then
+                     notify $pgm is already disabled;
+                else
                  if mkdir -p $(dirname $disable_file); touch $disable_file ; then
-                     echo $pgm disabled;
+                     notify $pgm is disabled;
                  fi
-                 exit;;
-            (-r) rm -f $disable_file;
-                 echo $pgm enabled;
-                 exit;;
+                fi
+                exit;;
+            (-r)
+                if [ -f $disable_file ] ; then
+                    rm -f $disable_file && notify $pgm is enabled;
+                else
+                    notify $pgm is already enabled;
+                fi
+                exit;;
             (-w) warn=1;;
             (-e) error=1;;
             (-h) help;
@@ -121,7 +137,7 @@ function gnome-keyring-attach() {
         SSH_AGENT_PID \
         XDG_SESSION_COOKIE \
     )
-    if pgrep ${WM} ; then
+    if pgrep ${WM} 2>&1 > /dev/null ; then
         local pid=$(ps -C ${WM} -o pid --no-heading)
         eval "unset ${vars[@]}; $(printf "export %s;" $(sed 's/\x00/\n/g' /proc/${pid//[^0-9]/}/environ | grep $(printf -- "-e ^%s= " "${vars[@]}")) )"
 
@@ -129,10 +145,9 @@ function gnome-keyring-attach() {
         exit 1;
     fi
 
-    if ! timeout -s KILL 2 ~/bin/get-imap-pass ; then
+    if ! timeout -s KILL 2 ~/bin/get-imap-pass 2>&1 > /dev/null; then
 	exit 1;
     fi
-    echo ~/bin/get-imap-pass
 }
 
 pgm=$(basename $0)
