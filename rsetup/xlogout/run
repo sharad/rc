@@ -12,7 +12,7 @@ pkill gnome-keyring
 
 pkill ssh-agent
 
-~/bin/syncimap -d
+~/bin/syncimap -d               # it only get secinfo from x keyring; disable
 
 foreach prog (
     ## it is automatically started by gdm, so no need to start it.

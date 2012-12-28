@@ -68,7 +68,7 @@ URxvt.perl-ext-common: default,matcher,keyboard-select,url-select,clipboard,tabb
 URxvt.jumpScroll: true
 
 !! Urxvt Print very much necessary.....
-URxvt.print-pipe: cat > $(TMPDIR=$HOME mktemp urxvt.XXXXXX)
+URxvt.print-pipe: cat > $HOME/../paradise/urxvt.Screen
 URxvt.loginShell: false
 
 !!# Fonts

@@ -63,4 +63,4 @@ DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/lib/gnome-online-acc
 echo 2 DBUS >&2
 pgrep -l dbus-daemon  >&2
 
-~/bin/syncimap -r               # enable
+# ~/bin/syncimap -r               # enable, done in rsetup/x/run

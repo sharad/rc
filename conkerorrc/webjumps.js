@@ -849,3 +849,7 @@ define_webjump("downforeveryoneorjustme", "http://www.downforeveryoneorjustme.co
 define_webjump("urbandictionary", "http://www.urbandictionary.com/define.php?term=%s"); // urban dictionary
 define_webjump("rts", "http://rts.rs");             // RTS
 define_webjump("facebook", "http://www.facebook.com");      // facebook homepage
+
+//{{
+define_webjump("auto/search", "http://lmgtfy.com/?q=%s");
+//}}

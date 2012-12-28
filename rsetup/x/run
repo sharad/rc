@@ -4,8 +4,7 @@
 
 xterm -e 'ish -s bash less ~/.xsession-errors' &!
 
-~/bin/syncimap -d               # disable
-
+~/bin/syncimap -r               # it only get secinfo from x keyring; enable
 
 whence -p xhost && xhost +local:mpd
 
