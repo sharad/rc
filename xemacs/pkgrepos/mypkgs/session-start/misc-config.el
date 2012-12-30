@@ -318,5 +318,8 @@ The indirect buffer can have another major mode."
     (dolist (f (frame-list))
       (delete-frame f t))))
 
-(provide 'misc-config)
+(defun hindi-devanagari-itrans ()
+  (interactive)
+  (set-input-method "devanagari-itrans" t))
 
+(provide 'misc-config)

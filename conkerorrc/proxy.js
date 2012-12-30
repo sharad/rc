@@ -109,6 +109,22 @@ define_key(default_global_keymap, "C-c p p", "proxy-port");
 define_key(default_global_keymap, "C-c p d", "proxy-display-settings");
 
 
+
+/* Tor */
+// user_pref('network.proxy.http',  "localhost");
+// user_pref('network.proxy.http_port', 8118);
+// user_pref('network.proxy.ssl',    "localhost");
+// user_pref('network.proxy.ssl_port',    8118);
+// user_pref('network.proxy.socks',  "localhost");
+// user_pref('network.proxy.socks_port',  9050);
+// user_pref('network.proxy.type', 1);
+// pref("network.http.keep-alive", false);
+// pref("network.http.max-persistent-connections-per-proxy", 0);
+// pref("network.http.max-persistent-connections-per-server",i 0);
+
+
+
+
 /*
  * A simple modeline-widget displaying the proxy settings
  */
@@ -134,4 +150,3 @@ proxy_widget.prototype.update = function () {
  */
 
 add_hook("mode_line_hook", mode_line_adder(proxy_widget));
-

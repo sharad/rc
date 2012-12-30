@@ -249,6 +249,8 @@ See (info \"(gnus)Group Line Specification\")."
 	  ((< c (* 1000 10000)) (format "%1.1fM" (/ c (* 1024.0 1024))))
 	  (t (format "%dM" (/ c (* 1024.0 1024)))))))
 
+(require 'gnus-sum)
+
 ;;;###autoload
 (defun rs-gnus-summary-line-score (head)
   "Return pretty-printed version of article score.

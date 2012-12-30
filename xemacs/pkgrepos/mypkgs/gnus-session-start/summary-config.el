@@ -1,4 +1,4 @@
-;;; summary.el --- Summary relate functions, summary format etc.
+;;; summary-config.el --- Summary relate functions, summary format etc.
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -41,6 +41,8 @@
 ;; x-bugzilla-who:
 ;; x-bugzilla-status: VERIFIED
 ;; x-bugzilla-priority: P1
+
+(require 'nnheader)
 
 (deh-section "summary line format user functions"
   (defun sdfsdgfdsgdfg-gnus-user-format-function-b (header)
@@ -141,6 +143,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 (deh-section "summary line formats"
 
 
+
   (defvar sharad/gnus/global-summry-line-format   nil "")
   (defvar sharad/gnus/bugzilla-summry-line-format nil "")
   (defvar sharad/gnus/sent-summry-line-format     nil "")
@@ -232,4 +235,3 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 
 (provide 'summary-config)
-

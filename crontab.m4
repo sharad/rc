@@ -5,7 +5,7 @@ SHELL=/bin/zsh
 
 # */7 * * * * DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/syncimap -a $OFFLINEIMAPACCOUNT > /dev/null 2>&1
 
-# */7 * * * * DISPLAY=:0 ~/bin/syncimap -a $OFFLINEIMAPACCOUNT > /dev/null 2>&1
+*/7 * * * * DISPLAY=:0 ~/bin/syncimap -a $OFFLINEIMAPACCOUNT > /dev/null 2>&1
 
 # 0 0 * * * /aruba/utils/cm/bin/p4bkup --puthere ~/.p4bkup --copies 10
 
@@ -40,18 +40,6 @@ SHELL=/bin/zsh
 50 08 * * * DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys -c
 00 09 * * * ~/bin/pwddwnsys -g
 
-# 30 09 * * * ~/bin/pwddwnsys -g
-# 30 10 * * * ~/bin/pwddwnsys -g
-# 30 12 * * * ~/bin/pwddwnsys -g
-# 30 14 * * * ~/bin/pwddwnsys -g
-# 30 16 * * * ~/bin/pwddwnsys -g
-# 30 18 * * * ~/bin/pwddwnsys -g
-# 30 20 * * * ~/bin/pwddwnsys -g
-# 30 21 * * * ~/bin/pwddwnsys -g
-# 30 01 * * * ~/bin/pwddwnsys -g
-# 30 03 * * * ~/bin/pwddwnsys -g
-# 30 04 * * * ~/bin/pwddwnsys -g
-# 30 05 * * * ~/bin/pwddwnsys -g
 # 00 06 * * * ~/bin/pwddwnsys -g
 
 

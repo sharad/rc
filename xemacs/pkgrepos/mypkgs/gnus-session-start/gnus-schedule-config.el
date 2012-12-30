@@ -49,6 +49,8 @@
   (add-hook 'gnus-article-prepare-hook 'diary-from-outlook-gnus-safe)
 
   ;; using icalendar.el wotrking
+
+  (require 'mm-decode)
   (defun my-save-icalendar (handle)
     (let ((diary "~/.Organize/emacs/diary/outlook)"))
       (when (and (equal (car (mm-handle-type handle)) "text/calendar")
