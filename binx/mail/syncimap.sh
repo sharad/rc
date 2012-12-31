@@ -25,7 +25,7 @@ function main() {
            nm-tool | egrep -q 'State:[[:space:]]+connected'; then
             if ! pgrep offlineimap 2>&1 > /dev/null ; then
                 if [  $interactive  ] ; then
-                    offlineimap -a ${account:-$OFFLINEIMAPACCOUNT} -u blinkenlights
+                    offlineimap -a ${account:-$OFFLINEIMAPACCOUNT}
                 else
                     timeout -s KILL 70 offlineimap -1 -u quiet -a ${account:-$OFFLINEIMAPACCOUNT}
                 fi
