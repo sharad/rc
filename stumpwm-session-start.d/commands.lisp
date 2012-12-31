@@ -333,6 +333,13 @@
     ;'(:class "Firefox-bin")
     ))
 
+(defcommand torbrowser () ()
+   (run-wcli-command
+    (concat "firefox -P tor" ;; (getenv "XBPROFILE")
+            )
+    ;'(:class "Firefox-bin")
+    ))
+
 (defcommand seamonkey () ()
    (run-wcli-command
     (concat "seamonkey -P " (getenv "XBPROFILE"))

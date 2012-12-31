@@ -326,6 +326,7 @@
              (kbd "t") "urxvt"
              (kbd "b") "xbrowser"
              (kbd "f") "firefox"
+             (kbd "T") "torbrowser"
              (kbd "e") "emacsclient"
              (kbd "m") "mail-reader"
              (kbd "n") "new-mail"
@@ -403,4 +404,3 @@
 ;;    (kbd "d") "disappear-window"))
 
 (undefine-key *top-map* (kbd "s-p"))
-
