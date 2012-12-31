@@ -4,7 +4,8 @@ include(defs)
 metadata = ~/.offlineimap
 accounts = esyscmd(echo -n $OFFLINEIMAPACCOUNT)
 maxsyncaccounts = 1
-ui = blinkenlights, ttyui, basic, quiet, machineui
+# ui = blinkenlights, ttyui, basic, quiet, machineui
+ui = blinkenlights
 ignore-readonly = no
 pythonfile = ~/bin/lib-keyring
 
@@ -25,6 +26,7 @@ statuschar = .
 localrepository = GmailLocal
 remoterepository = GmailRemote
 postsynchook = notmuch new
+maxage = 10
 
 [[Repository GmailLocal]]
 
