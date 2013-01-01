@@ -851,5 +851,27 @@ define_webjump("rts", "http://rts.rs");             // RTS
 define_webjump("facebook", "http://www.facebook.com");      // facebook homepage
 
 //{{
-define_webjump("auto/search", "http://lmgtfy.com/?q=%s");
+define_webjump("search/auto", "http://lmgtfy.com/?q=%s");
+define_webjump("search/clusty", "http://clusty.com/search?query=%s");
+define_webjump("search/duckduckgo", "https://duckduckgo.com/?q=%s");
+define_webjump(
+    "search/ixquick",
+    function (term) {
+        if (! term)
+            return "https://osnews.com";
+        return load_spec(
+            { uri: "https://us4.ixquick.com/do/search",
+              post_data: make_post_data([
+                  ['query', term],
+                  ['abp', '-1'],
+                  ['engine0', 'v1all'],
+                  ['language', 'english'],
+                  ['cmd', 'process_search'],
+                  ['cat', 'web'],
+                  ['submit', 'find']
+              ])
+    },
+    $argument = 'optional')});
+
 //}}
+
