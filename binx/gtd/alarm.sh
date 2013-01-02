@@ -97,6 +97,16 @@ ZZZ
       mpc clear
       mpc load $playlist
       mpc play
+      sleep 1s
+      mpc play
+      sleep 1s
+      mpc play
+      sleep 1s
+      mpc play
+      sleep 1s
+      mpc play
+      sleep 1s
+      mpc play
       sleep 2
       mpc volume $volume_high
 EOF
@@ -106,6 +116,18 @@ EOF
       xset dpms force on
       xset dpms 60 80 0
       mpc play
+      sleep 1s
+      mpc play
+      sleep 1s
+      mpc play
+      sleep 1s
+      mpc play
+      sleep 1s
+      mpc play
+      sleep 1s
+      mpc play
+      sleep 1s
+      mpc play
       sleep 2
       mpc volume $volume_low
       xset dpms 60 80 1800
@@ -114,4 +136,3 @@ XYEOF
 fi
 
 true
-

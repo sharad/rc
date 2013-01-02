@@ -44,7 +44,9 @@
 
   (defun office-activate ()
     (let ((file (buffer-file-name)))
-      (if enable-p4-login
+      (if (and
+           enable-p4-login
+           sharad-in-office-with-perforce)
           (unless (shell-command-no-output "p4 user -o")
             (shell-command-no-output "zenity --password | p4 login")))
       (when (and file
@@ -71,4 +73,3 @@
 
 
 (provide 'minor-modes-act-config)
-
