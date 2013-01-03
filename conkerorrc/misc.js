@@ -17,6 +17,23 @@ interactive("cookie-culler", "Open the CookieCuller settings in a new buffer.",
 // }}
 
 
+
+
+//{{
+
+interactive("cleartrack", "Google page mode clear track.",
+            function (I) {
+                var buf = I.buffer;
+                var elem = buf.document.querySelector("//a[@class='l']|//a[@class='l vst']|//a[@class='gs-title']|//h3[@class='r']/a");
+                I.minibuffer.message(elem.length + "test");
+                if (elem)
+                    dom_node_click(elem, 1, 1);
+                else
+                    I.minibuffer.message(error_message);
+            });
+
+//}}
+
 // Local Variables: **
 // folded-file:f **
 // mode:js2 **
@@ -24,3 +41,4 @@ interactive("cookie-culler", "Open the CookieCuller settings in a new buffer.",
 // comment-start: "// "  **
 // comment-end:   "// "  **
 // End: **
+

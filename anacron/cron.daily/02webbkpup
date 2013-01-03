@@ -1,0 +1,12 @@
+#!/bin/bash
+
+pass=$(zenity --password)
+
+if [ "x$pass" = "x" ] ; then
+   exit -1
+fi
+
+curl 'https://sh4r4d:$pass@api.del.icio.us/v1/posts/all?results=20000' > ~/bkp.xhtml
+
+exit 0
+
