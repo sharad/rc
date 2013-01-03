@@ -61,17 +61,25 @@ var google_search_results_modality = {
 };
 
 
+function correctlink(doc) {
+    while(anchor = doc.evaluate("//a[@class='l']|//a[@class='l vst']|//a[@class='gs-title']|//h3[@class='r']/a",
+                              doc, null, XPathResult.ANY_TYPE, null).iterateNext()) {
+        anchor.href = "http://asdfsdf.com";
+        doc.alert(anchor.href);
+    }
+}
+
+
 define_page_mode("google-search-results-mode",
     build_url_regexp($domain = "google",
                      $allow_www = true,
                      $path = /search\?|cse\?/,
                      $tlds = ["com", "com.au", "co.uk", "de", "dk", "es",
-                              "fr", "it", "no", "se", "uk", "co.in"]),
+                              "fr", "it", "no", "se", "uk", "co.in", "in"]),
     function enable (buffer) {
 
-        // buffer.document.alert("test");
-        // var elem = buf.document.querySelector("#top_search_form input[name=q]");
-
+        // buffer.alert("asfsdf");
+        correctlink(buffer.document);
         for each (var c in google_search_results_link_commands) {
             buffer.default_browser_object_classes[c] =
                 browser_object_google_search_results_links;
@@ -91,6 +99,3 @@ define_page_mode("google-search-results-mode",
 page_mode_activate(google_search_results_mode);
 
 provide("google-search-results");
-
-
-
