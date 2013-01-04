@@ -132,3 +132,10 @@ read_url_handler_list = [read_url_make_default_webjump_handler("lucky")];
 // http://www.surf-proxy.de/index.php?q=http%3A%2F%2Fconkeror.org%2FContentHandlers
 content_handlers.set("application/pdf", content_handler_prompt);
 
+
+//http://conkeror.org/NoScript
+require("noscript");
+// After performing the above require, a function M-x ns-toggle-temp
+// is defined, which will enable/disable javascript for the current
+// site/page after prompting for confirmation.
+

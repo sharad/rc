@@ -75,6 +75,8 @@ define_webjump("cfile",
 add_delicious_webjumps("sh4r4d");
 define_webjump("tag",
                "http://del.icio.us/sh4r4d/%s");
+define_webjump("search/del",
+               "http://delicious.com/search?p=%s");
 // webjumps -sharad
 define_webjump("blank",
                "about:blank");
@@ -788,8 +790,32 @@ define_webjump(
 define_webjump(
     "review/mouthshut",
     "http://www.mouthshut.com/search/prodsrch.aspx?data=%s&type=&p=0");
+
+define_webjump(
+    "review/phone/gsmarena",
+    "http://www.gsmarena.com/results.php3?sQuickSearch=yes&sName=%s");
+
+define_webjump(
+    "review/phone/phonearena",
+    "http://www.phonearena.com/search/term/%s");
 //}}
 
+
+//{{
+define_webjump(
+    "price/mysmartprice",
+    "http://www.mysmartprice.com/msp/findprice.php?title=%s&isbn=-1");
+//}}
+
+//{{
+define_webjump(
+    "phone/ispyprice",
+    "http://www.ispyprice.com/search/%s/");
+
+define_webjump(
+    "phone/smartprix",
+    "http://www.smartprix.com/finder.php?q=%s");
+//}}
 
 //{{Phone Stuff
 define_webjump(
@@ -874,4 +900,5 @@ define_webjump(
     $argument = 'optional')});
 
 //}}
+
 
