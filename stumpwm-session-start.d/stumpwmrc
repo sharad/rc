@@ -16,6 +16,18 @@ else
 fi
 
 
+ /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
+
+
+if [ -x  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] ; then
+    pgrep gnome-settings ||  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &!
+elif [ -x /usr/libexec/polkit-gnome-authentication-agent-1 ] ; then
+    pgrep gnome-settings || /usr/libexec/polkit-gnome-authentication-agent-1 &!
+else
+    whence -p polkit-gnome-authentication-agent-1 &&
+    pgrep polkit-gnome || polkit-gnome-authentication-agent-1 &!
+fi
+
 
 pgrep nm-applet || nm-applet --sm-disable &!
 
