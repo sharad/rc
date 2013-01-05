@@ -42,13 +42,16 @@
            (not (getenv "P4CONFIG")))
       (setenv "P4CONFIG" ".p4conf"))
 
+  (defun login-to-perforce ()
+    (if (and
+         enable-p4-login
+         sharad-in-office-with-perforce)
+        (unless (shell-command-no-output "p4 user -o")
+          (shell-command-no-output "zenity --password | p4 login"))))
+
   (defun office-activate ()
     (let ((file (buffer-file-name)))
-      (if (and
-           enable-p4-login
-           sharad-in-office-with-perforce)
-          (unless (shell-command-no-output "p4 user -o")
-            (shell-command-no-output "zenity --password | p4 login")))
+      (login-to-perforce)
       (when (and file
                  (with-timeout (4 nil) (vc-p4-registered file)))
           ;; if file is handled by perforce than assume it is

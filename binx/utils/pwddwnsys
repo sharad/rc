@@ -3,39 +3,55 @@
 
 
 function main() {
-
-
-
+    interval=10m
+    action=pm-hibernate
     process_arg $@
+
+    if ! zenity --question --timeout=20 --text="Do you want system to $action after ${interval}?" ; then
+        rm -f $enable_file;
+        notify $pgm disabled;
+        exit 0;
+    else
+        notify $pgm will $action after $interval;
+    fi
+
+    poweroffsys
 
 }
 
 function poweroffsys() {
+    sleep $interval
+
     if [ -e $enable_file ] ; then
-        sudo poweroff
+        if [ -z "$noaction" ] ; then
+            sudo $action
+        else
+            notify sudo poweroff
+        fi
     else
-        notify no poweringoff system.
+        notify not poweringoff system.
     fi
 }
 
 function process_arg() {
 
     enable_file=~/.var/comm/disable/$pgm
-    set -- $(getopt -n $pgm -o hscivweg -- $@)
+    set -- $(getopt -n $pgm -o hscivwent:a: -- $@)
     while [ $# -gt 0 ]
     do
         case $1 in
-            (-a) eval account=$2; shift;;
+            (-t) eval interval=$2; shift;;
+            (-a) eval action=$2; shift;;
+            (-n) noaction=1;;
             (-i) interactive=1;;
             (-v) verbose=1;;
-            (-g) poweroffsys ;;
             (-c)
                  if mkdir -p $(dirname $enable_file); touch $enable_file ; then
                      notify "will poweroff to avoid poweroff run \n\t\t $pgm -s "
                  fi
                  exit;;
             (-s) rm -f $enable_file;
-                 echo $pgm disabled;
+                 notify $pgm disabled;
                  exit;;
             (-w) warn=1;;
             (-e) error=1;;
@@ -96,4 +112,3 @@ function logmsg() {
 pgm=$(basename $0)
 
 main $@
-
