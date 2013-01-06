@@ -835,6 +835,14 @@ define_webjump("sitesearch", function (term) {
     return "javascript:window.location.href='http://www.google.com/search?sitesearch='+window.location.hostname+'&as_q=" + encodeURIComponent(term) + "';";
 }, $argument = "optional");
 
+define_webjump("search/similarsites", function (url) {
+    if (url) {
+        return "http://www.similarsites.com/site/" + url;
+    } else {
+        return "javascript:window.location.href='http://www.similarsites.com/site/'+window.location.hostname;";
+    }
+}, $argument = "optional");
+
 //}}
 
 
@@ -900,5 +908,3 @@ define_webjump(
     $argument = 'optional')});
 
 //}}
-
-
