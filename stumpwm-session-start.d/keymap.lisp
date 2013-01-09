@@ -332,6 +332,8 @@
              (kbd "n") "new-mail"
              (kbd "E") "editor")
 
+(define-key *top-map* (kbd "XF86Mail") "mail-reader")
+
 ;; Handling
 (fill-keymap *window-handling-map*
              (kbd "d") "disappear-window")

@@ -136,14 +136,17 @@ XYEOF
 fi
 
 
-if [ "x$lock" != "x" ] ; then
-    echo lock $lock >&2
-    echo SDFDS >&2
-    pgrep pidgin && purple-remote 'setstatus?status=away&message=Away'
-    xtrlock
-    pgrep pidgin && purple-remote 'setstatus?status=away&message='
+lockstatus=away
+if [ "$HOST" = "lispm.genera.net" ] ; then
+    unlockstatus=away
 else
-    echo else lock $lock >&2
+    unlockstatus=online
+fi
+
+if [ "x$lock" != "x" ] ; then
+    pgrep pidgin && purple-remote 'setstatus?status=$lockstatus&message=Away'
+    xtrlock
+    pgrep pidgin && purple-remote 'setstatus?status=$unlockstatus&message='
 fi
 
 
