@@ -4,8 +4,20 @@
 
 
 
-Xautolock.locker: alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=ifelse(esyscmd(echo -n $HOST),SETUP_office_hostname,available,away)&message='
-xautolock*locker: alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=ifelse(esyscmd(echo -n $HOST),SETUP_office_hostname,available,away)&message='
+!! Xautolock.locker: alarm -s ; purple-remote 'setstatus?status=away&message=Away' ; xtrlock ; purple-remote 'setstatus?status=ifelse(esyscmd(echo -n $HOST),SETUP_office_hostname,available,away)&message='
+!! xautolock*locker: alarm -s ; purple-remote 'setstatus?status=away&message=Away' ; xtrlock ; purple-remote 'setstatus?status=ifelse(esyscmd(echo -n $HOST),SETUP_office_hostname,available,away)&message='
+Xautolock.locker: alarm -l ;
+xautolock*locker: alarm -l ;
+Xautolock.corners:	0000
+Xautolock.noclose:	true
+!! Xautolock.notifier:	ubuntu-sharad = taj
+Xautolock.notify:	60
+Xautolock.time:	7
+xautolock*noclose:	true
+!! xautolock*notifier:	ubuntu-sharad = taj
+xautolock*notify:	60
+xautolock*time:	7
+xautolock.corners:	0000
 !! Xautolock.locker: xlock -mode blank -mousemotion
 !! options are xtrlock xdaliclock xlock slock xnlock
 !! timeout of 3 mins before locking
@@ -35,5 +47,3 @@ xautolock*notifier: [ esyscmd(echo -n $HOST) = taj ]
 
 Xlock.mode: blank
 Xlock.mousemotion: on
-
-

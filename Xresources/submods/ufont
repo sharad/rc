@@ -86,12 +86,6 @@ XTerm_color*background:	Black
 XTerm_color*cursorColor:	Orchid
 XTerm_color*foreground:	light grey
 XTerm_color*reverseVideo:	false
-Xautolock.corners:	0000
-Xautolock.locker:	alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=away&message='
-Xautolock.noclose:	true
-Xautolock.notifier:	ubuntu-sharad = taj
-Xautolock.notify:	60
-Xautolock.time:	7
 Xft.antialias:	1
 Xft.dpi:	96
 Xft.hinting:	1
@@ -105,12 +99,6 @@ emacs*ttyModes:	intr ^c erase  susp ^@ dsusp ^@ kill ^u eof ^d
 urxvt*font:	xft:DejaVu Sans Mono, Lohit Nepali:style=Regular, Lohit Konkani:style=Regular, Sarai:style=Regular, Lohit Marathi:style=Regular, Samanata:style=Regular, gargi:style=Medium, Samyak Devanagari:style=Regular, Nakula:style=Regular, Lohit Kashmiri:style=Regular, Chandas:style=Regular, Lohit Maithili:style=Regular, Lohit Hindi:style=Regular, FreeSans:style=Medium,нормален,obyčejné,normal,Mittel,µεσαία,Normaali,Normál,Medio,Gemiddeld,Odmiana Zwykła,Обычный,Normálne,menengah,прямій,Navadno,vidējs,normalusis,vừa,Arrunta, FreeSerif:style=Medium,нормален,obyčejné,normal,Mittel,µεσαία,Normaali,Normál,Normale,Gemiddeld,odmiana zwykła,Обычный,Normálne,ปกติ,menengah,прямій,Navadno,vidējs,normalusis,vừa,Arrunta, Sahadeva:style=Regular, Lohit Sindhi:style=Regular
 urxvt.keysym.Control-Shift-Down:	perl:font:decrement
 urxvt.keysym.Control-Shift-Up:	perl:font:increment
-xautolock*locker:	alarm && purple-remote 'setstatus?status=away&message=Away' && xtrlock && purple-remote 'setstatus?status=away&message='
-xautolock*noclose:	true
-xautolock*notifier:	ubuntu-sharad = taj
-xautolock*notify:	60
-xautolock*time:	7
-xautolock.corners:	0000
 xman*manualFontNormal:	8x16
 xterm*AutoRaise:	on
 xterm*ScrollBar:	off

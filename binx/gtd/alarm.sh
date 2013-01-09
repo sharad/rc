@@ -21,7 +21,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##
 
-
+echo "$@" >&2
 
 # defaults
 playlist=myfav
@@ -38,7 +38,6 @@ max=
 
 
 # cli arg processing
-set -- $(getopt nh:z:q: "$@")
 sleep_hours=7
 snooze=10
 queue_name=d
@@ -49,10 +48,11 @@ max=
 
 
 # cli arg processing
-set -- $(getopt nh:z:q:p: "$@")
+set -- $(getopt "lnh:z:q:p:" "$@")
 while [ $# -gt 0 ]
 do
     case "$1" in
+        (-l) lock=1;;
         (-p) playlist="$2"; shift;;
         (-h) sleep_hours="$2"; shift;;
         (-z) snooze="$2"; shift;;
@@ -134,5 +134,17 @@ EOF
 XYEOF
 
 fi
+
+
+if [ "x$lock" != "x" ] ; then
+    echo lock $lock >&2
+    echo SDFDS >&2
+    pgrep pidgin && purple-remote 'setstatus?status=away&message=Away'
+    xtrlock
+    pgrep pidgin && purple-remote 'setstatus?status=away&message='
+else
+    echo else lock $lock >&2
+fi
+
 
 true
