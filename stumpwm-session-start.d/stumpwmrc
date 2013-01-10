@@ -16,7 +16,6 @@ else
 fi
 
 
- /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
 
 
 if [ -x  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] ; then
@@ -29,15 +28,19 @@ else
 fi
 
 
+pgrep gnome-keyring-d || gnome-keyring-daemon --start &!
+
+DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/lib/gnome-online-accounts/goa-daemon &!
 pgrep nm-applet || nm-applet --sm-disable &!
 
 
 # pgrep empathy ||
 # DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
 
-# syndaemon -i 1 -d
-
-synclient TouchpadOff=1
+if whence -p syndaemon ; then
+    syndaemon -i 1 -d &!
+    whence -p synclient && synclient TouchpadOff=1 &!
+fi
 
 
 foreach prog (
@@ -51,12 +54,10 @@ foreach prog (
     pidgin
     synergys
     ) {
-        echo A DBUS >&2
-        pgrep -l dbus-daemon >&2
-
-        echo $prog
-        whence -p $prog &&
-        pgrep $prog[0,15] || $prog &!
+        echo starting $prog >&2
+        if whence -p $prog ; then
+            pgrep $prog[0,15] || $prog &!
+        fi
 
         echo B DBUS >&2
         pgrep -l dbus-daemon >&2
@@ -64,15 +65,5 @@ foreach prog (
     }
 
 
-echo 1 DBUS >&2
-pgrep -l dbus-daemon  >&2
-
-pgrep gnome-keyring-d || gnome-keyring-daemon --start
-
-DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/lib/gnome-online-accounts/goa-daemon
-
-
-echo 2 DBUS >&2
-pgrep -l dbus-daemon  >&2
-
 # ~/bin/syncimap -r               # enable, done in rsetup/x/run
+echo stumpwmrc end here >&2
