@@ -38,7 +38,8 @@ SHELL=/bin/zsh
 45 08 * * * spd-say -C
 
 50 08 * * * DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys -c
-00 09 * * * ~/bin/pwddwnsys -g
+00 09 * * * DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys -g
+20 23 * * * DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION  ~/bin/pwddwnsys
 
 # 00 06 * * * ~/bin/pwddwnsys -g
 

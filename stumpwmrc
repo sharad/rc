@@ -337,7 +337,7 @@
        (probe-file paradise)
        (probe-file (getenv "HOME")))))
 
-(start-gnome-components)
+(start-wm-components)
 (sleep 2)
 (set-profile :myprofile)
 
@@ -349,4 +349,3 @@
 ;; comment-start: ";; "  **
 ;; comment-end:"**" **
 ;; End: **
-

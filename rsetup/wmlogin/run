@@ -1,4 +1,6 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
+# give access to mpd
+
 
 [ -x /usr/libexec/at-spi-registryd ] && DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/libexec/at-spi-registryd &!
 
@@ -54,9 +56,12 @@ foreach prog (
     pidgin
     synergys
     ) {
-        echo starting $prog >&2
-        if whence -p $prog ; then
-            pgrep $prog[0,15] || $prog &!
+        if whence -p $prog && ! pgrep $prog[0,15] ; then
+            $prog &!
+            echo started $prog >&2
+	    pgrep $prog[0,15]
+        else
+            echo Not starting $prog >&2
         fi
 
         echo B DBUS >&2
@@ -67,3 +72,8 @@ foreach prog (
 
 # ~/bin/syncimap -r               # enable, done in rsetup/x/run
 echo stumpwmrc end here >&2
+
+
+
+[ -r ~/.rsetup/wmlogin/run.d/${HOST//.*} ] &&
+~/.rsetup/wmlogin/run.d/${HOST//.*}

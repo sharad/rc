@@ -7,7 +7,7 @@ function main() {
     action=pm-hibernate
     process_arg $@
 
-    if ! zenity --question --timeout=20 --text="Do you want system to $action after ${interval}?" ; then
+    if ! yad --image "dialog-question" --title "Alert" --button=gtk-yes:0 --button=gtk-no:1  --timeout=20 --text="Do you want system to $action after ${interval}?" ; then
         rm -f $enable_file;
         notify $pgm disabled;
         exit 0;

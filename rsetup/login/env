@@ -25,7 +25,7 @@ EOF
     fi
 
 if [ "${SSH_AUTH_SOCK}x" != "x" ]; then
-    cat <<EOF > ~/.emacs.d/ssh-agent-$(hostname -f).el
+    cat <<EOF > ~/.emacs.d/ssh-agent-$(hostname).el
 (setenv "SSH_AUTH_SOCK"  "${SSH_AUTH_SOCK}" )
 (setenv "SSH_AGENT_PID"  "${SSH_AGENT_PID}" )
 EOF
