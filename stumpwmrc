@@ -239,7 +239,7 @@
 (message "Loaded.... 1")
 
 ;; Get rid of cursor initially
-(banish-pointer)
+; (banish-pointer)
 (message "Loaded.... 2")
 
 ;; (if (init-mpd-connection)
@@ -331,14 +331,21 @@
 ;;}}
       )
 
+
+
+(sleep 2)
+
+(start-wm-components)
+
+(sleep 2)
+
+
 (cd
  (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
    (if (probe-file paradise)
        (probe-file paradise)
        (probe-file (getenv "HOME")))))
 
-(start-wm-components)
-(sleep 2)
 (set-profile :myprofile)
 
 
