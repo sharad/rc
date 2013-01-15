@@ -1,4 +1,11 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
+# give access to mpd
+
+if whence xte ; then
+    xte <<EOF
+mousemove 42 42
+EOF
+fi
 
 [ -x /usr/libexec/at-spi-registryd ] && DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/libexec/at-spi-registryd &!
 
@@ -13,31 +20,43 @@ elif [ -x /usr/libexec/gnome-settings-daemon ] ; then
 else
     whence -p gnome-settings-daemon &&
     pgrep gnome-settings || gnome-settings-daemon &!
+    sleep 1s;
 fi
 
 
- /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
 
 
 if [ -x  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] ; then
     pgrep gnome-settings ||  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &!
+    sleep 1s;
 elif [ -x /usr/libexec/polkit-gnome-authentication-agent-1 ] ; then
     pgrep gnome-settings || /usr/libexec/polkit-gnome-authentication-agent-1 &!
+    sleep 1s;
 else
     whence -p polkit-gnome-authentication-agent-1 &&
     pgrep polkit-gnome || polkit-gnome-authentication-agent-1 &!
+    sleep 1s;
 fi
 
 
+pgrep gnome-keyring-d || gnome-keyring-daemon --start &!
+sleep 1s;
+
+DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/lib/gnome-online-accounts/goa-daemon &!
+sleep 1s;
 pgrep nm-applet || nm-applet --sm-disable &!
+sleep 1s;
 
 
 # pgrep empathy ||
 # DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
 
-# syndaemon -i 1 -d
-
-synclient TouchpadOff=1
+if whence -p syndaemon ; then
+    syndaemon -i 1 -d &!
+    sleep 1s;
+    whence -p synclient && synclient TouchpadOff=1 &!
+    sleep 1s;
+fi
 
 
 foreach prog (
@@ -51,28 +70,29 @@ foreach prog (
     pidgin
     synergys
     ) {
-        echo A DBUS >&2
-        pgrep -l dbus-daemon >&2
-
-        echo $prog
-        whence -p $prog &&
-        pgrep $prog[0,15] || $prog &!
-
-        echo B DBUS >&2
-        pgrep -l dbus-daemon >&2
-
+        if whence -p $prog && ! pgrep $prog[0,15] ; then
+            $prog &!
+            echo started $prog >&2
+	    pgrep $prog[0,15]
+            sleep 1s;
+        else
+            echo Not starting $prog >&2
+        fi
     }
 
 
-echo 1 DBUS >&2
-pgrep -l dbus-daemon  >&2
+if whence xte ; then
+    xte <<EOF
+mousemove 42 42
+EOF
+fi
 
-pgrep gnome-keyring-d || gnome-keyring-daemon --start
-
-DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/lib/gnome-online-accounts/goa-daemon
-
-
-echo 2 DBUS >&2
-pgrep -l dbus-daemon  >&2
+xautolock -locknow &!
 
 # ~/bin/syncimap -r               # enable, done in rsetup/x/run
+echo stumpwmrc end here >&2
+
+
+
+[ -r ~/.rsetup/wmlogin/run.d/${HOST//.*} ] &&
+~/.rsetup/wmlogin/run.d/${HOST//.*}

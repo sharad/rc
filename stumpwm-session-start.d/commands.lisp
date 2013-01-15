@@ -597,11 +597,11 @@
 (defcommand sys-reboot () ()
   (run-shell-command "reb00t"))
 
-(defcommand start-gnome-components () ()
+(defcommand start-wm-components () ()
   (run-shell-command
    (concat
     (getenv "HOME")
-    "/.stumpwm-session-start.d/stumpwmrc")))
+    "/.rsetup/wmlogin/run")))
 
 (defcommand bye () ()
   (in.net.sharad.pa-backend-emacs-planner::emacs-eval-nooutput "(close-all-frames)")
@@ -609,7 +609,7 @@
   (run-shell-command
    (concat
     (getenv "HOME")
-    "/.stumpwm-session-start.d/stumpwm-logout"))
+    "/.rsetup/wmlogout/run"))
   (quit))
 
 

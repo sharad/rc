@@ -42,6 +42,8 @@
            (not (getenv "P4CONFIG")))
       (setenv "P4CONFIG" ".p4conf"))
 
+  (require 'host-info)
+
   (defun login-to-perforce ()
     (if (and
          enable-p4-login

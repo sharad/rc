@@ -1,8 +1,22 @@
 #!/usr/bin/env zsh
 # give access to mpd
 
+# whence -p xrdb &&
+# xrdb \
+#     -cpp 'm4 -I ~/.Xresources' \
+#     -merge ~/.Xresource/init  # should use m4
+
+whence -p xrdb &&
+m4 -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init | xrdb -merge -
 
 xterm -e 'ish -s bash less ~/.xsession-errors' &!
+
+if whence xte ; then
+    xte <<EOF
+mousemove 42 42
+EOF
+fi
+
 
 ~/bin/syncimap -r               # it only get secinfo from x keyring; enable
 
@@ -36,13 +50,6 @@ if [ $DISPLAY ] ; then
             xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
         fi
     fi
-    # whence -p xrdb &&
-    # xrdb \
-    #     -cpp 'm4 -I ~/.Xresources' \
-    #     -merge ~/.Xresource/init  # should use m4
-
-    whence -p xrdb &&
-    m4 -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init | xrdb -merge -
 
     whence -p urxvtd &&
     pgrep urxvtd ||
@@ -88,6 +95,8 @@ if [ -e ~/.stumpwm.d/debug-output.txt ] ; then
     command rm -f ~/.stumpwm.d/debug-output.txt
 fi
 
+xautolock -locknow &!
+
 
 # gconftool -s /apps/mail-notification/commands/new-mail/command "$EDITOR -e '(gnus)'"
 # gconftool -s /apps/mail-notification/commands/new-mail/enabled true
@@ -95,6 +104,3 @@ fi
 
 [ -r ~/.rsetup/x/run.d/${HOST//.*} ] &&
 ~/.rsetup/x/run.d/${HOST//.*}
-
-
-

@@ -1,5 +1,4 @@
-#!/bin/zsh
-
+#!/usr/bin/env zsh
 
 
 [ -x /usr/libexec/at-spi-registryd ] && pkill at-spi-registry
@@ -48,3 +47,8 @@ foreach prog (
 
 [  -x ~/.rsetup/xlogout/run ] &&
 ~/.rsetup/xlogout/run
+
+
+
+[ -r ~/.rsetup/wmlogout/run.d/${HOST//.*} ] &&
+~/.rsetup/wmlogout/run.d/${HOST//.*}

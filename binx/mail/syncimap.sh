@@ -65,12 +65,14 @@ function process_arg() {
                      notify $pgm is already disabled;
                 else
                  if mkdir -p $(dirname $disable_file); touch $disable_file ; then
+                     sync
                      notify $pgm is disabled;
                  fi
                 fi
                 exit;;
             (-r)
                 if [ -f $disable_file ] ; then
+                    sync
                     rm -f $disable_file && notify $pgm is enabled;
                 else
                     notify $pgm is already enabled;
@@ -153,4 +155,3 @@ function gnome-keyring-attach() {
 pgm=$(basename $0)
 
 main $@
-

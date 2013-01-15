@@ -421,7 +421,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
     # See who all are present and what they are doing.
 
     # w -l                # what all people is doing.
-    w -hl                # what all people is doing.
+    w -huf                # what all people is doing.
 
     echo # insert a empty line
 
@@ -446,5 +446,3 @@ fi
 
 # Workplace
 [ -r ~/.$WORKPLACE.zshrc ] && source ~/.$WORKPLACE.zshrc || :
-
-
