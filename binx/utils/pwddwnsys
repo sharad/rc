@@ -3,17 +3,21 @@
 
 
 function main() {
-    interval=10m
-    action=pm-hibernate
+
     process_arg $@
 
-    if ! yad --image "dialog-question" --title "Alert" --button=gtk-yes:0 --button=gtk-no:1  --timeout=20 --text="Do you want system to $action after ${interval}?" ; then
-        rm -f $enable_file;
-        notify $pgm disabled;
-        exit 0;
-    else
-        notify $pgm will $action after $interval;
-    fi
+    # ask
+    yad --image "dialog-question" --title "Alert"  --button=gtk-no:1 --button=gtk-yes:0  --timeout=$timeout --text="Do you want system to $action after ${interval}?" ;
+
+    retval=$?
+
+    case $retval in
+        (0|70) notify $pgm will $action after $interval;;
+        (*)
+            rm -f $disable_file;
+            notify $pgm disabled;
+            exit 0;;
+    esac
 
     poweroffsys
 
@@ -22,35 +26,45 @@ function main() {
 function poweroffsys() {
     sleep $interval
 
-    if [ -e $enable_file ] ; then
-        if [ -z "$noaction" ] ; then
-            sudo $action
-        else
-            notify sudo poweroff
-        fi
-    else
+    if [ -e $disable_file ] ; then
         notify not poweringoff system.
+    else
+        if [ -z "$noaction" ] ; then
+            [ -n "$debug" ] && notify sudo $action if noaction $noaction
+            [ -n "$debug" ] || sudo $action
+        else
+            [ -n "$debug" ] && notify sudo $action else noaction $noaction
+            [ -n "$debug" ] || notify sudo $action
+        fi
     fi
 }
 
 function process_arg() {
 
-    enable_file=~/.var/comm/disable/$pgm
-    set -- $(getopt -n $pgm -o hscivwent:a: -- $@)
+    disable_file=~/.var/comm/disable/$pgm
+    interval=10m
+    timeout=20
+    action=pm-hibernate
+    unset debug
+    unset noaction
+
+    set -- $(getopt -n $pgm -o dhscivwent:a:o: -- $@)
     while [ $# -gt 0 ]
     do
         case $1 in
+            (-o) eval timeout=$2; shift;;
             (-t) eval interval=$2; shift;;
             (-a) eval action=$2; shift;;
+            (-d) debug=1;;
             (-n) noaction=1;;
             (-i) interactive=1;;
             (-v) verbose=1;;
             (-c)
-                 if mkdir -p $(dirname $enable_file); touch $enable_file ; then
+                 if mkdir -p $(dirname $disable_file); touch $disable_file ; then
                      notify "will poweroff to avoid poweroff run \n\t\t $pgm -s "
                  fi
                  exit;;
-            (-s) rm -f $enable_file;
+            (-s) rm -f $disable_file;
                  notify $pgm disabled;
                  exit;;
             (-w) warn=1;;
@@ -70,8 +84,8 @@ function help() {
             -a: eval account=$2; shift;;
             -i: interactive=1;;
             -v: verbose=1;;
-            -d: touch $enable_file;;
-            -r: rm -f $enable_file;;
+            -d: touch $disable_file;;
+            -r: rm -f $disable_file;;
             -w: warn=1;;
             -e: error=1;;
             -h: help;;
