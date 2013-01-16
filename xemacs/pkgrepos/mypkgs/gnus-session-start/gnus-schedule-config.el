@@ -50,19 +50,19 @@
 
   ;; using icalendar.el wotrking
 
-  (require 'mm-decode)
-  (defun my-save-icalendar (handle)
-    (let ((diary "~/.Organize/emacs/diary/outlook)"))
-      (when (and (equal (car (mm-handle-type handle)) "text/calendar")
-                 (gnus-mime-view-part-internally handle)
-                 (mm-with-part handle (icalendar-import-buffer diary)))
-                 (message "Saved calendar entry in %s" diary))))
+  (deh-require-maybe mm-decode
+    (defun my-save-icalendar (handle)
+      (let ((diary "~/.Organize/emacs/diary/outlook)"))
+        (when (and (equal (car (mm-handle-type handle)) "text/calendar")
+                   (gnus-mime-view-part-internally handle)
+                   (mm-with-part handle (icalendar-import-buffer diary)))
+          (message "Saved calendar entry in %s" diary))))
 
   (setq gnus-article-mime-part-function 'my-save-icalendar)
 
   (add-hook
    'gnus-mime-multipart-functions
-   '("text/calendar" . my-save-icalendar)))
+   '("text/calendar" . my-save-icalendar))))
 
 
 
