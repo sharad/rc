@@ -63,6 +63,10 @@ Xft.dpi: 97
 Xft.hinting: 1
 Xft.hintstyle: hintmedium
 
+!! YeahConsole
+include(submods/general)
+
+
 !! Emacs
 include(submods/emacs)
 
@@ -77,5 +81,3 @@ include(submods/urxvt)
 
 !! YeahConsole
 include(submods/yeahconsole)
-
-
