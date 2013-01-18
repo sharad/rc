@@ -212,27 +212,26 @@ function restoresshkeys() {
 function screenssh {
     if (( $# >= 1 )) ; then
         machine=$1
-        session=$2
-        if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub ; then
+        sessionarg=$2
+        session=${sessionarg:-default}
 
-            if [ ! "$session" ] ; then
-                if ! ssh $machine screen -x $session -ls | grep 'No Sockets' ; then
-                    session=$(ssh $machine screen -x $session -ls | sed -n 2p | awk '{ print $1 }')
-                else
-                    session=default
-                fi
+        if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub ; then
+            if [ "$sessionarg" ] && ! ssh $machine screen -x $sessionarg -ls | grep 'No Sockets' 1>&2 > /dev/null ; then
+                session=$(ssh $machine screen -x $sessionarg -ls | sed -n 2p | awk '{ print $1 }')
             fi
+
             if [ "$session" ] ; then
-                echo ssh -t $machine screen -x $session
+                echo ssh -t $machine screen -x $session >&2
                 ssh -t $machine screen -x $session  ||
                 ssh -t $machine screen -S $session
             else
-                echo No session
+                echo No session $sessionarg creating it. >&2
             fi
-
+        else
+            echo Not able to set the private in ssh-agent. >&2
         fi
     else
-        echo no file name
+        echo no server name >&2
     fi
 }
 

@@ -121,10 +121,9 @@
                 (progn
                   (if force
                       (tramp-cleanup-all-connections))
-                  (message "loading %s" agent-file)
                   (load agent-file t t)
                   (ssh-agent-add-key)
-                  )
+                  (message "loading %s" agent-file))
                 (message "Unable to find agent file."))
             (ssh-agent-add-key)))))
 
