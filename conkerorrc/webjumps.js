@@ -883,6 +883,9 @@ define_webjump("downforeveryoneorjustme", "http://www.downforeveryoneorjustme.co
 define_webjump("urbandictionary", "http://www.urbandictionary.com/define.php?term=%s"); // urban dictionary
 define_webjump("rts", "http://rts.rs");             // RTS
 define_webjump("facebook", "http://www.facebook.com");      // facebook homepage
+define_webjump("mobile/trace/bharatiyamobile", "http://trace.bharatiyamobile.com/?numb=%s");
+define_webjump("mobile/trace/store", "http://tracker.mobileringtonesstore.com/mobiletracker.php?no=%s");
+define_webjump("mobile/trace/india", "http://indiatrace.com/trace-mobile-number-location/trace-mobile-number-location.php?N=%s");
 
 //{{
 define_webjump("search/auto", "http://lmgtfy.com/?q=%s");
