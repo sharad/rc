@@ -5,6 +5,8 @@
 prog=$(basename $0)
 
 
+debug=1
+
 typeset -A args
 
 args[-f]="~/.emacs.d/server/general"
@@ -32,8 +34,9 @@ foreach f ("$@" ) {
     [ -f $f ] && filegiven=
 }
 
-if which emacs && which emacsclient ; then
-    (( ${+debug}) ) && echo eval emacsclient ${(kv)args} ${filegiven--c} "$@"
+if which emacs >& /dev/null && which emacsclient >& /dev/null ; then
+    (( ${+debug} )) &&
+    echo eval emacsclient ${(kv)args} ${filegiven--c} "$@"
     eval emacsclient ${(kv)args} ${filegiven--c} "$@"
 elif which sensible-editor ; then
     sensible-editor "$@"
