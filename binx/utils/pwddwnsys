@@ -12,9 +12,11 @@ function main() {
     retval=$?
 
     case $retval in
-        (0|70) notify $pgm will $action after $interval;;
+        (0|70)
+            touch $enable_file;
+            notify $pgm will $action after $interval;;
         (*)
-            rm -f $disable_file;
+            rm -f $enable_file;
             notify $pgm disabled;
             exit 0;;
     esac
@@ -26,9 +28,7 @@ function main() {
 function poweroffsys() {
     sleep $interval
 
-    if [ -e $disable_file ] ; then
-        notify not poweringoff system.
-    else
+    if [ -e $enable_file ] ; then
         if [ -z "$noaction" ] ; then
             [ -n "$debug" ] && notify sudo $action if noaction $noaction
             [ -n "$debug" ] || sudo $action
@@ -36,12 +36,14 @@ function poweroffsys() {
             [ -n "$debug" ] && notify sudo $action else noaction $noaction
             [ -n "$debug" ] || notify sudo $action
         fi
+    else
+        notify not poweringoff system.
     fi
 }
 
 function process_arg() {
 
-    disable_file=~/.var/comm/disable/$pgm
+    enable_file=~/.var/comm/disable/$pgm
     interval=10m
     timeout=20
     action=pm-hibernate
@@ -60,11 +62,11 @@ function process_arg() {
             (-i) interactive=1;;
             (-v) verbose=1;;
             (-c)
-                 if mkdir -p $(dirname $disable_file); touch $disable_file ; then
+                 if mkdir -p $(dirname $enable_file); touch $enable_file ; then
                      notify "will poweroff to avoid poweroff run \n\t\t $pgm -s "
                  fi
                  exit;;
-            (-s) rm -f $disable_file;
+            (-s) rm -f $enable_file;
                  notify $pgm disabled;
                  exit;;
             (-w) warn=1;;
@@ -84,8 +86,8 @@ function help() {
             -a: eval account=$2; shift;;
             -i: interactive=1;;
             -v: verbose=1;;
-            -d: touch $disable_file;;
-            -r: rm -f $disable_file;;
+            -c: touch $enable_file;;
+            -s: rm -f $enable_file;;
             -w: warn=1;;
             -e: error=1;;
             -h: help;;
