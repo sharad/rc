@@ -33,7 +33,7 @@ esac
 foreach f ("$@" ) {
     [ -f $f ] && filegiven=
 }
-
+]
 if which emacs >& /dev/null && which emacsclient >& /dev/null ; then
     (( ${+debug} )) &&
     echo eval emacsclient ${(kv)args} ${filegiven--c} "$@"
