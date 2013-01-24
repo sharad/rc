@@ -47,6 +47,23 @@ volume_low=70   # 45
 max=
 
 
+
+
+function state_locked () {
+    pgrep pidgin && purple-remote 'setstatus?status=$lockstatus&message=Away'
+    whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -as
+}
+
+function state_unlocked () {
+    whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -AS
+    pgrep pidgin && purple-remote 'setstatus?status=$unlockstatus&message='
+}
+
+
+
+
+
+
 # cli arg processing
 set -- $(getopt "lnh:z:q:p:" "$@")
 while [ $# -gt 0 ]
@@ -144,11 +161,9 @@ else
 fi
 
 if [ "x$lock" != "x" ] ; then
-    pgrep pidgin && purple-remote 'setstatus?status=$lockstatus&message=Away'
-    whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -as
+    state_locked
     xtrlock
-    whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -AS
-    pgrep pidgin && purple-remote 'setstatus?status=$unlockstatus&message='
+    state_unlocked
 fi
 
 
