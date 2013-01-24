@@ -322,4 +322,8 @@ The indirect buffer can have another major mode."
   (interactive)
   (set-input-method "devanagari-itrans" t))
 
+
+(deh-require-maybe imenu-tree
+  (setq imenu-tree-windata '(frame right 0.2 delete)))
+
 (provide 'misc-config)

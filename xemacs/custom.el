@@ -4,10 +4,10 @@
 
 ;;{{{ custom-set-variables
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(auto-compression-mode t nil (jka-compr))
  '(auto-insert (quote other))
  '(auto-insert-alist (quote ((("\\.\\([Hh]\\|hh\\|hpp\\)\\'" . "C / C++ header") . ["template.h" c++-mode my/autoinsert-yas-expand]) (("\\.\\([C]\\|cc\\|cpp\\)\\'" . "C++ source") . ["template.cc" my/autoinsert-yas-expand]) (("\\.sh\\'" . "Shell script") . ["template.sh" my/autoinsert-yas-expand]) (("\\.el\\'" . "Emacs Lisp") . ["template.el" my/autoinsert-yas-expand]) (("\\.pl\\'" . "Perl script") . ["template.pl" my/autoinsert-yas-expand]) (("\\.pm\\'" . "Perl module") . ["template.pm" my/autoinsert-yas-expand]) (("\\.py\\'" . "Python script") . ["template.py" my/autoinsert-yas-expand]) (("[mM]akefile\\'" . "Makefile") . ["Makefile" my/autoinsert-yas-expand]) (("\\.tex\\'" . "TeX/LaTeX") . ["template.tex" my/autoinsert-yas-expand]))))
@@ -80,11 +80,10 @@
  '(planner-renumber-tasks-automatically t)
  '(planner-sections (quote ((tasks . "Tasks") (notes . "Notes") (diary . "Diary") (env . "Environment"))))
  '(planner-tasks-file-behavior (quote close))
- '(safe-local-variable-values (quote ((folded-file . t) (auto-fill-mode))))
+ '(safe-local-variable-values (quote ((office-mode . t) (flymake-run-in-place) (auto-save-default) (eval office-mode 1) (folded-file . t) (auto-fill-mode))))
  '(save-abbrevs t)
  '(save-place t nil (saveplace))
  '(scroll-conservatively 4)
- '(send-mail-function (quote sendmail-send-it))
  '(session-set-file-name-exclude-regexp "/\\.overview\\|.session\\|News/\\|\\.Organize/")
  '(session-use-package t)
  '(show-paren-mode t nil (paren))
@@ -105,10 +104,10 @@
 
 ;;{{{ custom-set-faces
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(background "blue")
  '(etask-face-day-marker ((((class color)) (:foreground "white"))))
  '(etask-face-normaltask ((((class color)) (:foreground "white"))))

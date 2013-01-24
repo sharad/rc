@@ -20,47 +20,6 @@
 ;; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ;;
 
-;;{{ from: http://www.gnu.org/software/emacs/manual/html_node/cl/
-(require 'cl)
-(defun* call-at-steps (&key (count 100) (micros 100) (fn 'next-line))
-  (loop repeat count do
-       (progn
-         (funcall fn)
-         (sit-for 0 micros)
-              )))
-
-(defun smooth-next-line ()
-  (interactive)
-  (call-at-steps :fn 'next-line))
-
-(defun smooth-forward-char ()
-  (interactive)
-  (call-at-steps :count 10000 :fn 'forward-char))
-
-(defun smooth-step (num key micros)
-  (interactive "p num: \nkkey: \nnmicrosecs: ")
-  ;; (let ((cmd (key-binding (read-key-sequence "safds: ") t)))
-  (let ((cmd (key-binding key t))
-        (num (if (> num 1) num 100))
-        (micros (if (> micros 1) micros 100))
-        )
-
-    ;; (message num)
-    (call-at-steps :count num :micros micros :fn cmd)))
-
-
-
-(defun smooth-read ()
-  (interactive)
-  (call-at-steps :micros 800 :fn '(lambda ()
-                       (forward-sentence)
-                       (speechd-speak-read-sentence)
-                                   )))
-
-
-
-;;}}
-
 
 ;; (defn (key-binding key t))
 
