@@ -145,7 +145,9 @@ fi
 
 if [ "x$lock" != "x" ] ; then
     pgrep pidgin && purple-remote 'setstatus?status=$lockstatus&message=Away'
+    whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -as
     xtrlock
+    whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -AS
     pgrep pidgin && purple-remote 'setstatus?status=$unlockstatus&message='
 fi
 

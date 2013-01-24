@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 
 
@@ -31,7 +31,7 @@ function poweroffsys() {
     if [ -e $enable_file ] ; then
         if [ -z "$noaction" ] ; then
             [ -n "$debug" ] && notify sudo $action if noaction $noaction
-            [ -n "$debug" ] || sudo $action
+            [ -n "$debug" ] || { sync ; sleep 7s ; sync ; sleep 2s ; sudo $action } # do sync as some time it crash
         else
             [ -n "$debug" ] && notify sudo $action else noaction $noaction
             [ -n "$debug" ] || notify sudo $action
