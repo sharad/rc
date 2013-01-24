@@ -37,12 +37,12 @@
 
 ;;{{ from: http://www.gnu.org/software/emacs/manual/html_node/cl/
 (require 'cl)
+
 (defun* call-at-steps (&key (count 100) (micros 100) (fn 'next-line))
   (loop repeat count do
        (progn
          (funcall fn)
-         (sit-for 0 micros)
-              )))
+         (sit-for 0 micros))))
 
 (defun smooth-next-line ()
   (interactive)
@@ -67,12 +67,10 @@
 
 (defun smooth-read ()
   (interactive)
-  (call-at-steps :micros 800 :fn '(lambda ()
-                       (forward-sentence)
-                       (speechd-speak-read-sentence)
+  (call-at-steps :micros 4800 :fn '(lambda ()
+                                   (forward-sentence)
+                                   ;; (speechd-speak-read-sentence)
                                    )))
-
-
 
 ;;}}
 
