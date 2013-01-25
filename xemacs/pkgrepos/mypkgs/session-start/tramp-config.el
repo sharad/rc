@@ -102,7 +102,7 @@
   (defun ssh-agent-add-key ()
     (require 'misc-config)
     (provide 'host-info)
-    (message "Calling update-ssh-agent > ssh-agent-add-key")
+    ;; (message "Calling update-ssh-agent > ssh-agent-add-key")
     (if (and
          (boundp 'ssh-key-file)
          ssh-key-file)
