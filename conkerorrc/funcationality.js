@@ -197,6 +197,7 @@ interactive("delicious-post-sel",
                     encodeURIComponent((yield I.minibuffer.read(
                         $prompt = "name (required): ",
                         $initial_value = I.buffer.top_frame.getSelection().toString())))+
+                    '&replace=yes' +
                     '&tags='+
                     encodeURIComponent((yield I.minibuffer.read(
                                             $prompt = "tags (space delimited): ",
@@ -282,6 +283,7 @@ interactive("delicious-post",
                     encodeURIComponent((yield I.minibuffer.read(
                         $prompt = "name (required): ",
                         $initial_value = desc))) +
+                    '&replace=yes' +
                     '&tags='+
                     encodeURIComponent((yield I.minibuffer.read(
                                             $prompt = "tags (space delimited): ",
@@ -363,6 +365,7 @@ interactive("delicious-post-link",
                         $initial_value = bo))) +
                     '&description=' +
                     encodeURIComponent((yield I.minibuffer.read($prompt = "name (required): " , $initial_value = desc))) +
+                    '&replace=yes' +
                     '&tags=' + encodeURIComponent((yield I.minibuffer.read(
                                                        $prompt = "tags (space delimited): ",
                                                        $completer = completer,
@@ -889,6 +892,8 @@ define_key(content_buffer_normal_keymap, "L", "search-clipboard-contents-doubleq
 // comment-start: "// "  **
 // comment-end:   "// "  **
 // End: **
+
+
 
 
 
