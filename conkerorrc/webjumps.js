@@ -395,6 +395,8 @@ define_webjump("news", "http://news.google.com/news/search?q=%s");
 
 define_webjump("codesearch", "http://www.google.com/codesearch?q=%s");
 
+define_webjump("code/fossies", "http://fossies.org/search?q=%s&rd=%2Ffresh%2F&sd=0&ud=%2F&ap=no&ca=no&dp=0&si=0&sn=1&ml=30&dml=3");
+
 // 2.10.2. Perl
 
 define_webjump("perldoc", "http://perldoc.perl.org/search.html?q=%s");
@@ -486,6 +488,10 @@ define_webjump("ubuntupkg", "http://packages.ubuntu.com/%s");
 define_webjump("ubuntufile", "http://packages.ubuntu.com/search?searchon=contents&keywords=%s&mode=path&arch=any");
 define_webjump("ubuntubugs", "http://launchpad.net/ubuntu/+source/%s");
 define_webjump("launchpad", "https://launchpad.net/+search?field.text=%s");
+
+
+define_webjump("soft/altvto", "http://alternativeto.net/SearchResult.aspx?search=%s");
+define_webjump("soft/osalto", "http://www.osalt.com/search?q=%s");
 
 // 2.14.3. Github search
 
@@ -911,3 +917,10 @@ define_webjump(
     $argument = 'optional')});
 
 //}}
+
+//{ Man Page
+define_webjump("search/man", "http://man.cx/%s");
+define_webjump("man", "http://man.cx/%s");
+//}
+
+
