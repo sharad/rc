@@ -72,6 +72,35 @@
                                    ;; (speechd-speak-read-sentence)
                                    )))
 
+
+
+
+
+(defvar *smooth-step-timer* nil)
+(setq *smooth-step-timer* nil)
+
+
+(defun smooth-reader (num key micros)
+  (interactive "p num: \nkkey: \nnmicrosecs: ")
+  ;; (let ((cmd (key-binding (read-key-sequence "safds: ") t)))
+  (let ((cmd (key-binding key t))
+        (num (if (> num 1) num 100))
+        (micros (if (> micros 1) micros 100)))
+
+  (unless *smooth-step-timer*
+      (setq *smooth-step-timer*
+            (run-with-idle-timer 1 t #'call-at-steps :count 100 :micros micros :fn cmd)))))
+
+
+(defun cancel-smooth-reader ()
+  (interactive)
+  (when *smooth-step-timer*
+    (cancel-timer *smooth-step-timer*)
+    (setq *smooth-step-timer* nil)))
+
+
+;; (funcall #'call-at-steps :micros 800 :fn #'forward-sentence)
+
 ;;}}
 
 

@@ -37,15 +37,20 @@ SHELL=/bin/zsh
 30 08 * * * mpc play
 45 08 * * * spd-say -C
 
-50 08 * * * DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys -c
-00 09 * * * DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys -g
-20 23 * * * DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION  ~/bin/pwddwnsys
 
-# 00 06 * * * ~/bin/pwddwnsys -g
+# run each hour on week days
+50 9-22/1 * * 1-5 DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys
+
+# run 9.50 daily
+50 09     * * *   DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys
+
+# run 10.50 daily
+50 22     * * *   DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys
 
 
 
-*/34  *  * * *  DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION  notify-send -i ~/.osetup/images/icons/glass_empty.png "@"
+
+0 */1  * * *  DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION  notify-send -i ~/.osetup/images/icons/glass_empty.png "@"
 
 
 @reboot    /usr/sbin/anacron -s -S $HOME/.anacron/spool/ -t $HOME/.anacron/etc/anacrontab
