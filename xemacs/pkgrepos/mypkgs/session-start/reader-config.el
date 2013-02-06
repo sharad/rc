@@ -80,21 +80,29 @@
 (setq *smooth-step-timer* nil)
 
 
-(defun smooth-reader (num key micros)
-  (interactive "p num: \nkkey: \nnmicrosecs: ")
+(defun smooth-reader (num key repeat)
+  (interactive "pnum: \nkkey: \nnrepeat: ")
   ;; (let ((cmd (key-binding (read-key-sequence "safds: ") t)))
-  (let ((cmd (key-binding key t))
-        (num (if (> num 1) num 100))
-        (micros (if (> micros 1) micros 100)))
-
-  (unless *smooth-step-timer*
+  (let ((cmd (key-binding key t)))
+    (unless *smooth-step-timer*
+      (hl-line-toggle-when-idle -1)
       (setq *smooth-step-timer*
-            (run-with-idle-timer 1 t #'call-at-steps :count 100 :micros micros :fn cmd)))))
+            (run-with-timer 1 repeat cmd)))))
 
+(defun pause-smooth-reader ()
+  (interactive)
+  (when *smooth-step-timer*
+    (timer-activate *smooth-step-timer* t)))
+
+(defun resume-smooth-reader ()
+  (interactive)
+  (when *smooth-step-timer*
+    (timer-activate *smooth-step-timer*)))
 
 (defun cancel-smooth-reader ()
   (interactive)
   (when *smooth-step-timer*
+    (hl-line-toggle-when-idle 1)
     (cancel-timer *smooth-step-timer*)
     (setq *smooth-step-timer* nil)))
 

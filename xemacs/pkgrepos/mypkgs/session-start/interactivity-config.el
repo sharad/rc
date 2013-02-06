@@ -17,6 +17,8 @@
 ;;;;
 ;;;; ;;in the .emacs
 (deh-require-maybe ido
+  (setq ido-default-buffer-method 'maybe-frame)
+
   (ido-mode t)
 
   (when nil
