@@ -1,5 +1,9 @@
 # -*- Mode: shell-script; indent-tabs-mode: nil -*-
 
+
+PRIVATE_DIR=$HOME/.Private
+SSH_KEYS_DIR=$HOME/.ssh/login-keys.d
+
 if [ "${LOGIN_ENV}x" = "x" ]; then
     LOGIN_ENV=LOGIN_ENV
 
@@ -54,7 +58,11 @@ fi
     if ! ssh-add -l >/dev/null && [ "$UID" != "0" ] ; then
 
         if which $HOME/bin/ecryptfs-mount-private 2>&1 ; then
-            $HOME/bin/ecryptfs-mount-private
+
+            if [  -e $PRIVATE_DIR ] ; then
+                $HOME/bin/ecryptfs-mount-private
+            fi
+
             if [ -x /usr/bin/keychain ] ; then
 
                 #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
@@ -64,25 +72,26 @@ fi
                     --clear --lockwait 1\
                     --agents gpg,ssh     \
                     --inherit local-once  \
-                    $( ls -d1 $HOME/.ssh/login-keys.d/*) \
-                    $HOME/.ssh/login-keys.d/id_dsa       \
-                    $HOME/.ssh/login-keys.d/id_rsa       \
-                    $HOME/.ssh/login-keys.d/internet 070E69E5
-
-        # echo cat $HOME/.keychain/${HOST}-sh >&2
-        # cat $HOME/.keychain/${HOST}-sh >&2
+                    $( ls -d1 $SSH_KEYS_DIR/*) \
+                    $SSH_KEYS_DIR/id_dsa       \
+                    $SSH_KEYS_DIR/id_rsa       \
+                    $SSH_KEYS_DIR/internet 070E69E5
 
                 if [ -f $HOME/.keychain/${HOST}-sh ] ; then
                     . $HOME/.keychain/${HOST}-sh
-            # echo cat $HOME/.keychain/${HOST}-sh >&2
-            # cat $HOME/.keychain/${HOST}-sh >&2
+                    # echo cat $HOME/.keychain/${HOST}-sh >&2
+                    # cat $HOME/.keychain/${HOST}-sh >&2
                 fi
             fi
-            if [ -x /sbin/umount.ecryptfs_private ] ; then
-                /sbin/umount.ecryptfs_private
-            else
-                ecryptfs-umount-private
+
+            if [  -e $PRIVATE_DIR ] ; then
+                if [ -x /sbin/umount.ecryptfs_private ] ; then
+                    /sbin/umount.ecryptfs_private
+                else
+                    ecryptfs-umount-private
+                fi
             fi
+
         fi
     fi
 # fi
