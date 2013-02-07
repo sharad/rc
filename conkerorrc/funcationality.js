@@ -519,7 +519,7 @@ register_user_stylesheet(
 var $blackurls = [
     "http://www.emacswiki.org",
     "http://emacswiki.org",
-    "http://www.google.",
+    // "http://www.google.",
     "http://www.toodledo.com",
     "http://www.delicious.com",
     "http://www.linuxtoday.com"
@@ -892,6 +892,7 @@ define_key(content_buffer_normal_keymap, "L", "search-clipboard-contents-doubleq
 // comment-start: "// "  **
 // comment-end:   "// "  **
 // End: **
+
 
 
 

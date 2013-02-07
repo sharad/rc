@@ -79,30 +79,59 @@
 (defvar *smooth-step-timer* nil)
 (setq *smooth-step-timer* nil)
 
+(setq ccm-vpos-init 0)
 
-(defun smooth-reader (num key repeat)
-  (interactive "pnum: \nkkey: \nnrepeat: ")
+(defun smooth-reader (center key repeat)
+  (interactive "P \nkkey: \nnrepeat: ")
   ;; (let ((cmd (key-binding (read-key-sequence "safds: ") t)))
   (let ((cmd (key-binding key t)))
     (unless *smooth-step-timer*
+      (set (make-local-variable 'smooth-reader-active) t)
+      (if t
+          ; (set (make-local-variable 'ccm-vpos) 0)
+          (progn ;resumepause
+            (set (make-local-variable 'cursor-type) nil))
+          (centered-cursor-mode t)
+          (view-mode t))
       (hl-line-toggle-when-idle -1)
       (setq *smooth-step-timer*
-            (run-with-timer 1 repeat cmd)))))
+            (run-with-timer 1 repeat
+                            (lambda (cmdx)
+                              (when smooth-reader-active
+                                (call-interactively cmdx)
+                                (run-hooks 'post-command-hook)))
+                            ;; #'call-interactively
+                            cmd)))))
 
 (defun pause-smooth-reader ()
   (interactive)
+  (progn ;resumepause
+            (set (make-local-variable 'cursor-type) t))
   (when *smooth-step-timer*
     (timer-activate *smooth-step-timer* t)))
 
-(defun resume-smooth-reader ()
-  (interactive)
-  (when *smooth-step-timer*
-    (timer-activate *smooth-step-timer*)))
+(defun resume-smooth-reader (center)
+  (interactive "P")
+  (if *smooth-step-timer*
+      (progn
+        (timer-activate *smooth-step-timer*)
+        (progn ;resumepause
+          (set (make-local-variable 'cursor-type) nil)))
+      (let ((key (read-key-sequence "key: "))
+            (repeat (read-number "num: ")))
+        (smooth-reader center key repeat))))
 
 (defun cancel-smooth-reader ()
   (interactive)
   (when *smooth-step-timer*
     (hl-line-toggle-when-idle 1)
+    (if t
+        (progn ;resumepause
+          (set (make-local-variable 'cursor-type) t))
+        (set (make-local-variable 'ccm-vpos) nil)
+        (centered-cursor-mode nil)
+        (view-mode nil))
+    (set (make-local-variable 'smooth-reader-active) nil)
     (cancel-timer *smooth-step-timer*)
     (setq *smooth-step-timer* nil)))
 
