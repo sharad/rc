@@ -32,108 +32,96 @@
 ;; for buffer local or
 ;;     M-x global-centered-cursor-mode
 ;; for global minor mode.
-  )
+  (setq ccm-vpos-init 0))
 
 
 ;;{{ from: http://www.gnu.org/software/emacs/manual/html_node/cl/
 (require 'cl)
 
-(defun* call-at-steps (&key (count 100) (micros 100) (fn 'next-line))
-  (loop repeat count do
-       (progn
-         (funcall fn)
-         (sit-for 0 micros))))
 
-(defun smooth-next-line ()
-  (interactive)
-  (call-at-steps :fn 'next-line))
 
-(defun smooth-forward-char ()
-  (interactive)
-  (call-at-steps :count 10000 :fn 'forward-char))
 
-(defun smooth-step (num key micros)
-  (interactive "p num: \nkkey: \nnmicrosecs: ")
-  ;; (let ((cmd (key-binding (read-key-sequence "safds: ") t)))
-  (let ((cmd (key-binding key t))
-        (num (if (> num 1) num 100))
-        (micros (if (> micros 1) micros 100))
-        )
 
-    ;; (message num)
-    (call-at-steps :count num :micros micros :fn cmd)))
 
+
+(defvar reader-mode-hook nil "")
+(defvar reader-mode-resume-hook nil "")
+(defvar reader-mode-pause-hook nil "")
+
+(defvar reader-idle-time 1 "Reader idle time")
+(defvar reader-cmd #'forward-char "command")
+(defvar reader-repeat 0.25 "repeat interval")
+
+(add-hook 'reader-mode-hook
+          #'(lambda ()
+              (centered-cursor-mode t)
+              (hl-line-toggle-when-idle -1)))
+
+(add-hook 'reader-mode-pause-hook
+          #'(lambda ()
+              (set (make-local-variable 'cursor-type) t)))
+
+(add-hook 'reader-mode-resume-hook
+          #'(lambda ()
+              (set (make-local-variable 'cursor-type) nil)))
+
+
+(define-minor-mode reader-mode
+    "Prepare for working with collarative office project."
+  :initial-value nil
+  :lighter " Reader"
+  :global nil
+  (if reader-mode
+      (progn
+        (set (make-local-variable 'reader-idle-time) reader-idle-time)
+        (set (make-local-variable 'reader-cmd) reader-cmd)
+        (set (make-local-variable 'reader-repeat) reader-repeat)
+        (set (make-local-variable 'smooth-step-timer) nil)
+        (add-hook 'pre-command-hook #'pause-smooth-read)
+        (set (make-local-variable 'reader-idle-timer)
+             (run-with-idle-timer reader-idle-time nil
+                                  #'resume-smooth-read
+                                  reader-cmd reader-repeat))
+        (message "hi reader mode"))
+      (progn
+        (remove-hook 'pre-command-hook #'pause-smooth-read)
+        (cancel-timer reader-idle-timer)
+        (cancel-smooth-read)
+        (set (make-local-variable 'reader-idle-timer) nil)
+        (message "by reader mode"))))
 
 
 (defun smooth-read ()
-  (interactive)
-  (call-at-steps :micros 4800 :fn '(lambda ()
-                                   (forward-sentence)
-                                   ;; (speechd-speak-read-sentence)
-                                   )))
-
-
-
-
-
-(defvar *smooth-step-timer* nil)
-(setq *smooth-step-timer* nil)
-
-(setq ccm-vpos-init 0)
-
-(defun smooth-reader (center key repeat)
-  (interactive "P \nkkey: \nnrepeat: ")
   ;; (let ((cmd (key-binding (read-key-sequence "safds: ") t)))
-  (let ((cmd (key-binding key t)))
-    (unless *smooth-step-timer*
-      (set (make-local-variable 'smooth-reader-active) t)
-      (if t
-          ; (set (make-local-variable 'ccm-vpos) 0)
-          (progn ;resumepause
-            (set (make-local-variable 'cursor-type) nil))
-          (centered-cursor-mode t)
-          (view-mode t))
-      (hl-line-toggle-when-idle -1)
-      (setq *smooth-step-timer*
-            (run-with-timer 1 repeat
-                            (lambda (cmdx)
-                              (when smooth-reader-active
-                                (call-interactively cmdx)
-                                (run-hooks 'post-command-hook)))
-                            ;; #'call-interactively
-                            cmd)))))
+  (set (make-local-variable 'smooth-step-timer)
+       (run-with-timer 1 reader-repeat
+                       (lambda (cmdx)
+                         ; (when smooth-read-active
+                           (call-interactively cmdx)
+                           (run-hooks 'post-command-hook))
+                         ; )
+                       ;; #'call-interactively
+                       reader-cmd)))
 
-(defun pause-smooth-reader ()
+(defun pause-smooth-read ()
   (interactive)
-  (progn ;resumepause
-            (set (make-local-variable 'cursor-type) t))
-  (when *smooth-step-timer*
-    (timer-activate *smooth-step-timer* t)))
+  (when smooth-step-timer
+    (run-mode-hooks 'reader-mode-pause-hook)
+    (timer-activate smooth-step-timer t)))
 
-(defun resume-smooth-reader (center)
-  (interactive "P")
-  (if *smooth-step-timer*
-      (progn
-        (timer-activate *smooth-step-timer*)
-        (progn ;resumepause
-          (set (make-local-variable 'cursor-type) nil)))
-      (let ((key (read-key-sequence "key: "))
-            (repeat (read-number "num: ")))
-        (smooth-reader center key repeat))))
+(defun resume-smooth-read ()
+  (when smooth-step-timer
+    (timer-activate smooth-step-timer)
+    (run-mode-hooks 'reader-mode-resume-hook)
+    (smooth-read *reader-cmd* *reader-repeat*)))
 
-(defun cancel-smooth-reader ()
+(defun cancel-smooth-read ()
   (interactive)
-  (when *smooth-step-timer*
-    (hl-line-toggle-when-idle 1)
-    (if t
-        (progn ;resumepause
-          (set (make-local-variable 'cursor-type) t))
-        (set (make-local-variable 'ccm-vpos) nil)
-        (centered-cursor-mode nil)
-        (view-mode nil))
-    (set (make-local-variable 'smooth-reader-active) nil)
-    (cancel-timer *smooth-step-timer*)
-    (setq *smooth-step-timer* nil)))
+  (when smooth-step-timer
+    (cancel-timer smooth-step-timer)
+    ;; (set (make-local-variable 'smooth-read-active) nil)
+    (set (make-local-variable 'smooth-step-timer) nil)
+    (run-mode-hooks 'reader-mode-hook)))
 
 
 ;; (funcall #'call-at-steps :micros 800 :fn #'forward-sentence)
@@ -141,6 +129,42 @@
 ;;}}
 
 
+
+
+;; (when nil                               ;Old deprecated
+;;   (defun* call-at-steps (&key (count 100) (micros 100) (fn 'next-line))
+;;     (loop repeat count do
+;;          (progn
+;;            (funcall fn)
+;;            (sit-for 0 micros))))
+
+;;   (defun smooth-next-line ()
+;;     (interactive)
+;;     (call-at-steps :fn 'next-line))
+
+;;   (defun smooth-forward-char ()
+;;     (interactive)
+;;     (call-at-steps :count 10000 :fn 'forward-char))
+
+;;   (defun smooth-step (num key micros)
+;;     (interactive "p num: \nkkey: \nnmicrosecs: ")
+;;     ;; (let ((cmd (key-binding (read-key-sequence "safds: ") t)))
+;;     (let ((cmd (key-binding key t))
+;;           (num (if (> num 1) num 100))
+;;           (micros (if (> micros 1) micros 100))
+;;           )
+
+;;       ;; (message num)
+;;       (call-at-steps :count num :micros micros :fn cmd)))
+
+
+
+;;   (defun smooth-read ()
+;;     (interactive)
+;;     (call-at-steps :micros 4800 :fn '(lambda ()
+;;                                       (forward-sentence)
+;;                                       ;; (speechd-speak-read-sentence)
+;;                                       ))))
 
 (provide 'reader-config)
 ;;; reader-config.el ends here
