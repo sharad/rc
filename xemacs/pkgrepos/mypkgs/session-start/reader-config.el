@@ -54,7 +54,8 @@
 (defvar reader-idle-timer nil "")
 (defvar smooth-step-timer nil "")
 
-(defvar reader-idle-time 1 "Reader idle time")
+(defvar reader-idle-time 7 "Reader idle time")
+(defvar  reader-idle-repeat-time 7 "Reader idle repeat time")
 (defvar reader-cmd #'forward-char "command")
 (defvar reader-repeat 0.25 "repeat interval")
 
@@ -86,11 +87,11 @@
           #'(lambda ()
               (set (make-local-variable 'old-cursor-type) cursor-type)
               (set (make-local-variable 'cursor-type) nil)
-              (set (make-local-variable old-hl-line-when-idle-p) hl-line-when-idle-p)
+              (set (make-local-variable 'old-hl-line-when-idle-p) hl-line-when-idle-p)
               (hl-line-toggle-when-idle -1)
-              (set (make-local-variable old-centered-cursor-mode) centered-cursor-mode)
+              (set (make-local-variable 'old-centered-cursor-mode) centered-cursor-mode)
               (centered-cursor-mode t)
-              (set (make-local-variable old-view-mode) view-mode)
+              (set (make-local-variable 'old-view-mode) view-mode)
               (view-mode t)))
 
 
@@ -102,12 +103,13 @@
   (if reader-mode
       (progn
         (set (make-local-variable 'reader-idle-time) reader-idle-time)
+        (set (make-local-variable 'reader-idle-repeat-time) reader-idle-repeat-time)
         (set (make-local-variable 'reader-cmd) reader-cmd)
         (set (make-local-variable 'reader-repeat) reader-repeat)
         (set (make-local-variable 'smooth-step-timer) nil)
         (add-hook 'pre-command-hook #'pause-smooth-read)
         (set (make-local-variable 'reader-idle-timer)
-             (run-with-idle-timer reader-idle-time nil #'resume-smooth-read))
+             (run-with-idle-timer reader-idle-time reader-idle-repeat-time #'resume-smooth-read))
         (message "hi reader mode %s" reader-idle-timer))
       (progn
         (remove-hook 'pre-command-hook #'pause-smooth-read)
