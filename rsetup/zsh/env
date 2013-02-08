@@ -1,0 +1,28 @@
+# -*- mode: shell-script; -*-
+
+
+
+
+[ -r ~/.rsetup/zsh/env.d/${HOST} ] && . ~/.rsetup/zsh/env.d/${HOST}
+
+
+
+function warnif () {
+
+}
+
+
+
+
+function workoffice () {
+    if ((${+WORKPLACE})) ; then
+        if [  -d ~/.opt/p/$WORKPLACE ] ; then
+            source ~/.opt/p/$WORKPLACE/env
+            ~/.opt/p/$WORKPLACE/run
+        else
+            echo ~/.opt/p/$WORKPLACE directory  do not exits. 2>&1
+        fi
+    else
+        echo WORKPLACE is not set. 2>&1
+    fi
+}

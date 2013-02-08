@@ -1,5 +1,8 @@
 OFFLINEIMAPACCOUNT=OfficePlain
 
+WORKPLACE=merunetworks.com
+
+
 . $HOME/.osetup/info/hosts/$HOST/sh/env.sh
 
 

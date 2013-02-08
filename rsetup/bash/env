@@ -1,0 +1,1 @@
+[ -r ~/.rsetup/bash/env.d/${HOST} ] && . ~/.rsetup/bash/env.d/${HOST}

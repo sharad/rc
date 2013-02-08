@@ -21,6 +21,7 @@
  '(calendar-view-diary-initially-flag t)
  '(canlock-password "93d68f0366b0f7bb850c020c9b41a029023b0526")
  '(case-fold-search t)
+ '(ccm-vpos-init 0)
  '(color-theme-selection "Arjen" nil (color-theme))
  '(column-number-mode t)
  '(current-language-environment "ASCII")
@@ -80,7 +81,7 @@
  '(planner-renumber-tasks-automatically t)
  '(planner-sections (quote ((tasks . "Tasks") (notes . "Notes") (diary . "Diary") (env . "Environment"))))
  '(planner-tasks-file-behavior (quote close))
- '(safe-local-variable-values (quote ((flymake-run-in-place) (auto-save-default) (eval office-mode 1) (folded-file . t) (auto-fill-mode))))
+ '(safe-local-variable-values (quote ((folded-file . f) (flymake-run-in-place) (auto-save-default) (eval office-mode 1) (folded-file . t) (auto-fill-mode))))
  '(save-abbrevs t)
  '(save-place t nil (saveplace))
  '(scroll-conservatively 4)
@@ -108,6 +109,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(default ((t (:height 110 :family "Consolas" :embolden t))))
  '(background "blue")
  '(etask-face-day-marker ((((class color)) (:foreground "white"))))
  '(etask-face-normaltask ((((class color)) (:foreground "white"))))
@@ -134,6 +136,7 @@
  '(mode-line ((t (:background "Navy"))))
  '(paren-match ((t (:background "darkseagreen4"))) t)
  '(region ((t (:background "DarkSlateBlue"))))
+ '(sharad-test ((t (:family "Courior"))) t)
  '(show-paren-match ((t (:foreground "black" :background "wheat"))))
  '(show-paren-mismatch ((((class color)) (:foreground "white" :background "red"))))
  '(speedbar-button-face ((((class color) (background dark)) (:foreground "green4"))))

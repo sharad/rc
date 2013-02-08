@@ -53,6 +53,14 @@ source ~/.rsetup/rc/env
 
 emulate zsh
 
+# {{{
+[  -r ~/.rsetup/zsh/env  ] &&
+source ~/.rsetup/zsh/env
+[  -r ~/.rsetup/zsh/run ] &&
+~/.rsetup/zsh/run
+# }}}
+
+
 # If not running interactively, don't do anything:
 [ -z "$PS1" ] && return
 
@@ -445,4 +453,4 @@ fi
 
 
 # Workplace
-[ -r ~/.$WORKPLACE.zshrc ] && source ~/.$WORKPLACE.zshrc || :
+workoffice

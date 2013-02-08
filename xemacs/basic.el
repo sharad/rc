@@ -310,6 +310,13 @@ alkready should not exist.")
 
 ;;{{
 (deh-section "login-session-inperrupting-feature"
+  (defun sharad/disable-login-session-inperrupting-feature ()
+
+    (interactive)
+    ;; (login-to-perforce)
+    ;; (update-ssh-agent t)
+    )
+
   (defun sharad/enable-login-session-inperrupting-feature ()
     (interactive)
     ;; (setenv "DISPLAY" ":1")

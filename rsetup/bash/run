@@ -1,0 +1,2 @@
+#!/bin/zsh
+[ -r ~/.rsetup/bash/run.d/${HOST} ] && ~/.rsetup/bash/run.d/${HOST}

@@ -44,26 +44,54 @@
 
 
 
-(defvar reader-mode-hook nil "")
+(defvar reader-mode-smooth-read-start-hook nil "")
+(defvar reader-mode-smooth-read-end-hook nil "")
 (defvar reader-mode-resume-hook nil "")
 (defvar reader-mode-pause-hook nil "")
+
+
+
+(defvar reader-idle-timer nil "")
+(defvar smooth-step-timer nil "")
 
 (defvar reader-idle-time 1 "Reader idle time")
 (defvar reader-cmd #'forward-char "command")
 (defvar reader-repeat 0.25 "repeat interval")
 
-(add-hook 'reader-mode-hook
+(add-hook 'reader-mode-smooth-read-start-hook
           #'(lambda ()
-              (centered-cursor-mode t)
-              (hl-line-toggle-when-idle -1)))
+
+              ))
+
+(add-hook 'reader-mode-smooth-read-end-hook
+          #'(lambda ()
+              ))
 
 (add-hook 'reader-mode-pause-hook
           #'(lambda ()
-              (set (make-local-variable 'cursor-type) t)))
+              (if (and (boundp 'old-cursor-type)
+                       old-cursor-type)
+                  (set (make-local-variable 'cursor-type) old-cursor-type))
+              (if (and (boundp 'old-centered-cursor-mode)
+                       old-centered-cursor-mode)
+                  (centered-cursor-mode old-centered-cursor-mode))
+              (if (and (boundp 'old-hl-line-when-idle-p)
+                       old-hl-line-when-idle-p)
+                  (hl-line-toggle-when-idle old-hl-line-when-idle-p))
+              (if (and (boundp 'old-view-mode)
+                       old-view-mode)
+                  (view-mode old-view-mode))))
 
 (add-hook 'reader-mode-resume-hook
           #'(lambda ()
-              (set (make-local-variable 'cursor-type) nil)))
+              (set (make-local-variable 'old-cursor-type) cursor-type)
+              (set (make-local-variable 'cursor-type) nil)
+              (set (make-local-variable old-hl-line-when-idle-p) hl-line-when-idle-p)
+              (hl-line-toggle-when-idle -1)
+              (set (make-local-variable old-centered-cursor-mode) centered-cursor-mode)
+              (centered-cursor-mode t)
+              (set (make-local-variable old-view-mode) view-mode)
+              (view-mode t)))
 
 
 (define-minor-mode reader-mode
@@ -79,10 +107,8 @@
         (set (make-local-variable 'smooth-step-timer) nil)
         (add-hook 'pre-command-hook #'pause-smooth-read)
         (set (make-local-variable 'reader-idle-timer)
-             (run-with-idle-timer reader-idle-time nil
-                                  #'resume-smooth-read
-                                  reader-cmd reader-repeat))
-        (message "hi reader mode"))
+             (run-with-idle-timer reader-idle-time nil #'resume-smooth-read))
+        (message "hi reader mode %s" reader-idle-timer))
       (progn
         (remove-hook 'pre-command-hook #'pause-smooth-read)
         (cancel-timer reader-idle-timer)
@@ -90,6 +116,14 @@
         (set (make-local-variable 'reader-idle-timer) nil)
         (message "by reader mode"))))
 
+(defun reader-show-timers ()
+  (interactive)
+  (if reader-idle-timer
+      (message "reader-idle-timer %s" reader-idle-timer)
+      (message "no reader-idle-timer"))
+  (if smooth-step-timer
+      (message "smooth-step-timer %s" smooth-step-timer)
+      (message "no smooth-step-timer")))
 
 (defun smooth-read ()
   ;; (let ((cmd (key-binding (read-key-sequence "safds: ") t)))
@@ -97,23 +131,27 @@
        (run-with-timer 1 reader-repeat
                        (lambda (cmdx)
                          ; (when smooth-read-active
-                           (call-interactively cmdx)
-                           (run-hooks 'post-command-hook))
+                         (call-interactively cmdx)
+                         (run-hooks 'post-command-hook))
                          ; )
                        ;; #'call-interactively
-                       reader-cmd)))
+                       reader-cmd))
+  (run-mode-hooks 'reader-mode-smooth-read-start-hook))
 
 (defun pause-smooth-read ()
   (interactive)
-  (when smooth-step-timer
+  (when (and (boundp 'smooth-step-timer)
+             smooth-step-timer)
     (run-mode-hooks 'reader-mode-pause-hook)
     (timer-activate smooth-step-timer t)))
 
 (defun resume-smooth-read ()
-  (when smooth-step-timer
+
+  (if smooth-step-timer
     (timer-activate smooth-step-timer)
-    (run-mode-hooks 'reader-mode-resume-hook)
-    (smooth-read *reader-cmd* *reader-repeat*)))
+    (smooth-read))
+
+  (run-mode-hooks 'reader-mode-resume-hook))
 
 (defun cancel-smooth-read ()
   (interactive)
@@ -121,7 +159,7 @@
     (cancel-timer smooth-step-timer)
     ;; (set (make-local-variable 'smooth-read-active) nil)
     (set (make-local-variable 'smooth-step-timer) nil)
-    (run-mode-hooks 'reader-mode-hook)))
+    (run-mode-hooks 'reader-mode-smooth-read-end-hook)))
 
 
 ;; (funcall #'call-at-steps :micros 800 :fn #'forward-sentence)

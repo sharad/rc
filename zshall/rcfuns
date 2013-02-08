@@ -254,3 +254,24 @@ function _checkscheduls() {
 }
 
 zshexit_functions=(${chpwd_functions[@]} "_checkscheduls")
+
+
+
+
+function mkrsetupdir () {
+    if (( $# == 1 )) ; then
+        dir=$1
+        mkdir -p ~/.rsetup/$dir/{env,run}.d
+        cat > ~/.rsetup/$dir/run <<EOF
+#!/bin/zsh
+[ -r ~/.rsetup/$dir/run.d/\${HOST} ] && ~/.rsetup/$dir/run.d/\${HOST}
+EOF
+
+        cat > ~/.rsetup/$dir/env <<EOF
+[ -r ~/.rsetup/$dir/env.d/\${HOST} ] && . ~/.rsetup/$dir/env.d/\${HOST}
+EOF
+    else
+        echo onl one arg required >&2
+    fi
+}
+
