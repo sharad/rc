@@ -89,7 +89,8 @@
               ;;     (message "no old-hl-line-mode"))
               (if (boundp 'old-hl-line-when-idle-p)
                   (progn
-                    (hl-line-toggle-when-idle (if (null old-hl-line-when-idle-p) -1 t))
+                    (hl-line-toggle-when-idle (if (null old-hl-line-when-idle-p) -1 1))
+                    (hl-line-toggle-when-idle (if (null gold-hl-line-when-idle-p) -1 1))
                     (message "pause-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p))
                   (message "no old hl"))
               (if (boundp 'old-view-mode)
@@ -122,6 +123,7 @@
               ;; (set (make-local-variable 'old-hl-line-mode) hl-line-mode)
               (hl-line-mode -1)
               (set (make-local-variable 'old-hl-line-when-idle-p) hl-line-when-idle-p)
+              (setq gold-hl-line-when-idle-p hl-line-when-idle-p)
               (hl-line-toggle-when-idle -1)
               (set (make-local-variable 'old-centered-cursor-mode)
                    centered-cursor-mode)
