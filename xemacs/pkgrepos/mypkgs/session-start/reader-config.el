@@ -189,10 +189,11 @@
   (set (make-local-variable 'smooth-step-timer)
        (run-with-timer 1 reader-repeat
                        (lambda (cmdx)
-                         ; (when smooth-read-active
-                         (call-interactively cmdx)
-                         (run-hooks 'post-command-hook))
-                         ; )
+                         (when ;; smooth-read-active
+                             (and reader-idle-timer
+                              smooth-step-timer)
+                           (call-interactively cmdx)
+                           (run-hooks 'post-command-hook)))
                        ;; #'call-interactively
                        reader-cmd))
   (run-hooks 'reader-mode-smooth-read-start-hook))
