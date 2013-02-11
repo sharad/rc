@@ -121,7 +121,7 @@
               (set (make-local-variable 'old-cursor-type) cursor-type)
               (set (make-local-variable 'cursor-type) nil)
               ;; (set (make-local-variable 'old-hl-line-mode) hl-line-mode)
-              (hl-line-mode -1)
+              ;; (hl-line-mode -1)
               (set (make-local-variable 'old-hl-line-when-idle-p) hl-line-when-idle-p)
               (setq gold-hl-line-when-idle-p hl-line-when-idle-p)
               (hl-line-toggle-when-idle -1)
@@ -205,8 +205,8 @@
   (when (and (boundp 'smooth-step-timer)
              smooth-step-timer)
     (timer-activate smooth-step-timer t)
-    (run-hooks 'reader-mode-pause-hook))
-  (remove-hook 'pre-command-hook #'pause-smooth-read))
+    (run-hooks 'reader-mode-pause-hook)
+    (remove-hook 'pre-command-hook #'pause-smooth-read)))
 
 (defun resume-smooth-read ()
 

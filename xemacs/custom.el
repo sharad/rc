@@ -81,7 +81,7 @@
  '(planner-renumber-tasks-automatically t)
  '(planner-sections (quote ((tasks . "Tasks") (notes . "Notes") (diary . "Diary") (env . "Environment"))))
  '(planner-tasks-file-behavior (quote close))
- '(safe-local-variable-values (quote ((folded-file . f) (flymake-run-in-place) (auto-save-default) (eval office-mode 1) (folded-file . t) (auto-fill-mode))))
+ '(safe-local-variable-values (quote ((flymake-run-in-place) (auto-save-default) (eval office-mode 1) (folded-file . t) (auto-fill-mode))))
  '(save-abbrevs t)
  '(save-place t nil (saveplace))
  '(scroll-conservatively 4)
@@ -109,8 +109,8 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-;;  '(default ((t (:height 110 :family "Consolas" :embolden t))))
-;;  '(background "blue")
+ '(default ((t (:height 110 :family "Consolas" :embolden t))))
+ '(background "blue")
  '(etask-face-day-marker ((((class color)) (:foreground "white"))))
  '(etask-face-normaltask ((((class color)) (:foreground "white"))))
  '(etask-face-normaltaskname-behind-schedule ((((class color)) (:foreground "white" :weight bold))))

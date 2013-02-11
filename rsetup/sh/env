@@ -1,3 +1,4 @@
+# -*- mode: shell-script; -*-
 
 
 [ -r ~/.rsetup/sh/env.d/${HOST} ] && . ~/.rsetup/sh/env.d/${HOST}
@@ -16,3 +17,17 @@ export BROWSER
 
 MY_DBUS_SESSION=$(cat /var/lib/dbus/machine-id)
 export MY_DBUS_SESSION
+
+
+if [ "x" != "x$WORKPLACE" ] ; then
+    if [  -d ~/.opt/p/$WORKPLACE ] ; then
+        source ~/.opt/p/$WORKPLACE/env
+        # ~/.opt/p/$WORKPLACE/run
+    else
+        echo ~/.opt/p/$WORKPLACE directory  do not exits. 2>&1
+    fi
+else
+    echo WORKPLACE is not set. 2>&1
+fi
+
+
