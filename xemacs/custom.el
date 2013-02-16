@@ -21,7 +21,6 @@
  '(calendar-view-diary-initially-flag t)
  '(canlock-password "93d68f0366b0f7bb850c020c9b41a029023b0526")
  '(case-fold-search t)
- '(ccm-vpos-init 0)
  '(color-theme-selection "Arjen" nil (color-theme))
  '(column-number-mode t)
  '(current-language-environment "ASCII")
