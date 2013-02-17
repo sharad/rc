@@ -84,6 +84,7 @@
  		(face-list))))
 
  (defun egoge-wash-out-fontlock-faces (&optional degree)
+   (interactive)
    (mapc (lambda (elt)
  	  (egoge-wash-out-face elt degree))
  	(delq 'font-lock-warning-face

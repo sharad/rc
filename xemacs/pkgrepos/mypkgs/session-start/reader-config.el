@@ -181,18 +181,23 @@
 (defun reader-pause ()
   (interactive)
   (when reader-mode
+    (cancel-timer reader-idle-timer)
+    (set (make-local-variable 'reader-idle-timer) nil)
     (when (and
            (boundp 'smooth-step-timer)
            smooth-step-timer)
-      (timer-activate smooth-step-timer t))
-    (timer-activate reader-idle-timer t)
-    ;; (timer-activate smooth-step-timer t)
-    ))
+      (timer-activate smooth-step-timer t))))
 
 (defun reader-resume ()
   (interactive)
   (when reader-mode
-    (run-with-timer reader-idle-time nil #'timer-activate reader-idle-timer)))
+    (set (make-local-variable 'reader-idle-timer)
+             (run-with-idle-timer
+              reader-idle-time
+              reader-idle-repeat-time
+              #'resume-smooth-read))))
+
+; (run-with-timer reader-idle-time nil #'timer-activate reader-idle-timer)))
 
 (defun reader-show-timers ()
   (interactive)
