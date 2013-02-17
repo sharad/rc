@@ -72,17 +72,17 @@
 (add-hook 'reader-mode-pause-hook
           ;; stop reader
           #'(lambda ()
-              (message "reader-mode-pause-hook")
+              (when testing (message "reader-mode-pause-hook"))
               (if (boundp 'old-cursor-type)
                   (progn
                     (set (make-local-variable 'cursor-type) old-cursor-type)
-                    (message "pause-hook: old-cursor-type %s" old-cursor-type))
-                  (message "no old cursor"))
+                    (when testing (message "pause-hook: old-cursor-type %s" old-cursor-type)))
+                  (when testing (message "no old cursor")))
               (if (boundp 'old-centered-cursor-mode)
                   (progn
                     (centered-cursor-mode (if (null old-centered-cursor-mode) -1 t))
-                    (message "pause-hook: old-centered-cursor-mode %s" old-centered-cursor-mode))
-                  (message "no old centered"))
+                    (when testing (message "pause-hook: old-centered-cursor-mode %s" old-centered-cursor-mode)))
+                  (when testing (message "no old centered")))
               ;; (if (boundp 'old-global-hl-line-mode)
               ;;     (progn
               ;;       (global-hl-line-mode (if (null old-global-hl-line-mode) -1 t))
@@ -92,33 +92,38 @@
                   (progn
                     (hl-line-toggle-when-idle (if (null old-hl-line-when-idle-p) -1 1))
                     (hl-line-toggle-when-idle (if (null gold-hl-line-when-idle-p) -1 1))
-                    (message "pause-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p))
-                  (message "no old hl"))
+                    (when testing
+                      (message "pause-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p)))
+                  (when testing (message "no old hl")))
               (if (boundp 'old-view-mode)
                   (progn
                       (view-mode (if (null old-view-mode) -1 t))
-                      (message "pause-hook: old-view-mode %s" old-view-mode))
-                  (message "no old view"))
+                      (when testing (message "pause-hook: old-view-mode %s" old-view-mode)))
+                  (when testing (message "no old view")))
 
-              (message "old values:")
-              (message "pause-hook: old-cursor-type %s" old-cursor-type)
-              ;; (message "pause-hook: old-global-hl-line-mode %s" old-global-global-hl-line-mode)
-              (message "pause-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p)
-              (message "pause-hook: old-centered-cursor-mode %s" old-centered-cursor-mode)
-              (message "pause-hook: old-view-mode %s" old-view-mode)
+              (when testing
+                (message "old values:")
+                (message "pause-hook: old-cursor-type %s" old-cursor-type)
+                ;; (message "pause-hook: old-global-hl-line-mode %s" old-global-global-hl-line-mode)
+                (message "pause-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p)
+                (message "pause-hook: old-centered-cursor-mode %s" old-centered-cursor-mode)
+                (message "pause-hook: old-view-mode %s" old-view-mode)
 
-              (message "values:")
+                (message "values:")
 
-              (message "pause-hook: cursor-type %s" cursor-type)
-              ;; (message "pause-hook: global-hl-line-mode %s" global-hl-line-mode)
-              (message "pause-hook: hl-line-when-idle-p %s" hl-line-when-idle-p)
-              (message "pause-hook: centered-cursor-mode %s" centered-cursor-mode)
-              (message "pause-hook: view-mode %s" view-mode)))
+                (message "pause-hook: cursor-type %s" cursor-type)
+                ;; (message "pause-hook: global-hl-line-mode %s" global-hl-line-mode)
+                (message "pause-hook: hl-line-when-idle-p %s" hl-line-when-idle-p)
+                (message "pause-hook: centered-cursor-mode %s" centered-cursor-mode)
+                (message "pause-hook: view-mode %s" view-mode))
+              (message nil)))
 
 (add-hook 'reader-mode-resume-hook
           ;; start reader
           #'(lambda ()
-              (message "reader-mode-resume-hook")
+
+              (when testing
+                (message "reader-mode-resume-hook"))
               (set (make-local-variable 'old-cursor-type) cursor-type)
               (set (make-local-variable 'cursor-type) nil)
               (set (make-local-variable 'old-global-hl-line-mode) global-hl-line-mode)
@@ -132,21 +137,23 @@
               (set (make-local-variable 'old-view-mode) view-mode)
               (view-mode t)
 
-              (message "old values:")
-              (message "resume-hook: old-cursor-type %s" old-cursor-type)
-              (message "resume-hook: old-global-hl-line-mode %s" old-global-hl-line-mode)
-              (message "resume-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p)
-              (message "resume-hook: old-centered-cursor-mode %s" old-centered-cursor-mode)
-              (message "resume-hook: old-view-mode %s" old-view-mode)
+              (when testing
+                  (message "old values:")
+                  (message "resume-hook: old-cursor-type %s" old-cursor-type)
+                  (message "resume-hook: old-global-hl-line-mode %s" old-global-hl-line-mode)
+                  (message "resume-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p)
+                  (message "resume-hook: old-centered-cursor-mode %s" old-centered-cursor-mode)
+                  (message "resume-hook: old-view-mode %s" old-view-mode)
 
-              (message "values:")
+                  (message "values:")
 
-              (message "resume-hook: cursor-type %s" cursor-type)
-              (message "resume-hook: global-hl-line-mode %s" global-hl-line-mode)
-              (message "resume-hook: hl-line-when-idle-p %s" hl-line-when-idle-p)
-              (message "resume-hook: centered-cursor-mode %s" centered-cursor-mode)
-              (message "resume-hook: view-mode %s" view-mode)
-              ))
+                  (message "resume-hook: cursor-type %s" cursor-type)
+                  (message "resume-hook: global-hl-line-mode %s" global-hl-line-mode)
+                  (message "resume-hook: hl-line-when-idle-p %s" hl-line-when-idle-p)
+                  (message "resume-hook: centered-cursor-mode %s" centered-cursor-mode)
+                  (message "resume-hook: view-mode %s" view-mode)
+                  )
+              (message nil)))
 
 
 
@@ -170,13 +177,14 @@
               reader-idle-time
               reader-idle-repeat-time
               #'resume-smooth-read))
-        (message "hi reader mode %s" reader-idle-timer))
+        (when testing (message "hi reader mode %s" reader-idle-timer)))
       (progn
         (remove-hook 'pre-command-hook #'pause-smooth-read)
         (cancel-timer reader-idle-timer)
         (cancel-smooth-read)
         (set (make-local-variable 'reader-idle-timer) nil)
-        (message "by reader mode"))))
+        (when testing (message "by reader mode"))))
+  (message nil))
 
 (defun reader-pause ()
   (interactive)
