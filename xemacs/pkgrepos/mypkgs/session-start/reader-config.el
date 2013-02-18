@@ -72,7 +72,7 @@
 (add-hook 'reader-mode-pause-hook
           ;; stop reader
           #'(lambda ()
-              (set (make-local-variable 'reader-mode-active) nil)
+              (set (make-local-variable 'reader-mode-smooth-step-active) nil)
               (when testing (message "reader-mode-pause-hook"))
               (if (boundp 'old-cursor-type)
                   (progn
@@ -125,7 +125,7 @@
 
               (when testing
                 (message "reader-mode-resume-hook"))
-              (set (make-local-variable 'reader-mode-active) t)
+              (set (make-local-variable 'reader-mode-smooth-step-active) t)
               (set (make-local-variable 'old-cursor-type) cursor-type)
               (set (make-local-variable 'cursor-type) nil)
               (set (make-local-variable 'old-global-hl-line-mode) global-hl-line-mode)
@@ -166,7 +166,7 @@
   :global nil
   (if reader-mode
       (progn
-        (set (make-local-variable 'reader-mode-active) t)
+        (set (make-local-variable 'reader-mode-smooth-step-active) t)
         (set (make-local-variable 'reader-idle-time) reader-idle-time)
         (set (make-local-variable 'reader-idle-repeat-time) reader-idle-repeat-time)
         (set (make-local-variable 'reader-cmd) reader-cmd)
@@ -182,7 +182,7 @@
               #'resume-smooth-read))
         (when testing (message "hi reader mode %s" reader-idle-timer)))
       (progn
-        (set (make-local-variable 'reader-mode-active) nil)
+        (set (make-local-variable 'reader-mode-smooth-step-active) nil)
         (remove-hook 'pre-command-hook #'pause-smooth-read)
         (cancel-timer reader-idle-timer)
         (cancel-smooth-read)
@@ -193,13 +193,14 @@
 (defun reader-pause ()
   (interactive)
   (when reader-mode
-    (cancel-timer reader-idle-timer)
-    (set (make-local-variable 'reader-idle-timer) nil)
-    (when (and
-           (boundp 'smooth-step-timer)
-           smooth-step-timer)
-      (timer-activate smooth-step-timer t)
-      (set (make-local-variable 'reader-mode-active) nil))))
+    (when reader-idle-timer
+      (cancel-timer reader-idle-timer)
+      (set (make-local-variable 'reader-idle-timer) nil)
+      (when (and
+             (boundp 'smooth-step-timer)
+             smooth-step-timer)
+        (timer-activate smooth-step-timer t)
+        (set (make-local-variable 'reader-mode-smooth-step-active) nil)))))
 
 (defun reader-resume ()
   (interactive)
@@ -209,7 +210,7 @@
               reader-idle-time
               reader-idle-repeat-time
               #'resume-smooth-read))
-    (set (make-local-variable 'reader-mode-active) t)))
+    (set (make-local-variable 'reader-mode-smooth-step-active) t)))
 
 ; (run-with-timer reader-idle-time nil #'timer-activate reader-idle-timer)))
 
@@ -246,7 +247,7 @@
     (timer-activate smooth-step-timer t)
     (run-hooks 'reader-mode-pause-hook)
     (remove-hook 'pre-command-hook #'pause-smooth-read)
-    (set (make-local-variable 'reader-mode-active) nil)))
+    (set (make-local-variable 'reader-mode-smooth-step-active) nil)))
 
 (defun resume-smooth-read ()
   (if (and
@@ -261,7 +262,7 @@
        smooth-step-timer)
     (run-hooks 'reader-mode-resume-hook)
     (add-hook 'pre-command-hook #'pause-smooth-read)
-    (set (make-local-variable 'reader-mode-active) nil)))
+    (set (make-local-variable 'reader-mode-smooth-step-active) nil)))
 
 (defun cancel-smooth-read ()
   (interactive)
@@ -270,7 +271,7 @@
     ;; (set (make-local-variable 'smooth-read-active) nil)
     (set (make-local-variable 'smooth-step-timer) nil)
     (run-hooks 'reader-mode-smooth-read-end-hook)
-    (set (make-local-variable 'reader-mode-active) nil))
+    (set (make-local-variable 'reader-mode-smooth-step-active) nil))
   (remove-hook 'pre-command-hook #'pause-smooth-read))
 
 ;; (funcall #'call-at-steps :micros 800 :fn #'forward-sentence)
@@ -293,18 +294,23 @@
                                        (cdr active-window)) 16)))
           (emacs-window-id (string-to-number
                             (frame-parameter nil 'outer-window-id))))
-     (when (and
+     (if (and
             (= emacs-window-id on-blur--saved-window-id)
             (not (= active-window-id on-blur--saved-window-id)))
-       (run-hooks 'on-blur-hook))
+       (progn
+         (run-hooks 'on-blur-hook)
+         (message "deactivated"))
+       (progn
+         (message "activated")
+         (setq on-blur--saved-window-id 0)))
      (setq on-blur--saved-window-id active-window-id)
      (run-with-timer 1 nil 'on-blur--refresh)))
 
-
+ (setq on-blur-hook nil)
  (add-hook 'on-blur-hook
            #'(lambda ()
                (message "cursor %s , buffer %s" cursor-type (current-buffer))
-               (if reader-mode-active
+               (if reader-mode-smooth-step-active
                    (run-hooks 'reader-mode-pause-hook))
                (reader-pause)))
  (on-blur--refresh))
