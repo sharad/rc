@@ -114,6 +114,16 @@
                 (setq mime-type (substring (shell-command-to-string (concat "file --mime-type --brief " (shell-quote-argument (expand-file-name full-file-path)))) 0 -1))
                 (insert (concat "<#part type=\"" mime-type "\" filename=\"" full-file-path "\" disposition=" disposition ">\n"))))))))
 
+;; (setq gnus-gcc-externalize-attachments 'all)
+(setq gnus-gcc-externalize-attachments nil)
+;    If nil, attach files as normal parts in Gcc copies; if a regexp
+;    and matches the Gcc group name, attach files as external parts;
+;    if it is all, attach local files as external parts; if it is
+;    other non-nil, the behavior is the same as all, but it may be
+;    changed in the future.
+;;}}
+
+
 (provide 'attachment-config)
 
 ;;}}

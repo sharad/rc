@@ -87,7 +87,8 @@
 (setq gnus-gcc-mark-as-read t)
 ;    If non-nil, automatically mark Gcc articles as read.
 
-(setq gnus-gcc-externalize-attachments 'all)
+;; (setq gnus-gcc-externalize-attachments 'all)
+(setq gnus-gcc-externalize-attachments nil)
 ;    If nil, attach files as normal parts in Gcc copies; if a regexp
 ;    and matches the Gcc group name, attach files as external parts;
 ;    if it is all, attach local files as external parts; if it is
