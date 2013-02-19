@@ -3,6 +3,9 @@
 ;; I use the gmane server as my primary news source.
 
 
+
+(require 'nnheader)
+
 ;; http://www.delorie.com/gnu/docs/emacs/gnus_316.html Q1.11
 ;; (require 'tm-setup)
 ;; (require 'gnus)

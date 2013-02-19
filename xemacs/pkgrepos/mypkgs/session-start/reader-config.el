@@ -282,38 +282,51 @@
 (when (and (featurep 'x) window-system)
  (defvar on-blur--saved-window-id 0 "Last known focused window.")
  (defvar on-blur--timer nil "Timer refreshing known focused window.")
+
+ (setq old-active-window-id 0)
+
  (defun on-blur--refresh ()
    "Runs on-blur-hook if emacs has lost focus."
    (let* ((active-window (x-window-property
                           "_NET_ACTIVE_WINDOW" nil "WINDOW" 0 nil t))
           (active-window-id (if (numberp active-window)
                                 active-window
-                              (string-to-number
-                               (format "%x00%x"
-                                       (car active-window)
-                                       (cdr active-window)) 16)))
+                                (string-to-number
+                                 (format "%x%x" ; "%x00%x"
+                                         (car active-window)
+                                         (cdr active-window)) 16)))
           (emacs-window-id (string-to-number
                             (frame-parameter nil 'outer-window-id))))
-     (if (and
-            (= emacs-window-id on-blur--saved-window-id)
-            (not (= active-window-id on-blur--saved-window-id)))
-       (progn
-         (run-hooks 'on-blur-hook)
-         (message "deactivated"))
-       (progn
-         (message "activated")
-         (setq on-blur--saved-window-id 0)))
-     (setq on-blur--saved-window-id active-window-id)
-     (run-with-timer 1 nil 'on-blur--refresh)))
 
- (setq on-blur-hook nil)
- (add-hook 'on-blur-hook
+     (when (not (= active-window-id old-active-window-id))
+         (if (= emacs-window-id active-window-id)
+             (progn
+               (run-hooks 'on-focus-in-hook))
+             (progn
+               (run-hooks 'on-focus-out-hook)))
+         (setq old-active-window-id active-window-id))
+     (setq on-blur-timer
+      (run-with-timer 1 nil 'on-blur--refresh))))
+
+ (setq on-focus-out-hook nil
+       on-focus-in-hook nil)
+ (add-hook 'on-focus-in-hook
            #'(lambda ()
-               (message "cursor %s , buffer %s" cursor-type (current-buffer))
-               (if reader-mode-smooth-step-active
+               (message "focus IN cursor %s , buffer %s" cursor-type (current-buffer))))
+ (cancel-timer on-blur-timer)
+ (on-blur--refresh)
+ )
+
+
+
+ (add-hook 'on-focus-out-hook
+           #'(lambda ()
+               (message "focus OUT cursor %s , buffer %s" cursor-type (current-buffer))
+               (if (and reader-mode
+                        (boundp 'reader-mode-smooth-step-active)
+                        reader-mode-smooth-step-active)
                    (run-hooks 'reader-mode-pause-hook))
                (reader-pause)))
- (on-blur--refresh))
 
 ;;}}
 
@@ -355,3 +368,18 @@
 
 (provide 'reader-config)
 ;;; reader-config.el ends here
+
+(run-with-timer 10 nil
+
+                #'(lambda ()
+                    (let* ((active-window (x-window-property
+                                           "_NET_ACTIVE_WINDOW" nil "WINDOW" 0 nil t))
+                           (active-window-id (if (numberp active-window)
+                                                 active-window
+                                                 (string-to-number
+                                                  (format "%x%x"
+                                                          (car active-window)
+                                                          (cdr active-window)) 16)))
+                           (emacs-window-id (string-to-number
+                                             (frame-parameter nil 'outer-window-id))))
+                      (message "emacs id %x aw id %x" emacs-window-id active-window-id))))
