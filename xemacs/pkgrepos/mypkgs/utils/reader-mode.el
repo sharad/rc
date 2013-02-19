@@ -61,10 +61,9 @@
 (defvar reader-repeat 0.25 "repeat interval")
 
 
-(testing
- (setq
-  reader-mode-resume-hook nil
-  reader-mode-pause-hook nil))
+(setq
+ reader-mode-resume-hook nil
+ reader-mode-pause-hook nil)
 
 
 ;; (run-with-timer 10 nil #'message "hl-line-when-idle-p %s" hl-line-when-idle-p)
@@ -257,13 +256,11 @@
     (if reader-mode (smooth-read)))
 
   (when (and
-       reader-mode
-       (boundp 'smooth-step-timer)
-       smooth-step-timer)
+         reader-mode
+         (boundp 'smooth-step-timer)
+         smooth-step-timer)
     (run-hooks 'reader-mode-resume-hook)
-    (add-hook 'pre-command-hook #'pause-smooth-read)
-    ;; (set (make-local-variable 'reader-mode-smooth-step-active) t)
-    ))
+    (add-hook 'pre-command-hook #'pause-smooth-read)))
 
 (defun cancel-smooth-read ()
   (interactive)
@@ -281,8 +278,10 @@
 ;;}}
 
 ;;{{ http://stackoverflow.com/questions/1230245/how-to-automatically-save-files-on-lose-focus-in-emacs/13917428#13917428
-(when (and (featurep 'x) window-system)
- (defvar on-blur--saved-window-id 0 "Last known focused window.")
+(deh-section "Focus"
+ ;; when (and
+ ;;       (featurep 'x)
+ ;;       window-system)
  (defvar on-blur--timer nil "Timer refreshing known focused window.")
 
  (setq old-active-window-id 0)
@@ -303,19 +302,19 @@
 
      (when (not (= active-window-id old-active-window-id))
          (if (= emacs-window-id active-window-id)
-             (progn
-               (run-hooks 'on-focus-in-hook))
-             (progn
-               (run-hooks 'on-focus-out-hook)))
+             (run-hooks 'on-focus-in-hook)
+             (run-hooks 'on-focus-out-hook))
          (setq old-active-window-id active-window-id))
-     (setq on-blur-timer
+     (setq on-blur--timer
       (run-with-timer 1 nil 'on-blur--refresh))))
 
  (setq on-focus-out-hook nil
        on-focus-in-hook nil)
 
- (cancel-timer on-blur-timer)
- (on-blur--refresh))
+ (if (and (boundp 'on-blur--timer)
+          on-blur--timer)
+     (cancel-timer on-blur--timer))
+ (on-blur--refresh)
 
 
 
@@ -323,68 +322,59 @@
            #'(lambda ()
                (message "focus OUT cursor %s , buffer %s" cursor-type (current-buffer))
                (when reader-mode
-                 (pause-smooth-read)
+                 (when (member #'pause-smooth-read pre-command-hook)
+                   (pause-smooth-read)
+                   (message "running pause"))
                  (reader-pause))))
 
 
-(add-hook 'on-focus-in-hook
-          #'(lambda ()
-              (message "focus IN cursor %s , buffer %s" cursor-type (current-buffer))
-              (when reader-mode
-                (reader-resume))))
+ (add-hook 'on-focus-in-hook
+           #'(lambda ()
+               (message "focus IN cursor %s , buffer %s" cursor-type (current-buffer))
+               (when reader-mode
+                 (reader-resume)))))
 
 ;;}}
 
 
-;; (when nil                               ;Old deprecated
-;;   (defun* call-at-steps (&key (count 100) (micros 100) (fn 'next-line))
-;;     (loop repeat count do
-;;          (progn
-;;            (funcall fn)
-;;            (sit-for 0 micros))))
-
-;;   (defun smooth-next-line ()
-;;     (interactive)
-;;     (call-at-steps :fn 'next-line))
-
-;;   (defun smooth-forward-char ()
-;;     (interactive)
-;;     (call-at-steps :count 10000 :fn 'forward-char))
-
-;;   (defun smooth-step (num key micros)
-;;     (interactive "p num: \nkkey: \nnmicrosecs: ")
-;;     ;; (let ((cmd (key-binding (read-key-sequence "safds: ") t)))
-;;     (let ((cmd (key-binding key t))
-;;           (num (if (> num 1) num 100))
-;;           (micros (if (> micros 1) micros 100))
-;;           )
-
-;;       ;; (message num)
-;;       (call-at-steps :count num :micros micros :fn cmd)))
-
-
-
-;;   (defun smooth-read ()
-;;     (interactive)
-;;     (call-at-steps :micros 4800 :fn '(lambda ()
-;;                                       (forward-sentence)
-;;                                       ;; (speechd-speak-read-sentence)
-;;                                       ))))
-
 (provide 'reader-config)
 ;;; reader-config.el ends here
 
-(run-with-timer 10 nil
+(testing
+ (run-with-timer 10 nil
+                 #'(lambda ()
+                     (let* ((active-window (x-window-property
+                                            "_NET_ACTIVE_WINDOW" nil "WINDOW" 0 nil t))
+                            (active-window-id (if (numberp active-window)
+                                                  active-window
+                                                  (string-to-number
+                                                   (format "%x%x"
+                                                           (car active-window)
+                                                           (cdr active-window)) 16)))
+                            (emacs-window-id (string-to-number
+                                              (frame-parameter nil 'outer-window-id))))
+                       (message "emacs id %x aw id %x" emacs-window-id active-window-id))))
 
-                #'(lambda ()
-                    (let* ((active-window (x-window-property
-                                           "_NET_ACTIVE_WINDOW" nil "WINDOW" 0 nil t))
-                           (active-window-id (if (numberp active-window)
-                                                 active-window
-                                                 (string-to-number
-                                                  (format "%x%x"
-                                                          (car active-window)
-                                                          (cdr active-window)) 16)))
-                           (emacs-window-id (string-to-number
-                                             (frame-parameter nil 'outer-window-id))))
-                      (message "emacs id %x aw id %x" emacs-window-id active-window-id))))
+
+ (setq t1 (run-with-timer 10 10 #'message "abcd"))
+
+
+ (progn
+   (timer-activate t1 )
+   (message "Activate"))
+
+
+ (progn
+   (timer-activate t1 t)
+   (message "Deactivate"))
+
+
+ (message "%s"
+          (timer--triggered t1))
+
+
+
+ (run-with-timer 10 nil #'(lambda ()
+                            (if (member #'pause-smooth-read pre-command-hook)
+                                (message "yes")
+                                (message "no")))))
