@@ -1,4 +1,4 @@
-;;; reader-config.el --- Reader Config
+;;; reader-mode.el --- Reader Config
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -172,6 +172,8 @@
         (set (make-local-variable 'reader-repeat) reader-repeat)
         (set (make-local-variable 'smooth-step-timer) nil)
 
+        (set (make-local-variable 'reader-mode-buffer) (current-buffer))
+
         ;; (add-hook 'pre-command-hook #'pause-smooth-read)
 
         (set (make-local-variable 'reader-idle-timer)
@@ -192,6 +194,7 @@
 (defun reader-pause (&optional auto)
   (interactive)
   (when (and reader-mode
+             (eq reader-mode-buffer (current-buffer))
              reader-idle-timer)
     (cancel-timer reader-idle-timer)
     (set (make-local-variable 'reader-idle-timer) nil)
@@ -203,6 +206,7 @@
 (defun reader-resume ()
   (interactive)
   (when (and reader-mode
+             (eq reader-mode-buffer (current-buffer))
              (null reader-idle-timer))
     (set (make-local-variable 'reader-idle-timer)
              (run-with-idle-timer
@@ -223,7 +227,8 @@
 
 (defun smooth-read ()
   ;; (let ((cmd (key-binding (read-key-sequence "safds: ") t)))
-  (when reader-mode
+  (when (and reader-mode
+             (eq reader-mode-buffer (current-buffer)))
     (set (make-local-variable 'smooth-step-timer)
          (run-with-timer 1 reader-repeat
                          (lambda (cmdx)
@@ -240,27 +245,35 @@
   (interactive)
   (when (and
          reader-mode
+         (eq reader-mode-buffer (current-buffer))
          (boundp 'smooth-step-timer)
          smooth-step-timer)
     (timer-activate smooth-step-timer t)
-    (run-hooks 'reader-mode-pause-hook)
+    (if (eq reader-mode-buffer
+           (current-buffer))
+        (run-hooks 'reader-mode-pause-hook))
+    (message "pause-smooth-read: removing pause-smooth-read from pre-command-hook")
     (remove-hook 'pre-command-hook #'pause-smooth-read)
     ;; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
     ))
 
 (defun resume-smooth-read ()
-  (if (and
-       (boundp 'smooth-step-timer)
-       smooth-step-timer)
-    (timer-activate smooth-step-timer)
-    (if reader-mode (smooth-read)))
+  (if (eq reader-mode-buffer (current-buffer))
+      (if (and
+           (boundp 'smooth-step-timer)
+           smooth-step-timer)
+          (timer-activate smooth-step-timer)
+          (if reader-mode (smooth-read)))
 
-  (when (and
-         reader-mode
-         (boundp 'smooth-step-timer)
-         smooth-step-timer)
-    (run-hooks 'reader-mode-resume-hook)
-    (add-hook 'pre-command-hook #'pause-smooth-read)))
+      (when (and
+             reader-mode
+             (boundp 'smooth-step-timer)
+             smooth-step-timer)
+        (if (eq reader-mode-buffer
+               (current-buffer))
+            (run-hooks 'reader-mode-resume-hook))
+        (message "resume-smooth-read: adding pause-smooth-read from pre-command-hook")
+        (add-hook 'pre-command-hook #'pause-smooth-read))))
 
 (defun cancel-smooth-read ()
   (interactive)
@@ -337,8 +350,8 @@
 ;;}}
 
 
-(provide 'reader-config)
-;;; reader-config.el ends here
+(provide 'reader-mode)
+;;; reader-mode.el ends here
 
 (testing
  (run-with-timer 10 nil
@@ -356,7 +369,7 @@
                        (message "emacs id %x aw id %x" emacs-window-id active-window-id))))
 
 
- (setq t1 (run-with-timer 10 10 #'message "abcd"))
+ ;; (setq t1 (run-with-timer 10 10 #'message "abcd"))
 
 
  (progn
@@ -374,7 +387,8 @@
 
 
 
- (run-with-timer 10 nil #'(lambda ()
+ (run-with-timer 20 nil #'(lambda ()
+                            (message "pre-command-hook: %s" pre-command-hook)
                             (if (member #'pause-smooth-read pre-command-hook)
                                 (message "yes")
                                 (message "no")))))
