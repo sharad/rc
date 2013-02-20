@@ -65,6 +65,7 @@
  reader-mode-resume-hook nil
  reader-mode-pause-hook nil)
 
+(require 'centered-cursor-mode)
 
 ;; (run-with-timer 10 nil #'message "hl-line-when-idle-p %s" hl-line-when-idle-p)
 
@@ -253,12 +254,14 @@
            (current-buffer))
         (run-hooks 'reader-mode-pause-hook))
     (message "pause-smooth-read: removing pause-smooth-read from pre-command-hook")
+    (unless (member #'pause-smooth-read pre-command-hook)
+      (message "error: pause-smooth-read not in pre-command-hook"))
     (remove-hook 'pre-command-hook #'pause-smooth-read)
     ;; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
     ))
 
 (defun resume-smooth-read ()
-  (if (eq reader-mode-buffer (current-buffer))
+  (when (eq reader-mode-buffer (current-buffer))
       (if (and
            (boundp 'smooth-step-timer)
            smooth-step-timer)
@@ -269,11 +272,10 @@
              reader-mode
              (boundp 'smooth-step-timer)
              smooth-step-timer)
-        (if (eq reader-mode-buffer
-               (current-buffer))
-            (run-hooks 'reader-mode-resume-hook))
-        (message "resume-smooth-read: adding pause-smooth-read from pre-command-hook")
-        (add-hook 'pre-command-hook #'pause-smooth-read))))
+          (if (eq reader-mode-buffer (current-buffer))
+              (run-hooks 'reader-mode-resume-hook))
+          (message "resume-smooth-read: adding pause-smooth-read from pre-command-hook")
+          (add-hook 'pre-command-hook #'pause-smooth-read))))
 
 (defun cancel-smooth-read ()
   (interactive)
@@ -353,42 +355,42 @@
 (provide 'reader-mode)
 ;;; reader-mode.el ends here
 
-(testing
- (run-with-timer 10 nil
-                 #'(lambda ()
-                     (let* ((active-window (x-window-property
-                                            "_NET_ACTIVE_WINDOW" nil "WINDOW" 0 nil t))
-                            (active-window-id (if (numberp active-window)
-                                                  active-window
-                                                  (string-to-number
-                                                   (format "%x%x"
-                                                           (car active-window)
-                                                           (cdr active-window)) 16)))
-                            (emacs-window-id (string-to-number
-                                              (frame-parameter nil 'outer-window-id))))
-                       (message "emacs id %x aw id %x" emacs-window-id active-window-id))))
+;; (testing
+;;  (run-with-timer 10 nil
+;;                  #'(lambda ()
+;;                      (let* ((active-window (x-window-property
+;;                                             "_NET_ACTIVE_WINDOW" nil "WINDOW" 0 nil t))
+;;                             (active-window-id (if (numberp active-window)
+;;                                                   active-window
+;;                                                   (string-to-number
+;;                                                    (format "%x%x"
+;;                                                            (car active-window)
+;;                                                            (cdr active-window)) 16)))
+;;                             (emacs-window-id (string-to-number
+;;                                               (frame-parameter nil 'outer-window-id))))
+;;                        (message "emacs id %x aw id %x" emacs-window-id active-window-id))))
 
 
- ;; (setq t1 (run-with-timer 10 10 #'message "abcd"))
+;;  (setq t1 (run-with-timer 10 10 #'message "abcd"))
 
 
- (progn
-   (timer-activate t1 )
-   (message "Activate"))
+;;  (progn
+;;    (timer-activate t1 )
+;;    (message "Activate"))
 
 
- (progn
-   (timer-activate t1 t)
-   (message "Deactivate"))
+;;  (progn
+;;    (timer-activate t1 t)
+;;    (message "Deactivate"))
 
 
- (message "%s"
-          (timer--triggered t1))
+;;  (message "%s"
+;;           (timer--triggered t1))
 
 
 
- (run-with-timer 20 nil #'(lambda ()
-                            (message "pre-command-hook: %s" pre-command-hook)
-                            (if (member #'pause-smooth-read pre-command-hook)
-                                (message "yes")
-                                (message "no")))))
+;;  (run-with-timer 20 nil #'(lambda ()
+;;                             (message "pre-command-hook: %s" pre-command-hook)
+;;                             (if (member #'pause-smooth-read pre-command-hook)
+;;                                 (message "yes")
+;;                                 (message "no")))))
