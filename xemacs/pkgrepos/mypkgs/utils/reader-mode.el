@@ -32,7 +32,7 @@
 ;; for buffer local or
 ;;     M-x global-centered-cursor-mode
 ;; for global minor mode.
-  ;; (setq ccm-vpos-init '(round (window-text-height) 2))
+;; (setq ccm-vpos-init '(round (window-text-height) 2))
   )
 
 
@@ -47,6 +47,10 @@
 
 (defvar reader-mode-smooth-read-start-hook nil "")
 (defvar reader-mode-smooth-read-end-hook nil "")
+
+(defvar reader-mode-start-hook nil "")
+(defvar reader-mode-end-hook nil "")
+
 (defvar reader-mode-resume-hook nil "")
 (defvar reader-mode-pause-hook nil "")
 
@@ -61,9 +65,24 @@
 (defvar reader-repeat 0.25 "repeat interval")
 
 
+(defvar reader-mode-config
+  '((cursor-type . nil)
+    (global-hl-line-mode . -1)
+    (hl-line-toggle-when-idle . -1)
+    (centered-cursor-mode . t)
+    (view-mode . t))
+  "Desired reader mode config")
+
+
+
+
+
 (setq
  reader-mode-resume-hook nil
  reader-mode-pause-hook nil)
+
+(defun reader-mode-get-config (key)
+  (cdr (assoc key reader-mode-config)))
 
 (require 'centered-cursor-mode)
 
@@ -73,39 +92,33 @@
           ;; stop reader
           #'(lambda ()
               ;; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
-              (when testing (message "reader-mode-pause-hook"))
+              (testing (message "reader-mode-pause-hook"))
               (if (boundp 'old-cursor-type)
                   (progn
                     (set (make-local-variable 'cursor-type) old-cursor-type)
-                    (when testing (message "pause-hook: old-cursor-type %s" old-cursor-type)))
-                  (when testing (message "no old cursor")))
+                    (testing (message "pause-hook: old-cursor-type %s" old-cursor-type)))
+                  (testing (message "no old cursor")))
               (if (boundp 'old-centered-cursor-mode)
                   (progn
                     (centered-cursor-mode (if (null old-centered-cursor-mode) -1 t))
-                    (when testing (message "pause-hook: old-centered-cursor-mode %s" old-centered-cursor-mode)))
-                  (when testing (message "no old centered")))
-              ;; (if (boundp 'old-global-hl-line-mode)
-              ;;     (progn
-              ;;       (global-hl-line-mode (if (null old-global-hl-line-mode) -1 t))
-              ;;       (message "pause-hook: old-global-hl-line-mode %s" old-global-hl-line-mode))
-              ;;     (message "no old-global-hl-line-mode"))
+                    (testing (message "pause-hook: old-centered-cursor-mode %s" old-centered-cursor-mode)))
+                  (testing (message "no old centered")))
               (if (boundp 'old-hl-line-when-idle-p)
                   (progn
                     (hl-line-toggle-when-idle (if (null old-hl-line-when-idle-p) -1 1))
                     (hl-line-toggle-when-idle (if (null gold-hl-line-when-idle-p) -1 1))
-                    (when testing
+                    (testing
                       (message "pause-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p)))
-                  (when testing (message "no old hl")))
+                  (testing (message "no old hl")))
               (if (boundp 'old-view-mode)
                   (progn
                       (view-mode (if (null old-view-mode) -1 t))
-                      (when testing (message "pause-hook: old-view-mode %s" old-view-mode)))
-                  (when testing (message "no old view")))
+                      (testing (message "pause-hook: old-view-mode %s" old-view-mode)))
+                  (testing (message "no old view")))
 
-              (when testing
+              (testing
                 (message "old values:")
                 (message "pause-hook: old-cursor-type %s" old-cursor-type)
-                ;; (message "pause-hook: old-global-hl-line-mode %s" old-global-global-hl-line-mode)
                 (message "pause-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p)
                 (message "pause-hook: old-centered-cursor-mode %s" old-centered-cursor-mode)
                 (message "pause-hook: old-view-mode %s" old-view-mode)
@@ -113,7 +126,6 @@
                 (message "values:")
 
                 (message "pause-hook: cursor-type %s" cursor-type)
-                ;; (message "pause-hook: global-hl-line-mode %s" global-hl-line-mode)
                 (message "pause-hook: hl-line-when-idle-p %s" hl-line-when-idle-p)
                 (message "pause-hook: centered-cursor-mode %s" centered-cursor-mode)
                 (message "pause-hook: view-mode %s" view-mode))
@@ -123,23 +135,25 @@
           ;; start reader
           #'(lambda ()
 
-              (when testing
+              (testing
                 (message "reader-mode-resume-hook"))
-              ; (set (make-local-variable 'reader-mode-smooth-step-active) t)
               (set (make-local-variable 'old-cursor-type) cursor-type)
-              (set (make-local-variable 'cursor-type) nil)
+              (set (make-local-variable 'cursor-type)
+                   (reader-mode-get-config 'cursor-type))
               (set (make-local-variable 'old-global-hl-line-mode) global-hl-line-mode)
-              (global-hl-line-mode -1)
+              (global-hl-line-mode
+               (reader-mode-get-config 'global-hl-line-mode))
               (set (make-local-variable 'old-hl-line-when-idle-p) hl-line-when-idle-p)
               (setq gold-hl-line-when-idle-p hl-line-when-idle-p)
-              (hl-line-toggle-when-idle -1)
+              (hl-line-toggle-when-idle
+               (reader-mode-get-config 'hl-line-toggle-when-idle))
               (set (make-local-variable 'old-centered-cursor-mode)
                    centered-cursor-mode)
-              (centered-cursor-mode t)
+              (centered-cursor-mode (reader-mode-get-config 'centered-cursor-mode))
               (set (make-local-variable 'old-view-mode) view-mode)
-              (view-mode t)
+              (view-mode  (reader-mode-get-config 'view-mode))
 
-              (when testing
+              (testing
                   (message "old values:")
                   (message "resume-hook: old-cursor-type %s" old-cursor-type)
                   (message "resume-hook: old-global-hl-line-mode %s" old-global-hl-line-mode)
@@ -158,24 +172,63 @@
               (message nil)))
 
 
+(add-hook 'reader-mode-start-hook
+          #'(lambda ()
+              (progn
+                (set (make-local-variable 'before-reader-mode-cursor-type) cursor-type)
+                (set (make-local-variable 'before-reader-mode-global-hl-line-mode) global-hl-line-mode)
+                (set (make-local-variable 'before-reader-mode-hl-line-when-idle-p) hl-line-when-idle-p)
+                (setq gbefore-reader-mode-hl-line-when-idle-p hl-line-when-idle-p)
+                (set (make-local-variable 'before-reader-mode-centered-cursor-mode) centered-cursor-mode)
+                (set (make-local-variable 'before-reader-mode-view-mode) view-mode))))
+
+
+
+(add-hook 'reader-mode-end-hook
+          #'(lambda ()
+              (progn
+                (set (make-local-variable 'cursor-type) before-reader-mode-cursor-type)
+                (global-hl-line-mode (if (null before-reader-mode-global-hl-line-mode) -1 t))
+                (hl-line-toggle-when-idle (if (null before-reader-mode-hl-line-when-idle-p) -1 t))
+                (centered-cursor-mode (if (null before-reader-mode-centered-cursor-mode) -1 t))
+                (view-mode  (if (null before-reader-mode-view-mode) -1 t)))))
+
 
 (define-minor-mode reader-mode
     "Prepare for working with collarative office project."
   :initial-value nil
-  :lighter (:eval (if (and (boundp 'reader-paused-manually) reader-paused-manually) " R[P]" " R"))
+  :lighter (:eval
+            (if (and (boundp 'reader-debug)
+                     reader-debug)
+                (concat
+                 " rd["
+                 (if reader-paused-manually "P")
+                 (if (not reader-idle-timer) "i")
+                 (if (not (and (boundp 'smooth-step-timer)
+                               (not (timer--triggered smooth-step-timer))))
+                     "s")
+                 "]")
+                (concat
+                 " rd"
+                 (if reader-paused-manually "[P]"
+                     (if (not reader-idle-timer) "[i]"
+                         (if (not (and (boundp 'smooth-step-timer)
+                                       (not (timer--triggered smooth-step-timer))))
+                             "[s]"))))))
   :global nil
   (if reader-mode
       (progn
-        ; (set (make-local-variable 'reader-mode-smooth-step-active) t)
+        (run-hooks 'reader-mode-start-hook)
+
         (set (make-local-variable 'reader-idle-time) reader-idle-time)
         (set (make-local-variable 'reader-idle-repeat-time) reader-idle-repeat-time)
         (set (make-local-variable 'reader-cmd) reader-cmd)
         (set (make-local-variable 'reader-repeat) reader-repeat)
         (set (make-local-variable 'smooth-step-timer) nil)
+        (set (make-local-variable 'reader-paused-manually) nil)
+        (set (make-local-variable 'reader-debug) nil)
 
         (set (make-local-variable 'reader-mode-buffer) (current-buffer))
-
-        ;; (add-hook 'pre-command-hook #'pause-smooth-read)
 
         (set (make-local-variable 'reader-idle-timer)
              (run-with-idle-timer
@@ -189,19 +242,19 @@
                                  (eq reader-mode-buffer (current-buffer))
                                  reader-idle-timer)
                         (cancel-timer reader-idle-timer)
+                        (set (make-local-variable 'reader-idle-timer) nil)
                         (when (and
                                (boundp 'smooth-step-timer)
                                smooth-step-timer)
                           (cancel-timer smooth-step-timer)))) t t)
-
-        (when testing (message "hi reader mode %s" reader-idle-timer)))
+        (testing (message "hi reader mode %s" reader-idle-timer)))
       (progn
-        ; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
         (remove-hook 'pre-command-hook #'pause-smooth-read)
         (cancel-timer reader-idle-timer)
         (cancel-smooth-read)
         (set (make-local-variable 'reader-idle-timer) nil)
-        (when testing (message "by reader mode"))))
+        (testing (message "by reader mode"))
+        (run-hooks 'reader-mode-end-hook)))
   (message nil))
 
 (defun reader-pause (&optional auto)
@@ -215,14 +268,14 @@
            (boundp 'smooth-step-timer)
            smooth-step-timer)
       (timer-activate smooth-step-timer t))
-    (message "called reader-pause")
-    (set (make-local-variable 'reader-paused-manually) (called-interactively-p))))
+    (testing (message "called reader-pause"))
+    (set (make-local-variable 'reader-paused-manually) (called-interactively-p 'interactive))))
 
 (defun reader-resume ()
   (interactive)
   (when (and reader-mode
              (if reader-paused-manually
-                 (called-interactively-p)
+                 (called-interactively-p 'interactive)
                  t)
              (eq reader-mode-buffer (current-buffer))
              (null reader-idle-timer))
@@ -231,10 +284,8 @@
               reader-idle-time
               reader-idle-repeat-time
               #'resume-smooth-read))
-    (message "called reader-resume")
+    (testing (message "called reader-resume"))
     (set (make-local-variable 'reader-paused-manually) nil)))
-
-; (run-with-timer reader-idle-time nil #'timer-activate reader-idle-timer)))
 
 (defun reader-show-timers ()
   (interactive)
@@ -246,18 +297,15 @@
       (message "no smooth-step-timer")))
 
 (defun smooth-read ()
-  ;; (let ((cmd (key-binding (read-key-sequence "safds: ") t)))
   (when (and reader-mode
              (eq reader-mode-buffer (current-buffer)))
     (set (make-local-variable 'smooth-step-timer)
          (run-with-timer 1 reader-repeat
                          (lambda (cmdx)
-                           (when ;; smooth-read-active
-                               (and reader-idle-timer
-                                    smooth-step-timer)
+                           (when (and reader-idle-timer
+                                      smooth-step-timer)
                              (call-interactively cmdx)
                              (run-hooks 'post-command-hook)))
-                         ;; #'call-interactively
                          reader-cmd))
     (run-hooks 'reader-mode-smooth-read-start-hook)))
 
@@ -272,9 +320,10 @@
     (if (eq reader-mode-buffer
            (current-buffer))
         (run-hooks 'reader-mode-pause-hook))
-    (message "pause-smooth-read: removing pause-smooth-read from pre-command-hook")
-    (unless (member #'pause-smooth-read pre-command-hook)
-      (message "error: pause-smooth-read not in pre-command-hook(%s)" pre-command-hook))
+    (testing
+     (message "pause-smooth-read: removing pause-smooth-read from pre-command-hook")
+     (unless (member #'pause-smooth-read pre-command-hook)
+       (message "error: pause-smooth-read not in pre-command-hook(%s)" pre-command-hook)))
     (remove-hook 'pre-command-hook #'pause-smooth-read t)
     ;; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
     ))
@@ -294,8 +343,10 @@
         (if (eq reader-mode-buffer (current-buffer))
             (run-hooks 'reader-mode-resume-hook))
         (if (add-hook 'pre-command-hook #'pause-smooth-read t t)
-            (message "resume-smooth-read: added pause-smooth-read to pre-command-hook(%s)" pre-command-hook)
-            (message "failed")))))
+            (testing
+             (message "resume-smooth-read: added pause-smooth-read to pre-command-hook(%s)" pre-command-hook))
+            (testing
+             (message "failed"))))))
 
 (defun cancel-smooth-read ()
   (interactive)
@@ -355,17 +406,20 @@
 
  (add-hook 'on-focus-out-hook
            #'(lambda ()
-               (message "focus OUT cursor %s , buffer %s" cursor-type (current-buffer))
+               (testing
+                (message "focus OUT cursor %s , buffer %s" cursor-type (current-buffer)))
                (when reader-mode
                  (when (member #'pause-smooth-read pre-command-hook)
                    (pause-smooth-read)
-                   (message "running pause"))
+                   (testing
+                    (message "running pause")))
                  (reader-pause))))
 
 
  (add-hook 'on-focus-in-hook
            #'(lambda ()
-               (message "focus IN cursor %s , buffer %s" cursor-type (current-buffer))
+               (testing
+                (message "focus IN cursor %s , buffer %s" cursor-type (current-buffer)))
                (when reader-mode
                  (reader-resume)))))
 
