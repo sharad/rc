@@ -162,7 +162,7 @@
 (define-minor-mode reader-mode
     "Prepare for working with collarative office project."
   :initial-value nil
-  :lighter " Reader"
+  :lighter (:eval (if (and (boundp 'reader-paused-manually) reader-paused-manually) " R[P]" " R"))
   :global nil
   (if reader-mode
       (progn
@@ -182,6 +182,18 @@
               reader-idle-time
               reader-idle-repeat-time
               #'resume-smooth-read))
+
+        (add-hook 'kill-buffer-hook
+                  #'(lambda ()
+                      (when (and reader-mode
+                                 (eq reader-mode-buffer (current-buffer))
+                                 reader-idle-timer)
+                        (cancel-timer reader-idle-timer)
+                        (when (and
+                               (boundp 'smooth-step-timer)
+                               smooth-step-timer)
+                          (cancel-timer smooth-step-timer)))) t t)
+
         (when testing (message "hi reader mode %s" reader-idle-timer)))
       (progn
         ; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
@@ -202,18 +214,25 @@
     (when (and
            (boundp 'smooth-step-timer)
            smooth-step-timer)
-      (timer-activate smooth-step-timer t))))
+      (timer-activate smooth-step-timer t))
+    (message "called reader-pause")
+    (set (make-local-variable 'reader-paused-manually) (called-interactively-p))))
 
 (defun reader-resume ()
   (interactive)
   (when (and reader-mode
+             (if reader-paused-manually
+                 (called-interactively-p)
+                 t)
              (eq reader-mode-buffer (current-buffer))
              (null reader-idle-timer))
     (set (make-local-variable 'reader-idle-timer)
              (run-with-idle-timer
               reader-idle-time
               reader-idle-repeat-time
-              #'resume-smooth-read))))
+              #'resume-smooth-read))
+    (message "called reader-resume")
+    (set (make-local-variable 'reader-paused-manually) nil)))
 
 ; (run-with-timer reader-idle-time nil #'timer-activate reader-idle-timer)))
 
@@ -255,8 +274,8 @@
         (run-hooks 'reader-mode-pause-hook))
     (message "pause-smooth-read: removing pause-smooth-read from pre-command-hook")
     (unless (member #'pause-smooth-read pre-command-hook)
-      (message "error: pause-smooth-read not in pre-command-hook"))
-    (remove-hook 'pre-command-hook #'pause-smooth-read)
+      (message "error: pause-smooth-read not in pre-command-hook(%s)" pre-command-hook))
+    (remove-hook 'pre-command-hook #'pause-smooth-read t)
     ;; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
     ))
 
@@ -272,10 +291,11 @@
              reader-mode
              (boundp 'smooth-step-timer)
              smooth-step-timer)
-          (if (eq reader-mode-buffer (current-buffer))
-              (run-hooks 'reader-mode-resume-hook))
-          (message "resume-smooth-read: adding pause-smooth-read from pre-command-hook")
-          (add-hook 'pre-command-hook #'pause-smooth-read))))
+        (if (eq reader-mode-buffer (current-buffer))
+            (run-hooks 'reader-mode-resume-hook))
+        (if (add-hook 'pre-command-hook #'pause-smooth-read t t)
+            (message "resume-smooth-read: added pause-smooth-read to pre-command-hook(%s)" pre-command-hook)
+            (message "failed")))))
 
 (defun cancel-smooth-read ()
   (interactive)
@@ -286,7 +306,7 @@
     (run-hooks 'reader-mode-smooth-read-end-hook)
     ;; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
     )
-  (remove-hook 'pre-command-hook #'pause-smooth-read))
+  (remove-hook 'pre-command-hook #'pause-smooth-read t))
 
 ;; (funcall #'call-at-steps :micros 800 :fn #'forward-sentence)
 
