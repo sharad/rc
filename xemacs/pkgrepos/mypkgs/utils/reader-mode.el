@@ -79,7 +79,9 @@
 
 (setq
  reader-mode-resume-hook nil
- reader-mode-pause-hook nil)
+ reader-mode-pause-hook nil
+ reader-mode-start-hook nil
+ reader-mode-end-hook nil)
 
 (defun reader-mode-get-config (key)
   (cdr (assoc key reader-mode-config)))
@@ -197,6 +199,7 @@
 (define-minor-mode reader-mode
     "Prepare for working with collarative office project."
   :initial-value nil
+  :init-value nil
   :lighter (:eval
             (if (and (boundp 'reader-debug)
                      reader-debug)
@@ -205,6 +208,7 @@
                  (if reader-paused-manually "P")
                  (if (not reader-idle-timer) "i")
                  (if (not (and (boundp 'smooth-step-timer)
+                               smooth-step-timer
                                (not (timer--triggered smooth-step-timer))))
                      "s")
                  "]")
@@ -213,6 +217,7 @@
                  (if reader-paused-manually "[P]"
                      (if (not reader-idle-timer) "[i]"
                          (if (not (and (boundp 'smooth-step-timer)
+                                       smooth-step-timer
                                        (not (timer--triggered smooth-step-timer))))
                              "[s]"))))))
   :global nil
@@ -227,6 +232,7 @@
         (set (make-local-variable 'smooth-step-timer) nil)
         (set (make-local-variable 'reader-paused-manually) nil)
         (set (make-local-variable 'reader-debug) nil)
+        (set (make-local-variable 'reader-no-smooth-step-timer) (if current-prefix-arg t nil))
 
         (set (make-local-variable 'reader-mode-buffer) (current-buffer))
 
@@ -255,7 +261,8 @@
         (set (make-local-variable 'reader-idle-timer) nil)
         (testing (message "by reader mode"))
         (run-hooks 'reader-mode-end-hook)))
-  (message nil))
+  (message nil)
+  t)
 
 (defun reader-pause (&optional auto)
   (interactive)
@@ -298,7 +305,9 @@
 
 (defun smooth-read ()
   (when (and reader-mode
-             (eq reader-mode-buffer (current-buffer)))
+             (eq reader-mode-buffer (current-buffer))
+             ;; (null reader-no-smooth-step-timer)
+             )
     (set (make-local-variable 'smooth-step-timer)
          (run-with-timer 1 reader-repeat
                          (lambda (cmdx)
@@ -313,12 +322,12 @@
   (interactive)
   (when (and
          reader-mode
-         (eq reader-mode-buffer (current-buffer))
+         (eq reader-mode-buffer (current-buffer)))
+    (if (and
          (boundp 'smooth-step-timer)
          smooth-step-timer)
-    (timer-activate smooth-step-timer t)
-    (if (eq reader-mode-buffer
-           (current-buffer))
+        (timer-activate smooth-step-timer t))
+    (if (eq reader-mode-buffer (current-buffer))
         (run-hooks 'reader-mode-pause-hook))
     (testing
      (message "pause-smooth-read: removing pause-smooth-read from pre-command-hook")
@@ -330,16 +339,17 @@
 
 (defun resume-smooth-read ()
   (when (eq reader-mode-buffer (current-buffer))
+    (unless reader-no-smooth-step-timer
       (if (and
            (boundp 'smooth-step-timer)
            smooth-step-timer)
           (timer-activate smooth-step-timer)
-          (if reader-mode (smooth-read)))
+          (if reader-mode (smooth-read))))
 
       (when (and
              reader-mode
-             (boundp 'smooth-step-timer)
-             smooth-step-timer)
+             ;; (boundp 'smooth-step-timer) smooth-step-timer
+             )
         (if (eq reader-mode-buffer (current-buffer))
             (run-hooks 'reader-mode-resume-hook))
         (if (add-hook 'pre-command-hook #'pause-smooth-read t t)
@@ -424,6 +434,25 @@
                  (reader-resume)))))
 
 ;;}}
+
+
+
+
+(define-minor-mode reader-light-mode
+    "Prepare for working with collarative office project."
+  :init-value nil
+  :lighter " rl"
+  :global nil
+  (if reader-light-mode
+      (progn
+        (run-hooks 'reader-mode-start-hook)
+        (set (make-local-variable 'cursor-type)
+                   (reader-mode-get-config 'cursor-type))
+        (global-hl-line-mode (reader-mode-get-config 'global-hl-line-mode))
+        (hl-line-toggle-when-idle (reader-mode-get-config 'hl-line-toggle-when-idle))
+        (centered-cursor-mode (reader-mode-get-config 'centered-cursor-mode))
+        (view-mode  (reader-mode-get-config 'view-mode)))
+      (run-hooks 'reader-mode-end-hook)))
 
 
 (provide 'reader-mode)
