@@ -94,7 +94,9 @@
           ;; stop reader
           #'(lambda ()
               ;; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
-              (testing (message "reader-mode-pause-hook"))
+              (testing
+               (message "reader-mode-pause-hook")
+               (reader-show-timers))
               (if (boundp 'old-cursor-type)
                   (progn
                     (set (make-local-variable 'cursor-type) old-cursor-type)
@@ -138,7 +140,8 @@
           #'(lambda ()
 
               (testing
-                (message "reader-mode-resume-hook"))
+                (message "reader-mode-resume-hook")
+                (reader-show-timers))
               (set (make-local-variable 'old-cursor-type) cursor-type)
               (set (make-local-variable 'cursor-type)
                    (reader-mode-get-config 'cursor-type))
@@ -296,6 +299,7 @@
 
 (defun reader-show-timers ()
   (interactive)
+  (message "%s" (current-buffer))
   (if reader-idle-timer
       (message "reader-idle-timer %s" reader-idle-timer)
       (message "no reader-idle-timer"))
@@ -346,17 +350,17 @@
           (timer-activate smooth-step-timer)
           (if reader-mode (smooth-read))))
 
-      (when (and
-             reader-mode
-             ;; (boundp 'smooth-step-timer) smooth-step-timer
-             )
-        (if (eq reader-mode-buffer (current-buffer))
-            (run-hooks 'reader-mode-resume-hook))
-        (if (add-hook 'pre-command-hook #'pause-smooth-read t t)
-            (testing
-             (message "resume-smooth-read: added pause-smooth-read to pre-command-hook(%s)" pre-command-hook))
-            (testing
-             (message "failed"))))))
+    (when (and
+           reader-mode
+           ;; (boundp 'smooth-step-timer) smooth-step-timer
+           )
+      (if (eq reader-mode-buffer (current-buffer))
+          (run-hooks 'reader-mode-resume-hook))
+      (if (add-hook 'pre-command-hook #'pause-smooth-read t t)
+          (testing
+           (message "resume-smooth-read: added pause-smooth-read to pre-command-hook(%s)" pre-command-hook))
+          (testing
+           (message "failed"))))))
 
 (defun cancel-smooth-read ()
   (interactive)
