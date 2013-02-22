@@ -66,7 +66,9 @@
 
 
 (defvar reader-mode-config
-  '((cursor-type . nil)
+  '((mode-line-format)
+    (elscreen-display-tab)
+    (cursor-type)
     (global-hl-line-mode . -1)
     (hl-line-toggle-when-idle . -1)
     (centered-cursor-mode . t)
@@ -100,6 +102,8 @@
               (if (boundp 'old-elscreen-display-tab)
                   (progn
                     (set (make-local-variable 'elscreen-display-tab) old-elscreen-display-tab)
+                    (elscreen-notify-screen-modification 'force-immediately)
+                    ;; (elscreen-run-screen-update-hook)
                     (testing (message "pause-hook: old-elscreen-display-tab %s" old-elscreen-display-tab)))
                   (testing (message "no old cursor")))
               (if (boundp 'old-mode-line-format)
@@ -158,7 +162,8 @@
               (set (make-local-variable 'old-elscreen-display-tab) elscreen-display-tab)
               (set (make-local-variable 'elscreen-display-tab)
                    (reader-mode-get-config 'elscreen-display-tab))
-              ;; (elscreen-notify-screen-modification 'force)
+              (elscreen-notify-screen-modification 'force-immediately)
+              ;; (elscreen-run-screen-update-hook)
               (set (make-local-variable 'old-cursor-type) cursor-type)
               (set (make-local-variable 'cursor-type)
                    (reader-mode-get-config 'cursor-type))
@@ -478,6 +483,7 @@
                    (reader-mode-get-config 'mode-line-format))
         (set (make-local-variable 'elscreen-display-tab)
                    (reader-mode-get-config 'elscreen-display-tab))
+        (elscreen-notify-screen-modification 'force-immediately)
         (set (make-local-variable 'cursor-type)
                    (reader-mode-get-config 'cursor-type))
         (global-hl-line-mode (reader-mode-get-config 'global-hl-line-mode))
