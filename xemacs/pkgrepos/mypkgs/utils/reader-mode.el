@@ -97,6 +97,16 @@
               (testing
                (message "reader-mode-pause-hook")
                (reader-show-timers))
+              (if (boundp 'old-elscreen-display-tab)
+                  (progn
+                    (set (make-local-variable 'elscreen-display-tab) old-elscreen-display-tab)
+                    (testing (message "pause-hook: old-elscreen-display-tab %s" old-elscreen-display-tab)))
+                  (testing (message "no old cursor")))
+              (if (boundp 'old-mode-line-format)
+                  (progn
+                    (set (make-local-variable 'mode-line-format) old-mode-line-format)
+                    (testing (message "pause-hook: old-mode-line-format %s" old-mode-line-format)))
+                  (testing (message "no old cursor")))
               (if (boundp 'old-cursor-type)
                   (progn
                     (set (make-local-variable 'cursor-type) old-cursor-type)
@@ -142,6 +152,13 @@
               (testing
                 (message "reader-mode-resume-hook")
                 (reader-show-timers))
+              (set (make-local-variable 'old-mode-line-format) mode-line-format)
+              (set (make-local-variable 'mode-line-format)
+                   (reader-mode-get-config 'mode-line-format))
+              (set (make-local-variable 'old-elscreen-display-tab) elscreen-display-tab)
+              (set (make-local-variable 'elscreen-display-tab)
+                   (reader-mode-get-config 'elscreen-display-tab))
+              ;; (elscreen-notify-screen-modification 'force)
               (set (make-local-variable 'old-cursor-type) cursor-type)
               (set (make-local-variable 'cursor-type)
                    (reader-mode-get-config 'cursor-type))
@@ -180,6 +197,8 @@
 (add-hook 'reader-mode-start-hook
           #'(lambda ()
               (progn
+                (set (make-local-variable 'before-reader-mode-mode-line-format) mode-line-format)
+                (set (make-local-variable 'before-reader-mode-elscreen-display-tab) elscreen-display-tab)
                 (set (make-local-variable 'before-reader-mode-cursor-type) cursor-type)
                 (set (make-local-variable 'before-reader-mode-global-hl-line-mode) global-hl-line-mode)
                 (set (make-local-variable 'before-reader-mode-hl-line-when-idle-p) hl-line-when-idle-p)
@@ -192,6 +211,8 @@
 (add-hook 'reader-mode-end-hook
           #'(lambda ()
               (progn
+                (set (make-local-variable 'mode-line-format) before-reader-mode-mode-line-format)
+                (set (make-local-variable 'elscreen-display-tab) before-reader-mode-elscreen-display-tab)
                 (set (make-local-variable 'cursor-type) before-reader-mode-cursor-type)
                 (global-hl-line-mode (if (null before-reader-mode-global-hl-line-mode) -1 t))
                 (hl-line-toggle-when-idle (if (null before-reader-mode-hl-line-when-idle-p) -1 t))
@@ -243,7 +264,7 @@
              (run-with-idle-timer
               reader-idle-time
               reader-idle-repeat-time
-              #'resume-smooth-read))
+              #'resume-smooth-read (current-buffer)))
 
         (add-hook 'kill-buffer-hook
                   #'(lambda ()
@@ -293,7 +314,7 @@
              (run-with-idle-timer
               reader-idle-time
               reader-idle-repeat-time
-              #'resume-smooth-read))
+              #'resume-smooth-read (current-buffer)))
     (testing (message "called reader-resume"))
     (set (make-local-variable 'reader-paused-manually) nil)))
 
@@ -314,12 +335,13 @@
              )
     (set (make-local-variable 'smooth-step-timer)
          (run-with-timer 1 reader-repeat
-                         (lambda (cmdx)
+                         (lambda (cmdx cbuf)
                            (when (and reader-idle-timer
-                                      smooth-step-timer)
+                                      smooth-step-timer
+                                      (eq cbuf (current-buffer)))
                              (call-interactively cmdx)
                              (run-hooks 'post-command-hook)))
-                         reader-cmd))
+                         reader-cmd (current-buffer)))
     (run-hooks 'reader-mode-smooth-read-start-hook)))
 
 (defun pause-smooth-read ()
@@ -341,8 +363,10 @@
     ;; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
     ))
 
-(defun resume-smooth-read ()
-  (when (eq reader-mode-buffer (current-buffer))
+(defun resume-smooth-read (cbuf)
+  (when (and
+         (eq reader-mode-buffer (current-buffer))
+         (eq cbuf (current-buffer)))
     (unless reader-no-smooth-step-timer
       (if (and
            (boundp 'smooth-step-timer)
@@ -450,6 +474,10 @@
   (if reader-light-mode
       (progn
         (run-hooks 'reader-mode-start-hook)
+        (set (make-local-variable 'mode-line-format)
+                   (reader-mode-get-config 'mode-line-format))
+        (set (make-local-variable 'elscreen-display-tab)
+                   (reader-mode-get-config 'elscreen-display-tab))
         (set (make-local-variable 'cursor-type)
                    (reader-mode-get-config 'cursor-type))
         (global-hl-line-mode (reader-mode-get-config 'global-hl-line-mode))
