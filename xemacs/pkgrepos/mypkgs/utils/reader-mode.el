@@ -77,7 +77,20 @@
   "Desired reader mode config")
 
 
-
+(defun reader-mode-set-config (key value)
+  (interactive
+   (let* ((key (car (read-from-string
+                     (completing-read "key: "
+                                      (mapcar #'(lambda (k)
+                                                  (symbol-name (car k))) reader-mode-config)
+                                      nil
+                                      t))))
+          (value (car (read-from-string (read-from-minibuffer
+                                         (format "%s value: " key)
+                                         (format "%s" (reader-mode-get-config key)))))))
+     (list key value)))
+  (setq reader-mode-config
+   (append (list (cons key value)) reader-mode-config)))
 
 
 (setq
@@ -422,6 +435,8 @@
  ;;       (featurep 'x)
  ;;       window-system)
  (defvar on-blur--timer nil "Timer refreshing known focused window.")
+ (defvar on-focus-out-hook nil "on-focus-out-hook")
+ (defvar on-focus-in-hook nil "on-focus-in-hook")
 
  (setq old-active-window-id 0)
 
@@ -447,15 +462,11 @@
      (setq on-blur--timer
       (run-with-timer 1 nil 'on-blur--refresh))))
 
- (setq on-focus-out-hook nil
-       on-focus-in-hook nil)
 
  (if (and (boundp 'on-blur--timer)
           on-blur--timer)
      (cancel-timer on-blur--timer))
  (on-blur--refresh)
-
-
 
  (add-hook 'on-focus-out-hook
            #'(lambda ()
