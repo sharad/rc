@@ -143,23 +143,23 @@
 
 
 
-(testing
+;; (testing
 
- (bugzilla-search-bugs '("summary" "id") '(("id" . 786)))
+;;  (bugzilla-search-bugs '("summary" "id") '(("id" . 786)))
 
- (bugz/User.login '(("rememberlogin" . 0)))
+;;  (bugz/User.login '(("rememberlogin" . 0)))
 
- (bugz-bug-search '("ASSIGNED" "REOPNED" "NEW"))
+;;  (bugz-bug-search '("ASSIGNED" "REOPNED" "NEW"))
 
- (bugz-bug-get-bugs-attributes
-  '("id" "summary")
-  (cdr (assoc "bugs" (bugz-bug-search '("REOPENED")))))
+;;  (bugz-bug-get-bugs-attributes
+;;   '("id" "summary")
+;;   (cdr (assoc "bugs" (bugz-bug-search '("REOPENED")))))
 
- (bugz-bug-get-bugs-attributes
-  '("id" . "summary")
-  (cdr (assoc "bugs" (bugz-bug-search '("REOPENED")))))
+;;  (bugz-bug-get-bugs-attributes
+;;   '("id" . "summary")
+;;   (cdr (assoc "bugs" (bugz-bug-search '("REOPENED")))))
 
- (bugz-bug-search '("ASSIGNED" "REOPENED" "NEW")))
+;;  (bugz-bug-search '("ASSIGNED" "REOPENED" "NEW")))
 
 
 (provide 'bugz)

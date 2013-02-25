@@ -72,7 +72,8 @@
     (global-hl-line-mode . -1)
     (hl-line-toggle-when-idle . -1)
     (centered-cursor-mode . t)
-    (view-mode . t))
+    (view-mode . t)
+    (fullscreen . fullboth))
   "Desired reader mode config")
 
 
@@ -99,6 +100,11 @@
               (testing
                (message "reader-mode-pause-hook")
                (reader-show-timers))
+              (if (boundp 'old-fullscreen)
+                  (progn
+                    (set-frame-parameter nil 'fullscreen old-fullscreen)
+                    (testing (message "pause-hook: old-fullscreen %s" old-fullscreen)))
+                  (testing (message "no old cursor")))
               (if (boundp 'old-elscreen-display-tab)
                   (progn
                     (set (make-local-variable 'elscreen-display-tab) old-elscreen-display-tab)
@@ -156,6 +162,8 @@
               (testing
                 (message "reader-mode-resume-hook")
                 (reader-show-timers))
+              (set (make-local-variable 'old-fullscreen) (frame-parameter nil 'fullscreen))
+              (set-frame-parameter nil 'fullscreen (reader-mode-get-config 'fullscreen))
               (set (make-local-variable 'old-mode-line-format) mode-line-format)
               (set (make-local-variable 'mode-line-format)
                    (reader-mode-get-config 'mode-line-format))
@@ -202,6 +210,7 @@
 (add-hook 'reader-mode-start-hook
           #'(lambda ()
               (progn
+                (set (make-local-variable 'before-reader-mode-fullscreen) (frame-parameter nil 'fullscreen))
                 (set (make-local-variable 'before-reader-mode-mode-line-format) mode-line-format)
                 (set (make-local-variable 'before-reader-mode-elscreen-display-tab) elscreen-display-tab)
                 (set (make-local-variable 'before-reader-mode-cursor-type) cursor-type)
@@ -216,6 +225,7 @@
 (add-hook 'reader-mode-end-hook
           #'(lambda ()
               (progn
+                (set-frame-parameter nil 'fullscreen before-reader-mode-fullscreen)
                 (set (make-local-variable 'mode-line-format) before-reader-mode-mode-line-format)
                 (set (make-local-variable 'elscreen-display-tab) before-reader-mode-elscreen-display-tab)
                 (set (make-local-variable 'cursor-type) before-reader-mode-cursor-type)
