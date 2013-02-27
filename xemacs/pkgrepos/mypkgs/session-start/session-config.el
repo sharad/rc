@@ -308,7 +308,9 @@ Also returns nil if pid is nil."
   ;; see: http://desktopaid.sourceforge.net/
   (dta-hook-up))
 
-(deh-require-maybe frame-restore)
+(deh-require-maybe frame-restore
+  ;; http://www.emacswiki.org/emacs/frame-restore.el
+  )
 
 (deh-require-maybe revive)
 
