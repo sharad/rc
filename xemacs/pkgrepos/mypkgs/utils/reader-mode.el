@@ -430,7 +430,9 @@
 ;;}}
 
 ;;{{ http://stackoverflow.com/questions/1230245/how-to-automatically-save-files-on-lose-focus-in-emacs/13917428#13917428
+(require 'macros)
 (deh-section "Focus"
+  (message "deh-sec loaded")
  ;; when (and
  ;;       (featurep 'x)
  ;;       window-system)

@@ -1,4 +1,4 @@
-;;; contacts.el --- Contacts
+;;; contacts-config.el --- Contacts
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -32,8 +32,9 @@
   (defun bbdb/gnus-pop-up-bbdb-buffer-for-some-time ()
     (bbdb/gnus-pop-up-bbdb-buffer)
     (let ((w (get-buffer-window "*BBDB*")))
-      (if w
-          (run-at-time "4 sec" nil #'delete-window w))))
+      (when w
+        ;; (run-at-time "4 sec" nil #'delete-window w))))
+        (run-at-time "4 sec" nil #'old-delete-window w))))
   (define-key gnus-summary-mode-map (kbd "s-c s-v")  'bbdb/gnus-pop-up-bbdb-buffer))
 
 ;;
@@ -41,7 +42,7 @@
 (provide 'contacts-config)
 
 
-;;; contacts.el ends here
+;;; contacts-config.el ends here
 
 ;; (run-at-time "4 sec" nil #'message "Hello")
 ;; (cancel-function-timers #'message)

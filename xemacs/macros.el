@@ -144,3 +144,5 @@
 ;;   some-configuration)
 ;;}}}
 
+
+(provide 'macros)
