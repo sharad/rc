@@ -349,15 +349,17 @@ alkready should not exist.")
   (defun set-this-frame-id (frame)
     (select-frame frame)
     (message "in set-this-frame-id")
-    (let ((locatoin (fmsession-read-location)))
-      (modify-frame-parameters frame (list (cons 'frame-spec-id location)))
+    (let ((location (fmsession-read-location)))
+      (message "set-this-frame-id: %s" location)
+      (modify-frame-parameters frame
+                               (list (cons 'frame-spec-id location)))
       (fmsession-restore location)))
 
   (add-hook 'after-make-frame-functions #'set-this-frame-id t)
 
   (defun save-frame-session (frame)
     (message "in save-frame-session:")
-    (when  (frame-parameter frame 'frame-spec-id)
+    (when (frame-parameter frame 'frame-spec-id)
       (message "saved the session for %s"
                (frame-parameter frame 'frame-spec-id))
       (fmsession-store (frame-parameter frame 'frame-spec-id))))

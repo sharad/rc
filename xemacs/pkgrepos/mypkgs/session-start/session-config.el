@@ -38,20 +38,9 @@
     "elscreen"
     "The file where the elscreen tab configuration is stored.")
 
-  (defun fmsession-store (session-dir)
-    "Store the elscreen tab configuration."
-    (interactive "ssession-name:")
-    (let* (;; (session-dir (concat emacs-frame-session-directory (or
-           ;;                                                     frame-id
-           ;;                                                     (completing-read "session name: " nil))))
-           (elscreen-session (concat session-dir "/" elscreen-tab-configuration-store-filename) ))
-      (if (progn
-            (make-directory session-dir t)
-            (desktop-save session-dir))
-          (with-temp-file elscreen-session
-            (insert (prin1-to-string (elscreen-get-screen-to-name-alist)))))))
+  ;; (desktop-save (fmsession-read-location))
+  ;; (desktop-read (fmsession-read-location))
 
-  ;; (push #'elscreen-store kill-emacs-hook)
 
   (defun fmsession-read-location ()
     (concat
@@ -61,16 +50,28 @@
                       #'(lambda (dir)
                           (file-directory-p (concat emacs-frame-session-directory "/" dir))))))
 
+  (defun fmsession-store (session-dir)
+    "Store the elscreen tab configuration."
+    (interactive
+     (list (fmsession-read-location)))
+    (let ((elscreen-session (concat session-dir "/" elscreen-tab-configuration-store-filename) ))
+      (when (progn
+            (make-directory session-dir t)
+            (desktop-save session-dir))
+          (with-temp-file elscreen-session
+            (insert (prin1-to-string (elscreen-get-screen-to-name-alist)))))))
+
+  ;; (push #'elscreen-store kill-emacs-hook)
+
   (defun fmsession-restore (session-dir)
-    (interactive "ssession-name:")
     "Restore the elscreen tab configuration."
-    (let* (;; (session-dir (concat emacs-frame-session-directory (or
-           ;;                                                     frame-id
-           ;;                                                     (completing-read "session name: " nil))))
-           (elscreen-session (concat session-dir "/" elscreen-tab-configuration-store-filename))
-           (desktop-load-locked-desktop t))
+    (interactive
+     (list (fmsession-read-location)))
+    (let ((elscreen-session (concat session-dir "/" elscreen-tab-configuration-store-filename))
+          (desktop-load-locked-desktop t))
       (if (file-directory-p session-dir)
-          (if (eq (type-of (desktop-read session-dir)) 'symbol)
+          ;; (if (eq (type-of (desktop-read session-dir)) 'symbol)
+          (progn (eq (type-of (desktop-read session-dir)) 'symbol)
               (let ((screens (reverse
                               (read
                                (with-temp-buffer
