@@ -62,22 +62,24 @@
                                                                (completing-read "session name: " nil))))
            (elscreen-session (concat session-dir "/" elscreen-tab-configuration-store-filename))
            (desktop-load-locked-desktop t))
-      (if (eq (type-of (desktop-read session-dir)) 'symbol)
-          (let ((screens (reverse
-                          (read
-                           (with-temp-buffer
-                             (insert-file-contents elscreen-session)
-                             (buffer-string))))))
-            (while screens
-              (setq screen (car (car screens)))
-              (setq buffers (split-string (cdr (car screens)) ":"))
-              (if (eq screen 0)
-                  (switch-to-buffer (car buffers))
-                  (elscreen-find-and-goto-by-buffer (car buffers) t t))
-              (while (cdr buffers)
-                (switch-to-buffer-other-window (car (cdr buffers)))
-                (setq buffers (cdr buffers)))
-              (setq screens (cdr screens)))))))
+      (if (file-directory-p session-dir)
+          (if (eq (type-of (desktop-read session-dir)) 'symbol)
+              (let ((screens (reverse
+                              (read
+                               (with-temp-buffer
+                                 (insert-file-contents elscreen-session)
+                                 (buffer-string))))))
+                (while screens
+                  (setq screen (car (car screens)))
+                  (setq buffers (split-string (cdr (car screens)) ":"))
+                  (if (eq screen 0)
+                      (switch-to-buffer (car buffers))
+                      (elscreen-find-and-goto-by-buffer (car buffers) t t))
+                  (while (cdr buffers)
+                    (switch-to-buffer-other-window (car (cdr buffers)))
+                    (setq buffers (cdr buffers)))
+                  (setq screens (cdr screens)))))
+          (message "no such %s dir exists." session-dir))))
 
   ;; (elscreen-restore)
   ;;}}

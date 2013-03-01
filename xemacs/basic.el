@@ -306,6 +306,7 @@ alkready should not exist.")
     (remove-hook 'after-make-frame-functions #'sharad/enable-startup-inperrupting-feature-in-frame-once))
 
   (add-hook 'after-make-frame-functions #'sharad/enable-startup-inperrupting-feature-in-frame-once))
+  ;; (sharad/enable-startup-inperrupting-feature-in-frame-once (selected-frame))
 ;;}}
 
 ;;{{
@@ -331,6 +332,7 @@ alkready should not exist.")
     (message "removed sharad/enable-login-session-inperrupting-feature-in-frame-once"))
 
   (add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once)
+  ;; (sharad/enable-login-session-inperrupting-feature-in-frame-once (selected-frame))
 
   (defun sharad/disable-login-session-inperrupting-feature-in-frame (f)
     (when (< (length (frame-list)) 3) ;last frame then add.
@@ -342,29 +344,34 @@ alkready should not exist.")
 
 
 ;;{{
-;; (deh-section "per frame session"
+(deh-section "per frame session"
 
-;;   (defvar spec-id nil "spec id")
+  (defvar spec-id nil "spec id")
 
-;;   (defun set-this-frame-id (frame)
-;;     (message "in set-this-frame-id: %s aa" spec-id)
-;;     (when spec-id
-;;       (message "(frame-parameter frame 'frame-spec-id) to %s" spec-id)
-;;       (modify-frame-parameters frame (list (cons 'frame-spec-id spec-id)))
-;;       (elscreen-restore spec-id))
-;;     (setq spec-id nil))
+  (defun set-this-frame-id (frame)
+    (select-frame frame)
+    (message "in set-this-frame-id")
+    (let ((spec-id (read-from-minibuffer "frameid: " )))
+      (modify-frame-parameters frame (list (cons 'frame-spec-id spec-id)))
+      (elscreen-restore spec-id)
+      ))
 
-;;   (add-hook 'after-make-frame-functions #'set-this-frame-id)
+  ;; (add-hook 'after-make-frame-functions #'set-this-frame-id t)
 
-;;   (defun save-frame-session (frame)
-;;     (message "in save-frame-session:")
-;;     (when  (frame-parameter frame 'frame-spec-id)
-;;       (message "saved the session for %s"
-;;                (frame-parameter frame 'frame-spec-id))
-;;       (elscreen-store (frame-parameter frame 'frame-spec-id))))
+  (defun save-frame-session (frame)
+    (message "in save-frame-session:")
+    (when  (frame-parameter frame 'frame-spec-id)
+      (message "saved the session for %s"
+               (frame-parameter frame 'frame-spec-id))
+      (elscreen-store (frame-parameter frame 'frame-spec-id))))
 
-;;   (add-hook 'delete-frame-functions #'save-frame-session))
+  (add-hook 'delete-frame-functions #'save-frame-session t))
 
+;; (frame-parameter (selected-frame) 'frame-spec-id)
+
+after-make-frame-functions
 ;;}}
+
+
 
 (defalias 'make-local-hook 'ignore)
