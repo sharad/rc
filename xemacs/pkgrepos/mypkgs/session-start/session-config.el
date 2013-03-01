@@ -34,7 +34,7 @@
   ;;{{ http://stackoverflow.com/a/13711234
   ;; from: http://stackoverflow.com/questions/847962/what-alternate-session-managers-are-available-for-emacs
   (defvar *emacs-frame-session-directory*
-    "~/.emacs.d/session/frames/"
+    "~/.emacs.d/session/frames"
     "The directory where the emacs configuration files are stored.")
 
   (defvar *elscreen-tab-configuration-store-filename*
@@ -75,13 +75,60 @@
   ;; (x-window-property "_NET_DESKTOP_NAMES" nil nil 0 nil nil)
   ;; (x-window-property "_NET_WM_NAME" nil nil 0 nil t)
 
+  (fmsession-read-location-internal)
+
   (defun fmsession-read-location (&optional initial-input)
+    (let ((used t)
+          (sel))
+      (while used
+        (setq used
+              (member
+               (setq sel (fmsession-read-location-internal initial-input))
+               (remove-if #'null
+                          (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list))))))
+      sel))
+
+
+  ;; (not
+  ;;  (member
+  ;;   "~/.emacs.d/session/frames/nmtest"
+  ;;   (remove-if #'null
+  ;;              (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list)))))
+
+;; (defun testa (dir)
+;;   (and
+;;    (file-directory-p
+;;     (concat *emacs-frame-session-directory* "/" dir))
+;;    (not
+;;     (member
+;;      (concat *emacs-frame-session-directory* "/" dir)
+;;      (remove-if #'null
+;;                 (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list)))))))
+
+;; (file-directory-p
+;;     (concat *emacs-frame-session-directory* "/" "nmtest"))
+;; (not
+;;  (member
+;;   (concat *emacs-frame-session-directory* "/" "nmtest")
+;;   (remove-if #'null
+;;              (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list)))))
+
+;; (testa "nmtest")
+
+  (defun fmsession-read-location-internal (&optional initial-input)
     (concat
-     *emacs-frame-session-directory*
+     *emacs-frame-session-directory* "/"
      (ido-completing-read "Session: "
                           (remove-if-not
                            #'(lambda (dir)
-                               (file-directory-p (concat *emacs-frame-session-directory* "/" dir)))
+                               (and
+                                (file-directory-p
+                                 (concat *emacs-frame-session-directory* "/" dir))
+                                (not
+                                 (member
+                                  (concat *emacs-frame-session-directory* "/" dir)
+                                  (remove-if #'null
+                                             (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list)))))))
                            (directory-files *emacs-frame-session-directory* nil "[a-zA-Z]+"))
                           nil
                           nil
