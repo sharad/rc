@@ -38,12 +38,12 @@
     "elscreen"
     "The file where the elscreen tab configuration is stored.")
 
-  (defun elscreen-store (frame-id)
+  (defun fmsession-store (session-dir)
     "Store the elscreen tab configuration."
     (interactive "ssession-name:")
-    (let* ((session-dir (concat emacs-frame-session-directory (or
-                                                               frame-id
-                                                               (completing-read "session name: " nil))))
+    (let* (;; (session-dir (concat emacs-frame-session-directory (or
+           ;;                                                     frame-id
+           ;;                                                     (completing-read "session name: " nil))))
            (elscreen-session (concat session-dir "/" elscreen-tab-configuration-store-filename) ))
       (if (progn
             (make-directory session-dir t)
@@ -53,13 +53,20 @@
 
   ;; (push #'elscreen-store kill-emacs-hook)
 
-  (defun elscreen-restore (frame-id)
+  (defun fmsession-read-location ()
+    (concat
+     emacs-frame-session-directory
+     (completing-read "Session: "
+                      (directory-files emacs-frame-session-directory nil "[a-zA-Z]+")
+                      #'(lambda (dir)
+                          (file-directory-p (concat emacs-frame-session-directory "/" dir))))))
+
+  (defun fmsession-restore (session-dir)
     (interactive "ssession-name:")
     "Restore the elscreen tab configuration."
-    (interactive)
-    (let* ((session-dir (concat emacs-frame-session-directory (or
-                                                               frame-id
-                                                               (completing-read "session name: " nil))))
+    (let* (;; (session-dir (concat emacs-frame-session-directory (or
+           ;;                                                     frame-id
+           ;;                                                     (completing-read "session name: " nil))))
            (elscreen-session (concat session-dir "/" elscreen-tab-configuration-store-filename))
            (desktop-load-locked-desktop t))
       (if (file-directory-p session-dir)

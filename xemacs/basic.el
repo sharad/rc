@@ -346,30 +346,27 @@ alkready should not exist.")
 ;;{{
 (deh-section "per frame session"
 
-  (defvar spec-id nil "spec id")
-
   (defun set-this-frame-id (frame)
     (select-frame frame)
     (message "in set-this-frame-id")
-    (let ((spec-id (read-from-minibuffer "frameid: " )))
-      (modify-frame-parameters frame (list (cons 'frame-spec-id spec-id)))
-      (elscreen-restore spec-id)
-      ))
+    (let ((locatoin (fmsession-read-location)))
+      (modify-frame-parameters frame (list (cons 'frame-spec-id location)))
+      (fmsession-restore location)))
 
-  ;; (add-hook 'after-make-frame-functions #'set-this-frame-id t)
+  (add-hook 'after-make-frame-functions #'set-this-frame-id t)
 
   (defun save-frame-session (frame)
     (message "in save-frame-session:")
     (when  (frame-parameter frame 'frame-spec-id)
       (message "saved the session for %s"
                (frame-parameter frame 'frame-spec-id))
-      (elscreen-store (frame-parameter frame 'frame-spec-id))))
+      (fmsession-store (frame-parameter frame 'frame-spec-id))))
 
   (add-hook 'delete-frame-functions #'save-frame-session t))
 
 ;; (frame-parameter (selected-frame) 'frame-spec-id)
 
-after-make-frame-functions
+;; after-make-frame-functions
 ;;}}
 
 
