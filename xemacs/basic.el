@@ -364,7 +364,7 @@ alkready should not exist.")
                (frame-parameter frame 'frame-spec-id))
       (fmsession-store (frame-parameter frame 'frame-spec-id))))
 
-  (add-hook 'delete-frame-functions #'save-frame-session t))
+  (add-hook 'delete-frame-functions #'save-frame-session))
 
 ;; (frame-parameter (selected-frame) 'frame-spec-id)
 

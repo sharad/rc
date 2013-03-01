@@ -28,38 +28,75 @@
 (require 'general-testing)
 
 (deh-section "session per frames"
+
+  (setq desktop-base-file-name "session.desktop")
+
   ;;{{ http://stackoverflow.com/a/13711234
   ;; from: http://stackoverflow.com/questions/847962/what-alternate-session-managers-are-available-for-emacs
-  (defvar emacs-frame-session-directory
+  (defvar *emacs-frame-session-directory*
     "~/.emacs.d/session/frames/"
     "The directory where the emacs configuration files are stored.")
 
-  (defvar elscreen-tab-configuration-store-filename
+  (defvar *elscreen-tab-configuration-store-filename*
     "elscreen"
     "The file where the elscreen tab configuration is stored.")
 
   ;; (desktop-save (fmsession-read-location))
   ;; (desktop-read (fmsession-read-location))
 
+  (require 'misc-config)
 
-  (defun fmsession-read-location ()
+  (defun elscreen-session-store (elscreen-session)
+    (with-temp-file elscreen-session
+      (insert (prin1-to-string (elscreen-get-screen-to-name-alist)))))
+
+  ;; (defun elscreen-session-restore (elscreen-session)
+  ;;   (let ((screens (reverse (sharad/read-file elscreen-session))))
+  ;;     (elscreen-set-screen-to-name-alist-cache screens)))
+
+  (defun elscreen-session-restore (elscreen-session)
+    (let ((screens (reverse (sharad/read-file elscreen-session))))
+      (while screens
+        ; (message "start: screen-to-name-alist %s" (reverse (elscreen-get-screen-to-name-alist)))
+        (setq screen (car (car screens)))
+        ; (message "screen: %s buffer: %s" screen (cdr (car screens)))
+        (setq buffers (split-string (cdr (car screens)) ":"))
+        (if (eq screen 0)
+            (switch-to-buffer (car buffers))
+            (elscreen-find-and-goto-by-buffer (car buffers) t t))
+        (while (cdr buffers)
+          (switch-to-buffer-other-window (car (cdr buffers)))
+          (setq buffers (cdr buffers)))
+        (setq screens (cdr screens))))
+    (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
+
+  ;; (x-window-property "_NET_CURRENT_DESKTOP" nil nil 0 nil nil)
+  ;; (x-window-property "_NET_NUMBER_OF_DESKTOPS" nil nil 0 nil nil)
+  ;; (x-window-property "_NET_DESKTOP_NAMES" nil nil 0 nil nil)
+  ;; (x-window-property "_NET_WM_NAME" nil nil 0 nil t)
+
+  (defun fmsession-read-location (&optional initial-input)
     (concat
-     emacs-frame-session-directory
-     (completing-read "Session: "
-                      (directory-files emacs-frame-session-directory nil "[a-zA-Z]+")
-                      #'(lambda (dir)
-                          (file-directory-p (concat emacs-frame-session-directory "/" dir))))))
+     *emacs-frame-session-directory*
+     (ido-completing-read "Session: "
+                          (remove-if-not
+                           #'(lambda (dir)
+                               (file-directory-p (concat *emacs-frame-session-directory* "/" dir)))
+                           (directory-files *emacs-frame-session-directory* nil "[a-zA-Z]+"))
+                          nil
+                          nil
+                          initial-input)))
 
   (defun fmsession-store (session-dir)
     "Store the elscreen tab configuration."
     (interactive
      (list (fmsession-read-location)))
-    (let ((elscreen-session (concat session-dir "/" elscreen-tab-configuration-store-filename) ))
+    (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*) ))
       (when (progn
             (make-directory session-dir t)
             (desktop-save session-dir))
-          (with-temp-file elscreen-session
-            (insert (prin1-to-string (elscreen-get-screen-to-name-alist)))))))
+        (message "elscreen-session-store %s" elscreen-session)
+        (elscreen-session-store elscreen-session))))
 
   ;; (push #'elscreen-store kill-emacs-hook)
 
@@ -67,26 +104,13 @@
     "Restore the elscreen tab configuration."
     (interactive
      (list (fmsession-read-location)))
-    (let ((elscreen-session (concat session-dir "/" elscreen-tab-configuration-store-filename))
+    (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*))
           (desktop-load-locked-desktop t))
       (if (file-directory-p session-dir)
           ;; (if (eq (type-of (desktop-read session-dir)) 'symbol)
           (progn (eq (type-of (desktop-read session-dir)) 'symbol)
-              (let ((screens (reverse
-                              (read
-                               (with-temp-buffer
-                                 (insert-file-contents elscreen-session)
-                                 (buffer-string))))))
-                (while screens
-                  (setq screen (car (car screens)))
-                  (setq buffers (split-string (cdr (car screens)) ":"))
-                  (if (eq screen 0)
-                      (switch-to-buffer (car buffers))
-                      (elscreen-find-and-goto-by-buffer (car buffers) t t))
-                  (while (cdr buffers)
-                    (switch-to-buffer-other-window (car (cdr buffers)))
-                    (setq buffers (cdr buffers)))
-                  (setq screens (cdr screens)))))
+                 (message "elscreen-session-restore %s" elscreen-session)
+                 (elscreen-session-restore elscreen-session))
           (message "no such %s dir exists." session-dir))))
 
   ;; (elscreen-restore)
