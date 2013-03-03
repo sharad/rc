@@ -26,8 +26,9 @@
 
 
 (require 'general-testing)
+(require 'cl)
 
-(deh-section "session per frames"
+(deh-section "session per frames prework"
 
   (setq desktop-base-file-name "session.desktop")
 
@@ -109,9 +110,9 @@
      (list (fmsession-read-location)))
     (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
       (when (progn
-            (make-directory session-dir t)
-            ;; (desktop-save session-dir)
-            )
+              (make-directory session-dir t)
+              ;; (desktop-save session-dir)
+              t)
         (message "elscreen-session-store %s" elscreen-session)
         (elscreen-session-store elscreen-session))))
 
@@ -127,12 +128,13 @@
       (if (file-directory-p session-dir)
           ;; (if (eq (type-of (desktop-read session-dir)) 'symbol)
           (progn ;; (eq (type-of (desktop-read session-dir)) 'symbol)
-                 (message "elscreen-session-restore %s" elscreen-session)
-                 (elscreen-session-restore elscreen-session))
+            (message "elscreen-session-restore %s" elscreen-session)
+            (elscreen-session-restore elscreen-session))
           (message "no such %s dir exists." session-dir))))
 
   ;; (elscreen-restore)
   ;;}}
+  )
 
   ;;{{
   (deh-section "per frame session"
@@ -154,10 +156,10 @@
 
     (defun save-frame-session (frame)
       (message "in save-frame-session:")
-      (when (frame-parameter frame 'frame-spec-id)
-        (message "saved the session for %s"
-                 (frame-parameter frame 'frame-spec-id))
-        (fmsession-store (frame-parameter frame 'frame-spec-id))))
+      (let ((location (frame-parameter frame 'frame-spec-id)))
+        (when location
+          (message "saved the session for %s" location)
+          (fmsession-store location))))
 
 
     (defun save-all-frames-session ()
@@ -274,6 +276,7 @@
     ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
     (if (eq (desktop-owner) (emacs-pid))
         (desktop-save desktop-dirname)))
+
   (testing
    (add-hook 'auto-save-hook 'my-desktop-save))
 
@@ -366,8 +369,9 @@ Also returns nil if pid is nil."
     "Restore a saved emacs session."
     (interactive)
     (if (saved-session)
-                                        ;  (my-desktop-save)
-        (desktop-read)
+        (progn
+          (message "desktop-session-restore")
+          (desktop-read))
         (message "No desktop found.")))
 
 ;; use session-save to save the desktop manually
