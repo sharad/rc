@@ -305,6 +305,13 @@ The indirect buffer can have another major mode."
       t))
 
 
+(defun messageto (buf &rest text)
+  (with-current-buffer (get-buffer-create buf)
+    (apply 'insert text)
+    (insert "\n")))
+
+(messageto "*Complains*" " bookmarking fecility, may consider Org mode which is unexpanded.")
+
 (deh-require-maybe (progn help+ help-fns+ help-macro+ help-mode+)
   )
 
@@ -325,5 +332,9 @@ The indirect buffer can have another major mode."
 
 (deh-require-maybe imenu-tree
   (setq imenu-tree-windata '(frame right 0.2 delete)))
+
+
+
+
 
 (provide 'misc-config)

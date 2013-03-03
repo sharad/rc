@@ -137,7 +137,6 @@
        (add-hook 'diary-display-hook 'sort-diary-entries)))
 
     ;;check existance
-    ;;check existance
     (when (and
            (xrequire 'cal-desk-calendar)
            (functionp 'fancy-schedule-display-desk-calendar))
@@ -188,9 +187,17 @@
       "* Accomplishments\n\n\n"))
     (planner-accomplishments-insinuate))
 
-  (deh-require-maybe planner-registry
-      (planner-registry-insinuate))
+  ;;{{
+  ;; (deh-require-maybe planner-registry
+  ;;     (planner-registry-insinuate))
+  ;; planner-registry-insinuate some time create problem in daemon startup.
+  ;; as it may start to ask input.
+  (add-hook '*sharad/after-init-hook*
+            #'(lambda ()
+                (deh-require-maybe planner-registry
+                  (planner-registry-insinuate))))
 
+  ;;}}
   (xrequire 'planner-zoom)
   (xrequire 'planner-lisp)
 
@@ -243,7 +250,7 @@
     (interactive)
     (planner-fix-tasks)
     (planner-save-buffers))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; (plan)
 
   ;; http://lists.gnu.org/archive/html/emacs-wiki-discuss/2005-08/msg00168.html

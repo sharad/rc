@@ -95,6 +95,23 @@
                    (cdr forms)
                    forms)))))
 
+    (defmacro deh-require-todo (feature todo-if-no-feature &rest forms)
+      (declare (indent 1))
+      (labels ((refine (feature)
+                 (if (consp feature)
+                     (cond
+                       ((or (equal (car feature) 'or)
+                            (equal (car feature) 'and)
+                            (equal (car feature) 'progn))
+                        `(,(car feature) ,@(mapcar #'refine (cdr feature))))
+                       (t feature))
+                     `(require ',feature nil t))))
+        `(progn
+           (if ,(refine feature)
+             (,@(if (stringp (car forms))
+                   (cdr forms)
+                   forms))
+             todo-if-no-feature))))
 
     (defmacro deh-require-maybe (feature &rest forms)
       (declare (indent 1))

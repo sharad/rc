@@ -268,24 +268,41 @@ alkready should not exist.")
   ;;  (pathname-delete-trailing-/ "/sdfsd/sdgfdg////"))
   )
 
+
+;;{{ Run after init
+
+(defvar *sharad/after-init-hook* nil "sharad/after-init-hook")
+(add-hook 'after-init-hook
+          #'(lambda ()
+              (run-hooks '*sharad/after-init-hook*)))
+
+
+
+;;}}
+
+
 ;;{{
-(deh-section "startup-inperrupting-feature"
+(deh-section "disable startup inperrupting feature till first frame created."
   (defvar enable-p4-login nil "test")
+  (defvar sharad/enable-startup-inperrupting-feature-hoon nil)
+  (defvar sharad/disable-startup-inperrupting-feature-hoon nil)
 
   (defun sharad/disable-startup-inperrupting-feature ()
     (interactive)
     (setq
+     debug-on-error t
      enable-p4-login nil
      tramp-mode nil
      ido-mode nil)
     (deh-featurep epa
       (if (fboundp 'epa-file-disable)
           (epa-file-disable)))
-    )
+    (run-hooks 'sharad/disable-startup-inperrupting-feature-hook))
 
   (defun sharad/enable-startup-inperrupting-feature ()
     (interactive)
     (setq
+     debug-on-error t
      enable-p4-login t
      tramp-mode t
      ido-mode 'both)
@@ -298,7 +315,8 @@ alkready should not exist.")
       (add-element-to-lists '(lambda ()
                               (light-symbol-mode 1)
                               (highlight-changes-visible-mode t)
-                              (highlight-changes-mode t)) pgm-langs)))
+                              (highlight-changes-mode t)) pgm-langs))
+    (run-hooks 'sharad/enable-startup-inperrupting-feature-hook))
 
 
   (defun sharad/enable-startup-inperrupting-feature-in-frame-once (frame)
@@ -311,18 +329,21 @@ alkready should not exist.")
 
 ;;{{
 (deh-section "login-session-inperrupting-feature"
-  (defun sharad/disable-login-session-inperrupting-feature ()
+  (defvar sharad/disable-login-session-inperrupting-feature nil)
+  (defvar sharad/enable-login-session-inperrupting-feature-hook nil)
 
+  (defun sharad/disable-login-session-inperrupting-feature ()
     (interactive)
     ;; (login-to-perforce)
     ;; (update-ssh-agent t)
-    )
+    (run-hooks 'sharad/disable-login-session-inperrupting-feature))
 
   (defun sharad/enable-login-session-inperrupting-feature ()
     (interactive)
     ;; (setenv "DISPLAY" ":1")
     (login-to-perforce)
-    (update-ssh-agent t))
+    (update-ssh-agent t)
+    (run-hooks 'sharad/enable-login-session-inperrupting-feature-hook))
 
   (defun sharad/enable-login-session-inperrupting-feature-in-frame-once (frame)
     ;; run and disable.
@@ -336,40 +357,13 @@ alkready should not exist.")
 
   (defun sharad/disable-login-session-inperrupting-feature-in-frame (f)
     (when (< (length (frame-list)) 3) ;last frame then add.
+      (sharad/disable-login-session-inperrupting-feature)
       (add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once)
       (message "added sharad/enable-login-session-inperrupting-feature-in-frame-once")))
 
   (add-hook 'delete-frame-functions #'sharad/disable-login-session-inperrupting-feature-in-frame))
 ;;}}
 
-
-;;{{
-(deh-section "per frame session"
-
-  (defun set-this-frame-id (frame)
-    (select-frame frame)
-    (message "in set-this-frame-id")
-    (let ((location (fmsession-read-location)))
-      (message "set-this-frame-id: %s" location)
-      (modify-frame-parameters frame
-                               (list (cons 'frame-spec-id location)))
-      (fmsession-restore location)))
-
-  (add-hook 'after-make-frame-functions #'set-this-frame-id t)
-
-  (defun save-frame-session (frame)
-    (message "in save-frame-session:")
-    (when (frame-parameter frame 'frame-spec-id)
-      (message "saved the session for %s"
-               (frame-parameter frame 'frame-spec-id))
-      (fmsession-store (frame-parameter frame 'frame-spec-id))))
-
-  (add-hook 'delete-frame-functions #'save-frame-session))
-
-;; (frame-parameter (selected-frame) 'frame-spec-id)
-
-;; after-make-frame-functions
-;;}}
 
 
 

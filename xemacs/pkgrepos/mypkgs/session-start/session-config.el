@@ -68,14 +68,18 @@
           (switch-to-buffer-other-window (car (cdr buffers)))
           (setq buffers (cdr buffers)))
         (setq screens (cdr screens))))
-    (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
+    (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t)
+    (elscreen-notify-screen-modification 'force-immediately))
 
   ;; (x-window-property "_NET_CURRENT_DESKTOP" nil nil 0 nil nil)
   ;; (x-window-property "_NET_NUMBER_OF_DESKTOPS" nil nil 0 nil nil)
   ;; (x-window-property "_NET_DESKTOP_NAMES" nil nil 0 nil nil)
   ;; (x-window-property "_NET_WM_NAME" nil nil 0 nil t)
+  ;; (x-window-property "STUMPWM_WCLI" nil nil 0 nil t)
 
-  (fmsession-read-location-internal)
+  ;; (fmsession-read-location-internal)
+
+  ;; (x-window-property "_NET_DESKTOP_NAMES" nil "WINDOW" 0 nil nil)
 
   (defun fmsession-read-location (&optional initial-input)
     (let ((used t)
@@ -88,34 +92,9 @@
                           (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list))))))
       sel))
 
-
-  ;; (not
-  ;;  (member
-  ;;   "~/.emacs.d/session/frames/nmtest"
-  ;;   (remove-if #'null
-  ;;              (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list)))))
-
-;; (defun testa (dir)
-;;   (and
-;;    (file-directory-p
-;;     (concat *emacs-frame-session-directory* "/" dir))
-;;    (not
-;;     (member
-;;      (concat *emacs-frame-session-directory* "/" dir)
-;;      (remove-if #'null
-;;                 (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list)))))))
-
-;; (file-directory-p
-;;     (concat *emacs-frame-session-directory* "/" "nmtest"))
-;; (not
-;;  (member
-;;   (concat *emacs-frame-session-directory* "/" "nmtest")
-;;   (remove-if #'null
-;;              (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list)))))
-
-;; (testa "nmtest")
-
   (defun fmsession-read-location-internal (&optional initial-input)
+    (unless (file-directory-p *emacs-frame-session-directory*)
+      (make-directory *emacs-frame-session-directory*))
     (concat
      *emacs-frame-session-directory* "/"
      (ido-completing-read "Session: "
@@ -138,7 +117,7 @@
     "Store the elscreen tab configuration."
     (interactive
      (list (fmsession-read-location)))
-    (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*) ))
+    (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
       (when (progn
             (make-directory session-dir t)
             (desktop-save session-dir))
@@ -163,7 +142,46 @@
   ;; (elscreen-restore)
   ;;}}
 
-  )
+  ;;{{
+  (deh-section "per frame session"
+
+    (require 'emacs-panel)
+
+    (defun set-this-frame-session-location (frame)
+      (select-frame frame)
+      (message "in set-this-frame-session-location")
+      (let* ((wm-hints (emacs-panel-wm-hints))
+             (desktop-name (nth
+                            (cadr (assoc 'current-desktop wm-hints))
+                            (cdr (assoc 'desktop-names wm-hints))))
+             (location (fmsession-read-location desktop-name)))
+        (message "set-this-frame-session-location: %s" location)
+        (modify-frame-parameters frame
+                                 (list (cons 'frame-spec-id location)))
+        (fmsession-restore location)))
+
+    (defun save-frame-session (frame)
+      (message "in save-frame-session:")
+      (when (frame-parameter frame 'frame-spec-id)
+        (message "saved the session for %s"
+                 (frame-parameter frame 'frame-spec-id))
+        (fmsession-store (frame-parameter frame 'frame-spec-id))))
+
+    (add-hook '*sharad/after-init-hook*
+              #'(lambda ()
+                  (add-hook 'after-make-frame-functions #'set-this-frame-session-location t)
+                  (add-hook 'delete-frame-functions #'save-frame-session))))
+
+  (testing
+     (frame-parameter (selected-frame) 'frame-spec-id)
+     after-make-frame-functions
+     delete-frame-functions
+     *sharad/after-init-hook*
+     )
+
+
+  ;;}}
+)
 
 (deh-require-maybe savehist-20+
   )
