@@ -53,8 +53,7 @@ General Public License for more details.
 
     (goto-char (point-min))
     (insert gpl)
-    (comment-region (point-min) (+ (point-min) (length gpl))))
-)
+    (comment-region (point-min) (+ (point-min) (length gpl)))))
 
 
 

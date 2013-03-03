@@ -111,7 +111,7 @@
              (,@(if (stringp (car forms))
                    (cdr forms)
                    forms))
-             todo-if-no-feature))))
+             ,todo-if-no-feature))))
 
     (defmacro deh-require-maybe (feature &rest forms)
       (declare (indent 1))

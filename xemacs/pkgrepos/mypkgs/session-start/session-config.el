@@ -110,7 +110,8 @@
     (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
       (when (progn
             (make-directory session-dir t)
-            (desktop-save session-dir))
+            ;; (desktop-save session-dir)
+            )
         (message "elscreen-session-store %s" elscreen-session)
         (elscreen-session-store elscreen-session))))
 
@@ -121,10 +122,11 @@
     (interactive
      (list (fmsession-read-location)))
     (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*))
-          (desktop-load-locked-desktop t))
+          ;; (desktop-load-locked-desktop t)
+          )
       (if (file-directory-p session-dir)
           ;; (if (eq (type-of (desktop-read session-dir)) 'symbol)
-          (progn (eq (type-of (desktop-read session-dir)) 'symbol)
+          (progn ;; (eq (type-of (desktop-read session-dir)) 'symbol)
                  (message "elscreen-session-restore %s" elscreen-session)
                  (elscreen-session-restore elscreen-session))
           (message "no such %s dir exists." session-dir))))
@@ -157,10 +159,16 @@
                  (frame-parameter frame 'frame-spec-id))
         (fmsession-store (frame-parameter frame 'frame-spec-id))))
 
+
+    (defun save-all-frames-session ()
+      (dolist (f (frame-list))
+	(save-frame-session f)))
+
     (add-hook '*sharad/after-init-hook*
               #'(lambda ()
                   (add-hook 'after-make-frame-functions #'set-this-frame-session-location t)
-                  (add-hook 'delete-frame-functions #'save-frame-session))))
+                  (add-hook 'delete-frame-functions #'save-frame-session)
+		  (add-hook 'kill-emacs-hook #'save-all-frames-session)))
 
   (testing
      (frame-parameter (selected-frame) 'frame-spec-id)
@@ -216,10 +224,10 @@
 ;;  (session-initialize))
 
 
-;; (deh-require-maybe desktop
-(testing
+(deh-require-maybe desktop
+;; (testing
   ;; http://stackoverflow.com/questions/2703743/restore-emacs-session-desktop
-  (desktop-save-mode 1)
+  ;; (desktop-save-mode 1)
   ;; (desktop-read)
 
   ;; from: http://www.emacswiki.org/emacs/DeskTop
@@ -266,7 +274,8 @@
     ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
     (if (eq (desktop-owner) (emacs-pid))
         (desktop-save desktop-dirname)))
-  (add-hook 'auto-save-hook 'my-desktop-save)
+  (testing
+   (add-hook 'auto-save-hook 'my-desktop-save))
 
 
 
@@ -303,15 +312,15 @@
 
   ;; I implemented ‘emacs-process-p’ by following way, it could work on both Windows and Linux.
 
-(defun emacs-process-p (pid)
-  "If pid is the process ID of an emacs process, return t, else nil.
+  (defun emacs-process-p (pid)
+    "If pid is the process ID of an emacs process, return t, else nil.
 Also returns nil if pid is nil."
-  (when pid
-    (let ((attributes (process-attributes pid)) (cmd))
-      (dolist (attr attributes)
-        (if (string= "comm" (car attr))
-            (setq cmd (cdr attr))))
-      (if (and cmd (or (string= "emacs" cmd) (string= "emacs.exe" cmd))) t))))
+    (when pid
+      (let ((attributes (process-attributes pid)) (cmd))
+        (dolist (attr attributes)
+          (if (string= "comm" (car attr))
+              (setq cmd (cdr attr))))
+        (if (and cmd (or (string= "emacs" cmd) (string= "emacs.exe" cmd))) t))))
 
 ;; I think the original function contains an error. Should it not end something like:
 
@@ -322,7 +331,7 @@ Also returns nil if pid is nil."
 
 
 
-  ;;{{
+;;{{
 ;; Minimal Setup
 
 ;; This is for people who only want minimal session management
@@ -333,45 +342,54 @@ Also returns nil if pid is nil."
 ;; It works for me with one desktop, with more than one may need some tweaking.
 
 ;; use only one desktop
-(setq desktop-path '("~/.emacs.d/"))
-(setq desktop-dirname "~/.emacs.d/")
-(setq desktop-base-file-name "emacs-desktop")
+  (setq desktop-path '("~/.emacs.d/"))
+  (setq desktop-dirname "~/.emacs.d/")
+  (setq desktop-base-file-name
+        (concat
+         "emacs-desktop"
+         (if (boundp 'server-name)
+             (concat "-" server-name))))
 
 ;; remove desktop after it's been read
-(add-hook 'desktop-after-read-hook
-	  '(lambda ()
-	     ;; desktop-remove clears desktop-dirname
-	     (setq desktop-dirname-tmp desktop-dirname)
-	     (desktop-remove)
-	     (setq desktop-dirname desktop-dirname-tmp)))
+  (add-hook 'desktop-after-read-hook
+            '(lambda ()
+              ;; desktop-remove clears desktop-dirname
+              (setq desktop-dirname-tmp desktop-dirname)
+              (desktop-remove)
+              (setq desktop-dirname desktop-dirname-tmp)))
 
-(defun saved-session ()
-  (file-exists-p (concat desktop-dirname "/" desktop-base-file-name)))
+  (defun saved-session ()
+    (file-exists-p (concat desktop-dirname "/" desktop-base-file-name)))
 
 ;; use session-restore to restore the desktop manually
-(defun session-restore ()
-  "Restore a saved emacs session."
-  (interactive)
-  (if (saved-session)
-      (desktop-read)
-    (message "No desktop found.")))
+  (defun session-restore ()
+    "Restore a saved emacs session."
+    (interactive)
+    (if (saved-session)
+                                        ;  (my-desktop-save)
+        (desktop-read)
+        (message "No desktop found.")))
 
 ;; use session-save to save the desktop manually
-(defun session-save ()
-  "Save an emacs session."
-  (interactive)
-  (if (saved-session)
-      (if (y-or-n-p "Overwrite existing desktop? ")
-	  (desktop-save-in-desktop-dir)
-	(message "Session not saved."))
-  (desktop-save-in-desktop-dir)))
+  (defun session-save ()
+    "Save an emacs session."
+    (interactive)
+    (if (saved-session)
+        (if (y-or-n-p "Overwrite existing desktop? ")
+            (desktop-save-in-desktop-dir)
+            (message "Session not saved."))
+        (desktop-save-in-desktop-dir)))
+
+  (add-hook 'session-before-save-hook
+            #'session-save)
 
 ;; ask user whether to restore desktop at start-up
-(add-hook 'after-init-hook
-	  '(lambda ()
-	     (if (saved-session)
-		 (if (y-or-n-p "Restore desktop? ")
-		     (session-restore)))))
+  (add-hook ;; 'after-init-hook
+	    'sharad/enable-startup-inperrupting-feature-hook
+            '(lambda ()
+              (if (saved-session)
+                  (if t ;; (y-or-n-p "Restore desktop? ")
+                      (session-restore)))))
 
 ;; Then type ‘M-x session-save’, or ‘M-x session-restore’ whenever you want to save or restore a desktop. Restored desktops are deleted from disk.
 
