@@ -310,7 +310,7 @@ The indirect buffer can have another major mode."
     (apply 'insert text)
     (insert "\n")))
 
-(messageto "*Complains*" " bookmarking fecility, may consider Org mode which is unexpanded.")
+(messageto "*Complains*" "Bookmarking fecility, may consider Org mode which is unexpanded.")
 
 (deh-require-maybe (progn help+ help-fns+ help-macro+ help-mode+)
   )

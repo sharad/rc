@@ -71,16 +71,6 @@
     (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t)
     (elscreen-notify-screen-modification 'force-immediately))
 
-  ;; (x-window-property "_NET_CURRENT_DESKTOP" nil nil 0 nil nil)
-  ;; (x-window-property "_NET_NUMBER_OF_DESKTOPS" nil nil 0 nil nil)
-  ;; (x-window-property "_NET_DESKTOP_NAMES" nil nil 0 nil nil)
-  ;; (x-window-property "_NET_WM_NAME" nil nil 0 nil t)
-  ;; (x-window-property "STUMPWM_WCLI" nil nil 0 nil t)
-
-  ;; (fmsession-read-location-internal)
-
-  ;; (x-window-property "_NET_DESKTOP_NAMES" nil "WINDOW" 0 nil nil)
-
   (defun fmsession-read-location (&optional initial-input)
     (let ((used t)
           (sel))
