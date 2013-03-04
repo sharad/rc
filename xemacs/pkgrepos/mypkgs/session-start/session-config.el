@@ -62,12 +62,12 @@
         (setq screen (car (car screens)))
         ; (message "screen: %s buffer: %s" screen (cdr (car screens)))
         (setq buffers (split-string (cdr (car screens)) ":"))
-        (if (eq screen 0)
-            (switch-to-buffer (car buffers))
-            (elscreen-find-and-goto-by-buffer (car buffers) t t))
-        (while (cdr buffers)
-          (switch-to-buffer-other-window (car (cdr buffers)))
-          (setq buffers (cdr buffers)))
+        (if (if (eq screen 0)
+                (switch-to-buffer (car buffers))
+                (elscreen-find-and-goto-by-buffer (car buffers) nil t))
+            (while (cdr buffers)
+              (switch-to-buffer-other-window (car (cdr buffers)))
+              (setq buffers (cdr buffers))))
         (setq screens (cdr screens))))
     (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t)
     (elscreen-notify-screen-modification 'force-immediately))
@@ -161,7 +161,6 @@
           (message "saved the session for %s" location)
           (fmsession-store location))))
 
-
     (defun save-all-frames-session ()
       (dolist (f (frame-list))
 	(save-frame-session f)))
@@ -241,15 +240,15 @@
 
   ;; You can specify buffers which should not be saved, by name or by mode, e.g.:
 
-  ;; (setq desktop-buffers-not-to-save
-  ;;       (concat "\\("
-  ;;               "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
-  ;;               "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
-  ;;               "\\)$"))
-  ;; (add-to-list 'desktop-modes-not-to-save 'dired-mode)
-  ;; (add-to-list 'desktop-modes-not-to-save 'Info-mode)
-  ;; (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
-  ;; (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
+  (setq desktop-buffers-not-to-save
+        (concat "\\("
+                "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
+                "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
+                "\\)$"))
+  (add-to-list 'desktop-modes-not-to-save 'dired-mode)
+  (add-to-list 'desktop-modes-not-to-save 'Info-mode)
+  (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
+  (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
 
 
   ;; Since all lists will be truncated when saved, it is important to
@@ -293,17 +292,17 @@
   ;; not still running.
 
   ;; desktop-override-stale-locks.el begins here
-;;   (defun emacs-process-p (pid)
-;;     "If pid is the process ID of an emacs process, return t, else nil.
-;; Also returns nil if pid is nil."
-;;     (when pid
-;;       (let* ((cmdline-file (concat "/proc/" (int-to-string pid) "/cmdline")))
-;;         (when (file-exists-p cmdline-file)
-;;           (with-temp-buffer
-;;             (insert-file-contents-literally cmdline-file)
-;;             (goto-char (point-min))
-;;             (search-forward "emacs" nil t)
-;;             pid)))))
+  ;;   (defun emacs-process-p (pid)
+  ;;     "If pid is the process ID of an emacs process, return t, else nil.
+  ;; Also returns nil if pid is nil."
+  ;;     (when pid
+  ;;       (let* ((cmdline-file (concat "/proc/" (int-to-string pid) "/cmdline")))
+  ;;         (when (file-exists-p cmdline-file)
+  ;;           (with-temp-buffer
+  ;;             (insert-file-contents-literally cmdline-file)
+  ;;             (goto-char (point-min))
+  ;;             (search-forward "emacs" nil t)
+  ;;             pid)))))
 
   (defadvice desktop-owner (after pry-from-cold-dead-hands activate)
     "Don't allow dead emacsen to own the desktop file."
@@ -325,7 +324,7 @@ Also returns nil if pid is nil."
               (setq cmd (cdr attr))))
         (if (and cmd (or (string= "emacs" cmd) (string= "emacs.exe" cmd))) t))))
 
-;; I think the original function contains an error. Should it not end something like:
+  ;; I think the original function contains an error. Should it not end something like:
 
           ;; (when (search-forward "emacs" nil t)
           ;;   pid))))))
@@ -492,16 +491,16 @@ Also returns nil if pid is nil."
   ;; Here is an example that just inserts some text into *scratch*
   ;; when Emacs is restarted by the session manager.
 
-     (add-hook 'emacs-save-session-functions 'save-yourself-test)
+  ;; (add-hook 'emacs-save-session-functions 'save-yourself-test)
 
-     (defun save-yourself-test ()
-       (insert "(save-current-buffer
+  (defun save-yourself-test ()
+    (insert "(save-current-buffer
        (switch-to-buffer \"*scratch*\")
        (insert \"I am restored\"))")
-       nil)
+    nil)
 
 ;; }}
-)
+  )
 
 (provide 'session-config)
 ;;; session-config.el ends here
