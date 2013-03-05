@@ -56,7 +56,8 @@
             (function (lambda ()
               (add-hook 'local-write-file-hooks 'highlight-changes-rotate-faces)
               (highlight-changes-mode t)
-              (... other stuff for setting up C mode ...))))
+              ;; (... other stuff for setting up C mode ...)
+              )))
   ;;}}
 
   ;;{{
@@ -72,7 +73,8 @@
               (add-hook 'local-write-file-hooks 'DE-highlight-changes-rotate-faces)
               (highlight-changes-mode t)
               (highlight-changes-mode nil)
-              (... other stuff for setting up C mode ...))))
+              ;; (... other stuff for setting up C mode ...)
+              )))
   ;;}}
 
   ;;{{
@@ -94,4 +96,3 @@
     )
 
 (provide 'editing-config)
-
