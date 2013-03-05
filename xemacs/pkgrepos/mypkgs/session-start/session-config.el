@@ -58,13 +58,14 @@
   (defun elscreen-session-restore (elscreen-session)
     (let ((screens (reverse (sharad/read-file elscreen-session))))
       (while screens
-        ; (message "start: screen-to-name-alist %s" (reverse (elscreen-get-screen-to-name-alist)))
         (setq screen (car (car screens)))
         ; (message "screen: %s buffer: %s" screen (cdr (car screens)))
         (setq buffers (split-string (cdr (car screens)) ":"))
-        (if (if (eq screen 0)
-                (switch-to-buffer (car buffers))
-                (elscreen-find-and-goto-by-buffer (car buffers) nil t))
+        (message "start: screen-to-name-alist %s" (reverse (elscreen-get-screen-to-name-alist)))
+        (if (if (bufferp (car buffers))
+                (if (eq screen 0)
+                    (switch-to-buffer (car buffers))
+                    (elscreen-find-and-goto-by-buffer (car buffers) t t)))
             (while (cdr buffers)
               (switch-to-buffer-other-window (car (cdr buffers)))
               (setq buffers (cdr buffers))))
@@ -370,7 +371,8 @@ Also returns nil if pid is nil."
     (if (saved-session)
         (progn
           (message "desktop-session-restore")
-          (desktop-read))
+          (desktop-read)
+          t)
         (message "No desktop found.")))
 
 ;; use session-save to save the desktop manually
