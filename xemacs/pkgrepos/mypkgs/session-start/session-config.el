@@ -30,6 +30,8 @@
 
 (deh-section "session per frames prework"
 
+  (defvar elscreen-session-restore-create-scratch-buffer nil "elscreen-session-restore-create-scratch-buffer")
+
   (setq desktop-base-file-name "session.desktop")
 
   ;;{{ http://stackoverflow.com/a/13711234
@@ -47,16 +49,30 @@
 
   (require 'misc-config)
 
+  (defun elscreen-session-make-session-list ()
+    (let (session-list)
+      (push (cons 'screens (reverse (elscreen-get-screen-to-name-alist))) session-list)
+      (push (cons 'current-buffer (buffer-name (current-buffer))) session-list)
+      (push (cons 'current-screen (elscreen-get-current-screen)) session-list)))
+
   (defun elscreen-session-store (elscreen-session)
     (with-temp-file elscreen-session
-      (insert (prin1-to-string (elscreen-get-screen-to-name-alist)))))
+      (insert
+       (prin1-to-string (elscreen-session-make-session-list)))))
 
   ;; (defun elscreen-session-restore (elscreen-session)
   ;;   (let ((screens (reverse (sharad/read-file elscreen-session))))
   ;;     (elscreen-set-screen-to-name-alist-cache screens)))
 
   (defun elscreen-session-restore (elscreen-session)
-    (let ((screens (reverse (sharad/read-file elscreen-session))))
+    (let* ((elscreen-session-list (sharad/read-file elscreen-session))
+           (screens (cdr (assoc 'screens elscreen-session-list)))
+           ;; (cdr (assoc 'current-buffer elscreen-session-list))))
+           (session-current-buffer
+            (car (split-string (cdr (assoc
+                                     (cdr (assoc 'current-screen elscreen-session-list))
+                                     screens)) ":"))))
+      (message "start: session-current-buffer %s" session-current-buffer)
       (while screens
         (setq screen (car (car screens)))
         ; (message "screen: %s buffer: %s" screen (cdr (car screens)))
@@ -69,9 +85,13 @@
             (while (cdr buffers)
               (switch-to-buffer-other-window (car (cdr buffers)))
               (setq buffers (cdr buffers))))
-        (setq screens (cdr screens))))
-    (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t)
-    (elscreen-notify-screen-modification 'force-immediately))
+        (setq screens (cdr screens)))
+      (when elscreen-session-restore-create-scratch-buffer
+        (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
+      (if (get-buffer session-current-buffer)
+          (elscreen-find-and-goto-by-buffer (get-buffer session-current-buffer) nil nil)
+          (message "in when session-current-buffer %s" session-current-buffer))
+      (elscreen-notify-screen-modification 'force-immediately)))
 
   (defun fmsession-read-location (&optional initial-input)
     (let ((used t)
@@ -181,6 +201,40 @@
 
 
   ;;}}
+  ;;{{
+  (defun server-create-window-system-frame (display nowait proc)
+    (add-to-list 'frame-inherited-parameters 'client)
+    (if (not (fboundp 'make-frame-on-display))
+        (progn
+          ;; This emacs does not support X.
+          (server-log "Window system unsupported" proc)
+          (server-send-string proc "-window-system-unsupported \n")
+          nil)
+        ;; Flag frame as client-created, but use a dummy client.
+        ;; This will prevent the frame from being deleted when
+        ;; emacsclient quits while also preventing
+        ;; `server-save-buffers-kill-terminal' from unexpectedly
+        ;; killing emacs on that frame.
+        (let* ((params `((client . ,(if nowait 'nowait proc))
+                         ;; This is a leftover, see above.
+                         (environment . ,(process-get proc 'env))))
+               (frame (make-frame-on-display
+                       (or display
+                           (frame-parameter nil 'display)
+                           (getenv "DISPLAY")
+                           (error "Please specify display"))
+                       params)))
+          (server-log (format "%s created" frame) proc)
+          (select-frame frame)
+          (process-put proc 'frame frame)
+          (process-put proc 'terminal (frame-terminal frame))
+
+          (if elscreen-session-restore-create-scratch-buffer
+              ;; Display *scratch* by default.
+              (switch-to-buffer (get-buffer-create "*scratch*") 'norecord))
+          frame)))
+  ;;}}
+
 )
 
 (deh-require-maybe savehist-20+
