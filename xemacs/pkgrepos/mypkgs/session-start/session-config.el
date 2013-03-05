@@ -77,7 +77,7 @@
          screen-list))
 
        ;; (elscreen-set-screen-to-name-alist-cache screen-to-name-alist)
-       screen-to-name-alist))))
+       screen-to-name-alist)))
 
 (sharad/elscreen-get-screen-to-name-alist)
 
@@ -118,13 +118,17 @@
   ;;     (elscreen-set-screen-to-name-alist-cache screens)))
 
   (defun elscreen-session-restore (elscreen-session)
+    (message "Nstart: session-current-buffer %s" elscreen-session)
     (let* (screen buffers
            (elscreen-session-list (sharad/read-file elscreen-session))
            (screens (cdr (assoc 'screens elscreen-session-list)))
            ;; (cdr (assoc 'current-buffer elscreen-session-list))))
            (session-current-buffer
-            (car (cdr (assoc (cdr (assoc 'current-screen elscreen-session-list)) screens)))))
-      (message "start: session-current-buffer %s" session-current-buffer)
+            (car (cdr (assoc
+                       (cdr (assoc 'current-screen elscreen-session-list))
+                       screens)))))
+      (message "Bstart: session-current-buffer %s" session-current-buffer)
+      (message "Astart: screen-to-name-alist %s" elscreen-session-list)
       (while screens
         (setq screen (car (car screens)))
         ; (message "screen: %s buffer: %s" screen (cdr (car screens)))
