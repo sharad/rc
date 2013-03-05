@@ -63,7 +63,7 @@
         (setq buffers (split-string (cdr (car screens)) ":"))
         (message "start: screen-to-name-alist %s" (reverse (elscreen-get-screen-to-name-alist)))
         (if (if (bufferp (car buffers))
-                (if (eq screen 0)
+                (if (eq (elscreen-get-current-screen) 0) ;; (eq screen 0)
                     (switch-to-buffer (car buffers))
                     (elscreen-find-and-goto-by-buffer (car buffers) t t)))
             (while (cdr buffers)
