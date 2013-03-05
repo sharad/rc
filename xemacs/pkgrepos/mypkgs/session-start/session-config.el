@@ -28,6 +28,59 @@
 (require 'general-testing)
 (require 'cl)
 
+
+
+(defun sharad/elscreen-get-screen-to-name-alist (&optional truncate-length padding)
+  ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
+    (elscreen-notify-screen-modification-suppress
+     (elscreen-set-window-configuration (elscreen-get-current-screen)
+                                        (elscreen-current-window-configuration))
+     (let* ((screen-list (sort (elscreen-get-screen-list) '<))
+            screen-name screen-to-name-alist nickname-type-map)
+       (elscreen-save-screen-excursion
+        (mapcar
+         (lambda (screen)
+           ;; If nickname exists, use it.
+           (setq screen-name (elscreen-get-screen-nickname screen))
+           ;; Nickname does not exist, so examine major-mode and buffer-name.
+           (when (null screen-name)
+             (elscreen-goto-internal screen)
+
+             (setq nickname-type-map
+                   (mapcar
+                    (lambda (window)
+                      (with-current-buffer (window-buffer window)
+                        (or (elscreen-get-alist-to-nickname
+                             elscreen-mode-to-nickname-alist-internal
+                             'string-match (symbol-name major-mode))
+                            (elscreen-get-alist-to-nickname
+                             elscreen-buffer-to-nickname-alist-internal
+                             'string-match (buffer-name))
+                            (cons 'buffer-name (buffer-name)))))
+                    (window-list)))
+
+             (let (nickname-list)
+               (while (> (length nickname-type-map) 0)
+                 (let ((type (caar nickname-type-map))
+                       (name (cdar nickname-type-map)))
+                   (when name
+                     (setq nickname-list (cons name nickname-list)))
+                   (setq nickname-type-map
+                         (if (eq type 'nickname)
+                             (delete (car nickname-type-map) nickname-type-map)
+                           (cdr nickname-type-map)))))
+               ;; (setq screen-name
+               ;;       (mapconcat 'identity (reverse nickname-list) ":"))
+               (setq screen-name (reverse nickname-list))))
+
+           (set-alist 'screen-to-name-alist screen screen-name))
+         screen-list))
+
+       ;; (elscreen-set-screen-to-name-alist-cache screen-to-name-alist)
+       screen-to-name-alist))))
+
+(sharad/elscreen-get-screen-to-name-alist)
+
 (deh-section "session per frames prework"
 
   (defvar elscreen-session-restore-create-scratch-buffer nil "elscreen-session-restore-create-scratch-buffer")
@@ -51,7 +104,7 @@
 
   (defun elscreen-session-make-session-list ()
     (let (session-list)
-      (push (cons 'screens (reverse (elscreen-get-screen-to-name-alist))) session-list)
+      (push (cons 'screens (reverse (sharad/elscreen-get-screen-to-name-alist))) session-list)
       (push (cons 'current-buffer (buffer-name (current-buffer))) session-list)
       (push (cons 'current-screen (elscreen-get-current-screen)) session-list)))
 
@@ -65,20 +118,19 @@
   ;;     (elscreen-set-screen-to-name-alist-cache screens)))
 
   (defun elscreen-session-restore (elscreen-session)
-    (let* ((elscreen-session-list (sharad/read-file elscreen-session))
+    (let* (screen buffers
+           (elscreen-session-list (sharad/read-file elscreen-session))
            (screens (cdr (assoc 'screens elscreen-session-list)))
            ;; (cdr (assoc 'current-buffer elscreen-session-list))))
            (session-current-buffer
-            (car (split-string (cdr (assoc
-                                     (cdr (assoc 'current-screen elscreen-session-list))
-                                     screens)) ":"))))
+            (car (cdr (assoc (cdr (assoc 'current-screen elscreen-session-list)) screens)))))
       (message "start: session-current-buffer %s" session-current-buffer)
       (while screens
         (setq screen (car (car screens)))
         ; (message "screen: %s buffer: %s" screen (cdr (car screens)))
-        (setq buffers (split-string (cdr (car screens)) ":"))
+        (setq buffers (cdr (car screens)))
         (if (when (bufferp (get-buffer (car buffers)))
-              (message "start: screen-to-name-alist %s" (reverse (elscreen-get-screen-to-name-alist)))
+              (message "start: screen-to-name-alist %s" elscreen-session-list)
               (if (eq screen 0) ;; (eq (elscreen-get-current-screen) 0)
                   (switch-to-buffer (car buffers))
                   (elscreen-find-and-goto-by-buffer (car buffers) t t)))
