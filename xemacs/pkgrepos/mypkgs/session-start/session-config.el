@@ -37,7 +37,7 @@
 (deh-require elscreen
 
 
-  (defun sharad/elscreen-get-screen-to-name-alist (&optional truncate-length padding)
+  (defun sharad/elscreen-get-screen-to-name-alist ()
     ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
     (elscreen-notify-screen-modification-suppress
      (elscreen-set-window-configuration (elscreen-get-current-screen)
@@ -112,7 +112,7 @@
       (push (cons 'current-screen (elscreen-get-current-screen)) session-list)))
 
   (defun elscreen-session-store (elscreen-session)
-    (interactive "ffile: " )
+    (interactive "Ffile: " )
     (with-temp-file elscreen-session
       (insert
        (prin1-to-string (elscreen-session-make-session-list)))))
@@ -236,11 +236,15 @@
     (defun set-this-frame-session-location (frame)
       (select-frame frame)
       (message "in set-this-frame-session-location")
-      (let* ((wm-hints (emacs-panel-wm-hints))
-             (desktop-name (nth
-                            (cadr (assoc 'current-desktop wm-hints))
-                            (cdr (assoc 'desktop-names wm-hints))))
+      (let* ((wm-hints
+              (ignore-errors (emacs-panel-wm-hints)))
+             (desktop-name (if wm-hints
+                               (nth
+                                (cadr (assoc 'current-desktop wm-hints))
+                                (cdr (assoc 'desktop-names wm-hints)))))
              (location (fmsession-read-location desktop-name)))
+        (unless wm-hints
+          (message "Some error in wm-hints"))
         (message "set-this-frame-session-location: %s" location)
         (modify-frame-parameters frame
                                  (list (cons 'frame-spec-id location)))
