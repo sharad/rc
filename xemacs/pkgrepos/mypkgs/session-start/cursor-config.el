@@ -34,12 +34,12 @@
 ;;
 (cond
   ((xrequire 'hl-line+) ; Load this file (it will load `hl-line.el')
-;;
-;;  To turn on `global-hl-line-mode' only when Emacs is idle, by
-;;  default, add this line also to your init file:
-;;
-;; Highlight only when idle
-   (toggle-hl-line-when-idle 7))
+   ;;
+   ;;  To turn on `global-hl-line-mode' only when Emacs is idle, by
+   ;;  default, add this line also to your init file:
+   ;;
+   ;; Highlight only when idle
+   (toggle-hl-line-when-idle 70))
   ((xrequire 'hl-line)
    (hl-line-mode) ;; for the current buffer
    (global-hl-line-mode))) ;; for all buffers

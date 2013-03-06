@@ -42,7 +42,11 @@
 
     (deh-require-maybe iproject
       ;; http://www.emacswiki.org/emacs/IProject
-      (iproject-key-binding))
+      (iproject-key-binding)
+      (add-hook '*sharad/after-init-hook*
+                #'(lambda ()
+                    (iproject-key-binding)))
+      )
 
     (deh-require-maybe project-buffer-occur
       ;; http://www.emacswiki.org/emacs/ProjectBufferOccur
