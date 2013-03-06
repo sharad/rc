@@ -30,8 +30,15 @@
 
 
 
-(defun sharad/elscreen-get-screen-to-name-alist (&optional truncate-length padding)
-  ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
+
+
+;; (sharad/elscreen-get-screen-to-name-alist)
+
+(deh-require elscreen
+
+
+  (defun sharad/elscreen-get-screen-to-name-alist (&optional truncate-length padding)
+    ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
     (elscreen-notify-screen-modification-suppress
      (elscreen-set-window-configuration (elscreen-get-current-screen)
                                         (elscreen-current-window-configuration))
@@ -68,7 +75,7 @@
                    (setq nickname-type-map
                          (if (eq type 'nickname)
                              (delete (car nickname-type-map) nickname-type-map)
-                           (cdr nickname-type-map)))))
+                             (cdr nickname-type-map)))))
                ;; (setq screen-name
                ;;       (mapconcat 'identity (reverse nickname-list) ":"))
                (setq screen-name (reverse nickname-list))))
@@ -78,10 +85,6 @@
 
        ;; (elscreen-set-screen-to-name-alist-cache screen-to-name-alist)
        screen-to-name-alist)))
-
-(sharad/elscreen-get-screen-to-name-alist)
-
-(deh-section "session per frames prework"
 
   (defvar elscreen-session-restore-create-scratch-buffer nil "elscreen-session-restore-create-scratch-buffer")
 
@@ -109,6 +112,7 @@
       (push (cons 'current-screen (elscreen-get-current-screen)) session-list)))
 
   (defun elscreen-session-store (elscreen-session)
+    (interactive "ffile: " )
     (with-temp-file elscreen-session
       (insert
        (prin1-to-string (elscreen-session-make-session-list)))))
@@ -118,6 +122,7 @@
   ;;     (elscreen-set-screen-to-name-alist-cache screens)))
 
   (defun elscreen-session-restore (elscreen-session)
+    (interactive "ffile: " )
     (message "Nstart: session-current-buffer %s" elscreen-session)
     (let* (screen buffers
            (elscreen-session-list (sharad/read-file elscreen-session))
@@ -129,25 +134,35 @@
                        screens)))))
       (message "Bstart: session-current-buffer %s" session-current-buffer)
       (message "Astart: screen-to-name-alist %s" elscreen-session-list)
+
       (while screens
-        (setq screen (car (car screens)))
-        ; (message "screen: %s buffer: %s" screen (cdr (car screens)))
-        (setq buffers (cdr (car screens)))
+        (setq screen (caar screens))
+        (setq buffers (cdar screens))
         (if (when (bufferp (get-buffer (car buffers)))
-              (message "start: screen-to-name-alist %s" elscreen-session-list)
+              (message "if screen: %s buffer: %s" screen buffers)
               (if (eq screen 0) ;; (eq (elscreen-get-current-screen) 0)
-                  (switch-to-buffer (car buffers))
-                  (elscreen-find-and-goto-by-buffer (car buffers) t t)))
+                  (progn
+                    (message "(switch-to-buffer %s)" (car buffers))
+                    (switch-to-buffer (car buffers)))
+                  (progn
+                    (message "(elscreen-find-and-goto-by-buffer %s t t)" (car buffers))
+                    (elscreen-find-and-goto-by-buffer (car buffers) t t)))
+              (cdr buffers))
             (while (cdr buffers)
+              (message "while: screen: %s buffer: %s" screen (cadr buffers))
               (switch-to-buffer-other-window (car (cdr buffers)))
-              (setq buffers (cdr buffers))))
+              (setq buffers (cdr buffers)))
+            (message "else"))
         (setq screens (cdr screens)))
+
       (when elscreen-session-restore-create-scratch-buffer
         (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
+
       (if (get-buffer session-current-buffer)
           (elscreen-find-and-goto-by-buffer (get-buffer session-current-buffer) nil nil)
-          (message "in when session-current-buffer %s" session-current-buffer))
-      (elscreen-notify-screen-modification 'force-immediately)))
+          (message "in when session-current-buffer %s" session-current-buffer)))
+    (message "elscreen-notify-screen-modification")
+    (elscreen-notify-screen-modification 'force-immediately))
 
   (defun fmsession-read-location (&optional initial-input)
     (let ((used t)
