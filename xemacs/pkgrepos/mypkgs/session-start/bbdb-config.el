@@ -1,5 +1,5 @@
 ;;
-;; bbdb.el
+;; bbdb-config.el
 ;;
 ;; Made by Sharad Pratap
 ;; Login   <s@taj>
@@ -21,4 +21,3 @@
   (add-hook 'kill-emacs-hook 'bbdb-save-db))
 
 (provide 'bbdb-config)
-

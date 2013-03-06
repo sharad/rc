@@ -34,10 +34,8 @@
 
 ;; (sharad/elscreen-get-screen-to-name-alist)
 
-(deh-require elscreen
-
-
-  (defun sharad/elscreen-get-screen-to-name-alist ()
+(eval-after-load "elscreen"
+   '(defun sharad/elscreen-get-screen-to-name-alist ()
     ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
     (elscreen-notify-screen-modification-suppress
      (elscreen-set-window-configuration (elscreen-get-current-screen)
@@ -84,7 +82,9 @@
          screen-list))
 
        ;; (elscreen-set-screen-to-name-alist-cache screen-to-name-alist)
-       screen-to-name-alist)))
+       screen-to-name-alist))))
+
+(deh-require elscreen
 
   (defvar elscreen-session-restore-create-scratch-buffer nil "elscreen-session-restore-create-scratch-buffer")
 
@@ -121,9 +121,12 @@
   ;;   (let ((screens (reverse (sharad/read-file elscreen-session))))
   ;;     (elscreen-set-screen-to-name-alist-cache screens)))
 
+  (defvar *elscreen-session-restore-data* nil "")
+
   (defun elscreen-session-restore (elscreen-session)
     (interactive "ffile: " )
-    (message "Nstart: session-current-buffer %s" elscreen-session)
+    (testing
+     (message "Nstart: session-current-buffer %s" elscreen-session))
     (let* (screen buffers
            (elscreen-session-list (sharad/read-file elscreen-session))
            (screens (cdr (assoc 'screens elscreen-session-list)))
@@ -132,36 +135,39 @@
             (car (cdr (assoc
                        (cdr (assoc 'current-screen elscreen-session-list))
                        screens)))))
-      (message "Bstart: session-current-buffer %s" session-current-buffer)
-      (message "Astart: screen-to-name-alist %s" elscreen-session-list)
-
+      (testing
+       (message "Bstart: session-current-buffer %s" session-current-buffer)
+       (message "Astart: screen-to-name-alist %s" elscreen-session-list))
       (while screens
         (setq screen (caar screens))
         (setq buffers (cdar screens))
         (if (when (bufferp (get-buffer (car buffers)))
-              (message "if screen: %s buffer: %s" screen buffers)
+              ;; (message "if screen: %s buffer: %s" screen buffers)
               (if (eq screen 0) ;; (eq (elscreen-get-current-screen) 0)
-                  (progn
-                    (message "(switch-to-buffer %s)" (car buffers))
-                    (switch-to-buffer (car buffers)))
-                  (progn
-                    (message "(elscreen-find-and-goto-by-buffer %s t t)" (car buffers))
-                    (elscreen-find-and-goto-by-buffer (car buffers) t t)))
+                    (switch-to-buffer (car buffers))
+                    (elscreen-find-and-goto-by-buffer (car buffers) t t))
               (cdr buffers))
             (while (cdr buffers)
-              (message "while: screen: %s buffer: %s" screen (cadr buffers))
+              (testing (message "while: screen: %s buffer: %s" screen (cadr buffers)))
               (switch-to-buffer-other-window (car (cdr buffers)))
               (setq buffers (cdr buffers)))
-            (message "else"))
+            (testing (message "else")))
         (setq screens (cdr screens)))
 
-      (when elscreen-session-restore-create-scratch-buffer
-        (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
+      ;; (when elscreen-session-restore-create-scratch-buffer
+      ;;   (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
+      (elscreen-create)                 ;trap
 
       (if (get-buffer session-current-buffer)
-          (elscreen-find-and-goto-by-buffer (get-buffer session-current-buffer) nil nil)
-          (message "in when session-current-buffer %s" session-current-buffer)))
-    (message "elscreen-notify-screen-modification")
+          (progn
+            ;; (elscreen-find-and-goto-by-buffer (get-buffer session-current-buffer) nil nil)
+            (setq *elscreen-session-restore-data* (list (cons 'cb session-current-buffer)))
+            (testing
+             (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*)))
+          (testing
+           (message "in when session-current-buffer %s" session-current-buffer))))
+    (testing
+     (message "elscreen-notify-screen-modification"))
     (elscreen-notify-screen-modification 'force-immediately))
 
   (defun fmsession-read-location (&optional initial-input)
@@ -226,7 +232,106 @@
 
   ;; (elscreen-restore)
   ;;}}
-  )
+
+    ;;{{
+  (message "server-create-window-system-frame")
+
+
+
+  ;; (defun server-create-window-system-frame (display nowait proc parent-id
+  ;;                                           &optional parameters)
+  ;;   (add-to-list 'frame-inherited-parameters 'client)
+  ;;   (if (not (fboundp 'make-frame-on-display))
+  ;;       (progn
+  ;;         ;; This emacs does not support X.
+  ;;         (server-log "Window system unsupported" proc)
+  ;;         (server-send-string proc "-window-system-unsupported \n")
+  ;;         nil)
+  ;;       ;; Flag frame as client-created, but use a dummy client.
+  ;;       ;; This will prevent the frame from being deleted when
+  ;;       ;; emacsclient quits while also preventing
+  ;;       ;; `server-save-buffers-kill-terminal' from unexpectedly
+  ;;       ;; killing emacs on that frame.
+  ;;       (let* ((params `((client . ,(if nowait 'nowait proc))
+  ;;                        ;; This is a leftover, see above.
+  ;;                        (environment . ,(process-get proc 'env))
+  ;;                        ,@parameters))
+  ;;              (display (or display
+  ;;                           (frame-parameter nil 'display)
+  ;;                           (getenv "DISPLAY")
+  ;;                           (error "Please specify display")))
+  ;;              frame)
+  ;;         (if parent-id
+  ;;             (push (cons 'parent-id (string-to-number parent-id)) params))
+  ;;         (setq frame (make-frame-on-display display params))
+  ;;         (server-log (format "%s created" frame) proc)
+  ;;         (select-frame frame)
+  ;;         (process-put proc 'frame frame)
+  ;;         (process-put proc 'terminal (frame-terminal frame))
+
+  ;;         ;; Display *scratch* by default.
+  ;;         ;; (switch-to-buffer (get-buffer-create "*scratch*") 'norecord)
+  ;;         frame)))
+
+
+  ;; (eval-after-load "server"
+  ;;                  '(defun server-create-window-system-frame (display nowait proc parent-id
+  ;;                                                             &optional parameters)
+  ;;                    (add-to-list 'frame-inherited-parameters 'client)
+  ;;                    (if (not (fboundp 'make-frame-on-display))
+  ;;                        (progn
+  ;;                          ;; This emacs does not support X.
+  ;;                          (server-log "Window system unsupported" proc)
+  ;;                          (server-send-string proc "-window-system-unsupported \n")
+  ;;                          nil)
+  ;;                        ;; Flag frame as client-created, but use a dummy client.
+  ;;                        ;; This will prevent the frame from being deleted when
+  ;;                        ;; emacsclient quits while also preventing
+  ;;                        ;; `server-save-buffers-kill-terminal' from unexpectedly
+  ;;                        ;; killing emacs on that frame.
+  ;;                        (let* ((params `((client . ,(if nowait 'nowait proc))
+  ;;                                         ;; This is a leftover, see above.
+  ;;                                         (environment . ,(process-get proc 'env))
+  ;;                                         ,@parameters))
+  ;;                               (display (or display
+  ;;                                            (frame-parameter nil 'display)
+  ;;                                            (getenv "DISPLAY")
+  ;;                                            (error "Please specify display")))
+  ;;                               frame)
+  ;;                          (if parent-id
+  ;;                              (push (cons 'parent-id (string-to-number parent-id)) params))
+  ;;                          (setq frame (make-frame-on-display display params))
+  ;;                          (server-log (format "%s created" frame) proc)
+  ;;                          (select-frame frame)
+  ;;                          (process-put proc 'frame frame)
+  ;;                          (process-put proc 'terminal (frame-terminal frame))
+
+  ;;                          ;; Display *scratch* by default.
+  ;;                          ;; (switch-to-buffer (get-buffer-create "*scratch*") 'norecord)
+  ;;                          frame))))
+
+
+
+
+  (defadvice server-create-window-system-frame
+      (after remove-scratch-buffer activate)
+    "remove-scratch-buffer"
+    (testing (message "in running server-create-window-system-frame afer advise"))
+    (if *elscreen-session-restore-data*
+        (let ((cb (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*)))))
+          (testing
+           (message "running server-create-window-system-frame afer advise if")
+           (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*))
+          (when cb
+            (elscreen-kill)
+            (elscreen-find-and-goto-by-buffer cb nil nil)
+            (setq *elscreen-session-restore-data* nil)
+            (elscreen-notify-screen-modification 'force-immediately)))
+        (testing (message "running server-create-window-system-frame afer advise else")))
+    ad-return-value)
+
+
+  ;;}}
 
   ;;{{
   (deh-section "per frame session"
@@ -272,99 +377,23 @@
      after-make-frame-functions
      delete-frame-functions
      *sharad/after-init-hook*
-     )
+     ))
 
 
   ;;}}
-  ;;{{
-  (defun server-create-window-system-frame (display nowait proc)
-    (add-to-list 'frame-inherited-parameters 'client)
-    (if (not (fboundp 'make-frame-on-display))
-        (progn
-          ;; This emacs does not support X.
-          (server-log "Window system unsupported" proc)
-          (server-send-string proc "-window-system-unsupported \n")
-          nil)
-        ;; Flag frame as client-created, but use a dummy client.
-        ;; This will prevent the frame from being deleted when
-        ;; emacsclient quits while also preventing
-        ;; `server-save-buffers-kill-terminal' from unexpectedly
-        ;; killing emacs on that frame.
-        (let* ((params `((client . ,(if nowait 'nowait proc))
-                         ;; This is a leftover, see above.
-                         (environment . ,(process-get proc 'env))))
-               (frame (make-frame-on-display
-                       (or display
-                           (frame-parameter nil 'display)
-                           (getenv "DISPLAY")
-                           (error "Please specify display"))
-                       params)))
-          (server-log (format "%s created" frame) proc)
-          (select-frame frame)
-          (process-put proc 'frame frame)
-          (process-put proc 'terminal (frame-terminal frame))
-
-          (if elscreen-session-restore-create-scratch-buffer
-              ;; Display *scratch* by default.
-              (switch-to-buffer (get-buffer-create "*scratch*") 'norecord))
-          frame)))
-  ;;}}
-
-)
-
-(deh-require-maybe savehist-20+
   )
-
-(deh-require-maybe workspaces
-  )
-
-;;For Session
-(deh-require-maybe session ;;
-  (add-hook 'after-init-hook 'session-initialize)
-  (add-hook 'kill-emacs-hook 'session-save-session)
-  (setq session-initialize t)
-
-  ;;{{ http://www.emacswiki.org/emacs/EmacsSession
-
-  ;; There is a function in session that’s not really persistence
-  ;; related – ‘session-jump-to-last-change’ <C-x C-/>. This is the
-  ;; singular most useful function of any Emacs add-on to me. It moves
-  ;; the point to the last modified location. Keep calling it and you
-  ;; will visit all the locations you’ve made
-  ;; modifications. Absolutely brilliant. Unobstrusive, unlike
-  ;; highlight-changes-mode.
-
-  ;; However, it doesn’t automatically reveal folded sections. Here is
-  ;; the fix:
-
-
-  ;; expanded folded secitons as required
-  (defun le::maybe-reveal ()
-    (when (and (or (memq major-mode  '(org-mode outline-mode))
-                   (and (boundp 'outline-minor-mode)
-                        outline-minor-mode))
-               (outline-invisible-p))
-      (if (eq major-mode 'org-mode)
-          (org-reveal)
-          (show-subtree))))
-
-  (add-hook 'session-after-jump-to-last-change-hook
-            'le::maybe-reveal)
-  ;;}}
-  )
-;;  (session-initialize))
 
 
 (deh-require-maybe desktop
-;; (testing
+  ;; (testing
   ;; http://stackoverflow.com/questions/2703743/restore-emacs-session-desktop
   ;; (desktop-save-mode 1)
   ;; (desktop-read)
 
   ;; from: http://www.emacswiki.org/emacs/DeskTop
   ;; You can add any extra variables you want saved across sessions to the list ‘desktop-globals-to-save’. For example:
-    ;; (setq history-length 250)
-    ;; (add-to-list 'desktop-globals-to-save 'file-name-history)
+  ;; (setq history-length 250)
+  ;; (add-to-list 'desktop-globals-to-save 'file-name-history)
 
   ;; Specifying Files Not to be Opened
 
@@ -408,8 +437,6 @@
 
   (testing
    (add-hook 'auto-save-hook 'my-desktop-save))
-
-
 
   ;;{{
   ;; Automatically Overriding Stale Locks
@@ -456,24 +483,21 @@ Also returns nil if pid is nil."
 
   ;; I think the original function contains an error. Should it not end something like:
 
-          ;; (when (search-forward "emacs" nil t)
-          ;;   pid))))))
+  ;; (when (search-forward "emacs" nil t)
+  ;;   pid))))))
   ;;}}
 
+  ;;{{
+  ;; Minimal Setup
 
+  ;; This is for people who only want minimal session management
+  ;; functionality, and don’t want their previous sessions automatically
+  ;; restored at start-up. Note that you need desktop-save-mode NOT
+  ;; ENABLED for this to work as intended.
 
+  ;; It works for me with one desktop, with more than one may need some tweaking.
 
-;;{{
-;; Minimal Setup
-
-;; This is for people who only want minimal session management
-;; functionality, and don’t want their previous sessions automatically
-;; restored at start-up. Note that you need desktop-save-mode NOT
-;; ENABLED for this to work as intended.
-
-;; It works for me with one desktop, with more than one may need some tweaking.
-
-;; use only one desktop
+  ;; use only one desktop
   (setq desktop-path '("~/.emacs.d/"))
   (setq desktop-dirname "~/.emacs.d/")
   (setq desktop-base-file-name
@@ -482,7 +506,7 @@ Also returns nil if pid is nil."
          (if (boundp 'server-name)
              (concat "-" server-name))))
 
-;; remove desktop after it's been read
+  ;; remove desktop after it's been read
   (add-hook 'desktop-after-read-hook
             '(lambda ()
               ;; desktop-remove clears desktop-dirname
@@ -493,7 +517,7 @@ Also returns nil if pid is nil."
   (defun saved-session ()
     (file-exists-p (concat desktop-dirname "/" desktop-base-file-name)))
 
-;; use session-restore to restore the desktop manually
+  ;; use session-restore to restore the desktop manually
   (defun session-restore ()
     "Restore a saved emacs session."
     (interactive)
@@ -504,7 +528,7 @@ Also returns nil if pid is nil."
           t)
         (message "No desktop found.")))
 
-;; use session-save to save the desktop manually
+  ;; use session-save to save the desktop manually
   (defun session-save ()
     "Save an emacs session."
     (interactive)
@@ -517,25 +541,69 @@ Also returns nil if pid is nil."
   (add-hook 'session-before-save-hook
             #'session-save)
 
-;; ask user whether to restore desktop at start-up
+  ;; ask user whether to restore desktop at start-up
   (add-hook ;; 'after-init-hook
-	    'sharad/enable-startup-inperrupting-feature-hook
-            '(lambda ()
-              (if (saved-session)
-                  (if t ;; (y-or-n-p "Restore desktop? ")
-                      (session-restore)))))
+   'sharad/enable-startup-inperrupting-feature-hook
+   '(lambda ()
+     (if (saved-session)
+         (if t ;; (y-or-n-p "Restore desktop? ")
+             (session-restore)))))
 
-;; Then type ‘M-x session-save’, or ‘M-x session-restore’ whenever you want to save or restore a desktop. Restored desktops are deleted from disk.
+  ;; Then type ‘M-x session-save’, or ‘M-x session-restore’ whenever you want to save or restore a desktop. Restored desktops are deleted from disk.
 
   ;;}}
 
 
   )
 
-;; Something like this is recommended to get emacs to shut-up
-;; and never ask you for a coding system. Otherwise this can
-;; happen on *every* desktop-save triggered by the auto-save-hook:
-(prefer-coding-system 'utf-8)
+
+
+(deh-require-maybe savehist-20+
+  )
+
+(deh-require-maybe workspaces
+  )
+
+;;For Session
+(deh-require-maybe session ;;
+  (add-hook 'after-init-hook 'session-initialize)
+  (add-hook 'kill-emacs-hook 'session-save-session)
+  (setq session-initialize t)
+
+  ;;{{ http://www.emacswiki.org/emacs/EmacsSession
+
+  ;; There is a function in session that’s not really persistence
+  ;; related – ‘session-jump-to-last-change’ <C-x C-/>. This is the
+  ;; singular most useful function of any Emacs add-on to me. It moves
+  ;; the point to the last modified location. Keep calling it and you
+  ;; will visit all the locations you’ve made
+  ;; modifications. Absolutely brilliant. Unobstrusive, unlike
+  ;; highlight-changes-mode.
+
+  ;; However, it doesn’t automatically reveal folded sections. Here is
+  ;; the fix:
+
+
+  ;; expanded folded secitons as required
+  (defun le::maybe-reveal ()
+    (when (and (or (memq major-mode  '(org-mode outline-mode))
+                   (and (boundp 'outline-minor-mode)
+                        outline-minor-mode))
+               (outline-invisible-p))
+      (if (eq major-mode 'org-mode)
+          (org-reveal)
+          (show-subtree))))
+
+  (add-hook 'session-after-jump-to-last-change-hook
+            'le::maybe-reveal)
+  ;;}}
+  ;;  (session-initialize))
+
+  ;; Something like this is recommended to get emacs to shut-up
+  ;; and never ask you for a coding system. Otherwise this can
+  ;; happen on *every* desktop-save triggered by the auto-save-hook:
+  (prefer-coding-system 'utf-8))
+
 
 
 ;; (deh-require-maybe desktop-recover

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2013-03-06 19:34:35 s>
+;; Time-stamp: <2013-03-06 21:18:26 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -120,7 +120,7 @@ and their terminal equivalents.")
   (save-excursion
     (beginning-of-line)
     (copy-region-as-kill (point)
-                          (progn (forward-line arg) (point)))))
+                         (progn (forward-line arg) (point)))))
 
 (if (not running-xemacs)
     (global-set-key-if-unbind [C-w] 'rlr-copy-line-as-kill) ;use [S-del] to cut the region
@@ -395,4 +395,3 @@ and their terminal equivalents.")
   (global-set-key "\C-x4t" 'transpose-buffers)
 
 (provide 'binding-config)
-
