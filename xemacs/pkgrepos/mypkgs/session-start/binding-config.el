@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2012-09-28 21:58:00 s>
+;; Time-stamp: <2013-03-06 19:34:35 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -127,6 +127,7 @@ and their terminal equivalents.")
   )
 
 
+(global-set-key (kbd "M-SPC") 'just-one-space)
 
 ;; F5 is user by anything-config - resolve it.
 ;; (global-set-key [f5] 'font-lock-fontify-buffer) ;"reload colors"
