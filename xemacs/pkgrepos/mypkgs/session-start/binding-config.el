@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2013-03-06 21:18:26 s>
+;; Time-stamp: <2013-03-07 11:59:04 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -393,5 +393,12 @@ and their terminal equivalents.")
 
 (define-key global-map [(kbd "C-x4t")] 'transpose-buffers)
   (global-set-key "\C-x4t" 'transpose-buffers)
+
+
+(deh-require-maybe recentf
+  (global-set-key-if-unbind (kbd "C-c C-o") 'recentf-open-files))
+
+(deh-require-maybe recentf-buffer
+  (global-set-key [?\C-c ?r ?f] 'recentf-open-files-in-simply-buffer))
 
 (provide 'binding-config)

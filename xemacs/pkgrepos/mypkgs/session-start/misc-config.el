@@ -45,14 +45,6 @@ The indirect buffer can have another major mode."
 ;; (display-time-mode 1)			;not available in XEmacs.
 
 
-; Add to the "File" menu a list of recently opened files.
-(if (not running-xemacs)
-    ( if (xrequire 'recentf);; nil t)
-        (progn (when (fboundp 'recentf-mode)
-                 (recentf-mode 1))
-               ;;displays this menu in a buffer
-               (global-set-key-if-unbind (kbd "C-c C-o") 'recentf-open-files))))
-
 ;show white spaces (in "pale turquoise", see "custom-set-faces" below)
 ;at the end of lines
 (setq-default show-trailing-whitespace t)
