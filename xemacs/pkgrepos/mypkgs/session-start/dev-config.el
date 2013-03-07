@@ -44,7 +44,8 @@
 (deh-require-maybe sidebrain
   ;;http://www.emacswiki.org/emacs/SideBrain
   ;;http://sidebrain.sourceforge.net/manual/index.html
-  )
+  (add-hook 'find-file-hook
+            #'sidebrain-read-todo-from-comments))
 
 
 (provide 'dev-config)

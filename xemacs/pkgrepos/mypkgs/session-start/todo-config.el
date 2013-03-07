@@ -24,8 +24,6 @@
 
 ;;; Code:
 
-(testing
-
 (deh-section "todo"
   ; http://stackoverflow.com/a/2242801/341107
   ;;This command will do something like you want.
@@ -85,77 +83,76 @@ having the same major mode as the current buffer"
   ;; This highlighting of FIXMEs etc. can be done with
   ;; WcheckMode. Here’s an example configuration:
 
-    (defvar my-highlight-words
-      '("FIXME" "TODO" "BUG"))
+  (defvar my-highlight-words
+    '("FIXME" "TODO" "BUG"))
 
-    ;; Ensure that the variable exists.
-    (defvar wcheck-language-data nil)
+  ;; Ensure that the variable exists.
+  (defvar wcheck-language-data nil)
 
-    (push '("FIXME"
-            (program . (lambda (strings)
-                         (let (found)
-                           (dolist (word my-highlight-words found)
-                             (when (member word strings)
-                               (push word found))))))
-            (face . highlight)
-            (read-or-skip-faces
-             (nil)))
-          wcheck-language-data)
+  (push '("FIXME"
+          (program . (lambda (strings)
+                       (let (found)
+                         (dolist (word my-highlight-words found)
+                           (when (member word strings)
+                             (push word found))))))
+          (face . highlight)
+          (read-or-skip-faces
+           (nil)))
+        wcheck-language-data)
 
-    ;; Now ‘wcheck-change-language’ to FIXME and turn on ‘wcheck-mode’
-    ;; (a minor mode).
+  ;; Now ‘wcheck-change-language’ to FIXME and turn on ‘wcheck-mode’
+  ;; (a minor mode).
 
-    (deh-require-maybe ficme-mode)
-    (deh-require-maybe myfixme)
-    (deh-require-maybe rfringe)
+  (deh-require-maybe ficme-mode)
+  (deh-require-maybe myfixme)
+  (deh-require-maybe rfringe)
 
-    (deh-require-todo wcheck-mode
-      ()
-      (message "elpa pkg wcheck-mode"))
+  (deh-require-todo wcheck-mode
+    ()
+    (message "elpa pkg wcheck-mode"))
 
-    (deh-require-maybe org-jira)
-    (deh-require-maybe todostack)
-    (deh-require-maybe todo-mode
-      ;; famous
-      ;; https://groups.google.com/forum/?fromgroups=#!msg/gnu.emacs.sources/7v7Wlnocr8o/bSUKTMEdL4QJ
-      )
+  (deh-require-maybe org-jira)
+  (deh-require-maybe todostack
+    ;; beautiful
+    (add-hook 'kill-emacs-hook 'todostack-save)
+    (add-hook 'emacs-startup-hook 'todostack-load)
+    (add-hook 'todostack-post-op-hook 'todostack-save))
+  (deh-require-maybe todo-mode
+    ;; famous
+    ;; https://groups.google.com/forum/?fromgroups=#!msg/gnu.emacs.sources/7v7Wlnocr8o/bSUKTMEdL4QJ
+    )
 
-    (deh-require-maybe sidebrain
-      ;;http://www.emacswiki.org/emacs/SideBrain
-      ;;http://sidebrain.sourceforge.net/manual/index.html
-      )
+  (deh-require-maybe sidebrain
+    ;;http://www.emacswiki.org/emacs/SideBrain
+    ;;http://sidebrain.sourceforge.net/manual/index.html
+    )
 
-    (deh-require-maybe todoo
-      ;; part of emacs-goodies-el
-      ;; http://www.emacswiki.org/emacs/ToDoo
-        (defun todoo-or-close-todoo()
-          (interactive)
-          (if (eq major-mode 'todoo-mode)
-              (call-interactively 'todoo-save-and-exit)
-              (call-interactively 'todoo)))
-      )
-    (deh-require-maybe taskjuggler-mode
-      ;; http://www.skamphausen.de/cgi-bin/ska/taskjuggler-mode
-      ;; http://www.emacswiki.org/emacs/Taskjuggler
-      )
+  (deh-require-maybe todoo
+    ;; part of emacs-goodies-el
+    ;; http://www.emacswiki.org/emacs/ToDoo
+    (defun todoo-or-close-todoo()
+      (interactive)
+      (if (eq major-mode 'todoo-mode)
+          (call-interactively 'todoo-save-and-exit)
+          (call-interactively 'todoo)))
+    )
+  (deh-require-maybe taskjuggler-mode
+    ;; http://www.skamphausen.de/cgi-bin/ska/taskjuggler-mode
+    ;; http://www.emacswiki.org/emacs/Taskjuggler
+    )
 
-    (deh-section "todo in dir"
-      ;; http://www.datenterrorist.de/index.php?itemid=1437
-      (defun grep-todos-in-dir (dir &optional not-recursive)
-        "Grep recursively for TODO comments in the given directory"
-        (interactive "Ddirectory:")
-        (let ((recur "-r"))
-          (if not-recursive
-              (setq recur ""))
-          (grep (concat "grep -nH -I " recur " -E \"[\\#\\/\\-\\;\\*]\s*TODO|FIXME|XXX:?\" " dir " 2>/dev/null")))
-        (enlarge-window 7))
+  (deh-section "todo in dir"
+    ;; http://www.datenterrorist.de/index.php?itemid=1437
+    (defun grep-todos-in-dir (dir &optional not-recursive)
+      "Grep recursively for TODO comments in the given directory"
+      (interactive "Ddirectory:")
+      (let ((recur "-r"))
+        (if not-recursive
+            (setq recur ""))
+        (grep (concat "grep -nH -I " recur " -E \"[\\#\\/\\-\\;\\*]\s*TODO|FIXME|XXX:?\" " dir " 2>/dev/null")))
+      (enlarge-window 7))
 
-      (global-set-key-if-unbind [f4] 'grep-todos-in-dir))
-
-
-)
-
-)
+    (global-set-key-if-unbind [f4] 'grep-todos-in-dir)))
 
 
 (provide 'todo-config)

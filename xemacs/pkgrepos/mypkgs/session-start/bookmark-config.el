@@ -109,7 +109,11 @@
   ;; http://dto.github.com/notebook/linkd.html
   ;; http://www.emacswiki.org/emacs/LinkdMode
 
+  (setq linkd-use-icons t
+        linkd-icons-directory "~/.xemacs/pkgrepos/world/misc/linkd/icons/") ;; or wherever you put it
+
   )
 
-(provide 'bookmark-config)
 
+
+(provide 'bookmark-config)

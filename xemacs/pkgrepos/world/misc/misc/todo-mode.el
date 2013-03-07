@@ -5,26 +5,21 @@
 ;; Author: Oliver...@cl.cam.ac.uk (was valid on Aug 2, 1997)
 ;; Created: 2 Aug 1997
 ;; Version: $Id: todo-mode.el,v 1.21 1997/10/18 13:31:40 os10000 Exp $
-- hide quoted text -
 
 ;; Keywords: Categorised TODO list editor, todo-mode
 
-- hide quoted text -
 ;; This file is part of GNU Emacs.
 
-- hide quoted text -
 ;; GNU Emacs is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
 ;; any later version.
 
-- hide quoted text -
 ;; GNU Emacs is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
-- hide quoted text -
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs; see the file COPYING.  If not, write to the
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
@@ -34,7 +29,6 @@
 
 ;;; Commentary:
 
-- hide quoted text -
 ;;  Preface, Quickstart Installation
 ;;
 ;;      To get this to work, make emacs execute the line
@@ -85,7 +79,6 @@
 ;;      Which version of todo-mode.el does this documentation refer to?
 ;;
 ;;      $Id: todo-mode.el,v 1.21 1997/10/18 13:31:40 os10000 Exp $
-- hide quoted text -
 
 ;;
 ;;  Pre-Requisites
@@ -303,7 +296,6 @@
 ;;     generated the attached page using the following command:
 ;;     ripdoc.pls < todo-mode.el | t2html.pls -a "Oliver.Seidel" -e \
 ;;     Oliver...@cl.cam.ac.uk -simple -base
-- hide quoted text -
 
 ;;
 ;; And of course I appreciate it.  Jari's stuff can be found at:
@@ -405,7 +397,6 @@
 
 ;; User-configurable variables:
 
-- hide quoted text -
 (defvar todo-prefix     "*/*"           "*TODO mode prefix for entries.")
 (defvar todo-file-do    "~/.todo-do"    "*TODO mode list file.")
 (defvar todo-file-done  "~/.todo-done"  "*TODO mode archive file.")
@@ -414,7 +405,6 @@
 (defvar todo-insert-threshold 0         "*TODO mode insertion accuracy.")
 (defvar todo-edit-buffer " *TODO Edit*" "TODO Edit buffer name.")
 
-- hide quoted text -
 (defvar todo-print-function 'ps-print-buffer-with-faces
   "*Function to print the current buffer.")
 (defvar todo-show-priorities 1
@@ -427,7 +417,6 @@
   "*Non-nil removes category separators in
  \\[todo-top-priorities] and \\[todo-print].")
 
-- hide quoted text -
 
 ;; Thanks for the ISO time stamp format go to Karl Eichwalder <k...@suse.de>
 ;; My format string for the appt.el package is "%3b %2d, %y, %02I:%02M%p".
@@ -437,20 +426,17 @@
   "TODO mode time string format for done entries.
 For details see the variable `time-stamp-format'.")
 
-- hide quoted text -
 (defvar todo-entry-prefix-function 'todo-entry-timestamp-initials
   "*Function producing text to insert at start of todo entry.")
 (defvar todo-initials (or (getenv "INITIALS") (user-login-name))
   "*Initials of todo item author.")
 
-- hide quoted text -
 (defun todo-entry-timestamp-initials ()
   (let ((time-stamp-format todo-time-string-format))
     (concat (time-stamp-string) " " todo-initials ": ")))
 
 ;; ---------------------------------------------------------------------------
 
-- hide quoted text -
 ;; Get some outside help ...
 
 (require 'time-stamp)
@@ -458,10 +444,8 @@ For details see the variable `time-stamp-format'.")
 
 ;; ---------------------------------------------------------------------------
 
-- hide quoted text -
 ;; Set up some helpful context ...
 
-- hide quoted text -
 (defvar todo-categories         nil     "TODO categories.")
 (defvar todo-cats               nil     "Old variable for holding the
 TODO categories. Use `todo-categories' instead.")
@@ -470,7 +454,6 @@ TODO categories. Use `todo-categories' instead.")
 (defvar todo-mode-map           nil     "TODO mode keymap.")
 (defvar todo-category-number    0       "TODO category number.")
 
-- hide quoted text -
 
 (defvar todo-category-sep (make-string 75 ?-)
   "Category separator.")
@@ -483,7 +466,6 @@ TODO categories. Use `todo-categories' instead.")
 
 ;; ---------------------------------------------------------------------------
 
-- hide quoted text -
 (if todo-mode-map
     nil
   (let ((map (make-keymap)))
@@ -507,7 +489,6 @@ TODO categories. Use `todo-categories' instead.")
     (define-key map "t" 'todo-top-priorities)
     (setq todo-mode-map map)))
 
-- hide quoted text -
 (defun todo-category-select ()
   "Make TODO mode display the current category correctly."
   (let ((name (nth todo-category-number todo-categories)))
@@ -525,7 +506,6 @@ TODO categories. Use `todo-categories' instead.")
       (goto-char (point-min)))))
 (defalias 'todo-cat-slct 'todo-category-select)
 
-- hide quoted text -
 (defun todo-forward-category () "Go forward to TODO list of next category."
   (interactive)
   (setq todo-category-number
@@ -533,7 +513,6 @@ TODO categories. Use `todo-categories' instead.")
   (todo-category-select))
 (defalias 'todo-cmd-forw 'todo-forward-category)
 
-- hide quoted text -
 (defun todo-backward-category () "Go back to TODO list of previous category."
   (interactive)
   (setq todo-category-number
@@ -541,14 +520,12 @@ TODO categories. Use `todo-categories' instead.")
   (todo-category-select))
 (defalias 'todo-cmd-back 'todo-backward-category)
 
-- hide quoted text -
 (defun todo-backward-item () "Select previous entry of TODO list."
   (interactive)
   (search-backward-regexp (concat "^" (regexp-quote todo-prefix)) nil t)
   (message ""))
 (defalias 'todo-cmd-prev 'todo-backward-item)
 
-- hide quoted text -
 (defun todo-forward-item (&optional count)
   "Select Nth next entry of TODO list."
   (interactive "P")
@@ -560,13 +537,11 @@ TODO categories. Use `todo-categories' instead.")
   (message ""))
 (defalias 'todo-cmd-next 'todo-forward-item)
 
-- hide quoted text -
 (defun todo-save () "Save the TODO list."
   (interactive)
   (save-buffer))
 (defalias 'todo-cmd-save 'todo-save)
 
-- hide quoted text -
 (defun todo-quit () "Done with TODO list for now."
   (interactive)
   (widen)
@@ -575,7 +550,6 @@ TODO categories. Use `todo-categories' instead.")
   (bury-buffer))
 (defalias 'todo-cmd-done 'todo-quit)
 
-- hide quoted text -
 (defun todo-edit-item () "Edit current TODO list entry."
   (interactive)
   (let ((item (todo-item-string)))
@@ -588,7 +562,6 @@ TODO categories. Use `todo-categories' instead.")
         (message "")))))
 (defalias 'todo-cmd-edit 'todo-edit-item)
 
-- hide quoted text -
 (defun todo-edit-multiline ()
   "Set up a buffer for editing a multiline TODO list entry."
   (interactive)
@@ -600,7 +573,6 @@ TODO categories. Use `todo-categories' instead.")
     (todo-edit-mode)
     (narrow-to-region (todo-item-start) (todo-item-end))))
 
-- hide quoted text -
 ;;;### autoload
 (defun todo-add-category (cat) "Add a new category to the TODO list."
   (interactive)
@@ -667,7 +639,6 @@ TODO categories. Use `todo-categories' instead.")
             (goto-char (point-min))
             (forward-line (1- top))))
       (beginning-of-line))
-- hide quoted text -
 
     (insert new-item "\n")
     (todo-backward-item)
