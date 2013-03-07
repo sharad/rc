@@ -67,6 +67,26 @@
 
 
 
+    (deh-require-maybe (and gnus-sum nntodo todo-gnus)
+      ;; http://www.emacswiki.org/emacs/TodoGnus
+      (setq nntodo-mbox-file "~/.nntodo")
+
+      ;; Then go into the Server Buffer (with ^) and add there a new Server
+      ;; (with a; nntodo as server method) Now go back to the group buffer
+      ;; and add your new todo-group (with G m and nntodo as the
+      ;; method). You can’t access an empty group, so first you eigther have
+      ;; to create a message (C-u a in the group buffer, when over the
+      ;; group’s name) or copy/move a message (B c or B m) to the group.
+
+      ;; You maybe don’t want todo groups to be hidden, if there are no unread items.
+
+      (setq gnus-permanently-visible-groups "^nntodo+")
+
+      ;; Also it could be usefull to see always all todo items, regardless if they are marked as unread or read:
+
+      (setq gnus-parameters
+            '(("^nntodo+"
+               (display . all))))
 
 
 

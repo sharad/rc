@@ -104,5 +104,12 @@
     (let ((backup-inhibited t)) (save-buffer))
     (kill-buffer (current-buffer))))
 
+
+(deh-require-maybe linkd                ;excellent
+  ;; http://dto.github.com/notebook/linkd.html
+  ;; http://www.emacswiki.org/emacs/LinkdMode
+
+  )
+
 (provide 'bookmark-config)
 

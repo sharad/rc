@@ -39,6 +39,13 @@
 ;; (add-hook 'after-save-hook 'file-auto-rcs-register)
 
 
+(testing
+ ;; TODO: check
+ ;; http://www.emacswiki.org/emacs/log-edit-fill
+ ;; http://www.emacswiki.org/emacs/VcAddLogEntries
+
+ )
+
 
 (provide 'vc-config)
 ;;; vc-config.el ends here

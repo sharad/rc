@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2012  Sharad Pratap
 
-;; Author: Sharad Pratap <spratap@merunetworks.com>
+;; Author: Sharad Pratap <sharad>
 ;; Keywords: internal, internal
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -27,9 +27,24 @@
 
 
 
+(deh-require-maybe which-func
+  (which-function-mode 1)
+  (defface which-func
+      '((((class color) (min-colors 88) (background dark)) (:foreground "Green")))
+    "which-face"))
 
 
+(deh-require-maybe 'devel-notes
+  ;; http://www.emacswiki.org/emacs/DevelNotes
+  (global-set-key "\C-cza" 'develnotes-add-annotation)
+  (global-set-key "\C-czv" 'develnotes-visit-file)
+  (global-set-key "\C-czt" 'develnotes-add-TODO)
+  (global-set-key "\C-czf" 'develnotes-add-FIXME))
 
+(deh-require-maybe sidebrain
+  ;;http://www.emacswiki.org/emacs/SideBrain
+  ;;http://sidebrain.sourceforge.net/manual/index.html
+  )
 
 
 (provide 'dev-config)

@@ -40,3 +40,15 @@
 [submodule "xemacs/pkgrepos/world/gits/perspective-el"]
 	path = xemacs/pkgrepos/world/gits/perspective-el
 	url = https://github.com/nex3/perspective-el.git
+[submodule "xemacs/pkgrepos/world/gits/fic-mode"]
+	path = xemacs/pkgrepos/world/gits/fic-mode
+	url = https://github.com/lewang/fic-mode.git
+[submodule "xemacs/pkgrepos/world/gits/org-jira"]
+	path = xemacs/pkgrepos/world/gits/org-jira
+	url = https://github.com/baohaojun/org-jira.git
+[submodule "xemacs/pkgrepos/world/gits/todostack"]
+	path = xemacs/pkgrepos/world/gits/todostack
+	url = https://github.com/EvansWinner/todostack.git
+[submodule "xemacs/pkgrepos/world/gits/todotxt-mode"]
+	path = xemacs/pkgrepos/world/gits/todotxt-mode
+	url = https://github.com/avillafiorita/todotxt-mode.git

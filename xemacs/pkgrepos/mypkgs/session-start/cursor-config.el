@@ -39,7 +39,8 @@
    ;;  default, add this line also to your init file:
    ;;
    ;; Highlight only when idle
-   (toggle-hl-line-when-idle 70))
+   (hl-line-toggle-when-idle 1)
+   (hl-line-when-idle-interval 70))
   ((xrequire 'hl-line)
    (hl-line-mode) ;; for the current buffer
    (global-hl-line-mode))) ;; for all buffers
