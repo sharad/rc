@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2013-03-07 11:59:04 s>
+;; Time-stamp: <2013-03-07 12:41:34 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -398,7 +398,7 @@ and their terminal equivalents.")
 (deh-require-maybe recentf
   (global-set-key-if-unbind (kbd "C-c C-o") 'recentf-open-files))
 
-(deh-require-maybe recentf-buffer
-  (global-set-key [?\C-c ?r ?f] 'recentf-open-files-in-simply-buffer))
+;; (deh-require-maybe recentf-buffer
+;;   (global-set-key [?\C-c ?r ?f] 'recentf-open-files-in-simply-buffer))
 
 (provide 'binding-config)
