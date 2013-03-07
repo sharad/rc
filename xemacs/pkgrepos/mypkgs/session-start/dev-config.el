@@ -33,6 +33,9 @@
       '((((class color) (min-colors 88) (background dark)) (:foreground "Green")))
     "which-face"))
 
+(deh-require-maybe 'member-functions
+  ;; for C++ mode
+  )
 
 (deh-require-maybe devel-notes
   ;; http://www.emacswiki.org/emacs/DevelNotes
