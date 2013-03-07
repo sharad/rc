@@ -34,7 +34,7 @@
     "which-face"))
 
 
-(deh-require-maybe 'devel-notes
+(deh-require-maybe devel-notes
   ;; http://www.emacswiki.org/emacs/DevelNotes
   (global-set-key "\C-cza" 'develnotes-add-annotation)
   (global-set-key "\C-czv" 'develnotes-visit-file)
@@ -46,6 +46,8 @@
   ;;http://sidebrain.sourceforge.net/manual/index.html
   (add-hook 'find-file-hook
             #'sidebrain-read-todo-from-comments))
+
+
 
 
 (provide 'dev-config)
