@@ -284,8 +284,8 @@ alkready should not exist.")
 ;;{{
 (deh-section "disable startup inperrupting feature till first frame created."
   (defvar enable-p4-login nil "test")
-  (defvar sharad/enable-startup-inperrupting-feature-hoon nil)
-  (defvar sharad/disable-startup-inperrupting-feature-hoon nil)
+  (defvar sharad/enable-startup-inperrupting-feature-hook nil)
+  (defvar sharad/disable-startup-inperrupting-feature-hook nil)
 
   (defun sharad/disable-startup-inperrupting-feature ()
     (interactive)
@@ -329,6 +329,9 @@ alkready should not exist.")
 
 ;;{{
 (deh-section "login-session-inperrupting-feature"
+  ;; don't mislead by login it is when no frame or 1 or more frame hook
+  ;; basiclly used accross login where emacs daemon outlive.
+  ;; can be used for other purpose.
   (defvar sharad/disable-login-session-inperrupting-feature nil)
   (defvar sharad/enable-login-session-inperrupting-feature-hook nil)
 

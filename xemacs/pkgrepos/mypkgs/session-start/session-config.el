@@ -37,49 +37,49 @@
 (eval-after-load "elscreen"
    '(defun sharad/elscreen-get-screen-to-name-alist ()
     ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
-    (elscreen-notify-screen-modification-suppress
-     (elscreen-set-window-configuration (elscreen-get-current-screen)
-                                        (elscreen-current-window-configuration))
-     (let* ((screen-list (sort (elscreen-get-screen-list) '<))
-            screen-name screen-to-name-alist nickname-type-map)
-       (elscreen-save-screen-excursion
-        (mapcar
-         (lambda (screen)
-           ;; If nickname exists, use it.
-           (setq screen-name (elscreen-get-screen-nickname screen))
-           ;; Nickname does not exist, so examine major-mode and buffer-name.
-           (when (null screen-name)
-             (elscreen-goto-internal screen)
+     (elscreen-notify-screen-modification-suppress
+      (elscreen-set-window-configuration (elscreen-get-current-screen)
+       (elscreen-current-window-configuration))
+      (let* ((screen-list (sort (elscreen-get-screen-list) '<))
+             screen-name screen-to-name-alist nickname-type-map)
+        (elscreen-save-screen-excursion
+         (mapcar
+          (lambda (screen)
+            ;; If nickname exists, use it.
+            (setq screen-name (elscreen-get-screen-nickname screen))
+            ;; Nickname does not exist, so examine major-mode and buffer-name.
+            (when (null screen-name)
+              (elscreen-goto-internal screen)
 
-             (setq nickname-type-map
-                   (mapcar
-                    (lambda (window)
-                      (with-current-buffer (window-buffer window)
-                        (or (elscreen-get-alist-to-nickname
-                             elscreen-mode-to-nickname-alist-internal
-                             'string-match (symbol-name major-mode))
-                            (elscreen-get-alist-to-nickname
-                             elscreen-buffer-to-nickname-alist-internal
-                             'string-match (buffer-name))
-                            (cons 'buffer-name (buffer-name)))))
-                    (window-list)))
+              (setq nickname-type-map
+                    (mapcar
+                     (lambda (window)
+                       (with-current-buffer (window-buffer window)
+                         (or (elscreen-get-alist-to-nickname
+                              elscreen-mode-to-nickname-alist-internal
+                              'string-match (symbol-name major-mode))
+                             (elscreen-get-alist-to-nickname
+                              elscreen-buffer-to-nickname-alist-internal
+                              'string-match (buffer-name))
+                             (cons 'buffer-name (buffer-name)))))
+                     (window-list)))
 
-             (let (nickname-list)
-               (while (> (length nickname-type-map) 0)
-                 (let ((type (caar nickname-type-map))
-                       (name (cdar nickname-type-map)))
-                   (when name
-                     (setq nickname-list (cons name nickname-list)))
-                   (setq nickname-type-map
-                         (if (eq type 'nickname)
-                             (delete (car nickname-type-map) nickname-type-map)
-                             (cdr nickname-type-map)))))
-               ;; (setq screen-name
-               ;;       (mapconcat 'identity (reverse nickname-list) ":"))
+              (let (nickname-list)
+                (while (> (length nickname-type-map) 0)
+                  (let ((type (caar nickname-type-map))
+                        (name (cdar nickname-type-map)))
+                    (when name
+                      (setq nickname-list (cons name nickname-list)))
+                    (setq nickname-type-map
+                          (if (eq type 'nickname)
+                              (delete (car nickname-type-map) nickname-type-map)
+                              (cdr nickname-type-map)))))
+                ;; (setq screen-name
+                ;;       (mapconcat 'identity (reverse nickname-list) ":"))
                (setq screen-name (reverse nickname-list))))
 
-           (set-alist 'screen-to-name-alist screen screen-name))
-         screen-list))
+            (set-alist 'screen-to-name-alist screen screen-name))
+          screen-list))
 
        ;; (elscreen-set-screen-to-name-alist-cache screen-to-name-alist)
        screen-to-name-alist))))
@@ -129,12 +129,14 @@
      (message "Nstart: session-current-buffer %s" elscreen-session))
     (let* (screen buffers
            (elscreen-session-list (sharad/read-file elscreen-session))
-           (screens (cdr (assoc 'screens elscreen-session-list)))
-           ;; (cdr (assoc 'current-buffer elscreen-session-list))))
+           (screens
+            (or
+             (cdr (assoc 'screens elscreen-session-list))
+             '((0 "*scratch*"))))
            (session-current-buffer
-            (car (cdr (assoc
-                       (cdr (assoc 'current-screen elscreen-session-list))
-                       screens)))))
+            (cadr (assoc
+                   (cdr (assoc 'current-screen elscreen-session-list))
+                   screens))))
       (testing
        (message "Bstart: session-current-buffer %s" session-current-buffer)
        (message "Astart: screen-to-name-alist %s" elscreen-session-list))
@@ -207,11 +209,8 @@
     (interactive
      (list (fmsession-read-location)))
     (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
-      (when (progn
-              (make-directory session-dir t)
-              ;; (desktop-save session-dir)
-              t)
-        (message "elscreen-session-store %s" elscreen-session)
+      (make-directory session-dir t)
+      (when (file-directory-p session-dir)
         (elscreen-session-store elscreen-session))))
 
   ;; (push #'elscreen-store kill-emacs-hook)
@@ -220,11 +219,8 @@
     "Restore the elscreen tab configuration."
     (interactive
      (list (fmsession-read-location)))
-    (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*))
-          ;; (desktop-load-locked-desktop t)
-          )
+    (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
       (if (file-directory-p session-dir)
-          ;; (if (eq (type-of (desktop-read session-dir)) 'symbol)
           (progn ;; (eq (type-of (desktop-read session-dir)) 'symbol)
             (message "elscreen-session-restore %s" elscreen-session)
             (elscreen-session-restore elscreen-session))
@@ -273,9 +269,10 @@
         (unless wm-hints
           (message "Some error in wm-hints"))
         (message "set-this-frame-session-location: %s" location)
-        (modify-frame-parameters frame
-                                 (list (cons 'frame-spec-id location)))
-        (fmsession-restore location)))
+        (when location
+          (modify-frame-parameters frame
+                                   (list (cons 'frame-spec-id location)))
+          (fmsession-restore location))))
 
     (defun save-frame-session (frame)
       (message "in save-frame-session:")

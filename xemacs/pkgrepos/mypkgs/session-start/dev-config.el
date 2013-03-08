@@ -47,8 +47,18 @@
 (deh-require-maybe sidebrain
   ;;http://www.emacswiki.org/emacs/SideBrain
   ;;http://sidebrain.sourceforge.net/manual/index.html
-  (add-hook 'find-file-hook
-            #'sidebrain-read-todo-from-comments))
+  ;; (add-hook 'find-file-hook
+  ;;           #'sidebrain-read-todo-from-comments)
+
+  (add-hook 'sharad/enable-login-session-inperrupting-feature-hook
+            #'(lambda ()
+                (add-hook 'find-file-hook
+                          #'sidebrain-read-todo-from-comments)) t)
+
+  (add-hook 'sharad/disable-login-session-inperrupting-feature-hook
+            #'(lambda ()
+                (remove-hook 'find-file-hook
+                             #'sidebrain-read-todo-from-comments)) t))
 
 
 

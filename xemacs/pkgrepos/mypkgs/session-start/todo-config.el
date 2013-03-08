@@ -117,6 +117,7 @@ having the same major mode as the current buffer"
     (add-hook 'kill-emacs-hook 'todostack-save)
     (add-hook 'emacs-startup-hook 'todostack-load)
     (add-hook 'todostack-post-op-hook 'todostack-save))
+
   (deh-require-maybe todo-mode
     ;; famous
     ;; https://groups.google.com/forum/?fromgroups=#!msg/gnu.emacs.sources/7v7Wlnocr8o/bSUKTMEdL4QJ
@@ -125,6 +126,8 @@ having the same major mode as the current buffer"
   (deh-require-maybe sidebrain
     ;;http://www.emacswiki.org/emacs/SideBrain
     ;;http://sidebrain.sourceforge.net/manual/index.html
+    (trace-function #'sidebrain-read-todo-from-comments)
+    ;; it is in dev-config.el
     )
 
   (deh-require-maybe todoo
