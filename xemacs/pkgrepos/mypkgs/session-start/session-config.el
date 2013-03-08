@@ -270,8 +270,9 @@
           (message "Some error in wm-hints"))
         (message "set-this-frame-session-location: %s" location)
         (when location
-          (modify-frame-parameters frame
-                                   (list (cons 'frame-spec-id location)))
+          (set-frame-parameter frame 'frame-spec-id location)
+          ;; (modify-frame-parameters frame
+          ;;                          (list (cons 'frame-spec-id location)))
           (fmsession-restore location))))
 
     (defun save-frame-session (frame)

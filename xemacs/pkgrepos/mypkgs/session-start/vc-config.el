@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-
+(require 'general-testing)
 
 (defun file-auto-rcs-register (&optional file)
   (let ((file (or file (buffer-file-name (current-buffer)))))
@@ -44,7 +44,7 @@
  ;; http://www.emacswiki.org/emacs/log-edit-fill
  ;; http://www.emacswiki.org/emacs/VcAddLogEntries
 
- )
+)
 
 
 (provide 'vc-config)

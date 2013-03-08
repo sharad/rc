@@ -114,9 +114,9 @@
   (defun update-ssh-agent (&optional force)
     (interactive "P")
     (unless (tramp-tramp-file-p default-directory)
-      (let (;; (agent-file (concat "~/.emacs.d/ssh-agent-" (getenv "HOST") ".el"))
-            (agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el")))
-        (if (or force (null (getenv "SSH_AGENT_PID")))
+      (let ((agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el")))
+        ;; (if (or force (null (getenv "SSH_AGENT_PID")))
+        (if (or force (null (getenv "SSH_AGENT_PID" (selected-frame))))
             (if (file-exists-p agent-file)
                 (progn
                   (if force

@@ -26,7 +26,7 @@
 
 
 
-(deh-require-maybe diary-lib
+(deh-require-maybe (and diary-lib mm-decode)
   ;; diary-from-outlook-gnus is an interactive compiled Lisp function in
   ;; `diary-lib.el'.
 
@@ -38,6 +38,8 @@
   ;; user is asked to confirm its addition.
   ;; Add this function to `gnus-article-prepare-hook' to notice appointments
   ;; automatically.
+
+  (require 'mm-decode)
 
   (defun diary-from-outlook-gnus-safe ()
     (ignore-errors
@@ -78,15 +80,17 @@
       ;; to create a message (C-u a in the group buffer, when over the
       ;; group’s name) or copy/move a message (B c or B m) to the group.
 
-      ;; You maybe don’t want todo groups to be hidden, if there are no unread items.
+      ;; You maybe don’t want todo groups to be hidden, if there are
+      ;; no unread items.
 
       (setq gnus-permanently-visible-groups "^nntodo+")
 
-      ;; Also it could be usefull to see always all todo items, regardless if they are marked as unread or read:
+      ;; Also it could be usefull to see always all todo items,
+      ;; regardless if they are marked as unread or read:
 
       (setq gnus-parameters
             '(("^nntodo+"
-               (display . all))))
+               (display . all)))))
 
 
 

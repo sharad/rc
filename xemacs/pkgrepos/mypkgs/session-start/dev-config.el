@@ -44,7 +44,8 @@
   (global-set-key "\C-czt" 'develnotes-add-TODO)
   (global-set-key "\C-czf" 'develnotes-add-FIXME))
 
-(deh-require-maybe sidebrain
+;; (deh-require-maybe sidebrain
+(when nil
   ;;http://www.emacswiki.org/emacs/SideBrain
   ;;http://sidebrain.sourceforge.net/manual/index.html
   ;; (add-hook 'find-file-hook
