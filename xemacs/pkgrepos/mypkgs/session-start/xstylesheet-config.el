@@ -10,8 +10,11 @@
 (autoload 'xsl-process "xslide-process" "Process an XSL stylesheet." t)
 (add-hook 'xml-mode-hook
 	  (lambda ()
-	    (define-key xml-mode-map [(control c) (meta control p)]
-	      'xsl-process)))
+            (if (and
+                 (boundp 'xml-mode-map)
+                 xml-mode-map)
+                (define-key xml-mode-map [(control c) (meta control p)]
+                  'xsl-process))))
 
 ;; Turn on font lock when in XSL mode
 (add-hook 'xsl-mode-hook

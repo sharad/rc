@@ -116,12 +116,14 @@
     (unless (tramp-tramp-file-p default-directory)
       (let ((agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el")))
         ;; (if (or force (null (getenv "SSH_AGENT_PID")))
-        (if (or force (null (getenv "SSH_AGENT_PID" (selected-frame))))
+        (if (or force (null (getenv "SSH_AGENT_PID")))
             (if (file-exists-p agent-file)
                 (progn
                   (if force
                       (tramp-cleanup-all-connections))
-                  (load agent-file t t)
+                  ;; (load agent-file t t)
+                  (setenv "SSH_AGENT_PID" (getenv "SSH_AGENT_PID" (selected-frame)))
+                  (setenv "SSH_AUTH_SOCK" (getenv "SSH_AUTH_SOCK" (selected-frame)))
                   (ssh-agent-add-key)
                   (message "loading %s" agent-file))
                 (message "Unable to find agent file."))

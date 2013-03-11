@@ -41,5 +41,9 @@
             " "))
            (cdr pos))))
 
+
+(deh-require 'scroll-mode-line-mode
+  )
+
 (provide 'mode-line-config)
 ;;; mode-line-config.el ends here

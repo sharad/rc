@@ -44,8 +44,8 @@
   (global-set-key "\C-czt" 'develnotes-add-TODO)
   (global-set-key "\C-czf" 'develnotes-add-FIXME))
 
-;; (deh-require-maybe sidebrain
-(when nil
+(deh-require-maybe sidebrain
+;; (when nil
   ;;http://www.emacswiki.org/emacs/SideBrain
   ;;http://sidebrain.sourceforge.net/manual/index.html
   ;; (add-hook 'find-file-hook
@@ -59,7 +59,13 @@
   (add-hook 'sharad/disable-login-session-inperrupting-feature-hook
             #'(lambda ()
                 (remove-hook 'find-file-hook
-                             #'sidebrain-read-todo-from-comments)) t))
+                             #'sidebrain-read-todo-from-comments)) t)
+
+
+  (setq
+   sidebrain-browse-tasks-project-group-overlay)
+
+  )
 
 
 
