@@ -126,7 +126,7 @@ having the same major mode as the current buffer"
   (deh-require-maybe sidebrain
     ;;http://www.emacswiki.org/emacs/SideBrain
     ;;http://sidebrain.sourceforge.net/manual/index.html
-    (trace-function #'sidebrain-read-todo-from-comments)
+    ;; (trace-function #'sidebrain-read-todo-from-comments)
     ;; it is in dev-config.el
     )
 
@@ -137,8 +137,8 @@ having the same major mode as the current buffer"
       (interactive)
       (if (eq major-mode 'todoo-mode)
           (call-interactively 'todoo-save-and-exit)
-          (call-interactively 'todoo)))
-    )
+          (call-interactively 'todoo))))
+
   (deh-require-maybe taskjuggler-mode
     ;; http://www.skamphausen.de/cgi-bin/ska/taskjuggler-mode
     ;; http://www.emacswiki.org/emacs/Taskjuggler
