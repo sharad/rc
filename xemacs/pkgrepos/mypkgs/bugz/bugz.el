@@ -45,6 +45,21 @@
 (defun bugz-dispatch (method &optional args url)
   (xml-rpc-method-call (or url bugz-url) method args))
 
+(defun bugz/Bug.method (method criteria)
+  (bugz-dispatch method criteria))
+
+(defun bugzilla-method (method ret &optional attributes criteria)
+  (let ((attributes (or attributes (list "summary")))
+         (criteria (cond
+                     ((equal criteria t) (bugz-make-bug-search-criteria))
+                     ((null criteria) (cdar bug-search-criterias))
+                     (t criteria))))
+     (bugz-bug-get-bugs-attributes attributes
+                                   (bugz-bug-method method ret criteria))))
+
+(bugzilla-bugs-method 'Bug.search "bugs")
+
+
 ;; logout
 (defun bugz/User.logout ()
   (bugz-dispatch 'User.logout))
@@ -60,6 +75,24 @@
                      `(("login".,username)
                        ("password".,password)
                         ,@opts))))
+
+;; general
+;; (defmacro bugz/Bug.method (method criteria)
+;;   `(bugz-dispatch
+;;     ,(intern (concat "Bug." (symbol-name method)))
+;;     ,criteria))
+
+(defun bugz/Bug.method (method criteria)
+  (bugz-dispatch method criteria))
+
+;; (defmacro testmm (s)
+;;     `(setq ,(intern-soft (concat "Bug." (symbol-name s))) 1))
+
+
+;; search
+(defun bugz/Bug.get (criteria)
+  (bugz-dispatch 'Bug.get criteria))
+
 ;; search
 (defun bugz/Bug.search (criteria)
   (bugz-dispatch 'Bug.search criteria))
@@ -74,8 +107,31 @@
 
 ;; (nconc (cdr x) '(r))
 
+;; general
+;; (defmacro bugz-bug-method (method criteria)
+;;   `(cdr (assoc "bugs"
+;;                (bugz-dispatch
+;;                 ,(intern (concat "Bug." (symbol-name method)))
+;;                 ,criteria))))
+
+(defun bugz-method (method ret criteria)
+  (cdr (assoc ret (bugz/Bug.method method criteria))))
+
+
+(defun bugz-bug-method (method criteria)
+  (cdr (assoc "bugs" (bugz/Bug.method method criteria))))
+
+
 (defun bugz-bug-search (criteria)
   (cdr (assoc "bugs" (bugz/Bug.search criteria))))
+
+(defun bugz-bug-get (criteria)
+  (cdr (assoc "bugs" (bugz/Bug.get criteria))))
+
+
+
+
+
 
 (defun bugz-bug-get-bugs-attributes (attributes bugs)
   (flet ((first-belong-in-attributesp (e)
@@ -86,14 +142,12 @@
 ;;;;
 
 ;;;; critaria management
-(defvar bug-search-criterias
-  `(("assigned to me and status OPEN" .
-                                      `(("assigned to me and status OPEN" . (
-                                             ,@(if (boundp 'bugz-default-username)
-                                                  (list `("assigned_to" . ,bugz-default-username)))
-                                              ("status" . ,(if (boundp 'bugz-default-status)
-                                                               bugz-default-status
-                                                               "OPEN")))))))
+(setq bug-search-criterias
+      `(("assigned to me and status OPEN" . (,@(if (boundp 'bugz-default-username)
+                                                   (list `("assigned_to" . ,bugz-default-username)))
+                                               ("status" . ,(if (boundp 'bugz-default-status)
+                                                                bugz-default-status
+                                                                "OPEN"))))))
   "Bug search critarias.")
 
 
@@ -126,6 +180,44 @@
 ;; (bugz-make-bug-search-criteria)
 ;;;;
 
+;; general
+;; (defmacro bugzilla-bugs-method (method &optional attributes criteria)
+;;   `(let ((attributes (or ,attributes (list "summary")))
+;;          (criteria (cond
+;;                      ((equal ,criteria t) (bugz-make-bug-search-criteria))
+;;                      ((null ,criteria) (cdar bug-search-criterias))
+;;                      (t ,criteria))))
+;;      (bugz-bug-get-bugs-attributes attributes
+;;                                    (cdr (assoc "bugs"
+;;                                                (bugz-dispatch
+;;                                                 ,(intern (concat "Bug." (symbol-name method)))
+;;                                                 ,criteria))))))
+
+
+(defun bugzilla-bugs-method (method &optional attributes criteria)
+  (let ((attributes (or attributes (list "summary")))
+         (criteria (cond
+                     ((equal criteria t) (bugz-make-bug-search-criteria))
+                     ((null criteria) (cdar bug-search-criterias))
+                     (t criteria))))
+     (bugz-bug-get-bugs-attributes attributes
+                                   (bugz-bug-method method criteria))))
+
+
+(defun bugzilla-method (method ret &optional attributes criteria)
+  (let ((attributes (or attributes (list "summary")))
+         (criteria (cond
+                     ((equal criteria t) (bugz-make-bug-search-criteria))
+                     ((null criteria) (cdar bug-search-criterias))
+                     (t criteria))))
+     (bugz-bug-get-bugs-attributes attributes
+                                   (bugz-bug-method method ret criteria))))
+
+(bugzilla-bugs-method 'Bug.search "bugs")
+
+
+
+;;
 (defun bugzilla-search-bugs-main (attributes criteria)
   "get bug @attribute from bugzilla for @criteria."
   (bugz-bug-get-bugs-attributes attributes (bugz-bug-search criteria)))
@@ -137,7 +229,18 @@
                     ((equal criteria t) (bugz-make-bug-search-criteria))
                     ((null criteria) (cdar bug-search-criterias))
                     (t criteria))))
-    (bugzilla-search-bugs-main attributes criteria)))
+    ;; (bugzilla-search-bugs-main attributes criteria)))
+    (bugz-bug-get-bugs-attributes attributes (bugz-bug-search criteria))))
+
+
+(defun bugzilla-get-bugs (&optional attributes criteria)
+  (let ((attributes (or attributes ("summary")))
+        (criteria (cond
+                    ((equal criteria t) (bugz-make-bug-search-criteria))
+                    ((null criteria) (cdar bug-search-criterias))
+                    (t criteria))))
+    ;; (bugzilla-search-bugs-main attributes criteria)))
+    (bugz-bug-get-bugs-attributes attributes (bugz-bug-get criteria))))
 
 
 
@@ -162,6 +265,7 @@
 ;;  (bugz-bug-search '("ASSIGNED" "REOPENED" "NEW")))
 
 
+
+
 (provide 'bugz)
 ;;; bugz.el ends here
-
