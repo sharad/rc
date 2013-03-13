@@ -36,14 +36,33 @@
   (setcdr pos
           (cons
            '(:eval
-            (concat
-             (file-name-nondirectory (frame-parameter (selected-frame) 'frame-spec-id))
-            " "))
-           (cdr pos))))
+             (concat
+              (file-name-nondirectory (frame-parameter (selected-frame) 'frame-spec-id))
+              " "))
+            (cons
+             '(:eval
+               (concat
+                (car sidebrain-current-stack)
+                " "))
+             (cdr pos)))))
 
 
 (deh-require 'scroll-mode-line-mode
   )
 
+;; (testing
+;;  (let* ((x '(a b c d e f))
+;;         (pos (memq 'e x)))
+;;    (setcdr pos
+;;            (cons
+;;             'n
+;;             (cons
+;;              'l
+;;              (cdr pos))))
+;;    x))
+
+
 (provide 'mode-line-config)
 ;;; mode-line-config.el ends here
+
+

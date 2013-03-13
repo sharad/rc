@@ -286,11 +286,13 @@
       (dolist (f (frame-list))
 	(save-frame-session f)))
 
-    (add-hook '*sharad/after-init-hook*
+    ;; (add-hook '*sharad/after-init-hook*
+    (add-hook 'sharad/enable-startup-inperrupting-feature-hook
               #'(lambda ()
                   (add-hook 'after-make-frame-functions #'set-this-frame-session-location t)
                   (add-hook 'delete-frame-functions #'save-frame-session)
-		  (add-hook 'kill-emacs-hook #'save-all-frames-session)))
+                  (add-hook 'kill-emacs-hook #'save-all-frames-session))
+              t)
 
   (testing
      (frame-parameter (selected-frame) 'frame-spec-id)
@@ -319,11 +321,20 @@
 
   ;; You can specify buffers which should not be saved, by name or by mode, e.g.:
 
+
   (setq desktop-buffers-not-to-save
         (concat "\\("
                 "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
                 "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
-                "\\)$"))
+                "\\)$")
+
+        ;; check it http://stackoverflow.com/a/4055504/341107
+        desktop-files-not-to-save       ;very important
+        ;; default value
+        ;; "\\(^/[^/:]*:\\|(ftp)$\\)"
+        ;; that do not allow to save trampe file
+        "^$")
+
   (add-to-list 'desktop-modes-not-to-save 'dired-mode)
   (add-to-list 'desktop-modes-not-to-save 'Info-mode)
   (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
@@ -434,40 +445,41 @@ Also returns nil if pid is nil."
               (desktop-remove)
               (setq desktop-dirname desktop-dirname-tmp)))
 
-  (defun saved-session ()
+  (defun sharad/desktop-saved-session ()
     (file-exists-p (concat desktop-dirname "/" desktop-base-file-name)))
 
   ;; use session-restore to restore the desktop manually
-  (defun session-restore ()
+  (defun sharad/desktop-session-restore ()
     "Restore a saved emacs session."
     (interactive)
-    (if (saved-session)
+    (message "in desktop-session-restore")
+    (if (sharad/desktop-saved-session)
         (progn
           (message "desktop-session-restore")
           (desktop-read)
           t)
-        (message "No desktop found.")))
+        (message "No desktop found."))
+    (if (y-or-n-p "Do you want to set session of frame? ")
+        (set-this-frame-session-location (selected-frame)))
+    (message "leaving desktop-session-restore"))
 
   ;; use session-save to save the desktop manually
-  (defun session-save ()
+  (defun sharad/desktop-session-save ()
     "Save an emacs session."
     (interactive)
-    (if (saved-session)
-        (if (y-or-n-p "Overwrite existing desktop? ")
+    (if (sharad/desktop-saved-session)
+        (if (y-or-n-p "Overwrite existing desktop (might be it was not restore properly at startup)? ")
             (desktop-save-in-desktop-dir)
             (message "Session not saved."))
         (desktop-save-in-desktop-dir)))
 
   (add-hook 'session-before-save-hook
-            #'session-save)
+            #'sharad/desktop-session-save)
 
-  ;; ask user whether to restore desktop at start-up
+  ;; ;; ask user whether to restore desktop at start-up
   (add-hook ;; 'after-init-hook
    'sharad/enable-startup-inperrupting-feature-hook
-   '(lambda ()
-     (if (saved-session)
-         (if t ;; (y-or-n-p "Restore desktop? ")
-             (session-restore)))))
+   #'sharad/desktop-session-restore)
 
   ;; Then type ‘M-x session-save’, or ‘M-x session-restore’ whenever you want to save or restore a desktop. Restored desktops are deleted from disk.
 
@@ -488,6 +500,7 @@ Also returns nil if pid is nil."
 (deh-require-maybe session ;;
   (add-hook 'after-init-hook 'session-initialize)
   (add-hook 'kill-emacs-hook 'session-save-session)
+
   (setq session-initialize t)
 
   ;;{{ http://www.emacswiki.org/emacs/EmacsSession
@@ -518,12 +531,10 @@ Also returns nil if pid is nil."
             'le::maybe-reveal)
   ;;}}
   ;;  (session-initialize))
-
   ;; Something like this is recommended to get emacs to shut-up
   ;; and never ask you for a coding system. Otherwise this can
   ;; happen on *every* desktop-save triggered by the auto-save-hook:
   (prefer-coding-system 'utf-8))
-
 
 
 ;; (deh-require-maybe desktop-recover
@@ -537,15 +548,17 @@ Also returns nil if pid is nil."
   ;; see: http://desktopaid.sourceforge.net/
   (dta-hook-up))
 
-(deh-require-maybe frame-restore
-  ;; http://www.emacswiki.org/emacs/frame-restore.el
-  )
+;; (deh-require-maybe frame-restore
+;;   ;; check this library will know what to do.
+;;   ;; http://www.emacswiki.org/emacs/frame-restore.el
+;;   )
 
 (deh-require-maybe revive)
 
-(deh-require-maybe winner
-  ;; see: http://emacs.wordpress.com/2007/01/28/simple-window-configuration-management/
-   (winner-mode 1))
+;; first test it with startup
+;; (deh-require-maybe winner
+;;   ;; see: http://emacs.wordpress.com/2007/01/28/simple-window-configuration-management/
+;;   (winner-mode 1))
 
 (deh-require-maybe tapestry
   ;; http://superuser.com/questions/383560/how-to-restore-emacs-windows-and-buffers-from-the-last-session
@@ -568,8 +581,6 @@ Also returns nil if pid is nil."
           (write-region (point-min) (point-max) my-tapestry-file)))))
 
   (add-hook 'kill-emacs-hook 'save-my-tapestry))
-
-
 
 
 (deh-section "emacs session management"

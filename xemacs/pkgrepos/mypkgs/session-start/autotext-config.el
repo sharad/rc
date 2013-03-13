@@ -169,9 +169,12 @@ General Public License for more details.
 ;;{{ from: http://www.emacswiki.org/emacs/AutoInsertMode
 ;; I use Yasnippet for initial skeletons:
 
-(deh-require-todo yasnippet
-  (messageto "*Complains*" "Install yasnippet for good experience")
-  (defun my/autoinsert-yas-expand()
+;; (deh-require-todo yasnippet
+(deh-require-maybe yasnippet
+
+;;  (messageto "*Complains*" "Install yasnippet for good experience")
+
+  (defun my/autoinsert-yas-expand ()
     "Replace text in yasnippet template."
     (yas/expand-snippet (buffer-string) (point-min) (point-max)))
 

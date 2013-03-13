@@ -1,5 +1,5 @@
 ;;;; sidebrain-browse.el -- browser for sidebrain.el
-;;; Time-stamp: <2006-05-05 15:48:13 john>
+;;; Time-stamp: <2013-03-12 10:38:52 s>
 
 ;;  This program is free software; you can redistribute it and/or modify it
 ;;  under the terms of the GNU General Public License as published by the
@@ -139,7 +139,8 @@
 			    sidebrain-browse-tasks-project-group-end))
 	(overlay-put sidebrain-browse-tasks-project-group-overlay
 		     'face
-		     (cons 'background-color "light goldenrod")))
+		     ;; (cons 'background-color "light goldenrod")))
+		     '(:background "light goldenrod" :foreground "black")))
     (delete-overlay sidebrain-browse-tasks-project-group-overlay)
     (setq sidebrain-browse-tasks-project-group-overlay nil))
   (sidebrain-browse-tasks-get-project)
@@ -154,7 +155,8 @@
 			    sidebrain-browse-tasks-project-end))
 	(overlay-put sidebrain-browse-tasks-project-overlay
 		     'face
-		     (cons 'background-color "goldenrod")))
+		     ;; (cons 'background-color "goldenrod")))
+		     '(:background "goldenrod" :foreground "black")))
     (delete-overlay sidebrain-browse-tasks-project-overlay)
     (setq sidebrain-browse-tasks-project-overlay nil))
   (save-excursion
@@ -189,7 +191,9 @@
 	  (setq sidebrain-browse-tasks-stack-overlay
 		(make-overlay stack-start stack-end))
 	  (overlay-put sidebrain-browse-tasks-stack-overlay
-		       'face (cons 'background-color "yellow")))))))
+		       'face
+                       ;; (cons 'background-color "yellow")))))))
+                       '(:background "yellow" :foreground "black")))))))
 
 (defvar sidebrain-browse-tasks-stack-start-regexp "^    [^ ]"
   "Pattern for recognizing the start of a task stack.")
@@ -353,10 +357,13 @@
       (when label
 	(pushnew label sidebrain-browse-tasks-marked :test 'string=)
 	(re-search-forward "^$" (point-max) t)
-	(put-text-property here (point) 'face (cons 'background-color "yellow")))))
+	(put-text-property here (point)
+                           'face
+                           ;; (cons 'background-color "yellow")))))
+                           '(:background "yellow" :foreground "black")))))
   (message (substitute-command-keys
     "\\<sidebrain-browse-tasks-mode-keymap>\\[sidebrain-browse-tasks-unmark] to unmark, \\[sidebrain-mail-tasks] to mail marked tasks")))
-  
+
 (defun sidebrain-browse-tasks-unmark ()
   "Unmark the selected task."
   (interactive)
@@ -368,7 +375,10 @@
 	      (delete-if (lambda (task) (string= task label))
 			 sidebrain-browse-tasks-marked))
 	(re-search-forward "^$" (point-max) t)
-	(put-text-property here (point) 'face (cons 'background-color nil))))))
+	(put-text-property here (point)
+                           'face
+                           ;; (cons 'background-color nil))))))
+                           '(:background nil))))))
 
 (define-key sidebrain-browse-tasks-mode-keymap "" 'sidebrain-browse-tasks-select)
 (define-key sidebrain-browse-tasks-mode-keymap "n" 'sidebrain-browse-tasks-next)
@@ -433,7 +443,7 @@ cursor; if they are not given, it starts on the first task."
       (insert "Project group \""(car project-group) "\"")
       (when (eq project-group sidebrain-current-project-group)
 	(insert " (current)"))
-      (if sidebrain-browse-tasks-double-spaced 
+      (if sidebrain-browse-tasks-double-spaced
 	  (insert ":\n\n")
 	(insert ":\n"))
       (dolist (project (or specific-projects
@@ -445,7 +455,7 @@ cursor; if they are not given, it starts on the first task."
 	  (insert "  Project \"" (car project) "\"")
 	  (when (eq project sidebrain-current-project)
 	    (insert " (current)"))
-	  (if sidebrain-browse-tasks-double-spaced 
+	  (if sidebrain-browse-tasks-double-spaced
 	      (insert ":\n\n")
 	    (insert ":\n"))
 	  (dolist (task (cdr project))

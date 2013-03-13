@@ -31,7 +31,21 @@
 ;;    adding lets Emacs call the function python-mode whenever a file
 ;;    for the python interpreter is edited.
 
+(unless (and (boundp 'py-mode-map)
+         py-mode-map)
+  (setq py-mode-map (make-sparse-keymap)))
+
 (deh-require-maybe python-mode
+
+  ;; (add-hook 'xml-mode-hook
+  ;;         (lambda ()
+  ;;           (if (and
+  ;;                (boundp 'xml-mode-map)
+  ;;                xml-mode-map)
+  ;;               (define-key xml-mode-map [(control c) (meta control p)]
+  ;;                 'xsl-process))))
+
+
   ;; from:
   ;; (autoload 'python-mode "python-mode" "Python Mode." t)
   (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))

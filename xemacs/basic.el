@@ -110,11 +110,12 @@ alkready should not exist.")
                        (ignore-errors (require feature)))
                     (push feature load-lib-with-errors)))))
             (directory-files dir nil "^[a-zA-Z0-9-]+\.el$"))
-      (if load-lib-with-errors
-          (mapc '(lambda (f)
-                  (message "now loading file with error %s.el" f)
-                  (require f))
-                load-lib-with-errors)
+      (when load-lib-with-errors
+        (message "now loading files ( %s ) with errors." load-lib-with-errors)
+        (mapc '(lambda (f)
+                (message "now loading file with error %s.el" f)
+                (require f))
+              load-lib-with-errors)
           t))))
 
 
@@ -243,6 +244,9 @@ alkready should not exist.")
     sh
     python) "Langauge modes.")
 
+(defvar reader-requester
+  '(rfcview) "Modes that need reader.")
+
 (defvar mode-used '(org planner)  "Modes used.")
 
 (setq mode-used (append mode-used pgm-langs))
@@ -280,6 +284,10 @@ alkready should not exist.")
 
 ;;}}
 
+;;{{ --debug-init
+(message "debug-on-error %s" debug-on-error)
+;;}}
+
 
 ;;{{
 (deh-section "disable startup inperrupting feature till first frame created."
@@ -289,8 +297,11 @@ alkready should not exist.")
 
   (defun sharad/disable-startup-inperrupting-feature ()
     (interactive)
+
+    (when nil
+        (unless debug-on-error                  ;I am running in --debug-init
+          (setq debug-on-error nil)))
     (setq
-     debug-on-error t
      enable-p4-login nil
      tramp-mode nil
      ido-mode nil)
@@ -320,6 +331,7 @@ alkready should not exist.")
 
 
   (defun sharad/enable-startup-inperrupting-feature-in-frame-once (frame)
+    (select-frame frame)
     (sharad/enable-startup-inperrupting-feature)
     (remove-hook 'after-make-frame-functions #'sharad/enable-startup-inperrupting-feature-in-frame-once))
 
@@ -339,6 +351,7 @@ alkready should not exist.")
     (interactive)
     ;; (login-to-perforce)
     ;; (update-ssh-agent t)
+    (setq debug-on-error nil)           ;for planner
     (run-hooks 'sharad/disable-login-session-inperrupting-feature))
 
   (defun sharad/enable-login-session-inperrupting-feature ()
@@ -346,22 +359,25 @@ alkready should not exist.")
     ;; (setenv "DISPLAY" ":1")
     (login-to-perforce)
     (update-ssh-agent t)
+    (setq debug-on-error t)           ;for planner
     (run-hooks 'sharad/enable-login-session-inperrupting-feature-hook))
 
   (defun sharad/enable-login-session-inperrupting-feature-in-frame-once (frame)
+    (select-frame frame)
     ;; run and disable.
     (when (< (length (frame-list)) 3)
       (sharad/enable-login-session-inperrupting-feature))
     (remove-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once)
-    (message "removed sharad/enable-login-session-inperrupting-feature-in-frame-once"))
+    (when nil
+      (message "removed sharad/enable-login-session-inperrupting-feature-in-frame-once")))
 
-  (add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once)
+  (add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once t)
   ;; (sharad/enable-login-session-inperrupting-feature-in-frame-once (selected-frame))
 
   (defun sharad/disable-login-session-inperrupting-feature-in-frame (f)
     (when (< (length (frame-list)) 3) ;last frame then add.
       (sharad/disable-login-session-inperrupting-feature)
-      (add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once)
+      (add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once t)
       (message "added sharad/enable-login-session-inperrupting-feature-in-frame-once")))
 
   (add-hook 'delete-frame-functions #'sharad/disable-login-session-inperrupting-feature-in-frame))

@@ -464,11 +464,28 @@
      (setq on-blur--timer
       (run-with-timer 1 nil 'on-blur--refresh))))
 
+ (testing
+  (if (and (boundp 'on-blur--timer)
+           on-blur--timer)
+      (cancel-timer on-blur--timer)))
 
- (if (and (boundp 'on-blur--timer)
-          on-blur--timer)
-     (cancel-timer on-blur--timer))
- (on-blur--refresh)
+ (add-hook 'sharad/enable-login-session-inperrupting-feature
+           #'(lambda ()
+               (when (and
+                      (featurep 'x)
+                      window-system)
+                 (unless (and (boundp 'on-blur--timer)
+                              on-blur--timer)
+                   (on-blur--refresh)))))
+
+ (add-hook 'sharad/enable-login-session-inperrupting-feature
+           #'(lambda ()
+               (when (and
+                      (featurep 'x)
+                      window-system)
+                 (when (and (boundp 'on-blur--timer)
+                            on-blur--timer)
+                   (cancel-timer on-blur--timer)))))
 
  (add-hook 'on-focus-out-hook
            #'(lambda ()

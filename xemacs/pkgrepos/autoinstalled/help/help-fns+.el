@@ -891,7 +891,8 @@ Return the description that was displayed, as a string."
     ;;$$$  (unless (fboundp function) (error "Not a defined Emacs function: `%s'" function))
     (help-setup-xref (list #'describe-function function) (interactive-p))
     (save-excursion
-      (with-output-to-temp-buffer (help-buffer)
+      ;; (with-output-to-temp-buffer (help-buffer)
+      (with-help-window (help-buffer)
         (prin1 function)
         ;; Use " is " instead of ": " so it is easier to get the function name using `forward-sexp'.
         (princ " is ")
@@ -1268,7 +1269,8 @@ it is displayed along with the global value."
                (val      (and (not valvoid)  (buffer-local-value variable buffer)))
                val-start-pos)
           (help-setup-xref (list #'describe-variable variable buffer) (interactive-p))
-          (with-output-to-temp-buffer (help-buffer)
+          ;; (with-output-to-temp-buffer (help-buffer)
+          (with-help-window (help-buffer)
             (with-current-buffer buffer
               (prin1 variable)
               ;; Make a hyperlink to the library if appropriate.  (Don't change the format of the
@@ -2207,7 +2209,8 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
                                 (format "Inode:                      %S\n" inode)
                                 (format "Device number:              %s\n" device)
                                 image-info)))
-        (with-output-to-temp-buffer "*Help*"
+        ;; (with-output-to-temp-buffer "*Help*"
+        (with-help-window "*Help*"
           (when bmk
             (if internal-form-p
                 (let* ((bname     (bookmark-name-from-full-record bmk))
@@ -2250,7 +2253,8 @@ Completion is available for the keymap name."
                                                 nil 'ADD-HELP-BUTTONS)
                  (documentation-property keymap 'variable-documentation))))
     (help-setup-xref (list #'describe-keymap keymap) (interactive-p))
-    (with-output-to-temp-buffer "*Help*"
+    ;; (with-output-to-temp-buffer "*Help*"
+    (with-help-window "*Help*"
       (princ name) (terpri) (princ (make-string (length name) ?-)) (terpri) (terpri)
       (when doc
         (when (boundp 'Info-virtual-files) ; Emacs 23.2+

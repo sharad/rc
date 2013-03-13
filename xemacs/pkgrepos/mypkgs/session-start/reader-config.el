@@ -27,7 +27,10 @@
 
 
 (deh-require-maybe reader-mode
-  )
+  (add-element-to-lists
+   #'(lambda ()
+       (reader-mode 1))
+   reader-requester))
 
 
 
