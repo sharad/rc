@@ -62,9 +62,18 @@
   ;;                            #'sidebrain-read-todo-from-comments)) t)
 
 
-  (setq
-   sidebrain-browse-tasks-project-group-overlay)
+  ;; (xml-parse-file sidebrain-file-name)
+  ;; (defun filter-ws (tree)
+  ;;   (if (listp tree)
+  ;;       (mapcar 'tree tree)
+  ;;       tree))
 
+  ;; xmllint --noblanks ~/.sidebrain.xml | tr -d '\n' |  sed 's/>[[:space:]]\+</></g'
+  ;; (xml-parse-file "~/x.xml" )
+  ;; (defun filter-ws (tree)
+  ;;   (if (listp tree)
+  ;;       (mapcar 'tree tree)
+  ;;       tree))
   )
 
 
