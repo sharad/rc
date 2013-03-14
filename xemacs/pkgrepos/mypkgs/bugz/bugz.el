@@ -85,10 +85,12 @@
           ))
     (read-from-minibuffer (concat "value for " attribute ": ") km)))
 
+;;{{ using condition-case
 (defun testb ()
   (interactive)
   (setq deactivate-mark nil)
   (throw 'exit "test"))
+
 
 (defun eg-read-any-data ()
   (let ((km (copy-keymap minibuffer-local-map)))
@@ -96,6 +98,34 @@
     (condition-case test
         (read-from-minibuffer (concat "value for "  ": ") nil km)
       (error (read-from-minibuffer "iooo: ")))))
+;;}}
+
+;;{{ using throw catch
+(defun throwgoforlist ()
+  (interactive)
+  (setq redoeg-read t)
+  (setq deactivate-mark nil)
+  (throw 'goforlist
+    (progn
+      (setq dolist (not dolist))
+      (exit-minibuffer)
+      )))
+
+(defun condread ()
+  (let ((km (copy-keymap minibuffer-local-map)))
+        (define-key km (kbd "C-v") 'throwgoforlist)
+        (if dolist
+            (read-from-minibuffer (concat "value for list"  ": ") nil km)
+            (read-from-minibuffer (concat "value for "  ": ") nil km))))
+
+(defun eg-read-any-data ()
+  (catch 'goforlist
+    (setq redoeg-read nil)
+    (setq retval (condread))
+    (if redoeg-read
+        (eg-read-any-data)
+        retval)))
+;;}}
 
 (defun bugz-make-search-criteria ()
   (interactive)
