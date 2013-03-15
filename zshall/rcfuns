@@ -284,3 +284,16 @@ EOF
     fi
 }
 
+
+#{{ Debug.
+function standoutmsg () {
+    if (( ${+STANDOUTMSGFILE} )) ; then
+        print "\n\n\n" sharad: $@ "\n\n\n" >> $STANDOUTMSGFILE
+    else
+        print STANDOUTMSGFILE is not set to file
+    fi
+}
+
+#}}
+
+
