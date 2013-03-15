@@ -92,7 +92,7 @@
   (throw 'exit "test"))
 
 
-(defun eg-read-any-data ()
+(defun eg-read-any-data-using-condcase ()
   (let ((km (copy-keymap minibuffer-local-map)))
     (define-key km (kbd "C-v") 'testb)
     (condition-case test
@@ -101,6 +101,10 @@
 ;;}}
 
 ;;{{ using throw catch
+
+(defvar dolist nil)
+(defvar  mbstr nil)
+
 (defun throwgoforlist ()
   (interactive)
   (setq redoeg-read t)
@@ -108,23 +112,32 @@
   (throw 'goforlist
     (progn
       (setq dolist (not dolist))
+      (setq mbstr (buffer-string))
       (exit-minibuffer)
       )))
 
-(defun condread ()
+(defun condread (fn1 fn2 inittext)
   (let ((km (copy-keymap minibuffer-local-map)))
         (define-key km (kbd "C-v") 'throwgoforlist)
         (if dolist
-            (read-from-minibuffer (concat "value for list"  ": ") nil km)
-            (read-from-minibuffer (concat "value for "  ": ") nil km))))
+            (funcall fn1 inittext km)
+            (funcall fn2 inittext km))))
 
-(defun eg-read-any-data ()
+(defun eg-read-any-data-using-tag (fn1 fn2)
+  (message "mbstr %s" mbstr)
   (catch 'goforlist
     (setq redoeg-read nil)
-    (setq retval (condread))
+    (setq retval (condread fn1 fn2 mbstr))
     (if redoeg-read
-        (eg-read-any-data)
+        (eg-read-any-data-using-tag fn1 fn2)
         retval)))
+
+;; (eg-read-any-data-using-tag
+;;  #'(lambda (inittext km)
+;;      (read-from-minibuffer (concat "value"  ": ") inittext km))
+;;  #'(lambda (inittext km)
+;;      (read-from-minibuffer (concat "value for list"  ": ") inittext km)))
+
 ;;}}
 
 (defun bugz-make-search-criteria ()
