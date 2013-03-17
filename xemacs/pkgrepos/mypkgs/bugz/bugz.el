@@ -105,6 +105,8 @@
 (defvar dolist nil)
 (defvar  mbstr nil)
 
+(setq mbstr nil)
+
 (defun throwgoforlist ()
   (interactive)
   (setq redoeg-read t)
@@ -113,6 +115,7 @@
     (progn
       (setq dolist (not dolist))
       (setq mbstr (buffer-string))
+      (message "text: %s (buffer-string) %s prompt %s" mbstr (buffer-string) prompt)
       (exit-minibuffer)
       )))
 
@@ -132,12 +135,25 @@
         (eg-read-any-data-using-tag fn1 fn2)
         retval)))
 
-;; (eg-read-any-data-using-tag
-;;  #'(lambda (inittext km)
-;;      (read-from-minibuffer (concat "value"  ": ") inittext km))
-;;  #'(lambda (inittext km)
-;;      (read-from-minibuffer (concat "value for list"  ": ") inittext km)))
+(require 'general-testing)
 
+
+
+(testing
+
+ (defun test-read-from-minibuffer ()
+   (read-from-minibuffer "test-read-from-minibuffer") "initail input")
+
+ (eval
+  (read-from-minibuffer "sdfds: "))
+
+ (eg-read-any-data-using-tag
+  #'(lambda (inittext km)
+      (read-from-minibuffer (concat "value"  ": ") inittext km))
+  #'(lambda (inittext km)
+      (read-from-minibuffer (concat "value for list"  ": ") inittext km)))
+
+ )
 ;;}}
 
 (defun bugz-make-search-criteria ()
