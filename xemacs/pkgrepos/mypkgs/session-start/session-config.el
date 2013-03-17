@@ -219,12 +219,14 @@
     "Restore the elscreen tab configuration."
     (interactive
      (list (fmsession-read-location)))
-    (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
-      (if (file-directory-p session-dir)
-          (progn ;; (eq (type-of (desktop-read session-dir)) 'symbol)
-            (message "elscreen-session-restore %s" elscreen-session)
-            (elscreen-session-restore elscreen-session))
-          (message "no such %s dir exists." session-dir))))
+    (if session-dir
+        (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
+          (if (file-directory-p session-dir)
+              (progn ;; (eq (type-of (desktop-read session-dir)) 'symbol)
+                (message "elscreen-session-restore %s" elscreen-session)
+                (elscreen-session-restore elscreen-session))
+              (message "no such %s dir exists." session-dir)))
+        (message "session-dir is nil, not doing anything.")))
 
   ;; (elscreen-restore)
   ;;}}
@@ -257,6 +259,8 @@
     (require 'emacs-panel)
 
     (defun set-this-frame-session-location (frame)
+      (interactive
+       (list (selected-frame)))
       (select-frame frame)
       (message "in set-this-frame-session-location")
       (let* ((wm-hints
@@ -269,11 +273,31 @@
         (unless wm-hints
           (message "Some error in wm-hints"))
         (message "set-this-frame-session-location: %s" location)
-        (when location
-          (set-frame-parameter frame 'frame-spec-id location)
-          ;; (modify-frame-parameters frame
-          ;;                          (list (cons 'frame-spec-id location)))
-          (fmsession-restore location))))
+        (set-frame-parameter frame 'frame-spec-id location)
+        location))
+
+    ;; (defun set-this-frame-session-location (frame)
+    ;;   (select-frame frame)
+    ;;   (message "in set-this-frame-session-location")
+    ;;   (let* ((wm-hints
+    ;;           (ignore-errors (emacs-panel-wm-hints)))
+    ;;          (desktop-name (if wm-hints
+    ;;                            (nth
+    ;;                             (cadr (assoc 'current-desktop wm-hints))
+    ;;                             (cdr (assoc 'desktop-names wm-hints)))))
+    ;;          (location (fmsession-read-location desktop-name)))
+    ;;     (unless wm-hints
+    ;;       (message "Some error in wm-hints"))
+    ;;     (message "set-this-frame-session-location: %s" location)
+    ;;     (when location
+    ;;       (set-frame-parameter frame 'frame-spec-id location)
+    ;;       ;; (modify-frame-parameters frame
+    ;;       ;;                          (list (cons 'frame-spec-id location)))
+    ;;       (fmsession-restore location))))
+
+    (defun restore-frame-session (frame)
+      (select-frame frame)
+      (fmsession-restore (set-this-frame-session-location frame)))
 
     (defun save-frame-session (frame)
       (message "in save-frame-session:")
@@ -289,7 +313,8 @@
     ;; (add-hook '*sharad/after-init-hook*
     (add-hook 'sharad/enable-startup-inperrupting-feature-hook
               #'(lambda ()
-                  (add-hook 'after-make-frame-functions #'set-this-frame-session-location t)
+                  ;; (add-hook 'after-make-frame-functions #'set-this-frame-session-location t)
+                  (add-hook 'after-make-frame-functions #'restore-frame-session t)
                   (add-hook 'delete-frame-functions #'save-frame-session)
                   (add-hook 'kill-emacs-hook #'save-all-frames-session))
               t)
