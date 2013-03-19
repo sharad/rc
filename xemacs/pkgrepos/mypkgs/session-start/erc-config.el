@@ -22,7 +22,7 @@
 
 
 
-(deh-require-maybe (and erc passwds-config)
+(deh-require-maybe (and erc passwds)
 
   ;; help
   ;; This is an example of how to make a new command.  Type "/uptime" to
@@ -41,6 +41,7 @@
           (let ((logdir (concat (getenv "HOME") "/.logs/chat/erc")))
             (unless (file-directory-p logdir)
               (make-directory logdir t)))
+          (message "connecting freenode")
           (erc-freenode)
           (sleep-for 0 500)
           (erc-bitlbee)
@@ -72,8 +73,11 @@
     (defun erc-bitlbee ()
       (interactive)
       (bitlbee-start)
+      (if (bitlbee-running-p)
+          (erc :server "localhost" :port "6667")
+          (message "bitlbee is not running, install bitlbee and run it."))
       ; (sleep-for 0 500)
-      (erc :server "localhost" :port "6667")
+
       ;; (bitlbee-connect)
       ))
 
