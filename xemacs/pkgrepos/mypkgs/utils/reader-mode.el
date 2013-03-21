@@ -249,7 +249,7 @@
 
 
 (define-minor-mode reader-mode
-    "Prepare for working with collarative office project."
+    "reader-mode"
   :initial-value nil
   :init-value nil
   :lighter (:eval

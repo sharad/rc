@@ -389,10 +389,16 @@
     (interactive)
     ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
     (if (eq (desktop-owner) (emacs-pid))
-        (desktop-save desktop-dirname)))
+        ;; (desktop-save desktop-dirname)
+        (desktop-save-in-desktop-dir)
+        (error "You %d are not the desktop owner %d."
+                (emacs-pid)
+                (desktop-owner))))
 
   (testing
    (add-hook 'auto-save-hook 'my-desktop-save))
+  ;; giving life to it.
+  (add-hook 'auto-save-hook 'my-desktop-save)
 
   ;;{{
   ;; Automatically Overriding Stale Locks
@@ -473,6 +479,16 @@ Also returns nil if pid is nil."
   (defun sharad/desktop-saved-session ()
     (file-exists-p (concat desktop-dirname "/" desktop-base-file-name)))
 
+  ;; use session-save to save the desktop manually
+  (defun sharad/desktop-session-save ()
+    "Save an emacs session."
+    (interactive)
+    (if (sharad/desktop-saved-session)
+        (if (y-or-n-p "Overwrite existing desktop (might be it was not restore properly at startup)? ")
+            (desktop-save-in-desktop-dir)
+            (message "Session not saved."))
+        (desktop-save-in-desktop-dir)))
+
   ;; use session-restore to restore the desktop manually
   (defun sharad/desktop-session-restore ()
     "Restore a saved emacs session."
@@ -487,16 +503,6 @@ Also returns nil if pid is nil."
     (if (y-or-n-p "Do you want to set session of frame? ")
         (set-this-frame-session-location (selected-frame)))
     (message "leaving desktop-session-restore"))
-
-  ;; use session-save to save the desktop manually
-  (defun sharad/desktop-session-save ()
-    "Save an emacs session."
-    (interactive)
-    (if (sharad/desktop-saved-session)
-        (if (y-or-n-p "Overwrite existing desktop (might be it was not restore properly at startup)? ")
-            (desktop-save-in-desktop-dir)
-            (message "Session not saved."))
-        (desktop-save-in-desktop-dir)))
 
   (add-hook 'session-before-save-hook
             #'sharad/desktop-session-save)

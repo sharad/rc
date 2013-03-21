@@ -68,13 +68,5 @@
 ;;; minor-modes-act.el ends here
 
 
-(defun put-file-in-rcs (&optional file)
-  (let ((file (or file
-                  (buffer-file-name (current-buffer)))))
-    (if (not (vc-backend file))
-        (vc-rcs-register (list file)))))
-
-;; (remove-hook 'after-save-hook 'put-file-in-rcs)
-
 
 (provide 'minor-modes-act-config)

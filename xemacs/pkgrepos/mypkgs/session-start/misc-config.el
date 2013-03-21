@@ -87,12 +87,6 @@ The indirect buffer can have another major mode."
           (lambda () (flyspell-mode 1)))
 (add-hook 'fundamental-mode-hook
           (lambda () (flyspell-mode 1)))
-;; Explanation: when emacs does a backup, by default it renames the
-;; original file into the backup file name, then create a new file and
-;; insert the current data into it. This effectively destroys the
-;; creation date of your file.
-(setq backup-by-copying t)
-
 
 ;; peace
 (setq ring-bell-function (lambda () (message "bell !!")))
