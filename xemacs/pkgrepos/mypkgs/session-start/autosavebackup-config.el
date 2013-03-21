@@ -57,17 +57,21 @@
     (message "put-file-in-rcs: adding to rcs")
     (if (not (string-match ".+,v" file))
         (if (not (vc-backend file))
-            (if (and (not (file-exists-p
-                           (setq subdir (expand-file-name "RCS" (file-name-directory file)))))
-                     (make-directory subdir)) ;no question.
-                (vc-rcs-register (list file))
-                (message "Not able to create %s for %s" subdir file))
-            (message "file %s already in vcs not doing anything."))
+            (let ((subdir (expand-file-name "RCS" (file-name-directory file))))
+              (if (if (not (file-exists-p subdir))
+                      (make-directory subdir t)
+                      t) ;no question.
+                  (vc-rcs-register (list file))
+                  (message "Not able to create %s for %s" subdir file)))
+            (message "file %s already in vcs not doing anything." file))
         (message "file %s is a backup file." file)))
 
 
-  (defadvice backup-buffer-copy (after backup-buffer-copy-in-rcs (from-name to-name modes) disable)
-    (message "defadvise filename %s %s" from-name)
+  (defadvice backup-buffer-copy (after
+                                 backup-buffer-copy-in-rcs
+                                 (from-name to-name modes  context)
+                                 disable)
+    (message "defadvise filename %s %s" from-name to-name)
     (put-file-in-rcs from-name))
 
 
