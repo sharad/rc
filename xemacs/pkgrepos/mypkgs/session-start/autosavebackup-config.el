@@ -39,8 +39,8 @@
 (setq backup-by-copying t   ; don't clobber symlinks
       version-control t     ; use versioned backups
       delete-old-versions t
-      kept-new-versions 6
-      kept-old-versions 2)
+      kept-new-versions 20
+      kept-old-versions 10)
 
 (deh-require-maybe (and vc vc-rcs)
   ;; (defun put-file-in-rcs (&optional file)
