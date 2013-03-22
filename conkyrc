@@ -65,7 +65,8 @@ own_window_colour hotpink
 double_buffer yes
 
 # Minimum size of text area
-minimum_size 1024 5
+# minimum_size 1024 5
+minimum_size 280 5
 
 # Draw shades?
 draw_shades yes
