@@ -52,27 +52,45 @@
   ;; (defun backup-buffer-copy (from-name to-name modes)
   ;;   (let ((umask (default-file-modes)))))
 
+  ;; (setq vc-rcs-checkin-switches
+  ;;       ;; http://www.emacswiki.org/emacs/RevisionControlSystem#toc1
+  ;;       "-l")
 
   (defun put-file-in-rcs (file)
+    ;; http://www.emacswiki.org/emacs/VersionControlAlways
     (message "put-file-in-rcs: adding to rcs")
     (if (not (string-match ".+,v" file))
         (if (not (vc-backend file))
             (let ((subdir (expand-file-name "RCS" (file-name-directory file))))
-              (if (if (not (file-exists-p subdir))
-                      (make-directory subdir t)
-                      t) ;no question.
-                  (vc-rcs-register (list file))
+              (when (not (file-exists-p subdir))
+                ;no question.
+                    (make-directory subdir t))
+              (if (file-exists-p subdir)
+                  (progn
+                    (vc-rcs-register (list file))
+                    (vc-checkout file t)
+                    ;; (vc-toggle-read-only)
+                    )
                   (message "Not able to create %s for %s" subdir file)))
-            (message "file %s already in vcs not doing anything." file))
+            (if (eq (vc-backend file) 'RCS)
+                (progn
+                  (message "going to checkin")
+                  (vc-checkin file 'RCS nil "checkin" nil)
+                  (vc-checkout file t)
+                  ;; (vc-toggle-read-only)
+                  (message "Checked in"))
+                (message "file %s already in %s vcs not doing anything."
+                         file (vc-backend file))))
         (message "file %s is a backup file." file)))
 
 
-  (defadvice backup-buffer-copy (after
-                                 backup-buffer-copy-in-rcs
-                                 (from-name to-name modes  context)
-                                 disable)
-    (message "defadvise filename %s %s" from-name to-name)
-    (put-file-in-rcs from-name))
+  (eval
+   `(defadvice backup-buffer-copy (after
+                                   backup-buffer-copy-in-rcs
+                                   ,(help-function-arglist 'backup-buffer-copy)
+                                   disable)
+      (message "defadvise filename %s %s" from-name to-name)
+      (put-file-in-rcs from-name)))
 
 
 
@@ -89,7 +107,10 @@
     (ad-activate #'backup-buffer-copy)
     (ad-update #'backup-buffer-copy)))
 
+
+
 ;; (remove-hook 'after-save-hook 'put-file-in-rcs)
+
 
 
 
