@@ -21,8 +21,24 @@
 ;;
 
 
+(defvar erc-autojoin-channels-alist nil)
+(defvar erc-pals nil)
+(defvar erc-fools nil)
+(defvar erc-track-exclude-types nil)
+(defvar erc-log-channels-directory nil)
+(defvar erc-save-buffer-on-part nil)
+(defvar erc-save-queries-on-quit nil)
+(defvar erc-log-write-after-send nil)
+(defvar erc-log-write-after-insert nil)
+(defvar bitlbee-buffer-name nil)
+(defvar erc-keywords nil)
+(defvar fb/all-ids nil)
+(defvar fb/old-erc-hooks nil)
+(defvar erc-nickserv-passwords nil)
+(defvar erc-prompt-for-nickserv-password nil)
 
-(deh-require-maybe (and erc passwds)
+
+(deh-require-maybe (and erc passwds bitlbee)
 
   ;; help
   ;; This is an example of how to make a new command.  Type "/uptime" to
@@ -30,6 +46,7 @@
   ;; (defun erc-cmd-UPTIME (&rest ignore)
 
 
+  (message "loading defun sharad/erc-start-or-switch")
 
   (defun sharad/erc-start-or-switch ()
     "Connect to ERC, or switch to last active buffer"
@@ -83,6 +100,7 @@
 
   ;; notify me of which erc buffers have been modified in the mode line
   (erc-track-mode 1)
+
   (setq erc-autojoin-channels-alist '(
                                       ;; ("freenode.net" ;"#bugfunk"
                                       ;;  "#emacs" "#lisp"
@@ -426,7 +444,7 @@ waiting for responses from the server"
 
 
 
-(deh-require-maybe (and passwds-config erc-services)
+(deh-require-maybe (and passwds erc-services)
 
   (erc-services-mode 1)
 
@@ -607,7 +625,8 @@ waiting for responses from the server"
   (defun erc-notify-allowed (nick target &optional delay)
     "Return true if a certain nick has waited long enough to notify"
     (unless delay (setq delay 30))
-    (let ((cur-time (time-to-seconds (current-time)))
+    (let ;; ((cur-time (time-to-seconds (current-time)))
+        ((cur-time (float-time (current-time)))
           (cur-assoc (assoc (format "%s|%s" nick target) erc-page-nick-alist))
           (last-time))
       (if cur-assoc

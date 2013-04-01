@@ -93,6 +93,10 @@
       (put-file-in-rcs from-name)))
 
 
+  (defadvice  vc-rcs-find-file-hook (after backup-buffer-copy-in-rcs-ff () disable)
+    (message "yes in backup-buffer-copy-in-rcs-ff")
+    (set (make-local-variable 'backup-inhibited) nil))
+
 
   (define-minor-mode rcs-backup-mode
     "backup-rcs-mode"
@@ -102,10 +106,16 @@
     :lighter 'rcb
     :global t
     (if rcs-backup-mode
-        (ad-enable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-in-rcs)
-        (ad-disable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-in-rcs))
+        (progn
+          (ad-enable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-in-rcs)
+          (ad-enable-advice 'vc-rcs-find-file-hook 'after 'backup-buffer-copy-in-rcs-ff))
+        (progn
+          (ad-disable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-in-rcs)
+          (ad-disable-advice 'vc-rcs-find-file-hook 'after 'backup-buffer-copy-in-rcs-ff)))
     (ad-activate #'backup-buffer-copy)
-    (ad-update #'backup-buffer-copy)))
+    (ad-update #'backup-buffer-copy)
+    (ad-activate #'vc-rcs-find-file-hook)
+    (ad-update #'vc-rcs-find-file-hook)))
 
 
 
@@ -113,7 +123,52 @@
 
 
 
+;; (vc-rcs-find-file-hook)
 
+
+;; (defun sharad/vc-find-file-hook ()
+;;   "Function for `find-file-hook' activating VC mode if appropriate."
+;;   ;; Recompute whether file is version controlled,
+;;   ;; if user has killed the buffer and revisited.
+;;   (when buffer-file-name
+;;     (let (backend)
+;;       (cond
+;;         ((setq backend (with-demoted-errors (vc-backend buffer-file-name)))
+;;          (unless vc-make-backup-files
+;;            ;; Use this variable, not make-backup-files,
+;;            ;; because this is for things that depend on the file name.
+;;            (set (make-local-variable 'backup-inhibited) t))
+;;          ;; Let the backend setup any buffer-local things he needs.
+;;          (vc-call-backend backend 'find-file-hook))
+;;        ((let ((link-type (and (not (equal buffer-file-name buffer-file-truename))
+;; 			      (vc-backend buffer-file-truename))))
+;; 	  (cond ((not link-type) nil)	;Nothing to do.
+;; 		((eq vc-follow-symlinks nil)
+;; 		 (message
+;; 		  "Warning: symbolic link to %s-controlled source file" link-type))
+;; 		((or (not (eq vc-follow-symlinks 'ask))
+;; 		     ;; If we already visited this file by following
+;; 		     ;; the link, don't ask again if we try to visit
+;; 		     ;; it again.  GUD does that, and repeated questions
+;; 		     ;; are painful.
+;; 		     (get-file-buffer
+;; 		      (abbreviate-file-name
+;; 		       (file-chase-links buffer-file-name))))
+
+;; 		 (vc-follow-link)
+;; 		 (message "Followed link to %s" buffer-file-name)
+;; 		 (vc-find-file-hook))
+;; 		(t
+;; 		 (if (yes-or-no-p (format
+;; 				   "Symbolic link to %s-controlled source file; follow link? " link-type))
+;; 		     (progn (vc-follow-link)
+;; 			    (message "Followed link to %s" buffer-file-name)
+;; 			    (vc-find-file-hook))
+;; 		   (message
+;; 		    "Warning: editing through the link bypasses version control")
+;; 		   )))))))))
+
+;; (add-hook 'find-file-hook 'vc-find-file-hook)
 
 
 (provide 'autosavebackup-config)
