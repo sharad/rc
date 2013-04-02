@@ -42,9 +42,15 @@
       kept-new-versions 20
       kept-old-versions 10)
 
+(eval-when-compile
+  '(require 'vc))
+
+(require 'vc)
 
 (deh-require-maybe (and vc vc-rcs)
 ;; (when nil
+
+
 
   (defun put-file-in-rcs (nfile)
     ;; http://www.emacswiki.org/emacs/VersionControlAlways
@@ -52,7 +58,8 @@
      (list (buffer-file-name (current-buffer))))
     (message "put-file-in-rcs: adding to rcs")
     (if (not (string-match ".+,v" nfile))
-        (let ((vc-rcs-checkin-switches "-l"))
+        (let ((vc-rcs-checkin-switches "-l")
+              (vc-rcs-register-switches "-l"))
           (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
           (if (not (vc-backend nfile))
               (let ((subdir (expand-file-name "RCS" (file-name-directory nfile))))
@@ -62,10 +69,7 @@
                 (if (file-exists-p subdir)
                     (progn
                       (vc-rcs-register (list nfile))
-                      (with-temp-buffer
-                        (vc-checkout nfile t))
-                      ;; (vc-toggle-read-only)
-                      )
+                      (vc-mode-line nfile 'RCS))
                     (message "Not able to create %s for %s" subdir nfile)))
               (if (eq (vc-backend nfile) 'RCS)
                   (progn
@@ -79,13 +83,14 @@
                           (mapc 'vc-delete-automatic-version-backups (list nfile))
                           (message "Checked in %s" nfile))
                         `((vc-state . up-to-date)
-                          (vc-checkout-time . ,(nth 5 (file-attributes file)))
+                          (vc-checkout-time . ,(nth 5 (file-attributes nfile)))
                           (vc-working-revision . nil))))
                     ;; (with-temp-buffer
                     ;;     (sharad/vc-checkout nfile t))
                     ;; (vc-checkout nfile t)
                     ;; (vc-toggle-read-only)
-                    (run-hook-with-args 'vc-mode-line-hook nfile)))))
+                    (run-hook-with-args 'vc-mode-line-hook nfile))
+                  (message "file %s is VC file" nfile))))
         (message "file %s is a backup file." nfile))
     (message nil))
 
@@ -94,7 +99,7 @@
 ;; (vc-call-backend 'RCS 'mode-line-string buffer-file-name)
 ;; (vc-default-mode-line-string buffer-file-name)
 
-;; (sharad/vc-mode-line buffer-file-name 'RCS)
+;; (vc-mode-line buffer-file-name 'RCS)
 ;; (sharad/vc-mode-line buffer-file-name 'RCS)
 
   (eval

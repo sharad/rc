@@ -500,8 +500,10 @@ Also returns nil if pid is nil."
           (desktop-read)
           t)
         (message "No desktop found."))
-    (if (y-or-n-p "Do you want to set session of frame? ")
-        (set-this-frame-session-location (selected-frame)))
+    (message "SADFDASFas")
+    (when (y-or-n-p "Do you want to set session of frame? ")
+      (message "RTYTRu")
+      (set-this-frame-session-location (selected-frame)))
     (message "leaving desktop-session-restore"))
 
   (add-hook 'session-before-save-hook
