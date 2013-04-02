@@ -112,7 +112,8 @@ having the same major mode as the current buffer"
     (message "elpa pkg wcheck-mode"))
 
   (deh-require-maybe org-jira)
-  (deh-require-maybe todostack
+  ;; (deh-require-maybe todostack
+  (when nil
     ;; beautiful
     (add-hook 'kill-emacs-hook 'todostack-save)
     (add-hook 'emacs-startup-hook 'todostack-load)

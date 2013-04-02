@@ -42,7 +42,9 @@
       kept-new-versions 20
       kept-old-versions 10)
 
-(deh-require-maybe (and vc vc-rcs)
+
+;; (deh-require-maybe (and vc vc-rcs)
+(when nil
   ;; (defun put-file-in-rcs (&optional file)
   ;;   (let ((file (or file
   ;;                   (buffer-file-name (current-buffer)))))
@@ -56,33 +58,56 @@
   ;;       ;; http://www.emacswiki.org/emacs/RevisionControlSystem#toc1
   ;;       "-l")
 
-  (defun put-file-in-rcs (file)
+  (defun put-file-in-rcs (nfile)
     ;; http://www.emacswiki.org/emacs/VersionControlAlways
+    (interactive
+     (list (buffer-file-name (current-buffer))))
     (message "put-file-in-rcs: adding to rcs")
-    (if (not (string-match ".+,v" file))
-        (if (not (vc-backend file))
-            (let ((subdir (expand-file-name "RCS" (file-name-directory file))))
-              (when (not (file-exists-p subdir))
-                ;no question.
-                    (make-directory subdir t))
-              (if (file-exists-p subdir)
+    (if (not (string-match ".+,v" nfile))
+        (let ((vc-rcs-checkin-switches "-l"))
+          (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
+          (if (not (vc-backend nfile))
+              (let ((subdir (expand-file-name "RCS" (file-name-directory nfile))))
+                (when (not (file-exists-p subdir))
+                                        ;no question.
+                  (make-directory subdir t))
+                (if (file-exists-p subdir)
+                    (progn
+                      (vc-rcs-register (list nfile))
+                      (with-temp-buffer
+                        (vc-checkout nfile t))
+                      ;; (vc-toggle-read-only)
+                      )
+                    (message "Not able to create %s for %s" subdir nfile)))
+              (if (eq (vc-backend nfile) 'RCS)
                   (progn
-                    (vc-rcs-register (list file))
-                    (vc-checkout file t)
+                    (message "going to checkin")
+                    ;; (vc-checkin file 'RCS nil "checkin" nil)
+                    (with-temp-buffer
+                      (with-vc-properties
+                          (list nfile)
+                        (progn
+                          (vc-call-backend 'RCS 'checkin (list nfile) nil "testcomment")
+                          (mapc 'vc-delete-automatic-version-backups (list nfile))
+                          (message "Checked in %s" nfile))
+                        `((vc-state . up-to-date)
+                          (vc-checkout-time . ,(nth 5 (file-attributes file)))
+                          (vc-working-revision . nil))))
+                    ;; (with-temp-buffer
+                    ;;     (sharad/vc-checkout nfile t))
+                    ;; (vc-checkout nfile t)
                     ;; (vc-toggle-read-only)
-                    )
-                  (message "Not able to create %s for %s" subdir file)))
-            (if (eq (vc-backend file) 'RCS)
-                (progn
-                  (message "going to checkin")
-                  (vc-checkin file 'RCS nil "checkin" nil)
-                  (vc-checkout file t)
-                  ;; (vc-toggle-read-only)
-                  (message "Checked in"))
-                (message "file %s already in %s vcs not doing anything."
-                         file (vc-backend file))))
-        (message "file %s is a backup file." file)))
+                    (run-hook-with-args 'vc-mode-line-hook nfile)))))
+        (message "file %s is a backup file." nfile))
+    (message nil))
 
+;; (message "%s" vc-mode)
+
+;; (vc-call-backend 'RCS 'mode-line-string buffer-file-name)
+;; (vc-default-mode-line-string buffer-file-name)
+
+;; (sharad/vc-mode-line buffer-file-name 'RCS)
+;; (sharad/vc-mode-line buffer-file-name 'RCS)
 
   (eval
    `(defadvice backup-buffer-copy (after
@@ -120,56 +145,6 @@
 
 
 ;; (remove-hook 'after-save-hook 'put-file-in-rcs)
-
-
-
-;; (vc-rcs-find-file-hook)
-
-
-;; (defun sharad/vc-find-file-hook ()
-;;   "Function for `find-file-hook' activating VC mode if appropriate."
-;;   ;; Recompute whether file is version controlled,
-;;   ;; if user has killed the buffer and revisited.
-;;   (when buffer-file-name
-;;     (let (backend)
-;;       (cond
-;;         ((setq backend (with-demoted-errors (vc-backend buffer-file-name)))
-;;          (unless vc-make-backup-files
-;;            ;; Use this variable, not make-backup-files,
-;;            ;; because this is for things that depend on the file name.
-;;            (set (make-local-variable 'backup-inhibited) t))
-;;          ;; Let the backend setup any buffer-local things he needs.
-;;          (vc-call-backend backend 'find-file-hook))
-;;        ((let ((link-type (and (not (equal buffer-file-name buffer-file-truename))
-;; 			      (vc-backend buffer-file-truename))))
-;; 	  (cond ((not link-type) nil)	;Nothing to do.
-;; 		((eq vc-follow-symlinks nil)
-;; 		 (message
-;; 		  "Warning: symbolic link to %s-controlled source file" link-type))
-;; 		((or (not (eq vc-follow-symlinks 'ask))
-;; 		     ;; If we already visited this file by following
-;; 		     ;; the link, don't ask again if we try to visit
-;; 		     ;; it again.  GUD does that, and repeated questions
-;; 		     ;; are painful.
-;; 		     (get-file-buffer
-;; 		      (abbreviate-file-name
-;; 		       (file-chase-links buffer-file-name))))
-
-;; 		 (vc-follow-link)
-;; 		 (message "Followed link to %s" buffer-file-name)
-;; 		 (vc-find-file-hook))
-;; 		(t
-;; 		 (if (yes-or-no-p (format
-;; 				   "Symbolic link to %s-controlled source file; follow link? " link-type))
-;; 		     (progn (vc-follow-link)
-;; 			    (message "Followed link to %s" buffer-file-name)
-;; 			    (vc-find-file-hook))
-;; 		   (message
-;; 		    "Warning: editing through the link bypasses version control")
-;; 		   )))))))))
-
-;; (add-hook 'find-file-hook 'vc-find-file-hook)
-
 
 (provide 'autosavebackup-config)
 
