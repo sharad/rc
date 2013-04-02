@@ -45,18 +45,6 @@
 
 ;; (deh-require-maybe (and vc vc-rcs)
 (when nil
-  ;; (defun put-file-in-rcs (&optional file)
-  ;;   (let ((file (or file
-  ;;                   (buffer-file-name (current-buffer)))))
-  ;;     (if (not (vc-backend file))
-  ;;         (vc-rcs-register (list file)))))
-
-  ;; (defun backup-buffer-copy (from-name to-name modes)
-  ;;   (let ((umask (default-file-modes)))))
-
-  ;; (setq vc-rcs-checkin-switches
-  ;;       ;; http://www.emacswiki.org/emacs/RevisionControlSystem#toc1
-  ;;       "-l")
 
   (defun put-file-in-rcs (nfile)
     ;; http://www.emacswiki.org/emacs/VersionControlAlways
