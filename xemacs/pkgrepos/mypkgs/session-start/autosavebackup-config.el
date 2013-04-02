@@ -43,8 +43,8 @@
       kept-old-versions 10)
 
 
-;; (deh-require-maybe (and vc vc-rcs)
-(when nil
+(deh-require-maybe (and vc vc-rcs)
+;; (when nil
 
   (defun put-file-in-rcs (nfile)
     ;; http://www.emacswiki.org/emacs/VersionControlAlways
