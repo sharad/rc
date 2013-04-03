@@ -45,6 +45,8 @@
   ;; use it.
   ;; (defun erc-cmd-UPTIME (&rest ignore)
 
+  (setq erc-join-buffer 'buffer)
+
 
   (message "loading defun sharad/erc-start-or-switch")
 

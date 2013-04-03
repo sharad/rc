@@ -923,4 +923,15 @@ define_webjump("search/man", "http://man.cx/%s");
 define_webjump("man", "http://man.cx/%s");
 //}
 
+// define_webjump("tinyurl/f0rk",
+//                function(){
+//                    var ali=prompt('Enter a custom alias:');
+//                    if(ali) {
+//                        location.href='http://f0rk.in/index.php?url='   escape(location.href)   '&alias=' ali;
+//                    }
+//                },
+//               $argument = 'optional');
 
+
+
+// javascript:void( location.href = 'http://f0rk.in/index.php?alias=&url=' escape(location.href))

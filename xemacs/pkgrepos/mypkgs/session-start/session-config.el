@@ -28,7 +28,8 @@
 (require 'general-testing)
 (require 'cl)
 
-
+(eval-when-compile
+  '(require 'cl))
 
 
 
@@ -501,7 +502,6 @@ Also returns nil if pid is nil."
           (desktop-read)
           t)
         (message "No desktop found."))
-    (message "SADFDASFas")
     (when (y-or-n-p "Do you want to set session of frame? ")
       (restore-frame-session (selected-frame)))
     (message "leaving desktop-session-restore"))

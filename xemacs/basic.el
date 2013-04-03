@@ -313,7 +313,6 @@ alkready should not exist.")
   (defun sharad/enable-startup-inperrupting-feature ()
     (interactive)
     (setq
-     debug-on-error t
      enable-p4-login t
      tramp-mode t
      ido-mode 'both)
@@ -327,7 +326,11 @@ alkready should not exist.")
                               (light-symbol-mode 1)
                               (highlight-changes-visible-mode t)
                               (highlight-changes-mode t)) pgm-langs))
-    (run-hooks 'sharad/enable-startup-inperrupting-feature-hook))
+    (run-hooks 'sharad/enable-startup-inperrupting-feature-hook)
+
+    (setq
+     debug-on-error t
+     ))
 
 
   (defun sharad/enable-startup-inperrupting-feature-in-frame-once (frame)
