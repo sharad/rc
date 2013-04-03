@@ -310,6 +310,7 @@
       (dolist (f (frame-list))
 	(save-frame-session f)))
 
+
     ;; (add-hook '*sharad/after-init-hook*
     (add-hook 'sharad/enable-startup-inperrupting-feature-hook
               #'(lambda ()
@@ -365,40 +366,6 @@
   (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
   (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
 
-
-  ;; Since all lists will be truncated when saved, it is important to
-  ;; have a high default history length, for example. If that is not
-  ;; enough, follow the suggestions in the doc-string of
-  ;; ‘desktop-globals-to-save’:
-
-  ;;   An element may be variable name (a symbol) or a cons cell of
-  ;;   the form (VAR . MAX-SIZE), which means to truncate VAR’s value
-  ;;   to at most MAX-SIZE elements (if the value is a list) before
-  ;;   saving the value.
-
-
-  ;; Auto-Saving the Desktop
-
-  ;; I’m starting to work on a new package called desktop-recover.el
-  ;; with some improvements like this. Alternatively, you can just add
-  ;; something like this to your init file to auto-save your desktop
-  ;; when Emacs is idle: – Doom
-
-
-  (defun my-desktop-save ()
-    (interactive)
-    ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
-    (if (eq (desktop-owner) (emacs-pid))
-        ;; (desktop-save desktop-dirname)
-        (desktop-save-in-desktop-dir)
-        (error "You %d are not the desktop owner %d."
-                (emacs-pid)
-                (desktop-owner))))
-
-  (testing
-   (add-hook 'auto-save-hook 'my-desktop-save))
-  ;; giving life to it.
-  (add-hook 'auto-save-hook 'my-desktop-save)
 
   ;;{{
   ;; Automatically Overriding Stale Locks
@@ -476,6 +443,40 @@ Also returns nil if pid is nil."
               (desktop-remove)
               (setq desktop-dirname desktop-dirname-tmp)))
 
+  ;; Since all lists will be truncated when saved, it is important to
+  ;; have a high default history length, for example. If that is not
+  ;; enough, follow the suggestions in the doc-string of
+  ;; ‘desktop-globals-to-save’:
+
+  ;;   An element may be variable name (a symbol) or a cons cell of
+  ;;   the form (VAR . MAX-SIZE), which means to truncate VAR’s value
+  ;;   to at most MAX-SIZE elements (if the value is a list) before
+  ;;   saving the value.
+
+
+  ;; Auto-Saving the Desktop
+
+  ;; I’m starting to work on a new package called desktop-recover.el
+  ;; with some improvements like this. Alternatively, you can just add
+  ;; something like this to your init file to auto-save your desktop
+  ;; when Emacs is idle: – Doom
+
+
+  (defun my-desktop-save ()
+    (interactive)
+    ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
+    (if (eq (desktop-owner) (emacs-pid))
+        ;; (desktop-save desktop-dirname)
+        (desktop-save-in-desktop-dir)
+        (error "You %d are not the desktop owner %d."
+                (emacs-pid)
+                (desktop-owner))))
+
+  (testing
+   (add-hook 'auto-save-hook 'my-desktop-save))
+  ;; giving life to it.
+  (add-hook 'auto-save-hook 'my-desktop-save)
+
   (defun sharad/desktop-saved-session ()
     (file-exists-p (concat desktop-dirname "/" desktop-base-file-name)))
 
@@ -502,12 +503,12 @@ Also returns nil if pid is nil."
         (message "No desktop found."))
     (message "SADFDASFas")
     (when (y-or-n-p "Do you want to set session of frame? ")
-      (message "RTYTRu")
-      (set-this-frame-session-location (selected-frame)))
+      (restore-frame-session (selected-frame)))
     (message "leaving desktop-session-restore"))
 
   (add-hook 'session-before-save-hook
-            #'sharad/desktop-session-save)
+            #'my-desktop-save)
+  ;; #'sharad/desktop-session-save)
 
   ;; ;; ask user whether to restore desktop at start-up
   (add-hook ;; 'after-init-hook
