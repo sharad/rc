@@ -58,8 +58,7 @@
 
     (let ((org-from-file (file-truename from-file)))
       (message "put-file-in-rcs: adding to rcs")
-      (if (not (file-writable-p org-from-file))
-          (if (not (string-match ".+,v" org-from-file))
+      (if (not (string-match ".+,v" org-from-file))
           (let ((vc-rcs-checkin-switches "-l")
                 (vc-rcs-register-switches "-l"))
             (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
@@ -94,7 +93,6 @@
                       (run-hook-with-args 'vc-mode-line-hook org-from-file))
                     (message "file %s is VC file" org-from-file))))
           (message "file %s is a backup file." org-from-file))
-          (message "file %s is not writable." org-from-file))
       (message nil)))
 
 ;; (message "%s" vc-mode)

@@ -45,7 +45,6 @@
   ;; use it.
   ;; (defun erc-cmd-UPTIME (&rest ignore)
 
-  (setq erc-join-buffer 'buffer)
 
 
   (message "loading defun sharad/erc-start-or-switch")
@@ -61,7 +60,8 @@
             (unless (file-directory-p logdir)
               (make-directory logdir t)))
           (message "connecting freenode")
-          (erc-freenode)
+          (erc-bnc4free)
+          ;; (erc-freenode)
           (sleep-for 0 500)
           (erc-bitlbee)
                                         ; can connect to multiple servers automatically
@@ -70,6 +70,8 @@
 
   (deh-require-maybe erc-join
     (erc-autojoin-mode t))
+
+
 
   ;; useful stuff at http://www.emacswiki.org/emacs-en/AlexSchroederErcConfig
   ;; basic info at http://emacs-fu.blogspot.com/2009/06/erc-emacs-irc-client.html
@@ -87,6 +89,13 @@
     (erc :server "irc.freenode.net" :port 6667
          :nick "sharad" :full-name "Sharad Pratap"
          :password freenode-pass))
+
+  (defun erc-bnc4free ()
+    (interactive)
+    (erc :server "Grape.bnc4free.com" :port 1337
+         ;; :nick "sharad" :full-name "Sharad Pratap"
+         ;; :password bnc4free-pass ;; "PLYjOsSdGKNErQ"
+         ))
 
   (deh-require-maybe bitlbee
     (defun erc-bitlbee ()
@@ -487,7 +496,9 @@ waiting for responses from the server"
 ;;   any other value  - in place of the current buffer."
 
   (setf erc-auto-query 'frame
-        erc-join-buffer 'window))
+        ;; erc-join-buffer 'window
+        erc-join-buffer 'buffer
+        erc-kill-queries-on-quit t)
 
 
 
@@ -701,8 +712,3 @@ waiting for responses from the server"
 
 
   ;;
-
-
-
-
-
