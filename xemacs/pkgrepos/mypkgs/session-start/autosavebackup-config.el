@@ -37,10 +37,10 @@
 ;; creation date of your file.
 
 (setq backup-by-copying t   ; don't clobber symlinks
-      version-control t     ; use versioned backups
+      version-control nil     ; use versioned backups
       delete-old-versions t
-      kept-new-versions 20
-      kept-old-versions 10)
+      kept-new-versions 2
+      kept-old-versions 2)
 
 (eval-when-compile
   '(require 'vc))
