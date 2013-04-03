@@ -56,7 +56,8 @@
     (interactive
      (list (buffer-file-name (current-buffer))))
 
-    (let ((org-from-file (file-truename from-file)))
+    (let* ((org-from-file (file-truename from-file))
+           (fmode (file-modes org-from-file)))
       (message "put-file-in-rcs: adding to rcs")
       (if (not (string-match ".+,v" org-from-file))
           (let ((vc-rcs-checkin-switches "-l")
@@ -91,7 +92,8 @@
                       ;; (vc-checkout org-from-file t)
                       ;; (vc-toggle-read-only)
                       (run-hook-with-args 'vc-mode-line-hook org-from-file))
-                    (message "file %s is VC file" org-from-file))))
+                    (message "file %s is VC file" org-from-file)))
+            (set-file-modes org-from-file fmode))
           (message "file %s is a backup file." org-from-file))
       (message nil)))
 
