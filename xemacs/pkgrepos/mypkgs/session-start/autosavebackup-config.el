@@ -51,48 +51,49 @@
 ;; (when nil
 
 
-
-  (defun put-file-in-rcs (nfile)
+  (defun put-file-in-rcs (from-file)
     ;; http://www.emacswiki.org/emacs/VersionControlAlways
     (interactive
      (list (buffer-file-name (current-buffer))))
-    (message "put-file-in-rcs: adding to rcs")
-    (if (not (string-match ".+,v" nfile))
-        (let ((vc-rcs-checkin-switches "-l")
-              (vc-rcs-register-switches "-l"))
-          (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
-          (if (not (vc-backend nfile))
-              (let ((subdir (expand-file-name "RCS" (file-name-directory nfile))))
-                (when (not (file-exists-p subdir))
+
+    (let ((org-from-file (file-truename from-file)))
+      (message "put-file-in-rcs: adding to rcs")
+      (if (not (string-match ".+,v" org-from-file))
+          (let ((vc-rcs-checkin-switches "-l")
+                (vc-rcs-register-switches "-l"))
+            (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
+            (if (not (vc-backend org-from-file))
+                (let ((subdir (expand-file-name "RCS" (file-name-directory org-from-file))))
+                  (when (not (file-exists-p subdir))
                                         ;no question.
-                  (make-directory subdir t))
-                (if (file-exists-p subdir)
+                    (make-directory subdir t))
+                  (if (file-exists-p subdir)
+                      (progn
+                        (vc-rcs-register (list org-from-file))
+                        (vc-mode-line org-from-file 'RCS))
+                      (message "Not able to create %s for %s" subdir org-from-file)))
+                (if (eq (vc-backend org-from-file) 'RCS)
                     (progn
-                      (vc-rcs-register (list nfile))
-                      (vc-mode-line nfile 'RCS))
-                    (message "Not able to create %s for %s" subdir nfile)))
-              (if (eq (vc-backend nfile) 'RCS)
-                  (progn
-                    (message "going to checkin")
-                    ;; (vc-checkin file 'RCS nil "checkin" nil)
-                    (with-temp-buffer
-                      (with-vc-properties
-                          (list nfile)
-                        (progn
-                          (vc-call-backend 'RCS 'checkin (list nfile) nil "testcomment")
-                          (mapc 'vc-delete-automatic-version-backups (list nfile))
-                          (message "Checked in %s" nfile))
-                        `((vc-state . up-to-date)
-                          (vc-checkout-time . ,(nth 5 (file-attributes nfile)))
-                          (vc-working-revision . nil))))
-                    ;; (with-temp-buffer
-                    ;;     (sharad/vc-checkout nfile t))
-                    ;; (vc-checkout nfile t)
-                    ;; (vc-toggle-read-only)
-                    (run-hook-with-args 'vc-mode-line-hook nfile))
-                  (message "file %s is VC file" nfile))))
-        (message "file %s is a backup file." nfile))
-    (message nil))
+                      (message "going to checkin")
+                      ;; (vc-checkin file 'RCS nil "checkin" nil)
+                      (with-temp-buffer
+                        (with-vc-properties
+                            (list org-from-file)
+                          (progn
+                            (vc-call-backend 'RCS 'checkin (list org-from-file) nil "autobackup")
+                            (mapc 'vc-delete-automatic-version-backups (list org-from-file))
+                            (message "Checked in %s" org-from-file))
+                          `((vc-state . up-to-date)
+                            (vc-checkout-time . ,(nth 5 (file-attributes org-from-file)))
+                            (vc-working-revision . nil))))
+                      ;; (with-temp-buffer
+                      ;;     (sharad/vc-checkout org-from-file t))
+                      ;; (vc-checkout org-from-file t)
+                      ;; (vc-toggle-read-only)
+                      (run-hook-with-args 'vc-mode-line-hook org-from-file))
+                    (message "file %s is VC file" org-from-file))))
+          (message "file %s is a backup file." org-from-file))
+      (message nil)))
 
 ;; (message "%s" vc-mode)
 
