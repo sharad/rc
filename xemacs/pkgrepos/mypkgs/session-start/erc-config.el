@@ -95,7 +95,19 @@
     (erc :server "Grape.bnc4free.com" :port 1337
          ;; :nick "sharad" :full-name "Sharad Pratap"
          ;; :password bnc4free-pass ;; "PLYjOsSdGKNErQ"
-         ))
+         )
+
+    (sleep-for 0 500)
+    (sharad/erc-bnc4free-connect))
+
+
+    (defun sharad/erc-bnc4free-connect ()
+      (interactive)
+      (save-window-excursion
+        (when (get-buffer "Grape.bnc4free.com:1337")
+          (with-current-buffer "Grape.bnc4free.com:1337"
+            (erc-message "PRIVMSG" (concat (erc-default-target) " quote PASS " (concat bnc4free-username ":" bnc4free-password)))))))
+
 
   (deh-require-maybe bitlbee
     (defun erc-bitlbee ()
