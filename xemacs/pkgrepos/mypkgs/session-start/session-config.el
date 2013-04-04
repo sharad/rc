@@ -187,23 +187,25 @@
   (defun fmsession-read-location-internal (&optional initial-input)
     (unless (file-directory-p *emacs-frame-session-directory*)
       (make-directory *emacs-frame-session-directory*))
-    (concat
-     *emacs-frame-session-directory* "/"
-     (ido-completing-read "Session: "
-                          (remove-if-not
-                           #'(lambda (dir)
-                               (and
-                                (file-directory-p
-                                 (concat *emacs-frame-session-directory* "/" dir))
-                                (not
-                                 (member
-                                  (concat *emacs-frame-session-directory* "/" dir)
-                                  (remove-if #'null
-                                             (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list)))))))
-                           (directory-files *emacs-frame-session-directory* nil "[a-zA-Z]+"))
-                          nil
-                          nil
-                          initial-input)))
+    (condition-case terr
+        (concat
+         *emacs-frame-session-directory* "/"
+         (ido-completing-read "Session: "
+                              (remove-if-not
+                               #'(lambda (dir)
+                                   (and
+                                    (file-directory-p
+                                     (concat *emacs-frame-session-directory* "/" dir))
+                                    (not
+                                     (member
+                                      (concat *emacs-frame-session-directory* "/" dir)
+                                      (remove-if #'null
+                                                 (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list)))))))
+                               (directory-files *emacs-frame-session-directory* nil "[a-zA-Z]+"))
+                              nil
+                              nil
+                              initial-input))
+      ('quit nil)))
 
   (defun fmsession-store (session-dir)
     "Store the elscreen tab configuration."
