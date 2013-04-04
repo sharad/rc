@@ -236,21 +236,31 @@
 
     ;;{{
 
+  (defvar *restore-frame-session* nil "*restore-frame-session*")
+
+  (defadvice server-create-window-system-frame
+      (before set-restore-frame-session activate)
+    "remove-scratch-buffer"
+    (setq *restore-frame-session* t))
+
   (defadvice server-create-window-system-frame
       (after remove-scratch-buffer activate)
     "remove-scratch-buffer"
-    (testing (message "in running server-create-window-system-frame afer advise"))
-    (if *elscreen-session-restore-data*
-        (let ((cb (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*)))))
-          (testing
-           (message "running server-create-window-system-frame afer advise if")
-           (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*))
-          (when cb
-            (elscreen-kill)
-            (elscreen-find-and-goto-by-buffer cb nil nil)
-            (setq *elscreen-session-restore-data* nil)
-            (elscreen-notify-screen-modification 'force-immediately)))
-        (testing (message "running server-create-window-system-frame afer advise else")))
+    (if *restore-frame-session*
+        (progn
+          (setq *restore-frame-session* nil)
+          (testing (message "in running server-create-window-system-frame afer advise"))
+          (if *elscreen-session-restore-data*
+              (let ((cb (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*)))))
+                (testing
+                 (message "running server-create-window-system-frame afer advise if")
+                 (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*))
+                (when cb
+                  (elscreen-kill)
+                  (elscreen-find-and-goto-by-buffer cb nil nil)
+                  (setq *elscreen-session-restore-data* nil)
+                  (elscreen-notify-screen-modification 'force-immediately)))
+              (testing (message "running server-create-window-system-frame afer advise else")))))
     ad-return-value)
 
 
@@ -299,8 +309,11 @@
     ;;       (fmsession-restore location))))
 
     (defun restore-frame-session (frame)
-      (select-frame frame)
-      (fmsession-restore (set-this-frame-session-location frame)))
+      (if *restore-frame-session*
+          (progn
+            (select-frame frame)
+            (fmsession-restore (set-this-frame-session-location frame)))
+          (message "not restoring screen session.")))
 
     (defun save-frame-session (frame)
       (message "in save-frame-session:")
