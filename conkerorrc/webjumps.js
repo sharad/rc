@@ -935,3 +935,9 @@ define_webjump("man", "http://man.cx/%s");
 
 
 // javascript:void( location.href = 'http://f0rk.in/index.php?alias=&url=' escape(location.href))
+
+
+//{IRC
+define_webjump("irc/searchirc", "http://searchirc.com/irc-%s-1");
+define_webjump("irc/netsplit", "http://irc.netsplit.de/channels/?chat=%s");
+//}

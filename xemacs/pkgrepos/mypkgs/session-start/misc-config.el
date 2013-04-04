@@ -320,7 +320,8 @@ The indirect buffer can have another major mode."
   (setq imenu-tree-windata '(frame right 0.2 delete)))
 
 
-
+(deh-require-maybe (progn pastie pastbin paste2)
+  )
 
 
 (provide 'misc-config)

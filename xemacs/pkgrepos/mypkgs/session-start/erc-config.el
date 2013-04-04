@@ -94,7 +94,7 @@
     (interactive)
     (erc :server "Grape.bnc4free.com" :port 1337
          ;; :nick "sharad" :full-name "Sharad Pratap"
-         ;; :password bnc4free-pass ;; "PLYjOsSdGKNErQ"
+         ;; :password bnc4free-password
          )
 
     (sleep-for 0 500)
@@ -108,6 +108,7 @@
           (with-current-buffer "Grape.bnc4free.com:1337"
             (erc-message "PRIVMSG" (concat (erc-default-target) " quote PASS " (concat bnc4free-username ":" bnc4free-password)))))))
 
+    ;; (concat bnc4free-username ":" bnc4free-password)
 
   (deh-require-maybe bitlbee
     (defun erc-bitlbee ()
@@ -611,7 +612,7 @@ waiting for responses from the server"
                                         ;(erc-delete-query))))
                  (signal 'wrong-number-of-arguments ""))
              )
-	   nil))))
+	   nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;; erc.el ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
