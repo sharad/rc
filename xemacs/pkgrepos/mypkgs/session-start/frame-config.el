@@ -46,7 +46,7 @@
               (ignore-errors
               (select-frame-by-name name))
               (equal (get-frame-name) name))
-      (let ((f (make-frame (list (cons 'name  name))))
+      (let ((f (make-frame (list (cons 'name name))))
             (screennum 0)
             (first-screen t))
         (select-frame f)
@@ -59,33 +59,15 @@
                   (if fun
                       (funcall fun a)
                       (funcall a))
-                  (launcher-set-elscreen-altname (format "%s" a) f
-                                                 ;; screennum
-                                                 ))
+                  (launcher-set-elscreen-altname (format "%s" a) f screennum))
               ('quit (message "Not able to start %s" a))))))))
-
-
-
-
-  ;; (set-frame-parameter (selected-frame) 'altscreen '())
-
-  ;; (setq x '((altscreen (0) (1))))
-
-  ;; (get-alist
-  ;;  'altscreen
-  ;;  (frame-parameters (selected-frame) ))
-
-  ;; (let ((y (get-alist 'altscreen x)))
-  ;;   (set-alist 'y 1 'z))
-
-  ;; (frame-parameters (selected-frame) )
 
   ;; (frame-parameter (selected-frame) 'altscreen)
 
   (defun launcher-set-elscreen-altname (name &optional frame screennum)
     (interactive "sname:")
     (let* ((frame (or frame (selected-frame)))
-           (screennum (or screennum 0))
+           (screennum (or screennum (elscreen-get-current-screen)))
            (place (get-alist 'altscreen (frame-parameters frame))))
       (unless (frame-parameter frame 'altscreen)
         (set-frame-parameter frame 'altscreen nil))
@@ -94,25 +76,41 @@
                                       name
                                       place))))
 
+  (defun launcher-del-elscreen-altname (&optional frame screennum)
+    (interactive "sname:")
+    (let* ((frame (or frame (selected-frame)))
+           (screennum (or screennum (elscreen-get-current-screen)))
+           (place (get-alist 'altscreen (frame-parameters frame))))
+      (unless (frame-parameter frame 'altscreen)
+        (set-frame-parameter frame 'altscreen nil))
+      (set-frame-parameter frame 'altscreen
+                           (del-alist screennum place))))
+
   (defun launcher-get-elscreen-altname (&optional frame screennum)
     (interactive)
     (let* ((frame (or frame (selected-frame)))
-           (screennum (or screennum 0))
+           (screennum (or screennum (elscreen-get-current-screen)))
            (altscreen (frame-parameter frame 'altscreen)))
       (if altscreen
           (if (called-interactively-p)
               (message "altcreen: %s" (get-alist screennum altscreen))
               (get-alist screennum altscreen)))))
 
+  ;; (add-hook 'elscreen-kill-hook #'launcher-del-elscreen-altname)
 
+  ;; advise (elscreen-kill-internal screen)
+
+  (defadvice elscreen-kill-internal (after lanucher-del-altname (screen) activate)
+    (message "in advise %d" screen)
+    (launcher-del-elscreen-altname (selected-frame) screen))
 
   ;; (launcher-set-elscreen-altname "test" (selected-frame))
   ;; (launcher-get-elscreen-altname)
+  ;; (launcher-del-elscreen-altname)
+)
 
 
-
-
-
+(deh-require-maybe 'elscreen
 
   (defun make-mail-chat-frame (&optional force)
     (interactive "P")
