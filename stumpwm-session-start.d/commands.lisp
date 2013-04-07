@@ -254,10 +254,15 @@
        '(:class "EmacsGNU"))))
 
 
+;; (defcommand mail-reader () ()
+;;   (if (wait-for-program "emacsclient")
+;;   (run-wcli-command
+;;    (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus)'")))))
+
 (defcommand mail-reader () ()
-  (if (wait-for-program "emacsclient")
   (run-wcli-command
-   (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus)'")))))
+   (concat "emacsclient -n -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(make-mail-chat-frame)'"))))
+
 
 (defcommand new-mail () ()
   (if (wait-for-program "emacsclient")
