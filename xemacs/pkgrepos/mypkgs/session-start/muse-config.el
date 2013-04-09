@@ -14,7 +14,7 @@
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/muse-el/experimental")
 
-
+;; lib muse-texinfo
 
 (add-to-list
    'muse-project-alist
@@ -36,3 +36,4 @@
 
 
 (provide 'muse-config)
+

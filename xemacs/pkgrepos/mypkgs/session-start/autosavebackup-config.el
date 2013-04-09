@@ -126,7 +126,7 @@
     :init-value nil
     :lighter 'rcb
     :global t
-    (if rcs-backup-mode
+    (if (>= rcs-backup-mode 0)
         (progn
           (ad-enable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-in-rcs)
           (ad-enable-advice 'vc-rcs-find-file-hook 'after 'backup-buffer-copy-in-rcs-ff))
@@ -138,6 +138,7 @@
     (ad-activate #'vc-rcs-find-file-hook)
     (ad-update #'vc-rcs-find-file-hook)))
 
+(rcs-backup-mode 1)
 
 
 ;; (remove-hook 'after-save-hook 'put-file-in-rcs)

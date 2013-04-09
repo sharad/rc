@@ -71,7 +71,21 @@
            (concat dir name "/"
                    (dolist (f (cdr (assoc 'files (cdr (assoc task task-alist))))
                             (car (cdr (assoc 'files (cdr (assoc task task-alist))))))
-                     (unless (write-region (format "\n\n* %s %s \n\n" (capitalize task) name) nil
+                     (unless (write-region (format
+                                            "
+
+* %s %s
+
+
+
+
+* File Local Variables
+;;; Local Variables:
+;;; buffer-read-only: t
+;;; fill-column: 172
+;;; End:
+
+" (capitalize task) name) nil
                                            (concat dir name "/" f)
                                            nil nil nil t)))))))))
 
