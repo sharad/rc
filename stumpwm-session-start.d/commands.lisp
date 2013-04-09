@@ -261,7 +261,7 @@
 
 (defcommand mail-reader () ()
   (run-wcli-command
-   (concat "emacsclient -n -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(make-mail-chat-frame)'"))))
+   (concat "emacsclient -n -f " (concat (getenv "HOME") "/.emacs.d/server/general -e (make-mail-chat-frame)"))))
 
 
 (defcommand new-mail () ()
