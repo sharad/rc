@@ -314,6 +314,16 @@ directory, select directory. Lastly the file is opened."
   )
 
 
+(defun find-same-file-in-relative-dir ()
+  (interactive)
+  (let* ((dircomponents
+          (split-string buffer-file-name "/" t))
+         (dircomponent (ido-completing-read "dir: " dircomponents))
+         (fileregex (replace-in-string buffer-file-name dircomponent "*")))
+
+    (message directroy-files)))
+
+
 
 
 

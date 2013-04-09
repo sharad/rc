@@ -482,8 +482,8 @@ Also returns nil if pid is nil."
     (interactive)
     ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
     (if (eq (desktop-owner) (emacs-pid))
-        ;; (desktop-save desktop-dirname)
-        (desktop-save-in-desktop-dir)
+        (desktop-save desktop-dirname)
+        ;; (desktop-save-in-desktop-dir)
         (error "You %d are not the desktop owner %d."
                 (emacs-pid)
                 (desktop-owner))))
