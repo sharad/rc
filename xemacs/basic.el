@@ -114,7 +114,9 @@ alkready should not exist.")
         (message "now loading files ( %s ) with errors." load-lib-with-errors)
         (mapc '(lambda (f)
                 (message "now loading file with error %s.el" f)
-                (require f))
+                (condition-case e
+                    (require f)
+                    ('error nil)))
               load-lib-with-errors)
           t))))
 

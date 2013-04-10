@@ -313,10 +313,6 @@ directory, select directory. Lastly the file is opened."
 
   )
 
-/scpc:spratap@susengg-01:/home/spratap/releases/5.3/src/wnc/coord/CoordTopoMgr.cpp
-
-(psg-filename-in-directory-list "CoordTopoMgr.cpp"
-                                '("/scpc:spratap@susengg-01:/home/spratap/releases/main/src/wnc/coord"))
 
 
 (defun find-same-file-in-relative-dir (&optional dir-only)

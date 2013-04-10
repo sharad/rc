@@ -122,11 +122,10 @@
   (define-minor-mode rcs-backup-mode
     "backup-rcs-mode"
     ;; :initial-value nil
-    :init-value nil
-    :init-value nil
+    :init-value 1
     :lighter 'rcb
     :global t
-    (if (>= rcs-backup-mode 0)
+    (if rcs-backup-mode
         (progn
           (ad-enable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-in-rcs)
           (ad-enable-advice 'vc-rcs-find-file-hook 'after 'backup-buffer-copy-in-rcs-ff))
@@ -138,7 +137,7 @@
     (ad-activate #'vc-rcs-find-file-hook)
     (ad-update #'vc-rcs-find-file-hook)))
 
-(rcs-backup-mode 1)
+(rcs-backup-mode t)
 
 
 ;; (remove-hook 'after-save-hook 'put-file-in-rcs)

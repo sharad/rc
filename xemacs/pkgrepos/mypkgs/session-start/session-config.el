@@ -478,18 +478,33 @@ Also returns nil if pid is nil."
   ;; when Emacs is idle: – Doom
 
 
+  ;; (defun my-desktop-save ()
+  ;;   (interactive)
+  ;;   ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
+  ;;   (let ((owner (or (desktop-owner) -1)))
+  ;;     (if (eq owner (emacs-pid))
+  ;;       (desktop-save desktop-dirname)
+  ;;       ;; (desktop-save-in-desktop-dir)
+  ;;       (error "You %d are not the desktop owner %d."
+  ;;              (emacs-pid) owner))))
+
   (defun my-desktop-save ()
     (interactive)
     ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
-    (if (eq (desktop-owner) (emacs-pid))
-        (desktop-save desktop-dirname)
+    (let ((owner (or (desktop-owner) -1)))
+      (if (or
+           (eq owner (emacs-pid))
+           (y-or-n-p (format "You %d are not the desktop owner %d (it is not recommended) ? "
+                             (emacs-pid) owner)))
+          (desktop-save desktop-dirname)
         ;; (desktop-save-in-desktop-dir)
-        (error "You %d are not the desktop owner %d."
-                (emacs-pid)
-                (desktop-owner))))
+          (progn
+            (remove-hook 'auto-save-hook 'my-desktop-save)
+            (error "You %d are not the desktop owner %d. removed my-desktop-save from auto-save-hook."
+                   (emacs-pid) owner)))))
 
   (testing
-   (add-hook 'auto-save-hook 'my-desktop-save))
+   (remove-hook 'auto-save-hook 'my-desktop-save))
   ;; giving life to it.
   (add-hook 'auto-save-hook 'my-desktop-save)
 
@@ -524,6 +539,10 @@ Also returns nil if pid is nil."
   (add-hook 'session-before-save-hook
             #'my-desktop-save)
   ;; #'sharad/desktop-session-save)
+
+(testing
+ (remove-hook 'session-before-save-hook
+              #'my-desktop-save))
 
   ;; ;; ask user whether to restore desktop at start-up
   (add-hook ;; 'after-init-hook
