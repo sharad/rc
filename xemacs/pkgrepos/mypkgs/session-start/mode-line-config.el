@@ -32,18 +32,20 @@
   (add-hook 'shell-mode-hook 'add-mode-line-dirtrack))
 
 ;; http://stackoverflow.com/questions/778508/emacs-add-hostname-to-mode-line
-(let ((pos (memq 'mode-line-modes mode-line-format)))
+(let ((pos (cddr (memq 'mode-line-modes mode-line-format))))
   (setcdr pos
           (cons
            '(:eval
-             (concat
-              (file-name-nondirectory (frame-parameter (selected-frame) 'frame-spec-id))
-              " "))
+             (if (frame-parameter (selected-frame) 'frame-spec-id)
+                 (concat
+                  (file-name-nondirectory (frame-parameter (selected-frame) 'frame-spec-id))
+                  " ")))
             (cons
              '(:eval
-               (concat
-                (car sidebrain-current-stack)
-                " "))
+               (if (car sidebrain-current-stack)
+                   (concat
+                    (car sidebrain-current-stack)
+                    " ")))
              (cdr pos)))))
 
 

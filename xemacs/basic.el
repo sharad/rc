@@ -107,7 +107,10 @@ alkready should not exist.")
                   (unless
                       (and
                        (message "now loading %s.el" feature)
-                       (ignore-errors (require feature)))
+                       ;; (ignore-errors (require feature))
+                       (condition-case e
+                           (require feature)
+                         ('error nil)))
                     (push feature load-lib-with-errors)))))
             (directory-files dir nil "^[a-zA-Z0-9-]+\.el$"))
       (when load-lib-with-errors
@@ -319,6 +322,11 @@ alkready should not exist.")
      tramp-mode t
      ido-mode 'both)
 
+    ;; test
+    (login-to-perforce)
+    (update-ssh-agent t)
+    ;; test
+
     (deh-featurep epa
       (if (fboundp 'epa-file-disable)
           (epa-file-enable)))
@@ -363,7 +371,8 @@ alkready should not exist.")
     (interactive)
     ;; (setenv "DISPLAY" ":1")
     (login-to-perforce)
-    (update-ssh-agent t)
+    ;; (update-ssh-agent t)  ; test
+    (update-ssh-agent)
     (setq debug-on-error t)           ;for planner
     (run-hooks 'sharad/enable-login-session-inperrupting-feature-hook))
 

@@ -56,45 +56,49 @@
     (interactive
      (list (buffer-file-name (current-buffer))))
 
-    (let* ((org-from-file (file-truename from-file))
+    (let* ((default-directory (file-truename default-directory)) ;to fix planner muse file issue.
+           (org-from-file (file-truename from-file))
            (fmode (file-modes org-from-file)))
       (message "put-file-in-rcs: adding to rcs")
-      (if (not (string-match ".+,v" org-from-file))
-          (let ((vc-rcs-checkin-switches "-l")
-                (vc-rcs-register-switches "-l"))
-            (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
-            (if (not (vc-backend org-from-file))
-                (let ((subdir (expand-file-name "RCS" (file-name-directory org-from-file))))
-                  (when (not (file-exists-p subdir))
-                                        ;no question.
-                    (make-directory subdir t))
-                  (if (file-exists-p subdir)
-                      (progn
-                        (vc-rcs-register (list org-from-file))
-                        (vc-mode-line org-from-file 'RCS))
-                      (message "Not able to create %s for %s" subdir org-from-file)))
-                (if (eq (vc-backend org-from-file) 'RCS)
-                    (progn
-                      (message "going to checkin")
-                      ;; (vc-checkin file 'RCS nil "checkin" nil)
-                      (with-temp-buffer
-                        (with-vc-properties
-                            (list org-from-file)
+      (message "org-from-file %s" org-from-file)
+      (if (file-exists-p org-from-file)
+          (if (not (string-match ".+,v" org-from-file))
+              (let ((vc-rcs-checkin-switches "-l")
+                    (vc-rcs-register-switches "-l"))
+                (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
+                (if (not (vc-backend org-from-file))
+                    (let ((subdir (expand-file-name "RCS" (file-name-directory org-from-file))))
+                      (when (not (file-exists-p subdir))
+                        ;no question.
+                        (make-directory subdir t))
+                      (if (file-exists-p subdir)
                           (progn
-                            (vc-call-backend 'RCS 'checkin (list org-from-file) nil "autobackup")
-                            (mapc 'vc-delete-automatic-version-backups (list org-from-file))
-                            (message "Checked in %s" org-from-file))
-                          `((vc-state . up-to-date)
-                            (vc-checkout-time . ,(nth 5 (file-attributes org-from-file)))
-                            (vc-working-revision . nil))))
-                      ;; (with-temp-buffer
-                      ;;     (sharad/vc-checkout org-from-file t))
-                      ;; (vc-checkout org-from-file t)
-                      ;; (vc-toggle-read-only)
-                      (run-hook-with-args 'vc-mode-line-hook org-from-file))
-                    (message "file %s is VC file" org-from-file)))
-            (set-file-modes org-from-file fmode))
-          (message "file %s is a backup file." org-from-file))
+                            (vc-rcs-register (list org-from-file))
+                            (vc-mode-line org-from-file 'RCS))
+                          (message "Not able to create %s for %s" subdir org-from-file)))
+                    (if (eq (vc-backend org-from-file) 'RCS)
+                        (progn
+                          (message "going to checkin")
+                          ;; (vc-checkin file 'RCS nil "checkin" nil)
+                          (with-temp-buffer
+                            (with-vc-properties
+                                (list org-from-file)
+                              (progn
+                                (vc-call-backend 'RCS 'checkin (list org-from-file) nil "autobackup")
+                                (mapc 'vc-delete-automatic-version-backups (list org-from-file))
+                                (message "Checked in %s" org-from-file))
+                              `((vc-state . up-to-date)
+                                (vc-checkout-time . ,(nth 5 (file-attributes org-from-file)))
+                                (vc-working-revision . nil))))
+                          ;; (with-temp-buffer
+                          ;;     (sharad/vc-checkout org-from-file t))
+                          ;; (vc-checkout org-from-file t)
+                          ;; (vc-toggle-read-only)
+                          (run-hook-with-args 'vc-mode-line-hook org-from-file))
+                        (message "file %s is VC file" org-from-file)))
+                (set-file-modes org-from-file fmode))
+              (message "file %s is a backup file." org-from-file))
+          (message "file %s do not exists." org-from-file))
       (message nil)))
 
 ;; (message "%s" vc-mode)
