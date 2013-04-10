@@ -249,7 +249,7 @@
     ;; Should use current buffer's group
     (interactive "P")
     (when (or call-stop-up-cmd
-            (if (called-interactively-p) group))
+            (if (called-interactively-p 'any) group))
         (call-group-start-stop-alist-cmd group 'stop)
         ;; correct it
         (setq group-window-configuration-alist
@@ -258,9 +258,9 @@
                          group-window-configuration-alist)))
     (let* ((call-stop-up-cmd
             (or call-stop-up-cmd
-                (if (called-interactively-p) group)))
+                (if (called-interactively-p 'any) group)))
            (group (or
-                   (unless (called-interactively-p) group)
+                   (unless (called-interactively-p 'any) group)
                    (get-ibuffer-group nil (if call-stop-up-cmd 'stop))))
            (buflist (sharad/ibuffer-get-group-buffers group)))
       (when buflist
@@ -292,9 +292,9 @@
     (interactive "P")
     (let* ((call-start-up-cmd
             (or call-start-up-cmd
-                (if (called-interactively-p) group)))
+                (if (called-interactively-p 'any) group)))
            (group (or
-                   (unless (called-interactively-p) group)
+                   (unless (called-interactively-p 'any) group)
                    (get-ibuffer-group nil (if call-start-up-cmd 'start))))
            (buflist (sharad/ibuffer-get-group-buffers group)))
       (if buflist
@@ -324,9 +324,9 @@
     (interactive "P")
     (let* ((force-call-cmd
            (or force-call-cmd
-               (if (called-interactively-p) group)))
+               (if (called-interactively-p 'any) group)))
            (group (or
-                   (unless (called-interactively-p) group)
+                   (unless (called-interactively-p 'any) group)
                    (get-ibuffer-group nil (if force-call-cmd 'any)))))
       (if (sharad/ibuffer-included-in-group-p (current-buffer) group)
           (sharad/hide-group group force-call-cmd)
@@ -373,15 +373,9 @@
 (deh-require-maybe contentswitch
   )
 
-(sharad/disable-startup-inperrupting-feature)
+;; believe it need not be here
+;; (sharad/disable-startup-inperrupting-feature)
 
 ;; (setq debug-on-error t)
 
 (provide 'buffer-config)
-
-
-
-
-
-
-

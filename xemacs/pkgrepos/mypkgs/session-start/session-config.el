@@ -495,8 +495,9 @@ Also returns nil if pid is nil."
       (if (or
            (eq owner (emacs-pid))
            ;; TODO: it was mean to be used as non-obtrusive and non-interctive
-           (y-or-n-p (format "You %d are not the desktop owner %d (it is not recommended) ? "
-                             (emacs-pid) owner)))
+           (y-or-n-p (format
+                      "You %d are not the desktop owner %d\nOverwrite existing desktop (might be it was not restore properly at startup)? "
+                      (emacs-pid) owner)))
           (desktop-save desktop-dirname)
         ;; (desktop-save-in-desktop-dir)
           (progn

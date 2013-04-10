@@ -27,17 +27,10 @@
 
 (require 'general-testing)
 
-(defun file-auto-rcs-register (&optional file)
-  (let ((file (or file (buffer-file-name (current-buffer)))))
-    (if (and (not (vc-rcs-registered file))
-             (vc-register file))
-        (vc-switch-backend file 'RCS)
-        (vc-checkin (list file) 'RCS (number-to-string
-                               (+ 0.1 (string-to-number (vc-working-revision file 'RCS))))
-                    (read-from-minibuffer "comment: ")))))
-
-;; (add-hook 'after-save-hook 'file-auto-rcs-register)
-
+(setq
+ vc-follow-symlinks
+ ;; see http://www.gnu.org/software/emacs/manual/html_node/emacs/General-VC-Options.html
+ t)
 
 (testing
  ;; TODO: check
@@ -49,4 +42,3 @@
 
 (provide 'vc-config)
 ;;; vc-config.el ends here
-

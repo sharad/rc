@@ -96,7 +96,7 @@
         (when (get-buffer "Grape.bnc4free.com:1337")
           (with-current-buffer "Grape.bnc4free.com:1337"
             ;; (erc-message "PRIVMSG" (concat (erc-default-target) " quote PASS " (concat bnc4free-username ":" bnc4free-password)))
-            (erc-send-input (concat "/quote PASS " bnc4free-username ":" bnc4free-password ""))
+            (erc-send-input (concat "/quote PASS " bnc4free-username ":" bnc4free-password "\r\n"))
             ;; (insert (concat "/quote PASS " bnc4free-username ":" bnc4free-password ""))
             ))))
 

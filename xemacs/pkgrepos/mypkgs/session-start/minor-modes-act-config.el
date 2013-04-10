@@ -30,7 +30,14 @@
   (defun pabbrev-activate ()
     (unless buffer-read-only
       (pabbrev-mode 1)))
-  (add-element-to-lists 'pabbrev-activate pgm-langs))
+
+  (add-element-to-lists 'pabbrev-activate pgm-langs)
+  ;; Error during redisplay: (wrong-type-argument arrayp nil)
+  ;; is courtesy of pabbrev
+  ;; run
+  ;; (remove-element-to-lists 'pabbrev-activate pgm-langs)
+  ;; to correct it.
+  )
 
 (deh-require-maybe (and
                     (executable-find "p4")

@@ -1,4 +1,4 @@
-;;; cache.el ---
+;;; cache-config.el ---
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -28,12 +28,22 @@
 
 ;; filecache remembers visited places. Add the directory into the cache:
 
+(message "tramp-mode %s" tramp-mode)
+
 (eval-after-load "filecache"
-  '(file-cache-add-directory
-    "/ssh:spratap@susengg-01:/"))
+
+
+  '(add-hook
+    'sharad/enable-startup-inperrupting-feature-hook
+    #'(lambda ()
+        (condition-case e
+            (file-cache-add-directory
+             "/ssh:spratap@susengg-01:/")
+          ('error (message "problem happened in %s fun call."
+                           'file-cache-add-directory))))))
 
 ;; Whenever you want to load a file, you can enter C-x C-f C-<TAB> in
 ;; the minibuffer. The completion is done for the given directory.
 
 (provide 'cache-config)
-;;; cache.el ends here
+;;; cache-config.el ends here

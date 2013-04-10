@@ -92,7 +92,7 @@
            (screennum (or screennum (elscreen-get-current-screen)))
            (altscreen (frame-parameter frame 'altscreen)))
       (if altscreen
-          (if (called-interactively-p)
+          (if (called-interactively-p 'any)
               (message "altcreen: %s" (get-alist screennum altscreen))
               (get-alist screennum altscreen)))))
 

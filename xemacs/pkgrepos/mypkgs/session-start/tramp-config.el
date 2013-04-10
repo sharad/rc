@@ -227,7 +227,8 @@
 
 (autoload 'password-in-cache-p "password-cache")
 
-(sharad/disable-startup-inperrupting-feature)
+;; believe it need not be here
+;; (sharad/disable-startup-inperrupting-feature)
 
 
 (provide 'tramp-config)

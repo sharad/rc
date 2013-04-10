@@ -1,3 +1,4 @@
+;; -*- mode: emacs-lisp; -*-
 ;;;_ auto-insert-choose.el --- Core of choosable auto-insert
 
 ;;;_. Headers

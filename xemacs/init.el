@@ -105,7 +105,9 @@
   (write-region (point-min) (point-max) "~/.emacs.d/startup.log")
   ;; (write-current-buffer "*emacs-startup-log*"
   ;;                       )
-  (setq messages-buffer-max-lines old-messages-buffer-max-lines))
+  (setq messages-buffer-max-lines 2000
+        ;; old-messages-buffer-max-lines
+        ))
 
 ;;end
 
@@ -122,6 +124,3 @@
 
 
 ;; (sharad/enable-startup-inperrupting-feature)
-
-
-

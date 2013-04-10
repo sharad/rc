@@ -115,7 +115,7 @@
  '(tramp-fish-method "fish")
  '(tramp-verbose 10)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
- '(vc-follow-symlinks nil)
+ '(vc-follow-symlinks t)
  '(view-read-only t)
  '(w3m-default-display-inline-images t)
  '(weblogger-config-alist (quote (("default" "http://www.livejournal.com/interface/blogger/" "sh4r4d" "" "sh4r4d"))))

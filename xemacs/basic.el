@@ -235,6 +235,10 @@ alkready should not exist.")
   (dolist (list lists)
           (add-hook (intern (concat (symbol-name list) "-mode-hook")) element)))
 
+(defun remove-element-to-lists (element lists)
+  (dolist (list lists)
+          (remove-hook (intern (concat (symbol-name list) "-mode-hook")) element)))
+
 (defvar pgm-langs
   '(java
     c
@@ -313,7 +317,13 @@ alkready should not exist.")
     (deh-featurep epa
       (if (fboundp 'epa-file-disable)
           (epa-file-disable)))
-    (run-hooks 'sharad/disable-startup-inperrupting-feature-hook))
+    (condition-case e
+        (run-hooks 'sharad/disable-startup-inperrupting-feature-hook)
+      ('error (message "problem happened in %s hook."
+                       'sharad/disable-startup-inperrupting-feature-hook))))
+
+  ;; run now
+  (sharad/disable-startup-inperrupting-feature)
 
   (defun sharad/enable-startup-inperrupting-feature ()
     (interactive)
@@ -336,19 +346,23 @@ alkready should not exist.")
                               (light-symbol-mode 1)
                               (highlight-changes-visible-mode t)
                               (highlight-changes-mode t)) pgm-langs))
-    (run-hooks 'sharad/enable-startup-inperrupting-feature-hook)
+    (condition-case e
+        (run-hooks 'sharad/enable-startup-inperrupting-feature-hook)
+      ('error (message "problem happened in %s hook."
+                       'sharad/enable-startup-inperrupting-feature-hook)))
 
-    (setq
-     debug-on-error t
-     ))
+    (setq debug-on-error t ))
 
 
   (defun sharad/enable-startup-inperrupting-feature-in-frame-once (frame)
     (select-frame frame)
-    (sharad/enable-startup-inperrupting-feature)
-    (remove-hook 'after-make-frame-functions #'sharad/enable-startup-inperrupting-feature-in-frame-once))
+    (condition-case e
+        (sharad/enable-startup-inperrupting-feature)
+      ('error (message "probelm happened in %s function"
+                       'sharad/enable-startup-inperrupting-feature)))
+    (remove-hook 'after-make-frame-functions 'sharad/enable-startup-inperrupting-feature-in-frame-once))
 
-  (add-hook 'after-make-frame-functions #'sharad/enable-startup-inperrupting-feature-in-frame-once))
+  (add-hook 'after-make-frame-functions 'sharad/enable-startup-inperrupting-feature-in-frame-once))
   ;; (sharad/enable-startup-inperrupting-feature-in-frame-once (selected-frame))
 ;;}}
 
@@ -365,7 +379,10 @@ alkready should not exist.")
     ;; (login-to-perforce)
     ;; (update-ssh-agent t)
     (setq debug-on-error nil)           ;for planner
-    (run-hooks 'sharad/disable-login-session-inperrupting-feature))
+    (condition-case e
+        (run-hooks 'sharad/disable-login-session-inperrupting-feature)
+      ('error (message "problem happened in %s hook."
+                       'sharad/disable-login-session-inperrupting-feature))))
 
   (defun sharad/enable-login-session-inperrupting-feature ()
     (interactive)
@@ -374,27 +391,36 @@ alkready should not exist.")
     ;; (update-ssh-agent t)  ; test
     (update-ssh-agent)
     (setq debug-on-error t)           ;for planner
-    (run-hooks 'sharad/enable-login-session-inperrupting-feature-hook))
+    (condition-case e
+        (run-hooks 'sharad/enable-login-session-inperrupting-feature-hook)
+      ('error (message "problem happened in %s hook."
+                       'sharad/enable-login-session-inperrupting-feature-hook))))
 
   (defun sharad/enable-login-session-inperrupting-feature-in-frame-once (frame)
     (select-frame frame)
     ;; run and disable.
     (when (< (length (frame-list)) 3)
-      (sharad/enable-login-session-inperrupting-feature))
-    (remove-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once)
+      (condition-case e
+          (sharad/enable-login-session-inperrupting-feature)
+        ('error (message "problem happened in %s fun"
+                         'sharad/enable-login-session-inperrupting-feature))))
+    (remove-hook 'after-make-frame-functions 'sharad/enable-login-session-inperrupting-feature-in-frame-once)
     (when nil
       (message "removed sharad/enable-login-session-inperrupting-feature-in-frame-once")))
 
-  (add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once t)
+  (add-hook 'after-make-frame-functions 'sharad/enable-login-session-inperrupting-feature-in-frame-once t)
   ;; (sharad/enable-login-session-inperrupting-feature-in-frame-once (selected-frame))
 
   (defun sharad/disable-login-session-inperrupting-feature-in-frame (f)
     (when (< (length (frame-list)) 3) ;last frame then add.
-      (sharad/disable-login-session-inperrupting-feature)
-      (add-hook 'after-make-frame-functions #'sharad/enable-login-session-inperrupting-feature-in-frame-once t)
+      (condition-case e
+          (sharad/disable-login-session-inperrupting-feature)
+        ('error (message "problem happened in %s fun"
+                         'sharad/disable-login-session-inperrupting-feature)))
+      (add-hook 'after-make-frame-functions 'sharad/enable-login-session-inperrupting-feature-in-frame-once t)
       (message "added sharad/enable-login-session-inperrupting-feature-in-frame-once")))
 
-  (add-hook 'delete-frame-functions #'sharad/disable-login-session-inperrupting-feature-in-frame))
+  (add-hook 'delete-frame-functions 'sharad/disable-login-session-inperrupting-feature-in-frame))
 ;;}}
 
 
