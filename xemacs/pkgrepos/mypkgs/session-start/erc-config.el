@@ -59,7 +59,7 @@
           (let ((logdir (concat (getenv "HOME") "/.logs/chat/erc")))
             (unless (file-directory-p logdir)
               (make-directory logdir t)))
-          (message "connecting freenode")
+          (message "connecting bnc4free to connect freenode")
           (erc-bnc4free)
           ;; (erc-freenode)
           (sleep-for 0 500)
@@ -96,9 +96,9 @@
         (when (get-buffer "Grape.bnc4free.com:1337")
           (with-current-buffer "Grape.bnc4free.com:1337"
             ;; (erc-message "PRIVMSG" (concat (erc-default-target) " quote PASS " (concat bnc4free-username ":" bnc4free-password)))
-            (insert (concat "/quote PASS " bnc4free-username ":" bnc4free-password ""))))))
-
-(defun xxsss ())
+            (erc-send-input (concat "/quote PASS " bnc4free-username ":" bnc4free-password ""))
+            ;; (insert (concat "/quote PASS " bnc4free-username ":" bnc4free-password ""))
+            ))))
 
     (defun erc-bnc4free ()
       (interactive)

@@ -65,6 +65,7 @@
           (if (not (string-match ".+,v" org-from-file))
               (let ((vc-rcs-checkin-switches "-l")
                     (vc-rcs-register-switches "-l"))
+                ;; Now it is sure file will be VCed.
                 (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
                 (if (not (vc-backend org-from-file))
                     (let ((subdir (expand-file-name "RCS" (file-name-directory org-from-file))))
@@ -74,7 +75,9 @@
                       (if (file-exists-p subdir)
                           (progn
                             (vc-rcs-register (list org-from-file))
-                            (vc-mode-line org-from-file 'RCS))
+                            (vc-switch-backend from-file 'RCS)
+                            ;; (vc-mode-line org-from-file 'RCS)
+                            )
                           (message "Not able to create %s for %s" subdir org-from-file)))
                     (if (eq (vc-backend org-from-file) 'RCS)
                         (progn
@@ -94,8 +97,10 @@
                           ;;     (sharad/vc-checkout org-from-file t))
                           ;; (vc-checkout org-from-file t)
                           ;; (vc-toggle-read-only)
-                          (run-hook-with-args 'vc-mode-line-hook org-from-file))
+                          ;; (run-hook-with-args 'vc-mode-line-hook org-from-file)
+                          )
                         (message "file %s is VC file" org-from-file)))
+                (run-hook-with-args 'vc-mode-line-hook org-from-file)
                 (set-file-modes org-from-file fmode))
               (message "file %s is a backup file." org-from-file))
           (message "file %s do not exists." org-from-file))

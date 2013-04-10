@@ -5,6 +5,9 @@
 ;; (add-to-list 'load-path "/usr/share/emacs/23.3/lisp/emacs-lisp")
 ;; (add-to-list 'load-path "/usr/share/emacs/23.3/lisp")
 
+(setq old-messages-buffer-max-lines messages-buffer-max-lines
+      messages-buffer-max-lines 2000)
+
 (eval-when-compile
   (require 'cl nil nil))
 
@@ -96,6 +99,13 @@
 
 (require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/session-start")
 
+(with-current-buffer "*Messages*"
+  (copy-to-buffer "*emacs-startup-log*" (point-min) (point-max))
+  ;; (with-temp-file file body)
+  (write-region (point-min) (point-max) "~/.emacs.d/startup.log")
+  ;; (write-current-buffer "*emacs-startup-log*"
+  ;;                       )
+  (setq messages-buffer-max-lines old-messages-buffer-max-lines))
 
 ;;end
 
