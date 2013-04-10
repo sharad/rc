@@ -60,6 +60,7 @@
            (org-from-file (file-truename from-file))
            (fmode (file-modes org-from-file)))
       (message "put-file-in-rcs: adding to rcs")
+      (message "from-file %s" from-file)
       (message "org-from-file %s" org-from-file)
       (if (file-exists-p org-from-file)
           (if (not (string-match ".+,v" org-from-file))
@@ -67,7 +68,9 @@
                     (vc-rcs-register-switches "-l"))
                 ;; Now it is sure file will be VCed.
                 (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
-                (if (not (vc-backend org-from-file))
+                (if (not (and (vc-backend org-from-file)
+                              (file-exists-p (expand-file-name (file-name-nondirectory org-from-file)
+                                                               (concat (file-name-directory org-from-file) "/RCS")))))
                     (let ((subdir (expand-file-name "RCS" (file-name-directory org-from-file))))
                       (when (not (file-exists-p subdir))
                         ;no question.
