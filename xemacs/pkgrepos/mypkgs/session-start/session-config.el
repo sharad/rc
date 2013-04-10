@@ -494,6 +494,7 @@ Also returns nil if pid is nil."
     (let ((owner (or (desktop-owner) -1)))
       (if (or
            (eq owner (emacs-pid))
+           ;; TODO: it was mean to be used as non-obtrusive and non-interctive
            (y-or-n-p (format "You %d are not the desktop owner %d (it is not recommended) ? "
                              (emacs-pid) owner)))
           (desktop-save desktop-dirname)
