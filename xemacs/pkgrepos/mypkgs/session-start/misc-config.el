@@ -324,4 +324,10 @@ The indirect buffer can have another major mode."
   )
 
 
+(deh-require-maybe oneliner
+  (setq oneliner-temp-dir-name (expand-file-name "temp" (getenv "HOME"))
+        oneliner-shell-type 'zsh
+        oneliner-sync-default-directory-after-prompt t))
+
+
 (provide 'misc-config)
