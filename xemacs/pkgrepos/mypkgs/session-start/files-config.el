@@ -381,9 +381,18 @@ directory, select directory. Lastly the file is opened."
 
 
 
+(defun find-truefile (&optional file)
+  "Useful in case of when vc-follow-symlink is nil
+to do VC operation."
+  (interactive)
+  (if buffer-file-name
+      (if (not (string-equal buffer-file-name (file-truename buffer-file-name)))
+          (find-alternate-file (file-truename buffer-file-name))
+          (message "file %s is true file, not doing anything." buffer-file-name))
+      (message "No file is associated with buffer.")))
 
 
-(directory-files "/home/s")
+
 
 
 (provide 'files-config)
