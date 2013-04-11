@@ -124,10 +124,13 @@
   (messageto "*Complains*" "Do not overwrite default value of auto-insert-alist try "
                            "to integrate default value also.")
 
-  (deh-require-maybe auto-insert-choose)
+  (deh-require-maybe auto-insert-choose
+    (setq auto-insert-c-header-alist)
 
 
-  (setq auto-insert-c-header-alist)
+    )
+
+
 
 
   (custom-set-variables

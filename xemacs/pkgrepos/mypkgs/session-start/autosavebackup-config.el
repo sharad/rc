@@ -66,23 +66,24 @@
           (if (not (string-match ".+,v" org-from-file))
               (let ((vc-rcs-checkin-switches "-l")
                     (vc-rcs-register-switches "-l")
-                    (file-vc-backend (vc-backend org-from-file)))
+                    (file-vc-backend (vc-backend org-from-file))
+                    (rcsdir (expand-file-name "RCS" (file-name-directory org-from-file))))
                 ;; Now it is sure file will be VCed.
                 (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
                 (if (not (or file-vc-backend
-                             (file-exists-p (expand-file-name (file-name-nondirectory org-from-file)
-                                                               (concat (file-name-directory org-from-file) "/RCS")))))
-                    (let ((subdir (expand-file-name "RCS" (file-name-directory org-from-file))))
-                      (when (not (file-exists-p subdir))
+                             (file-exists-p (expand-file-name
+                                             (file-name-nondirectory org-from-file)
+                                             rcsdir))))
+                    (let ()
+                      (when (not (file-exists-p rcsdir))
                         ;no question.
-                        (make-directory subdir t))
-                      (if (file-exists-p subdir)
+                        (make-directory rcsdir t))
+                      (if (file-exists-p rcsdir)
                           (progn
                             (vc-rcs-register (list org-from-file))
-                            (vc-switch-backend from-file 'RCS)
-                            ;; (vc-mode-line org-from-file 'RCS)
-                            )
-                          (message "Not able to create %s for %s" subdir org-from-file)))
+                            (vc-switch-backend from-file 'RCS))
+                          (message "Not able to create %s for %s" rcsdir org-from-file)))
+
                     (if (eq (vc-backend org-from-file) 'RCS)
                         (progn
                           (message "going to checkin")
@@ -124,10 +125,12 @@
                                    ,(help-function-arglist 'backup-buffer-copy)
                                    disable)
       (message "defadvise filename %s %s" from-name to-name)
-      (put-file-in-rcs from-name)))
+      (condition-case e
+          (put-file-in-rcs from-name)
+          ('error nil))))
 
 
-  (defadvice  vc-rcs-find-file-hook (after backup-buffer-copy-in-rcs-ff () disable)
+  (defadvice vc-rcs-find-file-hook (after backup-buffer-copy-in-rcs-ff () disable)
     (message "yes in backup-buffer-copy-in-rcs-ff")
     (set (make-local-variable 'backup-inhibited) nil))
 

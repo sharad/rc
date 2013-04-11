@@ -77,7 +77,7 @@
                                       place))))
 
   (defun launcher-del-elscreen-altname (&optional frame screennum)
-    (interactive "sname:")
+    (interactive "sname: ")
     (let* ((frame (or frame (selected-frame)))
            (screennum (or screennum (elscreen-get-current-screen)))
            (place (get-alist 'altscreen (frame-parameters frame))))

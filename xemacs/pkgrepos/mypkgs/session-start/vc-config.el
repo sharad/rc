@@ -32,6 +32,18 @@
  ;; see http://www.gnu.org/software/emacs/manual/html_node/emacs/General-VC-Options.html
  t)
 
+(unless vc-follow-symlinks
+  (add-hook 'find-file-hook
+            #'(lambda ()
+                (let ((file-truename (file-truename buffer-file-name))
+                      (vc-backend (vc-backend file-truename)))
+                  (when (and
+                         (not vc-follow-symlinks)
+                         (or
+                          (file-symlink-p buffer-file-name)
+                          (not (string-equal file-truename buffer-file-name))))
+                    (vc-mode-line file-truename vc-backend))))))
+
 (testing
  ;; TODO: check
  ;; http://www.emacswiki.org/emacs/log-edit-fill

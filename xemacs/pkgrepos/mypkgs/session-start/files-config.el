@@ -368,17 +368,16 @@ directory, select directory. Lastly the file is opened."
                               (ido-completing-read "select subdir: " existing-subdirs)))
            (selected-file-name (if select-subdir
                                    (concat prefix-filename select-subdir suffix-filename))))
-
+      (testing
+       (message "%s %s %s %s %s %s %s" tpos spos dirnu prefix-filename suffix-filename subdirs existing-subdirs))
       (if selected-file-name
           (if (file-directory-p selected-file-name)
               (let ((default-directory selected-file-name))
-                (ido-find-file))
+                (call-interactively
+                 (or (command-remapping 'find-file)
+                     'find-file)))
               (find-file selected-file-name))
-          (message "No match present."))
-
-
-      ;; (message "%s %s %s %s %s %s %s" tpos spos dirnu prefix-filename suffix-filename subdirs existing-subdirs)
-      )))
+          (message "No match present.")))))
 
 
 
