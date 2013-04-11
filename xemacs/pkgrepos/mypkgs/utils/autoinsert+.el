@@ -461,6 +461,17 @@ or if CONDITION had no actions, after all other CONDITIONs."
 
 (add-from-autoinsert-alist "old" auto-insert-alist)
 
+
+(defvar tmpledir-alist
+  '(("yastemp" "~/emacs.d/template.d/autoinsert" )
+    ("autoinsert" "~/emacs.d/template.d/autoinsert")
+    ("template" "~/emacs.d/template.d/template")))
+
+(defun template-buffer ()
+  (tmpldir )
+  ())
+
+
 ;; auto-insert+-alist
 
 ;;;###autoload
