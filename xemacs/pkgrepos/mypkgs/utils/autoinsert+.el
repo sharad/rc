@@ -385,7 +385,7 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
 	       (setq desc cond)
 	     (setq desc (cdr cond)
 		   cond (car cond)))
-	   (if (if (symbolp cond)
+	   (if (if (symbolp cond) ;; auto-mode-alist
 		   (eq cond major-mode)
                    (and buffer-file-name
                         (string-match cond buffer-file-name)))

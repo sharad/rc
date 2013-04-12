@@ -359,6 +359,7 @@
 
 (deh-section "scratch mode"
 
+  (require 'auto-insert+)
 
   (defun mjmode-scratch (&optional name mjmode)
     (interactive
@@ -373,7 +374,8 @@
                               "-scratch*"))))
        (list name mjmode)))
     (switch-to-buffer name t)
-    (funcall (intern mjmode)))
+    (funcall (intern mjmode))
+    (auto-insert+))
 
   (defvar mjmode-scratch-mode-map
     (let ((map (make-sparse-keymap)))
