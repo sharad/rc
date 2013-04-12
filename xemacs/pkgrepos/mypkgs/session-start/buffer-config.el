@@ -28,8 +28,15 @@
 ;; half and displayed side by side.  Neat-o.
 ;; get it from: http://www.andersl.com/emacs/follow.html
 
-(eval-after-load "ido"
-  '(sharad/disable-startup-inperrupting-feature))
+
+;; (require 'cl)
+
+(eval-when-compile
+  '(require 'cl))
+
+;; believe it need not be here
+;; (eval-after-load "ido"
+;;   '(sharad/disable-startup-inperrupting-feature))
 
 (deh-section "Setting ignore extention for file completion"
   (setq completion-ignored-extensions

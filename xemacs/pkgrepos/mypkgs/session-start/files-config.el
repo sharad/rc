@@ -308,10 +308,7 @@ directory, select directory. Lastly the file is opened."
     :global t
     :keymap ff-mode-map
     (when office-mode
-      (message "calling ff mode")
-      ))
-
-  )
+      (message "calling ff mode"))))
 
 
 

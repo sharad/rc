@@ -1,12 +1,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2013-03-07 12:41:34 s>
+;; Time-stamp: <2013-04-12 21:10:08 s>
 ;;
 
 ;; (deh-section "Key binding utils"
 ;; )
 
 
+;; (require 'utils)
 
 (autoload 'describe-unbound-keys "unbound" "Find Unbound keys" t)
 
@@ -268,8 +269,7 @@ and their terminal equivalents.")
   (global-set-key [C-kp-add]      'inline-arithmetic-add)
   (global-set-key [C-kp-divide]   'inline-arithmetic-divide)
   (global-set-key [C-kp-multiply] 'inline-arithmetic-multiply)
-  (global-set-key [C-kp-subtract] 'inline-arithmetic-subtract)
-)
+  (global-set-key [C-kp-subtract] 'inline-arithmetic-subtract))
 
 
 (deh-require-maybe folding
@@ -277,7 +277,7 @@ and their terminal equivalents.")
   (global-set-key-if-unbind (kbd "C-\\") 'toggle-selective-display))
 
 
-(when (require 'db-config)
+(deh-require-maybe db-config
   (global-set-key [f12] 'enter-db-mode))
 
 (deh-require-maybe org

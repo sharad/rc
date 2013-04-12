@@ -29,17 +29,41 @@
 
   ;; toggle-ibuffer-group
 
-  ;; (defmacro frame-launcher (args &optional fun)
-  ;;   `(let ((f (make-frame)))
-  ;;      (select-frame f)
-  ;;      (dolist (a ,args)
-  ;;        (when (or (= 0 (elscreen-get-current-screen))
-  ;;                  (elscreen-create))
-  ;;          (condition-case e
-  ;;              (if fun
-  ;;                  (funcall ,fun a)
-  ;;                  (funcall a))
-  ;;            ('quit (message "Not able to start %s" a)))))))
+  (defmacro frame-launcher (args &optional fun)
+    `(let ((f (make-frame)))
+       (select-frame f)
+       (dolist (a ,args)
+         (when (or (= 0 (elscreen-get-current-screen))
+                   (elscreen-create))
+           (condition-case e
+               (if fun
+                   (funcall ,fun a)
+                   (funcall a))
+             ('quit (message "Not able to start %s" a)))))))
+
+  (defmacro frame-launcher (name args &optional fun)
+    `(unless (progn
+               (ignore-errors
+                 (select-frame-by-name ,name))
+               (equal (get-frame-name) ,name))
+       (let ((f (make-frame (list (cons 'name ,name))))
+             (screennum 0)
+             (first-screen t))
+         (select-frame f)
+         (progn
+           ,@(mapcar
+              (lambda (a)
+                `(when (or first-screen
+                           (setq screennum (elscreen-create)))
+                   (setq first-screen nil)
+                   (condition-case e
+                       (progn
+                         (if ,fun
+                             (funcall ,fun ,a)
+                             (funcall ,a))
+                         (launcher-set-elscreen-altname (format "%s" ,a) f screennum))
+                     ('quit (message "Not able to start %s" a)))))
+              ,args)))))
 
   (defun frame-launcher (name args &optional fun)
     (unless (progn

@@ -162,4 +162,55 @@
 ;;}}}
 
 
+;; (defmacro with-report-error (msg &rest body)
+;;   (declare (debug t) (indent 0))
+;;   ;;(unwind-protect BODYFORM UNWINDFORMS...)
+;;     (let ((err (make-symbol "err"))
+;;           (form (make-symbol "form")))
+;;       ;; `(condition-case-no-debug ,err
+;;       ;; `(condition-case ,err
+;;       ;;      (progn ,@body)
+;;       ;;    (error (message "Error: %s - %s in %s" msg ,err ,body)
+;;       ;;           nil))
+
+;;       `(dolist (,form ,body)
+;;          `(condition-case ,,err
+;;               ,,form
+;;             (error (message "Error: %s - %s in %s" ,,msg ,,err ,,form)
+;;                    nil)))
+
+;;       )
+;;     ;; `(condition-case e
+;;     ;;    ,@forms
+;;     ;;  (error "%s" ,forms))
+;;     )
+
+
+(defmacro with-report-error (msg &rest body)
+  (declare (debug t) (indent 4))
+  ;;(unwind-protect BODYFORM UNWINDFORMS...)
+  (let ((err  (make-symbol "err"))
+        (form (make-symbol "form")))
+    `(progn
+       ,@(mapcar
+          (lambda (,form)
+            ;; `(condition-case-no-debug ,err
+            `(condition-case ,err
+                 ,,form
+               (error (message "Error: %s - %s in %s" ,msg ,err ',,form)
+                   nil)))
+          body))))
+
+'(testing
+ (with-report-error "check"
+     (message "tset")
+     (message "test"))
+ (macroexpand '(with-report-error "check" (x) (y))))
+
+
+
+
+
+
+
 (provide 'macros)

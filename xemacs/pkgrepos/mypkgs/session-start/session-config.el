@@ -104,7 +104,7 @@
   ;; (desktop-save (fmsession-read-location))
   ;; (desktop-read (fmsession-read-location))
 
-  (require 'misc-config)
+  (require 'utils-config)
 
   (defun elscreen-session-make-session-list ()
     (let (session-list)
@@ -129,7 +129,7 @@
     (testing
      (message "Nstart: session-current-buffer %s" elscreen-session))
     (let* (screen buffers
-           (elscreen-session-list (sharad/read-file elscreen-session))
+                  (elscreen-session-list (sharad/read-file elscreen-session))
            (screens
             (or
              (cdr (assoc 'screens elscreen-session-list))
@@ -329,11 +329,11 @@
 
     ;; (add-hook '*sharad/after-init-hook*
     (add-hook 'sharad/enable-startup-inperrupting-feature-hook
-              #'(lambda ()
-                  ;; (add-hook 'after-make-frame-functions #'set-this-frame-session-location t)
-                  (add-hook 'after-make-frame-functions #'restore-frame-session t)
-                  (add-hook 'delete-frame-functions #'save-frame-session)
-                  (add-hook 'kill-emacs-hook #'save-all-frames-session))
+              '(lambda ()
+                ;; (add-hook 'after-make-frame-functions 'set-this-frame-session-location t)
+                (add-hook 'after-make-frame-functions 'restore-frame-session t)
+                (add-hook 'delete-frame-functions 'save-frame-session)
+                (add-hook 'kill-emacs-hook 'save-all-frames-session))
               t)
 
   (testing
@@ -539,17 +539,17 @@ Also returns nil if pid is nil."
     (message "leaving desktop-session-restore"))
 
   (add-hook 'session-before-save-hook
-            #'my-desktop-save)
-  ;; #'sharad/desktop-session-save)
+            'my-desktop-save)
+  ;; 'sharad/desktop-session-save)
 
-(testing
- (remove-hook 'session-before-save-hook
-              #'my-desktop-save))
+  (testing
+   (remove-hook 'session-before-save-hook
+                'my-desktop-save))
 
   ;; ;; ask user whether to restore desktop at start-up
   (add-hook ;; 'after-init-hook
    'sharad/enable-startup-inperrupting-feature-hook
-   #'sharad/desktop-session-restore)
+   'sharad/desktop-session-restore)
 
   ;; Then type ‘M-x session-save’, or ‘M-x session-restore’ whenever you want to save or restore a desktop. Restored desktops are deleted from disk.
 
@@ -604,7 +604,17 @@ Also returns nil if pid is nil."
   ;; Something like this is recommended to get emacs to shut-up
   ;; and never ask you for a coding system. Otherwise this can
   ;; happen on *every* desktop-save triggered by the auto-save-hook:
-  (prefer-coding-system 'utf-8))
+  (prefer-coding-system 'utf-8)
+
+
+
+
+  (add-hook 'delete-frame-functions
+            '(lambda (frame)
+              (if (and
+                   (< (length (frame-list)) 3)
+                   (functionp 'session-save-sessoin))
+                  (session-save-sessoin)))))
 
 
 ;; (deh-require-maybe desktop-recover

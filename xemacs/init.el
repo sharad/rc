@@ -5,6 +5,10 @@
 ;; (add-to-list 'load-path "/usr/share/emacs/23.3/lisp/emacs-lisp")
 ;; (add-to-list 'load-path "/usr/share/emacs/23.3/lisp")
 
+(defvar old-messages-buffer-max-lines 100 "To keep all startup detail.")
+(defvar *emacs-in-init* t "Emacs is in init.")
+(setq *emacs-in-init* t)
+
 (setq old-messages-buffer-max-lines messages-buffer-max-lines
       messages-buffer-max-lines 2000)
 
@@ -109,6 +113,7 @@
         ;; old-messages-buffer-max-lines
         ))
 
+(setq *emacs-in-init* nil)              ;how to ensure it will run.
 ;;end
 
 

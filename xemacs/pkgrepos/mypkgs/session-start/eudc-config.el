@@ -139,9 +139,9 @@ BEG and END delimit the text which is to be replaced."
   '(define-key post-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline)))
 
 
-(testing
- (eudc-display-jpeg-inline
-  (cdaar (remove-if 'null (eudc-query '(("givenName" . "Sharad")) '(thumbnailPhoto))))))
+;; (testing
+;;  (eudc-display-jpeg-inline
+;;   (cdaar (remove-if 'null (eudc-query '(("givenName" . "Sharad")) '(thumbnailPhoto))))))
 
 
 

@@ -76,4 +76,13 @@
 
 
 
+;;;###autoload
+(defun sharad/read-file (filename)
+  (when (file-exists-p filename)
+    (with-temp-buffer
+      (insert-file-contents-literally filename)
+      (let ((contents (read (current-buffer))))
+        contents))))
+
+
 (provide 'utils-config)

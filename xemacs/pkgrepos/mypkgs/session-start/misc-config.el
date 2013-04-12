@@ -270,21 +270,6 @@ The indirect buffer can have another major mode."
 (xrequire 'thingatpt+)
 
 
-;;;###autoload
-(defun sharad/read-file (filename)
-  (when (file-exists-p filename)
-    (with-temp-buffer
-      (insert-file-contents-literally filename)
-      (let ((contents (read (current-buffer))))
-        contents))))
-
-
-(add-hook 'delete-frame-functions
-          '(lambda (frame)
-            (if (and
-                 (< (length (frame-list)) 3)
-                 (functionp 'session-save-sessoin))
-                (session-save-sessoin))))
 
 (defun shell-command-no-output (cmd)
   (if (equal 0 (call-process "/bin/bash" nil nil nil "-c" cmd))
@@ -313,7 +298,9 @@ The indirect buffer can have another major mode."
 
 (defun hindi-devanagari-itrans ()
   (interactive)
-  (set-input-method "devanagari-itrans" t))
+  (if (string-equal current-input-method "devanagari-itrans")
+      (set-input-method nil nil)
+      (set-input-method "devanagari-itrans" nil)))
 
 
 (deh-require-maybe imenu-tree
@@ -326,7 +313,10 @@ The indirect buffer can have another major mode."
 
 (deh-require-maybe oneliner
   (setq oneliner-temp-dir-name (if (getenv "TMPDIR")
-                                   (expand-file-name (getenv "TMPDIR")))
+                                   (expand-file-name (getenv "TMPDIR"))
+                                   (expand-file-name "temp" (getenv "HOME"))
+                                   ;; (error "test")
+                                   )
         oneliner-shell-type 'zsh
         oneliner-sync-default-directory-after-prompt t))
 

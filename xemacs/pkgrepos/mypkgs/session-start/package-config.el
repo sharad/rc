@@ -43,7 +43,7 @@
   '(progn
 
     (require 'cl)
-    (require 'misc-config)
+    (require 'utils-config)
 
     (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 

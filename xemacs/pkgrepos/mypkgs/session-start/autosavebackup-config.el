@@ -64,11 +64,18 @@
       (message "org-from-file %s" org-from-file)
       (if (file-exists-p org-from-file)
           (if (not (string-match ".+,v" org-from-file))
-              (let ((vc-rcs-checkin-switches "-l")
+              (let ((tempdir (getenv "TMPDIR"))
+                    (vc-rcs-checkin-switches "-l")
                     (vc-rcs-register-switches "-l")
                     (file-vc-backend (vc-backend org-from-file))
                     (rcsdir (expand-file-name "RCS" (file-name-directory org-from-file))))
-                ;; Now it is sure file will be VCed.
+
+                (if tempdir
+                    (when (not (file-exists-p tempdir))
+                        ;no question.
+                        (make-directory tempdir t)))
+
+                (message "Now it is sure file %s will be VCed." from-file)
                 (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
                 (if (not (or file-vc-backend
                              (file-exists-p (expand-file-name

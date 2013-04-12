@@ -43,7 +43,8 @@
 
     (setq
      ;; auto-insert t
-     auto-insert-directory "~/emacs.d/template.d/autoinsert"
+     auto-insert+-directory "~/.xemacs/template.d/autoinsert"
+     template-directory-list '("~/.xemacs/pkgrepos/world/misc/pde/templates" "~/.templates/" "~/.xemacs/template.d/templates")
      auto-insert-query t
      auto-insert+ 'other)
 
@@ -51,18 +52,19 @@
       "Which files to insert to embed."
       (insert-file-contents ""))
 
+    auto-insert+-alist
 
     (setq auto-insert-alist
           (append '(((muse-mode .  "Muse Mode") . insert-muse-file))
                   auto-insert-alist))
 
-    (define-auto-insert+ '(muse-mode . "Muse Mode")
-        "empty"
-      'insert-muse-file)
-
     (set-auto-insert+noaction '(".planner-registry.el\\'" . "Planner File"))
 
     (set-auto-insert+noaction '(".ido.last\\'" . "Planner File"))
+
+    (define-auto-insert+ '(muse-mode . "Muse Mode")
+        "empty"
+      'insert-muse-file)
 
     (define-auto-insert+ '("\\.\\([Hh]\\|hh\\|hpp\\)\\'" . "C / C++ header")
         "yastemp"

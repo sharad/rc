@@ -359,7 +359,7 @@
 
 (deh-section "scratch mode"
 
-  (require 'auto-insert+)
+  (require 'autoinsert+)
 
   (defun mjmode-scratch (&optional name mjmode)
     (interactive
