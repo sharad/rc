@@ -269,20 +269,6 @@ The indirect buffer can have another major mode."
 (xrequire 'thingatpt)
 (xrequire 'thingatpt+)
 
-
-
-(defun shell-command-no-output (cmd)
-  (if (equal 0 (call-process "/bin/bash" nil nil nil "-c" cmd))
-      t))
-
-
-(defun messageto (buf &rest text)
-  (with-current-buffer (get-buffer-create buf)
-    (apply 'insert text)
-    (insert "\n")))
-
-(messageto "*Complains*" "Bookmarking fecility, may consider Org mode which is unexpanded.")
-
 (deh-require-maybe (progn help+ help-fns+ help-macro+ help-mode+)
   )
 

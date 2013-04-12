@@ -33,6 +33,7 @@
 
 (eval-when-compile
   '(require 'cl))
+(require 'general-testing)
 
 ;; believe it need not be here
 ;; (eval-after-load "ido"

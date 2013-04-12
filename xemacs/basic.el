@@ -108,22 +108,21 @@ alkready should not exist.")
                   (unless
                       (and
                        (message "now loading %s.el" feature)
-                       ;; (ignore-errors (require feature))
-                       (condition-case e
-                           (require feature)
-                         ('error nil)))
+                       (with-report-error "check"
+                           (require feature)))
                     (push feature load-lib-with-errors)))))
             (directory-files dir nil "^[a-zA-Z0-9-]+\.el$"))
-      (when load-lib-with-errors
-        (setq reloading-libraries t)
-        (message "now loading files ( %s ) with errors." load-lib-with-errors)
-        (mapc '(lambda (f)
-                (message "now loading file with error %s.el" f)
-                (condition-case e
-                    (require f)
-                    ('error nil)))
-              load-lib-with-errors)
-          t))))
+      (if load-lib-with-errors
+          (progn
+            (setq reloading-libraries t)
+            (message "now loading files ( %s ) with errors." load-lib-with-errors)
+            (mapc '(lambda (f)
+                    (message "now loading file with error %s.el" f)
+                    (with-report-error "check"
+                        (require f)))
+                  load-lib-with-errors))
+          (message "all library loaded in %s directory without error." dir))
+      t)))
 
 
 ;; (defun package-dir-setup (package-dir)
@@ -135,12 +134,6 @@ alkready should not exist.")
 ;;             (directory-files package-dir t "[a-zA-Z]+"))))
 
 
-(defun afind-if (fun list) ;; anaphoric
-  (let ((result
-         (funcall fun (car list))))
-    (if result
-        result
-        (if list (afind-if fun (cdr list))))))
 
 (eval-when-compile
 

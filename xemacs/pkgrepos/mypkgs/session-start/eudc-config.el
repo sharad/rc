@@ -26,117 +26,116 @@
 
 ;; from http://www.emacswiki.org/emacs/EUDC
 
-
-  (deh-require-maybe (and eudc ldap passwds)
-    "LDAP BBDB backend"
-
-
-    (defun eudc-ldap-datas ()
-      (or (and (boundp 'eudc-ldap-datas) eudc-ldap-datas) '()))
-
-    (setq ldap-default-base "ou=addressbook,dc=your_dc_here,dc=fr")
-
-    (setq ;; eudc-default-return-attributes nil
-     eudc-default-return-attributes 'all
-          eudc-strict-return-matches nil
-          ldap-ldapsearch-args '("-tt" "-LLL" "-x")
-          eudc-inline-query-format '(
-                                     (givenName)
-                                     (sn)
-                                     (givenName sn)
-                                     (email)
-                                     )
-          ;; eudc-inline-query-format nil
-          eudc-inline-expansion-format '("%s %s <%s>" givenName name email)
-          ;; eudc-inline-expansion-format '("%s <%s>" givenName email)
-
-          ;; (setq ldap-host-parameters-alist
-          ;;       (quote (("your_server" base "ou=addressbook,dc=your_dc_here,dc=fr"
-          ;;                              binddn "cn=admin,dc=your_dc_here,dc=fr"
-          ;;                              passwd "your_password"))))
-
-          ldap-host-parameters-alist
-          ;; `(("your_server" base "ou=addressbook,dc=your_dc_here,dc=fr"
-          ;;                  binddn "cn=admin,dc=your_dc_here,dc=fr"
-          ;;                  passwd "your_password"))
-          `(,(cdr (assoc 'office (eudc-ldap-datas))))
-
-          eudc-server-hotlist `(( ,(car (cdr (assoc 'office (eudc-ldap-datas)))) . ldap ))
-
-          eudc-inline-expansion-servers 'hotlist)
-
-    (eudc-set-server (car (cdr (assoc 'office (eudc-ldap-datas)))) 'ldap t)
-
-    (defun enz-eudc-expand-inline()
-      (interactive)
-      (move-end-of-line 1)
-      (insert "*")
-      (unless (condition-case nil
-                  (eudc-expand-inline)
-                (error nil))
-        (backward-delete-char-untabify 1)))
+(deh-require-maybe (and eudc ldap passwds)
+  "LDAP BBDB backend"
 
 
-    (defun sharad/enz-eudc-expand-inline()
-      (interactive)
-      (move-end-of-line 1)
-      (insert "*")
-      (unless (condition-case nil
-                  (eudc-expand-inline)
-                (error nil))
-        (progn
-          (backward-delete-char-untabify 1))))
+  (defun eudc-ldap-datas ()
+    (or (and (boundp 'eudc-ldap-datas) eudc-ldap-datas) '()))
+
+  (setq ldap-default-base "ou=addressbook,dc=your_dc_here,dc=fr")
+
+  (setq ;; eudc-default-return-attributes nil
+   eudc-default-return-attributes 'all
+   eudc-strict-return-matches nil
+   ldap-ldapsearch-args '("-tt" "-LLL" "-x")
+   eudc-inline-query-format '(
+                              (givenName)
+                              (sn)
+                              (givenName sn)
+                              (email)
+                              )
+   ;; eudc-inline-query-format nil
+   eudc-inline-expansion-format '("%s %s <%s>" givenName name email)
+   ;; eudc-inline-expansion-format '("%s <%s>" givenName email)
+
+   ;; (setq ldap-host-parameters-alist
+   ;;       (quote (("your_server" base "ou=addressbook,dc=your_dc_here,dc=fr"
+   ;;                              binddn "cn=admin,dc=your_dc_here,dc=fr"
+   ;;                              passwd "your_password"))))
+
+   ldap-host-parameters-alist
+   ;; `(("your_server" base "ou=addressbook,dc=your_dc_here,dc=fr"
+   ;;                  binddn "cn=admin,dc=your_dc_here,dc=fr"
+   ;;                  passwd "your_password"))
+   `(,(cdr (assoc 'office (eudc-ldap-datas))))
+
+   eudc-server-hotlist `(( ,(car (cdr (assoc 'office (eudc-ldap-datas)))) . ldap ))
+
+   eudc-inline-expansion-servers 'hotlist)
+
+  (eudc-set-server (car (cdr (assoc 'office (eudc-ldap-datas)))) 'ldap t)
+
+  (defun enz-eudc-expand-inline()
+    (interactive)
+    (move-end-of-line 1)
+    (insert "*")
+    (unless (condition-case nil
+                (eudc-expand-inline)
+              (error nil))
+      (backward-delete-char-untabify 1)))
+
+
+  (defun sharad/enz-eudc-expand-inline()
+    (interactive)
+    (move-end-of-line 1)
+    (insert "*")
+    (unless (condition-case nil
+                (eudc-expand-inline)
+              (error nil))
+      (progn
+        (backward-delete-char-untabify 1))))
 
 
 
-    (defun sharad/eudc-show-at-point (arg)
-      (interactive "P")
-      ;; from .gnus.d/article.el
-      (let ((email (thing-at-point 'fullemail)))
-        (if email
-            (eudc-display-records (eudc-query (list (cons 'mail (car (ietf-drums-parse-address email)))) ) arg)
-            (message "Not able to parse any email at point."))))
+  (defun sharad/eudc-show-at-point (arg)
+    (interactive "P")
+    ;; from .gnus.d/article.el
+    (let ((email (thing-at-point 'fullemail)))
+      (if email
+          (eudc-display-records (eudc-query (list (cons 'mail (car (ietf-drums-parse-address email)))) ) arg)
+          (message "Not able to parse any email at point."))))
 
-    (defun eudc-select (choices beg end)
-      "Choose one from CHOICES using a completion.
+  (defun eudc-select (choices beg end)
+    "Choose one from CHOICES using a completion.
 BEG and END delimit the text which is to be replaced."
-      (let ((replacement))
-        (setq replacement
-              (completing-read "Multiple matches found; choose one: "
-                               (mapcar 'list choices)))
-        (delete-region beg end)
-        (insert replacement)))
+    (let ((replacement))
+      (setq replacement
+            (completing-read "Multiple matches found; choose one: "
+                             (mapcar 'list choices)))
+      (delete-region beg end)
+      (insert replacement)))
 
 
-(eudc-protocol-set 'eudc-attribute-display-method-alist
-                   '(("jpegphoto" . eudc-display-jpeg-inline)
-                     ("thumbnailphoto" . eudc-display-jpeg-inline)
-                     ("labeledurl" . eudc-display-url)
-                     ("audio" . eudc-display-sound)
-                     ("labeleduri" . eudc-display-url)
-                     ("mail" . eudc-display-mail)
-                     ("url" . eudc-display-url))
-                   'ldap)
+  (eudc-protocol-set 'eudc-attribute-display-method-alist
+                     '(("jpegphoto" . eudc-display-jpeg-inline)
+                       ("thumbnailphoto" . eudc-display-jpeg-inline)
+                       ("labeledurl" . eudc-display-url)
+                       ("audio" . eudc-display-sound)
+                       ("labeleduri" . eudc-display-url)
+                       ("mail" . eudc-display-mail)
+                       ("url" . eudc-display-url))
+                     'ldap)
 
-(eudc-protocol-set 'eudc-attribute-display-method-alist
-                   '(("jpegphoto" . eudc-display-jpeg-inline)
-                     ("thumbnailphoto" . eudc-display-jpeg-inline)
-                     ("labeledurl" . eudc-display-url)
-                     ("audio" . eudc-display-sound)
-                     ("labeleduri" . eudc-display-url)
-                     ("mail" . eudc-display-mail)
-                     ("url" . eudc-display-url))
-                   )
+  (eudc-protocol-set 'eudc-attribute-display-method-alist
+                     '(("jpegphoto" . eudc-display-jpeg-inline)
+                       ("thumbnailphoto" . eudc-display-jpeg-inline)
+                       ("labeledurl" . eudc-display-url)
+                       ("audio" . eudc-display-sound)
+                       ("labeleduri" . eudc-display-url)
+                       ("mail" . eudc-display-mail)
+                       ("url" . eudc-display-url))
+                     )
 
 
-    ;; Adds some hooks
+  ;; Adds some hooks
 
-(eval-after-load "message"
-  '(define-key message-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))
-(eval-after-load "sendmail"
-  '(define-key mail-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))
-(eval-after-load "post"
-  '(define-key post-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline)))
+  (eval-after-load "message"
+    '(define-key message-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))
+  (eval-after-load "sendmail"
+    '(define-key mail-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))
+  (eval-after-load "post"
+    '(define-key post-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline)))
 
 
 ;; (testing
@@ -214,8 +213,8 @@ see `eudc-inline-expansion-servers'"
 	    '(current-server server-then-hotlist))
       (or eudc-server
 	  (call-interactively 'eudc-set-server))
-    (or eudc-server-hotlist
-	(error "No server in the hotlist")))
+      (or eudc-server-hotlist
+          (error "No server in the hotlist")))
   (let* ((end (point))
 	 (beg (save-excursion
 		(if (re-search-backward "\\([:,]\\|^\\)[ \t]*"
@@ -238,16 +237,16 @@ see `eudc-inline-expansion-servers'"
     (setq servers (copy-sequence eudc-server-hotlist))
     (setq servers
 	  (cond
-	   ((eq eudc-inline-expansion-servers 'hotlist)
-	    eudc-server-hotlist)
-	   ((eq eudc-inline-expansion-servers 'server-then-hotlist)
-	    (cons (cons eudc-server eudc-protocol)
-		  (delete (cons eudc-server eudc-protocol) servers)))
-	   ((eq eudc-inline-expansion-servers 'current-server)
-	    (list (cons eudc-server eudc-protocol)))
-	   (t
-	    (error "Wrong value for `eudc-inline-expansion-servers': %S"
-		   eudc-inline-expansion-servers))))
+            ((eq eudc-inline-expansion-servers 'hotlist)
+             eudc-server-hotlist)
+            ((eq eudc-inline-expansion-servers 'server-then-hotlist)
+             (cons (cons eudc-server eudc-protocol)
+                   (delete (cons eudc-server eudc-protocol) servers)))
+            ((eq eudc-inline-expansion-servers 'current-server)
+             (list (cons eudc-server eudc-protocol)))
+            (t
+             (error "Wrong value for `eudc-inline-expansion-servers': %S"
+                    eudc-inline-expansion-servers))))
     (if (and eudc-max-servers-to-query
 	     (> (length servers) eudc-max-servers-to-query))
 	(setcdr (nthcdr (1- eudc-max-servers-to-query) servers) nil))
@@ -288,38 +287,38 @@ see `eudc-inline-expansion-servers'"
 	  (if (null response)
 	      (error "No match")
 
-	    ;; Process response through eudc-inline-expansion-format
-	    (while response
-	      (setq response-string (apply 'format
-					   (car eudc-inline-expansion-format)
-					   (mapcar (function
-						    (lambda (field)
-						      (or (cdr (assq field (car response)))
-							  "")))
-						   (eudc-translate-attribute-list
-						    (cdr eudc-inline-expansion-format)))))
-	      (if (> (length response-string) 0)
-		  (setq response-strings
-			(cons response-string response-strings)))
-	      (setq response (cdr response)))
+              ;; Process response through eudc-inline-expansion-format
+              (while response
+                (setq response-string (apply 'format
+                                             (car eudc-inline-expansion-format)
+                                             (mapcar (function
+                                                      (lambda (field)
+                                                       (or (cdr (assq field (car response)))
+                                                           "")))
+                                                     (eudc-translate-attribute-list
+                                                      (cdr eudc-inline-expansion-format)))))
+                (if (> (length response-string) 0)
+                    (setq response-strings
+                          (cons response-string response-strings)))
+                (setq response (cdr response)))
 
-	    (if (or
-		 (and replace (not eudc-expansion-overwrites-query))
-		 (and (not replace) eudc-expansion-overwrites-query))
-		(kill-ring-save beg end))
-	    (cond
-	     ((or (= (length response-strings) 1)
-		  (null eudc-multiple-match-handling-method)
-		  (eq eudc-multiple-match-handling-method 'first))
-	      (delete-region beg end)
-	      (insert (car response-strings)))
-	     ((eq eudc-multiple-match-handling-method 'select)
-	      (eudc-select response-strings beg end))
-	     ((eq eudc-multiple-match-handling-method 'all)
-	      (delete-region beg end)
-	      (insert (mapconcat 'identity response-strings ", ")))
-	     ((eq eudc-multiple-match-handling-method 'abort)
-	      (error "There is more than one match for the query"))))
+              (if (or
+                   (and replace (not eudc-expansion-overwrites-query))
+                   (and (not replace) eudc-expansion-overwrites-query))
+                  (kill-ring-save beg end))
+              (cond
+                ((or (= (length response-strings) 1)
+                     (null eudc-multiple-match-handling-method)
+                     (eq eudc-multiple-match-handling-method 'first))
+                 (delete-region beg end)
+                 (insert (car response-strings)))
+                ((eq eudc-multiple-match-handling-method 'select)
+                 (eudc-select response-strings beg end))
+                ((eq eudc-multiple-match-handling-method 'all)
+                 (delete-region beg end)
+                 (insert (mapconcat 'identity response-strings ", ")))
+                ((eq eudc-multiple-match-handling-method 'abort)
+                 (error "There is more than one match for the query"))))
 	  (or (and (equal eudc-server eudc-former-server)
 		   (equal eudc-protocol eudc-former-protocol))
 	      (eudc-set-server eudc-former-server eudc-former-protocol t)))
@@ -359,22 +358,22 @@ queries the server for the existing fields and displays a corresponding form."
 					     (progn
 					       (call-interactively 'eudc-set-server)
 					       eudc-server))
-					     "\n")
+                   "\n")
     (widget-insert "Protocol         : " (symbol-name eudc-protocol) "\n")
     ;; Build the list of prompts
     (setq prompts (if eudc-use-raw-directory-names
 		      (mapcar 'symbol-name (eudc-translate-attribute-list fields))
-		    (mapcar (function
-			     (lambda (field)
-			       (or (and (assq field eudc-user-attribute-names-alist)
-					(cdr (assq field eudc-user-attribute-names-alist)))
-				   (capitalize (symbol-name field)))))
-			    fields)))
+                      (mapcar (function
+                               (lambda (field)
+                                (or (and (assq field eudc-user-attribute-names-alist)
+                                         (cdr (assq field eudc-user-attribute-names-alist)))
+                                    (capitalize (symbol-name field)))))
+                              fields)))
     ;; Loop over prompt strings to find the longest one
     (mapc (function
 	   (lambda (prompt)
-	     (if (> (length prompt) width)
-		 (setq width (length prompt)))))
+            (if (> (length prompt) width)
+                (setq width (length prompt)))))
 	  prompts)
     ;; Insert the first widget out of the mapcar to leave the cursor
     ;; in the first field
@@ -387,13 +386,13 @@ queries the server for the existing fields and displays a corresponding form."
     (setq prompts (cdr prompts))
     (mapc (function
 	   (lambda (field)
-	     (widget-insert "\n\n" (format (concat "%" (int-to-string width) "s: ") (car prompts)))
-	     (setq widget (widget-create 'editable-field
-					 :size 15
-                                         (cdr (assoc field attribute-value-alist))))
-	     (setq eudc-form-widget-list (cons (cons field widget)
-					       eudc-form-widget-list))
-	     (setq prompts (cdr prompts))))
+            (widget-insert "\n\n" (format (concat "%" (int-to-string width) "s: ") (car prompts)))
+            (setq widget (widget-create 'editable-field
+                                        :size 15
+                                        (cdr (assoc field attribute-value-alist))))
+            (setq eudc-form-widget-list (cons (cons field widget)
+                                              eudc-form-widget-list))
+            (setq prompts (cdr prompts))))
 	  fields)
     (widget-insert "\n\n")
     (widget-create 'push-button
@@ -414,6 +413,5 @@ queries the server for the existing fields and displays a corresponding form."
     (use-local-map widget-keymap)
     (widget-setup))
   )
-
 (provide 'eudc-config)
 ;;; eudc.el ends here

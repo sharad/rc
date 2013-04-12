@@ -131,14 +131,14 @@
                                    backup-buffer-copy-in-rcs
                                    ,(help-function-arglist 'backup-buffer-copy)
                                    disable)
-      (message "defadvise filename %s %s" from-name to-name)
+      ;; (message "defadvise filename %s %s" from-name to-name)
       (condition-case e
           (put-file-in-rcs from-name)
           ('error nil))))
 
 
   (defadvice vc-rcs-find-file-hook (after backup-buffer-copy-in-rcs-ff () disable)
-    (message "yes in backup-buffer-copy-in-rcs-ff")
+    ;; (message "yes in backup-buffer-copy-in-rcs-ff")
     (set (make-local-variable 'backup-inhibited) nil))
 
 

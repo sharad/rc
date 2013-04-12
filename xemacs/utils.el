@@ -23,12 +23,6 @@
 (defun global-set-key-if-unbind (key cmd)
   "Set binding for key if there is no  existing binding for key."
   ;; (interactive)
-  (message "*emacs-in-init* %s load-lib-with-errors %s (or (not *emacs-in-init*) (not load-lib-with-errors)) %s"
-           *emacs-in-init*
-           load-lib-with-errors
-           (or (not *emacs-in-init*) (not load-lib-with-errors)))
-  (if (or (not *emacs-in-init*) (not reloading-libraries))
-     (message "k %s c %s" key cmd))
   (let ((bindedcmd (key-binding key t)))
     (if bindedcmd
         (when (or (not *emacs-in-init*) (not reloading-libraries))
@@ -39,17 +33,11 @@
 (defun keymap-set-key-if-unbind (map key cmd)
   "Set binding for key if there is no  existing binding for key."
   ;; (interactive)
-  (message "*emacs-in-init* %s reloading-libraries %s (or (not *emacs-in-init*) (not reloading-libraries)) %s"
-           *emacs-in-init*
-           reloading-libraries
-           (or (not *emacs-in-init*) (not reloading-libraries)))
-  (if (or (not *emacs-in-init*) (not reloading-libraries))
-     (message "k %s c %s" key cmd))
   (let ((bindedcmd (key-binding key t)))
     (if bindedcmd
-        (if (or (not *emacs-in-init*) (not *binding-config-loaded*))
-         (message "key %s already have binded with command %s, can't bind to %s."
-                  key bindedcmd cmd))
+        (when (or (not *emacs-in-init*) (not reloading-libraries))
+          (message "key %s already have binded with command %s, can't bind to %s."
+                   key bindedcmd cmd))
         (define-key map key cmd))))
 
 
@@ -84,3 +72,11 @@
 
 ;; Are we running XEmacs or Emacs?
 (defvar running-xemacs (string-match "XEmacs\\|Lucid" emacs-version))
+
+
+(defun afind-if (fun list) ;; anaphoric
+  (let ((result
+         (funcall fun (car list))))
+    (if result
+        result
+        (if list (afind-if fun (cdr list))))))

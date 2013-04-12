@@ -260,46 +260,21 @@ directory, select directory. Lastly the file is opened."
     (setq workspace-dir nil)))
 
 
-;; definition for your keybinding and menu
-(when (or
-       (not (boundp 'ff-mode-map))
-       (not ff-mode-map)) ; if it is not already defined
-  ;; from: http://ergoemacs.org/emacs/elisp_menu_for_major_mode.html
-  ;; assign command to keys
-  (setq ff-mode-map (make-sparse-keymap))
-  (define-key ff-mode-map (kbd "s-x l") 'lusty-file-explorer)
-  (define-key ff-mode-map (kbd "s-x i") 'ido-find-file)
-  (define-key ff-mode-map (kbd "s-x c") 'find-file-in-other-dir)
-  (define-key ff-mode-map (kbd "s-x j") 'jcl-file-cache-ido-find-file)
-  (define-key ff-mode-map (kbd "s-x p") 'ffip)
+(deh-section "ff-mode"
+  (defvar ff-mode-map
+    (let ((map (make-sparse-keymap)))
+      ;; These bindings roughly imitate those used by Outline mode.
+      ;;(define-key map "\C-c@\C-c"	      'hs-toggle-hiding)
+      ;;(define-key map [(shift mouse-2)] 'hs-mouse-toggle-hiding)
+      map)
+    "Keymap for hideshow minor mode.")
 
-  ;; lusty-buffer-explorer find-file-in-project find-dired
-
-  ;; … more here …
-
-  ;; (define-key ff-mode-map [remap comment-dwim] 'xlsl-comment-dwim)
-  ;;  ; above: make your comment command “xlsl-comment-dwim” use the current key for “comment-dwim” (because user may have changed the key for “comment-dwim”)
-
-  ;; define your menu
-  (define-key ff-mode-map [menu-bar] (make-sparse-keymap))
-
-  (let ((menuMap (make-sparse-keymap "LSL")))
-    (define-key ff-mode-map [menu-bar xlsl] (cons "LSL" menuMap))
-
-    (define-key menuMap [about]
-      '("About xlsl-mode" . xlsl-about))
-    (define-key menuMap [customize]
-      '("Customize xlsl-mode" . xlsl-customize))
-    (define-key menuMap [separator]
-      '("--"))
-    (define-key menuMap [convert-rgb]
-      '("Convert #rrggbb under cursor" . xlsl-convert-rgb))
-    (define-key menuMap [copy-all]
-      '("Copy whole buffer content" . xlsl-copy-all))
-    (define-key menuMap [syntax-check]
-      '("Check syntax" . xlsl-syntax-check))
-    (define-key menuMap [lookup-onlne-doc]
-      '("Lookup ref of word under cursor" . xlsl-lookup-lsl-ref)))
+  (unless (and
+           (boundp 'ff-mode-map)
+           ff-mode-map) ; if it is not already defined
+    ;; from: http://ergoemacs.org/emacs/elisp_menu_for_major_mode.html
+    ;; assign command to keys
+    (setq ff-mode-map (make-sparse-keymap)))
 
   (define-minor-mode ff-mode
       "Prepare for working with collarative office project."
@@ -309,7 +284,6 @@ directory, select directory. Lastly the file is opened."
     :keymap ff-mode-map
     (when office-mode
       (message "calling ff mode"))))
-
 
 
 (defun find-same-file-in-relative-dir (&optional dir-only)
