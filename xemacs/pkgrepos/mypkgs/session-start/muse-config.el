@@ -1,5 +1,14 @@
 
 
+
+
+(deh-require-maybe muse-mode
+  (defun muse-help ()
+    (interactive)
+    (find-file-other-window "/usr/share/doc/muse-el/examples/QuickStart.muse"))
+  (define-key muse-mode-local-map (kbd "C-c C-.") 'muse-help))
+
+
 ;; from: http://1010.co.uk/tech_notes.html
 ;;
 ;;
@@ -36,4 +45,3 @@
 
 
 (provide 'muse-config)
-

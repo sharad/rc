@@ -97,4 +97,57 @@
 (messageto "*Complains*" "Bookmarking fecility, may consider Org mode which is unexpanded.")
 
 
+(defcustom recentf-save-file-modes 384 ;; 0600
+  "Mode bits of recentf save file, as an integer, or nil.
+If non-nil, after writing `recentf-save-file', set its mode bits to
+this value.  By default give R/W access only to the user who owns that
+file.  See also the function `set-file-modes'."
+  :group 'recentf
+  :type '(choice (const :tag "Don't change" nil)
+          integer))
+
+
+(defcustom recentf-save-file (convert-standard-filename "~/.recentf")
+  "File to save the recent list into."
+  :group 'recentf
+  :type 'file
+  :initialize 'custom-initialize-default
+  :set (lambda (symbol value)
+         (let ((oldvalue (eval symbol)))
+           (custom-set-default symbol value)
+           (and (not (equal value oldvalue))
+                recentf-mode
+                (recentf-load-list)))))
+
+
+(defconst recentf-save-file-coding-system
+  (if (coding-system-p 'utf-8-emacs)
+      'utf-8-emacs
+    'emacs-mule)
+  "Coding system of the file `recentf-save-file'.")
+
+(defun recentf-save-list ()
+  "Save the recent list.
+Write data into the file specified by `recentf-save-file'."
+  (interactive)
+  (condition-case error
+      (with-temp-buffer
+        (erase-buffer)
+        (set-buffer-file-coding-system recentf-save-file-coding-system)
+        (insert (format recentf-save-file-header (current-time-string)))
+        (recentf-dump-variable 'recentf-list recentf-max-saved-items)
+        (recentf-dump-variable 'recentf-filter-changer-current)
+        (insert "\n\n;; Local Variables:\n"
+                (format ";; coding: %s\n" recentf-save-file-coding-system)
+                ";; End:\n")
+        (write-file (expand-file-name recentf-save-file))
+        (when recentf-save-file-modes
+          (set-file-modes recentf-save-file recentf-save-file-modes))
+        nil)
+    (error
+     (warn "recentf mode: %s" (error-message-string error)))))
+
+
+
+
 (provide 'utils-config)

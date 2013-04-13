@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2013-04-12 23:09:19 s>
+;; Time-stamp: <2013-04-12 23:38:23 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -328,11 +328,10 @@ and their terminal equivalents.")
 
   (define-key ido-file-completion-map (kbd "C-,") 'insert-ts))
 
+
 (deh-require-maybe muse-mode
-  (defun muse-help ()
-    (interactive)
-    (find-file-other-window "/usr/share/doc/muse-el/examples/QuickStart.muse"))
-  (define-key muse-mode-local-map (kbd "C-c C-.") 'muse-help))
+  (define-key muse-mode-local-map (kbd "C-c C-.") 'muse-help)))
+
 
 
 (deh-require-maybe breadcrumb
