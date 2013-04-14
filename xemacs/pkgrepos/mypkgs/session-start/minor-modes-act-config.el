@@ -69,7 +69,7 @@
 
 
   (if sharad-in-office-with-perforce
-   (add-element-to-lists 'office-activate pgm-langs)))
+      (add-element-to-lists 'office-activate pgm-langs)))
 
 
 ;;; minor-modes-act.el ends here

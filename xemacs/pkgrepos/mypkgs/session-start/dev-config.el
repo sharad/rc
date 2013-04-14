@@ -77,6 +77,9 @@
   )
 
 
+(deh-require-maybe subword
+  ;; (global-subword-mode 1)
+  (add-element-to-lists '(lambda nil (subword-mode 1)) pgm-langs))
 
 
 (provide 'dev-config)
