@@ -663,7 +663,7 @@ Bind this command to C-x C-f to get:
                (cons
                 (lambda ()
                   (define-key lusty-mode-map
-                      (kbd "C-f") ;; (plist-get plist :key)
+                      (kbd "s-f") ;; (plist-get plist :key)
                     (lambda (arg)
                       (interactive "P")
                       (progn
@@ -696,7 +696,7 @@ Bind this command to C-x C-f to get:
                (cons
                 (lambda ()
                   (define-key ido-completion-map ;; ido-mode-map
-                      (kbd "C-f") ;; (plist-get plist :key)
+                      (kbd "s-f") ;; (plist-get plist :key)
                     (lambda (arg)
                       (interactive "P")
                       (progn
