@@ -25,6 +25,7 @@
 ;;; Code:
 
 
+
 (progn
 
   (defvar *find-file-wizard-alist* nil "find-file-wizard-alist")
@@ -32,8 +33,12 @@
   (defun find-file-wizard-add (name ff setup)
   "hook where initial set could be defined\n
 "
-  (let ((elt (cons name (list :ff ff :setup setup))))
-    (push elt *find-file-wizard-alist*)))
+  (if (assoc name *find-file-wizard-alist*)
+      (setcdr
+       (assoc name *find-file-wizard-alist*)
+       (list :ff ff :setup setup))
+      (let ((elt (cons name (list :ff ff :setup setup))))
+        (push elt *find-file-wizard-alist*))))
 
 
   (setq *find-file-wizard-alist* nil)
@@ -76,17 +81,16 @@
                       (kbd "s-f") ;; (plist-get plist :key)
                     (lambda (arg)
                       (interactive "P")
-                      (progn
-                        (setq initial-string ido-text
-                              ido-text 'fallback-wizard
-                              ido-exit 'done)
-                        ;; (message "magic Alambda3: ido-text: %s initial-string: %s" ido-text initial-string)
-                        ;; (exit-minibuffer)
-                        (throw 'nextff (list 'next (list (cons :initial-string initial-string))))
-                        ;; (message "magic Alambda3x: ido-text: %s initial-string: %s" ido-text initial-string)
-                        ))))
+                      (setq initial-string ido-text
+                            ido-text 'fallback-wizard
+                            ido-exit 'done)
+                      ;; (message "magic Alambda3: ido-text: %s initial-string: %s" ido-text initial-string)
+                      ;; (exit-minibuffer)
+                      (throw 'nextff (list 'next (list (cons :initial-string initial-string))))
+                      ;; (message "magic Alambda3x: ido-text: %s initial-string: %s" ido-text initial-string)
+                      )))
                 ido-setup-hook)))
-              (funcall ff initial-string))))
+          (funcall ff initial-string))))
 
 
 
