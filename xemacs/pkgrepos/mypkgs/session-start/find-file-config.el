@@ -26,6 +26,8 @@
 
 
 
+
+
   (defun jcl-file-cache-ido-find-file ()
     "Open a file from the file cache.
 First select a file from `file-cache-alist'.  If the file exist
@@ -105,28 +107,6 @@ Bind this command to C-x C-f to get:
                               ido-exit 'done)
                         (exit-minibuffer)))
 
-
-(find-file-wizard-add "ido1"
-                      ;; ido-find-file
-                      (lambda (initial-string)
-                        (ido-file-internal ido-default-file-method
-                               nil
-                               nil
-                               "Ido Find File: "
-                               nil
-                               initial-string))
-                      ido-completion-map
-                      (kbd "C-f") ;; [(control ?f)]
-                      ido-setup-hook
-                      ido-text
-                      (lambda ()
-                        (interactive)
-                        (progn
-                          (setq initial-string ido-text
-                                ido-text 'fallback
-                                ido-exit 'done)
-                          (exit-minibuffer))))
-
 ;; (setq *find-file-wizard-alist* nil)
 
 ;; *find-file-wizard-alist*
@@ -160,6 +140,63 @@ Bind this command to C-x C-f to get:
 
 
 
+(progn
+  (setq *find-file-wizard-alist* nil)
+
+  (find-file-wizard-add "ido2"
+                        ;; ido-find-file
+                        (lambda (initial-string)
+                          (message "initial-string 2: %s" initial-string)
+                          (ido-file-internal ido-default-file-method
+                                             nil
+                                             nil
+                                             "Ido 2 Find File: "
+                                             nil
+                                             (or initial-string ""))
+                          (message "Ainitial-string 2: %s" initial-string))
+                        ido-completion-map
+                        (kbd "C-f") ;; [(control ?f)]
+                        ido-setup-hook
+                        ido-text
+                        (lambda (arg)
+                          (interactive "P")
+                          (progn
+                            (message "lambda2: %s" ido-text)
+                            (setq initial-string ido-text
+                                  ido-text 'fallback
+                                  ido-exit 'done)
+                            (message "Alambda2: %s" ido-text)
+                            (exit-minibuffer)
+                            (message "Alambda2x: %s" ido-text))))
+
+
+  (find-file-wizard-add "ido1"
+                        ;; ido-find-file
+                        (lambda (initial-string)
+                          (message "initial-string 1: %s" initial-string)
+                          (message "Ainitial-string 1: %s" initial-string)
+                          (ido-file-internal ido-default-file-method
+                                             nil
+                                             nil
+                                             "Ido 1 Find File: "
+                                             nil
+                                             (or initial-string ""))
+                          )
+                        ido-completion-map
+                        (kbd "C-f") ;; [(control ?f)]
+                        ido-setup-hook
+                        ido-text
+                        (lambda (arg)
+                          (interactive "P")
+                          (progn
+                            (message "lambda1: %s" ido-text)
+                            (setq initial-string ido-text
+                                  ido-text 'fallback
+                                  ido-exit 'done)
+                            (message "Alambda1: %s" ido-text)
+                            (exit-minibuffer)
+                            (message "Alambda1x: %s" ido-text)))))
+
 (defun find-file-wizard ()
   (interactive)
   (let ((wizard-alist *find-file-wizard-alist*)
@@ -167,16 +204,20 @@ Bind this command to C-x C-f to get:
         (file 'fallback)
         initial-string)
     (while (and wizard-alist (eq file 'fallback))
+      (message "file %s" file)
       (let ((plist (cdar wizard-alist)))
         (setq file
               (letf (((symbol-value (plist-get plist :hook))
                       (cons (lambda ()
                               (define-key (symbol-value (plist-get plist :map))
-                                  (plist-get plist :key)
+                                  (kbd "C-f") ;; (plist-get plist :key)
                                 (plist-get plist :fun)))
                             (symbol-value (plist-get plist :hook)))))
-                (funcall (plist-get plist :ff-fun) initial-string))
-              wizard-alist (cdr wizard-alist))))
+                (setq minibuffer-history (delete 'fallback minibuffer-history))
+                (funcall (plist-get plist :ff-fun) initial-string)
+                (setq minibuffer-history (delete 'fallback minibuffer-history)))
+              wizard-alist (cdr wizard-alist)))
+      (message "TEST"))
     ;; (exit-minibuffer)
     ;; file
     ))
