@@ -28,8 +28,8 @@
 
 
 
-  (defun jcl-file-cache-ido-find-file ()
-    "Open a file from the file cache.
+(defun jcl-file-cache-ido-find-file ()
+  "Open a file from the file cache.
 First select a file from `file-cache-alist'.  If the file exist
 in more than one directory one is asked to select which to open.
 If you find out that the desired file is not present in the file
@@ -41,71 +41,72 @@ Bind this command to C-x C-f to get:
  C-x C-f C-f     -> Open file with normal ido.
  C-x C-f C-f C-f -> Open file with vanilla find-file.
 "
-    (interactive)
-    (let* (jcl-ido-text
-           (file (let ((ido-setup-hook (cons (lambda ()
-                                               (define-key ido-completion-map [(control ?f)]
-                                                 (lambda (arg)
-                                                   (interactive "P")
-                                                   (if jcl-ido-text
-                                                       (ido-magic-forward-char arg)
-                                                       (setq jcl-ido-text ido-text
-                                                             ido-text 'fallback-from-cache
-                                                             ido-exit 'done)
-                                                       (exit-minibuffer)))))
-                                             ido-setup-hook)))
-                   (ido-completing-read "Cached File: "
-                                        (mapcar 'car file-cache-alist)))))
-      (if (eq file 'fallback-from-cache)
-          (progn
-            (setq minibuffer-history (delete 'fallback-from-cache minibuffer-history))
-            (ido-file-internal ido-default-file-method
-                               nil
-                               nil
-                               "Ido Find File: "
-                               nil
-                               jcl-ido-text))
+  (interactive)
+  (let* (jcl-ido-text
+         (file (let ((ido-setup-hook (cons (lambda ()
+                                             (define-key ido-completion-map [(control ?f)]
+                                               (lambda (arg)
+                                                 (interactive "P")
+                                                 (if jcl-ido-text
+                                                     (ido-magic-forward-char arg)
+                                                     (setq jcl-ido-text ido-text
+                                                           ido-text 'fallback-from-cache
+                                                           ido-exit 'done)
+                                                     (exit-minibuffer)))))
+                                           ido-setup-hook)))
+                 (ido-completing-read "Cached File: "
+                                      (mapcar 'car file-cache-alist)))))
+    (if (eq file 'fallback-from-cache)
+        (progn
+          (setq minibuffer-history (delete 'fallback-from-cache minibuffer-history))
+          (ido-file-internal ido-default-file-method
+                             nil
+                             nil
+                             "Ido Find File: "
+                             nil
+                             jcl-ido-text))
 
-          ;; don't consider it.
-          (let ((record (assoc file file-cache-alist)))
-            (find-file
-             (expand-file-name
-              file
-              (if (= (length record) 2)
-                  (cadr record)
-                  (ido-completing-read (format "Find %s in dir: " file)
-                                       (cdr record)
-                                       nil
-                                       t)))))
+        ;; don't consider it.
+        (let ((record (assoc file file-cache-alist)))
+          (find-file
+           (expand-file-name
+            file
+            (if (= (length record) 2)
+                (cadr record)
+                (ido-completing-read (format "Find %s in dir: " file)
+                                     (cdr record)
+                                     nil
+                                     t)))))
 
-          )))
+        )))
 
 (defvar *find-file-wizard-alist* nil "find-file-wizard-alist")
 
 (defmacro find-file-wizard-add (name ff-fun map magic-key hook ret-variable fun)
   "hook where initial set could be defined\n
 "
+  (declare (debug t) (indent 4))
   `(let ((elt (cons ,name (list :ff-fun ',ff-fun :map ',map :key ',magic-key :hook ',hook :ret-variable ',ret-variable :fun ',fun))))
      (push elt *find-file-wizard-alist*)))
 
 
 (find-file-wizard-add "ido1"
-                      ;; ido-find-file
-                      (ido-file-internal ido-default-file-method
-                               nil
-                               nil
-                               "Ido Find File: "
-                               nil
-                               initial-string)
-                      ido-completion-map
-                      (kbd "C-f") ;; [(control ?f)]
-                      ido-setup-hook
-                      ido-text
-                      (progn
-                        (setq initial-string ido-text
-                              ido-text 'fallback
-                              ido-exit 'done)
-                        (exit-minibuffer)))
+    ;; ido-find-file
+    (ido-file-internal ido-default-file-method
+                       nil
+                       nil
+                       "Ido Find File: "
+                       nil
+                       initial-string)
+    ido-completion-map
+    (kbd "C-f") ;; [(control ?f)]
+  ido-setup-hook
+  ido-text
+  (progn
+    (setq initial-string ido-text
+          ido-text 'fallback
+          ido-exit 'done)
+    (exit-minibuffer)))
 
 ;; (setq *find-file-wizard-alist* nil)
 
@@ -144,127 +145,353 @@ Bind this command to C-x C-f to get:
   (setq *find-file-wizard-alist* nil)
 
   (find-file-wizard-add "lusty"
-                        ;; ido-find-file
-                        (lambda (initial-string)
-                          (message "initial-string 4: %s" initial-string)
-                          (setq minibuffer-history (delete 'fallback minibuffer-history))
-                          (lusty-file-explorer)
-                          (message "Ainitial-string 4: %s" initial-string))
-                        ido-completion-map
-                        (kbd "C-f") ;; [(control ?f)]
-                        ido-setup-hook
-                        ido-text
-                        (lambda (arg)
-                          (interactive "P")
-                          (progn
-                            (message "lambda4: %s" ido-text)
-                            (setq initial-string ido-text
-                                  ido-text 'fallback
-                                  ido-exit 'done)
-                            (message "Alambda4: %s" ido-text)
-                            (exit-minibuffer)
-                            (message "Alambda4x: %s" ido-text))))
+      ;; ido-find-file
+      (lambda (initial-string)
+        (message "finder initial-string 4: %s" initial-string)
+        (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
+        (prog1
+            (lusty-file-explorer)
+          (message "finder Ainitial-string 4: %s" initial-string)))
+      ido-completion-map
+      (kbd "C-f") ;; [(control ?f)]
+    ido-setup-hook
+    ido-text
+    (lambda (arg)
+      (interactive "P")
+      (progn
+        (message "magic lambda4: ido-text: %s initial-string: %s" ido-text initial-string)
+        (setq initial-string ido-text
+              ido-text 'fallback-wizard
+              ido-exit 'done)
+        (message "magic Alambda4: ido-text: %s initial-string: %s" ido-text initial-string)
+        (exit-minibuffer)
+        (message "magic Alambda4x: ido-text: %s initial-string: %s" ido-text initial-string))))
 
   (find-file-wizard-add "idoff"
-                        ;; ido-find-file
-                        (lambda (initial-string)
-                          (message "initial-string 3: %s" initial-string)
-                          (setq minibuffer-history (delete 'fallback minibuffer-history))
-                          (ido-find-file)
-                          (message "Ainitial-string 3: %s" initial-string))
-                        ido-completion-map
-                        (kbd "C-f") ;; [(control ?f)]
-                        ido-setup-hook
-                        ido-text
-                        (lambda (arg)
-                          (interactive "P")
-                          (progn
-                            (message "lambda3: %s" ido-text)
-                            (setq initial-string ido-text
-                                  ido-text 'fallback
-                                  ido-exit 'done)
-                            (message "Alambda3: %s" ido-text)
-                            (exit-minibuffer)
-                            (message "Alambda3x: %s" ido-text))))
+      ;; ido-find-file
+      (lambda (initial-string)
+        (message "finder initial-string 3: initial-string: %s" initial-string)
+        (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
+        (prog1
+            (ido-find-file)
+          (message "finder Ainitial-string 3: initial-string: %s" initial-string)))
+      ido-completion-map
+      (kbd "C-f") ;; [(control ?f)]
+    ido-setup-hook
+    ido-text
+    (lambda (arg)
+      (interactive "P")
+      (progn
+        (message "magic lambda3: ido-text: %s initial-string: %s" ido-text initial-string)
+        (setq initial-string ido-text
+              ;; ido-text 'fallback-wizard
+              ido-exit 'done)
+        (message "magic Alambda3: ido-text: %s initial-string: %s" ido-text initial-string)
+        (exit-minibuffer)
+        (message "magic Alambda3x: ido-text: %s initial-string: %s" ido-text initial-string))))
+
   (find-file-wizard-add "ido2"
-                        ;; ido-find-file
-                        (lambda (initial-string)
-                          (message "initial-string 2: %s" initial-string)
-                          (message "Ainitial-string 2: %s" initial-string)
-                          (setq minibuffer-history (delete 'fallback minibuffer-history))
-                          (ido-completing-read "2. Cached File: "
-                                               (mapcar 'car file-cache-alist))
-                          )
-                        ido-completion-map
-                        (kbd "C-f") ;; [(control ?f)]
-                        ido-setup-hook
-                        ido-text
-                        (lambda (arg)
-                          (interactive "P")
-                          (progn
-                            (message "lambda2: %s" ido-text)
-                            (setq initial-string ido-text
-                                  ido-text 'fallback
-                                  ido-exit 'done)
-                            (message "Alambda2: %s" ido-text)
-                            (exit-minibuffer)
-                            (message "Alambda2x: %s" ido-text))))
+      ;; ido-find-file
+      (lambda (initial-string)
+        (message "finder initial-string 2: initial-string: %s" initial-string)
+        (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
+        (prog1
+            (ido-completing-read "2. Cached File: "
+                                 (mapcar 'car file-cache-alist))
+          (message "finder Ainitial-string 2: initial-string: %s" initial-string)))
+      ido-completion-map
+      (kbd "C-f") ;; [(control ?f)]
+    ido-setup-hook
+    ido-text
+    (lambda (arg)
+      (interactive "P")
+      (progn
+        (message "magic lambda2: ido-text: %s initial-string: %s" ido-text initial-string)
+        (setq initial-string ido-text
+              ido-text 'fallback-wizard
+              ido-exit 'done)
+        (message "magic Alambda2: ido-text: %s initial-string: %s" ido-text initial-string)
+        (exit-minibuffer)
+        (message "magic Alambda2x: ido-text: %s initial-string" ido-text initial-string))))
 
 
   (find-file-wizard-add "ido1"
-                        ;; ido-find-file
-                        (lambda (initial-string)
-                          (message "initial-string 1: %s" initial-string)
-                          (message "Ainitial-string 1: %s" initial-string)
-                          (setq minibuffer-history (delete 'fallback minibuffer-history))
-                          (ido-completing-read "1. Cached File: "
-                                               (mapcar 'car file-cache-alist))
-                          )
-                        ido-completion-map
-                        (kbd "C-f") ;; [(control ?f)]
-                        ido-setup-hook
-                        ido-text
-                        (lambda (arg)
-                          (interactive "P")
-                          (progn
-                            (message "lambda1: %s" ido-text)
-                            (setq initial-string ido-text
-                                  ido-text 'fallback
-                                  ido-exit 'done)
-                            (message "Alambda1: %s" ido-text)
-                            (exit-minibuffer)
-                            (message "Alambda1x: %s" ido-text)))))
+      ;; ido-find-file
+      (lambda (initial-string)
+        (message "finder initial-string 1: initial-string: %s" initial-string)
+        (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
+        (prog1
+            (ido-completing-read "1. Cached File: "
+                                 (mapcar 'car file-cache-alist))
+          (message "finder Ainitial-string 1: initial-string: %s" initial-string)))
+      ido-completion-map
+      (kbd "C-f") ;; [(control ?f)]
+    ido-setup-hook
+    ido-text
+    (lambda (arg)
+      (interactive "P")
+      (progn
+        (message "magic lambda1: ido-text: %s initial-string: %s" ido-text initial-string)
+        (setq initial-string ido-text
+              ido-text 'fallback-wizard
+              ido-exit 'done)
+        (message "magic Alambda1: ido-text: %s initial-string: %s" ido-text initial-string)
+        (exit-minibuffer)
+        (message "magic Alambda1x: ido-text: %s initial-string: %s" ido-text initial-string))))
 
-(defun find-file-wizard ()
-  (interactive)
-  (let ((wizard-alist *find-file-wizard-alist*)
-        ;; (plist (cdar wizard-alist))
-        (file 'fallback)
-        initial-string)
-    (while (and wizard-alist (eq file 'fallback))
-      (message "fileB %s" file)
-      (message "TESTB")
-      (let ((plist (cdar wizard-alist)))
-        (setq file
-              (letf (((symbol-value (plist-get plist :hook))
-                      (cons (lambda ()
-                              (define-key (symbol-value (plist-get plist :map))
-                                  (kbd "C-f") ;; (plist-get plist :key)
-                                (plist-get plist :fun)))
-                            (symbol-value (plist-get plist :hook)))))
-                (funcall (plist-get plist :ff-fun) initial-string))
-              wizard-alist (cdr wizard-alist)))
-      (message "TESTA")
-      (message "fileA %s QQ" file))
-    ;; (exit-minibuffer)
-    ;; file
-    ))
+  (defvar initial-string "" nil)
+
+  (defun find-file-wizard ()
+    (interactive)
+    (let ((wizard-alist *find-file-wizard-alist*)
+          (plist (cdar *find-file-wizard-alist*))
+          (file 'fallback-wizard)
+          initial-string)
+      (while (and wizard-alist (eq file 'fallback-wizard))
+        (message "fileB: %s" file)
+        (message "TESTB")
+        (message "while initial-string: %s" initial-string)
+        (let ((plist (cdar wizard-alist)))
+          (setq file
+                (letf (((symbol-value (plist-get plist :hook))
+                        (cons (lambda ()
+                                (define-key (symbol-value (plist-get plist :map))
+                                    (kbd "C-f") ;; (plist-get plist :key)
+                                  (plist-get plist :fun)))
+                              (symbol-value (plist-get plist :hook)))))
+                  (message "letf initial-string: %s" initial-string)
+                  (funcall (plist-get plist :ff-fun) initial-string))
+                wizard-alist (or (cdr wizard-alist)
+                                 (setq wizard-alist *find-file-wizard-alist*))
+                ))
+        (message "TESTA")
+        (message "fileA: %s QQ" file))
+      ;; (exit-minibuffer)
+      ;; file
+      ))
+
+
+  (defun find-file-wizard ()
+    (interactive)
+    (let ((wizard-alist *find-file-wizard-alist*)
+          (plist (cdar *find-file-wizard-alist*))
+          (file 'fallback-wizard)
+          initial-string)
+      (while (and wizard-alist (eq file 'fallback-wizard))
+        (message "fileB: %s" file)
+        (message "TESTB")
+        (message "while initial-string: %s" initial-string)
+        (let ((plist (cdar wizard-alist)))
+          (setq file
+                (letf (((symbol-value (plist-get plist :hook))
+                        (cons (plist-get plist :fun)
+                              (symbol-value (plist-get plist :hook)))))
+                  (message "letf initial-string: %s" initial-string)
+                  (funcall (plist-get plist :ff-fun) initial-string))
+                wizard-alist (or (cdr wizard-alist)
+                                 (setq wizard-alist *find-file-wizard-alist*))
+                ))
+        (message "TESTA")
+        (message "fileA: %s QQ" file))
+      ;; (exit-minibuffer)
+      ;; file
+      ))
+
+
+
+  )
+
+
+
+
+(progn
+  (setq *find-file-wizard-alist* nil)
+
+  (find-file-wizard-add "lusty"
+      ;; ido-find-file
+      (lambda (initstr)
+        (message "finder initstr 4: %s" initstr)
+        (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
+        (prog1
+            (lusty-file-explorer)
+          (message "finder Ainitstr 4: %s" initstr)))
+      ido-completion-map
+      (kbd "C-f") ;; [(control ?f)]
+    ido-setup-hook
+    ido-text
+
+    (lambda ()
+      (define-key ido-completion-map
+          (kbd "C-f") ;; (plist-get plist :key)
+        (lambda (arg)
+          (interactive "P")
+          (progn
+            (message "magic lambda4: ido-text: %s initial-string: %s" ido-text initial-string)
+            (setq initial-string ido-text
+                  ido-text 'fallback-wizard
+                  ido-exit 'done)
+            (message "magic Alambda4: ido-text: %s initial-string: %s" ido-text initial-string)
+            (exit-minibuffer)
+            (throw 'nextff initial-string)
+            (message "magic Alambda4x: ido-text: %s initial-string: %s" ido-text initial-string))))))
+
+  (find-file-wizard-add "idoff"
+      ;; ido-find-file
+      (lambda (initstr)
+        (message "finder initstr 3: initstr: %s" initstr)
+        (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
+        (prog1
+            (ido-find-file)
+          (message "finder Ainitstr 3: initstr: %s" initstr)))
+      ido-completion-map
+      (kbd "C-f") ;; [(control ?f)]
+    ido-setup-hook
+    ido-text
+
+    (lambda ()
+      (define-key ido-completion-map
+          (kbd "C-f") ;; (plist-get plist :key)
+        (lambda (arg)
+          (interactive "P")
+          (progn
+            (message "magic lambda3: ido-text: %s initial-string: %s" ido-text initial-string)
+            (setq initial-string ido-text
+                  ido-text 'fallback-wizard
+                  ido-exit 'done)
+            (message "magic Alambda3: ido-text: %s initial-string: %s" ido-text initial-string)
+            ;; (exit-minibuffer)
+            (throw 'nextff initial-string)
+            (message "magic Alambda3x: ido-text: %s initial-string: %s" ido-text initial-string))))))
+
+  (find-file-wizard-add "ido2"
+      ;; ido-find-file
+      (lambda (initstr)
+        (message "finder initstr 2: initstr: %s" initstr)
+        (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
+        (prog1
+            (ido-completing-read "2. Cached File: "
+                                 (mapcar 'car file-cache-alist))
+          (message "finder Ainitstr 2: initstr: %s" initstr)))
+      ido-completion-map
+      (kbd "C-f") ;; [(control ?f)]
+    ido-setup-hook
+    ido-text
+
+    (lambda ()
+      (define-key ido-completion-map
+          (kbd "C-f") ;; (plist-get plist :key)
+        (lambda (arg)
+          (interactive "P")
+          (progn
+            (message "magic lambda2: ido-text: %s initial-string: %s" ido-text initial-string)
+            (setq initial-string ido-text
+                  ido-text 'fallback-wizard
+                  ido-exit 'done)
+            (message "magic Alambda2: ido-text: %s initial-string: %s" ido-text initial-string)
+            (exit-minibuffer)
+            (throw 'nextff initial-string)
+            (message "magic Alambda2x: ido-text: %s initial-string" ido-text initial-string))))))
+
+
+  (find-file-wizard-add "ido1"
+      ;; ido-find-file
+      (lambda (initstr)
+        (message "finder initstr 1: initstr: %s" initstr)
+        (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
+        (prog1
+            (ido-completing-read "1. Cached File: "
+                                 (mapcar 'car file-cache-alist))
+          (message "finder Ainitstr 1: initstr: %s" initstr)))
+      ido-completion-map
+      (kbd "C-f") ;; [(control ?f)]
+    ido-setup-hook
+    ido-text
+
+    (lambda ()
+      (define-key ido-completion-map
+          (kbd "C-f") ;; (plist-get plist :key)
+        (lambda (arg)
+          (interactive "P")
+          (progn
+            (message "magic lambda1: ido-text: %s initial-string: %s" ido-text initial-string)
+            (setq initial-string ido-text
+                  ido-text 'fallback-wizard
+                  ido-exit 'done)
+            (message "magic Alambda1: ido-text: %s initial-string: %s" ido-text initial-string)
+            ;; (exit-minibuffer)
+            (throw 'nextff  initial-string)
+            (message "magic Alambda1x: ido-text: %s initial-string: %s" ido-text initial-string))))))
+
+
+
+
+  ;; (defvar initial-string "" nil)
+
+
+
+  (defun find-file-wizard ()
+    (interactive)
+    (let ((wizard-alist *find-file-wizard-alist*)
+          (plist (cdar *find-file-wizard-alist*))
+          (file 'fallback-wizard)
+          initial-string)
+      (while (and wizard-alist (eq file 'fallback-wizard))
+        (message "fileB: %s" file)
+        (message "TESTB")
+        (message "while initial-string: %s" initial-string)
+        (letf ((plist (cdar wizard-alist)))
+          (setq file
+                (letf (((symbol-value (plist-get plist :hook))
+                        (cons (plist-get plist :fun)
+                              (symbol-value (plist-get plist :hook)))))
+                  (message "letf initial-string: %s" initial-string)
+                  (funcall (plist-get plist :ff-fun) initial-string))
+                wizard-alist (or (cdr wizard-alist)
+                                 (setq wizard-alist *find-file-wizard-alist*))
+                ))
+        (message "TESTA")
+        (message "fileA: %s QQ" file))
+      ;; (exit-minibuffer)
+      ;; file
+      ))
+
+
+  (defun find-file-wizard ()
+    (interactive)
+    (let ((wizard-alist *find-file-wizard-alist*)
+          (plist (cdar *find-file-wizard-alist*))
+          (file 'fallback-wizard)
+          initial-string)
+      (while (and wizard-alist ;; (eq file 'fallback-wizard)
+                  )
+        (message "fileB: %s" file)
+        (message "TESTB")
+        (message "while initial-string: %s" initial-string)
+        (letf ((plist (cdar wizard-alist)))
+          (setq file
+                (catch 'nextff
+                  (letf (((symbol-value (plist-get plist :hook))
+                          (cons (plist-get plist :fun)
+                                (symbol-value (plist-get plist :hook)))))
+                    (message "letf initial-string: %s" initial-string)
+                    (funcall (plist-get plist :ff-fun) initial-string)))
+                wizard-alist (or (cdr wizard-alist)
+                                 (setq wizard-alist *find-file-wizard-alist*))
+                ))
+        (message "TESTA")
+        (message "fileA: %s QQ" file))
+      ;; (exit-minibuffer)
+      ;; file
+      ))
+
+  )
 
 
 
 
 
-;; (find-file-wizard)
+;; (global-set-key-if-unbind (kbd "s-x s-f") 'find-file-wizard)
+;; ( find-file-wizard)
 
 
 (defmacro macmsg (msg)
@@ -319,7 +546,7 @@ Bind this command to C-x C-f to get:
     ))
 
 
-,mhook ((lambda nil (define-key map key (funcall (lambda nil (` (lambda (arg) (interactive P) (, fun))))))) . ido-setup-hook)
+;; ,mhook ((lambda nil (define-key map key (funcall (lambda nil (` (lambda (arg) (interactive P) (, fun))))))) . ido-setup-hook)
 ;; (find-file-wizard)
 
 
@@ -353,18 +580,18 @@ Bind this command to C-x C-f to get:
 
 (let* (jcl-ido-text
        (file (let ((ido-setup-hook (cons (lambda ()
-                                               (define-key ido-completion-map [(control ?f)]
-                                                 (lambda (arg)
-                                                   (interactive "P")
-                                                   (if jcl-ido-text
-                                                       (ido-magic-forward-char arg)
-                                                       (setq jcl-ido-text ido-text
-                                                             ido-text 'fallback-from-cache
-                                                             ido-exit 'done)
-                                                       (exit-minibuffer)))))
-                                             ido-setup-hook)))
-                   (ido-completing-read "Cached File: "
-                                        (mapcar 'car file-cache-alist))))))
+                                           (define-key ido-completion-map [(control ?f)]
+                                             (lambda (arg)
+                                               (interactive "P")
+                                               (if jcl-ido-text
+                                                   (ido-magic-forward-char arg)
+                                                   (setq jcl-ido-text ido-text
+                                                         ido-text 'fallback-from-cache
+                                                         ido-exit 'done)
+                                                   (exit-minibuffer)))))
+                                         ido-setup-hook)))
+               (ido-completing-read "Cached File: "
+                                    (mapcar 'car file-cache-alist))))))
 
 
 (defun funA ()
@@ -397,10 +624,119 @@ Bind this command to C-x C-f to get:
   (dolist (e alist)
     (destructuring-bind (variable . function) e
       (letf (((symbol-value variable)
-                 (read-from-minibuffer
-                  (format "value for %s: "
-                          variable))))
+              (read-from-minibuffer
+               (format "value for %s: "
+                       variable))))
         (funcall function)))))
+
+
+
+
+
+
+
+(progn
+
+  (defvar *find-file-wizard-alist* nil "find-file-wizard-alist")
+
+  (defun find-file-wizard-add (name ff setup)
+  "hook where initial set could be defined\n
+"
+  (let ((elt (cons name (list :ff ff :setup setup))))
+    (push elt *find-file-wizard-alist*)))
+
+
+  (setq *find-file-wizard-alist* nil)
+
+  (find-file-wizard-add "lusty"
+      ;; ido-find-file
+      (lambda (initstr)
+        ;; (message "finder initstr 4: %s" initstr)
+        (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
+        (prog1
+            (lusty-file-explorer)
+          ;; (message "finder Ainitstr 4: %s" initstr)
+          ))
+
+      (lambda (ff initial-string)
+        (let ((lusty-setup-hook
+               (cons
+                (lambda ()
+                  (define-key lusty-mode-map
+                      (kbd "C-f") ;; (plist-get plist :key)
+                    (lambda (arg)
+                      (interactive "P")
+                      (progn
+                        ;; (message "magic lambda4: ido-text: %s initial-string: %s" ido-text initial-string)
+                        (setq initial-string ido-text
+                              ;; ido-text 'fallback-wizard
+                              ;; ido-exit 'done
+                              )
+                        ;; (message "magic Alambda4: ido-text: %s initial-string: %s" ido-text initial-string)
+                        ;; (exit-minibuffer)
+                        (throw 'nextff initial-string)
+                        ;; (message "magic Alambda4x: ido-text: %s initial-string: %s" ido-text initial-string)
+                        ))))
+                lusty-setup-hook)))
+          (funcall ff initial-string))))
+
+  (find-file-wizard-add "idoff"
+      ;; ido-find-file
+      (lambda (initstr)
+        ;; (message "finder initstr 3: initstr: %s" initstr)
+        (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
+        (prog1
+            (ido-find-file)
+          ;; (message "finder Ainitstr 3: initstr: %s" initstr)
+          ))
+
+
+      (lambda (ff initial-string)
+        (let ((ido-setup-hook
+               (cons
+                (lambda ()
+                  (define-key ido-completion-map ;; ido-mode-map
+                      (kbd "C-f") ;; (plist-get plist :key)
+                    (lambda (arg)
+                      (interactive "P")
+                      (progn
+                        ;; (message "magic lambda3: ido-text: %s initial-string: %s" ido-text initial-string)
+                        (setq initial-string ido-text
+                              ido-text 'fallback-wizard
+                              ido-exit 'done)
+                        ;; (message "magic Alambda3: ido-text: %s initial-string: %s" ido-text initial-string)
+                        ;; (exit-minibuffer)
+                        (throw 'nextff initial-string)
+                        ;; (message "magic Alambda3x: ido-text: %s initial-string: %s" ido-text initial-string)
+                        ))))
+                  ido-setup-hook)))
+              (funcall ff initial-string))))
+
+
+
+    (defun find-file-wizard ()
+      (interactive)
+      (let ((wizard-alist *find-file-wizard-alist*)
+            (plist (cdar *find-file-wizard-alist*))
+            ;; (file 'fallback-wizard)
+            initial-string
+            abcd)
+        (while (and wizard-alist ;; (eq file 'fallback-wizard)
+                  )
+          ;; (message "fileB: %s" file)
+          (message "TESTB")
+          (message "while initial-string: %s" initial-string)
+          (letf ((plist (cdar wizard-alist)))
+            (setq abcd
+                  (catch 'nextff
+                    (funcall (plist-get plist :setup) (plist-get plist :ff) initial-string))
+                  wizard-alist (or (cdr wizard-alist)
+                                   (setq wizard-alist *find-file-wizard-alist*))))
+          (message "TESTA")
+          ;; (message "fileA: %s QQ" file)
+          ))))
+
+
 
 (provide 'find-file-config)
 ;;; find-file-config.el ends here
