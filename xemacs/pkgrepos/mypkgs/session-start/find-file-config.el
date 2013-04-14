@@ -143,14 +143,58 @@ Bind this command to C-x C-f to get:
 (progn
   (setq *find-file-wizard-alist* nil)
 
+  (find-file-wizard-add "lusty"
+                        ;; ido-find-file
+                        (lambda (initial-string)
+                          (message "initial-string 4: %s" initial-string)
+                          (setq minibuffer-history (delete 'fallback minibuffer-history))
+                          (lusty-file-explorer)
+                          (message "Ainitial-string 4: %s" initial-string))
+                        ido-completion-map
+                        (kbd "C-f") ;; [(control ?f)]
+                        ido-setup-hook
+                        ido-text
+                        (lambda (arg)
+                          (interactive "P")
+                          (progn
+                            (message "lambda4: %s" ido-text)
+                            (setq initial-string ido-text
+                                  ido-text 'fallback
+                                  ido-exit 'done)
+                            (message "Alambda4: %s" ido-text)
+                            (exit-minibuffer)
+                            (message "Alambda4x: %s" ido-text))))
+
+  (find-file-wizard-add "idoff"
+                        ;; ido-find-file
+                        (lambda (initial-string)
+                          (message "initial-string 3: %s" initial-string)
+                          (setq minibuffer-history (delete 'fallback minibuffer-history))
+                          (ido-find-file)
+                          (message "Ainitial-string 3: %s" initial-string))
+                        ido-completion-map
+                        (kbd "C-f") ;; [(control ?f)]
+                        ido-setup-hook
+                        ido-text
+                        (lambda (arg)
+                          (interactive "P")
+                          (progn
+                            (message "lambda3: %s" ido-text)
+                            (setq initial-string ido-text
+                                  ido-text 'fallback
+                                  ido-exit 'done)
+                            (message "Alambda3: %s" ido-text)
+                            (exit-minibuffer)
+                            (message "Alambda3x: %s" ido-text))))
   (find-file-wizard-add "ido2"
                         ;; ido-find-file
                         (lambda (initial-string)
                           (message "initial-string 2: %s" initial-string)
+                          (message "Ainitial-string 2: %s" initial-string)
                           (setq minibuffer-history (delete 'fallback minibuffer-history))
                           (ido-completing-read "2. Cached File: "
-                                        (mapcar 'car file-cache-alist))
-                          (message "Ainitial-string 2: %s" initial-string))
+                                               (mapcar 'car file-cache-alist))
+                          )
                         ido-completion-map
                         (kbd "C-f") ;; [(control ?f)]
                         ido-setup-hook
@@ -198,7 +242,8 @@ Bind this command to C-x C-f to get:
         (file 'fallback)
         initial-string)
     (while (and wizard-alist (eq file 'fallback))
-      (message "file %s" file)
+      (message "fileB %s" file)
+      (message "TESTB")
       (let ((plist (cdar wizard-alist)))
         (setq file
               (letf (((symbol-value (plist-get plist :hook))
@@ -209,7 +254,8 @@ Bind this command to C-x C-f to get:
                             (symbol-value (plist-get plist :hook)))))
                 (funcall (plist-get plist :ff-fun) initial-string))
               wizard-alist (cdr wizard-alist)))
-      (message "TEST"))
+      (message "TESTA")
+      (message "fileA %s QQ" file))
     ;; (exit-minibuffer)
     ;; file
     ))
