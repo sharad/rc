@@ -147,12 +147,9 @@ Bind this command to C-x C-f to get:
                         ;; ido-find-file
                         (lambda (initial-string)
                           (message "initial-string 2: %s" initial-string)
-                          (ido-file-internal ido-default-file-method
-                                             nil
-                                             nil
-                                             "Ido 2 Find File: "
-                                             nil
-                                             (or initial-string ""))
+                          (setq minibuffer-history (delete 'fallback minibuffer-history))
+                          (ido-completing-read "2. Cached File: "
+                                        (mapcar 'car file-cache-alist))
                           (message "Ainitial-string 2: %s" initial-string))
                         ido-completion-map
                         (kbd "C-f") ;; [(control ?f)]
@@ -175,12 +172,9 @@ Bind this command to C-x C-f to get:
                         (lambda (initial-string)
                           (message "initial-string 1: %s" initial-string)
                           (message "Ainitial-string 1: %s" initial-string)
-                          (ido-file-internal ido-default-file-method
-                                             nil
-                                             nil
-                                             "Ido 1 Find File: "
-                                             nil
-                                             (or initial-string ""))
+                          (setq minibuffer-history (delete 'fallback minibuffer-history))
+                          (ido-completing-read "1. Cached File: "
+                                               (mapcar 'car file-cache-alist))
                           )
                         ido-completion-map
                         (kbd "C-f") ;; [(control ?f)]
@@ -213,9 +207,7 @@ Bind this command to C-x C-f to get:
                                   (kbd "C-f") ;; (plist-get plist :key)
                                 (plist-get plist :fun)))
                             (symbol-value (plist-get plist :hook)))))
-                (setq minibuffer-history (delete 'fallback minibuffer-history))
-                (funcall (plist-get plist :ff-fun) initial-string)
-                (setq minibuffer-history (delete 'fallback minibuffer-history)))
+                (funcall (plist-get plist :ff-fun) initial-string))
               wizard-alist (cdr wizard-alist)))
       (message "TEST"))
     ;; (exit-minibuffer)
