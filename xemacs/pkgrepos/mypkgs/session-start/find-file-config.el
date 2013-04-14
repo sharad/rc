@@ -651,12 +651,8 @@ Bind this command to C-x C-f to get:
   (find-file-wizard-add "lusty"
       ;; ido-find-file
       (lambda (initstr)
-        ;; (message "finder initstr 4: %s" initstr)
         (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
-        (prog1
-            (lusty-file-explorer)
-          ;; (message "finder Ainitstr 4: %s" initstr)
-          ))
+        (lusty-file-explorer))
 
       (lambda (ff initial-string)
         (let ((lusty-setup-hook
@@ -666,29 +662,20 @@ Bind this command to C-x C-f to get:
                       (kbd "s-f") ;; (plist-get plist :key)
                     (lambda (arg)
                       (interactive "P")
-                      (progn
-                        ;; (message "magic lambda4: ido-text: %s initial-string: %s" ido-text initial-string)
-                        (setq initial-string ido-text
-                              ;; ido-text 'fallback-wizard
-                              ;; ido-exit 'done
-                              )
-                        ;; (message "magic Alambda4: ido-text: %s initial-string: %s" ido-text initial-string)
-                        ;; (exit-minibuffer)
-                        (throw 'nextff (list 'next (list (cons :initial-string initial-string))))
-                        ;; (message "magic Alambda4x: ido-text: %s initial-string: %s" ido-text initial-string)
-                        ))))
+                      (setq initial-string ido-text
+                            ;; ido-text 'fallback-wizard
+                            ;; ido-exit 'done
+                            )
+                      ;; (exit-minibuffer)
+                      (throw 'nextff (list 'next (list (cons :initial-string initial-string)))))))
                 lusty-setup-hook)))
           (funcall ff initial-string))))
 
   (find-file-wizard-add "idoff"
       ;; ido-find-file
       (lambda (initstr)
-        ;; (message "finder initstr 3: initstr: %s" initstr)
         (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
-        (prog1
-            (ido-find-file)
-          ;; (message "finder Ainitstr 3: initstr: %s" initstr)
-          ))
+        (ido-find-file))
 
 
       (lambda (ff initial-string)
@@ -700,7 +687,6 @@ Bind this command to C-x C-f to get:
                     (lambda (arg)
                       (interactive "P")
                       (progn
-                        ;; (message "magic lambda3: ido-text: %s initial-string: %s" ido-text initial-string)
                         (setq initial-string ido-text
                               ido-text 'fallback-wizard
                               ido-exit 'done)
@@ -709,7 +695,7 @@ Bind this command to C-x C-f to get:
                         (throw 'nextff (list 'next (list (cons :initial-string initial-string))))
                         ;; (message "magic Alambda3x: ido-text: %s initial-string: %s" ido-text initial-string)
                         ))))
-                  ido-setup-hook)))
+                ido-setup-hook)))
               (funcall ff initial-string))))
 
 
@@ -730,10 +716,7 @@ Bind this command to C-x C-f to get:
                   (catch 'nextff
                     (funcall (plist-get plist :setup) (plist-get plist :ff) initial-string))
                   wizard-alist (or (cdr wizard-alist)
-                                   (setq wizard-alist *find-file-wizard-alist*))))
-          (message "TESTA")
-          ;; (message "fileA: %s QQ" file)
-          ))))
+                                   (setq wizard-alist *find-file-wizard-alist*))))))))
 
 
 
