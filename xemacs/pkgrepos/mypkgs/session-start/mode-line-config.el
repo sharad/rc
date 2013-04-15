@@ -238,6 +238,7 @@ want to use in the modeline *in lieu of* the original.")
   (deh-reqiure-maybe (progn modeline-posn ;; http://www.emacswiki.org/emacs/ModeLinePosition
                             nyan-mode ;; http://www.emacswiki.org/emacs/NyanMode http://nyan-mode.buildsomethingamazing.com/
                             sml-modeline ;; http://www.emacswiki.org/emacs/SmlModeLine
+                            diminish ;; http://www.masteringemacs.org/articles/2012/09/10/hiding-replacing-modeline-strings/#comment-14637
                             )
 
 
