@@ -66,6 +66,34 @@
                 lusty-setup-hook)))
           (funcall ff initial-string))))
 
+
+  (find-file-wizard-add ""
+      ;; ido-find-file
+      (lambda (initstr)
+        (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
+        (find-same-file-in-relative-dir))
+
+
+      (lambda (ff initial-string)
+        (let ((ido-setup-hook
+               (cons
+                (lambda ()
+                  (define-key ido-completion-map ;; ido-mode-map
+                      (kbd "s-f") ;; (plist-get plist :key)
+                    (lambda (arg)
+                      (interactive "P")
+                      (setq initial-string ido-text
+                            ido-text 'fallback-wizard
+                            ido-exit 'done)
+                      ;; (message "magic Alambda3: ido-text: %s initial-string: %s" ido-text initial-string)
+                      ;; (exit-minibuffer)
+                      (throw 'nextff (list 'next (list (cons :initial-string initial-string))))
+                      ;; (message "magic Alambda3x: ido-text: %s initial-string: %s" ido-text initial-string)
+                      )))
+                ido-setup-hook)))
+          (funcall ff initial-string))))
+
+
   (find-file-wizard-add "idoff"
       ;; ido-find-file
       (lambda (initstr)
@@ -108,7 +136,9 @@
                  (initial-string (plist-get (cdr retval) :initial-string)))
             (setq retval
                   (catch 'nextff
-                    (funcall (plist-get plist :setup) (plist-get plist :ff) initial-string))
+                    (condition-case e
+                        (funcall (plist-get plist :setup) (plist-get plist :ff) initial-string)
+                      (error '(next))))
                   wizard-alist (or (cdr wizard-alist)
                                    (setq wizard-alist *find-file-wizard-alist*)))))))
 

@@ -42,7 +42,30 @@
      ffip-project-root (ido-read-directory-name "FFip Root Dir: " ffip-project-root))))
 
 (deh-require-maybe lusty-explorer
-  )
+
+  (find-file-wizard-add
+   "lusty"
+   ;; ido-find-file
+   (lambda (initstr)
+     (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
+     (lusty-file-explorer))
+
+   (lambda (ff initial-string)
+     (let ((lusty-setup-hook
+            (cons
+             (lambda ()
+               (define-key lusty-mode-map
+                   (kbd "s-f") ;; (plist-get plist :key)
+                 (lambda (arg)
+                   (interactive "P")
+                   (setq initial-string ido-text
+                         ;; ido-text 'fallback-wizard
+                         ;; ido-exit 'done
+                         )
+                   ;; (exit-minibuffer)
+                   (throw 'nextff (list 'next (list (cons :initial-string initial-string)))))))
+             lusty-setup-hook)))
+       (funcall ff initial-string)))))
 
 (deh-require-maybe ff-paths
   (ff-paths-install))
