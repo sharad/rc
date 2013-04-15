@@ -1,0 +1,1 @@
+../modeline/minor-mode-hack.el
