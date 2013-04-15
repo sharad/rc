@@ -106,7 +106,12 @@
 (with-current-buffer "*Messages*"
   (copy-to-buffer "*emacs-startup-log*" (point-min) (point-max))
   ;; (with-temp-file file body)
-  (write-region (point-min) (point-max) "~/.emacs.d/startup.log")
+  (set-buffer-file-coding-system
+   (if (coding-system-p 'utf-8-emacs)
+       'utf-8-emacs
+       'emacs-mule))
+  (write-file (expand-file-name "~/.emacs.d/startup.log"))
+  ;; (write-region (point-min) (point-max) "~/.emacs.d/startup.log")
   ;; (write-current-buffer "*emacs-startup-log*"
   ;;                       )
   (setq messages-buffer-max-lines 2000

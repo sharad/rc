@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+(require 'find-file-config)
+
 (deh-require-maybe find-dired
   )
 
