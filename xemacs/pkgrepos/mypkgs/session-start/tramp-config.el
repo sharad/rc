@@ -17,7 +17,8 @@
     (setq
      ;; ido-enable-tramp-completion t ;this guy was missing
      ;; ido-enable-tramp-completion nil ;this guy was missing
-     ido-enable-tramp-completion t ;this guy was missing
+     ido-enable-tramp-completion t ;Very much require to complete tramp user /server names.
+     ido-record-ftp-work-directories t ;must be true for tramp partial match, very useful.
      ))
 
 
