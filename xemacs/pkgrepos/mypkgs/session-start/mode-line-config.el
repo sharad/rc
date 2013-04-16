@@ -24,6 +24,13 @@
 
 ;;; Code:
 
+
+;; mode-line-format
+
+(setq global-mode-string
+      '("" win:mode-string " " display-time-string " " appt-mode-string))
+
+
 (deh-section "ModeLineDirtrack"
   ;; emacswiki: http://www.emacswiki.org/emacs/ModeLineDirtrack
   (defun add-mode-line-dirtrack ()
@@ -38,14 +45,14 @@
            '(:eval
              (if (frame-parameter (selected-frame) 'frame-spec-id)
                  (concat
-                  (file-name-nondirectory (frame-parameter (selected-frame) 'frame-spec-id))
-                  " ")))
+                  " "
+                  (file-name-nondirectory (frame-parameter (selected-frame) 'frame-spec-id)))))
             (cons
              '(:eval
                (if (car sidebrain-current-stack)
                    (concat
-                    (car sidebrain-current-stack)
-                    " ")))
+                    " "
+                    (car sidebrain-current-stack))))
              (cdr pos)))))
 
 
@@ -235,7 +242,7 @@ want to use in the modeline *in lieu of* the original.")
 
 (deh-section "test"
 
-  (deh-reqiure-maybe (progn modeline-posn ;; http://www.emacswiki.org/emacs/ModeLinePosition
+  (deh-require-maybe (progn modeline-posn ;; http://www.emacswiki.org/emacs/ModeLinePosition
                             nyan-mode ;; http://www.emacswiki.org/emacs/NyanMode http://nyan-mode.buildsomethingamazing.com/
                             sml-modeline ;; http://www.emacswiki.org/emacs/SmlModeLine
                             diminish ;; http://www.masteringemacs.org/articles/2012/09/10/hiding-replacing-modeline-strings/#comment-14637
@@ -244,9 +251,9 @@ want to use in the modeline *in lieu of* the original.")
 
                      ;; (:eval (list (nyan-create)))
 
-                     )
+                     ))
 
-  )
+
 
 
 

@@ -16,8 +16,21 @@
   (deh-require-maybe ido
     (setq
      ;; ido-enable-tramp-completion t ;this guy was missing
-     ido-enable-tramp-completion nil ;this guy was missing
+     ;; ido-enable-tramp-completion nil ;this guy was missing
+     ido-enable-tramp-completion t ;this guy was missing
      ))
+
+
+  (deh-section "ido tramp problem"
+    (when nil
+      (setq ido-dir-file-cache (remove-if-not
+        (lambda (f)
+            (if (ido-is-ftp-directory (car f))
+                 (eq (caadr f) 'ftp)
+                 t))
+            ido-dir-file-cache))
+      ))
+
 
   (setq ;; tramp-default-method "ssh"
    ;; tramp-default-method "scpc" <- default

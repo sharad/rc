@@ -16,7 +16,26 @@
 ;;;; ;;     (iswitchb-default-keybindings))
 ;;;;
 ;;;; ;;in the .emacs
+
+;; (load-file "~/ido.elc")
+(eval-after-load "ido"
+  '(defun ido-is-ftp-directory (&optional dir)
+    (string-match
+     (if nil ;; ido-enable-tramp-completion
+         "\\`/[^/:][^/:]+:"  ;; like tramp-file-name-regexp-unified, but doesn't match single drive letters
+         "\\`/[^/:][^/:]+:/")
+     (or dir ido-current-directory))))
+
+;; (when t
 (deh-require-maybe ido
+
+  (defun ido-is-ftp-directory (&optional dir)
+    (string-match
+     (if nil ;; ido-enable-tramp-completion
+         "\\`/[^/:][^/:]+:"  ;; like tramp-file-name-regexp-unified, but doesn't match single drive letters
+         "\\`/[^/:][^/:]+:/")
+     (or dir ido-current-directory)))
+
   (setq ido-default-buffer-method 'maybe-frame)
 
   (ido-mode t)

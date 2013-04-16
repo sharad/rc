@@ -71,13 +71,17 @@
   ;;  (pop *find-file-wizard-alist*)
   ;; (define-key minibuffer-local-map (kbd "C-f") 'forward-char)
 
+  (find-file-wizard-add "ffip"
+      ;; ido-find-file
+      (lambda (initstr)
+        (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
+        (ffip)))
 
   (find-file-wizard-add "contentswitch"
       ;; ido-find-file
       (lambda (initstr)
         (setq minibuffer-history (delete 'fallback-wizard minibuffer-history))
         (contentswitch)))
-
 
   (find-file-wizard-add "find-file"
       ;; ido-find-file
@@ -204,10 +208,9 @@
                  (initial-string (plist-get (cdr retval) :initial-string)))
             (setq retval
                   (catch 'nextff
-                    ;; (condition-case e
+                    (condition-case e
                         (funcall (plist-get plist :setup) (plist-get plist :ff) initial-string)
-                        ;; (error '(next)))
-                    )
+                      (error '(next))))
                   wizard-alist (or (cdr wizard-alist)
                                    (setq wizard-alist *find-file-wizard-alist*)))))))
 

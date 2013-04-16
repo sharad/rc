@@ -62,7 +62,14 @@
 
     (autoload 'find-sln "sln-mode")))
 
-(deh-require-maybe project-buffer-mode)
+(deh-require-maybe project-buffer-mode
+
+  ;; check
+  ;; project-buffer-mode-p-go-to-attached-project-buffer
+  ;; project-buffer-mode-p-register-project-to-file
+  ;; project-buffer-mode-p-link-buffers-to-current-project
+
+  )
 
 (deh-require-maybe fsproject
 
