@@ -30,7 +30,7 @@
   (defvar *find-file-wizard-alist* nil "find-file-wizard-alist")
   (setq *find-file-wizard-alist* nil)
 
-  (defun find-file-wizard-add (name ff &optional setup)
+  (defun find-file-wizard-add (name ff &optional setup failval)
     "hook where initial set could be defined\n
 "
 
@@ -63,8 +63,8 @@
     (if (assoc name *find-file-wizard-alist*)
         (setcdr
          (assoc name *find-file-wizard-alist*)
-         (list :ff ff :setup setup))
-        (let ((elt (cons name (list :ff ff :setup setup))))
+         (list :ff ff :setup setup :failval failval))
+        (let ((elt (cons name (list :ff ff :setup setup :failval failval))))
           (push elt *find-file-wizard-alist*))))
 
 
@@ -206,13 +206,15 @@
           ;; (message "fileB: %s" file)
           (letf ((plist (cdar wizard-alist))
                  (initial-string (plist-get (cdr retval) :initial-string)))
-            (setq retval
-                  (catch 'nextff
-                    (condition-case e
-                        (funcall (plist-get plist :setup) (plist-get plist :ff) initial-string)
-                      (error '(next))))
-                  wizard-alist (or (cdr wizard-alist)
-                                   (setq wizard-alist *find-file-wizard-alist*)))))))
+            (let ((failval  (plist-get plist :failval))
+                  (ffretval (catch 'nextff
+                              (condition-case e
+                                  (funcall (plist-get plist :setup) (plist-get plist :ff) initial-string)
+                                (error '(next))))))
+              (if (eq failval ffretval)
+                  (setq retval '(next)))
+              (setq wizard-alist (or (cdr wizard-alist)
+                                     (setq wizard-alist *find-file-wizard-alist*))))))))
 
 
     (global-set-key-if-unbind (kbd "s-x s-f") 'find-file-wizard))

@@ -27,10 +27,22 @@
 
 (require 'general-testing)
 
-(setq
- vc-follow-symlinks
- ;; see http://www.gnu.org/software/emacs/manual/html_node/emacs/General-VC-Options.html
- t)
+(deh-section  "vc check rcs-backup-mode also"
+ (setq
+  vc-follow-symlinks
+  ;; see http://www.gnu.org/software/emacs/manual/html_node/emacs/General-VC-Options.html
+  t)
+
+
+ (defvar vc-donot-follow-symlinks '() "")
+
+ (defadvice vc-find-file-hook (before disable-vc-follow-symlinks () activate)
+   (message "disable-vc-follow-symlinks %s" vc-follow-symlinks)
+   (if (and
+        buffer-file-name
+        (string-match "\\.gpg$" buffer-file-name))
+       (set (make-local-variable 'vc-follow-symlinks) nil))))
+
 
 (unless vc-follow-symlinks
   (add-hook 'find-file-hook
