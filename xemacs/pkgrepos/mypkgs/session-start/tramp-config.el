@@ -47,6 +47,32 @@
                                  '((tramp-parse-sconfig "/etc/ssh_config")
                                    (tramp-parse-sconfig "~/.ssh/config")))
 
+  (ignore-errors
+    (deh-section "GVFS DBUS TRAMP IDO Avahi"
+     ;; it is not working find why, get it working
+     (deh-require-maybe tramp-gvfs
+       ;; need it.
+       ;; http://comments.gmane.org/gmane.emacs.tramp/6704
+       ;; http://www.gnu.org/software/emacs/manual/html_node/tramp/GVFS-based-methods.html
+      )))
+
+
+
+  (deh-section "All Tramp"
+
+    (deh-require-maybe (progn
+                         tramp-cache
+                         tramp-cmds
+                         tramp-compat
+                         tramp-fish
+                         tramp-ftp
+                         ;; tramp-gvfs
+                         tramp-gw
+                         tramp-imap
+                         tramp-smb
+                         tramp-uu
+                         trampver)))
+
 
   ;; (defun sudo-edit (&optional arg)
   ;;   (interactive "p")
