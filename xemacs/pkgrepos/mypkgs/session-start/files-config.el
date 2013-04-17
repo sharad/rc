@@ -311,7 +311,7 @@ directory, select directory. Lastly the file is opened."
       (message "calling ff mode"))))
 
 
-(defun find-same-file-in-relative-dir (&optional dir-only)
+(defun find-same-file-in-relative-dir (updircount &optional dir-only)
   (interactive "P")
   (when buffer-file-name
       (let* ((filename buffer-file-name)
@@ -387,6 +387,21 @@ to do VC operation."
           (find-alternate-file (file-truename buffer-file-name))
           (message "file %s is true file, not doing anything." buffer-file-name))
       (message "No file is associated with buffer.")))
+
+
+(ido-no-final-slash
+ (expand-file-name
+  (file-name-directory "/sdfsd/asfdas/asasd")))
+
+
+
+(defun testpa (c)
+  (interactive "P")
+  ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Prefix-Command-Arguments.html
+  (message "prefix c %d"
+           (if c
+               (prefix-numeric-value c)
+               0)))
 
 
 
