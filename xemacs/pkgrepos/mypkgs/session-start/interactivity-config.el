@@ -36,6 +36,8 @@
          "\\`/[^/:][^/:]+:/")
      (or dir ido-current-directory)))
 
+  ;; (input-pending-p)
+
   '(defun ido-make-merged-file-list (text auto wide)
     (let (res)
       (message "Searching for `%s'...." text)
