@@ -311,7 +311,7 @@ directory, select directory. Lastly the file is opened."
       (message "calling ff mode"))))
 
 
-(defun find-same-file-in-relative-dir (updircount &optional dir-only)
+(defun find-same-file-in-relative-dir ( &optional updircount dir-only)
   (interactive "P")
   (when buffer-file-name
       (let* ((filename buffer-file-name)
@@ -373,7 +373,8 @@ directory, select directory. Lastly the file is opened."
                     (call-interactively
                      (or (command-remapping 'find-file)
                          'find-file)))
-                  (find-file selected-file-name))
+                  (find-file selected-file-name)
+                  t)
               (message "No match present."))))))
 
 

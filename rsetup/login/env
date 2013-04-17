@@ -60,7 +60,7 @@ fi
         if which $HOME/bin/ecryptfs-mount-private 2>&1 ; then
 
             if [  -e $PRIVATE_DIR ] ; then
-                $HOME/bin/ecryptfs-mount-private
+                timeout 7 $HOME/bin/ecryptfs-mount-private
             fi
 
             if [ -x /usr/bin/keychain ] ; then
@@ -84,13 +84,13 @@ fi
                 fi
             fi
 
-            if [  -e $PRIVATE_DIR ] ; then
-                if [ -x /sbin/umount.ecryptfs_private ] ; then
-                    /sbin/umount.ecryptfs_private
-                else
-                    ecryptfs-umount-private
-                fi
-            fi
+            # if [  -e $PRIVATE_DIR ] ; then
+            #     if [ -x /sbin/umount.ecryptfs_private ] ; then
+            #         /sbin/umount.ecryptfs_private
+            #     else
+            #         ecryptfs-umount-private
+            #     fi
+            # fi
 
         fi
     fi

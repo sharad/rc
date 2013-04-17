@@ -52,6 +52,11 @@
 
   (defvar rcs-backup-vc-file nil "")
 
+  (if (file-remote-p buffer-file-name)
+      (tramp-handle-executable-find "ci")
+      (executable-find "ci"))
+
+
   (defun vc-find-backend (file &optional backends)
     (catch 'found
       (mapc
@@ -155,7 +160,7 @@
       ;; (message "defadvise filename %s %s" from-name to-name)
       (condition-case e
           (put-file-in-rcs from-name)
-          ('error nil))))
+        ('error (message "Error: %s" e)))))
 
 
   (defadvice vc-rcs-find-file-hook (after backup-buffer-copy-in-rcs-ff () disable)

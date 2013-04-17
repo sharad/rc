@@ -37,7 +37,7 @@
  (defvar vc-donot-follow-symlinks '() "")
 
  (defadvice vc-find-file-hook (before disable-vc-follow-symlinks () activate)
-   (message "disable-vc-follow-symlinks %s" vc-follow-symlinks)
+   ;; (message "disable-vc-follow-symlinks %s" vc-follow-symlinks)
    (if (and
         buffer-file-name
         (string-match "\\.gpg$" buffer-file-name))

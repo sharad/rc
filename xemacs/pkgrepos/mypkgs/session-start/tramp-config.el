@@ -153,24 +153,35 @@
 
   (defun update-ssh-agent (&optional force)
     (interactive "P")
-    (unless (tramp-tramp-file-p default-directory)
-      (let ((agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el")))
-        ;; (if (or force (null (getenv "SSH_AGENT_PID")))
-        (if (or force (null (getenv "SSH_AGENT_PID")))
-            (if (file-exists-p agent-file)
-                (progn
-                  (if force (tramp-cleanup-all-connections))
-                  ;; (load agent-file t t)
-                  (setenv "SSH_AGENT_PID" (getenv "SSH_AGENT_PID" (selected-frame)))
-                  (setenv "SSH_AUTH_SOCK" (getenv "SSH_AUTH_SOCK" (selected-frame)))
-                  (ssh-agent-add-key)
-                  (message "update main pid and sock to frame pid %s sock %s"
-                           (getenv "SSH_AGENT_PID" (selected-frame))
-                           (getenv "SSH_AUTH_SOCK" (selected-frame)))
-                  ;; (message "loading %s" agent-file)
-                  )
-                (message "Unable to find agent file."))
-            (ssh-agent-add-key)))))
+    ;; (message "update-ssh-agent called")
+    (if ido-auto-merge-timer
+        (timer-activate ido-auto-merge-timer t))
+    (unwind-protect
+         (save-excursion
+           (let ((enable-recursive-minibuffers t))
+             (unless (tramp-tramp-file-p default-directory)
+               (let ((agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el")))
+                 ;; (if (or force (null (getenv "SSH_AGENT_PID")))
+                 (if (or force (null (getenv "SSH_AGENT_PID")))
+                     (if (file-exists-p agent-file)
+                         (progn
+                           (if force (tramp-cleanup-all-connections))
+                           ;; (load agent-file t t)
+                           (setenv "SSH_AGENT_PID" (getenv "SSH_AGENT_PID" (selected-frame)))
+                           (setenv "SSH_AUTH_SOCK" (getenv "SSH_AUTH_SOCK" (selected-frame)))
+                           (ssh-agent-add-key)
+                           (message "update main pid and sock to frame pid %s sock %s"
+                                    (getenv "SSH_AGENT_PID" (selected-frame))
+                                    (getenv "SSH_AUTH_SOCK" (selected-frame)))
+                           ;; (message "loading %s" agent-file)
+                           )
+                         (message "Unable to find agent file."))
+                     (ssh-agent-add-key)))
+               (let ()
+                 ;; (message "update-ssh-agent yes authinfo")
+                 (find-file-noselect (plist-get (car auth-sources) :source))))))
+      (if ido-auto-merge-timer
+          (timer-activate ido-auto-merge-timer))))
 
   (defadvice tramp-file-name-handler
       (before ad-update-ssh-agent-env activate)

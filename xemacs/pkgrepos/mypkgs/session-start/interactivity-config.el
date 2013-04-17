@@ -36,6 +36,30 @@
          "\\`/[^/:][^/:]+:/")
      (or dir ido-current-directory)))
 
+  '(defun ido-make-merged-file-list (text auto wide)
+    (let (res)
+      (message "Searching for `%s'...." text)
+      (condition-case nil
+          (if (eq t (setq res
+                          (while-no-input
+                            (ido-make-merged-file-list-1 text auto wide))))
+              (setq res 'input-pending-p))
+        (quit
+         (setq res t
+               ido-try-merged-list nil
+               ido-use-merged-list nil)))
+      (when (and res (listp res))
+        (setq res (ido-sort-merged-list res auto)))
+      (when (and (or ido-rotate-temp ido-rotate-file-list-default)
+                 (listp res)
+                 (> (length text) 0))
+        (let ((elt (assoc text res)))
+          (when (and elt (not (eq elt (car res))))
+            (setq res (delq elt res))
+            (setq res (cons elt res)))))
+      (message nil)
+      res))
+
   (setq ido-default-buffer-method 'maybe-frame)
 
   (ido-mode t)

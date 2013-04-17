@@ -9,6 +9,9 @@
 whence -p xrdb &&
 m4 -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init | xrdb -merge -
 
+whence -p xmodmap &&
+xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
+
 xterm -e 'ish -s bash less ~/.xsession-errors' &!
 
 if whence xte ; then
@@ -69,8 +72,8 @@ if [ $DISPLAY ] ; then
 
     synclient  TapButton1=1
 
-    whence -p xmodmap &&
-    xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
+    # whence -p xmodmap &&
+    # xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
 
     # stop this bell.
     whence -p xset && xset b off                  # peace

@@ -58,6 +58,9 @@ if whence -p syndaemon ; then
     sleep 1s;
 fi
 
+if [ -x /usr/lib/gvfs/gvfsd ] ; then
+    ! pgrep gvfsd || /usr/lib/gvfs/gvfsd -r ~/.gvfs &!
+fi
 
 foreach prog (
     ## it is automatically started by gdm, so no need to start it.
