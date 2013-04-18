@@ -354,7 +354,7 @@ directory, select directory. Lastly the file is opened."
                             subdirs))
          existing-subdirs)))
 
-(defun find-same-file-in-relative-dir ( &optional updircount dir-only)
+(defun find-same-file-in-relative-dir (&optional updircount)
   (interactive "P")
   (when buffer-file-name
     (let* ((filename (call-times (prefix-numeric-value updircount) 'dirname-of-file buffer-file-name))
@@ -397,7 +397,7 @@ directory, select directory. Lastly the file is opened."
             (message "No match present."))))))
 
 (when nil
-(defun find-same-file-in-relative-dir ( &optional updircount dir-only)
+(defun find-same-file-in-relative-dir (&optional updircount)
   (interactive "P")
   (when buffer-file-name
     (let* ((filename (call-times (prefix-numeric-value updircount) 'dirname-of-file buffer-file-name))

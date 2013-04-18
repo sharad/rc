@@ -21,7 +21,7 @@ export MY_DBUS_SESSION
 
 if [ "x" != "x$WORKPLACE" ] ; then
     if [  -d ~/.opt/p/$WORKPLACE ] ; then
-        source ~/.opt/p/$WORKPLACE/env
+        . ~/.opt/p/$WORKPLACE/env
         # ~/.opt/p/$WORKPLACE/run
     else
         echo ~/.opt/p/$WORKPLACE directory  do not exits. 2>&1

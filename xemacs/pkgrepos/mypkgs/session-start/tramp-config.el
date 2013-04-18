@@ -179,7 +179,9 @@
                      (ssh-agent-add-key)))
                (let ()
                  ;; (message "update-ssh-agent yes authinfo")
-                 (find-file-noselect (plist-get (car auth-sources) :source))))))
+                 (find-file-noselect (or
+                                      (plist-get (car auth-sources) :source)
+                                      "~/.authinfo.gpg"))))))
       (if ido-auto-merge-timer
           (timer-activate ido-auto-merge-timer))))
 
