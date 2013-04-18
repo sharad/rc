@@ -28,7 +28,6 @@
 (autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
 
 (xrequire 'moz)
-(xrequire 'pabbrev)
 
 (defun javascript-custom-setup ()
   (moz-minor-mode 1))
@@ -36,8 +35,8 @@
 ;; (defun javascript-custom-setup ()
 ;;   (deh-require-maybe moz
 ;;     `(moz-minor-mode 1))
-;;   (deh-require-maybe pabbrev
-;;     `(pabbrev-mode 1)))
+;;
+;;     )
 
 (add-hook 'javascript-mode-hook 'flymake-jslint-load)
 (add-hook 'javascript-mode-hook 'javascript-custom-setup)

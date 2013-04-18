@@ -27,6 +27,7 @@
 
 
 (deh-require-maybe pabbrev
+  (setq pabbrev-read-only-error nil)
   (defun pabbrev-activate ()
     (unless buffer-read-only
       (pabbrev-mode 1)))

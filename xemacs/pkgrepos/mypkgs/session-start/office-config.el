@@ -47,10 +47,13 @@
   :initial-value nil
   :lighter " Office"
   :global nil
-  (when office-mode
-    (message "calling office mode")
-    (set (make-local-variable 'before-save-hook) before-save-hook)
-    (remove-hook 'before-save-hook 'delete-trailing-whitespace t)))
+  (condition-case e
+      (when office-mode
+        (message "calling office mode")
+        (set (make-local-variable 'before-save-hook) before-save-hook)
+        (remove-hook 'before-save-hook 'delete-trailing-whitespace t)
+        (message "called office mode"))
+    (error (message "Error: %s" e))))
 
 (defvar taskdir "/home/s/paradise/tasks" "Task Directory")
 
@@ -80,14 +83,12 @@
 
 
 * File Local Variables
-;;; Local Variables:
-;;; buffer-read-only: t
-;;; fill-column: 172
+;;; %s:
+;;; %s: t
+;;; %s: 172
 ;;; End:
 
-" (capitalize task) name) nil
-                                           (concat dir name "/" f)
-                                           nil nil nil t)))))))))
+" (capitalize task) name "Local Variables" "buffer-read-only" "fill-column") nil (concat dir name "/" f) nil nil nil t)))))))))
 
 (defun find-task (task)
   (interactive

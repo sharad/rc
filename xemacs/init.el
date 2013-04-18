@@ -8,9 +8,13 @@
 (defvar old-messages-buffer-max-lines 100 "To keep all startup detail.")
 (defvar *emacs-in-init* t "Emacs is in init.")
 (setq *emacs-in-init* t)
-
+(add-hook 'after-init-hook
+          (lambda ()
+            (setq *emacs-in-init* nil)
+            (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)))
 (setq old-messages-buffer-max-lines messages-buffer-max-lines
       messages-buffer-max-lines 2000)
+
 
 (eval-when-compile
   (require 'cl nil nil))
@@ -18,6 +22,22 @@
 (load-file "~/.xemacs/macros.el")
 (load-file "~/.xemacs/utils.el")
 (load-file "~/.xemacs/basic.el")
+
+(eval-after-load "server"
+  '(defadvice server-create-window-system-frame
+      (around nocreate-in-init activate)
+    "remove-scratch-buffer"
+    (if *emacs-in-init*
+        (message "loading init now.")
+        ad-do-it)))
+
+;; (eval-after-load "server"
+;;   '(progn
+;;     (undefine-function-remmeber 'server-create-window-system-frame)
+;;     (add-hook 'after-init-hook
+;;      (lambda ()
+;;        (redefine-function-remembered
+;;         'server-create-window-system-frame)))))
 
 (add-to-list 'load-path "/usr/local/share/emacs/23.3/site-lisp")
 
@@ -118,7 +138,9 @@
         ;; old-messages-buffer-max-lines
         ))
 
+;; (redefine-function-remembered 'server-create-window-system-frame)
 (setq *emacs-in-init* nil)              ;how to ensure it will run.
+(ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)
 ;;end
 
 
@@ -131,6 +153,8 @@
 
 
 ;; (message "My .emacs loaded in %s" (emacs-init-time))
+
+
 
 
 ;; (sharad/enable-startup-inperrupting-feature)

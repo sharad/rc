@@ -68,7 +68,8 @@
        (lambda (b)
          (if (vc-call-backend b 'registered file)
               (throw 'found b)))
-       (or backends vc-handled-backends))))
+       (or backends vc-handled-backends))
+      nil))
 
   (defun put-file-in-rcs (from-file)
     ;; http://www.emacswiki.org/emacs/VersionControlAlways

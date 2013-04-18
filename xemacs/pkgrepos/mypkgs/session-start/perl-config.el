@@ -188,6 +188,11 @@
 ;;        ))
 ;; (add-to-list 'ffap-alist  '(cperl-mode . pde-ffap-locate))
 
+(eval-after-load "ffap"
+  '(add-to-list 'ffap-alist '(cperl-mode . pde-ffap-locate)))
+(add-hook 'cperl-mode-hook 'pde-perl-mode-hook)
+
+
 ;; Rebinding keys for hideshow
 ( if (and
       (keymapp 'hs-minor-mode-map)

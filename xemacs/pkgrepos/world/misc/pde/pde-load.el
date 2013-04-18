@@ -72,7 +72,7 @@
        "\\)[^:]"             ; require one more character that not ":"
        ))
 (eval-after-load "ffap"
-  '(add-to-list 'ffap-alist '("." . pde-ffap-locate)))
+  '(add-to-list 'ffap-alist '(cperl-mode . pde-ffap-locate)))
 (add-hook 'cperl-mode-hook 'pde-perl-mode-hook)
 
 ;; Extra setting that run only once

@@ -941,3 +941,25 @@ define_webjump("man", "http://man.cx/%s");
 define_webjump("irc/searchirc", "http://searchirc.com/irc-%s-1");
 define_webjump("irc/netsplit", "http://irc.netsplit.de/channels/?chat=%s");
 //}
+
+
+//{{
+define_webjump("src/kernel", "http://www.kneuro.net/cgi-bin/lxr/http/ident?i=%s");
+// define_webjump("src/linux", "http://lxr.linux.no/linux+v2.6.12.1/+search");
+
+define_webjump(
+    "src/linux",
+    function (term) {
+        if (! term)
+            return "http://lxr.linux.no/linux/+search";
+        return load_spec(
+            { uri: "http://lxr.linux.no/linux/+search",
+              post_data: make_post_data([
+                  ['search', term],
+                  ['submit', 'Search']
+              ])
+            },
+    $argument = 'optional')});
+
+
+//}}

@@ -398,7 +398,9 @@
 
 
 
-
+(deh-require-maybe popup-kill-ring
+  ;; http://emacswiki.org/emacs/khiker
+  )
 
 
 

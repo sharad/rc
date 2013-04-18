@@ -40,13 +40,14 @@
 ;; `eldoc-documentation-function'.
 
 
-;; (deh-require-maybe eldoc                 ;http://www.emacswiki.org/emacs/ElDoc
-;;   (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-;;   (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-;;   (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
-;;   (deh-require-maybe c-eldoc             ;for c http://www.emacswiki.org/emacs/CEldocMode#toc5
-;;     (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
-;;     (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ "))
+(deh-require-maybe eldoc                 ;http://www.emacswiki.org/emacs/ElDoc
+  (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+  (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+  (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+  (deh-require-maybe c-eldoc             ;for c http://www.emacswiki.org/emacs/CEldocMode#toc5
+    (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
+    (add-hook 'c++-mode-hook 'c-turn-on-eldoc-mode)
+    (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ "))
 
 ;;   (deh-require-maybe cperl-mode          ;for perl http://www.emacswiki.org/emacs/CPerlMode#toc10
 

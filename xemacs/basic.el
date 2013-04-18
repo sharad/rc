@@ -312,7 +312,9 @@ alkready should not exist.")
         (deh-featurep epa
           (if (fboundp 'epa-file-disable)
               (epa-file-disable)))
-      (run-hooks 'sharad/disable-startup-inperrupting-feature-hook)))
+      ;; (global-pabbrev-mode -1)
+      ;; (run-hooks 'sharad/disable-startup-inperrupting-feature-hook)
+      (run-each-hooks 'sharad/disable-startup-inperrupting-feature-hook)))
 
   ;; run now
   (sharad/disable-startup-inperrupting-feature)

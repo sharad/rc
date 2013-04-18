@@ -80,3 +80,59 @@
     (if result
         result
         (if list (afind-if fun (cdr list))))))
+
+
+
+
+(defun run-each-hooks (hook)
+  (dolist (f (symbol-value hook))
+    (condition-case e
+        (funcall f)
+      (error (message "run-each-hooks Error: function %s error %s" f e)))))
+
+
+
+
+(when nil
+  (defun toignore ()
+    (message "asdfds"))
+
+
+  (defalias 'toignore 'ignore)
+
+  (fset 'alttoignore (symbol-function 'toignore))
+  (fset 'ignore (symbol-function 'alttoignore))
+
+  (toignore)
+  (alttoignore))
+
+(defvar *undefine-function-alist* nil "undefine-function-alist")
+
+(defun undefine-function-remmeber (fnsym)
+  (unless (eq fnsym 'ignore)
+   (push (cons fnsym (symbol-function fnsym))
+         *undefine-function-alist*)
+   (defalias fnsym 'ignore)))
+
+(defun redefine-function-remembered (fnsym)
+  (let ((fdef (assoc fnsym *undefine-function-alist*)))
+    (if fdef
+        (progn
+          (fset fnsym (cdr fdef))
+          (setq *undefine-function-alist*
+                (del-alist (car fdef) *undefine-function-alist*)))
+        (message "def for %s function is not available." fnsym))))
+
+
+
+;; (add-hook 'aa-hook (lambda ()
+;;                      (message "dsafds")))
+
+;; (add-hook 'aa-hook (lambda ()
+;;                      (message "errorQQ")
+;;                      (error "Err")))
+
+
+;; (run-each-hooks 'aa-hook)
+
+
