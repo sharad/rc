@@ -120,18 +120,29 @@ Mostly we check word delimiters."
   (interactive)
   (when yas/minor-mode
     (with-local-quit
-      (let (o)
-        (while (setq o (pop yas-overlays))
-          (delete-overlay o)))
+
+      ;; (let (o)
+      ;;   (while (setq o (pop yas-overlays))
+      ;;     (delete-overlay o)))
+
+      (dolist (o yas-overlays)
+        (delete-overlay o))
       (let ((command this-command)
             ;; Prevent anything we do from affecting the mark.
             deactivate-mark
             (positions (yas-check-word-p) )
             overlay)
-        (if positions
-            (push
-             (apply 'make-yas-overlay (append positions '(highlight highlight)))
-             yas-overlays))))))
+        (if (and
+             positions
+             (null yas-overlays))
+            (progn
+              (push
+               (apply 'make-yas-overlay (append positions '(highlight highlight)))
+               yas-overlays)
+              (backward-char 1))
+            (setq yas-overlays nil))))))
+
+
 
 
 (defun make-yas-overlay (beg end face mouse-face)
