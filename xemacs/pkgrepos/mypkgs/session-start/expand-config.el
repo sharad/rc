@@ -83,6 +83,80 @@
 
 (setq comint-completion-addsuffix '("/" . ""))
 
+
+;;{{
+;; /usr/share/emacs23/site-lisp/dictionaries-common/flyspell.el
+(defun yas/expandable-at-point ()
+  "Return non-nil if a snippet can be expanded here."
+  ;; (car (yas/current-key))
+  (yas/current-key))
+
+(defvar yas-overlays nil)
+(make-variable-buffer-local 'yas-overlays)
+
+(add-hook 'post-command-hook (function yas-post-command-hook) )
+
+(defun yas-check-word-p ()
+  "Return t when the word at `point' has to be checked.
+The answer depends of several criteria.
+Mostly we check word delimiters."
+  (let ()
+    (cond
+     ((<= (- (point-max) 1) (point-min))
+      ;; The buffer is not filled enough.
+      nil)
+     ((> (current-column) 1)
+      (save-excursion
+        (backward-char 2)
+        (and
+             (looking-at "[[:alpha:]][^[:alpha:]]")
+             (forward-word 1)
+             (cdr (yas/current-key)))))
+      ;; Yes because we have reached or typed a word delimiter.
+     (t nil))))
+
+(defun yas-post-command-hook ()
+  "The `post-command-hook' used by flyspell to check a word on-the-fly."
+  (interactive)
+  (when yas/minor-mode
+    (with-local-quit
+      (let (o)
+        (while (setq o (pop yas-overlays))
+          (delete-overlay o)))
+      (let ((command this-command)
+            ;; Prevent anything we do from affecting the mark.
+            deactivate-mark
+            (positions (yas-check-word-p) )
+            overlay)
+        (if positions
+            (push
+             (apply 'make-yas-overlay (append positions '(highlight highlight)))
+             yas-overlays))))))
+
+
+(defun make-yas-overlay (beg end face mouse-face)
+  "Allocate an overlay to highlight an incorrect word.
+BEG and END specify the range in the buffer of that word.
+FACE and MOUSE-FACE specify the `face' and `mouse-face' properties
+for the overlay."
+  (let ((overlay (make-overlay beg end nil t nil)))
+    (overlay-put overlay 'face face)
+    (overlay-put overlay 'mouse-face mouse-face)
+    (overlay-put overlay 'flyspell-overlay t)
+    (overlay-put overlay 'evaporate t)
+    (overlay-put overlay 'help-echo "mouse-2: yas/expansion at point")
+    ;; (overlay-put overlay 'keymap yas-mouse-map)
+    ;; (when (eq face 'flyspell-incorrect)
+    ;;   (and (stringp flyspell-before-incorrect-word-string)
+    ;;        (overlay-put overlay 'before-string
+    ;;                     flyspell-before-incorrect-word-string))
+    ;;   (and (stringp flyspell-after-incorrect-word-string)
+    ;;        (overlay-put overlay 'after-string
+    ;;                     flyspell-after-incorrect-word-string)))
+    overlay))
+;;}}
+
 (provide 'expand-config)
+
 
 
