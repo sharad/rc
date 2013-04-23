@@ -21,6 +21,14 @@ EOF
 fi
 
 
+if which $HOME/bin/ecryptfs-mount-private 2>&1 ; then
+
+    if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
+        timeout 7 $HOME/bin/ecryptfs-mount-private
+    fi
+fi
+
+
 ~/bin/syncimap -r               # it only get secinfo from x keyring; enable
 
 whence -p xhost && xhost +local:mpd

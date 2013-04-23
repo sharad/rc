@@ -99,6 +99,7 @@
           ;; (erc-send-input (concat "/quote PASS " bnc4free-username ":" bnc4free-password "\r\n"))
           (insert (concat "/quote PASS " bnc4free-username ":" bnc4free-password ""))))))
 
+
     (defun erc-bnc4free ()
       (interactive)
       (erc :server "Grape.bnc4free.com" :port 1337
@@ -645,10 +646,15 @@ waiting for responses from the server"
                       (eq window-system 'x))
                   (pymacs-exec (format "os.environ['DISPLAY'] = '%s'" (getenv "DISPLAY" (selected-frame)))))))
 
+  (require 'python-config)
 
   (defun notify-desktop (title message &optional duration &optional icon)
     "Pop up a message on the desktop with an optional duration (forever otherwise)"
-    (message "test")
+    (condition-case e
+        (progn
+          (pymacs-exec "import os")
+          (pymacs-exec "print os.getenv('DISPLAY',False)"))
+      ('error (pymacs-terminate-services-force)))
     (condition-case e
         (progn
           (pymacs-exec "import pynotify")
@@ -656,14 +662,16 @@ waiting for responses from the server"
           (unless (pymacs-eval "os.getenv('DISPLAY',False)")
             (pymacs-exec (format "os.environ['DISPLAY'] = '%s'" (getenv "DISPLAY" (selected-frame)))))
           (if icon
-              (pymacs-exec (format "msg = pynotify.Notification('AA %s','%s','%s')"
+              (pymacs-exec (format "msg = pynotify.Notification('%s','%s','%s')"
                                    title message icon))
-              (pymacs-exec (format "msg = pynotify.Notification('AA %s','%s')"
+              (pymacs-exec (format "msg = pynotify.Notification('%s','%s')"
                                    title message)))
           (if duration
               (pymacs-exec (format "msg.set_timeout(%s)" duration)))
           (pymacs-exec "msg.show()"))
-      ('error (message "Error in notify-desktop: %s" e))))
+      ('error (progn
+                (message "Error in notify-desktop: %s" e)
+                (pymacs-terminate-services-force)))))
 
   (when nil
     (notify-desktop "ss" "aaa")
@@ -674,6 +682,9 @@ waiting for responses from the server"
     (notify-desktop (format "%s - %s" "asfsadf"
                             (format-time-string "%b %d %I:%M %p"))
                     "Test" 1 "gnome-emacs"))
+
+
+
 
 
   ;; (undefine-function-remember 'notify-desktop)

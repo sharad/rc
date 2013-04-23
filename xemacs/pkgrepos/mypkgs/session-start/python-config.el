@@ -172,5 +172,23 @@
      '(("(python)Index" nil "")))))
 
 
-(provide 'python-config)
 
+(defun pymacs-terminate-services-force ()
+  ;; This function is mainly provided for documentation purposes.
+  (garbage-collect)
+  (pymacs-garbage-collect)
+  (when (not pymacs-used-ids)
+    (cond ((boundp 'post-gc-hook)
+           (remove-hook 'post-gc-hook 'pymacs-schedule-gc))
+          ((timerp pymacs-gc-timer)
+           (cancel-timer pymacs-gc-timer)))
+    (when pymacs-transit-buffer
+      (kill-buffer pymacs-transit-buffer))
+    (setq pymacs-gc-running nil
+          pymacs-gc-timer nil
+          pymacs-transit-buffer nil
+          pymacs-lisp nil
+          pymacs-freed-list nil)))
+
+
+(provide 'python-config)

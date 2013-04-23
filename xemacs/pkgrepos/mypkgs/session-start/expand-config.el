@@ -94,7 +94,7 @@
 (defvar yas-overlays nil)
 (make-variable-buffer-local 'yas-overlays)
 
-(add-hook 'post-command-hook (function yas-post-command-hook) )
+(remove-hook 'post-command-hook (function yas-post-command-hook) )
 
 (defun yas-check-word-p ()
   "Return t when the word at `point' has to be checked.
@@ -168,6 +168,3 @@ for the overlay."
 ;;}}
 
 (provide 'expand-config)
-
-
-
