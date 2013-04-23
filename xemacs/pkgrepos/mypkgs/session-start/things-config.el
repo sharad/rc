@@ -55,8 +55,10 @@ with angle brackets.")
                 (car boundary-pair) (cdr boundary-pair)))))))
 
 
-;; Sharad Pratap <spratap@arubanetworks.com>
 
+
+(deh-require-maybe (or
+                    thing-cmds thing-edit))
 
 (provide 'things-config)
 ;;; things.el ends here

@@ -447,23 +447,23 @@ waiting for responses from the server"
     (save-restriction
       (with-current-buffer (current-buffer)
         (let ((case-fold-search t))
-	  (goto-char (point-min))
-	  (when (re-search-forward "<HTML>.*</HTML>" nil t)
-	    (print (match-string 0))
-	    (narrow-to-region (match-beginning 0) (match-end 0))
-	    (let ((w3m-safe-url-regexp mm-w3m-safe-url-regexp)
-		  w3m-force-redisplay)
-	      (w3m-region (point-min) (point-max))
-	      (goto-char (point-max))
-	      (delete-char -2))
-	    (when (and mm-inline-text-html-with-w3m-keymap
-		       (boundp 'w3m-minor-mode-map)
-		       w3m-minor-mode-map)
-	      (add-text-properties
-	       (point-min) (point-max)
-	       (list 'keymap w3m-minor-mode-map
-		     ;; Put the mark meaning this part was rendered by emacs-w3m.
-		     'mm-inline-text-html-with-w3m t))))))))
+          (goto-char (point-min))
+          (when (re-search-forward "<HTML>.*</HTML>" nil t)
+            (print (match-string 0))
+            (narrow-to-region (match-beginning 0) (match-end 0))
+            (let ((w3m-safe-url-regexp mm-w3m-safe-url-regexp)
+                  w3m-force-redisplay)
+              (w3m-region (point-min) (point-max))
+              (goto-char (point-max))
+              (delete-char -2))
+            (when (and mm-inline-text-html-with-w3m-keymap
+                       (boundp 'w3m-minor-mode-map)
+                       w3m-minor-mode-map)
+              (add-text-properties
+               (point-min) (point-max)
+               (list 'keymap w3m-minor-mode-map
+                     ;; Put the mark meaning this part was rendered by emacs-w3m.
+                     'mm-inline-text-html-with-w3m t))))))))
   (add-hook 'erc-insert-modify-hook 'mah/maybe-wash-im-with-w3m)
   (autoload 'w3m-region "w3m" "Render region using w3m")
 )
@@ -531,9 +531,9 @@ waiting for responses from the server"
 ;;   (interactive
 ;;    (list (read-from-minibuffer "Start a query with: " nil)))
 ;;   (let ((session-buffer (erc-server-buffer))
-;; 	(erc-join-buffer erc-query-display))
+;;      (erc-join-buffer erc-query-display))
 ;;     (if user
-;; 	(erc-query user session-buffer)
+;;      (erc-query user session-buffer)
 ;;       ;; currently broken, evil hack to display help anyway
 ;;       ;(erc-delete-query))))
 ;;       (signal 'wrong-number-of-arguments ""))))
@@ -544,47 +544,47 @@ waiting for responses from the server"
 ;;   "Put this on `erc-server-PRIVMSG-functions'."
 ;;   (when erc-auto-query
 ;;     (let* ((nick (car (erc-parse-user (erc-response.sender parsed))))
-;; 	   (target (car (erc-response.command-args parsed)))
-;; 	   (msg (erc-response.contents parsed))
-;; 	   (query  (if (not erc-query-on-unjoined-chan-privmsg)
-;; 		       nick
-;; 		     (if (erc-current-nick-p target)
-;; 			 nick
-;; 		       target))))
+;;         (target (car (erc-response.command-args parsed)))
+;;         (msg (erc-response.contents parsed))
+;;         (query  (if (not erc-query-on-unjoined-chan-privmsg)
+;;                     nick
+;;                   (if (erc-current-nick-p target)
+;;                       nick
+;;                     target))))
 ;;       (and (not (erc-ignored-user-p (erc-response.sender parsed)))
-;; 	   (or erc-query-on-unjoined-chan-privmsg
-;; 	       (string= target (erc-current-nick)))
-;; 	   (not (erc-get-buffer query proc))
-;; 	   (not (erc-is-message-ctcp-and-not-action-p msg))
-;; 	   (let ((erc-join-buffer erc-auto-query))
-;; 	     (erc-cmd-QUERY query))
-;; 	   nil))))
+;;         (or erc-query-on-unjoined-chan-privmsg
+;;             (string= target (erc-current-nick)))
+;;         (not (erc-get-buffer query proc))
+;;         (not (erc-is-message-ctcp-and-not-action-p msg))
+;;         (let ((erc-join-buffer erc-auto-query))
+;;           (erc-cmd-QUERY query))
+;;         nil))))
 ;; ;; call from erc-open which call from erc-query
 ;; (defun erc-setup-buffer (buffer)
 ;;   "Consults `erc-join-buffer' to find out how to display `BUFFER'."
 ;;   (cond ((eq erc-join-buffer 'window)
-;; 	 (if (active-minibuffer-window)
-;; 	     (display-buffer buffer)
-;; 	   (switch-to-buffer-other-window buffer)))
-;; 	((eq erc-join-buffer 'window-noselect)
-;; 	 (display-buffer buffer))
-;; 	((eq erc-join-buffer 'bury)
-;; 	 nil)
-;; 	((eq erc-join-buffer 'frame)
-;; 	 (when (or (not erc-reuse-frames)
-;; 		   (not (get-buffer-window buffer t)))
-;; 	   ((lambda (frame)
-;; 		     (raise-frame frame)
-;; 		     (select-frame frame))
-;; 		  (make-frame (or erc-frame-alist
-;; 				  default-frame-alist)))
-;; 	 (switch-to-buffer buffer)
-;; 	 (when erc-frame-dedicated-flag
-;; 	   (set-window-dedicated-p (selected-window) t))))
-;; 	(t
-;; 	 (if (active-minibuffer-window)
-;; 	     (display-buffer buffer)
-;; 	   (switch-to-buffer buffer)))))
+;;       (if (active-minibuffer-window)
+;;           (display-buffer buffer)
+;;         (switch-to-buffer-other-window buffer)))
+;;      ((eq erc-join-buffer 'window-noselect)
+;;       (display-buffer buffer))
+;;      ((eq erc-join-buffer 'bury)
+;;       nil)
+;;      ((eq erc-join-buffer 'frame)
+;;       (when (or (not erc-reuse-frames)
+;;                 (not (get-buffer-window buffer t)))
+;;         ((lambda (frame)
+;;                   (raise-frame frame)
+;;                   (select-frame frame))
+;;                (make-frame (or erc-frame-alist
+;;                                default-frame-alist)))
+;;       (switch-to-buffer buffer)
+;;       (when erc-frame-dedicated-flag
+;;         (set-window-dedicated-p (selected-window) t))))
+;;      (t
+;;       (if (active-minibuffer-window)
+;;           (display-buffer buffer)
+;;         (switch-to-buffer buffer)))))
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;; erc.el ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -595,28 +595,27 @@ waiting for responses from the server"
   "Put this on `erc-server-PRIVMSG-functions'."
   (when erc-auto-query
     (let* ((nick (car (erc-parse-user (erc-response.sender parsed))))
-	   (target (car (erc-response.command-args parsed)))
-	   (msg (erc-response.contents parsed))
-	   (query  (if (not erc-query-on-unjoined-chan-privmsg)
-		       nick
-		     (if (erc-current-nick-p target)
-			 nick
-		       target))))
+           (target (car (erc-response.command-args parsed)))
+           (msg (erc-response.contents parsed))
+           (query  (if (not erc-query-on-unjoined-chan-privmsg)
+                       nick
+                     (if (erc-current-nick-p target)
+                         nick
+                       target))))
       (and (not (erc-ignored-user-p (erc-response.sender parsed)))
-	   (or erc-query-on-unjoined-chan-privmsg
-	       (string= target (erc-current-nick)))
-	   (not (erc-get-buffer query proc))
-	   (not (erc-is-message-ctcp-and-not-action-p msg))
-	   (let ((erc-join-buffer erc-auto-query)
+           (or erc-query-on-unjoined-chan-privmsg
+               (string= target (erc-current-nick)))
+           (not (erc-get-buffer query proc))
+           (not (erc-is-message-ctcp-and-not-action-p msg))
+           (let ((erc-join-buffer erc-auto-query)
                  (session-buffer (erc-server-buffer)))
-	     ;; (erc-cmd-QUERY query)
+             ;; (erc-cmd-QUERY query)
              (if query
                  (erc-query query session-buffer)
                  ;; currently broken, evil hack to display help anyway
                                         ;(erc-delete-query))))
-                 (signal 'wrong-number-of-arguments ""))
-             )
-	   nil)))))
+                 (signal 'wrong-number-of-arguments "")))
+           nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;; erc.el ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -630,20 +629,55 @@ waiting for responses from the server"
   ;; from: http://www.enigmacurry.com/2008/08/07/emacs-irc-erc-with-noticeable-notifications/
   ;; http://www.emacswiki.org/cgi-bin/wiki/ErcPageMe
 
+  (deh-require-maybe erc-nick-notify
+    (setq erc-nick-notify-delay '(0 0 10)
+          erc-nick-notify-cmd "notify-send"
+          erc-nick-notify-icon "~/MyEmacs/Image/Irc.png"
+          erc-nick-notify-timeout 10000
+          erc-nick-notify-urgency "normal"
+          erc-nick-notify-category "im.received")
+    (erc-nick-notify-mode t))
+
+  (add-hook 'sharad/enable-login-session-inperrupting-feature-hook
+            (lambda ()
+              ;; update python DISPLAY env variable.
+              (if (and (getenv "DISPLAY" (selected-frame))
+                      (eq window-system 'x))
+                  (pymacs-exec (format "os.environ['DISPLAY'] = '%s'" (getenv "DISPLAY" (selected-frame)))))))
+
+
   (defun notify-desktop (title message &optional duration &optional icon)
     "Pop up a message on the desktop with an optional duration (forever otherwise)"
-    (pymacs-exec "import pynotify")
-    (pymacs-exec "pynotify.init('Emacs')")
-    (if icon
-        (pymacs-exec (format "msg = pynotify.Notification('%s','%s','%s')"
-                             title message icon))
-        (pymacs-exec (format "msg = pynotify.Notification('%s','%s')" title message))
-        )
-    (if duration
-        (pymacs-exec (format "msg.set_timeout(%s)" duration))
-        )
-    (pymacs-exec "msg.show()")
-    )
+    (message "test")
+    (condition-case e
+        (progn
+          (pymacs-exec "import pynotify")
+          (pymacs-exec "pynotify.init('Emacs')")
+          (unless (pymacs-eval "os.getenv('DISPLAY',False)")
+            (pymacs-exec (format "os.environ['DISPLAY'] = '%s'" (getenv "DISPLAY" (selected-frame)))))
+          (if icon
+              (pymacs-exec (format "msg = pynotify.Notification('AA %s','%s','%s')"
+                                   title message icon))
+              (pymacs-exec (format "msg = pynotify.Notification('AA %s','%s')"
+                                   title message)))
+          (if duration
+              (pymacs-exec (format "msg.set_timeout(%s)" duration)))
+          (pymacs-exec "msg.show()"))
+      ('error (message "Error in notify-desktop: %s" e))))
+
+  (when nil
+    (notify-desktop "ss" "aaa")
+    (notify-desktop (format "%s - %s" "asfsadf"
+                            (format-time-string "%b %d %I:%M %p"))
+                    "Test" 0 "gnome-emacs")
+
+    (notify-desktop (format "%s - %s" "asfsadf"
+                            (format-time-string "%b %d %I:%M %p"))
+                    "Test" 1 "gnome-emacs"))
+
+
+  ;; (undefine-function-remember 'notify-desktop)
+  ;; (redefine-function-remembered 'notify-desktop)
 
   ;; Notify me when someone wants to talk to me.
   ;; Heavily based off of ErcPageMe on emacswiki.org, with some improvements.
@@ -652,6 +686,9 @@ waiting for responses from the server"
   (defvar erc-page-nick-alist nil
     "Alist of 'nickname|target' and last time they triggered a notification"
     )
+
+  (defvar erc-page-duration 100 "notification duration.")
+
   (defun erc-notify-allowed (nick target &optional delay)
     "Return true if a certain nick has waited long enough to notify"
     (unless delay (setq delay 30))
@@ -665,9 +702,8 @@ waiting for responses from the server"
             (setcdr cur-assoc cur-time)
             (> (abs (- cur-time last-time)) delay))
           (push (cons (format "%s|%s" nick target) cur-time) erc-page-nick-alist)
-          t)
-      )
-    )
+          t)))
+
   (defun erc-notify-PRIVMSG (proc parsed)
     (let ((nick (car (erc-parse-user (erc-response.sender parsed))))
           (target (car (erc-response.command-args parsed)))
@@ -681,22 +717,17 @@ waiting for responses from the server"
         (ding)
         (notify-desktop (format "%s - %s" nick
                                 (format-time-string "%b %d %I:%M %p"))
-                        msg 0 "gnome-emacs")
+                        msg erc-page-duration "gnome-emacs")
         )
       ;;Handle channel messages when my nick is mentioned
       (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
                  (string-match (erc-current-nick) msg)
-                 (erc-notify-allowed nick target)
-                 )
-                                        ;Do actual notification
+                 (erc-notify-allowed nick target))
+        ;Do actual notification
         (ding)
         (notify-desktop (format "%s - %s" target
                                 (format-time-string "%b %d %I:%M %p"))
-                        (format "%s: %s" nick msg) 0 "gnome-emacs")
-        )
-      )
-
-    )
+                        (format "%s: %s" nick msg) erc-page-duration "gnome-emacs"))))
 
   (add-hook 'erc-server-PRIVMSG-functions 'erc-notify-PRIVMSG))
 

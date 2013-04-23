@@ -678,17 +678,6 @@ define_webjump("clip",
                "javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title);}})();");
 
 
-define_webjump("flipkart",
-               "http://www.flipkart.com/search/a/all?query=%s&vertical=all&dd=0&autosuggest%5Bas%5D=off&autosuggest%5Bas-submittype%5D=entered&autosuggest%5Bas-grouprank%5D=0&autosuggest%5Bas-overallrank%5D=0&Search=%C2%A0&_r=n_2yuAC4xgh0SZTuulvAtw--&_l=Tnndui8JdMVk7CZmDKIfXQ--&ref=86996893-c57b-498e-ad0d-3c6819910b56&selmitem=");
-
-define_webjump("jabong",
-               "http://www.jabong.com/catalog/?q=%s&submit=&baseUrl=");
-
-define_webjump("yebhi",
-               "http://www.yebhi.com/searchAll.aspx?q=%s");
-
-
-
 
 //{{ Stock
 define_webjump("stock/income-statement",
@@ -962,4 +951,26 @@ define_webjump(
     $argument = 'optional')});
 
 
+//}}
+
+
+
+//{{ online marteking
+define_webjump("buy/india-tradus", "http://www.tradus.com/search?query=%s&availability=true");
+define_webjump("buy/india-ebay", "http://www.ebay.in/sch/i.html?_nkw=%s");
+define_webjump("buy/flipkart",
+               "http://www.flipkart.com/search/a/all?query=%s&vertical=all&dd=0&autosuggest%5Bas%5D=off&autosuggest%5Bas-submittype%5D=entered&autosuggest%5Bas-grouprank%5D=0&autosuggest%5Bas-overallrank%5D=0&Search=%C2%A0&_r=n_2yuAC4xgh0SZTuulvAtw--&_l=Tnndui8JdMVk7CZmDKIfXQ--&ref=86996893-c57b-498e-ad0d-3c6819910b56&selmitem=");
+
+define_webjump("buy/jabong",
+               "http://www.jabong.com/catalog/?q=%s&submit=&baseUrl=");
+
+define_webjump("buy/yebhi",
+               "http://www.yebhi.com/searchAll.aspx?q=%s");
+
+
+
+//}}
+
+//{{ online deal
+define_webjump("deal/desidime", "http://www.desidime.com/topics/search?q=%s");
 //}}

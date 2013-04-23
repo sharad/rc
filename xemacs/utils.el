@@ -108,13 +108,15 @@
 
 (defvar *undefine-function-alist* nil "undefine-function-alist")
 
-(defun undefine-function-remmeber (fnsym)
+(defun undefine-function-remember (fnsym)
+  "Use (redefine-function-remembered fnsym) to redefine."
   (unless (eq fnsym 'ignore)
    (push (cons fnsym (symbol-function fnsym))
          *undefine-function-alist*)
    (defalias fnsym 'ignore)))
 
 (defun redefine-function-remembered (fnsym)
+  "Use (undefine-function-remember fnsym) to undefine."
   (let ((fdef (assoc fnsym *undefine-function-alist*)))
     (if fdef
         (progn

@@ -27,7 +27,7 @@
 
 
 
-(deh-require-maybe (or newpaste paste2 pastie)
+(deh-require-maybe (or newpaste paste2 pastie dpaste pastebin)
   )
 
 

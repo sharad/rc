@@ -120,8 +120,16 @@ The indirect buffer can have another major mode."
 ;; from comint.el: filename completion
 (autoload 'comint-dynamic-complete-filename
   "comint" "Complete filenames." t)
+
+
+
 ;; simple math using calculator
 (autoload 'calculator "calculator" "Simple calculator." t)
+
+;; (defun calculator-buffer ()
+;;   (if (get-buffer "*caluclator*")
+;;       ()))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; mouse wheel: try it with S and C
@@ -222,6 +230,7 @@ The indirect buffer can have another major mode."
 
 ;; delete trailing save before sving. Is it good :-)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook 'untabify)
 ; (remove-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; To customize the color of the background, use the code
