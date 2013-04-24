@@ -742,6 +742,63 @@ waiting for responses from the server"
 
   (add-hook 'erc-server-PRIVMSG-functions 'erc-notify-PRIVMSG))
 
+
+
+
+
+
+(deh-section "monitor"
+
+  (defvar sharad/erc-monitor-user-list nil "list")
+
+  (defun erc-cmd-MONITOR (user &optional server)
+  "Display whois information for USER.
+
+If SERVER is non-nil, use that, rather than the current server."
+  ;; FIXME: is the above docstring correct?  -- Lawrence 2004-01-08
+  (let ()
+    (message "name %s server %s" user server)
+    (push user sharad/erc-monitor-user-list))
+  t)
+
+
+
+
+  (defun erc-notify-MONITOR (proc parsed)
+    ;; (message "called")
+    (let ((nick (car (erc-parse-user (erc-response.sender parsed))))
+          (target (car (erc-response.command-args parsed)))
+          (msg (erc-response.contents parsed)))
+      ;;Handle true private/direct messages (non channel)
+      (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
+                 (erc-current-nick-p target)
+                 (erc-notify-allowed nick target)
+                 )
+                                        ;Do actual notification
+        (ding)
+        (notify-desktop (format "%s - %s" nick
+                                (format-time-string "%b %d %I:%M %p"))
+                        msg erc-page-duration "gnome-emacs")
+        )
+      (message "nick %s" nick)
+      ;;Handle channel messages when my nick is mentioned
+      (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
+                 ;; (string-match (erc-current-nick) msg)
+                 (member nick sharad/erc-monitor-user-list)
+                 ;; (erc-notify-allowed nick target)
+                 )
+        ;Do actual notification
+        ;; (message "ttttttttt")
+        (ding)
+        (notify-desktop (format "%s - %s" target
+                                (format-time-string "%b %d %I:%M %p"))
+                        (format "%s: %s" nick msg) erc-page-duration "gnome-emacs"))))
+
+  (add-hook 'erc-server-PRIVMSG-functions 'erc-notify-MONITOR))
+
+
+
+
 (provide 'erc-config)
 
 
