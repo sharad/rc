@@ -294,6 +294,84 @@ function standoutmsg () {
     fi
 }
 
+STANDOUTMSG_standoutmsgfns=()
+
+function mkstandoutmsg () {
+    # print QQQ $@
+
+    local _fundefined _xlmachine _xlfile _xluser singleq doubleq
+
+    set -- $(getopt -n mkstandoutmsg -o n:f:u: -- $@)
+    while [ $# -gt 0 ]
+    do
+        case $1 in
+            (-n) eval _xlmachine=$2; shift;;
+            (-f) eval _xlfile=$2; shift;;
+            (-u) eval _xluser=$2; shift;;
+            (--) ;;
+            (-*) echo "$0: error - unrecognized option $1" 1>&2; : help; return -1;;
+            (*)  break;;
+        esac
+        shift
+    done
+
+    if ! (( ${+_xlfile} )) ; then
+        echo bye >&2
+        return -1
+    fi
+
+    if ! (( ${+_xluser} )) ; then
+        echo bye >&2
+        return -1
+    fi
+
+    singleq="'"
+    doubleq='"'
+
+    if [ "${_xlmachine}" ]  ; then
+        _fundefined="standoutmsg-${_xlmachine}-$(basename $_xlfile)"
+        eval "function ${_fundefined}" \
+            '() { ssh ' \
+            "${_xlmachine}" \
+            $doubleq \
+            "  echo -e '\n\n\n'" \
+            '$(date +%d%h%Y-%H%M%S)' \
+            "${_xluser}:" \
+            '$@ ' \
+            "'\n\n\n'" \
+            ' >>  ' \
+            ${_xlfile} \
+            $doubleq \
+            '}'
+    else
+        _fundefined="standoutmsg-$(basename $_xlfile)"
+        eval "function ${_fundefined}" \
+            '() { print "\n\n\n"' \
+            '$(date +%d%h%Y-%H%M%S)' \
+            "${_xluser}:" \
+            '$@ "\n\n\n" >>  ' \
+            ${_xlfile} \
+            '}'
+    fi
+
+
+    print defined ${_fundefined}
+
+    STANDOUTMSG_standoutmsgfns+=${_fundefined}
+}
+
+function STANDOUTMSG_standoutmsgAll () {
+    foreach fn (${(u)STANDOUTMSG_standoutmsgfns})
+    do
+        $fn $@
+    done
+}
+
+function waitmsg () {
+    print Wait $1
+    sleep $1
+}
+
 #}}
 
 

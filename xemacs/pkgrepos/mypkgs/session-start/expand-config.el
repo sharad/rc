@@ -96,6 +96,11 @@
 
 (remove-hook 'post-command-hook (function yas-post-command-hook) )
 
+;; (defun showthiscommand ()
+;;   (message "this-command %s" this-command))
+
+;; (remove-hook 'post-command-hook 'showthiscommand)
+
 (defun yas-check-word-p ()
   "Return t when the word at `point' has to be checked.
 The answer depends of several criteria.
