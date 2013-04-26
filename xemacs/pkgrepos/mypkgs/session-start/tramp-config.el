@@ -4,6 +4,11 @@
 ;;(require 'tramp) ;stop error caused by no availability of tramp.
 ;; check C-h f require
 
+
+;; set shell based on
+;; "TERM=dumb" "EMACS=t" "INSIDE_EMACS='23.4.1,tramp:2.1.21-pre'"
+;;
+
 (eval-after-load "tramp"
   '(sharad/disable-startup-inperrupting-feature))
 

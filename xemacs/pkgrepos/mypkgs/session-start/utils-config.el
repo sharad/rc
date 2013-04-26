@@ -84,9 +84,21 @@
       (let ((contents (read (current-buffer))))
         contents))))
 
+;;{{ already present in tramp-remote-path
+;; have to add into .profile
+;; (add-to-list 'tramp-remote-path "/usr/local/bin")
+;; (add-to-list 'tramp-remote-path "~/bin")
+;;}}
+
 (defun shell-command-no-output (cmd)
-  (if (equal 0 (call-process "/bin/bash" nil nil nil "-c" cmd))
-      t))
+  (let* ((handler
+          (find-file-name-handler (directory-file-name default-directory)
+                                  'shell-command))
+         (retval
+          (if handler
+              (funcall handler 'shell-command cmd nil nil)
+              (call-process shell-file-name nil nil nil "-c" cmd))))
+    (if (equal 0 retval) t)))
 
 
 (defun messageto (buf &rest text)

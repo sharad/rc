@@ -979,3 +979,9 @@ define_webjump("deal/desidime", "http://www.desidime.com/topics/search?q=%s");
 //{{ Good Feed
 define_webjump("rss/reddit", "http://www.reddit.com/r/emacs/search?q=%s");
 //}}
+
+
+
+//{{
+define_webjump("search/gmane", "http://gmane.org/find.php?list=%s");
+//}}

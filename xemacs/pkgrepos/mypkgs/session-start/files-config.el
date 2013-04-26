@@ -351,8 +351,9 @@ directory, select directory. Lastly the file is opened."
          (existing-subdirs (remove-if-not
                             #'(lambda (sd)
                                 (file-exists-p (concat prefix-filename sd suffix-filename)))
-                            subdirs))
-         existing-subdirs)))
+                            subdirs)))
+    (message "existing-subdirs %s" existing-subdirs)
+    existing-subdirs))
 
 (defun find-same-file-in-relative-dir (&optional updircount)
   (interactive "P")
@@ -378,13 +379,13 @@ directory, select directory. Lastly the file is opened."
                 (rassoc
                  (ido-completing-read "which one: " (mapcar #'cdr matcheddircomponents))
                  matcheddircomponents))))
-      (let* ((existing-subdirs (get-subdirs (car dirnu) (cdr dirnu) fielname))
+      (let* ((existing-subdirs (get-subdirs (car dirnu) (cdr dirnu) filename))
              (select-subdir (if existing-subdirs
                                 (ido-completing-read "select subdir: " existing-subdirs)))
              (selected-file-name (if select-subdir
                                      (concat prefix-filename select-subdir suffix-filename))))
-        (testing
-         (message "%s %s %s %s %s %s %s" tpos spos dirnu prefix-filename suffix-filename subdirs existing-subdirs))
+        ;; (testing
+        ;;  (message "%s %s %s %s %s %s %s" tpos spos dirnu prefix-filename suffix-filename subdirs existing-subdirs))
         (if selected-file-name
             (progn
               (if (file-directory-p selected-file-name)

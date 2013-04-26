@@ -80,21 +80,24 @@
   "Create etags file."
   (let* ((fmt "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
          (cmd (read-from-minibuffer "etag cmd: " (format fmt dir))))
-    (eshell-command cmd)))
+    ;; (eshell-command cmd)
+    (shell-command-no-output cmd)))
 
 (defun create-gtags (dir)
   "Create etags file."
   (let* ((fmt "gtags -v 2>/dev/null")
          (cmd (read-from-minibuffer "gtag cmd: " (format fmt dir))))
     (let ((default-directory dir))
-      (async-shell-command cmd))))
+      ;; (async-shell-command cmd)
+      (shell-command-no-output cmd))))
 
 (defun create-cscope (dir)
   "Create etags file."
   (let* ((fmt "cscope -Rb - 2>/dev/null")
          (cmd (read-from-minibuffer "cscope cmd: " (format fmt dir))))
     (let ((default-directory dir))
-      (async-shell-command cmd))))
+      ;; (async-shell-command cmd)
+      (shell-command-no-output cmd))))
 
 ;; (defun create-c-tags (dir-name)
 ;;   "Create tags file."
