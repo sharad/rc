@@ -1248,7 +1248,10 @@ it is displayed along with the global value."
                                                    (variable-at-point))))
            (enable-recursive-minibuffers  t)
            val)
-       (setq val  (completing-read "Describe variable: " obarray
+       (setq val  (completing-read (concat
+                                    "Describe variable "
+                                    (if symb (format " (default %s): " symb) ": "))
+                                   obarray
                                    (if current-prefix-arg
                                        (lambda (vv) (user-variable-p vv))
                                      (lambda (vv) (or (boundp vv)  (get vv 'variable-documentation))))
@@ -1443,7 +1446,9 @@ it is displayed along with the global value."
            (enable-recursive-minibuffers  t)
            val)
        (setq val  (completing-read
-                   "Describe variable: " obarray
+                   (concat
+                    "Describe variable "
+                    (if symb (format " (default %s): " symb) ": ")) obarray
                    (if current-prefix-arg
                        (lambda (vv) (user-variable-p vv))
                      (lambda (vv)
@@ -1646,11 +1651,14 @@ it is displayed along with the global value."
            (enable-recursive-minibuffers  t)
            val)
        (setq val (completing-read
-                  "Describe variable: " obarray (if current-prefix-arg
-                                                    (lambda (vv) (user-variable-p vv))
-                                                  (lambda (vv)
-                                                    (or (get vv 'variable-documentation)
-                                                        (and (boundp vv)  (not (keywordp vv))))))
+                  (concat
+                   "Describe variable "
+                   (if symb (format " (default %s): " symb) ": "))
+                  obarray (if current-prefix-arg
+                              (lambda (vv) (user-variable-p vv))
+                              (lambda (vv)
+                                (or (get vv 'variable-documentation)
+                                    (and (boundp vv)  (not (keywordp vv))))))
                   t nil nil (and (symbolp symb)  (symbol-name symb))))
        (list (if (equal val "") symb (intern val))
              nil

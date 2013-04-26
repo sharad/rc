@@ -41,6 +41,7 @@
 
 
 (deh-require-maybe eldoc                 ;http://www.emacswiki.org/emacs/ElDoc
+  (deh-require-maybe eldoc-extension)
   (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
   (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
   (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
@@ -49,18 +50,18 @@
     (add-hook 'c++-mode-hook 'c-turn-on-eldoc-mode)
     (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ "))
 
-;;   (deh-require-maybe cperl-mode          ;for perl http://www.emacswiki.org/emacs/CPerlMode#toc10
+  (deh-require-maybe cperl-mode          ;for perl http://www.emacswiki.org/emacs/CPerlMode#toc10
 
-;;     (defun my-cperl-eldoc-documentation-function ()
-;;       "Return meaningful doc string for `eldoc-mode'."
-;;       (car
-;;        (let ((cperl-message-on-help-error nil))
-;;          (cperl-get-help))))
+    (defun my-cperl-eldoc-documentation-function ()
+      "Return meaningful doc string for `eldoc-mode'."
+      (car
+       (let ((cperl-message-on-help-error nil))
+         (cperl-get-help))))
 
-;;     (add-hook 'cperl-mode-hook
-;;               (lambda ()
-;;                 (set (make-local-variable 'eldoc-documentation-function)
-;;                      'my-cperl-eldoc-documentation-function)))))
+    (add-hook 'cperl-mode-hook
+              (lambda ()
+                (set (make-local-variable 'eldoc-documentation-function)
+                     'my-cperl-eldoc-documentation-function)))))
 
 
 (deh-require-maybe clweb

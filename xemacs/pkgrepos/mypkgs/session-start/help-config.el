@@ -43,7 +43,7 @@
                (describe-function-1 function)
                (buffer-string)))
            nil nil nil 0)))
-    (define-key help-map (kbd "C-;") 'my-describe-function))
+    (define-key help-map (kbd ";") 'my-describe-function))
 
 
 

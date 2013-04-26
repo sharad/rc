@@ -331,14 +331,22 @@ function mkstandoutmsg () {
     if [ "${_xlmachine}" ]  ; then
         _fundefined="standoutmsg-${_xlmachine}-$(basename $_xlfile)"
         eval "function ${_fundefined}" \
-            '() { ssh ' \
+            '() { ' \
+            'if [ "$STANDOUTMSGnonl" = "yes" ] ; then ;' \
+            "   nls=$singleq$singleq    ;" \
+            'else ;' \
+            "   nls=$singleq\\\n\\\n\\\n$singleq    ;" \
+            'fi ;' \
+            'ssh ' \
             "${_xlmachine}" \
             $doubleq \
-            "  echo -e '\n\n\n'" \
-            '$(date +%d%h%Y-%H%M%S)' \
+            "  echo -e \$nls" \
+            '$(date +%d%h%Y-%H:%M:%S)' \
             "${_xluser}:" \
-            '$@ ' \
-            "'\n\n\n'" \
+            "${singleq}" \
+            '"$@" ' \
+            "${singleq}" \
+            "\$nls" \
             ' >>  ' \
             ${_xlfile} \
             $doubleq \
@@ -346,16 +354,24 @@ function mkstandoutmsg () {
     else
         _fundefined="standoutmsg-$(basename $_xlfile)"
         eval "function ${_fundefined}" \
-            '() { print "\n\n\n"' \
-            '$(date +%d%h%Y-%H%M%S)' \
+            '() { ' \
+            'if [ "$STANDOUTMSGnonl" = "yes" ] ; then ;' \
+            "   nls=$singleq$singleq    ;" \
+            'else ;' \
+            "   nls=$singleq\\n\\n\\n$singleq    ;" \
+            'fi ;' \
+            'print $nls' \
+            '$(date +%d%h%Y-%H:%M:%S)' \
             "${_xluser}:" \
-            '$@ "\n\n\n" >>  ' \
+            '"$@" $nls >>  ' \
             ${_xlfile} \
             '}'
     fi
 
 
-    print defined ${_fundefined}
+    print defined ${_fundefined} as
+
+    functions ${_fundefined}
 
     STANDOUTMSG_standoutmsgfns+=${_fundefined}
 }
@@ -363,8 +379,10 @@ function mkstandoutmsg () {
 function STANDOUTMSG_standoutmsgAll () {
     foreach fn (${(u)STANDOUTMSG_standoutmsgfns})
     do
-        $fn $@
+        $fn "$@"
     done
+
+    print "$@"
 }
 
 function waitmsg () {
