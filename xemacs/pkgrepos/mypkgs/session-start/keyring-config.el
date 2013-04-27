@@ -30,7 +30,8 @@
   (eval-after-load "pymacs"
     '(add-to-list 'pymacs-load-path "~/.xemacs/pymacs/"))
 
-  (pymacs-load "gnome-keyring" "gnome-keyring-")
+  (unless (pymacs-load "gnome-keyring" "gnome-keyring-" t)
+      (message "Look into unable to load python module gnome-keyring"))
   ;; (pymacs-load "ropemacs" "rope-")
   ;; ;; * Trying from the interactive emacs lisp mode (M-x ielm)
 
@@ -50,4 +51,3 @@
 ;; (gnome-keyring-get-password "localhost"))
 
 (provide 'keyring-config)
-

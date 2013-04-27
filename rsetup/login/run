@@ -37,24 +37,26 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
     fi
 
     if whence -p emacs > /dev/null ; then
+	echo emacs
         foreach server (general) {
             if [ ! -e ~/.emacs.d/server/${server} ] ||
        	        ! { # bundler command is not here for timeout it only for zsh
                 # timeout 7 command emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")';
                 # timeout 10 command emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")'
 
-                # do notr delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
+                # do not delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
                     timeout 16 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")';
                 } ; then
             # blow one is not allow gnus to read its ~/.gnus file automatically.
 	        # rm -f   \#.ido.last\#
                 pkill emacs
                 EMACS_SERVER_NAME=$server command emacs --daemon=$server
-                disown %emacs
+                # disown %emacs
             else
                 command emacsclient -n -f ~/.emacs.d/server/${server}  -e '(progn (update-ssh-agent) (plan))';
             fi
         }
+	echo emacs1
     fi
 
     # foreach server (general) {

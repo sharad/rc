@@ -138,7 +138,7 @@
         erc-prompt-for-password nil
         erc-pals '("siprsuhane") ;'("pfeyz" "nenn" "echo" "SirCodesalot")
         erc-fools '()
-        erc-hide-list '("JOIN" "PART" "QUIT")
+        erc-hide-list '() ;'("JOIN" "PART" "QUIT")
         erc-track-exclude-types '("324" "353" "333"
                                   "JOIN" "NAMES" "NICK" "QUIT" "PART" "TOPIC")
         ;; logging! ... requires the `log' module

@@ -209,6 +209,27 @@ function restoresshkeys() {
     fi
 }
 
+
+function cryptdir() {
+    #from: http://codeblogging.net/blogs/1/16/creating-password-protected-targz-file-command-line
+    if (( ${+2} )) ; then
+        tar czf - $2 | openssl enc -aes-256-cbc -e > $1
+    else
+        echo no file name
+    fi
+}
+
+
+function decryptdir() {
+    #from: http://codeblogging.net/blogs/1/16/creating-password-protected-targz-file-command-line
+    if (( $# == 1 )) ; then
+        openssl enc -in $1 -aes-256-cbc -d | tar -zxvf -
+    else
+        echo no file name
+    fi
+}
+
+
 function screenssh {
     if (( $# >= 1 )) ; then
         if (( $# == 2 )) ; then
@@ -391,5 +412,3 @@ function waitmsg () {
 }
 
 #}}
-
-
