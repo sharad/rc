@@ -56,6 +56,7 @@
     (if (and
          enable-p4-login
          sharad-in-office-with-perforce)
+        ;; fix p4 timeout problem, detect it than disable it for next run.
         (unless (shell-command-no-output "p4 user -o")
           (shell-command-no-output "zenity --password | p4 login"))))
 
