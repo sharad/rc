@@ -654,7 +654,8 @@ waiting for responses from the server"
         (progn
           (pymacs-exec "import os")
           (pymacs-exec "print os.getenv('DISPLAY',False)"))
-      ('error (pymacs-terminate-services-force)))
+      ;; ('error (pymacs-terminate-services-force)))
+      ('error nil))
     (condition-case e
         (progn
           (pymacs-exec "import pynotify")
@@ -780,7 +781,7 @@ If SERVER is non-nil, use that, rather than the current server."
                                 (format-time-string "%b %d %I:%M %p"))
                         msg erc-page-duration "gnome-emacs")
         )
-      (message "nick %s" nick)
+      ;; (message "nick %s" nick)
       ;;Handle channel messages when my nick is mentioned
       (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
                  ;; (string-match (erc-current-nick) msg)

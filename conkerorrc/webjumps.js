@@ -387,7 +387,9 @@ define_webjump("wayback", function (url) {
 
 // 2.9.1. Google News
 
-define_webjump("news", "http://news.google.com/news/search?q=%s");
+define_webjump("news/google", "http://news.google.com/news/search?q=%s");
+
+define_webjump("news/psychology", "http://www.psychologytoday.com/search/query?keys=%s&x=0&y=0");
 
 // 2.10. Programming
 
