@@ -59,6 +59,7 @@
 ;;}}}
 ;;WARNING: this is specific to clisp
 ;;{{{ Parameters
+
 (defparameter *hostname* (or (getenv "HOSTNAME") (getenv "HOST") (sb-unix::unix-gethostname)))
 (defparameter *home-dir* (getenv "HOME"))
 (defparameter *login-user* (getenv "USER"))
@@ -67,6 +68,7 @@
 (defparameter *stumpish* "/usr/local/share/stumpwm/contrib/stumpish")
 ;; (defparameter *desktop-background* nil)
 (defparameter *desktop-background-image-path* (concat *home-dir* "/.share/backgrounds"))
+
 ;;}}}
 
 ;;{{{ Customization:  change default parameters
@@ -285,53 +287,16 @@
         (load file)
         (message "Loaded ~a" file)))
 
-(if (or t (usepa))
-    (progn
-      (sharad/load-dir-files *session-dir*)
-      (pa-fnstumpwm::initpa)
-      (pa-fnstumpwm::select-plan-task))
 
-(sharad/load-dir-files (concat *session-dir* "contrib"))
-
-
-;;{{ Old
-
-    ;; (progn
-    ;;   (dformat 5 "~a" "Hello...........!!")
-    ;;   (dolist (x (directory (concat *session-dir* "old/*.lisp")))
-    ;;     (load x)
-    ;;     (message "Loaded ~a" x))
-
-    ;;   ;; load all file in session dir
-    ;;   (dolist (x (directory (concat *session-dir* "*.lisp")))
-    ;;     (load x)
-    ;;     (message "Loaded ~a" x))
-
-    ;;   (message "H1")
-    ;;   (defvar *emacs-planner-plans* (get-emacs-plans-today) "Emacs Planner Plans today")
-    ;;   (message "H2")
-    ;;   (defvar *emacs-planner-current-plan* (first *emacs-planner-plans*) "Emacs Planner Plans today")
-    ;;   (message "H3")
-
-    ;;   (defvar *emacs-planner-tasks*
-    ;;     (if (and (boundp '*emacs-planner-current-plan*)
-    ;;              *emacs-planner-current-plan*)
-    ;;         (get-emacs-tasks *emacs-planner-current-plan*)) "Emacs Planner tasks")
-    ;;   (message "H4")
-
-    ;;   (groups-create-from-tasks t)
-
-    ;;   (run-commands
-    ;;    ;; "groups-create-from-tasks"
-    ;;    "groups-number")
-
-    ;;   ;; ask user on what he wanted to start work.
-    ;;   (select-plan-task))
-
-;;}}
-      )
+(progn
+  (sharad/load-dir-files *session-dir*)
+  (sharad/load-dir-files (concat *session-dir* "contrib"))
+  (when (or t (usepa))
+    (pa-fnstumpwm::initpa)
+    (pa-fnstumpwm::select-plan-task)))
 
 
+(gselect ".scratchpad")
 
 (sleep 2)
 
