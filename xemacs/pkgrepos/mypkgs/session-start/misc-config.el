@@ -316,4 +316,8 @@ The indirect buffer can have another major mode."
         oneliner-sync-default-directory-after-prompt t))
 
 
+(deh-section "crontab-mode"
+  (autoload 'crontab-mode "crontab-mode.el" "Major mode for editing your crontab file." t))
+
+
 (provide 'misc-config)

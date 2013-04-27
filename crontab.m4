@@ -38,14 +38,15 @@ SHELL=/bin/zsh
 45 08 * * * spd-say -C
 
 
-# run each hour on week days
-50 9-22/1 * * 1-5 DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys
+# # run each hour on week days
+# 50 9-22/1 * * 1-5 DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys
 
-# run 9.50 daily
-50 09     * * *   DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys
+# # run 9.50 daily
+# 50 09     * * *   DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys
 
-# run 10.50 daily
-50 22     * * *   DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys
+# # run 10.50 daily
+# 50 22     * * *   DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys
+
 
 
 
