@@ -46,6 +46,8 @@
          (t
           (setf (scratchpad-last-group scratchpad) (current-group))
           (switch-to-group (scratchpad-group scratchpad))
-          (message "scratchpad")))
-      (message "No scratchpad for this screen."))))
-
+          (message "scratchpad")
+          t))
+        (prog1
+            nil
+          (message "No scratchpad for this screen.")))))

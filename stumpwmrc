@@ -295,7 +295,8 @@
     (pa-fnstumpwm::initpa)
     (pa-fnstumpwm::select-plan-task)))
 
-(scratchpad)
+(if (scratchpad)
+    (dotimes (c 2) (hsplit)))
 
 ;; (let ((sg (find-group (current-screen) ".scratchpad"))) **
 ;;   (if sg (switch-to-group sg))) **
