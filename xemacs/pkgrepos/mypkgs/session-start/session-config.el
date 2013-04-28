@@ -531,7 +531,9 @@ Also returns nil if pid is nil."
     (if (sharad/desktop-saved-session)
         (progn
           (message "desktop-session-restore")
-          (desktop-read)
+          (condition-case e
+              (desktop-read)
+            ('error (message "Error in desktop-read: %s" e)))
           t)
         (message "No desktop found."))
     (when (y-or-n-p "Do you want to set session of frame? ")

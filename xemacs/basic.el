@@ -282,7 +282,7 @@ alkready should not exist.")
 (defvar *sharad/after-init-hook* nil "sharad/after-init-hook")
 (add-hook 'after-init-hook
           #'(lambda ()
-              (run-hooks '*sharad/after-init-hook*)))
+              (run-each-hooks '*sharad/after-init-hook*)))
 
 
 
@@ -338,7 +338,7 @@ alkready should not exist.")
                                 (light-symbol-mode 1)
                                 (highlight-changes-visible-mode t)
                                 (highlight-changes-mode t)) pgm-langs))
-      (run-hooks 'sharad/enable-startup-inperrupting-feature-hook)
+      (run-each-hooks 'sharad/enable-startup-inperrupting-feature-hook)
       (message "Seen")
       (setq debug-on-error t )))
 
@@ -367,7 +367,7 @@ alkready should not exist.")
     ;; (update-ssh-agent t)
     (setq debug-on-error nil)           ;for planner
     (with-report-error "check"
-        (run-hooks 'sharad/disable-login-session-inperrupting-feature)))
+        (run-each-hooks 'sharad/disable-login-session-inperrupting-feature)))
 
   (defun sharad/enable-login-session-inperrupting-feature ()
     (interactive)
@@ -377,7 +377,7 @@ alkready should not exist.")
         ;; (update-ssh-agent t)  ; test
         (update-ssh-agent)
         (setq debug-on-error t)           ;for planner
-      (run-hooks 'sharad/enable-login-session-inperrupting-feature-hook)))
+      (run-each-hooks 'sharad/enable-login-session-inperrupting-feature-hook)))
 
   (defun sharad/enable-login-session-inperrupting-feature-in-frame-once (frame)
     (select-frame frame)
