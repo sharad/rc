@@ -5,9 +5,24 @@
 prog=$(basename $0)
 
 
-debug=1
+debug=0
 
 typeset -A args
+
+
+if which zile >& /dev/null ; then
+    alted=zile
+elif which mg >& /dev/null ; then
+    alted=mg
+elif which jove >& /dev/null ; then
+    alted=jove
+elif which sensible-editor >& /dev/null ; then
+    alted=sensible-editor
+else
+    alted=vim
+fi
+
+
 
 args[-f]="~/.emacs.d/server/general"
 
@@ -33,12 +48,17 @@ esac
 foreach f ("$@" ) {
     [ -f $f ] && filegiven=
 }
-]
+
 if which emacs >& /dev/null && which emacsclient >& /dev/null ; then
-    (( ${+debug} )) &&
-    echo eval emacsclient ${(kv)args} ${filegiven--c} "$@"
-    eval emacsclient ${(kv)args} ${filegiven--c} "$@"
-elif which sensible-editor ; then
+    (( ${+debug} )) && echo eval emacsclient ${(kv)args} ${filegiven--c} -a $alted "$@"
+    eval emacsclient ${(kv)args} ${filegiven--c} -a $alted "$@"
+elif which zile >& /dev/null ; then
+    zile "$@"
+elif which mg >& /dev/null ; then
+    mg "$@"
+elif which jove >& /dev/null ; then
+    jove "$@"
+elif which sensible-editor >& /dev/null ; then
     sensible-editor "$@"
 else
     vim "$@"
