@@ -41,19 +41,19 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
         foreach server (general) {
             if [ ! -e ~/.emacs.d/server/${server} ] ||
        	        ! { # bundler command is not here for timeout it only for zsh
-                # timeout 7 command emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")';
-                # timeout 10 command emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")'
-
                 # do not delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
-                    timeout 16 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")';
+                timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")';
+                # timeout 10 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")'
+
+                # timeout 16 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")';
                 } ; then
             # blow one is not allow gnus to read its ~/.gnus file automatically.
 	        # rm -f   \#.ido.last\#
                 pkill emacs
                 EMACS_SERVER_NAME=$server command emacs --daemon=$server
                 # disown %emacs
-            else
-                command emacsclient -n -f ~/.emacs.d/server/${server}  -e '(progn (update-ssh-agent) (plan))';
+            # else   #  it cause problem in autologin in GDM,  LightDM
+            #     command emacsclient -n -f ~/.emacs.d/server/${server}  -e '(progn (update-ssh-agent) (plan))';
             fi
         }
 	echo emacs1
@@ -73,6 +73,3 @@ fi
 
 whence leave &&
 leave +0800
-
-
-
