@@ -312,8 +312,18 @@ The indirect buffer can have another major mode."
                                    (expand-file-name "temp" (getenv "HOME"))
                                    ;; (error "test")
                                    )
+        oneliner-debug t
         oneliner-shell-type 'zsh
-        oneliner-sync-default-directory-after-prompt t))
+        oneliner-sync-default-directory-after-prompt t)
+
+
+  (defadvice oneliner (around shell-call-shell-file-name activate)
+    ;; I can not make (env ESELL) to zsh, becasue of tramp
+    ;; see in tramp-config.el
+    ;; oneliner choose shell-type by shell-file-name
+    "make (shell) to prefer shell-file-name"
+    (let ((explicit-shell-file-name shell-file-name))
+      ad-do-it)))
 
 
 (deh-section "crontab-mode"

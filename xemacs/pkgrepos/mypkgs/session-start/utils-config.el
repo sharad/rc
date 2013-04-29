@@ -96,6 +96,7 @@
                                   'shell-command))
          (retval
           (if handler
+              ;;(process-file-shell-command
               (funcall handler 'shell-command cmd nil nil)
               (call-process shell-file-name nil nil nil "-c" cmd))))
     (if (equal 0 retval) t)))
