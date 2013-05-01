@@ -213,6 +213,8 @@
             '(progn
               ;; (slime-setup '(slime-repl inferior-slime slime-fancy slime-scratch slime-editing-commands slime-asdf))
               (slime-setup '(slime-fancy))
+              ;; http://common-lisp.net/project/slime/doc/html/slime_002dautodoc_002dmode.html
+              (slime-setup '(slime-autodoc)) ;; doc needed like eldoc
               ;; (slime-setup '(slime-fancy slime-scratch slime-editing-commands slime-repl slime-asdf))
               ;; (slime-setup '(slime-fancy slime-asdf slime-banner))
               ;; (slime-setup '(slime-asdf slime-banner))

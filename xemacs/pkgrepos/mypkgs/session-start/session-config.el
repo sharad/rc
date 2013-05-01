@@ -112,6 +112,8 @@
       (push (cons 'current-buffer (buffer-name (current-buffer))) session-list)
       (push (cons 'current-screen (elscreen-get-current-screen)) session-list)))
 
+  (defvar *frames-elscreen-session* nil "Stores all elscreen sessions here.")
+
   (defun elscreen-session-store (elscreen-session)
     (interactive "Ffile: " )
     (with-temp-file elscreen-session

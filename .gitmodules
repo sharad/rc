@@ -61,3 +61,6 @@
 [submodule "xemacs/pkgrepos/world/gits/disaster"]
 	path = xemacs/pkgrepos/world/gits/disaster
 	url = https://github.com/jart/disaster.git
+[submodule "xemacs/pkgrepos/world/gits/e-sink"]
+	path = xemacs/pkgrepos/world/gits/e-sink
+	url = https://github.com/lewang/e-sink.git
