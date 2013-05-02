@@ -32,7 +32,6 @@
   '(require 'cl))
 
 
-
 ;; (sharad/elscreen-get-screen-to-name-alist)
 
 (eval-after-load "elscreen"
@@ -132,12 +131,25 @@
               (concat *emacs-frame-session-directory* "/" session "/" *elscreen-tab-configuration-store-filename*)))
        *frames-elscreen-session*)))
 
+  (defun fmsession-store-to-file (file)
+    (interactive "Ffile: ")
+    (with-temp-file file
+      (insert
+       (prin1-to-string *frames-elscreen-session*))))
+
+  (defun fmsession-restore-from-file (file)
+    (interactive "ffile: ")
+    (setq *frames-elscreen-session*
+          (append
+           *frames-elscreen-session*
+           (sharad/read-file file))))
 
   (defun elscreen-session-store (elscreen-session)
     (interactive
-     (fmsession-read-location))
+     (list
+      (fmsession-read-location)))
     (if (assoc elscreen-session *frames-elscreen-session*)
-        (set-cdr (assoc elscreen-session *frames-elscreen-session*)
+        (setcdr (assoc elscreen-session *frames-elscreen-session*)
                  (cons elscreen-session (elscreen-session-make-session-list)))
         (push (cons elscreen-session (elscreen-session-make-session-list))
               *frames-elscreen-session*))
@@ -207,7 +219,8 @@
 
   (defun fmsession-read-location (&optional initial-input)
     (let ((used t)
-          e used
+          sel)
+      (while used
         (setq used
               (member
                (setq sel (fmsession-read-location-internal initial-input))
@@ -229,7 +242,7 @@
                              nil
                              nil
                              initial-input)
-      ('quit nil))))
+      ('quit nil)))
 
   ;; (defun fmsession-read-location-internal (&optional initial-input)
   ;;   (unless (file-directory-p *emacs-frame-session-directory*)
