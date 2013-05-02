@@ -484,6 +484,21 @@ Also returns nil if pid is nil."
   ;;       (error "You %d are not the desktop owner %d."
   ;;              (emacs-pid) owner))))
 
+  (defvar *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
+
+  (defun desktop-vc-save (desktop-save-filename)
+    (interactive "Fdesktop file: ")
+    (if (t)
+        (let ((desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
+          (put-file-in-rcs desktop-save-filename)
+          (desktop-save (dirname-of-file desktop-save-filename)))))
+
+  (defun desktop-vc-read (dirname base-file-name)
+    (interactive "fdesktop file: ")
+    (let ((desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
+      (put-file-in-rcs desktop-save-filename)
+      (desktop-read (dirname-of-file desktop-save-filename))))
+
   (defun my-desktop-save ()
     (interactive)
     ;; Don't call desktop-save-in-desktop-dir, as it prints a message.

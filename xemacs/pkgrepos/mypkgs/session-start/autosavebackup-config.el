@@ -54,6 +54,10 @@
         ;; want RCSshould be last.
         (append (remove 'RCS vc-handled-backends) '(RCS)))
 
+  (defun failed (fmt &rest args)
+    (message fmt args)
+    nil)
+
   (defvar rcs-backup-vc-file nil "")
 
   (defun rcs-ci-executable-find (file)
@@ -71,44 +75,52 @@
        (or backends vc-handled-backends))
       nil))
 
-  (defun put-file-in-rcs (from-file)
+
+  (defun put-file-in-rcs-for-backup (from-file)
+    (let (())
+      (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
+      (if (put-file-in-rcs from-file)
+          (run-hook-with-args 'vc-mode-line-hook ((file-truename from-file)))))
+
+  (defun put-file-in-rcs (nfile)
     ;; http://www.emacswiki.org/emacs/VersionControlAlways
     (interactive
      (list (buffer-file-name (current-buffer))))
-    (if (file-exists-p from-file)
-        (let ((org-from-file (file-truename from-file)))
-          (if (file-exists-p org-from-file)
-              (if (rcs-ci-executable-find org-from-file)
+    (if (file-exists-p nfile)
+        (let ((org-nfile (file-truename nfile)))
+          (if (file-exists-p org-nfile)
+              (if (rcs-ci-executable-find org-nfile)
                   (if (member 'RCS vc-handled-backends)
                       (let* ((default-directory (file-truename default-directory)) ;to fix planner muse file issue.
-                             (fmode (file-modes org-from-file))
+                             (fmode (file-modes org-nfile))
                              (file-nonrcs-backend
                               (unless rcs-backup-vc-file
-                                (vc-find-backend org-from-file (remove 'RCS vc-handled-backends)))))
+                                (vc-find-backend org-nfile (remove 'RCS vc-handled-backends)))))
                         ;; (message "put-file-in-rcs: adding to rcs")
-                        ;; (message "from-file %s" from-file)
-                        ;; (message "org-from-file %s" org-from-file)
+                        ;; (message "nfile %s" nfile)
+                        ;; (message "org-nfile %s" org-nfile)
 
                         (if (not file-nonrcs-backend)
-                            (if (not (string-match ".+,v" org-from-file))
+                            (if (not (string-match ".+,v" org-nfile))
                                 (let ((tempdir (getenv "TMPDIR"))
                                       (vc-rcs-checkin-switches "-l")
                                       (vc-rcs-register-switches "-l")
-                                      (file-is-in-rcs (vc-call-backend 'RCS 'registered org-from-file))
-                                      (rcsdir (expand-file-name "RCS" (file-name-directory org-from-file))))
+                                      (file-is-in-rcs (vc-call-backend 'RCS 'registered org-nfile))
+                                      (rcsdir (expand-file-name "RCS" (file-name-directory org-nfile))))
+                                  ;; (message "Now it is sure file %s will be VCed." nfile)
+
 
                                   (if tempdir
                                       (when (not (file-exists-p tempdir))
                                         ;no question.
                                         (make-directory tempdir t)))
 
-                                  ;; (message "Now it is sure file %s will be VCed." from-file)
-                                  (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
+                                  ;; (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
 
                                   (if (not (or file-is-in-rcs
                                                (file-exists-p (expand-file-name
                                                                (concat
-                                                                (file-name-nondirectory org-from-file) ",v")
+                                                                (file-name-nondirectory org-nfile) ",v")
                                                                rcsdir))))
                                       (let ()
                                         (when (not (file-exists-p rcsdir))
@@ -116,9 +128,9 @@
                                           (make-directory rcsdir t))
                                         (if (file-exists-p rcsdir)
                                             (progn
-                                              (vc-rcs-register (list org-from-file))
-                                              (vc-switch-backend from-file 'RCS))
-                                            (message "Not able to create %s for %s" rcsdir org-from-file)))
+                                              (vc-rcs-register (list org-nfile))
+                                              (vc-switch-backend nfile 'RCS))
+                                            (failed "Not able to create %s for %s" rcsdir org-nfile)))
 
                                       (if file-is-in-rcs
                                           (progn
@@ -126,24 +138,26 @@
                                             ;; (vc-checkin file 'RCS nil "checkin" nil)
                                             (with-temp-buffer
                                               (with-vc-properties
-                                                  (list org-from-file)
+                                                  (list org-nfile)
                                                 (progn
-                                                  (vc-call-backend 'RCS 'checkin (list org-from-file) nil "autobackup")
-                                                  (mapc 'vc-delete-automatic-version-backups (list org-from-file))
-                                                  ;; (message "Checked in %s" org-from-file)
+                                                  (vc-call-backend 'RCS 'checkin (list org-nfile) nil "autobackup")
+                                                  (mapc 'vc-delete-automatic-version-backups (list org-nfile))
+                                                  ;; (message "Checked in %s" org-nfile)
                                                   )
                                                 `((vc-state . up-to-date)
-                                                  (vc-checkout-time . ,(nth 5 (file-attributes org-from-file)))
+                                                  (vc-checkout-time . ,(nth 5 (file-attributes org-nfile)))
                                                   (vc-working-revision . nil)))))))
-                                  (run-hook-with-args 'vc-mode-line-hook org-from-file)
-                                  (set-file-modes org-from-file fmode)
-                                  (message nil))
-                                (message "file %s is a backup file." org-from-file))
-                            (message "file %s is %s file" org-from-file file-nonrcs-backend)))
-                      (message "RCS is not available."))
-                  (message "rcs ci executable not available."))
-              (message "file %s do not exists." org-from-file)))
-        (message "file %s do not exists." from-file)))
+                                  ;; (run-hook-with-args 'vc-mode-line-hook org-nfile)
+                                  (set-file-modes org-nfile fmode)
+                                  (message nil)
+                                  t)
+                                (failed "file %s is a backup file." org-nfile))
+                            (failed "file %s is %s file" org-nfile file-nonrcs-backend)))
+                      (failed "RCS is not available."))
+                  (failed "rcs ci executable not available."))
+              (failed "file %s do not exists." org-nfile)))
+        (failed "file %s do not exists." nfile)))
+
 
 ;; (message "%s" vc-mode)
 
@@ -160,7 +174,7 @@
                                    disable)
       ;; (message "defadvise filename %s %s" from-name to-name)
       (condition-case e
-          (put-file-in-rcs from-name)
+          (put-file-in-rcs-for-backup from-name)
         ('error (message "Error: %s" e)))))
 
 
