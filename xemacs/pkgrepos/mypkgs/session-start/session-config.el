@@ -282,11 +282,12 @@
 
   ;; (push #'elscreen-store kill-emacs-hook)
 
-  (defun fmsession-restore (session-dir)
+  (defun fmsession-restore (session-name)
     "Restore the elscreen tab configuration."
     (interactive
      (list (fmsession-read-location)))
-    (elscreen-session-restore elscreen-session)
+    ;; (elscreen-session-restore elscreen-session)
+    (elscreen-session-restore session-name)
     ;; (if session-dir
     ;;     (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
     ;;       (if (file-directory-p session-dir)
