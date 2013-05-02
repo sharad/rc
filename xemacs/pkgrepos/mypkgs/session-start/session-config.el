@@ -88,7 +88,7 @@
 
   (defvar elscreen-session-restore-create-scratch-buffer nil "elscreen-session-restore-create-scratch-buffer")
 
-  (setq desktop-base-file-name "session.desktop")
+  ;; (setq desktop-base-file-name "session.desktop")
 
   ;;{{ http://stackoverflow.com/a/13711234
   ;; from: http://stackoverflow.com/questions/847962/what-alternate-session-managers-are-available-for-emacs

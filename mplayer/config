@@ -1,0 +1,25 @@
+# Write your default config options here!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[radio/fm]
+# rawaudio=rate=24000
+# radio=adevice=hw=2:arate=24000:channels=91.90-IndigoEng,93.5-RedFMH,94.3-OneH,100-Amrut,101.30-Raibow,102.90-VivdhBH,104.00-Fever,106.40-Gyanvani
+# cache=1024
+# cache-min=20
+
+
