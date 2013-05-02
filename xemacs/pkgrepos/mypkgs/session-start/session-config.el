@@ -113,13 +113,15 @@
 
   (defvar *frames-elscreen-session* nil "Stores all elscreen sessions here.")
 
-  (add-to-list
-   'desktop-globals-to-save
-   '*frames-elscreen-session*)
+  (eval-after-load "desktop"
+    '(add-to-list
+      'desktop-globals-to-save
+      '*frames-elscreen-session*))
 
-  (add-to-list
-   'session-globals-include
-   '(*frames-elscreen-session* 100))
+  (eval-after-load "session"
+    '(add-to-list
+      'session-globals-include
+      '(*frames-elscreen-session* 100)))
 
 
   (defun fmsession-migration ()
@@ -625,13 +627,6 @@ Also returns nil if pid is nil."
   )
 
 
-
-(deh-require-maybe savehist-20+
-  )
-
-(deh-require-maybe workspaces
-  )
-
 ;;For Session
 (deh-require-maybe session ;;
   (add-hook 'after-init-hook 'session-initialize)
@@ -682,6 +677,12 @@ Also returns nil if pid is nil."
                    (functionp 'session-save-sessoin))
                   (session-save-sessoin)))))
 
+
+(deh-require-maybe savehist-20+
+  )
+
+(deh-require-maybe workspaces
+  )
 
 ;; (deh-require-maybe desktop-recover
 ;;   ;; ssee:http://www.emacswiki.org/emacs/DesktopRecover
