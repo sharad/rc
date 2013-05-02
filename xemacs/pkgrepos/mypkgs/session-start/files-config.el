@@ -357,8 +357,12 @@ directory, select directory. Lastly the file is opened."
 
 (defun find-same-file-in-relative-dir (&optional updircount)
   (interactive "P")
-  (when buffer-file-name
-    (let* ((filename (call-times (prefix-numeric-value updircount) 'dirname-of-file buffer-file-name))
+  (if buffer-file-name
+    (let* ((filename (call-times (cond
+                                   ((and (consp updircount) (eq (car wprif) 4)) 1)
+                                   ((null updircount) 0)
+                                   (t (prefix-numeric-value updircount)))
+                                 'dirname-of-file buffer-file-name))
            (dircomponents
             (let ((count 0))
               (mapcar
@@ -366,7 +370,9 @@ directory, select directory. Lastly the file is opened."
                  (prog1
                      (cons c count)
                    (incf count)))
-               (split-string filename "/" t))))
+               (split-string (if (file-directory-p filename)
+                                 filename
+                                 (dirname-of-file filename)) "/" t))))
            (matchd (ido-completing-read "dir: " (mapcar #'car dircomponents)))
            (matcheddircomponents
             (remove-if-not
@@ -398,71 +404,10 @@ directory, select directory. Lastly the file is opened."
                          'find-file)))
                   (find-file selected-file-name))
               t)
-            (message "No match present."))))))
+            (message "No match present."))))
+    (message "buffer <%s> is not associate to any file." (current-buffer))))
 
-(when nil
-(defun find-same-file-in-relative-dir (&optional updircount)
-  (interactive "P")
-  (when buffer-file-name
-    (let* ((filename (call-times (prefix-numeric-value updircount) 'dirname-of-file buffer-file-name))
-           (dircomponents
-            (let ((count 0))
-              (mapcar
-               (lambda (c)
-                 (prog1
-                     (cons c count)
-                   (incf count)))
-               (split-string filename "/" t))))
-           (matchd (ido-completing-read "dir: " (mapcar #'car dircomponents)))
-           (matcheddircomponents
-            (remove-if-not
-             #'(lambda (e)
-                 (string-equal (car e) matchd))
-             dircomponents))
-           (dirnu
-            (if (= (length matcheddircomponents) 1)
-                (car matcheddircomponents)
-                (rassoc
-                 (ido-completing-read "which one: " (mapcar #'cdr matcheddircomponents))
-                 matcheddircomponents))))
-      (let* ((tpos 0)
-             (epos 0)
-             (spos (dotimes (c (1+ (cdr dirnu)) tpos)
-                     (string-match (car dirnu) filename tpos)
-                     (setq tpos (match-beginning 0)
-                           epos (match-end 0))))
-             (prefix-filename (substring filename 0 spos))
-             (suffix-filename (substring filename epos))
-             (subdirs (remove
-                       (car dirnu)
-                       (remove-if-not
-                        #'(lambda (d)
-                            (and
-                             (file-directory-p (concat prefix-filename d))
-                             (not
-                              (or
-                               (string-equal (concat  ".") d)
-                               (string-equal (concat  "..") d)))))
-                        (directory-files prefix-filename))))
-             (existing-subdirs (remove-if-not
-                                #'(lambda (sd)
-                                    (file-exists-p (concat prefix-filename sd suffix-filename)))
-                                subdirs))
-             (select-subdir (if existing-subdirs
-                                (ido-completing-read "select subdir: " existing-subdirs)))
-             (selected-file-name (if select-subdir
-                                     (concat prefix-filename select-subdir suffix-filename))))
-        (testing
-         (message "%s %s %s %s %s %s %s" tpos spos dirnu prefix-filename suffix-filename subdirs existing-subdirs))
-        (if selected-file-name
-            (if (file-directory-p selected-file-name)
-                (let ((default-directory selected-file-name))
-                  (call-interactively
-                   (or (command-remapping 'find-file)
-                       'find-file)))
-                (find-file selected-file-name)
-                t)
-            (message "No match present.")))))))
+
 
 
 
