@@ -92,24 +92,66 @@
 
   ;;{{ http://stackoverflow.com/a/13711234
   ;; from: http://stackoverflow.com/questions/847962/what-alternate-session-managers-are-available-for-emacs
-  (defvar *emacs-frame-session-directory*
-    "~/.emacs.d/session/frames"
-    "The directory where the emacs configuration files are stored.")
-
-  (defvar *elscreen-tab-configuration-store-filename*
-    "elscreen"
-    "The file where the elscreen tab configuration is stored.")
-
   ;; (desktop-save (fmsession-read-location))
   ;; (desktop-read (fmsession-read-location))
 
   (require 'utils-config)
 
-  (defun elscreen-session-make-session-list ()
-    (let (session-list)
-      (push (cons 'screens (reverse (sharad/elscreen-get-screen-to-name-alist))) session-list)
-      (push (cons 'current-buffer (buffer-name (current-buffer))) session-list)
-      (push (cons 'current-screen (elscreen-get-current-screen)) session-list)))
+  (defvar *elscreen-session-restore-data* nil "")
+
+  (defun elscreen-session-session-list-get (&optional nframe)
+    (with-selected-frame (or nframe (selected-frame))
+      (let (session-list)
+        (push (cons 'screens (reverse (sharad/elscreen-get-screen-to-name-alist))) session-list)
+        (push (cons 'current-buffer (buffer-name (current-buffer))) session-list)
+        (push (cons 'current-screen (elscreen-get-current-screen)) session-list))))
+
+  (defun elscreen-session-session-list-set (session-list &optional nframe)
+    (with-selected-frame (or nframe (selected-frame))
+      (let* (screen
+             buffers
+             (screens
+              (or
+               (cdr (assoc 'screens session-list))
+               '((0 "*scratch*"))))
+             (session-current-buffer
+              (cadr (assoc
+                     (cdr (assoc 'current-screen session-list))
+                     screens))))
+        (testing
+         (message "Bstart: session-current-buffer %s" session-current-buffer)
+         (message "Astart: screen-to-name-alist %s" session-list))
+        (while screens
+          (setq screen (caar screens))
+          (setq buffers (cdar screens))
+          (if (when (bufferp (get-buffer (car buffers)))
+                ;; (message "if screen: %s buffer: %s" screen buffers)
+                (if (eq screen 0) ;; (eq (elscreen-get-current-screen) 0)
+                    (switch-to-buffer (car buffers))
+                    (elscreen-find-and-goto-by-buffer (car buffers) t t))
+                (cdr buffers))
+              (while (cdr buffers)
+                (testing (message "while: screen: %s buffer: %s" screen (cadr buffers)))
+                (switch-to-buffer-other-window (car (cdr buffers)))
+                (setq buffers (cdr buffers)))
+              (testing (message "else")))
+          (setq screens (cdr screens)))
+
+        ;; (when elscreen-session-restore-create-scratch-buffer
+        ;;   (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
+        (elscreen-create)                 ;trap
+
+        (if (get-buffer session-current-buffer)
+            (progn
+              ;; (elscreen-find-and-goto-by-buffer (get-buffer session-current-buffer) nil nil)
+              (setq *elscreen-session-restore-data* (list (cons 'cb session-current-buffer)))
+              (testing
+               (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*)))
+            (testing
+             (message "in when session-current-buffer %s" session-current-buffer))))
+      (testing
+       (message "elscreen-notify-screen-modification"))
+      (elscreen-notify-screen-modification 'force-immediately)))
 
   (defvar *frames-elscreen-session* nil "Stores all elscreen sessions here.")
 
@@ -123,14 +165,13 @@
       'session-globals-include
       '(*frames-elscreen-session* 100)))
 
-
   (defun fmsession-migration ()
     (interactive)
-    (dolist (session (directory-files *emacs-frame-session-directory* nil "[a-zA-Z]+"))
+    (dolist (session (directory-files "~/.emacs.d/session/frames/" nil "[a-zA-Z]+"))
       (pushnew
        (cons session
              (sharad/read-file
-              (concat *emacs-frame-session-directory* "/" session "/" *elscreen-tab-configuration-store-filename*)))
+              (concat "~/.emacs.d/session/frames/" session "/elscreen")))
        *frames-elscreen-session*)))
 
   (defun fmsession-store-to-file (file)
@@ -146,78 +187,25 @@
            *frames-elscreen-session*
            (sharad/read-file file))))
 
-  (defun elscreen-session-store (elscreen-session)
+  (defun elscreen-session-store (elscreen-session &optional nframe)
     (interactive
      (list
       (fmsession-read-location)))
-    (if (assoc elscreen-session *frames-elscreen-session*)
-        (setcdr (assoc elscreen-session *frames-elscreen-session*)
-                 (cons elscreen-session (elscreen-session-make-session-list)))
-        (push (cons elscreen-session (elscreen-session-make-session-list))
-              *frames-elscreen-session*))
-    ;; (with-temp-file elscreen-session
-    ;;   (insert
-    ;;    (prin1-to-string (elscreen-session-make-session-list))))
-    )
+    (let ((session-list (elscreen-session-session-list-get (or nframe (selected-frame)))))
+      (if (assoc elscreen-session *frames-elscreen-session*)
+          (setcdr (assoc elscreen-session *frames-elscreen-session*)
+                  (cons elscreen-session session-list))
+          (push (cons elscreen-session session-list) *frames-elscreen-session*))))
 
-  ;; (defun elscreen-session-restore (elscreen-session)
-  ;;   (let ((screens (reverse (sharad/read-file elscreen-session))))
-  ;;     (elscreen-set-screen-to-name-alist-cache screens)))
-
-  (defvar *elscreen-session-restore-data* nil "")
-
-  (defun elscreen-session-restore (elscreen-session)
+  (defun elscreen-session-restore (elscreen-session &optional nframe)
     (interactive
      (list
       (fmsession-read-location)))
-    (testing
-     (message "Nstart: session-current-buffer %s" elscreen-session))
-    (let* (screen buffers
-                  (elscreen-session-list
-                   ;; (sharad/read-file elscreen-session)
-                   (cdr (assoc elscreen-session *frames-elscreen-session*)))
-           (screens
-            (or
-             (cdr (assoc 'screens elscreen-session-list))
-             '((0 "*scratch*"))))
-           (session-current-buffer
-            (cadr (assoc
-                   (cdr (assoc 'current-screen elscreen-session-list))
-                   screens))))
+    (let ((elscreen-session-list
+           (cdr (assoc elscreen-session *frames-elscreen-session*))))
       (testing
-       (message "Bstart: session-current-buffer %s" session-current-buffer)
-       (message "Astart: screen-to-name-alist %s" elscreen-session-list))
-      (while screens
-        (setq screen (caar screens))
-        (setq buffers (cdar screens))
-        (if (when (bufferp (get-buffer (car buffers)))
-              ;; (message "if screen: %s buffer: %s" screen buffers)
-              (if (eq screen 0) ;; (eq (elscreen-get-current-screen) 0)
-                    (switch-to-buffer (car buffers))
-                    (elscreen-find-and-goto-by-buffer (car buffers) t t))
-              (cdr buffers))
-            (while (cdr buffers)
-              (testing (message "while: screen: %s buffer: %s" screen (cadr buffers)))
-              (switch-to-buffer-other-window (car (cdr buffers)))
-              (setq buffers (cdr buffers)))
-            (testing (message "else")))
-        (setq screens (cdr screens)))
-
-      ;; (when elscreen-session-restore-create-scratch-buffer
-      ;;   (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
-      (elscreen-create)                 ;trap
-
-      (if (get-buffer session-current-buffer)
-          (progn
-            ;; (elscreen-find-and-goto-by-buffer (get-buffer session-current-buffer) nil nil)
-            (setq *elscreen-session-restore-data* (list (cons 'cb session-current-buffer)))
-            (testing
-             (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*)))
-          (testing
-           (message "in when session-current-buffer %s" session-current-buffer))))
-    (testing
-     (message "elscreen-notify-screen-modification"))
-    (elscreen-notify-screen-modification 'force-immediately))
+       (message "Nstart: session-current-buffer %s" elscreen-session))
+      (elscreen-session-session-list-set elscreen-session-list (or nframe (selected-frame)))))
 
   (defun fmsession-read-location (&optional initial-input)
     (let ((used t)
@@ -246,57 +234,17 @@
                              initial-input)
       ('quit nil)))
 
-  ;; (defun fmsession-read-location-internal (&optional initial-input)
-  ;;   (unless (file-directory-p *emacs-frame-session-directory*)
-  ;;     (make-directory *emacs-frame-session-directory*))
-  ;;   (condition-case terr
-  ;;       (concat
-  ;;        *emacs-frame-session-directory* "/"
-  ;;        (ido-completing-read "Session: "
-  ;;                             (remove-if-not
-  ;;                              #'(lambda (dir)
-  ;;                                  (and
-  ;;                                   (file-directory-p
-  ;;                                    (concat *emacs-frame-session-directory* "/" dir))
-  ;;                                   (not
-  ;;                                    (member
-  ;;                                     (concat *emacs-frame-session-directory* "/" dir)
-  ;;                                     (remove-if #'null
-  ;;                                                (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list)))))))
-  ;;                              (directory-files *emacs-frame-session-directory* nil "[a-zA-Z]+"))
-  ;;                             nil
-  ;;                             nil
-  ;;                             initial-input))
-  ;;     ('quit nil)))
-
-  (defun fmsession-store (session-name)
+  (defun fmsession-store (session-name &optional nframe)
     "Store the elscreen tab configuration."
     (interactive
      (list (fmsession-read-location)))
-    (elscreen-session-store session-name)
-    ;; (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
-    ;;   (make-directory session-dir t)
-    ;;   (when (file-directory-p session-dir)
-    ;;     (elscreen-session-store elscreen-session)))
-    )
+    (elscreen-session-store session-name nframe))
 
-  ;; (push #'elscreen-store kill-emacs-hook)
-
-  (defun fmsession-restore (session-name)
+  (defun fmsession-restore (session-name &optional nframe)
     "Restore the elscreen tab configuration."
     (interactive
      (list (fmsession-read-location)))
-    ;; (elscreen-session-restore elscreen-session)
-    (elscreen-session-restore session-name)
-    ;; (if session-dir
-    ;;     (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
-    ;;       (if (file-directory-p session-dir)
-    ;;           (progn ;; (eq (type-of (desktop-read session-dir)) 'symbol)
-    ;;             (message "elscreen-session-restore %s" elscreen-session)
-    ;;             (elscreen-session-restore elscreen-session))
-    ;;           (message "no such %s dir exists." session-dir)))
-    ;;     (message "session-dir is nil, not doing anything."))
-    )
+    (elscreen-session-restore session-name nframe))
 
   ;; (elscreen-restore)
   ;;}}
@@ -338,10 +286,10 @@
 
     (require 'emacs-panel)
 
-    (defun set-this-frame-session-location (frame)
+    (defun set-this-frame-session-location (nframe)
       (interactive
        (list (selected-frame)))
-      (select-frame frame)
+      (select-frame nframe)
       (message "in set-this-frame-session-location")
       (let* ((wm-hints
               (ignore-errors (emacs-panel-wm-hints)))
@@ -353,41 +301,22 @@
         (unless wm-hints
           (message "Some error in wm-hints"))
         (message "set-this-frame-session-location: %s" location)
-        (set-frame-parameter frame 'frame-spec-id location)
+        (set-frame-parameter nframe 'frame-spec-id location)
         location))
 
-    ;; (defun set-this-frame-session-location (frame)
-    ;;   (select-frame frame)
-    ;;   (message "in set-this-frame-session-location")
-    ;;   (let* ((wm-hints
-    ;;           (ignore-errors (emacs-panel-wm-hints)))
-    ;;          (desktop-name (if wm-hints
-    ;;                            (nth
-    ;;                             (cadr (assoc 'current-desktop wm-hints))
-    ;;                             (cdr (assoc 'desktop-names wm-hints)))))
-    ;;          (location (fmsession-read-location desktop-name)))
-    ;;     (unless wm-hints
-    ;;       (message "Some error in wm-hints"))
-    ;;     (message "set-this-frame-session-location: %s" location)
-    ;;     (when location
-    ;;       (set-frame-parameter frame 'frame-spec-id location)
-    ;;       ;; (modify-frame-parameters frame
-    ;;       ;;                          (list (cons 'frame-spec-id location)))
-    ;;       (fmsession-restore location))))
-
-    (defun restore-frame-session (frame)
+    (defun restore-frame-session (nframe)
       (if *restore-frame-session*
           (progn
-            (select-frame frame)
-            (fmsession-restore (set-this-frame-session-location frame)))
+            (select-frame nframe)
+            (fmsession-restore (set-this-frame-session-location nframe)) nframe)
           (message "not restoring screen session.")))
 
-    (defun save-frame-session (frame)
+    (defun save-frame-session (nframe)
       (message "in save-frame-session:")
-      (let ((location (frame-parameter frame 'frame-spec-id)))
+      (let ((location (frame-parameter nframe 'frame-spec-id)))
         (when location
           (message "saved the session for %s" location)
-          (fmsession-store location))))
+          (fmsession-store location nframe))))
 
     (defun save-all-frames-session ()
       (dolist (f (frame-list))
@@ -802,7 +731,8 @@ Also returns nil if pid is nil."
             (let (print-level
                   print-length)
               (print undo-to-save (current-buffer)))
-            (let ((write-file-hooks (remove 'save-undo-list write-file-hooks)))
+            ;; (let ((write-file-hooks (remove 'save-undo-list write-file-hooks)))
+            (let ((write-file-functions (remove 'save-undo-list write-file-functions)))
               (save-buffer))
             (kill-buffer))))
       nil)
@@ -820,7 +750,8 @@ Also returns nil if pid is nil."
                  (undo-buffer-to-eval (find-file-noselect (save-undo-filename (buffer-file-name)))))
             (eval (read undo-buffer-to-eval))))))
 
-    (add-hook 'write-file-hooks 'save-undo-list)
+    ;; (add-hook 'write-file-hooks 'save-undo-list)
+    (add-hook 'write-file-functions 'save-undo-list)
     (add-hook 'find-file-hook 'load-undo-list))
 
 
