@@ -114,11 +114,37 @@
 
   (defvar *frames-elscreen-session* nil "Stores all elscreen sessions here.")
 
+  (add-to-list
+   'desktop-globals-to-save
+   '*frames-elscreen-session*)
+
+  (add-to-list
+   'session-globals-include
+   '(*frames-elscreen-session* 100))
+
+
+  (defun fmsession-migration ()
+    (interactive)
+    (dolist (session (directory-files *emacs-frame-session-directory* nil "[a-zA-Z]+"))
+      (pushnew
+       (cons session
+             (sharad/read-file
+              (concat *emacs-frame-session-directory* "/" session "/" *elscreen-tab-configuration-store-filename*)))
+       *frames-elscreen-session*)))
+
+
   (defun elscreen-session-store (elscreen-session)
-    (interactive "Ffile: " )
-    (with-temp-file elscreen-session
-      (insert
-       (prin1-to-string (elscreen-session-make-session-list)))))
+    (interactive
+     (fmsession-read-location))
+    (if (assoc elscreen-session *frames-elscreen-session*)
+        (set-cdr (assoc elscreen-session *frames-elscreen-session*)
+                 (cons elscreen-session (elscreen-session-make-session-list)))
+        (push (cons elscreen-session (elscreen-session-make-session-list))
+              *frames-elscreen-session*))
+    ;; (with-temp-file elscreen-session
+    ;;   (insert
+    ;;    (prin1-to-string (elscreen-session-make-session-list))))
+    )
 
   ;; (defun elscreen-session-restore (elscreen-session)
   ;;   (let ((screens (reverse (sharad/read-file elscreen-session))))
@@ -127,11 +153,15 @@
   (defvar *elscreen-session-restore-data* nil "")
 
   (defun elscreen-session-restore (elscreen-session)
-    (interactive "ffile: " )
+    (interactive
+     (list
+      (fmsession-read-location)))
     (testing
      (message "Nstart: session-current-buffer %s" elscreen-session))
     (let* (screen buffers
-                  (elscreen-session-list (sharad/read-file elscreen-session))
+                  (elscreen-session-list
+                   ;; (sharad/read-file elscreen-session)
+                   (cdr (assoc elscreen-session *frames-elscreen-session*)))
            (screens
             (or
              (cdr (assoc 'screens elscreen-session-list))
@@ -177,8 +207,7 @@
 
   (defun fmsession-read-location (&optional initial-input)
     (let ((used t)
-          (sel))
-      (while used
+          e used
         (setq used
               (member
                (setq sel (fmsession-read-location-internal initial-input))
@@ -187,36 +216,54 @@
       sel))
 
   (defun fmsession-read-location-internal (&optional initial-input)
-    (unless (file-directory-p *emacs-frame-session-directory*)
-      (make-directory *emacs-frame-session-directory*))
     (condition-case terr
-        (concat
-         *emacs-frame-session-directory* "/"
-         (ido-completing-read "Session: "
-                              (remove-if-not
-                               #'(lambda (dir)
-                                   (and
-                                    (file-directory-p
-                                     (concat *emacs-frame-session-directory* "/" dir))
-                                    (not
-                                     (member
-                                      (concat *emacs-frame-session-directory* "/" dir)
-                                      (remove-if #'null
-                                                 (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list)))))))
-                               (directory-files *emacs-frame-session-directory* nil "[a-zA-Z]+"))
-                              nil
-                              nil
-                              initial-input))
-      ('quit nil)))
+        (ido-completing-read "Session: "
+                             (remove-if-not
+                              #'(lambda (dir)
+                                  (not
+                                   (member
+                                    dir
+                                    (remove-if #'null
+                                               (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list))))))
+                              (mapcar 'car *frames-elscreen-session*))
+                             nil
+                             nil
+                             initial-input)
+      ('quit nil))))
 
-  (defun fmsession-store (session-dir)
+  ;; (defun fmsession-read-location-internal (&optional initial-input)
+  ;;   (unless (file-directory-p *emacs-frame-session-directory*)
+  ;;     (make-directory *emacs-frame-session-directory*))
+  ;;   (condition-case terr
+  ;;       (concat
+  ;;        *emacs-frame-session-directory* "/"
+  ;;        (ido-completing-read "Session: "
+  ;;                             (remove-if-not
+  ;;                              #'(lambda (dir)
+  ;;                                  (and
+  ;;                                   (file-directory-p
+  ;;                                    (concat *emacs-frame-session-directory* "/" dir))
+  ;;                                   (not
+  ;;                                    (member
+  ;;                                     (concat *emacs-frame-session-directory* "/" dir)
+  ;;                                     (remove-if #'null
+  ;;                                                (mapcar (lambda (f) (frame-parameter f 'frame-spec-id)) (frame-list)))))))
+  ;;                              (directory-files *emacs-frame-session-directory* nil "[a-zA-Z]+"))
+  ;;                             nil
+  ;;                             nil
+  ;;                             initial-input))
+  ;;     ('quit nil)))
+
+  (defun fmsession-store (session-name)
     "Store the elscreen tab configuration."
     (interactive
      (list (fmsession-read-location)))
-    (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
-      (make-directory session-dir t)
-      (when (file-directory-p session-dir)
-        (elscreen-session-store elscreen-session))))
+    (elscreen-session-store session-name)
+    ;; (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
+    ;;   (make-directory session-dir t)
+    ;;   (when (file-directory-p session-dir)
+    ;;     (elscreen-session-store elscreen-session)))
+    )
 
   ;; (push #'elscreen-store kill-emacs-hook)
 
@@ -224,14 +271,16 @@
     "Restore the elscreen tab configuration."
     (interactive
      (list (fmsession-read-location)))
-    (if session-dir
-        (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
-          (if (file-directory-p session-dir)
-              (progn ;; (eq (type-of (desktop-read session-dir)) 'symbol)
-                (message "elscreen-session-restore %s" elscreen-session)
-                (elscreen-session-restore elscreen-session))
-              (message "no such %s dir exists." session-dir)))
-        (message "session-dir is nil, not doing anything.")))
+    (elscreen-session-restore elscreen-session)
+    ;; (if session-dir
+    ;;     (let ((elscreen-session (concat session-dir "/" *elscreen-tab-configuration-store-filename*)))
+    ;;       (if (file-directory-p session-dir)
+    ;;           (progn ;; (eq (type-of (desktop-read session-dir)) 'symbol)
+    ;;             (message "elscreen-session-restore %s" elscreen-session)
+    ;;             (elscreen-session-restore elscreen-session))
+    ;;           (message "no such %s dir exists." session-dir)))
+    ;;     (message "session-dir is nil, not doing anything."))
+    )
 
   ;; (elscreen-restore)
   ;;}}
