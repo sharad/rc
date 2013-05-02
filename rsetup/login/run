@@ -81,3 +81,8 @@ fi
 
 whence leave &&
 leave +0800
+
+
+[ -r ~/.rsetup/login/run.d/${HOST//.*} ] &&
+~/.rsetup/login/run.d/${HOST//.*}
+

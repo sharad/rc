@@ -6,3 +6,6 @@ rsync -av   ~/.xemacs/pkgrepos/mypkgs/pa-planner/.  ~/../paradise/Projects/lisp/
 
 pgrep mplayer || { rm -f /tmp/mplayer.fifo ;  mkfifo /tmp/mplayer.fifo && mplayer  -profile radio/fm -idle -slave -input file=/tmp/mplayer.fifo 1&>/dev/null &! }
 
+( sleep 2s ; echo "load radio://6/capture" > /tmp/mplayer.fifo ) &
+
+
