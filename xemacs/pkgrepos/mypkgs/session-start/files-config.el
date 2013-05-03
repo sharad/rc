@@ -311,10 +311,29 @@ directory, select directory. Lastly the file is opened."
       (message "calling ff mode"))))
 
 
-(defun dirname-of-file (file)
-  (ido-no-final-slash
-   (expand-file-name
-    (file-name-directory file))))
+(defun dirname-of-file (file &optional final-slash)
+  ;; (ido-no-final-slash
+  (if final-slash
+      (expand-file-name
+       (file-name-directory file))
+      (directory-file-name
+       (expand-file-name
+        (file-name-directory file)))))
+
+
+(defun dir-final-slash (dir &optional noerror)
+  (if dir
+      (expand-file-name (concat dir "/"))
+      (unless noerror
+          (error "dir is nil"))))
+
+;; (defun dirname-of-file (dir)
+;;   (concat
+;;    (directory-file-name
+;;    (if (file-directory-p dir)
+;;        dir
+;;        (file-name-directory dir)))
+;;    "/"))
 
 (defun call-times (count fn arg)
   (if (eq count 0)

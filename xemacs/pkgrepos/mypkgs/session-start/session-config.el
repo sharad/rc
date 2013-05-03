@@ -401,7 +401,6 @@
   ;;             (goto-char (point-min))
   ;;             (search-forward "emacs" nil t)
   ;;             pid)))))
-
   (defadvice desktop-owner (after pry-from-cold-dead-hands activate)
     "Don't allow dead emacsen to own the desktop file."
     (when (not (emacs-process-p ad-return-value))
@@ -447,14 +446,6 @@ Also returns nil if pid is nil."
          (if (boundp 'server-name)
              (concat "-" server-name))))
 
-  ;; remove desktop after it's been read
-  (add-hook 'desktop-after-read-hook
-            '(lambda ()
-              ;; desktop-remove clears desktop-dirname
-              (setq desktop-dirname-tmp desktop-dirname)
-              (desktop-remove)
-              (setq desktop-dirname desktop-dirname-tmp)))
-
   ;; Since all lists will be truncated when saved, it is important to
   ;; have a high default history length, for example. If that is not
   ;; enough, follow the suggestions in the doc-string of
@@ -486,31 +477,57 @@ Also returns nil if pid is nil."
 
   (defvar *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
 
-  (defun desktop-vc-save (desktop-save-filename)
+  (defun desktop-vc-remove (&optional desktop-save-filename)
+    "Delete desktop file"
     (interactive "Fdesktop file: ")
-    (if (t)
-        (let ((desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
-          (put-file-in-rcs desktop-save-filename)
-          (desktop-save (dirname-of-file desktop-save-filename)))))
+    (let* ((desktop-save-filename (or desktop-save-filename *desktop-save-filename*))
+           (desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
+      (when (file-exists-p desktop-save-filename)
+        (put-file-in-rcs desktop-save-filename)
+        (delete-file desktop-save-filename))))
 
-  (defun desktop-vc-read (dirname base-file-name)
+  (defun desktop-vc-owner (&optional desktop-save-filename)
     (interactive "fdesktop file: ")
-    (let ((desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
-      (put-file-in-rcs desktop-save-filename)
+    (let* ((desktop-save-filename (or desktop-save-filename *desktop-save-filename*))
+           (desktop-base-file-name (file-name-nondirectory desktop-save-filename))
+           (retval (desktop-owner (dirname-of-file desktop-save-filename))))
+      (when (emacs-process-p retval)
+        retval)))
+
+  (defun desktop-vc-save (&optional desktop-save-filename)
+    (interactive "Fdesktop file: ")
+    (let* ((desktop-save-filename (or desktop-save-filename *desktop-save-filename*))
+           (desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
+      (if (file-exists-p desktop-save-filename)
+          (put-file-in-rcs desktop-save-filename))
+      (desktop-save (dirname-of-file desktop-save-filename))))
+
+  (defun desktop-vc-read (&optional desktop-save-filename)
+    (interactive "fdesktop file: ")
+    (let* ((desktop-save-filename (or desktop-save-filename *desktop-save-filename*))
+           (desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
       (desktop-read (dirname-of-file desktop-save-filename))))
+
+  ;; remove desktop after it's been read
+  (add-hook 'desktop-after-read-hook
+            '(lambda ()
+              ;; desktop-remove clears desktop-dirname
+              (setq desktop-dirname-tmp desktop-dirname)
+              (desktop-vc-remove)
+              (setq desktop-dirname desktop-dirname-tmp)))
 
   (defun my-desktop-save ()
     (interactive)
     ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
-    (let ((owner (or (desktop-owner) -1)))
+    (let ((owner (or (desktop-vc-owner) -1)))
       (if (or
            (eq owner (emacs-pid))
            ;; TODO: it was mean to be used as non-obtrusive and non-interctive
            (y-or-n-p (format
                       "You %d are not the desktop owner %d\nOverwrite existing desktop (might be it was not restore properly at startup)? "
                       (emacs-pid) owner)))
-          (desktop-save desktop-dirname)
-        ;; (desktop-save-in-desktop-dir)
+          (desktop-vc-save *desktop-save-filename*)
+          ;; (desktop-save-in-desktop-dir)
           (progn
             (remove-hook 'auto-save-hook 'my-desktop-save)
             (error "You %d are not the desktop owner %d. removed my-desktop-save from auto-save-hook."
@@ -522,7 +539,9 @@ Also returns nil if pid is nil."
   (add-hook 'auto-save-hook 'my-desktop-save)
 
   (defun sharad/desktop-saved-session ()
-    (file-exists-p (concat desktop-dirname "/" desktop-base-file-name)))
+    (file-exists-p *desktop-save-filename*)
+    ;; (file-exists-p (concat desktop-dirname "/" desktop-base-file-name))
+    )
 
   ;; use session-save to save the desktop manually
   (defun sharad/desktop-session-save ()
@@ -530,9 +549,9 @@ Also returns nil if pid is nil."
     (interactive)
     (if (sharad/desktop-saved-session)
         (if (y-or-n-p "Overwrite existing desktop (might be it was not restore properly at startup)? ")
-            (desktop-save-in-desktop-dir)
+            (desktop-vc-save *desktop-save-filename*)
             (message "Session not saved."))
-        (desktop-save-in-desktop-dir)))
+        (desktop-vc-save *desktop-save-filename*)))
 
   ;; use session-restore to restore the desktop manually
   (defun sharad/desktop-session-restore ()
@@ -543,7 +562,7 @@ Also returns nil if pid is nil."
         (progn
           (message "desktop-session-restore")
           (condition-case e
-              (desktop-read)
+              (desktop-vc-read *desktop-save-filename*)
             ('error (message "Error in desktop-read: %s" e)))
           t)
         (message "No desktop found."))
@@ -553,6 +572,10 @@ Also returns nil if pid is nil."
 
   (add-hook 'session-before-save-hook
             'my-desktop-save)
+
+  (eval-after-load "session"
+    '(add-hook 'session-before-save-hook 'my-desktop-save))
+
   ;; 'sharad/desktop-session-save)
 
   (testing
@@ -574,8 +597,17 @@ Also returns nil if pid is nil."
 
 ;;For Session
 (deh-require-maybe session ;;
+
+  (defun session-vc-save-session ()
+    (if (file-exists-p session-save-file)
+        (put-file-in-rcs session-save-file))
+    (session-save-session))
+
+
+
+
   (add-hook 'after-init-hook 'session-initialize)
-  (add-hook 'kill-emacs-hook 'session-save-session)
+  (add-hook 'kill-emacs-hook 'session-vc-save-session)
 
   (setq session-initialize t)
 

@@ -50,6 +50,8 @@
 (deh-require-maybe (and vc vc-rcs)
 ;; (when nil
 
+  (require 'files-config)
+
   (setq vc-handled-backends
         ;; want RCSshould be last.
         (append (remove 'RCS vc-handled-backends) '(RCS)))
@@ -77,12 +79,12 @@
 
 
   (defun put-file-in-rcs-for-backup (from-file)
-    (let (())
+    (let ()
       (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
-      (if (put-file-in-rcs from-file)
-          (run-hook-with-args 'vc-mode-line-hook ((file-truename from-file)))))
+      (if (put-file-in-rcs from-file default-directory)
+          (run-hook-with-args 'vc-mode-line-hook ((file-truename from-file))))))
 
-  (defun put-file-in-rcs (nfile)
+  (defun put-file-in-rcs (nfile &optional ndirectory)
     ;; http://www.emacswiki.org/emacs/VersionControlAlways
     (interactive
      (list (buffer-file-name (current-buffer))))
@@ -91,11 +93,12 @@
           (if (file-exists-p org-nfile)
               (if (rcs-ci-executable-find org-nfile)
                   (if (member 'RCS vc-handled-backends)
-                      (let* ((default-directory (file-truename default-directory)) ;to fix planner muse file issue.
+                      (let* ((default-directory (file-truename (or (dir-final-slash ndirectory t) (dirname-of-file org-nfile t)))) ;to fix planner muse file issue.
                              (fmode (file-modes org-nfile))
                              (file-nonrcs-backend
                               (unless rcs-backup-vc-file
                                 (vc-find-backend org-nfile (remove 'RCS vc-handled-backends)))))
+                        (message "default-directory %s" default-directory)
                         ;; (message "put-file-in-rcs: adding to rcs")
                         ;; (message "nfile %s" nfile)
                         ;; (message "org-nfile %s" org-nfile)
@@ -157,6 +160,7 @@
                   (failed "rcs ci executable not available."))
               (failed "file %s do not exists." org-nfile)))
         (failed "file %s do not exists." nfile)))
+
 
 
 ;; (message "%s" vc-mode)
