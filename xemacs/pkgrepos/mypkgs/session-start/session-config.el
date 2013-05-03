@@ -516,22 +516,35 @@ Also returns nil if pid is nil."
               (desktop-vc-remove)
               (setq desktop-dirname desktop-dirname-tmp)))
 
+  (defvar *my-desktop-save-max-error-count* 6 "")
+  (defvar *my-desktop-save-error-count* 0 "")
+
   (defun my-desktop-save ()
     (interactive)
     ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
     (let ((owner (or (desktop-vc-owner) -1)))
-      (if (or
-           (eq owner (emacs-pid))
-           ;; TODO: it was mean to be used as non-obtrusive and non-interctive
-           (y-or-n-p (format
-                      "You %d are not the desktop owner %d\nOverwrite existing desktop (might be it was not restore properly at startup)? "
-                      (emacs-pid) owner)))
-          (desktop-vc-save *desktop-save-filename*)
-          ;; (desktop-save-in-desktop-dir)
-          (progn
-            (remove-hook 'auto-save-hook 'my-desktop-save)
-            (error "You %d are not the desktop owner %d. removed my-desktop-save from auto-save-hook."
-                   (emacs-pid) owner)))))
+      (condition-case e
+          (if (or
+               (eq owner (emacs-pid))
+               ;; TODO: it was mean to be used as non-obtrusive and non-interctive
+               (y-or-n-p (format
+                          "You %d are not the desktop owner %d\nOverwrite existing desktop (might be it was not restore properly at startup)? "
+                          (emacs-pid) owner)))
+              (desktop-vc-save *desktop-save-filename*)
+              ;; (desktop-save-in-desktop-dir)
+              (progn
+                (remove-hook 'auto-save-hook 'my-desktop-save)
+                (error "You %d are not the desktop owner %d. removed my-desktop-save from auto-save-hook."
+                       (emacs-pid) owner)))
+        ('error
+         (progn
+           ;; make after 2 errors.
+           (message "my-desktop-save(): Error: %s" e)
+           (1+ *my-desktop-save-error-count* )
+           (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
+             (setq *my-desktop-save-error-count* 0)
+             (message "my-desktop-save(): Removing my-desktop-save function from auto-save-hook" e)
+             (remove-hook 'auto-save-hook 'my-desktop-save)))))))
 
   (testing
    (remove-hook 'auto-save-hook 'my-desktop-save))

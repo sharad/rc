@@ -72,6 +72,9 @@
     (global-hl-line-mode . -1)
     (hl-line-toggle-when-idle . -1)
     (centered-cursor-mode . t)
+    (ccm-vpos-init
+     '(or ccm-vpos
+       (1- (count-lines (window-start) (point)))))
     (view-mode . t)
     (fullscreen . fullboth))
   "Desired reader mode config")
@@ -102,7 +105,15 @@
 (defun reader-mode-get-config (key)
   (cdr (assoc key reader-mode-config)))
 
+;; ;; To keep cursor on same place
+;; (setq ccm-vpos-init
+;;       '(or ccm-vpos
+;;         (1- (count-lines (window-start) (point)))))
+;; (defadvice ccm-first-start (before reset-ccm-vpos (animate) activate)
+;;   (setq ccm-vpos nil) t))
+
 (require 'centered-cursor-mode)
+
 
 ;; (run-with-timer 10 nil #'message "hl-line-when-idle-p %s" hl-line-when-idle-p)
 
@@ -138,7 +149,10 @@
               (if (boundp 'old-centered-cursor-mode)
                   (progn
                     (centered-cursor-mode (if (null old-centered-cursor-mode) -1 t))
-                    (testing (message "pause-hook: old-centered-cursor-mode %s" old-centered-cursor-mode)))
+                    (testing (message "pause-hook: old-centered-cursor-mode %s" old-centered-cursor-mode))
+                    (ad-disable-advice 'ccm-first-start 'before 'reset-ccm-vpos)
+                    (ad-activate #'ccm-first-start)
+                    (ad-update #'ccm-first-start))
                   (testing (message "no old centered")))
               (if (boundp 'old-hl-line-when-idle-p)
                   (progn
@@ -198,6 +212,10 @@
               (set (make-local-variable 'old-centered-cursor-mode)
                    centered-cursor-mode)
               (centered-cursor-mode (reader-mode-get-config 'centered-cursor-mode))
+              (ad-enable-advice 'ccm-first-start 'before 'reset-ccm-vpos)
+              (ad-activate #'ccm-first-start)
+              (ad-update #'ccm-first-start)
+
               (set (make-local-variable 'old-view-mode) view-mode)
               (view-mode  (reader-mode-get-config 'view-mode))
 
@@ -231,6 +249,8 @@
                 (set (make-local-variable 'before-reader-mode-hl-line-when-idle-p) hl-line-when-idle-p)
                 (setq gbefore-reader-mode-hl-line-when-idle-p hl-line-when-idle-p)
                 (set (make-local-variable 'before-reader-mode-centered-cursor-mode) centered-cursor-mode)
+                (defadvice ccm-first-start (before reset-ccm-vpos (animate) activate)
+                  (setq ccm-vpos nil) t))
                 (set (make-local-variable 'before-reader-mode-view-mode) view-mode))))
 
 
@@ -245,6 +265,13 @@
                 (global-hl-line-mode (if (null before-reader-mode-global-hl-line-mode) -1 t))
                 (hl-line-toggle-when-idle (if (null before-reader-mode-hl-line-when-idle-p) -1 t))
                 (centered-cursor-mode (if (null before-reader-mode-centered-cursor-mode) -1 t))
+                ;; Delete advise
+                ;; (defadvice ccm-first-start (before reset-ccm-vpos (animate) activate)
+                ;;   (setq ccm-vpos nil) t))
+                (ad-disable-advice 'ccm-first-start 'before 'reset-ccm-vpos)
+                (ad-remove-advice 'ccm-first-start 'before 'reset-ccm-vpos)
+                (ad-activate #'ccm-first-start)
+                (ad-update #'ccm-first-start)
                 (view-mode  (if (null before-reader-mode-view-mode) -1 t)))))
 
 

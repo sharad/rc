@@ -330,4 +330,42 @@ The indirect buffer can have another major mode."
   (autoload 'crontab-mode "crontab-mode.el" "Major mode for editing your crontab file." t))
 
 
+
+(deh-section "centered-cursor-mode"
+  (defun centered-cursor-stay-same-pos ()
+    (interactive)
+    (unless (ad-find-advice 'ccm-first-start 'before 'reset-ccm-vpos)
+      (defadvice ccm-first-start (before reset-ccm-vpos (animate) activate)
+        (setq ccm-vpos nil) t))
+    (setq ccm-vpos-init
+          '(or ccm-vpos
+            (1- (count-lines (window-start) (point)))))
+    (ad-enable-advice 'ccm-first-start 'before 'reset-ccm-vpos)
+    (ad-activate #'ccm-first-start)
+    (ad-update #'ccm-first-start))
+
+  (defun centered-cursor-unstay-same-pos ()
+    (interactive)
+    (unless (ad-find-advice 'ccm-first-start 'before 'reset-ccm-vpos)
+      (defadvice ccm-first-start (before reset-ccm-vpos (animate) activate)
+        (setq ccm-vpos nil) t))
+    (setq ccm-vpos-init
+          (default-value 'ccm-vpos-init))
+    (ad-disable-advice 'ccm-first-start 'before 'reset-ccm-vpos)
+    (ad-activate #'ccm-first-start)
+    (ad-update #'ccm-first-start))
+
+  (defun centered-cursor-toggle-stay-same-pos ()
+    (interactive)
+    (if (eq ccm-vpos-init
+            (default-value 'ccm-vpos-init))
+        (centered-cursor-stay-same-pos)
+        (centered-cursor-unstay-same-pos)))
+
+  (defalias 'toggle-ccm-stay 'centered-cursor-toggle-stay-same-pos)
+  (defalias 'ccm-stay 'centered-cursor-stay-same-pos)
+  (defalias 'ccm-unstay 'centered-cursor-unstay-same-pos)
+
+  (defalias 'ccm 'centered-cursor-mode))
+
 (provide 'misc-config)

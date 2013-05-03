@@ -200,6 +200,7 @@
         (progn
           (ad-disable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-in-rcs)
           (ad-disable-advice 'vc-rcs-find-file-hook 'after 'backup-buffer-copy-in-rcs-ff)))
+    ;; user ad-remove-advice to remove advice/advise.
     (ad-activate #'backup-buffer-copy)
     (ad-update #'backup-buffer-copy)
     (ad-activate #'vc-rcs-find-file-hook)
