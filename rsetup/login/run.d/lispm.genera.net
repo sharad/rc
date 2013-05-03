@@ -4,8 +4,3 @@ rsync -av   ~/.xemacs/pkgrepos/mypkgs/planner-utils/.  ~/../paradise/Projects/li
 rsync -av   ~/.xemacs/pkgrepos/mypkgs/pa-planner/.  ~/../paradise/Projects/lisp/pa/in.net.sharad.pa-backend-emacs-planner/emacs/lisp/pa-planner/.
 
 
-pgrep mplayer || { rm -f /tmp/mplayer.fifo ;  mkfifo /tmp/mplayer.fifo && mplayer  -profile radio/fm -idle -slave -input file=/tmp/mplayer.fifo 1&>/dev/null &! }
-
-( sleep 2s ; echo "load radio://6/capture" > /tmp/mplayer.fifo ) &
-
-
