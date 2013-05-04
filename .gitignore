@@ -14,3 +14,4 @@ offlineimaprc
 netrc
 .svn
 RCS
+*.undo

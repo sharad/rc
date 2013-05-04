@@ -66,11 +66,6 @@
 
     (defvar sharad/package-installed-archive "~/.xemacs/pkgrepos/elpa/installed-archive.el" "Known Installed packages.")
 
-    (when (file-exists-p sharad/package-installed-archive)
-      (when (set-difference (mapcar 'car  (car (sharad/read-file sharad/package-installed-archive)))
-                            (mapcar 'car package-alist))
-        (message "Your do not have all packages installed.\n install it will sharad/package-install-from-installed-archive.")))
-
     (defun sharad/update-installed-package-archive ()
       (interactive)
       (if package-alist
@@ -84,7 +79,12 @@
              (packages-from-package-alist (mapcar 'car package-alist))
              (packages-missing (set-difference packages-from-installed-archive packages-from-package-alist)))
         (dolist (p packages-missing)
-          (package-install p))))))
+          (package-install p))))
+
+    (when (file-exists-p sharad/package-installed-archive)
+      (when (set-difference (mapcar 'car  (sharad/read-file sharad/package-installed-archive))
+                            (mapcar 'car package-alist))
+        (message "Your do not have all packages installed.\n install it will sharad/package-install-from-installed-archive.")))))
 
 
 (autoload 'package-list-packages "package" "Elap Package" t)

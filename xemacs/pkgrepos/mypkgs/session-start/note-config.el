@@ -25,6 +25,8 @@
 ;;; Code:
 
 
+(deh-require-mayb deft)
+
 (when (xrequire 'evernote-mode)
   ;; http://emacs-evernote-mode.googlecode.com/svn-history/r190/trunk/doc/readme_en.html#sec-7
   ;; (setq evernote-username "") ; optional: you can use this username as default.

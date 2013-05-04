@@ -7,6 +7,8 @@
 ;;file. However this currently forgets that you also need something like
 ;;this in your .emacs:
 
+(require 'cl)
+
 (when (and (xrequire 'remember)
            (xrequire 'org)
            (xrequire 'planner)
@@ -17,7 +19,7 @@
   ;; from: http://members.optusnet.com.au/~charles57/GTD/remember.html
 
 
-  (setq org-default-notes-file (concat org-directory "notes.org"))
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
 
 
   (defun remember-sys ()
@@ -81,7 +83,7 @@
         ("Contact" ;; contact
          ?c
          "\n* %^{Name} :CONTACT:\n%[~/.Organize/emacs/remember/templates/contact]\n"
-         ,(concat org-parent-dir s "/" "privnotes.org"))
+         ,(concat org-parent-dir s "/" "contacts.org"))
         ("Receipt" ;; receipt
          ?e
          "** %^{BriefDesc} %U %^g\n%?"
@@ -140,7 +142,9 @@
     "Remember an arbitrary piece of data.
 With a prefix, uses the region as INITIAL."
     (interactive
-     (list (when current-prefix-arg
+     (list (when (or current-prefix-arg
+                     (and mark-active
+                        transient-mark-mode))
              (buffer-substring (point) (mark)))))
     (window-configuration-to-register remember-register)
     (let* ((xremember-annotation-functions
@@ -150,7 +154,7 @@ With a prefix, uses the region as INITIAL."
                 (mapconcat 'identity
                            (delq nil (mapcar 'funcall xremember-annotation-functions))
                            "\n")
-                (run-list-until-success xremember-annotation-functions)))
+                (run-hook-with-args-until-success 'xremember-annotation-functions)))
            (buf (get-buffer-create remember-buffer)))
       (mapc 'funcall remember-before-remember-hook)
       (switch-to-buffer-other-window buf)
@@ -185,8 +189,8 @@ If you want to remember a region, supply a universal prefix to
       (save-restriction
         (narrow-to-region b e)
         (if remember-all-handler-functions
-            (mapc 'funcall xremember-handler-functions)
-            (run-list-until-success xremember-handler-functions))
+            (run-hooks 'xremember-handler-functions)
+            (run-hook-with-args-until-success 'xremember-handler-functions))
         (remember-destroy))))
 
   (defvar remember-mode-map ()
@@ -196,6 +200,9 @@ If you want to remember a region, supply a universal prefix to
     (define-key remember-mode-map "\C-x\C-s" 'sharad/remember-buffer)
     (define-key remember-mode-map "\C-c\C-c" 'sharad/remember-buffer)
     (define-key remember-mode-map "\C-c\C-k" 'remember-destroy))
+
+
+  (defvar organizer-for-remember-region nil "")
 
   (defun sharad/remember-mode (organizer)
     "Major mode for output from \\[remember].

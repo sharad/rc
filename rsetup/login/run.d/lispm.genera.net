@@ -1,6 +1,16 @@
 #!/bin/zsh
+# -*- mode: shell-script; -*-
 
 rsync -av   ~/.xemacs/pkgrepos/mypkgs/planner-utils/.  ~/../paradise/Projects/lisp/pa/in.net.sharad.pa-backend-emacs-planner/emacs/lisp/planner-utils/.
 rsync -av   ~/.xemacs/pkgrepos/mypkgs/pa-planner/.  ~/../paradise/Projects/lisp/pa/in.net.sharad.pa-backend-emacs-planner/emacs/lisp/pa-planner/.
 
+
+
+
+
+if ! pgrep mplayer >& /dev/null ; then
+    rm -f /tmp/mplayer.fifo ;
+    mkfifo /tmp/mplayer.fifo && mplayer  -profile radio/fm -idle -slave -input file=/tmp/mplayer.fifo 1&>/dev/null &!
+    sleep 2s ; echo "load radio://6/capture" > /tmp/mplayer.fifo
+fi
 
