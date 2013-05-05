@@ -811,8 +811,10 @@ Also returns nil if pid is nil."
             (eval (read undo-buffer-to-eval))))))
 
     ;; (add-hook 'write-file-hooks 'save-undo-list)
-    (add-hook 'write-file-functions 'save-undo-list)
-    (add-hook 'find-file-hook 'load-undo-list))
+
+    ;; (remove-hook 'write-file-functions 'save-undo-list)
+    ;; (remove-hook 'find-file-hook 'load-undo-list)
+    )
 
 
   (add-to-list 'desktop-locals-to-save 'buffer-undo-list)

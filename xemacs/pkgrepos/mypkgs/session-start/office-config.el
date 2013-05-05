@@ -56,9 +56,16 @@
     (error (message "Error: %s" e))))
 
 (defvar taskdir "/home/s/paradise/tasks" "Task Directory")
+(defvar current-task nil "Current task")
 
 (defvar task-alist '(("bugs" (files "todo.org" "notes.org" "an0.org"))
                      ("features" (files "todo.org" "notes.org" "an0.org"))))
+
+(defun find-task-dir (&optional force)
+  (interactive "P")
+  (if (or force (null current-task))
+      (setq current-task (ido-read-directory-name "dir: " taskdir nil t))
+      current-task))
 
 (defun create-task (task name)
   (interactive
@@ -88,7 +95,10 @@
 ;;; %s: 172
 ;;; End:
 
-" (capitalize task) name "Local Variables" "buffer-read-only" "fill-column") nil (concat dir name "/" f) nil nil nil t)))))))))
+" (capitalize task) name "Local Variables" "buffer-read-only" "fill-column") nil (concat dir name "/" f) nil nil nil t)))))))
+
+    (if (y-or-n-p (format "Should set %s current task" dir))
+        (setq current-task dir))))
 
 (defun find-task (task)
   (interactive

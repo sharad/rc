@@ -1,0 +1,1 @@
+../misc/stumpwm-mode.el

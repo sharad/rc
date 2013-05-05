@@ -9,114 +9,49 @@
 
 (require 'cl)
 
-(when (and (xrequire 'remember)
-           (xrequire 'org)
-           (xrequire 'planner)
-           (xrequire 'remember-planner))
-  ;;If you are, like me, missing the function org-remember-insinuate, try
-  ;;the following
-  ;; start
-  ;; from: http://members.optusnet.com.au/~charles57/GTD/remember.html
+(require 'remember)
+(require 'org)
+(require 'planner)
+(require 'remember-planner)
+(require 'read-file-name)
+;; (require 'remember-blosxom)
+(require 'remember-experimental)
+(require 'remember-autoloads)
+(require 'remember-diary)
+(require 'remember-planner)
+(require 'remember-bbdb)
+(require 'remember)
+;; (require 'remember-bibl) ; - check it
+;; (require 'macs-wiki-journal)
 
 
-  (setq org-default-notes-file (concat org-directory "/notes.org"))
+(deh-require-maybe (and remember
+                        org
+                        planner
+                        remember-planner
+                        read-file-name
+                        ;; remember-blosxom
+                        remember-experimental
+                        remember-autoloads
+                        remember-diary
+                        remember-planner
+                        remember-bbdb
+                        remember
+                        loadhist
+                        ;; remember-bibl
+                        ;; macs-wiki-journal
+                        )
 
 
-  (defun remember-sys ()
-    (cond
-      ((string-match "spratap" (system-name)) 'office)
-      (t 'myself)))
-
-  ;; (defun get-org-file (dirpath file &optional org-base-dir)
-  ;;   (let ((org-parent-dir (or org-parent-dir "~/.Organize/emacs/org/")))
-  ;;     (if )
-  ;;     ))
-
-  (defun org-template-gen (s &optional org-parent-dir)
-    (let ((org-parent-dir (or org-parent-dir "~/.Organize/emacs/org/")))
-      `(("Todo" ;; todos
-         ?t
-         "* TODO %? %^g\n %i\n"
-         ,(concat org-parent-dir s "/" "todo.org")
-         "G T D")
-        ("Journal" ;; any kind of note
-         ?j
-         "\n* %^{topic} %T \n%i%?\n"
-         ,(concat org-parent-dir s "/" "journal.org")
-         "j o u r n a l")
-        ("Plan" ;; any kind of note
-         ?n
-         "\n* %^{topic} %T \n%i%?\n"
-         ,(concat org-parent-dir s "/" "plan.org")
-         "p l a n")
-        ("Learn" ;; any kind of note
-         ?l
-         "\n* %^{topic} %T \n%i%?\n"
-         ,(concat org-parent-dir s "/" "learn.org")
-         "Learn")
-        ("Idea" ;; any kind of note
-         ?i
-         "\n* %^{topic} %T \n%i%?\n"
-         ,(concat org-parent-dir s "/" "idea.org")
-         "Ideas")
-        ("Book" ;; book descp
-         ?b
-         "\n* %^{Book Title} %t :READING: \n%[~/.Organize/emacs/remember/templates/book]\n"
-         ,(concat org-parent-dir s "/" "journal.org")
-         "Books")
-        ("Private" ;; private note
-         ?p
-         "\n* %^{topic} %T \n%i%?\n"
-         ,(concat org-parent-dir s "/" "privnotes.org"))
-        ("Remember" ;; private note
-         ?r
-         "\n* %^{topic} %T \n%i%?\n"
-         ,(concat org-parent-dir s "/" "remember.org"))
-        ("SomeDay" ;; private note
-         ?s
-         "\n* %^{topic} %T \n%i%?\n"
-         ,(concat org-parent-dir s "/" "someday.org"))
-        ("Waiting-For" ;; private note
-         ?w
-         "\n* %^{topic} %T \n%i%?\n"
-         ,(concat org-parent-dir s "/" "waiting4.org"))
-        ("Contact" ;; contact
-         ?c
-         "\n* %^{Name} :CONTACT:\n%[~/.Organize/emacs/remember/templates/contact]\n"
-         ,(concat org-parent-dir s "/" "contacts.org"))
-        ("Receipt" ;; receipt
-         ?e
-         "** %^{BriefDesc} %U %^g\n%?"
-         ,(concat org-parent-dir s "/" "finances.org")))))
-
-  ;; end: from: http://members.optusnet.com.au/~charles57/GTD/remember.html
-  (setq org-remember-templates (org-template-gen (symbol-name (remember-sys))))
-
-
-  (defun th-org-remember-conkeror (url)
-    (interactive "s")
-    (org-remember nil ?t)
-    (save-excursion
-      (insert "\n\n  [[" url "]]"))
-    (local-set-key (kbd "C-c C-c")
-                   (lambda ()
-                     (interactive)
-                     (org-ctrl-c-ctrl-c)
-                     (delete-frame nil t)))))
-
-
-;; End
-;; from http://www.emacswiki.org/emacs/RememberMode#toc7
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(deh-section "My Remember"
   (defvar sharad/remember-functions-alist nil "")
+
+  (defvar remember-organizer 'planner "")
 
   (setq sharad/remember-functions-alist
         `((planner .
                    ((annotation . ,planner-annotation-functions)
-                    (handler    . (remember-planner-append))))
+                    (handler    . (remember-planner-append))
+                    (hook)))
           (org .
                ((annotation . (org-remember-annotation))
                 (handler    . (org-remember-handler))
@@ -125,152 +60,71 @@
   (defmacro cdr-assoc-cdr-assoc (key1 key2 alist)
     `(cdr (assoc ,key2 (cdr (assoc ,key1 ,alist)))))
 
-  (defun sharad/remember-org ()
+
+  ;; (defun run-list-until-success (flist)
+  ;;   (some 'funcall flist))
+
+
+  (defun sharad/remember-fun-set-orgnizer (fun)
+    (eval
+     `(defadvice ,fun (around Ad-organizer activate)
+        (let ((remember-annotation-functions
+               (cdr-assoc-cdr-assoc remember-organizer 'annotation sharad/remember-functions-alist))
+              (remember-handler-functions
+               (cdr-assoc-cdr-assoc remember-organizer 'handler sharad/remember-functions-alist))
+              (remember-mode-hook
+               (cdr-assoc-cdr-assoc remember-organizer 'hook sharad/remember-functions-alist)))
+          ad-do-it))))
+
+  (defun sharad/remember-set-orgnizer ()
     (interactive)
-    (sharad/remember 'org))
+    (setq remember-annotation-functions nil
+          remember-handler-functions nil
+          remember-mode-hook nil)
+    (dolist (fun (mapcar 'cdr
+                         (remove-if-not
+                          '(lambda (e)
+                            (and (consp e)
+                             (eq 'defun (car e))))
+                          (feature-symbols 'remember))))
+      (sharad/remember-fun-set-orgnizer fun)))
 
-  (defun sharad/remember-planner ()
+  (sharad/remember-set-orgnizer)
+
+  ;; (unless (ad-find-advice 'ccm-first-start 'before 'reset-ccm-vpos)
+  ;;   (defadvice ccm-first-start (before reset-ccm-vpos (animate) activate)
+  ;;     (setq ccm-vpos nil) t))
+
+
+
+  (defun dontforgetme (&optional arg)
+    (interactive "P")
+    (let ((old-remember-organizer remember-organizer)
+          (organizer
+           (intern
+            (ido-completing-read "Organizer: "
+                                 (mapcar (lambda (e)
+                                           (symbol-name (car e)))
+                                         sharad/remember-functions-alist)
+                                 nil t))))
+      (setq remember-organizer organizer)
+      (remember arg)
+      ;; will not work, think more or live with it.
+      ;; (setq remember-organizer old-remember-organizer)
+      ))
+
+  (defun sharad/remember-org (&optional initial)
     (interactive)
-    (sharad/remember 'planner))
+    (let ((organizer 'org))
+      (setq remember-organizer organizer)
+      (remember initial)))
 
-
-  (defun run-list-until-success (flist)
-    (some 'funcall flist))
-
-
-  (defun sharad/remember (organizer &optional initial)
-    "Remember an arbitrary piece of data.
-With a prefix, uses the region as INITIAL."
-    (interactive
-     (list (when (or current-prefix-arg
-                     (and mark-active
-                        transient-mark-mode))
-             (buffer-substring (point) (mark)))))
-    (window-configuration-to-register remember-register)
-    (let* ((xremember-annotation-functions
-            (cdr-assoc-cdr-assoc organizer 'annotation sharad/remember-functions-alist))
-           (annotation
-            (if remember-run-all-annotation-functions-flag
-                (mapconcat 'identity
-                           (delq nil (mapcar 'funcall xremember-annotation-functions))
-                           "\n")
-                (run-hook-with-args-until-success 'xremember-annotation-functions)))
-           (buf (get-buffer-create remember-buffer)))
-      (mapc 'funcall remember-before-remember-hook)
-      (switch-to-buffer-other-window buf)
-      (sharad/remember-mode organizer)
-      (when (= (point-max) (point-min))
-        (when initial (insert initial))
-        (setq remember-annotation annotation)
-        (when remember-initial-contents (insert remember-initial-contents))
-        (when (and (stringp annotation)
-                   (not (equal annotation "")))
-          (insert "\n\n" annotation))
-        (setq remember-initial-contents nil)
-        (goto-char (point-min)))
-      (message "Use C-c C-c to remember the data.")))
-
-
-  (defun sharad/remember-region (organizer &optional beg end)
-    "Remember the data from BEG to END.
-If called from within the remember buffer, BEG and END are ignored,
-and the entire buffer will be remembered.
-
-This function is meant to be called from the *Remember* buffer.
-If you want to remember a region, supply a universal prefix to
-`remember' instead. For example: C-u M-x remember."
-    ;; Sacha: I have no idea where remember.el gets this context information, but
-    ;; you can just use remember-annotation-functions.
+  (defun sharad/remember-planner (&optional initial)
     (interactive)
-    (let ((xremember-handler-functions
-           (cdr-assoc-cdr-assoc organizer 'handler sharad/remember-functions-alist))
-          (b (or beg (min (point) (or (mark) (point-min)))))
-          (e (or end (max (point) (or (mark) (point-max))))))
-      (save-restriction
-        (narrow-to-region b e)
-        (if remember-all-handler-functions
-            (run-hooks 'xremember-handler-functions)
-            (run-hook-with-args-until-success 'xremember-handler-functions))
-        (remember-destroy))))
-
-  (defvar remember-mode-map ()
-    "Keymap used in Remember mode.")
-  (when (or t (not remember-mode-map))
-    (setq remember-mode-map (make-sparse-keymap))
-    (define-key remember-mode-map "\C-x\C-s" 'sharad/remember-buffer)
-    (define-key remember-mode-map "\C-c\C-c" 'sharad/remember-buffer)
-    (define-key remember-mode-map "\C-c\C-k" 'remember-destroy))
-
-
-  (defvar organizer-for-remember-region nil "")
-
-  (defun sharad/remember-mode (organizer)
-    "Major mode for output from \\[remember].
-\\<remember-mode-map>This buffer is used to collect data that you want
-remember.  Just hit \\[remember-region] when you're done entering, and
-it will go ahead and file the data for latter retrieval, and possible
-indexing.  \\{remember-mode-map}"
-    (interactive)
-    (kill-all-local-variables)
-    (indented-text-mode)
-    (use-local-map remember-mode-map)
-    (setq major-mode 'remember-mode
-          mode-name "Remember")
-    (set (make-local-variable 'organizer-for-remember-region) organizer)
-    (mapc 'funcall (cdr-assoc-cdr-assoc organizer 'hook sharad/remember-functions-alist)))
-
-;;;###autoload
-  (defun sharad/remember-clipboard ()
-    "Remember the contents of the current clipboard.
-Most useful for remembering things from Netscape or other X Windows
-application."
-    (interactive)
-    (sharad/remember (current-kill 0)))
-
-;;;###autoload
-  (defun sharad/remember-buffer ()
-    "Remember the contents of the current buffer."
-    (interactive)
-    (unless (get-buffer calendar-buffer)
-      (save-window-excursion
-        (save-excursion
-          (calendar))))
-    (let ((organizer-for-remember-region
-           (or (if (boundp 'organizer-for-remember-region)
-                   organizer-for-remember-region)
-               (if (or (equal major-mode 'org-mode)
-                       org-remember-mode) 'org))))
-      (sharad/remember-region organizer-for-remember-region (point-min) (point-max)))))
-
-
-(defun org-remember-finalize ()
-  "Finalize the remember process."
-  (interactive)
-  (unless org-remember-mode
-    (error "This does not seem to be a remember buffer for Org-mode"))
-  (run-hooks 'org-remember-before-finalize-hook)
-  (unless (fboundp 'remember-finalize)
-    (defalias 'remember-finalize 'sharad/remember-buffer))
-  (when (and org-clock-marker
-	     (equal (marker-buffer org-clock-marker) (current-buffer)))
-    ;; the clock is running in this buffer.
-    (when (and (equal (marker-buffer org-clock-marker) (current-buffer))
-	       (or (eq org-remember-clock-out-on-exit t)
-		   (and org-remember-clock-out-on-exit
-			(y-or-n-p "The clock is running in this buffer.  Clock out now? "))))
-      (let (org-log-note-clock-out) (org-clock-out))))
-  (when buffer-file-name
-    (do-auto-save))
-  (remember-finalize))
-
-
-;; (let ((map (make-sparse-keymap)))
-
-;;   ;; Now for the stuff that has direct keybindings
-;;   ;;
-;;   (define-key map "\C-crp" 'sharad/remember-planner)
-;;   (define-key map "\C-c r o" 'sharad/remember-org)
-;;   map)
+    (let ((organizer 'planner))
+      (setq remember-organizer organizer)
+      (remember initial))))
 
 
 (provide 'remember-config)
+

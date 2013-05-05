@@ -55,5 +55,135 @@
         "Clear the appt-time-msg-list."
         (setq appt-time-msg-list nil)))
 
+
+
+
+
+
+(deh-require-maybe (and remember
+                        org
+                        planner
+                        remember-planner
+                        read-file-name
+                        ;; remember-blosxom
+                        remember-experimental
+                        remember-autoloads
+                        remember-diary
+                        remember-planner
+                        remember-bbdb
+                        remember
+                        ;; remember-bibl
+                        ;; macs-wiki-journal
+                        )
+
+  ;;If you are, like me, missing the function org-remember-insinuate, try
+  ;;the following
+  ;; start
+  ;; from: http://members.optusnet.com.au/~charles57/GTD/remember.html
+
+
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
+
+
+
+  (defun remember-sys ()
+    (cond
+      ((string-match "spratap" (system-name)) 'office)
+      (t 'myself)))
+
+
+  (defun org-template-gen (s &optional org-parent-dir)
+    (let ((org-parent-dir (or org-parent-dir "~/.Organize/emacs/org/")))
+      `(("Current Task"
+         ?k
+         "* TODO %? %^g\n %i\n"
+         (lambda ()
+           (concat (find-task-dir) "notes.org")))
+        ("Emacs"
+         ?m
+         "* TODO %? %^g\n %i\n"
+         ,(concat org-parent-dir s "/" "emacs.org"))
+        ("Todo" ;; todos
+         ?t
+         "* TODO %? %^g\n %i\n"
+         ,(concat org-parent-dir s "/" "todo.org")
+         "G T D")
+        ("Journal" ;; any kind of note
+         ?j
+         "\n* %^{topic} %T \n%i%?\n"
+         ,(concat org-parent-dir s "/" "journal.org")
+         "j o u r n a l")
+        ("Plan" ;; any kind of note
+         ?n
+         "\n* %^{topic} %T \n%i%?\n"
+         ,(concat org-parent-dir s "/" "plan.org")
+         "p l a n")
+        ("Learn" ;; any kind of note
+         ?l
+         "\n* %^{topic} %T \n%i%?\n"
+         ,(concat org-parent-dir s "/" "learn.org")
+         "Learn")
+        ("Idea" ;; any kind of note
+         ?i
+         "\n* %^{topic} %T \n%i%?\n"
+         ,(concat org-parent-dir s "/" "idea.org")
+         "Ideas")
+        ("Book" ;; book descp
+         ?b
+         "\n* %^{Book Title} %t :READING: \n%[~/.Organize/emacs/remember/templates/book]\n"
+         ,(concat org-parent-dir s "/" "journal.org")
+         "Books")
+        ("Private" ;; private note
+         ?p
+         "\n* %^{topic} %T \n%i%?\n"
+         ,(concat org-parent-dir s "/" "privnotes.org"))
+        ("Remember" ;; private note
+         ?r
+         "\n* %^{topic} %T \n%i%?\n"
+         ,(concat org-parent-dir s "/" "remember.org"))
+        ("SomeDay" ;; private note
+         ?s
+         "\n* %^{topic} %T \n%i%?\n"
+         ,(concat org-parent-dir s "/" "someday.org"))
+        ("Waiting-For" ;; private note
+         ?w
+         "\n* %^{topic} %T \n%i%?\n"
+         ,(concat org-parent-dir s "/" "waiting4.org"))
+        ("Contact" ;; contact
+         ?c
+         "\n* %^{Name} :CONTACT:\n%[~/.Organize/emacs/remember/templates/contact]\n"
+         ,(concat org-parent-dir s "/" "contacts.org"))
+        ("Receipt" ;; receipt
+         ?e
+         "** %^{BriefDesc} %U %^g\n%?"
+         ,(concat org-parent-dir s "/" "finances.org")))))
+
+  ;; end: from: http://members.optusnet.com.au/~charles57/GTD/remember.html
+  ;; (defvar org-remember-templates nil "templates for org.")
+
+  (setq org-remember-templates (org-template-gen (symbol-name (remember-sys))))
+
+
+  ;; (functionp
+  ;;  (nth 3 (car org-remember-templates)))
+
+  (defun th-org-remember-conkeror (url)
+    (interactive "s")
+    (org-remember nil ?t)
+    (save-excursion
+      (insert "\n\n  [[" url "]]"))
+    (local-set-key (kbd "C-c C-c")
+                   (lambda ()
+                     (interactive)
+                     (org-ctrl-c-ctrl-c)
+                     (delete-frame nil t))))
+
+
+
+;; End
+;; from http://www.emacswiki.org/emacs/RememberMode#toc7
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  )
+
 (provide 'orgmode-config)
 
