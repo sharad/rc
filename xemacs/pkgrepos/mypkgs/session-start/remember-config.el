@@ -131,7 +131,73 @@
     (interactive)
     (let ((organizer 'planner))
       (setq remember-organizer organizer)
-      (remember initial))))
+      (remember initial)))
+
+
+
+
+  )
+
+
+
+(deh-section "Idle reminder"
+
+  (defvar idle-reminder-register nil "Idle reminder register")
+  (defvar idle-reminder-buffer nil "buffer")
+  (defvar idle-reminder-interval (* 7 60) "Idle reminder register")
+  (defvar idle-reminder-timer nil "buffer")
+
+
+  (defvar idle-reminder-mode-map (make-sparse-keymap)
+    "Keymap for org-remember-mode, a minor mode.
+Use this map to set additional keybindings for when Org-mode is used
+for a Remember buffer.")
+
+  (defvar idle-reminder-mode-hook nil
+    "Hook for the minor `idle-reminder-mode'.")
+
+  (define-minor-mode idle-reminder-mode
+      "Minor mode for special key bindings in a remember buffer."
+    nil " Rem" idle-reminder-mode-map
+    (run-hooks 'org-remember-mode-hook))
+
+
+  (defun leave-show-reminder ()
+    (interactive)
+    (if (equal idle-reminder-buffer
+               (current-buffer))
+     (bury-buffer))
+    (if idle-reminder-register
+        (jump-to-register idle-reminder-register)))
+
+  (define-key idle-reminder-mode-map "q" 'leave-show-reminder)
+  ;; (define-key idle-reminder-mode-map "\C-c\C-k" 'org-remember-kill)
+
+  (defun show-reminder (fn &optional time-to-show)
+    (window-configuration-to-register idle-reminder-register)
+    (setq idle-reminder-buffer (funcall fn))
+    (view-mode 1)
+    (reader-mode)
+    (idle-reminder-mode 1))
+
+
+  (defun show-some-orgfile ()
+    (let* ((file "~/.Organize/emacs/org/myself/emacs.org")
+           (buf (or (find-buffer-visiting file)
+                    (find-file-noselect file))))
+      (switch-to-buffer buf)
+      buf))
+
+  (defun idle-reminder-start ()
+    (interactive)
+    (setq idle-reminder-timer
+          (run-with-idle-timer idle-reminder-interval t 'show-reminder 'show-some-orgfile)))
+
+
+  (defun idle-reminder-cancel ()
+    (interactive)
+    (if idle-reminder-timer
+        (cancel-timer idle-reminder-timer))))
 
 
 (provide 'remember-config)
