@@ -60,6 +60,14 @@
   (defmacro cdr-assoc-cdr-assoc (key1 key2 alist)
     `(cdr (assoc ,key2 (cdr (assoc ,key1 ,alist)))))
 
+  (defun getelements (alist &rest keys)
+    (reduce (lambda (alist k)
+              (cdr (assoc k alist)))
+            keys
+            :initial-value alist))
+
+  ;; (reduce #'list '(1 2 3 4)
+  ;;         :initial-value 'foo)
 
   ;; (defun run-list-until-success (flist)
   ;;   (some 'funcall flist))
