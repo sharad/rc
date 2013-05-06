@@ -60,7 +60,7 @@
 (defvar smooth-step-timer nil "")
 
 (defvar reader-idle-time 7 "Reader idle time")
-(defvar  reader-idle-repeat-time 7 "Reader idle repeat time")
+(defvar reader-idle-repeat-time 7 "Reader idle repeat time")
 (defvar reader-cmd #'forward-char "command")
 (defvar reader-repeat 0.25 "repeat interval")
 

@@ -164,9 +164,10 @@ for a Remember buffer.")
 
   (defun leave-show-reminder ()
     (interactive)
-    (if (equal idle-reminder-buffer
+    (when (equal idle-reminder-buffer
                (current-buffer))
-     (bury-buffer))
+      (reader-mode -1)
+      (bury-buffer))
     (if idle-reminder-register
         (jump-to-register idle-reminder-register)))
 
@@ -177,7 +178,7 @@ for a Remember buffer.")
     (window-configuration-to-register idle-reminder-register)
     (setq idle-reminder-buffer (funcall fn))
     (view-mode 1)
-    (reader-mode)
+    (reader-mode 1)
     (idle-reminder-mode 1))
 
 
