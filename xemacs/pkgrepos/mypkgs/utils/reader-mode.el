@@ -57,13 +57,38 @@
 
 
 (defvar reader-idle-timer nil "")
+(make-variable-buffer-local 'reader-idle-timer)
+
 (defvar smooth-step-timer nil "")
+(make-variable-buffer-local 'smooth-step-timer)
 
 (defvar reader-idle-time 7 "Reader idle time")
-(defvar reader-idle-repeat-time 7 "Reader idle repeat time")
-(defvar reader-cmd #'forward-char "command")
-(defvar reader-repeat 0.25 "repeat interval")
+(make-variable-buffer-local 'reader-idle-time)
 
+(defvar reader-idle-repeat-time 7 "Reader idle repeat time")
+(make-variable-buffer-local 'reader-idle-repeat-time)
+
+
+
+
+(defun my-next-line () ;; (&optional arg try-vscroll)
+  ""
+  (interactive)
+  ;; (interactive "^p\np")
+  ;; (or arg (setq arg 1))
+  (condition-case nil
+      (line-move 1 nil nil t)
+    (end-of-buffer (goto-char (point-min)))))
+
+
+
+
+;; (defvar reader-cmd #'forward-char "command")
+(defvar reader-cmd 'my-next-line "command")
+(make-variable-buffer-local 'reader-cmd)
+
+(defvar reader-repeat 0.25 "repeat interval")
+(make-variable-buffer-local 'reader-repeat)
 
 (defvar reader-mode-config
   '((mode-line-format)
@@ -84,8 +109,8 @@
   (interactive
    (let* ((key (car (read-from-string
                      (completing-read "key: "
-                                      (mapcar #'(lambda (k)
-                                                  (symbol-name (car k))) reader-mode-config)
+                                      (mapcar (lambda (k)
+                                                (symbol-name (car k))) reader-mode-config)
                                       nil
                                       t))))
           (value (car (read-from-string (read-from-minibuffer
@@ -112,6 +137,16 @@
 ;; (defadvice ccm-first-start (before reset-ccm-vpos (animate) activate)
 ;;   (setq ccm-vpos nil) t))
 
+
+;; (defun test123 ()
+;;   (interactive)
+;;   (if (called-interactively-p 'interactive)
+;;       (message "interactive")
+;;       (message "uninteractive")))
+
+;; (global-set-key-if-unbind (kbd "C-c u") 'test123)
+
+
 (require 'centered-cursor-mode)
 
 
@@ -119,160 +154,161 @@
 
 (add-hook 'reader-mode-pause-hook
           ;; stop reader
-          #'(lambda ()
-              ;; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
-              (testing
-               (message "reader-mode-pause-hook")
-               (reader-show-timers))
-              (if (boundp 'old-fullscreen)
-                  (progn
-                    (set-frame-parameter nil 'fullscreen old-fullscreen)
-                    (testing (message "pause-hook: old-fullscreen %s" old-fullscreen)))
-                  (testing (message "no old cursor")))
-              (if (boundp 'old-elscreen-display-tab)
-                  (progn
-                    (set (make-local-variable 'elscreen-display-tab) old-elscreen-display-tab)
-                    (elscreen-notify-screen-modification 'force-immediately)
-                    ;; (elscreen-run-screen-update-hook)
-                    (testing (message "pause-hook: old-elscreen-display-tab %s" old-elscreen-display-tab)))
-                  (testing (message "no old cursor")))
-              (if (boundp 'old-mode-line-format)
-                  (progn
-                    (set (make-local-variable 'mode-line-format) old-mode-line-format)
-                    (testing (message "pause-hook: old-mode-line-format %s" old-mode-line-format)))
-                  (testing (message "no old cursor")))
-              (if (boundp 'old-cursor-type)
-                  (progn
-                    (set (make-local-variable 'cursor-type) old-cursor-type)
-                    (testing (message "pause-hook: old-cursor-type %s" old-cursor-type)))
-                  (testing (message "no old cursor")))
-              (if (boundp 'old-centered-cursor-mode)
-                  (progn
-                    (centered-cursor-mode (if (null old-centered-cursor-mode) -1 t))
-                    (testing (message "pause-hook: old-centered-cursor-mode %s" old-centered-cursor-mode))
-                    (ad-disable-advice 'ccm-first-start 'before 'reset-ccm-vpos)
-                    (ad-activate #'ccm-first-start)
-                    (ad-update #'ccm-first-start))
-                  (testing (message "no old centered")))
-              (if (boundp 'old-hl-line-when-idle-p)
-                  (progn
-                    (hl-line-toggle-when-idle (if (null old-hl-line-when-idle-p) -1 1))
-                    (hl-line-toggle-when-idle (if (null gold-hl-line-when-idle-p) -1 1))
-                    (testing
-                      (message "pause-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p)))
-                  (testing (message "no old hl")))
-              (if (boundp 'old-view-mode)
-                  (progn
-                      (view-mode (if (null old-view-mode) -1 t))
-                      (testing (message "pause-hook: old-view-mode %s" old-view-mode)))
-                  (testing (message "no old view")))
+          (lambda ()
+            ;; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
+            (testing
+             (message "reader-mode-pause-hook")
+             (reader-show-timers))
+            (if (boundp 'old-fullscreen)
+                (progn
+                  (set-frame-parameter nil 'fullscreen old-fullscreen)
+                  (testing (message "pause-hook: old-fullscreen %s" old-fullscreen)))
+                (testing (message "no old cursor")))
+            (if (boundp 'old-elscreen-display-tab)
+                (progn
+                  (set (make-local-variable 'elscreen-display-tab) old-elscreen-display-tab)
+                  (elscreen-notify-screen-modification 'force-immediately)
+                  ;; (elscreen-run-screen-update-hook)
+                  (testing (message "pause-hook: old-elscreen-display-tab %s" old-elscreen-display-tab)))
+                (testing (message "no old cursor")))
+            (if (boundp 'old-mode-line-format)
+                (progn
+                  (set (make-local-variable 'mode-line-format) old-mode-line-format)
+                  (testing (message "pause-hook: old-mode-line-format %s" old-mode-line-format)))
+                (testing (message "no old cursor")))
+            (if (boundp 'old-cursor-type)
+                (progn
+                  (set (make-local-variable 'cursor-type) old-cursor-type)
+                  (testing (message "pause-hook: old-cursor-type %s" old-cursor-type)))
+                (testing (message "no old cursor")))
+            (if (boundp 'old-centered-cursor-mode)
+                (progn
+                  (centered-cursor-mode (if (null old-centered-cursor-mode) -1 t))
+                  (testing (message "pause-hook: old-centered-cursor-mode %s" old-centered-cursor-mode))
+                  (ad-disable-advice 'ccm-first-start 'before 'reset-ccm-vpos)
+                  (ad-activate #'ccm-first-start)
+                  (ad-update #'ccm-first-start))
+                (testing (message "no old centered")))
+            (if (boundp 'old-hl-line-when-idle-p)
+                (progn
+                  (hl-line-toggle-when-idle (if (null old-hl-line-when-idle-p) -1 1))
+                  (hl-line-toggle-when-idle (if (null gold-hl-line-when-idle-p) -1 1))
+                  (testing
+                   (message "pause-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p)))
+                (testing (message "no old hl")))
+            (if (boundp 'old-view-mode)
+                (progn
+                  (view-mode (if (null old-view-mode) -1 t))
+                  (testing (message "pause-hook: old-view-mode %s" old-view-mode)))
+                (testing (message "no old view")))
 
-              (testing
-                (message "old values:")
-                (message "pause-hook: old-cursor-type %s" old-cursor-type)
-                (message "pause-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p)
-                (message "pause-hook: old-centered-cursor-mode %s" old-centered-cursor-mode)
-                (message "pause-hook: old-view-mode %s" old-view-mode)
+            (testing
+             (message "old values:")
+             (message "pause-hook: old-cursor-type %s" old-cursor-type)
+             (message "pause-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p)
+             (message "pause-hook: old-centered-cursor-mode %s" old-centered-cursor-mode)
+             (message "pause-hook: old-view-mode %s" old-view-mode)
 
-                (message "values:")
+             (message "values:")
 
-                (message "pause-hook: cursor-type %s" cursor-type)
-                (message "pause-hook: hl-line-when-idle-p %s" hl-line-when-idle-p)
-                (message "pause-hook: centered-cursor-mode %s" centered-cursor-mode)
-                (message "pause-hook: view-mode %s" view-mode))
-              (message nil)))
+             (message "pause-hook: cursor-type %s" cursor-type)
+             (message "pause-hook: hl-line-when-idle-p %s" hl-line-when-idle-p)
+             (message "pause-hook: centered-cursor-mode %s" centered-cursor-mode)
+             (message "pause-hook: view-mode %s" view-mode))
+            (message nil)))
 
 (add-hook 'reader-mode-resume-hook
           ;; start reader
-          #'(lambda ()
+          (lambda ()
 
-              (testing
-                (message "reader-mode-resume-hook")
-                (reader-show-timers))
-              (set (make-local-variable 'old-fullscreen) (frame-parameter nil 'fullscreen))
-              (set-frame-parameter nil 'fullscreen (reader-mode-get-config 'fullscreen))
-              (set (make-local-variable 'old-mode-line-format) mode-line-format)
-              (set (make-local-variable 'mode-line-format)
-                   (reader-mode-get-config 'mode-line-format))
-              (set (make-local-variable 'old-elscreen-display-tab) elscreen-display-tab)
-              (set (make-local-variable 'elscreen-display-tab)
-                   (reader-mode-get-config 'elscreen-display-tab))
-              (elscreen-notify-screen-modification 'force-immediately)
-              ;; (elscreen-run-screen-update-hook)
-              (set (make-local-variable 'old-cursor-type) cursor-type)
-              (set (make-local-variable 'cursor-type)
-                   (reader-mode-get-config 'cursor-type))
-              (set (make-local-variable 'old-global-hl-line-mode) global-hl-line-mode)
-              (global-hl-line-mode
-               (reader-mode-get-config 'global-hl-line-mode))
-              (set (make-local-variable 'old-hl-line-when-idle-p) hl-line-when-idle-p)
-              (setq gold-hl-line-when-idle-p hl-line-when-idle-p)
-              (hl-line-toggle-when-idle
-               (reader-mode-get-config 'hl-line-toggle-when-idle))
-              (set (make-local-variable 'old-centered-cursor-mode)
-                   centered-cursor-mode)
-              (centered-cursor-mode (reader-mode-get-config 'centered-cursor-mode))
-              (ad-enable-advice 'ccm-first-start 'before 'reset-ccm-vpos)
-              (ad-activate #'ccm-first-start)
-              (ad-update #'ccm-first-start)
+            (testing
+             (message "reader-mode-resume-hook")
+             (reader-show-timers))
+            (set (make-local-variable 'old-fullscreen) (frame-parameter nil 'fullscreen))
+            (set-frame-parameter nil 'fullscreen (reader-mode-get-config 'fullscreen))
+            (set (make-local-variable 'old-mode-line-format) mode-line-format)
+            (set (make-local-variable 'mode-line-format)
+                 (reader-mode-get-config 'mode-line-format))
+            (set (make-local-variable 'old-elscreen-display-tab) elscreen-display-tab)
+            (set (make-local-variable 'elscreen-display-tab)
+                 (reader-mode-get-config 'elscreen-display-tab))
+            (elscreen-notify-screen-modification 'force-immediately)
+            ;; (elscreen-run-screen-update-hook)
+            (set (make-local-variable 'old-cursor-type) cursor-type)
+            (set (make-local-variable 'cursor-type)
+                 (reader-mode-get-config 'cursor-type))
+            (set (make-local-variable 'old-global-hl-line-mode) global-hl-line-mode)
+            (global-hl-line-mode
+             (reader-mode-get-config 'global-hl-line-mode))
+            (set (make-local-variable 'old-hl-line-when-idle-p) hl-line-when-idle-p)
+            (setq gold-hl-line-when-idle-p hl-line-when-idle-p)
+            (hl-line-toggle-when-idle
+             (reader-mode-get-config 'hl-line-toggle-when-idle))
+            (set (make-local-variable 'old-centered-cursor-mode)
+                 centered-cursor-mode)
+            (centered-cursor-mode (reader-mode-get-config 'centered-cursor-mode))
+            (ad-enable-advice 'ccm-first-start 'before 'reset-ccm-vpos)
+            (ad-activate #'ccm-first-start)
+            (ad-update #'ccm-first-start)
 
-              (set (make-local-variable 'old-view-mode) view-mode)
-              (view-mode  (reader-mode-get-config 'view-mode))
+            (set (make-local-variable 'old-view-mode) view-mode)
+            (view-mode  (reader-mode-get-config 'view-mode))
 
-              (testing
-                  (message "old values:")
-                  (message "resume-hook: old-cursor-type %s" old-cursor-type)
-                  (message "resume-hook: old-global-hl-line-mode %s" old-global-hl-line-mode)
-                  (message "resume-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p)
-                  (message "resume-hook: old-centered-cursor-mode %s" old-centered-cursor-mode)
-                  (message "resume-hook: old-view-mode %s" old-view-mode)
+            (testing
+             (message "old values:")
+             (message "resume-hook: old-cursor-type %s" old-cursor-type)
+             (message "resume-hook: old-global-hl-line-mode %s" old-global-hl-line-mode)
+             (message "resume-hook: old-hl-line-when-idle-p %s" old-hl-line-when-idle-p)
+             (message "resume-hook: old-centered-cursor-mode %s" old-centered-cursor-mode)
+             (message "resume-hook: old-view-mode %s" old-view-mode)
 
-                  (message "values:")
+             (message "values:")
 
-                  (message "resume-hook: cursor-type %s" cursor-type)
-                  (message "resume-hook: global-hl-line-mode %s" global-hl-line-mode)
-                  (message "resume-hook: hl-line-when-idle-p %s" hl-line-when-idle-p)
-                  (message "resume-hook: centered-cursor-mode %s" centered-cursor-mode)
-                  (message "resume-hook: view-mode %s" view-mode)
-                  )
-              (message nil)))
+             (message "resume-hook: cursor-type %s" cursor-type)
+             (message "resume-hook: global-hl-line-mode %s" global-hl-line-mode)
+             (message "resume-hook: hl-line-when-idle-p %s" hl-line-when-idle-p)
+             (message "resume-hook: centered-cursor-mode %s" centered-cursor-mode)
+             (message "resume-hook: view-mode %s" view-mode)
+             )
+            (message nil)))
 
 
 (add-hook 'reader-mode-start-hook
-          #'(lambda ()
-              (progn
-                (set (make-local-variable 'before-reader-mode-fullscreen) (frame-parameter nil 'fullscreen))
-                (set (make-local-variable 'before-reader-mode-mode-line-format) mode-line-format)
-                (set (make-local-variable 'before-reader-mode-elscreen-display-tab) elscreen-display-tab)
-                (set (make-local-variable 'before-reader-mode-cursor-type) cursor-type)
-                (set (make-local-variable 'before-reader-mode-global-hl-line-mode) global-hl-line-mode)
-                (set (make-local-variable 'before-reader-mode-hl-line-when-idle-p) hl-line-when-idle-p)
-                (setq gbefore-reader-mode-hl-line-when-idle-p hl-line-when-idle-p)
-                (set (make-local-variable 'before-reader-mode-centered-cursor-mode) centered-cursor-mode)
-                (defadvice ccm-first-start (before reset-ccm-vpos (animate) activate)
-                  (setq ccm-vpos nil) t))
-                (set (make-local-variable 'before-reader-mode-view-mode) view-mode))))
+          (lambda ()
+            (progn
+              (set (make-local-variable 'before-reader-mode-fullscreen) (frame-parameter nil 'fullscreen))
+              (set (make-local-variable 'before-reader-mode-mode-line-format) mode-line-format)
+              (set (make-local-variable 'before-reader-mode-elscreen-display-tab) elscreen-display-tab)
+              (set (make-local-variable 'before-reader-mode-cursor-type) cursor-type)
+              (set (make-local-variable 'before-reader-mode-global-hl-line-mode) global-hl-line-mode)
+              (set (make-local-variable 'before-reader-mode-hl-line-when-idle-p) hl-line-when-idle-p)
+              (setq gbefore-reader-mode-hl-line-when-idle-p hl-line-when-idle-p)
+              (set (make-local-variable 'before-reader-mode-centered-cursor-mode) centered-cursor-mode)
+              (defadvice ccm-first-start (before reset-ccm-vpos (animate) activate)
+                (setq ccm-vpos nil) t)
+              (set (make-local-variable 'before-reader-mode-view-mode) view-mode))))
 
 
 
 (add-hook 'reader-mode-end-hook
-          #'(lambda ()
-              (progn
-                (set-frame-parameter nil 'fullscreen before-reader-mode-fullscreen)
-                (set (make-local-variable 'mode-line-format) before-reader-mode-mode-line-format)
-                (set (make-local-variable 'elscreen-display-tab) before-reader-mode-elscreen-display-tab)
-                (set (make-local-variable 'cursor-type) before-reader-mode-cursor-type)
-                (global-hl-line-mode (if (null before-reader-mode-global-hl-line-mode) -1 t))
-                (hl-line-toggle-when-idle (if (null before-reader-mode-hl-line-when-idle-p) -1 t))
-                (centered-cursor-mode (if (null before-reader-mode-centered-cursor-mode) -1 t))
-                ;; Delete advise
-                ;; (defadvice ccm-first-start (before reset-ccm-vpos (animate) activate)
-                ;;   (setq ccm-vpos nil) t))
+          (lambda ()
+            (progn
+              (set-frame-parameter nil 'fullscreen before-reader-mode-fullscreen)
+              (set (make-local-variable 'mode-line-format) before-reader-mode-mode-line-format)
+              (set (make-local-variable 'elscreen-display-tab) before-reader-mode-elscreen-display-tab)
+              (set (make-local-variable 'cursor-type) before-reader-mode-cursor-type)
+              (global-hl-line-mode (if (null before-reader-mode-global-hl-line-mode) -1 t))
+              (hl-line-toggle-when-idle (if (null before-reader-mode-hl-line-when-idle-p) -1 t))
+              (centered-cursor-mode (if (null before-reader-mode-centered-cursor-mode) -1 t))
+              ;; Delete advise
+              ;; (defadvice ccm-first-start (before reset-ccm-vpos (animate) activate)
+              ;;   (setq ccm-vpos nil) t))
+              (when (ad-find-advice 'ccm-first-start 'before 'reset-ccm-vpos)
                 (ad-disable-advice 'ccm-first-start 'before 'reset-ccm-vpos)
                 (ad-remove-advice 'ccm-first-start 'before 'reset-ccm-vpos)
-                (ad-activate #'ccm-first-start)
-                (ad-update #'ccm-first-start)
-                (view-mode  (if (null before-reader-mode-view-mode) -1 t)))))
+                (ad-activate #'ccm-first-start))
+              (ad-update #'ccm-first-start)
+              (view-mode  (if (null before-reader-mode-view-mode) -1 t)))))
 
 
 (define-minor-mode reader-mode
@@ -300,7 +336,9 @@
                                        (not (timer--triggered smooth-step-timer))))
                              "[s]"))))))
   :global nil
-  (if reader-mode
+  (if (and arg
+	       (if (> (prefix-numeric-value arg) 0)
+                   reader-mode (not reader-mode)))
       (progn
         (run-hooks 'reader-mode-start-hook)
 
@@ -334,7 +372,7 @@
                           (cancel-timer smooth-step-timer)))) t t)
         (testing (message "hi reader mode %s" reader-idle-timer)))
       (progn
-        (remove-hook 'pre-command-hook #'pause-smooth-read)
+        (remove-hook 'pre-command-hook 'pause-smooth-read)
         (cancel-timer reader-idle-timer)
         (cancel-smooth-read)
         (set (make-local-variable 'reader-idle-timer) nil)
@@ -414,7 +452,7 @@
      (message "pause-smooth-read: removing pause-smooth-read from pre-command-hook")
      (unless (member #'pause-smooth-read pre-command-hook)
        (message "error: pause-smooth-read not in pre-command-hook(%s)" pre-command-hook)))
-    (remove-hook 'pre-command-hook #'pause-smooth-read t)
+    (remove-hook 'pre-command-hook 'pause-smooth-read t)
     ;; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
     ))
 
@@ -435,7 +473,7 @@
            )
       (if (eq reader-mode-buffer (current-buffer))
           (run-hooks 'reader-mode-resume-hook))
-      (if (add-hook 'pre-command-hook #'pause-smooth-read t t)
+      (if (add-hook 'pre-command-hook 'pause-smooth-read t t)
           (testing
            (message "resume-smooth-read: added pause-smooth-read to pre-command-hook(%s)" pre-command-hook))
           (testing
@@ -450,9 +488,33 @@
     (run-hooks 'reader-mode-smooth-read-end-hook)
     ;; (set (make-local-variable 'reader-mode-smooth-step-active) nil)
     )
-  (remove-hook 'pre-command-hook #'pause-smooth-read t))
+  (remove-hook 'pre-command-hook 'pause-smooth-read t))
+
+
+
 
 ;; (funcall #'call-at-steps :micros 800 :fn #'forward-sentence)
+
+
+
+ (add-hook 'on-focus-out-hook
+           #'(lambda ()
+               (testing
+                (message "focus OUT cursor %s , buffer %s" cursor-type (current-buffer)))
+               (when reader-mode
+                 (when (member 'pause-smooth-read pre-command-hook)
+                   (pause-smooth-read)
+                   (testing
+                    (message "running pause")))
+                 (reader-pause))))
+
+
+ (add-hook 'on-focus-in-hook
+           #'(lambda ()
+               (testing
+                (message "focus IN cursor %s , buffer %s" cursor-type (current-buffer)))
+               (when reader-mode
+                 (reader-resume))))
 
 ;;}}
 
@@ -488,8 +550,22 @@
              (run-hooks 'on-focus-in-hook)
              (run-hooks 'on-focus-out-hook))
          (setq old-active-window-id active-window-id))
-     (setq on-blur--timer
-      (run-with-timer 1 nil 'on-blur--refresh))))
+     ;; (when on-blur--timer
+     ;;     (cancel-timer on-blur--timer))
+     ;; (setq on-blur--timer
+     ;;  (run-with-timer 1 nil 'on-blur--refresh))
+     ))
+
+ (defun run-on-blur-timer ()
+   (interactive)
+   (setq on-blur--timer
+         (run-with-timer 1 1 'on-blur--refresh)))
+
+ (defun cancel-on-blur-timer ()
+   (interactive)
+   (if on-blur--timer
+       (cancel-timer on-blur--timer)))
+
 
  (testing
   (if (and (boundp 'on-blur--timer)
@@ -503,7 +579,7 @@
                       window-system)
                  (unless (and (boundp 'on-blur--timer)
                               on-blur--timer)
-                   (on-blur--refresh)))))
+                   (run-on-blur-timer)))))
 
  (add-hook 'sharad/enable-login-session-inperrupting-feature
            #'(lambda ()
@@ -512,26 +588,9 @@
                       window-system)
                  (when (and (boundp 'on-blur--timer)
                             on-blur--timer)
-                   (cancel-timer on-blur--timer)))))
+                   (cancel-on-blur-timer)))))
 
- (add-hook 'on-focus-out-hook
-           #'(lambda ()
-               (testing
-                (message "focus OUT cursor %s , buffer %s" cursor-type (current-buffer)))
-               (when reader-mode
-                 (when (member #'pause-smooth-read pre-command-hook)
-                   (pause-smooth-read)
-                   (testing
-                    (message "running pause")))
-                 (reader-pause))))
-
-
- (add-hook 'on-focus-in-hook
-           #'(lambda ()
-               (testing
-                (message "focus IN cursor %s , buffer %s" cursor-type (current-buffer)))
-               (when reader-mode
-                 (reader-resume)))))
+)
 
 ;;}}
 

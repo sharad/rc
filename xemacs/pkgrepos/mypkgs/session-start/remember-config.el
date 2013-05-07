@@ -15,7 +15,7 @@
 (require 'remember-planner)
 (require 'read-file-name)
 ;; (require 'remember-blosxom)
-(require 'remember-experimental)
+;; (require 'remember-experimental) ;; will start mail at daemon startup time.
 (require 'remember-autoloads)
 (require 'remember-diary)
 (require 'remember-planner)
@@ -31,7 +31,7 @@
                         remember-planner
                         read-file-name
                         ;; remember-blosxom
-                        remember-experimental
+                        ;; remember-experimental ;; will start mail at daemon startup time.
                         remember-autoloads
                         remember-diary
                         remember-planner
@@ -176,9 +176,10 @@ for a Remember buffer.")
   (defun leave-show-reminder ()
     (interactive)
     (when (equal idle-reminder-buffer
-               (current-buffer))
-      (reader-mode -1)
-      (bury-buffer))
+                 (current-buffer))
+      (with-current-buffer idle-reminder-buffer
+        (reader-mode nil)
+        (bury-buffer)))
     (if idle-reminder-register
         (jump-to-register idle-reminder-register)))
 
@@ -188,9 +189,12 @@ for a Remember buffer.")
   (defun show-reminder (fn &optional time-to-show)
     (window-configuration-to-register idle-reminder-register)
     (setq idle-reminder-buffer (funcall fn))
-    (view-mode 1)
-    (reader-mode 1)
-    (idle-reminder-mode 1))
+    ;; (view-mode 1)
+    (when idle-reminder-buffer
+      (with-current-buffer idle-reminder-buffer
+        (reader-mode 1)
+        (idle-reminder-mode 1))
+      (switch-to-buffer idle-reminder-buffer)))
 
 
   (defun show-some-orgfile ()
@@ -208,8 +212,17 @@ for a Remember buffer.")
 
   (defun idle-reminder-cancel ()
     (interactive)
-    (if idle-reminder-timer
-        (cancel-timer idle-reminder-timer))))
+    (when idle-reminder-timer
+      (cancel-timer idle-reminder-timer)
+      (when idle-reminder-buffer
+        (with-current-buffer idle-reminder-buffer
+          (reader-mode nil)
+          (bury-buffer)))))
+
+
+  ;; (show-reminder 'show-some-orgfile)
+
+  )
 
 
 (provide 'remember-config)
