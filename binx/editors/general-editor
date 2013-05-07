@@ -5,7 +5,7 @@
 prog=$(basename $0)
 
 
-debug=0
+debug=1
 
 typeset -A args
 
@@ -15,8 +15,8 @@ alternate_editors=( em zile mg jove sensible-editor vim joe )
 
 foreach editor ( $alternate_editors )
 do
-if which zile >& /dev/null ; then
-    alted=zile
+if which $editor >& /dev/null ; then
+    alted=$editor
     break
 fi
 done
@@ -49,8 +49,8 @@ foreach f ("$@" ) {
 }
 
 if which emacs >& /dev/null && which emacsclient >& /dev/null ; then
-    (( ${+debug} )) && echo eval emacsclient ${(kv)args} ${filegiven--c} -a $alted "$@"
-    eval emacsclient ${(kv)args} ${filegiven--c} -a $alted "$@"
+    (( ${+debug} )) && echo eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
+    eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
 else
     $alted "$@"
 fi
