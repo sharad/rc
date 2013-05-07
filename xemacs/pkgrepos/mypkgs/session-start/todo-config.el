@@ -111,7 +111,10 @@ having the same major mode as the current buffer"
     ()
     (message "elpa pkg wcheck-mode"))
 
+  (unless (locate-library "soap-client")
+    (load-file "/usr/share/emacs/24.2/lisp/net/soap-client.elc"))
   (deh-require-maybe org-jira)
+
   (deh-require-maybe todostack
     ;; beautiful
     (add-hook 'kill-emacs-hook 'todostack-save)

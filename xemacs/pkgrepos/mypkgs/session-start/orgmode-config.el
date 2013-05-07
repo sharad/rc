@@ -91,14 +91,40 @@
       ((string-match "spratap" (system-name)) 'office)
       (t 'myself)))
 
+  (defvar file-make-ro nil)
+  (add-hook 'ad-remember-mode-after-hook
+            (lambda ()
+              (dolist (f file-make-ro)
+                (if (find-buffer-visiting file)
+                    (with-current-buffer (find-buffer-visiting file)
+                      (setq buffer-read-only t
+                            view-read-only t
+                            view-mode t))))))
+
+  (defun get-task-notes ()
+    (let* ((file (concat (find-task-dir) "notes.org"))
+           (buf (or (find-buffer-visiting file)
+                    (find-file-noselect file))))
+
+      (if (with-current-buffer buf
+            (when buffer-read-only
+              (setq buffer-read-only nil
+                    view-read-only nil
+                    view-mode nil)
+              t))
+          (add-to-list 'file-make-ro file)
+          file)))
+
 
   (defun org-template-gen (s &optional org-parent-dir)
     (let ((org-parent-dir (or org-parent-dir "~/.Organize/emacs/org/")))
       `(("Current Task"
          ?k
          "* TODO %? %^g\n %i\n"
-         (lambda ()
-           (concat (find-task-dir) "notes.org")))
+         ,(function get-task-notes)
+         ;; (lambda ()
+         ;;   (concat (find-task-dir) "notes.org"))
+         )
         ("Emacs"
          ?m
          "* TODO %? %^g\n %i\n"
@@ -164,8 +190,8 @@
   (setq org-remember-templates (org-template-gen (symbol-name (remember-sys))))
 
 
-  ;; (functionp
-  ;;  (nth 3 (car org-remember-templates)))
+  (functionp
+   (nth 3 (car org-remember-templates)))
 
   (defun th-org-remember-conkeror (url)
     (interactive "s")

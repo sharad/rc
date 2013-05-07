@@ -25,7 +25,9 @@
 ;;; Code:
 
 
-(deh-require-mayb deft)
+(deh-require-maybe deft
+  (setq deft-extension "org"
+        deft-text-mode 'org-mode))
 
 (when (xrequire 'evernote-mode)
   ;; http://emacs-evernote-mode.googlecode.com/svn-history/r190/trunk/doc/readme_en.html#sec-7

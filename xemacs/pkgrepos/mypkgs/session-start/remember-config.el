@@ -138,6 +138,17 @@
 
   )
 
+(progn
+
+  (defvar ad-remember-mode-after-hook nil "")
+
+  (defadvice remember-buffer (after remember-mode-after-hook activated)
+    (run-hooks  'ad-remember-mode-after-hook))
+
+
+
+ )
+
 
 
 (deh-section "Idle reminder"
