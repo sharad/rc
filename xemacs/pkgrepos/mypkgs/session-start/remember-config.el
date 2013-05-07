@@ -15,7 +15,7 @@
 (require 'remember-planner)
 (require 'read-file-name)
 ;; (require 'remember-blosxom)
-(require 'remember-experimental)
+;; (require 'remember-experimental) ;; will start mail at daemon startup time.
 (require 'remember-autoloads)
 (require 'remember-diary)
 (require 'remember-planner)
@@ -31,7 +31,7 @@
                         remember-planner
                         read-file-name
                         ;; remember-blosxom
-                        remember-experimental
+                        ;; remember-experimental ;; will start mail at daemon startup time.
                         remember-autoloads
                         remember-diary
                         remember-planner
@@ -209,7 +209,7 @@ for a Remember buffer.")
           (bury-buffer)))))
 
 
-  (show-reminder 'show-some-orgfile)
+  ;; (show-reminder 'show-some-orgfile)
 
   )
 

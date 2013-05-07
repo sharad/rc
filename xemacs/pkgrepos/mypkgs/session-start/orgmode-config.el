@@ -66,7 +66,7 @@
                         remember-planner
                         read-file-name
                         ;; remember-blosxom
-                        remember-experimental
+                        ;; remember-experimental ;; will start mail at daemon startup time.
                         remember-autoloads
                         remember-diary
                         remember-planner
