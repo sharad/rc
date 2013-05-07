@@ -84,26 +84,24 @@
 
   (setq org-default-notes-file (concat org-directory "/notes.org"))
 
-
-
   (defun remember-sys ()
     (cond
       ((string-match "spratap" (system-name)) 'office)
       (t 'myself)))
 
-  (defvar file-make-ro nil)
+  (defvar org-template-files-revert nil)
+
   (add-hook 'ad-remember-mode-after-hook
             (lambda ()
-              (dolist (f file-make-ro)
+              (dolist (f org-template-files-revert)
                 (if (find-buffer-visiting file)
                     (with-current-buffer (find-buffer-visiting file)
                       (setq buffer-read-only t
                             view-read-only t
                             view-mode t))))))
 
-  (defun get-task-notes ()
-    (let* ((file (concat (find-task-dir) "notes.org"))
-           (buf (or (find-buffer-visiting file)
+  (defun org-template-set-file-writable (file)
+    (let* ((buf (or (find-buffer-visiting file)
                     (find-file-noselect file))))
 
       (if (with-current-buffer buf
@@ -115,13 +113,28 @@
           (add-to-list 'file-make-ro file)
           file)))
 
+  (defvar org-remember-template-alist nil "org-remember-template-alist")
+
+
+  (defun org-template-push (template &rest keys)
+    (pushnew (cons key template)
+             org-remember-template-alist
+             :key 'car))
+
+
+  ;; (get-tree '((a (b (c . d)))) 'a 'b 'c)
+
+  (defun make-orgremember-tmpl-with-sys (key s )
+    )
+
 
   (defun org-template-gen (s &optional org-parent-dir)
     (let ((org-parent-dir (or org-parent-dir "~/.Organize/emacs/org/")))
       `(("Current Task"
          ?k
          "* TODO %? %^g\n %i\n"
-         ,(function get-task-notes)
+         (lambda ()
+           (org-template-set-file-writable (file (concat (find-task-dir) "notes.org"))))
          ;; (lambda ()
          ;;   (concat (find-task-dir) "notes.org"))
          )
