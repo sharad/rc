@@ -78,16 +78,16 @@
             :initial-value tree)
      e))
 
+  (defun set-tree (tree e &rest keys)
+    (setcdr
+     (reduce (lambda (xtree k)
+               (message "tree %s k %s" xtree k)
+               (assoc k (pushnew (list k) (cdr xtree) :key 'car)))
+             keys :initial-value (cons nil tree))
+     e))
 
   (when nil
 
-    (defun set-tree (tree e &rest keys)
-      (setcdr
-       (reduce (lambda (xtree k)
-                 (message "tree %s k %s" xtree k)
-                 (assoc k (pushnew (list k) (cdr xtree) :key 'car)))
-               keys :initial-value (list nil tree))
-       e))
 
     (progn
       (get-tree '((a .((b ((c . d)))))) 'a 'b 'c)
@@ -103,7 +103,11 @@
 
     (progn
       (setq ol '((k p) (a b)))
-      (assoc 'k (pushnew '(k . c) ol :key 'car))))
+      (assoc 'k (pushnew '(f . c) ol :key 'car)))
+
+
+
+    )
 
 
 
@@ -155,7 +159,7 @@ With a prefix, uses the region as INITIAL."
            (buffer-substring (point) (mark)))))
 )
 
-  (defun sharad/remember-fun-set-orgnizer (fun adname)
+  (defun remember-fun-set-orgnizer-advice (fun adname)
     (unless (ad-find-advice fun 'around adname)
       (eval
        `(defadvice ,fun (around ,adname ,(help-function-arglist fun) activate)
@@ -171,25 +175,25 @@ With a prefix, uses the region as INITIAL."
     (ad-activate fun)
     (ad-update fun))
 
-  (defun sharad/remember-fun-unset-orgnizer (fun adname)
+  (defun remember-fun-unset-orgnizer-advice (fun adname)
     (when (ad-find-advice fun 'around adname)
       (ad-remove-advice fun 'around adname))
     (ad-activate fun)
     (ad-update fun))
 
-  (defun sharad/remember-fun-disable-orgnizer (fun adname)
+  (defun remember-fun-disable-orgnizer-advice (fun adname)
     (when (ad-find-advice fun 'around adname)
       (ad-disable-advice fun 'around adname))
     (ad-activate fun)
     (ad-update fun))
 
-  (defun sharad/remember-fun-enable-orgnizer (fun adname)
+  (defun remember-fun-enable-orgnizer-advice (fun adname)
     (when (ad-find-advice fun 'around adname)
       (ad-enable-advice fun 'around adname))
     (ad-activate fun)
     (ad-update fun))
 
-  (defun sharad/remember-set-orgnizer ()
+  (defun remember-set-orgnizer-advice ()
     (interactive)
     (setq remember-annotation-functions nil
           remember-handler-functions nil
@@ -200,9 +204,9 @@ With a prefix, uses the region as INITIAL."
                             (and (consp e)
                              (eq 'defun (car e))))
                           (feature-symbols 'remember))))
-      (sharad/remember-fun-set-orgnizer fun 'Ad-organizer)))
+      (remember-fun-set-orgnizer-advice fun 'Ad-organizer)))
 
-    (defun sharad/remember-manage-orgnizer (mgrfn)
+    (defun remember-manage-orgnizer-advice (mgrfn)
       (interactive
        (let*
            ((fnnames '("sharad/remember-fun-set-orgnizer"
@@ -222,7 +226,7 @@ With a prefix, uses the region as INITIAL."
                             (feature-symbols 'remember))))
         (funcall mgrfn fun 'Ad-organizer)))
 
-  (sharad/remember-set-orgnizer)
+  (remember-set-orgnizer-advice)
   ;; (sharad/remember-unset-orgnizer)
 
   ;; (unless (ad-find-advice 'ccm-first-start 'before 'reset-ccm-vpos)
@@ -230,19 +234,29 @@ With a prefix, uses the region as INITIAL."
   ;;     (setq ccm-vpos nil) t))
 
 
+  (defun remember-change-orgnizer (&optional orgnizer)
+    (interactive
+     (list (when current-prefix-arg
+             (buffer-substring (point) (mark)))))
+    (let ((old-remember-organizer remember-organizer)
+          (organizer
+           (or
+            orgnizer
+            (intern
+             (ido-completing-read "Organizer: "
+                                  (mapcar (lambda (e)
+                                            (symbol-name (car e)))
+                                          sharad/remember-functions-alist)
+                                  nil t)))))
+      (setq remember-organizer organizer)))
+
 
   (defun dontforgetme (&optional initial)
     (interactive
      (list (when current-prefix-arg
              (buffer-substring (point) (mark)))))
     (let ((old-remember-organizer remember-organizer)
-          (organizer
-           (intern
-            (ido-completing-read "Organizer: "
-                                 (mapcar (lambda (e)
-                                           (symbol-name (car e)))
-                                         sharad/remember-functions-alist)
-                                 nil t))))
+          (organizer (remember-change-orgnizer)))
       (setq remember-organizer organizer)
       (remember initial)
       ;; will not work, think more or live with it.

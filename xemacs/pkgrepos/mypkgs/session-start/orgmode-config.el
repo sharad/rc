@@ -84,7 +84,7 @@
 
   (setq org-default-notes-file (concat org-directory "/notes.org"))
 
-  (defun remember-sys ()
+  (defun sharad/org-remember-sys ()
     (cond
       ((string-match "spratap" (system-name)) 'office)
       (t 'myself)))
@@ -199,7 +199,7 @@
   ;; end: from: http://members.optusnet.com.au/~charles57/GTD/remember.html
   ;; (defvar org-remember-templates nil "templates for org.")
 
-  (setq org-remember-templates (org-template-gen (symbol-name (remember-sys))))
+  (setq org-remember-templates (org-template-gen (symbol-name (sharad/org-remember-sys))))
 
 
   (functionp

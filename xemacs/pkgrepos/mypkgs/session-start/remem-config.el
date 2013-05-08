@@ -29,7 +29,9 @@
 
 ;; C-c r
 
-
+;;{{ Faces
+(set-face-foreground 'remem-odd  "White")
+;;}}
 
 ;;from: http://1010.co.uk/tech_notes.html
 ;;

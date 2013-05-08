@@ -62,7 +62,10 @@
 
   (defvar rcs-backup-vc-file nil "")
 
+  (require 'tramp-util ) ;; for `tramp-handle-executable-find'
+
   (defun rcs-ci-executable-find (file)
+    (require 'tramp-util)
     (if (file-remote-p file)
         (tramp-handle-executable-find "ci")
         (executable-find "ci")))
@@ -98,7 +101,7 @@
                              (file-nonrcs-backend
                               (unless rcs-backup-vc-file
                                 (vc-find-backend org-nfile (remove 'RCS vc-handled-backends)))))
-                        (message "default-directory %s" default-directory)
+                        ;; (message "default-directory %s" default-directory)
                         ;; (message "put-file-in-rcs: adding to rcs")
                         ;; (message "nfile %s" nfile)
                         ;; (message "org-nfile %s" org-nfile)
