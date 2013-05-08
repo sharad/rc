@@ -89,20 +89,22 @@
       ((string-match "spratap" (system-name)) 'office)
       (t 'myself)))
 
-  (defvar org-template-files-revert nil)
+  (defvar org-template-files-revert nil "")
 
   (add-hook 'ad-remember-mode-after-hook
             (lambda ()
               (dolist (f org-template-files-revert)
-                (if (find-buffer-visiting file)
-                    (with-current-buffer (find-buffer-visiting file)
+                (if (find-buffer-visiting f)
+                    (with-current-buffer (find-buffer-visiting f)
                       (setq buffer-read-only t
                             view-read-only t
                             view-mode t))))))
 
-  (defun org-template-set-file-writable (file)
-    (let* ((buf (or (find-buffer-visiting file)
-                    (find-file-noselect file))))
+  (defun org-template-set-file-writable (xfile)
+    (if (consp xfile)
+        (error "xfile %s not file" xfile))
+    (let* ((buf (or (find-buffer-visiting xfile)
+                    (find-file-noselect xfile))))
 
       (if (with-current-buffer buf
             (when buffer-read-only
@@ -110,8 +112,9 @@
                     view-read-only nil
                     view-mode nil)
               t))
-          (add-to-list 'file-make-ro file)
-          file)))
+          (add-to-list 'org-template-files-revert xfile))
+          (message "xfile %s" xfile)
+          xfile))
 
   (defvar org-remember-template-alist nil "org-remember-template-alist")
 
@@ -133,10 +136,7 @@
          ?k
          "* TODO %? %^g\n %i\n"
          (lambda ()
-           (org-template-set-file-writable (file (concat (find-task-dir) "notes.org"))))
-         ;; (lambda ()
-         ;;   (concat (find-task-dir) "notes.org"))
-         )
+           (org-template-set-file-writable (concat (find-task-dir) "notes.org"))))
         ("Emacs"
          ?m
          "* TODO %? %^g\n %i\n"

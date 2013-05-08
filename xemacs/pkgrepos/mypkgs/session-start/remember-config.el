@@ -107,6 +107,39 @@
 
 
 
+  (when nil ;;get interactive
+
+
+    (nth 4 (indirect-function 'find-file))
+
+    (nth 2 (aref  (indirect-function 'remember) 5))
+
+
+    (nth 3  (indirect-function 'remember))
+
+
+
+    (defun help-function-interactive (def)
+      ;; Handle symbols aliased to other symbols.
+      (if (and (symbolp def) (fboundp def)) (setq def (indirect-function def)))
+      ;; If definition is a macro, find the function inside it.
+      (if (eq (car-safe def) 'macro) (setq def (cdr def)))
+      (cond
+        ((byte-code-function-p def) (append (nth 2 (aref def 5)) nil))
+        ((eq (car-safe def) 'lambda) (nth 3 def))
+        ((and (eq (car-safe def) 'autoload) (not (eq (nth 4 def) 'keymap)))
+         "[Arg list not available until function definition is loaded.]")
+        (t t)))
+
+    (append  [ 1 2 ] ())
+
+    (help-function-interactive 'find-file)
+    (help-function-interactive 'remember)
+
+
+    )
+
+
 
   ;; (reduce #'list '(1 2 3 4)
   ;;         :initial-value 'foo)
@@ -114,17 +147,47 @@
   ;; (defun run-list-until-success (flist)
   ;;   (some 'funcall flist))
 
+  (defun remember-XXX (&optional initial)
+  "Remember an arbitrary piece of data.
+With a prefix, uses the region as INITIAL."
+  (interactive
+   (list (when current-prefix-arg
+           (buffer-substring (point) (mark)))))
+)
 
-  (defun sharad/remember-fun-set-orgnizer (fun)
-    (eval
-     `(defadvice ,fun (around Ad-organizer activate)
-        (let ((remember-annotation-functions
-               (cdr-assoc-cdr-assoc remember-organizer 'annotation sharad/remember-functions-alist))
-              (remember-handler-functions
-               (cdr-assoc-cdr-assoc remember-organizer 'handler sharad/remember-functions-alist))
-              (remember-mode-hook
-               (cdr-assoc-cdr-assoc remember-organizer 'hook sharad/remember-functions-alist)))
-          ad-do-it))))
+  (defun sharad/remember-fun-set-orgnizer (fun adname)
+    (unless (ad-find-advice fun 'around adname)
+      (eval
+       `(defadvice ,fun (around ,adname ,(help-function-arglist fun) activate)
+          ;; ,(help-function-interactive 'fun)
+          (let ((remember-annotation-functions
+                 (cdr-assoc-cdr-assoc remember-organizer 'annotation sharad/remember-functions-alist))
+                (remember-handler-functions
+                 (cdr-assoc-cdr-assoc remember-organizer 'handler sharad/remember-functions-alist))
+                (remember-mode-hook
+                 (cdr-assoc-cdr-assoc remember-organizer 'hook sharad/remember-functions-alist)))
+            ad-do-it))))
+    (ad-enable-advice fun 'around adname)
+    (ad-activate fun)
+    (ad-update fun))
+
+  (defun sharad/remember-fun-unset-orgnizer (fun adname)
+    (when (ad-find-advice fun 'around adname)
+      (ad-remove-advice fun 'around adname))
+    (ad-activate fun)
+    (ad-update fun))
+
+  (defun sharad/remember-fun-disable-orgnizer (fun adname)
+    (when (ad-find-advice fun 'around adname)
+      (ad-disable-advice fun 'around adname))
+    (ad-activate fun)
+    (ad-update fun))
+
+  (defun sharad/remember-fun-enable-orgnizer (fun adname)
+    (when (ad-find-advice fun 'around adname)
+      (ad-enable-advice fun 'around adname))
+    (ad-activate fun)
+    (ad-update fun))
 
   (defun sharad/remember-set-orgnizer ()
     (interactive)
@@ -137,9 +200,30 @@
                             (and (consp e)
                              (eq 'defun (car e))))
                           (feature-symbols 'remember))))
-      (sharad/remember-fun-set-orgnizer fun)))
+      (sharad/remember-fun-set-orgnizer fun 'Ad-organizer)))
+
+    (defun sharad/remember-manage-orgnizer (mgrfn)
+      (interactive
+       (let*
+           ((fnnames '("sharad/remember-fun-set-orgnizer"
+                       "sharad/remember-fun-unset-orgnizer"
+                       "sharad/remember-fun-enable-orgnizer"
+                       "sharad/remember-fun-disable-orgnizer"))
+            (fn (ido-completing-read "manager: " fnnames nil t)))
+         (list (intern fn))))
+      (setq remember-annotation-functions nil
+            remember-handler-functions nil
+            remember-mode-hook nil)
+      (dolist (fun (mapcar 'cdr
+                           (remove-if-not
+                            '(lambda (e)
+                              (and (consp e)
+                               (eq 'defun (car e))))
+                            (feature-symbols 'remember))))
+        (funcall mgrfn fun 'Ad-organizer)))
 
   (sharad/remember-set-orgnizer)
+  ;; (sharad/remember-unset-orgnizer)
 
   ;; (unless (ad-find-advice 'ccm-first-start 'before 'reset-ccm-vpos)
   ;;   (defadvice ccm-first-start (before reset-ccm-vpos (animate) activate)
@@ -147,8 +231,10 @@
 
 
 
-  (defun dontforgetme (&optional arg)
-    (interactive "P")
+  (defun dontforgetme (&optional initial)
+    (interactive
+     (list (when current-prefix-arg
+             (buffer-substring (point) (mark)))))
     (let ((old-remember-organizer remember-organizer)
           (organizer
            (intern
@@ -158,19 +244,23 @@
                                          sharad/remember-functions-alist)
                                  nil t))))
       (setq remember-organizer organizer)
-      (remember arg)
+      (remember initial)
       ;; will not work, think more or live with it.
       ;; (setq remember-organizer old-remember-organizer)
       ))
 
   (defun sharad/remember-org (&optional initial)
-    (interactive)
+    (interactive
+     (list (when current-prefix-arg
+             (buffer-substring (point) (mark)))))
     (let ((organizer 'org))
       (setq remember-organizer organizer)
       (remember initial)))
 
   (defun sharad/remember-planner (&optional initial)
-    (interactive)
+    (interactive
+     (list (when current-prefix-arg
+             (buffer-substring (point) (mark)))))
     (let ((organizer 'planner))
       (setq remember-organizer organizer)
       (remember initial)))
@@ -184,7 +274,7 @@
 
   (defvar ad-remember-mode-after-hook nil "")
 
-  (defadvice remember-buffer (after remember-mode-after-hook activated)
+  (defadvice remember-buffer (after remember-mode-after-hook activate)
     (run-hooks  'ad-remember-mode-after-hook))
 
 

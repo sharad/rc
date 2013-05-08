@@ -77,25 +77,22 @@
         (find-task (concat dir name))
         (progn
           (make-directory (concat dir name "/logs") t)
-          (find-file
-           (concat dir name "/"
-                   (dolist (f (cdr (assoc 'files (cdr (assoc task task-alist))))
-                            (car (cdr (assoc 'files (cdr (assoc task task-alist))))))
-                     (unless (write-region (format
-                                            "
-
-* %s %s
-
-
-
-
-* File Local Variables
-;;; %s:
-;;; %s: t
-;;; %s: 172
-;;; End:
-
-" (capitalize task) name "Local Variables" "buffer-read-only" "fill-column") nil (concat dir name "/" f) nil nil nil t)))))))
+          (dolist (f (cdr (assoc 'files (cdr (assoc task task-alist)))))
+            (with-current-buffer (let ((nfile (expand-file-name f (concat dir name "/"))))
+                                   (or (find-buffer-visiting nfile)
+                                       (find-file-noselect nfile)))
+              (dolist pv '((buffer-read-only . t)
+                           (fill-column . 172))
+                      (add-file-local-variable-prop-line (car pv) (cdr pv)))
+              (insert (format "\n\n* %s %s\n\n\n\n" (capitalize task) name ))
+              (set-buffer-file-coding-system
+               (if (coding-system-p 'utf-8-emacs)
+                   'utf-8-emacs
+                   'emacs-mule))
+              (write-file (expand-file-name f dir))))
+          (find-file (expand-file-name
+                      (cadr (assoc 'files (cdr (assoc task task-alist))))
+                      (concat dir name "/")))))
 
     (if (y-or-n-p (format "Should set %s current task" dir))
         (setq current-task dir))))
