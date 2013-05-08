@@ -93,12 +93,14 @@
 
   (add-hook 'ad-remember-mode-after-hook
             (lambda ()
-              (dolist (f org-template-files-revert)
-                (if (find-buffer-visiting f)
-                    (with-current-buffer (find-buffer-visiting f)
-                      (setq buffer-read-only t
-                            view-read-only t
-                            view-mode t))))))
+              ;;(dolist (f org-template-files-revert)
+              (while (org-template-files-revert)
+                (let ((f (pop org-template-files-revert)))
+                  (if (find-buffer-visiting f)
+                      (with-current-buffer (find-buffer-visiting f)
+                        (setq buffer-read-only t
+                              view-read-only t
+                              view-mode t)))))))
 
   (defun org-template-set-file-writable (xfile)
     (if (consp xfile)
@@ -106,14 +108,12 @@
     (let* ((buf (or (find-buffer-visiting xfile)
                     (find-file-noselect xfile))))
 
-      (if (with-current-buffer buf
+      (with-current-buffer buf
             (when buffer-read-only
               (setq buffer-read-only nil
                     view-read-only nil
                     view-mode nil)
-              t))
-          (add-to-list 'org-template-files-revert xfile))
-          (message "xfile %s" xfile)
+              (add-to-list 'org-template-files-revert xfile)))
           xfile))
 
   (defvar org-remember-template-alist nil "org-remember-template-alist")
