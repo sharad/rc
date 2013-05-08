@@ -121,7 +121,6 @@
              org-remember-template-alist
              :key 'car))
 
-
   ;; (get-tree '((a (b (c . d)))) 'a 'b 'c)
 
   (defun make-orgremember-tmpl-with-sys (key s )

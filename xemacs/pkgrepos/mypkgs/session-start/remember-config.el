@@ -60,12 +60,51 @@
   (defmacro cdr-assoc-cdr-assoc (key1 key2 alist)
     `(cdr (assoc ,key2 (cdr (assoc ,key1 ,alist)))))
 
-  (defun get-tree (alist &rest keys)
-    (reduce (lambda (axlist k)
-              (message "axlist %s k %s" axlist k)
-              (cdr (assoc k axlist)))
+  (defun get-tree (tree &rest keys)
+    (reduce (lambda (xtree k)
+              (message "tree %s k %s ret (cdr (assoc k xtree)) %s" xtree k (cdr (assoc k xtree)))
+              (cdr (assoc k xtree)))
             keys
-            :initial-value alist))
+            :initial-value tree))
+
+  (defun set-tree (tree e &rest keys)
+    (setcdr
+     (reduce (lambda (xtree k)
+              (message "tree %s k %s" xtree k)
+              (unless (assoc k xtree)
+                (pushnew (list k) xtree))
+              (assoc k xtree))
+            keys
+            :initial-value tree)
+     e))
+
+
+  (when nil
+
+    (defun set-tree (tree e &rest keys)
+      (setcdr
+       (reduce (lambda (xtree k)
+                 (message "tree %s k %s" xtree k)
+                 (assoc k (pushnew (list k) (cdr xtree) :key 'car)))
+               keys :initial-value (list nil tree))
+       e))
+
+    (progn
+      (get-tree '((a .((b ((c . d)))))) 'a 'b 'c)
+      (get-tree '((a (b (c . d)))) 'a 'b 'c)
+      (get-tree '((a)) 'a 'b 'c)
+      (cdr (assoc 'a '((a ((b ((c . d)))))))))
+
+    (progn
+      (setq jt '((a (b (c . d)))))
+      (set-tree jt 'o 'a 'b 'c)
+      jt)
+
+
+    (progn
+      (setq ol '((k p) (a b)))
+      (assoc 'k (pushnew '(k . c) ol :key 'car))))
+
 
 
 
