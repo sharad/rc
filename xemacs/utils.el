@@ -30,6 +30,16 @@
                    key bindedcmd cmd))
         (global-set-key key cmd))))
 
+(defun global-set-key-warn-if-bind (key cmd)
+  "Set binding for key if there is no  existing binding for key."
+  ;; (interactive)
+  (let ((bindedcmd (key-binding key t)))
+    (if bindedcmd
+        (when (or (not *emacs-in-init*) (not reloading-libraries))
+          (message "key %s already have binded with command %s, but binding to %s."
+                   key bindedcmd cmd)))
+        (global-set-key key cmd)))
+
 (defun keymap-set-key-if-unbind (map key cmd)
   "Set binding for key if there is no  existing binding for key."
   ;; (interactive)

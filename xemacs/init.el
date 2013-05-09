@@ -31,31 +31,37 @@
         (message "loading init now.")
         ad-do-it)))
 
-;; (eval-after-load "server"
-;;   '(progn
-;;     (undefine-function-remmeber 'server-create-window-system-frame)
-;;     (add-hook 'after-init-hook
-;;      (lambda ()
-;;        (redefine-function-remembered
-;;         'server-create-window-system-frame)))))
 
-(add-to-list 'load-path "/usr/local/share/emacs/23.3/site-lisp")
+;; (add-to-list 'load-path "/usr/local/share/emacs/23.3/site-lisp")
 
-(progn
-  (progn                                ;add to loadpath
-    (defun package-dir-add-to-loadpath (package-dir)
+(deh-section "General"
+
+  (deh-section "loadpath"                                ;add to loadpath
+
+    (defun package-dir-add-to-loadpath (package-dir &optional recursive)
       (when (file-directory-p package-dir)
-        (mapc #'(lambda (path)
-                  (add-to-list 'load-path path))
-              (directory-files package-dir t "[a-zA-Z]+"))))
+        (mapc
+         (if recursive
+             (lambda (path)
+               (add-to-list 'load-path path)
+               (let ((default-directory path))
+                 (normal-top-level-add-subdirs-to-load-path)))
+             (lambda (path)
+               (add-to-list 'load-path path)))
+         (remove-if-not
+	  'file-directory-p
+	  (directory-files package-dir t "[a-zA-Z]+")))))
 
 
 
     ;; (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/world")
     (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/mypkgs")
     (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/elpa")
-    (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/world/misc")
-    (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/world/gits")
+    (dolist (d (remove-if-not
+                'file-directory-p
+                (directory-files "~/.xemacs/pkgrepos/world/" t "[a-zA-Z]+")))
+      (package-dir-add-to-loadpath d t))
+
 
     (mapc
      '(lambda (dir)
@@ -64,7 +70,7 @@
        "~/.osetup/info/common/elisp"
        ,(concat "~/.osetup/info/hosts/" (system-name) "/elisp"))))
 
-  (progn                                ;byte compile
+  (deh-section "byte-compile"                                ;byte compile
     (defun package-dir-byte-compile (package-dir)
       (when (file-directory-p package-dir)
         (mapc #'(lambda (dir)

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2013-04-15 10:21:37 s>
+;; Time-stamp: <2013-05-09 22:48:48 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -39,8 +39,7 @@
        (if prev-cmd
            (if (global-set-key (kbd ,(replace-modifier keys rep-map)) prev-cmd)
                (progn
-                 (global-set-key (kbd ,keys) ',cmd)
-                 ))
+                 (global-set-key (kbd ,keys) ',cmd)))
            (global-set-key (kbd ,keys) ',cmd)))))
 
 (deh-section "Hyper Super etc"
@@ -459,5 +458,31 @@ and their terminal equivalents.")
 
 ;; (deh-require-maybe recentf-buffer
 ;;   (global-set-key [?\C-c ?r ?f] 'recentf-open-files-in-simply-buffer))
+
+
+(deh-section "Necessary"
+  (global-set-key-warn-if-bind (kbd "C-x 1") 'delete-other-windows)
+  (global-set-key-warn-if-bind (kbd "C-x 0") 'delete-window))
+
+
+(deh-section "Find place of keybinding"
+  (let* ((function 'find-file)
+        (advised (and (symbolp function)  (featurep 'advice)  (ad-get-advice-info function)))
+           ;; If the function is advised, use the symbol that has the real def, if already set up.
+           (real-function  (or (and advised  (let ((origname  (cdr (assq 'origname advised))))
+                                               (and (fboundp origname)  origname)))
+                               function))
+           ;; Get the real definition.
+           (def            (if (symbolp real-function) (symbol-function real-function) function))
+           (beg            (if (commandp def) "an interactive "  "a "))
+           (pt1            (with-current-buffer (help-buffer) (point)))
+           file-name string errtype)
+    (find-lisp-object-file-name function def)
+    ;; (help-xref-button 1 'help-function-def function file-name)
+    ))
+
+
+(deh-section "debug"
+  (global-set-key (kbd "s-g") 'keyboard-debug))
 
 (provide 'binding-config)

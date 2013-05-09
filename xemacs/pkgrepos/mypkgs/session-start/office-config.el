@@ -70,6 +70,8 @@
       (setq current-task (ido-read-directory-name "dir: " taskdir nil t))
       current-task))
 
+
+
 (defun create-task (task name)
   (interactive
    (let* ((task (completing-read "what: " (mapcar 'car task-alist) nil t))
@@ -83,11 +85,13 @@
           (make-directory (concat dir name "/logs") t)
 
           (dolist (f (cdr (assoc 'files (cdr (assoc task task-alist)))))
-            (let ((nfile (expand-file-name f (concat dir name "/"))))
+            (let ((nfile (expand-file-name f (concat dir name "/")))
+                  find-file-not-found-functions) ;find alternate of find-file-noselect to get non-existing file.
               (with-current-buffer (or (find-buffer-visiting nfile)
                                        (find-file-noselect nfile))
                 (dolist (pv task-file-properties)
                   (add-file-local-variable-prop-line (car pv) (cdr pv)))
+                (goto-char (point-max))
                 (insert (format "\n\n* %s %s\n\n\n\n" (capitalize task) name ))
                 (set-buffer-file-coding-system
                  (if (coding-system-p 'utf-8-emacs)

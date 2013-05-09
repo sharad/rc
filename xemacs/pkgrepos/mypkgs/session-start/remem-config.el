@@ -1,4 +1,4 @@
-
+;;
 ;; from: http://1010.co.uk/emacs.html
 ;; ra-index -v ~/experiment/RA-indexes/svn ~/svn_test/trunk
 
@@ -20,8 +20,8 @@
   ;; (define-key perly-sense-map (kbd "C-g") 'perly-sense-smart-go-to-at-point)
 
   (setq remem-prog-dir "/usr/bin")
-  (setq remem-database-dir "~/RA-indexes")
-  (setq remem-scopes-list '(("mail" 6 5 500) ("experiment" 6 5 500)))
+  (setq remem-database-dir "~/.RA-indexes")
+  (setq remem-scopes-list '(("mail" 6 5 500) ("office" 6 5 500)))
   ;;(setq remem-terminal-mode t)
   (setq remem-load-original-suggestion  nil)
 
