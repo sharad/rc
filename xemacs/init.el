@@ -123,20 +123,26 @@
 
 (require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/session-start")
 
-(with-current-buffer "*Messages*"
-  (copy-to-buffer "*emacs-startup-log*" (point-min) (point-max))
-  ;; (with-temp-file file body)
-  (set-buffer-file-coding-system
-   (if (coding-system-p 'utf-8-emacs)
-       'utf-8-emacs
-       'emacs-mule))
-  (write-file (expand-file-name "~/.emacs.d/startup.log"))
-  ;; (write-region (point-min) (point-max) "~/.emacs.d/startup.log")
-  ;; (write-current-buffer "*emacs-startup-log*"
-  ;;                       )
-  (setq messages-buffer-max-lines 2000
-        ;; old-messages-buffer-max-lines
-        ))
+(progn
+  (put-file-in-rcs "~/.emacs.d/startup.log")
+  (with-current-buffer "*Messages*"
+    (setq messages-buffer-max-lines 2000
+          ;; old-messages-buffer-max-lines
+          )
+    ;; (append-to-buffer "*xxemacs-startup-log*" (point-min) (point-max))
+    (copy-to-buffer "*emacs-startup-log*" (point-min) (point-max)))
+
+  ;; (with-current-buffer "*emacs-startup-log*"
+  ;;   ;; (with-temp-file file body)
+  ;;   (set-buffer-file-coding-system
+  ;;    (if (coding-system-p 'utf-8-emacs)
+  ;;        'utf-8-emacs
+  ;;        'emacs-mule))
+  ;;   (write-region (point-min) (point-max) "~/.emacs.d/startup.log" t)
+  ;;   (put-file-in-rcs "~/.emacs.d/startup.log"))
+  )
+
+
 
 ;; (redefine-function-remembered 'server-create-window-system-frame)
 (setq *emacs-in-init* nil)              ;how to ensure it will run.

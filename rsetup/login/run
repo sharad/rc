@@ -54,7 +54,9 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
             # blow one is not allow gnus to read its ~/.gnus file automatically.
 	        # rm -f   \#.ido.last\#
                 pkill emacs
-                EMACS_SERVER_NAME=$server command emacs --daemon=$server
+                EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee ~/.emacs.d/startup.log
+                print "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> ~/.emacs.d/startup.log
+
                 # disown %emacs
             # else   #  it cause problem in autologin in GDM,  LightDM
             #     command emacsclient -n -f ~/.emacs.d/server/${server}  -e '(progn (update-ssh-agent) (plan))';

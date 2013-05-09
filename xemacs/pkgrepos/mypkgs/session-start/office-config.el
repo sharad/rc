@@ -60,6 +60,9 @@
 
 (defvar task-alist '(("bugs" (files "todo.org" "notes.org" "an0.org"))
                      ("features" (files "todo.org" "notes.org" "an0.org"))))
+(defvar task-file-properties '((buffer-read-only . t)
+                               (fill-column . 172))
+  "Task file properties.")
 
 (defun find-task-dir (&optional force)
   (interactive "P")
@@ -76,20 +79,22 @@
     (if (file-directory-p (concat dir name))
         (find-task (concat dir name))
         (progn
+
           (make-directory (concat dir name "/logs") t)
+
           (dolist (f (cdr (assoc 'files (cdr (assoc task task-alist)))))
-            (with-current-buffer (let ((nfile (expand-file-name f (concat dir name "/"))))
-                                   (or (find-buffer-visiting nfile)
-                                       (find-file-noselect nfile)))
-              (dolist pv '((buffer-read-only . t)
-                           (fill-column . 172))
-                      (add-file-local-variable-prop-line (car pv) (cdr pv)))
-              (insert (format "\n\n* %s %s\n\n\n\n" (capitalize task) name ))
-              (set-buffer-file-coding-system
-               (if (coding-system-p 'utf-8-emacs)
-                   'utf-8-emacs
-                   'emacs-mule))
-              (write-file (expand-file-name f dir))))
+            (let ((nfile (expand-file-name f (concat dir name "/"))))
+              (with-current-buffer (or (find-buffer-visiting nfile)
+                                       (find-file-noselect nfile))
+                (dolist (pv task-file-properties)
+                  (add-file-local-variable-prop-line (car pv) (cdr pv)))
+                (insert (format "\n\n* %s %s\n\n\n\n" (capitalize task) name ))
+                (set-buffer-file-coding-system
+                 (if (coding-system-p 'utf-8-emacs)
+                     'utf-8-emacs
+                     'emacs-mule))
+                (write-file nfile))))
+
           (find-file (expand-file-name
                       (cadr (assoc 'files (cdr (assoc task task-alist))))
                       (concat dir name "/")))))

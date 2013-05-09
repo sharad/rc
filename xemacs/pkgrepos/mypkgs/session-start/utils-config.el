@@ -75,7 +75,6 @@
 ;; (delete-file "asfasdf")
 
 
-
 ;;;###autoload
 (defun sharad/read-file (filename)
   (when (file-exists-p filename)
@@ -83,6 +82,23 @@
       (insert-file-contents-literally filename)
       (let ((contents (read (current-buffer))))
         contents))))
+
+(defun sharad/write-file (filename content)
+  (with-current-buffer (or (find-buffer-visiting filename)
+                           (find-file-noselect filename))
+    (set-buffer-file-coding-system
+     (if (coding-system-p 'utf-8-emacs)
+         'utf-8-emacs
+         'emacs-mule))
+    (write-file filename)))
+
+(defun sharad/write-append-file (filename content)
+  (when (file-exists-p filename)
+    (write-file content nil filename t)
+    (put-file-in-rcs filename)))
+
+
+
 
 ;;{{ already present in tramp-remote-path
 ;; have to add into .profile
