@@ -4,6 +4,28 @@
 
 (in-package :stumpwm)
 
+
+
+(if (and
+     (find-package 'in.net.sharad.pa-frontend-stumpwm)
+     (fboundp 'in.net.sharad.pa-frontend-stumpwm:run-cli-command))
+    (import 'in.net.sharad.pa-frontend-stumpwm:run-cli-command)
+    (message "define your own run-cli-command"))
+
+(if (and
+     (find-package 'in.net.sharad.pa-frontend-stumpwm)
+     (fboundp 'in.net.sharad.pa-frontend-stumpwm:run-wcli-command))
+    (import 'in.net.sharad.pa-frontend-stumpwm:run-wcli-command)
+    (message "define your own run-wcli-command"))
+
+(if (and
+     (find-package 'in.net.sharad.pa-frontend-stumpwm)
+     (fboundp 'in.net.sharad.pa-frontend-stumpwm:process-pid))
+    (import 'in.net.sharad.pa-frontend-stumpwm:process-pid)
+    (message "define your own process-pid"))
+
+;; (fboundp 'stumpwm::run-cli-command)
+
 (defcommand fnext () ()
   (focus-next-frame (current-group)))
 (defcommand fprev () ()
@@ -50,6 +72,7 @@
 
 ;; (create-backup "/tmp/out.mpg")
 
+
 (let (video-pid
       filename)
   (defcommand grab-desktop-info () ()
@@ -69,29 +92,29 @@
           (grab-desktop-start (read-one-line (current-screen) "Filename: " :initial-input "/tmp/out.flv"))))
 
   (defcommand grab-desktop-start (&optional filearg) ((:rest "Filename: "))
-    (let* ((filearg (or filearg "/tmp/out.mpeg"))
-           ;(width (run-shell-command "xrandr | grep 'Screen 0' | awk '{ printf \"%s\", $8 }'" t))
-           ;(hight (run-shell-command "xrandr | grep 'Screen 0' | awk '{ printf \"%s\", $10 }' | sed 's/,.*//'" t))
-           (geometry (run-shell-command "xwininfo -root | grep 'geometry' | awk '{printf \"%s\", $2;}'" t))
-           (depth    (run-shell-command "xwininfo -root | grep -i 'Depth' | awk '{printf \"%s\", $2;}'" t))
-           (capture-cmd
-            (concatenate 'string
-                         ;"ffmpeg -y -f x11grab -s xga -r 24 -i "
-                         ;"ffmpeg -f x11grab -s " width "x" hight " -r 24 -i "
-                         "ffmpeg -f x11grab -s " geometry " -r " depth " -i "
-                         (getenv "DISPLAY")
-                         ".0 -sameq "
-                         filearg)))
-      (if (and video-pid (sb-ext:process-alive-p video-pid))
-          (message
-           "Already desktop grabber is running with pid: ~a~&outputting into ~a"
-           (process-pid video-pid) filename)
-          (progn
-            (if (and filearg (probe-file filearg))
-                (create-backup filearg))
-            (when (setf video-pid (run-cli-command capture-cmd))
-              (setf filename filearg)
-              (message "Your pid is ~a with cmd ~a" (process-pid video-pid) capture-cmd))))))
+    (if (and video-pid (sb-ext:process-alive-p video-pid))
+        (message
+         "Already desktop grabber is running with pid: ~a~&outputting into ~a"
+         (process-pid video-pid) filename)
+        (let* ((filearg (or filearg "/tmp/out.mpeg"))
+                                        ;(width (run-shell-command "xrandr | grep 'Screen 0' | awk '{ printf \"%s\", $8 }'" t))
+                                        ;(hight (run-shell-command "xrandr | grep 'Screen 0' | awk '{ printf \"%s\", $10 }' | sed 's/,.*//'" t))
+               (geometry (run-shell-command "xwininfo -root | grep 'geometry' | awk '{printf \"%s\", $2;}'" t))
+               (depth    (run-shell-command "xwininfo -root | grep -i 'Depth' | awk '{printf \"%s\", $2;}'" t))
+               (capture-cmd
+                (concatenate 'string
+                                        ;"ffmpeg -y -f x11grab -s xga -r 24 -i "
+                                        ;"ffmpeg -f x11grab -s " width "x" hight " -r 24 -i "
+                             "ffmpeg -f x11grab -s " geometry " -r " depth " -i "
+                             (getenv "DISPLAY")
+                             ".0 -sameq "
+                             filearg)))
+          (if (and filearg (probe-file filearg))
+              (create-backup filearg))
+          (when (setf video-pid (run-cli-command capture-cmd))
+            (setf filename filearg)
+            (message "Your pid is ~a with cmd ~a" (process-pid video-pid) capture-cmd)))))
+
   ;;(message-no-timeout capture-cmd))))
 
   (defcommand grab-desktop-stop () ()
