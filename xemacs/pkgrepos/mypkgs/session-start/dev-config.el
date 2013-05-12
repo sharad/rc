@@ -82,5 +82,25 @@
   (add-element-to-lists '(lambda nil (subword-mode 1)) pgm-langs))
 
 
+
+
+(eval-after-load "simple-call-tree+"
+    '((defun left-word (arg)
+        (interactive)
+        (backward-word arg))
+
+      (defun right-word (arg)
+        (interactive)
+        (forward-word arg))))
+
+  (eval-after-load 'outline
+    '(progn
+      (require 'outline-magic)
+      (define-key outline-minor-mode-map (kbd "<C-tab>") 'outline-cycle)))
+
+
+(deh-require-maybe (and simple-call-tree+ fm outline outline-magic)
+  )
+
 (provide 'dev-config)
 ;;; dev-config.el ends here
