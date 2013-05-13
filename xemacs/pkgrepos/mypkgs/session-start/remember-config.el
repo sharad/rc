@@ -57,47 +57,205 @@
                 (handler    . (org-remember-handler))
                 (hook       . (org-remember-apply-template))))))
 
-  (defmacro cdr-assoc-cdr-assoc (key1 key2 alist)
-    `(cdr (assoc ,key2 (cdr (assoc ,key1 ,alist)))))
 
-  (defun get-tree (tree &rest keys)
+  (get-tree-node sharad/remember-functions-alist 'org)
+
+  ;; (set-tree-node sharad/remember-functions-alist '(org-remember-annotation) 'org 'annotation)
+  ;; (set-tree-node sharad/remember-functions-alist 'planner-annotation-functions 'planner 'annotation)
+  ;; (set-tree-node sharad/remember-functions-alist '(org-remember-handler) 'org 'handler)
+  ;; (set-tree-node sharad/remember-functions-alist '(remember-planner-append) 'planner 'handler)
+  ;; (set-tree-node sharad/remember-functions-alist '(org-remember-apply-template) 'org 'hook)
+  ;; (set-tree-node sharad/remember-functions-alist nil 'planner 'hook)
+
+  (defun get-tree-node (tree &rest keys)
     (reduce (lambda (xtree k)
               (message "tree %s k %s ret (cdr (assoc k xtree)) %s" xtree k (cdr (assoc k xtree)))
               (cdr (assoc k xtree)))
             keys
             :initial-value tree))
 
-  (defun set-tree (tree e &rest keys)
-    (setcdr
-     (reduce (lambda (xtree k)
-              (message "tree %s k %s" xtree k)
-              (unless (assoc k xtree)
-                (pushnew (list k) xtree))
-              (assoc k xtree))
-            keys
-            :initial-value tree)
-     e))
+  (when nil
 
-  (defun set-tree (tree e &rest keys)
-    (setcdr
-     (reduce (lambda (xtree k)
-               (message "tree %s k %s" xtree k)
-               (assoc k (pushnew (list k) (cdr xtree) :key 'car)))
-             keys :initial-value (cons nil tree))
-     e))
+
+    (defun set-tree-node (tree e &rest keys)
+      (setcdr
+       (reduce (lambda (xtree k)
+                 (message "tree %s k %s" xtree k)
+                 (unless (assoc k xtree)
+                   (pushnew (list k) xtree))
+                 (assoc k xtree))
+               keys
+               :initial-value tree)
+       e))
+
+    (defun set-tree-node (tree e &rest keys)
+      (setcdr
+       (reduce (lambda (xtree k)
+                 (message "tree %s k %s" xtree k)
+                 (assoc k (pushnew (list k) (cdr xtree) :key 'car)))
+               keys :initial-value (cons nil tree))
+       e))
+
+
+    (defmacro set-tree-node (tree e &rest keys)
+      (if keys
+          `(assoc ,(car keys)
+                  (pushnew
+                   (list ,(car keys))
+                   (cdr
+                    (set-tree-node `(cdr ,tree) e ,@(cdr keys)))
+                   :key 'car))
+          tree)
+      e)
+
+    (defmacro set-tree-node (tree &rest keys)
+      (if keys
+          `(assoc ,(car keys)
+                  (pushnew
+                   (list ,(car keys))
+                   (cdr
+                    (set-tree-node (cdr ,tree) e ,@(cdr keys)))
+                   :key 'car))
+          tree))
+
+    (macroexpand-all '(set-tree-node jt o 'n 'b 'c))
+
+
+
+    (setq jt nil)
+
+    (set-cdr (set-tree-node jt 'o n b c) 'o)
+
+    (defmacro remacro (&rest keys)
+      (if keys
+          `(abc ,(car keys) (list ,@(cdr keys)))
+          t))
+
+
+
+    (defmacro remacro (keys)
+      (if keys
+          `(abc ,(car keys)
+                (remacro ,(cdr keys)))
+          ))
+
+
+    (defmacro remacro (&rest keys)
+      (if keys
+          `(abc ,(car keys)
+                (remacro ,@(cdr keys)))
+          ))
+
+
+
+    (remacro 'a 'b 'c)
+
+    (macroexpand-all '(remacro a b c))
+
+    (abc a (abc b (abc c nil)))
+
+    (remacro '(a b c))
+
+    (macroexpand-all '(remacro (a b c)))
+    (abc a (abc b (abc c nil)))
+
+
+
+
+
+  (defun set-tree-node (tree e &rest keys)
+    `(progn
+       ,@(maplist
+          (lambda (k)
+            `(pushnew (list ,(car k) (cdr tree) :key 'car))
+            keys))))
+
+  )
+
+  ;; (defun depth (tree)
+  ;;   ;; http://www.lispforum.com/viewtopic.php?p=5372&sid=e117daaa584b63c64864135d178ea654#p5372
+  ;;   (if (atom tree)
+  ;;       0
+  ;;       (if (atom (cdr tree))
+  ;;           (1+ (depth (or (cdr tree)
+  ;;                          (list (car tree)))))
+  ;;           (1+ (apply 'max (mapcar #'depth tree))))))
+
+
+  (defun depth (tree)
+    ;; http://www.lispforum.com/viewtopic.php?p=5372&sid=e117daaa584b63c64864135d178ea654#p5372
+    (if (atom tree)
+        0
+        (if (cdr tree)
+            (if (atom (cdr tree))
+                1
+                (1+ (apply 'max (mapcar #'depth tree))))
+            (if (atom (car tree))
+                1
+                (1+ (apply 'max (mapcar #'depth tree)))))))
+
+
+  (depth '(nil .  (a (b  ( c . d) ))))
+
+  (depth '( (b) a ))
+
+  (depth '())
+  (depth nil)
+  (depth 'nil)
+  (depth '(nil))
+
+  (defun* get-tree-leaves (tree &optional (depth 0))
+    (let ((tdepth (depth tree)))
+      (if (>= depth tdepth)
+          (if (= depth tdepth)
+              (list tree))
+          (let (ret)
+            (if (and (cdr tree)
+                     (atom (cdr tree)))
+                (and (cdr tree)
+                     (list (cdr tree)))
+                (dolist (tr (or (cdr tree)
+                                (list (car tree))) ret)
+                  ;; (dolist (tr tree ret)
+                  (setq
+                   ret
+                   (append ret
+                           (get-tree-leaves tr depth)))))))))
+
+
+  (get-tree-leaves '(a
+                     (z)
+                     (b (c . d) (e . d) i)
+                     (o (n (p . q) (w . x)))) 1)
+
+  (get-tree-leaves '((a
+                      (z)
+                      (b (c . d) (e . d) i)
+                      (o (n (p . q) (w . x))))) 1)
+
+
+  (((a (z) (b (c . d) (e . d) i) (o (n (p . q) (w . x))))))
+
+
+  (car tree)
+
+  (depth '((a (b (c . d) (e . d))
+            (o (n (p . q) (w . x))))))
+
 
   (when nil
 
 
     (progn
-      (get-tree '((a .((b ((c . d)))))) 'a 'b 'c)
-      (get-tree '((a (b (c . d)))) 'a 'b 'c)
-      (get-tree '((a)) 'a 'b 'c)
+      (get-tree-node '((a .((b ((c . d)))))) 'a 'b 'c)
+      (get-tree-node '((a (b (c . d)))) 'a 'b 'c)
+      (get-tree-node '((a)) 'a 'b 'c)
       (cdr (assoc 'a '((a ((b ((c . d)))))))))
 
     (progn
       (setq jt '((a (b (c . d)))))
-      (set-tree jt 'o 'a 'b 'c)
+      ;; (setq jt '((a . b)))
+      (set-tree-node jt 'o 'n 'b 'c)
       jt)
 
 
@@ -151,13 +309,7 @@
   ;; (defun run-list-until-success (flist)
   ;;   (some 'funcall flist))
 
-  (defun remember-XXX (&optional initial)
-  "Remember an arbitrary piece of data.
-With a prefix, uses the region as INITIAL."
-  (interactive
-   (list (when current-prefix-arg
-           (buffer-substring (point) (mark)))))
-)
+
 
   (defun remember-fun-set-orgnizer-advice (fun adname)
     (unless (ad-find-advice fun 'around adname)
@@ -165,11 +317,11 @@ With a prefix, uses the region as INITIAL."
        `(defadvice ,fun (around ,adname ,(help-function-arglist fun) activate)
           ;; ,(help-function-interactive 'fun)
           (let ((remember-annotation-functions
-                 (cdr-assoc-cdr-assoc remember-organizer 'annotation sharad/remember-functions-alist))
+                 (get-tree-node  sharad/remember-functions-alist remember-organizer 'annotation))
                 (remember-handler-functions
-                 (cdr-assoc-cdr-assoc remember-organizer 'handler sharad/remember-functions-alist))
+                 (get-tree-node sharad/remember-functions-alist remember-organizer 'handler))
                 (remember-mode-hook
-                 (cdr-assoc-cdr-assoc remember-organizer 'hook sharad/remember-functions-alist)))
+                 (get-tree-node sharad/remember-functions-alist remember-organizer 'hook)))
             ad-do-it))))
     (ad-enable-advice fun 'around adname)
     (ad-activate fun)
@@ -369,6 +521,10 @@ for a Remember buffer.")
   ;; (show-reminder 'show-some-orgfile)
 
   )
+
+
+
+
 
 
 (provide 'remember-config)
