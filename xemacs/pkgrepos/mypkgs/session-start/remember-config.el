@@ -60,12 +60,12 @@
 
   (get-tree-node sharad/remember-functions-alist 'org)
 
-  (set-tree-node sharad/remember-functions-alist '(org-remember-annotation) 'org 'annotation)
-  (set-tree-node sharad/remember-functions-alist 'planner-annotation-functions 'planner 'annotation)
-  (set-tree-node sharad/remember-functions-alist '(org-remember-handler) 'org 'handler)
-  (set-tree-node sharad/remember-functions-alist '(remember-planner-append) 'planner 'handler)
-  (set-tree-node sharad/remember-functions-alist '(org-remember-apply-template) 'org 'hook)
-  (set-tree-node sharad/remember-functions-alist nil 'planner 'hook)
+  ;; (set-tree-node sharad/remember-functions-alist '(org-remember-annotation) 'org 'annotation)
+  ;; (set-tree-node sharad/remember-functions-alist 'planner-annotation-functions 'planner 'annotation)
+  ;; (set-tree-node sharad/remember-functions-alist '(org-remember-handler) 'org 'handler)
+  ;; (set-tree-node sharad/remember-functions-alist '(remember-planner-append) 'planner 'handler)
+  ;; (set-tree-node sharad/remember-functions-alist '(org-remember-apply-template) 'org 'hook)
+  ;; (set-tree-node sharad/remember-functions-alist nil 'planner 'hook)
 
   (defun get-tree-node (tree &rest keys)
     (reduce (lambda (xtree k)
@@ -100,21 +100,25 @@
     (defmacro set-tree-node (tree e &rest keys)
       `(setcdr
         ,(if keys
-             `(assoc (car keys)
+             `(assoc ,(car keys)
                      (pushnew
                       (list ,(car keys))
                       (cdr
-                       ,(set-tree-node `(cdr ,xtree) e `,@(cdr keys)))
+                       (set-tree-node `(cdr ,xtree) e ,@(cdr keys)))
                       :key 'car))
              tree)
         e))
 
 
-    (macroexpand '(set-tree-node jt o n b c))
+    (macroexpand-all '(set-tree-node jt o n b c))
 
 
 
 
+
+    (setq jt nil)
+
+    (set-tree-node jt o n b c)
 
     (defmacro remacro (&rest keys)
       (if keys
@@ -126,30 +130,31 @@
     (defmacro remacro (keys)
       (if keys
           `(abc ,(car keys)
-                ,(remacro (cdr keys)))
+                (remacro ,(cdr keys)))
           ))
 
 
     (defmacro remacro (&rest keys)
       (if keys
           `(abc ,(car keys)
-                ,(remacro `,@(cdr keys)))
+                (remacro ,@(cdr keys)))
           ))
 
 
 
     (remacro 'a 'b 'c)
 
-    (macroexpand '(remacro 'a 'b 'c))
+    (macroexpand-all '(remacro a b c))
 
+    (abc a (abc b (abc c nil)))
 
     (remacro '(a b c))
 
-    (macroexpand '(remacro '(a b c)))
+    (macroexpand-all '(remacro (a b c)))
+    (abc a (abc b (abc c nil)))
 
 
 
-    )
 
 
   (defun set-tree-node (tree e &rest keys)
@@ -159,7 +164,7 @@
             `(pushnew (list ,(car k) (cdr tree) :key 'car))
             keys))))
 
-
+  )
 
   ;; (defun depth (tree)
   ;;   ;; http://www.lispforum.com/viewtopic.php?p=5372&sid=e117daaa584b63c64864135d178ea654#p5372
@@ -298,13 +303,7 @@
   ;; (defun run-list-until-success (flist)
   ;;   (some 'funcall flist))
 
-  (defun remember-XXX (&optional initial)
-  "Remember an arbitrary piece of data.
-With a prefix, uses the region as INITIAL."
-  (interactive
-   (list (when current-prefix-arg
-           (buffer-substring (point) (mark)))))
-)
+
 
   (defun remember-fun-set-orgnizer-advice (fun adname)
     (unless (ad-find-advice fun 'around adname)
