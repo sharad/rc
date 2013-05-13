@@ -106,15 +106,27 @@
 ;; (add-to-list 'tramp-remote-path "~/bin")
 ;;}}
 
+;; tramp-file-name-handler-alist
+;;     ;; `executable-find' is not official yet.
+;;     (executable-find . tramp-handle-executable-find)
+;;     (start-file-process . tramp-handle-start-file-process)
+
+
+
 (defun shell-command-no-output (cmd)
+  ;; (interactive "scmd: ")
   (let* ((handler
           (find-file-name-handler (directory-file-name default-directory)
                                   'shell-command))
          (retval
           (if handler
               ;;(process-file-shell-command
-              (funcall handler 'shell-command cmd nil nil)
-              (call-process shell-file-name nil nil nil "-c" cmd))))
+              ;; (funcall handler 'shell-command cmd nil nil)
+              ;; (start-file-process :shcmd1 nil cmd)
+              ;; (call-process shell-file-name nil nil nil "-c" cmd)
+              (process-file shell-file-name nil nil nil "-c" cmd)
+              ;; (start-file-process "shcmd1" nil shell-file-name "-c" cmd)
+              )))
     (if (equal 0 retval) t)))
 
 

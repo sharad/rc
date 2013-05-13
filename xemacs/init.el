@@ -32,7 +32,7 @@
         ad-do-it)))
 
 
-;; (add-to-list 'load-path "/usr/local/share/emacs/23.3/site-lisp")
+(add-to-list 'load-path "/usr/local/share/emacs/23.3/site-lisp") ;; need it for gtags.el gtags over tramp
 
 (deh-section "General"
 

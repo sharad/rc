@@ -93,6 +93,16 @@
         (interactive)
         (forward-word arg))))
 
+(eval-after-load "simple-call-tree"
+    '((defun left-word (arg)
+        (interactive)
+        (backward-word arg))
+
+      (defun right-word (arg)
+        (interactive)
+        (forward-word arg))))
+
+
   (eval-after-load 'outline
     '(progn
       (require 'outline-magic)
@@ -101,6 +111,22 @@
 
 (deh-require-maybe (and simple-call-tree+ fm outline outline-magic)
   )
+
+
+;; remove-useless-whitespace
+(deh-require-mayb devellock
+                  ;for now
+ (ad-remove-advice 'indent-region 'around 'remove-useless-whitespace)
+ (ad-activate 'indent-region)
+ (ad-update  'indent-region))
+
+
+(deh-section "gprof"
+ (autoload 'gprof-mode "gprof" "Switch to the gprof major mode" t)
+ (add-to-list 'auto-mode-alist '("\\.g?prof\\'" . gprof-mode)))
+
+
+
 
 (provide 'dev-config)
 ;;; dev-config.el ends here

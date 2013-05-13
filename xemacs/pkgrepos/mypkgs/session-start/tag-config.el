@@ -234,6 +234,7 @@
       "Rebuilds completion list when changing GLOBAL database rootdir."
       (gtags-make-complete-list))
 
+
     (defun gtags-global-dir-p (dir)
       "Return non-nil if directory DIR contains a GLOBAL database."
       (and (file-exists-p (expand-file-name "GPATH" dir))
@@ -275,9 +276,13 @@ See `gtags-global-complete-list-obsolete-flag'."
     (add-hook 'gtags-mode-hook
               (lambda ()
                 (add-hook 'after-save-hook 'gtags-global-update nil t)
+
                 (defadvice gtags-find-tag
                   (before gtags-global-complete-list-maybe activate)
                   (gtags-global-complete-list-maybe))
+                ;; (ad-disable-advice 'gtags-find-tag 'before 'gtags-global-complete-list-maybe)
+                ;; (ad-activate 'gtags-find-tag)
+                ;; (ad- 'gtags-find-tag)
                 (defadvice gtags-find-rtag
                   (before gtags-global-complete-list-maybe activate)
                   (gtags-global-complete-list-maybe))

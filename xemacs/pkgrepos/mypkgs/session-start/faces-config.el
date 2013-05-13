@@ -14,11 +14,24 @@
 
 
 
-(face-list)
+(when nil
+  (face-list)
+  (face-background 'default)
+  (face-foreground 'default))
 
+check http://delicious.com/sh4r4d/complementry+invert+opposite+hsl+hsv
 
-(face-background 'default)
-(face-foreground 'default)
+(defun color-code (color)
+  (apply 'format "#%02x%02x%02x"
+         (mapcar (lambda (c) (lsh c -8))
+                 (color-values color))))
+
+(when nil
+  (color-code "black")
+  (color-code "white"))
+
+(defun color-invert (code)
+  ())
 
 
 ;; (list-colors-display)

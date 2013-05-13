@@ -389,7 +389,11 @@ define_webjump("wayback", function (url) {
 
 define_webjump("news/google", "http://news.google.com/news/search?q=%s");
 
-define_webjump("news/psychology", "http://www.psychologytoday.com/search/query?keys=%s&x=0&y=0");
+define_webjump("psychology/todat", "http://www.psychologytoday.com/search/query?keys=%s&x=0&y=0");
+define_webjump("psychology/tronics", "http://www.psychtronics.com/");
+define_webjump("psychology/wiki", "http://www.psychwiki.com/wiki/Main_Page");
+define_webjump("psychology/changingminds", "http://changingminds.org/");
+
 
 // 2.10. Programming
 

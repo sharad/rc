@@ -58,7 +58,6 @@
                 (hook       . (org-remember-apply-template))))))
 
 
-  (get-tree-node sharad/remember-functions-alist 'org)
 
   ;; (set-tree-node sharad/remember-functions-alist '(org-remember-annotation) 'org 'annotation)
   ;; (set-tree-node sharad/remember-functions-alist 'planner-annotation-functions 'planner 'annotation)
@@ -69,13 +68,14 @@
 
   (defun get-tree-node (tree &rest keys)
     (reduce (lambda (xtree k)
-              (message "tree %s k %s ret (cdr (assoc k xtree)) %s" xtree k (cdr (assoc k xtree)))
+              ;; (message "tree %s k %s ret (cdr (assoc k xtree)) %s" xtree k (cdr (assoc k xtree)))
               (cdr (assoc k xtree)))
             keys
             :initial-value tree))
 
   (when nil
 
+    (get-tree-node sharad/remember-functions-alist 'org)
 
     (defun set-tree-node (tree e &rest keys)
       (setcdr
@@ -223,6 +223,9 @@
                            (get-tree-leaves tr depth)))))))))
 
 
+  (testing
+
+
   (get-tree-leaves '(a
                      (z)
                      (b (c . d) (e . d) i)
@@ -241,7 +244,7 @@
 
   (depth '((a (b (c . d) (e . d))
             (o (n (p . q) (w . x))))))
-
+)
 
   (when nil
 

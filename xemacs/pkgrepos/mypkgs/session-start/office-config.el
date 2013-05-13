@@ -59,7 +59,9 @@
 (defvar current-task nil "Current task")
 
 (defvar task-alist '(("bugs" (files "todo.org" "notes.org" "an0.org"))
-                     ("features" (files "todo.org" "notes.org" "an0.org"))))
+                     ("features"
+                      (files "reqirement.org" "feasibility.org"
+                             "design.org" "todo.org" "notes.org" "an0.org"))))
 (defvar task-file-properties '((buffer-read-only . t)
                                (fill-column . 172))
   "Task file properties.")

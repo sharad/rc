@@ -94,7 +94,7 @@
   (add-hook 'ad-remember-mode-after-hook
             (lambda ()
               ;;(dolist (f org-template-files-revert)
-              (while (org-template-files-revert)
+              (while org-template-files-revert
                 (let ((f (pop org-template-files-revert)))
                   (if (find-buffer-visiting f)
                       (with-current-buffer (find-buffer-visiting f)
