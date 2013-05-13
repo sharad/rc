@@ -130,6 +130,14 @@
           ))
 
 
+    (defmacro remacro (&rest keys)
+      (if keys
+          `(abc ,(car keys)
+                ,(remacro `,@(cdr keys)))
+          ))
+
+
+
     (remacro 'a 'b 'c)
 
     (macroexpand '(remacro 'a 'b 'c))
