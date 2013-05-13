@@ -98,27 +98,33 @@
 
 
     (defmacro set-tree-node (tree e &rest keys)
-      `(setcdr
-        ,(if keys
-             `(assoc ,(car keys)
-                     (pushnew
-                      (list ,(car keys))
-                      (cdr
-                       (set-tree-node `(cdr ,xtree) e ,@(cdr keys)))
-                      :key 'car))
-             tree)
-        e))
+      (if keys
+          `(assoc ,(car keys)
+                  (pushnew
+                   (list ,(car keys))
+                   (cdr
+                    (set-tree-node `(cdr ,tree) e ,@(cdr keys)))
+                   :key 'car))
+          tree)
+      e)
 
+    (defmacro set-tree-node (tree &rest keys)
+      (if keys
+          `(assoc ,(car keys)
+                  (pushnew
+                   (list ,(car keys))
+                   (cdr
+                    (set-tree-node (cdr ,tree) e ,@(cdr keys)))
+                   :key 'car))
+          tree))
 
-    (macroexpand-all '(set-tree-node jt o n b c))
-
-
+    (macroexpand-all '(set-tree-node jt o 'n 'b 'c))
 
 
 
     (setq jt nil)
 
-    (set-tree-node jt o n b c)
+    (set-cdr (set-tree-node jt 'o n b c) 'o)
 
     (defmacro remacro (&rest keys)
       (if keys
