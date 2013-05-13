@@ -54,7 +54,7 @@
       "Which files to insert to embed."
       (insert-file-contents ""))
 
-    auto-insert+-alist
+    ;; auto-insert+-alist
 
     (setq auto-insert-alist
           (append '(((muse-mode .  "Muse Mode") . insert-muse-file))

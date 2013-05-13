@@ -353,6 +353,9 @@ thus, on a GNU or Unix system, it must end in a slash."
             action
             (vector action)))))
 
+
+
+;; TODO: check major mode with reverse auto-mode-alist file pattern.
 ;;;###autoload
 (defun auto-insert+ ()
   "Insert default contents into new files if variable `auto-insert+' is non-nil.
@@ -484,6 +487,7 @@ the mode if ARG is omitted or nil.
 When auto-insert+ mode is enabled, when new files are created you can
 insert a template for the file depending on the mode of the buffer."
   :global t :group 'auto-insert+
+  :init-value t
   (if auto-insert+-mode
       (add-hook 'find-file-hook 'auto-insert+)
     (remove-hook 'find-file-hook 'auto-insert+)))
