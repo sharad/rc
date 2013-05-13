@@ -40,3 +40,5 @@
   #     (message \\\"Merge buffer saved in: %s\\\" file) \
   #     (set-buffer-modified-p nil) \
   #     (sit-for 1))) \
+[push]
+	default = simple
