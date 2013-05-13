@@ -6,23 +6,6 @@
 
 
 
-(if (and
-     (find-package 'in.net.sharad.pa-frontend-stumpwm)
-     (fboundp 'in.net.sharad.pa-frontend-stumpwm:run-cli-command))
-    (import 'in.net.sharad.pa-frontend-stumpwm:run-cli-command)
-    (message "define your own run-cli-command"))
-
-(if (and
-     (find-package 'in.net.sharad.pa-frontend-stumpwm)
-     (fboundp 'in.net.sharad.pa-frontend-stumpwm:run-wcli-command))
-    (import 'in.net.sharad.pa-frontend-stumpwm:run-wcli-command)
-    (message "define your own run-wcli-command"))
-
-(if (and
-     (find-package 'in.net.sharad.pa-frontend-stumpwm)
-     (fboundp 'in.net.sharad.pa-frontend-stumpwm:process-pid))
-    (import 'in.net.sharad.pa-frontend-stumpwm:process-pid)
-    (message "define your own process-pid"))
 
 ;; (fboundp 'stumpwm::run-cli-command)
 

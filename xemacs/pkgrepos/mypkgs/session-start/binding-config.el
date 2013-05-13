@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2013-05-09 22:48:48 s>
+;; Time-stamp: <2013-05-10 17:01:10 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -483,6 +483,7 @@ and their terminal equivalents.")
 
 
 (deh-section "debug"
-  (global-set-key (kbd "s-g") 'keyboard-debug))
+  (global-set-key (kbd "s-g g") 'keyboard-debug)
+  (global-set-key (kbd "s-g G") 'debug))
 
 (provide 'binding-config)

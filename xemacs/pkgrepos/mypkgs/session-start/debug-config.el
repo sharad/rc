@@ -34,10 +34,12 @@ During execution of Lisp code, this character causes a quit directly.
 At top-level, as an editor command, this simply beeps."
   (interactive)
   (deactivate-mark)
-  (if (fboundp 'kmacro-keyboard-quit)
-      (kmacro-keyboard-quit))
-  (setq defining-kbd-macro nil)
-  (debug))
+  (let ((debug-on-error t))
+   (if (fboundp 'kmacro-keyboard-quit)
+       (kmacro-keyboard-quit))
+   (setq defining-kbd-macro nil)
+   ;; (error "User throw error")
+   (debug)))
 
 (provide 'debug-config)
 
