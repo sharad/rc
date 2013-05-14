@@ -454,6 +454,7 @@ or if CONDITION had no actions, after all other CONDITIONs."
 
 ;;;###autoload
 (defun set-auto-insert+noaction (condition)
+  "Set pattern where auto-insert+ should not be performed."
   (unless (member condition auto-noinsert+-alist)
       (push condition auto-noinsert+-alist)))
 

@@ -125,6 +125,12 @@
   (org-mode))
 
 
+(deh-section "Forgive"
+
+  (defun forgive/them ()
+    (interactive)
+    (develock-mode -1)
+    (highlight-changes-visible-mode -1)))
 
 
 

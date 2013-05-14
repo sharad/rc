@@ -134,66 +134,66 @@
     (let ((org-parent-dir (or org-parent-dir "~/.Organize/emacs/org/")))
       `(("Current Task"
          ?k
-         "* TODO %? %^g\n %i\n %a\n"
+         "* TODO %? %^g\n %i\n [%a]\n"
          (lambda ()
            (org-template-set-file-writable (concat (find-task-dir) "notes.org"))))
         ("Emacs"
          ?m
-         "* TODO %? %^g\n %i\n %a\n"
+         "* TODO %? %^g\n %i\n [%a]\n"
          ,(concat org-parent-dir s "/" "emacs.org"))
         ("Todo" ;; todos
          ?t
-         "* TODO %? %^g\n %i\n %a\n"
+         "* TODO %? %^g\n %i\n [%a]\n"
          ,(concat org-parent-dir s "/" "todo.org")
          "G T D")
         ("Journal" ;; any kind of note
          ?j
-         "\n* %^{topic} %T \n%i%?\n %a\n"
+         "\n* %^{topic} %T \n%i%?\n [%a]\n"
          ,(concat org-parent-dir s "/" "journal.org")
          "j o u r n a l")
         ("Plan" ;; any kind of note
          ?n
-         "\n* %^{topic} %T \n%i%?\n %a\n"
+         "\n* %^{topic} %T \n%i%?\n [%a]\n"
          ,(concat org-parent-dir s "/" "plan.org")
          "p l a n")
         ("Learn" ;; any kind of note
          ?l
-         "\n* %^{topic} %T \n%i%?\n %a\n"
+         "\n* %^{topic} %T \n%i%?\n [%a]\n"
          ,(concat org-parent-dir s "/" "learn.org")
          "Learn")
         ("Idea" ;; any kind of note
          ?i
-         "\n* %^{topic} %T \n%i%?\n %a\n"
+         "\n* %^{topic} %T \n%i%?\n [%a]\n"
          ,(concat org-parent-dir s "/" "idea.org")
          "Ideas")
         ("Book" ;; book descp
          ?b
-         "\n* %^{Book Title} %t :READING: \n%[~/.Organize/emacs/remember/templates/book]\n %a\n"
+         "\n* %^{Book Title} %t :READING: \n%[~/.Organize/emacs/remember/templates/book]\n [%a]\n"
          ,(concat org-parent-dir s "/" "journal.org")
          "Books")
         ("Private" ;; private note
          ?p
-         "\n* %^{topic} %T \n%i%?\n %a\n"
+         "\n* %^{topic} %T \n%i%?\n [%a]\n"
          ,(concat org-parent-dir s "/" "privnotes.org"))
         ("Remember" ;; private note
          ?r
-         "\n* %^{topic} %T \n%i%?\n %a\n"
+         "\n* %^{topic} %T \n%i%?\n [%a]\n"
          ,(concat org-parent-dir s "/" "remember.org"))
         ("SomeDay" ;; private note
          ?s
-         "\n* %^{topic} %T \n%i%?\n %a\n"
+         "\n* %^{topic} %T \n%i%?\n [%a]\n"
          ,(concat org-parent-dir s "/" "someday.org"))
         ("Waiting-For" ;; private note
          ?w
-         "\n* %^{topic} %T \n%i%?\n %a\n"
+         "\n* %^{topic} %T \n%i%?\n [%a]\n"
          ,(concat org-parent-dir s "/" "waiting4.org"))
         ("Contact" ;; contact
          ?c
-         "\n* %^{Name} :CONTACT:\n%[~/.Organize/emacs/remember/templates/contact]\n %a\n"
+         "\n* %^{Name} :CONTACT:\n%[~/.Organize/emacs/remember/templates/contact]\n %i\n [%a]\n"
          ,(concat org-parent-dir s "/" "contacts.org"))
         ("Receipt" ;; receipt
          ?e
-         "** %^{BriefDesc} %U %^g\n%?\n %a\n"
+         "** %^{BriefDesc} %U %^g\n%?\n [%a]\n"
          ,(concat org-parent-dir s "/" "finances.org")))))
 
   ;; end: from: http://members.optusnet.com.au/~charles57/GTD/remember.html
