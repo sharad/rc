@@ -19,7 +19,7 @@
   (face-background 'default)
   (face-foreground 'default))
 
-check http://delicious.com/sh4r4d/complementry+invert+opposite+hsl+hsv
+;; check http://delicious.com/sh4r4d/complementry+invert+opposite+hsl+hsv
 
 (defun color-code (color)
   (apply 'format "#%02x%02x%02x"

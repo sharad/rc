@@ -366,6 +366,8 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
        (or (eq this-command 'auto-insert+)
 	   (and auto-insert+
 		(bobp) (eobp)))
+
+       ;; no action test
        (let ((alist auto-noinsert+-alist)
              noaction-alist cond)
          (while alist
@@ -379,23 +381,32 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
            (setq alist (cdr alist)))
          ;; (message "noaction-alist %s" noaction-alist)
          (not noaction-alist))
+
        (let ((alist auto-insert+-alist)
 	     case-fold-search cond desc action-alist)
 	 (goto-char 1)
-	 ;; find first matching alist entry
+	 ;; find all matching alist entry
 	 (while alist
-	   (if (atom (setq cond (car (car alist))))
-	       (setq desc cond)
-	     (setq desc (cdr cond)
-		   cond (car cond)))
-	   (if (if (symbolp cond) ;; auto-mode-alist
-		   (eq cond major-mode)
-                   (and buffer-file-name
-                        (string-match cond buffer-file-name)))
-	       (setq
-                action-alist (append action-alist (cdr (car alist)))
-                ;; alist nil
-                ))
+
+	   (let* ((element (car alist))
+                  (cond
+                    (if (atom (car element))
+                        (car element)
+                        (caar element)))
+                  (newdesc
+                   (if (atom (car element))
+                       (car element)
+                       (cdar element))))
+
+             (if (some (lambda (c)
+                         (if (symbolp c)
+                             (eq cond major-mode)
+                             (and buffer-file-name
+                                  (string-match cond buffer-file-name))))
+                       (if (consp cond) cond (list cond)))
+                 (setq action-alist (append action-alist (cdr element))
+                       desc (concat desc (if newdesc (format " %s" newdesc))))))
+
            (setq alist (cdr alist)))
 
 	 ;; Now, if we found something, do it
