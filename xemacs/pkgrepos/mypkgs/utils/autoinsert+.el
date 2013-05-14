@@ -354,7 +354,7 @@ thus, on a GNU or Unix system, it must end in a slash."
             (vector action)))))
 
 
-
+;; TODO: checkout pcre2el.el
 ;; TODO: check major mode with reverse auto-mode-alist file pattern.
 ;;;###autoload
 (defun auto-insert+ ()
@@ -376,12 +376,14 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
 		   (eq cond major-mode)
                    (and buffer-file-name
                         (string-match cond buffer-file-name)))
-	       (setq noaction-alist (append noaction-alist (caar alist))
-                     alist nil))
+	       (setq
+                noaction-alist (append noaction-alist (caar alist))
+                alist nil))
            (setq alist (cdr alist)))
          ;; (message "noaction-alist %s" noaction-alist)
          (not noaction-alist))
 
+       ;; all actions test and accumulation
        (let ((alist auto-insert+-alist)
 	     case-fold-search cond desc action-alist)
 	 (goto-char 1)
