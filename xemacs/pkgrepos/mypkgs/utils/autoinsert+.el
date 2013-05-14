@@ -398,12 +398,15 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
                        (car element)
                        (cdar element))))
 
-             (if (some (lambda (c)
+             (if
+
+              (some (lambda (c)
                          (if (symbolp c)
                              (eq cond major-mode)
                              (and buffer-file-name
                                   (string-match cond buffer-file-name))))
                        (if (consp cond) cond (list cond)))
+
                  (setq action-alist (append action-alist (cdr element))
                        desc (concat desc (if newdesc (format " %s" newdesc))))))
 
