@@ -74,7 +74,7 @@
     (defun package-dir-byte-compile (package-dir)
       (when (file-directory-p package-dir)
         (mapc #'(lambda (dir)
-                  (byte-recompile-directory dir 0))
+                  (ignore-errors (byte-recompile-directory dir 0)))
               (directory-files package-dir t "[a-zA-Z]+"))))
 
     ;; (package-dir-byte-compile "~/.xemacs/pkgrepos/world")

@@ -100,7 +100,7 @@ alkready should not exist.")
   (let (load-lib-with-errors
         reloading-libraries)
     (when (file-directory-p dir)
-      (byte-recompile-directory dir 0)
+      (ignore-errors (byte-recompile-directory dir 0))
       (mapc (lambda (lib)
               (let ((feature (if (string-match "\\(.\+\\)\.el" lib)
                                  (intern (match-string 1 lib)))))

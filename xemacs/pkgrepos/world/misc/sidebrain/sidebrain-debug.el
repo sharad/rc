@@ -18,6 +18,10 @@
 (defvar sidebrain-debug-stop-after-each nil
   "Debugging control")
 
+
+(defvar sidebrain-safe-data-file "~/tmp/sidebrain-safe.xml"
+  "Where to put the real sidebrain data during experiments.")
+
 (defmacro sidebrain-with-browsing (&rest forms)
   "Execute FORMS, running the sidebrain browser after each."
   (let ((i 1))
@@ -45,8 +49,6 @@
     (let ((sidebrain-file-name sidebrain-safe-data-file))
       (sidebrain-load-from-file t))))
 
-(defvar sidebrain-safe-data-file "~/tmp/sidebrain-safe.xml"
-  "Where to put the real sidebrain data during experiments.")
 
 (defun sidebrain-debug-structures (&optional arg)
   "Debugging run of sidebrain data structures"
