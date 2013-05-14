@@ -43,6 +43,8 @@
 
     ;; (add-hook 'find-file-hooks 'auto-insert+)
 
+    (auto-insert+-mode 1)
+
     (setq
      ;; auto-insert t
      auto-insert+-directory "~/.xemacs/template.d/autoinsert"

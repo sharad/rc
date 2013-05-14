@@ -408,7 +408,7 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
                        (if (consp cond) cond (list cond)))
 
                  (setq action-alist (append action-alist (cdr element))
-                       desc (concat desc (if newdesc (format " %s" newdesc))))))
+                       desc (concat desc (if newdesc (format " or %s" newdesc))))))
 
            (setq alist (cdr alist)))
 
@@ -502,10 +502,13 @@ the mode if ARG is omitted or nil.
 When auto-insert+ mode is enabled, when new files are created you can
 insert a template for the file depending on the mode of the buffer."
   :global t :group 'auto-insert+
-  :init-value t
-  (if auto-insert+-mode
+  :init-value nil
+  (if (and arg
+           (if (> (prefix-numeric-value arg) 0)
+               auto-insert+-mode (not auto-insert+-mode)))
+
       (add-hook 'find-file-hook 'auto-insert+)
-    (remove-hook 'find-file-hook 'auto-insert+)))
+      (remove-hook 'find-file-hook 'auto-insert+)))
 
 (provide 'autoinsert+)
 

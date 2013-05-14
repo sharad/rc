@@ -337,8 +337,8 @@
                              "[s]"))))))
   :global nil
   (if (and arg
-	       (if (> (prefix-numeric-value arg) 0)
-                   reader-mode (not reader-mode)))
+           (if (> (prefix-numeric-value arg) 0)
+               reader-mode (not reader-mode)))
       (progn
         (run-hooks 'reader-mode-start-hook)
 
