@@ -315,9 +315,50 @@ See `gtags-global-complete-list-obsolete-flag'."
                                   ; (when (locate-library "gtags") ...)
 
 
-  (defvar gtags-libdirs () "extra lib dirs")
+  ;; (defvar gtags-libdirs 'empty "extra lib dirs")
+  ;; (make-local-variable 'gtags-libdirs)
+  (defvar gtags-dir-config-file ".gtags-dir-local.el" "extra lib dirs")
+  (defvar gtags-dir-config '((gtags-libdirs . empty)) "gtags dir config")
+  (make-local-variable 'gtags-dir-config)
+
+  (defun gtags-set-dir-config (variable &optional readfile)
+    (interactive
+     (let ((variable (intern
+                      (ido-completing-read "variable: " '("gtags-libdirs") nil t))))
+       (list variable nil)))
+    (let* ((readfile (or
+                      readfile
+                      (expand-file-name gtags-dir-config (gtags-root-dir)))))
+           (progn
+             (if (file-readable-p readfile)
+                 (setq gtags-dir-config (sharad/read-file readfile)))
+             (if (eq (assoc gtags-libdirs gtags-dir-config) 'empty)
+                 (set-cdr (assoc gtags-libdirs gtags-dir-config) nil))
+             (push (ido-read-directory-name "dir: ") (assoc variable gtags-dir-config))
+             (sharad/write-file readfile (prin1-to-string gtags-dir-config))
+             gtags-dir-config)))
+
+
+  (defun gtags-set-env ()
+    (if (eq (assoc gtags-libdirs gtags-dir-config) 'empty)
+         (if (gtags-root-dir)
+             (let* ((readfile (expand-file-name gtags-dir-config (gtags-root-dir)))
+                    (dirs (assoc 'gtags-libdirs (if (file-readable-p readfile)
+                                                    (sharad/read-file readfile)
+                                                    (gtags-set-dir-config readfile)))))
+               (setq gtags-libdirs dirs))
+             (message "not able to find gtags root dir."))
+         (message "gtags-libdirs %s" gtags-libdirs))
+
+    (if (cdr (assoc gtags-libdirs gtags-dir-config))
+        (setenv "GTAGSLIBPATH" (mapconcat 'identity (cdr (assoc gtags-libdirs gtags-dir-config)) ":"))))
+
+
+  (defadvice gtags-find-tag (before set-gtags-libdirs last () activate)
+    (gtags-set-env))
+
   ;; make dir-local variable. -- will not work
-  ;; keep a seperate file .el in same dir where GTAGSfiles are present.
+  ;; keep a seperate file .el in same dir where GTAGS files are present.
 
   ;; defadvice set GTAGSLIBPATH before global query
 

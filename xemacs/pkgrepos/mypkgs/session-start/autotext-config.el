@@ -108,9 +108,11 @@
         "yastemp"
       ["template.el" my/autoinsert+-yas-expand])
 
-    (define-auto-insert+ '("\\.*\\'" . "All file")
-        "template"
-      [template-not-found-function])
+    ;; Make auto-insert+-alist element plist of :desc :cond :priority :actions
+    ;; something like ((cond . (:desc :priority :actions)))
+    ;; (define-auto-insert+ '("\\.*\\'" . "All file")
+    ;;     "template"
+    ;;   [template-not-found-function])
 
     ;; from http://www.emacswiki.org/emacs/AutoInsertMode
     (define-auto-insert+
