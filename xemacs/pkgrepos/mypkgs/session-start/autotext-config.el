@@ -64,7 +64,8 @@
 
     (set-auto-insert+noaction '(".planner-registry.el\\'" . "Planner File"))
 
-    (set-auto-insert+noaction '(".ido.last\\'" . "Planner File"))
+    (set-auto-insert+noaction '(".ido.last\\'" . "Ido save file name"))
+    (set-auto-insert+noaction '("diary/private" . "Diary private file name"))
 
     (define-auto-insert+ '(muse-mode . "Muse Mode")
         "empty"

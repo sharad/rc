@@ -34,6 +34,13 @@
   ())
 
 
+(deh-section "face size"
+  ;; 98
+  ;; default was 98 or 100
+  (set-face-attribute 'default nil :height 86)
+
+  (face-attribute 'default :height))
+
 ;; (list-colors-display)
 ;; http://www.emacswiki.org/emacs/CustomizingFaces
 ;; http://www.emacswiki.org/emacs/font-lock-color-test.el

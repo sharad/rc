@@ -404,7 +404,23 @@
 
 
 
-
+(deh-section "Enable recursive minibuffer"
+  (defun status-recursive-minibuffers ()
+      (if enable-recursive-minibuffers
+        (message "recursive minibuffers enabled")
+        (message "recursive minibuffers disabled")))
+  (defun enable-recursive-minibuffer ()
+    (interactive)
+    (setq enable-recursive-minibuffers t)
+    (status-recursive-minibuffers))
+  (defun disable-recursive-minibuffer ()
+    (interactive)
+    (setq enable-recursive-minibuffers t)
+    (status-recursive-minibuffers))
+  (defun toggle-recursive-minibuffer ()
+    (interactive)
+    (setq enable-recursive-minibuffers (not enable-recursive-minibuffers))
+    (status-recursive-minibuffers)))
 
 
 

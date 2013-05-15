@@ -237,14 +237,14 @@
                       (o (n (p . q) (w . x))))) 1)
 
 
-  (((a (z) (b (c . d) (e . d) i) (o (n (p . q) (w . x))))))
+  ;; (((a (z) (b (c . d) (e . d) i) (o (n (p . q) (w . x))))))
 
 
   (car tree)
 
   (depth '((a (b (c . d) (e . d))
             (o (n (p . q) (w . x))))))
-)
+  )
 
   (when nil
 
