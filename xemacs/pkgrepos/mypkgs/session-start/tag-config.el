@@ -328,13 +328,13 @@ See `gtags-global-complete-list-obsolete-flag'."
        (list variable nil)))
     (let* ((readfile (or
                       readfile
-                      (expand-file-name gtags-dir-config (gtags-root-dir)))))
+                      (expand-file-name gtags-dir-config-file (gtags-root-dir)))))
            (progn
-             (if (file-readable-p readfile)
-                 (setq gtags-dir-config (sharad/read-file readfile)))
-             (if (eq (assoc gtags-libdirs gtags-dir-config) 'empty)
-                 (set-cdr (assoc gtags-libdirs gtags-dir-config) nil))
-             (push (ido-read-directory-name "dir: ") (assoc variable gtags-dir-config))
+             ;; (if (file-readable-p readfile)
+             ;;     (setq gtags-dir-config (sharad/read-file readfile)))
+             (if (eq (cdr (assoc variable gtags-dir-config)) 'empty)
+                 (setcdr (assoc variable gtags-dir-config) nil))
+             (push (ido-read-directory-name "dir: ") (cdr (assoc variable gtags-dir-config)))
              (sharad/write-file readfile (prin1-to-string gtags-dir-config))
              gtags-dir-config)))
 
@@ -342,7 +342,7 @@ See `gtags-global-complete-list-obsolete-flag'."
   (defun gtags-set-env ()
     (if (eq (assoc gtags-libdirs gtags-dir-config) 'empty)
          (if (gtags-root-dir)
-             (let* ((readfile (expand-file-name gtags-dir-config (gtags-root-dir)))
+             (let* ((readfile (expand-file-name gtags-dir-config-file (gtags-root-dir)))
                     (dirs (assoc 'gtags-libdirs (if (file-readable-p readfile)
                                                     (sharad/read-file readfile)
                                                     (gtags-set-dir-config readfile)))))

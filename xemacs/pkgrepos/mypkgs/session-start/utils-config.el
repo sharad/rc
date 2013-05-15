@@ -80,7 +80,10 @@
   (when (file-exists-p filename)
     (with-temp-buffer
       (insert-file-contents-literally filename)
-      (let ((contents (read (current-buffer))))
+      (let ((contents
+             (condition-case e
+                 (read (current-buffer))
+               ('end-of-file nil))))
         contents))))
 
 (defun sharad/write-file (filename content)
@@ -90,6 +93,8 @@
      (if (coding-system-p 'utf-8-emacs)
          'utf-8-emacs
          'emacs-mule))
+    (erase-buffer)
+    (insert content)
     (write-file filename)))
 
 (defun sharad/write-append-file (filename content)
