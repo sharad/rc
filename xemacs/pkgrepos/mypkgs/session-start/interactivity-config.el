@@ -404,6 +404,68 @@
 
 
 
+(deh-section "Completing Read Multiple"
+  (deh-section "ido"
+
+    (defun ido-completing-read-multiple (prompt choices &optional predicate require-match initial-input hist def sentinel)
+      "Read multiple items with ido-completing-read. Reading stops
+  when the user enters SENTINEL. By default, SENTINEL is
+  \"*done*\". SENTINEL is disambiguated with clashing completions
+  by appending _ to SENTINEL until it becomes unique. So if there
+  are multiple values that look like SENTINEL, the one with the
+  most _ at the end is the actual sentinel value. See
+  documentation for `ido-completing-read' for details on the
+  other parameters."
+      (let
+          ((sentinel (if sentinel sentinel "*done*"))
+           (done-reading nil)
+           (res ()))
+
+        ;; uniquify the SENTINEL value
+        (while (find sentinel choices)
+          (setq sentinel (concat sentinel "_")))
+        (setq choices (cons sentinel choices))
+
+        ;; read some choices
+        (while (not done-reading)
+          (setq this-choice (ido-completing-read prompt choices predicate require-match initial-input hist def))
+          (if (equal this-choice sentinel)
+              (setq done-reading t)
+              (setq res (cons this-choice res))))
+
+        ;; return the result
+        res))
+    )
+
+
+  (deh-require-maybe crm
+
+;; ;; testing and debugging
+;; (defun crm-init-test-environ ()
+;;   "Set up some variables for testing."
+;;   (interactive)
+;;   (setq my-prompt "Prompt: ")
+;;   (setq my-table
+;; 	'(("hi") ("there") ("man") ("may") ("mouth") ("ma")
+;; 	  ("a") ("ab") ("abc") ("abd") ("abf") ("zab") ("acb")
+;; 	  ("da") ("dab") ("dabc") ("dabd") ("dabf") ("dzab") ("dacb")
+;; 	  ("fda") ("fdab") ("fdabc") ("fdabd") ("fdabf") ("fdzab") ("fdacb")
+;; 	  ("gda") ("gdab") ("gdabc") ("gdabd") ("gdabf") ("gdzab") ("gdacb")
+;; 	  ))
+;;   (setq my-separator ","))
+
+;; (completing-read-multiple my-prompt my-table)
+;; (completing-read-multiple my-prompt my-table nil t)
+;; (completing-read-multiple my-prompt my-table nil "match")
+;; (completing-read my-prompt my-table nil t)
+;; (completing-read my-prompt my-table nil "match")
+
+
+    )
+
+  )
+
+
 (deh-section "Enable recursive minibuffer"
   (defun status-recursive-minibuffers ()
       (if enable-recursive-minibuffers

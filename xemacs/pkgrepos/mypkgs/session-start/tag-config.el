@@ -224,7 +224,6 @@
 
 ;;; http://lists.gnu.org/archive/html/help-gnu-emacs/2005-09/msg00157.html
 
-  (deh-require-maybe gtags
 
   (autoload 'gtags-mode "gtags" nil t)
 
@@ -313,7 +312,15 @@ See `gtags-global-complete-list-obsolete-flag'."
 
   ;; Use gtags in all modes for now.
   ;; (gtags-mode 1)
-  )                                ; (when (locate-library "gtags") ...)
+                                  ; (when (locate-library "gtags") ...)
+
+
+  (defvar gtags-libdirs () "extra lib dirs")
+  ;; make dir-local variable. -- will not work
+  ;; keep a seperate file .el in same dir where GTAGSfiles are present.
+
+  ;; defadvice set GTAGSLIBPATH before global query
+
 
   )
 
