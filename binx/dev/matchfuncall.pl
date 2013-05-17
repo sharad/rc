@@ -14,8 +14,9 @@ getopts("C:A:B:f:", \%options);
 
 
 my $debuglevel = 0;
+my $function;
 if ( $options{f} ) {
-    my $function = $options{B};
+    $function = $options{f};
 } else {
     print STDERR "-f function name required";
     exit -1;
@@ -50,7 +51,7 @@ print $content if $debuglevel > 2;
 while ( $content =~ m{ (
                            $cbefore
                            [^\n]*
-                           MELF
+                           $function
                            \s*
                            $bp
                            \s*

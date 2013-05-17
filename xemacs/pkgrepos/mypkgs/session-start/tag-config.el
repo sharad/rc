@@ -166,10 +166,17 @@
 
   (defun gtags-root-dir ()
     "Returns GTAGS root directory or nil if doesn't exist."
-    (with-temp-buffer
-      (if (zerop (call-process "global" nil t nil "-pr"))
-          (buffer-substring (point-min) (1- (point-max)))
-          nil)))
+    ;; ido-is-tramp-root
+    ;; "\\`/[^/]+[@:][^:/]+:"
+    (let* ((tramp-prefix "\\`/[^/]+[@:][^:/]+:")
+           (prefix (if (string-match tramp-prefix default-directory)
+                       (match-string 0 default-directory)))
+           (dir (with-temp-buffer
+                  (if (zerop (process-file "global" nil t nil "-pr"))
+                      (buffer-substring (point-min) (1- (point-max)))
+                      nil))))
+      (concat  prefix dir)))
+
 
   (defun gtags-update-synchronously ()
     "Make GTAGS incremental update, synchronously."
@@ -334,28 +341,35 @@ See `gtags-global-complete-list-obsolete-flag'."
              ;;     (setq gtags-dir-config (sharad/read-file readfile)))
              (if (eq (cdr (assoc variable gtags-dir-config)) 'empty)
                  (setcdr (assoc variable gtags-dir-config) nil))
-             (push (ido-read-directory-name "dir: ") (cdr (assoc variable gtags-dir-config)))
+             (pushnew (list variable) gtags-dir-config :key 'car)
+             (push (list (ido-read-directory-name "gtags dir: "))
+                   (cdr (assoc variable gtags-dir-config)))
              (sharad/write-file readfile (prin1-to-string gtags-dir-config))
              gtags-dir-config)))
 
 
   (defun gtags-set-env ()
-    (if (eq (assoc gtags-libdirs gtags-dir-config) 'empty)
+    (if (eq (cdr (assoc 'gtags-libdirs gtags-dir-config)) 'empty)
          (if (gtags-root-dir)
              (let* ((readfile (expand-file-name gtags-dir-config-file (gtags-root-dir)))
-                    (dirs (assoc 'gtags-libdirs (if (file-readable-p readfile)
-                                                    (sharad/read-file readfile)
-                                                    (gtags-set-dir-config readfile)))))
-               (setq gtags-libdirs dirs))
+                    (dirs (cdr (assoc 'gtags-libdirs (if (file-readable-p readfile)
+                                                         (unless (sharad/read-file readfile)
+                                                           (gtags-set-dir-config readfile))
+                                                         (gtags-set-dir-config readfile))))))
+               )
              (message "not able to find gtags root dir."))
-         (message "gtags-libdirs %s" gtags-libdirs))
+         (message "gtags-libdirs %s" (cdr (assoc 'gtags-libdirs gtags-dir-config))))
 
-    (if (cdr (assoc gtags-libdirs gtags-dir-config))
-        (setenv "GTAGSLIBPATH" (mapconcat 'identity (cdr (assoc gtags-libdirs gtags-dir-config)) ":"))))
+    (if (cdr (assoc 'gtags-libdirs gtags-dir-config))
+        (setenv "GTAGSLIBPATH" (mapconcat 'identity (cdr (assoc 'gtags-libdirs gtags-dir-config)) ":"))))
 
 
   (defadvice gtags-find-tag (before set-gtags-libdirs last () activate)
     (gtags-set-env))
+
+  (ad-disable-advice 'gtags-find-tag 'before 'set-gtags-libdirs)
+  (ad-update 'gtags-find-tag)
+  ((ad-activate 'gtags-find-tag)
 
   ;; make dir-local variable. -- will not work
   ;; keep a seperate file .el in same dir where GTAGS files are present.
@@ -802,6 +816,25 @@ See `gtags-global-complete-list-obsolete-flag'."
 ;;        color) is `cscope-line-face'.
 
  )
+
+
+;; (let ((str "/scpc:spratap@susengg-01:/home/spratap/releases/5.1/src/wnc/coord/")
+;;       (regexs (list
+;;                tramp-file-name-regexp
+;;                tramp-file-name-regexp-unified
+;;                tramp-file-name-regexp-url
+;;                tramp-root-regexp
+;;                tramp-domain-regexp
+;;                tramp-user-regexp
+;;                tramp-prefix-domain-regexp
+;;                "\\`/[^:/][^:/]+:\\'"
+;;                "\\`/[^/]+[@:][^:/]+:/")))
+;;   (message "start")
+;;   (dolist (r regexs)
+;;     (string-match r str)
+;;     (message "aa: %s %s" r (match-string 0 str))))
+;; (ido-is-tramp-root "/scpc:spratap@susengg-01:")
+;; (ido-is-root-directory "/")
 
 
 (provide 'tag-config)

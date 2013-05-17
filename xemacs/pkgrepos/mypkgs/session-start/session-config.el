@@ -107,6 +107,7 @@
         (push (cons 'current-screen (elscreen-get-current-screen)) session-list))))
 
   (defun elscreen-session-session-list-set (session-list &optional nframe)
+    (if session-list                    ;may causing error
     (with-selected-frame (or nframe (selected-frame))
       (let* (screen
              buffers
@@ -151,7 +152,8 @@
              (message "in when session-current-buffer %s" session-current-buffer))))
       (testing
        (message "elscreen-notify-screen-modification"))
-      (elscreen-notify-screen-modification 'force-immediately)))
+      (elscreen-notify-screen-modification 'force-immediately))
+    (message "elscreen-session-session-list-set: Session do not exists.")))
 
   (defvar *frames-elscreen-session* nil "Stores all elscreen sessions here.")
 

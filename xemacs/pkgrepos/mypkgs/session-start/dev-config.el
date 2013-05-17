@@ -85,20 +85,22 @@
 
 
 (eval-after-load "simple-call-tree+"
-    '((defun left-word (arg)
-        (interactive)
-        (backward-word arg))
+  '(progn
+    (defun left-word (&optional arg)
+      (interactive)
+      (backward-word arg))
 
-      (defun right-word (arg)
-        (interactive)
-        (forward-word arg))))
+    (defun right-word (&optional arg)
+      (interactive)
+      (forward-word arg))))
 
 (eval-after-load "simple-call-tree"
-    '((defun left-word (arg)
+    '(progn
+      (defun left-word (&optional arg)
         (interactive)
         (backward-word arg))
 
-      (defun right-word (arg)
+      (defun right-word (&optional arg)
         (interactive)
         (forward-word arg))))
 
