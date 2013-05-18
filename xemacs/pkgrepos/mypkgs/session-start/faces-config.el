@@ -35,11 +35,19 @@
 
 
 (deh-section "face size"
+
+  ;; http://stackoverflow.com/questions/3514299/how-do-i-find-the-display-size-of-my-system-in-emacs
+  ;; http://stackoverflow.com/questions/2151449/can-i-detect-the-display-size-resolution-in-emacs
+  ;; (x-display-pixel-width)
+  ;; (/ (x-display-pixel-height) 12)
+
   ;; 98
   ;; default was 98 or 100
-  (set-face-attribute 'default nil :height 86)
+  (if (x-display-pixel-height)
+   (set-face-attribute 'default nil :height (/ (x-display-pixel-height) 12)))
 
-  (face-attribute 'default :height))
+  (face-attribute 'default :height)
+  (face-attribute 'default :width))
 
 ;; (list-colors-display)
 ;; http://www.emacswiki.org/emacs/CustomizingFaces
