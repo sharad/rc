@@ -31,7 +31,15 @@
   (which-function-mode 1)
   (defface which-func
       '((((class color) (min-colors 88) (background dark)) (:foreground "Green")))
-    "which-face"))
+    "which-face")
+
+
+  (defun copy-current-function ()
+    (interactive)
+    (let ((fun-name (which-function)))
+      (if fun-name
+          (kill-new fun-name)
+          (message "Not able to get function.")))))
 
 (deh-require-maybe 'member-functions
   ;; for C++ mode
@@ -116,7 +124,7 @@
 
 
 ;; remove-useless-whitespace
-(deh-require-mayb devellock
+(deh-require-maybe develock
                   ;for now
  (ad-remove-advice 'indent-region 'around 'remove-useless-whitespace)
  (ad-activate 'indent-region)

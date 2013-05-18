@@ -2,7 +2,13 @@
 ;; The following will automatically create a TAGS file from within Emacs
 ;; itself if none exists. Just hit `M-. and youre off.
 
+
+(eval-when-compile 
+  '(require 'cl))
+
 (require 'cl)
+
+
 
 (defvar *create-tags-alist* '((cscope . create-cscope)
                               (etags  . create-etags)
@@ -369,7 +375,7 @@ See `gtags-global-complete-list-obsolete-flag'."
 
   (ad-disable-advice 'gtags-find-tag 'before 'set-gtags-libdirs)
   (ad-update 'gtags-find-tag)
-  ((ad-activate 'gtags-find-tag)
+  (ad-activate 'gtags-find-tag)
 
   ;; make dir-local variable. -- will not work
   ;; keep a seperate file .el in same dir where GTAGS files are present.
