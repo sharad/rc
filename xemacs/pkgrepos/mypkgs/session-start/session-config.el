@@ -280,6 +280,12 @@
               (testing (message "running server-create-window-system-frame afer advise else")))))
     ad-return-value)
 
+  ;; (ad-disable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
+  ;; (ad-disable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
+  ;; (ad-enable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
+  ;; (ad-enable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
+  ;; (ad-update 'server-create-window-system-frame)
+  ;; (ad-activate 'server-create-window-system-frame)
 
   ;;}}
 

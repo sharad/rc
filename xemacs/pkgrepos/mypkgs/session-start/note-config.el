@@ -27,7 +27,8 @@
 
 (deh-require-maybe deft
   (setq deft-extension "org"
-        deft-text-mode 'org-mode))
+        deft-text-mode 'org-mode)
+  (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'deft t))
 
 (when (xrequire 'evernote-mode)
   ;; http://emacs-evernote-mode.googlecode.com/svn-history/r190/trunk/doc/readme_en.html#sec-7

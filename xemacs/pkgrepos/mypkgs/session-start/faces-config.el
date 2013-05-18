@@ -23,7 +23,8 @@
 
 (defun color-code (color)
   (apply 'format "#%02x%02x%02x"
-         (mapcar (lambda (c) (lsh c -8))
+         (mapcar (lambda (c)
+                   (lsh c -8))
                  (color-values color))))
 
 (when nil
@@ -43,8 +44,39 @@
 
   ;; 98
   ;; default was 98 or 100
+  ;; (set-face-attribute 'default nil :height 80)
+  (when nil
+    (defun l100 (v x y)
+      (log (expt 1.1 x) y))
+
+    (l100 768)
+    (l100 1200)
+
+    (= (expt y 77) (expt 768 x))
+    (= (expt y 100) (expt 1200 x)))
+
+  (defun cal1 (y)
+    (- (* (log (expt y 100) 768) (log (expt y 33) 768) (expt 10 6))
+       (* (log 1200 768) (expt 10 6))))
+
+
+  (cal1 1)
+  (cal1 1.0188111111)
+
+  ;; log7(x):= log(x)/log(768);
+  ;; f(y) := (log7(y / 1000  ^ 100) * log7(y / 1000 ^ 33) - log7(1200)) * 10 ^ 6;
+  ;; f(y) := log7(y / 1000  ^ 100) * log7(y / 1000 ^ 33) - log7(1200)
+  ;; plot2d(f(y), [y, -10, 10]);
+  ;; plot2d(f(y), [y, -1, 100]);
+  ;; plot2d(f(y), [y, -1, 1000]);
+  ;; plot2d(f(y), [y, -1, 10000000000000000000000]);
+  ;; plot2d(f(y), [y, 1.12690488499, 1.12690488509]);
+
+
+
+
   (if (x-display-pixel-height)
-   (set-face-attribute 'default nil :height (/ (x-display-pixel-height) 12)))
+      (set-face-attribute 'default nil :height (/ (x-display-pixel-height) 10)))
 
   (face-attribute 'default :height)
   (face-attribute 'default :width))

@@ -272,11 +272,11 @@ The indirect buffer can have another major mode."
     (cd *work-dir*))
 
 
-(xrequire 'smart-operator)
+(deh-require-maybe smart-operator)
 
 
-(xrequire 'thingatpt)
-(xrequire 'thingatpt+)
+(deh-require-maybe thingatpt)
+(deh-require-maybe thingatpt+)
 
 (deh-require-maybe (progn help+ help-fns+ help-macro+ help-mode+)
   )

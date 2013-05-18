@@ -296,10 +296,16 @@ alkready should not exist.")
 ;;{{
 (deh-section "disable startup inperrupting feature till first frame created."
   (defvar enable-p4-login nil "test")
-  (defvar sharad/enable-startup-inperrupting-feature-hook nil)
-  (defvar sharad/disable-startup-inperrupting-feature-hook nil)
+  (defvar sharad/enable-startup-inperrupting-feature-hook nil
+    "Run only once when when very frame got created after emacs startup.")
+  (defvar sharad/disable-startup-inperrupting-feature-hook nil
+    "Run only when emacs start from this file only, it basically run when this ful get loaded at emacs start time")
 
   (defun sharad/disable-startup-inperrupting-feature ()
+    "Run only when emacs start from this file only,
+it basically run when this ful get loaded at emacs start time,
+its purpose to disable all interrupting feature that may cause
+problem while emacs startup in daemon mode, non-interactively."
     (interactive)
     (with-report-error "check"
         (when nil
@@ -320,27 +326,30 @@ alkready should not exist.")
   (sharad/disable-startup-inperrupting-feature)
 
   (defun sharad/enable-startup-inperrupting-feature ()
-    (interactive)
-    ;; test
-    (with-report-error "check"
-        ;; why desktop-restore not running.
-        (setq enable-p4-login t
-              tramp-mode t
-              ido-mode 'both)
-        (login-to-perforce)
-        (update-ssh-agent t)
-      ;;test
-      (deh-featurep epa
-          (if (fboundp 'epa-file-disable)
-              (epa-file-enable)))
-      (deh-featurep (and light-symbol hilit-chg)
-        (add-element-to-lists '(lambda ()
-                                (light-symbol-mode 1)
-                                (highlight-changes-visible-mode t)
-                                (highlight-changes-mode t)) pgm-langs))
-      (run-each-hooks 'sharad/enable-startup-inperrupting-feature-hook)
-      (message "Seen")
-      (setq debug-on-error t )))
+    "Run only once when when very frame got created after emacs startup.
+its purpose to re/enable all feature that may have cuused problem in emacs
+startup in daemon mode."
+     (interactive)
+     ;; test
+     (with-report-error "check"
+         ;; why desktop-restore not running.
+         (setq enable-p4-login t
+               tramp-mode t
+               ido-mode 'both)
+         (login-to-perforce)
+         (update-ssh-agent t)
+       ;;test
+       (deh-featurep epa
+           (if (fboundp 'epa-file-disable)
+               (epa-file-enable)))
+       (deh-featurep (and light-symbol hilit-chg)
+         (add-element-to-lists '(lambda ()
+                                 (light-symbol-mode 1)
+                                 (highlight-changes-visible-mode t)
+                                 (highlight-changes-mode t)) pgm-langs))
+       (run-each-hooks 'sharad/enable-startup-inperrupting-feature-hook)
+       (message "sharad/enable-startup-inperrupting-feature() completed Seen.")
+       (setq debug-on-error t )))
 
 
   (defun sharad/enable-startup-inperrupting-feature-in-frame-once (frame)

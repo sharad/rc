@@ -112,17 +112,26 @@
   (interactive
    (let ((task (ido-read-directory-name "dir: " taskdir nil t)))
      (list task)))
-  (with-current-buffer (get-buffer-create (concat "*task*"))
-    (dolist (f (directory-files task t "/*.org$"))
-      (insert-file-contents f))
-    (not-modified)
-    (View-exit-and-edit)
-    (make-local-variable 'view-read-only)
-    (make-local-variable 'buffer-read-only)
-    (setq view-read-only t
-          buffer-read-only t))
-  (switch-to-buffer "*task*")
-  (org-mode))
+  (let ((buf (format "*task %s*"
+                     (file-name-nondirectory
+                      (substring (expand-file-name (concat task "/"))
+                                 0 -1)))))
+    (with-current-buffer (get-buffer-create buf)
+      (dolist (f (directory-files task t "/*.org$"))
+        (insert-file-contents f))
+      (not-modified)
+      (setq default-directory task)
+      (View-exit-and-edit)
+      (make-local-variable 'view-read-only)
+      (make-local-variable 'buffer-read-only)
+      (setq view-read-only t
+            buffer-read-only t)
+      (org-mode)
+      (goto-char (point-min))
+      (org-cycle t))
+    (switch-to-buffer buf)
+    (if (y-or-n-p (format "Should set %s current task" task))
+        (setq current-task task))))
 
 
 (deh-section "Forgive"
@@ -131,7 +140,6 @@
     (interactive)
     (develock-mode -1)
     (highlight-changes-visible-mode -1)))
-
 
 
 (provide 'office-config)
