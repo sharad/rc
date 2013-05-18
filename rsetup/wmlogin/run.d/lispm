@@ -4,9 +4,10 @@
 
 if ! pgrep mplayer >& /dev/null ; then
     mpc stop
+    mplayeroutput=/dev/null
     rm -f /tmp/mplayer.fifo
     mkfifo /tmp/mplayer.fifo
-    mplayer  -profile radio/fm -idle -slave -input file=/tmp/mplayer.fifo 1&>/dev/null &!
+    mplayer  -profile radio/fm -idle -slave -input file=/tmp/mplayer.fifo 1&> $mplayeroutput &!
     sleep 2s ;
     at now + 2 minutes <<'EOF'
     echo "load radio://6/capture" > /tmp/mplayer.fifo
