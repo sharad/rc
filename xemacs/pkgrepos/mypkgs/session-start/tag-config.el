@@ -3,7 +3,7 @@
 ;; itself if none exists. Just hit `M-. and youre off.
 
 
-(eval-when-compile 
+(eval-when-compile
   '(require 'cl))
 
 (require 'cl)
@@ -331,49 +331,58 @@ See `gtags-global-complete-list-obsolete-flag'."
   ;; (defvar gtags-libdirs 'empty "extra lib dirs")
   ;; (make-local-variable 'gtags-libdirs)
   (defvar gtags-dir-config-file ".gtags-dir-local.el" "extra lib dirs")
-  (defvar gtags-dir-config '((gtags-libdirs . empty)) "gtags dir config")
+  (defvar gtags-dir-config nil "gtags dir config")
   (make-local-variable 'gtags-dir-config)
 
-  (defun gtags-set-dir-config (variable &optional readfile)
+  (defun gtags-store-dir-config ()
+    (let* ((readfile (expand-file-name gtags-dir-config-file (gtags-root-dir))))
+      (sharad/write-file readfile (prin1-to-string gtags-dir-config))
+      gtags-dir-config))
+
+  (defun gtags-restore-dir-config ()
+    (let* ((readfile (expand-file-name gtags-dir-config-file (gtags-root-dir))))
+      (setq gtags-dir-config (sharad/read-file readfile))))
+
+  (defun gtags-get-dir-config (variable)
     (interactive
      (let ((variable (intern
                       (ido-completing-read "variable: " '("gtags-libdirs") nil t))))
-       (list variable nil)))
-    (let* ((readfile (or
-                      readfile
-                      (expand-file-name gtags-dir-config-file (gtags-root-dir)))))
-           (progn
-             ;; (if (file-readable-p readfile)
-             ;;     (setq gtags-dir-config (sharad/read-file readfile)))
-             (if (eq (cdr (assoc variable gtags-dir-config)) 'empty)
-                 (setcdr (assoc variable gtags-dir-config) nil))
-             (pushnew (list variable) gtags-dir-config :key 'car)
-             (push (list (ido-read-directory-name "gtags dir: "))
-                   (cdr (assoc variable gtags-dir-config)))
-             (sharad/write-file readfile (prin1-to-string gtags-dir-config))
-             gtags-dir-config)))
+       (list variable)))
+    (if (or gtags-dir-config (gtags-restore-dir-config))
+        (or (cdr (assoc variable gtags-dir-config))
+            (gtags-set-dir-config variable))
+        (gtags-set-dir-config variable)))
 
+  (defun gtags-set-dir-config (variable)
+    (interactive
+     (let ((variable (intern
+                      (ido-completing-read "variable: " '("gtags-libdirs") nil t))))
+       (list variable)))
+    (pushnew (list variable) gtags-dir-config :key 'car)
+    (push (ido-read-directory-name "gtags dir: ")
+          (cdr (assoc variable gtags-dir-config)))
+    (gtags-store-dir-config)
+    (cdr (assoc variable gtags-dir-config)))
 
   (defun gtags-set-env ()
-    (if (eq (cdr (assoc 'gtags-libdirs gtags-dir-config)) 'empty)
-         (if (gtags-root-dir)
-             (let* ((readfile (expand-file-name gtags-dir-config-file (gtags-root-dir)))
-                    (dirs (cdr (assoc 'gtags-libdirs (if (file-readable-p readfile)
-                                                         (unless (sharad/read-file readfile)
-                                                           (gtags-set-dir-config readfile))
-                                                         (gtags-set-dir-config readfile))))))
-               )
-             (message "not able to find gtags root dir."))
-         (message "gtags-libdirs %s" (cdr (assoc 'gtags-libdirs gtags-dir-config))))
+    (let* ((dirs (gtags-get-dir-config 'gtags-libdirs)))
+      (when dirs
+        (let ((gtagslibpath-env (mapconcat 'identity dirs ":")))
+          (push (concat "GTAGSLIBPATH=" gtagslibpath-env) process-environment)
+          (setenv "GTAGSLIBPATH" gtagslibpath-env)
+          (message "gtags-libdirs %s" dirs)))))
 
-    (if (cdr (assoc 'gtags-libdirs gtags-dir-config))
-        (setenv "GTAGSLIBPATH" (mapconcat 'identity (cdr (assoc 'gtags-libdirs gtags-dir-config)) ":"))))
-
+  (defun gtags-rest-env ()
+    (pop process-environment))
 
   (defadvice gtags-find-tag (before set-gtags-libdirs last () activate)
     (gtags-set-env))
 
+  (defadvice gtags-find-tag (after reset-gtags-libdirs last () activate)
+    (gtags-reset-env))
+
   (ad-disable-advice 'gtags-find-tag 'before 'set-gtags-libdirs)
+  (ad-enable-advice 'gtags-find-tag 'before 'set-gtags-libdirs)
   (ad-update 'gtags-find-tag)
   (ad-activate 'gtags-find-tag)
 
