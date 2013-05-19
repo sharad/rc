@@ -1,1 +1,0 @@
-../rinari/rinari.el

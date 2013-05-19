@@ -1,1 +1,0 @@
-../pde/template-simple.el

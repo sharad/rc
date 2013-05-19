@@ -25,6 +25,11 @@
 ;;; Code:
 
 
+(deh-require-maybe locations
+  ;; https://www.assembla.com/code/saintamh/subversion/nodes/2389/emacs/.emacsd/locations.el
+  )
+
+
 (deh-section "find-file-wizard"
 
   (defvar *find-file-wizard-alist* nil "find-file-wizard-alist")

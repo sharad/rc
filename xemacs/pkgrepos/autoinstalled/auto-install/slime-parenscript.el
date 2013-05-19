@@ -1,1 +1,0 @@
-../slime-parenscript/slime-parenscript.el

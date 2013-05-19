@@ -1,1 +1,0 @@
-../BlogMax/shortcuts.el

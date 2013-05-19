@@ -10,9 +10,6 @@
 [submodule "xemacs/pkgrepos/world/gits/drag-stuff"]
 	path = xemacs/pkgrepos/world/gits/drag-stuff
 	url = git://github.com/rejeep/drag-stuff.git
-[submodule "xemacs/pkgrepos/world/gits/auto-complete"]
-	path = xemacs/pkgrepos/world/gits/auto-complete
-	url = git://github.com/m2ym/auto-complete
 [submodule "xemacs/pkgrepos/world/gits/BlogMax"]
 	path = xemacs/pkgrepos/world/gits/BlogMax
 	url = https://github.com/billstclair/BlogMax

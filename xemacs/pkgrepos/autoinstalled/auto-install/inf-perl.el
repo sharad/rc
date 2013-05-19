@@ -1,1 +1,0 @@
-../pde/inf-perl.el

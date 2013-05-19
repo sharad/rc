@@ -52,4 +52,16 @@
   (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))
 
+
+(deh-require-maybe (progn
+                     oddmuse
+                     yaoddmuse
+                     org-oddmuse
+                     wikirel
+                     oddmuse-curl)
+  ;; http://www.emacswiki.org/emacs/Yaoddmuse
+  ;; http://www.emacswiki.org/emacs/Yaoddmuse#toc8
+  )
+
+
 (provide 'muse-config)

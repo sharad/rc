@@ -386,6 +386,12 @@ The indirect buffer can have another major mode."
     )
   (deh-require-maybe alert
     ;;http://www.emacswiki.org/emacs/alert.el
-    ))
+    )
+  (deh-require-maybe org-pua
+    ;;http://www.emacswiki.org/emacs-es/org-pua.el
+    )
+  )
+
+
 
 (provide 'misc-config)
