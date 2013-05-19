@@ -31,12 +31,15 @@
  x-select-enable-clipboard t
  x-select-enable-primary t)
 
-(deh-require-maybe light-symbol
+(deh-require-or-package-install light-symbol
   ;; ;; http://stackoverflow.com/a/385676/341107
   ;; (add-element-to-lists 'light-symbol-mode pgm-langs)
   ;; ;; (light-symbol-mode 1) - not works
   )
 
+(when nil                               ;e.g.
+  (deh-require-or-act light-symbol
+    (lambda (p) (package-install p))))
 
 (deh-require-maybe hilit-chg
   ;; (add-element-to-lists '(lambda ()

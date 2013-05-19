@@ -95,22 +95,51 @@
                    (cdr forms)
                    forms)))))
 
-    (defmacro deh-require-todo (feature todo-if-no-feature &rest forms)
-      (declare (indent 1))
-      (labels ((refine (feature)
-                 (if (consp feature)
-                     (cond
-                       ((or (equal (car feature) 'or)
-                            (equal (car feature) 'and)
-                            (equal (car feature) 'progn))
-                        `(,(car feature) ,@(mapcar #'refine (cdr feature))))
-                       (t feature))
-                     `(require ',feature nil t))))
-        `(progn
-           (if ,(refine feature)
+
+  (defmacro deh-require-or-act (feature act &rest forms)
+    ;; master
+    (declare (indent 1))
+    (labels ((refine (feature)
+               (if (consp feature)
+                   (cond
+                     ((or (equal (car feature) 'or)
+                          (equal (car feature) 'and)
+                          (equal (car feature) 'progn))
+                      `(,(car feature) ,@(mapcar #'refine (cdr feature))))
+                     (t feature))
+                   `(unless (require ',feature nil t)
+                      (funcall ,act ',feature)))))
+      `(progn
+         (if ,(refine feature)
              (,@(if (stringp (car forms))
-                   (cdr forms)
-                   forms))
+                    (cdr forms)
+                    forms))
+             ))))
+
+  (defmacro deh-require-or-package-install (feature &rest forms)
+    (declare (indent 2))
+    `(deh-require-or-act ,feature
+       (lambda (p) (package-install p))
+       forms))
+
+
+
+  (defmacro deh-require-todo (feature todo-if-no-feature &rest forms)
+    (declare (indent 1))
+    (labels ((refine (feature)
+               (if (consp feature)
+                   (cond
+                     ((or (equal (car feature) 'or)
+                          (equal (car feature) 'and)
+                          (equal (car feature) 'progn))
+                      `(,(car feature) ,@(mapcar #'refine (cdr feature))))
+                     (t feature))
+                   `(require ',feature nil t))))
+      `(progn
+         (if ,(refine feature)
+             (,@(if (stringp (car forms))
+                    (cdr forms)
+                    forms))
              ,todo-if-no-feature))))
 
     (defmacro deh-require-maybe (feature &rest forms)
