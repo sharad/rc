@@ -43,7 +43,9 @@
 
 ;; save bookmarks
 
-(require 'bookmark+)
+(require 'bookmark+
+         ;; available in elpa
+         )
 
 (remove-hook 'kill-emacs-hook 'bookmark-bmenu-save)
 

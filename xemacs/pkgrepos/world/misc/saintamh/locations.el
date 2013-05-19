@@ -3,16 +3,16 @@
 ;; This module allows for 'bookmarking' of certain directories so that the
 ;; files they contain can be quickly opened. For instance if you have code in
 ;; this directory that you access often:
-;; 
+;;
 ;;   C:\Documents and Settings\Bozo\My Documents\My Code\Bogumaton\src\main.cpp
-;; 
+;;
 ;; You might like being able to open it as simply
-;; 
+;;
 ;;   Bogumaton/main.cpp
-;; 
+;;
 ;; rather than having to type the full path each time your current buffer
 ;; happens to be in a different CWD.
-;; 
+;;
 ;; This module provides a function that shows an alternative prompt, in which
 ;; you can enter the short form of file names. That prompt provides
 ;; auto-complete, and when you hit enter the correct file will be opened.
@@ -29,18 +29,18 @@
 ;; main data structure
 
 ;; Each location is defined as:
-;; 
+;;
 ;;  1. A fixed base path, giving the root of this location
-;; 
+;;
 ;;  2. A list of regular expressions used to define both which files found in
 ;;     the root's subtree are included, and what their short name is.
-;; 
+;;
 ;;     Every regular expression in the list must match its respective
 ;;     subdirectory of the root: the 1st regex is applied to directories that
 ;;     are found in the base path directory itself, then the 2nd regex is
 ;;     applied to the contents of those directories that matched the 1st regex,
 ;;     etc.
-;; 
+;;
 ;;     If any of the regexes capture something, what they capture will be made
 ;;     part of the short name for the matched files.
 
@@ -124,15 +124,15 @@ and that value is what we return. Else this returns nil."
 
   (defun walk-dir (path regexes short-path)
     ;; Recursive function that does the searching.
-    ;; 
+    ;;
     ;; 'path' is the directory we're scanning (the root on 1st invocation, then
     ;; subdirectories, then files), 'regexes' is the list of regular
     ;; expressions we're consuming, and 'short-path' is the (reverse) list of
     ;; matching short name elements we're building.
-    ;; 
+    ;;
     ;; save-match will be called for every match found. If it returns a true
     ;; value, search stops and that value is what we return
-    ;; 
+    ;;
     ;; Serves as the basis for locations-expand and locations-find-matching
 
     ;; We're walking down the directory tree and the regex list in
@@ -243,5 +243,8 @@ file. Returns nil if no match found"
               (do-locations (cdr locations))))))
 
   (do-locations locations-list))
+
+(provide 'locations)
+
 
 ;;-----------------------------------------------------------------------------

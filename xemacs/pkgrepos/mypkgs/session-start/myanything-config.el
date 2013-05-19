@@ -52,4 +52,7 @@
 
 
   )
+
+
+(provide 'myanything-config)
 ;;; myanythinig-config.el ends here
