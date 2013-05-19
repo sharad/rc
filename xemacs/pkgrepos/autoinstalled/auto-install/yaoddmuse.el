@@ -1,0 +1,1 @@
+../wikiblog/yaoddmuse.el
