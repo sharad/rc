@@ -323,7 +323,16 @@ The indirect buffer can have another major mode."
     ;; oneliner choose shell-type by shell-file-name
     "make (shell) to prefer shell-file-name"
     (let ((explicit-shell-file-name shell-file-name))
-      ad-do-it)))
+      ad-do-it))
+
+
+  (defun cd-tramp-absolute (dir &optional base-directory)
+    (let* ((tramp-prefix "\\`/[^/]+[@:][^:/]+:")
+           (base-directory (or base-directory default-directory))
+           (prefix (if (string-match tramp-prefix base-directory)
+                       (match-string 0 base-directory)))
+           (tdir (concat  prefix dir)))
+      (cd-absolute tdir))))
 
 
 (deh-section "crontab-mode"
@@ -367,5 +376,16 @@ The indirect buffer can have another major mode."
   (defalias 'ccm-unstay 'centered-cursor-unstay-same-pos)
 
   (defalias 'ccm 'centered-cursor-mode))
+
+
+
+
+(deh-section "New"
+  (deh-require-maybe ipa
+    ;;http://www.emacswiki.org/emacs/InPlaceAnnotations
+    )
+  (deh-require-maybe alert
+    ;;http://www.emacswiki.org/emacs/alert.el
+    ))
 
 (provide 'misc-config)

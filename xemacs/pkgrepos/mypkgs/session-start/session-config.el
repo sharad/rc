@@ -253,6 +253,7 @@
 
     ;;{{
 
+  (when nil
   (defvar *restore-frame-session* nil "*restore-frame-session*")
 
   (defadvice server-create-window-system-frame
@@ -278,7 +279,27 @@
                   (setq *elscreen-session-restore-data* nil)
                   (elscreen-notify-screen-modification 'force-immediately)))
               (testing (message "running server-create-window-system-frame afer advise else")))))
-    ad-return-value)
+    ad-return-value))
+
+    (defvar *restore-frame-session* nil "*restore-frame-session*")
+
+    (defadvice server-create-window-system-frame
+        (around remove-scratch-buffer activate)
+      "remove-scratch-buffer"
+      (let ((*restore-frame-session* t))
+        ad-do-it
+        (if *elscreen-session-restore-data*
+            (let ((cb (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*)))))
+              (testing
+               (message "running server-create-window-system-frame afer advise if")
+               (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*))
+              (when cb
+                (elscreen-kill)
+                (elscreen-find-and-goto-by-buffer cb nil nil)
+                (setq *elscreen-session-restore-data* nil)
+                (elscreen-notify-screen-modification 'force-immediately)))
+            (testing (message "running server-create-window-system-frame afer advise else")))))
+
 
   ;; (ad-disable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
   ;; (ad-disable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)

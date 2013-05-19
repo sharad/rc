@@ -277,7 +277,8 @@
       ;;       (setq gtags-global-complete-list-obsolete-flag t)
       ;;     (error "global database update failed"))))
 
-    (defun gtags-global-complete-list-maybe ()
+    (when nil
+     (defun gtags-global-complete-list-maybe ()
       "Rebuild the GLOBAL complete list when indicated.
 See `gtags-global-complete-list-obsolete-flag'."
       (interactive)
@@ -320,7 +321,7 @@ See `gtags-global-complete-list-obsolete-flag'."
                   (before gtags-global-complete-list-maybe activate)
                   (gtags-global-complete-list-maybe))
                 )                       ; (lambda () ...)
-              )                        ; (add-hook 'gtags-mode-hook ...)
+              ))                        ; (add-hook 'gtags-mode-hook ...)
     )                            ; (when (executable-find "global") ...)
 
   ;; Use gtags in all modes for now.
@@ -328,69 +329,86 @@ See `gtags-global-complete-list-obsolete-flag'."
                                   ; (when (locate-library "gtags") ...)
 
 
-  ;; (defvar gtags-libdirs 'empty "extra lib dirs")
-  ;; (make-local-variable 'gtags-libdirs)
-  (defvar gtags-dir-config-file ".gtags-dir-local.el" "extra lib dirs")
-  (defvar gtags-dir-config nil "gtags dir config")
-  (make-local-variable 'gtags-dir-config)
+  (deh-section "GTAGSLIBDIR"
+    ;; (defvar gtags-libdirs 'empty "extra lib dirs")
+    ;; (make-local-variable 'gtags-libdirs)
+    (defvar gtags-dir-config-file ".gtags-dir-local.el" "extra lib dirs")
+    (defvar gtags-dir-config nil "gtags dir config")
+    (make-local-variable 'gtags-dir-config)
 
-  (defun gtags-store-dir-config ()
-    (let* ((readfile (expand-file-name gtags-dir-config-file (gtags-root-dir))))
-      (sharad/write-file readfile (prin1-to-string gtags-dir-config))
-      gtags-dir-config))
+    (defun gtags-store-dir-config ()
+      (let* ((readfile (expand-file-name gtags-dir-config-file (gtags-root-dir))))
+        (sharad/write-file readfile (prin1-to-string gtags-dir-config))
+        gtags-dir-config))
 
-  (defun gtags-restore-dir-config ()
-    (let* ((readfile (expand-file-name gtags-dir-config-file (gtags-root-dir))))
-      (setq gtags-dir-config (sharad/read-file readfile))))
+    (defun gtags-restore-dir-config ()
+      (let* ((readfile (expand-file-name gtags-dir-config-file (gtags-root-dir))))
+        (setq gtags-dir-config (sharad/read-file readfile))))
 
-  (defun gtags-get-dir-config (variable)
-    (interactive
-     (let ((variable (intern
-                      (ido-completing-read "variable: " '("gtags-libdirs") nil t))))
-       (list variable)))
-    (if (or gtags-dir-config (gtags-restore-dir-config))
-        (or (cdr (assoc variable gtags-dir-config))
-            (gtags-set-dir-config variable))
-        (gtags-set-dir-config variable)))
+    (defun gtags-get-dir-config (variable)
+      (interactive
+       (let ((variable (intern
+                        (ido-completing-read "variable: " '("gtags-libdirs") nil t))))
+         (list variable)))
+      (if (or gtags-dir-config (gtags-restore-dir-config))
+          (or (cdr (assoc variable gtags-dir-config))
+              (gtags-set-dir-config variable))
+          (gtags-set-dir-config variable)))
 
-  (defun gtags-set-dir-config (variable)
-    (interactive
-     (let ((variable (intern
-                      (ido-completing-read "variable: " '("gtags-libdirs") nil t))))
-       (list variable)))
-    (pushnew (list variable) gtags-dir-config :key 'car)
-    (push (ido-read-directory-name "gtags dir: ")
-          (cdr (assoc variable gtags-dir-config)))
-    (gtags-store-dir-config)
-    (cdr (assoc variable gtags-dir-config)))
+    (defun gtags-set-dir-config (variable)
+      (interactive
+       (let ((variable (intern
+                        (ido-completing-read "variable: " '("gtags-libdirs") nil t))))
+         (list variable)))
+      (pushnew (list variable) gtags-dir-config :key 'car)
+      (push (ido-read-directory-name "gtags dir: ")
+            (cdr (assoc variable gtags-dir-config)))
+      (gtags-store-dir-config)
+      (cdr (assoc variable gtags-dir-config)))
 
-  (defun gtags-set-env ()
-    (let* ((dirs (gtags-get-dir-config 'gtags-libdirs)))
-      (when dirs
-        (let ((gtagslibpath-env (mapconcat 'identity dirs ":")))
-          (push (concat "GTAGSLIBPATH=" gtagslibpath-env) process-environment)
-          (setenv "GTAGSLIBPATH" gtagslibpath-env)
-          (message "gtags-libdirs %s" dirs)))))
+    (defun gtags-set-env (envar)
+      (let* ((dirs (gtags-get-dir-config envar)))
+        (when dirs
+          (let ((gtagslibpath-env (mapconcat 'identity dirs ":")))
+            (push (concat "GTAGSLIBPATH=" gtagslibpath-env) process-environment)
+            ;; (setenv "GTAGSLIBPATH" gtagslibpath-env)
+            (message "gtags-libdirs %s" dirs)))))
 
-  (defun gtags-rest-env ()
-    (pop process-environment))
+    (defun gtags-rest-env ()
+      (pop process-environment))
 
-  (defadvice gtags-find-tag (before set-gtags-libdirs last () activate)
-    (gtags-set-env))
+    (when nil
+      (defadvice gtags-find-tag (before set-gtags-libdirs last () activate)
+        (gtags-set-env 'gtags-libdirs))
 
-  (defadvice gtags-find-tag (after reset-gtags-libdirs last () activate)
-    (gtags-reset-env))
+      (defadvice gtags-find-tag (after reset-gtags-libdirs last () activate)
+        (gtags-reset-env)
+        ad-return-value))
 
-  (ad-disable-advice 'gtags-find-tag 'before 'set-gtags-libdirs)
-  (ad-enable-advice 'gtags-find-tag 'before 'set-gtags-libdirs)
-  (ad-update 'gtags-find-tag)
-  (ad-activate 'gtags-find-tag)
+    (defadvice gtags-find-tag (around set-gtags-libdirs last () activate)
+      (gtags-set-env 'gtags-libdirs)
+      ad-do-it
+      (gtags-reset-env))
 
-  ;; make dir-local variable. -- will not work
-  ;; keep a seperate file .el in same dir where GTAGS files are present.
+    ;; (ad-disable-advice 'gtags-find-tag 'before 'set-gtags-libdirs)
+    ;; (ad-enable-advice 'gtags-find-tag 'before 'set-gtags-libdirs)
+    ;; (ad-update 'gtags-find-tag)
+    ;; (ad-activate 'gtags-find-tag)
 
-  ;; defadvice set GTAGSLIBPATH before global query
+    ;; make dir-local variable. -- will not work
+    ;; keep a seperate file .el in same dir where GTAGS files are present.
 
+    ;; defadvice set GTAGSLIBPATH before global query
+    )
+
+  (deh-section "Combnining all tag search"
+
+    (defun combine-find-tag ()
+      (o
+       (gtags-find-tag)
+       (find-tag)
+       (cscope-find-this-symbol)))
+    )
 
   )
 
