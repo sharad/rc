@@ -288,10 +288,28 @@
 ;; believe it need not be here
 ;; (sharad/disable-startup-inperrupting-feature)
 
-
+(deh-section "Info"
 ;; tramp-cleanup-connection (vec)
 ;; want to know what is vec than see definition of tramp-cleanup-connection
 ;; (with-parsed-tramp-file-name buffer-file-name nil v)
+;; (defun tramp-connectable-p (filename)
+;;   "Check, whether it is possible to connect the remote host w/o side-effects.
+;; This is true, if either the remote host is already connected, or if we are
+;; not in completion mode."
+;;   (and (tramp-tramp-file-p filename)
+;;        (with-parsed-tramp-file-name filename nil
+;; 	 (or (get-buffer (tramp-buffer-name v))
+;; 	     (not (tramp-completion-mode-p))))))
+
+;; (tramp-open-connection-setup-interactive-shell PROC VEC)
+
+  ;; (defadvice tramp-open-connection-setup-interactive-shell (after (p vec) )
+  ;;   )
+
+  )
+
+
+
 
 
 (provide 'tramp-config)
