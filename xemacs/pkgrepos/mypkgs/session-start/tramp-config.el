@@ -288,6 +288,22 @@
 ;; believe it need not be here
 ;; (sharad/disable-startup-inperrupting-feature)
 
+
+
+(deh-section "tramp"
+  ;; https://idlebox.net/2011/apidocs/emacs-23.3.zip/tramp/tramp_5.html#SEC31
+
+  ;; 5.4.1 Running remote programs that create local X11 windows
+
+  ;; If you want to run a remote program, which shall connect the X11
+  ;; server you are using with your local host, you can set the
+  ;; $DISPLAY environment variable on the remote host:
+
+
+  (add-to-list 'tramp-remote-process-environment
+               (format "DISPLAY=%s" (getenv "DISPLAY"))))
+
+
 (deh-section "Info"
 ;; tramp-cleanup-connection (vec)
 ;; want to know what is vec than see definition of tramp-cleanup-connection
