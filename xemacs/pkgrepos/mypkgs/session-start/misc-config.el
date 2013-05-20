@@ -306,50 +306,6 @@ The indirect buffer can have another major mode."
   )
 
 
-(deh-require-maybe oneliner
-  (setq oneliner-temp-dir-name (if (getenv "TMPDIR")
-                                   (expand-file-name (getenv "TMPDIR"))
-                                   (expand-file-name "temp" (getenv "HOME"))
-                                   ;; (error "test")
-                                   )
-        oneliner-debug t
-        oneliner-shell-type 'zsh
-        oneliner-sync-default-directory-after-prompt t)
-
-
-  (defadvice oneliner (around shell-call-shell-file-name activate)
-    ;; I can not make (env ESELL) to zsh, becasue of tramp
-    ;; see in tramp-config.el
-    ;; oneliner choose shell-type by shell-file-name
-    "make (shell) to prefer shell-file-name"
-    (let ((explicit-shell-file-name shell-file-name))
-      ad-do-it))
-
-
-  (defun cd-tramp-absolute (dir &optional base-directory)
-    (let* ((tramp-prefix "\\`/[^/]+[@:][^:/]+:")
-           (base-directory (or base-directory default-directory))
-           (prefix (if (string-match tramp-prefix base-directory)
-                       (match-string 0 base-directory)))
-           (tdir (concat  prefix dir)))
-      (cd-absolute tdir)))
-
-  (require 'utils-config)
-
-  (defun get-tramp-env (variable)
-    (with-temp-buffer
-      (process-file "bash" nil t nil "-c" (concat "echo $" variable) )
-      (trim-string (buffer-string))))
-
-
-  (defun shell-process-cd (arg)
-    (let ((new-dir (cond ((zerop (length arg)) (concat comint-file-name-prefix
-                                                       (get-tramp-env "HOME")))
-                         ((string-equal "-" arg) shell-last-dir)
-                         (t (shell-prefixed-directory-name arg)))))
-      (setq shell-last-dir default-directory)
-      (shell-cd new-dir)
-      (shell-dirstack-message))))
 
 
 (deh-section "crontab-mode"
