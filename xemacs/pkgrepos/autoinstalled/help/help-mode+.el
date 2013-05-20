@@ -75,6 +75,32 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+;; ;; REPLACES ORIGINAL IN `help-mode.el'.
+;; ;; Deletes frame if `one-window-p'.
+;; ;;
+;; ;;;###autoload
+;; (defun help-mode ()
+;;   "Major mode for viewing help text and navigating references in it.
+;; Entry to this mode runs the normal hook `help-mode-hook'.
+;; Commands:
+;; \\{help-mode-map}"
+;;   (interactive)
+;;   (kill-all-local-variables)
+;;   (use-local-map help-mode-map)
+;;   (setq mode-name "Help")
+;;   (setq major-mode 'help-mode)
+;;   (view-mode)
+;;   (make-local-variable 'view-no-disable-on-exit)
+;;   (setq view-no-disable-on-exit t)
+;;   (setq view-exit-action (lambda (buffer)
+;;                            (or (window-minibuffer-p (selected-window))
+;;                                (when (eq (window-buffer) (get-buffer "*Help*"))
+;;                                  (if (one-window-p t)
+;;                                      (delete-frame)
+;;                                    (delete-window))))))
+;;   (run-mode-hooks 'help-mode-hook))
+
+
 ;; REPLACES ORIGINAL IN `help-mode.el'.
 ;; Deletes frame if `one-window-p'.
 ;;
@@ -90,14 +116,19 @@ Commands:
   (setq mode-name "Help")
   (setq major-mode 'help-mode)
   (view-mode)
-  (make-local-variable 'view-no-disable-on-exit)
-  (setq view-no-disable-on-exit t)
-  (setq view-exit-action (lambda (buffer)
-                           (or (window-minibuffer-p (selected-window))
-                               (when (eq (window-buffer) (get-buffer "*Help*"))
-                                 (if (one-window-p t)
-                                     (delete-frame)
-                                   (delete-window))))))
+  (set (make-local-variable 'view-no-disable-on-exit) t)
+  ;; With Emacs 22 `view-exit-action' could delete the selected window
+  ;; disregarding whether the help buffer was shown in that window at
+  ;; all.  Since `view-exit-action' is called with the help buffer as
+  ;; argument it seems more appropriate to have it work on the buffer
+  ;; only and leave it to `view-mode-exit' to delete any associated
+  ;; window(s).
+  (setq view-exit-action
+        (lambda (buffer)
+	  ;; Use `with-current-buffer' to make sure that `bury-buffer'
+	  ;; also removes BUFFER from the selected window.
+	  (with-current-buffer buffer
+	    (bury-buffer))))
   (run-mode-hooks 'help-mode-hook))
 
 
