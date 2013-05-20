@@ -289,4 +289,9 @@
 ;; (sharad/disable-startup-inperrupting-feature)
 
 
+;; tramp-cleanup-connection (vec)
+;; want to know what is vec than see definition of tramp-cleanup-connection
+;; (with-parsed-tramp-file-name buffer-file-name nil v)
+
+
 (provide 'tramp-config)

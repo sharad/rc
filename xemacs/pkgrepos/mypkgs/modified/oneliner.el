@@ -239,6 +239,7 @@ take effect."
          (prefix (if (string-match tramp-prefix base-directory)
                      (match-string 0 base-directory)))
          (tdir (concat  prefix dir)))
+    ;; (message "base-directory: %s, tdir %s" base-directory tdir)
     (cd-absolute tdir)))
 
 (defun oneliner (&optional arg)
@@ -627,6 +628,7 @@ any later version.
 (defun oneliner-send-cd (arg)
   "Change directory of *Oneliner shell* to current buffer's `default-directory'."
   (interactive "p")
+  (message "Hello")
   (let ((curdir default-directory))
     (oneliner-invisible-command-exec (concat "cd " curdir))
     (when (interactive-p)
@@ -637,6 +639,7 @@ any later version.
 ;;
 (defun oneliner-handle-control-codes (string)
   "Act properly when certain control codes are seen."
+  ;; (message "ctrl-control: %s" default-directory)
   (when (and oneliner-handle-control-codes-flag oneliner-hook-enable)
     (let ((len (length (split-string string "[\r\n]"))))
       (save-excursion
@@ -671,6 +674,7 @@ any later version.
 ;;
 (defun oneliner-handle-OL-control (string)
   "Handle OL-control string."
+  ;; (message "OL-control: %s" default-directory)
   (when oneliner-hook-enable
     (progn
       (let ((len (length (split-string string "[\n]")))

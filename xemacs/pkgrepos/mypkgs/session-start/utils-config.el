@@ -194,6 +194,13 @@ Write data into the file specified by `recentf-save-file'."
      (warn "recentf mode: %s" (error-message-string error)))))
 
 
+(deh-section "trim-string"
+  ;; http://xahlee.blogspot.in/2011/09/emacs-lisp-function-to-trim-string.html
+  (defun trim-string (string)
+    "Remove white spaces in beginning and ending of STRING.
+White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
+    (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))))
+
 
 
 (provide 'utils-config)

@@ -332,7 +332,24 @@ The indirect buffer can have another major mode."
            (prefix (if (string-match tramp-prefix base-directory)
                        (match-string 0 base-directory)))
            (tdir (concat  prefix dir)))
-      (cd-absolute tdir))))
+      (cd-absolute tdir)))
+
+  (require 'utils-config)
+
+  (defun get-tramp-env (variable)
+    (with-temp-buffer
+      (process-file "bash" nil t nil "-c" (concat "echo $" variable) )
+      (trim-string (buffer-string))))
+
+
+  (defun shell-process-cd (arg)
+    (let ((new-dir (cond ((zerop (length arg)) (concat comint-file-name-prefix
+                                                       (get-tramp-env "HOME")))
+                         ((string-equal "-" arg) shell-last-dir)
+                         (t (shell-prefixed-directory-name arg)))))
+      (setq shell-last-dir default-directory)
+      (shell-cd new-dir)
+      (shell-dirstack-message))))
 
 
 (deh-section "crontab-mode"
