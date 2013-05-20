@@ -183,6 +183,16 @@
                       nil))))
       (concat  prefix dir)))
 
+  (defun gtags-root-dir ()
+    "Returns GTAGS root directory or nil if doesn't exist."
+    ;; ido-is-tramp-root
+    (let* ((prefix (tramp-file-prefix default-directory))
+           (dir (with-temp-buffer
+                  (if (zerop (process-file "global" nil t nil "-pr"))
+                      (buffer-substring (point-min) (1- (point-max)))
+                      nil))))
+      (concat  prefix dir)))
+
 
   (defun gtags-update-synchronously ()
     "Make GTAGS incremental update, synchronously."

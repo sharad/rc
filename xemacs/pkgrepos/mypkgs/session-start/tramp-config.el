@@ -292,6 +292,7 @@
 ;; tramp-cleanup-connection (vec)
 ;; want to know what is vec than see definition of tramp-cleanup-connection
 ;; (with-parsed-tramp-file-name buffer-file-name nil v)
+
 ;; (defun tramp-connectable-p (filename)
 ;;   "Check, whether it is possible to connect the remote host w/o side-effects.
 ;; This is true, if either the remote host is already connected, or if we are
@@ -303,13 +304,36 @@
 
 ;; (tramp-open-connection-setup-interactive-shell PROC VEC)
 
-  ;; (defadvice tramp-open-connection-setup-interactive-shell (after (p vec) )
-  ;;   )
 
-  )
+
+  (defun tramp-file-connection (file-name)
+    (when (and file-name (file-remote-p file-name))
+      (with-parsed-tramp-file-name file-name nil v)))
+
+  (defun tramp-connection-file (connection)
+    (when connection
+        (tramp-make-tramp-file-name
+         (tramp-file-name-method connection)
+         (tramp-file-name-user connection)
+         (tramp-file-name-host connection)
+         (tramp-file-name-localname connection))))
+
+  (defun tramp-connection-prefix (connection)
+    (when connection
+      (tramp-make-tramp-file-name
+       (tramp-file-name-method connection)
+       (tramp-file-name-user connection)
+       (tramp-file-name-host connection)
+       nil)))
+
+  (defun tramp-file-prefix (file-name)
+    (tramp-connection-prefix
+     (tramp-file-connection file-name))))
 
 
 
 
 
 (provide 'tramp-config)
+
+

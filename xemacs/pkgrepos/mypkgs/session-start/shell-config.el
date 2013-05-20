@@ -45,13 +45,21 @@
       ad-do-it))
 
 
+  ;; (defun cd-tramp-absolute (dir &optional base-directory)
+  ;;   (let* ((tramp-prefix "\\`/[^/]+[@:][^:/]+:")
+  ;;          (base-directory (or base-directory default-directory))
+  ;;          (prefix (if (string-match tramp-prefix base-directory)
+  ;;                      (match-string 0 base-directory)))
+  ;;          (tdir (concat  prefix dir)))
+  ;;     (cd-absolute tdir)))
+
+
   (defun cd-tramp-absolute (dir &optional base-directory)
-    (let* ((tramp-prefix "\\`/[^/]+[@:][^:/]+:")
-           (base-directory (or base-directory default-directory))
-           (prefix (if (string-match tramp-prefix base-directory)
-                       (match-string 0 base-directory)))
+    (let* ((base-directory (or base-directory default-directory))
+           (prefix (tramp-file-prefix base-directory))
            (tdir (concat  prefix dir)))
       (cd-absolute tdir)))
+
 
   (require 'utils-config)
 
@@ -68,7 +76,25 @@
                          (t (shell-prefixed-directory-name arg)))))
       (setq shell-last-dir default-directory)
       (shell-cd new-dir)
-      (shell-dirstack-message))))
+      (shell-dirstack-message)))
+
+
+  (defvar oneliners-list nil "Multiple oneliners")
+
+  (defadvice tramp-open-connection-setup-interactive-shell
+      (after start-oneliner last (p vec) activate)
+    (let ((prefix (tramp-connection-prefix vec)))
+      (message "came")
+      (unless (member prefix oneliners-list)
+        (message "come")
+        (push prefix oneliners-list)
+        (let ((oneliner-suffix prefix))
+          (oneliner)))))
+
+  (when nil
+    (ad-remove-advice 'tramp-open-connection-setup-interactive-shell 'after 'start-oneliner)
+    (ad-update 'tramp-open-connection-setup-interactive-shell)
+    (ad-activate 'tramp-open-connection-setup-interactive-shell)))
 
 ;; checkout: http://snarfed.org/why_i_run_shells_inside_emacs
 

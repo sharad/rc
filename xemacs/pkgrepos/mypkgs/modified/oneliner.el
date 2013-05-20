@@ -223,6 +223,7 @@ take effect."
 
 (provide 'oneliner)
 (require 'poe)
+(require 'tramp-config)
 
 ;;--- debugging message logger
 (defmacro oneliner-debug-print (string)
@@ -234,13 +235,20 @@ take effect."
 
 
 (defun cd-tramp-absolute (dir &optional base-directory)
-  (let* ((tramp-prefix "\\`/[^/]+[@:][^:/]+:")
-         (base-directory (or base-directory default-directory))
-         (prefix (if (string-match tramp-prefix base-directory)
-                     (match-string 0 base-directory)))
+  (let* ((base-directory (or base-directory default-directory))
+         (prefix (tramp-file-prefix base-directory))
          (tdir (concat  prefix dir)))
-    ;; (message "base-directory: %s, tdir %s" base-directory tdir)
     (cd-absolute tdir)))
+
+(defun make-oneliner-shell-buffer-name ()
+  (let ((connection-name
+         (or
+          (if (boundp 'oneliner-suffix)
+              oneliner-suffix)
+          (tramp-file-prefix default-directory))))
+    (concat oneliner-shell-buffer-name
+            (if connection-name
+                (concat " " connection-name)))))
 
 (defun oneliner (&optional arg)
   "Execute Oneliner."
@@ -248,23 +256,25 @@ take effect."
 
   ;; directory for temporary file
   (cond (oneliner-temp-dir-name
-	 (let ((rename nil))
-	   (cond ((get-buffer oneliner-shell-buffer-name)
-		  (set-window-buffer (selected-window) oneliner-shell-buffer-name))
+	 (let ((rename nil)
+               (shell-buffer-name (make-oneliner-shell-buffer-name)))
+	   (cond ((get-buffer shell-buffer-name)
+		  (set-window-buffer (selected-window) shell-buffer-name))
 		 (t
 		  (setenv "ONELINER_EX_CMD_PREFIX" oneliner-ex-cmd-prefix)
 		  (setenv "ONELINER_STD_START" oneliner-std-start)
 		  (setenv "ONELINER_STD_END" oneliner-std-end)
-		  (when (get-buffer "*shell*")
-		    (with-current-buffer (get-buffer "*shell*")
-		      (rename-buffer "*shell*-rename")
-		      (setq rename t)))
+		  ;; (when (get-buffer "*shell*")
+		  ;;   (with-current-buffer (get-buffer "*shell*")
+		  ;;     (rename-buffer "*shell*-rename")
+		  ;;     (setq rename t)))
 		  (add-hook 'shell-mode-hook 'oneliner-init)
-		  (shell)
+		  (shell shell-buffer-name)
 		  (remove-hook 'shell-mode-hook 'oneliner-init)
-		  (when rename
-		    (with-current-buffer (get-buffer "*shell*-rename")
-		      (rename-buffer "*shell*")))))))
+		  ;; (when rename
+		  ;;   (with-current-buffer (get-buffer "*shell*-rename")
+		  ;;     (rename-buffer "*shell*")))
+                  ))))
 	(t
 	 (message "Error: Please set environment variable TMPDIR (e.g. export TMPDIR=\"/home/youraccount/temp/\")"))))
 
@@ -308,7 +318,7 @@ any later version.
       ((buffer (oneliner-get-pipe-buffer 0 t))
        (prompt-str))
 
-    (rename-buffer oneliner-shell-buffer-name)
+    ;; (rename-buffer (make-oneliner-shell-buffer-name))
     (setq oneliner-hook-enable t)
     (setq oneliner-title-display-done nil)
     (oneliner-command-done)
