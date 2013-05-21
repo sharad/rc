@@ -46,6 +46,14 @@
     (let ((explicit-shell-file-name shell-file-name))
       ad-do-it))
 
+  (defadvice oneliner-for-dir (around shell-call-shell-file-name activate)
+    ;; I can not make (env ESELL) to zsh, becasue of tramp
+    ;; see in tramp-config.el
+    ;; oneliner choose shell-type by shell-file-name
+    "make (shell) to prefer shell-file-name"
+    (let ((explicit-shell-file-name shell-file-name))
+      ad-do-it))
+
 
   ;; (defun cd-tramp-absolute (dir &optional base-directory)
   ;;   (let* ((tramp-prefix "\\`/[^/]+[@:][^:/]+:")
@@ -83,13 +91,18 @@
 
   (defvar oneliners-list nil "Multiple oneliners")
 
+  ;; (defadvice tramp-open-connection-setup-interactive-shell
+  ;;     (after start-oneliner last (p vec) activate)
+  ;;   (let ((prefix (tramp-connection-prefix vec)))
+  ;;     (unless (member prefix oneliners-list)
+  ;;       (push prefix oneliners-list)
+  ;;       (let ((oneliner-suffix prefix))
+  ;;         (oneliner)))))
+
   (defadvice tramp-open-connection-setup-interactive-shell
       (after start-oneliner last (p vec) activate)
-    (let ((prefix (tramp-connection-prefix vec)))
-      (unless (member prefix oneliners-list)
-        (push prefix oneliners-list)
-        (let ((oneliner-suffix prefix))
-          (oneliner)))))
+    (oneliner-for-dir (tramp-connection-file vec)))
+
 
   (when nil
     (ad-remove-advice 'tramp-open-connection-setup-interactive-shell 'after 'start-oneliner)

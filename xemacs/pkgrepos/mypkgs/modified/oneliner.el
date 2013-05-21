@@ -240,12 +240,9 @@ take effect."
          (tdir (concat  prefix dir)))
     (cd-absolute tdir)))
 
-(defun make-oneliner-shell-buffer-name ()
+(defun make-oneliner-shell-buffer-name (&optional dir)
   (let ((connection-name
-         (or
-          (if (boundp 'oneliner-suffix)
-              oneliner-suffix)
-          (tramp-file-prefix default-directory))))
+         (tramp-file-prefix (or dir default-directory))))
     (concat "*" oneliner-shell-buffer-name
             (if connection-name
                 (concat " " connection-name))
@@ -256,28 +253,40 @@ take effect."
   (interactive "P")
 
   ;; directory for temporary file
-  (cond (oneliner-temp-dir-name
-	 (let ((rename nil)
-               (shell-buffer-name (make-oneliner-shell-buffer-name)))
-	   (cond ((get-buffer shell-buffer-name)
-		  (set-window-buffer (selected-window) shell-buffer-name))
-		 (t
-		  (setenv "ONELINER_EX_CMD_PREFIX" oneliner-ex-cmd-prefix)
-		  (setenv "ONELINER_STD_START" oneliner-std-start)
-		  (setenv "ONELINER_STD_END" oneliner-std-end)
-		  ;; (when (get-buffer "*shell*")
-		  ;;   (with-current-buffer (get-buffer "*shell*")
-		  ;;     (rename-buffer "*shell*-rename")
-		  ;;     (setq rename t)))
-		  (add-hook 'shell-mode-hook 'oneliner-init)
-		  (shell shell-buffer-name)
-		  (remove-hook 'shell-mode-hook 'oneliner-init)
-		  ;; (when rename
-		  ;;   (with-current-buffer (get-buffer "*shell*-rename")
-		  ;;     (rename-buffer "*shell*")))
-                  ))))
-	(t
-	 (message "Error: Please set environment variable TMPDIR (e.g. export TMPDIR=\"/home/youraccount/temp/\")"))))
+  (if oneliner-temp-dir-name
+      (let ((rename nil)
+            (shell-buffer-name (make-oneliner-shell-buffer-name)))
+        (cond ((get-buffer shell-buffer-name)
+               (set-window-buffer (selected-window) shell-buffer-name))
+              (t
+               (setenv "ONELINER_EX_CMD_PREFIX" oneliner-ex-cmd-prefix)
+               (setenv "ONELINER_STD_START" oneliner-std-start)
+               (setenv "ONELINER_STD_END" oneliner-std-end)
+               (add-hook 'shell-mode-hook 'oneliner-init)
+               (shell shell-buffer-name)
+               (remove-hook 'shell-mode-hook 'oneliner-init))))
+      (message "Error: Please set environment variable TMPDIR (e.g. export TMPDIR=\"/home/youraccount/temp/\")")))
+
+(defun oneliner-for-dir (&optional dir)
+  "Execute Oneliner."
+  ;; (interactive "P")
+  (interactive "D")
+
+  ;; directory for temporary file
+  (if oneliner-temp-dir-name
+      (let* ((rename nil)
+             (default-directory (or dir default-directory))
+             (shell-buffer-name (make-oneliner-shell-buffer-name default-directory)))
+        (cond ((get-buffer shell-buffer-name)
+               (set-window-buffer (selected-window) shell-buffer-name))
+              (t
+               (setenv "ONELINER_EX_CMD_PREFIX" oneliner-ex-cmd-prefix)
+               (setenv "ONELINER_STD_START" oneliner-std-start)
+               (setenv "ONELINER_STD_END" oneliner-std-end)
+               (add-hook 'shell-mode-hook 'oneliner-init)
+               (shell shell-buffer-name)
+               (remove-hook 'shell-mode-hook 'oneliner-init))))
+      (message "Error: Please set environment variable TMPDIR (e.g. export TMPDIR=\"/home/youraccount/temp/\")")))
 
 (defun oneliner-title-display (string)
   (cond
