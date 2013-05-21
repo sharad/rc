@@ -367,8 +367,14 @@ startup in daemon mode."
   ;; don't mislead by login it is when no frame or 1 or more frame hook
   ;; basiclly used accross login where emacs daemon outlive.
   ;; can be used for other purpose.
-  (defvar sharad/disable-login-session-inperrupting-feature nil)
-  (defvar sharad/enable-login-session-inperrupting-feature-hook nil)
+  (defvar sharad/disable-login-session-inperrupting-feature nil
+    "called before when last frame deleted, don't mislead by
+    login it is for no frame or 1 or more frame hook basiclly
+    used accross login where emacs daemon outlive.")
+  (defvar sharad/enable-login-session-inperrupting-feature-hook nil
+    "called before when first frame created, don't mislead by
+    login it is for no frame or 1 or more frame hook basiclly
+    used accross login where emacs daemon outlive.")
 
   (defun sharad/disable-login-session-inperrupting-feature ()
     (interactive)

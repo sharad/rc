@@ -24,8 +24,10 @@
 
 ;;; Code:
 
+(load-library "oneliner")
 
 (deh-require-maybe oneliner
+  (load-library "oneliner")
   (setq oneliner-temp-dir-name (if (getenv "TMPDIR")
                                    (expand-file-name (getenv "TMPDIR"))
                                    (expand-file-name "temp" (getenv "HOME"))
@@ -84,9 +86,7 @@
   (defadvice tramp-open-connection-setup-interactive-shell
       (after start-oneliner last (p vec) activate)
     (let ((prefix (tramp-connection-prefix vec)))
-      (message "came")
       (unless (member prefix oneliners-list)
-        (message "come")
         (push prefix oneliners-list)
         (let ((oneliner-suffix prefix))
           (oneliner)))))

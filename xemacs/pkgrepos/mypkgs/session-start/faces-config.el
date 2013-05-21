@@ -35,7 +35,8 @@
   ())
 
 
-(deh-section "face size"
+(when nil
+  ;; (deh-section "face size"
 
   ;; http://stackoverflow.com/questions/3514299/how-do-i-find-the-display-size-of-my-system-in-emacs
   ;; http://stackoverflow.com/questions/2151449/can-i-detect-the-display-size-resolution-in-emacs
@@ -45,23 +46,24 @@
   ;; 98
   ;; default was 98 or 100
   ;; (set-face-attribute 'default nil :height 80)
-  (when nil
-    (defun l100 (v x y)
-      (log (expt 1.1 x) y))
 
-    (l100 768)
-    (l100 1200)
+  ;; (when nil
+  ;;   (defun l100 (v x y)
+  ;;     (log (expt 1.1 x) y))
 
-    (= (expt y 77) (expt 768 x))
-    (= (expt y 100) (expt 1200 x)))
+  ;;   (l100 768)
+  ;;   (l100 1200)
 
-  (defun cal1 (y)
-    (- (* (log (expt y 100) 768) (log (expt y 33) 768) (expt 10 6))
-       (* (log 1200 768) (expt 10 6))))
+  ;;   (= (expt y 77) (expt 768 x))
+  ;;   (= (expt y 100) (expt 1200 x)))
+
+  ;; (defun cal1 (y)
+  ;;   (- (* (log (expt y 100) 768) (log (expt y 33) 768) (expt 10 6))
+  ;;      (* (log 1200 768) (expt 10 6))))
 
 
-  (cal1 1)
-  (cal1 1.0188111111)
+  ;; (cal1 1)
+  ;; (cal1 1.0188111111)
 
   ;; log7(x):= log(x)/log(768);
   ;; f(y) := (log7(y / 1000  ^ 100) * log7(y / 1000 ^ 33) - log7(1200)) * 10 ^ 6;
@@ -75,11 +77,11 @@
 
 
 
-  (if (x-display-pixel-height)
-      (set-face-attribute 'default nil :height (/ (x-display-pixel-height) 10)))
+  ;; (if (x-display-pixel-height)
+  ;;     (set-face-attribute 'default nil :height (/ (x-display-pixel-height) 10)))
 
-  (face-attribute 'default :height)
-  (face-attribute 'default :width))
+  ;; (face-attribute 'default :height)
+  ;; (face-attribute 'default :width))
 
 ;; (list-colors-display)
 ;; http://www.emacswiki.org/emacs/CustomizingFaces
@@ -88,7 +90,25 @@
 ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Faces.html
 ;; http://david.rothlis.net/emacs/customize_colors.html
 ;; http://david.rothlis.net/emacs/customize_colors.html
+  )
 
+  (deh-section "face size"
+
+    (defun set-default-face-height-by-resolution (&optional height)
+      (interactive
+       (list (read-number "Face height: "
+                          (if (and (featurep 'x)
+                                    window-system
+                                    (x-display-pixel-height))
+                              (/ (x-display-pixel-height) 10)
+                              (face-attribute 'default :height)))))
+      (if (and (featurep 'x) window-system)
+          (if (x-display-pixel-height)
+              (set-face-attribute 'default nil :height (/ (x-display-pixel-height) 10))
+              (message "(x-display-pixel-height) return nil"))
+          (message "Not in Graphical Window system.")))
+
+    (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'set-default-face-height-by-resolution))
 
 
 (provide 'faces-config)

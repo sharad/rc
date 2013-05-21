@@ -533,28 +533,32 @@
 
  (defun on-blur--refresh ()
    "Runs on-blur-hook if emacs has lost focus."
-   (let* ((active-window (x-window-property
-                          "_NET_ACTIVE_WINDOW" nil "WINDOW" 0 nil t))
-          (active-window-id (if (numberp active-window)
-                                active-window
-                                (string-to-number
-                                 (format ; "%x%x"
-                                  "%x00%x"
-                                         (car active-window)
-                                         (cdr active-window)) 16)))
-          (emacs-window-id (string-to-number
-                            (frame-parameter nil 'outer-window-id))))
+   (if (and
+        (featurep 'x)
+        window-system)
+       (let* ((active-window (x-window-property
+                              "_NET_ACTIVE_WINDOW" nil "WINDOW" 0 nil t))
+              (active-window-id (if (numberp active-window)
+                                    active-window
+                                    (string-to-number
+                                     (format ; "%x%x"
+                                      "%x00%x"
+                                      (car active-window)
+                                      (cdr active-window)) 16)))
+              (emacs-window-id (string-to-number
+                                (frame-parameter nil 'outer-window-id))))
 
-     (when (not (= active-window-id old-active-window-id))
-         (if (= emacs-window-id active-window-id)
-             (run-hooks 'on-focus-in-hook)
-             (run-hooks 'on-focus-out-hook))
-         (setq old-active-window-id active-window-id))
-     ;; (when on-blur--timer
-     ;;     (cancel-timer on-blur--timer))
-     ;; (setq on-blur--timer
-     ;;  (run-with-timer 1 nil 'on-blur--refresh))
-     ))
+         (when (not (= active-window-id old-active-window-id))
+           (if (= emacs-window-id active-window-id)
+               (run-hooks 'on-focus-in-hook)
+               (run-hooks 'on-focus-out-hook))
+           (setq old-active-window-id active-window-id))
+         ;; (when on-blur--timer
+         ;;     (cancel-timer on-blur--timer))
+         ;; (setq on-blur--timer
+         ;;  (run-with-timer 1 nil 'on-blur--refresh))
+         )
+       (message "Not in Graphical Window system.")))
 
  (defun run-on-blur-timer ()
    (interactive)
@@ -573,22 +577,22 @@
       (cancel-timer on-blur--timer)))
 
  (add-hook 'sharad/enable-login-session-inperrupting-feature
-           #'(lambda ()
-               (when (and
-                      (featurep 'x)
-                      window-system)
+           '(lambda ()
+             (if (and (featurep 'x) window-system)
                  (unless (and (boundp 'on-blur--timer)
                               on-blur--timer)
-                   (run-on-blur-timer)))))
+                   (run-on-blur-timer))
+                 (message "Not in Graphical Window system."))))
 
- (add-hook 'sharad/enable-login-session-inperrupting-feature
-           #'(lambda ()
-               (when (and
-                      (featurep 'x)
-                      window-system)
-                 (when (and (boundp 'on-blur--timer)
-                            on-blur--timer)
-                   (cancel-on-blur-timer)))))
+ (add-hook 'sharad/disable-login-session-inperrupting-feature
+           '(lambda ()
+             (when (and
+                    (featurep 'x)
+                    window-system)
+               (when (and (boundp 'on-blur--timer)
+                          on-blur--timer)
+                 (cancel-on-blur-timer))
+               (message "Not in Graphical Window system."))))
 
 )
 

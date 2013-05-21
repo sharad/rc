@@ -219,7 +219,7 @@ take effect."
 
 (defconst oneliner-version-number "0.3.6")
 (defconst oneliner-version (format "Oneliner version %s" oneliner-version-number) "Version string for this version of Oneliner.")
-(defconst oneliner-shell-buffer-name "*Oneliner shell*")
+(defconst oneliner-shell-buffer-name "Oneliner shell")
 
 (provide 'oneliner)
 (require 'poe)
@@ -246,9 +246,10 @@ take effect."
           (if (boundp 'oneliner-suffix)
               oneliner-suffix)
           (tramp-file-prefix default-directory))))
-    (concat oneliner-shell-buffer-name
+    (concat "*" oneliner-shell-buffer-name
             (if connection-name
-                (concat " " connection-name)))))
+                (concat " " connection-name))
+            "*")))
 
 (defun oneliner (&optional arg)
   "Execute Oneliner."
@@ -620,7 +621,7 @@ any later version.
 	(len 0))
     (if dir (setq len (length (split-string dir " "))))
     (if (= 1 len) (cd-tramp-absolute dir))
-    (if (interactive-p)
+    (if (called-interactively-p 'any) ;;(interactive-p)
 	(message "Default directory is now '%s'" default-directory))
     default-directory))
 
@@ -629,7 +630,7 @@ any later version.
 ;;
 (defun oneliner-fix-id (id)
   (cond ((not id) oneliner-default-pipe-buffer-id)
-	((stringp id) (string-to-int id))
+	((stringp id) (string-to-number id))
 	((natnump id) id)))
 
 ;;
@@ -641,7 +642,7 @@ any later version.
   (message "Hello")
   (let ((curdir default-directory))
     (oneliner-invisible-command-exec (concat "cd " curdir))
-    (when (interactive-p)
+    (when (called-interactively-p 'any) ;;(interactive-p)
       (message "Send to %s buffer 'cd %s'" (buffer-name oneliner-shell-buffer) curdir))))
 
 ;;
@@ -673,7 +674,8 @@ any later version.
 	      (delete-char 1)
 	      (beep))
 	     ((eq char ?\C-h)
-	      (delete-backward-char 1)
+              (delete-char -1)
+              ;; (delete-backward-char 1)
 	      (delete-char 1))
 	     (t
 	      (forward-char)))))))))
