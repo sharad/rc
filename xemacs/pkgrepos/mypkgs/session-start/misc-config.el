@@ -354,7 +354,7 @@ The indirect buffer can have another major mode."
 
 
 (deh-section "New"
-  (deh-require-maybe ipa
+  (deh-require-maybe (progn ipa org-pua)
     ;;http://www.emacswiki.org/emacs/InPlaceAnnotations
     )
   (deh-require-maybe alert
