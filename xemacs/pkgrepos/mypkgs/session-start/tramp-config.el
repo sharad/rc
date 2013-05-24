@@ -300,8 +300,9 @@
   ;; $DISPLAY environment variable on the remote host:
 
 
-  (add-to-list 'tramp-remote-process-environment
-               (format "DISPLAY=%s" (getenv "DISPLAY"))))
+  (deh-require-maybe tramp-sh
+    (add-to-list 'tramp-remote-process-environment
+                 (format "DISPLAY=%s" (getenv "DISPLAY")))))
 
 
 (deh-section "Info"
