@@ -24,7 +24,6 @@
 
 ;;; Code:
 
-(load-library "oneliner")
 
 (deh-require-maybe oneliner
   (load-library "oneliner")
@@ -111,6 +110,9 @@
 
 ;; checkout: http://snarfed.org/why_i_run_shells_inside_emacs
 
+
+(deh-require-maybe eshell
+  )
 
 
 
