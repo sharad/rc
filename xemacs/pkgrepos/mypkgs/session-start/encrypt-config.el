@@ -45,7 +45,7 @@
        (setq epa-file-passphrase-alist (assq-delete-all-test file-name epa-file-passphrase-alist #'string-equal))
        (kill-buffer buffer))))
 
-(defvar epa-file-passphrase-suspend-cleanup nil "")
+(defvar epa-file-passphrase-suspend-cleanup nil "Stop cleanup for now.")
 
 (defun epa-file-passphrase-cleanup (&optional exceptitions)
   (interactive)
@@ -71,8 +71,24 @@
         (setq epa-file-passphrase-alist (assq-delete-all-test buff-name epa-file-passphrase-alist #'string-equal))))))
 
 (defvar epa-file-passphrase-cleanup-exceptitions nil "Epa file passphrase cleanup exceptitions")
+
 (require 'common-info)
-(run-with-idle-timer 10 t 'epa-file-passphrase-cleanup epa-file-passphrase-cleanup-exceptitions)
+(defvar epa-file-passphrase-cleanup-timer nil "epa file passphrase cleanup timer")
+
+(setq
+ epa-file-passphrase-cleanup-timer
+ (run-with-idle-timer 10 t 'epa-file-passphrase-cleanup epa-file-passphrase-cleanup-exceptitions))
+
+(defun epa-passphrase-cleanup-suspend ()
+  (interactive)
+  (timer-activate epa-file-passphrase-cleanup-timer t))
+
+(defun epa-passphrase-cleanup-resume ()
+  (interactive)
+  (timer-activate epa-file-passphrase-cleanup-timer))
+
+
+(push "~/.authinfo.gpg" epa-file-passphrase-cleanup-exceptitions)
 
 ;; test
 ;; (setq epa-file-passphrase-alist nil)
