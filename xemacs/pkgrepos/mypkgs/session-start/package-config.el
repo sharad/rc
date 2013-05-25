@@ -69,17 +69,25 @@
     (defun sharad/update-installed-package-archive ()
       (interactive)
       (if package-alist
-          (write-region (prin1-to-string package-alist) nil sharad/package-installed-archive)
+          (write-region
+           (with-output-to-string
+               (pp package-alist))
+           ;; (prin1-to-string package-alist)
+           nil sharad/package-installed-archive)
           (message "package-alist is not defiend, not doing anything.")))
 
     (defun sharad/package-install-from-installed-archive ()
       (interactive)
       (require 'cl)
-      (let* ((packages-from-installed-archive  (mapcar 'car  (car (sharad/read-file sharad/package-installed-archive))))
+      (let* ((packages-from-installed-archive  (mapcar 'car  (sharad/read-file sharad/package-installed-archive)))
              (packages-from-package-alist (mapcar 'car package-alist))
              (packages-missing (set-difference packages-from-installed-archive packages-from-package-alist)))
-        (dolist (p packages-missing)
-          (package-install p))))
+        (if packages-missing
+            (progn
+              (package-refresh-contents)
+              (dolist (p packages-missing)
+              (package-install p)))
+            (message "No missing package found."))))
 
     (when (file-exists-p sharad/package-installed-archive)
       (when (set-difference (mapcar 'car  (sharad/read-file sharad/package-installed-archive))
