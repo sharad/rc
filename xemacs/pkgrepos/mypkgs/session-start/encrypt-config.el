@@ -53,7 +53,8 @@
   (dolist (a epa-file-passphrase-alist)
     (let* ((file-name (car a))
            (buffer-of-file (find file-name (buffer-list) :key #'buffer-file-name :test #'string-equal)))
-      (unless (member file-name exceptitions)
+      (unless (member file-name
+                      (mapcar 'file-truename exceptitions))
         (setq epa-file-passphrase-alist (assq-delete-all-test file-name epa-file-passphrase-alist #'string-equal))
         (if buffer-of-file
             (kill-buffer buffer-of-file)))))
