@@ -89,7 +89,7 @@
   (timer-activate epa-file-passphrase-cleanup-timer))
 
 
-(push "~/.authinfo.gpg" epa-file-passphrase-cleanup-exceptitions)
+(pushnew "~/.authinfo.gpg" epa-file-passphrase-cleanup-exceptitions)
 
 ;; test
 ;; (setq epa-file-passphrase-alist nil)
