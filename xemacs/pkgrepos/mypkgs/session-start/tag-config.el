@@ -287,51 +287,7 @@
       ;;       (setq gtags-global-complete-list-obsolete-flag t)
       ;;     (error "global database update failed"))))
 
-    (when nil
-     (defun gtags-global-complete-list-maybe ()
-      "Rebuild the GLOBAL complete list when indicated.
-See `gtags-global-complete-list-obsolete-flag'."
-      (interactive)
-      (when gtags-global-complete-list-obsolete-flag
-        (gtags-make-complete-list)
-        (setq gtags-global-complete-list-obsolete-flag nil)))
 
-    (add-hook 'gtags-mode-hook
-              (lambda ()
-                (add-hook 'after-save-hook 'gtags-global-update nil t)
-
-                (defadvice gtags-find-tag
-                  (before gtags-global-complete-list-maybe activate)
-                  (gtags-global-complete-list-maybe))
-                ;; (ad-disable-advice 'gtags-find-tag 'before 'gtags-global-complete-list-maybe)
-                ;; (ad-activate 'gtags-find-tag)
-                ;; (ad- 'gtags-find-tag)
-                (defadvice gtags-find-rtag
-                  (before gtags-global-complete-list-maybe activate)
-                  (gtags-global-complete-list-maybe))
-                (defadvice gtags-find-symbol
-                  (before gtags-global-complete-list-maybe activate)
-                  (gtags-global-complete-list-maybe))
-                (defadvice gtags-find-pattern
-                  (before gtags-global-complete-list-maybe activate)
-                  (gtags-global-complete-list-maybe))
-                (defadvice gtags-find-with-grep
-                  (before gtags-global-complete-list-maybe activate)
-                  (gtags-global-complete-list-maybe))
-                (defadvice gtags-find-with-idutils
-                  (before gtags-global-complete-list-maybe activate)
-                  (gtags-global-complete-list-maybe))
-                (defadvice gtags-find-file
-                  (before gtags-global-complete-list-maybe activate)
-                  (gtags-global-complete-list-maybe))
-                (defadvice gtags-parse-file
-                  (before gtags-global-complete-list-maybe activate)
-                  (gtags-global-complete-list-maybe))
-                (defadvice gtags-find-tag-from-here
-                  (before gtags-global-complete-list-maybe activate)
-                  (gtags-global-complete-list-maybe))
-                )                       ; (lambda () ...)
-              ))                        ; (add-hook 'gtags-mode-hook ...)
     )                            ; (when (executable-find "global") ...)
 
   ;; Use gtags in all modes for now.
@@ -384,16 +340,16 @@ See `gtags-global-complete-list-obsolete-flag'."
             ;; (setenv "GTAGSLIBPATH" gtagslibpath-env)
             (message "gtags-libdirs %s" dirs)))))
 
-    (defun gtags-rest-env ()
+    (defun gtags-reset-env ()
       (pop process-environment))
 
-    (when nil
-      (defadvice gtags-find-tag (before set-gtags-libdirs last () activate)
-        (gtags-set-env 'gtags-libdirs))
+    ;; (when nil
+    ;;   (defadvice gtags-find-tag (before set-gtags-libdirs last () activate)
+    ;;     (gtags-set-env 'gtags-libdirs))
 
-      (defadvice gtags-find-tag (after reset-gtags-libdirs last () activate)
-        (gtags-reset-env)
-        ad-return-value))
+    ;;   (defadvice gtags-find-tag (after reset-gtags-libdirs last () activate)
+    ;;     (gtags-reset-env)
+    ;;     ad-return-value))
 
     (defadvice gtags-find-tag (around set-gtags-libdirs last () activate)
       (gtags-set-env 'gtags-libdirs)

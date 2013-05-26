@@ -54,7 +54,12 @@
     (let* ((file-name (car a))
            (buffer-of-file (find file-name (buffer-list) :key #'buffer-file-name :test #'string-equal)))
       (unless (member file-name
-                      (mapcar 'file-truename exceptitions))
+                      (mapcar
+                       '(lambda (f)
+                         (file-name-sans-extension
+                          (file-truename
+                           (concat f ".gpg"))))
+                       exceptitions))
         (setq epa-file-passphrase-alist (assq-delete-all-test file-name epa-file-passphrase-alist #'string-equal))
         (if buffer-of-file
             (kill-buffer buffer-of-file)))))
@@ -87,6 +92,8 @@
 (defun epa-passphrase-cleanup-resume ()
   (interactive)
   (timer-activate epa-file-passphrase-cleanup-timer))
+
+;; (cancel-timer epa-file-passphrase-cleanup-timer)
 
 
 (pushnew "~/.authinfo.gpg" epa-file-passphrase-cleanup-exceptitions)
