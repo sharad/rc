@@ -503,3 +503,15 @@ pcm.downmix_51to20_no_lfe {
 	type vdownmix
 	slave.pcm "surround20"
 }
+
+
+pcm.copy {
+    # http://carthick.wordpress.com/2007/11/26/linux-recording-soundcard-output-using-arecord/
+    type plug
+    slave {
+       pcm hw
+    }
+    route_policy copy
+}
+
+
