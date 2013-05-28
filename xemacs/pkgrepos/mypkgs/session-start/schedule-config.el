@@ -66,10 +66,10 @@
 
 
 (deh-require-maybe diary-lib
-       (setq diary-display-function 'diary-fancy-display)
-       (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
-       (add-hook 'diary-list-entries-hook 'diary-mark-included-diary-files)
-       (add-hook 'diary-list-entries-hook 'diary-sort-entries t))
+  (setq diary-display-function 'diary-fancy-display)
+  (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+  (add-hook 'diary-list-entries-hook 'diary-mark-included-diary-files)
+  (add-hook 'diary-list-entries-hook 'diary-sort-entries t))
 
 
 (deh-require-maybe midnight
@@ -78,6 +78,137 @@
   (add-hook 'midnight-hook '(lambda ()
                              (save-window-excursion
                                (plan)))))
+
+
+(deh-require-maybe (progn
+                     calfw
+                     calfw-howm
+                     calfw-ical
+                     calfw-org
+                     calfw-cal)
+  ;; https://github.com/kiwanami/emacs-calfw
+
+  (deh-require-maybe calfw-howm
+    (eval-after-load "howm-menu" '(progn
+                                   (require 'calfw-howm)
+                                   (cfw:install-howm-schedules)
+                                   (define-key howm-mode-map (kbd "M-C") 'cfw:open-howm-calendar)))
+
+    (define-key howm-mode-map (kbd "M-C") 'cfw:elscreen-open-howm-calendar))
+
+  (deh-require-maybe calfw-ical
+    ;; (cfw:open-ical-calendar "http://www.google.com/calendar/ical/.../basic.ics")
+    )
+
+  (defun my-open-calendar ()
+    (interactive)
+    (cfw:open-calendar-buffer
+     :contents-sources
+     (list
+      (cfw:org-create-source "Green")  ; orgmode source
+      (cfw:howm-create-source "Blue")  ; howm source
+      (cfw:cal-create-source "Orange") ; diary source
+      (cfw:ical-create-source "Moon" "~/moon.ics" "Gray")  ; ICS source1
+                                        ; google calendar ICS
+      (cfw:ical-create-source "gcal" "https://..../basic.ics" "IndianRed"))))
+
+
+  ;; Holidays
+
+  ;; The calfw collects holidays from the customize variable
+  ;; calendar-holidays which belongs to holidays.el in the Emacs. See
+  ;; the document and source of holidays.el for details.
+
+  ;; Format of month and week days
+
+  ;; Month
+  (setq calendar-month-name-array
+        ["January" "February" "March"     "April"   "May"      "June"
+                   "July"    "August"   "September" "October" "November" "December"])
+
+  ;; Week days
+  (setq calendar-day-name-array
+        ["Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday"])
+
+  ;; First day of the week
+  (setq calendar-week-start-day 0) ; 0:Sunday, 1:Monday
+
+
+  ;; Faces
+  (custom-set-faces
+   '(cfw:face-title ((t (:foreground "#f0dfaf" :weight bold :height 2.0 :inherit variable-pitch))))
+   '(cfw:face-header ((t (:foreground "#d0bf8f" :weight bold))))
+   '(cfw:face-sunday ((t :foreground "#cc9393" :background "grey10" :weight bold)))
+   '(cfw:face-saturday ((t :foreground "#8cd0d3" :background "grey10" :weight bold)))
+   '(cfw:face-holiday ((t :background "grey10" :foreground "#8c5353" :weight bold)))
+   '(cfw:face-grid ((t :foreground "DarkGrey")))
+   '(cfw:face-default-content ((t :foreground "#bfebbf")))
+   '(cfw:face-periods ((t :foreground "cyan")))
+   '(cfw:face-day-title ((t :background "grey10")))
+   '(cfw:face-default-day ((t :weight bold :inherit cfw:face-day-title)))
+   '(cfw:face-annotation ((t :foreground "RosyBrown" :inherit cfw:face-day-title)))
+   '(cfw:face-disable ((t :foreground "DarkGray" :inherit cfw:face-day-title)))
+   '(cfw:face-today-title ((t :background "#7f9f7f" :weight bold)))
+   '(cfw:face-today ((t :background: "grey10" :weight bold)))
+   '(cfw:face-select ((t :background "#2f2f2f")))
+   '(cfw:face-toolbar ((t :foreground "Steelblue4" :background "Steelblue4")))
+   '(cfw:face-toolbar-button-off ((t :foreground "Gray10" :weight bold)))
+   '(cfw:face-toolbar-button-on ((t :foreground "Gray50" :weight bold))))
+
+
+  ;; Grid setting example:
+  ;; Default setting
+  (setq cfw:fchar-junction ?+
+        cfw:fchar-vertical-line ?|
+        cfw:fchar-horizontal-line ?-
+        cfw:fchar-left-junction ?+
+        cfw:fchar-right-junction ?+
+        cfw:fchar-top-junction ?+
+        cfw:fchar-top-left-corner ?+
+        cfw:fchar-top-right-corner ?+ )
+
+  ;; Unicode characters
+  (setq cfw:fchar-junction ?╋
+        cfw:fchar-vertical-line ?┃
+        cfw:fchar-horizontal-line ?━
+        cfw:fchar-left-junction ?┣
+        cfw:fchar-right-junction ?┫
+        cfw:fchar-top-junction ?┯
+        cfw:fchar-top-left-corner ?┏
+        cfw:fchar-top-right-corner ?┓)
+
+  ;; Another unicode chars
+  (setq cfw:fchar-junction ?╬
+        cfw:fchar-vertical-line ?║
+        cfw:fchar-horizontal-line ?═
+        cfw:fchar-left-junction ?╠
+        cfw:fchar-right-junction ?╣
+        cfw:fchar-top-junction ?╦
+        cfw:fchar-top-left-corner ?╔
+        cfw:fchar-top-right-corner ?╗)
+
+
+  ;;  Line breaking
+
+  ;; If a content string is longer than the cell width, the calfw breaks
+  ;; into the multiple lines. In the current implementation, the Calfw
+  ;; has 3 strategies: none, simple and wordwrap. The variable
+  ;; cfw:render-line-breaker selects the strategy to break lines.
+
+  ;;     cfw:render-line-breaker-none
+  ;;         Never breaks lines. Longer contents are truncated.
+  ;;     cfw:render-line-breaker-simple (default)
+  ;;         This strategy breaks lines with rigid width. This may be not so beautiful, but In the most cases it looks good.
+  ;;     cfw:render-line-breaker-wordwrap
+
+  ;;         This strategy breaks lines with the emacs function
+  ;;         fill-region. Although, the line breaking algorithm of the
+  ;;         Emacs is not so smart as more complicated ones, such as
+  ;;         Knuth/Plass algorithm, this strategy is better than the
+  ;;         simple one.
+
+
+  (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'cfw:open-calendar-buffer t))
 
 (provide 'schedule-config)
 ;;; schedule.el ends here
