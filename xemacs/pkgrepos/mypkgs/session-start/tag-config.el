@@ -26,17 +26,13 @@
 (setf (tree-node *tags-config* cmd etags)  "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
 (setf (tree-node *tags-config* cmd gtags)  "gtags -v 2>/dev/null")
 
+;; (defun pushnew-alist (key value list)
+;;   (unless (assoc key list)
+;;     (pushnew (cons key nil) list :key #'car))
+;;   (pushnew value (cdr (assoc key list)) :test #'string-equal))
 
-
-(defvar *dirs-having-tag-files-alist* nil "place to keep dir entries who already have tag/gtag/cscope files.")
-
-(defun pushnew-alist (key value list)
-  (unless (assoc key list)
-    (pushnew (cons key nil) list :key #'car))
-  (pushnew value (cdr (assoc key list)) :test #'string-equal))
-
-(defun push-dir-in-tag-sys-alist (tag-sys dir)
-  (pushnew-alist tag-sys dir *dirs-having-tag-files-alist*))
+;; (defun push-dir-in-tag-sys-alist (tag-sys dir)
+;;   (pushnew-alist tag-sys dir *dirs-having-tag-files-alist*))
 
 (defun search-upwards (files starting-path)
   ;; from: https://lists.ubuntu.com/archives/bazaar/2009q2/057669.html
@@ -55,6 +51,7 @@
               (search-upwards files parent))))))
 
 (defun issubdirp (superdir subdir)
+  ;; check if this is working proplerly.
   (message "issubdirp %s %s" superdir subdir)
   (let ((superdir (file-truename superdir))
         (subdir (file-truename subdir)))
@@ -62,17 +59,17 @@
 
 (defun tag-file-existp-main (tag-sys dir)
   (if (search-upwards (tree-node *tags-config* files tag-sys) dir)
-      (push-dir-in-tag-sys-alist tag-sys dir)))
+      (pushnew dir (tree-node *tags-config* dirs-cache tag-sys))))
 
 (defun tag-file-existp (tag-sys dir)
   (message "tag-file-existp %s %s" tag-sys dir)
-  (let ((dirs (cdr (assoc tag-sys *dirs-having-tag-files-alist*))))
+  (let ((dirs (tree-node *tags-config* dirs-cache tag-sys)))
     (message "tag-file-existp dirs %s" dirs)
     (if (some '(lambda (d)
-                    (issubdirp d dir))
-                  dirs)
+                 (issubdirp d dir))
+              dirs)
         t
-        (tag-file-existp-main tag-sys dir))))
+      (tag-file-existp-main tag-sys dir))))
 
 ;;;;;;;;;;;;;;;;;;
 ;; ref: http://www.emacswiki.org/cgi-bin/wiki/BuildTags
@@ -97,6 +94,7 @@
         (shell-command-no-output cmd)))))
 
 (defun create-tags (tag-sys dir &optional force)
+  (interactive)
   (let* ((tag-dir (ido-read-directory-name (format "Directory to create %s files: " tag-sys) dir dir t))
          (dirs (list tag-dir ;; get other libdirs also like gtags libdir
                     ))
@@ -105,7 +103,8 @@
         (if fun
             (funcall fun dirs)
           (funcall create-tags-default tag-sys dirs force))
-      (push-dir-in-tag-sys-alist tag-sys dir))))
+      ;; (push-dir-in-tag-sys-alist tag-sys dir)
+      (pushnew dir (tree-node *tags-config* dirs-cache tag-sys)))))
 
 (defun create-etags (dir &optional force)
   "Create etags file."
