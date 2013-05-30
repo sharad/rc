@@ -28,6 +28,8 @@
   (interactive)
   (load-file (concat (get-slime-config 'slime-path) "/slime.el")))
 
+(load-slime)
+
 (setf use-slime-config 'ubuntu)
 
 (testing
