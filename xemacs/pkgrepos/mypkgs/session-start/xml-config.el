@@ -53,6 +53,41 @@
       (tree-mode-insert (xml->tree-widget root) (get-buffer-create "*xmltree*")))))
 
 
+(deh-section "imenu"
+  (defun xml-imenu-get-tree ()
+  "Produce the index for Imenu."
+  (mapc (lambda (x) (move-marker x nil)) org-imenu-markers)
+  (setq org-imenu-markers nil)
+  (let* ((n org-imenu-depth)
+	 (re (concat "^" outline-regexp))
+	 (subs (make-vector (1+ n) nil))
+	 (last-level 0)
+	 m level head)
+    (save-excursion
+      (save-restriction
+	(widen)
+	(goto-char (point-max))
+	(while (re-search-backward re nil t)
+	  (setq level (org-reduced-level (funcall outline-level)))
+	  (when (<= level n)
+	    (looking-at org-complex-heading-regexp)
+	    (setq head (org-link-display-format
+			(org-match-string-no-properties 4))
+		  m (org-imenu-new-marker))
+	    (org-add-props head nil 'org-imenu-marker m 'org-imenu t)
+	    (if (>= level last-level)
+		(push (cons head m) (aref subs level))
+	      (push (cons head (aref subs (1+ level))) (aref subs level))
+	      (loop for i from (1+ level) to n do (aset subs i nil)))
+	    (setq last-level level)))))
+    (aref subs 1)))
+
+  ;; (set (make-local-variable imenu-create-index-function) xml-imenu-get-tree)
+  ;; [[file:/usr/share/emacs/23.4/lisp/imenu.el.gz::imenu%20el%20framework%20for%20mode%20specific%20buffer%20indexes][imenu.el]]
+  ;; [[file:~/.setup-trunk/xemacs/pkgrepos/world/misc/pde/imenu-tree.el::A%20list%20to%20search%20icon%20for%20the%20button%20in%20the%20tree][imenu-tree.el]]
+  )
+
+
 
 (deh-section "xstylesheet"
 

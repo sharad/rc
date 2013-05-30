@@ -147,13 +147,13 @@
   (defun ssh-agent-add-key ()
     (require 'misc-config)
     (provide 'host-info)
-    ;; (message "Calling update-ssh-agent > ssh-agent-add-key")
+    (message "Calling update-ssh-agent > ssh-agent-add-key")
     (if (and
          (boundp 'ssh-key-file)
          ssh-key-file)
         (unless (or (not tramp-mode)
-                   (shell-command-no-output "ssh-add -l < /dev/null"))
-          (shell-command-no-output (concat "ssh-add " ssh-key-file " < /dev/null")))
+                    (shell-command-local-no-output "ssh-add -l < /dev/null"))
+          (shell-command-local-no-output (concat "ssh-add " ssh-key-file " < /dev/null")))
         (error "No ssh-key-file defined")))
 
   (defun update-ssh-agent (&optional force)
@@ -164,10 +164,13 @@
     (unwind-protect
          (save-excursion
            (let ((enable-recursive-minibuffers t))
-             (unless (tramp-tramp-file-p default-directory)
+             ;; (unless (tramp-tramp-file-p default-directory)
+             (if t
                (let ((agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el")))
                  ;; (if (or force (null (getenv "SSH_AGENT_PID")))
-                 (if (or force (null (getenv "SSH_AGENT_PID")))
+                 (if (or force
+                         (not (shell-command-local-no-output "ssh-add -l < /dev/null"))
+                         (null (getenv "SSH_AGENT_PID")))
                      (if (file-exists-p agent-file)
                          (progn
                            (if force (tramp-cleanup-all-connections))

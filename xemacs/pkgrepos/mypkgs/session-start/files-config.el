@@ -454,6 +454,27 @@ to do VC operation."
 
 
 
+(deh-section "Buffer with Multiple files"
+
+  (defvar buffer-linked-files nil "list of buffer-linked-files")
+  (make-local-variable 'buffer-linked-files)
+
+  (defun copy-all-file (file)
+    (if buffer-linked-files
+        (dolist (f buffer-linked-files)
+          (write-region nil nil f nil))))
+
+
+  (defun add-linked-file (file)
+    (interactive "Flink file: ")
+    (if buffer-file-name
+        (pushnew file buffer-linked-files)
+        (message "buffer is not associated with any file.")))
+
+  ;; (add-hook 'after-save-hook copy-all-file)
+  )
+
+
 
 
 (provide 'files-config)
