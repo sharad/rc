@@ -7,19 +7,28 @@
   '(require 'cl))
 
 (require 'cl)
+(require 'tree)
+
+
+(defvar *tags-config* nil "Tags system configurations")
+
+;; (setf (tree-node *tags-config* setupfn cscope) 'create-cscope)
+;; (setf (tree-node *tags-config* setupfn etags)  'create-etags)
+;; (setf (tree-node *tags-config* setupfn gtags)  'create-gtags)
+
+(setf (tree-node *tags-config* files cscope) '("cscope.out"))
+(setf (tree-node *tags-config* files etags)  '("TAGS"))
+(setf (tree-node *tags-config* files gtags)  '("GTAGS" "GRTAGS" "GPATH"
+                                               ;; "GSYMS"
+                                               ))
+
+(setf (tree-node *tags-config* cmd cscope) "cscope -Rb - 2>/dev/null")
+(setf (tree-node *tags-config* cmd etags)  "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
+(setf (tree-node *tags-config* cmd gtags)  "gtags -v 2>/dev/null")
 
 
 
-(defvar *create-tags-alist* '((cscope . create-cscope)
-                              (etags  . create-etags)
-                              (gtags  . create-gtags))
-  "Function names.")
 (defvar *dirs-having-tag-files-alist* nil "place to keep dir entries who already have tag/gtag/cscope files.")
-(defvar *tag-systems-files-alist*
-  '((etags  . ("TAGS"))
-    (gtags  . ("GTAGS" "GRTAGS" "GPATH"))
-    (cscope . ("cscope.out")))
-  "Different tag systems files.")
 
 (defun pushnew-alist (key value list)
   (unless (assoc key list)
@@ -29,17 +38,21 @@
 (defun push-dir-in-tag-sys-alist (tag-sys dir)
   (pushnew-alist tag-sys dir *dirs-having-tag-files-alist*))
 
-(defun search-upwards (filename starting-path)
+(defun search-upwards (files starting-path)
   ;; from: https://lists.ubuntu.com/archives/bazaar/2009q2/057669.html
   "Search for `filename' in every directory from `starting-path' up."
   (let ((path (file-name-as-directory starting-path)))
     (message "path %s" (concat path filename))
-    (if (file-exists-p (concat path filename))
+    ;; (if (file-exists-p (concat path filename))
+
+    (if (every '(lambda (f)
+                  (file-exists-p (expand-file-name f path)))
+               files)
         path
         (let ((parent (file-name-directory (directory-file-name path))))
           (if (string= parent path)
               nil
-              (search-upwards filename parent))))))
+              (search-upwards files parent))))))
 
 (defun issubdirp (superdir subdir)
   (message "issubdirp %s %s" superdir subdir)
@@ -48,9 +61,7 @@
     (string-prefix-p superdir subdir)))
 
 (defun tag-file-existp-main (tag-sys dir)
-  (if (every '(lambda (file)
-               (search-upwards file dir))
-             (cdr (assoc tag-sys *tag-systems-files-alist*)))
+  (if (search-upwards (tree-node *tags-config* files tag-sys) dir)
       (push-dir-in-tag-sys-alist tag-sys dir)))
 
 (defun tag-file-existp (tag-sys dir)
@@ -76,20 +87,34 @@
 ;;
 ;; Or to build the tags file within emacs, put this in your .emacs file:
 
+(defun create-tags-default (tag-sys dirs &optional force)
+  (interactive)
+  (dolist (d dirs)
+    (let* ((fmt (tree-node *tags-config* cmd tag-sys))
+           (cmd (read-from-minibuffer (format "%s cmd: " tag-sys) (format fmt d))))
+      (let ((default-directory d))
+        ;; (async-shell-command cmd)
+        (shell-command-no-output cmd)))))
 
-(defun create-tags (tag-sys dir)
-  (let ((dir (ido-read-directory-name (format "Directory to create %s files: " tag-sys) dir dir t)))
-    (when (funcall (cdr (assoc tag-sys *create-tags-alist*)) dir)
+(defun create-tags (tag-sys dir &optional force)
+  (let* ((tag-dir (ido-read-directory-name (format "Directory to create %s files: " tag-sys) dir dir t))
+         (dirs (list tag-dir ;; get other libdirs also like gtags libdir
+                    ))
+         (fun (tree-node *tags-config* setupfn cscope)))
+    (when
+        (if fun
+            (funcall fun dirs)
+          (funcall create-tags-default tag-sys dirs force))
       (push-dir-in-tag-sys-alist tag-sys dir))))
 
-(defun create-etags (dir)
+(defun create-etags (dir &optional force)
   "Create etags file."
   (let* ((fmt "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
          (cmd (read-from-minibuffer "etag cmd: " (format fmt dir))))
     ;; (eshell-command cmd)
     (shell-command-no-output cmd)))
 
-(defun create-gtags (dir)
+(defun create-gtags (dir &optional force)
   "Create etags file."
   (let* ((fmt "gtags -v 2>/dev/null")
          (cmd (read-from-minibuffer "gtag cmd: " (format fmt dir))))
@@ -97,7 +122,7 @@
       ;; (async-shell-command cmd)
       (shell-command-no-output cmd))))
 
-(defun create-cscope (dir)
+(defun create-cscope (dir &optional force)
   "Create etags file."
   (let* ((fmt "cscope -Rb - 2>/dev/null")
          (cmd (read-from-minibuffer "cscope cmd: " (format fmt dir))))
@@ -259,10 +284,9 @@
 
     (defun gtags-global-dir-p (dir)
       "Return non-nil if directory DIR contains a GLOBAL database."
-      (and (file-exists-p (expand-file-name "GPATH" dir))
-           (file-exists-p (expand-file-name "GRTAGS" dir))
-           (file-exists-p (expand-file-name "GSYMS" dir))
-           (file-exists-p (expand-file-name "GTAGS" dir))))
+      (every '(lambda (file)
+                (file-exists-p (expand-file-name file dir)))
+             (tree-node *tags-config* files 'gtags)))
 
     (defun gtags-global-dir (&optional dir)
       "Return the nearest super directory that contains a GLOBAL database."
@@ -298,42 +322,42 @@
   (deh-section "GTAGSLIBDIR"
     ;; (defvar gtags-libdirs 'empty "extra lib dirs")
     ;; (make-local-variable 'gtags-libdirs)
-    (defvar gtags-dir-config-file ".gtags-dir-local.el" "extra lib dirs")
-    (defvar gtags-dir-config nil "gtags dir config")
-    (make-local-variable 'gtags-dir-config)
+    (defvar tag-dir-config-file ".tag-dir-local.el" "extra lib dirs")
+    (defvar tag-dir-config nil "tags dir config")
+    (make-local-variable 'tag-dir-config)
 
-    (defun gtags-store-dir-config ()
-      (let* ((readfile (expand-file-name gtags-dir-config-file (gtags-root-dir))))
-        (sharad/write-file readfile (prin1-to-string gtags-dir-config))
-        gtags-dir-config))
+    (defun tags-dir-store-config ()
+      (let* ((readfile (expand-file-name tag-dir-config-file (gtags-root-dir))))
+        (sharad/write-file readfile (prin1-to-string tag-dir-config))
+        tag-dir-config))
 
-    (defun gtags-restore-dir-config ()
-      (let* ((readfile (expand-file-name gtags-dir-config-file (gtags-root-dir))))
-        (setq gtags-dir-config (sharad/read-file readfile))))
+    (defun tags-dir-restore-config ()
+      (let* ((readfile (expand-file-name tag-dir-config-file (gtags-root-dir))))
+        (setq tag-dir-config (sharad/read-file readfile))))
 
-    (defun gtags-get-dir-config (variable)
+    (defun tags-dir-get-config (variable)
       (interactive
        (let ((variable (intern
                         (ido-completing-read "variable: " '("gtags-libdirs") nil t))))
          (list variable)))
-      (if (or gtags-dir-config (gtags-restore-dir-config))
-          (or (cdr (assoc variable gtags-dir-config))
-              (gtags-set-dir-config variable))
-          (gtags-set-dir-config variable)))
+      (if (or tag-dir-config (tags-dir-restore-config))
+          (or (cdr (assoc variable tag-dir-config))
+              (tags-dir-set-config variable))
+          (tags-dir-set-config variable)))
 
-    (defun gtags-set-dir-config (variable)
+    (defun tags-dir-set-config (variable)
       (interactive
        (let ((variable (intern
                         (ido-completing-read "variable: " '("gtags-libdirs") nil t))))
          (list variable)))
-      (pushnew (list variable) gtags-dir-config :key 'car)
+      (pushnew (list variable) tag-dir-config :key 'car)
       (push (ido-read-directory-name "gtags dir: ")
-            (cdr (assoc variable gtags-dir-config)))
-      (gtags-store-dir-config)
-      (cdr (assoc variable gtags-dir-config)))
+            (cdr (assoc variable tag-dir-config)))
+      (tags-dir-store-config)
+      (cdr (assoc variable tag-dir-config)))
 
     (defun gtags-set-env (envar)
-      (let* ((dirs (gtags-get-dir-config envar)))
+      (let* ((dirs (tags-dir-get-config envar)))
         (when dirs
           (let ((gtagslibpath-env (mapconcat 'identity dirs ":")))
             (push (concat "GTAGSLIBPATH=" gtagslibpath-env) process-environment)
