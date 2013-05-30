@@ -1,0 +1,101 @@
+2003-01-28  Junichi Uekawa  <dancer@debian.org>
+
+	* apt-elserv.el (apt-elserv-menu-page): some dummy things added.
+	progressing very slowly.
+	(apt-elserv-list-page): implement some things.
+	(apt-elserv-package-page): somewhat implement some minor things.
+	I doubt that this is useful.
+
+2003-01-24  Junichi Uekawa  <dancer@debian.org>
+
+	* apt-elserv.el (apt-elserv-function): start making a new file,
+	and getting things ready to get hacking.
+
+2003-01-15  Junichi Uekawa  <dancer@debian.org>
+
+	* apt-mode.el (apt-get-install): make-comint, so that things are
+	interactive.
+	(apt-cache-search, apt-cache-show, apt-cache-showpkg) 
+	(apt-get-install-simulate, apt-get-install, apt-get-remove) 
+	(apt-get-remove-simulate): use apt-mode-current-word instead of 
+	current-word
+	(apt-mode-current-word): Return the current word
+	This fixes problems with filesnames with .
+
+2002-11-13  Junichi Uekawa  <dancer@debian.org>
+
+	* apt-mode.el (dpkg-l-mode): fix typo
+	(apt-mode): add font-lock
+	(apt-cache-show): use (interactive).
+	Ran the thing through checkdoc-interactive.
+
+2002-10-31  Junichi Uekawa  <dancer@debian.org>
+
+	* apt-mode.el (dpkg-l-mode): fix regexp
+	(apt-mode-superuser-command-string): new variable. make "sudo" configurable.
+	(apt-get-simulate-dist-upgrade, apt-get-install-simulate) 
+	(apt-get-install, apt-get-remove, apt-get-remove-simulate) 
+	(apt-get-update): use the new variable
+
+2002-10-30  Junichi Uekawa  <dancer@debian.org>
+
+	* Makefile: Improve makefile so that I can release something.
+
+	* apt-mode.el (apt-dpkg-l): use dpkg-l-mode
+	(dpkg-l-mode): a new mode for dpkg-l with font-lock for dpkg -l
+	(dpkg-l-mode-syntax-table): make an empty syntax-table
+	(dpkg-l-mode): use the new syntax-table
+	(apt-dpkg-l-width): make the variable customizable
+	(apt-dpkg-l): make COLUMNS be passed to dpkg -l 
+
+2002-03-13  Junichi Uekawa  <dancer@debian.org>
+
+	* apt-mode.el (apt-mode-map): added apt-dpkg-l for "l". which was missing for some reason.
+	(apt-get-remove): added -y to apt-get-remove. -- possible revert?
+
+2002-01-25  Junichi Uekawa  <dancer@debian.org>
+
+	* dpkg-rpm: created a file, but not quite done.
+
+	* eselect: Created the eselect script to start up the program.
+
+2002-01-06    <dancer@debian.org>
+
+	* Makefile (clean): added a makefile just to make cleaning easier.
+
+	* Release 20020106 version to the public.
+
+2002-01-05    <dancer@debian.org>
+
+	* apt-mode.el: added some notes about the upstream page.
+
+	* COPYING: added the GPL license file.
+
+	* README: Created the file with minimal contents.
+
+	* apt-mode.el (apt): added remove and install
+	(apt-mode-map): added remove and install
+	(apt-get-install-simulate): added
+	(apt-get-install): added
+	(apt-get-remove): added
+	(apt-get-remove-simulate): added
+	(apt-get-install-simulate): fixed typo here, and other places.
+	(apt): provide 'apt.
+	(apt): added "u" character for update the lists.
+	(apt-mode-map): assign "u" for apt-get update
+	(apt-get-update): added a new function to run apt-get update.
+
+2002-01-04    <dancer@debian.org>
+
+	* apt-mode.el (apt-cache-search): added default using (current-word)
+	(apt-cache-show): also
+	(apt-cache-showpkg): also.
+	(apt): added help message for key binding.
+	(apt): clear buffer before changes.
+	(apt-get-simulate-dist-upgrade): added a new function
+	(apt-dpkg-l): added a new function
+
+2002-01-01    <dancer@debian.org>
+
+	* apt-mode.el (apt): Created a new function.
+

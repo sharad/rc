@@ -217,6 +217,12 @@ Write data into the file specified by `recentf-save-file'."
 White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
     (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))))
 
-
+(deh-section "library utils"
+  (defun find-library-directory (lib)
+    (file-name-directory (let (nosuffix)
+                           (locate-file lib
+                                        load-path
+                                        (append (unless nosuffix (get-load-suffixes))
+                                                load-file-rep-suffixes))))))
 
 (provide 'utils-config)

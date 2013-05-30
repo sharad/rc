@@ -1,0 +1,1 @@
+../../xemacs/pkgrepos/world/gits/devhelp-index/devhelp-query.py

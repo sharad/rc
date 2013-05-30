@@ -99,6 +99,19 @@
 (autoload 'list-packages "package" "Elap Package" t)
 (autoload 'package-install "package" "Elap Package" t)
 
+
+
+(deh-require-maybe (progn
+                     apt-utils
+                     apt-utils-ido
+                     apt-mode ;; http://www.netfort.gr.jp/~dancer/software/downloads/list.cgi#apt-el
+                     apt-elserv
+                     helm-apt)
+  ;; make  function to install missing package.
+
+  )
+
+
 (provide 'package-config)
 
 ;;; package.el ends here

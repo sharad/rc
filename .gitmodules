@@ -70,3 +70,15 @@
 [submodule "xemacs/pkgrepos/world/gits/s"]
 	path = xemacs/pkgrepos/world/gits/s
 	url = https://github.com/magnars/s.el.git
+[submodule "xemacs/pkgrepos/world/gits/cclookup"]
+	path = xemacs/pkgrepos/world/gits/cclookup
+	url = git@github.com:tsgates/cclookup.git
+[submodule "xemacs/pkgrepos/world/gits/ya-cppref"]
+	path = xemacs/pkgrepos/world/gits/ya-cppref
+	url = git@github.com:whitypig/ya-cppref.git
+[submodule "xemacs/pkgrepos/world/gits/devhelp-index"]
+	path = xemacs/pkgrepos/world/gits/devhelp-index
+	url = git@github.com:martine/devhelp-index.git
+[submodule "xemacs/pkgrepos/world/gits/emacs-apt"]
+	path = xemacs/pkgrepos/world/gits/emacs-apt
+	url = git@github.com:cgroza/Emacs-apt.git

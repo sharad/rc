@@ -1,0 +1,1 @@
+../../xemacs/pkgrepos/world/gits/cclookup/cclookup.py
