@@ -34,19 +34,19 @@ define_webjump("search",
 //              "Google");
 
 // I'm Feeling Lucky.
-define_webjump("clucky",
+define_webjump("search/clucky",
                "http://www.google.com/search?hl=en&biw=1364&bih=384&sclient=psy-ab&q=%s&oq=%s&aq=f&aqi=g4&aql=&gs_l=hp.9..0l4.0l0l5l1800l0l0l0l0l0l0l0l0ll0l0.frgbld.&pbx=1&btnI=1"
                // "http://www.google.com/search?btnI=I%27m+Feeling+Lucky&ie=UTF-8&oe=UTF-8&q=%s"
               )
 
 // I'm Feeling Lucky.
-define_webjump("lucky",
+define_webjump("search/lucky",
                "http://www.google.com/search?hl=en&&q=%s&btnI=1"
               )
                // "http://www.google.com/search?btnI=I%27m+Feeling+Lucky&ie=UTF-8&oe=UTF-8&q=%s"
 
 
-define_webjump("blog",
+define_webjump("search/blog",
                "http://blogsearch.google.com/blogsearch/cse?cx=013269018370076798483:gg7jrrhpsy4&cof=FORID:1&q=%s&sa=Search");
 //              "Search");
 // define_webjump("map",
@@ -55,22 +55,6 @@ define_webjump("blog",
 define_webjump("tag",
                "http://del.icio.us/sh4r4d/%s");
 //              "Your del.icio.us tag");
-define_webjump("koders",
-               "http://koders.com/default.aspx?s=%s&btn=&la=*&li=*");
-//              "Koder code search");
-define_webjump("cclass",
-               "http://koders.com/default.aspx?s=cdef%3A%s&btn=&la=*&li=*");
-//              "Koder C, C++ class function definition");
-define_webjump("cinterface",
-               "http://koders.com/default.aspx?s=idef%3A%s&btn=&la=*&li=*");
-//              "Koder C C++ Interface");
-define_webjump("cmethod",
-               "http://koders.com/default.aspx?s=mdef%3A%s&btn=&la=*&li=*");
-//              "Koder C Method");
-define_webjump("cfile",
-               "http://koders.com/default.aspx?s=file%3A%s&btn=&la=*&li=*");
-//              "Koder C files");
-
 // del.icio.us
 add_delicious_webjumps("sh4r4d");
 define_webjump("tag",
@@ -399,31 +383,64 @@ define_webjump("psychology/changingminds", "http://changingminds.org/");
 
 // 2.10.1. Google Codesearch
 
-define_webjump("codesearch", "http://www.google.com/codesearch?q=%s");
+define_webjump("code/google", "http://www.google.com/codesearch?q=%s");
 
 define_webjump("code/fossies", "http://fossies.org/search?q=%s&rd=%2Ffresh%2F&sd=0&ud=%2F&ap=no&ca=no&dp=0&si=0&sn=1&ml=30&dml=3");
 
 // 2.10.2. Perl
 
-define_webjump("perldoc", "http://perldoc.perl.org/search.html?q=%s");
-define_webjump("cpan", "http://search.cpan.org/search?query=%s&mode=all");
+define_webjump("code/perl/doc", "http://perldoc.perl.org/search.html?q=%s");
+define_webjump("code/perl/cpan", "http://search.cpan.org/search?query=%s&mode=all");
 
 // 2.10.3. Qt
 
-define_webjump("qt", "http://doc.qtsoftware.com/4.5/%s.html");
+define_webjump("code/qt", "http://doc.qtsoftware.com/4.5/%s.html");
 
 // Not actually a search engine, but it's good enough to look up classes by name.
 
 // 2.10.4. TeX
 
-define_webjump("ctan-desc", "http://www.ctan.org/cgi-bin/search.py?"+
+define_webjump("code/tex/ctan-desc", "http://www.ctan.org/cgi-bin/search.py?"+
                "metadataSearch=%s&metadataSearchSubmit=Search");
-define_webjump("ctan-pack", "http://www.ctan.org/cgi-bin/search.py?"+
+define_webjump("code/tex/ctan-pack", "http://www.ctan.org/cgi-bin/search.py?"+
                "tdsFilename=%s&tdsFilenameSearch=Search");
-define_webjump("ctan-file", "http://www.ctan.org/cgi-bin/filenameSearch.py?"+
+define_webjump("code/tex/ctan-file", "http://www.ctan.org/cgi-bin/filenameSearch.py?"+
                "filename=%s&Search=Search");
-define_webjump("ctan-doc", "http://www.ctan.org/cgi-bin/searchFullText.py?"+
+define_webjump("code/tex/ctan-doc", "http://www.ctan.org/cgi-bin/searchFullText.py?"+
                "fullTextSearch=%s&fullTextSearchSubmit=Search");
+
+// 2.10.5
+// Get code snippets
+define_webjump("code/snippets",
+               "http://snippets.dzone.com/search/get_results?q=%s");
+define_webjump("code/gsnippets",
+               "http://www.google.co.in/search?q=%20site%3Asnippets.dzone.com%20%s%20&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai");
+define_webjump("code/languages",
+               "http://rosettacode.org/mw/index.php?title=Special%3ASearch&search=%s&go=Go");
+
+// 2.10.6
+define_webjump("code/koders",
+               "http://koders.com/default.aspx?s=%s&btn=&la=*&li=*");
+//              "Koder code search");
+define_webjump("code/cpp/koders/cclass",
+               "http://koders.com/default.aspx?s=cdef%3A%s&btn=&la=*&li=*");
+//              "Koder C, C++ class function definition");
+define_webjump("code/cpp/koders/cinterface",
+               "http://koders.com/default.aspx?s=idef%3A%s&btn=&la=*&li=*");
+//              "Koder C C++ Interface");
+define_webjump("code/c/koders/cmethod",
+               "http://koders.com/default.aspx?s=mdef%3A%s&btn=&la=*&li=*");
+//              "Koder C Method");
+define_webjump("code/c/koders/cfile",
+               "http://koders.com/default.aspx?s=file%3A%s&btn=&la=*&li=*");
+//              "Koder C files");
+define_webjump("code/cpp/cppreference",
+               "http://en.cppreference.com/mwiki/index.php?title=Special%3ASearch&search=%s&button=");
+define_webjump("code/cpp/cplusplus",
+               "http://www.cplusplus.com/reference/set/set/?kw=%s");
+
+
+
 
 // 2.11. Reference
 
@@ -634,14 +651,6 @@ define_webjump("lispdocfull",
 
 // "http://www.google.com/custom?q=defstructbind&sa=Google+Search&client=pub-9189966831921234&forid=1&channel=7601138232&ie=UTF-8&oe=UTF-8&flav=0000&sig=BT4vXQm3jSJWiv_9&cof=GALT%3A%23008000%3BGL%3A1%3BDIV%3A%23FFFFFF%3BVLC%3A663399%3BAH%3Acenter%3BBGC%3AFFFFFF%3BLBGC%3A336699%3BALC%3A0000FF%3BLC%3A0000FF%3BT%3A000000%3BGFNT%3A0000FF%3BGIMP%3A0000FF%3BFORID%3A1&hl=en"
 
-
-// Get code snippets
-define_webjump("snippets",
-               "http://snippets.dzone.com/search/get_results?q=%s");
-define_webjump("gsnippets",
-               "http://www.google.co.in/search?q=%20site%3Asnippets.dzone.com%20%s%20&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai");
-define_webjump("languages",
-               "http://rosettacode.org/mw/index.php?title=Special%3ASearch&search=%s&go=Go");
 
 // http://www.123people.com/s/firstname+lastname/world
 

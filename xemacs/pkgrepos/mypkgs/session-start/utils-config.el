@@ -120,35 +120,27 @@
 
 (defun shell-command-no-output (cmd)
   ;; (interactive "scmd: ")
-  (let* ((handler
-          (find-file-name-handler (directory-file-name default-directory)
-                                  'shell-command))
-         (retval
-          (if handler
-              ;;(process-file-shell-command
-              ;; (funcall handler 'shell-command cmd nil nil)
-              ;; (start-file-process :shcmd1 nil cmd)
-              ;; (call-process shell-file-name nil nil nil "-c" cmd)
-              (process-file shell-file-name nil nil nil "-c" cmd)
-              ;; (start-file-process "shcmd1" nil shell-file-name "-c" cmd)
-              )))
-    (if (equal 0 retval) t)))
+  (let ((handler
+         (find-file-name-handler (directory-file-name default-directory)
+                                 'shell-command)))
+         (equal 0
+           (if handler
+               ;;(process-file-shell-command
+               ;; (funcall handler 'shell-command cmd nil nil)
+               ;; (start-file-process :shcmd1 nil cmd)
+               ;; (call-process shell-file-name nil nil nil "-c" cmd)
+               ;; (start-file-process "shcmd1" nil shell-file-name "-c" cmd)
+               (process-file shell-file-name nil nil nil "-c" cmd)
+               (call-process shell-file-name nil nil nil "-c" cmd)))))
 
 (defun shell-command-local-no-output (cmd)
   ;; (interactive "scmd: ")
-  (let* ((handler
-          (find-file-name-handler (directory-file-name default-directory)
-                                  'shell-command))
-         (retval
-          (if handler
-              ;;(process-file-shell-command
-              ;; (funcall handler 'shell-command cmd nil nil)
-              ;; (start-file-process :shcmd1 nil cmd)
-              (call-process shell-file-name nil nil nil "-c" cmd)
-              ;; (process-file shell-file-name nil nil nil "-c" cmd)
-              ;; (start-file-process "shcmd1" nil shell-file-name "-c" cmd)
-              )))
-    (if (equal 0 retval) t)))
+  (let ((default-directory "~/"))
+    (shell-command-no-output cmd)))
+
+(defun shell-command-local-no-output (cmd)
+  ;; (interactive "scmd: ")
+  (equal 0 (call-process shell-file-name nil nil nil "-c" cmd)))
 
 
 (defun messageto (buf &rest text)

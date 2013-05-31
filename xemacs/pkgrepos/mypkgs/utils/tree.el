@@ -36,9 +36,9 @@
 (defmacro tree-node (tree &rest keys)
   (if keys
       `(cdr
-        (assoc ',(car (last keys))
+        (assoc ,(car (last keys))
                (pushnew
-                ',(last keys)
+                (list ,@(last keys))
                 (tree-node ,tree ,@(butlast keys))
                 :key 'car)))
     tree))

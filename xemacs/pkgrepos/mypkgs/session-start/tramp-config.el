@@ -151,7 +151,7 @@
     (if (and
          (boundp 'ssh-key-file)
          ssh-key-file)
-        (unless (or (not tramp-mode)
+        (unless (and (not tramp-mode)
                     (shell-command-local-no-output "ssh-add -l < /dev/null"))
           (shell-command-local-no-output (concat "ssh-add " ssh-key-file " < /dev/null")))
         (error "No ssh-key-file defined")))
@@ -168,7 +168,7 @@
              (if t
                (let ((agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el")))
                  ;; (if (or force (null (getenv "SSH_AGENT_PID")))
-                 (if (or force
+                 (when (or force
                          (not (shell-command-local-no-output "ssh-add -l < /dev/null"))
                          (null (getenv "SSH_AGENT_PID")))
                      (if (file-exists-p agent-file)
@@ -184,7 +184,8 @@
                            ;; (message "loading %s" agent-file)
                            )
                          (message "Unable to find agent file."))
-                     (ssh-agent-add-key)))
+                     ;; (ssh-agent-add-key)
+                     ))
                (let ()
                  ;; (message "update-ssh-agent yes authinfo")
                  (find-file-noselect (or
@@ -217,7 +218,47 @@
   (add-hook 'grep-mode-hook #'tramp-output-wash)
   (add-hook 'cscope-list-entry-hook #'tramp-output-wash)
 
-  )
+  (deh-section "Info"
+;; tramp-cleanup-connection (vec)
+;; want to know what is vec than see definition of tramp-cleanup-connection
+;; (with-parsed-tramp-file-name buffer-file-name nil v)
+
+;; (defun tramp-connectable-p (filename)
+;;   "Check, whether it is possible to connect the remote host w/o side-effects.
+;; This is true, if either the remote host is already connected, or if we are
+;; not in completion mode."
+;;   (and (tramp-tramp-file-p filename)
+;;        (with-parsed-tramp-file-name filename nil
+;; 	 (or (get-buffer (tramp-buffer-name v))
+;; 	     (not (tramp-completion-mode-p))))))
+
+;; (tramp-open-connection-setup-interactive-shell PROC VEC)
+
+
+
+  (defun tramp-file-connection (file-name)
+    (when (and file-name (file-remote-p file-name))
+      (with-parsed-tramp-file-name file-name nil v)))
+
+  (defun tramp-connection-file (connection)
+    (when connection
+        (tramp-make-tramp-file-name
+         (tramp-file-name-method connection)
+         (tramp-file-name-user connection)
+         (tramp-file-name-host connection)
+         (tramp-file-name-localname connection))))
+
+  (defun tramp-connection-prefix (connection)
+    (when connection
+      (tramp-make-tramp-file-name
+       (tramp-file-name-method connection)
+       (tramp-file-name-user connection)
+       (tramp-file-name-host connection)
+       nil)))
+
+  (defun tramp-file-prefix (file-name)
+    (tramp-connection-prefix
+     (tramp-file-connection file-name)))))
 
 (when nil
   (defun tramp-do-file-attributes-with-stat
@@ -308,47 +349,7 @@
                  (format "DISPLAY=%s" (getenv "DISPLAY")))))
 
 
-(deh-section "Info"
-;; tramp-cleanup-connection (vec)
-;; want to know what is vec than see definition of tramp-cleanup-connection
-;; (with-parsed-tramp-file-name buffer-file-name nil v)
 
-;; (defun tramp-connectable-p (filename)
-;;   "Check, whether it is possible to connect the remote host w/o side-effects.
-;; This is true, if either the remote host is already connected, or if we are
-;; not in completion mode."
-;;   (and (tramp-tramp-file-p filename)
-;;        (with-parsed-tramp-file-name filename nil
-;; 	 (or (get-buffer (tramp-buffer-name v))
-;; 	     (not (tramp-completion-mode-p))))))
-
-;; (tramp-open-connection-setup-interactive-shell PROC VEC)
-
-
-
-  (defun tramp-file-connection (file-name)
-    (when (and file-name (file-remote-p file-name))
-      (with-parsed-tramp-file-name file-name nil v)))
-
-  (defun tramp-connection-file (connection)
-    (when connection
-        (tramp-make-tramp-file-name
-         (tramp-file-name-method connection)
-         (tramp-file-name-user connection)
-         (tramp-file-name-host connection)
-         (tramp-file-name-localname connection))))
-
-  (defun tramp-connection-prefix (connection)
-    (when connection
-      (tramp-make-tramp-file-name
-       (tramp-file-name-method connection)
-       (tramp-file-name-user connection)
-       (tramp-file-name-host connection)
-       nil)))
-
-  (defun tramp-file-prefix (file-name)
-    (tramp-connection-prefix
-     (tramp-file-connection file-name))))
 
 
 

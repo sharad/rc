@@ -12,19 +12,24 @@
 
 (defvar *tags-config* nil "Tags system configurations")
 
-;; (setf (tree-node *tags-config* setupfn cscope) 'create-cscope)
-;; (setf (tree-node *tags-config* setupfn etags)  'create-etags)
-;; (setf (tree-node *tags-config* setupfn gtags)  'create-gtags)
+;; (setf (tree-node *tags-config* 'setupfn 'cscope) 'create-cscope)
+;; (setf (tree-node *tags-config* 'setupfn 'etags)  'create-etags)
+;; (setf (tree-node *tags-config* 'setupfn 'gtags)  'create-gtags)
 
-(setf (tree-node *tags-config* files cscope) '("cscope.out"))
-(setf (tree-node *tags-config* files etags)  '("TAGS"))
-(setf (tree-node *tags-config* files gtags)  '("GTAGS" "GRTAGS" "GPATH"
+;; (setq *tags-config* nil)
+
+;; (let ((tg 'gtags))
+;;   (tree-node *tags-config* 'files tg))
+
+(setf (tree-node *tags-config* 'files 'cscope) '("cscope.out"))
+(setf (tree-node *tags-config* 'files 'etags)  '("TAGS"))
+(setf (tree-node *tags-config* 'files 'gtags)  '("GTAGS" "GRTAGS" "GPATH"
                                                ;; "GSYMS"
                                                ))
 
-(setf (tree-node *tags-config* cmd cscope) "cscope -Rb - 2>/dev/null")
-(setf (tree-node *tags-config* cmd etags)  "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
-(setf (tree-node *tags-config* cmd gtags)  "gtags -v 2>/dev/null")
+(setf (tree-node *tags-config* 'cmd 'cscope) "cscope -Rb - 2>/dev/null")
+(setf (tree-node *tags-config* 'cmd 'etags)  "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
+(setf (tree-node *tags-config* 'cmd 'gtags)  "gtags -v 2>/dev/null")
 
 ;; (defun pushnew-alist (key value list)
 ;;   (unless (assoc key list)
@@ -38,7 +43,7 @@
   ;; from: https://lists.ubuntu.com/archives/bazaar/2009q2/057669.html
   "Search for `filename' in every directory from `starting-path' up."
   (let ((path (file-name-as-directory starting-path)))
-    (message "path %s" (concat path filename))
+    (message "path %s files %s" path files)
     ;; (if (file-exists-p (concat path filename))
 
     (if (every '(lambda (f)
@@ -58,12 +63,12 @@
     (string-prefix-p superdir subdir)))
 
 (defun tag-file-existp-main (tag-sys dir)
-  (if (search-upwards (tree-node *tags-config* files tag-sys) dir)
-      (pushnew dir (tree-node *tags-config* dirs-cache tag-sys))))
+  (if (search-upwards (tree-node *tags-config* 'files tag-sys) dir)
+      (pushnew dir (tree-node *tags-config* 'dirs-cache tag-sys))))
 
 (defun tag-file-existp (tag-sys dir)
   (message "tag-file-existp %s %s" tag-sys dir)
-  (let ((dirs (tree-node *tags-config* dirs-cache tag-sys)))
+  (let ((dirs (tree-node *tags-config* 'dirs-cache tag-sys)))
     (message "tag-file-existp dirs %s" dirs)
     (if (some '(lambda (d)
                  (issubdirp d dir))
@@ -87,7 +92,7 @@
 (defun create-tags-default (tag-sys dirs &optional force)
   (interactive)
   (dolist (d dirs)
-    (let* ((fmt (tree-node *tags-config* cmd tag-sys))
+    (let* ((fmt (tree-node *tags-config* 'cmd tag-sys))
            (cmd (read-from-minibuffer (format "%s cmd: " tag-sys) (format fmt d))))
       (let ((default-directory d))
         ;; (async-shell-command cmd)
@@ -98,13 +103,13 @@
   (let* ((tag-dir (ido-read-directory-name (format "Directory to create %s files: " tag-sys) dir dir t))
          (dirs (list tag-dir ;; get other libdirs also like gtags libdir
                     ))
-         (fun (tree-node *tags-config* setupfn cscope)))
+         (fun (tree-node *tags-config* 'setupfn 'cscope)))
     (when
         (if fun
             (funcall fun dirs)
           (funcall create-tags-default tag-sys dirs force))
       ;; (push-dir-in-tag-sys-alist tag-sys dir)
-      (pushnew dir (tree-node *tags-config* dirs-cache tag-sys)))))
+      (pushnew dir (tree-node *tags-config* 'dirs-cache 'tag-sys)))))
 
 (defun create-etags (dir &optional force)
   "Create etags file."
@@ -285,7 +290,7 @@
       "Return non-nil if directory DIR contains a GLOBAL database."
       (every '(lambda (file)
                 (file-exists-p (expand-file-name file dir)))
-             (tree-node *tags-config* files 'gtags)))
+             (tree-node *tags-config* 'files 'gtags)))
 
     (defun gtags-global-dir (&optional dir)
       "Return the nearest super directory that contains a GLOBAL database."
