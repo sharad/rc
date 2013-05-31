@@ -49,12 +49,12 @@
       (beginning-of-buffer)
       (while (re-search-forward "^ii  \\([^ ]*\\)" nil t)
 	(setq currentpkg (match-string 1))
-	(setq htmlstr 
+	(setq htmlstr
 	      (concat
 	       htmlstr
 	       (format "<a href=\"/apt/pkg/%s\">%s</a> "
 		       currentpkg currentpkg))))
-      (with-temp-buffer 
+      (with-temp-buffer
 	(apt-elserv-insert-header "list")
 	(insert htmlstr)
 	(apt-elserv-insert-footer)
@@ -72,7 +72,7 @@
     (while (re-search-forward "\\([^ ]+\\)" nil t)
       (setq currentpkg (match-string 1))
       (setq htmlstr
-	    (concat 
+	    (concat
 	     htmlstr
 	     (format "<a href=\"/apt/pkg/%s\">%s</a> "
 		     currentpkg currentpkg))))
@@ -89,10 +89,10 @@
 
 (defun apt-elserv-menu-page (result)
   "serve apt elserv main menu page"
-  (elserv-set-result-header 
+  (elserv-set-result-header
    result
    (list 'content-type "text/html"))
-  (elserv-set-result-body 
+  (elserv-set-result-body
    result
    "
 <html>
@@ -102,13 +102,13 @@
 <body>
   <h1>APT/Elserv page</h1>
   <p>
-   Debian maintenance through APT. 
+   Debian maintenance through APT.
   </p>
 </body>
 </html>
 "))
 
-(defun apt-elserv-function (result path ppath request) 
+(defun apt-elserv-function (result path ppath request)
   "APT elserv interface
 
 RESULT is the resulting value
@@ -135,3 +135,4 @@ REQUEST is the request data."
 		  :description "apt-mode"))
 
 
+(provide 'apt-elserv)

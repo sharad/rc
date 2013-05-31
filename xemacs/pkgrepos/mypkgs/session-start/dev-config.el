@@ -140,19 +140,17 @@
 ;; load cclookup when compile time
 (eval-when-compile (require 'cclookup))
 (deh-require-maybe cclookup
+  ;; this problem I were facing http://www.gnu.org/software/emacs/manual/html_node/elisp/Init-File.html
   ;; taesoo.org/proj/cclookup.html
   ;; http://www.cppreference.com/wiki
   ;; http://github.com/tsgates/cclookup
-  (setq cclookup-program "cclookup")
-
-
-
 
   ;; add cclookup to your loadpath, ex) "~/.lisp/addons/cclookup"
-  (setq cclookup-dir (find-library-directory "cclookup")
+  (setq ccreference-dir "~/.doc/html/cppreference/"
+        cclookup-dir (find-library-directory "cclookup")
         ;; set executable file and db file
         cclookup-program (concat cclookup-dir "/cclookup.py")
-        cclookup-db-file (concat cclookup-dir "/cclookup.db"))
+        cclookup-db-file (concat ccreference-dir "/cclookup.db"))
 
 
 

@@ -1,4 +1,7 @@
 
+(require 'general-testing)
+
+
 (defvar use-slime-config 'ubuntu "Config")
 
 (defvar quicklisp-path (if (string-equal (system-name) "spratap")
@@ -24,12 +27,6 @@
             (slime-backend . "/usr/share/common-lisp/source/slime/swank-loader.lisp"))))
   "Available")
 
-(defun load-slime ()
-  (interactive)
-  (load-file (concat (get-slime-config 'slime-path) "/slime.el")))
-
-(load-slime)
-
 (setf use-slime-config 'ubuntu)
 
 (testing
@@ -49,6 +46,15 @@
   (interactive)
   (dolist (v (list slime-path slime-backend)
            (format "%s: %s" (symbol-name v) v))))
+
+
+(defun load-slime ()
+  (interactive)
+  (load-file (concat (get-slime-config 'slime-path) "/slime.el")))
+
+(load-slime)
+
+
 
 (when t
     (setq inferior-lisp-program "sbcl"

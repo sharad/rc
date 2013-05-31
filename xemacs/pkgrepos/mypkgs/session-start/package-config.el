@@ -104,7 +104,8 @@
 (deh-require-maybe (progn
                      apt-utils
                      apt-utils-ido
-                     apt-mode ;; http://www.netfort.gr.jp/~dancer/software/downloads/list.cgi#apt-el
+                     ;; apt-mode ;; http://www.netfort.gr.jp/~dancer/software/downloads/list.cgi#apt-el
+                     apt
                      apt-elserv
                      helm-apt)
   ;; make  function to install missing package.
