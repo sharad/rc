@@ -111,28 +111,28 @@
       ;; (push-dir-in-tag-sys-alist tag-sys dir)
       (pushnew dir (tree-node *tags-config* 'dirs-cache 'tag-sys)))))
 
-(defun create-etags (dir &optional force)
-  "Create etags file."
-  (let* ((fmt "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
-         (cmd (read-from-minibuffer "etag cmd: " (format fmt dir))))
-    ;; (eshell-command cmd)
-    (shell-command-no-output cmd)))
+;; (defun create-etags (dir &optional force)
+;;   "Create etags file."
+;;   (let* ((fmt "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
+;;          (cmd (read-from-minibuffer "etag cmd: " (format fmt dir))))
+;;     ;; (eshell-command cmd)
+;;     (shell-command-no-output cmd)))
 
-(defun create-gtags (dir &optional force)
-  "Create etags file."
-  (let* ((fmt "gtags -v 2>/dev/null")
-         (cmd (read-from-minibuffer "gtag cmd: " (format fmt dir))))
-    (let ((default-directory dir))
-      ;; (async-shell-command cmd)
-      (shell-command-no-output cmd))))
+;; (defun create-gtags (dir &optional force)
+;;   "Create etags file."
+;;   (let* ((fmt "gtags -v 2>/dev/null")
+;;          (cmd (read-from-minibuffer "gtag cmd: " (format fmt dir))))
+;;     (let ((default-directory dir))
+;;       ;; (async-shell-command cmd)
+;;       (shell-command-no-output cmd))))
 
-(defun create-cscope (dir &optional force)
-  "Create etags file."
-  (let* ((fmt "cscope -Rb - 2>/dev/null")
-         (cmd (read-from-minibuffer "cscope cmd: " (format fmt dir))))
-    (let ((default-directory dir))
-      ;; (async-shell-command cmd)
-      (shell-command-no-output cmd))))
+;; (defun create-cscope (dir &optional force)
+;;   "Create etags file."
+;;   (let* ((fmt "cscope -Rb - 2>/dev/null")
+;;          (cmd (read-from-minibuffer "cscope cmd: " (format fmt dir))))
+;;     (let ((default-directory dir))
+;;       ;; (async-shell-command cmd)
+;;       (shell-command-no-output cmd))))
 
 ;; (defun create-c-tags (dir-name)
 ;;   "Create tags file."
