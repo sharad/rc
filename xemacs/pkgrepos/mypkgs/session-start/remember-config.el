@@ -168,7 +168,6 @@
         (funcall mgrfn fun 'Ad-organizer)))
 
   (remember-set-orgnizer-advice)
-  ;; (sharad/remember-unset-orgnizer)
 
   ;; (unless (ad-find-advice 'ccm-first-start 'before 'reset-ccm-vpos)
   ;;   (defadvice ccm-first-start (before reset-ccm-vpos (animate) activate)
@@ -218,24 +217,12 @@
              (buffer-substring (point) (mark)))))
     (let ((organizer 'planner))
       (setq remember-organizer organizer)
-      (remember initial)))
-
-
-
-
-  )
+      (remember initial))))
 
 (progn
-
   (defvar ad-remember-mode-after-hook nil "")
-
   (defadvice remember-buffer (after remember-mode-after-hook activate)
-    (run-hooks  'ad-remember-mode-after-hook))
-
-
-
- )
-
+    (run-hooks  'ad-remember-mode-after-hook)))
 
 
 (deh-section "Idle reminder"
