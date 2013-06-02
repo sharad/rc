@@ -167,5 +167,24 @@
 
 
 
+
+
+;;;; utils funs: could change
+
+(defun bugzilla-search-bugs (attributes criteria)
+  (bugzilla-method 'Bug.search "bugs" attributes criteria))
+
+(defun bugzilla-get-bugs (attributes criteria)
+  (bugzilla-method 'Bug.get "bugs" attributes criteria))
+
+; (bugzilla-method 'Bug.search "bugs" '("id" "summary") t)
+; (bugzilla-method 'Bug.get "bugs" '("id" "summary") t)
+; (bugzilla-method 'Bug.get "bugs" '("id" "summary") '(("ids" 12123 32121)))
+
+
+;;;;
+
+
+
 (provide 'bugz)
 ;;; bugz.el ends here

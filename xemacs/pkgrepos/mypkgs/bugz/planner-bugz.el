@@ -33,7 +33,7 @@
 
 (task-status-add-maps bugz
                       ((inprogress . "ASSIGNED")
-                       (open     . "OPENED")
+                       (open       . "OPENED")
                        (completed  . "RESOLVED")
                        (cancelled  . "WONTFIX")))
 
@@ -108,6 +108,15 @@
   (dolist (bug (bugzilla-search-bugs '("id" "summary" "status") t))
     (planner-bugzilla-create-bug-to-task bug page)))
 
+
+;;;###autoload
+(defun planner-bugzilla-fetch-new-bugtask (&optional page)
+  ;; add url username used in bug list.
+  (interactive
+   (list
+    (planner-read-non-date-page (planner-file-alist))))
+  (dolist (bug (bugzilla-get-bugs '("id" "summary" "status") t))
+    (planner-bugzilla-create-bug-to-task bug page)))
 
 
 (provide 'planner-bugz)
