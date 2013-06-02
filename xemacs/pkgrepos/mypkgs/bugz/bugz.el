@@ -26,6 +26,7 @@
 
 
 (require 'xml-rpc)
+(require 'read-utils)
 
 (defvar bugz-url "https://bugzilla.mozilla.org/xmlrpc.cgi" "Bugz xmlrpc url.")
 (defvar bugz-default-username nil "Bugzilla default username used in search.")
@@ -63,6 +64,16 @@
     (mapcar #'modify-list items)))
 ;;;;
 
+
+;;;;
+(when nil
+  (read-from-minibuffer-fns
+   (lambda (inittext km)
+     (read-from-minibuffer (concat "value"  ": ") inittext km))
+   (lambda (inittext km)
+     (read-list-from-minibuffer (concat "value for list"  ": ") inittext km))))
+;;;;
+
 ;;;; critaria management
 (defvar bugz-search-criterias
       `(("assigned to me and status OPEN" . (,@(if (boundp 'bugz-default-username)
@@ -70,7 +81,7 @@
                                                ("status" . ,(if (boundp 'bugz-default-status)
                                                                 bugz-default-status
                                                                 "OPEN")))))
-  "Bug search critarias.")
+  "Bug search criteria.")
 
 
 (defun bugz-get-attribute-name ()
@@ -78,83 +89,15 @@
     (if (not (string-equal retval ""))
         retval)))
 
+
+
 (defun bugz-get-attribute-value (attribute)
-  (let ((km
-         (define-keymap (copy-keymap minibuffer-local-map) (kbd "C-v")
-           #'(lambda () "test"))
-          ))
-    (read-from-minibuffer (concat "value for " attribute ": ") km)))
+  (read-from-minibuffer-fns
+   (lambda (inittext km)
+     (read-from-minibuffer (concat "value for " attribute ": ") inittext km))
+   (lambda (inittext km)
+     (read-list-from-minibuffer (concat "list of values for " attribute ": ") inittext km))))
 
-;;{{ using condition-case
-(defun testb ()
-  (interactive)
-  (setq deactivate-mark nil)
-  (throw 'exit "test"))
-
-
-(defun eg-read-any-data-using-condcase ()
-  (let ((km (copy-keymap minibuffer-local-map)))
-    (define-key km (kbd "C-v") 'testb)
-    (condition-case test
-        (read-from-minibuffer (concat "value for "  ": ") nil km)
-      (error (read-from-minibuffer "iooo: ")))))
-;;}}
-
-;;{{ using throw catch
-
-(defvar dolist nil)
-(defvar  mbstr nil)
-
-(setq mbstr nil)
-
-(defun throwgoforlist ()
-  (interactive)
-  (setq redoeg-read t)
-  (setq deactivate-mark nil)
-  (throw 'goforlist
-    (progn
-      (setq dolist (not dolist))
-      (setq mbstr (buffer-string))
-      (message "text: %s (buffer-string) %s prompt %s" mbstr (buffer-string) prompt)
-      (exit-minibuffer)
-      )))
-
-(defun condread (fn1 fn2 inittext)
-  (let ((km (copy-keymap minibuffer-local-map)))
-        (define-key km (kbd "C-v") 'throwgoforlist)
-        (if dolist
-            (funcall fn1 inittext km)
-            (funcall fn2 inittext km))))
-
-(defun eg-read-any-data-using-tag (fn1 fn2)
-  (message "mbstr %s" mbstr)
-  (catch 'goforlist
-    (setq redoeg-read nil)
-    (setq retval (condread fn1 fn2 mbstr))
-    (if redoeg-read
-        (eg-read-any-data-using-tag fn1 fn2)
-        retval)))
-
-(require 'general-testing)
-
-
-
-(testing
-
- (defun test-read-from-minibuffer ()
-   (read-from-minibuffer "test-read-from-minibuffer") "initail input")
-
- (eval
-  (read-from-minibuffer "sdfds: "))
-
- (eg-read-any-data-using-tag
-  #'(lambda (inittext km)
-      (read-from-minibuffer (concat "value"  ": ") inittext km))
-  #'(lambda (inittext km)
-      (read-from-minibuffer (concat "value for list"  ": ") inittext km)))
-
- )
-;;}}
 
 (defun bugz-make-search-criteria ()
   (interactive)
