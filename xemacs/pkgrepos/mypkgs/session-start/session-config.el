@@ -552,7 +552,7 @@ Also returns nil if pid is nil."
     (interactive)
     ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
     (let ((owner (or (desktop-vc-owner) -1)))
-      (condition-case e
+      (when t ;;condition-case e
           (if (or
                (eq owner (emacs-pid))
                ;; TODO: it was mean to be used as non-obtrusive and non-interctive
@@ -562,9 +562,19 @@ Also returns nil if pid is nil."
               (desktop-vc-save *desktop-save-filename*)
               ;; (desktop-save-in-desktop-dir)
               (progn
-                (remove-hook 'auto-save-hook 'my-desktop-save)
+                (remove-hook 'auto-save-hook 'save-desktop-auto-save)
                 (error "You %d are not the desktop owner %d. removed my-desktop-save from auto-save-hook."
-                       (emacs-pid) owner)))
+                       (emacs-pid) owner))))))
+
+  (testing
+   (remove-hook 'auto-save-hook 'my-desktop-save))
+
+  (defvar save-desktop-auto-save-time (current-time) "")
+  (defun save-desktop-auto-save ()
+    (when (> (float-time (time-since save-desktop-auto-save-time)) 600)
+      (setq save-desktop-auto-save-time (current-time))
+      (condition-case e
+          (my-desktop-save)
         ('error
          (progn
            ;; make after 2 errors.
@@ -572,13 +582,11 @@ Also returns nil if pid is nil."
            (1+ *my-desktop-save-error-count* )
            (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
              (setq *my-desktop-save-error-count* 0)
-             (message "my-desktop-save(): Removing my-desktop-save function from auto-save-hook" e)
-             (remove-hook 'auto-save-hook 'my-desktop-save)))))))
+             (message "my-desktop-save(): Removing save-desktop-auto-save function from auto-save-hook" e)
+             (remove-hook 'auto-save-hook 'save-desktop-auto-save)))))))
 
-  (testing
-   (remove-hook 'auto-save-hook 'my-desktop-save))
   ;; giving life to it.
-  (add-hook 'auto-save-hook 'my-desktop-save)
+  (add-hook 'auto-save-hook 'save-desktop-auto-save)
 
   (defun sharad/desktop-saved-session ()
     (file-exists-p *desktop-save-filename*)
@@ -608,7 +616,7 @@ Also returns nil if pid is nil."
             ('error (message "Error in desktop-read: %s" e)))
           t)
         (message "No desktop found."))
-    (when (y-or-n-p "Do you want to set session of frame? ")
+    (when t ;(y-or-n-p "Do you want to set session of frame? ")
       (restore-frame-session (selected-frame)))
     (message "leaving desktop-session-restore"))
 

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2013-05-10 17:01:10 s>
+;; Time-stamp: <2013-06-03 22:59:32 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -485,5 +485,17 @@ and their terminal equivalents.")
 (deh-section "debug"
   (global-set-key (kbd "s-g g") 'keyboard-debug)
   (global-set-key (kbd "s-g G") 'debug))
+
+
+(deh-section "bind frequent M-x command to keys"
+  ;; http://aaronhawley.livejournal.com/27573.html
+  ;; http://www.splode.com/~friedman/software/emacs-lisp/src/suggbind.el
+  ;; http://emacs.1067599.n5.nabble.com/Unuseful-keybindings-td273016i20.html
+  (deh-require-maybe unbound
+    (defvar extended-command-freq-alist nil "")
+    ;; (defadvice execute-extended-command (before find-unbound-extended-command activate)
+    ;;   ())
+    ))
+
 
 (provide 'binding-config)
