@@ -17,6 +17,8 @@
 
 (deh-require-maybe tramp
 
+  (require 'utils-config)
+
   (setq                                 ;very necessary.
    tramp-mode nil
    ido-mode nil)
