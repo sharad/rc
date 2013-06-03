@@ -11,7 +11,7 @@ SHELL=/bin/zsh
 
 
 
-
+##{{ Morning
 # try waking up at 7.30 to 7.45
 # 00 06 * * * ~/bin/alarm -h .2 -p myfav -r mpc
 00 06 * * * ~/bin/alarm -h .2 -p 6 -r radio
@@ -42,11 +42,13 @@ SHELL=/bin/zsh
 # 30 08 * * * mpc play
 30 08 * * * ~/bin/mradion -c 2
 # 45 08 * * * spd-say -C
+##}}
 
-
-00 06 * * * echo "radio_set_channel 6" > /tmp/mplayer.fifo
-
-
+##{{ Evening
+00 18 * * * ~/bin/mradion -c 6
+30 18 * * * ~/bin/mradion -c 6
+10 23 * * * ~/bin/mradion -c 2
+##}}
 
 # run each hour on week days
 50 9-22/1 * * 1-5 DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/pwddwnsys
