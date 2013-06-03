@@ -33,7 +33,7 @@
 
 (task-status-add-maps 'bugz
                       '((inprogress . "ASSIGNED")
-                        (open       . "OPENED")
+                        (open         "OPENED" "NEW")
                         (completed  . "RESOLVED")
                         (cancelled  . "WONTFIX")))
 
