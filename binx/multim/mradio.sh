@@ -53,7 +53,7 @@ function mplayer_radio() {
 # ZZZ
 
         xset dpms force on
-        xset dpms 60 80 0
+        # xset dpms 60 80 0
         # amixer -- sset  Master   100% unmute
 
         if ! pgrep mplayer >& /dev/null ; then
@@ -71,9 +71,10 @@ function mplayer_radio() {
         print changing to channel ${channel}
         echo "radio_set_channel ${channel}" > /tmp/mplayer.fifo
         xset dpms force on
-        xset dpms 60 80 0
+        # xset dpms 60 80 0
         # echo "volume ${volume_low}" > /tmp/mplayer.fifo ;
-        xset dpms 60 80 1800
+        # xset dpms 60 80 1800
+        xset dpms 1800 1800 1800
     fi
 }
 

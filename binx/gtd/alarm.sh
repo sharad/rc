@@ -67,7 +67,7 @@ set-card-profile 0 output:analog-stereo
 ZZZ
       DISPLAY=:0.0
       xset dpms force on
-      xset dpms 60 80 0
+      # xset dpms 60 80 0
       amixer -- sset  Master   100% unmute
       mpc clear
       mpc load $playlist
@@ -89,7 +89,7 @@ EOF
     ### after 6 m 25 sec low down volume
             at -q $queue_name now + ${${:-$(( $sleep_hours * 60 + $snooze ))}//./} minutes <<'XYEOF'
       xset dpms force on
-      xset dpms 60 80 0
+      # xset dpms 60 80 0
       mpc play
       sleep 1s
       mpc play
@@ -105,7 +105,8 @@ EOF
       mpc play
       sleep 2
       mpc volume $volume_low
-      xset dpms 60 80 1800
+      # xset dpms 60 80 1800
+      xset dpms 1800 1800 1800
 XYEOF
     fi
 
@@ -131,7 +132,7 @@ set-card-profile 0 output:analog-stereo
 ZZZ
       DISPLAY=:0.0
       xset dpms force on
-      xset dpms 60 80 0
+      # xset dpms 60 80 0
       amixer -- sset  Master   100% unmute
       mradio -c 6
       echo "volume ${volume_high}" > /tmp/mplayer.fifo ;
@@ -140,10 +141,11 @@ EOF
     ### after 6 m 25 sec low down volume
             at -q $queue_name now + ${${:-$(( $sleep_hours * 60 + $snooze ))}//./} minutes <<'XYEOF'
       xset dpms force on
-      xset dpms 60 80 0
+      # xset dpms 60 80 0
       mradio -c 6
       echo "volume ${volume_low}" > /tmp/mplayer.fifo ;
-      xset dpms 60 80 1800
+      # xset dpms 60 80 1800
+      xset dpms 1800 1800 1800
 XYEOF
     fi
 
