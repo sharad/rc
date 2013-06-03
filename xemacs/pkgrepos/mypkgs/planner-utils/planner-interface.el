@@ -27,14 +27,7 @@
 (require 'general-testing)
 (require 'cl)
 
-(defvar status-mappings
-  '((open . ((planner . "_")))
-    (inprogress . ((planner . "o")))
-    (completed . ((planner . "C")))
-    (cancelled . ((planner . "X")))
-    (delegated . ((planner . "D")))
-    (pending . ((planner . "P"))))
-  "Status Mapping")
+(defvar status-mappings nil "Status Mapping")
 
 (defvar task-stati '(open inprogress completed cancelled delegated pending))
 
@@ -64,6 +57,13 @@
           `(task-status-add-map ,sys ,(car m) ,(cdr m)))
         maps)))
 
+(task-status-add-maps planner
+                      ((inprogress . "o")
+                       (open       . "_")
+                       (completed  . "C")
+                       (cancelled  . "X")
+                       (delegated  . "D")
+                       (pending    . "P")))
 
 ;; (task-status-add-maps bugz ((completed .("CLOSED" "asdfdsaf"))))
 

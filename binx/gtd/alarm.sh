@@ -21,13 +21,10 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##
 
+
 echo "$@" >&2
 
 # defaults
-playlist=myfav
-if whence mpc >& /dev/null ; then
-    playlist="$( mpc lsplaylists | sed -n $(( $RANDOM % $(mpc lsplaylists | wc -l ) + 1 ))p )"
-fi
 sleep_hours=7
 snooze=10
 queue_name=d
@@ -36,71 +33,32 @@ volume_low=70   # 45
 
 max=
 
+function main() {
+        process_arg $@
 
-# cli arg processing
-sleep_hours=7
-snooze=10
-queue_name=d
-volume_high=100 # 60
-volume_low=70   # 45
+        $run
 
-max=
-
-
-
-
-function state_locked () {
-    pgrep pidgin && purple-remote 'setstatus?status=$lockstatus&message=Away'
-    whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -as
+        screen_lock
+        true
 }
 
-function state_unlocked () {
-    whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -AS
-    pgrep pidgin && purple-remote 'setstatus?status=$unlockstatus&message='
-}
-
-
-
-
-
-
-# cli arg processing
-set -- $(getopt "lnh:z:q:p:" "$@")
-while [ $# -gt 0 ]
-do
-    case "$1" in
-        (-l) lock=1;;
-        (-p) playlist="$2"; shift;;
-        (-h) sleep_hours="$2"; shift;;
-        (-z) snooze="$2"; shift;;
-        (-q) queue_name="$2"; shift;;
-        (-n) now=1;;
-        (--) shift; break;;
-        (-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
-        (*)  break;;
-    esac
-    shift
-done
-
-
-# now
-hour=$(date +%H)
-
-
-# check 'xset q'
-
-if whence mpc >&/dev/null && [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep xtrlock ; then
-
-# cancel all jobs in queue d
-    jobs=($(atq -q $queue_name | cut -d'	' -f1 ))
-
-    if (($#jobs)) ; then
-        atrm $jobs
+function mpc() {
+    if whence mpc >& /dev/null ; then
+        playlist="$( mpc lsplaylists | sed -n $(( $RANDOM % $(mpc lsplaylists | wc -l ) + 1 ))p )"
     fi
 
-    command="at -q $queue_name now + ${${:-$(( $sleep_hours * 60 ))}//./} minutes"
+    if whence mpc >&/dev/null && [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep xtrlock ; then
 
-    at -q $queue_name now + ${${:-$(( $sleep_hours * 60 ))}//./} minutes <<EOF
+        # cancel all jobs in queue d
+        jobs=($(atq -q $queue_name | cut -d'	' -f1 ))
+
+        if (($#jobs)) ; then
+            atrm $jobs
+        fi
+        command="at -q $queue_name now + ${${:-$(( $sleep_hours * 60 ))}//./} minutes"
+        # check 'xset q'
+
+        at -q $queue_name now + ${${:-$(( $sleep_hours * 60 ))}//./} minutes <<EOF
 
 pacmd <<'ZZZ'
 set-card-profile 0 output:analog-stereo
@@ -129,7 +87,7 @@ ZZZ
 EOF
 
     ### after 6 m 25 sec low down volume
-    at -q $queue_name now + ${${:-$(( $sleep_hours * 60 + $snooze ))}//./} minutes <<'XYEOF'
+            at -q $queue_name now + ${${:-$(( $sleep_hours * 60 + $snooze ))}//./} minutes <<'XYEOF'
       xset dpms force on
       xset dpms 60 80 0
       mpc play
@@ -149,22 +107,112 @@ EOF
       mpc volume $volume_low
       xset dpms 60 80 1800
 XYEOF
+    fi
 
-fi
+}
+
+function radio() {
+    if whence mplayer >&/dev/null && [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep xtrlock ; then
+
+        # cancel all jobs in queue d
+        jobs=($(atq -q $queue_name | cut -d'	' -f1 ))
+
+        if (($#jobs)) ; then
+            atrm $jobs
+        fi
+        command="at -q $queue_name now + ${${:-$(( $sleep_hours * 60 ))}//./} minutes"
+
+        at -q $queue_name now + ${${:-$(( $sleep_hours * 60 ))}//./} minutes <<EOF
+
+pacmd <<'ZZZ'
+set-card-profile 0 output:analog-stereo
+set-card-profile 0 output:iec958-stereo+input:analog-stereo
+set-card-profile 0 output:analog-stereo
+ZZZ
+      DISPLAY=:0.0
+      xset dpms force on
+      xset dpms 60 80 0
+      amixer -- sset  Master   100% unmute
+      mradio -c 6
+      echo "volume ${volume_high}" > /tmp/mplayer.fifo ;
+EOF
+
+    ### after 6 m 25 sec low down volume
+            at -q $queue_name now + ${${:-$(( $sleep_hours * 60 + $snooze ))}//./} minutes <<'XYEOF'
+      xset dpms force on
+      xset dpms 60 80 0
+      mradio -c 6
+      echo "volume ${volume_low}" > /tmp/mplayer.fifo ;
+      xset dpms 60 80 1800
+XYEOF
+    fi
+
+}
 
 
-lockstatus=away
-if [ "$HOST" = "lispm.genera.net" ] ; then
-    unlockstatus=away
-else
-    unlockstatus=online
-fi
+function state_locked () {
+    pgrep pidgin && purple-remote 'setstatus?status=$lockstatus&message=Away'
+    whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -as
+}
 
-if [ "x$lock" != "x" ] ; then
-    state_locked
-    xtrlock
-    state_unlocked
-fi
+function state_unlocked () {
+    whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -AS
+    pgrep pidgin && purple-remote 'setstatus?status=$unlockstatus&message='
+}
+
+function screen_lock() {
+    lockstatus=away
+    if [ "$HOST" = "lispm.genera.net" ] ; then
+        unlockstatus=away
+    else
+        unlockstatus=online
+    fi
+
+    if [ "x$lock" != "x" ] ; then
+        state_locked
+        xtrlock
+        state_unlocked
+    fi
+}
 
 
-true
+function process_arg() {
+    # cli arg processing
+    set -- $(getopt "lnh:z:q:p:r:" "$@")
+    while [ $# -gt 0 ]
+    do
+        case "$1" in
+            (-l) lock=1;;
+            (-p) playlist="$2"; shift;;
+            (-h) sleep_hours="$2"; shift;;
+            (-z) snooze="$2"; shift;;
+            (-q) queue_name="$2"; shift;;
+            (-r) run="$2"; shift;;
+            (-n) now=1;;
+            (--) shift; break;;
+            (-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
+            (*)  break;;
+        esac
+        shift
+    done
+    # now
+    hour=$(date +%H)
+
+    if ! [ "${run}" = "mpc" -o "${run}" = "radio" ] ; then
+        print "please specify -r mpc|radio"
+    fi
+
+    if [ "$run" = "mpc" ] ; then
+        playlist=myfav
+    elif [ "$run" = "radio" ] ; then
+        playlist=6
+    fi
+
+}
+
+
+
+pgm=$(basename $0)
+
+main $@
+
