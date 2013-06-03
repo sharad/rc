@@ -35,12 +35,12 @@ SHELL=/bin/zsh
 
 # # try waking up at 8.00 to 8.15
 # 00 08 * * * mpc play
-00 08 * * * ~/bin/mradion -c 6
+00 08 * * * ~/bin/mradion -c 2
 # 15 08 * * * spd-say -C
 
 # # try waking up at 8.30 to 8.45
 # 30 08 * * * mpc play
-30 08 * * * ~/bin/mradion -c 6
+30 08 * * * ~/bin/mradion -c 2
 # 45 08 * * * spd-say -C
 
 
