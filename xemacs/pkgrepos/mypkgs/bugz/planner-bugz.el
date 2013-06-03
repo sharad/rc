@@ -28,12 +28,15 @@
 (require 'planner-interface)
 (require 'bugz)
 
+(eval-when-compile
+  '(require 'cl))
+
 
 ;; '(open inprogress completed cancelled delegated pending )
 
 (task-status-add-maps 'bugz
                       '((inprogress . "ASSIGNED")
-                        (open         "OPENED" "NEW")
+                        (open         "OPENED" "NEW" "REOPENED")
                         (completed  . "RESOLVED")
                         (cancelled  . "WONTFIX")))
 
@@ -57,7 +60,7 @@
         :key #'planner-bugzilla-task-to-bugid
         :test #'equal))
 
-(defun planner-bugzilla-bugtask-differ (bug &optioanl page)
+(defun planner-bugzilla-bugtask-differ (bug &optional page)
   (let ((task (planner-bugzilla-bugtask-exist-in-page bug page)))
     (if (and task
              (string-equal
@@ -65,7 +68,7 @@
               (planner-task-status task)))
         task)))
 
-(defun planner-bugzilla-bugtask-update (bug &optioanl page)
+(defun planner-bugzilla-bugtask-update (bug &optional page)
   (let ((differed-task (planner-bugzilla-bugtask-differ bug page)))
     (if (nth 4 differed-task)
         (planner-task-change-status
@@ -74,11 +77,15 @@
            (planner-mark-task (bugz-to-planner-status (cdr (assoc "status" bug)))))
          page))))
 
-(defun planner-bugzilla-create-bug-to-task (bug &optional page)
-  (unless (planner-bugzilla-bugtask-exist-in-page bug page)
+(defun planner-bugzilla-create-bug-to-task (bug &optional plan-page date)
+  (unless (planner-bugzilla-bugtask-exist-in-page bug plan-page)
     (planner-create-task
      (planner-bugzilla-bug-to-task-name bug)
-     nil nil page
+     (let ((planner-expand-name-favor-future-p
+            (or planner-expand-name-favor-future-p
+                planner-task-dates-favor-future-p)))
+       (planner-read-date))
+     nil plan-page
      (bugz-to-planner-status (cdr (assoc "status" bug))))))
 
 (defun planner-bugzilla-task-to-bugid (task)
@@ -95,7 +102,7 @@
      (string-match planner-bugz-regex (nth 4 task)))
    (planner-task-lists page)))
 
-(defun planner-bugzilla-update-existing-bugtasks (&optional how)
+(defun planner-bugzilla-update-existing-bugtasks (page &optional how)
   ;; how could be 'ask, 'force
   (dolist (task (planner-bugzilla-find-bugtasks-in-page page))
     (planner-bugzilla-bugtask-update task page)))
@@ -107,7 +114,7 @@
    (list
     (planner-read-non-date-page (planner-file-alist))))
   (dolist (bug (bugzilla-search-bugs '("id" "summary" "status" "_bugz-url") t))
-    (planner-bugzilla-create-bug-to-task bug page)))
+    (planner-bugzilla-create-bug-to-task bug page t)))
 
 
 ;;;###autoload
@@ -117,7 +124,7 @@
    (list
     (planner-read-non-date-page (planner-file-alist))))
   (dolist (bug (bugzilla-get-bugs '("id" "summary" "status" "_bugz-url") t))
-    (planner-bugzilla-create-bug-to-task bug page)))
+    (planner-bugzilla-create-bug-to-task bug page t)))
 
 
 (provide 'planner-bugz)

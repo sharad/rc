@@ -12,6 +12,9 @@
 (eval-after-load "tramp"
   '(sharad/disable-startup-inperrupting-feature))
 
+(eval-when-compile
+  '(require 'tramp))
+
 (deh-require-maybe tramp
 
   (setq                                 ;very necessary.
@@ -147,7 +150,7 @@
   (defun ssh-agent-add-key ()
     (require 'misc-config)
     (provide 'host-info)
-    (message "Calling update-ssh-agent > ssh-agent-add-key")
+    ;; (message "Calling update-ssh-agent > ssh-agent-add-key")
     (if (and
          (boundp 'ssh-key-file)
          ssh-key-file)
@@ -169,8 +172,8 @@
                (let ((agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el")))
                  ;; (if (or force (null (getenv "SSH_AGENT_PID")))
                  (when (or force
-                         (not (shell-command-local-no-output "ssh-add -l < /dev/null"))
-                         (null (getenv "SSH_AGENT_PID")))
+                           (not (shell-command-local-no-output "ssh-add -l < /dev/null"))
+                           (null (getenv "SSH_AGENT_PID")))
                      (if (file-exists-p agent-file)
                          (progn
                            (if force (tramp-cleanup-all-connections))

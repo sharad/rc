@@ -26,6 +26,10 @@
 
 (require 'general-testing)
 (require 'cl)
+
+(eval-when-compile
+  '(require 'cl))
+
 (require 'tree)
 
 (defvar status-mappings nil "Status Mapping")
@@ -95,7 +99,7 @@
   (let* ((mappings (or mappings status-mappings))
          (map (if (consp stati)
                   (loop for s in stati
-                       collect ((task-map-from-sys-status sys s mappings)))
+                       collect (task-map-from-sys-status sys s mappings))
                   (task-map-from-sys-status sys stati mappings))))
     map))
 
@@ -253,8 +257,8 @@
 
 (defun planner-tasks-of-pages-intersection (plan1 plan2 status)
   (intersection
-   (planner-tasks-from-page page1 status)
-   (planner-tasks-from-page page2 status)))
+   (planner-tasks-from-page plan1 status)
+   (planner-tasks-from-page plan2 status)))
 ;;end
 
 ;;test
@@ -306,7 +310,7 @@
       (save-window-excursion
         (save-excursion
           (save-restriction
-            (planner-find-task-in-page-main task page &optional buf-op))))
+            (planner-find-task-in-page-main task page buf-op))))
       (planner-find-task-in-page-main task page buf-op)))
 
 (defun planner-task-change-status (task statusfn &optional page)
@@ -316,8 +320,8 @@
                                  ;; (timeclock-in)
                                  (if (functionp statusfn) (funcall statusfn))
                                  (save-buffer)
-                                 (bury-buffer buf)
-                                 ;; (kill-buffer buf)
+                                 (bury-buffer b)
+                                 ;; (kill-buffer b)
                                  )))
 ;; }}
 

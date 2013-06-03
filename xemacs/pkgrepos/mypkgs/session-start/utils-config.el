@@ -24,7 +24,8 @@
         ;(attachment (y-or-n-p (format "make inline: ")))
         (discription "attachment")
         attachment)
-     (list resume object keys attachment type disposition)))
+     ;; (list resume object keys attachment type disposition)))
+     (list resume object keys attachment type description)))
   (let* ((resume-make-keys (format "make -sC %s name=%s object=%s keys" resume-workdir resume object))
          (keys (or keys  (read-string "keys: " (shell-command-to-string resume-make-keys))))
          (keys-of-resume-name (mapconcat 'identity (sort (split-string keys) #'string-lessp) "-"))
@@ -47,7 +48,7 @@
           (insert-file-contents resume-actual-file))
       (message "Not able to %s %s."
                (if attachment "attach" "insert")
-               cover))))
+               object))))
 
 
 
@@ -99,7 +100,7 @@
 
 (defun sharad/write-append-file (filename content)
   (when (file-exists-p filename)
-    (write-file content nil filename t)
+    (write-region content nil filename t)
     (put-file-in-rcs filename)))
 
 
@@ -138,9 +139,9 @@
   (let ((default-directory "~/"))
     (shell-command-no-output cmd)))
 
-(defun shell-command-local-no-output (cmd)
-  ;; (interactive "scmd: ")
-  (equal 0 (call-process shell-file-name nil nil nil "-c" cmd)))
+;; (defun shell-command-local-no-output (cmd)
+;;   ;; (interactive "scmd: ")
+;;   (equal 0 (call-process shell-file-name nil nil nil "-c" cmd)))
 
 
 (defun messageto (buf &rest text)
