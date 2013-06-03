@@ -31,23 +31,24 @@
 
 ;; '(open inprogress completed cancelled delegated pending )
 
-(task-status-add-maps bugz
-                      ((inprogress . "ASSIGNED")
-                       (open       . "OPENED")
-                       (completed  . "RESOLVED")
-                       (cancelled  . "WONTFIX")))
+(task-status-add-maps 'bugz
+                      '((inprogress . "ASSIGNED")
+                        (open       . "OPENED")
+                        (completed  . "RESOLVED")
+                        (cancelled  . "WONTFIX")))
 
 (defvar planner-bugz-regex "^\\(\\(b[0-9]\+\\) .\+\\) \{\{Tasks:[0-9]\+\}\}\\(\s\+[[][[]\\)\?" "Planner Bugz Regex")
-(defvar planner-bugz-format "b%d %s [[%s][url]]" "Planner Bugz Regex")
+(defvar planner-bugz-format "b%d %s [[%s][url]]" "Planner Bugz Format")
 
 
 (defun bugz-to-planner-status (status)
   (task-src-status-to-trg-status 'bugz status 'planner))
 
 (defun planner-bugzilla-bug-to-task-name (bug)
-  (let ((id      (cdr (assoc "id" bug)))
-        (summary (cdr (assoc "summary" bug)))
-        (url (or (cdr (assoc "_bugz-url" bug)) bugz-url)))
+  (let* ((id      (cdr (assoc "id" bug)))
+         (summary (cdr (assoc "summary" bug)))
+         (url (or (concat bugz-showbug-url (number-to-string id))
+                  (cdr (assoc "_bugz-url" bug)) bugz-url)))
     (format planner-bugz-format id summary url)))
 
 (defun planner-bugzilla-bugtask-exist-in-page (bug &optional page)
@@ -105,17 +106,17 @@
   (interactive
    (list
     (planner-read-non-date-page (planner-file-alist))))
-  (dolist (bug (bugzilla-search-bugs '("id" "summary" "status") t))
+  (dolist (bug (bugzilla-search-bugs '("id" "summary" "status" "_bugz-url") t))
     (planner-bugzilla-create-bug-to-task bug page)))
 
 
 ;;;###autoload
-(defun planner-bugzilla-fetch-new-bugtask (&optional page)
+(defun planner-bugzilla-get-new-bugtask (&optional page)
   ;; add url username used in bug list.
   (interactive
    (list
     (planner-read-non-date-page (planner-file-alist))))
-  (dolist (bug (bugzilla-get-bugs '("id" "summary" "status") t))
+  (dolist (bug (bugzilla-get-bugs '("id" "summary" "status" "_bugz-url") t))
     (planner-bugzilla-create-bug-to-task bug page)))
 
 

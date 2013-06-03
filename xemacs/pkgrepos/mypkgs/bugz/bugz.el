@@ -28,7 +28,9 @@
 (require 'xml-rpc)
 (require 'read-utils)
 
-(defvar bugz-url "https://bugzilla.mozilla.org/xmlrpc.cgi" "Bugz xmlrpc url.")
+(defvar bugz-url "https://bugzilla.mozilla.org" "Bugz url.")
+(defvar bugz-xmlrpc-url (concat bugz-url "/xmlrpc.cgi") "Bugz xmlrpc url.")
+(defvar bugz-showbug-url (concat bugz-url "/show_bug.cgi?id=") "Bugz showbug url.")
 (defvar bugz-default-username nil "Bugzilla default username used in search.")
 
 ;; http://www.emacswiki.org/emacs/UrlPackage#toc3
@@ -120,7 +122,13 @@
                      ((null criteria) (cdar bugz-search-criterias))
                      (t criteria))))
      (bugz-get-items-attributes attributes
-                                   (bugz-method method ret criteria))))
+                                (bugz-method method ret criteria))))
+
+
+; (bugz-method 'Bug.get "bugs" (bugz-make-search-criteria))
+; (defvar bugzresult nil )
+; (setq bugzresult (bugz/Bug.method 'Bug.get (bugz-make-search-criteria)))
+
 
 
 

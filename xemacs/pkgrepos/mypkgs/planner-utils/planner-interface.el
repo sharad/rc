@@ -26,44 +26,34 @@
 
 (require 'general-testing)
 (require 'cl)
+(require 'tree)
 
 (defvar status-mappings nil "Status Mapping")
 
 (defvar task-stati '(open inprogress completed cancelled delegated pending))
 
- (defun pushnew-alist (key value list)
-   (unless (assoc key list)
-     (pushnew (cons key nil) list :key #'car))
+(defun pushnew-alist (key value list)
+  (unless (assoc key list)
+    (pushnew (cons key nil) list :key #'car))
    (pushnew value (cdr (assoc key list)) :test #'string-equal))
 
 (defun task-status-map (sys status)
   (cdr (assoc sys (cdr (assoc status status-mappings)))))
 
-;; (defun task-status-add-map (sys status sysstatus)
-;;   (pushnew-alist ',sys ',sysstatus (cdr (assoc ',status status-mappings))
-;;                  :test #'(lambda (a b)
-;;                            (equal (car a) (car b))))))
+(defun task-status-add-map (sys status sysstatus)
+  (setf (tree-node status-mappings status sys) sysstatus))
 
-(defmacro task-status-add-map (sys status sysstatus)
-  `(pushnew (cons ',sys ',sysstatus)
-            (cdr (assoc ',status status-mappings))
-            :test #'(lambda (a b)
-                      (equal (car a) (car b)))))
+(defun task-status-add-maps (sys maps)
+  (dolist (m maps)
+    (task-status-add-map sys (car m) (cdr m))))
 
-(defmacro task-status-add-maps (sys maps)
-  `(progn
-     ,@(mapcar
-        (lambda (m)
-          `(task-status-add-map ,sys ,(car m) ,(cdr m)))
-        maps)))
-
-(task-status-add-maps planner
-                      ((inprogress . "o")
-                       (open       . "_")
-                       (completed  . "C")
-                       (cancelled  . "X")
-                       (delegated  . "D")
-                       (pending    . "P")))
+(task-status-add-maps 'planner
+                      '((inprogress . "o")
+                        (open       . "_")
+                        (completed  . "C")
+                        (cancelled  . "X")
+                        (delegated  . "D")
+                        (pending    . "P")))
 
 ;; (task-status-add-maps bugz ((completed .("CLOSED" "asdfdsaf"))))
 
