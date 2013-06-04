@@ -44,6 +44,31 @@
     tree))
 
 
+(defun read-mb (prompt collection)
+  (let ((finish-reading nil))
+   (flet (;; (finish-reading nil)
+          (minibuffer-local-map (copy-keymap minibuffer-local-map))
+          (read-done ()
+            (throw 'goforlist
+              (let (input-string)
+                (move-beginning-of-line nil)
+                (setq
+                 finish-reading t
+                 input-string (buffer-substring (point) (point-max)))
+                (catch 'exit (exit-minibuffer))
+                input-string))))
+     (define-key minibuffer-local-map (kbd "S-RET") 'read-done)
+     (let ((ret (catch 'goforlist
+                  (completing-read prompt collection nil t))))
+       (if finish-reading
+           (list ret t)
+           (if (string-equal ret "")
+               (list nil t)
+               (list ret nil)))))))
+
+;; (read-mb "af: " '("afdf" "dasfdsf"))
+
+
 (defun depth (tree)
   ;; http://www.lispforum.com/viewtopic.php?p=5372&sid=e117daaa584b63c64864135d178ea654#p5372
   (if (atom tree)

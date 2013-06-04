@@ -19,35 +19,35 @@ SHELL=/bin/zsh
 
 # 29 06 * * * mpc load myfav
 # 30 06 * * * mpc play
-30 06 * * * ~/bin/mradion -c 6
+30 06 * * * ~/bin/mradio -c 6
 # 31 06 * * * mpc volume 100
 # 45 06 * * * spd-say -C
 
 # 00 07 * * * mpc play
-00 07 * * * ~/bin/mradion -c 6
+00 07 * * * ~/bin/mradio -c 6
 # 01 07 * * * mpc volume 100
 
 # # try waking up at 7.30 to 7.45
 # 30 07 * * * mpc play
-30 07 * * * ~/bin/mradion -c 6
+30 07 * * * ~/bin/mradio -c 6
 # 31 07 * * * mpc volume 100
 # 45 07 * * * spd-say -C
 
 # # try waking up at 8.00 to 8.15
 # 00 08 * * * mpc play
-00 08 * * * ~/bin/mradion -c 2
+00 08 * * * ~/bin/mradio -c 2
 # 15 08 * * * spd-say -C
 
 # # try waking up at 8.30 to 8.45
 # 30 08 * * * mpc play
-30 08 * * * ~/bin/mradion -c 2
+30 08 * * * ~/bin/mradio -c 2
 # 45 08 * * * spd-say -C
 ##}}
 
 ##{{ Evening
-00 18 * * * ~/bin/mradion -c 6
-30 18 * * * ~/bin/mradion -c 6
-10 23 * * * ~/bin/mradion -c 2
+00 18 * * * ~/bin/mradio -c 6
+30 18 * * * ~/bin/mradio -c 6
+10 23 * * * ~/bin/mradio -c 2
 ##}}
 
 # run each hour on week days
