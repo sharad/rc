@@ -43,6 +43,18 @@
                 :key 'car)))
     tree))
 
+(defmacro tree-node (tree &rest xkeys)
+  (let* ((pos (position-if 'keywordp xkeys))
+         (keys (if pos (subseq xkeys 0 pos) xkeys))
+         (okeys (if pos (subseq xkeys pos))))
+    (if keys
+        `(cdr
+          (assoc ,(car (last keys))
+                 (pushnew
+                  (list ,@(last keys))
+                  (tree-node ,tree ,@(butlast keys) ,@okeys)
+                  :key 'car ,@okeys)))
+        tree)))
 
 (defun read-mb (prompt collection)
   (let ((finish-reading nil))
