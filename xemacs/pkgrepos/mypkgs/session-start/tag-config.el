@@ -21,15 +21,15 @@
 ;; (let ((tg 'gtags))
 ;;   (tree-node *tags-config* 'files tg))
 
-(setf (tree-node *tags-config* 'files 'cscope) '("cscope.out"))
-(setf (tree-node *tags-config* 'files 'etags)  '("TAGS"))
-(setf (tree-node *tags-config* 'files 'gtags)  '("GTAGS" "GRTAGS" "GPATH"
+(setf (tree-node* *tags-config* 'files 'cscope) '("cscope.out"))
+(setf (tree-node* *tags-config* 'files 'etags)  '("TAGS"))
+(setf (tree-node* *tags-config* 'files 'gtags)  '("GTAGS" "GRTAGS" "GPATH"
                                                ;; "GSYMS"
                                                ))
 
-(setf (tree-node *tags-config* 'cmd 'cscope) "cscope -Rb - 2>/dev/null")
-(setf (tree-node *tags-config* 'cmd 'etags)  "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
-(setf (tree-node *tags-config* 'cmd 'gtags)  "gtags -v 2>/dev/null")
+(setf (tree-node* *tags-config* 'cmd 'cscope) "cscope -Rb - 2>/dev/null")
+(setf (tree-node* *tags-config* 'cmd 'etags)  "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
+(setf (tree-node* *tags-config* 'cmd 'gtags)  "gtags -v 2>/dev/null")
 
 ;; (defun pushnew-alist (key value list)
 ;;   (unless (assoc key list)

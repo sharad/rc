@@ -27,6 +27,7 @@
 
 (require 'xml-rpc)
 (require 'read-utils)
+(require 'tree)
 
 (defvar bugz-url "https://bugzilla.mozilla.org" "Bugz url.")
 (defvar bugz-xmlrpc-url (concat bugz-url "/xmlrpc.cgi") "Bugz xmlrpc url.")
@@ -54,7 +55,9 @@
 (defun bugz-method (method ret criteria)
   (cdr (assoc ret (bugz/Bug.method method criteria))))
 
-
+(defun bugz-method (method ret criteria)
+  (tree-leaves
+   (cdr (assoc ret (bugz/Bug.method method criteria))) 1))
 
 ;;{{
 
