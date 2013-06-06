@@ -45,7 +45,7 @@
   (cdr (assoc sys (cdr (assoc status status-mappings)))))
 
 (defun task-status-add-map (sys status sysstatus)
-  (setf (tree-node status-mappings status sys) sysstatus))
+  (setf (tree-node* status-mappings status sys) sysstatus))
 
 (defun task-status-add-maps (sys maps)
   (dolist (m maps)

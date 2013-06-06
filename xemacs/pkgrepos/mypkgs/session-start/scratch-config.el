@@ -44,21 +44,48 @@
 
   (require 'autoinsert+)
 
-  (defun mjmode-scratch (&optional name mjmode)
+  (defvar mjmode-scratch-directory "~/.emacs.d/scratchs/")
+
+  (defun mjmode-scratch (&optional new name mjmode)
     (interactive
-     (let* ((mjmode (or
+     (let* ((new current-prefix-arg)
+            (mjmode (or
                      (ido-completing-read "cmd: "
                                           (all-completions "" obarray '(lambda (i)
                                                                         (and
                                                                          (commandp i)
                                                                          (string-match "[.-]*-mode" (symbol-name i))))))))
-            (name (or (concat "*"
-                              (if (string-match "\\(.+[.-]+.+\\)-mode" mjmode) (match-string 1 mjmode) mjmode)
-                              "-scratch*"))))
-       (list name mjmode)))
-    (switch-to-buffer name t)
-    (funcall (intern mjmode))
-    (auto-insert+))
+            (name (read-from-minibuffer
+                   "buffer: "
+                   (concat "*"
+                           (if (string-match "\\(.+[.-]+.+\\)-mode" mjmode)
+                               (match-string 1 mjmode)
+                               mjmode)
+                           "-scratch*"))))
+       (list new name mjmode)))
+
+    (let* (;; (name (if (and new (get-buffer name))
+           ;;           (replace-regexp-in-string "\\**\\'" "" name)
+           ;;           name))
+           (basename (replace-regexp-in-string "\\`\\**" ""
+                                               (replace-regexp-in-string "\\**\\'" "" name)))
+           (file (expand-file-name basename mjmode-scratch-directory))
+           (buf (or
+                 (get-buffer name)
+                 (find-file-noselect-1 (get-buffer-create name) file nil nil file
+                                       (if (file-exists-p file)
+                                           (nthcdr 10 (file-attributes file))))))
+           (prev-default-directory default-directory))
+      (with-current-buffer buf
+        (setq default-directory prev-default-directory)
+        (if buffer-file-name
+            (unless (string-equal buffer-file-name file)
+              (error "different file %s is set for buffer %s." buffer-file-name buf))
+          (setq buffer-file-name file)))
+      ;; (switch-to-buffer buf t)
+      (switch-to-buffer buf)
+      (funcall (intern mjmode))
+      (auto-insert+)))
 
   (defvar mjmode-scratch-mode-map
     (let ((map (make-sparse-keymap)))

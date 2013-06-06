@@ -62,6 +62,33 @@
 
 ;; (macroexpand-all '(tree-node testbug "interAAAA" "bug_status" :test 'qqq))
 
+(defmacro* tree-node (tree &rest xkeys)
+  (let* ((pos (position-if 'keywordp xkeys))
+         (keys (if pos (subseq xkeys 0 pos) xkeys))
+         (okeys (if pos (subseq xkeys pos))))
+    (if keys
+        `(cdr
+          (assoc* ,(car (last keys))
+                  (tree-node ,tree ,@(butlast keys) ,@okeys)
+                  ,@okeys))
+        tree)))
+
+(defmacro* tree-node* (tree &rest xkeys)
+  (let* ((pos (position-if 'keywordp xkeys))
+         (keys (if pos (subseq xkeys 0 pos) xkeys))
+         (okeys (if pos (subseq xkeys pos))))
+    (if keys
+        `(cdr
+          (assoc* ,(car (last keys))
+                  (pushnew
+                   (list ,@(last keys))
+                   (tree-node ,tree ,@(butlast keys) ,@okeys)
+                   :key 'car ,@okeys)
+                  ,@okeys))
+        tree)))
+
+;; (setq u nil)
+;; (setf (tree-node u "a" "b" "c" :test 'string-equal)  'ww )
 
 (defun read-mb (prompt collection)
   (let ((finish-reading nil))
@@ -127,6 +154,24 @@
              ret
              (append ret
                      (get-tree-leaves tr depth)))))))))
+
+(defun* tree-leaves (tree &optional (depth 0))
+  (let ((tdepth (depth tree)))
+    (if (>= depth tdepth)
+        (if (= depth tdepth)
+            (list tree))
+      (let (ret)
+        (if (and (cdr tree)
+                 (atom (cdr tree)))
+            (and (cdr tree)
+                 (list (cdr tree)))
+          (dolist (tr (or (cdr tree)
+                          (list (car tree))) ret)
+            ;; (dolist (tr tree ret)
+            (setq
+             ret
+             (append ret
+                     (tree-leaves tr depth)))))))))
 
 
 (testing
