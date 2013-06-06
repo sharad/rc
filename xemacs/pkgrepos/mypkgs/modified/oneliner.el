@@ -657,6 +657,22 @@ any later version.
     (when (called-interactively-p 'any) ;;(interactive-p)
       (message "Send to %s buffer 'cd %s'" (buffer-name oneliner-shell-buffer) curdir))))
 
+
+
+(defun oneliner-tramp-send-cd (arg &optional dir)
+  "Change directory of *Oneliner shell* to current buffer's `default-directory'."
+  (interactive "p")
+  (message "Hello")
+  (let ((curdir (or dir default-directory)))
+    (oneliner-invisible-command-exec
+     (concat "cd "
+             (if (tramp-file-name-p curdir)
+                 (tramp-file-name-localname (tramp-file-connection curdir))
+                 curdir)))
+    (when (called-interactively-p 'any) ;;(interactive-p)
+      (message "Send to %s buffer 'cd %s'" (buffer-name oneliner-shell-buffer)
+               (curdir)))))
+
 ;;
 ;;  [control code hander( hook for comint-output-filter-functions )]
 ;;

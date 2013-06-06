@@ -88,6 +88,21 @@
       (shell-dirstack-message)))
 
 
+  (defun oneliner-tramp-send-cd (arg &optional dir)
+    "Change directory of *Oneliner shell* to current buffer's `default-directory'."
+    (interactive "p")
+    (message "Hello")
+    (let ((curdir (or dir default-directory)))
+      (oneliner-invisible-command-exec
+       (concat "cd "
+               (if (tramp-file-name-p curdir)
+                   (tramp-file-name-localname (tramp-file-connection curdir))
+                   curdir)))
+      (when (called-interactively-p 'any) ;;(interactive-p)
+        (message "Send to %s buffer 'cd %s'" (buffer-name oneliner-shell-buffer)
+                 (curdir)))))
+
+
   (defvar oneliners-list nil "Multiple oneliners")
 
   ;; (defadvice tramp-open-connection-setup-interactive-shell
@@ -98,13 +113,28 @@
   ;;       (let ((oneliner-suffix prefix))
   ;;         (oneliner)))))
 
+  ;; (defadvice tramp-open-connection-setup-interactive-shell
+  ;;     (after start-oneliner last (p vec) activate)
+  ;;   (save-window-excursion
+  ;;     ;; check if save-excrusion is required.
+  ;;     (oneliner-for-dir
+  ;;      (file-name-directory
+  ;;       (tramp-connection-file vec)))))
+
+
   (defadvice tramp-open-connection-setup-interactive-shell
       (after start-oneliner last (p vec) activate)
-    (save-window-excursion
-      ;; check if save-excrusion is required.
-      (oneliner-for-dir
-       (file-name-directory
-        (tramp-connection-file vec)))))
+    (let ((prefix (tramp-connection-prefix vec))
+          (dir (file-name-directory
+                (tramp-connection-file vec))))
+      (unless (member prefix oneliners-list)
+        (push prefix oneliners-list)
+        (save-window-excursion
+          (oneliner-for-dir dir)))
+      (with-current-buffer (make-oneliner-shell-buffer-name dir)
+        (oneliner-tramp-send-cd dir))
+      (message "change oneliner dir %s here" dir)))
+
 
 
   (when nil
