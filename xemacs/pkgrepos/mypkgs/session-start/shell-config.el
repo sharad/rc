@@ -127,15 +127,12 @@
     (let ((prefix (tramp-connection-prefix vec))
           (dir (file-name-directory
                 (tramp-connection-file vec))))
-      (unless (member prefix oneliners-list)
-        (push prefix oneliners-list)
-        (save-window-excursion
-          (oneliner-for-dir dir)))
-      (with-current-buffer (make-oneliner-shell-buffer-name dir)
-        (oneliner-tramp-send-cd dir))
-      (message "change oneliner dir %s here" dir)))
-
-
+      (save-window-excursion
+        (unless (member prefix oneliners-list)
+          (push prefix oneliners-list)
+          (oneliner-for-dir dir))
+        (with-current-buffer (make-oneliner-shell-buffer-name dir)
+          (oneliner-tramp-send-cd dir)))))
 
   (when nil
     (ad-remove-advice 'tramp-open-connection-setup-interactive-shell 'after 'start-oneliner)
