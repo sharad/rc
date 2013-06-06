@@ -106,11 +106,11 @@
        `(defadvice ,fun (around ,adname ,(help-function-arglist fun) activate)
           ;; ,(help-function-interactive 'fun)
           (let ((remember-annotation-functions
-                 (get-tree-node*  sharad/remember-functions-alist remember-organizer 'annotation))
+                 (get-tree-node  sharad/remember-functions-alist remember-organizer 'annotation))
                 (remember-handler-functions
-                 (get-tree-node* sharad/remember-functions-alist remember-organizer 'handler))
+                 (get-tree-node sharad/remember-functions-alist remember-organizer 'handler))
                 (remember-mode-hook
-                 (get-tree-node* sharad/remember-functions-alist remember-organizer 'hook)))
+                 (get-tree-node sharad/remember-functions-alist remember-organizer 'hook)))
             ad-do-it))))
     (ad-enable-advice fun 'around adname)
     (ad-activate fun)
@@ -150,10 +150,10 @@
     (defun remember-manage-orgnizer-advice (mgrfn)
       (interactive
        (let*
-           ((fnnames '("sharad/remember-fun-set-orgnizer"
-                       "sharad/remember-fun-unset-orgnizer"
-                       "sharad/remember-fun-enable-orgnizer"
-                       "sharad/remember-fun-disable-orgnizer"))
+           ((fnnames '("remember-fun-set-orgnizer-advice"
+                       "remember-fun-unset-orgnizer-advice"
+                       "remember-fun-enable-orgnizer-advice"
+                       "remember-fun-disable-orgnizer-advice"))
             (fn (ido-completing-read "manager: " fnnames nil t)))
          (list (intern fn))))
       (setq remember-annotation-functions nil
