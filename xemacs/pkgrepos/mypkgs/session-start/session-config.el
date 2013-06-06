@@ -340,6 +340,13 @@
             (fmsession-restore (set-this-frame-session-location nframe)) nframe)
           (message "not restoring screen session.")))
 
+    (defun appply-frame-session (nframe)
+      (interactive
+       (list (selected-frame)))
+      (progn
+        (select-frame nframe)
+        (fmsession-restore (fmsession-read-location) nframe)))
+
     (defun save-frame-session (nframe)
       (message "in save-frame-session:")
       (let ((location (frame-parameter nframe 'frame-spec-id)))

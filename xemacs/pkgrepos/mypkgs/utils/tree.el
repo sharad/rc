@@ -54,7 +54,7 @@
   (if keys
       `(cdr
         (assoc ,(car (last keys))
-               (pushnewx
+               (pushnew
                 (list ,@(last keys))
                 (tree-node ,tree ,@(butlast keys))
                 :key 'car)))
@@ -88,7 +88,8 @@
         tree)))
 
 ;; (setq u nil)
-;; (setf (tree-node u "a" "b" "c" :test 'string-equal)  'ww )
+;; (setf (tree-node* u "a" "b" "c" :test 'string-equal)  'ww )
+;; (setf (tree-node* u 'a 'b 'c)  'ww )
 
 (defun read-mb (prompt collection)
   (let ((finish-reading nil))

@@ -107,7 +107,7 @@
     (when
         (if fun
             (funcall fun dirs)
-          (funcall create-tags-default tag-sys dirs force))
+          (funcall 'create-tags-default tag-sys dirs force))
       ;; (push-dir-in-tag-sys-alist tag-sys dir)
       (pushnew dir (tree-node *tags-config* 'dirs-cache 'tag-sys)))))
 

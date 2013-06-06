@@ -100,7 +100,9 @@
 
   (defadvice tramp-open-connection-setup-interactive-shell
       (after start-oneliner last (p vec) activate)
-    (oneliner-for-dir (tramp-connection-file vec)))
+    (save-window-excursion
+      ;; check if save-excrusion is required.
+      (oneliner-for-dir (tramp-connection-file vec))))
 
 
   (when nil

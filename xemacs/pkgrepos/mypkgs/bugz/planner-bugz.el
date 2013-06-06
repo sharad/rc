@@ -137,14 +137,18 @@
 
 
 
-;; (let ((bug (cadar (bugz/Bug.method 'Bug.get '(("ids" 37026 ))))))
-;;   (planner-bugzilla-bug-to-task-name bug)
-;;   (bugz-to-planner-status (cdr (assoc "status" bug)))
-;;   (setq testbug bug)
-;;   (assoc "bug_status" bug))
+(when nil
+ (let ((bug (bugz-method 'Bug.get "bugs" '(("ids" 37026 )))))
+  (planner-bugzilla-bug-to-task-name bug)
+  (bugz-to-planner-status (cdr (assoc "bug_status" bug)))
+  ;; (setq testbug bug)
+  ;; (assoc "bug_status" bug)
+  )
 
 ;; (tree-node testbug "AAAinternals" "bug_status" :test 'string-equal)
 ;; (tree-node testbug "AAAinternals" "bug_status")
+;; (tree-leaves testbug 1)
+)
 
 (provide 'planner-bugz)
 ;;; planner-bugz.el ends here

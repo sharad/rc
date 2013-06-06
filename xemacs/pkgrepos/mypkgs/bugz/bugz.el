@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+(eval-when-compile
+  '(require 'cl))
 
 (require 'xml-rpc)
 (require 'read-utils)
@@ -193,6 +195,7 @@
 ; (bugzilla-method 'Bug.get "bugs" '("id" "summary") '(("ids" 12123 32121)))
 ; (bugz-method 'Bug.get "bugs" '(("ids" 12123 32121)))
 ; (bugz/Bug.method 'Bug.get '(("ids" 37026 )))
+; (bugz-method 'Bug.get "bugs" '(("ids" 37026)))
 
 ;;;;
 
