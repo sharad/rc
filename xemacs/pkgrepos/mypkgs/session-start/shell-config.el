@@ -102,7 +102,9 @@
       (after start-oneliner last (p vec) activate)
     (save-window-excursion
       ;; check if save-excrusion is required.
-      (oneliner-for-dir (tramp-connection-file vec))))
+      (oneliner-for-dir
+       (file-name-directory
+        (tramp-connection-file vec)))))
 
 
   (when nil

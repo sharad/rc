@@ -273,7 +273,10 @@ take effect."
   (interactive "D")
 
   ;; directory for temporary file
-  (if oneliner-temp-dir-name
+  (let ((dir (if (file-directory-p dir)
+                 dir
+                 (file-name-directory dir))))
+   (if oneliner-temp-dir-name
       (let* ((rename nil)
              (default-directory (or dir default-directory))
              (shell-buffer-name (make-oneliner-shell-buffer-name default-directory)))
@@ -286,7 +289,7 @@ take effect."
                (add-hook 'shell-mode-hook 'oneliner-init)
                (shell shell-buffer-name)
                (remove-hook 'shell-mode-hook 'oneliner-init))))
-      (message "Error: Please set environment variable TMPDIR (e.g. export TMPDIR=\"/home/youraccount/temp/\")")))
+      (message "Error: Please set environment variable TMPDIR (e.g. export TMPDIR=\"/home/youraccount/temp/\")"))))
 
 (defun oneliner-title-display (string)
   (cond
