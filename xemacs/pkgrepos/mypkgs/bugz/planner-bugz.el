@@ -37,6 +37,7 @@
 (task-status-add-maps 'bugz
                       '((inprogress . "ASSIGNED")
                         (open         "OPENED" "NEW" "REOPENED")
+                        (pending    . "NEEDINFO")
                         (completed  . "RESOLVED")
                         (cancelled  . "WONTFIX")))
 
@@ -64,7 +65,10 @@
   (let ((task (planner-bugzilla-bugtask-exist-in-page bug page)))
     (if (and task
              (string-equal
-              (bugz-to-planner-status (cdr (assoc "status" bug)))
+              (bugz-to-planner-status (cdr
+                                       (or
+                                        (assoc "bug_status" bug)
+                                        (assoc "status" bug))))
               (planner-task-status task)))
         task)))
 
@@ -74,7 +78,10 @@
         (planner-task-change-status
          (nth 4 differed-task)
          (lambda ()
-           (planner-mark-task (bugz-to-planner-status (cdr (assoc "status" bug)))))
+           (planner-mark-task (bugz-to-planner-status (cdr
+                                                       (or
+                                                        (assoc "bug_status" bug)
+                                                        (assoc "status" bug))))))
          page))))
 
 (defun planner-bugzilla-create-bug-to-task (bug &optional plan-page date)
@@ -86,7 +93,9 @@
                 planner-task-dates-favor-future-p)))
        (planner-read-date))
      nil plan-page
-     (bugz-to-planner-status (cdr (assoc "status" bug))))))
+     (bugz-to-planner-status (cdr (or
+                                   (assoc "bug_status" bug)
+                                   (assoc "status" bug)))))))
 
 (defun planner-bugzilla-task-to-bugid (task)
   (let ((description (nth 4 task)))
@@ -113,7 +122,7 @@
   (interactive
    (list
     (planner-read-non-date-page (planner-file-alist))))
-  (dolist (bug (bugzilla-search-bugs '("id" "summary" "status" "_bugz-url") t))
+  (dolist (bug (bugzilla-search-bugs '("id" "summary" "status" "bug_status" "_bugz-url") t))
     (planner-bugzilla-create-bug-to-task bug page t)))
 
 
@@ -123,9 +132,19 @@
   (interactive
    (list
     (planner-read-non-date-page (planner-file-alist))))
-  (dolist (bug (bugzilla-get-bugs '("id" "summary" "status" "_bugz-url") t))
+  (dolist (bug (bugzilla-get-bugs '("id" "summary" "status" "bug_status" "_bugz-url") t))
     (planner-bugzilla-create-bug-to-task bug page t)))
 
+
+
+;; (let ((bug (cadar (bugz/Bug.method 'Bug.get '(("ids" 37026 ))))))
+;;   (planner-bugzilla-bug-to-task-name bug)
+;;   (bugz-to-planner-status (cdr (assoc "status" bug)))
+;;   (setq testbug bug)
+;;   (assoc "bug_status" bug))
+
+;; (tree-node testbug "AAAinternals" "bug_status" :test 'string-equal)
+;; (tree-node testbug "AAAinternals" "bug_status")
 
 (provide 'planner-bugz)
 ;;; planner-bugz.el ends here

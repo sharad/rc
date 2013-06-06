@@ -126,9 +126,10 @@
 ;; remove-useless-whitespace
 (deh-require-maybe develock
                   ;for now
- (ad-remove-advice 'indent-region 'around 'remove-useless-whitespace)
- (ad-activate 'indent-region)
- (ad-update  'indent-region))
+  (when (ad-find-advice 'indent-region 'around 'remove-useless-whitespace)
+    (ad-remove-advice 'indent-region 'around 'remove-useless-whitespace)
+    (ad-activate 'indent-region)
+    (ad-update  'indent-region)))
 
 
 (deh-section "gprof"
@@ -152,13 +153,13 @@
         cclookup-program (concat cclookup-dir "/cclookup.py")
         cclookup-db-file (concat ccreference-dir "/cclookup.db"))
 
-  (push
-   (list "text/html" (concat "file://" (expand-file-name ccreference-dir)) nil nil)
-   w3m-content-type-alist)
+  ;; (push
+  ;;  (list "text/html" (concat "file://" (expand-file-name ccreference-dir)) nil nil)
+  ;;  w3m-content-type-alist)
 
-  (push
-   (list "text/html" (concat "file:/" (expand-file-name ccreference-dir)) nil nil)
-   w3m-content-type-alist)
+  ;; (push
+  ;;  (list "text/html" (concat "file:/" (expand-file-name ccreference-dir)) nil nil)
+  ;;  w3m-content-type-alist)
 
   ;; to speedup, just load it on demand
   (autoload 'cclookup-lookup "cclookup"

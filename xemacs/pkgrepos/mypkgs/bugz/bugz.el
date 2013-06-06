@@ -46,7 +46,7 @@
 
 ;;;; core
 (defun bugz-dispatch (method &optional args url)
-  (xml-rpc-method-call (or url bugz-url) method args))
+  (xml-rpc-method-call (or url bugz-xmlrpc-url) method args))
 
 (defun bugz/Bug.method (method criteria)
   (bugz-dispatch method criteria))
@@ -144,7 +144,7 @@
 
 ;; login
 (defun bugz/User.login (&optional opts username password url)
-  (let* ((url (or url bugz-url))
+  (let* ((url (or url bugz-xmlrpc-url))
          (username (or username
                        (read-from-minibuffer (format "Bugzilla [%s] User: " url))))
          (password (or password
@@ -188,7 +188,8 @@
 ; (bugzilla-method 'Bug.search "bugs" '("id" "summary") t)
 ; (bugzilla-method 'Bug.get "bugs" '("id" "summary") t)
 ; (bugzilla-method 'Bug.get "bugs" '("id" "summary") '(("ids" 12123 32121)))
-
+; (bugz-method 'Bug.get "bugs" '(("ids" 12123 32121)))
+; (bugz/Bug.method 'Bug.get '(("ids" 37026 )))
 
 ;;;;
 

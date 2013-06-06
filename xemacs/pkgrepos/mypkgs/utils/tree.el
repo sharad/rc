@@ -33,15 +33,34 @@
           keys
           :initial-value tree))
 
-(defmacro tree-node (tree &rest keys)
+(defmacro* tree-node (tree &rest keys &key (test 'eql))
   (if keys
       `(cdr
         (assoc ,(car (last keys))
-               (pushnew
+               (pushnewx
+                (list ,@(last keys))
+                (tree-node ,tree ,@(butlast keys) :test ,test)
+                :key 'car :test ,test)))
+      tree))
+
+
+(defmacro* test-tree-node (tree &rest xkeys &key test)
+  `(list ,tree ,@xkeys ,test ))
+
+;; (macroexpand-all '(test-tree-node  'testa 11 'testbug 'interAAAA 'bug_status))
+
+
+(defmacro* tree-node (tree &rest keys)
+  (if keys
+      `(cdr
+        (assoc ,(car (last keys))
+               (pushnewx
                 (list ,@(last keys))
                 (tree-node ,tree ,@(butlast keys))
                 :key 'car)))
-    tree))
+      tree))
+
+;; (macroexpand-all '(tree-node testbug "interAAAA" "bug_status" :test 'qqq))
 
 
 (defun read-mb (prompt collection)

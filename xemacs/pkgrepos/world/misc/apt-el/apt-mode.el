@@ -26,7 +26,7 @@
 
 
 
-(defvar apt-mode-superuser-command-string "sudo" 
+(defvar apt-mode-superuser-command-string "sudo"
   "*The command that provides superuser privilage for running apt and dpkg.
 Such as sudo.
 This needs to be noninteractive.")
@@ -37,7 +37,7 @@ This needs to be noninteractive.")
   (switch-to-buffer "*apt*")
   (kill-region (point-min) (point-max))
   (apt-mode)
-  (insert 
+  (insert
    "APT front-end mode for Emacs\n\n"
    "Copyright 2002 Junichi Uekawa\n\n"
    "\ts - search\n"
@@ -67,7 +67,7 @@ Special commands: \\{apt-mode-map}
   (setq major-mode 'apt-mode)
   (make-local-variable 'font-lock-defaults)
   (set-syntax-table dpkg-l-mode-syntax-table)
-  (setq font-lock-defaults 
+  (setq font-lock-defaults
 	'(
 					;keywords start here
 	  (("^ii" . font-lock-keyword-face)
@@ -83,7 +83,7 @@ Special commands: \\{apt-mode-map}
 (if dpkg-l-mode-syntax-table
          ()              ; Do not change the table if it is already set up.
        (setq dpkg-l-mode-syntax-table (make-syntax-table)))
-  
+
 (defun apt-mode ()
   "Major mode for apt controls.
 Special commands:
@@ -95,7 +95,7 @@ Special commands:
   (setq mode-name "Apt")
   (setq major-mode 'apt-mode)
   (make-local-variable 'font-lock-defaults)
-  (setq font-lock-defaults 
+  (setq font-lock-defaults
 	'(
 					;keywords start here
 	  (("^\\([^ ]*\\) - \\(.*\\)$" (1 font-lock-warning-face) (2 font-lock-keyword-face)))
@@ -107,7 +107,7 @@ Special commands:
 
 (defvar apt-mode-map nil    ; Create a mode-specific keymap.
   "Keymap for Apt mode.")
-     
+
 (if apt-mode-map
     ()              ; Do not change the keymap if it is already set up.
   (setq apt-mode-map (make-sparse-keymap))
@@ -132,7 +132,7 @@ Special commands:
   (kill-buffer (current-buffer))
 )
 
-(defun apt-cache-search () 
+(defun apt-cache-search ()
   "Apt cache search function.  Interactively search the package database with a regular expression."
   (interactive)
   (let* ((searchregex (read-string "Apt-cache search regex: " (apt-mode-current-word) ))
@@ -141,7 +141,7 @@ Special commands:
     (switch-to-buffer searchregexbufname)
     (apt-mode)
     (kill-region (point-min) (point-max))
-    (call-process "apt-cache" nil 
+    (call-process "apt-cache" nil
 		  searchregexbufname
 		  nil "search" searchregex)
     ))
@@ -153,7 +153,7 @@ Special commands:
     (switch-to-buffer packagenamebuf)
     (apt-mode)
     (kill-region (point-min) (point-max))
-    (call-process "apt-cache" nil 
+    (call-process "apt-cache" nil
 		  packagenamebuf
 		  nil "show" packagename)))
 
@@ -166,7 +166,7 @@ Special commands:
     (switch-to-buffer packagenamebuf)
     (apt-mode)
     (kill-region (point-min) (point-max))
-    (call-process "apt-cache" nil 
+    (call-process "apt-cache" nil
 		  packagenamebuf
 		  nil "showpkg" packagename)
     ))
@@ -179,7 +179,7 @@ Special commands:
     (switch-to-buffer packagenamebuf)
     (apt-mode)
     (kill-region (point-min) (point-max))
-    (call-process apt-mode-superuser-command-string nil 
+    (call-process apt-mode-superuser-command-string nil
 		  packagenamebuf
 		  nil "apt-get" "dist-upgrade" "-s")
     ))
@@ -193,11 +193,11 @@ Special commands:
     (dpkg-l-mode)
     (kill-region (point-min) (point-max))
     (setenv "COLUMNS" apt-dpkg-l-width)
-    (call-process "dpkg" nil 
+    (call-process "dpkg" nil
 		  packagenamebuf
 		  nil "-l" )
     ))
-  
+
 (defun apt-get-install-simulate ()
   "Show apt get install simulation, using sudo to gain root."
   (interactive)
@@ -207,7 +207,7 @@ Special commands:
     (switch-to-buffer packagenamebuf)
     (apt-mode)
     (kill-region (point-min) (point-max))
-    (call-process apt-mode-superuser-command-string nil 
+    (call-process apt-mode-superuser-command-string nil
 		  packagenamebuf
 		  nil "apt-get" "install" "-s" packagename)
     ))
@@ -220,7 +220,7 @@ Special commands:
 	 (packagenamebuf (concat "*" agi-name "*")))
     (switch-to-buffer packagenamebuf)
     (insert "\n --- start\n\n")
-    (switch-to-buffer (make-comint agi-name apt-mode-superuser-command-string 
+    (switch-to-buffer (make-comint agi-name apt-mode-superuser-command-string
 		 nil "apt-get" "install" packagename))))
 
 
@@ -233,7 +233,7 @@ Special commands:
     (switch-to-buffer packagenamebuf)
     (apt-mode)
     (kill-region (point-min) (point-max))
-    (call-process apt-mode-superuser-command-string nil 
+    (call-process apt-mode-superuser-command-string nil
 		  packagenamebuf
 		  t "apt-get" "-y" "remove" packagename)
     (insert "\n --- finished\n\n")
@@ -248,7 +248,7 @@ Special commands:
     (switch-to-buffer packagenamebuf)
     (apt-mode)
     (kill-region (point-min) (point-max))
-    (call-process apt-mode-superuser-command-string nil 
+    (call-process apt-mode-superuser-command-string nil
 		  packagenamebuf
 		  nil "apt-get" "remove" "-s" packagename)
     ))
@@ -261,7 +261,7 @@ Special commands:
     (switch-to-buffer packagenamebuf)
     (apt-mode)
     (kill-region (point-min) (point-max))
-    (call-process apt-mode-superuser-command-string nil 
+    (call-process apt-mode-superuser-command-string nil
 		  packagenamebuf
 		  t "apt-get" "update")
     (insert "\n --- finished\n\n")
@@ -284,4 +284,4 @@ Special commands:
 	  (error "Cannot find end of packagename")))
       (buffer-substring start-pos end-pos))))
 
-(provide 'apt)
+(provide 'apt-mode)
