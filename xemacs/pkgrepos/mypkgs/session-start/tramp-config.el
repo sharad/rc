@@ -188,9 +188,8 @@
                                  (ssh-agent-add-key)
                                  (message "update main pid and sock to frame pid %s sock %s"
                                           (getenv "SSH_AGENT_PID" (selected-frame))
-                                          (getenv "SSH_AUTH_SOCK" (selected-frame)))))
-                           ;; (message "loading %s" agent-file)
-                           (message "No frame present."))
+                                          (getenv "SSH_AUTH_SOCK" (selected-frame))))
+                               (message "No frame present.")))
                          (message "Unable to find agent file."))
                      ;; (ssh-agent-add-key)
                      ))

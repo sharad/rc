@@ -614,6 +614,7 @@ Also returns nil if pid is nil."
   (defun sharad/desktop-session-restore ()
     "Restore a saved emacs session."
     (interactive)
+    (setq debug-on-error t)
     (message "in desktop-session-restore")
     (if (sharad/desktop-saved-session)
         (progn

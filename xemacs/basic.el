@@ -347,15 +347,21 @@ startup in daemon mode."
                                  (light-symbol-mode 1)
                                  (highlight-changes-visible-mode t)
                                  (highlight-changes-mode t)) pgm-langs))
-       (run-each-hooks 'sharad/enable-startup-inperrupting-feature-hook)
+       (setq debug-on-error t ) ;; debug for now
+       ;; ;; (add-hook ;; 'after-init-hook
+       ;; ;;  'sharad/enable-startup-inperrupting-feature-hook
+       ;; ;;  'sharad/desktop-session-restore)
+       ;; (run-each-debug-hooks 'sharad/enable-startup-inperrupting-feature-hook)
+       (sharad/desktop-session-restore)
        (message "sharad/enable-startup-inperrupting-feature() completed Seen.")
        (setq debug-on-error t )))
 
 
   (defun sharad/enable-startup-inperrupting-feature-in-frame-once (frame)
     (select-frame frame)
-    (with-report-error "check"
-                       (sharad/enable-startup-inperrupting-feature))
+    ;; (with-report-error "check"
+    ;;                    (sharad/enable-startup-inperrupting-feature))
+    (sharad/enable-startup-inperrupting-feature)
     (remove-hook 'after-make-frame-functions 'sharad/enable-startup-inperrupting-feature-in-frame-once))
 
   (add-hook 'after-make-frame-functions 'sharad/enable-startup-inperrupting-feature-in-frame-once))

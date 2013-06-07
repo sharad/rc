@@ -100,6 +100,10 @@
         (funcall f)
       (error (message "run-each-hooks Error: function %s error %s" f e)))))
 
+(defun run-each-debug-hooks (hook)
+  (dolist (f (symbol-value hook))
+      (error (message "run-each-hooks Error: function %s error %s" f e))))
+
 
 
 

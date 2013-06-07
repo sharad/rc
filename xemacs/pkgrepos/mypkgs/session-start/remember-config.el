@@ -206,6 +206,8 @@
       ;; (setq remember-organizer old-remember-organizer)
       ))
 
+  ;; org-ignore-region
+
   (defun sharad/remember-org (&optional initial)
     (interactive
      (list (when current-prefix-arg

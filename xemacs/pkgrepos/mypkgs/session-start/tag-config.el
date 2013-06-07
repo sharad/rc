@@ -64,7 +64,7 @@
 
 (defun tag-file-existp-main (tag-sys dir)
   (if (search-upwards (tree-node *tags-config* 'files tag-sys) dir)
-      (pushnew dir (tree-node *tags-config* 'dirs-cache tag-sys))))
+      (pushnew dir (tree-node* *tags-config* 'dirs-cache tag-sys))))
 
 (defun tag-file-existp (tag-sys dir)
   (message "tag-file-existp %s %s" tag-sys dir)
