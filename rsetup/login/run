@@ -84,6 +84,10 @@ fi
 whence leave &&
 leave +0800
 
+at now + 10 minutes <<EOF
+~/bin/mradio -c 6
+EOF
+
 
 [ -r ~/.rsetup/login/run.d/${HOST//.*} ] &&
 ~/.rsetup/login/run.d/${HOST//.*}

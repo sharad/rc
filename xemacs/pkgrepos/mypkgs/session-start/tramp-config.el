@@ -158,7 +158,8 @@
          ssh-key-file)
         (unless (and (not tramp-mode)
                     (shell-command-local-no-output "ssh-add -l < /dev/null"))
-          (shell-command-local-no-output (concat "ssh-add " ssh-key-file " < /dev/null")))
+          (with-timeout (7 nil)
+            (shell-command-local-no-output (concat "ssh-add " ssh-key-file " < /dev/null"))))
         (error "No ssh-key-file defined")))
 
   (defun update-ssh-agent (&optional force)
