@@ -82,7 +82,7 @@
           (assoc* ,(car (last keys))
                   (pushnew
                    (list ,@(last keys))
-                   (tree-node ,tree ,@(butlast keys) ,@okeys)
+                   (tree-node* ,tree ,@(butlast keys) ,@okeys)
                    :key 'car ,@okeys)
                   ,@okeys))
         tree)))

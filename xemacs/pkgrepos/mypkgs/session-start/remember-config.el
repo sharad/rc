@@ -7,6 +7,9 @@
 ;;file. However this currently forgets that you also need something like
 ;;this in your .emacs:
 
+(eval-when-compile
+  '(require 'cl))
+
 (require 'cl)
 
 (require 'remember)
