@@ -59,15 +59,15 @@
   ;;          (base-directory (or base-directory default-directory))
   ;;          (prefix (if (string-match tramp-prefix base-directory)
   ;;                      (match-string 0 base-directory)))
-  ;;          (tdir (concat  prefix dir)))
-  ;;     (cd-absolute tdir)))
+  ;;          (dir (concat  prefix dir)))
+  ;;     (cd-absolute dir)))
 
 
   (defun cd-tramp-absolute (dir &optional base-directory)
     (let* ((base-directory (or base-directory default-directory))
            (prefix (tramp-file-prefix base-directory))
-           (tdir (concat  prefix dir)))
-      (cd-absolute tdir)))
+           (dir (concat  prefix dir)))
+      (cd-absolute dir)))
 
 
   (require 'utils-config)
@@ -124,10 +124,10 @@
 
   (defadvice tramp-open-connection-setup-interactive-shell
       (after start-oneliner last (p vec) activate)
-    (let ((onelinerbuf (make-oneliner-shell-buffer-name dir))
-          (prefix (tramp-connection-prefix vec))
-          (dir (file-name-directory
-                (tramp-connection-file vec))))
+    (let* ((prefix (tramp-connection-prefix vec))
+           (dir (file-name-directory
+                  (tramp-connection-file vec)))
+           (onelinerbuf (make-oneliner-shell-buffer-name dir)))
       (save-window-excursion
         (unless (member prefix oneliners-list)
           (push prefix oneliners-list)

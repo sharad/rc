@@ -237,8 +237,8 @@ take effect."
 (defun cd-tramp-absolute (dir &optional base-directory)
   (let* ((base-directory (or base-directory default-directory))
          (prefix (tramp-file-prefix base-directory))
-         (tdir (concat  prefix dir)))
-    (cd-absolute tdir)))
+         (dir (concat  prefix dir)))
+    (cd-absolute dir)))
 
 (defun make-oneliner-shell-buffer-name (&optional dir)
   (let ((connection-name
