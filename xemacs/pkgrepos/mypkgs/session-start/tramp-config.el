@@ -181,14 +181,16 @@
                          (progn
                            (if force (tramp-cleanup-all-connections))
                            ;; (load agent-file t t)
-                           (setenv "SSH_AGENT_PID" (getenv "SSH_AGENT_PID" (selected-frame)))
-                           (setenv "SSH_AUTH_SOCK" (getenv "SSH_AUTH_SOCK" (selected-frame)))
-                           (ssh-agent-add-key)
-                           (message "update main pid and sock to frame pid %s sock %s"
-                                    (getenv "SSH_AGENT_PID" (selected-frame))
-                                    (getenv "SSH_AUTH_SOCK" (selected-frame)))
+                           (if (getenv "SSH_AGENT_PID" (selected-frame))
+                               (progn
+                                 (setenv "SSH_AGENT_PID" (getenv "SSH_AGENT_PID" (selected-frame)))
+                                 (setenv "SSH_AUTH_SOCK" (getenv "SSH_AUTH_SOCK" (selected-frame)))
+                                 (ssh-agent-add-key)
+                                 (message "update main pid and sock to frame pid %s sock %s"
+                                          (getenv "SSH_AGENT_PID" (selected-frame))
+                                          (getenv "SSH_AUTH_SOCK" (selected-frame)))))
                            ;; (message "loading %s" agent-file)
-                           )
+                           (message "No frame present."))
                          (message "Unable to find agent file."))
                      ;; (ssh-agent-add-key)
                      ))
@@ -199,6 +201,14 @@
                                       "~/.authinfo.gpg"))))))
       (if ido-auto-merge-timer
           (timer-activate ido-auto-merge-timer))))
+
+
+
+(when nil
+  (run-with-timer 10 nil (lambda ()
+                           (setq xxtframe (selected-frame))))
+  (select-frame xxtframe)
+  (getenv "SSH_AGENT_PID" xxtframe))
 
   (defadvice tramp-file-name-handler
       (before ad-update-ssh-agent-env activate)
@@ -225,46 +235,50 @@
   (add-hook 'cscope-list-entry-hook #'tramp-output-wash)
 
   (deh-section "Info"
-;; tramp-cleanup-connection (vec)
-;; want to know what is vec than see definition of tramp-cleanup-connection
-;; (with-parsed-tramp-file-name buffer-file-name nil v)
+    ;; tramp-cleanup-connection (vec)
+    ;; want to know what is vec than see definition of tramp-cleanup-connection
+    ;; (with-parsed-tramp-file-name buffer-file-name nil v)
 
-;; (defun tramp-connectable-p (filename)
-;;   "Check, whether it is possible to connect the remote host w/o side-effects.
-;; This is true, if either the remote host is already connected, or if we are
-;; not in completion mode."
-;;   (and (tramp-tramp-file-p filename)
-;;        (with-parsed-tramp-file-name filename nil
-;; 	 (or (get-buffer (tramp-buffer-name v))
-;; 	     (not (tramp-completion-mode-p))))))
+    ;; (defun tramp-connectable-p (filename)
+    ;;   "Check, whether it is possible to connect the remote host w/o side-effects.
+    ;; This is true, if either the remote host is already connected, or if we are
+    ;; not in completion mode."
+    ;;   (and (tramp-tramp-file-p filename)
+    ;;        (with-parsed-tramp-file-name filename nil
+    ;; 	 (or (get-buffer (tramp-buffer-name v))
+    ;; 	     (not (tramp-completion-mode-p))))))
 
-;; (tramp-open-connection-setup-interactive-shell PROC VEC)
+    ;; (tramp-open-connection-setup-interactive-shell PROC VEC)
 
+    (eval-when-compile
+      '(require 'tramp))
 
+    (require 'tramp)
 
-  (defun tramp-file-connection (file-name)
-    (when (and file-name (file-remote-p file-name))
-      (with-parsed-tramp-file-name file-name nil v)))
+    (defun tramp-file-connection (file-name)
+      (when (and file-name (file-remote-p file-name))
+        ;; (with-parsed-tramp-file-name file-name nil v)
+        (tramp-dissect-file-name file-name)))
 
-  (defun tramp-connection-file (connection)
-    (when connection
+    (defun tramp-connection-file (connection)
+      (when connection
         (tramp-make-tramp-file-name
          (tramp-file-name-method connection)
          (tramp-file-name-user connection)
          (tramp-file-name-host connection)
          (tramp-file-name-localname connection))))
 
-  (defun tramp-connection-prefix (connection)
-    (when connection
-      (tramp-make-tramp-file-name
-       (tramp-file-name-method connection)
-       (tramp-file-name-user connection)
-       (tramp-file-name-host connection)
-       nil)))
+    (defun tramp-connection-prefix (connection)
+      (when connection
+        (tramp-make-tramp-file-name
+         (tramp-file-name-method connection)
+         (tramp-file-name-user connection)
+         (tramp-file-name-host connection)
+         nil)))
 
-  (defun tramp-file-prefix (file-name)
-    (tramp-connection-prefix
-     (tramp-file-connection file-name)))))
+    (defun tramp-file-prefix (file-name)
+      (tramp-connection-prefix
+       (tramp-file-connection file-name)))))
 
 (when nil
   (defun tramp-do-file-attributes-with-stat

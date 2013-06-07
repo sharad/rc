@@ -225,6 +225,9 @@ take effect."
 (require 'poe)
 (require 'tramp-config)
 
+(require 'utils-config)
+(require 'tramp-config)
+
 ;;--- debugging message logger
 (defmacro oneliner-debug-print (string)
   `(if oneliner-debug
@@ -671,7 +674,7 @@ any later version.
                  curdir)))
     (when (called-interactively-p 'any) ;;(interactive-p)
       (message "Send to %s buffer 'cd %s'" (buffer-name oneliner-shell-buffer)
-               (curdir)))))
+               curdir))))
 
 ;;
 ;;  [control code hander( hook for comint-output-filter-functions )]

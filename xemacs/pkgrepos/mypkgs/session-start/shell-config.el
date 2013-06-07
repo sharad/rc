@@ -27,6 +27,9 @@
 
 (deh-require-maybe oneliner
   (load-library "oneliner")
+  (require 'utils-config)
+  (require 'tramp-config)
+
   (setq oneliner-temp-dir-name (if (getenv "TMPDIR")
                                    (expand-file-name (getenv "TMPDIR"))
                                    (expand-file-name "temp" (getenv "HOME"))
@@ -70,7 +73,6 @@
       (cd-absolute dir)))
 
 
-  (require 'utils-config)
 
   (defun get-tramp-env (variable)
     (with-temp-buffer
@@ -100,7 +102,7 @@
                    curdir)))
       (when (called-interactively-p 'any) ;;(interactive-p)
         (message "Send to %s buffer 'cd %s'" (buffer-name oneliner-shell-buffer)
-                 (curdir)))))
+                 curdir))))
 
 
   (defvar oneliners-list nil "Multiple oneliners")
