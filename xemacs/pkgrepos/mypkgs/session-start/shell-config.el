@@ -125,10 +125,12 @@
 
 
   (defadvice tramp-open-connection-setup-interactive-shell
-      (after start-oneliner last (p vec) activate)
+      (after start-oneliner last (p vec) disable)
     (let* ((prefix (tramp-connection-prefix vec))
-           (dir (file-name-directory
-                  (tramp-connection-file vec)))
+           (file (tramp-connection-file vec))
+           (dir (if (file-directory-p file)
+                    file
+                    (file-name-directory file)))
            (onelinerbuf (make-oneliner-shell-buffer-name dir)))
       (save-window-excursion
         (unless (member prefix oneliners-list)
@@ -136,7 +138,15 @@
           (oneliner-for-dir dir))
         (if (bufferp onelinerbuf)
             (with-current-buffer onelinerbuf
-              (oneliner-tramp-send-cd dir))))))
+              (oneliner-tramp-send-cd dir)))))
+    ad-return-value)
+
+  (add-hook 'sharad/enable-startup-inperrupting-feature-hook
+            '(lambda ()
+              (ad-enable-advice 'tramp-open-connection-setup-interactive-shell 'after 'start-oneliner)
+              (ad-update 'tramp-open-connection-setup-interactive-shell)
+              (ad-activate 'tramp-open-connection-setup-interactive-shell))
+            t)
 
   (when nil
     (ad-remove-advice 'tramp-open-connection-setup-interactive-shell 'after 'start-oneliner)

@@ -347,12 +347,15 @@ startup in daemon mode."
                                  (light-symbol-mode 1)
                                  (highlight-changes-visible-mode t)
                                  (highlight-changes-mode t)) pgm-langs))
-       (setq debug-on-error t ) ;; debug for now
+       ;; (setq debug-on-error t ) ;; debug for now
+
        ;; ;; (add-hook ;; 'after-init-hook
        ;; ;;  'sharad/enable-startup-inperrupting-feature-hook
        ;; ;;  'sharad/desktop-session-restore)
        ;; (run-each-debug-hooks 'sharad/enable-startup-inperrupting-feature-hook)
-       (sharad/desktop-session-restore)
+       ;; )
+       (run-each-hooks 'sharad/enable-startup-inperrupting-feature-hook)
+       ;; (sharad/desktop-session-restore)
        (message "sharad/enable-startup-inperrupting-feature() completed Seen.")
        (setq debug-on-error t )))
 
@@ -422,8 +425,5 @@ startup in daemon mode."
 
   (add-hook 'delete-frame-functions 'sharad/disable-login-session-inperrupting-feature-in-frame))
 ;;}}
-
-
-
 
 (defalias 'make-local-hook 'ignore)

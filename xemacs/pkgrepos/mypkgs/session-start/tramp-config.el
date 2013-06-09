@@ -203,17 +203,29 @@
 
 
 
-(when nil
-  (run-with-timer 10 nil (lambda ()
-                           (setq xxtframe (selected-frame))))
-  (select-frame xxtframe)
-  (getenv "SSH_AGENT_PID" xxtframe))
+  (when nil
+    (run-with-timer 10 nil (lambda ()
+                             (setq xxtframe (selected-frame))))
+    (select-frame xxtframe)
+    (getenv "SSH_AGENT_PID" xxtframe))
 
   (defadvice tramp-file-name-handler
       (before ad-update-ssh-agent-env activate)
     "Support ssh agent."
     (unless (tramp-tramp-file-p default-directory)
       (update-ssh-agent)))
+
+  ;; (defadvice tramp-file-name-handler
+  ;;     (before ad-update-ssh-agent-env activate)
+  ;;   "Support ssh agent."
+  ;;   (update-ssh-agent))
+
+
+  (when nil
+    (ad-remove-advice 'tramp-file-name-handler 'before 'ad-update-ssh-agent-env)
+    (ad-update 'tramp-file-name-handler)
+    (ad-activate 'tramp-file-name-handler))
+
 
   ;; run, do not run it, it trouble at start-up time.
   ;; (update-ssh-agent)
