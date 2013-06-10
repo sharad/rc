@@ -353,6 +353,35 @@ thus, on a GNU or Unix system, it must end in a slash."
             action
             (vector action)))))
 
+(defun char-isalpha-p (thechar)
+  "Check to see if thechar is a letter"
+  (and (or (and (>= thechar ?a) (<= thechar ?z))
+         (and (>= thechar ?A) (<= thechar ?Z)))))
+
+(defun char-isnum-p (thechar)
+  "Check to see if thechar is a number"
+  (and (>= thechar ?0) (<= thechar ?9)))
+
+(defun char-isalnum-p (thechar)
+  (or (char-isalpha-p thechar) (char-isnum-p thechar)))
+
+
+;; (mapcar (lambda (s)
+;;           (remove-if-not 'char-isalpha-p s))
+;;         (mapcar 'car auto-mode-alist))
+
+;; ? How to unify mode (cdr auto-mode-alist) and file names
+
+(defun auto-mode-alist-get-modes-from-file (file) ;return list
+  )
+
+(defun auto-mode-alist-get-fileregexs-from-mode (file) ;return list
+  )
+
+(defun regex-equal (r1 r2)
+  (string-equal
+   (remove-if-not 'char-isalpha-p r1)
+   (remove-if-not 'char-isalpha-p r2)))
 
 ;; TODO: checkout pcre2el.el
 ;; TODO: check major mode with reverse auto-mode-alist file pattern.
@@ -373,9 +402,14 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
          (while alist
            (setq cond (caar alist))
 	   (if (if (symbolp cond)
-		   (eq cond major-mode)
-                   (and buffer-file-name
-                        (string-match cond buffer-file-name)))
+		   (let ((cond-major-mode cond))
+                     (or
+                      (eq cond-major-mode major-mode)
+                      (member major-mode (auto-mode-alist-get-mode-from-file cond-major-mode))))
+                   (let ((file-regex-cond cond))
+                     (or
+                      (and buffer-file-name (string-match file-regex-cond buffer-file-name))
+                      (member* file-regex-cond (auto-mode-alist-get-fileregex-from-mode file) :test 'regex-equal))))
 	       (setq
                 noaction-alist (append noaction-alist (caar alist))
                 alist nil))

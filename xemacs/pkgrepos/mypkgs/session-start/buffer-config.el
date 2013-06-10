@@ -87,14 +87,40 @@
 
 
   (setq ibuffer-saved-filter-groups
-        '(("default"
+        `(("default"
+           ("scratches" (or
+                         (name . "^\\*.*\-scratch\\*$")))
+           ("Config"
+            (or
+             (name . "^config$")
+             (name . "^conf$")
+             (name . "^cfg$")
+             (name . "^\\.cfg$")
+             (name . "^\\.conf$")
+             (name . "^\\.config$")
+             ;; (name . "^\\rc$")
+             ))
+           ("Logs"
+            (or
+             (name . "^\\.log$")))
            ("dired" (mode . dired-mode))
            ("perl" (mode . cperl-mode))
            ("erc" (mode . erc-mode))
            ("planner" (or
                        (name . "^\\*Calendar\\*$")
                        (name . "^diary$")
-                       (mode . muse-mode)))
+                       (name . "planner-cyclic-diary-file")
+                       (name . "private")
+                       (name . "public")
+                       (name . ,(concat planner-date-regexp ".muse"))
+                       (mode . planner-mode)))
+           ("wiki" (or
+                    (name . "^\\.muse$")
+                    (mode . muse-mode)))
+           ("org" (or
+                   (name . "^\\.org$")
+                   (name . "^\\.rem$")
+                   (mode . org-mode)))
            ("emacs" (or
                      (name . "^\\*scratch\\*$")
                      (name . "^\\*Messages\\*$")))
@@ -107,14 +133,46 @@
                     (mode . gnus-article-mode)
                     (name . "^\\.bbdb$")
                     (name . "^\\.newsrc-dribble")))
-
+           ("emacs-lisp" (or
+                          (name . "^\\.el$")
+                          (mode . emacs-lisp-mode)))
+           ("C" (or
+                 (name . "^\\.c$")
+                 (name . "^\\.cpp$")
+                 (name . "^\\.cxx$")
+                 (name . "^\\.C$")
+                 (name . "^\\.h$")
+                 (mode . cpp-mode)
+                 (mode . c++-mode)
+                 (mode . c-mode)))
+           ("Lisp" (or
+                 (name . "^\\.lisp$")
+                 (mode . lisp-mode)
+                 (mode . slime-mode)))
+           ("XML" (or
+                   (name . "^\\.xml$")
+                   (name . "^\\.xql$")
+                   (name . "^\\.xq$")
+                   (name . "^\\.xsl$")
+                   (mode . nxml-mode)
+                   (mode . xml-mode)
+                   (mode . xslt-mode)
+                   (mode . xql-mode)
+                   (mode . xquery-mode)))
+           ("Shell" (or
+                     (name . "^\\.sh$")
+                     (name . "^\\.zsh$")
+                     (mode . sh-mode)
+                     (mode . shell-script-mode)))
            ("programming" (or
                            (mode . emacs-lisp-mode)
                            (mode . cperl-mode)
                            (mode . c-mode)
                            (mode . java-mode)
                            (mode . idl-mode)
-                           (mode . lisp-mode))))))
+                           (mode . lisp-mode)))
+           ("Other Buffer" (or
+                            (name . "^\\*.+\\*$"))))))
 
 
 
