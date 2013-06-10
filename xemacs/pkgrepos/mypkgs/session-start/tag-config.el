@@ -397,11 +397,11 @@
 
   (deh-section "Combnining all tag search"
 
-    (defun combine-find-tag ()
-      (o
-       (gtags-find-tag)
-       (find-tag)
-       (cscope-find-this-symbol)))
+    ;; (defun combine-find-tag ()
+    ;;   (o
+    ;;    (gtags-find-tag)
+    ;;    (find-tag)
+    ;;    (cscope-find-this-symbol)))
     )
 
   )
