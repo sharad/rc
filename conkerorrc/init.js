@@ -20,6 +20,7 @@ require("tab-bar.js");
 // }}
 
 
+
 let (conkerorhome = get_home_directory().path + "/.conkerorrc/") {
     for (f in ["custom.js", "display.js", "webjumps.js", "proxy.js", "misc.js", "office.js", "extention.js", "repl.js", "utils.js", "commands.js", "utils1.js", "behaviour.js", "modes.js", "gsearch.js"]) {
         if (typeof load_rc_file == 'function') {
@@ -73,3 +74,4 @@ Components.classes["@mozilla.org/login-manager;1"]
 //     user_pref("network.protocol-handler.app.mailto", home + "/bin/gnus-mailto");
 // }
 //}}
+

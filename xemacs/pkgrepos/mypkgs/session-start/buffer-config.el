@@ -119,6 +119,7 @@
                     (mode . muse-mode)))
            ("org" (or
                    (name . "^\\.org$")
+                   (name . "^\\.org")
                    (name . "^\\.rem$")
                    (mode . org-mode)))
            ("emacs" (or
@@ -145,6 +146,11 @@
                  (mode . cpp-mode)
                  (mode . c++-mode)
                  (mode . c-mode)))
+           ("Javascript" (or
+                     (name . "^\\.js$")
+                     (mode . js-mode)
+                     (mode . espresso-mode)
+                     (mode . js2-mode)))
            ("Lisp" (or
                  (name . "^\\.lisp$")
                  (mode . lisp-mode)

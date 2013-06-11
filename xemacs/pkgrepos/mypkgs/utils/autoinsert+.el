@@ -386,15 +386,15 @@ thus, on a GNU or Unix system, it must end in a slash."
 ;; TODO: checkout pcre2el.el
 ;; TODO: check major mode with reverse auto-mode-alist file pattern.
 ;;;###autoload
-(defun auto-insert+ ()
+(defun auto-insert+ (&optional force)
   "Insert default contents into new files if variable `auto-insert+' is non-nil.
 Matches the visited file name against the elements of `auto-insert+-alist'."
-  (interactive)
+  (interactive "P")
   ;; (message "in auto-insert+")
   (and (not buffer-read-only)
        (or (eq this-command 'auto-insert+)
 	   (and auto-insert+
-		(bobp) (eobp)))
+		(or force (and (bobp) (eobp)))))
 
        ;; no action test
        (let ((alist auto-noinsert+-alist)
@@ -409,7 +409,7 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
                    (let ((file-regex-cond cond))
                      (or
                       (and buffer-file-name (string-match file-regex-cond buffer-file-name))
-                      (member* file-regex-cond (auto-mode-alist-get-fileregex-from-mode file) :test 'regex-equal))))
+                      (member* file-regex-cond (auto-mode-alist-get-fileregex-from-mode buffer-file-name) :test 'regex-equal))))
 	       (setq
                 noaction-alist (append noaction-alist (caar alist))
                 alist nil))
