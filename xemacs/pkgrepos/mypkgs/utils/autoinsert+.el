@@ -383,6 +383,27 @@ thus, on a GNU or Unix system, it must end in a slash."
    (remove-if-not 'char-isalpha-p r1)
    (remove-if-not 'char-isalpha-p r2)))
 
+
+;; thos fileregex o mode o auto-mode-alist matchs files regx o
+;; template o auto-insert-alist than that mode also need also cause
+;; that template to be used.
+
+(defun auto-mode-alist-get-modes-from-moderegex (inmode inregex) ;return list
+  ;; inmode: given file mode
+  ;; inregx: template file regex
+  (let ((mode-regexs (rassoc-all inmode auto-mode-alist))
+        (remove-if-not '(lambda (e)
+                           (regex-equal (car e) inregex))
+                         rassoc-all))))
+
+(defun auto-mode-alist-get-modes-from-moderegex-p (inmode inregex) ;return list
+  ;; inmode: given file mode
+  ;; inregx: template file regex
+  (let ((mode-regexs (rassoc-all inmode auto-mode-alist))
+        (memeber* rassoc-all
+          :test '(lambda (e)
+                  (regex-equal (car e) inregex))))))
+
 ;; TODO: checkout pcre2el.el
 ;; TODO: check major mode with reverse auto-mode-alist file pattern.
 ;;;###autoload
@@ -404,12 +425,11 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
 	   (if (if (symbolp cond)
 		   (let ((cond-major-mode cond))
                      (or
-                      (eq cond-major-mode major-mode)
-                      (member major-mode (auto-mode-alist-get-mode-from-file cond-major-mode))))
+                      (eq cond-major-mode major-mode)))
                    (let ((file-regex-cond cond))
                      (or
                       (and buffer-file-name (string-match file-regex-cond buffer-file-name))
-                      (member* file-regex-cond (auto-mode-alist-get-fileregex-from-mode buffer-file-name) :test 'regex-equal))))
+                      (auto-mode-alist-get-modes-from-moderegex-p major-mode file-regex-cond))))
 	       (setq
                 noaction-alist (append noaction-alist (caar alist))
                 alist nil))
@@ -434,9 +454,7 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
                        (car element)
                        (cdar element))))
 
-             (if
-
-              (some (lambda (c)
+             (if (some (lambda (c)
                          (if (symbolp c)
                              (eq cond major-mode)
                              (and buffer-file-name
