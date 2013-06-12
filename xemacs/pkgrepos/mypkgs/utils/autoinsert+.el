@@ -384,25 +384,42 @@ thus, on a GNU or Unix system, it must end in a slash."
    (remove-if-not 'char-isalpha-p r2)))
 
 
+(regex-equal
+ "\\.el\\'"
+ (car (find 'emacs-lisp-mode auto-mode-alist :key 'cdr :test 'eq)))
+
+
 ;; thos fileregex o mode o auto-mode-alist matchs files regx o
 ;; template o auto-insert-alist than that mode also need also cause
 ;; that template to be used.
 
-(defun auto-mode-alist-get-modes-from-moderegex (inmode inregex) ;return list
+(defun auto-mode-alist-get-from-moderegex (inmode tmplregex) ;return list
   ;; inmode: given file mode
   ;; inregx: template file regex
-  (let ((mode-regexs (rassoc-all inmode auto-mode-alist))
-        (remove-if-not '(lambda (e)
-                           (regex-equal (car e) inregex))
-                         rassoc-all))))
+  (let ((mode-regexs (remove-if-not (lambda (e)
+                                      (eq e inmode)) auto-mode-alist :key 'cdr)))
+    (remove-if-not '(lambda (e)
+                     (regex-equal (car e) tmplregex))
+                   mode-regexs)))
 
-(defun auto-mode-alist-get-modes-from-moderegex-p (inmode inregex) ;return list
+;; (defun auto-mode-alist-get-modes-from-moderegex-p (inmode tmplregex) ;return list
+;;   ;; inmode: given file mode
+;;   ;; inregx: template file regex
+;;   (let ((mode-regexs (find inmode auto-mode-alist :key 'cdr :test 'eq)))
+;;     (member* tmplregex
+;;               mode-regexs
+;;               :test '(lambda (e)
+;;                       (regex-equal (car e) tmplregex)))))
+
+(defun auto-mode-alist-get-from-strmode (infile tmplmode) ;return list
   ;; inmode: given file mode
   ;; inregx: template file regex
-  (let ((mode-regexs (rassoc-all inmode auto-mode-alist))
-        (memeber* rassoc-all
-          :test '(lambda (e)
-                  (regex-equal (car e) inregex))))))
+  (let ((mode-regexs (remove-if-not (lambda (regex)
+                                      (string-match regex infile))
+                                    auto-mode-alist :key 'car)))
+    (member* tmplmode mode-regexs :key 'cdr)))
+
+
 
 ;; TODO: checkout pcre2el.el
 ;; TODO: check major mode with reverse auto-mode-alist file pattern.
@@ -424,12 +441,9 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
            (setq cond (caar alist))
 	   (if (if (symbolp cond)
 		   (let ((cond-major-mode cond))
-                     (or
-                      (eq cond-major-mode major-mode)))
+                      (eq cond-major-mode major-mode))
                    (let ((file-regex-cond cond))
-                     (or
-                      (and buffer-file-name (string-match file-regex-cond buffer-file-name))
-                      (auto-mode-alist-get-modes-from-moderegex-p major-mode file-regex-cond))))
+                     (and buffer-file-name (string-match file-regex-cond buffer-file-name))))
 	       (setq
                 noaction-alist (append noaction-alist (caar alist))
                 alist nil))
@@ -456,9 +470,14 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
 
              (if (some (lambda (c)
                          (if (symbolp c)
-                             (eq cond major-mode)
-                             (and buffer-file-name
-                                  (string-match cond buffer-file-name))))
+                             (let ((cond-major-mode c))
+                               (or (eq cond major-mode)
+                                   (auto-mode-alist-get-from-strmode buffer-file-name cond-major-mode)))
+                             (let ((file-regex-cond c))
+                               (or
+                                (and buffer-file-name
+                                     (string-match cond buffer-file-name))
+                                (auto-mode-alist-get-from-moderegex major-mode file-regex-cond)))))
                        (if (consp cond) cond (list cond)))
 
                  (setq action-alist (append action-alist (cdr element))
