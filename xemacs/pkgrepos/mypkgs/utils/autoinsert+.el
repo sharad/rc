@@ -325,6 +325,7 @@ thus, on a GNU or Unix system, it must end in a slash."
          (cdr (assoc name alist))))
 
 (defun auto-insert+run-action (action)
+  ;; TODO: Add support function with arguments
   (and action
        (or (not (stringp action))
            (file-readable-p (expand-file-name

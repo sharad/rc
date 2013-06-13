@@ -38,13 +38,14 @@
 ;;
 ;;     )
 
-(add-hook 'javascript-mode-hook 'flymake-jslint-load)
+(deh-require-maybe flymake-js
+  (add-hook 'javascript-mode-hook 'flymake-jslint-load))
 (add-hook 'javascript-mode-hook 'javascript-custom-setup)
 (add-hook 'inferior-moz-hook 'javascript-custom-setup)
 
 ;; Or if you’re trying espresso.el, add this:
 ;; (autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
-(deh-require-maybe espresso
+(deh-require-maybe (and espresso flymake-js)
   ;; (add-hook 'espresso-mode-hook 'espresso-custom-setup)
   (add-hook 'espresso-mode-hook 'flymake-jslint-load)
   (add-hook 'espresso-mode-hook 'javascript-custom-setup)
@@ -57,7 +58,8 @@
 ;; Or if you’re using js2-mode, add this:
 ;; (autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
 ;; (add-hook 'js2-mode-hook 'js2-custom-setup)
-(add-hook 'js2-mode-hook 'flymake-jslint-load)
+(deh-require-maybe flymake-js
+  (add-hook 'js2-mode-hook 'flymake-jslint-load))
 (add-hook 'js2-mode-hook 'javascript-custom-setup)
 ;; (defun js2-custom-setup ()
 ;;   (moz-minor-mode 1))

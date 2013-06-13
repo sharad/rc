@@ -32,6 +32,19 @@
 
   (require 'utils-config)
 
+
+
+  (when nil
+    (yas/expand-snippet "(defun $1 ()
+  \"DOCSTRING\"
+  (interactive)
+  (let (var1)
+    (setq var1 some)
+    $0
+  ))
+
+(require $0 )" ))
+
   (defun my/autoinsert+-yas-expand ()
     "Replace text in yasnippet template."
     (yas/expand-snippet (buffer-string) (point-min) (point-max)))

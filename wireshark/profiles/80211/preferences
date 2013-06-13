@@ -1,138 +1,152 @@
-# Configuration file for Wireshark 1.6.7.
+# Configuration file for Wireshark 1.8.2.
 #
 # This file is regenerated each time preferences are saved within
 # Wireshark.  Making manual changes should be safe, however.
-# Protocol preferences that have been commented out have not been
+# Preferences that have been commented out have not been
 # changed from their default value.
 
 ######## User Interface ########
 
 # Vertical scrollbars should be on right side?
 # TRUE or FALSE (case-insensitive).
-gui.scrollbar_on_right: TRUE
+#gui.scrollbar_on_right: TRUE
 
 # Packet-list selection bar can be used to browse w/o selecting?
 # TRUE or FALSE (case-insensitive).
-gui.packet_list_sel_browse: FALSE
+#gui.packet_list_sel_browse: FALSE
 
 # Protocol-tree selection bar can be used to browse w/o selecting?
 # TRUE or FALSE (case-insensitive).
-gui.protocol_tree_sel_browse: FALSE
+#gui.protocol_tree_sel_browse: FALSE
 
 # Alternating colors in TreeViews?
 # TRUE or FALSE (case-insensitive).
-gui.tree_view_altern_colors: FALSE
+#gui.tree_view_altern_colors: FALSE
+
+# Display LEDs on Expert Composite Dialog Tabs?
+# TRUE or FALSE (case-insensitive).
+#gui.expert_composite_eyecandy: FALSE
 
 # Place filter toolbar inside the statusbar?
 # TRUE or FALSE (case-insensitive).
-gui.filter_toolbar_show_in_statusbar: FALSE
+#gui.filter_toolbar_show_in_statusbar: FALSE
 
 # Protocol-tree line style.
 # One of: NONE, SOLID, DOTTED, TABBED
-gui.protocol_tree_line_style: NONE
+#gui.protocol_tree_line_style: NONE
 
 # Protocol-tree expander style.
 # One of: NONE, SQUARE, TRIANGLE, CIRCULAR
-gui.protocol_tree_expander_style: SQUARE
+#gui.protocol_tree_expander_style: SQUARE
 
 # Hex dump highlight style.
 # One of: BOLD, INVERSE
-gui.hex_dump_highlight_style: INVERSE
+#gui.hex_dump_highlight_style: INVERSE
 
 # Main Toolbar style.
 # One of: ICONS, TEXT, BOTH
-gui.toolbar_main_style: ICONS
+#gui.toolbar_main_style: ICONS
 
 # Filter Toolbar style.
 # One of: ICONS, TEXT, BOTH
-gui.toolbar_filter_style: TEXT
+#gui.toolbar_filter_style: TEXT
 
 # Save window position at exit?
 # TRUE or FALSE (case-insensitive).
-gui.geometry.save.position: FALSE
+#gui.geometry.save.position: FALSE
 
 # Save window size at exit?
 # TRUE or FALSE (case-insensitive).
-gui.geometry.save.size: TRUE
+#gui.geometry.save.size: TRUE
 
 # Save window maximized state at exit?
 # TRUE or FALSE (case-insensitive).
-gui.geometry.save.maximized: TRUE
+#gui.geometry.save.maximized: TRUE
 
 # Use Mac OS X style (Mac OS X with native GTK only)?
 # TRUE or FALSE (case-insensitive).
-gui.macosx_style: TRUE
+#gui.macosx_style: TRUE
 
 # Open a console window (WIN32 only)?
 # One of: NEVER, AUTOMATIC, ALWAYS
-gui.console_open: NEVER
+#gui.console_open: NEVER
 
 # The max. number of entries in the display filter list.
 # A decimal number.
-gui.recent_display_filter_entries.max: 10
+#gui.recent_display_filter_entries.max: 10
 
 # The max. number of items in the open recent files list.
 # A decimal number.
-gui.recent_files_count.max: 10
+#gui.recent_files_count.max: 10
 
 # Where to start the File Open dialog box.
 # One of: LAST_OPENED, SPECIFIED
-gui.fileopen.style: LAST_OPENED
+#gui.fileopen.style: LAST_OPENED
 
 # Directory to start in when opening File Open dialog.
-gui.fileopen.dir: 
+#gui.fileopen.dir: 
 
 # The preview timeout in the File Open dialog.
 # A decimal number (in seconds).
-gui.fileopen.preview: 3
+#gui.fileopen.preview: 3
 
 # Ask to save unsaved capture files?
 # TRUE or FALSE (case-insensitive).
-gui.ask_unsaved: TRUE
+#gui.ask_unsaved: TRUE
 
 # Wrap to beginning/end of file during search?
 # TRUE or FALSE (case-insensitive).
-gui.find_wrap: TRUE
+#gui.find_wrap: TRUE
 
 # Settings dialogs use a save button?
 # TRUE or FALSE (case-insensitive).
-gui.use_pref_save: FALSE
+#gui.use_pref_save: FALSE
 
 # The path to the webbrowser.
 # Ex: mozilla %s
-gui.webbrowser: sensible-browser %s
+#gui.webbrowser: sensible-browser %s
 
 # Custom window title. (Appended to existing titles.)
-gui.window_title: 
+#gui.window_title: 
 
 # Custom start page title.
-gui.start_title: The World's Most Popular Network Protocol Analyzer
+#gui.start_title: The World's Most Popular Network Protocol Analyzer
 
 # Show version in the start page and main screen's title bar.
 # TRUE or FALSE (case-insensitive).
-gui.version_in_start_page: TRUE
+#gui.version_in_start_page: TRUE
+
+# Automatically scroll the recently expanded item.
+# TRUE or FALSE (case-insensitive).
+#gui.auto_scroll_on_expand: FALSE
+
+# The percentage down the view the recently expanded item should be scrolled.
+# A decimal number (a percentage).
+#gui.auto_scroll_percentage: 0
 
 ######## User Interface: Layout ########
 
 # Layout type (1-6).
-gui.layout_type: 1
+#gui.layout_type: 1
 
 # Layout content of the panes (1-3).
 # One of: NONE, PLIST, PDETAILS, PBYTES
-gui.layout_content_1: PLIST
-gui.layout_content_2: PDETAILS
-gui.layout_content_3: PBYTES
+#gui.layout_content_1: PLIST
+#gui.layout_content_2: PDETAILS
+#gui.layout_content_3: PBYTES
 
 ######## User Interface: Columns ########
 
 # Packet list hidden columns.
 # List all columns to hide in the packet list.
-column.hidden: 
+column.hidden: %Gt
 
 # Packet list column format.
 # Each pair of strings consists of a column title and its format.
 column.format: 
 	"No.", "%m",
+	"RelTime", "%Rt",
+	"Ref Time", "%Gt",
 	"Time", "%t",
 	"Source", "%s",
 	"Destination", "%d",
@@ -149,26 +163,26 @@ column.format:
 ######## User Interface: Font ########
 
 # Font name for packet list, protocol tree, and hex dump panes.
-gui.gtk2.font_name: Monospace 10
+#gui.gtk2.font_name: Monospace 10
 
 ######## User Interface: Colors ########
 
 # Color preferences for a marked frame.
 # Each value is a six digit hexadecimal color value in the form rrggbb.
-gui.marked_frame.fg: ffffff
-gui.marked_frame.bg: 000000
+#gui.marked_frame.fg: ffffff
+#gui.marked_frame.bg: 000000
 
 # Color preferences for a ignored frame.
 # Each value is a six digit hexadecimal color value in the form rrggbb.
 gui.ignored_frame.fg: 7f7f7f
-gui.ignored_frame.bg: ffffff
+#gui.ignored_frame.bg: ffffff
 
 # TCP stream window color preferences.
 # Each value is a six digit hexadecimal color value in the form rrggbb.
 stream.client.fg: 7f0000
-stream.client.bg: fbeded
+#stream.client.bg: fbeded
 stream.server.fg: 00007f
-stream.server.bg: ededfb
+#stream.server.bg: ededfb
 
 ######## Console: logging level ########
 # (debugging only, not in the Preferences dialog)
@@ -179,13 +193,13 @@ stream.server.bg: ededfb
 # G_LOG_LEVEL_MESSAGE  = 32
 # G_LOG_LEVEL_INFO     = 64
 # G_LOG_LEVEL_DEBUG    = 128
-console.log.level: 28
+#console.log.level: 28
 
 ####### Capture ########
 
 # Capture in promiscuous mode?
 # TRUE or FALSE (case-insensitive).
-capture.prom_mode: TRUE
+#capture.prom_mode: TRUE
 
 # Capture in Pcap-NG format?
 # TRUE or FALSE (case-insensitive).
@@ -193,33 +207,29 @@ capture.pcap_ng: FALSE
 
 # Update packet list in real time during capture?
 # TRUE or FALSE (case-insensitive).
-capture.real_time_update: TRUE
+#capture.real_time_update: TRUE
 
 # Scroll packet list during capture?
 # TRUE or FALSE (case-insensitive).
-capture.auto_scroll: TRUE
+#capture.auto_scroll: TRUE
 
 # Show capture info dialog while capturing?
 # TRUE or FALSE (case-insensitive).
-capture.show_info: FALSE
-
-# Syntax check capture filter?
-# TRUE or FALSE (case-insensitive).
-capture.syntax_check_filter: TRUE
+#capture.show_info: FALSE
 
 ######## Printing ########
 
 # Can be one of "text" or "postscript".
-print.format: text
+#print.format: text
 
 # Can be one of "command" or "file".
-print.destination: command
+#print.destination: command
 
 # This is the file that gets written to when the destination is set to "file"
-print.file: wireshark.out
+#print.file: wireshark.out
 
 # Output gets piped to this command when the destination is set to "command"
-print.command: lpr
+#print.command: lpr
 
 ####### Name Resolution ########
 
@@ -229,31 +239,33 @@ name_resolve: mtC
 
 # Name resolution concurrency.
 # A decimal number.
-name_resolve_concurrency: 500
+#name_resolve_concurrency: 500
 
 # Load SMI modules?
 # TRUE or FALSE (case-insensitive).
-name_resolve_load_smi_modules: FALSE
+#name_resolve_load_smi_modules: FALSE
 
 # Suppress SMI errors?
 # TRUE or FALSE (case-insensitive).
-name_resolve_suppress_smi_errors: FALSE
+#name_resolve_suppress_smi_errors: FALSE
 
 ####### Taps/Statistics ########
 
 # Tap update interval in ms.
 # An integer value greater between 100 and 10000.
-taps.update_interval: 3000
+#taps.update_interval: 3000
 
 # Maximum visible channels in RTP Player window.
 # An integer value greater than 0.
-taps.rtp_player_max_visible: 4
+#taps.rtp_player_max_visible: 4
+
+####### Filter Expressions ########
 
 ####### Protocols ########
 
 # Display hidden items in packet details pane?
 # TRUE or FALSE (case-insensitive).
-packet_list.display_hidden_proto_items: FALSE
+#packet_list.display_hidden_proto_items: FALSE
 
 # Enable this option to recognise all traffic on RTP dynamic payload type 96 (0x60) as FEC data corresponding to Pro-MPEG Code of Practice #3 release 2
 # TRUE or FALSE (case-insensitive).
@@ -448,25 +460,6 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #arp.detect_duplicate_ips: TRUE
 
-# The UDP port on which Art-Net packets will be sent
-# A decimal number.
-#artnet.udp_port: 6454
-
-# The way DMX values are displayed
-# One of: Percent, Hexadecimal, Decimal
-# (case-insensitive).
-#artnet.dmx_disp_chan_val_type: Percent
-
-# The way DMX channel numbers are displayed
-# One of: Hexadecimal, Decimal
-# (case-insensitive).
-#artnet.dmx_disp_chan_nr_type: Hexadecimal
-
-# The number of columns for the DMX display
-# One of: 6, 10, 12, 16, 24
-# (case-insensitive).
-#artnet.dmx_disp_col_count: 16
-
 # Set the UDP port numbers (by default is range 5555 to 5560) used for ARUBA encapsulated remote mirroring frames;
 # 0 (default) means that the ARUBA_ERM dissector is not active
 # 
@@ -579,7 +572,15 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #ber.decode_primitive: FALSE
 
+# Whether the dissector should warn if excessive leading zero (0) bits
+# TRUE or FALSE (case-insensitive).
+#ber.warn_too_many_bytes: FALSE
+
 # A table that provides names for object identifiers and the syntax of any associated values
+
+# Enable BFCP heuristic dissection (default is disabled)
+# TRUE or FALSE (case-insensitive).
+#bfcp.enable: FALSE
 
 # Whether the BGP dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
 # TRUE or FALSE (case-insensitive).
@@ -611,11 +612,11 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #bootp.pkt.ccc.option: 122
 
-# Format: OptionNumber,OptionName,OptionType[;Format].
-# Example: 176,MyOption,string;242,NewOption,ipv4.
-# OptionNumbers: 1-254, but no special options. OptionType: string, ipv4 and bytes
-# A string.
-#bootp.displayasstring: 
+# Custom BootP/DHCP Options (Excl. suboptions)
+
+# Set the UDP port for BRP messages
+# A decimal number.
+#brp.port: 0
 
 # For the sake of sub-dissectors registering to accept data from the BSSAP/BSAP dissector, this defines whether it is identified as BSSAP or BSAP.
 # One of: BSSAP, BSAP
@@ -639,9 +640,9 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #bssgp.nri_length: 4
 
-# Set the UDP port for uTorrent Transport Protocol.
-# A decimal number.
-#bt-utp.udp_port: 55627
+# Enable BT-DHT heuristic dissection (default is disabled)
+# TRUE or FALSE (case-insensitive).
+#bt-dht.enable: FALSE
 
 # Whether the ACL dissector should reassemble fragmented PDUs
 # TRUE or FALSE (case-insensitive).
@@ -659,6 +660,20 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #bvlc.additional_udp_port: 0
 
+# Whether the Bazaar dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
+# TRUE or FALSE (case-insensitive).
+#bzr.desegment: TRUE
+
+# Whether the C12.22 dissector should reassemble all messages spanning multiple TCP segments
+# TRUE or FALSE (case-insensitive).
+#c1222.desegment: TRUE
+
+# Whether the C12.22 dissector should verify the crypto for all relevant messages
+# TRUE or FALSE (case-insensitive).
+#c1222.decrypt: TRUE
+
+# Table of security parameters for decryption of C12.22 packets
+
 # The date format: (DD/MM) or (MM/DD)
 # One of: DD/MM/YYYY, MM/DD/YYYY
 # (case-insensitive).
@@ -675,6 +690,11 @@ packet_list.display_hidden_proto_items: FALSE
 # Statistics for Response Time
 # TRUE or FALSE (case-insensitive).
 #camel.persistentsrt: FALSE
+
+# Next level protocol like CANopen etc.
+# One of: Raw data (no further dissection), CANopen protocol
+# (case-insensitive).
+#can.protocol: Raw data (no further dissection)
 
 # Set the port for CAPWAP Control messages (if other than the default of 5246)
 # A decimal number.
@@ -713,9 +733,13 @@ packet_list.display_hidden_proto_items: FALSE
 # A string denoting an positive integer range (e.g., "1-20,30-40").
 #cflow.ipfix.ports: 4739
 
-# Set the number of fields allowed in a template.  Use 0 (zero) for unlimited.   (default: 60)
+# Set the number of fields allowed in a template.  Use 0 (zero) for unlimited.   (default: V9TEMPLATE_MAX_FIELDS_DEF)
 # A decimal number.
 #cflow.max_template_fields: 60
+
+# Enable this dissector (default is false)
+# TRUE or FALSE (case-insensitive).
+#cfp.enable: FALSE
 
 # The type of CHDLC frame checksum (none, 16-bit, 32-bit)
 # One of: None, 16-Bit, 32-Bit
@@ -770,7 +794,7 @@ packet_list.display_hidden_proto_items: FALSE
 
 # Port number used for COAP traffic
 # A decimal number.
-#coap.udp_port: 61616
+#coap.udp_port: 5683
 
 # Set the UDP port for collectd messages
 # A decimal number.
@@ -959,6 +983,18 @@ packet_list.display_hidden_proto_items: FALSE
 # A string denoting an positive integer range (e.g., "1-20,30-40").
 #dmp.udp_ports: 5031
 
+# Select the type of decoding for nationally-defined values
+# One of: None (raw data), As for regular, Thales XOmail
+# (case-insensitive).
+#dmp.national_decode: As for regular
+
+# Select the nation of sending server.  This is used when presenting security classification values in messages with security policy set to National (nation of local server)
+# One of: None, Albania, Armenia, Austria, Azerbaijan, Belarus, Belgium, Bosnia and Hercegowina, Bulgaria, Canada, Croatia, Czech Republic, Denmark, Estonia, Euro-Atlantic Partnership Council (EAPC), European Union (EU), Finland, Former Yugoslav Republic of Macedonia, France, Georgia, Germany, Greece, Hungary, Iceland, International Security Assistance Force (ISAF), Ireland, Italy, Kazakhstan, Kyrgyztan, Latvia, Lithuania, Luxembourg, Malta, Moldova, Montenegro, Netherlands, Norway, Partnership for Peace (PfP), Poland, Portugal, Romania, Russian Federation, Serbia, Slovakia, Slovenia, Spain, Sweden, Switzerland, Tajikistan, Turkey, Turkmenistan, United Kingdom, United States, Ukraine, Uzbekistan, Western European Union (WEU)
+# (case-insensitive).
+#dmp.local_nation: None
+
+# Translation table for national security classifications.  This is used when presenting security classification values in messages with security policy set to National or Extended National
+
 # Calculate sequence/acknowledgement analysis
 # TRUE or FALSE (case-insensitive).
 #dmp.seq_ack_analysis: TRUE
@@ -983,6 +1019,21 @@ packet_list.display_hidden_proto_items: FALSE
 # Used to set length of fixed text string in the structured message id format (maximum 128 characters)
 # A decimal number.
 #dmp.struct_length: 1
+
+# The way DMX values are displayed
+# One of: Percent, Hexadecimal, Decimal
+# (case-insensitive).
+#dmx-chan.dmx_disp_chan_val_type: Percent
+
+# The way DMX channel numbers are displayed
+# One of: Hexadecimal, Decimal
+# (case-insensitive).
+#dmx-chan.dmx_disp_chan_nr_type: Hexadecimal
+
+# The number of columns for the DMX display
+# One of: 6, 10, 12, 16, 24
+# (case-insensitive).
+#dmx-chan.dmx_disp_col_count: 16
 
 # Whether the DNP3 dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
 # TRUE or FALSE (case-insensitive).
@@ -1019,6 +1070,14 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #dtpt.tcp.port: 5721
 
+# SAC Encryption Key (16 hex bytes)
+# A string.
+#dvb-ci.sek: 
+
+# SAC Init Vector (16 hex bytes)
+# A string.
+#dvb-ci.siv: 
+
 # Allow only packets with Major=0x03//Minor=0xFF as DVMRP V3 packets
 # TRUE or FALSE (case-insensitive).
 #dvmrp.strict_v3: FALSE
@@ -1030,6 +1089,14 @@ packet_list.display_hidden_proto_items: FALSE
 # Whether the EtherNet/IP dissector should desegment all messages spanning multiple TCP segments
 # TRUE or FALSE (case-insensitive).
 #enip.desegment: TRUE
+
+# Determines whether all I/O connections will assume a 32-bit header in the O->T direction
+# TRUE or FALSE (case-insensitive).
+#enip.o2t_run_idle: TRUE
+
+# Determines whether all I/O connections will assume a 32-bit header in the T->O direction
+# TRUE or FALSE (case-insensitive).
+#enip.t2o_run_idle: FALSE
 
 # The UDP port on which ENTTEC packets will be sent
 # A decimal number.
@@ -1076,6 +1143,10 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #erf.ethfcs: TRUE
 
+# When set, dissector will FORCE to decode directly Ethernet FrameSome vendor use fake ERSPAN frame (with not ERSPAN Header)
+# TRUE or FALSE (case-insensitive).
+#erspan.fake_erspan: FALSE
+
 # Enable this dissector (default is false)
 # TRUE or FALSE (case-insensitive).
 #esl.enable: FALSE
@@ -1092,357 +1163,7 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #esp.enable_authentication_check: FALSE
 
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_1: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_1: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_1: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_1: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_1: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_2: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_2: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_2: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_2: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_2: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_3: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_3: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_3: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_3: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_3: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_4: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_4: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_4: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_4: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_4: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_5: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_5: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_5: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_5: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_5: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_6: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_6: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_6: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_6: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_6: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_7: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_7: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_7: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_7: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_7: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_8: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_8: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_8: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_8: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_8: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_9: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_9: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_9: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_9: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_9: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_10: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_10: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_10: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_10: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_10: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_11: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_11: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_11: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_11: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_11: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_12: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_12: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_12: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_12: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_12: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_13: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_13: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_13: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_13: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_13: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_14: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_14: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_14: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_14: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_14: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_15: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_15: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_15: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_15: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_15: 
-
-# SA identifier.  Must have the form "Protocol|Source Address|Destination Address|SPI". Example: "IPv4|192.168.0.45|10.1.2.7|*" See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for more details.
-# A string.
-#esp.sa_16: 
-
-# Encryption algorithm
-# One of: NULL, TripleDES-CBC [RFC2451], AES-CBC [RFC3602], AES-CTR [RFC3686], DES-CBC [RFC2405], CAST5-CBC [RFC2144], BLOWFISH-CBC [RFC2451], TWOFISH-CBC
-# (case-insensitive).
-#esp.encryption_algorithm_16: NULL
-
-# Authentication algorithm
-# One of: NULL, HMAC-SHA-1-96 [RFC2404], HMAC-SHA-256-96 [draft-ietf-ipsec-ciph-sha-256-00], HMAC-SHA-256-128 [RFC4868], HMAC-MD5-96 [RFC2403], MAC-RIPEMD-160-96 [RFC2857], ANY 96 bit authentication [no checking], ANY 128 bit authentication [no checking], ANY 192 bit authentication [no checking], ANY 256 bit authentication [no checking]
-# (case-insensitive).
-#esp.authentication_algorithm_16: NULL
-
-# Encryption key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.encryption_key_16: 
-
-# Authentication key. May be ASCII or hexadecimal (if prepended with 0x).See the ESP Preferences page on the Wireshark wiki (http://wiki.wireshark.org/ESP_Preferences) for supported sizes.
-# A string.
-#esp.authentication_key_16: 
+# Preconfigured ESP Security Associations
 
 # ESS category attributes translation table
 
@@ -1454,9 +1175,17 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #etch.tcp.port: 0
 
+# Some devices add trailing data to frames. When this setting is checked the Ethernet dissector will assume there has been added padding to the frame before the trailer was added. Uncheck if a device added a trailer before the frame was padded.
+# TRUE or FALSE (case-insensitive).
+#eth.assume_padding: TRUE
+
 # Some Ethernet adapters and drivers include the FCS at the end of a packet, others do not.  The Ethernet dissector attempts to guess whether a captured packet has an FCS, but it cannot always guess correctly.
 # TRUE or FALSE (case-insensitive).
 #eth.assume_fcs: FALSE
+
+# Whether to validate the Frame Check Sequence
+# TRUE or FALSE (case-insensitive).
+#eth.check_fcs: TRUE
 
 # Whether packets should be interpreted as coming from CheckPoint FireWall-1 monitor file if they look as if they do
 # TRUE or FALSE (case-insensitive).
@@ -1632,6 +1361,10 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #fw1.iflist_with_chain: FALSE
 
+# Whether the Gadu-Gadu dissector should reassemble messages spanning multiple TCP segments.To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
+# TRUE or FALSE (case-insensitive).
+#gadu-gadu.desegment: TRUE
+
 # Whether the GIOP dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
 # TRUE or FALSE (case-insensitive).
 #giop.desegment_giop_messages: TRUE
@@ -1672,9 +1405,14 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #gsm-sms-ud.prevent_dissectors_chg_cols: FALSE
 
-# Set the port(s) for ip.access IPA (default: 3002,3003,3006,5000)
+# Use ipaccess nanoBTS specific definitions for OML
+# One of: ETSI/3GPP TS 12.21, Siemens, ip.access, Ericsson OM2000
+# (case-insensitive).
+#gsm_abis_oml.oml_dialect: ETSI/3GPP TS 12.21
+
+# Set the port(s) for ip.access IPA (default: 3002,3003,3006,4249,4250,5000)
 # A string denoting an positive integer range (e.g., "1-20,30-40").
-#gsm_ipa.tcp_ports: 3002,3003,3006,5000
+#gsm_ipa.tcp_ports: 3002,3003,3006,4249,4250,5000
 
 # Set the port(s) for ip.access IPA (default: 3006)
 # A string denoting an positive integer range (e.g., "1-20,30-40").
@@ -1788,9 +1526,17 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #h501.desegment: TRUE
 
-# Enable this dissector (default is false)
+# Enable heuristic HDCPv2 dissector (default is false)
 # TRUE or FALSE (case-insensitive).
-#hilscher.enable: FALSE
+#hdcp2.enable: FALSE
+
+# Set the TCP port for HDFS
+# A decimal number.
+#hdfs.tcp.port: 0
+
+# Set the TCP port for HDFSDATA
+# A decimal number.
+#hdfsdata.tcp.port: 0
 
 # Set the port for HNBAP messages (Default of 29169)
 # A decimal number.
@@ -1809,7 +1555,7 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #http.desegment_body: TRUE
 
-# Whether to reassemble bodies of entities that are transfered using the "Transfer-Encoding: chunked" method
+# Whether to reassemble bodies of entities that are transferred using the "Transfer-Encoding: chunked" method
 # TRUE or FALSE (case-insensitive).
 #http.dechunk_body: TRUE
 
@@ -1819,7 +1565,7 @@ packet_list.display_hidden_proto_items: FALSE
 
 # TCP Ports range
 # A string denoting an positive integer range (e.g., "1-20,30-40").
-#http.tcp.port: 80,3128,3132,5985,8080,8088,11371,1900,2869
+#http.tcp.port: 80,3128,3132,5985,8080,8088,11371,1900,2869,2710
 
 # SSL/TLS Ports range
 # A string denoting an positive integer range (e.g., "1-20,30-40").
@@ -1827,8 +1573,16 @@ packet_list.display_hidden_proto_items: FALSE
 
 # A table to define custom HTTP header for which fields can be setup and used for filtering/data extraction etc.
 
+# Whether the hazel dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
+# TRUE or FALSE (case-insensitive).
+#hzlcst.desegment: TRUE
+
+#  Hazelcast TCP port if other than the default
+# A decimal number.
+#hzlcst.tcp.port: 5701
+
 # How the I2C messages are interpreted
-# One of: None (raw I2C), IPMB
+# One of: None (raw I2C), IPMB, HDCP
 # (case-insensitive).
 #i2c.type: IPMB
 
@@ -1890,6 +1644,8 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #ifcp.desegment: TRUE
 
+# A table to define custom IMF headers for which fields can be setup and used for filtering/data extraction etc.
+
 # TCAP Subsystem numbers used for INAP
 # A string denoting an positive integer range (e.g., "1-20,30-40").
 #inap.ssn: 106,241
@@ -1924,7 +1680,7 @@ packet_list.display_hidden_proto_items: FALSE
 
 # Whether to look up IP addresses in each GeoIP database we have loaded
 # TRUE or FALSE (case-insensitive).
-#ip.use_geoip: FALSE
+#ip.use_geoip: TRUE
 
 # Whether to interpret the originally reserved flag as security flag
 # TRUE or FALSE (case-insensitive).
@@ -1968,9 +1724,15 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #ipv6.summary_in_tree: TRUE
 
-# Path to a pluto log file containing DH secret information
-# A string.
-#isakmp.log: insert pluto log path here
+# Whether to look up IPv6 addresses in each GeoIP database we have loaded
+# TRUE or FALSE (case-insensitive).
+#ipv6.use_geoip: TRUE
+
+# Whether to check that all RPL Source Routing Headers adhere to RFC 6554
+# TRUE or FALSE (case-insensitive).
+#ipv6.perform_strict_rpl_srh_rfc_checking: FALSE
+
+# Table of IKE_SA security parameters for decryption of IKEv1 packets
 
 # Table of IKE_SA security parameters for decryption of IKEv2 packets
 
@@ -1995,9 +1757,9 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #iscsi.bogus_pdu_max_data_len: 262144
 
-# Port number of iSCSI target
-# A decimal number.
-#iscsi.target_port: 3260
+# Range of iSCSI target ports(default 3260)
+# A string denoting an positive integer range (e.g., "1-20,30-40").
+#iscsi.target_ports: 3260
 
 # System port number of iSCSI target
 # A decimal number.
@@ -2014,6 +1776,11 @@ packet_list.display_hidden_proto_items: FALSE
 # The size of a data digest (bytes)
 # A decimal number.
 #iscsi.data_digest_size: 4
+
+# The protocol running on the D channel
+# One of: LAPD, DPNSS
+# (case-insensitive).
+#isdn.dchannel_protocol: LAPD
 
 # The dynamic payload type which will be interpreted as ISMACryp
 # A decimal number.
@@ -2107,6 +1874,11 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #isns.desegment: TRUE
 
+# Note national variants may not be fully supported
+# One of: ITU Standard, French national Standard, Israeli national Standard
+# (case-insensitive).
+#isup.variant: ITU Standard
+
 # Show the CIC value (in addition to the message type) in the Info column
 # TRUE or FALSE (case-insensitive).
 #isup.show_cic_in_info: TRUE
@@ -2165,6 +1937,10 @@ packet_list.display_hidden_proto_items: FALSE
 
 # A table of matches vs stack filenames and relative protocols
 
+# Set the port for Kismet Drone/Server messages (if other than the default of 2502)
+# A decimal number.
+#kdsp.tcp.port: 2502
+
 # Whether the Kerberos dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
 # TRUE or FALSE (case-insensitive).
 #kerberos.desegment: TRUE
@@ -2181,6 +1957,18 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #kismet.tcp.port: 2501
 
+# Set the SCTP port for kNet messages
+# A decimal number.
+#knet.sctp.port: 2345
+
+# Set the TCP port for kNet messages
+# A decimal number.
+#knet.tcp.port: 2345
+
+# Set the UDP port for kNet messages
+# A decimal number.
+#knet.udp.port: 2345
+
 # Whether the Kpasswd dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
 # TRUE or FALSE (case-insensitive).
 #kpasswd.desegment: TRUE
@@ -2196,7 +1984,7 @@ packet_list.display_hidden_proto_items: FALSE
 #l2tp.l2_specific: Default L2-Specific
 
 # Decode L2TPv3 packet contents as this protocol
-# One of: Ethernet, Cisco HDLC, Frame Relay, PPP, IP, MPLS, AAL5, LAPD, DOCSIS-DMPT
+# One of: Ethernet, Cisco HDLC, Frame Relay, PPP, IP, MPLS, AAL5, LAPD, DOCSIS-DMPT, Ericsson HDLC
 # (case-insensitive).
 #l2tp.protocol: Cisco HDLC
 
@@ -2216,6 +2004,10 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #laplink.desegment_laplink_over_tcp: TRUE
 
+# Set the SCTP port for LCSAP messages
+# A decimal number.
+#lcsap.sctp.port: 9082
+
 # Whether the LDAP dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
 # TRUE or FALSE (case-insensitive).
 #ldap.desegment_ldap_messages: TRUE
@@ -2227,6 +2019,8 @@ packet_list.display_hidden_proto_items: FALSE
 # Set the port for LDAP operations over SSL
 # A decimal number.
 #ldap.ssl.port: 636
+
+# A table to define custom LDAP attribute type values for which fields can be setup and used for filtering/data extraction etc.
 
 # Set the TCP port for messages (if other than the default of 646)
 # A decimal number.
@@ -2268,9 +2062,9 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #lsc.port: 0
 
-# UDP Port to accept LTP Connections
+# The UDP or DCCP port to accept LTP Connections
 # A decimal number.
-#ltp.udp.port: 1113
+#ltp.port: 1113
 
 # Swap frame control bytes (needed for some APs
 # TRUE or FALSE (case-insensitive).
@@ -2351,6 +2145,10 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #mdshdr.decode_if_etype_zero: TRUE
 
+# Set the SCTP port for MEGACO text messages
+# A decimal number.
+#megaco.sctp.txt_port: 2944
+
 # Set the TCP port for MEGACO text messages
 # A decimal number.
 #megaco.tcp.txt_port: 2944
@@ -2367,7 +2165,7 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #megaco.display_dissect_tree: TRUE
 
-# Mantain relationships between transactions and contexts and display an extra tree showing context data
+# Maintain relationships between transactions and contexts and display an extra tree showing context data
 # TRUE or FALSE (case-insensitive).
 #megaco.ctx_info: FALSE
 
@@ -2419,6 +2217,14 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #mime_multipart.remove_base64_encoding: FALSE
 
+# MoldUDP UDP port to capture on.
+# A decimal number.
+#moldudp.udp.port: 0
+
+# MoldUDP64 UDP port to dissect on.
+# A decimal number.
+#moldudp64.udp.port: 0
+
 # MONGO TCP port if other than the default
 # A decimal number.
 #mongo.tcp.port: 27017
@@ -2431,28 +2237,22 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #mp4v-es.dynamic.payload.type: 0
 
+# Whether the section dissector should verify the CRC or checksum
+# TRUE or FALSE (case-insensitive).
+#mpeg-dsmcc.verify_crc: FALSE
+
+# Whether the section dissector should verify the CRC
+# TRUE or FALSE (case-insensitive).
+#mpeg_sect.verify_crc: FALSE
+
 # Default decoder for MPLS payload
 # One of: SAToP (no RTP support), CESoPSN basic NxDS0 mode (no RTP support), Ethernet MPLS PW (CW is heuristically detected), Frame relay DLCI MPLS PW, HDLC MPLS PW (no CW), FR Port mode, HDLC MPLS PW (no CW), HDLC mode, PPP payload, Ethernet MPLS PW (with CW), Ethernet MPLS PW (no CW, early implementations), Generic MPLS PW (with Generic/Preferred MPLS CW), Internal TDM, MPLS PW ATM N-to-One encapsulation, with CW, MPLS PW ATM N-to-One encapsulation, no CW, MPLS PW ATM One-to-One or AAL5 PDU encapsulation, MPLS PW ATM AAL5 CPCS-SDU mode encapsulation
 # (case-insensitive).
 #mpls.mplspref.payload: Ethernet MPLS PW (CW is heuristically detected)
 
-# draft-ietf-pwe3-vccv-bfd-05 states that PWAC Channel Type 0x07 must be used when VCCV carries PW-ACH-encapsulated BFD (i.e., BFD without IP/UDP Headers, or "raw" BFD)
-# 
-# Legacy or buggy devices may not comply to this and use Channel Type 0x0 for BFD. Enable this preference to decode such BFD traffic. Disable for standard behavior of PWAC dissector (default).
+# Lowest label is used to segregate flows inside a pseudowire
 # TRUE or FALSE (case-insensitive).
-#mpls.mplspref.pwac_0x0_as_bfd: FALSE
-
-# draft-ietf-pwe3-vccv-bfd-05 states that PWAC Channel Type 0x07 must be used when VCCV carries PW-ACH-encapsulated BFD (i.e., "raw" BFD)
-# 
-# Legacy or buggy devices may not comply to this and use voluntary Channel Type for BFD. Enable this preference to decode all PWAC Channel Types as raw BFD, except Channel Type 0x21 (IPv4). Disable for standard behavior of PWAC dissector (default).
-# TRUE or FALSE (case-insensitive).
-#mpls.mplspref.pwac_all_as_bfd_xip: FALSE
-
-# Legacy devices may use MPLS PW Associated Channel for PPP traffic.
-# 
-# Enable this preference to allow PWAC dissector to try PPP, if no other suitable dissector found (default).
-# TRUE or FALSE (case-insensitive).
-#mpls.mplspref.pwac_try_ppp: TRUE
+#mpls.flowlabel_in_mpls_header: FALSE
 
 # Set the UDP port for messages (if other than the default of 3503)
 # A decimal number.
@@ -2502,6 +2302,10 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #mtp2.use_extended_sequence_numbers: FALSE
 
+# This only works for SCCP traffic for now
+# TRUE or FALSE (case-insensitive).
+#mtp3.heuristic_standard: FALSE
+
 # The SS7 standard used in MTP3 packets
 # One of: ITU, ANSI, Chinese ITU, Japan
 # (case-insensitive).
@@ -2541,6 +2345,10 @@ packet_list.display_hidden_proto_items: FALSE
 # Whether the MySQL dissector should display the SQL query string in the INFO column.
 # TRUE or FALSE (case-insensitive).
 #mysql.show_sql_query: FALSE
+
+# Always dissect NAS EPS messages as plain
+# TRUE or FALSE (case-insensitive).
+#nas-eps.dissect_plain: FALSE
 
 # Whether the Nasdaq ITCH dissector should decode Chi X extensions.
 # TRUE or FALSE (case-insensitive).
@@ -2635,9 +2443,14 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #netsync.desegment_netsync_messages: TRUE
 
-# Always dissect this port's traffic as newmail notifications.  Additional ports will be dynamically registered as they are seen in MAPI register push notification packets.
+# Always dissect this port's traffic as newmail notifications. Additional ports will be dynamically registered as they are seen in MAPI register push notification packets.
 # A decimal number.
 #newmail.default_port: 0
+
+# Byte Order
+# One of: Auto, Host, Little Endian, Big Endian
+# (case-insensitive).
+#nflog.byte_order_type: Auto
 
 # Whether the dissector should snoop the FH to filename mappings by looking inside certain packets
 # TRUE or FALSE (case-insensitive).
@@ -2691,6 +2504,34 @@ packet_list.display_hidden_proto_items: FALSE
 # To be able to fully dissect SSDO and SPDO packages, a valid UDID for the SCM has to be provided
 # A string.
 #opensafety.scm_udid: 00:00:00:00:00:00
+
+# Automatically assign a detected SCM UDID (by reading SNMT->SNTM_assign_UDID_SCM) and set it for the file
+# TRUE or FALSE (case-insensitive).
+#opensafety.scm_udid_autoset: TRUE
+
+# Port used by any UDP demo implementation to transport data
+# A decimal number.
+#opensafety.network_udp_port: 9877
+
+# UDP port used by SercosIII to transport data
+# A decimal number.
+#opensafety.network_udp_port_sercosiii: 8755
+
+# In the transport stream, openSAFETY frame 2 will be expected before frame 1
+# TRUE or FALSE (case-insensitive).
+#opensafety.network_udp_frame_first: FALSE
+
+# Modbus/TCP words can be transcoded either big- or little endian. Default will be little endian
+# TRUE or FALSE (case-insensitive).
+#opensafety.mbtcp_big_endian: FALSE
+
+# Whether the Openwire dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
+# TRUE or FALSE (case-insensitive).
+#openwire.desegment: TRUE
+
+# Whether verbose type and length information are displayed in the protocol tree
+# TRUE or FALSE (case-insensitive).
+#openwire.verbose_type: FALSE
 
 # Whether the OPSI dissector should desegment all messages spanning multiple TCP segments
 # TRUE or FALSE (case-insensitive).
@@ -2758,20 +2599,22 @@ packet_list.display_hidden_proto_items: FALSE
 #pdcp-lte.show_signalling_plane_as_rrc: FALSE
 
 # Do sequence number analysis
-# TRUE or FALSE (case-insensitive).
-#pdcp-lte.check_sequence_numbers: FALSE
+# One of: No-Analysis, Only-RLC-frames, Only-PDCP-frames
+# (case-insensitive).
+#pdcp-lte.check_sequence_numbers: No-Analysis
 
 # Attempt to decode ROHC data
 # TRUE or FALSE (case-insensitive).
 #pdcp-lte.dissect_rohc: FALSE
 
-# Show ROHC feedback option tag & length
-# TRUE or FALSE (case-insensitive).
-#pdcp-lte.show_feedback_option_tag_length: FALSE
-
 # When enabled, use heuristic dissector to find PDCP-LTE frames sent with UDP framing
 # TRUE or FALSE (case-insensitive).
 #pdcp-lte.heuristic_pdcp_lte_over_udp: FALSE
+
+# Can show RLC, PDCP or Traffic layer info in Info column
+# One of: RLC Info, PDCP Info, Traffic Info
+# (case-insensitive).
+#pdcp-lte.layer_to_show: RLC Info
 
 # Whether the dissector should put the internal PER data in the tree or if it should hide it
 # TRUE or FALSE (case-insensitive).
@@ -2896,6 +2739,10 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #ranap.sccp_ssn: 142
 
+# Set the port for RDP operations (if other than the default of 3389)
+# A decimal number.
+#rdp.tcp.port: 3389
+
 # Where available, show which protocol and frame caused this RDT stream to be created
 # TRUE or FALSE (case-insensitive).
 #rdt.show_setup_info: TRUE
@@ -2908,6 +2755,8 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #rdt.default_udp_port: 6970
 
+# A table of Kind ID definitions
+
 # Whether fragmented RELOAD datagrams should be reassembled
 # TRUE or FALSE (case-insensitive).
 #reload.defragment: TRUE
@@ -2916,9 +2765,25 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #reload.nodeid_length: 16
 
+# topology plugin defined in the overlay
+# A string.
+#reload.topology_plugin: CHORD-RELOAD
+
 # Display the third and forth bytes of the RIPv2 header as the Routing Domain field (introduced in RFC 1388 [January 1993] and obsoleted as of RFC 1723 [November 1994])
 # TRUE or FALSE (case-insensitive).
 #rip.display_routing_domain: FALSE
+
+# When enabled, use heuristic dissector to find RLC frames sent with UDP framing
+# TRUE or FALSE (case-insensitive).
+#rlc.heuristic_rlc_over_udp: FALSE
+
+# When enabled, try to reassemble SDUs from the various PDUs received
+# TRUE or FALSE (case-insensitive).
+#rlc.perform_reassembly: TRUE
+
+# When enabled, if data is not present, don't report as an error, but instead add expert info to indicate that headers were omitted
+# TRUE or FALSE (case-insensitive).
+#rlc.header_only_mode: FALSE
 
 # Attempt to keep track of PDUs for AM channels, and point out problems
 # One of: No-Analysis, Only-MAC-frames, Only-RLC-frames
@@ -2934,7 +2799,7 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #rlc-lte.call_pdcp_for_srb: FALSE
 
-# Call PDCP dissector for user-plane PDUs.  Note that without reassembly, it canonly be called for complete PDus (i.e. not segmented over RLC)
+# Call PDCP dissector for user-plane PDUs.  Note that without reassembly, it canonly be called for complete PDUs (i.e. not segmented over RLC)
 # One of: Off, 7-bit SN, 12-bit SN, Use signalled value
 # (case-insensitive).
 #rlc-lte.call_pdcp_for_drb: Off
@@ -2950,6 +2815,10 @@ packet_list.display_hidden_proto_items: FALSE
 # When enabled, if data is not present, don't report as an error, but instead add expert info to indicate that headers were omitted
 # TRUE or FALSE (case-insensitive).
 #rlc-lte.header_only_mode: FALSE
+
+# When enabled, attempts to re-assemble upper-layer SDUs that are split over more than one RLC PDU.  Note: does not currently support out-of-order or re-segmentation. N.B. sequence analysis must also be turned on in order for reassembly to work
+# TRUE or FALSE (case-insensitive).
+#rlc-lte.reassembly: FALSE
 
 # Whether the RPC dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
 # TRUE or FALSE (case-insensitive).
@@ -2982,6 +2851,22 @@ packet_list.display_hidden_proto_items: FALSE
 # Default link-layer type to use if an Open Reply packet has not been received.
 # A decimal number.
 #rpcap.linktype: 0
+
+# Controls the display of the session's client username in the info column.  This is only displayed if the packet containing it was seen during this capture session.
+# TRUE or FALSE (case-insensitive).
+#rsh.info_show_client_username: FALSE
+
+# Controls the display of the session's server username in the info column.  This is only displayed if the packet containing it was seen during this capture session.
+# TRUE or FALSE (case-insensitive).
+#rsh.info_show_server_username: TRUE
+
+# Controls the display of the command being run on the server by this session in the info column.  This is only displayed if the packet containing it was seen during this capture session.
+# TRUE or FALSE (case-insensitive).
+#rsh.info_show_command: FALSE
+
+# Use ipaccess nanoBTS specific definitions for RSL
+# TRUE or FALSE (case-insensitive).
+#rsl.use_ipaccess_rsl: FALSE
 
 # Specifies whether Wireshark should decode and display sub-messages within BUNDLE messages
 # TRUE or FALSE (case-insensitive).
@@ -3049,6 +2934,10 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #rtpevent.cisco_nse_payload_type_value: 100
 
+# This is the value of the Payload Type field that specifies RTP-MIDI
+# A decimal number.
+#rtpmidi.midi_payload_type_value: 0
+
 # Specifies the maximum number of samples dissected in a DATA_BATCH submessage. Increasing this value may affect performances if the trace has a lot of big batched samples.
 # A decimal number.
 #rtps2.max_batch_samples_dissected: 16
@@ -3084,6 +2973,10 @@ packet_list.display_hidden_proto_items: FALSE
 # Set the SCTP port for S1AP messages
 # A decimal number.
 #s1ap.sctp.port: 36412
+
+# Dissect TransparentContainers that are opaque to S1AP
+# TRUE or FALSE (case-insensitive).
+#s1ap.dissect_container: TRUE
 
 # Whether the S5066 dissector should reassemble PDUs spanning multiple TCP segments. The default is to use reassembly.
 # TRUE or FALSE (case-insensitive).
@@ -3190,6 +3083,11 @@ packet_list.display_hidden_proto_items: FALSE
 # Dissect upper layer protocols
 # TRUE or FALSE (case-insensitive).
 #sctp.ulp_dissection: TRUE
+
+# Data rate
+# One of: Attempt to guess, OC-3, OC-12, OC-24, OC-48
+# (case-insensitive).
+#sdh.data.rate: OC-3
 
 # Specifies that RTP/RTCP/T.38/MSRP/etc streams are decoded based upon port numbers found in SDP payload
 # TRUE or FALSE (case-insensitive).
@@ -3386,6 +3284,10 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #ssl.desegment_ssl_application_data: TRUE
 
+# For troubleshooting ignore the mac check result and decrypt also if the Message Authentication Code (MAC) fails.
+# TRUE or FALSE (case-insensitive).
+#ssl.ignore_ssl_mac_failed: FALSE
+
 # Pre-Shared-Key as HEX string, should be 0 to 16 bytes
 # A string.
 #ssl.psk: 
@@ -3524,6 +3426,14 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #tcp.try_heuristic_first: FALSE
 
+# Do not place the TCP Timestamps in the summary line
+# TRUE or FALSE (case-insensitive).
+#tcp.ignore_tcp_timestamps: FALSE
+
+# Do not call any subdissectors for Retransmitted or OutOfOrder segments
+# TRUE or FALSE (case-insensitive).
+#tcp.no_subdissector_on_error: FALSE
+
 # Set the port for IPSEC/ISAKMP messagesIf other than the default of 10000)
 # A decimal number.
 #tcpencap.tcp.port: 10000
@@ -3561,6 +3471,11 @@ packet_list.display_hidden_proto_items: FALSE
 # Port numbers used for TFTP traffic (default 69)
 # A string denoting an positive integer range (e.g., "1-20,30-40").
 #tftp.udp_ports: 69
+
+# Time display type
+# One of: UTC, Local
+# (case-insensitive).
+#time.display_time_type: Local
 
 # Whether TIPCv1 SEGMENTATION_MANAGER datagrams should be reassembled
 # TRUE or FALSE (case-insensitive).
@@ -3615,6 +3530,38 @@ packet_list.display_hidden_proto_items: FALSE
 # A hexadecimal number.
 #tte.ct_marker_value: 0xffffffff
 
+# Setup RTP/RTCP conversations when parsing Start RTP messages
+# TRUE or FALSE (case-insensitive).
+#ua.setup_conversations: TRUE
+
+# NOE SIP Protocol
+# TRUE or FALSE (case-insensitive).
+#uasip.noesip: FALSE
+
+# IPv4 address of the proxy (Invalid values will be ignored)
+# A string.
+#uasip.proxy_ipaddr: 
+
+# Terminal UDP port (setting 1)
+# A decimal number.
+#uaudp.port1: 32000
+
+# Terminal UDP port (setting 2)
+# A decimal number.
+#uaudp.port2: 32512
+
+# Terminal UDP port (setting 3)
+# A decimal number.
+#uaudp.port3: 0
+
+# Terminal UDP port (setting 4)
+# A decimal number.
+#uaudp.port4: 0
+
+# IPv4 address of the DHS3 system. (Used only in case of identical source and destination ports)
+# A string.
+#uaudp.system_ip: 
+
 # Whether the UCP dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
 # TRUE or FALSE (case-insensitive).
 #ucp.desegment_ucp_messages: TRUE
@@ -3663,11 +3610,18 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #unistim.udp.port: 0
 
-# Try to decode a packet using a heuristic sub-dissector before attempting to dissect the packet using the "usb.bulk" dissector table.
+# Try to decode a packet using a heuristic sub-dissector before attempting to dissect the packet using the "usb.bulk", "usb.interrupt" or "usb.control" dissector tables.
 # TRUE or FALSE (case-insensitive).
 #usb.try_heuristics: TRUE
 
+# How commands from the PC to the reader are interpreted
+# One of: Data, Generic ISO 7816, GSM SIM, NXP PN532 with ACS Pseudo-Header
+# (case-insensitive).
+#usbccid.prtype: Data
+
 # A table that enumerates the various protocols to be used against a certain user DLT
+
+# Bitstream Channel Table
 
 # Whether the vlan summary line should be shown in the protocol tree
 # TRUE or FALSE (case-insensitive).
@@ -3684,6 +3638,14 @@ packet_list.display_hidden_proto_items: FALSE
 # Decode this port's traffic as VNC in addition to the default ports (5500, 5501, 5900, 5901)
 # A decimal number.
 #vnc.alternate_port: 0
+
+# When enabled, Wireshark will do a check on the trailer data to verifywhether it contains VSS-Monitoring time- and port-stamps.
+# TRUE or FALSE (case-insensitive).
+#vssmonitoring.use_heuristics: TRUE
+
+# Set the UDP port for Vuze DHT Protocol.
+# A decimal number.
+#vuze-dht.udp_port: 11273
 
 # Enable this preference if you want to view the WBXML tokens without the representation in a media type (e.g., WML). Tokens will show up as Tag_0x12, attrStart_0x08 or attrValue_0x0B for example.
 # TRUE or FALSE (case-insensitive).
@@ -3741,261 +3703,7 @@ packet_list.display_hidden_proto_items: FALSE
 
 # Valid key formats
 
-# Key #1 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key1: 
-
-# Key #2 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key2: 
-
-# Key #3 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key3: 
-
-# Key #4 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key4: 
-
-# Key #5 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key5: 
-
-# Key #6 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key6: 
-
-# Key #7 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key7: 
-
-# Key #8 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key8: 
-
-# Key #9 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key9: 
-
-# Key #10 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key10: 
-
-# Key #11 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key11: 
-
-# Key #12 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key12: 
-
-# Key #13 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key13: 
-
-# Key #14 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key14: 
-
-# Key #15 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key15: 
-
-# Key #16 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key16: 
-
-# Key #17 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key17: 
-
-# Key #18 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key18: 
-
-# Key #19 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key19: 
-
-# Key #20 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key20: 
-
-# Key #21 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key21: 
-
-# Key #22 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key22: 
-
-# Key #23 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key23: 
-
-# Key #24 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key24: 
-
-# Key #25 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key25: 
-
-# Key #26 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key26: 
-
-# Key #27 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key27: 
-
-# Key #28 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key28: 
-
-# Key #29 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key29: 
-
-# Key #30 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key30: 
-
-# Key #31 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key31: 
-
-# Key #32 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key32: 
-
-# Key #33 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key33: 
-
-# Key #34 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key34: 
-
-# Key #35 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key35: 
-
-# Key #36 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key36: 
-
-# Key #37 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key37: 
-
-# Key #38 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key38: 
-
-# Key #39 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key39: 
-
-# Key #40 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key40: 
-
-# Key #41 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key41: 
-
-# Key #42 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key42: 
-
-# Key #43 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key43: 
-
-# Key #44 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key44: 
-
-# Key #45 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key45: 
-
-# Key #46 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key46: 
-
-# Key #47 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key47: 
-
-# Key #48 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key48: 
-
-# Key #49 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key49: 
-
-# Key #50 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key50: 
-
-# Key #51 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key51: 
-
-# Key #52 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key52: 
-
-# Key #53 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key53: 
-
-# Key #54 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key54: 
-
-# Key #55 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key55: 
-
-# Key #56 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key56: 
-
-# Key #57 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key57: 
-
-# Key #58 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key58: 
-
-# Key #59 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key59: 
-
-# Key #60 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key60: 
-
-# Key #61 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key61: 
-
-# Key #62 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key62: 
-
-# Key #63 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key63: 
-
-# Key #64 string can be:   <wep hexadecimal key>;   wep:<wep hexadecimal key>;   wpa-pwd:<passphrase>[:<ssid>];   wpa-psk:<wpa hexadecimal key>
-# A string.
-#wlan.wep_key64: 
+# WEP and pre-shared WPA keys
 
 # Set the maximum Basic CID used in the Wimax decoder (if other than the default of 320).  Note: The maximum Primary CID is double the maximum Basic CID.
 # A decimal number.
@@ -4027,6 +3735,15 @@ packet_list.display_hidden_proto_items: FALSE
 # A string.
 #wpan.802154_key: 
 
+# Specifies the security suite to use for 802.15.4-2003 secured frames (only supported suites are listed). Option ignored for 802.15.4-2006 and unsecured frames.
+# One of: AES-128 Encryption, 128-bit Integrity Protection, AES-128 Encryption, 64-bit Integrity Protection, AES-128 Encryption, 32-bit Integrity Protection
+# (case-insensitive).
+#wpan.802154_sec_suite: AES-128 Encryption, 64-bit Integrity Protection
+
+# Set if the manufacturer extends the authentication data with the security header. Option ignored for 802.15.4-2006 and unsecured frames.
+# TRUE or FALSE (case-insensitive).
+#wpan.802154_extend_auth: TRUE
+
 # Whether the X11 dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
 # TRUE or FALSE (case-insensitive).
 #x11.desegment: TRUE
@@ -4051,6 +3768,10 @@ packet_list.display_hidden_proto_items: FALSE
 # A decimal number.
 #x2ap.sctp.port: 36422
 
+# Set the port for XMCP messages (if other than the default of 4788)
+# A decimal number.
+#xmcp.tcp.port: 4788
+
 # Try to recognize XML for unknown media types
 # TRUE or FALSE (case-insensitive).
 #xml.heuristic: FALSE
@@ -4071,6 +3792,10 @@ packet_list.display_hidden_proto_items: FALSE
 # TRUE or FALSE (case-insensitive).
 #xml.heuristic_unicode: FALSE
 
+# Whether the XMPP dissector should reassemble messages. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings
+# TRUE or FALSE (case-insensitive).
+#xmpp.desegment: TRUE
+
 # Whether the X.25-over-TCP dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings
 # TRUE or FALSE (case-insensitive).
 #xot.desegment: TRUE
@@ -4078,6 +3803,18 @@ packet_list.display_hidden_proto_items: FALSE
 # Whether the X.25-over-TCP dissector should reassemble all X.25 packets before calling the X25 dissector. If the TCP packets arrive out-of-order, the X.25 reassembly can otherwise fail. To use this option, you should also enable "Reassemble X.25-over-TCP messages spanning multiple TCP segments", "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings and "Reassemble fragmented X.25 packets" in the X.25 protocol settings.
 # TRUE or FALSE (case-insensitive).
 #xot.x25_desegment: FALSE
+
+# The TCP port on which YAMI messages will be read
+# A decimal number.
+#yami.tcp.port: 3000
+
+# The UDP port on which YAMI messages will be read
+# A decimal number.
+#yami.udp.port: 5000
+
+# Whether the YAMI dissector should reassemble messages spanning multiple TCP segments.To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
+# TRUE or FALSE (case-insensitive).
+#yami.desegment: TRUE
 
 # Whether the YMSG dissector should reassemble messages spanning multiple TCP segments. To use this option, you must also enable "Allow subdissectors to reassemble TCP streams" in the TCP protocol settings.
 # TRUE or FALSE (case-insensitive).
