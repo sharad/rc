@@ -19,9 +19,13 @@
 
   (require 'utils-config)
 
-  (setq                                 ;very necessary.
-   tramp-mode nil
-   ido-mode nil)
+  (add-hook 'sharad/disable-startup-inperrupting-feature-hook
+            '(lambda () ;very necessary.
+              (setq tramp-mode nil ido-mode nil)))
+
+  ;; (setq                                 ;very necessary.
+  ;;  tramp-mode nil
+  ;;  ido-mode nil)
 
   (deh-require-maybe ido
     (setq
@@ -162,7 +166,7 @@
           (shell-command-local-no-output (concat "ssh-add " ssh-key-file " < /dev/null"))) ;;)
         (error "No ssh-key-file defined")))
 
-  (defun update-ssh-agent-1 ()
+  (defun update-ssh-agent-1 (&optional force)
     (unwind-protect
          (save-excursion
            (if ido-auto-merge-timer
@@ -182,8 +186,7 @@
                    (ssh-agent-add-key)))
                (message "No frame present.")))
       (if ido-auto-merge-timer
-          (timer-activate ido-auto-merge-timer)))
-    (message "Unable to find agent file."))
+          (timer-activate ido-auto-merge-timer))))
 
   (defun update-ssh-agent (&optional force)
     (interactive "P")

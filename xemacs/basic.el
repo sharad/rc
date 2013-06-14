@@ -296,78 +296,93 @@ alkready should not exist.")
 ;;{{
 (deh-section "disable startup inperrupting feature till first frame created."
   (defvar enable-p4-login nil "test")
-  (defvar sharad/enable-startup-inperrupting-feature-hook nil
-    "Run only once when when very frame got created after emacs startup.")
-  (defvar sharad/disable-startup-inperrupting-feature-hook nil
-    "Run only when emacs start from this file only, it basically run when this ful get loaded at emacs start time")
 
-  (defun sharad/disable-startup-inperrupting-feature ()
-    "Run only when emacs start from this file only,
+  (deh-section "disable-startup-inperrupting-feature"
+    (defvar sharad/disable-startup-inperrupting-feature-hook nil
+      "Run only when emacs start from this file only, it basically run when this ful get loaded at emacs start time")
+
+    (defun sharad/disable-startup-inperrupting-feature ()
+      "Run only when emacs start from this file only,
 it basically run when this ful get loaded at emacs start time,
 its purpose to disable all interrupting feature that may cause
 problem while emacs startup in daemon mode, non-interactively."
-    (interactive)
-    (with-report-error "check"
-        (when nil
-          (unless debug-on-error                  ;I am running in --debug-init
-            (setq debug-on-error nil)))
-        (setq
-         enable-p4-login nil
-         tramp-mode nil
-         ido-mode nil)
-        (deh-featurep epa
-          (if (fboundp 'epa-file-disable)
-              (epa-file-disable)))
-      ;; (global-pabbrev-mode -1)
-      ;; (run-hooks 'sharad/disable-startup-inperrupting-feature-hook)
-      (run-each-hooks 'sharad/disable-startup-inperrupting-feature-hook)))
+      (interactive)
+      (with-report-error "check"
+          (when nil
+            (unless debug-on-error                  ;I am running in --debug-init
+              (setq debug-on-error nil)))
+          (setq
+           enable-p4-login nil
+           tramp-mode nil
+           ido-mode nil)
+          (deh-featurep epa
+            (if (fboundp 'epa-file-disable)
+                (epa-file-disable)))
+        ;; (global-pabbrev-mode -1)
+        ;; (run-hooks 'sharad/disable-startup-inperrupting-feature-hook)
+        (run-each-hooks 'sharad/disable-startup-inperrupting-feature-hook)))
 
-  ;; run now
-  (sharad/disable-startup-inperrupting-feature)
+    ;; run now
+    ;; (sharad/disable-startup-inperrupting-feature)
 
-  (defun sharad/enable-startup-inperrupting-feature ()
-    "Run only once when when very frame got created after emacs startup.
+    (defun sharad/disable-startup-inperrupting-feature-in-frame-once (frame)
+      ;; (select-frame frame)
+      ;; (with-report-error "check"
+      ;;                    (sharad/enable-startup-inperrupting-feature))
+      (sharad/disable-startup-inperrupting-feature)
+      (remove-hook 'after-init-hook 'sharad/disable-startup-inperrupting-feature-in-frame-once))
+
+    (add-hook 'after-init-hook 'sharad/disable-startup-inperrupting-feature-in-frame-once))
+
+
+
+  (deh-section "enable-startup-inperrupting-feature"
+    (defvar sharad/enable-startup-inperrupting-feature-hook nil
+      "Run only once when when very frame got created after emacs startup.")
+
+    (defun sharad/enable-startup-inperrupting-feature ()
+      "Run only once when when very frame got created after emacs startup.
 its purpose to re/enable all feature that may have cuused problem in emacs
 startup in daemon mode."
-     (interactive)
-     ;; test
-     (with-report-error "check"
-         ;; why desktop-restore not running.
-         (setq enable-p4-login t
-               tramp-mode t
-               ido-mode 'both)
-         (login-to-perforce)
-         (update-ssh-agent t)
-       ;;test
-       (deh-featurep epa
-           (if (fboundp 'epa-file-disable)
-               (epa-file-enable)))
-       (deh-featurep (and light-symbol hilit-chg)
-         (add-element-to-lists '(lambda ()
-                                 (light-symbol-mode 1)
-                                 (highlight-changes-visible-mode t)
-                                 (highlight-changes-mode t)) pgm-langs))
-       ;; (setq debug-on-error t ) ;; debug for now
+      (interactive)
+      ;; test
+      (with-report-error "check"
+          ;; why desktop-restore not running.
+          (setq enable-p4-login t
+                tramp-mode t
+                ido-mode 'both)
+          (login-to-perforce)
+          (update-ssh-agent t)
+        ;;test
+        (deh-featurep epa
+          (if (fboundp 'epa-file-disable)
+              (epa-file-enable)))
+        (deh-featurep (and light-symbol hilit-chg)
+          (add-element-to-lists '(lambda ()
+                                  (light-symbol-mode 1)
+                                  (highlight-changes-visible-mode t)
+                                  (highlight-changes-mode t)) pgm-langs))
+        ;; (setq debug-on-error t ) ;; debug for now
 
-       ;; ;; (add-hook ;; 'after-init-hook
-       ;; ;;  'sharad/enable-startup-inperrupting-feature-hook
-       ;; ;;  'sharad/desktop-session-restore)
-       ;; (run-each-debug-hooks 'sharad/enable-startup-inperrupting-feature-hook)
-       ;; )
-       (run-each-hooks 'sharad/enable-startup-inperrupting-feature-hook)
-       ;; (sharad/desktop-session-restore)
-       (message "sharad/enable-startup-inperrupting-feature() completed Seen.")
-       (setq debug-on-error t )))
+        ;; ;; (add-hook ;; 'after-init-hook
+        ;; ;;  'sharad/enable-startup-inperrupting-feature-hook
+        ;; ;;  'sharad/desktop-session-restore)
+        ;; (run-each-debug-hooks 'sharad/enable-startup-inperrupting-feature-hook)
+        ;; )
+        (run-each-hooks 'sharad/enable-startup-inperrupting-feature-hook)
+        ;; (sharad/desktop-session-restore)
+        (message "sharad/enable-startup-inperrupting-feature() completed Seen.")
+        (setq debug-on-error t )))
 
 
-  (defun sharad/enable-startup-inperrupting-feature-in-frame-once (frame)
-    (select-frame frame)
-    ;; (with-report-error "check"
-    ;;                    (sharad/enable-startup-inperrupting-feature))
-    (sharad/enable-startup-inperrupting-feature)
-    (remove-hook 'after-make-frame-functions 'sharad/enable-startup-inperrupting-feature-in-frame-once))
+    (defun sharad/enable-startup-inperrupting-feature-in-frame-once (frame)
+      (select-frame frame)
+      ;; (with-report-error "check"
+      ;;                    (sharad/enable-startup-inperrupting-feature))
+      (sharad/enable-startup-inperrupting-feature)
+      (remove-hook 'after-make-frame-functions 'sharad/enable-startup-inperrupting-feature-in-frame-once))
 
-  (add-hook 'after-make-frame-functions 'sharad/enable-startup-inperrupting-feature-in-frame-once))
+    (add-hook 'after-make-frame-functions 'sharad/enable-startup-inperrupting-feature-in-frame-once)))
   ;; (sharad/enable-startup-inperrupting-feature-in-frame-once (selected-frame))
 ;;}}
 
@@ -376,54 +391,59 @@ startup in daemon mode."
   ;; don't mislead by login it is when no frame or 1 or more frame hook
   ;; basiclly used accross login where emacs daemon outlive.
   ;; can be used for other purpose.
-  (defvar sharad/disable-login-session-inperrupting-feature nil
-    "called before when last frame deleted, don't mislead by
+  (deh-section "disable-login-session-inperrupting-feature"
+
+   (defvar sharad/disable-login-session-inperrupting-feature nil
+     "called before when last frame deleted, don't mislead by
     login it is for no frame or 1 or more frame hook basiclly
     used accross login where emacs daemon outlive.")
-  (defvar sharad/enable-login-session-inperrupting-feature-hook nil
-    "called before when first frame created, don't mislead by
+
+   (defun sharad/disable-login-session-inperrupting-feature ()
+     (interactive)
+     ;; (login-to-perforce)
+     ;; (update-ssh-agent t)
+     (setq debug-on-error nil)           ;for planner
+     (with-report-error "check"
+         (run-each-hooks 'sharad/disable-login-session-inperrupting-feature)))
+
+   (defun sharad/disable-login-session-inperrupting-feature-in-frame-once (f)
+     (when (< (length (frame-list)) 3) ;last frame then add.
+       (with-report-error "check"
+           (sharad/disable-login-session-inperrupting-feature)
+           (add-hook 'after-make-frame-functions 'sharad/enable-login-session-inperrupting-feature-in-frame-once t)
+           (message "added sharad/enable-login-session-inperrupting-feature-in-frame-once"))))
+
+   (add-hook 'delete-frame-functions 'sharad/disable-login-session-inperrupting-feature-in-frame-once))
+
+  (deh-section "enable-login-session-inperrupting-feature"
+
+    (defvar sharad/enable-login-session-inperrupting-feature-hook nil
+      "called before when first frame created, don't mislead by
     login it is for no frame or 1 or more frame hook basiclly
     used accross login where emacs daemon outlive.")
 
-  (defun sharad/disable-login-session-inperrupting-feature ()
-    (interactive)
-    ;; (login-to-perforce)
-    ;; (update-ssh-agent t)
-    (setq debug-on-error nil)           ;for planner
-    (with-report-error "check"
-        (run-each-hooks 'sharad/disable-login-session-inperrupting-feature)))
-
-  (defun sharad/enable-login-session-inperrupting-feature ()
-    (interactive)
-    ;; (setenv "DISPLAY" ":1")
-    (with-report-error "check"
-        (login-to-perforce)
-        ;; (update-ssh-agent t)  ; test
-        (update-ssh-agent)
-        (setq debug-on-error t)           ;for planner
-      (run-each-hooks 'sharad/enable-login-session-inperrupting-feature-hook)))
-
-  (defun sharad/enable-login-session-inperrupting-feature-in-frame-once (frame)
-    (select-frame frame)
-    ;; run and disable.
-    (with-report-error "check"
-        (when (< (length (frame-list)) 3)
-          (sharad/enable-login-session-inperrupting-feature))
-        (remove-hook 'after-make-frame-functions 'sharad/enable-login-session-inperrupting-feature-in-frame-once)
-        (when t
-          (message "removed sharad/enable-login-session-inperrupting-feature-in-frame-once"))))
-
-  (add-hook 'after-make-frame-functions 'sharad/enable-login-session-inperrupting-feature-in-frame-once t)
-  ;; (sharad/enable-login-session-inperrupting-feature-in-frame-once (selected-frame))
-
-  (defun sharad/disable-login-session-inperrupting-feature-in-frame (f)
-    (when (< (length (frame-list)) 3) ;last frame then add.
+    (defun sharad/enable-login-session-inperrupting-feature ()
+      (interactive)
+      ;; (setenv "DISPLAY" ":1")
       (with-report-error "check"
-          (sharad/disable-login-session-inperrupting-feature)
-          (add-hook 'after-make-frame-functions 'sharad/enable-login-session-inperrupting-feature-in-frame-once t)
-          (message "added sharad/enable-login-session-inperrupting-feature-in-frame-once"))))
+          (login-to-perforce)
+          ;; (update-ssh-agent t)  ; test
+          (update-ssh-agent)
+          (setq debug-on-error t)           ;for planner
+        (run-each-hooks 'sharad/enable-login-session-inperrupting-feature-hook)))
 
-  (add-hook 'delete-frame-functions 'sharad/disable-login-session-inperrupting-feature-in-frame))
+    (defun sharad/enable-login-session-inperrupting-feature-in-frame-once (frame)
+      (select-frame frame)
+      ;; run and disable.
+      (with-report-error "check"
+          (when (< (length (frame-list)) 3)
+            (sharad/enable-login-session-inperrupting-feature))
+          (remove-hook 'after-make-frame-functions 'sharad/enable-login-session-inperrupting-feature-in-frame-once)
+          (when t
+            (message "removed sharad/enable-login-session-inperrupting-feature-in-frame-once"))))
+
+    ;; (sharad/enable-login-session-inperrupting-feature-in-frame-once (selected-frame))
+    (add-hook 'after-make-frame-functions 'sharad/enable-login-session-inperrupting-feature-in-frame-once t)))
 ;;}}
 
 (defalias 'make-local-hook 'ignore)
