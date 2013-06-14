@@ -156,37 +156,34 @@
     (if (and
          (boundp 'ssh-key-file)
          ssh-key-file)
-        (unless (and (not tramp-mode)
-                    (shell-command-local-no-output "ssh-add -l < /dev/null"))
-          (with-timeout (7 nil)
-            (shell-command-local-no-output (concat "ssh-add " ssh-key-file " < /dev/null"))))
+        ;; (unless (and (not tramp-mode)
+        ;;             (shell-command-local-no-output "ssh-add -l < /dev/null"))
+        (with-timeout (7 nil)
+          (shell-command-local-no-output (concat "ssh-add " ssh-key-file " < /dev/null"))) ;;)
         (error "No ssh-key-file defined")))
 
   (defun update-ssh-agent-1 ()
-    ;; (let ((agent-file (concat "~/.emacs.d/ssh-agent-" (system-name) ".el")))
-    ;;   (if (file-exists-p agent-file)
-          (unwind-protect
-               (save-excursion
-                 (if ido-auto-merge-timer
-                     (timer-activate ido-auto-merge-timer t))
-                 (if force (tramp-cleanup-all-connections))
-                 (if (getenv "SSH_AGENT_PID" (selected-frame))
-                     (progn
-                       (when (or force
-                                 (null (getenv "SSH_AGENT_PID")))
-                         (setenv "SSH_AGENT_PID" (getenv "SSH_AGENT_PID" (selected-frame)))
-                         (setenv "SSH_AUTH_SOCK" (getenv "SSH_AUTH_SOCK" (selected-frame)))
-                         (message "update main pid and sock to frame pid %s sock %s"
-                                  (getenv "SSH_AGENT_PID" (selected-frame))
-                                  (getenv "SSH_AUTH_SOCK" (selected-frame))))
-                       (when (or force
-                                 (not (shell-command-local-no-output "ssh-add -l < /dev/null")))
-                         (ssh-agent-add-key)))
-                     (message "No frame present.")))
-            (if ido-auto-merge-timer
-                (timer-activate ido-auto-merge-timer)))
-          (message "Unable to find agent file."))
-  ;; ))
+    (unwind-protect
+         (save-excursion
+           (if ido-auto-merge-timer
+               (timer-activate ido-auto-merge-timer t))
+           (if force (tramp-cleanup-all-connections))
+           (if (getenv "SSH_AGENT_PID" (selected-frame))
+               (progn
+                 (when (or force
+                           (null (getenv "SSH_AGENT_PID")))
+                   (setenv "SSH_AGENT_PID" (getenv "SSH_AGENT_PID" (selected-frame)))
+                   (setenv "SSH_AUTH_SOCK" (getenv "SSH_AUTH_SOCK" (selected-frame)))
+                   (message "update main pid and sock to frame pid %s sock %s"
+                            (getenv "SSH_AGENT_PID" (selected-frame))
+                            (getenv "SSH_AUTH_SOCK" (selected-frame))))
+                 (when (or force
+                           (not (shell-command-local-no-output "ssh-add -l < /dev/null")))
+                   (ssh-agent-add-key)))
+               (message "No frame present.")))
+      (if ido-auto-merge-timer
+          (timer-activate ido-auto-merge-timer)))
+    (message "Unable to find agent file."))
 
   (defun update-ssh-agent (&optional force)
     (interactive "P")
@@ -194,11 +191,9 @@
     (when (or force
               (null (getenv "SSH_AGENT_PID"))
               (not (shell-command-local-no-output "ssh-add -l < /dev/null")))
-      (update-ssh-agent-1)
-      (let ()
-        (find-file-noselect (or
-                             (plist-get (car auth-sources) :source)
-                             "~/.authinfo.gpg")))))
+      (find-file-noselect (or (plist-get (car auth-sources) :source)
+                              "~/.authinfo.gpg"))
+      (update-ssh-agent-1)))
 
 
   (when nil
