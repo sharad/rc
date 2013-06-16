@@ -205,15 +205,16 @@
                               "~/.authinfo.gpg"))
       (update-ssh-agent-1)))
 
+  (require 'general-testing)
 
-
-  (when (or (null (getenv "SSH_AGENT_PID"))
+  (testing
+   (when (or (null (getenv "SSH_AGENT_PID"))
             (not (string-equal (getenv "SSH_AGENT_PID")
                                (getenv "SSH_AGENT_PID" (selected-frame))))
             (not (shell-command-local-no-output "ssh-add -l < /dev/null")))
       (find-file-noselect (or (plist-get (car auth-sources) :source)
                               "~/.authinfo.gpg"))
-      (update-ssh-agent-1))
+      (update-ssh-agent-1)))
 
   (when nil
     (run-with-timer 10 nil (lambda ()
