@@ -20,12 +20,15 @@
   (require 'utils-config)
 
   (add-hook 'sharad/disable-startup-inperrupting-feature-hook
+            ;;will not be called.
             '(lambda () ;very necessary.
               (setq tramp-mode nil ido-mode nil)))
 
-  ;; (setq                                 ;very necessary.
-  ;;  tramp-mode nil
-  ;;  ido-mode nil)
+
+  (when *emacs-in-init*
+    (setq                                 ;very necessary.
+     tramp-mode nil
+     ido-mode nil))
 
   (deh-require-maybe ido
     (setq
@@ -175,7 +178,9 @@
            (if (getenv "SSH_AGENT_PID" (selected-frame))
                (progn
                  (when (or force
-                           (null (getenv "SSH_AGENT_PID")))
+                           (null (getenv "SSH_AGENT_PID"))
+                           (not (string-equal (getenv "SSH_AGENT_PID")
+                                              (getenv "SSH_AGENT_PID" (selected-frame)))))
                    (setenv "SSH_AGENT_PID" (getenv "SSH_AGENT_PID" (selected-frame)))
                    (setenv "SSH_AUTH_SOCK" (getenv "SSH_AUTH_SOCK" (selected-frame)))
                    (message "update main pid and sock to frame pid %s sock %s"
@@ -193,11 +198,22 @@
     ;; (message "update-ssh-agent called")
     (when (or force
               (null (getenv "SSH_AGENT_PID"))
+              (not (string-equal (getenv "SSH_AGENT_PID")
+                                 (getenv "SSH_AGENT_PID" (selected-frame))))
               (not (shell-command-local-no-output "ssh-add -l < /dev/null")))
       (find-file-noselect (or (plist-get (car auth-sources) :source)
                               "~/.authinfo.gpg"))
       (update-ssh-agent-1)))
 
+
+
+  (when (or (null (getenv "SSH_AGENT_PID"))
+            (not (string-equal (getenv "SSH_AGENT_PID")
+                               (getenv "SSH_AGENT_PID" (selected-frame))))
+            (not (shell-command-local-no-output "ssh-add -l < /dev/null")))
+      (find-file-noselect (or (plist-get (car auth-sources) :source)
+                              "~/.authinfo.gpg"))
+      (update-ssh-agent-1))
 
   (when nil
     (run-with-timer 10 nil (lambda ()
