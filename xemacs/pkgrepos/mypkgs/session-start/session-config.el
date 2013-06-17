@@ -569,6 +569,7 @@ Also returns nil if pid is nil."
               (desktop-vc-save *desktop-save-filename*)
               ;; (desktop-save-in-desktop-dir)
               (progn
+                (remove-hook 'session-before-save-hook 'my-desktop-save)
                 (remove-hook 'auto-save-hook 'save-desktop-auto-save)
                 (error "You %d are not the desktop owner %d. removed my-desktop-save from auto-save-hook."
                        (emacs-pid) owner))))))
@@ -585,15 +586,17 @@ Also returns nil if pid is nil."
         ('error
          (progn
            ;; make after 2 errors.
-           (message "my-desktop-save(): Error: %s" e)
+           (message "my-desktop-save: Error: %s" e)
            (1+ *my-desktop-save-error-count* )
            (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
              (setq *my-desktop-save-error-count* 0)
              (message "my-desktop-save(): Removing save-desktop-auto-save function from auto-save-hook" e)
              (remove-hook 'auto-save-hook 'save-desktop-auto-save)))))))
 
-  ;; giving life to it.
-  (add-hook 'auto-save-hook 'save-desktop-auto-save)
+  (when nil
+    ;; moved to sharad/desktop-session-restore
+    ;; giving life to it.
+    (add-hook 'auto-save-hook 'save-desktop-auto-save))
 
   (defun sharad/desktop-saved-session ()
     (file-exists-p *desktop-save-filename*)
@@ -620,8 +623,12 @@ Also returns nil if pid is nil."
         (progn
           (message "desktop-session-restore")
           (condition-case e
-              (desktop-vc-read *desktop-save-filename*)
-            ('error (message "Error in desktop-read: %s" e)))
+              (when (desktop-vc-read *desktop-save-filename*)
+                (add-hook 'session-before-save-hook 'my-desktop-save)
+                (add-hook 'auto-save-hook 'save-desktop-auto-save)
+                (message "Added my-desktop-save to session-before-save-hook and\nsave-desktop-auto-save to auto-save-hook"))
+            ('error
+             (message "Error in desktop-read: %s\n not adding my-desktop-save to session-before-save-hook and\nsave-desktop-auto-save to auto-save-hook" e)))
           t)
         (message "No desktop found."))
     (when t ;(y-or-n-p "Do you want to set session of frame? ")
@@ -631,8 +638,10 @@ Also returns nil if pid is nil."
   (add-hook 'session-before-save-hook
             'my-desktop-save)
 
-  (eval-after-load "session"
-    '(add-hook 'session-before-save-hook 'my-desktop-save))
+  (when nil
+    ;; moved to sharad/desktop-session-restore
+    (eval-after-load "session"
+      '(add-hook 'session-before-save-hook 'my-desktop-save)))
 
   ;; 'sharad/desktop-session-save)
 
