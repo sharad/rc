@@ -20,12 +20,15 @@
   (require 'utils-config)
 
   (add-hook 'sharad/disable-startup-inperrupting-feature-hook
+            ;;will not be called.
             '(lambda () ;very necessary.
               (setq tramp-mode nil ido-mode nil)))
 
-  ;; (setq                                 ;very necessary.
-  ;;  tramp-mode nil
-  ;;  ido-mode nil)
+
+  (when *emacs-in-init*
+    (setq                                 ;very necessary.
+     tramp-mode nil
+     ido-mode nil))
 
   (deh-require-maybe ido
     (setq
@@ -174,15 +177,17 @@
            (if force (tramp-cleanup-all-connections))
            (if (getenv "SSH_AGENT_PID" (selected-frame))
                (progn
-                 (when (or force
-                           (null (getenv "SSH_AGENT_PID")))
+                 (unless (and (not force)
+                              (getenv "SSH_AGENT_PID")
+                              (string-equal (getenv "SSH_AGENT_PID")
+                                            (getenv "SSH_AGENT_PID" (selected-frame))))
                    (setenv "SSH_AGENT_PID" (getenv "SSH_AGENT_PID" (selected-frame)))
                    (setenv "SSH_AUTH_SOCK" (getenv "SSH_AUTH_SOCK" (selected-frame)))
                    (message "update main pid and sock to frame pid %s sock %s"
                             (getenv "SSH_AGENT_PID" (selected-frame))
                             (getenv "SSH_AUTH_SOCK" (selected-frame))))
-                 (when (or force
-                           (not (shell-command-local-no-output "ssh-add -l < /dev/null")))
+                 (unless (and (not force)
+                              (shell-command-local-no-output "ssh-add -l < /dev/null"))
                    (ssh-agent-add-key)))
                (message "No frame present.")))
       (if ido-auto-merge-timer
@@ -193,11 +198,25 @@
     ;; (message "update-ssh-agent called")
     (when (or force
               (null (getenv "SSH_AGENT_PID"))
+              (not (string-equal (getenv "SSH_AGENT_PID")
+                                 (getenv "SSH_AGENT_PID" (selected-frame))))
               (not (shell-command-local-no-output "ssh-add -l < /dev/null")))
-      (find-file-noselect (or (plist-get (car auth-sources) :source)
-                              "~/.authinfo.gpg"))
+      (with-temp-buffer
+        (find-file-noselect (or (plist-get (car auth-sources) :source)
+                                "~/.authinfo.gpg")))
       (update-ssh-agent-1)))
 
+  (eval-when-compile
+    '(require 'general-testing))
+
+  (testing
+   (when (or (null (getenv "SSH_AGENT_PID"))
+            (not (string-equal (getenv "SSH_AGENT_PID")
+                               (getenv "SSH_AGENT_PID" (selected-frame))))
+            (not (shell-command-local-no-output "ssh-add -l < /dev/null")))
+     (find-file-noselect (or (plist-get (car auth-sources) :source)
+                             "~/.authinfo.gpg"))
+     (update-ssh-agent-1)))
 
   (when nil
     (run-with-timer 10 nil (lambda ()
@@ -208,13 +227,13 @@
   (defadvice tramp-file-name-handler
       (before ad-update-ssh-agent-env activate)
     "Support ssh agent."
-    (unless (tramp-tramp-file-p default-directory)
+    (unless (tramp-tramp-file-p default-directory) ;why?
       (update-ssh-agent)))
 
-  ;; (defadvice tramp-file-name-handler
-  ;;     (before ad-update-ssh-agent-env activate)
-  ;;   "Support ssh agent."
-  ;;   (update-ssh-agent))
+  (defadvice tramp-file-name-handler
+     (before ad-update-ssh-agent-env activate)
+   "Support ssh agent."
+   (update-ssh-agent))
 
 
   (when nil

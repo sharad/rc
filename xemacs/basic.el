@@ -326,14 +326,20 @@ problem while emacs startup in daemon mode, non-interactively."
     (sharad/disable-startup-inperrupting-feature)
 
     (defun sharad/disable-startup-inperrupting-feature-in-frame-once (frame)
+      ;; NOTE: Can not be called in hook.
       ;; (select-frame frame)
       ;; (with-report-error "check"
       ;;                    (sharad/enable-startup-inperrupting-feature))
       (sharad/disable-startup-inperrupting-feature)
       (remove-hook 'after-init-hook 'sharad/disable-startup-inperrupting-feature-in-frame-once))
 
+<<<<<<< HEAD
     ;; (add-hook 'after-init-hook 'sharad/disable-startup-inperrupting-feature-in-frame-once)
    )
+=======
+    ;; (add-hook 'after-init-hook 'sharad/disable-startup-inperrupting-feature-in-frame-once))
+    )
+>>>>>>> 48c02324e0e1f76de2419d3f3e6a42fa40481e13
 
 
 

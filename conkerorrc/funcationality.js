@@ -1,4 +1,4 @@
-// -*- mode: js2 -*-
+// -*- mode: js -*-
 
 // from: http://conkeror.org/Tips#Darkenthecurrentpage
 // {{ follow-new-buffer
