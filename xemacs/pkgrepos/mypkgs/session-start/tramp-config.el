@@ -165,7 +165,7 @@
          ssh-key-file)
         ;; (unless (and (not tramp-mode)
         ;;             (shell-command-local-no-output "ssh-add -l < /dev/null"))
-        (with-timeout (7 nil)
+        (with-timeout (7 (message "ssh-add timed out."))
           (shell-command-local-no-output (concat "ssh-add " ssh-key-file " < /dev/null"))) ;;)
         (error "No ssh-key-file defined")))
 
