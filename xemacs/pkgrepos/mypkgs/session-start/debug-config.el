@@ -41,6 +41,10 @@ At top-level, as an editor command, this simply beeps."
    ;; (error "User throw error")
    (debug)))
 
+
+
+
+
 (provide 'debug-config)
 
 ;;; debug-config.el ends here

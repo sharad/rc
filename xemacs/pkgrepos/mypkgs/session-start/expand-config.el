@@ -38,7 +38,43 @@
 
 
 (deh-require-maybe auto-complete
-  (global-auto-complete-mode t))
+  (global-auto-complete-mode t)
+
+  (defun my-c-mode-cedet-hook ()
+    ;; http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+    (add-to-list 'ac-sources 'ac-source-gtags)
+    (add-to-list 'ac-sources 'ac-source-semantic))
+  (add-hook 'c-mode-common-hook 'my-c-mode-cedet-hook)
+
+
+  (deh-section "config autocomplete"
+    ;; http://root42.blogspot.hu/2012/07/nice-c-autocomplete-configuration-for.html
+   (defcustom mycustom-system-include-paths '("./include/" "/opt/local/include" "/usr/include" )
+     "This is a list of include paths that are used by the clang auto completion."
+     :group 'mycustom
+     :type '(repeat directory)
+     )
+
+   ;; (add-to-list 'load-path "~/bin/emacs/auto-complete")
+   (deh-require-maybe auto-complete-config
+   ;; (add-to-list 'ac-dictionary-directories "~/bin/emacs/auto-complete/ac-dict")
+   (ac-config-default)
+   (deh-require-maybe auto-complete-clang
+   (setq clang-completion-suppress-error 't)
+   (setq ac-clang-flags
+         (mapcar (lambda (item)(concat "-I" item))
+                 (append
+                  mycustom-system-include-paths
+                  )
+                 )
+         )
+
+   (defun my-ac-clang-mode-common-hook()
+     (define-key c-mode-base-map (kbd "M-/") 'ac-complete-clang)
+     )
+
+   (add-hook 'c-mode-common-hook 'my-ac-clang-mode-common-hook)))))
+
 
 (deh-require-maybe pde-indent-dwim
   (global-set-key-if-unbind (kbd "C-M-=") 'pde-indent-dwim))

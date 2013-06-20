@@ -209,7 +209,10 @@
   (eval-when-compile
     '(require 'general-testing))
 
-  (testing
+  (require 'general-testing)
+
+  ;; (testing
+  (when nil
    (when (or (null (getenv "SSH_AGENT_PID"))
             (not (string-equal (getenv "SSH_AGENT_PID")
                                (getenv "SSH_AGENT_PID" (selected-frame))))

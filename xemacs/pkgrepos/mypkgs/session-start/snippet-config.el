@@ -1,4 +1,4 @@
-;;
+;
 ;; snippet.el
 ;; Login : <spratap@spratap>
 ;; Started on  Tue Jul 27 12:25:14 2010 Sharad Pratap

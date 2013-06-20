@@ -299,7 +299,9 @@ The indirect buffer can have another major mode."
 
 
 (deh-require-maybe imenu-tree
-  (setq imenu-tree-windata '(frame right 0.2 delete)))
+  (setq imenu-tree-windata '(frame right 0.2 delete))
+
+  )
 
 
 (deh-require-maybe (progn pastie pastbin paste2)

@@ -190,5 +190,13 @@
   )
 
 
+
+
+(deh-require-maybe gdb-ui
+  (setq gud-gdb-command-name (concat gud-gdb-command-name " -n -s SYMBOLFILE")))
+
+
+
+
 (provide 'dev-config)
 ;;; dev-config.el ends here
