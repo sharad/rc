@@ -166,7 +166,8 @@
                  (atom (cdr tree)))
             (and (cdr tree)
                  (list (cdr tree)))
-          (dolist (tr (or (cdr tree)
+          ;; (dolist (tr (or (cdr tree)
+          (dolist (tr (or tree
                           (list (car tree))) ret)
             ;; (dolist (tr tree ret)
             (setq

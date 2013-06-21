@@ -50,7 +50,9 @@
 
 (defun planner-bugzilla-bug-to-task-name (bug)
   (let* ((id      (cdr (assoc "id" bug)))
-         (summary (cdr (assoc "summary" bug)))
+         (summary (cdr (or
+                        (assoc "summary" bug)
+                        (assoc "short_desc" bug))))
          (url (or (concat bugz-showbug-url (number-to-string id))
                   (cdr (assoc "_bugz-url" bug)) bugz-url)))
     (format planner-bugz-format id summary url)))
@@ -122,7 +124,7 @@
   (interactive
    (list
     (planner-read-non-date-page (planner-file-alist))))
-  (dolist (bug (bugzilla-search-bugs '("id" "summary" "status" "bug_status" "_bugz-url") t))
+  (dolist (bug (bugzilla-search-bugs '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url") t))
     (planner-bugzilla-create-bug-to-task bug page t)))
 
 
@@ -132,7 +134,7 @@
   (interactive
    (list
     (planner-read-non-date-page (planner-file-alist))))
-  (dolist (bug (bugzilla-get-bugs '("id" "summary" "status" "bug_status" "_bugz-url") t))
+  (dolist (bug (bugzilla-get-bugs '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url") t))
     (planner-bugzilla-create-bug-to-task bug page t)))
 
 

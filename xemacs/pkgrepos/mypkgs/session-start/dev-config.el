@@ -193,6 +193,7 @@
 
 
 (deh-require-maybe gdb-ui
+  ;; make command for asking remotehost:remoteport for gdbserver
   (setq gud-gdb-command-name (concat gud-gdb-command-name " -n -s SYMBOLFILE")))
 
 

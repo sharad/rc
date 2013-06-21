@@ -18,7 +18,7 @@ The indirect buffer can have another major mode."
 
 
 (if (not running-xemacs)
-    (menu-bar-mode -10))
+   (menu-bar-mode -10))
 
 (tool-bar-mode -10)
 

@@ -58,8 +58,9 @@
   (cdr (assoc ret (bugz/Bug.method method criteria))))
 
 (defun bugz-method (method ret criteria)
-  (tree-leaves
-   (cdr (assoc ret (bugz/Bug.method method criteria))) 1))
+  (mapcar '(lambda (e)
+            (tree-leaves e 1))
+          (cdr (assoc ret (bugz/Bug.method method criteria)))))
 
 ;;{{
 
