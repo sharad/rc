@@ -800,6 +800,36 @@ If SERVER is non-nil, use that, rather than the current server."
 
 
 
+(deh-section "h4x0r"
+  ;; http://www.emacswiki.org/emacs/ErcHaxorCode
+
+  ;; EliteSpeech (h4x0r!) has code to transform normal speech into
+  ;; elite (31337!) speech. We can use that for a little haxor output –
+  ;; useful when you are trapped with script kiddies on a
+  ;; channel. Remember to set the ‘h4x0r-unreadable’ variable to your
+  ;; favorite level. The default is 5.
+
+  (add-hook 'erc-send-pre-hook 'erc-maybe-h4x0r)
+
+  (define-minor-mode erc-h4x0r-mode
+      "Toggle automatic usage of h4x0r code for everything you type in ERC.")
+
+  (defun erc-maybe-h4x0r (ignore)
+    "Change the text to h4x0r code, if `erc-h4x0r-mode' is non-nil."
+    (when erc-h4x0r-mode
+      (with-temp-buffer
+        (insert str)
+        (erc-h4x0r)
+        (setq str (buffer-string)))))
+
+  (defun erc-h4x0r ()
+    "Transform the buffer into h4x0r code."
+    (h4x0r-region (point-min) (point-max)))
+
+    (autoload 'h4x0r-region "h4x0r"))
+
+
+
 (provide 'erc-config)
 
 

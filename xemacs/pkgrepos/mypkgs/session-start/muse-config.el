@@ -28,7 +28,8 @@
 (add-to-list
    'muse-project-alist
    '("WikiWriting"
-     ("~/../paradise/Writing"   ;; Or wherever you want your planner files to be
+     ("~/../paradise/Writing"   ;; Or wherever you want your planner
+                                ;; files to be
       :default "index"
       :major-mode muse-mode
       :visit-link planner-visit-link)

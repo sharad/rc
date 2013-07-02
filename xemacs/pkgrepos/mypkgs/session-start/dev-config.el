@@ -194,6 +194,17 @@
 
 (deh-require-maybe gdb-ui
   ;; make command for asking remotehost:remoteport for gdbserver
+  ;; *** On Embedded Device
+  ;; gdbserver localhost:PORT program arg
+  ;; *** On build machine
+  ;; gdb
+  ;; (gdb) target remote EmbeddedDeviceIP:PORT
+  ;; (gdb)
+  ;; or
+  ;; gdb -s /path/to/symbolfile.dbg
+  ;; or
+  ;; gdb -s /path/to/excutable-with-symbol
+
   (setq gud-gdb-command-name (concat gud-gdb-command-name " -n -s SYMBOLFILE")))
 
 
