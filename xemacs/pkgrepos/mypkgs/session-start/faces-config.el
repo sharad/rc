@@ -111,5 +111,27 @@
     (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'set-default-face-height-by-resolution))
 
 
+
+(deh-section "face help"
+  ;; http://stackoverflow.com/questions/1242352/get-font-face-under-cursor-in-emacs
+  (defun what-face (pos)
+    (interactive "d")
+    (let ((face (or (get-char-property (point) 'read-face-name)
+                    (get-char-property (point) 'face))))
+      (if face (message "Face: %s" face) (message "No face at %d" pos))))
+
+
+  ;; what-cursor-position with a prefix argument shows the face under point, among other information.
+  ;; Keyboard shortcut is C-u C-x =
+
+
+  ;; M-x describe-face
+
+  )
+
+
+
+;; (length (font-family-list))
+
 (provide 'faces-config)
 

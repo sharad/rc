@@ -15,6 +15,9 @@
 # cache in order to proxy the list of results (like the list of
 # available debian packages) Use a cache:
 
+autoload -U compinit
+compinit
+
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.var/cache/zsh/
 
@@ -201,6 +204,12 @@ zstyle -e ':completion:*:email-ldap' filter '(( $#PREFIX+$#SUFFIX > 2 )) && repl
 # zstyle ':completion:*:email-ldap' command 'ldapsearch -w Hog27Xol -LLL $filter cn mail | grep -v "^# refldap://"'
 
 zstyle ':completion:*:email-ldap' command 'ldapsearch -w `get-imap-pass.py` -LLL $filter displayName mail | egrep -v "^(# refldap://|dn:)" | grep -v "^\$"'
+
+
+
+
+zstyle ''
+
 
 # And, my .ldaprc contains a `HOST host:port' line
 

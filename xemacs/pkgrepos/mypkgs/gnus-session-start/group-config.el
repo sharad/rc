@@ -1,4 +1,4 @@
-;;; group.el --- GNUS group related behaviours.
+;;; group-config.el --- GNUS group related behaviours.
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -47,7 +47,14 @@
              (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
                                         ;"Gnus: %g [%A] %Z"
              (gnus-extra-headers '(To Newsgroups X-Newsreader))
-             (gnus-ignored-from-addresses "Sharad Pratap\\|sh4r4d.*\\|spratap.*"))))))
+             (gnus-ignored-from-addresses "Sharad Pratap\\|sh4r4d.*\\|spratap.*"))
+            ("nnshimbun.*"
+             (encapsulate-images t))))))
+
+(setq nnshimbun-group-parameters-alist
+ '(
+   ("^nnshimbun.*:" index-range all prefetch-articles off
+    encapsulate-images on expiry-wait 6)))
 
 ;; ("mail\\..*"
 ;;  (gnus-show-threads nil)
@@ -71,4 +78,4 @@
 ;;}}
 
 (provide 'group-config)
-;;; group.el ends here
+;;; group-config.el ends here

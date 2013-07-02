@@ -54,7 +54,7 @@
 
   (deh-require-maybe mm-decode
     (defun my-save-icalendar (handle)
-      (let ((diary "~/.Organize/emacs/diary/outlook)"))
+      (let ((diary "~/.Organize/emacs/diary/outlook"))
         (when (and (equal (car (mm-handle-type handle)) "text/calendar")
                    (gnus-mime-view-part-internally handle)
                    (mm-with-part handle (icalendar-import-buffer diary)))

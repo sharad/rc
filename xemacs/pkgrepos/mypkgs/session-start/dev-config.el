@@ -209,6 +209,10 @@
 
 
 
+(deh-section "minimap"
+  (autoload 'minimap-create "minimap")
+  (setq minimap-window-location 'right))
+
 
 (provide 'dev-config)
 ;;; dev-config.el ends here
