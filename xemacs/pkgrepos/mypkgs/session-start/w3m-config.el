@@ -179,5 +179,38 @@ used instead of `browse-url-new-window-flag'."
                  '("--newwin"))
              (list "--raise" url))))))
 
+;; w3m browse url netscape conkeror emacs gnus
+;; browse-url-browser-function
+
+;; To invoke different browsers for different URLs:
+;; (setq browse-url-browser-function '(("^mailto:" . browse-url-mail)
+;; ("." . browse-url-netscape)))
+
+(setq browse-url-new-window-flag
+      ;; Non-nil means always open a new browser window with appropriate browsers
+      nil)
+
+(defun browse-url-conditional (url &optional ns)
+  (funcall
+   (case (intern (completing-read "what: " '("w3m" "conkeror") nil t))
+     (w3m 'w3m-browse-url)
+     (conkeror 'browse-url-conkeror))
+   url (yes-or-no-p "New Window: ")))
+
+
+(setq browse-url-browser-function  'browse-url-conditional)
+
+
+;; (defun widget-button-press (pos &optional event)
+;;   "Invoke button at POS."
+;;   (interactive "@d")
+;;   (let ((button (get-char-property pos 'button)))
+;;     (if button
+;; 	(widget-apply-action button event)
+;;       (let ((command (lookup-key widget-global-map (this-command-keys))))
+;; 	(when (commandp command)
+;; 	  (call-interactively command))))))
+
+
 (provide 'w3m-config)
 

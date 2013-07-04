@@ -140,7 +140,7 @@
 
 (if (xrequire 'gnus-demon)
     (setq gnus-use-demon t)
-    (gnus-demon-add-handler 'gnus-group-get-new-news 5 2)
+    (gnus-demon-add-handler 'gnus-group-get-new-news 3 2)
     (gnus-demon-init))
 
 (when (xrequire 'gnus-demon)
@@ -160,7 +160,7 @@
       (save-window-excursion
         (save-excursion
           (set-buffer gnus-group-buffer)
-          (gnus-group-get-new-news)))))
+          (gnus-group-get-new-news 3)))))
 
   (add-hook 'gnus-group-mode-hook 'gnus-demon-init)
 

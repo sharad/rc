@@ -1,4 +1,4 @@
-;;; header.el --- Header
+;;; header-config.el --- Header
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -56,6 +56,8 @@
         "^X-bugzilla"	; Show all X-headers
         ;; for attachment
         "^Content-Type"
+        "^X-Face:"
+        "^X-Face"
         )
       gnus-sorted-header-list
       '("^From:" "^Subject:" "^Summary:" "^Keywords:" "^Newsgroups:" "^Followup-To:" "^To:" "^Cc:" "^Date:" "^Organization:")))
@@ -63,7 +65,23 @@
 
 
 
+(deh-section "Art"
 
+  (setq gnus-article-x-face-command
+        ;; http://git.gnus.org/cgit/gnus.git/plain/lisp/gnus-art.el?h=V5-8&id=9e60844ade6660e25359aefaf313daf3e92ff3a9
+        ;; should be 'gnus-display-x-face-in-from else it will popup image outside
+    (if (featurep 'xemacs)
+        (if (or (gnus-image-type-available-p 'xface)
+                (gnus-image-type-available-p 'pbm))
+            'gnus-display-x-face-in-from
+            "{ echo \
+'/* Format_version=1, Width=48, Height=48, Depth=1, Valid_bits_per_item=16 */'\
+; uncompface; } | icontopbm | ee -")
+    (if (gnus-image-type-available-p 'pbm)
+	'gnus-display-x-face-in-from
+      "{ echo \
+'/* Format_version=1, Width=48, Height=48, Depth=1, Valid_bits_per_item=16 */'\
+; uncompface; } | icontopbm | display -")))
 
 
 ;; gnus-extra-headers

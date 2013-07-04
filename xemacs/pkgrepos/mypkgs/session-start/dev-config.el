@@ -205,7 +205,26 @@
   ;; or
   ;; gdb -s /path/to/excutable-with-symbol
 
-  (setq gud-gdb-command-name (concat gud-gdb-command-name " -n -s SYMBOLFILE")))
+  (setq gud-gdb-command-name (concat gud-gdb-command-name " -n -s SYMBOLFILE")
+        gdb-many-windows t)
+
+
+  (add-hook 'gdb-mode-hook '(lambda()
+                             (setq comint-input-ring-file-name "~/.gdbhist")
+                             (comint-read-input-ring t)
+                             (setq comint-input-ring-size 1000)
+                             (setq comint-input-ignoredups t)))
+  (add-hook 'kill-buffer-hook 'comint-write-input-ring)
+
+
+  (defadvice gdb-send-item (before gdb-save-history first nil activate)
+    "write input ring on quit"
+
+    (if (equal (type-of item) 'string) ; avoid problems with some horrible, seemingly unprintable structures sent to this function..
+
+        (if (string-match "^q\\(u\\|ui\\|uit\\)?$" item)
+            (progn (comint-write-input-ring)
+                   (message "history file '%s' written" comint-input-ring-file-name))))))
 
 
 
