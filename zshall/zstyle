@@ -208,7 +208,7 @@ zstyle ':completion:*:email-ldap' command 'ldapsearch -w `get-imap-pass.py` -LLL
 
 
 
-zstyle ''
+# zstyle ''
 
 
 # And, my .ldaprc contains a `HOST host:port' line

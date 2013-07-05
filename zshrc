@@ -207,6 +207,15 @@ fi
         setopt MAGIC_EQUAL_SUBST
 # }}}
 
+
+# PATH variable
+path=( $path )
+
+fpath=( $fpath ~/.zshall/functions ~/.zshall/completion )
+
+
+
+
 # {{{ *Zstyle*
 [ -r ~/.zshall/zstyle ] && source ~/.zshall/zstyle
 # }}}
@@ -302,18 +311,13 @@ if [ -r ~/.LESS_TERMCAP ] ; then
     source ~/.LESS_TERMCAP
 fi
 
-# PATH variable
-path=(
-            $path
-        )
 
 # take mailbox from ~/.mutt/muttrc
 [ -r ~/.mutt/muttrc ] &&
-        mailpath=( ${(f)"$(sed -n \
+mailpath=( ${(f)"$(sed -n \
     's@^[[:space:]]*mailboxes[[:space:]]\+\(.*\)[[:space:]]*$@\1?new mail in ${fg_no_bold[cyan]}${_:t}${reset_color}@p'\
     ~/.mutt/muttrc | sed  s@\^\~@$HOME@)"} )
 
-        fpath=( $fpath ~/.zshall/functions )
 
 
 # If console, change some keymaps
@@ -410,6 +414,14 @@ chpwd() {
 [ -r ~/.zshall/tramp ] && source ~/.zshall/tramp
 # }}}
 
+
+
+# {{{ load all ~/.zshall/rc.d
+foreach f ( ~/.zshall/rc.d/*.zsh ) {
+    source $f
+}
+
+# }}}
 
 # {{{ For changing cursor to cyan still block.	  #
 if [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
