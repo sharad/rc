@@ -81,7 +81,7 @@
 	'gnus-display-x-face-in-from
       "{ echo \
 '/* Format_version=1, Width=48, Height=48, Depth=1, Valid_bits_per_item=16 */'\
-; uncompface; } | icontopbm | display -")))
+; uncompface; } | icontopbm | display -"))))
 
 
 ;; gnus-extra-headers

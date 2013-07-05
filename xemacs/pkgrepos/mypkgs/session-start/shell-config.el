@@ -126,19 +126,22 @@
 
   (defadvice tramp-open-connection-setup-interactive-shell
       (after start-oneliner last (p vec) disable)
-    (let* ((prefix (tramp-connection-prefix vec))
-           (file (tramp-connection-file vec))
-           (dir (if (file-directory-p file)
-                    file
-                    (file-name-directory file)))
-           (onelinerbuf (make-oneliner-shell-buffer-name dir)))
-      (save-window-excursion
-        (unless (member prefix oneliners-list)
-          (push prefix oneliners-list)
-          (oneliner-for-dir dir))
-        (if (bufferp onelinerbuf)
-            (with-current-buffer onelinerbuf
-              (oneliner-tramp-send-cd dir)))))
+    ;; see function tramp-sh-file-name-handler in tramp-sh.el
+    (unless (and tramp-locked (not tramp-locker)) ;; (or tramp-locked tramp-locker)
+      (let* ((prefix (tramp-connection-prefix vec))
+             (file (tramp-connection-file vec))
+             (dir (if (file-directory-p file)
+                      file
+                      (file-name-directory file)))
+             (onelinerbuf (make-oneliner-shell-buffer-name dir)))
+        (save-window-excursion
+          (unless (member prefix oneliners-list)
+            (push prefix oneliners-list)
+            (oneliner-for-dir dir))
+          (if (bufferp onelinerbuf)
+              (with-current-buffer onelinerbuf
+                (oneliner-tramp-send-cd dir))))))
+    (message "start-oneliner: tramp-locked %s tramp-locker %s" tramp-locked tramp-locker)
     ad-return-value)
 
   (add-hook 'sharad/enable-startup-inperrupting-feature-hook
