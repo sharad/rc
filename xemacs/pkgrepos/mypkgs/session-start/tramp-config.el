@@ -202,7 +202,7 @@
                                  (getenv "SSH_AGENT_PID" (selected-frame))))
               (not (shell-command-local-no-output "ssh-add -l < /dev/null")))
       (with-temp-buffer
-        (let (default-directory "~/")
+        (let ((default-directory "~/"))
           (find-file-noselect (or (plist-get (car auth-sources) :source)
                                   "~/.authinfo.gpg"))))
       (update-ssh-agent-1)))

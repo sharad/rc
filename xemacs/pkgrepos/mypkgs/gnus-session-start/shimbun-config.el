@@ -26,15 +26,17 @@
 
 
 
-(add-to-list 'shimbun-rss-blogs-group-url-regexp
-             '("OSNews" "http://www.osnews.com/files/recent.xml"))
+(deh-require (and shimbun sb-rss-blogs)
 
-(add-to-list 'shimbun-rss-blogs-group-url-regexp
-             '("LinuxToday" "http://feedproxy.google.com/linuxtoday/linux"))
+  (add-to-list 'shimbun-rss-blogs-group-url-regexp
+               '("OSNews" "http://www.osnews.com/files/recent.xml"))
+
+  (add-to-list 'shimbun-rss-blogs-group-url-regexp
+               '("LinuxToday" "http://feedproxy.google.com/linuxtoday/linux"))
 
 
-(add-to-list 'shimbun-rss-blogs-group-url-regexp
-             '("NDTV" "http://feeds2.feedburner.com/NdtvNews-TopStories"))
+  (add-to-list 'shimbun-rss-blogs-group-url-regexp
+               '("NDTV" "http://feeds2.feedburner.com/NdtvNews-TopStories")))
 
 (setq shimbun-atom-hash-group-path-alist
       '(("LinuxToday" "http://feedproxy.google.com/linuxtoday/linux" t)

@@ -40,6 +40,7 @@
   ;; automatically.
 
   (require 'mm-decode)
+  (require 'mm-util)
 
   (defun diary-from-outlook-gnus-safe ()
     (ignore-errors

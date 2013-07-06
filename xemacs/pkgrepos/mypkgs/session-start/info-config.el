@@ -331,6 +331,12 @@
       '("/usr/share/info/emacs-snapshot"
         "/usr/share/info/emacs-23/"))
 
+(deh-require-maybe (and info gnus-config)
+  (if (featurep 'xemacs)
+      (add-to-list 'Info-directory-list (expand-file-name "../texi" gnus-lib-path))
+      (add-to-list 'Info-default-directory-list (expand-file-name "../texi" gnus-lib-path))))
+
+
 
 
 
