@@ -125,7 +125,7 @@
 Assumes it has the same name, but without an extension"
     (interactive "P")
     (let* ((file
-            (or buffer-file-name
+            (or ;; buffer-file-name
                 (let ((tf (make-temp-file (symbol-name major-mode) nil ".c")))
                   (write-region nil nil tf)
                   tf)))
@@ -136,7 +136,8 @@ Assumes it has the same name, but without an extension"
         (sleep-for 0 1000)
         (if (file-exists-p exe)
             (progn
-              (unless buffer-file-name (delete-file file))
+              ;; (unless buffer-file-name (delete-file file))
+              (delete-file file)
               (shell-command exe output output)
               (if (bufferp (get-buffer output))
                   (switch-to-buffer-other-window output))

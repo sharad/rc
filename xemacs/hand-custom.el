@@ -130,6 +130,7 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(background "blue")
+ '(family "DejaVu Sans Mono")
  '(etask-face-day-marker ((((class color)) (:foreground "white"))))
  '(etask-face-normaltask ((((class color)) (:foreground "white"))))
  '(etask-face-normaltaskname-behind-schedule ((((class color)) (:foreground "white" :weight bold))))
