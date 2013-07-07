@@ -1,8 +1,8 @@
 !  Emacs (like I ever use it - but the info might be worthwhile if I do)
 
 !emacs*Background: DarkSlateGray
-emacs*Background: black
-! emacs*Background: DarkSlateGray
+!emacs*Background: black
+!emacs*Background: DarkSlateGray
 !emacs*Foreground: Wheat
 !emacs*Foreground: white
 !emacs*Foreground: FloralWhite

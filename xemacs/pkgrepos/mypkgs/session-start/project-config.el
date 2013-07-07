@@ -136,7 +136,7 @@
 
 
 (deh-require-maybe (progn
-                     perspective
+                     ;; perspective   ;; ecb bug
                      workspaces
                      ;; ide-skel
                      ))
