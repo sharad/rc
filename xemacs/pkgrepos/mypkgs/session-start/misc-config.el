@@ -484,5 +484,17 @@ The indirect buffer can have another major mode."
     ))
 
 
+(deh-section "General"
+
+  (defun general-disable-startup-setting ()
+    )
+
+  (defun general-enable-startup-setting ()
+    )
+
+  (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'general-enable-startup-setting)
+  (add-hook 'sharad/disable-startup-inperrupting-feature-hook 'general-disable-startup-setting))
+
+
 
 (provide 'misc-config)

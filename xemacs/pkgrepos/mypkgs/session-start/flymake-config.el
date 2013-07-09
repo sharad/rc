@@ -28,10 +28,28 @@
   (setq
    ;; http://stackoverflow.com/questions/2571436/emacs-annoying-flymake-dialog-box
    ;; flymake-gui-warnings-enabled nil       ;need to know.
-   flymake-gui-warnings-enabled t       ;need to know.
+   flymake-gui-warnings-enabled nil       ;need to know.
    flymake-run-in-place
    ;; https://github.com/illusori/emacs-flymake/issues/1
-   t))
+   t)
+
+  (deh-require-maybe warnings
+    ;; Overwrite flymake-display-warning so that no annoying dialog box is
+    ;; used.
+
+    ;; This version uses lwarn instead of message-box in the original version.
+    ;; lwarn will open another window, and display the warning in there.
+    (defun flymake-display-warning (warning)
+      "Display a warning to the user, using lwarn"
+      (lwarn 'flymake :warning warning))
+
+    ;; Using lwarn might be kind of annoying on its own, popping up windows and
+    ;; what not. If you prefer to recieve the warnings in the mini-buffer, use:
+    (defun flymake-display-warning (warning)
+      "Display a warning to the user, using lwarn"
+      (message warning))
+    )
+  )
 
 
 (provide 'flymake-config)

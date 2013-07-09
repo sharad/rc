@@ -37,6 +37,11 @@
 ;; Enable directory local variables with remote files. This facilitates both
 ;; the (dir-locals-set-class-variables ...)(dir-locals-set-directory-class ...)
 ;; and the dir-locals.el approaches.
+
+
+
+(require 'dir-locals)
+
 (defadvice hack-dir-local-variables (around my-remote-dir-local-variables)
   "Allow directory local variables with remote files, by temporarily redefining
      `file-remote-p' to return nil unconditionally."
@@ -44,6 +49,13 @@
     ad-do-it))
 
 (ad-activate 'hack-dir-local-variables)
+
+
+;; As of Emacs 24.3, you can set the variable
+;; ‘enable-remote-dir-locals’ to apply such values on remote files. If
+;; you’re using an earlier version of Emacs, read on:
+
+(setq enable-remote-dir-locals t)
 
 (dir-locals-set-class-variables
  'plone-core

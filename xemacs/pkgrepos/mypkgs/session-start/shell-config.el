@@ -124,6 +124,7 @@
   ;;       (tramp-connection-file vec)))))
 
 
+(when nil
   (defadvice tramp-open-connection-setup-interactive-shell
       (after start-oneliner last (p vec) disable)
     ;; see function tramp-sh-file-name-handler in tramp-sh.el
@@ -155,7 +156,7 @@
     (ad-remove-advice 'tramp-open-connection-setup-interactive-shell 'after 'start-oneliner)
     (ad-update 'tramp-open-connection-setup-interactive-shell)
     (ad-activate 'tramp-open-connection-setup-interactive-shell)))
-
+)
 ;; checkout: http://snarfed.org/why_i_run_shells_inside_emacs
 
 
