@@ -580,14 +580,18 @@ Also returns nil if pid is nil."
   (defvar save-all-sessions-auto-save-time (current-time) "")
   ;; (defun save-desktop-auto-save ()
   (defun save-all-sessions-auto-save (&optional force)
+    "Save elscreen frame, desktop, and session time to time
+to restore in case of sudden emacs crash."
     (when (or
            force
            (> (float-time (time-since save-all-sessions-auto-save-time)) 600))
       (setq save-all-sessions-auto-save-time (current-time))
       (condition-case e
           (progn
+            (save-all-frames-session)
             (my-desktop-save)
-            (session-vc-save-session))
+            (session-vc-save-session)
+            (message "Save frame desktop and session."))
         ('error
          (progn
            ;; make after 2 errors.
@@ -624,24 +628,37 @@ Also returns nil if pid is nil."
     "Restore a saved emacs session."
     (interactive)
     (let ((enable-local-eval t                ;query
-           ))
+            )
+          (flymake-run-in-place nil)
+          (show-error (called-interactively-p 'interactive)))
       (setq debug-on-error t)
-      (message "in desktop-session-restore")
+      (message "in sharad/desktop-session-restore")
       (if (sharad/desktop-saved-session)
           (progn
-            (message "desktop-session-restore")
-            (condition-case e
+            (message "sharad/desktop-session-restore")
+            (if show-error
+
                 (when (desktop-vc-read *desktop-save-filename*)
-                  ;; (add-hook 'session-before-save-hook 'my-desktop-save)
-                  (add-hook 'auto-save-hook 'save-all-sessions-auto-save)
-                  (message "Added my-desktop-save to session-before-save-hook and\nsave-desktop-auto-save to auto-save-hook"))
-              ('error
-               (message "Error in desktop-read: %s\n not adding my-desktop-save to session-before-save-hook and\nsave-desktop-auto-save to auto-save-hook" e)))
+                      ;; (add-hook 'session-before-save-hook 'my-desktop-save)
+                      (add-hook 'auto-save-hook 'save-all-sessions-auto-save)
+                      (message "Added my-desktop-save to session-before-save-hook and\nsave-desktop-auto-save to auto-save-hook"))
+
+                (condition-case e
+                    (when (desktop-vc-read *desktop-save-filename*)
+                      ;; (add-hook 'session-before-save-hook 'my-desktop-save)
+                      (add-hook 'auto-save-hook 'save-all-sessions-auto-save)
+                      (message "Added my-desktop-save to session-before-save-hook and\nsave-desktop-auto-save to auto-save-hook"))
+                  ('error
+                   ;; (message "Error in desktop-read: %s\n not adding my-desktop-save to session-before-save-hook and\nsave-all-sessions-auto-save to auto-save-hook" e)
+                   (message "sharad/desktop-session-restore: Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
+                   (message "sharad/desktop-session-restore: Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e)))
+
+                )
             t)
           (message "No desktop found."))
       (when t ;(y-or-n-p "Do you want to set session of frame? ")
         (restore-frame-session (selected-frame)))
-      (message "leaving desktop-session-restore")))
+      (message "leaving sharad/desktop-session-restore")))
 
   (add-hook 'session-before-save-hook
             'my-desktop-save)
@@ -768,7 +785,7 @@ Using it may cause conflicts.  Use it anyway? " owner)))))
 
   (add-hook 'after-init-hook 'session-initialize)
   ;; (add-hook 'kill-emacs-hook 'session-vc-save-session)
-  (add-hook 'kill-emacs-hook 'save-all-sessions-auto-save)
+  (add-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
 
   (setq session-initialize t)
 
