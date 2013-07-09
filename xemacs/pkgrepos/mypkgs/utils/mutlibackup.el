@@ -32,7 +32,7 @@
 
 (defvar mutlibackup-locs nil "List of locations to backup file.")
 
-(defun multibackup-file (locations)
+(defun multibackup-file (file locations)
   )
 
 
