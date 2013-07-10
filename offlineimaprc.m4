@@ -47,6 +47,8 @@ holdconnectionopen = no
 nametrans = lambda foldername: re.sub('^', 'Gmail/', re.sub('^\[[Gmail\]]/Sent Mail$', 'sent-mail', foldername))
 folderfilter = lambda foldername: foldername in  [['INBOX', 'official', '[Gmail]/Sent Mail']]
 realdelete = no
+## https://bugs.launchpad.net/ubuntu/+source/offlineimap/+bug/1015692
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
 
 [[Account OfficePlain]]
 localrepository =  OfficeLocal

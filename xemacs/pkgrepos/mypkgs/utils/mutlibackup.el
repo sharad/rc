@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-
+(require 'rcs-backup)
 
 (define-minor-mode mutlibackup-mode ())
 

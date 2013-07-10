@@ -32,8 +32,8 @@
 
 
 
-;; (deh-section "ecb"
-(when nil
+(deh-section "ecb"
+;;(when nil
   (deh-require-maybe semantic
 
     (deh-require-maybe imenu
@@ -53,7 +53,9 @@
 
 
     ;; if you want to enable support for gnu global
-    (when (cedet-gnu-global-version-check t)
+    (when (and
+           (fboundp 'cedet-gnu-global-version-check)
+           (cedet-gnu-global-version-check t))
       (semanticdb-enable-gnu-global-databases 'c-mode)
       (semanticdb-enable-gnu-global-databases 'c++-mode))
 
@@ -112,8 +114,8 @@
     ))
 
 
-;; (deh-section "https://gist.github.com/alexott/3968635"
-(when nil
+(deh-section "https://gist.github.com/alexott/3968635"
+;;(when nil
   ;;; cedet-1.1-startup.el --- Working configuration for CEDET 1.1 & below
 
   ;; Copyright (C) Alex Ott
