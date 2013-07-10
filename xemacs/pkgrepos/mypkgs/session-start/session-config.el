@@ -365,7 +365,7 @@
                 ;; (add-hook 'after-make-frame-functions 'set-this-frame-session-location t)
                 (add-hook 'after-make-frame-functions 'restore-frame-session t)
                 (add-hook 'delete-frame-functions 'save-frame-session)
-                (add-hook 'kill-emacs-hook 'save-all-frames-session))
+                ;; (add-hook 'kill-emacs-hook 'save-all-frames-session)) ; done in save-all-sessions-auto-save
               t)
 
   (testing
@@ -569,13 +569,10 @@ Also returns nil if pid is nil."
               (desktop-vc-save *desktop-save-filename*)
               ;; (desktop-save-in-desktop-dir)
               (progn
-                (remove-hook 'session-before-save-hook 'my-desktop-save)
-                (remove-hook 'auto-save-hook 'save-desktop-auto-save)
+                (remove-hook 'auto-save-hook 'save-all-sessions-auto-save)
                 (error "You %d are not the desktop owner %d. removed my-desktop-save from auto-save-hook."
                        (emacs-pid) owner))))))
 
-  (testing
-   (remove-hook 'auto-save-hook 'my-desktop-save))
 
   (defvar save-all-sessions-auto-save-time (current-time) "")
   ;; (defun save-desktop-auto-save ()
@@ -589,8 +586,8 @@ to restore in case of sudden emacs crash."
       (condition-case e
           (progn
             (save-all-frames-session)
-            (my-desktop-save)
             (session-vc-save-session)
+            (my-desktop-save)
             (message "Save frame desktop and session."))
         ('error
          (progn
@@ -623,6 +620,19 @@ to restore in case of sudden emacs crash."
             (message "Session not saved."))
         (desktop-vc-save *desktop-save-filename*)))
 
+  (defun sharad/disable-session-saving ()
+    (interactive)
+    (remove-hook 'auto-save-hook 'save-all-sessions-auto-save)
+    (remove-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
+    (message "Removed save-all-sessions-auto-save  from auto-save-hook kill-emacs-hook"))
+
+
+  (defun sharad/enable-session-saving ()
+    (interactive)
+    (add-hook 'auto-save-hook 'save-all-sessions-auto-save)
+    (add-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
+    (message "Added save-all-sessions-auto-save  from auto-save-hook kill-emacs-hook"))
+
   ;; use session-restore to restore the desktop manually
   (defun sharad/desktop-session-restore ()
     "Restore a saved emacs session."
@@ -640,18 +650,16 @@ to restore in case of sudden emacs crash."
 
                 (when (desktop-vc-read *desktop-save-filename*)
                       ;; (add-hook 'session-before-save-hook 'my-desktop-save)
-                      (add-hook 'auto-save-hook 'save-all-sessions-auto-save)
-                      (message "Added my-desktop-save to session-before-save-hook and\nsave-desktop-auto-save to auto-save-hook"))
+                  (sharad/enable-session-saving))
 
                 (condition-case e
                     (when (desktop-vc-read *desktop-save-filename*)
                       ;; (add-hook 'session-before-save-hook 'my-desktop-save)
-                      (add-hook 'auto-save-hook 'save-all-sessions-auto-save)
-                      (message "Added my-desktop-save to session-before-save-hook and\nsave-desktop-auto-save to auto-save-hook"))
-                  ('error
-                   ;; (message "Error in desktop-read: %s\n not adding my-desktop-save to session-before-save-hook and\nsave-all-sessions-auto-save to auto-save-hook" e)
-                   (message "sharad/desktop-session-restore: Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
-                   (message "sharad/desktop-session-restore: Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e)))
+                      (sharad/enable-session-saving))
+t                  ('error
+                    ;; (message "Error in desktop-read: %s\n not adding my-desktop-save to session-before-save-hook and\nsave-all-sessions-auto-save to auto-save-hook" e)
+                    (message "sharad/desktop-session-restore: Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
+                    (message "sharad/desktop-session-restore: Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e)))
 
                 )
             t)
@@ -785,7 +793,7 @@ Using it may cause conflicts.  Use it anyway? " owner)))))
 
   (add-hook 'after-init-hook 'session-initialize)
   ;; (add-hook 'kill-emacs-hook 'session-vc-save-session)
-  (add-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
+
 
   (setq session-initialize t)
 
