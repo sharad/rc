@@ -484,6 +484,17 @@ The indirect buffer can have another major mode."
     ))
 
 
+
+(deh-require-maybe point-stack
+  (global-set-key-if-unbind '[(f5)] 'point-stack-push)
+  (global-set-key-if-unbind '[(f6)] 'point-stack-pop)
+  (global-set-key-if-unbind '[(f7)] 'point-stack-forward-stack-pop)
+
+  (global-set-key-if-unbind (kbd "s-right") 'point-stack-push)
+  (global-set-key-if-unbind (kbd "s-left") 'point-stack-pop)
+  (global-set-key-if-unbind (kbd "s-left") 'point-stack-forward-stack-pop))
+
+
 (deh-section "General"
 
   (defun general-disable-startup-setting ()
@@ -494,6 +505,9 @@ The indirect buffer can have another major mode."
 
   (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'general-enable-startup-setting)
   (add-hook 'sharad/disable-startup-inperrupting-feature-hook 'general-disable-startup-setting))
+
+
+
 
 
 

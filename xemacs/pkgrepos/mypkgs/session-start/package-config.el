@@ -161,7 +161,7 @@
       (loop for p in '(color-theme		; nice looking emacs
                        color-theme-tango	; check out color-theme-solarized
                        )
-           do (add-to-list 'el-get-sources p)))
+         do (add-to-list 'el-get-sources p)))
 
     ;;
     ;; Some recipes require extra tools to be installed

@@ -32,16 +32,44 @@
 (deh-require-maybe find-file-in-project
   ;; If non-nil, this function is called to determine the project root.
   (setq
-   ffip-project-root-function nil
+   ;; ffip-project-root-function nil
+   ffip-project-root-function (lambda () (let ((dir (ido-read-directory-name "dir: " default-directory)))
+                                           (message "dir: %s" dir)
+                                           dir))
    ;; define suitable functon for it.
-   ffip-project-root "~/"
-   ffip-patterns (append '("*.cpp" "*.h") ffip-patterns)
-   )
+   ;; ffip-project-root "~/"
+   ffip-project-root nil
+   ffip-patterns (append '("*.cpp" "*.h" "*.c") ffip-patterns))
 
   (defun ffip-set-project-root ()
     (interactive)
     (setq
-     ffip-project-root (ido-read-directory-name "FFip Root Dir: " ffip-project-root))))
+     ffip-project-root (ido-read-directory-name "FFip Root Dir: " ffip-project-root)))
+
+
+  (defun ffip-project-files ()          ;make it for tramp files
+    "Return an alist of all filenames in the project and their path.
+
+Files with duplicate filenames are suffixed with the name of the
+directory they are found in so that they are unique."
+    (let ((file-alist nil)
+          (root (expand-file-name (or ffip-project-root (ffip-project-root)
+                                      (error "No project root found")))))
+      (mapcar (lambda (file)
+                (if ffip-full-paths
+                    (cons (substring (expand-file-name file) (length root))
+                          (expand-file-name file))
+                    (let ((file-cons (cons (file-name-nondirectory file)
+                                           (expand-file-name file))))
+                      (when (assoc (car file-cons) file-alist)
+                        (ffip-uniqueify (assoc (car file-cons) file-alist))
+                        (ffip-uniqueify file-cons))
+                      (add-to-list 'file-alist file-cons)
+                      file-cons)))
+              (split-string (shell-command-to-string
+                             (format "find %s -type f \\( %s \\) %s | head -n %s"
+                                     root (ffip-join-patterns)
+                                     ffip-find-options ffip-limit)))))))
 
 (deh-require-maybe lusty-explorer
 
