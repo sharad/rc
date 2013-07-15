@@ -130,6 +130,17 @@
   )
 
 
+;;
+
+;; (deh-section "Font"
+;;   (set-face-attribute 'default nil :font "Kacst")
+
+;;   (set-default-font "Mono-10")
+;;   (set-default-font "KacstNaskh")
+;;   (set-face-attribute 'default nil :font "")
+
+;;   )
+
 
 ;; (length (font-family-list))
 

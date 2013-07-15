@@ -28,3 +28,9 @@
 ! emacs*font: 9x15
 ! emacs.geometry: 85x40
 emacs*ttyModes:         intr ^c erase  susp ^@ dsusp ^@ kill ^u eof ^d
+
+Emacs.FontBackend: xft
+emacs.FontBackend: xft
+
+
+

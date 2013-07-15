@@ -51,5 +51,5 @@
 
 
 
-(provide 'gnumisc-config)
+(provide 'gnusmisc-config)
 ;;; gnumisc-config.el ends here
