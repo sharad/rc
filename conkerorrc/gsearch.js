@@ -61,32 +61,118 @@ var google_search_results_modality = {
 };
 
 
-function correctlink(doc) {
-    while(anchor = doc.evaluate("//a[@class='l']|//a[@class='l vst']|//a[@class='gs-title']|//h3[@class='r']/a",
-                              doc, null, XPathResult.ANY_TYPE, null).iterateNext()) {
-        anchor.href = "http://asdfsdf.com";
-        doc.alert(anchor.href);
+function docEvaluateArray (expr, doc, context, resolver) {
+    var i, result, a = [];
+    doc = doc || (context ? context.ownerDocument : document);
+    resolver = resolver || null;
+    context = context || doc;
+
+    result = doc.evaluate(expr, context, resolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    for(i = 0; i < result.snapshotLength; i++) {
+        a[i] = result.snapshotItem(i);
     }
+    return a;
+}
+
+// while(anchor = doc.evaluate("//a[@class='l']|//a[@class='l vst']|//a[@class='gs-title']|//h3[@class='r']/a", doc, null, XPathResult.ANY_TYPE, null).iterateNext()) {
+// get_recent_conkeror_window().alert("hello world");
+// void(correctlink(buffer.document));
+
+// var iterator = document.evaluate('//phoneNumber', documentNode, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null );
+// var iterator = doc.evaluate("//a", doc, null, XPathResult.ANY_TYPE, null);
+
+
+// while(anchor = doc.evaluate("//a", doc, null, XPathResult.ANY_TYPE, null).iterateNext()) {
+//     anchor.href = "http://asdfsdf.com";
+//     get_recent_conkeror_window().alert("hello world " + anchor);
+// }
+//        dump( 'Error: Document tree modified during iteration ' + e );
+//     var iterator = doc.evaluate("//a", doc, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
+
+//get_recent_conkeror_window().alert("HELLO WORLD11");
+
+//             get_recent_conkeror_window().alert( thisNode.textContent );
+//         get_recent_conkeror_window().alert("hello world22" + e);
+
+
+function correctlink(buffer) {
+    get_recent_conkeror_window().alert("hello world22" + docEvaluateArray);
+
+    var els = docEvaluateArray('//a');
+
+
+}
+
+// var iterator = doc.evaluate("//a[@class='l']|//a[@class='l vst']|//a[@class='gs-title']|//h3[@class='r']/a", doc, null, 0, null);
+
+
+// http://www.google.co.in/url?q=http://mozdev.org/pipermail/conkeror/2013-February/003215.html&sa=U&ei=hwrkUb-aEs-fkgXT3YCoDA&ved=0CC0QFjAF&sig2=c3sGHnf4nh34_09TI3Acdg&usg=AFQjCNFgyxoyeeqfRx0WkeQxPHOEJlvjiw
+// return link.replace("/url\?q=(.+)&/", "/\1/.");
+//     return (unescape(link.match("url?q=([^&]*)")[1]));
+// link.match("url\?q=([^&]*)") ;
+
+// var x = (link.match("url\?q=([^&]*)")[1]);
+        // var x =rredirect.match(url);
+
+    // var rredirect = /\/url\?(?:url|q)=([^&]*)/i;
+    // if (rredirect.test(link)) {
+    //     get_recent_conkeror_window().alert("hello world22 ");
+    // } else
+    //     var x = link;
+
+    return link.match(, "sdfdsf");
+
+
+function cleanlink(link) {
+
+    var re1 = new RegExp("\/url\?(?:url|q)=([^&]*)");
+    if (re1.test(link))
+        get_recent_conkeror_window().alert("matched ... ");
+
+    return link;
+
+}
+
+function cleanpage(buffer) {
+    doc = buffer.document;
+
+    var iterator = doc.evaluate("//a", doc, null, 0, null);
+
+    try {
+        var thisNode = iterator.iterateNext();
+        while (thisNode) {
+            thisNode = iterator.iterateNext();
+            thisNode.href = cleanlink(thisNode.href)
+        }
+    }
+    catch (e) {
+    }
+    get_recent_conkeror_window().alert("hello world22");
+
 }
 
 
 define_page_mode("google-search-results-mode",
-    build_url_regexp($domain = "google",
-                     $allow_www = true,
-                     $path = /search\?|cse\?/,
-                     $tlds = ["com", "com.au", "co.uk", "de", "dk", "es",
-                              "fr", "it", "no", "se", "uk", "co.in", "in"]),
-    function enable (buffer) {
 
-        // buffer.alert("asfsdf");
-        correctlink(buffer.document);
-        for each (var c in google_search_results_link_commands) {
-            buffer.default_browser_object_classes[c] =
-                browser_object_google_search_results_links;
-        }
-        buffer.content_modalities.push(google_search_results_modality);
-    },
-    function disable (buffer) {
+                 build_url_regexp($domain = "google",
+                                  $allow_www = true,
+                                  $path = /search\?|cse\?/,
+                                  $tlds = ["com", "com.au", "co.uk", "de", "dk", "es", "fr", "it", "no", "se", "uk", "co.in", "in"]),
+
+                 function enable (buffer) {
+
+
+                     for each (var c in google_search_results_link_commands) {
+                         buffer.default_browser_object_classes[c] =
+                             browser_object_google_search_results_links;
+                     }
+                     buffer.content_modalities.push(google_search_results_modality);
+                     add_hook.call(buffer, "buffer_dom_content_loaded_hook",
+                                   cleanpage);
+
+                 },
+
+                 function disable (buffer) {
         for each (var c in google_search_results_link_commands) {
             delete buffer.default_browser_object_classes[c];
         }
@@ -94,8 +180,10 @@ define_page_mode("google-search-results-mode",
         if (i > -1)
             buffer.content_modalities.splice(i, 1);
     },
-    $display_name = "Google Search Results");
+
+                 $display_name = "Sharad1 -- Google Search Results");
 
 page_mode_activate(google_search_results_mode);
 
 provide("google-search-results");
+

@@ -649,15 +649,12 @@ to restore in case of sudden emacs crash."
             (if show-error
 
                 (when (desktop-vc-read *desktop-save-filename*)
-                      ;; (add-hook 'session-before-save-hook 'my-desktop-save)
                   (sharad/enable-session-saving))
 
                 (condition-case e
                     (when (desktop-vc-read *desktop-save-filename*)
-                      ;; (add-hook 'session-before-save-hook 'my-desktop-save)
                       (sharad/enable-session-saving))
 t                  ('error
-                    ;; (message "Error in desktop-read: %s\n not adding my-desktop-save to session-before-save-hook and\nsave-all-sessions-auto-save to auto-save-hook" e)
                     (message "sharad/desktop-session-restore: Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
                     (message "sharad/desktop-session-restore: Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e)))
 

@@ -31,6 +31,7 @@ emacs*ttyModes:         intr ^c erase  susp ^@ dsusp ^@ kill ^u eof ^d
 
 Emacs.FontBackend: xft
 emacs.FontBackend: xft
-
+Xft.dpi: 96
+Xft.hinting: None
 
 

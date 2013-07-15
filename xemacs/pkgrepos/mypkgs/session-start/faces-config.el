@@ -125,7 +125,7 @@
   ;; Keyboard shortcut is C-u C-x =
 
 
-  ;; M-x describe-face
+  ;; C-u M-x describe-face
 
   )
 
@@ -133,11 +133,17 @@
 ;;
 
 ;; (deh-section "Font"
-;;   (set-face-attribute 'default nil :font "Kacst")
+;;   (set-face-attribute 'default nil :font "KacstNaskh")
 
 ;;   (set-default-font "Mono-10")
 ;;   (set-default-font "KacstNaskh")
-;;   (set-face-attribute 'default nil :font "")
+;;   (set-face-attribute 'default nil :font "KacstNaskh")
+;;   (set-face-attribute 'default nil :font "Mono-10")
+
+;; (custom-set-faces '(family "DejaVu Sans Mono"))
+
+;; (custom-set-faces '(family "KacstNaskh"))
+
 
 ;;   )
 
