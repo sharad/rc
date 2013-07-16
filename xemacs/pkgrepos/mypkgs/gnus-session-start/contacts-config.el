@@ -31,6 +31,8 @@
 
   (defun bbdb/gnus-pop-up-bbdb-buffer-for-some-time ()
     (bbdb/gnus-pop-up-bbdb-buffer)
+    ;; (with-selected-window (get-buffer-window gnus-article-buffer)
+    ;;   (gnus-summary-goto-subject (cdr gnus-article-current)))
     (let ((w (get-buffer-window "*BBDB*")))
       (when w
         ;; (run-at-time "4 sec" nil #'delete-window w))))

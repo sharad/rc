@@ -104,6 +104,7 @@ function correctlink(buffer) {
 }
 
 // var iterator = doc.evaluate("//a[@class='l']|//a[@class='l vst']|//a[@class='gs-title']|//h3[@class='r']/a", doc, null, 0, null);
+// var iterator = doc.evaluate("//a", doc, null, 0, null);
 
 
 // http://www.google.co.in/url?q=http://mozdev.org/pipermail/conkeror/2013-February/003215.html&sa=U&ei=hwrkUb-aEs-fkgXT3YCoDA&ved=0CC0QFjAF&sig2=c3sGHnf4nh34_09TI3Acdg&usg=AFQjCNFgyxoyeeqfRx0WkeQxPHOEJlvjiw
@@ -120,32 +121,36 @@ function correctlink(buffer) {
     // } else
     //     var x = link;
 
-    return link.match(, "sdfdsf");
+    // return link.match(, "sdfdsf");
+    // get_recent_conkeror_window().alert("test ... " + link);
 
+    // var re1 = new RegExp('/url\?(?:url|q)=([^&]*)');
+    // if (re1.test(link))
+    //     get_recent_conkeror_window().alert("matched ... ");
 
 function cleanlink(link) {
 
-    var re1 = new RegExp("\/url\?(?:url|q)=([^&]*)");
-    if (re1.test(link))
-        get_recent_conkeror_window().alert("matched ... ");
-
-    return link;
-
+    return "http://abcd.com";
 }
 
 function cleanpage(buffer) {
-    doc = buffer.document;
+    var doc = buffer.document;
 
-    var iterator = doc.evaluate("//a", doc, null, 0, null);
+    var count = 0;
+
+    var iterator = doc.evaluate("//a[@class='l']|//a[@class='l vst']|//a[@class='gs-title']|//h3[@class='r']/a", doc, null, 0, null);
 
     try {
         var thisNode = iterator.iterateNext();
         while (thisNode) {
+            if (thisNode.href)
+                thisNode.href = "http://abcd.com";
             thisNode = iterator.iterateNext();
-            thisNode.href = cleanlink(thisNode.href)
+            count++;
         }
     }
     catch (e) {
+        get_recent_conkeror_window().alert("error: " + count + " e:" + e );
     }
     get_recent_conkeror_window().alert("hello world22");
 
@@ -169,7 +174,8 @@ define_page_mode("google-search-results-mode",
                      buffer.content_modalities.push(google_search_results_modality);
                      add_hook.call(buffer, "buffer_dom_content_loaded_hook",
                                    cleanpage);
-
+                     add_hook.call(buffer, "content_buffer_finished_loading_hook",
+                                   cleanpage);
                  },
 
                  function disable (buffer) {

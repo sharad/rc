@@ -45,7 +45,7 @@
  gnus-completing-read-function 'gnus-ido-completing-read
  mail-user-agent 'gnus-user-agent
  read-mail-command 'gnus
- ;; gnus-treat-display-smileys nil
+ ;;gnus-treat-display-smileys nil
  )
 (autoload 'sendmail-send-it "sendmail")
 

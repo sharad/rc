@@ -138,7 +138,8 @@
 
   (defun forgive/them ()
     (interactive)
-    (develock-mode -1)
+    (if (assq major-mode develock-keywords-alist)
+        (develock-mode -1))
     (highlight-changes-visible-mode -1)))
 
 

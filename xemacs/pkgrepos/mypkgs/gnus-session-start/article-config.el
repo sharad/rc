@@ -97,7 +97,36 @@
 	     (gnus-article-date-local)              ; will actually convert timestamp from other timezones to yours
              (gnus-article-strip-trailing-space)
 ;;              (gnus-article-fill-cited-article)
-             ))
+            ;; (with-selected-window (get-buffer-window gnus-article-buffer)
+            ;;   (gnus-summary-goto-subject (cdr gnus-article-current)))
+            ;; (select-window (get-buffer-window gnus-summary-buffer))
+            ))
+
+(when nil ; not working
+
+  (defadvice gnus-summary-select-article (after goto-article-subject activate)
+    (with-selected-window (get-buffer-window gnus-article-buffer)
+      (gnus-summary-goto-subject (cdr gnus-article-current))))
+
+  (ad-disable-advice 'gnus-summary-select-article 'after 'goto-article-subject)
+  (ad-remove-advice 'gnus-summary-select-article 'after 'goto-article-subject)
+  (ad-update 'gnus-summary-select-article)
+
+  (defadvice gnus-summary-scroll-up (after goto-article-subject activate)
+    (with-selected-window (get-buffer-window gnus-article-buffer)
+      (gnus-summary-goto-subject (cdr gnus-article-current))))
+
+  (ad-disable-advice 'gnus-summary-scroll-up 'after 'goto-article-subject)
+  (ad-remove-advice 'gnus-summary-scroll-up 'after 'goto-article-subject)
+  (ad-update 'gnus-summary-scroll-up))
+
+(unless (fboundp 'gnus-article-goto-subject)
+  (defun gnus-article-goto-subject ()
+    (interactive)
+    (with-selected-window
+        (get-buffer-window gnus-article-buffer)
+      (gnus-summary-goto-subject
+       (cdr gnus-article-current)))))
 
 
 ;;}}
