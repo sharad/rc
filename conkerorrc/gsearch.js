@@ -120,35 +120,42 @@ function correctlink(buffer) {
     // } else
     //     var x = link;
 
-    return link.match(, "sdfdsf");
+    // return link.match(, "sdfdsf");
 
 
 function cleanlink(link) {
-
-    var re1 = new RegExp("\/url\?(?:url|q)=([^&]*)");
-    if (re1.test(link))
-        get_recent_conkeror_window().alert("matched ... ");
-
+    var urlre1 = new RegExp(/.+url\?q=([^&]+).+/);
+    if (urlre1.test(link))
+        return link.replace(urlre1, "$1");
     return link;
-
 }
 
 function cleanpage(buffer) {
-    doc = buffer.document;
+    var doc = buffer.document;
+    var links = [];
 
-    var iterator = doc.evaluate("//a", doc, null, 0, null);
+    // var iterator = doc.evaluate("//a", doc, null, 0, null);
+    var iterator = doc.evaluate("//a[@class='l']|//a[@class='l vst']|//a[@class='gs-title']|//h3[@class='r']/a", doc, null, 0, null);
 
     try {
         var thisNode = iterator.iterateNext();
-        while (thisNode) {
+        while (thisNode != null) {
+            // get_recent_conkeror_window().alert("matched ... " + thisNode.href);
+            links.push(thisNode);
             thisNode = iterator.iterateNext();
-            thisNode.href = cleanlink(thisNode.href)
         }
     }
     catch (e) {
+        get_recent_conkeror_window().alert("error: " + e);
     }
-    get_recent_conkeror_window().alert("hello world22");
-
+    try {
+        for(var l in links) {
+            // links[l].href = "http://www.osnews.com";
+            links[l].href = cleanlink(links[l].href);
+        }
+    } catch (e) {
+        get_recent_conkeror_window().alert("error: " + e);
+    }
 }
 
 
