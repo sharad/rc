@@ -1,4 +1,4 @@
-;;; notmuch.el --- sadsa
+;;; notmuch-config.el --- sadsa
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -60,7 +60,7 @@
 
 
 (provide 'notmuch-config)
-;;; notmuch.el ends here
+;;; notmuch-config.el ends here
 
 (testing
  (setq x "<asfddsafdsf>")
