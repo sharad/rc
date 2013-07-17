@@ -139,3 +139,21 @@ require("noscript");
 // is defined, which will enable/disable javascript for the current
 // site/page after prompting for confirmation.
 
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////// find id attribute to get exact link.
+
+define_browser_object_class("id", null,
+    xpath_browser_object_handler("//*[@id]"),
+    $hint = "select search result");
+define_key(content_buffer_normal_keymap, "* x", "browser-object-id");

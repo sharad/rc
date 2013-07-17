@@ -129,9 +129,9 @@ function correctlink(buffer) {
     //     get_recent_conkeror_window().alert("matched ... ");
 
 function cleanlink(link) {
-    var urlre1 = new RegExp(/.+url\?q=([^&]+).+/);
-    if (urlre1.test(link))
-        return link.replace(urlre1, "$1");
+    var urlre = new RegExp(/.+url\?q=([^&]+).+/);
+    if (urlre.test(link))
+        return decodeURIComponent(link.replace(urlre, "$1"));
     return link;
 }
 
@@ -140,7 +140,11 @@ function cleanpage(buffer) {
     var links = [];
 
     // var iterator = doc.evaluate("//a", doc, null, 0, null);
-    var iterator = doc.evaluate("//a[@class='l']|//a[@class='l vst']|//a[@class='gs-title']|//h3[@class='r']/a", doc, null, 0, null);
+    var iterator = doc.evaluate("//a[@class='l']|//a[@class='l vst']|//a[@class='gs-title']|//h3[@class='r']/a|//span[@class='flc']/a|//div[@class='osl']/a",
+                                doc,
+                                null,
+                                Ci.nsIDOMXPathResult.ANY_TYPE, //XPathResult.ANY_TYPE,
+                                null);
 
     try {
         var thisNode = iterator.iterateNext();
@@ -193,7 +197,7 @@ define_page_mode("google-search-results-mode",
             buffer.content_modalities.splice(i, 1);
     },
 
-                 $display_name = "Sharad1 -- Google Search Results");
+                 $display_name = "Google Search Results");
 
 page_mode_activate(google_search_results_mode);
 
