@@ -128,6 +128,9 @@ function correctlink(buffer) {
     // if (re1.test(link))
     //     get_recent_conkeror_window().alert("matched ... ");
 
+
+// http://www.google.co.in/search?hl=en&q=draconian+definition&revid=2137190891&sa=X&ei=QaLnUf7aMavyiAeM54DwDw&ved=0CEcQ1QIoAQ
+
 function cleanlink(link) {
     var urlre = new RegExp(/.+url\?q=([^&]+).+/);
     if (urlre.test(link))

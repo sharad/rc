@@ -579,6 +579,7 @@ Also returns nil if pid is nil."
   (defun save-all-sessions-auto-save (&optional force)
     "Save elscreen frame, desktop, and session time to time
 to restore in case of sudden emacs crash."
+    (interactive "P")
     (when (or
            force
            (> (float-time (time-since save-all-sessions-auto-save-time)) 600))
