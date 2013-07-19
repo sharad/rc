@@ -201,7 +201,8 @@ interactive("delicious-post-sel",
                     '&tags='+
                     encodeURIComponent((yield I.minibuffer.read(
                                             $prompt = "tags (space delimited): ",
-                                            $completer = completer
+                                            $completer = completer,
+                                            $initial_value = tags + " " + read_from_x_primary_selection()
                                         )).replace(new RegExp(/\s+/g), ','))+
                     '&extended='+
                     encodeURIComponent((yield I.minibuffer.read(
@@ -369,7 +370,7 @@ interactive("delicious-post-link",
                     '&tags=' + encodeURIComponent((yield I.minibuffer.read(
                                                        $prompt = "tags (space delimited): ",
                                                        $completer = completer,
-                                                       $initial_value = tags
+                                                       $initial_value = tags + " " + read_from_x_primary_selection()
                                                    )).replace(new RegExp(/\s+/g), ',')) +
                     '&extended=' + encodeURIComponent((yield I.minibuffer.read($prompt = "extended description: "))) +
                     '&shared=' +

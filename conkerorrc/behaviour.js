@@ -78,6 +78,16 @@ define_key(content_buffer_normal_keymap, "K", "find-url-from-bookmark");
 ///////////////// Similarly bookmark ///////////////////////
 
 
+///////////////// find id attribute to get exact link. /////////////////
+
+define_browser_object_class("id", null,
+    xpath_browser_object_handler("//*[@id]"),
+    $hint = "select search result");
+define_key(content_buffer_normal_keymap, "* x", "browser-object-id");
+
+///////////////// find id attribute to get exact link. /////////////////
+
+
 
 /////////////////////////////////////////////////////////////
 
@@ -149,11 +159,3 @@ require("noscript");
 
 
 
-
-
-///////////////////////////// find id attribute to get exact link.
-
-define_browser_object_class("id", null,
-    xpath_browser_object_handler("//*[@id]"),
-    $hint = "select search result");
-define_key(content_buffer_normal_keymap, "* x", "browser-object-id");
