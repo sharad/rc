@@ -86,6 +86,7 @@ leave +0800
 
 at now + 10 minutes <<EOF
 ~/bin/mradio -c 6
+exit 0
 EOF
 
 

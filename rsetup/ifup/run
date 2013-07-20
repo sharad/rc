@@ -1,0 +1,13 @@
+#!/usr/bin/env zsh
+# give access to mpd
+
+
+
+[ -r ~/.rsetup/ifup/run.d/${HOST//.*} ] &&
+~/.rsetup/ifup/run.d/${HOST//.*}
+
+
+
+
+
+

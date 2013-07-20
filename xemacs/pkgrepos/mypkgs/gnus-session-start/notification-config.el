@@ -138,10 +138,10 @@
 ;;; Get messages automaticaly
 ;;;
 
-(if (xrequire 'gnus-demon)
-    (setq gnus-use-demon t)
-    (gnus-demon-add-handler 'gnus-group-get-new-news 3 2)
-    (gnus-demon-init))
+;; (if (xrequire 'gnus-demon)
+;;     (setq gnus-use-demon t)
+;;     (gnus-demon-add-handler 'gnus-group-get-new-news 3 2)
+;;     (gnus-demon-init))
 
 (when (xrequire 'gnus-demon)
   ;; (defvar gnus-scan-man-idle-timer
@@ -150,25 +150,34 @@
   ;;     (run-with-idle-timer gnus-scan-man-idle-interval nil 'hl-line-highlight-now))
   ;;   "Timer used to turn on `global-hl-line-mode' whenever Emacs is idle.")
 
-  (defun gnus-demon-scan-mail-and-news ()
-    (cancel-timer
-     (run-with-idle-timer 6 nil 'gnus-demon-scan-mail-and-news-now)))
+  (setq gnus-use-demon t)
 
-  (defun gnus-demon-scan-mail-and-news-now ()
+  ;; not being used
+  ;; (defun gnus-demon-scan-mail-and-news ()
+  ;;   (cancel-timer
+  ;;    (run-with-idle-timer 6 nil 'gnus-demon-scan-mail-and-news-now)))
+
+  (defun gnus-demon-scan-mail-and-news-now (&optional level)
     "Scan for new mail/news and update the *Group* buffer."
-    (when (gnus-alive-p)
-      (save-window-excursion
-        (save-excursion
-          (set-buffer gnus-group-buffer)
-          (gnus-group-get-new-news 3)))))
+    (let ((level (or level 3)))
+      (when (gnus-alive-p)
+        (message "gnus-demon-scan-mail-and-news-now %d" level)
+        (save-window-excursion
+          (save-excursion
+            (set-buffer gnus-group-buffer)
+            (gnus-group-get-new-news 3))))))
 
   (add-hook 'gnus-group-mode-hook 'gnus-demon-init)
+  (add-hook 'gnus-exit-gnus-hook 'gnus-demon-cancel)
 
   ;; Sort threads by the date of the root node.
   (setq gnus-thread-sort-functions `(gnus-thread-sort-by-date))
   ;; Initialize the Gnus daemon, check new mail every six minutes.
   ;; (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news 1 nil))
-  (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news-now 2 nil))
+  ;; (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news-now 2 nil)
+  (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news-now 10 2)
+
+  (gnus-demon-add-handler '(lambda () (gnus-demon-scan-mail-and-news-now 6)) 22 7))
 
 ;;}}
 
