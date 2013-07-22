@@ -72,3 +72,9 @@ else
     export VISUAL=$EDITOR
     export BROWSER="w3m"
 fi
+
+
+# {{{ *Functions*
+[ -r ~/.zshall/envfuns ] && source ~/.zshall/envfuns
+# }}}
+

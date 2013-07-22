@@ -53,6 +53,9 @@ function mplayer_radio() {
 # ZZZ
 
         xset dpms force on
+
+        setvolume 100% unmute
+
         # xset dpms 60 80 0
         # amixer -- sset  Master   100% unmute
 

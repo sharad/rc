@@ -416,13 +416,3 @@ function waitmsg () {
 
 
 
-
-
-
-#{{
-function setvolume() {
-    foreach c  ( $(amixer -- | grep -B 1 pvolume |grep control |  cut -d' ' -f4 | cut -d, -f1  | tr -d \') ) {
-        amixer -- sset $c $@
-    }
-}
-#}}
