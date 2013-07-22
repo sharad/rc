@@ -775,7 +775,18 @@ Using it may cause conflicts.  Use it anyway? " owner)))))
           (let ((default-directory desktop-dirname))
             (run-hooks 'desktop-no-desktop-file-hook))
           (message "No desktop file.")
-          nil))))
+          nil)))
+
+
+    (deh-section "desktop-settings"
+
+    ;; (defun desktop-handler-pabbrev-mode (desktop-buffer-locals)
+    ;;   (unless desktop-buffer-read-only
+    ;;     (pabber-mode)))
+
+    ;; (add-to-list 'desktop-minor-mode-handlers '(pabbrev-mode . desktop-handler-pabbrev-mode))
+
+    ))
 
 
 ;;For Session

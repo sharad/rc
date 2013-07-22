@@ -72,6 +72,9 @@
  (thesaurus .
             [(2012 4 7)
              nil "replace a word with a synonym looked up in a web service."])
+ (text-language .
+                [(0 20121008)
+                 nil "tracking, setting, guessing language of text"])
  (tabulated-list .
                  [(0)
                   nil "generic major mode for tabulated lists."])
@@ -565,12 +568,6 @@
  (ediprolog .
             [(1 0)
              nil "Emacs Does Interactive Prolog"])
- (ecb_snap .
-           [(20110605)
-            nil "Emacs Code Browser CVS snapshot"])
- (ecb .
-      [(2 40)
-       nil "Emacs Code Browser"])
  (dsvn .
        [(922257)
         nil "Subversion interface"])

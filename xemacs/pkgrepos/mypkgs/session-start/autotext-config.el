@@ -252,4 +252,14 @@ General Public License for more details.
     (insert gpl)
     (comment-region (point-min) (+ (point-min) (length gpl)))))
 )
+
+
+
+
+;; (deh-require-maybe  text-language
+;;   (add-element-to-lists 'text-language-mode text-langs)
+;;   (add-element-to-lists 'text-language-guess-mode text-langs))
+
+
+
 (provide 'autotext-config)

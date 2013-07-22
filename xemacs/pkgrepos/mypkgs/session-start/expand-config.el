@@ -208,4 +208,16 @@ for the overlay."
     overlay))
 ;;}}
 
+
+(deh-section "pabber"
+  (setq pabbrev-read-only-error t)
+  (deh-section "desktop-settings"
+
+    (defun desktop-handler-pabbrev-mode (desktop-buffer-locals)
+      (unless desktop-buffer-read-only
+        (pabber-mode)))
+
+    (add-to-list 'desktop-minor-mode-handlers '(pabbrev-mode . desktop-handler-pabbrev-mode)))
+  )
+
 (provide 'expand-config)

@@ -248,6 +248,10 @@ alkready should not exist.")
     sh
     python) "Langauge modes.")
 
+(defvar text-langs
+  '(muse
+    text))
+
 (defvar reader-requester
   '(rfcview) "Modes that need reader.")
 

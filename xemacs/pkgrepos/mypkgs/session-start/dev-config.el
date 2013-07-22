@@ -227,6 +227,31 @@
                    (message "history file '%s' written" comint-input-ring-file-name))))))
 
 
+(deh-require-maybe (progn
+                     guess-offset
+                     guess-style)
+  )
+
+
+(deh-require-maybe guess-style
+  ;; http://nschum.de/src/emacs/guess-style/
+  ;; To guess variables when a major mode is loaded, add
+  ;; guess-style-guess-all to that mode's hook like this: (add-hook
+  ;; 'c-mode-common-hook 'guess-style-guess-all)
+
+  ;; To (permanently) override values use guess-style-set-variable.
+  ;; To change what variables are guessed, customize
+  ;; guess-style-guesser-alist.
+
+  ;; To show some of the guessed variables in the mode-line, enable
+  ;; guess-style-info-mode.  You can do this by adding this to your
+  ;; .emacs:
+
+  (global-guess-style-info-mode 1)
+
+  (add-hook
+   'c-mode-common-hook 'guess-style-guess-all))
+
 
 (deh-section "minimap"
   (autoload 'minimap-create "minimap")
