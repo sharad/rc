@@ -95,6 +95,9 @@ xautolock -locknow &!
 # ~/bin/syncimap -r               # enable, done in rsetup/x/run
 echo stumpwmrc end here >&2
 
+atq
+atrm  $(atq | cut -f1)
+
 
 at now + 10 minutes <<EOF
 ~/bin/mradio -c 6

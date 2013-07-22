@@ -548,6 +548,10 @@ define_webjump("wikitravel", "http://wikitravel.org/en/Special:Search/?search=%s
 
 define_webjump("weather", "http://www.wunderground.com/cgi-bin/findweather/getForecast?query=%s");
 
+
+define_webjump("weather/india", "http://www.google.com/search?q=%s&sitesearch=www.imd.gov.in");
+
+
 // {{ My Added
 define_webjump("gtrans", function (url) {
     if (url) {
