@@ -206,7 +206,7 @@
     (let ((elscreen-session-list
            (cdr (assoc elscreen-session *frames-elscreen-session*))))
       (testing
-       (message "Nstart: session-current-buffer %s" elscreen-session))
+       (message "Nstart: session-session %s" elscreen-session))
       (elscreen-session-session-list-set elscreen-session-list (or nframe (selected-frame)))))
 
   (defun fmsession-read-location (&optional initial-input)
