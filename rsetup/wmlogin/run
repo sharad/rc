@@ -96,7 +96,9 @@ xautolock -locknow &!
 echo stumpwmrc end here >&2
 
 atq
-atrm  $(atq | cut -f1)
+if [ $(atq | cut -f1) -gt 0 ] ; then
+    atrm  $(atq | cut -f1)
+fi
 
 
 at now + 10 minutes <<EOF

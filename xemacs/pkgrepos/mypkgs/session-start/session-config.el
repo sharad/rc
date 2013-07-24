@@ -108,52 +108,52 @@
 
   (defun elscreen-session-session-list-set (session-list &optional nframe)
     (if session-list                    ;may causing error
-    (with-selected-frame (or nframe (selected-frame))
-      (let* (screen
-             buffers
-             (screens
-              (or
-               (cdr (assoc 'screens session-list))
-               '((0 "*scratch*"))))
-             (session-current-buffer
-              (cadr (assoc
-                     (cdr (assoc 'current-screen session-list))
-                     screens))))
-        (testing
-         (message "Bstart: session-current-buffer %s" session-current-buffer)
-         (message "Astart: screen-to-name-alist %s" session-list))
-        (while screens
-          (setq screen (caar screens))
-          (setq buffers (cdar screens))
-          (if (when (bufferp (get-buffer (car buffers)))
-                ;; (message "if screen: %s buffer: %s" screen buffers)
-                (if (eq screen 0) ;; (eq (elscreen-get-current-screen) 0)
-                    (switch-to-buffer (car buffers))
-                    (elscreen-find-and-goto-by-buffer (car buffers) t t))
-                (cdr buffers))
-              (while (cdr buffers)
-                (testing (message "while: screen: %s buffer: %s" screen (cadr buffers)))
-                (switch-to-buffer-other-window (car (cdr buffers)))
-                (setq buffers (cdr buffers)))
-              (testing (message "else")))
-          (setq screens (cdr screens)))
-
-        ;; (when elscreen-session-restore-create-scratch-buffer
-        ;;   (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
-        (elscreen-create)                 ;trap
-
-        (if (get-buffer session-current-buffer)
-            (progn
-              ;; (elscreen-find-and-goto-by-buffer (get-buffer session-current-buffer) nil nil)
-              (setq *elscreen-session-restore-data* (list (cons 'cb session-current-buffer)))
-              (testing
-               (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*)))
+        (with-selected-frame (or nframe (selected-frame))
+          (let* (screen
+                 buffers
+                 (screens
+                  (or
+                   (cdr (assoc 'screens session-list))
+                   '((0 "*scratch*"))))
+                 (session-current-buffer
+                  (cadr (assoc
+                         (cdr (assoc 'current-screen session-list))
+                         screens))))
             (testing
-             (message "in when session-current-buffer %s" session-current-buffer))))
-      (testing
-       (message "elscreen-notify-screen-modification"))
-      (elscreen-notify-screen-modification 'force-immediately))
-    (message "elscreen-session-session-list-set: Session do not exists.")))
+             (message "Bstart: session-current-buffer %s" session-current-buffer)
+             (message "Astart: screen-to-name-alist %s" session-list))
+            (while screens
+              (setq screen (caar screens))
+              (setq buffers (cdar screens))
+              (if (when (bufferp (get-buffer (car buffers)))
+                    ;; (message "if screen: %s buffer: %s" screen buffers)
+                    (if (eq screen 0) ;; (eq (elscreen-get-current-screen) 0)
+                        (switch-to-buffer (car buffers))
+                        (elscreen-find-and-goto-by-buffer (car buffers) t t))
+                    (cdr buffers))
+                  (while (cdr buffers)
+                    (testing (message "while: screen: %s buffer: %s" screen (cadr buffers)))
+                    (switch-to-buffer-other-window (car (cdr buffers)))
+                    (setq buffers (cdr buffers)))
+                  (testing (message "else")))
+              (setq screens (cdr screens)))
+
+            ;; (when elscreen-session-restore-create-scratch-buffer
+            ;;   (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
+            (elscreen-create)                 ;trap
+
+            (if (get-buffer session-current-buffer)
+                (progn
+                  ;; (elscreen-find-and-goto-by-buffer (get-buffer session-current-buffer) nil nil)
+                  (setq *elscreen-session-restore-data* (list (cons 'cb session-current-buffer)))
+                  (testing
+                   (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*)))
+                (testing
+                 (message "in when session-current-buffer %s" session-current-buffer))))
+          (testing
+           (message "elscreen-notify-screen-modification"))
+          (elscreen-notify-screen-modification 'force-immediately))
+        (message "elscreen-session-session-list-set: Session do not exists.")))
 
   (defvar *frames-elscreen-session* nil "Stores all elscreen sessions here.")
 
@@ -251,19 +251,15 @@
   ;; (elscreen-restore)
   ;;}}
 
-    ;;{{
+  ;;{{
 
-  (when nil
   (defvar *restore-frame-session* nil "*restore-frame-session*")
-
-  (defadvice server-create-window-system-frame
-      (before set-restore-frame-session activate)
+  (defun server-create-frame-before-adrun ()
     "remove-scratch-buffer"
     (setq *restore-frame-session* t))
 
-  (defadvice server-create-window-system-frame
-      (after remove-scratch-buffer activate)
-    "remove-scratch-buffer"
+  (defun server-create-frame-after-adrun
+      "remove-scratch-buffer"
     (if *restore-frame-session*
         (progn
           (setq *restore-frame-session* nil)
@@ -278,37 +274,53 @@
                   (elscreen-find-and-goto-by-buffer cb nil nil)
                   (setq *elscreen-session-restore-data* nil)
                   (elscreen-notify-screen-modification 'force-immediately)))
-              (testing (message "running server-create-window-system-frame afer advise else")))))
-    ad-return-value))
+              (testing (message "running server-create-window-system-frame afer advise else"))))))
 
-    (defvar *restore-frame-session* nil "*restore-frame-session*")
+  (defadvice server-create-window-system-frame
+      (around remove-scratch-buffer activate)
+    "remove-scratch-buffer"
+    (let ((*restore-frame-session* t))
+      ad-do-it
+      (if *elscreen-session-restore-data*
+          (let ((cb (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*)))))
+            (testing
+             (message "running server-create-window-system-frame afer advise if")
+             (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*))
+            (when cb
+              (elscreen-kill)
+              (elscreen-find-and-goto-by-buffer cb nil nil)
+              (setq *elscreen-session-restore-data* nil)
+              (elscreen-notify-screen-modification 'force-immediately)))
+          (testing (message "running server-create-window-system-frame afer advise else")))))
 
-    (defadvice server-create-window-system-frame
-        (around remove-scratch-buffer activate)
-      "remove-scratch-buffer"
-      (let ((*restore-frame-session* t))
-        ad-do-it
-        (if *elscreen-session-restore-data*
-            (let ((cb (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*)))))
-              (testing
-               (message "running server-create-window-system-frame afer advise if")
-               (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*))
-              (when cb
-                (elscreen-kill)
-                (elscreen-find-and-goto-by-buffer cb nil nil)
-                (setq *elscreen-session-restore-data* nil)
-                (elscreen-notify-screen-modification 'force-immediately)))
-            (testing (message "running server-create-window-system-frame afer advise else")))))
+  (defadvice server-create-tty-frame
+      (around remove-scratch-buffer activate)
+    "remove-scratch-buffer"
+    (let ((*restore-frame-session* t))
+      ad-do-it
+      (server-create-frame-after-adrun)))
 
+  (when nil
+    ;; (ad-disable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
+    ;; (ad-disable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
+    ;; (ad-enable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
+    ;; (ad-enable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
+    ;; (ad-remove-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
+    ;; (ad-remove-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
+    ;; (ad-update 'server-create-window-system-frame)
+    ;; (ad-activate 'server-create-window-system-frame)
 
-  ;; (ad-disable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
-  ;; (ad-disable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
-  ;; (ad-enable-advice 'server-create-window-system-frame 'before 'set-restore-frame-session)
-  ;; (ad-enable-advice 'server-create-window-system-frame 'after 'remove-scratch-buffer)
-  ;; (ad-update 'server-create-window-system-frame)
-  ;; (ad-activate 'server-create-window-system-frame)
-
+    ;; (ad-disable-advice 'server-create-tty-frame 'before 'set-restore-frame-session)
+    ;; (ad-disable-advice 'server-create-tty-frame 'after 'remove-scratch-buffer)
+    ;; (ad-enable-advice 'server-create-tty-frame 'before 'set-restore-frame-session)
+    ;; (ad-enable-advice 'server-create-tty-frame 'after 'remove-scratch-buffer)
+    ;; (ad-remove-advice 'server-create-tty-frame 'before 'set-restore-frame-session)
+    ;; (ad-remove-advice 'server-create-tty-frame 'after 'remove-scratch-buffer)
+    ;; (ad-update 'server-create-tty-frame)
+    ;; (ad-activate 'server-create-tty-frame)
+    )
   ;;}}
+  )
 
   ;;{{
   (deh-section "per frame session"
@@ -321,7 +333,8 @@
       (select-frame nframe)
       (message "in set-this-frame-session-location")
       (let* ((wm-hints
-              (ignore-errors (emacs-panel-wm-hints)))
+              (if (eq (frame-parameter (selected-frame) 'window-system) 'x)
+                  (ignore-errors (emacs-panel-wm-hints))))
              (desktop-name (if wm-hints
                                (nth
                                 (cadr (assoc 'current-desktop wm-hints))
@@ -650,12 +663,15 @@ to restore in case of sudden emacs crash."
             (if show-error
 
                 (when (desktop-vc-read *desktop-save-filename*)
-                  (sharad/enable-session-saving))
+                  (sharad/enable-session-saving)
+                  (when (y-or-n-p "Do you want to set session of frame? ")
+                    (let ((*restore-frame-session* t))
+                      (restore-frame-session (selected-frame)))))
 
                 (condition-case e
                     (when (desktop-vc-read *desktop-save-filename*)
                       (sharad/enable-session-saving))
-t                  ('error
+                  ('error
                     (message "sharad/desktop-session-restore: Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
                     (message "sharad/desktop-session-restore: Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e)))
 

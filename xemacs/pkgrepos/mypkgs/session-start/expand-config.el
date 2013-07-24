@@ -215,7 +215,7 @@ for the overlay."
 
     (defun desktop-handler-pabbrev-mode (desktop-buffer-locals)
       (unless desktop-buffer-read-only
-        (pabber-mode)))
+        (pabbrev-mode 1)))
 
     (add-to-list 'desktop-minor-mode-handlers '(pabbrev-mode . desktop-handler-pabbrev-mode)))
   )

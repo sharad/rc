@@ -92,7 +92,9 @@ whence leave &&
 leave +0800
 
 atq
-atrm  $(atq | cut -f1)
+if [ $(atq | cut -f1) -gt 0 ] ; then
+    atrm  $(atq | cut -f1)
+fi
 
 at now + 10 minutes <<EOF
 ~/bin/mradio -c 6
