@@ -35,7 +35,7 @@
  ;; tls-program '("gnutls-cli --x509cafile /etc/ssl/certs/ca-certificates.crt -p %p %h"
  ;;               "gnutls-cli --x509cafile /etc/ssl/certs/ca-certificates.crt -p %p %h --protocols ssl3"
  ;;               "openssl s_client -connect %h:%p -CAfile /etc/ssl/certs/ca-certificates.crt -no_ssl2 -ign_eof")
- gnus-agent-synchronize-flags t
+ gnus-agent-synchronize-flags nil
  ;; gnus-agent-queue-mail 'always
  ;; gnus-agent-prompt-send-queue t
  ;; gnus-asynchronous t
