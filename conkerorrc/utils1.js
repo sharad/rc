@@ -128,6 +128,7 @@ function str2binl(str){
 }
 
 function binl2hex(binarray){
+    // http://www.conkeror.org/MinibufferRead
     var hex_tab = "0123456789abcdef";
     var str = "";
     for(var i = 0; i < binarray.length * 4; i++) {
