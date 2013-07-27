@@ -49,12 +49,14 @@
   (defun mjmode-scratch (&optional new name mjmode)
     (interactive
      (let* ((new current-prefix-arg)
-            (mjmode (or
-                     (ido-completing-read "cmd: "
-                                          (all-completions "" obarray '(lambda (i)
-                                                                        (and
-                                                                         (commandp i)
-                                                                         (string-match "[.-]*-mode" (symbol-name i))))))))
+            (mjmode (ido-completing-read "mode: "
+                                         (all-completions "" obarray '(lambda (i)
+                                                                       (and
+                                                                        (commandp i)
+                                                                        (string-match "[.-]*-mode" (symbol-name i)))))
+                                         nil
+                                         t
+                                         (if major-mode (symbol-name major-mode))))
             (name (read-from-minibuffer
                    "buffer: "
                    (concat "*"
@@ -86,6 +88,8 @@
       (switch-to-buffer buf)
       (funcall (intern mjmode))
       (auto-insert+)))
+
+  (defalias 'scratch 'mjmode-scratch)
 
   (defvar mjmode-scratch-mode-map
     (let ((map (make-sparse-keymap)))

@@ -659,7 +659,7 @@ to restore in case of sudden emacs crash."
           (flymake-run-in-place nil)
           (show-error (called-interactively-p 'interactive)))
       (setq debug-on-error t)
-      (message "in sharad/desktop-session-restore")
+      (message "entering sharad/desktop-session-restore")
       (if (sharad/desktop-saved-session)
           (progn
             (message "sharad/desktop-session-restore")
