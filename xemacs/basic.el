@@ -394,6 +394,7 @@ startup in daemon mode."
 
 ;;{{
 (deh-section "login-session-inperrupting-feature"
+  (defvar *minimum-disable-login-session-frames* 3 "Minimum disable login session frames")
   ;; don't mislead by login it is when no frame or 1 or more frame hook
   ;; basiclly used accross login where emacs daemon outlive.
   ;; can be used for other purpose.
@@ -413,7 +414,10 @@ startup in daemon mode."
          (run-each-hooks 'sharad/disable-login-session-inperrupting-feature)))
 
    (defun sharad/disable-login-session-inperrupting-feature-in-frame-once (f)
-     (when (< (length (frame-list)) 3) ;last frame then add.
+     (when (< (length (frame-list)) *minimum-disable-login-session-frames*) ;last
+                                                                            ;frame
+                                                                            ;then
+                                                                            ;add.
        (with-report-error "check"
            (sharad/disable-login-session-inperrupting-feature)
            (add-hook 'after-make-frame-functions 'sharad/enable-login-session-inperrupting-feature-in-frame-once t)
@@ -442,7 +446,7 @@ startup in daemon mode."
       (select-frame frame)
       ;; run and disable.
       (with-report-error "check"
-          (when (< (length (frame-list)) 3)
+          (when (< (length (frame-list)) *minimum-disable-login-session-frames*)
             (sharad/enable-login-session-inperrupting-feature))
           (remove-hook 'after-make-frame-functions 'sharad/enable-login-session-inperrupting-feature-in-frame-once)
           (when t
@@ -453,3 +457,6 @@ startup in daemon mode."
 ;;}}
 
 (defalias 'make-local-hook 'ignore)
+
+
+

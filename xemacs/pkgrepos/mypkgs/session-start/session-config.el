@@ -36,7 +36,7 @@
 
 (eval-after-load "elscreen"
    '(defun sharad/elscreen-get-screen-to-name-alist ()
-    ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
+     ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
      (elscreen-notify-screen-modification-suppress
       (elscreen-set-window-configuration (elscreen-get-current-screen)
        (elscreen-current-window-configuration))
@@ -86,7 +86,7 @@
 
 (deh-require elscreen
 
-  (defvar elscreen-session-restore-create-scratch-buffer nil "elscreen-session-restore-create-scratch-buffer")
+  ;; (defvar elscreen-session-restore-create-scratch-buffer nil "elscreen-session-restore-create-scratch-buffer")
 
   ;; (setq desktop-base-file-name "session.desktop")
 
@@ -97,7 +97,7 @@
 
   (require 'utils-config)
 
-  (defvar *elscreen-session-restore-data* nil "")
+  (defvar *elscreen-session-restore-data* nil "elscreen session restore data like current screen buffer among multiple screens.")
 
   (defun elscreen-session-session-list-get (&optional nframe)
     (with-selected-frame (or nframe (selected-frame))
@@ -114,7 +114,7 @@
                  (screens
                   (or
                    (cdr (assoc 'screens session-list))
-                   '((0 "*scratch*"))))
+                   `((,(length session-list) "*scratch*"))))
                  (session-current-buffer
                   (cadr (assoc
                          (cdr (assoc 'current-screen session-list))
@@ -207,7 +207,8 @@
            (cdr (assoc elscreen-session *frames-elscreen-session*))))
       (testing
        (message "Nstart: session-session %s" elscreen-session))
-      (elscreen-session-session-list-set elscreen-session-list (or nframe (selected-frame)))))
+      (if elscreen-session-list
+          (elscreen-session-session-list-set elscreen-session-list (or nframe (selected-frame))))))
 
   (defun fmsession-read-location (&optional initial-input)
     (let ((used t)
@@ -624,7 +625,6 @@ to restore in case of sudden emacs crash."
 
   (defun sharad/desktop-saved-session ()
     (file-exists-p *desktop-save-filename*)
-    ;; (file-exists-p (concat desktop-dirname "/" desktop-base-file-name))
     )
 
   ;; use session-save to save the desktop manually
@@ -676,11 +676,12 @@ to restore in case of sudden emacs crash."
                       (sharad/enable-session-saving))
                   ('error
                     (message "sharad/desktop-session-restore: Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
-                    (message "sharad/desktop-session-restore: Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e)))
-
-                )
+                    (message "sharad/desktop-session-restore: Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e))))
             t)
-          (message "No desktop found."))
+          (when (y-or-n-p
+                 (format "No desktop found. or you can check out old %s from VCS.\nShould I enable session saving in auto save, at kill-emacs ?"
+                         *desktop-save-filename*))
+            (sharad/enable-session-saving)))
       (when t ;(y-or-n-p "Do you want to set session of frame? ")
         (restore-frame-session (selected-frame)))
       (message "leaving sharad/desktop-session-restore")))
