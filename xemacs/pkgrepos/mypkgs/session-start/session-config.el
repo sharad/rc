@@ -258,7 +258,7 @@
     "remove-scratch-buffer"
     (setq *restore-frame-session* t))
 
-  (defun server-create-frame-after-adrun
+  (defun server-create-frame-after-adrun ()
       "remove-scratch-buffer"
     (if *restore-frame-session*
         (progn
@@ -298,6 +298,7 @@
     "remove-scratch-buffer"
     (let ((*restore-frame-session* t))
       ad-do-it
+      ;; (message "going to run")
       (server-create-frame-after-adrun)))
 
   (when nil
@@ -332,16 +333,18 @@
        (list (selected-frame)))
       (select-frame nframe)
       (message "in set-this-frame-session-location")
-      (let* ((wm-hints
-              (if (eq (frame-parameter (selected-frame) 'window-system) 'x)
+      (let* ((xwin-enabled (eq (frame-parameter (selected-frame) 'window-system) 'x))
+             (wm-hints
+              (if xwin-enabled
                   (ignore-errors (emacs-panel-wm-hints))))
              (desktop-name (if wm-hints
                                (nth
                                 (cadr (assoc 'current-desktop wm-hints))
                                 (cdr (assoc 'desktop-names wm-hints)))))
              (location (fmsession-read-location desktop-name)))
-        (unless wm-hints
-          (message "Some error in wm-hints"))
+        (if xwin-enabled
+            (unless wm-hints
+              (message "Some error in wm-hints")))
         (message "set-this-frame-session-location: %s" location)
         (set-frame-parameter nframe 'frame-spec-id location)
         location))
