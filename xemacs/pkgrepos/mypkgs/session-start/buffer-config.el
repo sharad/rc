@@ -523,7 +523,7 @@
 
   ;; (type-of (current-buffer))
 
-  (setq ido-ignore-buffers '(sharad/context-ignore-buffer
+  (setq ido-ignore-buffers '( ;; sharad/context-ignore-buffer
                              "\\` ")))
 
 
