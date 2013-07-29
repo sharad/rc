@@ -39,6 +39,102 @@
 ;; (eval-after-load "ido"
 ;;   '(sharad/disable-startup-inperrupting-feature))
 
+(deh-require-maybe buffer-move)
+
+(deh-require-maybe ido
+  ;; http://scottfrazersblog.blogspot.in/2010/01/emacs-filtered-buffer-switching.html
+
+
+  (defvar my-bs-always-show-regexps '("\\*\\(scratch\\|info\\|grep\\|compilation\\)\\*")
+    "*Buffer regexps to always show when buffer switching.")
+  (defvar my-bs-never-show-regexps '("^\\s-" "^\\*" "TAGS$")
+    "*Buffer regexps to never show when buffer switching.")
+  (defvar my-ido-ignore-dired-buffers t
+    "*If non-nil, buffer switching should ignore dired buffers.")
+
+  (defun my-bs-str-in-regexp-list (str regexp-list)
+    "Return non-nil if str matches anything in regexp-list."
+    (let ((case-fold-search nil))
+      (catch 'done
+        (dolist (regexp regexp-list)
+          (when (string-match regexp str)
+            (throw 'done t))))))
+
+  (defun my-bs-ignore-buffer (name)
+    "Return non-nil if the named buffer should be ignored."
+    (or (and (not (my-bs-str-in-regexp-list name my-bs-always-show-regexps))
+             (my-bs-str-in-regexp-list name my-bs-never-show-regexps))
+        (and my-ido-ignore-dired-buffers
+             (save-excursion
+               (set-buffer name)
+               (equal major-mode 'dired-mode)))))
+
+
+  ;; This is set up to ignore all buffers that start with a space or
+  ;; '*', except for scratch, info, grep, and compilation buffers.
+  ;; Dired buffers are also ignored.
+
+  ;; []The function to toggle between the two most recently used buffers
+  ;; is easy enough:
+
+  (defun my-bs-toggle ()
+    "Toggle buffers, ignoring certain ones."
+    (interactive)
+    (catch 'done
+      (dolist (buf (buffer-list))
+        (unless (or (equal (current-buffer) buf)
+                    (my-bs-ignore-buffer (buffer-name buf)))
+          (switch-to-buffer buf)
+          (throw 'done t)))))
+
+
+  ;; I use ido to switch buffers by name:
+
+  ;; (setq ido-ignore-buffers '(my-bs-ignore-buffer))
+
+
+  ;; I like bs for getting a list of buffers to choose from:
+
+  (setq bs-configurations
+        '(("all" nil nil nil nil nil)
+          ("files" nil nil nil (lambda (buf) (my-bs-ignore-buffer (buffer-name buf))) nil)))
+  (setq bs-cycle-configuration-name "files")
+
+
+  ;; This sets up two bs configurations, one that shows all the
+  ;; buffers and one that only shows my subset.  Somewhat off-topic, I
+  ;; like bs but not the default look ... too much information.
+  ;; Here's my simplified version:
+
+  (setq bs-mode-font-lock-keywords
+        (list
+         ; Headers
+         (list "^[ ]+\\([-M].*\\)$" 1 font-lock-keyword-face)
+         ; Boring buffers
+         (list "^\\(.*\\*.*\\*.*\\)$" 1 font-lock-comment-face)
+         ; Dired buffers
+         '("^[ .*%]+\\(Dired.*\\)$" 1 font-lock-type-face)
+         ; Modified buffers
+         '("^[ .]+\\(\\*\\)" 1 font-lock-warning-face)
+         ; Read-only buffers
+         '("^[ .*]+\\(\\%\\)" 1 font-lock-variable-name-face)))
+
+  (setq bs-attributes-list
+        (quote (("" 2 2 left bs--get-marked-string)
+                ("M" 1 1 left bs--get-modified-string)
+                ("R" 2 2 left bs--get-readonly-string)
+                ("" 2 2 left "  ")
+                ("Mode" 16 16 left bs--get-mode-name)
+                ("" 2 2 left "  ")
+                ("Buffer" bs--get-name-length 30 left bs--get-name))))
+
+
+  ;; Finally, to flip sequentially through buffers (like Alt-Tab in a
+  ;; window manager) I use iflipb:
+
+  (setq iflipb-boring-buffer-filter 'my-bs-ignore-buffer))
+
+
 (deh-section "Setting ignore extention for file completion"
   (setq completion-ignored-extensions
         (append  completion-ignored-extensions '(".rem"))))

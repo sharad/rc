@@ -508,7 +508,7 @@ The indirect buffer can have another major mode."
 
 
 
-
+(deh-require-maybe byte-code-cache)
 
 
 (provide 'misc-config)
