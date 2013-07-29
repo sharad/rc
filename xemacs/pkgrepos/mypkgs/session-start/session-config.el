@@ -261,27 +261,6 @@
 
   (defun server-create-frame-after-adrun ()
       "remove-scratch-buffer"
-    (if *restore-frame-session*
-        (progn
-          (setq *restore-frame-session* nil)
-          (testing (message "in running server-create-window-system-frame afer advise"))
-          (if *elscreen-session-restore-data*
-              (let ((cb (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*)))))
-                (testing
-                 (message "running server-create-window-system-frame afer advise if")
-                 (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*))
-                (when cb
-                  (elscreen-kill)
-                  (elscreen-find-and-goto-by-buffer cb nil nil)
-                  (setq *elscreen-session-restore-data* nil)
-                  (elscreen-notify-screen-modification 'force-immediately)))
-              (testing (message "running server-create-window-system-frame afer advise else"))))))
-
-  (defadvice server-create-window-system-frame
-      (around remove-scratch-buffer activate)
-    "remove-scratch-buffer"
-    (let ((*restore-frame-session* t))
-      ad-do-it
       (if *elscreen-session-restore-data*
           (let ((cb (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*)))))
             (testing
@@ -292,14 +271,20 @@
               (elscreen-find-and-goto-by-buffer cb nil nil)
               (setq *elscreen-session-restore-data* nil)
               (elscreen-notify-screen-modification 'force-immediately)))
-          (testing (message "running server-create-window-system-frame afer advise else")))))
+          (testing (message "running server-create-window-system-frame afer advise else"))))
+
+  (defadvice server-create-window-system-frame
+      (around remove-scratch-buffer activate)
+    "remove-scratch-buffer"
+    (let ((*restore-frame-session* t))
+      ad-do-it
+      (server-create-frame-after-adrun)))
 
   (defadvice server-create-tty-frame
       (around remove-scratch-buffer activate)
     "remove-scratch-buffer"
     (let ((*restore-frame-session* t))
       ad-do-it
-      ;; (message "going to run")
       (server-create-frame-after-adrun)))
 
   (when nil
