@@ -41,9 +41,14 @@
 
 (deh-require-maybe buffer-move)
 
+;; Finally, to flip sequentially through buffers (like Alt-Tab in a
+;; window manager) I use iflipb:
+
+(deh-require-maybe iflipb
+  (setq iflipb-boring-buffer-filter 'my-bs-ignore-buffer))
+
 (deh-require-maybe ido
   ;; http://scottfrazersblog.blogspot.in/2010/01/emacs-filtered-buffer-switching.html
-
 
   (defvar my-bs-always-show-regexps '("\\*\\(scratch\\|info\\|grep\\|compilation\\)\\*")
     "*Buffer regexps to always show when buffer switching.")
@@ -126,13 +131,7 @@
                 ("" 2 2 left "  ")
                 ("Mode" 16 16 left bs--get-mode-name)
                 ("" 2 2 left "  ")
-                ("Buffer" bs--get-name-length 30 left bs--get-name))))
-
-
-  ;; Finally, to flip sequentially through buffers (like Alt-Tab in a
-  ;; window manager) I use iflipb:
-
-  (setq iflipb-boring-buffer-filter 'my-bs-ignore-buffer))
+                ("Buffer" bs--get-name-length 30 left bs--get-name)))))
 
 
 (deh-section "Setting ignore extention for file completion"
@@ -503,7 +502,29 @@
 
 ;;}}
 
-  )
+  (defvar sharad/context-ignore-buffer t "Allow to enable context-ignore-buffer")
+
+  (defun toggle-context-ignore-buffer ()
+    (interactive)
+    (setq sharad/context-ignore-buffer (not sharad/context-ignore-buffer)))
+
+  (defun sharad/context-ignore-buffer (name)
+    (interactive "P")
+    (let ((group (sharad/ibuffer-containing-group-of-buffer (current-buffer) t))
+          (buff (get-buffer name)))
+      (if (and sharad/context-ignore-buffer buff)
+          (not (sharad/ibuffer-included-in-group-p buff group))
+          t)))
+
+  ;; (defun sharad/context-ignore-buffer (name)
+  ;;   (interactive "P")
+  ;;   (message "cib: %s" (type-of name))
+  ;;   nil)
+
+  ;; (type-of (current-buffer))
+
+  (setq ido-ignore-buffers '(sharad/context-ignore-buffer
+                             "\\` ")))
 
 
 (deh-require-maybe uniquify
