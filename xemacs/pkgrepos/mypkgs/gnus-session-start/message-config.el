@@ -1,4 +1,4 @@
-;;; message.el --- GNUS Message
+;;; message-config.el --- GNUS Message
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -25,6 +25,50 @@
 ;;; Code:
 
 (require 'citation-config)
+
+
+
+;; Increase the score for followups to a sent article.
+(add-hook 'message-sent-hook 'gnus-score-followup-article)
+(add-hook 'message-sent-hook 'gnus-score-followup-thread)
+
+
+;;{{ http://www.gnus.org/manual/gnus_401.html
+(when (xrequire 'ispell)
+  ;; Ispell.el assumes you use ispell, if you choose aspell say
+  (setq ispell-program-name "aspell")
+  ;; in your Emacs configuration file.  If you want your outgoing
+  ;; messages to be spell-checked, say
+  (add-hook 'message-send-hook 'ispell-message)
+  ;; In your ~/.gnus.el, if you prefer on-the-fly spell-checking say
+  (add-hook 'message-mode-hook (lambda () (flyspell-mode 1))))
+(add-hook 'message-mode-hook (lambda () (footnote-mode 1)))
+;;}}
+
+
+;;{{ Address Book http://www.emacswiki.org/emacs/ExternalAbook
+(when (xrequire 'external-abook)
+  (setq external-abook-command "timeout 4 /usr/bin/lbdbq '%s*' | sed 1d | cut -d'	' -f1,2") ;;"contacts -lf '%%e\t%%n' %s")
+
+  (eval-after-load "message"
+    '(progn
+      (add-to-list 'message-mode-hook
+       '(lambda ()
+         (define-key message-mode-map "\C-c\t" 'external-abook-try-expand))))))
+;;}}
+
+
+;;{{ from: http://tilde.co.kr/.gnus
+;;; Signature
+(setq gnus-signature-separator
+      '("^-- $"
+        "^-- *$"
+        "^-------*$"
+        "^ *--------*$"
+        "^________*$"
+        "^========*$"))
+;;}}
+
 
 (defvar *use-msmtp-for-senmail* nil "msmtp to use")
 
@@ -409,4 +453,4 @@
 
 
 (provide 'message-config)
-;;; message.el ends here
+;;; message-config.el ends here
