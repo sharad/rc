@@ -25,31 +25,6 @@
 ;;; Code:
 
 
-(setq
-
- ;; message-send-mail-function 'message-send-mail-with-sendmail
- ;; message-sendmail-envelope-from 'header
- ;; message-sendmail-f-is-evil nil
-
- ;; tls-checktrust 'ask
- ;; tls-program '("gnutls-cli --x509cafile /etc/ssl/certs/ca-certificates.crt -p %p %h"
- ;;               "gnutls-cli --x509cafile /etc/ssl/certs/ca-certificates.crt -p %p %h --protocols ssl3"
- ;;               "openssl s_client -connect %h:%p -CAfile /etc/ssl/certs/ca-certificates.crt -no_ssl2 -ign_eof")
- gnus-agent-synchronize-flags nil
- ;; gnus-agent-queue-mail 'always
- ;; gnus-agent-prompt-send-queue t
- ;; gnus-asynchronous t
- ;; gnus-agent-go-online t
- ;; mm-text-html-renderer 'gnus-w3m
- gnus-summary-display-arrow t
- gnus-completing-read-function 'gnus-ido-completing-read
- mail-user-agent 'gnus-user-agent
- read-mail-command 'gnus
- ;;gnus-treat-display-smileys nil
- )
-(autoload 'sendmail-send-it "sendmail")
-
-
 
 (provide 'gnusmisc-config)
 ;;; gnumisc-config.el ends here
