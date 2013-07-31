@@ -535,12 +535,14 @@
                              "\\` "))
 
 
-  ;; (defadvice other-buffer (around context-buffer activate)
-  ;;   (let ((group (sharad/ibuffer-containing-group-of-buffer (current-buffer) t))
-  ;;         (buff (get-buffer ad-do-it))
-  ;;         (buff (if (and sharad/context-ignore-buffer buff)
-  ;;                   (sharad/ibuffer-included-in-group-p buff group))))
-  ;;     t))
+  ;; (defadvice other-buffer (around context-buffer (&optional buffer visible-ok frame) activate)
+  ;;   (let ((group (sharad/ibuffer-containing-group-of-buffer buffer t))
+  ;;         (obuff (get-buffer ad-do-it)))
+  ;;     (if (and sharad/context-ignore-buffer buff
+  ;;              (sharad/ibuffer-included-in-group-p obuff group))
+  ;;         obuff
+  ;;         (let ((cbuff (sharad/context-switch-other-buffer buffer)))
+  ;;           (or cbuff obuff)))))
   )
 
 
