@@ -60,8 +60,8 @@ function mplayer_radio() {
         # amixer -- sset  Master   100% unmute
 
         if ! pgrep mplayer >& /dev/null ; then
-            pkill -9 mplayer
-            sleep 2s
+            # pkill -9 mplayer
+            # sleep 2s
             rm -f /tmp/mplayer.fifo
             if mkfifo /tmp/mplayer.fifo ; then
                 mplayer  -profile radio/fm -idle -slave -input file=/tmp/mplayer.fifo >& /dev/null &!

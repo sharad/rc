@@ -523,8 +523,25 @@
 
   ;; (type-of (current-buffer))
 
+  (defun sharad/context-switch-other-buffer (buffer)
+    (let ((group (sharad/ibuffer-containing-group-of-buffer buffer t)))
+      (find-if
+       (lambda (buff)
+         (if (sharad/ibuffer-included-in-group-p buff group)
+             (not (eq (current-buffer) buff))))
+       (buffer-list))))
+
   (setq ido-ignore-buffers '( ;; sharad/context-ignore-buffer
-                             "\\` ")))
+                             "\\` "))
+
+
+  ;; (defadvice other-buffer (around context-buffer activate)
+  ;;   (let ((group (sharad/ibuffer-containing-group-of-buffer (current-buffer) t))
+  ;;         (buff (get-buffer ad-do-it))
+  ;;         (buff (if (and sharad/context-ignore-buffer buff)
+  ;;                   (sharad/ibuffer-included-in-group-p buff group))))
+  ;;     t))
+  )
 
 
 (deh-require-maybe uniquify
