@@ -44,6 +44,20 @@
 
 (require 'nnheader)
 
+;;{{http://eschulte.github.com/emacs-starter-kit/starter-kit-gnus.html
+;; http://groups.google.com/group/gnu.emacs.gnus/browse_thread/thread/a673a74356e7141f
+(when window-system
+  (setq
+   gnus-sum-thread-tree-indent "  "
+   gnus-sum-thread-tree-root "● "
+   gnus-sum-thread-tree-false-root "◯ "
+   gnus-sum-thread-tree-single-indent "◎ "
+   gnus-sum-thread-tree-vertical        "│"
+   gnus-sum-thread-tree-leaf-with-other "├─► "
+   gnus-sum-thread-tree-single-leaf     "╰─► "))
+
+;;}}
+
 (deh-section "summary line format user functions"
   (defun sdfsdgfdsgdfg-gnus-user-format-function-b (header)
     (let ((descr
