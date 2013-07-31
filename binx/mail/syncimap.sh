@@ -30,9 +30,9 @@ function main() {
                     timeout -s KILL 70 offlineimap -1 -u quiet -a ${account:-$OFFLINEIMAPACCOUNT}
                 fi
             else
-                echo n
+                # verbose already offline map running with pid $(pgrep offlineimap).
+                notify already offline map running with pid $(pgrep offlineimap).
                 exit 0;
-                verbose already offline map running with pid $(pgrep offlineimap).
             fi
         else
             verbose no network connectivity.
