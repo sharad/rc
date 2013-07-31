@@ -191,32 +191,6 @@
 ;; ;; ;; (add-hook 'gnus-summary-prepare-hook 'gnus-summary-hl-nospam-in-spam-group)
 
 
-;; ;; ;; ;; Setup the search via gnus-namazu. First create the index via the command line.
-
-;; ;; ;; ;; # generate the database: look at gnus-directory, mine is "~/gnus"
-;; ;; ;; ;; # ~/gnus/nnml-mail contains the mails
-;; ;; ;; ;; mkdir ~/gnus/namazu
-;; ;; ;; ;; mknmz -a -h -O ~/gnus/namazu ~/gnus/nnml-mail
-
-
-;; ;; ;; ;; Enable gnus-namazu. You can start a search vie C-c C-n.
-
-;; ;; ;; (require 'gnus-namazu)
-;; ;; ;; (gnus-namazu-insinuate)
-;; ;; ;; (setq gnus-namazu-index-update-interval nil)
-;; ;; ;; ;; call explicitely M-x gnus-namazu-update-all-indices
-
-
-;; ;; ;; ;; Update the namazu index every day at 6:00am
-;; ;; ;; (defun xsteve-gnus-namazu-update-all-indices ()
-;; ;; ;;   (interactive)
-;; ;; ;;   (gnus-namazu-update-all-indices t))
-
-;; ;; ;; (defun xsteve-gnus-update-namazu-index ()
-;; ;; ;;   (run-at-time "6:00am" nil 'xsteve-gnus-namazu-update-all-indices))
-
-;; ;; ;; (require 'midnight)
-;; ;; ;; (add-hook 'midnight-hook 'xsteve-gnus-update-namazu-index)
 
 
 
