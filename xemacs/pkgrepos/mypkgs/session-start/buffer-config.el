@@ -528,21 +528,28 @@
       (find-if
        (lambda (buff)
          (if (sharad/ibuffer-included-in-group-p buff group)
-             (not (eq (current-buffer) buff))))
+             (not (eq buff buffer))))
        (buffer-list))))
 
-  (setq ido-ignore-buffers '( ;; sharad/context-ignore-buffer
+  (setq ido-ignore-buffers '(sharad/context-ignore-buffer
                              "\\` "))
 
 
-  ;; (defadvice other-buffer (around context-buffer (&optional buffer visible-ok frame) activate)
-  ;;   (let ((group (sharad/ibuffer-containing-group-of-buffer buffer t))
-  ;;         (obuff (get-buffer ad-do-it)))
-  ;;     (if (and sharad/context-ignore-buffer buff
-  ;;              (sharad/ibuffer-included-in-group-p obuff group))
-  ;;         obuff
-  ;;         (let ((cbuff (sharad/context-switch-other-buffer buffer)))
-  ;;           (or cbuff obuff)))))
+  (defadvice other-buffer (around context-buffer (&optional buffer visible-ok frame) activate)
+    (let ((group (sharad/ibuffer-containing-group-of-buffer buffer t))
+          (obuff (get-buffer ad-do-it)))
+      (message "obuff %s group %s" obuff group)
+      (setq
+       ad-return-value
+       (if (and sharad/context-ignore-buffer
+                (sharad/ibuffer-included-in-group-p obuff group))
+           obuff
+           (let ((cbuff (sharad/context-switch-other-buffer buffer)))
+             (or cbuff obuff))))))
+
+  ;; (sharad/ibuffer-included-in-group-p (other-buffer (current-buffer)) "emacs-lisp")
+  ;; (sharad/context-switch-other-buffer (current-buffer))
+  ;; (other-buffer (current-buffer))
   )
 
 
