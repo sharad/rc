@@ -1,15 +1,18 @@
 # m h  dom mon dow   command
 
+#variable set
 SHELL=/bin/zsh
-# MAILTO=$MAILTO variable set
-
-# */7 * * * * DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION ~/bin/syncimap -a $OFFLINEIMAPACCOUNT > /dev/null 2>&1
-
-*/7 * * * * DISPLAY=:0 ~/bin/syncimap -a $OFFLINEIMAPACCOUNT > /dev/null 2>&1
-
-# 0 0 * * * /aruba/utils/cm/bin/p4bkup --puthere ~/.p4bkup --copies 10
+MAILTO=$MAILTO
 
 
+*/ifelse(hostname,lispm,7,3) * * * * DISPLAY=:0 ~/bin/syncimap -a $OFFLINEIMAPACCOUNT > /dev/null 2>&1
+
+ifelse(hostname,lispm,,
+00 22 * * * pkill pidgin
+01 22 * * * pkill skype
+)
+
+ifelse(hostname,lispm,
 
 ##{{ Morning
 # try waking up at 7.30 to 7.45
@@ -74,3 +77,4 @@ SHELL=/bin/zsh
 
 
 
+)
