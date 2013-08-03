@@ -7,7 +7,7 @@
 
 
 host_macrodir = ../.osetup/info/hosts/$(HOST)/m4.d
-macroconfig      = .setup/config
+macroconfig      = m4
 macrodir      = ../.osetup/info/common/m4.d
 
 M4            = m4 -I /usr/share/doc/m4/examples -I $(macroconfig) -I $(macrodir) -I $(host_macrodir)
