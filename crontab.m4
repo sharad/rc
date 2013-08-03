@@ -1,3 +1,4 @@
+include(config.m4)
 # m h  dom mon dow   command
 
 #variable set
@@ -7,12 +8,12 @@ MAILTO=$MAILTO
 
 */ifelse(hostname,lispm,7,3) * * * * DISPLAY=:0 ~/bin/syncimap -a $OFFLINEIMAPACCOUNT > /dev/null 2>&1
 
-ifelse(hostname,lispm,,
+ifelse(hostname,lispm,,[
 00 22 * * * pkill pidgin
 01 22 * * * pkill skype
-)
+])
 
-ifelse(hostname,lispm,
+ifelse(hostname,lispm,[
 
 ##{{ Morning
 # try waking up at 7.30 to 7.45
@@ -77,4 +78,6 @@ ifelse(hostname,lispm,
 
 
 
-)
+])
+
+
