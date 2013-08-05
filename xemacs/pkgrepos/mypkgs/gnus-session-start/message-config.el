@@ -333,9 +333,10 @@
          ;; message is mail and this is not my system taj then do not save Gcc copy in sent-mail
          (eval (unless (equal (system-name) "taj")
                  (set (make-local-variable 'gnus-message-archive-group)
-                      ,(if (equal (system-name) office-host-name)
-                           "Office.Sent Items"
-                           "sent-mail")))))
+                      (list
+                       "sent" "sent-mail"
+                       ,(if (equal (system-name) office-host-name)
+                            "Office.Sent Items"))))))
 
         (message-news-p
          (name ,myname)
@@ -344,7 +345,7 @@
          (address ,email-addr)
          (eval
           (progn
-            (set (make-local-variable 'gnus-message-archive-group) "sent-news")
+            (set (make-local-variable 'gnus-message-archive-group) '("sent" "sent-news"))
             (set (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)
             (set (make-local-variable 'message-cite-reply-above) nil)
             (set (make-local-variable 'message-cite-reply-position) 'traditional))))
@@ -363,7 +364,7 @@
          (signature "Regards,\n-sharad")
          (address ,office-email)
          (eval (set (make-local-variable 'gnus-message-archive-group)
-                           "Office.Sent Items")))
+                    '("sent" "sent-mail" "Office.Sent Items"))))
 
         ;; J sites
         ((header "Received" "monster.co.in\\|naukri.com") ;reply
