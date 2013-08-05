@@ -591,7 +591,8 @@ to restore in case of sudden emacs crash."
             (save-all-frames-session)
             (session-vc-save-session)
             (my-desktop-save)
-            (message "Save frame desktop and session."))
+            (message "Save frame desktop and session.")
+            (message nil))
         ('error
          (progn
            ;; make after 2 errors.
