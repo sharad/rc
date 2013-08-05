@@ -78,6 +78,19 @@
   (deh-require-maybe idomenu
     ;; http://emacswiki.org/emacs/ImenuMode
     ))
+
+;; ido-work-file-list
+;; ido-work-directory-list
+;; ido-last-directory-list
+;; command-history
+		    ;; (setq ido-last-directory-list (read (current-buffer))
+		    ;;       ido-work-directory-list (read (current-buffer))
+		    ;;       ido-work-file-list (read (current-buffer))
+		    ;;       ido-dir-file-cache (read (current-buffer))
+		    ;;       ido-unc-hosts-cache (read (current-buffer)))
+;; (defun ido-load-history (&optional arg)
+;; (defun ido-wash-history ()
+
 ;;;;
 ;;;;   ;; Mimicking an invocation of ido followed by some keys
 ;;;;

@@ -119,25 +119,25 @@
     (planner-bugzilla-bugtask-update task page)))
 
 ;;;###autoload
-(defun planner-bugzilla-fetch-new-bugtask (&optional page)
+(defun planner-bugzilla-fetch-new-bugtask (&optional criteria page)
   ;; add url username used in bug list.
   (interactive
    (list
+    t
     (planner-read-non-date-page (planner-file-alist))))
-  (dolist (bug (bugzilla-search-bugs '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url") t))
+  (dolist (bug (bugzilla-search-bugs '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url") criteria))
     (planner-bugzilla-create-bug-to-task bug page t)))
 
 
 ;;;###autoload
-(defun planner-bugzilla-get-new-bugtask (&optional page)
+(defun planner-bugzilla-get-new-bugtask (&optional criteria page)
   ;; add url username used in bug list.
   (interactive
    (list
+    t
     (planner-read-non-date-page (planner-file-alist))))
-  (dolist (bug (bugzilla-get-bugs '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url") t))
+  (dolist (bug (bugzilla-get-bugs '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url") criteria))
     (planner-bugzilla-create-bug-to-task bug page t)))
-
-
 
 (when nil
  (let ((bug (bugz-method 'Bug.get "bugs" '(("ids" 37026 )))))

@@ -74,12 +74,21 @@
 
 
 
-(defun create-task (task name)
+(defun create-task (task name &optional desc)
   (interactive
    (let* ((task (completing-read "what: " (mapcar 'car task-alist) nil t))
-          (name (completing-read "name: " (directory-files (concat taskdir "/" task "/")) nil)))
-     (list task name)))
-  (let ((dir (concat taskdir "/" task "/")))
+          (name (completing-read "name: " (directory-files (concat taskdir "/" task "/")) nil))
+          (bug (if (eq task 'bug)
+                   (car
+                    (bugzilla-get-bugs
+                     '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url")
+                     (list "ids" name)))))
+          (desc (if bug
+                    (cdr (assoc "summary" bug))
+                    (read-from-minibuffer (format "Desc of %s: " name)))))
+     (list task name desc)))
+
+  (let* ((dir (concat taskdir "/" task "/")))
     (if (file-directory-p (concat dir name))
         (find-task (concat dir name))
         (progn
@@ -100,6 +109,18 @@
                      'utf-8-emacs
                      'emacs-mule))
                 (write-file nfile))))
+
+          (let ((plan-page (planner-read-non-date-page (planner-file-alist))))
+            (if (eq task 'bug)
+                (planner-bugzilla-create-bug-to-task bug plan-page t)
+                (planner-create-task
+                 (format "%s: %s" name desc)
+                 (let ((planner-expand-name-favor-future-p
+                        (or planner-expand-name-favor-future-p
+                            planner-task-dates-favor-future-p)))
+                   (planner-read-date))
+                 nil plan-page
+                 (task-status-of-sys 'planner 'inprogress))))
 
           (find-file (expand-file-name
                       (cadr (assoc 'files (cdr (assoc task task-alist))))
