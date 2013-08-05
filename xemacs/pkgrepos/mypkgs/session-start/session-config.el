@@ -254,10 +254,10 @@
 
   ;;{{
 
-  (defvar *restore-frame-session* nil "*restore-frame-session*")
+  (defvar *frame-session-restore* nil "*frame-session-restore*")
   (defun server-create-frame-before-adrun ()
     "remove-scratch-buffer"
-    (setq *restore-frame-session* t))
+    (setq *frame-session-restore* t))
 
   (defun server-create-frame-after-adrun ()
       "remove-scratch-buffer"
@@ -276,14 +276,14 @@
   (defadvice server-create-window-system-frame
       (around remove-scratch-buffer activate)
     "remove-scratch-buffer"
-    (let ((*restore-frame-session* t))
+    (let ((*frame-session-restore* t))
       ad-do-it
       (server-create-frame-after-adrun)))
 
   (defadvice server-create-tty-frame
       (around remove-scratch-buffer activate)
     "remove-scratch-buffer"
-    (let ((*restore-frame-session* t))
+    (let ((*frame-session-restore* t))
       ad-do-it
       (server-create-frame-after-adrun)))
 
@@ -314,11 +314,11 @@
 
     (require 'emacs-panel)
 
-    (defun set-this-frame-session-location (nframe)
+    (defun frame-session-set-this-location (nframe)
       (interactive
        (list (selected-frame)))
       (select-frame nframe)
-      (message "in set-this-frame-session-location")
+      (message "in frame-session-set-this-location")
       (let* ((xwin-enabled (eq (frame-parameter (selected-frame) 'window-system) 'x))
              (wm-hints
               (if xwin-enabled
@@ -331,26 +331,26 @@
         (if xwin-enabled
             (unless wm-hints
               (message "Some error in wm-hints")))
-        (message "set-this-frame-session-location: %s" location)
+        (message "frame-session-set-this-location: %s" location)
         (set-frame-parameter nframe 'frame-spec-id location)
         location))
 
-    (defun restore-frame-session (nframe)
-      (if *restore-frame-session*
+    (defun frame-session-restore (nframe)
+      (if *frame-session-restore*
           (progn
             (select-frame nframe)
-            (fmsession-restore (set-this-frame-session-location nframe)) nframe)
+            (fmsession-restore (frame-session-set-this-location nframe)) nframe)
           (message "not restoring screen session.")))
 
-    (defun appply-frame-session (nframe)
+    (defun frame-session-appply (nframe)
       (interactive
        (list (selected-frame)))
       (progn
         (select-frame nframe)
         (fmsession-restore (fmsession-read-location) nframe)))
 
-    (defun save-frame-session (nframe)
-      (message "in save-frame-session:")
+    (defun frame-session-save (nframe)
+      (message "in frame-session-save:")
       (let ((location (frame-parameter nframe 'frame-spec-id)))
         (when location
           (message "saved the session for %s" location)
@@ -358,15 +358,15 @@
 
     (defun save-all-frames-session ()
       (dolist (f (frame-list))
-	(save-frame-session f)))
+	(frame-session-save f)))
 
 
     ;; (add-hook '*sharad/after-init-hook*
     (add-hook 'sharad/enable-startup-inperrupting-feature-hook
               '(lambda ()
-                ;; (add-hook 'after-make-frame-functions 'set-this-frame-session-location t)
-                (add-hook 'after-make-frame-functions 'restore-frame-session t)
-                (add-hook 'delete-frame-functions 'save-frame-session)
+                ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
+                (add-hook 'after-make-frame-functions 'frame-session-restore t)
+                (add-hook 'delete-frame-functions 'frame-session-save)
                 ;; (add-hook 'kill-emacs-hook 'save-all-frames-session)) ; done in save-all-sessions-auto-save
               t)
 
@@ -653,8 +653,8 @@ to restore in case of sudden emacs crash."
                 (when (desktop-vc-read *desktop-save-filename*)
                   (sharad/enable-session-saving)
                   (when (y-or-n-p "Do you want to set session of frame? ")
-                    (let ((*restore-frame-session* t))
-                      (restore-frame-session (selected-frame)))))
+                    (let ((*frame-session-restore* t))
+                      (frame-session-restore (selected-frame)))))
 
                 (condition-case e
                     (when (desktop-vc-read *desktop-save-filename*)
@@ -668,7 +668,7 @@ to restore in case of sudden emacs crash."
                          *desktop-save-filename*))
             (sharad/enable-session-saving)))
       (when t ;(y-or-n-p "Do you want to set session of frame? ")
-        (restore-frame-session (selected-frame)))
+        (frame-session-restore (selected-frame)))
       (message "leaving sharad/desktop-session-restore")))
 
   (add-hook 'session-before-save-hook
