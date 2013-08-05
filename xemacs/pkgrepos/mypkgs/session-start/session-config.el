@@ -627,14 +627,14 @@ to restore in case of sudden emacs crash."
     (interactive)
     (remove-hook 'auto-save-hook 'save-all-sessions-auto-save)
     (remove-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
-    (message "Removed save-all-sessions-auto-save  from auto-save-hook kill-emacs-hook"))
+    (message "Removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook"))
 
 
   (defun sharad/enable-session-saving ()
     (interactive)
     (add-hook 'auto-save-hook 'save-all-sessions-auto-save)
     (add-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
-    (message "Added save-all-sessions-auto-save  from auto-save-hook kill-emacs-hook"))
+    (message "Added save-all-sessions-auto-save to auto-save-hook and kill-emacs-hook"))
 
   ;; use session-restore to restore the desktop manually
   (defun sharad/desktop-session-restore ()

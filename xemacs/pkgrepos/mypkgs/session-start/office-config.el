@@ -110,6 +110,7 @@
                      'emacs-mule))
                 (write-file nfile))))
 
+          ;; Planner
           (let ((plan-page (planner-read-non-date-page (planner-file-alist))))
             (if (eq task 'bug)
                 (planner-bugzilla-create-bug-to-task bug plan-page t)
@@ -121,6 +122,8 @@
                    (planner-read-date))
                  nil plan-page
                  (task-status-of-sys 'planner 'inprogress))))
+          ;; Project-Buffer
+          ()
 
           (find-file (expand-file-name
                       (cadr (assoc 'files (cdr (assoc task task-alist))))
