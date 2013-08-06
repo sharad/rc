@@ -539,7 +539,7 @@
     (let* ((buffer (or buffer (current-buffer)))
            (group (sharad/ibuffer-containing-group-of-buffer buffer t))
            (obuff (get-buffer ad-do-it)))
-      (message "obuff %s group %s" obuff group)
+      ;; (message "obuff %s group %s" obuff group)
       (setq
        ad-return-value
        (if (and sharad/context-ignore-buffer

@@ -145,5 +145,8 @@
         "Invoke `xml-mode-hook' hooks in the XML mode."
         (run-hooks 'xml-mode-hook)))))
 
+(deh-require-maybe nxml-mode
+  (setq nxml-child-indent 2))
+
 
 (provide 'xml-config)

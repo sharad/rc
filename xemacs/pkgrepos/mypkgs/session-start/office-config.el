@@ -88,22 +88,24 @@
                     (read-from-minibuffer (format "Desc of %s: " name)))))
      (list task name desc)))
 
-  (let* ((dir (concat taskdir "/" task "/")))
-    (if (file-directory-p (concat dir name))
-        (find-task (concat dir name))
+  (let* ((dir (concat taskdir "/" task "/" name)))
+    (if (file-directory-p dir)
+        (find-task dir)
         (progn
 
-          (make-directory (concat dir name "/logs") t)
+          (make-directory (concat dir "/logs") t)
 
           (dolist (f (cdr (assoc 'files (cdr (assoc task task-alist)))))
-            (let ((nfile (expand-file-name f (concat dir name "/")))
+            (let ((nfile (expand-file-name f (concat dir "/")))
                   find-file-not-found-functions) ;find alternate of find-file-noselect to get non-existing file.
               (with-current-buffer (or (find-buffer-visiting nfile)
                                        (find-file-noselect nfile))
+                (if (goto-char (point-min))
+                    (insert "# -*-  -*-\n"))
                 (dolist (pv task-file-properties)
                   (add-file-local-variable-prop-line (car pv) (cdr pv)))
                 (goto-char (point-max))
-                (insert (format "\n\n* %s %s\n\n\n\n" (capitalize task) name ))
+                (insert (format "\n\n* %s %s: %s\n\n\n\n" (capitalize task) name desc))
                 (set-buffer-file-coding-system
                  (if (coding-system-p 'utf-8-emacs)
                      'utf-8-emacs
@@ -127,7 +129,7 @@
 
           (find-file (expand-file-name
                       (cadr (assoc 'files (cdr (assoc task task-alist))))
-                      (concat dir name "/")))))
+                      (concat dir "/")))))
 
     (if (y-or-n-p (format "Should set %s current task" dir))
         (setq current-task dir))))

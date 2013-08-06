@@ -243,22 +243,25 @@ function screenssh {
 
 
         if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub ; then
-            if [ "$sessionarg" ] && ! ${=prefixcmd} screen -x $sessionarg -ls | grep 'No Sockets' 1>&2 > /dev/null ; then
-                session=$( ${=prefixcmd} screen -x $sessionarg -ls | sed -n 2p | awk '{ print $1 }')
+
+            if [ "$sessionarg" ] && ! ${=prefixcmd} screen -x $sessionarg -ls 2>/dev/null | grep 'No Sockets' 1>&2 > /dev/null ; then
+                trap 'print Interrupted; return 1' SIGINT
+                session=$( ${=prefixcmd} screen -x $sessionarg -ls 2>/dev/null | sed -n 2p | awk '{ print $1 }')
+                trap - SIGINT
             fi
 
             if [ "$session" ] ; then
-                echo ${=prefixcmdintractive} screen -x $session >&2
+                print ${=prefixcmdintractive} screen -x $session >&2
                 ${=prefixcmdintractive} screen -x $session  ||
                 ${=prefixcmdintractive} screen -S $session
             else
-                echo No session $sessionarg creating it. >&2
+                print No session $sessionarg creating it. >&2
             fi
         else
-            echo Not able to set the private in ssh-agent. >&2
+            print Not able to set the private in ssh-agent. >&2
         fi
     else
-        echo no server name >&2
+        print no server name >&2
     fi
 }
 
@@ -270,9 +273,9 @@ function lsscreenssh {
     fi
 
     if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub ; then
-        ${=prefixcmdintractive} screen -ls
+        ${=prefixcmdintractive} screen -ls 2>/dev/null
     else
-        echo else
+        print else
     fi
 }
 

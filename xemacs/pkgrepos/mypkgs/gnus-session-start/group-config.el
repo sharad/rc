@@ -60,8 +60,8 @@
              "sent-mail"
              (if (string-equal (system-name) office-host-name)
                  "Office.Sent Items")))
-        ;; '(format-time-string "sent.%Y-%m")
-        )
+        '(format-time-string "sent.%Y-%m")
+        ))
 
 
 ;; http://www.gnus.org/manual/gnus_153.html
