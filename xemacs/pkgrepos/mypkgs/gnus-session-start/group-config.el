@@ -53,14 +53,15 @@
 ;;                  "sent"))))
 
 (setq gnus-message-archive-group        ;even I have handled it in gnus-posting-style
-      '(append
-        "sent"
+      '("sent"
         (if (message-news-p)
             '("sent-news")
             (list
              "sent-mail"
-             (if (equal (system-name) office-host-name)
-                 "Office.Sent Items")))))
+             (if (string-equal (system-name) office-host-name)
+                 "Office.Sent Items")))
+        ;; '(format-time-string "sent.%Y-%m")
+        )
 
 
 ;; http://www.gnus.org/manual/gnus_153.html
