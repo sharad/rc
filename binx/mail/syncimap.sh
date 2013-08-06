@@ -104,6 +104,11 @@ EOF
 
 }
 
+function error() {
+    notify "$*"
+    logger "$*"
+}
+
 function warn() {
     if [ $warn ] ; then
         notify "$*"
@@ -120,7 +125,8 @@ function verbose() {
 
 function notify() {
     if [ -t 1 ] ; then
-        echo -e "${pgm}:" "$*"
+        # echo -e "${pgm}:" "$*" >&2
+        print "${pgm}:" "$*" >&2
     else
         notify-send "${pgm}:" "$*"
     fi
@@ -148,6 +154,7 @@ function gnome-keyring-attach() {
     fi
 
     if ! timeout -s KILL 2 ~/bin/get-imap-pass 2>&1 > /dev/null; then
+        error "Keyring is not responding. Please check error with get-imap-pass"
 	exit 1;
     fi
 }
