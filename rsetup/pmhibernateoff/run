@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+[ -r ~/.rsetup/pmhibernateoff/run.d/${HOST//.*} ] &&
+~/.rsetup/pmhibernateoff/run.d/${HOST//.*}

@@ -1,0 +1,9 @@
+
+
+
+# VAR=value
+# export VAR
+
+
+[ -r ~/.rsetup/pmhibernateoff/env.d/${HOST} ] && . ~/.rsetup/pmhibernateoff/env.d/${HOST}
+

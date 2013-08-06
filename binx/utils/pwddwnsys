@@ -31,7 +31,16 @@ function poweroffsys() {
     if [ -e $enable_file ] ; then
         if [ -z "$noaction" ] ; then
             [ -n "$debug" ] && notify sudo $action if noaction $noaction
-            [ -n "$debug" ] || { sync ; sleep 7s ; sync ; sleep 2s ; sudo $action } # do sync as some time it crash
+            [ -n "$debug" ] ||
+            {
+                sync
+                sleep 7s
+                sync
+                sleep 2s
+                ${action}on
+                sudo $action
+                ${action}off
+            } # do sync as some time it crash
         else
             [ -n "$debug" ] && notify sudo $action else noaction $noaction
             [ -n "$debug" ] || notify sudo $action
@@ -123,7 +132,16 @@ function logmsg() {
     logger -i -p local1.notice -t ${pgm}  -- "$*"
 }
 
-
+### action pref hooks ###
+function pm-hibernateon () {
+    source ~/.rsetup/pmhibernateon/env
+    ~/.rsetup/pmhibernateon/run
+}
+function pm-hibernateoff () {
+    source ~/.rsetup/pmhibernateoff/env
+    ~/.rsetup/pmhibernateoff/run
+}
+### action pref hooks ###
 
 pgm=$(basename $0)
 

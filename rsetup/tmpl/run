@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+[ -r ~/.rsetup/tmpl/run.d/${HOST//.*} ] &&
+~/.rsetup/tmpl/run.d/${HOST//.*}

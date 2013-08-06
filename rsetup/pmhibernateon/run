@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+
+[ -r ~/.rsetup/pmhibernateon/run.d/${HOST//.*} ] &&
+~/.rsetup/pmhibernateon/run.d/${HOST//.*}
+
+ecryptfs-mount-private
+

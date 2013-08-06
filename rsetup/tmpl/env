@@ -1,0 +1,9 @@
+
+
+
+# VAR=value
+# export VAR
+
+
+[ -r ~/.rsetup/tmpl/env.d/${HOST} ] && . ~/.rsetup/tmpl/env.d/${HOST}
+
