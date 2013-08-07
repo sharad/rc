@@ -571,8 +571,9 @@ Also returns nil if pid is nil."
               (desktop-vc-save *desktop-save-filename*)
               ;; (desktop-save-in-desktop-dir)
               (progn
-                (remove-hook 'auto-save-hook 'save-all-sessions-auto-save)
-                (error "You %d are not the desktop owner %d. removed my-desktop-save from auto-save-hook."
+                (sharad/disable-session-saving)
+                ;; (remove-hook 'auto-save-hook 'save-all-sessions-auto-save)
+                (error "You %d are not the desktop owner %d. removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook by calling M-x sharad/disable-session-saving"
                        (emacs-pid) owner))))))
 
   (defcustom save-all-sessions-auto-save-idle-time-interval 7 "save all sessions auto save idle time interval")
@@ -606,8 +607,8 @@ to restore in case of sudden emacs crash."
              (1+ *my-desktop-save-error-count* )
              (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
                (setq *my-desktop-save-error-count* 0)
-               (message "save-all-sessions-auto-save(): Removing save-all-sessions-auto-save function from auto-save-hook" e)
-               (remove-hook 'auto-save-hook 'save-all-sessions-auto-save))))))))
+               (message "save-all-sessions-auto-save(): %s" e)
+               (sharad/disable-session-saving))))))))
 
 
   (when nil
@@ -678,8 +679,8 @@ to restore in case of sudden emacs crash."
         (frame-session-restore (selected-frame)))
       (message "leaving sharad/desktop-session-restore")))
 
-  (add-hook 'session-before-save-hook
-            'my-desktop-save)
+  ;; (add-hook 'session-before-save-hook
+  ;;           'my-desktop-save)
 
   ;; (when nil
   ;;   ;; moved to sharad/desktop-session-restore
