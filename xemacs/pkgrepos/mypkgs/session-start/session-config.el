@@ -575,6 +575,8 @@ Also returns nil if pid is nil."
                 (error "You %d are not the desktop owner %d. removed my-desktop-save from auto-save-hook."
                        (emacs-pid) owner))))))
 
+  (defcustom save-all-sessions-auto-save-idle-time-interval 7 "save all sessions auto save idle time interval")
+  (defcustom save-all-sessions-auto-save-time-interval 600 "save all sessions auto save time interval")
 
   (defvar save-all-sessions-auto-save-time (current-time) "")
   ;; (defun save-desktop-auto-save ()
@@ -582,26 +584,30 @@ Also returns nil if pid is nil."
     "Save elscreen frame, desktop, and session time to time
 to restore in case of sudden emacs crash."
     (interactive "P")
-    (when (or
-           force
-           (> (float-time (time-since save-all-sessions-auto-save-time)) 600))
-      (setq save-all-sessions-auto-save-time (current-time))
-      (condition-case e
-          (progn
-            (save-all-frames-session)
-            (session-vc-save-session)
-            (my-desktop-save)
-            (message "Save frame desktop and session.")
-            (message nil))
-        ('error
-         (progn
-           ;; make after 2 errors.
-           (message "save-all-sessions-auto-save: Error: %s" e)
-           (1+ *my-desktop-save-error-count* )
-           (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
-             (setq *my-desktop-save-error-count* 0)
-             (message "save-all-sessions-auto-save(): Removing save-all-sessions-auto-save function from auto-save-hook" e)
-             (remove-hook 'auto-save-hook 'save-all-sessions-auto-save)))))))
+    (let ((idle-time (current-idle-time)))
+      (when (or
+             force
+             (and idle-time
+                  ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Save-Control.html#Auto-Save-Control
+                  (> (float-time (time-since idle-time)) save-all-sessions-auto-save-idle-time-interval)
+                  (> (float-time (time-since save-all-sessions-auto-save-time)) save-all-sessions-auto-save-time-interval)))
+        (setq save-all-sessions-auto-save-time (current-time))
+        (condition-case e
+            (progn
+              (save-all-frames-session)
+              (session-vc-save-session)
+              (my-desktop-save)
+              (message "Save frame desktop and session.")
+              (message nil))
+          ('error
+           (progn
+             ;; make after 2 errors.
+             (message "save-all-sessions-auto-save: Error: %s" e)
+             (1+ *my-desktop-save-error-count* )
+             (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
+               (setq *my-desktop-save-error-count* 0)
+               (message "save-all-sessions-auto-save(): Removing save-all-sessions-auto-save function from auto-save-hook" e)
+               (remove-hook 'auto-save-hook 'save-all-sessions-auto-save))))))))
 
 
   (when nil
