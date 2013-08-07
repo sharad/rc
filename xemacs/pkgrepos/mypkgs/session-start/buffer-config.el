@@ -176,7 +176,9 @@
   ;;     used-mode
   ;;     mode
   ;;
-  ;; Since filename can work for any part of the path, if you filter on a partial (or complete) directory, anything you have open from the directory is now grouped:
+  ;; Since filename can work for any part of the path, if you filter
+  ;; on a partial (or complete) directory, anything you have open from
+  ;; the directory is now grouped:
   ;;
   ;;     ("journal" (filename . "/personal/journal/"))
 
@@ -272,8 +274,10 @@
                            (mode . java-mode)
                            (mode . idl-mode)
                            (mode . lisp-mode)))
-           ("Other Buffer" (or
-                            (name . "^\\*.+\\*$"))))))
+           ("other" (or
+                     (name . "^\\*.+\\*$")))
+           ("debug" (or
+                     (name . " .+debug.+$"))))))
 
 
 
@@ -402,8 +406,8 @@
 
   (setq
    group-start-fun-alist
-   '(("gnus" . (gnus-unplugged . gnus-group-exit))
-     ("erc" . (sharad/erc-start-or-switch))
+   '(("gnus"    . (gnus-unplugged . gnus-group-exit))
+     ("erc"     . (sharad/erc-start-or-switch))
      ("planner" . (plan))))
 
   (defun sharad/ibuffer-bury-group (group &optional buflist)
@@ -470,8 +474,7 @@
             (switch-to-buffer (car buflist))
             (if (assoc group group-window-configuration-alist)
                 ;;                 (set-window-configuration (cdr (assoc group group-window-configuration-alist)))
-                (elscreen-apply-window-configuration (cdr (assoc group group-window-configuration-alist)))
-                )
+                (elscreen-apply-window-configuration (cdr (assoc group group-window-configuration-alist))))
             (if call-start-up-cmd
                 (call-group-start-stop-alist-cmd group 'start)))
           (call-group-start-stop-alist-cmd group 'start))))
@@ -498,7 +501,6 @@
       (if (sharad/ibuffer-included-in-group-p (current-buffer) group)
           (sharad/hide-group group force-call-cmd)
           (sharad/unhide-group group force-call-cmd)))))
-
 
 ;;}}
 
@@ -539,7 +541,6 @@
     (let* ((buffer (or buffer (current-buffer)))
            (group (sharad/ibuffer-containing-group-of-buffer buffer t))
            (obuff (get-buffer ad-do-it)))
-      ;; (message "obuff %s group %s" obuff group)
       (setq
        ad-return-value
        (if (and sharad/context-ignore-buffer
