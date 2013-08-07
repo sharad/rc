@@ -53,20 +53,22 @@
 (defun fmbiff ()
   (interactive)
   (save-excursion
-    (set-buffer "*Group*")
-    ; (beginning-of-buffer)
-    (goto-char (point-min))
-    (defvar foundanymbox nil)
-    (cond ((re-search-forward "INBOX.ALL" nil t)
-           (setq foundanymbox t))
-          (t (setq foundanymbox nil)))
-    (set-buffer "*Group*")
-    ; (beginning-of-buffer)
-    (goto-char (point-min))
-    (cond ((re-search-forward "0: INBOX.ALL" nil t)
-           (setq foundnewmbox ""))
-          (t (if foundanymbox (setq foundnewmbox "[M]")
-               (setq foundnewmbox ""))))))
+    (with-current-buffer gnus-group-buffer
+      ;; (set-buffer "*Group*")
+      ; (beginning-of-buffer)
+      (goto-char (point-min))
+      (defvar foundanymbox nil)
+      (cond ((re-search-forward "INBOX.ALL" nil t)
+             (setq foundanymbox t))
+            (t (setq foundanymbox nil)))
+      ;; (set-buffer "*Group*")
+      ; (beginning-of-buffer)
+      (goto-char (point-min))
+      (cond ((re-search-forward "0: INBOX.ALL" nil t)
+             (setq foundnewmbox ""))
+            (t (if foundanymbox (setq foundnewmbox "[M]")
+                   (setq foundnewmbox ""))))
+      (message nil))))
 
 (unless (member 'foundnewmbox global-mode-string)
    (setq global-mode-string (append global-mode-string
@@ -164,8 +166,10 @@
         (message "gnus-demon-scan-mail-and-news-now %d" level)
         (save-window-excursion
           (save-excursion
-            (set-buffer gnus-group-buffer)
-            (gnus-group-get-new-news 3))))))
+            (with-current-buffer gnus-group-buffer
+              ;; (set-buffer gnus-group-buffer)
+              (gnus-group-get-new-news 3)
+              (message nil)))))))
 
   (add-hook 'gnus-group-mode-hook 'gnus-demon-init)
   (add-hook 'gnus-exit-gnus-hook 'gnus-demon-cancel)

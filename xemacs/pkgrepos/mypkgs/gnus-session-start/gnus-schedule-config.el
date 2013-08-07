@@ -104,8 +104,10 @@
   (when (gnus-alive-p)
     (save-window-excursion
       (save-excursion
- (set-buffer gnus-group-buffer)
- (gnus-group-get-new-news)))))
+        (with-current-buffer gnus-group-buffer
+          ;; (set-buffer gnus-group-buffer)
+          (gnus-group-get-new-news)
+          (message nil))))))
 
 (defun gnus-demon-scan-and-update ()
   (gnus-demon-scan-mail-or-news-and-update))
