@@ -77,6 +77,8 @@
   (midnight-delay-set 'midnight-delay "4:30am")
   (add-hook 'midnight-hook '(lambda ()
                              (save-window-excursion
+                               (message "Midnight: running calendar and planner")
+                               (calendar)
                                (plan)))))
 
 

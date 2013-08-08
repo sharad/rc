@@ -96,7 +96,7 @@ if [[  $TERM == "XYZ" ]] ; then
     local ps1status="%(?..%S%?%s )"
 else
     if [[  $TERM == "screen" ]] ; then
-        local ps1status="%(?..%S%?%s )"
+        local ps1status="%(?..%? )"
     else
         local ps1status="%(?..%S%{$fg[red]%}%?%{$reset_color%}%s )"
     fi
