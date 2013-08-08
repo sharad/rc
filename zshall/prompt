@@ -95,14 +95,22 @@ fi
 if [[  $TERM == "XYZ" ]] ; then
     local ps1status="%(?..%S%?%s )"
 else
-    local ps1status="%(?..%S%{$fg[red]%}%?%{$reset_color%}%s )"
+    if [[  $TERM == "screen" ]] ; then
+        local ps1status="%(?..%S%{$fg[red]%}%?%{$reset_color%}%s )"
+    else
+        local ps1status="%(?..%S%?%s )"
+    fi
 fi
 
 	# time at next hour
 if [[  $TERM == "XYZ" ]] ; then
     local ps1_time_at_hour="%(0t.%t .)"
 else
-    local ps1_time_at_hour="%(0t.%{$fg[red]%}%t%{$reset_color%} .)"
+    if [[  $TERM == "screen" ]] ; then
+        local ps1_time_at_hour="%(0t.%t .)"
+    else
+        local ps1_time_at_hour="%(0t.%{$fg[red]%}%t%{$reset_color%} .)"
+    fi
 fi
 
 local ps1_dir='%2~'
