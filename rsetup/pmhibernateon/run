@@ -5,3 +5,8 @@
 
 ecryptfs-mount-private
 
+[ -r ~/.rsetup/ifdown/run ] &&
+~/.rsetup/ifdown/run
+
+
+

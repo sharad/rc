@@ -1,9 +1,0 @@
-#!/bin/zsh
-# -*- mode: shell-script; -*-
-
-rsync -av   ~/.xemacs/pkgrepos/mypkgs/planner-utils/.  ~/../paradise/Projects/lisp/pa/in.net.sharad.pa-backend-emacs-planner/emacs/lisp/planner-utils/.
-rsync -av   ~/.xemacs/pkgrepos/mypkgs/pa-planner/.  ~/../paradise/Projects/lisp/pa/in.net.sharad.pa-backend-emacs-planner/emacs/lisp/pa-planner/.
-
-
-
-

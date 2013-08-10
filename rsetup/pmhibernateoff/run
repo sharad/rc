@@ -2,3 +2,12 @@
 
 [ -r ~/.rsetup/pmhibernateoff/run.d/${HOST//.*} ] &&
 ~/.rsetup/pmhibernateoff/run.d/${HOST//.*}
+
+
+ecryptfs-mount-private
+
+
+[ -r ~/.rsetup/ifup/run ] &&
+~/.rsetup/ifup/run
+
+
