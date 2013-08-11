@@ -380,13 +380,17 @@ startup in daemon mode."
         (message "sharad/enable-startup-inperrupting-feature() completed Seen.")
         (setq debug-on-error t )))
 
-
+    (defvar sharad/enable-startup-inperrupting-feature-in-frame-once-lock nil "Lock for sharad/enable-startup-inperrupting-feature-in-frame-once")
     (defun sharad/enable-startup-inperrupting-feature-in-frame-once (frame)
-      (select-frame frame)
-      ;; (with-report-error "check"
-      ;;                    (sharad/enable-startup-inperrupting-feature))
-      (sharad/enable-startup-inperrupting-feature)
-      (remove-hook 'after-make-frame-functions 'sharad/enable-startup-inperrupting-feature-in-frame-once))
+      (if sharad/enable-startup-inperrupting-feature-in-frame-once-lock
+          (progn
+            (setq sharad/enable-startup-inperrupting-feature-in-frame-once-lock t)
+            (select-frame frame)
+            ;; (with-report-error "check"
+            ;;                    (sharad/enable-startup-inperrupting-feature))
+            (sharad/enable-startup-inperrupting-feature)
+            (remove-hook 'after-make-frame-functions 'sharad/enable-startup-inperrupting-feature-in-frame-once)
+            (setq sharad/enable-startup-inperrupting-feature-in-frame-once-lock nil))))
 
     (add-hook 'after-make-frame-functions 'sharad/enable-startup-inperrupting-feature-in-frame-once)))
   ;; (sharad/enable-startup-inperrupting-feature-in-frame-once (selected-frame))

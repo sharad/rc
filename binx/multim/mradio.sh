@@ -44,6 +44,7 @@ function main() {
 
 
 function mplayer_radio() {
+    grep -A 2 '\[radio/fm\]' ~/.mplayer/config | grep channel | cut -d: -f3 | cut -d= -f2 | tr -- ,- "\n\t"  | cat -n
     if whence mplayer >&/dev/null ; then
 
 #         pacmd <<'ZZZ'
