@@ -169,3 +169,9 @@ alias pmailhold="sudo qshape -s hold"
 # alias ldapsearch='ldapsearch -y ~/.ldappass -x  -LLL '
 alias ldapsearch='ldapsearch -w $(< ~/.ldappass) -x  -LLL '
 alias fmchannels="grep radio= ~/.mplayer/config  | cut -d= -f6 | tr -- , '\n' | cat -n"
+
+
+# Encrypt/Decrypt
+alias sslencrypt='openssl enc -aes-256-cbc -e'
+alias ssldecrypt='openssl enc -aes-256-cbc -d'
+
