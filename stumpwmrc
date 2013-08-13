@@ -6,10 +6,23 @@
 ;;  Always remember, the StumpWM dotfile is in lisp
 ;;  (setq auto-mode-alist (cons '(".stumpwmrc$" . lisp-mode) auto-mode-alist))"")))
 
+;; Press C-c @ C-q to unfold
+
+
 (defparameter *debug-level* 10)
 (redirect-all-output (data-dir-file "debug-output" "txt"))
 
 (in-package :stumpwm)
+
+;;{{{ Load all subfiles
+(defun sharad/load-dir-files (dir)
+    (dolist (file (directory (concat dir "*.lisp")))
+        (load file)
+        (message "Loaded ~a" file)))
+;; Load all sub files
+(sharad/load-dir-files *session-dir*)
+(sharad/load-dir-files (concat *session-dir* "contrib"))
+;;}}}
 
 (setf *group-format* "%t [%s]")
 
@@ -157,7 +170,13 @@
 
 ;; Default layout
 ;;{{{ mode-line
-(defvar *mode-line-fmts* '(((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - %N [^B%n^b ^71^B%u^b^7* ] %W - %m - %D")
+(defvar *mode-line-fmts* '(
+                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^01%N^** [^B%n^b ^B^01%u^**^b ] %W - %m - %D")
+                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^71%N^** [^B%n^b ^B^71%u^**^b ] %W - %m - %D")
+                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^1*%N^** [^B%n^b ^B^1*%u^**^b ] %W - %m - %D")
+                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
+                            (:eval (format "Name"))
+                            " %p - %c (%f) - %B - ^1*%N^** [^B%n^b ^B^1*%u^**^b ] %W - %m - %D")
                            ;; ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - %N [^B%n^b ^71^B%u^b^70^* ] %W - %m - %D")
                            ;; (:eval (format "Name"))
                             " - %c (%f) - %b %B - %N [^B%n^b ^B^1%u^*^b ] %W - %m - %D"
@@ -307,15 +326,9 @@
      :role "MainWindow"))
 
 
-(defun sharad/load-dir-files (dir)
-    (dolist (file (directory (concat dir "*.lisp")))
-        (load file)
-        (message "Loaded ~a" file)))
 
 
 (progn
-  (sharad/load-dir-files *session-dir*)
-  (sharad/load-dir-files (concat *session-dir* "contrib"))
   (when (or t (usepa))
     (pa-fnstumpwm::initpa)
     (pa-fnstumpwm::select-plan-task)))
