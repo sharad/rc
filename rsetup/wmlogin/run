@@ -101,10 +101,14 @@ if [ $(atq | cut -f1) -gt 0 ] ; then
 fi
 
 
-
+# WM specific setup
+~/bin/wallpaper-setup
+~/bin/stumpwm-setup
 
 
 [ -r ~/.rsetup/wmlogin/run.d/${HOST//.*} ] &&
 ~/.rsetup/wmlogin/run.d/${HOST//.*}
+
+
 
 
