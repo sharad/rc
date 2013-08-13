@@ -1,0 +1,104 @@
+
+
+;;{{{ Background
+(defparameter *desktop-background-image-path* (concat *home-dir* "/.share/backgrounds"))
+
+(defparameter wallpaper-image-command
+  (car
+   '("display -resize 1280x1024 -window root ~a"
+     "xv -quit -root -rmode 5 -max ~a"))
+  "wallpaper image command")
+
+(defun select-random-wallpaper-image-path ()
+  "Select a random image"
+  (let ((file-list (directory (concatenate 'string *desktop-background-image-path* "/*/*.jpg"))))
+    (if file-list
+        (let ((*random-state* (if file-list (make-random-state t))))
+          (namestring (nth (random (length file-list)) file-list))))))
+
+(defun setup-wallpaper-image (image-path)
+  (run-shell-command
+   (format nil wallpaper-image-command image-path)))
+
+(defun setup-random-wallpaper-image ()
+  (let ((image-path (select-random-wallpaper-image-path)))
+    (if image-path
+        (setup-wallpaper-image image-path)
+        (message "No image present to setup random wallpaper."))))
+
+(defcommand random-wallpaper () ()
+  "Setup random wallpaper"
+  (setup-random-wallpaper-image))
+
+;;}}} Background
+
+
+;; Default layout
+;;{{{ mode-line
+(defvar *mode-line-fmts* '(
+                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^01%N^** [^B%n^01%u^**^b] %W - %m - %D")
+                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %W - %m - %D")
+                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^1*%N^** [^B%n^b ^B^1*%u^**^b ] %W - %m - %D")
+                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
+                            (:eval (format "Name"))
+                            " %p - %c (%f) - %B - ^1*%N^** [^B%n^b ^B^1*%u^**^b ] %W - %m - %D")
+                           ;; ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - %N [^B%n^b ^71^B%u^b^70^* ] %W - %m - %D")
+                           ;; (:eval (format "Name"))
+                            " - %c (%f) - %b %B - %N [^B%n^b ^B^1%u^*^b ] %W - %m - %D"
+
+                            "%N [^B%n^b ^B^1%u^*^b ] %W"))
+
+;; (setf *mode-line-fmts* '(
+;;                            ((:eval
+;;                              (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
+;;                             ;; (:eval (format "Name"))
+;;                             "~% - %c (%f) - %B - [^B%n^b ^B%u^b] %W - %m - %D")
+;;                             " - %c (%f) - %b %B - [^B%n^b ^B%u^b ] %W - %m - %D"
+;;                             "[^B%n^b ^B%u^b] %W"))
+
+(setf stumpwm:*screen-mode-line-format* (car *mode-line-fmts*))
+
+;; Stumpwm lets you have a mode-line that can be used to show
+;; different things (e.g. - what windows/groups are open, date/time,
+;; cpu usage, etc). I normally don't want to see the mode-line
+;; (because I don't like to see mode-line info unless I want to see
+;; it) but I do want to see it when I'm running a Stumpwm command (I
+;; display window/group info in the mode-line; therefore, if I'm
+;; switching to a different window/group, it's convenient to have the
+;; mode-line display when I'm initiating something in Stumpwm). So, I
+;; created a "hook" that runs whenever the Stumpwm "escape key" (by
+;; default - "C-t") is pressed. Now, I only see the mode line when I
+;; actually need to see it:
+
+;; (defun toggle-mode-line-hook (key key-seq cmd)
+;;   (declare (ignore key key-seq cmd))
+;;   (mode-line))
+
+(defun toggle-mode-line-hook (key key-seq cmd)
+  (declare (ignore key key-seq cmd))
+  (toggle-mode-line (current-screen) (current-head) (car *mode-line-fmts*)))
+
+;;(toggle-mode-line (current-screen) (current-head) '(eval: "(format \"Name\")"))
+
+;; (add-hook *key-press-hook* 'toggle-mode-line-hook)
+;;(add-hook *key-press-hook* 'toggle-mode-line)
+
+
+;;}}} mode-line end
+
+;;Set X11 background image for all screens
+(when *desktop-background-image-path*
+  (let ((start-screen (car *screen-list*)))
+    (loop for i in *screen-list*
+       for j in *mode-line-fmts*
+       do (progn (switch-to-screen i)
+                 ;; Turn on the modeline
+                 (if (not (head-mode-line (current-head)))
+                     (toggle-mode-line (current-screen) (current-head) j))
+                 (setup-random-wallpaper-image)))
+    (switch-to-screen start-screen)))
+;; "display -resize `xwininfo -root | awk '{ if ($1 == \"Width:\" ) { w=$2 } else if ($1 == \"Height:\" ) { h=$2 } } END { print w \"x\" h }'` -window root "
+
+
+
+
