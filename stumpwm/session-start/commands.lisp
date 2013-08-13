@@ -7,7 +7,7 @@
 
 
 
-;; (fboundp 'stumpwm::run-cli-command)
+;; #+pb (fboundp 'stumpwm::run-cli-command)
 
 (defcommand fnext () ()
   (focus-next-frame (current-group)))
@@ -105,13 +105,13 @@
     (if (and video-pid
              (sb-ext:process-alive-p video-pid))
                                         ;(signal 'INT)))
-        (let (pid (process-pid video-pid))
+        (let ((pid (process-pid video-pid)))
           (when (sb-ext:process-kill video-pid 2)
-            (setf video-pid nil)
             (message (concatenate 'string
                                   "Stopped the desktop grabbing from the pid ~a~%"
                                   "See the video in ~a file")
-                     pid filename)))
+                     pid filename)
+            (setf video-pid nil)))
         (message "No desktop grabbing happenning to stop.")))
 
   (defcommand grab-desktop-play () ()
