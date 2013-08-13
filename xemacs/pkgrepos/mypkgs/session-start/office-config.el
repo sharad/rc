@@ -78,11 +78,11 @@
   (interactive
    (let* ((task (completing-read "what: " (mapcar 'car task-alist) nil t))
           (name (completing-read "name: " (directory-files (concat taskdir "/" task "/")) nil))
-          (bug (if (eq task 'bug)
+          (bug (if (string-equal task "bugs")
                    (car
                     (bugzilla-get-bugs
                      '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url")
-                     (list "ids" name)))))
+                     `(("ids" ,name))))))
           (desc (if bug
                     (cdr (assoc "summary" bug))
                     (read-from-minibuffer (format "Desc of %s: " name)))))
@@ -114,7 +114,7 @@
 
           ;; Planner
           (let ((plan-page (planner-read-non-date-page (planner-file-alist))))
-            (if (eq task 'bug)
+            (if (string-equal task "bugs")
                 (planner-bugzilla-create-bug-to-task bug plan-page t)
                 (planner-create-task
                  (format "%s: %s" name desc)

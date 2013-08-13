@@ -197,6 +197,7 @@
 ; (bugz-method 'Bug.get "bugs" '(("ids" 12123 32121)))
 ; (bugz/Bug.method 'Bug.get '(("ids" 37026 )))
 ; (bugz-method 'Bug.get "bugs" '(("ids" 37026)))
+; (bugzilla-get-bugs '("id" "summary") '(("ids" 37026)))
 
 ;;;;
 

@@ -333,11 +333,11 @@
          ;; message is mail and this is not my system taj then do not save Gcc copy in sent-mail
          (eval (unless (equal (system-name) "taj")
                  (set (make-local-variable 'gnus-message-archive-group)
-                      (list
-                       "sent" "sent-mail"
-                       (format-time-string "sent.%Y-%m")
-                       ,@(if (equal (system-name) office-host-name)
-                            '("Office.Sent Items")))))))
+                      '("sent"
+                        "sent-mail"
+                        ,(format-time-string "sent.%Y-%m")
+                        ,@(if (equal (system-name) office-host-name)
+                              '("Office.Sent Items")))))))
 
         (message-news-p
          (name ,myname)
@@ -346,7 +346,10 @@
          (address ,email-addr)
          (eval
           (progn
-            (set (make-local-variable 'gnus-message-archive-group) '((format-time-string "sent.%Y-%m")"sent" "sent-news"))
+            (set (make-local-variable 'gnus-message-archive-group)
+                 '(,(format-time-string "sent.%Y-%m")
+                   "sent"
+                   "sent-news"))
             (set (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)
             (set (make-local-variable 'message-cite-reply-above) nil)
             (set (make-local-variable 'message-cite-reply-position) 'traditional))))
@@ -365,7 +368,10 @@
          (signature "Regards,\n-sharad")
          (address ,office-email)
          (eval (set (make-local-variable 'gnus-message-archive-group)
-                    '((format-time-string "sent.%Y-%m")"sent" "sent-mail" "Office.Sent Items"))))
+                    '(,(format-time-string "sent.%Y-%m")
+                      "sent"
+                      "sent-mail"
+                      "Office.Sent Items"))))
 
         ;; J sites
         ((header "Received" "monster.co.in\\|naukri.com") ;reply

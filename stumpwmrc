@@ -34,6 +34,16 @@
 ;;(load-module "wmii-like-stumpwmrc")
 ;;}}}
 
+;;{{{ Notification
+(define-key *root-map* (kbd "N") '*notifications-map*)
+;;}}}
+
+;;{{{ Color
+;; colors
+;; 0 = black, 1 = red, 2 = green, 3 = yellow,
+;; 4 = blue, 5 = magenta, 6 = cyan, 7 = white
+;;}}}
+
 ;;{{{ Additional keysyms
 
 (define-keysym #x1008ff31 "XF86AudioPause")
@@ -151,11 +161,11 @@
                            ((:eval
                              (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
                             ;; (:eval (format "Name"))
-                            " %p - %c (%f) - %B - [^B%n^b ^B%u^b] %W - %m - %D")
+                            " %p - %c (%f) - %B - (^1%N^7) [^B%n^b ^1^B%u^b^7] %W - %m - %D")
 
-                            " - %c (%f) - %b %B - [^B%n^b ^B%u^b ] %W - %m - %D"
+                            " - %c (%f) - %b %B - (^1%N^7) [^B%n^b ^1^B%u^b^7] %W - %m - %D"
 
-                            "[^B%n^b ^B%u^b] %W"))
+                            "(^1%N^7) [^B%n^b ^1^B%u^b^7] %W"))
 
 ;; (setf *mode-line-fmts* '(
 ;;                            ((:eval
@@ -213,9 +223,9 @@
                      (toggle-mode-line (current-screen) (current-head) j))
                  (run-shell-command
                   (concatenate 'string "echo display -resize 1280x1024 -window root "
-                  ;;(concatenate 'string "xv -quit -root -rmode 5 -max "
-                               ;; Select a random background image from a given folder
-                               ;;(select-random-background-image)
+                  (concatenate 'string "xv -quit -root -rmode 5 -max "
+                               Select a random background image from a given folder
+                               (select-random-background-image)
                                ))))
     (switch-to-screen start-screen)))
 ;; "display -resize `xwininfo -root | awk '{ if ($1 == \"Width:\" ) { w=$2 } else if ($1 == \"Height:\" ) { h=$2 } } END { print w \"x\" h }'` -window root "
