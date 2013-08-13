@@ -157,15 +157,12 @@
 
 ;; Default layout
 ;;{{{ mode-line
-(defvar *mode-line-fmts* '(
-                           ((:eval
-                             (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
-                            ;; (:eval (format "Name"))
-                            " %p - %c (%f) - %B - (^1%N^7) [^B%n^b ^1^B%u^b^7] %W - %m - %D")
+(defvar *mode-line-fmts* '(((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - %N [^B%n^b ^71^B%u^b^7* ] %W - %m - %D")
+                           ;; ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - %N [^B%n^b ^71^B%u^b^70^* ] %W - %m - %D")
+                           ;; (:eval (format "Name"))
+                            " - %c (%f) - %b %B - %N [^B%n^b ^B^1%u^*^b ] %W - %m - %D"
 
-                            " - %c (%f) - %b %B - (^1%N^7) [^B%n^b ^1^B%u^b^7] %W - %m - %D"
-
-                            "(^1%N^7) [^B%n^b ^1^B%u^b^7] %W"))
+                            "%N [^B%n^b ^B^1%u^*^b ] %W"))
 
 ;; (setf *mode-line-fmts* '(
 ;;                            ((:eval
@@ -206,11 +203,35 @@
 ;;}}} mode-line end
 
 ;;{{{ Random background
-(defun select-random-background-image ()
+
+(defparameter wallpaper-image-command
+  (car
+   '("display -resize 1280x1024 -window root ~a"
+     "xv -quit -root -rmode 5 -max ~a"))
+  "wallpaper image command")
+
+(defun select-random-wallpaper-image-path ()
   "Select a random image"
-  (let ((file-list (directory (concatenate 'string *desktop-background-image-path* "/*/*.jpg")))
-        (*random-state* (make-random-state t)))
-    (namestring (nth (random (length file-list)) file-list))))
+  (let* ((file-list (directory (concatenate 'string *desktop-background-image-path* "/*/*.jpg")))
+         (*random-state* (if file-list (make-random-state t))))
+    (if file-list
+        (namestring (nth (random (length file-list)) file-list)))))
+
+(defun setup-wallpaper-image (image-path)
+  (run-shell-command
+   (format nil wallpaper-image-command image-path)))
+
+(defun setup-random-wallpaper-image ()
+  (let ((image-path (select-random-wallpaper-image-path)))
+    (if image-path
+        (setup-wallpaper-image image-path)
+        (message "No image present to setup random wallpaper."))))
+
+(defcommand random-wallpaper () ()
+  "Setup random wallpaper"
+  (setup-random-wallpaper-image))
+
+;;}}} Random background
 
 ;;Set X11 background image for all screens
 (when *desktop-background-image-path*
@@ -221,15 +242,9 @@
                  ;; Turn on the modeline
                  (if (not (head-mode-line (current-head)))
                      (toggle-mode-line (current-screen) (current-head) j))
-                 (run-shell-command
-                  (concatenate 'string "echo display -resize 1280x1024 -window root "
-                  (concatenate 'string "xv -quit -root -rmode 5 -max "
-                               Select a random background image from a given folder
-                               (select-random-background-image)
-                               ))))
+                 (setup-random-wallpaper-image)))
     (switch-to-screen start-screen)))
 ;; "display -resize `xwininfo -root | awk '{ if ($1 == \"Width:\" ) { w=$2 } else if ($1 == \"Height:\" ) { h=$2 } } END { print w \"x\" h }'` -window root "
-;;}}}
 
 (unless (find-package :pa-fnstumpwm)
   (make-package :pa-fnstumpwm))
@@ -328,7 +343,7 @@
 
 
 ;; Local Variables: **
-;; folded-file:f **
+;; folded-file:t **
 ;; mode:lisp **
 ;; comment-column:0 **
 ;; comment-start: ";; "  **
