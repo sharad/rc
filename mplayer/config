@@ -18,7 +18,7 @@
 
 [radio/fm]
 rawaudio=rate=32000
-radio=adevice=hw=2:arate=32000:channels=91.90-IndigoEng,93.5-RedFMH,94.3-OneH,100-Amrut,101.30-Raibow,102.90-VivdhBH,104.00-Fever,106.40-Gyanvani
+radio=adevice=hw=2:arate=32000:channels=91.90-IndigoEng,93.50-RedFMH,94.30-OneH,100.00-Amrut,101.30-Raibow,102.90-VivdhBH,104.00-Fever,106.40-Gyanvani
 # cache=1024
 # cache-min=20
 
@@ -30,7 +30,7 @@ radio=adevice=hw=2:arate=32000:channels=91.90-IndigoEng,93.5-RedFMH,94.3-OneH,10
 
 [radio/fmrecord]
 rawaudio=rate=32000
-radio=adevice=hw=2:arate=32000:channels=91.90-IndigoEng,93.5-RedFMH,94.3-OneH,100-Amrut,101.30-Raibow,102.90-VivdhBH,104.00-Fever,106.40-Gyanvani
+radio=adevice=hw=2:arate=32000:channels=91.90-IndigoEng,93.50-RedFMH,94.30-OneH,100.00-Amrut,101.30-Raibow,102.90-VivdhBH,104.00-Fever,106.40-Gyanvani
 cache=4096
 cache-min=30
 
