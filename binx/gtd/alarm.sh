@@ -155,11 +155,14 @@ XYEOF
 function state_locked () {
     pgrep pidgin && purple-remote 'setstatus?status=$lockstatus&message=Away'
     whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -as
+    whence stumpish && stumpish fclear
+
 }
 
 function state_unlocked () {
     whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -AS
     pgrep pidgin && purple-remote 'setstatus?status=$unlockstatus&message='
+    whence stumpish && stumpish pull-hidden-other
 }
 
 function screen_lock() {

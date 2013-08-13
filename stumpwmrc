@@ -181,8 +181,8 @@
 ;; Default layout
 ;;{{{ mode-line
 (defvar *mode-line-fmts* '(
-                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^01%N^** [^B%n^b ^B^01%u^**^b ] %W - %m - %D")
-                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^71%N^** [^B%n^b ^B^71%u^**^b ] %W - %m - %D")
+                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^01%N^** [^B%n^01%u^**^b] %W - %m - %D")
+                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %W - %m - %D")
                            ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^1*%N^** [^B%n^b ^B^1*%u^**^b ] %W - %m - %D")
                            ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
                             (:eval (format "Name"))
@@ -241,10 +241,10 @@
 
 (defun select-random-wallpaper-image-path ()
   "Select a random image"
-  (let* ((file-list (directory (concatenate 'string *desktop-background-image-path* "/*/*.jpg")))
-         (*random-state* (if file-list (make-random-state t))))
+  (let ((file-list (directory (concatenate 'string *desktop-background-image-path* "/*/*.jpg"))))
     (if file-list
-        (namestring (nth (random (length file-list)) file-list)))))
+        (let ((*random-state* (if file-list (make-random-state t))))
+          (namestring (nth (random (length file-list)) file-list))))))
 
 (defun setup-wallpaper-image (image-path)
   (run-shell-command
