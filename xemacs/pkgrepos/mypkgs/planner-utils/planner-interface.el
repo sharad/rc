@@ -137,16 +137,18 @@
  (task-status-map 'planner 'open))
 
 (defun planner-today-ensure-exists ()
-  (unless (file-exists-p (concat planner-directory (planner-today) ".muse"))
+  (let ((tramp-mode nil))
+   (unless (file-exists-p (concat planner-directory (planner-today) ".muse"))
     (save-excursion
       (save-window-excursion
         (calendar)
         (plan))))
-  (planner-today))
+   (planner-today)))
 
 (defun planner-task-lists (plan)
-  (planner-extract-tasks
-   (list (cons plan (concat planner-directory "/" plan ".muse")))))
+  (let ((tramp-mode nil))
+    (planner-extract-tasks
+     (list (cons plan (concat planner-directory "/" plan ".muse"))))))
 
 ;;test
 ;;
