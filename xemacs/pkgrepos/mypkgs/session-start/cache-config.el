@@ -32,13 +32,17 @@
 
 (eval-after-load "filecache"
 
+  (defvar file-cache-directories nil
+    ;; '("/ssh:spratap@susengg-01:/")
+    "file-cache-directories")
+
 
   '(add-hook
     'sharad/enable-startup-inperrupting-feature-hook
     #'(lambda ()
         (condition-case e
-            (file-cache-add-directory
-             "/ssh:spratap@susengg-01:/")
+            (dolist (dir file-cache-directories)
+              (file-cache-add-directory dir))
           ('error (message "problem happened in %s fun call."
                            'file-cache-add-directory))))))
 

@@ -36,8 +36,8 @@
 ;; Default layout
 ;;{{{ mode-line
 (defvar *mode-line-fmts* '(
-                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^01%N^** [^B%n^01%u^**^b] %W - %m - %D")
                            ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %W - %m - %D")
+                           ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^01%N^** [^B%n^01%u^**^b] %W - %m - %D")
                            ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^1*%N^** [^B%n^b ^B^1*%u^**^b ] %W - %m - %D")
                            ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
                             (:eval (format "Name"))
