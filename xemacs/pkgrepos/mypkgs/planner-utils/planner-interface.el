@@ -218,13 +218,37 @@
    (member (concat "[[" plan "]]") (nth 5 task))
    (member (nth 3 task) status)))
 
+;; (defvar planner-task-simple-name-regex "^\\(.\+\}\}\\)\\(\s\+[[][[]\\)\?" "planner task simple name regex")
+;; b39437 code: Un reason (0x0001) {{Tasks:42}}
+(defvar planner-task-simple-name-regex "^\\(.\+\\)\s\{\{" "planner task simple name regex")
+;; b39437 code: Un reason (0x0001)
+
+
+(defun extract-task-name (task)
+  (if (string-match "^\\(.\+\}\}\\)\\(\s\+[[][[]\\)\?" task)
+      (match-string 1 task)))
+  ;; (if (string-match "^\\(.\+\}\}\\)\s\+" task)
+)
 
 (defun extract-task-name (task)
   ;; (if (string-match "^\\(.\+\}\}\\)\s\+[[][[]" task)
   ;; (if (string-match "^\\(.\+\}\}\\)\s\+" task)
-  (if (string-match "^\\(.\+\}\}\\)\\(\s\+[[][[]\\)\?" task)
-      (match-string 1 task)))
+  (let* ((task-with-links-removed
+          (if (string-match planner-task-simple-name-regex task)
+              (match-string 1 task)
+              task))
+         (task-with-links-url-removed
+          (replace-regexp-in-string
+           "\s*[[][[].*[]][[]url[]][]]"
+           ""
+           task-with-links-removed)))
+    task-with-links-url-removed))
 
+
+(testing
+ (kill-new
+  (extract-task-name
+   "b39437 code: Un reason (0x0001) [[https://bugzilla.merunetworks.com/bugzilla/show_bug.cgi?id=39437][url]] {{Tasks:42}} ([[2013.08.14]],[[MyMIS]],[[TasksByProject]])")))
 
 (defun extract-task-name-from-list (task-list)
   (extract-task-name (nth 4 task-list)))

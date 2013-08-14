@@ -32,10 +32,7 @@
 
 (eval-after-load "filecache"
 
-  (defvar file-cache-directories nil
-    ;; '("/ssh:spratap@susengg-01:/")
-    "file-cache-directories")
-
+  (defvar file-cache-directories nil "file-cache-directories")
 
   '(add-hook
     'sharad/enable-startup-inperrupting-feature-hook

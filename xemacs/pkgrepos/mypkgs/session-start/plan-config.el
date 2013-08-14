@@ -96,7 +96,7 @@
   ;;(setq planner-renumber-tasks-automatically t)
   (setq
    planner-task-dates-favor-future-p t
-   planner-carry-tasks-forward t
+   planner-carry-tasks-forward 'scan-all ;; t
    planner-use-task-numbers t
    planner-sort-tasks-automatically t
    planner-align-tasks-automatically t

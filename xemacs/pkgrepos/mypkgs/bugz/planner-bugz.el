@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2012  Sharad Pratap
 
-;; Author: Sharad Pratap <sh4r4d@gmail.com>
+;; Author: Sharad Pratap <yes>
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -145,6 +145,7 @@
   (bugz-to-planner-status (cdr (assoc "bug_status" bug)))
   ;; (setq testbug bug)
   ;; (assoc "bug_status" bug)
+  ;; (kill-new (planner-bugzilla-bug-to-task-name (first (bugzilla-get-bugs '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url") '(("ids" 39437))))))
   )
 
 ;; (tree-node testbug "AAAinternals" "bug_status" :test 'string-equal)
