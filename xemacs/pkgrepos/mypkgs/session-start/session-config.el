@@ -658,7 +658,7 @@ to restore in case of sudden emacs crash."
 
 
       (unless (sharad/desktop-saved-session)
-        (message "sharad/desktop-session-restore: %s not found so trying to checkout it.")
+        (message "sharad/desktop-session-restore: %s not found so trying to checkout it." *desktop-save-filename*)
         (vc-checkout-file *desktop-save-filename*))
 
 
