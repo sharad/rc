@@ -46,22 +46,22 @@
 
 (unless vc-follow-symlinks
   (add-hook 'find-file-hook
-                (let ((file-truename (file-truename buffer-file-name))
-                      (vc-backend (vc-backend file-truename)))
+                (let* ((file-fullname (file-truename buffer-file-name))
+                       (vc-backend (vc-backend file-fullname)))
                   (when (and
                          (not vc-follow-symlinks)
                          (or
                           (file-symlink-p buffer-file-name)
-                          (not (string-equal file-truename buffer-file-name))))
+                          (not (string-equal file-fullname buffer-file-name))))
                     (if (vc-backend 'RCS)
-                        (if (or (file-exist-p (concat file-truename ",v"))
-                                (file-exist-p (concat
-                                               (file-name-directory file-truename)
+                        (if (or (file-exists-p (concat file-fullname ",v"))
+                                (file-exists-p (concat
+                                               (file-name-directory file-fullname)
                                                "RCS/"
-                                               (file-name-nondirectory file-truename)
+                                               (file-name-nondirectory file-fullname)
                                                ",v")))
-                            (vc-mode-line file-truename vc-backend))
-                        (vc-mode-line file-truename vc-backend)))))))
+                            (vc-mode-line file-fullname vc-backend))
+                        (vc-mode-line file-fullname vc-backend))))))
 
 (testing
  ;; TODO: check
@@ -70,6 +70,13 @@
 
 )
 
+
+(defun vc-checkout-file (file)
+  (condition-case e
+      (let ((default-directory (file-name-directory file)))
+        (vc-checkout (concat *desktop-save-filename*))
+        t)
+    ('file-error (message "error: %s" e) nil)))
 
 (provide 'vc-config)
 ;;; vc-config.el ends here

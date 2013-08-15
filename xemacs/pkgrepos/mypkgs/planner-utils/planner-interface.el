@@ -228,7 +228,6 @@
   (if (string-match "^\\(.\+\}\}\\)\\(\s\+[[][[]\\)\?" task)
       (match-string 1 task)))
   ;; (if (string-match "^\\(.\+\}\}\\)\s\+" task)
-)
 
 (defun extract-task-name (task)
   ;; (if (string-match "^\\(.\+\}\}\\)\s\+[[][[]" task)

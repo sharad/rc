@@ -643,6 +643,8 @@ to restore in case of sudden emacs crash."
     (add-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
     (message "Added save-all-sessions-auto-save to auto-save-hook and kill-emacs-hook"))
 
+  (require 'vc-config)
+
   ;; use session-restore to restore the desktop manually
   (defun sharad/desktop-session-restore ()
     "Restore a saved emacs session."
@@ -653,6 +655,13 @@ to restore in case of sudden emacs crash."
           (show-error (called-interactively-p 'interactive)))
       (setq debug-on-error t)
       (message "entering sharad/desktop-session-restore")
+
+
+      (unless (sharad/desktop-saved-session)
+        (message "sharad/desktop-session-restore: %s not found so trying to checkout it.")
+        (vc-checkout-file *desktop-save-filename*))
+
+
       (if (sharad/desktop-saved-session)
           (progn
             (message "sharad/desktop-session-restore")

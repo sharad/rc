@@ -53,7 +53,10 @@
 
   (deh-require-maybe muse-wiki    ;;; Allow wiki-links
       (setq muse-wiki-allow-nonexistent-wikiword t))
-  (setq mark-diary-entries-in-calendar t)
+  (setq
+   calendar-mark-diary-entries-flag t
+   ;;   mark-diary-entries-in-calendar t
+   )
 
   ;;(global-set-key (kbd "<f9> t") 'planner-create-task-from-buffer)
 
@@ -192,10 +195,17 @@
   ;;     (planner-registry-insinuate))
   ;; planner-registry-insinuate some time create problem in daemon startup.
   ;; as it may start to ask input.
-  (add-hook '*sharad/after-init-hook*
-            #'(lambda ()
-                (deh-require-maybe planner-registry
-                  (planner-registry-insinuate))))
+
+  (when nil ;; find out somewhere else (plan) is already started.
+   ;; (add-hook '*sharad/after-init-hook*
+
+   (add-hook 'sharad/enable-startup-inperrupting-feature-hook ;; '*sharad/after-init-hook*
+             '(lambda ()
+               (deh-require-maybe planner-registry
+                 (save-excursion
+                   (save-window-excursion
+                     (plan 2)
+                     (planner-registry-insinuate)))))))
 
   ;;}}
   (xrequire 'planner-zoom)

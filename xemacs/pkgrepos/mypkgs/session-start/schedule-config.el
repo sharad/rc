@@ -76,11 +76,12 @@
   ;; (midnight-delay-set 'midnight-delay 16200) ;; (eq (* 4.5 60 60) "4:30am")
   (midnight-delay-set 'midnight-delay "4:30am")
   (add-hook 'midnight-hook '(lambda ()
-                             (save-window-excursion
-                               (message "Midnight: running calendar and planner")
-                               (calendar)
-                               ;; check planner-carry-tasks-forward
-                               (plan 10)))))
+                             (save-excursion
+                               (save-window-excursion
+                                 (message "Midnight: running calendar and planner")
+                                 (calendar)
+                                 ;; check planner-carry-tasks-forward
+                                 (plan 10))))))
 
 
 (deh-require-maybe (progn
