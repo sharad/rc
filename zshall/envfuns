@@ -14,3 +14,5 @@ function setvolume() {
 #}}
 
 
+alias getvolume='amixer -- | sed -n 5p | cut -d'\'' '\'' -f6 | cut -c2-3'
+

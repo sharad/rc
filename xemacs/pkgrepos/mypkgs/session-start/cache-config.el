@@ -32,16 +32,17 @@
 
 (eval-after-load "filecache"
 
-  (defvar file-cache-directories nil "file-cache-directories")
+  '(progn
+    (defvar file-cache-directories nil "file-cache-directories")
 
-  '(add-hook
-    'sharad/enable-startup-inperrupting-feature-hook
-    #'(lambda ()
+    '(add-hook
+      'sharad/enable-startup-inperrupting-feature-hook
+      '(lambda ()
         (condition-case e
             (dolist (dir file-cache-directories)
               (file-cache-add-directory dir))
           ('error (message "problem happened in %s fun call."
-                           'file-cache-add-directory))))))
+                           'file-cache-add-directory)))))))
 
 ;; Whenever you want to load a file, you can enter C-x C-f C-<TAB> in
 ;; the minibuffer. The completion is done for the given directory.

@@ -46,7 +46,6 @@
 
 (unless vc-follow-symlinks
   (add-hook 'find-file-hook
-            #'(lambda ()
                 (let ((file-truename (file-truename buffer-file-name))
                       (vc-backend (vc-backend file-truename)))
                   (when (and
@@ -54,7 +53,15 @@
                          (or
                           (file-symlink-p buffer-file-name)
                           (not (string-equal file-truename buffer-file-name))))
-                    (vc-mode-line file-truename vc-backend))))))
+                    (if (vc-backend 'RCS)
+                        (if (or (file-exist-p (concat file-truename ",v"))
+                                (file-exist-p (concat
+                                               (file-name-directory file-truename)
+                                               "RCS/"
+                                               (file-name-nondirectory file-truename)
+                                               ",v")))
+                            (vc-mode-line file-truename vc-backend))
+                        (vc-mode-line file-truename vc-backend)))))))
 
 (testing
  ;; TODO: check

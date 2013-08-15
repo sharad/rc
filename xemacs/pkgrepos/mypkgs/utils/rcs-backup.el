@@ -79,6 +79,16 @@
     nil))
 
 
+
+;; (when nil
+;;   (vc-backend (file-truename "~/.Organize/emacs/plan/Plans/2013.06.26.muse"))
+;;   (expand-file-name (file-name-directory (file-truename "~/.Organize/emacs/plan/Plans/2013.06.26.muse") ))
+;;   (vc-file-getprop (file-truename "~/.Organize/emacs/plan/Plans/2013.06.26.muse") 'vc-backend)
+;;   (vc-registered (file-truename "~/.Organize/emacs/plan/Plans/2013.06.26.muse"))
+;;   (file-exists-p (vc-call-backend 'RCS 'registered (file-truename "~/.Organize/emacs/plan/Plans/2013.06.26.muse")))
+;;   )
+
+
 ;;;###autoload
 (defun put-file-in-rcs-for-backup (from-file)
   (let ()

@@ -299,10 +299,10 @@
 
 ;;test
 (testing
- (planner-tasks-of-plan-today (planner-today-ensure-exists) '("_" "o"))
  (planner-tasks-of-plan-today "LinuxMIS" (task-stati-of-sys 'planner '(open inprogress)))
  (planner-tasks-of-plan-today (planner-today-ensure-exists) (task-stati-of-sys 'planner '(open inprogress)))
  (planner-tasks-of-plan-today "TasksByProject" (task-stati-of-sys 'planner '(open inprogress)))
+ (planner-tasks-of-plan-today (planner-today-ensure-exists) '("_" "o"))
  )
 
 (defun normalize-task (task)

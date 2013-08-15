@@ -96,7 +96,7 @@
   ;;(setq planner-renumber-tasks-automatically t)
   (setq
    planner-task-dates-favor-future-p t
-   planner-carry-tasks-forward 'scan-all ;; t
+   planner-carry-tasks-forward 4 ;; 'scan-all ;; t ;; this value badly affect performance and speed or operation, so be careful.
    planner-use-task-numbers t
    planner-sort-tasks-automatically t
    planner-align-tasks-automatically t
