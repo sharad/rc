@@ -176,6 +176,16 @@
               (concat "~/.emacs.d/session/frames/" session "/elscreen")))
        *frames-elscreen-session*)))
 
+  (defun fmsession-modify-element (fun)
+    (mapcar fun
+            (copy-tree *frames-elscreen-session*)))
+
+  (defun fmsession-modify-name (fun)
+    (mapcar (lambda (x)
+              (setcar x (fun (car x)))
+              x)
+            (copy-tree *frames-elscreen-session*)))
+
   (defun fmsession-store-to-file (file)
     (interactive "Ffile: ")
     (with-temp-file file

@@ -338,11 +338,11 @@ problem while emacs startup in daemon mode, non-interactively."
         (run-each-hooks 'sharad/disable-startup-inperrupting-feature-hook)))
 
     ;; run now
-    (sharad/disable-startup-inperrupting-feature)
+    ;; (sharad/disable-startup-inperrupting-feature)
 
 
 
-    (defun sharad/disable-startup-inperrupting-feature-in-frame-once (frame)
+    (defun sharad/disable-startup-inperrupting-feature-in-frame-once (&optional frame)
       ;; NOTE: Can not be called in hook.
       ;; (select-frame frame)
       ;; (with-report-error "check"
@@ -351,7 +351,10 @@ problem while emacs startup in daemon mode, non-interactively."
       (remove-hook 'after-init-hook 'sharad/disable-startup-inperrupting-feature-in-frame-once))
 
     ;;(add-hook 'after-init-hook 'sharad/disable-startup-inperrupting-feature-in-frame-once)
-    )
+    ;; cause problems at the end of deamon strtup, consider implementing after, before lib loads.
+
+    ;; run now
+    (sharad/disable-startup-inperrupting-feature-in-frame-once))
 
 
 
@@ -367,27 +370,24 @@ startup in daemon mode."
       ;; test
       (with-report-error "check"
           ;; why desktop-restore not running.
-        ;;   (setq enable-p4-login t
-        ;;         tramp-mode t
-        ;;         ido-mode 'both)
-        ;;   (login-to-perforce)
-        ;;   ;; (update-ssh-agent t) ;; should be called when tramp file accessed. - see how it will work in case sharad/desktop-session-restore.
-        ;;   ;;test
-        ;;   (deh-featurep epa
-        ;;     (if (fboundp 'epa-file-disable)
-        ;;         (epa-file-enable)))
-        ;; (deh-featurep (and light-symbol hilit-chg)
-        ;;   (add-element-to-lists '(lambda ()
-        ;;                           (light-symbol-mode 1)
-        ;;                           (highlight-changes-visible-mode t)
-        ;;                           (highlight-changes-mode t)) pgm-langs))
+          (progn
+            (setq enable-p4-login t
+                  tramp-mode t
+                  ido-mode 'both)
+            (login-to-perforce)
+            ;; (update-ssh-agent t) ;; should be called when tramp file accessed. - see how it will work in case sharad/desktop-session-restore.
+            ;;test
+            (deh-featurep epa
+              (if (fboundp 'epa-file-disable)
+                  (epa-file-enable)))
+            (deh-featurep (and light-symbol hilit-chg)
+              (add-element-to-lists '(lambda ()
+                                      (light-symbol-mode 1)
+                                      (highlight-changes-visible-mode t)
+                                      (highlight-changes-mode t)) pgm-langs))
+            )
         ;; (setq debug-on-error t ) ;; debug for now
 
-        ;; ;; (add-hook ;; 'after-init-hook
-        ;; ;;  'sharad/enable-startup-inperrupting-feature-hook
-        ;; ;;  'sharad/desktop-session-restore)
-        ;; (run-each-debug-hooks 'sharad/enable-startup-inperrupting-feature-hook)
-        ;; )
         (run-each-hooks 'sharad/enable-startup-inperrupting-feature-hook)
         ;; (sharad/desktop-session-restore)
         (message "sharad/enable-startup-inperrupting-feature() completed Seen.")

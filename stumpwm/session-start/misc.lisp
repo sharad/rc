@@ -5,9 +5,20 @@
 
 (defparameter wallpaper-image-command
   (car
-   '("display -resize 1280x1024 -window root ~a"
+   '("display -resize ~a -window root ~a"
      "xv -quit -root -rmode 5 -max ~a"))
   "wallpaper image command")
+
+(defun get-root-height ()
+  (xlib:drawable-height (screen-root (current-screen))))
+
+(defun get-root-width ()
+  (xlib:drawable-width (screen-root (current-screen))))
+
+(defun get-root-display-size ()
+  (format nil "~dx~d"
+          (get-root-width)
+          (get-root-height)))
 
 (defun select-random-wallpaper-image-path ()
   "Select a random image"
@@ -18,7 +29,7 @@
 
 (defun setup-wallpaper-image (image-path)
   (run-shell-command
-   (format nil wallpaper-image-command image-path)))
+   (format nil wallpaper-image-command (get-root-display-size) image-path)))
 
 (defun setup-random-wallpaper-image ()
   (let ((image-path (select-random-wallpaper-image-path)))
