@@ -304,6 +304,17 @@ alkready should not exist.")
   (deh-section "disable-startup-inperrupting-feature"
     (defvar sharad/disable-startup-inperrupting-feature-hook nil
       "Run only when emacs start from this file only, it basically run when this ful get loaded at emacs start time")
+    (deh-section "xx"
+      (defun general-disable-startup-setting ()
+        (setq pabbrev-read-only-error nil)
+        (setq
+         enable-p4-login nil
+         tramp-mode nil
+         ido-mode nil)
+        (deh-featurep epa
+          (if (fboundp 'epa-file-disable)
+              (epa-file-disable))))
+      (add-hook 'sharad/disable-startup-inperrupting-feature-hook 'general-disable-startup-setting))
 
     (defun sharad/disable-startup-inperrupting-feature ()
       "Run only when emacs start from this file only,
@@ -329,6 +340,8 @@ problem while emacs startup in daemon mode, non-interactively."
     ;; run now
     (sharad/disable-startup-inperrupting-feature)
 
+
+
     (defun sharad/disable-startup-inperrupting-feature-in-frame-once (frame)
       ;; NOTE: Can not be called in hook.
       ;; (select-frame frame)
@@ -337,8 +350,7 @@ problem while emacs startup in daemon mode, non-interactively."
       (sharad/disable-startup-inperrupting-feature)
       (remove-hook 'after-init-hook 'sharad/disable-startup-inperrupting-feature-in-frame-once))
 
-    ;; (add-hook 'after-init-hook 'sharad/disable-startup-inperrupting-feature-in-frame-once))
-    )
+    (add-hook 'after-init-hook 'sharad/disable-startup-inperrupting-feature-in-frame-once))
 
 
 
