@@ -46,8 +46,7 @@
             (if (ido-is-ftp-directory (car f))
                  (eq (caadr f) 'ftp)
                  t))
-            ido-dir-file-cache))
-      ))
+            ido-dir-file-cache))))
 
 
   (setq ;; tramp-default-method "ssh"
@@ -166,7 +165,7 @@
         ;; (unless (and (not tramp-mode)
         ;;             (shell-command-local-no-output "ssh-add -l < /dev/null"))
         (with-timeout (7 (message "ssh-add timed out."))
-          (shell-command-local-no-output (concat "ssh-add " ssh-key-file " < /dev/null"))) ;;)
+          (shell-command-local-no-output (concat "timeout -k 16 10 ssh-add " ssh-key-file " < /dev/null"))) ;;)
         (error "No ssh-key-file defined")))
 
   (defun update-ssh-agent-1 (&optional force)
@@ -201,10 +200,12 @@
               (not (string-equal (getenv "SSH_AGENT_PID")
                                  (getenv "SSH_AGENT_PID" (selected-frame))))
               (not (shell-command-local-no-output "ssh-add -l < /dev/null")))
-      (with-temp-buffer
-        (let ((default-directory "~/"))
-          (find-file-noselect (or (plist-get (car auth-sources) :source)
-                                  "~/.authinfo.gpg"))))
+      (if (memq epa-file-handler file-name-handler-alist)
+          (with-temp-buffer
+            (let ((default-directory "~/"))
+              (find-file-noselect (or (plist-get (car auth-sources) :source)
+                                      "~/.authinfo.gpg"))))
+          (message "update-ssh-agent: epa is not enabled."))
       (update-ssh-agent-1)))
 
   (eval-when-compile

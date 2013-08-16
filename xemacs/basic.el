@@ -274,7 +274,7 @@ alkready should not exist.")
   (defun pathname-equal (p1 p2)
     "Pathname equality"
     (apply #'string-equal
-           (mapcar #'pathname-delete-trailing-/ p1 p2)))
+           (mapcar #'pathname-delete-trailing-/ (list p1 p2))))
 
   ;; (testing
   ;;  (pathname-delete-trailing-/ "/sdfsd/sdgfdg////"))
@@ -315,13 +315,13 @@ problem while emacs startup in daemon mode, non-interactively."
           (when nil
             (unless debug-on-error                  ;I am running in --debug-init
               (setq debug-on-error nil)))
-          (setq
-           enable-p4-login nil
-           tramp-mode nil
-           ido-mode nil)
-          (deh-featurep epa
-            (if (fboundp 'epa-file-disable)
-                (epa-file-disable)))
+          ;; (setq
+          ;;  enable-p4-login nil
+          ;;  tramp-mode nil
+          ;;  ido-mode nil)
+          ;; (deh-featurep epa
+          ;;   (if (fboundp 'epa-file-disable)
+          ;;       (epa-file-disable)))
         ;; (global-pabbrev-mode -1)
         ;; (run-hooks 'sharad/disable-startup-inperrupting-feature-hook)
         (run-each-hooks 'sharad/disable-startup-inperrupting-feature-hook)))
@@ -354,20 +354,20 @@ startup in daemon mode."
       ;; test
       (with-report-error "check"
           ;; why desktop-restore not running.
-          (setq enable-p4-login t
-                tramp-mode t
-                ido-mode 'both)
-          (login-to-perforce)
-          (update-ssh-agent t)
-        ;;test
-        (deh-featurep epa
-          (if (fboundp 'epa-file-disable)
-              (epa-file-enable)))
-        (deh-featurep (and light-symbol hilit-chg)
-          (add-element-to-lists '(lambda ()
-                                  (light-symbol-mode 1)
-                                  (highlight-changes-visible-mode t)
-                                  (highlight-changes-mode t)) pgm-langs))
+        ;;   (setq enable-p4-login t
+        ;;         tramp-mode t
+        ;;         ido-mode 'both)
+        ;;   (login-to-perforce)
+        ;;   ;; (update-ssh-agent t) ;; should be called when tramp file accessed. - see how it will work in case sharad/desktop-session-restore.
+        ;;   ;;test
+        ;;   (deh-featurep epa
+        ;;     (if (fboundp 'epa-file-disable)
+        ;;         (epa-file-enable)))
+        ;; (deh-featurep (and light-symbol hilit-chg)
+        ;;   (add-element-to-lists '(lambda ()
+        ;;                           (light-symbol-mode 1)
+        ;;                           (highlight-changes-visible-mode t)
+        ;;                           (highlight-changes-mode t)) pgm-langs))
         ;; (setq debug-on-error t ) ;; debug for now
 
         ;; ;; (add-hook ;; 'after-init-hook
@@ -443,7 +443,7 @@ startup in daemon mode."
       (with-report-error "check"
           (login-to-perforce)
           ;; (update-ssh-agent t)  ; test
-          (update-ssh-agent)
+          ;; (update-ssh-agent) ;; should be called when tramp file accessed. - see how it will work in case sharad/desktop-session-restore.
           (setq debug-on-error t)           ;for planner
         (run-each-hooks 'sharad/enable-login-session-inperrupting-feature-hook)))
 

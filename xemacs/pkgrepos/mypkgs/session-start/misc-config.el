@@ -490,18 +490,41 @@ The indirect buffer can have another major mode."
   (global-set-key-if-unbind '[(f6)] 'point-stack-pop)
   (global-set-key-if-unbind '[(f7)] 'point-stack-forward-stack-pop)
 
-  (global-set-key-if-unbind (kbd "s-right") 'point-stack-push)
-  (global-set-key-if-unbind (kbd "s-left") 'point-stack-pop)
-  (global-set-key-if-unbind (kbd "s-left") 'point-stack-forward-stack-pop))
+  (global-set-key-if-unbind (kbd "s-<right>") 'point-stack-push)
+  (global-set-key-if-unbind (kbd "s-<left>") 'point-stack-pop)
+  (global-set-key-if-unbind (kbd "s-<left>") 'point-stack-forward-stack-pop))
 
 
 (deh-section "General"
 
   (defun general-disable-startup-setting ()
-    (setq pabbrev-read-only-error nil))
+    (setq pabbrev-read-only-error nil)
+    (setq
+     enable-p4-login nil
+     tramp-mode nil
+     ido-mode nil)
+    (deh-featurep epa
+      (if (fboundp 'epa-file-disable)
+          (epa-file-disable))))
 
   (defun general-enable-startup-setting ()
-    (setq pabbrev-read-only-error nil))
+    (setq pabbrev-read-only-error nil)
+
+
+    (setq enable-p4-login t
+          tramp-mode t
+          ido-mode 'both)
+    (login-to-perforce)
+    ;; (update-ssh-agent t) ;; should be called when tramp file accessed. - see how it will work in case sharad/desktop-session-restore.
+    ;;test
+    (deh-featurep epa
+      (if (fboundp 'epa-file-disable)
+          (epa-file-enable)))
+    (deh-featurep (and light-symbol hilit-chg)
+      (add-element-to-lists '(lambda ()
+                              (light-symbol-mode 1)
+                              (highlight-changes-visible-mode t)
+                              (highlight-changes-mode t)) pgm-langs)))
 
   (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'general-enable-startup-setting)
   (add-hook 'sharad/disable-startup-inperrupting-feature-hook 'general-disable-startup-setting))
