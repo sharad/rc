@@ -1,9 +1,17 @@
 #!/bin/zsh
 
-
+function setvar() {
+    enable_file=~/.var/comm/disable/$pgm
+    interval=10m
+    timeout=20
+    action=pm-hibernate
+    unset debug
+    unset noaction
+}
 
 function main() {
 
+    setvar
     process_arg $@
 
     # ask
@@ -52,12 +60,6 @@ function poweroffsys() {
 
 function process_arg() {
 
-    enable_file=~/.var/comm/disable/$pgm
-    interval=10m
-    timeout=20
-    action=pm-hibernate
-    unset debug
-    unset noaction
 
     set -- $(getopt -n $pgm -o dhscivwent:a:o: -- $@)
     while [ $# -gt 0 ]
