@@ -30,6 +30,8 @@ snooze=10
 queue_name=d
 volume_high=100 # 60
 volume_low=70   # 45
+wmlockfile_disable=~/.var/comm/disable/alarmwm
+run=radio
 
 max=
 
@@ -155,14 +157,18 @@ XYEOF
 function state_locked () {
     pgrep pidgin >&/dev/null && purple-remote 'setstatus?status=$lockstatus&message=Away' &!
     whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -as &!
-    whence stumpish >&/dev/null && stumpish fclear
+    if [ ! -e $wmlockfile_disable ] ; then
+        whence stumpish >&/dev/null && stumpish fclear
+    fi
 
 }
 
 function state_unlocked () {
     whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -AS &!
     pgrep pidgin >&/dev/null && purple-remote 'setstatus?status=$unlockstatus&message=' &!
-    whence stumpish >&/dev/null && stumpish pull-hidden-other &!
+    if [ ! -e $wmlockfile_disable ] ; then
+        whence stumpish >&/dev/null && stumpish pull-hidden-other &!
+    fi
 }
 
 function screen_lock() {
@@ -183,11 +189,13 @@ function screen_lock() {
 
 function process_arg() {
     # cli arg processing
-    set -- $(getopt "lnh:z:q:p:r:" "$@")
+    set -- $(getopt "lnh:z:q:p:r:de" "$@")
     while [ $# -gt 0 ]
     do
         case "$1" in
             (-l) lock=1;;
+            (-e) rm -f $wmlockfile_disable;;
+            (-d) touch $wmlockfile_disable;;
             (-p) playlist="$2"; shift;;
             (-h) sleep_hours="$2"; shift;;
             (-z) snooze="$2"; shift;;

@@ -34,7 +34,7 @@ URxvt_color*foreground: light grey
 !!
 ! URxvt*font: xft:Mono-ifelse(WIDTH, 1280, 10, 12)
 ! URxvt.font: xft:DejaVu Sans Mono:size=ifelse(WIDTH, 1280, 10, 12)
-URxvt.font: xft:KacstNaskh:style=Regular:size=8:spacing=1:style=Regular,\
+URxvt.font: xft:KacstNaskh:style=Regular:size=10:spacing=1:style=Regular,\
             xft:DejaVu Sans Mono,\
           Lohit Nepali:style=Regular,\
           Lohit Konkani:style=Regular,\

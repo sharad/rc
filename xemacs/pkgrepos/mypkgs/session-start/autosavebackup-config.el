@@ -29,7 +29,7 @@
   ;;link: http://www.litchie.net/programs/real-auto-save.html
   (add-hook 'text-mode-hook 'turn-on-real-auto-save)
   (add-hook 'muse-mode-hook 'turn-on-real-auto-save)
-  (setq real-auto-save-interval 5))
+  (setq real-auto-save-interval 10))
 
 ;; Explanation: when emacs does a backup, by default it renames the
 ;; original file into the backup file name, then create a new file and
