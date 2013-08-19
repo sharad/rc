@@ -24,7 +24,7 @@ fi
 if which $HOME/bin/ecryptfs-mount-private 2>&1 ; then
 
     if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
-        timeout 7 $HOME/bin/ecryptfs-mount-private
+        timeout 7 -k 10 $HOME/bin/ecryptfs-mount-private
     fi
 fi
 
