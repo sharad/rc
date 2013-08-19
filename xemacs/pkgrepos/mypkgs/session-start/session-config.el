@@ -589,20 +589,24 @@ Also returns nil if pid is nil."
   (defcustom save-all-sessions-auto-save-idle-time-interval 7 "save all sessions auto save idle time interval")
   (defcustom save-all-sessions-auto-save-time-interval 600 "save all sessions auto save time interval")
 
-  (defvar save-all-sessions-auto-save-time (current-time) "")
+  (defvar save-all-sessions-auto-save-time (current-time) "save all sessions auto save time")
   ;; (defun save-desktop-auto-save ()
   (defun save-all-sessions-auto-save (&optional force)
     "Save elscreen frame, desktop, and session time to time
 to restore in case of sudden emacs crash."
     (interactive "P")
-    (let ((idle-time (current-idle-time)))
+    (let ((idle-time (current-idle-time))
+          (time-format "%a %H:%M:%S"))
       (when (or
              force
              (and idle-time
                   ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Save-Control.html#Auto-Save-Control
-                  (> (float-time (time-since idle-time)) save-all-sessions-auto-save-idle-time-interval)
+                  (> (float-time idle-time) save-all-sessions-auto-save-idle-time-interval)
                   (> (float-time (time-since save-all-sessions-auto-save-time)) save-all-sessions-auto-save-time-interval)))
         (setq save-all-sessions-auto-save-time (current-time))
+        (message "current time %s, idle time %d"
+                 (format-time-string time-format save-all-sessions-auto-save-time)
+                 (float-time idle-time))
         (condition-case e
             (progn
               (save-all-frames-session)

@@ -94,6 +94,8 @@
         (progn
 
           (make-directory (concat dir "/logs") t)
+          (make-directory (concat "/home/s/hell/SCRATCH/bugs/" task) t)
+          (make-symbolic-link (concat "/home/s/hell/SCRATCH/bugs/" task) (concat dir "/scratch"))
 
           (dolist (f (cdr (assoc 'files (cdr (assoc task task-alist)))))
             (let ((nfile (expand-file-name f (concat dir "/")))
