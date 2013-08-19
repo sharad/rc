@@ -79,6 +79,10 @@
 
   ;;(deh-require-maybe sdic-inline-pos-tip
   (when nil
+    (deh-require-maybe sdic-inline
+      (sdic-inline-mode t))
+
+    (require 'sdic-inline-pos-tip)
     (deh-section "http://www.emacswiki.org/emacs/PosTip#toc8"
        ;; *Change the following lines according to your environment*
       (setq sdic-inline-eiwa-dictionary "/usr/share/dict/gene.sdic")

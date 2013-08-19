@@ -586,7 +586,7 @@ Also returns nil if pid is nil."
                 (error "You %d are not the desktop owner %d. removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook by calling M-x sharad/disable-session-saving"
                        (emacs-pid) owner))))))
 
-  (defcustom save-all-sessions-auto-save-idle-time-interval 7 "save all sessions auto save idle time interval")
+  (defcustom save-all-sessions-auto-save-idle-time-interval 4 "save all sessions auto save idle time interval")
   (defcustom save-all-sessions-auto-save-time-interval 600 "save all sessions auto save time interval")
 
   (defvar save-all-sessions-auto-save-time (current-time) "save all sessions auto save time")

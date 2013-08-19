@@ -47,9 +47,10 @@
     ;; what not. If you prefer to recieve the warnings in the mini-buffer, use:
     (defun flymake-display-warning (warning)
       "Display a warning to the user, using lwarn"
-      (message warning))
-    )
-  )
+      (message warning)))
+  (deh-require-maybe flymake-cursor
+    ;; http://www.emacswiki.org/emacs/flymake-cursor.el
+    ))
 
 
 (provide 'flymake-config)
