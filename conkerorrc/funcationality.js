@@ -808,12 +808,30 @@ interactive("zap-style-sheets",
 
 
 // http://conkeror.org/BreakingChanges
+can_kill_last_buffer = true;
+
 add_hook("before_quit_hook",
          function () {
              cookie_manager.removeAll();
-             // I.window.alert("bye .. removed cookies");
              var w = get_recent_conkeror_window();
-             var result = (w == null) ||
+
+
+             var result = (w.buffers.count == 1) ||
+                 "y" == (yield w.minibuffer.read_single_character_option(
+                     $prompt = "Quit Conkeror? (y/n)",
+                     $options = ["y", "n"]));
+             yield co_return(result);
+         });
+
+add_hook("kill_buffer_hook",
+         function (buffer){
+             // var buffers = buffer.window.buffers;
+             var w = buffer.window;
+             if (w.buffers.count == 1) {
+                 w.alert("bye .. removed cookies");
+                 cookie_manager.removeAll();
+             }
+             var result = (w.buffers.count == 1) ||
                  "y" == (yield w.minibuffer.read_single_character_option(
                      $prompt = "Quit Conkeror? (y/n)",
                      $options = ["y", "n"]));
@@ -821,6 +839,48 @@ add_hook("before_quit_hook",
          });
 
 // {{{
+
+
+//{{{ I think by the time kill_buffer_hook runs the buffer is gone so I
+// patch kill_buffer
+
+var kill_buffer_original = kill_buffer_original || kill_buffer;
+
+var killed_buffer_urls = [];
+
+kill_buffer = function (buffer, force) {
+    if (buffer.display_uri_string) {
+        killed_buffer_urls.push(buffer.display_uri_string);
+    }
+    var w = buffer.window;
+    // var result = (w.buffers.count == 1) &&
+    //     "y" == (yield w.minibuffer.read_single_character_option(
+    //         $prompt = "Quit Conkeror? (y/n)",
+    //         $options = ["y", "n"]));
+    if ((w.buffers.count == 1)) {
+        cookie_manager.removeAll();
+    }
+    kill_buffer_original(buffer,force);
+};
+
+interactive("restore-killed-buffer-url", "Loads url from a previously killed buffer",
+            function restore_killed_buffer_url (I) {
+                if (killed_buffer_urls.length !== 0) {
+                    var url = yield I.minibuffer.read(
+                        $prompt = "Restore killed url:",
+                        $completer = all_word_completer($completions = killed_buffer_urls),
+                        $default_completion = killed_buffer_urls[killed_buffer_urls.length - 1],
+                        $auto_complete = "url",
+                        $auto_complete_initial = true,
+                        $auto_complete_delay = 0,
+                        $match_required);
+
+                    load_url_in_new_buffer(url);
+                } else {
+                    I.window.minibuffer.message("No killed buffer urls");
+                }
+            });
+//}}}
 
 
 function delicious(I, mylink) {

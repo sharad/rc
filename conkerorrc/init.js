@@ -19,6 +19,7 @@ require("tab-bar.js");
 //
 // }}
 
+// http://conkeror.org/BreakingChanges
 
 
 let (conkerorhome = get_home_directory().path + "/.conkerorrc/") {

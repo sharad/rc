@@ -26,6 +26,9 @@ interactive("reload-rc",
 
 // init_webjumps();
 
+// http://conkeror.org/UserVariables
+url_remoting_fn = load_url_in_new_buffer;
+can_kill_last_buffer = false;
 
 // // from: http://dotfiles.org/~sofeng/.conkerorrc
 // // new bindings
