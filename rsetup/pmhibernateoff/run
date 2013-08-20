@@ -11,9 +11,9 @@ if which $HOME/bin/ecryptfs-mount-private 2>&1 ; then
     fi
 fi
 
+timeout 7 -k 10 gksudo -gS ifup eth0
 
-
-[ -r ~/.rsetup/ifup/run ] &&
-~/.rsetup/ifup/run
+# [ -r ~/.rsetup/ifup/run ] &&
+# ~/.rsetup/ifup/run
 
 

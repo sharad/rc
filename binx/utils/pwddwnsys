@@ -15,7 +15,12 @@ function main() {
     process_arg $@
 
     # ask
-    yad --image "dialog-question" --title "Alert"  --button=gtk-no:1 --button=gtk-yes:0  --timeout=$timeout --text="Do you want system to $action after ${interval}?" ;
+    yad --image "dialog-question" \
+        --title "Alert" \
+        --button=gtk-no:1 \
+        --button=gtk-yes:0  \
+        --timeout=$timeout \
+        --text="Do you want system to $action after ${interval}?" ;
 
     retval=$?
 
@@ -45,9 +50,9 @@ function poweroffsys() {
                 sleep 7s
                 sync
                 sleep 2s
-                ${action}on
+                whence -f ${action}on >& /dev/null && ${action}on
                 sudo $action
-                ${action}off
+                whence -f ${action}off >& /dev/null && ${action}off
             } # do sync as some time it crash
         else
             [ -n "$debug" ] && notify sudo $action else noaction $noaction
