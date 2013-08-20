@@ -586,11 +586,11 @@ Also returns nil if pid is nil."
                 (error "You %d are not the desktop owner %d. removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook by calling M-x sharad/disable-session-saving"
                        (emacs-pid) owner))))))
 
-  (defcustom save-all-sessions-auto-save-idle-time-interval 4 "save all sessions auto save idle time interval")
-  (defcustom save-all-sessions-auto-save-time-interval 600 "save all sessions auto save time interval")
-
+  (defcustom save-all-sessions-auto-save-idle-time-interval 7 "save all sessions auto save idle time interval")
+  (defvar save-all-sessions-auto-save-idle-time-interval-dynamic 7 "save all sessions auto save idle time interval dynamic.")
+  (defcustom save-all-sessions-auto-save-time-interval (* 7 60) "save all sessions auto save time interval")
   (defvar save-all-sessions-auto-save-time (current-time) "save all sessions auto save time")
-  ;; (defun save-desktop-auto-save ()
+
   (defun save-all-sessions-auto-save (&optional force)
     "Save elscreen frame, desktop, and session time to time
 to restore in case of sudden emacs crash."
@@ -599,30 +599,36 @@ to restore in case of sudden emacs crash."
           (time-format "%a %H:%M:%S"))
       (when (or
              force
+             (> (float-time (time-since save-all-sessions-auto-save-time)) save-all-sessions-auto-save-time-interval))
+        (if (or
+             force
              (and idle-time
                   ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Save-Control.html#Auto-Save-Control
-                  (> (float-time idle-time) save-all-sessions-auto-save-idle-time-interval)
-                  (> (float-time (time-since save-all-sessions-auto-save-time)) save-all-sessions-auto-save-time-interval)))
-        (setq save-all-sessions-auto-save-time (current-time))
-        (message "current time %s, idle time %d"
-                 (format-time-string time-format save-all-sessions-auto-save-time)
-                 (float-time idle-time))
-        (condition-case e
+                  (> (float-time idle-time) save-all-sessions-auto-save-idle-time-interval-dynamic)))
             (progn
-              (save-all-frames-session)
-              (session-vc-save-session)
-              (my-desktop-save)
-              (message "Save frame desktop and session.")
-              (message nil))
-          ('error
-           (progn
-             ;; make after 2 errors.
-             (message "save-all-sessions-auto-save: Error: %s" e)
-             (1+ *my-desktop-save-error-count* )
-             (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
-               (setq *my-desktop-save-error-count* 0)
-               (message "save-all-sessions-auto-save(): %s" e)
-               (sharad/disable-session-saving))))))))
+              (setq save-all-sessions-auto-save-time (current-time)
+                    save-all-sessions-auto-save-idle-time-interval-dynamic save-all-sessions-auto-save-idle-time-interval)
+              (message "current time %s, idle time %d"
+                       (format-time-string time-format save-all-sessions-auto-save-time)
+                       (float-time idle-time))
+              (condition-case e
+                  (progn
+                    (save-all-frames-session)
+                    (session-vc-save-session)
+                    (my-desktop-save)
+                    (message "Save frame desktop and session.")
+                    (message nil))
+                ('error
+                 (progn
+                   ;; make after 2 errors.
+                   (message "save-all-sessions-auto-save: Error: %s" e)
+                   (1+ *my-desktop-save-error-count* )
+                   (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
+                     (setq *my-desktop-save-error-count* 0)
+                     (message "save-all-sessions-auto-save(): %s" e)
+                     (sharad/disable-session-saving))))))
+            (setq save-all-sessions-auto-save-idle-time-interval-dynamic
+                    (- save-all-sessions-auto-save-idle-time-interval-dynamic 1))))))
 
 
   (when nil
@@ -631,8 +637,7 @@ to restore in case of sudden emacs crash."
     (add-hook 'auto-save-hook 'save-all-sessions-auto-save))
 
   (defun sharad/desktop-saved-session ()
-    (file-exists-p *desktop-save-filename*)
-    )
+    (file-exists-p *desktop-save-filename*))
 
   ;; use session-save to save the desktop manually
   (defun sharad/desktop-session-save ()
@@ -836,7 +841,12 @@ Using it may cause conflicts.  Use it anyway? " owner)))))
 
 
 
-  (add-hook 'after-init-hook 'session-initialize)
+  (add-hook 'after-init-hook '(lambda ()
+                               (setq session-initialize t)
+                               (session-initialize)
+                               (remove-hook 'kill-emacs-hook
+                                ;; done in save-all-sessions-auto-save
+                                'session-save-session)))
   ;; (add-hook 'kill-emacs-hook 'session-vc-save-session)
 
 
