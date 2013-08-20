@@ -628,7 +628,7 @@ to restore in case of sudden emacs crash."
                      (message "save-all-sessions-auto-save(): %s" e)
                      (sharad/disable-session-saving))))))
             (setq save-all-sessions-auto-save-idle-time-interval-dynamic
-                    (- save-all-sessions-auto-save-idle-time-interval-dynamic 1))))))
+                  (1- save-all-sessions-auto-save-idle-time-interval-dynamic))))))
 
 
   (when nil
