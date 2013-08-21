@@ -606,11 +606,12 @@ to restore in case of sudden emacs crash."
                   ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Save-Control.html#Auto-Save-Control
                   (> (float-time idle-time) save-all-sessions-auto-save-idle-time-interval-dynamic)))
             (progn
+              (message "current time %s, idle time %d idle-time-interval left %d"
+                       (format-time-string time-format save-all-sessions-auto-save-time)
+                       (float-time idle-time)
+                       save-all-sessions-auto-save-idle-time-interval-dynamic)
               (setq save-all-sessions-auto-save-time (current-time)
                     save-all-sessions-auto-save-idle-time-interval-dynamic save-all-sessions-auto-save-idle-time-interval)
-              (message "current time %s, idle time %d"
-                       (format-time-string time-format save-all-sessions-auto-save-time)
-                       (float-time idle-time))
               (condition-case e
                   (progn
                     (save-all-frames-session)
