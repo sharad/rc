@@ -61,7 +61,9 @@
 
     ;; enable ctags for some languages:
     ;;  Unix Shell, Perl, Pascal, Tcl, Fortran, Asm
-    (when (cedet-ectag-version-check)
+    (when (and
+           (fboundp 'cedet-ectag-version-check)
+           (cedet-ectag-version-check))
       (semantic-load-enable-primary-exuberent-ctags-support))
 
 
