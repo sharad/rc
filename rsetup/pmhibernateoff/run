@@ -7,12 +7,15 @@
 if which $HOME/bin/ecryptfs-mount-private 2>&1 ; then
 
     if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
-        timeout 7 -k 10 $HOME/bin/ecryptfs-mount-private
+        timeout -k 10 7 $HOME/bin/ecryptfs-mount-private
     fi
 fi
 
-timeout 7 -k 10 gksudo -gS ifup eth0
+sleep 10s
 
+timeout -k 320 200 gksudo -gS ifup eth0
+ifconfig eth0
+print eth0 is up
 # [ -r ~/.rsetup/ifup/run ] &&
 # ~/.rsetup/ifup/run
 
