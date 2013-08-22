@@ -4,7 +4,7 @@
 ~/.rsetup/pmhibernateoff/run.d/${HOST//.*}
 
 
-if which $HOME/bin/ecryptfs-mount-private 2>&1 ; then
+if which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null ; then
 
     if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
         timeout -k 10 7 $HOME/bin/ecryptfs-mount-private
