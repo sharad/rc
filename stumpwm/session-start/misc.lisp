@@ -1,5 +1,5 @@
 ;;{{ Pointer
-(setq *grab-pointer-timeout* 7)
+(setq *grab-pointer-timeout* 4)
 ;;}}
 
 ;;{{{ Background
