@@ -1,4 +1,4 @@
-;;; javascript.el --- javascript
+;;; javascript-config.el --- javascript
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -285,7 +285,11 @@
 
 )
 
+
+(unless (require 'js2-mode nil t)
+  (defalias 'js2-mode 'js-mode))
+
 (provide 'javascript-config)
-;;; javascript.el ends here
+;;; javascript-config.el ends here
 
 

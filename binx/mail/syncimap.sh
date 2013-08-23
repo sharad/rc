@@ -155,6 +155,9 @@ function gnome-keyring-attach() {
 
     if ! timeout -s KILL 2 ~/bin/get-imap-pass 2>&1 > /dev/null; then
         error "Keyring is not responding. Please check error with get-imap-pass"
+        if pkill gnome-keyring && get-imap-pass ; then
+            notify "Restarted keyring"
+        fi
 	exit 1;
     fi
 }
