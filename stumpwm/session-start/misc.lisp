@@ -1,4 +1,6 @@
-
+;;{{ Pointer
+(setq *grab-pointer-timeout* 7)
+;;}}
 
 ;;{{{ Background
 (defparameter *desktop-background-image-path* (concat *home-dir* "/.share/backgrounds"))

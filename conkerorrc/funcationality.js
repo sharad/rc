@@ -948,7 +948,7 @@ define_key(content_buffer_normal_keymap, "L", "search-clipboard-contents-doubleq
 
 // Local Variables: **
 // folded-file:f **
-// mode:js2 **
+// mode:js **
 // comment-column:0 **
 // comment-start: "// "  **
 // comment-end:   "// "  **

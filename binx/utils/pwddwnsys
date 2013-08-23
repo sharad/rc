@@ -51,7 +51,9 @@ function poweroffsys() {
                 sync
                 sleep 2s
                 whence -f ${action}on >& /dev/null && ${action}on
+                sleep 1s
                 sudo $action
+                sleep 1s
                 whence -f ${action}off >& /dev/null && ${action}off
             } # do sync as some time it crash
         else
