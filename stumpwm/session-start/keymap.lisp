@@ -109,6 +109,7 @@
 (define-key *root-map* (kbd "k") "delete")
 (define-key *root-map* (kbd "K") "kill")
 (define-key *root-map* (kbd "b") "banish")
+(define-key *root-map* (kbd "P") "show-pointer")
 (define-key *root-map* (kbd "a") "time")
 (define-key *root-map* (kbd "'") "select")
 (define-key *root-map* (kbd "\"") "windowlist")

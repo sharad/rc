@@ -45,6 +45,13 @@
 
 ;;}}} Background
 
+;;{{ Pointer
+(defcommand show-pointer () ()
+  "Show pointer"
+  (warp-pointer (current-screen)
+                (/ (get-root-width) 2)
+                (/ (get-root-height) 2)))
+;;}}
 
 ;; Default layout
 ;;{{{ mode-line
