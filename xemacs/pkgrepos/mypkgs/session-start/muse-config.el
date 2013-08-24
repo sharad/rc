@@ -42,7 +42,29 @@
             ;; (the value of 'planner-publishing-directory', if
             ;; if you have configuration for an older version
             ;; of Planner)
-      :path "~/public_html/Writing")))
+      ;; Not needed.
+      ;; :path "~/public_html/Writing/html"
+      )))
+
+(add-to-list
+   'muse-project-alist
+   '("StartWiki"
+     ("~/public_html"   ;; Or wherever you want your planner
+                                ;; files to be
+      :default "index"
+      :major-mode muse-mode
+      :visit-link planner-visit-link)
+     ;; This next part is for specifying where Planner pages
+     ;; should be published and what Muse publishing style to
+     ;; use. In this example, we will use the XHTML publishing
+     ;; style.
+     (:base "xhtml"
+            ;; where files are published to
+            ;; (the value of 'planner-publishing-directory', if
+            ;; if you have configuration for an older version
+            ;; of Planner)
+      ;; :path "~/public_html"
+      )))
 
 
 
@@ -65,4 +87,30 @@
   )
 
 
+;; (deh-require-maybe oddmuse
+;;   ;; http://www.emacswiki.org/emacs/OddmuseMode
+;;   )
+
+
+(deh-require-maybe yaoddmuse
+  ;; excellent great
+  ;; http://www.emacswiki.org/emacs/Yaoddmuse
+
+  ;; Usage
+
+  ;;     To edit your first EmacsWiki page:
+
+  ;;         M-x yaoddmuse-edit-default RET, input page name you want edit.
+  ;;         Yaoddmuse will download the current page content. Then edit page using Oddmuse Markup (See TextFormattingRules)
+  ;;         Type “C-u C-c C-c” when your edits are complete.
+  ;;         Write your summary for the modifications, typically something like “Update”.
+
+  ;;     That’s all. Yaoddmuse will view your edited page after a successful post.
+
+  ;;  Me: M-x yaoddmuse-edit-default RET Yaoddmuse RET C-s ==Usage==
+
+  )
+
+
 (provide 'muse-config)
+

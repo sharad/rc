@@ -57,6 +57,17 @@
 (define-key *root-map* (kbd "[") "prev")
 ;;}}}
 
+(defcommand xgobackmyp () ()
+            (set-profile :myprofile)
+            '*root-map*)
+
+;;{{ When Other profile came in
+(define-key *top-map* (kbd "M-`") "set-profile myprofile")
+;; TODO: make list of action also possible
+;; (define-key *top-map* (kbd "M-`") '("set-profile myprofile"))
+;;}}
+
+
 ;;Top map-----------------------------------------------------------------------
 (define-key *top-map* (kbd "XF86Video") "mpd-connect")
 (define-key *top-map* (kbd "XF86AudioPause") "mpd-toggle-pause")
