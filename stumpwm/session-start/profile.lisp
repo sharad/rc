@@ -71,3 +71,42 @@
 
 
 
+
+
+;;{{ When Other profile came in
+;; (defstruct key
+;;   keysym shift control meta alt hyper super)
+
+
+(defun keysym->code-state (key)
+  ;; (key (kbd keystring))
+  (let* ((keysym (key-keysym key))
+         (code (xlib:keysym->keycodes *display* keysym))
+         (state (apply
+                 'xlib:make-state-mask
+                 (remove-if 'null
+                            (mapcar 'car
+                                    (list
+                                     (if (key-shift key) '(:shift))
+                                     (if (key-control key) '(:control))
+                                     (if (key-meta key) (modifiers-meta *modifiers*))
+                                     (if (key-alt key) (modifiers-alt *modifiers*))
+                                     (if (key-hyper key) (modifiers-hype *modifiers*))
+                                     (if (key-super key) (modifiers-super *modifiers*))))))))
+    (cons code state)))
+
+;; (keysym->code-state (kbd "C-`"))
+
+(defcommand gobackmyp () ()
+  (set-profile :myprofile)
+  (message "enabled your profile")
+  ;; (sleep 2)
+  (let* ((code-state (keysym->code-state *escape-key* #|(kbd "C-`")|#))
+         (code (car code-state))
+         (state (cdr code-state)))
+    (funcall (gethash :key-press *event-fn-table*)  :code code :state state)))
+
+;;}}
+
+
+

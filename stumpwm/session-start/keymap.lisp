@@ -47,7 +47,8 @@
 ;; Top map
 ;;{{{ Prefix Key
 ;; change the prefix key to something else
-(set-prefix-key (kbd "C-`"))
+;; (set-prefix-key (kbd "C-`"))
+(set-prefix-key (kbd "C-quoteleft"))
 (setf *mouse-focus-policy* :ignore)
 ;;When not in Stumpwm mode, we want Insert to be bound to enter Stumpwm mode
 (define-key *top-map* (kbd "Menu") '*root-map*)
@@ -57,12 +58,13 @@
 (define-key *root-map* (kbd "[") "prev")
 ;;}}}
 
-(defcommand xgobackmyp () ()
-            (set-profile :myprofile)
-            '*root-map*)
-
 ;;{{ When Other profile came in
-(define-key *top-map* (kbd "M-`") "set-profile myprofile")
+
+(let ((escape-keystring (print-key *escape-key*))
+      (escape-keystring-with-meta (cl-ppcre:regex-replace-all "C" (print-key *escape-key*) "M")))
+  (unless (string= escape-keystring escape-keystring-with-meta)
+    (define-key *top-map* (kbd escape-keystring-with-meta) "gobackmyp")))
+
 ;; TODO: make list of action also possible
 ;; (define-key *top-map* (kbd "M-`") '("set-profile myprofile"))
 ;;}}
