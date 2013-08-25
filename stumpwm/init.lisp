@@ -2,8 +2,8 @@
 
 (in-package :stumpwm)
 
-(defparameter *debug-level* 10)
-(redirect-all-output (data-dir-file "debug-output" "txt"))
+(defparameter *debug-level* 0)
+(redirect-all-output (data-dir-file "debug-output" "log"))
 
 
 ;;WARNING: this is specific to clisp

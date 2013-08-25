@@ -102,8 +102,8 @@ if [ $DISPLAY ] ; then
 
 fi
 
-if [ -e ~/.stumpwm.d/debug-output.txt ] ; then
-    command rm -f ~/.stumpwm.d/debug-output.txt
+if [ -e ~/.stumpwm.d/debug-output.log ] ; then
+    command rm -f ~/.stumpwm.d/debug-output.log
 fi
 
 xautolock -locknow &!

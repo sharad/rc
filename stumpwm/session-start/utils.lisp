@@ -170,3 +170,8 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
 ;;        ;; pass it by dynamix variable
 ;;        ;; call actual function.
 ;;        )
+
+(defcommand set-debug-level (&optional (level 1)) ((:number "Debug level: "))
+  (defparameter *debug-level* level))
+
+
