@@ -32,6 +32,13 @@
                       (balance-frames))
               (hsplit)))
 
+(defcommand vsbalance-frames () ()
+            "sdfdsf"
+            (only)
+            (dotimes (c (1- (length (group-windows (current-group))))
+                      (balance-frames))
+              (vsplit)))
+
 ;; menu test
 (defcommand test-menu () ()
    (select-from-menu (current-screen)
