@@ -78,5 +78,11 @@
         t)
     ('file-error (message "error: %s" e) nil)))
 
+
+(deh-require-maybe magit
+  (defadvice magit-push (before ad-update-ssh-agent-env activate)
+    (update-ssh-agent)))
+
+
 (provide 'vc-config)
 ;;; vc-config.el ends here
