@@ -36,6 +36,7 @@
 ;;{{ http://www.gnus.org/manual/gnus_401.html
 (when (xrequire 'ispell)
   ;; Ispell.el assumes you use ispell, if you choose aspell say
+  ;; (setq ispell-program-name "timeout -k 12 10 aspell")
   (setq ispell-program-name "aspell")
   ;; in your Emacs configuration file.  If you want your outgoing
   ;; messages to be spell-checked, say
