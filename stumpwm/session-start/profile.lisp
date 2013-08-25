@@ -97,14 +97,18 @@
 
 ;; (keysym->code-state (kbd "C-`"))
 
-(defcommand gobackmyp () ()
-  (set-profile :myprofile)
-  (message "enabled your profile")
-  ;; (sleep 2)
+(defun send-escape-key ()
   (let* ((code-state (keysym->code-state *escape-key* #|(kbd "C-`")|#))
          (code (car code-state))
          (state (cdr code-state)))
-    (funcall (gethash :key-press *event-fn-table*)  :code code :state state)))
+    ;; (funcall (gethash :key-press *event-fn-table*) :code code :state state)
+    (handle-event :event-key :key-press :code code :state state)))
+
+(defcommand gobackmyp () ()
+  (set-profile :myprofile)
+  (message "enabled your profile")
+  ;;(sleep 2)
+  (send-escape-key))
 
 ;;}}
 
