@@ -1,0 +1,14 @@
+server dict.org
+server dict.tugraz.at
+server dict.hewgill.com
+
+# check http://ccls-online.de/dictd/index.php
+dict.dvo.ru
+
+
+## Unfortunately, there is no way to set a default database using the
+## .dictrc file. If you would like to use a database other than the
+## default en database you must specify it on the command line. You can
+## use a shell alias to make this easier, eg. for Bourne-style shells:
+##
+## alias dict="dict -d en-brief"

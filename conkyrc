@@ -206,7 +206,7 @@ max_user_text 16384
 
 TEXT
 $nodename - $sysname $kernel on $machine
-${goto -600}${voffset 40}${execi 120 python ~/bin/stocks arun meru}
+${goto -600}${voffset 40}${execi 120 python ~/bin/stocks meru} #arun
 $stippled_hr
 ${color lightgrey}Uptime:$color $uptime ${color lightgrey}- Load:$color $loadavg ${exec sensors | sed -n 3p | grep -n 'temp1' | awk -F'+' '{print $2}' | awk -F' ' '{print $1}'}
 ${color lightgrey}CPU Usage:${color #cc2222} $cpu% ${cpubar}
