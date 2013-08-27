@@ -639,3 +639,28 @@
   "Kill the client associated with window."
   (dformat 3 "Kill client~%")
   (xlib:kill-client *display* (xlib:window-id window)))
+
+
+
+(progn
+  ;; http://theatticlight.net/posts/Stumpwm-shutdown-nag/
+  (ql:quickload 'cl-cron)
+  (require 'cl-cron)
+  (use-package 'cl-cron)
+  )
+
+;; (no-error
+;;     (require 'cl-xyzfail)
+;;  )
+(progn
+ ;; http://www.cliki.net/CPS
+ ;; http://dunsmor.com/lisp/onlisp/onlisp_24.html
+ ;;
+ (require 'cl-cont)
+ (use-package 'cl-cont))
+
+
+
+
+(defcommand bye-with-cleanup () ()
+            )
