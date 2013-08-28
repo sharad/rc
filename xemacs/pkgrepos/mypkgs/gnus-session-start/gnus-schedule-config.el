@@ -99,20 +99,5 @@
 
 
 
-(defun gnus-demon-scan-mail-or-news-and-update ()
-  "Scan for new mail/news and update the *Group* buffer"
-  (when (gnus-alive-p)
-    (save-window-excursion
-      (save-excursion
-        (with-current-buffer gnus-group-buffer
-          ;; (set-buffer gnus-group-buffer)
-          (gnus-group-get-new-news)
-          (message nil))))))
-
-(defun gnus-demon-scan-and-update ()
-  (gnus-demon-scan-mail-or-news-and-update))
-
-
-
 (provide 'gnus-schedule-config)
 ;;; schedule.el ends here

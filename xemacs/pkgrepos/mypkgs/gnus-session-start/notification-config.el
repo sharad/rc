@@ -146,6 +146,28 @@
 ;;     (gnus-demon-init))
 
 (when (xrequire 'gnus-demon)
+
+
+  (when nil ;; old
+
+
+
+
+    (defun gnus-demon-scan-mail-or-news-and-update ()
+      "Scan for new mail/news and update the *Group* buffer"
+      (when (gnus-alive-p)
+        (save-window-excursion
+          (save-excursion
+            (with-current-buffer gnus-group-buffer
+              ;; (set-buffer gnus-group-buffer)
+              (gnus-group-get-new-news)
+              (message nil))))))
+
+    (defun gnus-demon-scan-and-update ()
+      (gnus-demon-scan-mail-or-news-and-update)))
+
+
+
   ;; (defvar gnus-scan-man-idle-timer
   ;;   (progn                                ; Cancel to prevent duplication.
   ;;     (when (boundp 'gnus-scan-man-idle-timer) (cancel-timer gnus-scan-man-idle-timer))
@@ -162,6 +184,9 @@
   (defun gnus-demon-scan-mail-and-news-now (&optional level)
     "Scan for new mail/news and update the *Group* buffer."
     (let ((level (or level 3)))
+      (message "gnus-demon-scan-mail-and-news-now: current time %s, idle time %d"
+               (format-time-string time-format (current-time))
+               (float-time (current-idle-time)))
       (when (gnus-alive-p)
         (message "gnus-demon-scan-mail-and-news-now %d" level)
         (save-window-excursion
@@ -179,9 +204,9 @@
   ;; Initialize the Gnus daemon, check new mail every six minutes.
   ;; (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news 1 nil))
   ;; (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news-now 2 nil)
-  (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news-now 10 2)
+  (gnus-demon-add-handler 'gnus-demon-scan-mail-and-news-now 10 10)
 
-  (gnus-demon-add-handler '(lambda () (gnus-demon-scan-mail-and-news-now 6)) 22 7))
+  (gnus-demon-add-handler '(lambda () (gnus-demon-scan-mail-and-news-now 6)) 22 20))
 
 ;;}}
 

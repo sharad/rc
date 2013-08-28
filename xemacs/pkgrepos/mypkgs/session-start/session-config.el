@@ -834,11 +834,40 @@ Using it may cause conflicts.  Use it anyway? " owner)))))
 ;;For Session
 (deh-require-maybe session ;;
 
+  ;; (setq desktop-path '("~/.emacs.d/"))
+  ;; (setq desktop-dirname "~/.emacs.d/")
+  ;; (setq desktop-base-file-name
+  ;;       (concat
+  ;;        "emacs-desktop"
+  ;;        (if (boundp 'server-name)
+  ;;            (concat "-" server-name))))
+
+  ;; (defvar *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
+  (setq session-save-file (expand-file-name "session" "~/.emacs.d"))
+
+  (defun sharad/session-saved-session ()
+    (if (file-exists-p session-save-file) session-save-file))
+
   (defun session-vc-save-session ()
-    (if (file-exists-p session-save-file)
+    (if (sharad/session-saved-session)
         (put-file-in-rcs session-save-file))
     (session-save-session))
 
+  (defun session-vc-restore-session ()
+    (unless (sharad/session-saved-session)
+      (message "sharad/session-vc-session-restore: %s not found so trying to checkout it." session-save-file)
+      (vc-checkout-file session-save-file))
+
+    (or session-successful-p
+	(setq session-successful-p
+	      (and session-save-file
+		   (condition-case nil
+		       (progn
+			 ;; load might fail with coding-system = emacs-mule
+			 (load session-save-file t nil t)
+			 (run-hooks 'session-after-load-save-file-hook)
+			 t)
+                     (error nil))))))
 
 
 

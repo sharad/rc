@@ -38,7 +38,7 @@ function main() {
 }
 
 function process_arg() {
-    set -- $(getopt -n $pgm -o tvwes:d: -- $@)
+    set -- $(getopt -n $pgm -o tvwebs:d: -- $@)
     while [ $# -gt 0 ]
     do
         case $1 in
