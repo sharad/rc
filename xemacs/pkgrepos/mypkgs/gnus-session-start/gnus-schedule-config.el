@@ -61,11 +61,11 @@
                    (mm-with-part handle (icalendar-import-buffer diary)))
           (message "Saved calendar entry in %s" diary))))
 
-  (setq gnus-article-mime-part-function 'my-save-icalendar)
+    (setq gnus-article-mime-part-function 'my-save-icalendar)
 
-  (add-hook
-   'gnus-mime-multipart-functions
-   '("text/calendar" . my-save-icalendar))))
+    (add-hook
+     'gnus-mime-multipart-functions
+     '("text/calendar" . my-save-icalendar))))
 
 
 
