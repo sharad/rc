@@ -33,3 +33,7 @@ _hello "$@"
 
 
 # zstyle ":completion:*:descriptions" format "%B%d%b"
+
+## Local Variables:
+## mode: shell-script
+## End:

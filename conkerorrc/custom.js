@@ -26,6 +26,27 @@ interactive("reload-rc",
 
 // init_webjumps();
 
+
+
+;;{{
+;; A script on this page may be busy, or it may have stopped responding. You can stop the script now, or you can continue to see if the script will complete.
+;; Script: resource://gre/modules/XPCOMUtils.jsm:324
+
+;; http://www.google.co.in/search?q=%20firefox%20A%20script%20on%20this%20page%20may%20be%20busy%2C%20or%20it%20may%20have%20stopped%20responding.%20You%20can%20stop%20the%20script%20now%2C%20or%20you%20can%20continue%20to%20see%20if%20the%20script%20will%20complete.&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai=
+;; http://support.mozilla.org/en-US/kb/warning-unresponsive-script
+
+user_pref("dom.max_script_run_time", 7);
+user_pref("dom.max_chrome_script_run_time", 7);
+
+session_pref("dom.max_script_run_time", 7);
+session_pref("dom.max_chrome_script_run_time", 7);
+
+;;}}
+
+
+
+
+
 // http://conkeror.org/UserVariables
 url_remoting_fn = load_url_in_new_buffer;
 can_kill_last_buffer = false;
@@ -245,18 +266,3 @@ user_pref("browser.visited_color", "#660033");
 
 
 
-
-;;{{
-;; A script on this page may be busy, or it may have stopped responding. You can stop the script now, or you can continue to see if the script will complete.
-;; Script: resource://gre/modules/XPCOMUtils.jsm:324
-
-;; http://www.google.co.in/search?q=%20firefox%20A%20script%20on%20this%20page%20may%20be%20busy%2C%20or%20it%20may%20have%20stopped%20responding.%20You%20can%20stop%20the%20script%20now%2C%20or%20you%20can%20continue%20to%20see%20if%20the%20script%20will%20complete.&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai=
-;; http://support.mozilla.org/en-US/kb/warning-unresponsive-script
-
-user_pref("dom.max_script_run_time", 7);
-user_pref("dom.max_script_run_time", 7);
-
-session_pref("dom.max_script_run_time", 7);
-session_pref("dom.max_script_run_time", 7);
-
-;;}}

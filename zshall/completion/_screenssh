@@ -1,0 +1,28 @@
+#compdef screenssh
+
+_screensshsession() {
+    local curcontext="$curcontext" state line
+    typeset -A opt_args
+
+
+    _arguments \
+        '1: :->hosts'\
+        '2: :->session'
+
+    case $state in
+        (hosts) _wanted hosts expl host _combination -s '[@:]' '' users-hosts-ports ${opt_args[-l]:+users=${opt_args[-l]:q}} hosts - && ret=0  ;;
+    session)
+        compadd "$@" $(lsscreenssh $words[2] | grep  -v '^[^[:space:]]'  | sed \$d | cut -f2 )
+        ;;
+    esac
+}
+
+_screensshsession "$@"
+
+
+# zstyle ":completion:*:descriptions" format "%B%d%b"
+
+
+## Local Variables:
+## mode: shell-script
+## End:
