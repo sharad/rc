@@ -30,7 +30,7 @@
 #-quicklisp
 (let* ((qlisp-parent-dir
         (cond
-          ((string=  (machine-instance) "ubuntu-sharadp") #p"/atlantic/opt/share/common-lisp/")
+          ((string=  (machine-instance) "ubuntu-sharad") #p"/atlantic/opt/share/common-lisp/")
           ((not (string=  (machine-instance) "lispm.genera.net")) #p"/atlantic/home/s/res/share/common-lisp/")
           (t #p"/all/res/share/common-lisp/")
           ))

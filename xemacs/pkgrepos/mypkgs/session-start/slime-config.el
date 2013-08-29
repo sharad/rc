@@ -276,6 +276,8 @@
     (slime-connect host port)))
 
 
+(load-slime)
+
 (provide 'slime-config)
 
 
