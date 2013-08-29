@@ -246,6 +246,11 @@ bindkey	-M	mymap	'\e\C-i'	expand-or-complete
 # games
 bindkey	-M	mymap	'\e\C-g'	tetris
 
+
+# describe key
+bindkey	-M	mymap	'\C-[k'		describe-key-briefly
+
+
 # use it
 bindkey	-A	mymap	main
 
