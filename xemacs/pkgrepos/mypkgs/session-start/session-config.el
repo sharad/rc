@@ -176,6 +176,12 @@
               (concat "~/.emacs.d/session/frames/" session "/elscreen")))
        *frames-elscreen-session*)))
 
+  (defun fmsession-delete-element ()
+    (interactive)
+    ;; save somewhere as backup
+    )
+
+
   (defun fmsession-modify-element (fun)
     (mapcar fun
             (copy-tree *frames-elscreen-session*)))
