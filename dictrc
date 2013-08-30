@@ -3,7 +3,7 @@ server dict.tugraz.at
 server dict.hewgill.com
 
 # check http://ccls-online.de/dictd/index.php
-dict.dvo.ru
+server ict.dvo.ru
 
 
 ## Unfortunately, there is no way to set a default database using the

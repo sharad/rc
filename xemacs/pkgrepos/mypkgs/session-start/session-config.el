@@ -176,10 +176,23 @@
               (concat "~/.emacs.d/session/frames/" session "/elscreen")))
        *frames-elscreen-session*)))
 
-  (defun fmsession-delete-element ()
-    (interactive)
+  (defun fmsession-delete-session (session)
+    (interactive
+     (list
+      (fmsession-read-location)))
     ;; save somewhere as backup
-    )
+    (if (and
+         session
+         (y-or-n-p (format "Can I delete screen \"%s\" session: " session)))
+        (progn
+          (push
+           (find session *frames-elscreen-session* :key 'car :test 'string-equal)
+           *frames-elscreen-session-old*)
+          (setq *frames-elscreen-session*
+                (remove* session *frames-elscreen-session*
+                         :key 'car
+                         :test 'string-equal)))
+        (message "Not deleting screen \"%s\" session: " session)))
 
 
   (defun fmsession-modify-element (fun)

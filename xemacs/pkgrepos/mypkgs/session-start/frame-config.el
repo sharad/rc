@@ -125,7 +125,7 @@
   ;; advise (elscreen-kill-internal screen)
 
   (defadvice elscreen-kill-internal (after lanucher-del-altname (screen) activate)
-    (message "in advise %d" screen)
+    ;; (message "elscreen-kill-internal: in advise %d" screen)
     (launcher-del-elscreen-altname (selected-frame) screen))
 
   ;; (launcher-set-elscreen-altname "test" (selected-frame))
