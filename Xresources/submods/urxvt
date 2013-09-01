@@ -34,24 +34,37 @@ URxvt_color*foreground: light grey
 !!
 ! URxvt*font: xft:Mono-ifelse(WIDTH, 1280, 10, 12)
 ! URxvt.font: xft:DejaVu Sans Mono:size=ifelse(WIDTH, 1280, 10, 12)
-URxvt.font: xft:KacstNaskh:style=Regular:size=ifelse(WIDTH, 1280, 8, 10):spacing=1:style=Regular,\
-          xft:DejaVu Sans Mono,\
-          Lohit Nepali:style=Regular,\
-          Lohit Konkani:style=Regular,\
-          Sarai:style=Regular,\
-          Lohit Marathi:style=Regular,\
-          Samanata:style=Regular,\
-          gargi:style=Medium,\
-          Samyak Devanagari:style=Regular,\
-          Nakula:style=Regular,\
-          Lohit Kashmiri:style=Regular,\
-          Chandas:style=Regular,\
-          Lohit Maithili:style=Regular,\
-          Lohit Hindi:style=Regular,\
-          FreeSans:style=Medium,нормален,obyčejné,normal,Mittel,µεσαία,Normaali,Normál,Medio,Gemiddeld,Odmiana Zwykła,Обычный,Normálne,menengah,прямій,Navadno,vidējs,normalusis,vừa,Arrunta,\
-          FreeSerif:style=Medium,нормален,obyčejné,normal,Mittel,µεσαία,Normaali,Normál,Normale,Gemiddeld,odmiana zwykła,Обычный,Normálne,ปกติ,menengah,прямій,Navadno,vidējs,normalusis,vừa,Arrunta,\
-          Sahadeva:style=Regular,\
-          Lohit Sindhi:style=Regular
+
+
+!! Added Hindi fonts for dict -d hin-eng word, dict -d eng-hin word
+URxvt.font: \
+   xft:DejaVu Sans Mono:size=8:spacing=1,\
+   xft:KacstNaskh:style=Regular:size=ifelse(WIDTH, 1280, 8, 10):style=Regular:spacing=1,\
+   xft:FreeSans:style=Bold:size=8:spacing=1,\
+   xft:FreeSans:style=Regular:size=8:spacing=1,\
+   xft:gargi:style=Medium:size=8:spacing=1,\
+   xft:Lohit Hindi:style=Regular:size=8:spacing=1,\
+   xft:FreeSerif:style=Regular:size=8:spacing=1,\
+   xft:FreeSerif:style=Bold:size=8:spacing=1,\
+   xft:Lohit Nepali:style=Regular:size=8:spacing=1,\
+   xft:Lohit Konkani:style=Regular:size=8:spacing=1,\
+   xft:Sarai:style=Regular:size=8:spacing=1,\
+   xft:Lohit Marathi:style=Regular:size=8:spacing=1,\
+   xft:Samanata:style=Regular:size=8:spacing=1,\
+   xft:gargi:style=Medium:size=8:spacing=1,\
+   xft:Samyak Devanagari:style=Regular:size=8:spacing=1,\
+   xft:Nakula:style=Regular:size=8:spacing=1,\
+   xft:Lohit Kashmiri:style=Regular:size=8:spacing=1,\
+   xft:Chandas:style=Regular:size=8:spacing=1,\
+   xft:Lohit Maithili:style=Regular:size=8:spacing=1,\
+   xft:Lohit Hindi:style=Regular:size=8:spacing=1,\
+   xft:FreeSans:style=Medium:size=8:spacing=1,\
+   xft:FreeSerif:style=Medium:size=8\
+   xft:Sahadeva:style=Regular:size=8:spacing=1,\
+   xft:Lohit Sindhi:style=Regular:size=8:spacing=1
+
+
+
 
 
 URxvt.xftAntialias:      false

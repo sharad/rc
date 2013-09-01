@@ -176,3 +176,8 @@ alias fmchannels="grep radio= ~/.mplayer/config  | cut -d= -f6 | tr -- , '\n' | 
 alias sslencrypt='openssl enc -aes-256-cbc -e'
 alias ssldecrypt='openssl enc -aes-256-cbc -d'
 
+# Translation, Dictionary Lookup, Languages
+alias dictenhin='dict -d eng-hin'
+alias dicthien='dict -d eng-hin'
+
+
