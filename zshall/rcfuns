@@ -244,16 +244,25 @@ function screenssh {
 
         if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub ; then
 
-            if [ "$sessionarg" ] && ! ${=prefixcmd} screen -x $sessionarg -ls 2>/dev/null | grep 'No Sockets' 1>&2 > /dev/null ; then
+            if [ "$sessionarg" ] && ! ${=prefixcmd} screen -x $session -ls 2>/dev/null | grep 'No Sockets' 1>&2 > /dev/null ; then
                 trap 'print Interrupted; return 1' SIGINT
-                session=$( ${=prefixcmd} screen -x $sessionarg -ls 2>/dev/null | sed -n 2p | awk '{ print $1 }')
+                session=$( ${=prefixcmd} screen -x $session -ls 2>/dev/null | sed -n 2p | awk '{ print $1 }')
+                sessionexists=${session}
                 trap - SIGINT
             fi
 
             if [ "$session" ] ; then
                 print ${=prefixcmdintractive} screen -x $session >&2
-                ${=prefixcmdintractive} screen -x $session  ||
-                ${=prefixcmdintractive} screen -S $session
+                if [ "${sessionexists}" ] ; then
+                    ${=prefixcmdintractive} screen -x $session
+                    if (( $? == 255 )) ; then
+                        print some problem happened in ssh to $machine, will try after 7 seconds
+                        sleep 7s
+                        screenssh $machine $session
+                    fi
+                else
+                    ${=prefixcmdintractive} screen -S $session
+                fi
             else
                 print No session $sessionarg creating it. >&2
             fi
