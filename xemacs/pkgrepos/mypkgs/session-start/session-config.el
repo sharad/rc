@@ -615,10 +615,15 @@ Also returns nil if pid is nil."
 to restore in case of sudden emacs crash."
     (interactive "P")
     (let ((idle-time (current-idle-time))
-          (time-format "%a %H:%M:%S"))
+          (time-format "%a %H:%M:%S")
+          ;; (time-since-save-all-sessions-auto-save-time (float-time (time-since save-all-sessions-auto-save-time)))
+          )
       (when (or
              force
-             (> (float-time (time-since save-all-sessions-auto-save-time)) save-all-sessions-auto-save-time-interval))
+             (let ((time-since-last-save (float-time (time-since save-all-sessions-auto-save-time))))
+               (and
+                (> time-since-last-save (float-time idle-time))
+                (> time-since-last-save save-all-sessions-auto-save-time-interval))))
         (if (or
              force
              (and idle-time
