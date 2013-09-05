@@ -136,7 +136,7 @@
          ?k
          "* TODO %? %^g\n %i\n [%a]\n"
          (lambda ()
-           (org-template-set-file-writable (concat (find-task-dir) "notes.org"))))
+           (org-template-set-file-writable (expand-file-name "notes.org" (find-task-dir)))))
         ("Emacs"
          ?m
          "* TODO %? %^g\n %i\n [%a]\n"

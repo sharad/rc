@@ -156,16 +156,25 @@
         (message "elscreen-session-session-list-set: Session do not exists.")))
 
   (defvar *frames-elscreen-session* nil "Stores all elscreen sessions here.")
+  (defvar *frames-elscreen-session-old* nil "Stores all discarded elscreen sessions here.")
 
   (eval-after-load "desktop"
-    '(add-to-list
-      'desktop-globals-to-save
-      '*frames-elscreen-session*))
+    '(progn
+      (add-to-list
+       'desktop-globals-to-save
+       '*frames-elscreen-session*)
+      (add-to-list
+       'desktop-globals-to-save
+       '*frames-elscreen-session-old*)))
 
   (eval-after-load "session"
-    '(add-to-list
-      'session-globals-include
-      '(*frames-elscreen-session* 100)))
+    '(progn
+      (add-to-list
+       'session-globals-include
+       '(*frames-elscreen-session* 100))
+      (add-to-list
+       'session-globals-include
+       '(*frames-elscreen-session-old* 100))))
 
   (defun fmsession-migration ()
     (interactive)
@@ -175,6 +184,7 @@
              (sharad/read-file
               (concat "~/.emacs.d/session/frames/" session "/elscreen")))
        *frames-elscreen-session*)))
+
 
   (defun fmsession-delete-session (session)
     (interactive
@@ -201,7 +211,7 @@
 
   (defun fmsession-modify-name (fun)
     (mapcar (lambda (x)
-              (setcar x (fun (car x)))
+              (setcar x (funcall fun (car x)))
               x)
             (copy-tree *frames-elscreen-session*)))
 

@@ -88,7 +88,12 @@
                     (read-from-minibuffer (format "Desc of %s: " name)))))
      (list task name desc)))
 
-  (let* ((dir (concat taskdir "/" task "/" name)))
+  (let* ((dir (concat taskdir "/" task "/" name))
+         (bug (if (string-equal task "bugs")
+                  (car
+                   (bugzilla-get-bugs
+                    '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url")
+                    `(("ids" ,name)))))))
     (if (file-directory-p dir)
         (find-task dir)
         (progn
@@ -102,8 +107,8 @@
                   find-file-not-found-functions) ;find alternate of find-file-noselect to get non-existing file.
               (with-current-buffer (or (find-buffer-visiting nfile)
                                        (find-file-noselect nfile))
-                (if (goto-char (point-min))
-                    (insert "# -*-  -*-\n"))
+                ;; (if (goto-char (point-min))
+                ;;     (insert "# -*-  -*-\n"))
                 (dolist (pv task-file-properties)
                   (add-file-local-variable-prop-line (car pv) (cdr pv)))
                 (goto-char (point-max))
