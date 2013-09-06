@@ -214,10 +214,26 @@ for the overlay."
 
   (deh-section "desktop-settings"
 
-    (defun desktop-handler-pabbrev-mode (desktop-buffer-locals)
-      (unless desktop-buffer-read-only
-        (pabbrev-mode 1)))
 
-    (add-to-list 'desktop-minor-mode-handlers '(pabbrev-mode . desktop-handler-pabbrev-mode))))
+    ;; (defmacro desktop-get-readonly-proof-mode (modefn)
+    ;;   `(defun ,(intern (concat "desktop-handler-" (symbol-name modefn))) (desktop-buffer-locals)
+    ;;      (unless desktop-buffer-read-only
+    ;;        (,modefn 1))))
+
+    (require 'session-config)
+
+    ;; (defun desktop-handler-pabbrev-mode (desktop-buffer-locals)
+    ;;   (unless desktop-buffer-read-only
+    ;;     (pabbrev-mode 1)))
+    ;; (desktop-get-readonly-proof-mode pabbrev-mode)
+    ;; (add-to-list 'desktop-minor-mode-handlers '(pabbrev-mode . desktop-handler-pabbrev-mode))
+    ;; (desktop-get-readonly-proof-mode flymake-mode)
+    ;; (add-to-list 'desktop-minor-mode-handlers '(flymake-mode . desktop-handler-flymake-mode))
+
+    (add-to-list 'desktop-minor-mode-handlers (cons 'pabbrev-mode
+                                                    (desktop-get-readonly-proof-mode pabbrev-mode)))))
+
+
+
 
 (provide 'expand-config)

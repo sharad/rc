@@ -862,7 +862,11 @@ Using it may cause conflicts.  Use it anyway? " owner)))))
 
     ;; (add-to-list 'desktop-minor-mode-handlers '(pabbrev-mode . desktop-handler-pabbrev-mode))
 
-    ))
+
+      (defmacro desktop-get-readonly-proof-mode (modefn)
+        `(lambda (desktop-buffer-locals)
+           (unless desktop-buffer-read-only
+             (,modefn 1))))))
 
 
 ;;For Session

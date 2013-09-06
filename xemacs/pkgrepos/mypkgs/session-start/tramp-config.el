@@ -119,7 +119,59 @@
   ;; http://www.gnu.org/software/tramp/#Multi_002dhops
   (deh-require-maybe common-info
     (add-to-list 'tramp-default-proxies-alist
-                 `(,tramp-default-proxie "\\`root\\'" "/ssh:%h:")))
+                 `(,tramp-default-proxie "\\`root\\'" "/ssh:%h:"))
+
+    (require 'tree)
+
+    (defvar *tramp-default-proxies-config* nil "tramp default proxies config")
+
+    (defun tramp-noproxies-hosts-default-user (user)
+      (get-tree-node *tramp-default-proxies-config* 'noproxy user))
+
+    (defun tramp-sudoproxies-hosts-default-user (user)
+      (get-tree-node *tramp-default-proxies-config* 'sudo user))
+
+    (deh-section "general sudo setup for tramp-default-proxies-alist"
+      ;; http://www.gnu.org/software/emacs/manual/html_node/tramp/Multi_002dhops.html
+      (add-to-list 'tramp-default-proxies-alist
+                   '(nil "\\`root\\'" "/ssh:%h:"))
+
+      (add-to-list 'tramp-default-proxies-alist
+                   '((regexp-quote (system-name)) nil nil)))
+
+    (deh-section "sudo using different user for tramp-default-proxies-alist"
+      (dolist (user (mapcar 'car (get-tree-node *tramp-default-proxies-config* 'sudo)))
+        (add-to-list 'tramp-default-proxies-alist
+                     (list
+                      (apply regexp-or (mapcar
+                                        (lambda (host)
+                                          (concat "\\`" host))
+                                        (get-tree-node *tramp-default-proxies-config* 'sudo user)))
+                      "\\`root\\'"
+                      (concat "ssh:" user "@%h"))))
+
+      (when nil ;; e.g.
+        (add-to-list 'tramp-default-proxies-alist
+                     '("\\`host" "\\`root\\'" "/ssh:user@%h:"))))
+
+    (deh-section "default user setup for tramp-default-proxies-alist"
+      (dolist (user (mapcar 'car (get-tree-node *tramp-default-proxies-config* 'noproxy)))
+        (add-to-list 'tramp-default-proxies-alist
+                     (list
+                      (apply regexp-or (mapcar
+                                        (lambda (host)
+                                          (concat "\\`" host))
+                                        (get-tree-node *tramp-default-proxies-config* 'noproxy user)))
+                      (concat "\\`" user "\\'")
+                      nil)))
+
+      (when nil ;; e.g.
+        (add-to-list 'tramp-default-proxies-alist
+                     '("\\`host" "\\`user\\'" nil) t))))
+
+
+
+
   ;; If you, for example, wants to work as ‘root’ on hosts in the
   ;; domain ‘your.domain’, but login as ‘root’ is disabled for
   ;; non-local access, you might add the following rule:

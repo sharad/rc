@@ -50,7 +50,11 @@
       (message warning)))
   (deh-require-maybe flymake-cursor
     ;; http://www.emacswiki.org/emacs/flymake-cursor.el
-    ))
+    )
+
+  (deh-require-maybe session-config
+    (add-to-list 'desktop-minor-mode-handlers (cons 'flymake-mode
+                                                    (desktop-get-readonly-proof-mode flymake-mode)))))
 
 
 (provide 'flymake-config)
