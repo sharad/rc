@@ -33,7 +33,6 @@
                      projman ;; http://www.emacswiki.org/emacs/ProjmanMode
                      project-root))
 
-
 (defun directory-files-and-attributes-only-child (dir &optional full)
   (cddr (directory-files-and-attributes dir full)))
 
@@ -44,8 +43,8 @@
       ;; http://www.emacswiki.org/emacs/IProject
       (iproject-key-binding)
       (add-hook '*sharad/after-init-hook*
-                #'(lambda ()
-                    (iproject-key-binding)))
+                '(lambda ()
+                  (iproject-key-binding)))
       )
 
     (deh-require-maybe project-buffer-occur

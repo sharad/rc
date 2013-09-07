@@ -52,6 +52,9 @@
     ;; http://www.emacswiki.org/emacs/flymake-cursor.el
     )
 
+  (eval-when-compile
+    '(require 'session-config))
+
   (deh-require-maybe session-config
     (add-to-list 'desktop-minor-mode-handlers (cons 'flymake-mode
                                                     (desktop-get-readonly-proof-mode flymake-mode)))))

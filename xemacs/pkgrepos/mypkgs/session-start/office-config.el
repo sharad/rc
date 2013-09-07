@@ -58,7 +58,7 @@
 (defvar taskdir "/home/s/paradise/tasks" "Task Directory")
 (defvar current-task nil "Current task")
 
-(defvar task-alist '(("bugs" (files "todo.org" "notes.org" "an0.org"))
+(defvar task-config '(("bugs" (files "todo.org" "notes.org" "an0.org"))
                      ("features"
                       (files "reqirement.org" "feasibility.org"
                              "design.org" "todo.org" "notes.org" "an0.org"))))
@@ -76,7 +76,7 @@
 
 (defun create-task (task name &optional desc)
   (interactive
-   (let* ((task (completing-read "what: " (mapcar 'car task-alist) nil t))
+   (let* ((task (completing-read "what: " (mapcar 'car task-config) nil t))
           (name (completing-read "name: " (directory-files (concat taskdir "/" task "/")) nil))
           (bug (if (string-equal task "bugs")
                    (car
@@ -102,7 +102,7 @@
           (make-directory (concat "/home/s/hell/SCRATCH/bugs/" task) t)
           (make-symbolic-link (concat "/home/s/hell/SCRATCH/bugs/" task) (concat dir "/scratch"))
 
-          (dolist (f (cdr (assoc 'files (cdr (assoc task task-alist)))))
+          (dolist (f (cdr (assoc 'files (cdr (assoc task task-config)))))
             (let ((nfile (expand-file-name f (concat dir "/")))
                   find-file-not-found-functions) ;find alternate of find-file-noselect to get non-existing file.
               (with-current-buffer (or (find-buffer-visiting nfile)
@@ -132,10 +132,15 @@
                  nil plan-page
                  (task-status-of-sys 'planner 'inprogress))))
           ;; Project-Buffer
-          ()
+          (iproject-add-project
+           nil                          ;project-type
+           nil                          ;project-main-file
+           nil                          ;project-root-folder
+           project-name                 ;project-name
+           nil)                         ;file-filter
 
           (find-file (expand-file-name
-                      (cadr (assoc 'files (cdr (assoc task task-alist))))
+                      (cadr (assoc 'files (cdr (assoc task task-config))))
                       (concat dir "/")))))
 
     (if (y-or-n-p (format "Should set %s current task" dir))
