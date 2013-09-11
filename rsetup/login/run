@@ -92,7 +92,7 @@ whence leave &&
 leave +0800
 
 atq
-if [ $(atq | cut -f1) -gt 0 ] ; then
+if [ $(atq | cut -f1 | wc -l) -gt 0 ] ; then
     atrm  $(atq | cut -f1)
 fi
 
