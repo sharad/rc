@@ -865,7 +865,7 @@ Using it may cause conflicts.  Use it anyway? " owner)))))
 
       (defmacro desktop-get-readonly-proof-mode (modefn)
         `'(lambda (desktop-buffer-locals)
-           (unless desktop-buffer-read-only
+           (unless (or desktop-buffer-read-only buffer-read-only)
              (,modefn 1)))))
 
     ;; (macroexpand '(desktop-get-readonly-proof-mode sdf))

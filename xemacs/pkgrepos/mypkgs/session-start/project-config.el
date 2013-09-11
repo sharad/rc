@@ -31,7 +31,15 @@
                      ;; eproject-another
                      mk-project ;; https://github.com/mattkeller/mk-project
                      projman ;; http://www.emacswiki.org/emacs/ProjmanMode
-                     project-root))
+                     project-root)
+
+
+  (add-to-list 'desktop-minor-mode-handlers '(eproject-mode . (lambda (desktop-buffer-locals)
+                                                                (eproject-maybe-turn-on))))
+
+
+
+  )
 
 (defun directory-files-and-attributes-only-child (dir &optional full)
   (cddr (directory-files-and-attributes dir full)))
