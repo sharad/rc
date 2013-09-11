@@ -9,8 +9,10 @@
 ;; "TERM=dumb" "EMACS=t" "INSIDE_EMACS='23.4.1,tramp:2.1.21-pre'"
 ;;
 
+
 (eval-after-load "tramp"
-  '(sharad/disable-startup-inperrupting-feature))
+  '(when *emacs-in-init*
+    (sharad/disable-startup-inperrupting-feature)))
 
 (eval-when-compile
   '(require 'tramp))
@@ -137,37 +139,42 @@
                    '(nil "\\`root\\'" "/ssh:%h:"))
 
       (add-to-list 'tramp-default-proxies-alist
-                   '((regexp-quote (system-name)) nil nil)))
+                   '((regexp-quote (system-name)) nil nil))
 
-    ;; (deh-section "sudo using different user for tramp-default-proxies-alist"
-    ;;   (dolist (user (mapcar 'car (get-tree-node *tramp-default-proxies-config* 'sudo)))
-    ;;     (add-to-list 'tramp-default-proxies-alist
-    ;;                  (list
-    ;;                   (apply 'regexp-opt (mapcar
-    ;;                                     (lambda (host)
-    ;;                                       (concat "\\`" host))
-    ;;                                     (get-tree-node *tramp-default-proxies-config* 'sudo user)))
-    ;;                   "\\`root\\'"
-    ;;                   (concat "ssh:" user "@%h"))))
+      (add-to-list 'tramp-default-proxies-alist
+                   '((regexp-quote "localhost") nil nil)))
 
-    ;;   (when nil ;; e.g.
-    ;;     (add-to-list 'tramp-default-proxies-alist
-    ;;                  '("\\`host" "\\`root\\'" "/ssh:user@%h:"))))
+    (deh-section "sudo using different user for tramp-default-proxies-alist"
+      (dolist (user (mapcar 'car (get-tree-node *tramp-default-proxies-config* 'sudo)))
+        (add-to-list 'tramp-default-proxies-alist
+                     (list
+                      (cons ;; funcall
+                            'regexp-opt (mapcar
+                                          (lambda (host)
+                                          (concat "\\`" host))
+                                        (get-tree-node *tramp-default-proxies-config* 'sudo user)))
+                      "\\`root\\'"
+                      (concat "ssh:" user "@%h"))))
 
-    ;; (deh-section "default user setup for tramp-default-proxies-alist"
-    ;;   (dolist (user (mapcar 'car (get-tree-node *tramp-default-proxies-config* 'noproxy)))
-    ;;     (add-to-list 'tramp-default-proxies-alist
-    ;;                  (list
-    ;;                   (apply 'regexp-opt (mapcar
-    ;;                                     (lambda (host)
-    ;;                                       (concat "\\`" host))
-    ;;                                     (get-tree-node *tramp-default-proxies-config* 'noproxy user)))
-    ;;                   (concat "\\`" user "\\'")
-    ;;                   nil)))
+      (when nil ;; e.g.
+        (add-to-list 'tramp-default-proxies-alist
+                     '("\\`host" "\\`root\\'" "/ssh:user@%h:"))))
 
-    ;;   (when nil ;; e.g.
-    ;;     (add-to-list 'tramp-default-proxies-alist
-    ;;                  '("\\`host" "\\`user\\'" nil) t)))
+    (deh-section "default user setup for tramp-default-proxies-alist"
+      (dolist (user (mapcar 'car (get-tree-node *tramp-default-proxies-config* 'noproxy)))
+        (add-to-list 'tramp-default-proxies-alist
+                     (list
+                      (cons ;; funcall
+                            'regexp-opt (mapcar
+                                        (lambda (host)
+                                          (concat "\\`" host))
+                                        (get-tree-node *tramp-default-proxies-config* 'noproxy user)))
+                      (concat "\\`" user "\\'")
+                      nil)))
+
+      (when nil ;; e.g.
+        (add-to-list 'tramp-default-proxies-alist
+                     '("\\`host" "\\`user\\'" nil) t)))
     )
 
 

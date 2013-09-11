@@ -304,8 +304,9 @@ alkready should not exist.")
   (deh-section "disable-startup-inperrupting-feature"
     (defvar sharad/disable-startup-inperrupting-feature-hook nil
       "Run only when emacs start from this file only, it basically run when this ful get loaded at emacs start time")
-    (deh-section "xx"
+    (deh-section "xxdis"
       (defun general-disable-startup-setting ()
+        (interactive)
         (setq pabbrev-read-only-error nil)
         (setq
          enable-p4-login nil
@@ -333,9 +334,10 @@ problem while emacs startup in daemon mode, non-interactively."
           ;; (deh-featurep epa
           ;;   (if (fboundp 'epa-file-disable)
           ;;       (epa-file-disable)))
-        ;; (global-pabbrev-mode -1)
-        ;; (run-hooks 'sharad/disable-startup-inperrupting-feature-hook)
-        (run-each-hooks 'sharad/disable-startup-inperrupting-feature-hook)))
+          ;; (global-pabbrev-mode -1)
+          ;; (run-hooks 'sharad/disable-startup-inperrupting-feature-hook)
+          (run-each-hooks 'sharad/disable-startup-inperrupting-feature-hook)
+          (message "sharad/disable-startup-inperrupting-feature() completed Seen.")))
 
     ;; run now
     ;; (sharad/disable-startup-inperrupting-feature)
@@ -362,6 +364,20 @@ problem while emacs startup in daemon mode, non-interactively."
     (defvar sharad/enable-startup-inperrupting-feature-hook nil
       "Run only once when when very frame got created after emacs startup.")
 
+    (deh-section "xxen"
+      (defun general-enable-startup-setting ()
+        (interactive)
+        (setq pabbrev-read-only-error nil)
+        (setq
+         enable-p4-login t
+         tramp-mode t
+         ido-mode t)
+        (deh-featurep epa
+          (if (fboundp 'epa-file-enable)
+              (epa-file-enable)))
+        (login-to-perforce))
+      (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'general-enable-startup-setting))
+
     (defun sharad/enable-startup-inperrupting-feature ()
       "Run only once when when very frame got created after emacs startup.
 its purpose to re/enable all feature that may have cuused problem in emacs
@@ -371,26 +387,24 @@ startup in daemon mode."
       (with-report-error "check"
           ;; why desktop-restore not running.
           (progn
-            (setq enable-p4-login t
-                  tramp-mode t
-                  ido-mode 'both)
-            (login-to-perforce)
+            ;; (setq enable-p4-login t
+            ;;       tramp-mode t
+            ;;       ido-mode 'both)
+            ;; (login-to-perforce)
             ;; (update-ssh-agent t) ;; should be called when tramp file accessed. - see how it will work in case sharad/desktop-session-restore.
             ;;test
-            (deh-featurep epa
-              (if (fboundp 'epa-file-disable)
-                  (epa-file-enable)))
+            ;; (deh-featurep epa
+            ;;   (if (fboundp 'epa-file-enable)
+            ;;       (epa-file-enable)))
             (deh-featurep (and light-symbol hilit-chg)
               (add-element-to-lists '(lambda ()
                                       (light-symbol-mode 1)
                                       (highlight-changes-visible-mode t)
                                       (highlight-changes-mode t)) pgm-langs))
             )
-        ;; (setq debug-on-error t ) ;; debug for now
-
-        (run-each-hooks 'sharad/enable-startup-inperrupting-feature-hook)
-        ;; (sharad/desktop-session-restore)
-        (message "sharad/enable-startup-inperrupting-feature() completed Seen.")
+          (run-each-hooks 'sharad/enable-startup-inperrupting-feature-hook)
+          ;; (sharad/desktop-session-restore)
+          (message "sharad/enable-startup-inperrupting-feature() completed Seen.")
         (setq debug-on-error t )))
 
     (defvar sharad/enable-startup-inperrupting-feature-in-frame-once-lock nil "Lock for sharad/enable-startup-inperrupting-feature-in-frame-once")
