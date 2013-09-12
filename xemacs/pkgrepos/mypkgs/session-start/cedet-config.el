@@ -68,17 +68,17 @@
 
 
 
-    (ede-cpp-root-project "Test"
-                          :name "Test Project"
-                          :file "~/work/project/CMakeLists.txt"
-                          :include-path '("/"
-                                          "/Common"
-                                          "/Interfaces"
-                                          "/Libs"
-                                          )
-                          :system-include-path '("~/exp/include")
-                          :spp-table '(("isUnix" . "")
-                                       ("BOOST_TEST_DYN_LINK" . "")))
+    ;; (ede-cpp-root-project "Test"
+    ;;                       :name "Test Project"
+    ;;                       :file "~/work/project/CMakeLists.txt"
+    ;;                       :include-path '("/"
+    ;;                                       "/Common"
+    ;;                                       "/Interfaces"
+    ;;                                       "/Libs"
+    ;;                                       )
+    ;;                       :system-include-path '("~/exp/include")
+    ;;                       :spp-table '(("isUnix" . "")
+    ;;                                    ("BOOST_TEST_DYN_LINK" . "")))
 
 
 
@@ -87,9 +87,10 @@
       (setq qt4-base-dir "/usr/include/qt4")
       (semantic-add-system-include qt4-base-dir 'c++-mode)
       (add-to-list 'auto-mode-alist (cons qt4-base-dir 'c++-mode))
-      (add-to-list 'semantic-lex-c-preprocessor-symbol-file (concat qt4-base-dir "/Qt/qconfig.h"))
-      (add-to-list 'semantic-lex-c-preprocessor-symbol-file (concat qt4-base-dir "/Qt/qconfig-dist.h"))
-      (add-to-list 'semantic-lex-c-preprocessor-symbol-file (concat qt4-base-dir "/Qt/qglobal.h")))
+      (when (boundp 'semantic-lex-c-preprocessor-symbol-file)
+          (add-to-list 'semantic-lex-c-preprocessor-symbol-file (concat qt4-base-dir "/Qt/qconfig.h"))
+          (add-to-list 'semantic-lex-c-preprocessor-symbol-file (concat qt4-base-dir "/Qt/qconfig-dist.h"))
+          (add-to-list 'semantic-lex-c-preprocessor-symbol-file (concat qt4-base-dir "/Qt/qglobal.h"))))
 
 
 
@@ -125,8 +126,10 @@
   ;; Author: Alex Ott <alexott@gmail.com>
   ;; Keywords: CEDET 1.1,
   ;; Requirements: CEDET 1.1 or below
+(let ((cedet "~/tmp/cedet-1.1/common/cedet.el"))
+  (when (file-exists-p cedet)
+      (load-file cedet)))
 
-  (load-file "~/tmp/cedet-1.1/common/cedet.el")
   (deh-require-maybe (progn
                        semantic-decorate-include
                        semantic-gcc
@@ -143,17 +146,21 @@
   (if (fboundp 'semantic-load-enable-excessive-code-helpers)
       (semantic-load-enable-excessive-code-helpers))
 
-  (custom-set-variables
-   '(semantic-idle-scheduler-idle-time 3)
-   '(semantic-self-insert-show-completion-function
-     (lambda nil (semantic-ia-complete-symbol-menu (point))))
-   '(global-semantic-tag-folding-mode t nil (semantic-util-modes)))
+  (deh-require-maybe semantic-util-modes
+    (custom-set-variables
+     '(semantic-idle-scheduler-idle-time 3)
+     '(semantic-self-insert-show-completion-function
+       (lambda nil (semantic-ia-complete-symbol-menu (point))))
+     '(global-semantic-tag-folding-mode t nil (semantic-util-modes))))
 
   (setq senator-minor-mode-name "SN")
   (setq semantic-imenu-auto-rebuild-directory-indexes nil)
-  (global-srecode-minor-mode 1)
+  (when (fboundp 'global-srecode-minor-mode)
+    (global-srecode-minor-mode 1))
   (global-semantic-mru-bookmark-mode 1)
-  (global-semantic-tag-folding-mode 1)
+  (when (fboundp 'global-semantic-tag-folding-mode)
+    (global-semantic-tag-folding-mode 1))
+
 
   (setq-mode-local c-mode semanticdb-find-default-throttle
                    '(project unloaded system recursive))
@@ -198,13 +205,16 @@
   (add-hook 'semantic-init-hooks 'alexott/semantic-hook)
 
   ;; gnu global support
-  (when (cedet-gnu-global-version-check t)
+
+  (when (and (fboundp 'cedet-gnu-global-version-check)
+             (cedet-gnu-global-version-check t))
     (require 'semanticdb-global)
     (semanticdb-enable-gnu-global-databases 'c-mode)
     (semanticdb-enable-gnu-global-databases 'c++-mode))
 
   ;; ctags
-  (when (cedet-ectag-version-check t)
+  (when (and (fboundp 'cedet-ectag-version-check)
+             (cedet-ectag-version-check t))
     (require 'semanticdb-ectag)
     (semantic-load-enable-primary-exuberent-ctags-support))
 

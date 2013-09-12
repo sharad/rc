@@ -376,7 +376,7 @@ problem while emacs startup in daemon mode, non-interactively."
           (if (fboundp 'epa-file-enable)
               (epa-file-enable)))
         (login-to-perforce))
-      (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'general-enable-startup-setting))
+      (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'general-enable-startup-setting t))
 
     (defun sharad/enable-startup-inperrupting-feature ()
       "Run only once when when very frame got created after emacs startup.
@@ -391,11 +391,13 @@ startup in daemon mode."
             ;;       tramp-mode t
             ;;       ido-mode 'both)
             ;; (login-to-perforce)
-            ;; (update-ssh-agent t) ;; should be called when tramp file accessed. - see how it will work in case sharad/desktop-session-restore.
+            ;; ;; (update-ssh-agent t) ;; should be called when tramp file accessed. - see how it will work in case sharad/desktop-session-restore.
             ;;test
             ;; (deh-featurep epa
             ;;   (if (fboundp 'epa-file-enable)
             ;;       (epa-file-enable)))
+            (general-enable-startup-setting) ;could not run from sharad/enable-startup-inperrupting-feature-hook
+            ;as needed before the function in sharad/enable-startup-inperrupting-feature-hook.
             (deh-featurep (and light-symbol hilit-chg)
               (add-element-to-lists '(lambda ()
                                       (light-symbol-mode 1)

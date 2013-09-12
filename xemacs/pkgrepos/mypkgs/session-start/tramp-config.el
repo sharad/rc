@@ -147,14 +147,13 @@
     (deh-section "sudo using different user for tramp-default-proxies-alist"
       (dolist (user (mapcar 'car (get-tree-node *tramp-default-proxies-config* 'sudo)))
         (add-to-list 'tramp-default-proxies-alist
-                     (list
-                      (cons ;; funcall
-                            'regexp-opt (mapcar
-                                          (lambda (host)
-                                          (concat "\\`" host))
-                                        (get-tree-node *tramp-default-proxies-config* 'sudo user)))
-                      "\\`root\\'"
-                      (concat "ssh:" user "@%h"))))
+                     `((regexp-opt ',(mapcar
+                                      (lambda (host)
+                                        ;; (concat "\\`" host)
+                                        (concat host))
+                                      (get-tree-node *tramp-default-proxies-config* 'sudo user)))
+                       "\\`root\\'"
+                       ,(concat "ssh:" user "@%h"))))
 
       (when nil ;; e.g.
         (add-to-list 'tramp-default-proxies-alist
@@ -163,19 +162,17 @@
     (deh-section "default user setup for tramp-default-proxies-alist"
       (dolist (user (mapcar 'car (get-tree-node *tramp-default-proxies-config* 'noproxy)))
         (add-to-list 'tramp-default-proxies-alist
-                     (list
-                      (cons ;; funcall
-                            'regexp-opt (mapcar
-                                        (lambda (host)
-                                          (concat "\\`" host))
-                                        (get-tree-node *tramp-default-proxies-config* 'noproxy user)))
-                      (concat "\\`" user "\\'")
-                      nil)))
+                     `((regexp-opt ',(mapcar
+                                      (lambda (host)
+                                        ;; (concat "\\`" host)
+                                        (concat host))
+                                      (get-tree-node *tramp-default-proxies-config* 'noproxy user)))
+                       ,(concat "\\`" user "\\'")
+                       nil)))
 
       (when nil ;; e.g.
         (add-to-list 'tramp-default-proxies-alist
-                     '("\\`host" "\\`user\\'" nil) t)))
-    )
+                     '("\\`host" "\\`user\\'" nil) t))))
 
 
 
