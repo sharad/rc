@@ -109,11 +109,11 @@
        `(defadvice ,fun (around ,adname ,(help-function-arglist fun) activate)
           ;; ,(help-function-interactive 'fun)
           (let ((remember-annotation-functions
-                 (get-tree-node  sharad/remember-functions-alist remember-organizer 'annotation))
+                 (tree-node  sharad/remember-functions-alist remember-organizer 'annotation :test 'equal))
                 (remember-handler-functions
-                 (get-tree-node sharad/remember-functions-alist remember-organizer 'handler))
+                 (tree-node sharad/remember-functions-alist remember-organizer 'handler :test 'equal))
                 (remember-mode-hook
-                 (get-tree-node sharad/remember-functions-alist remember-organizer 'hook)))
+                 (tree-node sharad/remember-functions-alist remember-organizer 'hook :test 'equal)))
             ad-do-it))))
     (ad-enable-advice fun 'around adname)
     (ad-activate fun)
