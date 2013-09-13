@@ -24,6 +24,17 @@
 
 ;;; Code:
 
+
+;;test
+(when nil
+  (testing
+   (planner-tasks-of-plan-today (planner-today-ensure-exists) (task-stati-of-sys 'planner '(open inprogress)))
+   (planner-tasks-of-plan-today "LinuxMIS" (task-stati-of-sys 'planner '(open inprogress)))
+   (planner-tasks-of-plan-today "TasksByProject" (task-stati-of-sys 'planner '(open inprogress)))
+   (planner-tasks-of-plan-today (planner-today-ensure-exists) '("_" "o"))
+   ))
+
+
 (require 'general-testing)
 (require 'cl)
 
@@ -136,8 +147,17 @@
  (cdr (assoc 'open status-mappings))
  (task-status-map 'planner 'open))
 
+(defmacro with-safe-plan-env (&rest body)
+  `(let ((global-ede-mode nil)
+         (ede-minor-mode nil)
+         (tramp-mode nil)
+         (find-file-hook find-file-hook))
+     (remove-hook 'find-file-hook 'ede-turn-on-hook)
+     ;; (update-ssh-agent)
+     ,@body))
+
 (defun planner-today-ensure-exists ()
-  (let ((tramp-mode nil))
+  (with-safe-plan-env
    (unless (file-exists-p (concat planner-directory (planner-today) ".muse"))
     (save-excursion
       (save-window-excursion
@@ -146,7 +166,7 @@
    (planner-today)))
 
 (defun planner-task-lists (plan)
-  (let ((tramp-mode nil))
+  (with-safe-plan-env
     (planner-extract-tasks
      (list (cons plan (concat planner-directory "/" plan ".muse"))))))
 

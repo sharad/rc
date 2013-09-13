@@ -246,13 +246,17 @@
     (require 'misc-config)
     (provide 'host-info)
     ;; (message "Calling update-ssh-agent > ssh-agent-add-key")
+    (message "tramp-mode %s" tramp-mode)
     (if (and
          (boundp 'ssh-key-file)
          ssh-key-file)
         ;; (unless (and (not tramp-mode)
         ;;             (shell-command-local-no-output "ssh-add -l < /dev/null"))
         (with-timeout (7 (message "ssh-add timed out."))
-          (shell-command-local-no-output (concat "timeout -k 16 10 ssh-add " ssh-key-file " < /dev/null"))) ;;)
+          (cond ((eq (frame-parameter (selected-frame) 'window-system) 'x)
+                 (shell-command-local-no-output (concat "timeout -k 16 10 ssh-add " ssh-key-file " < /dev/null")))
+                ((eq (frame-parameter (selected-frame) 'window-system) nil)
+                 (shell-command-local-no-output (concat "timeout -k 16 10 ssh-add " ssh-key-file))))) ;;)
         (error "No ssh-key-file defined")))
 
   (defun update-ssh-agent-1 (&optional force)
