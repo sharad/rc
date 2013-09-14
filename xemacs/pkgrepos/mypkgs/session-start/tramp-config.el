@@ -246,7 +246,7 @@
     (require 'misc-config)
     (provide 'host-info)
     ;; (message "Calling update-ssh-agent > ssh-agent-add-key")
-    (message "tramp-mode %s" tramp-mode)
+    ;; (message "tramp-mode %s" tramp-mode)
     (if (and
          (boundp 'ssh-key-file)
          ssh-key-file)
