@@ -56,7 +56,13 @@
     (error (message "Error: %s" e))))
 
 (defvar taskdir "/home/s/paradise/tasks" "Task Directory")
-(defvar current-task nil "Current task")
+(defvar *taskdir-current-task* nil "Current task")
+(add-to-list
+ 'desktop-globals-to-save
+ '*taskdir-current-task*)
+(add-to-list
+ 'session-globals-include
+ '(*taskdir-current-task* 100))
 
 (defvar task-config '(("bugs" (files "todo.org" "notes.org" "an0.org"))
                      ("features"
@@ -68,9 +74,9 @@
 
 (defun find-task-dir (&optional force)
   (interactive "P")
-  (if (or force (null current-task))
-      (setq current-task (ido-read-directory-name "dir: " taskdir nil t))
-      current-task))
+  (if (or force (null *taskdir-current-task*))
+      (setq *taskdir-current-task* (ido-read-directory-name "dir: " taskdir nil t))
+      *taskdir-current-task*))
 
 
 
@@ -132,19 +138,20 @@
                  nil plan-page
                  (task-status-of-sys 'planner 'inprogress))))
           ;; Project-Buffer
-          (iproject-add-project
-           nil                          ;project-type
-           nil                          ;project-main-file
-           nil                          ;project-root-folder
-           project-name                 ;project-name
-           nil)                         ;file-filter
-
+          (when nil
+            (iproject-add-project
+             nil                          ;project-type
+             nil                          ;project-main-file
+             nil                          ;project-root-folder
+             project-name                 ;project-name
+             nil)                         ;file-filter
+            )
           (find-file (expand-file-name
                       (cadr (assoc 'files (cdr (assoc task task-config))))
                       (concat dir "/")))))
 
     (if (y-or-n-p (format "Should set %s current task" dir))
-        (setq current-task dir))))
+        (setq *taskdir-current-task* dir))))
 
 (defun find-task (task)
   (interactive
@@ -169,7 +176,7 @@
       (org-cycle t))
     (switch-to-buffer buf)
     (if (y-or-n-p (format "Should set %s current task" task))
-        (setq current-task task))))
+        (setq *taskdir-current-task* task))))
 
 
 (deh-section "Forgive"

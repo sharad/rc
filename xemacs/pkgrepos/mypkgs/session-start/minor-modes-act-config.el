@@ -60,14 +60,24 @@
         (unless (shell-command-no-output "p4 user -o")
           (shell-command-no-output "zenity --password | p4 login"))))
 
+  (defvar run-office-activate-failed-max 7 "run-office-activate")
+  (defvar run-office-activate-failed 0 "run-office-activate")
+  (defvar run-office-activate t "run-office-activate")
+
   (defun office-activate ()
-    (let ((file (buffer-file-name)))
-      (login-to-perforce)
-      (when (and file
-                 (with-timeout (4 nil) (vc-p4-registered file)))
-          ;; if file is handled by perforce than assume it is
-          ;; related to office perforce repository.
-        (office-mode 1))))
+    (if (and
+         run-office-activate
+         (< run-office-activate-failed run-office-activate-failed-max))
+        (let ((file (buffer-file-name)))
+          (login-to-perforce)
+          (when (and file
+                     (with-timeout (4 (incf run-office-activate-failed)) (vc-p4-registered file)))
+            ;; if file is handled by perforce than assume it is
+            ;; related to office perforce repository.
+            (office-mode 1)))
+        (progn
+          (message "perforce is not reachable, so disabling office-activate.")
+          (setq run-office-activate nil))))
 
 
   (if sharad-in-office-with-perforce

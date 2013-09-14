@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+(require 'tree)
+(eval-when-compile '(require 'tree))
 
 (deh-require-maybe oneliner
   (load-library "oneliner")

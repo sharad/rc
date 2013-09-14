@@ -9,6 +9,8 @@
 ;; "TERM=dumb" "EMACS=t" "INSIDE_EMACS='23.4.1,tramp:2.1.21-pre'"
 ;;
 
+(require 'tree)
+(eval-when-compile '(require 'tree))
 
 (eval-after-load "tramp"
   '(when *emacs-in-init*
@@ -139,9 +141,6 @@
   (deh-require-maybe common-info
     (add-to-list 'tramp-default-proxies-alist
                  `(,tramp-default-proxie "\\`root\\'" "/ssh:%h:"))
-
-    (require 'tree)
-    (eval-when-compile '(require 'tree))
 
     (deh-section "section for tramp-default-proxies-alist"
      (defvar *tramp-default-proxies-config* nil "tramp default proxies config")
