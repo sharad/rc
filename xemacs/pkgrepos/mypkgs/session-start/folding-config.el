@@ -166,5 +166,51 @@
    (assoc major-mode folding-mode-marks-alist)))
 
 
+
+(deh-section "persistance"
+  ;; http://stackoverflow.com/questions/2479977/emacs-persistent-folding-mode
+  ;; http://stackoverflow.com/questions/2299133/how-to-execute-emacs-grep-find-link-in-the-same-window
+  ;; http://stackoverflow.com/questions/1085170/how-to-achieve-code-folding-effects-in-emacs
+  (defvar omm-state nil
+    "file local variable storing outline overlays")
+  (defun omm-state-mode (&optional arg)
+    "poor man's minor mode to re-apply the outline overlays "
+    (interactive)
+    (omm-re-enable-outline-state)
+    (add-hook 'before-save-hook 'omm-state-save))
+  (defun omm-get-all-overlays ()
+    "return a list of outline information for all the current buffer"
+    (save-excursion
+      (let ((all-overlays (overlays-in (point-min) (point-max))))
+        (mapcar (lambda (o)
+                  (list (overlay-start o) (overlay-end o) (overlay-get o 'invisible)))
+                (reverse all-overlays)))))
+  (defun omm-re-enable-outline-state (&optional arg)
+    "turn on outline-minor-mode and re-apply the outline information"
+    (outline-minor-mode 1)
+    (when (listp omm-state)
+      (mapcar (lambda (p)
+                (apply 'outline-flag-region p))
+              omm-state)))
+  (defun omm-state-save ()
+    "save the outline state in a file local variable
+Note: this just replaces the existing value, you need to start
+it off by adding something like this to your file:
+
+# Local Variables:
+# omm-state:()
+# mode:omm-state
+# End:
+"
+    (ignore-errors
+      (save-excursion
+        (goto-char (point-max))
+        (when (search-backward "omm-state:" nil t)
+          (goto-char (match-end 0))
+          (kill-sexp)
+          (princ (omm-get-all-overlays) (current-buffer)))))
+    nil))
+
+
 (provide 'folding-config)
 

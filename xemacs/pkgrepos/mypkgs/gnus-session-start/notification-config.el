@@ -193,7 +193,11 @@
           (save-excursion
             (with-current-buffer gnus-group-buffer
               ;; (set-buffer gnus-group-buffer)
-              (gnus-group-get-new-news 3)
+              (let ((idle-time (current-idle-time)))
+                (if (> (float-time idle-time) 7)
+                    (with-timeout 3 (message "gnus demon timeout")
+                                  (gnus-group-get-new-news 3))
+                    (message "not running gnus demon")))
               (message nil)))))))
 
   (add-hook 'gnus-group-mode-hook 'gnus-demon-init)

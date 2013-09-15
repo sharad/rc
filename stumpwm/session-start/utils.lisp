@@ -175,3 +175,56 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
   (defparameter *debug-level* level))
 
 
+
+(defun select-group (screen query)
+  "Attempt to match string QUERY against group number or partial name."
+  (labels ((match-num (grp)
+             (let ((gn (group-map-number grp)))
+               (unless gn
+                 (string-equal gn query))))
+           (match-whole (grp)
+             (string-equal (group-name grp) query))
+           (match-partial (grp)
+             (let* ((end (min (length (group-name grp)) (length query))))
+               (string-equal (group-name grp) query :end1 end :end2 end))))
+    (when query
+      (or (find-if #'match-num (screen-groups screen))
+          (find-if #'match-whole (screen-groups screen))
+          (find-if #'match-partial (screen-groups screen))))))
+
+(let ((group-stack nil))
+  (defun push-group (group)
+    (if (push (screen-current-group (current-screen))
+          group-stack)
+     (switch-to-group group)))
+  (defun pop-group ()
+    (if group-stack
+        (let ((group (pop group-stack)))
+          (if (member group (screen-groups (current-screen)))
+              (switch-to-group group)
+              (pop-group)))
+        (message "group stack is empty.")))
+  (defun get-group-stack ()
+    group-stack))
+
+(defcommand gpop () ()
+            (pop-group))
+
+(defcommand gpush (group) ((:group "Select Group: "))
+            (when group
+              (push-group group)))
+
+(defcommand gstack (&optional (fmt *group-format*)) (:rest)
+  (let* ((groups (get-group-stack))
+         (names (mapcan (lambda (g)
+                          (list*
+                           (format-expand *group-formatters* fmt g)
+                           (when nil ;; verbose
+                             (mapcar (lambda (w)
+                                       (format-expand *window-formatters*
+                                                      (concatenate 'string "  " wfmt)
+                                                      w))
+                                     (sort-windows g)))))
+                        (if *list-hidden-groups* groups (non-hidden-groups groups)))))
+    (echo-string-list (current-screen) names)))
+
