@@ -213,8 +213,9 @@
                              (setq comint-input-ring-file-name "~/.gdbhist")
                              (comint-read-input-ring t)
                              (setq comint-input-ring-size 1000)
-                             (setq comint-input-ignoredups t)))
-  (add-hook 'kill-buffer-hook 'comint-write-input-ring)
+                             (setq comint-input-ignoredups t)
+                             (add-hook 'kill-buffer-hook 'comint-write-input-ring nil t)))
+
 
 
   (defadvice gdb-send-item (before gdb-save-history first nil activate)
@@ -224,7 +225,27 @@
 
         (if (string-match "^q\\(u\\|ui\\|uit\\)?$" item)
             (progn (comint-write-input-ring)
-                   (message "history file '%s' written" comint-input-ring-file-name))))))
+                   (message "history file '%s' written" comint-input-ring-file-name)))))
+
+
+  (defun gdb-remote (command)
+    ;; not working.
+    (interactive
+     (let ((command (gud-query-cmdline 'gdb (format "gdb --annotate=3 -n -s %s" default-directory))))
+       (list command)))
+    (let ()
+      (gdb command)
+      (gud-refresh)
+      (setq gdb-output-sink 'inferior)
+      (gud-call "target remote 172.17.56.2:1717\n")
+      (gud-refresh))))
+
+;; (let ((process (get-buffer-process gud-comint-buffer)))
+;;   (setq gdb-output-sink 'user)
+;;   (if process
+;;       (process-send-string (get-buffer-process gud-comint-buffer) "target remote 172.17.56.2:1717\n\n")
+;;       (message "no process")))
+
 
 
 (deh-require-maybe (progn

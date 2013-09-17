@@ -204,42 +204,74 @@
                        '("\\`method" "\\`host\\'" user) t)))))
 
 
+  (deh-section "tramp beeps"
 
+    ;; If you, for example, wants to work as ‘root’ on hosts in the
+    ;; domain ‘your.domain’, but login as ‘root’ is disabled for
+    ;; non-local access, you might add the following rule:
 
-  ;; If you, for example, wants to work as ‘root’ on hosts in the
-  ;; domain ‘your.domain’, but login as ‘root’ is disabled for
-  ;; non-local access, you might add the following rule:
+    ;; (add-to-list 'tramp-default-proxies-alist
+    ;;              '("\\.your\\.domain\\'" "\\`root\\'" "/ssh:%h:"))
 
-  ;; (add-to-list 'tramp-default-proxies-alist
-  ;;              '("\\.your\\.domain\\'" "\\`root\\'" "/ssh:%h:"))
+    ;; Opening /sudo:randomhost.your.domain: would connect first
+    ;; ‘randomhost.your.domain’ via ssh under your account name, and
+    ;; perform sudo -u root on that host afterwards. It is important to
+    ;; know that the given method is applied on the host which has been
+    ;; reached so far. sudo -u root, applied on your local host,
+    ;; wouldn't be useful here.
 
-  ;; Opening /sudo:randomhost.your.domain: would connect first
-  ;; ‘randomhost.your.domain’ via ssh under your account name, and
-  ;; perform sudo -u root on that host afterwards. It is important to
-  ;; know that the given method is applied on the host which has been
-  ;; reached so far. sudo -u root, applied on your local host,
-  ;; wouldn't be useful here.
+    ;; {{http://ubuntuforums.org/archive/index.php/t-1375454.html
+    ;; TRAMP beep when done downloading files
+    (defadvice tramp-handle-write-region
+        (after tramp-write-beep-advice activate)
+      " make tramp beep after writing a file."
+      (interactive)
+      (beep))
+    (defadvice tramp-handle-do-copy-or-rename-file
+        (after tramp-copy-beep-advice activate)
+      " make tramp beep after copying a file."
+      (interactive)
+      (beep))
+    (defadvice tramp-handle-insert-file-contents
+        (after tramp-copy-beep-advice activate)
+      " make tramp beep after copying a file."
+      (interactive)
+      (beep))
+    ;; }}
+    )
 
-  ;; {{http://ubuntuforums.org/archive/index.php/t-1375454.html
-  ;; TRAMP beep when done downloading files
-  (defadvice tramp-handle-write-region
-      (after tramp-write-beep-advice activate)
-    " make tramp beep after writing a file."
-    (interactive)
-    (beep))
-  (defadvice tramp-handle-do-copy-or-rename-file
-      (after tramp-copy-beep-advice activate)
-    " make tramp beep after copying a file."
-    (interactive)
-    (beep))
-  (defadvice tramp-handle-insert-file-contents
-      (after tramp-copy-beep-advice activate)
-    " make tramp beep after copying a file."
-    (interactive)
-    (beep))
-  ;; }}
+  (deh-section "Get ssh-add pass from emacs only."
+    (defvar getpass-ssh-add-program (concat "timeout -k 16 10 ssh-add " ssh-key-file) "ssh-add command")
 
+    (defvar getpass-ssh-add-prompt "Enter passphrase for \\([^:]+\\):"
+      "ssh-add prompt for passphrases")
 
+    (defvar getpass-ssh-add-invalid-prompt "Bad passphrase, try again:"
+      "ssh-add prompt indicating an invalid passphrase")
+
+    (defun getpass-ssh-add-process-filter (process input)
+      "filter for ssh-add input"
+      (cond ((string-match ssh-add-prompt input)
+             (ssh-send-passwd process input))
+            ((string-match ssh-add-invalid-prompt input)
+             (ssh-send-passwd process input))
+            ;; (t (with-current-buffer (get-buffer-create ssh-agent-buffer)
+            ;;      (insert input)))
+            ))
+
+    (defun getpass-ssh-add (&optional cmd)
+      "run ssh-add"
+      (interactive (list (if current-prefix-arg
+                             (read-string "Run ssh-add: " getpass-ssh-add-program)
+                             getpass-ssh-add-program)))
+      (unless cmd
+        (setq cmd getpass-ssh-add-program))
+      (let ()
+        (if cmd
+            (set-process-filter
+             (apply #'start-process "ssh-add" nil shell-file-name "-c" (list cmd))
+             #'getpass-ssh-add-process-filter)
+            (error "No command given")))))
 
   (defun ssh-agent-add-key ()
     (require 'misc-config)
@@ -255,7 +287,7 @@
           (cond ((eq (frame-parameter (selected-frame) 'window-system) 'x)
                  (shell-command-local-no-output (concat "timeout -k 16 10 ssh-add " ssh-key-file " < /dev/null")))
                 ((eq (frame-parameter (selected-frame) 'window-system) nil)
-                 (shell-command-local-no-output (concat "timeout -k 16 10 ssh-add " ssh-key-file))))) ;;)
+                 (getpass-ssh-add (concat "timeout -k 16 10 ssh-add " ssh-key-file))))) ;;)
         (error "No ssh-key-file defined")))
 
   (defun update-ssh-agent-1 (&optional force)
