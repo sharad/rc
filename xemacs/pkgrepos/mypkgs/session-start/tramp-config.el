@@ -249,12 +249,19 @@
     (defvar getpass-ssh-add-invalid-prompt "Bad passphrase, try again:"
       "ssh-add prompt indicating an invalid passphrase")
 
+    (defun getpass-ssh-send-passwd (process prompt)
+      "read a passphrase with `read-passwd` and pass it to the ssh-add process"
+      (let ((passwd (read-passwd prompt)))
+        (process-send-string process passwd)
+        (process-send-string process "\n")
+        (clear-string passwd)))
+
     (defun getpass-ssh-add-process-filter (process input)
       "filter for ssh-add input"
       (cond ((string-match ssh-add-prompt input)
-             (ssh-send-passwd process input))
+             (getpass-ssh-send-passwd process input))
             ((string-match ssh-add-invalid-prompt input)
-             (ssh-send-passwd process input))
+             (getpass-ssh-send-passwd process input))
             ;; (t (with-current-buffer (get-buffer-create ssh-agent-buffer)
             ;;      (insert input)))
             ))
