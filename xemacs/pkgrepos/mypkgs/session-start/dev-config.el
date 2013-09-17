@@ -205,8 +205,9 @@
   ;; or
   ;; gdb -s /path/to/excutable-with-symbol
 
-  (setq gud-gdb-command-name (concat gud-gdb-command-name " -n -s SYMBOLFILE")
-        gdb-many-windows t)
+  (setq ;; gud-gdb-command-name (concat gud-gdb-command-name " -n -s SYMBOLFILE")
+   gud-gdb-command-name "gdb --annotate=3 -n"
+   gdb-many-windows t)
 
 
   (add-hook 'gdb-mode-hook '(lambda()
@@ -228,24 +229,36 @@
                    (message "history file '%s' written" comint-input-ring-file-name)))))
 
 
-  (defun gdb-remote (command)
+
+  (defun gdb-remote (command location)
     ;; not working.
     (interactive
-     (let ((command (gud-query-cmdline 'gdb (format "gdb --annotate=3 -n -s %s" default-directory))))
-       (list command)))
+     (let ((command (gud-query-cmdline 'gdb (format "--annotate=3 -n -s %s" default-directory)))
+           (location (or
+                      (read-from-minibuffer "location: "
+                                            (concat "remote "
+                                                    (or (tramp-file-name-host (tramp-file-connection default-directory)) "localhost")
+                                                    ":1717"))
+                      "remote localhost:1717")))
+       (list command location)))
     (let ()
       (gdb command)
+      ;; (setq gdb-output-sink 'user)
       (gud-refresh)
-      (setq gdb-output-sink 'inferior)
-      (gud-call "target remote 172.17.56.2:1717\n")
+      (let ((process (get-buffer-process gud-comint-buffer)))
+        (if process
+            (gdb-send process (concat "target " location))
+      (message "no process")))
       (gud-refresh))))
 
-;; (let ((process (get-buffer-process gud-comint-buffer)))
-;;   (setq gdb-output-sink 'user)
-;;   (if process
-;;       (process-send-string (get-buffer-process gud-comint-buffer) "target remote 172.17.56.2:1717\n\n")
-;;       (message "no process")))
 
+;; (gud-query-cmdline 'gdb (format " --annotate=3 -n -s %s" default-directory))
+;; (gud-val 'command-name 'gdb)
+;; (gud-symbol 'command-name t 'gdb)
+;; (gud-symbol 'history nil 'gdb)
+;; (setq gud-gdb-history-old gud-gdb-history
+;;       gud-gdb-history nil)
+;; (setq gdb-output-sink 'user)
 
 
 (deh-require-maybe (progn
