@@ -86,8 +86,8 @@
       (add-element-to-lists 'office-activate pgm-langs)))
 
 
-;;; minor-modes-act.el ends here
 
 
 
 (provide 'minor-modes-act-config)
+;;; minor-modes-act.el ends here

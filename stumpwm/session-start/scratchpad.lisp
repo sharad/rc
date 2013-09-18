@@ -39,13 +39,13 @@
     (if scratchpad
         (cond
          ((scratchpad-last-group scratchpad)
-          (switch-to-group (scratchpad-last-group scratchpad))
+          (group-stack-switch-to-group (scratchpad-last-group scratchpad))
           (setf (scratchpad-last-group scratchpad) nil))
          ((eq (current-group) (scratchpad-group scratchpad))
           (message "scratchpad: I don't know where home is"))
          (t
           (setf (scratchpad-last-group scratchpad) (current-group))
-          (switch-to-group (scratchpad-group scratchpad))
+          (group-stack-switch-to-group (scratchpad-group scratchpad))
           (message "scratchpad")
           t))
         (prog1
