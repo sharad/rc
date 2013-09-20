@@ -183,7 +183,8 @@
 
   (defun gnus-demon-scan-mail-and-news-now (&optional level)
     "Scan for new mail/news and update the *Group* buffer."
-    (let ((level (or level 3)))
+    (let ((level (or level 3))
+          (time-format "%a %H:%M:%S"))
       (message "gnus-demon-scan-mail-and-news-now: current time %s, idle time %d"
                (format-time-string time-format (current-time))
                (float-time (current-idle-time)))
@@ -195,8 +196,8 @@
               ;; (set-buffer gnus-group-buffer)
               (let ((idle-time (current-idle-time)))
                 (if (> (float-time idle-time) 7)
-                    (with-timeout 3 (message "gnus demon timeout")
-                                  (gnus-group-get-new-news 3))
+                    (with-timeout (3 (message "gnus demon timeout"))
+                                  (gnus-group-get-new-news level))
                     (message "not running gnus demon")))
               (message nil)))))))
 

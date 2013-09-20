@@ -21,11 +21,29 @@
 ;;
 
 ;; {{{ Signal to Emacs
-(defun sigusr-handler ()
+(defun sigusr2-handler ()
   (interactive)
   (message "Caught signal %S" last-input-event))
+
+
+(defun emacs-clean-hangup ()
+  (tramp-cleanup-all-connections)
+  (let ((ispell (get-process "ispell")))
+    (if ispell
+        (kill-process ispell))))
+
+
+(defun sigusr1-handler ()
+  (interactive)
+  (let ((li last-input-event))
+    (message "Caught signal %S" li)
+    (emacs-clean-hangup)
+    (keyboard-quit)
+    (message "Caught signal %S" li)))
+
 ;; http://www.gnu.org/s/emacs/manual/html_node/elisp/Misc-Events.html
-(define-key special-event-map [sigusr1] 'sigusr-handler)
+(define-key special-event-map [sigusr1] 'sigusr1-handler)
+(define-key special-event-map [sigusr2] 'sigusr2-handler)
 
 (define-key special-event-map [sigint] 'sigusr-handler)
 
@@ -38,3 +56,5 @@
 ;; }}}
 
 (provide 'signal-config)
+
+
