@@ -224,5 +224,41 @@
 
     (global-set-key-if-unbind (kbd "s-x s-f") 'find-file-wizard))
 
+
+
+
+
+
+
+
+
+
+(deh-section "ffap trouble"
+
+  (require 'ffap)
+
+  (defun ignore-ffap-p (name abs default-directory)
+  (string-match "\\*\\*\\*\\*" name))
+
+  (defadvice ffap-file-at-point (around ignore-ffap activate)
+    "calculate ignore criteria to no call ffap"
+    ;; Note: this function does not need to look for url's, just
+    ;; filenames.  On the other hand, it is responsible for converting
+    ;; a pseudo-url "site.com://dir" to an ftp file name
+    (let* ((case-fold-search t)		; url prefixes are case-insensitive
+           (data (match-data))
+           (string (ffap-string-at-point)) ; uses mode alist
+           (name
+            (or (condition-case nil
+                    (and (not (string-match "//" string)) ; foo.com://bar
+                         (substitute-in-file-name string))
+                  (error nil))
+                string))
+           (abs (file-name-absolute-p name))
+           (default-directory default-directory)
+           (oname name))
+      (unless (ignore-ffap-p name abs default-directory)
+        ad-do-it))))
+
 (provide 'find-file-config)
 ;;; find-file-config.el ends here
