@@ -53,7 +53,7 @@ function mpc() {
 
 
 
-        pgrep mplayer && timeout  -k 4 2 echo "quit 0"  > /tmp/mplayer.fifo; # stop radio
+        # pgrep mplayer && timeout  -k 4 2 echo "quit 0"  > /tmp/mplayer.fifo; # stop radio
 
         # cancel all jobs in queue d
         jobs=($(atq -q $queue_name | cut -d'	' -f1 ))
@@ -121,7 +121,7 @@ XYEOF
 function radio() {
     if whence mplayer >&/dev/null && [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep xtrlock ; then
 
-        mpc status |grep playing >& /dev/null && mpc stop
+        # pgrep mpd && mpc status |grep playing >& /dev/null && mpc stop
 
         # cancel all jobs in queue d
         jobs=($(atq -q $queue_name | cut -d'	' -f1 ))

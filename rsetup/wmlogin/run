@@ -1,3 +1,6 @@
+#!/bin/zsh
+
+
 #!/usr/bin/env zsh
 # give access to mpd
 
@@ -14,12 +17,12 @@ fi
 # gnome-screensaver &!
 
 if [ -x /usr/lib/gnome-settings-daemon/gnome-settings-daemon ] ; then
-    pgrep gnome-settings || /usr/lib/gnome-settings-daemon/gnome-settings-daemon &!
+    pgrep gnome-settings >& /dev/null || /usr/lib/gnome-settings-daemon/gnome-settings-daemon &!
 elif [ -x /usr/libexec/gnome-settings-daemon ] ; then
-    pgrep gnome-settings || /usr/libexec/gnome-settings-daemon &!
+    pgrep gnome-settings >& /dev/null || /usr/libexec/gnome-settings-daemon &!
 else
     whence -p gnome-settings-daemon &&
-    pgrep gnome-settings || gnome-settings-daemon &!
+    pgrep gnome-settings >& /dev/null || gnome-settings-daemon &!
     sleep 1s;
 fi
 
@@ -27,34 +30,36 @@ fi
 
 
 if [ -x  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] ; then
-    pgrep gnome-settings ||  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &!
+    pgrep gnome-settings >& /dev/null ||  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &!
     sleep 1s;
 elif [ -x /usr/libexec/polkit-gnome-authentication-agent-1 ] ; then
-    pgrep gnome-settings || /usr/libexec/polkit-gnome-authentication-agent-1 &!
+    pgrep gnome-settings >& /dev/null || /usr/libexec/polkit-gnome-authentication-agent-1 &!
     sleep 1s;
 else
-    whence -p polkit-gnome-authentication-agent-1 &&
-    pgrep polkit-gnome || polkit-gnome-authentication-agent-1 &!
+    whence -p polkit-gnome-authentication-agent-1 >& /dev/null &&
+    pgrep polkit-gnome >& /dev/null || polkit-gnome-authentication-agent-1 &!
     sleep 1s;
 fi
 
 
-pgrep gnome-keyring-d || gnome-keyring-daemon --start &!
+pgrep gnome-keyring-d >& /dev/null || gnome-keyring-daemon --start &!
 sleep 1s;
 
 DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/lib/gnome-online-accounts/goa-daemon &!
 sleep 1s;
-pgrep nm-applet || nm-applet --sm-disable &!
+pgrep nm-applet >& /dev/null || nm-applet --sm-disable &!
 sleep 1s;
 
 
 # pgrep empathy ||
 # DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
 
-if whence -p syndaemon ; then
+if whence -p syndaemon >& /dev/null ; then
     syndaemon -i 1 -d &!
     sleep 1s;
-    whence -p synclient && synclient TouchpadOff=1 &!
+    whence -p synclient >& /dev/null &&
+    pgrep synclient >& /dev/null ||
+    synclient TouchpadOff=1 &!
     sleep 1s;
 fi
 
@@ -73,13 +78,13 @@ foreach prog (
     pidgin
     synergys
     ) {
-        if whence -p $prog && ! pgrep $prog[0,15] ; then
+        if whence -p $prog >& /dev/null && ! pgrep $prog[0,15] >& /dev/null ; then
             $prog &!
             echo started $prog >&2
-	    pgrep $prog[0,15]
+	    pgrep $prog[0,15] >&2
             sleep 1s;
         else
-            echo Not starting $prog >&2
+            print Not starting $prog >&2
         fi
     }
 
@@ -90,7 +95,7 @@ mousemove 42 42
 EOF
 fi
 
-xautolock -locknow &!
+pgrep xautolock >& /dev/null && xautolock -locknow &!
 
 # ~/bin/syncimap -r               # enable, done in rsetup/x/run
 echo stumpwmrc end here >&2

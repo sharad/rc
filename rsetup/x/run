@@ -1,4 +1,7 @@
-#!/usr/bin/env zsh
+#!/bin/zsh
+
+
+###!/usr/bin/env zsh
 # give access to mpd
 
 # whence -p xrdb &&
@@ -62,8 +65,8 @@ if [ $DISPLAY ] ; then
         fi
     fi
 
-    whence -p urxvtd &&
-    pgrep urxvtd ||
+    whence -p urxvtd >& /dev/null &&
+    pgrep urxvtd >& /dev/null ||
      urxvtd \
         --quiet \
         --opendisplay \
@@ -72,12 +75,16 @@ if [ $DISPLAY ] ; then
     # DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
 
 
-    whence -p xautolock &&
+    whence -p xautolock >& /dev/null &&
+    pgrep xautolock >& /dev/null ||
     xautolock -detectsleep &!
 
-    whence -p conky &&
+    whence -p conky >& /dev/null &&
+    pgrep conky >& /dev/null ||
     conky &!
 
+    whence synclient >& /dev/null &&
+    pgrep synclient >& /dev/null ||
     synclient  TapButton1=1
 
     # whence -p xmodmap &&
@@ -92,10 +99,14 @@ if [ $DISPLAY ] ; then
     fi
 
 
-    whence -p osdsh && osdsh -n 10 &!
+    whence -p osdsh >& /dev/null &&
+    pgrep osdsh >& /dev/null ||
+    osdsh -n 10 &!
 
 
-    whence -p keynav && keynav &!
+    whence -p keynav >& /dev/null &&
+    pgrep keynav >& /dev/null ||
+    keynav &!
 
 
 
@@ -106,7 +117,7 @@ if [ -e ~/.stumpwm.d/debug-output.log ] ; then
     command rm -f ~/.stumpwm.d/debug-output.log
 fi
 
-xautolock -locknow &!
+pgrep xautolock >& /dev/null && xautolock -locknow &!
 
 
 # gconftool -s /apps/mail-notification/commands/new-mail/command "$EDITOR -e '(gnus)'"
