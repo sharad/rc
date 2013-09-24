@@ -17,6 +17,9 @@ print eth0 is down
 
 ssh-add -D
 
+pgrep mplayer && timeout  -k 4 2 echo "quit 0"  > /tmp/mplayer.fifo; # stop radio
+
+
 # [ -r ~/.rsetup/ifdown/run ] &&
 # ~/.rsetup/ifdown/run
 

@@ -16,6 +16,9 @@ sleep 10s
 timeout -k 320 200 gksudo -gS ifup eth0
 ifconfig eth0
 print eth0 is up
+
+mradio -c 6
+
 # [ -r ~/.rsetup/ifup/run ] &&
 # ~/.rsetup/ifup/run
 
