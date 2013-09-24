@@ -154,7 +154,7 @@ function pstreeo {
     pstree "$@" -p  $(command pgrep -o   '\<'$1'\>')
 }
 
-function ldapsearchor () {
+function adsearch () {
     arg=$1
     shift
     objectClass=person

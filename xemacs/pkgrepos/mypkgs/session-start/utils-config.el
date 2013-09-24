@@ -83,7 +83,8 @@
       (insert-file-contents-literally filename)
       (let ((contents
              (condition-case e
-                 (read (current-buffer))
+                 ;; (read (current-buffer))
+                 (buffer-string)
                ('end-of-file nil))))
         contents))))
 

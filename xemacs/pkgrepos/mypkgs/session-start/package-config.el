@@ -79,7 +79,8 @@
     (defun sharad/package-install-from-installed-archive ()
       (interactive)
       (require 'cl)
-      (let* ((packages-from-installed-archive  (mapcar 'car  (sharad/read-file sharad/package-installed-archive)))
+      (let* ((packages-from-installed-archive
+              (mapcar 'car  (read-from-string (sharad/read-file sharad/package-installed-archive))))
              (packages-from-package-alist (mapcar 'car package-alist))
              (packages-missing (set-difference packages-from-installed-archive packages-from-package-alist)))
         (if packages-missing
@@ -90,7 +91,7 @@
             (message "No missing package found."))))
 
     (when (file-exists-p sharad/package-installed-archive)
-      (when (set-difference (mapcar 'car  (sharad/read-file sharad/package-installed-archive))
+      (when (set-difference (mapcar 'car (read-from-string (sharad/read-file sharad/package-installed-archive)))
                             (mapcar 'car package-alist))
         (message "Your do not have all packages installed.\n install it will sharad/package-install-from-installed-archive.")))))
 

@@ -258,7 +258,35 @@
            (default-directory default-directory)
            (oname name))
       (unless (ignore-ffap-p name abs default-directory)
-        ad-do-it))))
+        ad-do-it)))
+
+
+
+
+  (deh-section "fallback from ffap"
+
+
+    (deh-require-maybe (and ffap ido)
+
+      (defun ido-plain-directory ()
+        "Read current directory again.
+May be useful if cached version is no longer valid, but directory
+timestamp has not changed (e.g. with ftp or on Windows)."
+        (interactive)
+        (if (and ido-mode (memq ido-cur-item '(file dir)))
+            (progn
+              (if (ido-is-unc-root)
+                  (setq ido-unc-hosts-cache t)
+                  (ido-remove-cached-dir ido-current-directory))
+              (setq ido-current-directory default-directory)
+              ;; (setq ido-text-init ido-text)
+              (setq ido-text-init "")
+              (setq ido-rotate-temp t)
+              (setq ido-exit 'refresh)
+              (exit-minibuffer))))
+
+      (keymap-set-key-if-unbind ido-file-completion-map (kbd "C-.") 'ido-plain-directory))))
+
 
 (provide 'find-file-config)
 ;;; find-file-config.el ends here

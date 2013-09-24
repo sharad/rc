@@ -181,8 +181,9 @@
     (dolist (session (directory-files "~/.emacs.d/session/frames/" nil "[a-zA-Z]+"))
       (pushnew
        (cons session
-             (sharad/read-file
-              (concat "~/.emacs.d/session/frames/" session "/elscreen")))
+             (read-from-string
+              (sharad/read-file
+               (concat "~/.emacs.d/session/frames/" session "/elscreen"))))
        *frames-elscreen-session*)))
 
 
@@ -226,7 +227,7 @@
     (setq *frames-elscreen-session*
           (append
            *frames-elscreen-session*
-           (sharad/read-file file))))
+           (read-from-string (sharad/read-file file)))))
 
   (defun elscreen-session-store (elscreen-session &optional nframe)
     (interactive

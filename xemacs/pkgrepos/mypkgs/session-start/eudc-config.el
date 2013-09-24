@@ -43,10 +43,11 @@
                               (givenName)
                               (sn)
                               (givenName sn)
-                              (email)
+                              (mail)    ;note email have been changed to mail
+                              (name)
                               )
    ;; eudc-inline-query-format nil
-   eudc-inline-expansion-format '("%s %s <%s>" givenName name email)
+   eudc-inline-expansion-format '("%s %s <%s>" givenName name mail)
    ;; eudc-inline-expansion-format '("%s <%s>" givenName email)
 
    ;; (setq ldap-host-parameters-alist
