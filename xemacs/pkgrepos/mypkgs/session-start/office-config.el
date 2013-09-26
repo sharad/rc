@@ -78,7 +78,27 @@
       (setq *taskdir-current-task* (ido-read-directory-name "dir: " taskdir nil t))
       *taskdir-current-task*))
 
+(defun create-task-dir (dir task name desc)
+  (make-directory (concat dir "/logs") t)
+  (make-directory (concat "/home/s/hell/SCRATCH/bugs/" task) t)
+  (make-symbolic-link (concat "/home/s/hell/SCRATCH/bugs/" task) (concat dir "/scratch"))
 
+  (dolist (f (cdr (assoc 'files (cdr (assoc task task-config)))))
+    (let ((nfile (expand-file-name f (concat dir "/")))
+          find-file-not-found-functions) ;find alternate of find-file-noselect to get non-existing file.
+      (with-current-buffer (or (find-buffer-visiting nfile)
+                               (find-file-noselect nfile))
+        ;; (if (goto-char (point-min))
+        ;;     (insert "# -*-  -*-\n"))
+        (dolist (pv task-file-properties)
+          (add-file-local-variable-prop-line (car pv) (cdr pv)))
+        (goto-char (point-max))
+        (insert (format "\n\n* %s %s: %s\n\n\n\n" (capitalize task) name desc))
+        (set-buffer-file-coding-system
+         (if (coding-system-p 'utf-8-emacs)
+             'utf-8-emacs
+             'emacs-mule))
+        (write-file nfile)))))
 
 (defun create-task (task name &optional desc)
   (interactive
@@ -86,9 +106,11 @@
           (name (completing-read "name: " (directory-files (concat taskdir "/" task "/")) nil))
           (bug (if (string-equal task "bugs")
                    (car
-                    (bugzilla-get-bugs
-                     '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url")
-                     `(("ids" ,name))))))
+                    (condition-case e
+                         (bugzilla-get-bugs
+                          '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url")
+                          `(("ids" ,name)))
+                      ('error (progn (message "bugzilla some problem is there.") nil))))))
           (desc (if bug
                     (cdr (assoc "summary" bug))
                     (read-from-minibuffer (format "Desc of %s: " name)))))
@@ -97,40 +119,27 @@
   (let* ((dir (concat taskdir "/" task "/" name))
          (bug (if (string-equal task "bugs")
                   (car
-                   (bugzilla-get-bugs
-                    '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url")
-                    `(("ids" ,name)))))))
+                    (condition-case e
+                         (bugzilla-get-bugs
+                          '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url")
+                          `(("ids" ,name)))
+                      ('error (progn (message "bugzilla some problem is there.") nil))))))
+         (desc (or desc (if bug (read-from-minibuffer (format "Desc of %s: " name))))))
     (if (file-directory-p dir)
         (find-task dir)
         (progn
 
-          (make-directory (concat dir "/logs") t)
-          (make-directory (concat "/home/s/hell/SCRATCH/bugs/" task) t)
-          (make-symbolic-link (concat "/home/s/hell/SCRATCH/bugs/" task) (concat dir "/scratch"))
-
-          (dolist (f (cdr (assoc 'files (cdr (assoc task task-config)))))
-            (let ((nfile (expand-file-name f (concat dir "/")))
-                  find-file-not-found-functions) ;find alternate of find-file-noselect to get non-existing file.
-              (with-current-buffer (or (find-buffer-visiting nfile)
-                                       (find-file-noselect nfile))
-                ;; (if (goto-char (point-min))
-                ;;     (insert "# -*-  -*-\n"))
-                (dolist (pv task-file-properties)
-                  (add-file-local-variable-prop-line (car pv) (cdr pv)))
-                (goto-char (point-max))
-                (insert (format "\n\n* %s %s: %s\n\n\n\n" (capitalize task) name desc))
-                (set-buffer-file-coding-system
-                 (if (coding-system-p 'utf-8-emacs)
-                     'utf-8-emacs
-                     'emacs-mule))
-                (write-file nfile))))
-
           ;; Planner
           (let ((plan-page (planner-read-non-date-page (planner-file-alist))))
-            (if (string-equal task "bugs")
+            (if (and (string-equal task "bugs")
+                     bug)
                 (planner-bugzilla-create-bug-to-task bug plan-page t)
                 (planner-create-task
-                 (format "%s: %s" name desc)
+                 (cond ((string-equal task "bugs")
+                        (format "b%s %s %s" name desc (concat "[[" (read-from-minibuffer (format "url for bug " name)) "][url]]")))
+                       ((string-equal task "features")
+                        (format "%s: %s" name desc))
+                       (t (error "task is not bound.")))
                  (let ((planner-expand-name-favor-future-p
                         (or planner-expand-name-favor-future-p
                             planner-task-dates-favor-future-p)))
@@ -148,7 +157,9 @@
             )
           (find-file (expand-file-name
                       (cadr (assoc 'files (cdr (assoc task task-config))))
-                      (concat dir "/")))))
+                      (concat dir "/")))
+          ;; create task dir
+          (create-task-dir dir task name desc)))
 
     (if (y-or-n-p (format "Should set %s current task" dir))
         (setq *taskdir-current-task* dir))))

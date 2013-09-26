@@ -54,6 +54,7 @@
 
   (eval-when-compile
     '(require 'session-config))
+  (require 'session-config)
 
   (deh-require-maybe session-config
     (add-to-list 'desktop-minor-mode-handlers (cons 'flymake-mode

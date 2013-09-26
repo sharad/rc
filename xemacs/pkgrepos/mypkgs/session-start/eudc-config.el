@@ -225,7 +225,11 @@ see `eudc-inline-expansion-servers'"
 					'move)
 		    (goto-char (match-end 0)))
 		(point)))
-	 (query-words (split-string (buffer-substring beg end) "[ \t]+"))
+	 ;; (query-words (split-string (buffer-substring beg end) "[ \t]+"))
+         ;; for partial names.
+	 (query-words (mapcar
+                       '(lambda (w) (concat "*" w "*"))
+                       (split-string (buffer-substring beg end) "[ \t]+")))
 	 query-formats
 	 response
 	 response-string
