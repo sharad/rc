@@ -158,13 +158,16 @@ function adsearch () {
     arg=$1
     shift
     objectClass=person
+    query="(&(|(cn=*"${arg}"*)(sn=*"${arg}"*)(givenName=*"${arg}"*)(physicalDeliveryOfficeName=*"${arg}"*)(telephoneNumber=*"${arg}"*))(objectClass="$objectClass"))"
+
     attrs=("givenName" "cn" "mobile" "sn" "physicalDeliveryOfficeName" "homePhone" "mail" "ipPhone" "mailNickname" "department" "telephoneNumber" "title" "whenCreated")
     if [ "$1" -a "$1" = "all" ] ; then
-        ldapsearch    "(&(|(cn=*"${arg}"*)(sn=*"${arg}"*)(givenName=*"${arg}"*))(objectClass="$objectClass"))"| egrep -v '^#|,DC=com'
+        ldapsearch    ${query} | egrep -v '^#|,DC=com'
     else
-        ldapsearch    "(&(|(cn=*"${arg}"*)(sn=*"${arg}"*)(givenName=*"${arg}"*))(objectClass="$objectClass"))" $attrs $@ | egrep -v '^#|,DC=com'
+        ldapsearch    ${query} $attrs $@ | egrep -v '^#|,DC=com'
     fi
 }
+
 
 DIRLEAVEHOOKFILE=.dirleavehook
 DIRENTERHOOKFILE=.direnterhook

@@ -219,4 +219,39 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
                                         (append (unless nosuffix (get-load-suffixes))
                                                 load-file-rep-suffixes))))))
 
+(deh-section "message-notify"
+  (defun message-notify (title fmt &rest args)
+    (message title ": " (format fmt args))
+    (notify title (format fmt args))))
+
+
+(deh-section "have-x-focus"
+  (defun have-x-focus ()
+    "Runs on-blur-hook if emacs has lost focus."
+    (if (and
+         (featurep 'x)
+         window-system)
+        (let* ((active-window (x-window-property
+                               "_NET_ACTIVE_WINDOW" nil "WINDOW" 0 nil t))
+               (active-window-id (if (numberp active-window)
+                                     active-window
+                                     (string-to-number
+                                      (format
+                                       "%x%x"
+                                       ; "%x00%x"
+                                       (car active-window)
+                                       (cdr active-window)) 16)))
+               (emacs-window-id (string-to-number
+                                 (frame-parameter nil 'outer-window-id))))
+          ;; (message "emacs-window-id %d active-window-id %d" emacs-window-id active-window-id)
+          (= emacs-window-id active-window-id))
+        (message "Not in Graphical Window system.")))
+
+  (when nil
+    (have-x-focus)
+    (progn
+      (sleep-for 4)
+      (list (selected-frame)
+            (have-x-focus)))))
+
 (provide 'utils-config)
