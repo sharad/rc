@@ -106,7 +106,7 @@
           (if (x-display-pixel-height)
               (set-face-attribute 'default nil :height (/ (x-display-pixel-height) 10))
               (message "(x-display-pixel-height) return nil"))
-          (message "Not in Graphical Window system.")))
+          (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
 
     (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'set-default-face-height-by-resolution))
 

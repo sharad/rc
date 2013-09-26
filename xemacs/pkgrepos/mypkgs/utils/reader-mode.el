@@ -558,7 +558,7 @@
          ;; (setq on-blur--timer
          ;;  (run-with-timer 1 nil 'on-blur--refresh))
          )
-       (message "Not in Graphical Window system.")))
+       (message "on-blur--refresh: Not in Graphical Window system.")))
 
  (defun run-on-blur-timer ()
    (interactive)

@@ -173,3 +173,7 @@
 
 (message "emacs ~/.xemacs/init.el loaded")
 
+;; (notify "Emacs" "Loaded Completely :)")
+
+
+

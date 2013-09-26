@@ -1,5 +1,13 @@
 
 
+(require 'cl)
+
+(eval-when-compile
+  '(require 'cl))
+
+
+
+
 (defvar resume-workdir "/home/s/paradise/Projects/doc/resume" "resume work dir.")
 
 (defvar tags-from-resume nil "Tags from resume")
@@ -253,5 +261,20 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
       (sleep-for 4)
       (list (selected-frame)
             (have-x-focus)))))
+
+
+
+(deh-section "setenv-from-file"
+  (defun setenv-from-file (file)
+    (if (file-exists-p file)
+        (mapc
+         (lambda (ev)
+           (let ((p (position ?\= ev)))
+             (setenv (substring ev 0 p)
+                     (substring ev (1+ p)))))
+         (remove-if-not (lambda (l)
+                          (and (not (string-match "^#" l))
+                               (string-match "\\w+=\\w+" l)))
+                        (split-string (sharad/read-file file) "\n"))))))
 
 (provide 'utils-config)

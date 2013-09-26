@@ -5,7 +5,6 @@
 
 
 
-(with-report-error "autotext"
 
 
 (deh-require-maybe template
@@ -43,7 +42,7 @@
     $0
   ))
 
-(require $0 )" ))
+\(require $0 \)" ))
 
   (defun my/autoinsert+-yas-expand ()
     "Replace text in yasnippet template."
@@ -251,7 +250,6 @@ General Public License for more details.
     (goto-char (point-min))
     (insert gpl)
     (comment-region (point-min) (+ (point-min) (length gpl)))))
-)
 
 
 

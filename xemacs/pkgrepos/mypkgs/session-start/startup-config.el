@@ -57,5 +57,16 @@
 ;; epa-passphrase-callback-function
 ;; ;; (defun epa-passphrase-callback-function (context key-id handback)
 
+
+
+(deh-section "set dbus env"
+  (setenv-from-file (concat "~/.dbus/session-bus/" (getenv "MY_DBUS_SESSION") "-0")))
+
+
+(add-hook 'emacs-startup-hook
+          '(lambda ()
+            (message-notify "Emacs" "Loaded Completely :)")))
+
+
 (provide 'startup-config)
 ;;; startup-config.el ends here
