@@ -367,6 +367,8 @@
       (if tramp-mode
           (update-ssh-agent))))
 
+  ;; gtags-push-tramp-environment  ;; set defadvice with update-ssh-agent
+
   (defadvice tramp-file-name-handler
      (before ad-update-ssh-agent-env activate)
    "Support ssh agent."
