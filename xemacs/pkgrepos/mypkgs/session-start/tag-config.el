@@ -337,7 +337,7 @@
 
     (defun tags-dir-restore-config ()
       (let* ((readfile (expand-file-name tag-dir-config-file (gtags-root-dir))))
-        (setq tag-dir-config (read-from-string (sharad/read-file readfile)))))
+        (setq tag-dir-config (sharad/read-sexp readfile))))
 
     (defun tags-dir-get-config (variable)
       (interactive

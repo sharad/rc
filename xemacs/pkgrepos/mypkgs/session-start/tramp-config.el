@@ -258,9 +258,9 @@
 
     (defun getpass-ssh-add-process-filter (process input)
       "filter for ssh-add input"
-      (cond ((string-match ssh-add-prompt input)
+      (cond ((string-match getpass-ssh-add-prompt input)
              (getpass-ssh-send-passwd process input))
-            ((string-match ssh-add-invalid-prompt input)
+            ((string-match getpass-ssh-add-invalid-prompt input)
              (getpass-ssh-send-passwd process input))
             ;; (t (with-current-buffer (get-buffer-create ssh-agent-buffer)
             ;;      (insert input)))
@@ -324,6 +324,8 @@
   (defun update-ssh-agent (&optional force)
     (interactive "P")
     ;; (message "update-ssh-agent called")
+    (if (< (length (frame-list)) 2)
+        (backtrace-to-buffer "*plan-ssh-key-trace*"))
     (when (or force
               (null (getenv "SSH_AGENT_PID"))
               (not (string-equal (getenv "SSH_AGENT_PID")
@@ -362,7 +364,8 @@
       (before ad-update-ssh-agent-env activate)
     "Support ssh agent."
     (unless (tramp-tramp-file-p default-directory) ;why?
-      (update-ssh-agent)))
+      (if tramp-mode
+          (update-ssh-agent))))
 
   (defadvice tramp-file-name-handler
      (before ad-update-ssh-agent-env activate)

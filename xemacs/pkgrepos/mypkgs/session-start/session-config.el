@@ -31,6 +31,7 @@
 (eval-when-compile
   '(require 'cl))
 
+(require 'utils-config)
 
 ;; (sharad/elscreen-get-screen-to-name-alist)
 
@@ -181,9 +182,8 @@
     (dolist (session (directory-files "~/.emacs.d/session/frames/" nil "[a-zA-Z]+"))
       (pushnew
        (cons session
-             (read-from-string
-              (sharad/read-file
-               (concat "~/.emacs.d/session/frames/" session "/elscreen"))))
+             (sharad/read-sexp
+              (concat "~/.emacs.d/session/frames/" session "/elscreen")))
        *frames-elscreen-session*)))
 
 
@@ -227,7 +227,7 @@
     (setq *frames-elscreen-session*
           (append
            *frames-elscreen-session*
-           (read-from-string (sharad/read-file file)))))
+           (sharad/read-sexp file))))
 
   (defun elscreen-session-store (elscreen-session &optional nframe)
     (interactive
@@ -713,7 +713,7 @@ to restore in case of sudden emacs crash."
 
   (require 'vc-config)
 
-  (require 'utils-config)
+
 
   ;; use session-restore to restore the desktop manually
   (defun sharad/desktop-session-restore ()

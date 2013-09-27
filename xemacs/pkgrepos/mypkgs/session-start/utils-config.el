@@ -96,6 +96,11 @@
                ('end-of-file nil))))
         contents))))
 
+(defun sharad/read-sexp (filename)
+  (when (file-exists-p filename)
+    (car (read-from-string (sharad/read-file filename)))))
+
+
 (defun sharad/write-file (filename content)
   (with-current-buffer (or (find-buffer-visiting filename)
                            (find-file-noselect filename))
@@ -276,5 +281,17 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
                           (and (not (string-match "^#" l))
                                (string-match "\\w+=\\w+" l)))
                         (split-string (sharad/read-file file) "\n"))))))
+
+
+
+(deh-section "debugging"
+  (defun backtrace-to-buffer (buf)
+    ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Internals-of-Debugger.html
+    (with-output-to-temp-buffer buf ; "backtrace-output"
+      (let ((var 1))
+        (save-excursion
+          (setq var (eval '(progn
+                            (1+ var)
+                            (list 'testing (backtrace))))))))))
 
 (provide 'utils-config)

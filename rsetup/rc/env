@@ -13,3 +13,9 @@ BROWSER=w3m
 export EDITOR
 export VISUAL
 export BROWSER
+
+if [ -r /var/lib/dbus/machine-id -a -r ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-0 ] ; then
+   source ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-0
+   export DBUS_SESSION_BUS_ADDRESS
+fi
+

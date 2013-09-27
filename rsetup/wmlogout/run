@@ -44,6 +44,8 @@ foreach prog (
     }
 
 
+pkill dbus-daemon
+
 
 [  -x ~/.rsetup/xlogout/run ] &&
 ~/.rsetup/xlogout/run

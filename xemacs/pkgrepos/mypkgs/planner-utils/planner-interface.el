@@ -156,6 +156,13 @@
      ;; (update-ssh-agent)
      ,@body))
 
+(defun planner-plan-safe ()
+  (with-safe-plan-env
+      (save-excursion
+        (save-window-excursion
+          (calendar)
+          (plan)))))
+
 (defun planner-today-ensure-exists ()
   (with-safe-plan-env
    (unless (file-exists-p (concat planner-directory (planner-today) ".muse"))

@@ -1,5 +1,5 @@
 OFFLINEIMAPACCOUNT=Gmail,Office
-MY_DBUS_SESSION=91c78c177a690ec1f3158ee74bb2f757
+MY_DBUS_SESSION=$(cat /var/lib/dbus/machine-id)
 MAILTO=sh4r4d@gmail.com
 
 

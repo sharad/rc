@@ -60,7 +60,7 @@
 
 
 (deh-section "set dbus env"
-  (setenv-from-file (concat "~/.dbus/session-bus/" (getenv "MY_DBUS_SESSION") "-0")))
+  (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-0")))
 
 
 (add-hook 'emacs-startup-hook
