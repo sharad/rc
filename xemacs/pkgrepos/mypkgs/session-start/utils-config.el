@@ -160,6 +160,10 @@
 
 (defun messageto (buf &rest text)
   (with-current-buffer (get-buffer-create buf)
+    (funcall 'message (concat
+                      (if (stringp buf) buf (buffer-name buf))
+                      ": "
+                      (apply 'concat text)))
     (apply 'insert text)
     (insert "\n")))
 
