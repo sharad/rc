@@ -153,8 +153,10 @@ function gnome-keyring-attach() {
         exit 1;
     fi
 
+    source ~/.dbus/session-bus/$(< /var/lib/dbus/machine-id)-0
+
     if ! timeout -s KILL 2 ~/bin/get-imap-pass 2>&1 > /dev/null; then
-        error "Keyring is not responding. Please check error with get-imap-pass"
+        error "Keyring is not responding. Please check error with get-imap-pass $DBUS_SESSION_BUS_ADDRESS"
         if false && pkill gnome-keyring && get-imap-pass ; then
             notify "Restarted keyring"
         fi
@@ -165,3 +167,5 @@ function gnome-keyring-attach() {
 pgm=$(basename $0)
 
 main $@
+
+
