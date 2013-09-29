@@ -20,18 +20,24 @@
 ;; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ;;
 
+(require 'tramp-cmds)
+
 ;; {{{ Signal to Emacs
+
+
 (defun sigusr2-handler ()
   (interactive)
   (message "Caught signal %S" last-input-event))
 
+(defvar emacs-hang-load-file "~/.emacs.d/hang.el" "emacs hang load file")
 
 (defun emacs-clean-hangup ()
   (tramp-cleanup-all-connections)
   (let ((ispell (get-process "ispell")))
     (if ispell
-        (kill-process ispell))))
-
+        (kill-process ispell)))
+  (if (file-exists-p emacs-hang-load-file)
+      (load-file emacs-hang-load-file)))
 
 (defun sigusr1-handler ()
   (interactive)
