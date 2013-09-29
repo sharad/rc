@@ -25,13 +25,21 @@
 ;; {{{ Signal to Emacs
 
 
-(defun sigusr2-handler ()
-  (interactive)
-  (message "Caught signal %S" last-input-event))
 
 (defvar emacs-hang-load-file "~/.emacs.d/hang.el" "emacs hang load file")
 
+(defun emacs-collect-states-and-log ()
+  (interactive)
+  (with-current-buffer "*Messages*"
+    (write-region nil t "~/.emacs.d/message.log"))
+  (backtrace-to-buffer "*CurrentBacktrace*")
+  (with-current-buffer "*CurrentBacktrace*"
+    (write-region nil t "~/.emacs.d/backtrace.log")))
+
+(add-hook 'kill-emacs-hook 'emacs-collect-states-and-log)
+
 (defun emacs-clean-hangup ()
+  (emacs-collect-states-and-log)
   (tramp-cleanup-all-connections)
   (let ((ispell (get-process "ispell")))
     (if ispell
@@ -46,6 +54,11 @@
     (emacs-clean-hangup)
     (keyboard-quit)
     (message "Caught signal %S" li)))
+
+(defun sigusr2-handler ()
+  (interactive)
+  (emacs-collect-states-and-log)
+  (message "Caught signal %S" last-input-event))
 
 ;; http://www.gnu.org/s/emacs/manual/html_node/elisp/Misc-Events.html
 (define-key special-event-map [sigusr1] 'sigusr1-handler)

@@ -238,7 +238,7 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
 
 (deh-section "message-notify"
   (defun message-notify (title fmt &rest args)
-    (message title ": " (format fmt args))
+    (message "%s: %s" title (format fmt args))
     (notify title (format fmt args))))
 
 
