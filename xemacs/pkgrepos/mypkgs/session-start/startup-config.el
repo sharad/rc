@@ -67,6 +67,9 @@
           '(lambda ()
             (message-notify "Emacs" "Loaded Completely :)")))
 
+(add-hook 'sharad/enable-login-session-inperrupting-feature-hook
+          '(lambda ()
+            (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-0"))))
 
 (provide 'startup-config)
 ;;; startup-config.el ends here
