@@ -576,9 +576,12 @@ Also returns nil if pid is nil."
     (interactive "Fdesktop file: ")
     (let* ((desktop-save-filename (or desktop-save-filename *desktop-save-filename*))
            (desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
+      (desktop-save (dirname-of-file desktop-save-filename))
       (if (file-exists-p desktop-save-filename)
           (put-file-in-rcs desktop-save-filename))
-      (desktop-save (dirname-of-file desktop-save-filename))))
+      (setq desktop-file-modtime (nth 5 (file-attributes desktop-save-filename
+                                                         ;; (desktop-full-file-name)
+                                                         )))))
 
   (defun desktop-vc-read (&optional desktop-save-filename)
     (interactive "fdesktop file: ")
@@ -895,7 +898,9 @@ Using it may cause conflicts.  Use it anyway? " owner)))))
       (defmacro desktop-get-readonly-proof-mode (modefn)
         `'(lambda (desktop-buffer-locals)
            (unless (or desktop-buffer-read-only buffer-read-only)
-             (,modefn 1)))))
+             (condition-case e
+                 (,modefn 1)
+               ('error (message "%s: %s" ,modefn e)))))))
 
     ;; (macroexpand '(desktop-get-readonly-proof-mode sdf))
     )
