@@ -37,7 +37,7 @@ max=
 function main() {
         process_arg $@
 
-        mplayer_radio
+        mplayer_radio $@
 
         true
 }
@@ -57,32 +57,50 @@ function mplayer_radio() {
 # ZZZ
 
         xset dpms force on
-
+        ensureradioup
         # setvolume 100% unmute
 
         # xset dpms 60 80 0
         # amixer -- sset  Master   100% unmute
 
-        if ! pgrep mplayer >& /dev/null ; then
-            # pkill -9 mplayer
-            # sleep 2s
-            rm -f /tmp/mplayer.fifo
-            if mkfifo /tmp/mplayer.fifo ; then
-                mplayer  -profile radio/fm -idle -slave -input file=/tmp/mplayer.fifo >& /dev/null &!
-                sleep 2s;
-                echo "load radio://${channel}/capture" > /tmp/mplayer.fifo ;
-                echo "volume ${volume_high}" > /tmp/mplayer.fifo ;
-            fi
+
+        if [ "$channelcmd" ] ; then
+            setchannel
+        else
+            sendradiocmd $@
         fi
 
-        print changing to channel ${channel}
-        echo "radio_set_channel ${channel}" > /tmp/mplayer.fifo
+
         xset dpms force on
         # xset dpms 60 80 0
         # echo "volume ${volume_low}" > /tmp/mplayer.fifo ;
         # xset dpms 60 80 1800
         xset dpms 1800 1800 1800
     fi
+}
+
+function setchannel() {
+    print changing to channel ${channel}
+    echo "radio_set_channel ${channel}" > /tmp/mplayer.fifo
+}
+
+function ensureradioup() {
+    if ! pgrep mplayer >& /dev/null ; then
+            # pkill -9 mplayer
+            # sleep 2s
+        rm -f /tmp/mplayer.fifo
+        if mkfifo /tmp/mplayer.fifo ; then
+            mplayer  -profile radio/fm -idle -slave -input file=/tmp/mplayer.fifo >& /dev/null &!
+            sleep 2s;
+            echo "load radio://6/capture" > /tmp/mplayer.fifo ;
+            echo "volume ${volume_high}" > /tmp/mplayer.fifo ;
+        fi
+    fi
+}
+
+function sendradiocmd () {
+    echo $@ > /tmp/mplayer.fifo
+    echo sending cmd $@ to /tmp/mplayer.fifo
 }
 
 function process_arg() {
@@ -92,7 +110,7 @@ function process_arg() {
     while [ $# -gt 0 ]
     do
         case "$1" in
-            (-c) channel="$2"; shift;;
+            (-c) channel="$2"; channelcmd=1 ; shift;;
             (--) shift; break;;
             (-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
             (*)  break;;
