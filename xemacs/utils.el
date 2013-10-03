@@ -152,3 +152,24 @@
 ;; (run-each-hooks 'aa-hook)
 
 
+(deh-section "dep"
+
+  (defadvice require (around compile-if-fail (feature &optional filename noerror) activate)
+    (let ((ret (condition-case e
+                   ad-do-it
+                 ('error nil))))
+      (if ret
+          ret
+          (let ((file (or
+                       filename
+                       (locate-library feature))))
+
+            (load-file file)
+            (byte-compile-file file)
+            ;; (require feature filename noerror)
+            ))))
+
+  (when nil
+    (ad-disable-advice 'require 'around 'compile-if-fail)
+    (ad-remove-advice 'require 'around 'compile-if-fail)
+    (ad-update 'require)))
