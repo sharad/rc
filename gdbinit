@@ -384,3 +384,18 @@ set output-radix 0x10
 set input-radix 0x10
 set disassembly-flavor intel
 
+define bpwithcmds
+  commands $arg0
+    bt
+    bt full
+    info locals
+    info frame
+    p v
+    p *v
+    continue
+  end
+end
+document bpwithcmds
+  Test
+end
+

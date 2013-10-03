@@ -248,17 +248,24 @@
 
 (defcommand xeditor () ()
       (run-wcli-command
-       (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(progn (setq spec-id \"" (format nil "~a" (substitute #\_ #\Space (group-name (current-group)))) "\"))'")
+       (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/general")
+               " -e "
+               (prin1-to-string
+                (concat
+                 "(progn (message "
+                 (prin1-to-string (format nil "~a" (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))
+                 ")(display-about-screen))")))))
+
+(defcommand emacsclient () ()
+      (run-wcli-command
+       (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/general")
+               " -e "
+               (prin1-to-string
+                (concat "(progn (message "
+                        (prin1-to-string (format nil "~a" (substitute #\_ #\Space (stumpwm::group-name (stumpwm::current-group)))))
+                        ")(display-about-screen))")))
+       ;; '(:class "Emacs")
        ))
-
-;; (defcommand emacsclient () ()
-;;   (if (wait-for-nwprogram "emacsclient")
-;;       (run-wcli-command
-;;        (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general"))
-;;        ;; '(:class "Emacs")
-;;        )))
-
-(defcommand-alias editor emacsclient)
 
 (defcommand gnus () ()
   (if (wait-for-nwprogram "emacsclient")
@@ -485,7 +492,7 @@
 (defcommand urxvt () ()
   (run-wcli-command (concatenate 'string "urxvtc"
                                  (format nil " -T ~a"
-                                         (substitute #\_ #\Space (group-name (current-group)))))))
+                                         (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
 
 (defcommand urxvt () ()
   (run-wcli-command (concatenate 'string "urxvtc"
@@ -498,7 +505,7 @@
                                            (if (probe-file paradise)
                                                (concatenate 'string " -cd " paradise " ")
                                                " "))
-                                         (substitute #\_ #\Space (group-name (current-group)))))))
+                                         (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
 
 
 ;; (testing
