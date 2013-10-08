@@ -152,8 +152,8 @@
 ;; (run-each-hooks 'aa-hook)
 
 
-(deh-section "dep"
-
+;; (deh-section "dep"
+(when nil
   (defadvice require (around compile-if-fail (feature &optional filename noerror) activate)
     (let ((ret (condition-case e
                    ad-do-it
@@ -162,7 +162,7 @@
           ret
           (let ((file (or
                        filename
-                       (locate-library feature))))
+                       (locate-library (symbol-name feature)))))
 
             (load-file file)
             (byte-compile-file file)
