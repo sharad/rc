@@ -30,7 +30,7 @@
 
 
 
-(deflock noheavytask "No heavy task, like gnus-daemon's fetch, session saving etc.")
+;; (deflock noheavytask "No heavy task, like gnus-daemon's fetch, session saving etc.")
 
 
 

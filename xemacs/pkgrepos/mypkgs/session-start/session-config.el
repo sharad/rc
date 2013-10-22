@@ -634,42 +634,46 @@ to restore in case of sudden emacs crash."
           (time-format "%a %H:%M:%S")
           ;; (time-since-save-all-sessions-auto-save-time (float-time (time-since save-all-sessions-auto-save-time)))
           )
-      (when (or
-             force
-             (let ((time-since-last-save (float-time (time-since save-all-sessions-auto-save-time))))
-               (and
-                (> time-since-last-save (float-time idle-time))
-                (> time-since-last-save save-all-sessions-auto-save-time-interval))))
-        (if (or
-             force
-             (and idle-time
-                  ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Save-Control.html#Auto-Save-Control
-                  (> (float-time idle-time) save-all-sessions-auto-save-idle-time-interval-dynamic)))
-            (progn
-              (message "current time %s, idle time %d idle-time-interval left %d"
-                       (format-time-string time-format save-all-sessions-auto-save-time)
-                       (float-time idle-time)
-                       save-all-sessions-auto-save-idle-time-interval-dynamic)
-              (setq save-all-sessions-auto-save-time (current-time)
-                    save-all-sessions-auto-save-idle-time-interval-dynamic save-all-sessions-auto-save-idle-time-interval)
-              (condition-case e
-                  (progn
-                    (save-all-frames-session)
-                    (session-vc-save-session)
-                    (my-desktop-save)
-                    (message-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
-                    (message nil))
-                ('error
-                 (progn
-                   ;; make after 2 errors.
-                   (message-notify "save-all-sessions-auto-save" "save-all-sessions-auto-save: Error: %s" e)
-                   (1+ *my-desktop-save-error-count* )
-                   (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
-                     (setq *my-desktop-save-error-count* 0)
-                     (message-notify "save-all-sessions-auto-save" "save-all-sessions-auto-save(): %s" e)
-                     (sharad/disable-session-saving))))))
-            (setq save-all-sessions-auto-save-idle-time-interval-dynamic
-                  (1- save-all-sessions-auto-save-idle-time-interval-dynamic))))))
+      (let ((time-since-last-save (float-time (time-since save-all-sessions-auto-save-time))))
+        (if (or force
+                (> time-since-last-save (float-time idle-time)))
+            (if (or force
+                    (> time-since-last-save save-all-sessions-auto-save-time-interval))
+                (if (or
+                     force
+                     (and idle-time
+                          ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Save-Control.html#Auto-Save-Control
+                          (> (float-time idle-time) save-all-sessions-auto-save-idle-time-interval-dynamic)))
+                    (progn
+                      (message "current time %s, idle time %d idle-time-interval left %d"
+                               (format-time-string time-format save-all-sessions-auto-save-time)
+                               (float-time idle-time)
+                               save-all-sessions-auto-save-idle-time-interval-dynamic)
+                      (setq save-all-sessions-auto-save-time (current-time)
+                            save-all-sessions-auto-save-idle-time-interval-dynamic save-all-sessions-auto-save-idle-time-interval)
+                      (condition-case e
+                          (progn
+                            (save-all-frames-session)
+                            (session-vc-save-session)
+                            (my-desktop-save)
+                            (message-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
+                            (message nil))
+                        ('error
+                         (progn
+                           ;; make after 2 errors.
+                           (message-notify "save-all-sessions-auto-save" "save-all-sessions-auto-save: Error: %s" e)
+                           (1+ *my-desktop-save-error-count* )
+                           (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
+                             (setq *my-desktop-save-error-count* 0)
+                             (message-notify "save-all-sessions-auto-save" "save-all-sessions-auto-save(): %s" e)
+                             (sharad/disable-session-saving))))))
+                    (setq save-all-sessions-auto-save-idle-time-interval-dynamic
+                          (1- save-all-sessions-auto-save-idle-time-interval-dynamic))))
+
+
+            (setq save-all-sessions-auto-save-time (current-time)
+                  save-all-sessions-auto-save-idle-time-interval-dynamic save-all-sessions-auto-save-idle-time-interval)
+            ))))
 
 
   (when nil
