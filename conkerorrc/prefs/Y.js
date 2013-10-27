@@ -9,6 +9,7 @@
  * For more information, see http://www.mozilla.org/unix/customizing.html#prefs
  */
 
+if (false ) {
 user_pref("app.update.lastUpdateTime.addon-background-update-timer", 1290846548);
 user_pref("app.update.lastUpdateTime.background-update-timer", 1290846548);
 user_pref("app.update.lastUpdateTime.blocklist-background-update-timer", 1290846548);
@@ -20,7 +21,7 @@ user_pref("extensions.update.notifyUser", false);
 user_pref("idle.lastDailyNotification", 1289929857);
 user_pref("network.cookie.prefsMigrated", true);
 user_pref("spellchecker.dictionary", "en-US");
-
+}
 
 
 // get color at http://www.webmonkey.com/2010/02/color_charts/
@@ -35,5 +36,5 @@ user_pref("spellchecker.dictionary", "en-US");
 // user_pref("browser.visited_color", "#660033");
 
 
-user_pref("browser.display.background_color", "#000000"); // BLACK
+if (false ) user_pref("browser.display.background_color", "#000000"); // BLACK
 

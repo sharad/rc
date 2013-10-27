@@ -525,7 +525,8 @@ var $blackurls = [
     "http://www.delicious.com",
     "http://www.linuxtoday.com"
 ];
-register_user_stylesheet(
+if (false )
+    register_user_stylesheet(
     make_css_data_uri(['* { background: Black  ! important; color: grey !important };\n'
                        + ':link, :link * { color: White !important }\n'
                        + ':visited, :visited * { color: Green !important }\n'],
@@ -938,8 +939,7 @@ define_key(content_buffer_normal_keymap, "L", "search-clipboard-contents-doubleq
 
 
 
-
-
+tab_bar_mode(false); //disable
 
 
 

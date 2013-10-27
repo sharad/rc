@@ -22,6 +22,7 @@ user_pref("spellchecker.dictionary", "en-US");
 
 
 // get color at http://www.webmonkey.com/2010/02/color_charts/
+if (false) {
 user_pref("browser.display.use_system_colors", false);
 user_pref("browser.active_color", "#EE0000");
 user_pref("browser.anchor_color", "#0000EE");
@@ -33,3 +34,4 @@ user_pref("browser.anchor_color", "#0000EE");
 // user_pref("browser.visited_color", "#551A8B");
 user_pref("browser.visited_color", "#660033");
 
+}
