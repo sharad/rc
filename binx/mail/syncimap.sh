@@ -139,12 +139,16 @@ function logger() {
 
 
 function gnome-keyring-attach() {
-    local -a vars=( \
+   # local -a vars
+    local var
+
+    vars=( \
         DBUS_SESSION_BUS_ADDRESS \
         SSH_AUTH_SOCK \
         SSH_AGENT_PID \
         XDG_SESSION_COOKIE \
     )
+
     if pgrep ${WM} 2>&1 > /dev/null ; then
         local pid=$(command ps -C ${WM} -o pid --no-heading)
         eval "unset ${vars[@]}; $(printf "export %s;" $(sed 's/\x00/\n/g' /proc/${pid//[^0-9]/}/environ | grep $(printf -- "-e ^%s= " "${vars[@]}")) )"
@@ -152,6 +156,7 @@ function gnome-keyring-attach() {
     else
         exit 1;
     fi
+
 
     source ~/.dbus/session-bus/$(< /var/lib/dbus/machine-id)-0
 

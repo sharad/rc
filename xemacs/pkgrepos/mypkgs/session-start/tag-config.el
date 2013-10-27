@@ -192,7 +192,40 @@
 ;; to use M-RET instead.
 (global-set-key (kbd "M-<return>") 'complete-tag)
 
-
+(eval-after-load 'gtags
+  '(progn
+    ;; select a tag line from lines
+    (defun gtags-select-it (delete &optional other-win)
+      (let (line file)
+        ;; get context from current tag line
+        (beginning-of-line)
+        (if (not (looking-at "[^ \t]+[ \t]+\\([0-9]+\\)[ \t]\\([^ \t]+\\)[ \t]"))
+            (gtags-pop-context)
+            (setq line (string-to-number (gtags-match-string 1)))
+            (setq file (gtags-decode-pathname (gtags-match-string 2)))
+            (message "File before: %s" file)
+            (if (and (not (file-exists-p file)) (string-match "^../" file))
+                (setq file (concat "../" file)))
+            (message "File after: %s" file)
+            ;;
+            ;; Why should we load new file before killing current-buffer?
+            ;;
+            ;; If you kill current-buffer before loading new file, current directory
+            ;; will be changed. This might cause loading error, if you use relative
+            ;; path in [GTAGS SELECT MODE], because emacs's buffer has its own
+            ;; current directory.
+            ;;
+            (let ((prev-buffer (current-buffer)))
+              ;; move to the context
+              (if gtags-read-only
+                  (if (null other-win) (find-file-read-only file)
+                      (find-file-read-only-other-window file))
+                  (if (null other-win) (find-file file)
+                      (find-file-other-window file)))
+              (if delete (kill-buffer prev-buffer)))
+            (setq gtags-current-buffer (current-buffer))
+            (goto-line line)
+            (gtags-mode 1))))))
 
 (deh-require-maybe gtags
   ;; http://www.emacswiki.org/emacs/GnuGlobal
