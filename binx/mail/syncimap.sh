@@ -140,7 +140,7 @@ function logger() {
 
 function gnome-keyring-attach() {
    # local -a vars
-    local var
+    local vars
 
     vars=( \
         DBUS_SESSION_BUS_ADDRESS \
@@ -150,7 +150,7 @@ function gnome-keyring-attach() {
     )
 
     if pgrep ${WM} 2>&1 > /dev/null ; then
-        local pid=$(command ps -C ${WM} -o pid --no-heading)
+        local pid=$(command ps -C ${WM} -o pid --no-heading | tr -d ' ')
         eval "unset ${vars[@]}; $(printf "export %s;" $(sed 's/\x00/\n/g' /proc/${pid//[^0-9]/}/environ | grep $(printf -- "-e ^%s= " "${vars[@]}")) )"
 
     else

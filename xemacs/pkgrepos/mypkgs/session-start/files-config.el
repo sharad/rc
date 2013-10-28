@@ -100,7 +100,8 @@ directory they are found in so that they are unique."
 (deh-require-maybe ff-paths
   (ff-paths-install))
 
-(deh-section "File no writable problem"
+(when nil
+;; (deh-section "File no writable problem"
   ;; not solved the problems. code now more complex in files.el
   (make-variable-buffer-local
    (defvar my-override-mode-on-save nil
@@ -116,7 +117,12 @@ directory they are found in so that they are unique."
     "Toggle buffer's read-only status, keeping `my-override-mode-on-save' in sync."
     (interactive)
     (setq my-override-mode-on-save (not my-override-mode-on-save))
-    (toggle-read-only)))
+    (toggle-read-only))
+
+  (ad-disable-advice 'file-writable-p 'around 'my-overide-file-writeable-p)
+  (ad-remove-advice 'file-writable-p 'around 'my-overide-file-writeable-p)
+  (ad-update 'file-writable-p)
+  )
 
 
 (deh-require-maybe filecache
