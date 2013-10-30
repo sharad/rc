@@ -311,8 +311,8 @@
           (if ofilemode
               (set-file-modes ofile ofilemode))
           (when (file-exists-p ofile)
-            (shell-command-local-no-output (concat "enscript  -f Courier7  -E " ofile " -p" psfile))
-            (message (concat "enscript  -f Courier7  -E " ofile " -p" psfile))
+            (shell-command-local-no-output (concat "enscript --color -f Courier7  -E " ofile " -p" psfile))
+            (message (concat "enscript --color -f Courier7  -E " ofile " -p" psfile))
             (if (file-exists-p psfile)
                 (progn
                   (shell-command-local-no-output (concat "ps2pdf " psfile " " pdffile))

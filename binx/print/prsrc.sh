@@ -1,5 +1,8 @@
 #!/usr/bin/env zsh
 
+
+color=1
+
 function main() {
     process_arg $@
 
@@ -20,7 +23,7 @@ function main() {
             files=( ${(f)"$(eval find $rest -type f )"} )
             foreach f ($files) {
                 mkdir -p $dst/$(dirname $f)
-                enscript  -f Courier7  -E $f -p${dst}/${f}.ps
+                enscript --color=$color -f Courier7  -E $f -p${dst}/${f}.ps
                 ps2pdf ${dst}/${f}.ps ${dst}/${f}.pdf
                 rm -f ${dst}/${f}.ps
 
@@ -38,12 +41,13 @@ function main() {
 }
 
 function process_arg() {
-    set -- $(getopt -n $pgm -o tvwebs:d: -- $@)
+    set -- $(getopt -n $pgm -o tvwebs:c:d: -- $@)
     while [ $# -gt 0 ]
     do
         case $1 in
             (-s) eval src=$2; shift;;
             (-d) eval dst=$2; shift;;
+            (-c) eval color=$2; shift;;
             (-t) test=1;;
             (-b) blank=1;;
             (-v) verbose=1;;
