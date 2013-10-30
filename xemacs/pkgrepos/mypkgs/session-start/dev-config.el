@@ -292,5 +292,40 @@
   (setq minimap-window-location 'right))
 
 
+;; enscript  -f Courier7  -E $f -p${dst}/${f}.ps
+;; ps2pdf ${dst}/${f}.ps ${dst}/${f}.pdf
+
+(defun find-alt-pdf-file (file)
+  (interactive "ffile: ")
+  (let ((filename (or file (buffer-file-name (current-buffer)))))
+    (if filename
+        (let ((ofile (expand-file-name (file-name-nondirectory filename) "/tmp/"))
+              ofilemode
+              (psfile (expand-file-name (concat (file-name-nondirectory filename) ".ps") "/tmp/"))
+              (pdffile (expand-file-name (concat (file-name-nondirectory filename) ".pdf") "/tmp/")))
+          (when (and (file-exists-p ofile)
+                   (not (file-writable-p ofile)))
+            (setq ofilemode (file-modes ofile))
+            (set-file-modes ofile 666))
+          (copy-file filename ofile 1)
+          (if ofilemode
+              (set-file-modes ofile ofilemode))
+          (when (file-exists-p ofile)
+            (shell-command-local-no-output (concat "enscript  -f Courier7  -E " ofile " -p" psfile))
+            (message (concat "enscript  -f Courier7  -E " ofile " -p" psfile))
+            (if (file-exists-p psfile)
+                (progn
+                  (shell-command-local-no-output (concat "ps2pdf " psfile " " pdffile))
+                  (message (concat "ps2pdf " psfile " " pdffile))
+                  (if (file-exists-p pdffile)
+                      (find-file pdffile)
+                      (message "Not able to create %s file." pdffile)))
+                (message "Not able to create %s file." psfile)))
+          (message "File %s done not exists" ofile)))))
+
+
+
+
+
 (provide 'dev-config)
 ;;; dev-config.el ends here
