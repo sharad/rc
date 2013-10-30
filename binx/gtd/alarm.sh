@@ -164,7 +164,7 @@ function state_locked () {
     pgrep pidgin >&/dev/null && purple-remote 'setstatus?status=$lockstatus&message=Away' &!
     whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -as &!
     if [ ! -e $wmlockfile_disable ] ; then
-        whence stumpish >&/dev/null && stumpish fclear
+        whence stumpish >&/dev/null && timeout 2 stumpish fclear
     fi
 
 }
@@ -173,7 +173,7 @@ function state_unlocked () {
     whence transmission-remote >& /dev/null && transmission-remote -N ~/.netrc -AS &!
     pgrep pidgin >&/dev/null && purple-remote 'setstatus?status=$unlockstatus&message=' &!
     if [ ! -e $wmlockfile_disable ] ; then
-        whence stumpish >&/dev/null && stumpish pull-hidden-other &!
+        whence stumpish >&/dev/null && timeout 2 stumpish pull-hidden-other &!
     fi
 }
 
