@@ -129,6 +129,8 @@
 
 (require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/session-start")
 
+(load-file "~/.xemacs/wrapper.el")
+
 (progn
   (put-file-in-rcs "~/.emacs.d/startup.log")
   (with-current-buffer "*Messages*"
@@ -174,6 +176,3 @@
 (message "emacs ~/.xemacs/init.el loaded")
 
 ;; (notify "Emacs" "Loaded Completely :)")
-
-
-
