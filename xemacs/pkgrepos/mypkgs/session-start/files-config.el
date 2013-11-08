@@ -493,20 +493,34 @@ to do VC operation."
   (defvar buffer-linked-files nil "list of buffer-linked-files")
   (make-local-variable 'buffer-linked-files)
 
-  (defun copy-all-file (file)
+  (defun copy-all-file ()
     (if buffer-linked-files
         (dolist (f buffer-linked-files)
-          (write-region nil nil f nil))))
+          ;; (write-region nil nil f nil)
+          (unless (file-exists-p (file-name-directory f))
+            (make-directory (file-name-directory f) t))
+          (copy-file (buffer-file-name (current-buffer)) f)
+          (message "copied %s to %s" (file-name-nondirectory buffer-file-name) f))))
 
 
-  (defun add-linked-file (file)
+  (defun add-linked-file (tfile)
     (interactive "Flink file: ")
     (if buffer-file-name
-        (pushnew file buffer-linked-files)
+        (let* ((srcfilename (file-name-nondirectory buffer-file-name))
+               (file (file-truename tfile))
+               (file   (if (file-exists-p file)
+                           (if (file-directory-p file)
+                               (concat (dir-final-slash file) srcfilename)
+                               file)
+                           (if (= (aref file (1- (length file))) ?\/)
+                               (concat (dir-final-slash file) srcfilename)
+                               file))))
+          (if (string-equal (file-truename buffer-file-name) (file-truename file))
+              (error "backup can not be same."))
+          (pushnew file buffer-linked-files))
         (message "buffer is not associated with any file.")))
 
-  ;; (add-hook 'after-save-hook copy-all-file)
-  )
+  (add-hook 'after-save-hook 'copy-all-file))
 
 
 

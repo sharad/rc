@@ -64,7 +64,6 @@
         (remove-hook 'diary-display-hook 'fancy-diary-display-week-graph-if-appt)
         (add-hook 'diary-display-function 'fancy-diary-display-week-graph-if-appt))))
 
-
 (deh-require-maybe diary-lib
   (setq diary-display-function 'diary-fancy-display)
   (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)

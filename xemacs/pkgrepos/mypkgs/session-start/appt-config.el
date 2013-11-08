@@ -16,12 +16,17 @@
         appt-announce-method 'appt-persistent-message-announce  ; XEmacs
         appt-display-duration 59)
 
+  (defvar show-diary-entries-and-appts t "show-diary-entries-and-appts")
 
   (defun diary-save-hook ()
     "Stuff to do when saving the diary files."
-    (if (not running-xemacs)
-        (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
-        (appt-initialize))) ; XEmacs
+    (if show-diary-entries-and-appts
+        (progn
+          (if (not running-xemacs)
+              (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
+              (appt-initialize))
+          (message "disable by setting show-diary-entries-and-appts to nil"))
+        (message "enable by setting show-diary-entries-and-appts to t"))) ; XEmacs
 
   (defun add-diary-save-hook ()
     "find-file-hooks hook to add the diary-save-hook when appropriate"
