@@ -20,13 +20,10 @@
 
   (defun diary-save-hook ()
     "Stuff to do when saving the diary files."
-    (if show-diary-entries-and-appts
-        (progn
-          (if (not running-xemacs)
-              (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
-              (appt-initialize))
-          (message "disable by setting show-diary-entries-and-appts to nil"))
-        (message "enable by setting show-diary-entries-and-appts to t"))) ; XEmacs
+    (if (not running-xemacs)
+        (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
+        (appt-initialize)))
+  ) ; XEmacs
 
   (defun add-diary-save-hook ()
     "find-file-hooks hook to add the diary-save-hook when appropriate"

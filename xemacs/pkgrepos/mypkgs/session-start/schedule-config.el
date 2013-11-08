@@ -71,6 +71,11 @@
   (add-hook 'diary-list-entries-hook 'diary-sort-entries t))
 
 
+;; (defadvice diary-fancy-display (before decide activate)
+;;       (let ((appt-is-here (car (diary-display-no-entries))))
+;; )
+
+
 (deh-require-maybe (and planner-interface midnight)
   ;; (midnight-delay-set 'midnight-delay 16200) ;; (eq (* 4.5 60 60) "4:30am")
   (midnight-delay-set 'midnight-delay "4:30am")

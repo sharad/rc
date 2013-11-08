@@ -499,7 +499,19 @@ to do VC operation."
           ;; (write-region nil nil f nil)
           (unless (file-exists-p (file-name-directory f))
             (make-directory (file-name-directory f) t))
-          (copy-file (buffer-file-name (current-buffer)) f)
+
+          (let (ofilemode)
+            (when (and (file-exists-p f)
+                       (not (file-writable-p f)))
+              (setq ofilemode (file-modes f))
+              (set-file-modes f 666))
+
+            (copy-file (buffer-file-name (current-buffer)) f t)
+
+            (if ofilemode
+                (set-file-modes f ofilemode)))
+
+          (put-file-in-rcs f)
           (message "copied %s to %s" (file-name-nondirectory buffer-file-name) f))))
 
 
