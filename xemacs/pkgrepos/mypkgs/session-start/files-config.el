@@ -529,13 +529,39 @@ to do VC operation."
                                file))))
           (if (string-equal (file-truename buffer-file-name) (file-truename file))
               (error "backup can not be same."))
+          (make-local-variable 'buffer-linked-files)
           (pushnew file buffer-linked-files))
         (message "buffer is not associated with any file.")))
+
+  (add-to-list 'desktop-locals-to-save 'buffer-linked-files)
+  (add-to-list 'session-locals-include 'buffer-linked-files)
 
   (add-hook 'after-save-hook 'copy-all-file))
 
 
+(deh-section "Tramp read-only file problem"
+  (defun set-file-mode-to-truename (file)
+    (interactive
+     (list (ido-read-file-name "file: " default-directory buffer-file-name)))
+    (if (file-remote-p file)
+        (when (not (string-equal file (file-truename file)))
+          (let ((tfile (file-truename file))
+                (fileattr (tramp-get-file-property (tramp-file-connection file) file "file-attributes-integer" 'undef))
+                (tfileattr (tramp-get-file-property (tramp-file-connection file) file "file-attributes-integer" 'undef)))
+            (if (eq fileattr 'undef)
+                (unless (eq tfileattr 'undef)
+                  (tramp-set-file-property (tramp-file-connection tfile) tfile "file-attributes-integer" 'undef))
+                (unless (string-equal (nth 8 fileattr) (nth 8 tfileattr))
+                  (setf (nth 8 tfileattr) (nth 8 fileattr))
+                  (tramp-set-file-property (tramp-file-connection tfile) tfile "file-attributes-integer" tfileattr)))))))
 
+
+  (defadvice set-file-modes (after set-file-mode-to-truename (filename mode) activate)
+    (set-file-mode-to-truename filename))
+
+  (when nil
+    (ad-disable-advice 'set-file-modes 'after 'set-file-mode-to-truename)
+    (ad-update 'set-file-modes)))
 
 (provide 'files-config)
 ;;; files-config.el ends here
