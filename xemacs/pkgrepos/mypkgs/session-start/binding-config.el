@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2013-06-03 22:59:32 s>
+;; Time-stamp: <2013-11-13 02:08:00 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -72,7 +72,7 @@ and their terminal equivalents.")
     "An assoc list of pretty key strings and their terminal equivalents.")
 
 
-  (defun key (desc)
+  (defun key (desc)                     ;????
     (or (and window-system (read-kbd-macro desc))
         (or (cdr (assoc desc real-keyboard-keys))
             (read-kbd-macro desc))))

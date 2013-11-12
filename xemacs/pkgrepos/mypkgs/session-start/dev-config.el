@@ -139,7 +139,7 @@
 (require 'utils-config)
 
 ;; load cclookup when compile time
-(eval-when-compile (require 'cclookup))
+(eval-when-compile (deh-require-maybe 'cclookup))
 (deh-require-maybe cclookup
   ;; this problem I were facing http://www.gnu.org/software/emacs/manual/html_node/elisp/Init-File.html
   ;; taesoo.org/proj/cclookup.html

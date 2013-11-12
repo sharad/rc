@@ -106,6 +106,10 @@
             alias scp='command scp -q'
         fi
 
+
+        #video
+        alias vlc='vlc --play-and-exit -f'
+
         ## XML aliases
         alias xml=xmlstarlet
         alias makeitxhtml='tidy -asxml 2>/dev/null | xmllint - | sed -e '\''s/&ndash;//g'\'' -e '\''s|xmlns="http://www.w3.org/1999/xhtml"||'\'' '
@@ -180,5 +184,3 @@ alias ssldecrypt='openssl enc -aes-256-cbc -d'
 # Translation, Dictionary Lookup, Languages
 alias dictenhin='dict -d eng-hin'
 alias dicthien='dict -d eng-hin'
-
-

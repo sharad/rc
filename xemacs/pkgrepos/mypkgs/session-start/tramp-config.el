@@ -291,7 +291,7 @@
         ;; (unless (and (not tramp-mode)
         ;;             (shell-command-local-no-output "ssh-add -l < /dev/null"))
         (with-timeout (7 (message "ssh-add timed out."))
-          (cond ((eq (frame-parameter (selected-frame) 'window-system) 'x)
+          (cond ((display-graphic-p)
                  (shell-command-local-no-output (concat "timeout -k 16 10 ssh-add " ssh-key-file " < /dev/null")))
                 ((eq (frame-parameter (selected-frame) 'window-system) nil)
                  (getpass-ssh-add (concat "timeout -k 16 10 ssh-add " ssh-key-file))))) ;;)
@@ -541,5 +541,3 @@
 
 
 (provide 'tramp-config)
-
-
