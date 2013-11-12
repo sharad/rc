@@ -25,7 +25,8 @@
 
 
 ;; Integration to bbdb and dired
-(add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+(deh-require-maybe bbdb
+  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
 (setq
