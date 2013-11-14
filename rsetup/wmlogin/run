@@ -10,9 +10,12 @@ mousemove 42 42
 EOF
 fi
 
-/usr/lib/at-spi2-core/at-spi2-registryd &!
+if [ -x /usr/libexec/at-spi-registryd ] ; then
+    DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/libexec/at-spi-registryd &!
+ elif [  -x  /usr/lib/at-spi2-core/at-spi2-registryd ] ; then
+    DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/lib/at-spi2-core/at-spi2-registryd &!
+fi
 
-[ -x /usr/libexec/at-spi-registryd ] && DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/libexec/at-spi-registryd &!
 
 # whence -p gnome-screensaver &&
 # pgrep gnome-screensaver ||
@@ -116,7 +119,3 @@ fi
 
 [ -r ~/.rsetup/wmlogin/run.d/${HOST//.*} ] &&
 ~/.rsetup/wmlogin/run.d/${HOST//.*}
-
-
-
-
