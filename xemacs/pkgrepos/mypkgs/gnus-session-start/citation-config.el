@@ -24,6 +24,9 @@
 
 ;;; Code:
 
+
+(require 'nnheader)
+
 ;;{{ XSteve, insert Hi Hello Name
 ;; The message-citation-line-function is responsible to display a
 ;; message citation. The following Code allows to switch
@@ -74,6 +77,7 @@
            (string-caseless-equal first-name-in-email first-name-in-name))
           first-name-in-name
           (capitalize first-name-in-email)))))
+
 
 (defun xsteve-message-citation ()
   (interactive)

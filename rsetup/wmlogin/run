@@ -10,6 +10,8 @@ mousemove 42 42
 EOF
 fi
 
+/usr/lib/at-spi2-core/at-spi2-registryd &!
+
 [ -x /usr/libexec/at-spi-registryd ] && DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/libexec/at-spi-registryd &!
 
 # whence -p gnome-screensaver &&
@@ -76,6 +78,7 @@ foreach prog (
     blueman-applet
     bluetoothd
     pidgin
+    empathy
     synergys
     ) {
         if whence -p $prog >& /dev/null && ! pgrep $prog[0,15] >& /dev/null ; then
