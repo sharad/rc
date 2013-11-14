@@ -110,8 +110,7 @@ The indirect buffer can have another major mode."
 ;; (setq visible-bell t)
 ;; I don't like VB
 (setq visible-bell nil)
-;; Hilight matching parenthesis
-(unless (featurep 'xemacs) (show-paren-mode 1))
+
 ;; fix missing INSERT key to toggle overwrite-mode on the console
 (global-set-key-if-unbind [insertchar] 'overwrite-mode)
 ;; The following function allows filename completion in the buffer

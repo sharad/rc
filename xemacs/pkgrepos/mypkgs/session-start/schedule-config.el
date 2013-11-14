@@ -62,7 +62,21 @@
     (interactive)
     (if (memq 'fancy-diary-display-week-graph-if-appt diary-display-function)
         (remove-hook 'diary-display-hook 'fancy-diary-display-week-graph-if-appt)
-        (add-hook 'diary-display-function 'fancy-diary-display-week-graph-if-appt))))
+        (add-hook 'diary-display-function 'fancy-diary-display-week-graph-if-appt)))
+
+  (defun diary-nonintrusive-display ()
+      (if diary-entries-list
+          (message "Some appointment today exists.")))
+
+  (defvar diary-display-function-old nil "diary-display-function-old")
+
+  (defun disable-diary-appt-display-for (fn howlong)
+    ;; unfinished
+    (interactive
+     (list
+      ()
+      ))
+    (setq diary-display-function 'diary-nonintrusive-display)))
 
 (deh-require-maybe diary-lib
   (setq diary-display-function 'diary-fancy-display)
