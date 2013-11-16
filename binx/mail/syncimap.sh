@@ -167,8 +167,7 @@ function gnome-keyring-attach() {
         if false && pkill gnome-keyring && get-imap-pass ; then
             notify "Restarted keyring"
         fi
-        notify "exiting"
-	exit 1;
+	exit -1;
     fi
 }
 
