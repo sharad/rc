@@ -53,22 +53,21 @@
       (force-mode-line-update)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-  ;; end
-  ;; from http://www.emacswiki.org/emacs/AppointmentMode
+;; end
+;; from http://www.emacswiki.org/emacs/AppointmentMode
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; start
-  ;; from http://alfredobuttari.wordpress.com/2008/02/08/emacs-appt-mode-reminders-with-gtk-popups/
-  (setq appt-display-format 'popup appt-audible t)
-  ;; (defvar appt-notifier (concat  "DISPLAY=0.0 dbus-launch --autolaunch=" (getenv "MY_DBUS_SESSION") " /usr/bin/notify-send 'Appointment' '%s'"))
-  ;; (defvar appt-notifier "zenity --info --title='Appointment' --text='%s'")
+;; start
+;; from http://alfredobuttari.wordpress.com/2008/02/08/emacs-appt-mode-reminders-with-gtk-popups/
+(setq appt-display-format 'popup appt-audible t)
+;; (defvar appt-notifier (concat  "DISPLAY=0.0 dbus-launch --autolaunch=" (getenv "MY_DBUS_SESSION") " /usr/bin/notify-send 'Appointment' '%s'"))
+;; (defvar appt-notifier "zenity --info --title='Appointment' --text='%s'")
 
-  (defvar appt-notifier
-    '("notify-send Appointment '%s'"
-      "pgrep osdsh && osdctl -s '%s'"))
+(defvar appt-notifier
+  '("notify-send Appointment '%s'"
+    "pgrep osdsh && osdctl -s '%s'"))
 
   ;; (dolist (cmd appt-notifier)
   ;;         (shell-command (format cmd "asdfsdf")))
@@ -123,4 +122,3 @@ The variable `appt-audible' controls the audible reminder."
 ;; from
 
 (provide 'appt-config)
-

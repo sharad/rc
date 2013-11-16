@@ -74,7 +74,7 @@
     ;; unfinished
     (interactive
      (list
-      ()
+      ((completing-read "what: " '("a" "b") nil t))
       ))
     (setq diary-display-function 'diary-nonintrusive-display)))
 
@@ -235,4 +235,3 @@
 
 (provide 'schedule-config)
 ;;; schedule.el ends here
-
