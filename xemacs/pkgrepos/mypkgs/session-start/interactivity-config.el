@@ -62,7 +62,8 @@
       (message nil)
       res))
 
-  (setq ido-default-buffer-method 'maybe-frame)
+  (setq ido-default-buffer-method 'maybe-frame
+        ido-case-fold t)
 
   (ido-mode t)
 

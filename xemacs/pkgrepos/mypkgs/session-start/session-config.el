@@ -359,7 +359,7 @@
        (list (selected-frame)))
       (select-frame nframe)
       (message "in frame-session-set-this-location")
-      (let* ((xwin-enabled (display-graphic-p))
+      (let* ((xwin-enabled (custom-display-graphic-p))
              (wm-hints
               (if xwin-enabled
                   (ignore-errors (emacs-panel-wm-hints))))

@@ -172,8 +172,12 @@
        (create-tags ',tag-sys default-directory))))
 
 (create-tags-before etags find-tag)
+(create-tags-before etags find-tag-interactive)
+(create-tags-before etags tags-apropos)
 (create-tags-before gtags gtags-find-tag)
+(create-tags-before gtags gtags-find-rtag)
 (create-tags-before cscope cscope-find-this-symbol)
+(create-tags-before cscope cscope-find-functions-calling-this-function)
 
 
 ;; (defadvice find-tag (before create-tags last () activate)

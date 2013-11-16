@@ -81,8 +81,8 @@
 
 
 (if (< emacs-major-version 24)
-  (defun display-graphic-p ()
-    (eq (frame-parameter (selected-frame) 'window-system) x)))
+  (defun custom-display-graphic-p ()
+    (eq (frame-parameter (selected-frame) 'window-system) 'x)))
 
 (provide 'wrapper)
 ;;; wrapper.el ends here
