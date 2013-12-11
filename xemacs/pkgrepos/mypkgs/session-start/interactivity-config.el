@@ -526,6 +526,75 @@
     (status-recursive-minibuffers)))
 
 
+(deh-section "idle timeout lock"
 
+  (defvar lock-passwd-keymap nil "lock passwd keymap")
+  (setq lock-passwd-keymap (make-sparse-keymap))
+  (define-key lock-passwd-keymap (kbd "C-j") 'newline)
+  (define-key lock-passwd-keymap (kbd "RET") 'exit-minibuffer)
+  (define-key lock-passwd-keymap (kbd "p") 'self-insert-command)
+
+  (when nil
+   (let ()
+    (defun reset-global-map ()
+    (interactive)
+    (use-global-map global-map)
+    (message "Done"))
+    (run-at-time "1 min" nil 'reset-global-map)
+    (use-global-map lock-passwd-keymap)
+    (message (read-from-minibuffer "ABC: " "p" lock-passwd-keymap))
+    (use-global-map global-map)))
+
+
+
+
+
+  (defun set-emacs-lock ()
+    (interactive)
+    (unless (ad-find-advice 'call-interactively 'around 'lock)
+      (eval
+       `(defadvice call-interactively (around lock activate)
+          ;; ,(help-function-interactive 'fun)
+          (condition-case e
+              (let ()
+                (define-key (current-global-map) [remap self-insert-command] 'ignore)
+                (when (or (< (length (frame-list)) 2) ;; *minimum-disable-login-session-frames*)
+                          (string-equal (read-passwd "unlock password: ") "simple"))
+                  ad-do-it
+                  (define-key (current-global-map) [remap self-insert-command] nil)
+                  (when (ad-find-advice 'call-interactively 'around 'lock)
+                    (ad-remove-advice 'call-interactively 'around 'lock)
+                    (ad-activate 'call-interactively)
+                    (ad-update  'call-interactively))))
+            ('error
+             (progn
+               (define-key (current-global-map) [remap self-insert-command] nil)
+               (when (ad-find-advice 'call-interactively 'around 'lock)
+                 (ad-remove-advice 'call-interactively 'around 'lock)
+                 (ad-activate 'call-interactively)
+                 (ad-update  'call-interactively)))))))
+      (ad-enable-advice 'call-interactively 'around 'lock)
+      (ad-activate 'call-interactively)
+      (ad-update 'call-interactively)))
+
+  (defalias 'lock-emacs 'set-emacs-lock)
+
+  ;; To enable Zone Mode for all buffers after Emacs is idle for 2
+  ;; minutes, add the following Lisp code to you InitFile or try it out
+  ;; by EvaluatingExpressions.
+
+  ;; (require 'zone)
+  ;; (zone-when-idle 120)
+
+  ;; This will also enable Zone Mode after 2 minutes of idle.
+
+  ;; (setq zone-timer (run-with-idle-timer 120 t
+  ;;                                       '(lambda ()
+  ;;                                         (zone)
+  ;;                                         (set-emacs-lock))))
+
+  ;; (cancel-timer zone-timer)
+
+  )
 
 (provide 'interactivity-config)
