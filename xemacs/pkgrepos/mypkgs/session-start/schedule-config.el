@@ -127,7 +127,7 @@ This function returns a timer object which you can use in `cancel-timer'."
     ;; unfinished
     (interactive
      (list
-      (get-time "When")
+      (get-time "When ")
       (intern (completing-read "what: " (mapcar 'symbol-name diary-display-functions-list) nil t))))
     (if (null diary-display-function-old)
         (when (and howlong fn)
