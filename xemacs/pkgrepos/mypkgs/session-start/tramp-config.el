@@ -319,7 +319,8 @@
                    (ssh-agent-add-key)))
                (message "No frame present.")))
       (if ido-auto-merge-timer
-          (timer-activate ido-auto-merge-timer))))
+          (timer-activate ido-auto-merge-timer))
+      (message nil)))
 
   (defun update-ssh-agent (&optional force)
     (interactive "P")

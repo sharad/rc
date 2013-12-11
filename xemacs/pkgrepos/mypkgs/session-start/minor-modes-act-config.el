@@ -70,8 +70,8 @@
          run-office-activate
          (< run-office-activate-failed run-office-activate-failed-max))
         (let ((file (buffer-file-name)))
-          (if (login-to-perforce)
-              (incf run-office-activate-failed))
+          (unless (login-to-perforce)
+            (incf run-office-activate-failed))
           (when (and file
                      (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (vc-p4-registered file)))
             ;; if file is handled by perforce than assume it is

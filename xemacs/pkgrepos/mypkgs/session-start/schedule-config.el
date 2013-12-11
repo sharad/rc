@@ -24,7 +24,58 @@
 
 ;;; Code:
 
+(defun get-time (prompt)
+  "Perform an action at time TIME.
+Repeat the action every REPEAT seconds, if REPEAT is non-nil.
+TIME should be one of: a string giving an absolute time like
+\"11:23pm\" (the acceptable formats are those recognized by
+`diary-entry-time'; note that such times are interpreted as times
+today, even if in the past); a string giving a relative time like
+\"2 hours 35 minutes\" (the acceptable formats are those
+recognized by `timer-duration'); nil meaning now; a number of
+seconds from now; a value from `encode-time'; or t (with non-nil
+REPEAT) meaning the next integral multiple of REPEAT.  REPEAT may
+be an integer or floating point number.  The action is to call
+FUNCTION with arguments ARGS.
 
+This function returns a timer object which you can use in `cancel-timer'."
+  (interactive)
+
+  (let ((time (read-from-minibuffer prompt)))
+    ;; Special case: nil means "now" and is useful when repeating.
+    (if (null time)
+        (setq time (current-time)))
+
+    ;; Special case: t means the next integral multiple of REPEAT.
+    (if (and (eq time t) repeat)
+        (setq time (timer-next-integral-multiple-of-time (current-time) repeat)))
+
+    ;; Handle numbers as relative times in seconds.
+    (if (numberp time)
+        (setq time (timer-relative-time (current-time) time)))
+
+    ;; Handle relative times like "2 hours 35 minutes"
+    (if (stringp time)
+        (let ((secs (timer-duration time)))
+          (if secs
+              (setq time (timer-relative-time (current-time) secs)))))
+
+    ;; Handle "11:23pm" and the like.  Interpret it as meaning today
+    ;; which admittedly is rather stupid if we have passed that time
+    ;; already.  (Though only Emacs hackers hack Emacs at that time.)
+    (if (stringp time)
+        (progn
+          (require 'diary-lib)
+          (let ((hhmm (diary-entry-time time))
+                (now (decode-time)))
+            (if (>= hhmm 0)
+                (setq time
+                      (encode-time 0 (% hhmm 100) (/ hhmm 100) (nth 3 now)
+                                   (nth 4 now) (nth 5 now) (nth 8 now)))))))
+
+    (or (consp time)
+        (error "Invalid time format"))
+    time))
 
 (defun fancy-diary-display-week-graph-if-appt ()
 
@@ -69,14 +120,28 @@
           (message "Some appointment today exists.")))
 
   (defvar diary-display-function-old nil "diary-display-function-old")
+  (defvar diary-display-functions-list '(diary-nonintrusive-display))
+  (defvar disable-diary-appt-display-timer nil "disable diary appt display timer")
 
-  (defun disable-diary-appt-display-for (fn howlong)
+  (defun disable-diary-appt-display-for (howlong fn)
     ;; unfinished
     (interactive
      (list
-      ((completing-read "what: " '("a" "b") nil t))
-      ))
-    (setq diary-display-function 'diary-nonintrusive-display)))
+      (get-time "When")
+      (intern (completing-read "what: " (mapcar 'symbol-name diary-display-functions-list) nil t))))
+    (if (null diary-display-function-old)
+        (when (and howlong fn)
+          (setq diary-display-function-old diary-display-function
+                diary-display-function fn
+                disable-diary-appt-display-timer
+                (run-at-time howlong nil
+                             '(lambda ()
+                               (if diary-display-function-old
+                                   (setq
+                                    diary-display-function diary-display-function-old
+                                    diary-display-function-old nil))))))
+        (message "Diary already disabled, not doing anything.")))
+  )
 
 (deh-require-maybe diary-lib
   (setq diary-display-function 'diary-fancy-display)
