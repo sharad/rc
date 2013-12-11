@@ -551,7 +551,9 @@
 
   (defun set-emacs-lock ()
     (interactive)
-    (unless (ad-find-advice 'call-interactively 'around 'lock)
+    (unless (and
+             (< (length (frame-list)) 2)
+             (ad-find-advice 'call-interactively 'around 'lock))
       (eval
        `(defadvice call-interactively (around lock activate)
           ;; ,(help-function-interactive 'fun)
