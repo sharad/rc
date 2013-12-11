@@ -28,6 +28,7 @@
 (deh-require-maybe elscreen
 
   ;; toggle-ibuffer-group
+  (require 'buffer-config)
 
   (defmacro frame-launcher (args &optional fun)
     `(let ((f (make-frame)))
@@ -36,9 +37,10 @@
          (when (or (= 0 (elscreen-get-current-screen))
                    (elscreen-create))
            (condition-case e
-               (if fun
-                   (funcall ,fun a)
-                   (funcall a))
+               (if (if fun
+                       (funcall ,fun a)
+                       (funcall a))
+                   (sticky-buffer-mode t))
              ('quit (message "Not able to start %s" a)))))))
 
   (defmacro frame-launcher (name args &optional fun)
@@ -58,9 +60,10 @@
                    (setq first-screen nil)
                    (condition-case e
                        (progn
-                         (if ,fun
-                             (funcall ,fun ,a)
-                             (funcall ,a))
+                         (if (if ,fun
+                                 (funcall ,fun ,a)
+                                 (funcall ,a))
+                             (sticky-buffer-mode t))
                          (launcher-set-elscreen-altname (format "%s" ,a) f screennum))
                      ('quit (message "Not able to start %s" a)))))
               ,args)))))
@@ -80,9 +83,10 @@
             (setq first-screen nil)
             (condition-case e
                 (progn
-                  (if fun
-                      (funcall fun a)
-                      (funcall a))
+                  (if (if fun
+                          (funcall fun a)
+                          (funcall a))
+                      (sticky-buffer-mode t))
                   (launcher-set-elscreen-altname (format "%s" a) f screennum))
               ('quit (message "Not able to start %s" a))))))))
 

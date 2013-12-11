@@ -22,7 +22,9 @@
     "Stuff to do when saving the diary files."
     (if (not running-xemacs)
         (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
-        (appt-initialize)))
+        (appt-initialize))
+    (unless diary-display-function-old
+      (message "Could disable it with disable-diary-appt-display-for function.")))
   ) ; XEmacs
 
   (defun add-diary-save-hook ()

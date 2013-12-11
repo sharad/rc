@@ -117,7 +117,26 @@ This function returns a timer object which you can use in `cancel-timer'."
 
   (defun diary-nonintrusive-display ()
       (if diary-entries-list
-          (message "Some appointment today exists.")))
+          (message "Some appointment exists today run M-x diary-show")))
+
+  (defun diary-get-entries-list ()
+    diary-entries-list)
+
+  (defun diary-show ()
+    (interactive)
+    (let ((diary-display-function
+           (intern
+            (completing-read
+             "what: "
+             (append
+              (mapcar 'symbol-name
+                      '(diary-fancy-display
+                        fancy-diary-display-week-graph-if-appt
+                        diary-get-entries-list
+                        diary-nonintrusive-display))) nil t))))
+      (if (not running-xemacs)
+          (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
+          (appt-initialize))))
 
   (defvar diary-display-function-old nil "diary-display-function-old")
   (defvar diary-display-functions-list '(diary-nonintrusive-display))

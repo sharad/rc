@@ -532,5 +532,9 @@ The indirect buffer can have another major mode."
 
 (deh-require-maybe byte-code-cache)
 
+(when nil                               ;obslete
+  (deh-require-maybe lazy-lock
+  ;; http://www.opensource.apple.com/source/emacs/emacs-54/emacs/lisp/lazy-lock.el
+  ))
 
 (provide 'misc-config)

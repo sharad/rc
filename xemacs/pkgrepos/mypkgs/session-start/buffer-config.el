@@ -590,6 +590,16 @@
 (deh-require-maybe contentswitch
   )
 
+
+
+(deh-section "lock buffer with window"
+  ;; http://lists.gnu.org/archive/html/help-gnu-emacs/2007-05/msg00978.html
+  (define-minor-mode sticky-buffer-mode
+      "Make the current window always display this buffer."
+    nil " sticky" nil
+    (set-window-dedicated-p (selected-window) sticky-buffer-mode))
+  ;; then M-x sticky-buffer-mode.
+  )
 ;; believe it need not be here
 ;; (sharad/disable-startup-inperrupting-feature)
 

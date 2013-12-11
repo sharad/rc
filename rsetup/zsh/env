@@ -29,7 +29,7 @@ function workoffice () {
 
 #{{ http://wroot.org/posts/terminal-auto-lock-with-zsh-and-vlock/
 if whence -p vlock > /dev/null ; then
-    export TMOUT=300
+    export TMOUT=600
     function TRAPALRM() {
         print Going to lock terminal
         vlock
