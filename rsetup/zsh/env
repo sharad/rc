@@ -31,9 +31,13 @@ function workoffice () {
 if whence -p vlock > /dev/null ; then
     export TMOUT=600
     function TRAPALRM() {
-        print Going to lock terminal
-        vlock
-        print Unlocked the terminal
+        if ! pgrep xtrlock && [ "$TERM" = "linux" ] ; then
+            print Going to lock terminal
+            vlock
+            print Unlocked the terminal
+        else
+            print X is already locked.
+        fi
     }
 fi
 #}}
