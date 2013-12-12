@@ -551,7 +551,7 @@
 
   (defun set-emacs-lock (&optional timeout)
     (interactive)
-    (let ((timeout (or timeout 4)))
+    (let ((timeout (or timeout 7)))
       (if (= (shell-command "pgrep xtrlock") 0)
           (message "Screen is already locked.")
           (if (or
@@ -585,8 +585,7 @@
                            (when (ad-find-advice 'call-interactively 'around 'lock)
                              (ad-remove-advice 'call-interactively 'around 'lock)
                              (ad-activate 'call-interactively)
-                             (ad-update  'call-interactively)))))
-                      )))
+                             (ad-update  'call-interactively))))))))
                 (ad-enable-advice 'call-interactively 'around 'lock)
                 (ad-activate 'call-interactively)
                 (ad-update 'call-interactively))))))
@@ -597,12 +596,12 @@
 
   (defun zone-with-lock ()
     (unless (ad-find-advice 'call-interactively 'around 'lock)
-      (lock-emacs))
+      (lock-emacs 7))
     (zone))
 
   (defun enable-zone-lock ()
     (interactive)
-    (setq zone-timer (run-with-idle-timer 10 t 'zone-with-lock)))
+    (setq zone-timer (run-with-idle-timer 120 t 'zone-with-lock)))
 
   (defun disable-zone-lock ()
     (interactive)
