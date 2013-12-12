@@ -354,7 +354,7 @@
 
     (require 'emacs-panel)
 
-    (defun frame-session-set-this-location (nframe)
+    (defun frame-session-set-this-location (nframe &optional not-ask)
       (interactive
        (list (selected-frame)))
       (select-frame nframe)
@@ -367,7 +367,9 @@
                                (nth
                                 (cadr (assoc 'current-desktop wm-hints))
                                 (cdr (assoc 'desktop-names wm-hints)))))
-             (location (fmsession-read-location desktop-name)))
+             (location (if (and not-ask desktop-name)
+                           desktop-name
+                           (fmsession-read-location desktop-name))))
         (if xwin-enabled
             (unless wm-hints
               (message "Some error in wm-hints")))
@@ -375,11 +377,11 @@
         (set-frame-parameter nframe 'frame-spec-id location)
         location))
 
-    (defun frame-session-restore (nframe)
+    (defun frame-session-restore (nframe &optional not-ask)
       (if *frame-session-restore*
           (progn
             (select-frame nframe)
-            (fmsession-restore (frame-session-set-this-location nframe)) nframe)
+            (fmsession-restore (frame-session-set-this-location nframe not-ask)) nframe)
           (message "not restoring screen session.")))
 
     (defun frame-session-appply (nframe)
@@ -779,7 +781,7 @@ to restore in case of sudden emacs crash."
                                  *desktop-save-filename*))
             (sharad/enable-session-saving)))
       (when t ;(y-or-n-p "Do you want to set session of frame? ")
-        (frame-session-restore (selected-frame)))
+        (frame-session-restore (selected-frame) t))
       (message-notify "sharad/desktop-session-restore" "leaving sharad/desktop-session-restore")))
 
   ;; (add-hook 'session-before-save-hook
