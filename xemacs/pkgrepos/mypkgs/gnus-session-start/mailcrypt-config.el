@@ -1,4 +1,4 @@
-;;; mailcrypt.el --- mailcrypt encryption
+;;; mailcrypt-config.el --- mailcrypt encryption
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -63,4 +63,4 @@
 
 
 (provide 'mailcrypt-config)
-;;; mailcrypt.el ends here
+;;; mailcrypt-config.el ends here

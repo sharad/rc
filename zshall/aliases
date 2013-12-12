@@ -181,6 +181,12 @@ alias fmchannels="grep radio= ~/.mplayer/config  | cut -d= -f6 | tr -- , '\n' | 
 alias sslencrypt='openssl enc -aes-256-cbc -e'
 alias ssldecrypt='openssl enc -aes-256-cbc -d'
 
+# Gpg GNU Privacy Guard
+# http://lists.gnupg.org/pipermail/gnupg-users/2009-November/037744.html
+alias gpgbackup='gpg --armor --export-secret-keys  | gpg --armor --sign --symmetric --force-mdc'
+alias gpgarmorencrypt='gpg --armor --sign --symmetric --force-mdc'
+alias gpgarmordecrypt='gpg --armor --decrypt'
+
 # Translation, Dictionary Lookup, Languages
 alias dictenhin='dict -d eng-hin'
 alias dicthien='dict -d eng-hin'

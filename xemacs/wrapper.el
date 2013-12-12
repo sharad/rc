@@ -80,7 +80,7 @@
            (server-return-error proc err))))))
 
 
-(if (< emacs-major-version 24)
+(if (or t (< emacs-major-version 24))
   (defun custom-display-graphic-p ()
     (eq (frame-parameter (selected-frame) 'window-system) 'x)))
 
