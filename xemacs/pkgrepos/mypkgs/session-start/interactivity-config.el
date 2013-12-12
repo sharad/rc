@@ -547,14 +547,23 @@
 
 
 
-
+  (defvar lock-emacs-master-password "abcd123" "lock emacs mster password")
+  (defvar lock-emacs-password nil "lock emacs password")
+  (defun set-emacs-lock-passwd ()
+    (interactive)
+    (let ((passwd (read-from-minibuffer "emacs lock passwd: " lock-emacs-password)))
+      (setq lock-emacs-password passwd)
+      (message "emacs lock password set to: %s" passwd)))
 
   (defun set-emacs-lock (&optional timeout)
     (interactive)
     (let ((timeout (or timeout 7)))
-      (if (= (shell-command "pgrep xtrlock") 0)
-          (message "Screen is already locked.")
-          (if (or
+      (cond ((= (shell-command "pgrep xtrlock") 0)
+             (message "Screen is already locked."))
+            ((null lock-emacs-password)
+             (message "password is not set, set it using set M-x set-emacs-lock-passwd"))
+            (t
+             (if (or
                (< (length (frame-list)) 2)
                (ad-find-advice 'call-interactively 'around 'lock))
               (message "Not locking emacs.")
@@ -568,16 +577,19 @@
                           (let ()
                             (define-key (current-global-map) [remap self-insert-command] 'ignore)
                             (when (or (< (length (frame-list)) 2) ;; *minimum-disable-login-session-frames*)
-                                      (string-equal
-                                       (with-timeout (,timeout (progn (message nil) (throw 'foo nil)))
-                                         (read-passwd "unlock password: "))
-                                       "simple"))
-                              ad-do-it
-                              (define-key (current-global-map) [remap self-insert-command] nil)
-                              (when (ad-find-advice 'call-interactively 'around 'lock)
-                                (ad-remove-advice 'call-interactively 'around 'lock)
-                                (ad-activate 'call-interactively)
-                                (ad-update  'call-interactively))))
+                                      (let ((passwd (with-timeout (,timeout (progn (message nil) (throw 'foo nil)))
+                                                     (read-passwd "unlock password: "))))
+                                        (or
+                                         (string-equal passwd lock-emacs-password)
+                                         (string-equal passwd lock-emacs-master-password))))
+                              (unwind-protect
+                                   ad-do-it
+                                (progn
+                                  (define-key (current-global-map) [remap self-insert-command] nil)
+                                  (when (ad-find-advice 'call-interactively 'around 'lock)
+                                    (ad-remove-advice 'call-interactively 'around 'lock)
+                                    (ad-activate 'call-interactively)
+                                    (ad-update  'call-interactively))))))
                         ('error
                          (progn
                            (message "Error: %s" e)
@@ -588,7 +600,7 @@
                              (ad-update  'call-interactively))))))))
                 (ad-enable-advice 'call-interactively 'around 'lock)
                 (ad-activate 'call-interactively)
-                (ad-update 'call-interactively))))))
+                (ad-update 'call-interactively)))))))
 
   (defalias 'lock-emacs 'set-emacs-lock)
 

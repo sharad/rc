@@ -36,7 +36,7 @@ if whence -p vlock > /dev/null ; then
             vlock
             print Unlocked the terminal
         else
-            print X is already locked.
+            print X is already locked. >& /dev/null
         fi
     }
 fi
