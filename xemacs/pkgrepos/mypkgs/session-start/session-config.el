@@ -709,14 +709,18 @@ to restore in case of sudden emacs crash."
 
   (defun sharad/check-session-saving ()
     (interactive)
-    (message
-     "%s, %s"
-     (if (member 'save-all-sessions-auto-save auto-save-hook)
-         "Yes save-all-sessions-auto-save is present in auto-save-hook"
-         "No save-all-sessions-auto-save is present in auto-save-hook")
-     (if (member '(lambda () (save-all-sessions-auto-save t)) kill-emacs-hook)
-         "Yes save-all-sessions-auto-save is present in kill-emacs-hook"
-         "No save-all-sessions-auto-save is present in kill-emacs-hook")))
+    (if (called-interactively-p 'interactive)
+        (message
+         "%s, %s"
+         (if (member 'save-all-sessions-auto-save auto-save-hook)
+             "Yes save-all-sessions-auto-save is present in auto-save-hook"
+             "No save-all-sessions-auto-save is present in auto-save-hook")
+         (if (member '(lambda () (save-all-sessions-auto-save t)) kill-emacs-hook)
+             "Yes save-all-sessions-auto-save is present in kill-emacs-hook"
+             "No save-all-sessions-auto-save is present in kill-emacs-hook"))
+        (and
+         (member 'save-all-sessions-auto-save auto-save-hook)
+         (member '(lambda () (save-all-sessions-auto-save t)) kill-emacs-hook))))
 
   (require 'vc-config)
 

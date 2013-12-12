@@ -555,7 +555,7 @@
       (setq lock-emacs-password passwd)
       (message "emacs lock password set to: %s" passwd)))
 
-  (defun set-emacs-lock (&optional timeout)
+  (defun lock-emacs (&optional timeout)
     (interactive)
     (let ((timeout (or timeout 7)))
       (cond ((= (shell-command "pgrep xtrlock") 0)
@@ -602,7 +602,7 @@
                 (ad-activate 'call-interactively)
                 (ad-update 'call-interactively)))))))
 
-  (defalias 'lock-emacs 'set-emacs-lock)
+  ;; (defalias 'lock-emacs 'set-emacs-lock)
 
   (defvar zone-timer nil "Zone timer.")
 
