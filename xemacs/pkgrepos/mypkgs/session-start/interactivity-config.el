@@ -601,12 +601,13 @@
 
   (defun enable-zone-lock ()
     (interactive)
-    (setq zone-timer (run-with-idle-timer 120 t 'zone-with-lock)))
+    (setq zone-timer (run-with-idle-timer 600 t 'zone-with-lock)))
 
   (defun disable-zone-lock ()
     (interactive)
-    (if zone-timer
-        (cancel-timer zone-timer)))
+    (when zone-timer
+      (cancel-timer zone-timer)
+      (setq zone-timer nil)))
 
   ;; To enable Zone Mode for al
 
