@@ -380,7 +380,9 @@
 
     (defun frame-session-restore (nframe &optional not-ask)
       (message "in frame-session-restore")
-      (if *frame-session-restore*
+      (if (and
+           *frame-session-restore*
+           (null *desktop-vc-read-inpgrogress*))
           (progn
             (message "pass in frame-session-restore")
             (if nframe (select-frame nframe) (error "nframe is nil"))
@@ -588,12 +590,17 @@ Also returns nil if pid is nil."
                                                          ;; (desktop-full-file-name)
                                                          )))))
 
+  (defvar *desktop-vc-read-inpgrogress* nil "desktop-vc-read-inpgrogress")
+
   (defun desktop-vc-read (&optional desktop-save-filename)
     (interactive "fdesktop file: ")
     (let* ((desktop-save-filename (or desktop-save-filename *desktop-save-filename*))
            (desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
       (prog1
-          (desktop-read (dirname-of-file desktop-save-filename))
+          (setq *desktop-vc-read-inpgrogress* t)
+        (if (desktop-read (dirname-of-file desktop-save-filename))
+            (setq *desktop-vc-read-inpgrogress* nil)
+            (message "desktop read failed."))
         (message-notify "desktop-vc-read" "finished."))))
 
   ;; remove desktop after it's been read
