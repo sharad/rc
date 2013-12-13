@@ -80,9 +80,11 @@
            (server-return-error proc err))))))
 
 
-(if (or t (< emacs-major-version 24))
-  (defun custom-display-graphic-p ()
-    (eq (frame-parameter (selected-frame) 'window-system) 'x)))
+(if (< emacs-major-version 24)
+    (defun custom-display-graphic-p ()
+      (eq (frame-parameter (selected-frame) 'window-system) 'x))
+    (defun custom-display-graphic-p ()
+      (display-graphic-p)))
 
 (provide 'wrapper)
 ;;; wrapper.el ends here
