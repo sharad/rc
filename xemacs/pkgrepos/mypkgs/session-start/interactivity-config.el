@@ -537,9 +537,9 @@
   (when nil
    (let ()
     (defun reset-global-map ()
-    (interactive)
-    (use-global-map global-map)
-    (message "Done"))
+      (interactive)
+      (use-global-map global-map)
+      (message "Done"))
     (run-at-time "1 min" nil 'reset-global-map)
     (use-global-map lock-passwd-keymap)
     (message (read-from-minibuffer "ABC: " "p" lock-passwd-keymap))

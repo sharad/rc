@@ -770,6 +770,8 @@ to restore in case of sudden emacs crash."
                           (frame-session-restore (selected-frame)))))
                     (progn
                       (message-notify "sharad/desktop-session-restore" "desktop loading failed :(")
+                      (run-at-time "1 sec" nil '(lambda () (insert "sharad/desktop-session-restore")))
+                      (execute-extended-command nil)
                       nil))
 
                 (condition-case e
@@ -783,7 +785,9 @@ to restore in case of sudden emacs crash."
                           nil))
                   ('error
                    (message-notify "sharad/desktop-session-restore" "Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
-                   (message-notify "sharad/desktop-session-restore" "Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e))))
+                   (message-notify "sharad/desktop-session-restore" "Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e)
+                   (run-at-time "1 sec" nil '(lambda () (insert "sharad/desktop-session-restore")))
+                   (execute-extended-command nil))))
             t)
           (when (y-or-n-p
                  (message-notify "sharad/desktop-session-restore"
