@@ -357,7 +357,7 @@
     (defun frame-session-set-this-location (nframe &optional not-ask)
       (interactive
        (list (selected-frame)))
-      (select-frame nframe)
+      (if nframe (select-frame nframe) (error "nframe is nil"))
       (message "in frame-session-set-this-location")
       (let* ((xwin-enabled (custom-display-graphic-p))
              (wm-hints
@@ -367,7 +367,8 @@
                                (nth
                                 (cadr (assoc 'current-desktop wm-hints))
                                 (cdr (assoc 'desktop-names wm-hints)))))
-             (location (if (and not-ask desktop-name)
+             (location (if (and not-ask desktop-name
+                                (member desktop-name (mapcar 'car *frames-elscreen-session*)))
                            desktop-name
                            (fmsession-read-location desktop-name))))
         (if xwin-enabled
@@ -378,13 +379,15 @@
         location))
 
     (defun frame-session-restore (nframe &optional not-ask)
+      (message "in frame-session-restore")
       (if *frame-session-restore*
           (progn
-            (select-frame nframe)
+            (message "pass in frame-session-restore")
+            (if nframe (select-frame nframe) (error "nframe is nil"))
             (fmsession-restore (frame-session-set-this-location nframe not-ask)) nframe)
           (message "not restoring screen session.")))
 
-    (defun frame-session-appply (nframe)
+    (defun frame-session-apply (nframe)
       (interactive
        (list (selected-frame)))
       (progn
@@ -407,7 +410,7 @@
     (add-hook 'sharad/enable-startup-inperrupting-feature-hook
               '(lambda ()
                 ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
-                (add-hook 'after-make-frame-functions 'frame-session-restore t)
+                (add-hook 'after-make-frame-functions '(lambda (nframe) (frame-session-restore nframe t)) t)
                 (add-hook 'delete-frame-functions 'frame-session-save)
                 ;; (add-hook 'kill-emacs-hook 'save-all-frames-session)) ; done in save-all-sessions-auto-save
               t)

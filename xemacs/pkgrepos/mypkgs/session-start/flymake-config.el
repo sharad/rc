@@ -58,7 +58,27 @@
 
   (deh-require-maybe session-config
     (add-to-list 'desktop-minor-mode-handlers (cons 'flymake-mode
-                                                    (desktop-get-readonly-proof-mode flymake-mode)))))
+                                                    (desktop-get-readonly-proof-mode flymake-mode))))
+
+
+
+;;;; general init-cleanup and helper routines
+;; TODO: rename these to something sane and deprecate the current names.
+(defun flymake-create-temp-copy (file-name prefix)
+  "Make filename for a temporary copy of FILE-NAME.
+
+If `flymake-run-in-place' is true it will use `flymake-create-temp-inplace',
+otherwise it will use `flymake-create-temp-intemp'.
+
+Note that this function, despite its name, does not actually create a
+copy of the file: it only choses and returns a filename for the temp
+copy."
+  (if (and flymake-run-in-place
+           (file-writable-p (dirname-of-file file-name)))
+    (flymake-create-temp-inplace file-name prefix)
+    (flymake-create-temp-intemp file-name prefix)))
+
+  )
 
 
 (provide 'flymake-config)

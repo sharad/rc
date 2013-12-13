@@ -113,8 +113,25 @@ fi
 
 
 # WM specific setup
-~/bin/wallpaper-setup
-~/bin/stumpwm-setup
+~/bin/wallpaper-setup &!
+~/bin/stumpwm-setup &!
+
+# Android LinConnect
+if [ -x ~/.linconnect/LinConnectServer/update.sh ] && ! pgrep linconnect_serv >& /dev/null ; then
+    # https://github.com/hauckwill/linconnect-server
+    # https://play.google.com/store/apps/details?id=com.willhauck.linconnectclient
+    rm -f ~/.logs/linconnect.1
+    mv ~/.logs/linconnect ~/.logs/linconnect.1
+    ~/.linconnect/LinConnectServer/main/linconnect_server.py >& ~/.logs/linconnect &!
+fi
+
+if [ -x /usr/share/android-notifier-desktop/run.sh ] &&
+    java -DconfigDir=~/.config -Djava.util.prefs.userRoot=$configDir/android-notifier-desktop \
+        -Djava.net.preferIPv4Stack=true -client -Xms8m -Xmx32m \
+        -jar /usr/share/android-notifier-desktop/android-notifier-desktop.jar -i |
+    grep "not" ; then
+    /usr/share/android-notifier-desktop/run.sh >& ~/.logs/android-notifier-desktop.log &!
+fi
 
 
 [ -r ~/.rsetup/wmlogin/run.d/${HOST//.*} ] &&

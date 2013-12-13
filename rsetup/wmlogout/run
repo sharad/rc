@@ -50,7 +50,12 @@ pkill dbus-daemon
 [  -x ~/.rsetup/xlogout/run ] &&
 ~/.rsetup/xlogout/run
 
-
+# Android LinConnect
+if pgrep linconnect_serv >& /dev/null ; then
+    pkill linconnect_serv
+    sleep 1s;
+    pkill -9 linconnect_serv
+fi
 
 [ -r ~/.rsetup/wmlogout/run.d/${HOST//.*} ] &&
 ~/.rsetup/wmlogout/run.d/${HOST//.*}
