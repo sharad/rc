@@ -64,7 +64,7 @@
 
 ;;;; general init-cleanup and helper routines
 ;; TODO: rename these to something sane and deprecate the current names.
-(defun flymake-create-temp-copy (file-name prefix)
+(defun flymake-create-temp-copy (file-name prefix) ;source of sorrow with desktop-vc-read
   "Make filename for a temporary copy of FILE-NAME.
 
 If `flymake-run-in-place' is true it will use `flymake-create-temp-inplace',
