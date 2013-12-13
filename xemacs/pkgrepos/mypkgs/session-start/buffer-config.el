@@ -605,4 +605,19 @@
 
 ;; (setq debug-on-error t)
 
+
+(deh-section "schedule buffer killing"
+  ;;;###autoload
+  (defun ido-schedule-kill-buffer ()
+    "Kill a buffer.
+The buffer name is selected interactively by typing a substring.
+For details of keybindings, see `ido-switch-buffer'."
+    (interactive)
+    (ido-buffer-internal 'kill 'schedule-kill-buffer "Kill buffer: " (buffer-name (current-buffer)) nil 'ignore))
+
+  (defun schedule-kill-buffer ()
+    ;; schedule killing buffer, if not accessed again in fixed time.
+    )
+  )
+
 (provide 'buffer-config)
