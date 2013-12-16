@@ -156,9 +156,15 @@ function pstreeo {
 
 function adsearch () {
     arg=$1
-    shift
     objectClass=person
-    query="(&(|(cn=*"${arg}"*)(sn=*"${arg}"*)(givenName=*"${arg}"*)(physicalDeliveryOfficeName=*"${arg}"*)(telephoneNumber=*"${arg}"*))(objectClass="$objectClass"))"
+    if [ "$1" -a "$1" = "all" ] ; then
+        query="(objectClass=*)"
+    elif [ "$1" -a "$1" = "person" ] ; then
+        query="(objectClass="person")"
+    else
+        query="(&(|(cn=*"${arg}"*)(sn=*"${arg}"*)(givenName=*"${arg}"*)(physicalDeliveryOfficeName=*"${arg}"*)(telephoneNumber=*"${arg}"*))(objectClass="$objectClass"))"
+    fi
+    shift
 
     attrs=("givenName" "cn" "mobile" "sn" "physicalDeliveryOfficeName" "homePhone" "mail" "ipPhone" "mailNickname" "department" "telephoneNumber" "title" "whenCreated")
     if [ "$1" -a "$1" = "all" ] ; then

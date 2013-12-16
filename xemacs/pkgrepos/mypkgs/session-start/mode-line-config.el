@@ -46,8 +46,7 @@
              (if (frame-parameter (selected-frame) 'frame-spec-id)
                  (concat
                   " "
-                  (file-name-nondirectory (frame-parameter (selected-frame) 'frame-spec-id))
-
+                  (frame-parameter (selected-frame) 'frame-spec-id)
                   (unless (sharad/check-session-saving)
                     " noAutoSave"))))
             (cons
