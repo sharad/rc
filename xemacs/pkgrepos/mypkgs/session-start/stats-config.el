@@ -25,10 +25,8 @@
 ;;; Code:
 
 (deh-section "Time stats"
-
  (deh-require-maybe uptime)
  (deh-require-maybe uptimes)
-
  (deh-section "emacs-uptime"
    ;; http://gnuvola.org/software/personal-elisp/dist/lisp/diversions/emacs-uptime.el
    (require 'cl)
