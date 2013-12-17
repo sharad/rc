@@ -113,9 +113,17 @@
         (remove-alist 'epa-file-passphrase-cleanup-exceptitions-alist file))
     (pushnew (cons file times) epa-file-passphrase-cleanup-exceptitions-alist)))
 
-(defun epa-remove-exception-for (file times)
-  ;; tbd
-  )
+(defun epa-remove-exception-for (file)
+  (interactive "Ffile: ")
+  (let ((file (file-name-sans-extension
+               (file-truename file))))
+    (if (member file
+                (mapcar
+                 '(lambda (f)
+                   (file-name-sans-extension
+                    (file-truename (car f))))
+                 epa-file-passphrase-cleanup-exceptitions-alist))
+        (remove-alist 'epa-file-passphrase-cleanup-exceptitions-alist file))))
 
 ;; (cancel-timer epa-file-passphrase-cleanup-timer)
 
