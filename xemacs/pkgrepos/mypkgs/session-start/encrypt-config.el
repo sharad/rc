@@ -49,8 +49,8 @@
 
 (defun epa-file-passphrase-cleanup (&optional exceptitions-alist)
   (interactive)
-
-  (let ((exceptitions (mapcar 'car exceptitions-alist)))
+  (let* ((exceptitions-alist (or exceptitions-alist epa-file-passphrase-cleanup-exceptitions-alist))
+         (exceptitions (mapcar 'car exceptitions-alist)))
     (dolist (a epa-file-passphrase-alist)
       (let* ((file-name (car a))
              (buffer-of-file (find file-name (buffer-list) :key #'buffer-file-name :test #'string-equal)))
@@ -58,8 +58,7 @@
                         (mapcar
                          '(lambda (f)
                            (file-name-sans-extension
-                            (file-truename
-                             (concat f ".gpg"))))
+                            (file-truename f)))
                          exceptitions))
           (setq epa-file-passphrase-alist (assq-delete-all-test file-name epa-file-passphrase-alist #'string-equal))
           (if buffer-of-file
@@ -75,12 +74,12 @@
           ;; (message "found %s" buff-name)
           (kill-buffer buff)
           ;; (message "killed %s" buff)
-          (setq epa-file-passphrase-alist (assq-delete-all-test buff-name epa-file-passphrase-alist #'string-equal))))))
-
-  (dolist (v exceptitions-alist)
-    (if (<= (cdr v) 0)
-        (decf (cdr v))
-        (remove-alist 'epa-file-passphrase-cleanup-exceptitions-alist (car v)))))
+          (setq epa-file-passphrase-alist (assq-delete-all-test buff-name epa-file-passphrase-alist #'string-equal)))))
+    (dolist (v exceptitions-alist)
+      (if (<= (cdr v) 0)
+          (remove-alist 'epa-file-passphrase-cleanup-exceptitions-alist (car v))
+          (decf (cdr v))))
+    (setq epa-file-passphrase-cleanup-exceptitions-alist exceptitions-alist)))
 
 (defvar epa-file-passphrase-cleanup-exceptitions-alist nil "Epa file passphrase cleanup exceptitions")
 
@@ -102,7 +101,7 @@
 ;; (cancel-timer epa-file-passphrase-cleanup-timer)
 
 
-(pushnew '("~/.authinfo.gpg" 100000) epa-file-passphrase-cleanup-exceptitions-alist)
+(pushnew '("~/.authinfo.gpg" . 100000) epa-file-passphrase-cleanup-exceptitions-alist)
 
 (defun epa-file-passphrase-delay-cleanup (file count)
   (interactive
