@@ -98,10 +98,29 @@
   (interactive)
   (timer-activate epa-file-passphrase-cleanup-timer))
 
+(pushnew '("~/.authinfo.gpg" . 100000) epa-file-passphrase-cleanup-exceptitions-alist)
+
+(defun epa-add-exception-for (file times)
+  (interactive "Ffile: \nnCount: ")
+  (let ((file (file-name-sans-extension
+               (file-truename file))))
+    (if (member file
+                (mapcar
+                 '(lambda (f)
+                   (file-name-sans-extension
+                    (file-truename (car f))))
+                 epa-file-passphrase-cleanup-exceptitions-alist))
+        (remove-alist 'epa-file-passphrase-cleanup-exceptitions-alist file))
+    (pushnew (cons file times) epa-file-passphrase-cleanup-exceptitions-alist)))
+
+(defun epa-remove-exception-for (file times)
+  ;; tbd
+  )
+
 ;; (cancel-timer epa-file-passphrase-cleanup-timer)
 
 
-(pushnew '("~/.authinfo.gpg" . 100000) epa-file-passphrase-cleanup-exceptitions-alist)
+
 
 (defun epa-file-passphrase-delay-cleanup (file count)
   (interactive
