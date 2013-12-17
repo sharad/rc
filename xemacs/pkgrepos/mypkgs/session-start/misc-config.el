@@ -537,4 +537,15 @@ The indirect buffer can have another major mode."
   ;; http://www.opensource.apple.com/source/emacs/emacs-54/emacs/lisp/lazy-lock.el
   ))
 
+
+(deh-section "misc"
+  ;; from: http://www.zerny.dk/emacs/dot-emacs.el
+  (defun cycle-windows()
+    "cycle the buffer of the windows in cyclic ordering"
+    (interactive)
+    (mapcar  (lambda(window)
+               (let ((next-window-buffer (window-buffer (next-window window 0))))
+                 (set-window-buffer (next-window window 0) (window-buffer window))
+                 (set-window-buffer window next-window-buffer))) (butlast (window-list nil 0)))))
+
 (provide 'misc-config)
