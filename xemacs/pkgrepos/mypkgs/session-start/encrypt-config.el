@@ -47,39 +47,42 @@
 
 (defvar epa-file-passphrase-suspend-cleanup nil "Stop cleanup for now.")
 
-(defun epa-file-passphrase-cleanup (&optional exceptitions-alist)
+(defun epa-file-passphrase-cleanup ()
   (interactive)
-  (let* ((exceptitions-alist (or exceptitions-alist epa-file-passphrase-cleanup-exceptitions-alist))
-         (exceptitions (mapcar 'car exceptitions-alist)))
-    (dolist (a epa-file-passphrase-alist)
-      (let* ((file-name (car a))
-             (buffer-of-file (find file-name (buffer-list) :key #'buffer-file-name :test #'string-equal)))
-        (unless (member file-name
-                        (mapcar
-                         '(lambda (f)
-                           (file-name-sans-extension
-                            (file-truename f)))
-                         exceptitions))
-          (setq epa-file-passphrase-alist (assq-delete-all-test file-name epa-file-passphrase-alist #'string-equal))
-          (if buffer-of-file
-              (kill-buffer buffer-of-file)))))
+  (when  epa-file-passphrase-alist
+    (let* ((exceptitions-alist (mapcar
+                                '(lambda (p) (cons (file-truename (car p)) (cdr p)))
+                                epa-file-passphrase-cleanup-exceptitions-alist))
+           (exceptitions (mapcar 'car exceptitions-alist)))
+      (dolist (a epa-file-passphrase-alist)
+        (let* ((file-name (file-truename (car a)))
+               (buffer-of-file (find file-name (buffer-list) :key #'(lambda (f)
+                                                                      (if (stringp f) (file-truename (buffer-file-name f))))
+                                     :test #'string-equal)))
+          (unless (member file-name exceptitions)
+            (setq epa-file-passphrase-alist (assq-delete-all-test file-name epa-file-passphrase-alist #'string-equal))
+            (if buffer-of-file
+                (kill-buffer buffer-of-file)))))
 
-    (dolist (buff (remove-if-not '(lambda (b)
-                                   (let ((bn (buffer-file-name b)))
-                                     (if bn
-                                         (string-match ".gpg\$" bn))))
-                                 (buffer-list)))
-      (let ((buff-name (buffer-file-name buff)))
-        (unless (member buff-name exceptitions)
-          ;; (message "found %s" buff-name)
-          (kill-buffer buff)
-          ;; (message "killed %s" buff)
-          (setq epa-file-passphrase-alist (assq-delete-all-test buff-name epa-file-passphrase-alist #'string-equal)))))
-    (dolist (v exceptitions-alist)
+      (dolist (buff (remove-if-not '(lambda (b)
+                                     (let ((bn (buffer-file-name b)))
+                                       (if bn
+                                           (string-match ".gpg\$" bn))))
+                                   (buffer-list)))
+        (let ((buff-file (file-truename (buffer-file-name buff))))
+          (unless (member buff-file exceptitions)
+            ;; (message "found %s" buff-name)
+            (kill-buffer buff)
+            ;; (message "killed %s" buff)
+            (setq epa-file-passphrase-alist
+                  (assq-delete-all-test buff-file epa-file-passphrase-alist #'string-equal))))))
+
+    (dolist (v epa-file-passphrase-cleanup-exceptitions-alist)
       (if (<= (cdr v) 0)
           (remove-alist 'epa-file-passphrase-cleanup-exceptitions-alist (car v))
           (decf (cdr v))))
-    (setq epa-file-passphrase-cleanup-exceptitions-alist exceptitions-alist)))
+    ;; (setq epa-file-passphrase-cleanup-exceptitions-alist exceptitions-alist)
+    ))
 
 (defvar epa-file-passphrase-cleanup-exceptitions-alist nil "Epa file passphrase cleanup exceptitions")
 
@@ -88,7 +91,7 @@
 
 (setq
  epa-file-passphrase-cleanup-timer
- (run-with-idle-timer 10 t 'epa-file-passphrase-cleanup epa-file-passphrase-cleanup-exceptitions-alist))
+ (run-with-idle-timer 10 t 'epa-file-passphrase-cleanup))
 
 (defun epa-passphrase-cleanup-suspend ()
   (interactive)
@@ -98,30 +101,37 @@
   (interactive)
   (timer-activate epa-file-passphrase-cleanup-timer))
 
-(pushnew '("~/.authinfo.gpg" . 100000) epa-file-passphrase-cleanup-exceptitions-alist)
+(defun epa-passphrase-cleanup-start ()
+  (interactive)
+  (setq
+   epa-file-passphrase-cleanup-timer
+   (run-with-idle-timer 10 t 'epa-file-passphrase-cleanup)))
+
+(defun epa-passphrase-cleanup-stop ()
+  (interactive)
+  (cancel-timer epa-file-passphrase-cleanup-timer)
+  (setq epa-file-passphrase-cleanup-timer nil))
+
+(epa-passphrase-cleanup-start)
 
 (defun epa-add-exception-for (file times)
   (interactive "Ffile: \nnCount: ")
-  (let ((file (file-name-sans-extension
-               (file-truename file))))
+  (let ((file (file-truename file)))
     (if (member file
                 (mapcar
                  '(lambda (f)
-                   (file-name-sans-extension
-                    (file-truename (car f))))
+                   (file-truename (car f)))
                  epa-file-passphrase-cleanup-exceptitions-alist))
         (remove-alist 'epa-file-passphrase-cleanup-exceptitions-alist file))
     (pushnew (cons file times) epa-file-passphrase-cleanup-exceptitions-alist)))
 
 (defun epa-remove-exception-for (file)
   (interactive "Ffile: ")
-  (let ((file (file-name-sans-extension
-               (file-truename file))))
+  (let ((file (file-truename file)))
     (if (member file
                 (mapcar
                  '(lambda (f)
-                   (file-name-sans-extension
-                    (file-truename (car f))))
+                   (file-truename (car f)))
                  epa-file-passphrase-cleanup-exceptitions-alist))
         (remove-alist 'epa-file-passphrase-cleanup-exceptitions-alist file))))
 
