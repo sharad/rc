@@ -12,38 +12,38 @@ define_webjump("scholar",
 //               "Search Code at whytheluckystiff");
 
 // hints_default_object_classes["bookmarks"] = "links";
-// define_webjump("g", "http://www.google.com/search?q=%s");
+// define_webjump("g", "https://www.google.com/search?q=%s");
 define_webjump("blackle",
-               "http://www.google.com/cse?cx=013269018370076798483:gg7jrrhpsy4&cof=FORID:1&q=%s&sa=Search");
+               "https://www.google.com/cse?cx=013269018370076798483:gg7jrrhpsy4&cof=FORID:1&q=%s&sa=Search");
 //              "Black Google");
 define_webjump("oldg",
-               "http://www.google.com/cse?cx=013269018370076798483:gg7jrrhpsy4&cof=FORID:1&q=%s&sa=Search");
+               "https://www.google.com/cse?cx=013269018370076798483:gg7jrrhpsy4&cof=FORID:1&q=%s&sa=Search");
 //              "Google");
 define_webjump("oldgoogle",
-               "http://www.google.com/cse?cx=013269018370076798483:gg7jrrhpsy4&cof=FORID:1&q=%s&sa=Search");
+               "https://www.google.com/cse?cx=013269018370076798483:gg7jrrhpsy4&cof=FORID:1&q=%s&sa=Search");
 //              "Google");
 // define_webjump("search",
-//                "http://www.google.com/cse?cx=013269018370076798483:gg7jrrhpsy4&cof=FORID:1&q=%s&sa=Search");
+//                "https://www.google.com/cse?cx=013269018370076798483:gg7jrrhpsy4&cof=FORID:1&q=%s&sa=Search");
 // //              "Search");
 define_webjump("altsearch",
-               'http://www.google.com/custom?hl=en&client=pub-6071644646659036&cof=FORID%3A13%3BAH%3Aleft%3BCX%3AGoogleBlackSearch%3BL%3Ahttp%3A%2F%2Fwww.google.com%2Fintl%2Fen%2Fimages%2Flogos%2Fcustom_search_logo_sm.gif%3BLH%3A30%3BLP%3A1%3BBGC%3A%23000000%3BT%3A%23ffffff%3BLC%3A%23008000%3BVLC%3A%2380ff00%3BGALT%3A%236f3c1b%3B&adkw=AELymgUvdaM8nU5n2tFte9c3we-XSQO146-wrqSqKoc_EeT1Af2TYUBtyH5YXsbKW9kVciGANHu1ixxAhIZRFHvWXqlj_4H-xAaU0CtJqzbtEjXILU5ETnL8n7T7u75eTDU4atKzzDJmZb3NGuvBBZN2cacxWvoKWBGc8hvpw12C8Slqnhf9usk0EP9ISXOXrZ_4a-TVA9xy&channel=1293889023&ie=ISO-8859-1&oe=ISO-8859-1&q=%s&btnG=Search&cx=partner-pub-6071644646659036%3A5wqdrnju8wy');
+               'https://www.google.com/custom?hl=en&client=pub-6071644646659036&cof=FORID%3A13%3BAH%3Aleft%3BCX%3AGoogleBlackSearch%3BL%3Ahttp%3A%2F%2Fwww.google.com%2Fintl%2Fen%2Fimages%2Flogos%2Fcustom_search_logo_sm.gif%3BLH%3A30%3BLP%3A1%3BBGC%3A%23000000%3BT%3A%23ffffff%3BLC%3A%23008000%3BVLC%3A%2380ff00%3BGALT%3A%236f3c1b%3B&adkw=AELymgUvdaM8nU5n2tFte9c3we-XSQO146-wrqSqKoc_EeT1Af2TYUBtyH5YXsbKW9kVciGANHu1ixxAhIZRFHvWXqlj_4H-xAaU0CtJqzbtEjXILU5ETnL8n7T7u75eTDU4atKzzDJmZb3NGuvBBZN2cacxWvoKWBGc8hvpw12C8Slqnhf9usk0EP9ISXOXrZ_4a-TVA9xy&channel=1293889023&ie=ISO-8859-1&oe=ISO-8859-1&q=%s&btnG=Search&cx=partner-pub-6071644646659036%3A5wqdrnju8wy');
 //              "Search");
 
 define_webjump("search",
-               "http://www.google.co.in/search?q=%s&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai=");
+               "https://www.google.co.in/search?q=%s&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai=");
 //              "Google");
 
 // I'm Feeling Lucky.
 define_webjump("search/clucky",
-               "http://www.google.com/search?hl=en&biw=1364&bih=384&sclient=psy-ab&q=%s&oq=%s&aq=f&aqi=g4&aql=&gs_l=hp.9..0l4.0l0l5l1800l0l0l0l0l0l0l0l0ll0l0.frgbld.&pbx=1&btnI=1"
-               // "http://www.google.com/search?btnI=I%27m+Feeling+Lucky&ie=UTF-8&oe=UTF-8&q=%s"
+               "https://www.google.com/search?hl=en&biw=1364&bih=384&sclient=psy-ab&q=%s&oq=%s&aq=f&aqi=g4&aql=&gs_l=hp.9..0l4.0l0l5l1800l0l0l0l0l0l0l0l0ll0l0.frgbld.&pbx=1&btnI=1"
+               // "https://www.google.com/search?btnI=I%27m+Feeling+Lucky&ie=UTF-8&oe=UTF-8&q=%s"
               )
 
 // I'm Feeling Lucky.
 define_webjump("search/lucky",
-               "http://www.google.com/search?hl=en&&q=%s&btnI=1"
+               "https://www.google.com/search?hl=en&&q=%s&btnI=1"
               )
-               // "http://www.google.com/search?btnI=I%27m+Feeling+Lucky&ie=UTF-8&oe=UTF-8&q=%s"
+               // "https://www.google.com/search?btnI=I%27m+Feeling+Lucky&ie=UTF-8&oe=UTF-8&q=%s"
 
 
 define_webjump("search/blog",
@@ -72,7 +72,7 @@ define_webjump("pandora",
                "http://www.pandora.com");
 //               "Pendora");
 define_webjump("reader",
-               "http://www.google.com/reader");
+               "https://www.google.com/reader");
 //               "RSS Reader");
 
 // from http://conkeror.org/Webjumps#GoogleTranslate
@@ -194,7 +194,7 @@ define_webjump("youtube-user", "http://youtube.com/profile_videos?user=%s");
 
 // 2.4.1. Google Finance
 
-define_webjump("finance", "http://www.google.com/finance?q=%s");
+define_webjump("finance", "https://www.google.com/finance?q=%s");
 
 // 2.5. Games
 
@@ -383,7 +383,7 @@ define_webjump("psychology/changingminds", "http://changingminds.org/");
 
 // 2.10.1. Google Codesearch
 
-define_webjump("code/google", "http://www.google.com/codesearch?q=%s");
+define_webjump("code/google", "https://www.google.com/codesearch?q=%s");
 
 define_webjump("code/fossies", "http://fossies.org/search?q=%s&rd=%2Ffresh%2F&sd=0&ud=%2F&ap=no&ca=no&dp=0&si=0&sn=1&ml=30&dml=3");
 
@@ -414,7 +414,7 @@ define_webjump("code/tex/ctan-doc", "http://www.ctan.org/cgi-bin/searchFullText.
 define_webjump("code/snippets",
                "http://snippets.dzone.com/search/get_results?q=%s");
 define_webjump("code/gsnippets",
-               "http://www.google.co.in/search?q=%20site%3Asnippets.dzone.com%20%s%20&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai");
+               "https://www.google.co.in/search?q=%20site%3Asnippets.dzone.com%20%s%20&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai");
 define_webjump("code/languages",
                "http://rosettacode.org/mw/index.php?title=Special%3ASearch&search=%s&go=Go");
 
@@ -533,7 +533,7 @@ define_webjump("savannah", "https://savannah.gnu.org/search/?words=%s&type_of_se
 // 2.15.1. Bicycling
 
 define_webjump("sheldonbrown",
-               "http://www.google.com/search?q=site:sheldonbrown.com %s",
+               "https://www.google.com/search?q=site:sheldonbrown.com %s",
                $alternative = "http://sheldonbrown.com/");
 
 // 2.16. Travel
@@ -549,7 +549,7 @@ define_webjump("wikitravel", "http://wikitravel.org/en/Special:Search/?search=%s
 define_webjump("weather", "http://www.wunderground.com/cgi-bin/findweather/getForecast?query=%s");
 
 
-define_webjump("weather/india", "http://www.google.com/search?q=%s&sitesearch=www.imd.gov.in");
+define_webjump("weather/india", "https://www.google.com/search?q=%s&sitesearch=www.imd.gov.in");
 
 
 // {{ My Added
@@ -643,7 +643,7 @@ define_webjump("finance-quote", // Stock quote
 // }
 
 define_webjump("emacswiki",
-    "http://www.google.com/cse?cx=004774160799092323420%3A6-ff2s0o6yi"+
+    "https://www.google.com/cse?cx=004774160799092323420%3A6-ff2s0o6yi"+
         "&q=%s&sa=Search&siteurl=emacswiki.org%2F",
     $alternative="http://www.emacswiki.org/");
 
@@ -653,7 +653,7 @@ define_webjump("lispdoc",
 define_webjump("lispdocfull",
                "http://lispdoc.com/?q=%s&search=Full+text+search");
 
-// "http://www.google.com/custom?q=defstructbind&sa=Google+Search&client=pub-9189966831921234&forid=1&channel=7601138232&ie=UTF-8&oe=UTF-8&flav=0000&sig=BT4vXQm3jSJWiv_9&cof=GALT%3A%23008000%3BGL%3A1%3BDIV%3A%23FFFFFF%3BVLC%3A663399%3BAH%3Acenter%3BBGC%3AFFFFFF%3BLBGC%3A336699%3BALC%3A0000FF%3BLC%3A0000FF%3BT%3A000000%3BGFNT%3A0000FF%3BGIMP%3A0000FF%3BFORID%3A1&hl=en"
+// "https://www.google.com/custom?q=defstructbind&sa=Google+Search&client=pub-9189966831921234&forid=1&channel=7601138232&ie=UTF-8&oe=UTF-8&flav=0000&sig=BT4vXQm3jSJWiv_9&cof=GALT%3A%23008000%3BGL%3A1%3BDIV%3A%23FFFFFF%3BVLC%3A663399%3BAH%3Acenter%3BBGC%3AFFFFFF%3BLBGC%3A336699%3BALC%3A0000FF%3BLC%3A0000FF%3BT%3A000000%3BGFNT%3A0000FF%3BGIMP%3A0000FF%3BFORID%3A1&hl=en"
 
 
 // http://www.123people.com/s/firstname+lastname/world
@@ -841,12 +841,12 @@ define_webjump(
 // Search in site
 
 define_webjump("sitesearch", function (term) {
-    return "javascript:window.location.href='http://www.google.co.in/search?q=site:'+window.location.hostname+'%20"+encodeURIComponent(term)+"&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai='";
+    return "javascript:window.location.href='https://www.google.co.in/search?q=site:'+window.location.hostname+'%20"+encodeURIComponent(term)+"&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai='";
 }, $argument = "optional");
 
 
 define_webjump("sitesearch", function (term) {
-    return "javascript:window.location.href='http://www.google.com/search?sitesearch='+window.location.hostname+'&as_q=" + encodeURIComponent(term) + "';";
+    return "javascript:window.location.href='https://www.google.com/search?sitesearch='+window.location.hostname+'&as_q=" + encodeURIComponent(term) + "';";
 }, $argument = "optional");
 
 define_webjump("search/similarsites", function (url) {
@@ -861,7 +861,7 @@ define_webjump("search/similarsites", function (url) {
 
 
 
-// homepage = "http://www.google.com";
+// homepage = "https://www.google.com";
 
 // set default webjump
 read_url_handler_list = [read_url_make_default_webjump_handler("google")];
@@ -880,7 +880,7 @@ require("page-modes/wikipedia.js");     // wikipedia mode
 define_webjump("gmail", "https://mail.google.com"); // gmail inbox
 define_webjump("twitter", "http://twitter.com/#!/search/%s", $alternative = "https://twitter.com/");  // twitter
 define_webjump("w3schools", "http://www.w3schools.com"); // w3schools site
-define_webjump("w3search", "http://www.google.com/search?sitesearch=www.w3schools.com&as_q=%s"); // w3schools search
+define_webjump("w3search", "https://www.google.com/search?sitesearch=www.w3schools.com&as_q=%s"); // w3schools search
 define_webjump("jquery", "http://docs.jquery.com/Special:Search?ns0=1&search=%s"); // jquery
 define_webjump("archwiki", "https://wiki.archlinux.org/index.php?search=%s"); // arch wiki
 define_webjump("stackoverflow", "http://stackoverflow.com/search?q=%s", $alternative = "http://stackoverflow.com/"); // stackoverflow
@@ -1006,5 +1006,6 @@ define_webjump("search/gmane", "http://gmane.org/find.php?list=%s");
 define_webjump("list/gmane", "http://gmane.org/find.php?list=%s");
 define_webjump("forum/gmane", "http://gmane.org/find.php?list=%s");
 //}}
+
 
 
