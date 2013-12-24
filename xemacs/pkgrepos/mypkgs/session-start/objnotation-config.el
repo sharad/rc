@@ -28,6 +28,23 @@
 ;; python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout, indent=4)' < file.yaml > file.json
 
 (deh-require-maybe (progn json yaml-mode)
+
+  (defun yaml-read-file (file)
+    ;; (interactive "fFile: ")
+    (let ((jfile (make-temp-file "json")))
+      (shell-command (concat "python -c "
+                             "'import sys, yaml, json; "
+                             "json.dump(yaml.load(sys.stdin), "
+                             "sys.stdout, indent=4)' < "
+                             (file-truename file)
+                             " > "
+                             jfile))
+      ;; (message jfile)
+      (json-read-file jfile)))
+
+  (defun yaml-read-from-string (string)
+    )
+
   )
 
 
