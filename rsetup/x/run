@@ -15,7 +15,7 @@ m4 -I ~/.setup/m4 -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/
 whence -p xmodmap &&
 xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
 
-xterm -e 'ish -s bash less ~/.xsession-errors' &!
+xterm -e 'ish -s bash -- timeout -k 120 70 tail -n 100 -f ~/.xsession-errors' &!
 
 if whence xte ; then
     xte <<EOF

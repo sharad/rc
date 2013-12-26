@@ -1,2 +1,4 @@
 export XBPROFILE=Y
 export XBROWSER="conkeror -P $XBPROFILE"
+export XLOCKER=xtrlock
+

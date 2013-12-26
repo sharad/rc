@@ -32,7 +32,7 @@ volume_high=100 # 60
 volume_low=70   # 45
 wmlockfile_disable=~/.var/comm/disable/alarmwm
 run=radio
-
+lockpgm=${XLOCKER:-slock} # xtrlock
 max=
 
 function main() {
@@ -49,7 +49,7 @@ function mpc() {
         playlist="$( mpc lsplaylists | sed -n $(( $RANDOM % $(mpc lsplaylists | wc -l ) + 1 ))p )"
     fi
 
-    if whence mpc >&/dev/null && [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep xtrlock ; then
+    if whence mpc >&/dev/null && [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep ${lockpgm} ; then
 
 
 
@@ -119,7 +119,7 @@ XYEOF
 }
 
 function radio() {
-    if whence mplayer >&/dev/null && [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep xtrlock ; then
+    if whence mplayer >&/dev/null && [ -t 0 ] || (( $hour > 20 || $hour < 6 )) && ! pgrep ${lockpgm} ; then
 
         # pgrep mpd && mpc status |grep playing >& /dev/null && mpc stop
 
@@ -187,7 +187,7 @@ function screen_lock() {
 
     if [ "x$lock" != "x" ] ; then
         state_locked
-        xtrlock
+        ${lockpgm}
         state_unlocked
     fi
 }
