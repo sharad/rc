@@ -432,6 +432,23 @@ function waitmsg () {
     sleep $1
 }
 
+## hashing ##
+function getmd5hash () {
+    if (( $# == 1 )) ; then
+        local hash
+        hash=$(md5sum $1 | cut -f1 -d' ')
+        print ${x[1,4]}${x[-4,-1]}
+    fi
+}
+
+function mvhash () {
+    if (( $# == 1 )) ; then
+        mv $1 $1-$(getmd5hash $1)
+    fi
+}
+
+## hashing ##
+
 #}}
 
 
