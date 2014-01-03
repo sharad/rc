@@ -635,7 +635,7 @@ Also returns nil if pid is nil."
 
   (defcustom save-all-sessions-auto-save-idle-time-interval 7 "save all sessions auto save idle time interval")
   (defvar save-all-sessions-auto-save-idle-time-interval-dynamic 7 "save all sessions auto save idle time interval dynamic.")
-  (defcustom save-all-sessions-auto-save-time-interval (* 7 60) "save all sessions auto save time interval")
+  (defcustom save-all-sessions-auto-save-time-interval (* 20 60) "save all sessions auto save time interval")
   (defvar save-all-sessions-auto-save-time (current-time) "save all sessions auto save time")
 
   (defun save-all-sessions-auto-save (&optional force)

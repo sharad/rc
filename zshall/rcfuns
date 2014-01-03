@@ -437,7 +437,7 @@ function getmd5hash () {
     if (( $# == 1 )) ; then
         local hash
         hash=$(md5sum $1 | cut -f1 -d' ')
-        print ${x[1,4]}${x[-4,-1]}
+        print ${hash[1,4]}${hash[-4,-1]}
     fi
 }
 
