@@ -79,7 +79,8 @@
       *taskdir-current-task*))
 
 (defun create-task-dir (dir task name desc)
-  (make-directory (concat dir "/logs") t)
+  (dolist (dname '("logs" "programs" "patches" "deliverables"))
+    (make-directory (concat dir "/" dname) t))
   (make-directory (concat "/home/s/hell/SCRATCH/" (pluralize-string task) "/" name) t)
   (make-symbolic-link (concat "/home/s/hell/SCRATCH/" (pluralize-string task) "/" name) (concat dir "/scratch"))
 
