@@ -682,7 +682,6 @@ to restore in case of sudden emacs crash."
                     (setq save-all-sessions-auto-save-idle-time-interval-dynamic
                           (1- save-all-sessions-auto-save-idle-time-interval-dynamic))))
 
-
             (setq save-all-sessions-auto-save-time (current-time)
                   save-all-sessions-auto-save-idle-time-interval-dynamic save-all-sessions-auto-save-idle-time-interval)
             ))))
