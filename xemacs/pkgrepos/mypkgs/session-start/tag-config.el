@@ -30,7 +30,7 @@
                                                ;; "GSYMS"
                                                ))
 
-(setf (tree-node* *tags-config* 'cmd 'cscope) "cscope -Rb - 2>/dev/null")
+(setf (tree-node* *tags-config* 'cmd 'cscope) "cscope -Rb 2>/dev/null")
 (setf (tree-node* *tags-config* 'cmd 'etags)  "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS - 2>/dev/null")
 (setf (tree-node* *tags-config* 'cmd 'gtags)  "gtags -v 2>/dev/null")
 
@@ -71,13 +71,20 @@
 
 (defun tag-file-existp (tag-sys dir)
   (dmessage 'tag 7 "tag-file-existp %s %s" tag-sys dir)
-  (let ((dirs (tree-node *tags-config* 'dirs-cache tag-sys)))
+  (let* ((dirs (tree-node *tags-config* 'dirs-cache tag-sys))
+         (cached-valid-dirs (remove-if-not '(lambda (d)
+                                             (if (issubdirp d dir)
+                                                 (every '(lambda (f)
+                                                          (file-exists-p (expand-file-name f d)))
+                                                        (tree-node *tags-config* 'files tag-sys))))
+                                     dirs)))
     (dmessage 'tag 7 "tag-file-existp dirs %s" dirs)
-    (if (some '(lambda (d)
-                 (issubdirp d dir))
-              dirs)
+    ;; (if (some '(lambda (d)
+    ;;              (issubdirp d dir))
+    ;;           dirs)
+    (if cached-valid-dirs
         t
-      (tag-file-existp-main tag-sys dir))))
+        (tag-file-existp-main tag-sys dir))))
 
 ;;;;;;;;;;;;;;;;;;
 ;; ref: http://www.emacswiki.org/cgi-bin/wiki/BuildTags

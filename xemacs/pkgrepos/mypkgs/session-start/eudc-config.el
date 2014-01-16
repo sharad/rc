@@ -29,43 +29,78 @@
 (deh-require-maybe (and eudc ldap passwds)
   "LDAP BBDB backend"
 
+(defun myeudc-ldap-format-query-as-rfc1558 (query)
+  "Format the EUDC QUERY list as a RFC1558 LDAP search filter."
+  (format "(|%s)"
+	  (apply 'concat
+		 (mapcar '(lambda (item)
+			    (format "(%s=%s)"
+				    (car item)
+				    (eudc-ldap-escape-query-special-chars (cdr item))))
+			 query))))
+
+  (defun broad-eudc-ldap-get-field-list (dummy &optional objectclass)
+  "Return a list of valid attribute names for the current server.
+OBJECTCLASS is the LDAP object class for which the valid
+attribute names are returned. Default to `person'"
+  (interactive)
+  (or eudc-server
+      (call-interactively 'eudc-set-server))
+  (let ((ldap-host-parameters-alist
+	 (list (cons eudc-server
+		     '(scope subtree sizelimit 1)))))
+    (mapcar 'eudc-ldap-cleanup-record-simple
+	    (ldap-search
+	     (myeudc-ldap-format-query-as-rfc1558
+	      (list
+               (cons "objectClass" "person")
+               (cons "objectClass" "group")))
+	     eudc-server nil t))))
+
+(eudc-protocol-set 'eudc-list-attributes-function 'broad-eudc-ldap-get-field-list
+		   'ldap)
+
 
   (defun eudc-ldap-datas ()
     (or (and (boundp 'eudc-ldap-datas) eudc-ldap-datas) '()))
 
   (setq ldap-default-base "ou=addressbook,dc=your_dc_here,dc=fr")
 
-  (setq ;; eudc-default-return-attributes nil
-   eudc-default-return-attributes 'all
-   eudc-strict-return-matches nil
-   ldap-ldapsearch-args '("-tt" "-LLL" "-x")
-   eudc-inline-query-format '(
-                              (givenName)
-                              (sn)
-                              (givenName sn)
-                              (mail)    ;note email have been changed to mail
-                              (name)
-                              )
+(setq ;; eudc-default-return-attributes nil
+ eudc-default-return-attributes 'all
+ eudc-strict-return-matches nil
+ ldap-ldapsearch-args '("-tt" "-LLL" "-x")
+ eudc-inline-query-format '(
+                            (mailNickname)
+                            (givenName)
+                            (sn)
+                            (givenName sn)
+                            (mail)    ;note email have been changed to mail
+                            (name)
+                            )
    ;; eudc-inline-query-format nil
-   eudc-inline-expansion-format '("%s %s <%s>" givenName name mail)
-   ;; eudc-inline-expansion-format '("%s <%s>" givenName email)
+ eudc-inline-expansion-format '("%s %s <%s>" givenName name mail)
+ eudc-inline-expansion-formats '(("%s %s <%s>" givenName name mail)
+                                 ("%s <%s>" name mail)
+                                 ("%s" mail))
+ ;; eudc-inline-expansion-format '("%s <%s>" givenName email)
 
-   ;; (setq ldap-host-parameters-alist
-   ;;       (quote (("your_server" base "ou=addressbook,dc=your_dc_here,dc=fr"
-   ;;                              binddn "cn=admin,dc=your_dc_here,dc=fr"
-   ;;                              passwd "your_password"))))
+ ;; (setq ldap-host-parameters-alist
+ ;;       (quote (("your_server" base "ou=addressbook,dc=your_dc_here,dc=fr"
+ ;;                              binddn "cn=admin,dc=your_dc_here,dc=fr"
+ ;;                              passwd "your_password"))))
 
-   ldap-host-parameters-alist
-   ;; `(("your_server" base "ou=addressbook,dc=your_dc_here,dc=fr"
-   ;;                  binddn "cn=admin,dc=your_dc_here,dc=fr"
-   ;;                  passwd "your_password"))
-   `(,(cdr (assoc 'office (eudc-ldap-datas))))
+ ldap-host-parameters-alist
+ ;; `(("your_server" base "ou=addressbook,dc=your_dc_here,dc=fr"
+ ;;                  binddn "cn=admin,dc=your_dc_here,dc=fr"
+ ;;                  passwd "your_password"))
+ `(,(cdr (assoc 'office (eudc-ldap-datas))))
 
-   eudc-server-hotlist `(( ,(car (cdr (assoc 'office (eudc-ldap-datas)))) . ldap ))
+ eudc-server-hotlist `(( ,(car (cdr (assoc 'office (eudc-ldap-datas)))) . ldap ))
 
-   eudc-inline-expansion-servers 'hotlist)
+ eudc-inline-expansion-servers 'hotlist)
 
-  (eudc-set-server (car (cdr (assoc 'office (eudc-ldap-datas)))) 'ldap t)
+(eudc-set-server (car (cdr (assoc 'office (eudc-ldap-datas)))) 'ldap t)
 
   (defun enz-eudc-expand-inline()
     (interactive)
@@ -231,6 +266,8 @@ see `eudc-inline-expansion-servers'"
                        '(lambda (w) (concat "*" w "*"))
                        (split-string (buffer-substring beg end) "[ \t]+")))
 	 query-formats
+         inline-expansion-formats
+         inline-expansion-format
 	 response
 	 response-string
 	 response-strings
@@ -276,32 +313,76 @@ see `eudc-inline-expansion-servers'"
 
                      ;; Loop on query-formats
                      (while query-formats
-                       (setq response
-                             (eudc-query
-                              (eudc-format-query query-words (car query-formats))
-                              (eudc-translate-attribute-list
-                               (cdr eudc-inline-expansion-format))))
-                       (if response
-                           (throw 'found response))
+                       (setq inline-expansion-formats
+                             (if eudc-inline-expansion-formats
+                                 eudc-inline-expansion-formats
+                                 (if eudc-inline-expansion-format
+                                     (list eudc-inline-expansion-format))))
+                       (setq inline-expansion-format (car inline-expansion-formats))
+                       (dmessage 'eudc 7 "X: inline-expansion-formats %s\nX: query-formats %s\n" inline-expansion-formats query-formats)
+                       (while inline-expansion-formats
+                         (setq response
+                               (eudc-query
+                                (eudc-format-query query-words (car query-formats))
+                                (eudc-translate-attribute-list
+                                 (cdr inline-expansion-format))))
+                         (dmessage 'eudc 7 "O: inline-expansion-formats %s\nO: query-formats %s\n response %s\n" inline-expansion-formats query-formats response)
+                         (setq response (remove nil response))
+                         (dmessage 'eudc 7 "O: inline-expansion-formats %s\nO: query-formats %s\n response %s\n" inline-expansion-formats query-formats response)
+                         (if response
+                             (throw 'found response))
+                         (setq inline-expansion-formats (cdr inline-expansion-formats))
+                         (setq inline-expansion-format (car inline-expansion-formats)))
+
+                       (dmessage 'eudc 7 "Z: inline-expansion-formats %s\nZ: query-formats %s\n" inline-expansion-formats query-formats)
+
                        (setq query-formats (cdr query-formats)))
                      (setq servers (cdr servers)))
                    ;; No more servers to try... no match found
                    nil)))
-
+          (dmessage 'eudc 7 "Y: inline-expansion-format %s\nY: response %s\nY: query-formats %s\n" inline-expansion-format response query-formats)
 
 	  (if (null response)
 	      (error "No match")
 
+              (let ((carresp (mapcar 'car (car response)))
+                    (formats eudc-inline-expansion-formats))
+                (setq inline-expansion-format
+                      (or
+                       (catch 'fmtfound
+                         (while formats
+                           (dmessage 'eudc 7 "L: format %s\nL: carresp %s\nL:diff %s\n"
+                                    (eudc-translate-attribute-list
+                                     (cdr (car formats)))
+                                    carresp
+                                    (set-exclusive-or
+                                     carresp
+                                     (eudc-translate-attribute-list
+                                      (cdr (car formats)))))
+                           (unless (set-exclusive-or
+                                    carresp
+                                    (eudc-translate-attribute-list
+                                     (cdr (car formats))))
+                             (throw 'fmtfound (car formats)))
+                           (dmessage 'eudc 7 "P: format %s\nP: carresp %s\n"
+                                    (eudc-translate-attribute-list
+                                     (cdr (car formats)))
+                                    carresp)
+                           (setq formats (cdr formats))
+                           nil))
+                       inline-expansion-format)))
+
+              (dmessage 'eudc 7 "N: inline-expansion-format %s\nN: response %s\n" inline-expansion-format response)
               ;; Process response through eudc-inline-expansion-format
               (while response
                 (setq response-string (apply 'format
-                                             (car eudc-inline-expansion-format)
+                                             (car inline-expansion-format)
                                              (mapcar (function
                                                       (lambda (field)
                                                        (or (cdr (assq field (car response)))
                                                            "")))
                                                      (eudc-translate-attribute-list
-                                                      (cdr eudc-inline-expansion-format)))))
+                                                      (cdr inline-expansion-format)))))
                 (if (> (length response-string) 0)
                     (setq response-strings
                           (cons response-string response-strings)))
@@ -332,9 +413,6 @@ see `eudc-inline-expansion-servers'"
 		(equal eudc-protocol eudc-former-protocol))
 	   (eudc-set-server eudc-former-server eudc-former-protocol t))
        (signal (car signal) (cdr signal))))))
-
-
-
 
 
 
