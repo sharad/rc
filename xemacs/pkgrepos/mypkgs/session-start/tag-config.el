@@ -9,6 +9,9 @@
 (require 'cl)
 (require 'tree)
 
+(require 'debug-config)
+;; debug
+(add-to-list 'debug-tags-level-list '(tag 4))
 
 (defvar *tags-config* nil "Tags system configurations")
 
@@ -28,7 +31,7 @@
                                                ))
 
 (setf (tree-node* *tags-config* 'cmd 'cscope) "cscope -Rb - 2>/dev/null")
-(setf (tree-node* *tags-config* 'cmd 'etags)  "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
+(setf (tree-node* *tags-config* 'cmd 'etags)  "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS - 2>/dev/null")
 (setf (tree-node* *tags-config* 'cmd 'gtags)  "gtags -v 2>/dev/null")
 
 ;; (defun pushnew-alist (key value list)
@@ -43,7 +46,7 @@
   ;; from: https://lists.ubuntu.com/archives/bazaar/2009q2/057669.html
   "Search for `filename' in every directory from `starting-path' up."
   (let ((path (file-name-as-directory starting-path)))
-    (message "path %s files %s" path files)
+    (dmessage 'tag 7 "path %s files %s" path files)
     ;; (if (file-exists-p (concat path filename))
 
     (if (every '(lambda (f)
@@ -57,7 +60,7 @@
 
 (defun issubdirp (superdir subdir)
   ;; check if this is working proplerly.
-  (message "issubdirp %s %s" superdir subdir)
+  (dmessage 'tag 7 "issubdirp %s %s" superdir subdir)
   (let ((superdir (file-truename superdir))
         (subdir (file-truename subdir)))
     (string-prefix-p superdir subdir)))
@@ -67,9 +70,9 @@
       (pushnew dir (tree-node* *tags-config* 'dirs-cache tag-sys))))
 
 (defun tag-file-existp (tag-sys dir)
-  (message "tag-file-existp %s %s" tag-sys dir)
+  (dmessage 'tag 7 "tag-file-existp %s %s" tag-sys dir)
   (let ((dirs (tree-node *tags-config* 'dirs-cache tag-sys)))
-    (message "tag-file-existp dirs %s" dirs)
+    (dmessage 'tag 7 "tag-file-existp dirs %s" dirs)
     (if (some '(lambda (d)
                  (issubdirp d dir))
               dirs)
@@ -93,7 +96,7 @@
   (interactive)
   (dolist (d dirs)
     (let* ((fmt (tree-node *tags-config* 'cmd tag-sys))
-           (cmd (read-from-minibuffer (format "%s cmd: " tag-sys) (format fmt d))))
+           (cmd (read-from-minibuffer (format "%s cmd: " tag-sys) (format fmt (tramp-file-name-localname (tramp-file-connection d))))))
       (let ((default-directory d))
         ;; (async-shell-command cmd)
         (shell-command-no-output cmd)))))
@@ -111,28 +114,6 @@
       ;; (push-dir-in-tag-sys-alist tag-sys dir)
       (pushnew dir (tree-node *tags-config* 'dirs-cache 'tag-sys)))))
 
-;; (defun create-etags (dir &optional force)
-;;   "Create etags file."
-;;   (let* ((fmt "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS -- 2>/dev/null")
-;;          (cmd (read-from-minibuffer "etag cmd: " (format fmt dir))))
-;;     ;; (eshell-command cmd)
-;;     (shell-command-no-output cmd)))
-
-;; (defun create-gtags (dir &optional force)
-;;   "Create etags file."
-;;   (let* ((fmt "gtags -v 2>/dev/null")
-;;          (cmd (read-from-minibuffer "gtag cmd: " (format fmt dir))))
-;;     (let ((default-directory dir))
-;;       ;; (async-shell-command cmd)
-;;       (shell-command-no-output cmd))))
-
-;; (defun create-cscope (dir &optional force)
-;;   "Create etags file."
-;;   (let* ((fmt "cscope -Rb - 2>/dev/null")
-;;          (cmd (read-from-minibuffer "cscope cmd: " (format fmt dir))))
-;;     (let ((default-directory dir))
-;;       ;; (async-shell-command cmd)
-;;       (shell-command-no-output cmd))))
 
 ;; (defun create-c-tags (dir-name)
 ;;   "Create tags file."
