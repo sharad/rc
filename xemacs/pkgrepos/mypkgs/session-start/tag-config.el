@@ -96,7 +96,14 @@
   (interactive)
   (dolist (d dirs)
     (let* ((fmt (tree-node *tags-config* 'cmd tag-sys))
-           (cmd (read-from-minibuffer (format "%s cmd: " tag-sys) (format fmt (tramp-file-name-localname (tramp-file-connection d))))))
+           (cmd (read-from-minibuffer
+                 (format "%s cmd: " tag-sys)
+                 (format fmt
+                         (if (stringp d)
+                             (if (tramp-file-name-p d)
+                                 (tramp-file-name-localname (tramp-file-connection d))
+                                 d)
+                             "")))))
       (let ((default-directory d))
         ;; (async-shell-command cmd)
         (shell-command-no-output cmd)))))

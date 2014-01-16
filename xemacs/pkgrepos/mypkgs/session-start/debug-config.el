@@ -45,9 +45,13 @@ At top-level, as an editor command, this simply beeps."
 
 (defun dmessage (tag &optional level fmt &rest args)
   (let ((level (or level 0))
-        (tagcons (assoc tag debug-tags-level-list)))
-    (if (and tagcons
-             (<= level (cadr tagcons)))
+        (tagl (find tag debug-tags-level-list
+                    :test (lambda (e tag)
+                            (or (eq tag e) (eq (car tag) e))))))
+    (if (and tagl
+             (if (consp tagl)
+                 (<= level (cadr tagl))
+                 (<= level 0)))
         (apply 'message fmt args))))
 
 
