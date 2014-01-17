@@ -70,7 +70,16 @@ attribute names are returned. Default to `person'"
  eudc-default-return-attributes 'all
  eudc-strict-return-matches nil
  ldap-ldapsearch-args '("-tt" "-LLL" "-x")
+ eudc-ldap-attributes-translation-alist
+ '((adname . name)
+   (name . sn)
+   (firstname . givenname)
+   (email . mail)
+   (phone . telephonenumber))
+
  eudc-inline-query-format '(
+                            (displayName)
+                            (adname)
                             (mailNickname)
                             (givenName)
                             (sn)
@@ -80,7 +89,11 @@ attribute names are returned. Default to `person'"
                             )
    ;; eudc-inline-query-format nil
  eudc-inline-expansion-format '("%s %s <%s>" givenName name mail)
- eudc-inline-expansion-formats '(("%s %s <%s>" givenName name mail)
+ eudc-inline-expansion-formats '(
+                                 ("%s <%s>" displayName mail)
+                                 ("%s <%s>" name mail)
+                                 ("%s %s <%s>" givenName name mail)
+                                 ("%s <%s>" adname mail)
                                  ("%s <%s>" name mail)
                                  ("%s" mail))
  ;; eudc-inline-expansion-format '("%s <%s>" givenName email)
@@ -99,6 +112,9 @@ attribute names are returned. Default to `person'"
  eudc-server-hotlist `(( ,(car (cdr (assoc 'office (eudc-ldap-datas)))) . ldap ))
 
  eudc-inline-expansion-servers 'hotlist)
+
+(eudc-protocol-set 'eudc-protocol-attributes-translation-alist
+		   'eudc-ldap-attributes-translation-alist 'ldap)
 
 (eudc-set-server (car (cdr (assoc 'office (eudc-ldap-datas)))) 'ldap t)
 
@@ -345,36 +361,39 @@ see `eudc-inline-expansion-servers'"
 	  (if (null response)
 	      (error "No match")
 
-              (let ((carresp (mapcar 'car (car response)))
-                    (formats eudc-inline-expansion-formats))
-                (setq inline-expansion-format
-                      (or
-                       (catch 'fmtfound
-                         (while formats
-                           (dmessage 'eudc 7 "L: format %s\nL: carresp %s\nL:diff %s\n"
-                                    (eudc-translate-attribute-list
-                                     (cdr (car formats)))
-                                    carresp
-                                    (set-exclusive-or
-                                     carresp
-                                     (eudc-translate-attribute-list
-                                      (cdr (car formats)))))
-                           (unless (set-exclusive-or
-                                    carresp
-                                    (eudc-translate-attribute-list
-                                     (cdr (car formats))))
-                             (throw 'fmtfound (car formats)))
-                           (dmessage 'eudc 7 "P: format %s\nP: carresp %s\n"
-                                    (eudc-translate-attribute-list
-                                     (cdr (car formats)))
-                                    carresp)
-                           (setq formats (cdr formats))
-                           nil))
-                       inline-expansion-format)))
 
               (dmessage 'eudc 7 "N: inline-expansion-format %s\nN: response %s\n" inline-expansion-format response)
               ;; Process response through eudc-inline-expansion-format
               (while response
+
+                (let ((carresp (mapcar 'car (car response)))
+                      (formats eudc-inline-expansion-formats))
+                  (setq inline-expansion-format
+                        (or
+                         (catch 'fmtfound
+                           (while formats
+                             (dmessage 'eudc 7 "L: format %s\nL: carresp %s\nL:diff %s\n"
+                                       (eudc-translate-attribute-list
+                                        (cdr (car formats)))
+                                       carresp
+                                       (set-exclusive-or
+                                        carresp
+                                        (eudc-translate-attribute-list
+                                         (cdr (car formats)))))
+                             (unless (set-exclusive-or
+                                      carresp
+                                      (eudc-translate-attribute-list
+                                       (cdr (car formats))))
+                               (throw 'fmtfound (car formats)))
+                             (dmessage 'eudc 7 "P: format %s\nP: carresp %s\n"
+                                       (eudc-translate-attribute-list
+                                        (cdr (car formats)))
+                                       carresp)
+                             (setq formats (cdr formats))
+                             nil))
+                       inline-expansion-format)))
+
+
                 (setq response-string (apply 'format
                                              (car inline-expansion-format)
                                              (mapcar (function
