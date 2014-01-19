@@ -515,5 +515,88 @@ queries the server for the existing fields and displays a corresponding form."
     (use-local-map widget-keymap)
     (widget-setup))
   )
+
+
+
+(defun eudc-query-form (&optional get-fields-from-server)
+  "Display a form to query the directory server.
+If given a non-nil argument GET-FIELDS-FROM-SERVER, the function first
+queries the server for the existing fields and displays a corresponding form."
+  (interactive "P")
+  (let ((fields (or (and get-fields-from-server
+			 (eudc-get-attribute-list))
+		    eudc-query-form-attributes))
+	(buffer (get-buffer-create "*Directory Query Form*"))
+	prompts
+	widget
+	(width 0)
+	inhibit-read-only
+	pt)
+    (switch-to-buffer buffer)
+    (setq inhibit-read-only t)
+    (erase-buffer)
+    (kill-all-local-variables)
+    (make-local-variable 'eudc-form-widget-list)
+    (widget-insert "Directory Query Form\n")
+    (widget-insert "====================\n\n")
+    (widget-insert "Current server is: " (or eudc-server
+					     (progn
+					       (call-interactively 'eudc-set-server)
+					       eudc-server))
+					     "\n")
+    (widget-insert "Protocol         : " (symbol-name eudc-protocol) "\n")
+    ;; Build the list of prompts
+    (setq prompts (if eudc-use-raw-directory-names
+		      (mapcar 'symbol-name (eudc-translate-attribute-list fields))
+		    (mapcar (function
+			     (lambda (field)
+			       (or (and (assq field eudc-user-attribute-names-alist)
+					(cdr (assq field eudc-user-attribute-names-alist)))
+				   (capitalize (symbol-name field)))))
+			    fields)))
+    ;; Loop over prompt strings to find the longest one
+    (mapc (function
+	   (lambda (prompt)
+	     (if (> (length prompt) width)
+		 (setq width (length prompt)))))
+	  prompts)
+    ;; Insert the first widget out of the mapcar to leave the cursor
+    ;; in the first field
+    (widget-insert "\n\n" (format (concat "%" (int-to-string width) "s: ") (car prompts)))
+    (setq pt (point))
+    (setq widget (widget-create 'editable-field :size 15))
+    (setq eudc-form-widget-list (cons (cons (car fields) widget)
+				      eudc-form-widget-list))
+    (setq fields (cdr fields))
+    (setq prompts (cdr prompts))
+    (mapc (function
+	   (lambda (field)
+	     (widget-insert "\n\n" (format (concat "%" (int-to-string width) "s: ") (car prompts)))
+	     (setq widget (widget-create 'editable-field
+					 :size 15))
+	     (setq eudc-form-widget-list (cons (cons field widget)
+					       eudc-form-widget-list))
+	     (setq prompts (cdr prompts))))
+	  fields)
+    (widget-insert "\n\n")
+    (widget-create 'push-button
+		   :notify (lambda (&rest ignore)
+			     (eudc-process-form))
+		   "Query Server")
+    (widget-insert " ")
+    (widget-create 'push-button
+		   :notify (lambda (&rest ignore)
+			     (eudc-query-form))
+		   "Reset Form")
+    (widget-insert " ")
+    (widget-create 'push-button
+		   :notify (lambda (&rest ignore)
+			     (kill-this-buffer))
+		   "Quit")
+    (goto-char pt)
+    (use-local-map widget-keymap)
+    (widget-setup))
+  )
+
 (provide 'eudc-config)
 ;;; eudc.el ends here
