@@ -31,17 +31,35 @@
 ;; I need it badly
 (deh-require-maybe elscreen-server
 
-  ;; (defun elscreen-swap-right ()
-  ;;   (interactive)
-  ;;   (elscreen-swap)
-  ;;   (elscreen-next)
-  ;;   (elscreen-notify-screen-modification))
+;; (defun elscreen-swap ()
+;;   "Interchange screens selected currently and previously."
+;;   (interactive)
+;;   (cond
+;;    ((elscreen-one-screen-p)
+;;     (elscreen-message "There is only one screen, cannot swap"))
+;;    (t
+;;     (let* ((current-screen (elscreen-get-current-screen))
+;;            (previous-screen (elscreen-get-previous-screen))
+;;            (current-screen-property
+;;             (elscreen-get-screen-property current-screen))
+;;            (previous-screen-property
+;;             (elscreen-get-screen-property previous-screen)))
+;;       (elscreen-set-screen-property current-screen previous-screen-property)
+;;       (elscreen-set-screen-property previous-screen current-screen-property)
+;;       (elscreen-goto-internal (elscreen-get-current-screen))))))
 
-  ;; (defun elscreen-swap-left ()
-  ;;   (interactive)
-  ;;   (elscreen-previous)
-  ;;   (elscreen-swap)
-  ;;   (elscreen-next))
+  (defun elscreen-move-right ()
+    (interactive)
+    (elscreen-next)
+    (elscreen-swap)
+    (elscreen-notify-screen-modification))
+
+  (defun elscreen-move-left ()
+    (interactive)
+    (elscreen-previous)
+    (elscreen-swap)
+    ;; (elscreen-next)
+    (elscreen-notify-screen-modification))
   )
 
 ;; thanks http://www.emacswiki.org/emacs-pt/EmacsLispScreen ElScreen-server
