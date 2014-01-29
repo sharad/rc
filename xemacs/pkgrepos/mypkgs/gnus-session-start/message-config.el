@@ -275,6 +275,7 @@
                `(
                  (name ,myname)
                  (signature "Regards,\n-sharad")
+                 (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
                  ;; ("Jabber-ID" ,office-email)
                  (address ,office-email)
                  )
@@ -367,6 +368,7 @@
         ("Office.*"
          (name ,myname)
          (signature "Regards,\n-sharad")
+         (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
          (address ,office-email)
          (eval (set (make-local-variable 'gnus-message-archive-group)
                     '(,(format-time-string "sent.%Y-%m")

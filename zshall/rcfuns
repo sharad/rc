@@ -450,7 +450,9 @@ function getmd5hash () {
 
 function mvhash () {
     if (( $# == 1 )) ; then
-        mv $1 $1-$(getmd5hash $1)
+        local hname=$1-$(getmd5hash $1)
+        mv $1 $hname
+        print mv $1 $hname
     fi
 }
 
