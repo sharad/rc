@@ -144,6 +144,7 @@ function gnome-keyring-attach() {
     local vars
 
     vars=( \
+        DISPLAY \
         DBUS_SESSION_BUS_ADDRESS \
         SSH_AUTH_SOCK \
         SSH_AGENT_PID \
@@ -158,8 +159,9 @@ function gnome-keyring-attach() {
         exit 1;
     fi
 
+    local _DISPLAYMAJOR=$(echo ${DISPLAY} | cut -f2 -d: | cut -d. -f1)
 
-    source ~/.dbus/session-bus/$(< /var/lib/dbus/machine-id)-0
+    source ~/.dbus/session-bus/$(< /var/lib/dbus/machine-id)-${_DISPLAYMAJOR}
 
 
     if ! timeout -s KILL 2 ~/bin/get-imap-pass 2>&1 > /dev/null; then

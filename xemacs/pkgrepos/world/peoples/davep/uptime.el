@@ -113,4 +113,6 @@ value may be found.  Currently defaults to 7 on 'berkeley-unix systems")
        (foo (kill-buffer (current-buffer))))
     (- (string-to-number systemuptimestring) (string-to-number starttime))))
 
+(provide 'uptime)
+
 ;; EOF

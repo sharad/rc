@@ -47,7 +47,7 @@ else
 fi
 
 
-pgrep gnome-keyring-d >& /dev/null || gnome-keyring-daemon --start &!
+# pgrep gnome-keyring-d >& /dev/null || gnome-keyring-daemon --start &!
 sleep 1s;
 
 DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/lib/gnome-online-accounts/goa-daemon &!
