@@ -89,6 +89,7 @@
         alias bbdb='emacsclient  -nw -t --eval '\''(bbdb)'\'''
         alias vncviewer='vncviewer -shared'
         alias mancolor="TERMINFO=~/.terminfo/ LESS=C TERM=mostlike PAGER=less man"
+        alias last='last -awFx'
 
         #volume
         alias palsactrl=pavucontrol

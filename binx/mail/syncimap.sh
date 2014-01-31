@@ -165,13 +165,21 @@ function gnome-keyring-attach() {
 
 
     if ! timeout -s KILL 2 ~/bin/get-imap-pass 2>&1 > /dev/null; then
-        error "Keyring is not responding. Please check error with get-imap-pass $DBUS_SESSION_BUS_ADDRESS"
+        warn "Keyring is not responding. Please check error with get-imap-pass $DBUS_SESSION_BUS_ADDRESS"
         if false && pkill gnome-keyring && get-imap-pass ; then
-            notify "Restarted keyring"
+            verbose "Restarted keyring"
         fi
-        ( sleep 10s; { get-imap-pass || pkill gnome-keyring } && notify "Restarted keyring successfully." ) &!
-        notify "Restarting keyring after 10 seconds."
-	exit -1;
+        if sleep 5s; timeout -s KILL 4 ~/bin/get-imap-pass 2>&1 > /dev/null ; then
+            verbose "Restarting keyring after 10 seconds."
+        else
+            error "Need to restart keyring"
+            if pkill gnome-keyring ; then
+                warn "Restarted keyring successfully."
+            else
+                error "Failed to restart keyring."
+            fi
+	    exit -1;
+        fi
     fi
 }
 
