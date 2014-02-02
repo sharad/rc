@@ -45,6 +45,8 @@
        (setq epa-file-passphrase-alist (assq-delete-all-test file-name epa-file-passphrase-alist #'string-equal))
        (kill-buffer buffer))))
 
+(defalias 'epa-forget-passphrase 'forget-passphrase)
+
 (defvar epa-file-passphrase-suspend-cleanup nil "Stop cleanup for now.")
 
 (defun epa-file-passphrase-cleanup ()
