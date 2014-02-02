@@ -1,5 +1,0 @@
-
-
-alias connectp4='sshpass -p`get-imap-pass.py` ssh -L 1666:p4proxy-india:1666 spratap@p4_ssh_sw_india.local'
-
-[ -r ~/.office/companies/aruba/aruba_aliases ] && source ~/.office/companies/aruba/aruba_aliases
