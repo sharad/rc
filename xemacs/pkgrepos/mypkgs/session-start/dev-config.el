@@ -324,6 +324,9 @@
           (message "File %s done not exists" ofile)))))
 
 
+(deh-section "C"
+  ;; check out http://www.emacswiki.org/emacs/IndentingC
+  )
 
 
 

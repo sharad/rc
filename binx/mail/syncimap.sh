@@ -169,7 +169,7 @@ function gnome-keyring-attach() {
         if false && pkill gnome-keyring && get-imap-pass ; then
             verbose "Restarted keyring"
         fi
-        if sleep 5s; timeout -s KILL 4 ~/bin/get-imap-pass 2>&1 > /dev/null ; then
+        if sleep 5s; timeout -s KILL 10 ~/bin/get-imap-pass 2>&1 > /dev/null ; then
             verbose "Restarting keyring after 10 seconds."
         else
             error "Need to restart keyring"

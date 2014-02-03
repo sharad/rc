@@ -50,6 +50,7 @@
   (condition-case e
       (when office-mode
         (message "calling office mode")
+        (c-set-style "stroustrup" 1)
         (set (make-local-variable 'before-save-hook) before-save-hook)
         (remove-hook 'before-save-hook 'delete-trailing-whitespace t)
         (message "called office mode"))

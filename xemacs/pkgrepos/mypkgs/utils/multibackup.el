@@ -27,8 +27,6 @@
 
 (require 'rcs-backup)
 
-(define-minor-mode multibackup-mode ())
-
 
 (defvar multibackup-locs nil "List of locations to backup file.")
 
@@ -42,7 +40,7 @@
   (defvar buffer-linked-files nil "list of buffer-linked-files")
   (make-local-variable 'buffer-linked-files)
 
-  (defun copy-all-file ()
+  (defun multibackup-copy-all-file ()
     (if buffer-linked-files
         (dolist (f buffer-linked-files)
           ;; (write-region nil nil f nil)
@@ -61,10 +59,11 @@
                 (set-file-modes f ofilemode)))
 
           (put-file-in-rcs f)
-          (message "copied %s to %s" (file-name-nondirectory buffer-file-name) f))))
+          (message "copied %s to %s" (file-name-nondirectory buffer-file-name) f))
+        (message "No target for multibackup, could be added using M-x multibackup-add-linked-file.")))
 
 
-  (defun add-linked-file (tfile)
+  (defun multibackup-add-linked-file (tfile)
     (interactive "Flink file: ")
     (if buffer-file-name
         (let* ((srcfilename (file-name-nondirectory buffer-file-name))
@@ -85,7 +84,20 @@
   (add-to-list 'desktop-locals-to-save 'buffer-linked-files)
   (add-to-list 'session-locals-include 'buffer-linked-files)
 
-  (add-hook 'after-save-hook 'copy-all-file))
+
+
+  (define-minor-mode multibackup-mode
+      "multibackup-mode"
+    ;; :initial-value nil
+    :init-value 1
+    ;; :lighter 'rcb
+    :global nil
+    (if multibackup-mode
+        (add-hook 'after-save-hook 'multibackup-copy-all-file nil t)
+        (remove-hook 'after-save-hook 'multibackup-copy-all-file t)))
+
+  ;; (add-hook 'after-save-hook 'copy-all-file)
+  )
 
 (provide 'multibackup)
 ;;; session-config.el ends here
