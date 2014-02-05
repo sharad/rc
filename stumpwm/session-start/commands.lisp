@@ -500,13 +500,17 @@
                                  ;;   (if (probe-file paradise)
                                  ;;       (concatenate 'string " -cd " paradise " ")
                                  ;;       ""))
-                                 (format nil "~a-T ~a"
+                                 (format nil " ~a-T ~a"
                                          (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
                                            (if (probe-file paradise)
                                                (concatenate 'string " -cd " paradise " ")
                                                " "))
                                          (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
 
+(defcommand xterm () ()
+  (run-wcli-command (concatenate 'string "xterm"
+                                 (format nil " -T ~a"
+                                         (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
 
 ;; (testing
 ;;   (cl-ppcre:split " " (concatenate 'string "urxvtc"

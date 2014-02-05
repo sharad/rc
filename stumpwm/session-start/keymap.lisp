@@ -337,10 +337,11 @@
 (defvar *imergency-map* nil
   "The keymap that group related key bindings sit on. It is bound to @kbd{C-t g} by default.")
 
-
+(defvar *term-commands-map* nil
+  "The keymap for terminal emulator commands.")
 
 (fill-keymap *window-commands-map*
-             (kbd "t") "urxvt"
+             (kbd "t") '*term-commands-map*
              (kbd "b") "xbrowser"
              (kbd "f") "firefox"
              (kbd "T") "torbrowser"
@@ -348,6 +349,10 @@
              (kbd "m") "mail-reader"
              (kbd "n") "new-mail"
              (kbd "E") "editor")
+
+(fill-keymap *term-commands-map*
+             (kbd "u") "urxvt"
+             (kbd "x") "xterm")
 
 (define-key *top-map* (kbd "XF86Mail") "mail-reader")
 
