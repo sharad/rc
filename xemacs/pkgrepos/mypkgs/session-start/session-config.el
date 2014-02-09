@@ -743,6 +743,7 @@ to restore in case of sudden emacs crash."
     (interactive)
     (let ((enable-local-eval t                ;query
             )
+          (enable-recursive-minibuffers t)
           (flymake-run-in-place nil)
           (show-error (called-interactively-p 'interactive)))
       (setq debug-on-error t)
@@ -793,8 +794,9 @@ to restore in case of sudden emacs crash."
                                  "No desktop found. or you can check out old %s from VCS.\nShould I enable session saving in auto save, at kill-emacs ?"
                                  *desktop-save-filename*))
             (sharad/enable-session-saving)))
-      (when t ;(y-or-n-p "Do you want to set session of frame? ")
-        (frame-session-restore (selected-frame) t))
+      (let ((enable-recursive-minibuffers t))
+        (when t ;(y-or-n-p "Do you want to set session of frame? ")
+          (frame-session-restore (selected-frame) t)))
       (message-notify "sharad/desktop-session-restore" "leaving sharad/desktop-session-restore")))
 
   ;; (add-hook 'session-before-save-hook

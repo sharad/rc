@@ -80,8 +80,8 @@ alkready should not exist.")
                            "~/.gnus.d"
                            "~/.xemacs/secure"
                            "~/.xemacs/info"
-                           "~/.osetup/info/common/elisp"
-                           ,(concat "~/.osetup/info/hosts/" (system-name) "/elisp")) "sadfsd")
+                           "~/.osetup/info.d/common/elisp"
+                           ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp")) "sadfsd")
 
 (defun load-dir-files (dir)
   (let (load-file-with-errors)
@@ -412,7 +412,7 @@ startup in daemon mode."
     (defvar sharad/enable-startup-inperrupting-feature-in-frame-once-lock nil "Lock for sharad/enable-startup-inperrupting-feature-in-frame-once")
     (defun sharad/enable-startup-inperrupting-feature-in-frame-once (frame)
       (if sharad/enable-startup-inperrupting-feature-in-frame-once-lock
-          (message "locked")
+          (message "locked due to sharad/enable-startup-inperrupting-feature-in-frame-once-lock is t")
           (progn
             (setq sharad/enable-startup-inperrupting-feature-in-frame-once-lock t)
             (select-frame frame)

@@ -60,7 +60,10 @@
 
 
 (deh-section "set dbus env"
-  (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-0")))
+  (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
+                          ":0.0"))
+         (dismajor-str (substring display-str 1 2)))
+    (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-" dismajor-str))))
 
 
 (add-hook 'emacs-startup-hook
@@ -69,7 +72,10 @@
 
 (add-hook 'sharad/enable-login-session-inperrupting-feature-hook
           '(lambda ()
-            (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-0"))))
+            (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
+                                    ":0.0"))
+                   (dismajor-str (substring display-str 1 2)))
+              (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-" dismajor-str)))))
 
 (provide 'startup-config)
 ;;; startup-config.el ends here
