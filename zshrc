@@ -433,6 +433,7 @@ fi
 
 # {{{ *Display Information*
 # For Tramp
+# "$TERM" = "dumb" for emacs tramp
 if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
 {
     cat ~/.logs/stderr/zshall/*
