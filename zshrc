@@ -438,7 +438,9 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
 {
     cat ~/.logs/stderr/zshall/*
     echo Could see all messages in '~/.logs/stderr/zshall/*'
-    ncal -3 -w
+    if whence -p ncal > /dev/null 2>&1 ; then
+    	ncal -3 -w
+    fi
     # display all people around, reminders and todos.
     # See who all are present and what they are doing.
 
