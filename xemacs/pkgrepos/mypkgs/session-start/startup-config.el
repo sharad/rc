@@ -37,8 +37,8 @@
            desktop-restore-in-progress)
       t
       (unless (have-x-focus)
-        (message-notify "hack-local-variables-confirm" "Need attention."))
-      ad-do-it))
+        (message-notify "hack-local-variables-confirm" "Need attention.")
+        ad-do-it)))
 
 
 
@@ -52,7 +52,7 @@
        (message-notify ,(symbol-name fn) "Need attention."))))
 
 (defun activate-notify-ad-before (fn)
-  `(ad-activate fn))
+  `(ad-activate ,fn))
 
 ;; epa-passphrase-callback-function
 ;; ;; (defun epa-passphrase-callback-function (context key-id handback)
