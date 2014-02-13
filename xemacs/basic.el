@@ -412,7 +412,7 @@ startup in daemon mode."
     (defvar sharad/enable-startup-inperrupting-feature-in-frame-once-lock nil "Lock for sharad/enable-startup-inperrupting-feature-in-frame-once")
     (defun sharad/enable-startup-inperrupting-feature-in-frame-once (frame)
       (if sharad/enable-startup-inperrupting-feature-in-frame-once-lock
-          (message "locked due to sharad/enable-startup-inperrupting-feature-in-frame-once-lock is t")
+          (message-notify "sharad/enable-startup-inperrupting-feature-in-frame-once" "locked due to sharad/enable-startup-inperrupting-feature-in-frame-once-lock is t")
           (progn
             (setq sharad/enable-startup-inperrupting-feature-in-frame-once-lock t)
             (select-frame frame)

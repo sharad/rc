@@ -10,11 +10,14 @@ The indirect buffer can have another major mode."
 ;; a key. Now I can use C-c i to insert the current date.
 
 ;; Insertion of Dates.
-(defun insert-date-string ()
-  "Insert a nicely formated date string."
-  (interactive)
-  (insert (format-time-string "%Y-%m-%d")))
-
+(deh-section "insert date time"
+  (deh-require insert-time-string)
+  (defun insert-date-string ()
+    "Insert a nicely formated date string."
+    (interactive)
+    (insert (format-time-string "%Y-%m-%d")))
+  ;; org-time-stamp
+  )
 
 
 (if (not running-xemacs)

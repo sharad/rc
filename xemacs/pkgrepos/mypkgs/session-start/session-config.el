@@ -387,7 +387,14 @@
             (message "pass in frame-session-restore")
             (if nframe (select-frame nframe) (error "nframe is nil"))
             (fmsession-restore (frame-session-set-this-location nframe not-ask)) nframe)
-          (message "not restoring screen session.")))
+          (progn
+            (message-notify "frame-session-restore" "not restoring screen session.")
+            (if *desktop-vc-read-inpgrogress*
+                (message-notify "frame-session-restore" "as desktop restore is in progress *desktop-vc-read-inpgrogress* %s"
+                         *desktop-vc-read-inpgrogress*))
+            (if (null *frame-session-restore*)
+                (message-notify "frame-session-restore" "as another frame session restore in progress *frame-session-restore* %s"
+                         *frame-session-restore*)))))
 
     (defun frame-session-apply (nframe)
       (interactive
