@@ -640,10 +640,10 @@ waiting for responses from the server"
     (erc-nick-notify-mode t))
 
   (add-hook 'sharad/enable-login-session-inperrupting-feature-hook
-            (lambda ()
+            '(lambda ()
               ;; update python DISPLAY env variable.
               (if (and (getenv "DISPLAY" (selected-frame))
-                      (eq window-system 'x))
+                       (eq window-system 'x))
                   (pymacs-exec (format "os.environ['DISPLAY'] = '%s'" (getenv "DISPLAY" (selected-frame)))))))
 
   (require 'python-config)

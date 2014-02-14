@@ -81,7 +81,7 @@ to restore in case of sudden emacs crash."
 
 
 (deh-section "ext-cmd passwd"
-  (provide 'host-info)
+  (require 'host-info)
   (defvar program--program (concat "timeout -k 16 10 ssh-add " ssh-key-file) "ssh-add command")
 
   (defvar program--prompt "Enter passphrase for \\([^:]+\\):"
