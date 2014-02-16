@@ -32,7 +32,7 @@ function process_arg() {
             (-e) error=1;;
             (-h) help;
                  exit;;
-            (--) shift; break;;
+            (--) shift; ((count++)); break;;
             (-*) echo "$0: error - unrecognized option $1" 1>&2; help; exit 1;;
             (*)  break;;
         esac

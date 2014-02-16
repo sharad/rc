@@ -1,0 +1,1 @@
+../../osetup/setup/rsetup.d/pmhibernateoff.d/run.d

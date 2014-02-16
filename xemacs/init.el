@@ -67,8 +67,8 @@
      '(lambda (dir)
        (add-to-list 'load-path dir))
      `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
-       "~/.osetup/info/common/elisp"
-       ,(concat "~/.osetup/info/hosts/" (system-name) "/elisp"))))
+       "~/.osetup/info.d/common/elisp"
+       ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp"))))
 
   (deh-section "byte-compile"                                ;byte compile
     (defun package-dir-byte-compile (package-dir)
@@ -87,8 +87,8 @@
      '(lambda (dir)
        (byte-recompile-directory dir 0))
      `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
-       "~/.osetup/info/common/elisp"
-       ,(concat "~/.osetup/info/hosts/" (system-name) "/elisp")))))
+       "~/.osetup/info.d/common/elisp"
+       ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp")))))
 
 (require 'dot-emacs-helper nil nil)
 

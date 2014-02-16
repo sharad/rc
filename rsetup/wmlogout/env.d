@@ -1,0 +1,1 @@
+../../osetup/setup/rsetup.d/wmlogout.d/env.d

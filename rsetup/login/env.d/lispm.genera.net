@@ -1,9 +1,0 @@
-
-STUMPWMPA=yes
-export STUMPWMPA
-
-# show me 30 minutes ahead.
-TZ=GMT-6:00
-export TZ
-
-

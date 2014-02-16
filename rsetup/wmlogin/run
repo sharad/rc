@@ -47,7 +47,7 @@ else
 fi
 
 
-pgrep gnome-keyring-d >& /dev/null || gnome-keyring-daemon --start &!
+# pgrep gnome-keyring-d >& /dev/null || gnome-keyring-daemon --start &!
 sleep 1s;
 
 DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/lib/gnome-online-accounts/goa-daemon &!
@@ -80,7 +80,6 @@ foreach prog (
     blueman-adapters
     blueman-applet
     bluetoothd
-    pidgin
     empathy
     synergys
     ) {
@@ -94,6 +93,15 @@ foreach prog (
         fi
     }
 
+
+if whence -p pidgin >& /dev/null && ! pgrep pidgin | grep -v orig | grep pidgin ; then
+    pidgin &!
+    print started pidgin >&2
+    pgrep pidgin >&2
+    sleep 1s
+else
+    print Not starting pidgin >&2
+fi
 
 if whence xte ; then
     xte <<EOF

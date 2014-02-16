@@ -162,6 +162,21 @@
         (add-to-list 'tramp-default-proxies-alist
                      '((regexp-quote "localhost") nil nil)))
 
+      (defun set-no-tramp-proxy (hostname)
+        (interactive "shostname: ")
+        (add-to-list 'tramp-default-proxies-alist
+                     `((regexp-quote ,hostname) nil nil)))
+
+      (eval-after-load "tramp"
+        '(progn
+          (add-to-list
+           'desktop-globals-to-save
+           'tramp-default-proxies-alist)
+          (add-to-list
+           'desktop-globals-to-save
+           'tramp-default-proxies-alist)))
+
+
       (deh-section "sudo using different user for tramp-default-proxies-alist"
         (dolist (user (mapcar 'car (tree-node *tramp-default-proxies-config* 'sudo :test 'equal)))
           (if (tree-node *tramp-default-proxies-config* 'sudo user :test 'equal)

@@ -1,0 +1,1 @@
+../../osetup/setup/rsetup.d/xlogout.d/env.d

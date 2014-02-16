@@ -1,1 +1,9 @@
+if ! pgrep gnome-keyring-d >& /dev/null ; then
+	eval $(gnome-keyring-daemon --start )
+if
+
+export GNOME_KEYRING_CONTROL
+# export SSH_AUTH_SOCK
+# export GPG_AGENT_INFO
+
 

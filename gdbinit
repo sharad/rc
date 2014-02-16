@@ -374,6 +374,17 @@ document context-on
 Disable display of context on every program stop
 end
 
+define toggle-context
+  if ($SHOW_CONTEXT)
+    set $SHOW_CONTEXT = 0
+  else
+    set $SHOW_CONTEXT = 1
+  end
+end
+document toggle-context
+Toggle display of context on every program stop
+end
+
 # Calls "context" at every breakpoint.
 define hook-stop
   context
@@ -398,4 +409,8 @@ end
 document bpwithcmds
   Test
 end
+
+context-off
+
+printf "\n\nFor more info run context-on command, for less info context-on, to toggle run toggle-context\n\n"
 

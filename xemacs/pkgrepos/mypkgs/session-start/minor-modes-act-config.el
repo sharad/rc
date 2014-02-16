@@ -52,26 +52,31 @@
 
   (require 'host-info)
 
-  (defun login-to-perforce ()
-    (if (and
-         enable-p4-login
-         sharad-in-office-with-perforce)
-        ;; fix p4 timeout problem, detect it than disable it for next run.
-        (unless (shell-command-no-output "timeout -k 3 2 p4 user -o")
-          (shell-command-no-output "zenity --password | timeout -k 7 6 p4 login")
-          nil)))
-
   (defvar run-office-activate-failed-max 7 "run-office-activate")
   (defvar run-office-activate-failed 0 "run-office-activate")
   (defvar run-office-activate t "run-office-activate")
+
+  (defun is-perforce-is-alive ()
+    (unless (shell-command-no-output "timeout -k 3 2 p4 depots")
+      (incf run-office-activate-failed)
+      nil))
+
+  (defun login-to-perforce ()
+    (if (and
+         enable-p4-login
+         sharad-in-office-with-perforce
+         (is-perforce-is-alive))
+        ;; fix p4 timeout problem, detect it than disable it for next run.
+        (if (shell-command-no-output "timeout -k 3 2 p4 user -o")
+            t
+            (shell-command-no-output "zenity --password | timeout -k 7 6 p4 login"))))
 
   (defun office-activate ()
     (if (and
          run-office-activate
          (< run-office-activate-failed run-office-activate-failed-max))
         (let ((file (buffer-file-name)))
-          (unless (login-to-perforce)
-            (incf run-office-activate-failed))
+          (login-to-perforce)
           (when (and file
                      (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (vc-p4-registered file)))
             ;; if file is handled by perforce than assume it is

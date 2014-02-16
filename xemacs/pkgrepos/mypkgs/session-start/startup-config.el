@@ -37,14 +37,10 @@
            desktop-restore-in-progress)
       t
       (unless (have-x-focus)
-        (message-notify "hack-local-variables-confirm" "Need attention."))
-      ad-do-it))
-
-
+        (message-notify "hack-local-variables-confirm" "Need attention.")
+        ad-do-it)))
 
 (ad-activate 'hack-local-variables-confirm)
-
-
 
 (defmacro defnotify-ad-before (fn)
   `(defadvice fn (before (concat "notify-ad-" ,(symbol-name fn)) disable)
@@ -52,16 +48,18 @@
        (message-notify ,(symbol-name fn) "Need attention."))))
 
 (defun activate-notify-ad-before (fn)
-  `(ad-activate fn))
+  `(ad-activate ,fn))
 
 ;; epa-passphrase-callback-function
 ;; ;; (defun epa-passphrase-callback-function (context key-id handback)
 
-
-
 (deh-section "set dbus env"
-  (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-0")))
-
+  (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
+                          ":0.0"))
+         (dismajor-str (if (>= (length display-str) 2)
+                           (substring display-str 1 2)
+                           "0")))
+    (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-" dismajor-str))))
 
 (add-hook 'emacs-startup-hook
           '(lambda ()
@@ -69,7 +67,12 @@
 
 (add-hook 'sharad/enable-login-session-inperrupting-feature-hook
           '(lambda ()
-            (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-0"))))
+            (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
+                                    ":0.0"))
+                   (dismajor-str (if (>= (length display-str) 2)
+                                     (substring display-str 1 2)
+                                     "0")))
+              (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-" dismajor-str)))))
 
 (provide 'startup-config)
 ;;; startup-config.el ends here

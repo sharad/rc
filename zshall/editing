@@ -280,5 +280,15 @@ bindkey '\e[7~' beginning-of-line       # home
 bindkey '\e[8~' end-of-line             # end
 #fi
 
+
+#### TIMESTAMP ####
+#### GRML ####
+insert-datestamp() { LBUFFER+=${(%):-'%D{'${FTIMESTAMPFMT:-%Y-%m-%d-%H%M}'}'}; }
+zle -N insert-datestamp
+bindkey '^Ed' insert-datestamp
+#### GRML ####
+
+
+
 exec 2> /dev/tty
 

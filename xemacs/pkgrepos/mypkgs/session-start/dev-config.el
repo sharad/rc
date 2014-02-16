@@ -324,6 +324,25 @@
           (message "File %s done not exists" ofile)))))
 
 
+(deh-section "C C++"
+  ;; check out http://www.emacswiki.org/emacs/IndentingC
+  (deh-require-maybe doxymacs
+    ;; http://doxymacs.sourceforge.net/
+    ;; Default key bindings are:
+    ;; C-c d ? will look up documentation for the symbol under the point.
+    ;; C-c d r will rescan your Doxygen tags file.
+    ;; C-c d f will insert a Doxygen comment for the next function.
+    ;; C-c d i will insert a Doxygen comment for the current file.
+    ;; C-c d ; will insert a Doxygen comment for a member variable on the current line (like M-;).
+    ;; C-c d m will insert a blank multi-line Doxygen comment.
+    ;; C-c d s will insert a blank single-line Doxygen comment.
+    ;; C-c d @ will insert grouping comments around the current region.
+
+    (add-hook 'c-mode-common-hook
+              (lambda ()
+                ;; (require 'doxymacs)
+                (doxymacs-mode t)
+                (doxymacs-font-lock)))))
 
 
 

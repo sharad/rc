@@ -1,0 +1,1 @@
+/home/s/hell/.xemacs/pkgrepos/autoinstalled/misc/insert-time-string.el

@@ -41,6 +41,19 @@ At top-level, as an editor command, this simply beeps."
    ;; (error "User throw error")
    (debug)))
 
+(defvar debug-tags-level-list  nil "Debug message tag and level assoc list")
+
+(defun dmessage (tag &optional level fmt &rest args)
+  (let ((level (or level 0))
+        (tagl (find tag debug-tags-level-list
+                    :test (lambda (e tag)
+                            (or (eq tag e) (eq (car tag) e))))))
+    (if (and tagl
+             (if (consp tagl)
+                 (<= level (cadr tagl))
+                 (<= level 0)))
+        (apply 'message fmt args))))
+
 
 
 

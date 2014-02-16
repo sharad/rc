@@ -81,44 +81,45 @@ to restore in case of sudden emacs crash."
 
 
 (deh-section "ext-cmd passwd"
-    (defvar program--program (concat "timeout -k 16 10 ssh-add " ssh-key-file) "ssh-add command")
+  (require 'host-info)
+  (defvar program--program (concat "timeout -k 16 10 ssh-add " ssh-key-file) "ssh-add command")
 
-    (defvar program--prompt "Enter passphrase for \\([^:]+\\):"
-      "ssh-add prompt for passphrases")
+  (defvar program--prompt "Enter passphrase for \\([^:]+\\):"
+    "ssh-add prompt for passphrases")
 
-    (defvar program--invalid-prompt "Bad passphrase, try again:"
-      "ssh-add prompt indicating an invalid passphrase")
+  (defvar program--invalid-prompt "Bad passphrase, try again:"
+    "ssh-add prompt indicating an invalid passphrase")
 
-    (defun getpass-ssh-send-passwd (process prompt)
-      "read a passphrase with `read-passwd` and pass it to the ssh-add process"
-      (let ((passwd (read-passwd prompt)))
-        (process-send-string process passwd)
-        (process-send-string process "\n")
-        (clear-string passwd)))
+  (defun getpass-ssh-send-passwd (process prompt)
+    "read a passphrase with `read-passwd` and pass it to the ssh-add process"
+    (let ((passwd (read-passwd prompt)))
+      (process-send-string process passwd)
+      (process-send-string process "\n")
+      (clear-string passwd)))
 
-    (defun program--process-filter (process input)
-      "filter for ssh-add input"
-      (cond ((string-match ssh-add-prompt input)
-             (getpass-ssh-send-passwd process input))
-            ((string-match ssh-add-invalid-prompt input)
-             (getpass-ssh-send-passwd process input))
-            ;; (t (with-current-buffer (get-buffer-create ssh-agent-buffer)
-            ;;      (insert input)))
-            ))
+  (defun program--process-filter (process input)
+    "filter for ssh-add input"
+    (cond ((string-match ssh-add-prompt input)
+           (getpass-ssh-send-passwd process input))
+          ((string-match ssh-add-invalid-prompt input)
+           (getpass-ssh-send-passwd process input))
+          ;; (t (with-current-buffer (get-buffer-create ssh-agent-buffer)
+          ;;      (insert input)))
+          ))
 
-    (defun program-fun (&optional cmd)
-      "run ssh-add"
-      (interactive (list (if current-prefix-arg
-                             (read-string "Run ssh-add: " program--program)
-                             program--program)))
-      (unless cmd
-        (setq cmd program--program))
-      (let ()
-        (if cmd
-            (set-process-filter
-             (apply #'start-process "ssh-add" nil shell-file-name "-c" (list cmd))
-             #'program--process-filter)
-            (error "No command given")))))
+  (defun program-fun (&optional cmd)
+    "run ssh-add"
+    (interactive (list (if current-prefix-arg
+                           (read-string "Run ssh-add: " program--program)
+                           program--program)))
+    (unless cmd
+      (setq cmd program--program))
+    (let ()
+      (if cmd
+          (set-process-filter
+           (apply #'start-process "ssh-add" nil shell-file-name "-c" (list cmd))
+           #'program--process-filter)
+          (error "No command given")))))
 
 
 (provide 'functionality-config)

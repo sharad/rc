@@ -1,0 +1,1 @@
+../../osetup/setup/rsetup.d/rc.d/env.d

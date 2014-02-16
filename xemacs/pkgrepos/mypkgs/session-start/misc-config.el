@@ -10,11 +10,14 @@ The indirect buffer can have another major mode."
 ;; a key. Now I can use C-c i to insert the current date.
 
 ;; Insertion of Dates.
-(defun insert-date-string ()
-  "Insert a nicely formated date string."
-  (interactive)
-  (insert (format-time-string "%Y-%m-%d")))
-
+(deh-section "insert date time"
+  (deh-require insert-time-string)
+  (defun insert-date-string ()
+    "Insert a nicely formated date string."
+    (interactive)
+    (insert (format-time-string "%Y-%m-%d")))
+  ;; org-time-stamp
+  )
 
 
 (if (not running-xemacs)
@@ -536,5 +539,21 @@ The indirect buffer can have another major mode."
   (deh-require-maybe lazy-lock
   ;; http://www.opensource.apple.com/source/emacs/emacs-54/emacs/lisp/lazy-lock.el
   ))
+
+
+(deh-section "misc"
+  ;; from: http://www.zerny.dk/emacs/dot-emacs.el
+  (defun cycle-windows()
+    "cycle the buffer of the windows in cyclic ordering"
+    (interactive)
+    (mapcar  (lambda(window)
+               (let ((next-window-buffer (window-buffer (next-window window 0))))
+                 (set-window-buffer (next-window window 0) (window-buffer window))
+                 (set-window-buffer window next-window-buffer))) (butlast (window-list nil 0)))))
+
+(deh-require-maybe ielm
+  ;; * Trying from the interactive emacs lisp mode (M-x ielm)
+  (defalias 'repl 'ielm)
+  (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'ielm t))
 
 (provide 'misc-config)

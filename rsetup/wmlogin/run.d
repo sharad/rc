@@ -1,0 +1,1 @@
+../../osetup/setup/rsetup.d/wmlogin.d/run.d

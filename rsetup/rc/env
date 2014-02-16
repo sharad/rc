@@ -1,6 +1,5 @@
+# -*- mode: shell-script; -*-
 
-
-[ -r ~/.rsetup/rc/env.d/${HOST} ] && . ~/.rsetup/rc/env.d/${HOST}
 
 EDITOR='emacsclient -t -c -f ~/.emacs.d/server/general '
 VISUAL='emacsclient -t -c -f ~/.emacs.d/server/general '
@@ -14,8 +13,25 @@ export EDITOR
 export VISUAL
 export BROWSER
 
-if [ -r /var/lib/dbus/machine-id -a -r ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-0 ] ; then
-   source ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-0
-   export DBUS_SESSION_BUS_ADDRESS
+if [ "x$DISPLAY" != "x" ] ; then
+   _DISPLAYMAJOR=$(echo ${DISPLAY} | cut -f2 -d: | cut -d. -f1)
+   if [ -r /var/lib/dbus/machine-id -a -r ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-0 ] ; then
+      source ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-${_DISPLAYMAJOR}
+      export DBUS_SESSION_BUS_ADDRESS
+      unset _DISPLAYMAJOR
+   fi
+else
+   if [ -r /var/lib/dbus/machine-id -a -r ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-0 ] ; then
+      source ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-0
+      export DBUS_SESSION_BUS_ADDRESS
+      unset _DISPLAYMAJOR
+   fi
+
 fi
+
+if [ ! -e ~/.rsetup/rc/env.d/${HOST} ] ; then
+    cp ~/.rsetup/rc/env.tmpl ~/.rsetup/rc/env.d/${HOST}
+fi
+
+[ -r ~/.rsetup/rc/env.d/${HOST} ] && . ~/.rsetup/rc/env.d/${HOST}
 

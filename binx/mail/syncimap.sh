@@ -144,6 +144,7 @@ function gnome-keyring-attach() {
     local vars
 
     vars=( \
+        DISPLAY \
         DBUS_SESSION_BUS_ADDRESS \
         SSH_AUTH_SOCK \
         SSH_AGENT_PID \
@@ -158,16 +159,27 @@ function gnome-keyring-attach() {
         exit 1;
     fi
 
+    local _DISPLAYMAJOR=$(echo ${DISPLAY} | cut -f2 -d: | cut -d. -f1)
 
-    source ~/.dbus/session-bus/$(< /var/lib/dbus/machine-id)-0
+    source ~/.dbus/session-bus/$(< /var/lib/dbus/machine-id)-${_DISPLAYMAJOR}
 
 
     if ! timeout -s KILL 2 ~/bin/get-imap-pass 2>&1 > /dev/null; then
-        error "Keyring is not responding. Please check error with get-imap-pass $DBUS_SESSION_BUS_ADDRESS"
+        warn "Keyring is not responding. Please check error with get-imap-pass $DBUS_SESSION_BUS_ADDRESS"
         if false && pkill gnome-keyring && get-imap-pass ; then
-            notify "Restarted keyring"
+            verbose "Restarted keyring"
         fi
-	exit -1;
+        if sleep 5s; timeout -s KILL 10 ~/bin/get-imap-pass 2>&1 > /dev/null ; then
+            verbose "Restarting keyring after 10 seconds."
+        else
+            error "Need to restart keyring"
+            if pkill gnome-keyring ; then
+                warn "Restarted keyring successfully."
+            else
+                error "Failed to restart keyring."
+            fi
+	    exit -1;
+        fi
     fi
 }
 

@@ -50,6 +50,9 @@
   (condition-case e
       (when office-mode
         (message "calling office mode")
+        (if (or (eq major-mode 'c-mode)
+                (eq major-mode 'c++-mode))
+            (c-set-style "stroustrup" 1))
         (set (make-local-variable 'before-save-hook) before-save-hook)
         (remove-hook 'before-save-hook 'delete-trailing-whitespace t)
         (message "called office mode"))
@@ -64,8 +67,8 @@
  'session-globals-include
  '(*taskdir-current-task* 100))
 
-(defvar task-config '(("bugs" (files "todo.org" "notes.org" "an0.org"))
-                     ("features"
+(defvar task-config '(("bug" (files "todo.org" "notes.org" "an0.org"))
+                     ("feature"
                       (files "reqirement.org" "feasibility.org"
                              "design.org" "todo.org" "notes.org" "an0.org"))))
 (defvar task-file-properties '((buffer-read-only . t)
@@ -79,9 +82,10 @@
       *taskdir-current-task*))
 
 (defun create-task-dir (dir task name desc)
-  (make-directory (concat dir "/logs") t)
-  (make-directory (concat "/home/s/hell/SCRATCH/bugs/" task) t)
-  (make-symbolic-link (concat "/home/s/hell/SCRATCH/bugs/" task) (concat dir "/scratch"))
+  (dolist (dname '("logs" "programs" "patches" "deliverables"))
+    (make-directory (concat dir "/" dname) t))
+  (make-directory (concat "/home/s/hell/SCRATCH/" (pluralize-string task) "/" name) t)
+  (make-symbolic-link (concat "/home/s/hell/SCRATCH/" (pluralize-string task) "/" name) (concat dir "/scratch"))
 
   (dolist (f (cdr (assoc 'files (cdr (assoc task task-config)))))
     (let ((nfile (expand-file-name f (concat dir "/")))
@@ -93,7 +97,7 @@
         (dolist (pv task-file-properties)
           (add-file-local-variable-prop-line (car pv) (cdr pv)))
         (goto-char (point-max))
-        (insert (format "\n\n* %s %s: %s\n\n\n\n" (capitalize task) name desc))
+        (insert (format "\n\n* %s - %s: %s\n\n\n\n" (capitalize task) name desc))
         (set-buffer-file-coding-system
          (if (coding-system-p 'utf-8-emacs)
              'utf-8-emacs
@@ -103,8 +107,8 @@
 (defun create-task (task name &optional desc)
   (interactive
    (let* ((task (completing-read "what: " (mapcar 'car task-config) nil t))
-          (name (completing-read "name: " (directory-files (concat taskdir "/" task "/")) nil))
-          (bug (if (string-equal task "bugs")
+          (name (completing-read "name: " (directory-files (concat taskdir "/" (pluralize-string task) "/")) nil))
+          (bug (if (string-equal task "bug")
                    (car
                     (condition-case e
                          (bugzilla-get-bugs
@@ -116,8 +120,8 @@
                     (read-from-minibuffer (format "Desc of %s: " name)))))
      (list task name desc)))
 
-  (let* ((dir (concat taskdir "/" task "/" name))
-         (bug (if (string-equal task "bugs")
+  (let* ((dir (concat taskdir "/" (pluralize-string task) "/" name))
+         (bug (if (string-equal task "bug")
                   (car
                     (condition-case e
                          (bugzilla-get-bugs
@@ -131,13 +135,13 @@
 
           ;; Planner
           (let ((plan-page (planner-read-non-date-page (planner-file-alist))))
-            (if (and (string-equal task "bugs")
+            (if (and (string-equal task "bug")
                      bug)
                 (planner-bugzilla-create-bug-to-task bug plan-page t)
                 (planner-create-task
-                 (cond ((string-equal task "bugs")
+                 (cond ((string-equal task "bug")
                         (format "b%s %s %s" name desc (concat "[[" (read-from-minibuffer (format "url for bug " name)) "][url]]")))
-                       ((string-equal task "features")
+                       ((string-equal task "feature")
                         (format "%s: %s" name desc))
                        (t (error "task is not bound.")))
                  (let ((planner-expand-name-favor-future-p
@@ -155,11 +159,11 @@
              project-name                 ;project-name
              nil)                         ;file-filter
             )
+          ;; create task dir
+          (create-task-dir dir task name desc)
           (find-file (expand-file-name
                       (cadr (assoc 'files (cdr (assoc task task-config))))
-                      (concat dir "/")))
-          ;; create task dir
-          (create-task-dir dir task name desc)))
+                      (concat dir "/")))))
 
     (if (y-or-n-p (format "Should set %s current task" dir))
         (setq *taskdir-current-task* dir))))
@@ -189,9 +193,7 @@
     (if (y-or-n-p (format "Should set %s current task" task))
         (setq *taskdir-current-task* task))))
 
-
 (deh-section "Forgive"
-
   (defun forgive/them ()
     (interactive)
     (if (and

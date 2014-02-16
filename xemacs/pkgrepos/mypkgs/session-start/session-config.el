@@ -387,7 +387,14 @@
             (message "pass in frame-session-restore")
             (if nframe (select-frame nframe) (error "nframe is nil"))
             (fmsession-restore (frame-session-set-this-location nframe not-ask)) nframe)
-          (message "not restoring screen session.")))
+          (progn
+            (message-notify "frame-session-restore" "not restoring screen session.")
+            (if *desktop-vc-read-inpgrogress*
+                (message-notify "frame-session-restore" "as desktop restore is in progress *desktop-vc-read-inpgrogress* %s"
+                         *desktop-vc-read-inpgrogress*))
+            (if (null *frame-session-restore*)
+                (message-notify "frame-session-restore" "as another frame session restore in progress *frame-session-restore* %s"
+                         *frame-session-restore*)))))
 
     (defun frame-session-apply (nframe)
       (interactive
@@ -635,7 +642,7 @@ Also returns nil if pid is nil."
 
   (defcustom save-all-sessions-auto-save-idle-time-interval 7 "save all sessions auto save idle time interval")
   (defvar save-all-sessions-auto-save-idle-time-interval-dynamic 7 "save all sessions auto save idle time interval dynamic.")
-  (defcustom save-all-sessions-auto-save-time-interval (* 7 60) "save all sessions auto save time interval")
+  (defcustom save-all-sessions-auto-save-time-interval (* 20 60) "save all sessions auto save time interval")
   (defvar save-all-sessions-auto-save-time (current-time) "save all sessions auto save time")
 
   (defun save-all-sessions-auto-save (&optional force)
@@ -657,10 +664,14 @@ to restore in case of sudden emacs crash."
                           ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Save-Control.html#Auto-Save-Control
                           (> (float-time idle-time) save-all-sessions-auto-save-idle-time-interval-dynamic)))
                     (progn
-                      (message "current time %s, idle time %d idle-time-interval left %d"
-                               (format-time-string time-format save-all-sessions-auto-save-time)
-                               (float-time idle-time)
-                               save-all-sessions-auto-save-idle-time-interval-dynamic)
+                      (message-notify "save-all-sessions-auto-save" "Started to save frame desktop and session.\ncurrent time %s, idle time %d idle-time-interval left %d"
+                                      (format-time-string time-format save-all-sessions-auto-save-time)
+                                      (float-time idle-time)
+                                      save-all-sessions-auto-save-idle-time-interval-dynamic)
+                      ;; (message "current time %s, idle time %d idle-time-interval left %d"
+                      ;;          (format-time-string time-format save-all-sessions-auto-save-time)
+                      ;;          (float-time idle-time)
+                      ;;          save-all-sessions-auto-save-idle-time-interval-dynamic)
                       (setq save-all-sessions-auto-save-time (current-time)
                             save-all-sessions-auto-save-idle-time-interval-dynamic save-all-sessions-auto-save-idle-time-interval)
                       (condition-case e
@@ -677,15 +688,13 @@ to restore in case of sudden emacs crash."
                            (1+ *my-desktop-save-error-count* )
                            (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
                              (setq *my-desktop-save-error-count* 0)
-                             (message-notify "save-all-sessions-auto-save" "save-all-sessions-auto-save(): %s" e)
+                             (message-notify "save-all-sessions-auto-save" "save-all-sessions-auto-save(): Error %s" e)
                              (sharad/disable-session-saving))))))
                     (setq save-all-sessions-auto-save-idle-time-interval-dynamic
                           (1- save-all-sessions-auto-save-idle-time-interval-dynamic))))
 
-
             (setq save-all-sessions-auto-save-time (current-time)
-                  save-all-sessions-auto-save-idle-time-interval-dynamic save-all-sessions-auto-save-idle-time-interval)
-            ))))
+                  save-all-sessions-auto-save-idle-time-interval-dynamic save-all-sessions-auto-save-idle-time-interval)))))
 
 
   (when nil
@@ -744,6 +753,7 @@ to restore in case of sudden emacs crash."
     (interactive)
     (let ((enable-local-eval t                ;query
             )
+          (enable-recursive-minibuffers t)
           (flymake-run-in-place nil)
           (show-error (called-interactively-p 'interactive)))
       (setq debug-on-error t)
@@ -794,8 +804,9 @@ to restore in case of sudden emacs crash."
                                  "No desktop found. or you can check out old %s from VCS.\nShould I enable session saving in auto save, at kill-emacs ?"
                                  *desktop-save-filename*))
             (sharad/enable-session-saving)))
-      (when t ;(y-or-n-p "Do you want to set session of frame? ")
-        (frame-session-restore (selected-frame) t))
+      (let ((enable-recursive-minibuffers t))
+        (when t ;(y-or-n-p "Do you want to set session of frame? ")
+          (frame-session-restore (selected-frame) t)))
       (message-notify "sharad/desktop-session-restore" "leaving sharad/desktop-session-restore")))
 
   ;; (add-hook 'session-before-save-hook

@@ -155,10 +155,23 @@ function pstreeo {
 }
 
 function adsearch () {
+    objectClass=(person group)
+    objectClassQ="(|(objectClass=person)(objectClass=group))"
+    if [ "$1" -a "$1" = "all" ] ; then
+        query="(objectClass=*)"
+        shift
+    elif [ "$1" ] ; then
+        if [ "$1" = "person" -o "$1" = "group"  ] ; then
+            objectClass=$1
+            objectClassQ="(objectClass=$1)"
+            shift
+        fi
+    fi
     arg=$1
+    # print $objectClassQ
+    query="(&(|(cn=*"${arg}"*)(sn=*"${arg}"*)(givenName=*"${arg}"*)(physicalDeliveryOfficeName=*"${arg}"*)(telephoneNumber=*"${arg}"*))${objectClassQ})"
+    # print $query
     shift
-    objectClass=person
-    query="(&(|(cn=*"${arg}"*)(sn=*"${arg}"*)(givenName=*"${arg}"*)(physicalDeliveryOfficeName=*"${arg}"*)(telephoneNumber=*"${arg}"*))(objectClass="$objectClass"))"
 
     attrs=("givenName" "cn" "mobile" "sn" "physicalDeliveryOfficeName" "homePhone" "mail" "ipPhone" "mailNickname" "department" "telephoneNumber" "title" "whenCreated")
     if [ "$1" -a "$1" = "all" ] ; then
@@ -247,24 +260,24 @@ function screenssh {
 
         if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub ; then
 
-            if [ "$sessionarg" ] && ! ${=prefixcmd} screen -x $session -ls 2>/dev/null | grep 'No Sockets' 1>&2 > /dev/null ; then
+            if [ "$sessionarg" ] && ! ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | grep 'No Sockets' 1>&2 > /dev/null ; then
                 trap 'print Interrupted; return 1' SIGINT
-                session=$( ${=prefixcmd} screen -x $session -ls 2>/dev/null | sed -n 2p | awk '{ print $1 }')
+                session=$( ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }')
                 sessionexists=${session}
                 trap - SIGINT
             fi
 
             if [ "$session" ] ; then
-                print ${=prefixcmdintractive} screen -x $session >&2
+                print ${=prefixcmdintractive} screen -x ${session} >&2
                 if [ "${sessionexists}" ] ; then
-                    ${=prefixcmdintractive} screen -x $session
+                    ${=prefixcmdintractive} screen -x "$session"
                     if (( $? == 255 )) ; then
                         print some problem happened in ssh to $machine, will try after 7 seconds
                         sleep 7s
-                        screenssh $machine $session
+                        screenssh $machine \'${session}\'
                     fi
                 else
-                    ${=prefixcmdintractive} screen -S $session
+                    ${=prefixcmdintractive} screen -S "${session}"
                 fi
             else
                 print No session $sessionarg creating it. >&2
@@ -425,6 +438,25 @@ function waitmsg () {
     print Wait $1
     sleep $1
 }
+
+## hashing ##
+function getmd5hash () {
+    if (( $# == 1 )) ; then
+        local hash
+        hash=$(md5sum $1 | cut -f1 -d' ')
+        print ${hash[1,4]}${hash[-4,-1]}
+    fi
+}
+
+function mvhash () {
+    if (( $# == 1 )) ; then
+        local hname=$1-$(getmd5hash $1)
+        mv $1 $hname
+        print mv $1 $hname
+    fi
+}
+
+## hashing ##
 
 #}}
 
