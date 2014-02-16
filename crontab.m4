@@ -18,33 +18,37 @@ ifelse(hostname,lispm,[
 ##{{ Morning
 # try waking up at 7.30 to 7.45
 # 00 06 * * * ~/bin/alarm -h .2 -p myfav -r mpc
-00 06 * * * ~/bin/alarm -h .2 -p 6 -r radio
+00 06 * * * ~/bin/alarm -h .2 -p 6 -r mpc
 
 
 # 29 06 * * * mpc load myfav
 # 30 06 * * * mpc play
-30 06 * * * ~/bin/mradio -c 6
+#30 06 * * * ~/bin/mradio -c 6
 # 31 06 * * * mpc volume 100
 # 45 06 * * * spd-say -C
 
 # 00 07 * * * mpc play
-00 07 * * * ~/bin/mradio -c 6
+# 00 07 * * * ~/bin/mradio -c 6
 # 01 07 * * * mpc volume 100
 
 # # try waking up at 7.30 to 7.45
 # 30 07 * * * mpc play
-30 07 * * * ~/bin/mradio -c 6
+# 30 07 * * * ~/bin/mradio -c 6
+30 07 * * * mpc play
 # 31 07 * * * mpc volume 100
 # 45 07 * * * spd-say -C
 
 # # try waking up at 8.00 to 8.15
 # 00 08 * * * mpc play
-00 08 * * * ~/bin/mradio -c 2
+# 00 08 * * * ~/bin/mradio -c 2
+00 08 * * * mpc play
+30 08 * * * mpc play
+
 # 15 08 * * * spd-say -C
 
 # # try waking up at 8.30 to 8.45
 # 30 08 * * * mpc play
-30 08 * * * ~/bin/mradio -c 2
+30 08 * * * ~/bin/alarm -h .2 -p 6 -r mpc
 # 45 08 * * * spd-say -C
 ##}}
 
@@ -79,5 +83,3 @@ ifelse(hostname,lispm,[
 
 
 ])
-
-

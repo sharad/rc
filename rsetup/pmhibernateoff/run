@@ -19,7 +19,10 @@ print eth0 is up
 
 mradio -c 6
 
+
+whence -p xmodmap &&
+xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
+
+
 # [ -r ~/.rsetup/ifup/run ] &&
 # ~/.rsetup/ifup/run
-
-
