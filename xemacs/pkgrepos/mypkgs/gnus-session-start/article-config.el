@@ -74,11 +74,8 @@
  ;; Make sure Gnus doesn't display smiley graphics.
  gnus-treat-display-smileys t
  gnus-treat-hide-boring-headers 'head
- gnus-treat-hide-signature 'last
- gnus-treat-strip-banner t
-
-
- )
+ gnus-treat-hide-signature nil ;; (unless (equal (system-name) office-host-name) 'last)
+ gnus-treat-strip-banner t)
 
 (setq gnus-article-date-lapsed-new-header t)
 (add-hook 'gnus-part-display-hook 'gnus-article-date-lapsed)
@@ -86,17 +83,17 @@
 
 (add-hook 'gnus-article-prepare-hook
           '(lambda ()
-;; 	     (gnus-article-de-quoted-unreadable)
-	     (gnus-article-emphasize)
-	     (gnus-article-hide-boring-headers)
-	     (gnus-article-hide-headers-if-wanted)
-;; 	     (gnus-article-hide-pgp)
-	     (gnus-article-highlight)
-	     (gnus-article-highlight-citation)
+            ;; 	     (gnus-article-de-quoted-unreadable)
+            (gnus-article-emphasize)
+            (gnus-article-hide-boring-headers)
+            (gnus-article-hide-headers-if-wanted)
+            ;; 	     (gnus-article-hide-pgp)
+            (gnus-article-highlight)
+            (gnus-article-highlight-citation)
             (gnus-article-date-lapsed)
-	     (gnus-article-date-local)              ; will actually convert timestamp from other timezones to yours
-             (gnus-article-strip-trailing-space)
-;;              (gnus-article-fill-cited-article)
+            (gnus-article-date-local)              ; will actually convert timestamp from other timezones to yours
+            (gnus-article-strip-trailing-space)
+            ;;              (gnus-article-fill-cited-article)
             ;; (with-selected-window (get-buffer-window gnus-article-buffer)
             ;;   (gnus-summary-goto-subject (cdr gnus-article-current)))
             ;; (select-window (get-buffer-window gnus-summary-buffer))
