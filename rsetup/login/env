@@ -11,6 +11,11 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
 
     [ $SHELL = "zsh" ] && emulate sh
 
+    ## It run from X
+    ## as X run before ssh-agent stumpwm
+    ## lightdm
+    ##       X
+    ##        ssh-agent stumpwm
     if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] && ps ${SSH_AGENT_PID} 2>&1 > /dev/null ; then
         #  && ! ps -u $USER $SSH_AGENT_PID > /dev/null 2>&1
         # export SSH_AUTH_SOCK=""
