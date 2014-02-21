@@ -57,9 +57,11 @@
   (defvar run-office-activate t "run-office-activate")
 
   (defun is-perforce-is-alive ()
-    (unless (shell-command-no-output "timeout -k 3 2 p4 depots")
-      (incf run-office-activate-failed)
-      nil))
+    (if (shell-command-no-output "timeout -k 3 2 p4 depots")
+        t
+        (progn
+          (incf run-office-activate-failed)
+          nil)))
 
   (defun login-to-perforce ()
     (if (and

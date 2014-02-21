@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+# -*- mode: shell-script; -*-
+
+
+
+
+
+[ -r ~/.rsetup/wscreenlockoff/run.d/${HOST//.*} ] &&
+~/.rsetup/wscreenlockoff/run.d/${HOST//.*}
+
+
+
+
+
+

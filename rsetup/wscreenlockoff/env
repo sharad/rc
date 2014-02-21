@@ -1,0 +1,6 @@
+# -*- mode: shell-script; -*-
+
+
+[ -r ~/.rsetup/wscreenlockoff/env.d/${HOST} ] && . ~/.rsetup/wscreenlockoff/env.d/${HOST}
+
+

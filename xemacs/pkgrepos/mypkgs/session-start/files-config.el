@@ -513,5 +513,10 @@ to do VC operation."
     (ad-disable-advice 'set-file-modes 'after 'set-file-mode-to-truename)
     (ad-update 'set-file-modes)))
 
+;; (deh-require-maybe rcs-backup
+;;   check C-h C-f save-buffer
+;;   (defun save-buffer-with-rcs ()
+;;     ))
+
 (provide 'files-config)
 ;;; files-config.el ends here

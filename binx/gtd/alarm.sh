@@ -166,7 +166,7 @@ function state_locked () {
     if [ ! -e $wmlockfile_disable ] ; then
         whence stumpish >&/dev/null && timeout 2 stumpish fclear
     fi
-
+    wscreenlockon
 }
 
 function state_unlocked () {
@@ -175,6 +175,7 @@ function state_unlocked () {
     if [ ! -e $wmlockfile_disable ] ; then
         whence stumpish >&/dev/null && timeout 2 stumpish pull-hidden-other &!
     fi
+    wscreenlockoff
 }
 
 function screen_lock() {
@@ -228,6 +229,25 @@ function process_arg() {
     fi
 
 }
+
+### action pref hooks ###
+function wscreenlockon () {
+    if [ -r ~/.rsetup/wscreenlockon/env ] ; then
+        source ~/.rsetup/wscreenlockon/env
+    fi
+    if [ -x ~/.rsetup/wscreenlockon/run ] ; then
+        ~/.rsetup/wscreenlockon/run
+    fi
+}
+function wscreenlockoff () {
+    if [ -r ~/.rsetup/wscreenlockoff/env ] ; then
+        source ~/.rsetup/wscreenlockoff/env
+    fi
+    if [ -x ~/.rsetup/wscreenlockoff/run ] ; then
+        ~/.rsetup/wscreenlockoff/run
+    fi
+}
+### action pref hooks ###
 
 
 

@@ -143,12 +143,20 @@ function logmsg() {
 
 ### action pref hooks ###
 function pm-hibernateon () {
-    source ~/.rsetup/pmhibernateon/env
-    ~/.rsetup/pmhibernateon/run
+    if [ -r ~/.rsetup/pmhibernateon/env ] ; then
+        source ~/.rsetup/pmhibernateon/env
+    fi
+    if [ -x ~/.rsetup/pmhibernateon/run ] ; then
+        ~/.rsetup/pmhibernateon/run
+    fi
 }
 function pm-hibernateoff () {
-    source ~/.rsetup/pmhibernateoff/env
-    ~/.rsetup/pmhibernateoff/run
+    if [ -r ~/.rsetup/pmhibernateoff/env ] ; then
+        source ~/.rsetup/pmhibernateoff/env
+    fi
+    if [ -x ~/.rsetup/pmhibernateoff/run ] ; then
+        ~/.rsetup/pmhibernateoff/run
+    fi
 }
 ### action pref hooks ###
 
