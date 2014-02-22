@@ -72,11 +72,6 @@ if [ `uname -s` != "SunOS" ] ; then
     fi
 fi
 
-# {{{ *Aliases*
-###################
-[ -r ~/.zshall/aliases ] && source ~/.zshall/aliases
-# }}}
-
 # {{{ *zModules*
 ###################
 # [ -r ~/.zshall/modules ] && source ~/.zshall/modules
@@ -233,6 +228,11 @@ fi
 
 # {{{ *Functions*
 [ -r ~/.zshall/rcfuns ] && source ~/.zshall/rcfuns
+# }}}
+
+# {{{ *Aliases*
+###################
+[ -r ~/.zshall/aliases ] && source ~/.zshall/aliases
 # }}}
 
 # {{{ *Variables for Zsh*

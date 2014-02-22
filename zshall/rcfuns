@@ -458,8 +458,22 @@ function mvhash () {
 
 ## hashing ##
 
+## images
+if whence -c w3m >& /dev/null && [ -x /usr/lib/w3m/w3mimgdisplay ] ; then
+
+    function w3mimg() {
+        if [ $# -gt 0 ] ; then
+            w3m  ${=2:+ -o image_scale=$2} -o imgdisplay=/usr/lib/w3m/w3mimgdisplay -o confirm_qq=N $1
+        else
+            print No image file >&2
+            print w3mimg img '[ scale ]' >&2
+        fi
+    }
+
+    alias -s jpeg=w3mimg
+    alias -s jpg=w3mimg
+fi
+## images
+
+
 #}}
-
-
-
-

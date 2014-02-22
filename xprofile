@@ -1,8 +1,10 @@
 # it is sourced in /etc/X11/xsession
 
+export __NO_SSH_AGENT_REQUIRED=yes
 for startup in sh login x ; do
     [ -r ~/.rsetup/$startup/env ] && . ~/.rsetup/$startup/env
 done
+unset __NO_SSH_AGENT_REQUIRED
 
 for startup in sh login x ; do
     [ -r ~/.rsetup/$startup/run ] && ~/.rsetup/$startup/run

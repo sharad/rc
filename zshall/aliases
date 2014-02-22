@@ -152,6 +152,12 @@ if is-at-least 4.3.12 ; then
     alias -s jpeg=eog
     alias -s dvi=xdvi
     alias -s djvu=djview
+
+    if whence -f w3mimg >& /dev/null ; then
+        alias -s jpeg=w3mimg
+        alias -s jpg=w3mimg
+    fi
+
 fi
 
 # Urxvt change font, backgrounf image

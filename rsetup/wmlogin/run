@@ -141,6 +141,22 @@ if [ -x /usr/share/android-notifier-desktop/run.sh ] &&
     /usr/share/android-notifier-desktop/run.sh >& ~/.logs/android-notifier-desktop.log &!
 fi
 
+pgrep xautolock >& /dev/null && xautolock -locknow &!
+
+
+## ssh-agent access needed.
+whence -p xautolock >& /dev/null &&
+pgrep xautolock >& /dev/null ||
+xautolock -detectsleep &!
+
+whence -p conky >& /dev/null &&
+pgrep conky >& /dev/null ||
+conky &!
+
+whence synclient >& /dev/null &&
+pgrep synclient >& /dev/null ||
+synclient  TapButton1=1
+
 
 
 

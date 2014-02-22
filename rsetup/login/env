@@ -21,12 +21,20 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
 
     [ $SHELL = "zsh" ] && emulate sh
 
+
+    if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] && ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null
+        if [  -r $HOME/.ssh/agent-custom-$HOST ] ; then
+            source $HOME/.ssh/agent-custom-$HOST
+        fi
+    fi
+
     ## It run from X
     ## as X run before ssh-agent stumpwm
     ## lightdm
     ##       X
     ##        ssh-agent stumpwm
-    if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] && ps ${SSH_AGENT_PID} 2>&1 > /dev/null ; then
+    ##  __NO_SSH_AGENT_REQUIRED: for ssh-agent not required from xprofile but from other place.
+    if [ "x${__NO_SSH_AGENT_REQUIRED}" != "x" ] && [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] && ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null ; then
         #  && ! ps -u $USER $SSH_AGENT_PID > /dev/null 2>&1
         # export SSH_AUTH_SOCK=""
 
@@ -34,26 +42,22 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
         [  -d $HOME/.ssh ] || mkdir $HOME/.ssh
         eval $(ssh-agent | tee $HOME/.ssh/agent-custom-$HOST)
         trap "echo KILLING ; kill $SSH_AGENT_PID ; rm -f $HOME/.ssh/agent-custom-$HOST " 0
-    else
         cat <<EOF > $HOME/.ssh/agent-custom-$HOST
 # running from else
 SSH_AUTH_SOCK=$SSH_AUTH_SOCK
 SSH_AGENT_PID=$SSH_AGENT_PID
 export SSH_AUTH_SOCK SSH_AGENT_PID
 EOF
-    fi
 
 if [ "${SSH_AUTH_SOCK}x" != "x" ]; then
     cat <<EOF > ~/.emacs.d/ssh-agent-$(hostname -f).el
 (setenv "SSH_AUTH_SOCK"  "${SSH_AUTH_SOCK}" )
 (setenv "SSH_AGENT_PID"  "${SSH_AGENT_PID}" )
 EOF
-
-#     cat <<EOF > ~/.ssh/agent-custom-$HOST
-# SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
-# SSH_AGENT_PID=${SSH_AGENT_PID}
-# export SSH_AUTH_SOCK SSH_AGENT_PID
-# EOF
+    else
+        echo SSH_AUTH_SOCK=$SSH_AUTH_SOCK >&2
+        echo SSH_AGENT_PID=$SSH_AGENT_PID >&2
+    fi
 
 else
     cat <<EOF > ~/.emacs.d/ssh-agent-${HOST}.el

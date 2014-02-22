@@ -77,11 +77,6 @@ if [ $DISPLAY ] ; then
 
     # DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
 
-
-    whence -p xautolock >& /dev/null &&
-    pgrep xautolock >& /dev/null ||
-    xautolock -detectsleep &!
-
     whence -p conky >& /dev/null &&
     pgrep conky >& /dev/null ||
     conky &!
@@ -119,8 +114,6 @@ fi
 if [ -e ~/.stumpwm.d/debug-output.log ] ; then
     command rm -f ~/.stumpwm.d/debug-output.log
 fi
-
-pgrep xautolock >& /dev/null && xautolock -locknow &!
 
 
 # gconftool -s /apps/mail-notification/commands/new-mail/command "$EDITOR -e '(gnus)'"

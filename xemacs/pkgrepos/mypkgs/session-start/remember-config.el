@@ -303,10 +303,4 @@ for a Remember buffer.")
 
   )
 
-
-
-
-
-
 (provide 'remember-config)
-
