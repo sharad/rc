@@ -2,7 +2,7 @@
 
 (in-package :stumpwm)
 
-(defparameter *debug-level* 0)
+(defparameter *debug-level* 10)
 (redirect-all-output (data-dir-file "debug-output" "log"))
 
 
@@ -252,4 +252,3 @@
        (probe-file (getenv "HOME")))))
 
 (set-profile :myprofile)
-

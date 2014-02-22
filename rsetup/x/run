@@ -57,6 +57,9 @@ if [ $DISPLAY ] ; then
     # which  gnubiff &&  gnubiff  -n &
     # xmodmap ~/.xmodmaprc	# excellent, why i was not knowing it before.
 
+    # unset Caps Lock
+    python -c 'from ctypes import *; X11 = cdll.LoadLibrary("libX11.so.6"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'
+
     if whence -p xmodmap ; then
         if [ -e ~/.xmodmaprc  ] ; then
             xmodmap ~/.xmodmaprc
@@ -127,7 +130,7 @@ pgrep xautolock >& /dev/null && xautolock -locknow &!
 __comp=x
 
 if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}/
+    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
 fi
 
 [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}

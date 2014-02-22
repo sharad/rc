@@ -35,8 +35,19 @@
           (message "Added ~a profile" (setf current name))))
 
     (defun profile-apply (profile)
-      (if (assoc :map profile)
-          (run-shell-command (concat "xmodmap " (cdr (assoc :map profile))))))
+      (let ((maps (cdr (assoc :map profile)))
+            (cmds (cdr (assoc :cmd profile))))
+        (if maps
+            (if (consp maps)
+                (dolist (m maps)
+                  (run-shell-command (concat "xmodmap " m)))
+                (run-shell-command (concat "xmodmap " maps))))
+        (if cmds
+            (if (consp cmds)
+                (dolist (c cmds)
+                  (run-shell-command c))
+                (run-shell-command cmds)))
+        t))
 
     (defcommand toggle-profile () ()
       (let ((profile (car (or (cdr (member current profile-alist :key #'car)) profile-alist))))
@@ -47,7 +58,8 @@
                     (find profile profile-alist :key #'car :test #'equal )
                     profile)))
         (if (profile-apply (cdr pr))
-            (message "applied ~a profile" (setf current (car pr))))))
+            (message "applied ~a profile" (setf current (car pr)))
+            (message "failed to apply ~a profile" (car pr)))))
 
     (defcommand show-profile (profile) ((:profile "profile name: "))
       (message "profile: ~a" profile))
@@ -64,10 +76,10 @@
 
   (profile-add :cprofile
                '(:map . "~/.Xmodmaps/xmodmaprc-normal-but-super")
-               '(:cmd . "synclient TouchpadOff=0"))
+               '(:cmd "python -c 'from ctypes import *; X11 = cdll.LoadLibrary(\"libX11.so.6\"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'" "synclient TouchpadOff=0"))
   (profile-add :myprofile
                '(:map . "~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt")
-               '(:cmd . "synclient TouchpadOff=1")))
+               '(:cmd "python -c 'from ctypes import *; X11 = cdll.LoadLibrary(\"libX11.so.6\"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'" "synclient TouchpadOff=1")))
 
 
 
@@ -111,6 +123,3 @@
   (send-escape-key))
 
 ;;}}
-
-
-

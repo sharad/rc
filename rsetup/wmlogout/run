@@ -61,7 +61,7 @@ fi
 __comp=wmlogout
 
 if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}/
+    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
 fi
 
 [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}
