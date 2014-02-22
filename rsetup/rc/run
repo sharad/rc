@@ -1,7 +1,11 @@
 #!/bin/zsh
 
-## put commands only
+__comp=rc
 
-[ -r ~/.rsetup/rc/run.d/${HOST//.*} ] &&
-~/.rsetup/rc/run.d/${HOST//.*}
+if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}/
+fi
 
+[ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}
+
+unset __comp

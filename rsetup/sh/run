@@ -1,10 +1,11 @@
 #!/bin/zsh
 
-## put commands only
+__comp=sh
 
-# whence ~/bin/syncimap &&
-# ~/bin/syncimap -a $OFFLINEIMAPACCOUNT &!
+if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}/
+fi
 
-[ -r ~/.rsetup/sh/run.d/${HOST//.*} ] &&
-~/.rsetup/sh/run.d/${HOST//.*}
+[ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}
 
+unset __comp

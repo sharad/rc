@@ -1,1 +1,11 @@
-[ -r ~/.rsetup/bash/env.d/${HOST} ] && . ~/.rsetup/bash/env.d/${HOST}
+# -*- mode: shell-script; -*-
+
+__comp=bash
+
+if [ ! -e ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
+    cp ~/.rsetup/${__comp}/env.tmpl ~/.rsetup/${__comp}/env.d/${HOST}
+fi
+
+[ -r ~/.rsetup/${__comp}/env.d/${HOST} ] && . ~/.rsetup/${__comp}/env.d/${HOST}
+
+unset __comp

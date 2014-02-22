@@ -30,3 +30,15 @@ foreach prog (
         pgrep -l dbus-daemon >&2
 
     }
+
+
+
+__comp=xlogout
+
+if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}/
+fi
+
+[ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}
+
+unset __comp

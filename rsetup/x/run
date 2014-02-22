@@ -124,5 +124,12 @@ pgrep xautolock >& /dev/null && xautolock -locknow &!
 # gconftool -s /apps/mail-notification/commands/new-mail/enabled true
 
 
-[ -r ~/.rsetup/x/run.d/${HOST//.*} ] &&
-~/.rsetup/x/run.d/${HOST//.*}
+__comp=x
+
+if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}/
+fi
+
+[ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}
+
+unset __comp

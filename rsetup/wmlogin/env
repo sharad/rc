@@ -1,3 +1,15 @@
+# -*- mode: shell-script; -*-
+
+__comp=wmlogin
+
+if [ ! -e ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
+    cp ~/.rsetup/${__comp}/env.tmpl ~/.rsetup/${__comp}/env.d/${HOST}
+fi
+
+[ -r ~/.rsetup/${__comp}/env.d/${HOST} ] && . ~/.rsetup/${__comp}/env.d/${HOST}
+
+unset __comp
+
 if ! pgrep gnome-keyring-d >& /dev/null ; then
 	eval $(gnome-keyring-daemon --start )
 if
@@ -5,5 +17,3 @@ if
 export GNOME_KEYRING_CONTROL
 # export SSH_AUTH_SOCK
 # export GPG_AGENT_INFO
-
-

@@ -1,7 +1,14 @@
-#!/usr/bin/env zsh
+#!/bin/zsh
 
-[ -r ~/.rsetup/pmhibernateoff/run.d/${HOST//.*} ] &&
-~/.rsetup/pmhibernateoff/run.d/${HOST//.*}
+__comp=pmhibernateoff
+
+if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}/
+fi
+
+[ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}
+
+unset __comp
 
 
 if which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null ; then

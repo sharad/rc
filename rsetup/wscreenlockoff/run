@@ -1,15 +1,11 @@
-#!/usr/bin/env zsh
-# -*- mode: shell-script; -*-
+#!/bin/zsh
 
+__comp=wscreenlockoff
 
+if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}/
+fi
 
+[ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}
 
-
-[ -r ~/.rsetup/wscreenlockoff/run.d/${HOST//.*} ] &&
-~/.rsetup/wscreenlockoff/run.d/${HOST//.*}
-
-
-
-
-
-
+unset __comp

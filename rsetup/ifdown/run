@@ -1,13 +1,11 @@
-#!/usr/bin/env zsh
-# give access to mpd
+#!/bin/zsh
 
+__comp=ifdown
 
+if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}/
+fi
 
-[ -r ~/.rsetup/ifdown/run.d/${HOST//.*} ] &&
-~/.rsetup/ifdown/run.d/${HOST//.*}
+[ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}
 
-
-
-
-
-
+unset __comp

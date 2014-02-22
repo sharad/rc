@@ -29,9 +29,13 @@ else
 
 fi
 
-if [ ! -e ~/.rsetup/rc/env.d/${HOST} ] ; then
-    cp ~/.rsetup/rc/env.tmpl ~/.rsetup/rc/env.d/${HOST}
+
+__comp=rc
+
+if [ ! -e ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
+    cp ~/.rsetup/${__comp}/env.tmpl ~/.rsetup/${__comp}/env.d/${HOST}
 fi
 
-[ -r ~/.rsetup/rc/env.d/${HOST} ] && . ~/.rsetup/rc/env.d/${HOST}
+[ -r ~/.rsetup/${__comp}/env.d/${HOST} ] && . ~/.rsetup/${__comp}/env.d/${HOST}
 
+unset __comp
