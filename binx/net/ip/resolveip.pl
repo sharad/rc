@@ -15,13 +15,19 @@ if ($addr =~ /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4
     $name = gethostbyaddr(inet_aton( $addr ), AF_INET)
 } else {
     my $ip  = gethostbyname($addr);
-    my $rhost = gethostbyaddr( $ip, AF_INET);
-    # print $rhost . "\n";
-    my $rip = gethostbyname( $rhost ) ;
-    if ($ip ne $rip) {
+    if ($ip) {
+      my $rhost = gethostbyaddr( $ip, AF_INET);
+      # print $rhost . "\n";
+      my $rip = gethostbyname( $rhost ) ;
+      if ($ip ne $rip) {
         print STDERR "dns reply is not correct " . $ip . " " . $rip . "\n";
+      }
+      $name = inet_ntoa($ip);
     }
-    $name = inet_ntoa($ip);
 }
 
-print "$name\n"
+if ($name) {
+  print "$name\n";
+} else {
+  print STDERR "not found $addr\n";
+}
