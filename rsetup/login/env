@@ -22,7 +22,7 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
     [ $SHELL = "zsh" ] && emulate sh
 
 
-    if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] && ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null
+    if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] && ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null ; then
         if [  -r $HOME/.ssh/agent-custom-$HOST ] ; then
             source $HOME/.ssh/agent-custom-$HOST
         fi

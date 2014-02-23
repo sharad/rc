@@ -1,5 +1,12 @@
 
 (deh-require-maybe org
+  (deh-section "orgextra"
+    ;; http://notmuchmail.org/emacstips/
+    (add-to-list 'load-path "/usr/share/org-mode/lisp")
+    (deh-require-maybe org-notmuch
+      )
+    )
+
     ;; The following lines are always needed.  Choose your own keys.
   (defvar org2rem-create-remind-file nil "Create remind file on when saving org file.")
   (setq org-remind-escape-percentage nil
@@ -224,4 +231,3 @@
   )
 
 (provide 'orgmode-config)
-

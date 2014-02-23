@@ -82,3 +82,9 @@
 [submodule "xemacs/pkgrepos/world/gits/emacs-apt"]
 	path = xemacs/pkgrepos/world/gits/emacs-apt
 	url = git@github.com:cgroza/Emacs-apt.git
+[submodule "utils/ext/gits/vala-notmuch"]
+	path = utils/ext/gits/vala-notmuch
+	url = https://github.com/spaetz/vala-notmuch.git
+[submodule "utils/ext/gits/notmuch-addrlookup-c"]
+	path = utils/ext/gits/notmuch-addrlookup-c
+	url = https://github.com/aperezdc/notmuch-addrlookup-c.git

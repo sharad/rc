@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2014-01-26 16:37:04 s>
+;; Time-stamp: <2014-02-23 03:04:23 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -499,5 +499,9 @@ and their terminal equivalents.")
     ;;   ())
     ))
 
+
+(deh-section "orgextra"
+  ;; http://notmuchmail.org/emacstips/
+  (global-set-key-if-unbind (kbd "C-c l") 'org-store-link))
 
 (provide 'binding-config)

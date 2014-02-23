@@ -26,6 +26,12 @@
 
 (deh-require-maybe notmuch
 
+
+  (deh-require-maybe notmuch-address
+    ;; http://notmuchmail.org/emacstips/
+    (setq notmuch-address-command "/path/to/address_fetching_program")
+    (notmuch-address-message-insinuate))
+
   (defun sharad/gnu-notmuch-current-message-id ()
     (interactive)
     (let ((id (with-current-buffer gnus-original-article-buffer
@@ -65,4 +71,3 @@
 (testing
  (setq x "<asfddsafdsf>")
  (aref x (- (length x ) 1)))
-
