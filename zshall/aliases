@@ -115,6 +115,12 @@
         alias xml=xmlstarlet
         alias makeitxhtml='tidy -asxml 2>/dev/null | xmllint - | sed -e '\''s/&ndash;//g'\'' -e '\''s|xmlns="http://www.w3.org/1999/xhtml"||'\'' '
 
+        ## ps
+        alias psfull='ps -H f '
+        alias pslongfull='ps -H lf '
+        alias psfullall='psfull -e -A'
+        alias pslongfullall='pslongfull -e -A'
+
 
 
 autoload -U is-at-least

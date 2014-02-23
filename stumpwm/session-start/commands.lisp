@@ -675,3 +675,11 @@
 
 (defcommand bye-with-cleanup () ()
             )
+
+
+(defcommand gnext-nonempty () ()
+            )
+
+(defcommand gprev-nonempty () ()
+            )
+
