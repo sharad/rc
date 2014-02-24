@@ -1,12 +1,21 @@
 #!/usr/bin/perl
-use Socket;
 
 use strict;
 use warnings;
 
 
+use Getopt::Long;
+use Socket;
+
+my $silent;
+
+my $result = GetOptions ("h"  => sub {
+                          print "Help\n";
+                          },
+                      "s"  => \$silent);  # flag
 
 my $addr=$ARGV[0];
+
 my $name;
 
 
@@ -20,7 +29,7 @@ if ($addr =~ /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4
       # print $rhost . "\n";
       my $rip = gethostbyname( $rhost ) ;
       if ($ip ne $rip) {
-        print STDERR "dns reply is not correct " . $ip . " " . $rip . "\n";
+        print STDERR "dns reply is not correct " . $ip . " " . $rip . "\n" unless $silent;
       }
       $name = inet_ntoa($ip);
     }
@@ -29,5 +38,5 @@ if ($addr =~ /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4
 if ($name) {
   print "$name\n";
 } else {
-  print STDERR "not found $addr\n";
+    print STDERR "not found $addr\n" unless $silent;
 }
