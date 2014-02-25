@@ -271,6 +271,76 @@
   (define-key planner-mode-map (kbd "C-c n") 'planner-create-note-this-page)
 
 
+  (deh-section "Day Pages Cleanup"
+    (defun planner-clean-page-section (section empty-string page-string)
+      (or
+       (string-replace-match (concat "* " section "\n\n" empty-string) page-string (concat "* " section "\n") t)
+       page-string))
+
+    (defun planner-clean-page-sections (page-string)
+      (setq page-string (planner-clean-page-section "Schedule" "[\r\n\t ]+@13:00 | 14:00 | Lunch\n\n" page-string))
+      (setq page-string (planner-clean-page-section "Diary" "No entries\n\n" page-string))
+      (setq page-string (planner-clean-page-section "Public Diary" "No entries\n\n" page-string))
+      (setq page-string (planner-clean-page-section "Private Diary" "No entries\n\n" page-string))
+      (setq page-string (planner-clean-page-section "Cal-Desk" "No entries\n\n" page-string))
+      (setq page-string (planner-clean-page-section "Accomplishments"
+                                                    "Link[\r\n\t ]+| Total\nTotal[\r\n\t ]+|[\r\n\t ]+0\n" page-string))
+      page-string)
+
+    ;; planner-day-page-template
+    ;; planner-diary-appts-string
+    (defun planner-page-default-p (&optional buffer)
+      "Return t if this plan page can be safely deleted.
+If the contents of this plan page are the same as the value of
+`planner-day-page-template' or the plan page is empty, then no
+information has been added and the page can safely be removed.
+
+If BUFFER is given, considers the planner page in BUFFER instead.
+
+Override this if `planner-day-page-template' is a function
+instead of a string."
+      (with-current-buffer (or buffer (current-buffer))
+        (let* ((bufstr (planner-clean-page-sections (buffer-string))))
+          (when (and (stringp planner-day-page-template)
+                     (not (> (length bufstr)
+                             (+
+                              (if (member 'planner-diary-insert-all-diaries-maybe planner-goto-hook)
+                                  (length planner-diary-appts-string) 0)
+                              (length planner-day-page-template)
+                              planner-template-fuzz-factor))))
+            (let ((body (planner-strip-whitespace
+                         (if (member 'planner-diary-insert-all-diaries-maybe planner-goto-hook)
+                             (or (string-replace-match (concat planner-diary-appts-string "\n\n\n") bufstr "") bufstr)
+                             bufstr))))
+              (or (= (length body) 0)
+                  (string=
+                   body
+                   (planner-strip-whitespace
+                    planner-day-page-template))))))))
+
+    (defun planner-maybe-remove-file ()
+      "Delete the planner file if it does not contain new information."
+      (if (planner-page-default-p (current-buffer))
+          (let ((filename buffer-file-name))
+            (set-buffer-modified-p nil)
+            (kill-buffer (current-buffer))
+            (when (file-exists-p filename)
+              (message "planner-maybe-remove-file: deleting %s" filename)
+              (funcall planner-delete-file-function filename)))
+          (kill-buffer (current-buffer))))
+
+    (defun planner-project-cleanup-empty-pages ()
+      (interactive)
+      (dolist (f (directory-files (or (caadr (assoc "WikiPlanner" muse-project-alist))
+                                      planner-publishing-directory)
+                                  t
+                                  (concat planner-date-regexp ".muse$")))
+        (when (file-exists-p f)
+          (with-current-buffer (find-file-noselect f)
+            (unless (planner-maybe-remove-file)
+              (message "removed")))))))
+
+
   (deh-require-maybe (progn
                        planner-bugz
                        planner-env)))
