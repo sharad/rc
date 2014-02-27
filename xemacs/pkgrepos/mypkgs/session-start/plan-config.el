@@ -272,6 +272,9 @@
 
 
   (deh-section "Day Pages Cleanup"
+
+    (require 'string) ;; from elib package
+
     (defun planner-clean-page-section (section empty-string page-string)
       (or
        (string-replace-match (concat "* " section "\n\n" empty-string) page-string (concat "* " section "\n") t)

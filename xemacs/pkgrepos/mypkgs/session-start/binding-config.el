@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2014-02-23 03:04:23 s>
+;; Time-stamp: <2014-02-27 14:45:52 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -180,6 +180,7 @@ and their terminal equivalents.")
 
 (deh-section "Keybinding: Elscreen"
   ;;{{ elscreen
+  ;; (global-set-key [C-z c] 'elscreen-create)
   (global-set-key-if-unbind [s-right] 'elscreen-next)
   (global-set-key-if-unbind [s-left]  'elscreen-previous)
   (global-set-key-if-unbind [H-right] 'elscreen-move-right)

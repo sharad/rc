@@ -551,6 +551,13 @@ The indirect buffer can have another major mode."
                  (set-window-buffer (next-window window 0) (window-buffer window))
                  (set-window-buffer window next-window-buffer))) (butlast (window-list nil 0)))))
 
+
+(deh-section "vim"
+  ;; viper-mode
+  ;; viper-go-away
+  (shell-command "xterm"))
+
+
 (deh-require-maybe ielm
   ;; * Trying from the interactive emacs lisp mode (M-x ielm)
   (defalias 'repl 'ielm)
