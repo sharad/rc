@@ -551,11 +551,37 @@ The indirect buffer can have another major mode."
                  (set-window-buffer (next-window window 0) (window-buffer window))
                  (set-window-buffer window next-window-buffer))) (butlast (window-list nil 0)))))
 
+(deh-section "examine"
+  (defun disply-expression-value (var)
+    (interactive "sexp: ")
+    (let ((buf (get-buffer-create "*output*")))
+      (if (or t (window-splittable-p (selected-window) ))
+          (split-window-sensibly (selected-window)))
+      (switch-to-buffer-other-window buf)
+      (switch-to-buffer buf)
+      (pp (eval var) buf))))
 
 (deh-section "vim"
   ;; viper-mode
   ;; viper-go-away
-  (shell-command "xterm"))
+  (defun open-xvim ()
+    (interactive)
+    (let* ((file (file-truename (buffer-file-name)))
+           (xcmd
+            (if (file-remote-p file)
+                "DISPLAY=localhost:10.0 xterm -e"
+                "xterm -e"))
+           (vimcmd "vim")
+           (filename
+            (if (file-remote-p file)
+                (tramp-file-name-localname (tramp-file-connection file))
+                file))
+           (pos (format "'+normal %dG%d|'" (current-line) (current-column)))
+           (cmd (mapconcat 'identity
+                           (list xcmd vimcmd pos filename "&") " ")))
+      (message cmd)
+      ;; DONE: shell-command-no-output in background
+      (shell-command-no-output cmd))))
 
 
 (deh-require-maybe ielm

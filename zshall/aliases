@@ -197,7 +197,8 @@ alias ssldecrypt='openssl enc -aes-256-cbc -d'
 # Gpg GNU Privacy Guard
 # http://lists.gnupg.org/pipermail/gnupg-users/2009-November/037744.html
 alias gpgbackup='gpg --armor --export-secret-keys  | gpg --armor --sign --symmetric --force-mdc'
-alias gpgarmorencrypt='gpg --armor --sign --symmetric --force-mdc'
+alias gpgarmorencryptsign='gpg --armor --sign --symmetric --force-mdc'
+alias gpgarmorencrypt='gpg --armor --symmetric --force-mdc'
 alias gpgarmordecrypt='gpg --armor --decrypt'
 
 # Translation, Dictionary Lookup, Languages
