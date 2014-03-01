@@ -226,13 +226,13 @@ fi
 
 # End of lines added by compinstall
 
-# {{{ *Functions*
-[ -r ~/.zshall/rcfuns ] && source ~/.zshall/rcfuns
-# }}}
-
 # {{{ *Aliases*
 ###################
 [ -r ~/.zshall/aliases ] && source ~/.zshall/aliases
+# }}}
+
+# {{{ *Functions*
+[ -r ~/.zshall/rcfuns ] && source ~/.zshall/rcfuns
 # }}}
 
 # {{{ *Variables for Zsh*
