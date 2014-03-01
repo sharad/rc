@@ -566,22 +566,24 @@ The indirect buffer can have another major mode."
   ;; viper-go-away
   (defun open-xvim ()
     (interactive)
-    (let* ((file (file-truename (buffer-file-name)))
-           (xcmd
-            (if (file-remote-p file)
-                "DISPLAY=localhost:10.0 xterm -e"
-                "xterm -e"))
-           (vimcmd "vim")
-           (filename
-            (if (file-remote-p file)
-                (tramp-file-name-localname (tramp-file-connection file))
-                file))
-           (pos (format "'+normal %dG%d|'" (current-line) (current-column)))
-           (cmd (mapconcat 'identity
-                           (list xcmd vimcmd pos filename "&") " ")))
-      (message cmd)
-      ;; DONE: shell-command-no-output in background
-      (shell-command-no-output cmd))))
+    (if (buffer-file-name)
+        (let* ((file (file-truename (buffer-file-name)))
+               (xcmd
+                (if (file-remote-p file)
+                    "DISPLAY=localhost:10.0 xterm -e"
+                    "xterm -e"))
+               (vimcmd "vim")
+               (filename
+                (if (file-remote-p file)
+                    (tramp-file-name-localname (tramp-file-connection file))
+                    file))
+               (pos (format "'+normal %dG%d|'" (current-line) (current-column)))
+               (cmd (mapconcat 'identity
+                               (list xcmd vimcmd pos filename "&") " ")))
+          (message cmd)
+          ;; DONE: shell-command-no-output in background
+          (shell-command-no-output cmd))
+        (error "No file is associated with buffer %s" (current-buffer)))))
 
 
 (deh-require-maybe ielm

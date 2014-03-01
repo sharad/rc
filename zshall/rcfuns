@@ -251,8 +251,8 @@ function screenssh {
         if (( $# == 2 )) ; then
             machine=$1
             shift
-            prefixcmd="ssh $machine"
-            prefixcmdintractive="ssh -t $machine"
+            prefixcmd="ssh -X $machine"
+            prefixcmdintractive="ssh -X -t $machine"
         fi
         sessionarg=$1
         session=${sessionarg:-default}
