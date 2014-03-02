@@ -1,3 +1,5 @@
+// -*- mode: js; -*-
+
 //_* Conkeror initialisation
 //(eev-index-create)
 ///«INDEX»
@@ -181,7 +183,7 @@ register_user_stylesheet(
                       ]));
 
 theme_load_paths.push("~/.conkerorrc/themes/");
-theme_load("blackened"); 
+theme_load("blackened");
 
 // register_user_stylesheet(
 //     make_css_data_uri([
