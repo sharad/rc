@@ -170,7 +170,7 @@ function doIt(I) {
         var i=0, j=0, p=hex_md5(master+':'+host).substr(0,22), F=I.buffer.document.forms;
         for(i=0; i<F.length; i++) {
             E=F[i].elements;
-            // I.window.alert(p);
+            I.window.alert(p);
             for(j=0; j<E.length; j++) {
                 D=E[j];
                 if(D.type=='password') {
@@ -197,4 +197,3 @@ interactive("passpass",
             function(I) {
                 doIt(I);
             });
-
