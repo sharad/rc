@@ -44,5 +44,5 @@ Host SETUP_h6_name
 Host SETUP_controllers
    StrictHostKeyChecking no
    UserKnownHostsFile=/dev/null
-
+   ServerAliveInterval 240
 
