@@ -2,11 +2,13 @@
 
 
 
-function hex_md5(s){
-    return binl2hex(core_md5(str2binl(s), s.length * 8));
+function hex_md5(s)
+{
+    return binl2hex( core_md5( str2binl(s), s.length * 8) );
 }
 
-function core_md5(x, len){
+function core_md5(x, len)
+{
     x[len >> 5] |= 0x80 << ((len) % 32);
     x[(((len + 64) >>> 9) << 4) + 14] = len;
     var a =  1732584193;
@@ -167,7 +169,14 @@ function doIt(I) {
     if (master != '' && master != null) {
         re = new RegExp("https*://([^/]+)");
         host = I.buffer.document.location.href.match(re)[1];
-        var i=0, j=0, p=hex_md5(master+':'+host).substr(0,22), F=I.buffer.document.forms;
+
+        var i=0;
+        var j=0;
+        // var p=hex_md5(master+':'+host).substr(0,22);
+        // var p=hex_md5(master+':'+host);
+        var p=hex_md5(master);
+        var F=I.buffer.document.forms;
+
         for(i=0; i<F.length; i++) {
             E=F[i].elements;
             I.window.alert(p);
@@ -187,6 +196,7 @@ function doIt(I) {
         }
     }
 }
+
 
 // doIt();
 
