@@ -268,19 +268,26 @@ sub match3 () {
           # m ^ and $ do not represent start and end of line.
           # s to include newline in `.'
           $matchcount++;
-
-          my $mstart = substr($content, $-[0]) =~ tr/\n//;
           my $mend   = $1 =~ tr/\n//;
+
+          my $matchpos = $-[0];
+          my $contsubstr = substr $content, 0, $matchpos;
+          my $mstart = $contsubstr  =~ tr/\n//;
+          $mstart += $options{B};
 
           my $clen = length $content;
 
-          print "content len: $clen \n";
+          # print "content len: $clen matchpos: $matchpos\n";
 
-          print "${matchcount}: in $file at line $mstart of length $mend \n\n\n", $1, "\n\n\n";
+          print "=======================================================\n";
+          print "${matchcount}: in $file at line $mstart of length $mend\n";
+          print "=======================================================\n";
+          print " \n\n\n", $1, "\n\n\n";
         }
 
     }
-    print "\n\n\n\nTotal $matchcount found.\n";
+  print "=======================================================\n";
+  print "\n\n\n\nTotal $matchcount found.\n";
 }
 
 
