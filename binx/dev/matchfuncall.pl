@@ -7,97 +7,113 @@ use warnings;
 use Regexp::Common;
 use Getopt::Std;
 
-
-# declare the perl command line flags/options we want to allow
-my %options=();
-getopts("C:A:B:f:lp", \%options);
-
-
-my $debuglevel = 0;
 my $function;
-if ( $options{f} ) {
+my $cbefore;
+my $cafter;
+my $bp;
+my %options=();
+my $debuglevel;
+
+sub processsargs() {
+  # declare the perl command line flags/options we want to allow
+  getopts("C:A:B:f:lp", \%options);
+
+
+  $debuglevel = 0;
+  if ( $options{f} ) {
     $function = $options{f};
-} else {
+  } else {
     print STDERR "-f function name required";
     exit -1;
-}
+  }
 
-# print "show lines $options{l}\n";
-
-
-my $cbefore = "";
-my $cafter  = "";
-my $content;
-my $bp = $RE{balanced}{-parens=>'()'};
-my $matchcount = 0;
+  # print "show lines $options{l}\n";
 
 
-# local $/;
+  $cbefore = "";
+  $cafter  = "";
+  $bp = $RE{balanced}{-parens=>'()'};
 
 
-if ($debuglevel > 3) {
+  # local $/;
+
+
+  if ($debuglevel > 3) {
     print $_, "\n" for @ARGV ;
-}
+  }
 
 
-$cbefore = $cafter = '(?:[^\n]*\n+){0,' . $options{C} . '}' if $options{C};
-$cbefore = '(?:[^\n]*\n+){0,' . $options{B} . '}' if $options{B};
-$cafter  = '(?:[^\n]*\n+){0,' . $options{A} . '}' if $options{A};
+  # $cbefore = $cafter = '(?:[^\n]*\n+){0,' . $options{C} . '}' if $options{C};
+  # $cbefore = '(?:[^\n]*\n+){0,' . $options{B} . '}' if $options{B};
+  # $cafter  = '(?:[^\n]*\n+){0,' . $options{A} . '}' if $options{A};
 
-if ( ! $options{A}  && $options{C} ) {
+
+  $cbefore = $cafter = '(?:[^\n]*\n){0,' . $options{C} . '}' if $options{C};
+  $cbefore = '(?:[^\n]*\n){0,' . $options{B} . '}' if $options{B};
+  $cafter  = '(?:[^\n]*\n){0,' . $options{A} . '}' if $options{A};
+
+  if ( ! $options{A}  && $options{C} ) {
     $options{A}  = $options{C};
-}
+  }
 
-if ( ! $options{B}  && $options{C} ) {
+  if ( ! $options{B}  && $options{C} ) {
     $options{B}  = $options{C};
+  }
 }
 
 
-## if ( 0 )
-## {
-## local $/;
-## # $content .=  <> for @ARGV;
-## # while (<>) {
-## #     $content .= $_;
-## # }
-##
-##     $content .= $_ while (<>);
-##
-##     print $content if $debuglevel > 2;
-##
-## #                           [^\n]*
-##
-##     while ( $content =~ m{ (
-##                                $cbefore
-##                                [^\n]*
-##                                \s+
-##                                $function
-##                                \s*
-##                                $bp
-##                                \s*
-##                                ;
-##                                [^\n]*
-##                                $cafter
-##                            )
-##                      }smgix ) {
-##         #while ( $content =~ m/( \n [^\n]+ \n [^\n]* MELF \s* $bp \s* ; ) /smgix ) {
-##
-##         # g for multiple match
-##         # x for readability
-##         # m ^ and $ do not represent start and end of line.
-##         # s to include newline in `.'
-##         $matchcount++;
-##
-##         print "${matchcount}: at line ",  , " \n\n\n", $1, "\n\n\n";
-##     }
-## }
+
+sub match1 () {
+
+  local $/;
+# $content .=  <> for @ARGV;
+# while (<>) {
+#     $content .= $_;
+# }
+
+  my $matchcount = 0;
+  processsargs;
+  my $content .= $_ while (<>);
+
+  print $content if $debuglevel > 2;
+
+  #                           [^\n]*
+
+  while ( $content =~ m{ (
+                           $cbefore
+                           [^\n]*
+                           \s+
+                           $function
+                           \s*
+                           $bp
+                           \s*
+                           ;
+                           [^\n]*
+                           $cafter
+                         )
+                     }smgix ) {
+    #while ( $content =~ m/( \n [^\n]+ \n [^\n]* MELF \s* $bp \s* ; ) /smgix ) {
+
+    # g for multiple match
+    # x for readability
+    # m ^ and $ do not represent start and end of line.
+    # s to include newline in `.'
+    $matchcount++;
+
+    print "${matchcount}: at line ",  , " \n\n\n", $1, "\n\n\n";
+  }
+
+  print "\n\n\n\nTotal $matchcount found.\n";
+}
 
 
-if ( 1 ) {
+sub match2 () {
 
-    my $linenobuffer = $options{A} + $options{B} + 10;
+  my $matchcount = 0;
+  processsargs;
+  my $linenobuffer = $options{A} + $options{B} + 10;
 
-    foreach my $file ( @ARGV ) {
+  foreach my $file ( @ARGV ) {
 
         my $lineno = 0;
         my $lastclearlineno = 0;
@@ -209,24 +225,65 @@ if ( 1 ) {
             $lastmatch = "";
         }
     }
+    print "\n\n\n\nTotal $matchcount found.\n";
 }
 
 
 
-print "\n\n\n\nTotal $matchcount found.\n";
+sub match3 () {
+
+  my $matchcount = 0;
+  processsargs;
+
+  foreach my $file ( @ARGV ) {
+
+    my $lineno = 0;
+
+    open(my $fh, '<', $file) # always use a variable here containing filename
+      or die "Unable to open file, $!\n";
+
+    my $content;
+
+    while (<$fh>) {
+      $content .= $_;
+    }
+
+    # my $content .= $_ while (<$fh>);
+
+    while ( $content =~ m{ (
+                             $cbefore
+                             [^\n]*
+                             (?:\W|\s)*
+                             $function
+                             \s*
+                             $bp (?:\W|\s|\))* ;? (?:\W|\s)*
+                             [^\n]*
+                             $cafter
+                           )
+                       }smgix ) {
+          #while ( $content =~ m/( \n [^\n]+ \n [^\n]* MELF \s* $bp \s* ; ) /smgix ) {
+
+          # g for multiple match
+          # x for readability
+          # m ^ and $ do not represent start and end of line.
+          # s to include newline in `.'
+          $matchcount++;
+
+          my $mstart = substr($content, $-[0]) =~ tr/\n//;
+          my $mend   = $1 =~ tr/\n//;
+
+          my $clen = length $content;
+
+          print "content len: $clen \n";
+
+          print "${matchcount}: in $file at line $mstart of length $mend \n\n\n", $1, "\n\n\n";
+        }
+
+    }
+    print "\n\n\n\nTotal $matchcount found.\n";
+}
 
 
-# ##### not working
-# while ( <> =~ m{ ( MELF \s* $bp \s* ; )  }smgix ) {
-#     # g for multiple match
-#     # x for readability
-#     # m ^ and $ do not represent start and end of line.
-#     # s to include newline in `.'
-#     print $1, "\n";
-# }
-# ##### not working
+match3
 
 __END__
-
-
-

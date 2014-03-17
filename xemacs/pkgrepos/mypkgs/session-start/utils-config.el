@@ -250,8 +250,10 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
 
 (deh-section "message-notify"
   (defun message-notify (title fmt &rest args)
-    (message "%s: %s" title (apply 'format fmt args))
-    (notify title (apply 'format fmt args))))
+    (let ((msg (apply 'format fmt args)))
+      (message "%s: %s" title msg)
+      (notify title msg)
+      msg)))
 
 
 (deh-section "have-x-focus"
