@@ -26,6 +26,10 @@
 
 (require 'find-file-config)
 
+
+(deh-section "settings"
+  (setq revert-without-query '("^/scpc:" "^/ssh:")))
+
 (deh-require-maybe find-dired
   )
 

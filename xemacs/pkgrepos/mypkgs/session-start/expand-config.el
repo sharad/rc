@@ -120,6 +120,9 @@
 (setq comint-completion-addsuffix '("/" . ""))
 
 
+
+
+
 ;;{{
 ;; /usr/share/emacs23/site-lisp/dictionaries-common/flyspell.el
 (defun yas/expandable-at-point ()
@@ -182,8 +185,6 @@ Mostly we check word delimiters."
                yas-overlays)
               (backward-char 1))
             (setq yas-overlays nil))))))
-
-
 
 
 (defun make-yas-overlay (beg end face mouse-face)

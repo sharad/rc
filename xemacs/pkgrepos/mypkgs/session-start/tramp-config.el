@@ -550,9 +550,13 @@
                  (format "DISPLAY=%s" (getenv "DISPLAY")))))
 
 
-
-
-
+(deh-section "dailty tramp problem"
+  (defun revert-tramp-file ()
+    (interactive)
+    (if (and buffer-file-name
+             (tramp-tramp-file-p buffer-file-name))
+        (tramp-cleanup-connection (tramp-file-connection buffer-file-name)))
+    (revert-buffer)))
 
 
 
