@@ -102,7 +102,46 @@ directory they are found in so that they are unique."
        (funcall ff initial-string)))))
 
 (deh-require-maybe ff-paths
-  (ff-paths-install))
+  (ff-paths-install)
+
+  ;; FIX
+  (defun ff-paths-locate (filename)
+    "Try finding FILENAME using the locate command.
+Return a string if a single match, or a list if many matches."
+    (let ((ff-buffer (get-buffer-create "*ff-paths-locate*"))
+          status matches
+          (count 0))
+      (save-excursion
+        (with-current-buffer ff-buffer
+          (setq status
+                (call-process "sh" nil t nil "-c"
+                              (concat "locate " (shell-quote-argument filename))))
+          (goto-char 1)
+          (if (eq status 1)
+              nil                           ;Not found...
+              (while (and (or (not (boundp 'ff-paths-locate-max-matches))
+                              (not ff-paths-locate-max-matches)
+                              (> ff-paths-locate-max-matches count))
+                          (re-search-forward (if (and (boundp 'ff-paths-gzipped)
+                                                      ff-paths-gzipped)
+                                                 (concat "/" filename "\\(.gz\\)?$")
+                                                 (concat "/" filename "$"))
+                                             nil t))
+                (let ((the-file (buffer-substring (progn (beginning-of-line)(point))
+                                                  (progn (end-of-line)(point)))))
+                  (setq count (1+ count))
+                  (if (and (file-exists-p the-file)
+                           (not (file-directory-p the-file)))
+                      (setq matches (cond ((not matches)
+                                           (list the-file))
+                                          (t
+                                           (cons the-file matches))))))))
+          (if (and (boundp 'ff-paths-locate-max-matches)
+                   ff-paths-locate-max-matches
+                   (<= ff-paths-locate-max-matches count))
+              (setq ff-paths-have-reached-locate-max t))
+          (kill-buffer ff-buffer)
+          matches)))))
 
 (when nil
 ;; (deh-section "File no writable problem"

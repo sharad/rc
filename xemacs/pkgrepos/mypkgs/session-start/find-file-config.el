@@ -26,8 +26,12 @@
 
 
 (deh-require-maybe locations
+  ;; may be good
   ;; https://www.assembla.com/code/saintamh/subversion/nodes/2389/emacs/.emacsd/locations.el
   )
+
+
+
 
 
 (deh-section "find-file-wizard"

@@ -82,7 +82,7 @@ URxvt.perl-ext-common: default,matcher,keyboard-select,url-select,clipboard,tabb
 URxvt.jumpScroll: true
 
 !! Urxvt Print very much necessary.....
-URxvt.print-pipe: cat > $HOME/../paradise/urxvt.$(date +%d%h%Y-%H%M%S-%s)
+URxvt.print-pipe: cat > $HOME/.var/cache/urxvt/dump/urxvt-dump.$(date +%d%h%Y-%H%M%S-%s)
 URxvt.loginShell: false
 
 !!# Fonts

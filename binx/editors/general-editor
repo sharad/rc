@@ -2,7 +2,10 @@
 
 # emacsclient -n -f ~/.emacs.d/server/general "$@"
 
-prog=$(basename $0)
+local prog=$(basename $0)
+local alternate_editors=( em zile mg jove sensible-editor vim joe )
+local server_file="~/.emacs.d/server/general"
+
 
 
 debug=1
@@ -10,20 +13,7 @@ debug=1
 typeset -A args
 
 
-
-alternate_editors=( em zile mg jove sensible-editor vim joe )
-
-foreach editor ( $alternate_editors )
-do
-if which $editor >& /dev/null ; then
-    alted=$editor
-    break
-fi
-done
-
-
-
-args[-f]="~/.emacs.d/server/general"
+args[-f]=${server_file}
 
 if [[ $prog =~ .*n$ ]]  ; then
     args[-n]=""
@@ -33,6 +23,15 @@ fi
 if [ $# -eq 0 ] ; then
     args[-c]=""
 fi
+
+    foreach editor ( $alternate_editors )
+    do
+    if which $editor >& /dev/null ; then
+        alted=$editor
+        break
+    fi
+    done
+
 
 case "$prog" in
     (general-editor*|editor*|ed*)
@@ -52,5 +51,6 @@ if which emacs >& /dev/null && which emacsclient >& /dev/null ; then
     (( ${+debug} )) && echo eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
     eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
 else
+
     $alted "$@"
 fi

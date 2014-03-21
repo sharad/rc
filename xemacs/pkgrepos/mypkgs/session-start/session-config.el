@@ -568,6 +568,7 @@ Also returns nil if pid is nil."
   ;;              (emacs-pid) owner))))
 
   (defvar *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
+  (setq *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
 
   (defun desktop-vc-remove (&optional desktop-save-filename)
     "Delete desktop file"
