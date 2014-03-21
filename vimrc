@@ -39,3 +39,8 @@ let &t_EI = "\033]12;RoyalBlue1\007"
 autocmd VimLeave * :!echo -ne "\033]12;green\007"
 endif
 
+
+"{{{ Spell check
+set spell spelllang=en_us
+"}}}
+
