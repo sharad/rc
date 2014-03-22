@@ -11,8 +11,16 @@ fi
 unset __comp
 
 if ! pgrep gnome-keyring-d >& /dev/null ; then
-	eval $(gnome-keyring-daemon --start )
+       echo Yes started gnome-keyring-daemon > ~/wmlogin.log
+       echo value of GNOME_KEYRING_CONTROL $GNOME_KEYRING_CONTROL  > ~/wmlogin.log
+# 	eval $(gnome-keyring-daemon --start )
 if
+
+
+# if ! pgrep gnome-keyring-d >& /dev/null ; then
+# 	eval $(/usr/bin/gnome-keyring-daemon --start --foreground --components=secrets)
+# if
+
 
 export GNOME_KEYRING_CONTROL
 # export SSH_AUTH_SOCK
