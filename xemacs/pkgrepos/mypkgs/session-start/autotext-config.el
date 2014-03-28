@@ -18,8 +18,7 @@
 
   (setq template-auto-update-disable-regexp "\\.ido\\.last"))
 
-(deh-require-maybe template-simple
-  )
+(deh-require-maybe template-simple)
 
 ;;{{ from: http://www.emacswiki.org/emacs/AutoInsertMode
 ;; I use Yasnippet for initial skeletons:
@@ -51,142 +50,16 @@
   (messageto "*Complains*" "Do not overwrite default value of auto-insert-alist try "
                            "to integrate default value also.")
 
-  (deh-require-maybe autoinsert+
-
-    ;; (add-hook 'find-file-hooks 'auto-insert+)
-
-    (auto-insert+-mode 1)
-
-    (setq
-     ;; auto-insert t
-     auto-insert+-directory "~/.xemacs/template.d/autoinsert"
-     template-directory-list '("~/.xemacs/pkgrepos/world/misc/pde/templates" "~/.templates/" "~/.xemacs/template.d/templates")
-     auto-insert-query t
-     auto-insert+ 'other)
-
-    (defun insert-muse-file ()
-      "Which files to insert to embed."
-      (insert-file-contents ""))
-
-    ;; auto-insert+-alist
-
-    (setq auto-insert-alist
-          (append '(((muse-mode .  "Muse Mode") . insert-muse-file))
-                  auto-insert-alist))
-
-    ;; (set-auto-insert+noaction '(".planner-registry.el\\'" . "Planner File"))
-    (set-auto-insert+noaction '(".planner-registry.el\\'" . "Planner File"))
-
-    (set-auto-insert+noaction '(".ido.last\\'" . "Ido save file name"))
-    (set-auto-insert+noaction '(".gtags-dir-local.el\\'" . "Ido save file name"))
-    (set-auto-insert+noaction '("diary/private\\'" . "Diary private file name"))
-
-    (define-auto-insert+ '(muse-mode . "Muse Mode")
-        "empty"
-      'insert-muse-file)
-
-    (define-auto-insert+ '("\\.\\([Hh]\\|hh\\|hpp\\)\\'" . "C / C++ header")
-        "yastemp"
-      ["template.h" c++-mode my/autoinsert+-yas-expand])
-
-    (define-auto-insert+ '("\\.\\([C]\\|cc\\|cpp\\)\\'" . "C++ source")
-        "yastemp"
-      ["template.cc" my/autoinsert+-yas-expand])
-
-
-    (define-auto-insert+ '("\\.sh\\'" . "Shell script")
-        "yastemp"
-      ["template.sh" my/autoinsert+-yas-expand])
-
-    (define-auto-insert+ '("\\.pl\\'" . "Perl script")
-        "yastemp"
-      ["template.pl" my/autoinsert+-yas-expand])
-    (define-auto-insert+ ' ("\\.pm\\'" . "Perl module")
-        "yastemp"
-      ["template.pm" my/autoinsert+-yas-expand])
-
-    (define-auto-insert+ '("\\.py\\'" . "Python script")
-        "yastemp"
-      ["template.py" my/autoinsert+-yas-expand])
-
-    (define-auto-insert+ '("[mM]akefile\\'" . "Makefile")
-        "yastemp"
-      ["Makefile" my/autoinsert+-yas-expand])
-
-    (define-auto-insert+ '("\\.tex\\'" . "TeX/LaTeX")
-        "yastemp"
-      ["template.tex" my/autoinsert+-yas-expand])
-
-    (define-auto-insert+ '("\\.el\\'" . "Emacs Lisp")
-        "yastemp"
-      ["template.el" my/autoinsert+-yas-expand])
-
-    ;; Make auto-insert+-alist element plist of :desc :cond :priority :actions
-    ;; something like ((cond . (:desc :priority :actions)))
-    ;; (define-auto-insert+ '("\\.*\\'" . "All file")
-    ;;     "template"
-    ;;   [template-not-found-function])
-
-    ;; from http://www.emacswiki.org/emacs/AutoInsertMode
-    (define-auto-insert+
-     '("\\.\\(CC?\\|cc\\|cxx\\|cpp\\|c++\\)\\'" . "C++ skeleton")
-     "test"
-     '("Short description: "
-       "/*" \n
-       (file-name-nondirectory (buffer-file-name))
-       " -- " str \n
-       " */" > \n \n
-       "#include <iostream>" \n \n
-       "using namespace std;" \n \n
-       "main()" \n
-       "{" \n
-       > _ \n
-       "}" > \n))
-
-
-    (define-auto-insert+ '("\\.c\\'" . "C skeleton")
-     "test"
-      '(
-        "Short description: "
-        "/**\n * "
-        (file-name-nondirectory (buffer-file-name))
-        " -- " str \n
-        "*" \n
-        "* Written on " (format-time-string "%A, %e %B %Y.") \n
-        "*/" > \n \n
-        "#include <stdio.h>" \n
-        "#include \""
-        (file-name-sans-extension
-         (file-name-nondirectory (buffer-file-name)))
-        ".h\"" \n \n
-        "int main()" \n
-        "{" > \n
-        > _ \n
-        "}" > \n))
-
-
-    (define-auto-insert+ '(perl-mode . "Perl skeleton")
-     "test"
-     '("Description: "
-       "#!/usr/bin/env perl" \n
-       \n
-       "use strict;" \n
-       "use warnings;" \n \n
-       _ \n \n
-       "__END__" "\n\n"
-       "=head1 NAME" "\n\n"
-       str "\n\n"
-       "=head1 SYNOPSIS" "\n\n\n"
-       "=head1 DESCRIPTION" "\n\n\n"
-       "=head1 COPYRIGHT" "\n\n"
-       "Copyright (c) " (substring (current-time-string) -4) " "
-       (getenv "ORGANIZATION") | (progn user-full-name) "\n\n"
-       "This library is free software; you can redistribute it and/or" "\n"
-       "modify it under the same terms as Perl itself." "\n\n"
-       "=cut" "\n")))
 
 
 
+
+
+  (deh-require-maybe auto-yasnippet
+    ;;   (require 'yasnippet)
+    ;;   (global-set-key (kbd "H-w") 'create-auto-yasnippet)
+    ;;   (global-set-key (kbd "H-y") 'expand-auto-yasnippet)
+    )
 
   )
 ;;}}
@@ -258,6 +131,142 @@ General Public License for more details.
 ;;   (add-element-to-lists 'text-language-mode text-langs)
 ;;   (add-element-to-lists 'text-language-guess-mode text-langs))
 
+
+;;{{{ AUTOINSERT+
+(deh-require-maybe autoinsert+
+
+  ;; (add-hook 'find-file-hooks 'auto-insert+)
+
+  (auto-insert+-mode 1)
+
+  (setq
+   ;; auto-insert t
+   auto-insert+-directory "~/.xemacs/template.d/autoinsert"
+   template-directory-list '("~/.xemacs/pkgrepos/world/misc/pde/templates" "~/.templates/" "~/.xemacs/template.d/templates")
+   auto-insert-query t
+   auto-insert+ 'other)
+
+  (defun insert-muse-file ()
+    "Which files to insert to embed."
+    (insert-file-contents ""))
+
+  ;; auto-insert+-alist
+
+  (setq auto-insert-alist
+        (append '(((muse-mode .  "Muse Mode") . insert-muse-file))
+                auto-insert-alist))
+
+  ;; (set-auto-insert+noaction '(".planner-registry.el\\'" . "Planner File"))
+  (set-auto-insert+noaction '(".planner-registry.el\\'" . "Planner File"))
+
+  (set-auto-insert+noaction '(".ido.last\\'" . "Ido save file name"))
+  (set-auto-insert+noaction '(".gtags-dir-local.el\\'" . "Ido save file name"))
+  (set-auto-insert+noaction '("diary/private\\'" . "Diary private file name"))
+
+  (define-auto-insert+ '(muse-mode . "Muse Mode")
+      "empty"
+    'insert-muse-file)
+
+  (define-auto-insert+ '("\\.\\([Hh]\\|hh\\|hpp\\)\\'" . "C / C++ header")
+      "yastemp"
+    ["template.h" c++-mode my/autoinsert+-yas-expand])
+
+  (define-auto-insert+ '("\\.\\([C]\\|cc\\|cpp\\)\\'" . "C++ source")
+      "yastemp"
+    ["template.cc" my/autoinsert+-yas-expand])
+
+
+  (define-auto-insert+ '("\\.sh\\'" . "Shell script")
+      "yastemp"
+    ["template.sh" my/autoinsert+-yas-expand])
+
+  (define-auto-insert+ '("\\.pl\\'" . "Perl script")
+      "yastemp"
+    ["template.pl" my/autoinsert+-yas-expand])
+  (define-auto-insert+ ' ("\\.pm\\'" . "Perl module")
+      "yastemp"
+    ["template.pm" my/autoinsert+-yas-expand])
+
+  (define-auto-insert+ '("\\.py\\'" . "Python script")
+      "yastemp"
+    ["template.py" my/autoinsert+-yas-expand])
+
+  (define-auto-insert+ '("[mM]akefile\\'" . "Makefile")
+      "yastemp"
+    ["Makefile" my/autoinsert+-yas-expand])
+
+  (define-auto-insert+ '("\\.tex\\'" . "TeX/LaTeX")
+      "yastemp"
+    ["template.tex" my/autoinsert+-yas-expand])
+
+  (define-auto-insert+ '("\\.el\\'" . "Emacs Lisp")
+      "yastemp"
+    ["template.el" my/autoinsert+-yas-expand])
+
+  ;; Make auto-insert+-alist element plist of :desc :cond :priority :actions
+  ;; something like ((cond . (:desc :priority :actions)))
+  ;; (define-auto-insert+ '("\\.*\\'" . "All file")
+  ;;     "template"
+  ;;   [template-not-found-function])
+
+  ;; from http://www.emacswiki.org/emacs/AutoInsertMode
+  (define-auto-insert+
+      '("\\.\\(CC?\\|cc\\|cxx\\|cpp\\|c++\\)\\'" . "C++ skeleton")
+      "test"
+    '("Short description: "
+      "/*" \n
+      (file-name-nondirectory (buffer-file-name))
+      " -- " str \n
+      " */" > \n \n
+      "#include <iostream>" \n \n
+      "using namespace std;" \n \n
+      "main()" \n
+      "{" \n
+      > _ \n
+      "}" > \n))
+
+
+  (define-auto-insert+ '("\\.c\\'" . "C skeleton")
+      "test"
+    '(
+      "Short description: "
+      "/**\n * "
+      (file-name-nondirectory (buffer-file-name))
+      " -- " str \n
+      "*" \n
+      "* Written on " (format-time-string "%A, %e %B %Y.") \n
+      "*/" > \n \n
+      "#include <stdio.h>" \n
+      "#include \""
+      (file-name-sans-extension
+       (file-name-nondirectory (buffer-file-name)))
+      ".h\"" \n \n
+      "int main()" \n
+      "{" > \n
+      > _ \n
+      "}" > \n))
+
+
+  (define-auto-insert+ '(perl-mode . "Perl skeleton")
+      "test"
+    '("Description: "
+      "#!/usr/bin/env perl" \n
+      \n
+      "use strict;" \n
+      "use warnings;" \n \n
+      _ \n \n
+      "__END__" "\n\n"
+      "=head1 NAME" "\n\n"
+      str "\n\n"
+      "=head1 SYNOPSIS" "\n\n\n"
+      "=head1 DESCRIPTION" "\n\n\n"
+      "=head1 COPYRIGHT" "\n\n"
+      "Copyright (c) " (substring (current-time-string) -4) " "
+      (getenv "ORGANIZATION") | (progn user-full-name) "\n\n"
+      "This library is free software; you can redistribute it and/or" "\n"
+      "modify it under the same terms as Perl itself." "\n\n"
+      "=cut" "\n")))
+;;}}}
 
 
 (provide 'autotext-config)
