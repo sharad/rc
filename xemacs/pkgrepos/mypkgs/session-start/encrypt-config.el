@@ -5,6 +5,15 @@
 
 (deh-require-maybe epa-file
 
+  (defun epa-set-file-regex (prefix)
+    (let ((regex (concat "\\." prefix "\\(~\\|\\.~[0-9]+~\\)?\\'")))
+      (add-to-list 'auto-mode-alist
+                   (list regex nil 'epa-file))
+      (setq
+       epa-file-name-regexp (regexp-or "\\.gpg\\(~\\|\\.~[0-9]+~\\)?\\'" regex))
+      (epa-file-name-regexp-update)))
+
+
 
   ;; (epa-file-enable)
 

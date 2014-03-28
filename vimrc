@@ -41,6 +41,11 @@ endif
 
 
 "{{{ Spell check
+" https://www.linux.com/learn/tutorials/357267:using-spell-checking-in-vim
 set spell spelllang=en_us
 "}}}
 
+"{{{
+" Emacs Mode check
+" http://stackoverflow.com/questions/4236808/syntax-highlight-a-vimrc-file-in-emacs
+"}}}

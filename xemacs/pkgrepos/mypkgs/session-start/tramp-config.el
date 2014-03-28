@@ -551,7 +551,7 @@
 
 
 (deh-section "dailty tramp problem"
-  (defun revert-tramp-file ()
+  (defun revert-tramp-buffer ()
     (interactive)
     (if (and buffer-file-name
              (tramp-tramp-file-p buffer-file-name))

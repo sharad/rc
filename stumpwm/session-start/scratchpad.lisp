@@ -33,6 +33,19 @@
                              :group scratchpad-group)))))
     (switch-to-screen start-screen)))
 
+(defun make-scrtchpad-hash ()
+  (setf *scratchpads* (make-hash-table :test #'eq))
+  (let ((start-screen (car *screen-list*)))
+    (loop for i in *screen-list*
+       do (progn (switch-to-screen i)
+                 (let ((scratchpad-group (create-scratchpad-group i)))
+                   ;;Store the scratchpad
+                   (setf (gethash (current-screen)
+                                  *scratchpads*)
+                         (make-scratchpad
+                          :group scratchpad-group)))))
+    (switch-to-screen start-screen)))
+
 
 (defcommand scratchpad () ()
   (let ((scratchpad (current-scratchpad)))
@@ -50,4 +63,5 @@
           t))
         (prog1
             nil
-          (message "No scratchpad for this screen.")))))
+          (message "No scratchpad for this screen. will create new hash")
+          (make-scrtchpad-hash)))))

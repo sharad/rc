@@ -140,51 +140,69 @@
 
 ;; (remove-hook 'post-command-hook 'showthiscommand)
 
+(defun yas/word-key (word)
+  "Get the key under current position. A key is used to find
+the template of a snippet in the current snippet-table."
+  (let ((start (point))
+        (end (point))
+        (syntaxes yas/key-syntaxes)
+        syntax
+        done
+        templates)
+    (while (and (not done) syntaxes)
+      (setq syntax (car syntaxes))
+      (setq syntaxes (cdr syntaxes))
+      (save-excursion
+        (skip-syntax-backward syntax)
+        (setq start (point)))
+      (setq templates
+            (mapcan #'(lambda (table)
+                        (yas/fetch table word))
+                    (yas/get-snippet-tables)))
+      (if templates
+          (setq done t)
+        (setq start end)))
+    (list templates
+          start
+          end)))
+
+
 (defun yas-check-word-p ()
   "Return t when the word at `point' has to be checked.
 The answer depends of several criteria.
 Mostly we check word delimiters."
-  (let ()
-    (cond
-     ((<= (- (point-max) 1) (point-min))
-      ;; The buffer is not filled enough.
-      nil)
-     ((> (current-column) 1)
-      (save-excursion
-        (backward-char 2)
-        (and
-             (looking-at "[[:alpha:]][^[:alpha:]]")
-             (forward-word 1)
-             (cdr (yas/current-key)))))
-      ;; Yes because we have reached or typed a word delimiter.
-     (t nil))))
+  (and
+   (not (<= (- (point-max) 1) (point-min)))
+   (> (current-column) 1)
+   (let ((cc (char-after (point)))
+         (pc (char-after (1- (point)))))
+     (and (char-isalnum-p pc)
+          (not (char-isalnum-p cc))))
+   (let ((con (yas/current-key)))
+     (if (car con)
+         (cdr con)))))
 
 (defun yas-post-command-hook ()
   "The `post-command-hook' used by flyspell to check a word on-the-fly."
   (interactive)
   (when yas/minor-mode
     (with-local-quit
+      (if (> (length yas-overlays) 2)
+          (delete-overlay (pop yas-overlays)))
+      ;; (dolist (o yas-overlays)
+      ;;   (delete-overlay o))
+      (when (or
+             (eq (aref (this-command-keys) 0) ?\ )
+             (eq this-command #'self-insert-command)
+             (eq this-command #'tempo-x-space))
+        (let (deactivate-mark ;; Prevent anything we do from affecting the mark.
+              (positions (yas-check-word-p) ))
+          (if positions
+              (progn
+                (nconc
+                 yas-overlays
+                 (list (apply 'make-yas-overlay (append positions '(highlight highlight))))))))))))
 
-      ;; (let (o)
-      ;;   (while (setq o (pop yas-overlays))
-      ;;     (delete-overlay o)))
-
-      (dolist (o yas-overlays)
-        (delete-overlay o))
-      (let ((command this-command)
-            ;; Prevent anything we do from affecting the mark.
-            deactivate-mark
-            (positions (yas-check-word-p) )
-            overlay)
-        (if (and
-             positions
-             (null yas-overlays))
-            (progn
-              (push
-               (apply 'make-yas-overlay (append positions '(highlight highlight)))
-               yas-overlays)
-              (backward-char 1))
-            (setq yas-overlays nil))))))
 
 
 (defun make-yas-overlay (beg end face mouse-face)
