@@ -10,6 +10,57 @@ mousemove 42 42
 EOF
 fi
 
+pgrep xautolock >& /dev/null && xautolock -locknow &!
+foreach prog (
+    ## it is automatically started by gdm, so no need to start it.
+    # gnome-keyring-daemon
+    # gnome-power-manager
+    mail-notification
+    # blueman-adapters
+    # blueman-applet
+    # bluetoothd
+    # empathy
+    synergys
+    ) {
+        if whence -p $prog >& /dev/null && ! pgrep $prog[0,15] >& /dev/null ; then
+            $prog &!
+            echo started $prog >&2
+	    pgrep $prog[0,15] >&2
+            sleep 1s;
+        else
+            print Not starting $prog >&2
+        fi
+    }
+
+## ssh-agent access needed.
+whence -p xautolock >& /dev/null &&
+pgrep xautolock >& /dev/null ||
+xautolock -detectsleep &!
+
+whence -p conky >& /dev/null &&
+pgrep conky >& /dev/null ||
+conky &!
+
+if whence xte ; then
+    xte <<EOF
+mousemove 42 42
+EOF
+fi
+
+# ~/bin/syncimap -r               # enable, done in rsetup/x/run
+
+atq
+if [ $(atq | cut -f1 | wc -l) -gt 0 ] ; then
+    atrm  $(atq | cut -f1)
+fi
+
+
+# WM specific setup
+~/bin/wallpaper-setup &!
+~/bin/stumpwm-setup &!
+
+
+
 #### # if [ -x /usr/libexec/at-spi-registryd ] ; then
 #### #     DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/libexec/at-spi-registryd &!
 #### #  elif [  -x  /usr/lib/at-spi2-core/at-spi2-registryd ] ; then
