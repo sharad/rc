@@ -261,26 +261,34 @@ function screenssh {
         if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub ; then
 
             if [ "$sessionarg" ] && ! ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | grep 'No Sockets' 1>&2 > /dev/null ; then
-                trap 'print Interrupted; return 1' SIGINT
-                session=$( ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }')
-                sessionexists=${session}
+                trap 'print Interrupted >&2 ; return 1' SIGINT
+                sessionorg=${session}
+                # ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }'
+                session=$( ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }' )
+                local retval=$?
+                if (( $retval == 255 )) ; then
+                    print not able to run ${=prefixcmd} 'screen -x' ${session} '-ls'  \? $retval >&2
+                    trap - SIGINT
+                    return $retval
+                # else
+                #     session=$( ${=prefixcmd} screen -x ${session} -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }' )
+                fi
                 trap - SIGINT
             fi
 
-            if [ "$session" ] ; then
+            # print sessionexists ${session} >&2
+
+            if [ "${session}" ] ; then
                 print ${=prefixcmdintractive} screen -x ${session} >&2
-                if [ "${sessionexists}" ] ; then
-                    ${=prefixcmdintractive} screen -x "$session"
-                    if (( $? == 255 )) ; then
-                        print some problem happened in ssh to $machine, will try after 7 seconds
-                        sleep 7s
-                        screenssh $machine \'${session}\'
-                    fi
-                else
-                    ${=prefixcmdintractive} screen -S "${session}"
+                ${=prefixcmdintractive} screen -x "$session"
+                if (( $? == 255 )) ; then
+                    print some problem happened in ssh to $machine, will try after 7 seconds >&2
+                    sleep 7s
+                    screenssh $machine \'${session}\'
                 fi
             else
-                print No session $sessionarg creating it. >&2
+                print ${=prefixcmdintractive} screen -S "${sessionorg}" >&2
+                ${=prefixcmdintractive} screen -S "${sessionorg}"
             fi
         else
             print Not able to set the private in ssh-agent. >&2
