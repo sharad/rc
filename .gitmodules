@@ -88,3 +88,6 @@
 [submodule "utils/ext/gits/notmuch-addrlookup-c"]
 	path = utils/ext/gits/notmuch-addrlookup-c
 	url = https://github.com/aperezdc/notmuch-addrlookup-c.git
+[submodule "xemacs/pkgrepos/world/gits/emacs-twiki-mode"]
+	path = xemacs/pkgrepos/world/gits/emacs-twiki-mode
+	url = https://github.com/christopherjwhite/emacs-twiki-mode.git
