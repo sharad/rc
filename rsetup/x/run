@@ -112,7 +112,11 @@ if [ $DISPLAY ] ; then
 fi
 
 if [ -e ~/.stumpwm.d/debug-output.log ] ; then
-    command rm -f ~/.stumpwm.d/debug-output.log
+    # command rm -f ~/.stumpwm.d/debug-output.log
+    if [ -e ~/.stumpwm.d/debug-output.0.log ] ; then
+        command mv ~/.stumpwm.d/debug-output.0.log ~/.stumpwm.d/debug-output.1.log
+    fi
+    command mv ~/.stumpwm.d/debug-output.log ~/.stumpwm.d/debug-output.0.log
 fi
 
 
