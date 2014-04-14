@@ -760,57 +760,68 @@ to restore in case of sudden emacs crash."
       (setq debug-on-error t)
       (message-notify "sharad/desktop-session-restore" "entering sharad/desktop-session-restore")
 
-
-      (unless (sharad/desktop-saved-session)
-        (message-notify "sharad/desktop-session-restore" "%s not found so trying to checkout it." *desktop-save-filename*)
-        (vc-checkout-file *desktop-save-filename*))
-
-
-      (if (sharad/desktop-saved-session)
+      (if (not (string= *desktop-save-filename*
+                        (concat (getenv "HOME") "/.emacs.d/emacs-desktop-" server-name)))
           (progn
-            (message-notify "sharad/desktop-session-restore" "sharad/desktop-session-restore")
-            (if show-error
+            (message-notify "sharad/desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s"
+                            (concat (getenv "HOME") "/.emacs.d/emacs-desktop-" server-name)
+                            *desktop-save-filename*)
+            (if (y-or-n-p (format "sharad/desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s\nshould emacs be killed ? "
+                                  (concat (getenv "HOME") "/.emacs.d/emacs-desktop-" server-name)
+                                  *desktop-save-filename*))
+                (kill-emacs)))
 
-                (if (desktop-vc-read *desktop-save-filename*)
-                    (progn
-                      (message-notify "sharad/desktop-session-restore" "desktop loaded successfully :)")
-                      (sharad/enable-session-saving)
-                      (message-notify "sharad/desktop-session-restore" "Do you want to set session of frame? ")
-                      (when (y-or-n-p "Do you want to set session of frame? ")
-                        (let ((*frame-session-restore* t))
-                          (frame-session-restore (selected-frame)))))
-                    (progn
-                      (message-notify "sharad/desktop-session-restore" "desktop loading failed :(")
-                      (run-at-time "1 sec" nil '(lambda () (insert "sharad/desktop-session-restore")))
-                      (execute-extended-command nil)
-                      nil))
+          (progn
+            (unless (sharad/desktop-saved-session)
+              (message-notify "sharad/desktop-session-restore" "%s not found so trying to checkout it." *desktop-save-filename*)
+              (vc-checkout-file *desktop-save-filename*))
 
-                (condition-case e
-                    (if (let ((desktop-restore-in-progress t))
-                          (desktop-vc-read *desktop-save-filename*))
-                        (progn
-                          (message-notify "sharad/desktop-session-restore" "desktop loaded successfully :)")
-                          (sharad/enable-session-saving))
-                        (progn
-                          (message-notify "sharad/desktop-session-restore" "desktop loading failed :(")
-                          nil))
-                  ('error
-                   (message-notify "sharad/desktop-session-restore" "Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
-                   (message-notify "sharad/desktop-session-restore" "Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e)
-                   (run-at-time "1 sec" nil '(lambda () (insert "sharad/desktop-session-restore")))
-                   (condition-case e
-                       (execute-extended-command nil)
-                     ('error (message "M-x sharad/desktop-session-restore %s" e))))))
-            t)
-          (when (y-or-n-p
-                 (message-notify "sharad/desktop-session-restore"
-                                 "No desktop found. or you can check out old %s from VCS.\nShould I enable session saving in auto save, at kill-emacs ?"
-                                 *desktop-save-filename*))
-            (sharad/enable-session-saving)))
-      (let ((enable-recursive-minibuffers t))
-        (when t ;(y-or-n-p "Do you want to set session of frame? ")
-          (frame-session-restore (selected-frame) t)))
-      (message-notify "sharad/desktop-session-restore" "leaving sharad/desktop-session-restore")))
+
+            (if (sharad/desktop-saved-session)
+                (progn
+                  (message-notify "sharad/desktop-session-restore" "sharad/desktop-session-restore")
+                  (if show-error
+
+                      (if (desktop-vc-read *desktop-save-filename*)
+                          (progn
+                            (message-notify "sharad/desktop-session-restore" "desktop loaded successfully :)")
+                            (sharad/enable-session-saving)
+                            (message-notify "sharad/desktop-session-restore" "Do you want to set session of frame? ")
+                            (when (y-or-n-p "Do you want to set session of frame? ")
+                              (let ((*frame-session-restore* t))
+                                (frame-session-restore (selected-frame)))))
+                          (progn
+                            (message-notify "sharad/desktop-session-restore" "desktop loading failed :(")
+                            (run-at-time "1 sec" nil '(lambda () (insert "sharad/desktop-session-restore")))
+                            (execute-extended-command nil)
+                            nil))
+
+                      (condition-case e
+                          (if (let ((desktop-restore-in-progress t))
+                                (desktop-vc-read *desktop-save-filename*))
+                              (progn
+                                (message-notify "sharad/desktop-session-restore" "desktop loaded successfully :)")
+                                (sharad/enable-session-saving))
+                              (progn
+                                (message-notify "sharad/desktop-session-restore" "desktop loading failed :(")
+                                nil))
+                        ('error
+                         (message-notify "sharad/desktop-session-restore" "Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
+                         (message-notify "sharad/desktop-session-restore" "Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e)
+                         (run-at-time "1 sec" nil '(lambda () (insert "sharad/desktop-session-restore")))
+                         (condition-case e
+                             (execute-extended-command nil)
+                           ('error (message "M-x sharad/desktop-session-restore %s" e))))))
+                  t)
+                (when (y-or-n-p
+                       (message-notify "sharad/desktop-session-restore"
+                                       "No desktop found. or you can check out old %s from VCS.\nShould I enable session saving in auto save, at kill-emacs ?"
+                                       *desktop-save-filename*))
+                  (sharad/enable-session-saving)))
+            (let ((enable-recursive-minibuffers t))
+              (when t ;(y-or-n-p "Do you want to set session of frame? ")
+                (frame-session-restore (selected-frame) t)))
+            (message-notify "sharad/desktop-session-restore" "leaving sharad/desktop-session-restore")))))
 
   ;; (add-hook 'session-before-save-hook
   ;;           'my-desktop-save)
