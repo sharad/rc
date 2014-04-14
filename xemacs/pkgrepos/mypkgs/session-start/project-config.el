@@ -264,6 +264,78 @@
 
 
 
+(deh-section "pbmode"
+  (define-derived-mode iprjbuf-mode fundamental-mode
+    "Create a iproject buffer named NAME with a `default-directory' set to ROOT-FOLDER."
+    (let* ((filename buffer-file-name)
+           (buffer-name (concat "ipb:" (file-name-sans-extension
+                                        (file-name-nondirectory filename))))
+           (pmbuff
+            (if (file-exists-p filename)
+                (or
+                 (let ((list (buffer-list)) found)
+                   (while (and (not found) list)
+                     (with-current-buffer (car list)
+                       (if (and
+                            filename
+                            (file-truename filename)
+                            project-buffer-file-name
+                            (or
+                             (string= project-buffer-file-name (file-truename filename))
+                             (string= project-buffer-file-name filename)))
+                           (setq found (car list))))
+                     (setq list (cdr list)))
+                   found)
+                 (let ((buffer (generate-new-buffer buffer-name)))
+                   (with-current-buffer buffer
+                     (project-buffer-mode t)
+                     (project-buffer-raw-load filename t t)
+                     (setq project-buffer-file-name filename))
+                   buffer))
+
+                (let ((buffer (generate-new-buffer buffer-name)))
+                  (with-current-buffer buffer
+                    (cd (ido-read-directory-name "Root Folder: "))
+                    (project-buffer-mode)
+                    ;; local variables:
+                    (make-local-variable 'iproject-last-project-type-choosen)
+                    (make-local-variable 'iproject-last-filter-type-choosen)
+                    (make-local-variable 'iproject-last-file-filter-query-mode-choosen)
+                    (make-local-variable 'iproject-last-file-filter-regexp-choosen)
+                    (make-local-variable 'iproject-last-file-extension-list-choosen)
+                    (make-local-variable 'iproject-platform-list)
+                    (make-local-variable 'iproject-build-configuration-list)
+                    ;; register the local variable to be saved:
+                    (add-to-list 'project-buffer-locals-to-save 'iproject-last-project-type-choosen)
+                    (add-to-list 'project-buffer-locals-to-save 'iproject-last-filter-type-choosen)
+                    (add-to-list 'project-buffer-locals-to-save 'iproject-last-file-filter-query-mode-choosen)
+                    (add-to-list 'project-buffer-locals-to-save 'iproject-last-file-filter-regexp-choosen)
+                    (add-to-list 'project-buffer-locals-to-save 'iproject-last-file-extension-list-choosen)
+                    (add-to-list 'project-buffer-locals-to-save 'iproject-platform-list)
+                    (add-to-list 'project-buffer-locals-to-save 'iproject-build-configuration-list)
+                    ;; ask for the platform list:
+                    (setq iproject-platform-list            (split-string (read-from-minibuffer "Enter the list of platforms separated by spaces: "
+                                                                                                (if iproject-platforms-history (car iproject-platforms-history) (format "%s" system-type))
+                                                                                                nil nil 'iproject-platforms-history)))
+                    (setq iproject-build-configuration-list (split-string (read-from-minibuffer "Enter the list of build configurations separated by spaces: "
+                                                                                                (if iproject-build-configurations-history (car iproject-build-configurations-history) "release debug")
+                                                                                                nil nil 'iproject-build-configurations-history)))
+                    ;;
+                    (iproject-setup-local-key)
+                    (setq project-buffer-file-name filename)
+                    (add-hook 'project-buffer-post-load-hook 'iproject-setup-local-key nil t)
+                    (add-hook 'project-buffer-action-hook    'iproject-action-handler  nil t)
+                    (add-hook 'project-buffer-refresh-hook   'iproject-refresh-handler nil t))
+                  buffer))))
+
+      (run-with-timer  2 nil `(lambda ()
+                                (switch-to-buffer ,pmbuff)
+                                (kill-buffer (get-file-buffer ,filename))))))
+
+
+  (add-to-list 'auto-mode-alist '("\\.pb\\'" . iprjbuf-mode)))
+
+
 (provide 'project-config)
 ;;; project-config.el ends here
 
