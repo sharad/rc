@@ -239,33 +239,44 @@
                            (subseq (string-left-trim " " s) 0 (min (length pgm) (length s)))))
       (wait-for-program pgm)))
 
-(defcommand editor () ()
-            ;;(if (wait-for-nwprogram "emacsclient")
-      (run-wcli-command
-       (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(setq spec-id \"main\")")
-   ;; '(:class "Emacs")
-       ))
+#-pa
+(progn
+  (defcommand editor () ()
+              ;;(if (wait-for-nwprogram "emacsclient")
+              (run-wcli-command
+               (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(setq spec-id \"main\")")
+               ;; '(:class "Emacs")
+               ))
 
-(defcommand xeditor () ()
-      (run-wcli-command
-       (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/general")
-               " -e "
-               (prin1-to-string
-                (concat
-                 "(progn (message "
-                 (prin1-to-string (format nil "~a" (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))
-                 ")(display-about-screen))")))))
+  (defcommand xeditor () ()
+              (run-wcli-command
+               (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/general")
+                       " -e "
+                       (prin1-to-string
+                        (concat
+                         "(progn (message "
+                         (prin1-to-string (format nil "~a" (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))
+                         ")(display-about-screen))")))))
 
-(defcommand emacsclient () ()
-      (run-wcli-command
-       (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/general")
-               " -e "
-               (prin1-to-string
-                (concat "(progn (message "
-                        (prin1-to-string (format nil "~a" (substitute #\_ #\Space (stumpwm::group-name (stumpwm::current-group)))))
-                        ")(display-about-screen))")))
-       ;; '(:class "Emacs")
-       ))
+  (defcommand emacsclient () ()
+              (run-wcli-command
+               (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/general")
+                       " -e "
+                       (prin1-to-string
+                        (concat "(progn (message "
+                                (prin1-to-string (format nil "~a" (substitute #\_ #\Space (stumpwm::group-name (stumpwm::current-group)))))
+                                ")(display-about-screen))")))
+               ;; '(:class "Emacs")
+               ))
+
+  (defcommand mail-reader () ()
+              (run-wcli-command
+               (concat "emacsclient -n -f " (concat (getenv "HOME") "/.emacs.d/server/general -e (make-mail-chat-frame)"))))
+
+  (defcommand new-mail () ()
+              (if (wait-for-program "emacsclient")
+                  (run-wcli-command
+                   (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus-group-mail)'"))))))
 
 (defcommand gnus () ()
   (if (wait-for-nwprogram "emacsclient")
@@ -279,15 +290,6 @@
 ;;   (run-wcli-command
 ;;    (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus)'")))))
 
-(defcommand mail-reader () ()
-  (run-wcli-command
-   (concat "emacsclient -n -f " (concat (getenv "HOME") "/.emacs.d/server/general -e (make-mail-chat-frame)"))))
-
-
-(defcommand new-mail () ()
-  (if (wait-for-program "emacsclient")
-  (run-wcli-command
-   (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus-group-mail)'")))))
 
 (defcommand gnusclient () ()
   (if (wait-for-program "emacsclient")
@@ -682,4 +684,3 @@
 
 (defcommand gprev-nonempty () ()
             )
-

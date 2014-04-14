@@ -81,6 +81,7 @@
 ;;; http://www.reddit.com/r/lisp/comments/gzip8/linedit_adds_history_completion_and_editing_to/
 ;;; Check for --no-linedit command-line option.
 #+quicklisp
+(if nil
 (if (member "--no-linedit" sb-ext:*posix-argv* :test 'equal)
   (setf sb-ext:*posix-argv*
         (remove "--no-linedit" sb-ext:*posix-argv* :test 'equal))
@@ -88,7 +89,7 @@
     (require :sb-aclrepl)
     (ql:quickload "linedit")
     (funcall (intern "INSTALL-REPL" :linedit)
-             :wrap-current t)))
+             :wrap-current t))))
 ;;; LineEdit
 
 
