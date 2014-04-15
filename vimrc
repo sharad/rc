@@ -1,4 +1,7 @@
-set ic aw sw=4 mouse=a
+set ic
+set aw
+set sw=4
+"" set mouse=a
 set title
 set dir=/tmp
 set nobackup writebackup
