@@ -265,9 +265,9 @@
 
 
 (deh-section "pbmode"
-  (define-derived-mode iprjbuf-mode fundamental-mode
-    "Create a iproject buffer named NAME with a `default-directory' set to ROOT-FOLDER."
-    (let* ((filename buffer-file-name)
+
+  (defun iprj-get-buffer (file)
+    (let* ((filename file)
            (buffer-name (concat "ipb:" (file-name-sans-extension
                                         (file-name-nondirectory filename))))
            (pmbuff
@@ -327,10 +327,16 @@
                     (add-hook 'project-buffer-action-hook    'iproject-action-handler  nil t)
                     (add-hook 'project-buffer-refresh-hook   'iproject-refresh-handler nil t))
                   buffer))))
+      pmbuff))
 
-      (run-with-timer  2 nil `(lambda ()
-                                (switch-to-buffer ,pmbuff)
-                                (kill-buffer (get-file-buffer ,filename))))))
+  (define-derived-mode iprjbuf-mode fundamental-mode
+    "Create a iproject buffer named NAME with a `default-directory' set to ROOT-FOLDER."
+    (let* ((file-name buffer-file-name)
+          (pmbuff (iprj-get-buffer file-name)))
+      ;; (run-with-timer  4 nil `(lambda ()
+      ;;                           (switch-to-buffer ,pmbuff)
+      ;;                           (kill-buffer (get-file-buffer ,file-name))))
+      ))
 
 
   (add-to-list 'auto-mode-alist '("\\.pb\\'" . iprjbuf-mode)))
