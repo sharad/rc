@@ -112,11 +112,11 @@ Return a string if a single match, or a list if many matches."
           status matches
           (count 0))
       (save-excursion
-        (let ((default-directory "~/"))
-         (with-current-buffer ff-buffer
-          (setq status
-                (call-process "sh" nil t nil "-c"
-                              (concat "locate " (shell-quote-argument filename))))
+        (with-current-buffer ff-buffer
+          (let ((default-directory (or default-directory "~/")))
+            (setq status
+                  (call-process "sh" nil t nil "-c"
+                                (concat "locate " (shell-quote-argument filename)))))
           (goto-char 1)
           (if (eq status 1)
               nil                           ;Not found...
@@ -142,7 +142,7 @@ Return a string if a single match, or a list if many matches."
                    (<= ff-paths-locate-max-matches count))
               (setq ff-paths-have-reached-locate-max t))
           (kill-buffer ff-buffer)
-          matches))))))
+          matches)))))
 
 (when nil
 ;; (deh-section "File no writable problem"
