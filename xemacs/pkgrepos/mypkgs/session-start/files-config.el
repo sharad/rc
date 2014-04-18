@@ -113,7 +113,7 @@ Return a string if a single match, or a list if many matches."
           (count 0))
       (save-excursion
         (with-current-buffer ff-buffer
-          (let ((default-directory (or default-directory "~/")))
+          (let ((default-directory (if (file-directory-p default-directory) default-directory "~/")))
             (setq status
                   (call-process "sh" nil t nil "-c"
                                 (concat "locate " (shell-quote-argument filename)))))
