@@ -38,27 +38,35 @@
 ;;}}}
 
 (setf *group-format* "%t [%s]")
+
+
+(defun load-external-module (module)
+  (if (and
+       (boundp '*contrib-dir*)
+       (probe-file *contrib-dir*))
+      (load-module module)
+      (if (ql:where-is-system module)
+          (ql:quickload module))))
+
 ;; ;;{{{ Load module
-(when (probe-file *contrib-dir*)
-  (load-module "amixer")
-  (load-module "aumix")
-  (load-module "battery")
-  (load-module "battery-portable")
-  ;;(load-module "cpu")
-  (load-module "disk")
-  (load-module "g15-keysyms")
-  (load-module "maildir")
-  (load-module "mem")
-  (load-module "mpd")
-  (load-module "net")
-  (load-module "notifications")
-  (load-module "productivity")
-  #+sbcl (load-module "sbclfix")
-  (load-module "surfraw")
-  (load-module "wifi")
-  (load-module "window-tags")
-  ;;(load-module "wmii-like-stumpwmrc")
-  )
+(load-external-module "amixer")
+(load-external-module "aumix")
+(load-external-module "battery")
+(load-external-module "battery-portable")
+;;(load-external-module "cpu")
+;; (load-external-module "disk")
+(load-external-module "g15-keysyms")
+(load-external-module "maildir")
+(load-external-module "mem")
+(load-external-module "mpd")
+;; (load-external-module "net")
+(load-external-module "notifications")
+(load-external-module "productivity")
+#+sbcl (load-external-module "sbclfix")
+;; (load-external-module "surfraw")
+(load-external-module "wifi")
+(load-external-module "window-tags")
+;;(load-external-module "wmii-like-stumpwmrc")
 ;;}}}
 
 ;;{{{ Notification

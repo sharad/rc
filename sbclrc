@@ -81,7 +81,7 @@
 ;;; http://www.reddit.com/r/lisp/comments/gzip8/linedit_adds_history_completion_and_editing_to/
 ;;; Check for --no-linedit command-line option.
 #+quicklisp
-(if nil
+(if t
 (if (member "--no-linedit" sb-ext:*posix-argv* :test 'equal)
   (setf sb-ext:*posix-argv*
         (remove "--no-linedit" sb-ext:*posix-argv* :test 'equal))
@@ -92,8 +92,12 @@
              :wrap-current t))))
 ;;; LineEdit
 
+#+quicklisp
+(defparameter *quicklisp-local-home-dir* (merge-pathnames "../paradise/opt/lisp/common-lisp/quicklisp/" (user-homedir-pathname)))
+(when (probe-file (merge-pathnames "local-projects" *quicklisp-local-home-dir*))
+  (nconc ql:*local-project-directories* (list (merge-pathnames "local-projects" *quicklisp-local-home-dir*))))
+
 
 ;; load my utils
 (if (member "IN.NET.SHARAD.UTILS" (mapcar #'package-name (list-all-packages)) :test #'string=)
     (require :in.net.sharad.utils))
-
