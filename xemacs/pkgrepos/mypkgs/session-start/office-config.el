@@ -59,6 +59,9 @@
     (error (message "Error: %s" e))))
 
 (defvar taskdir "/home/s/paradise/tasks" "Task Directory")
+
+
+
 (defvar *taskdir-current-task* nil "Current task")
 (add-to-list
  'desktop-globals-to-save
@@ -67,10 +70,14 @@
  'session-globals-include
  '(*taskdir-current-task* 100))
 
-(defvar task-config '(("bug" (files "todo.org" "notes.org" "an0.org"))
-                     ("feature"
-                      (files "reqirement.org" "feasibility.org"
-                             "design.org" "todo.org" "notes.org" "an0.org"))))
+(defvar task-config '(("bug"
+                       (files "todo.org" "notes.org" "an0.org")
+                       (project "/susengg-01:releases/projects/bugs.pb"))
+                      ("feature"
+                       (files "reqirement.org" "feasibility.org"
+                        "design.org" "todo.org" "notes.org" "an0.org")
+                       (project "/susengg-01:releases/projects/features-dev.pb"))))
+
 (defvar task-file-properties '((buffer-read-only . t)
                                (fill-column . 172))
   "Task file properties.")
