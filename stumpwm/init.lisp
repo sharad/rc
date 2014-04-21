@@ -5,10 +5,8 @@
 (defparameter *debug-level* 10)
 (redirect-all-output (data-dir-file "debug-output" "log"))
 
-
 ;;WARNING: this is specific to clisp
 ;;{{{ Parameters
-
 (defparameter *hostname* (or (getenv "HOSTNAME") (getenv "HOST") (sb-unix::unix-gethostname)))
 (defparameter *home-dir* (getenv "HOME"))
 (defparameter *login-user* (getenv "USER"))
@@ -17,15 +15,12 @@
 ; (defparameter *data-dir* (concat *home-dir* "/.stumpwm.d/"))
 (defparameter *stumpish* "/usr/local/share/stumpwm/contrib/stumpish")
 ;; (defparameter *desktop-background* nil)
-
-
 ;;}}}
 
 ;;{{{ Basic files loading
 (load (concat *initdir* "/basic.lisp"))
 (load (concat *initdir* "/macros.lisp"))
 ;;}}}
-
 
 ;;{{{ Load all subfiles
 (defun sharad/load-dir-files (dir)
@@ -38,7 +33,6 @@
 ;;}}}
 
 (setf *group-format* "%t [%s]")
-
 
 (defun load-external-module (module)
   (if (and
@@ -224,9 +218,9 @@
 
     (0 nil t :class "Pidgin"  :instance "Pidgin"  :title "Buddy List"   :role "buddy_list")
     (2 t nil :class "Pidgin" :instance "Pidgin" :title  nil ;"FN LN"
-     :role "conversation")
+       :role "conversation")
     (2 nil t :class "Skype" :instance "skype" :title    nil ;"skypeid - Skype? Beta"
-     :role "MainWindow"))
+       :role "MainWindow"))
 
 
 
