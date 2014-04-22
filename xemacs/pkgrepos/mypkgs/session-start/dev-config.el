@@ -394,5 +394,32 @@
 
   (add-hook 'c-mode-common-hook 'my-cpp-highlight))
 
+
+
+;; ![Screenshot](http://i.imgur.com/kMoN1m6.png)
+;;
+;; Disaster lets you press `C-c C-d` to see the compiled assembly code for the
+;; C/C++ file you're currently editing. It even jumps to and highlights the
+;; line of assembly corresponding to the line beneath your cursor.
+;;
+;; It works by creating a `.o` file using make (if you have a Makefile) or the
+;; default system compiler. It then runs that file through objdump to generate
+;; the human-readable assembly.
+
+;;; Installation:
+
+;; Make sure to place `disaster.el` somewhere in the load-path and add the
+;; following lines to your `.emacs` file to enable the `C-c C-d` shortcut to
+;; invoke `disaster':
+;;
+(deh-section "disassemble C/C++"
+  (eval-after-load 'cc-mode
+    '(progn
+      (require 'disaster)
+      (defun my-c-mode-common-hook ()
+        (define-key c-mode-base-map (kbd "C-c C-d") 'disaster)
+        (define-key c-mode-base-map (kbd "C-c C-c") 'compile))
+      (add-hook 'c-mode-common-hook 'my-c-mode-common-hook))))
+
 (provide 'dev-config)
 ;;; dev-config.el ends here
