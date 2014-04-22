@@ -1,0 +1,24 @@
+
+
+
+// Left Ctrl key functions as another left Alt.
+partial modifier_keys
+xkb_symbols "lctrl_lalt" {
+    key <LCTL>  { symbols[Group1]= [ Alt_L ] };
+};
+
+
+// Left Alt key functions as another right Ctrl.
+partial modifier_keys
+xkb_symbols "lalt_lctrl" {
+    replace key <LALT> { type[Group1] = "TWO_LEVEL",
+                         symbols[Group1] = [ Control_L, Control_L ] };
+    modifier_map Control { <LALT> };
+};
+
+
+// Caps key functions as another left Alt.
+partial modifier_keys
+xkb_symbols "caps_lalt" {
+    key <CAPS>  { symbols[Group1]= [ Alt_L ] };
+};

@@ -267,3 +267,44 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
           (echo-string-list (current-screen) names))
         (message "group stack is empty."))))
 
+
+
+
+;;{{
+
+(when (and t (ql:where-is-system "climacs"))
+  ;; from: http://g000001.cddddr.org/?TAGS=Climacs
+  (defun fun-run-or-raise (fun props &optional (all-groups *run-or-raise-all-groups*) (all-screens *run-or-raise-all-screens*))
+    (labels
+        ;; Raise the window win and select its frame.  For now, it
+        ;; does not select the screen.
+        ((goto-win (win)
+           (let* ((group (window-group win))
+                  (frame (window-frame win))
+                  (old-frame (tile-group-current-frame group)))
+             (frame-raise-window group frame win)
+             (focus-all win)
+             (unless (eq frame old-frame)
+               (show-frame-indicator group)))))
+      (let* ((matches (find-matching-windows props all-groups all-screens))
+             ;; other-matches is list of matches "after" the current
+             ;; win, if current win matches. getting 2nd element means
+             ;; skipping over the current win, to cycle through matches
+             (other-matches (member (current-window) matches))
+             (win (if (> (length other-matches) 1)
+                      (second other-matches)
+                      (first matches))))
+        (if win
+            (goto-win win)
+            #+sbcl (sb-thread:make-thread fun
+                                          :name (format nil "~A" fun))))))
+
+  (defcommand climacs () ()
+              ""
+              (fun-run-or-raise (lambda ()
+                                  (climacs:climacs :new-process "climacs"))
+                                '(:class "Climacs"))))
+
+
+
+;;}}

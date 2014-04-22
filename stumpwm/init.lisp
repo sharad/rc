@@ -5,10 +5,8 @@
 (defparameter *debug-level* 10)
 (redirect-all-output (data-dir-file "debug-output" "log"))
 
-
 ;;WARNING: this is specific to clisp
 ;;{{{ Parameters
-
 (defparameter *hostname* (or (getenv "HOSTNAME") (getenv "HOST") (sb-unix::unix-gethostname)))
 (defparameter *home-dir* (getenv "HOME"))
 (defparameter *login-user* (getenv "USER"))
@@ -17,15 +15,12 @@
 ; (defparameter *data-dir* (concat *home-dir* "/.stumpwm.d/"))
 (defparameter *stumpish* "/usr/local/share/stumpwm/contrib/stumpish")
 ;; (defparameter *desktop-background* nil)
-
-
 ;;}}}
 
 ;;{{{ Basic files loading
 (load (concat *initdir* "/basic.lisp"))
 (load (concat *initdir* "/macros.lisp"))
 ;;}}}
-
 
 ;;{{{ Load all subfiles
 (defun sharad/load-dir-files (dir)
@@ -38,27 +33,34 @@
 ;;}}}
 
 (setf *group-format* "%t [%s]")
+
+(defun load-external-module (module)
+  (if (and
+       (boundp '*contrib-dir*)
+       (probe-file *contrib-dir*))
+      (load-module module)
+      (if (ql:where-is-system module)
+          (ql:quickload module))))
+
 ;; ;;{{{ Load module
-(when (probe-file *contrib-dir*)
-  (load-module "amixer")
-  (load-module "aumix")
-  (load-module "battery")
-  (load-module "battery-portable")
-  ;;(load-module "cpu")
-  (load-module "disk")
-  (load-module "g15-keysyms")
-  (load-module "maildir")
-  (load-module "mem")
-  (load-module "mpd")
-  (load-module "net")
-  (load-module "notifications")
-  (load-module "productivity")
-  #+sbcl (load-module "sbclfix")
-  (load-module "surfraw")
-  (load-module "wifi")
-  (load-module "window-tags")
-  ;;(load-module "wmii-like-stumpwmrc")
-  )
+(load-external-module "amixer")
+(load-external-module "aumix")
+(load-external-module "battery")
+(load-external-module "battery-portable")
+;;(load-external-module "cpu")
+;; (load-external-module "disk")
+(load-external-module "g15-keysyms")
+(load-external-module "maildir")
+(load-external-module "mem")
+(load-external-module "mpd")
+;; (load-external-module "net")
+(load-external-module "notifications")
+(load-external-module "productivity")
+#+sbcl (load-external-module "sbclfix")
+;; (load-external-module "surfraw")
+(load-external-module "wifi")
+(load-external-module "window-tags")
+;;(load-external-module "wmii-like-stumpwmrc")
 ;;}}}
 
 ;;{{{ Notification
@@ -216,9 +218,9 @@
 
     (0 nil t :class "Pidgin"  :instance "Pidgin"  :title "Buddy List"   :role "buddy_list")
     (2 t nil :class "Pidgin" :instance "Pidgin" :title  nil ;"FN LN"
-     :role "conversation")
+       :role "conversation")
     (2 nil t :class "Skype" :instance "skype" :title    nil ;"skypeid - Skype? Beta"
-     :role "MainWindow"))
+       :role "MainWindow"))
 
 
 
