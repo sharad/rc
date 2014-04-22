@@ -395,7 +395,7 @@
   (add-hook 'c-mode-common-hook 'my-cpp-highlight))
 
 
-
+(deh-section "disassemble C/C++"
 ;; ![Screenshot](http://i.imgur.com/kMoN1m6.png)
 ;;
 ;; Disaster lets you press `C-c C-d` to see the compiled assembly code for the
@@ -412,7 +412,6 @@
 ;; following lines to your `.emacs` file to enable the `C-c C-d` shortcut to
 ;; invoke `disaster':
 ;;
-(deh-section "disassemble C/C++"
   (eval-after-load 'cc-mode
     '(progn
       (require 'disaster)
