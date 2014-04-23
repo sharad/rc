@@ -420,7 +420,6 @@
         (define-key c-mode-base-map (kbd "C-c C-c") 'compile))
       (add-hook 'c-mode-common-hook 'my-c-mode-common-hook))))
 
-
 (deh-section "celdoc"
   (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ -I/usr/include")
   (add-hook 'c-mode-common-hook 'c-turn-on-eldoc-mode))
@@ -479,7 +478,6 @@
 
   ;; turn it on
   (add-hook 'c-mode-common-hook 'turn-on-eldoc-mode))
-
 
 (provide 'dev-config)
 ;;; dev-config.el ends here
