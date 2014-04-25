@@ -420,9 +420,6 @@
         (define-key c-mode-base-map (kbd "C-c C-c") 'compile))
       (add-hook 'c-mode-common-hook 'my-c-mode-common-hook))))
 
-(deh-section "celdoc"
-  (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ -I/usr/include")
-  (add-hook 'c-mode-common-hook 'c-turn-on-eldoc-mode))
 
 (deh-section "cinfo"
   ;; http://tenkan.org/~tim/c-function-signature.html
@@ -456,28 +453,39 @@
   ;; and output it in the minibuffer.
   (defun show-tag-in-minibuffer ()
     (when tags-table-list
-      (save-excursion
-        ;; shadow some etags globals so they won't be modified
-        (let ((tags-location-ring (make-ring find-tag-marker-ring-length))
-              (find-tag-marker-ring (make-ring find-tag-marker-ring-length))
-              (last-tag nil))
-          (let* ((tag (funcall
-                       (or find-tag-default-function
-                           (get major-mode 'find-tag-default-function)
-                           'find-tag-default)))
-                 ;; we try to keep M-. from matching any old tag all the
-                 ;; time
-                 (tag-regex (format "\\(^\\|[ \t\n*]\\)%s\\($\\|(\\)"
-                                    (regexp-quote tag))))
-            (set-buffer (find-tag-noselect tag-regex nil t))
-            (let ((synopsis (or (thing-at-point 'function-synopsis)
-                                (thing-at-point 'line))))
-              (when synopsis
-                (eldoc-message "%s"
-                               (cleanup-function-synopsis synopsis)))))))))
+      (let ((idle-time (or (current-idle-time) '(0 0 0))))
+        (if (> (float-time idle-time) 2)
+            (save-excursion
+              ;; shadow some etags globals so they won't be modified
+              (let ((tags-location-ring (make-ring find-tag-marker-ring-length))
+                    (find-tag-marker-ring (make-ring find-tag-marker-ring-length))
+                    (last-tag nil))
+                (let* ((tag (funcall
+                             (or find-tag-default-function
+                                 (get major-mode 'find-tag-default-function)
+                                 'find-tag-default)))
+                       ;; we try to keep M-. from matching any old tag all the
+                       ;; time
+                       (tag-regex (format "\\(^\\|[ \t\n*]\\)%s\\($\\|(\\)"
+                                          (regexp-quote tag))))
+                  (set-buffer (find-tag-noselect tag-regex nil t))
+                  (let ((synopsis (or (thing-at-point 'function-synopsis)
+                                      (thing-at-point 'line))))
+                    (when synopsis
+                      (eldoc-message "%s"
+                                     (cleanup-function-synopsis synopsis)))))))))))
+
+  (when nil
+    (ad-disable-advice 'eldoc-print-current-symbol-info 'around 'eldoc-show-c-tag)
+    (ad-remove-advice 'eldoc-print-current-symbol-info 'around 'eldoc-show-c-tag)
+    (ad-update 'eldoc-print-current-symbol-info))
 
   ;; turn it on
-  (add-hook 'c-mode-common-hook 'turn-on-eldoc-mode))
+  (add-hook 'c-mode-common-hook 'turn-on-eldoc-mode)
+
+  (deh-section "celdoc"
+    (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ -I/usr/include/")
+    (add-hook 'c-mode-common-hook 'c-turn-on-eldoc-mode)))
 
 (provide 'dev-config)
 ;;; dev-config.el ends here

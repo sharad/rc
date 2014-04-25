@@ -650,7 +650,7 @@ Also returns nil if pid is nil."
     "Save elscreen frame, desktop, and session time to time
 to restore in case of sudden emacs crash."
     (interactive "P")
-    (let ((idle-time (current-idle-time))
+    (let ((idle-time (or (current-idle-time) '(0 0 0)))
           (time-format "%a %H:%M:%S")
           ;; (time-since-save-all-sessions-auto-save-time (float-time (time-since save-all-sessions-auto-save-time)))
           )

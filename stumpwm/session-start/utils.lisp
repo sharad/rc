@@ -271,7 +271,7 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
 
 
 ;;{{
-#-climacs
+#+climacs
 (when (and t (ql:where-is-system "climacs"))
   ;; from: http://g000001.cddddr.org/?TAGS=Climacs
   (defun fun-run-or-raise (fun props &optional (all-groups *run-or-raise-all-groups*) (all-screens *run-or-raise-all-screens*))
