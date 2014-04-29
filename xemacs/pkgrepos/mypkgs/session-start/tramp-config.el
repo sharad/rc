@@ -459,7 +459,14 @@
 
     (defun tramp-file-prefix (file-name)
       (tramp-connection-prefix
-       (tramp-file-connection file-name)))))
+       (tramp-file-connection file-name)))
+
+    (defun file-name-localname (file)
+      (if (file-remote-p file)
+          (tramp-file-name-localname (tramp-file-connection file))
+          file))))
+
+
 
 (when nil
   (defun tramp-do-file-attributes-with-stat

@@ -99,9 +99,7 @@
     (let ((curdir (or dir default-directory)))
       (oneliner-invisible-command-exec
        (concat "cd "
-               (if (tramp-file-name-p curdir)
-                   (tramp-file-name-localname (tramp-file-connection curdir))
-                   curdir)))
+               (file-name-localname curdir)))
       (when (called-interactively-p 'any) ;;(interactive-p)
         (message "Send to %s buffer 'cd %s'" (buffer-name oneliner-shell-buffer)
                  curdir))))

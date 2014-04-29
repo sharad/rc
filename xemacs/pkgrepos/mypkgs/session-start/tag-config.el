@@ -107,9 +107,7 @@
                  (format "%s cmd: " tag-sys)
                  (format fmt
                          (if (stringp d)
-                             (if (tramp-file-name-p d)
-                                 (tramp-file-name-localname (tramp-file-connection d))
-                                 d)
+                             (file-name-localname d)
                              "")))))
       (let ((default-directory d))
         ;; (async-shell-command cmd)

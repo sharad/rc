@@ -421,9 +421,34 @@
       (add-hook 'c-mode-common-hook 'my-c-mode-common-hook))))
 
 
-(deh-section "cinfo"
+(deh-require-maybe c-eldoc
   ;; http://tenkan.org/~tim/c-function-signature.html
   ;; make 'function-synopsis a new thing for thing-at-point
+
+  (deh-section "correction"
+    (defun c-eldoc-get-buffer (function-name)
+      "Call the preprocessor on the current file"
+      ;; run the first time for macros
+      (let ((output-buffer (cache-gethash (current-buffer) c-eldoc-buffers)))
+        (if output-buffer output-buffer
+            (let* ((this-name (concat "*" buffer-file-name "-preprocessed*"))
+                   (preprocessor-command (concat c-eldoc-cpp-command " "
+                                                 c-eldoc-cpp-macro-arguments " "
+                                                 c-eldoc-includes " "
+                                                 (file-name-localname buffer-file-name)))
+                   (cur-buffer (current-buffer))
+                   (output-buffer (generate-new-buffer this-name)))
+              (bury-buffer output-buffer)
+              (process-file-shell-command preprocessor-command nil output-buffer nil)
+              ;; run the second time for normal functions
+              (setq preprocessor-command (concat c-eldoc-cpp-command " "
+                                                 c-eldoc-cpp-normal-arguments " "
+                                                 c-eldoc-includes " "
+                                                 (file-name-localname buffer-file-name)))
+              (process-file-shell-command preprocessor-command nil output-buffer nil)
+              (cache-puthash cur-buffer output-buffer c-eldoc-buffers)
+              output-buffer)))))
+
   (put 'function-synopsis 'beginning-op
        (lambda ()
          (if (bolp) (forward-line -1) (beginning-of-line))
@@ -433,11 +458,15 @@
   (put 'function-synopsis 'end-op
        (lambda () (skip-chars-forward "^{")))
 
+  (setq c-eldoc-cpp-command "/usr/bin/cpp")
+
   ;; override eldoc-mode's doc printer thingy
   (defadvice eldoc-print-current-symbol-info
       (around eldoc-show-c-tag activate)
-    (if (eq major-mode 'c-mode)
-        (show-tag-in-minibuffer)
+    (if (or (eq major-mode 'c-mode)
+            (eq major-mode 'c++-mode))
+        (unless (show-tag-in-minibuffer)
+          ad-do-it)
         ad-do-it))
 
   (defun cleanup-function-synopsis (f)
@@ -468,12 +497,18 @@
                        ;; time
                        (tag-regex (format "\\(^\\|[ \t\n*]\\)%s\\($\\|(\\)"
                                           (regexp-quote tag))))
-                  (set-buffer (find-tag-noselect tag-regex nil t))
+                  ;; (set-buffer (find-tag-noselect tag-regex nil t))
+                  (set-buffer (find-tag-noselect tag nil t))
                   (let ((synopsis (or (thing-at-point 'function-synopsis)
                                       (thing-at-point 'line))))
+                    (message "synopsis: %s %s" synopsis (find-tag-noselect tag-regex nil t))
                     (when synopsis
                       (eldoc-message "%s"
-                                     (cleanup-function-synopsis synopsis)))))))))))
+                                     (cleanup-function-synopsis synopsis))
+                      t)))))))))
+
+  ;; (find-tag-noselect (format "\\(^\\|[ \t\n*]\\)%s\\($\\|(\\)" (regexp-quote (find-tag-default))) nil t)
+  ;; (find-tag-noselect (regexp-quote (find-tag-default)) nil t)
 
   (when nil
     (ad-disable-advice 'eldoc-print-current-symbol-info 'around 'eldoc-show-c-tag)
@@ -489,3 +524,6 @@
 
 (provide 'dev-config)
 ;;; dev-config.el ends here
+
+
+

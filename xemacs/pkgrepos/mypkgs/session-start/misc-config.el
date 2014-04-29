@@ -573,10 +573,7 @@ The indirect buffer can have another major mode."
                     "DISPLAY=localhost:10.0 xterm -e"
                     "xterm -e"))
                (vimcmd "vim")
-               (filename
-                (if (file-remote-p file)
-                    (tramp-file-name-localname (tramp-file-connection file))
-                    file))
+               (filename (file-name-localname file))
                (pos (format "'+normal %dG%d|'" (current-line) (current-column)))
                (cmd (mapconcat 'identity
                                (list xcmd vimcmd pos filename "&") " ")))

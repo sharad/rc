@@ -134,7 +134,8 @@ to the created hash table."
   "Return the difference between the two times, in seconds.
 T1 and T2 are time values (as returned by `current-time' for example)."
   ;; Pacify byte-compiler with `symbol-function'.
-  (time-to-seconds (subtract-time t1 t2)))
+  ;; (time-to-seconds (subtract-time t1 t2))
+  (float-time (subtract-time t1 t2)))
 
 (defun c-eldoc-time-difference (old-time)
   "Returns whether or not old-time is less than c-eldoc-buffer-regenerate-time seconds ago."
@@ -289,15 +290,15 @@ T1 and T2 are time values (as returned by `current-time' for example)."
               (c-skip-ws-forward)
               ;; colorize
               (concat (propertize (buffer-substring-no-properties
-                                   (point)
-                                   function-name-point)
-                                  'face type-face)
-                      " "
-                      (propertize current-function
-                                  'face 'font-lock-function-name-face)
-                      " "
-                      (c-eldoc-format-arguments-string arguments
-                                                       (cdr current-function-cons))))
+                                         (point)
+                                         function-name-point)
+                                        'face type-face)
+                            " "
+                            (propertize current-function
+                                        'face 'font-lock-function-name-face)
+                            " "
+                            (c-eldoc-format-arguments-string arguments
+                                                             (cdr current-function-cons))))
           (set-buffer current-buffer))))))
 
 (provide 'c-eldoc)
