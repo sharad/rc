@@ -56,7 +56,7 @@ define_webjump("tag",
                "http://delicious.com/sh4r4d/%s");
 //              "Your del.icio.us tag");
 // del.icio.us
-add_delicious_webjumps("sh4r4d");
+// add_delicious_webjumps("sh4r4d");
 define_webjump("tag",
                "http://delicious.com/sh4r4d/%s");
 define_webjump("search/del",
