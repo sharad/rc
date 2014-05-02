@@ -56,9 +56,12 @@ define_webjump("tag",
                "http://delicious.com/sh4r4d/%s");
 //              "Your del.icio.us tag");
 // del.icio.us
-add_delicious_webjumps("sh4r4d");
+
+// add_delicious_webjumps("sh4r4d");
+
 define_webjump("tag",
                "http://delicious.com/sh4r4d/%s");
+
 define_webjump("search/del",
                "http://delicious.com/search?p=%s");
 // webjumps -sharad
@@ -1010,5 +1013,3 @@ define_webjump("forum/gmane", "http://gmane.org/find.php?list=%s");
 //{{
 define_webjump("commandlinefu", "http://www.commandlinefu.com/commands/matching/%s/ZmluZA==/sort-by-votes");
 //}}
-
-
