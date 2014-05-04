@@ -167,6 +167,12 @@
         (add-to-list 'tramp-default-proxies-alist
                      `((regexp-quote ,hostname) nil nil)))
 
+      (defun reset-no-tramp-proxy (hostname)
+        (interactive "shostname: ")
+        ;; (add-to-list 'tramp-default-proxies-alist
+        ;;              `((regexp-quote ,hostname) nil nil))
+        )
+
       (eval-after-load "tramp"
         '(progn
           (add-to-list
