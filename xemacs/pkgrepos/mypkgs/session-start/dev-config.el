@@ -193,6 +193,35 @@
 
 
 (deh-require-maybe gdb-ui
+
+  (deh-section "correction"
+    (defalias 'gud-find-file-noselect 'gud-find-file)
+
+    (defun gdb-get-location (bptno line flag)
+      "Find the directory containing the relevant source file.
+Put in buffer and place breakpoint icon."
+      (goto-char (point-min))
+      (catch 'file-not-found
+        (if (search-forward "Located in " nil t)
+            (when (looking-at "\\S-+")
+              (delete (cons bptno "File not found") gdb-location-alist)
+              (push (cons bptno (match-string 0)) gdb-location-alist))
+            (gdb-resync)
+            (unless (assoc bptno gdb-location-alist)
+              (push (cons bptno "File not found") gdb-location-alist)
+              (message-box "Cannot find source file for breakpoint location.\n\
+Add directory to search path for source files using the GDB command, dir."))
+            (throw 'file-not-found nil))
+        (with-current-buffer
+            (gud-find-file-noselect (match-string 0))
+          (gdb-init-buffer)
+          ;; only want one breakpoint icon at each location
+          (save-excursion
+            (goto-char (point-min))
+            (forward-line (1- (string-to-number line)))
+            (gdb-put-breakpoint-icon (eq flag ?y) bptno))))))
+
+
   ;; make command for asking remotehost:remoteport for gdbserver
   ;; *** On Embedded Device
   ;; gdbserver localhost:PORT program arg
