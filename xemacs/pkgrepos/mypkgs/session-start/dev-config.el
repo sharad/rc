@@ -195,6 +195,12 @@
 (deh-require-maybe gdb-ui
 
   (deh-section "correction"
+
+
+    ;; find-file-noselect
+    ;; find-file
+    ;; call fails over tramp
+
     (defalias 'gud-find-file-noselect 'gud-find-file)
 
     (defun gdb-get-location (bptno line flag)
