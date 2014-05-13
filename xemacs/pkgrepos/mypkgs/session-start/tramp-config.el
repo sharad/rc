@@ -162,12 +162,12 @@
         (add-to-list 'tramp-default-proxies-alist
                      '((regexp-quote "localhost") nil nil)))
 
-      (defun set-no-tramp-proxy (hostname)
+      (defun tramp-set-no-proxy (hostname)
         (interactive "shostname: ")
         (add-to-list 'tramp-default-proxies-alist
                      `((regexp-quote ,hostname) nil nil)))
 
-      (defun reset-no-tramp-proxy (hostname)
+      (defun tramp-reset-no-proxy (hostname)
         (interactive "shostname: ")
         ;; (add-to-list 'tramp-default-proxies-alist
         ;;              `((regexp-quote ,hostname) nil nil))

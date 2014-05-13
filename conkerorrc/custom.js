@@ -264,5 +264,8 @@ let (home = get_home_directory()) { // already ion init.js
 // user_pref("browser.visited_color", "#551A8B");
 // user_pref("browser.visited_color", "#660033");
 
+user_pref("browser.sessionhistory.max_total_viewers", 5);
+user_pref("browser.cache.memory.max_entry_size", 2560);
+
 // }
 
