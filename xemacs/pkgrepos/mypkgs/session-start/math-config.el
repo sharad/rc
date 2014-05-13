@@ -26,6 +26,7 @@
 
 
 (deh-require-maybe (progn maxima imaxima)
+  ;; M-x imaxima
   ;; http://www.emacswiki.org/emacs/MaximaMode
   ;; (add-to-list 'load-path "/usr/local/share/maxima/5.18.1/emacs/")
   (autoload 'maxima-mode "maxima" "Maxima mode" t)
@@ -36,6 +37,7 @@
   (add-to-list 'auto-mode-alist '("\\.ma[cx]" . maxima-mode)))
 
 (deh-require-maybe gnuplot
+  ;; M-x gnuplot-make-buffer
   ;; http://www.emacswiki.org/emacs/GnuplotMode
   ;; see http://xafs.org/BruceRavel/GnuplotMode
   ;; see http://xafs.org/BruceRavel/GnuplotMode?action=AttachFile&do=view&target=gpelcard.pdf
