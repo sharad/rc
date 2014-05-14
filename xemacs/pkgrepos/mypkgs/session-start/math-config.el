@@ -47,16 +47,14 @@
         (append
          (list
           '("\\.gp$" . gnuplot-mode)
-          '("\\.plt$" . gnuplot-mode)
-          )
+          '("\\.plt$" . gnuplot-mode))
          auto-mode-alist))
 
   ;; if you have the latest win32 version of gnuplot
   (add-hook 'gnuplot-load-hook
             '(lambda ()
-              ;; (setq gnuplot-program "C:\\Programme\\gnuplot\\bin\\pgnuplot.exe")
-              (setq gnuplot-gnuplot-buffer "plot.plt") ; name of a new gnuplot file
-              ; (setq show-trailing-whitespace t)
+              ;; (setq gnuplot-gnuplot-buffer "plot.plt") ; name of a new gnuplot file
+              ;;; (setq show-trailing-whitespace t)
               (setq whitespace-check-buffer-ateol t))))
 
 
