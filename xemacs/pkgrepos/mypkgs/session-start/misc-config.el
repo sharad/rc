@@ -586,7 +586,11 @@ The indirect buffer can have another major mode."
 (deh-require-maybe ielm
   ;; * Trying from the interactive emacs lisp mode (M-x ielm)
   (defalias 'repl 'ielm)
-  (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'ielm t))
+  (add-hook 'sharad/enable-startup-inperrupting-feature-hook
+            '(lambda ()
+              (let ((default-directory "~/"))
+                (ielm)))
+            t))
 
 
 (deh-section "vimrc"
