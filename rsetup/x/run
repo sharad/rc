@@ -102,12 +102,6 @@ if [ $DISPLAY ] ; then
     osdsh -n 10 &!
 
 
-    whence -p keynav >& /dev/null &&
-    pgrep keynav >& /dev/null ||
-    keynav &!
-
-
-
 
 fi
 

@@ -10,28 +10,6 @@ mousemove 42 42
 EOF
 fi
 
-pgrep xautolock >& /dev/null && xautolock -locknow &!
-foreach prog (
-    ## it is automatically started by gdm, so no need to start it.
-    # gnome-keyring-daemon
-    # gnome-power-manager
-    mail-notification
-    # blueman-adapters
-    # blueman-applet
-    # bluetoothd
-    # empathy
-    synergys
-    ) {
-        if whence -p $prog >& /dev/null && ! pgrep $prog[0,15] >& /dev/null ; then
-            $prog &!
-            echo started $prog >&2
-	    pgrep $prog[0,15] >&2
-            sleep 1s;
-        else
-            print Not starting $prog >&2
-        fi
-    }
-
 ## ssh-agent access needed.
 whence -p xautolock >& /dev/null &&
 pgrep xautolock >& /dev/null ||
@@ -221,3 +199,32 @@ fi
 [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}
 
 unset __comp
+
+
+pgrep xautolock >& /dev/null && xautolock -locknow &!
+foreach prog (
+    ## it is automatically started by gdm, so no need to start it.
+    # gnome-keyring-daemon
+    # gnome-power-manager
+    mail-notification
+    # blueman-adapters
+    # blueman-applet
+    # bluetoothd
+    # empathy
+    synergys
+    ) {
+        if whence -p $prog >& /dev/null && ! pgrep $prog[0,15] >& /dev/null ; then
+            $prog &!
+            echo started $prog >&2
+	    pgrep $prog[0,15] >&2
+            sleep 1s;
+        else
+            print Not starting $prog >&2
+        fi
+    }
+
+whence -p keynav >& /dev/null &&
+pgrep keynav >& /dev/null ||
+keynav &!
+
+
