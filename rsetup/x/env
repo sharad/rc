@@ -34,3 +34,10 @@ BROWSER="conkeror"
 export EDITOR
 export VISUAL
 export BROWSER
+
+# https://bugzilla.gnome.org/show_bug.cgi?id=85715
+# https://bugzilla.gnome.org/show_bug.cgi?id=723740
+# https://bugzilla.gnome.org/show_bug.cgi?id=724067
+# https://bugzilla.gnome.org/show_bug.cgi?id=630217#c15
+GDK_RGBA=0
+export GDK_RGBA
