@@ -28,6 +28,7 @@
 ;;test
 (when nil
   (testing
+   ;; (calendar)
    (planner-tasks-of-plan-today (planner-today-ensure-exists) (task-stati-of-sys 'planner '(open inprogress)))
    (planner-tasks-of-plan-today "LinuxMIS" (task-stati-of-sys 'planner '(open inprogress)))
    (planner-tasks-of-plan-today "MyMIS" (task-stati-of-sys 'planner '(open inprogress)))

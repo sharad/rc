@@ -186,7 +186,8 @@ interactive("delicious-post-sel",
                     // I.window.alert(eles[i].text);
                     completions.push(eles[i].text);
                 }
-                var completer = prefix_completer($completions = completions);
+                // var completer = prefix_completer($completions = completions);
+                var completer = new prefix_completer($completions = completions);
 
                 var sendurl = 'https://api.del.icio.us/v1/posts/add?&url='+
                 // var sendurl = 'https://api.del.icio.us/v2/posts/add?&url='+
@@ -248,7 +249,8 @@ interactive("delicious-post",
                     // I.window.alert(pop[i].attributes[0].textContent);
                     completions.push(pop[i].attributes[0].textContent);
                 }
-                var completer = prefix_completer($completions = completions);
+                // var completer = prefix_completer($completions = completions);
+                var completer = new prefix_completer($completions = completions);
                 // }}
 
                 // {{ initial value
@@ -333,7 +335,8 @@ interactive("delicious-post-link",
                     // I.window.alert(pop[i].attributes[0].textContent);
                     completions.push(pop[i].attributes[0].textContent);
                 }
-                var completer = prefix_completer($completions = completions);
+                // var completer = prefix_completer($completions = completions);
+                var completer = new prefix_completer($completions = completions);
                 // }}
 
                 // {{ initial value

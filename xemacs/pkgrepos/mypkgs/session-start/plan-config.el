@@ -55,6 +55,7 @@
       (setq muse-wiki-allow-nonexistent-wikiword t))
   (setq
    calendar-mark-diary-entries-flag t
+   diary-file "~/.Organize/emacs/diary/diary"
    ;;   mark-diary-entries-in-calendar t
    )
 
