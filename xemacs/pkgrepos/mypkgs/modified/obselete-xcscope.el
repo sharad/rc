@@ -2462,4 +2462,4 @@ file."
 (add-hook 'c++-mode-hook (function cscope:hook))
 (add-hook 'dired-mode-hook (function cscope:hook))
 
-(provide 'xcscope)
+(provide 'obslete-xcscope)
