@@ -14,7 +14,9 @@ URxvt*shading: -100
 URxvt*scrollstyle: xterm
 URxvt*scrollBar: False
 URxvt*scrollTtyOutput: True
-URxvt*saveLines: 100000
+!! URxvt*saveLines: 100000
+!! URxvt*saveLines: 64
+URxvt*saveLines: 65535
 URxvt*borderLess: False
 !URxvt*inheritPixmap: True
 URxvt*background: Black
@@ -76,7 +78,8 @@ URxvt.perl-ext:        selection,mark-yank-urls,readline
 !! check http://mina86.com/2009/05/16/tabbed-urxvt-extension/
 !! URxvt.new-button:       yes
 !! URxvt.perl-ext-common: default,matcher,digital-clock,grab
-URxvt.perl-ext-common: default,matcher,keyboard-select,url-select,clipboard,tabbedex,font,sharad
+URxvt.perl-ext-common: default,matcher,keyboard-select,url-select,clipboard,tabbedex,font
+URxvt.perl-ext: default,matcher,keyboard-select,url-select,clipboard,tabbedex,font
 
 !!start: from: http://christarnowski.wordpress.com/2009/08/22/urxvt/
 URxvt.jumpScroll: true
@@ -277,6 +280,3 @@ urxvt.keysym.Control-Shift-Up:      perl:font:increment
 urxvt.keysym.Control-Shift-Down:    perl:font:decrement
 
 urxvt.keysym.3-l:		\033c
-
-
-

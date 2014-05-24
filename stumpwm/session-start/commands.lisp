@@ -492,12 +492,12 @@
 ;;             (run-wcli-command (concatenate 'string "urxvtc"
 ;;                                           (if title (format nil " -T ~a" title)))))
 (defcommand urxvt () ()
-  (run-wcli-command (concatenate 'string "urxvtc"
+  (run-wcli-command (concatenate 'string "urxvt" ;; "urxvtc"
                                  (format nil " -T ~a"
                                          (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))))
 
 (defcommand urxvt () ()
-  (run-wcli-command (concatenate 'string "urxvtc"
+  (run-wcli-command (concatenate 'string "urxvt" ;; "urxvtc"
                                  ;; (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
                                  ;;   (if (probe-file paradise)
                                  ;;       (concatenate 'string " -cd " paradise " ")
