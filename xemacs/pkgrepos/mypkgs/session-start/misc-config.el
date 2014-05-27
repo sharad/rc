@@ -552,14 +552,18 @@ The indirect buffer can have another major mode."
                  (set-window-buffer window next-window-buffer))) (butlast (window-list nil 0)))))
 
 (deh-section "examine"
-  (defun disply-expression-value (var)
+  (defun display-expression-value (var)
     (interactive "sexp: ")
     (let ((buf (get-buffer-create "*output*")))
       (if (or t (window-splittable-p (selected-window) ))
           (split-window-sensibly (selected-window)))
       (switch-to-buffer-other-window buf)
       (switch-to-buffer buf)
-      (pp (eval var) buf))))
+      ;; (pp (eval (read var)) buf)
+      (with-current-buffer buf
+        (prin1 (eval (read var)) buf)
+        (terpri)))))
+
 
 (deh-section "vim"
   ;; viper-mode

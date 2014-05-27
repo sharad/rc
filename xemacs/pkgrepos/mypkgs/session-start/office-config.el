@@ -59,6 +59,7 @@
     (error (message "Error: %s" e))))
 
 (defvar taskdir "/home/s/paradise/tasks" "Task Directory")
+(defvar task-local-path "/~s/tasks" "task-local-path")
 
 
 
@@ -147,9 +148,14 @@
                 (planner-bugzilla-create-bug-to-task bug plan-page t)
                 (planner-create-task
                  (cond ((string-equal task "bug")
-                        (format "b%s %s %s" name desc (concat "[[" (read-from-minibuffer (format "url for bug " name)) "][url]]")))
+                        (if task-local-path
+                            (format "[[%s/%s][b%s]] %s %s"
+                                    task-local-path (concat (pluralize-string task) "/" name) name desc (concat "[[" (read-from-minibuffer (format "url for bug " name)) "][url]]"))
+                            (format "b%s %s %s" name desc (concat "[[" (read-from-minibuffer (format "url for bug " name)) "][url]]"))))
                        ((string-equal task "feature")
-                        (format "%s: %s" name desc))
+                        (if task-local-path
+                            (format "[[%s/%s][%s]]: %s" task-local-path (concat (pluralize-string task) "/" name) name desc)
+                            (format "%s: %s" name desc)))
                        (t (error "task is not bound.")))
                  (let ((planner-expand-name-favor-future-p
                         (or planner-expand-name-favor-future-p
@@ -211,4 +217,3 @@
 
 
 (provide 'office-config)
-
