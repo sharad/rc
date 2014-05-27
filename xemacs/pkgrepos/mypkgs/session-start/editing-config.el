@@ -29,7 +29,12 @@
 
 (setq
  x-select-enable-clipboard t
- x-select-enable-primary t)
+ x-select-enable-primary t
+ ;; http://www.emacswiki.org/emacs/CopyAndPaste#toc5
+ select-active-regions 'only)
+
+;; http://www.emacswiki.org/emacs/CopyAndPaste#toc5
+;; (global-set-key [mouse-2] 'mouse-yank-primary)
 
 (deh-require-or-package-install light-symbol
   ;; ;; http://stackoverflow.com/a/385676/341107

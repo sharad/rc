@@ -265,18 +265,24 @@
           (if (string-match planner-task-simple-name-regex task)
               (match-string 1 task)
               task))
-         (task-with-links-url-removed
+         (task-with-links-local-link-removed
+          (replace-regexp-in-string
+           (concat "[[][[]" ".\+" "[]][[]" "\\(.\+\\)" "[]][]]\\(\s\+\\)")
+           "\\1\\2"
+           task-with-links-removed))
+
+         (task-with-links-local-link-url-removed
           (replace-regexp-in-string
            "\s*[[][[].*[]][[]url[]][]]"
            ""
-           task-with-links-removed)))
-    task-with-links-url-removed))
+           task-with-links-local-link-removed)))
+    task-with-links-local-link-url-removed))
 
 
 (testing
  (kill-new
   (extract-task-name
-   "b39437 code: Un reason (0x0001) [[https://bugzilla.merunetworks.com/bugzilla/show_bug.cgi?id=39437][url]] {{Tasks:42}} ([[2013.08.14]],[[MyMIS]],[[TasksByProject]])")))
+   "[[sadfdsf][b39437]] code: Un reason (0x0001) [[https://bugzilla.merunetworks.com/bugzilla/show_bug.cgi?id=39437][url]] {{Tasks:42}} ([[2013.08.14]],[[MyMIS]],[[TasksByProject]])")))
 
 (defun extract-task-name-from-list (task-list)
   (extract-task-name (nth 4 task-list)))
