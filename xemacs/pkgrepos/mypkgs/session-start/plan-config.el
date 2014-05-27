@@ -55,9 +55,8 @@
       (setq muse-wiki-allow-nonexistent-wikiword t))
   (setq
    calendar-mark-diary-entries-flag t
-   diary-file "~/.Organize/emacs/diary/diary"
    ;;   mark-diary-entries-in-calendar t
-   )
+   diary-file "~/.Organize/emacs/diary/diary")
 
   ;;(global-set-key (kbd "<f9> t") 'planner-create-task-from-buffer)
 
@@ -69,13 +68,11 @@
       (setq
        planner-id-add-task-id-flag t
        planner-id-update-automatically t ;; default
-       planner-id-tracking-file "~/.Organize/emacs/plan/planner-ids"
-       ))
+       planner-id-tracking-file "~/.Organize/emacs/plan/planner-ids"))
   (deh-require-maybe planner-cyclic
       (setq
        planner-cyclic-diary-file "~/.Organize/emacs/plan/planner-cyclic-diary-file"
-       planner-cyclic-diary-nag t
-       ))
+       planner-cyclic-diary-nag t))
   (xrequire 'planner-deadline)
 
   (deh-require-maybe planner-multi
@@ -86,6 +83,7 @@
 
   (deh-require-maybe bbdb-com          ;checking it as it fail emacs to move ahead.
       (xrequire 'planner-bbdb))
+
   (xrequire 'planner-erc)
   ;; (xrequire 'planner-w3m)
   (xrequire 'planner-bibtex)
@@ -162,8 +160,7 @@
       "* Diary\n\n\n"
       "* Public Diary\n\n"
       "* Private Diary\n\n"
-      "* Cal-Desk\n\n"
-      )))
+      "* Cal-Desk\n\n")))
 
   ;; "* Diary\n\n<lisp>(planner-diary-entries-here)</lisp>\n"
 
