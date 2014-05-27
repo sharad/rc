@@ -184,7 +184,8 @@ This function returns a timer object which you can use in `cancel-timer'."
                                      (message "Midnight: running calendar and planner")
                                      (calendar)
                                      ;; check planner-carry-tasks-forward
-                                     (plan 7)))))))
+                                     (plan 7)
+                                     (muse-project-publish "WikiPlanner")))))))
 
 
 (deh-require-maybe (progn
