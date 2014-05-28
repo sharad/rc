@@ -1,5 +1,8 @@
 
 (deh-require-maybe org
+  ;; publishing
+  (require 'org-publish)
+
   (deh-section "orgextra"
     ;; http://notmuchmail.org/emacstips/
     (add-to-list 'load-path "/usr/share/org-mode/lisp")

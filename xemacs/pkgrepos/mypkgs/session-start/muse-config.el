@@ -6,7 +6,27 @@
   (defun muse-help ()
     (interactive)
     (find-file-other-window "/usr/share/doc/muse-el/examples/QuickStart.muse"))
-  (define-key muse-mode-local-map (kbd "C-c C-.") 'muse-help))
+  (define-key muse-mode-local-map (kbd "C-c C-.") 'muse-help)
+
+  (deh-require-maybe org
+
+    ;; quick fix
+    (setq muse-ignored-extensions-regexp
+          (regexp-or muse-ignored-extensions-regexp "\\.\\(muse\\|bz2\\|gz\\|[Zz]\\|org\\)\\'"))
+
+
+    ;; (setq html (org-export-region-as-html beg end t 'string))
+    (defun org-export-string-as-html-string (text)
+      (with-temp-buffer
+        (insert text)
+        (org-export-region-as-html 0 (point-max) t 'string)))
+
+    ;; Hurdle
+    ;; (string-match muse-explicit-link-regexp "[[/~s/tmp/xx.org][sdfds]]")
+    ;; (string-match org-bracket-link-analytic-regexp++ "[[/~s/tmp/xx.org][sdfds]]")
+
+    (add-to-list 'muse-publish-markup-regexps
+                 '(4000 org-bracket-link-analytic-regexp++ 0 org-export-string-as-html-string))))
 
 
 ;; from: http://1010.co.uk/tech_notes.html
@@ -113,4 +133,3 @@
 
 
 (provide 'muse-config)
-
