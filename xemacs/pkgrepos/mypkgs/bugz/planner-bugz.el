@@ -43,6 +43,7 @@
 
 (defvar planner-bugz-regex "^\\(\\(b[0-9]\+\\) .\+\\) \{\{Tasks:[0-9]\+\}\}\\(\s\+[[][[]\\)\?" "Planner Bugz Regex")
 (defvar planner-bugz-format "b%d %s [[%s][url]]" "Planner Bugz Format")
+(defvar planner-bugz-formattor nil "Planner Bugz Formattor ")
 
 
 (defun bugz-to-planner-status (status)
@@ -55,7 +56,13 @@
                         (assoc "short_desc" bug))))
          (url (or (concat bugz-showbug-url (number-to-string id))
                   (cdr (assoc "_bugz-url" bug)) bugz-url)))
-    (format planner-bugz-format id summary url)))
+    (if (fboundp planner-bugz-formattor)
+        (progn
+          (message "planner-bugz-formattor defined")
+          (funcall planner-bugz-formattor  id summary url))
+        (progn
+          (message "planner-bugz-formattor not defined")
+          (format planner-bugz-format id summary url)))))
 
 (defun planner-bugzilla-bugtask-exist-in-page (bug &optional page)
   (find (cdr (assoc "id" bug))

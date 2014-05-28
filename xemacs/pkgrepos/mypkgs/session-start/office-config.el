@@ -73,10 +73,14 @@
 
 (defvar task-config '(("bug"
                        (files "todo.org" "notes.org" "an0.org")
+                       (dirs "logs" "programs" "patches" "deliverables")
+                       (links ("notes.html" . "index.html"))
                        (project "/susengg-01:releases/projects/bugs.pb"))
                       ("feature"
                        (files "reqirement.org" "feasibility.org"
                         "design.org" "todo.org" "notes.org" "an0.org")
+                       (dirs "logs" "programs" "patches" "deliverables")
+                       (links ("notes.html" . "index.html"))
                        (project "/susengg-01:releases/projects/features-dev.pb"))))
 
 (defvar task-file-properties '((buffer-read-only . t)
@@ -89,12 +93,48 @@
       (setq *taskdir-current-task* (ido-read-directory-name "dir: " taskdir nil t))
       *taskdir-current-task*))
 
+(defun create-plan-task (dir task name desc)
+  (let* ((plan-page (planner-read-non-date-page (planner-file-alist)))
+         (hname
+          (if task-local-path
+              (format "[[%s][b%s]]:" (concat task-local-path "/" (pluralize-string task) "/" name) name)
+              (format "b%s:" name))))
+    ;; (read-from-minibuffer (format "task-description %s: " task-description)
+    ;;                       task-description)
+    (if (and (string-equal task "bug")
+             bug)
+        (flet ((my-formattor (id summary url)
+                 (format "[[%s][b%s]]: %s %s"
+                         (concat task-local-path "/" (pluralize-string task) "/" (number-to-string id))
+                         (number-to-string id) summary (concat "[[" url "][url]]"))))
+          (let ((planner-bugz-formattor #'my-formattor))
+            (planner-bugzilla-create-bug-to-task bug plan-page t)))
+        (let ((task-description
+               (cond
+
+                 ((string-equal task "bug")
+                  (format "%s %s %s"
+                          hname desc (concat "[[" (read-from-minibuffer (format "url for bug " name)) "][url]]")))
+
+                 ((string-equal task "feature") (format "%s %s" hname desc))
+
+                 (t (error "task is not bound.")))))
+          (planner-create-task
+           task-description
+           (let ((planner-expand-name-favor-future-p
+                  (or planner-expand-name-favor-future-p
+                      planner-task-dates-favor-future-p)))
+             (planner-read-date))
+           nil plan-page
+           (task-status-of-sys 'planner 'inprogress))))))
+
 (defun create-task-dir (dir task name desc)
-  (dolist (dname '("logs" "programs" "patches" "deliverables"))
-    (make-directory (concat dir "/" dname) t))
+  ;; (dolist (dname '("logs" "programs" "patches" "deliverables"))
+  (make-directory dir t)
   (make-directory (concat "/home/s/hell/SCRATCH/" (pluralize-string task) "/" name) t)
   (make-symbolic-link (concat "/home/s/hell/SCRATCH/" (pluralize-string task) "/" name) (concat dir "/scratch"))
 
+  ;; files
   (dolist (f (cdr (assoc 'files (cdr (assoc task task-config)))))
     (let ((nfile (expand-file-name f (concat dir "/")))
           find-file-not-found-functions) ;find alternate of find-file-noselect to get non-existing file.
@@ -110,9 +150,98 @@
          (if (coding-system-p 'utf-8-emacs)
              'utf-8-emacs
              'emacs-mule))
-        (write-file nfile)))))
+        (write-file nfile))))
+  ;; links
+  (dolist (lp (cdr (assoc 'links (cdr (assoc task task-config)))))
+    (make-symbolic-link
+     (car lp) ;; (expand-file-name (car lp) (concat dir "/"))
+     (expand-file-name (cdr lp) (concat dir "/"))))
+  ;; dirs
+  (dolist (dname (cdr (assoc 'dirs (cdr (assoc task task-config)))))
+    (make-directory (concat dir "/" dname) t)))
 
 (defun create-task (task name &optional desc)
+  (interactive
+   (let* ((task (completing-read "what: " (mapcar 'car task-config) nil t))
+          (name (completing-read "name: " (directory-files (concat taskdir "/" (pluralize-string task) "/")) nil))
+          (bug (if (string-equal task "bug")
+                   (car
+                    (condition-case e
+                         (bugzilla-get-bugs
+                          '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url")
+                          `(("ids" ,name)))
+                      ('error (progn (message "bugzilla some problem is there.") nil))))))
+          (desc (if bug
+                    (cdr (assoc "summary" bug))
+                    (read-from-minibuffer (format "Desc of %s: " name)))))
+     (list task name desc)))
+
+  (let* ((dir (concat taskdir "/" (pluralize-string task) "/" name))
+         (bug (if (string-equal task "bug")
+                  (car
+                    (condition-case e
+                         (bugzilla-get-bugs
+                          '("id" "summary" "short_desc" "status" "bug_status" "_bugz-url")
+                          `(("ids" ,name)))
+                      ('error (progn (message "bugzilla some problem is there.") nil))))))
+         (desc (or desc (if bug (read-from-minibuffer (format "Desc of %s: " name))))))
+    (if (file-directory-p dir)
+        (find-task dir)
+        (progn
+
+          ;; Planner
+          (create-plan-task dir task name desc)
+          ;; Project-Buffer
+          (when nil
+            (iproject-add-project
+             nil                          ;project-type
+             nil                          ;project-main-file
+             nil                          ;project-root-folder
+             project-name                 ;project-name
+             nil)                         ;file-filter
+            )
+          ;; create task dir
+          (create-task-dir dir task name desc)
+          (find-file (expand-file-name
+                      (cadr (assoc 'files (cdr (assoc task task-config))))
+                      (concat dir "/")))))
+
+    (if (y-or-n-p (format "Should set %s current task" dir))
+        (setq *taskdir-current-task* dir))))
+
+(defun delete-task-dir (dir task name desc)
+  ;; (dolist (dname '("logs" "programs" "patches" "deliverables"))
+  (make-directory dir t)
+  (make-directory (concat "/home/s/hell/SCRATCH/" (pluralize-string task) "/" name) t)
+  (make-symbolic-link (concat "/home/s/hell/SCRATCH/" (pluralize-string task) "/" name) (concat dir "/scratch"))
+
+  ;; files
+  (dolist (f (cdr (assoc 'files (cdr (assoc task task-config)))))
+    (let ((nfile (expand-file-name f (concat dir "/")))
+          find-file-not-found-functions) ;find alternate of find-file-noselect to get non-existing file.
+      (with-current-buffer (or (find-buffer-visiting nfile)
+                               (find-file-noselect nfile))
+        ;; (if (goto-char (point-min))
+        ;;     (insert "# -*-  -*-\n"))
+        (dolist (pv task-file-properties)
+          (add-file-local-variable-prop-line (car pv) (cdr pv)))
+        (goto-char (point-max))
+        (insert (format "\n\n* %s - %s: %s\n\n\n\n" (capitalize task) name desc))
+        (set-buffer-file-coding-system
+         (if (coding-system-p 'utf-8-emacs)
+             'utf-8-emacs
+             'emacs-mule))
+        (write-file nfile))))
+  ;; links
+  (dolist (lp (cdr (assoc 'links (cdr (assoc task task-config)))))
+    (make-symbolic-link
+     (car lp) ;; (expand-file-name (car lp) (concat dir "/"))
+     (expand-file-name f (concat (cdr lp) "/"))))
+  ;; dirs
+  (dolist (dname (cdr (assoc 'dirs (cdr (assoc task task-config)))))
+    (make-directory (concat dir "/" dname) t)))
+
+(defun delete-task (task name &optional desc)
   (interactive
    (let* ((task (completing-read "what: " (mapcar 'car task-config) nil t))
           (name (completing-read "name: " (directory-files (concat taskdir "/" (pluralize-string task) "/")) nil))

@@ -84,7 +84,9 @@
     (setq
      ;; see http://www.gnus.org/manual/message_36.html
      message-sendmail-f-is-evil nil
-     message-sendmail-envelope-from 'head))
+     message-sendmail-envelope-from 'header
+     mail-specify-envelope-from t
+     mail-envelope-from 'header))
 
 
 ;;{{ For SMTP msmtp
