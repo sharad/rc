@@ -11,8 +11,11 @@
   (deh-require-maybe org
 
     ;; quick fix
-    (setq muse-ignored-extensions-regexp
-          (regexp-or muse-ignored-extensions-regexp "\\.\\(muse\\|bz2\\|gz\\|[Zz]\\|org\\)\\'"))
+    (push "org" muse-ignored-extensions)
+    (when (fboundp 'muse-update-ignored-extensions-regexp)
+        (muse-update-ignored-extensions-regexp
+         'muse-ignored-extensions muse-ignored-extensions))
+
 
 
     ;; (setq html (org-export-region-as-html beg end t 'string))

@@ -267,7 +267,7 @@
               task))
          (task-with-links-local-link-removed
           (replace-regexp-in-string
-           (concat "[[][[]" ".\+" "[]][[]" "\\(.\+\\)" "[]][]]\\(\s\+\\)")
+           (concat "[[][[]" ".\+" "[]][[]" "\\(.\+\\)" "[]][]]" "\\(:\?\s\+\\)")
            "\\1\\2"
            task-with-links-removed))
 
@@ -282,7 +282,7 @@
 (testing
  (kill-new
   (extract-task-name
-   "[[sadfdsf][b39437]] code: Un reason (0x0001) [[https://bugzilla.merunetworks.com/bugzilla/show_bug.cgi?id=39437][url]] {{Tasks:42}} ([[2013.08.14]],[[MyMIS]],[[TasksByProject]])")))
+   "[[sadfdsf][b39437]]: code: Un reason (0x0001) [[https://bugzilla.merunetworks.com/bugzilla/show_bug.cgi?id=39437][url]] {{Tasks:42}} ([[2013.08.14]],[[MyMIS]],[[TasksByProject]])")))
 
 (defun extract-task-name-from-list (task-list)
   (extract-task-name (nth 4 task-list)))

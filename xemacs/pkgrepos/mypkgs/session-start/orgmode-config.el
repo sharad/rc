@@ -1,7 +1,7 @@
 
 (deh-require-maybe org
   ;; publishing
-  (require 'org-publish)
+  (deh-require-maybe org-publish)
 
   (deh-section "orgextra"
     ;; http://notmuchmail.org/emacstips/

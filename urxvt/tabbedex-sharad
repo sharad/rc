@@ -183,10 +183,16 @@ sub new_tab {
 
    push @urxvt::TERM_EXT, urxvt::ext::tabbedex::tab::;
 
+   urxvt::log sprintf "sharad: %s\n", "new term 1";
+
+
    my $term = new urxvt::term
       $self->env, $urxvt::RXVTNAME,
       -embed => $self->parent,
       @argv;
+
+   urxvt::log sprintf "sharad: %s\n", "new term 2";
+
 }
 
 
