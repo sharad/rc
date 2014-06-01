@@ -231,7 +231,7 @@
 ;;     (pa-fnstumpwm::select-plan-task)))
 
 #+pa
-(progn
+(ignore-errors ;if this fails, don't enter debugger
   (pa-fnstumpwm::initpa)
   (pa-fnstumpwm::select-plan-task))
 

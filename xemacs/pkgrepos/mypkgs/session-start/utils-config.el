@@ -117,9 +117,6 @@
     (write-region content nil filename t)
     (put-file-in-rcs filename)))
 
-
-
-
 ;;{{ already present in tramp-remote-path
 ;; have to add into .profile
 ;; (add-to-list 'tramp-remote-path "/usr/local/bin")

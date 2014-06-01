@@ -149,6 +149,10 @@
  (cdr (assoc 'open status-mappings))
  (task-status-map 'planner 'open))
 
+(defmacro with-writable-buffer (&rest body)
+  `(let ((buffer-read-only nil))
+     ,@body))
+
 (defmacro with-safe-plan-env (&rest body)
   `(let ((global-ede-mode nil)
          (ede-minor-mode nil)
@@ -156,7 +160,8 @@
          (find-file-hook find-file-hook))
      (remove-hook 'find-file-hook 'ede-turn-on-hook)
      ;; (update-ssh-agent)
-     ,@body))
+     (with-writable-buffer
+         ,@body)))
 
 (defun planner-plan-safe ()
   (with-safe-plan-env
