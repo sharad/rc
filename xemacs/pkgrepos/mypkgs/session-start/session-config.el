@@ -530,8 +530,11 @@ Also returns nil if pid is nil."
   ;; It works for me with one desktop, with more than one may need some tweaking.
 
   ;; use only one desktop
-  (setq desktop-path '("~/.emacs.d/"))
-  (setq desktop-dirname "~/.emacs.d/")
+  (make-directory (expand-file-name "autoconfig/desktop/" user-emacs-directory) t)
+  (setq todoo-file-name (expand-file-name "autoconfig/desktop/" user-emacs-directory))
+
+  (setq desktop-path (expand-file-name "autoconfig/desktop/" user-emacs-directory))
+  (setq desktop-dirname (expand-file-name "autoconfig/desktop/" user-emacs-directory))
   (setq desktop-base-file-name
         (concat
          "emacs-desktop"
@@ -967,7 +970,8 @@ Using it may cause conflicts.  Use it anyway? " owner)))))
   ;;            (concat "-" server-name))))
 
   ;; (defvar *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
-  (setq session-save-file (expand-file-name "session" "~/.emacs.d"))
+  (make-directory (expand-file-name "autoconfig/session/" user-emacs-directory) t)
+  (setq session-save-file (expand-file-name "autoconfig/session/session.el" user-emacs-directory))
 
   (defun sharad/session-saved-session ()
     (if (file-exists-p session-save-file) session-save-file))
@@ -1051,7 +1055,14 @@ Using it may cause conflicts.  Use it anyway? " owner)))))
 
 
 (deh-require-maybe savehist-20+
-  )
+  ;; savehist: save some history
+  (make-directory (expand-file-name "autoconfig/savehist/" user-emacs-directory) t)
+  (setq savehist-additional-variables    ;; also save...
+        '(search ring regexp-search-ring)    ;; ... my search entries
+        savehist-autosave-interval 60        ;; save every minute (default: 5 min)
+        savehist-file (expand-file-name "autoconfig/savehist/savehist.el" user-emacs-directory))   ;; keep my home clean
+  ;; do customization before activation
+  (savehist-mode t))
 
 (deh-require-maybe workspaces
   )

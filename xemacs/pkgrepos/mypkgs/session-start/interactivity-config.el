@@ -29,6 +29,9 @@
 ;; (when t
 (deh-require-maybe ido
 
+  (make-directory (expand-file-name "autoconfig/ido/" user-emacs-directory) t)
+  (setq ido-save-directory-list-file (expand-file-name "autoconfig/ido/ido.last" user-emacs-directory))
+
   (defun ido-is-ftp-directory (&optional dir)
     (string-match
      (if nil ;; ido-enable-tramp-completion

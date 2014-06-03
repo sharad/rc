@@ -1,4 +1,4 @@
-;;; howm.el --- Howm
+;;; howm-config.el --- Howm
 
 ;; Copyright (C) 2011  Sharad Pratap
 
@@ -26,9 +26,11 @@
 
 
 (deh-require-maybe howm
-    (message "howm"))
+  (make-directory (expand-file-name "autoconfig/howm/" user-emacs-directory) t)
+  (setq
+   howm-keyword-file (expand-file-name "autoconfig/howm/howm-keys.el" user-emacs-directory)
+   howm-history-file (expand-file-name "autoconfig/howm/howm-history.el" user-emacs-directory)))
 
 
 (provide 'howm-config)
 ;;; howm.el ends here
-

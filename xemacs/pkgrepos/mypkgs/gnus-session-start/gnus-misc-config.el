@@ -29,8 +29,11 @@
   (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
+(make-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory) t)
 (setq
- mail-user-agent 'gnus-user-agent)
+ mail-user-agent 'gnus-user-agent
+ gnus-home-directory (expand-file-name "autoconfig/gnus/" user-emacs-directory)
+ gnus-startup-file   (expand-file-name "autoconfig/gnus/newsrc" user-emacs-directory))
 
 
 (global-set-key-if-unbind (kbd "H-s") 'gnus-group-save-newsrc)

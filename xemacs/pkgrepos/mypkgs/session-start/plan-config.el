@@ -173,9 +173,10 @@
     (setq
      planner-appt-update-appts-on-save-flag t))
 
-  (when (and (xrequire 'planner-timeclock)
-           (xrequire 'planner-timeclock-summary))
-      (planner-timeclock-summary-insinuate))
+  (deh-require-maybe (and timeclock planner-timeclock planner-timeclock-summary)
+    (make-directory (expand-file-name "autoconfig/timeclock/" user-emacs-directory) t)
+    (setq timeclock-file (convert-standard-filename (expand-file-name "autoconfig/timeclock/timelog" user-emacs-directory)))
+    (planner-timeclock-summary-insinuate))
 
   ;; (deh-require-maybe planner-ledger
   ;;   (add-hook 'planner-goto-hook 'planner-ledger-insert-maybe))
@@ -194,12 +195,16 @@
   ;; planner-registry-insinuate some time create problem in daemon startup.
   ;; as it may start to ask input.
 
+  (make-directory (expand-file-name "autoconfig/planner/" user-emacs-directory) t)
+  (setq planner-registry-file (expand-file-name "autoconfig/planner/planner-registry.el" user-emacs-directory))
+
   (when nil ;; find out somewhere else (plan) is already started.
    ;; (add-hook '*sharad/after-init-hook*
 
    (add-hook 'sharad/enable-startup-inperrupting-feature-hook ;; '*sharad/after-init-hook*
              '(lambda ()
                (deh-require-maybe planner-registry
+                 (setq planner-registry-file "~/.emacs.d/autoconfig/planner/planner-registry.el")
                  (save-excursion
                    (save-window-excursion
                      (plan 2)

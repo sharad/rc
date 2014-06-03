@@ -124,7 +124,11 @@ having the same major mode as the current buffer"
   (deh-require-maybe todo-mode
     ;; famous
     ;; https://groups.google.com/forum/?fromgroups=#!msg/gnu.emacs.sources/7v7Wlnocr8o/bSUKTMEdL4QJ
-    )
+
+    (make-directory (expand-file-name "autoconfig/todo-mode/" user-emacs-directory) t)
+    (setq
+     todo-file-do   (expand-file-name "autoconfig/todo-mode/todo-do" user-emacs-directory)
+     todo-file-done (expand-file-name "autoconfig/todo-mode/todo-done" user-emacs-directory)))
 
   (deh-require-maybe sidebrain
     ;;http://www.emacswiki.org/emacs/SideBrain
@@ -136,6 +140,8 @@ having the same major mode as the current buffer"
   (deh-require-maybe todoo
     ;; part of emacs-goodies-el
     ;; http://www.emacswiki.org/emacs/ToDoo
+    (make-directory (expand-file-name "autoconfig/todoo/" user-emacs-directory) t)
+    (setq todoo-file-name (expand-file-name "autoconfig/todoo/todo" user-emacs-directory))
     (defun todoo-or-close-todoo()
       (interactive)
       (if (eq major-mode 'todoo-mode)

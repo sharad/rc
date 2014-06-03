@@ -27,7 +27,9 @@
 
 
 (deh-require-maybe recentf
+  (make-directory (expand-file-name "autoconfig/recentf/" user-emacs-directory) t)
   (setq
+   recentf-save-file  (make-directory (expand-file-name "autoconfig/recentf/recentf.el" user-emacs-directory) t)
    recentf-exclude (list (regexp-opt '(".org$" ".rem$")))
    recentf-max-saved-items 99
    ;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2007-07/msg00007.html

@@ -24,6 +24,10 @@
 ;; breadcrumb
 (deh-require-maybe breadcrumb
   ;;
+
+  (make-directory (expand-file-name "autoconfig/breadcrumb/" user-emacs-directory) t)
+  (setq bc-bookmark-file (expand-file-name "autoconfig/breadcrumb/breadcrumbe.el" user-emacs-directory))
+
   (autoload 'bc-set               "breadcrumb" "Set bookmark in current point."   t)
   (autoload 'bc-previous          "breadcrumb" "Go to previous bookmark."         t)
   (autoload 'bc-next              "breadcrumb" "Go to next bookmark."             t)

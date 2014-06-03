@@ -7,6 +7,7 @@
 
 (defvar old-messages-buffer-max-lines 100 "To keep all startup detail.")
 (defvar *emacs-in-init* t "Emacs is in init.")
+(setq user-emacs-directory "~/.emacs.d")
 (setq *emacs-in-init* t)
 (add-hook 'after-init-hook
           (lambda ()

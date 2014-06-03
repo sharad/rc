@@ -289,7 +289,8 @@
 (unless (require 'js2-mode nil t)
   (defalias 'js2-mode 'js-mode))
 
+
+(add-to-list 'interpreter-mode-alist '("node" . js-mode))
+
 (provide 'javascript-config)
 ;;; javascript-config.el ends here
-
-
