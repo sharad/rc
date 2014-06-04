@@ -12,18 +12,22 @@
         '((tasks . "Tasks")
           (notes . "Notes")
           (diary . "Diary")
-          (env . "Environment")))
+          (env   . "Environment")))
 
   ;; Setting up Planner
   ;; Add the files to your load-path. Change these paths as needed.
   (setq planner-directory "~/.Organize/emacs/plan/Plans")
-  (setq planner-project "WikiPlanner")
+  (setq planner-project "WikiPlanner"
+        ;; faced muse-get-keyword void-variable planner-mode
+        planner-mode #'planner-mode)
   (add-to-list
    'muse-project-alist
    '("WikiPlanner"
      ("~/.Organize/emacs/plan/Plans"   ;; Or wherever you want your planner files to be
       :default "index"
+      ;; :major-mode #'planner-mode
       :major-mode planner-mode
+      ;; :final muse-project-publish-file
       :visit-link planner-visit-link)
      ;; This next part is for specifying where Planner pages
      ;; should be published and what Muse publishing style to
