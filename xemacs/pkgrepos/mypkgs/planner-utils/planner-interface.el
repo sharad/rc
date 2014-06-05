@@ -160,8 +160,10 @@
          (find-file-hook find-file-hook))
      (remove-hook 'find-file-hook 'ede-turn-on-hook)
      ;; (update-ssh-agent)
-     (with-writable-buffer
-         ,@body)))
+     ,@body
+     ;; (with-writable-buffer
+     ;;     ,@body)
+     ))
 
 (defun planner-plan-safe ()
   (with-safe-plan-env
