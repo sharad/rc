@@ -1,7 +1,10 @@
 #!/bin/zsh
 
 function setvar() {
-    enable_file=~/.var/comm/disable/$pgm
+    # for controlling the action
+    enable_file=~/.var/comm/enable/$pgm
+    # for controlling program
+    disable_file=~/.var/comm/disable/$pgm
     interval=10m
     timeout=20
     action=pm-hibernate

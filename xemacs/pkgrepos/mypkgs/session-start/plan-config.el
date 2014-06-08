@@ -80,10 +80,58 @@
   (xrequire 'planner-deadline)
 
   (deh-require-maybe planner-multi
-      (setq
-       ;; planner-multi-copy-tasks-to-page "TaskPool"
-       planner-multi-copy-tasks-to-page "[[TasksByProject][p]] [[TasksByContext][c]]"
-       planner-multi-separator ","))
+    (load-library "planner-multi")
+    (setq
+     ;; planner-multi-copy-tasks-to-page "TaskPool"
+     planner-multi-separator ","
+     planner-multi-copy-tasks-to-page "[[TasksByProject][p]],[[TasksByContext][c]]")
+
+    (assert (eq (symbol-function 'planner-copy-or-move-task)
+                'planner-multi-copy-or-move-task))
+    (assert (not
+             (eq (symbol-function 'planner-copy-or-move-task)
+                 'planner-copy-or-move-task-basic)))
+
+    ;; (assert (eq (symbol-function 'planner-replan-task)
+    ;;             'planner-multi-replan-task))
+    (assert (not
+             (eq (symbol-function 'planner-replan-task)
+                 'planner-replan-task-basic)))
+
+    (assert (eq (symbol-function 'planner-update-task)
+                'planner-multi-update-task))
+    (assert (not
+             (eq (symbol-function 'planner-update-task)
+                 'planner-update-task-basic)))
+
+
+    (assert (eq (symbol-function 'planner-tasks-equal-p)
+                'planner-multi-tasks-equal-p))
+
+    (assert (eq (symbol-function 'planner-edit-task-description)
+                'planner-multi-edit-task-description))
+    (assert (not
+             (eq (symbol-function 'planner-edit-task-description)
+                 'planner-edit-task-description-basic)))
+
+    (assert (eq (symbol-function 'planner-task-date)
+                'planner-multi-task-date))
+
+    (assert (eq (symbol-function 'planner-link-as-list)
+                'planner-multi-link-as-list))
+
+    (defalias 'planner-task-date 'planner-multi-task-date)
+    (defalias 'planner-task-link-as-list 'planner-multi-task-link-as-list)
+    (defalias 'planner-copy-or-move-task 'planner-multi-copy-or-move-task)
+    (defalias 'planner-replan-task 'planner-multi-replan-task)
+    (defalias 'planner-update-task 'planner-multi-update-task)
+    (defalias 'planner-tasks-equal-p 'planner-multi-tasks-equal-p)
+    (defalias 'planner-edit-task-description 'planner-multi-edit-task-description)
+    (defalias 'planner-multi-xref-note 'planner-multi-note-xref)
+    (defalias 'planner-multi-delete-note 'planner-multi-note-delete)
+    (defalias 'planner-multi-delete-note-this-page 'planner-multi-note-delete-this-page)
+    (defalias 'planner-multi-xref-task 'planner-multi-task-xref)
+    (defalias 'planner-multi-delete-task-this-page 'planner-multi-task-delete-this-page))
 
   (deh-require-maybe bbdb-com          ;checking it as it fail emacs to move ahead.
       (xrequire 'planner-bbdb))
