@@ -459,6 +459,21 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
     if whence -p bugz >& /dev/null; then
         : bugz  search -a spratap # -s new,open,reopen
     fi
+
+    autoload ztodo
+    print ztodo:
+    ztodo list
+    print sticky-note:
+    sticky-note -l
+    print sched:
+    sched
+    autoload calendar
+    print calendar:
+    calendar -a
+    print bsd calendar:
+    command calendar
+
+
 } |
 command less \
     --RAW-CONTROL-CHARS \
