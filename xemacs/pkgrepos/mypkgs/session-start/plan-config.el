@@ -131,7 +131,54 @@
     (defalias 'planner-multi-delete-note 'planner-multi-note-delete)
     (defalias 'planner-multi-delete-note-this-page 'planner-multi-note-delete-this-page)
     (defalias 'planner-multi-xref-task 'planner-multi-task-xref)
-    (defalias 'planner-multi-delete-task-this-page 'planner-multi-task-delete-this-page))
+    (defalias 'planner-multi-delete-task-this-page 'planner-multi-task-delete-this-page)
+
+    (progn ;;modification
+      (defun planner-make-link (link &optional name single)
+        "Return a Wiki link to LINK with NAME as the text.
+If SINGLE is non-nil, treat it as a single link.
+If LINK is already a valid link, replace it's description
+by NAME"
+        (cond ((or (null link) (string= link ""))
+               "")
+              ((string-match muse-explicit-link-regexp link)
+               (muse-make-link (match-string 1 link) (or name (match-string 2 link))))
+              (t
+               (muse-make-link link name))))
+
+
+      (defun planner-multi-task-string (info page-name links &optional new-pages)
+        "Return task line for INFO on PAGE-NAME with LINKS, a list of pages to link to.
+If non-nil, PAGES should be a list of the `planner-link-base's of LINKS."
+        ;; Set up the new links list for easy testing
+        ;; (setq new-pages (mapcar 'planner-link-base links))
+        (setq new-pages (mapcar 'identity links))
+        (cond
+          ;; If this is a no-link task
+          ((and (= (length new-pages) 1)
+                (string= (car new-pages) page-name))
+           (planner-format-task info nil nil nil nil "" ""))
+          ;; If this is a standard singly-linked task (date, plan)
+          ((and (= (length new-pages) 2)
+                (string-match planner-date-regexp (car new-pages))
+                (not (string-match planner-date-regexp (cadr new-pages))))
+           (planner-format-task info nil nil nil nil
+                                (planner-make-link
+                                 (if (string-match planner-date-regexp page-name)
+                                     (cadr new-pages)
+                                     (car new-pages)))))
+          ;; If this is a standard singly-linked task (plan, date)
+          ((and (= (length new-pages) 2)
+                (not (string-match planner-date-regexp (car new-pages)))
+                (string-match planner-date-regexp (cadr new-pages)))
+           (planner-format-task info nil nil nil nil
+                                (planner-make-link
+                                 (if (string-match planner-date-regexp page-name)
+                                     (car new-pages)
+                                     (cadr new-pages)))))
+          ;; Multilink
+          (t (planner-format-task info nil nil nil nil
+                                  (planner-make-link new-pages)))))))
 
   (deh-require-maybe bbdb-com          ;checking it as it fail emacs to move ahead.
       (xrequire 'planner-bbdb))

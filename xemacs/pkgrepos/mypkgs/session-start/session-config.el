@@ -764,7 +764,7 @@ to restore in case of sudden emacs crash."
       (message-notify "sharad/desktop-session-restore" "entering sharad/desktop-session-restore")
 
       (if (not (string= *desktop-save-filename*
-                        (concat (getenv "HOME") "/.emacs.d/emacs-desktop-" server-name)))
+                        (concat (getenv "HOME") "/.emacs.d/autoconfig/desktop/emacs-desktop-" server-name)))
           (progn
             (message-notify "sharad/desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s"
                             (concat (getenv "HOME") "/.emacs.d/emacs-desktop-" server-name)
