@@ -473,7 +473,6 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
     print bsd calendar:
     command calendar
 
-
 } |
 command less \
     --RAW-CONTROL-CHARS \
