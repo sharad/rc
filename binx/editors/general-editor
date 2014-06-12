@@ -1,9 +1,10 @@
-#!/bin/zsh
+#!/bin/zsh -v
 
 # emacsclient -n -f ~/.emacs.d/server/general "$@"
 
 local prog=$(basename $0)
-local alternate_editors=( em zile mg jove sensible-editor vim joe )
+local alternative_editor
+alternate_editors=( em zile mg jove sensible-editor vim joe )
 local server_file="~/.emacs.d/server/general"
 
 

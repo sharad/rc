@@ -289,7 +289,9 @@
 (unless (require 'js2-mode nil t)
   (defalias 'js2-mode 'js-mode))
 
-
+(setq
+ js-indent-level 2 ;;4
+      )
 (add-to-list 'interpreter-mode-alist '("node" . js-mode))
 
 (provide 'javascript-config)

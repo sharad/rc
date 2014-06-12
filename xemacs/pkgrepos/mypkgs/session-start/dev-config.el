@@ -455,6 +455,8 @@ Add directory to search path for source files using the GDB command, dir."))
         (define-key c-mode-base-map (kbd "C-c C-c") 'compile))
       (add-hook 'c-mode-common-hook 'my-c-mode-common-hook))))
 
+(deh-require-maybe cc-cmds
+  (require 'cc-cmds-modified))
 
 (deh-require-maybe c-eldoc
   ;; http://tenkan.org/~tim/c-function-signature.html
@@ -559,6 +561,3 @@ Add directory to search path for source files using the GDB command, dir."))
 
 (provide 'dev-config)
 ;;; dev-config.el ends here
-
-
-
