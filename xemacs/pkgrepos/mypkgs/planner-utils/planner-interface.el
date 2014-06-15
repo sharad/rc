@@ -220,7 +220,11 @@
    '(lambda (str)
      ;; (if (string-match "\\[\\[\\(\\S\\+\\)\\](:?\\[\\S\\])\\?\\]" str)
      (if (string-match muse-explicit-link-regexp str)
-         (replace-match "\\1" t nil str)))
+         (cond
+         ((match-string 2 str)
+          (replace-match "\\2" t nil str))
+         ((match-string 1 str)
+          (replace-match "\\1" t nil str)))))
    (planner-plans-on-task-lists-main task-lists)))
 
 ;; (defun planner-plans-on-task-lists (task-lists)
@@ -244,7 +248,11 @@
  (let ((str "[[TaskBy][asdf]]"))
    (if (string-match muse-explicit-link-regexp str)
        ;; (match-string 2 str)
-       (replace-match "\\1" t nil str)
+       (cond
+         ((match-string 2 str)
+          (replace-match "\\2" t nil str))
+         ((match-string 1 str)
+          (replace-match "\\1" t nil str)))
        )))
 
 ;;test
