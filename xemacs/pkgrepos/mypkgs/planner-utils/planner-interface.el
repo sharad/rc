@@ -218,7 +218,8 @@
 (defun planner-plans-on-task-lists (task-lists)
   (mapcar
    '(lambda (str)
-     (if (string-match "\\[\\[\\(\\S\\+\\)\\]\\]" str)
+     ;; (if (string-match "\\[\\[\\(\\S\\+\\)\\](:?\\[\\S\\])\\?\\]" str)
+     (if (string-match muse-explicit-link-regexp str)
          (replace-match "\\1" t nil str)))
    (planner-plans-on-task-lists-main task-lists)))
 
@@ -232,10 +233,19 @@
 ;;    (planner-plans-on-task-lists-main task-lists)))
 
 ;; test
+
+
 (testing
- (let ((str "[[TaskBy]]"))
-   (if (string-match "\\[\\[\\(\\S\\+\\)\\]\\]" str)
+ (let ((str "[[TaskBy][asdf]]"))
+   (if (string-match "\\[\\[\\(\\S\\+\\)\\](\\[\\S\\+\\])\\?\\]" str)
        (replace-match "\\1" t nil str))))
+
+(testing
+ (let ((str "[[TaskBy][asdf]]"))
+   (if (string-match muse-explicit-link-regexp str)
+       ;; (match-string 2 str)
+       (replace-match "\\1" t nil str)
+       )))
 
 ;;test
 (testing
@@ -302,7 +312,7 @@
 (testing
  (kill-new
   (extract-task-name
-   "[[sadfdsf][b39437]]: code: Un reason (0x0001) [[https://bugzilla.merunetworks.com/bugzilla/show_bug.cgi?id=39437][url]] {{Tasks:42}} ([[2014.06.15]],[[MyMIS]],[[TasksByProject][p]],[[TasksByContext][c]])")))
+   "[[sadfdsf][b1222]]: code: Un reason (0x0001) [[https://bugzilla.sadfsdf.com/bugzilla/show_bug.cgi?id=1222][url]] {{Tasks:42}} ([[2014.06.15]],[[MyMIS]],[[TasksByProject][p]],[[TasksByContext][c]])")))
 
 (defun extract-task-name-from-list (task-list)
   (extract-task-name (nth 4 task-list)))
