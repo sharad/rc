@@ -185,7 +185,61 @@ This function returns a timer object which you can use in `cancel-timer'."
                                      (calendar)
                                      ;; check planner-carry-tasks-forward
                                      (plan 7)
-                                     (muse-project-publish "WikiPlanner")))))))
+                                     (muse-project-publish "WikiPlanner"))))))
+
+
+
+  (when nil
+    (run-with-timer
+     10
+     nil
+     '(lambda ()
+       (with-safe-plan-env
+           (condition-case perr
+               (save-excursion
+                 (save-window-excursion
+                   (progn
+                     (calendar)
+                     ;; check planner-carry-tasks-forward
+                     (defadvice error (before dumptrace activate)
+                       (backtrace-to-buffer "*errbuf*")
+                       t)
+                     (setq find-file-hook nil)
+                     (message "sharad11-Midnight: running calendar and planner planner-use-other-window %s" planner-use-other-window)
+                     ;; (find-file "/home/s/hell/.Organize/emacs/plan/Plans/AAA.muse")
+                     ;; (muse-project-find-file (planner-link-base (planner-today))
+                     ;;                         planner-project
+                     ;;                         'find-file)
+
+                     ;; (find-file "~/test123.txt")
+                     (plan 7)
+                     (ad-disable-advice 'error 'before 'dumptrace)
+                     (ad-update 'error)
+                     (message "sharad22-Midnight: running calendar and planner"))))
+             (error
+              (progn
+                (message "XXXPl Error: %s" perr)
+                (ad-disable-advice 'error 'before 'dumptrace)
+                (ad-update 'error)))))))
+
+
+    (run-with-timer
+     10
+     nil
+     '(lambda ()
+       (with-safe-plan-env
+           (condition-case perr
+               (save-excursion
+                 (save-window-excursion
+                   (progn
+                     (calendar)
+                     (message "sharad22-Midnight: running calendar and planner")
+                     (plan 7)
+                     (message "sharad22-Midnight: running calendar and planner"))))
+             (error
+              (progn
+                (message "XXXPl Error: %s" perr)
+                ))))))))
 
 
 (deh-require-maybe (progn

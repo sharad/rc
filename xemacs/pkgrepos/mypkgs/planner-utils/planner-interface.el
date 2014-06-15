@@ -154,11 +154,24 @@
      ,@body))
 
 (defmacro with-safe-plan-env (&rest body)
-  `(let ((global-ede-mode nil)
-         (ede-minor-mode nil)
-         (tramp-mode nil)
+  `(let (global-ede-mode
+         ede-minor-mode
+         tramp-mode
+         ido-mode
+         muse-colors-inline-images
+         muse-colors-autogen-headings
+         muse-colors-evaluate-lisp-tags
+         muse-colors-highlighting-registry
+         ;; (find-file-not-found-functions find-file-not-found-functions)
+         ;; find-file-not-found-functions
+         (planner-use-other-window nil)
          (find-file-hook find-file-hook))
      (remove-hook 'find-file-hook 'ede-turn-on-hook)
+     (remove-hook 'find-file-hook 'global-highlight-changes-mode-check-buffers)
+     ;; (setq
+     ;;  find-file-not-found-functions
+     ;;  '(PC-look-for-include-file template-not-found-function find-file-using-paths-hook session-find-file-not-found-hook))
+     (message "sss find-file-hook %s" find-file-hook)
      ;; (update-ssh-agent)
      ,@body
      ;; (with-writable-buffer
@@ -179,7 +192,7 @@
       (save-window-excursion
         (calendar)
         (plan))))
-   (planner-today)))
+    (planner-today)))
 
 (defun planner-task-lists (plan)
   (with-safe-plan-env
@@ -260,9 +273,9 @@
 ;; b39437 code: Un reason (0x0001)
 
 
-(defun extract-task-name (task)
-  (if (string-match "^\\(.\+\}\}\\)\\(\s\+[[][[]\\)\?" task)
-      (match-string 1 task)))
+;; (defun extract-task-name (task)
+;;   (if (string-match "^\\(.\+\}\}\\)\\(\s\+[[][[]\\)\?" task)
+;;       (match-string 1 task)))
   ;; (if (string-match "^\\(.\+\}\}\\)\s\+" task)
 
 (defun extract-task-name (task)
@@ -289,7 +302,7 @@
 (testing
  (kill-new
   (extract-task-name
-   "[[sadfdsf][b39437]]: code: Un reason (0x0001) [[https://bugzilla.merunetworks.com/bugzilla/show_bug.cgi?id=39437][url]] {{Tasks:42}} ([[2013.08.14]],[[MyMIS]],[[TasksByProject]])")))
+   "[[sadfdsf][b39437]]: code: Un reason (0x0001) [[https://bugzilla.merunetworks.com/bugzilla/show_bug.cgi?id=39437][url]] {{Tasks:42}} ([[2014.06.15]],[[MyMIS]],[[TasksByProject][p]],[[TasksByContext][c]])")))
 
 (defun extract-task-name-from-list (task-list)
   (extract-task-name (nth 4 task-list)))

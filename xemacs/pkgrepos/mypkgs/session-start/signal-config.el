@@ -60,6 +60,28 @@
   (emacs-collect-states-and-log)
   (message "Caught signal %S" last-input-event))
 
+
+(defmacro with-error-trace-buffer (buf &rest body)
+  `(condition-case e
+       ,@body
+     (error
+      (print (format "Error: %s" e) (get-buffer ,buf))
+      ;; (backtrace-to-buffer ,buf)
+      )))
+
+
+(defadvice error (before dumptrace activate)
+  (backtrace-to-buffer "*errbuf*")
+  t)
+
+(ad-disable-advice 'error 'before 'dumptrace)
+(ad-update 'error)
+
+
+;; (with-error-trace-buffer "*Messages*"
+;;   (message "sdafds"))
+
+
 ;; http://www.gnu.org/s/emacs/manual/html_node/elisp/Misc-Events.html
 (define-key special-event-map [sigusr1] 'sigusr1-handler)
 (define-key special-event-map [sigusr2] 'sigusr2-handler)
@@ -75,5 +97,3 @@
 ;; }}}
 
 (provide 'signal-config)
-
-
