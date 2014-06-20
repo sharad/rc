@@ -91,12 +91,12 @@ define_webjump("reader",
 // so because you can't currently use both
 // url_completion_use_bookmarks and url_completion_use_history.
 
-define_webjump("bookmark",
-               function(term) {return term;},
-               $completer = history_completer($use_history = false,
-                                              $use_bookmarks = true,
-                                              $match_required = true),
-               $description = "Visit a conkeror bookmark");
+// define_webjump("bookmark",
+//                function(term) { return term; },
+//                $completer = new history_completer($use_history = false,
+//                                                   $use_bookmarks = true,
+//                                                   $match_required = true),
+//                $description = "Visit a conkeror bookmark");
 
 // 2.2. Computer Programs
 
@@ -165,22 +165,24 @@ define_webjump("memory-alpha", "http://memory-alpha.org/en/wiki/Special:Search/?
 
 // 2.3.5. Roger Ebert's Movie Reviews
 
-define_webjump(
-    "ebert",
-    function (term) {
-        if (! term)
-            return "http://rogerebert.suntimes.com/";
-        return load_spec(
-            { uri: "http://rogerebert.suntimes.com/apps/pbcs.dll/classifieds?category=search3",
-              post_data: make_post_data([['Class','60'], ['Type', ''],
-                                         ['FromDate', '19150101'], ['ToDate', '20091231'],
-                                         ['Start', '1'], ['SortOrder', 'AltTitle'],
-                                         ['Genre', ''], ['GenreMultiSearch', ''],
-                                         ['RatingMultiSearch', ''],['MPAASearch', ''],
-                                         ['SearchType', '1'], ['qrender', ''],
-                                         ['Partial',''], ['q', term]])
-    },
-    $argument = 'optional')});
+define_webjump("ebert",
+               function (term) {
+                 if (! term)
+                   return "http://rogerebert.suntimes.com/";
+                 return load_spec({
+                   uri: "http://rogerebert.suntimes.com/apps/pbcs.dll/classifieds?category=search3",
+                   post_data: make_post_data([['Class','60'], ['Type', ''],
+                                              ['FromDate', '19150101'], ['ToDate', '20091231'],
+                                              ['Start', '1'], ['SortOrder', 'AltTitle'],
+                                              ['Genre', ''], ['GenreMultiSearch', ''],
+                                              ['RatingMultiSearch', ''],['MPAASearch', ''],
+                                              ['SearchType', '1'], ['qrender', ''],
+                                              ['Partial',''], ['q', term]])
+                 });
+               }// ,
+               // $arguments = 'optional'
+              );
+
 
 // 2.3.6. Rotten Tomatoes
 
@@ -283,8 +285,9 @@ define_webjump("popupchinese",
             { uri: "http://popupchinese.com/words/dictionary",
               post_data: make_post_data([['search', term]]) });
     },
-    $alternative = "http://popupchinese.com/dictionary",
-    $argument = 'optional');
+    $alternative = "http://popupchinese.com/dictionary"// ,
+    // $arguments = 'optional'
+              );
 
 define_webjump("nciku", "http://www.nciku.com/search/all/%s");
 
@@ -304,15 +307,17 @@ define_webjump("leo", "http://pda.leo.org/?lp=ende&lang=de&searchLoc=0&cmpType=r
 // 2.7.4. Japanese
 
 define_webjump("e2j",
-    function (term) {
-        return load_spec(
-            { uri: "http://www.freedict.com/onldict/onldict.php",
-              post_data: make_post_data([['search', term], ['exact', 'true'], ['selected', '10'],
-                                         ['from', 'English'], ['to', 'Japanese'],
-                                         ['fname', 'eng2jap1'], ['back', 'jap.html']]) });
-    },
-    $alternative = "http://www.freedict.com/onldict/jap.html",
-    $argument = 'optional');
+               function (term) {
+                 return load_spec(
+                   { uri: "http://www.freedict.com/onldict/onldict.php",
+                     post_data: make_post_data([['search', term], ['exact', 'true'], ['selected', '10'],
+                                                ['from', 'English'], ['to', 'Japanese'],
+                                                ['fname', 'eng2jap1'], ['back', 'jap.html']])
+                   });
+               },
+               $alternative = "http://www.freedict.com/onldict/jap.html"// ,
+               // $arguments = 'optional'
+              );
 
 define_webjump("j2e",
     function (term) {
@@ -322,8 +327,9 @@ define_webjump("j2e",
                                          ['from', 'Japanese'], ['to', 'English'],
                                          ['fname', 'eng2jap2'], ['back', 'jap.html']]) });
     },
-    $alternative = "http://www.freedict.com/onldict/jap.html",
-    $argument = 'optional');
+    $alternative = "http://www.freedict.com/onldict/jap.html"// ,
+    // $arguments = 'optional'
+              );
 
 // 2.7.5. Google Translate
 
@@ -350,23 +356,29 @@ define_webjump("acronyms/acronyms", "http://acronyms.thefreedictionary.com/%s");
 
 // 2.8.1. Down for everyone or just me?
 
-define_webjump("down?", function (url) {
-    if (url) {
-        return "http://downforeveryoneorjustme.com/" + url;
-    } else {
-        return "javascript:window.location.href='http://downforeveryoneorjustme.com/'+window.location.href;";
-   }
-}, $argument = "optional");
+define_webjump("down?",
+               function (url) {
+                 if (url) {
+                   return "http://downforeveryoneorjustme.com/" + url;
+                 } else {
+                   return "javascript:window.location.href='http://downforeveryoneorjustme.com/'+window.location.href;";
+                 }
+               }// ,
+               // $arguments = "optional"
+              );
 
 // 2.8.2. The Wayback Machine
 
-define_webjump("wayback", function (url) {
-    if (url) {
-        return "http://web.archive.org/web/*/" + url;
-    } else {
-        return "javascript:window.location.href='http://web.archive.org/web/*/'+window.location.href;";
-    }
-}, $argument = "optional");
+define_webjump("wayback",
+               function (url) {
+                 if (url) {
+                   return "http://web.archive.org/web/*/" + url;
+                 } else {
+                   return "javascript:window.location.href='http://web.archive.org/web/*/'+window.location.href;";
+                 }
+               }// ,
+               // $arguments = "optional"
+              );
 
 // 2.9. News
 
@@ -554,14 +566,18 @@ define_webjump("weather/india", "https://www.google.com/search?q=%s&sitesearch=w
 
 
 // {{ My Added
-define_webjump("gtrans", function (url) {
-    if (url) {
-        // return "http://translate.google.com/#auto|en|" + url;
-        return "http://translate.google.com/translate?js=y&prev=_t&hl=en&ie=UTF-8&layout=1&eotf=1&u=" + url + "&sl=auto&tl=en";
-    } else {
-        return "javascript:window.location.href='http://translate.google.com/translate?js=y&prev=_t&hl=en&ie=UTF-8&layout=1&eotf=1&u='+window.location.href+'&sl=auto&tl=en';";
-    }
-}, $argument = "optional");
+define_webjump("gtrans",
+               function (url) {
+                 if (url) {
+                   // return "http://translate.google.com/#auto|en|" + url;
+                   return "http://translate.google.com/translate?js=y&prev=_t&hl=en&ie=UTF-8&layout=1&eotf=1&u=" + url + "&sl=auto&tl=en";
+                 } else {
+                   return "javascript:window.location.href='http://translate.google.com/translate?js=y&prev=_t&hl=en&ie=UTF-8&layout=1&eotf=1&u='+window.location.href+'&sl=auto&tl=en';";
+                 }
+               },
+               $alternative = "http://www.wh4f.org/index.php"// ,
+               // $arguments = "optional"
+              );
 
 
 define_webjump("mtime", "javascript:alert(document.lastModified)");
@@ -576,13 +592,17 @@ define_webjump("isbn-books-by-isbn-search", "http://www.books-by-isbn.com/cgi-bi
 
 // define_webjump("anonweb", "http://www.surf-proxy.de/index.php?q=%s");
 
-define_webjump("anonweb", function (url) {
-    if (url) {
-        return "http://www.surf-proxy.de/index.php?q=" + url;
-    } else {
-        return "javascript:window.location.href='http://www.surf-proxy.de/index.php?q='+window.location.href;";
-   }
-}, $argument = "optional");
+define_webjump("anonweb",
+               function (url) {
+                 if (url) {
+                   return "http://www.surf-proxy.de/index.php?q=" + url;
+                 } else {
+                   return "javascript:window.location.href='http://www.surf-proxy.de/index.php?q='+window.location.href;";
+                 }
+               },
+               $alternative = "http://www.wh4f.org/index.php"//,
+               // $arguments = "optional"
+              );
 
 //
 
@@ -591,29 +611,31 @@ define_webjump("anonweb", function (url) {
 // {{ One Time Mail
 define_webjump("otmread/wh4f",
                function (user) {
-        return load_spec(
-            { uri: "http://www.wh4f.org/index.php?p=readmail",
-              post_data: make_post_data([['login_username', user],
-                                         ['login_password', 'kill'],
-                                         ['autologin', '0'],
-                                         ['login', ' Login ']
-                                        ]) });
-    },
-    $alternative = "http://www.wh4f.org/index.php",
-    $argument = 'optional');
+                 return load_spec(
+                   { uri: "http://www.wh4f.org/index.php?p=readmail",
+                     post_data: make_post_data([['login_username', user],
+                                                ['login_password', 'kill'],
+                                                ['autologin', '0'],
+                                                ['login', ' Login ']
+                                               ]) });
+               },
+               $alternative = "http://www.wh4f.org/index.php"// ,
+               // $arguments = 'optional'
+              );
 
 define_webjump("otmregister/wh4f",
                function (user) {
-        return load_spec(
-            { uri: "http://www.wh4f.org/index.php?p=home",
-              post_data: make_post_data([['register_username', user],
-                                         ['register_password', 'kill'],
-                                         ['register_expire', '8'],
-                                         ['register', ' Register ']
-                                        ]) });
-    },
-    $alternative = "http://www.wh4f.org/index.php",
-    $argument = 'optional');
+                 return load_spec(
+                   { uri: "http://www.wh4f.org/index.php?p=home",
+                     post_data: make_post_data([['register_username', user],
+                                                ['register_password', 'kill'],
+                                                ['register_expire', '8'],
+                                                ['register', ' Register ']
+                                               ]) });
+               },
+               $alternative = "http://www.wh4f.org/index.php"// ,
+               // $arguments = 'optional'
+              );
 
 define_webjump("otmread/10min",
                "http://10minutemail.com/10MinuteMail/index.html");
@@ -716,8 +738,9 @@ define_webjump(
                   ['lccp_pnrno1', term],
                   ['submit', 'Get Status']
               ])
-    },
-    $argument = 'optional')});
+    }// ,
+    // $arguments = 'optional'
+        )});
 
 define_webjump(
     "train/schedule",
@@ -730,8 +753,9 @@ define_webjump(
                   ['lccp_trnname', term],
                   ['submit', 'Get Schedule']
               ])
-    },
-    $argument = 'optional')});
+    }// ,
+    // $arguments = 'optional'
+        )});
 
 
 define_webjump(
@@ -745,8 +769,9 @@ define_webjump(
                   ['keywords', term],
                   ['go-button', 'go']
               ])
-    },
-    $argument = 'optional')});
+    }// ,
+    // $arguments = 'optional'
+        )});
 
 
 define_webjump(
@@ -760,8 +785,9 @@ define_webjump(
                   ['keywords', term],
                   ['go-button', 'go']
               ])
-    },
-    $argument = 'optional')});
+    }// ,
+    // $arguments = 'optional'
+        )});
 
 
 //}}
@@ -787,8 +813,9 @@ define_webjump(
                   ['personName', term],
                   ['submit', 'find']
               ])
-    },
-    $argument = 'optional')});
+    }// ,
+    // $arguments = 'optional'
+        )});
 
 //}}
 
@@ -841,22 +868,35 @@ define_webjump(
 //{{ Search in site
 // Search in site
 
-define_webjump("sitesearch", function (term) {
-    return "javascript:window.location.href='https://www.google.co.in/search?q=site:'+window.location.hostname+'%20"+encodeURIComponent(term)+"&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai='";
-}, $argument = "optional");
+define_webjump("sitesearch",
+               function (term) {
+                 return "javascript:window.location.href='https://www.google.co.in/search?q=site:'+window.location.hostname+'%20"+
+                   encodeURIComponent(term)+
+                   "&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai='";
+               }// ,
+               // $arguments = "optional"
+              );
 
 
-define_webjump("sitesearch", function (term) {
-    return "javascript:window.location.href='https://www.google.com/search?sitesearch='+window.location.hostname+'&as_q=" + encodeURIComponent(term) + "';";
-}, $argument = "optional");
+define_webjump("sitesearch",
+               function (term) {
+                 return "javascript:window.location.href='https://www.google.com/search?sitesearch='+window.location.hostname+'&as_q=" +
+                   encodeURIComponent(term) +
+                   "';";
+               }// ,
+               // $arguments = "optional"
+              );
 
-define_webjump("search/similarsites", function (url) {
-    if (url) {
-        return "http://www.similarsites.com/site/" + url;
-    } else {
-        return "javascript:window.location.href='http://www.similarsites.com/site/'+window.location.hostname;";
-    }
-}, $argument = "optional");
+define_webjump("search/similarsites",
+               function (url) {
+                 if (url) {
+                   return "http://www.similarsites.com/site/" + url;
+                 } else {
+                   return "javascript:window.location.href='http://www.similarsites.com/site/'+window.location.hostname;";
+                 }
+               }// ,
+               // $arguments = "optional"
+              );
 
 //}}
 
@@ -922,8 +962,9 @@ define_webjump(
                   ['cat', 'web'],
                   ['submit', 'find']
               ])
-    },
-    $argument = 'optional')});
+    }// ,
+    // $arguments = 'optional'
+        )});
 
 //}}
 
@@ -939,7 +980,7 @@ define_webjump("man", "http://man.cx/%s");
 //                        location.href='http://f0rk.in/index.php?url='   escape(location.href)   '&alias=' ali;
 //                    }
 //                },
-//               $argument = 'optional');
+//               $arguments = 'optional');
 
 
 
@@ -967,8 +1008,9 @@ define_webjump(
                   ['search', term],
                   ['submit', 'Search']
               ])
-            },
-    $argument = 'optional')});
+            }// ,
+    // $arguments = 'optional'
+        )});
 
 
 //}}
