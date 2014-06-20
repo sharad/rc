@@ -3,6 +3,10 @@
 __comp=pmhibernateon
 
 if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    if [ ! -d ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
+        rm -f ~/.rsetup/${__comp}/env.d/${HOST}
+    fi
+    mkdir ~/.rsetup/${__comp}/env.d/${HOST}
     cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
 fi
 
