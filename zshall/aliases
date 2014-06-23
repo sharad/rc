@@ -132,23 +132,25 @@ if is-at-least 4.3.12 ; then
 # 	alias -s c='command emacsclient  -nw -t'
 # 	alias -s pl='command emacsclient  -nw -t'
 # 	alias -s cgi='command emacsclient  -nw -t'
-    alias -s txt='command emacsclient  -nw -t'
+    # alias -s txt='command emacsclient  -nw -t'
     alias -s html='command w3m'
     alias -s org='command w3m'
-    foreach reader (acroread evince) {
-        if whence -p $reader > /dev/null ; then
-	    alias -s pdf='command '$reader
-            break
-        fi
-    }
+    if alias -s pdf >& /dev/null ; then
+        foreach reader (acroread evince) {
+            if whence -p $reader > /dev/null ; then
+	        alias -s pdf='command '$reader
+                break
+            fi
+        }
+    fi
     foreach writer (abiword ooffice) {
         if whence -p $writer > /dev/null ; then
-	    alias -s doc='command '${writer}' -nologo'
-	    alias -s ppt='command '${writer}' -nologo'
-	    alias -s odt='command '${writer}' -nologo'
-	    alias -s Xls='command '${writer}' -nologo'
-	    alias -s xls='command '${writer}' -nologo'
-	    alias -s XLS='command '${writer}' -nologo'
+	    alias -s doc >& /dev/null || alias -s doc='command '${writer}' -nologo'
+	    alias -s ppt >& /dev/null || alias -s ppt='command '${writer}' -nologo'
+	    alias -s odt >& /dev/null || alias -s odt='command '${writer}' -nologo'
+	    alias -s Xls >& /dev/null || alias -s Xls='command '${writer}' -nologo'
+	    alias -s xls >& /dev/null || alias -s xls='command '${writer}' -nologo'
+	    alias -s XLS >& /dev/null || alias -s XLS='command '${writer}' -nologo'
             break
         fi
     }
