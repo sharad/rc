@@ -397,6 +397,7 @@
                          *frame-session-restore*)))))
 
     (defun frame-session-apply (nframe)
+      "Apply existing frame session to NFRAME."
       (interactive
        (list (selected-frame)))
       (progn
