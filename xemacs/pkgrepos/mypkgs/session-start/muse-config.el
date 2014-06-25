@@ -46,8 +46,8 @@
 
   ;; This uses a different header and footer than normal
   (muse-derive-style "my-xhtml" "xhtml"
-                     :header "~/personal-site/muse/header.html"
-                     :footer "~/personal-site/muse/footer.html")
+                     :header (concat *created-content-dir* "/gen/web/site/meta/generic/muse/header.html")
+                     :footer (concat *created-content-dir* "/gen/web/site/meta/generic/muse/footer.html"))
 
   ;; Define a draft style which provides extra space between sections
 
@@ -95,7 +95,7 @@
     (setq my-muse-project-alist
           `(
             ("Website" ( ,(concat *muse-top-dir* "/web/site/wiki/web")
-                         ,(concat *muse-top-dir* "/web/site/wiki/web/testdir/")
+                         ,(concat *muse-top-dir* "/web/site/wiki/web/testdir")
                                            :force-publish ("WikiIndex")
                                            :default "WelcomePage")
                        (:base "my-xhtml"

@@ -65,7 +65,8 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
                 pkill emacs
                 # export GDK_RGBA=0
                 # EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee ~/.emacs.d/startup.log
-                GDK_RGBA=0 EMACS_SERVER_NAME=$server timeout 240s command emacs --daemon=$server |& tee ~/.emacs.d/startup.log
+                # GDK_RGBA=0 EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee ~/.emacs.d/startup.log
+                GDK_RGBA=0 EMACS_SERVER_NAME=$server timeout 240s emacs --daemon=$server |& tee ~/.emacs.d/startup.log
                 print "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> ~/.emacs.d/startup.log
 
                 # disown %emacs
