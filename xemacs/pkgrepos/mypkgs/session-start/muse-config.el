@@ -46,8 +46,8 @@
 
   ;; This uses a different header and footer than normal
   (muse-derive-style "my-xhtml" "xhtml"
-                     :header (concat *created-content-dir* "/gen/web/site/meta/generic/muse/header.html")
-                     :footer (concat *created-content-dir* "/gen/web/site/meta/generic/muse/footer.html"))
+                     :header (concat *muse-top-dir* "/web/site/meta/generic/header.html")
+                     :footer (concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
 
   ;; Define a draft style which provides extra space between sections
 
@@ -101,14 +101,14 @@
                        (:base "my-xhtml"
                               :base-url ,(concat *website-address* "/web/")
                               :include "/web/[^/]+"
-                              :path ,(concat *generated-top-dir* "/web/site/wiki/web"))
+                              :path ,(concat *generated-top-dir* "/web/site/wiki/web/html"))
                        (:base "my-xhtml"
                               :base-url ,(concat *website-address* "/web/")
                               :include "/testdir/[^/]+"
-                              :path ,(concat *generated-top-dir* "/web/site/wiki/web/testdir/"))
+                              :path ,(concat *generated-top-dir* "/web/site/wiki/web/testdir/html"))
                        (:base "my-pdf"
                               :base-url ,(concat *website-address* "/web/")
-                              :path ,(concat *generated-top-dir* "/doc/pdf/site/wiki/web")
+                              :path ,(concat *generated-top-dir* "/doc/pdf/site/wiki/web/html")
                               :include "/\\(CurriculumVitae\\|BriefResume\\)[^/]*$"))
 
             ("Projects" (
@@ -117,7 +117,7 @@
                          :default "WelcomePage")
                         (:base "my-xhtml"
                                :base-url ,(concat *website-address* "/projects/")
-                               :path ,(concat *generated-top-dir* "/web/site/wiki/projects")))
+                               :path ,(concat *generated-top-dir* "/web/site/wiki/projects/html")))
 
             ("Blog" (,@(muse-project-alist-dirs (concat *muse-top-dir* "/web/site/blog"))
                        :default "index"
@@ -131,7 +131,7 @@
                     ;;   remainder: Other things to put in every generated style
                     ,@(muse-project-alist-styles
                        (concat *muse-top-dir* "/web/site/blog")
-                       (concat *generated-top-dir* "/doc/pdf/site/blog")
+                       (concat *generated-top-dir* "/web/site/blog/pdf")
                        "ikiwiki"
                        :base-url (concat *website-address* "/blog/"))) ;; "http://grepfind.hello.org/blog/"
 
@@ -139,42 +139,41 @@
                         :force-publish ("index")
                         :default "index")
                        (:base "xhtml"
-                              :base-url "http://mwolson.org/notes/"
-                              :path ,(concat *generated-top-dir* "/web/site/wiki/notes"))
+                              :base-url (concat *website-address* "/notes/")
+                              :path ,(concat *generated-top-dir* "/web/site/wiki/notes/html"))
                        (:base "my-pdf"
-                              :base-url "http://mwolson.org/notes/"
-                              :path ,(concat *generated-top-dir* "/web/site/wiki/notes")))
+                              :base-url ,(concat *website-address* "/notes/")
+                              :path ,(concat *generated-top-dir* "/web/site/wiki/notes/pdf")))
 
             ("_Private" (,(concat *muse-top-dir* "/doc/priv"))
                         ,@(muse-project-alist-styles (concat *muse-top-dir* "/doc/priv")
-                                                     (concat *generated-top-dir* "/doc/pdf/doc/priv")
+                                                     (concat *generated-top-dir* "/doc/pdf/doc/priv/pdf")
                                                      "pdf"))
 
             ("_Classes" (,@(muse-project-alist-dirs (concat *muse-top-dir* "/web/site/wiki/classes"))
                            :default "index")
                         ,@(muse-project-alist-styles (concat *muse-top-dir* "/web/site/wiki/classes")
-                                                     (concat *generated-top-dir* "/web/site/wiki/classes")
+                                                     (concat *generated-top-dir* "/web/site/wiki/classes/html")
                                                      "xhtml"))
 
             ("MA366" (,(concat *muse-top-dir* "/doc/pdf/classes/ma366"))
                      (:base "pdf-uh"
-                      :path ,(concat *generated-top-dir* "/doc/pdf/classes/ma366")))
+                      :path ,(concat *generated-top-dir* "/doc/pdf/classes/ma366/pdf")))
 
             ("ENGL238" (,(concat *muse-top-dir* "/doc/pdf/classes/eng238"))
                        (:base "pdf-uh"
-                        :path ,(concat *generated-top-dir* "/doc/pdf/classes/eng238")))
+                        :path ,(concat *generated-top-dir* "/doc/pdf/classes/eng238/pdf")))
 
             ("CS426" (,(concat *muse-top-dir* "/web/site/wiki/classes/cs426"))
                      (:base "pdf-uh"
-                      :path "~/proj/classes/cs426"))
+                      :path "~/proj/classes/cs426/pdf"))
 
             ("_Plans" (,(concat *muse-top-dir* "/web/site/wiki/plans")
                        :default "TaskPool"
                        :major-mode planner-mode
                        :visit-link planner-visit-link)
                       (:base "planner-xhtml"
-                       :path ,(concat *generated-top-dir* "/web/site/wiki/plans")))
-            ))
+                       :path ,(concat *generated-top-dir* "/web/site/wiki/plans/html")))))
 
 
     (setq muse-project-alist (append my-muse-project-alist muse-project-alist)))
@@ -338,29 +337,31 @@ between the two tags."
 
   (custom-set-variables
    `(muse-blosxom-base-directory ,(concat *created-content-dir* "/gen/web/site/blog"))
-   '(muse-colors-autogen-headings (quote outline))
-   '(muse-colors-inline-image-method (quote muse-colors-use-publishing-directory))
-   '(muse-completing-read-function (quote ido-completing-read))
-   '(muse-html-charset-default "utf-8")
-   '(muse-html-encoding-default (quote utf-8))
-   '(muse-html-footer ,(concat *created-content-dir* "/gen/web/site/meta/generic/muse/footer.html"))
-   '(muse-html-header ,(concat *created-content-dir* "/gen/web/site/meta/generic/muse/header.html"))
-   '(muse-html-meta-content-encoding (quote utf-8))
-   '(muse-html-style-sheet "<link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"all\" href=\"/common.css\" />
-<link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"screen\" href=\"/screen.css\" />
-<link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"print\" href=\"/print.css\" />")
-   '(muse-latex-header "~/personal-site/muse/header.tex")
-   '(muse-latex-pdf-browser "evince %s &")
-   '(muse-mode-hook (quote (flyspell-mode footnote-mode)))
-   '(muse-publish-comments-p t)
-   '(muse-publish-date-format "%b. %e, %Y")
-   '(muse-publish-desc-transforms (quote (muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL)))
-   '(muse-wiki-publish-small-title-words (quote ("the" "and" "at" "on" "of" "for" "in" "an" "a" "page")))
-   `(muse-xhtml-footer ,(concat *created-content-dir* "/gen/web/site/meta/generic/muse/footer.html"))
-   `(muse-xhtml-header ,(concat *created-content-dir* "/gen/web/site/meta/generic/muse/header.html"))
-   '(muse-xhtml-style-sheet "<link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"all\" href=\"/common.css\" />
-<link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"screen\" href=\"/screen.css\" />
-<link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"print\" href=\"/print.css\" />"))
+   `(muse-colors-autogen-headings (quote outline))
+   `(muse-colors-inline-image-method (quote muse-colors-use-publishing-directory))
+   `(muse-completing-read-function (quote ido-completing-read))
+   `(muse-html-charset-default "utf-8")
+   `(muse-html-encoding-default (quote utf-8))
+   `(muse-html-footer ,(concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
+   `(muse-html-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
+   `(muse-html-meta-content-encoding (quote utf-8))
+   `(muse-html-style-sheet
+     "<link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"all\" href=\"../style/common.css\" />
+      <link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"screen\" href=\"../style/screen.css\" />
+      <link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"print\" href=\"../style/print.css\" />")
+   `(muse-latex-header "~/personal-site/muse/header.tex")
+   `(muse-latex-pdf-browser "evince %s &")
+   `(muse-mode-hook (quote (flyspell-mode footnote-mode)))
+   `(muse-publish-comments-p t)
+   `(muse-publish-date-format "%b. %e, %Y")
+   `(muse-publish-desc-transforms (quote (muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL)))
+   `(muse-wiki-publish-small-title-words (quote ("the" "and" "at" "on" "of" "for" "in" "an" "a" "page")))
+   `(muse-xhtml-footer ,(concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
+   `(muse-xhtml-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
+   `(muse-xhtml-style-sheet
+     "<link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"all\" href=\"../style/common.css\" />
+      <link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"screen\" href=\"../style/screen.css\" />
+      <link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"print\" href=\"../style/print.css\" />"))
   (custom-set-faces
    '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold)))))
 
