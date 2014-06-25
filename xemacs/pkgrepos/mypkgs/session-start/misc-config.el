@@ -614,5 +614,9 @@ The indirect buffer can have another major mode."
     "Generic mode for Vim configuration files.")
   (add-to-list 'auto-mode-alist '("vimrc\\'" . vimrc-generic-mode)))
 
+(deh-require-maybe wtf
+;; wtf.el provides the ability to look up the definitions of popular
+;; conversational and computing acronyms.
+)
 
 (provide 'misc-config)

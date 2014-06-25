@@ -227,7 +227,12 @@ for the overlay."
         (dolist (o yas-overlays)
           (delete-overlay o))
         (setq yas-overlays nil)
-       (remove-hook 'post-command-hook (function yas-post-command-hook))))))
+       (remove-hook 'post-command-hook (function yas-post-command-hook)))))
+
+(defun yas-suggest-activate ()
+  (yas-suggest-mode 1))
+
+(add-element-to-lists 'yas-suggest-activate pgm-langs))
 
 
 (deh-section "pabber"
