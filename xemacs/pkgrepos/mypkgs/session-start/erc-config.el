@@ -639,7 +639,7 @@ waiting for responses from the server"
           erc-nick-notify-category "im.received")
     (erc-nick-notify-mode t))
 
-  (add-hook 'sharad/enable-login-session-inperrupting-feature-hook
+  (add-hook 'sharad/enable-login-session-interrupting-feature-hook
             '(lambda ()
               ;; update python DISPLAY env variable.
               (if (and (getenv "DISPLAY" (selected-frame))

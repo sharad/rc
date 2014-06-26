@@ -528,8 +528,8 @@ The indirect buffer can have another major mode."
                               (highlight-changes-visible-mode t)
                               (highlight-changes-mode t)) pgm-langs)))
 
-  (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'general-enable-startup-setting)
-  (add-hook 'sharad/disable-startup-inperrupting-feature-hook 'general-disable-startup-setting))
+  (add-hook 'sharad/enable-startup-interrupting-feature-hook 'general-enable-startup-setting)
+  (add-hook 'sharad/disable-startup-interrupting-feature-hook 'general-disable-startup-setting))
 
 
 
@@ -590,7 +590,7 @@ The indirect buffer can have another major mode."
 (deh-require-maybe ielm
   ;; * Trying from the interactive emacs lisp mode (M-x ielm)
   (defalias 'repl 'ielm)
-  (add-hook 'sharad/enable-startup-inperrupting-feature-hook
+  (add-hook 'sharad/enable-startup-interrupting-feature-hook
             '(lambda ()
               (let ((default-directory "~/"))
                 (ielm)))

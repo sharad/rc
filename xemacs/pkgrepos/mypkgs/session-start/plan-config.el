@@ -255,7 +255,7 @@
   (when nil ;; find out somewhere else (plan) is already started.
    ;; (add-hook '*sharad/after-init-hook*
 
-   (add-hook 'sharad/enable-startup-inperrupting-feature-hook ;; '*sharad/after-init-hook*
+   (add-hook 'sharad/enable-startup-interrupting-feature-hook ;; '*sharad/after-init-hook*
              '(lambda ()
                (deh-require-maybe planner-registry
                  (setq planner-registry-file "~/.emacs.d/autoconfig/planner/planner-registry.el")

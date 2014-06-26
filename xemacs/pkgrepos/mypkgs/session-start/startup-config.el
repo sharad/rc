@@ -65,7 +65,7 @@
           '(lambda ()
             (message-notify "Emacs" "Loaded Completely :)")))
 
-(add-hook 'sharad/enable-login-session-inperrupting-feature-hook
+(add-hook 'sharad/enable-login-session-interrupting-feature-hook
           '(lambda ()
             (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
                                     ":0.0"))

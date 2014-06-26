@@ -90,6 +90,53 @@
   (defvar *website-address* "http://hello.org/")
 
   ;; Here is my master project listing.
+  (defun remove-muse-project (project-spec)
+    (interactive
+     (let ((project (ido-completing-read "Project: "
+                                         (mapcar 'car muse-project-alist))))
+       (if project
+           (list project)
+           (error "No project %s present" project))))
+    (let ((project
+           (cond
+             ((and (consp project-spec)
+                   (stringp (car project-spec)))
+              (car project-spec))
+             ((stringp project-spec)
+              project-spec)
+             (t nil))))
+      (if project
+          (setq muse-project-alist
+                (delete* project muse-project-alist
+                         :key 'car
+                         :test 'string-equal)))))
+
+  (defun add-muse-project (project-spec)
+    "Add muse project."
+    (interactive
+     (let ((spec (read-from-minibuffer "Project Spec: ")))
+       (if spec
+           (list spec)
+           (error "No project spec given"))))
+    (let (var1)
+      (if (member (car project-spec)(mapcar 'car muse-project-alist))
+          (if (or (not (interactivep ))
+               (y-or-n-p (format "project %s already present, do you want to overwrite it?: " (car project-spec))))
+              (progn
+                (remove-muse-project project-spec)
+                (add-muse-project project-spec)))
+          (add-to-list 'muse-project-alist project-spec))))
+
+  (defun make-muse-project ()
+    (let (name
+          muse-dirs
+          muse-publishing-style
+          muse-publishing-url
+          muse-publishing-path
+          muse-publishing-options))
+    (list name
+          (list :base)))
+
   (when t
 
     (setq my-muse-project-alist

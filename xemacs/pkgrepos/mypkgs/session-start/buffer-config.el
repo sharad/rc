@@ -37,7 +37,7 @@
 
 ;; believe it need not be here
 ;; (eval-after-load "ido"
-;;   '(sharad/disable-startup-inperrupting-feature))
+;;   '(sharad/disable-startup-interrupting-feature))
 
 (deh-require-maybe buffer-move)
 
@@ -601,7 +601,7 @@
   ;; then M-x sticky-buffer-mode.
   )
 ;; believe it need not be here
-;; (sharad/disable-startup-inperrupting-feature)
+;; (sharad/disable-startup-interrupting-feature)
 
 ;; (setq debug-on-error t)
 

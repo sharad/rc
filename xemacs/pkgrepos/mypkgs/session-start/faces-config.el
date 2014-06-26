@@ -108,7 +108,7 @@
               (message "(x-display-pixel-height) return nil"))
           (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
 
-    (add-hook 'sharad/enable-startup-inperrupting-feature-hook 'set-default-face-height-by-resolution))
+    (add-hook 'sharad/enable-startup-interrupting-feature-hook 'set-default-face-height-by-resolution))
 
 
 
@@ -189,4 +189,3 @@
     ))
 
 (provide 'faces-config)
-

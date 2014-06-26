@@ -417,7 +417,7 @@
 
 
     ;; (add-hook '*sharad/after-init-hook*
-    (add-hook 'sharad/enable-startup-inperrupting-feature-hook
+    (add-hook 'sharad/enable-startup-interrupting-feature-hook
               '(lambda ()
                 ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
                 (add-hook 'after-make-frame-functions '(lambda (nframe) (frame-session-restore nframe t)) t)
@@ -843,7 +843,7 @@ to restore in case of sudden emacs crash."
 
   ;; ;; ask user whether to restore desktop at start-up
   (add-hook ;; 'after-init-hook
-   'sharad/enable-startup-inperrupting-feature-hook
+   'sharad/enable-startup-interrupting-feature-hook
    'sharad/desktop-session-restore)
 
   ;; Then type ‘M-x session-save’, or ‘M-x session-restore’ whenever you want to save or restore a desktop. Restored desktops are deleted from disk.
