@@ -127,15 +127,35 @@
                 (add-muse-project project-spec)))
           (add-to-list 'muse-project-alist project-spec))))
 
-  (defun make-muse-project ()
+
+  (muse-project-alist-styles
+   (concat *muse-top-dir* "/doc/priv")
+   (concat *generated-top-dir* "/doc/pdf/doc/priv/pdf")
+   "pdf")
+
+  (muse-project-alist-styles
+   (concat *muse-top-dir* "/web/site/blog")
+   (concat *generated-top-dir* "/web/site/blog/pdf")
+   "ikiwiki"
+   :base-url (concat *website-address* "/blog/"))
+
+  (defun make-muse-project (project)
+    (interactive)
     (let (name
           muse-dirs
           muse-publishing-style
           muse-publishing-url
           muse-publishing-path
-          muse-publishing-options))
-    (list name
-          (list :base)))
+          muse-publishing-options)
+      (setq
+       name (read-from-minibuffer "Project Name: " name)
+       muse-dirs (read-directory-name "Muse Project Directory: " muse-dirs)
+       muse-publishing-url (read-from-minibuffer "Publishing Base URL: " muse-publishing-url))
+      (list name
+            (list :base))))
+
+  (defun make-muse-style (style)
+    )
 
   (when t
 
