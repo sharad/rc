@@ -1,0 +1,26 @@
+#! perl
+## -*- mode: perl; -*-
+
+
+
+sub on_init {
+   my ($self) = @_;
+
+   # $self->{tabheight} = $self->int_bwidth + $self->fheight + $self->lineSpace;
+
+   # $self->cmd_parse ("\033[?25l");
+
+   my @argv = $self->argv;
+
+   do {
+      shift @argv;
+   } while @argv && $argv[0] ne "-e";
+
+   $self->new_tab (@argv);
+
+   ()
+
+}
+
+
+
