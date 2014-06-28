@@ -2,6 +2,8 @@
 ;;
 ;; Stumpwm user definitions
 
+(in-package :stumpwm)
+
 ;;; see at first line.
 ;;  Always remember, the StumpWM dotfile is in lisp
 ;;  (setq auto-mode-alist (cons '(".stumpwmrc$" . lisp-mode) auto-mode-alist))"")))

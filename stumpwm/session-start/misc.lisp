@@ -1,5 +1,15 @@
+
+(in-package :stumpwm)
+
 ;;{{ Pointer
-(setq *grab-pointer-timeout* 4)
+(setq *grab-pointer-timeout* 4
+      ;; change window numbers
+      *frame-number-map* "1234567890"
+      *group-number-map* "123456789"
+      ;;Run-or-raise work through multiple screens
+      *run-or-raise-all-screens* t
+      *run-or-raise-all-groups*  t
+      *disk-usage-paths* '("/" "/home" "/usr" "/pacific"))
 ;;}}
 
 ;;{{{ Background
@@ -127,5 +137,3 @@
       (or time   (decode-universal-time (+ (get-universal-time) (* 30 60))))
     (list :second sec :minute min :hour hour :dom dom :month mon
           :year year :dow dow :dlsavings-p dstp :tz tz)))
-
-

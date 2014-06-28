@@ -308,3 +308,13 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
 
 
 ;;}}
+
+
+(defun run-on-screen (screen cmd props)
+  (switch-to-screen screen)
+  (run-or-raise cmd props))
+
+(defun kill-empty-group (win)
+  (declare (ignore win))
+  (unless (group-windows (current-group))
+    (gkill)))

@@ -197,7 +197,4 @@ stty erase  susp 
 
 export CVSROOT=/home/c_sharad/rpstry
 
-source ~/.rsetup/sh/env.d/spratap
-source ~/.rsetup/rc/env.d/spratap
-
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"

@@ -3,6 +3,31 @@
 
 (in-package :stumpwm)
 
+;;{{{ Additional keysyms
+
+(define-keysym #x1008ff31 "XF86AudioPause")
+(define-keysym #x1008ff15 "XF86AudioStop")
+(define-keysym #x1008ff17 "XF86AudioNext")
+(define-keysym #x1008ff16 "XF86AudioPrev")
+(define-keysym #x1008ff87 "XF86Video")
+
+;; aumixer
+(define-key *top-map* (kbd "XF86AudioLowerVolume")   "amixer-PCM-1-")
+(define-key *top-map* (kbd "XF86AudioRaiseVolume")   "amixer-PCM-1+")
+(define-key *top-map* (kbd "XF86AudioMute")          "amixer-PCM-toggle")
+
+(define-key *top-map* (kbd "C-XF86AudioLowerVolume") "amixer-Master-1-")
+(define-key *top-map* (kbd "C-XF86AudioRaiseVolume") "amixer-Master-1+")
+(define-key *top-map* (kbd "C-XF86AudioMute")        "amixer-Master-toggle")
+
+(define-key *top-map* (kbd "M-XF86AudioLowerVolume") "amixer-Headphone-1-")
+(define-key *top-map* (kbd "M-XF86AudioRaiseVolume") "amixer-Headphone-1+")
+(define-key *top-map* (kbd "M-XF86AudioMute")        "amixer-Headphone-toggle")
+(define-key *top-map* (kbd "S-XF86AudioMute")        "amixer-sense-toggle")
+
+;;}}}
+
+
 (defmacro set-key (map mapping)
   `(loop for pair in ,mapping
       do (if (consp pair)
@@ -428,3 +453,8 @@
 ;;    (kbd "d") "disappear-window"))
 
 (undefine-key *top-map* (kbd "s-p"))
+
+
+;;{{{ Notification
+(define-key *root-map* (kbd "N") '*notifications-map*)
+;;}}}

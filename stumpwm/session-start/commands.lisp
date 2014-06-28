@@ -6,6 +6,18 @@
 
 
 
+;;{{{ Notification system
+
+(defun msg-notify (fmt args)
+  (let ((*executing-stumpwm-command* nil)
+        (*message-window-gravity* :center))
+    (message-no-timeout fmt args)))
+
+(defcommand notify (msg) ((:rest "Notify: "))
+  (msg-notify "~a" msg))
+;;}}}
+
+
 
 ;; #+pb (fboundp 'stumpwm::run-cli-command)
 
@@ -635,6 +647,7 @@
     "/.rsetup/wmlogin/run")))
 
 (defcommand bye () ()
+#+pa
   (in.net.sharad.pa-backend-emacs-planner::emacs-eval-nooutput "(close-all-frames)")
   (sleep 1)
   (run-shell-command

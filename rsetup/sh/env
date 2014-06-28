@@ -42,7 +42,7 @@ if [ "x" != "x$WORKPLACE" ] ; then
         . ~/.opt/p/$WORKPLACE/env
         # ~/.opt/p/$WORKPLACE/run
     else
-        echo ~/.opt/p/$WORKPLACE directory  do not exits. >&2
+        echo ~/.opt/p/$WORKPLACE directory  do not exits, so setup ~/.opt/ directory. >&2
     fi
 else
     if [ ! $SUDO_USER ] && [ "$TERM" != "dumb" ] ; then
