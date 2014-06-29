@@ -91,3 +91,6 @@
 [submodule "xemacs/pkgrepos/world/gits/emacs-twiki-mode"]
 	path = xemacs/pkgrepos/world/gits/emacs-twiki-mode
 	url = https://github.com/christopherjwhite/emacs-twiki-mode.git
+[submodule "zshall/git/ohmyzsh"]
+	path = zshall/git/ohmyzsh
+	url = https://github.com/robbyrussell/oh-my-zsh.git
