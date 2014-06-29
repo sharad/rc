@@ -1,8 +1,7 @@
 
+(eval-when-compile '(require 'cl))
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/muse-el/experimental")
-
-
 
 (deh-require-maybe
     ;; from: http://mwolson.org/projects/emacs-config/muse-init.el.html
@@ -89,7 +88,87 @@
   (defvar *generated-top-dir* (concat *created-content-dir* "/gen"))
   (defvar *website-address* "http://hello.org/")
 
-  ;; Here is my master project listing.
+  (defun* make-muse-style-spec (muse-dir publishing-path publishing-style publishing-url publishing-options)
+    (interactive
+     (let* ((muse-dir (read-directory-name "Muse Project Directory: " *muse-top-dir*))
+            (publishing-path
+             (read-directory-name
+              "Muse Project Directory: "
+              (concat *generated-top-dir* (replace-regexp-in-string *muse-top-dir* "" muse-dir))))
+            (publishing-style
+             (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
+            (publishing-url (read-from-minibuffer "Publishing Base URL: "))
+            (publishing-options nil))
+       (list muse-dir publishing-path publishing-style publishing-url publishing-options)))
+    (apply
+     'muse-project-alist-styles
+     (append
+      (list
+       muse-dir
+       publishing-path)
+      (list publishing-style)
+      (if publishing-url
+          (list :base-url publishing-url))
+      publishing-options)))
+
+  (defun* make-muse-project-spec (name muse-dirs publishing-path publishing-style publishing-url publishing-options)
+    (interactive
+     (let* ((name (read-from-minibuffer "Project Name: "))
+            (muse-dirs
+             (read-directory-name "Muse Project Directory: " (concat *muse-top-dir* "/" name)))
+            (publishing-path
+             (read-directory-name
+              "Muse Project Directory: "
+              (concat *generated-top-dir*
+                      (replace-regexp-in-string *muse-top-dir* ""
+                                                (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
+            (publishing-style
+             (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
+            (publishing-url (read-from-minibuffer "Publishing Base URL: "))
+            (publishing-options nil))
+       (list name muse-dirs publishing-path publishing-style publishing-url publishing-options)))
+    `(,name
+      ,@(make-muse-style-spec
+         (if (consp muse-dirs) (car muse-dirs) muse-dirs)
+         publishing-path
+         publishing-style
+         publishing-url
+         publishing-options)))
+
+  (defun* read-muse-style-spec ()
+    (let* ((muse-dir (read-directory-name "Muse Project Directory: " *muse-top-dir*))
+            (publishing-path
+             (read-directory-name
+              "Muse Project Directory: "
+              (concat *generated-top-dir* (replace-regexp-in-string *muse-top-dir* "" muse-dir))))
+            (publishing-style
+             (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
+            (publishing-url (read-from-minibuffer "Publishing Base URL: "))
+            (publishing-options nil))
+      (list muse-dir publishing-path publishing-style publishing-url publishing-options)))
+
+  (defun* read-muse-project-spec ()
+    (let* ((name (read-from-minibuffer "Project Name: "))
+           (muse-dirs
+            (read-directory-name "Muse Project Directory: " (concat *muse-top-dir* "/" name)))
+           (publishing-path
+            (read-directory-name
+             "Muse Project Directory: "
+             (concat *generated-top-dir*
+                     (replace-regexp-in-string *muse-top-dir* ""
+                                               (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
+           (publishing-style
+            (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
+           (publishing-url (read-from-minibuffer "Publishing Base URL: "))
+           (publishing-options nil))
+      `(,name
+        ,@(make-muse-style-spec
+           (if (consp muse-dirs) (car muse-dirs) muse-dirs)
+           publishing-path
+           publishing-style
+           publishing-url
+           publishing-options))))
+
   (defun remove-muse-project (project-spec)
     (interactive
      (let ((project (ido-completing-read "Project: "
@@ -114,136 +193,123 @@
   (defun add-muse-project (project-spec)
     "Add muse project."
     (interactive
-     (let ((spec (read-from-minibuffer "Project Spec: ")))
-       (if spec
-           (list spec)
-           (error "No project spec given"))))
+     (let ((project-spec
+            (read-muse-project-spec)))))
     (let (var1)
       (if (member (car project-spec)(mapcar 'car muse-project-alist))
-          (if (or (not (interactivep ))
-               (y-or-n-p (format "project %s already present, do you want to overwrite it?: " (car project-spec))))
+          (if (or (not (called-interactively-p 'interactive))
+                  (y-or-n-p (format "project %s already present, do you want to overwrite it?: " (car project-spec))))
               (progn
                 (remove-muse-project project-spec)
                 (add-muse-project project-spec)))
           (add-to-list 'muse-project-alist project-spec))))
 
+  ;; (mapcar 'car muse-publishing-styles)
+  ;; (muse-project-alist-styles
+  ;;  (concat *muse-top-dir* "/doc/priv")
+  ;;  (concat *generated-top-dir* "/doc/pdf/doc/priv/pdf")
+  ;;  "pdf")
 
-  (muse-project-alist-styles
-   (concat *muse-top-dir* "/doc/priv")
-   (concat *generated-top-dir* "/doc/pdf/doc/priv/pdf")
-   "pdf")
+  ;; (muse-project-alist-styles
+  ;;  (concat *muse-top-dir* "/web/site/blog")
+  ;;  (concat *generated-top-dir* "/web/site/blog/pdf")
+  ;;  "ikiwiki"
+  ;;  :base-url (concat *website-address* "/blog/"))
 
-  (muse-project-alist-styles
-   (concat *muse-top-dir* "/web/site/blog")
-   (concat *generated-top-dir* "/web/site/blog/pdf")
-   "ikiwiki"
-   :base-url (concat *website-address* "/blog/"))
+(deh-section "Muse Projects"
+  ;; Here is my master project listing.
+  (add-muse-project
+   `("Website"
+     ( ,(concat *muse-top-dir* "/web/site/wiki/web")
+        ,(concat *muse-top-dir* "/web/site/wiki/web/testdir")
+        :force-publish ("WikiIndex")
+        :default "WelcomePage")
+     (:base "my-xhtml"
+            :base-url ,(concat *website-address* "/web/")
+            :include "/web/[^/]+"
+            :path ,(concat *generated-top-dir* "/web/site/wiki/web/html"))
+     (:base "my-xhtml"
+            :base-url ,(concat *website-address* "/web/")
+            :include "/testdir/[^/]+"
+            :path ,(concat *generated-top-dir* "/web/site/wiki/web/testdir/html"))
+     (:base "my-pdf"
+            :base-url ,(concat *website-address* "/web/")
+            :path ,(concat *generated-top-dir* "/doc/pdf/site/wiki/web/html")
+            :include "/\\(CurriculumVitae\\|BriefResume\\)[^/]*$")))
 
-  (defun make-muse-project (project)
-    (interactive)
-    (let (name
-          muse-dirs
-          muse-publishing-style
-          muse-publishing-url
-          muse-publishing-path
-          muse-publishing-options)
-      (setq
-       name (read-from-minibuffer "Project Name: " name)
-       muse-dirs (read-directory-name "Muse Project Directory: " muse-dirs)
-       muse-publishing-url (read-from-minibuffer "Publishing Base URL: " muse-publishing-url))
-      (list name
-            (list :base))))
+  (add-muse-project
+   `("Projects" ( ,(concat *muse-top-dir* "/web/site/wiki/projects")
+                   :force-publish ("WikiIndex" "MuseQuickStart")
+                   :default "WelcomePage")
+                (:base "my-xhtml"
+                       :base-url ,(concat *website-address* "/projects/")
+                       :path ,(concat *generated-top-dir* "/web/site/wiki/projects/html"))))
 
-  (defun make-muse-style (style)
-    )
+  (add-muse-project
+   `("Blog" (,@(muse-project-alist-dirs (concat *muse-top-dir* "/web/site/blog"))
+               :default "index"
+               :publish-project #'ignore)
+            ;; Publish this directory and its subdirectories.  Arguments
+            ;; are as follows.  The above `muse-project-alist-dirs' part
+            ;; is also needed.
+            ;;   1. Source directory
+            ;;   2. Output directory
+            ;;   3. Publishing style
+            ;;   remainder: Other things to put in every generated style
+            ,@(muse-project-alist-styles
+               (concat *muse-top-dir* "/web/site/blog")
+               (concat *generated-top-dir* "/web/site/blog/pdf")
+               "ikiwiki"
+               :base-url (concat *website-address* "/blog/"))))
 
-  (when t
+  ;; "http://grepfind.hello.org/blog/"
+  (add-muse-project
+   `("MyNotes" (,(concat *muse-top-dir* "/web/site/wiki/notes")
+                 :force-publish ("index")
+                 :default "index")
+               (:base "xhtml"
+                      :base-url (concat *website-address* "/notes/")
+                      :path ,(concat *generated-top-dir* "/web/site/wiki/notes/html"))
+               (:base "my-pdf"
+                      :base-url ,(concat *website-address* "/notes/")
+                      :path ,(concat *generated-top-dir* "/web/site/wiki/notes/pdf"))))
 
-    (setq my-muse-project-alist
-          `(
-            ("Website" ( ,(concat *muse-top-dir* "/web/site/wiki/web")
-                         ,(concat *muse-top-dir* "/web/site/wiki/web/testdir")
-                                           :force-publish ("WikiIndex")
-                                           :default "WelcomePage")
-                       (:base "my-xhtml"
-                              :base-url ,(concat *website-address* "/web/")
-                              :include "/web/[^/]+"
-                              :path ,(concat *generated-top-dir* "/web/site/wiki/web/html"))
-                       (:base "my-xhtml"
-                              :base-url ,(concat *website-address* "/web/")
-                              :include "/testdir/[^/]+"
-                              :path ,(concat *generated-top-dir* "/web/site/wiki/web/testdir/html"))
-                       (:base "my-pdf"
-                              :base-url ,(concat *website-address* "/web/")
-                              :path ,(concat *generated-top-dir* "/doc/pdf/site/wiki/web/html")
-                              :include "/\\(CurriculumVitae\\|BriefResume\\)[^/]*$"))
+  (add-muse-project
+   `("_Private" (,(concat *muse-top-dir* "/doc/priv"))
+                ,@(muse-project-alist-styles (concat *muse-top-dir* "/doc/priv")
+                                             (concat *generated-top-dir* "/doc/pdf/doc/priv/pdf")
+                                             "pdf")))
 
-            ("Projects" (
-                         ,(concat *muse-top-dir* "/web/site/wiki/projects")
-                         :force-publish ("WikiIndex" "MuseQuickStart")
-                         :default "WelcomePage")
-                        (:base "my-xhtml"
-                               :base-url ,(concat *website-address* "/projects/")
-                               :path ,(concat *generated-top-dir* "/web/site/wiki/projects/html")))
+  (add-muse-project
+   `("_Classes" (,@(muse-project-alist-dirs (concat *muse-top-dir* "/web/site/wiki/classes"))
+                   :default "index")
+                ,@(muse-project-alist-styles (concat *muse-top-dir* "/web/site/wiki/classes")
+                                             (concat *generated-top-dir* "/web/site/wiki/classes/html")
+                                             "xhtml")))
 
-            ("Blog" (,@(muse-project-alist-dirs (concat *muse-top-dir* "/web/site/blog"))
-                       :default "index"
-                       :publish-project #'ignore)
-                    ;; Publish this directory and its subdirectories.  Arguments
-                    ;; are as follows.  The above `muse-project-alist-dirs' part
-                    ;; is also needed.
-                    ;;   1. Source directory
-                    ;;   2. Output directory
-                    ;;   3. Publishing style
-                    ;;   remainder: Other things to put in every generated style
-                    ,@(muse-project-alist-styles
-                       (concat *muse-top-dir* "/web/site/blog")
-                       (concat *generated-top-dir* "/web/site/blog/pdf")
-                       "ikiwiki"
-                       :base-url (concat *website-address* "/blog/"))) ;; "http://grepfind.hello.org/blog/"
+  (add-muse-project
+   `("MA366" (,(concat *muse-top-dir* "/doc/pdf/classes/ma366"))
+             (:base "pdf-uh"
+                    :path ,(concat *generated-top-dir* "/doc/pdf/classes/ma366/pdf"))))
 
-            ("MyNotes" (,(concat *muse-top-dir* "/web/site/wiki/notes")
-                        :force-publish ("index")
-                        :default "index")
-                       (:base "xhtml"
-                              :base-url (concat *website-address* "/notes/")
-                              :path ,(concat *generated-top-dir* "/web/site/wiki/notes/html"))
-                       (:base "my-pdf"
-                              :base-url ,(concat *website-address* "/notes/")
-                              :path ,(concat *generated-top-dir* "/web/site/wiki/notes/pdf")))
+  (add-muse-project
+   `("ENGL238" (,(concat *muse-top-dir* "/doc/pdf/classes/eng238"))
+               (:base "pdf-uh"
+                      :path ,(concat *generated-top-dir* "/doc/pdf/classes/eng238/pdf"))))
 
-            ("_Private" (,(concat *muse-top-dir* "/doc/priv"))
-                        ,@(muse-project-alist-styles (concat *muse-top-dir* "/doc/priv")
-                                                     (concat *generated-top-dir* "/doc/pdf/doc/priv/pdf")
-                                                     "pdf"))
+  (add-muse-project
+   `("CS426" (,(concat *muse-top-dir* "/web/site/wiki/classes/cs426"))
+             (:base "pdf-uh"
+                    :path "~/proj/classes/cs426/pdf")))
 
-            ("_Classes" (,@(muse-project-alist-dirs (concat *muse-top-dir* "/web/site/wiki/classes"))
-                           :default "index")
-                        ,@(muse-project-alist-styles (concat *muse-top-dir* "/web/site/wiki/classes")
-                                                     (concat *generated-top-dir* "/web/site/wiki/classes/html")
-                                                     "xhtml"))
+  (add-muse-project
+   `("_Plans" (,(concat *muse-top-dir* "/web/site/wiki/plans")
+                :default "TaskPool"
+                :major-mode planner-mode
+                :visit-link planner-visit-link)
+              (:base "planner-xhtml"
+                     :path ,(concat *generated-top-dir* "/web/site/wiki/plans/html")))))
 
-            ("MA366" (,(concat *muse-top-dir* "/doc/pdf/classes/ma366"))
-                     (:base "pdf-uh"
-                      :path ,(concat *generated-top-dir* "/doc/pdf/classes/ma366/pdf")))
-
-            ("ENGL238" (,(concat *muse-top-dir* "/doc/pdf/classes/eng238"))
-                       (:base "pdf-uh"
-                        :path ,(concat *generated-top-dir* "/doc/pdf/classes/eng238/pdf")))
-
-            ("CS426" (,(concat *muse-top-dir* "/web/site/wiki/classes/cs426"))
-                     (:base "pdf-uh"
-                      :path "~/proj/classes/cs426/pdf"))
-
-            ("_Plans" (,(concat *muse-top-dir* "/web/site/wiki/plans")
-                       :default "TaskPool"
-                       :major-mode planner-mode
-                       :visit-link planner-visit-link)
-                      (:base "planner-xhtml"
-                       :path ,(concat *generated-top-dir* "/web/site/wiki/plans/html")))))
-
-
-    (setq muse-project-alist (append my-muse-project-alist muse-project-alist)))
 
   ;; Wiki settings
   (setq muse-wiki-interwiki-alist
