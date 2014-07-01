@@ -7,7 +7,7 @@
 
 
 
-(deh-require-maybe planner
+(deh-require-maybe (and muse-config planner)
   (setq planner-sections
         '((tasks . "Tasks")
           (notes . "Notes")
@@ -20,10 +20,30 @@
   (setq planner-project "WikiPlanner"
         ;; faced muse-get-keyword void-variable planner-mode
         planner-mode #'planner-mode)
-  (add-to-list
-   'muse-project-alist
-   '("WikiPlanner"
-     ("~/.Organize/emacs/plan/Plans"   ;; Or wherever you want your planner files to be
+
+  ;; (add-muse-project
+  ;;  '("WikiPlanner"
+  ;;    ("~/.Organize/emacs/plan/Plans"   ;; Or wherever you want your planner files to be
+  ;;     :default "index"
+  ;;     ;; :major-mode #'planner-mode
+  ;;     :major-mode planner-mode
+  ;;     ;; :final muse-project-publish-file
+  ;;     :visit-link planner-visit-link)
+  ;;    ;; This next part is for specifying where Planner pages
+  ;;    ;; should be published and what Muse publishing style to
+  ;;    ;; use. In this example, we will use the XHTML publishing
+  ;;    ;; style.
+  ;;    (:base "planner-xhtml"
+  ;;           ;; where files are published to
+  ;;           ;; (the value of 'planner-publishing-directory', if
+  ;;           ;; if you have configuration for an older version
+  ;;           ;; of Planner)
+  ;;           :path "~/public_html/Plans")))
+
+
+  (add-muse-project
+   `("WikiPlanner"
+     (,(concat *muse-top-dir* "/web/site/wiki/Organize/plan/Plans")  ;; Or wherever you want your planner files to be
       :default "index"
       ;; :major-mode #'planner-mode
       :major-mode planner-mode
@@ -38,7 +58,8 @@
             ;; (the value of 'planner-publishing-directory', if
             ;; if you have configuration for an older version
             ;; of Planner)
-            :path "~/public_html/Plans")))
+            :path ,(concat *generated-top-dir* "/web/site/wiki/Organize/plan/Plans"))))
+
 
   ;; (global-set-key (kbd "C-c r") 'remember)
 

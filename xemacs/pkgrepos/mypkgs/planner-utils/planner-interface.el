@@ -171,7 +171,7 @@
      ;; (setq
      ;;  find-file-not-found-functions
      ;;  '(PC-look-for-include-file template-not-found-function find-file-using-paths-hook session-find-file-not-found-hook))
-     (message "sss find-file-hook %s" find-file-hook)
+     ;; (message "sss find-file-hook %s" find-file-hook)
      ;; (update-ssh-agent)
      ,@body
      ;; (with-writable-buffer

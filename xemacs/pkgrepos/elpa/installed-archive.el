@@ -171,7 +171,7 @@
           [(20130305 1120)
            nil "PCRE/Elisp/rx/SRE regexp syntax converter and utilities [github]"])
  (pcache .
-         [(0 2 3)
+         [(20131201 1159)
           ((eieio
             (1 3)))
           "persistent caching for Emacs"])
@@ -456,20 +456,20 @@
                        [(4 1)
                         nil "Emacs Minor mode to automatically commit and push"])
  (gist .
-       [(1 0 2)
+       [(20131109 2155)
         ((eieio
           (1 3))
          (gh
-          (0 5 3))
+          (0 7 2))
          (tabulated-list
           (0)))
         "Emacs integration for gist.github.com"])
  (gh .
-     [(0 5 3)
+     [(20140121 2038)
       ((eieio
         (1 3))
        (pcache
-        (0 2 3))
+        (0 2 4))
        (logito
         (0 1)))
       "A GitHub library for Emacs"])
@@ -562,9 +562,6 @@
  (el-autoyas .
              [(0 20)
               nil "Automatically create Emacs-Lisp Yasnippets"])
- (eieio .
-        [(1 4)
-         nil "Enhanced Implememntation of Emacs Interpreted Objects"])
  (ediprolog .
             [(1 0)
              nil "Emacs Does Interactive Prolog"])

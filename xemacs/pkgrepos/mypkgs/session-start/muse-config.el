@@ -31,6 +31,13 @@
       muse-message  ; load message support (experimental)
       )
 
+
+  (defvar *doc-root* "~/Documents")
+  (defvar *created-content-dir* (concat *doc-root* "/CreatedContent"))
+  (defvar *muse-top-dir* (concat *created-content-dir* "/contents/muse"))
+  (defvar *generated-top-dir* (concat *created-content-dir* "/gen"))
+  (defvar *website-address* "http://hello.org/")
+
   ;; Setup projects
 
   ;; Here is an example of making a customized version of your favorite
@@ -81,12 +88,6 @@
                      :browser 'muse-latex-pdf-browse-file
                      :link-suffix 'muse-latex-pdf-extension
                      :osuffix 'muse-latex-pdf-extension)
-
-  (defvar *doc-root* "~/Documents")
-  (defvar *created-content-dir* (concat *doc-root* "/CreatedContent"))
-  (defvar *muse-top-dir* (concat *created-content-dir* "/contents/muse"))
-  (defvar *generated-top-dir* (concat *created-content-dir* "/gen"))
-  (defvar *website-address* "http://hello.org/")
 
   (defun* make-muse-style-spec (muse-dir publishing-path publishing-style publishing-url publishing-options)
     (interactive
@@ -218,10 +219,11 @@
 
 (deh-section "Muse Projects"
   ;; Here is my master project listing.
+
   (add-muse-project
    `("Website"
      ( ,(concat *muse-top-dir* "/web/site/wiki/web")
-        ,(concat *muse-top-dir* "/web/site/wiki/web/testdir")
+       ,(concat *muse-top-dir* "/web/site/wiki/web/testdir")
         :force-publish ("WikiIndex")
         :default "WelcomePage")
      (:base "my-xhtml"

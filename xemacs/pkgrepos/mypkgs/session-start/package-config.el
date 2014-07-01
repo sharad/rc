@@ -53,42 +53,14 @@
 
     (defconst *elpa-package-dir* "~/.xemacs/pkgrepos/elpa")
 
+    (package-initialize)
+
     (when (file-directory-p *elpa-package-dir*)
       (mapc #'(lambda (path)
                 (when (file-directory-p path)
                   (add-to-list 'load-path path)))
             (directory-files *elpa-package-dir* t "[a-zA-Z]+"))
       (byte-recompile-directory *elpa-package-dir*))
-
-    (setq package-user-dir
-     (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa")))
-    (package-initialize)
-
-    (defvar sharad/package-installed-archive "~/.xemacs/pkgrepos/elpa/installed-archive.el" "Known Installed packages.")
-
-    (defun sharad/update-installed-package-archive ()
-      (interactive)
-      (if package-alist
-          (write-region
-           (with-output-to-string
-               (pp package-alist))
-           ;; (prin1-to-string package-alist)
-           nil sharad/package-installed-archive)
-          (message "package-alist is not defiend, not doing anything.")))
-
-    (defun sharad/package-install-from-installed-archive ()
-      (interactive)
-      (require 'cl)
-      (let* ((packages-from-installed-archive
-              (mapcar 'car (sharad/read-sexp sharad/package-installed-archive)))
-             (packages-from-package-alist (mapcar 'car package-alist))
-             (packages-missing (set-difference packages-from-installed-archive packages-from-package-alist)))
-        (if packages-missing
-            (progn
-              (package-refresh-contents)
-              (dolist (p packages-missing)
-              (package-install p)))
-            (message "No missing package found."))))
 
     (when (file-exists-p sharad/package-installed-archive)
       (when (set-difference (mapcar 'car (sharad/read-sexp sharad/package-installed-archive))
@@ -100,7 +72,36 @@
 (autoload 'list-packages "package" "Elap Package" t)
 (autoload 'package-install "package" "Elap Package" t)
 
+(defvar package-user-dir
+  (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa"))
+  "package-user-dir")
 
+(defvar sharad/package-installed-archive (expand-file-name "installed-archive.el" package-user-dir) "Known Installed packages.")
+
+(defun sharad/update-installed-package-archive ()
+  (interactive)
+  (require 'package)
+  (if package-alist
+      (write-region
+       (with-output-to-string
+           (pp package-alist))
+       ;; (prin1-to-string package-alist)
+       nil sharad/package-installed-archive)
+      (error "package-alist is not defiend, not doing anything.")))
+
+(defun sharad/package-install-from-installed-archive ()
+  (interactive)
+  (require 'cl)
+  (let* ((packages-from-installed-archive
+          (mapcar 'car (sharad/read-sexp sharad/package-installed-archive)))
+         (packages-from-package-alist (mapcar 'car package-alist))
+             (packages-missing (set-difference packages-from-installed-archive packages-from-package-alist)))
+    (if packages-missing
+        (progn
+          (package-refresh-contents)
+          (dolist (p packages-missing)
+            (package-install p)))
+        (message "No missing package found."))))
 
 (deh-require-maybe (progn
                      apt-utils
@@ -185,4 +186,3 @@
 (provide 'package-config)
 
 ;;; package.el ends here
-
