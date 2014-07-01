@@ -132,9 +132,9 @@ attribute names are returned. Default to `person'"
     (interactive)
     (move-end-of-line 1)
     (insert "*")
-    (unless (condition-case nil
+    (unless (condition-case err
                 (eudc-expand-inline)
-              (error nil))
+              (error (message "%s" err)))
       (progn
         (backward-delete-char-untabify 1))))
 
