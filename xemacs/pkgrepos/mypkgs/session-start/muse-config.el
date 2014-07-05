@@ -468,8 +468,73 @@ between the two tags."
     (global-set-key "\C-cpW" #'my-muse-dictize)
     (global-set-key "\C-cpx" #'my-muse-prepare-entry-for-xanga)
     )
-;;; Custom variables
 
+(defun muse-make-css-link (media href)
+  (let ((media (or media "all")))
+    (concat
+     "<link"
+     " rel=\"stylesheet\""
+     " type=\"text/css\""
+     " charset=\"utf-8\""
+     " media=\"" media "\""
+     " href=\"" href "\" />\n")))
+
+;; (muse-project "MyNotes")
+
+;; ("MyNotes"
+;;  ("~/Documents/CreatedContent/contents/muse/web/site/wiki/notes" :force-publish ("index") :default "index")
+;;  (:base "xhtml" :base-url (concat *website-address* "/notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/html")
+;;  (:base "my-pdf" :base-url "http://hello.org//notes/" :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/pdf"))
+
+(defvar *muse-top-style-dir* (concat *muse-top-dir* "/web/site/meta/generic/style"))
+
+(defun mkdir-copy-file (src-file dst-file)
+  (unless (file-exists-p dst-file)
+    (progn
+      (message "%s not exists" dst-file)
+      (make-directory
+       (expand-file-name
+        (dirname-of-file dst-file)) t)
+      (if (file-exists-p src-file)
+          (copy-file src-file dst-file)
+          (error "file %s not exists" src-file)))))
+
+(defun muse-insert-css-link (media href &optional srcdir)
+  (let* ((filename (file-name-nondirectory href))
+         (srcdir (or srcdir
+                  (let* ((srcdir (cadr (muse-project)))
+                         (srcdir (concat
+                               (if (consp srcdir) (car srcdir) srcdir)
+                               "/styles")))
+                    srcdir)))
+         (dstdir (plist-get muse-publishing-current-style :path))
+         (src-file (expand-file-name filename srcdir))
+         (dst-file (expand-file-name href dstdir))
+         (style (plist-get muse-publishing-current-style :base)))
+
+    (unless (file-exists-p src-file)
+      (let ((style-file (expand-file-name
+                         filename
+                         (concat
+                          *muse-top-style-dir*
+                          "/" style))))
+        (unless (file-exists-p style-file)
+          (mkdir-copy-file
+           (expand-file-name
+            filename *muse-top-style-dir*) style-file))
+        (mkdir-copy-file style-file src-file)))
+
+    (if (file-exists-p src-file)
+        (mkdir-copy-file src-file dst-file)
+        (error "src file %s not exists" src-file))
+    (muse-make-css-link media href)))
+
+
+;; edit-project-style-file
+;; edit-project-header
+;; edit-project-footer
+
+;;; Custom variables
   (custom-set-variables
    `(muse-blosxom-base-directory ,(concat *created-content-dir* "/gen/web/site/blog"))
    `(muse-colors-autogen-headings (quote outline))
@@ -481,9 +546,12 @@ between the two tags."
    `(muse-html-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
    `(muse-html-meta-content-encoding (quote utf-8))
    `(muse-html-style-sheet
-     "<link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"all\" href=\"../style/common.css\" />
-      <link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"screen\" href=\"../style/screen.css\" />
-      <link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"print\" href=\"../style/print.css\" />")
+     "<lisp>
+       (concat
+        (muse-insert-css-link \"all\" \"../style/common.css\")
+        (muse-insert-css-link \"screen\" \"../style/screen.css\")
+        (muse-insert-css-link \"print\" \"../style/print.css\"))
+       </lisp>")
    `(muse-latex-header "~/personal-site/muse/header.tex")
    `(muse-latex-pdf-browser "evince %s &")
    `(muse-mode-hook (quote (flyspell-mode footnote-mode)))
@@ -494,9 +562,12 @@ between the two tags."
    `(muse-xhtml-footer ,(concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
    `(muse-xhtml-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
    `(muse-xhtml-style-sheet
-     "<link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"all\" href=\"../style/common.css\" />
-      <link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"screen\" href=\"../style/screen.css\" />
-      <link rel=\"stylesheet\" type=\"text/css\" charset=\"utf-8\" media=\"print\" href=\"../style/print.css\" />"))
+     "<lisp>
+       (concat
+        (muse-insert-css-link \"all\" \"../style/common.css\")
+        (muse-insert-css-link \"screen\" \"../style/screen.css\")
+        (muse-insert-css-link \"print\" \"../style/print.css\"))
+       </lisp>"))
   (custom-set-faces
    '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold)))))
 
