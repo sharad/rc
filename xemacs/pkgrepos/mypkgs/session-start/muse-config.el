@@ -229,14 +229,14 @@
      (:base "my-xhtml"
             :base-url ,(concat *website-address* "/web/")
             :include "/web/[^/]+"
-            :path ,(concat *generated-top-dir* "/web/site/wiki/web/html"))
+            :path ,(concat *generated-top-dir* "/web/site/wiki/web/my-xhtml"))
      (:base "my-xhtml"
             :base-url ,(concat *website-address* "/web/")
             :include "/testdir/[^/]+"
-            :path ,(concat *generated-top-dir* "/web/site/wiki/web/testdir/html"))
+            :path ,(concat *generated-top-dir* "/web/site/wiki/web/testdir/my-xhtml"))
      (:base "my-pdf"
             :base-url ,(concat *website-address* "/web/")
-            :path ,(concat *generated-top-dir* "/doc/pdf/site/wiki/web/html")
+            :path ,(concat *generated-top-dir* "/doc/pdf/site/wiki/web/my-pdf")
             :include "/\\(CurriculumVitae\\|BriefResume\\)[^/]*$")))
 
   (add-muse-project
@@ -245,7 +245,7 @@
                    :default "WelcomePage")
                 (:base "my-xhtml"
                        :base-url ,(concat *website-address* "/projects/")
-                       :path ,(concat *generated-top-dir* "/web/site/wiki/projects/html"))))
+                       :path ,(concat *generated-top-dir* "/web/site/wiki/projects/my-xhtml"))))
 
   (add-muse-project
    `("Blog" (,@(muse-project-alist-dirs (concat *muse-top-dir* "/web/site/blog"))
@@ -260,7 +260,7 @@
             ;;   remainder: Other things to put in every generated style
             ,@(muse-project-alist-styles
                (concat *muse-top-dir* "/web/site/blog")
-               (concat *generated-top-dir* "/web/site/blog/pdf")
+               (concat *generated-top-dir* "/web/site/blog/ikiwiki")
                "ikiwiki"
                :base-url (concat *website-address* "/blog/"))))
 
@@ -271,10 +271,10 @@
                  :default "index")
                (:base "xhtml"
                       :base-url (concat *website-address* "/notes/")
-                      :path ,(concat *generated-top-dir* "/web/site/wiki/notes/html"))
+                      :path ,(concat *generated-top-dir* "/web/site/wiki/notes/xhtml"))
                (:base "my-pdf"
                       :base-url ,(concat *website-address* "/notes/")
-                      :path ,(concat *generated-top-dir* "/web/site/wiki/notes/pdf"))))
+                      :path ,(concat *generated-top-dir* "/web/site/wiki/notes/my-pdf"))))
 
   (add-muse-project
    `("_Private" (,(concat *muse-top-dir* "/doc/priv"))
@@ -286,23 +286,23 @@
    `("_Classes" (,@(muse-project-alist-dirs (concat *muse-top-dir* "/web/site/wiki/classes"))
                    :default "index")
                 ,@(muse-project-alist-styles (concat *muse-top-dir* "/web/site/wiki/classes")
-                                             (concat *generated-top-dir* "/web/site/wiki/classes/html")
+                                             (concat *generated-top-dir* "/web/site/wiki/classes/xhtml")
                                              "xhtml")))
 
   (add-muse-project
    `("MA366" (,(concat *muse-top-dir* "/doc/pdf/classes/ma366"))
              (:base "pdf-uh"
-                    :path ,(concat *generated-top-dir* "/doc/pdf/classes/ma366/pdf"))))
+                    :path ,(concat *generated-top-dir* "/doc/pdf/classes/ma366/pdf-uh"))))
 
   (add-muse-project
    `("ENGL238" (,(concat *muse-top-dir* "/doc/pdf/classes/eng238"))
                (:base "pdf-uh"
-                      :path ,(concat *generated-top-dir* "/doc/pdf/classes/eng238/pdf"))))
+                      :path ,(concat *generated-top-dir* "/doc/pdf/classes/eng238/pdf-uh"))))
 
   (add-muse-project
    `("CS426" (,(concat *muse-top-dir* "/web/site/wiki/classes/cs426"))
              (:base "pdf-uh"
-                    :path "~/proj/classes/cs426/pdf")))
+                    :path "~/proj/classes/cs426/pdf-uh")))
 
   (add-muse-project
    `("_Plans" (,(concat *muse-top-dir* "/web/site/wiki/plans")
@@ -532,6 +532,7 @@ between the two tags."
            ((stringp (car fnslist))   (expand-file-name filename (car fnslist)))
            (t (error "wrong")))))
     (if (and filepath (file-exists-p filepath))
+        filepath
         (if fnslist
             (let ((parent-filepath (muse-find-or-create-meta-file filename (cdr fnslist))))
               (if (and parent-filepath
