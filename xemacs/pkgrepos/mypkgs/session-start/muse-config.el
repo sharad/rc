@@ -569,9 +569,9 @@ between the two tags."
    `(muse-html-style-sheet
      "<lisp>
        (concat
-        (muse-insert-css-link \"all\" \"../style/common.css\")
-        (muse-insert-css-link \"screen\" \"../style/screen.css\")
-        (muse-insert-css-link \"print\" \"../style/print.css\"))
+        (muse-insert-css-link \"all\" \"common.css\")
+        (muse-insert-css-link \"screen\" \"screen.css\")
+        (muse-insert-css-link \"print\" \"print.css\"))
        </lisp>")
    `(muse-latex-header "~/personal-site/muse/header.tex")
    `(muse-latex-pdf-browser "evince %s &")
