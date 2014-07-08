@@ -246,9 +246,12 @@ for the overlay."
     ;;      (unless desktop-buffer-read-only
     ;;        (,modefn 1))))
 
-  (eval-when-compile
-   '(require 'session-config))
+    (eval-when-compile
+      '(progn
+        (require 'desktop)
+        (require 'session-config)))
 
+    (require 'desktop)
     (require 'session-config)
 
     ;; (defun desktop-handler-pabbrev-mode (desktop-buffer-locals)

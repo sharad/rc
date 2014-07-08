@@ -488,6 +488,30 @@ between the two tags."
 
 (defvar *muse-top-style-dir* (concat *muse-top-dir* "/web/site/meta/generic/style"))
 
+(defun muse-meta-style-dirname (dir)
+  (let* ((style (plist-get muse-publishing-current-style :base))
+         (srcdir dir)
+         (srcdir (concat
+                  (if (consp srcdir) (car srcdir) srcdir)
+                  "/styles/" style)))
+        scrdir))
+
+(defvar *muse-meta-style-dirname-fns*
+  (list
+   (lambda ()
+     (muse-meta-style-dirname
+      (plist-get muse-publishing-current-style :path)))
+
+   (lambda ()
+     (muse-meta-style-dirname
+      (cadr (muse-project))))
+
+   (lambda ()
+     (muse-meta-style-dirname
+      *muse-top-style-dir*))
+
+   *muse-top-style-dir*))
+
 (defun mkdir-copy-file (src-file dst-file)
   (unless (file-exists-p dst-file)
     (progn
@@ -497,38 +521,34 @@ between the two tags."
         (dirname-of-file dst-file)) t)
       (if (file-exists-p src-file)
           (copy-file src-file dst-file)
-          (error "file %s not exists" src-file)))))
+          (error "file %s not exists" src-file))))
+  src-file)
 
-(defun muse-insert-css-link (media href &optional srcdir)
-  (let* ((filename (file-name-nondirectory href))
-         (srcdir (or srcdir
-                  (let* ((srcdir (cadr (muse-project)))
-                         (srcdir (concat
-                               (if (consp srcdir) (car srcdir) srcdir)
-                               "/styles")))
-                    srcdir)))
-         (dstdir (plist-get muse-publishing-current-style :path))
-         (src-file (expand-file-name filename srcdir))
-         (dst-file (expand-file-name href dstdir))
-         (style (plist-get muse-publishing-current-style :base)))
+(defun muse-find-or-create-meta-file (filename &optional fnslist)
+  (let ((fnslist (or fnslist *muse-meta-style-dirname-fns*))
+        (filepath
+         (cond
+           ((functionp (car fnslist)) (expand-file-name filename (funcall fnslist)))
+           ((stringp (car fnslist))   (expand-file-name filename (car fnslist)))
+           (t (error "wrong")))))
+    (if (and filepath (file-exists-p filepath))
+        (if fnslist
+            (let ((parent-filepath (muse-find-or-create-meta-file filename (cdr fnslist))))
+              (if (and parent-filepath
+                       (file-exists-p parent-filepath))
+                  (mkdir-copy-file parent-filepath filepath)
+                  (error "can not get parent file %s" parent-filepath)))
+            (progn
+              (message "You need to create atleast %s file manually" filepath)
+              (error "Can not file futher %s file now." filename))))))
 
-    (unless (file-exists-p src-file)
-      (let ((style-file (expand-file-name
-                         filename
-                         (concat
-                          *muse-top-style-dir*
-                          "/" style))))
-        (unless (file-exists-p style-file)
-          (mkdir-copy-file
-           (expand-file-name
-            filename *muse-top-style-dir*) style-file))
-        (mkdir-copy-file style-file src-file)))
+(defun muse-insert-css-link (media filename)
+  (muse-make-css-link media
+                      (file-relative-name
+                       (muse-find-or-create-meta-file filename)
+                       (plist-get muse-publishing-current-style :path))))
 
-    (if (file-exists-p src-file)
-        (mkdir-copy-file src-file dst-file)
-        (error "src file %s not exists" src-file))
-    (muse-make-css-link media href)))
-
+;; (file-relative-name "/tmp/xx" "/tmp/asfd/sdf")
 
 ;; edit-project-style-file
 ;; edit-project-header
@@ -564,9 +584,9 @@ between the two tags."
    `(muse-xhtml-style-sheet
      "<lisp>
        (concat
-        (muse-insert-css-link \"all\" \"../style/common.css\")
-        (muse-insert-css-link \"screen\" \"../style/screen.css\")
-        (muse-insert-css-link \"print\" \"../style/print.css\"))
+        (muse-insert-css-link \"all\" \"common.css\")
+        (muse-insert-css-link \"screen\" \"screen.css\")
+        (muse-insert-css-link \"print\" \"print.css\"))
        </lisp>"))
   (custom-set-faces
    '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold)))))
