@@ -619,4 +619,13 @@ The indirect buffer can have another major mode."
 ;; conversational and computing acronyms.
 )
 
+
+(defun get-string-from-file (filePath)
+  ;; http://ergoemacs.org/emacs/elisp_read_file_content.html
+  "Return filePath's file content."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (buffer-string)))
+;; thanks to “Pascal J Bourguignon” and “TheFlyingDutchman 〔zzbba…@aol.com〕”. 2010-09-02
+
 (provide 'misc-config)

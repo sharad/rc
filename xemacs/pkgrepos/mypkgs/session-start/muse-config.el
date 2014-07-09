@@ -51,9 +51,14 @@
                      :before 'my-muse-pdf-prepare-buffer)
 
   ;; This uses a different header and footer than normal
+  ;; (muse-derive-style "my-xhtml" "xhtml"
+  ;;                    :header (concat *muse-top-dir* "/web/site/meta/generic/header.html")
+  ;;                    :footer (concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
+
+  ;; This uses a different header and footer than normal
   (muse-derive-style "my-xhtml" "xhtml"
-                     :header (concat *muse-top-dir* "/web/site/meta/generic/header.html")
-                     :footer (concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
+                     :header "<lisp>(muse-insert-meta-html \"header.html\")</lisp>"
+                     :footer "<lisp>(muse-insert-meta-html \"footer.html\")</lisp>")
 
   ;; Define a draft style which provides extra space between sections
 
@@ -486,15 +491,37 @@ between the two tags."
 ;;  (:base "xhtml" :base-url (concat *website-address* "/notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/html")
 ;;  (:base "my-pdf" :base-url "http://hello.org//notes/" :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/pdf"))
 
-(defvar *muse-top-style-dir* (concat *muse-top-dir* "/web/site/meta/generic/style"))
+(defvar *muse-top-style-dir* (concat *muse-top-dir* "/generic/style"))
 
 (defun muse-meta-style-dirname (dir)
   (let* ((style (plist-get muse-publishing-current-style :base))
          (srcdir dir)
-         (srcdir (concat
-                  (if (consp srcdir) (car srcdir) srcdir)
-                  "/styles/" style)))
-        scrdir))
+         (srcdir (if (stringp srcdir)
+                     (concat
+                      (if (consp srcdir) (car srcdir) srcdir)
+                      "/styles/" style))))
+        srcdir))
+
+(setq *muse-meta-style-dirname-fns*
+  (list
+   (lambda ()
+     (unless muse-publishing-current-style
+       (error "muse-publishing-current-style"))
+     (message "muse-publishing-current-style %s" muse-publishing-current-style)
+     (muse-meta-style-dirname
+      (plist-get muse-publishing-current-style :path)))
+
+   (lambda ()
+     (let* ((project-dir (cadr (muse-project)))
+            (project-dir (if (consp project-dir) (car project-dir) project-dir)))
+       (message "(cadr (muse-project)) %s" project-dir)
+       (muse-meta-style-dirname project-dir)))
+
+   (lambda ()
+     (muse-meta-style-dirname
+      *muse-top-style-dir*))
+
+   *muse-top-style-dir*))
 
 (defvar *muse-meta-style-dirname-fns*
   (list
@@ -524,30 +551,47 @@ between the two tags."
           (error "file %s not exists" src-file))))
   src-file)
 
-(defun muse-find-or-create-meta-file (filename &optional fnslist)
-  (let ((fnslist (or fnslist *muse-meta-style-dirname-fns*))
-        (filepath
-         (cond
-           ((functionp (car fnslist)) (expand-file-name filename (funcall fnslist)))
-           ((stringp (car fnslist))   (expand-file-name filename (car fnslist)))
-           (t (error "wrong")))))
-    (if (and filepath (file-exists-p filepath))
-        filepath
-        (if fnslist
-            (let ((parent-filepath (muse-find-or-create-meta-file filename (cdr fnslist))))
-              (if (and parent-filepath
-                       (file-exists-p parent-filepath))
-                  (mkdir-copy-file parent-filepath filepath)
-                  (error "can not get parent file %s" parent-filepath)))
-            (progn
-              (message "You need to create atleast %s file manually" filepath)
-              (error "Can not file futher %s file now." filename))))))
+(defun sharad/muse-find-or-create-meta-file (filename &optional fnslist)
+  "asfds"
+  (let ((fnslist (or fnslist *muse-meta-style-dirname-fns*)))
+    (sharad/muse-find-or-create-meta-file-main filename fnslist)))
+
+(defun sharad/muse-find-or-create-meta-file-main (filename fnslist)
+  "sdfds"
+  (if fnslist
+      (let* ((strorfn (car fnslist))
+             (dirpath
+              (cond
+                ((functionp strorfn) (funcall strorfn))
+                ((stringp strorfn)   strorfn)
+                ((null strorfn) nil)
+                (t (error "wrong"))))
+             (filepath (progn
+                         (message "list fns no %d retval %s" (length fnslist) dirpath)
+                         (if (stringp dirpath) (expand-file-name filename dirpath)))))
+        (message "filepath: %s" filepath)
+        (if filepath
+            (if (file-exists-p filepath)
+                filepath
+                (let ((parent-filepath (sharad/muse-find-or-create-meta-file-main filename (cdr fnslist))))
+                  (if parent-filepath
+                      (if (file-exists-p parent-filepath)
+                          (mkdir-copy-file parent-filepath filepath)
+                          (error "file %s did not got created for %s" parent-filepath filepath))
+                      (progn
+                        (message "You need to create %s file manually" filepath)
+                        (error "Can not file futher %s file now." filename)))))))
+      (error "can not get parent file for %s" filename)))
 
 (defun muse-insert-css-link (media filename)
   (muse-make-css-link media
                       (file-relative-name
-                       (muse-find-or-create-meta-file filename)
+                       (sharad/muse-find-or-create-meta-file filename)
                        (plist-get muse-publishing-current-style :path))))
+
+(defun muse-insert-meta-html (filename)
+  (get-string-from-file
+   (sharad/muse-find-or-create-meta-file filename)))
 
 ;; (file-relative-name "/tmp/xx" "/tmp/asfd/sdf")
 
@@ -563,8 +607,11 @@ between the two tags."
    `(muse-completing-read-function (quote ido-completing-read))
    `(muse-html-charset-default "utf-8")
    `(muse-html-encoding-default (quote utf-8))
-   `(muse-html-footer ,(concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
-   `(muse-html-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
+   ;; `(muse-html-footer ,(concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
+   ;; `(muse-html-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
+   `(muse-html-footer "<lisp>(muse-insert-meta-html \"footer.html\")</lisp>")
+   `(muse-html-header "<lisp>(muse-insert-meta-html \"header.html\")</lisp>")
+
    `(muse-html-meta-content-encoding (quote utf-8))
    `(muse-html-style-sheet
      "<lisp>
@@ -580,8 +627,8 @@ between the two tags."
    `(muse-publish-date-format "%b. %e, %Y")
    `(muse-publish-desc-transforms (quote (muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL)))
    `(muse-wiki-publish-small-title-words (quote ("the" "and" "at" "on" "of" "for" "in" "an" "a" "page")))
-   `(muse-xhtml-footer ,(concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
-   `(muse-xhtml-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
+   `(muse-xhtml-footer "<lisp>(muse-insert-meta-html \"footer.html\")</lisp>"))
+   `(muse-xhtml-header "<lisp>(muse-insert-meta-html \"header.html\")</lisp>")
    `(muse-xhtml-style-sheet
      "<lisp>
        (concat
@@ -620,7 +667,7 @@ between the two tags."
       ;; (string-match org-bracket-link-analytic-regexp++ "[[/~s/tmp/xx.org][sdfds]]")
 
       (add-to-list 'muse-publish-markup-regexps
-                   '(4000 org-bracket-link-analytic-regexp++ 0 org-export-string-as-html-string)))))
+                   '(4000 org-bracket-link-analytic-regexp++ 0 org-export-string-as-html-string))))
 
 
 ;; from: http://1010.co.uk/tech_notes.html

@@ -43,6 +43,8 @@ function main() {
 }
 
 function process_arg() {
+    warn=1
+    error=1
 
     disable_file=~/.var/comm/disable/$pgm
     set -- $(getopt -n $pgm -o hdrsivwea: -- $@)
@@ -79,8 +81,8 @@ function process_arg() {
                     notify $pgm is already enabled;
                 fi
                 exit;;
-            (-w) warn=1;;
-            (-e) error=1;;
+            (-w) warn="";;
+            (-e) error="";;
             (-h) help;
                  exit;;
             (--) shift; break;;
