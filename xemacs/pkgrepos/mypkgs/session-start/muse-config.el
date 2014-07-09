@@ -60,6 +60,8 @@
                      :header "<lisp>(muse-insert-meta-html \"header.html\")</lisp>"
                      :footer "<lisp>(muse-insert-meta-html \"footer.html\")</lisp>")
 
+  ;; muse-publishing-styles
+  ;; (assoc "my-xhtml" muse-publishing-styles)
   ;; Define a draft style which provides extra space between sections
 
   (defvar muse-latex-draft-markup-strings
@@ -576,7 +578,9 @@ between the two tags."
                 (let ((parent-filepath (sharad/muse-find-or-create-meta-file-main filename (cdr fnslist))))
                   (if parent-filepath
                       (if (file-exists-p parent-filepath)
-                          (mkdir-copy-file parent-filepath filepath)
+                          (progn
+                            (mkdir-copy-file parent-filepath filepath)
+                            filepath)
                           (error "file %s did not got created for %s" parent-filepath filepath))
                       (progn
                         (message "You need to create %s file manually" filepath)
@@ -627,7 +631,7 @@ between the two tags."
    `(muse-publish-date-format "%b. %e, %Y")
    `(muse-publish-desc-transforms (quote (muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL)))
    `(muse-wiki-publish-small-title-words (quote ("the" "and" "at" "on" "of" "for" "in" "an" "a" "page")))
-   `(muse-xhtml-footer "<lisp>(muse-insert-meta-html \"footer.html\")</lisp>"))
+   `(muse-xhtml-footer "<lisp>(muse-insert-meta-html \"footer.html\")</lisp>")
    `(muse-xhtml-header "<lisp>(muse-insert-meta-html \"header.html\")</lisp>")
    `(muse-xhtml-style-sheet
      "<lisp>

@@ -13,50 +13,47 @@ function main() {
     setup_dbus_vars
 
     if [ -e $disable_file ] ; then
-        notify "Syncimap is disabled"
+        notify "monitru is disabled"
         exit 0
     fi
 
     foreach p ($processes)
     {
-        pid_max_cpu=$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p) | awk '{ if ( $3 > '$max_cpu' ) print $2}')
-        pid_max_mem=$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p) | awk '{ if ( $4 > '$max_mem' ) print $2}')
+        eval max_cpu_pid_val=$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p) | awk '{ if ( $3 > '$max_cpu' ) print $2 $3 }')
+        eval max_mem_pid_val=$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p) | awk '{ if ( $4 > '$max_mem' ) print $2 $4 }')
 
-        verbose "$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p))"
+        pid_max_cpu=${max_cpu_pid_val[1]}
+        pid_max_mem=${max_mem_pid_val[1]}
+
+        val_max_cpu=${max_cpu_pid_val[2]}
+        val_max_mem=${max_mem_pid_val[2]}
 
         if [ "x$pid_max_mem" != "x" ] ; then
             comm_max_cpu=$(ps h -o comm $pid_max_cpu)
-            # echo $pid_max_cpu
-            # echo $pid_max_mem
 
-            warn "Going to kill $p mem usage $pid_max_mem exceeds $max_mem"
+            warn "Going to kill $p ($pid_max_mem) mem usage $val_max_mem exceeds $max_mem"
             kill $pid_max_mem
             sleep 2s
-            if command ps $pid_max_mem >&/dev/null ; then
+            if command ps $pid_max_mem >& /dev/null ; then
                 kill -9 $pid_max_mem
             fi
-            warn "Killed $p mem usage $pid_max_mem exceeds $max_mem"
+            warn "Killed $p ($pid_max_mem) mem usage $val_max_mem exceeds $max_mem"
         fi
 
         if [ "x$pid_max_cpu" != "x" ] ; then
             comm_max_cpu=$(ps h -o comm $pid_max_cpu)
-            # echo $pid_max_cpu
-            # echo $pid_max_cpu
+            # if command ps $pid_max_cpu >&/dev/null ; then
+            #     verbose "$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p))"
+            # fi
 
-            warn "Going to kill $p cpu usage $pid_max_cpu exceeds $max_cpu"
+            warn "Going to kill $p ($pid_max_cpu) cpu usage $val_max_cpu exceeds $max_cpu"
             kill $pid_max_cpu
             sleep 2s
-            if command ps $pid_max_cpu >&/dev/null ; then
+            if command ps $pid_max_cpu >& /dev/null ; then
                 kill -9 $pid_max_cpu
             fi
-            warn "Killed $p cpu usage $pid_max_cpu exceeds $max_cpu"
+            warn "Killed $p ($pid_max_cpu) cpu usage $val_max_cpu exceeds $max_cpu"
         fi
-
-        # if [ ${processes[(r)comm_max_mem]} = $comm_max_mem ] ; then
-        #     kill $pid_max_mem
-        #     sleep 2s
-        #     kill -9 $pid_max_mem
-        # fi
     }
 
 }
