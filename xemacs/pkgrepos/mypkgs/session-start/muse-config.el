@@ -565,7 +565,7 @@ between the two tags."
       (if (file-exists-p src-file)
           (copy-file src-file dst-file)
           (error "file %s not exists" src-file))))
-  src-file)
+  dst-file)
 
 (defun sharad/muse-find-or-create-meta-file (filename &optional fnslist)
   "asfds"
