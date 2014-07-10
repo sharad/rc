@@ -520,40 +520,51 @@ between the two tags."
 
 (setq *muse-meta-style-dirname-fns*
   (list
-   (lambda ()
-     (unless muse-publishing-current-style
-       (error "muse-publishing-current-style"))
-     (message "muse-publishing-current-style %s" muse-publishing-current-style)
-     (muse-meta-style-dirname
-      (plist-get muse-publishing-current-style :path)))
+   ("project-export"
+    (
+     :path-function
+     (lambda ()
+       (unless muse-publishing-current-style
+         (error "muse-publishing-current-style"))
+       (message "muse-publishing-current-style %s" muse-publishing-current-style)
+       (muse-meta-style-dirname
+        (plist-get muse-publishing-current-style :path)))))
 
-   (lambda ()
-     (let* ((project-dir (cadr (muse-project)))
-            (project-dir (if (consp project-dir) (car project-dir) project-dir)))
-       (message "(cadr (muse-project)) %s" project-dir)
-       (muse-meta-style-dirname project-dir)))
+   ("project"
+    (
+     :path-function
+     (lambda ()
+       (let* ((project-dir (cadr (muse-project)))
+              (project-dir (if (consp project-dir) (car project-dir) project-dir)))
+         (message "(cadr (muse-project)) %s" project-dir)
+         (muse-meta-style-dirname project-dir)))))
 
-   (lambda ()
-     (muse-meta-style-dirname
-      *muse-top-style-dir*))
+   ("style"
+    (
+     :path-funtion
+     (lambda ()
+       (muse-meta-style-dirname
+        *muse-top-style-dir*))))
 
-   *muse-top-style-dir*))
+   ("base"
+    (:path-function
+     *muse-top-style-dir*))))
 
-(defvar *muse-meta-style-dirname-fns*
-  (list
-   (lambda ()
-     (muse-meta-style-dirname
-      (plist-get muse-publishing-current-style :path)))
+;; (defvar *muse-meta-style-dirname-fns*
+;;   (list
+;;    (lambda ()
+;;      (muse-meta-style-dirname
+;;       (plist-get muse-publishing-current-style :path)))
 
-   (lambda ()
-     (muse-meta-style-dirname
-      (cadr (muse-project))))
+;;    (lambda ()
+;;      (muse-meta-style-dirname
+;;       (cadr (muse-project))))
 
-   (lambda ()
-     (muse-meta-style-dirname
-      *muse-top-style-dir*))
+;;    (lambda ()
+;;      (muse-meta-style-dirname
+;;       *muse-top-style-dir*))
 
-   *muse-top-style-dir*))
+;;    *muse-top-style-dir*))
 
 (defun mkdir-copy-file (src-file dst-file)
   (unless (file-exists-p dst-file)
@@ -575,7 +586,7 @@ between the two tags."
 (defun sharad/muse-find-or-create-meta-file-main (filename fnslist)
   "sdfds"
   (if fnslist
-      (let* ((strorfn (car fnslist))
+      (let* ((strorfn (plist-get (cdar fnslist) :path-function))
              (dirpath
               (cond
                 ((functionp strorfn) (funcall strorfn))
