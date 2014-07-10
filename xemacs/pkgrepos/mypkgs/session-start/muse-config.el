@@ -493,16 +493,30 @@ between the two tags."
 ;;  (:base "xhtml" :base-url (concat *website-address* "/notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/html")
 ;;  (:base "my-pdf" :base-url "http://hello.org//notes/" :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/pdf"))
 
+
 (defvar *muse-top-style-dir* (concat *muse-top-dir* "/generic/style"))
+
+;; (file-name-nondirectory "/sdf/sdfds//")
+
+(when nil
+  ;; Do corrections
+ (dir-final-slash "/sdfds/dfg/dfg/fdg")
+ (pathname-delete-trailing-/ "/sdfds/dfg/dfg/fdg")))
+
+
 
 (defun muse-meta-style-dirname (dir)
   (let* ((style (plist-get muse-publishing-current-style :base))
-         (srcdir dir)
-         (srcdir (if (stringp srcdir)
+         (dir (if (stringp dir)
                      (concat
-                      (if (consp srcdir) (car srcdir) srcdir)
-                      "/styles/" style))))
-        srcdir))
+                      (if (consp dir) (car dir) dir)
+                      "/styles/"
+                      (unless (string-equal
+                               style
+                               (file-name-nondirectory
+                                (pathname-delete-trailing-/ dir)))
+                          style)))))
+        dir))
 
 (setq *muse-meta-style-dirname-fns*
   (list
