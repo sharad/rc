@@ -550,22 +550,6 @@ between the two tags."
     (:path-function
      *muse-top-style-dir*))))
 
-;; (defvar *muse-meta-style-dirname-fns*
-;;   (list
-;;    (lambda ()
-;;      (muse-meta-style-dirname
-;;       (plist-get muse-publishing-current-style :path)))
-
-;;    (lambda ()
-;;      (muse-meta-style-dirname
-;;       (cadr (muse-project))))
-
-;;    (lambda ()
-;;      (muse-meta-style-dirname
-;;       *muse-top-style-dir*))
-
-;;    *muse-top-style-dir*))
-
 (defun mkdir-copy-file (src-file dst-file)
   (unless (file-exists-p dst-file)
     (progn
@@ -611,6 +595,10 @@ between the two tags."
                         (message "You need to create %s file manually" filepath)
                         (error "Can not file futher %s file now." filename)))))))
       (error "can not get parent file for %s" filename)))
+
+(defun sharad/muse-edit-meta-file (what)
+
+    sharad/muse-find-or-create-meta-file)
 
 (defun muse-insert-css-link (media filename)
   (muse-make-css-link media

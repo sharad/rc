@@ -16,7 +16,7 @@
 
   ;; Setting up Planner
   ;; Add the files to your load-path. Change these paths as needed.
-  (setq planner-directory "~/.Organize/emacs/plan/Plans")
+  (setq planner-directory (concat *muse-top-dir* "/web/site/wiki/Organize/plan/Plans"))
   (setq planner-project "WikiPlanner"
         ;; faced muse-get-keyword void-variable planner-mode
         planner-mode #'planner-mode)
@@ -58,7 +58,7 @@
             ;; (the value of 'planner-publishing-directory', if
             ;; if you have configuration for an older version
             ;; of Planner)
-            :path ,(concat *generated-top-dir* "/web/site/wiki/Organize/plan/Plans"))))
+            :path ,(concat *generated-top-dir* "/web/site/wiki/Organize/plan/Plans/planner-xhtml"))))
 
 
   ;; (global-set-key (kbd "C-c r") 'remember)

@@ -196,8 +196,8 @@
 
 (defun planner-task-lists (plan)
   (with-safe-plan-env
-    (planner-extract-tasks
-     (list (cons plan (concat planner-directory "/" plan ".muse"))))))
+      (planner-extract-tasks
+       (list (cons plan (concat planner-directory "/" plan ".muse"))))))
 
 ;;test
 ;;
@@ -281,9 +281,12 @@
 
 ;;start: one way to get tasks of plan from one page
 (defun task-lists-of-plan-with-status-p (task plan status)
-  (and
-   (member (concat "[[" plan "]]") (nth 5 task))
-   (member (nth 3 task) status)))
+  (let ((task-pages (nth 5 task)))
+    (and
+     (if (consp task-pages)
+         (member (concat "[[" plan "]]") task-pages)
+         (string-equal plan task-pages))
+     (member (nth 3 task) status))))
 
 ;; (defvar planner-task-simple-name-regex "^\\(.\+\}\}\\)\\(\s\+[[][[]\\)\?" "planner task simple name regex")
 ;; b39437 code: Un reason (0x0001) {{Tasks:42}}
@@ -320,7 +323,11 @@
 (testing
  (kill-new
   (extract-task-name
-   "[[sadfdsf][b1222]]: code: Un reason (0x0001) [[https://bugzilla.sadfsdf.com/bugzilla/show_bug.cgi?id=1222][url]] {{Tasks:42}} ([[2014.06.15]],[[MyMIS]],[[TasksByProject][p]],[[TasksByContext][c]])")))
+   "[[sadfdsf][b1222]]: code: Un reason (0x0001) [[https://bugzilla.sadfsdf.com/bugzilla/show_bug.cgi?id=1222][url]] {{Tasks:42}} ([[2014.06.15]],[[MyMIS]],[[TasksByProject][p]],[[TasksByContext][c]])"))
+
+ (kill-new
+  (extract-task-name
+   "Syncing or updating of WM group {{Tasks:13}} ([[2014.07.10]],[[MyMIS]],[[GNUEmacs]],[[TasksByProject][p]],[[TasksByContext][c]])")))
 
 (defun extract-task-name-from-list (task-list)
   (extract-task-name (nth 4 task-list)))
@@ -331,6 +338,24 @@
      (task-lists-of-plan-with-status-p task plan status))
    (planner-task-lists page)
    :fun #'extract-task-name-from-list))
+
+(testing
+
+ (planner-task-lists-if
+   '(lambda (task) t)
+   (planner-task-lists (planner-today-ensure-exists))
+   :fun #'extract-task-name-from-list)
+
+ (remove-if-not
+  '(lambda (task)
+    (task-lists-of-plan-with-status-p task (planner-today-ensure-exists) (task-stati-of-sys 'planner '(open inprogress))))
+  (planner-task-lists (planner-today-ensure-exists)))
+
+ (task-lists-of-plan-with-status-p
+  (car (planner-task-lists (planner-today-ensure-exists)))
+  (planner-today-ensure-exists)
+  (task-stati-of-sys 'planner '(open inprogress)))
+ )
 ;;end
 
 ;;test
