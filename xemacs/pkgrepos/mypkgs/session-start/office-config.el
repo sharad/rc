@@ -114,7 +114,7 @@
 
                  ((string-equal task "bug")
                   (format "%s %s %s"
-                          hname desc (concat "[[" (read-from-minibuffer (format "url for bug " name)) "][url]]")))
+                          hname desc (concat "[[" (read-from-minibuffer (format "url for bug %s: " name)) "][url]]")))
 
                  ((string-equal task "feature") (format "%s %s" hname desc))
 
@@ -279,8 +279,8 @@
                  (cond ((string-equal task "bug")
                         (if task-local-path
                             (format "[[%s/%s][b%s]] %s %s"
-                                    task-local-path (concat (pluralize-string task) "/" name) name desc (concat "[[" (read-from-minibuffer (format "url for bug " name)) "][url]]"))
-                            (format "b%s %s %s" name desc (concat "[[" (read-from-minibuffer (format "url for bug " name)) "][url]]"))))
+                                    task-local-path (concat (pluralize-string task) "/" name) name desc (concat "[[" (read-from-minibuffer (format "url for bug %s" name)) "][url]]"))
+                            (format "b%s %s %s" name desc (concat "[[" (read-from-minibuffer (format "url for bug %s: " name)) "][url]]"))))
                        ((string-equal task "feature")
                         (if task-local-path
                             (format "[[%s/%s][%s]]: %s" task-local-path (concat (pluralize-string task) "/" name) name desc)
