@@ -67,7 +67,9 @@
         (setq appt-time-msg-list nil))
 
 
-      (deh-require-maybe ox-html5presentation))
+      (deh-require-maybe (and
+                          ob-exp
+                          ox-html5presentation)))
 
 
 
@@ -76,6 +78,9 @@
 
 (deh-require-maybe (and remember
                         org
+                        ob-exp
+                        org-element
+                        org-list
                         planner
                         remember-planner
                         read-file-name
