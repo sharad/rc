@@ -94,3 +94,6 @@
 [submodule "zshall/git/ohmyzsh"]
 	path = zshall/git/ohmyzsh
 	url = https://github.com/robbyrussell/oh-my-zsh.git
+[submodule "xemacs/pkgrepos/world/gits/org-html5presentation"]
+	path = xemacs/pkgrepos/world/gits/org-html5presentation
+	url = https://github.com/kinjo/org-html5presentation.el.git

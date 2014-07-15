@@ -528,7 +528,7 @@ between the two tags."
           (lambda ()
             (unless muse-publishing-current-style
               (error "muse-publishing-current-style"))
-            (message "muse-publishing-current-style %s" muse-publishing-current-style)
+            ;; (message "muse-publishing-current-style %s" muse-publishing-current-style)
             (muse-meta-style-dirname
              (plist-get muse-publishing-current-style :path)))
 
@@ -540,7 +540,7 @@ between the two tags."
           (lambda ()
             (let* ((project-dir (cadr (muse-project)))
                    (project-dir (if (consp project-dir) (car project-dir) project-dir)))
-              (message "(cadr (muse-project)) %s" project-dir)
+              ;; (message "(cadr (muse-project)) %s" project-dir)
               (muse-meta-style-dirname project-dir)))
 
           ))
@@ -595,16 +595,16 @@ between the two tags."
                 ((null strorfn) nil)
                 (t (error "wrong"))))
              (filepath (progn
-                         (message "fnslist %s" fnslist)
-                         (message "fn %s list fns no %d retval %s" strorfn  (length fnslist) dirpath)
+                         ;; (message "fnslist %s" fnslist)
+                         ;; (message "fn %s list fns no %d retval %s" strorfn  (length fnslist) dirpath)
                          (if (stringp dirpath) (expand-file-name filename dirpath)))))
-        (message "filepath: %s" filepath)
+        ;; (message "filepath: %s" filepath)
         (when filepath
-          (message "Xfilepath: %s" filepath)
+          ;; (message "Xfilepath: %s" filepath)
           (if (file-exists-p filepath)
               filepath
               (let ((parent-filepath (sharad/muse-find-or-create-meta-file-main filename (cdr fnslist))))
-                (message "Have come here")
+                ;; (message "Have come here")
                 (if parent-filepath
                     (if (file-exists-p parent-filepath)
                         (progn

@@ -1,5 +1,6 @@
 
-(deh-require-maybe org
+
+(deh-require-maybe (and org-compat org)
   ;; publishing
   (deh-require-maybe org-publish)
 
@@ -63,7 +64,10 @@
       (xrequire 'org-export-freemind-install)
       (defadvice org-agenda-to-appt (before wickedcool activate)
         "Clear the appt-time-msg-list."
-        (setq appt-time-msg-list nil)))
+        (setq appt-time-msg-list nil))
+
+
+      (deh-require-maybe ox-html5presentation))
 
 
 
@@ -232,5 +236,8 @@
 ;; from http://www.emacswiki.org/emacs/RememberMode#toc7
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   )
+
+
+
 
 (provide 'orgmode-config)

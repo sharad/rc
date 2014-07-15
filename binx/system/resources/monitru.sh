@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 
-processes=(firefox)
+processes=(firefox skype)
 max_cpu=100
 max_mem=50
 WM=stumpwm
@@ -19,8 +19,8 @@ function main() {
 
     foreach p ($processes)
     {
-        eval max_cpu_pid_val=$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p) | awk '{ if ( $3 > '$max_cpu' ) print $2 $3 }')
-        eval max_mem_pid_val=$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p) | awk '{ if ( $4 > '$max_mem' ) print $2 $4 }')
+        eval max_cpu_pid_val=$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p) | awk '{ if ( $3 > '$max_cpu' ) printf "(%d %d)\n", $2, $3 }')
+        eval max_mem_pid_val=$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p) | awk '{ if ( $4 > '$max_mem' ) printf "(%d %d)\n", $2, $4 }')
 
         pid_max_cpu=${max_cpu_pid_val[1]}
         pid_max_mem=${max_mem_pid_val[1]}
