@@ -672,7 +672,7 @@ between the two tags."
   (let* ((path-alist (sharad/muse-get-meta-path-plist))
          (name
           (funcall muse-completing-read-function
-                   "Publish to directory: " path-alist nil t))
+                   "Get dir: " path-alist nil t))
          (path (cdr (assoc name path-alist))))
     (ido-find-file-in-dir path)))
 
