@@ -518,14 +518,43 @@ between the two tags."
                           style)))))
         dir))
 
+(defmacro muse-with-project-style (&rest body)
+  `(let* ((muse-current-project (or (muse-project) (muse-read-project "Publish project: " t t)))
+          (muse-publishing-current-style (or muse-publishing-current-style
+                                             (cdr
+                                              (muse-publish-get-style
+                                               (mapcar (lambda (style)
+                                                         (cons (muse-get-keyword :base style) style))
+                                                       (cddr muse-current-project)))))))
+     ,@body))
+
+;; (muse-publish-get-style
+;;  (mapcar (lambda (style)
+;;            (cons (muse-get-keyword :base style) style))
+;;          (cddr (muse-read-project "Publish project: " t t))))
+
+;; (ido-completing-read "sdfds" '(("aaa" "sdfds") ("ppp" "asfddsa")))
+
+
+;; (mapcar (lambda (style)
+;;            (cons (muse-get-keyword :base style) style))
+;;          (cddr (muse-read-project "Publish project: " t t)))
+
+;; (ido-completing-read "sdfads: "
+;; '(("xhtml" :base "xhtml" :base-url (concat *website-address* "/notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/xhtml")
+;;  ("my-pdf" :base "my-pdf" :base-url "http://hello.org//notes/" :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/my-pdf"))
+;; )
+
+
 ;; muse-publishing-styles
 
 (setq *muse-meta-style-dirname-fns*
-      '(
+      `(
         ("project-export"
          (
           :path-function
           (lambda ()
+            (message "current-style %s " muse-publishing-current-style)
             (unless muse-publishing-current-style
               (error "muse-publishing-current-style"))
             ;; (message "muse-publishing-current-style %s" muse-publishing-current-style)
@@ -587,7 +616,9 @@ between the two tags."
       (let* ((strorfn (plist-get (cadar fnslist) :path-function))
              (dirpath
               (cond
-                ((functionp strorfn) (funcall strorfn))
+                ((functionp strorfn)
+                 (muse-with-project-style
+                  (funcall strorfn)))
                 ((stringp strorfn)   strorfn)
                 ((if (symbolp strorfn)
                      (stringp (symbol-value strorfn)))
@@ -616,9 +647,34 @@ between the two tags."
                       (error "Can not file futher %s file now." filename)))))))
       (error "can not get parent file for %s" filename)))
 
-(defun sharad/muse-edit-meta-file (what)
+(defun sharad/muse-get-meta-path-plist ()
+  "sdfds"
+  (interactive)
+  (muse-with-project-style
+   (mapcar
+    (lambda (fn-list)
+      (let ((name (car fn-list))
+            (strfn (plist-get (cadr fn-list) :path-function)))
+        (cons name
+              (cond
+                ((if (symbolp strfn)
+                     (stringp (symbol-value strfn)))
+                 (symbol-value strfn))
+                ((stringp strfn) strfn)
+                ((functionp strfn) (funcall strfn))
+                (t (error "error"))))))
+    *muse-meta-style-dirname-fns*)))
 
-    sharad/muse-find-or-create-meta-file)
+
+
+(defun sharad/muse-edit-meta-file ()
+  (interactive)
+  (let* ((path-alist (sharad/muse-get-meta-path-plist))
+         (name
+          (funcall muse-completing-read-function
+                   "Publish to directory: " path-alist nil t))
+         (path (cdr (assoc name path-alist))))
+    (ido-find-file-in-dir path)))
 
 (defun muse-insert-css-link (media filename)
   (muse-make-css-link media

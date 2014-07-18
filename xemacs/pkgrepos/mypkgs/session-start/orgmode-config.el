@@ -79,6 +79,7 @@
 (deh-require-maybe (and remember
                         org
                         ob-exp
+                        ob-ditaa
                         org-element
                         org-list
                         planner
