@@ -255,6 +255,17 @@
                        :path ,(concat *generated-top-dir* "/web/site/wiki/projects/my-xhtml"))))
 
   (add-muse-project
+   `("WikiWriting"
+     ( ,(concat *muse-top-dir* "/web/site/wiki/writing")
+        ;; :force-publish ("WikiIndex" "MuseQuickStart")
+        :major-mode muse-mode
+        :default "index")
+     (:base "my-xhtml"
+                       :base-url ,(concat *website-address* "/projects/")
+                       :path ,(concat *generated-top-dir* "/web/site/wiki/writing/my-xhtml"))))
+
+
+  (add-muse-project
    `("Blog" (,@(muse-project-alist-dirs (concat *muse-top-dir* "/web/site/blog"))
                :default "index"
                :publish-project #'ignore)
@@ -519,7 +530,7 @@ between the two tags."
         dir))
 
 (defmacro muse-with-project-style (&rest body)
-  `(let* ((muse-current-project (or (muse-project) (muse-read-project "Publish project: " t t)))
+  `(let* ((muse-current-project (or (muse-project) (muse-read-project "Muse Project: " t t)))
           (muse-publishing-current-style (or muse-publishing-current-style
                                              (cdr
                                               (muse-publish-get-style
@@ -554,7 +565,7 @@ between the two tags."
          (
           :path-function
           (lambda ()
-            (message "current-style %s " muse-publishing-current-style)
+            ;; (message "current-style %s " muse-publishing-current-style)
             (unless muse-publishing-current-style
               (error "muse-publishing-current-style"))
             ;; (message "muse-publishing-current-style %s" muse-publishing-current-style)
@@ -611,7 +622,7 @@ between the two tags."
 
 (defun sharad/muse-find-or-create-meta-file-main (filename fnslist)
   "sdfds"
-  (message "calling sharad/muse-find-or-create-meta-file-main filename %s fnslist %s (cadar fnslist) %s" filename fnslist (cadar fnslist))
+  ;; (message "calling sharad/muse-find-or-create-meta-file-main filename %s fnslist %s (cadar fnslist) %s" filename fnslist (cadar fnslist))
   (if fnslist
       (let* ((strorfn (plist-get (cadar fnslist) :path-function))
              (dirpath
@@ -676,6 +687,18 @@ between the two tags."
          (path (cdr (assoc name path-alist))))
     (ido-find-file-in-dir path)))
 
+(defun sharad/muse-delete-meta-file ()
+  (interactive)
+  (let* ((path-alist (sharad/muse-get-meta-path-plist))
+         (name
+          (funcall muse-completing-read-function
+                   "Get dir: " path-alist nil t))
+         (path (cdr (assoc name path-alist)))
+         (delete-file (ido-read-file-name "delete muse meta file: " path)))
+    (when (y-or-n-p (format "really delete %s :" delete-file))
+      (delete-file delete-file)
+      (message "file %s deleted." delete-file))))
+
 (defun muse-insert-css-link (media filename)
   (muse-make-css-link media
                       (file-relative-name
@@ -713,7 +736,7 @@ between the two tags."
         (muse-insert-css-link \"screen\" \"screen.css\")
         (muse-insert-css-link \"print\" \"print.css\"))
        </lisp>")
-   `(muse-latex-header "~/personal-site/muse/header.tex")
+   `(muse-latex-header "<lisp>(muse-insert-meta-html \"header.tex\")</lisp>")
    `(muse-latex-pdf-browser "evince %s &")
    `(muse-mode-hook (quote (flyspell-mode footnote-mode)))
    `(muse-publish-comments-p t)
@@ -778,48 +801,6 @@ between the two tags."
 ;;end ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; lib muse-texinfo
-
-(add-to-list
-   'muse-project-alist
-   '("WikiWriting"
-     ("~/../paradise/Writing"   ;; Or wherever you want your planner
-                                ;; files to be
-      :default "index"
-      :major-mode muse-mode
-      :visit-link planner-visit-link)
-     ;; This next part is for specifying where Planner pages
-     ;; should be published and what Muse publishing style to
-     ;; use. In this example, we will use the XHTML publishing
-     ;; style.
-     (:base "planner-xhtml"
-            ;; where files are published to
-            ;; (the value of 'planner-publishing-directory', if
-            ;; if you have configuration for an older version
-            ;; of Planner)
-      ;; Not needed.
-      ;; :path "~/public_html/Writing/html"
-      )))
-
-(add-to-list
-   'muse-project-alist
-   '("StartWiki"
-     ("~/public_html"   ;; Or wherever you want your planner
-                                ;; files to be
-      :default "index"
-      :major-mode muse-mode
-      :visit-link planner-visit-link)
-     ;; This next part is for specifying where Planner pages
-     ;; should be published and what Muse publishing style to
-     ;; use. In this example, we will use the XHTML publishing
-     ;; style.
-     (:base "xhtml"
-            ;; where files are published to
-            ;; (the value of 'planner-publishing-directory', if
-            ;; if you have configuration for an older version
-            ;; of Planner)
-      ;; :path "~/public_html"
-      )))
-
 
 
 (deh-require-maybe markdown-mode

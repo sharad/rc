@@ -6,6 +6,7 @@
 (deh-require-maybe epa-file
 
   (defun epa-set-file-regex (prefix)
+    (interactive "sprefix: ")
     (let ((regex (concat "\\." prefix "\\(~\\|\\.~[0-9]+~\\)?\\'")))
       (add-to-list 'auto-mode-alist
                    (list regex nil 'epa-file))
