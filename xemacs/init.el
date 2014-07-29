@@ -118,7 +118,14 @@
   (setq server-host (system-name))
   (if (functionp 'server-running-p)
       (when (not (server-running-p))
-	(server-start)))
+	(condition-case e
+            (server-start)
+          ('error
+           (progn
+             (message "Error: %s, now trying to run with tcp." e)
+             (let ((server-use-tcp nil))
+               (setq server-use-tcp nil)
+               (server-start)))))))
   (message (concat "SERVER: " server-name))
   (when (server-running-p "general")
     (message (concat "YES SERVER: " server-name))))
