@@ -3,6 +3,9 @@
 
 
 (deh-section "xml"
+  ;; http://stackoverflow.com/a/11409099
+  (setq rng-nxml-auto-validate-flag nil)
+
   ;; from: http://www.emacswiki.org/emacs/XmlParserExamples
 
   ;; You can also walk the tree converting nodes to sexp’s. The
@@ -132,7 +135,8 @@
 
 
 (deh-section "xslt-config"
-
+  ;; http://stackoverflow.com/a/11409099
+  (setq rng-nxml-auto-validate-flag nil)
   (when (xrequire 'string)
     (deh-require-maybe xslt-process
       (autoload 'xslt-process-mode "xslt-process" "Emacs XSLT processing" t)
@@ -147,7 +151,11 @@
         (run-hooks 'xml-mode-hook)))))
 
 (deh-require-maybe nxml-mode
+  ;; http://stackoverflow.com/a/11409099
+  (setq rng-nxml-auto-validate-flag nil)
   (setq nxml-child-indent 2))
 
+; http://stackoverflow.com/a/11409099
+(setq rng-nxml-auto-validate-flag nil)
 
 (provide 'xml-config)
