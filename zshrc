@@ -460,6 +460,11 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
         : bugz  search -a spratap # -s new,open,reopen
     fi
 
+    foreach gdir (~/.setup ~/.system ~/.pi/org) {
+        print showing $gdir
+        git -C $gdir   status -s -uno --ignore-submodules=all
+    }
+
     autoload ztodo
     print ztodo:
     ztodo list

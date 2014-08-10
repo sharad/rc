@@ -1,5 +1,6 @@
 
-set history filename .gdb_history
+# set history filename .gdb_history
+set history filename ~/.gdb_history
 set history save
 set history save on
 set history size 10000
@@ -413,4 +414,3 @@ end
 context-off
 
 printf "\n\nFor more info run context-on command, for less info context-on, to toggle run toggle-context\n\n"
-
