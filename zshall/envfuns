@@ -4,7 +4,7 @@
 
 
 #{{
-function setvolume() {
+function volmasterset() {
     foreach c  ( $(amixer -- | grep -B 1 pvolume |grep control |  cut -d' ' -f4- | grep -v Master | cut -d, -f1  | tr -d \') ) {
         amixer -- sset $c 100% unmute >& /dev/null
     }
@@ -12,18 +12,28 @@ function setvolume() {
     amixer -- sset Master $@ >& /dev/null
 }
 
-function micopen() {
+function volrearmicopen() {
   # amixer -- sset 'Rear Mic Boost' 53%
   amixer -- sset 'Rear Mic Boost' 66%
   amixer -- sset 'Rear Mic' 100% unmute
 }
 
-function micclose() {
+function volrearmicclose() {
   amixer -- sset 'Rear Mic Boost' 0%
   amixer -- sset 'Rear Mic' 0% mute
+}
+
+function volfrontmicopen() {
+  # amixer -- sset 'Front Mic Boost' 53%
+  amixer -- sset 'Front Mic Boost' 66%
+  amixer -- sset 'Front Mic' 100% unmute
+}
+
+function volfrontmicclose() {
+  amixer -- sset 'Front Mic Boost' 0%
+  amixer -- sset 'Front Mic' 0% mute
 }
 #}}
 
 
 alias getvolume='amixer -- | sed -n 5p | cut -d'\'' '\'' -f6 | cut -c2-3'
-
