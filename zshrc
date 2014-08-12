@@ -461,7 +461,8 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
     fi
 
     foreach gdir (~/.setup ~/.system ~/.sysinfo ~/.osetup ~/.opt ~/.pi/org) {
-        if [ -d $gdir ] ; then
+        if [ -d $gdir ] &&
+            ! git -C $gdir diff --exit-code -s --ignore-submodules=all ; then
             print showing $gdir
             git -C $gdir   status -s -uno --ignore-submodules=all
         fi
