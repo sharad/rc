@@ -460,7 +460,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
         : bugz  search -a spratap # -s new,open,reopen
     fi
 
-    foreach gdir (~/.setup ~/.system ~/.sysinfo ~/.osetup ~/.opt ~/.pi/org) {
+    foreach gdir (~/.setup ~/.system ~/.sysinfo ~/.osetup ~/.opt ~/Documents ~/.pi/org) {
         if [ -d $gdir ] &&
             ! git -C $gdir diff --exit-code -s --ignore-submodules=all ; then
             print showing $gdir
