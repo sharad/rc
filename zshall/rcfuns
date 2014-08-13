@@ -504,4 +504,18 @@ function gitssync () {
     }
 }
 
+function gitsstatus () {
+    if [ $# -gt 0 ] ; then
+        grepos=($*)
+    else
+        grepos=(~/.setup ~/.system ~/.sysinfo ~/.osetup ~/.opt ~/Documents ~/.pi/org)
+    fi
+    foreach gdir ($grepos)
+    {
+        print start $gdir
+        git -C $gdir status
+        print end $gdir
+    }
+}
+
 #}}
