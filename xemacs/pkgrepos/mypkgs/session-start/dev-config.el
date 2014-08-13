@@ -192,7 +192,7 @@
 
 
 
-(deh-require-maybe gdb-ui
+(deh-require-maybe (or gdb-ui gdb-mi)
 
   (deh-section "correction"
 

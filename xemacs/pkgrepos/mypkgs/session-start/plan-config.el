@@ -5,6 +5,8 @@
 ;; Setting up Planner
 ;; Add the files to your load-path. Change these paths as needed.
 
+;; output dot problem see http://www.gnu.org/software/emacs/manual/html_node/elisp/Output-Variables.html
+;; set print-length
 
 
 (deh-require-maybe (and muse-config planner)

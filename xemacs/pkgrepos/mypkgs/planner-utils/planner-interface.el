@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+;; output dot problem see http://www.gnu.org/software/emacs/manual/html_node/elisp/Output-Variables.html
+;; set print-length
 
 ;;test
 (when nil
