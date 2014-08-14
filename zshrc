@@ -479,7 +479,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
     print calendar:
     calendar -a
     print bsd calendar:
-    command calendar
+    ## command calendar
 
 } |
 command less \

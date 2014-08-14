@@ -493,14 +493,17 @@ function gitssync () {
     fi
     foreach gdir ($grepos)
     {
-        print start $gdir
-        git -C $gdir status
-        git -C $gdir pull
-        git -C $gdir status
-        git -C $gdir commit -a -m "corrections"
-        git -C $gdir push origin
-        git -C $gdir status
-        print end $gdir
+        if [ -d $gdir ] &&
+            ! git -C $gdir diff --exit-code -s --ignore-submodules=all ; then
+            print start $gdir
+            git -C $gdir status
+            git -C $gdir pull
+            git -C $gdir status
+            git -C $gdir commit -a -m "corrections"
+            git -C $gdir push origin
+            git -C $gdir status
+            print end $gdir
+        fi
     }
 }
 
@@ -512,9 +515,11 @@ function gitsstatus () {
     fi
     foreach gdir ($grepos)
     {
-        print start $gdir
-        git -C $gdir status
-        print end $gdir
+        if [ -d $gdir ] &&
+            ! git -C $gdir diff --exit-code -s --ignore-submodules=all ; then
+            print showing $gdir
+            git -C $gdir   status -s -uno --ignore-submodules=all
+        fi
     }
 }
 
