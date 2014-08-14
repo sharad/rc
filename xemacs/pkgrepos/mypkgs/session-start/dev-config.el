@@ -599,5 +599,12 @@ Add directory to search path for source files using the GDB command, dir."))
   (remove-hook 'find-file-hooks 'tramp-minor-mode)
   (remove-hook 'dired-mode-hook 'tramp-minor-mode))
 
+
+(deh-require-maybe compile
+  (setq
+   compilation-auto-jump-to-first-error t
+   compilation-skip-threshold 1  ;; 1 - errors, 2 - warnings
+   ))
+
 (provide 'dev-config)
 ;;; dev-config.el ends here

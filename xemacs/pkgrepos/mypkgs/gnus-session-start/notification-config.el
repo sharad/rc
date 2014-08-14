@@ -147,6 +147,15 @@
 
 (when (xrequire 'gnus-demon)
 
+  ;; Group Level
+  ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Group-Levels.html
+  ;; http://www.emacswiki.org/emacs/GnusNiftyTricks
+  ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Group-Parameters.html
+  ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Scanning-New-Messages.html
+  ;; http://www.emacswiki.org/emacs/GnusRss
+  ;; http://www.emacswiki.org/emacs/GnusDemon
+
+
 
   (when nil ;; old
 
