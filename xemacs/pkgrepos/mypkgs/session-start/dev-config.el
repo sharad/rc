@@ -559,5 +559,45 @@ Add directory to search path for source files using the GDB command, dir."))
     (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ -I/usr/include/")
     (add-hook 'c-mode-common-hook 'c-turn-on-eldoc-mode)))
 
+
+
+(deh-require-maybe tramp
+(when nil
+  ;; Utility functions.
+
+  (defun tramp-compile (command)
+    "Compile on remote host."
+    (interactive
+     (if (or compilation-read-command current-prefix-arg)
+         (list (read-from-minibuffer "Compile command: "
+                                     compile-command nil nil
+                                     '(compile-history . 1)))
+         (list compile-command)))
+    (setq compile-command command)
+    (save-some-buffers (not compilation-ask-about-save) nil)
+    (let ((d default-directory))
+      (save-excursion
+        (pop-to-buffer (get-buffer-create "*Compilation*") t)
+        (erase-buffer)
+        (setq default-directory d)))
+    (tramp-handle-shell-command command (get-buffer "*Compilation*"))
+    (pop-to-buffer (get-buffer "*Compilation*"))
+    (tramp-minor-mode 1)
+    (compilation-minor-mode 1))
+
+  (defun tramp-recompile ()
+    "Re-compile on remote host."
+    (interactive)
+    (save-some-buffers (not compilation-ask-about-save) nil)
+    (tramp-handle-shell-command compile-command (get-buffer "*Compilation*"))
+    (pop-to-buffer (get-buffer "*Compilation*"))
+    (tramp-minor-mode 1)
+    (compilation-minor-mode 1)))
+
+
+
+  (remove-hook 'find-file-hooks 'tramp-minor-mode)
+  (remove-hook 'dired-mode-hook 'tramp-minor-mode))
+
 (provide 'dev-config)
 ;;; dev-config.el ends here

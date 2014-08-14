@@ -33,7 +33,7 @@
 
 (require 'vc)
 (require 'vc-rcs)
-(require 'tramp-util) ;; for `tramp-handle-executable-find'
+;; (require 'tramp-util) ;; for `tramp-handle-executable-find'
 
 (defun dirname-of-file (file &optional final-slash)
   ;; (ido-no-final-slash
@@ -225,5 +225,3 @@
 
 (provide 'rcs-backup)
 ;;; rcs-backup.el ends here
-
-
