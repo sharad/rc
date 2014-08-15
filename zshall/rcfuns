@@ -493,7 +493,9 @@ function gitssync () {
     fi
     foreach gdir ($grepos)
     {
-        if [ -d $gdir ] ; then
+        if [ -d $gdir ] &&
+            ! ( git -C $gdir diff -s --ignore-submodules=all --exit-code &&
+                git -C $gdir diff -s --ignore-submodules=all --exit-code remotes/origin/HEAD ); then
             print start $gdir
             git -C $gdir status
             git -C $gdir pull
@@ -514,10 +516,14 @@ function gitsstatus () {
     fi
     foreach gdir ($grepos)
     {
-        if [ -d $gdir ] &&
-            ! git -C $gdir diff --exit-code -s --ignore-submodules=all ; then
-            print showing $gdir
-            git -C $gdir   status -s -uno --ignore-submodules=all
+        if [ -d $gdir ] ; then
+            if ! git -C $gdir diff --exit-code -s --ignore-submodules=all ; then
+                print showing $gdir
+                git -C $gdir   status -s -uno --ignore-submodules=all
+            fi
+            if ! git -C $gdir diff -s --ignore-submodules=all --exit-code remotes/origin/HEAD ; then
+                print $gdir remote changes available.
+            fi
         fi
     }
 }
