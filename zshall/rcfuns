@@ -493,8 +493,7 @@ function gitssync () {
     fi
     foreach gdir ($grepos)
     {
-        if [ -d $gdir ] &&
-            ! git -C $gdir diff --exit-code -s --ignore-submodules=all ; then
+        if [ -d $gdir ] ; then
             print start $gdir
             git -C $gdir status
             git -C $gdir pull
