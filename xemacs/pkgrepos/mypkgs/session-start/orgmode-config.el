@@ -2,7 +2,7 @@
 
 (deh-require-maybe (and org-compat org)
   ;; publishing
-  (deh-require-maybe org-publish)
+  (deh-require-maybe (progn org-publish org-html))
 
   (deh-section "orgextra"
     ;; http://notmuchmail.org/emacstips/
@@ -78,6 +78,7 @@
 
 (deh-require-maybe (and remember
                         org
+                        org-html
                         ob-exp
                         ob-ditaa
                         org-element

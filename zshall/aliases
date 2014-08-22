@@ -206,3 +206,6 @@ alias gpgarmordecrypt='gpg --armor --decrypt'
 # Translation, Dictionary Lookup, Languages
 alias dictenhin='dict -d eng-hin'
 alias dicthien='dict -d eng-hin'
+
+# dev
+objdump='objdump -d -M att -Sl --no-show-raw-insn'
