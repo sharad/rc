@@ -230,7 +230,7 @@ alkready should not exist.")
   (dolist (list lists)
           (add-hook (intern (concat (symbol-name list) "-mode-hook")) element)))
 
-(defun remove-element-to-lists (element lists)
+(defun remove-element-from-lists (element lists)
   (dolist (list lists)
           (remove-hook (intern (concat (symbol-name list) "-mode-hook")) element)))
 

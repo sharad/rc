@@ -232,7 +232,10 @@ for the overlay."
 (defun yas-suggest-activate ()
   (yas-suggest-mode 1))
 
-(add-element-to-lists 'yas-suggest-activate pgm-langs))
+(add-element-to-lists 'yas-suggest-activate pgm-langs)
+;; (remove-element-from-lists 'yas-suggest-activate pgm-langs)
+)
+
 
 
 (deh-section "pabber"

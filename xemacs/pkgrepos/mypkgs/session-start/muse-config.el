@@ -537,7 +537,23 @@ between the two tags."
                                                (mapcar (lambda (style)
                                                          (cons (muse-get-keyword :base style) style))
                                                        (cddr muse-current-project)))))))
+     (message "muse-with-project-style: muse-current-project %s" muse-current-project)
+     (message "muse-with-project-style: muse-publishing-current-style %s" muse-publishing-current-style)
      ,@body))
+
+
+(defmacro muse-with-project-style (&rest body)
+  `(let ((muse-current-project (or (muse-project) (muse-read-project "Muse Project: " t t))))
+     (message "muse-with-project-style: muse-current-project %s" muse-current-project)
+     (let ((muse-publishing-current-style (or muse-publishing-current-style
+                                              (cdr
+                                               (muse-publish-get-style
+                                                (mapcar (lambda (style)
+                                                          (cons (muse-get-keyword :base style) style))
+                                                        (cddr muse-current-project)))))))
+       (message "muse-with-project-style: muse-current-project %s" muse-current-project)
+       (message "muse-with-project-style: muse-publishing-current-style %s" muse-publishing-current-style)
+       ,@body)))
 
 ;; (muse-publish-get-style
 ;;  (mapcar (lambda (style)
@@ -559,7 +575,7 @@ between the two tags."
 
 ;; muse-publishing-styles
 
-(setq *muse-meta-style-dirname-fns*
+(defvar *muse-meta-style-dirname-fns*
       `(
         ("project-export"
          (
@@ -570,8 +586,10 @@ between the two tags."
               (error "muse-publishing-current-style"))
             ;; (message "muse-publishing-current-style %s" muse-publishing-current-style)
             (muse-meta-style-dirname
-             (plist-get muse-publishing-current-style :path)))
-
+             (or
+              (plist-get muse-publishing-current-style :path)
+              (when muse-current-output-style
+                (plist-get muse-current-output-style :path)))))
           ))
 
         ("project"
@@ -597,7 +615,8 @@ between the two tags."
         ("base"
          (
           :path-function
-          *muse-top-style-dir*))))
+          *muse-top-style-dir*)))
+  "*muse-meta-style-dirname-fns*")
 
 ;; *muse-top-style-dir*
 ;; "~/Documents/CreatedContent/contents/muse/generic/style"
@@ -618,7 +637,8 @@ between the two tags."
 (defun sharad/muse-find-or-create-meta-file (filename &optional fnslist)
   "asfds"
   (let ((fnslist (or fnslist *muse-meta-style-dirname-fns*)))
-    (sharad/muse-find-or-create-meta-file-main filename fnslist)))
+    (muse-with-project-style
+     (sharad/muse-find-or-create-meta-file-main filename fnslist))))
 
 (defun sharad/muse-find-or-create-meta-file-main (filename fnslist)
   "sdfds"
@@ -628,8 +648,9 @@ between the two tags."
              (dirpath
               (cond
                 ((functionp strorfn)
-                 (muse-with-project-style
-                  (funcall strorfn)))
+                 ;; (muse-with-project-style
+                  (funcall strorfn))
+                 ;; )
                 ((stringp strorfn)   strorfn)
                 ((if (symbolp strorfn)
                      (stringp (symbol-value strorfn)))
