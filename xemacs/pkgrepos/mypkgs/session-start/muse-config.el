@@ -57,8 +57,8 @@
 
   ;; This uses a different header and footer than normal
   (muse-derive-style "my-xhtml" "xhtml"
-                     :header "<lisp>(muse-insert-meta-html \"header.html\")</lisp>"
-                     :footer "<lisp>(muse-insert-meta-html \"footer.html\")</lisp>")
+                     :header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>"
+                     :footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
 
   ;; muse-publishing-styles
   ;; (assoc "my-xhtml" muse-publishing-styles)
@@ -644,7 +644,9 @@ between the two tags."
   "sdfds"
   ;; (message "calling sharad/muse-find-or-create-meta-file-main filename %s fnslist %s (cadar fnslist) %s" filename fnslist (cadar fnslist))
   (if fnslist
-      (let* ((strorfn (plist-get (cadar fnslist) :path-function))
+      (let* ((style-dirname-list (car fnslist))
+             (style-name (car style-dirname-list))
+             (strorfn (plist-get (cadr style-dirname-list) :path-function))
              (dirpath
               (cond
                 ((functionp strorfn)
@@ -662,9 +664,11 @@ between the two tags."
                          ;; (message "fn %s list fns no %d retval %s" strorfn  (length fnslist) dirpath)
                          (if (stringp dirpath) (expand-file-name filename dirpath)))))
         ;; (message "filepath: %s" filepath)
-        (when filepath
-          ;; (message "Xfilepath: %s" filepath)
-          (if (file-exists-p filepath)
+        (unless dirpath
+          (error "can not get dirpath from style %s" style-name))
+        (if filepath
+            ;; (message "Xfilepath: %s" filepath)
+            (if (file-exists-p filepath)
               filepath
               (let ((parent-filepath (sharad/muse-find-or-create-meta-file-main filename (cdr fnslist))))
                 ;; (message "Have come here")
@@ -726,7 +730,7 @@ between the two tags."
                        (sharad/muse-find-or-create-meta-file filename)
                        (plist-get muse-publishing-current-style :path))))
 
-(defun muse-insert-meta-html (filename)
+(defun muse-insert-meta-file (filename)
   (get-string-from-file
    (sharad/muse-find-or-create-meta-file filename)))
 
@@ -746,8 +750,8 @@ between the two tags."
    `(muse-html-encoding-default (quote utf-8))
    ;; `(muse-html-footer ,(concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
    ;; `(muse-html-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
-   `(muse-html-footer "<lisp>(muse-insert-meta-html \"footer.html\")</lisp>")
-   `(muse-html-header "<lisp>(muse-insert-meta-html \"header.html\")</lisp>")
+   `(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+   `(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
 
    `(muse-html-meta-content-encoding (quote utf-8))
    `(muse-html-style-sheet
@@ -757,17 +761,17 @@ between the two tags."
         (muse-insert-css-link \"screen\" \"screen.css\")
         (muse-insert-css-link \"print\" \"print.css\"))
        </lisp>")
-   `(muse-latex-header "<lisp>(muse-insert-meta-html \"header.tex\")</lisp>")
+   `(muse-latex-header "<lisp>(muse-insert-meta-file \"header.tex\")</lisp>")
    `(muse-latex-pdf-browser "evince %s &")
    `(muse-mode-hook (quote (flyspell-mode footnote-mode)))
    `(muse-publish-comments-p t)
    `(muse-publish-date-format "%b. %e, %Y")
    `(muse-publish-desc-transforms (quote (muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL)))
    `(muse-wiki-publish-small-title-words (quote ("the" "and" "at" "on" "of" "for" "in" "an" "a" "page")))
-   `(muse-xhtml-footer "<lisp>(muse-insert-meta-html \"footer.html\")</lisp>")
-   `(muse-xhtml-header "<lisp>(muse-insert-meta-html \"header.html\")</lisp>")
-   `(planner-xhtml-footer "<lisp>(muse-insert-meta-html \"footer.html\")</lisp>")
-   `(planner-xhtml-header "<lisp>(muse-insert-meta-html \"header.html\")</lisp>")
+   `(muse-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+   `(muse-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+   `(planner-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+   `(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
    `(muse-xhtml-style-sheet
      "<lisp>
        (concat
