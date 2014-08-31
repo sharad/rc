@@ -97,3 +97,6 @@
 [submodule "xemacs/pkgrepos/world/gits/org-html5presentation"]
 	path = xemacs/pkgrepos/world/gits/org-html5presentation
 	url = https://github.com/kinjo/org-html5presentation.el.git
+[submodule "xemacs/pkgrepos/world/gits/jade-mode"]
+	path = xemacs/pkgrepos/world/gits/jade-mode
+	url = https://github.com/brianc/jade-mode.git
