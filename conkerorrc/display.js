@@ -60,6 +60,13 @@ user_pref("browser.display.background_color", "#000000"); // BLACK
 
 
 // register_user_stylesheet('file://' + get_home_directory().path + "/.conkerorrc/conkeror.css");
+"data:text/css,"+escape("input { background-color: white; background: #ffffff; color: black;-moz-appearance: none !important;}")
+
+register_user_stylesheet(make_css_data_uri(
+  [
+    "input, textarea { background-color: white; background: #ffffff; color: black;-moz-appearance: none !important;}"
+  ]
+));
 
 if (false)
 let (mycss = get_home_directory().path + "/.conkerorrc/conkeror.css") {
@@ -92,8 +99,8 @@ if (false)
 //{{ Theming
 // http://truongtx.me/2012/12/27/conkeror-display-tab-bar/
 // http://conkeror.org/Appearance#Theming
-theme_load_paths.unshift("~/.conkerorrc/themes/");
-theme_unload("default");
+theme_load_paths.unshift(get_home_directory().path + "/.conkerorrc/themes/");
+theme_load("default");
 theme_load("tommytxtruong");
 
 

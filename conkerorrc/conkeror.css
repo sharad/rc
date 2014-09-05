@@ -2,7 +2,8 @@
 input {
 border: 1px inset gray;
 background-color: white;
-color: black;
+background: #ffffff;
+/* color: black; */
 -moz-appearance: none !important;
 }
 

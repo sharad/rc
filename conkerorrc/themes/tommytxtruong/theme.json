@@ -1,5 +1,6 @@
 
 { "sheets": [
+      "useradded.css",
       "content-buffer-input.css",
       "minibuffer.css",
       "mode-line.css",
