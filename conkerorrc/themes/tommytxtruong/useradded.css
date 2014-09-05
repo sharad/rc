@@ -1,0 +1,12 @@
+
+
+
+@-moz-document url-prefix(http) {
+input {
+border: 1px inset gray;
+background-color: white;
+background: #ffffff;
+/* color: black; */
+-moz-appearance: none !important;
+background-color: -moz-field !important;
+}
