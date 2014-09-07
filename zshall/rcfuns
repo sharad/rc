@@ -537,6 +537,7 @@ function gitsstatus () {
             if (( ${+remotebranch} )) && ! git -C $gdir diff -s --ignore-submodules=all --exit-code $remotebranch ; then
                 print $gdir remote changes available.
             fi
+            unset remotebranch
         fi
     }
 }
