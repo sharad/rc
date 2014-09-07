@@ -493,10 +493,15 @@ function gitssync () {
     fi
     foreach gdir ($grepos)
     {
-        echo git -C $gdir diff -s --ignore-submodules=all --exit-code remotes/origin/HEAD
+        local remotebranch
+        if [ -r $gdir/.git/refs/remotes/origin/HEAD ] ; then
+            remotebranch=remotes/origin/HEAD
+        elif [ -r $gdir/.git/refs/remotes/origin/master ] ; then
+            remotebranch=remotes/origin/master
+        fi
         if [ -d $gdir ] &&
             ! ( git -C $gdir diff -s --ignore-submodules=all --exit-code &&
-                git -C $gdir diff -s --ignore-submodules=all --exit-code remotes/origin/HEAD ); then
+                git -C $gdir diff -s --ignore-submodules=all --exit-code $remotebranch ); then
             print start $gdir
             git -C $gdir status
             git -C $gdir pull
@@ -523,7 +528,14 @@ function gitsstatus () {
                 print showing $gdir
                 git -C $gdir   status -s -uno --ignore-submodules=all
             fi
-            if ! git -C $gdir diff -s --ignore-submodules=all --exit-code remotes/origin/HEAD ; then
+            local remotebranch
+            if [ -r $gdir/.git/refs/remotes/origin/HEAD ] ; then
+                remotebranch=remotes/origin/HEAD
+            elif [ -r $gdir/.git/refs/remotes/origin/master ] ; then
+                remotebranch=remotes/origin/master
+            fi
+
+            if (( ${+remotebranch} )) && ! git -C $gdir diff -s --ignore-submodules=all --exit-code $remotebranch ; then
                 print $gdir remote changes available.
             fi
         fi
