@@ -522,7 +522,6 @@ function gitsstatus () {
     fi
     foreach gdir ($grepos)
     {
-        echo git -C $gdir diff -s --ignore-submodules=all --exit-code remotes/origin/HEAD
         if [ -d $gdir ] ; then
             if ! git -C $gdir diff --exit-code -s --ignore-submodules=all ; then
                 print showing $gdir
