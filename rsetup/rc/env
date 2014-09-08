@@ -15,7 +15,7 @@ export BROWSER
 
 if [ "x$DISPLAY" != "x" ] ; then
    _DISPLAYMAJOR=$(echo ${DISPLAY} | cut -f2 -d: | cut -d. -f1)
-   if [ -r /var/lib/dbus/machine-id -a -r ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-0 ] ; then
+   if [ -r /var/lib/dbus/machine-id -a -r ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-${_DISPLAYMAJOR} ] ; then
       source ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-${_DISPLAYMAJOR}
       export DBUS_SESSION_BUS_ADDRESS
       unset _DISPLAYMAJOR
