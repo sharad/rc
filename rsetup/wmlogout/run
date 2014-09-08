@@ -18,11 +18,14 @@ pgrep nm-applet && pkill nm-applet
 
 
 
-pgrep gnome-keyring-d && pkill gnome-keyring-d
+if pgrep gnome-keyring-d >& /dev/null ; then
+    pkill gnome-keyring-d >& /dev/null
+    pkill -9 gnome-keyring-d >& /dev/null
+fi
 
 foreach prog (
     ## it is automatically started by gdm, so no need to start it.
-    # gnome-keyring-daemon
+    gnome-keyring-daemon
     gnome-power-manager
     mail-notification
     blueman-adapters
@@ -30,13 +33,16 @@ foreach prog (
     bluetoothd
     pidgin
     synergys
+    nm-applet
     ) {
         echo A DBUS >&2
         pgrep -l dbus-daemon >&2
 
         echo $prog
-        whence -p $prog &&
-        pgrep $prog[0,15] && pkill $prog[0,15]
+        if whence -p $prog &&
+            pgrep $prog[0,15] ; then
+            pkill $prog[0,15]
+        fi
 
         echo B DBUS >&2
         pgrep -l dbus-daemon >&2
