@@ -251,8 +251,8 @@ function screenssh {
         if (( $# == 2 )) ; then
             machine=$1
             shift
-            prefixcmd="ssh -X $machine"
-            prefixcmdintractive="ssh -X -t $machine"
+            prefixcmd="ssh -X  -o VisualHostKey=no $machine"
+            prefixcmdintractive="ssh -X  -o VisualHostKey=no -t $machine"
         fi
         sessionarg=$1
         session=${sessionarg:-default}
@@ -303,7 +303,7 @@ function lsscreenssh {
     if (( $# == 1 )) ; then
         machine=$1
         shift
-        prefixcmdintractive="ssh -t $machine"
+        prefixcmdintractive="ssh -t  -o VisualHostKey=no $machine"
     fi
 
     if ssh-add -l > /dev/null  || ssh-add ~/.ssh/login-keys.d/*~*.pub ; then
@@ -493,6 +493,10 @@ function gitssync () {
     fi
     foreach gdir ($grepos)
     {
+        if ssh-add -l >& /dev/null ; then
+            git -C $gdir remote update
+        fi
+
         local remotebranch
         if [ -r $gdir/.git/refs/remotes/origin/HEAD ] ; then
             remotebranch=remotes/origin/HEAD
@@ -528,6 +532,11 @@ function gitsstatus () {
                 print showing $gdir
                 git -C $gdir   status -s -uno --ignore-submodules=all
             fi
+
+            if ssh-add -l >& /dev/null ; then
+                git -C $gdir remote update
+            fi
+
             local remotebranch
             if [ -r $gdir/.git/refs/remotes/origin/HEAD ] ; then
                 remotebranch=remotes/origin/HEAD
