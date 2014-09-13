@@ -532,10 +532,11 @@ Also returns nil if pid is nil."
 
   ;; use only one desktop
   (make-directory (expand-file-name "autoconfig/desktop/" user-emacs-directory) t)
-  (setq todoo-file-name (expand-file-name "autoconfig/desktop/" user-emacs-directory))
+  ;; (setq todoo-file-name (expand-file-name "autoconfig/desktop/" user-emacs-directory))
 
   (setq desktop-path (expand-file-name "autoconfig/desktop/" user-emacs-directory))
   (setq desktop-dirname (expand-file-name "autoconfig/desktop/" user-emacs-directory))
+
   (setq desktop-base-file-name
         (concat
          "emacs-desktop"
