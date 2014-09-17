@@ -44,7 +44,10 @@ function main() {
 }
 
 function poweroffsys() {
-    sleep $interval
+
+    if [ ! "$now" ] ; then
+        sleep $interval
+    fi
 
     if [ -e $enable_file ] ; then
         if [ -z "$noaction" ] ; then
