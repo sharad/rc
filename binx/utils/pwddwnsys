@@ -38,6 +38,7 @@ function main() {
                 exit 0;;
         esac
     else
+        mkdir -p $(dirname $enable_file)
         touch $enable_file;
     fi
 
