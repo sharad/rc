@@ -18,24 +18,26 @@ function main() {
     process_arg $@
 
     # ask
-    yad --image "dialog-question" \
-        --title "Alert" \
-        --button=gtk-no:1 \
-        --button=gtk-yes:0  \
-        --timeout=$timeout \
-        --text="Do you want system to $action after ${interval}?" ;
+    if [ ! "$now" ] ; then
+        yad --image "dialog-question" \
+            --title "Alert" \
+            --button=gtk-no:1 \
+            --button=gtk-yes:0  \
+            --timeout=$timeout \
+            --text="Do you want system to $action after ${interval}?" ;
 
-    retval=$?
+        retval=$?
 
-    case $retval in
-        (0|70)
-            touch $enable_file;
-            notify $pgm will $action after $interval;;
-        (*)
-            rm -f $enable_file;
-            notify $pgm disabled;
-            exit 0;;
-    esac
+        case $retval in
+            (0|70)
+                touch $enable_file;
+                notify $pgm will $action after $interval;;
+            (*)
+                rm -f $enable_file;
+                notify $pgm disabled;
+                exit 0;;
+        esac
+    fi
 
     poweroffsys
 
@@ -71,7 +73,7 @@ function poweroffsys() {
 function process_arg() {
 
 
-    set -- $(getopt -n $pgm -o dhscivwent:a:o: -- $@)
+    set -- $(getopt -n $pgm -o dhscivwent:a:o:x -- $@)
     while [ $# -gt 0 ]
     do
         case $1 in
@@ -82,6 +84,7 @@ function process_arg() {
             (-n) noaction=1;;
             (-i) interactive=1;;
             (-v) verbose=1;;
+            (-x) now=1;;
             (-c)
                  if mkdir -p $(dirname $enable_file); touch $enable_file ; then
                      notify "will poweroff to avoid poweroff run \n\t\t $pgm -s "
@@ -106,6 +109,7 @@ function help() {
     cat <<'EOF'
             -a: eval account=$2; shift;;
             -i: interactive=1;;
+            -c: now=1;;
             -v: verbose=1;;
             -c: touch $enable_file;;
             -s: rm -f $enable_file;;
