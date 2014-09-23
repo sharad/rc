@@ -741,76 +741,49 @@ between the two tags."
 ;; edit-project-footer
 
 ;;; Custom variables
-  (custom-set-variables
-   `(muse-blosxom-base-directory ,(concat *created-content-dir* "/gen/web/site/blog"))
-   `(muse-colors-autogen-headings (quote outline))
-   `(muse-colors-inline-image-method (quote muse-colors-use-publishing-directory))
-   `(muse-completing-read-function (quote ido-completing-read))
-   `(muse-html-charset-default "utf-8")
-   `(muse-html-encoding-default (quote utf-8))
-   ;; `(muse-html-footer ,(concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
-   ;; `(muse-html-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
-   `(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
-   `(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+(custom-set-variables
+ `(muse-blosxom-base-directory ,(concat *created-content-dir* "/gen/web/site/blog"))
+ `(muse-colors-autogen-headings (quote outline))
+ `(muse-colors-inline-image-method (quote muse-colors-use-publishing-directory))
+ `(muse-completing-read-function (quote ido-completing-read))
+ `(muse-html-charset-default "utf-8")
+ `(muse-html-encoding-default (quote utf-8))
+ ;; `(muse-html-footer ,(concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
+ ;; `(muse-html-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
+ `(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+ `(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
 
-   `(muse-html-meta-content-encoding (quote utf-8))
-   `(muse-html-style-sheet
-     "<lisp>
+ `(muse-html-meta-content-encoding (quote utf-8))
+ `(muse-html-style-sheet
+   "<lisp>
        (concat
         (muse-insert-css-link \"all\" \"common.css\")
         (muse-insert-css-link \"screen\" \"screen.css\")
         (muse-insert-css-link \"print\" \"print.css\"))
        </lisp>")
-   `(muse-latex-header "<lisp>(muse-insert-meta-file \"header.tex\")</lisp>")
-   `(muse-latex-pdf-browser "evince %s &")
-   `(muse-mode-hook (quote (flyspell-mode footnote-mode)))
-   `(muse-publish-comments-p t)
-   `(muse-publish-date-format "%b. %e, %Y")
-   `(muse-publish-desc-transforms (quote (muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL)))
-   `(muse-wiki-publish-small-title-words (quote ("the" "and" "at" "on" "of" "for" "in" "an" "a" "page")))
-   `(muse-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
-   `(muse-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
-   `(planner-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
-   `(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
-   `(muse-xhtml-style-sheet
-     "<lisp>
+ `(muse-latex-header "<lisp>(muse-insert-meta-file \"header.tex\")</lisp>")
+ `(muse-latex-pdf-browser "evince %s &")
+ `(muse-mode-hook (quote (flyspell-mode footnote-mode)))
+ `(muse-publish-comments-p t)
+ `(muse-publish-date-format "%b. %e, %Y")
+ `(muse-publish-desc-transforms (quote (muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL)))
+ `(muse-wiki-publish-small-title-words (quote ("the" "and" "at" "on" "of" "for" "in" "an" "a" "page")))
+ `(muse-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+ `(muse-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+ `(planner-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+ `(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+ `(muse-xhtml-style-sheet
+   "<lisp>
        (concat
         (muse-insert-css-link \"all\" \"common.css\")
         (muse-insert-css-link \"screen\" \"screen.css\")
         (muse-insert-css-link \"print\" \"print.css\"))
        </lisp>"))
-  (custom-set-faces
-   '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold)))))
-
-
-  (deh-section "from here"
-    (defun muse-help ()
-      (interactive)
-      (find-file-other-window "/usr/share/doc/muse-el/examples/QuickStart.muse"))
-    (define-key muse-mode-local-map (kbd "C-c C-.") 'muse-help)
-
-    (deh-require-maybe org
-
-      ;; quick fix
-      (push "org" muse-ignored-extensions)
-      (when (fboundp 'muse-update-ignored-extensions-regexp)
-        (muse-update-ignored-extensions-regexp
-         'muse-ignored-extensions muse-ignored-extensions))
+(custom-set-faces
+ '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold)))))
 
 
 
-      ;; (setq html (org-export-region-as-html beg end t 'string))
-      (defun org-export-string-as-html-string (text)
-        (with-temp-buffer
-          (insert text)
-          (org-export-region-as-html 0 (point-max) t 'string)))
-
-      ;; Hurdle
-      ;; (string-match muse-explicit-link-regexp "[[/~s/tmp/xx.org][sdfds]]")
-      ;; (string-match org-bracket-link-analytic-regexp++ "[[/~s/tmp/xx.org][sdfds]]")
-
-      (add-to-list 'muse-publish-markup-regexps
-                   '(4000 org-bracket-link-analytic-regexp++ 0 org-export-string-as-html-string))))
 
 
 ;; from: http://1010.co.uk/tech_notes.html
@@ -871,5 +844,157 @@ between the two tags."
 
   )
 
+(deh-section "many changes"
+    (defun muse-help ()
+      (interactive)
+      (find-file-other-window "/usr/share/doc/muse-el/examples/QuickStart.muse"))
+    (define-key muse-mode-local-map (kbd "C-c C-.") 'muse-help)
+
+    (deh-require-maybe org
+
+      ;; quick fix
+      (progn
+        (push "org" muse-ignored-extensions)
+        (when (fboundp 'muse-update-ignored-extensions-regexp)
+          (muse-update-ignored-extensions-regexp
+           'muse-ignored-extensions muse-ignored-extensions)))
+
+
+      ;; (defadvice muse-update-ignored-extensions-regexp ())
+
+
+      ;; (setq html (org-export-region-as-html beg end t 'string))
+      (defun org-export-string-as-html-string (text)
+        (with-temp-buffer
+          (insert text)
+          (org-export-region-as-html 0 (point-max) t 'string)))
+
+      ;; Hurdle
+      ;; (string-match muse-explicit-link-regexp "[[/~s/tmp/xx.org][sdfds]]")
+      ;; (string-match muse-explicit-link-regexp "[[/~s/office/Adding tables to Controller-new.muse][Adding tables to Controller]]")
+      ;; (string-match org-bracket-link-analytic-regexp++ "[[/~s/tmp/xx.org][sdfds]]")
+      ;; (string-match org-bracket-link-analytic-regexp++ "[[/~s/tmp/xx.muse][sdfds]]")
+      ;; (string-match org-bracket-link-analytic-regexp++ "[[xx.muse][sdfds]]")
+
+      (add-to-list 'muse-publish-markup-regexps
+                   '(4000 org-bracket-link-analytic-regexp++ 0 org-export-string-as-html-string)))
+
+    (defvar custome/muse-ignore-existing-muse-file nil "custome/muse-ignore-existing-muse-file")
+    (setq custome/muse-ignore-existing-muse-file t)
+    ;; custome/muse-ignore-existing-muse-file is nil
+    ;; or output Publishing Directory should be different from muse file directory.
+
+    (defun muse-publish-classify-url (target)
+      "Transform anchors and get published name, if TARGET is a page.
+The return value is two linked cons cells.  The car is the type
+of link, the cadr is the page name, and the cddr is the anchor."
+      (save-match-data
+        (cond ((or (null target) (string= target ""))
+               nil)
+              ((string-match "\\`[uU][rR][lL]:\\(.+\\)\\'" target)
+               (cons 'url (cons (match-string 1 target) nil)))
+              ((string-match muse-image-regexp target)
+               (cons 'image (cons target nil)))
+              ((string-match muse-url-regexp target)
+               (cons 'url (cons target nil)))
+              ;; SOLVE it, which stops [[/~s/office/notes.org][Notes]] or [[/~s/office/MemoryDebug.muse][Memory Debugging]] link to works
+              ;; ((string-match muse-file-regexp target)
+              ;;  (cons 'file (cons target nil)))
+              ((string-match "#" target)
+               (if (eq (aref target 0) ?\#)
+                   (cons 'anchor-ref (cons nil (substring target 1)))
+                   (cons 'link-and-anchor
+                         ;; match-data is changed by
+                         ;; `muse-publish-link-page' or descendants.
+                         (cons (save-match-data
+                                 (muse-publish-link-page
+                                  (substring target 0 (match-beginning 0))))
+                               (substring target (match-end 0))))))
+              (t
+               (cons 'link (cons (muse-publish-link-page target) nil))))))
+
+
+    (defun muse-project-link-page (page)
+      (let ((project (muse-project-of-file)))
+        (if project
+            (muse-project-resolve-link page
+                                       (muse-project-current-output-style)
+                                       (muse-project-applicable-styles
+                                        (muse-project-page-file page project)
+                                        (cddr project)))
+            (muse-publish-link-file page))))
+
+    (defsubst muse-publish-link-file (file &optional style)
+      "Turn FILE into a URL.
+
+If FILE exists on the system as-is, return it without
+modification.  In the case of wanting to link to Muse files when
+`muse-file-extension' is nil, you should load muse-project.el.
+
+Otherwise, assume that it is a Muse file and call
+`muse-publish-link-name' to add :prefix, :link-suffix, :suffix,
+and removing ignored file extensions, but preserving the
+directory part of FILE."
+      (setq style (muse-style style))
+      (if (and
+           (null custome/muse-ignore-existing-muse-file)
+           (file-exists-p file))
+          file
+          (concat (file-name-directory file)
+                  (muse-publish-link-name file style))))
+
+
+
+;;
+    (testing
+
+
+      (defsubst muse-publish-link-name (&optional file style)
+        "Take FILE and add :prefix and either :link-suffix or :suffix from STYLE.
+We assume that FILE is a Muse file.
+
+We call `muse-page-name' on FILE to remove the directory part of
+FILE and any extensions that are in `muse-ignored-extensions'."
+        (setq style (muse-style style))
+        (concat (muse-style-element :prefix style)
+                (muse-page-name file)
+                (or (muse-style-element :link-suffix style)
+                    (muse-style-element :suffix style))))
+
+
+      (muse-style-element :link-suffix (car muse-publishing-styles))
+      (muse-style-element :suffix (car muse-publishing-styles))
+
+      (muse-publish-link-name "xx.org"
+                              (muse-style
+                               (assoc "html" muse-publishing-styles)))
+
+      (assoc "xhtml" muse-publishing-styles)
+
+      (muse-style-element :suffix
+                          (muse-style
+                           (assoc "html" muse-publishing-styles)))
+
+      (muse-style-element :rules
+                          (assoc "xhtml" muse-publishing-styles))
+
+      (muse-publish-markup-string
+       "[[Controller.muse][Control]]"
+       (assoc "xhtml" muse-publishing-styles))
+
+      (muse-publish-insert-url "aa.muse" "xx" "aa.muse" t)
+      (muse-publish-url url desc orig-url explicit)
+      (muse-publish-classify-url)
+
+
+      ;; check for
+      ;; (defsubst muse-publish-link-page (page)
+      ;;   (if (fboundp 'muse-project-link-page)
+      ;;       (muse-project-link-page page)
+      ;;     (muse-publish-link-file page)))
+
+
+      )
+    )
 
 (provide 'muse-config)
