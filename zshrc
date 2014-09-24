@@ -434,7 +434,7 @@ fi
 # {{{ *Display Information*
 # For Tramp
 # "$TERM" = "dumb" for emacs tramp
-if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # let emacs tramp work.
+if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let emacs tramp work.
 {
     cat ~/.logs/stderr/zshall/*
     echo Could see all messages in '~/.logs/stderr/zshall/*'
@@ -486,7 +486,7 @@ command less \
     --RAW-CONTROL-CHARS \
     --QUIT-AT-EOF       \
     --no-init
-else #for emacs tramp
+else # for emacs tramp
     #disable adding to history
     unset HISTFILE
     #HISTFILESIZE=1000000000
