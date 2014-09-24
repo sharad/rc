@@ -249,7 +249,7 @@ HISTCONTROL='ignoreboth:ignorespace:erasedups'
 HISTFILE=~/.histfile
 #HISTFILESIZE=1000000000
 HISTSIZE=50000 # 1000000000
-        HISTIGNORE='&:ls:[bf]g:exit'
+HISTIGNORE='&:ls:[bf]g:exit'
 LOCALCVSROOT=/atlantic/lib/cvs/
 LOGCHECK=1
 PROMPT_COMMAND='history -n'
@@ -486,6 +486,10 @@ command less \
     --RAW-CONTROL-CHARS \
     --QUIT-AT-EOF       \
     --no-init
+else #for emacs tramp
+unset HISTFILE
+#HISTFILESIZE=1000000000
+HISTSIZE=0 # 1000000000
 fi
 # }}}
 
