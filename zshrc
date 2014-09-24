@@ -487,9 +487,10 @@ command less \
     --QUIT-AT-EOF       \
     --no-init
 else #for emacs tramp
-unset HISTFILE
-#HISTFILESIZE=1000000000
-HISTSIZE=0 # 1000000000
+    #disable adding to history
+    unset HISTFILE
+    #HISTFILESIZE=1000000000
+    HISTSIZE=0 # 1000000000
 fi
 # }}}
 
