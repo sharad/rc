@@ -189,11 +189,11 @@ Not all types of values are supported."
              ;; (dolist (e l)
              ;;   (insert "\n  " (desktop-value-to-string e)))
 
-             ;; ,(mapcar 'desktop-value-to-string l)
-             ,@l
+             ,(mapcar 'desktop-value-to-string l)
+             ;; ,@l
              )))))
 
-  ;; (eval (desktop-make-create-buffer (current-buffer)))
+  ;; (read (desktop-make-create-buffer (current-buffer)))
 
   )
 

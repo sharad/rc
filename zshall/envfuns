@@ -37,3 +37,8 @@ function volfrontmicclose() {
 
 
 alias getvolume='amixer -- | sed -n 5p | cut -d'\'' '\'' -f6 | cut -c2-3'
+
+function volletmetalk() {
+    volrearmicopen
+    print close mic by volrearmicclose
+}
