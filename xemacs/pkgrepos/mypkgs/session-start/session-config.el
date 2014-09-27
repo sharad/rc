@@ -85,6 +85,118 @@
        ;; (elscreen-set-screen-to-name-alist-cache screen-to-name-alist)
        screen-to-name-alist))))
 
+
+(deh-require-maybe desktop
+
+  (when nil
+    (desktop-buffer-info (current-buffer)))
+
+  (let ((l (desktop-buffer-info (current-buffer)))
+        (eager desktop-restore-eager))
+    (let ((base (pop l)))
+      (when (apply 'desktop-save-buffer-p l)
+        `(
+          ,(if (or (not (integerp eager))
+                   (if (zerop eager)
+                       nil
+                       (setq eager (1- eager))))
+               'desktop-create-buffer
+               'desktop-append-buffer-args)
+
+           ,desktop-file-version
+           ;; If there's a non-empty base name, we save it instead of the buffer name
+           ,(when (and base (not (string= base "")))
+                  (setcar (nthcdr 1 l) base))
+           ;; (dolist (e l)
+           ;;   (insert "\n  " (desktop-value-to-string e)))
+
+           ;; ,(mapcar 'desktop-value-to-string l)
+           ,@l
+           ))))
+
+  (when nil
+    (let ((base (pop l)))
+      (when (apply 'desktop-save-buffer-p l)
+        `(
+          ,(if (or (not (integerp eager))
+                        (if (zerop eager)
+                            nil
+                            (setq eager (1- eager))))
+               'desktop-create-buffer
+               'desktop-append-buffer-args)
+
+           ,desktop-file-version
+           ;; If there's a non-empty base name, we save it instead of the buffer name
+           ,(when (and base (not (string= base "")))
+                  (setcar (nthcdr 1 l) base))
+           ;; (dolist (e l)
+           ;;   (insert "\n  " (desktop-value-to-string e)))
+
+           ,(mapcar desktop-value-to-string l)))))
+
+  (when nil
+    (insert "\n;; Buffer section -- buffers listed in same order as in buffer list:\n")
+    (dolist (l (mapcar 'desktop-buffer-info (buffer-list)))
+      (let ((base (pop l)))
+        (when (apply 'desktop-save-buffer-p l)
+          (insert "("
+                  (if (or (not (integerp eager))
+                          (if (zerop eager)
+                              nil
+                              (setq eager (1- eager))))
+                      "desktop-create-buffer"
+                      "desktop-append-buffer-args")
+                  " "
+                  desktop-file-version)
+          ;; If there's a non-empty base name, we save it instead of the buffer name
+          (when (and base (not (string= base "")))
+            (setcar (nthcdr 1 l) base))
+          (dolist (e l)
+            (insert "\n  " (desktop-value-to-string e)))
+          (insert ")\n\n")))))
+
+
+  (defun desktop-value-to-string (value)
+    "Convert VALUE to a string that when read evaluates to the same value.
+Not all types of values are supported."
+    (let* ((print-escape-newlines t)
+           (float-output-format nil)
+           (quote.txt (desktop-internal-v2s value))
+           (quote (car quote.txt))
+           (txt (cdr quote.txt)))
+      (if (eq quote 'must)
+          (concat "'" txt)
+          txt)))
+
+  (defun desktop-make-create-buffer (buffer)
+    (let ((l (desktop-buffer-info buffer))
+          ;; (eager desktop-restore-eager)
+          (eager t))
+      (let ((base (pop l)))
+        (when (apply 'desktop-save-buffer-p l)
+          `(
+            ,(if (or (not (integerp eager))
+                     (if (zerop eager)
+                         nil
+                         (setq eager (1- eager))))
+                 'desktop-create-buffer
+                 'desktop-append-buffer-args)
+
+             ,desktop-file-version
+             ;; If there's a non-empty base name, we save it instead of the buffer name
+             ,(when (and base (not (string= base "")))
+                    (setcar (nthcdr 1 l) base))
+             ;; (dolist (e l)
+             ;;   (insert "\n  " (desktop-value-to-string e)))
+
+             ;; ,(mapcar 'desktop-value-to-string l)
+             ,@l
+             )))))
+
+  ;; (eval (desktop-make-create-buffer (current-buffer)))
+
+  )
+
 (deh-require elscreen
 
   ;; (defvar elscreen-session-restore-create-scratch-buffer nil "elscreen-session-restore-create-scratch-buffer")
@@ -584,6 +696,13 @@ Also returns nil if pid is nil."
                          (lambda (f)
                            (string-match (concat "^" default-file "-") f)))
      desktop-dirname))
+
+  (defun switch-desktop-file ()
+    ;; save desktop
+    ;; kill all file buffer
+    ;; change name of desktop file
+    ;; restore desktop file
+    )
 
   ;; (setq *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
   (setq *desktop-save-filename* nil)    ;setting to nil so it will be asked from user.
