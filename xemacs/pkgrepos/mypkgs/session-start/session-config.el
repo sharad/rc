@@ -573,7 +573,20 @@ Also returns nil if pid is nil."
   ;;              (emacs-pid) owner))))
 
   (defvar *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
-  (setq *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
+
+  (defun find-desktop-file (prompt desktop-dir default-file)
+    (expand-file-name
+     (ido-read-file-name prompt
+                         desktop-dir
+                         (concat default-file "-local")
+                         t
+                         (concat default-file "-local")
+                         (lambda (f)
+                           (string-match (concat "^" default-file "-") f)))
+     desktop-dirname))
+
+  ;; (setq *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
+  (setq *desktop-save-filename* nil)    ;setting to nil so it will be asked from user.
 
   (defun desktop-vc-remove (&optional desktop-save-filename)
     "Delete desktop file"
@@ -757,6 +770,12 @@ to restore in case of sudden emacs crash."
   (defun sharad/desktop-session-restore ()
     "Restore a saved emacs session."
     (interactive)
+
+    ;; ask user about desktop to restore, and use it for session.
+    (unless *desktop-save-filename*
+      (setq *desktop-save-filename*
+            (find-desktop-file "select desktop: " desktop-dirname desktop-base-file-name)))
+
     (let ((enable-local-eval t                ;query
             )
           (enable-recursive-minibuffers t)
@@ -765,8 +784,8 @@ to restore in case of sudden emacs crash."
       (setq debug-on-error t)
       (message-notify "sharad/desktop-session-restore" "entering sharad/desktop-session-restore")
 
-      (if (not (string= *desktop-save-filename*
-                        (concat (getenv "HOME") "/.emacs.d/autoconfig/desktop/emacs-desktop-" server-name)))
+      (if (not (string-match (concat "^" (getenv "HOME") "/.emacs.d/autoconfig/desktop/emacs-desktop-" server-name)
+                             *desktop-save-filename*))
           (progn
             (message-notify "sharad/desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s"
                             (concat (getenv "HOME") "/.emacs.d/emacs-desktop-" server-name)
@@ -780,7 +799,6 @@ to restore in case of sudden emacs crash."
             (unless (sharad/desktop-saved-session)
               (message-notify "sharad/desktop-session-restore" "%s not found so trying to checkout it." *desktop-save-filename*)
               (vc-checkout-file *desktop-save-filename*))
-
 
             (if (sharad/desktop-saved-session)
                 (progn
@@ -852,7 +870,7 @@ to restore in case of sudden emacs crash."
   ;;}}
 
 
-  ;; ----------------------------------------------------------------------------
+;; ----------------------------------------------------------------------------
 ;;;###autoload
   (defun desktop-read-alternate (&optional dirname)
     "Read and process the desktop file in directory DIRNAME.
