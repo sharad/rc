@@ -34,139 +34,84 @@
 (require 'utils-config)
 
 ;; (sharad/elscreen-get-screen-to-name-alist)
-
 (eval-after-load "elscreen"
-   '(defun sharad/elscreen-get-screen-to-name-alist ()
-     ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
-     (elscreen-notify-screen-modification-suppress
-      (elscreen-set-window-configuration (elscreen-get-current-screen)
-       (elscreen-current-window-configuration))
-      (let* ((screen-list (sort (elscreen-get-screen-list) '<))
-             screen-name screen-to-name-alist nickname-type-map)
-        (elscreen-save-screen-excursion
-         (mapcar
-          (lambda (screen)
-            ;; If nickname exists, use it.
-            (setq screen-name (elscreen-get-screen-nickname screen))
-            ;; Nickname does not exist, so examine major-mode and buffer-name.
-            (when (null screen-name)
-              (elscreen-goto-internal screen)
+  '(defun sharad/elscreen-get-screen-to-name-alist ()
+    ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
+    (elscreen-notify-screen-modification-suppress
+     (elscreen-set-window-configuration (elscreen-get-current-screen)
+      (elscreen-current-window-configuration))
+     (let* ((screen-list (sort (elscreen-get-screen-list) '<))
+            screen-name screen-to-name-alist nickname-type-map)
+       (elscreen-save-screen-excursion
+        (mapcar
+         (lambda (screen)
+           ;; If nickname exists, use it.
+           (setq screen-name (elscreen-get-screen-nickname screen))
+           ;; Nickname does not exist, so examine major-mode and buffer-name.
+           (when (null screen-name)
+             (elscreen-goto-internal screen)
 
-              (setq nickname-type-map
-                    (mapcar
-                     (lambda (window)
-                       (with-current-buffer (window-buffer window)
-                         (or (elscreen-get-alist-to-nickname
-                              elscreen-mode-to-nickname-alist-internal
-                              'string-match (symbol-name major-mode))
-                             (elscreen-get-alist-to-nickname
-                              elscreen-buffer-to-nickname-alist-internal
-                              'string-match (buffer-name))
-                             (cons 'buffer-name (buffer-name)))))
-                     (window-list)))
+             (setq nickname-type-map
+                   (mapcar
+                    (lambda (window)
+                      (with-current-buffer (window-buffer window)
+                        (or (elscreen-get-alist-to-nickname
+                             elscreen-mode-to-nickname-alist-internal
+                             'string-match (symbol-name major-mode))
+                            (elscreen-get-alist-to-nickname
+                             elscreen-buffer-to-nickname-alist-internal
+                             'string-match (buffer-name))
+                            (cons 'buffer-name (buffer-name)))))
+                    (window-list)))
 
-              (let (nickname-list)
-                (while (> (length nickname-type-map) 0)
-                  (let ((type (caar nickname-type-map))
-                        (name (cdar nickname-type-map)))
-                    (when name
-                      (setq nickname-list (cons name nickname-list)))
-                    (setq nickname-type-map
-                          (if (eq type 'nickname)
-                              (delete (car nickname-type-map) nickname-type-map)
-                              (cdr nickname-type-map)))))
-                ;; (setq screen-name
-                ;;       (mapconcat 'identity (reverse nickname-list) ":"))
+             (let (nickname-list)
+               (while (> (length nickname-type-map) 0)
+                 (let ((type (caar nickname-type-map))
+                       (name (cdar nickname-type-map)))
+                   (when name
+                     (setq nickname-list (cons name nickname-list)))
+                   (setq nickname-type-map
+                         (if (eq type 'nickname)
+                             (delete (car nickname-type-map) nickname-type-map)
+                             (cdr nickname-type-map)))))
+               ;; (setq screen-name
+               ;;       (mapconcat 'identity (reverse nickname-list) ":"))
                (setq screen-name (reverse nickname-list))))
 
-            (set-alist 'screen-to-name-alist screen screen-name))
-          screen-list))
+           (set-alist 'screen-to-name-alist screen screen-name))
+         screen-list))
 
        ;; (elscreen-set-screen-to-name-alist-cache screen-to-name-alist)
        screen-to-name-alist))))
 
+(deh-require-maybe elscreen
+  (defun sharad/elscreen-get-desktop-buffer-args-list ()
+   ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
+   (elscreen-notify-screen-modification-suppress
+    (elscreen-set-window-configuration (elscreen-get-current-screen)
+                                       (elscreen-current-window-configuration))
+    (let* ((screen-list (sort (elscreen-get-screen-list) '<))
+           screen-name)
+      (let ((desktop-buffers
+             (elscreen-save-screen-excursion
+              (remove-duplicates
+               (mapcan
+                (lambda (screen)
+                  ;; If nickname exists, use it.
+                  (setq screen-name (elscreen-get-screen-nickname screen))
+                  ;; Nickname does not exist, so examine major-mode and buffer-name.
+                  (when (null screen-name)
+                    (elscreen-goto-internal screen)
+                    (mapcar
+                     (lambda (window)
+                       (window-buffer window))
+                     (window-list))))
+                screen-list)))))
+
+        (remove nil
+                (mapcar 'desktop-make-create-buffer-list desktop-buffers)))))))
 
 (deh-require-maybe desktop
-
-  (when nil
-    (desktop-buffer-info (current-buffer)))
-
-  (let ((l (desktop-buffer-info (current-buffer)))
-        (eager desktop-restore-eager))
-    (let ((base (pop l)))
-      (when (apply 'desktop-save-buffer-p l)
-        `(
-          ,(if (or (not (integerp eager))
-                   (if (zerop eager)
-                       nil
-                       (setq eager (1- eager))))
-               'desktop-create-buffer
-               'desktop-append-buffer-args)
-
-           ,desktop-file-version
-           ;; If there's a non-empty base name, we save it instead of the buffer name
-           ,(when (and base (not (string= base "")))
-                  (setcar (nthcdr 1 l) base))
-           ;; (dolist (e l)
-           ;;   (insert "\n  " (desktop-value-to-string e)))
-
-           ;; ,(mapcar 'desktop-value-to-string l)
-           ,@l
-           ))))
-
-  (when nil
-    (let ((base (pop l)))
-      (when (apply 'desktop-save-buffer-p l)
-        `(
-          ,(if (or (not (integerp eager))
-                        (if (zerop eager)
-                            nil
-                            (setq eager (1- eager))))
-               'desktop-create-buffer
-               'desktop-append-buffer-args)
-
-           ,desktop-file-version
-           ;; If there's a non-empty base name, we save it instead of the buffer name
-           ,(when (and base (not (string= base "")))
-                  (setcar (nthcdr 1 l) base))
-           ;; (dolist (e l)
-           ;;   (insert "\n  " (desktop-value-to-string e)))
-
-           ,(mapcar desktop-value-to-string l)))))
-
-  (when nil
-    (insert "\n;; Buffer section -- buffers listed in same order as in buffer list:\n")
-    (dolist (l (mapcar 'desktop-buffer-info (buffer-list)))
-      (let ((base (pop l)))
-        (when (apply 'desktop-save-buffer-p l)
-          (insert "("
-                  (if (or (not (integerp eager))
-                          (if (zerop eager)
-                              nil
-                              (setq eager (1- eager))))
-                      "desktop-create-buffer"
-                      "desktop-append-buffer-args")
-                  " "
-                  desktop-file-version)
-          ;; If there's a non-empty base name, we save it instead of the buffer name
-          (when (and base (not (string= base "")))
-            (setcar (nthcdr 1 l) base))
-          (dolist (e l)
-            (insert "\n  " (desktop-value-to-string e)))
-          (insert ")\n\n")))))
-
-
-  (defun desktop-value-to-string (value)
-    "Convert VALUE to a string that when read evaluates to the same value.
-Not all types of values are supported."
-    (let* ((print-escape-newlines t)
-           (float-output-format nil)
-           (quote.txt (desktop-internal-v2s value))
-           (quote (car quote.txt))
-           (txt (cdr quote.txt)))
-      (if (eq quote 'must)
-          (concat "'" txt)
-          txt)))
 
   (defun desktop-make-create-buffer (buffer)
     (let ((l (desktop-buffer-info buffer))
@@ -174,28 +119,53 @@ Not all types of values are supported."
           (eager t))
       (let ((base (pop l)))
         (when (apply 'desktop-save-buffer-p l)
+          (when (and base (not (string= base "")))
+            (setcar (nthcdr 1 l) base))
+          `(let ((desktop-buffer-ok-count 0)
+                 (desktop-buffer-fail-count 0)
+                 desktop-first-buffer)
+             (
+              ,(if (or (not (integerp eager))
+                       (if (zerop eager)
+                           nil
+                           (setq eager (1- eager))))
+                   'desktop-create-buffer
+                   'desktop-append-buffer-args)
+
+               (string-to-number desktop-file-version)
+               ;; If there's a non-empty base name, we save it instead of the buffer name
+               ;; (when (and base (not (string= base "")))
+               ;;   (setcar (nthcdr 1 l) base))
+               ;; (dolist (e l)
+               ;;   (insert "\n  " (desktop-value-to-string e)))
+               ,@(mapcar '(lambda (s)
+                           (read (desktop-value-to-string s))) l)))))))
+
+  ;; (desktop-make-create-buffer-list (current-buffer))
+  (let ((desktop-buffer-ok-count 0)
+        (desktop-buffer-fail-count 0)
+        desktop-first-buffer)
+    ;; (apply 'desktop-create-buffer (car (sharad/elscreen-get-desktop-buffer-args-list)))
+    (apply 'desktop-create-buffer
+           (car (sharad/elscreen-get-desktop-buffer-args-list))))
+
+  (defun desktop-make-create-buffer-list (buffer)
+    (let ((l (desktop-buffer-info buffer))
+          ;; (eager desktop-restore-eager)
+          (eager t))
+      (let ((base (pop l)))
+        (when (apply 'desktop-save-buffer-p l)
+          (when (and base (not (string= base "")))
+            (setcar (nthcdr 1 l) base))
           `(
-            ,(if (or (not (integerp eager))
-                     (if (zerop eager)
-                         nil
-                         (setq eager (1- eager))))
-                 'desktop-create-buffer
-                 'desktop-append-buffer-args)
-
-             ,desktop-file-version
-             ;; If there's a non-empty base name, we save it instead of the buffer name
-             ,(when (and base (not (string= base "")))
-                    (setcar (nthcdr 1 l) base))
-             ;; (dolist (e l)
-             ;;   (insert "\n  " (desktop-value-to-string e)))
-
-             ,(mapcar 'desktop-value-to-string l)
-             ;; ,@l
-             )))))
-
-  ;; (read (desktop-make-create-buffer (current-buffer)))
-
-  )
+            (string-to-number desktop-file-version)
+            ;; If there's a non-empty base name, we save it instead of the buffer name
+            ;; (when (and base (not (string= base "")))
+            ;;   (setcar (nthcdr 1 l) base))
+            ;; (dolist (e l)
+            ;;   (insert "\n  " (desktop-value-to-string e)))
+            ,@(mapcar '(lambda (s)
+                        (read (desktop-value-to-string s))) l)))))))
 
 (deh-require elscreen
 
@@ -208,6 +178,8 @@ Not all types of values are supported."
   ;; (desktop-save (fmsession-read-location))
   ;; (desktop-read (fmsession-read-location))
 
+  ;; (desktop-make-create-buffer-list (current-buffer))
+
   (require 'utils-config)
 
   (defvar *elscreen-session-restore-data* nil "elscreen session restore data like current screen buffer among multiple screens.")
@@ -217,13 +189,18 @@ Not all types of values are supported."
       (let (session-list)
         (push (cons 'screens (reverse (sharad/elscreen-get-screen-to-name-alist))) session-list)
         (push (cons 'current-buffer (buffer-name (current-buffer))) session-list)
-        (push (cons 'current-screen (elscreen-get-current-screen)) session-list))))
+        (push (cons 'current-screen (elscreen-get-current-screen)) session-list)
+        (when nil
+         (push (cons 'desktop-buffers (sharad/elscreen-get-desktop-buffer-args-list)) session-list))
+        )))
 
   (defun elscreen-session-session-list-set (session-list &optional nframe)
     (if session-list                    ;may causing error
         (with-selected-frame (or nframe (selected-frame))
           (let* (screen
                  buffers
+                 (desktop-buffers
+                  (cdr (assoc 'desktop-buffers session-list)))
                  (screens
                   (or
                    (cdr (assoc 'screens session-list))
@@ -235,6 +212,18 @@ Not all types of values are supported."
             (testing
              (message "Bstart: session-current-buffer %s" session-current-buffer)
              (message "Astart: screen-to-name-alist %s" session-list))
+
+            (when nil
+              ;; recreate desktop buffer if not present.
+              (let ((desktop-buffer-ok-count 0)
+                    (desktop-buffer-fail-count 0)
+                    desktop-first-buffer)
+                (dolist (desktop-buffer-args desktop-buffers)
+                  (if (get-buffer (nth 3 desktop-buffer-args))
+                      (apply
+                       'desktop-create-buffer
+                       desktop-buffer-args)))))
+
             (while screens
               (setq screen (caar screens))
               (setq buffers (cdar screens))
