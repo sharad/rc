@@ -474,7 +474,7 @@ startup in daemon mode."
           ;; (update-ssh-agent t)  ; test
           ;; (update-ssh-agent) ;; should be called when tramp file accessed. - see how it will work in case sharad/desktop-session-restore.
           (setq debug-on-error t)           ;for planner
-        (run-each-hooks 'sharad/enable-login-session-interrupting-feature-hook)))
+          (run-each-hooks 'sharad/enable-login-session-interrupting-feature-hook)))
 
     (defun sharad/enable-login-session-interrupting-feature-in-frame-once (frame)
       (select-frame frame)
