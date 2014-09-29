@@ -21,7 +21,7 @@
 ;;
 
 ;; This file require work
-;; resolve pabber yes-expand hippi-expan.....
+;; resolve pabbrev yes-expand hippi-expan.....
 
 
 
@@ -238,7 +238,7 @@ for the overlay."
 
 
 
-(deh-section "pabber"
+(deh-section "pabbrev"
   (setq pabbrev-read-only-error t)
 
   (deh-section "desktop-settings"
