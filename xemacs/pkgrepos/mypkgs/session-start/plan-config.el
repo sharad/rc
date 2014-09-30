@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; from http://www.emacswiki.org/emacs/PlannerModeQuickStart
 ;; start
 
@@ -133,6 +133,7 @@
     (assert (eq (symbol-function 'planner-tasks-equal-p)
                 'planner-multi-tasks-equal-p))
 
+    ;; TODO Fix it
     (assert (eq (symbol-function 'planner-edit-task-description)
                 'planner-multi-edit-task-description))
     (assert (not
@@ -414,7 +415,7 @@ instead of a string."
 
     (defun planner-project-cleanup-empty-pages ()
       (interactive)
-      (dolist (f (directory-files (or (caadr (assoc "WikiPlanner" muse-project-alist))
+      (dolist (f (directory-files (or (caadr (assoc planner-project muse-project-alist))
                                       planner-publishing-directory)
                                   t
                                   (concat planner-date-regexp ".muse$")))

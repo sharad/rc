@@ -24,7 +24,9 @@
 
 ;;; Code:
 
+;; TODO:
 ;; output dot problem see http://www.gnu.org/software/emacs/manual/html_node/elisp/Output-Variables.html
+;; output dot problem see https://www.gnu.org/software/emacs/manual/html_node/elisp/Output-Variables.html
 ;; set print-length
 
 ;;test

@@ -949,17 +949,17 @@ directory part of FILE."
     (testing
 
 
-      (defsubst muse-publish-link-name (&optional file style)
-        "Take FILE and add :prefix and either :link-suffix or :suffix from STYLE.
+     (defsubst muse-publish-link-name (&optional file style)
+       "Take FILE and add :prefix and either :link-suffix or :suffix from STYLE.
 We assume that FILE is a Muse file.
 
 We call `muse-page-name' on FILE to remove the directory part of
 FILE and any extensions that are in `muse-ignored-extensions'."
-        (setq style (muse-style style))
-        (concat (muse-style-element :prefix style)
-                (muse-page-name file)
-                (or (muse-style-element :link-suffix style)
-                    (muse-style-element :suffix style))))
+       (setq style (muse-style style))
+       (concat (muse-style-element :prefix style)
+               (muse-page-name file)
+               (or (muse-style-element :link-suffix style)
+                   (muse-style-element :suffix style))))
 
 
       (muse-style-element :link-suffix (car muse-publishing-styles))
@@ -982,9 +982,9 @@ FILE and any extensions that are in `muse-ignored-extensions'."
        "[[Controller.muse][Control]]"
        (assoc "xhtml" muse-publishing-styles))
 
-      (muse-publish-insert-url "aa.muse" "xx" "aa.muse" t)
-      (muse-publish-url url desc orig-url explicit)
-      (muse-publish-classify-url)
+      ;; (muse-publish-insert-url "aa.muse" "xx" "aa.muse" t)
+      ;; (muse-publish-url url desc orig-url explicit)
+      ;; (muse-publish-classify-url)
 
 
       ;; check for

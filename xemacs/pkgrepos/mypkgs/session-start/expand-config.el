@@ -27,7 +27,35 @@
 
 (require 'template-simple)
 
+(deh-section "pabbrev"
+  (setq pabbrev-read-only-error t)
 
+  (deh-section "desktop-settings"
+
+
+    ;; (defmacro desktop-get-readonly-proof-mode (modefn)
+    ;;   `(defun ,(intern (concat "desktop-handler-" (symbol-name modefn))) (desktop-buffer-locals)
+    ;;      (unless desktop-buffer-read-only
+    ;;        (,modefn 1))))
+
+    (eval-when-compile
+      '(progn
+        (require 'desktop)
+        (require 'session-config)))
+
+    (require 'desktop)
+    (require 'session-config)
+
+    ;; (defun desktop-handler-pabbrev-mode (desktop-buffer-locals)
+    ;;   (unless desktop-buffer-read-only
+    ;;     (pabbrev-mode 1)))
+    ;; (desktop-get-readonly-proof-mode pabbrev-mode)
+    ;; (add-to-list 'desktop-minor-mode-handlers '(pabbrev-mode . desktop-handler-pabbrev-mode))
+    ;; (desktop-get-readonly-proof-mode flymake-mode)
+    ;; (add-to-list 'desktop-minor-mode-handlers '(flymake-mode . desktop-handler-flymake-mode))
+
+    (add-to-list 'desktop-minor-mode-handlers (cons 'pabbrev-mode
+                                                    (desktop-get-readonly-proof-mode pabbrev-mode)))))
 ;;; Actually TAB is originally binded to indent-for-tab-command from indent.el
 ;;; But Pabbrev mode override it to pabbrev-expand-maybe that call
 ;;; pabbrev-get-previous-binding -> indent-for-tab-command
@@ -238,35 +266,7 @@ for the overlay."
 
 
 
-(deh-section "pabbrev"
-  (setq pabbrev-read-only-error t)
 
-  (deh-section "desktop-settings"
-
-
-    ;; (defmacro desktop-get-readonly-proof-mode (modefn)
-    ;;   `(defun ,(intern (concat "desktop-handler-" (symbol-name modefn))) (desktop-buffer-locals)
-    ;;      (unless desktop-buffer-read-only
-    ;;        (,modefn 1))))
-
-    (eval-when-compile
-      '(progn
-        (require 'desktop)
-        (require 'session-config)))
-
-    (require 'desktop)
-    (require 'session-config)
-
-    ;; (defun desktop-handler-pabbrev-mode (desktop-buffer-locals)
-    ;;   (unless desktop-buffer-read-only
-    ;;     (pabbrev-mode 1)))
-    ;; (desktop-get-readonly-proof-mode pabbrev-mode)
-    ;; (add-to-list 'desktop-minor-mode-handlers '(pabbrev-mode . desktop-handler-pabbrev-mode))
-    ;; (desktop-get-readonly-proof-mode flymake-mode)
-    ;; (add-to-list 'desktop-minor-mode-handlers '(flymake-mode . desktop-handler-flymake-mode))
-
-    (add-to-list 'desktop-minor-mode-handlers (cons 'pabbrev-mode
-                                                    (desktop-get-readonly-proof-mode pabbrev-mode)))))
 
 
 
