@@ -161,15 +161,17 @@
         (when (apply 'desktop-save-buffer-p l)
           (when (and base (not (string= base "")))
             (setcar (nthcdr 1 l) base))
-          `(
-            (string-to-number desktop-file-version)
-            ;; If there's a non-empty base name, we save it instead of the buffer name
-            ;; (when (and base (not (string= base "")))
-            ;;   (setcar (nthcdr 1 l) base))
-            ;; (dolist (e l)
-            ;;   (insert "\n  " (desktop-value-to-string e)))
-            ,@(mapcar '(lambda (s)
-                        (read (desktop-value-to-string s))) l)))))))
+          ;; `(
+          ;;   (string-to-number desktop-file-version)
+          ;;   ;; If there's a non-empty base name, we save it instead of the buffer name
+          ;;   ;; (when (and base (not (string= base "")))
+          ;;   ;;   (setcar (nthcdr 1 l) base))
+          ;;   ;; (dolist (e l)
+          ;;   ;;   (insert "\n  " (desktop-value-to-string e)))
+          ;;   ,@(mapcar '(lambda (s)
+          ;;               (read (desktop-value-to-string s))) l))
+          (cons (string-to-number desktop-file-version)
+                l))))))
 
 (deh-require elscreen
 
