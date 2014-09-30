@@ -223,6 +223,8 @@
 
             (if desktop-buffers
                 ;; recreate desktop buffer if not present.
+                (message-notify "elscreen-session-session-list-set"
+                                "Please wait I am busy to restore %d buffers" (length desktop-buffers))
                 (let ((desktop-buffer-ok-count 0)
                       (desktop-buffer-fail-count 0)
                       desktop-first-buffer)
