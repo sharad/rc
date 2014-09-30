@@ -54,8 +54,9 @@
     ;; (desktop-get-readonly-proof-mode flymake-mode)
     ;; (add-to-list 'desktop-minor-mode-handlers '(flymake-mode . desktop-handler-flymake-mode))
 
-    (add-to-list 'desktop-minor-mode-handlers (cons 'pabbrev-mode
-                                                    (desktop-get-readonly-proof-mode pabbrev-mode)))))
+    (add-to-list 'desktop-minor-mode-handlers
+                 (cons 'pabbrev-mode
+                       (desktop-get-readonly-proof-mode pabbrev-mode)))))
 ;;; Actually TAB is originally binded to indent-for-tab-command from indent.el
 ;;; But Pabbrev mode override it to pabbrev-expand-maybe that call
 ;;; pabbrev-get-previous-binding -> indent-for-tab-command
