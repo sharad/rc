@@ -688,6 +688,8 @@ Also returns nil if pid is nil."
   ;;              (emacs-pid) owner))))
 
   (defvar *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
+  ;; (setq *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
+  (setq *desktop-save-filename* nil)    ;setting to nil so it will be asked from user.
 
   (defun find-desktop-file (prompt desktop-dir default-file)
     (expand-file-name
@@ -701,6 +703,12 @@ Also returns nil if pid is nil."
                                (string-match (concat "^" default-file "-") f))))
      desktop-dirname))
 
+  (defun desktop-get-desktop-save-filename ()
+    (if *desktop-save-filename*
+        *desktop-save-filename*
+        (setq *desktop-save-filename*
+              (find-desktop-file "select desktop: " desktop-dirname desktop-base-file-name))))
+
   (defun switch-desktop-file ()
     ;; save desktop
     ;; kill all file buffer
@@ -708,8 +716,6 @@ Also returns nil if pid is nil."
     ;; restore desktop file
     )
 
-  ;; (setq *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
-  (setq *desktop-save-filename* nil)    ;setting to nil so it will be asked from user.
 
   (defun desktop-vc-remove (&optional desktop-save-filename)
     "Delete desktop file"
@@ -790,6 +796,7 @@ Also returns nil if pid is nil."
   (defvar save-all-sessions-auto-save-idle-time-interval-dynamic 7 "save all sessions auto save idle time interval dynamic.")
   (defcustom save-all-sessions-auto-save-time-interval (* 20 60) "save all sessions auto save time interval")
   (defvar save-all-sessions-auto-save-time (current-time) "save all sessions auto save time")
+  (defvar session-debug-on-error nil "session-debug-on-error")
 
   (defun save-all-sessions-auto-save (&optional force)
     "Save elscreen frame, desktop, and session time to time
@@ -820,22 +827,29 @@ to restore in case of sudden emacs crash."
                       ;;          save-all-sessions-auto-save-idle-time-interval-dynamic)
                       (setq save-all-sessions-auto-save-time (current-time)
                             save-all-sessions-auto-save-idle-time-interval-dynamic save-all-sessions-auto-save-idle-time-interval)
-                      (condition-case e
+                      (if session-debug-on-error
                           (progn
                             (save-all-frames-session)
                             (session-vc-save-session)
                             (my-desktop-save)
                             (message-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
                             (message nil))
-                        ('error
-                         (progn
-                           ;; make after 2 errors.
-                           (message-notify "save-all-sessions-auto-save" "save-all-sessions-auto-save: Error: %s" e)
-                           (1+ *my-desktop-save-error-count* )
-                           (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
-                             (setq *my-desktop-save-error-count* 0)
-                             (message-notify "save-all-sessions-auto-save" "save-all-sessions-auto-save(): Error %s" e)
-                             (sharad/disable-session-saving))))))
+                          (condition-case e
+                              (progn
+                                (save-all-frames-session)
+                                (session-vc-save-session)
+                                (my-desktop-save)
+                                (message-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
+                                (message nil))
+                            ('error
+                             (progn
+                               ;; make after 2 errors.
+                               (message-notify "save-all-sessions-auto-save" "Error: %s" e)
+                               (1+ *my-desktop-save-error-count* )
+                               (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
+                                 (setq *my-desktop-save-error-count* 0)
+                                 (message-notify "save-all-sessions-auto-save" "Error %s" e)
+                                 (sharad/disable-session-saving)))))))
                     (setq save-all-sessions-auto-save-idle-time-interval-dynamic
                           (1- save-all-sessions-auto-save-idle-time-interval-dynamic))))
 
@@ -847,6 +861,10 @@ to restore in case of sudden emacs crash."
     ;; moved to sharad/desktop-session-restore
     ;; giving life to it.
     (add-hook 'auto-save-hook 'save-all-sessions-auto-save))
+
+  (add-hook 'desktop-after-read-hook
+            '(lambda ()
+              (message "desktop-after-read-hook Done")))
 
   (defun sharad/desktop-saved-session ()
     (file-exists-p *desktop-save-filename*))
@@ -861,18 +879,38 @@ to restore in case of sudden emacs crash."
             (message "Session not saved."))
         (desktop-vc-save *desktop-save-filename*)))
 
-  (defun sharad/disable-session-saving ()
+  (defun sharad/disable-session-saving-immediately ()
     (interactive)
     (remove-hook 'auto-save-hook 'save-all-sessions-auto-save)
     (remove-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
     (message-notify "sharad/disable-session-saving"  "Removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook"))
 
 
-  (defun sharad/enable-session-saving ()
+  (defun sharad/enable-session-saving-immediately ()
     (interactive)
     (add-hook 'auto-save-hook 'save-all-sessions-auto-save)
     (add-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
     (message-notify "sharad/enable-session-saving" "Added save-all-sessions-auto-save to auto-save-hook and kill-emacs-hook"))
+
+  (defadvice desktop-idle-create-buffers (after desktop-idle-complete-actions)
+    (unless desktop-buffer-args-list
+      (message-notify "desktop-idle-complete-actions"
+                      "Enable session saving")
+      (sharad/enable-session-saving-immediately)))
+
+  (defun sharad/enable-session-saving ()
+    (if (eq desktop-restore-eager t)
+        (sharad/enable-session-saving-immediately)
+        (progn
+          (ad-enable-advice 'desktop-idle-create-buffers 'after 'desktop-idle-complete-actions)
+          (ad-update 'desktop-idle-create-buffers)
+          (ad-activate 'desktop-idle-create-buffers))))
+
+  (defun sharad/disable-session-saving ()
+    (sharad/disable-session-saving-immediately)
+    (ad-disable-advice 'desktop-idle-create-buffers 'after 'desktop-idle-complete-actions)
+    (ad-update 'desktop-idle-create-buffers)
+    (ad-activate 'desktop-idle-create-buffers))
 
   (defun sharad/check-session-saving ()
     (interactive)
@@ -899,9 +937,8 @@ to restore in case of sudden emacs crash."
     (interactive)
 
     ;; ask user about desktop to restore, and use it for session.
-    (unless *desktop-save-filename*
-      (setq *desktop-save-filename*
-            (find-desktop-file "select desktop: " desktop-dirname desktop-base-file-name)))
+    ;; will set *desktop-save-filename*
+    (desktop-get-desktop-save-filename)
 
     (let ((enable-local-eval t                ;query
             )
