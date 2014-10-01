@@ -698,7 +698,10 @@ Also returns nil if pid is nil."
 
   (defvar *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
   ;; (setq *desktop-save-filename* (expand-file-name desktop-base-file-name desktop-dirname))
-  (setq *desktop-save-filename* nil)    ;setting to nil so it will be asked from user.
+
+  (when (or (not *emacs-in-init*) (not reloading-libraries))
+    ;setting to nil so it will be asked from user.
+    (setq *desktop-save-filename* nil))
 
   (defun find-desktop-file (prompt desktop-dir default-file)
     (expand-file-name
