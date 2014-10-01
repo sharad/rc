@@ -706,6 +706,7 @@ Also returns nil if pid is nil."
      desktop-dirname))
 
   (defun desktop-get-desktop-save-filename ()
+    (interactive)
     (if *desktop-save-filename*
         *desktop-save-filename*
         (setq *desktop-save-filename*
