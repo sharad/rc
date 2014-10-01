@@ -223,21 +223,28 @@
 
             (if desktop-buffers
                 ;; recreate desktop buffer if not present.
-                (message-notify "elscreen-session-session-list-set"
-                                "Please wait I am busy to restore %d buffers" (length desktop-buffers))
-                (let ((desktop-buffer-ok-count 0)
-                      (desktop-buffer-fail-count 0)
-                      desktop-first-buffer)
-                  (dolist (desktop-buffer-args desktop-buffers)
-                    (let ((bufname (nth 2 desktop-buffer-args)))
-                      (message "bufname %s" bufname)
-                      (if (stringp bufname)
-                          (if (get-buffer bufname)
-                              (message "buffer %s already here" bufname)
-                              (apply
-                               'desktop-create-buffer
-                               desktop-buffer-args))
-                          (message "bufname: %s is not string" bufname)))))
+                (let ()
+                  (message-notify "elscreen-session-session-list-set"
+                                  "Please wait I am busy to restore %d\nbuffers %s"
+                                  (length desktop-buffers)
+                                  desktop-buffers)
+                  (let ((desktop-buffer-ok-count 0)
+                        (desktop-buffer-fail-count 0)
+                        desktop-first-buffer)
+                    (dolist (desktop-buffer-args desktop-buffers)
+                      (let ((bufname (nth 2 desktop-buffer-args)))
+                        (message "bufname %s" bufname)
+                        (if (stringp bufname)
+                            (if (get-buffer bufname)
+                                (message "buffer %s already here" bufname)
+                                (apply
+                                 'desktop-create-buffer
+                                 desktop-buffer-args))
+                            (message "bufname: %s is not string" bufname)))))
+                  (message-notify "elscreen-session-session-list-set"
+                                  "Restored %d\nbuffers %s"
+                                  (length desktop-buffers)
+                                  desktop-buffers))
                 (message "No desktop-buffers"))
 
             (while screens
