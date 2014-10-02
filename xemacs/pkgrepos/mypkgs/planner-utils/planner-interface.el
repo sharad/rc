@@ -157,6 +157,12 @@
   `(let ((buffer-read-only nil))
      ,@body))
 
+;; planner-copy-or-move-region
+;; planner-delete-task
+
+;; define function to set around defadvice
+;; to make buffer writable.
+
 (defmacro with-safe-plan-env (&rest body)
   `(let (global-ede-mode
          ede-minor-mode

@@ -26,7 +26,7 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
     [ $SHELL = "zsh" ] && emulate sh
 
 
-    if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] && ! ps ${SSH_AGENT_PID} >&/dev/null > /dev/null ; then
+    if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] && ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null ; then
         if [  -r $HOME/.ssh/agent-custom-$HOST ] ; then
             source $HOME/.ssh/agent-custom-$HOST
         fi
@@ -38,8 +38,8 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
     ##       X
     ##        ssh-agent stumpwm
     ##  __NO_SSH_AGENT_REQUIRED: for ssh-agent not required from xprofile but from other place.
-    if [ "x${__NO_SSH_AGENT_REQUIRED}" != "x" ] && [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] && ! ps ${SSH_AGENT_PID} >&/dev/null > /dev/null ; then
-        #  && ! ps -u $USER $SSH_AGENT_PID > /dev/null >&/dev/null
+    if [ "x${__NO_SSH_AGENT_REQUIRED}" != "x" ] && [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] && ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null ; then
+        #  && ! ps -u $USER $SSH_AGENT_PID 2>&1 > /dev/null
         # export SSH_AUTH_SOCK=""
 
         # pkill ssh-agent
@@ -53,8 +53,8 @@ SSH_AGENT_PID=$SSH_AGENT_PID
 export SSH_AUTH_SOCK SSH_AGENT_PID
 EOF
 
-if [ "${SSH_AUTH_SOCK}x" != "x" ]; then
-    cat <<EOF > ~/.emacs.d/ssh-agent-$(hostname -f).el
+    if [ "${SSH_AUTH_SOCK}x" != "x" ]; then
+           cat <<EOF > ~/.emacs.d/ssh-agent-$(hostname -f).el
 (setenv "SSH_AUTH_SOCK"  "${SSH_AUTH_SOCK}" )
 (setenv "SSH_AGENT_PID"  "${SSH_AGENT_PID}" )
 EOF
@@ -73,14 +73,14 @@ fi
 
 # if ssh auth forwarding is enabled, use it and dont start keychain
 
-# if df | grep `cat $HOME/.ecryptfs/Private.mnt ` >&/dev/null > /dev/null ; then
+# if df | grep `cat $HOME/.ecryptfs/Private.mnt ` 2>&1 > /dev/null ; then
     # ecryptfs-umount-private         # forget passphrase.
 
-    # if ! ssh-add -l 2>/dev/null && [ "${SSH_AUTH_SOCK}x" = "x" ] && [ "$UID" != "0" ] ; then
+    # if ! ssh-add -l 2>&1 >/dev/null && [ "${SSH_AUTH_SOCK}x" = "x" ] && [ "$UID" != "0" ] ; then
     # if [ "${SSH_AUTH_SOCK}x" = "x" ] && [ "$UID" != "0" ] ; then
-    if ! ssh-add -l >/dev/null && [ "$UID" != "0" ] ; then
+    if ! ssh-add -l 2>&1 > /dev/null && [ "$UID" != "0" ] ; then
 
-        if whence -p $HOME/bin/ecryptfs-mount-private >& /dev/null ; then
+        if whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null ; then
 
             if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
                 timeout 7 $HOME/bin/ecryptfs-mount-private
@@ -122,10 +122,10 @@ fi
 # If we have ssh-agent running, forward it to the next host,
 # otherwise dont try to use key authentication at all.
     if [ "${SSH_AUTH_SOCK}x" = "x" ] ; then
-    # if we dont have an auth sock, dont use pub key identification
+        # if we dont have an auth sock, dont use pub key identification
         alias ssh='ssh -o PubkeyAuthentication=no'
     else
-    # We do have an auth sock, use auth forwarding
+        # We do have an auth sock, use auth forwarding
         alias ssh='ssh -A'
     fi
 

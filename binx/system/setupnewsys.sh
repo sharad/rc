@@ -1,4 +1,5 @@
-#/usr/bin/env zsh
+#!/bin/zsh
+
 
 
 
@@ -26,3 +27,27 @@ if [ ! -d ~/.osetup-trunk ] ; then
 else
     print ~/.osetup-trunk already present
 fi
+
+print Installing sbcl, stow
+sudo apt-get install sbcl stow
+
+foreach d (/usr/local/stow /usr/local/builds) {
+    mkdir -p $d
+    sudo chown ${USER}:${GID} $d
+
+}
+
+git clone gitolite@lispm:s/lisp/stumpwm.git /usr/local/builds/stumpwm
+
+cd /usr/local/builds/stumpwm/
+sudo rm -f   /usr/local/stow/stumpwm-lispm/bin/stumpwm
+ls /usr/local/stow/stumpwm-lispm/bin/stumpwm
+/usr/local/builds/stumpwm/autogen.sh
+/usr/local/builds/stumpwm/configure --prefix /usr/local/stow/stumpwm-lispm --with-lisp=sbcl
+make clean all -C /usr/local/builds/stumpwm
+sed -i s/install: stumpwm.info stumpwm/install: stumpwm/g   /usr/local/builds/stumpwm/Makefile
+sudo make install -C /usr/local/builds/stumpwm
+md5sum /usr/local/stow/stumpwm-lispm/bin/stumpwm /usr/local/builds/stumpwm/stumpwm
+make clean
+ls /usr/local/stow/stumpwm-lispm/bin/stumpwm
+cd -
