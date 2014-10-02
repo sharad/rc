@@ -223,28 +223,28 @@
 
             (if desktop-buffers
                 ;; recreate desktop buffer if not present.
-                (let ()
+                (let ((bufs (mapcar
+                             '(lambda (bl) (nth 2 bl))
+                             desktop-buffers)))
                   (message-notify "elscreen-session-session-list-set"
                                   "Please wait I am busy to restore %d\nbuffers %s"
-                                  (length desktop-buffers)
-                                  desktop-buffers)
+                                  (length desktop-buffers) bufs)
                   (let ((desktop-buffer-ok-count 0)
                         (desktop-buffer-fail-count 0)
                         desktop-first-buffer)
                     (dolist (desktop-buffer-args desktop-buffers)
                       (let ((bufname (nth 2 desktop-buffer-args)))
-                        (message "bufname %s" bufname)
+                        (message "restoring %s" bufname)
                         (if (stringp bufname)
                             (if (get-buffer bufname)
                                 (message "buffer %s already here" bufname)
-                                (apply
-                                 'desktop-create-buffer
-                                 desktop-buffer-args))
+                                (let ()
+                                  (apply 'desktop-create-buffer desktop-buffer-args)
+                                  (message "restored %s" bufname)))
                             (message "bufname: %s is not string" bufname)))))
                   (message-notify "elscreen-session-session-list-set"
                                   "Restored %d\nbuffers %s"
-                                  (length desktop-buffers)
-                                  desktop-buffers))
+                                  (length desktop-buffers) bufs))
                 (message "No desktop-buffers"))
 
             (while screens
