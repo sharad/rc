@@ -1,6 +1,8 @@
 #!/bin/zsh
 
 # emacsclient -n -f ~/.emacs.d/server/general "$@"
+debug=0
+
 
 local prog=$(basename $0)
 local alternative_editor
@@ -9,16 +11,17 @@ alternate_editors=( em zile mg jove sensible-editor vim joe )
 local server_file="${HOME}/.emacs.d/server/general"
 local lhost=$(hostname -s)
 
-print remoteedit: ${remoteedit}
-print DISPLAY: ${DISPLAY}
-print prog: ${prog}
+if (( ${+debug} )) ; then
+    print remoteedit: ${remoteedit}
+    print DISPLAY: ${DISPLAY}
+    print prog: ${prog}
+fi
 
 # local rhost=s@ubuntu-sharad
 # local rproto=scpc
 # local rserver_file="${HOME}/.emacs.d/server/general"
 # local lhost=$(hostname -s)
 
-debug=1
 
 typeset -A args
 
@@ -66,25 +69,6 @@ foreach f ("$@" ) {
     [ -f $f ] && filegiven=
 }
 
-# if (( ${+remoteedit} )) ; then
-#     # (( ${+debug} )) && echo eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
-#     # eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
-#     (( ${+debug} )) && echo ssh ${remoteedit} $prog /${remoteeditproto}:${lhost}:$(readlink -m "$@")
-#     print ssh -X ${remoteedit} $prog /${remoteeditproto}:${lhost}:$(readlink -m "$@")
-# else
-#     if which emacs >& /dev/null && which emacsclient >& /dev/null ; then
-#         (( ${+debug} )) && echo eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
-#         print eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
-#     else
-#         $alted "$@"
-#     fi
-# fi
-
-
-    # (( ${+debug} )) && echo eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
-    # eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
-
-# typeset -a files
 local -a files
 if (( ${+remoteedit} )) ; then
     foreach f ($@) {
