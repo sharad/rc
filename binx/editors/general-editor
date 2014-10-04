@@ -27,7 +27,7 @@ fi
 #     args[-n]=""
 # fi
 
-if [[ $prog = "xedn" -o $prog = "edn"  ]]  ; then
+if [ $prog = "xedn" -o $prog = "edn"  ]  ; then
     args[-n]=""
 fi
 
