@@ -909,7 +909,11 @@ to restore in case of sudden emacs crash."
     (unless desktop-buffer-args-list
       (message-notify "desktop-idle-complete-actions"
                       "Enable session saving")
-      (sharad/enable-session-saving-immediately)))
+      (sharad/enable-session-saving-immediately)
+      (progn
+        (ad-disable-advice 'desktop-idle-create-buffers 'after 'desktop-idle-complete-actions)
+        (ad-update 'desktop-idle-create-buffers)
+        (ad-activate 'desktop-idle-create-buffers))))
 
   (defun sharad/enable-session-saving ()
     (if (eq desktop-restore-eager t)
