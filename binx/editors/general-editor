@@ -28,7 +28,7 @@ else
     args[-f]=${server_file}
 fi
 
-args[-f]=".emacs.d/server/general"
+# args[-f]=".emacs.d/server/general"
 
 # if [[ $prog =~ .*n$ ]]  ; then
 #     args[-n]=""
