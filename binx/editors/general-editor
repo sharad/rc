@@ -11,6 +11,7 @@ local lhost=$(hostname -s)
 
 print remoteedit: ${remoteedit}
 print DISPLAY: ${DISPLAY}
+print prog: ${prog}
 
 # local rhost=s@ubuntu-sharad
 # local rproto=scpc
@@ -53,8 +54,8 @@ case "$prog" in
     (general-xeditor*|xeditor*|xed*)
         # args[-d]="$DISPLAY";;
         : ;;
-    (general-editor*|editor*|ed*)
-        args[-t]="";;
+    # (general-editor*|editor*|ed*)
+    #     args[-t]="";;
     (*)  ;;
 esac
 
@@ -86,7 +87,7 @@ if (( ${+remoteedit} )) ; then
 else
     if which emacs >& /dev/null && which emacsclient >& /dev/null ; then
         (( ${+debug} )) && echo eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
-        print eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
+        eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
     else
         $alted "$@"
     fi
