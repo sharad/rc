@@ -61,10 +61,10 @@ foreach f ("$@" ) {
 
 if which emacs >& /dev/null && which emacsclient >& /dev/null ; then
     if (( ${+rhost})) ; then
-        # (( ${+debug} )) && echo eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
-        # eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
-        (( ${+debug} )) && echo eval ssh ${rhost} ${prog} /${rproto}:${lhost}:$(readlink -m "$@")
-        eval ssh ${rhost} ${prog} /${rproto}:${lhost}:$(readlink -m "$@")
+        (( ${+debug} )) && echo eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
+        eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
+        # (( ${+debug} )) && echo eval ssh ${rhost} ${prog} /${rproto}:${lhost}:$(readlink -m "$@")
+        # eval ssh ${rhost} ${prog} /${rproto}:${lhost}:$(readlink -m "$@")
     else
         (( ${+debug} )) && echo eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
         eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
