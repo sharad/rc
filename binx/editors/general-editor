@@ -83,13 +83,24 @@ foreach f ("$@" ) {
 
     # (( ${+debug} )) && echo eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
     # eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
+
+# typeset -a files
+local -a files
 if (( ${+remoteedit} )) ; then
-    (( ${+debug} )) && print eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${remoteeditproto}:${lhost}:$(readlink -m "$@")
-    eval ssh ${remoteedit} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${remoteeditproto}:${lhost}:$(readlink -m "$@")
+    foreach f ($@) {
+        files[$(expr $#files + 1)]=/${remoteeditproto}:${lhost}:$(readlink -m f)
+    }
+else
+    files=$@
+fi
+
+if (( ${+remoteedit} )) ; then
+    (( ${+debug} )) && print eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} ${files[@]}
+    eval ssh ${remoteedit} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} ${files[@]}
 else
     if which emacs >& /dev/null && which emacsclient >& /dev/null ; then
-        (( ${+debug} )) && echo eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
-        eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
+        (( ${+debug} )) && echo eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "${files[@]}"
+        eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "${files[@]}"
     else
         $alted "$@"
     fi
