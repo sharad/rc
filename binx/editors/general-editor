@@ -56,8 +56,8 @@ case "$prog" in
     (general-xeditor*|xeditor*|xed*)
         # args[-d]="$DISPLAY";;
         : ;;
-    # (general-editor*|editor*|ed*)
-    #     args[-t]="";;
+    (general-editor*|editor*|ed*)
+        args[-t]="";;
     (*)  ;;
 esac
 
