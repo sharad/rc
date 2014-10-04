@@ -107,14 +107,6 @@ fi
                 fi
             fi
 
-            # if [  -e $PRIVATE_DIR ] ; then
-            #     if [ -x /sbin/umount.ecryptfs_private ] ; then
-            #         /sbin/umount.ecryptfs_private
-            #     else
-            #         ecryptfs-umount-private
-            #     fi
-            # fi
-
         fi
     fi
 # fi

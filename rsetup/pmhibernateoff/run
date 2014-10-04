@@ -22,17 +22,21 @@ if which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null ; then
     fi
 fi
 
-sleep 10s
+sleep 4s
 
-timeout -k 320 200 gksudo -gS ifup eth0
-ifconfig eth0
-print eth0 is up
+if timeout -k 320 200 gksudo -gS ifup eth0 ; then
+    ifconfig eth0
+    notify eth0 is up
+else
+    notify Not able to up eth0
+fi
 
 mradio -c 6
 
 
-whence -p xmodmap &&
-xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
+if whence -p xmodmap >& /dev/null ; then
+    xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
+fi
 
 
 # [ -r ~/.rsetup/ifup/run ] &&

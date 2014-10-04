@@ -2,16 +2,6 @@
 
 __comp=pmhibernateon
 
-if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    if [ ! -d ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
-        rm -f ~/.rsetup/${__comp}/env.d/${HOST}
-    fi
-    mkdir ~/.rsetup/${__comp}/env.d/${HOST}
-    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
-fi
-
-[ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}
-
 unset __comp
 
 if which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null ; then
@@ -21,15 +11,23 @@ if which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null ; then
     fi
 fi
 
+# stop eth0 interface
 timeout -k 32 20 gksudo -gS ifdown eth0
-ifconfig eth0
 sleep 2s
 print eth0 is down
 
+# clear ssh keys
 ssh-add -D
 
 pgrep mplayer && timeout  -k 4 2 echo "quit 0"  > /tmp/mplayer.fifo; # stop radio
 
 
-# [ -r ~/.rsetup/ifdown/run ] &&
-# ~/.rsetup/ifdown/run
+if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    if [ ! -d ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
+        rm -f ~/.rsetup/${__comp}/env.d/${HOST}
+    fi
+    mkdir ~/.rsetup/${__comp}/env.d/${HOST}
+    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
+fi
+
+[ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}

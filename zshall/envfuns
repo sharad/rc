@@ -42,3 +42,18 @@ function volletmetalk() {
     volrearmicopen
     print close mic by volrearmicclose
 }
+
+function notify() {
+    print ${pgm:-info} "$*" >&2
+    notify-send ${pgm:-info} "$*"
+}
+
+function notify-warn() {
+    print ${pgm:-warning} "$*" >&2
+    notify-send ${pgm:-warning} "$*"
+}
+
+function notify-error() {
+    print ${pgm:-error} "$*" >&2
+    notify-send ${pgm:-error} "$*"
+}
