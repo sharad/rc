@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # emacsclient -n -f ~/.emacs.d/server/general "$@"
-debug=0
+local debug=0
 
 
 local prog=$(basename $0)
@@ -11,7 +11,7 @@ alternate_editors=( em zile mg jove sensible-editor vim joe )
 local server_file="${HOME}/.emacs.d/server/general"
 local lhost=$(hostname -s)
 
-if (( ${+debug} )) ; then
+if (( ${+debug} && $debug )) ; then
     print remoteedit: ${remoteedit}
     print DISPLAY: ${DISPLAY}
     print prog: ${prog}
@@ -79,11 +79,11 @@ else
 fi
 
 if (( ${+remoteedit} )) ; then
-    (( ${+debug} )) && print eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} ${files[@]}
+    (( ${+debug} && $debug )) && print eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} ${files[@]}
     eval ssh ${remoteedit} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} ${files[@]}
 else
     if which emacs >& /dev/null && which emacsclient >& /dev/null ; then
-        (( ${+debug} )) && echo eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "${files[@]}"
+        (( ${+debug} && $debug )) && echo eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "${files[@]}"
         eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "${files[@]}"
     else
         $alted "$@"
