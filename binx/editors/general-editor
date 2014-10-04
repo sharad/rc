@@ -59,17 +59,16 @@ foreach f ("$@" ) {
     [ -f $f ] && filegiven=
 }
 
-if which emacs >& /dev/null && which emacsclient >& /dev/null ; then
-    if (( ${+remoteedit} )) ; then
-        # (( ${+debug} )) && echo eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
-        # eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
-        (( ${+debug} )) && echo ssh ${remoteedit} $prog /${remoteeditproto}:${lhost}:$(readlink -m "$@")
-        ssh ${remoteedit} $prog /${remoteeditproto}:${lhost}:$(readlink -m "$@")
-    else
+if (( ${+remoteedit} )) ; then
+    # (( ${+debug} )) && echo eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
+    # eval ssh ${rhost} emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} /${rproto}:${lhost}:$(readlink -m "$@")
+    (( ${+debug} )) && echo ssh ${remoteedit} $prog /${remoteeditproto}:${lhost}:$(readlink -m "$@")
+    ssh ${remoteedit} $prog /${remoteeditproto}:${lhost}:$(readlink -m "$@")
+else
+    if which emacs >& /dev/null && which emacsclient >& /dev/null ; then
         (( ${+debug} )) && echo eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
         eval emacsclient ${(kv)args} ${filegiven--c} ${alted:+ -a $alted} "$@"
+    else
+        $alted "$@"
     fi
-else
-
-    $alted "$@"
 fi
