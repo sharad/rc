@@ -23,7 +23,11 @@ else
     args[-f]=${server_file}
 fi
 
-if [[ $prog =~ .*n$ ]]  ; then
+# if [[ $prog =~ .*n$ ]]  ; then
+#     args[-n]=""
+# fi
+
+if [[ $prog = "xedn" -o $prog = "edn"  ]]  ; then
     args[-n]=""
 fi
 
