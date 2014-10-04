@@ -88,7 +88,7 @@ foreach f ("$@" ) {
 local -a files
 if (( ${+remoteedit} )) ; then
     foreach f ($@) {
-        files[$(expr $#files + 1)]=/${remoteeditproto}:${lhost}:$(readlink -m f)
+        files[$(expr $#files + 1)]=/${remoteeditproto}:${lhost}:$(readlink -m $f)
     }
 else
     files=$@
