@@ -2,14 +2,17 @@
 
 __comp=rc
 
+
+if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
+fi
 if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    if [ ! -d ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
-        rm -f ~/.rsetup/${__comp}/env.d/${HOST}
-    fi
-    mkdir ~/.rsetup/${__comp}/env.d/${HOST}
+    mkdir ~/.rsetup/${__comp}/run.d/
     cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
 fi
 
-[ -x ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}
+if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    ~/.rsetup/${__comp}/run.d/${HOST}
+fi
 
 unset __comp

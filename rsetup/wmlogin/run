@@ -1,7 +1,21 @@
 #!/bin/zsh
 
+__comp=wmlogin
 
-#!/usr/bin/env zsh
+if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
+fi
+if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    mkdir ~/.rsetup/${__comp}/run.d/
+    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
+fi
+
+if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    ~/.rsetup/${__comp}/run.d/${HOST}
+fi
+
+unset __comp
+
 # give access to mpd
 
 if whence xte ; then
@@ -190,19 +204,6 @@ fi
 ####
 ####
 
-__comp=wmlogin
-
-if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    if [ ! -d ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
-        rm -f ~/.rsetup/${__comp}/env.d/${HOST}
-    fi
-    mkdir ~/.rsetup/${__comp}/env.d/${HOST}
-    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
-fi
-
-[ -r ~/.rsetup/${__comp}/run.d/${HOST} ] && ~/.rsetup/${__comp}/run.d/${HOST}
-
-unset __comp
 
 
 pgrep xautolock >& /dev/null && xautolock -locknow &!
