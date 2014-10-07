@@ -1,7 +1,5 @@
 #!/bin/zsh
 
-__comp=pmhibernateon
-
 if which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null ; then
 
     if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
@@ -21,16 +19,22 @@ pgrep mplayer && timeout  -k 4 2 echo "quit 0"  > /tmp/mplayer.fifo; # stop radi
 
 
 
-if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
-fi
-if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    mkdir ~/.rsetup/${__comp}/run.d/
-    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
-fi
+if [ "x${HOST}" != "x" ] ; then
+    __comp=pmhibernateon
 
-if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    ~/.rsetup/${__comp}/run.d/${HOST}
-fi
+    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+        rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
+    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+        mkdir ~/.rsetup/${__comp}/run.d/
+        cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
 
-unset __comp
+    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+        ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
+
+    unset __comp
+else
+    print env var HOST is not set $HOST
+fi

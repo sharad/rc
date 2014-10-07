@@ -106,19 +106,23 @@ fi
 
 
 
-__comp=login
+if [ "x${HOST}" != "x" ] ; then
+    __comp=login
 
 
-if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
+    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+        rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
+    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+        mkdir ~/.rsetup/${__comp}/run.d/
+        cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
+
+    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+        ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
+
+    unset __comp
+else
+    print env var HOST is not set $HOST
 fi
-if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    mkdir ~/.rsetup/${__comp}/run.d/
-    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
-fi
-
-if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    ~/.rsetup/${__comp}/run.d/${HOST}
-fi
-
-unset __comp

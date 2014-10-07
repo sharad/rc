@@ -1059,3 +1059,7 @@ get_recent_conkeror_window().alert("hello world");
 //{{
 define_webjump("art/deviantart", "http://www.deviantart.com/?q=%s");
 //}}
+
+//{{
+define_webjump("coverity", "http://india-coverity:8080/sourcebrowser.htm?projectId=10010#mergedDefectId=%s");
+//}}

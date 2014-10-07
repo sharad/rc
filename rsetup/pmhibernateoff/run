@@ -1,20 +1,24 @@
 #!/bin/zsh
 
-__comp=pmhibernateoff
+if [ "x${HOST}" != "x" ] ; then
+    __comp=pmhibernateoff
 
-if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
-fi
-if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    mkdir ~/.rsetup/${__comp}/run.d/
-    cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
-fi
+    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+        rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
+    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+        mkdir ~/.rsetup/${__comp}/run.d/
+        cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
 
-if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-    ~/.rsetup/${__comp}/run.d/${HOST}
-fi
+    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+        ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
 
-unset __comp
+    unset __comp
+else
+    print env var HOST is not set $HOST
+fi
 
 
 if which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null ; then
