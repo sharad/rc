@@ -1063,3 +1063,8 @@ define_webjump("art/deviantart", "http://www.deviantart.com/?q=%s");
 //{{
 define_webjump("coverity", "http://india-coverity:8080/sourcebrowser.htm?projectId=10010#mergedDefectId=%s");
 //}}
+
+
+//{{
+define_webjump("doc/ibiblio", "http://www.ibiblio.org/gsearch/?cx=006345117986368989313%3Ar2fkn4tcz5i&cof=FORID%3A11&ie=UTF-8&q=%s");
+//}}

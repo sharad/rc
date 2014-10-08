@@ -925,9 +925,10 @@ to restore in case of sudden emacs crash."
 
   (defun sharad/disable-session-saving ()
     (sharad/disable-session-saving-immediately)
-    (ad-disable-advice 'desktop-idle-create-buffers 'after 'desktop-idle-complete-actions)
-    (ad-update 'desktop-idle-create-buffers)
-    (ad-activate 'desktop-idle-create-buffers))
+    (progn
+      (ad-disable-advice 'desktop-idle-create-buffers 'after 'desktop-idle-complete-actions)
+      (ad-update 'desktop-idle-create-buffers)
+      (ad-activate 'desktop-idle-create-buffers)))
 
   (defun sharad/check-session-saving ()
     (interactive)
