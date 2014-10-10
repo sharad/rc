@@ -145,4 +145,3 @@ autoload -U promptinit; promptinit
 #             fi
 #         }
 #         PERIOD=1
-
