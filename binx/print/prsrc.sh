@@ -15,12 +15,25 @@ function main() {
         cd $src
         if [ $test ] ; then
             echo running
-            echo find $rest -type f
-            eval find $rest -type f
+            if (( ${+pattern} )) ; then
+                print find $rest -type f -iname $pattern
+            else
+                eval print find $rest -type f
+            fi
         else
             echo running
-            echo find $rest -type f
-            files=( ${(f)"$(eval find $rest -type f )"} )
+
+            if (( ${+pattern} )) ; then
+                print find $rest -type f -iname $pattern
+            else
+                eval print find $rest -type f
+            fi
+
+            if (( ${+pattern} )) ; then
+                files=( ${(f)"$(find $rest -type f -iname $pattern )"} )
+            else
+                files=( ${(f)"$(eval find $rest -type f )"} )
+            fi
             foreach f ($files) {
                 mkdir -p $dst/$(dirname $f)
                 enscript --color=$color -f Courier7  -E $f -p${dst}/${f}.ps
@@ -41,10 +54,11 @@ function main() {
 }
 
 function process_arg() {
-    set -- $(getopt -n $pgm -o tvwebs:c:d: -- $@)
+    set -- $(getopt -n $pgm -o tvwebs:c:d:p: -- $@)
     while [ $# -gt 0 ]
     do
         case $1 in
+            (-p) eval pattern=$2; shift;;
             (-s) eval src=$2; shift;;
             (-d) eval dst=$2; shift;;
             (-c) eval color=$2; shift;;
