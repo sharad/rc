@@ -15,13 +15,6 @@ fi
 
 if [ "$SSH_CONNECTION" ] ; then
 
-    # if ! ps1_ssh_from_host=${$(timeout3 -t 1 resolveip -s ${${(z)SSH_CONNECTION}[1]} 2>/dev/null || echo ${${(z)SSH_CONNECTION}[1]})//.*/} 2>/dev/null ; then
-    #     ps1_ssh_from_host=${${(z)SSH_CONNECTION}[1]}
-    # fi
-    # if ! ps1_ssh_to_host=${$(timeout3 -t 1 resolveip -s ${${(z)SSH_CONNECTION}[3]} 2>/dev/null || echo ${${(z)SSH_CONNECTION}[3]})//.*/} 2>/dev/null ; then
-    #     ps1_ssh_to_host=${${(z)SSH_CONNECTION}[3]}
-    # fi
-
     if ! ps1_ssh_from_host=${$(timeout3 -t 1 resolveip -s ${${(z)SSH_CONNECTION}[1]} 2>/dev/null)//.*/} 2>/dev/null ; then
         ps1_ssh_from_host=${${(z)SSH_CONNECTION}[1]}
     fi
