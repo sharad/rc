@@ -703,17 +703,21 @@ Also returns nil if pid is nil."
     ;setting to nil so it will be asked from user.
     (setq *desktop-save-filename* nil))
 
+  ;; might be the reason for Terminal 0 is locked.
+  ;; after start check M-: (debug)
+  ;; in case of timeout and no timeout
   (defun find-desktop-file (prompt desktop-dir default-file)
-    (expand-file-name
-     (with-timeout (10 (concat default-file "-local"))
+    (let ((default-local-file (concat default-file "-local")))
+     (expand-file-name
+     (with-timeout (20 default-local-file)
          (ido-read-file-name prompt
                              desktop-dir
-                             (concat default-file "-local")
-                             t
-                             (concat default-file "-local")
+                             default-local-file
+                             'confirm
+                             default-local-file
                              (lambda (f)
                                (string-match (concat "^" default-file "-") f))))
-     desktop-dirname))
+     desktop-dirname)))
 
   (defun desktop-get-desktop-save-filename ()
     (interactive)

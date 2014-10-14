@@ -45,6 +45,13 @@
    (hl-line-mode) ;; for the current buffer
    (global-hl-line-mode))) ;; for all buffers
 
+(defun my-delete-timer ()
+  (interactive)
+  (dolist (timer timer-list)
+    (let ()
+      (when (yes-or-no-p (format "Remove timer: %s" timer))
+        (message "removing timer %s" timer)
+        (delete timer timer-list)
+        (message "removed timer %s list is now %s" timer timer-list)))))
 
 (provide 'cursor-config)
-
