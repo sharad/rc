@@ -33,12 +33,15 @@ fi
 
 if [ ${SSH_AGENT_PID+1} == 1 ]; then
     ssh-add -D
-    ssh-agent -k > /dev/null 2>&1
-    kill $SSH_AGENT_PID
+    # no killing
+    # ssh-agent -k > /dev/null 2>&1
+    # ssh-agent -k
+    # # it kill all other login's ssh-agent
+    # pkill ssh-agent
+    # ssh-agent -k
+    # kill $SSH_AGENT_PID
     unset SSH_AGENT_PID
     unset SSH_AUTH_SOCK
-    # it kill all other login's ssh-agent
-    # pkill ssh-agent
 fi
 
 if pgrep leave >& /dev/null ; then

@@ -10,14 +10,20 @@ pkill gnome-keyring
 
 # pkill dbus-daemon
 
+nlogin=$(w -h $LOGNAME | grep -cv pts)
 if [ ${SSH_AGENT_PID+1} == 1 ]; then
     ssh-add -D
-    ssh-agent -k > /dev/null 2>&1
-    kill $SSH_AGENT_PID
-    unset SSH_AGENT_PID
-    unset SSH_AUTH_SOCK
-    # it kill all other login's ssh-agent
-    # pkill ssh-agent
+    if (( $nlogin == 0 )) ; then
+        ssh-agent -k > /dev/null 2>&1
+        # it kill all other login's ssh-agent
+        kill $SSH_AGENT_PID
+        pkill ssh-agent
+        unset SSH_AGENT_PID
+        unset SSH_AUTH_SOCK
+    fi
+elif (( $nlogin == 0 )) ; then
+        # it kill all other login's ssh-agent
+        pkill ssh-agent
 fi
 
 
