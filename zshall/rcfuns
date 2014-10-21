@@ -252,6 +252,7 @@ function screenssh {
         local prefixcmd
         local sessionarg
         local session
+        local prefixcmdintractive
         if (( $# == 2 )) ; then
             machine=$1
             shift
