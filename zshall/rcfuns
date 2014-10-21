@@ -248,6 +248,10 @@ function decryptdir() {
 
 function screenssh {
     if (( $# >= 1 )) ; then
+        local machine
+        local prefixcmd
+        local sessionarg
+        local session
         if (( $# == 2 )) ; then
             machine=$1
             shift
@@ -294,6 +298,8 @@ function screenssh {
         else
             print Not able to set the private in ssh-agent. >&2
         fi
+
+
     else
         print no server name >&2
     fi
