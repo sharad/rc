@@ -2,7 +2,15 @@
 
 (deh-require-maybe (and org-compat org)
   ;; publishing
-  (deh-require-maybe (progn org-publish org-html))
+
+  ;;
+  ;; (deh-require-maybe (progn org-publish org-html))
+  ;; (defconst org-export-html-special-string-regexps
+  ;;   '(("\\\\-" . "&shy;")
+  ;;     ("---\\([^-]\\)" . "&mdash;\\1")
+  ;;     ("--\\([^-]\\)" . "&ndash;\\1")
+  ;;     ("\\.\\.\\." . "&hellip;"))
+  ;;   "Regular expressions for special string conversion.")
 
   (deh-section "orgextra"
     ;; http://notmuchmail.org/emacstips/
