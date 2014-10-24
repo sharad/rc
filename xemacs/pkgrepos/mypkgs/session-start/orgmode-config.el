@@ -11,6 +11,11 @@
   ;;     ("--\\([^-]\\)" . "&ndash;\\1")
   ;;     ("\\.\\.\\." . "&hellip;"))
   ;;   "Regular expressions for special string conversion.")
+  (deh-require-maybe ox-publish
+    (setq org-publish-project-alist
+          '(
+            ;; ... add all the components here (see below)...
+            )))
 
   (deh-section "orgextra"
     ;; http://notmuchmail.org/emacstips/
