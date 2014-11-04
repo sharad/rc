@@ -91,7 +91,7 @@
 
 (deh-require-maybe (and remember
                         org
-                        org-html
+                        ;; org-html
                         ob-exp
                         ob-ditaa
                         org-element
@@ -252,9 +252,9 @@
 
 
 
-;; End
-;; from http://www.emacswiki.org/emacs/RememberMode#toc7
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; End
+  ;; from http://www.emacswiki.org/emacs/RememberMode#toc7
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   )
 
 
