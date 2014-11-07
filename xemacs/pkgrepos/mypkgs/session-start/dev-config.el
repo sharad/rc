@@ -603,7 +603,7 @@ Add directory to search path for source files using the GDB command, dir."))
 (deh-require-maybe compile
   (setq
    compilation-auto-jump-to-first-error t
-   compilation-skip-threshold 1  ;; 1 - errors, 2 - warnings
+   compilation-skip-threshold 2  ;; 2 - errors, 1 - warnings
    ))
 
 (provide 'dev-config)
