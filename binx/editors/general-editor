@@ -64,10 +64,10 @@ fi
 done
 
 if [[ $prog = *x* ]] ; then
-    # args[-d]="$DISPLAY";;
-    : ;
+    # args[-d]="$DISPLAY"
+    :
 else
-    args[-t]="";;
+    args[-t]=""
 fi
 
 
