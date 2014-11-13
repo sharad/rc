@@ -46,7 +46,7 @@ fi
 #     args[-n]=""
 # fi
 
-if [ $prog = "xedn" -o $prog = "edn"  ]  ; then
+if [[ $prog = *n ]]  ; then
     args[-n]=""
 fi
 
@@ -55,23 +55,21 @@ if [ $# -eq 0 ] ; then
     args[-c]=""
 fi
 
-    foreach editor ( $alternate_editors )
-    do
-    if which $editor >& /dev/null ; then
-        alted=$editor
-        break
-    fi
-    done
+foreach editor ( $alternate_editors )
+do
+if which $editor >& /dev/null ; then
+    alted=$editor
+    break
+fi
+done
 
+if [[ $prog = *x* ]] ; then
+    # args[-d]="$DISPLAY";;
+    : ;
+else
+    args[-t]="";;
+fi
 
-case "$prog" in
-    (general-xeditor*|xeditor*|xed*)
-        # args[-d]="$DISPLAY";;
-        : ;;
-    (general-editor*|editor*|ed*)
-        args[-t]="";;
-    (*)  ;;
-esac
 
 
 foreach f ("$@" ) {
