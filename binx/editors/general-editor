@@ -41,6 +41,8 @@ typeset -A args
 
 if (( ${+remoteedit})) ; then
     args[-f]=${remoteditsocfile}
+    local lhost=${USER}@$(hostname -s)
+    local remoteeditproto=scpc
 else
     args[-f]=${server_file}
 fi
