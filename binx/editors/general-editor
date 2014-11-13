@@ -9,6 +9,7 @@ local alternative_editor
 alternate_editors=( em zile mg jove sensible-editor vim joe )
 
 local server_file="${HOME}/.emacs.d/server/general"
+local remoteditsocfile='\\~/.emacs.d/server/general'
 local lhost=$(hostname -s)
 
 
