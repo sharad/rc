@@ -13,7 +13,12 @@ local lhost=$(hostname -s)
 
 
 if [[ $prog = r*   ]]  ; then
-    remoteedit=doit
+    if (( ${+REMOTEEDITORHOST} )) ; then
+        remoteedit=$REMOTEEDITORHOST
+    else
+        print REMOTEEDITORHOST not set >&2
+        exit -1;
+    fi
 else
     unset remoteedit
 fi
