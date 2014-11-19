@@ -35,7 +35,12 @@ export GNOME_KEYRING_SOCKET
 EDITOR="emacsclient -d $DISPLAY -c -f ~/.emacs.d/server/general "
 VISUAL="emacsclient -d $DISPLAY -c -f ~/.emacs.d/server/general "
 
-EDITOR=$HOME/bin/general-xeditor
+if [ "x${REMOTEEDITORHOST}" != "x" ] ; then
+    EDITOR=$HOME/bin/general-xeditor
+else
+    EDITOR=$HOME/bin/rgeneral-xeditor
+fi
+
 VISUAL=$EDITOR
 
 BROWSER="conkeror"

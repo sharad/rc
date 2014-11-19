@@ -11,7 +11,12 @@ WORKPLACE=home
 EDITOR='emacsclient -t -c -f ~/.emacs.d/server/general '
 VISUAL='emacsclient -t -c -f ~/.emacs.d/server/general '
 
-EDITOR=$HOME/bin/general-editor
+if [ "x${REMOTEEDITORHOST}" != "x" ] ; then
+    EDITOR=$HOME/bin/general-editor
+else
+    EDITOR=$HOME/bin/rgeneral-editor
+fi
+
 VISUAL=$EDITOR
 
 BROWSER=w3m
