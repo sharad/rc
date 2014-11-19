@@ -291,11 +291,19 @@ WATCHFMT="%n from %M has %a tty%l at %T %W"
 # fi
 
 if [ $DISPLAY ] ; then
-    export EDITOR=~/bin/general-xeditor
+    if [ "x${REMOTEEDITORHOST}" != "x" ] ; then
+        EDITOR=$HOME/bin/rgeneral-xeditor
+    else
+        EDITOR=$HOME/bin/general-xeditor
+    fi
     export VISUAL=$EDITOR
     export BROWSER="conkeror"
 else
-    export EDITOR=~/bin/general-editor
+    if [ "x${REMOTEEDITORHOST}" != "x" ] ; then
+        EDITOR=$HOME/bin/rgeneral-editor
+    else
+        EDITOR=$HOME/bin/general-editor
+    fi
     export VISUAL=$EDITOR
     export BROWSER="w3m"
 fi
