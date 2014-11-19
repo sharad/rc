@@ -5,9 +5,9 @@ EDITOR='emacsclient -t -c -f ~/.emacs.d/server/general '
 VISUAL='emacsclient -t -c -f ~/.emacs.d/server/general '
 
 if [ "x${REMOTEEDITORHOST}" != "x" ] ; then
-    EDITOR=$HOME/bin/general-editor
-else
     EDITOR=$HOME/bin/rgeneral-editor
+else
+    EDITOR=$HOME/bin/general-editor
 fi
 
 VISUAL=$EDITOR
