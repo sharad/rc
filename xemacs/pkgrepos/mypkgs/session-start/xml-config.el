@@ -95,8 +95,8 @@
 (deh-section "xstylesheet"
 
   ;; XSL mode
-  ;; (autoload 'xsl-mode "xslide" "Major mode for XSL stylesheets." t)
-  (autoload 'xsl-mode "xslide2" "Major mode for XSL stylesheets." t)
+  (autoload 'xsl-mode "xslide" "Major mode for XSL stylesheets." t)
+  ;; (autoload 'xsl-mode "xslide2" "Major mode for XSL stylesheets." t)
 
   ;; Uncomment if you want to use `xsl-grep' outside of XSL files.
   (autoload 'xsl-grep "xslide" "Grep for PATTERN in files matching FILESPEC." t)
@@ -152,7 +152,9 @@
 
 (deh-require-maybe nxml-mode
   ;; http://stackoverflow.com/a/11409099
-  (setq rng-nxml-auto-validate-flag nil)
+  (setq rng-nxml-auto-validate-flag nil
+        nxml-slash-auto-complete-flag t
+        )
   (setq nxml-child-indent 2))
 
 ; http://stackoverflow.com/a/11409099

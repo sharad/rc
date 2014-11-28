@@ -1,4 +1,4 @@
-;;;; xslide.el --- XSL Integrated Development Environment
+;;;; xslide2.el --- XSL Integrated Development Environment
 ;; Copyright (C) 1998, 1999, 2000, 2001, 2003, 2011 Tony Graham
 
 ;; Author: Tony Graham <tkg@menteith.com>
@@ -26,6 +26,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; imenu stuff
+
+(require 'xslide-data "xslide-data")
+(require 'xslide-abbrev "xslide-abbrev")
+(require 'xslide-font "xslide-font")
+(require 'xslide-process "xslide-process")
 
 (defun xsl-sort-alist (alist)
   "Sort an alist."
@@ -259,8 +264,11 @@
   (speedbar-add-supported-extension (list ".xsl" ".fo"))
   (setq imenu-create-index-function 'xsl-imenu-create-index-function)
   (setq imenu-extract-index-name-function 'xsl-imenu-create-index-function)
+  (setq local-abbrev-table xsl-mode-abbrev-table)
   (imenu-add-to-menubar "Templates")
   (make-local-variable 'tab-width)
   (setq tab-width 8))
+
+(provide 'xslide2)
 
 ;;; xslide2.el ends here

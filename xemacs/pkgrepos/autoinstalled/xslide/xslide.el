@@ -303,7 +303,7 @@ Bound to C-c C-t by default."
             (while (search-backward "<xsl:if" the-start t)
               (xsl-convert-if-to-choose-slave)
             )
-            (message "xsl-if-to-choose error: There's no <xsl:if> within the selected region.")            
+            (message "xsl-if-to-choose error: There's no <xsl:if> within the selected region.")
           )
         )
       )
@@ -314,7 +314,7 @@ Bound to C-c C-t by default."
 (defun xsl-convert-if-to-choose-slave ()
   (if (looking-at "<xsl:if")
     (let
-      ( (start (save-excursion (beginning-of-line) (point))) )      
+      ( (start (save-excursion (beginning-of-line) (point))) )
       (delete-char 7)
       (insert "<xsl:choose>\n<xsl:when")
       (search-forward "</xsl:if>" nil t)
