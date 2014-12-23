@@ -9,6 +9,7 @@
 ;; output dot problem see http://www.gnu.org/software/emacs/manual/html_node/elisp/Output-Variables.html
 ;; output dot problem see https://www.gnu.org/software/emacs/manual/html_node/elisp/Output-Variables.html
 ;; set print-length
+;; (setq print-length 100)
 
 
 (deh-require-maybe (and muse-config planner)

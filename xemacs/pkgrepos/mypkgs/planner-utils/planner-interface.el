@@ -337,7 +337,20 @@
 
  (kill-new
   (extract-task-name
-   "Syncing or updating of WM group {{Tasks:13}} ([[2014.07.10]],[[MyMIS]],[[GNUEmacs]],[[TasksByProject][p]],[[TasksByContext][c]])")))
+   "Syncing or updating of WM group {{Tasks:13}} ([[2014.07.10]],[[MyMIS]],[[GNUEmacs]],[[TasksByProject][p]],[[TasksByContext][c]])"))
+
+ (kill-new
+  (extract-task-name
+   "[[/~s/tasks/features/dbginforpm][dbginforpm]]: Debug Symbol RPMs setting up seperate debug rpms with symbol files for binaries to debug customer issues. {{Tasks:57}} ([[2014.12.22]],[[MyMIS]],[[TasksByProject][p]],[[TasksByContext][c]])"))
+
+ (kill-new
+  (extract-task-name
+ "[[/~s/tasks/bugs/43093][b43093]]: Build 6.1-2-18 - Station connected to wired Ethernet port of the AP not able to ping after Nplus1 fail over. [[https://bugzilla.merunetworks.com/bugzilla/show_bug.cgi?id=43093][url]] {{Tasks:95}} ([[2014.12.22]],[[MyMIS]],[[TasksByProject][p]],[[TasksByContext][c]])"))
+
+
+  (kill-new
+  (extract-task-name "[[/~s/tasks/bugs/coverity][bcoverity]]: Coverity Issues. [[http://india-coverity:8080/reports.htm#v10448/p10010/fileInstanceId=14121992&defectInstanceId=10813926&mergedDefectId=27561&eventId=10813926-14][url]] {{Tasks:102}} ([[2014.12.22]],[[MyMIS]],[[TasksByProject][p]],[[TasksByContext][c]])"
+   )))
 
 (defun extract-task-name-from-list (task-list)
   (extract-task-name (nth 4 task-list)))
