@@ -6,9 +6,9 @@
 ## X-URL:
 
 
-host_macrodir = ../.osetup/info/hosts/$(HOST)/m4.d
+host_macrodir = ../.osetup/info.d/hosts/$(HOST)/m4.d
 macroconfig      = m4
-macrodir      = ../.osetup/info/common/m4.d
+macrodir      = ../.osetup/info.d/common/m4.d
 
 M4            = m4 -I /usr/share/doc/m4/examples -I $(macroconfig) -I $(macrodir) -I $(host_macrodir)
 
