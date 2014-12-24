@@ -138,14 +138,6 @@
  (quickrun .
            [(1 1)
             nil "Run commands quickly"])
- (projectile .
-             [(0 7)
-              nil "Manage and navigate projects in Emacs easily"])
- (project-mode .
-               [(1 0)
-                ((levenshtein
-                  (1 0)))
-                "Define code projects. Full-text search, etc."])
  (project-local-variables .
                           [(0 2)
                            nil "set project-local variables from a file"])
@@ -164,32 +156,17 @@
  (popup .
         [(0 5)
          nil "Visual Popup User Interface"])
- (perspective .
-              [(1 7)
-               nil "switch between named \"perspectives\" of the editor"])
- (pcre2el .
-          [(20130305 1120)
-           nil "PCRE/Elisp/rx/SRE regexp syntax converter and utilities [github]"])
  (pcache .
          [(20131201 1159)
           ((eieio
             (1 3)))
           "persistent caching for Emacs"])
- (pastebin .
-           [(0 1)
-            nil "A simple interface to the www.pastebin.com webservice"])
- (parenface .
-            [(1 1)
-             nil "Provide a face for parens in lisp modes."])
  (paredit .
           [(22)
            nil "minor mode for editing parentheses  -*- Mode: Emacs-Lisp -*-"])
  (otp .
       [(1 0)
        nil "a one-time password creator"])
- (org-outlook .
-              [(0 3)
-               nil "Outlook org"])
  (org-mime .
            [(20120112)
             nil "org html export for text/html MIME emails"])
@@ -242,9 +219,6 @@
  (memory-usage .
                [(0 1)
                 nil "Analyze the memory usage of Emacs in various ways"])
- (member-function .
-                  [(0 3 1)
-                   nil "expand member functions for C++ classes"])
  (mediawiki .
             [(2 2 3)
              nil "mediawiki frontend"])
@@ -352,9 +326,6 @@
          (inflections
           (1 0)))
         "build functions which contextually jump between files"])
- (jtags-extras .
-               [(0 3 0)
-                nil "jtags related functionality for Java development"])
  (jtags .
         [(0 97)
          nil "enhanced tags functionality for Java development"])
@@ -370,9 +341,6 @@
  (javap-mode .
              [(9)
               nil "Javap major mode"])
- (javadoc-help .
-               [(1 0)
-                nil "Javadoc-Help.  Look up Java class on online javadocs in browser."])
  (jaunte .
          [(0 0 0)
           nil "Emacs Hit a Hint"])
@@ -414,9 +382,6 @@
  (highlight-symbol .
                    [(20130401 1733)
                     nil "automatic and manual symbol highlighting [github]"])
- (helm .
-       [(20121003 940)
-        nil "Helm is an Emacs incremental and narrowing framework [source: github]"])
  (header2 .
           [(21 0)
            nil "Support for creation and update of file headers."])
@@ -529,9 +494,6 @@
  (erefactor .
             [(0 5 4)
              nil "Emacs-Lisp refactoring utilities"])
- (eproject .
-           [(0 4)
-            nil "project workspaces for emacs"])
  (epoch-view .
              [(0 0 1)
               nil "Minor mode to visualize epoch timestamps"])
@@ -577,9 +539,6 @@
  (dpaste .
          [(0 2)
           nil "Emacs integration for dpaste.com"])
- (doc-mode .
-           [(0 2)
-            nil "convenient editing of in-code documentation"])
  (dizzee .
          [(0 1 1)
           nil "A more pleasant way to manage your project's subprocesses in Emacs."])
@@ -612,9 +571,6 @@
  (deferred .
      [(0 3 1)
       nil "Simple asynchronous functions for emacs lisp"])
- (defaultcontent .
-     [(1 4)
-      nil "a templating tool. Fill new files with default content."])
  (dedicated .
             [(1 0 0)
              nil "A very simple minor mode for dedicated buffers"])
@@ -641,9 +597,6 @@
               ((deferred
                    (0 3 1)))
               "Concurrent utility functions for emacs lisp"])
- (company .
-          [(0 5)
-           nil "extensible inline text completion mechanism"])
  (command-frequency .
                     [(1 1)
                      nil "Track command frequencies"])
@@ -700,42 +653,12 @@
  (apache-mode .
               [(2 0)
                nil "major mode for editing Apache configuration files"])
- (anything-show-completion .
-                           [(20091119)
-                            nil "Show selection in buffer for anything completion"])
- (anything-obsolete .
-                    [(0 1)
-                     nil "obsolete functions of anything"])
- (anything-match-plugin .
-                        [(1 27)
-                         nil "Humane match plug-in for anything"])
- (anything-ipython .
-                   [(0 1 2009)
-                    nil " Ipython anything"])
- (anything-git-goto .
-                    [(0 1 0)
-                     nil "Quick listing of:"])
  (anything-exuberant-ctags .
                            [(0 1 2)
                             nil "Exuberant ctags anything.el interface"])
- (anything-extension .
-                     [(0 2)
-                      nil "Extension functions for anything.el"])
- (anything-el-swank-fuzzy .
-                          [(0 1 2009)
-                           nil "anything-sources for el-swank-fuzzy.el"])
- (anything-config .
-                  [(0 4 1)
-                   nil "Predefined configurations for `anything.el'"])
- (anything-complete .
-                    [(1 86)
-                     nil "completion with anything"])
  (anything .
            [(1 287)
             nil "open anything / QuickSilver-like candidate-selection framework"])
- (ampc .
-       [(0 1 3)
-        nil "Asynchronous Music Player Controller"])
  (alpha .
         [(1 0)
          nil "increase frame transparency"])
