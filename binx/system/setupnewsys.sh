@@ -59,3 +59,7 @@ cd -
 # setup quicklisp
 # run sbcl
 # setup ecryptfs-setup-private
+# setup ls .osetup/dirs.d especially reiser-disk and scratch.d/
+# setup mail
+# setup ~/.maildir folder
+# postfix and dovecot
