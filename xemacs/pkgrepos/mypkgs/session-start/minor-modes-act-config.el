@@ -93,8 +93,17 @@
       (add-element-to-lists 'office-activate pgm-langs)))
 
 
+(unless (fboundp 'login-to-perforce)
+  (defun login-to-perforce ()
+    (message "login-to-perforce: p4 not installed.")
+    t))
 
+(unless (fboundp 'is-perforce-is-alive)
+  (defun is-perforce-is-alive ()
+    (message "is-perforce-is-alive: p4 not installed.")
+    t))
 
+(defvar enable-p4-login nil "test")
 
 (provide 'minor-modes-act-config)
 ;;; minor-modes-act.el ends here
