@@ -51,3 +51,11 @@ md5sum /usr/local/stow/stumpwm-lispm/bin/stumpwm /usr/local/builds/stumpwm/stump
 make clean
 ls /usr/local/stow/stumpwm-lispm/bin/stumpwm
 cd -
+
+# check for /atlantic and pacific dirs
+# copy ~/.config/common-lisp
+# copy .osetup
+# setup .ssh/login-keys.d
+# setup quicklisp
+# run sbcl
+# setup ecryptfs-setup-private
