@@ -45,13 +45,29 @@
     (require 'cl)
     (require 'utils-config)
 
+    (defvar package-user-dir
+      (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa"))
+      "package-user-dir")
+
+    (defvar sharad/package-installed-archive (expand-file-name "installed-archive.el" package-user-eadiar) "Known Installed packages.")
+
+    (defconst *elpa-package-dir* "~/.xemacs/pkgrepos/elpa")
+
+    (setq
+     package-user-dir
+     (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa")))
+
+    sharad/package-installed-archive (expand-file-name "installed-archive.el" package-user-eadiar)
+
+    ;; *elpa-package-dir* "~/.xemacs/pkgrepos/elpa"
+    )
+
     (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
     (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
 
     (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
-    (defconst *elpa-package-dir* "~/.xemacs/pkgrepos/elpa")
 
     (package-initialize)
 
@@ -71,12 +87,6 @@
 (autoload 'package-list-packages "package" "Elap Package" t)
 (autoload 'list-packages "package" "Elap Package" t)
 (autoload 'package-install "package" "Elap Package" t)
-
-(defvar package-user-dir
-  (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa"))
-  "package-user-dir")
-
-(defvar sharad/package-installed-archive (expand-file-name "installed-archive.el" package-user-dir) "Known Installed packages.")
 
 (defun sharad/update-installed-package-archive ()
   (interactive)
