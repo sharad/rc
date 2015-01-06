@@ -1,10 +1,6 @@
 #!/bin/zsh
 
-
-
-
 # do apt-clone
-
 
 # check for /atlantic and pacific dirs
 foreach d (/all/reiser /all/res/share) {
@@ -15,6 +11,8 @@ foreach d (/all/reiser /all/res/share) {
         exit -1
     fi
 }
+
+#setup gitolite
 
 print Installing sbcl, stow
 sudo apt-get install sbcl stow
@@ -76,6 +74,15 @@ ln -s .setup/ssh/login-keys.d ~/.ssh/login-keys.d
 ls -l ~/.ssh/login-keys.d
 
 
+# setup quicklisp
+# depend sbcl asdf
+cd /tmp
+curl -O http://beta.quicklisp.org/quicklisp.lisp
+sbcl --load quicklisp.lisp  --eval '(progn (quicklisp-quickstart:install)(quit))'
+sudo mkdir /all/res/share/common-lisp/
+sudo mv  ~/quicklisp /all/res/share/common-lisp/
+cd -
+
 
 git clone gitolite@lispm:s/lisp/stumpwm.git /usr/local/builds/stumpwm
 git -C /usr/local/builds/stumpwm checkout pa-point-timeout
@@ -94,7 +101,6 @@ ls /usr/local/stow/stumpwm-lispm/bin/stumpwm
 cd -
 
 # copy .osetup
-# setup quicklisp
 # run sbcl
 # setup ls .osetup/dirs.d especially reiser-disk and scratch.d/
 # setup mail
