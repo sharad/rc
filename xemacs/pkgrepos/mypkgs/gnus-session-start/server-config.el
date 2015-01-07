@@ -36,6 +36,9 @@
 ;; (require 'gnus)
 ;; (require 'mime-compose)
 
+;; use M-x password-reset (from password-cache.el)
+;; if .authinfo.gpg  became active later.
+
 (setq gnus-select-method '(nntp "news.gmane.org"))
 
 (add-to-list
@@ -93,24 +96,3 @@
 
 (provide 'server-config)
 ;;; server-config.el ends here
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
