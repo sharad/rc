@@ -213,3 +213,86 @@ zstyle ':completion:*:email-ldap' command 'ldapsearch -w `get-imap-pass.py` -LLL
 
 # And, my .ldaprc contains a `HOST host:port' line
 
+
+
+
+
+
+
+
+
+################ From Zsh Pony ################
+
+# 8.4 Pick item but stay in the menu
+
+bindkey -M menuselect "+" accept-and-menu-complete
+# % ls <tab> +
+
+
+
+# 10.5 Remove last part from directory name
+
+slash-backward-kill-word() {
+    local WORDCHARS="${WORDCHARS:s@/@}"
+    zle backward-kill-word
+}
+zle -N slash-backward-kill-word
+bindkey '\e^?' slash-backward-kill-word
+# % cd /usr/share/doc/mutt/examples/<alt+backspace>
+# Note: configured by default in grml-zshrc, so ready for usage out-of-the-box.
+
+
+
+# 10.8 Zsh Line Editor (AKA zle)
+
+#     It's what readline is for bash (move, delete, copy words/lines/…)
+#     Basic layout of custom widgets, used like functions:
+
+# % foobar() { LBUFFER="foobar $LBUFFER"; } # function
+# % zle -N foobar         # declare function as bindable widget
+# % bindkey '^x^s' foobar # bind command to a keybinding
+
+#     ctrl-x-z provides helpzleparsekeybindings in grml-zshrc
+
+
+# 10.9 Edit command line in editor
+
+# % autoload edit-command-line && zle -N edit-command-line
+# % bindkey '\ee' edit-command-line
+# % $SOME_COMMAND_LINE <esc-e>
+
+
+# 10.10 Insert a timestamp on the command line (yyyy-mm-dd)
+
+# insert-datestamp() { LBUFFER+=${(%):-'%D{%Y-%m-%d}'}; }
+# zle -N insert-datestamp
+# bindkey '^Ed' insert-datestamp
+
+# 10.11 Insert last typed word
+
+# % insert-last-typed-word() { zle insert-last-word -- 0 -1 };
+# % zle -N insert-last-typed-word;
+# % bindkey "\em" insert-last-typed-word
+# % mv foobar <esc-m>
+
+# 10.12 Complete word from history with menu
+
+# % zle -C hist-complete complete-word _generic
+# % zstyle ':completion:hist-complete:*' completer _history
+# % bindkey "^X^X" hist-complete
+
+
+
+# 13 Get VCS information into your prompt - vcs_info
+
+# autoload -Uz vcs_info
+# precmd() {
+#   psvar=()
+#   vcs_info
+#   [[ -n $vcs_info_msg_0_ ]] && psvar[1]="$vcs_info_msg_0_"
+# }
+# PS1="%m%(1v.%F{green}%1v%f.)%# "
+
+
+
+################ From Zsh Pony ################

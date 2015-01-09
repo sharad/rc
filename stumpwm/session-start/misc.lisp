@@ -137,3 +137,44 @@
       (or time   (decode-universal-time (+ (get-universal-time) (* 30 60))))
     (list :second sec :minute min :hour hour :dom dom :month mon
           :year year :dow dow :dlsavings-p dstp :tz tz)))
+
+
+
+
+;; from: https://lists.gnu.org/archive/html/stumpwm-devel/2014-05/msg00001.html
+(defcommand projector-toggle () ()
+  "Toggle the projector (mirrorred display) on or off."
+  (let ((xrandr-q (run-shell-command "xrandr -q" t)))
+    (with-input-from-string (s xrandr-q)
+      ;; If an output is on, xrandr shows its mode after the "NAME connected"
+      ;; and before the parentheses.
+      (let* ((displays (loop for line = (read-line s nil :EOF)
+                             until (eql line :EOF)
+                             for matches = (multiple-value-bind (str matches)
+                                               (ppcre:scan-to-strings
+                                                "^(.+) connected (.*)\\("
+                                                line)
+                                             (declare (ignore str))
+                                             matches)
+                             when matches
+                             ;; matches[0] = output name
+                             ;; matches[1] = current mode (if connected)
+                             collect (cons (svref matches 0)
+                                           (if (string= (svref matches 1) "")
+                                               :OFF
+                                               :ON))))
+             (vga (find "VGA" displays :test #'ppcre:scan :key #'car))
+             (lvds (find "LVDS" displays :test #'ppcre:scan :key #'car)))
+        (when vga
+          (if (eql (cdr vga) :off)
+              (run-shell-command
+               (format nil
+                       "xrandr --output ~A --mode 1024x768 --same-as ~A
+--output ~A --mode 1024x768"
+                       (car vga)
+                       (car lvds)
+                       (car lvds)))
+              (run-shell-command
+               (format nil "xrandr --output ~A --off --output ~A --auto"
+                       (car vga)
+                       (car lvds)))))))))
