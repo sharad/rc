@@ -9,14 +9,8 @@
 
 (deh-require-maybe template
   (template-initialize)
-
-  (add-to-list
-   ;; disable nagging update .ido.last
-   ;; http://permalink.gmane.org/gmane.emacs.bugs/31777
-   'template-update-buffer-alist
-   '(".ido.last" nil nil nil nil))
-
-  (setq template-auto-update-disable-regexp "\\.ido\\.last"))
+  ;; to ignore
+  (setq template-auto-update-disable-regexp "ido\\.last"))
 
 (deh-require-maybe template-simple)
 
