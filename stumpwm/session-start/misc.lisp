@@ -134,7 +134,8 @@
 
 (defun time-plist (&optional time)
   (multiple-value-bind (sec min hour dom mon year dow dstp tz)
-      (or time   (decode-universal-time (+ (get-universal-time) (* 30 60))))
+      ;; (or time   (decode-universal-time (+ (get-universal-time) (* 30 60))))
+      (or time   (decode-universal-time (+ (get-universal-time) (* 0 60))))
     (list :second sec :minute min :hour hour :dom dom :month mon
           :year year :dow dow :dlsavings-p dstp :tz tz)))
 

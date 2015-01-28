@@ -11,6 +11,7 @@
 ;; set print-length
 ;; (setq print-length 100)
 
+;; Query replace (default /home/s/hell/.Organize/emacs/plan/Plans -> ~/Documents/CreatedContent/contents/muse/web/site/wiki/Organize/plan/Plans): 
 
 (deh-require-maybe (and muse-config planner)
   (setq planner-sections
