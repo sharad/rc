@@ -262,7 +262,7 @@
                                  (if (consp buff-file)
                                      (car buff-file)
                                      buff-file))))
-                  (message "if screen: %s buffer: %s" screen buff-files)
+                  (message "if screen: %s buffer: %s buff: %s file-path: %s" screen buff-files buff file-path)
                   (if (when (bufferp (get-buffer buff))
                         ;; (message "if screen: %s buffer: %s" screen buff-files)
                         (if (eq screen 0) ;; (eq (elscreen-get-current-screen) 0)
@@ -287,7 +287,8 @@
 
             ;; (when elscreen-session-restore-create-scratch-buffer
             ;;   (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
-            (elscreen-create)                 ;trap
+
+            (when nil (elscreen-create))                 ;trap
 
             (let* ((file-path  (if (consp session-current-buffer-file)
                                    (cdr session-current-buffer-file)))
@@ -309,7 +310,8 @@
               ))
           (testing
            (message "elscreen-notify-screen-modification"))
-          (elscreen-notify-screen-modification 'force-immediately))
+          (elscreen-notify-screen-modification 'force-immediately)
+          ;; (message "elscreen-session-session-list-set: DONE."))
         (message "elscreen-session-session-list-set: Session do not exists.")))
 
   (defvar *frames-elscreen-session* nil "Stores all elscreen sessions here.")
