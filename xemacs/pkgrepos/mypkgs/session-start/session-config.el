@@ -62,15 +62,15 @@
                               (elscreen-get-alist-to-nickname
                                elscreen-buffer-to-nickname-alist-internal
                                'string-match (buffer-name))
-                              (cons 'buffer-name (buffer-name)))))
+                              (cons 'buffer-name (cons (buffer-name) (buffer-file-name))))))
                       (window-list)))
 
                (let (nickname-list)
                  (while (> (length nickname-type-map) 0)
                    (let ((type (caar nickname-type-map))
-                         (name (cdar nickname-type-map)))
-                     (when name
-                       (setq nickname-list (cons name nickname-list)))
+                         (buff-file (cdar nickname-type-map)))
+                     (when buff-file
+                       (setq nickname-list (cons buff-file nickname-list)))
                      (setq nickname-type-map
                            (if (eq type 'nickname)
                                (delete (car nickname-type-map) nickname-type-map)
@@ -83,7 +83,7 @@
            screen-list))
 
          ;; (elscreen-set-screen-to-name-alist-cache screen-to-name-alist)
-         screen-to-name-alist)))
+         (reverse screen-to-name-alist))))
 
     (defun sharad/elscreen-get-desktop-buffer-args-list ()
       ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
@@ -193,31 +193,29 @@
   (defun elscreen-session-session-list-get (&optional nframe)
     (with-selected-frame (or nframe (selected-frame))
       (let (session-list)
-        (push (cons 'screens (reverse (sharad/elscreen-get-screen-to-name-alist))) session-list)
-        (push (cons 'current-buffer (buffer-name (current-buffer))) session-list)
+        (push (cons 'screens (sharad/elscreen-get-screen-to-name-alist)) session-list)
+        (push (cons 'current-buffer-file (cons (buffer-name (current-buffer)) (buffer-file-name))) session-list)
         (push (cons 'current-screen (elscreen-get-current-screen)) session-list)
-        (when t
-         (push (cons 'desktop-buffers (sharad/elscreen-get-desktop-buffer-args-list)) session-list))
-        )))
+        (push (cons 'desktop-buffers (sharad/elscreen-get-desktop-buffer-args-list)) session-list))))
 
   (defun elscreen-session-session-list-set (session-list &optional nframe)
     (if session-list                    ;may causing error
         (with-selected-frame (or nframe (selected-frame))
-          (let* (screen
-                 buffers
-                 (desktop-buffers
+          (let* ((desktop-buffers
                   (cdr (assoc 'desktop-buffers session-list)))
                  (screens
                   (or
                    (cdr (assoc 'screens session-list))
                    `((,(length session-list) "*scratch*"))))
-                 (session-current-buffer
+                 (session-current-screen-buffers
                   (cadr (assoc
                          (cdr (assoc 'current-screen session-list))
-                         screens))))
+                         screens)))
+                 (session-current-buffer-file
+                  (cdr (assoc 'current-buffer-file session-list))))
             ;;(when t
             (testing
-              (message "Bstart: session-current-buffer %s" session-current-buffer)
+              (message "Bstart: session-current-screen-buffers %s" session-current-screen-buffers)
               (message "Astart: screen-to-name-alist %s" session-list)
               (message "Cstart: desktop-buffers %s" desktop-buffers))
 
@@ -250,34 +248,65 @@
                                   (length desktop-buffers) bufs))
                 (message "No desktop-buffers"))
 
+            (message "if screen: %s" screens)
             (while screens
-              (setq screen (caar screens))
-              (setq buffers (cdar screens))
-              (if (when (bufferp (get-buffer (car buffers)))
-                    ;; (message "if screen: %s buffer: %s" screen buffers)
-                    (if (eq screen 0) ;; (eq (elscreen-get-current-screen) 0)
-                        (switch-to-buffer (car buffers))
-                        (elscreen-find-and-goto-by-buffer (car buffers) t t))
-                    (cdr buffers))
-                  (while (cdr buffers)
-                    (testing (message "while: screen: %s buffer: %s" screen (cadr buffers)))
-                    (switch-to-buffer-other-window (car (cdr buffers)))
-                    (setq buffers (cdr buffers)))
-                  (testing (message "else")))
-              (setq screens (cdr screens)))
+                ;; (setq screen (caar screens))
+                ;; (setq buff-files (cdar screens))
+                (let* ((screen     (caar screens))
+                       (buff-files (cdar screens))
+                       (buff-file  (car buff-files))
+                       (file-path  (if (consp buff-file)
+                                       (cdr buff-file)))
+                       (buff (or (if file-path
+                                    (find-buffer-visiting file-path))
+                                 (if (consp buff-file)
+                                     (car buff-file)
+                                     buff-file))))
+                  (message "if screen: %s buffer: %s" screen buff-files)
+                  (if (when (bufferp (get-buffer buff))
+                        ;; (message "if screen: %s buffer: %s" screen buff-files)
+                        (if (eq screen 0) ;; (eq (elscreen-get-current-screen) 0)
+                            (switch-to-buffer buff)
+                            (elscreen-find-and-goto-by-buffer buff t t))
+                        (cdr buff-files))
+                      (while (cdr buff-files)
+                        (let* ((buff-files (cdar screens))
+                               (buff-file  (car buff-files))
+                               (file-path  (if (consp buff-file)
+                                               (cdr buff-file)))
+                               (buff (or (if file-path
+                                             (find-buffer-visiting file-path))
+                                         (if (consp buff-file)
+                                             (car buff-file)
+                                             buff-file))))
+                          (testing (message "while: screen: %s buffer: %s" screen buff))
+                          (switch-to-buffer-other-window buff))
+                        (setq buff-files (cdr buff-files)))
+                      (testing (message "else"))))
+                (setq screens (cdr screens)))
 
             ;; (when elscreen-session-restore-create-scratch-buffer
             ;;   (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
             (elscreen-create)                 ;trap
 
-            (if (get-buffer session-current-buffer)
-                (progn
-                  ;; (elscreen-find-and-goto-by-buffer (get-buffer session-current-buffer) nil nil)
-                  (setq *elscreen-session-restore-data* (list (cons 'cb session-current-buffer)))
-                  (testing
-                   (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*)))
-                (testing
-                 (message "in when session-current-buffer %s" session-current-buffer))))
+            (let* ((file-path  (if (consp session-current-buffer-file)
+                                   (cdr session-current-buffer-file)))
+                   (buff (or (if file-path
+                                 (find-buffer-visiting file-path))
+                             (if (consp session-current-buffer-file)
+                                 (car session-current-buffer-file)
+                                 session-current-buffer-file))))
+              (when (get-buffer buff)
+                (elscreen-find-and-goto-by-buffer (get-buffer buff) nil nil)
+                (setq *elscreen-session-restore-data* session-current-buffer-file))
+              ;; (if (get-buffer buff)
+              ;;     (progn
+              ;;       (setq *elscreen-session-restore-data* (list (cons 'cb session-current-screen-buffers)))
+              ;;       (testing
+              ;;        (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*)))
+              ;;     (testing
+              ;;      (message "in when session-current-screen-buffers %s" session-current-screen-buffers)))
+              ))
           (testing
            (message "elscreen-notify-screen-modification"))
           (elscreen-notify-screen-modification 'force-immediately))
@@ -428,13 +457,20 @@
   (defun server-create-frame-after-adrun ()
       "remove-scratch-buffer"
       (if *elscreen-session-restore-data*
-          (let ((cb (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*)))))
+          (let ((buffer-file (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*))))
+                (file-path  (if (consp buffer-file)
+                                (cdr buffer-file)))
+                (buff (or (if file-path
+                              (find-buffer-visiting file-path))
+                          (if (consp buffer-file)
+                              (car buffer-file)
+                              buffer-file))))
             (testing
              (message "running server-create-window-system-frame afer advise if")
              (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*))
-            (when cb
+            (when buff
               (elscreen-kill)
-              (elscreen-find-and-goto-by-buffer cb nil nil)
+              (elscreen-find-and-goto-by-buffer buff nil nil)
               (setq *elscreen-session-restore-data* nil)
               (elscreen-notify-screen-modification 'force-immediately)))
           (testing (message "running server-create-window-system-frame afer advise else"))))
