@@ -290,7 +290,7 @@ function screenssh {
                 if (( $? == 255 )) ; then
                     print some problem happened in ssh to $machine, will try after 7 seconds >&2
                     sleep 7s
-                    screenssh $machine \'${session}\'
+                    screenssh $machine ${session}
                 fi
             else
                 print ${=prefixcmdintractive} screen -S "${sessionorg}" >&2
