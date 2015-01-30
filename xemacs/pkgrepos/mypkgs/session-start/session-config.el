@@ -550,7 +550,10 @@
           (progn
             (message "pass in frame-session-restore")
             (if nframe (select-frame nframe) (error "nframe is nil"))
-            (fmsession-restore (frame-session-set-this-location nframe not-ask)) nframe)
+            (fmsession-restore (frame-session-set-this-location nframe not-ask))
+            ;; nframe)
+            (display-about-screen)
+            nframe)
           (progn
             (message-notify "frame-session-restore" "not restoring screen session.")
             (if *desktop-vc-read-inpgrogress*
