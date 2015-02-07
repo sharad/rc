@@ -45,7 +45,9 @@ function main() {
     if ! pgrep apt ; then
         notify apt is running not poweroff system.
     elif ! pgrep vlc ; then
-        notify apt is running not poweroff system.
+        notify vlc is running not poweroff system.
+    elif ! pgrep avconv ; then
+        notify avconv is running not poweroff system.
     else
         poweroffsys
     fi
