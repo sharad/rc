@@ -81,6 +81,12 @@
                         "design.org" "todo.org" "notes.org" "an0.org")
                        (dirs "logs" "programs" "patches" "deliverables")
                        (links ("notes.html" . "index.html"))
+                       (project "/susengg-01:releases/projects/features-dev.pb"))
+                      ("work"
+                       (files "reqirement.org" "feasibility.org"
+                        "design.org" "todo.org" "notes.org" "an0.org")
+                       (dirs "logs" "programs" "patches" "deliverables")
+                       (links ("notes.html" . "index.html"))
                        (project "/susengg-01:releases/projects/features-dev.pb"))))
 
 (defvar task-file-properties '((buffer-read-only . t)
@@ -97,6 +103,7 @@
   (let* ((plan-page (planner-read-non-date-page (planner-file-alist)))
          (hname
           (if task-local-path
+              ;; BUG: w f b
               (format "[[%s][b%s]]:" (concat task-local-path "/" (pluralize-string task) "/" name) name)
               (format "b%s:" name))))
     ;; (read-from-minibuffer (format "task-description %s: " task-description)
@@ -104,6 +111,7 @@
     (if (and (string-equal task "bug")
              bug)
         (flet ((my-formattor (id summary url)
+                 ;; BUG: w f b
                  (format "[[%s][b%s]]: %s %s"
                          (concat task-local-path "/" (pluralize-string task) "/" (number-to-string id))
                          (number-to-string id) summary (concat "[[" url "][url]]"))))
@@ -117,6 +125,8 @@
                           hname desc (concat "[[" (read-from-minibuffer (format "url for bug %s: " name)) "][url]]")))
 
                  ((string-equal task "feature") (format "%s %s" hname desc))
+
+                 ((string-equal task "work") (format "%s %s" hname desc))
 
                  (t (error "task is not bound.")))))
           (planner-create-task
@@ -283,7 +293,11 @@
                             (format "b%s %s %s" name desc (concat "[[" (read-from-minibuffer (format "url for bug %s: " name)) "][url]]"))))
                        ((string-equal task "feature")
                         (if task-local-path
-                            (format "[[%s/%s][%s]]: %s" task-local-path (concat (pluralize-string task) "/" name) name desc)
+                            (format "[[%s/%s][f%s]]: %s" task-local-path (concat (pluralize-string task) "/" name) name desc)
+                            (format "%s: %s" name desc)))
+                       ((string-equal task "work")
+                        (if task-local-path
+                            (format "[[%s/%s][w%s]]: %s" task-local-path (concat (pluralize-string task) "/" name) name desc)
                             (format "%s: %s" name desc)))
                        (t (error "task is not bound.")))
                  (let ((planner-expand-name-favor-future-p

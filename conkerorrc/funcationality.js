@@ -279,6 +279,7 @@ interactive("delicious-post",
                 // var sendurl = 'https://api.del.icio.us/v2/posts/add?&url='+
                     encodeURIComponent((yield I.minibuffer.read(
                         $prompt = "url (required): ",
+                        // $initial_value = I.buffer.display_uri_string)))
                         $initial_value = I.buffer.display_uri_string)))
                     // encodeURIComponent(I.buffer.display_uri_string)
                     +
@@ -368,7 +369,9 @@ interactive("delicious-post-link",
                         // $initial_value = decodeURIComponent(mylink)))) +
                         $initial_value = bo))) +
                     '&description=' +
-                    encodeURIComponent((yield I.minibuffer.read($prompt = "name (required): " , $initial_value = desc))) +
+                    encodeURIComponent(
+                      (yield I.minibuffer.read(
+                        $prompt = "name (required): " , $initial_value = desc))) +
                     '&replace=yes' +
                     '&tags=' + encodeURIComponent((yield I.minibuffer.read(
                                                        $prompt = "tags (space delimited): ",

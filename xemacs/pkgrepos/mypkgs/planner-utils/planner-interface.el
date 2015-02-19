@@ -414,8 +414,10 @@
 
 ;;should be fault tolrent. else face lot of time waste.
 (defun planner-tasks-of-plan-today (plan status)
-  (planner-tasks-of-plan-from-page
-   (planner-today-ensure-exists) plan '("_" "o")))
+  (remove-if-not                        ;for ("aa"_"bb" "cc") bug
+   'stringp
+   (planner-tasks-of-plan-from-page
+   (planner-today-ensure-exists) plan '("_" "o"))))
 
 ;;test
 (testing
