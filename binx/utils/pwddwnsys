@@ -42,11 +42,11 @@ function main() {
         touch $enable_file;
     fi
 
-    if ! pgrep apt ; then
+    if pgrep apt ; then
         notify apt is running not poweroff system.
-    elif ! pgrep vlc ; then
+    elif pgrep vlc ; then
         notify vlc is running not poweroff system.
-    elif ! pgrep avconv ; then
+    elif pgrep avconv ; then
         notify avconv is running not poweroff system.
     else
         poweroffsys
