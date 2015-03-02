@@ -8,28 +8,29 @@ define_key(content_buffer_normal_keymap, "d", "follow-new-buffer-background");
 
 
 // {{ darken_page: thanks very much for saving my eyes.
-function darken_page (I) {
-    // var newSS, styles='* { background: black ! important; color: grey !important }'
-    // var newSS, styles='* { background: black ! important; color: white !important }'
-    // var newSS, styles='* { background: #EFFFEF ! important; color: white !important }'
-    // var newSS, styles='* { background: #428a42 ! important; color: white !important }'
-    // var newSS, styles='* { background: DarkGreen ! important; color: white !important }'
-    // var newSS, styles='* { background: DarkSlateGray  ! important; color: white !important }'
-    var newSS, styles='* { background: Black  ! important; color: grey !important }'
-        + ':link, :link * { color: #4986dd !important }'
-        + ':visited, :visited * { color: #d75047 !important }';
+function darken_page (I)
+{
+  // var newSS, styles='* { background: black ! important; color: grey !important }'
+  // var newSS, styles='* { background: black ! important; color: white !important }'
+  // var newSS, styles='* { background: #EFFFEF ! important; color: white !important }'
+  // var newSS, styles='* { background: #428a42 ! important; color: white !important }'
+  // var newSS, styles='* { background: DarkGreen ! important; color: white !important }'
+  // var newSS, styles='* { background: DarkSlateGray  ! important; color: white !important }'
+  var newSS, styles='* { background: Black  ! important; color: grey !important }'
+    + ':link, :link * { color: #4986dd !important }'
+    + ':visited, :visited * { color: #d75047 !important }';
 
-    var document = I.window.buffers.current.document;
+  var document = I.window.buffers.current.document;
 
-    if (document.createStyleSheet) {
-        document.createStyleSheet("javascript:'" + styles + "'");
-    }
-    else {
-        newSS=document.createElement('link');
-        newSS.rel='stylesheet';
-        newSS.href='data:text/css,'+escape(styles);
-        document.getElementsByTagName("head")[0].appendChild(newSS);
-    }
+  if (document.createStyleSheet) {
+    document.createStyleSheet("javascript:'" + styles + "'");
+  }
+  else {
+    newSS=document.createElement('link');
+    newSS.rel='stylesheet';
+    newSS.href='data:text/css,'+escape(styles);
+    document.getElementsByTagName("head")[0].appendChild(newSS);
+  }
 }
 
 interactive("darken-page",
@@ -46,29 +47,33 @@ define_key(content_buffer_normal_keymap, "f1", "darken-page");
 
 // Add the following code to your rc:
 
-// {
-   let _save_path = get_home_directory();
+function update_save_path(info)
+{
+  _save_path = info.target_file.parent.path;
+}
 
-   function update_save_path(info) {
-       _save_path = info.target_file.parent.path;
-   }
+{
+  let _save_path = get_home_directory();
 
-   add_hook("download_added_hook", update_save_path);
+  add_hook("download_added_hook", update_save_path);
 
-   suggest_save_path_from_file_name = function (filename, buffer) {
-       let file = make_file(_save_path);
-       file.append(filename);
-       return file.path;
-   }
-// }
+  suggest_save_path_from_file_name =
+    function (filename, buffer)
+    {
+      let file = make_file(_save_path);
+      file.append(filename);
+      return file.path;
+    }
+}
 // }}
 
 // {{ If you are using Conkeror with multiple profiles, you may find
 // the following code handy.  It puts the name of your current profile
 // into the titles of Conkeror's windows.
-function my_title_format (window) {
-    // http://conkeror.org/Profiles
-    return '{'+get_current_profile()+'} '+window.buffers.current.description;
+function my_title_format (window)
+{
+  // http://conkeror.org/Profiles
+  return '{'+get_current_profile()+'} '+window.buffers.current.description;
 }
 
 title_format_fn = my_title_format;
@@ -79,34 +84,35 @@ title_format_fn = my_title_format;
 // http://lab.arc90.com/experiments/readability/
 interactive("readability_arc90",
             "Readability is a simple tool that makes reading on the web more enjoyable by removing the clutter around what you are reading",
-            function readability_arc90(I) {
-                var document = I.window.buffers.current.document;
+            function readability_arc90(I)
+            {
+              var document = I.window.buffers.current.document;
 
-                _readability_readStyle=document.createElement('SCRIPT');
-                _readability_readStyle.text = 'var readStyle = style-newspaper;';
-                document.getElementsByTagName('head')[0].appendChild(_readability_readStyle);
-                _readability_readSize=document.createElement('SCRIPT');
-                _readability_readSize.text = 'var readSize = size-medium;';
-                document.getElementsByTagName('head')[0].appendChild(_readability_readSize);
-                _readability_readMargin=document.createElement('SCRIPT');
-                _readability_readMargin.text = 'var readMargin = margin-wide;';
-                document.getElementsByTagName('head')[0].appendChild(_readability_readMargin);
-                _readability_script=document.createElement('SCRIPT');
-                _readability_script.type='text/javascript';
-                _readability_script.src='http://lab.arc90.com/experiments/readability/js/readability.js?x='+(Math.random());
-                document.getElementsByTagName('head')[0].appendChild(_readability_script);
-                _readability_css=document.createElement('LINK');
-                _readability_css.rel='stylesheet';
-                _readability_css.href='http://lab.arc90.com/experiments/readability/css/readability.css';
-                _readability_css.type='text/css';
-                _readability_css.media='screen';
-                document.getElementsByTagName('head')[0].appendChild(_readability_css);
-                _readability_print_css=document.createElement('LINK');
-                _readability_print_css.rel='stylesheet';
-                _readability_print_css.href='http://lab.arc90.com/experiments/readability/css/readability-print.css';
-                _readability_print_css.media='print';
-                _readability_print_css.type='text/css';
-                document.getElementsByTagName('head')[0].appendChild(_readability_print_css);
+              _readability_readStyle=document.createElement('SCRIPT');
+              _readability_readStyle.text = 'var readStyle = style-newspaper;';
+              document.getElementsByTagName('head')[0].appendChild(_readability_readStyle);
+              _readability_readSize=document.createElement('SCRIPT');
+              _readability_readSize.text = 'var readSize = size-medium;';
+              document.getElementsByTagName('head')[0].appendChild(_readability_readSize);
+              _readability_readMargin=document.createElement('SCRIPT');
+              _readability_readMargin.text = 'var readMargin = margin-wide;';
+              document.getElementsByTagName('head')[0].appendChild(_readability_readMargin);
+              _readability_script=document.createElement('SCRIPT');
+              _readability_script.type='text/javascript';
+              _readability_script.src='http://lab.arc90.com/experiments/readability/js/readability.js?x='+(Math.random());
+              document.getElementsByTagName('head')[0].appendChild(_readability_script);
+              _readability_css=document.createElement('LINK');
+              _readability_css.rel='stylesheet';
+              _readability_css.href='http://lab.arc90.com/experiments/readability/css/readability.css';
+              _readability_css.type='text/css';
+              _readability_css.media='screen';
+              document.getElementsByTagName('head')[0].appendChild(_readability_css);
+              _readability_print_css=document.createElement('LINK');
+              _readability_print_css.rel='stylesheet';
+              _readability_print_css.href='http://lab.arc90.com/experiments/readability/css/readability-print.css';
+              _readability_print_css.media='print';
+              _readability_print_css.type='text/css';
+              document.getElementsByTagName('head')[0].appendChild(_readability_print_css);
             });
 //Bind it to 'z'
 
@@ -172,44 +178,57 @@ define_key(content_buffer_normal_keymap, "z", "readability_arc90");
 
 interactive("delicious-post-sel",
             "bookmark the page via delicious",
-            function (I) {
-                check_buffer(I.buffer, content_buffer);
-                var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
-                var xsendurl = 'https://api.delicious.com/v1/posts/suggest?&url='+encodeURIComponent(I.buffer.top_frame.getSelection());
-                var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
-                var c = domParser.parseFromString(xcontent.responseText, "text/xml");
+            function (I)
+            {
+              check_buffer(I.buffer, content_buffer);
+              var domParser = Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
+              var xsendurl  = 'https://api.delicious.com/v1/posts/suggest?&url='+encodeURIComponent(I.buffer.top_frame.getSelection());
+              var xcontent  = (yield send_http_request(load_spec({uri: xsendurl})));
+              var c         = domParser.parseFromString(xcontent.responseText, "text/xml");
 
-                // I.window.alert(xcontent.responseText);
-                var completions = new Array();
-                var eles = c.getElementsByTagName('recommended');
-                for (i=0; i< eles.length; i++) {
-                    // I.window.alert(eles[i].text);
-                    completions.push(eles[i].text);
-                }
-                // var completer = prefix_completer($completions = completions);
-                var completer = new prefix_completer($completions = completions);
+              // I.window.alert(xcontent.responseText);
+              var completions = new Array();
+              var eles = c.getElementsByTagName('recommended');
+              for (i=0; i< eles.length; i++)
+              {
+                // I.window.alert(eles[i].text);
+                completions.push(eles[i].text);
+              }
+              // var completer = prefix_completer($completions = completions);
+              var completer = new prefix_completer($completions = completions);
 
-                var sendurl = 'https://api.delicious.com/v1/posts/add?&url='+
+              var sendurl =
                 // var sendurl = 'https://api.delicious.com/v2/posts/add?&url='+
-                    encodeURIComponent((yield I.minibuffer.read(
-                        $prompt = "url (required): ",
-                        $initial_value = I.buffer.top_frame.getSelection().toString()))) +
-                    '&description='+
-                    encodeURIComponent((yield I.minibuffer.read(
-                        $prompt = "name (required): ",
-                        $initial_value = I.buffer.top_frame.getSelection().toString())))+
-                    '&replace=yes' +
-                    '&tags='+
-                    encodeURIComponent((yield I.minibuffer.read(
-                                            $prompt = "tags (space delimited): ",
-                                            $completer = completer,
-                                            $initial_value = tags + " " + read_from_x_primary_selection()
-                                        )).replace(new RegExp(/\s+/g), ','))+
-                    '&extended='+
-                    encodeURIComponent((yield I.minibuffer.read(
-                        $prompt = "extended description: ")));
-                var content = yield send_http_request(load_spec({uri: sendurl}));
-                I.window.minibuffer.message(content.responseText);
+                'https://api.delicious.com/v1/posts/add?&url='                           +
+                encodeURIComponent(
+                  (yield                    I.minibuffer.read(
+                     $prompt = "url (required): ",
+                     $initial_value =
+                       I.buffer.top_frame.getSelection().toString()))) +
+                '&description=' +
+                encodeURIComponent(
+                  (yield I.minibuffer.read(
+                    $prompt = "name (required): ",
+                    $initial_value =
+                      I.buffer.top_frame.getSelection().toString())))                    +
+                '&replace=yes' + '&tags=' +
+                encodeURIComponent(
+                  (yield I.minibuffer.read(
+                    $prompt = "tags (space delimited): ",
+                    $completer = completer,
+                    $initial_value =
+                      tags +
+                      " "  +
+                      read_from_x_primary_selection())).replace(new RegExp(/\s+/g), ',')) +
+                '&extended=' +
+                encodeURIComponent(
+                  (yield I.minibuffer.read(
+                    $prompt = "extended description: ")));
+
+              var content =
+                yield send_http_request(load_spec({uri: sendurl}));
+
+              I.window.minibuffer.message(content.responseText);
             });
 
 
@@ -220,176 +239,190 @@ var delicious_shared = null;
 
 interactive("delicious-shared-set",
             "bookmark setting delicious shared.",
-            function (I) {
-                delicious_shared = (("y" == (yield I.minibuffer.read_single_character_option(
-                                                 $prompt = "Shared? (y/n)",
-                                                 $initial_value = "y",
-                                                 $options = ["y", "n"]))) ? "yes" : "no");
+            function (I)
+            {
+              delicious_shared =
+                (("y" ==
+                  (yield I.minibuffer.read_single_character_option(
+                    $prompt = "Shared? (y/n)",
+                    $initial_value = "y",
+                    $options = ["y", "n"]))) ?
+                 "yes" : "no");
             });
 
 interactive("delicious-post",
             "bookmark the page via delicious",
             function (I) {
-                check_buffer(I.buffer, content_buffer);
-                var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
+              check_buffer(I.buffer, content_buffer);
+              var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
 
-                // {{ completer
-                var xsendurl = 'https://api.delicious.com/v1/posts/suggest?&url='+encodeURIComponent(I.buffer.display_uri_string);
-                var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
-                var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
-                // I.window.alert(xcontent.responseText);
-                var completions = new Array();
-                var sug = cc.getElementsByTagName('recommended');
-                var pop = cc.getElementsByTagName('popular');
-                for (i=0; i< sug.length; i++) {
-                    // I.window.alert(sug[i].attributes[0].textContent);
-                    completions.push(sug[i].attributes[0].textContent);
-                }
-                for (i=0; i< pop.length; i++) {
-                    // I.window.alert(pop[i].attributes[0].textContent);
-                    completions.push(pop[i].attributes[0].textContent);
-                }
-                // var completer = prefix_completer($completions = completions);
-                var completer = new prefix_completer($completions = completions);
-                // }}
+              // {{ completer
+              var xsendurl = 'https://api.delicious.com/v1/posts/suggest?&url='+encodeURIComponent(I.buffer.display_uri_string);
+              var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
+              var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
+              // I.window.alert(xcontent.responseText);
+              var completions = new Array();
+              var sug = cc.getElementsByTagName('recommended');
+              var pop = cc.getElementsByTagName('popular');
+              for (i = 0;
+                   i < sug.length;
+                   i++)
+              {
+                // I.window.alert(sug[i].attributes[0].textContent);
+                completions.push(sug[i].attributes[0].textContent);
+              }
+              for (i=0; i< pop.length; i++) {
+                // I.window.alert(pop[i].attributes[0].textContent);
+                completions.push(pop[i].attributes[0].textContent);
+              }
+              // var completer = prefix_completer($completions = completions);
+              var completer  = new prefix_completer($completions = completions);
+              // }}
 
-                // {{ initial value
-                var tsendurl = 'https://api.delicious.com/v1/posts/get?url=' + encodeURIComponent(I.buffer.display_uri_string);
-                var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
-                // I.window.alert(tagcontent.responseText);
-                var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
-                var post = tc.getElementsByTagName('post');
-                var tags  = (post.length > 0)  ? post[0].attributes[6].textContent : "";
+              // {{ initial value
+              var tsendurl   = 'https://api.delicious.com/v1/posts/get?url=' + encodeURIComponent(I.buffer.display_uri_string);
+              var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
+              // I.window.alert(tagcontent.responseText);
+              var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
+              var post       = tc.getElementsByTagName('post');
+              var tags       = (post.length > 0)  ? post[0].attributes[6].textContent : "";
 
-                if ((post.length > 0 && post[0].attributes[0].textContent.length > 0)) {
-                    var desc = post[0].attributes[0].textContent;
-                } else {
-                    var desc = (I.buffer.title == "" ? I.buffer.display_uri_string : I.buffer.title);
-                }
+              if (post.length > 0 &&
+                  post[0].attributes[0].textContent.length > 0) {
+                var desc = post[0].attributes[0].textContent;
+              } else {
+                var desc = (I.buffer.title == "" ? I.buffer.display_uri_string : I.buffer.title);
+              }
 
-                var shared = null;
-                if (post.length > 0 && post[0].attributes[5].textContent.length > 0) {
-                    shared = post[0].attributes[5].textContent;
-                }
+              var shared = null;
+              if (post.length > 0 && post[0].attributes[5].textContent.length > 0) {
+                shared = post[0].attributes[5].textContent;
+              }
 
-                // }}
+              // }}
 
 
-                var sendurl = 'https://api.delicious.com/v1/posts/add?&url='+
+              var sendurl = 'https://api.delicious.com/v1/posts/add?&url='+
                 // var sendurl = 'https://api.delicious.com/v2/posts/add?&url='+
-                    encodeURIComponent((yield I.minibuffer.read(
-                        $prompt = "url (required): ",
-                        // $initial_value = I.buffer.display_uri_string)))
-                        $initial_value = I.buffer.display_uri_string)))
-                    // encodeURIComponent(I.buffer.display_uri_string)
-                    +
-                    '&description='+
-                    encodeURIComponent((yield I.minibuffer.read(
-                        $prompt = "name (required): ",
-                        $initial_value = desc))) +
-                    '&replace=yes' +
-                    '&tags='+
-                    encodeURIComponent((yield I.minibuffer.read(
-                                            $prompt = "tags (space delimited): ",
-                                            $completer = completer,
-                                            $initial_value = tags + " " + read_from_x_primary_selection()
-                                        )).replace(new RegExp(/\s+/g), ','))+
-                    '&extended='+
-                    encodeURIComponent((yield I.minibuffer.read(
-                        $prompt = "extended description: "))) +
-                    '&shared=' +
-                    (delicious_shared == null ?
-                     (("y" == (yield I.minibuffer.read_single_character_option(
-                                   $prompt = ("Shared? (y/n)" + (shared ? (" [" + shared + "]") : "")),
-                                   $options = ["y", "n"]))) ? "yes" : "no")  : delicious_shared );
+                encodeURIComponent((yield I.minibuffer.read(
+                  $prompt = "url (required): ",
+                  // $initial_value = I.buffer.display_uri_string)))
+                  $initial_value = I.buffer.display_uri_string))) +
+              // encodeURIComponent(I.buffer.display_uri_string) +
+                '&description=' +
+                encodeURIComponent((yield I.minibuffer.read(
+                  $prompt = "name (required): ",
+                  $initial_value = desc))) +
+                '&replace=yes' +
+                '&tags='+
+                encodeURIComponent((yield I.minibuffer.read(
+                  $prompt = "tags (space delimited): ",
+                  $completer = completer,
+                  $initial_value = tags + " " + read_from_x_primary_selection()
+                )).replace(new RegExp(/\s+/g), ','))+
+                '&extended=' +
+                encodeURIComponent((yield I.minibuffer.read(
+                  $prompt = "extended description: "))) +
+                '&shared=' +
+                (delicious_shared == null ?
+                 (("y" == (yield I.minibuffer.read_single_character_option(
+                   $prompt = ("Shared? (y/n)" +
+                              (shared ? (" [" + shared + "]") : "")),
+                   $options = ["y", "n"]))) ?
+                  "yes" : "no")  : delicious_shared );
 
-                var content = yield send_http_request(load_spec({uri: sendurl}));
-                I.window.minibuffer.message(content.responseText);
-                if (typeof(debug_level) != "undefined" && debug_level)
-                    I.window.minibuffer.message(sendurl);
-
+              var content = yield send_http_request(load_spec({uri: sendurl}));
+              I.window.minibuffer.message(content.responseText);
+              if (typeof(debug_level) != "undefined" && debug_level)
+                I.window.minibuffer.message(sendurl);
             });
 
 interactive("delicious-post-link",
             "bookmark the link via delicious",
             function (I) {
-                bo = yield read_browser_object(I) ;
-                mylink = load_spec_uri_string(load_spec(encodeURIComponent(bo)));
-                check_buffer(I.buffer, content_buffer);
+              bo = yield read_browser_object(I) ;
+              mylink = load_spec_uri_string(load_spec(encodeURIComponent(bo)));
+              check_buffer(I.buffer, content_buffer);
 
-                var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
-
-
-                // {{ completer
-                var xsendurl = 'https://api.delicious.com/v1/posts/suggest?&url='+mylink;
-                var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
-                var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
-                // I.window.alert(xcontent.responseText);
-                var completions = new Array();
-                var sug = cc.getElementsByTagName('recommended');
-                var pop = cc.getElementsByTagName('popular');
-                for (i=0; i< sug.length; i++) {
-                    // I.window.alert(sug[i].attributes[0].textContent);
-                    completions.push(sug[i].attributes[0].textContent);
-                }
-                for (i=0; i< pop.length; i++) {
-                    // I.window.alert(pop[i].attributes[0].textContent);
-                    completions.push(pop[i].attributes[0].textContent);
-                }
-                // var completer = prefix_completer($completions = completions);
-                var completer = new prefix_completer($completions = completions);
-                // }}
-
-                // {{ initial value
-                var tsendurl = 'https://api.delicious.com/v1/posts/get?url=' + mylink;
-                var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
-                // I.window.alert(tagcontent.responseText);
-                var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
-                var post = tc.getElementsByTagName('post');
-                var tags  = (post.length > 0)  ? post[0].attributes[6].textContent : "";
-                if ((post.length > 0 && post[0].attributes[0].textContent.length > 0)) {
-                    var desc = post[0].attributes[0].textContent;
-                } else {
-                    var desc = (bo.textContent == "" ? bo : bo.textContent);
-                }
-
-                var shared = null;
-                if ((post.length > 0 && post[0].attributes[5].textContent.length > 0)) {
-                    shared = post[0].attributes[5].textContent;
-                }
+              var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
 
 
-                // }}
+              // {{ completer
+              var xsendurl = 'https://api.delicious.com/v1/posts/suggest?&url='+mylink;
+              var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
+              var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
+              // I.window.alert(xcontent.responseText);
+              var completions = new Array();
+              var sug = cc.getElementsByTagName('recommended');
+              var pop = cc.getElementsByTagName('popular');
+              for (i=0; i< sug.length; i++) {
+                // I.window.alert(sug[i].attributes[0].textContent);
+                completions.push(sug[i].attributes[0].textContent);
+              }
+              for (i=0; i< pop.length; i++) {
+                // I.window.alert(pop[i].attributes[0].textContent);
+                completions.push(pop[i].attributes[0].textContent);
+              }
+              // var completer = prefix_completer($completions = completions);
+              var completer = new prefix_completer($completions = completions);
+              // }}
+
+              // {{ initial value
+              var tsendurl   = 'https://api.delicious.com/v1/posts/get?url=' + mylink;
+              var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
+              // I.window.alert(tagcontent.responseText);
+              var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
+              var post       = tc.getElementsByTagName('post');
+              var tags       = (post.length > 0)  ? post[0].attributes[6].textContent : "";
+              if (post.length > 0 &&
+                  post[0].attributes[0].textContent.length > 0)
+              {
+                var desc = post[0].attributes[0].textContent;
+              }
+              else
+              {
+                var desc = (bo.textContent == "" ? bo : bo.textContent);
+              }
+
+              var shared = null;
+              if (post.length > 0 &&
+                  post[0].attributes[5].textContent.length > 0)
+              {
+                shared = post[0].attributes[5].textContent;
+              }
 
 
-                let sendurl = 'https://api.delicious.com/v1/posts/add?&url=' +
-                    // mylink
-                    encodeURIComponent((yield I.minibuffer.read(
-                        $prompt = "url (required): ",
-                        // $initial_value = decodeURIComponent(mylink)))) +
-                        $initial_value = bo))) +
-                    '&description=' +
-                    encodeURIComponent(
-                      (yield I.minibuffer.read(
-                        $prompt = "name (required): " , $initial_value = desc))) +
-                    '&replace=yes' +
-                    '&tags=' + encodeURIComponent((yield I.minibuffer.read(
-                                                       $prompt = "tags (space delimited): ",
-                                                       $completer = completer,
-                                                       $initial_value = tags + " " + read_from_x_primary_selection()
-                                                   )).replace(new RegExp(/\s+/g), ',')) +
-                    '&extended=' + encodeURIComponent((yield I.minibuffer.read($prompt = "extended description: "))) +
-                    '&shared=' +
-                    (delicious_shared == null ?
-                     (("y" == (yield I.minibuffer.read_single_character_option(
-                                   $prompt = ("Shared? (y/n)" + (shared ? (" [" + shared + "]") : "")),
-                                   $options = ["y", "n"]))) ? "yes" : "no")  : delicious_shared );
+              // }}
 
-                var content = yield send_http_request(
-                    load_spec({uri: sendurl}));
-                I.window.minibuffer.message(content.responseText);
-                if (typeof(debug_level) != "undefined" && debug_level)
-                    I.window.minibuffer.message(sendurl);
+
+              let sendurl = 'https://api.delicious.com/v1/posts/add?&url=' +
+                // mylink
+                encodeURIComponent((yield I.minibuffer.read(
+                  $prompt = "url (required): ",
+                  // $initial_value = decodeURIComponent(mylink)))) +
+                  $initial_value = bo))) +
+                '&description=' +
+                encodeURIComponent(
+                  (yield I.minibuffer.read(
+                    $prompt = "name (required): " , $initial_value = desc))) +
+                '&replace=yes' +
+                '&tags=' + encodeURIComponent((yield I.minibuffer.read(
+                  $prompt = "tags (space delimited): ",
+                  $completer = completer,
+                  $initial_value = tags + " " + read_from_x_primary_selection()
+                )).replace(new RegExp(/\s+/g), ',')) +
+                '&extended=' + encodeURIComponent((yield I.minibuffer.read($prompt = "extended description: "))) +
+                '&shared=' +
+                (delicious_shared == null ?
+                 (("y" == (yield I.minibuffer.read_single_character_option(
+                   $prompt = ("Shared? (y/n)" + (shared ? (" [" + shared + "]") : "")),
+                   $options = ["y", "n"]))) ? "yes" : "no")  : delicious_shared );
+
+              var content = yield send_http_request(
+                load_spec({uri: sendurl}));
+              I.window.minibuffer.message(content.responseText);
+              if (typeof(debug_level) != "undefined" && debug_level)
+                I.window.minibuffer.message(sendurl);
 
             },
             $browser_object = browser_object_links);
@@ -454,14 +487,14 @@ define_webjump("del", "http://delicious.com/search?p=%s&chk=&context=userposts%7
 interactive("bibsonomy-post-publication",
             "Post a publication to Bibsonomy. Either uses the URL and scrapes the page, or sends the selected bibtex.",
             function (I) {
-                var element = yield read_browser_object(I);
-                var spec = load_spec(element);
-                newspec = 'http://www.bibsonomy.org/BibtexHandler?requTask=upload&url='
-                    + encodeURIComponent(load_spec_uri_string(spec))
-                    + '&description='
-                    + encodeURIComponent(load_spec_title(spec))
-                    + '&selection='+encodeURIComponent(I.buffer.top_frame.getSelection());
-                browser_object_follow(I.buffer, OPEN_CURRENT_BUFFER, newspec);
+              var element = yield read_browser_object(I);
+              var spec = load_spec(element);
+              newspec = 'http://www.bibsonomy.org/BibtexHandler?requTask=upload&url='
+                + encodeURIComponent(load_spec_uri_string(spec))
+                + '&description='
+                + encodeURIComponent(load_spec_title(spec))
+                + '&selection='+encodeURIComponent(I.buffer.top_frame.getSelection());
+              browser_object_follow(I.buffer, OPEN_CURRENT_BUFFER, newspec);
             },
             $browser_object = browser_object_frames);
 define_key(content_buffer_normal_keymap, "C-c b", "bibsonomy-post-publication");
@@ -498,13 +531,13 @@ define_key(content_buffer_normal_keymap, "C-c b", "bibsonomy-post-publication");
 //                 "}"));
 
 register_user_stylesheet(
-    "data:text/css," +
-        escape(
-            "@namespace url(\"http://www.w3.org/1999/xhtml\");\n" +
-                "span.__conkeror_hint {\n"+
-                "  font-size: 12px !important;\n"+
-                "  line-height: 12px !important;\n"+
-                "}"));
+  "data:text/css," +
+    escape(
+      "@namespace url(\"http://www.w3.org/1999/xhtml\");\n" +
+        "span.__conkeror_hint {\n"+
+        "  font-size: 12px !important;\n"+
+        "  line-height: 12px !important;\n"+
+        "}"));
 
 // }}
 
@@ -524,15 +557,15 @@ register_user_stylesheet(
 //                        $url_prefixes = "http://www.google."));
 
 var $blackurls = [
-    "http://www.emacswiki.org",
-    "http://emacswiki.org",
-    // "http://www.google.",
-    "http://www.toodledo.com",
-    "http://www.delicious.com",
-    "http://www.linuxtoday.com"
+  "http://www.emacswiki.org",
+  "http://emacswiki.org",
+  // "http://www.google.",
+  "http://www.toodledo.com",
+  "http://www.delicious.com",
+  "http://www.linuxtoday.com"
 ];
 if (false )
-    register_user_stylesheet(
+  register_user_stylesheet(
     make_css_data_uri(['* { background: Black  ! important; color: grey !important };\n'
                        + ':link, :link * { color: White !important }\n'
                        + ':visited, :visited * { color: Green !important }\n'],
@@ -580,7 +613,7 @@ if (false )
 // {{ Default Zoom Level
 
 function my_zoom_set (buffer) {
-    browser_zoom_set(buffer, false, 100);
+  browser_zoom_set(buffer, false, 100);
 }
 add_hook('create_buffer_hook', my_zoom_set);
 
@@ -634,19 +667,19 @@ add_hook('create_buffer_hook', my_zoom_set);
 
 // last updated September 22, 2009
 define_browser_object_class(
-    "tinyurl", "Get a tinyurl for the current page",
-    function (I, prompt) {
-        check_buffer(I.buffer, content_buffer);
-        let createurl = 'http://tinyurl.com/api-create.php?url=' +
-            encodeURIComponent(
-                load_spec_uri_string(
-                    load_spec(I.buffer.top_frame)));
-        try {
-            var content = yield send_http_request(
-                load_spec({uri: createurl}));
-            yield co_return(content.responseText);
-        } catch (e) { }
-    });
+  "tinyurl", "Get a tinyurl for the current page",
+  function (I, prompt) {
+    check_buffer(I.buffer, content_buffer);
+    let createurl = 'http://tinyurl.com/api-create.php?url=' +
+      encodeURIComponent(
+        load_spec_uri_string(
+          load_spec(I.buffer.top_frame)));
+    try {
+      var content = yield send_http_request(
+        load_spec({uri: createurl}));
+      yield co_return(content.responseText);
+    } catch (e) { }
+  });
 
 define_key(content_buffer_normal_keymap, "* q", "browser-object-tinyurl");
 
@@ -659,15 +692,15 @@ define_key(content_buffer_normal_keymap, "* q", "browser-object-tinyurl");
 // buffer. These bindings work as expected with the tab-bar module.
 
 function define_key_buffer_switch(key, buf_num) {
-    define_key(content_buffer_normal_keymap, key, function (I) {
-        switch_to_buffer(I.window, I.window.buffers.get_buffer(buf_num));
-    });
-    define_key(download_buffer_keymap, key, function (I) {
-        switch_to_buffer(I.window, I.window.buffers.get_buffer(buf_num));
-    });
+  define_key(content_buffer_normal_keymap, key, function (I) {
+    switch_to_buffer(I.window, I.window.buffers.get_buffer(buf_num));
+  });
+  define_key(download_buffer_keymap, key, function (I) {
+    switch_to_buffer(I.window, I.window.buffers.get_buffer(buf_num));
+  });
 }
 for (let i = 0; i < 10; ++i) {
-    define_key_buffer_switch(i == 9 ? "0" : (i+1).toString(), i);
+  define_key_buffer_switch(i == 9 ? "0" : (i+1).toString(), i);
 }
 
 // }}
@@ -710,7 +743,7 @@ for (let i = 0; i < 10; ++i) {
 
 interactive("duplicate-buffer", "Duplicate buffer",
             function (I) {
-                browser_object_follow(I.buffer, OPEN_NEW_BUFFER, I.buffer.current_uri.spec);
+              browser_object_follow(I.buffer, OPEN_NEW_BUFFER, I.buffer.current_uri.spec);
             });
 define_key(content_buffer_normal_keymap, "M-N", "duplicate-buffer");
 // }}
@@ -724,7 +757,7 @@ define_key(content_buffer_normal_keymap, "M-N", "duplicate-buffer");
 // not working
 interactive("enable_scrollbars", "Enable Scrollbars",
             function enable_scrollbars (buffer) {
-                buffer.browser.contentWindow.scrollbars.visible = true;
+              buffer.browser.contentWindow.scrollbars.visible = true;
             });
 // break isearch
 // add_hook("content_buffer_location_change_hook", disable_scrollbars);
@@ -753,47 +786,49 @@ define_key(content_buffer_normal_keymap, "f2", "open-gmail");
 /* Removes most presentational attributes and tags while leaving style sheets intact. */
 function zap_presentation(I){
 
-    var
-    H = ["bgcolor",
-         "bgColor",
-         "background",
-         "color",
-         "align",
-         "text",
-         "alink",
-         "vlink"],
-    Y = {FONT:1,
-         CENTER:1},
-    d=[],
-    p,
-    document = I.window.buffers.current.document;
+  var
+  H = ["bgcolor",
+       "bgColor",
+       "background",
+       "color",
+       "align",
+       "text",
+       "alink",
+       "vlink"],
+  Y = {FONT:1,
+       CENTER:1},
+  d=[],
+  p,
+  document = I.window.buffers.current.document;
 
-    function R(N){
-        var a,x,i,t;
-        if(t==N.tagName){
+  function R(N){
+    var a,x,i,t;
+    if(t == N.tagName){
 
-            t=t.toUpperCase();
+      t=t.toUpperCase();
 
-            for (i=0; a=H[i]; ++i)
-                if(N.getAttribute(a))
-                    N.removeAttribute(a);
+      for (i=0; a=H[i]; ++i)
+        if(N.getAttribute(a))
+          N.removeAttribute(a);
 
-            for(i=0; x=N.childNodes[i]; ++i)
-                R(x);
+      for(i = 0;
+          x = N.childNodes[i];
+          ++i)
+        R(x);
 
-            if (Y[t])
-                d.push(N);
-        }
+      if (Y[t])
+        d.push(N);
     }
+  }
 
-    R(document.documentElement);
+  R(document.documentElement);
 
-    for (i=0;N=d[i];++i) {
-        p=N.parentNode;
-        while(N.firstChild)
-            p.insertBefore(N.firstChild,N);
-        p.removeChild(N);
-    }
+  for (i=0;N=d[i];++i) {
+    p=N.parentNode;
+    while(N.firstChild)
+      p.insertBefore(N.firstChild,N);
+    p.removeChild(N);
+  }
 }
 
 
@@ -802,11 +837,11 @@ interactive("zap-presentation",
             zap_presentation);
 
 function zap_style_sheets(I) {
-    var i, x;
-    document = I.window.buffers.current.document;
+  var i, x;
+  document = I.window.buffers.current.document;
 
-    for(i=0; x=document.styleSheets[i]; ++i)
-        x.disabled=true;
+  for(i=0; x=document.styleSheets[i]; ++i)
+    x.disabled=true;
 }
 
 interactive("zap-style-sheets",
@@ -818,31 +853,33 @@ interactive("zap-style-sheets",
 can_kill_last_buffer = true;
 
 add_hook("before_quit_hook",
-         function () {
-             cookie_manager.removeAll();
-             var w = get_recent_conkeror_window();
-
-
-             var result = (w.buffers.count == 1) ||
-                 "y" == (yield w.minibuffer.read_single_character_option(
-                     $prompt = "Quit Conkeror? (y/n)",
-                     $options = ["y", "n"]));
-             yield co_return(result);
+         function ()
+         {
+           cookie_manager.removeAll();
+           var w = get_recent_conkeror_window();
+           var result = (w.buffers.count == 1) ||
+             "y" ==
+             (yield w.minibuffer.read_single_character_option(
+               $prompt = "Quit Conkeror? (y/n)",
+               $options = ["y", "n"]));
+           yield co_return(result);
          });
 
 add_hook("kill_buffer_hook",
-         function (buffer){
-             // var buffers = buffer.window.buffers;
-             var w = buffer.window;
-             if (w.buffers.count == 1) {
-                 w.alert("bye .. removed cookies");
-                 cookie_manager.removeAll();
-             }
-             var result = (w.buffers.count == 1) ||
-                 "y" == (yield w.minibuffer.read_single_character_option(
-                     $prompt = "Quit Conkeror? (y/n)",
-                     $options = ["y", "n"]));
-             yield co_return(result);
+         function (buffer)
+         {
+           // var buffers = buffer.window.buffers;
+           var w = buffer.window;
+           if (w.buffers.count == 1) {
+             w.alert("bye .. removed cookies");
+             cookie_manager.removeAll();
+           }
+
+           var result = (w.buffers.count == 1) ||
+             "y" == (yield w.minibuffer.read_single_character_option(
+               $prompt = "Quit Conkeror? (y/n)",
+               $options = ["y", "n"]));
+           yield co_return(result);
          });
 
 // {{{
