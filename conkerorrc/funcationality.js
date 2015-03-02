@@ -46,7 +46,7 @@ define_key(content_buffer_normal_keymap, "f1", "darken-page");
 
 // Add the following code to your rc:
 
-{
+// {
    let _save_path = get_home_directory();
 
    function update_save_path(info) {
@@ -60,7 +60,7 @@ define_key(content_buffer_normal_keymap, "f1", "darken-page");
        file.append(filename);
        return file.path;
    }
-}
+// }
 // }}
 
 // {{ If you are using Conkeror with multiple profiles, you may find
@@ -770,7 +770,7 @@ function zap_presentation(I){
 
     function R(N){
         var a,x,i,t;
-        if(t=N.tagName){
+        if(t==N.tagName){
 
             t=t.toUpperCase();
 
