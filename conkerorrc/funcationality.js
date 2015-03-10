@@ -803,7 +803,8 @@ function zap_presentation(I){
 
   function R(N){
     var a,x,i,t;
-    if(t == N.tagName){
+    t = N.tagName;
+    if( t ){
 
       t=t.toUpperCase();
 
