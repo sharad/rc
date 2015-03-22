@@ -68,22 +68,22 @@ register_user_stylesheet(make_css_data_uri(
   ]
 ));
 
-if (false)
-let (mycss = get_home_directory().path + "/.conkerorrc/conkeror.css") {
-    register_user_stylesheet('file://' + mycss);
-    // To toggle the style sheet's' active state:
-    var global_css_registered=true;
-    function toggle_global_css(I){
-        global_css_registered=global_css_registered ? false : true;
-        if(global_css_registered){
-            register_user_stylesheet('file://' + mycss);
-        }else{
-            unregister_user_stylesheet('file://' + mycss);
-        }
-    }
-    interactive("toggle-global-css", "Toggle global.css", toggle_global_css);
-    define_key(default_global_keymap, "C-t", "toggle-global-css");
-}
+// if (false)
+// let (mycss = get_home_directory().path + "/.conkerorrc/conkeror.css") {
+//     register_user_stylesheet('file://' + mycss);
+//     // To toggle the style sheet's' active state:
+//     var global_css_registered=true;
+//     function toggle_global_css(I){
+//         global_css_registered=global_css_registered ? false : true;
+//         if(global_css_registered){
+//             register_user_stylesheet('file://' + mycss);
+//         }else{
+//             unregister_user_stylesheet('file://' + mycss);
+//         }
+//     }
+//     interactive("toggle-global-css", "Toggle global.css", toggle_global_css);
+//     define_key(default_global_keymap, "C-t", "toggle-global-css");
+// }
 
 // add_hook("window_initialize_late_hook",function(){session_pref("browser.display.use_document_colors", false);});
 
