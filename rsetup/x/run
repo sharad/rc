@@ -9,16 +9,18 @@
 #     -cpp 'm4 -I ~/.Xresources' \
 #     -merge ~/.Xresource/init  # should use m4
 
-whence -p xrdb &&
-m4 -I ~/.setup/m4 -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init | xrdb -merge -
+if whence -p xrdb  >&/dev/null ; then
+    m4 -I ~/.setup/m4 -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init 2>/dev/null | xrdb -merge -  >&/dev/null
+fi
 
-whence -p xmodmap &&
-xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
+if whence -p xmodmap ; then
+    xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >&/dev/null
+fi
 
-xterm -e 'ish -s bash -- timeout -k 120 70 tail -n 100 -f ~/.xsession-errors' &!
+xterm -e 'ish -s bash -- timeout -k 120 70 tail -n 100 -f ~/.xsession-errors'  >&/dev/null &!
 
 if whence xte ; then
-    xte <<EOF
+    xte <<EOF >&/dev/null
 mousemove 42 42
 EOF
 fi
@@ -32,9 +34,11 @@ if which $HOME/bin/ecryptfs-mount-private 2>&1 ; then
 fi
 
 
-~/bin/syncimap -r               # it only get secinfo from x keyring; enable
+~/bin/syncimap -r >& /dev/null               # it only get secinfo from x keyring; enable
 
-whence -p xhost && xhost +local:mpd
+if whence -p xhost >&/dev/null ; then
+    xhost +local:mpd
+fi
 
 
 
@@ -62,34 +66,39 @@ if [ $DISPLAY ] ; then
 
     if whence -p xmodmap ; then
         if [ -e ~/.xmodmaprc  ] ; then
-            xmodmap ~/.xmodmaprc
+            xmodmap ~/.xmodmaprc >&/dev/null
         else
-            xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
+            xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >&/dev/null
         fi
     fi
 
-    whence -p urxvtd >& /dev/null &&
-    pgrep urxvtd >& /dev/null ||
-     urxvtd \
-        --quiet \
-        --opendisplay \
-        --fork &!
+    if whence -p urxvtd >& /dev/null &&
+        ! pgrep urxvtd >& /dev/null ; then
+        urxvtd \
+            --quiet \
+            --opendisplay \
+            --fork &
+    fi
 
     # DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
 
-    whence -p conky >& /dev/null &&
-    pgrep conky >& /dev/null ||
-    conky &!
+     if whence -p conky >& /dev/null &&
+         ! pgrep conky >& /dev/null ; then
+         conky  >&/dev/null  &!
+     fi
 
-    whence synclient >& /dev/null &&
-    pgrep synclient >& /dev/null ||
-    synclient  TapButton1=1
+     if whence synclient >& /dev/null &&
+         ! pgrep synclient >& /dev/null ; then
+         synclient  TapButton1=1 >& /dev/null
+     fi
 
     # whence -p xmodmap &&
     # xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
 
     # stop this bell.
-    whence -p xset && xset b off                  # peace
+     if whence -p xset ; then
+         xset b off                  # peace
+     fi
 
     # set fonts
     if [  -r ~/.emacs.d/server/general ] ; then
@@ -97,9 +106,10 @@ if [ $DISPLAY ] ; then
     fi
 
 
-    whence -p osdsh >& /dev/null &&
-    pgrep osdsh >& /dev/null ||
-    osdsh -n 10 &!
+    if whence -p osdsh >& /dev/null &&
+        ! pgrep osdsh >& /dev/null ; then
+        osdsh -n 10 &!
+    fi
 
 
 

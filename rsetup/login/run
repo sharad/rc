@@ -12,28 +12,29 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
     if whence -p amixer >& /dev/null ; then
 # Music
 ## Playback
-        amixer -- sset  Master   100% unmute
-        amixer -- sset  PCM      100% unmute
-        amixer -- sset  Speaker       unmute
-        amixer -- sset  Beep     100% unmute
+        amixer -- sset  Master   100% unmute >&/dev/null
+        amixer -- sset  PCM      100% unmute >&/dev/null
+        amixer -- sset  Speaker       unmute >&/dev/null
+        amixer -- sset  Beep     100% unmute >&/dev/null
 
 ## Capture
-        amixer -- sset 'Front Mic Boost' 0%
-        amixer -- sset 'Mic Boost'       0%
+        amixer -- sset 'Front Mic Boost' 0% >&/dev/null
+        amixer -- sset 'Mic Boost'       0% >&/dev/null
 
 ## Do not know
-        amixer -- sset 'Caller ID'   mute
-        amixer -- sset 'Off-hook'    mute
+        amixer -- sset 'Caller ID'   mute >&/dev/null
+        amixer -- sset 'Off-hook'    mute >&/dev/null
     fi
 
 
     if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
         [ -x $HOME/bin/ecryptfs-mount-private ] &&
-        timeout 7 $HOME/bin/ecryptfs-mount-private
+        timeout 7 $HOME/bin/ecryptfs-mount-private >&/dev/null
     fi
 
 
-    if whence -p remind >& /dev/null && ! pgrep remind  >& /dev/null ; then
+    if whence -p remind >& /dev/null &&
+        ! pgrep remind  >& /dev/null ; then
     # remind -z1 \
     #     -k"~/bin/popremind %s &" \
     #     ${DOTREMINDERS-~/.Organize/remind/Reminders/init.rem} &!
@@ -50,12 +51,12 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
     fi
 
     if whence -p emacs >& /dev/null || ! pgrep emacs >& /dev/null ; then
-	echo emacs
+	echo emacs >& /dev/null
         foreach server (general) {
             if [ ! -e ~/.emacs.d/server/${server} ] ||
        	        ! { # bundler command is not here for timeout it only for zsh
                 # do not delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
-                timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")';
+                timeout 7 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")' >& /dev/null ;
                 # timeout 10 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")'
 
                 # timeout 16 emacsclient -f ~/.emacs.d/server/${server}  -e '(message "works")';
@@ -74,7 +75,7 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
             #     command emacsclient -n -f ~/.emacs.d/server/${server}  -e '(progn (update-ssh-agent) (plan))';
             fi
         }
-	echo emacs1
+	echo emacs1 >& /dev/null
     fi
 
     # foreach server (general) {
@@ -93,12 +94,13 @@ fi
 
 
 
-whence leave  >& /dev/null &&
-leave +0800
+if whence leave  >& /dev/null ; then
+    leave +0800
+fi
 
 atq
 if [ $(atq | cut -f1 | wc -l) -gt 0 ] ; then
-    atrm  $(atq | cut -f1)
+    atrm  $(atq | cut -f1) >& /dev/null
 fi
 
 

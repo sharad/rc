@@ -29,13 +29,15 @@ EOF
 fi
 
 ## ssh-agent access needed.
-whence -p xautolock >& /dev/null &&
-pgrep xautolock >& /dev/null ||
-xautolock -detectsleep &!
+if whence -p xautolock >& /dev/null &&
+    ! pgrep xautolock >& /dev/null ; then
+    xautolock -detectsleep &!
+fi
 
-whence -p conky >& /dev/null &&
-pgrep conky >& /dev/null ||
-conky &!
+if whence -p conky >& /dev/null &&
+    ! pgrep conky >& /dev/null ; then
+    conky &!
+fi
 
 if whence xte ; then
     xte <<EOF
@@ -224,14 +226,15 @@ foreach prog (
     ) {
         if whence -p $prog >& /dev/null && ! pgrep $prog[0,15] >& /dev/null ; then
             $prog &!
-            echo started $prog >&2
-	    pgrep $prog[0,15] >&2
+            # echo started $prog >&2
+	    pgrep $prog[0,15]  >& /dev/null
             sleep 1s;
         else
-            print Not starting $prog >&2
+            print Not starting $prog  >& /dev/null
         fi
     }
 
-whence -p keynav >& /dev/null &&
-pgrep keynav >& /dev/null ||
-keynav &!
+if whence -p keynav >& /dev/null &&
+    pgrep keynav >& /dev/null ; then
+    keynav  >& /dev/null &!
+fi
