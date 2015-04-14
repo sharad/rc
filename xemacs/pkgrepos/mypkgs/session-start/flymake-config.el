@@ -86,7 +86,7 @@ copy."
 
   )
 
-
+;; http://stackoverflow.com/questions/20377288/setup-makefile-to-check-both-c-and-c-source-files-with-emacs-flymake
 ;; (add-hook 'find-file-hook 'flymake-find-file-hook)
 
 (provide 'flymake-config)
