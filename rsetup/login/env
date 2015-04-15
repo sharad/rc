@@ -91,7 +91,7 @@ fi
         if whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null ; then
 
             if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
-                timeout 7 $HOME/bin/ecryptfs-mount-private
+                timeout 7 $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
             fi
 
             if [ -x /usr/bin/keychain ] ; then
