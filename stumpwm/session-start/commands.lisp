@@ -612,10 +612,11 @@
    device in xorg.conf."
   (let ((state (run-shell-command
 		"synclient -l | grep TouchpadOff | awk '{ print $3 }'" t)))
-    (case (string= (subseq state 0 1) "1")
-      (t (run-shell-command "synclient TouchpadOff=0"))
-      (otherwise (run-shell-command "synclient TouchpadOff=1")
-		 (banish-pointer)))))
+    (if (string= (subseq state 0 1) "1")
+      (run-shell-command "synclient TouchpadOff=0")
+      (progn
+        (run-shell-command "synclient TouchpadOff=1")
+        (banish-pointer)))))
 
 (defcommand refocus-conkeror () ()
   ;; from: http://bc.tech.coop/ubuntu-config/.stumpwmrc
