@@ -686,10 +686,14 @@ sub parse_config_file {
 sub run_pw_helper {
 	my $pw_script="";
 	($pw_script) = @_;
-	if (-x $pw_script){
-		$password=`$pw_script`;
-		chomp $password
-	}
+        my @commandargs = split  /[\s]+/, $pw_script;
+
+	if (-x $commandargs[0])
+        {
+            $password=`$pw_script`;
+            chomp $password;
+        }
+
 	return $password;
 }
 
