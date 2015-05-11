@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+import getopt
 import gtk
 import gnomekeyring as gkey
 
@@ -43,5 +44,27 @@ def get_password(server):
     (username, password) = keyring.get_credentials()
     return password
 
-print get_password("localhost")
 
+
+
+def main(argv):
+   inputfile = ''
+   outputfile = ''
+   try:
+      opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
+   except getopt.GetoptError:
+      print 'get-imap-pass.py <server>'
+      sys.exit(2)
+   for opt, arg in opts:
+      if opt == '-h':
+         print 'test.py -i <inputfile> -o <outputfile>'
+         sys.exit()
+      elif opt in ("-i", "--ifile"):
+         inputfile = arg
+      elif opt in ("-o", "--ofile"):
+         outputfile = arg
+   # print sys.argv[1]
+   print get_password(sys.argv[1])
+
+if __name__ == "__main__":
+   main(sys.argv[1:])

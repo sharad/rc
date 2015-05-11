@@ -28,7 +28,7 @@ use POSIX;
 use Cwd 'abs_path';
 
 my %Config;
-my @config_files = ("", $ENV{'HOME'}."/", "/etc/jvpn/");
+my @config_files = ("", $ENV{'HOME'}."/.", "/etc/jvpn/");
 my $config_file = 'jvpn.ini';
 my $show_help = 0;
 # find configuration file
