@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+echo XXXX >> /tmp/jvpn.log
+
 if [ "x${HOST}" != "x" ] ; then
     __comp=ifup
 
