@@ -94,17 +94,19 @@
 
   (deh-section "face size"
 
+    (defvar *custom-xface-factor* 7)
+
     (defun set-default-face-height-by-resolution (&optional height)
       (interactive
        (list (read-number "Face height: "
                           (if (and (featurep 'x)
                                     window-system
                                     (x-display-pixel-height))
-                              (/ (x-display-pixel-height) 10)
+                              (/ (x-display-pixel-height) *custom-xface-factor*)
                               (face-attribute 'default :height)))))
       (if (and (featurep 'x) window-system)
           (if (x-display-pixel-height)
-              (set-face-attribute 'default nil :height (/ (x-display-pixel-height) 10))
+              (set-face-attribute 'default nil :height (/ (x-display-pixel-height) *custom-xface-factor*))
               (message "(x-display-pixel-height) return nil"))
           (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
 

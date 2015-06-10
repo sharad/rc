@@ -31,13 +31,9 @@
 
 ! # processing with m4
 
-include(defs)
+!! include(`defs.m4')
 
 
-define([LQ],[changequote(<,>)[dnl]
-changequote[]])
-define([RQ],[changequote(<,>)dnl[
-]changequote[]])
 
 
 

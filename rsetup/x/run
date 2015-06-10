@@ -10,7 +10,7 @@
 #     -merge ~/.Xresource/init  # should use m4
 
 if whence -p xrdb  >&/dev/null ; then
-    m4 -I ~/.setup/m4 -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init 2>/dev/null | xrdb -merge -  >&/dev/null
+    m4 -I ~/.setup/m4 -I ~/.osetup/lib.d/m4.d -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init 2>/dev/null | xrdb -merge -  >&/dev/null
 fi
 
 if whence -p xmodmap ; then

@@ -39,31 +39,34 @@ URxvt_color*foreground: light grey
 
 
 !! Added Hindi fonts for dict -d hin-eng word, dict -d eng-hin word
+
+!! define([SETUP_fontsize],eval(SETUP_XWIDTH / 140))
+
 URxvt.font: \
-   xft:DejaVu Sans Mono:size=10:spacing=1,\
-   xft:KacstNaskh:style=Regular:size=ifelse(WIDTH, 1280, 8, 10):style=Regular:spacing=1,\
-   xft:FreeSans:style=Bold:size=10:spacing=1,\
-   xft:FreeSans:style=Regular:size=10:spacing=1,\
-   xft:gargi:style=Medium:size=10:spacing=1,\
-   xft:Lohit Hindi:style=Regular:size=10:spacing=1,\
-   xft:FreeSerif:style=Regular:size=10:spacing=1,\
-   xft:FreeSerif:style=Bold:size=10:spacing=1,\
-   xft:Lohit Nepali:style=Regular:size=10:spacing=1,\
-   xft:Lohit Konkani:style=Regular:size=10:spacing=1,\
-   xft:Sarai:style=Regular:size=10:spacing=1,\
-   xft:Lohit Marathi:style=Regular:size=10:spacing=1,\
-   xft:Samanata:style=Regular:size=10:spacing=1,\
-   xft:gargi:style=Medium:size=10:spacing=1,\
-   xft:Samyak Devanagari:style=Regular:size=10:spacing=1,\
-   xft:Nakula:style=Regular:size=10:spacing=1,\
-   xft:Lohit Kashmiri:style=Regular:size=10:spacing=1,\
-   xft:Chandas:style=Regular:size=10:spacing=1,\
-   xft:Lohit Maithili:style=Regular:size=10:spacing=1,\
-   xft:Lohit Hindi:style=Regular:size=10:spacing=1,\
-   xft:FreeSans:style=Medium:size=10:spacing=1,\
+   xft:DejaVu Sans Mono:size=SETUP_fontsize:spacing=1,\
+   xft:KacstNaskh:style=Regular:size=SETUP_fontsize:style=Regular:spacing=1,\
+   xft:FreeSans:style=Bold:size=SETUP_fontsize:spacing=1,\
+   xft:FreeSans:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:gargi:style=Medium:size=SETUP_fontsize:spacing=1,\
+   xft:Lohit Hindi:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:FreeSerif:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:FreeSerif:style=Bold:size=SETUP_fontsize:spacing=1,\
+   xft:Lohit Nepali:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:Lohit Konkani:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:Sarai:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:Lohit Marathi:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:Samanata:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:gargi:style=Medium:size=SETUP_fontsize:spacing=1,\
+   xft:Samyak Devanagari:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:Nakula:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:Lohit Kashmiri:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:Chandas:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:Lohit Maithili:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:Lohit Hindi:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:FreeSans:style=Medium:size=SETUP_fontsize:spacing=1,\
    xft:FreeSerif:style=Medium:size=8\
-   xft:Sahadeva:style=Regular:size=10:spacing=1,\
-   xft:Lohit Sindhi:style=Regular:size=10:spacing=1
+   xft:Sahadeva:style=Regular:size=SETUP_fontsize:spacing=1,\
+   xft:Lohit Sindhi:style=Regular:size=SETUP_fontsize:spacing=1
 
 
 
