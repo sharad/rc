@@ -477,17 +477,27 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
     # }
 
     autoload ztodo
-    print ztodo:
-    ztodo list
-    print sticky-note:
-    sticky-note -l
-    print sched:
-    sched
-    autoload calendar
-    print calendar:
-    calendar -a
-    print bsd calendar:
-    ## command calendar
+    if whence -f ztodo >&/dev/null ; then
+        print ztodo:
+        ztodo list
+    fi
+    if whence -f sticky-note >&/dev/null ; then
+        print sticky-note:
+        sticky-note -l
+    fi
+    if whence -f sched >&/dev/null ; then
+        print sched:
+        sched
+    fi
+    if whence -f calendar >&/dev/null ; then
+        autoload calendar
+        print calendar:
+        calendar -a
+    fi
+    if whence -w calender | grep command >&/dev/null ; then
+        print bsd calendar:
+        ## command calendar
+    fi
 
 } |
 command less \
