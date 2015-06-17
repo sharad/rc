@@ -1,49 +1,46 @@
+# -*- Mode: shell-script; indent-tabs-mode: nil -*-
+# $Id
+
 mkdir -p ~/.logs/stderr/zshall
 exec 2> ~/.logs/stderr/zshall/module
 
-zmodload zsh/attr
-zmodload zsh/cap
-zmodload zsh/clone
-zmodload zsh/compctl
-zmodload zsh/complete
-zmodload zsh/complist
-zmodload zsh/computil
-zmodload zsh/curses
-zmodload zsh/datetime
+foreach mod ( attr cap clone compctl complete complist computil curses datetime ) {
+    if [ -e $module_path/$mod ] ; then
+        zmodload zsh/$mod
+    fi
+}
 
-# zmodload zsh/db  # dir
-zmodload zsh/db/gdbm  # dir
+foreach mod ( db/gdbm ) {    # dir
+    if [ -e $module_path/$mod ] ; then
+        zmodload zsh/$mod
+    fi
+}
 
+foreach mod ( deltochar example files lanfinfo mathfunc ) {
+    if [ -e $module_path/$mod ] ; then
+        zmodload zsh/$mod
+    fi
+}
 
-zmodload zsh/deltochar
-zmodload zsh/example >& /dev/null  # The example module has now been set up.
-zmodload zsh/files
-zmodload zsh/langinfo
-zmodload -ap zsh/mapfile mapfile
-zmodload zsh/mathfunc
+if [ -e $module_path/example ] ; then
+    zmodload zsh/example >& /dev/null  # The example module has now been set up.
+fi
 
-# zmodload zsh/net # dir
-zmodload zsh/net/socket # dir
-zmodload zsh/net/tcp # dir
+if [ -e $module_path/example ] ; then
+    zmodload -ap zsh/mapfile mapfile
+fi
 
-zmodload zsh/newuser
-zmodload zsh/parameter
-zmodload zsh/pcre
-zmodload zsh/regex
-zmodload zsh/rlimits
-zmodload zsh/sched
-zmodload zsh/stat
-zmodload zsh/system
-zmodload zsh/termcap
-zmodload zsh/terminfo
-zmodload zsh/zftp
-zmodload zsh/zle
-zmodload zsh/zleparameter
-zmodload zsh/zprof
-zmodload zsh/zselect
-zmodload zsh/zutil
+foreach mod ( net/socket net/tcp ) {
+    if [ -e $module_path/$mod ] ; then
+        zmodload zsh/$mod
+    fi
+}
 
-zmodload zsh/zpty
+foreach mod ( newuser parameter pcre regex rlimits sched stat system termcap terminfo zftp zle zleparameter zprof zselect zutil zpty ) {
+    if [ -e $module_path/$mod ] ; then
+        zmodload zsh/$mod
+    fi
+}
 
 #
 
