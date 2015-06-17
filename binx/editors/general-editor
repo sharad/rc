@@ -27,9 +27,9 @@ if [[ $prog = r* ]]            ||
     (( ${+REMOTEEDITORHOST} )) ||
     (( ${+SSH_REMOTEEDITORHOST} )); then
     if (( ${+SSH_REMOTEEDITORHOST} )) ; then
-        remoteedit=${SSH_REMOTEEDITORHOST}
+        remoteedit=${REMOTEEDITORUSER}@${SSH_REMOTEEDITORHOST}
     elif (( ${+REMOTEEDITORHOST} )) ; then
-        remoteedit=${REMOTEEDITORHOST}
+        remoteedit=${REMOTEEDITORUSER}@${REMOTEEDITORHOST}
     else
         print REMOTEEDITORHOST or SSH_REMOTEEDITORHOST are not set >&2
         exit -1;
