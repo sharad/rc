@@ -23,13 +23,15 @@ if (( ${+SSH_CONNECTION} )) ; then
 fi
 
 
-if [[ $prog = r*   ]] || (( ${+REMOTEEDITORHOST} )) || (( ${+SSH_REMOTEEDITORHOST} )); then
+if [[ $prog = r* ]]            ||
+    (( ${+REMOTEEDITORHOST} )) ||
+    (( ${+SSH_REMOTEEDITORHOST} )); then
     if (( ${+SSH_REMOTEEDITORHOST} )) ; then
         remoteedit=${SSH_REMOTEEDITORHOST}
     elif (( ${+REMOTEEDITORHOST} )) ; then
         remoteedit=${REMOTEEDITORHOST}
     else
-        print REMOTEEDITORHOST not set >&2
+        print REMOTEEDITORHOST or SSH_REMOTEEDITORHOST are not set >&2
         exit -1;
     fi
 else
