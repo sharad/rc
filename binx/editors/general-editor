@@ -16,7 +16,7 @@ local remoteditsocfile='~/.emacs.d/server/general'
 local lhost=$(hostname -s)
 
 
-if [[ $prog = r*   ]] || ${+REMOTEEDITORHOST} ; then
+if [[ $prog = r*   ]] || (( ${+REMOTEEDITORHOST} )) ; then
     if (( ${+REMOTEEDITORHOST} )) ; then
         remoteedit=$REMOTEEDITORHOST
     else
