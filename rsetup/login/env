@@ -26,13 +26,45 @@ fi
 PRIVATE_DIR=$HOME/.Private
 SSH_KEYS_DIR=$HOME/.ssh/login-keys.d
 
+
+
 if [ "${LOGIN_ENV}x" = "x" ]; then
     LOGIN_ENV=LOGIN_ENV
-
     HOST=`uname -n`
 
     [ $SHELL = "zsh" ] && emulate sh
 
+    if ! ssh-add -l 2>&1 > /dev/null && [ "$UID" != "0" ] ; then
+        if ! screen -x ssh -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }' | grep ssh ; then
+            t=$(tempfile)
+            cat <<-'EOF' > $t
+	defshell /bin/zsh
+	setenv SHELL /bin/zsh
+	escape 
+	vbell off # always
+	backtick 0 30 30 sh -c 'screen -ls | grep --color=no -o "$PPID[^[:space:]]*"'
+	hardstatus alwayslastline
+	hardstatus string '%{= kC}|%`:%h|%=%{= kG}[%{G}%H%{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]'
+
+	#hardstatus alwayslastline "%= %3n %t%? [%h]%? %="
+	caption always "%= %-w%L>%{= BW}%n*%t%{-}%52<%+w %L="
+
+	# http://aperiodic.net/screen/commands:idle
+	# idle 600
+	idle 0
+
+	EOF
+
+            screen -S ssh -c $t
+            rm -f $t
+
+            if [ -f $HOME/.keychain/${HOST}-sh ] ; then
+                . $HOME/.keychain/${HOST}-sh
+                # echo cat $HOME/.keychain/${HOST}-sh >&2
+                # cat $HOME/.keychain/${HOST}-sh >&2
+            fi
+        fi
+    fi
 
     if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] && ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null ; then
         if [  -r $HOME/.ssh/agent-custom-$HOST ] ; then
@@ -54,28 +86,29 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
         [  -d $HOME/.ssh ] || mkdir $HOME/.ssh
         eval $(ssh-agent | tee $HOME/.ssh/agent-custom-$HOST)
         trap "echo KILLING ; kill $SSH_AGENT_PID ; rm -f $HOME/.ssh/agent-custom-$HOST " 0
-        cat <<EOF > $HOME/.ssh/agent-custom-$HOST
-# running from else
-SSH_AUTH_SOCK=$SSH_AUTH_SOCK
-SSH_AGENT_PID=$SSH_AGENT_PID
-export SSH_AUTH_SOCK SSH_AGENT_PID
-EOF
+        cat <<-EOF > $HOME/.ssh/agent-custom-$HOST
+	# running from else
+	SSH_AUTH_SOCK=$SSH_AUTH_SOCK
+	SSH_AGENT_PID=$SSH_AGENT_PID
+	export SSH_AUTH_SOCK SSH_AGENT_PID
+	EOF
 
-    if [ "${SSH_AUTH_SOCK}x" != "x" ]; then
-           cat <<EOF > ~/.emacs.d/ssh-agent-$(hostname -f).el
-(setenv "SSH_AUTH_SOCK"  "${SSH_AUTH_SOCK}" )
-(setenv "SSH_AGENT_PID"  "${SSH_AGENT_PID}" )
-EOF
+        if [ "${SSH_AUTH_SOCK}x" != "x" ]; then
+            cat <<-EOF > ~/.emacs.d/ssh-agent-$(hostname -f).el
+	(setenv "SSH_AUTH_SOCK"  "${SSH_AUTH_SOCK}" )
+	(setenv "SSH_AGENT_PID"  "${SSH_AGENT_PID}" )
+	EOF
+        else
+            echo SSH_AUTH_SOCK=$SSH_AUTH_SOCK >&2
+            echo SSH_AGENT_PID=$SSH_AGENT_PID >&2
+        fi
+
     else
-        echo SSH_AUTH_SOCK=$SSH_AUTH_SOCK >&2
-        echo SSH_AGENT_PID=$SSH_AGENT_PID >&2
+        cat <<-EOF > ~/.emacs.d/ssh-agent-${HOST}.el
+	(message "SSH_AUTH_SOCK is not set.")
+	EOF
     fi
 
-else
-    cat <<EOF > ~/.emacs.d/ssh-agent-${HOST}.el
-(message "SSH_AUTH_SOCK is not set.")
-EOF
-fi
 
 # if pam_ssh have not created agent then we will rely on keychain.
 

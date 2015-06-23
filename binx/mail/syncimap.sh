@@ -5,8 +5,6 @@ WM=stumpwm
 
 function main() {
 
-
-
     process_arg $@
 
     gnome-keyring-attach
@@ -104,7 +102,6 @@ function help() {
             -e: error=1;;
             -h: help;;
 EOF
-
 }
 
 function error() {
