@@ -693,6 +693,7 @@ sub INT_handler {
     system($script);
   }
   print "Exiting\n";
+  disconnect_hook();
   exit(0);
 }
 
@@ -917,11 +918,11 @@ sub connect_hook {
   my $forward;
 
   print "calling connect hook\n";
-  $forward = 'forwarders {';
+  $forward = "forwarders {\n";
   foreach ( @dnses ) {
-    $forward .= "	" . $_ . ";";
+    $forward .= "	" . $_ . ";\n";
   }
-  $forward .= '};';
+  $forward .= "};\n";
 
   my $tmpfile = $ENV{TMP} . "/forward" . $$;
   local *FH;
@@ -931,12 +932,13 @@ sub connect_hook {
     foreach ( @dnses ) {
       print FH "	" . $_ . ";\n";
     }
-  print FH '};\n';
+  print FH "};\n";
   close(FH);
 
   print "file $tmpfile";
   system("gksudo cp /etc/bind/named.conf.forwarders /etc/bind/named.conf.forwarders-jvpn");
   system("gksudo cp $tmpfile /etc/bind/named.conf.forwarders");
+  system("gksudo service bind9 reload");
 
 
   local *FH;
@@ -957,6 +959,7 @@ sub disconnect_hook {
   print "calling disconnect hook\n";
   system("gksudo cp /etc/bind/named.conf.forwarders-jvpn /etc/bind/named.conf.forwarders");
   system("syncimap -d");
+  system("gksudo service bind9 reload");
 }
 
 connect_vpn();
