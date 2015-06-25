@@ -20,3 +20,7 @@ if [ "x${HOST}" != "x" ] ; then
 else
     print env var HOST is not set $HOST
 fi
+
+if whence -p xbacklight >&/dev/null ; then
+    xbacklight -set 10
+fi

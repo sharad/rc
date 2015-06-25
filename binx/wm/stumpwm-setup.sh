@@ -12,7 +12,7 @@ function main() {
     process_arg $@
 
     if pgrep $WM 2>&1 > /dev/null ; then
-        STUPMWM_INSTALL_DIR=$(readlink -m /proc/$(command ps -C ${WM} -o pid --no-heading)/exe | xargs dirname  | xargs dirname)
+        STUPMWM_INSTALL_DIR=$(readlink -m /proc/$(command ps -C ${WM} -o pid --no-heading | tr -d ' ' )/exe | xargs dirname  | xargs dirname)
         [ "$debug" ] && notify $STUPMWM_INSTALL_DIR
         STUMPISH=${STUPMWM_INSTALL_DIR}/share/contrib/stumpish
         if [  -e $STUMPISH ] ; then
@@ -107,4 +107,3 @@ function logger() {
 pgm=$(basename $0)
 
 main $@
-
