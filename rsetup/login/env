@@ -34,6 +34,11 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
 
     [ $SHELL = "zsh" ] && emulate sh
 
+    if [ -f $HOME/.keychain/${HOST}-sh ] ; then
+        . $HOME/.keychain/${HOST}-sh
+        # echo cat $HOME/.keychain/${HOST}-sh >&2
+        # cat $HOME/.keychain/${HOST}-sh >&2
+    fi
     if ! ssh-add -l 2>&1 > /dev/null && [ "$UID" != "0" ] ; then
         if ! screen -x ssh -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }' | grep ssh ; then
             t=$(tempfile)
