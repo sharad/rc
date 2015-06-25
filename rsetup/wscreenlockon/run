@@ -22,5 +22,5 @@ else
 fi
 
 if whence -p xbacklight >&/dev/null ; then
-    xbacklight -set 10
+    xbacklight -set 7
 fi

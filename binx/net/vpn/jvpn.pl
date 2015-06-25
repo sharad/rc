@@ -589,7 +589,6 @@ sub connect_vpn {
       "\nConnected to $dhost, press CTRL+C to exit\n";
 
     my @dnses = (inet_ntoa(pack("N",unpack('x[84]N',$data))), inet_ntoa(pack("N",unpack('x[94]N',$data))));
-    print "calling connect hook\n";
     connect_hook(@dnses);
     # disabling cursor
     print "\e[?25l";
@@ -917,6 +916,7 @@ sub connect_hook {
 
   my $forward;
 
+  print "calling connect hook\n";
   $forward = 'forwarders {';
   foreach ( @dnses ) {
     $forward .= "	" . $_ . ";";
@@ -949,10 +949,14 @@ search local\n";
   close(FH);
   system("gksudo cp $tmpfile /etc/resolv.conf");
 
+  system("syncimap -r");
+
 }
 
 sub disconnect_hook {
+  print "calling disconnect hook\n";
   system("gksudo cp /etc/bind/named.conf.forwarders-jvpn /etc/bind/named.conf.forwarders");
+  system("syncimap -d");
 }
 
 connect_vpn();
