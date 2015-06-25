@@ -42,6 +42,12 @@
 ;; (defun push-dir-in-tag-sys-alist (tag-sys dir)
 ;;   (pushnew-alist tag-sys dir *dirs-having-tag-files-alist*))
 
+
+(setq
+ tags-table-list
+ ;; '("../../TAGS" "../TAGS" "./TAGS")
+ '("../TAGS" "./TAGS"))
+
 (defun search-upwards (files starting-path)
   ;; from: https://lists.ubuntu.com/archives/bazaar/2009q2/057669.html
   "Search for `filename' in every directory from `starting-path' up."

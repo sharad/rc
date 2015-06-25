@@ -79,8 +79,15 @@
          (< run-office-activate-failed run-office-activate-failed-max))
         (let ((file (buffer-file-name)))
           (when (and file
-                     (login-to-perforce)
-                     (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (vc-p4-registered file)))
+                     (with-timeout
+                         (4 (progn
+                              (login-to-perforce)
+                              nil)))
+                     (with-timeout
+                         (4 (progn
+                              (incf run-office-activate-failed)
+                              nil))
+                       (vc-p4-registered file)))
             ;; if file is handled by perforce than assume it is
             ;; related to office perforce repository.
             (office-mode 1)))
