@@ -147,15 +147,16 @@
           ;; Use the comint filter for proper handling of carriage motion
           ;; (see `comint-inhibit-carriage-motion'),.
           (set-process-filter proc 'comint-output-filter))
-        (equal 0
-               (if handler
-                   ;;(process-file-shell-command
-                   ;; (funcall handler 'shell-command command nil nil)
-                   ;; (start-file-process :shcommand1 nil command)
-                   ;; (call-process shell-file-name nil nil nil "-c" command)
-                   ;; (start-file-process "shcommand1" nil shell-file-name "-c" command)
-                   (process-file shell-file-name nil nil nil shell-command-switch command)
-                   (call-process shell-file-name nil nil nil shell-command-switch command))))))
+        (ignore-errors
+          (equal 0
+                 (if handler
+                     ;;(process-file-shell-command
+                     ;; (funcall handler 'shell-command command nil nil)
+                     ;; (start-file-process :shcommand1 nil command)
+                     ;; (call-process shell-file-name nil nil nil "-c" command)
+                     ;; (start-file-process "shcommand1" nil shell-file-name "-c" command)
+                     (process-file shell-file-name nil nil nil shell-command-switch command)
+                     (call-process shell-file-name nil nil nil shell-command-switch command)))))))
 
 (defun shell-command-local-no-output (cmd)
   ;; (interactive "scmd: ")

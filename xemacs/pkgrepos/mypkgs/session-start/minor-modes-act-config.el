@@ -79,15 +79,8 @@
          (< run-office-activate-failed run-office-activate-failed-max))
         (let ((file (buffer-file-name)))
           (when (and file
-                     (with-timeout
-                         (4 (progn
-                              (login-to-perforce)
-                              nil)))
-                     (with-timeout
-                         (4 (progn
-                              (incf run-office-activate-failed)
-                              nil))
-                       (vc-p4-registered file)))
+                     (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (login-to-perforce))
+                     (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (vc-p4-registered file)))
             ;; if file is handled by perforce than assume it is
             ;; related to office perforce repository.
             (office-mode 1)))
@@ -95,10 +88,8 @@
           (message-notify "office-activate" "perforce is not reachable, so disabling office-activate.")
           (setq run-office-activate nil))))
 
-
   (if sharad-in-office-with-perforce
       (add-element-to-lists 'office-activate pgm-langs)))
-
 
 (unless (fboundp 'login-to-perforce)
   (defun login-to-perforce ()

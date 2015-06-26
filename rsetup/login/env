@@ -1,7 +1,8 @@
 # -*- Mode: shell-script; indent-tabs-mode: nil -*-
 
 
-if [ "x${HOST}" != "x" ] ; then
+if [ "x${HOST}" != "x" ]
+then
     __comp=login
 
     if [ -d ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
@@ -25,57 +26,90 @@ fi
 
 PRIVATE_DIR=$HOME/.Private
 SSH_KEYS_DIR=$HOME/.ssh/login-keys.d
+SCREEN4KEYCHAIN=keychain
 
 
-
-if [ "${LOGIN_ENV}x" = "x" ]; then
+if [ "${LOGIN_ENV}x" = "x" ]
+then
     LOGIN_ENV=LOGIN_ENV
-    HOST=`uname -n`
+    HOST=$(uname -n)
 
     [ $SHELL = "zsh" ] && emulate sh
 
-    if [ -f $HOME/.keychain/${HOST}-sh ] ; then
-        . $HOME/.keychain/${HOST}-sh
-        # echo cat $HOME/.keychain/${HOST}-sh >&2
-        # cat $HOME/.keychain/${HOST}-sh >&2
-    fi
-    if ! ssh-add -l 2>&1 > /dev/null && [ "$UID" != "0" ] ; then
-        if ! screen -x ssh -ls 2>/dev/null | sed -n '/^There/,$p' | sed -n 2p | awk '{ print $1 }' | grep ssh ; then
-            t=$(tempfile)
-            cat <<-'EOF' > $t
-	defshell /bin/zsh
-	setenv SHELL /bin/zsh
-	escape 
-	vbell off # always
-	backtick 0 30 30 sh -c 'screen -ls | grep --color=no -o "$PPID[^[:space:]]*"'
-	hardstatus alwayslastline
-	hardstatus string '%{= kC}|%`:%h|%=%{= kG}[%{G}%H%{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]'
+    if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
+       ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null # if pid is set and no working alive ssh-agent process.
+    then
+        if [ -f $HOME/.keychain/${HOST}-sh ]
+        then
+            . $HOME/.keychain/${HOST}-sh
+            if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
+               ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null # check if $HOME/.keychain/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
+            then
+                unset SSH_AGENT_PID
+                unset SSH_AUTH_SOCK
+                rm -f $HOME/.keychain/${HOST}-sh
+            fi                  # if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
+        fi                      # if [ -f $HOME/.keychain/${HOST}-sh ]
+    fi                          # if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
+    if  [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
+        ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                     || # if pid is set and no working alive ssh-agent process.
+        ! ssh-add -l 2>&1 > /dev/null
+    then
+        if [ "$UID" != "0" ]
+            then
+            if ! screen -x $SCREEN4KEYCHAIN -ls 2>/dev/null |
+                sed -n '/^There/,$p'                |
+                sed -n 2p                           |
+                awk '{ print $1 }'                  |
+                grep $SCREEN4KEYCHAIN 2>&1 > /dev/null
+            then
+                if whence -p tempfile 2>&1 >/dev/null
+                    then
+                    screentmprc=$(tempfile)
+                else
+                    screentmprc=${TMP:-/tmp}/screenrc$$$RANDOM
+                fi
+                cat <<-'EOF' > $screentmprc
+		defshell /bin/zsh
+		setenv SHELL /bin/zsh
+		escape 
+		vbell off # always
+		backtick 0 30 30 sh -c 'screen -ls | grep --color=no -o "$PPID[^[:space:]]*"'
+		hardstatus alwayslastline
+		hardstatus string '%{= kC}|%`:%h|%=%{= kG}[%{G}%H%{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]'
+		#hardstatus alwayslastline "%= %3n %t%? [%h]%? %="
+		caption always "%= %-w%L>%{= BW}%n*%t%{-}%52<%+w %L="
+		# http://aperiodic.net/screen/commands:idle
+		# idle 600
+		idle 0
+		EOF
 
-	#hardstatus alwayslastline "%= %3n %t%? [%h]%? %="
-	caption always "%= %-w%L>%{= BW}%n*%t%{-}%52<%+w %L="
+                screen -S $SCREEN4KEYCHAIN -c $screentmprc
+                rm -f $screentmprc
 
-	# http://aperiodic.net/screen/commands:idle
-	# idle 600
-	idle 0
+                if [ -f $HOME/.keychain/${HOST}-sh ]
+                then
+                    . $HOME/.keychain/${HOST}-sh
 
-	EOF
+                    if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
+                        ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
+                        ! ssh-add -l 2>&1 > /dev/null                                && # key is not added
+                        then
+                        ssh-add $SSH_KEYS_DIR/*
+                    fi          # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
+                fi              # if [ -f $HOME/.keychain/${HOST}-sh ]
+            fi                  # if screen -x $SCREEN4KEYCHAIN -ls
+        fi                      # if [ "$UID" != "0" ]
+    fi                          # if ssh-agent pid is not set
 
-            screen -S ssh -c $t
-            rm -f $t
-
-            if [ -f $HOME/.keychain/${HOST}-sh ] ; then
-                . $HOME/.keychain/${HOST}-sh
-                # echo cat $HOME/.keychain/${HOST}-sh >&2
-                # cat $HOME/.keychain/${HOST}-sh >&2
-            fi
-        fi
-    fi
-
-    if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] && ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null ; then
-        if [  -r $HOME/.ssh/agent-custom-$HOST ] ; then
+    if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] &&
+       ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null
+    then
+        if [  -r $HOME/.ssh/agent-custom-$HOST ]
+        then
             source $HOME/.ssh/agent-custom-$HOST
         fi
-    fi
+    fi                          # [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ]
 
     ## It run from X
     ## as X run before ssh-agent stumpwm
@@ -83,7 +117,10 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
     ##       X
     ##        ssh-agent stumpwm
     ##  __NO_SSH_AGENT_REQUIRED: for ssh-agent not required from xprofile but from other place.
-    if [ "x${__NO_SSH_AGENT_REQUIRED}" != "x" ] && [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] && ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null ; then
+    if [ "x${__NO_SSH_AGENT_REQUIRED}" != "x" ] &&
+        [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] &&
+        ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null
+    then
         #  && ! ps -u $USER $SSH_AGENT_PID 2>&1 > /dev/null
         # export SSH_AUTH_SOCK=""
 
@@ -112,7 +149,7 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
         cat <<-EOF > ~/.emacs.d/ssh-agent-${HOST}.el
 	(message "SSH_AUTH_SOCK is not set.")
 	EOF
-    fi
+    fi                          # [ "x${__NO_SSH_AGENT_REQUIRED}" != "x" ]
 
 
 # if pam_ssh have not created agent then we will rely on keychain.
@@ -124,15 +161,19 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
 
     # if ! ssh-add -l 2>&1 >/dev/null && [ "${SSH_AUTH_SOCK}x" = "x" ] && [ "$UID" != "0" ] ; then
     # if [ "${SSH_AUTH_SOCK}x" = "x" ] && [ "$UID" != "0" ] ; then
-    if ! ssh-add -l 2>&1 > /dev/null && [ "$UID" != "0" ] ; then
+    if ! ssh-add -l 2>&1 > /dev/null &&
+        [ "$UID" != "0" ]
+    then
 
-        if whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null ; then
+        if whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+        then
 
             if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
                 timeout 7 $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
             fi
 
-            if [ -x /usr/bin/keychain ] ; then
+            if [ -x /usr/bin/keychain ]
+            then
 
                 #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
 
@@ -146,20 +187,28 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
                     $SSH_KEYS_DIR/id_rsa       \
                     $SSH_KEYS_DIR/internet 070E69E5
 
-                if [ -f $HOME/.keychain/${HOST}-sh ] ; then
+                if [ -f $HOME/.keychain/${HOST}-sh ]
+                then
                     . $HOME/.keychain/${HOST}-sh
                     # echo cat $HOME/.keychain/${HOST}-sh >&2
-                    # cat $HOME/.keychain/${HOST}-sh >&2
-                fi
-            fi
+               # cat $HOME/.keychain/${HOST}-sh >&2
+                    if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
+                        ps ${SSH_AGENT_PID} 2>&1 > /dev/null && # if pid is set and working alive ssh-agent process.
+                        ! ssh-add -l 2>&1 > /dev/null           # key is not added
+                    then
+                        ssh-add $SSH_KEYS_DIR/*
+                    fi          # [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
+                fi              # [ -f $HOME/.keychain/${HOST}-sh ]
+            fi                  # [ -x /usr/bin/keychain ]
 
-        fi
-    fi
+        fi                      # whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+    fi                          # ! ssh-add -l 2>&1
 # fi
 
 # If we have ssh-agent running, forward it to the next host,
 # otherwise dont try to use key authentication at all.
-    if [ "${SSH_AUTH_SOCK}x" = "x" ] ; then
+    if [ "${SSH_AUTH_SOCK}x" = "x" ]
+    then
         # if we dont have an auth sock, dont use pub key identification
         alias ssh='ssh -o PubkeyAuthentication=no'
     else
@@ -173,4 +222,4 @@ if [ "${LOGIN_ENV}x" = "x" ]; then
     [ -r $HOME/.rsetup/login/env.d/${HOST} ] && . $HOME/.rsetup/login/env.d/${HOST}
 
 
-fi
+fi                              # [ "${LOGIN_ENV}x" = "x" ]

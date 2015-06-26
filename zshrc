@@ -34,7 +34,8 @@
 # }}}
 
 # {{{ for running ssh-agent and adding key to it.
-if [ "$STY" -o "$TERM" = "screen" ] && [[ "$STY" = *.ssh ]] ; then
+SCREEN4KEYCHAIN=keychain
+if [ "$STY" -o "$TERM" = "screen" ] && [[ "$STY" = *.${SCREEN4KEYCHAIN} ]] ; then
     [  -r ~/.rsetup/screen/env  ] &&
     source ~/.rsetup/screen/env
     [  -r ~/.rsetup/screen/run ] &&
