@@ -17,3 +17,5 @@ RCS
 *.undo
 yawkn
 spaa.cresh
+crontab
+notmuch-config

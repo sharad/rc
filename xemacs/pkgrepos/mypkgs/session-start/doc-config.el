@@ -39,6 +39,7 @@
 ;; appropriate function as the buffer-local value of
 ;; `eldoc-documentation-function'.
 
+(require 'macros)
 
 (deh-require-maybe eldoc                 ;http://www.emacswiki.org/emacs/ElDoc
   (deh-require-maybe eldoc-extension)
@@ -68,4 +69,3 @@
   "good")
 
 (provide 'doc-config)
-

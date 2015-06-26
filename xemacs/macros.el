@@ -143,6 +143,7 @@
              ,todo-if-no-feature))))
 
     (defmacro deh-require-maybe (feature &rest forms)
+      "deh-require-maybe: deh-require-maybe"
       (declare (indent 1))
       (labels ((refine (feature)
                  (if (consp feature)

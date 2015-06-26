@@ -24,7 +24,7 @@
 ;;; Commentary:
 
 
-
+(require 'macros)
 
 (deh-require-maybe pabbrev
   (setq pabbrev-read-only-error nil)
@@ -53,8 +53,8 @@
   (require 'host-info)
 
   (defvar run-office-activate-failed-max 7 "run-office-activate")
-  (defvar run-office-activate-failed 0 "run-office-activate")
-  (defvar run-office-activate t "run-office-activate")
+  (defvar run-office-activate-failed     0 "run-office-activate")
+  (defvar run-office-activate            t "run-office-activate")
 
   (defun is-perforce-is-alive ()
     (if (shell-command-no-output "timeout -k 3 2 p4 depots")
@@ -85,7 +85,9 @@
             ;; related to office perforce repository.
             (office-mode 1)))
         (progn
-          (message-notify "office-activate" "perforce is not reachable, so disabling office-activate.")
+          (message-notify
+           "office-activate"
+           "perforce is not reachable, so disabling office-activate.")
           (setq run-office-activate nil))))
 
   (if sharad-in-office-with-perforce
