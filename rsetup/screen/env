@@ -1,0 +1,121 @@
+# -*- mode: shell-script; -*-
+
+
+if [ "x${HOST}" != "x" ] ; then
+    __comp=screen
+
+    if [ -d ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
+        rm -rf ~/.rsetup/${__comp}/env.d/${HOST}
+    fi
+
+    if [ ! -e ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
+        mkdir ~/.rsetup/${__comp}/env.d/
+        cp ~/.rsetup/${__comp}/env.tmpl ~/.rsetup/${__comp}/env.d/${HOST}
+    fi
+
+    if [ -r ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
+        . ~/.rsetup/${__comp}/env.d/${HOST}
+    fi
+
+    unset __comp
+else
+    echo env var HOST is not set $HOST
+fi
+
+# VAR=value
+# export VAR
+
+PRIVATE_DIR=$HOME/.Private
+SSH_KEYS_DIR=$HOME/.ssh/login-keys.d
+SCREEN4KEYCHAIN=keychain
+
+if [ "${LOGIN_ENV}x" = "x" ]
+then
+    LOGIN_ENV=LOGIN_ENV
+    HOST=`uname -n`
+
+    [ $SHELL = "zsh" ] && emulate sh
+
+    if [ -f $HOME/.keychain/${HOST}-sh ]
+    then
+        . $HOME/.keychain/${HOST}-sh
+        if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
+            ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # check if $HOME/.keychain/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
+        then
+            unset SSH_AGENT_PID
+            unset SSH_AUTH_SOCK
+            rm -f $HOME/.keychain/${HOST}-sh
+        fi                  # if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ]
+    else
+        unset SSH_AGENT_PID
+        unset SSH_AUTH_SOCK
+    fi                      # if [ -f $HOME/.keychain/${HOST}-sh ]
+
+    if  [ ! -r $HOME/.keychain/${HOST}-sh ]                        ||
+        [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
+        ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # check if $HOME/.keychain/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
+    then
+
+        if  [ "$UID" != "0" ]
+            then
+            if whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+            then
+
+                if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ]
+                then
+                    timeout 7 $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+                fi
+
+                if [ -x /usr/bin/keychain ]
+                then
+
+                    #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
+
+                    /usr/bin/keychain -q  \
+                        --ignore-missing   \
+                        --clear --lockwait 1\
+                    --agents gpg,ssh     \
+                        --inherit local-once  \
+                        $( ls -d1 $SSH_KEYS_DIR/*) \
+                        $SSH_KEYS_DIR/id_dsa       \
+                        $SSH_KEYS_DIR/id_rsa       \
+                        $SSH_KEYS_DIR/internet 070E69E5
+
+                fi                  # [ -x /usr/bin/keychain ]
+
+                if [ -f $HOME/.keychain/${HOST}-sh ]
+                then
+                    . $HOME/.keychain/${HOST}-sh
+                fi              # if [ -f $HOME/.keychain/${HOST}-sh ]
+
+                if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
+                    ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
+                    ! ssh-add -l 2>&1 > /dev/null                                && # key is not added
+                then
+                    ssh-add $SSH_KEYS_DIR/*
+                fi          # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
+
+
+            fi                      # whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+        fi
+    fi                          # ! ssh-add -l 2>&1
+# fi
+
+# If we have ssh-agent running, forward it to the next host,
+# otherwise dont try to use key authentication at all.
+    if [ "${SSH_AUTH_SOCK}x" = "x" ]
+    then
+        # if we dont have an auth sock, dont use pub key identification
+        alias ssh='ssh -o PubkeyAuthentication=no'
+    else
+        # We do have an auth sock, use auth forwarding
+        alias ssh='ssh -A'
+    fi                          # if [ "${SSH_AUTH_SOCK}x" = "x" ]
+
+    [ "$SHELL" = "zsh" ] && emulate zsh
+
+
+    [ -r $HOME/.rsetup/screen/env.d/${HOST} ] && . $HOME/.rsetup/screen/env.d/${HOST}
+
+
+fi                              # [ "${LOGIN_ENV}x" = "x" ]
