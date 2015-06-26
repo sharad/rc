@@ -508,7 +508,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
     fi
 
 } |
-command less \
+command less            \
     --RAW-CONTROL-CHARS \
     --QUIT-AT-EOF       \
     --no-init

@@ -178,20 +178,25 @@ then
 
                     if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
                     then
-                        mkdir -p ${KEYCHAINDIR} &&
-                        /usr/bin/keychain -q                                     \
-                            --ignore-missing                                     \
-                            --clear --lockwait 1                                 \
-                            --agents gpg,ssh                                     \
-                            --inherit local-once                                 \
-                            $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) \
-                            $SSH_KEYS_DIR/id_dsa                                 \
-                            $SSH_KEYS_DIR/id_rsa                                 \
-                            $SSH_KEYS_DIR/internet                               \
-                            070E69E5                                             \
-                            --dir ${KEYCHAINDIR}
-
-                        trap "echo KILLING ; kill $SSH_AGENT_PID ; rm -f ${KEYCHAINDIR}/* " 0
+                        if mkdir -p ${KEYCHAINDIR}
+                        then
+                            /usr/bin/keychain -q                                      \
+                                --ignore-missing                                      \
+                                --clear --lockwait 1                                  \
+                                --agents gpg,ssh                                      \
+                                --inherit local-once                                  \
+                                $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) \
+                                $SSH_KEYS_DIR/id_dsa                                  \
+                                $SSH_KEYS_DIR/id_rsa                                  \
+                                $SSH_KEYS_DIR/internet                                \
+                                070E69E5                                              \
+                                --dir ${KEYCHAINDIR}
+                        fi
+                        if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
+                        then
+                            . ${KEYCHAINDIR}/${HOST}-sh
+                            # trap "echo KILLING $SSH_AGENT_PID; echo kill $SSH_AGENT_PID ; [ -f ${KEYCHAINDIR}/${HOST}-sh ] && echo rm -f ${KEYCHAINDIR}/* " EXIT
+                        fi              # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
                     fi
 
                     if [ -f ${KEYCHAINDIR}-login/${HOST}-sh ]
