@@ -28,7 +28,7 @@ fi
 PRIVATE_DIR=$HOME/.Private
 SSH_KEYS_DIR=$HOME/.ssh/login-keys.d
 SCREEN4KEYCHAIN=keychain
-KEYCHAINDIR=${KEYCHAINDIR}-screen
+KEYCHAINDIR=$HOME/.keychain-screen
 export SCREEN4KEYCHAIN
 export KEYCHAINDIR
 
