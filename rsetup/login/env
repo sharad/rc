@@ -115,9 +115,18 @@ then
 
     if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
         ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
-        ! ssh-add -l 2>&1 > /dev/null                                && # key is not added
+        ! ssh-add -l 2>&1 > /dev/null                                # key is not added
     then
-        ssh-add $SSH_KEYS_DIR/*
+        if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
+        then
+            if [ -t ]
+            then
+                ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
+            else
+                ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
+            fi
+        fi
+
         # else
         #     unset SSH_AGENT_PID
         #     unset SSH_AUTH_SOCK
@@ -167,19 +176,23 @@ then
 
                     #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
 
-                    mkdir -p ${KEYCHAINDIR} &&
-                    /usr/bin/keychain -q  \
-                        --ignore-missing   \
-                        --clear --lockwait 1\
-                    --agents gpg,ssh     \
-                        --inherit local-once  \
-                        $( ls -d1 $SSH_KEYS_DIR/*) \
-                        $SSH_KEYS_DIR/id_dsa       \
-                        $SSH_KEYS_DIR/id_rsa       \
-                        $SSH_KEYS_DIR/internet 070E69E5 \
-                        --dir ${KEYCHAINDIR}
+                    if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
+                    then
+                        mkdir -p ${KEYCHAINDIR} &&
+                        /usr/bin/keychain -q                                     \
+                            --ignore-missing                                     \
+                            --clear --lockwait 1                                 \
+                            --agents gpg,ssh                                     \
+                            --inherit local-once                                 \
+                            $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) \
+                            $SSH_KEYS_DIR/id_dsa                                 \
+                            $SSH_KEYS_DIR/id_rsa                                 \
+                            $SSH_KEYS_DIR/internet                               \
+                            070E69E5                                             \
+                            --dir ${KEYCHAINDIR}
 
-                    trap "echo KILLING ; kill $SSH_AGENT_PID ; rm -f ${KEYCHAINDIR}-login/* " 0
+                        trap "echo KILLING ; kill $SSH_AGENT_PID ; rm -f ${KEYCHAINDIR}/* " 0
+                    fi
 
                     if [ -f ${KEYCHAINDIR}-login/${HOST}-sh ]
                     then
@@ -190,7 +203,15 @@ then
                             ps ${SSH_AGENT_PID} 2>&1 > /dev/null && # if pid is set and working alive ssh-agent process.
                             ! ssh-add -l 2>&1 > /dev/null           # key is not added
                         then
-                            ssh-add $SSH_KEYS_DIR/*
+                            if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
+                            then
+                                if [ -t ]
+                                then
+                                    ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
+                                else
+                                    ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
+                                fi
+                            fi
                         fi          # [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
                     fi              # [ -f ${KEYCHAINDIR}/${HOST}-sh ]
                 fi                  # [ -x /usr/bin/keychain ]
@@ -273,7 +294,15 @@ then
                             ps ${SSH_AGENT_PID} 2>&1 > /dev/null && # if pid is set and working alive ssh-agent process.
                             ! ssh-add -l 2>&1 > /dev/null           # key is not added
                         then
-                            ssh-add $SSH_KEYS_DIR/*
+                            if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
+                            then
+                                if [ -t ]
+                                then
+                                    ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
+                                else
+                                    ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
+                                fi
+                            fi
                         fi          # [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
                     fi              # [ -f ${KEYCHAINDIR}/${HOST}-sh ]
                 fi                  # [ -x /usr/bin/keychain ]
