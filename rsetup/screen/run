@@ -8,8 +8,8 @@ if [ "x${HOST}" != "x" ] ; then
         rm -rf ~/.rsetup/${__comp}/${__subcomp}.d/${HOST}
     fi
 
-    if [ ! -L ~/.rsetup/${__comp}/${__subcomp}.d ] ; then
-        tdir=$(readlink -m ~/.rsetup/${__comp}/${__subcomp}.d/)
+    tdir=$(readlink -m ~/.rsetup/${__comp}/${__subcomp}.d/)
+    if [ ! -d $tdir ] ; then
         mkdir -p $tdir
         cat <<'EOF' > $tdir/.gitignore
 *
