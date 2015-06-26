@@ -173,48 +173,52 @@ then
 
     # if ! ssh-add -l 2>&1 >/dev/null && [ "${SSH_AUTH_SOCK}x" = "x" ] && [ "$UID" != "0" ] ; then
     # if [ "${SSH_AUTH_SOCK}x" = "x" ] && [ "$UID" != "0" ] ; then
-    if ! ssh-add -l 2>&1 > /dev/null &&
-        [ "$UID" != "0" ]
-    then
 
-        if whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+    if false                    # we are running keychain only in screen now
+    then
+        if ! ssh-add -l 2>&1 > /dev/null &&
+            [ "$UID" != "0" ]
         then
 
-            if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
-                timeout 7 $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
-            fi
-
-            if [ -x /usr/bin/keychain ]
+            if whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
             then
 
-                #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
+                if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
+                    timeout 7 $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+                fi
 
-                /usr/bin/keychain -q  \
-                    --ignore-missing   \
-                    --clear --lockwait 1\
-                    --agents gpg,ssh     \
-                    --inherit local-once  \
-                    $( ls -d1 $SSH_KEYS_DIR/*) \
-                    $SSH_KEYS_DIR/id_dsa       \
-                    $SSH_KEYS_DIR/id_rsa       \
-                    $SSH_KEYS_DIR/internet 070E69E5
-
-                if [ -f $HOME/.keychain/${HOST}-sh ]
+                if [ -x /usr/bin/keychain ]
                 then
-                    . $HOME/.keychain/${HOST}-sh
-                    # echo cat $HOME/.keychain/${HOST}-sh >&2
-               # cat $HOME/.keychain/${HOST}-sh >&2
-                    if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
-                        ps ${SSH_AGENT_PID} 2>&1 > /dev/null && # if pid is set and working alive ssh-agent process.
-                        ! ssh-add -l 2>&1 > /dev/null           # key is not added
-                    then
-                        ssh-add $SSH_KEYS_DIR/*
-                    fi          # [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
-                fi              # [ -f $HOME/.keychain/${HOST}-sh ]
-            fi                  # [ -x /usr/bin/keychain ]
 
-        fi                      # whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
-    fi                          # ! ssh-add -l 2>&1
+                    #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
+
+                    /usr/bin/keychain -q  \
+                        --ignore-missing   \
+                        --clear --lockwait 1\
+                    --agents gpg,ssh     \
+                        --inherit local-once  \
+                        $( ls -d1 $SSH_KEYS_DIR/*) \
+                        $SSH_KEYS_DIR/id_dsa       \
+                        $SSH_KEYS_DIR/id_rsa       \
+                        $SSH_KEYS_DIR/internet 070E69E5
+
+                    if [ -f $HOME/.keychain/${HOST}-sh ]
+                    then
+                        . $HOME/.keychain/${HOST}-sh
+                        # echo cat $HOME/.keychain/${HOST}-sh >&2
+                        # cat $HOME/.keychain/${HOST}-sh >&2
+                        if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
+                            ps ${SSH_AGENT_PID} 2>&1 > /dev/null && # if pid is set and working alive ssh-agent process.
+                            ! ssh-add -l 2>&1 > /dev/null           # key is not added
+                        then
+                            ssh-add $SSH_KEYS_DIR/*
+                        fi          # [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
+                    fi              # [ -f $HOME/.keychain/${HOST}-sh ]
+                fi                  # [ -x /usr/bin/keychain ]
+
+            fi                      # whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+        fi                          # ! ssh-add -l 2>&1
+    fi
 # fi
 
 # If we have ssh-agent running, forward it to the next host,
