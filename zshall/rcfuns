@@ -560,3 +560,48 @@ function gitsstatus () {
 }
 
 #}}
+
+#{{ ssh
+function sshaddkey() {
+    KEYCHAINDIR=$HOME/.keychain-screen
+
+    if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
+        ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # if pid is set and working alive ssh-agent process.
+    then
+
+        if ! ssh-add -l 2>&1 > /dev/null
+        then
+            if [ -t ] ; then
+                ssh-add ~/.ssh/login-keys.d/*~*.pub
+            else
+                ssh-add ~/.ssh/login-keys.d/*~*.pub < /dev/null
+            fi
+        fi
+
+    else
+
+        if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
+        then
+            . ${KEYCHAINDIR}/${HOST}-sh
+
+            if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
+                ps ${SSH_AGENT_PID} 2>&1 > /dev/null                            # if pid is set and working alive ssh-agent process.
+            then
+                if ! ssh-add -l 2>&1 > /dev/null                                # key is not added
+                then
+                    if [ -t ]
+                    then
+                        ssh-add ~/.ssh/login-keys.d/*~*.pub
+                    else
+                        ssh-add ~/.ssh/login-keys.d/*~*.pub < /dev/null
+                    fi
+                fi
+            else
+                unset SSH_AGENT_PID
+                unset SSH_AUTH_SOCK
+                rm -f ${KEYCHAINDIR}/${HOST}-sh
+            fi          # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
+        fi              # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
+    fi  # if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
+}
+#}}

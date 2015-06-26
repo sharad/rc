@@ -27,7 +27,9 @@ fi
 PRIVATE_DIR=$HOME/.Private
 SSH_KEYS_DIR=$HOME/.ssh/login-keys.d
 SCREEN4KEYCHAIN=keychain
-
+KEYCHAINDIR=$HOME/.keychain-login
+export SCREEN4KEYCHAIN
+export KEYCHAINDIR
 
 if [ "${LOGIN_ENV}x" = "x" ]
 then
@@ -76,17 +78,17 @@ then
     if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
        ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null # if pid is set and no working alive ssh-agent process.
     then
-        if [ -f $HOME/.keychain/${HOST}-sh ]
+        if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
         then
-            . $HOME/.keychain/${HOST}-sh
+            . ${KEYCHAINDIR}/${HOST}-sh
             if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
-               ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null # check if $HOME/.keychain/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
+               ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null # check if ${KEYCHAINDIR}/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
             then
                 unset SSH_AGENT_PID
                 unset SSH_AUTH_SOCK
-                rm -f $HOME/.keychain/${HOST}-sh
+                rm -f ${KEYCHAINDIR}/${HOST}-sh
             fi                  # if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
-        fi                      # if [ -f $HOME/.keychain/${HOST}-sh ]
+        fi                      # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
     fi                          # if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
 
     if  [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
@@ -94,10 +96,10 @@ then
     then
         if [ "$UID" != "0" ]
         then
-            if [ -f $HOME/.keychain/${HOST}-sh ]
+            if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
             then
-                . $HOME/.keychain/${HOST}-sh
-            fi              # if [ -f $HOME/.keychain/${HOST}-sh ]
+                . ${KEYCHAINDIR}/${HOST}-sh
+            fi              # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
         fi                      # if [ "$UID" != "0" ]
     fi                          # if ssh-agent pid is not set
 
@@ -110,7 +112,7 @@ then
         # else
         #     unset SSH_AGENT_PID
         #     unset SSH_AUTH_SOCK
-        #     rm -f $HOME/.keychain/${HOST}-sh
+        #     rm -f ${KEYCHAINDIR}/${HOST}-sh
     fi          # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
 
 
@@ -138,8 +140,59 @@ then
 
         # pkill ssh-agent
         [  -d $HOME/.ssh ] || mkdir $HOME/.ssh
-        eval $(ssh-agent | tee $HOME/.ssh/agent-custom-$HOST)
-        trap "echo KILLING ; kill $SSH_AGENT_PID ; rm -f $HOME/.ssh/agent-custom-$HOST " 0
+
+
+        if ! ssh-add -l 2>&1 > /dev/null &&
+            [ "$UID" != "0" ]
+        then
+
+            if whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+            then
+
+                if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
+                    timeout 7 $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+                fi
+
+                if [ -x /usr/bin/keychain ]
+                then
+
+                    #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
+
+                    mkdir -p ${KEYCHAINDIR} &&
+                    /usr/bin/keychain -q  \
+                        --ignore-missing   \
+                        --clear --lockwait 1\
+                    --agents gpg,ssh     \
+                        --inherit local-once  \
+                        $( ls -d1 $SSH_KEYS_DIR/*) \
+                        $SSH_KEYS_DIR/id_dsa       \
+                        $SSH_KEYS_DIR/id_rsa       \
+                        $SSH_KEYS_DIR/internet 070E69E5 \
+                        --dir ${KEYCHAINDIR}
+
+                    trap "echo KILLING ; kill $SSH_AGENT_PID ; rm -f ${KEYCHAINDIR}-login/* " 0
+
+                    if [ -f ${KEYCHAINDIR}-login/${HOST}-sh ]
+                    then
+                        . ${KEYCHAINDIR}-login/${HOST}-sh
+                        # echo cat ${KEYCHAINDIR}/${HOST}-sh >&2
+                        # cat ${KEYCHAINDIR}/${HOST}-sh >&2
+                        if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
+                            ps ${SSH_AGENT_PID} 2>&1 > /dev/null && # if pid is set and working alive ssh-agent process.
+                            ! ssh-add -l 2>&1 > /dev/null           # key is not added
+                        then
+                            ssh-add $SSH_KEYS_DIR/*
+                        fi          # [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
+                    fi              # [ -f ${KEYCHAINDIR}/${HOST}-sh ]
+                fi                  # [ -x /usr/bin/keychain ]
+
+            fi                      # whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+        fi                          # ! ssh-add -l 2>&1
+
+
+
+        # eval $(ssh-agent | tee $HOME/.ssh/agent-custom-$HOST)
+        # trap "echo KILLING ; kill $SSH_AGENT_PID ; rm -f $HOME/.ssh/agent-custom-$HOST " 0
         cat <<-EOF > $HOME/.ssh/agent-custom-$HOST
 	# running from else
 	SSH_AUTH_SOCK=$SSH_AUTH_SOCK
@@ -202,18 +255,18 @@ then
                         $SSH_KEYS_DIR/id_rsa       \
                         $SSH_KEYS_DIR/internet 070E69E5
 
-                    if [ -f $HOME/.keychain/${HOST}-sh ]
+                    if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
                     then
-                        . $HOME/.keychain/${HOST}-sh
-                        # echo cat $HOME/.keychain/${HOST}-sh >&2
-                        # cat $HOME/.keychain/${HOST}-sh >&2
+                        . ${KEYCHAINDIR}/${HOST}-sh
+                        # echo cat ${KEYCHAINDIR}/${HOST}-sh >&2
+                        # cat ${KEYCHAINDIR}/${HOST}-sh >&2
                         if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
                             ps ${SSH_AGENT_PID} 2>&1 > /dev/null && # if pid is set and working alive ssh-agent process.
                             ! ssh-add -l 2>&1 > /dev/null           # key is not added
                         then
                             ssh-add $SSH_KEYS_DIR/*
                         fi          # [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
-                    fi              # [ -f $HOME/.keychain/${HOST}-sh ]
+                    fi              # [ -f ${KEYCHAINDIR}/${HOST}-sh ]
                 fi                  # [ -x /usr/bin/keychain ]
 
             fi                      # whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null

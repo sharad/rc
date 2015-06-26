@@ -28,6 +28,9 @@ fi
 PRIVATE_DIR=$HOME/.Private
 SSH_KEYS_DIR=$HOME/.ssh/login-keys.d
 SCREEN4KEYCHAIN=keychain
+KEYCHAINDIR=${KEYCHAINDIR}-screen
+export SCREEN4KEYCHAIN
+export KEYCHAINDIR
 
 if [ "${LOGIN_ENV}x" = "x" ]
 then
@@ -36,24 +39,24 @@ then
 
     [ $SHELL = "zsh" ] && emulate sh
 
-    if [ -f $HOME/.keychain/${HOST}-sh ]
+    if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
     then
-        . $HOME/.keychain/${HOST}-sh
+        . ${KEYCHAINDIR}/${HOST}-sh
         if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
-            ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # check if $HOME/.keychain/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
+            ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # check if ${KEYCHAINDIR}/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
         then
             unset SSH_AGENT_PID
             unset SSH_AUTH_SOCK
-            rm -f $HOME/.keychain/${HOST}-sh
+            rm -f ${KEYCHAINDIR}/${HOST}-sh
         fi                  # if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ]
     else
         unset SSH_AGENT_PID
         unset SSH_AUTH_SOCK
-    fi                      # if [ -f $HOME/.keychain/${HOST}-sh ]
+    fi                      # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
 
-    if  [ ! -r $HOME/.keychain/${HOST}-sh ]                        ||
+    if  [ ! -r ${KEYCHAINDIR}/${HOST}-sh ]                        ||
         [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
-        ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # check if $HOME/.keychain/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
+        ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # check if ${KEYCHAINDIR}/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
     then
 
         if  [ "$UID" != "0" ]
@@ -71,6 +74,7 @@ then
 
                     #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
 
+                    mkdir -p ${KEYCHAINDIR} &&
                     /usr/bin/keychain -q  \
                         --ignore-missing   \
                         --clear --lockwait 1\
@@ -79,14 +83,17 @@ then
                         $( ls -d1 $SSH_KEYS_DIR/*) \
                         $SSH_KEYS_DIR/id_dsa       \
                         $SSH_KEYS_DIR/id_rsa       \
-                        $SSH_KEYS_DIR/internet 070E69E5
+                        $SSH_KEYS_DIR/internet 070E69E5 \
+                        --dir ${KEYCHAINDIR}
+
+                    trap "echo KILLING ; kill $SSH_AGENT_PID ; rm -f ${KEYCHAINDIR}-screen/* " 0
 
                 fi                  # [ -x /usr/bin/keychain ]
 
-                if [ -f $HOME/.keychain/${HOST}-sh ]
+                if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
                 then
-                    . $HOME/.keychain/${HOST}-sh
-                fi              # if [ -f $HOME/.keychain/${HOST}-sh ]
+                    . ${KEYCHAINDIR}/${HOST}-sh
+                fi              # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
 
                 if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
                     ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
