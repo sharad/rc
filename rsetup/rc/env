@@ -35,6 +35,38 @@ else
 fi
 
 
+
+
+if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
+   ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # if pid is set and no working alive ssh-agent process.
+then
+
+    if ! ssh-add -l 2>&1 > /dev/null
+    then
+        ssh-add $SSH_KEYS_DIR/*
+    fi
+
+else
+
+    if [ -f $HOME/.keychain/${HOST}-sh ]
+    then
+        . $HOME/.keychain/${HOST}-sh
+
+        if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
+            ps ${SSH_AGENT_PID} 2>&1 > /dev/null                            # if pid is set and working alive ssh-agent process.
+        then
+            if ! ssh-add -l 2>&1 > /dev/null                                # key is not added
+            then
+                ssh-add $SSH_KEYS_DIR/*
+            fi
+        else
+            unset SSH_AGENT_PID
+            unset SSH_AUTH_SOCK
+            rm -f $HOME/.keychain/${HOST}-sh
+        fi          # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
+    fi              # if [ -f $HOME/.keychain/${HOST}-sh ]
+fi  # if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
+
 if [ "x${HOST}" != "x" ] ; then
     __comp=rc
 

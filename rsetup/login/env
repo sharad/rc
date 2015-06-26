@@ -36,6 +36,43 @@ then
 
     [ $SHELL = "zsh" ] && emulate sh
 
+    # {{{ start at least one screen what ever be the case.
+    if [ "$UID" != "0" ]        # start at least one screen what ever be the case.
+    then
+        if ! screen -x $SCREEN4KEYCHAIN -ls 2>/dev/null |
+            sed -n '/^There/,$p'                |
+            sed -n 2p                           |
+            awk '{ print $1 }'                  |
+            grep $SCREEN4KEYCHAIN 2>&1 > /dev/null
+        then
+            if whence -p tempfile 2>&1 >/dev/null
+            then
+                screentmprc=$(tempfile)
+            else
+                screentmprc=${TMP:-/tmp}/screenrc$$$RANDOM
+            fi
+            cat <<-'EOF' > $screentmprc
+		defshell /bin/zsh
+		setenv SHELL /bin/zsh
+		escape 
+		vbell off # always
+		backtick 0 30 30 sh -c 'screen -ls | grep --color=no -o "$PPID[^[:space:]]*"'
+		hardstatus alwayslastline
+		hardstatus string '%{= kC}|%`:%h|%=%{= kG}[%{G}%H%{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]'
+		#hardstatus alwayslastline "%= %3n %t%? [%h]%? %="
+		caption always "%= %-w%L>%{= BW}%n*%t%{-}%52<%+w %L="
+		# http://aperiodic.net/screen/commands:idle
+		# idle 600
+		idle 0
+		EOF
+
+            screen -S $SCREEN4KEYCHAIN -c $screentmprc
+            rm -f $screentmprc
+
+        fi                  # if screen -x $SCREEN4KEYCHAIN -ls
+    fi
+    # }}}
+
     if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
        ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null # if pid is set and no working alive ssh-agent process.
     then
@@ -51,56 +88,31 @@ then
             fi                  # if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
         fi                      # if [ -f $HOME/.keychain/${HOST}-sh ]
     fi                          # if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
+
     if  [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
-        ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                     || # if pid is set and no working alive ssh-agent process.
-        ! ssh-add -l 2>&1 > /dev/null
+        ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # if pid is set and no working alive ssh-agent process.
     then
         if [ "$UID" != "0" ]
+        then
+            if [ -f $HOME/.keychain/${HOST}-sh ]
             then
-            if ! screen -x $SCREEN4KEYCHAIN -ls 2>/dev/null |
-                sed -n '/^There/,$p'                |
-                sed -n 2p                           |
-                awk '{ print $1 }'                  |
-                grep $SCREEN4KEYCHAIN 2>&1 > /dev/null
-            then
-                if whence -p tempfile 2>&1 >/dev/null
-                    then
-                    screentmprc=$(tempfile)
-                else
-                    screentmprc=${TMP:-/tmp}/screenrc$$$RANDOM
-                fi
-                cat <<-'EOF' > $screentmprc
-		defshell /bin/zsh
-		setenv SHELL /bin/zsh
-		escape 
-		vbell off # always
-		backtick 0 30 30 sh -c 'screen -ls | grep --color=no -o "$PPID[^[:space:]]*"'
-		hardstatus alwayslastline
-		hardstatus string '%{= kC}|%`:%h|%=%{= kG}[%{G}%H%{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]'
-		#hardstatus alwayslastline "%= %3n %t%? [%h]%? %="
-		caption always "%= %-w%L>%{= BW}%n*%t%{-}%52<%+w %L="
-		# http://aperiodic.net/screen/commands:idle
-		# idle 600
-		idle 0
-		EOF
-
-                screen -S $SCREEN4KEYCHAIN -c $screentmprc
-                rm -f $screentmprc
-
-                if [ -f $HOME/.keychain/${HOST}-sh ]
-                then
-                    . $HOME/.keychain/${HOST}-sh
-
-                    if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
-                        ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
-                        ! ssh-add -l 2>&1 > /dev/null                                && # key is not added
-                        then
-                        ssh-add $SSH_KEYS_DIR/*
-                    fi          # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
-                fi              # if [ -f $HOME/.keychain/${HOST}-sh ]
-            fi                  # if screen -x $SCREEN4KEYCHAIN -ls
+                . $HOME/.keychain/${HOST}-sh
+            fi              # if [ -f $HOME/.keychain/${HOST}-sh ]
         fi                      # if [ "$UID" != "0" ]
     fi                          # if ssh-agent pid is not set
+
+
+    if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
+        ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
+        ! ssh-add -l 2>&1 > /dev/null                                && # key is not added
+    then
+        ssh-add $SSH_KEYS_DIR/*
+        # else
+        #     unset SSH_AGENT_PID
+        #     unset SSH_AUTH_SOCK
+        #     rm -f $HOME/.keychain/${HOST}-sh
+    fi          # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
+
 
     if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] &&
        ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null
