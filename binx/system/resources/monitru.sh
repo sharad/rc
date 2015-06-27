@@ -19,40 +19,43 @@ function main() {
 
     foreach p ($processes)
     {
-        eval max_cpu_pid_val=$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p) | awk '{ if ( $3 > '$max_cpu' ) printf "(%d %d)\n", $2, $3 }')
-        eval max_mem_pid_val=$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p) | awk '{ if ( $4 > '$max_mem' ) printf "(%d %d)\n", $2, $4 }')
+        if pgrep $p >&/dev/null
+        then
+            eval max_cpu_pid_val=$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p) | awk '{ if ( $3 > '$max_cpu' ) printf "(%d %d)\n", $2, $3 }')
+            eval max_mem_pid_val=$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p) | awk '{ if ( $4 > '$max_mem' ) printf "(%d %d)\n", $2, $4 }')
 
-        pid_max_cpu=${max_cpu_pid_val[1]}
-        pid_max_mem=${max_mem_pid_val[1]}
+            pid_max_cpu=${max_cpu_pid_val[1]}
+            pid_max_mem=${max_mem_pid_val[1]}
 
-        val_max_cpu=${max_cpu_pid_val[2]}
-        val_max_mem=${max_mem_pid_val[2]}
+            val_max_cpu=${max_cpu_pid_val[2]}
+            val_max_mem=${max_mem_pid_val[2]}
 
-        if [ "x$pid_max_mem" != "x" ] ; then
-            comm_max_cpu=$(ps h -o comm $pid_max_cpu)
+            if [ "x$pid_max_mem" != "x" ] ; then
+                comm_max_cpu=$(ps h -o comm $pid_max_cpu)
 
-            warn "Going to kill $p ($pid_max_mem) mem usage $val_max_mem exceeds $max_mem"
-            kill $pid_max_mem
-            sleep 2s
-            if command ps $pid_max_mem >& /dev/null ; then
-                kill -9 $pid_max_mem
+                warn "Going to kill $p ($pid_max_mem) mem usage $val_max_mem exceeds $max_mem"
+                kill $pid_max_mem
+                sleep 2s
+                if command ps $pid_max_mem >& /dev/null ; then
+                    kill -9 $pid_max_mem
+                fi
+                warn "Killed $p ($pid_max_mem) mem usage $val_max_mem exceeds $max_mem"
             fi
-            warn "Killed $p ($pid_max_mem) mem usage $val_max_mem exceeds $max_mem"
-        fi
 
-        if [ "x$pid_max_cpu" != "x" ] ; then
-            comm_max_cpu=$(ps h -o comm $pid_max_cpu)
-            # if command ps $pid_max_cpu >&/dev/null ; then
-            #     verbose "$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p))"
-            # fi
+            if [ "x$pid_max_cpu" != "x" ] ; then
+                comm_max_cpu=$(ps h -o comm $pid_max_cpu)
+                # if command ps $pid_max_cpu >&/dev/null ; then
+                #     verbose "$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p))"
+                # fi
 
-            warn "Going to kill $p ($pid_max_cpu) cpu usage $val_max_cpu exceeds $max_cpu"
-            kill $pid_max_cpu
-            sleep 2s
-            if command ps $pid_max_cpu >& /dev/null ; then
-                kill -9 $pid_max_cpu
+                warn "Going to kill $p ($pid_max_cpu) cpu usage $val_max_cpu exceeds $max_cpu"
+                kill $pid_max_cpu
+                sleep 2s
+                if command ps $pid_max_cpu >& /dev/null ; then
+                    kill -9 $pid_max_cpu
+                fi
+                warn "Killed $p ($pid_max_cpu) cpu usage $val_max_cpu exceeds $max_cpu"
             fi
-            warn "Killed $p ($pid_max_cpu) cpu usage $val_max_cpu exceeds $max_cpu"
         fi
     }
 

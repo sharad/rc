@@ -34,7 +34,7 @@
 
 (deh-section "ecb"
 ;;(when nil
-  (deh-require-maybe semantic
+  (deh-require-maybe (and mode-local semantic)
 
     (deh-require-maybe imenu
       (defun my-semantic-hook ()
@@ -48,8 +48,9 @@
     (require 'semantic/bovine/gcc)
 
     (semantic-add-system-include "~/exp/include/boost_1_37" 'c++-mode)
-    (setq-mode-local c-mode semanticdb-find-default-throttle
-                     '(project unloaded system recursive))
+    (setq-mode-local
+     c-mode semanticdb-find-default-throttle
+     '(project unloaded system recursive))
 
 
     ;; if you want to enable support for gnu global
@@ -227,4 +228,3 @@
 
 
 (provide 'cedet-config)
-

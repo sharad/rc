@@ -83,6 +83,7 @@
     (package-dir-byte-compile "~/.xemacs/pkgrepos/elpa")
     (package-dir-byte-compile "~/.xemacs/pkgrepos/world/misc")
     (package-dir-byte-compile "~/.xemacs/pkgrepos/world/gits")
+    (package-dir-add-to-loadpath "/usr/local/share/emacs/site-lisp")
 
     (mapc
      '(lambda (dir)

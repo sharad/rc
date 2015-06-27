@@ -53,6 +53,8 @@
 
     (defconst *elpa-package-dir* "~/.xemacs/pkgrepos/elpa")
 
+    (defvar package-archives nil "package archive")
+
     (setq
      package-user-dir
      (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa")))
@@ -60,7 +62,6 @@
     sharad/package-installed-archive (expand-file-name "installed-archive.el" package-user-eadiar)
 
     ;; *elpa-package-dir* "~/.xemacs/pkgrepos/elpa"
-    )
 
     (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
@@ -136,6 +137,7 @@
          (end-of-buffer)
          (eval-print-last-sexp))))
 
+    (defvar el-get-sources nil "el-get-sources")
     ;; now either el-get is `require'd already, or have been `load'ed by the
     ;; el-get installer.
     (setq

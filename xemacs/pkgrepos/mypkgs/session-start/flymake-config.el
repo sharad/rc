@@ -77,9 +77,9 @@ copy."
                                                         (desktop-get-readonly-proof-mode flymake-mode))))))
   (require 'session-config)
 
-  (deh-require-maybe session-config
-    (add-to-list 'desktop-minor-mode-handlers (cons 'flymake-mode
-                                                    (desktop-get-readonly-proof-mode flymake-mode))))
+  ;; (deh-require-maybe session-config
+  ;;   (add-to-list 'desktop-minor-mode-handlers (cons 'flymake-mode
+  ;;                                                   (desktop-get-readonly-proof-mode flymake-mode))))
 
 
 

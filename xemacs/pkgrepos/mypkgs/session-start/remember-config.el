@@ -20,7 +20,7 @@
 ;; (require 'remember-blosxom)
 ;; (require 'remember-experimental) ;; will start mail at daemon startup time.
 (require 'remember-autoloads)
-(require 'remember-diary)
+;; (require 'remember-diary) ; merged in remember.el
 (require 'remember-planner)
 (require 'remember-bbdb)
 (require 'remember)
@@ -36,7 +36,7 @@
                         ;; remember-blosxom
                         ;; remember-experimental ;; will start mail at daemon startup time.
                         remember-autoloads
-                        remember-diary
+                        ;; remember-diary ; merged in remember.el
                         remember-planner
                         remember-bbdb
                         remember

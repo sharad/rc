@@ -40,77 +40,75 @@
   ;; to correct it.
   )
 
-(deh-require-maybe (and
-                    (executable-find "p4")
-                    vc-p4)
+(deh-require-maybe vc-p4
+  (when (executable-find "p4")
+    (defvar enable-p4-login nil "test")
 
-  (defvar enable-p4-login nil "test")
+    (if (and (setq vc-p4-require-p4config t)
+             (not (getenv "P4CONFIG")))
+        (setenv "P4CONFIG" ".p4conf"))
 
-  (if (and (setq vc-p4-require-p4config t)
-           (not (getenv "P4CONFIG")))
-      (setenv "P4CONFIG" ".p4conf"))
+    (require 'host-info)
 
-  (require 'host-info)
+    (defvar run-office-activate-failed-max 4 "run-office-activate")
+    (defvar run-office-activate-failed     0 "run-office-activate")
+    (defvar run-office-activate            t "run-office-activate")
 
-  (defvar run-office-activate-failed-max 4 "run-office-activate")
-  (defvar run-office-activate-failed     0 "run-office-activate")
-  (defvar run-office-activate            t "run-office-activate")
-
-  (defadvice vc-p4-registered (around checkp4accessible first (file) activate)
-    (when run-office-activate
-      (if (< run-office-activate-failed run-office-activate-failed-max)
-          (when (and file
-                     (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (login-to-perforce)))
-            ad-do-it)
-          (progn
-            (message-notify
-             "office-activate"
-             "perforce is not reachable, so disabling office-activate and removing P4 from vc-handled-backends.")
-            (setq vc-handled-backends (remove 'P4 vc-handled-backends))
-            (add-hook 'sharad/enable-desktop-restore-interrupting-feature
-                      '(lambda ()
-                        (add-to-list 'vc-handled-backends 'P4)))
-            (setq run-office-activate nil)))))
-
-  (defun is-perforce-is-alive ()
-    (if (shell-command-no-output "timeout -k 3 2 p4 depots")
-        t
-        (progn
-          (incf run-office-activate-failed)
-          nil)))
-
-  (defun login-to-perforce ()
-    (if (and
-         enable-p4-login
-         sharad-in-office-with-perforce
-         (is-perforce-is-alive))
-        ;; fix p4 timeout problem, detect it than disable it for next run.
-        (if (shell-command-no-output "timeout -k 3 2 p4 user -o")
-            t
-            (shell-command-no-output "zenity --password | timeout -k 7 6 p4 login"))))
-
-  (defun office-activate ()
-    (when run-office-activate
-      (if (< run-office-activate-failed run-office-activate-failed-max)
-          (let ((file (buffer-file-name)))
+    (defadvice vc-p4-registered (around checkp4accessible first (file) activate)
+      (when run-office-activate
+        (if (< run-office-activate-failed run-office-activate-failed-max)
             (when (and file
-                       (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (login-to-perforce))
-                       (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (vc-p4-registered file)))
-              ;; if file is handled by perforce than assume it is
-              ;; related to office perforce repository.
-              (office-mode 1)))
-          (progn
-            (message-notify
-           "office-activate"
-           "perforce is not reachable, so disabling office-activate and removing P4 from vc-handled-backends.")
-            (setq vc-handled-backends (remove 'P4 vc-handled-backends))
-            (add-hook 'sharad/enable-desktop-restore-interrupting-feature
-                      '(lambda ()
-                        (add-to-list 'vc-handled-backends 'P4)))
-            (setq run-office-activate nil)))))
+                       (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (login-to-perforce)))
+              ad-do-it)
+            (progn
+              (message-notify
+               "office-activate"
+               "perforce is not reachable, so disabling office-activate and removing P4 from vc-handled-backends.")
+              (setq vc-handled-backends (remove 'P4 vc-handled-backends))
+              (add-hook 'sharad/enable-desktop-restore-interrupting-feature
+                        '(lambda ()
+                          (add-to-list 'vc-handled-backends 'P4)))
+              (setq run-office-activate nil)))))
 
-  (if sharad-in-office-with-perforce
-      (add-element-to-lists 'office-activate pgm-langs)))
+    (defun is-perforce-is-alive ()
+      (if (shell-command-no-output "timeout -k 3 2 p4 depots")
+          t
+          (progn
+            (incf run-office-activate-failed)
+            nil)))
+
+    (defun login-to-perforce ()
+      (if (and
+           enable-p4-login
+           sharad-in-office-with-perforce
+           (is-perforce-is-alive))
+          ;; fix p4 timeout problem, detect it than disable it for next run.
+          (if (shell-command-no-output "timeout -k 3 2 p4 user -o")
+              t
+              (shell-command-no-output "zenity --password | timeout -k 7 6 p4 login"))))
+
+    (defun office-activate ()
+      (when run-office-activate
+        (if (< run-office-activate-failed run-office-activate-failed-max)
+            (let ((file (buffer-file-name)))
+              (when (and file
+                         (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (login-to-perforce))
+                         (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (vc-p4-registered file)))
+                ;; if file is handled by perforce than assume it is
+                ;; related to office perforce repository.
+                (office-mode 1)))
+            (progn
+              (message-notify
+               "office-activate"
+               "perforce is not reachable, so disabling office-activate and removing P4 from vc-handled-backends.")
+              (setq vc-handled-backends (remove 'P4 vc-handled-backends))
+              (add-hook 'sharad/enable-desktop-restore-interrupting-feature
+                        '(lambda ()
+                          (add-to-list 'vc-handled-backends 'P4)))
+              (setq run-office-activate nil)))))
+
+    (if sharad-in-office-with-perforce
+        (add-element-to-lists 'office-activate pgm-langs))))
 
 (unless (fboundp 'login-to-perforce)
   (defun login-to-perforce ()
