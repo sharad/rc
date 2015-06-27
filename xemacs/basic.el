@@ -83,6 +83,8 @@ alkready should not exist.")
                            "~/.osetup/info.d/common/elisp"
                            ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp")) "sadfsd")
 
+(defvar reloading-libraries nil "used in session-conf.el")
+
 (defun load-dir-files (dir)
   (let (load-file-with-errors)
    (when (file-directory-p dir)
@@ -362,7 +364,7 @@ problem while emacs startup in daemon mode, non-interactively."
 
   (deh-section "enable-startup-interrupting-feature"
     (defvar sharad/enable-startup-interrupting-feature-hook nil
-      "Run only once when when very frame got created after emacs startup.")
+      "Run only once when when very frame got created after emacs startup. Feature that were disabled for proper startup of emacs will get re-enabled here.")
 
     (deh-section "xxen"
       (defun general-enable-startup-setting ()
@@ -402,8 +404,7 @@ startup in daemon mode."
               (add-element-to-lists '(lambda ()
                                       (light-symbol-mode 1)
                                       (highlight-changes-visible-mode t)
-                                      (highlight-changes-mode t)) pgm-langs))
-            )
+                                      (highlight-changes-mode t)) pgm-langs)))
           (run-each-hooks 'sharad/enable-startup-interrupting-feature-hook)
           ;; (sharad/desktop-session-restore)
           (message "sharad/enable-startup-interrupting-feature() completed Seen.")

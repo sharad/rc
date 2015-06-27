@@ -311,8 +311,9 @@
           (testing
            (message "elscreen-notify-screen-modification"))
           (elscreen-notify-screen-modification 'force-immediately)
-          ;; (message "elscreen-session-session-list-set: DONE."))
-        (message "elscreen-session-session-list-set: Session do not exists.")))
+          (message "elscreen-session-session-list-set: DONE.")
+          )
+          (message "elscreen-session-session-list-set: Session do not exists.")))
 
   (defvar *frames-elscreen-session* nil "Stores all elscreen sessions here.")
   (defvar *frames-elscreen-session-old* nil "Stores all discarded elscreen sessions here.")
@@ -459,14 +460,14 @@
   (defun server-create-frame-after-adrun ()
       "remove-scratch-buffer"
       (if *elscreen-session-restore-data*
-          (let ((buffer-file (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*))))
-                (file-path  (if (consp buffer-file)
-                                (cdr buffer-file)))
-                (buff (or (if file-path
-                              (find-buffer-visiting file-path))
-                          (if (consp buffer-file)
-                              (car buffer-file)
-                              buffer-file))))
+          (let* ((buffer-file (get-buffer (cdr (assoc 'cb *elscreen-session-restore-data*))))
+                 (file-path  (if (consp buffer-file)
+                                 (cdr buffer-file)))
+                 (buff (or (if file-path
+                               (find-buffer-visiting file-path))
+                           (if (consp buffer-file)
+                               (car buffer-file)
+                               buffer-file))))
             (testing
              (message "running server-create-window-system-frame afer advise if")
              (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*))
@@ -933,6 +934,7 @@ to restore in case of sudden emacs crash."
               (message "desktop-after-read-hook Done")))
 
   (defun sharad/desktop-saved-session ()
+    "check file exists."
     (file-exists-p *desktop-save-filename*))
 
   ;; use session-save to save the desktop manually
@@ -958,20 +960,14 @@ to restore in case of sudden emacs crash."
     (add-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
     (message-notify "sharad/enable-session-saving" "Added save-all-sessions-auto-save to auto-save-hook and kill-emacs-hook"))
 
-  (defadvice desktop-idle-create-buffers (after desktop-idle-complete-actions)
-    (unless desktop-buffer-args-list
-      (message-notify "desktop-idle-complete-actions"
-                      "Enable session saving")
-      (sharad/enable-session-saving-immediately)
-      (progn
-        (ad-disable-advice 'desktop-idle-create-buffers 'after 'desktop-idle-complete-actions)
-        (ad-update 'desktop-idle-create-buffers)
-        (ad-activate 'desktop-idle-create-buffers))))
-
   (defun sharad/enable-session-saving ()
-    (if (or
-         (eq desktop-restore-eager t)
-         (null (sharad/desktop-saved-session)))
+    (if (sharad/desktop-saved-session)
+        (message "desktop file exists.")
+        (message "desktop file do not exists."))
+    ;; (if (or
+    ;;      (eq desktop-restore-eager t)
+    ;;      (null (sharad/desktop-saved-session)))
+    (if (eq desktop-restore-eager t)
         (sharad/enable-session-saving-immediately)
         (progn
           (ad-enable-advice 'desktop-idle-create-buffers 'after 'desktop-idle-complete-actions)
@@ -999,6 +995,37 @@ to restore in case of sudden emacs crash."
         (and
          (member 'save-all-sessions-auto-save auto-save-hook)
          (member '(lambda () (save-all-sessions-auto-save t)) kill-emacs-hook))))
+
+  (defvar sharad/enable-desktop-restore-interrupting-feature nil
+    "feature that were disabled for proper restoring of desktop will get re-enabled here.")
+
+  (defun desktop-idle-create-buffers ()
+    "Create buffers until the user does something, then stop.
+If there are no buffers left to create, kill the timer."
+    (let ((repeat 1))
+      (while (and repeat desktop-buffer-args-list)
+        (unless (ignore-errors
+                 (save-window-excursion
+                   (desktop-lazy-create-buffer)))
+          (message "Desktop lazily opening Failed."))
+        (setq repeat (sit-for 0.2))
+        (unless desktop-buffer-args-list
+          (cancel-timer desktop-lazy-timer)
+          (setq desktop-lazy-timer nil)
+          (message "Lazy desktop load complete")
+          (sit-for 3)
+          (message "")))))
+
+  (defadvice desktop-idle-create-buffers (after desktop-idle-complete-actions)
+    (unless desktop-buffer-args-list
+      (message-notify "desktop-idle-complete-actions"
+                      "Enable session saving")
+      (sharad/enable-session-saving-immediately)
+      (progn
+        (ad-disable-advice 'desktop-idle-create-buffers 'after 'desktop-idle-complete-actions)
+        (ad-update 'desktop-idle-create-buffers)
+        (ad-activate 'desktop-idle-create-buffers))
+      (run-each-hooks 'sharad/enable-desktop-restore-interrupting-feature)))
 
   (require 'vc-config)
 

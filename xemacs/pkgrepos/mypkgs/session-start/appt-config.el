@@ -107,7 +107,7 @@ The variable `appt-audible' controls the audible reminder."
              (message "%s" string))
             ((eq appt-display-format 'popup)
              (appt-notify string)))
-      (if appt-audible (beep 1)))))
+      (if appt-audible (beep 1))))
 
 ;; Note that you need zenity to be installed on your box. If you dont
 ;; like popups maybe you can replace the zenity command with a
