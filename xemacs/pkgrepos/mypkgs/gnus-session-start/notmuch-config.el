@@ -29,8 +29,9 @@
 
   (deh-require-maybe notmuch-address
     ;; http://notmuchmail.org/emacstips/
-    (setq notmuch-address-command "/path/to/address_fetching_program")
-    (notmuch-address-message-insinuate))
+    (setq notmuch-address-command (expand-file-name "notmuch-addrlookup" "~/bin"))
+    (if (file-exists-p notmuch-address-command)
+        (notmuch-address-message-insinuate)))
 
   (defun sharad/gnu-notmuch-current-message-id ()
     (interactive)

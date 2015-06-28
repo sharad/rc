@@ -88,7 +88,8 @@
                           (funcall a))
                       (sticky-buffer-mode t))
                   (launcher-set-elscreen-altname (format "%s" a) f screennum))
-              ('quit (message "Not able to start %s" a))))))))
+              ('quit (message "Not able to start %s error %" a e))
+              ('.error (message "Not able to start %s error %" a e))))))))
 
   ;; (frame-parameter (selected-frame) 'altscreen)
 

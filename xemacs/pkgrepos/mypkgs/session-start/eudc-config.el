@@ -69,6 +69,7 @@ attribute names are returned. Default to `person'"
 (setq ;; eudc-default-return-attributes nil
  eudc-default-return-attributes 'all
  eudc-strict-return-matches nil
+ ;; ldap-ldapsearch-args '("-tt" "-LLL" "-x" "-ZZ")
  ldap-ldapsearch-args '("-tt" "-LLL" "-x")
  eudc-ldap-attributes-translation-alist
  '((adname . name)
@@ -118,7 +119,7 @@ attribute names are returned. Default to `person'"
 
 (eudc-set-server (car (cdr (assoc 'office (eudc-ldap-datas)))) 'ldap t)
 
-  (defun enz-eudc-expand-inline()
+  (defun enz-eudc-expand-inline ()
     (interactive)
     (move-end-of-line 1)
     (insert "*")
@@ -128,7 +129,7 @@ attribute names are returned. Default to `person'"
       (backward-delete-char-untabify 1)))
 
 
-  (defun sharad/enz-eudc-expand-inline()
+  (defun sharad/enz-eudc-expand-inline ()
     (interactive)
     (move-end-of-line 1)
     (insert "*")
@@ -151,10 +152,15 @@ attribute names are returned. Default to `person'"
   (defun eudc-select (choices beg end)
     "Choose one from CHOICES using a completion.
 BEG and END delimit the text which is to be replaced."
-    (let ((replacement))
+    (let ((replacement)
+          ;; (complete-fn 'completing-read)
+          (complete-fn
+           (if (< (length choices) 10)
+               'ido-completing-read
+               'completing-read)))
       (setq replacement
-            (completing-read "Multiple matches found; choose one: "
-                             (mapcar 'list choices)))
+            (funcall complete-fn "Multiple matches found; choose one: "
+                     (mapcar 'list choices)))
       (delete-region beg end)
       (insert replacement)))
 
