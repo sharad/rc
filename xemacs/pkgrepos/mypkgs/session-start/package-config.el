@@ -49,7 +49,7 @@
       (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa"))
       "package-user-dir")
 
-    (defvar sharad/package-installed-archive (expand-file-name "installed-archive.el" package-user-eadiar) "Known Installed packages.")
+    (defvar sharad/package-installed-archive (expand-file-name "installed-archive.el" package-user-dir) "Known Installed packages.")
 
     (defconst *elpa-package-dir* "~/.xemacs/pkgrepos/elpa")
 
@@ -59,7 +59,7 @@
      package-user-dir
      (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa")))
 
-    sharad/package-installed-archive (expand-file-name "installed-archive.el" package-user-eadiar)
+    sharad/package-installed-archive (expand-file-name "installed-archive.el" package-user-dir)
 
     ;; *elpa-package-dir* "~/.xemacs/pkgrepos/elpa"
 
@@ -134,7 +134,7 @@
       (url-retrieve
        "https://github.com/dimitri/el-get/raw/master/el-get-install.el"
        (lambda (s)
-         (end-of-buffer)
+         (goto-char (point-max))
          (eval-print-last-sexp))))
 
     (defvar el-get-sources nil "el-get-sources")

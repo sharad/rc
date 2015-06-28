@@ -86,7 +86,8 @@ Creates a ~/.timeclock/default.log if it doesn't exist already."
 (timeclock-initialize)
 (timeclock-setup-keys)
 
-(timeclock-modeline-display 1) ;; if you want modline display
+;; (timeclock-modeline-display 1) ;; if you want modline display
+(timeclock-mode-line-display 1)
 
 
 
@@ -95,15 +96,19 @@ Creates a ~/.timeclock/default.log if it doesn't exist already."
   "Insert a daily report of hours spent on each project.
 Summarizes the data in the timeclock log."
   (interactive)
-  (let* ( (command "perl timeclock_project_hours_report")
-          (report (shell-command-to-string command) )
-         )
-    (insert report)
-    )
-  )
+  (let* ((command "perl timeclock_project_hours_report")
+         (report (shell-command-to-string command) ))
+    (insert report)))
 
-(global-set-key "\C-xtR" 'timeclock-insert-project-hours-report)
+;; TODO
+(unless (and (boundp 'sup-t-map)
+               (keymapp sup-t-map))
+    (setq sup-t-map (make-sparse-keymap))
+    (local-set-key "s-t" sup-t-map))
 
+;; (global-set-key "\C-xtR" 'timeclock-insert-project-hours-report)
+;; (global-set-key "\C-ctR" 'timeclock-insert-project-hours-report)
+(define-key sup-t-map "tR" 'timeclock-insert-project-hours-report)
 
 (defun timeclock-display-project-names  ()
   "Displays project names in use in the timeclock log."
@@ -130,8 +135,9 @@ Summarizes the data in the timeclock log."
     )
   )
 
-(global-set-key "\C-xtN" 'timeclock-display-project-names)
-
+;; (global-set-key "\C-xtN" 'timeclock-display-project-names)
+;; (global-set-key "\C-ctN" 'timeclock-display-project-names)
+(define-key sup-t-map "tR" 'timeclock-display-project-names)
 
 
 

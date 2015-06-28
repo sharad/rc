@@ -81,7 +81,9 @@
           (pushnew file buffer-linked-files))
         (message "buffer is not associated with any file.")))
 
+  (require 'desktop)
   (add-to-list 'desktop-locals-to-save 'buffer-linked-files)
+  (require 'session)
   (add-to-list 'session-locals-include 'buffer-linked-files)
 
 

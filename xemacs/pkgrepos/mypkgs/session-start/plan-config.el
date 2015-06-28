@@ -11,7 +11,7 @@
 ;; set print-length
 ;; (setq print-length 100)
 
-;; Query replace (default /home/s/hell/.Organize/emacs/plan/Plans -> ~/Documents/CreatedContent/contents/muse/web/site/wiki/Organize/plan/Plans): 
+;; Query replace (default /home/s/hell/.Organize/emacs/plan/Plans -> ~/Documents/CreatedContent/contents/muse/web/site/wiki/Organize/plan/Plans):
 
 (deh-require-maybe (and muse-config planner)
   (setq planner-sections
@@ -138,8 +138,10 @@
                 'planner-multi-tasks-equal-p))
 
     ;; TODO Fix it
-    (assert (eq (symbol-function 'planner-edit-task-description)
-                'planner-multi-edit-task-description))
+    (when nil
+     (assert (eq (symbol-function 'planner-edit-task-description)
+                 'planner-multi-edit-task-description)))
+
     (assert (not
              (eq (symbol-function 'planner-edit-task-description)
                  'planner-edit-task-description-basic)))

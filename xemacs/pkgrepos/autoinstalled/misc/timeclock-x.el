@@ -4,7 +4,7 @@
 ;; Author: Kahlil (Kal) HODGSON <dorge@tpg.com.au>
 ;; Keywords: convenience, data
 ;; X-URL: http://www.emacswiki.org/elisp/timeclock-x.el
-;; Time-stamp: <2014-06-05 13:05:11 s>
+;; Time-stamp: <2015-06-28 16:35:53 s>
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -173,22 +173,41 @@ whenever you clock out or change project."
   (or (null timeclock-last-event)
       (equal (downcase (car timeclock-last-event)) "o")))
 
+(defvar sup-t-map nil "map")
+
 (defun timeclock-setup-keys ()
   "Setup keys for timeclock."
 
   (autoload 'timeclock-generate-latex-report "timeclock-report")
 
-  (define-key ctl-x-map "ti" 'timeclock-in-safe)
-  (define-key ctl-x-map "to" 'timeclock-out-safe)
-  (define-key ctl-x-map "tc" 'timeclock-change-safe)
-  (define-key ctl-x-map "tC" 'timeclock-change-job)
-  (define-key ctl-x-map "tr" 'timeclock-reread-log)
-  (define-key ctl-x-map "tu" 'timeclock-update-modeline)
-  (define-key ctl-x-map "tw" 'timeclock-when-to-leave-string)
-  (define-key ctl-x-map "th" 'timeclock-pop-up-help)
-  (define-key ctl-x-map "ts" 'timeclock-status-string)
-  (define-key ctl-x-map "tv" 'timeclock-visit-timelog)
-  (define-key ctl-x-map "tp" 'timeclock-toggle-query-project))
+  ;; (define-key ctl-x-map "ti" 'timeclock-in-safe)
+  ;; (define-key ctl-x-map "to" 'timeclock-out-safe)
+  ;; (define-key ctl-x-map "tc" 'timeclock-change-safe)
+  ;; (define-key ctl-x-map "tC" 'timeclock-change-job)
+  ;; (define-key ctl-x-map "tr" 'timeclock-reread-log)
+  ;; (define-key ctl-x-map "tu" 'timeclock-update-modeline)
+  ;; (define-key ctl-x-map "tw" 'timeclock-when-to-leave-string)
+  ;; (define-key ctl-x-map "th" 'timeclock-pop-up-help)
+  ;; (define-key ctl-x-map "ts" 'timeclock-status-string)
+  ;; (define-key ctl-x-map "tv" 'timeclock-visit-timelog)
+  ;; (define-key ctl-x-map "tp" 'timeclock-toggle-query-project))
+
+  (unless (and (boundp 'sup-t-map)
+               (keymapp sup-t-map))
+    (setq sup-t-map (make-sparse-keymap))
+    (local-set-key "s-t" sup-t-map))
+  (define-key sup-t-map "ti" 'timeclock-in-safe)
+  (define-key sup-t-map "to" 'timeclock-out-safe)
+  (define-key sup-t-map "tc" 'timeclock-change-safe)
+  (define-key sup-t-map "tC" 'timeclock-change-job)
+  (define-key sup-t-map "tr" 'timeclock-reread-log)
+  (define-key sup-t-map "tu" 'timeclock-update-modeline)
+  (define-key sup-t-map "tw" 'timeclock-when-to-leave-string)
+  (define-key sup-t-map "th" 'timeclock-pop-up-help)
+  (define-key sup-t-map "ts" 'timeclock-status-string)
+  (define-key sup-t-map "tv" 'timeclock-visit-timelog)
+  (define-key sup-t-map "tp" 'timeclock-toggle-query-project)
+  )
 
 (defun timeclock-pop-up-help ()
   "Display a helpful non-technical usage message for the timeclock package."

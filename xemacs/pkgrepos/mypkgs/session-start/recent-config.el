@@ -29,7 +29,7 @@
 (deh-require-maybe recentf
   (make-directory (expand-file-name "autoconfig/recentf/" user-emacs-directory) t)
   (setq
-   recentf-save-file  (make-directory (expand-file-name "autoconfig/recentf/recentf.el" user-emacs-directory) t)
+   recentf-save-file (expand-file-name "autoconfig/recentf/recentf" user-emacs-directory)
    recentf-exclude (list (regexp-opt '(".org$" ".rem$")))
    recentf-max-saved-items 99
    ;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2007-07/msg00007.html
@@ -108,7 +108,9 @@ FILE has been displayed."
          (if arg (nth arg recently-killed-list)
              (car recently-killed-list)))))))
 
-(deh-require-maybe recentf-ext)
+(when recentf-save-file
+  (deh-require-maybe recentf-ext))
+
 
 (deh-require-maybe recentf-buffer)
 

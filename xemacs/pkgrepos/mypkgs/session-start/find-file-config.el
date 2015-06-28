@@ -289,7 +289,14 @@ timestamp has not changed (e.g. with ftp or on Windows)."
               (setq ido-exit 'refresh)
               (exit-minibuffer))))
 
-      (keymap-set-key-if-unbind ido-file-completion-map (kbd "C-.") 'ido-plain-directory))))
+      ;; ido-file-completion-map is only defined when ido-mode is called.
+      (add-hook 'ido-setup-hook
+                (lambda ()
+                  (keymap-set-key-if-unbind
+                   ido-file-completion-map
+                   (kbd "C-.")
+                   'ido-plain-directory)))
+      )))
 
 
 (provide 'find-file-config)
