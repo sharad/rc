@@ -465,5 +465,14 @@
 ;; }}
 
 
+;; {{
+;; message-completion-alist
+;; (("^\\(Resent-\\)?\\(To\\|B?Cc\\|Reply-To\\|From\\|Mail-Followup-To\\|Mail-Copies-To\\):" . notmuch-address-expand-name)
+;;  ("^\\(Newsgroups\\|Followup-To\\|Posted-To\\|Gcc\\):" . message-expand-group)
+;;  ("^\\(Resent-\\)?\\(To\\|B?Cc\\):" . message-expand-name)
+;;  ("^\\(Reply-To\\|From\\|Mail-Followup-To\\|Mail-Copies-To\\):" . message-expand-name)
+;;  ("^\\(Disposition-Notification-To\\|Return-Receipt-To\\):" . message-expand-name))
+;; }}
+
 (provide 'message-config)
 ;;; message-config.el ends here
