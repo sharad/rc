@@ -30,44 +30,6 @@
   ;; toggle-ibuffer-group
   (require 'buffer-config)
 
-  (defmacro frame-launcher (args &optional fun)
-    `(let ((f (make-frame)))
-       (select-frame f)
-       (dolist (a ,args)
-         (when (or (= 0 (elscreen-get-current-screen))
-                   (elscreen-create))
-           (condition-case e
-               (if (if fun
-                       (funcall ,fun a)
-                       (funcall a))
-                   (sticky-buffer-mode t))
-             ('quit (message "Not able to start %s" a)))))))
-
-  (defmacro frame-launcher (name args &optional fun)
-    `(unless (progn
-               (ignore-errors
-                 (select-frame-by-name ,name))
-               (equal (get-frame-name) ,name))
-       (let ((f (make-frame (list (cons 'name ,name))))
-             (screennum 0)
-             (first-screen t))
-         (select-frame f)
-         (progn
-           ,@(mapcar
-              (lambda (a)
-                `(when (or first-screen
-                           (setq screennum (elscreen-create)))
-                   (setq first-screen nil)
-                   (condition-case e
-                       (progn
-                         (if (if ,fun
-                                 (funcall ,fun ,a)
-                                 (funcall ,a))
-                             (sticky-buffer-mode t))
-                         (launcher-set-elscreen-altname (format "%s" ,a) f screennum))
-                     ('quit (message "Not able to start %s" a)))))
-              ,args)))))
-
   (defun frame-launcher (name args &optional fun)
     (unless (progn
               (ignore-errors
@@ -88,8 +50,8 @@
                           (funcall a))
                       (sticky-buffer-mode t))
                   (launcher-set-elscreen-altname (format "%s" a) f screennum))
-              ('quit (message "Not able to start %s error %" a e))
-              ('.error (message "Not able to start %s error %" a e))))))))
+              (quit  (message "Not able to start %s error %" a e))
+              (error (message "Not able to start %s error %" a e))))))))
 
   ;; (frame-parameter (selected-frame) 'altscreen)
 

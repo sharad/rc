@@ -366,7 +366,7 @@ sub connect_vpn {
   # set int handlers
   $SIG{'INT'}  = \&INT_handler; # CTRL+C
   $SIG{'TERM'} = \&INT_handler; # Kill process
-  $SIG{'HUP'} = \&INT_handler; # Terminal closed
+  $SIG{'HUP'}  = \&INT_handler; # Terminal closed
   $SIG{'PIPE'} = \&INT_handler; # Process died
 
   # flush after every write

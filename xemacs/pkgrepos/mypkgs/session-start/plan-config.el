@@ -365,6 +365,8 @@
     (defun planner-clean-page-section (section empty-string page-string)
       (or
        (string-replace-match (concat "* " section "\n\n" empty-string) page-string (concat "* " section "\n") t)
+       ;; alternate
+       ;; (replace-regexp-in-string (concat "* " section "\n\n" empty-string) (concat "* " section "\n") page-string nil t)
        page-string))
 
     (defun planner-clean-page-sections (page-string)

@@ -60,10 +60,14 @@
             (unless (file-directory-p logdir)
               (make-directory logdir t)))
           (message "connecting bnc4free to connect freenode")
-          (erc-bnc4free)
+          (condition-case e
+              (erc-bnc4free)
+            (error (message "Error: %s" e)))
           ;; (erc-freenode)
           (sleep-for 0 500)
-          (erc-bitlbee)
+          (condition-case e
+              (erc-bitlbee)
+            (error (message "Error: %s" e)))
                                         ; can connect to multiple servers automatically
                                         ;(erc :server "irc.gimp.org" :port 6667 :nick "foo" :full-name "bar")
           )))
@@ -118,8 +122,12 @@
   (deh-require-maybe bitlbee
     (defun erc-bitlbee ()
       (interactive)
-      (bitlbee-start)
-      (if (bitlbee-running-p)
+      ;; (if (and (bitlbee-start)
+      ;;          (bitlbee-running-p))
+      ;;     (erc :server "localhost" :port "6667")
+      ;;     (message "bitlbee is not running, install bitlbee and run it."))
+
+      (if (shell-command-no-output "pgrep bitlbee") ;with bitlbee system-wide service.
           (erc :server "localhost" :port "6667")
           (message "bitlbee is not running, install bitlbee and run it."))
       ; (sleep-for 0 500)
@@ -240,7 +248,8 @@
       (when (get-buffer "&bitlbee")
         (with-current-buffer "&bitlbee"
           (erc-message "PRIVMSG" (concat (erc-default-target) " identify " bitlbee-password))
-          (erc-message "PRIVMSG" (concat (erc-default-target) " account on"))))))
+          (erc-message "PRIVMSG" (concat (erc-default-target) " account on"))
+          (erc-message "PRIVMSG" (concat (erc-default-target) " blist all"))))))
 
   ;; (setq bitlbee-reconnect-timer (run-with-timer 0 60 'bitlbee-connect))
 
@@ -417,16 +426,22 @@ waiting for responses from the server"
   ;; these can all be accomplished by
   ;;     M-x ibuffer RET * M erc-mode RET D RET
 
-  ;; Kill buffers for channels after /part
-  ;; (setq erc-kill-buffer-on-part t)
-  ;; Kill buffers for private queries after quitting the server
-  ;; (setq erc-kill-queries-on-quit t)
-  ;; Kill buffers for server messages after quitting the server
-  (setq erc-kill-server-buffer-on-quit t)
+  (setq
+   ;; Kill buffers for server messages after quitting the server
+   erc-kill-server-buffer-on-quit t
+   ;; Kill buffers for private queries after quitting the server
+   erc-kill-queries-on-quit t
+   ;; Kill buffers for channels after /part
+   erc-kill-buffer-on-part t
+   ;; open query buffers in the current window
+   erc-query-display 'window)
 
   ;; (setq erc-encoding-coding-alist (quote (("#lisp" . utf-8)
   ;;                                         ("#nihongo" . iso-2022-jp) ("#truelambda" . iso-latin-1)
   ;;                                         ("#bitlbee" . iso-latin-1))))
+
+  ;; (defvar erc-save-buffer-on-part nil)
+  ;; (defvar erc-save-queries-on-quit nil)
 
 
 
@@ -662,11 +677,13 @@ waiting for responses from the server"
           (pymacs-exec "pynotify.init('Emacs')")
           (unless (pymacs-eval "os.getenv('DISPLAY',False)")
             (pymacs-exec (format "os.environ['DISPLAY'] = '%s'" (getenv "DISPLAY" (selected-frame)))))
-          (if icon
+          (let ((title   (replace-regexp-in-string "'" "\\'" title nil t))
+                (message (replace-regexp-in-string "'" "\\'" message nil t)))
+           (if icon
               (pymacs-exec (format "msg = pynotify.Notification('%s','%s','%s')"
                                    title message icon))
               (pymacs-exec (format "msg = pynotify.Notification('%s','%s')"
-                                   title message)))
+                                   title message))))
           (if duration
               (pymacs-exec (format "msg.set_timeout(%s)" duration)))
           (pymacs-exec "msg.show()"))
@@ -828,7 +845,38 @@ If SERVER is non-nil, use that, rather than the current server."
 
     (autoload 'h4x0r-region "h4x0r"))
 
+(deh-section "erc-logs"
+ (defun erc-save-buffers-in-logs ()
+   (interactive)
+   (mapc (lambda(buf)
+    (save-excursion
+      (set-buffer buf)
+      (erc-save-buffer-in-logs)))
+  (erc-buffer-filter (lambda() t))))
 
+ (defadvice save-buffers-kill-emacs
+   (before save-logs-before-save-buffers-kill-emacs (&rest args) activate)
+   'erc-save-buffers-in-logs)
+
+ (defadvice save-some-buffers
+   (before save-logs-before-save-some-buffers (&rest args) activate)
+   'erc-save-buffers-in-logs)
+
+ (add-hook 'erc-insert-post-hook 'erc-save-buffer-in-logs)
+
+ (setq erc-save-buffer-on-part nil
+       erc-save-queries-on-quit nil
+       erc-log-write-after-send t
+       erc-log-write-after-insert t)
+
+
+ ;; Character encoding problems
+ ;; If you log, and erc frequently hangs on you upon seeing certain international characters, try this:
+
+ ;; (setq bbdb-file-coding-system 'raw-text)
+ ;; (setq-default buffer-file-coding-system 'raw-text)
+ ;; (setq buffer-file-coding-system 'raw-text)
+ (add-hook 'erc-mode-hook (lambda () (setq buffer-file-coding-system 'raw-text))))
 
 (provide 'erc-config)
 
