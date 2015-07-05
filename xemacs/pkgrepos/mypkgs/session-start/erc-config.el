@@ -142,7 +142,8 @@
                                       ;; ("freenode.net" ;"#bugfunk"
                                       ;;  "#emacs" "#lisp"
                                       ;;  "#python")
-                                      ("localhost" "#bitlbee"))
+                                      ;; ("localhost" "#bitlbee")
+                                      ("localhost" "&bitlbee"))
         erc-prompt-for-password nil
         erc-pals '("siprsuhane") ;'("pfeyz" "nenn" "echo" "SirCodesalot")
         erc-fools '()
@@ -248,7 +249,8 @@
       (when (get-buffer "&bitlbee")
         (with-current-buffer "&bitlbee"
           (erc-message "PRIVMSG" (concat (erc-default-target) " identify " bitlbee-password))
-          (erc-message "PRIVMSG" (concat (erc-default-target) " account on"))
+          ;; (erc-message "PRIVMSG" (concat (erc-default-target) " account on"))
+          (erc-message "PRIVMSG" (concat (erc-default-target) " account off"))
           (erc-message "PRIVMSG" (concat (erc-default-target) " blist all"))))))
 
   ;; (setq bitlbee-reconnect-timer (run-with-timer 0 60 'bitlbee-connect))
@@ -434,11 +436,14 @@ waiting for responses from the server"
    ;; Kill buffers for channels after /part
    erc-kill-buffer-on-part t
    ;; open query buffers in the current window
-   erc-query-display 'window)
+   erc-query-display 'window
+   )
 
   ;; (setq erc-encoding-coding-alist (quote (("#lisp" . utf-8)
-  ;;                                         ("#nihongo" . iso-2022-jp) ("#truelambda" . iso-latin-1)
-  ;;                                         ("#bitlbee" . iso-latin-1))))
+  ;;                                         ("#nihongo" . iso-2022-jp)
+  ;;                                         ("#truelambda" . iso-latin-1)
+  ;;                                         ("#bitlbee" . iso-latin-1)
+  ;;                                         ("&bitlbee" . iso-latin-1))))
 
   ;; (defvar erc-save-buffer-on-part nil)
   ;; (defvar erc-save-queries-on-quit nil)
@@ -492,7 +497,8 @@ waiting for responses from the server"
 
   (erc-services-mode 1)
 
-  (setq erc-auto-query 'frame
+  (setq ;; erc-auto-query 'frame
+        erc-auto-query 'buffer
         erc-nickserv-passwords
         `(
           (freenode (,(cons "sharad"  freenode-pass)
@@ -756,7 +762,7 @@ waiting for responses from the server"
         (ding)
         (notify-desktop (format "%s - %s" target
                                 (format-time-string "%b %d %I:%M %p"))
-                        (format "%s: %s" nick msg) erc-page-duration "gnome-emacs"))))
+                        (format "%s: %s" zcnick msg) erc-page-duration "gnome-emacs"))))
 
   (add-hook 'erc-server-PRIVMSG-functions 'erc-notify-PRIVMSG))
 
@@ -896,7 +902,8 @@ If SERVER is non-nil, use that, rather than the current server."
   ;;       '(
   ;;         ;; ("freenode.net" "#emacs" "#wiki" "#nethack")
   ;;         ("freenode.net" "#emacs")
-  ;;         ("localhost" "#bitlbee")))
+  ;;         ;; ("localhost" "#bitlbee")
+  ;;         ("localhost" "&bitlbee")))
 
   ;;   (defun sharad/start-erc ()
   ;;     (interactive)
