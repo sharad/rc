@@ -281,7 +281,8 @@
         (let ((nameless-msg (replace-regexp-in-string "^\<.*?\> \(oscar - \)?" "" msg)))
           (shell-command (concat "notify-send -t 1500 \"" (buffer-name) "\" \"" nameless-msg "\"")))))
 
-  (add-hook 'erc-insert-pre-hook 'erc-notify-on-msg)
+  ;; not all messages
+  ;; (add-hook 'erc-insert-pre-hook 'erc-notify-on-msg)
 
   (defun erc-ignore-unimportant (msg)
     "this is probably a really really horrible idea
@@ -498,7 +499,8 @@ waiting for responses from the server"
   (erc-services-mode 1)
 
   (setq ;; erc-auto-query 'frame
-        erc-auto-query 'buffer
+        ;; erc-auto-query 'buffer
+        erc-auto-query 'window-noselect
         erc-nickserv-passwords
         `(
           (freenode (,(cons "sharad"  freenode-pass)
@@ -534,10 +536,11 @@ waiting for responses from the server"
 ;;   'buffer          - in place of the current buffer,
 ;;   any other value  - in place of the current buffer."
 
-  (setf erc-auto-query 'frame
-        ;; erc-join-buffer 'window
-        erc-join-buffer 'buffer
-        erc-kill-queries-on-quit t)
+  (setf ;; erc-auto-query 'frame
+   erc-auto-query 'window-noselect
+   ;; erc-join-buffer 'window
+   erc-join-buffer 'buffer
+   erc-kill-queries-on-quit t)
 
 
 
@@ -671,6 +674,7 @@ waiting for responses from the server"
 
   (defun notify-desktop (title message &optional duration &optional icon)
     "Pop up a message on the desktop with an optional duration (forever otherwise)"
+    (message "Notification")
     (condition-case e
         (progn
           (pymacs-exec "import os")
@@ -722,22 +726,29 @@ waiting for responses from the server"
     "Alist of 'nickname|target' and last time they triggered a notification"
     )
 
+  (defvar erc-page-nick-block-list nil
+    "Alist of 'nickname|target' and last time they triggered a notification"
+    )
+
+  (add-to-list 'erc-page-nick-block-list "skypeconsole")
+
   (defvar erc-page-duration 100 "notification duration.")
 
   (defun erc-notify-allowed (nick target &optional delay)
     "Return true if a certain nick has waited long enough to notify"
     (unless delay (setq delay 30))
-    (let ;; ((cur-time (time-to-seconds (current-time)))
-        ((cur-time (float-time (current-time)))
-          (cur-assoc (assoc (format "%s|%s" nick target) erc-page-nick-alist))
-          (last-time))
-      (if cur-assoc
-          (progn
-            (setq last-time (cdr cur-assoc))
-            (setcdr cur-assoc cur-time)
-            (> (abs (- cur-time last-time)) delay))
-          (push (cons (format "%s|%s" nick target) cur-time) erc-page-nick-alist)
-          t)))
+    (unless (member nick erc-page-nick-block-list)
+      (let ;; ((cur-time (time-to-seconds (current-time)))
+          ((cur-time (float-time (current-time)))
+           (cur-assoc (assoc (format "%s|%s" nick target) erc-page-nick-alist))
+           (last-time))
+        (if cur-assoc
+            (progn
+              (setq last-time (cdr cur-assoc))
+              (setcdr cur-assoc cur-time)
+              (> (abs (- cur-time last-time)) delay))
+            (push (cons (format "%s|%s" nick target) cur-time) erc-page-nick-alist)
+            t))))
 
   (defun erc-notify-PRIVMSG (proc parsed)
     (let ((nick (car (erc-parse-user (erc-response.sender parsed))))
@@ -746,23 +757,27 @@ waiting for responses from the server"
       ;;Handle true private/direct messages (non channel)
       (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
                  (erc-current-nick-p target)
-                 (erc-notify-allowed nick target)
-                 )
+                 (erc-notify-allowed nick target))
                                         ;Do actual notification
         (ding)
-        (notify-desktop (format "%s - %s" nick
-                                (format-time-string "%b %d %I:%M %p"))
+        (notify-desktop (format "PRIVMSG-%s - %s"
+                                nick
+                                target
+                                (format-time-string "%b %d %I:%M %p")
+                                )
                         msg erc-page-duration "gnome-emacs")
         )
+
       ;;Handle channel messages when my nick is mentioned
       (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
                  (string-match (erc-current-nick) msg)
                  (erc-notify-allowed nick target))
-        ;Do actual notification
+                                        ;Do actual notification
         (ding)
-        (notify-desktop (format "%s - %s" target
+        (notify-desktop (format "PRIVMSG-%s - %s" target
                                 (format-time-string "%b %d %I:%M %p"))
-                        (format "%s: %s" zcnick msg) erc-page-duration "gnome-emacs"))))
+                        (format "%s: %s" nick msg) erc-page-duration "gnome-emacs"))
+      ))
 
   (add-hook 'erc-server-PRIVMSG-functions 'erc-notify-PRIVMSG))
 
@@ -785,38 +800,33 @@ If SERVER is non-nil, use that, rather than the current server."
     (push user sharad/erc-monitor-user-list))
   t)
 
-
-
-
   (defun erc-notify-MONITOR (proc parsed)
-    ;; (message "called")
     (let ((nick (car (erc-parse-user (erc-response.sender parsed))))
           (target (car (erc-response.command-args parsed)))
           (msg (erc-response.contents parsed)))
-      ;;Handle true private/direct messages (non channel)
-      (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
-                 (erc-current-nick-p target)
-                 (erc-notify-allowed nick target)
-                 )
+      (when (member nick sharad/erc-monitor-user-list)
+          ;;Handle true private/direct messages (non channel)
+          (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
+                     (erc-current-nick-p target)
+                     (erc-notify-allowed nick target))
                                         ;Do actual notification
-        (ding)
-        (notify-desktop (format "%s - %s" nick
-                                (format-time-string "%b %d %I:%M %p"))
-                        msg erc-page-duration "gnome-emacs")
-        )
-      ;; (message "nick %s" nick)
-      ;;Handle channel messages when my nick is mentioned
-      (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
-                 ;; (string-match (erc-current-nick) msg)
-                 (member nick sharad/erc-monitor-user-list)
-                 ;; (erc-notify-allowed nick target)
-                 )
-        ;Do actual notification
-        ;; (message "ttttttttt")
-        (ding)
-        (notify-desktop (format "%s - %s" target
-                                (format-time-string "%b %d %I:%M %p"))
-                        (format "%s: %s" nick msg) erc-page-duration "gnome-emacs"))))
+            (ding)
+            (notify-desktop (format "MONITOR-%s - %s" nick
+                                    (format-time-string "%b %d %I:%M %p"))
+                            msg erc-page-duration "gnome-emacs")
+            )
+          ;; (message "nick %s" nick)
+          ;;Handle channel messages when my nick is mentioned
+          (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
+                     (string-match (erc-current-nick) msg)
+                     (member nick sharad/erc-monitor-user-list)
+                     (erc-notify-allowed nick target))
+                                        ;Do actual notification
+            ;; (message "ttttttttt")
+            (ding)
+            (notify-desktop (format "MONITOR-%s - %s" target
+                                    (format-time-string "%b %d %I:%M %p"))
+                            (format "%s: %s" nick msg) erc-page-duration "gnome-emacs")))))
 
   (add-hook 'erc-server-PRIVMSG-functions 'erc-notify-MONITOR))
 

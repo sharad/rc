@@ -176,35 +176,40 @@ mentioned in an erc channel."
 (defun erc-nick-notify ()
   "Notify me when my nick show up.
 This function should be on `erc-insert-post-hook'"
+  ;; (error "yes")
   (let ((now (current-time)))
     (when (time-less-p erc-nick-notify-delay
                        (time-since erc-nick-notify-last))
       (setq erc-nick-notify-last now)
-      (goto-char (point-min))
-      (when (re-search-forward
-             (concat "\\("
-                     "\\(<\\([^>]*\\)>\\)" ; <someone>
-                     "\\|"
-                     ;; Don't match if we're saying something
-                     "\\(\\* " (regexp-quote (erc-current-nick)) "\\)"
-                     "\\)"
-                     "\\(.*" (regexp-quote (erc-current-nick)) ".*\\)")
-             nil t)
-        (let ((msg (concat
-                    (when (> (length (match-string-no-properties 2)) 0)
-                      (concat "<b>&lt;" (match-string-no-properties 3)
-                              "&gt;</b> "))
-                    (match-string-no-properties 5))))
-          (setq erc-nick-notify-buffer (buffer-name))
-          (start-process "erc-nick-notify" nil erc-nick-notify-cmd
-                         "-i" erc-nick-notify-icon
-                         "-t" (int-to-string
+      (save-excursion
+        ;; (goto-char (point-min))
+        (goto-char (point-max))
+        (forward-line -1)
+        (move-beginning-of-line nil)
+        (when (re-search-forward
+               (concat "\\("
+                       "\\(<\\([^>]*\\)>\\)" ; <someone>
+                       "\\|"
+                       ;; Don't match if we're saying something
+                       "\\(\\* " (regexp-quote (erc-current-nick)) "\\)"
+                       "\\)"
+                       "\\(.*" (regexp-quote (erc-current-nick)) ".*\\)")
+               nil t)
+          (let ((msg (concat
+                      (when (> (length (match-string-no-properties 2)) 0)
+                        (concat "<b>&lt;" (match-string-no-properties 3)
+                                "&gt;</b> "))
+                      (match-string-no-properties 5))))
+            (setq erc-nick-notify-buffer (buffer-name))
+            (start-process "erc-nick-notify" nil erc-nick-notify-cmd
+                           "-i" erc-nick-notify-icon
+                           "-t" (int-to-string
                                  erc-nick-notify-timeout)
-                         "-u" erc-nick-notify-urgency
-                         "-c" erc-nick-notify-category
-                         "--" erc-nick-notify-buffer
-                         (if (boundp 'msg)
-                             msg "")))))))
+                           "-u" erc-nick-notify-urgency
+                           "-c" erc-nick-notify-category
+                           "--" erc-nick-notify-buffer
+                           (if (boundp 'msg)
+                               msg ""))))))))
 
 
 (provide 'erc-nick-notify)

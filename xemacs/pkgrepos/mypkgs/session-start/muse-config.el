@@ -654,8 +654,8 @@ between the two tags."
                   (funcall strorfn))
                  ;; )
                 ((stringp strorfn)   strorfn)
-                ((if (symbolp strorfn)
-                     (stringp (symbol-value strorfn)))
+                ((and (symbolp strorfn)
+                      (stringp (symbol-value strorfn)))
                  (symbol-value strorfn))
                 ((null strorfn) nil)
                 (t (error "wrong"))))
@@ -945,8 +945,9 @@ directory part of FILE."
 
 
 
-;;
-    (testing
+    ;;
+    ;; (testing
+    (when nil
 
 
      (defsubst muse-publish-link-name (&optional file style)
