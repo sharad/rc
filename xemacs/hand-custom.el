@@ -105,6 +105,7 @@
  '(save-abbrevs t)
  '(save-place t nil (saveplace))
  '(scroll-conservatively 4)
+ '(send-mail-function (quote sendmail-send-it))
  '(session-set-file-name-exclude-regexp "/\\.overview\\|.session\\|News/\\|\\.Organize/")
  '(session-use-package t)
  '(show-paren-mode t nil (paren))

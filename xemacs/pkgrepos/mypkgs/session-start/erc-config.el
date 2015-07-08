@@ -45,8 +45,6 @@
   ;; use it.
   ;; (defun erc-cmd-UPTIME (&rest ignore)
 
-
-
   (message "loading defun sharad/erc-start-or-switch")
 
   (defun sharad/erc-start-or-switch ()
@@ -372,7 +370,9 @@ Pretty sure these are guaranteed to not work, but they do
   (defun fb/all-user-rename (msg)
     (when (string-match "Name: \\([[:alpha:] -]+[[:alpha:]]\\)" msg)
       (let ((fbid fb/id)
-            (name (concat (mapconcat 'identity (split-string (match-string 1 msg)) "") fb/suffix)))
+            ;; (name (concat (mapconcat 'identity (split-string (match-string 1 msg)) "") fb/suffix))
+            (name (concat fb/suffix "/" (mapconcat 'identity (split-string (match-string 1 msg)) "")))
+            )
         (erc-display-line (concat "<fbid> renaming " fbid " to " name))
         (erc-message "PRIVMSG" (concat (erc-default-target) " rename " fbid " " name)))
       (fb/get-info-all-names)))
@@ -437,7 +437,9 @@ waiting for responses from the server"
    ;; Kill buffers for channels after /part
    erc-kill-buffer-on-part t
    ;; open query buffers in the current window
-   erc-query-display 'window
+   erc-query-display 'window-noselect
+   ;; enable/disable logging
+   erc-log-p nil
    )
 
   ;; (setq erc-encoding-coding-alist (quote (("#lisp" . utf-8)
@@ -661,7 +663,8 @@ waiting for responses from the server"
           erc-nick-notify-timeout 10000
           erc-nick-notify-urgency "normal"
           erc-nick-notify-category "im.received")
-    (erc-nick-notify-mode t))
+    ;; not required
+    (erc-nick-notify-mode nil))
 
   (add-hook 'sharad/enable-login-session-interrupting-feature-hook
             '(lambda ()
@@ -893,6 +896,43 @@ If SERVER is non-nil, use that, rather than the current server."
  ;; (setq-default buffer-file-coding-system 'raw-text)
  ;; (setq buffer-file-coding-system 'raw-text)
  (add-hook 'erc-mode-hook (lambda () (setq buffer-file-coding-system 'raw-text))))
+
+
+
+
+(deh-section "erc/fix"
+  (defun erc-cmd-QUERY (&optional user)
+    "Open a query with USER.
+The type of query window/frame/etc will depend on the value of
+`erc-query-display'.
+
+If USER is omitted, close the current query buffer if one exists
+- except this is broken now ;-)"
+    (interactive
+     (list (read-from-minibuffer "Start a query with: " nil)))
+    (let ((session-buffer (erc-server-buffer))
+          (erc-join-buffer erc-query-display))
+      (message "%s" erc-default-recipients)
+      (if user
+          (erc-query user session-buffer)
+          ;; currently broken, evil hack to display help anyway
+          (erc-delete-query))))
+  ;;(signal 'wrong-number-of-arguments ""))))
+
+  (defun erc-delete-query ()
+    "Delete the topmost target if it is a QUERY."
+    (message "%s" erc-default-recipients)
+    (let ((d1 (car erc-default-recipients))
+          (d2 (cdr erc-default-recipients)))
+      (if (and (listp d1)
+               (eq (car d1) 'QUERY))
+          (setq erc-default-recipients d2)
+          (if (and
+               (stringp d1)
+               (equal (buffer-name) d1))
+              (kill-buffer d1))
+          ;; (error "Current target is not a QUERY")
+          ))))
 
 (provide 'erc-config)
 

@@ -27,6 +27,8 @@
 (require 'citation-config)
 
 
+;; send using /usr/bin/sendmial
+(setq send-mail-function 'sendmail-send-it)
 
 ;; Increase the score for followups to a sent article.
 (add-hook 'message-sent-hook 'gnus-score-followup-article)
