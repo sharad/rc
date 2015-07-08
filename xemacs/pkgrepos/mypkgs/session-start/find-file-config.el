@@ -296,8 +296,7 @@ timestamp has not changed (e.g. with ftp or on Windows)."
                   (keymap-set-key-if-unbind
                    ido-file-completion-map
                    (kbd "C-.")
-                   'ido-plain-directory)))
-      )))
+                   'ido-plain-directory))))))
 
 
 (provide 'find-file-config)

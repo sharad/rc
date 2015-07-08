@@ -522,6 +522,7 @@ between the two tags."
 ;;                      (concat
 ;;                       (if (consp dir) (car dir) dir)
 ;;                       "/styles/"
+
 ;;                       (unless (string-equal
 ;;                                style
 ;;                                (file-name-nondirectory
@@ -549,8 +550,8 @@ between the two tags."
                                                (mapcar (lambda (style)
                                                          (cons (muse-get-keyword :base style) style))
                                                        (cddr muse-current-project)))))))
-     (message "muse-with-project-style: muse-current-project %s" muse-current-project)
-     (message "muse-with-project-style: muse-publishing-current-style %s" muse-publishing-current-style)
+     (message "muse-with-project-style: body:- %s muse-current-project:- %s" body muse-current-project)
+     (message "muse-with-project-style: body:- %s muse-publishing-current-style:- %s" body muse-publishing-current-style)
      ,@body))
 
 
@@ -563,8 +564,8 @@ between the two tags."
                                                 (mapcar (lambda (style)
                                                           (cons (muse-get-keyword :base style) style))
                                                         (cddr muse-current-project)))))))
-       (message "muse-with-project-style: muse-current-project %s" muse-current-project)
-       (message "muse-with-project-style: muse-publishing-current-style %s" muse-publishing-current-style)
+       (message "muse-with-project-style: body:- %s muse-current-project:- %s" body muse-current-project)
+       (message "muse-with-project-style: body:- %s muse-publishing-current-style:- %s" body muse-publishing-current-style)
        ,@body)))
 
 ;; (muse-publish-get-style
@@ -590,44 +591,35 @@ between the two tags."
 (defvar *muse-meta-style-dirname-fns*
       `(
         ("project-export"
-         (
-          :path-function
-          (lambda ()
-            ;; (message "current-style %s " muse-publishing-current-style)
-            (unless muse-publishing-current-style
-              (error "muse-publishing-current-style"))
-            ;; (message "muse-publishing-current-style %s" muse-publishing-current-style)
-            (muse-meta-style-dirname
-             (or
-              (plist-get muse-publishing-current-style :path)
-              (when muse-current-output-style
-                (plist-get muse-current-output-style :path)))
-             (plist-get muse-publishing-current-style :base)))
-          ))
-
+         (:path-function (lambda ()
+                           ;; (message "current-style %s " muse-publishing-current-style)
+                           (if muse-publishing-current-style
+                               ;; (message "muse-publishing-current-style %s" muse-publishing-current-style)
+                               (muse-meta-style-dirname
+                                (or
+                                 (plist-get muse-publishing-current-style :path)
+                                 (when muse-current-output-style
+                                   (plist-get muse-current-output-style :path)))
+                                (plist-get muse-publishing-current-style :base))
+                               'pass))))
         ("project"
-         (
-          :path-function
-          (lambda ()
-            (let* ((project-dir (cadr (muse-project)))
-                   (project-dir (if (consp project-dir) (car project-dir) project-dir)))
-              ;; (message "(cadr (muse-project)) %s" project-dir)
-              (muse-meta-style-dirname project-dir (plist-get muse-publishing-current-style :base))))
-
-          ))
+         (:path-function (lambda ()
+                           (if (and (muse-project)
+                                    muse-publishing-current-style)
+                               (let* ((project-dir (cadr (muse-project)))
+                                      (project-dir (if (consp project-dir) (car project-dir) project-dir)))
+                                 ;; (message "(cadr (muse-project)) %s" project-dir)
+                                 (muse-meta-style-dirname project-dir (plist-get muse-publishing-current-style :base)))
+                               'pass))))
 
         ("style"
-         (
-          :path-function
-          (lambda ()
-            (muse-meta-style-dirname *muse-top-style-dir* (plist-get muse-publishing-current-style :base)))
-
-          ))
+         (:path-function (lambda ()
+                           (if muse-publishing-current-style
+                               (muse-meta-style-dirname *muse-top-style-dir* (plist-get muse-publishing-current-style :base))
+                               'pass))))
 
         ("base"
-         (
-          :path-function
-          *muse-top-style-dir*)))
+         (:path-function *muse-top-style-dir*)))
   "*muse-meta-style-dirname-fns*")
 
 ;; *muse-top-style-dir*
@@ -646,78 +638,90 @@ between the two tags."
           (error "file %s not exists" src-file))))
   dst-file)
 
-(defun sharad/muse-find-or-create-meta-file (filename &optional fnslist)
-  "asfds"
-  (let ((fnslist (or fnslist *muse-meta-style-dirname-fns*)))
-    (muse-with-project-style
-     (sharad/muse-find-or-create-meta-file-main filename fnslist))))
+;; (defun sharad/muse-find-or-create-meta-file (filename &optional fnslist)
+;;   "asfds"
+;;   (let ((fnslist (or fnslist *muse-meta-style-dirname-fns*)))
+;;     (muse-with-project-style
+;;      (sharad/muse-find-or-create-meta-file-main filename fnslist))))
 
-(defun sharad/muse-find-or-create-meta-file-main (filename fnslist)
+(defun sharad/muse-find-or-create-meta-file (filename &optional dirfnslist)
+  "asfds"
+  (let ((dirfnslist (or dirfnslist *muse-meta-style-dirname-fns*)))
+    (sharad/muse-find-or-create-meta-file-main filename dirfnslist)))
+
+(defun sharad/muse-find-or-create-meta-file-main (filename dirfnslist)
   "sdfds"
-  ;; (message "calling sharad/muse-find-or-create-meta-file-main filename %s fnslist %s (cadar fnslist) %s" filename fnslist (cadar fnslist))
-  (if fnslist
-      (let* ((style-dirname-list (car fnslist))
+  ;; (message "calling sharad/muse-find-or-create-meta-file-main filename %s dirfnslist %s (cadar dirfnslist) %s" filename dirfnslist (cadar dirfnslist))
+  (if dirfnslist
+      (let* ((style-dirname-list (car dirfnslist))
              (style-name (car style-dirname-list))
-             (strorfn (plist-get (cadr style-dirname-list) :path-function))
-             (dirpath
-              (cond
-                ((functionp strorfn)
-                 ;; (muse-with-project-style
+             (strorfn (plist-get (cadr style-dirname-list) :path-function)))
+        (let ((dirpath
+               (cond
+                 ((functionp strorfn)
+                  ;; (muse-with-project-style
                   (funcall strorfn))
                  ;; )
-                ((stringp strorfn)   strorfn)
-                ((and (symbolp strorfn)
-                      (stringp (symbol-value strorfn)))
-                 (symbol-value strorfn))
-                ((null strorfn) nil)
-                (t (error "wrong"))))
-             (filepath (progn
-                         ;; (message "fnslist %s" fnslist)
-                         ;; (message "fn %s list fns no %d retval %s" strorfn  (length fnslist) dirpath)
-                         (if (stringp dirpath) (expand-file-name filename dirpath)))))
-        ;; (message "filepath: %s" filepath)
-        (unless dirpath
-          (error "can not get dirpath from style %s" style-name))
-        (if filepath
-            ;; (message "Xfilepath: %s" filepath)
-            (if (file-exists-p filepath)
-              filepath
-              (let ((parent-filepath (sharad/muse-find-or-create-meta-file-main filename (cdr fnslist))))
-                ;; (message "Have come here")
-                (if parent-filepath
-                    (if (file-exists-p parent-filepath)
-                        (progn
-                          (mkdir-copy-file parent-filepath filepath)
-                          filepath)
-                        (error "file %s did not got created for %s" parent-filepath filepath))
-                    (progn
-                      (message "You need to create %s file manually" filepath)
-                      (error "Can not file futher %s file now." filename)))))))
+                 ((stringp strorfn)   strorfn)
+                 ((and (symbolp strorfn)
+                       (stringp (symbol-value strorfn)))
+                  (symbol-value strorfn))
+                 ((null strorfn) nil)
+                 (t (error "wrong")))))
+
+          (cond
+            ((and (stringp dirpath)
+                  (file-directory-p dirpath))
+             (let ((filepath (progn
+                               ;; (message "dirfnslist %s" dirfnslist)
+                               ;; (message "fn %s list fns no %d retval %s" strorfn  (length dirfnslist) dirpath)
+                               (if (stringp dirpath) (expand-file-name filename dirpath)))))
+               ;; (message "filepath: %s" filepath)
+               ;; (unless dirpath
+               ;;   (error "can not get dirpath from style %s" style-name))
+               (if filepath
+                   ;; (message "Xfilepath: %s" filepath)
+                   (if (file-exists-p filepath)
+                       filepath
+                       (let ((parent-filepath (sharad/muse-find-or-create-meta-file-main filename (cdr dirfnslist))))
+                         ;; (message "Have come here")
+                         (if parent-filepath
+                             (if (file-exists-p parent-filepath)
+                                 (progn
+                                   (mkdir-copy-file parent-filepath filepath)
+                                   filepath)
+                                 (error "file %s did not got created for %s" parent-filepath filepath))
+                             (progn
+                               (message "You need to create %s file manually" filepath)
+                               (error "Can not file futher %s file now." filename))))))))
+            ((eq dirpath 'pass)
+             (sharad/muse-find-or-create-meta-file-main filename (cdr dirfnslist)))
+            (t (error "can not get dirpath from style %s" style-name)))))
       (error "can not get parent file for %s" filename)))
 
-(defun sharad/muse-get-meta-path-plist ()
+(defun sharad/muse-get-meta-path-plist (&optional dirfnslist)
   "sdfds"
   (interactive)
-  (muse-with-project-style
-   (mapcar
-    (lambda (fn-list)
-      (let ((name (car fn-list))
-            (strfn (plist-get (cadr fn-list) :path-function)))
-        (cons name
-              (cond
-                ((if (symbolp strfn)
-                     (stringp (symbol-value strfn)))
-                 (symbol-value strfn))
-                ((stringp strfn) strfn)
-                ((functionp strfn) (funcall strfn))
-                (t (error "error"))))))
-    *muse-meta-style-dirname-fns*)))
-
-
+  (let ((dirfnslist (or dirfnslist *muse-meta-style-dirname-fns*)))
+    (remove-if-not '(lambda (c)
+                     (stringp (cdr c)))
+                   (mapcar
+                    (lambda (fn-list)
+                      (let ((name (car fn-list))
+                            (strfn (plist-get (cadr fn-list) :path-function)))
+                        (cons name
+                              (cond
+                                ((if (symbolp strfn)
+                                     (stringp (symbol-value strfn)))
+                                 (symbol-value strfn))
+                                ((stringp strfn) strfn)
+                                ((functionp strfn) (funcall strfn))
+                                (t (error "error"))))))
+                    dirfnslist))))
 
 (defun sharad/muse-edit-meta-file ()
   (interactive)
-  (let* ((path-alist (sharad/muse-get-meta-path-plist))
+  (let* ((path-alist (sharad/muse-get-meta-path-plist *muse-meta-style-dirname-fns*))
          (name
           (funcall muse-completing-read-function
                    "Get dir: " path-alist nil t))
@@ -726,7 +730,7 @@ between the two tags."
 
 (defun sharad/muse-delete-meta-file ()
   (interactive)
-  (let* ((path-alist (sharad/muse-get-meta-path-plist))
+  (let* ((path-alist (sharad/muse-get-meta-path-plist *muse-meta-style-dirname-fns*))
          (name
           (funcall muse-completing-read-function
                    "Get dir: " path-alist nil t))
