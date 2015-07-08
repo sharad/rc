@@ -516,18 +516,30 @@ between the two tags."
 
 
 
-(defun muse-meta-style-dirname (dir)
-  (let* ((style (plist-get muse-publishing-current-style :base))
-         (dir (if (stringp dir)
-                     (concat
-                      (if (consp dir) (car dir) dir)
-                      "/styles/"
-                      (unless (string-equal
-                               style
-                               (file-name-nondirectory
-                                (pathname-delete-trailing-/ dir)))
-                          style)))))
-        dir))
+;; (defun muse-meta-style-dirname (dir)
+;;   (let* ((style (plist-get muse-publishing-current-style :base))
+;;          (dir (if (stringp dir)
+;;                      (concat
+;;                       (if (consp dir) (car dir) dir)
+;;                       "/styles/"
+;;                       (unless (string-equal
+;;                                style
+;;                                (file-name-nondirectory
+;;                                 (pathname-delete-trailing-/ dir)))
+;;                           style)))))
+;;         dir))
+
+(defun muse-meta-style-dirname (dir style)
+  (let* ((dir (if (stringp dir)
+                  (concat
+                   (if (consp dir) (car dir) dir)
+                   "/styles/"
+                   (unless (string-equal
+                            style
+                            (file-name-nondirectory
+                             (pathname-delete-trailing-/ dir)))
+                     style)))))
+    dir))
 
 (defmacro muse-with-project-style (&rest body)
   `(let* ((muse-current-project (or (muse-project) (muse-read-project "Muse Project: " t t)))
@@ -589,7 +601,8 @@ between the two tags."
              (or
               (plist-get muse-publishing-current-style :path)
               (when muse-current-output-style
-                (plist-get muse-current-output-style :path)))))
+                (plist-get muse-current-output-style :path)))
+             (plist-get muse-publishing-current-style :base)))
           ))
 
         ("project"
@@ -599,7 +612,7 @@ between the two tags."
             (let* ((project-dir (cadr (muse-project)))
                    (project-dir (if (consp project-dir) (car project-dir) project-dir)))
               ;; (message "(cadr (muse-project)) %s" project-dir)
-              (muse-meta-style-dirname project-dir)))
+              (muse-meta-style-dirname project-dir (plist-get muse-publishing-current-style :base))))
 
           ))
 
@@ -607,8 +620,7 @@ between the two tags."
          (
           :path-function
           (lambda ()
-            (muse-meta-style-dirname
-             *muse-top-style-dir*))
+            (muse-meta-style-dirname *muse-top-style-dir* (plist-get muse-publishing-current-style :base)))
 
           ))
 
