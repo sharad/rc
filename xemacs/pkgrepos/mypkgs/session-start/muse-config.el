@@ -3,6 +3,9 @@
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/muse-el/experimental")
 
+
+(require 'publishing-config)
+
 (deh-require-maybe
     ;; from: http://mwolson.org/projects/emacs-config/muse-init.el.html
     ;; I use initsplit.el to separate customize settings on a per-project
@@ -31,12 +34,6 @@
       muse-message  ; load message support (experimental)
       )
 
-
-  (defvar *doc-root* "~/Documents")
-  (defvar *created-content-dir* (concat *doc-root* "/CreatedContent"))
-  (defvar *muse-top-dir* (concat *created-content-dir* "/contents/muse"))
-  (defvar *generated-top-dir* (concat *created-content-dir* "/gen"))
-  (defvar *website-address* "http://hello.org/")
 
   ;; Setup projects
 
@@ -96,239 +93,6 @@
                      :link-suffix 'muse-latex-pdf-extension
                      :osuffix 'muse-latex-pdf-extension)
 
-  (defun* make-muse-style-spec (muse-dir publishing-path publishing-style publishing-url publishing-options)
-    (interactive
-     (let* ((muse-dir (read-directory-name "Muse Project Directory: " *muse-top-dir*))
-            (publishing-path
-             (read-directory-name
-              "Muse Project Directory: "
-              (concat *generated-top-dir* (replace-regexp-in-string *muse-top-dir* "" muse-dir))))
-            (publishing-style
-             (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
-            (publishing-url (read-from-minibuffer "Publishing Base URL: "))
-            (publishing-options nil))
-       (list muse-dir publishing-path publishing-style publishing-url publishing-options)))
-    (apply
-     'muse-project-alist-styles
-     (append
-      (list
-       muse-dir
-       publishing-path)
-      (list publishing-style)
-      (if publishing-url
-          (list :base-url publishing-url))
-      publishing-options)))
-
-  (defun* make-muse-project-spec (name muse-dirs publishing-path publishing-style publishing-url publishing-options)
-    (interactive
-     (let* ((name (read-from-minibuffer "Project Name: "))
-            (muse-dirs
-             (read-directory-name "Muse Project Directory: " (concat *muse-top-dir* "/" name)))
-            (publishing-path
-             (read-directory-name
-              "Muse Project Directory: "
-              (concat *generated-top-dir*
-                      (replace-regexp-in-string *muse-top-dir* ""
-                                                (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
-            (publishing-style
-             (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
-            (publishing-url (read-from-minibuffer "Publishing Base URL: "))
-            (publishing-options nil))
-       (list name muse-dirs publishing-path publishing-style publishing-url publishing-options)))
-    `(,name
-      ,@(make-muse-style-spec
-         (if (consp muse-dirs) (car muse-dirs) muse-dirs)
-         publishing-path
-         publishing-style
-         publishing-url
-         publishing-options)))
-
-  (defun* read-muse-style-spec ()
-    (let* ((muse-dir (read-directory-name "Muse Project Directory: " *muse-top-dir*))
-            (publishing-path
-             (read-directory-name
-              "Muse Project Directory: "
-              (concat *generated-top-dir* (replace-regexp-in-string *muse-top-dir* "" muse-dir))))
-            (publishing-style
-             (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
-            (publishing-url (read-from-minibuffer "Publishing Base URL: "))
-            (publishing-options nil))
-      (list muse-dir publishing-path publishing-style publishing-url publishing-options)))
-
-  (defun* read-muse-project-spec ()
-    (let* ((name (read-from-minibuffer "Project Name: "))
-           (muse-dirs
-            (read-directory-name "Muse Project Directory: " (concat *muse-top-dir* "/" name)))
-           (publishing-path
-            (read-directory-name
-             "Muse Project Directory: "
-             (concat *generated-top-dir*
-                     (replace-regexp-in-string *muse-top-dir* ""
-                                               (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
-           (publishing-style
-            (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
-           (publishing-url (read-from-minibuffer "Publishing Base URL: "))
-           (publishing-options nil))
-      `(,name
-        ,@(make-muse-style-spec
-           (if (consp muse-dirs) (car muse-dirs) muse-dirs)
-           publishing-path
-           publishing-style
-           publishing-url
-           publishing-options))))
-
-  (defun remove-muse-project (project-spec)
-    (interactive
-     (let ((project (ido-completing-read "Project: "
-                                         (mapcar 'car muse-project-alist))))
-       (if project
-           (list project)
-           (error "No project %s present" project))))
-    (let ((project
-           (cond
-             ((and (consp project-spec)
-                   (stringp (car project-spec)))
-              (car project-spec))
-             ((stringp project-spec)
-              project-spec)
-             (t nil))))
-      (if project
-          (setq muse-project-alist
-                (delete* project muse-project-alist
-                         :key 'car
-                         :test 'string-equal)))))
-
-  (defun add-muse-project (project-spec)
-    "Add muse project."
-    (interactive
-     (let ((project-spec
-            (read-muse-project-spec)))))
-    (let (var1)
-      (if (member (car project-spec)(mapcar 'car muse-project-alist))
-          (if (or (not (called-interactively-p 'interactive))
-                  (y-or-n-p (format "project %s already present, do you want to overwrite it?: " (car project-spec))))
-              (progn
-                (remove-muse-project project-spec)
-                (add-muse-project project-spec)))
-          (add-to-list 'muse-project-alist project-spec))))
-
-  ;; (mapcar 'car muse-publishing-styles)
-  ;; (muse-project-alist-styles
-  ;;  (concat *muse-top-dir* "/doc/priv")
-  ;;  (concat *generated-top-dir* "/doc/pdf/doc/priv/pdf")
-  ;;  "pdf")
-
-  ;; (muse-project-alist-styles
-  ;;  (concat *muse-top-dir* "/web/site/blog")
-  ;;  (concat *generated-top-dir* "/web/site/blog/pdf")
-  ;;  "ikiwiki"
-  ;;  :base-url (concat *website-address* "/blog/"))
-
-(deh-section "Muse Projects"
-  ;; Here is my master project listing.
-
-  (add-muse-project
-   `("Website"
-     ( ,(concat *muse-top-dir* "/web/site/wiki/web")
-       ,(concat *muse-top-dir* "/web/site/wiki/web/testdir")
-        :force-publish ("WikiIndex")
-        :default "WelcomePage")
-     (:base "my-xhtml"
-            :base-url ,(concat *website-address* "/web/")
-            :include "/web/[^/]+"
-            :path ,(concat *generated-top-dir* "/web/site/wiki/web/my-xhtml"))
-     (:base "my-xhtml"
-            :base-url ,(concat *website-address* "/web/")
-            :include "/testdir/[^/]+"
-            :path ,(concat *generated-top-dir* "/web/site/wiki/web/testdir/my-xhtml"))
-     (:base "my-pdf"
-            :base-url ,(concat *website-address* "/web/")
-            :path ,(concat *generated-top-dir* "/doc/pdf/site/wiki/web/my-pdf")
-            :include "/\\(CurriculumVitae\\|BriefResume\\)[^/]*$")))
-
-  (add-muse-project
-   `("Projects" ( ,(concat *muse-top-dir* "/web/site/wiki/projects")
-                   :force-publish ("WikiIndex" "MuseQuickStart")
-                   :default "WelcomePage")
-                (:base "my-xhtml"
-                       :base-url ,(concat *website-address* "/projects/")
-                       :path ,(concat *generated-top-dir* "/web/site/wiki/projects/my-xhtml"))))
-
-  (add-muse-project
-   `("WikiWriting"
-     ( ,(concat *muse-top-dir* "/web/site/wiki/writing")
-        ;; :force-publish ("WikiIndex" "MuseQuickStart")
-        :major-mode muse-mode
-        :default "index")
-     (:base "my-xhtml"
-                       :base-url ,(concat *website-address* "/projects/")
-                       :path ,(concat *generated-top-dir* "/web/site/wiki/writing/my-xhtml"))))
-
-
-  (add-muse-project
-   `("Blog" (,@(muse-project-alist-dirs (concat *muse-top-dir* "/web/site/blog"))
-               :default "index"
-               :publish-project #'ignore)
-            ;; Publish this directory and its subdirectories.  Arguments
-            ;; are as follows.  The above `muse-project-alist-dirs' part
-            ;; is also needed.
-            ;;   1. Source directory
-            ;;   2. Output directory
-            ;;   3. Publishing style
-            ;;   remainder: Other things to put in every generated style
-            ,@(muse-project-alist-styles
-               (concat *muse-top-dir* "/web/site/blog")
-               (concat *generated-top-dir* "/web/site/blog/ikiwiki")
-               "ikiwiki"
-               :base-url (concat *website-address* "/blog/"))))
-
-  ;; "http://grepfind.hello.org/blog/"
-  (add-muse-project
-   `("MyNotes" (,(concat *muse-top-dir* "/web/site/wiki/notes")
-                 :force-publish ("index")
-                 :default "index")
-               (:base "xhtml"
-                      :base-url (concat *website-address* "/notes/")
-                      :path ,(concat *generated-top-dir* "/web/site/wiki/notes/xhtml"))
-               (:base "my-pdf"
-                      :base-url ,(concat *website-address* "/notes/")
-                      :path ,(concat *generated-top-dir* "/web/site/wiki/notes/my-pdf"))))
-
-  (add-muse-project
-   `("_Private" (,(concat *muse-top-dir* "/doc/priv"))
-                ,@(muse-project-alist-styles (concat *muse-top-dir* "/doc/priv")
-                                             (concat *generated-top-dir* "/doc/pdf/doc/priv/pdf")
-                                             "pdf")))
-
-  (add-muse-project
-   `("_Classes" (,@(muse-project-alist-dirs (concat *muse-top-dir* "/web/site/wiki/classes"))
-                   :default "index")
-                ,@(muse-project-alist-styles (concat *muse-top-dir* "/web/site/wiki/classes")
-                                             (concat *generated-top-dir* "/web/site/wiki/classes/xhtml")
-                                             "xhtml")))
-
-  (add-muse-project
-   `("MA366" (,(concat *muse-top-dir* "/doc/pdf/classes/ma366"))
-             (:base "pdf-uh"
-                    :path ,(concat *generated-top-dir* "/doc/pdf/classes/ma366/pdf-uh"))))
-
-  (add-muse-project
-   `("ENGL238" (,(concat *muse-top-dir* "/doc/pdf/classes/eng238"))
-               (:base "pdf-uh"
-                      :path ,(concat *generated-top-dir* "/doc/pdf/classes/eng238/pdf-uh"))))
-
-  (add-muse-project
-   `("CS426" (,(concat *muse-top-dir* "/web/site/wiki/classes/cs426"))
-             (:base "pdf-uh"
-                    :path "~/proj/classes/cs426/pdf-uh")))
-
-  (add-muse-project
-   `("_Plans" (,(concat *muse-top-dir* "/web/site/wiki/plans")
-                :default "TaskPool"
-                :major-mode planner-mode
-                :visit-link planner-visit-link)
-              (:base "planner-xhtml"
-                     :path ,(concat *generated-top-dir* "/web/site/wiki/plans/html")))))
 
 
   ;; Wiki settings
@@ -504,299 +268,55 @@ between the two tags."
 ;;  (:base "xhtml" :base-url (concat *website-address* "/notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/html")
 ;;  (:base "my-pdf" :base-url "http://hello.org//notes/" :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/pdf"))
 
+(deh-section "muse-publishing"
 
-(defvar *muse-top-style-dir* (concat *muse-top-dir* "/generic/style"))
+ ;; (file-relative-name "/tmp/xx" "/tmp/asfd/sdf")
 
-;; (file-name-nondirectory "/sdf/sdfds//")
-
-(when nil
-  ;; Do corrections
- (dir-final-slash "/sdfds/dfg/dfg/fdg")
- (pathname-delete-trailing-/ "/sdfds/dfg/dfg/fdg")))
-
-
-
-;; (defun muse-meta-style-dirname (dir)
-;;   (let* ((style (plist-get muse-publishing-current-style :base))
-;;          (dir (if (stringp dir)
-;;                      (concat
-;;                       (if (consp dir) (car dir) dir)
-;;                       "/styles/"
-
-;;                       (unless (string-equal
-;;                                style
-;;                                (file-name-nondirectory
-;;                                 (pathname-delete-trailing-/ dir)))
-;;                           style)))))
-;;         dir))
-
-(defun muse-meta-style-dirname (dir style)
-  (let* ((dir (if (stringp dir)
-                  (concat
-                   (if (consp dir) (car dir) dir)
-                   "/styles/"
-                   (unless (string-equal
-                            style
-                            (file-name-nondirectory
-                             (pathname-delete-trailing-/ dir)))
-                     style)))))
-    dir))
-
-(defmacro muse-with-project-style (&rest body)
-  `(let* ((muse-current-project (or (muse-project) (muse-read-project "Muse Project: " t t)))
-          (muse-publishing-current-style (or muse-publishing-current-style
-                                             (cdr
-                                              (muse-publish-get-style
-                                               (mapcar (lambda (style)
-                                                         (cons (muse-get-keyword :base style) style))
-                                                       (cddr muse-current-project)))))))
-     (message "muse-with-project-style: body:- %s muse-current-project:- %s" body muse-current-project)
-     (message "muse-with-project-style: body:- %s muse-publishing-current-style:- %s" body muse-publishing-current-style)
-     ,@body))
-
-
-(defmacro muse-with-project-style (&rest body)
-  `(let ((muse-current-project (or (muse-project) (muse-read-project "Muse Project: " t t))))
-     (message "muse-with-project-style: muse-current-project %s" muse-current-project)
-     (let ((muse-publishing-current-style (or muse-publishing-current-style
-                                              (cdr
-                                               (muse-publish-get-style
-                                                (mapcar (lambda (style)
-                                                          (cons (muse-get-keyword :base style) style))
-                                                        (cddr muse-current-project)))))))
-       (message "muse-with-project-style: body:- %s muse-current-project:- %s" body muse-current-project)
-       (message "muse-with-project-style: body:- %s muse-publishing-current-style:- %s" body muse-publishing-current-style)
-       ,@body)))
-
-;; (muse-publish-get-style
-;;  (mapcar (lambda (style)
-;;            (cons (muse-get-keyword :base style) style))
-;;          (cddr (muse-read-project "Publish project: " t t))))
-
-;; (ido-completing-read "sdfds" '(("aaa" "sdfds") ("ppp" "asfddsa")))
-
-
-;; (mapcar (lambda (style)
-;;            (cons (muse-get-keyword :base style) style))
-;;          (cddr (muse-read-project "Publish project: " t t)))
-
-;; (ido-completing-read "sdfads: "
-;; '(("xhtml" :base "xhtml" :base-url (concat *website-address* "/notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/xhtml")
-;;  ("my-pdf" :base "my-pdf" :base-url "http://hello.org//notes/" :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/my-pdf"))
-;; )
-
-
-;; muse-publishing-styles
-
-(defvar *muse-meta-style-dirname-fns*
-      `(
-        ("project-export"
-         (:path-function (lambda ()
-                           ;; (message "current-style %s " muse-publishing-current-style)
-                           (if muse-publishing-current-style
-                               ;; (message "muse-publishing-current-style %s" muse-publishing-current-style)
-                               (muse-meta-style-dirname
-                                (or
-                                 (plist-get muse-publishing-current-style :path)
-                                 (when muse-current-output-style
-                                   (plist-get muse-current-output-style :path)))
-                                (plist-get muse-publishing-current-style :base))
-                               'pass))))
-        ("project"
-         (:path-function (lambda ()
-                           (if (and (muse-project)
-                                    muse-publishing-current-style)
-                               (let* ((project-dir (cadr (muse-project)))
-                                      (project-dir (if (consp project-dir) (car project-dir) project-dir)))
-                                 ;; (message "(cadr (muse-project)) %s" project-dir)
-                                 (muse-meta-style-dirname project-dir (plist-get muse-publishing-current-style :base)))
-                               'pass))))
-
-        ("style"
-         (:path-function (lambda ()
-                           (if muse-publishing-current-style
-                               (muse-meta-style-dirname *muse-top-style-dir* (plist-get muse-publishing-current-style :base))
-                               'pass))))
-
-        ("base"
-         (:path-function *muse-top-style-dir*)))
-  "*muse-meta-style-dirname-fns*")
-
-;; *muse-top-style-dir*
-;; "~/Documents/CreatedContent/contents/muse/generic/style"
-;; (cadar *muse-meta-style-dirname-fns*)
-
-(defun mkdir-copy-file (src-file dst-file)
-  (unless (file-exists-p dst-file)
-    (progn
-      (message "%s not exists" dst-file)
-      (make-directory
-       (expand-file-name
-        (dirname-of-file dst-file)) t)
-      (if (file-exists-p src-file)
-          (copy-file src-file dst-file)
-          (error "file %s not exists" src-file))))
-  dst-file)
-
-;; (defun sharad/muse-find-or-create-meta-file (filename &optional fnslist)
-;;   "asfds"
-;;   (let ((fnslist (or fnslist *muse-meta-style-dirname-fns*)))
-;;     (muse-with-project-style
-;;      (sharad/muse-find-or-create-meta-file-main filename fnslist))))
-
-(defun sharad/muse-find-or-create-meta-file (filename &optional dirfnslist)
-  "asfds"
-  (let ((dirfnslist (or dirfnslist *muse-meta-style-dirname-fns*)))
-    (sharad/muse-find-or-create-meta-file-main filename dirfnslist)))
-
-(defun sharad/muse-find-or-create-meta-file-main (filename dirfnslist)
-  "sdfds"
-  ;; (message "calling sharad/muse-find-or-create-meta-file-main filename %s dirfnslist %s (cadar dirfnslist) %s" filename dirfnslist (cadar dirfnslist))
-  (if dirfnslist
-      (let* ((style-dirname-list (car dirfnslist))
-             (style-name (car style-dirname-list))
-             (strorfn (plist-get (cadr style-dirname-list) :path-function)))
-        (let ((dirpath
-               (cond
-                 ((functionp strorfn)
-                  ;; (muse-with-project-style
-                  (funcall strorfn))
-                 ;; )
-                 ((stringp strorfn)   strorfn)
-                 ((and (symbolp strorfn)
-                       (stringp (symbol-value strorfn)))
-                  (symbol-value strorfn))
-                 ((null strorfn) nil)
-                 (t (error "wrong")))))
-
-          (cond
-            ((and (stringp dirpath)
-                  (file-directory-p dirpath))
-             (let ((filepath (progn
-                               ;; (message "dirfnslist %s" dirfnslist)
-                               ;; (message "fn %s list fns no %d retval %s" strorfn  (length dirfnslist) dirpath)
-                               (if (stringp dirpath) (expand-file-name filename dirpath)))))
-               ;; (message "filepath: %s" filepath)
-               ;; (unless dirpath
-               ;;   (error "can not get dirpath from style %s" style-name))
-               (if filepath
-                   ;; (message "Xfilepath: %s" filepath)
-                   (if (file-exists-p filepath)
-                       filepath
-                       (let ((parent-filepath (sharad/muse-find-or-create-meta-file-main filename (cdr dirfnslist))))
-                         ;; (message "Have come here")
-                         (if parent-filepath
-                             (if (file-exists-p parent-filepath)
-                                 (progn
-                                   (mkdir-copy-file parent-filepath filepath)
-                                   filepath)
-                                 (error "file %s did not got created for %s" parent-filepath filepath))
-                             (progn
-                               (message "You need to create %s file manually" filepath)
-                               (error "Can not file futher %s file now." filename))))))))
-            ((eq dirpath 'pass)
-             (sharad/muse-find-or-create-meta-file-main filename (cdr dirfnslist)))
-            (t (error "can not get dirpath from style %s" style-name)))))
-      (error "can not get parent file for %s" filename)))
-
-(defun sharad/muse-get-meta-path-plist (&optional dirfnslist)
-  "sdfds"
-  (interactive)
-  (let ((dirfnslist (or dirfnslist *muse-meta-style-dirname-fns*)))
-    (remove-if-not '(lambda (c)
-                     (stringp (cdr c)))
-                   (mapcar
-                    (lambda (fn-list)
-                      (let ((name (car fn-list))
-                            (strfn (plist-get (cadr fn-list) :path-function)))
-                        (cons name
-                              (cond
-                                ((if (symbolp strfn)
-                                     (stringp (symbol-value strfn)))
-                                 (symbol-value strfn))
-                                ((stringp strfn) strfn)
-                                ((functionp strfn) (funcall strfn))
-                                (t (error "error"))))))
-                    dirfnslist))))
-
-(defun sharad/muse-edit-meta-file ()
-  (interactive)
-  (let* ((path-alist (sharad/muse-get-meta-path-plist *muse-meta-style-dirname-fns*))
-         (name
-          (funcall muse-completing-read-function
-                   "Get dir: " path-alist nil t))
-         (path (cdr (assoc name path-alist))))
-    (ido-find-file-in-dir path)))
-
-(defun sharad/muse-delete-meta-file ()
-  (interactive)
-  (let* ((path-alist (sharad/muse-get-meta-path-plist *muse-meta-style-dirname-fns*))
-         (name
-          (funcall muse-completing-read-function
-                   "Get dir: " path-alist nil t))
-         (path (cdr (assoc name path-alist)))
-         (delete-file (ido-read-file-name "delete muse meta file: " path)))
-    (when (y-or-n-p (format "really delete %s :" delete-file))
-      (delete-file delete-file)
-      (message "file %s deleted." delete-file))))
-
-(defun muse-insert-css-link (media filename)
-  (muse-make-css-link media
-                      (file-relative-name
-                       (sharad/muse-find-or-create-meta-file filename)
-                       (plist-get muse-publishing-current-style :path))))
-
-(defun muse-insert-meta-file (filename)
-  (get-string-from-file
-   (sharad/muse-find-or-create-meta-file filename)))
-
-;; (file-relative-name "/tmp/xx" "/tmp/asfd/sdf")
-
-;; edit-project-style-file
-;; edit-project-header
-;; edit-project-footer
+ ;; edit-project-style-file
+ ;; edit-project-header
+ ;; edit-project-footer
 
 ;;; Custom variables
-(custom-set-variables
- `(muse-blosxom-base-directory ,(concat *created-content-dir* "/gen/web/site/blog"))
- `(muse-colors-autogen-headings (quote outline))
- `(muse-colors-inline-image-method (quote muse-colors-use-publishing-directory))
- `(muse-completing-read-function (quote ido-completing-read))
- `(muse-html-charset-default "utf-8")
- `(muse-html-encoding-default (quote utf-8))
- ;; `(muse-html-footer ,(concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
- ;; `(muse-html-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
- `(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
- `(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+ (custom-set-variables
+  `(muse-blosxom-base-directory ,(concat *created-content-dir* "/gen/web/site/blog"))
+  `(muse-colors-autogen-headings (quote outline))
+  `(muse-colors-inline-image-method (quote muse-colors-use-publishing-directory))
+  `(muse-completing-read-function (quote ido-completing-read))
+  `(muse-html-charset-default "utf-8")
+  `(muse-html-encoding-default (quote utf-8))
+  ;; `(muse-html-footer ,(concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
+  ;; `(muse-html-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
+  `(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+  `(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
 
- `(muse-html-meta-content-encoding (quote utf-8))
- `(muse-html-style-sheet
-   "<lisp>
+  `(muse-html-meta-content-encoding (quote utf-8))
+  `(muse-html-style-sheet
+    "<lisp>
        (concat
         (muse-insert-css-link \"all\" \"common.css\")
         (muse-insert-css-link \"screen\" \"screen.css\")
         (muse-insert-css-link \"print\" \"print.css\"))
        </lisp>")
- `(muse-latex-header "<lisp>(muse-insert-meta-file \"header.tex\")</lisp>")
- `(muse-latex-pdf-browser "evince %s &")
- `(muse-mode-hook (quote (flyspell-mode footnote-mode)))
- `(muse-publish-comments-p t)
- `(muse-publish-date-format "%b. %e, %Y")
- `(muse-publish-desc-transforms (quote (muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL)))
- `(muse-wiki-publish-small-title-words (quote ("the" "and" "at" "on" "of" "for" "in" "an" "a" "page")))
- `(muse-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
- `(muse-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
- `(planner-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
- `(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
- `(muse-xhtml-style-sheet
-   "<lisp>
+  `(muse-latex-header "<lisp>(muse-insert-meta-file \"header.tex\")</lisp>")
+  `(muse-latex-pdf-browser "evince %s &")
+  `(muse-mode-hook (quote (flyspell-mode footnote-mode)))
+  `(muse-publish-comments-p t)
+  `(muse-publish-date-format "%b. %e, %Y")
+  `(muse-publish-desc-transforms (quote (muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL)))
+  `(muse-wiki-publish-small-title-words (quote ("the" "and" "at" "on" "of" "for" "in" "an" "a" "page")))
+  `(muse-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+  `(muse-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+  `(planner-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+  `(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+  `(muse-xhtml-style-sheet
+    "<lisp>
        (concat
         (muse-insert-css-link \"all\" \"common.css\")
         (muse-insert-css-link \"screen\" \"screen.css\")
         (muse-insert-css-link \"print\" \"print.css\"))
        </lisp>"))
-(custom-set-faces
- '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold)))))
+ (custom-set-faces
+  '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold))))))
 
 
 
@@ -866,8 +386,7 @@ between the two tags."
       (find-file-other-window "/usr/share/doc/muse-el/examples/QuickStart.muse"))
     (define-key muse-mode-local-map (kbd "C-c C-.") 'muse-help)
 
-    (deh-require-maybe org
-
+    (deh-require-maybe (and org org-html)
       ;; quick fix
       (progn
         (push "org" muse-ignored-extensions)
@@ -1011,7 +530,6 @@ FILE and any extensions that are in `muse-ignored-extensions'."
       ;;     (muse-publish-link-file page)))
 
 
-      )
-    )
+      )))
 
 (provide 'muse-config)

@@ -30,12 +30,14 @@ fi
 
 ## ssh-agent access needed.
 if whence -p xautolock >& /dev/null &&
-    ! pgrep xautolock >& /dev/null ; then
+    ! pgrep xautolock >& /dev/null
+then
     xautolock -detectsleep &!
 fi
 
 if whence -p conky >& /dev/null &&
-    ! pgrep conky >& /dev/null ; then
+    ! pgrep conky >& /dev/null
+then
     conky &!
 fi
 
@@ -212,7 +214,12 @@ fi
 
 
 
-pgrep xautolock >& /dev/null && xautolock -locknow &!
+# pgrep xautolock >& /dev/null && xautolock -locknow &!
+if pgrep xautolock >& /dev/null
+then
+    xautolock -locknow &!
+fi
+
 foreach prog (
     ## it is automatically started by gdm, so no need to start it.
     # gnome-keyring-daemon
@@ -224,7 +231,8 @@ foreach prog (
     # empathy
     synergys
     ) {
-        if whence -p $prog >& /dev/null && ! pgrep $prog[0,15] >& /dev/null
+        if whence -p $prog >& /dev/null &&
+           ! pgrep $prog[0,15] >& /dev/null
         then
             $prog &!
             # echo started $prog >&2
@@ -236,19 +244,21 @@ foreach prog (
     }
 
 if whence -p keynav >& /dev/null &&
-   pgrep keynav >& /dev/null
+   ! pgrep keynav >& /dev/null
 then
     keynav  >& /dev/null &!
 fi
 
 if whence -p skyped >& /dev/null &&
-   pgrep skyped >& /dev/null
+   ! pgrep skyped >& /dev/null
 then
     skyped -c ~/.skyped/skyped.conf >&/dev/null &!
 fi
 
 # Android LinConnect
-if [ -x ~/.linconnect/LinConnectServer/update.sh ] && ! pgrep linconnect_serv >& /dev/null ; then
+if [ -x ~/.linconnect/LinConnectServer/update.sh ] &&
+    ! pgrep linconnect_serv >& /dev/null
+then
     # https://github.com/hauckwill/linconnect-server
     # https://play.google.com/store/apps/details?id=com.willhauck.linconnectclient
     rm -f ~/.logs/linconnect.1

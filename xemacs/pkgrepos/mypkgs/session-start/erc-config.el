@@ -150,7 +150,7 @@
                                   "JOIN" "NAMES" "NICK" "QUIT" "PART" "TOPIC")
         ;; logging! ... requires the `log' module
         ;; do it line-by-line instead of on quit
-        erc-log-channels-directory (expand-file-name "~/.logs/chat/erc")
+        erc-log-channels-directory (expand-file-name "erc/" "~/.logs/chat/")
         erc-save-buffer-on-part nil
         erc-save-queries-on-quit nil
         erc-log-write-after-send t
@@ -664,7 +664,7 @@ waiting for responses from the server"
           erc-nick-notify-urgency "normal"
           erc-nick-notify-category "im.received")
     ;; not required
-    (erc-nick-notify-mode nil))
+    (erc-nick-notify-mode -1))
 
   (add-hook 'sharad/enable-login-session-interrupting-feature-hook
             '(lambda ()
@@ -677,7 +677,7 @@ waiting for responses from the server"
 
   (defun notify-desktop (title message &optional duration &optional icon)
     "Pop up a message on the desktop with an optional duration (forever otherwise)"
-    (message "Notification")
+    ;; (message "Notification")
     (condition-case e
         (progn
           (pymacs-exec "import os")
@@ -730,10 +730,10 @@ waiting for responses from the server"
     )
 
   (defvar erc-page-nick-block-list nil
-    "Alist of 'nickname|target' and last time they triggered a notification"
-    )
+    "Alist of 'nickname|target' and last time they triggered a notification")
 
   (add-to-list 'erc-page-nick-block-list "skypeconsole")
+  (add-to-list 'erc-page-nick-block-list "root")
 
   (defvar erc-page-duration 100 "notification duration.")
 
@@ -753,6 +753,9 @@ waiting for responses from the server"
             (push (cons (format "%s|%s" nick target) cur-time) erc-page-nick-alist)
             t))))
 
+  (defvar debug-erc-local nil "debug-erc-local")
+  (setq debug-erc-local t)
+
   (defun erc-notify-PRIVMSG (proc parsed)
     (let ((nick (car (erc-parse-user (erc-response.sender parsed))))
           (target (car (erc-response.command-args parsed)))
@@ -763,13 +766,11 @@ waiting for responses from the server"
                  (erc-notify-allowed nick target))
                                         ;Do actual notification
         (ding)
-        (notify-desktop (format "PRIVMSG-%s - %s"
+        (notify-desktop (format (if debug-erc-local "%s - %s" "PRIVMSG-%s - %s")
                                 nick
                                 target
-                                (format-time-string "%b %d %I:%M %p")
-                                )
-                        msg erc-page-duration "gnome-emacs")
-        )
+                                (format-time-string "%b %d %I:%M %p"))
+                        msg erc-page-duration "gnome-emacs"))
 
       ;;Handle channel messages when my nick is mentioned
       (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
@@ -777,10 +778,10 @@ waiting for responses from the server"
                  (erc-notify-allowed nick target))
                                         ;Do actual notification
         (ding)
-        (notify-desktop (format "PRIVMSG-%s - %s" target
+        (notify-desktop (format (if debug-erc-local "%s - %s" "PRIVMSG-%s - %s")
+                                target
                                 (format-time-string "%b %d %I:%M %p"))
-                        (format "%s: %s" nick msg) erc-page-duration "gnome-emacs"))
-      ))
+                        (format "%s: %s" nick msg) erc-page-duration "gnome-emacs"))))
 
   (add-hook 'erc-server-PRIVMSG-functions 'erc-notify-PRIVMSG))
 
@@ -814,7 +815,8 @@ If SERVER is non-nil, use that, rather than the current server."
                      (erc-notify-allowed nick target))
                                         ;Do actual notification
             (ding)
-            (notify-desktop (format "MONITOR-%s - %s" nick
+            (notify-desktop (format (if debug-erc-local "%s - %s" "MONITOR-%s - %s")
+                                    nick
                                     (format-time-string "%b %d %I:%M %p"))
                             msg erc-page-duration "gnome-emacs")
             )
@@ -827,7 +829,8 @@ If SERVER is non-nil, use that, rather than the current server."
                                         ;Do actual notification
             ;; (message "ttttttttt")
             (ding)
-            (notify-desktop (format "MONITOR-%s - %s" target
+            (notify-desktop (format (if debug-erc-local "%s - %s" "MONITOR-%s - %s")
+                                    target
                                     (format-time-string "%b %d %I:%M %p"))
                             (format "%s: %s" nick msg) erc-page-duration "gnome-emacs")))))
 

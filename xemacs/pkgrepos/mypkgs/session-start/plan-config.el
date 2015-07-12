@@ -13,7 +13,7 @@
 
 ;; Query replace (default /home/s/hell/.Organize/emacs/plan/Plans -> ~/Documents/CreatedContent/contents/muse/web/site/wiki/Organize/plan/Plans):
 
-(deh-require-maybe (and muse-config planner)
+(deh-require-maybe (and muse-config publishing-config planner)
   (setq planner-sections
         '((tasks . "Tasks")
           (notes . "Notes")
@@ -64,7 +64,7 @@
             ;; (the value of 'planner-publishing-directory', if
             ;; if you have configuration for an older version
             ;; of Planner)
-            :path ,(concat *generated-top-dir* "/web/site/wiki/Organize/plan/Plans/planner-xhtml"))))
+            :path ,(concat *muse-generated-top-dir* "/web/site/wiki/Organize/plan/Plans/planner-xhtml"))))
 
 
   ;; (global-set-key (kbd "C-c r") 'remember)

@@ -35,48 +35,10 @@
 
 
   (add-to-list 'desktop-minor-mode-handlers '(eproject-mode . (lambda (desktop-buffer-locals)
-                                                                (eproject-maybe-turn-on))))
-
-
-
-  )
+                                                                (eproject-maybe-turn-on)))))
 
 (defun directory-files-and-attributes-only-child (dir &optional full)
   (cddr (directory-files-and-attributes dir full)))
-
-(eval-after-load "project-buffer-mode"
-  '(progn
-
-    (deh-require-maybe iproject
-      ;; http://www.emacswiki.org/emacs/IProject
-      (iproject-key-binding)
-      (add-hook '*sharad/after-init-hook*
-                '(lambda ()
-                  (iproject-key-binding)))
-      )
-
-    (deh-require-maybe project-buffer-occur
-      ;; http://www.emacswiki.org/emacs/ProjectBufferOccur
-      (define-key project-buffer-mode-map [(control ?f)] 'project-buffer-occur))
-
-    (deh-require-maybe project-buffer-mode+
-      ;; http://www.emacswiki.org/emacs/ProjectBufferModePlus
-      (project-buffer-mode-p-setup))
-
-    (deh-require-maybe project-buffer-occur
-      ;; http://www.emacswiki.org/emacs/ProjectBufferOccur
-      (define-key project-buffer-mode-map [(control ?f)] 'project-buffer-occur))
-
-    (autoload 'find-sln "sln-mode")))
-
-(deh-require-maybe project-buffer-mode
-
-  ;; check
-  ;; project-buffer-mode-p-go-to-attached-project-buffer
-  ;; project-buffer-mode-p-register-project-to-file
-  ;; project-buffer-mode-p-link-buffers-to-current-project
-
-  )
 
 (deh-require-maybe fsproject
 
@@ -139,130 +101,151 @@
                                 build-configurations
                                 platforms))))
 
-
-
-
 (deh-require-maybe (progn
                      ;; perspective   ;; ecb bug
                      workspaces
                      ;; ide-skel
                      ))
 
+(eval-after-load "project-buffer-mode"
+  '(progn
+
+    (deh-require-maybe iproject
+      ;; http://www.emacswiki.org/emacs/IProject
+      (iproject-key-binding)
+      (add-hook '*sharad/after-init-hook*
+                '(lambda ()
+                  (iproject-key-binding))))
+
+    (deh-require-maybe project-buffer-occur
+      ;; http://www.emacswiki.org/emacs/ProjectBufferOccur
+      (define-key project-buffer-mode-map [(control ?f)] 'project-buffer-occur))
+
+    (deh-require-maybe project-buffer-mode+
+      ;; http://www.emacswiki.org/emacs/ProjectBufferModePlus
+      (project-buffer-mode-p-setup))
+
+    (deh-require-maybe project-buffer-occur
+      ;; http://www.emacswiki.org/emacs/ProjectBufferOccur
+      (define-key project-buffer-mode-map [(control ?f)] 'project-buffer-occur))
+
+    (autoload 'find-sln "sln-mode")))
+
+(deh-require-maybe project-buffer-mode
+
+  ;; check
+  ;; project-buffer-mode-p-go-to-attached-project-buffer
+  ;; project-buffer-mode-p-register-project-to-file
+  ;; project-buffer-mode-p-link-buffers-to-current-project
+
+  (defvar project-buffer-current-buf-project nil "current-project-buffer")
+
+  (defun buffer-mode (buffer-or-string)
+    "Returns the major mode associated with a buffer."
+    (with-current-buffer buffer-or-string
+      major-mode))
+
+  (defun project-buffer-mode-buffer-list ()
+    (loop for b in (buffer-list)
+         if (eq 'project-buffer-mode (buffer-mode b))
+         collect b))
 
 
-(defvar project-buffer-current-buf-project nil "current-project-buffer")
+  (defun project-buffer-select-pbuffer ()
+    (let* ((pblist (project-buffer-mode-buffer-list))
+           (pb
+            (cond
+              ((null pblist) (error "No project buffer exists.") nil)
+              ((eq (length pblist) 1) (car pblist))
+              (t (ido-completing-read "project buffer: " (mapcar #'buffer-name pblist))))))
+      pb))
 
-(defun buffer-mode (buffer-or-string)
-  "Returns the major mode associated with a buffer."
-  (with-current-buffer buffer-or-string
-     major-mode))
+  (defun project-buffer-mode-get-projects (pb)
+    (if pb
+        (with-current-buffer pb
+          project-buffer-projects-list)
+        (error "no buffer provided.")))
 
-(defun project-buffer-mode-buffer-list ()
-  (loop for b in (buffer-list)
-       if (eq 'project-buffer-mode (buffer-mode b))
-       collect b))
-
-
-(defun project-buffer-select-pbuffer ()
-  (let* ((pblist (project-buffer-mode-buffer-list))
-          (pb
-           (cond
-             ((null pblist) (error "No project buffer exists.") nil)
-             ((eq (length pblist) 1) (car pblist))
-             (t (ido-completing-read "project buffer: " (mapcar #'buffer-name pblist))))))
-
-    pb))
-
-(defun project-buffer-mode-get-projects (pb)
-  (if pb
-      (with-current-buffer pb
-        project-buffer-projects-list)
-      (error "no buffer provided.")))
-
-(defun project-select (&optional pb)
-  (interactive
-   (let* ((pb (project-buffer-select-pbuffer)))
-     (list pb)))
-  (if pb
-      (let* ((projects (project-buffer-mode-get-projects pb))
-             (project (cond
-                        ((null projects) (error "No project exists.") nil)
-                        ((eq (length projects) 1)
-                         (car projects))
-                        (t (ido-completing-read "project: " projects)))))
-        project)))
+  (defun project-select (&optional pb)
+    (interactive
+     (let* ((pb (project-buffer-select-pbuffer)))
+       (list pb)))
+    (if pb
+        (let* ((projects (project-buffer-mode-get-projects pb))
+               (project (cond
+                          ((null projects) (error "No project exists.") nil)
+                          ((eq (length projects) 1)
+                           (car projects))
+                          (t (ido-completing-read "project: " projects)))))
+          project)))
 
 
-(defmacro with-project-buffer (pbuf &rest body)
-  `(with-timeout (10 (message "Not able to do it."))
-     (with-current-buffer ,pbuf
-       (if (progn ,@body) t))))
+  (defmacro with-project-buffer (pbuf &rest body)
+    `(with-timeout (10 (message "Not able to do it."))
+       (with-current-buffer ,pbuf
+         (if (progn ,@body) t))))
 
 
-(defun project-buffer-set-master-project-no-status (&optional pb)
-  (interactive
-   (let* ((pb (project-buffer-select-pbuffer)))
-     (list pb)))
-  (if pb
-      (let ((project (project-select pb)))
-        (if (with-project-buffer pb
-              (project-buffer-set-master-project project-buffer-status project))
-            (setq project-buffer-current-buf-project (cons pb project))))
-      (error "no buffer provided.")))
+  (defun project-buffer-set-master-project-no-status (&optional pb)
+    (interactive
+     (let* ((pb (project-buffer-select-pbuffer)))
+       (list pb)))
+    (if pb
+        (let ((project (project-select pb)))
+          (if (with-project-buffer pb
+                (project-buffer-set-master-project project-buffer-status project))
+              (setq project-buffer-current-buf-project (cons pb project))))
+        (error "no buffer provided.")))
 
 
-(defun project-buffer-jump-to-project (&optional force)
-  (interactive "P")
-  (unless (and (or force (null project-buffer-current-buf-project))
-               (null
-                (project-buffer-set-master-project-no-status
-                 (project-buffer-select-pbuffer))))
+  (defun project-buffer-jump-to-project (&optional force)
+    (interactive "P")
+    (unless (and (or force (null project-buffer-current-buf-project))
+                 (null
+                  (project-buffer-set-master-project-no-status
+                   (project-buffer-select-pbuffer))))
       (switch-to-buffer (car project-buffer-current-buf-project))))
 
-(when nil
+  (testing
 
- (project-buffer-mode-get-projects (car (project-buffer-mode-buffer-list)))
+   (project-buffer-mode-get-projects (car (project-buffer-mode-buffer-list)))
 
- (defmacro with-current-project-mode-buffer (pmb &rest body)
-   `(with-current-buffer ,pmb
-      ,body))
+   (defmacro with-current-project-mode-buffer (pmb &rest body)
+     `(with-current-buffer ,pmb
+        ,body))
+
+   (defun
+       (project-buffer-get-project-settings-data ))
+
+   (project-buffer-get-current-project-name)
+   (save-excursion
+     (with-current-buffer (car (project-buffer-mode-buffer-list))
+       (project-buffer-set-master-project-no-status (project-select))))
 
 
+   (with-current-buffer "*scratch*"
+     test)
 
- (defun
-     (project-buffer-get-project-settings-data ))
-
- (project-buffer-get-current-project-name)
- (save-excursion
    (with-current-buffer (car (project-buffer-mode-buffer-list))
-     (project-buffer-set-master-project-no-status (project-select))))
+     (buffer-local-variables))
 
-
- (with-current-buffer "*scratch*"
-   test)
-
- (with-current-buffer (car (project-buffer-mode-buffer-list))
-   (buffer-local-variables))
-
- (with-current-buffer (car (project-buffer-mode-buffer-list))
-   project-buffer-status)
+   (with-current-buffer (car (project-buffer-mode-buffer-list))
+     project-buffer-status)
 
 
 
- (with-current-buffer (car (project-buffer-mode-buffer-list))
-   (project-buffer-mode t)
-   (project-buffer-set-master-project-no-status "Sipfd Over Ssl"))
+   (with-current-buffer (car (project-buffer-mode-buffer-list))
+     (project-buffer-mode t)
+     (project-buffer-set-master-project-no-status "Sipfd Over Ssl"))
 
- (progn
-   (switch-to-buffer (car (project-buffer-mode-buffer-list)))
-   (project-buffer-mode t)
-   (project-buffer-set-master-project-no-status "Sipfd Over Ssl"))
-
-
- (with-current-buffer (car (project-buffer-mode-buffer-list))
-   project-buffer-status))
+   (progn
+     (switch-to-buffer (car (project-buffer-mode-buffer-list)))
+     (project-buffer-mode t)
+     (project-buffer-set-master-project-no-status "Sipfd Over Ssl"))
 
 
+   (with-current-buffer (car (project-buffer-mode-buffer-list))
+     project-buffer-status)))
 
 (deh-section "pbmode"
 

@@ -106,7 +106,7 @@
   (defun make-mail-chat-frame (&optional force)
     (interactive "P")
     (frame-launcher "mail-chat"
-                    '("erc" "gnus")
+                    '("gnus" "erc")
                     (if force
                         #'(lambda (group)
                             (toggle-ibuffer-group group t))
