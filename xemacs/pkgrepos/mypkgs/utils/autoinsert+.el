@@ -365,10 +365,6 @@ thus, on a GNU or Unix system, it must end in a slash."
            (insert-file-contents (expand-file-name ac auto-insert+-directory))
            (error "error: %s file not exists" ac)))))
 
-(add-auto-insert+action-handler
- :yestemp
- '(lambda (ac) (ignore ac)))
-
 (defun char-isalpha-p (thechar)
   "Check to see if thechar is a letter"
   (and (or (and (>= thechar ?a) (<= thechar ?z))

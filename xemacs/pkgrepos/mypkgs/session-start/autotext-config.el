@@ -41,6 +41,12 @@
     "Replace text in yasnippet template."
     (yas/expand-snippet (buffer-string) (point-min) (point-max)))
 
+  (add-auto-insert+action-handler
+   :yestemp
+   '(lambda (ac) (ignore ac)))
+
+
+
   (messageto "*Complains*" "Do not overwrite default value of auto-insert-alist try "
                            "to integrate default value also.")
 
