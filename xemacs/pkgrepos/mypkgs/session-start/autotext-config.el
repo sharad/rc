@@ -43,7 +43,11 @@
 
   (add-auto-insert+action-handler
    :yestemp
-   '(lambda (ac) (ignore ac)))
+   '(lambda (ac)
+     (funcall
+      (plist-get auto-insert+action-handlers :plain-file)
+      ac)
+     (my/autoinsert+-yas-expand)))
 
 
 
@@ -165,43 +169,42 @@ General Public License for more details.
 
   (define-auto-insert+ 'muse-mode "Muse Mode" "empty" :func 'insert-muse-file)
 
-  (define-auto-insert+ "\\.\\([Hh]\\|hh\\|hpp\\)\\'" "C / C++ header" "yastemp" :yestemp ["template.h" c++-mode my/autoinsert+-yas-expand])
+  (define-auto-insert+ "\\.\\([Hh]\\|hh\\|hpp\\)\\'" "C / C++ header" "yastemp" :yestemp "template.h")
 
-  (define-auto-insert+ "\\.\\([C]\\|cc\\|cpp\\)\\'" "C++ source" "yastemp" :yestemp ["template.cc" my/autoinsert+-yas-expand])
+  (define-auto-insert+ "\\.\\([C]\\|cc\\|cpp\\)\\'" "C++ source" "yastemp" :yestemp "template.cc")
 
 
   (define-auto-insert+ "\\.sh\\'" "Shell script"
-      "yastemp"  :yestemp
-      ["template.sh" my/autoinsert+-yas-expand])
+      "yastemp"  :yestemp "template.sh")
 
   (define-auto-insert+ "\\.pl\\'" "Perl script"
       "yastemp"
      :yestemp
-     ["template.pl" my/autoinsert+-yas-expand])
+     "template.pl")
   (define-auto-insert+ "\\.pm\\'" "Perl module"
       "yastemp"
       :yestemp
-      ["template.pm" my/autoinsert+-yas-expand])
+      "template.pm")
 
   (define-auto-insert+ "\\.py\\'" "Python script"
       "yastemp"
        :yestemp
-       ["template.py" my/autoinsert+-yas-expand])
+       "template.py")
 
   (define-auto-insert+ "[mM]akefile\\'" "Makefile"
       "yastemp"
       :yestemp
-      ["Makefile" my/autoinsert+-yas-expand])
+      "Makefile")
 
   (define-auto-insert+ "\\.tex\\'" "TeX/LaTeX"
       "yastemp"
       :yestemp
-      ["template.tex" my/autoinsert+-yas-expand])
+      "template.tex")
 
   (define-auto-insert+ "\\.el\\'" "Emacs Lisp"
       "yastemp"
       :yestemp
-      ["template.el" my/autoinsert+-yas-expand])
+      "template.el")
 
   ;; Make auto-insert+-alist element plist of :desc :cond :priority :actions
   ;; something like ((cond . (:desc :priority :actions)))

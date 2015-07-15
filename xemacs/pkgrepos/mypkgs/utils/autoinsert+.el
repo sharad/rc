@@ -317,11 +317,12 @@ thus, on a GNU or Unix system, it must end in a slash."
 
 (defvar auto-insert+-alist nil)
 (defvar auto-noinsert+-alist nil)
-(defvar auto-insert+action-handlers nil)
+(defvar auto-insert+action-handlers nil "autoinsert+ handlers")
 
 ;;(setq auto-insert+-alist nil auto-noinsert+-alist nil)
 
 (defun add-auto-insert+action-handler (key handler)
+  "add autoinsert+ handler"
   (setq auto-insert+action-handlers
         (plist-put
          auto-insert+action-handlers
@@ -346,7 +347,6 @@ thus, on a GNU or Unix system, it must end in a slash."
          (if handler
              (funcall handler ac))))
      action)))
-
 
 (add-auto-insert+action-handler
  :skeleton
@@ -591,7 +591,6 @@ or if CONDITION had no actions, after all other CONDITIONs."
         (define-auto-insert+ pattern-mode desc   name type action t)))))
 
 (add-from-autoinsert-alist "old" auto-insert-alist)
-
 
 (defvar tmpledir-alist
   '(("yastemp" "~/emacs.d/template.d/autoinsert" )
