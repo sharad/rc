@@ -59,11 +59,16 @@
          (dismajor-str (if (>= (length display-str) 2)
                            (substring display-str 1 2)
                            "0")))
-    (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-" dismajor-str))))
+    (setenv-from-file
+     (concat
+      "~/.dbus/session-bus/"
+      (trim-string (sharad/read-file "/var/lib/dbus/machine-id"))
+      "-" dismajor-str))))
 
 (add-hook 'emacs-startup-hook
           '(lambda ()
-            (message-notify "Emacs" "Loaded Completely :)")))
+            (message-notify "Emacs" "Loaded Completely :)")
+            (message "\n\n\n\n")))
 
 (add-hook 'sharad/enable-login-session-interrupting-feature-hook
           '(lambda ()

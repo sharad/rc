@@ -961,9 +961,6 @@ to restore in case of sudden emacs crash."
     (message-notify "sharad/enable-session-saving" "Added save-all-sessions-auto-save to auto-save-hook and kill-emacs-hook"))
 
   (defun sharad/enable-session-saving ()
-    (if (sharad/desktop-saved-session)
-        (message "desktop file exists.")
-        (message "desktop file do not exists."))
     ;; (if (or
     ;;      (eq desktop-restore-eager t)
     ;;      (null (sharad/desktop-saved-session)))
@@ -972,7 +969,10 @@ to restore in case of sudden emacs crash."
         (progn
           (ad-enable-advice 'desktop-idle-create-buffers 'after 'desktop-idle-complete-actions)
           (ad-update 'desktop-idle-create-buffers)
-          (ad-activate 'desktop-idle-create-buffers))))
+          (ad-activate 'desktop-idle-create-buffers)))
+    (if (sharad/desktop-saved-session)
+        (message "desktop file exists.")
+        (message "desktop file do not exists.")))
 
   (defun sharad/disable-session-saving ()
     (sharad/disable-session-saving-immediately)

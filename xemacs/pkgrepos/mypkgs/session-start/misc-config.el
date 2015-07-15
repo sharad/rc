@@ -92,7 +92,8 @@ The indirect buffer can have another major mode."
           (lambda () (flyspell-mode 1)))
 
 ;; peace
-(setq ring-bell-function (lambda () (message "bell !!")))
+;; (setq ring-bell-function (lambda () (message "bell !!")))
+(setq ring-bell-function nil)
 
 ;; Make minibuffer larger if there is more to see
 (when (functionp 'resize-minibuffer-mode)

@@ -45,7 +45,7 @@
   ;; use it.
   ;; (defun erc-cmd-UPTIME (&rest ignore)
 
-  (message "loading defun sharad/erc-start-or-switch")
+  ;; (message "loading defun sharad/erc-start-or-switch")
 
   (defun sharad/erc-start-or-switch ()
     "Connect to ERC, or switch to last active buffer"
@@ -68,7 +68,8 @@
             (error (message "Error: %s" e)))
                                         ; can connect to multiple servers automatically
                                         ;(erc :server "irc.gimp.org" :port 6667 :nick "foo" :full-name "bar")
-          )))
+          ;; http://
+          (setq erc-log-insert-log-on-open t))))
 
   (deh-require-maybe erc-join
     (erc-autojoin-mode t))
@@ -440,6 +441,7 @@ waiting for responses from the server"
    erc-query-display 'window-noselect
    ;; enable/disable logging
    erc-log-p nil
+   erc-log-insert-log-on-open nil
    )
 
   ;; (setq erc-encoding-coding-alist (quote (("#lisp" . utf-8)
@@ -756,6 +758,8 @@ waiting for responses from the server"
   (defvar debug-erc-local nil "debug-erc-local")
   (setq debug-erc-local t)
 
+  (require 'frame-config)
+
   (defun erc-notify-PRIVMSG (proc parsed)
     (let ((nick (car (erc-parse-user (erc-response.sender parsed))))
           (target (car (erc-response.command-args parsed)))
@@ -766,11 +770,13 @@ waiting for responses from the server"
                  (erc-notify-allowed nick target))
                                         ;Do actual notification
         (ding)
+        ;; (x-urgency-hinthf (selected-frame) t)
         (notify-desktop (format (if debug-erc-local "%s - %s" "PRIVMSG-%s - %s")
                                 nick
                                 target
                                 (format-time-string "%b %d %I:%M %p"))
-                        msg erc-page-duration "gnome-emacs"))
+                        msg erc-page-duration "gnome-emacs")
+        (x-urgency-hinthf (selected-frame) t))
 
       ;;Handle channel messages when my nick is mentioned
       (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
@@ -778,10 +784,12 @@ waiting for responses from the server"
                  (erc-notify-allowed nick target))
                                         ;Do actual notification
         (ding)
+        ;; (x-urgency-hinthf (selected-frame) t)
         (notify-desktop (format (if debug-erc-local "%s - %s" "PRIVMSG-%s - %s")
                                 target
                                 (format-time-string "%b %d %I:%M %p"))
-                        (format "%s: %s" nick msg) erc-page-duration "gnome-emacs"))))
+                        (format "%s: %s" nick msg) erc-page-duration "gnome-emacs")
+        (x-urgency-hinthf (selected-frame) t))))
 
   (add-hook 'erc-server-PRIVMSG-functions 'erc-notify-PRIVMSG))
 

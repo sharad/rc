@@ -116,6 +116,27 @@
   (defun make-mail-compose-frame ()
     ))
 
+(deh-section "test"
+  (defun x-wm-hints (frame &optional source)
+    (mapcar '(lambda (field)
+              (if (consp field)
+                  (+ (lsh (car field) 16) (cdr field))
+                  field))
+            (x-window-property
+             "WM_HINTS" frame "WM_HINTS"
+             (if source
+                 source
+                 (string-to-number (frame-parameter frame 'outer-window-id)))
+             nil t)))
+
+  (defun x-urgency-hinthf (frame arg)
+    (let* ((wm-hints (x-wm-hints frame))
+           (flags (car wm-hints)))
+      (setcar wm-hints (if arg
+                           (logior flags #x00000100)
+                           (logand flags #xFFFFFEFF)))
+      (x-change-window-property "WM_HINTS" wm-hints frame "WM_HINTS" 32 t))))
+
 
 (provide 'frame-config)
 ;;; frame-config.el ends here

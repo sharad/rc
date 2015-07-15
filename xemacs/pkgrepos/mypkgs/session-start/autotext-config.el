@@ -86,7 +86,7 @@
   (goto-char (point-max))
   (insert "\n\\end{document}\n")
   (goto-char (point-min))
-  (next-line 2)
+  (forward-line 2)
   (backward-char 2)
   (latex-mode))
 
@@ -157,93 +157,96 @@ General Public License for more details.
   (set-auto-insert+noaction '(".gtags-dir-local.el\\'" . "Ido save file name"))
   (set-auto-insert+noaction '("diary/private\\'" . "Diary private file name"))
 
-  (define-auto-insert+ '(muse-mode . "Muse Mode")
-      "empty"
-    'insert-muse-file)
+  (define-auto-insert+ 'muse-mode "Muse Mode" "empty" :func 'insert-muse-file)
 
-  (define-auto-insert+ '("\\.\\([Hh]\\|hh\\|hpp\\)\\'" . "C / C++ header")
-      "yastemp"
-    ["template.h" c++-mode my/autoinsert+-yas-expand])
+  (define-auto-insert+ "\\.\\([Hh]\\|hh\\|hpp\\)\\'" "C / C++ header" "yastemp" :yestemp ["template.h" c++-mode my/autoinsert+-yas-expand])
 
-  (define-auto-insert+ '("\\.\\([C]\\|cc\\|cpp\\)\\'" . "C++ source")
-      "yastemp"
-    ["template.cc" my/autoinsert+-yas-expand])
+  (define-auto-insert+ "\\.\\([C]\\|cc\\|cpp\\)\\'" "C++ source" "yastemp" :yestemp ["template.cc" my/autoinsert+-yas-expand])
 
 
-  (define-auto-insert+ '("\\.sh\\'" . "Shell script")
-      "yastemp"
-    ["template.sh" my/autoinsert+-yas-expand])
+  (define-auto-insert+ "\\.sh\\'" "Shell script"
+      "yastemp"  :yestemp
+      ["template.sh" my/autoinsert+-yas-expand])
 
-  (define-auto-insert+ '("\\.pl\\'" . "Perl script")
+  (define-auto-insert+ "\\.pl\\'" "Perl script"
       "yastemp"
-    ["template.pl" my/autoinsert+-yas-expand])
-  (define-auto-insert+ ' ("\\.pm\\'" . "Perl module")
+     :yestemp
+     ["template.pl" my/autoinsert+-yas-expand])
+  (define-auto-insert+ "\\.pm\\'" "Perl module"
       "yastemp"
-    ["template.pm" my/autoinsert+-yas-expand])
+      :yestemp
+      ["template.pm" my/autoinsert+-yas-expand])
 
-  (define-auto-insert+ '("\\.py\\'" . "Python script")
+  (define-auto-insert+ "\\.py\\'" "Python script"
       "yastemp"
-    ["template.py" my/autoinsert+-yas-expand])
+       :yestemp
+       ["template.py" my/autoinsert+-yas-expand])
 
-  (define-auto-insert+ '("[mM]akefile\\'" . "Makefile")
+  (define-auto-insert+ "[mM]akefile\\'" "Makefile"
       "yastemp"
-    ["Makefile" my/autoinsert+-yas-expand])
+      :yestemp
+      ["Makefile" my/autoinsert+-yas-expand])
 
-  (define-auto-insert+ '("\\.tex\\'" . "TeX/LaTeX")
+  (define-auto-insert+ "\\.tex\\'" "TeX/LaTeX"
       "yastemp"
-    ["template.tex" my/autoinsert+-yas-expand])
+      :yestemp
+      ["template.tex" my/autoinsert+-yas-expand])
 
-  (define-auto-insert+ '("\\.el\\'" . "Emacs Lisp")
+  (define-auto-insert+ "\\.el\\'" "Emacs Lisp"
       "yastemp"
-    ["template.el" my/autoinsert+-yas-expand])
+      :yestemp
+      ["template.el" my/autoinsert+-yas-expand])
 
   ;; Make auto-insert+-alist element plist of :desc :cond :priority :actions
   ;; something like ((cond . (:desc :priority :actions)))
-  ;; (define-auto-insert+ '("\\.*\\'" . "All file")
+  ;; (define-auto-insert+ '("\\.*\\'" "All file")
   ;;     "template"
   ;;   [template-not-found-function])
 
   ;; from http://www.emacswiki.org/emacs/AutoInsertMode
   (define-auto-insert+
-      '("\\.\\(CC?\\|cc\\|cxx\\|cpp\\|c++\\)\\'" . "C++ skeleton")
+      "\\.\\(CC?\\|cc\\|cxx\\|cpp\\|c++\\)\\'" "C++ skeleton"
       "test"
-    '("Short description: "
-      "/*" \n
-      (file-name-nondirectory (buffer-file-name))
-      " -- " str \n
-      " */" > \n \n
-      "#include <iostream>" \n \n
-      "using namespace std;" \n \n
-      "main()" \n
-      "{" \n
-      > _ \n
-      "}" > \n))
+      :skeleton
+      '("Short description: "
+        "/*" \n
+        (file-name-nondirectory (buffer-file-name))
+        " -- " str \n
+        " */" > \n \n
+        "#include <iostream>" \n \n
+        "using namespace std;" \n \n
+        "main()" \n
+        "{" \n
+        > _ \n
+        "}" > \n))
 
 
-  (define-auto-insert+ '("\\.c\\'" . "C skeleton")
+  (define-auto-insert+ "\\.c\\'" "C skeleton"
       "test"
-    '(
-      "Short description: "
-      "/**\n * "
-      (file-name-nondirectory (buffer-file-name))
-      " -- " str \n
-      "*" \n
-      "* Written on " (format-time-string "%A, %e %B %Y.") \n
-      "*/" > \n \n
-      "#include <stdio.h>" \n
-      "#include \""
-      (file-name-sans-extension
-       (file-name-nondirectory (buffer-file-name)))
-      ".h\"" \n \n
-      "int main()" \n
-      "{" > \n
-      > _ \n
-      "}" > \n))
+      :skeleton
+      '(
+        "Short description: "
+        "/**\n * "
+        (file-name-nondirectory (buffer-file-name))
+        " -- " str \n
+        "*" \n
+        "* Written on " (format-time-string "%A, %e %B %Y.") \n
+        "*/" > \n \n
+        "#include <stdio.h>" \n
+        "#include \""
+        (file-name-sans-extension
+         (file-name-nondirectory (buffer-file-name)))
+        ".h\"" \n \n
+        "int main()" \n
+        "{" > \n
+        > _ \n
+        "}" > \n))
 
 
-  (define-auto-insert+ '(perl-mode . "Perl skeleton")
+  (define-auto-insert+ 'perl-mode "Perl skeleton"
       "test"
-    '("Description: "
+      :skeleton
+      '("Description: "
       "#!/usr/bin/env perl" \n
       \n
       "use strict;" \n
