@@ -1,12 +1,5 @@
 ;; automatic text, at least adapt author!
 
-
-
-
-
-
-
-
 (deh-require-maybe template
   (template-initialize)
   ;; to ignore
@@ -16,67 +9,6 @@
 
 ;;{{ from: http://www.emacswiki.org/emacs/AutoInsertMode
 ;; I use Yasnippet for initial skeletons:
-
-;; (deh-require-todo yasnippet
-(deh-require-maybe yasnippet
-
-;;  (messageto "*Complains*" "Install yasnippet for good experience")
-
-  (require 'utils-config)
-
-
-
-  (when nil
-    (yas/expand-snippet "(defun $1 ()
-  \"DOCSTRING\"
-  (interactive)
-  (let (var1)
-    (setq var1 some)
-    $0
-  ))
-
-\(require $0 \)" ))
-
-  (defun my/autoinsert+-yas-expand ()
-    "Replace text in yasnippet template."
-    (yas/expand-snippet (buffer-string) (point-min) (point-max)))
-
-  (add-auto-insert+action-handler
-   :yestemp
-   '(lambda (ac)
-     (funcall
-      (plist-get auto-insert+action-handlers :plain-file)
-      ac)
-     (my/autoinsert+-yas-expand)))
-
-
-
-  (messageto "*Complains*" "Do not overwrite default value of auto-insert-alist try "
-                           "to integrate default value also.")
-
-
-
-
-
-
-  (deh-require-maybe auto-yasnippet
-    ;;   (require 'yasnippet)
-    ;;   (global-set-key (kbd "H-w") 'create-auto-yasnippet)
-    ;;   (global-set-key (kbd "H-y") 'expand-auto-yasnippet)
-    )
-
-  )
-;;}}
-
-
-
-
-
-
-
-
-
-
 
 (defun start-latex () "Adds all that stuff to start a new LaTeX document" (interactive)
   (goto-char (point-min))
@@ -169,42 +101,6 @@ General Public License for more details.
 
   (define-auto-insert+ 'muse-mode "Muse Mode" "empty" :func 'insert-muse-file)
 
-  (define-auto-insert+ "\\.\\([Hh]\\|hh\\|hpp\\)\\'" "C / C++ header" "yastemp" :yestemp "template.h")
-
-  (define-auto-insert+ "\\.\\([C]\\|cc\\|cpp\\)\\'" "C++ source" "yastemp" :yestemp "template.cc")
-
-
-  (define-auto-insert+ "\\.sh\\'" "Shell script"
-      "yastemp"  :yestemp "template.sh")
-
-  (define-auto-insert+ "\\.pl\\'" "Perl script"
-      "yastemp"
-     :yestemp
-     "template.pl")
-  (define-auto-insert+ "\\.pm\\'" "Perl module"
-      "yastemp"
-      :yestemp
-      "template.pm")
-
-  (define-auto-insert+ "\\.py\\'" "Python script"
-      "yastemp"
-       :yestemp
-       "template.py")
-
-  (define-auto-insert+ "[mM]akefile\\'" "Makefile"
-      "yastemp"
-      :yestemp
-      "Makefile")
-
-  (define-auto-insert+ "\\.tex\\'" "TeX/LaTeX"
-      "yastemp"
-      :yestemp
-      "template.tex")
-
-  (define-auto-insert+ "\\.el\\'" "Emacs Lisp"
-      "yastemp"
-      :yestemp
-      "template.el")
 
   ;; Make auto-insert+-alist element plist of :desc :cond :priority :actions
   ;; something like ((cond . (:desc :priority :actions)))
@@ -214,7 +110,8 @@ General Public License for more details.
 
   ;; from http://www.emacswiki.org/emacs/AutoInsertMode
   (define-auto-insert+
-      "\\.\\(CC?\\|cc\\|cxx\\|cpp\\|c++\\)\\'" "C++ skeleton"
+      "\\.\\(CC?\\|cc\\|cxx\\|cpp\\|c++\\)\\'"
+      "C++ skeleton"
       "test"
       :skeleton
       '("Short description: "
@@ -271,7 +168,94 @@ General Public License for more details.
       (getenv "ORGANIZATION") | (progn user-full-name) "\n\n"
       "This library is free software; you can redistribute it and/or" "\n"
       "modify it under the same terms as Perl itself." "\n\n"
-      "=cut" "\n")))
+      "=cut" "\n"))
+
+;; (deh-require-todo yasnippet
+  (deh-require-maybe yasnippet
+
+    ;;  (messageto "*Complains*" "Install yasnippet for good experience")
+
+    (require 'utils-config)
+
+
+
+    (when nil
+      (yas/expand-snippet "(defun $1 ()
+  \"DOCSTRING\"
+  (interactive)
+  (let (var1)
+    (setq var1 some)
+    $0
+  ))
+
+\(require $0 \)" ))
+
+    (defun my/autoinsert+-yas-expand ()
+      "Replace text in yasnippet template."
+      (yas/expand-snippet (buffer-string) (point-min) (point-max)))
+
+    (add-auto-insert+action-handler
+     :yestemp
+     '(lambda (ac)
+       (funcall
+        (plist-get auto-insert+action-handlers :plain-file)
+        ac)
+       (my/autoinsert+-yas-expand)))
+
+
+
+    (messageto "*Complains*" "Do not overwrite default value of auto-insert-alist try "
+               "to integrate default value also.")
+
+
+    (define-auto-insert+ "\\.\\([Hh]\\|hh\\|hpp\\)\\'" "C / C++ header" "yastemp" :yestemp "template.h")
+
+    (define-auto-insert+ "\\.\\([C]\\|cc\\|cpp\\)\\'" "C++ source" "yastemp" :yestemp "template.cc")
+
+
+    (define-auto-insert+ "\\.sh\\'" "Shell script"
+      "yastemp"  :yestemp "template.sh")
+
+    (define-auto-insert+ "\\.pl\\'" "Perl script"
+      "yastemp"
+      :yestemp
+      "template.pl")
+    (define-auto-insert+ "\\.pm\\'" "Perl module"
+      "yastemp"
+      :yestemp
+      "template.pm")
+
+    (define-auto-insert+ "\\.py\\'" "Python script"
+      "yastemp"
+      :yestemp
+      "template.py")
+
+    (define-auto-insert+ "[mM]akefile\\'" "Makefile"
+      "yastemp"
+      :yestemp
+      "Makefile")
+
+    (define-auto-insert+ "\\.tex\\'" "TeX/LaTeX"
+      "yastemp"
+      :yestemp
+      "template.tex")
+
+    (define-auto-insert+ "\\.el\\'" "Emacs Lisp"
+      "yastemp"
+      :yestemp
+      "template.el")
+
+
+
+
+    (deh-require-maybe auto-yasnippet
+      ;;   (require 'yasnippet)
+      ;;   (global-set-key (kbd "H-w") 'create-auto-yasnippet)
+      ;;   (global-set-key (kbd "H-y") 'expand-auto-yasnippet)
+      ))
+;;}}
+
+  )
 ;;}}}
 
 

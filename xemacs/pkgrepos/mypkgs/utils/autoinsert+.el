@@ -89,8 +89,8 @@ If this contains a %s, that will be replaced by the matching rule."
   :type 'string
   :group 'auto-insert+)
 
-
-(defcustom auto-insert-alist
+(when nil
+  (defcustom auto-insert-alist
   '((("\\.\\([Hh]\\|hh\\|hpp\\)\\'" . "C / C++ header")
      (upcase (concat (file-name-nondirectory
 		      (file-name-sans-extension buffer-file-name))
@@ -304,7 +304,7 @@ ACTION may also be a vector containing several successive single actions as
 described above, e.g. [\"header.insert\" date-and-author-update]."
   :type 'sexp
   :group 'auto-insert+)
-
+  )
 
 ;; Establish a default value for auto-insert+-directory
 (defcustom auto-insert+-directory "~/insert/"
@@ -440,11 +440,12 @@ thus, on a GNU or Unix system, it must end in a slash."
 Matches the visited file name against the elements of `auto-insert+-alist'."
   (interactive "P")
   ;; (message "in auto-insert+")
-  (and (not buffer-read-only)
+  (when
+      (and
+       (not buffer-read-only)
        (or (eq this-command 'auto-insert+)
 	   (and auto-insert+
 		(or force (and (bobp) (eobp)))))
-
        ;; no action test
        (let ((alist auto-noinsert+-alist)
              noaction-alist cond)
@@ -460,8 +461,8 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
                 noaction-alist (append noaction-alist (caar alist))
                 alist nil))
            (setq alist (cdr alist)))
-         (message "noaction-alist %s" noaction-alist)
-         (not noaction-alist))
+         ;; (message "noaction-alist %s" noaction-alist)
+         (not noaction-alist)))
 
        ;; all actions test and accumulation
        (let ((alist auto-insert+-alist)
@@ -475,7 +476,7 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
 	   (let* ((element (car alist))
                   (cond    (car element))
                   (newdesc (plist-get (cdr element) :desc)))
-             (message "cond %s newdesc %s" cond newdesc)
+             ;; (message "cond %s newdesc %s" cond newdesc)
              (if (some (lambda (c)
                          (if (symbolp c)
                              (let ((cond-major-mode c))
@@ -492,9 +493,8 @@ Matches the visited file name against the elements of `auto-insert+-alist'."
                              desc
                              (if newdesc
                                  (format (concat (if desc " or") " %s") newdesc))))))
-
            (setq alist (cdr alist)))
-         (message "action-alist %s" action-alist)
+         ;; (message "action-alist %s" action-alist)
 	 ;; Now, if we found something, do it
          (if (and action-alist
                   (or (not auto-insert+-query)
@@ -537,9 +537,7 @@ or if CONDITION had no actions, after all other CONDITIONs."
           (setcdr elt
                   (plist-put (cdr  elt)
                              :action-alist
-                             action-alist)))
-        ;; (message "you should not see this message.")
-        )))
+                             action-alist))))))
 
 ;;;###autoload
 (defun set-auto-insert+noaction (condition)
@@ -547,50 +545,51 @@ or if CONDITION had no actions, after all other CONDITIONs."
   (unless (member condition auto-noinsert+-alist)
       (push condition auto-noinsert+-alist)))
 
-(require 'autoinsert)
-(defun action-type-old-autoinsert-alist (action)
-  ;; TODO: Add support function with arguments
-  (if action
-      (cond
-        ((and
-          (stringp action)
-          (or
-           (file-readable-p action)
-           (file-readable-p
-            (expand-file-name
-             action auto-insert+-directory))))
-         :plain-file)
-        ((and (consp action)
-              (not (eq (car action) 'lambda)))
-         :skeleton)
-        ((or
-          (symbolp action)
-          (and
-           (consp action)
-           (eq (car action) 'lambda)))
-         :func)
-        (t ;; (error "action is recognizable.")
-         :unknown))
-      (error "action is nil")))
+(progn
+  (require 'autoinsert)
+  (defun action-type-old-autoinsert-alist (action)
+    ;; TODO: Add support function with arguments
+    (if action
+        (cond
+          ((and
+            (stringp action)
+            (or
+             (file-readable-p action)
+             (file-readable-p
+              (expand-file-name
+               action auto-insert+-directory))))
+           :plain-file)
+          ((and (consp action)
+                (not (eq (car action) 'lambda)))
+           :skeleton)
+          ((or
+            (symbolp action)
+            (and
+             (consp action)
+             (eq (car action) 'lambda)))
+           :func)
+          (t ;; (error "action is recognizable.")
+           :unknown))
+        (error "action is nil")))
 
-(defun add-from-autoinsert-alist (name alist)
-  (dolist (elt alist)
-    (let ((pattern-mode (if (consp (car elt))
-                            (caar elt)
-                            (car elt)))
-          (desc         (if (consp (car elt))
-                            (cdar elt)
-                            (if (symbolp (car elt))
-                                (symbol-name (car elt))
-                                (car elt))))
-          (action       (cdr elt))
-          (type         (action-type-old-autoinsert-alist (cdr elt))))
-     (if (vectorp (cdr elt))
-        (dolist (a (append (cdr elt) nil))
-          (define-auto-insert+ pattern-mode desc name type a t))
-        (define-auto-insert+ pattern-mode desc   name type action t)))))
+  (defun add-from-autoinsert-alist (name alist)
+    (dolist (elt alist)
+      (let ((pattern-mode (if (consp (car elt))
+                              (caar elt)
+                              (car elt)))
+            (desc         (if (consp (car elt))
+                              (cdar elt)
+                              (if (symbolp (car elt))
+                                  (symbol-name (car elt))
+                                  (car elt))))
+            (action       (cdr elt))
+            (type         (action-type-old-autoinsert-alist (cdr elt))))
+        (if (vectorp (cdr elt))
+            (dolist (a (append (cdr elt) nil))
+              (define-auto-insert+ pattern-mode desc name type a t))
+            (define-auto-insert+ pattern-mode desc   name type action t)))))
 
-(add-from-autoinsert-alist "old" auto-insert-alist)
+  (add-from-autoinsert-alist "old" auto-insert-alist))
 
 (defvar tmpledir-alist
   '(("yastemp" "~/emacs.d/template.d/autoinsert" )
