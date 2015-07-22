@@ -53,20 +53,22 @@ then
     then
         . ${KEYCHAINDIR}/${HOST}-sh
         if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
-            ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # check if ${KEYCHAINDIR}/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
+           ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                     || # check if ${KEYCHAINDIR}/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
+           [ "$(basename $(\ps hc -ocmd $SSH_AGENT_PID  | cut -f1 -d' '  ))" != ssh-agent ]
         then
             unset SSH_AGENT_PID
             unset SSH_AUTH_SOCK
-            rm -f ${KEYCHAINDIR}/${HOST}-sh
+            rm -rf ${KEYCHAINDIR}
         fi                  # if [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ]
     else
         unset SSH_AGENT_PID
         unset SSH_AUTH_SOCK
     fi                      # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
 
-    if  [ ! -r ${KEYCHAINDIR}/${HOST}-sh ]                        ||
+    if  [ ! -r ${KEYCHAINDIR}/${HOST}-sh ]                         ||
         [ "x${SSH_AGENT_PID}" = "x" -a "x${SSH_AUTH_SOCK}" = "x" ] || # ssh-agent pid is not set
-        ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # check if ${KEYCHAINDIR}/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
+        ! ps ${SSH_AGENT_PID} 2>&1 > /dev/null                     ||   # check if ${KEYCHAINDIR}/${HOST}-sh's ssh-agent is alive or not, if pid is set and no working alive ssh-agent process.
+        [ "$(basename $(\ps hc -ocmd $SSH_AGENT_PID  | cut -f1 -d' '  ))" != ssh-agent ]
     then
 
         if  [ "$UID" != "0" ]

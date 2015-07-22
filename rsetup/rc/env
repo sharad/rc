@@ -19,6 +19,8 @@ export VISUAL
 export BROWSER
 SSH_KEYS_DIR=$HOME/.ssh/login-keys.d
 export SCREEN4KEYCHAIN=keychain
+#export KEYCHAINDIR=$HOME/.keychain-screen
+# tis is for interactive shell, not for login shell which could be invoke ssh-agent already.
 export KEYCHAINDIR=$HOME/.keychain-screen
 
 if [ "x$DISPLAY" != "x" ] ; then
@@ -41,7 +43,8 @@ fi
 
 
 if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
-   ps ${SSH_AGENT_PID} 2>&1 > /dev/null                        # if pid is set and working alive ssh-agent process.
+   ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
+   [ "$(basename $(\ps hc -ocmd $SSH_AGENT_PID  | cut -f1 -d' '  ))" = ssh-agent ]
 then
     if ! ssh-add -l 2>&1 > /dev/null
     then
@@ -61,7 +64,8 @@ else
         . ${KEYCHAINDIR}/${HOST}-sh
 
         if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
-            ps ${SSH_AGENT_PID} 2>&1 > /dev/null                            # if pid is set and working alive ssh-agent process.
+            ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
+            [ "$(basename $(\ps hc -ocmd $SSH_AGENT_PID  | cut -f1 -d' '  ))" = ssh-agent ]
         then
             if ! ssh-add -l 2>&1 > /dev/null                                # key is not added
             then
