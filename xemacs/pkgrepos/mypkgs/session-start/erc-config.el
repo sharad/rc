@@ -69,7 +69,8 @@
                                         ; can connect to multiple servers automatically
                                         ;(erc :server "irc.gimp.org" :port 6667 :nick "foo" :full-name "bar")
           ;; http://
-          (setq erc-log-insert-log-on-open t))))
+          ;; (setq erc-log-insert-log-on-open t)
+          )))
 
   (deh-require-maybe erc-join
     (erc-autojoin-mode t))

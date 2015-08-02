@@ -150,3 +150,67 @@ proxy_widget.prototype.update = function () {
  */
 
 add_hook("mode_line_hook", mode_line_adder(proxy_widget));
+
+
+
+
+
+
+//{{
+//set the proxy server for this session only
+// proxy_server_default = "proxy.server.com";
+// proxy_port_default = 80;
+tor_proxy_server_default = "127.0.0.1";
+tor_proxy_port_default = 9050;
+
+function set_proxy_session (I, server, port) {
+  var window = I.window;
+  var buffer = I.buffer;
+  if (server == "N") {
+    session_pref('network.proxy.type', 0); //direct connection
+    window.minibuffer.message("Direction connection to the internet enabled for this session");
+  } else {
+    if (server == "") server = tor_proxy_server_default;
+    if (port == "") port = tor_proxy_port_default;
+
+    // session_pref('network.proxy.ftp',    server);
+    // session_pref('network.proxy.gopher', server);
+    // session_pref('network.proxy.http',   server);
+    session_pref('network.proxy.socks',  server);
+    // session_pref('network.proxy.ssl',    server);
+
+    // session_pref('network.proxy.ftp_port',    port);
+    // session_pref('network.proxy.gopher_port', port);
+    // session_pref('network.proxy.http_port',   port);
+
+    session_pref('network.proxy.socks_port',  port);
+    // session_pref('network.proxy.ssl_port',    port);
+
+    session_pref('network.proxy.share_proxy_settings', false);
+    session_pref('network.proxy.type', 1);
+    session_pref('network.proxy.socks_version', 5);
+    browser_object_follow(buffer, OPEN_NEW_BUFFER, "https://check.torproject.org/");
+    window.minibuffer.message("All protocols using "+server+":"+port+" for this session");
+  }
+}
+
+interactive("set-proxy-session",
+            "set the proxy server for all protocols for this session only",
+            function (I) {
+              set_proxy_session(
+                // I.window,
+                I,
+                (yield I.minibuffer.read($prompt = "server ["+tor_proxy_server_default+"] or N: ")),
+                (yield I.minibuffer.read($prompt = "port ["+tor_proxy_port_default+"]: ")));
+            });
+
+interactive("tor-enable",
+            "set the proxy server for all protocols for this session only",
+            function (I) {
+              set_proxy_session(
+                // I.window,
+                I,
+                (yield I.minibuffer.read($prompt = "server ["+tor_proxy_server_default+"] or N: ")),
+                (yield I.minibuffer.read($prompt = "port ["+tor_proxy_port_default+"]: ")));
+            });
+//}}
