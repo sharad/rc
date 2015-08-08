@@ -30,6 +30,7 @@
 (xrequire 'moz)
 
 (defun javascript-custom-setup ()
+  (setq moz-repl-port 4747)
   (moz-minor-mode 1))
 
 ;; (defun javascript-custom-setup ()
@@ -37,6 +38,8 @@
 ;;     `(moz-minor-mode 1))
 ;;
 ;;     )
+
+(add-hook 'js-mode-hook 'javascript-custom-setup)
 
 (deh-require-maybe flymake-js
   (add-hook 'javascript-mode-hook 'flymake-jslint-load))

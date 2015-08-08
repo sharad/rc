@@ -188,10 +188,21 @@
 ;;The Prefix used for RA commands. Default is control-c r
 (defvar remem-command-prefix "\C-cx")
 
+(defvar remem-debug-retval nil "Used below")
+(defvar remem-last-query-mode "emacs-lisp-mode" "Used below")
 ;;;;;;;;;;;;;;;;
 ;; Keys We want to start with before running the RA
-(global-set-key (concat remem-command-prefix "t") 'remem-toggle)
-(global-set-key (concat remem-command-prefix "h") 'remem-create-help-page)
+;; (global-set-key (concat remem-command-prefix "t") 'remem-toggle)
+;; (global-set-key (concat remem-command-prefix "h") 'remem-create-help-page)
+
+(define-prefix-command 'remem-command-map)
+(if (key-binding (kbd "C-c x"))
+    (message "C-c x already binded to %s" (key-binding (kbd "C-c x")))
+    (global-set-key (kbd "C-c x") 'remem-command-map))
+
+;; Keys We want to start with before running the RA
+(define-key 'remem-command-map (kbd "t") 'remem-toggle)
+(define-key 'remem-command-map (kbd "h") 'remem-create-help-page)
 
 ;;;;;;;;;;;;;;;;
 ;; Mode aware changing
@@ -246,7 +257,8 @@
        )
       (t
 ;       (set-face-foreground 'remem-odd  "ForestGreen")
-       (set-face-foreground 'remem-odd  "Black")
+       (set-face-foreground 'remem-odd  "ForestGreen")
+;       (set-face-foreground 'remem-odd  "Black")
        (set-face-foreground 'remem-even  "MediumBlue")         ;; Every even column
        (set-face-foreground 'remem-odd-scope  "Blue")     ;; Every odd scope (numbers)
        (set-face-foreground 'remem-even-scope  "DarkSlateGray")        ;; Every even scope (numbers)
@@ -477,6 +489,7 @@ hand-set biases.")
 (make-variable-buffer-local 'remem-selection-field-overlay)
 
 (defvar remem-last-followed-docnum nil)   ;; Docnum of document followed last
+(defvar remem-last-followed-doctype nil)   ;; Doctype of document followed last
 
 ;;; ----------
 ;;; SCOPE DATA
@@ -549,7 +562,7 @@ hand-set biases.")
   (aset scope 12 value)) ; number queries done in this scope since the last log checkpoint
 (defun remem-set-scope-dbinfo (scope value)
   (aset scope 13 value)) ; info on the database queried in this scope (version # and num docs)
-(defun remem-set-scope-dbmodtime (scope)
+(defun remem-set-scope-dbmodtime (scope value)
   (aset scope 14 value)) ; modtime of the database queried in this scope (so we know to reset if it's been changed out from under us)
 
 (defun remem-decrement-scope-in-progress (scope)
@@ -647,7 +660,8 @@ hand-set biases.")
 (defun remem-default-scope ()
   "Returns the scope that is currently defaulted"
   (let ((default-scopes (remem-default-scope-list)))
-    (cond (default-scopes (car default-scopes))
+    (if default-scopes
+        (car default-scopes)
           nil)))
 
 (defun remem-all-scopes ()
@@ -1559,8 +1573,8 @@ hand-set biases.")
       (setq mode-name "Remembrance Agent")
       (toggle-read-only t)
       (cond ((and running-xemacs (boundp 'scrollbar-width) (boundp 'scrollbar-height)
-                  (set-specifier scrollbar-width  0 (get-buffer "*remem-display*"))
-                  (set-specifier scrollbar-height 0 (get-buffer "*remem-display*")))))
+                  (set-specifier scrollbar-width  0 (get-buffer remem-buffer-name))
+                  (set-specifier scrollbar-height 0 (get-buffer remem-buffer-name)))))
       (setq remem-selection-line 0)
       (setq remem-selection-line-contents "")
       (setq remem-selection-field 0))))
@@ -1972,10 +1986,31 @@ hand-set biases.")
   "Makes sure that Remem dies when the buffer is gone, and respawns when window is no longer visible.  This is because of that stupid resize-windows bug"
   (unless (window-live-p (get-buffer-window remem-buffer-name t))
     (cond ((get-buffer remem-buffer-name)    ;; if the buffer exists, respawn the window
-           (remem-display-buffer remem-buffer-name))
+           (if remem-hide-display            ;TODO: sharad fix it
+               (let ((w (get-buffer-window (get-buffer remem-buffer-name))))
+                 (message "WWhello")
+                 (if w (delete-window w)))
+               (message "hello")
+               (remem-display-buffer remem-buffer-name)))
           (t
+           (message "xhello")
            (remem-cancel-timer remem-global-timer)
            (kill-remem)))))
+
+
+(defun remem-fix-window-loss ()
+  "Makes sure that Remem dies when the buffer is gone, and respawns when window is no longer visible.  This is because of that stupid resize-windows bug"
+  (if (get-buffer remem-buffer-name)    ;; if the buffer exists, respawn the window
+      (if remem-hide-display            ;TODO: sharad fix it
+          (if (window-live-p (get-buffer-window remem-buffer-name (selected-frame)))
+              (let ((w (get-buffer-window (get-buffer remem-buffer-name))))
+                (if w (delete-window w))))
+          (unless (window-live-p (get-buffer-window remem-buffer-name (selected-frame)))
+            (remem-display-buffer remem-buffer-name)))
+      (progn
+        ;; if (window-live-p (get-buffer-window remem-buffer-name t))
+        (remem-cancel-timer remem-global-timer)
+        (kill-remem))))
 
 (defun remem-restart-on-outdated-index (scope)
   "If any of the index files we're looking at are newer than they were when we started up their processes, restart ra-retrieve."
@@ -2039,32 +2074,36 @@ hand-set biases.")
                   (setq remem-global-timer
                         (run-at-time 5 3 'remem-fix-window-loss))
 
+                  ;; will not unset it.
+                  ;; (global-set-key (kbd "C-c x") 'remem-command-map)
                   ;;to make the display stick!
-
 ;;; I don't like resetting C-xo, so I won't
 ;;;                  (setq remem-old-C-xo (global-key-binding "\C-xo"))
 ;;;                  (global-set-key "\C-xo" 'remem-other-window)
+                  (define-key 'remem-command-map (kbd "xo") 'remem-other-window)
 
 ;;; But I'll make an exception for C-x1 'cause it's so useful
-                  (setq remem-old-C-x1 (global-key-binding "\C-x1"))
-                  (global-set-key "\C-x1" 'remem-delete-other-windows)
+                  ;; (setq remem-old-C-x1 (global-key-binding "\C-x1"))
+                  ;; (global-set-key "\C-x1" 'remem-delete-other-windows)
+                  (define-key 'remem-command-map (kbd "x1") 'remem-delete-other-windows)
+                  (define-key 'remem-command-map (kbd "T")  'remem-display-toggle)
 
-                  (global-set-key (concat remem-command-prefix "v") 'remem-query-now)
-                  (global-set-key (concat remem-command-prefix "n") 'remem-display-other)
-		  (global-set-key (concat remem-command-prefix "f") 'remem-grab-query)
-		  (global-set-key (concat remem-command-prefix "d") 'remem-change-database)
-                  (global-set-key (concat remem-command-prefix "q") 'remem-create-query-page)
+                  (define-key 'remem-command-map (kbd "v") 'remem-query-now)
+                  (define-key 'remem-command-map (kbd "n") 'remem-display-other)
+		  (define-key 'remem-command-map (kbd "f") 'remem-grab-query)
+		  (define-key 'remem-command-map (kbd "d") 'remem-change-database)
+                  (define-key 'remem-command-map (kbd "q") 'remem-create-query-page)
 
 	   ;;;set the key bindings for the retrieval
-                  (global-set-key (concat remem-command-prefix "1") 'remem-display-line-1)
-                  (global-set-key (concat remem-command-prefix "2") 'remem-display-line-2)
-                  (global-set-key (concat remem-command-prefix "3") 'remem-display-line-3)
-                  (global-set-key (concat remem-command-prefix "4") 'remem-display-line-4)
-                  (global-set-key (concat remem-command-prefix "5") 'remem-display-line-5)
-                  (global-set-key (concat remem-command-prefix "6") 'remem-display-line-6)
-                  (global-set-key (concat remem-command-prefix "7") 'remem-display-line-7)
-                  (global-set-key (concat remem-command-prefix "8") 'remem-display-line-8)
-                  (global-set-key (concat remem-command-prefix "9") 'remem-display-line-9)
+                  (define-key 'remem-command-map (kbd "1") 'remem-display-line-1)
+                  (define-key 'remem-command-map (kbd "2") 'remem-display-line-2)
+                  (define-key 'remem-command-map (kbd "3") 'remem-display-line-3)
+                  (define-key 'remem-command-map (kbd "4") 'remem-display-line-4)
+                  (define-key 'remem-command-map (kbd "5") 'remem-display-line-5)
+                  (define-key 'remem-command-map (kbd "6") 'remem-display-line-6)
+                  (define-key 'remem-command-map (kbd "7") 'remem-display-line-7)
+                  (define-key 'remem-command-map (kbd "8") 'remem-display-line-8)
+                  (define-key 'remem-command-map (kbd "9") 'remem-display-line-9)
 
                   (cond (remem-non-r-number-keys
                          (global-set-key "\C-c1" 'remem-display-line-1)
@@ -2077,12 +2116,12 @@ hand-set biases.")
                          (global-set-key "\C-c8" 'remem-display-line-8)
                          (global-set-key "\C-c9" 'remem-display-line-9)))
 
-                  (global-unset-key (concat remem-command-prefix "r")) ; Just to be safe
-                  (global-set-key (concat remem-command-prefix "r1") 'remem-log-rating-1)
-                  (global-set-key (concat remem-command-prefix "r2") 'remem-log-rating-2)
-                  (global-set-key (concat remem-command-prefix "r3") 'remem-log-rating-3)
-                  (global-set-key (concat remem-command-prefix "r4") 'remem-log-rating-4)
-                  (global-set-key (concat remem-command-prefix "r5") 'remem-log-rating-5)
+                  ;; (global-unset-key (concat remem-command-prefix "r")) ; Just to be safe
+                  (define-key 'remem-command-map (kbd "r1") 'remem-log-rating-1)
+                  (define-key 'remem-command-map (kbd "r2") 'remem-log-rating-2)
+                  (define-key 'remem-command-map (kbd "r3") 'remem-log-rating-3)
+                  (define-key 'remem-command-map (kbd "r4") 'remem-log-rating-4)
+                  (define-key 'remem-command-map (kbd "r5") 'remem-log-rating-5)
                   (run-hooks 'remem-start-hook)
                   (message  "Remembrance Agent started")))))))
 
@@ -2100,27 +2139,40 @@ hand-set biases.")
 	       nil
 	     (remem-delete-window remem-buffer-name))
 	   (remem-kill-buffer remem-buffer-name)	   ;;to make the display stick!
-	   (global-set-key "\C-x1" remem-old-C-x1)
+           ;; (global-unset-key (kbd "C-c x"))
+	   ;; (global-set-key "\C-x1" remem-old-C-x1)
 ;;;	   (global-set-key "\C-xo" remem-old-C-xo)
 
 	   ;;;unset the key bindings
 
-           (global-unset-key (concat remem-command-prefix "v"))
-           (global-unset-key (concat remem-command-prefix "n"))
-           (global-unset-key (concat remem-command-prefix "f"))
-           (global-unset-key (concat remem-command-prefix "d"))
-           (global-unset-key (concat remem-command-prefix "q"))
-           (global-unset-key (concat remem-command-prefix "f"))
-	   (global-unset-key (concat remem-command-prefix "v"))
-           (global-unset-key (concat remem-command-prefix "1"))
-           (global-unset-key (concat remem-command-prefix "2"))
-           (global-unset-key (concat remem-command-prefix "3"))
-           (global-unset-key (concat remem-command-prefix "4"))
-           (global-unset-key (concat remem-command-prefix "5"))
-           (global-unset-key (concat remem-command-prefix "6"))
-           (global-unset-key (concat remem-command-prefix "7"))
-           (global-unset-key (concat remem-command-prefix "8"))
-           (global-unset-key (concat remem-command-prefix "9"))
+;;; I don't like resetting C-xo, so I won't
+;;;                  (setq remem-old-C-xo (global-key-binding "\C-xo"))
+;;;                  (global-set-key "\C-xo" 'remem-other-window)
+           (define-key 'remem-command-map (kbd "xo") nil)
+
+;;; But I'll make an exception for C-x1 'cause it's so useful
+           ;; (setq remem-old-C-x1 (global-key-binding "\C-x1"))
+           ;; (global-set-key "\C-x1" 'remem-delete-other-windows)
+           (define-key 'remem-command-map (kbd "x1") nil)
+           (define-key 'remem-command-map (kbd "T")  nil)
+
+	   ;;;set the key bindings for the retrieval
+           (define-key 'remem-command-map (kbd "v") nil)
+           (define-key 'remem-command-map (kbd "n") nil)
+           (define-key 'remem-command-map (kbd "f") nil)
+           (define-key 'remem-command-map (kbd "d") nil)
+           (define-key 'remem-command-map (kbd "q") nil)
+
+           (define-key 'remem-command-map (kbd "1") nil)
+           (define-key 'remem-command-map (kbd "2") nil)
+           (define-key 'remem-command-map (kbd "3") nil)
+           (define-key 'remem-command-map (kbd "4") nil)
+           (define-key 'remem-command-map (kbd "5") nil)
+           (define-key 'remem-command-map (kbd "6") nil)
+           (define-key 'remem-command-map (kbd "7") nil)
+           (define-key 'remem-command-map (kbd "8") nil)
+           (define-key 'remem-command-map (kbd "9") nil)
+
            (cond (remem-non-r-number-keys
                   (global-unset-key "\C-c1")
                   (global-unset-key "\C-c2")
@@ -2132,28 +2184,44 @@ hand-set biases.")
                   (global-unset-key "\C-c8")
                   (global-unset-key "\C-c9")))
 
+           ;; (global-unset-key (concat remem-command-prefix "r")) ; Just to be safe
+           (define-key 'remem-command-map (kbd "r1") nil)
+           (define-key 'remem-command-map (kbd "r2") nil)
+           (define-key 'remem-command-map (kbd "r3") nil)
+           (define-key 'remem-command-map (kbd "r4") nil)
+           (define-key 'remem-command-map (kbd "r5") nil)
+
            (run-hooks 'remem-start-hook)
 	   (message "Remembrance Agent stopped")))))
 
 (defun remem-hide-display ()
   (save-excursion
-    (cond (remem-display-running
-	   (cond (remem-hide-display
-		  (message "Remembrance display already hidden"))
-		 (t (setq remem-hide-display t)
-		    (select-window (get-buffer-window (get-buffer remem-buffer-name)))
-		    (delete-window))))
-	  (t (message "Remembrance Agent not running")))))
+    (if remem-display-running
+        (if remem-hide-display
+            (message "Remembrance display already hidden")
+
+            (setq remem-hide-display t)
+            ;; (message "xx %s" remem-hide-display)
+            (let ((w (get-buffer-window (get-buffer remem-buffer-name))))
+              (if w (delete-window w))))
+        (message "Remembrance Agent not running"))))
 
 
 (defun remem-show-display ()
   (save-excursion
-    (cond (remem-display-running
-	   (cond (remem-hide-display
-		  (remem-display-buffer remem-buffer-name)
-		  (setq remem-hide-display nil))
-		 (t (message "Remembrance display not hidden"))))
-	  (t (message "Remembrance Agent not running")))))
+    (if remem-display-running
+        (if (not remem-hide-display)
+            (message "Remembrance display not hidden")
+            (unless (window-live-p (get-buffer-window remem-buffer-name t))
+              (remem-display-buffer remem-buffer-name))
+            (setq remem-hide-display nil))
+        (message "Remembrance Agent not running"))))
+
+(defun remem-display-toggle ()
+  (interactive)
+  (if remem-hide-display
+      (remem-show-display)
+      (remem-hide-display)))
 
 (defun remem-toggle ()
   (interactive)
@@ -2323,7 +2391,7 @@ hand-set biases.")
                ((eq rating 5)
                 (message (format "Document rated: 5 [Great suggestion]")))))
         (t
-         (message (format "No document to rate or document already rated" rating))))
+         (message (format "No document to rate or document already rated to %d" rating))))
   (setq remem-last-followed-docnum nil)
   (setq remem-last-followed-doctype nil)
   (setq remem-last-query-mode nil))

@@ -150,12 +150,7 @@ require("noscript");
 // site/page after prompting for confirmation.
 
 
-
-
-
-
-
-
-
-
-
+//{{ Using Esc key in Conkeror [https://truongtx.me/2013/08/08/using-esc-key-in-conkeror/]
+require("global-overlay-keymap");
+define_key_alias("C-o", "escape");
+//}}

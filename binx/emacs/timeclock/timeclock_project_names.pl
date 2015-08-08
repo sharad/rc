@@ -12,6 +12,7 @@ use File::Basename qw( fileparse basename dirname );
 use File::Copy     qw( copy move );
 use Fatal          qw( open close mkpath copy move );
 use Cwd            qw( cwd abs_path );
+# use Crap;
 
 use Env qw(HOME);
 
@@ -24,7 +25,8 @@ getopts('d', \%opt);
 my $DEBUG   = $opt{d} || 0;   # TODO set default to 0 when in production
 
 my $log_file = "$HOME/.timeclock/default.log" || shift;
-open my $log_fh, '<', $log_file or croak "$!";
+# open my $log_fh, '<', $log_file or croak "$!";
+open my $log_fh, '<', $log_file or die "$!";
 
 # TODO cut and pasted patterns from:
 #   ~/End/Cave/EmacsPerl/bin/timeclock_project_hours_report

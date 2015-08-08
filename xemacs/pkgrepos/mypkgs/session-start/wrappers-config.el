@@ -1,4 +1,4 @@
-;;; wrapper.el --- wrapper
+;;; wrappers-config.el --- wrapper
 
 ;; Copyright (C) 2013  Sharad Pratap
 
@@ -86,5 +86,5 @@
     (defun custom-display-graphic-p ()
       (display-graphic-p)))
 
-(provide 'wrapper)
-;;; wrapper.el ends here
+(provide 'wrappers-config)
+;;; wrappers-config.el ends here

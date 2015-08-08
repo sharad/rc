@@ -135,72 +135,70 @@ alkready should not exist.")
 ;;       (mapc #'byte-recompile-directory
 ;;             (directory-files package-dir t "[a-zA-Z]+"))))
 
+;;{{
+;; (eval-when-compile
 
+;; (defun user-find-load-file (filename paths)
+;;   (flet ((delete-trailing-slash (path)
+;;            path)
+;;          (get-latest-file (file)
+;;            (let ((files (mapcar #'(lambda (su)
+;;                                     (if (string-match (concat "." su "$") file)
+;;                                         file
+;;                                         (concat file "." su)))
+;;                                 '("el" "elc"))))
+;;              (cond
+;;                ((and
+;;                  (> (length files) 1)
+;;                  (every #'file-exists-p files))
+;;                 (reduce #'(lambda (f1 f2)
+;;                             (if (file-newer-than-file-p f1 f2)
+;;                                 f1 f2))
+;;                         files))
+;;                ((some #'file-exists-p files) (car (remove-if-not #'file-exists-p files)))
+;;                (t nil)))))
+;;     (afind-if
+;;      #'(lambda (dir)
+;;          (get-latest-file (concat (delete-trailing-slash dir) "/" filename)))
+;;      paths)))
 
-(eval-when-compile
+;; (defun user-require (feature &optional file)
+;;   (let ((file-to-load (let ((file (and file (car (file-expand-wildcards file t)))))
+;;                         (if file
+;;                             file
+;;                             (let ((filename (symbol-name feature)))
+;;                               (user-find-load-file filename *user-load-path*))))))
 
-(defun user-find-load-file (filename paths)
-  (flet ((delete-trailing-slash (path)
-           path)
-         (get-latest-file (file)
-           (let ((files (mapcar #'(lambda (su)
-                                    (if (string-match (concat "." su "$") file)
-                                        file
-                                        (concat file "." su)))
-                                '("el" "elc"))))
-             (cond
-               ((and
-                 (> (length files) 1)
-                 (every #'file-exists-p files))
-                (reduce #'(lambda (f1 f2)
-                            (if (file-newer-than-file-p f1 f2)
-                                f1 f2))
-                        files))
-               ((some #'file-exists-p files) (car (remove-if-not #'file-exists-p files)))
-               (t nil)))))
-    (afind-if
-     #'(lambda (dir)
-         (get-latest-file (concat (delete-trailing-slash dir) "/" filename)))
-     paths)))
+;;     (if file-to-load
+;;         (load file-to-load)
+;;         (progn
+;;           (message "no such file to load.")
+;;           nil))))
 
-(defun user-require (feature &optional file)
-  (let ((file-to-load (let ((file (and file (car (file-expand-wildcards file t)))))
-                        (if file
-                            file
-                            (let ((filename (symbol-name feature)))
-                              (user-find-load-file filename *user-load-path*))))))
-
-    (if file-to-load
-        (load file-to-load)
-        (progn
-          (message "no such file to load.")
-          nil))))
-
-
-
-(defun user-provide (feature)
-  (acons feature 1 *user-module-loaded*))
+;; (defun user-provide (feature)
+;;   (acons feature 1 *user-module-loaded*))
 
 ;; (user-require 'plan)
 
 ;; (user-find-load-file "plan" *user-load-path*)
 
-(defun get-latest-file (file)
-  (let ((files (mapcar #'(lambda (su)
-                           (if (string-match (concat "." su "$") file)
-                               file
-                               (concat file "." su)))
-                       '("el" "elc"))))
-    (cond
-      ((and
-        (> (length files) 1)
-        (every #'file-exists-p files))
-       (reduce #'(lambda (f1 f2)
-                   (if (file-newer-than-file-p f1 f2)
-                       f1 f2))
-               files))
-      ((some #'file-exists-p files) (car (remove-if-not #'file-exists-p files)))
-      (t nil)))))
+;; (defun get-latest-file (file)
+;;   (let ((files (mapcar #'(lambda (su)
+;;                            (if (string-match (concat "." su "$") file)
+;;                                file
+;;                                (concat file "." su)))
+;;                        '("el" "elc"))))
+;;     (cond
+;;       ((and
+;;         (> (length files) 1)
+;;         (every #'file-exists-p files))
+;;        (reduce #'(lambda (f1 f2)
+;;                    (if (file-newer-than-file-p f1 f2)
+;;                        f1 f2))
+;;                files))
+;;       ((some #'file-exists-p files) (car (remove-if-not #'file-exists-p files)))
+;;       (t nil)))))
+;;}}
 
 ;; (get-latest-file "~/.xemacs/session-start.d/plan")
 
@@ -492,3 +490,6 @@ startup in daemon mode."
 ;;}}
 
 (defalias 'make-local-hook 'ignore)
+
+(provide 'basic-config)
+;;; basic-config.el ends here

@@ -258,8 +258,7 @@
      planner-appt-update-appts-on-save-flag t))
 
   (deh-require-maybe (and timeclock planner-timeclock planner-timeclock-summary)
-    (make-directory (expand-file-name "autoconfig/timeclock/" user-emacs-directory) t)
-    (setq timeclock-file (convert-standard-filename (expand-file-name "autoconfig/timeclock/timelog" user-emacs-directory)))
+    (setq timeclock-file (convert-standard-filename (auto-config-file "timeclock/timelog")))
     (planner-timeclock-summary-insinuate))
 
   ;; (deh-require-maybe planner-ledger
@@ -279,8 +278,7 @@
   ;; planner-registry-insinuate some time create problem in daemon startup.
   ;; as it may start to ask input.
 
-  (make-directory (expand-file-name "autoconfig/planner/" user-emacs-directory) t)
-  (setq planner-registry-file (expand-file-name "autoconfig/planner/planner-registry.el" user-emacs-directory))
+  (setq planner-registry-file (auto-config-file "planner/planner-registry.el"))
 
   (when nil ;; find out somewhere else (plan) is already started.
    ;; (add-hook '*sharad/after-init-hook*

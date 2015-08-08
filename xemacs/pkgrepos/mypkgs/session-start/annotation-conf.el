@@ -1,9 +1,9 @@
-;;; etask-config.el --- Emacs Tasks
+;;; annotation-conf.el --- Annotation configurations
 
-;; Copyright (C) 2011  Sharad Pratap
+;; Copyright (C) 2015  sharad
 
-;; Author:
-;; Keywords: lisp
+;; Author: sharad <spratap@merunetworks.com>
+;; Keywords:convenience
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,16 +24,20 @@
 
 ;;; Code:
 
-(deh-require-maybe etask
-  (setq etask-working-dir (auto-config-dir "etask/" t))
-
-  (defun etask-disabled-key()
-    "Tell user that key is disabled."
-    (interactive)
-    (message "%s" (etask-lang-msg 1004 etask-language))
-    (ding)))
 
 
 
-(provide 'etask-config)
-;;; etask-config.el ends here
+(deh-section "New"
+  (deh-require-maybe (progn ipa org-pua)
+    ;;http://www.emacswiki.org/emacs/InPlaceAnnotations
+    )
+  (deh-require-maybe alert
+    ;;http://www.emacswiki.org/emacs/alert.el
+    )
+  (deh-require-maybe org-pua
+    ;;http://www.emacswiki.org/emacs-es/org-pua.el
+    ))
+
+
+(provide 'annotation-conf)
+;;; annotation-conf.el ends here

@@ -267,4 +267,5 @@
 
 
 
-(provide 'macros)
+(provide 'macros-config)
+;;; macros-config.el ends here

@@ -81,9 +81,6 @@
 
 
 
-
-
-
 (deh-require-maybe (and remember
                         org
                         ;; org-html
@@ -104,6 +101,11 @@
                         ;; remember-bibl
                         ;; macs-wiki-journal
                         )
+)
+
+
+(deh-require-maybe (and remember
+                        org)
 
   ;;If you are, like me, missing the function org-remember-insinuate, try
   ;;the following

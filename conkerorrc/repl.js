@@ -7,14 +7,15 @@
 // restart. The longer method allows you to easily customize the port.
 
 user_pref('extensions.mozrepl.autoStart', true);
+user_pref('extensions.mozrepl.port', 4747);
+session_pref('extensions.mozrepl.port', 4747);
 
 // Mozrepl
 //
 if ('@hyperstruct.net/mozlab/mozrepl;1' in Cc) {
   let mozrepl = Cc['@hyperstruct.net/mozlab/mozrepl;1']
     .getService(Ci.nsIMozRepl);
-  if (! mozrepl.isActive())
-    mozrepl.start(4242);
+  if (! mozrepl.isActive()) mozrepl.start(4747);
 }
 
 // 2.1.2. Environment Setup
@@ -33,8 +34,8 @@ if ('@hyperstruct.net/mozlab/mozrepl;1' in Cc) {
 // Now put the following code into your .conkerorrc:
 
 let (mozrepl_init = get_home_directory()) {
-    mozrepl_init.appendRelativePath(".mozrepl.js");
-    session_pref('extensions.mozrepl.initUrl', make_uri(mozrepl_init).spec);
+  mozrepl_init.appendRelativePath(".mozrepl.js");
+  session_pref('extensions.mozrepl.initUrl', make_uri(mozrepl_init).spec);
 }
 
 // 2.1.3. Setting up Convenient Accessors

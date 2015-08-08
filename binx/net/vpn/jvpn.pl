@@ -158,7 +158,8 @@ sub connect_vpn {
   # if Juniper VPN server finds some 'known to be smart' useragent it will try to
   # start "host checker" service on a client machine using Java applet.
   if ($hostchecker) {
-    $ua->agent('Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:23.0) Gecko/20100101 Firefox/23.0');
+    # $ua->agent('Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:23.0) Gecko/20100101 Firefox/23.0');
+    $ua->agent('Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:39.0) Gecko/20100101 Firefox/39.0');
     # emulate javascript java check result
     $ua->cookie_jar->set_cookie(0,"DSCheckBrowser","java","/",$dhost,$dport,1,1,60*5,0, ());
   }
@@ -495,6 +496,8 @@ sub connect_vpn {
 
     if($status ne "6d") {
       printf("Status=$status\nAuthentication failed, exiting\n");
+      printf("Status=$status\nError via IPC from ncsvc, exiting\n");
+      system("grep -B2 disconnecting ~/.juniper_networks/network_connect/ncsvc.log | tail -n 3");
       system("./ncsvc -K");
       exit(1);
     }

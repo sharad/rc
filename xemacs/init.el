@@ -1,28 +1,22 @@
 ;; ensure we elc files.
 
 
-
-;; (add-to-list 'load-path "/usr/share/emacs/23.3/lisp/emacs-lisp")
-;; (add-to-list 'load-path "/usr/share/emacs/23.3/lisp")
-
 (defvar old-messages-buffer-max-lines 100 "To keep all startup detail.")
 (defvar *emacs-in-init* t "Emacs is in init.")
+(defvar user-emacs-directory "~/.emacs.d")
 (setq user-emacs-directory "~/.emacs.d")
 (setq *emacs-in-init* t)
 (add-hook 'after-init-hook
           (lambda ()
             (setq *emacs-in-init* nil)
             (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)))
-(setq old-messages-buffer-max-lines messages-buffer-max-lines
-      messages-buffer-max-lines 2000)
+(setq
+ old-messages-buffer-max-lines messages-buffer-max-lines
+ messages-buffer-max-lines 2000)
 
 
 (eval-when-compile
   (require 'cl nil nil))
-
-(load-file "~/.xemacs/macros.el")
-(load-file "~/.xemacs/utils.el")
-(load-file "~/.xemacs/basic.el")
 
 (eval-after-load "server"
   '(defadvice server-create-window-system-frame
@@ -32,12 +26,14 @@
         (message "loading init now.")
         ad-do-it)))
 
-
-(add-to-list 'load-path "/usr/local/share/emacs/23.3/site-lisp") ;; need it for gtags.el gtags over tramp
+(require 'macros-config      "~/.xemacs/pkgrepos/mypkgs/session-start/macros-config.el")
+(require 'basic-utils-config "~/.xemacs/pkgrepos/mypkgs/session-start/basic-utils-config.el")
 
 (deh-section "General"
 
   (deh-section "loadpath"                                ;add to loadpath
+
+    (add-to-list 'load-path "/usr/local/share/emacs/23.3/site-lisp") ;; need it for gtags.el gtags over tramp
 
     (defun package-dir-add-to-loadpath (package-dir &optional recursive)
       (when (file-directory-p package-dir)
@@ -92,7 +88,6 @@
        "~/.osetup/info.d/common/elisp"
        ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp")))))
 
-(require 'dot-emacs-helper nil nil)
 
 (when (require 'cl nil) ; a rare necessary use of REQUIRE
   ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
@@ -102,16 +97,11 @@
 (require 'general-testing)
 (irequire 'common-info)
 
-
-
 (when (file-exists-p (setq custom-file "~/.xemacs/custom.el"))
   (load-file custom-file))
 
 (when (file-exists-p (setq custom-override-file "~/.xemacs/hand-custom.el"))
   (load-file custom-override-file))
-
-
-
 
 (when (xrequire 'server)
   (setq server-use-tcp t
@@ -136,9 +126,16 @@
 ;; load all files present in ~/\.xemacs/session-start\.d directory.
 (defconst *work-dir* "~/\.\./paradise")
 
+(require 'auto-load-config)
+(require 'macros-config)
+(require 'basic-config)
+(require 'basic-utils-config)
+(require 'dot-emacs-helper nil nil)
+
 (require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/session-start")
 
-(load-file "~/.xemacs/wrapper.el")
+;; (load-file "~/.xemacs/wrapper.el")
+(require 'wrappers-config)
 
 (progn
   (put-file-in-rcs "~/.emacs.d/startup.log")

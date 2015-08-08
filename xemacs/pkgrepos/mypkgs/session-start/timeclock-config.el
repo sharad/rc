@@ -96,15 +96,17 @@ Creates a ~/.timeclock/default.log if it doesn't exist already."
   "Insert a daily report of hours spent on each project.
 Summarizes the data in the timeclock log."
   (interactive)
-  (let* ((command "perl timeclock_project_hours_report")
+  (let* ((command "~/bin/timeclock_project_hours_report")
          (report (shell-command-to-string command) ))
     (insert report)))
 
 ;; TODO
 (unless (and (boundp 'sup-t-map)
-               (keymapp sup-t-map))
-    (setq sup-t-map (make-sparse-keymap))
-    (local-set-key "s-t" sup-t-map))
+             (keymapp sup-t-map))
+  ;; (setq sup-t-map (make-sparse-keymap))
+  (define-prefix-command 'sup-t-map)
+  ;; (local-set-key (kbd "s-t") 'sup-t-map)
+  (global-set-key (kbd "s-t") 'sup-t-map))
 
 ;; (global-set-key "\C-xtR" 'timeclock-insert-project-hours-report)
 ;; (global-set-key "\C-ctR" 'timeclock-insert-project-hours-report)
@@ -113,7 +115,7 @@ Summarizes the data in the timeclock log."
 (defun timeclock-display-project-names  ()
   "Displays project names in use in the timeclock log."
   (interactive)
-  (let* ( (command "perl timeclock_project_names")
+  (let* ( (command "~/bin/timeclock_project_names")
           (report (shell-command-to-string command) )
          )
 

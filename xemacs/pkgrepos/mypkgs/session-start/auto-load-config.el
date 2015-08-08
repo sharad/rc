@@ -1,9 +1,9 @@
-;;; etask-config.el --- Emacs Tasks
+;;; auto-load-config.el --- Auto Loads
 
-;; Copyright (C) 2011  Sharad Pratap
+;; Copyright (C) 2015  sharad
 
-;; Author:
-;; Keywords: lisp
+;; Author: sharad <spratap@merunetworks.com>
+;; Keywords:convenience
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,20 +20,13 @@
 
 ;;; Commentary:
 
-;;
+;; auto loads
 
 ;;; Code:
 
-(deh-require-maybe etask
-  (setq etask-working-dir (auto-config-dir "etask/" t))
-
-  (defun etask-disabled-key()
-    "Tell user that key is disabled."
-    (interactive)
-    (message "%s" (etask-lang-msg 1004 etask-language))
-    (ding)))
+(autoload 'auto-config-file               "misc-config" "auto config file."   t)
+(autoload 'auto-config-dir                "misc-config" "auto config file."   t)
 
 
-
-(provide 'etask-config)
-;;; etask-config.el ends here
+(provide 'auto-load-config)
+;;; auto-load-config.el ends here

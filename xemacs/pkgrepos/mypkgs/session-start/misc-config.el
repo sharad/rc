@@ -84,8 +84,11 @@ The indirect buffer can have another major mode."
 ;; With a prefix argument ARG, turn Flyspell minor mode on iff ARG is positive.
 ;; Consider using the `ispell-parser' to check your text.  For instance
 ;; consider adding:
-(add-hook 'tex-mode-hook                ;for tex
-          (function (lambda () (setq ispell-parser 'tex))))
+
+(deh-require-maybe ispell
+ (add-hook 'tex-mode-hook                ;for tex
+          (function (lambda () (setq ispell-parser 'tex)))))
+
 (add-hook 'text-mode-hook
           (lambda () (flyspell-mode 1)))
 (add-hook 'fundamental-mode-hook
@@ -377,9 +380,13 @@ The indirect buffer can have another major mode."
     (interactive (list (form-at-point 'sexp)))
     (elisp-pp (macroexpand form)))
 
+  ;; (defun elisp-macroexpand-all (form)
+  ;;   (interactive (list (form-at-point 'sexp)))
+  ;;   (elisp-pp (cl-macroexpand-all form)))
+
   (defun elisp-macroexpand-all (form)
     (interactive (list (form-at-point 'sexp)))
-    (elisp-pp (cl-macroexpand-all form)))
+    (elisp-pp (macroexpand-all form)))
 
   (defun elisp-push-point-marker ()
     (require 'etags)
@@ -628,5 +635,31 @@ The indirect buffer can have another major mode."
     (insert-file-contents filePath)
     (buffer-string)))
 ;; thanks to “Pascal J Bourguignon” and “TheFlyingDutchman 〔zzbba…@aol.com〕”. 2010-09-02
+
+(unless user-emacs-directory
+  (error "user-emacs-directory is not set"))
+
+(defun auto-config-file (file-path)
+  (make-directory
+   (expand-file-name
+    (file-name-directory file-path)
+    (expand-file-name "autoconfig" user-emacs-directory)) t)
+  (expand-file-name file-path (expand-file-name "autoconfig" user-emacs-directory)))
+
+(defun simple-no-final-slash (s)
+  ;; Remove optional final slash from string S
+  (let ((l (1- (length s))))
+    (if (and (> l 0) (eq (aref s l) ?/))
+	(substring s 0 l)
+      s)))
+
+(defun auto-config-dir (dir-path &optional create-it)
+  (unless user-emacs-directory
+  (error "user-emacs-directory is not set"))
+  (make-directory
+   (expand-file-name
+    (if create-it dir-path (file-name-directory (simple-no-final-slash dir-path)))
+    (expand-file-name "autoconfig" user-emacs-directory)) t)
+  (expand-file-name dir-path (expand-file-name "autoconfig" user-emacs-directory)))
 
 (provide 'misc-config)

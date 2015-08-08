@@ -14,6 +14,7 @@
 
 (require 'remember)
 (require 'org)
+(require 'org-remember)
 (require 'planner)
 (require 'remember-planner)
 (require 'read-file-name)
@@ -54,7 +55,7 @@
 
   (progn
     (setf (tree-node* sharad/remember-functions-alist 'org 'annotation) '(org-remember-annotation))
-    (setf (tree-node* sharad/remember-functions-alist 'planner 'annotation) 'planner-annotation-functions)
+    (setf (tree-node* sharad/remember-functions-alist 'planner 'annotation) planner-annotation-functions)
     (setf (tree-node* sharad/remember-functions-alist 'org 'handler) '(org-remember-handler))
     (setf (tree-node* sharad/remember-functions-alist 'planner 'handler) '(remember-planner-append))
     (setf (tree-node* sharad/remember-functions-alist 'org 'hook) '(org-remember-apply-template))

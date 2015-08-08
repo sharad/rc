@@ -13,6 +13,7 @@ use File::Copy     qw( copy move );
 use Fatal          qw( open close mkpath copy move );
 use Cwd            qw( cwd abs_path );
 use Time::Local;
+#use Crap
 
 use Env qw(HOME);
 
@@ -26,7 +27,8 @@ my $DEBUG   = $opt{d} || 0;   # TODO set to 0 when in production
 
 my $log_file = "$HOME/.timeclock/default.log" || shift;
 
-open my $log_fh, '<', $log_file or croak "$!";
+# open my $log_fh, '<', $log_file or croak "$!";
+open my $log_fh, '<', $log_file or die "$!";
 
 my $parts_pat =
   qr{

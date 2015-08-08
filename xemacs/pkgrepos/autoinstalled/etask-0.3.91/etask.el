@@ -67,7 +67,7 @@
 (require 'timezone)
 (require 'cal-iso)
 (require 'etask-tex)
-(require 'etask-db) 
+(require 'etask-db)
 (require 'etask-port)
 (require 'etask-lang)
 (require 'etask-cat)
@@ -149,7 +149,7 @@ Also used for some minibuffer messages.
 If you use longer names than defined here they are trimmed to fit.
 However, nothing gets lost if a task name is longer than specified by
 this variable.  The whole name (and not the trimmed one) is stored and
-all status reports contain the entire name.  
+all status reports contain the entire name.
 
 Note that this variable affects only the draft Gantt chart, the chart
 you can edit within Emacs.  It does not apply to the high-quality
@@ -381,24 +381,24 @@ shape.
 
 That's why you can choose between three alternatives:
 
-   - 'Linear' (50% completion after 50% of the time): 
-     When, for example, half of the time for the task has elapsed, 
-     it must be 50 percent completed.  After 70 percent of the time 
+   - 'Linear' (50% completion after 50% of the time):
+     When, for example, half of the time for the task has elapsed,
+     it must be 50 percent completed.  After 70 percent of the time
      you need 70 percent completion.
 
-   - 'S-Shape-65' (65% completion after 50% of the time): 
-     Take into account that progress is slow at the start, then reaches 
+   - 'S-Shape-65' (65% completion after 50% of the time):
+     Take into account that progress is slow at the start, then reaches
      its peak, and then slows again during the completion phase. In other
      words, when assessing the task status, an S-shape curve is used.
      For example, after 20 percent of the time the task must be 15
      percent completed, and after 50 percent you need at least 65 percent
      completion.
 
-   - 'S-Shape-70' (70% completion after 50% of the time): 
+   - 'S-Shape-70' (70% completion after 50% of the time):
      Till about 30 percent of the task's time there are very much the same
-     completion requirements in place. But in order to have more flexibility 
-     towards the planned task end the requirements for the middle phase are 
-     tougher. 
+     completion requirements in place. But in order to have more flexibility
+     towards the planned task end the requirements for the middle phase are
+     tougher.
      For example, after 70 percent of the time the task must be 90 percent
      completed."
   :type 'string
@@ -1166,6 +1166,7 @@ online help.")
 
 (defun etask-disabled-key()
   "Tell user that key is disabled."
+  (interactive)
   (error "%s" (etask-lang-msg 1004 etask-language)))
 
 (defun etask-mode()
@@ -1193,7 +1194,7 @@ online help.")
    etask-stateid-curritem
    (etask-get-control-item etask-ctrl-curritem 'main))
   (etask-state-set etask-stateid-todostate "todoinit")
-  (etask-set-control-item 
+  (etask-set-control-item
    etask-ctrl-onlinehelp etask-helprequest-p 'main)
   (run-hooks 'etask-mode-hook))
 
@@ -1224,7 +1225,7 @@ online help.")
     (princ (etask-lang-msg 914 etask-language))
     (princ (etask-lang-msg 915 etask-language))
     (princ
-     (format "\n\n\nEtaskMode: \n\n%s\n" 
+     (format "\n\n\nEtaskMode: \n\n%s\n"
              (substitute-command-keys "\\{etask-mode-map}")))
     (save-excursion
       (set-buffer standard-output)
@@ -1235,7 +1236,7 @@ online help.")
   "Manage your projects within Emacs."
   (interactive)
   (let ((input))
-    (etask-log 
+    (etask-log
      (concat "EtaskMode started: " (current-time-string) "\n") 'init)
     (set-buffer (get-buffer-create etask-buffer))
     (setq buffer-read-only nil)
@@ -1268,13 +1269,13 @@ online help.")
            etask-working-dir
            "failure-report"
            "."
-           (number-to-string 
+           (number-to-string
             (extract-calendar-day (calendar-current-date)))
            "."
-           (calendar-month-name 
+           (calendar-month-name
             (extract-calendar-month (calendar-current-date)) 3)
            "."
-           (number-to-string 
+           (number-to-string
             (extract-calendar-year (calendar-current-date)))))
          (buf (find-file-noselect file))
          (itemlist)
@@ -1305,7 +1306,7 @@ online help.")
                                 (etask-cat-get-catfilename catid))))
         (goto-char (point-max))
         (forward-line)
-        (setq file (concat etask-working-dir 
+        (setq file (concat etask-working-dir
                  (etask-cat-get-catfilename catid)))
         (when (and (stringp file) (> (length file) 0)
                    (file-readable-p file))
@@ -1315,9 +1316,9 @@ online help.")
           (setq item (etask-cat-trim-current-id (car itemlist)))
           (goto-char (point-max))
           (forward-line)
-          (insert (format "\n\n\n==> Item '%s':\nFile \"%s\"\n\n" 
+          (insert (format "\n\n\n==> Item '%s':\nFile \"%s\"\n\n"
                           item
-                          (concat 
+                          (concat
                            etask-working-dir
                            (etask-cat-get-itemfilename catid item))))
           (goto-char (point-max))
@@ -1329,7 +1330,7 @@ online help.")
             (insert-file-contents file))
           (goto-char (point-max))
           (forward-line)
-          (insert (format "\n\n==> '%s' Ctrl:\nFile \"%s\"\n\n" 
+          (insert (format "\n\n==> '%s' Ctrl:\nFile \"%s\"\n\n"
                           item
                           (etask-get-item-ctrl-filename catid item)))
           (goto-char (point-max))
@@ -1377,9 +1378,9 @@ online help.")
    "rene.mas@chello.at"
    (format "EtaskMode %s" etask-release)
    (list
-    'emacs-version 
+    'emacs-version
     'system-type
-    'window-system 
+    'window-system
     'window-system-version
     'features)
    nil
@@ -1392,7 +1393,7 @@ online help.")
       (goto-char (point-max))
       (insert "\n\n")
       (insert-buffer-substring backtrace)))
-  
+
   (etask-insert-all-files)
 
   (goto-char (point-min))
@@ -1404,21 +1405,21 @@ online help.")
   (interactive "P")
   ;; -2: minibuffer + modeline
   (when (= (- (frame-height) 2) (etask-get-window-currheight))
-    (let* ((default 
+    (let* ((default
              (if (etask-window-too-small-p)
                  (- (etask-get-window-minheight)
                     (etask-get-window-currheight))
                (- (etask-get-window-currheight)
                   (etask-get-window-minheight))))
-           (amount 
+           (amount
             (if (etask-window-too-small-p)
-                (+ (frame-height) 
+                (+ (frame-height)
                    (if (natnump lines) (min lines default) default))
               (- (frame-height)
                  (if (natnump lines)
                      (min lines (etask-get-window-currheight))
                    default)))))
-      (set-frame-height 
+      (set-frame-height
        (window-frame (get-buffer-window (current-buffer)))
        amount))))
 
@@ -1430,9 +1431,9 @@ online help.")
           (nth (1- (string-to-number
                     (etask-read
                      (concat prompt "  ? ")
-                     (lambda (x) 
-                       (and (>= (string-to-number x) 1) 
-                            (<= (string-to-number x) 
+                     (lambda (x)
+                       (and (>= (string-to-number x) 1)
+                            (<= (string-to-number x)
                                 (length etasklang)))))))
                etasklang))
     (etask-cat-create-cat-alist)
@@ -1560,13 +1561,13 @@ just controls the scrolling direction."
                (cond ((and max (> days 0))
                       (let* ((chartend
                               (etask-state-get etask-stateid-chartend))
-                             (projend 
+                             (projend
                               (etask-calculate-lastend elements)))
                         (etask-days-between chartend projend)))
                      ((and max (< days 0))
-                      (let* ((chartbegin 
+                      (let* ((chartbegin
                               (etask-state-get etask-stateid-chartstart))
-                             (projbegin 
+                             (projbegin
                               (etask-calculate-earliestbegin elements)))
                         (etask-days-between projbegin chartbegin)))
                      (t
@@ -1575,19 +1576,19 @@ just controls the scrolling direction."
                (cond ((> days 0)
                       (let* ((chartend
                               (etask-state-get etask-stateid-chartend))
-                             (projend 
+                             (projend
                               (etask-calculate-lastend elements)))
-                        (if (calendar-date-compare 
+                        (if (calendar-date-compare
                              (list chartend) (list projend))
                             (if max
                                 (etask-days-between chartend projend)
-                              (min days 
+                              (min days
                                    (etask-days-between chartend projend)))
                           0)))
                      ((< days 0)
-                      (let* ((chartbegin 
+                      (let* ((chartbegin
                               (etask-state-get etask-stateid-chartstart))
-                             (projbegin 
+                             (projbegin
                               (etask-calculate-earliestbegin elements)))
                         (if (calendar-date-compare
                              (list projbegin) (list chartbegin))
@@ -1598,7 +1599,7 @@ just controls the scrolling direction."
                           0)))
                      (t
                       0))))))))
-         
+
 (defun etask-scroll-chart-left(sldays)
   "Scroll to the left by SLDAYS.  If SLDAYS is after the end of the
 last category item scroll to this last item instead."
@@ -1607,7 +1608,7 @@ last category item scroll to this last item instead."
            (elements (etask-cat-get-current-elts))
            (projbegin (etask-calculate-earliestbegin elements))
            (projend (etask-calculate-lastend elements))
-           (dist (etask-days-between 
+           (dist (etask-days-between
                   (etask-state-get etask-stateid-chartstart)
                   projend)))
       (when (etask-cat-is-valid-catid-p catid)
@@ -1638,7 +1639,7 @@ instead."
            (elements (etask-cat-get-current-elts))
            (projbegin (etask-calculate-earliestbegin elements))
            (projend (etask-calculate-lastend elements))
-           (dist (etask-days-between 
+           (dist (etask-days-between
                   (etask-state-get etask-stateid-chartstart)
                   projbegin)))
       (if (or (integerp sldays) (> dist 0))
@@ -1691,7 +1692,7 @@ numbers in IGNORELIST are omitted."
         flaglist)
     (while (> l 0)
       (when (not (member l ignorelist))
-        (setq flaglist 
+        (setq flaglist
               (cons (list l (etask-get-flag l 'properties)) flaglist)))
       (setq l (1- l)))
     flaglist))
@@ -1722,7 +1723,7 @@ numbers in IGNORELIST are omitted."
         (setq otherflags (1+ otherflags)))
       (setq li (cdr li)))
     (= otherflags 0)))
- 
+
 (defun etask-is-flag-allowed(flag)
   "Return true if FLAG can be set."
   (cond ((or (etask-is-flag-archive-p flag)
@@ -1778,7 +1779,7 @@ numbers in IGNORELIST are omitted."
 (defun etask-is-flag-empty-p(flag)
   "Return true if FLAG is the string `etask-flag-empty'."
   (string= flag etask-flag-empty))
-    
+
 (defun etask-set-last-flag-again()
   ""
   (interactive)
@@ -1806,7 +1807,7 @@ numbers in IGNORELIST are omitted."
              (etask-set-mark))
             (t
              ())))))
-            
+
 (defun etask-execute-flagcmd()
   "Execute commands according to current flags for all elements in
 buffer."
@@ -2116,7 +2117,7 @@ values collected via minibuffer."
       (while editlist
         (setq element (etask-cat-get-element (car editlist)))
         (setq currix (car editlist))
-        (setq plannedeffort 
+        (setq plannedeffort
               (etask-db-get element etask-db-attr-peffort))
         (if (> plannedeffort 0)
             (progn
@@ -2124,28 +2125,28 @@ values collected via minibuffer."
                     (calendar-read
                      (concat
                       (format "'%s': "
-                              (etask-shorten-string 
-                               (etask-db-get 
+                              (etask-shorten-string
+                               (etask-db-get
                                 element etask-db-attr-taskname)
                                etask-longer-taskname-len-minibuf))
                       (etask-lang-msg 110 etask-language)
                       " (0-100): ")
                      (lambda (x) (and
-                                  (string-match 
-                                   etask-wholenumber-regexp 
+                                  (string-match
+                                   etask-wholenumber-regexp
                                    (prin1-to-string x))
                                   (<= x 100)))))
               (etask-cat-store-element
                (etask-db-set element etask-db-attr-eeffort
                              (etask-simplify-number
-                              (* (etask-db-get 
+                              (* (etask-db-get
                                   element etask-db-attr-peffort)
                                  (/ (float percent) 100))))
                currix))
           (error "%s"
                  (concat
                   (format "'%s' -- "
-                          (etask-db-get 
+                          (etask-db-get
                            element etask-db-attr-taskname))
                   (etask-lang-msg 1000 etask-language))))
         (setq editlist (cdr editlist)))
@@ -2167,33 +2168,33 @@ to 16 days."
       (while editlist
         (setq element (etask-cat-get-element (car editlist)))
         (setq currix (car editlist))
-        (setq plannedeffort 
+        (setq plannedeffort
               (etask-db-get element etask-db-attr-peffort))
         (if (> plannedeffort 0)
             (progn
               (setq time
                     (calendar-read
-                     (etask-get-prompt-effort 
+                     (etask-get-prompt-effort
                       element
                       plannedeffort
                       (etask-lang-msg 140 etask-language))
                      (lambda (x) (and
-                                  (string-match 
-                                   etask-effort-regexp 
+                                  (string-match
+                                   etask-effort-regexp
                                    (prin1-to-string x t))
-                                  (<= (etask-extract-effort-hours 
+                                  (<= (etask-extract-effort-hours
                                        (prin1-to-string x t))
                                       plannedeffort)))))
               (etask-çat-store-element
                (etask-db-set element etask-db-attr-eeffort
                              (etask-simplify-number
-                              (etask-extract-effort-hours 
+                              (etask-extract-effort-hours
                                (prin1-to-string time t))))
                currix))
           (error "%s"
                  (concat
                   (format "'%s' -- "
-                          (etask-db-get 
+                          (etask-db-get
                            element etask-db-attr-taskname))
                   (etask-lang-msg 1000 etask-language))))
         (setq editlist (cdr editlist)))
@@ -2215,32 +2216,32 @@ add 12 hours or 16 days to the expended effort, respectively."
       (while editlist
         (setq element (etask-cat-get-element (car editlist)))
         (setq currix (car editlist))
-        (setq plannedeffort (etask-db-get 
+        (setq plannedeffort (etask-db-get
                              element etask-db-attr-peffort))
-        (setq expendedeffort (etask-db-get 
+        (setq expendedeffort (etask-db-get
                               element etask-db-attr-eeffort))
-        (setq maxneweffort (etask-simplify-number 
+        (setq maxneweffort (etask-simplify-number
                             (- plannedeffort expendedeffort)))
         (setq neweffort
               (if (= plannedeffort expendedeffort)
                   0
                 (calendar-read
-                 (etask-get-prompt-effort 
+                 (etask-get-prompt-effort
                   element
-                  maxneweffort 
+                  maxneweffort
                   (etask-lang-msg 150 etask-language))
                  (lambda (x) (and
-                              (string-match 
+                              (string-match
                                etask-effort-regexp
                                (prin1-to-string x t))
-                              (<= (etask-extract-effort-hours 
+                              (<= (etask-extract-effort-hours
                                    (prin1-to-string x t))
                                   (etask-simplify-number
                                    (- plannedeffort expendedeffort))))))))
         (etask-cat-store-element
          (etask-db-set element etask-db-attr-eeffort
                        (etask-simplify-number
-                        (+ (etask-extract-effort-hours 
+                        (+ (etask-extract-effort-hours
                             (prin1-to-string neweffort t))
                            expendedeffort)))
          currix)
@@ -2263,7 +2264,7 @@ reduce the expended effort by 12 hours or 16 days, respectively."
       (while editlist
         (setq element (etask-cat-get-element (car editlist)))
         (setq currix (car editlist))
-        (setq plannedeffort (etask-db-get 
+        (setq plannedeffort (etask-db-get
                              element etask-db-attr-peffort))
         (setq expendedeffort (etask-db-get
                               element etask-db-attr-eeffort))
@@ -2272,23 +2273,23 @@ reduce the expended effort by 12 hours or 16 days, respectively."
                      (if (= plannedeffort 0)
                          0
                        (calendar-read
-                        (etask-get-prompt-effort 
+                        (etask-get-prompt-effort
                          element
                          expendedeffort
                          (etask-lang-msg 160 etask-language))
                         (lambda (x) (and
-                                     (string-match 
-                                      etask-effort-regexp 
+                                     (string-match
+                                      etask-effort-regexp
                                       (prin1-to-string x t))
-                                     (<= (etask-extract-effort-hours 
+                                     (<= (etask-extract-effort-hours
                                           (prin1-to-string x t))
                                          expendedeffort))))))
                (etask-cat-store-element
                 (etask-db-set element etask-db-attr-eeffort
                               (etask-simplify-number
                                (- expendedeffort
-                                  (etask-extract-effort-hours 
-                                   (prin1-to-string 
+                                  (etask-extract-effort-hours
+                                   (prin1-to-string
                                     eeffort t)))))
                 currix))
               (t
@@ -2313,20 +2314,20 @@ FTE values collected via minibuffer."
           (setq currix (car editlist))
           (when (not (etask-is-milestone-p element))
             (let* ((fte (string-to-number
-                         (etask-read 
+                         (etask-read
                           (concat
                            (format "'%s': "
                                    (etask-db-get
                                     element etask-db-attr-taskname))
                            (etask-lang-msg 130 etask-language)
                            "  ? ")
-                          (lambda (x) 
+                          (lambda (x)
                             (and
-                             (string-match 
+                             (string-match
                               etask-effort-numonly-regexp x)
-                             (> (string-to-number x) 
+                             (> (string-to-number x)
                                 0)
-                             (<= (string-to-number x) 
+                             (<= (string-to-number x)
                                  etask-max-fte))))))
                    (peffort-in-days-new
                     (ceiling
@@ -2341,12 +2342,12 @@ FTE values collected via minibuffer."
                     (etask-days-till-business-day
                      (etask-db-get element etask-db-attr-taskbegin)))
                    (begindate
-                    (etask-add-days-to-date 
+                    (etask-add-days-to-date
                      (etask-db-get element etask-db-attr-taskbegin)
                      beginoffset))
                    (newtaskend
-                    (etask-add-businessdays-to-date 
-                     begindate 
+                    (etask-add-businessdays-to-date
+                     begindate
                      (cond ((and (etask-businessday-p
                                   begindate)
                                  (< peffort-in-days-new 1))
@@ -2360,7 +2361,7 @@ FTE values collected via minibuffer."
                             (1- peffort-in-days-new))
                            (t
                             peffort-in-days-new)))))
-              (etask-cat-store-element 
+              (etask-cat-store-element
                (etask-db-set
                 (etask-db-set element etask-db-attr-taskend newtaskend)
                 etask-db-attr-taskbegin
@@ -2386,7 +2387,7 @@ marked tasks, for all marked tasks."
                                 (concat "EtaskMode: --- "
                                         (etask-lang-msg 700 etask-language)
                                         " --- "
-                                        (calendar-date-string 
+                                        (calendar-date-string
                                          (calendar-current-date))))
                           frame-alist))
               (select-frame (make-frame frame-alist))
@@ -2448,8 +2449,8 @@ the current element is a todo, then its due date is changed."
                       (diff
                        (etask-business-days-between oldbegin begin)))
                  (if postponep
-                     (setq elt 
-                           (etask-start-n-days-later 
+                     (setq elt
+                           (etask-start-n-days-later
                             diff
                             (etask-finish-n-days-later diff elt 'business)
                             'business))
@@ -2458,7 +2459,7 @@ the current element is a todo, then its due date is changed."
                           diff
                           (etask-start-n-days-earlier diff elt 'business)
                           'business))))))
-      
+
         (etask-cat-store-element elt currix)
         (etask-cat-show-elements)))))
 
@@ -2482,18 +2483,18 @@ Otherwise only business days are used."
         (while editlist
           (setq element (etask-cat-get-element (car editlist)))
           (setq daysearlierstr
-                (etask-read 
+                (etask-read
                  (etask-get-prompt-fwdrew
                   element
                   (etask-lang-msg 190 etask-language)
                   businessp)
-                 (lambda (x) (or (string-match 
+                 (lambda (x) (or (string-match
                                   etask-wholenumber-regexp x)
                                  (string-match
                                   etask-effort-dwm-regexp x)))
                  (if (> daysearlier 0) ;default for successive changes
                      (number-to-string daysearlier))))
-          (etask-write-element-to-fwd-date 
+          (etask-write-element-to-fwd-date
            element 'begin daysearlierstr businessp)
           (setq editlist (cdr editlist)))))))
 
@@ -2515,7 +2516,7 @@ Otherwise only business days are used."
                  (= catid etask-category-projectid))
         (while editlist
           (setq element (etask-cat-get-element (car editlist)))
-          (if (etask-postpone-begindate-opvalid-p 
+          (if (etask-postpone-begindate-opvalid-p
                element 1 businessp)
               (progn
                 (setq dayslaterstr
@@ -2526,7 +2527,7 @@ Otherwise only business days are used."
                         businessp)
                        (lambda (x)
                          (and
-                          (or (string-match 
+                          (or (string-match
                                etask-wholenumber-regexp x)
                               (string-match
                                etask-effort-dwm-regexp x))
@@ -2569,23 +2570,23 @@ Otherwise only business days are used."
                         element
                         (etask-lang-msg 210 etask-language)
                         businessp)
-                       (lambda (x) 
+                       (lambda (x)
                          (and
-                          (or (string-match 
+                          (or (string-match
                                etask-wholenumber-regexp x)
                               (string-match
                                etask-effort-dwm-regexp x))
-                          (etask-forward-duedate-opvalid-p 
+                          (etask-forward-duedate-opvalid-p
                            element
                            (string-to-number x)
                            businessp)))
                        (if (> daysearlier 0) ;default for successive changes
                            (number-to-string daysearlier))))
-                (etask-write-element-to-fwd-date 
+                (etask-write-element-to-fwd-date
                  element nil daysearlierstr businessp))
             (error (etask-forward-duedate-errormsg businessp)))
           (setq editlist (cdr editlist)))))))
-  
+
 (defun etask-postpone-duedate(alldaysp)
   "Set end of current task or, if there are marked tasks, of all
 marked tasks to a date N days later according to values collected via
@@ -2610,7 +2611,7 @@ Otherwise only business days are used."
                   element
                   (etask-lang-msg 220 etask-language)
                   businessp)
-                 (lambda (x) (or (string-match 
+                 (lambda (x) (or (string-match
                                   etask-wholenumber-regexp x)
                                  (string-match
                                   etask-effort-dwm-regexp x)))
@@ -2640,7 +2641,7 @@ Otherwise only business days are used."
                 element
                 (etask-lang-msg 230 etask-language)
                 businessp)
-               (lambda (x) (or (string-match 
+               (lambda (x) (or (string-match
                                 etask-wholenumber-regexp x)
                                (string-match
                                 etask-effort-dwm-regexp x)))
@@ -2668,7 +2669,7 @@ Otherwise only business days are used."
                  element
                  (etask-lang-msg 240 etask-language)
                  businessp)
-                (lambda (x) (or (string-match 
+                (lambda (x) (or (string-match
                                  etask-wholenumber-regexp x)
                                 (string-match
                                  etask-effort-dwm-regexp x)))
@@ -2691,7 +2692,7 @@ algorithms."
                (not (etask-state-get etask-stateid-archive))
                (etask-cat-civalid-p catid item)
                (= catid etask-category-projectid))
-      (let* ((algorithm 
+      (let* ((algorithm
               (completing-read
                (concat
                 (etask-lang-msg 250 etask-language)
@@ -2751,7 +2752,7 @@ down -- if it is not already at the bottom."
       (etask-cat-show-elements)
       (etask-cat-goto-elementindex moveix)
       (etask-cat-show-elements))))
-    
+
 (defun etask-move-element-down()
   "Move the task under cursor one line down -- if it is not already at
 the bottom."
@@ -2811,7 +2812,7 @@ date and its zoom factor are set correctly."
     "2=2 " (etask-lang-msg 706 etask-language) ", "
     "3=3 " (etask-lang-msg 706 etask-language) ", ..."
     "]  ? ")
-   (lambda (x) 
+   (lambda (x)
      (or (string= x "a")
          (string= x "w")
          (string= x "d")
@@ -2908,14 +2909,14 @@ controls the width of a day in characters."
                 (let ((elements (etask-cat-get-elementlist catid projname))
                       (newelements))
                   (while elements
-                    (setq newelements (cons (etask-db-set 
+                    (setq newelements (cons (etask-db-set
                                              (car elements)
                                              etask-db-attr-projname
                                              projname)
                                             newelements))
                     (setq elements (cdr elements)))
-                  (etask-write-elements 
-                   (nreverse newelements) catid projname 'erase))) 
+                  (etask-write-elements
+                   (nreverse newelements) catid projname 'erase)))
             (error "%s" (etask-lang-msg 1014 etask-language))))
       (when (not (file-readable-p tfile))
         (error "%s" (etask-lang-msg 1013 etask-language)))
@@ -2949,7 +2950,7 @@ minibuffer, or, if NUM is non-nil, of the NUMth element."
                   (not (natnump num))
                   (< num 1) (> num elementnum)))
         (setq num (calendar-read
-                   (concat 
+                   (concat
                     (etask-lang-msg 280 etask-language)
                     " "
                     elementname
@@ -2957,7 +2958,7 @@ minibuffer, or, if NUM is non-nil, of the NUMth element."
                     elementname
                     (format " < %d): " (1+ elementnum)))
                    (lambda (x) (and (natnump x)
-                                    (> x 0) 
+                                    (> x 0)
                                     (< x (1+ elementnum)))))))
       (when (and (> num 0) (<= num elementnum))
         (save-restriction
@@ -3168,7 +3169,7 @@ point is already at the top level."
   "Return string for minibuffer query.  TASK begin or end date is forwarded or postponed."
   (concat
    (format "'%s': "
-           (etask-shorten-string 
+           (etask-shorten-string
             (etask-db-get task etask-db-attr-taskname)
             etask-longer-taskname-len-minibuf))
    msg
@@ -3195,16 +3196,16 @@ MAX hours.  Constraints included in string.
      (concat
       ", "
       (format "%sd"
-              (number-to-string 
-               (etask-simplify-number 
+              (number-to-string
+               (etask-simplify-number
                 (/ (float max)
                    etask-workinghours-per-day))))))
    (when (>= max etask-workinghours-per-day)
      (concat
       ", "
       (format "%sw"
-              (number-to-string 
-               (etask-simplify-number 
+              (number-to-string
+               (etask-simplify-number
                 (/ (float max)
                    (* etask-workinghours-per-day
                       etask-workingdays-per-week)))))))
@@ -3226,11 +3227,11 @@ MAX hours.  Constraints included in string.
 (defun etask-get-maxbarlen()
   "Return maximum task bar length in [0..n]."
   (max
-   (- (window-width) 
+   (- (window-width)
       (length (etask-get-flagstring))
       (length (etask-get-infostring))
       (length (etask-get-subelstring))
-      (etask-get-maxtasklen) 
+      (etask-get-maxtasklen)
       2)
    0))
 
@@ -3290,7 +3291,7 @@ are valid, return ITEM's control file name."
 
 If VALUE not available return the following default values:
 etask-ctrl-chartbegindate: project begin date or, if nil, today
-etask-ctrl-chartenddate: project end date or, if nil, 
+etask-ctrl-chartenddate: project end date or, if nil,
                          etask-ctrl-chartbegindate
 etask-ctrl-zoomfactor: 0 \( Note: Maximum = \(etask-get-maxbarlen\) \)
 etask-ctrl-todoview-begintime: etask-todo-day-begin
@@ -3310,7 +3311,7 @@ default: nil"
           (set-buffer buffer)
           (goto-char (point-min))
           (if (search-forward ctrl nil t)
-              (let ((line (buffer-substring-no-properties 
+              (let ((line (buffer-substring-no-properties
                            (- (match-beginning 0) 2) ;include (" prefix
                            (search-forward-regexp "$"))))
                 (setq value (car (cdr (car (read-from-string line))))))))
@@ -3375,8 +3376,8 @@ is an additional prompt string."
                      (1- (string-to-number
                           (etask-read
                            (concat prompt "  ? ")
-                           (lambda (x) 
-                             (and (>= (string-to-number x) 1) 
+                           (lambda (x)
+                             (and (>= (string-to-number x) 1)
                                   (<= (string-to-number x) len))))))
                      list)))
       input)))
@@ -3391,7 +3392,7 @@ upper case.  Modifies LIST."
       (when (car list)
         (setq prompt
               (concat prompt
-                      "(" (number-to-string count) ") " 
+                      "(" (number-to-string count) ") "
                       (if capitalizep
                           (capitalize (car list))
                         (car list))
@@ -3408,7 +3409,7 @@ date available.  BEGIN is the chart's begin date.  ZOOM, a
 non-negative integer, controls the width of a day in character.
 ZOOM=0 => draw whole project.  MAXBARLEN is the maximum bar length in
 characters."
-  (when (and (etask-calendardate-is-legal-p begin) 
+  (when (and (etask-calendardate-is-legal-p begin)
              (natnump zoom) (natnump maxbarlen) (> maxbarlen 0))
     (cond ((= zoom 0)
            (etask-calculate-lastend (etask-cat-get-current-elts)))
@@ -3453,7 +3454,7 @@ of length NUM."
     (while (and (search-forward etask-delimiter-markedtask-marker nil t)
                 (or (null num)
                     (and (natnump num) (> num 0))))
-      (setq ixlist (cons 
+      (setq ixlist (cons
                     (etask-cat-get-current-elementindex)
                     ixlist))
       (when (and (natnump num) (> num 0))
@@ -3470,7 +3471,7 @@ If INIT is non-nil the logfile contents are deleted first.
 If EXIT is non-nil the logfile buffer is killed."
   (when etask-write-logfile-p
     (save-current-buffer
-      (set-buffer (find-file-noselect 
+      (set-buffer (find-file-noselect
                    (concat etask-working-dir etask-logfile)))
       (if init
           (progn
@@ -3496,7 +3497,7 @@ A milestone is a task whose planned effort is zero."
 
 (defun etask-get-alignment-string(msgid1 msgid2)
   "Return string containing SPCs needed to align MSGID1 and MSGID2."
-  (make-string 
+  (make-string
    (abs (- (length (etask-lang-msg msgid1 etask-language))
            (length (etask-lang-msg msgid2 etask-language))))
    ? ))
@@ -3535,7 +3536,7 @@ A milestone is a task whose planned effort is zero."
                           (etask-calendardate-is-legal-p chartend))
                      (etask-simplify-number
                       (/ maxbarlen
-                         (float 
+                         (float
                           (1+ (etask-days-between chartstart chartend)))))
                    0)))
            (if (> daylen 1) (floor daylen) daylen)))))
@@ -3548,7 +3549,7 @@ otherwise."
          (projend (etask-calculate-lastend tasklist)))
     (and (etask-calendardate-is-legal-p date)
          (or
-          (and 
+          (and
            (calendar-date-compare (list projbegin) (list date))
            (calendar-date-compare (list date) (list projend)))
           (= (etask-days-between projbegin date) 0)
@@ -3599,7 +3600,7 @@ frame."
         ((and (= num 1)
               (> total 1))
          (1+
-          (- (calendar-last-day-of-month month year) 
+          (- (calendar-last-day-of-month month year)
              (extract-calendar-day projbegin))))
         (t
          (calendar-last-day-of-month month year))))
@@ -3638,15 +3639,15 @@ calendar days."
    (etask-is-milestone-p task)
    (calendar-date-compare
     (if businessp
-        (list 
+        (list
          (etask-add-businessdays-to-date
           (etask-db-get task etask-db-attr-taskbegin)
           num))
-      (list 
+      (list
        (etask-add-days-to-date
         (etask-db-get task etask-db-attr-taskbegin)
         num)))
-    (list 
+    (list
      (etask-db-get task etask-db-attr-taskend)))
    (calendar-date-equal
     (if businessp
@@ -3665,14 +3666,14 @@ of calendar days."
   (or
    (etask-is-milestone-p task)
    (calendar-date-compare
-    (list 
+    (list
      (etask-db-get task etask-db-attr-taskbegin))
     (if businessp
-        (list 
+        (list
          (etask-add-businessdays-to-date
           (etask-db-get task etask-db-attr-taskend)
           (- 0 num)))
-      (list 
+      (list
        (etask-add-days-to-date
         (etask-db-get task etask-db-attr-taskend)
         (- 0 num)))))
@@ -3717,8 +3718,8 @@ Optional MAX overrides `etask-normal-taskname-len-minibuf'."
            etask-normal-taskname-len-minibuf)))
     (if (and (stringp longstring)
              (> (length longstring) maxlen))
-        (concat (substring longstring 
-                           0 
+        (concat (substring longstring
+                           0
                            (- maxlen (length "..")))
                 "..")
       longstring)))
@@ -3760,7 +3761,7 @@ end date of all tasks in TASKLIST."
 DATE - DAYS."
   (if (etask-calendardate-is-legal-p date)
       (let ((days
-             (+ (timezone-absolute-from-gregorian 
+             (+ (timezone-absolute-from-gregorian
                  (extract-calendar-month date)
                  (extract-calendar-day date)
                  (extract-calendar-year date))
@@ -3835,7 +3836,7 @@ optional FWD is non-nil, TASK is to forward according to STR."
                (setq pmonths (- 0 pmonths)))
              (setq newbegin (etask-add-months-to-date oldbegin pmonths))
              (setq newend (etask-add-months-to-date oldend pmonths)))))
-    (etask-cat-store-element 
+    (etask-cat-store-element
      (etask-db-set
       (etask-db-set task etask-db-attr-taskend newend)
       etask-db-attr-taskbegin
@@ -3857,7 +3858,7 @@ false - end date is to postpone according to STR.  Examples for str:
 3d, 5w, 8m for days, weeks, months, accordingly.  If BUSINESSP is
 non-nil and STR indicates days then only business days count.  If
 optional FWD is non-nil, the date is to forward according to STR."
-  (let ((olddate (if begp 
+  (let ((olddate (if begp
                      (etask-db-get task etask-db-attr-taskbegin)
                    (etask-db-get task etask-db-attr-taskend)))
         (newdate))
@@ -3887,9 +3888,9 @@ optional FWD is non-nil, the date is to forward according to STR."
     (when (not (etask-is-milestone-p task))
       (let ((currix (etask-cat-get-current-elementindex)))
         (if begp
-            (etask-cat-store-element 
+            (etask-cat-store-element
              (etask-db-set task etask-db-attr-taskbegin newdate) currix)
-          (etask-cat-store-element 
+          (etask-cat-store-element
            (etask-db-set task etask-db-attr-taskend newdate) currix))))))
 
 (defun etask-days-till-business-day(date)
@@ -3934,7 +3935,7 @@ return value is DATE - DAYS."
             (daysadded 0)
             (bizdaysadded 0))
         (while (< bizdaysadded (abs days))
-          (setq daysadded 
+          (setq daysadded
                 (if (> days 0)
                     (1+ daysadded)
                   (1- daysadded)))
@@ -3950,14 +3951,14 @@ return value is DATE - DAYS."
 variables doesn't matter."
   (if (and (etask-calendardate-is-legal-p date1)
            (etask-calendardate-is-legal-p date2))
-      (let ((days1 
-             (timezone-absolute-from-gregorian 
+      (let ((days1
+             (timezone-absolute-from-gregorian
               (car date1)
               (car (cdr date1))
               (car(cdr(cdr date1)))))
-            (days2 
-             (timezone-absolute-from-gregorian 
-              (car date2) 
+            (days2
+             (timezone-absolute-from-gregorian
+              (car date2)
               (car (cdr date2))
               (car(cdr(cdr date2))))))
         (abs (- days1 days2)))
@@ -4044,7 +4045,7 @@ returns 0.2."
          (current (calendar-current-date))
          (total (1+ (etask-days-between start end)))
          (burnt (cond ((or
-                        (and 
+                        (and
                          (calendar-date-compare (list start) (list current))
                          (calendar-date-compare (list current) (list end)))
                         (= (etask-days-between current end) 0))
@@ -4148,17 +4149,17 @@ min hr day mon year\)"
          (sec (etask-extract-sec date))
          (daystoadd (floor (/ effort 24)))
          (hrstoadd (floor (- effort (* daystoadd 24))))
-         (mintoadd 
+         (mintoadd
           (floor (* (etask-simplify-number
-                     (- effort 
-                        (+ hrstoadd 
+                     (- effort
+                        (+ hrstoadd
                            (* daystoadd 24))))
                     60)))
          (sectoadd
           (floor (* (etask-simplify-number
-                     (- effort 
-                        (+ (/ mintoadd 60.0) 
-                           hrstoadd 
+                     (- effort
+                        (+ (/ mintoadd 60.0)
+                           hrstoadd
                            (* daystoadd 24))))
                     60 60)))
          (newdate)
@@ -4172,7 +4173,7 @@ min hr day mon year\)"
       (setq newhr 24))
     (setq newdate
           (etask-add-days-to-date (list month day year) daystoadd))
-    (list newsec newmin newhr 
+    (list newsec newmin newhr
           (extract-calendar-day newdate)
           (extract-calendar-month newdate)
           (extract-calendar-year newdate))))
@@ -4188,17 +4189,17 @@ min hr day mon year\)"
          (sec (etask-extract-sec date))
          (daystosub (floor (/ effort 24)))
          (hrstosub (floor (- effort (* daystosub 24))))
-         (mintosub 
+         (mintosub
           (floor (* (etask-simplify-number
-                     (- effort 
-                        (+ hrstosub 
+                     (- effort
+                        (+ hrstosub
                            (* daystosub 24))))
                     60)))
          (sectosub
           (floor (* (etask-simplify-number
-                     (- effort 
-                        (+ (/ mintosub 60.0) 
-                           hrstosub 
+                     (- effort
+                        (+ (/ mintosub 60.0)
+                           hrstosub
                            (* daystosub 24))))
                     60 60)))
          (newdate)
@@ -4208,13 +4209,13 @@ min hr day mon year\)"
          (newmin (if (>= min mintosub)
                      (- min (+ mintosub
                                (if (>= sec sectosub) 0 1)))
-                   (- 60 (- (+ mintosub 
+                   (- 60 (- (+ mintosub
                                (if (>= sec sectosub) 0 1))
                             min))))
          (newhr (if (>= hr hrstosub)
                     (- hr (+ hrstosub
                              (if (>= min mintosub) 0 1)))
-                  (- 24 (- (+ hrstosub 
+                  (- 24 (- (+ hrstosub
                               (if (>= min mintosub) 0 1))
                            hr)))))
     (setq daystosub (if (< hr hrstosub)
@@ -4222,7 +4223,7 @@ min hr day mon year\)"
                       daystosub))
     (setq newdate
           (etask-add-days-to-date (list month day year) (- 0 daystosub)))
-    (list newsec newmin newhr 
+    (list newsec newmin newhr
           (extract-calendar-day newdate)
           (extract-calendar-month newdate)
           (extract-calendar-year newdate))))
@@ -4233,7 +4234,7 @@ min hr day mon year\)"
   (cond ((etask-date-less-p d1 d2) t)
         ((and (etask-date-equal-p d1 d2) (etask-time-less-p d1 d2)) t)
         (t nil)))
-  
+
 (defun etask-date-less-p(d1 d2)
   "Return true if date D1's date part is before date D2's date part,
 nil otherwise.  DATE structure: \(sec min hr day mon year\)"
@@ -4289,7 +4290,7 @@ of the list is returned."
     (let ((len (safe-length list)))
       (when (> to len)
         (setq to len))
-      (when (and (natnump from) (natnump to) 
+      (when (and (natnump from) (natnump to)
                  (> from 0) (> to 0) (<= from to) (<= from len))
         (butlast (nthcdr (1- from) list) (- len to))))))
 
@@ -4314,7 +4315,7 @@ Because its effort is not even planned, the task cannot be completed."
          (ret
           (if (= peffort 0)
               nil
-            (cond ((= 1.0 (/ (float 
+            (cond ((= 1.0 (/ (float
                               (etask-db-get task etask-db-attr-eeffort))
                              peffort))
                    t)
@@ -4326,19 +4327,19 @@ Because its effort is not even planned, the task cannot be completed."
   "Return true if task TASK is behind schedule, nil otherwise."
   (let ((tracking (etask-db-get task etask-db-attr-tracking)))
     (cond ((string= tracking "s-shape-65")
-           (if (string-match 
+           (if (string-match
                 (etask-lang-msg 710 etask-language)
                 (etask-calculate-taskstatus-s-shape-65 task))
                t
              nil))
           ((string= tracking "s-shape-70")
-           (if (string-match 
+           (if (string-match
                 (etask-lang-msg 710 etask-language)
                 (etask-calculate-taskstatus-s-shape-70 task))
                t
              nil))
           (t
-           (if (string-match 
+           (if (string-match
                 (etask-lang-msg 710 etask-language)
                 (etask-calculate-taskstatus-linear task))
                t
@@ -4351,7 +4352,7 @@ Because its effort is not even planned, the task cannot be completed."
     (if (= plannedeffort 0)
         -1
       (round
-       (* 100 
+       (* 100
           (/ (float expendedeffort) plannedeffort))))))
 
 (defun etask-calculate-taskstatus-s-shape-70(task)
@@ -4381,7 +4382,7 @@ Otherwise it returns the string 'BEHIND SCHEDULE (target: y%, actual: x%)' or
          (burnt (etask-calculate-tasktime-expended task))
          (scaledburnt (* 10 burnt))
          target)
-    
+
     (cond ((or
             (= burnt 0)
             (= plannedeffort 0))
@@ -4399,7 +4400,7 @@ Otherwise it returns the string 'BEHIND SCHEDULE (target: y%, actual: x%)' or
                            (* 5 (- scaledburnt 2) (- scaledburnt 3)))))
 
           ;; [4..6[  55 + 15(x-4) - 1.5(x-4)(x-5)
-          ((and (>= burnt 0.4) (< burnt 0.6)) 
+          ((and (>= burnt 0.4) (< burnt 0.6))
            (setq target (+ 55
                            (* 15 (- scaledburnt 4))
                            (* -1.5 (- scaledburnt 4) (- scaledburnt 5)))))
@@ -4421,7 +4422,7 @@ Otherwise it returns the string 'BEHIND SCHEDULE (target: y%, actual: x%)' or
                 (>= target 0))
            (concat
             (format "%s ("
-                    (etask-apply-face 
+                    (etask-apply-face
                      (etask-lang-msg 711 etask-language) ;on time
                      'etask-face-status-ok))
             (etask-lang-msg 730 etask-language)
@@ -4429,24 +4430,24 @@ Otherwise it returns the string 'BEHIND SCHEDULE (target: y%, actual: x%)' or
             (etask-lang-msg 731 etask-language)
             (format ": %d%%) " percentcompleted)))
           ((= plannedeffort 0)
-           (format "%s" 
-                   (etask-apply-face 
+           (format "%s"
+                   (etask-apply-face
                     (etask-lang-msg 712 etask-language) ;milestone
                     'etask-face-status-ok)))
           ((= percentcompleted 100.0)
-           (format "%s" 
-                   (etask-apply-face 
+           (format "%s"
+                   (etask-apply-face
                     (etask-lang-msg 713 etask-language) ;completed
                     'etask-face-status-ok)))
           ((= percentcompleted 0.0)
-           (format "%s" 
+           (format "%s"
                    (etask-apply-face
                     (etask-lang-msg 714 etask-language) ;not started
                     'etask-face-status-ok)))
           (t
            (concat
             (format "%s ("
-                    (etask-apply-face 
+                    (etask-apply-face
                      (etask-lang-msg 710 etask-language) ;behind schedule
                      'etask-face-status-behindschedule))
             (etask-lang-msg 730 etask-language)
@@ -4493,7 +4494,7 @@ Otherwise it returns the string 'BEHIND SCHEDULE (target: y%, actual: x%)' or
                            (* 2.5 scaledburnt (- scaledburnt 1)))))
 
           ;; [2..4[  15 + 15(x-2) + 2.5(x-2)(x-3)
-          ((and (>= burnt 0.2) (< burnt 0.4)) 
+          ((and (>= burnt 0.2) (< burnt 0.4))
            (setq target (+ 15
                            (* 15 (- scaledburnt 2))
                            (* 2.5 (- scaledburnt 2) (- scaledburnt 3)))))
@@ -4512,7 +4513,7 @@ Otherwise it returns the string 'BEHIND SCHEDULE (target: y%, actual: x%)' or
 
           ;; [8..10] 91 + 5*(x-8) -0.5(x-8)(x-9)
           (t
-           (setq target 
+           (setq target
                  (round
                   (+ 91
                      (* 5 (- scaledburnt 8))
@@ -4523,7 +4524,7 @@ Otherwise it returns the string 'BEHIND SCHEDULE (target: y%, actual: x%)' or
                 (>= target 0))
            (concat
             (format "%s ("
-                    (etask-apply-face 
+                    (etask-apply-face
                      (etask-lang-msg 711 etask-language) ;on time
                      'etask-face-status-ok))
             (etask-lang-msg 730 etask-language)
@@ -4531,24 +4532,24 @@ Otherwise it returns the string 'BEHIND SCHEDULE (target: y%, actual: x%)' or
             (etask-lang-msg 731 etask-language)
             (format ": %d%%) " percentcompleted)))
           ((= plannedeffort 0)
-           (format "%s" 
+           (format "%s"
                    (etask-apply-face    ;milestone
                     (etask-lang-msg 712 etask-language)
                     'etask-face-status-ok)))
           ((= percentcompleted 100.0)
-           (format "%s" 
+           (format "%s"
                    (etask-apply-face    ;completed
                     (etask-lang-msg 713 etask-language)
                     'etask-face-status-ok)))
           ((= percentcompleted 0.0)
-           (format "%s" 
+           (format "%s"
                    (etask-apply-face    ;not started
                     (etask-lang-msg 714 etask-language)
                     'etask-face-status-ok)))
           (t
            (concat
             (format "%s ("
-                    (etask-apply-face 
+                    (etask-apply-face
                      (etask-lang-msg 710 etask-language) ;behind schedule
                      'etask-face-status-behindschedule))
             (etask-lang-msg 730 etask-language)
@@ -4591,7 +4592,7 @@ Otherwise it returns the string 'BEHIND SCHEDULE (target: y%, actual: x%)' or
                 (>= target 0))
            (concat
             (format "%s ("
-                    (etask-apply-face 
+                    (etask-apply-face
                      (etask-lang-msg 711 etask-language) ;on time
                      'etask-face-status-ok))
             (etask-lang-msg 730 etask-language)
@@ -4599,7 +4600,7 @@ Otherwise it returns the string 'BEHIND SCHEDULE (target: y%, actual: x%)' or
             (etask-lang-msg 731 etask-language)
             (format ": %d%%) " percentcompleted)))
           ((= plannedeffort 0)
-           (format "%s" 
+           (format "%s"
                    (etask-apply-face    ;milestone
                     (etask-lang-msg 712 etask-language)
                     'etask-face-status-ok)))
@@ -4614,7 +4615,7 @@ Otherwise it returns the string 'BEHIND SCHEDULE (target: y%, actual: x%)' or
           (t
            (concat
             (format "%s ("
-                    (etask-apply-face 
+                    (etask-apply-face
                      (etask-lang-msg 710 etask-language) ;behind schedule
                      'etask-face-status-behindschedule))
             (etask-lang-msg 730 etask-language)
@@ -4643,8 +4644,8 @@ Otherwise it returns the string 'BEHIND SCHEDULE (target: y%, actual: x%)' or
     (while tasklist
        (setq task (car tasklist))
        (insert "\n\n\n\n")
-       (insert (etask-cat-show-elementstatus 
-                (etask-cat-get-elementindex task) 
+       (insert (etask-cat-show-elementstatus
+                (etask-cat-get-elementindex task)
                 'reporting))
        (setq tasklist (cdr tasklist)))))
 
@@ -4656,12 +4657,12 @@ the corresponding integer value. If NUM is a floating point number with more
 than 2 digits after the decimal point round to its hundredth decimal place. All
 other numbers are returned unchanged."
   (if (numberp num)
-      (cond ((string-match 
-              "[0-9]+\.0+$" 
+      (cond ((string-match
+              "[0-9]+\.0+$"
               (number-to-string num))
              (truncate num))
-            ((string-match 
-              "[0-9]+\.[0-9][0-9][0-9]+$" 
+            ((string-match
+              "[0-9]+\.[0-9][0-9][0-9]+$"
               (number-to-string num))
              ;; see round documentation for rounding errors
 ;;           in XEmacs only (round NUMBER)
@@ -4837,8 +4838,8 @@ modified alist."
 
 (defun etask-state-set(statestr value)
   "Add STATE to EtaskMode state."
-  (when (and (stringp statestr) 
-             (or (stringp value) 
+  (when (and (stringp statestr)
+             (or (stringp value)
                  (natnump value)
                  (boolean-p value)
                  (etask-calendardate-is-legal-p value)))
@@ -4907,11 +4908,11 @@ insert operations - lost faces."
                   (substring string 0 len)
                 string))
          (numspcbef
-          (cond ((and form 
+          (cond ((and form
                       (string= form "left"))
                  0)
 
-                ((and form 
+                ((and form
                       (string= form "center")
                       (< orilen len))
                  (ceiling (/ (float (- len orilen)) 2)))
@@ -4922,11 +4923,11 @@ insert operations - lost faces."
                 (t
                  0)))
          (numspcaft
-          (cond ((and form 
+          (cond ((and form
                       (string= form "left")
                       (< orilen len))
                  (- len orilen))
-                ((and form 
+                ((and form
                       (string= form "center")
                       (< orilen len))
                  (- len numspcbef orilen))
@@ -4951,7 +4952,7 @@ with sublevel zero to maxsublevel."
            (chartstart (etask-state-get etask-stateid-chartstart))
            (chartend (etask-state-get etask-stateid-chartend))
            (maxnamelen (etask-state-get etask-stateid-maxtasklen))
-           (sublevel 
+           (sublevel
             (cond ((and (natnump sublevel) (not (natnump maxsublevel)))
                    sublevel)
                   ((and (natnump sublevel) (natnump maxsublevel))
@@ -4966,7 +4967,7 @@ with sublevel zero to maxsublevel."
                  (natnump sublevel))
         (while elements
           (setq element (car elements))
-          (setq elementname 
+          (setq elementname
                 (etask-db-get (car elements) etask-db-attr-taskname))
           (setq subelements
                 (etask-db-get (car elements) etask-db-attr-subtasklist))
@@ -4998,14 +4999,14 @@ with sublevel zero to maxsublevel."
           (goto-char (1+ (point)))
 
           (when (etask-cat-insert-elementbar-p catid element)
-            (etask-insert-taskbar 
+            (etask-insert-taskbar
              element chartstart chartend daylen maxnamelen))
           (insert "\n")
           (when (and (listp subelements) (> (length subelements) 0))
             (while subelements
               (etask-generate-chart
                (list (car subelements))
-               (1+ sublevel) 
+               (1+ sublevel)
                (when (natnump maxsublevel) maxsublevel))
               (setq subelements (cdr subelements))))
           (setq elements (cdr elements)))))))
@@ -5032,7 +5033,7 @@ the item's timeframe."
                  0)
                 ((and (etask-calendardate-is-legal-p projbegin)
                       (etask-calendardate-is-legal-p chartstart)
-                      (calendar-date-compare 
+                      (calendar-date-compare
                        (list projbegin) (list chartstart)))
                  (etask-days-between projbegin chartstart))
                 (t
@@ -5045,7 +5046,7 @@ the item's timeframe."
                  0)
                 ((and (etask-calendardate-is-legal-p projend)
                       (etask-calendardate-is-legal-p chartend)
-                      (calendar-date-compare 
+                      (calendar-date-compare
                        (list chartend) (list projend)))
                  (etask-days-between chartend projend))
                 (t
@@ -5054,9 +5055,9 @@ the item's timeframe."
          (catitemname))
     (when (etask-cat-is-valid-catid-p catid)
       (setq catitemname (capitalize (etask-cat-get-catitemname catid)))
-      (concat 
+      (concat
        (when (> daysbefore 0)
-         (concat 
+         (concat
           (number-to-string daysbefore)
           "d << "))
        "["
@@ -5065,7 +5066,7 @@ the item's timeframe."
        (car (cdr (etask-cat-get-current-item)))
        "]"
        (when (> daysafter 0)
-         (concat 
+         (concat
           " >> "
           (number-to-string daysafter)
           "d"))))))
@@ -5113,13 +5114,13 @@ infostring and a sublevel description if applicable."
                          'etask-face-normaltaskname-behind-schedule)))
                  ((etask-is-task-completed-p element)
                   (setq elementname
-                        (etask-apply-face 
+                        (etask-apply-face
                          elementname
                          'etask-face-normaltaskname-completed)))
                  (t
                   (setq elementname
                         (etask-apply-face
-                         elementname 
+                         elementname
                          'etask-face-normaltask)))))
           ((string= (etask-db-get element etask-db-attr-tasktype)
                     etask-highrisktask-string)
@@ -5130,7 +5131,7 @@ infostring and a sublevel description if applicable."
                          'etask-face-highrisktaskname-behind-schedule)))
                  ((etask-is-task-completed-p element)
                   (setq elementname
-                        (etask-apply-face 
+                        (etask-apply-face
                          elementname
                          'etask-face-highrisktaskname-completed)))
                  (t
@@ -5142,12 +5143,12 @@ infostring and a sublevel description if applicable."
                     etask-criticaltask-string)
            (cond ((etask-cat-is-element-behind-schedule-p element)
                   (setq elementname
-                        (etask-apply-face 
+                        (etask-apply-face
                          elementname
                          'etask-face-criticaltaskname-behind-schedule)))
                  ((etask-is-task-completed-p element)
                   (setq elementname
-                        (etask-apply-face 
+                        (etask-apply-face
                          elementname
                          'etask-face-criticaltaskname-completed)))
                  (t
@@ -5156,7 +5157,7 @@ infostring and a sublevel description if applicable."
                          elementname
                          'etask-face-criticaltask))))))
 
-    (setq str (concat 
+    (setq str (concat
                (etask-get-subelstring element sublevel) elementname))
     (etask-format-insert str len "left")))
 
@@ -5175,7 +5176,7 @@ are highlighted."
           ((and markp (not navp))
            (insert etask-delimiter-markedtask-marker))
           ((and markp navp)
-           (insert (etask-apply-face 
+           (insert (etask-apply-face
                     etask-delimiter-markedtask-marker
                     'etask-face-specialdelimiter))))))
 
@@ -5191,7 +5192,7 @@ are highlighted."
     (etask-insert-help))
   (etask-fit-window)
   (setq buffer-read-only t))
-  
+
 (defun etask-insert-help()
   "Insert help, ie various shortcuts, in current buffer."
   (setq buffer-read-only nil)
@@ -5235,7 +5236,7 @@ are highlighted."
   "Return a task bar string.
 
 The function generates a taskbar for tasks with type TASKTYPE.
-Every bar consists of two parts: the still OPEN and the already 
+Every bar consists of two parts: the still OPEN and the already
 COMPLETED part, given as nonnegative integers.
 The faces of these parts can be customized for every TASKTYPE.
 TASKTYPE is in {`etask-highrisktask-string', `etask-criticaltask-string',
@@ -5275,7 +5276,7 @@ Example: '     ----------------   '   = inserted string
               project begin
                2...here starts our task
                               3...END, here ends our task
-                                 4...here ends our chart, 
+                                 4...here ends our chart,
                                      may or may not be the projectend
 
 Example:       '----------------        '   = inserted string
@@ -5290,24 +5291,24 @@ Example:       '----------------        '   = inserted string
          (etask-ev-insert-bar task start end daylen))
         ((= catid etask-category-projectid)
          (if (etask-is-milestone-p task)
-             (let* ((taskstart 
+             (let* ((taskstart
                      (etask-db-get task etask-db-attr-taskbegin))
                     (earlierdays
-                     (if (calendar-date-compare 
+                     (if (calendar-date-compare
                           (list start) (list taskstart))
-                         (etask-days-between 
+                         (etask-days-between
                           start taskstart)
                        0))
                     (leadingspaces (round (* daylen earlierdays))))
                (insert
-                (make-string 
+                (make-string
                  (if (>= leadingspaces maxtasklen)
                      (1- leadingspaces)
                    leadingspaces)
                  ? ))
                (if (> daylen 1)
-                   (etask-format-insert 
-                    (make-string 
+                   (etask-format-insert
+                    (make-string
                      (cond ((< daylen 6)
                             1)
                            ((< daylen 9)
@@ -5323,19 +5324,19 @@ Example:       '----------------        '   = inserted string
                   (taskdays (1+ (etask-days-between taskstart taskend)))
                   (tasktype (etask-db-get task etask-db-attr-tasktype))
                   (chartdays (1+ (etask-days-between start end)))
-                  (chartlen 
+                  (chartlen
                    (min
                     (etask-state-get etask-stateid-maxbarlen)
                     (round (etask-simplify-number (* chartdays daylen)))))
                   (reltaskstart
-                   (if (calendar-date-compare 
+                   (if (calendar-date-compare
                         (list start)
                         (list taskstart))
                        (etask-days-between start taskstart)
                      ;; these task days are before chart window begin date
                      (- 0 (etask-days-between start taskstart))))
                   (reltaskend
-                   (if (calendar-date-compare 
+                   (if (calendar-date-compare
                         (list taskend)
                         (list end))
                        (etask-days-between taskend end)
@@ -5406,7 +5407,7 @@ Example:       '----------------        '   = inserted string
                            (* (/ (float eefforthours)
                                  pefforthours)
                               peffortbarlen)
-                           (if (< reltaskstart 0) 
+                           (if (< reltaskstart 0)
                                ;; subtract invisible days
                                (* (float reltaskstart) daylen)
                              0))
@@ -5423,13 +5424,13 @@ Example:       '----------------        '   = inserted string
                      0))
                   (deviation
                    (or
-                    (> (+ eeffortbarlen oeffortbarlen) 
+                    (> (+ eeffortbarlen oeffortbarlen)
                        (round peffortbarlenvisible))
-                    (> (+ leadingspclen eeffortbarlen oeffortbarlen) 
+                    (> (+ leadingspclen eeffortbarlen oeffortbarlen)
                        chartlen))))
-        
+
              (when deviation
-               (let ((amount 
+               (let ((amount
                       (max 1
                            (round
                             (abs (- (+ eeffortbarlen oeffortbarlen)
@@ -5443,14 +5444,14 @@ Example:       '----------------        '   = inserted string
                    (when deviation
                      (setq leadingspclen (max (- leadingspclen amount) 0))
                      (setq deviation nil)))))
-        
+
              (when (> leadingspclen 0)
                (insert (make-string leadingspclen ? )))
              (when (> eeffortbarlen 0)
-               (insert (etask-calculate-taskbar 
+               (insert (etask-calculate-taskbar
                         tasktype 0 eeffortbarlen)))
              (when (> oeffortbarlen 0)
-               (insert (etask-calculate-taskbar 
+               (insert (etask-calculate-taskbar
                         tasktype oeffortbarlen 0))))))))
 
 (defun etask-insert-currentdatestring(scaledprojday scaledmarkerlen)
@@ -5468,14 +5469,14 @@ one day in characters."
          (maxbarlen (etask-state-get etask-stateid-maxbarlen))
          (projbegin (etask-calculate-earliestbegin tasklist))
          (projend (etask-calculate-lastend tasklist))
-         (projday (1+ (etask-days-between 
+         (projday (1+ (etask-days-between
                        projbegin
                        (calendar-current-date))))
          (projlen (1+ (etask-days-between
                        projbegin
                        projend)))
-         (len-daycounter 
-          (+ (length 
+         (len-daycounter
+          (+ (length
               (concat
                (etask-lang-msg 772 etask-language)
                " /"))
@@ -5540,9 +5541,9 @@ one day in characters."
                  'etask-face-today))))
             (t
              (let* ((date (calendar-date-string (calendar-current-date)))
-                    (len 
+                    (len
                      ;; (round x.5) may be x on some systems => ceiling
-                     (ceiling 
+                     (ceiling
                       (/ (+ (float (length date))
                             ;; Center current date string below middle of
                             ;; `etask-today-symbol's
@@ -5550,7 +5551,7 @@ one day in characters."
                             len-daycounter)
                          2)))
                     ;; scaled day can be wider than 1 column; if so: center
-                    (datestring-middle-pos 
+                    (datestring-middle-pos
                      (+ scaledprojday (/ scaledmarkerlen 2)))
                     (numofblanks
                      (floor       ;ensure wholenumberp for make-string
@@ -5644,7 +5645,7 @@ DAYLEN is the width of today marker.  If <1 it is enlarged to 1."
              ()))))
 
 (defun etask-insert-timelinesymbols(scaledprojectlen
-                                    scaledoffsetbefore 
+                                    scaledoffsetbefore
                                     scaledoffsetafter
                                     scaledmarkerlen)
   "Insert timeline markers \(chart begin, chart end, today, and day
@@ -5661,20 +5662,20 @@ integer defining the length of one day in columns \(characters\)."
   (let ((chartbegin (etask-state-get etask-stateid-chartstart))
         (chartend (etask-state-get etask-stateid-chartend))
         (maxtasklen (etask-state-get etask-stateid-maxtasklen)))
-    (when (calendar-date-compare 
-           (list chartbegin) 
+    (when (calendar-date-compare
+           (list chartbegin)
            (list chartend))
-      
+
       ;; leading blanks for element name column including delimiter
       (insert (make-string (1+ maxtasklen) ? ))
-    
+
       (cond ((and (> scaledoffsetbefore scaledmarkerlen) ;'>': inclusive
                   (>= scaledoffsetafter scaledmarkerlen)
-                  (calendar-date-compare 
-                   (list chartbegin) 
+                  (calendar-date-compare
+                   (list chartbegin)
                    (list (calendar-current-date)))
                   (calendar-date-compare
-                   (list (calendar-current-date)) 
+                   (list (calendar-current-date))
                    (list chartend)))
              ;; today is visible and enough space for markers
 
@@ -5682,12 +5683,12 @@ integer defining the length of one day in columns \(characters\)."
 
              ;; days between chart begin and current date
              (if (and (natnump scaledmarkerlen) (>= scaledmarkerlen 1))
-                 (etask-insert-daymarkers (- scaledoffsetbefore 
+                 (etask-insert-daymarkers (- scaledoffsetbefore
                                              (* 2 scaledmarkerlen))
                                           scaledmarkerlen
                                           (etask-add-days-to-date
                                            chartbegin 1))
-               (insert (make-string 
+               (insert (make-string
                         (max
                          ;; subtract start and today marker
                          (round (- scaledoffsetbefore 2))
@@ -5704,20 +5705,20 @@ integer defining the length of one day in columns \(characters\)."
                                           scaledmarkerlen
                                           (etask-add-days-to-date
                                            (calendar-current-date) 1))
-               (insert (make-string 
+               (insert (make-string
                         (max
                          ;; subtract already inserted characters
-                         (round (- scaledprojectlen 
+                         (round (- scaledprojectlen
                                    (max
                                     (round (- scaledoffsetbefore 2))
-                                    0)        
+                                    0)
                                    3))
-                         0) 
+                         0)
                         ? )))
 
              ;; chart end marker is always on the right of the timeline
              (etask-insert-projbeginendmarker scaledmarkerlen chartend))
-          
+
             ((and (= scaledoffsetbefore 1)
                   (>= scaledprojectlen (* 2 scaledmarkerlen)))
              ;; => chart begin is current date
@@ -5736,16 +5737,16 @@ integer defining the length of one day in columns \(characters\)."
              ;; => chart ends today
              (etask-insert-projbeginendmarker scaledmarkerlen chartbegin)
              (if (>= scaledmarkerlen 1)
-                 (etask-insert-daymarkers (- scaledoffsetbefore 
+                 (etask-insert-daymarkers (- scaledoffsetbefore
                                              (* 2 scaledmarkerlen))
                                           scaledmarkerlen
                                           (etask-add-days-to-date
                                            chartbegin 1))
                (insert (make-string (- scaledprojectlen 2) ? )))
              (etask-insert-todaymarker scaledmarkerlen))
-           
+
             ((or
-              (calendar-date-compare (list chartend) 
+              (calendar-date-compare (list chartend)
                                      (list (calendar-current-date)))
               (calendar-date-compare (list (calendar-current-date))
                                      (list chartbegin)))
@@ -5775,7 +5776,7 @@ length in chars, respectively."
 
     (cond ((etask-todo-organizer-view-p)
            (let ((datestr
-                  (if (calendar-date-equal 
+                  (if (calendar-date-equal
                        (calendar-current-date) chartbegin)
                       (etask-apply-face
                        (calendar-date-string chartend) 'etask-face-today)
@@ -5784,7 +5785,7 @@ length in chars, respectively."
           ((and (>= scaledmarkerlen 19)
                 (calendar-date-equal chartbegin chartend))
            (let ((date
-                  (if (calendar-date-equal 
+                  (if (calendar-date-equal
                        (calendar-current-date) chartbegin)
                       (etask-apply-face
                        (calendar-date-string chartbegin)
@@ -5794,22 +5795,22 @@ length in chars, respectively."
           ((>= scaledmarkerlen 19)
            ())
           ((and (>= scaledmarkerlen 14) (< scaledmarkerlen 19))
-           (let* ((start 
-                   (if (calendar-date-equal 
+           (let* ((start
+                   (if (calendar-date-equal
                         (calendar-current-date) chartbegin)
                        (etask-apply-face
                         (calendar-day-name chartbegin) 'etask-face-today)
                      (calendar-day-name chartbegin)))
-                  (end 
-                   (if (calendar-date-equal 
+                  (end
+                   (if (calendar-date-equal
                         (calendar-current-date) chartend)
                        (etask-apply-face
                         (calendar-day-name chartend) 'etask-face-today)
                      (calendar-day-name chartend))))
              (etask-format-insert start scaledmarkerlen "center")
              (when (>= scaledprojlen (* 2 scaledmarkerlen))
-               (insert (make-string (- scaledprojlen 
-                                       (* 2 scaledmarkerlen)) 
+               (insert (make-string (- scaledprojlen
+                                       (* 2 scaledmarkerlen))
                                     ? ))
                (etask-format-insert end scaledmarkerlen "center"))))
           (t
@@ -5844,7 +5845,7 @@ length in chars, respectively."
                  (progn
                    (insert (make-string (- scaledmarkerlen 2) ? ))
                    (insert strstart)
-                   (insert (make-string (- scaledprojlen 
+                   (insert (make-string (- scaledprojlen
                                            (* 2 scaledmarkerlen))
                                         ? )))
                (insert (make-string (- scaledprojlen 2) ? )))
@@ -5861,33 +5862,33 @@ date, and end of days, if applicable."
          (end (etask-state-get etask-stateid-chartend))
          (maxtasklen (etask-state-get etask-stateid-maxtasklen))
          (chartlen (1+ (etask-days-between start end)))
-         (projday 
+         (projday
           (if (or
-               (calendar-date-compare 
+               (calendar-date-compare
                 (list start) (list (calendar-current-date)))
                (calendar-date-equal start (calendar-current-date)))
               (1+ (etask-days-between start (calendar-current-date)))
             (- 0 (etask-days-between start (calendar-current-date)))))
-         (projdays-tomorrow-end 
-          (if (calendar-date-compare 
+         (projdays-tomorrow-end
+          (if (calendar-date-compare
                (list (calendar-current-date)) (list end))
               (etask-days-between (calendar-current-date) end)
             (- 0 (etask-days-between (calendar-current-date) end))))
          (insert-today-p
           (and
            (or
-            (calendar-date-compare (list start) 
+            (calendar-date-compare (list start)
                                    (list (calendar-current-date)))
-            (calendar-date-equal start 
+            (calendar-date-equal start
                                  (calendar-current-date)))
            (or
-            (calendar-date-compare (list (calendar-current-date)) 
+            (calendar-date-compare (list (calendar-current-date))
                                    (list end))
-            (calendar-date-equal (calendar-current-date) 
+            (calendar-date-equal (calendar-current-date)
                                  end))))
          (scaledprojday
           (if (> daylen 1)
-              ;; scaled day > 1 column => set scaledprojday 
+              ;; scaled day > 1 column => set scaledprojday
               ;; at first column
               ;; |proj start|         |today    |         |proj end  |
               ;;                       ^
@@ -5896,7 +5897,7 @@ date, and end of days, if applicable."
                             daylen)))
             (round (* daylen projday))))
          (maxbarlen (etask-state-get etask-stateid-maxbarlen))
-         (scaledprojlen 
+         (scaledprojlen
           (min
            maxbarlen
            (round (etask-simplify-number
@@ -5907,14 +5908,14 @@ date, and end of days, if applicable."
             daylen)))               ;just insert proj begin/end, today
     (cond ((calendar-date-compare (list start) (list end))
            (etask-insert-timelinesymbols
-            scaledprojlen 
+            scaledprojlen
             scaledprojday
             (round (* daylen projdays-tomorrow-end))
             scaledmarkerlen)            ;needed if daylen > 1
            (when etask-show-projectdates-p
              (etask-insert-projectdates-pointers
               scaledmarkerlen scaledprojlen)
-             (etask-insert-datestring 
+             (etask-insert-datestring
               scaledmarkerlen scaledprojlen))
            (when insert-today-p
              (etask-insert-currentdatestring
@@ -5941,8 +5942,8 @@ respectively.  If EFFORT is not a valid effort return nil."
                                 etask-workingdays-per-week))
                    0))
            (concat
-            (number-to-string 
-             (/ effort 
+            (number-to-string
+             (/ effort
                 (* etask-workinghours-per-day
                    etask-workingdays-per-week)))
             "w"))
@@ -5952,8 +5953,8 @@ respectively.  If EFFORT is not a valid effort return nil."
                 (= (% effort etask-workinghours-per-day)
                    0))
            (concat
-            (number-to-string 
-             (/ effort 
+            (number-to-string
+             (/ effort
                 etask-workinghours-per-day))
             "d"))
           ((< effort 1)
@@ -5974,9 +5975,9 @@ serves as default value."
   (let* ((eeffort (etask-db-get task etask-db-attr-eeffort)))
     (etask-extract-effort-hours
      (etask-read
-      (concat 
+      (concat
        (format "'%s': "
-               (etask-shorten-string 
+               (etask-shorten-string
                 (etask-db-get task etask-db-attr-taskname)
                 etask-longer-taskname-len-minibuf))
        (etask-lang-msg 120 etask-language)
@@ -5995,7 +5996,7 @@ if the entered number of tasks is in 1..`etask-max-dataitems' or nil
 if this number is 0."
   (let* ((catid (car (etask-cat-get-current-item)))
          (labellist)
-         (labelnum 
+         (labelnum
           (if (= catid etask-category-projectid)
               (string-to-number
                (etask-read
@@ -6005,11 +6006,11 @@ if this number is 0."
                  (etask-lang-msg 100 etask-language)
                  (format " (0-%d)? " etask-max-dataitems))
                 (lambda (x) (and
-                             (string-match 
+                             (string-match
                               etask-wholenumber-regexp x)
-                             (>= (string-to-number x) 
+                             (>= (string-to-number x)
                                  0)
-                             (<= (string-to-number x) 
+                             (<= (string-to-number x)
                                  etask-max-dataitems)))
                 (if (= (etask-cat-get-elementnum) 0)
                     (number-to-string 10)
@@ -6020,7 +6021,7 @@ if this number is 0."
       (setq labellist
             (cons
              (cond ((= catid etask-category-projectid)
-                     (etask-get-taskname nil 
+                     (etask-get-taskname nil
                                          (+ 1 (- temp labelnum))
                                          temp
                                          labellist))
@@ -6042,7 +6043,7 @@ begin or - if optional ENDOFTASKP is non-nil - end date is the default
 value in the minibuffer.
 
 BEGINDATE is the task's begin date when ENDOFTASKP is non-nil."
-  (let* ((safyear (if endoftaskp 
+  (let* ((safyear (if endoftaskp
                          (extract-calendar-year begindate)
                        etask-earliest-taskstart-year))
          (year (string-to-number
@@ -6053,18 +6054,18 @@ BEGINDATE is the task's begin date when ENDOFTASKP is non-nil."
                   (etask-lang-msg 776 etask-language)
                   "  ? ")
                  (lambda (x) (and
-                              (string-match 
+                              (string-match
                                etask-wholenumber-regexp x)
                               (>= (string-to-number x) safyear)))
                  (if task
                      (int-to-string
                       (if endoftaskp
-                          (extract-calendar-year 
+                          (extract-calendar-year
                            (etask-db-get task etask-db-attr-taskend))
-                        (extract-calendar-year 
+                        (extract-calendar-year
                          (etask-db-get task etask-db-attr-taskbegin))))
                    (int-to-string
-                    (extract-calendar-year 
+                    (extract-calendar-year
                      (calendar-current-date)))))))
          (month-array calendar-month-name-array)
          (completion-ignore-case t)
@@ -6079,12 +6080,12 @@ BEGINDATE is the task's begin date when ENDOFTASKP is non-nil."
                        nil
                        t
                        (cond ((and task endoftaskp)
-                              (calendar-month-name 
-                               (extract-calendar-month 
+                              (calendar-month-name
+                               (extract-calendar-month
                                 (etask-db-get task etask-db-attr-taskend))))
                              (task
-                              (calendar-month-name 
-                               (extract-calendar-month 
+                              (calendar-month-name
+                               (extract-calendar-month
                                 (etask-db-get task etask-db-attr-taskbegin))))
                              (t
                               ())))
@@ -6095,7 +6096,7 @@ BEGINDATE is the task's begin date when ENDOFTASKP is non-nil."
                         (+
                          (extract-calendar-day begindate)
                          (etask-days-till-business-day begindate))
-                      (1+ (etask-days-till-business-day 
+                      (1+ (etask-days-till-business-day
                            (list month 1 year)))))
          (last (calendar-last-day-of-month month year))
          (lastbizday (if (etask-businessday-p (list month last year))
@@ -6108,41 +6109,41 @@ BEGINDATE is the task's begin date when ENDOFTASKP is non-nil."
         (list 1 1 1)
       (list month
             (string-to-number
-             (etask-read 
+             (etask-read
               (concat
                (format "%s" prompt)
                " - "
                (etask-lang-msg 721 etask-language)
                " "
-               (format "(%s-%d): " 
+               (format "(%s-%d): "
                        (number-to-string safendday)
                        lastbizday))
-              (lambda (x) (and 
-                           (string-match 
+              (lambda (x) (and
+                           (string-match
                             etask-wholenumber-regexp x)
-                           (<= safendday (string-to-number x)) 
+                           (<= safendday (string-to-number x))
                            (<= (string-to-number x) lastbizday)
                            (etask-businessday-p
-                            (list  
+                            (list
                              month
                              (string-to-number x)
                              year))))
-              (cond ((and task 
+              (cond ((and task
                           endoftaskp
                           (> safendday 1))
-                     (number-to-string 
+                     (number-to-string
                       (max
                        safendday
-                       (extract-calendar-day 
+                       (extract-calendar-day
                         (etask-db-get task etask-db-attr-taskend)))))
                     ((and task
                           endoftaskp)
-                     (number-to-string 
-                      (extract-calendar-day 
+                     (number-to-string
+                      (extract-calendar-day
                        (etask-db-get task etask-db-attr-taskend))))
                     (task
-                     (number-to-string 
-                      (extract-calendar-day 
+                     (number-to-string
+                      (extract-calendar-day
                        (etask-db-get task etask-db-attr-taskbegin))))
                     (t
                      nil))))
@@ -6162,7 +6163,7 @@ are processed within `etask-get-taskdate'."
       (if (or
            (calendar-date-compare (list date)
                                   (list tmp))
-           (calendar-date-equal tmp 
+           (calendar-date-equal tmp
                                 date))
           (setq illegaldatep nil)
         (error "%s" (etask-lang-msg 1003 etask-language))))
@@ -6191,7 +6192,7 @@ this list,too."
               (if oldname
                   (concat
                    (etask-lang-msg 299 etask-language)
-                   (format ": '%s': " 
+                   (format ": '%s': "
                            (etask-shorten-string
                             oldname
                             etask-longer-taskname-len-minibuf)))

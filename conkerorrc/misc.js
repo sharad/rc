@@ -34,6 +34,11 @@ interactive("cleartrack", "Google page mode clear track.",
 
 //}}
 
+
+//{{ check http://www.emacswiki.org/emacs/BrowseUrl#toc18
+url_remoting_fn = load_url_in_new_buffer;
+//}}
+
 // Local Variables: **
 // folded-file:f **
 // mode:js2 **
@@ -41,4 +46,3 @@ interactive("cleartrack", "Google page mode clear track.",
 // comment-start: "// "  **
 // comment-end:   "// "  **
 // End: **
-

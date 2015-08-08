@@ -55,12 +55,12 @@ At top-level, as an editor command, this simply beeps."
         (apply 'message fmt args))))
 
 
-
+(defun enable-backtrace-for-error ()
+  (setq
+   inhibit-debugger nil
+   debug-ignored-errors nil))
 
 
 (provide 'debug-config)
 
 ;;; debug-config.el ends here
-
-
-

@@ -26,10 +26,9 @@
 
 
 (deh-require-maybe howm
-  (make-directory (expand-file-name "autoconfig/howm/" user-emacs-directory) t)
   (setq
-   howm-keyword-file (expand-file-name "autoconfig/howm/howm-keys.el" user-emacs-directory)
-   howm-history-file (expand-file-name "autoconfig/howm/howm-history.el" user-emacs-directory)))
+   howm-keyword-file (auto-config-file "howm/howm-keys.el")
+   howm-history-file (auto-config-file "howm/howm-history.el")))
 
 
 (provide 'howm-config)

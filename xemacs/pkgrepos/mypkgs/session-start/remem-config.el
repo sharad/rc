@@ -4,13 +4,12 @@
 
 ;; in .emacs:
 
-;;(define-prefix-command 'remem-command-prefix)
-;;(global-set-key (kbd "C-r") 'remem-command-prefix)
-;;(defvar remem-command-prefix "\C-ca")
-;;;;;;;;;;;;;;;;
-;; Keys We want to start with before running the RA
-;;(define-key remem-command-prefix (kbd "t") 'remem-toggle)
-;;(define-key remem-command-prefix (kbd "h") 'remem-create-help-pag)e
+;; (define-prefix-command 'remem-command-map)
+;; (global-set-key (kbd "C-cx") 'remem-command-map)
+
+;; ;; Keys We want to start with before running the RA
+;; (define-key remem-command-map (kbd "t") 'remem-toggle)
+;; (define-key remem-command-map (kbd "h") 'remem-create-help-page)
 
 
 
@@ -21,7 +20,7 @@
 
   (setq remem-prog-dir "/usr/bin")
   (setq remem-database-dir "~/.RA-indexes")
-  (setq remem-scopes-list '(("mail" 6 5 500) ("office" 6 5 500)))
+  (setq remem-scopes-list '(("doc" 6 5 500) ("mail" 6 5 500) ("office" 6 5 500)))
   ;;(setq remem-terminal-mode t)
   (setq remem-load-original-suggestion  nil)
 
@@ -67,7 +66,7 @@
           (yank)
           (splice-buffer)
           (with-current-buffer target
-            (insert-buffer source))))))
+            (insert-buffer-substring source))))))
 
   (defun remem-append ()
     "remem-display buffer is appended to buffer with correct example tags"

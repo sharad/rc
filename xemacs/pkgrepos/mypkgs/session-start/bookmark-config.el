@@ -21,12 +21,12 @@
 ;;
 
 
+(require 'misc-config)
+
 ;; breadcrumb
 (deh-require-maybe breadcrumb
   ;;
-
-  (make-directory (expand-file-name "autoconfig/breadcrumb/" user-emacs-directory) t)
-  (setq bc-bookmark-file (expand-file-name "autoconfig/breadcrumb/breadcrumbe.el" user-emacs-directory))
+  (setq bc-bookmark-file (auto-config-file "breadcrumb/breadcrumbe.el"))
 
   (autoload 'bc-set               "breadcrumb" "Set bookmark in current point."   t)
   (autoload 'bc-previous          "breadcrumb" "Go to previous bookmark."         t)
@@ -42,16 +42,22 @@
 ;; bm
 (deh-require-maybe bm
   ;;
-  )
+  (setq bm-repository-file (auto-config-file "bm/bm-repository")))
 
 
 ;; save bookmarks
 
-(require 'bookmark+
-         ;; available in elpa
-         )
+(setq bookmark-file (auto-config-file "bookmark/bookmarks.el"))
+(setq bookmark-default-file (auto-config-file "bookmark/bookmarks.el"))
 
-(remove-hook 'kill-emacs-hook 'bookmark-bmenu-save)
+(deh-require-maybe bookmark+
+         ;; available in elpa
+  (setq bmkp-bmenu-state-file    (auto-config-file "bookmark+/emacs-bmk-bmenu-state.el")
+        bmkp-bmenu-commands-file (auto-config-file "bookmark+/emacs-bmk-bmenu-commands.el"))
+
+  (remove-hook 'kill-emacs-hook 'bookmark-bmenu-save))
+
+
 
 ;; from http://emacswiki.org/emacs/BookMarks#toc4
 ;; Access File Bookmarks from `C-x C-f'
