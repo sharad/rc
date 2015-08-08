@@ -1,5 +1,5 @@
 ;;
-;; gnus.el
+;; gnus-config.el
 ;; Login : <spratap@spratap>
 ;; Started on  Wed Jun 30 12:02:07 2010 Sharad Pratap
 ;; $Id$
@@ -123,3 +123,4 @@ depending on network status."
 
 (provide 'gnus-config)
 
+;;; gnus-config.el ends here

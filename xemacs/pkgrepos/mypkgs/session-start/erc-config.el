@@ -1,24 +1,31 @@
-;;
-;; erc.el
-;; Login : <spratap@spratap>
+;;; erc-config.el --- Auto Loads
+
+;; Copyright (C) 2015  sharad
+
+;; Author: sharad <spratap@merunetworks.com>
 ;; Started on  Thu Mar  3 16:12:21 2011 Sharad Pratap
 ;; $Id$
-;;
-;; Copyright (C) @YEAR@ Sharad Pratap
+;; Keywords:convenience
+
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2 of the License, or
+;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-;;
+
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;;
+
 ;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-;;
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; erc config
+
+;;; Code:
+
 
 
 (defvar erc-autojoin-channels-alist nil)
@@ -946,10 +953,6 @@ If USER is omitted, close the current query buffer if one exists
           ;; (error "Current target is not a QUERY")
           ))))
 
-(provide 'erc-config)
-
-
-
   ;;http://www.emacswiki.org/emacs/ErcStartupFiles
   ;; (defun my-irc ()
   ;;   "Start to waste time on IRC with ERC."
@@ -976,3 +979,7 @@ If USER is omitted, close the current query buffer if one exists
 
 
   ;;
+
+(provide 'erc-config)
+
+;;; erc-config.el ends here

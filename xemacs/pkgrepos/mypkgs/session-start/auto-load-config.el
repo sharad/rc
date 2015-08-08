@@ -29,4 +29,5 @@
 
 
 (provide 'auto-load-config)
+
 ;;; auto-load-config.el ends here
