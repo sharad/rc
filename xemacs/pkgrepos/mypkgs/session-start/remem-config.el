@@ -18,11 +18,14 @@
   ;; (define-key perly-sense-map (kbd "C-d") 'perly-sense-smart-docs-at-point)
   ;; (define-key perly-sense-map (kbd "C-g") 'perly-sense-smart-go-to-at-point)
 
-  (setq remem-prog-dir "/usr/bin")
-  (setq remem-database-dir "~/.RA-indexes")
-  (setq remem-scopes-list '(("doc" 6 5 500) ("mail" 6 5 500) ("office" 6 5 500)))
+  (setq remem-logfile (auto-config-file "remem/remem-log-file")
+        remem-prog-dir "/usr/bin"
+        remem-database-dir "~/.RA-indexes"
+        remem-scopes-list '(("doc" 6 5 500)
+                            ("mail" 6 5 500)
+                            ("office" 6 5 500))
   ;;(setq remem-terminal-mode t)
-  (setq remem-load-original-suggestion  nil)
+        remem-load-original-suggestion  t)
 
 
   ;; C-c r t - toggle

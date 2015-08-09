@@ -25,16 +25,20 @@
 ;;; Code:
 
 (deh-section "Time stats"
+ (deh-require-maybe uptimes
+   (setq
+    uptimes-database  (auto-config-file "uptimes/uptimes")))
+
  (deh-require-maybe uptime)
- (deh-require-maybe uptimes)
+
  (deh-section "emacs-uptime"
    ;; http://gnuvola.org/software/personal-elisp/dist/lisp/diversions/emacs-uptime.el
    (require 'cl)
 
    (defvar *emacs-start-time* nil "emacs-start-time")
 
-   (setq *emacs-start-time* *emacs-load-start*)
-
+   (setq
+    *emacs-start-time* *emacs-load-start*)
    ;;;###autoload
    (defun emacs-uptime (&optional start-time)
      "Gives Emacs' uptime, based on global var `*emacs-start-time*'."

@@ -37,6 +37,7 @@ PRIVATE_DIR=$HOME/.Private
 SSH_KEYS_DIR=$HOME/.ssh/login-keys.d
 SCREEN4KEYCHAIN=keychain
 KEYCHAINDIR=$HOME/.keychain-login
+EMACS_SSH_AGENT_FILE=~/.emacs.d/autoconfig/ssh/ssh-agent-$(hostname -f).el
 export SCREEN4KEYCHAIN
 export KEYCHAINDIR
 
@@ -236,7 +237,8 @@ then
 	EOF
 
         if [ "${SSH_AUTH_SOCK}x" != "x" ]; then
-            cat <<-EOF > ~/.emacs.d/ssh-agent-$(hostname -f).el
+            mkdir -p $(dirname $EMACS_SSH_AGENT_FILE)
+            cat <<-EOF > $EMACS_SSH_AGENT_FILE
 	(setenv "SSH_AUTH_SOCK"  "${SSH_AUTH_SOCK}" )
 	(setenv "SSH_AGENT_PID"  "${SSH_AGENT_PID}" )
 	EOF
@@ -246,7 +248,8 @@ then
         fi
 
     else
-        cat <<-EOF > ~/.emacs.d/ssh-agent-${HOST}.el
+        mkdir -p $(dirname $EMACS_SSH_AGENT_FILE)
+        cat <<-EOF > $EMACS_SSH_AGENT_FILE
 	(message "SSH_AUTH_SOCK is not set.")
 	EOF
     fi                          # [ "x${__NO_SSH_AGENT_REQUIRED}" != "x" ]

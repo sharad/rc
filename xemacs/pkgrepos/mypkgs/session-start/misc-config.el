@@ -26,6 +26,12 @@
 
 ;;; Code:
 
+(deh-featurep pcache
+  (setq pcache-directory (auto-config-dir "var/pcache/" t)))
+
+(deh-featurep abbrev
+  (setq abbrev-file-name (auto-config-file "abbrev/abbrev_defs")))
+
 ;; create an indirect buffer
 (defun indirect-buffer ()
   "Edit stuff in this buffer in an indirect buffer.
@@ -667,11 +673,16 @@ The indirect buffer can have another major mode."
 (unless user-emacs-directory
   (error "user-emacs-directory is not set"))
 
+;; (locate-user-emacs-file)
+
 (defun auto-config-file (file-path)
   (make-directory
-   (expand-file-name
-    (file-name-directory file-path)
-    (expand-file-name "autoconfig" user-emacs-directory)) t)
+   (if (file-name-directory file-path)
+       (expand-file-name
+        (file-name-directory file-path)
+        (expand-file-name "autoconfig" user-emacs-directory))
+       (expand-file-name "autoconfig" user-emacs-directory))
+   t)
   (expand-file-name file-path (expand-file-name "autoconfig" user-emacs-directory)))
 
 (defun simple-no-final-slash (s)
@@ -685,9 +696,12 @@ The indirect buffer can have another major mode."
   (unless user-emacs-directory
   (error "user-emacs-directory is not set"))
   (make-directory
-   (expand-file-name
-    (if create-it dir-path (file-name-directory (simple-no-final-slash dir-path)))
-    (expand-file-name "autoconfig" user-emacs-directory)) t)
+   (if (if create-it dir-path (file-name-directory (simple-no-final-slash dir-path)))
+       (expand-file-name
+        (if create-it dir-path (file-name-directory (simple-no-final-slash dir-path)))
+        (expand-file-name "autoconfig" user-emacs-directory))
+       (expand-file-name "autoconfig" user-emacs-directory))
+   t)
   (expand-file-name dir-path (expand-file-name "autoconfig" user-emacs-directory)))
 
 (provide 'misc-config)

@@ -75,7 +75,7 @@
     (unless (member feature exclude-lib)
       (if (not running-xemacs)
           (require feature nil t)
-	(require feature nil)))))
+          (require feature nil)))))
 
 
 ;;}}}

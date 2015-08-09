@@ -23,6 +23,9 @@
 
 (require 'misc-config)
 
+(deh-featurep saveplace
+  (setq save-place-file (auto-config-file "autoconfig/save-place/places")))
+
 ;; breadcrumb
 (deh-require-maybe breadcrumb
   ;;

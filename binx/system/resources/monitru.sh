@@ -12,13 +12,7 @@ function main() {
 
     setup_dbus_vars
 
-    if [ -e $disable_file ] ; then
-        notify "monitru is disabled"
-        exit 0
-    fi
-
-    foreach p ($processes)
-    {
+    foreach p ($processes) {
         if pgrep $p >&/dev/null
         then
             eval max_cpu_pid_val=$(command ps -o user,pid,pcpu,pmem --no-headers $(command pgrep $p) | awk '{ if ( $3 > '$max_cpu' ) printf "(%d %d)\n", $2, $3 }')
@@ -34,10 +28,19 @@ function main() {
                 comm_max_cpu=$(ps h -o comm $pid_max_cpu)
 
                 warn "Going to kill $p ($pid_max_mem) mem usage $val_max_mem exceeds $max_mem"
-                kill $pid_max_mem
+                # kill $pid_max_mem
+
+                if [ -e $disable_file ] ; then
+                    notify "monitru is disabled: kill $pid_max_mem"
+                else
+                    kill $pid_max_mem
+                fi
+
                 sleep 2s
                 if command ps $pid_max_mem >& /dev/null ; then
-                    kill -9 $pid_max_mem
+                    if [ ! -e $disable_file ] ; then
+                        kill -9 $pid_max_mem
+                    fi
                 fi
                 warn "Killed $p ($pid_max_mem) mem usage $val_max_mem exceeds $max_mem"
             fi
@@ -49,10 +52,17 @@ function main() {
                 # fi
 
                 warn "Going to kill $p ($pid_max_cpu) cpu usage $val_max_cpu exceeds $max_cpu"
-                kill $pid_max_cpu
+                if [ -e $disable_file ] ; then
+                    notify "monitru is disabled: kill $pid_max_cpu"
+                else
+                    kill $pid_max_cpu
+                fi
+
                 sleep 2s
                 if command ps $pid_max_cpu >& /dev/null ; then
-                    kill -9 $pid_max_cpu
+                    if [ ! -e $disable_file ] ; then
+                        kill -9 $pid_max_cpu
+                    fi
                 fi
                 warn "Killed $p ($pid_max_cpu) cpu usage $val_max_cpu exceeds $max_cpu"
             fi

@@ -87,8 +87,7 @@
   (setq
    calendar-mark-diary-entries-flag t
    ;;   mark-diary-entries-in-calendar t
-   diary-file "~/.Organize/emacs/diary/diary")
-
+   diary-file (auto-config-file "diary/diary"))
   ;;(global-set-key (kbd "<f9> t") 'planner-create-task-from-buffer)
 
   (deh-require-maybe planner-gnus
@@ -99,10 +98,11 @@
       (setq
        planner-id-add-task-id-flag t
        planner-id-update-automatically t ;; default
-       planner-id-tracking-file "~/.Organize/emacs/plan/planner-ids"))
+       planner-id-tracking-file (auto-config-file "plan/planner-ids")))
+
   (deh-require-maybe planner-cyclic
       (setq
-       planner-cyclic-diary-file "~/.Organize/emacs/plan/planner-cyclic-diary-file"
+       planner-cyclic-diary-file (auto-config-file "plan/planner-cyclic-diary-file")
        planner-cyclic-diary-nag t))
   (xrequire 'planner-deadline)
 

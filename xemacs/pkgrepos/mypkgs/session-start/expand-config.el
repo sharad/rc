@@ -68,7 +68,8 @@
 
 
 (deh-require-maybe auto-complete
-  (define-key ac-mode-map (kbd "<C-M-tab>") 'auto-complete)
+  (setq ac-comphist-file (auto-config-file "auto-complete/ac-comphist.dat"))
+  (define-key ac-mode-map (kbd "C-M-<tab>") 'auto-complete)
   (global-auto-complete-mode t)
 
   (defun my-c-mode-cedet-hook ()
@@ -304,7 +305,7 @@ for the overlay."
 (define-minor-mode yas-suggest-mode
     "Prepare for working with collarative office project."
   :init-value 1
-  :lighter "yas/sugg" ;; " rl"
+  :lighter " yas/sugg" ;; " rl"
   :global nil
   (if yas-suggest-mode
       (add-hook 'post-command-hook (function yas-post-command-hook) t)

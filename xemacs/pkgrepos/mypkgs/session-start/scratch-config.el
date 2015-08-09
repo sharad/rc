@@ -37,14 +37,11 @@
         (forward-word)
         (insert ?\  (number-to-string res) "MB"))))
 
-
-
-
 (deh-section "scratch mode"
 
   (require 'autoinsert+)
 
-  (defvar mjmode-scratch-directory "~/.emacs.d/scratchs/")
+  (defvar mjmode-scratch-directory (auto-config-dir "scratchs" t))
 
   (defun mjmode-scratch (&optional new name mjmode)
     (interactive

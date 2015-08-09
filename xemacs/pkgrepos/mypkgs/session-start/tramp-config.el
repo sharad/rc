@@ -23,6 +23,7 @@
 
   (require 'utils-config)
 
+  (setq tramp-persistency-file-name (auto-config-file "tramp/persistency"))
   (add-hook 'sharad/disable-startup-interrupting-feature-hook
             ;;will not be called.
             '(lambda () ;very necessary.

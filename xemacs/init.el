@@ -95,21 +95,31 @@
 ;;
 
 (require 'general-testing)
-(irequire 'common-info)
+(require 'common-info nil nil)
+(require 'auto-load-config)
+(require 'macros-config)
+(require 'basic-config)
+(require 'basic-utils-config)
+(require 'dot-emacs-helper nil nil)
 
-(when (file-exists-p (setq custom-file "~/.xemacs/custom.el"))
+(deh-section "custom setup"
+ (defvar custom-override-file "~/.xemacs/hand-custom.el" "Hand Custom elisp")
+
+ (when (file-exists-p (setq custom-file "~/.xemacs/custom.el"))
   (load-file custom-file))
 
-(when (file-exists-p (setq custom-override-file "~/.xemacs/hand-custom.el"))
-  (load-file custom-override-file))
+ (when (file-exists-p custom-override-file)
+   (load-file custom-override-file)))
 
-(when (xrequire 'server)
-  (setq server-use-tcp t
-        server-name (or (getenv "EMACS_SERVER_NAME") server-name))
+(deh-require-maybe server
+  (setq
+   server-auth-dir (auto-config-dir "server" t)
+   server-use-tcp t
+   server-name (or (getenv "EMACS_SERVER_NAME") server-name))
   (setq server-host (system-name))
   (if (functionp 'server-running-p)
       (when (not (server-running-p))
-	(condition-case e
+        (condition-case e
             (server-start)
           ('error
            (progn
@@ -126,11 +136,6 @@
 ;; load all files present in ~/\.xemacs/session-start\.d directory.
 (defconst *work-dir* "~/\.\./paradise")
 
-(require 'auto-load-config)
-(require 'macros-config)
-(require 'basic-config)
-(require 'basic-utils-config)
-(require 'dot-emacs-helper nil nil)
 
 (require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/session-start")
 
@@ -138,7 +143,7 @@
 (require 'wrappers-config)
 
 (progn
-  (put-file-in-rcs "~/.emacs.d/startup.log")
+  (put-file-in-rcs (auto-config-file "startup/startup.log"))
   (with-current-buffer "*Messages*"
     (setq messages-buffer-max-lines 2000
           ;; old-messages-buffer-max-lines

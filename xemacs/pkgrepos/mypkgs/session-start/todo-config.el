@@ -117,6 +117,7 @@ having the same major mode as the current buffer"
 
   (deh-require-maybe todostack
     ;; beautiful
+    (setq todostack-save-file (auto-config-file "todostacksave/todostacksave.el"))
     (add-hook 'kill-emacs-hook        'todostack-save)
     (add-hook 'emacs-startup-hook     'todostack-load)
     (add-hook 'todostack-post-op-hook 'todostack-save))

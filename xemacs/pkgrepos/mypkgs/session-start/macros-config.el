@@ -221,6 +221,7 @@
 
 
 (defmacro with-report-error (msg &rest body)
+  "run body and report error in echo area and message buffer"
   (declare (debug t) (indent 4))
   ;;(unwind-protect BODYFORM UNWINDFORMS...)
   (let ((err  (make-symbol "err"))
@@ -237,6 +238,7 @@
 
 
 (defmacro with-report-error (msg &rest body)
+  "run body and report error in echo area and message buffer"
   (declare (debug t) (indent 4))
   ;;(unwind-protect BODYFORM UNWINDFORMS...)
   (let ((err  (make-symbol "err"))
