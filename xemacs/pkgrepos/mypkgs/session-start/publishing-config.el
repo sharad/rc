@@ -526,8 +526,63 @@
 
 (deh-require-maybe (and org org-compat ox-publish)
 
+  (defun org-publish-get-attribute (project extention attrib)
+    (let ((proj-alist (assoc project org-publish-project-alist)))
+      (or
+       (plist-get (cdr proj-alist) attrib)
+       (plist-get
+        (cdar (remove-if-not
+               (lambda (p)
+                 (string-match
+                  (plist-get (cdr p) :base-extension)
+                  extention))
+               (org-publish-expand-projects
+                (list proj-alist))))
+        attrib))))
+  ;;e.g.
+  ;; (org-publish-get-attribute "journal" "org" :base-directory)
+
+
+  ;; ("B-inherit"
+  ;;  :base-directory ,(expand-file-name "B/" *org-top-dir*)
+  ;;  :recursive t
+  ;;  :base-extension "css\\|js"
+  ;;  :publishing-directory ,(expand-file-name "B/html/" *org-generated-top-dir*)
+  ;;  :publishing-function org-publish-attachment)
+
+  ;; ("B-org"
+  ;;  :base-directory ,(expand-file-name "B/" *org-top-dir*)
+  ;;  :auto-index t
+  ;;  :index-filename "sitemap.org"
+  ;;  :index-title "Sitemap"
+  ;;  :recursive t
+  ;;  :base-extension "org"
+  ;;  :publishing-directory ,(expand-file-name "B/html/" *org-generated-top-dir*)
+  ;;  :publishing-function org-publish-org-to-html
+  ;;  :headline-levels 3
+  ;;  :auto-preamble t)
+
+  ;; ("B-static"
+  ;;  :base-directory ,(expand-file-name "B/" *org-top-dir*)
+  ;;  :recursive t
+  ;;  :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+  ;;  :publishing-directory ,(expand-file-name "B/html/" *org-generated-top-dir*)
+  ;;  :publishing-function org-publish-attachment)
+
+  ;; ("B" :components ("inherit-org-info-js" "B-inherit" "B-notes" "B-static"))
+
+
   (setq org-publish-project-alist
-        `(("org-notes"
+        `(
+          ("inherit-org-info-js"
+           ;; :base-directory "~/develop/org/Worg/code/org-info-js/"
+           :base-directory ,(expand-file-name "org-info-js/" *org-top-dir*)
+           :recursive t
+           :base-extension "js"
+           :publishing-directory ,(expand-file-name "js/" *org-generated-top-dir*)
+           :publishing-function org-publish-attachment)
+
+          ("org-notes"
            :base-directory ,(expand-file-name "org/" *org-top-dir*)
            :base-extension "org"
            :publishing-directory ,(expand-file-name "org/html/" *org-generated-top-dir*)
@@ -545,43 +600,72 @@
 
           ("org" :components ("org-notes" "org-static"))
 
-          ("inherit-org-info-js"
-           ;; :base-directory "~/develop/org/Worg/code/org-info-js/"
-           :base-directory ,(expand-file-name "org-info-js/" *org-top-dir*)
-           :recursive t
-           :base-extension "js"
-           :publishing-directory ,(expand-file-name "js/" *org-generated-top-dir*)
-           :publishing-function org-publish-attachment)
-
-          ("B-inherit"
-           :base-directory ,(expand-file-name "B/" *org-top-dir*)
+          ("generic-inherit"
+           :base-directory ,(expand-file-name "generic/" *org-top-dir*)
            :recursive t
            :base-extension "css\\|js"
-           :publishing-directory ,(expand-file-name "B/html/" *org-generated-top-dir*)
-           :publishing-function org-publish-attachment
-           )
+           :publishing-directory ,(expand-file-name "generic/html/" *org-generated-top-dir*)
+           :publishing-function org-publish-attachment)
 
-          ("B-org"
-           :base-directory ,(expand-file-name "B/" *org-top-dir*)
+          ("generic-static"
+           :base-directory ,(expand-file-name "generic/" *org-top-dir*)
+           :recursive t
+           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+           :publishing-directory ,(expand-file-name "generic/html/" *org-generated-top-dir*)
+           :publishing-function org-publish-attachment)
+
+          ("generic-org"
+           :base-directory ,(expand-file-name "generic/" *org-top-dir*)
            :auto-index t
            :index-filename "sitemap.org"
            :index-title "Sitemap"
            :recursive t
            :base-extension "org"
-           :publishing-directory ,(expand-file-name "B/html/" *org-generated-top-dir*)
-           :publishing-function org-publish-org-to-html
+           :publishing-directory ,(expand-file-name "generic/html/" *org-generated-top-dir*)
+           ;; :publishing-function org-publish-org-to-html
+           :publishing-function org-html-publish-to-html
            :headline-levels 3
-           :auto-preamble t
-           )
-          ("B-static"
-           :base-directory ,(expand-file-name "B/" *org-top-dir*)
+           :auto-preamble t)
+
+          ("journal-notes"
+           :base-directory ,(expand-file-name "jorunal/" *org-top-dir*)
+           :auto-index t
+           :index-filename "sitemap.org"
+           :index-title "Sitemap"
            :recursive t
-           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-           :publishing-directory ,(expand-file-name "B/html/" *org-generated-top-dir*)
-           :publishing-function org-publish-attachment)
+           :base-extension "org"
+           :publishing-directory ,(expand-file-name "journal/html/" *org-generated-top-dir*)
+           ;; :publishing-function org-publish-org-to-html
+           :publishing-function org-html-publish-to-html
+           :headline-levels 3
+           :with-section-numbers nil
+           :table-of-contents nil
+           :auto-preamble t
+           :auto-postamble nil)
 
-          ("B" :components ("inherit-org-info-js" "B-inherit" "B-notes" "B-static")))))
+          ("journal"
+           :base-extension "org"
+           :components ("inherit-org-info-js" "generic-inherit" "journal-notes" "generic-static"))
 
+          ("tasks-notes"
+           :base-directory ,(expand-file-name "tasks/" *org-top-dir*)
+           :auto-index t
+           :index-filename "sitemap.org"
+           :index-title "Sitemap"
+           :recursive t
+           :base-extension "org"
+           :publishing-directory ,(expand-file-name "tasks/html/" *org-generated-top-dir*)
+           ;; :publishing-function org-publish-org-to-html
+           :publishing-function org-html-publish-to-html
+           :headline-levels 3
+           :with-section-numbers nil
+           :table-of-contents nil
+           :auto-preamble t
+           :auto-postamble nil)
+
+          ("tasks"
+           :base-extension "org"
+           :components ("inherit-org-info-js" "generic-inherit" "tasks-notes" "generic-static")))))
 
 (provide 'publishing-config)
 ;;; publishing-config.el ends here

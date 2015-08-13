@@ -48,6 +48,7 @@
     (defun flymake-display-warning (warning)
       "Display a warning to the user, using lwarn"
       (message warning)))
+
   (deh-require-maybe flymake-cursor
     ;; http://www.emacswiki.org/emacs/flymake-cursor.el
     )

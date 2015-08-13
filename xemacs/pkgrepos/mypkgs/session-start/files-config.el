@@ -560,5 +560,61 @@ to do VC operation."
 ;;   (defun save-buffer-with-rcs ()
 ;;     ))
 
+
+(deh-section "recursive"
+  ;; url: http://turingmachine.org/bl/2013-05-29-recursively-listing-directories-in-elisp.html
+  ;;;
+  ;;; Recursively list files in a given directory
+  ;;;
+  ;;; Author:    daniel m german dmg at uvic dot ca
+  ;;; Copyright: daniel m german
+  ;;; License:   Same as Emacs
+  ;;;
+
+  ;; e.g.
+  ;; (directory-files-recursive "/home/dmg/git.dmg/projects" "\\.org$" 2 "\\(rip\\|stage\\)")
+
+  (defun directory-files-recursive (directory match maxdepth ignore &optional no-dir)
+    "List files in DIRECTORY and in its sub-directories.
+   Return files that match the regular expression MATCH but ignore
+   files and directories that match IGNORE (IGNORE is tested before MATCH. Recurse only
+   to depth MAXDEPTH. If zero or negative, then do not recurse"
+    (let* ((files-list '())
+           (current-directory-list
+            (directory-files directory t)))
+      ;; while we are in the current directory
+      (while current-directory-list
+        (let ((f (car current-directory-list)))
+          (cond
+            ((and
+              ignore ;; make sure it is not nil
+              (string-match ignore f))
+             ; ignore
+             nil
+             )
+            ((and
+              (file-regular-p f)
+              (file-readable-p f)
+              (string-match match f))
+             (setq files-list (cons f files-list))
+             )
+            ((and
+              (file-directory-p f)
+              (file-readable-p f)
+              (not (string-equal ".." (substring f -2)))
+              (not (string-equal "." (substring f -1)))
+              (> maxdepth 0))
+             ;; recurse only if necessary
+             (setq files-list (append files-list (directory-files-recursive f match (- maxdepth -1) ignore)))
+             (unless no-dir
+               (setq files-list (cons f files-list))))
+            (t)
+            )
+          )
+        (setq current-directory-list (cdr current-directory-list))
+        )
+      files-list
+      )))
+
 (provide 'files-config)
 ;;; files-config.el ends here

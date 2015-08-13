@@ -26,6 +26,41 @@
 
 ;;; Code:
 
+(deh-section "autoconfig"
+  (unless user-emacs-directory
+    (error "user-emacs-directory is not set"))
+
+  ;; (locate-user-emacs-file)
+
+  (defun auto-config-file (file-path)
+    (make-directory
+     (if (file-name-directory file-path)
+	 (expand-file-name
+	  (file-name-directory file-path)
+	  (expand-file-name "autoconfig" user-emacs-directory))
+       (expand-file-name "autoconfig" user-emacs-directory))
+     t)
+    (expand-file-name file-path (expand-file-name "autoconfig" user-emacs-directory)))
+
+  (defun simple-no-final-slash (s)
+    ;; Remove optional final slash from string S
+    (let ((l (1- (length s))))
+      (if (and (> l 0) (eq (aref s l) ?/))
+	  (substring s 0 l)
+	s)))
+
+  (defun auto-config-dir (dir-path &optional create-it)
+    (unless user-emacs-directory
+      (error "user-emacs-directory is not set"))
+    (make-directory
+     (if (if create-it dir-path (file-name-directory (simple-no-final-slash dir-path)))
+	 (expand-file-name
+	  (if create-it dir-path (file-name-directory (simple-no-final-slash dir-path)))
+	  (expand-file-name "autoconfig" user-emacs-directory))
+       (expand-file-name "autoconfig" user-emacs-directory))
+     t)
+    (expand-file-name dir-path (expand-file-name "autoconfig" user-emacs-directory))))
+
 (deh-featurep pcache
   (setq pcache-directory (auto-config-dir "var/pcache/" t)))
 
@@ -669,40 +704,6 @@ The indirect buffer can have another major mode."
     (insert-file-contents filePath)
     (buffer-string)))
 ;; thanks to “Pascal J Bourguignon” and “TheFlyingDutchman 〔zzbba…@aol.com〕”. 2010-09-02
-
-(unless user-emacs-directory
-  (error "user-emacs-directory is not set"))
-
-;; (locate-user-emacs-file)
-
-(defun auto-config-file (file-path)
-  (make-directory
-   (if (file-name-directory file-path)
-       (expand-file-name
-        (file-name-directory file-path)
-        (expand-file-name "autoconfig" user-emacs-directory))
-       (expand-file-name "autoconfig" user-emacs-directory))
-   t)
-  (expand-file-name file-path (expand-file-name "autoconfig" user-emacs-directory)))
-
-(defun simple-no-final-slash (s)
-  ;; Remove optional final slash from string S
-  (let ((l (1- (length s))))
-    (if (and (> l 0) (eq (aref s l) ?/))
-	(substring s 0 l)
-      s)))
-
-(defun auto-config-dir (dir-path &optional create-it)
-  (unless user-emacs-directory
-  (error "user-emacs-directory is not set"))
-  (make-directory
-   (if (if create-it dir-path (file-name-directory (simple-no-final-slash dir-path)))
-       (expand-file-name
-        (if create-it dir-path (file-name-directory (simple-no-final-slash dir-path)))
-        (expand-file-name "autoconfig" user-emacs-directory))
-       (expand-file-name "autoconfig" user-emacs-directory))
-   t)
-  (expand-file-name dir-path (expand-file-name "autoconfig" user-emacs-directory)))
 
 (provide 'misc-config)
 ;;; misc-config.el ends here

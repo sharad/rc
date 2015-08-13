@@ -36,6 +36,20 @@
     )
   (deh-require-maybe org-pua
     ;;http://www.emacswiki.org/emacs-es/org-pua.el
+    )
+
+  (deh-require-maybe annot
+    ;; TODO: After adding annotation add it to a org file with link back to place where annotation were added.
+    ;; it could help to search annotation when the original place is forgotten.
+    ;; https://code.google.com/p/annot/
+    ;; * [C-x a]    -  add a new annotation/highlight or edit an existing annotation on point.
+    ;;                 You can also use [C-x C-a]. (annot-edit/add)
+    ;; * [C-x r]    -  remove annotation at point. (annot-remove)
+    ;; * [C-x w]    -  insert an image at point. (annot-add-image)
+    (setq
+     ;; annot-image-directory
+     annot-directory (auto-config-dir "annot/" t)
+     annot-enable-symlinking t)
     ))
 
 

@@ -26,8 +26,11 @@
 
 
 (deh-require-maybe deft
-  (setq deft-extension "org"
-        deft-text-mode 'org-mode)
+  (setq
+   deft-directory (auto-config-dir "deft/" t)
+   deft-use-filename-as-title nil
+   deft-extension "org"
+   deft-text-mode 'org-mode)
   (add-hook 'sharad/enable-startup-interrupting-feature-hook 'deft t))
 
 (when (xrequire 'evernote-mode)

@@ -213,12 +213,13 @@
                          screens)))
                  (session-current-buffer-file
                   (cdr (assoc 'current-buffer-file session-list))))
-            ;;(when t
+            ;; (when t
             (testing
               (message "Bstart: session-current-screen-buffers %s" session-current-screen-buffers)
               (message "Astart: screen-to-name-alist %s" session-list)
               (message "Cstart: desktop-buffers %s" desktop-buffers))
 
+            ;; ready file for buffer in session-list, using desktop-restore methods
             (if desktop-buffers
                 ;; recreate desktop buffer if not present.
                 (let ((bufs (mapcar
@@ -248,48 +249,52 @@
                                   (length desktop-buffers) bufs))
                 (message "No desktop-buffers"))
 
-            (message "if screen: %s" screens)
+            ;; setup elscreens with buffers
             (while screens
-                ;; (setq screen (caar screens))
-                ;; (setq buff-files (cdar screens))
-                (let* ((screen     (caar screens))
-                       (buff-files (cdar screens))
-                       (buff-file  (car buff-files))
-                       (file-path  (if (consp buff-file)
-                                       (cdr buff-file)))
-                       (buff (or (if file-path
-                                    (find-buffer-visiting file-path))
-                                 (if (consp buff-file)
-                                     (car buff-file)
-                                     buff-file))))
-                  (message "if screen: %s buffer: %s buff: %s file-path: %s" screen buff-files buff file-path)
-                  (if (when (bufferp (get-buffer buff))
-                        ;; (message "if screen: %s buffer: %s" screen buff-files)
-                        (if (eq screen 0) ;; (eq (elscreen-get-current-screen) 0)
+              (message "while screen: %s" screens)
+              ;; (setq screen (caar screens))
+              ;; (setq buff-files (cdar screens))
+              (let* ((screen         (caar screens))
+                     (buff-files     (cdar screens))
+                     (not-first-buff nil))
+
+                (while buff-files
+
+                  (unless (eq screen 0)
+                    (elscreen-create))
+
+                  (let* ((buff-file  (car buff-files))
+                         (file-path  (if (consp buff-file)
+                                         (cdr buff-file)))
+                         (buff (or (if file-path
+                                       (find-buffer-visiting file-path))
+                                   (if (consp buff-file)
+                                       (car buff-file)
+                                       buff-file))))
+                    (message "  while buff: %s file-path: %s" buff file-path)
+                    (if (get-buffer buff) ;check once for if buff is here or not.
+                        (if not-first-buff
+                            (switch-to-buffer-other-window buff)
                             (switch-to-buffer buff)
-                            (elscreen-find-and-goto-by-buffer buff t t))
-                        (cdr buff-files))
-                      (while (cdr buff-files)
-                        (let* ((buff-files (cdar screens))
-                               (buff-file  (car buff-files))
-                               (file-path  (if (consp buff-file)
-                                               (cdr buff-file)))
-                               (buff (or (if file-path
-                                             (find-buffer-visiting file-path))
-                                         (if (consp buff-file)
-                                             (car buff-file)
-                                             buff-file))))
-                          (testing (message "while: screen: %s buffer: %s" screen buff))
-                          (switch-to-buffer-other-window buff))
-                        (setq buff-files (cdr buff-files)))
-                      (testing (message "else"))))
-                (setq screens (cdr screens)))
+                            (setq not-first-buff t)))
+
+                    (message "test4"))
+
+                  (setq buff-files (cdr buff-files)))
+
+                  (message "progn buff-files: %s" buff-files)
+                  (testing (message "else")))
+
+              (setq screens (cdr screens)
+              (message "while screen: %s" screens))
+              (message "test5"))
 
             ;; (when elscreen-session-restore-create-scratch-buffer
             ;;   (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
 
             (when nil (elscreen-create))                 ;trap
 
+            ;; set current screen, window, and buffer.
             (let* ((file-path  (if (consp session-current-buffer-file)
                                    (cdr session-current-buffer-file)))
                    (buff (or (if file-path
@@ -559,12 +564,12 @@
             (message-notify
              "frame-session-restore"
              "not restoring screen session.")
-            (if (null *desktop-vc-read-inpgrogress*)
+            (if *desktop-vc-read-inpgrogress*
                 (message-notify
                  "frame-session-restore"
                  "as desktop restore is in progress *desktop-vc-read-inpgrogress* %s"
                  *desktop-vc-read-inpgrogress*))
-            (if *frame-session-restore*
+            (if (null *frame-session-restore*)
                 (message-notify
                  "frame-session-restore"
                  "as another frame session restore in progress *frame-session-restore* %s"
@@ -597,6 +602,8 @@
                 (add-hook 'after-make-frame-functions '(lambda (nframe) (frame-session-restore nframe t)) t)
                 (add-hook 'delete-frame-functions 'frame-session-save)
                 ;; (add-hook 'kill-emacs-hook 'save-all-frames-session)) ; done in save-all-sessions-auto-save
+                ;; t
+                )
               t)
 
   (testing
@@ -605,10 +612,7 @@
      delete-frame-functions
      *sharad/after-init-hook*
      ))
-
-
   ;;}}
-  )
 
 
 (deh-require-maybe desktop
@@ -1075,7 +1079,9 @@ If there are no buffers left to create, kill the timer."
                             (message-notify "sharad/desktop-session-restore" "desktop loaded successfully :)")
                             (sharad/enable-session-saving)
                             (message-notify "sharad/desktop-session-restore" "Do you want to set session of frame? ")
-                            (when (y-or-n-p "Do you want to set session of frame? ")
+                            (when (y-or-n-p-with-timeout
+                                   "Do you want to set session of frame? "
+                                   10 t)
                               (let ((*frame-session-restore* t))
                                 (frame-session-restore (selected-frame)))))
                           (progn
@@ -1107,7 +1113,7 @@ If there are no buffers left to create, kill the timer."
                                        *desktop-save-filename*))
                   (sharad/enable-session-saving)))
             (let ((enable-recursive-minibuffers t))
-              (when t ;(y-or-n-p "Do you want to set session of frame? ")
+              (when t ;(y-or-n-p-with-timeout "Do you want to set session of frame? " 7 t)
                 (frame-session-restore (selected-frame) t)))
             (message-notify "sharad/desktop-session-restore" "leaving sharad/desktop-session-restore")))))
 

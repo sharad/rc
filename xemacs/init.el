@@ -19,12 +19,14 @@
   (require 'cl nil nil))
 
 (eval-after-load "server"
-  '(defadvice server-create-window-system-frame
-      (around nocreate-in-init activate)
-    "remove-scratch-buffer"
-    (if *emacs-in-init*
-        (message "loading init now.")
-        ad-do-it)))
+  '(progn
+    ;; server-auth-dir (auto-config-dir "server" t)
+    (defadvice server-create-window-system-frame
+     (around nocreate-in-init activate)
+     "remove-scratch-buffer"
+     (if *emacs-in-init*
+         (message "loading init now.")
+         ad-do-it))))
 
 (require 'macros-config      "~/.xemacs/pkgrepos/mypkgs/session-start/macros-config.el")
 (require 'basic-utils-config "~/.xemacs/pkgrepos/mypkgs/session-start/basic-utils-config.el")
@@ -51,6 +53,14 @@
 
 
 
+
+    (mapc
+     '(lambda (dir)
+       (add-to-list 'load-path dir t))  ;auto-install at end as they are generally outdated.
+     `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
+       "~/.osetup/info.d/common/elisp"
+       ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp"))))
+
     ;; (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/world")
     (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/mypkgs")
     (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/elpa")
@@ -58,14 +68,6 @@
                 'file-directory-p
                 (directory-files "~/.xemacs/pkgrepos/world/" t "[a-zA-Z]+")))
       (package-dir-add-to-loadpath d t))
-
-
-    (mapc
-     '(lambda (dir)
-       (add-to-list 'load-path dir))
-     `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
-       "~/.osetup/info.d/common/elisp"
-       ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp"))))
 
   (deh-section "byte-compile"                                ;byte compile
     (defun package-dir-byte-compile (package-dir)
@@ -92,15 +94,18 @@
 (when (require 'cl nil) ; a rare necessary use of REQUIRE
   ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
   (defvar *emacs-load-start* (current-time)))
+
+(defconst *work-dir* "~/\.\./paradise")
 ;;
 
+(require 'dot-emacs-helper nil nil)
+(require 'basic-config)
 (require 'general-testing)
-(require 'common-info nil nil)
+(require 'common-info nil t)
 (require 'auto-load-config)
 (require 'macros-config)
-(require 'basic-config)
 (require 'basic-utils-config)
-(require 'dot-emacs-helper nil nil)
+
 
 (deh-section "custom setup"
  (defvar custom-override-file "~/.xemacs/hand-custom.el" "Hand Custom elisp")
@@ -113,7 +118,7 @@
 
 (deh-require-maybe server
   (setq
-   server-auth-dir (auto-config-dir "server" t)
+   ;; server-auth-dir (auto-config-dir "server" t)
    server-use-tcp t
    server-name (or (getenv "EMACS_SERVER_NAME") server-name))
   (setq server-host (system-name))
@@ -134,7 +139,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; load all files present in ~/\.xemacs/session-start\.d directory.
-(defconst *work-dir* "~/\.\./paradise")
 
 
 (require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/session-start")

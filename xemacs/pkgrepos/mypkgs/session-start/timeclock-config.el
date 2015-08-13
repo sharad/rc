@@ -66,10 +66,9 @@
   "Some additional set-up (timeclock-x squared?).
 Creates a ~/.timeclock/default.log if it doesn't exist already."
   (interactive)
-  (let* (  (location (substitute-in-file-name "$HOME/.timeclock"))
-           (log-file-base "default.log")
-           (log-file (concat location "/" log-file-base))
-          )
+  (let* ((location (substitute-in-file-name "$HOME/.timeclock"))
+         (log-file-base "default.log")
+         (log-file (concat location "/" log-file-base)))
 
     (unless (file-exists-p location)
       (make-directory location t))
@@ -79,15 +78,15 @@ Creates a ~/.timeclock/default.log if it doesn't exist already."
         (switch-to-buffer log-file t)
         (write-file log-file t) ;; additional safety: ask for confirmation on over-write
         (kill-buffer log-file-base)
-        )))
-  )
+        ))))
 
-(timeclock-additional-setup)
-(timeclock-initialize)
-(timeclock-setup-keys)
-
-;; (timeclock-modeline-display 1) ;; if you want modline display
-(timeclock-mode-line-display 1)
+(defun timeclock-x-initialize ()
+  (interactive)
+  (timeclock-additional-setup)
+  (timeclock-initialize)
+  (timeclock-setup-keys)
+ ;; (timeclock-modeline-display 1) ;; if you want modline display
+ (timeclock-mode-line-display 1))
 
 
 
@@ -115,27 +114,20 @@ Summarizes the data in the timeclock log."
 (defun timeclock-display-project-names  ()
   "Displays project names in use in the timeclock log."
   (interactive)
-  (let* ( (command "~/bin/timeclock_project_names")
-          (report (shell-command-to-string command) )
-         )
+  (let* ((command "~/bin/timeclock_project_names")
+         (report (shell-command-to-string command)))
+    (delete-other-windows)
+    (split-window-vertically)
+    (other-window 1)
+    (switch-to-buffer "*timeclock projects*")
+    (mark-whole-buffer)
+    (delete-region (mark) (point))
+    (insert report)
+    (set-mark-command (point)) ; just want to deactivate region
 
-  (interactive)
-  (delete-other-windows)
-  (split-window-vertically)
-  (other-window 1)
-  (switch-to-buffer "*timeclock projects*")
-  (mark-whole-buffer)
-  (delete-region (mark) (point))
-
-  (insert report)
-
-  (set-mark-command (point)) ; just want to deactivate region
-
-;; TODO switch to an appropriate mode
-;;  (mh-folder-list-mode)
-
-    )
-  )
+    ;; TODO switch to an appropriate mode
+    ;;  (mh-folder-list-mode)
+    ))
 
 ;; (global-set-key "\C-xtN" 'timeclock-display-project-names)
 ;; (global-set-key "\C-ctN" 'timeclock-display-project-names)
