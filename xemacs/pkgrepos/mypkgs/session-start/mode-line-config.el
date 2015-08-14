@@ -28,7 +28,12 @@
 ;; mode-line-format
 
 (setq global-mode-string
-      '("" win:mode-string " " display-time-string " " appt-mode-string))
+      ;; '("" win:mode-string " " display-time-string " " appt-mode-string)
+      '(org-mode-line-string
+        org-mode-work-day-mode-line-string
+        win:mode-string
+        display-time-string
+        appt-mode-string))
 
 
 (deh-section "ModeLineDirtrack"
@@ -40,22 +45,23 @@
 
 ;; http://stackoverflow.com/questions/778508/emacs-add-hostname-to-mode-line
 (let ((pos (cddr (memq 'mode-line-modes mode-line-format))))
-  (setcdr pos
-          (cons
-           '(:eval
-             (if (frame-parameter (selected-frame) 'frame-spec-id)
-                 (concat
-                  " "
-                  (frame-parameter (selected-frame) 'frame-spec-id)
-                  (unless (sharad/check-session-saving)
-                    " noAutoSave"))))
-            (cons
-             '(:eval
-               (if (car sidebrain-current-stack)
-                   (concat
-                    " "
-                    (car sidebrain-current-stack))))
-             (cdr pos)))))
+  (if pos
+      (setcdr pos
+              (cons
+               '(:eval
+                 (if (frame-parameter (selected-frame) 'frame-spec-id)
+                     (concat
+                      " "
+                      (frame-parameter (selected-frame) 'frame-spec-id)
+                      (unless (sharad/check-session-saving)
+                        " noAutoSave"))))
+               (cons
+                '(:eval
+                  (if (car sidebrain-current-stack)
+                      (concat
+                       " "
+                       (car sidebrain-current-stack))))
+                (cdr pos))))))
 
 
 (deh-require 'scroll-mode-line-mode
@@ -255,73 +261,108 @@ want to use in the modeline *in lieu of* the original.")
 
                      ))
 
+(when nil
 (deh-section "Mode Line Dynamic Add"
   (require 'tree)
-  (defvar *mode-line-tree*
-    nil "Mode line tree")
+  (defvar *mode-line-tree* nil "Mode line tree")
+
+  (defun setup-mode-line ()
+    (interactive)
+    (let ((mode-line-help
+           "mouse-1: Select (drag to resize)\nmouse-2: Make current window occupy the whole frame\nmouse-3: Remove current window from display")
+          (separator "--")
+          (gap-white-space ""))
+      (setq *mode-line-tree* nil)
+      (setf (tree-node* *mode-line-tree* 1 1) "%e")
+      (setf (tree-node* *mode-line-tree* 1 2)
+            '((winring-show-names
+               ("<" winring-name "> "))
+              #("-" 0 1
+                (help-echo
+                 mode-line-help))))
+      (setf (tree-node* *mode-line-tree* 1 3) 'mode-line-mule-info)
+      (setf (tree-node* *mode-line-tree* 1 4) 'mode-line-client)
+      (setf (tree-node* *mode-line-tree* 1 5) 'mode-line-modified)
+      (setf (tree-node* *mode-line-tree* 1 6) 'mode-line-remote)
+      (setf (tree-node* *mode-line-tree* 1 7) 'mode-line-frame-identification)
+      (setf (tree-node* *mode-line-tree* 1 8) 'mode-line-buffer-identification)
+      (setf (tree-node* *mode-line-tree* 1 9) (org-propertize gap-white-space 'help-echo mode-line-help))
+      (setf (tree-node* *mode-line-tree* 1 10) 'mode-line-position)
+
+      (setf (tree-node* *mode-line-tree* 2 1)  `(elscreen-display-screen-number (,gap-white-space elscreen-e21-mode-line-string)))
+      (setf (tree-node* *mode-line-tree* 2 2) '(vc-mode vc-mode))
+      (setf (tree-node* *mode-line-tree* 2 3) (org-propertize gap-white-space 'help-echo mode-line-help))
+      (setf (tree-node* *mode-line-tree* 2 4) 'mode-line-modes)
+      (setf (tree-node* *mode-line-tree* 2 5) `(which-func-mode (,gap-white-space which-func-format ,(org-propertize separator 'help-echo mode-line-help))))
+      (setf (tree-node* *mode-line-tree* 2 6) `(global-mode-string (,gap-white-space global-mode-string ,(org-propertize separator 'help-echo mode-line-help))))
+
+      (setf (tree-node* *mode-line-tree* 2 7) `(:eval
+                                                (apply
+                                                 'concat
+                                                 (append
+                                                  (mapcar
+                                                   #'(lambda (e)
+                                                       (cond
+                                                         ((stringp e) e)
+                                                         ((and (symbolp e) (boundp e) (stringp (symbol-value e))) (symbol-value e))
+                                                         ((and (symbolp e) (fboundp e)) (funcall (symbol-function e)))
+                                                         (t "")))
+                                                   (append global-mode-line-list (list ,(org-propertize separator 'help-echo mode-line-help))))))))
+
+      (setf (tree-node* *mode-line-tree* 2 8) `(:eval
+                                                (if (frame-parameter (selected-frame) 'frame-spec-id)
+                                                    (concat ,gap-white-space
+                                                            (frame-parameter (selected-frame) 'frame-spec-id)
+                                                            (unless (sharad/check-session-saving) (concat ,gap-white-space "noAutoSave"))))))
+      ;;    (setf (tree-node* *mode-line-tree* 2 9) '(:eval (if (car sidebrain-current-stack) (concat " " (car sidebrain-current-stack)))))
+      (setf (tree-node* *mode-line-tree* 2 9) (org-propertize  "-%-" 'help-echo mode-line-help))
 
 
 
-  (setf (tree-node* *mode-line-tree* 1 1) "%e")
-  (setf (tree-node* *mode-line-tree* 1 2)
-        '((winring-show-names
-           ("<" winring-name "> "))
-          #("-" 0 1
-            (help-echo
-             "mouse-1: Select (drag to resize)\nmouse-2: Make current window occupy the whole frame\nmouse-3: Remove current window from display"))))
-  (setf (tree-node* *mode-line-tree* 1 3) 'mode-line-mule-info)
-  (setf (tree-node* *mode-line-tree* 1 4) 'mode-line-client)
-  (setf (tree-node* *mode-line-tree* 1 5) 'mode-line-modified)
-  (setf (tree-node* *mode-line-tree* 1 6) 'mode-line-remote)
-  (setf (tree-node* *mode-line-tree* 1 7) 'mode-line-frame-identification)
-  (setf (tree-node* *mode-line-tree* 1 8) 'mode-line-buffer-identification)
-  (setf (tree-node* *mode-line-tree* 1 9) #("   " 0 3
-                                            (help-echo
-                                             "mouse-1: Select (drag to resize)\nmouse-2: Make current window occupy the whole frame\nmouse-3: Remove current window from display")))
+      (setq-default
+       mode-line-format
+       (reverse
+        (mapcar 'cdr
+                (apply 'append (mapcar 'cddr
+                                       *mode-line-tree*)))))))
+
+
+  ;; (setq mode-line-format-original mode-line-format)
+
+  ;; global-mode-string
+
+  ;; (setq
+  ;;  global-mode-line-list
+  ;;  '("" win:mode-string " " display-time-string " " org-mode-work-day-mode-line-string appt-mode-string))
+
+  ;; (setq
+  ;;  global-mode-line-list
+  ;;  '(org-mode-work-day-mode-line-string))
+
+
+  ;; (apply
+  ;;  'concat
+  ;;  (mapcar
+  ;;   #'(lambda (e)
+  ;;       (cond
+  ;;         ((stringp e) e)
+  ;;         ((and (symbolp e) (boundp e) (stringp (symbol-value e))) (symbol-value e))
+  ;;         ((and (symbolp e) (fboundp e)) (funcall (symbol-function e)))
+  ;;         (t "")))
+  ;;   global-mode-line-list))
 
 
 
-  (setf (tree-node* *mode-line-tree* 1 10) 'mode-line-position)
-  (setf (tree-node* *mode-line-tree* 1 2)  '(elscreen-display-screen-number
-                                             (" " elscreen-e21-mode-line-string)))
-  (setf (tree-node* *mode-line-tree* 1 3) '(vc-mode vc-mode))
-  (setf (tree-node* *mode-line-tree* 1 4) #("  " 0 2
-                                            (help-echo "mouse-1: Select (drag to resize)\nmouse-2: Make current window occupy the whole frame\nmouse-3: Remove current window from display")))
-  (setf (tree-node* *mode-line-tree* 1 5) 'mode-line-modes)
-  (setf (tree-node* *mode-line-tree* 1 6) '(which-func-mode
-                                            ("" which-func-format
-                                             #("--" 0 2
-                                               (help-echo "mouse-1: Select (drag to resize)\nmouse-2: Make current window occupy the whole frame\nmouse-3: Remove current window from display")))))
-  (setf (tree-node* *mode-line-tree* 1 7) '(global-mode-string
-                                            ("" global-mode-string
-                                             #("--" 0 2
-                                               (help-echo "mouse-1: Select (drag to resize)\nmouse-2: Make current window occupy the whole frame\nmouse-3: Remove current window from display")))))
-  (setf (tree-node* *mode-line-tree* 1 8) '(:eval
-                                            (if
-                                             (frame-parameter
-                                              (selected-frame)
-                                              'frame-spec-id)
-                                             (concat " "
-                                                     (file-name-nondirectory
-                                                      (frame-parameter
-                                                       (selected-frame)
-                                                       'frame-spec-id))
-                                                     (unless
-                                                         (sharad/check-session-saving)
-                                                       " noAutoSave")))))
-  (setf (tree-node* *mode-line-tree* 1 8) '(:eval
-                                            (if
-                                             (car sidebrain-current-stack)
-                                             (concat " "
-                                                     (car sidebrain-current-stack)))))
-  (setf (tree-node* *mode-line-tree* 1 10) #("-%-" 0 3
-                                            (help-echo "mouse-1: Select (drag to resize)\nmouse-2: Make current window occupy the whole frame\nmouse-3: Remove current window from display")))
 
 
 
-  ;; (get-tree-leaves *mode-line-tree*)
-  )
 
+  ;; (reverse (tree-leaves *mode-line-tree* 2))
+
+  ))
+
+
+; (setq mode-line-format default-mode-line-format)
 
 
 (provide 'mode-line-config)

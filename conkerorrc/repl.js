@@ -6,16 +6,31 @@
 // to your rc. The preference method will require an additional
 // restart. The longer method allows you to easily customize the port.
 
-user_pref('extensions.mozrepl.autoStart', true);
+
+
+user_pref('extensions.mozrepl.autoStart', false);
+session_pref('extensions.mozrepl.autoStart', false);
+// default port value is 4242 but it is used juniper VPN.
+// so can not use it.
 user_pref('extensions.mozrepl.port', 4747);
 session_pref('extensions.mozrepl.port', 4747);
+
+user_pref('extensions.mozrepl.loopbackOnly', true);
+session_pref('extensions.mozrepl.loopbackOnly', true);
 
 // Mozrepl
 //
 if ('@hyperstruct.net/mozlab/mozrepl;1' in Cc) {
   let mozrepl = Cc['@hyperstruct.net/mozlab/mozrepl;1']
     .getService(Ci.nsIMozRepl);
-  if (! mozrepl.isActive()) mozrepl.start(4747);
+
+  var topprefs     = Cc["@mozilla.org/preferences-service;1"]
+    .getService(Components.interfaces.nsIPrefService);
+  var mozpref      = topprefs.getBranch("extensions.mozrepl.");
+  var port         = mozpref.getIntPref('port')
+  var loopbackOnly = mozpref.getBoolPref('loopbackOnly')
+
+  if (! mozrepl.isActive()) mozrepl.start(port, loopbackOnly);
 }
 
 // 2.1.2. Environment Setup
@@ -58,3 +73,51 @@ let (mozrepl_init = get_home_directory()) {
 // }
 
 // this.enter(repl_context());
+
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// //_ . «MOZREPL» (to ".MOZREPL")
+// if ('@hyperstruct.net/mozlab/mozrepl;1' in Cc) {
+//   var mozrepl = Cc['@hyperstruct.net/mozlab/mozrepl;1']
+//     .getService(Ci.nsIMozRepl);
+//   if (! mozrepl.isActive()) mozrepl.start(4242);
+// }
+
+// let (mozrepl_init = get_home_directory()) {
+//     mozrepl_init.appendRelativePath(".mozrepl.js");
+//     session_pref('extensions.mozrepl.initUrl', make_uri(mozrepl_init).spec);
+// }
+////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////
+/**
+*mozrepl
+*/
+
+
+// if ('@hyperstruct.net/mozlab/mozrepl;1' in Components.classes)
+//     {
+// 	var mozrepl = Cc['@hyperstruct.net/mozlab/mozrepl;1']
+// 	    .getService(Components.interfaces.nsIMozRepl);
+// 	if (! mozrepl.isActive())
+// 	    mozrepl.start(4242);
+//     }
+
+
+// function repl_context() {
+//     var ctx = {};
+//     ctx.__proto__ = conkeror;
+//     ctx.conkeror = conkeror;
+//     ctx.window = window_watcher.activeWindow;
+//     ctx.buffer = ctx.window.buffers.current;
+//     ctx.document = ctx.buffer.document;
+//     return ctx;
+// }
+
+//end mozrepl
+////////////////////////////////////////////////////////////////////////////////////

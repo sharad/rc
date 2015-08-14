@@ -12,6 +12,7 @@
 ;; (define-key remem-command-map (kbd "h") 'remem-create-help-page)
 
 
+(require 'remem "~/.setup-trunk/xemacs/pkgrepos/autoinstalled/auto-install/remem.el")
 
 (deh-require-maybe remem
 

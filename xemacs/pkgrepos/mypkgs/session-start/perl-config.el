@@ -303,7 +303,27 @@
 (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
 
 ;; {{ http://www.emacswiki.org/emacs/PerlDevelopEnvironment#toc3
-(xrequire 'pde-load)
+(deh-require-maybe pde-load
+    (global-set-key "\C-m" 'newline-and-indent)
+    (global-set-key "\C-j" 'newline)
+    (global-set-key (kbd "M-'") 'just-one-space)
+    (global-set-key (kbd "C-M-=") 'pde-indent-dwim)
+    ;; nearest key to dabbrev-expand
+    ;; (global-set-key (kbd "M-;") 'hippie-expand)
+    ;; (global-set-key (kbd "C-;") 'comment-dwim)
+    (global-set-key "\C-cf" 'comint-dynamic-complete)
+    (global-set-key "\C-cs" 'compile-dwim-compile)
+    (global-set-key "\C-cr" 'compile-dwim-run)
+    (global-set-key "\C-ci" 'imenu)
+    (global-set-key "\C-cv" 'imenu-tree)
+    (global-set-key "\C-cj" 'ffap)
+    (global-set-key "\C-ch" 'help-dwim)
+    ;; TODO
+    ;; (global-set-key "\C-xan" 'tempo-forward-mark)
+    ;; (global-set-key "\C-xap" 'tempo-backward-mark)
+    ;; (global-set-key "\C-xam" 'tempo-complete-tag)
+    (global-set-key " " 'tempo-x-space)
+  )
 ;; }}
 
 (provide 'perl-config)

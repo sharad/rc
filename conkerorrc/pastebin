@@ -37,34 +37,6 @@ xkcd_add_title = true;
 
 
 
-/**
-*mozrepl
-*/
-
-
-if ('@hyperstruct.net/mozlab/mozrepl;1' in Components.classes)
-    {
-	var mozrepl = Cc['@hyperstruct.net/mozlab/mozrepl;1']
-	    .getService(Components.interfaces.nsIMozRepl);
-	if (! mozrepl.isActive())
-	    mozrepl.start(4242);
-    }
-
-
-function repl_context() {
-    var ctx = {};
-    ctx.__proto__ = conkeror;
-    ctx.conkeror = conkeror;
-    ctx.window = window_watcher.activeWindow;
-    ctx.buffer = ctx.window.buffers.current;
-    ctx.document = ctx.buffer.document;
-    return ctx;
-}
-
-//end mozrepl
-
-
-
 
 
 //you giant fucking Q
