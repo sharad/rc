@@ -17,56 +17,103 @@
     ;; http://orgmode.org/worg/org-gtd-etc.html
     (add-to-list 'org-modules 'org-timer)
     (add-to-list 'org-modules 'org-clock)
-    (setq
-     org-timer-default-timer 25
-     org-clock-persist-file  (auto-config-file "org/clock/org-clock-save.el")
-     org-log-note-clock-out t           ;excellent, great
-     org-clock-clocked-in-display 'both ;; ('mode-line 'frame-title 'both)
-     org-clock-idle-time 5 ;; minutes
-     org-clock-resolve-expert nil ;; good
-     org-clock-sound t ;; could be file name
-     ;; org-clock-current-task
-     ;; org-clock-heading
-     org-clock-history-length 100
-     ;; org-clock-marker
-     ;; org-clock-history
-     org-clock-persist t
-     ;; org-clock-out-switch-to-state ;; good
-     ;; org-clock-in-switch-to-state
-     org-clock-out-remove-zero-time-clocks t)
+    (deh-section "miscellaneous"
+     (setq
+      org-timer-default-timer 25
+      org-clock-persist-file  (auto-config-file "org/clock/org-clock-save.el")
+      org-log-note-clock-out t           ;excellent, great
+      org-clock-clocked-in-display 'both ;; ('mode-line 'frame-title 'both)
+      org-clock-idle-time 5 ;; minutes
+      org-clock-resolve-expert nil ;; good
+      org-clock-sound t ;; could be file name
+      ;; org-clock-current-task
+      ;; org-clock-heading
+      org-clock-history-length 100
+      ;; org-clock-marker
+      ;; org-clock-history
+      org-clock-persist t
+      ;; org-clock-out-switch-to-state ;; good
+      ;; org-clock-in-switch-to-state
+      org-clock-out-remove-zero-time-clocks t)
 
-    ;; (find
-    ;;   org-clock-leftover-time
-    ;;   org-clock-default-task ;; M-x org-clock-mark-default-task
-    ;;   M-x org-clock-select-task
-    ;; (org-clocking-buffer)
-    ;; (org-clock-sum-today)
-    ;; (org-clock-sum-custom nil 'today)
-    ;; (org-clock-is-active)
-    ;; )
+     ;; (find
+     ;;   org-clock-leftover-time
+     ;;   org-clock-default-task ;; M-x org-clock-mark-default-task
+     ;;   M-x org-clock-select-task
+     ;; (org-clocking-buffer)
+     ;; (org-clock-sum-today)
+     ;; (org-clock-sum-custom nil 'today)
+     ;; (org-clock-is-active)
+     ;; )
 
-    (add-hook 'org-clock-in-hook
-              (lambda ()
-                ;; if effort is not present tahnadd it.
-                (unless (org-entry-get nil "Effort")
-                  (org-set-effort))
-                ;; set timer
-                (when (not
-                       (and
-                        (boundp' org-timer-countdown-timer)
-                        org-timer-countdown-timer))
-                  (if (org-entry-get nil "Effort")
-                      (save-excursion
-                        (forward-line -2)
-                        (org-timer-set-timer nil))
-                      (call-interactively 'org-timer-set-timer)))))
+     (add-hook 'org-clock-in-hook
+               (lambda ()
+                 ;; if effort is not present tahnadd it.
+                 (unless (org-entry-get nil "Effort")
+                   (org-set-effort))
+                 ;; set timer
+                 (when (not
+                        (and
+                         (boundp' org-timer-countdown-timer)
+                         org-timer-countdown-timer))
+                   (if (org-entry-get nil "Effort")
+                       (save-excursion
+                         (forward-line -2)
+                         (org-timer-set-timer nil))
+                       (call-interactively 'org-timer-set-timer)))))
 
-    (add-hook 'org-clock-out-hook
-              (lambda ()
-                (if (and
-                     (boundp' org-timer-countdown-timer)
-                     org-timer-countdown-timer)
-                    (org-timer-stop))))
+     (add-hook 'org-clock-out-hook
+               (lambda ()
+                 (if (and
+                      (boundp' org-timer-countdown-timer)
+                      org-timer-countdown-timer)
+                     (org-timer-stop))))
+
+     (defun org-clock-in-if-not ()
+       (interactive)
+       (unless (org-clock-is-active)
+         ;; (org-clock-goto t)
+         (let (buffer-read-only)
+           (org-clock-in '(4)))))
+
+     (add-hook 'sharad/enable-startup-interrupting-feature-hook
+               '(lambda ()
+
+                 (add-hook 'after-make-frame-functions
+                  '(lambda (nframe)
+                    (org-clock-in-if-not)) t)
+
+                 (add-hook 'delete-frame-functions
+                  '(lambda (nframe)
+                    (if (and
+                         (org-clock-is-active)
+                         (y-or-n-p-with-timeout
+                          (format "Do you want to clock out current task %s: " org-clock-heading)
+                          7
+                          nil))
+                        (let (org-log-note-clock-out
+                              buffer-read-only)
+                          (org-clock-out)))))
+
+                 (if (fboundp 'org-clock-persistence-insinuate)
+                     (org-clock-persistence-insinuate)
+                     (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
+                 (if (fboundp 'org-clock-start-check-timer)
+                     (org-clock-start-check-timer)))
+
+               t)
+
+     (defmacro org-with-clock-position (clock &rest forms)
+       "Evaluate FORMS with CLOCK as the current active clock."
+       `(with-current-buffer (marker-buffer (car ,clock))
+          (save-excursion
+            (save-restriction
+              (widen)
+              (goto-char (car ,clock))
+              (beginning-of-line)
+              (let (buffer-read-only)
+                ,@forms)))))
+     ) ;; deh-section "miscellaneous"
 
     (deh-section "today time"
       (defvar org-clock-work-day-hours 8 "work day hours")
@@ -182,7 +229,7 @@ If not, show simply the clocked time like 01:50."
                 (org-minutes-to-clocksum-string (* org-clock-work-day-hours 60)))
                (clockstr (org-propertize
                           (concat  " ["
-                                   "%s/%s/%s/%s"
+                                   "%s %s/%s %s"
                                    "]"
                                    (if org-clock-work-day-msg
                                        (concat " (" (replace-regexp-in-string "%" "%%" org-clock-work-day-msg) ")")))
@@ -239,7 +286,7 @@ If not, show simply the clocked time like 01:50."
       (defun org-clock-work-day-mode-line-remove ()
         (interactive)
         (setq global-mode-string
-              (delq 'org-mode-work-day-line-string global-mode-string))
+              (delq 'org-mode-work-day-mode-line-string global-mode-string))
         (when org-mode-work-mode-line-timer
           (cancel-timer org-mode-work-mode-line-timer)
           (setq org-mode-work-mode-line-timer nil)))
@@ -258,51 +305,6 @@ If not, show simply the clocked time like 01:50."
     ;;      :tstart (car range)
     ;;      :tend   (cadr range)
     ;;      )))
-
-    (defun org-clock-in-if-not ()
-      (interactive)
-      (unless (org-clock-is-active)
-        ;; (org-clock-goto t)
-        (let (buffer-read-only)
-         (org-clock-in '(4)))))
-
-    (add-hook 'sharad/enable-startup-interrupting-feature-hook
-              '(lambda ()
-
-                (add-hook 'after-make-frame-functions
-                 '(lambda (nframe)
-                   (org-clock-in-if-not)) t)
-
-                (add-hook 'delete-frame-functions
-                 '(lambda (nframe)
-                   (if (and
-                        (org-clock-is-active)
-                        (y-or-n-p-with-timeout
-                         (format "Do you want to clock out current task %s: " org-clock-heading)
-                         7
-                         nil))
-                       (let (org-log-note-clock-out
-                             buffer-read-only)
-                         (org-clock-out)))))
-
-                (if (fboundp 'org-clock-persistence-insinuate)
-                    (org-clock-persistence-insinuate)
-                    (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
-                (if (fboundp 'org-clock-start-check-timer)
-                    (org-clock-start-check-timer)))
-
-              t)
-
-    (defmacro org-with-clock-position (clock &rest forms)
-      "Evaluate FORMS with CLOCK as the current active clock."
-      `(with-current-buffer (marker-buffer (car ,clock))
-         (save-excursion
-           (save-restriction
-             (widen)
-             (goto-char (car ,clock))
-             (beginning-of-line)
-             (let (buffer-read-only)
-              ,@forms)))))
 
     (deh-section "org clock timer checker"
 
@@ -362,25 +364,6 @@ If not, show simply the clocked time like 01:50."
          (when org-clock-check-timer-long
            (cancel-timer org-clock-check-timer-long)
            (setq org-clock-check-timer-long nil)))))
-
-    (when nil
-      (deh-section "correction org-clock.el"
-        (defun org-clock-notify-once-if-expired ()
-          "Show notification if we spent more time than we estimated before.
-Notification is shown only once."
-          (when (org-clocking-p)
-            (let ((effort-in-minutes (org-duration-string-to-minutes org-clock-effort))
-                  (clocked-time (org-clock-get-clocked-time)))
-              (if (setq org-clock-task-overrun
-                        (if (or (null effort-in-minutes) (zerop effort-in-minutes))
-                            nil
-                            (>= clocked-time effort-in-minutes)))
-                  (unless org-clock-notification-was-shown
-                    (setq org-clock-notification-was-shown t)
-                    (org-notify
-                     (format "Task '%s' should be finished by now. (%s)"
-                             org-clock-heading org-clock-effort) org-clock-sound))
-                  (setq org-clock-notification-was-shown nil)))))))
 
     (deh-section "correction org-timer.el"
       (defun org-timer-set-timer (&optional opt)
