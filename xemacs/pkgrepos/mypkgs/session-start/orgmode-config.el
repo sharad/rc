@@ -149,6 +149,11 @@
         "Face used for clock display in mode line."
         :group 'org-faces)
 
+      (defface org-mode-line-wday-underrun
+          '((t (:inherit mode-line :foreground "Green")))
+        "Face used for clock display for overrun tasks in mode line."
+        :group 'org-faces)
+
       (defface org-mode-line-wday-overrun
           '((t (:inherit mode-line :background "red")))
         "Face used for clock display for overrun tasks in mode line."
@@ -159,12 +164,14 @@
 
 
       (setq
-       org-work-day-face         'org-mode-line-wday
-       org-work-day-face-overrun 'org-mode-line-wday-overrun)
+       org-work-day-face          'org-mode-line-wday
+       org-work-day-face-underrun 'org-mode-line-wday-underrun
+       org-work-day-face-overrun  'org-mode-line-wday-overrun)
 
-      (setq
-       org-work-day-face         'org-mode-line-clock
-       org-work-day-face-overrun 'org-mode-line-clock-overrun)
+      ;; (setq
+      ;;  org-work-day-face          'org-mode-line-clock
+      ;;  org-work-day-face-underrun 'org-mode-line-wday-overrun
+      ;;  org-work-day-face-overrun  'org-mode-line-clock-overrun)
 
       (setq org-clock-monitor-files
             (list
@@ -252,8 +259,8 @@ If not, show simply the clocked time like 01:50."
                (work-done-str
                 (org-propertize
                  today-dur-left-str
-                 'face (if nil ;; (< today-dur-left-sec work-day-left-secs) ;; t ;; org-clock-task-overrun
-                           org-work-day-face
+                 'face (if (< today-dur-left-sec work-day-left-secs) ;; t ;; org-clock-task-overrun
+                           org-work-day-face-underrun
                            org-work-day-face-overrun)))
                (work-day-time-str
                 (org-minutes-to-clocksum-string (* org-clock-work-day-hours 60)))
