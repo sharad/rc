@@ -665,7 +665,27 @@
 
           ("tasks"
            :base-extension "org"
-           :components ("inherit-org-info-js" "generic-inherit" "tasks-notes" "generic-static")))))
+           :components ("inherit-org-info-js" "generic-inherit" "tasks-notes" "generic-static"))
+
+          ("notes-notes"
+           :base-directory ,(expand-file-name "notes/" *org-top-dir*)
+           :auto-index t
+           :index-filename "sitemap.org"
+           :index-title "Sitemap"
+           :recursive t
+           :base-extension "org"
+           :publishing-directory ,(expand-file-name "notes/html/" *org-generated-top-dir*)
+           ;; :publishing-function org-publish-org-to-html
+           :publishing-function org-html-publish-to-html
+           :headline-levels 3
+           :with-section-numbers nil
+           :table-of-contents nil
+           :auto-preamble t
+           :auto-postamble nil)
+
+          ("notes"
+           :base-extension "org"
+           :components ("inherit-org-info-js" "generic-inherit" "notes-notes" "generic-static")))))
 
 (provide 'publishing-config)
 ;;; publishing-config.el ends here

@@ -4,7 +4,7 @@
 ;; Author: Kahlil (Kal) HODGSON <dorge@tpg.com.au>
 ;; Keywords: convenience, data
 ;; X-URL: http://www.emacswiki.org/elisp/timeclock-x.el
-;; Time-stamp: <2015-08-10 01:37:33 s>
+;; Time-stamp: <2015-08-15 16:21:49 s>
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -207,7 +207,7 @@ whenever you clock out or change project."
     (define-key sup-t-map "th" 'timeclock-pop-up-help)
     (define-key sup-t-map "ts" 'timeclock-status-string)
     (define-key sup-t-map "tv" 'timeclock-visit-timelog)
-    (define-key sup-t-map "tp" 'timeclock-toggle-query-project))
+    (define-key sup-t-map "tp" 'timeclock-toggle-query-project)))
 
 (defun timeclock-pop-up-help ()
   "Display a helpful non-technical usage message for the timeclock package."

@@ -261,10 +261,13 @@ want to use in the modeline *in lieu of* the original.")
 
                      ))
 
-(when nil
+;;(when t
 (deh-section "Mode Line Dynamic Add"
   (require 'tree)
   (defvar *mode-line-tree* nil "Mode line tree")
+
+
+  (defvar global-mode-line-list nil "global-mode-line-list")
 
   (defun setup-mode-line ()
     (interactive)
@@ -303,10 +306,10 @@ want to use in the modeline *in lieu of* the original.")
                                                   (mapcar
                                                    #'(lambda (e)
                                                        (cond
-                                                         ((stringp e) e)
-                                                         ((and (symbolp e) (boundp e) (stringp (symbol-value e))) (symbol-value e))
-                                                         ((and (symbolp e) (fboundp e)) (funcall (symbol-function e)))
-                                                         (t "")))
+                                                         ((stringp e)   e)
+                                                         ((and (symbolp e) (boundp e) (stringp (symbol-value e)))   (symbol-value e))
+                                                         ;; ((and (symbolp e) (fboundp e)) (funcall (symbol-function e)))
+                                                         (t   "")))
                                                    (append global-mode-line-list (list ,(org-propertize separator 'help-echo mode-line-help))))))))
 
       (setf (tree-node* *mode-line-tree* 2 8) `(:eval
@@ -314,42 +317,51 @@ want to use in the modeline *in lieu of* the original.")
                                                     (concat ,gap-white-space
                                                             (frame-parameter (selected-frame) 'frame-spec-id)
                                                             (unless (sharad/check-session-saving) (concat ,gap-white-space "noAutoSave"))))))
-      ;;    (setf (tree-node* *mode-line-tree* 2 9) '(:eval (if (car sidebrain-current-stack) (concat " " (car sidebrain-current-stack)))))
-      (setf (tree-node* *mode-line-tree* 2 9) (org-propertize  "-%-" 'help-echo mode-line-help))
+      (setf (tree-node* *mode-line-tree* 2 9) '(:eval (if (car sidebrain-current-stack) (concat " " (car sidebrain-current-stack)))))
+      (setf (tree-node* *mode-line-tree* 2 10) (org-propertize  "-%-" 'help-echo mode-line-help)))
 
 
 
-      (setq-default
-       mode-line-format
-       (reverse
-        (mapcar 'cdr
-                (apply 'append (mapcar 'cddr
-                                       *mode-line-tree*)))))))
+    (setq-default
+     mode-line-format
+     (reverse
+      (mapcar 'cdr
+              (apply 'append (mapcar 'cdr
+                                     *mode-line-tree*))))))
 
 
   ;; (setq mode-line-format-original mode-line-format)
 
-  ;; global-mode-string
+  (defvar mode-line-format-original nil)
+  (setq mode-line-format-original mode-line-format)
+  (setup-mode-line)
 
-  ;; (setq
-  ;;  global-mode-line-list
-  ;;  '("" win:mode-string " " display-time-string " " org-mode-work-day-mode-line-string appt-mode-string))
-
-  ;; (setq
-  ;;  global-mode-line-list
-  ;;  '(org-mode-work-day-mode-line-string))
+  )
+;; )
 
 
-  ;; (apply
-  ;;  'concat
-  ;;  (mapcar
-  ;;   #'(lambda (e)
-  ;;       (cond
-  ;;         ((stringp e) e)
-  ;;         ((and (symbolp e) (boundp e) (stringp (symbol-value e))) (symbol-value e))
-  ;;         ((and (symbolp e) (fboundp e)) (funcall (symbol-function e)))
-  ;;         (t "")))
-  ;;   global-mode-line-list))
+                                        ; (setq mode-line-format default-mode-line-format)
+;; global-mode-string
+
+;; (setq
+;;  global-mode-line-list
+;;  '("" win:mode-string " " display-time-string " " org-mode-work-day-mode-line-string appt-mode-string))
+
+;; (setq
+;;  global-mode-line-list
+;;  '(org-mode-work-day-mode-line-string))
+
+
+;; (apply
+;;  'concat
+;;  (mapcar
+;;   #'(lambda (e)
+;;       (cond
+;;         ((stringp e) e)
+;;         ((and (symbolp e) (boundp e) (stringp (symbol-value e))) (symbol-value e))
+;;         ((and (symbolp e) (fboundp e)) (funcall (symbol-function e)))
+;;         (t "")))
+;;   global-mode-line-list))
 
 
 
@@ -358,11 +370,6 @@ want to use in the modeline *in lieu of* the original.")
 
 
   ;; (reverse (tree-leaves *mode-line-tree* 2))
-
-  ))
-
-
-; (setq mode-line-format default-mode-line-format)
 
 
 (provide 'mode-line-config)

@@ -285,8 +285,8 @@
                   (message "progn buff-files: %s" buff-files)
                   (testing (message "else")))
 
-              (setq screens (cdr screens)
-              (message "while screen: %s" screens))
+              (setq screens (cdr screens))
+              (message "while screen: %s" screens)
               (message "test5"))
 
             ;; (when elscreen-session-restore-create-scratch-buffer
@@ -853,7 +853,7 @@ Also returns nil if pid is nil."
                (eq owner (emacs-pid))
                ;; TODO: it was mean to be used as non-obtrusive and non-interctive
                (y-or-n-p (format
-                          "You %d are not the desktop owner %d\nOverwrite existing desktop (might be it was not restore properly at startup)? "
+                          "Your pid %d are not same as the desktop owner pid %d\nOverwrite existing desktop (might be it was not restore properly at startup)? "
                           (emacs-pid) owner)))
               (desktop-vc-save *desktop-save-filename*)
               ;; (desktop-save-in-desktop-dir)
@@ -863,9 +863,13 @@ Also returns nil if pid is nil."
                 (error "You %d are not the desktop owner %d. removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook by calling M-x sharad/disable-session-saving"
                        (emacs-pid) owner))))))
 
-  (defcustom save-all-sessions-auto-save-idle-time-interval 7 "save all sessions auto save idle time interval")
+  (defcustom save-all-sessions-auto-save-idle-time-interval 7
+    "save all sessions auto save idle time interval"
+    :group 'session)
   (defvar save-all-sessions-auto-save-idle-time-interval-dynamic 7 "save all sessions auto save idle time interval dynamic.")
-  (defcustom save-all-sessions-auto-save-time-interval (* 20 60) "save all sessions auto save time interval")
+  (defcustom save-all-sessions-auto-save-time-interval (* 20 60)
+    "save all sessions auto save time interval"
+    :group 'session)
   (defvar save-all-sessions-auto-save-time (current-time) "save all sessions auto save time")
   (defvar session-debug-on-error nil "session-debug-on-error")
 
@@ -1181,8 +1185,10 @@ It returns t if a desktop file was loaded, nil otherwise."
             (if (and owner
                      (memq desktop-load-locked-desktop '(nil ask))
                      (or (null desktop-load-locked-desktop)
-                         (not (y-or-n-p (format "Warning: desktop file appears to be in use by PID %s.\n\
-Using it may cause conflicts.  Use it anyway? " owner)))))
+                         (not (y-or-n-p
+                               (format
+                                "Warning: desktop file appears to be in use by PID %s.\nUsing it may cause conflicts.  Use it anyway? "
+                                owner)))))
                 (let ((default-directory desktop-dirname))
                   (setq desktop-dirname nil)
                   (run-hooks 'desktop-not-loaded-hook)

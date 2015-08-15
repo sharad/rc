@@ -69,6 +69,14 @@
   'session-globals-include
   '(*taskdir-current-task* 100))
 
+ (defvar task-org-headers
+   '("#+CATEGORY: Work"
+     "#+STARTUP: overview"
+     "#+STARTUP: hidestars"
+     "#+TAGS: PERFORCE(4)  BUGZILLA(b) SVN(v) SCMBUG(m) PROJECT(j)"
+     "#+TAGS: CVS(i) PHONE(p) INTERNET(i)"
+     "#+SEQ_TODO: TODO DONE")
+   "Desc")
  (defvar task-config '(("bug"
                         (files "todo.org" "notes.org" "an0.org")
                         (dirs "logs" "programs" "patches" "deliverables")
@@ -157,6 +165,8 @@
          ;;     (insert "# -*-  -*-\n"))
          (dolist (pv task-file-properties)
            (add-file-local-variable-prop-line (car pv) (cdr pv)))
+         (goto-char (point-max))
+         (insert (reduce '(lambda (a b) (concat a "\n" b)) task-org-headers))
          (goto-char (point-max))
          (insert (format "\n\n* %s - %s: %s\n\n\n\n" (capitalize task) name desc))
          (set-buffer-file-coding-system

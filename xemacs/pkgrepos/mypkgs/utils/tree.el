@@ -87,6 +87,45 @@
                   ,@okeys))
         tree)))
 
+;; (defmacro* tree-node-front* (tree &rest xkeys)
+;;   (let* ((pos (position-if 'keywordp xkeys))
+;;          (keys (if pos (subseq xkeys 0 pos) xkeys))
+;;          (okeys (if pos (subseq xkeys pos))))
+;;     (if keys
+;;         `(cdr
+;;           (assoc* ,(car (last keys))
+;;                   (pushnew
+;;                    (list ,@(last keys))
+;;                    (tree-node* ,tree ,@(butlast keys) ,@okeys)
+;;                    :key 'car ,@okeys)
+;;                   ,@okeys))
+;;         tree)))
+
+;; (defun endcons (a v)
+;;    (if (null v) (cons a nil) (cons (car v) (endcons a (cdr v)))))
+
+;; ;; (endcons 'a '(b c d))
+
+;; (defmacro* tree-node-back* (tree &rest xkeys)
+;;   (let* ((pos (position-if 'keywordp xkeys))
+;;          (keys (if pos (subseq xkeys 0 pos) xkeys))
+;;          (okeys (if pos (subseq xkeys pos))))
+;;     (if keys
+;;         `(cdr
+;;           (assoc* ,(car (last keys))
+;;                   (pushnew
+;;                    (list ,@(last keys))
+;;                    (tree-node* ,tree ,@(butlast keys) ,@okeys)
+;;                    :key 'car ,@okeys)
+;;                   ,@okeys))
+;;         tree)))
+
+;; (progn
+;;   (setq u nil)
+;;   (setf (tree-node-back* u "a" "b" "c" :test 'string-equal)  'ww )
+;;   (setf (tree-node-back* u 'a 'b 'c)  'ww )
+;;   u)
+
 ;; (setq u nil)
 ;; (setf (tree-node* u "a" "b" "c" :test 'string-equal)  'ww )
 ;; (setf (tree-node* u 'a 'b 'c)  'ww )

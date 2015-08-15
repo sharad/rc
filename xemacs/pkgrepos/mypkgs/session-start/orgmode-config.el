@@ -50,7 +50,7 @@
      ;; )
 
      (add-hook 'org-clock-in-hook
-               (lambda ()
+               '(lambda ()
                  ;; if effort is not present tahnadd it.
                  (unless (org-entry-get nil "Effort")
                    (org-set-effort))
@@ -66,11 +66,12 @@
                        (call-interactively 'org-timer-set-timer)))))
 
      (add-hook 'org-clock-out-hook
-               (lambda ()
+               '(lambda ()
                  (if (and
                       (boundp' org-timer-countdown-timer)
                       org-timer-countdown-timer)
-                     (org-timer-stop))))
+                     (org-timer-stop))
+                 (org-clock-get-work-day-clock-string t)))
 
      (defun org-clock-in-if-not ()
        (interactive)
@@ -119,6 +120,9 @@
      ) ;; deh-section "miscellaneous"
 
     (deh-section "today time"
+
+      (require 'mode-line-config)
+
       (defvar org-clock-work-day-hours 8 "work day hours")
 
       (defvar org-clock-monitor-files nil
@@ -173,10 +177,13 @@
       ;;  org-work-day-face-underrun 'org-mode-line-wday-overrun
       ;;  org-work-day-face-overrun  'org-mode-line-clock-overrun)
 
-      (setq org-clock-monitor-files
-            (list
-             "/home/s/paradise/doc/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org"
-             "/home/s/paradise/doc/CreatedContent/contents/org/tasks/meru/works/emacs/todo.org"))
+      (setq
+       org-clock-monitor-files
+       (directory-files-recursive
+        (expand-file-name
+         "meru"
+         (org-publish-get-attribute "tasks" "org" :base-directory))
+        "\\.org$" 2 "\\(rip\\|stage\\)" t))
 
       (defun org-clock-unclocked-files-mins-today (files)
         (let* ((totalmins 0))
@@ -240,7 +247,7 @@ previous clocking intervals."
            ["Switch task" (lambda () (interactive) (org-clock-in '(4))) :active t :keys "C-u C-c C-x C-i"])))
 
       ;; TODO: optimize it.
-      (defun org-clock-get-work-day-clock-string ()
+      (defun org-clock-get-work-day-clock-string (&optional force)
         "Form a clock-string, that will be shown in the mode line.
 If an effort estimate was defined for the current item, use
 01:30/01:50 format (clocked/estimated).
@@ -253,7 +260,7 @@ If not, show simply the clocked time like 01:50."
                (work-day-left-secs  (- work-day-end-secs now-sec))
                (work-day-over-str   (org-timer-secs-to-hms work-day-over-secs))
                (work-day-left-str   (org-timer-secs-to-hms work-day-left-secs))
-               (today-clocked-secs  (org-clock-files-secs org-clock-monitor-files))
+               (today-clocked-secs  (org-clock-files-secs org-clock-monitor-files force))
                (today-dur-left-sec  (- (* org-clock-work-day-hours 60 60) today-clocked-secs))
                (today-dur-left-str  (org-timer-secs-to-hms today-dur-left-sec))
                (work-done-str
@@ -300,35 +307,34 @@ If not, show simply the clocked time like 01:50."
                'local-map org-clock-work-day-mode-line-map
                'mouse-face (if (featurep 'xemacs) 'highlight 'mode-line-highlight)))
         (force-mode-line-update))
-    ;;
 
-    (defun org-clock-work-day-update-mode-line ()
-      "Update the timer time in the mode line."
-      (if org-mode-work-day-pause
-          nil
-          (org-clock-work-day-update-mode-line-internal)
-          (force-mode-line-update)))
+      (defun org-clock-work-day-update-mode-line ()
+        "Update the timer time in the mode line."
+        (if org-mode-work-day-pause
+            nil
+            (org-clock-work-day-update-mode-line-internal)
+            (force-mode-line-update)))
 
-    (defun org-clock-work-day-mode-line-add ()
-      (interactive)
-      ;; (or global-mode-string (setq global-mode-string '("")))
-      ;; (or (memq 'org-mode-work-day-mode-line-string global-mode-string)
-      ;;     (setq global-mode-string
-      ;;           (append global-mode-string
-      ;;                   '(org-mode-work-day-mode-line-string))))
+      (defun org-clock-work-day-mode-line-add ()
+        (interactive)
+        ;; (or global-mode-string (setq global-mode-string '("")))
+        ;; (or (memq 'org-mode-work-day-mode-line-string global-mode-string)
+        ;;     (setq global-mode-string
+        ;;           (append global-mode-string
+        ;;                   '(org-mode-work-day-mode-line-string))))
 
-      (or global-mode-line-list (setq global-mode-string '("")))
-      (or (memq 'org-mode-work-day-mode-line-string global-mode-line-list)
-          (setq global-mode-line-list
-                (append global-mode-line-list
-                        '(org-mode-work-day-mode-line-string))))
-      (when (eq org-mode-work-day-display 'mode-line)
-        (org-clock-work-day-update-mode-line)
-        (when org-mode-work-mode-line-timer
-          (cancel-timer org-mode-work-mode-line-timer)
-          (setq org-mode-work-mode-line-timer nil))
-        (setq org-mode-work-mode-line-timer
-              (run-with-timer 20 20 'org-clock-work-day-update-mode-line))))
+        (or global-mode-line-list (setq global-mode-string '("")))
+        (or (memq 'org-mode-work-day-mode-line-string global-mode-line-list)
+            (setq global-mode-line-list
+                  (append global-mode-line-list
+                          '(org-mode-work-day-mode-line-string))))
+        (when (eq org-mode-work-day-display 'mode-line)
+          (org-clock-work-day-update-mode-line)
+          (when org-mode-work-mode-line-timer
+            (cancel-timer org-mode-work-mode-line-timer)
+            (setq org-mode-work-mode-line-timer nil))
+          (setq org-mode-work-mode-line-timer
+                (run-with-timer 20 20 'org-clock-work-day-update-mode-line))))
 
       (defun org-clock-work-day-mode-line-remove ()
         (interactive)
@@ -342,7 +348,6 @@ If not, show simply the clocked time like 01:50."
 
 
       (org-clock-work-day-mode-line-add))
-
 
     (defun org-timer-update-mode-line ()
       "Update the timer time in the mode line."
@@ -515,7 +520,7 @@ using three `C-u' prefix arguments."
 
       (setq org-agenda-custom-commands
             ;; http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
-            '(("P" "Project List"
+            `(("P" "Project List"
                ((tags "PROJECT")))
               ("O" "Office"
                ((agenda)
@@ -528,18 +533,15 @@ using three `C-u' prefix arguments."
                ((agenda)
                 (tags-todo "HOME")
                 (tags-todo "COMPUTER")))
-              ("Z" "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
+              ("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
+                   "Meru Today" ;;  search ""
                ((agenda ""
-                        (;; (org-agenda-ndays 1)
-                         (org-agenda-span 'day)
+                        ((org-agenda-span 'day)
                          (org-agenda-prefix-format  "%e")))
                 (org-agenda-files
-                 (directory-files-recursive
-                  (expand-file-name "~/Documents/CreatedContent/contents/org/tasks/meru")
-                  "\\.org$"
-                  2
-                  "\\(rip\\|stage\\)"
-                  t))
+                 ',(directory-files-recursive
+                   (expand-file-name "~/Documents/CreatedContent/contents/org/tasks/meru")
+                   "\\.org$" 2 "\\(rip\\|stage\\)" t))
 
                 ;; (org-agenda-sorting-strategy '(priority-up effort-down))
                 )
@@ -548,7 +550,7 @@ using three `C-u' prefix arguments."
 
       (setq
        org-columns-default-format-org "%25ITEM %TODO %3PRIORITY %TAGS"
-       org-columns-default-format "%TODO %70ITEM(Task) %8Effort(Effort){:} %8CLOCKSUM{:} %8CLOCKSUM_T(Today){:} %CLOSED")
+       org-columns-default-format     "%TODO %70ITEM(Task) %8Effort(Effort){:} %8CLOCKSUM{:} %8CLOCKSUM_T(Today){:} %CLOSED")
 
       (setq
        org-agenda-files (directory-files-recursive
@@ -556,7 +558,13 @@ using three `C-u' prefix arguments."
                          "\\.org$"
                          2
                          "\\(rip\\|stage\\)"
-                         t))))
+                         t)))
+
+
+    (setq
+     ;; http://orgmode.org/worg/agenda-optimization.html
+     ;; org-agenda-inhibit-startup t
+     )) ;; (deh-section "org-agenda"
 
   (deh-section "orgextra"
     ;; http://notmuchmail.org/emacstips/
