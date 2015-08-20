@@ -25,11 +25,100 @@
 ;;; Code:
 
 
-(defun run-with-nonobtrusive-aware-idle-timers ()
-  )
+(defun run-with-nonobtrusive-aware-idle-timers (longdelay repeat shortdelay fn arg &optional cancel)
+  "Run a function after idle time of N, but will try to run when user"
+  (lexical-let* ((longdelay longdelay)
+                 (repeat repeat)
+                 (shortdelay shortdelay)
+                 (timer nil)
+                 (subtimer nil))
+    (setq timer
+          (run-with-idle-timer longdelay repeat
+                               (lambda (func)
+                                 (unless subtimer
+                                   (message "shortdelay %s running timer" shortdelay)
+                                   (setq subtimer
+                                         (run-with-nonobtrusive-timers shortdelay shortdelay 4
+                                                                       (lambda (func1)
+                                                                         (progn
+                                                                           (message "shortdelay %s running fun" shortdelay)
+                                                                           (if (funcall func1)
 
-(defun run-with-nonobtrusive-timers ()
-  )
+                                                                               ;; (when subtimer
+                                                                               ;;   (cancel-timer subtimer)
+                                                                               ;;   (setq subtimer nil))
+
+                                                                               (when (and cancel timer)
+                                                                                 (cancel-timer timer)
+                                                                                 (setq timer nil)))
+
+                                                                           (when subtimer
+                                                                             (cancel-timer subtimer)
+                                                                             (setq subtimer nil))
+
+                                                                           ;; (when subtimer
+                                                                           ;;   (cancel-timer subtimer)
+                                                                           ;;   (setq subtimer nil))
+
+                                                                           ))
+                                                                       func))))
+                               fn))))
+
+(defun run-with-nonobtrusive-timers (idledelay repeat useridlesec fn arg)
+  ""
+  (lexical-let* ((idledelay idledelay)
+                 (repeat repeat)
+                 (useridlesec useridlesec)
+                 (useridlesec-moving useridlesec)
+                 (timer nil))
+    (setq timer
+          (run-with-idle-timer
+           idledelay
+           repeat
+           (lambda (func)
+             (let ((current-idle-sec (float-time (or (current-idle-time) '(0 0 0)))))
+               (if (>= current-idle-sec useridlesec-moving) ;NOTE
+                   (progn
+                     (message "shortob running fun useridlesec-moving %s" useridlesec-moving)
+                     (funcall (car func) (cdr func))
+                     (setq useridlesec-moving useridlesec)
+                     (when timer
+                       (cancel-timer timer)
+                       (setq timer nil))
+                     t)
+                   (progn
+                     (message "shortob not running fun useridlesec-moving %s" useridlesec-moving)
+                     (unless (zerop useridlesec-moving) (decf useridlesec-moving))
+                     nil))))
+           (cons fn arg)))))
+
+(when nil
+  (progn
+    (defvar nonobtrusive-test-timer nil)
+    (if nonobtrusive-test-timer (cancel-timer nonobtrusive-test-timer))
+    (setq nonobtrusive-test-timer
+          (run-with-nonobtrusive-aware-idle-timers 4 4 2
+                                                   (lambda ()
+                                                     (message "Hello Hi World")
+                                                     (if nonobtrusive-test-timer (cancel-timer nonobtrusive-test-timer))
+                                                     (setq nonobtrusive-test-timer nil))
+                                                   nil
+                                                   t))))
+
+(setq
+ display-time-world-time-format "%A %d %B %R %Z"
+ display-time-world-time-format "    %10A %e %B, %Y  %r"
+ display-time-world-list                ;; used by M-x display-time-world
+ '(("America/Vancouver"   "Vancouver")
+   ("America/Los_Angeles" "California")
+   ("Asia/Calcutta"       "Bangalore")
+   ("Europe/London"       "London")
+   ("Europe/Paris"        "Paris")
+   ("Asia/Tokyo"          "Tokyo")
+   ("America/Los_Angeles" "Seattle")
+   ("America/New_York"    "New York")))
+
+(display-time-mode 1)
 
 (provide 'timer-config)
 ;;; timer-config.el ends here

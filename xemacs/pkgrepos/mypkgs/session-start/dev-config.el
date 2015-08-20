@@ -26,6 +26,9 @@
 
 (require 'macros-config)
 
+
+;; TODO: [[http://tuhdo.github.io/c-ide.html][C/C++ Development Environment for Emacs]]
+
 (deh-require-maybe which-func
   (which-function-mode 1)
   (defface which-func

@@ -1,4 +1,3 @@
-
 ;;
 ;; buffer.el
 ;; Login : <s@taj>

@@ -430,6 +430,10 @@ define_webjump("code/gsnippets",
                "https://www.google.co.in/search?q=%20site%3Asnippets.dzone.com%20%s%20&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai");
 define_webjump("code/languages",
                "http://rosettacode.org/mw/index.php?title=Special%3ASearch&search=%s&go=Go");
+define_webjump("rosettacode",
+               "http://rosettacode.org/mw/index.php?title=Special%3ASearch&search=%s&go=Go");
+define_webjump("code/snippet",
+               "http://rosettacode.org/mw/index.php?title=Special%3ASearch&search=%s&go=Go");
 
 // 2.10.6
 define_webjump("code/koders",

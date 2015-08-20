@@ -58,8 +58,20 @@
          (message "called office mode"))
      (error (message "Error: %s" e))))
 
- (defvar taskdir (org-publish-get-attribute "tasks" "org" :base-directory) "Task Directory")
- (defvar task-url-base "/~s/tasks" "task-url-base")
+ (defvar *task-party-dir* (org-publish-get-attribute "tasks" "org" :base-directory) "Task Party Directory")
+
+ (defvar taskdir
+   (expand-file-name "meru"
+                     (org-publish-get-attribute "tasks" "org" :base-directory))
+   "Task Directory")
+ (defvar task-url-base "/~s/tasks/meru" "task-url-base")
+
+ (defun task-select-party-dir (force)
+   (interactive "P")
+   (if (or force (null taskdir))
+       (setq taskdir
+             (ido-read-directory-name "dir: " *task-party-dir* nil t))
+       taskdir))
 
  (defvar *taskdir-current-task* nil "Current task")
  (add-to-list
@@ -69,6 +81,9 @@
   'session-globals-include
   '(*taskdir-current-task* 100))
 
+ (defvar task-file-properties '((buffer-read-only . t)
+                                (fill-column . 172))
+   "Task file properties.")
  (defvar task-org-headers
    '("#+CATEGORY: Work"
      "#+STARTUP: overview"
@@ -94,15 +109,6 @@
                         (dirs "logs" "programs" "patches" "deliverables")
                         (links ("notes.html" . "index.html"))
                         (project "/susengg-01:releases/projects/features-dev.pb"))))
-
- (defvar task-file-properties '((buffer-read-only . t)
-                                (fill-column . 172))
-   "Task file properties.")
-
- (defvar taskdir-)
-
- (defun taskdir-get ()
-   )
 
  (defun find-task-dir (&optional force)
    (interactive "P")

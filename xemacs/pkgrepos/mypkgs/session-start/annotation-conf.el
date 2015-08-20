@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-
+(require 'macros-config)
 
 (deh-section "New"
   (deh-require-maybe (progn ipa org-pua)
@@ -37,6 +37,8 @@
   (deh-require-maybe org-pua
     ;;http://www.emacswiki.org/emacs-es/org-pua.el
     )
+
+  (deh-require-maybe org-annotate-file)
 
   (deh-require-maybe annot
     ;; TODO: After adding annotation add it to a org file with link back to place where annotation were added.

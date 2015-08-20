@@ -27,6 +27,9 @@
 
 ;; mode-line-format
 
+
+(require 'macros-config)
+
 (setq global-mode-string
       ;; '("" win:mode-string " " display-time-string " " appt-mode-string)
       '(org-mode-line-string
@@ -192,8 +195,6 @@
                       :inherit 'mode-line-position-face
                       :foreground "black" :background "#eab700")))
 
-
-
 (deh-section "Hiding and replacing modeline strings with clean-mode-line"
   ;; http://www.masteringemacs.org/articles/2012/09/10/hiding-replacing-modeline-strings/
   (defvar mode-line-cleaner-alist
@@ -269,36 +270,49 @@ want to use in the modeline *in lieu of* the original.")
 
   (defvar global-mode-line-list nil "global-mode-line-list")
 
+  (setq winring-show-names t)
+
   (defun setup-mode-line ()
     (interactive)
-    (let ((mode-line-help
-           "mouse-1: Select (drag to resize)\nmouse-2: Make current window occupy the whole frame\nmouse-3: Remove current window from display")
-          (separator "--")
-          (gap-white-space ""))
+    (let* ((dynamic nil)
+           (mode-line-help
+            (reduce '(lambda (a b) (concat a "\n" b))
+                    '("mouse-1: Select (drag to resize)"
+                      "mouse-2: Make current window occupy the whole frame"
+                      "mouse-3: Remove current window from display")))
+          ;; (separator ,(propertize "--" 'help-echo mode-line-help))
+           (gap-white-space (propertize "" 'help-echo mode-line-help))
+           (white-space     (propertize " " 'help-echo mode-line-help))
+           (separator (if dynamic
+                          `(:eval
+                            (if (display-graphic-p)
+                                (propertize " " 'help-echo ,mode-line-help)
+                                (propertize "-" 'help-echo ,mode-line-help)))
+                          (if (display-graphic-p)
+                              (propertize " " 'help-echo mode-line-help)
+                              (propertize "-" 'help-echo mode-line-help)))))
+
       (setq *mode-line-tree* nil)
       (setf (tree-node* *mode-line-tree* 1 1) "%e")
       (setf (tree-node* *mode-line-tree* 1 2)
-            '((winring-show-names
-               ("<" winring-name "> "))
-              #("-" 0 1
-                (help-echo
-                 mode-line-help))))
+            '((winring-show-names ("<" winring-name "> ")) (propertize "-" help-echo mode-line-help)))
       (setf (tree-node* *mode-line-tree* 1 3) 'mode-line-mule-info)
       (setf (tree-node* *mode-line-tree* 1 4) 'mode-line-client)
       (setf (tree-node* *mode-line-tree* 1 5) 'mode-line-modified)
       (setf (tree-node* *mode-line-tree* 1 6) 'mode-line-remote)
       (setf (tree-node* *mode-line-tree* 1 7) 'mode-line-frame-identification)
       (setf (tree-node* *mode-line-tree* 1 8) 'mode-line-buffer-identification)
-      (setf (tree-node* *mode-line-tree* 1 9) (org-propertize gap-white-space 'help-echo mode-line-help))
+      (setf (tree-node* *mode-line-tree* 1 9) white-space)
       (setf (tree-node* *mode-line-tree* 1 10) 'mode-line-position)
 
       (setf (tree-node* *mode-line-tree* 2 1)  `(elscreen-display-screen-number (,gap-white-space elscreen-e21-mode-line-string)))
       (setf (tree-node* *mode-line-tree* 2 2) '(vc-mode vc-mode))
-      (setf (tree-node* *mode-line-tree* 2 3) (org-propertize gap-white-space 'help-echo mode-line-help))
+      (setf (tree-node* *mode-line-tree* 2 3) white-space)
       (setf (tree-node* *mode-line-tree* 2 4) 'mode-line-modes)
-      (setf (tree-node* *mode-line-tree* 2 5) `(which-func-mode (,gap-white-space which-func-format ,(org-propertize separator 'help-echo mode-line-help))))
-      (setf (tree-node* *mode-line-tree* 2 6) `(global-mode-string (,gap-white-space global-mode-string ,(org-propertize separator 'help-echo mode-line-help))))
-
+      ;; (setf (tree-node* *mode-line-tree* 2 5) 'mode-line-misc-info)
+      ;; (setf (tree-node* *mode-line-tree* 2 5) `(which-function-mode (,separator which-func-format)))
+      (setf (tree-node* *mode-line-tree* 2 5) `(which-function-mode (,gap-white-space which-func-format ,separator)))
+      (setf (tree-node* *mode-line-tree* 2 6) `(global-mode-string (,gap-white-space global-mode-string ,separator)))
       (setf (tree-node* *mode-line-tree* 2 7) `(:eval
                                                 (apply
                                                  'concat
@@ -310,19 +324,27 @@ want to use in the modeline *in lieu of* the original.")
                                                          ((and (symbolp e) (boundp e) (stringp (symbol-value e)))   (symbol-value e))
                                                          ;; ((and (symbolp e) (fboundp e)) (funcall (symbol-function e)))
                                                          (t   "")))
-                                                   (append global-mode-line-list (list ,(org-propertize separator 'help-echo mode-line-help))))))))
+                                                   global-mode-line-list)))))
+      (setf (tree-node* *mode-line-tree* 2 8) separator)
 
-      (setf (tree-node* *mode-line-tree* 2 8) `(:eval
+      (setf (tree-node* *mode-line-tree* 2 9) `(:eval
                                                 (if (frame-parameter (selected-frame) 'frame-spec-id)
-                                                    (concat ,gap-white-space
-                                                            (frame-parameter (selected-frame) 'frame-spec-id)
-                                                            (unless (sharad/check-session-saving) (concat ,gap-white-space "noAutoSave"))))))
-      (setf (tree-node* *mode-line-tree* 2 9) '(:eval (if (car sidebrain-current-stack) (concat " " (car sidebrain-current-stack)))))
-      (setf (tree-node* *mode-line-tree* 2 10) (org-propertize  "-%-" 'help-echo mode-line-help)))
+                                                    (concat ,gap-white-space (propertize (frame-parameter (selected-frame) 'frame-spec-id) 'help-echo "Frame Session name")))))
 
+      (setf (tree-node* *mode-line-tree* 2 10) `(:eval
+                                                 (unless (sharad/check-session-saving)
+                                                   (concat ,separator (propertize "noAutoSave" 'help-echo "Session auto save is not working.")))))
 
+      (setf (tree-node* *mode-line-tree* 2 11) `(:eval (if (car sidebrain-current-stack) (concat ,separator (car sidebrain-current-stack)))))
+      (setf (tree-node* *mode-line-tree* 2 12) 'mode-line-end-spaces))
 
     (setq-default
+     mode-line-format
+     (reverse
+      (mapcar 'cdr
+              (apply 'append (mapcar 'cdr
+                                     *mode-line-tree*)))))
+    (setq
      mode-line-format
      (reverse
       (mapcar 'cdr
@@ -334,9 +356,17 @@ want to use in the modeline *in lieu of* the original.")
 
   (defvar mode-line-format-original nil)
   (setq mode-line-format-original mode-line-format)
+
+
+  (message "setting up mode-line")
   (setup-mode-line)
 
-  )
+  (add-hook 'sharad/enable-startup-interrupting-feature-hook
+            '(lambda ()
+              (add-hook 'after-make-frame-functions
+               '(lambda (nframe)
+                 (setup-mode-line))))))
+
 ;; )
 
 

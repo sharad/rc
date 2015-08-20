@@ -1,4 +1,10 @@
 
+(require 'macros-config)
+(require 'auto-load-config)
+(require 'publishing-config)
+(require 'files-config)
+(require 'timer-config)
+
 
 (deh-require-maybe (and org-compat org)
   ;; publishing
@@ -21,6 +27,22 @@
     (add-to-list 'org-modules 'org-timer)
     (add-to-list 'org-modules 'org-clock)
     (deh-section "miscellaneous"
+
+      (setq org-todo-keywords ;; http://doc.norang.ca/org-mode.html#sec-5
+            (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                    (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+
+      (setq org-todo-keyword-faces ;; http://doc.norang.ca/org-mode.html#sec-5
+            (quote (("TODO" :foreground "red" :weight bold)
+                    ("NEXT" :foreground "blue" :weight bold)
+                    ("DONE" :foreground "forest green" :weight bold)
+                    ("WAITING" :foreground "orange" :weight bold)
+                    ("HOLD" :foreground "magenta" :weight bold)
+                    ("CANCELLED" :foreground "forest green" :weight bold)
+                    ("MEETING" :foreground "forest green" :weight bold)
+                    ("PHONE" :foreground "forest green" :weight bold))))
+
+
      (setq
       org-timer-default-timer 25
       org-clock-persist-file  (auto-config-file "org/clock/org-clock-save.el")
@@ -53,7 +75,8 @@
                '(lambda ()
                  ;; if effort is not present tahnadd it.
                  (unless (org-entry-get nil "Effort")
-                   (org-set-effort))
+                   (save-excursion
+                    (org-set-effort)))
                  ;; set timer
                  (when (not
                         (and
@@ -148,7 +171,13 @@
       (defvar org-mode-work-day-pause nil)
       (defvar org-mode-work-day-display 'mode-line)
 
-      (defface org-mode-line-wday
+     (defvar org-clock-get-work-day-start-timer nil)
+     (unless org-clock-get-work-day-start-timer
+      (setq org-clock-get-work-day-start-timer
+            (run-at-time "00:01am" (* 24 60 60) 'org-clock-get-work-day-clock-string t)))
+
+
+     (defface org-mode-line-wday
           '((t (:inherit mode-line)))
         "Face used for clock display in mode line."
         :group 'org-faces)
@@ -186,7 +215,8 @@
         "\\.org$" 2 "\\(rip\\|stage\\)" t))
 
       (defun org-clock-unclocked-files-mins-today (files)
-        (let* ((totalmins 0))
+        (let* ((totalmins 0)
+               file)
           (org-agenda-prepare-buffers files)
           (while (setq file (pop files))
             (with-current-buffer (find-buffer-visiting file)
@@ -375,62 +405,43 @@ If not, show simply the clocked time like 01:50."
 
     (deh-section "org clock timer checker"
 
-     (defvar org-clock-check-timer-long-period 20
+     (defvar org-clock-check-long-timer-period 7
        "Period of Long Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
 
-     (defvar org-clock-check-timer-long nil
+     (defvar org-clock-check-long-timer nil
        "Long Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
 
-     (defvar org-clock-check-timer-short-period 7
+     (defvar org-clock-check-short-timer-period 2
        "Period Short Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
 
-     (defvar org-clock-check-timer-short nil
-       "Short Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
-
+     ;; (defvar org-clock-check-short-timer nil
+     ;;   "Short Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
 
      (defun org-clock-start-check-timer ()
        (interactive)
+       (org-clock-stop-check-timer)
        (setq
-        org-clock-check-timer-long
-        (run-with-idle-timer
-         org-clock-check-timer-long-period
-         org-clock-check-timer-long-period
-         '(lambda (period)
+        org-clock-check-long-timer
+        (run-with-nonobtrusive-aware-idle-timers
+         org-clock-check-long-timer-period
+         org-clock-check-long-timer-period
+         org-clock-check-short-timer-period
+         (lambda ()
+           (message "after 7 sec.")
            (unless (org-clock-is-active)
-             (message "scheduleing after 2 sec.")
-             (run-at-time 2 nil
-                          '(lambda (period)
-                            (when org-clock-check-timer-short
-                              (cancel-timer org-clock-check-timer-short)
-                              (setq org-clock-check-timer-short nil))
-                            (setq
-                             org-clock-check-timer-short
-                             (run-with-idle-timer
-                              period
-                              nil
-                              '(lambda ()
-                                (message "after 7 sec.")
-                                (let ((idle-time (ceiling (float-time (or (current-idle-time) (seconds-to-time 0))))))
-                                  (message "idle time %s logn time %s" idle-time org-clock-check-timer-long-period)
-                                  (message "(< idle-time org-clock-check-timer-long-period) %s (org-clock-is-active) %s"
-                                           (< idle-time org-clock-check-timer-long-period)
-                                           (org-clock-is-active))
-                                  (unless (org-clock-is-active)
-                                    (if (< idle-time org-clock-check-timer-long-period)
-                                        (org-clock-in-if-not)
-                                        (message "Not reminding to clock-in as it is idle for long %s secs time." idle-time))))))))
-                          period)))
-         org-clock-check-timer-short-period)))
+             (org-clock-in-if-not)))
+         nil
+         nil)))
 
      (defun org-clock-stop-check-timer ()
        (interactive)
        (progn
-         (when org-clock-check-timer-short
-           (cancel-timer org-clock-check-timer-short)
-           (setq org-clock-check-timer-short nil))
-         (when org-clock-check-timer-long
-           (cancel-timer org-clock-check-timer-long)
-           (setq org-clock-check-timer-long nil)))))
+         ;; (when org-clock-check-short-timer
+         ;;   (cancel-timer org-clock-check-short-timer)
+         ;;   (setq org-clock-check-short-timer nil))
+         (when org-clock-check-long-timer
+           (cancel-timer org-clock-check-long-timer)
+           (setq org-clock-check-long-timer nil)))))
 
     (deh-section "correction org-timer.el"
       (defun org-timer-set-timer (&optional opt)
@@ -516,7 +527,6 @@ using three `C-u' prefix arguments."
 
 
   (deh-section "org-agenda"
-    (deh-require-maybe files-config
 
       (setq org-agenda-custom-commands
             ;; http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
@@ -540,7 +550,7 @@ using three `C-u' prefix arguments."
                          (org-agenda-prefix-format  "%e")))
                 (org-agenda-files
                  ',(directory-files-recursive
-                   (expand-file-name "~/Documents/CreatedContent/contents/org/tasks/meru")
+                    (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
                    "\\.org$" 2 "\\(rip\\|stage\\)" t))
 
                 ;; (org-agenda-sorting-strategy '(priority-up effort-down))
@@ -554,11 +564,12 @@ using three `C-u' prefix arguments."
 
       (setq
        org-agenda-files (directory-files-recursive
-                         (expand-file-name "~/Documents/CreatedContent/contents/org")
+                         (expand-file-name
+                          "~/Documents/CreatedContent/contents/org")
                          "\\.org$"
                          2
                          "\\(rip\\|stage\\)"
-                         t)))
+                         t))
 
 
     (setq
@@ -594,16 +605,19 @@ using three `C-u' prefix arguments."
                     (add-hook 'after-save-hook 'org2rem-this-file t t)))))
 
   (deh-section "org misc"
-   (add-hook 'org-mode-hook
-             (lambda()
-               (add-hook 'after-save-hook 'org-agenda-to-appt t t)))
+    (add-hook 'org-mode-hook
+              (lambda()
+                (add-hook 'after-save-hook 'org-agenda-to-appt t t)))
 
    (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
    ;; see key binding in binding.el
 
    (defun gtd ()
      (interactive)
-     (find-file "~/.Organize/emacs/org/office/plan.org" )
+     (find-file
+      (expand-file-name
+       "office"
+       (org-publish-get-attribute "notes" "org" :base-directory)))
      ;;(org-show-todo-tree 4)
      )
 
@@ -618,8 +632,6 @@ using three `C-u' prefix arguments."
   (deh-require-maybe (and
                       ob-exp
                       ox-html5presentation)))
-
-
 
 (deh-require-maybe (and remember
                         org
@@ -642,16 +654,20 @@ using three `C-u' prefix arguments."
                         ;; macs-wiki-journal
                         ))
 
+(deh-require-maybe (and
+                    remember
+                    org
+                    org-protocol
+                    org-capture)
 
-(deh-require-maybe (and remember org)
-
-  ;;If you are, like me, missing the function org-remember-insinuate, try
-  ;;the following
+  ;; If you are, like me, missing the function org-remember-insinuate, try
+  ;; the following
   ;; start
   ;; from: http://members.optusnet.com.au/~charles57/GTD/remember.html
 
-
-  (setq org-default-notes-file (concat org-directory "/notes.org"))
+  (setq
+   org-directory (org-publish-get-attribute "notes" "org" :base-directory)
+   org-default-notes-file (expand-file-name "notes.org" org-directory))
 
   (defun sharad/org-remember-sys ()
     (cond
@@ -674,19 +690,19 @@ using three `C-u' prefix arguments."
   (defun org-template-set-file-writable (xfile)
     (if (consp xfile)
         (error "xfile %s not file" xfile))
-    (let* ((buf (or (find-buffer-visiting xfile)
-                    (find-file-noselect xfile))))
-
+    (let* ((buf
+            (or (find-buffer-visiting xfile)
+                (find-file-noselect xfile))))
       (with-current-buffer buf
-            (when buffer-read-only
-              (setq buffer-read-only nil
-                    view-read-only nil
-                    view-mode nil)
-              (add-to-list 'org-template-files-revert xfile)))
-          xfile))
+        (when buffer-read-only
+          (setq
+           buffer-read-only nil
+           view-read-only   nil
+           view-mode        nil)
+          (add-to-list 'org-template-files-revert xfile)))
+      xfile))
 
   (defvar org-remember-template-alist nil "org-remember-template-alist")
-
 
   (defun org-template-push (template &rest keys)
     (pushnew (cons keys template)
@@ -696,12 +712,27 @@ using three `C-u' prefix arguments."
   ;; (get-tree '((a (b (c . d)))) 'a 'b 'c)
 
   (defun make-orgremember-tmpl-with-sys (key s )
+
     )
 
+  ;; (setq org-protocol-default-template-key "l")
+  (setq org-capture-templates
+        (quote
+         (("w"
+           "Default template"
+           entry
+           (file+headline "~/org/capture.org" "Notes")
+           "* %^{Title}\n\n  Source: %u, %c\n\n  %i"
+           :empty-lines 1)
+          ;; ... more templates here ...
+          )))
 
-  (defun org-template-gen (s &optional org-parent-dir)
-    (let ((org-parent-dir (or org-parent-dir "~/.Organize/emacs/org/")))
-      `(("Current Task"
+  (defun org-template-gen (&optional org-parent-dir)
+    (let ((org-parent-dir (or org-parent-dir
+                              (org-publish-get-attribute "notes" "org" :base-directory))))
+      `(
+        (?w "* %^{Title}\n\n  Source: %u, %c\n\n  %i" nil "Notes")
+        ("Current Task"
          ?k
          "* TODO %? %^g\n %i\n [%a]\n"
          (lambda ()
@@ -709,81 +740,83 @@ using three `C-u' prefix arguments."
         ("Emacs"
          ?m
          "* TODO %? %^g\n %i\n [%a]\n"
-         ,(concat org-parent-dir s "/" "emacs.org"))
+         ,(expand-file-name "emacs.org" org-parent-dir)))
         ("Todo" ;; todos
          ?t
          "* TODO %? %^g\n %i\n [%a]\n"
-         ,(concat org-parent-dir s "/" "todo.org")
+         ,(expand-file-name "todo.org" org-parent-dir))
          "G T D")
         ("Journal" ;; any kind of note
          ?j
          "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(concat org-parent-dir s "/" "journal.org")
+         ,(expand-file-name "journal.org" org-parent-dir)
          "j o u r n a l")
         ("Plan" ;; any kind of note
          ?n
          "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(concat org-parent-dir s "/" "plan.org")
+         ,(expand-file-name "plan.org" org-parent-dir)
          "p l a n")
         ("Learn" ;; any kind of note
          ?l
          "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(concat org-parent-dir s "/" "learn.org")
+         ,(expand-file-name "learn.org" org-parent-dir)
          "Learn")
         ("Idea" ;; any kind of note
          ?i
          "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(concat org-parent-dir s "/" "idea.org")
+         ,(expand-file-name "idea.org" org-parent-dir)
          "Ideas")
         ("Book" ;; book descp
          ?b
-         "\n* %^{Book Title} %t :READING: \n%[~/.Organize/emacs/remember/templates/book]\n [%a]\n"
-         ,(concat org-parent-dir s "/" "journal.org")
+         "\n* %^{Book Title} %t :READING: \n%[~/Documents/CreatedContent/contents/org/remember/templates/book]\n [%a]\n"
+         ,(expand-file-name "journal.org" org-parent-dir)
          "Books")
         ("Private" ;; private note
          ?p
          "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(concat org-parent-dir s "/" "privnotes.org"))
+         ,(expand-file-name "privnotes.org" org-parent-dir))
         ("Remember" ;; private note
          ?r
          "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(concat org-parent-dir s "/" "remember.org"))
+         ,(expand-file-name "remember.org" org-parent-dir))
         ("SomeDay" ;; private note
          ?s
          "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(concat org-parent-dir s "/" "someday.org"))
+         ,(expand-file-name "someday.org" org-parent-dir))
         ("Waiting-For" ;; private note
          ?w
          "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(concat org-parent-dir s "/" "waiting4.org"))
+         ,(expand-file-name "waiting4.org" org-parent-dir))
         ("Contact" ;; contact
          ?c
-         "\n* %^{Name} :CONTACT:\n%[~/.Organize/emacs/remember/templates/contact]\n %i\n [%a]\n"
-         ,(concat org-parent-dir s "/" "contacts.org"))
+         "\n* %^{Name} :CONTACT:\n%[~/Documents/CreatedContent/contents/org/remember/templates/contact]\n %i\n [%a]\n"
+         ,(expand-file-name "contacts.org" org-parent-dir))
         ("Receipt" ;; receipt
          ?e
          "** %^{BriefDesc} %U %^g\n%?\n [%a]\n"
-         ,(concat org-parent-dir s "/" "finances.org")))))
+         ,(expand-file-name "finances.org" org-parent-dir)))))
 
   ;; end: from: http://members.optusnet.com.au/~charles57/GTD/remember.html
   ;; (defvar org-remember-templates nil "templates for org.")
 
   (setq org-remember-templates (org-template-gen (symbol-name (sharad/org-remember-sys))))
 
-
   (functionp
    (nth 3 (car org-remember-templates)))
 
-  (defun th-org-remember-conkeror (url)
-    (interactive "s")
-    (org-remember nil ?t)
-    (save-excursion
-      (insert "\n\n  [[" url "]]"))
-    (local-set-key (kbd "C-c C-c")
-                   (lambda ()
-                     (interactive)
-                     (org-ctrl-c-ctrl-c)
-                     (delete-frame nil t))))
+  (deh-section "org-protocol-open-source"
+    ;; [[http://orgmode.org/worg/org-contrib/org-protocol.html#sec-7][Edit published content: org-protocol-open-source]]
+    (setq org-protocol-project-alist
+      '(("Worg"
+         :base-url "http://orgmode.org/worg/"
+         :working-directory "/home/user/worg/"
+         :online-suffix ".html"
+         :working-suffix ".org")
+        ("My local Org-notes"
+         :base-url "http://localhost/org/"
+         :working-directory "/home/user/org/"
+         :online-suffix ".php"
+         :working-suffix ".org"))))
 
 
 
@@ -791,6 +824,68 @@ using three `C-u' prefix arguments."
   ;; from http://www.emacswiki.org/emacs/RememberMode#toc7
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   )
+
+(when nil ;; deh-section "babel"
+  ;; http://draketo.de/book/export/html/41
+  ; And add babel inline code execution
+  ; babel, for executing code in org-mode.
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   ; load all language marked with (lang . t).
+   '((C . t)
+     ;; (R . t)
+     (asymptote)
+     (awk)
+     (calc)
+     (clojure)
+     (comint)
+     (css)
+     (ditaa . t)
+     (dot . t)
+     (emacs-lisp . t)
+     (fortran)
+     (gnuplot . t)
+     (haskell)
+     (io)
+     (java)
+     (js)
+     (latex)
+     (ledger)
+     (lilypond)
+     (lisp)
+     (matlab)
+     (maxima)
+     (mscgen)
+     (ocaml)
+     (octave)
+     (org . t)
+     (perl)
+     (picolisp)
+     (plantuml)
+     (python . t)
+     (ref)
+     (ruby)
+     (sass)
+     (scala)
+     (scheme)
+     (screen)
+     (sh . t)
+     (shen)
+     (sql)
+     (sqlite))))
+
+
+(deh-section "org rss"
+  ;;
+  (setq org-feed-alist
+        `(("mybugs"
+           "https://bugzilla.merunetworks.com/buglist.cgi?bug_status=NEEDINFO&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&email1=spratap%40merunetworks.com&emailassigned_to1=1&emailreporter1=1&emailtype1=exact&list_id=169890&query_format=advanced&title=Bug%20List&ctype=atom"
+           ,(expand-file-name "meru/mybugs.org" (org-publish-get-attribute "tasks" "org" :base-directory))
+           "My Bugs")
+          ("OSNews"
+           "http://www.osnews.com/feeds"
+           ,(expand-file-name "../rss/osnews.org" (org-publish-get-attribute "tasks" "org" :base-directory))
+           "OSNews Entries"))))
 
 
 

@@ -1,4 +1,18 @@
+;;; -*- mode: emacs-lisp; -*-
 
+
+
+
+(require 'macros-config)
+
+
+
+(deh-require-maybe reveal
+  (reveal-mode 1)
+
+  (setq
+   search-invisible 'open
+   hs-isearch-open t))
 
 ;;(load "folding" 'nomessage 'noerror)
 (deh-require-maybe folding
@@ -12,101 +26,199 @@
 ;;;       (folding-add-to-marks-list 'html-mode   "<!-- {{{ " "<!-- }}} -->" " -->" nil t)
 ;;;       (folding-add-to-marks-list 'lisp-mode   ";;{{{" ";;}}}" nil t)))
 
-;; Universal code folding
 
-;; set-selective-display is a simple, universal function which hides
-;; code according to its indentation level. It can be used as a
-;; fall-back for hs-toggle-hiding.
 
-;; First, define a toggling function based on set-selective-display:
 
-(defun toggle-selective-display (column)
-  (interactive "P")
-  (set-selective-display
-   (or column
-       (unless selective-display
-         (1+ (current-column))))))
+(deh-require-maybe hideshow
+  ;; Universal code folding
 
-;; The above is based on jao’s quick and dirty code folding code. The
-;; hiding level can be passed as an prefix argument, or is based on
-;; the horizontal position of point. Calling the function again brings
-;; the code back.
 
-;; Now, define another function which calls hs-toggle-hiding if it’s
-;; available, or else falls back on toggle-selective-display:
+  (setq hs-set-up-overlay
+        (defun my-display-code-line-counts (ov)
+          (when (eq 'code (overlay-get ov 'hs))
+            (overlay-put ov 'display
+                         (propertize
+                          ;; (format " ... <%d>"
+                          ;;         (count-lines (overlay-start ov)
+                          ;;                      (overlay-end ov)))
+                          (make-string
+                           (max 3 (1+ (/ (count-lines (overlay-start ov) (overlay-end ov)) 10)))
+                           ?.)
+                          'face 'font-lock-type-face))
+            (overlay-put ov 'help-echo
+                         (buffer-substring;; -no-properties
+                          (overlay-start ov) (overlay-end ov))))))
 
-(defun toggle-hiding (column)
-  (interactive "P")
-  (if hs-minor-mode
-      (if (condition-case nil
-              (hs-toggle-hiding)
-            (error t))
-          ;; (hs-show-all)
-          (hs-show-block)
-          )
-    (toggle-selective-display column)))
 
-;; This is more robust than the mere hs-toggle-hiding
-;; function. Specifically, it will return the buffer to its original
-;; state if something goes awry due to an uneven number of open and
-;; close brackets (e.g., extensive use of #ifdef macro declarations).
+  ;; For expansion on ‘goto-line’, adding the following code to your InitFile will do the trick:
+  (defadvice goto-line (after
+                        expand-after-goto-line
+                        activate
+                        compile)
+    "hideshow-expand affected block when using goto-line in a collapsed buffer"
+    (save-excursion
+      (hs-show-block)))
 
-;; Finally, set up key bindings and automatically activate
-;; hs-minor-mode for the desired major modes:
+  ;; set-selective-display is a simple, universal function which hides
+  ;; code according to its indentation level. It can be used as a
+  ;; fall-back for hs-toggle-hiding.
 
-;; see binding.el
+  ;; First, define a toggling function based on set-selective-display:
 
-;; Now we have (rudimentary) code folding for all modes, not just the
-;; ones listed above.  Automatically Activating
+  (defun toggle-selective-display (column)
+    (interactive "P")
+    (set-selective-display
+     (or column
+         (unless selective-display
+           (1+ (current-column))))))
 
-;; Does anyone else have trouble viewing the text after this next
-;; paragraph?
+  ;; The above is based on jao’s quick and dirty code folding code. The
+  ;; hiding level can be passed as an prefix argument, or is based on
+  ;; the horizontal position of point. Calling the function again brings
+  ;; the code back.
 
-;; SteveWainstead contributes the following code for Emacs 20, which
-;; automatically activates HideShow for Perl, Java, or Lisp sources.
+  ;; Now, define another function which calls hs-toggle-hiding if it’s
+  ;; available, or else falls back on toggle-selective-display:
 
-;; hideshow for programming java-mode
-(load-library "hideshow")
+  (defun toggle-hiding (column)
+    (interactive "P")
+    (if hs-minor-mode
+        (if (condition-case nil
+                (hs-toggle-hiding)
+              (error t))
+            ;; (hs-show-all)
+            (hs-show-block))
+        (toggle-selective-display column)))
 
-(add-element-to-lists 'hs-minor-mode pgm-langs)
+  ;; This is more robust than the mere hs-toggle-hiding
+  ;; function. Specifically, it will return the buffer to its original
+  ;; state if something goes awry due to an uneven number of open and
+  ;; close brackets (e.g., extensive use of #ifdef macro declarations).
 
-;; Other Options
+  ;; Finally, set up key bindings and automatically activate
+  ;; hs-minor-mode for the desired major modes:
 
-;; Here is a set of perhaps other useful options you can customize:
+  ;; see binding.el
 
-;; Hide the comments too when you do a 'hs-hide-all'
-(setq hs-hide-comments nil)
-;; Set whether isearch opens folded comments, code, or both
-;; where x is code, comments, t (both), or nil (neither)
-(setq hs-isearch-open 'x)
-;; Add more here
+  ;; Now we have (rudimentary) code folding for all modes, not just the
+  ;; ones listed above.  Automatically Activating
 
-;; Maintainer version also has spiffy new variable: hs-set-up-overlay
-;; Extensions
+  ;; Does anyone else have trouble viewing the text after this next
+  ;; paragraph?
 
-;; The extension hideshow-org makes hideshow.el’s functionality behave
-;; like org-mode’s. The code is located on github here. The
-;; announcement and screencast of it is here.
+  ;; SteveWainstead contributes the following code for Emacs 20, which
+  ;; automatically activates HideShow for Perl, Java, or Lisp sources.
 
-;; To get +/- markers on foldable regions, have a look at
-;; hideshowvis.el.
+  ;; hideshow for programming java-mode
+  (load-library "hideshow")
 
-;; The answer to the question “How do I get it to expand upon a
-;; goto-line? (like it does in search mode)” is by adding some advice.
+  (add-element-to-lists 'hs-minor-mode pgm-langs)
+  ;; (add-element-to-lists 'hs-hide-initial-comment-block  pgm-langs)
+  (add-hook 'find-file-hook 'hs-hide-initial-comment-block)
+  (add-hook 'find-file-hook '(lambda () (hs-hide-level 2)))
 
-;; advice is similar to a hook. It may be executed before or after an
-;; Emacs function. It can affect both the parameters and the return
-;; value of the function. See AdvisingFunctions.
+  ;; Other Options
 
-;; For expansion on goto-line, adding the following code to your
-;; .emacs file will do the trick:
+  ;; Here is a set of perhaps other useful options you can customize:
 
-    (defadvice goto-line (after expand-after-goto-line
-                                activate compile)
+  ;; Hide the comments too when you do a 'hs-hide-all'
+  (setq hs-hide-comments nil)
+  ;; Set whether isearch opens folded comments, code, or both
+  ;; where x is code, comments, t (both), or nil (neither)
+  (setq hs-isearch-open 't)
+  ;; Add more here
 
-        "hideshow-expand affected block when using goto-line in a collapsed buffer"
-        (save-excursion
-           (hs-show-block)))
+  ;; Maintainer version also has spiffy new variable: hs-set-up-overlay
+  ;; Extensions
+
+  ;; The extension hideshow-org makes hideshow.el’s functionality behave
+  ;; like org-mode’s. The code is located on github here. The
+  ;; announcement and screencast of it is here.
+
+  ;; To get +/- markers on foldable regions, have a look at
+  ;; hideshowvis.el.
+
+  ;; The answer to the question “How do I get it to expand upon a
+  ;; goto-line? (like it does in search mode)” is by adding some advice.
+
+  ;; advice is similar to a hook. It may be executed before or after an
+  ;; Emacs function. It can affect both the parameters and the return
+  ;; value of the function. See AdvisingFunctions.
+
+  ;; For expansion on goto-line, adding the following code to your
+  ;; .emacs file will do the trick:
+
+  (defadvice goto-line (after expand-after-goto-line
+                              activate compile)
+
+    "hideshow-expand affected block when using goto-line in a collapsed buffer"
+    (save-excursion
+      (hs-show-block)))
+
+  ;; Hiding all leaf nodes in a file
+
+  ;; When I work on larger source files, I often have a good idea of the
+  ;; spatial arrangement of classes and methods in the file but find no
+  ;; suitable facilities in Emacs that allow me to make use of that
+  ;; knowledge. What I think is missing is a kind of bird’s eye view of
+  ;; the file where only the first line of class, method, or function
+  ;; definition is shown. Here is an example illustrating what I have in
+  ;; mind using Python:
+
+  ;; class Meter(Canvas):
+  ;;     def __init__(self, **opts):
+  ;;     def update(self):
+
+  ;; class Controller:
+  ;;     def __init__(self):
+
+  ;; def util():
+
+  ;; This is the skeleton of the file but the bodies of the methods and
+  ;; functions are hidden. HideShow has ‘hs-hide-level’ which hides all
+  ;; code blocks at a specified nesting level but in the example above
+  ;; this would either hide the content of the methods or the content of
+  ;; the function and the complete content of the classes. What is
+  ;; needed is a way to hide blocks that do not contain nested blocks,
+  ;; that is, the leaf nodes. Here is code that provides the function
+  ;; ‘hs-hide-leafs’ which does exactly that:
+
+  (defun hs-hide-leafs-recursive (minp maxp)
+    "Hide blocks below point that do not contain further blocks in
+    region (MINP MAXP)."
+    (when (hs-find-block-beginning)
+      (setq minp (1+ (point)))
+      (funcall hs-forward-sexp-func 1)
+      (setq maxp (1- (point))))
+    (unless hs-allow-nesting
+      (hs-discard-overlays minp maxp))
+    (goto-char minp)
+    (let ((leaf t))
+      (while (progn
+               (forward-comment (buffer-size))
+               (and (< (point) maxp)
+                    (re-search-forward hs-block-start-regexp maxp t)))
+        (setq pos (match-beginning hs-block-start-mdata-select))
+        (if (hs-hide-leafs-recursive minp maxp)
+            (save-excursion
+              (goto-char pos)
+              (hs-hide-block-at-point t)))
+        (setq leaf nil))
+      (goto-char maxp)
+      leaf))
+
+  (defun hs-hide-leafs ()
+    "Hide all blocks in the buffer that do not contain subordinate
+    blocks.  The hook `hs-hide-hook' is run; see `run-hooks'."
+    (interactive)
+    (hs-life-goes-on
+     (save-excursion
+       (message "Hiding blocks ...")
+       (save-excursion
+         (goto-char (point-min))
+         (hs-hide-leafs-recursive (point-min) (point-max)))
+       (message "Hiding blocks ... done"))
+     (run-hooks 'hs-hide-hook))))
 
 ;; Similar solutions can most likely be found for the find-tag and
 ;; revert-file problem questions below (unless you want to preserve
@@ -133,11 +245,12 @@
 ;; (add-hook 'folding-load-hook 'my-folding-load-hook)
 
 ;; from http://www.dotemacs.de/dotfiles/DavidJolley.emacs.html
+(defvar fold-behave-table)
 (defun my-folding-mode-hook ()
   (interactive)
   (setq fold-behave-table
 	'((close	fold-hide)
-	  (open	fold-enter)
+	  (open	        fold-enter)
 	  (up		fold-exit)
 	  (other	fold-mouse-call-original)))
 	 (define-key folding-mode-map [mouse-3] 'fold-mouse-context-sensitive))
@@ -213,4 +326,3 @@ it off by adding something like this to your file:
 
 
 (provide 'folding-config)
-

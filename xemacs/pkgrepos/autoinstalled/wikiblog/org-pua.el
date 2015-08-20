@@ -202,7 +202,7 @@ in the corresponding annotations file."
     (when org-pua-annotations-dir
       (make-directory (file-name-directory org-pua-name) t))
     (with-current-buffer (find-file org-pua-name)
-      (unless (org-mode-p)
+      (unless (eq major-mode 'org-mode)
         (org-mode))
       (widen)
       (goto-char (point-min))
@@ -231,7 +231,7 @@ annotations file."
          end-of-file-annotations)
     (save-excursion
       (set-buffer (find-file-noselect annot-file-name))
-      (unless (org-mode-p)
+      (unless (eq major-mode 'org-mode)
         (org-mode))
       (goto-char (point-min))
       (widen)
@@ -244,16 +244,21 @@ annotations file."
       ;; Loop over all the links for this file
       (while (re-search-forward org-any-link-re end-of-file-annotations t)
         (goto-char (match-beginning 0))
-        (if (org-invisible-p)
+        (if (outline-invisible-p)
             (org-show-context))
 
         (let (type link path line text annotation)
           (save-excursion
             (skip-chars-forward "^]\n\r")
             (when (org-in-regexp org-bracket-link-regexp)
+              (message "%s" (org-link-unescape (org-match-string-no-properties 1)))
               (setq link
-                    (org-extract-attributes
-                     (org-link-unescape (org-match-string-no-properties 1))))
+                    ;; (org-element-property (org-link-unescape (org-match-string-no-properties 1)) :type "file")
+                    ;; (org-extract-attributes
+                    ;;  (org-link-unescape (org-match-string-no-properties 1)))
+                    (identity
+                     (org-link-unescape (org-match-string-no-properties 1)))
+                    )
               (while (string-match " *\n *" link)
                 (setq link (replace-match " " t t link)))
               (setq link (org-link-expand-abbrev link))

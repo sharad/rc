@@ -138,5 +138,62 @@
       (x-change-window-property "WM_HINTS" wm-hints frame "WM_HINTS" 32 t))))
 
 
+(deh-section "misc"
+  ;; http://draketo.de/book/export/html/41
+
+
+  ;; urgency hint
+
+  ;; Make Emacs announce itself in the tray.
+
+  ;; let emacs blink when something interesting happens.
+  ;; in KDE this marks the active Emacs icon in the tray.
+  (defun x-urgency-hint (frame arg &optional source)
+    "Set the x-urgency hint for the frame to arg:
+
+- If arg is nil, unset the urgency.
+- If arg is any other value, set the urgency.
+
+If you unset the urgency, you still have to visit the frame to make the urgency setting disappear (at least in KDE)."
+    (let* ((wm-hints (append (x-window-property
+                              "WM_HINTS" frame "WM_HINTS"
+                              source nil t) nil))
+           (flags (car wm-hints)))
+                                        ; (message flags)
+      (setcar wm-hints
+              (if arg
+                  (logior flags #x00000100)
+                  (logand flags #x1ffffeff)))
+      (x-change-window-property "WM_HINTS" wm-hints frame "WM_HINTS" 32 t)))
+
+  (defun x-urgent (&optional arg)
+    "Mark the current emacs frame as requiring urgent attention.
+
+With a prefix argument which does not equal a boolean value of nil, remove the urgency flag (which might or might not change display, depending on the window manager)."
+    (interactive "P")
+    (let (frame (car (car (cdr (current-frame-configuration)))))
+      (x-urgency-hint frame (not arg))))
+
+
+  ;; frame-to-front
+
+  ;; Get the current Emacs frame to the front. You can for example call this via emacsclient and set it as a keyboard shortcut in your desktop (for me it is F12):
+
+  ;; emacsclient -e "(show-frame)"
+
+  ;; This sounds much easier than it proves to be in the end… but luckily you only have to solve it once, then you can google it anywhere…
+
+  (defun show-frame (&optional frame)
+    "Show the current Emacs frame or the FRAME given as argument.
+
+And make sure that it really shows up!"
+    (raise-frame)
+    ; yes, you have to call this twice. Don’t ask me why…
+    ; select-frame-set-input-focus calls x-focus-frame and does a bit of
+    ; additional magic.
+    (select-frame-set-input-focus (selected-frame))
+    (select-frame-set-input-focus (selected-frame))))
+
+
 (provide 'frame-config)
 ;;; frame-config.el ends here
