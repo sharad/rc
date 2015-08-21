@@ -86,7 +86,8 @@
                        (save-excursion
                          (forward-line -2)
                          (org-timer-set-timer nil))
-                       (call-interactively 'org-timer-set-timer)))))
+                       (call-interactively 'org-timer-set-timer)))
+                 (save-buffer)))
 
      (add-hook 'org-clock-out-hook
                '(lambda ()
@@ -94,7 +95,8 @@
                       (boundp' org-timer-countdown-timer)
                       org-timer-countdown-timer)
                      (org-timer-stop))
-                 (org-clock-get-work-day-clock-string t)))
+                 (org-clock-get-work-day-clock-string t)
+                 (save-buffer)))
 
      (defun org-clock-in-if-not ()
        (interactive)
@@ -317,12 +319,12 @@ If not, show simply the clocked time like 01:50."
                   work-day-time-str
                   work-day-left-str)))
 
-      (defun org-clock-work-day-update-mode-line-internal ()
+      (defun org-clock-work-day-update-mode-line-internal (&optional force)
       ;; (defun org-clock-work-day-update-mode-line ()
         (setq org-mode-work-day-mode-line-string
               (org-propertize
 
-               (let ((clock-string (org-clock-get-work-day-clock-string))
+               (let ((clock-string (org-clock-get-work-day-clock-string force))
                      (help-text
                       ;; "Org-mode clock is running.\nmouse-1 shows a menu\nmouse-2 will jump to task"
                       "Today's work clocks."
@@ -338,15 +340,15 @@ If not, show simply the clocked time like 01:50."
                'mouse-face (if (featurep 'xemacs) 'highlight 'mode-line-highlight)))
         (force-mode-line-update))
 
-      (defun org-clock-work-day-update-mode-line ()
+      (defun org-clock-work-day-update-mode-line (&optional force)
         "Update the timer time in the mode line."
         (if org-mode-work-day-pause
             nil
-            (org-clock-work-day-update-mode-line-internal)
+            (org-clock-work-day-update-mode-line-internal force)
             (force-mode-line-update)))
 
-      (defun org-clock-work-day-mode-line-add ()
-        (interactive)
+      (defun org-clock-work-day-mode-line-add (force)
+        (interactive "P")
         ;; (or global-mode-string (setq global-mode-string '("")))
         ;; (or (memq 'org-mode-work-day-mode-line-string global-mode-string)
         ;;     (setq global-mode-string
@@ -359,7 +361,7 @@ If not, show simply the clocked time like 01:50."
                   (append global-mode-line-list
                           '(org-mode-work-day-mode-line-string))))
         (when (eq org-mode-work-day-display 'mode-line)
-          (org-clock-work-day-update-mode-line)
+          (org-clock-work-day-update-mode-line force)
           (when org-mode-work-mode-line-timer
             (cancel-timer org-mode-work-mode-line-timer)
             (setq org-mode-work-mode-line-timer nil))
@@ -669,11 +671,6 @@ using three `C-u' prefix arguments."
    org-directory (org-publish-get-attribute "notes" "org" :base-directory)
    org-default-notes-file (expand-file-name "notes.org" org-directory))
 
-  (defun sharad/org-remember-sys ()
-    (cond
-      ((string-match "spratap" (system-name)) 'office)
-      (t 'myself)))
-
   (defvar org-template-files-revert nil "")
 
   (add-hook 'ad-remember-mode-after-hook
@@ -711,98 +708,94 @@ using three `C-u' prefix arguments."
 
   ;; (get-tree '((a (b (c . d)))) 'a 'b 'c)
 
-  (defun make-orgremember-tmpl-with-sys (key s )
+  (deh-section "org-remember"
+   (defun* add-org-remember-templates (&rest project-spec)
+     "Add org project."
+     (add-to-list 'org-remember-templates project-spec t))
 
-    )
+   (setq org-remember-templates nil)
 
-  ;; (setq org-protocol-default-template-key "l")
-  (setq org-capture-templates
-        (quote
-         (("w"
-           "Default template"
-           entry
-           (file+headline "~/org/capture.org" "Notes")
-           "* %^{Title}\n\n  Source: %u, %c\n\n  %i"
-           :empty-lines 1)
-          ;; ... more templates here ...
-          )))
+   (defun org-remember-template-gen (&optional org-parent-dir)
+     (let ((org-parent-dir (or org-parent-dir
+                               (expand-file-name "remember" (org-publish-get-attribute "notes" "org" :base-directory)))))
+       (progn
+         (add-org-remember-templates
+          ?w "* %^{Title}\n\n  Source: %u, %c\n\n  %i" nil "Notes")
 
-  (defun org-template-gen (&optional org-parent-dir)
-    (let ((org-parent-dir (or org-parent-dir
-                              (org-publish-get-attribute "notes" "org" :base-directory))))
-      `(
-        (?w "* %^{Title}\n\n  Source: %u, %c\n\n  %i" nil "Notes")
-        ("Current Task"
-         ?k
-         "* TODO %? %^g\n %i\n [%a]\n"
-         (lambda ()
-           (org-template-set-file-writable (expand-file-name "notes.org" (find-task-dir)))))
-        ("Emacs"
-         ?m
-         "* TODO %? %^g\n %i\n [%a]\n"
-         ,(expand-file-name "emacs.org" org-parent-dir)))
-        ("Todo" ;; todos
-         ?t
-         "* TODO %? %^g\n %i\n [%a]\n"
-         ,(expand-file-name "todo.org" org-parent-dir))
-         "G T D")
-        ("Journal" ;; any kind of note
-         ?j
-         "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(expand-file-name "journal.org" org-parent-dir)
-         "j o u r n a l")
-        ("Plan" ;; any kind of note
-         ?n
-         "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(expand-file-name "plan.org" org-parent-dir)
-         "p l a n")
-        ("Learn" ;; any kind of note
-         ?l
-         "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(expand-file-name "learn.org" org-parent-dir)
-         "Learn")
-        ("Idea" ;; any kind of note
-         ?i
-         "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(expand-file-name "idea.org" org-parent-dir)
-         "Ideas")
-        ("Book" ;; book descp
-         ?b
-         "\n* %^{Book Title} %t :READING: \n%[~/Documents/CreatedContent/contents/org/remember/templates/book]\n [%a]\n"
-         ,(expand-file-name "journal.org" org-parent-dir)
-         "Books")
-        ("Private" ;; private note
-         ?p
-         "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(expand-file-name "privnotes.org" org-parent-dir))
-        ("Remember" ;; private note
-         ?r
-         "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(expand-file-name "remember.org" org-parent-dir))
-        ("SomeDay" ;; private note
-         ?s
-         "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(expand-file-name "someday.org" org-parent-dir))
-        ("Waiting-For" ;; private note
-         ?w
-         "\n* %^{topic} %T \n%i%?\n [%a]\n"
-         ,(expand-file-name "waiting4.org" org-parent-dir))
-        ("Contact" ;; contact
-         ?c
-         "\n* %^{Name} :CONTACT:\n%[~/Documents/CreatedContent/contents/org/remember/templates/contact]\n %i\n [%a]\n"
-         ,(expand-file-name "contacts.org" org-parent-dir))
-        ("Receipt" ;; receipt
-         ?e
-         "** %^{BriefDesc} %U %^g\n%?\n [%a]\n"
-         ,(expand-file-name "finances.org" org-parent-dir)))))
+         (add-org-remember-templates
+          "Current Task" ?k "* TODO %? %^g\n %i\n [%a]\n"
+          (lambda ()
+            (org-template-set-file-writable (expand-file-name "notes.org" (find-task-dir)))))
 
-  ;; end: from: http://members.optusnet.com.au/~charles57/GTD/remember.html
-  ;; (defvar org-remember-templates nil "templates for org.")
+         (add-org-remember-templates
+          "Emacs" ?m "* TODO %? %^g\n %i\n [%a]\n" (expand-file-name "emacs.org" org-parent-dir))
 
-  (setq org-remember-templates (org-template-gen (symbol-name (sharad/org-remember-sys))))
+         (add-org-remember-templates "Todo" ?t "* TODO %? %^g\n %i\n [%a]\n" (expand-file-name "todo.org" org-parent-dir) "G T D")
 
-  (functionp
-   (nth 3 (car org-remember-templates)))
+         (add-org-remember-templates
+          "Journal" ;; any kind of note
+          ?j "\n* %^{topic} %T \n%i%?\n [%a]\n" (expand-file-name "journal.org" org-parent-dir) "j o u r n a l")
+
+         (add-org-remember-templates "Plan" ;; any kind of note
+                                     ?n "\n* %^{topic} %T \n%i%?\n [%a]\n" (expand-file-name "plan.org" org-parent-dir) "p l a n")
+
+         (add-org-remember-templates "Learn" ;; any kind of note
+                                     ?l "\n* %^{topic} %T \n%i%?\n [%a]\n" (expand-file-name "learn.org" org-parent-dir) "Learn")
+
+         (add-org-remember-templates "Idea" ;; any kind of note
+                                     ?i "\n* %^{topic} %T \n%i%?\n [%a]\n" (expand-file-name "idea.org" org-parent-dir) "Ideas")
+
+         (add-org-remember-templates "Book" ;; book descp
+                                     ?b "\n* %^{Book Title} %t :READING: \n%[~/Documents/CreatedContent/contents/org/remember/templates/book]\n [%a]\n" (expand-file-name "journal.org" org-parent-dir) "Books")
+
+         (add-org-remember-templates "Private" ;; private note
+                                     ?p "\n* %^{topic} %T \n%i%?\n [%a]\n" (expand-file-name "privnotes.org" org-parent-dir))
+
+         (add-org-remember-templates "Remember" ;; private note
+                                     ?r "\n* %^{topic} %T \n%i%?\n [%a]\n" (expand-file-name "remember.org" org-parent-dir))
+
+         (add-org-remember-templates "SomeDay" ;; private note
+                                     ?s "\n* %^{topic} %T \n%i%?\n [%a]\n" (expand-file-name "someday.org" org-parent-dir))
+
+         (add-org-remember-templates "Waiting-For" ;; private note
+                                     ?w "\n* %^{topic} %T \n%i%?\n [%a]\n" (expand-file-name "waiting4.org" org-parent-dir))
+
+         (add-org-remember-templates "Contact" ;; contact
+                                     ?c "\n* %^{Name} :CONTACT:\n%[~/Documents/CreatedContent/contents/org/remember/templates/contact]\n %i\n [%a]\n" (expand-file-name "contacts.org" org-parent-dir))
+
+         (add-org-remember-templates "Receipt" ;; receipt
+                                     ?e "** %^{BriefDesc} %U %^g\n%?\n [%a]\n" (expand-file-name "finances.org" org-parent-dir)))))
+
+   ;; end: from: http://members.optusnet.com.au/~charles57/GTD/remember.html
+   ;; (defvar org-remember-templates nil "templates for org.")
+
+   (org-remember-template-gen)
+   )
+
+  (deh-section "org-capture"
+
+    (defun* add-org-capture-templates (&rest project-spec)
+      "Add org project."
+      (add-to-list 'org-capture-templates project-spec t))
+
+    ;; (setq org-protocol-default-template-key "l")
+    (setq org-capture-templates nil)
+
+   (defun org-remember-template-gen (&optional org-parent-dir)
+     (let ((org-parent-dir (or org-parent-dir
+                               (expand-file-name "capture" (org-publish-get-attribute "notes" "org" :base-directory)))))
+       (progn
+
+         (add-org-capture-templates
+          "w" "Default template"
+          'entry
+          `(file+headline ,(expand-file-name "capture.org" org-parent-dir) "Notes")
+          "* %^{Title}\n\n  Source: %u, %c\n\n  %i"
+          :empty-lines 1)
+
+         )))
+
+   (org-remember-template-gen))
 
   (deh-section "org-protocol-open-source"
     ;; [[http://orgmode.org/worg/org-contrib/org-protocol.html#sec-7][Edit published content: org-protocol-open-source]]
@@ -823,7 +816,7 @@ using three `C-u' prefix arguments."
   ;; End
   ;; from http://www.emacswiki.org/emacs/RememberMode#toc7
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  )
+  ) ;; (deh-require-maybe (and
 
 (when nil ;; deh-section "babel"
   ;; http://draketo.de/book/export/html/41

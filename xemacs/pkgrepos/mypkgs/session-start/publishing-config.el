@@ -40,6 +40,40 @@
     (defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
     (defvar *muse-website-address*   (concat *website-address* "muse/"))
 
+    (defun* read-muse-style-spec ()
+      (let* ((muse-dir (read-directory-name "Muse Project Directory: " *muse-top-dir*))
+             (publishing-path
+              (read-directory-name
+               "Muse Project Directory: "
+               (concat *muse-generated-top-dir* (replace-regexp-in-string *muse-top-dir* "" muse-dir))))
+             (publishing-style
+              (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
+             (publishing-url (read-from-minibuffer "Publishing Base URL: "))
+             (publishing-options nil))
+        (list muse-dir publishing-path publishing-style publishing-url publishing-options)))
+
+    (defun* read-muse-project-spec ()
+      (let* ((name (read-from-minibuffer "Project Name: "))
+             (muse-dirs
+              (read-directory-name "Muse Project Directory: " (concat *muse-top-dir* "/" name)))
+             (publishing-path
+              (read-directory-name
+               "Muse Project Directory: "
+               (concat *muse-generated-top-dir*
+                       (replace-regexp-in-string *muse-top-dir* ""
+                                                 (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
+             (publishing-style
+              (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
+             (publishing-url (read-from-minibuffer "Publishing Base URL: "))
+             (publishing-options nil))
+        `(,name
+          ,@(make-muse-style-spec
+             (if (consp muse-dirs) (car muse-dirs) muse-dirs)
+             publishing-path
+             publishing-style
+             publishing-url
+             publishing-options))))
+
     (defun add-muse-project (project-spec)
       "Add muse project."
       (interactive
@@ -121,40 +155,6 @@
            publishing-style
            publishing-url
            publishing-options)))
-
-    (defun* read-muse-style-spec ()
-      (let* ((muse-dir (read-directory-name "Muse Project Directory: " *muse-top-dir*))
-             (publishing-path
-              (read-directory-name
-               "Muse Project Directory: "
-               (concat *muse-generated-top-dir* (replace-regexp-in-string *muse-top-dir* "" muse-dir))))
-             (publishing-style
-              (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
-             (publishing-url (read-from-minibuffer "Publishing Base URL: "))
-             (publishing-options nil))
-        (list muse-dir publishing-path publishing-style publishing-url publishing-options)))
-
-    (defun* read-muse-project-spec ()
-      (let* ((name (read-from-minibuffer "Project Name: "))
-             (muse-dirs
-              (read-directory-name "Muse Project Directory: " (concat *muse-top-dir* "/" name)))
-             (publishing-path
-              (read-directory-name
-               "Muse Project Directory: "
-               (concat *muse-generated-top-dir*
-                       (replace-regexp-in-string *muse-top-dir* ""
-                                                 (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
-             (publishing-style
-              (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
-             (publishing-url (read-from-minibuffer "Publishing Base URL: "))
-             (publishing-options nil))
-        `(,name
-          ,@(make-muse-style-spec
-             (if (consp muse-dirs) (car muse-dirs) muse-dirs)
-             publishing-path
-             publishing-style
-             publishing-url
-             publishing-options))))
 
     (defun content-muse-dir (path)
         "thisandthat."
