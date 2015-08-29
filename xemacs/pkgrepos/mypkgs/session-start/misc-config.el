@@ -22,9 +22,11 @@
 
 ;;; Commentary:
 
-;; erc config
+;; misc config
 
 ;;; Code:
+
+(require 'macros-config)
 
 (deh-section "autoconfig"
   (unless user-emacs-directory
@@ -704,6 +706,14 @@ The indirect buffer can have another major mode."
     (insert-file-contents filePath)
     (buffer-string)))
 ;; thanks to “Pascal J Bourguignon” and “TheFlyingDutchman 〔zzbba…@aol.com〕”. 2010-09-02
+
+(deh-require-maybe ini-mode
+  (autoload 'ini-mode "ini-mode" nil t)
+  (add-to-list 'auto-mode-alist '("\\.ini\\'" . ini-mode)))
+
+(deh-require-maybe any-ini-mode
+  (add-to-list 'auto-mode-alist '(".*\\.ini$" . any-ini-mode))
+  (add-to-list 'auto-mode-alist '(".*\\.conf$" . any-ini-mode)))
 
 (provide 'misc-config)
 ;;; misc-config.el ends here

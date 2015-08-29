@@ -37,12 +37,12 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
         ! pgrep remind  >& /dev/null ; then
     # remind -z1 \
     #     -k"~/bin/popremind %s &" \
-    #     ${DOTREMINDERS-~/.Organize/remind/Reminders/init.rem} &!
+    #     ${DOTREMINDERS-$HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem} &!
 
-        if [ -r ${DOTREMINDERS-~/.Organize/remind/Reminders/init.rem} ] ; then
+        if [ -r ${DOTREMINDERS-$HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem} ] ; then
             remind -z1 \
                 -k~/bin/popremind\ %s\ \& \
-                ${DOTREMINDERS-~/.Organize/remind/Reminders/init.rem} &!
+                ${DOTREMINDERS-$HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem} &!
         fi
 
     # for testing remind that do not go into daemon mode, try below command

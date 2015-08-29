@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+(add-to-list 'debug-tags-level-list
+             '(timer 4))
 
 (defun run-with-nonobtrusive-aware-idle-timers (longdelay repeat shortdelay fn arg &optional cancel)
   "Run a function after idle time of N, but will try to run when user"
@@ -36,12 +38,12 @@
           (run-with-idle-timer longdelay repeat
                                (lambda (func)
                                  (unless subtimer
-                                   (message "shortdelay %s running timer" shortdelay)
+                                   (dmessage 'timer 7 "shortdelay %s running timer" shortdelay)
                                    (setq subtimer
                                          (run-with-nonobtrusive-timers shortdelay shortdelay 4
                                                                        (lambda (func1)
                                                                          (progn
-                                                                           (message "shortdelay %s running fun" shortdelay)
+                                                                           (dmessage 'timer 7 "shortdelay %s running fun" shortdelay)
                                                                            (if (funcall func1)
 
                                                                                ;; (when subtimer
@@ -79,7 +81,7 @@
              (let ((current-idle-sec (float-time (or (current-idle-time) '(0 0 0)))))
                (if (>= current-idle-sec useridlesec-moving) ;NOTE
                    (progn
-                     (message "shortob running fun useridlesec-moving %s" useridlesec-moving)
+                     (dmessage 'timer 7 "shortob running fun useridlesec-moving %s" useridlesec-moving)
                      (funcall (car func) (cdr func))
                      (setq useridlesec-moving useridlesec)
                      (when timer
@@ -87,8 +89,9 @@
                        (setq timer nil))
                      t)
                    (progn
-                     (message "shortob not running fun useridlesec-moving %s" useridlesec-moving)
-                     (unless (zerop useridlesec-moving) (decf useridlesec-moving))
+                     (dmessage 'timer 7 "shortob not running fun useridlesec-moving %s" useridlesec-moving)
+                     (unless (zerop useridlesec-moving)
+                       (decf useridlesec-moving))
                      nil))))
            (cons fn arg)))))
 
@@ -99,7 +102,7 @@
     (setq nonobtrusive-test-timer
           (run-with-nonobtrusive-aware-idle-timers 4 4 2
                                                    (lambda ()
-                                                     (message "Hello Hi World")
+                                                     (dmessage 'timer 7 "Hello Hi World")
                                                      (if nonobtrusive-test-timer (cancel-timer nonobtrusive-test-timer))
                                                      (setq nonobtrusive-test-timer nil))
                                                    nil

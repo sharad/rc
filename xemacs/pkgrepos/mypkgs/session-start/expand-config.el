@@ -49,6 +49,13 @@
     (require 'desktop)
     (require 'session-config)
 
+    (progn
+      (require 'desktop)
+      (require 'session-config)
+      (add-to-list 'desktop-minor-mode-handlers
+                   (cons 'pabbrev-mode
+                         (desktop-get-readonly-proof-mode pabbrev-mode))))
+
     ;; (defun desktop-handler-pabbrev-mode (desktop-buffer-locals)
     ;;   (unless desktop-buffer-read-only
     ;;     (pabbrev-mode 1)))

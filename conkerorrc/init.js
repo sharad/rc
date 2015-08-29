@@ -32,6 +32,13 @@ let (conkerorhome = get_home_directory().path + "/.conkerorrc/") {
     }
 };
 
+//{{
+for (var i = 0; i < get_recent_conkeror_window().buffers.count; i++)
+{
+  stop_loading(get_recent_conkeror_window().buffers.get_buffer(i));
+}
+//}}
+
 
 
 let (home = get_home_directory()) {
@@ -67,6 +74,12 @@ Components.classes["@mozilla.org/login-manager;1"]
 //}}}
 
 
+//{{
+for (var i = 0; i < get_recent_conkeror_window().buffers.count; i++)
+{
+  stop_loading(get_recent_conkeror_window().buffers.get_buffer(i));
+}
+//}}
 
 
 //{{ mailto config
@@ -75,4 +88,3 @@ Components.classes["@mozilla.org/login-manager;1"]
 //     user_pref("network.protocol-handler.app.mailto", home + "/bin/gnus-mailto");
 // }
 //}}
-

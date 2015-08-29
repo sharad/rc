@@ -4,10 +4,20 @@
 require("page-modes/google-search-results.js"); // google search results
 require("page-modes/wikipedia.js");     // wikipedia mode
 
+//{{
 // load session module
+// http://conkeror.org/Sessions
 require("session.js");
 session_auto_save_auto_load = true; // auto-load session
+// session_auto_save_auto_load = "prompt"; // auto-load session
+// Setup how long in days, history entries are kept before being automatically expired.
+session_pref('browser.history_expire_days', 30);
 
+for (var i = 0; i < get_recent_conkeror_window().buffers.count; i++)
+{
+  stop_loading(get_recent_conkeror_window().buffers.get_buffer(i));
+}
+//}}
 
 // tab bar
 require("new-tabs.js");
@@ -56,3 +66,17 @@ function enable_scrollbars (buffer) {
 }
 add_hook("create_buffer_late_hook", enable_scrollbars);
 
+//{{
+for (var i = 0; i < get_recent_conkeror_window().buffers.count; i++)
+{
+  stop_loading(get_recent_conkeror_window().buffers.get_buffer(i));
+}
+
+add_hook("window_initialize_late_hook",
+         function (window) {
+           for (var i = 0; i < window.buffers.count; i++)
+           {
+             stop_loading(window.buffers.get_buffer(i));
+           }
+         });
+//}}

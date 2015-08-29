@@ -73,13 +73,14 @@ function update_save_path(info)
 function my_title_format (window)
 {
   // http://conkeror.org/Profiles
-  return '{'+get_current_profile()+'} '+window.buffers.current.description;
+  return '{'+get_current_profile()+'} [' + window.buffers.count + '] '+window.buffers.current.description;
 }
 
 title_format_fn = my_title_format;
 // }}
 
-// {{ Readability is a simple tool that makes reading on the web more enjoyable by removing the clutter around what you are reading
+// {{ Readability is a simple tool that makes reading on the web more
+// enjoyable by removing the clutter around what you are reading
 // from: http://conkeror.org/Tips?highlight=%28add%5C_hook%29%7C%28hook%29#Makethecurrentpagereadablebyremovingclutter
 // http://lab.arc90.com/experiments/readability/
 interactive("readability_arc90",
@@ -181,8 +182,8 @@ interactive("delicious-post-sel",
             function (I)
             {
               check_buffer(I.buffer, content_buffer);
-              var domParser = Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
-              var xsendurl  = 'https://api.delicious.com/v1/posts/suggest?&url='+encodeURIComponent(I.buffer.top_frame.getSelection());
+              var domParser = Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance( Components.interfaces.nsIDOMParser );
+              var xsendurl  = 'https://api.delicious.com/v1/posts/suggest?&url=' + encodeURIComponent(I.buffer.top_frame.getSelection());
               var xcontent  = (yield send_http_request(load_spec({uri: xsendurl})));
               var c         = domParser.parseFromString(xcontent.responseText, "text/xml");
 
@@ -257,7 +258,7 @@ interactive("delicious-post",
               var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
 
               // {{ completer
-              var xsendurl = 'https://api.delicious.com/v1/posts/suggest?&url='+encodeURIComponent(I.buffer.display_uri_string);
+              var xsendurl = 'https://api.delicious.com/v1/posts/suggest?&url='+encodeURIComponent(I.buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
               var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
               var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
               // I.window.alert(xcontent.responseText);
@@ -280,7 +281,7 @@ interactive("delicious-post",
               // }}
 
               // {{ initial value
-              var tsendurl   = 'https://api.delicious.com/v1/posts/get?url=' + encodeURIComponent(I.buffer.display_uri_string);
+              var tsendurl   = 'https://api.delicious.com/v1/posts/get?url=' + encodeURIComponent(I.buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
               var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
               // I.window.alert(tagcontent.responseText);
               var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
@@ -289,9 +290,9 @@ interactive("delicious-post",
 
               if (post.length > 0 &&
                   post[0].attributes[0].textContent.length > 0) {
-                var desc = post[0].attributes[0].textContent;
+                var desc = post[0].attributes[0].textContent.replace(/[^\x00-\x7F]/g, '');
               } else {
-                var desc = (I.buffer.title == "" ? I.buffer.display_uri_string : I.buffer.title);
+                var desc = (I.buffer.title == "" ? I.buffer.display_uri_string : I.buffer.title).replace(/[^\x00-\x7F]/g, '');
               }
 
               var shared = null;
@@ -307,7 +308,7 @@ interactive("delicious-post",
                 encodeURIComponent((yield I.minibuffer.read(
                   $prompt = "url (required): ",
                   // $initial_value = I.buffer.display_uri_string)))
-                  $initial_value = I.buffer.display_uri_string))) +
+                  $initial_value = I.buffer.display_uri_string.replace(/[^\x00-\x7F]/g, '')))) +
               // encodeURIComponent(I.buffer.display_uri_string) +
                 '&description=' +
                 encodeURIComponent((yield I.minibuffer.read(
@@ -340,8 +341,8 @@ interactive("delicious-post",
 interactive("delicious-post-link",
             "bookmark the link via delicious",
             function (I) {
-              bo = yield read_browser_object(I) ;
-              mylink = load_spec_uri_string(load_spec(encodeURIComponent(bo)));
+              var bo = yield read_browser_object(I);
+              var mylink = load_spec_uri_string(load_spec(encodeURIComponent(bo))).replace(/[^\x00-\x7F]/g, '');
               check_buffer(I.buffer, content_buffer);
 
               var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
@@ -349,7 +350,7 @@ interactive("delicious-post-link",
 
               // {{ completer
               var xsendurl = 'https://api.delicious.com/v1/posts/suggest?&url='+mylink;
-              var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
+              var xcontent = (yield send_http_request(load_spec({uri: xsendurl}))).replace(/[^\x00-\x7F]/g, '');
               var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
               // I.window.alert(xcontent.responseText);
               var completions = new Array();
@@ -377,11 +378,11 @@ interactive("delicious-post-link",
               if (post.length > 0 &&
                   post[0].attributes[0].textContent.length > 0)
               {
-                var desc = post[0].attributes[0].textContent;
+                var desc = post[0].attributes[0].textContent.replace(/[^\x00-\x7F]/g, '');
               }
               else
               {
-                var desc = (bo.textContent == "" ? bo : bo.textContent);
+                var desc = (bo.textContent == "" ? bo : bo.textContent).replace(/[^\x00-\x7F]/g, '');
               }
 
               var shared = null;
@@ -399,8 +400,8 @@ interactive("delicious-post-link",
                 // mylink
                 encodeURIComponent((yield I.minibuffer.read(
                   $prompt = "url (required): ",
-                  // $initial_value = decodeURIComponent(mylink)))) +
-                  $initial_value = bo))) +
+                  $initial_value = decodeURIComponent(mylink)))) +
+                  // $initial_value = bo // ))) +
                 '&description=' +
                 encodeURIComponent(
                   (yield I.minibuffer.read(
@@ -979,7 +980,27 @@ define_key(content_buffer_normal_keymap, "L", "search-clipboard-contents-doubleq
 // }}}
 
 
+//{{
+// Stop loading all buffer (key A-h)
+define_key(default_global_keymap, "A-h",
+          function (I)
+          {
+              for (var i = 0; i < I.window.buffers.count; i++)
+              {
+                  stop_loading(I.window.buffers.get_buffer(i));
+              }
+          });
+// Reload all buffer (key A-r)
 
+define_key(default_global_keymap, "A-r",
+          function (I)
+          {
+              for (var i = 0; i < I.window.buffers.count; i++)
+              {
+                  reload(I.window.buffers.get_buffer(i));
+              }
+          });
+//}}
 
 
 

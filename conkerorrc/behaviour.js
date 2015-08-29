@@ -9,7 +9,7 @@
 // list. To have the find-url prompt included history urls in its
 // completions, set this in your rc:
 
-// url_completion_use_history = true;
+url_completion_use_history = true;
 
 // If you prefer not to have history mixed in with webjumps and
 // bookmarks, you can create a separate command with its own bindings
@@ -153,4 +153,32 @@ require("noscript");
 //{{ Using Esc key in Conkeror [https://truongtx.me/2013/08/08/using-esc-key-in-conkeror/]
 require("global-overlay-keymap");
 define_key_alias("C-o", "escape");
+//}}
+
+//{{ NOT using https://truongtx.me/2012/12/30/conkeror-get-tinyurl-for-the-current-page/
+// get tiny url for the current page
+// press * q and then c to generate and copy the tinyurl into clipboard
+
+interactive("tinyurl",
+            "tinyurl",
+            function (I, prompt) {
+              var element = yield read_browser_object(I);
+              browser_set_element_focus(I.buffer, element);
+              var text = browser_element_text(I.buffer, element);
+
+              let createurl = 'http://tinyurl.com/api-create.php?url=' + text;
+              try {
+                var content = yield send_http_request(
+                  load_spec({uri: createurl}));
+
+                writeToClipboard(content.responseText);
+                I.buffer.window.minibuffer.message("Copied: " + content.responseText);
+
+              } catch (e) { }
+
+            },
+            $browser_object = browser_object_links);
+
+
+
 //}}

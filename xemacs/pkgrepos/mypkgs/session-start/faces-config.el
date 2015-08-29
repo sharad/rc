@@ -1,5 +1,7 @@
 ;; -*- truncate-lines: t; -*-
 
+(require 'macros-config)
+
 (defun increase-font-size (size)
   (custom-set-faces
    '(default

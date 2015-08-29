@@ -637,7 +637,7 @@
                 "Org Project Publishing Directory: "
                 (concat *org-generated-top-dir*
                         (replace-regexp-in-string *org-top-dir* ""
-                                                  (if (consp org-dirs) (car org-dirs) org-dirs)))))
+                                                  (if (consp org-dir) (car org-dir) org-dir)))))
               (publishing-options nil))
          (list
           name
@@ -669,7 +669,7 @@
                "Org Project Publishing Directory: "
                (concat *org-generated-top-dir*
                        (replace-regexp-in-string *org-top-dir* ""
-                                                 (if (consp org-dirs) (car org-dirs) org-dirs)))))
+                                                 (if (consp org-dir) (car org-dir) org-dir)))))
              (publishing-options nil))
         `(
           ,name

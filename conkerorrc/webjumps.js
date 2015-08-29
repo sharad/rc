@@ -236,17 +236,33 @@ define_webjump("kol", "http://kol.coldfront.net/thekolwiki/index.php/%s");
 // gitweb-cz conkeror
 // gitweb-ko git/git
 
-// To make completions available use M-x webjump-get-index and select gitweb-cz then, once the download is finished, completions will be available for that webjump. Sites with many repositories (such as the two given) can take many minutes to return the OPML data.
+// To make completions available use M-x webjump-get-index and select
+// gitweb-cz then, once the download is finished, completions will be
+// available for that webjump. Sites with many repositories (such as
+// the two given) can take many minutes to return the OPML data.
 
-// When defining the webjump, a default repository at the gitweb server can be specified using the $default keyword. An $alternative may otherwise be given as usual. If neither are given then the alternative url for the webjump is defined to be the gitweb repository list page.
+// When defining the webjump, a default repository at the gitweb
+// server can be specified using the $default keyword. An $alternative
+// may otherwise be given as usual. If neither are given then the
+// alternative url for the webjump is defined to be the gitweb
+// repository list page.
 
 // 2.6.2. XPath webjumps
 
-// An xpath webjump extracts the set of referenced web pages from an index page using an XPath expression. For these webjumps to work, the index must be downloaded using M-x webjump-get-index.
+// An xpath webjump extracts the set of referenced web pages from an
+// index page using an XPath expression. For these webjumps to work,
+// the index must be downloaded using M-x webjump-get-index.
 
-// Unfortunately, the xulrunner parser that is used is quite fussy and, in particular, is an xml parser. Many web pages fail to parse correctly. To correct this problem the downloaded index page is automatically cleaned up using index_xpath_webjump_tidy_command. The html tidy program should be installed for this to work.
+// Unfortunately, the xulrunner parser that is used is quite fussy
+// and, in particular, is an xml parser. Many web pages fail to parse
+// correctly. To correct this problem the downloaded index page is
+// automatically cleaned up using
+// index_xpath_webjump_tidy_command. The html tidy program should be
+// installed for this to work.
 
-// It can take a few attempts to figure out an appropriate XPath expression; index_webjump_try_xpath is provided to help with that process.
+// It can take a few attempts to figure out an appropriate XPath
+// expression; index_webjump_try_xpath is provided to help with that
+// process.
 
 // # Hey get it.
 // // Examples:
@@ -1058,7 +1074,7 @@ define_webjump("forum/gmane", "http://gmane.org/find.php?list=%s");
 define_webjump("commandlinefu", "http://www.commandlinefu.com/commands/matching/%s/ZmluZA==/sort-by-votes");
 //}}
 
-get_recent_conkeror_window().alert("hello world");
+if (get_recent_conkeror_window()) get_recent_conkeror_window().alert("hello world");
 
 //{{
 define_webjump("art/deviantart", "http://www.deviantart.com/?q=%s");
@@ -1072,3 +1088,7 @@ define_webjump("coverity", "http://india-coverity:8080/sourcebrowser.htm?project
 //{{
 define_webjump("doc/ibiblio", "http://www.ibiblio.org/gsearch/?cx=006345117986368989313%3Ar2fkn4tcz5i&cof=FORID%3A11&ie=UTF-8&q=%s");
 //}}
+
+//{ history
+define_webjump("history", "http://www.historytoday.com/site-search/%s");
+//}

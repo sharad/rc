@@ -1,3 +1,28 @@
+;;; orgmode-config.el --- orgmode configuration
+
+;; Copyright (C) 2015  sharad
+
+;; Author: sharad <spratap@merunetworks.com>
+;; Keywords:convenience, data, hypermedia, wp
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; Publishing related configuration.
+
+;;; Code:
 
 (require 'macros-config)
 (require 'auto-load-config)
@@ -87,7 +112,8 @@
                          (forward-line -2)
                          (org-timer-set-timer nil))
                        (call-interactively 'org-timer-set-timer)))
-                 (save-buffer)))
+                 (save-buffer)
+                 (org-save-all-org-buffers)))
 
      (add-hook 'org-clock-out-hook
                '(lambda ()
@@ -96,7 +122,8 @@
                       org-timer-countdown-timer)
                      (org-timer-stop))
                  (org-clock-get-work-day-clock-string t)
-                 (save-buffer)))
+                 (save-buffer)
+                 (org-save-all-org-buffers)))
 
      (defun org-clock-in-if-not ()
        (interactive)
@@ -122,15 +149,17 @@
                           nil))
                         (let (org-log-note-clock-out
                               buffer-read-only)
-                          (org-clock-out)))))
+                          (org-clock-out))))))
 
+               t)
+
+     (add-hook 'sharad/enable-desktop-restore-interrupting-feature
+               '(lambda ()
                  (if (fboundp 'org-clock-persistence-insinuate)
                      (org-clock-persistence-insinuate)
                      (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
                  (if (fboundp 'org-clock-start-check-timer)
-                     (org-clock-start-check-timer)))
-
-               t)
+                     (org-clock-start-check-timer))))
 
      (defmacro org-with-clock-position (clock &rest forms)
        "Evaluate FORMS with CLOCK as the current active clock."
@@ -379,7 +408,7 @@ If not, show simply the clocked time like 01:50."
           (setq org-mode-work-mode-line-timer nil)))
 
 
-      (org-clock-work-day-mode-line-add))
+      (org-clock-work-day-mode-line-add t))
 
     (defun org-timer-update-mode-line ()
       "Update the timer time in the mode line."
@@ -429,7 +458,7 @@ If not, show simply the clocked time like 01:50."
          org-clock-check-long-timer-period
          org-clock-check-short-timer-period
          (lambda ()
-           (message "after 7 sec.")
+           ;; (message "after 7 sec.")
            (unless (org-clock-is-active)
              (org-clock-in-if-not)))
          nil
@@ -884,3 +913,4 @@ using three `C-u' prefix arguments."
 
 
 (provide 'orgmode-config)
+;; orgmode-config.el ends here

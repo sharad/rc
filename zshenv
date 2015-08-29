@@ -53,7 +53,7 @@ infopath=(
     /usr/share/local/info
 )
 
-export DOTREMINDERS=~/.Organize/remind/Reminders/init.rem # for remind or rem
+export DOTREMINDERS=~/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem # for remind or rem
 export HOST
 # export WORKPLACE=
 
@@ -77,4 +77,3 @@ fi
 # {{{ *Functions*
 [ -r ~/.zshall/envfuns ] && source ~/.zshall/envfuns
 # }}}
-

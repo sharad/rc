@@ -470,8 +470,8 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
     if whence -p rem > /dev/null 2>&1 ; then
         command rem -ahq
     elif whence -p remind > /dev/null 2>&1 ; then
-        if [ -r $HOME/.reminders/init.rem ] ; then
-            command remind -ahq $HOME/.reminders/init.rem
+        if [ -r $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem ] ; then
+            command remind -ahq $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem
         fi
     fi
     if whence -p bugz >& /dev/null; then

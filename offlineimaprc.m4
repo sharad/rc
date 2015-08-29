@@ -1,4 +1,6 @@
-include(defs)
+# -*- mode: ini; -*-
+
+include(defs.m4)
 
 [[general]]
 metadata = ~/.offlineimap
@@ -50,18 +52,18 @@ realdelete = no
 ## https://bugs.launchpad.net/ubuntu/+source/offlineimap/+bug/1015692
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
 
-[[Account OfficePlain]]
-localrepository =  OfficeLocal
-remoterepository = OfficeRemotePlain
+[[Account Office-Meru-Plain]]
+localrepository =  Office-Meru-Local
+remoterepository = Office-Meru-RemotePlain
 postsynchook = notmuch new
 
-[[Account Office]]
-localrepository =  OfficeLocal
-remoterepository = OfficeRemoteSSL
+[[Account Office-Meru]]
+localrepository =  Office-Meru-Local
+remoterepository = Office-Meru-RemoteSSL
 postsynchook = notmuch new
 
 
-[[Repository OfficeLocal]]
+[[Repository Office-Meru-Local]]
 type = IMAP
 # sep = /
 remotehost = localhost
@@ -69,7 +71,7 @@ remoteport = 143
 remoteusereval = get_username("localhost")
 remotepasseval = get_password("localhost")
 
-[[Repository OfficeRemotePlain]]
+[[Repository Office-Meru-RemotePlain]]
 type = IMAP
 remotehost = SETUP_offlinemaprc_office_imap_host
 remoteport = 143
@@ -91,11 +93,11 @@ folderfilter = lambda foldername: re.search('^INBOX$|^INBOX/info|^(Sent Items|De
 maxconnections = 4
 # holdconnectionopen = no
 nametrans = lambda foldername: \
-                    re.sub('^', 'Office/', re.sub('^INBOX/', 'lists/', foldername))
+                    re.sub('^', 'Office/Meru/', re.sub('^INBOX/', 'lists/', foldername))
 
 
 
-[[Repository OfficeRemoteSSL]]
+[[Repository Office-Meru-RemoteSSL]]
 type = IMAP
 remotehost = SETUP_offlinemaprc_office_imap_host
 remoteport = 443
@@ -117,7 +119,78 @@ folderfilter = lambda foldername: re.search('^INBOX$|^INBOX/info|^(Sent Items|De
 maxconnections = 4
 # holdconnectionopen = no
 nametrans = lambda foldername: \
-                    re.sub('^', 'Office/', re.sub('^INBOX/', 'lists/', foldername))
+                    re.sub('^', 'Office/Meru/', re.sub('^INBOX/', 'lists/', foldername))
 
 
 
+#### Another ####
+
+
+[[Account Office-Fortinet-Plain]]
+localrepository =  Office-Fortinet-Local
+remoterepository = Office-Fortinet-RemotePlain
+postsynchook = notmuch new
+
+[[Account Office-Fortinet]]
+localrepository =  Office-Fortinet-Local
+remoterepository = Office-Fortinet-RemoteSSL
+postsynchook = notmuch new
+
+
+[[Repository Office-Fortinet-Local]]
+type = IMAP
+# sep = /
+remotehost = localhost
+remoteport = 143
+remoteusereval = get_username("localhost")
+remotepasseval = get_password("localhost")
+
+[[Repository Office-Fortinet-RemotePlain]]
+type = IMAP
+remotehost = SETUP_offlinemaprc_office_imap_host
+remoteport = 143
+ssl = no
+remoteusereval = get_username( "SETUP_offlinemaprc_office_keyring_host" )
+remotepasseval = get_password( "SETUP_offlinemaprc_office_keyring_host" )
+
+# reference = Mail
+realdelete = no
+# folderfilter = lambda foldername: foldername in ['List/DATA/ZZ']
+# folderfilter = lambda foldername: foldername in ['INBOX', 'Sent Items', 'Deleted Items', 'Calendar', 'INBOX/DATA/junk']
+# folderfilter = lambda foldername: re.search('^INBOX', foldername)
+
+# folderfilter = lambda foldername: re.search('^INBOX$|^INBOX/info|^(Sent Items|Deleted Items|Calendar)$', foldername) and (not re.search('(techtalk)', foldername))
+
+folderfilter = lambda foldername: re.search('^INBOX$|^INBOX/info|^(Sent Items|Deleted Items)$', foldername) and (not re.search('(techtalk)', foldername))
+
+
+maxconnections = 4
+# holdconnectionopen = no
+nametrans = lambda foldername: \
+                    re.sub('^', 'Office/Fortinet/', re.sub('^INBOX/', 'lists/', foldername))
+
+
+
+[[Repository Office-Fortinet-RemoteSSL]]
+type = IMAP
+remotehost = SETUP_offlinemaprc_office_imap_host
+remoteport = 443
+ssl = yes
+remoteusereval = get_username( "SETUP_offlinemaprc_office_keyring_host" )
+remotepasseval = get_password( "SETUP_offlinemaprc_office_keyring_host" )
+
+# reference = Mail
+realdelete = no
+# folderfilter = lambda foldername: foldername in ['List/DATA/ZZ']
+# folderfilter = lambda foldername: foldername in ['INBOX', 'Sent Items', 'Deleted Items', 'Calendar', 'INBOX/DATA/junk']
+# folderfilter = lambda foldername: re.search('^INBOX', foldername)
+
+# folderfilter = lambda foldername: re.search('^INBOX$|^INBOX/info|^(Sent Items|Deleted Items|Calendar)$', foldername) and (not re.search('(techtalk)', foldername))
+
+folderfilter = lambda foldername: re.search('^INBOX$|^INBOX/info|^(Sent Items|Deleted Items)$', foldername) and (not re.search('(techtalk)', foldername))
+
+
+maxconnections = 4
+# holdconnectionopen = no
+nametrans = lambda foldername: \
+                    re.sub('^', 'Office/Fortinet/', re.sub('^INBOX/', 'lists/', foldername))

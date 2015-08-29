@@ -126,4 +126,15 @@
                                (blink-matching-open))))
       (when matching-text (message matching-text)))))
 
+
+(deh-require-maybe corral
+  ;; (https://github.com/nivekuil/corral)
+  (global-set-key-if-unbind (kbd "M-9") 'corral-parentheses-backward)
+  (global-set-key-if-unbind (kbd "M-0") 'corral-parentheses-forward)
+  (global-set-key-if-unbind (kbd "M-[") 'corral-brackets-backward)
+  (global-set-key-if-unbind (kbd "M-]") 'corral-brackets-forward)
+  (global-set-key-if-unbind (kbd "M-{") 'corral-braces-backward)
+  (global-set-key-if-unbind (kbd "M-}") 'corral-braces-forward)
+  (global-set-key-if-unbind (kbd "M-\"") 'corral-double-quotes-backward))
+
 (provide 'editing-config)
