@@ -166,7 +166,7 @@ interactive("tinyurl",
               browser_set_element_focus(I.buffer, element);
               var text = browser_element_text(I.buffer, element);
 
-              let createurl = 'http://tinyurl.com/api-create.php?url=' + text;
+              let createurl = 'http://tinyurl.com/api-create.php?url=' + encodeURIComponent( text );
               try {
                 var content = yield send_http_request(
                   load_spec({uri: createurl}));

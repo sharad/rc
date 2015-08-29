@@ -963,7 +963,9 @@ define_webjump("mobile/trace/store", "http://tracker.mobileringtonesstore.com/mo
 define_webjump("mobile/trace/india", "http://indiatrace.com/trace-mobile-number-location/trace-mobile-number-location.php?N=%s");
 
 //{{
-define_webjump("search/auto", "http://lmgtfy.com/?q=%s");
+define_webjump("search/auto",   "http://lmgtfy.com/?q=%s");
+define_webjump("search/funny",  "http://lmgtfy.com/?q=%s");
+define_webjump("search/lmgtfy", "http://lmgtfy.com/?q=%s");
 define_webjump("search/clusty", "http://clusty.com/search?query=%s");
 define_webjump("search/duckduckgo", "https://duckduckgo.com/?q=%s");
 define_webjump(
