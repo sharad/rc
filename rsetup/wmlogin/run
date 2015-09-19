@@ -249,11 +249,11 @@ then
     keynav  >& /dev/null &!
 fi
 
-if whence -p skyped >& /dev/null &&
-   ! pgrep skyped >& /dev/null
-then
-    skyped -c ~/.skyped/skyped.conf >&/dev/null &!
-fi
+# if whence -p skyped >& /dev/null &&
+#    ! pgrep skyped >& /dev/null
+# then
+#     skyped -c ~/.skyped/skyped.conf >&/dev/null &!
+# fi
 
 # Android LinConnect
 if [ -x ~/.linconnect/LinConnectServer/update.sh ] &&

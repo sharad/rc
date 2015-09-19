@@ -72,13 +72,13 @@ if [ $DISPLAY ] ; then
         fi
     fi
 
-    if whence -p urxvtd >& /dev/null &&
-        ! pgrep urxvtd >& /dev/null ; then
-        urxvtd \
-            --quiet \
-            --opendisplay \
-            --fork &
-    fi
+    # if whence -p urxvtd >& /dev/null &&
+    #     ! pgrep urxvtd >& /dev/null ; then
+    #     urxvtd \
+    #         --quiet \
+    #         --opendisplay \
+    #         --fork &
+    # fi
 
     # DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
 
