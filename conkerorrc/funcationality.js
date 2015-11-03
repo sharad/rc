@@ -350,7 +350,8 @@ interactive("delicious-post-link",
 
               // {{ completer
               var xsendurl = 'https://api.delicious.com/v1/posts/suggest?&url='+mylink;
-              var xcontent = (yield send_http_request(load_spec({uri: xsendurl}))).replace(/[^\x00-\x7F]/g, '');
+              var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
+              // var xcontent = xcontent.replace(/[^\x00-\x7F]/g, '');
               var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
               // I.window.alert(xcontent.responseText);
               var completions = new Array();

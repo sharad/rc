@@ -114,8 +114,13 @@
 
   (add-element-to-lists 'hs-minor-mode pgm-langs)
   ;; (add-element-to-lists 'hs-hide-initial-comment-block  pgm-langs)
-  (add-hook 'find-file-hook 'hs-hide-initial-comment-block)
-  (add-hook 'find-file-hook '(lambda () (hs-hide-level 2)))
+
+  (require 'session-config)
+
+  (add-hook 'sharad/enable-desktop-restore-interrupting-feature
+            '(lambda ()
+              (add-hook 'find-file-hook 'hs-hide-initial-comment-block)
+              (add-hook 'find-file-hook '(lambda () (ignore-errors (hs-hide-level 2))))))
 
   ;; Other Options
 
@@ -193,7 +198,8 @@
     (unless hs-allow-nesting
       (hs-discard-overlays minp maxp))
     (goto-char minp)
-    (let ((leaf t))
+    (let ((leaf t)
+          pos)
       (while (progn
                (forward-comment (buffer-size))
                (and (< (point) maxp)

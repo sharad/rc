@@ -183,12 +183,16 @@ The result is returned as the following `values':
 
 (defun uptimes-read-uptimes ()
   "Read the uptimes database into `uptimes-last-n' and `uptimes-top-n'."
-  (when (file-exists-p uptimes-database)
-    (with-temp-buffer
-      (let ((inhibit-clash-detection t))  ; For the benefit of XEmacs.
-        (insert-file-contents uptimes-database t))
-      (setq uptimes-last-n (read (current-buffer)))
-      (setq uptimes-top-n  (read (current-buffer))))))
+  (condition-case e
+      (when (file-exists-p uptimes-database)
+        (with-temp-buffer
+          (let ((inhibit-clash-detection t))  ; For the benefit of XEmacs.
+            (insert-file-contents uptimes-database t))
+          (setq uptimes-last-n (read (current-buffer)))
+          (setq uptimes-top-n  (read (current-buffer)))))
+    ('error (error "uptimes-read-uptimes: problem in reading %s file: %s"
+                   uptimes-database
+                   e))))
 
 (defun uptimes-update ()
   "Update `uptimes-last-n' and `uptimes-top-n'."

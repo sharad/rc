@@ -25,9 +25,11 @@ set hold
 set keepsave
 
 # set sendmail=sendmail://usr/sbin/sendmail
+set sendmail=sendmail://usr/sbin/sendmail
 
 
 # folder "imap://spratap@localhost"
+folder "imap://s@localhost"
 
 
 # folder "imap://spratap@localhost/"

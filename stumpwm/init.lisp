@@ -3,7 +3,8 @@
 (in-package :stumpwm)
 
  ;;Debugging
-(setq *debug-level* 10)
+;; (setq *debug-level* 10)
+(setq *debug-level* 0)
 
 ;;{{{ Basic files loading
 (load (concat *initdir* "/basic.lisp"))
