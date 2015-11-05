@@ -6,7 +6,12 @@
 
 ;;
 (setq message-alternative-emails
-      (regexp-opt (list email-addr office-email) ))
+      (regexp-opt
+       (list
+        email-addr
+        office-email
+        office-fortinet-email
+        office-meru-email)))
 
       ;; message-forward-ignored-headers
       ;; ;; "\\(?:\\^\\(?:Content-Transfer-Encoding:\\|In-Reply-To\\|Message-ID\\|References\\|User-Agent\\|X-\\(?:Draft-From\\|Gnus\\|OfflineIMAP\\)\\)\\)"
@@ -61,11 +66,12 @@
        (list
         user-mail-address
         email-addr
-        office-email)
+        office-email
+        office-fortinet-email
+        office-meru-email)
        user-other-email-addresses))
 
 ;;}}
 
 
 (provide 'reply-config)
-

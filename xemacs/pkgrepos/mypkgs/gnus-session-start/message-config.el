@@ -275,7 +275,7 @@
       `(
         (t                              ;global
 
-         ,@(if (equal (system-name) office-host-name)
+         ,@(if (member (system-name) office-host-names)
                `(
                  (name ,myname)
                  (signature "Regards,\n-sharad")
@@ -342,8 +342,8 @@
                       '("sent"
                         "sent-mail"
                         ,(format-time-string "sent.%Y-%m")
-                        ,@(if (equal (system-name) office-host-name)
-                              '("Office.Sent Items")))))))
+                        ,@(if (member (system-name) office-host-names)
+                              '("Office.Meru.Sent Items" "Office.Fortinet.Sent Items")))))))
 
         (message-news-p
          (name ,myname)
@@ -373,12 +373,35 @@
          (name ,myname)
          (signature "Regards,\n-sharad")
          (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
-         (address ,office-email)
+         (address ,office-fortinet-email)
          (eval (set (make-local-variable 'gnus-message-archive-group)
                     '(,(format-time-string "sent.%Y-%m")
                       "sent"
                       "sent-mail"
-                      "Office.Sent Items"))))
+                      "Office.Fortinet.Sent Items"
+                      "Office.Meru.Sent Items"))))
+
+        ("Office.Fortinet.*"
+         (name ,myname)
+         (signature "Regards,\n-sharad")
+         (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
+         (address ,office-fortinet-email)
+         (eval (set (make-local-variable 'gnus-message-archive-group)
+                    '(,(format-time-string "sent.%Y-%m")
+                      "sent"
+                      "sent-mail"
+                      "Office.Fortinet.Sent Items"))))
+
+        ("Office.Meru.*"
+         (name ,myname)
+         (signature "Regards,\n-sharad")
+         (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
+         (address ,office-meru-email)
+         (eval (set (make-local-variable 'gnus-message-archive-group)
+                    '(,(format-time-string "sent.%Y-%m")
+                      "sent"
+                      "sent-mail"
+                      "Office.Meru.Sent Items"))))
 
         ;; J sites
         ((header "Received" "monster.co.in\\|naukri.com") ;reply

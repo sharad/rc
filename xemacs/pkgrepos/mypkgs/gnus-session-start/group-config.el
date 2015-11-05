@@ -56,10 +56,9 @@
       '("sent"
         (if (message-news-p)
             '("sent-news")
-            (list
-             "sent-mail"
-             (if (string-equal (system-name) office-host-name)
-                 "Office.Sent Items")))
+            `("sent-mail"
+              ,@(if (member (system-name) office-host-names)
+                    '("Office.Meru.Sent Items" "Office.Fortinet.Sent Items"))))
         '(format-time-string "sent.%Y-%m")
         ))
 
