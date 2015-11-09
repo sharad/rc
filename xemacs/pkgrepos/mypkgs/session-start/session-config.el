@@ -242,10 +242,11 @@
                                     (message "buffer %s already here" bufname)
                                     (let ()
                                       (message "Hello 1")
+                                      (message "elscreen-session-session-list-set: Desktop lazily opening %s" bufname)
                                       (unless (ignore-errors
                                                 (save-window-excursion
                                                   (apply 'desktop-create-buffer desktop-buffer-args)))
-                                        (message "Desktop lazily opening Failed."))
+                                        (message "elscreen-session-session-list-set: Desktop lazily opening Failed."))
                                       (message "Hello 2")
                                       (message "restored %s" bufname)))
                                 (message "bufname: %s is not string" bufname))))))
