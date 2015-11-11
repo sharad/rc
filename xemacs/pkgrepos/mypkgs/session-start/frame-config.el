@@ -35,7 +35,7 @@
           (ignore-errors
             (select-frame-by-name name))
           (equal (get-frame-name) name))
-        (message "frame-launcher frame already exists, so not creating another frame.")
+        (message-notify "frame-launcher" "frame-launcher frame already exists, so not creating another frame.")
         (condition-case e
             (let ((*frame-session-restore* nil) ;not need to restore elsession for frames
                   (org-donot-try-to-clock-in t)) ;no clock require to be clocked-in.
@@ -54,9 +54,9 @@
                                   (funcall a))
                               (sticky-buffer-mode t))
                           (launcher-set-elscreen-altname (format "%s" a) f screennum))
-                      ('quit  (message "Not able to start %s error %s" a e))
-                      ('error (message "Not able to start %s error %s" a e)))))))
-          ('error (message "Error in creating frame %s" e)))))
+                      ('quit  (message-notify "frame-launcher" "Not able to start %s error %s" a e))
+                      ('error (message-notify "frame-launcher" "Not able to start %s error %s" a e)))))))
+          ('error (message-notify "frame-launcher" "Error in creating frame %s" e)))))
 
   ;; (frame-parameter (selected-frame) 'altscreen)
 
