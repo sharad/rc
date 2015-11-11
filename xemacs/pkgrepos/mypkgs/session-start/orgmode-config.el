@@ -125,9 +125,12 @@
                  (save-buffer)
                  (org-save-all-org-buffers)))
 
+     (defvar org-donot-try-to-clock-in nil "Not try to clock-in, require for properly creating frame especially for frame-launcher function.")
      (defun org-clock-in-if-not ()
        (interactive)
-       (unless (org-clock-is-active)
+       (unless (or
+                org-donot-try-to-clock-in
+                (org-clock-is-active))
          ;; (org-clock-goto t)
          (let (buffer-read-only)
            (org-clock-in '(4)))))

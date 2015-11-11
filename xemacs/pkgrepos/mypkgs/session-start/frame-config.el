@@ -31,27 +31,32 @@
   (require 'buffer-config)
 
   (defun frame-launcher (name args &optional fun)
-    (unless (progn
-              (ignore-errors
-              (select-frame-by-name name))
-              (equal (get-frame-name) name))
-      (let ((f (make-frame (list (cons 'name name))))
-            (screennum 0)
-            (first-screen t))
-        (select-frame f)
-        (dolist (a args)
-          (when (or first-screen
-                    (setq screennum (elscreen-create)))
-            (setq first-screen nil)
-            (condition-case e
-                (progn
-                  (if (if fun
-                          (funcall fun a)
-                          (funcall a))
-                      (sticky-buffer-mode t))
-                  (launcher-set-elscreen-altname (format "%s" a) f screennum))
-              (quit  (message "Not able to start %s error %" a e))
-              (error (message "Not able to start %s error %" a e))))))))
+    (if (progn
+          (ignore-errors
+            (select-frame-by-name name))
+          (equal (get-frame-name) name))
+        (message "frame-launcher frame already exists, so not creating another frame.")
+        (condition-case e
+            (let ((*frame-session-restore* nil) ;not need to restore elsession for frames
+                  (org-donot-try-to-clock-in t)) ;no clock require to be clocked-in.
+              (let ((f (make-frame (list (cons 'name name))))
+                    (screennum 0)
+                    (first-screen t))
+                (select-frame f)
+                (dolist (a args)
+                  (when (or first-screen
+                            (setq screennum (elscreen-create)))
+                    (setq first-screen nil)
+                    (condition-case e
+                        (progn
+                          (if (if fun
+                                  (funcall fun a)
+                                  (funcall a))
+                              (sticky-buffer-mode t))
+                          (launcher-set-elscreen-altname (format "%s" a) f screennum))
+                      ('quit  (message "Not able to start %s error %s" a e))
+                      ('error (message "Not able to start %s error %s" a e)))))))
+          ('error (message "Error in creating frame %s" e)))))
 
   ;; (frame-parameter (selected-frame) 'altscreen)
 
