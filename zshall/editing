@@ -21,7 +21,7 @@ elif [ -r ~/.zkbd/$TERM ] ; then
     termzdef=~/.zkbd/$TERM
 fi
 
-echo Helloooo termzdef $termzdef termzdef
+# echo Helloooo termzdef $termzdef termzdef
 
 [ $termzdef ] && source $termzdef && unset termzdef
 

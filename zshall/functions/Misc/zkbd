@@ -240,6 +240,9 @@ avoidkeys=(
     Control-Shift-Insert
     Control-Shift-PageUp
     Control-Shift-PageDown
+    # may not work in screen
+    # Alt-Shift-Insert
+    # Control-Alt-Delete
     Control-Alt-Shift-Insert
     Control-Alt-Shift-PageUp
     Control-Alt-Shift-PageDown
