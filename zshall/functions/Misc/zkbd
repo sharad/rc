@@ -233,9 +233,17 @@ modifiers=(Shift-
            # Alt-Meta-Shift- Control-Alt-Meta-Shift-
           )
 
-avoidkeys=(Shift-Insert Shift-PageUp Shift-PageDown Control-Shift-Up Control-Shift-Down
-           Control-Alt-Shift-Up Control-Alt-Shift-Down Control-Alt-Shift-PageUp
-           Control-Alt-F{1,2,3,4,5,6,7,8,9,10,11,12})
+avoidkeys=(
+    Shift-Insert
+    Shift-PageUp
+    Shift-PageDown
+    Control-Shift-Insert
+    Control-Shift-PageUp
+    Control-Shift-PageDown
+    Control-Alt-Shift-Insert
+    Control-Alt-Shift-PageUp
+    Control-Alt-Shift-PageDown
+    Control-Alt-F{1,2,3,4,5,6,7,8,9,10,11,12})
 
 exec 3>/dev/tty
 
@@ -262,6 +270,7 @@ do
         print "key[$xkey]='${(q)seq}'"
         print -u3 -R $seq
     else
+        continue;
         print -u3 -Rn "Press $xkey (But it will not work): "
         seq="$(getseq)" || return 1
         print -u3 -R $seq

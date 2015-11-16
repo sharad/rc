@@ -5,15 +5,23 @@ exec 2> ~/.logs/stderr/zshall/editing
 
 my_extended_wordchars='*?_-+./[]~=&;!#$%^(){}<>:@,\\';
 
-if [ -r ~/.zkbd/$HOST/$TERM-${DISPLAY:-$VENDOR-$OSTYPE} ] ;  then
-    termzdef=~/.zkbd/$HOST/$TERM-${DISPLAY:-$VENDOR-$OSTYPE}
-elif [ -r ~/.zkbd/$TERM-${DISPLAY:-$VENDOR-$OSTYPE} ] ; then
-    termzdef=~/.zkbd/$TERM-${DISPLAY:-$VENDOR-$OSTYPE}
-elif [ -r ~/.zkbd/_general/$TERM-${DISPLAY:-$VENDOR-$OSTYPE} ] ; then
-    termzdef=~/.zkbd/_general/$TERM-${DISPLAY:-$VENDOR-$OSTYPE}
+
+
+if [ -r ~/.zkbd/$HOST/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE} ] ; then
+    termzdef=~/.zkbd/$HOST/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
+elif [ -r ~/.zkbd/$HOST/$TERM ] ;  then
+    termzdef=~/.zkbd/$HOST/$TERM
+elif [ -r ~/.zkbd/_general/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE} ] ; then
+    termzdef=~/.zkbd/_general/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
 elif [ -r ~/.zkbd/_general/$TERM ] ; then
     termzdef=~/.zkbd/_general/$TERM
+elif [ -r ~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE} ] ; then
+    termzdef=~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
+elif [ -r ~/.zkbd/$TERM ] ; then
+    termzdef=~/.zkbd/$TERM
 fi
+
+echo Helloooo termzdef $termzdef termzdef
 
 [ $termzdef ] && source $termzdef && unset termzdef
 
@@ -291,4 +299,3 @@ bindkey '^Ed' insert-datestamp
 
 
 exec 2> /dev/tty
-
