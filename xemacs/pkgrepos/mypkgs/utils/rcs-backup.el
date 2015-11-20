@@ -93,12 +93,13 @@
 (defun put-file-in-rcs-for-backup (from-file)
   (let ()
     (add-hook 'vc-mode-line-hook #'vc-mode-line nil t)
-    (if (if (file-exists-p
-             (expand-file-name (file-name-nondirectory from-file)
-                               default-directory))
-            (put-file-in-rcs from-file default-directory)
-            (put-file-in-rcs from-file))
-        (run-hook-with-args 'vc-mode-line-hook (file-truename from-file)))))
+    (when (if (file-exists-p
+               (expand-file-name (file-name-nondirectory from-file)
+                                 default-directory))
+              (put-file-in-rcs from-file default-directory)
+              (put-file-in-rcs from-file))
+
+      (run-hook-with-args 'vc-mode-line-hook (file-truename from-file)))))
 
 (defun put-file-in-rcs (nfile &optional ndirectory)
   ;; http://www.emacswiki.org/emacs/VersionControlAlways
