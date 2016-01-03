@@ -649,6 +649,13 @@ Add directory to search path for source files using the GDB command, dir."))
 
   )
 
+(deh-require-maybe cc-vars
+  (deh-require-maybe session
+   (add-to-list 'session-locals-include
+                'c-indentation-style))
+  (deh-require-maybe desktop
+   (add-to-list 'desktop-locals-to-save
+                'c-indentation-style)))
 
 (provide 'dev-config)
 ;;; dev-config.el ends here
