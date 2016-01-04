@@ -28,7 +28,7 @@ use POSIX;
 use Cwd 'abs_path';
 
 my %Config;
-my @config_files = ("", $ENV{'HOME'}."/.", "/etc/jvpn/");
+my @config_file_dirs = ("", $ENV{'HOME'}."/.", "/etc/jvpn/" "/usr/local/etc/jvpn/");
 my $config_file = 'jvpn.ini';
 my $show_help = 0;
 
@@ -57,39 +57,38 @@ my $ua;
 
 sub connect_vpn {
   # find configuration file
-  foreach my $line (@config_files) {
-    $config_file= ($line . $config_file);
-    last if -e $config_file;
-  }
   # override from command line if specified
   GetOptions ("config_file=s" => \$config_file,
               "help" => \$show_help);
 
-  foreach my $line (@config_files) {
-    $config_file= ($line . $config_file);
+  foreach my $line (@config_file_dirs) {
+    $config_file = ($line . $config_file);
+    print("config_fileA: " . $config_file . "\n");
     last if -e $config_file;
+    $config_file = "";
+    print("config_fileB: " . $config_file . "\n");
   }
 
   if($show_help) { print_help(); }
   # parse configuration
-  &parse_config_file ($config_file, \%Config);
+  &parse_config_file($config_file, \%Config);
 
-  $dhost=$Config{"host"};
-  $dport=$Config{"port"};
-  $durl=$Config{"url"};
-  $username=$Config{"username"};
-  $realm=$Config{"realm"};
-  $dnsprotect=$Config{"dnsprotect"};
-  $debug=$Config{"debug"};
-  $verifycert=$Config{"verifycert"};
-  $mode=$Config{"mode"};
-  $script=$Config{"script"};
-  $cfgpass=$Config{"password"};
-  $workdir=$Config{"workdir"};
-  $password="";
-  $hostchecker=$Config{"hostchecker"};
-  $tncc_pid = 0;
-  $supportdir = $ENV{"HOME"}."/.juniper_networks";
+  $dhost        = $Config{"host"};
+  $dport        = $Config{"port"};
+  $durl         = $Config{"url"};
+  $username     = $Config{"username"};
+  $realm        = $Config{"realm"};
+  $dnsprotect   = $Config{"dnsprotect"};
+  $debug        = $Config{"debug"};
+  $verifycert   = $Config{"verifycert"};
+  $mode         = $Config{"mode"};
+  $script       = $Config{"script"};
+  $cfgpass      = $Config{"password"};
+  $workdir      = $Config{"workdir"};
+  $password     = "";
+  $hostchecker  = $Config{"hostchecker"};
+  $tncc_pid     = 0;
+  $supportdir   = $ENV{"HOME"}."/.juniper_networks";
   $narport_file = $supportdir."/narport.txt";
 
   # change directory
@@ -204,9 +203,9 @@ sub connect_vpn {
                       ]);
 
   $response_body=$res->decoded_content;
-  my $dsid="";
-  my $dlast="";
-  my $dfirst="";
+  my $dsid   = "";
+  my $dlast  = "";
+  my $dfirst = "";
 
   # Looking at the results...
   if ($res->is_success) {
@@ -701,7 +700,10 @@ sub INT_handler {
 }
 
 sub parse_config_file {
-  my $Name,my $Value; my $Config; my $File;
+  my $Name;
+  my $Value;
+  my $Config;
+  my $File;
 
   ($File, $Config) = @_;
   if (!open (CONFIG, "$File")) {
