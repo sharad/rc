@@ -123,6 +123,10 @@ if [ -e ~/.stumpwm.d/debug-output.log ] ; then
     command mv ~/.stumpwm.d/debug-output.log ~/.stumpwm.d/debug-output.0.log
 fi
 
+if whence -c bingwallpaper >& /dev/null
+then
+    bingwallpaper -d 0
+fi
 
 # gconftool -s /apps/mail-notification/commands/new-mail/command "$EDITOR -e '(gnus)'"
 # gconftool -s /apps/mail-notification/commands/new-mail/enabled true
