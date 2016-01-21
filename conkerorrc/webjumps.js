@@ -514,6 +514,7 @@ define_webjump("scrooglessl", "https://ssl.scroogle.org/cgi-bin/nbbwssl.cgi?Gw=%
 
 define_webjump("netflix", "http://www.netflix.com/Search?v1=%s");
 define_webjump("amazon", "http://www.amazon.com/exec/obidos/external-search/?field-keywords=%s&mode=blended");
+define_webjump("amazon/india", "http://www.amazon.in/exec/obidos/external-search/?field-keywords=%s&mode=blended");
 
 // 2.14. Software
 
