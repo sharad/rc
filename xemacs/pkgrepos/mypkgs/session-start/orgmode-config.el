@@ -1016,6 +1016,142 @@ using three `C-u' prefix arguments."
            "OSNews Entries"))))
 
 
+(deh-section "move org"
+
+
+
+
+(defun jay/refile-to (file headline)
+    "Move current headline to specified location"
+    (let ((pos (save-excursion
+                 (find-file file)
+                 (org-find-exact-headline-in-buffer headline))))
+      (org-refile nil nil (list headline file nil pos))))
+
+(defun jay/refile-to-bookmarks ()
+    "Move current headline to bookmarks"
+    (interactive)
+    (org-mark-ring-push)
+    (jay/refile-to "~/Org/bookmarks.org" "New")
+    (org-mark-ring-goto))
+
+
+
+
+
+
+  ;; (save-excursion (org-refile-get-location))
+
+  (setq org-refile-targets
+        '((nil :maxlevel . 3)           ; only the current file
+          (org-agenda-files :maxlevel . 3) ; all agenda files, 1st/2nd level
+          (org-files-list :maxlevel . 4)   ; all agenda and all open files
+          (my-org-files-list :maxlevel . 4))) ;all files returned by `my-org-files-list'
+
+  (defun my-org-files-list ()
+    (mapcar (lambda (buffer)
+              (buffer-file-name buffer))
+            (org-buffer-list 'files t)))
+
+  (defvar org-refile-region-format "\n%s\n")
+
+  (defvar org-refile-region-position 'top
+    "Where to refile a region. Use 'bottom to refile at the
+end of the subtree. ")
+
+  (defun my/org-refile-region (beg end copy)
+    "Refile the active region.
+If no region is active, refile the current paragraph.
+With prefix arg C-u, copy region instad of killing it."
+    (interactive "r\nP")
+    ;; mark paragraph if no region is set
+    (unless (use-region-p)
+      (setq beg (save-excursion
+                  (backward-paragraph)
+                  (skip-chars-forward "\n\t ")
+                  (point))
+            end (save-excursion
+                  (forward-paragraph)
+                  (skip-chars-backward "\n\t ")
+                  (point))))
+    (let* ((target (save-excursion (org-refile-get-location)))
+           (file (nth 1 target))
+           (pos (nth 3 target))
+           (text (buffer-substring-no-properties beg end)))
+      (unless copy (kill-region beg end))
+      (deactivate-mark)
+      (with-current-buffer (find-file-noselect file)
+        (save-excursion
+          (goto-char pos)
+          (if (eql org-refile-region-position 'bottom)
+              (org-end-of-subtree)
+              (org-end-of-meta-data-and-drawers))
+          (insert (format org-refile-region-format text))))))
+
+  (defvar org-refile-string-format " %s\n")
+
+  (defvar org-refile-string-position 'top
+    "Where to refile a region. Use 'bottom to refile at the
+end of the subtree. ")
+
+  (defun org-refile-string (text arg)
+    "Refile the active region.
+If no region is active, refile the current paragraph.
+With prefix arg C-u, copy region instad of killing it."
+    (interactive "sorg entry: \nP")
+    ;; mark paragraph if no region is set
+    (let* ((target (save-excursion (org-refile-get-location)))
+           (file (nth 1 target))
+           (pos (nth 3 target))
+           ;; (text (buffer-substring-no-properties beg end))
+           )
+      ;; (unless arg (kill-region beg end))
+      ;; (deactivate-mark)
+      (with-current-buffer (find-file-noselect file)
+        (save-excursion
+          (goto-char pos)
+          (if (eql org-refile-string-position 'bottom)
+              (org-end-of-subtree)
+              ;; (org-end-of-meta-data-and-drawers)
+              ;; (org-end-of-meta-data)
+              (org-end-of-subtree)
+              )
+          (org-insert-subheading nil)
+          (insert (format org-refile-string-format text))))))
+
+  (defun org-insert-subheading-to-file-headline (text file headline)
+    (let ((pos (save-excursion
+                (find-file file)
+                (org-find-exact-headline-in-buffer headline))))
+      (with-current-buffer (find-file-noselect file)
+        (save-excursion
+          (goto-char pos)
+          (if (eql org-refile-string-position 'bottom)
+              (org-end-of-subtree)
+              ;; (org-end-of-meta-data-and-drawers)
+              ;; (org-end-of-meta-data)
+              (org-end-of-subtree)
+              )
+          (org-insert-subheading nil)
+          (insert (format org-refile-string-format text))))))
+
+  (defun org-insert-heading-to-file-headline (text file headline)
+    (let ((pos (save-excursion
+                (find-file file)
+                (org-find-exact-headline-in-buffer headline))))
+      (with-current-buffer (find-file-noselect file)
+        (save-excursion
+          (goto-char pos)
+          (if (eql org-refile-string-position 'bottom)
+              (org-end-of-subtree)
+              ;; (org-end-of-meta-data-and-drawers)
+              ;; (org-end-of-meta-data)
+              (org-end-of-subtree)
+              )
+          (org-insert-heading nil)
+          (insert (format org-refile-string-format text))))))
+)
+
 
 
 (provide 'orgmode-config)
