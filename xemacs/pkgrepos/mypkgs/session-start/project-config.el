@@ -151,13 +151,20 @@
          collect b))
 
 
-  (defun project-buffer-select-pbuffer ()
+  (defun project-buffer-select-pbuffer (&optional current)
     (let* ((pblist (project-buffer-mode-buffer-list))
            (pb
             (cond
-              ((null pblist) (error "No project buffer exists.") nil)
-              ((eq (length pblist) 1) (car pblist))
-              (t (ido-completing-read "project buffer: " (mapcar #'buffer-name pblist))))))
+              ((null pblist)
+               (error "No project buffer exists.") nil)
+              ((and
+                (eq t current)
+                (eq 'project-buffer-mode (buffer-mode (current-buffer))))
+               (current-buffer))
+              ((eq (length pblist) 1)
+               (car pblist))
+              (t
+               (ido-completing-read "project buffer: " (mapcar #'buffer-name pblist))))))
       pb))
 
   (defun project-buffer-mode-get-projects (pb)
@@ -166,7 +173,7 @@
           project-buffer-projects-list)
         (error "no buffer provided.")))
 
-  (defun project-select (&optional pb)
+  (defun project-select (pb)
     (interactive
      (let* ((pb (project-buffer-select-pbuffer)))
        (list pb)))
@@ -186,12 +193,13 @@
          (if (progn ,@body) t))))
 
 
-  (defun project-buffer-set-master-project-no-status (&optional pb)
+  (defun project-buffer-set-master-project-no-status (pb project)
     (interactive
-     (let* ((pb (project-buffer-select-pbuffer)))
-       (list pb)))
+     (let* ((pb (project-buffer-select-pbuffer t))
+            (project (project-select pb)))
+       (list pb project)))
     (if pb
-        (let ((project (project-select pb)))
+        (let ()
           (if (with-project-buffer pb
                 (project-buffer-set-master-project project-buffer-status project))
               (setq project-buffer-current-buf-project (cons pb project))))

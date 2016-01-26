@@ -60,9 +60,9 @@
          (message "called office mode"))
      (error (message "Error: %s" e))))
 
- (defvar *task-party-dir* (org-publish-get-attribute "tasks" "org" :base-directory) "Task Party Directory")
+ (defvar *task-party-base-dir* (org-publish-get-attribute "tasks" "org" :base-directory) "Task Party Directory")
 
- (defvar task-scratch-dir "/home/s/hell/SCRATCH/" "task scratch directory")
+ (defvar task-scratch-dir "~/SCRATCH/" "task scratch directory")
 
  (defvar task-parties
    '(
@@ -88,26 +88,28 @@
      "#+SEQ_TODO: TODO DONE")
    "Desc")
 
+ (defvar *task-projbuffs-base-dir* (expand-file-name "misc/projbuffs" *created-content-dir*))
+
  (defvar task-config '(("bug"
                         (master-org-file "report.org")
                         (org-files "todo.org" "notes.org" "analysis.org")
                         (dirs "logs" "programs" "patches" "deliverables")
                         (links ("notes.html" . "index.html"))
-                        (project "/susengg-01:releases/projects/bugs.pb"))
+                        (project "bugs.pb"))
                        ("feature"
                         (master-org-file "report.org")
                         (org-files "reqirement.org" "feasibility.org"
                          "design.org" "todo.org" "notes.org" "analysis.org")
                         (dirs "logs" "programs" "patches" "deliverables")
                         (links ("notes.html" . "index.html"))
-                        (project "/susengg-01:releases/projects/features-dev.pb"))
+                        (project "features.pb"))
                        ("work"
                         (master-org-file "report.org")
                         (org-files "reqirement.org" "feasibility.org"
                          "design.org" "todo.org" "notes.org" "analysis.org")
                         (dirs "logs" "programs" "patches" "deliverables")
                         (links ("notes.html" . "index.html"))
-                        (project "/susengg-01:releases/projects/features-dev.pb"))))
+                        (project "works.pb"))))
 
  (defvar *taskdir-current-task* nil "Current task")
 
@@ -152,11 +154,14 @@
        (cdr (assoc 'org-files (cdr (assoc task task-config))))
        (error "task is not from task-config")))
 
+ (defun task-projbuffs-dir ()
+   (expand-file-name task-current-party *task-projbuffs-base-dir*))
+
  (defun task-select-party-dir (force)
    (interactive "P")
    (if (or force (null taskdir))
        (setq taskdir
-             (ido-read-directory-name "dir: " *task-party-dir* nil t))
+             (ido-read-directory-name "dir: " *task-party-base-dir* nil t))
        taskdir))
 
  (defun find-task-dir (&optional force)
@@ -197,12 +202,13 @@
  (defun task-get-org-description (task name desc)
    (flet ((my-formattor (id summary url)
               ;; BUG: w f b
-              (format "[[%s][%s - %s]]: %s %s"
-                      (concat (task-party-url-base) "/" (pluralize-string task) "/" (number-to-string id))
-                      (pluralize-string task)
-                      (number-to-string id)
-                      summary
-                      (concat "[[" url "][url]]"))))
+              (format
+               "[[%s][%s - %s]]: %s %s"
+               (concat (task-party-url-base) "/" (pluralize-string task) "/" (number-to-string id))
+               (pluralize-string task)
+               (number-to-string id)
+               summary
+               (concat "[[" url "][url]]"))))
        (let* ((planner-bugz-formattor #'my-formattor)
               (hname
                (if (task-party-url-base)
@@ -257,6 +263,21 @@
      (task-get-org-description task name desc)
      (expand-file-name (task-party-org-master-file) (task-party-dir))
      (task-party-org-heading))))
+
+ ;; Project-Buffer
+ (defun create-pbm-task (dir task name desc)
+   (let ((project-name (concat task ":" name " - " desc)))
+     (with-project-buffer (find-file-noselect
+                           (expand-file-name
+                            (concat (pluralize-string task) ".pb") (task-projbuffs-dir)))
+       (iproject-add-project
+        nil                          ;project-type
+        nil                          ;project-main-file
+        nil                          ;project-root-folder
+        project-name                 ;project-name
+        nil)                         ;file-filter
+       (project-buffer-set-master-project-no-status (current-buffer) project-name)
+       (iproject-add-files-to-current-project dir))))
 
  (defun create-task-dir (dir task name desc)
    ;; (dolist (dname '("logs" "programs" "patches" "deliverables"))
@@ -361,15 +382,7 @@
            ;; Planner
            (create-plan-task dir task name desc)
            (create-org-task dir task name desc)
-           ;; Project-Buffer
-           (when nil
-             (iproject-add-project
-              nil                          ;project-type
-              nil                          ;project-main-file
-              nil                          ;project-root-folder
-              project-name                 ;project-name
-              nil)                         ;file-filter
-             )
+           (create-pbm-task dir task name desc)
            ;; create task dir
            (create-task-dir dir task name desc)))
 
