@@ -56,9 +56,24 @@ At top-level, as an editor command, this simply beeps."
 
 
 (defun enable-backtrace-for-error ()
-  (setq
-   inhibit-debugger nil
-   debug-ignored-errors nil))
+  (interactive)
+  (when debug-ignored-errors
+   (setq
+    inhibit-debugger-default inhibit-debugger
+    debug-ignored-errors-default debug-ignored-errors)
+   (setq
+    inhibit-debugger nil
+    debug-ignored-errors nil)))
+
+(defun reset-backtrace-for-error ()
+  (interactive)
+  (when debug-ignored-errors-default
+    (setq
+     inhibit-debugger inhibit-debugger-default
+     debug-ignored-errors debug-ignored-errors-default)
+    (setq
+     inhibit-debugger-default nil
+     debug-ignored-errors-default nil)))
 
 
 (provide 'debug-config)

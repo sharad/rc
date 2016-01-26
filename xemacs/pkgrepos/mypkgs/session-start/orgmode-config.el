@@ -1149,8 +1149,7 @@ With prefix arg C-u, copy region instad of killing it."
               (org-end-of-subtree)
               )
           (org-insert-heading nil)
-          (insert (format org-refile-string-format text))))))
-)
+          (insert (format org-refile-string-format text)))))) )
 
 
 
