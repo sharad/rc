@@ -431,7 +431,7 @@ Commands:
       (unless skip-mode-hooks
 	(run-hooks 'project-buffer-mode-hook))
 
-      (remove-hook 'project-buffer-post-load-hook 'iproject-setup-local-key)
+      ;; (remove-hook 'project-buffer-post-load-hook 'iproject-setup-local-key)
 
       (when buffer-file-name
         (project-buffer-raw-load-with-real-handler buffer-file-name nil t)
@@ -440,7 +440,7 @@ Commands:
          default-directory (dirname-of-file buffer-file-name))
         (not-modified))
 
-      (local-unset-key (key "C-x C-s"))
+      ;; (local-unset-key (key "C-x C-s"))
       (add-hook 'project-buffer-post-load-hook 'pbm-setup-local-key nil t)
       )))
 
