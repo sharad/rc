@@ -125,10 +125,11 @@
  ;;                     (org-publish-get-attribute "tasks" "org" :base-directory))
  ;;   "Task Directory")
 
- (defun task-party-dir ()
+ (defun task-party-dir (&optional party)
    "Task Directory"
-   (expand-file-name task-current-party
-                     (org-publish-get-attribute "tasks" "org" :base-directory)))
+   (let ((party (or party task-current-party)))
+    (expand-file-name party
+                      (org-publish-get-attribute "tasks" "org" :base-directory))))
 
  (defun task-party-org-heading ()
    (cadr
@@ -520,14 +521,29 @@
 
  (deh-section "Org Task"
 
-   (defun org-clock-from-refile ()
-     (let ((org-refile-targets
-            '((nil :maxlevel . 3)           ; only the current file
-              (org-agenda-files :maxlevel . 3) ; all agenda files, 1st/2nd level
-              (org-files-list :maxlevel . 4)   ; all agenda and all open files
-              (my-org-files-list :maxlevel . 4)))) ;all files returned by `my-org-files-list'
-       )) )
+   (defun org-task-files (&optional party)
+     (let ((party (or party task-current-party)))
+       (directory-files-recursive
+        (task-party-dir party)
+        "\\.org$" 7 "\\(rip\\|stage\\)" t)))
 
+   (defun org-task-refile-target (party)
+     ;; (interactive)
+     (let* ((party (or party task-current-party))
+            (task-files (org-task-files party)))
+        ;all files returned by `org-task-files'
+       `((,task-files :maxlevel . 3))))
+
+  (defun org-clock-in-refile-task (party)
+    (interactive
+     (list (ido-completing-read
+            "Seletc Party: "
+            (mapcar 'car task-parties)
+            nil
+            t
+            task-current-party)))
+    (let ((refile-targets (org-task-refile-target party))) ;all files returned by `org-task-files'
+      (org-clock-in-refile refile-targets)))
  )
 
 
