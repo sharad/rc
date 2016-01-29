@@ -32,9 +32,21 @@
 (require 'tree)
 
 (defvar bugz-url "https://bugzilla.mozilla.org" "Bugz url.")
+(defvar bugz-xmlrpc-url-path "/xmlrpc.cgi" "Bugz xmlrpc url path.")
 (defvar bugz-xmlrpc-url (concat bugz-url "/xmlrpc.cgi") "Bugz xmlrpc url.")
+(defvar bugz-showbug-url-path "/show_bug.cgi?id=" "Bugz showbug url path.")
 (defvar bugz-showbug-url (concat bugz-url "/show_bug.cgi?id=") "Bugz showbug url.")
 (defvar bugz-default-username nil "Bugzilla default username used in search.")
+
+(defun bugz-get-xmlrpc-url (&optional url)
+  (concat
+   (or url bugz-url)
+   bugz-xmlrpc-url-path))
+
+(defun bugz-get-showbug-url (&optional url)
+  (concat
+   (or url bugz-url)
+   bugz-showbug-url-path))
 
 ;; http://www.emacswiki.org/emacs/UrlPackage#toc3
 ;; (setq url-cookie-confirmation t
@@ -49,18 +61,18 @@
 
 ;;;; core
 (defun bugz-dispatch (method &optional args url)
-  (xml-rpc-method-call (or url bugz-xmlrpc-url) method args))
+  (xml-rpc-method-call (bugz-get-xmlrpc-url url) method args))
 
-(defun bugz/Bug.method (method criteria)
-  (bugz-dispatch method criteria))
+(defun bugz/Bug.method (method criteria &optional url)
+  (bugz-dispatch method criteria url))
 
-(defun bugz-method (method ret criteria)
-  (cdr (assoc ret (bugz/Bug.method method criteria))))
+;; (defun bugz-method (method ret criteria &optional url)
+;;   (cdr (assoc ret (bugz/Bug.method method criteria url))))
 
-(defun bugz-method (method ret criteria)
+(defun bugz-method (method ret criteria &optional url)
   (mapcar '(lambda (e)
             (tree-leaves e 1))
-          (cdr (assoc ret (bugz/Bug.method method criteria)))))
+          (cdr (assoc ret (bugz/Bug.method method criteria url)))))
 
 ;;{{
 
@@ -121,14 +133,14 @@
 
 ;;}}
 
-(defun bugzilla-method (method ret &optional attributes criteria)
+(defun bugzilla-method (method ret &optional attributes criteria url)
   (let ((attributes (or attributes (list "summary")))
          (criteria (cond
                      ((equal criteria t) (bugz-make-search-criteria))
                      ((null criteria) (cdar bugz-search-criterias))
                      (t criteria))))
      (bugz-get-items-attributes attributes
-                                (bugz-method method ret criteria))))
+                                (bugz-method method ret criteria url))))
 
 
 ; (bugz-method 'Bug.get "bugs" (bugz-make-search-criteria))
@@ -150,7 +162,7 @@
 
 ;; login
 (defun bugz/User.login (&optional opts username password url)
-  (let* ((url (or url bugz-xmlrpc-url))
+  (let* ((url (bugz-get-xmlrpc-url url))
          (username (or username
                        (read-from-minibuffer (format "Bugzilla [%s] User: " url))))
          (password (or password
@@ -158,7 +170,8 @@
       (bugz-dispatch 'User.login
                      `(("login".,username)
                        ("password".,password)
-                        ,@opts))))
+                        ,@opts)
+                     url)))
 
 ;; (testing
 
@@ -185,11 +198,11 @@
 
 ;;;; utils funs: could change
 
-(defun bugzilla-search-bugs (attributes criteria)
-  (bugzilla-method 'Bug.search "bugs" attributes criteria))
+(defun bugzilla-search-bugs (attributes criteria &optional url)
+  (bugzilla-method 'Bug.search "bugs" attributes criteria url))
 
-(defun bugzilla-get-bugs (attributes criteria)
-  (bugzilla-method 'Bug.get "bugs" attributes criteria))
+(defun bugzilla-get-bugs (attributes criteria &optional url)
+  (bugzilla-method 'Bug.get "bugs" attributes criteria url))
 
 ; (bugzilla-method 'Bug.search "bugs" '("id" "summary") t)
 ; (bugzilla-method 'Bug.get "bugs" '("id" "summary") t)

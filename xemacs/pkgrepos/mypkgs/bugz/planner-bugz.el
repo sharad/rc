@@ -49,20 +49,21 @@
 (defun bugz-to-planner-status (status)
   (task-src-status-to-trg-status 'bugz status 'planner))
 
-(defun planner-bugzilla-bug-to-task-name (bug)
+(defun planner-bugzilla-bug-to-task-name (bug &optional url)
   (let* ((id      (cdr (assoc "id" bug)))
          (summary (cdr (or
                         (assoc "summary" bug)
                         (assoc "short_desc" bug))))
-         (url (or (concat bugz-showbug-url (number-to-string id))
-                  (cdr (assoc "_bugz-url" bug)) bugz-url)))
+         (showbug-url (or (concat (bugz-get-showbug-url url) (number-to-string id))
+                  (cdr (assoc "_bugz-url" bug))
+                  bugz-url)))
     (if (fboundp planner-bugz-formattor)
         (progn
           (message "planner-bugz-formattor defined")
-          (funcall planner-bugz-formattor  id summary url))
+          (funcall planner-bugz-formattor  id summary showbug-url))
         (progn
           (message "planner-bugz-formattor not defined")
-          (format planner-bugz-format id summary url)))))
+          (format planner-bugz-format id summary showbug-url)))))
 
 (defun planner-bugzilla-bugtask-exist-in-page (bug &optional page)
   (find (cdr (assoc "id" bug))

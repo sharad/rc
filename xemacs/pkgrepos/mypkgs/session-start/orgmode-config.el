@@ -146,8 +146,22 @@ With prefix arg C-u, copy region instad of killing it."
       ;; (unless arg (kill-region beg end))
       ;; (deactivate-mark)
       (with-current-buffer (find-file-noselect file)
-        (save-excursion
-          (goto-char pos)
+        (let ((buffer-read-only nil))
+          (save-excursion
+            (goto-char pos)
+            (if (eql org-refile-string-position 'bottom)
+                (org-end-of-subtree)
+                ;; (org-end-of-meta-data-and-drawers)
+                ;; (org-end-of-meta-data)
+                (org-end-of-subtree)
+                )
+            (org-insert-subheading nil)
+            (insert (format org-refile-string-format text)))))))
+
+  (defun org-insert-subheading-to-file-headline (text file headline)
+    (with-org-file-headline
+        file headline
+        (let ((buffer-read-only nil))
           (if (eql org-refile-string-position 'bottom)
               (org-end-of-subtree)
               ;; (org-end-of-meta-data-and-drawers)
@@ -155,31 +169,20 @@ With prefix arg C-u, copy region instad of killing it."
               (org-end-of-subtree)
               )
           (org-insert-subheading nil)
-          (insert (format org-refile-string-format text))))))
-
-  (defun org-insert-subheading-to-file-headline (text file headline)
-    (with-org-file-headline
-        file headline
-        (if (eql org-refile-string-position 'bottom)
-            (org-end-of-subtree)
-            ;; (org-end-of-meta-data-and-drawers)
-            ;; (org-end-of-meta-data)
-            (org-end-of-subtree)
-            )
-        (org-insert-subheading nil)
-        (insert (format org-refile-string-format text))))
+          (insert (format org-refile-string-format text)))))
 
   (defun org-insert-heading-to-file-headline (text file headline)
     (with-org-file-headline
         file headline
-        (if (eql org-refile-string-position 'bottom)
-            (org-end-of-subtree)
-            ;; (org-end-of-meta-data-and-drawers)
-            ;; (org-end-of-meta-data)
-            (org-end-of-subtree)
-            )
-        (org-insert-heading nil)
-        (insert (format org-refile-string-format text)))))
+        (let ((buffer-read-only nil))
+          (if (eql org-refile-string-position 'bottom)
+              (org-end-of-subtree)
+              ;; (org-end-of-meta-data-and-drawers)
+              ;; (org-end-of-meta-data)
+              (org-end-of-subtree)
+              )
+          (org-insert-heading nil)
+          (insert (format org-refile-string-format text))))))
 
 (deh-section "time management"
 
@@ -264,7 +267,7 @@ With prefix arg C-u, copy region instad of killing it."
 
      (defun org-clock-in-refile (refile-targets)
        (with-org-refile (or refile-targets org-refile-targets)
-         (let (buffer-read-only)
+         (let ((buffer-read-only nil))
            (org-clock-in))))
 
      (defvar org-donot-try-to-clock-in nil
