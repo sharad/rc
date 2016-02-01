@@ -438,7 +438,8 @@ Commands:
         (setq
          project-buffer-file-name buffer-file-name
          default-directory (dirname-of-file buffer-file-name))
-        (not-modified))
+        ;; (not-modified)
+        (set-buffer-modified-p nil))
 
       ;; (local-unset-key (key "C-x C-s"))
       (add-hook 'project-buffer-post-load-hook 'pbm-setup-local-key nil t)

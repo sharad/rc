@@ -193,17 +193,15 @@
          (if (progn ,@body) t))))
 
 
-  (defun project-buffer-set-master-project-no-status (pb project)
+  (defun project-buffer-set-master-project-no-status (project &optional pb)
     (interactive
      (let* ((pb (project-buffer-select-pbuffer t))
             (project (project-select pb)))
        (list pb project)))
-    (if pb
-        (let ()
-          (if (with-project-buffer pb
-                (project-buffer-set-master-project project-buffer-status project))
-              (setq project-buffer-current-buf-project (cons pb project))))
-        (error "no buffer provided.")))
+    (let ((pb (or pb (current-buffer))))
+      (if (with-project-buffer pb
+            (project-buffer-set-master-project project-buffer-status project))
+          (setq project-buffer-current-buf-project (cons pb project)))))
 
   (defun project-buffer-get-master-project ()
     (car project-buffer-master-project))
@@ -213,58 +211,89 @@
     (unless (and (or force (null project-buffer-current-buf-project))
                  (null
                   (project-buffer-set-master-project-no-status
+                   (cdr project-buffer-current-buf-project)
                    (project-buffer-select-pbuffer))))
       (switch-to-buffer (car project-buffer-current-buf-project))))
 
-  (defun iproject-add-files-to-project (project &optional root-folder file-filter base-virtual-folder)
-    "Add extra files to the current project."
-    (interactive)
-    (unless project-buffer-status (error "Not in project-buffer buffer"))
-    (let ((current-project (or
-                            project
-                            (project-buffer-get-master-project)
-                            (project-buffer-get-current-project-name))))
-      (unless current-project (error "No current project found"))
-      (when (called-interactively-p)
-        ;; Read the root-folder:
-        (unless root-folder
-          (while (or (not root-folder)
-                     (= (length root-folder) 0))
-	    (setq root-folder (read-directory-name "File Search - Root Folder: " nil nil t)))
-          (unless (string-equal (substring root-folder -1) "/")
-            (setq root-folder (concat root-folder "/"))))
-        ;; Read the file-filter:
-        (unless file-filter
-          (setq file-filter (iproject-choose-file-filter)))
-        ;; Read the base-virtual-path:
-        (unless base-virtual-folder
-          (let* ((def-string (if iproject-last-base-directory-choosen
-                                 (concat " [default " (iproject-shorten-string iproject-last-base-directory-choosen 9) "]")
-                                 "")))
-            (setq base-virtual-folder (read-from-minibuffer (format "Enter the base directory in the project%s: " def-string)
-                                                            nil nil nil 'iproject-last-base-directory-history))))
-        )
+  (deh-section "iproject"
 
-      (let (file-list user-data project-settings)
-        ;; Collect the project's file
-        (setq file-list (iproject-collect-files root-folder (nth 1 file-filter) iproject-ignore-folder))
+    (defun iproject-choose-main-file (project-type)
+      (when (nth 1 project-type)
+        (let* ((project-main-file nil)
+               (project-filter (nth 1 project-type))
+               (project-predicate (lambda (filename)
+                                    (and (not (string-equal filename "./"))
+                                         (not (string-equal filename "../"))
+                                         (or (file-directory-p filename)
+                                             (some '(lambda (item) (string-match item filename)) project-filter))))))
+          (while (or (not project-main-file)
+                     (file-directory-p project-main-file)
+                     (not (funcall project-predicate project-main-file)))
+            (let ((def-dir (and project-main-file (file-directory-p project-main-file) project-main-file)))
+              (setq project-main-file
+                    (read-file-name "Project Main File: " def-dir nil t nil project-predicate))))
+          project-main-file)))
 
-        ;; Make sure the base-virtual-folder doesn't start with a '/' and end with one:
-        (when (and (> (length base-virtual-folder) 0)
-                   (string-equal (substring base-virtual-folder 0 1) "/"))
-          (setq base-virtual-folder (substring base-virtual-folder 1)))
-        (unless (or (= (length base-virtual-folder) 0)
-                    (string-equal (substring base-virtual-folder -1) "/"))
-          (setq base-virtual-folder (concat base-virtual-folder "/")))
+    (defun iproject-choose-root-folder (project-main-file)
+      (let ((project-root-folder nil)
+            (def-dir (if project-main-file
+                         (file-name-directory project-main-file)
+                         default-directory)))
+        (while (or (not project-root-folder)
+                   (= (length project-root-folder) 0))
+          (setq project-root-folder (read-directory-name "File Search - Root Folder: " def-dir def-dir t)))
+        (unless (string-equal (substring project-root-folder -1) "/")
+          (setq project-root-folder (concat project-root-folder "/")))
+        project-root-folder))
 
-        ;; Update the project settings:
-        (setq project-settings (cons (list base-virtual-folder root-folder (nth 1 file-filter) iproject-ignore-folder)
-                                     (project-buffer-get-project-settings-data current-project)))
-        (project-buffer-set-project-settings-data current-project project-settings)
+    (defun iproject-add-files-to-project (project &optional root-folder file-filter base-virtual-folder)
+      "Add extra files to the current project."
+      (interactive)
+      (unless project-buffer-status (error "Not in project-buffer buffer"))
+      (let ((current-project (or
+                              project
+                              (project-buffer-get-master-project)
+                              (project-buffer-get-current-project-name))))
+        (unless current-project (error "No current project found"))
+        (when (called-interactively-p 'interactive)
+          ;; Read the root-folder:
+          (unless root-folder
+            (while (or (not root-folder)
+                       (= (length root-folder) 0))
+              (setq root-folder (read-directory-name "File Search - Root Folder: " nil nil t)))
+            (unless (string-equal (substring root-folder -1) "/")
+              (setq root-folder (concat root-folder "/"))))
+          ;; Read the file-filter:
+          (unless file-filter
+            (setq file-filter (iproject-choose-file-filter)))
+          ;; Read the base-virtual-path:
+          (unless base-virtual-folder
+            (let* ((def-string (if iproject-last-base-directory-choosen
+                                   (concat " [default " (iproject-shorten-string iproject-last-base-directory-choosen 9) "]")
+                                   "")))
+              (setq base-virtual-folder (read-from-minibuffer (format "Enter the base directory in the project%s: " def-string)
+                                                              nil nil nil 'iproject-last-base-directory-history))))
+          )
 
-        ;; Add each individual files to the project:
-        (iproject-add-file-list-to-current-project current-project base-virtual-folder root-folder file-list)
-        )))
+        (let (file-list user-data project-settings)
+          ;; Collect the project's file
+          (setq file-list (iproject-collect-files root-folder (nth 1 file-filter) iproject-ignore-folder))
+
+          ;; Make sure the base-virtual-folder doesn't start with a '/' and end with one:
+          (when (and (> (length base-virtual-folder) 0)
+                     (string-equal (substring base-virtual-folder 0 1) "/"))
+            (setq base-virtual-folder (substring base-virtual-folder 1)))
+          (unless (or (= (length base-virtual-folder) 0)
+                      (string-equal (substring base-virtual-folder -1) "/"))
+            (setq base-virtual-folder (concat base-virtual-folder "/")))
+
+          ;; Update the project settings:
+          (setq project-settings (cons (list base-virtual-folder root-folder (nth 1 file-filter) iproject-ignore-folder)
+                                       (project-buffer-get-project-settings-data current-project)))
+          (project-buffer-set-project-settings-data current-project project-settings)
+
+          ;; Add each individual files to the project:
+          (iproject-add-file-list-to-current-project current-project base-virtual-folder root-folder file-list)))))
 
   (testing
 

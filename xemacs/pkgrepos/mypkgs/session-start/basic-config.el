@@ -298,6 +298,10 @@ alkready should not exist.")
 
 
 ;;{{
+
+;; (defvar startup-select-frame-fn #'select-frame "startup-select-frame-fn")
+(defvar startup-select-frame-fn #'select-frame-set-input-focus "startup-select-frame-fn")
+
 (deh-section "disable startup interrupting feature till first frame created."
   (defvar enable-p4-login nil "test")
 
@@ -346,7 +350,7 @@ problem while emacs startup in daemon mode, non-interactively."
 
     (defun sharad/disable-startup-interrupting-feature-in-frame-once (&optional frame)
       ;; NOTE: Can not be called in hook.
-      ;; (select-frame frame)
+      ;; (funcall startup-select-frame-fn frame)
       ;; (with-report-error "check"
       ;;                    (sharad/enable-startup-interrupting-feature))
       (sharad/disable-startup-interrupting-feature)
@@ -414,7 +418,7 @@ startup in daemon mode."
           (message-notify "sharad/enable-startup-interrupting-feature-in-frame-once" "locked due to sharad/enable-startup-interrupting-feature-in-frame-once-lock is t")
           (progn
             (setq sharad/enable-startup-interrupting-feature-in-frame-once-lock t)
-            (select-frame frame)
+            (funcall startup-select-frame-fn frame)
             ;; (with-report-error "check"
             ;;                    (sharad/enable-startup-interrupting-feature))
             (sharad/enable-startup-interrupting-feature)
@@ -476,7 +480,7 @@ startup in daemon mode."
           (run-each-hooks 'sharad/enable-login-session-interrupting-feature-hook)))
 
     (defun sharad/enable-login-session-interrupting-feature-in-frame-once (frame)
-      (select-frame frame)
+      (funcall startup-select-frame-fn frame)
       ;; run and disable.
       (with-report-error "check"
           (when (< (length (frame-list)) *minimum-disable-login-session-frames*)
