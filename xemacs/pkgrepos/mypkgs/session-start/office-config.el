@@ -104,6 +104,103 @@
               nil
               'update-current-file))))
 
+   (defun org-entries-select (entries &optional prompt)
+     "Select a task that was recently associated with clocking."
+     (interactive)
+     (let (och
+           chl
+           sel-list
+           rpl
+           (i 0)
+           s)
+       ;; Remove successive dups from the clock history to consider
+       ;; (mapc (lambda (c) (if (not (equal c (car och))) (push c och)))
+       ;;       clocks)
+       (setq och (reverse och) chl (length och))
+       (if (zerop chl)
+           (user-error "No recent clock")
+           (save-window-excursion
+             (org-switch-to-buffer-other-window
+              (get-buffer-create "*Clock Task Select*"))
+             (erase-buffer)
+             (insert (org-add-props "Recent Tasks\n" nil 'face 'bold))
+             (mapc
+              (lambda (m)
+                (when (marker-buffer m)
+                  (setq i (1+ i)
+                        s (org-clock-insert-selection-line
+                           (if (< i 10)
+                               (+ i ?0)
+                               (+ i (- ?A 10))) m))
+                  (if (fboundp 'int-to-char) (setf (car s) (int-to-char (car s))))
+                  (push s sel-list)))
+              och)
+             (run-hooks 'org-clock-before-select-task-hook)
+             (goto-char (point-min))
+             ;; Set min-height relatively to circumvent a possible but in
+             ;; `fit-window-to-buffer'
+             (fit-window-to-buffer nil nil (if (< chl 10) chl (+ 5 chl)))
+             (message (or prompt "Select task for clocking:"))
+             (setq cursor-type nil rpl (read-char-exclusive))
+             (kill-buffer)
+             (cond
+               ((eq rpl ?q) nil)
+               ((eq rpl ?x) nil)
+               ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
+               (t (user-error "Invalid task choice %c" rpl)))))))
+
+   (defun org-clock-select-task-from-clocks (clocks &optional prompt)
+     "Select a task that was recently associated with clocking."
+     (interactive)
+     (let (och chl sel-list rpl (i 0) s)
+       ;; Remove successive dups from the clock history to consider
+       (mapc (lambda (c) (if (not (equal c (car och))) (push c och)))
+             clocks)
+       (setq och (reverse och) chl (length och))
+       (if (zerop chl)
+           (user-error "No recent clock")
+           (save-window-excursion
+             (org-switch-to-buffer-other-window
+              (get-buffer-create "*Clock Task Select*"))
+             (erase-buffer)
+             ;; (when (marker-buffer org-clock-default-task)
+             ;;   (insert (org-add-props "Default Task\n" nil 'face 'bold))
+             ;;   (setq s (org-clock-insert-selection-line ?d org-clock-default-task))
+             ;;   (push s sel-list))
+             ;; (when (marker-buffer org-clock-interrupted-task)
+             ;;   (insert (org-add-props "The task interrupted by starting the last one\n" nil 'face 'bold))
+             ;;   (setq s (org-clock-insert-selection-line ?i org-clock-interrupted-task))
+             ;;   (push s sel-list))
+             ;; (when (org-clocking-p)
+             ;;   (insert (org-add-props "Current Clocking Task\n" nil 'face 'bold))
+             ;;   (setq s (org-clock-insert-selection-line ?c org-clock-marker))
+             ;;   (push s sel-list))
+             (insert (org-add-props "Recent Tasks\n" nil 'face 'bold))
+             (mapc
+              (lambda (m)
+                (when (marker-buffer m)
+                  (setq i (1+ i)
+                        s (org-clock-insert-selection-line
+                           (if (< i 10)
+                               (+ i ?0)
+                               (+ i (- ?A 10))) m))
+                  (if (fboundp 'int-to-char) (setf (car s) (int-to-char (car s))))
+                  (push s sel-list)))
+              och)
+             (run-hooks 'org-clock-before-select-task-hook)
+             (goto-char (point-min))
+             ;; Set min-height relatively to circumvent a possible but in
+             ;; `fit-window-to-buffer'
+             (fit-window-to-buffer nil nil (if (< chl 10) chl (+ 5 chl)))
+             (message (or prompt "Select task for clocking:"))
+             (setq cursor-type nil rpl (read-char-exclusive))
+             (kill-buffer)
+             (cond
+               ((eq rpl ?q) nil)
+               ((eq rpl ?x) nil)
+               ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
+               (t (user-error "Invalid task choice %c" rpl)))))))
+
    (progn
      (add-hook 'buffer-list-update-hook     'run-task-current-file-timer)
      (add-hook 'elscreen-screen-update-hook 'run-task-current-file-timer)
@@ -143,10 +240,11 @@
 
    (defun org-entry-get-task-infos (files)
      (let ()
-      (org-map-entries
-      'org-entry-collect-task-info
-      t
-      files)))
+       (remove nil
+               (org-map-entries
+                'org-entry-collect-task-info
+                t
+                files))))
 
    (defun org-entry-update-task-infos ()
      (setq org-entry-task-infos
@@ -298,6 +396,7 @@ which other peoples are also working."
  (defvar task-config '(("bug"
                         (org-master-file "report.org")
                         (org-files       "todo.org" "notes.org" "analysis.org")
+                        (org-todo-file    "todo.org")
                         (dirs            "logs" "programs" "patches" "deliverables")
                         (links           ("notes.html" . "index.html"))
                         (project         "bugs.pb")
@@ -305,12 +404,14 @@ which other peoples are also working."
                        ("feature"
                         (org-master-file "report.org")
                         (org-files       "reqirement.org" "feasibility.org" "design.org" "todo.org" "notes.org" "analysis.org")
+                        (org-todo-file    "todo.org")
                         (dirs            "logs" "programs" "patches" "deliverables")
                         (links           ("notes.html" . "index.html"))
                         (project         "features.pb"))
                        ("work"
                         (org-master-file "report.org")
                         (org-files       "reqirement.org" "feasibility.org" "design.org" "todo.org" "notes.org" "analysis.org")
+                        (org-todo-file    "todo.org")
                         (dirs            "logs" "programs" "patches" "deliverables")
                         (links           ("notes.html" . "index.html"))
                         (project         "works.pb"))))
@@ -427,6 +528,11 @@ which other peoples are also working."
  (defun task-org-master-file (task)
    (if (member task (mapcar 'car task-config))
        (cadr (assoc 'org-master-file (cdr (assoc task task-config))))
+       (error "task is not from task-config")))
+
+ (defun task-org-todo-file (task)
+   (if (member task (mapcar 'car task-config))
+       (cadr (assoc 'org-todo-file (cdr (assoc task task-config))))
        (error "task is not from task-config")))
 
  (defun task-org-files (task)
@@ -613,7 +719,7 @@ which other peoples are also working."
          (heading (task-party-org-heading))
          (child-heading (task-get-org-description task name desc)))
      (org-insert-heading-to-file-headline child-heading file heading)
-     (with-org-file-headline file child-heading
+     (org-with-file-headline file child-heading
                              (let ((buffer-read-only nil))
                                (org-entry-put nil "Root" project-root-folder)))
      (with-current-buffer (find-file-noselect file)
@@ -656,7 +762,7 @@ which other peoples are also working."
    (interactive (task-get-task-data-all))
    (message "Not doing anything."))
 
- (defun create-task-dir (task name desc task-dir)
+ (defun create-task-dir (task name desc task-dir project-root-folder)
    (interactive (task-get-task-data t))
    ;; (dolist (dname '("logs" "programs" "patches" "deliverables"))
    (let* ()
@@ -665,25 +771,32 @@ which other peoples are also working."
      (make-directory (concat task-scratch-dir (pluralize-string task) "/" name) t)
      (make-symbolic-link (concat task-scratch-dir (pluralize-string task) "/" name) (concat task-dir "/scratch"))
 
-     ;; files
-     (dolist (f (task-org-files task))
-       (let ((nfile (expand-file-name f (concat task-dir "/")))) ;find alternate of find-file-noselect to get non-existing file.
-         (task-create-org-file nfile
-                               (insert (format "\n\n* %s - %s: %s\n\n\n\n" (capitalize task) name desc)))))
+     (let ((org-heading (format "%s - %s: %s" (capitalize task) name desc)))
+       ;; files
+       (dolist (file (task-org-files task))
+         (when file
+          (let ((nfile (expand-file-name file (concat task-dir "/")))) ;find alternate of find-file-noselect to get non-existing file.
+           (task-create-org-file nfile
+                                 (insert (format "\n\n* %s\n\n\n\n" org-heading))))))
 
+       (let ((file (task-org-todo-file task)))
+         (org-with-file-headline file org-heading
+                                 (let ((buffer-read-only nil))
+                                   (org-entry-put nil "Root" project-root-folder))))
 
-     ;; master file
-     (let ((f (task-org-master-file task)))
-       (let ((nfile (expand-file-name f (concat task-dir "/")))) ;find alternate of find-file-noselect to get non-existing file.
-         (task-create-org-file nfile
-                               (insert (format "\n\n* %s - %s: %s\n\n\n\n" (capitalize task) name desc))
-                               (dolist
-                                   (of (task-org-files task))
-                                 (insert
-                                  "\n - "
-                                  (format "[[file:%s][%s]]"
-                                          of
-                                          (capitalize (file-name-sans-extension of))))))))
+       ;; master file
+       (let ((file (task-org-master-file task)))
+         (when file
+           (let ((nfile (expand-file-name file (concat task-dir "/")))) ;find alternate of find-file-noselect to get non-existing file.
+             (task-create-org-file nfile
+                                   (insert (format "\n\n* %s\n\n\n\n" org-heading))
+                                   (dolist
+                                       (of (task-org-files task))
+                                     (insert
+                                      "\n - "
+                                      (format "[[file:%s][%s]]"
+                                              of
+                                              (capitalize (file-name-sans-extension of))))))))))
 
      ;; links
      (dolist (lp (cdr (assoc 'links (cdr (assoc task task-config)))))
@@ -710,7 +823,7 @@ which other peoples are also working."
          (progn
            (create-plan-task task name desc task-dir)
            (create-org-task  task name desc task-dir project-root-folder)
-           (create-task-dir  task name desc task-dir)
+           (create-task-dir  task name desc task-dir project-root-folder)
            (create-pbm-task  task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)))
 
      (when (y-or-n-p (format "Should set %s current task" task-dir))
@@ -852,33 +965,34 @@ which other peoples are also working."
                 ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
                 (t (user-error "Invalid task choice %c" rpl)))))))
 
-    (defun org-clock-insert-selection-line (i marker)
-      "Insert a line for the clock selection menu.
-And return a cons cell with the selection character integer and the marker
-pointing to it."
-      (when (marker-buffer marker)
-        (let (file cat task heading prefix)
-          (with-current-buffer (org-base-buffer (marker-buffer marker))
-            (save-excursion
-              (save-restriction
-                (widen)
-                (ignore-errors
-                  (goto-char marker)
-                  (setq file (buffer-file-name (marker-buffer marker))
-                        cat (org-get-category)
-                        heading (org-get-heading 'notags)
-                        prefix (save-excursion
-                                 (org-back-to-heading t)
-                                 (looking-at org-outline-regexp)
-                                 (match-string 0))
-                        task (substring
-                              (org-fontify-like-in-org-mode
-                               (concat prefix heading)
-                               org-odd-levels-only)
-                              (length prefix)))))))
-          (when (and cat task)
-            (insert (format "[%c] %-12s  %s\n" i cat task))
-            (cons i marker))))))
+;;     (defun org-clock-insert-selection-line (i marker)
+;;       "Insert a line for the clock selection menu.
+;; And return a cons cell with the selection character integer and the marker
+;; pointing to it."
+;;       (when (marker-buffer marker)
+;;         (let (file cat task heading prefix)
+;;           (with-current-buffer (org-base-buffer (marker-buffer marker))
+;;             (save-excursion
+;;               (save-restriction
+;;                 (widen)
+;;                 (ignore-errors
+;;                   (goto-char marker)
+;;                   (setq file (buffer-file-name (marker-buffer marker))
+;;                         cat (org-get-category)
+;;                         heading (org-get-heading 'notags)
+;;                         prefix (save-excursion
+;;                                  (org-back-to-heading t)
+;;                                  (looking-at org-outline-regexp)
+;;                                  (match-string 0))
+;;                         task (substring
+;;                               (org-fontify-like-in-org-mode
+;;                                (concat prefix heading)
+;;                                org-odd-levels-only)
+;;                               (length prefix)))))))
+;;           (when (and cat task)
+;;             (insert (format "[%c] %-12s  %s\n" i cat task))
+;;             (cons i marker)))))
+    )
 
   ) ;; (deh-require-maybe orgmode-config
 

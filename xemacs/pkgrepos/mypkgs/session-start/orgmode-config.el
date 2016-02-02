@@ -46,7 +46,7 @@
 
 (deh-section "org macro"
 
-  (defmacro with-org-refile (refile-targets &rest body)
+  (defmacro org-with-refile (refile-targets &rest body)
     "Refile the active region.
 If no region is active, refile the current paragraph.
 With prefix arg C-u, copy region instad of killing it."
@@ -60,7 +60,7 @@ With prefix arg C-u, copy region instad of killing it."
            (goto-char pos)
            ,@body))))
 
-  (defmacro with-org-file-headline (file headline &rest body)
+  (defmacro org-with-file-headline (file headline &rest body)
     `(let ((pos (save-excursion
                   (find-file ,file)
                   (org-find-exact-headline-in-buffer ,headline))))
@@ -119,7 +119,7 @@ With prefix arg C-u, copy region instad of killing it."
                   (forward-paragraph)
                   (skip-chars-backward "\n\t ")
                   (point))))
-    (with-org-refile nil
+    (org-with-refile nil
       (let ((text (buffer-substring-no-properties beg end)))
         (unless copy (kill-region beg end))
         (deactivate-mark)
@@ -144,7 +144,7 @@ If no region is active, refile the current paragraph.
 With prefix arg C-u, copy region instad of killing it."
     (interactive "sorg entry: \nP")
     ;; mark paragraph if no region is set
-    (with-org-refile nil
+    (org-with-refile nil
       ;; (unless arg (kill-region beg end))
       ;; (deactivate-mark)
       (with-current-buffer (find-file-noselect file)
@@ -161,7 +161,7 @@ With prefix arg C-u, copy region instad of killing it."
             (insert (format org-refile-string-format text)))))))
 
   (defun org-insert-subheading-to-file-headline (text file headline)
-    (with-org-file-headline
+    (org-with-file-headline
         file headline
         (let ((buffer-read-only nil))
           (if (eql org-refile-string-position 'bottom)
@@ -174,7 +174,7 @@ With prefix arg C-u, copy region instad of killing it."
           (insert (format org-refile-string-format text)))))
 
   (defun org-insert-heading-to-file-headline (text file headline)
-    (with-org-file-headline
+    (org-with-file-headline
         file headline
         (let ((buffer-read-only nil))
           (if (eql org-refile-string-position 'bottom)
@@ -193,7 +193,7 @@ With prefix arg C-u, copy region instad of killing it."
      (let ((property (read-from-minibuffer "property: "))
            (value    (read-from-minibuffer "value: ")))
        (list property value)))
-    (with-org-refile nil
+    (org-with-refile nil
       (let ((buffer-read-only nil))
         (org-entry-put nil property value))))
 
@@ -203,7 +203,7 @@ With prefix arg C-u, copy region instad of killing it."
      (let ((property (read-from-minibuffer "property: "))
            (value    (read-from-minibuffer "value: ")))
        (list property value)))
-    (with-org-refile nil
+    (org-with-refile nil
       (let ((buffer-read-only nil))
         (org-entry-put-multivalued-property nil property values)))))
 
@@ -420,7 +420,7 @@ With prefix arg C-u, copy region instad of killing it."
                  (org-save-all-org-buffers)))
 
      (defun org-clock-in-refile (refile-targets)
-       (with-org-refile (or refile-targets org-refile-targets)
+       (org-with-refile (or refile-targets org-refile-targets)
          (let ((buffer-read-only nil))
            (org-clock-in))))
 
