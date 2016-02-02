@@ -561,7 +561,7 @@ With prefix arg C-u, copy region instad of killing it."
         (expand-file-name
          "meru"
          (org-publish-get-attribute "tasks" "org" :base-directory))
-        "\\.org$" 2 "\\(rip\\|stage\\)" t))
+        "\\.org$" 2 "\\(rip\\|stage\\)"))
 
       (defun org-clock-unclocked-files-mins-today (files)
         (let* ((totalmins 0)
@@ -900,7 +900,7 @@ using three `C-u' prefix arguments."
                 (org-agenda-files
                  ',(directory-files-recursive
                     (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
-                   "\\.org$" 2 "\\(rip\\|stage\\)" t))
+                   "\\.org$" 2 "\\(rip\\|stage\\)"))
 
                 ;; (org-agenda-sorting-strategy '(priority-up effort-down))
                 )
@@ -917,8 +917,7 @@ using three `C-u' prefix arguments."
                           "~/Documents/CreatedContent/contents/org")
                          "\\.org$"
                          2
-                         "\\(rip\\|stage\\)"
-                         t))
+                         "\\(rip\\|stage\\)"))
 
 
     (setq

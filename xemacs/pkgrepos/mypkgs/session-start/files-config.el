@@ -574,7 +574,7 @@ to do VC operation."
   ;; e.g.
   ;; (directory-files-recursive "/home/dmg/git.dmg/projects" "\\.org$" 2 "\\(rip\\|stage\\)")
 
-  (defun directory-files-recursive (directory match maxdepth ignore &optional no-dir)
+  (defun directory-files-recursive (directory match maxdepth &optional ignore include-dir)
     "List files in DIRECTORY and in its sub-directories.
    Return files that match the regular expression MATCH but ignore
    files and directories that match IGNORE (IGNORE is tested before MATCH. Recurse only
@@ -607,17 +607,20 @@ to do VC operation."
              (setq
               files-list (append
                           files-list
-                          (directory-files-recursive f match (1- maxdepth) ignore no-dir)))
-             (unless no-dir
+                          (directory-files-recursive f match (1- maxdepth) ignore include-dir)))
+             (when (and
+                    include-dir
+                    (string-match match f))
                (setq
                 files-list (cons f files-list))))
             (t)))
         (setq current-directory-list (cdr current-directory-list)))
       files-list)))
 
-;; (directory-files-recursive
-;;  (expand-file-name "~/Documents/CreatedContent/contents/org/tasks/meru")
-;;  "\\.org$" 2 "\\(rip\\|stage\\)" t)
+(when nil
+  (directory-files-recursive
+   (expand-file-name "~/Documents/CreatedContent/contents/org/tasks/meru")
+   "\\.org$" 2 "\\(rip\\|stage\\)"))
 
 
 (provide 'files-config)

@@ -50,40 +50,47 @@
               task-previous-file task-current-file
               task-current-file  file)
 
-             (unless (and
-                      org-clock-marker
-                      (> (marker-position-nonil org-clock-marker) 0)
-                      (org-with-clock-position (list org-clock-marker)
-                        (org-entry-associated-to-file
-                         (org-task-collect-meta-info-from-heading)
-                         file)))
-               (let* ((matched-clocks (mapcar '(lambda (e)
-                                                (cdr (assoc 'marker (cdr e))))
-                                              (org-entries-associated-to-file file)))
-                      (selected-clock (if (> (length matched-clocks) 1)
-                                          (org-clock-select-task-from-clocks matched-clocks)
-                                          (car matched-clocks))))
-                 (if selected-clock
-                     (let ((buffer-read-only nil)
-                           (org-log-note-clock-out nil)
-                           (prev-org-clock-buff (marker-buffer org-clock-marker)))
+             (unless (org-clock-entry-associated-to-file-p file)
+               (org-entry-run-associated-clock file))))))
 
-                       (let ((prev-clock-buff-read-only
-                              (if prev-org-clock-buff
-                                  (with-current-buffer (marker-buffer org-clock-marker)
-                                    buffer-read-only))))
+   (defun org-clock-entry-associated-to-file-p (file)
+     (and
+      org-clock-marker
+      (> (marker-position-nonil org-clock-marker) 0)
+      (org-with-clock-position (list org-clock-marker)
+        (let ((info (org-entry-collect-task-info)))
+          (if (org-entry-associated-to-file-p (org-entry-collect-task-info) file)
+              info)))))
 
-                         (if prev-org-clock-buff
-                             (with-current-buffer prev-org-clock-buff
-                               (setq buffer-read-only nil)))
+   (defun org-entry-run-associated-clock (file)
+     (let ()
+       (let* ((matched-clocks (org-markers-associated-to-file file))
+              (selected-clock (if (> (length matched-clocks) 1)
+                                  (org-clock-select-task-from-clocks matched-clocks)
+                                  (car matched-clocks))))
+         (if selected-clock
+             (let ((org-log-note-clock-out nil)
+                   (prev-org-clock-buff (marker-buffer org-clock-marker)))
 
-                         (setq update-current-file-msg org-clock-marker)
-                         (org-clock-clock-in (list selected-clock))
+               (let ((prev-clock-buff-read-only
+                      (if prev-org-clock-buff
+                          (with-current-buffer (marker-buffer org-clock-marker)
+                            buffer-read-only))))
 
-                         (if prev-org-clock-buff
-                             (with-current-buffer prev-org-clock-buff
-                               (setq buffer-read-only prev-clock-buff-read-only)))))
-                     (setq update-current-file-msg "null clock"))))))))
+                 (if prev-org-clock-buff
+                     (with-current-buffer prev-org-clock-buff
+                       (setq buffer-read-only nil)))
+
+                 (setq update-current-file-msg org-clock-marker)
+
+                 (with-current-buffer (marker-buffer selected-clock)
+                   (let ((buffer-read-only nil))
+                     (org-clock-clock-in (list selected-clock))))
+
+                 (if prev-org-clock-buff
+                     (with-current-buffer prev-org-clock-buff
+                       (setq buffer-read-only prev-clock-buff-read-only)))))
+             (setq update-current-file-msg "null clock")))))
 
    (defun run-task-current-file-timer ()
      (let ()
@@ -91,12 +98,16 @@
        (when buffer-select-timer
          (cancel-timer buffer-select-timer)
          (setq buffer-select-timer nil))
-       (setq buffer-select-timer (run-with-timer (1+ task-current-file-time) nil 'update-current-file))))
+       (setq buffer-select-timer
+             (run-with-timer
+              (1+ task-current-file-time)
+              nil
+              'update-current-file))))
 
    (progn
-     (add-hook 'buffer-list-update-hook 'run-task-current-file-timer)
+     (add-hook 'buffer-list-update-hook     'run-task-current-file-timer)
      (add-hook 'elscreen-screen-update-hook 'run-task-current-file-timer)
-     (add-hook 'elscreen-goto-hook 'run-task-current-file-timer))
+     (add-hook 'elscreen-goto-hook          'run-task-current-file-timer))
 
    (when nil
      (remove-hook 'buffer-list-update-hook 'run-task-current-file-timer)
@@ -104,33 +115,47 @@
      (remove-hook 'elscreen-screen-update-hook 'run-task-current-file-timer)
      (remove-hook 'elscreen-goto-hook 'run-task-current-file-timer))
 
-   (defvar org-task-meta-infos nil "org-task-get-meta-infos")
+   (defvar org-entry-task-infos nil "org entry task infos")
 
-   (defun org-task-collect-meta-info-from-heading ()
-     (let ((heading (substring-no-properties (org-get-heading)))
-           (root    (org-entry-get (point) "Root")))
+   (defun org-entry-collect-task-info ()
+     (let ((heading-with-string-prop
+            (org-get-heading)))
+       (let ((heading (if heading-with-string-prop
+                          (substring-no-properties heading-with-string-prop)))
+             (root    (org-entry-get (point) "Root"))
+             (marker  (move-marker
+                       (make-marker)
+                       (point)
+                       (org-base-buffer (current-buffer))))
+             (file    (buffer-file-name))
+             (point   (point))
+             task-info)
+        (when heading
+          (if root   (push (cons "Root" root) task-info))
+          (if marker (push (cons 'marker marker) task-info))
+          (if file   (push (cons 'file file) task-info))
+          (if point  (push (cons 'point point) task-info))
+          (push heading task-info))
+        task-info)))
 
-       (list heading
-             (cons "Root" root)
-             (cons 'marker (move-marker (make-marker) (point) (org-base-buffer (current-buffer))))
-             (cons 'file (buffer-file-name))
-             (cons 'point (point)))))
+   (defun org-entry-task-info-get-property (task-info property)
+     (cdr (assoc property (cdr task-info))))
 
-   (defun org-task-get-meta-infos (files)
+   (defun org-entry-get-task-infos (files)
      (let ()
       (org-map-entries
-      'org-task-collect-meta-info-from-heading
+      'org-entry-collect-task-info
       t
       files)))
 
-   (defun org-task-update-meta-infos ()
-     (setq org-task-meta-infos
-           (org-task-get-meta-infos (org-task-files))))
+   (defun org-entry-update-task-infos ()
+     (setq org-entry-task-infos
+           (org-entry-get-task-infos (org-all-task-files))))
 
    (defvar org-entry-associated-file-predicate-fns nil)
 
    (defun org-entries-associated-to-file (file)
-     (let ((infos (or org-task-meta-infos (org-task-update-meta-infos)))
+     (let ((task-infos (or org-entry-task-infos (org-entry-update-task-infos)))
            (matched '()))
        (dolist (f org-entry-associated-file-predicate-fns matched)
          (let ((partitions
@@ -139,50 +164,80 @@
                               (push inf (first  result))
                               (push inf (second result)))
                           result)
-                        infos
+                        task-infos
                         :initial-value (list nil nil)
                         :from-end t)))
-           (setq infos   (second partitions)
-                 matched (append matched (first partitions)))))))
+           (setq
+            task-infos   (second partitions)
+            matched (append matched (first partitions)))))))
 
-   (defun org-entry-associated-to-file (info file)
+   (defun org-markers-associated-to-file (file)
+     (mapcar '(lambda (e)
+               (cdr (assoc 'marker (cdr e))))
+             (org-entries-associated-to-file file)))
+
+   (defun org-entry-associated-to-file-p (task-info file)
      (if file
       (some
-       '(lambda (fn) (funcall fn file info))
+       '(lambda (fn) (funcall fn file task-info))
        org-entry-associated-file-predicate-fns)))
 
-
-   (defun org-entry-associated-file-org-file (file info)
-     "Predicate funtion to check if file matches to info's file attribute."
-     (string-equal
-      (file-truename file)
-      (file-truename (cdr (assoc 'file (cdr info))))))
-
    (setq org-entry-associated-file-predicate-fns nil)
-   (push 'org-entry-associated-file-org-file org-entry-associated-file-predicate-fns)
 
-   (when nil
+   (deh-section "Org entries associated to file predicate functions"
+     ;; TODO: matching should be merit based.
+     ;; TODO: logical AND OR method should be possible in match-fn results
+     ;; TODO: exclusion fecelities also should be present.
+     (defun org-entries-register-associated-to-file-predicate-function (fn)
+       (add-to-list
+        'org-entry-associated-file-predicate-fns
+        fn))
 
-     (org-clock-clock-in
-      (list
-       (org-clock-select-task-from-clocks
-        (mapcar '(lambda (e)
-                  (cdr (assoc 'marker (cdr e))))
-                (org-entries-associated-to-file "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))))
+     (defun org-entry-associated-file-org-file-p (file task-info)
+       "Predicate funtion to check if file matches to task-info's file attribute."
+       (string-equal
+        (file-truename file)
+        (file-truename (org-entry-task-info-get-property task-info 'file))))
+     (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-org-file-p)
 
-     (org-with-clock-position (list org-clock-marker)
-                        (org-entry-associated-to-file
-                         (org-task-collect-meta-info-from-heading)
-                         "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"))
+     (defun org-entry-associated-file-root-dir-p (file task-info)
+       "Predicate funtion to check if file matches to task-info's file attribute."
+       (let ((root (org-entry-task-info-get-property task-info "Root")))
+         (if root
+             (string-match
+              (file-truename root)
+              (file-truename file)))))
+     (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-root-dir-p)
 
-     (org-with-clock-position (list org-clock-marker)
-                        (org-entry-associated-to-file
-                         (org-task-collect-meta-info-from-heading)
-                         "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org"))
-
+     (defun org-entry-associated-file-xx-p (file task-info)
+       )
+     ;;(org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-xx-p)
      )
 
-   ;; (org-entry-associated-file-org-file "~/Documents/CreatedContent/contents/org/tasks/meru/report.org" (cadr org-task-meta-infos))
+
+   (testing
+
+     (org-entry-run-associated-clock
+      (buffer-file-name))
+
+     (org-entry-run-associated-clock
+      "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
+
+     (org-markers-associated-to-file
+      (buffer-file-name))
+
+     (org-clock-entry-associated-to-file-p
+      (buffer-file-name))
+
+     (org-clock-entry-associated-to-file-p
+      "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
+
+     (org-clock-entry-associated-to-file-p
+        "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org")
+
+     (org-entry-associated-file-org-file-p
+      "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"
+      (cadr org-entry-task-infos)))
 
    )
 
@@ -713,7 +768,15 @@ which other peoples are also working."
      (let ((party (or party task-current-party)))
        (directory-files-recursive
         (task-party-dir party)
-        "\\.org$" 7 "\\(rip\\|stage\\)" t)))
+        "\\.org$"
+        7)))
+
+   (defun org-all-task-files ()
+     (let ()
+       (directory-files-recursive
+        (org-publish-get-attribute "tasks" "org" :base-directory)
+        "\\.org$"
+        7)))
 
    (defun org-task-refile-target (party)
      ;; (interactive)
