@@ -59,6 +59,7 @@ With prefix arg C-u, copy region instad of killing it."
          (save-excursion
            (goto-char pos)
            ,@body))))
+  (put 'org-with-refile 'lisp-indent-function 1)
 
   (defmacro org-with-file-headline (file headline &rest body)
     `(let ((pos (save-excursion
@@ -67,7 +68,9 @@ With prefix arg C-u, copy region instad of killing it."
        (with-current-buffer (find-file-noselect ,file)
          (save-excursion
            (goto-char pos)
-           ,@body)))))
+           ,@body))))
+  (put 'org-with-file-headline 'lisp-indent-function 1)
+  )
 
 (deh-section "move org"
 
@@ -392,10 +395,10 @@ With prefix arg C-u, copy region instad of killing it."
 
      (add-hook 'org-clock-in-hook
                '(lambda ()
-                 ;; if effort is not present than add it.
-                 (unless (org-entry-get nil "Effort")
-                   (save-excursion
-                    (org-set-effort)))
+                 ;; ;; if effort is not present than add it.
+                 ;; (unless (org-entry-get nil "Effort")
+                 ;;   (save-excursion
+                 ;;    (org-set-effort)))
                  ;; set timer
                  (when (not
                         (and
@@ -408,6 +411,24 @@ With prefix arg C-u, copy region instad of killing it."
                        (call-interactively 'org-timer-set-timer)))
                  (save-buffer)
                  (org-save-all-org-buffers)))
+
+     (defvar org-clock-default-effort "1:00")
+     (defun my-org-mode-add-default-effort ()
+       "Add a default effort estimation."
+       (unless (org-entry-get (point) "Effort")
+         (org-set-property "Effort" org-clock-default-effort)))
+     (add-hook 'org-clock-in-prepare-hook
+               'my-org-mode-ask-effort)
+     (defun my-org-mode-ask-effort ()
+       "Ask for an effort estimate when clocking in."
+       (unless (org-entry-get (point) "Effort")
+         (let ((effort
+                (completing-read
+                 "Effort: "
+                 (org-entry-get-multivalued-property (point) "Effort"))))
+           (unless (equal effort "")
+             (org-set-property "Effort" effort)))))
+
 
      (add-hook 'org-clock-out-hook
                '(lambda ()
@@ -1328,6 +1349,29 @@ using three `C-u' prefix arguments."
            "http://www.osnews.com/feeds"
            ,(expand-file-name "../rss/osnews.org" (org-publish-get-attribute "tasks" "org" :base-directory))
            "OSNews Entries"))))
+
+(deh-section "url"
+  ;; http://orgmode.org/worg/org-hacks.html
+
+  (require 'mm-url) ; to include mm-url-decode-entities-string
+
+  (defun my-org-insert-url ()
+    "Insert org link where default description is set to html title."
+    (interactive)
+    (let* ((url (read-string "URL: "))
+           (title (get-html-title-from-url url)))
+      (org-insert-link nil url title)))
+
+  (defun get-html-title-from-url (url)
+    "Return content in <title> tag."
+    (let (x1 x2 (download-buffer (url-retrieve-synchronously url)))
+      (save-excursion
+        (set-buffer download-buffer)
+        (beginning-of-buffer)
+        (setq x1 (search-forward "<title>"))
+        (search-forward "</title>")
+        (setq x2 (search-backward "<"))
+        (mm-url-decode-entities-string (buffer-substring-no-properties x1 x2))))))
 
 
 (provide 'orgmode-config)
