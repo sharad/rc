@@ -70,7 +70,13 @@ With prefix arg C-u, copy region instad of killing it."
            (goto-char pos)
            ,@body))))
   (put 'org-with-file-headline 'lisp-indent-function 1)
-  )
+
+  (defmacro org-with-clock-writeable-buffer (&rest body)
+    (let ((buff (org-base-buffer (marker-buffer org-clock-marker))))
+      (when buff
+        (with-current-buffer buff
+          (let (buffer-read-only)
+            ,@body))))))
 
 (deh-section "move org"
 
@@ -482,14 +488,10 @@ With prefix arg C-u, copy region instad of killing it."
                   '(lambda (nframe)
                     (if (and
                          (org-clock-is-active)
-                         (y-or-n-p-with-timeout
-                          (format "Do you want to clock out current task %s: " org-clock-heading)
-                          7
-                          nil))
-                        (let (org-log-note-clock-out
-                              buffer-read-only)
-                          (org-clock-out))))))
-
+                         (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
+                        (org-with-clock-writeable-buffer
+                         (let (org-log-note-clock-out)
+                           (org-clock-out)))))))
                t)
 
      (add-hook 'sharad/enable-desktop-restore-interrupting-feature

@@ -25,9 +25,11 @@ function main() {
             if ! pgrep offlineimap 2>&1 > /dev/null ; then
                 foreach acc ( $(echo ${account:-$OFFLINEIMAPACCOUNT}  | tr , ' ' ) ) {
                     if [  $interactive  ] ; then
-                        offlineimap -a $acc
+                        verbose offlineimap -1 -a $acc
+                        offlineimap -1 -a $acc
                     else
-                        timeout -s KILL 70 offlineimap -1 -u quiet -a $acc
+                        verbose timeout -s KILL 70 offlineimap -1 -u $ui -a $acc
+                        timeout -s KILL 70 offlineimap -1 -u $ui -a $acc
                     fi
                 }
             else
@@ -45,14 +47,23 @@ function main() {
 function process_arg() {
     warn=1
     error=1
+    # ui=basic
+    ui=quiet
 
     disable_file=~/.var/comm/disable/$pgm
-    set -- $(getopt -n $pgm -o hdrsivwea: -- $@)
+    if ! set -- $(getopt -n $pgm -o hdrsiu:vwea: -- $@)
+    then
+        verbose Wrong command line.
+    fi
     while [ $# -gt 0 ]
     do
         case $1 in
             (-a) eval account=$2; shift;;
-            (-i) interactive=1;;
+            (-i)
+                interactive=1
+                # ttyui
+                ui=blinkenlights;;
+            (-u) eval ui=$2; shift;;
             (-v) verbose=1;;
             (-s)
                 if [ -f $disable_file ] ; then
@@ -97,6 +108,7 @@ function help() {
     cat <<'EOF'
             -a: eval account=$2; shift;;
             -i: interactive=1;;
+            -u: user interface=$2; shift;;
             -v: verbose=1;;
             -d: touch $disable_file;;
             -r: rm -f $disable_file;;
@@ -107,7 +119,7 @@ EOF
 }
 
 function error() {
-    notify "$*"
+    notify "$*"  >&2
     logger "$*"
 }
 
@@ -130,6 +142,7 @@ function notify() {
         # echo -e "${pgm}:" "$*" >&2
         print "${pgm}:" "$*" >&2
     else
+        print "${pgm}:" "$*" >&2
         notify-send "${pgm}:" "$*"
     fi
 }

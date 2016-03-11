@@ -388,7 +388,17 @@ The indirect buffer can have another major mode."
 
 
 (deh-section "crontab-mode"
-  (autoload 'crontab-mode "crontab-mode.el" "Major mode for editing your crontab file." t))
+  (autoload 'crontab-mode "crontab-mode.el" "Major mode for editing your crontab file." t)
+  (eval-after-load "crontab-mode"
+    '(progn
+      (add-hook 'crontab-mode-hook
+       '(lambda () (setq crontab-apply-after-save t)))
+      (defvar crontab-default-file "~/.crontab")
+      (defadvice crontab-mode (after set-buffer-file-name activate)
+       (when (and crontab-default-file
+                  (file-exists-p crontab-default-file)
+                  (null buffer-file-name))
+         (setq buffer-file-name crontab-default-file))))))
 
 
 
