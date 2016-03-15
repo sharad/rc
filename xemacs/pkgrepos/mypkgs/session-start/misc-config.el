@@ -398,7 +398,9 @@ The indirect buffer can have another major mode."
        (when (and crontab-default-file
                   (file-exists-p crontab-default-file)
                   (null buffer-file-name))
-         (setq buffer-file-name crontab-default-file))))))
+         (setq
+          buffer-file-name crontab-default-file
+          default-directory (file-name-directory buffer-file-name)))))))
 
 
 

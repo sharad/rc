@@ -495,5 +495,10 @@ startup in daemon mode."
 
 (defalias 'make-local-hook 'ignore)
 
+(add-hook 'after-make-frame-functions '(lambda (frame)
+                                        (message
+                                         "Frame %s Ready for editing!"
+                                         (frame-parameter frame 'name))) t)
+
 (provide 'basic-config)
 ;;; basic-config.el ends here

@@ -20,21 +20,24 @@
 ;; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ;;
 
+(eval-when-compile
+  '(require 'macros-config))
+
+(require 'macros-config)
+(require 'files-config)
+
 (deh-require-maybe orgmode-config
 
   (defun org-task-files (&optional party)
     (let ((party (or party task-current-party)))
       (directory-files-recursive
-       (task-party-dir party)
-       "\\.org$"
-       7)))
+       (task-party-dir party) "\\.org$" 7)))
 
   (defun org-all-task-files ()
     (let ()
       (directory-files-recursive
        (org-publish-get-attribute "tasks" "org" :base-directory)
-       "\\.org$"
-       7)))
+       "\\.org$" 7)))
 
   (defun org-task-refile-target (party)
     ;; (interactive)
@@ -309,7 +312,6 @@
 
     (deh-section "recursive org"
 
-      (testing
 
        (defun org-map-subheading (fun)
          "Call FUN for every heading underneath the current one."
@@ -327,37 +329,64 @@
 
        (defun org-collect-task-info (&optional file)
          "org-collect-task-info"
-         (let* ((entry
-                 (cadr (org-element-at-point)))
-                (sub-tree
-                 (append
-                  (org-map-subheading 'org-collect-task-info)
-                  (let ((subtree-file
-                         (plist-get entry :SubtreeFile)))
-                    (if (and
-                         subtree-file
-                         (file-readable-p subtree-file))
-                        (with-current-buffer (find-file-noselect subtree-file)
-                          (org-map-subheading 'org-collect-task-info)))))))
-           (if sub-tree
-               (append entry (list :sub-tree sub-tree))
-               entry)))
+         (with-current-buffer (if file
+                                  (find-file-noselect file)
+                                  (current-buffer))
+           (goto-char (point-min))
+           (let* ((entry
+                   (cadr (org-element-at-point)))
+                  (sub-tree
+                   (append
+                    (org-map-subheading 'org-collect-task-info)
+                    (let ((subtree-file
+                           (plist-get entry :SubtreeFile)))
+                      (if (and
+                           subtree-file
+                           (file-readable-p subtree-file))
+                          (org-collect-task-info subtree-file))))))
+             (if sub-tree
+                 (append entry (list :sub-tree sub-tree))
+                 entry))))
 
        (defun org-task-infos-tree (file)
-         (with-current-buffer (find-file-noselect file)
-           (save-excursion
-             (goto-char (point-min))
-             (org-collect-task-info))))
+         (org-collect-task-info file))
 
-       (defun xx ()
-         (-tree-map-nodes
-          '(lambda (e)
-            (plist-get e :sub-tree)
-            )
-          f
-          (org-task-infos-tree ))))
+       (defun tree-mapcar-nodes (predicate fn tree)
+         (if (funcall predicate tree)
+             (list
+              (funcall fn tree)
+              :sub-tree
+              (mapcar
+               '(lambda (e)
+                 (tree-mapcar-nodes predicate fn e))
+               (funcall predicate tree)))
+             (funcall fn tree)))
 
-      )
+       (defun tree-mapc-nodes (predicate fn tree)
+         (if (funcall predicate tree)
+             (progn
+              (funcall fn tree)
+              (mapc
+               '(lambda (e)
+                 (tree-mapc-nodes predicate fn e))
+               (funcall predicate tree)))
+             (funcall fn tree)))
+
+       (testing
+        (setq testxxmapcar
+              (tree-mapcar-nodes '(lambda (tx) (plist-get tx :sub-tree))
+                                 '(lambda (tx) (plist-get tx :title))
+                                 ;; testxx
+                                 (car (plist-get testxx :sub-tree))
+                                 ))
+
+        (setq testxxmapc
+              (tree-mapc-nodes '(lambda (tx) (plist-get tx :sub-tree))
+                               '(lambda (tx) (plist-get tx :title))
+                               ;; testxx
+                               (car (plist-get testxx :sub-tree))
+                               )))
+       )
 
     (deh-section "task main work"
       (defvar task-current-file  nil)

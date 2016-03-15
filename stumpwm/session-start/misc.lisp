@@ -21,6 +21,10 @@
      "xv -quit -root -rmode 5 -max ~a"))
   "wallpaper image command")
 
+(defparameter bing-wallpaper-image-command
+  "bingwallpaper"
+  "bing wallpaper command")
+
 (defun get-root-height ()
   (xlib:drawable-height (screen-root (current-screen))))
 
@@ -52,6 +56,11 @@
 (defcommand random-wallpaper () ()
   "Setup random wallpaper"
   (setup-random-wallpaper-image))
+
+(defcommand bing-wallpaper () ()
+  "Setup bing wallpaper"
+  (run-shell-command
+   (concat *home-dir* "/" bing-wallpaper-image-command)))
 
 ;;}}} Background
 
@@ -170,8 +179,7 @@
           (if (eql (cdr vga) :off)
               (run-shell-command
                (format nil
-                       "xrandr --output ~A --mode 1024x768 --same-as ~A
---output ~A --mode 1024x768"
+                       "xrandr --output ~A --mode 1024x768 --same-as ~A --output ~A --mode 1024x768"
                        (car vga)
                        (car lvds)
                        (car lvds)))

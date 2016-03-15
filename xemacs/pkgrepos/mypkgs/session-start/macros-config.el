@@ -60,134 +60,143 @@
 ;; Excellent
 ;; (add-to-list 'load-path "~/.xemacs/pkgrepos/world/deh")
 
-(eval-when-compile
-  (require 'cl nil nil)
+;; (eval-when-compile
+;;   (require 'cl nil nil)
+
+
 ;;   (unless (require 'dot-emacs-helper nil t)
-    ;; (defmacro deh-require-maybe (feature &rest forms)
-    ;;   (declare (indent 1))
-    ;;   `(progn
-    ;;      (when ,(if (consp feature)
-    ;;                 (cond
-    ;;                   ((or (equal (car feature) 'or)
-    ;;                        (equal (car feature) 'and)
-    ;;                        (equal (car feature) 'progn))
-    ;;                    `(,(car feature) ,@(mapcar (lambda (f) `(require ',f nil t)) (cdr feature))))
-    ;;                   (t feature))
-    ;;                 `(require ',feature nil t))
-    ;;        ,@(if (stringp (car forms))
-    ;;              (cdr forms)
-    ;;              forms))))
+;;     (defmacro deh-require-maybe (feature &rest forms)
+;;       (declare (indent 1))
+;;       `(progn
+;;          (when ,(if (consp feature)
+;;                     (cond
+;;                       ((or (equal (car feature) 'or)
+;;                            (equal (car feature) 'and)
+;;                            (equal (car feature) 'progn))
+;;                        `(,(car feature) ,@(mapcar (lambda (f) `(require ',f nil t)) (cdr feature))))
+;;                       (t feature))
+;;                     `(require ',feature nil t))
+;;            ,@(if (stringp (car forms))
+;;                  (cdr forms)
+;;                  forms))))
 
-  (defmacro deh-featurep (feature &rest forms)
-    "Dot Emacs featurep"
-      (declare (indent 1))
-      (labels ((refine (feature)
-                 (if (consp feature)
-                     (cond
-                       ((or (equal (car feature) 'or)
-                            (equal (car feature) 'and)
-                            (equal (car feature) 'progn))
-                        `(,(car feature) ,@(mapcar #'refine (cdr feature))))
-                       (t feature))
-                     `(featurep ',feature))))
-        `(progn
-           (when ,(refine feature)
-             ,@(if (stringp (car forms))
-                   (cdr forms)
-                   forms)))))
+;;;###autoload
+(defmacro deh-featurep (feature &rest forms)
+  "Dot Emacs featurep"
+  (declare (indent 1))
+  (labels ((refine (feature)
+             (if (consp feature)
+                 (cond
+                   ((or (equal (car feature) 'or)
+                        (equal (car feature) 'and)
+                        (equal (car feature) 'progn))
+                    `(,(car feature) ,@(mapcar #'refine (cdr feature))))
+                   (t feature))
+                 `(featurep ',feature))))
+    `(progn
+       (when ,(refine feature)
+         ,@(if (stringp (car forms))
+               (cdr forms)
+               forms)))))
 
+;;;###autoload
+(defmacro deh-require-or-act (feature act &rest forms)
+  "Dot Emacs require or act"
+  ;; master
+  (declare (indent 1))
+  (labels ((refine (feature)
+             (if (consp feature)
+                 (cond
+                   ((or (equal (car feature) 'or)
+                        (equal (car feature) 'and)
+                        (equal (car feature) 'progn))
+                    `(,(car feature) ,@(mapcar #'refine (cdr feature))))
+                   (t feature))
+                 `(unless (require ',feature nil t)
+                    (funcall ,act ',feature)))))
+    `(progn
+       (if ,(refine feature)
+           (,@(if (stringp (car forms))
+                  (cdr forms)
+                  forms))
+           ))))
 
-  (defmacro deh-require-or-act (feature act &rest forms)
-    "Dot Emacs require or act"
-    ;; master
-    (declare (indent 1))
-    (labels ((refine (feature)
-               (if (consp feature)
-                   (cond
-                     ((or (equal (car feature) 'or)
-                          (equal (car feature) 'and)
-                          (equal (car feature) 'progn))
-                      `(,(car feature) ,@(mapcar #'refine (cdr feature))))
-                     (t feature))
-                   `(unless (require ',feature nil t)
-                      (funcall ,act ',feature)))))
-      `(progn
-         (if ,(refine feature)
-             (,@(if (stringp (car forms))
-                    (cdr forms)
-                    forms))
-             ))))
+;;;###autoload
+(defmacro deh-require-or-package-install (feature &rest forms)
+  "Dot Emacs require or package install"
+  (declare (indent 2))
+  `(deh-require-or-act ,feature
+     (lambda (p) (package-install p))
+     forms))
 
-  (defmacro deh-require-or-package-install (feature &rest forms)
-    "Dot Emacs require or package install"
-    (declare (indent 2))
-    `(deh-require-or-act ,feature
-       (lambda (p) (package-install p))
-       forms))
+;;;###autoload
+(defmacro deh-require-todo (feature todo-if-no-feature &rest forms)
+  "Dot Emacs require TODO"
+  (declare (indent 1))
+  (labels ((refine (feature)
+             (if (consp feature)
+                 (cond
+                   ((or (equal (car feature) 'or)
+                        (equal (car feature) 'and)
+                        (equal (car feature) 'progn))
+                    `(,(car feature) ,@(mapcar #'refine (cdr feature))))
+                   (t feature))
+                 `(require ',feature nil t))))
+    `(progn
+       (if ,(refine feature)
+           (,@(if (stringp (car forms))
+                  (cdr forms)
+                  forms))
+           ,todo-if-no-feature))))
 
-  (defmacro deh-require-todo (feature todo-if-no-feature &rest forms)
-    "Dot Emacs require TODO"
-    (declare (indent 1))
-    (labels ((refine (feature)
-               (if (consp feature)
-                   (cond
-                     ((or (equal (car feature) 'or)
-                          (equal (car feature) 'and)
-                          (equal (car feature) 'progn))
-                      `(,(car feature) ,@(mapcar #'refine (cdr feature))))
-                     (t feature))
-                   `(require ',feature nil t))))
-      `(progn
-         (if ,(refine feature)
-             (,@(if (stringp (car forms))
-                    (cdr forms)
-                    forms))
-             ,todo-if-no-feature))))
+;;;###autoload
+(defmacro deh-require-maybe (feature &rest forms)
+  "Dot Emacs require Maybe"
+  (declare (indent 1))
+  (labels ((refine (feature)
+             (if (consp feature)
+                 (cond
+                   ((or (equal (car feature) 'or)
+                        (equal (car feature) 'and)
+                        (equal (car feature) 'progn))
+                    `(,(car feature) ,@(mapcar #'refine (cdr feature))))
+                   (t feature))
+                 `(require ',feature nil t))))
+    `(progn
+       (when ,(refine feature)
+         ,@(if (stringp (car forms))
+               (cdr forms)
+               forms)))))
 
-    (defmacro deh-require-maybe (feature &rest forms)
-      "Dot Emacs require Maybe"
-      (declare (indent 1))
-      (labels ((refine (feature)
-                 (if (consp feature)
-                     (cond
-                       ((or (equal (car feature) 'or)
-                            (equal (car feature) 'and)
-                            (equal (car feature) 'progn))
-                        `(,(car feature) ,@(mapcar #'refine (cdr feature))))
-                       (t feature))
-                     `(require ',feature nil t))))
-        `(progn
-           (when ,(refine feature)
-             ,@(if (stringp (car forms))
-                   (cdr forms)
-                   forms)))))
+;;;###autoload
+(defmacro deh-require-mustbe (feature &rest forms)
+  "Dot Emacs require Must"
+  (declare (indent 1))
+  (labels ((refine (feature)
+             (if (consp feature)
+                 (cond
+                   ((or (equal (car feature) 'or)
+                        (equal (car feature) 'and)
+                        (equal (car feature) 'progn))
+                    `(,(car feature) ,@(mapcar #'refine (cdr feature))))
+                   (t feature))
+                 `(require ',feature nil nil))))
+    `(progn
+       (when ,(refine feature)
+         ,@(if (stringp (car forms))
+               (cdr forms)
+               forms)))))
 
-    (defmacro deh-require-mustbe (feature &rest forms)
-      "Dot Emacs require Must"
-      (declare (indent 1))
-      (labels ((refine (feature)
-                 (if (consp feature)
-                     (cond
-                       ((or (equal (car feature) 'or)
-                            (equal (car feature) 'and)
-                            (equal (car feature) 'progn))
-                        `(,(car feature) ,@(mapcar #'refine (cdr feature))))
-                       (t feature))
-                     `(require ',feature nil nil))))
-        `(progn
-           (when ,(refine feature)
-             ,@(if (stringp (car forms))
-                   (cdr forms)
-                   forms)))))
+;;;###autoload
+(defalias 'deh-require 'deh-require-maybe)
+(put 'deh-require 'lisp-indent-function 1)
 
-    (defalias 'deh-require 'deh-require-maybe)
-
-    (put 'deh-require 'lisp-indent-function 1)
-
-    (defmacro deh-section (section &rest forms)
-      "Dot Emacs Section"
-      (declare (indent 1))
-      `(progn ,@forms)))
+;;;###autoload
+(defmacro deh-section (section &rest forms)
+  "Dot Emacs Section"
+  (declare (indent 1))
+  `(progn ,@forms))
+;;  )
 ;;))
 ;; (deh-require 'feature-name
 ;;   configuration-for-the-feature)
@@ -220,6 +229,7 @@
 ;;     )
 
 
+;;;###autoload
 (defmacro with-report-error (msg &rest body)
   "run body and report error in echo area and message buffer"
   (declare (debug t) (indent 4))
@@ -237,6 +247,7 @@
           body))))
 
 
+;;;###autoload
 (defmacro with-report-error (msg &rest body)
   "run body and report error in echo area and message buffer"
   (declare (debug t) (indent 4))
