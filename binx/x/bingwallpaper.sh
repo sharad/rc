@@ -29,7 +29,7 @@ size="1920x1200"
 # Collection Path
 # imgpath="$HOME/Pictures/Bing/"
 
-imgpath="$HOME/.share/backgrounds/bing"
+imgpath="$HOME/.share/backgrounds/bing/"
 
 
 ########################################################################

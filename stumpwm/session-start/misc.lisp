@@ -22,7 +22,7 @@
   "wallpaper image command")
 
 (defparameter bing-wallpaper-image-command
-  "bingwallpaper"
+  (concat *home-dir* "/bin/bingwallpaper 2>&1 > /dev/null")
   "bing wallpaper command")
 
 (defun get-root-height ()
@@ -59,8 +59,7 @@
 
 (defcommand bing-wallpaper () ()
   "Setup bing wallpaper"
-  (run-shell-command
-   (concat *home-dir* "/" bing-wallpaper-image-command)))
+  (run-shell-command bing-wallpaper-image-command))
 
 ;;}}} Background
 
@@ -136,6 +135,9 @@
                      (toggle-mode-line (current-screen) (current-head) j))
                  (setup-random-wallpaper-image)))
     (switch-to-screen start-screen)))
+;; setup bing wall paper
+(bing-wallpaper)
+
 ;; "display -resize `xwininfo -root | awk '{ if ($1 == \"Width:\" ) { w=$2 } else if ($1 == \"Height:\" ) { h=$2 } } END { print w \"x\" h }'` -window root "
 
 
