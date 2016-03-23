@@ -246,7 +246,7 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
                                         (append (unless nosuffix (get-load-suffixes))
                                                 load-file-rep-suffixes))))))
 
-(deh-section "message-notify"
+(deh-require-maybe notify
   (defun message-notify (title fmt &rest args)
     (let ((msg (apply 'format fmt args)))
       (message "%s: %s" title msg)

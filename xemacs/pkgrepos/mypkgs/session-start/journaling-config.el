@@ -31,15 +31,18 @@
    records-init-file (expand-file-name "~/.emacs.d/records")
    records-directory (expand-file-name "~/.Organize/emacs/records")))
 
-(defvar org-journal-dir nil)
-(deh-require-mustbe (and publishing-config org-journal)
 
-  (setq
-   org-journal-file-format "%Y-%m-%d.org"
-   org-journal-file-pattern (org-journal-format-string->regex org-journal-file-format)
-   org-journal-dir (org-publish-get-attribute "journal" "org" :base-directory))
 
-  (org-journal-update-auto-mode-alist))
+(deh-require-mustbe publishing-config
+
+  (eval-after-load "org-journal"
+    '(progn
+      (defvar org-journal-dir (org-publish-get-attribute "journal" "org" :base-directory))
+      (setq
+       org-journal-file-format "%Y-%m-%d.org"
+       org-journal-file-pattern (org-journal-format-string->regex org-journal-file-format)
+       org-journal-dir (org-publish-get-attribute "journal" "org" :base-directory))
+      (org-journal-update-auto-mode-alist))))
 
 
 
