@@ -25,9 +25,12 @@
 ;;; Code:
 
 (deh-section "Time stats"
- (deh-require-maybe uptimes
-   (setq
-    uptimes-database  (auto-config-file "uptimes/uptimes")))
+  (eval-after-load "uptimes"
+    (setq
+     uptimes-database  (auto-config-file "uptimes/uptimes")))
+  (deh-require-maybe uptimes
+    (setq
+     uptimes-database  (auto-config-file "uptimes/uptimes")))
 
  (deh-require-maybe uptime)
 

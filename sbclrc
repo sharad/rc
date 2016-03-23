@@ -32,6 +32,7 @@
         (cond
           ((string=  (machine-instance) "ubuntu-sharad") #p"/atlantic/opt/share/common-lisp/")
           ((string=  (machine-instance) "lispm.genera.net") #p"/all/res/share/common-lisp/")
+          ((string=  (machine-instance) "lispm") #p"/all/res/share/common-lisp/")
           (t #p"/atlantic/opt/share/common-lisp/")
           ))
        (quicklisp-init (merge-pathnames "quicklisp/setup.lisp" qlisp-parent-dir)))
