@@ -60,16 +60,20 @@ attribute names are returned. Default to `person'"
 (eudc-protocol-set 'eudc-list-attributes-function 'broad-eudc-ldap-get-field-list
 		   'ldap)
 
+;; (setq eudc-office 'meru)
+(setq eudc-office 'fortinet)
 
-  (defun eudc-ldap-datas ()
-    (or (and (boundp 'eudc-ldap-datas) eudc-ldap-datas) '()))
+(defun eudc-ldap-datas ()
+  (or (and (boundp 'eudc-ldap-datas) eudc-ldap-datas) '()))
 
-  (setq ldap-default-base "ou=addressbook,dc=your_dc_here,dc=fr")
+(setq ldap-default-base "cn=accounts,dc=corp,dc=fortinet,dc=com")
 
 (setq ;; eudc-default-return-attributes nil
  eudc-default-return-attributes 'all
  eudc-strict-return-matches nil
  ;; ldap-ldapsearch-args '("-tt" "-LLL" "-x" "-ZZ")
+ ;; ldap-ldapsearch-args '()
+ ;; ldap-ldapsearch-args '("-tt" "-LLL" "-x")
  ldap-ldapsearch-args '("-tt" "-LLL" "-x")
  eudc-ldap-attributes-translation-alist
  '((adname . name)
@@ -108,18 +112,40 @@ attribute names are returned. Default to `person'"
  ;; `(("your_server" base "ou=addressbook,dc=your_dc_here,dc=fr"
  ;;                  binddn "cn=admin,dc=your_dc_here,dc=fr"
  ;;                  passwd "your_password"))
- `(,(cdr (assoc 'office (eudc-ldap-datas))))
+ `(,(cdr (assoc eudc-office (eudc-ldap-datas))))
 
- eudc-server-hotlist `(( ,(car (cdr (assoc 'office (eudc-ldap-datas)))) . ldap ))
+ eudc-server-hotlist `(;; ("" . bbdb)
+                       ( ,(car (cdr (assoc eudc-office (eudc-ldap-datas)))) . ldap ))
 
  eudc-inline-expansion-servers 'hotlist)
 
 (eudc-protocol-set 'eudc-protocol-attributes-translation-alist
 		   'eudc-ldap-attributes-translation-alist 'ldap)
 
-(eudc-set-server (car (cdr (assoc 'office (eudc-ldap-datas)))) 'ldap t)
+(eudc-set-server (car (cdr (assoc eudc-office (eudc-ldap-datas)))) 'ldap t)
 
-  (defun enz-eudc-expand-inline ()
+(when t
+  (setq
+   eudc-ldap-attributes-translation-alist
+   '((adname . uid)
+     (name . sn)
+     (firstname . givenName)
+     (email . mail)
+     (phone . telephoneNumber))
+
+   eudc-inline-query-format '(
+                              (displayName)
+                              ;; (adname)
+                              ;; (mailNickname)
+                              (uid)
+                              (givenName)
+                              (sn)
+                              (givenName sn)
+                              (mail)    ;note email have been changed to mail
+                              ;; (name)
+                              )))
+
+(defun enz-eudc-expand-inline ()
     (interactive)
     (move-end-of-line 1)
     (insert "*")
@@ -602,6 +628,183 @@ queries the server for the existing fields and displays a corresponding form."
     (goto-char pt)
     (use-local-map widget-keymap)
     (widget-setup))
+  )
+
+
+
+(deh-section "ldap"
+
+  (defun ldap-search-internal (search-plist)
+    "Perform a search on a LDAP server.
+SEARCH-PLIST is a property list describing the search request.
+Valid keys in that list are:
+
+  `auth-source', if non-nil, will use `auth-source-search' and
+will grab the :host, :secret, :base, and (:user or :binddn)
+tokens into the `host', `passwd', `base', and `binddn' parameters
+respectively if they are not provided in SEARCH-PLIST.  So for
+instance *each* of these netrc lines has the same effect if you
+ask for the host \"ldapserver:2400\":
+
+  machine ldapserver:2400 login myDN secret myPassword base myBase
+  machine ldapserver:2400 binddn myDN secret myPassword port ldap
+  login myDN secret myPassword base myBase
+
+but if you have more than one in your netrc file, only the first
+matching one will be used.  Note the \"port ldap\" part is NOT
+required.
+
+  `host' is a string naming one or more (blank-separated) LDAP servers
+to try to connect to.  Each host name may optionally be of the form HOST:PORT.
+  `filter' is a filter string for the search as described in RFC 1558.
+  `attributes' is a list of strings indicating which attributes to retrieve
+for each matching entry. If nil, return all available attributes.
+  `attrsonly', if non-nil, indicates that only attributes are retrieved,
+not their associated values.
+  `auth' is one of the symbols `simple', `krbv41' or `krbv42'.
+  `base' is the base for the search as described in RFC 1779.
+  `scope' is one of the three symbols `sub', `base' or `one'.
+  `binddn' is the distinguished name of the user to bind as (in RFC 1779 syntax).
+  `auth' is one of the symbols `simple', `krbv41' or `krbv42'
+  `passwd' is the password to use for simple authentication.
+  `deref' is one of the symbols `never', `always', `search' or `find'.
+  `timelimit' is the timeout limit for the connection in seconds.
+  `sizelimit' is the maximum number of matches to return.
+  `withdn' if non-nil each entry in the result will be prepended with
+its distinguished name DN.
+The function returns a list of matching entries.  Each entry is itself
+an alist of attribute/value pairs."
+    (let* ((buf (get-buffer-create " *ldap-search*"))
+           (bufval (get-buffer-create " *ldap-value*"))
+           (host (or (plist-get search-plist 'host)
+                     ldap-default-host))
+           ;; find entries with port "ldap" that match the requested host if any
+           (asfound (when (plist-get search-plist 'auth-source)
+                      (nth 0 (auth-source-search :host (or host t)
+                                                 :create t))))
+           ;; if no host was requested, get it from the auth-source entry
+           (host (or host (plist-get asfound :host)))
+           ;; get the password from the auth-source
+           (passwd (or (plist-get search-plist 'passwd)
+                       (plist-get asfound :secret)))
+           ;; convert the password from a function call if needed
+           (passwd (if (functionp passwd) (funcall passwd) passwd))
+           ;; get the binddn from the search-list or from the
+           ;; auth-source user or binddn tokens
+           (binddn (or (plist-get search-plist 'binddn)
+                       (plist-get asfound :user)
+                       (plist-get asfound :binddn)))
+           (base (or (plist-get search-plist 'base)
+                     (plist-get asfound :base)
+                     ldap-default-base))
+           (filter (plist-get search-plist 'filter))
+           (attributes (plist-get search-plist 'attributes))
+           (attrsonly (plist-get search-plist 'attrsonly))
+           (scope (plist-get search-plist 'scope))
+           (auth (plist-get search-plist 'auth))
+           (deref (plist-get search-plist 'deref))
+           (timelimit (plist-get search-plist 'timelimit))
+           (sizelimit (plist-get search-plist 'sizelimit))
+           (withdn (plist-get search-plist 'withdn))
+           (numres 0)
+           arglist dn name value record result)
+      (if (or (null filter)
+              (equal "" filter))
+          (error "No search filter"))
+      (setq filter (cons filter attributes))
+      (with-current-buffer buf
+        (erase-buffer)
+        (if (and host
+                 (not (equal "" host)))
+            (setq arglist
+                  (nconc
+                   arglist
+                   (list (format "-%s%s" (if (string-match "^ldap[s]?://" host) "H" "h") host)))))
+        (if (and attrsonly
+                 (not (equal "" attrsonly)))
+            (setq arglist (nconc arglist (list "-A"))))
+        (if (and base
+                 (not (equal "" base)))
+            (setq arglist (nconc arglist (list (format "-b%s" base)))))
+        (if (and scope
+                 (not (equal "" scope)))
+            (setq arglist (nconc arglist (list (format "-s%s" scope)))))
+        (if (and binddn
+                 (not (equal "" binddn)))
+            (setq arglist (nconc arglist (list (format "-D%s" binddn)))))
+        (if (and auth
+                 (equal 'simple auth))
+            (setq arglist (nconc arglist (list "-x"))))
+        (if (and passwd
+                 (not (equal "" passwd)))
+            (setq arglist (nconc arglist (list (format "-w%s" passwd)))))
+        (if (and deref
+                 (not (equal "" deref)))
+            (setq arglist (nconc arglist (list (format "-a%s" (if (symbolp deref) (symbol-name deref) deref))))))
+        (if (and timelimit
+                 (not (equal "" timelimit)))
+            (setq arglist (nconc arglist (list (format "-l%s" timelimit)))))
+        (if (and sizelimit
+                 (not (equal "" sizelimit)))
+            (setq arglist (nconc arglist (list (format "-z%s" sizelimit)))))
+
+        (message "%s %s" ldap-ldapsearch-prog
+                 (append arglist ldap-ldapsearch-args filter))
+        (apply #'call-process ldap-ldapsearch-prog
+               ;; Ignore stderr, which can corrupt results
+               nil (list buf nil) nil
+               (append arglist ldap-ldapsearch-args filter))
+        (insert "\n")
+        (goto-char (point-min))
+
+        (while (re-search-forward "[\t\n\f]+ " nil t)
+          (replace-match "" nil nil))
+        (goto-char (point-min))
+
+        (if (looking-at "usage")
+            (error "Incorrect ldapsearch invocation")
+            (message "Parsing results... ")
+            ;; Skip error message when retrieving attribute list
+            (if (looking-at "Size limit exceeded")
+                (forward-line 1))
+            (if (looking-at "version:") (forward-line 1)) ;bug#12724.
+            (while (progn
+                     (skip-chars-forward " \t\n")
+                     (not (eobp)))
+              (setq dn (buffer-substring (point) (point-at-eol)))
+              (forward-line 1)
+              (while (looking-at "^\\([A-Za-z][-A-Za-z0-9]*\
+\\|[0-9]+\\(?:\\.[0-9]+\\)*\\)\\(;[-A-Za-z0-9]+\\)*[=:\t ]+\
+\\(<[\t ]*file://\\)\\(.*\\)$")
+                (setq name (match-string 1)
+                      value (match-string 4))
+                ;; Need to handle file:///D:/... as generated by OpenLDAP
+                ;; on DOS/Windows as local files.
+                (if (and (memq system-type '(windows-nt ms-dos))
+                         (eq (string-match "/\\(.:.*\\)$" value) 0))
+                    (setq value (match-string 1 value)))
+                ;; Do not try to open non-existent files
+                (if (equal value "")
+                    (setq value " ")
+                    (with-current-buffer bufval
+                      (erase-buffer)
+                      (set-buffer-multibyte nil)
+                      (insert-file-contents-literally value)
+                      (delete-file value)
+                      (setq value (buffer-string))))
+                (setq record (cons (list name value)
+                                   record))
+                (forward-line 1))
+              (cond (withdn
+                     (push (cons dn (nreverse record)) result))
+                    (record
+                     (push (nreverse record) result)))
+              (setq record nil)
+              (skip-chars-forward " \t\n")
+              (message "Parsing results... %d" numres)
+              (1+ numres))
+            (message "Parsing results... done")
+            (nreverse result)))))
   )
 
 (provide 'eudc-config)
