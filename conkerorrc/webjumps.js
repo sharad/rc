@@ -146,7 +146,7 @@ define_webjump("imdb", "http://imdb.com/find?q=%s");
 
 // 2.3.2. last.fm
 
-lastfm_user = "your username here";
+var lastfm_user = "your username here";
 define_webjump("lastfm", "http://www.last.fm/user/" + lastfm_user);
 define_webjump("lastfm-music", "http://www.last.fm/search?m=all&q=%s");
 define_webjump("lastfm-event", "http://www.last.fm/events/search?search=1&q=%s");

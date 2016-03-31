@@ -24,13 +24,10 @@ function main() {
            true ; then
             if ! pgrep offlineimap 2>&1 > /dev/null ; then
                 foreach acc ( $(echo ${account:-$OFFLINEIMAPACCOUNT}  | tr , ' ' ) ) {
-                    if [  $interactive  ] ; then
-                        verbose offlineimap -1 -a $acc
-                        offlineimap -1 -a $acc
-                    else
-                        verbose timeout -s KILL 70 offlineimap -1 -u $ui -a $acc
-                        timeout -s KILL 70 offlineimap -1 -u $ui -a $acc
-                    fi
+
+                    verbose timeout -s KILL $timeout offlineimap -1 -u $ui -a $acc
+                    timeout -s KILL $timeout offlineimap -1 -u $ui -a $acc
+
                 }
             else
                 # verbose already offline map running with pid $(pgrep offlineimap).
@@ -49,9 +46,10 @@ function process_arg() {
     error=1
     # ui=basic
     ui=quiet
+    timeout=7m
 
     disable_file=~/.var/comm/disable/$pgm
-    if ! set -- $(getopt -n $pgm -o hdrsiu:vwea: -- $@)
+    if ! set -- $(getopt -n $pgm -o hdrsiu:vwea:t: -- $@)
     then
         verbose Wrong command line.
     fi
@@ -59,6 +57,7 @@ function process_arg() {
     do
         case $1 in
             (-a) eval account=$2; shift;;
+            (-t) eval timeout=$2; shift;;
             (-i)
                 interactive=1
                 # ttyui

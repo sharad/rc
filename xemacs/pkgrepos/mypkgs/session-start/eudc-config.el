@@ -76,13 +76,15 @@ attribute names are returned. Default to `person'"
  ;; ldap-ldapsearch-args '("-tt" "-LLL" "-x")
  ldap-ldapsearch-args '("-tt" "-LLL" "-x")
  eudc-ldap-attributes-translation-alist
- '((adname . name)
+ '((uid . uid)
+   (adname . name)
    (name . sn)
-   (firstname . givenname)
+   (firstname . givenName)
    (email . mail)
-   (phone . telephonenumber))
+   (phone . telephoneNumber))
 
  eudc-inline-query-format '(
+                            (uid)
                             (displayName)
                             (adname)
                             (mailNickname)
@@ -99,6 +101,7 @@ attribute names are returned. Default to `person'"
                                  ("%s <%s>" name mail)
                                  ("%s %s <%s>" givenName name mail)
                                  ("%s <%s>" adname mail)
+                                 ("%s <%s>" uid mail)
                                  ("%s <%s>" name mail)
                                  ("%s" mail))
  ;; eudc-inline-expansion-format '("%s <%s>" givenName email)
@@ -114,7 +117,7 @@ attribute names are returned. Default to `person'"
  ;;                  passwd "your_password"))
  `(,(cdr (assoc eudc-office (eudc-ldap-datas))))
 
- eudc-server-hotlist `(;; ("" . bbdb)
+ eudc-server-hotlist `(("" . bbdb)
                        ( ,(car (cdr (assoc eudc-office (eudc-ldap-datas)))) . ldap ))
 
  eudc-inline-expansion-servers 'hotlist)
@@ -678,6 +681,7 @@ an alist of attribute/value pairs."
            (bufval (get-buffer-create " *ldap-value*"))
            (host (or (plist-get search-plist 'host)
                      ldap-default-host))
+           (uri (plist-get search-plist :uri))
            ;; find entries with port "ldap" that match the requested host if any
            (asfound (when (plist-get search-plist 'auth-source)
                       (nth 0 (auth-source-search :host (or host t)
@@ -720,6 +724,9 @@ an alist of attribute/value pairs."
                   (nconc
                    arglist
                    (list (format "-%s%s" (if (string-match "^ldap[s]?://" host) "H" "h") host)))))
+        (if (and uri
+                 (not (equal "" uri)))
+            (setq arglist (nconc arglist (list (format "-H%s" uri)))))
         (if (and attrsonly
                  (not (equal "" attrsonly)))
             (setq arglist (nconc arglist (list "-A"))))
@@ -748,8 +755,8 @@ an alist of attribute/value pairs."
                  (not (equal "" sizelimit)))
             (setq arglist (nconc arglist (list (format "-z%s" sizelimit)))))
 
-        (message "%s %s" ldap-ldapsearch-prog
-                 (append arglist ldap-ldapsearch-args filter))
+        ;; (message "%s %s" ldap-ldapsearch-prog
+        ;;          (append arglist ldap-ldapsearch-args filter))
         (apply #'call-process ldap-ldapsearch-prog
                ;; Ignore stderr, which can corrupt results
                nil (list buf nil) nil

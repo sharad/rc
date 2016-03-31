@@ -4,9 +4,13 @@
 
 (defvar use-slime-config 'ubuntu "Config")
 
-(defvar quicklisp-path (if (string-equal (system-name) "spratap")
-                         "/atlantic/home/s/res/share/common-lisp/quicklisp"
-                         "/all/res/share/common-lisp/quicklisp")
+(defvar quicklisp-path
+  (cond
+    ((string-equal (system-name) "spratap")
+     "/atlantic/home/s/res/share/common-lisp/quicklisp")
+    ((string-equal (system-name) "think530-sharad")
+     "/atlantic/opt/share/common-lisp/quicklisp")
+    (t "/all/res/share/common-lisp/quicklisp"))
   "Quicklisp path.")
 
 (defvar
@@ -279,5 +283,3 @@
 (load-slime)
 
 (provide 'slime-config)
-
-

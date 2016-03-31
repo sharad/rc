@@ -318,3 +318,16 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
   (declare (ignore win))
   (unless (group-windows (current-group))
     (gkill)))
+
+
+;;{{ move to previous window when current window destroyed
+(defun jump-to-previous-window (&optional window (current-window))
+  (let ((group (current-group)))
+    (if (group-current-window group)
+        (focus-prev-window group)
+        (other-window group))))
+
+(add-hook *destroy-window-hook* #'jump-to-previous-window)
+
+;; (nconc *destroy-window-hook* (list #'jump-to-previous-window))
+;;}}
