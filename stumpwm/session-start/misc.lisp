@@ -140,18 +140,12 @@
 
 ;; "display -resize `xwininfo -root | awk '{ if ($1 == \"Width:\" ) { w=$2 } else if ($1 == \"Height:\" ) { h=$2 } } END { print w \"x\" h }'` -window root "
 
-
-
-
 (defun time-plist (&optional time)
   (multiple-value-bind (sec min hour dom mon year dow dstp tz)
       ;; (or time   (decode-universal-time (+ (get-universal-time) (* 30 60))))
       (or time   (decode-universal-time (+ (get-universal-time) (* 0 60))))
     (list :second sec :minute min :hour hour :dom dom :month mon
           :year year :dow dow :dlsavings-p dstp :tz tz)))
-
-
-
 
 ;; from: https://lists.gnu.org/archive/html/stumpwm-devel/2014-05/msg00001.html
 (defcommand projector-toggle () ()

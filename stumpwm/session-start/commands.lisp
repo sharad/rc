@@ -699,20 +699,23 @@
 (defcommand gprev-nonempty () ()
             )
 
-(defcommand env (var) ((:string "env var: "))
-  (let* ((var (format nil "~a" var))
-         (value (getenv var))
-         (changed-value
-          (read-one-line (current-screen)
-                         (format nil "env[~a]: " var)
-                         :initial-input value)))
-    (if (or
-         (null value)
-         (apply
-          #'string-equal
-          (mapcar
-           #'(lambda (str) (string-trim '(#\Space #\Tab #\Newline) str))
-           (list value changed-value))))
-        (message "env[~a] unchanged" var)
-        (if (setf (getenv var) changed-value)
-            (message "env[~a]: ~a" var changed-value)))))
+(defcommand env (&optional (var t)) ((:string "env var: "))
+  (if (eq var t)
+      (message "all env")
+      (let* ((var (format nil "~a" var))
+             (value (getenv var))
+             (changed-value
+              (read-one-line (current-screen)
+                             (format nil "env[~a]: " var)
+                             :initial-input value)))
+        (if (and
+             value
+             (stringp value)
+             (apply
+              #'string-equal
+              (mapcar
+               #'(lambda (str) (string-trim '(#\Space #\Tab #\Newline) str))
+               (list value changed-value))))
+            (message "env[~a] unchanged" var)
+            (if (setf (getenv var) changed-value)
+                (message "env[~a]: ~a" var changed-value))))))

@@ -7,6 +7,9 @@ define_webjump("arubaprofile",
 define_webjump("bug",
                "https://bugzilla.merunetworks.com/show_bug.cgi?id=%s");
 
+define_webjump("mantis",
+               "https://mantis.fortinet.com/mantis/bug_view_page.php?bug_id=%s");
+
 define_webjump("collab",
                "http://sleet2.merunetworks.com:8080/go?page=ReviewDisplay&reviewid=%s");
 
