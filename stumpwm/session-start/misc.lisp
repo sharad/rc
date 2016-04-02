@@ -108,33 +108,128 @@
 ;; default - "C-t") is pressed. Now, I only see the mode line when I
 ;; actually need to see it:
 
-;; (defun toggle-mode-line-hook (key key-seq cmd)
-;;   (declare (ignore key key-seq cmd))
-;;   (mode-line))
+(defun toggle-mode-line-on-key-press (key key-seq cmd)
+  (declare (ignore key key-seq cmd))
+  (mode-line))
 
-(defun toggle-mode-line-hook (key key-seq cmd)
+(defun toggle-mode-line-on-key-press (key key-seq cmd)
   (declare (ignore key key-seq cmd))
   (toggle-mode-line (current-screen) (current-head) (car *mode-line-fmts*)))
 
-;;(toggle-mode-line (current-screen) (current-head) '(eval: "(format \"Name\")"))
+(defun mode-line-show (screen head &optional (format '*screen-mode-line-format*))
+  "Toggle the state of the mode line for the specified screen"
+  (check-type format (or symbol list string))
+  (let ((ml (head-mode-line head)))
+    (unless ml
+      (progn
+        (setf (head-mode-line head) (make-head-mode-line screen head format))
+        (update-mode-line-color-context (head-mode-line head))
+        (resize-mode-line (head-mode-line head))
+        (xlib:map-window (mode-line-window (head-mode-line head)))
+        (redraw-mode-line (head-mode-line head))
+        (dformat 3 "modeline: ~s~%" (head-mode-line head))
+        ;; setup the timer
+        (turn-on-mode-line-timer)
+        (run-hook-with-args *new-mode-line-hook* (head-mode-line head))))
 
+    (let ((ml (head-mode-line head)))
+      (case (mode-line-mode ml)
+        ;; (:visible
+        ;;  ;; ;; Hide it.
+        ;;  ;; (setf (mode-line-mode ml) :hidden)
+        ;;  ;; (xlib:unmap-window (mode-line-window ml))
+        ;;  )
+        (:hidden
+         ;; Show it.
+         (setf (mode-line-mode ml) :visible)
+         (xlib:map-window (mode-line-window ml)))
+        ;; (:stump
+        ;;  ;; Delete it
+        ;;  (run-hook-with-args *destroy-mode-line-hook* ml)
+        ;;  (xlib:destroy-window (mode-line-window ml))
+        ;;  (xlib:free-gcontext (mode-line-gc ml))
+        ;;  (setf (head-mode-line head) nil)
+        ;;  (maybe-cancel-mode-line-timer))
+        ))
+
+    (dolist (group (screen-groups screen))
+      (group-sync-head group head))))
+
+(defun mode-line-hide (screen head &optional (format '*screen-mode-line-format*))
+  "Toggle the state of the mode line for the specified screen"
+  (check-type format (or symbol list string))
+  (let ((ml (head-mode-line head)))
+    (unless ml
+      (progn
+        (setf (head-mode-line head) (make-head-mode-line screen head format))
+        (update-mode-line-color-context (head-mode-line head))
+        (resize-mode-line (head-mode-line head))
+        (xlib:map-window (mode-line-window (head-mode-line head)))
+        (redraw-mode-line (head-mode-line head))
+        (dformat 3 "modeline: ~s~%" (head-mode-line head))
+        ;; setup the timer
+        (turn-on-mode-line-timer)
+        (run-hook-with-args *new-mode-line-hook* (head-mode-line head))))
+
+    (let ((ml (head-mode-line head)))
+      (case (mode-line-mode ml)
+        (:visible
+         ;; Hide it.
+         (setf (mode-line-mode ml) :hidden)
+         (xlib:unmap-window (mode-line-window ml)))
+        ;; (:hidden
+        ;;  ;; ;; Show it.
+        ;;  ;; (setf (mode-line-mode ml) :visible)
+        ;;  ;; (xlib:map-window (mode-line-window ml))
+        ;;  )
+        (:stump
+         ;; Delete it
+         (run-hook-with-args *destroy-mode-line-hook* ml)
+         (xlib:destroy-window (mode-line-window ml))
+         (xlib:free-gcontext (mode-line-gc ml))
+         (setf (head-mode-line head) nil)
+         (maybe-cancel-mode-line-timer))))
+
+    (dolist (group (screen-groups screen))
+      (group-sync-head group head))))
+
+(defun mode-line-when-pointer-grabbed (key key-seq cmd)
+  ;; (declare (ignore key key-seq cmd))
+  (declare (ignore key key-seq))
+  (if (kmap-or-kmap-symbol-p cmd)
+      (mode-line-show (current-screen) (current-head) (car stumpwm::*mode-line-fmts*))
+      (mode-line-hide (current-screen) (current-head) (car stumpwm::*mode-line-fmts*))))
+
+;; (mode-line-hide (current-screen) (current-head) (car stumpwm::*mode-line-fmts*))
+;; (setf *key-press-hook* nil)
+;; (add-hook *key-press-hook* 'mode-line-when-pointer-grabbed)
+;; (toggle-mode-line (current-screen) (current-head) '(eval: "(format \"Name\")"))
 ;; (add-hook *key-press-hook* 'toggle-mode-line-hook)
-;;(add-hook *key-press-hook* 'toggle-mode-line)
+;; (add-hook *key-press-hook* 'toggle-mode-line)
+
+(defcommand fullscreen-mode-enable () ()
+  (add-hook *key-press-hook* 'mode-line-when-pointer-grabbed))
+
+(defcommand fullscreen-mode-disable () ()
+  (remove-hook *key-press-hook* 'mode-line-when-pointer-grabbed))
 
 
 ;;}}} mode-line end
 
 ;;Set X11 background image for all screens
-(when *desktop-background-image-path*
-  (let ((start-screen (car *screen-list*)))
-    (loop for i in *screen-list*
-       for j in *mode-line-fmts*
-       do (progn (switch-to-screen i)
-                 ;; Turn on the modeline
-                 (if (not (head-mode-line (current-head)))
-                     (toggle-mode-line (current-screen) (current-head) j))
-                 (setup-random-wallpaper-image)))
-    (switch-to-screen start-screen)))
+(defun screen-initilize-decoration ()
+  (when *desktop-background-image-path*
+    (let ((start-screen (car *screen-list*)))
+      (loop for i in *screen-list*
+         for j in *mode-line-fmts*
+         do (progn (switch-to-screen i)
+                   ;; Turn on the modeline
+                   (if (not (head-mode-line (current-head)))
+                       (toggle-mode-line (current-screen) (current-head) j))
+                   (setup-random-wallpaper-image)))
+      (switch-to-screen start-screen))))
+
+(screen-initilize-decoration)
 ;; setup bing wall paper
 (bing-wallpaper)
 
@@ -183,3 +278,84 @@
                (format nil "xrandr --output ~A --off --output ~A --auto"
                        (car vga)
                        (car lvds)))))))))
+
+;;{{(find-package (symbol-value (intern "stumpwm" :keyword)))
+;; (define-stumpwm-type :package (input prompt)
+;;         (or
+;;          (pa-fnstumpwm::choose-or-provide
+;;           (mapcar #'package-name (list-all-packages))
+;;           :dialog prompt
+;;           :autoselect-if-only t
+;;           :choice-time-out-seconds 100
+;;           :extra-choices nil)
+;;          (throw 'error "Abort.")))
+
+(define-stumpwm-type :package (input prompt)
+  (completing-read
+   (current-screen)
+   prompt
+   (mapcar #'(lambda (p)
+               (string-downcase
+                (package-name p)))
+           (list-all-packages))
+   :initial-input (string-downcase (package-name *package*))
+   :require-match nil))
+
+(defcommand current-package (pkg) ((:package "package: "))
+  (let ((pkg (find-package (string-upcase pkg))))
+    (if pkg
+        (progn
+          (message "current package ~a" pkg)
+          (setf *package* pkg))
+        (message "current package ~a" *package*))))
+;;}}
+
+
+;; ;;{{ Example
+;; As an example, here’s a new type called :smart-direction. The
+;; existing :direction type simply asks for one of the four directions
+;; “left”, “right”, “up” or “down”, without checking to see if there’s
+;; a frame in that direction. Our new type, :smart-direction, will
+;; look around the current frame, and only allow the user to choose a
+;; direction in which another frame lies. If only one direction is
+;; possible it will return that automatically without troubling the
+;; user. It signals an error for invalid directions; it could
+;; alternately return a “nil” value in those cases, and let the
+;; command handle that.
+
+
+;; (define-stumpwm-type :smart-direction (input prompt)
+;;   (let ((valid-dirs
+;;          (loop  ; gather all the directions in which there's a neighbouring frame
+;;             with values = '(("up" :up)
+;;                             ("down" :down)
+;;                             ("left" :left)
+;;                             ("right" :right))
+;;             with frame-set =
+;;               (group-frames (window-group (current-window)))
+;;             for dir in values
+;;             for neighbour = (neighbour
+;;                              (second dir)
+;;                              (window-frame (current-window)) frame-set)
+;;             if (and neighbour (frame-window neighbour))
+;;             collect dir))
+;;         (arg (argument-pop input)))  ; store a possible argument
+;;     (cond ((null valid-dirs)  ; no directions, bail out
+;;            (throw 'error "No valid directions"))
+;;           (arg  ; an arg was bound, but is it valid?
+;;            (or (second (assoc arg valid-dirs :test #'string=))
+;;                (throw 'error "Not a valid direction")))
+;;           ((= 1 (length valid-dirs))  ; only one valid direction
+;;            (second (car valid-dirs)))
+;;           (t  ; multiple possibilities, prompt for direction
+;;            (second (assoc (completing-read input prompt valid-dirs
+;;                                            :require-match t)
+;;                           valid-dirs :test #'string=))))))
+
+;; (defcommand smarty (dir) ((:smart-direction "Pick a direction: "))
+;;   ;; `dir' is a keyword here
+;;   (message "You're going ~a" (string-downcase dir)))
+
+;; (define-key *root-map* (kbd "R") "smarty right")
+
+;; ;;}}
