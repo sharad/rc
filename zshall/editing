@@ -22,8 +22,8 @@ elif [ -r ~/.zkbd/$TERM ] ; then
 fi
 
 # echo Helloooo termzdef $termzdef termzdef
-
-[ $termzdef ] && source $termzdef && unset termzdef
+# [ $termzdef ] && source $termzdef && unset termzdef
+[ $termzdef ] && source $termzdef
 
 [[ -n ${key[Left]} ]] && bindkey "${key[Left]}" backward-char
 [[ -n ${key[Right]} ]] && bindkey "${key[Right]}" forward-char
@@ -230,10 +230,14 @@ bindkey -M	mymap	$key[Right]      forward-char                   # right arrow
 bindkey	-M	mymap	$key[Left]       backward-char                  # left arrow
 bindkey -M      mymap   $key[PageUp]	 beginning-of-buffer-or-history # page up
 bindkey -M      mymap   $key[PageDown]	 end-of-buffer-or-history       # page down
-bindkey -M      mymap   $key[Control-Left] backward-word
-bindkey -M      mymap   $key[Control-Right] forward-word
-bindkey -M      mymap   $key[Control-Up]    up-line-or-search
-bindkey -M      mymap   $key[Control-Down]  down-line-or-search
+
+if [[ "$termzdef" != *linux-pc* ]] # console C-Up/Down/Left/Righ == Up/Down/Left/Righ
+then
+    bindkey -M      mymap   $key[Control-Left] backward-word
+    bindkey -M      mymap   $key[Control-Right] forward-word
+    bindkey -M      mymap   $key[Control-Up]    up-line-or-search
+    bindkey -M      mymap   $key[Control-Down]  down-line-or-search
+fi
 
 
 # Copy
