@@ -231,13 +231,10 @@ bindkey	-M	mymap	$key[Left]       backward-char                  # left arrow
 bindkey -M      mymap   $key[PageUp]	 beginning-of-buffer-or-history # page up
 bindkey -M      mymap   $key[PageDown]	 end-of-buffer-or-history       # page down
 
-if [[ "$termzdef" != *linux-pc* ]] # console C-Up/Down/Left/Righ == Up/Down/Left/Righ
-then
-    bindkey -M      mymap   $key[Control-Left] backward-word
-    bindkey -M      mymap   $key[Control-Right] forward-word
-    bindkey -M      mymap   $key[Control-Up]    up-line-or-search
-    bindkey -M      mymap   $key[Control-Down]  down-line-or-search
-fi
+[ $key[Control-Left] != $key[Left] ]   && bindkey -M      mymap   $key[Control-Left]  backward-word
+[ $key[Control-Right] != $key[Right] ] && bindkey -M      mymap   $key[Control-Right] forward-word
+[ $key[Control-Up] != $key[Up] ]       && bindkey -M      mymap   $key[Control-Up]    up-line-or-search
+[ $key[Control-Down] != $key[Down] ]   && bindkey -M      mymap   $key[Control-Down]  down-line-or-search
 
 
 # Copy
