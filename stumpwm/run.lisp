@@ -41,8 +41,10 @@
 
 (cd
  (let ((paradise (concatenate 'string (getenv "HOME") "/../paradise/")))
-   (if (probe-file paradise)
-       (probe-file paradise)
-       (probe-file (getenv "HOME")))))
+   (or
+    (probe-file paradise)
+    (probe-file (getenv "HOME")))))
 
 (set-profile :myprofile)
+
+(vgroups)
