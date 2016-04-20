@@ -76,6 +76,12 @@ define_webjump("reader",
                "https://www.google.com/reader");
 //               "RSS Reader");
 
+//{{ revolvy
+define_webjump("revolvy",
+               "http://www.revolvy.com/main/index.php?s=%s&stype=topics",
+               "Revolvy Search");
+//}}
+
 // from http://conkeror.org/Webjumps#GoogleTranslate
 
 

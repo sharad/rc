@@ -9,6 +9,30 @@
 #     -cpp 'm4 -I ~/.Xresources' \
 #     -merge ~/.Xresource/init  # should use m4
 
+
+
+if [ "x${HOST}" != "x" ] ; then
+    __comp=x
+
+
+    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+        rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
+    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+        mkdir ~/.rsetup/${__comp}/run.d/
+        cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
+
+    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+        ~/.rsetup/${__comp}/run.d/${HOST}
+    fi
+
+    unset __comp
+else
+    print env var HOST is not set $HOST
+fi
+
+
 if whence -p xrdb  >&/dev/null ; then
     m4 -I ~/.setup/m4 -I ~/.osetup/lib.d/m4.d -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init 2>/dev/null | xrdb -merge -  >&/dev/null
 fi
