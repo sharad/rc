@@ -27,7 +27,8 @@
 
 (require 'org)
 (require 'org-agenda)
-(require 'org-exp)
+(if (featurep 'org-exp)
+  (require 'org-exp))
 (eval-and-compile
   (require 'cl))
 
@@ -412,7 +413,7 @@ REM %s %s MSG EVENT:%s%s %s%s%%
 	      (insert sexp "\n"))))
 	;; (princ (org-diary-to-rem-string sexp-buffer))
 	(kill-buffer sexp-buffer))
-      
+
       (when org-remind-include-todo
 	(setq prefix "TODO-")
 	(goto-char (point-min))
@@ -463,7 +464,7 @@ REM %s %s MSG EVENT:%s%s %s%s%%
 
                          ;;(floor (time-to-seconds (current-time))) )))
 
-              (if (and 
+              (if (and
                    (numberp org-rem-advwarndays)
                    (> org-rem-advwarndays 0))
                   (setq
@@ -493,7 +494,7 @@ REM %s %s MSG EVENT:%s%s %s%s%%
                                                        (if advwmin (format " +%s *5" advwmin))))))))
 
               (and remind-ew (setq remind-ew (first (org-rem-ts-to-remind-date-type remind-ew))))
-               
+
 	      (if (string-match org-bracket-link-regexp hd)
 		  (setq hd (replace-match (if (match-end 3) (match-string 3 hd)
 					    (match-string 1 hd))
@@ -516,7 +517,7 @@ REM %s %s MSG EVENT:%s%s %s%s%%
                               (deadline
                                (let ((date (first due))
                                      (time (second due)))
-                                 (if date 
+                                 (if date
                                      (concat date (concat "@" (or time "00:00"))))))
                               (schedule
                                (let ((date (first start))
@@ -704,7 +705,7 @@ ENDIF
 "
     )
              (if org-remind-dynamic-priority
-"## msgprefix definition: 
+"## msgprefix definition:
 FSET dypriority(p,d,s) dyprior_calculate(p, d - current(), d - s)
 FSET dyprior_calculate(p,diff,duration) iif( diff >= duration, 999, diff <= 0, 0, (diff * p)/duration )
 ")))))

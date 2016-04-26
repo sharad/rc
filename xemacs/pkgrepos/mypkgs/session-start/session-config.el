@@ -543,7 +543,8 @@
                                (nth
                                 (cadr (assoc 'current-desktop wm-hints))
                                 (cdr (assoc 'desktop-names wm-hints)))))
-             (location (if (and not-ask desktop-name
+             (location (if (and not-ask
+                                desktop-name
                                 (member desktop-name (mapcar 'car *frames-elscreen-session*)))
                            desktop-name
                            (fmsession-read-location desktop-name))))

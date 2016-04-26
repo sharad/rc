@@ -14,7 +14,8 @@
 
 (require 'remember)
 (require 'org)
-(require 'org-remember)
+(if (featurep 'org-remember)
+  (require 'org-remember))
 (require 'planner)
 (require 'remember-planner)
 (require 'read-file-name)
