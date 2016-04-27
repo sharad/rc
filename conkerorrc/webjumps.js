@@ -76,10 +76,11 @@ define_webjump("reader",
                "https://www.google.com/reader");
 //               "RSS Reader");
 
-//{{ revolvy
+//{{ revolvy Revolvy Search
 define_webjump("revolvy",
-               "http://www.revolvy.com/main/index.php?s=%s&stype=topics",
-               "Revolvy Search");
+               "http://www.revolvy.com/main/index.php?s=%s&stype=topics");
+define_webjump("search/revolvy",
+               "http://www.revolvy.com/main/index.php?s=%s&stype=topics");
 //}}
 
 // from http://conkeror.org/Webjumps#GoogleTranslate
@@ -968,6 +969,7 @@ define_webjump("facebook", "http://www.facebook.com");      // facebook homepage
 define_webjump("mobile/trace/bharatiyamobile", "http://trace.bharatiyamobile.com/?numb=%s");
 define_webjump("mobile/trace/store", "http://tracker.mobileringtonesstore.com/mobiletracker.php?no=%s");
 define_webjump("mobile/trace/india", "http://indiatrace.com/trace-mobile-number-location/trace-mobile-number-location.php?N=%s");
+define_webjump("mobile/trace/truecaller", "https://www.truecaller.com/in/%s");
 
 //{{
 define_webjump("search/auto",   "http://lmgtfy.com/?q=%s");
