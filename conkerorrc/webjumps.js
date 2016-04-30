@@ -53,15 +53,15 @@ define_webjump("search/blog",
 //                "http://maps.google.co.in/maps?q=%s&um=1&ie=UTF-8&sa=N&hl=en&tab=wl");
 //
 define_webjump("tag",
-               "http://delicious.com/sh4r4d/%s");
+               "http://del.icio.us/sh4r4d/%s");
 //              "Your del.icio.us tag");
 // del.icio.us
 // add_delicious_webjumps("sh4r4d");
 define_webjump("tag",
-               "http://delicious.com/sh4r4d/%s");
+               "http://del.icio.us/sh4r4d/%s");
 
 define_webjump("search/del",
-               "http://delicious.com/search?p=%s");
+               "http://del.icio.us/search?p=%s");
 // webjumps -sharad
 define_webjump("blank",
                "about:blank");

@@ -4,7 +4,7 @@
 
  ;;Debugging
 ;; (setq *debug-level* 10)
-(setq *debug-level* 0)
+(setq *debug-level* 10)
 
 ;;{{{ Basic files loading
 (load (concat *initdir* "/basic.lisp"))
@@ -33,3 +33,9 @@
 ;;{{{ Basic files loading
 (load (concat *initdir* "/run.lisp"))
 ;;}}}
+
+
+(setq *debug-level* 0)
+
+
+
