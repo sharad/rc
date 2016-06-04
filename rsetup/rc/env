@@ -39,53 +39,55 @@ else
 
 fi
 
-
-
-
-if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
-   ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
-   [ "$(basename $(\ps hc -ocmd $SSH_AGENT_PID  | cut -f1 -d' '  ))" = ssh-agent ]
-then
-    if ! ssh-add -l 2>&1 > /dev/null
+function update-ssh-agent()
+{
+    if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
+        ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
+        [ "$(basename $(\ps hc -ocmd $SSH_AGENT_PID  | cut -f1 -d' '  ))" = ssh-agent ]
     then
-        if [ $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' | wc -l ) -ne 0 ]
+        if ! ssh-add -l 2>&1 > /dev/null
         then
-            if [ -t ]
+            if [ $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' | wc -l ) -ne 0 ]
             then
-                ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
-            else
-                ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
-            fi
-        fi
-    fi
-else
-    if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
-    then
-        . ${KEYCHAINDIR}/${HOST}-sh
-
-        if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
-            ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
-            [ "$(basename $(\ps hc -ocmd $SSH_AGENT_PID  | cut -f1 -d' '  ))" = ssh-agent ]
-        then
-            if ! ssh-add -l 2>&1 > /dev/null                                # key is not added
-            then
-                if [ $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' | wc -l ) -ne 0 ]
+                if [ -t ]
                 then
-                    if [ -t ]
-                    then
-                        ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
-                    else
-                        ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
-                    fi
+                    ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
+                else
+                    ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
                 fi
             fi
-        else
-            unset SSH_AGENT_PID
-            unset SSH_AUTH_SOCK
-            rm -f ${KEYCHAINDIR}/${HOST}-sh
-        fi          # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
-    fi              # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
-fi  # if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
+        fi
+    else
+        if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
+        then
+            . ${KEYCHAINDIR}/${HOST}-sh
+
+            if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
+                ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
+                [ "$(basename $(\ps hc -ocmd $SSH_AGENT_PID  | cut -f1 -d' '  ))" = ssh-agent ]
+            then
+                if ! ssh-add -l 2>&1 > /dev/null                                # key is not added
+                then
+                    if [ $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' | wc -l ) -ne 0 ]
+                    then
+                        if [ -t ]
+                        then
+                            ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
+                        else
+                            ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
+                        fi
+                    fi
+                fi
+            else
+                unset SSH_AGENT_PID
+                unset SSH_AUTH_SOCK
+                rm -f ${KEYCHAINDIR}/${HOST}-sh
+            fi          # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
+        fi              # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
+    fi  # if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
+}
+
+update-ssh-agent
 
 __comp=rc
 __subcomp=env

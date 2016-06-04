@@ -143,7 +143,7 @@ define_key(content_buffer_normal_keymap, "z", "readability_arc90");
 
 // function deliciousSuggestions(uri, completions) {
 //     var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
-//     var xsendurl = 'https://api.delicious.com/v1/posts/suggest?&url='+encodeURIComponent(uri);
+//     var xsendurl = 'https://api.del.icio.us/v1/posts/suggest?&url='+encodeURIComponent(uri);
 //     var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
 //     var c = domParser.parseFromString(xcontent.responseText, "text/xml");
 //     // I.window.alert(xcontent.responseText);
@@ -183,7 +183,7 @@ interactive("delicious-post-sel",
             {
               check_buffer(I.buffer, content_buffer);
               var domParser = Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance( Components.interfaces.nsIDOMParser );
-              var xsendurl  = 'https://api.delicious.com/v1/posts/suggest?&url=' + encodeURIComponent(I.buffer.top_frame.getSelection());
+              var xsendurl  = 'https://api.del.icio.us/v1/posts/suggest?&url=' + encodeURIComponent(I.buffer.top_frame.getSelection());
               var xcontent  = (yield send_http_request(load_spec({uri: xsendurl})));
               var c         = domParser.parseFromString(xcontent.responseText, "text/xml");
 
@@ -199,8 +199,8 @@ interactive("delicious-post-sel",
               var completer = new prefix_completer($completions = completions);
 
               var sendurl =
-                // var sendurl = 'https://api.delicious.com/v2/posts/add?&url='+
-                'https://api.delicious.com/v1/posts/add?&url='                           +
+                // var sendurl = 'https://api.del.icio.us/v2/posts/add?&url='+
+                'https://api.del.icio.us/v1/posts/add?&url='                           +
                 encodeURIComponent(
                   (yield                    I.minibuffer.read(
                      $prompt = "url (required): ",
@@ -234,7 +234,7 @@ interactive("delicious-post-sel",
 
 
 
-// https://api.delicious.com/v1/posts/get?url={URL} get all tags for old url
+// https://api.del.icio.us/v1/posts/get?url={URL} get all tags for old url
 
 var delicious_shared = null;
 
@@ -258,7 +258,7 @@ interactive("delicious-post",
               var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
 
               // {{ completer
-              var xsendurl = 'https://api.delicious.com/v1/posts/suggest?&url='+encodeURIComponent(I.buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
+              var xsendurl = 'https://api.del.icio.us/v1/posts/suggest?&url='+encodeURIComponent(I.buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
               var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
               var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
               // I.window.alert(xcontent.responseText);
@@ -281,7 +281,7 @@ interactive("delicious-post",
               // }}
 
               // {{ initial value
-              var tsendurl   = 'https://api.delicious.com/v1/posts/get?url=' + encodeURIComponent(I.buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
+              var tsendurl   = 'https://api.del.icio.us/v1/posts/get?url=' + encodeURIComponent(I.buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
               var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
               // I.window.alert(tagcontent.responseText);
               var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
@@ -303,8 +303,8 @@ interactive("delicious-post",
               // }}
 
 
-              var sendurl = 'https://api.delicious.com/v1/posts/add?&url='+
-                // var sendurl = 'https://api.delicious.com/v2/posts/add?&url='+
+              var sendurl = 'https://api.del.icio.us/v1/posts/add?&url='+
+                // var sendurl = 'https://api.del.icio.us/v2/posts/add?&url='+
                 encodeURIComponent((yield I.minibuffer.read(
                   $prompt = "url (required): ",
                   // $initial_value = I.buffer.display_uri_string)))
@@ -349,7 +349,7 @@ interactive("delicious-post-link",
 
 
               // {{ completer
-              var xsendurl = 'https://api.delicious.com/v1/posts/suggest?&url='+mylink;
+              var xsendurl = 'https://api.del.icio.us/v1/posts/suggest?&url='+mylink;
               var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
               // var xcontent = xcontent.replace(/[^\x00-\x7F]/g, '');
               var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
@@ -370,7 +370,7 @@ interactive("delicious-post-link",
               // }}
 
               // {{ initial value
-              var tsendurl   = 'https://api.delicious.com/v1/posts/get?url=' + mylink;
+              var tsendurl   = 'https://api.del.icio.us/v1/posts/get?url=' + mylink;
               var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
               // I.window.alert(tagcontent.responseText);
               var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
@@ -397,7 +397,7 @@ interactive("delicious-post-link",
               // }}
 
 
-              let sendurl = 'https://api.delicious.com/v1/posts/add?&url=' +
+              let sendurl = 'https://api.del.icio.us/v1/posts/add?&url=' +
                 // mylink
                 encodeURIComponent((yield I.minibuffer.read(
                   $prompt = "url (required): ",
@@ -441,7 +441,7 @@ define_webjump("del", "http://delicious.com/search?p=%s&chk=&context=userposts%7
 //                 bo = yield read_browser_object(I) ;
 //                 mylink = load_spec_uri_string(load_spec(decodeURIComponent(bo)));
 //                 check_buffer(I.buffer, content_buffer);
-//                 // let sendurl = 'https://api.delicious.com/v1/posts/add?&url=' +
+//                 // let sendurl = 'https://api.del.icio.us/v1/posts/add?&url=' +
 //                 return mylink;
 //             }, $browser_object = browser_object_links);
 
@@ -931,7 +931,7 @@ interactive("restore-killed-buffer-url", "Loads url from a previously killed buf
 
 
 function delicious(I, mylink) {
-    var sendurl = 'https://api.delicious.com/v2/posts/add?&url='+
+    var sendurl = 'https://api.del.icio.us/v2/posts/add?&url='+
         mylink +
         '&description=' +
         encodeURIComponent((yield I.minibuffer.read($prompt = "name (required): " , $initial_value = bo.textContent))) +
@@ -951,7 +951,7 @@ interactive("acition-link",
 
                 // here implement it so it will ask for function name like delicious
                 delicious(I, mylink);
-                // let sendurl = 'https://api.delicious.com/v1/posts/add?&url=' +
+                // let sendurl = 'https://api.del.icio.us/v1/posts/add?&url=' +
             }, $browser_object = browser_object_links);
 
 // }}}

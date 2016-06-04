@@ -187,8 +187,34 @@
     (let ((dir (find-library-directory "devhelp-index")))
       (shell-command (concat dir "/devhelp-index.py")))))
 
-(deh-require-maybe eassist
+(deh-require-maybe (and
+                    semantic
+                    semantic/find
+                    semantic/ia
+                    semantic/bovine/gcc
+                    eassist
+                    cedet-global
+                    cedet)
   ;; http://www.emacswiki.org/emacs/eassist.el
+  ;; http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+  ;; (semantic-add-system-include "~/exp/include/boost_1_37" 'c++-mode)
+  (defun custom-semantic-hook ()
+    (imenu-add-to-menubar "TAGS"))
+  (add-hook 'semantic-init-hooks 'custom-semantic-hook)
+
+  (setq semantic-symref-tool "global")
+
+  ;; if you want to enable support for gnu global
+  (when (cedet-gnu-global-version-check t)
+    (semanticdb-enable-gnu-global-databases 'c-mode)
+    (semanticdb-enable-gnu-global-databases 'c++-mode))
+
+  ;; enable ctags for some languages:
+  ;;  Unix Shell, Perl, Pascal, Tcl, Fortran, Asm
+  (when (and
+         (fboundp 'cedet-ectag-version-check)
+         (cedet-ectag-version-check t))
+    (semantic-load-enable-primary-exuberent-ctags-support))
   )
 
 

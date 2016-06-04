@@ -103,6 +103,7 @@
 ;;; Code:
 
 (require 'semantic)
+(require 'semantic/find)
 
 ;; ================================== My STRING utils ========================
 (defun eassist-string-without-last (string n)
