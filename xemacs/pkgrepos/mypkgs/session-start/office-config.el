@@ -140,6 +140,148 @@
 
   ) ;; (deh-require-maybe orgmode-config
 
+;;
+;; office.el
+;; Login : <spratap@spratap>
+;; Started on  Wed Dec  1 17:11:05 2010 Sharad Pratap
+;; $Id: office-config-backup.el.backup,v 1.1 2016/06/15 14:45:02 s Exp s $
+;;
+;; Copyright (C) @YEAR@ Sharad Pratap
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; if not, write to the Free Software
+;; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+;;
+
+(eval-when-compile
+  '(require 'macros-config))
+
+(require 'macros-config)
+(require 'files-config)
+
+(deh-require-maybe orgmode-config
+
+  (defun org-task-files (&optional party)
+    (let ((party (or party task-current-party)))
+      (directory-files-recursive
+       (task-party-dir party) "\\.org$" 7)))
+
+  (defun org-all-task-files ()
+    (let ()
+      (directory-files-recursive
+       (org-publish-get-attribute "tasks" "org" :base-directory)
+       "\\.org$" 7)))
+
+  (defun org-task-refile-target (party)
+    ;; (interactive)
+    (let* ((party (or party task-current-party))
+           (task-files (org-task-files party)))
+                                        ;all files returned by `org-task-files'
+      `((,task-files :maxlevel . 3))))
+
+  (defun org-clock-in-refile-task (party)
+    (interactive
+     (list (ido-completing-read
+            "Seletc Party: "
+            (mapcar 'car task-parties)
+            nil
+            t
+            task-current-party)))
+    (org-clock-in-refile (org-task-refile-target party)))
+
+  (when nil
+    (defun org-clock-select-task-from-clocks (clocks &optional prompt)
+      "Select a task that was recently associated with clocking."
+      (interactive)
+      (let (och chl sel-list rpl (i 0) s)
+        ;; Remove successive dups from the clock history to consider
+        (mapc (lambda (c) (if (not (equal c (car och))) (push c och)))
+              clocks)
+        (setq och (reverse och) chl (length och))
+        (if (zerop chl)
+            (user-error "No recent clock")
+            (save-window-excursion
+              (org-switch-to-buffer-other-window
+               (get-buffer-create "*Clock Task Select*"))
+              (erase-buffer)
+              ;; (when (marker-buffer org-clock-default-task)
+              ;;   (insert (org-add-props "Default Task\n" nil 'face 'bold))
+              ;;   (setq s (org-clock-insert-selection-line ?d org-clock-default-task))
+              ;;   (push s sel-list))
+              ;; (when (marker-buffer org-clock-interrupted-task)
+              ;;   (insert (org-add-props "The task interrupted by starting the last one\n" nil 'face 'bold))
+              ;;   (setq s (org-clock-insert-selection-line ?i org-clock-interrupted-task))
+              ;;   (push s sel-list))
+              ;; (when (org-clocking-p)
+              ;;   (insert (org-add-props "Current Clocking Task\n" nil 'face 'bold))
+              ;;   (setq s (org-clock-insert-selection-line ?c org-clock-marker))
+              ;;   (push s sel-list))
+              (insert (org-add-props "Recent Tasks\n" nil 'face 'bold))
+              (mapc
+               (lambda (m)
+                 (when (marker-buffer m)
+                   (setq i (1+ i)
+                         s (org-clock-insert-selection-line
+                            (if (< i 10)
+                                (+ i ?0)
+                                (+ i (- ?A 10))) m))
+                   (if (fboundp 'int-to-char) (setf (car s) (int-to-char (car s))))
+                   (push s sel-list)))
+               och)
+              (run-hooks 'org-clock-before-select-task-hook)
+              (goto-char (point-min))
+              ;; Set min-height relatively to circumvent a possible but in
+              ;; `fit-window-to-buffer'
+              (fit-window-to-buffer nil nil (if (< chl 10) chl (+ 5 chl)))
+              (message (or prompt "Select task for clocking:"))
+              (setq cursor-type nil rpl (read-char-exclusive))
+              (kill-buffer)
+              (cond
+                ((eq rpl ?q) nil)
+                ((eq rpl ?x) nil)
+                ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
+                (t (user-error "Invalid task choice %c" rpl)))))))
+
+    ;;     (defun org-clock-insert-selection-line (i marker)
+    ;;       "Insert a line for the clock selection menu.
+    ;; And return a cons cell with the selection character integer and the marker
+    ;; pointing to it."
+    ;;       (when (marker-buffer marker)
+    ;;         (let (file cat task heading prefix)
+    ;;           (with-current-buffer (org-base-buffer (marker-buffer marker))
+    ;;             (save-excursion
+    ;;               (save-restriction
+    ;;                 (widen)
+    ;;                 (ignore-errors
+    ;;                   (goto-char marker)
+    ;;                   (setq file (buffer-file-name (marker-buffer marker))
+    ;;                         cat (org-get-category)
+    ;;                         heading (org-get-heading 'notags)
+    ;;                         prefix (save-excursion
+    ;;                                  (org-back-to-heading t)
+    ;;                                  (looking-at org-outline-regexp)
+    ;;                                  (match-string 0))
+    ;;                         task (substring
+    ;;                               (org-fontify-like-in-org-mode
+    ;;                                (concat prefix heading)
+    ;;                                org-odd-levels-only)
+    ;;                               (length prefix)))))))
+    ;;           (when (and cat task)
+    ;;             (insert (format "[%c] %-12s  %s\n" i cat task))
+    ;;             (cons i marker)))))
+    )
+
+  ) ;; (deh-require-maybe orgmode-config
+
 (deh-require-mustbe (and
                      iproject
                      orgmode-config
@@ -153,480 +295,473 @@
 
   (deh-section "File based clocking"
 
-    (deh-section "Org entries associated to file predicate functions"
+    ;; API
+    ;; (org-entries-associated-to-file-p file)
+    ;; (org-entry-associated-to-file-p task-info file)
 
-      (defvar org-entry-associated-file-predicate-fns nil)
+    (deh-section "org-entry-clocking-api interface"
 
-      (defun org-entries-associated-to-file-by-predicate (file)
-        (let ((task-infos (or
-                           org-entry-task-infos
-                           (org-entry-update-task-infos)))
-              (matched '()))
-          (dolist (fn org-entry-associated-file-predicate-fns matched)
-            (let ((partitions
-                   (reduce (lambda (task-info result)
-                             (if (funcall fn file task-info)
-                                 (push task-info (first  result))
-                                 (push task-info (second result)))
-                             result)
-                           task-infos
-                           :initial-value (list nil nil)
-                           :from-end t)))
-              (setq
-               task-infos (second partitions)
-               matched    (append matched (first partitions)))))))
+      (defvar org-entry-clocking-api nil)
 
-      (defun org-entry-associated-to-file-by-predicate (task-info file)
-        (if file
-            (some
-             '(lambda (fn) (funcall fn file task-info))
-             org-entry-associated-file-predicate-fns)))
+      (defun org-entry-clocking-api-set (name api fn)
+        (let ((pl (plist-get org-entry-clocking-api name)))
+          (message "org-entry-clocking-api: %s, pl: %s " org-entry-clocking-api pl)
+          (setq org-entry-clocking-api
+                (plist-put
+                 org-entry-clocking-api
+                 name
+                 (plist-put pl api fn)))))
+      (defun org-entry-clocking-api-get (name api)
+        (plist-get
+         (plist-get org-entry-clocking-api name)
+         api)))
 
-      (setq org-entry-associated-file-predicate-fns nil)
+    (deh-section "org entries clocking's APIs' API"
 
-      (defun org-entries-register-associated-to-file-predicate-function (fn)
-        (add-to-list
-         'org-entry-associated-file-predicate-fns
-         fn))
+      (deh-section "org entries accss common api"
+        ;; (defvar org-)
 
-      (defun org-entry-associated-file-org-file-p (file task-info)
-        "Predicate funtion to check if file matches to task-info's file attribute."
-        (string-equal
-         (file-truename file)
-         (file-truename (org-entry-task-info-get-property task-info 'file))))
-      (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-org-file-p)
+        (defun org-entry-collect-task-info ()
+          ;; (org-element-at-point)
+          (let ((heading-with-string-prop
+                 (org-get-heading)
+                  ;; (cadr (org-element-at-point))
+                  ))
+            (let ((heading (if heading-with-string-prop
+                               (substring-no-properties heading-with-string-prop)))
+                  (root    (org-entry-get (point) "Root"))
+                  (marker  (move-marker
+                            (make-marker)
+                            (point)
+                            (org-base-buffer (current-buffer))))
+                  (file    (buffer-file-name))
+                  (point   (point))
+                  task-info)
+              (when heading
+                (if root   (push (cons "Root" root) task-info))
+                (if marker (push (cons 'marker marker) task-info))
+                (if file   (push (cons 'file file) task-info))
+                (if point  (push (cons 'point point) task-info))
+                (push heading task-info))
+              task-info)))
 
-      (defun org-entry-associated-file-root-dir-p (file task-info)
-        "Predicate funtion to check if file matches to task-info's file attribute."
-        (let ((root
-               (org-entry-task-info-get-property task-info "Root")))
-          (if root
-              (string-match
-               (file-truename root)
-               (file-truename file)))))
-      (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-root-dir-p)
+        (defun org-entry-task-info-get-property (task-info property)
+          (cdr (assoc property (cdr task-info))))
 
-      ;; (defun org-entry-associated-file-xx-p (file task-info)
-      ;;   )
-      ;; (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-xx-p)
-      ;; )
-      )
+        (defun org-markers-associated-to-file (file)
+          (mapcar '(lambda (e)
+                    (cdr (assoc 'marker (cdr e))))
+                  (funcall org-entries-associated-to-file-p file))))
 
-    (deh-section "Org entries associated to file rank functions"
-      ;; TODO: matching should be merit based.
-      ;; TODO: logical AND OR method should be possible in match-fn results
-      ;; TODO: exclusion fecelities also should be present.
-      '(
-        '(matches
-          '(file based)x
-          '(dir based -merit) x
-          '(status based) x
-          '(user input based)
-          '(config based) x
-          '(time based recently opened)
-          '(heading level based)))
+      (deh-section "org entries access api for list org"
+        (defvar org-entry-list-task-infos nil "org entry task infos")
+        (defun org-entry-list-get-task-infos (files)
+          (let ()
+            (remove nil
+                    (org-map-entries
+                     'org-entry-collect-task-info
+                     t
+                     files))))
 
+        (defun org-entry-list-update-task-infos ()
+          (or
+           org-entry-list-task-infos
+           (setq org-entry-list-task-infos
+                 (org-entry-list-get-task-infos (org-all-task-files))))))
 
 
+      (deh-section "org entries access api for recursive task"
+        (defvar org-entry-tree-task-infos nil "org entry task infos")
+        (defun org-entry-get-task-infos (files)
+          )
+        (defvar org-entry-tree-task-info-root-org-file nil "org-task-info-root-org-file")
 
-      (defvar org-entry-associated-file-rank-fns nil)
+        (defun org-entry-tree-update-task-infos ()
+          (or
+           org-entry-tree-task-infos
+           (setq org-entry-tree-task-infos
+                 (org-entry-tree-get-task-infos org-task-info-root-org-file))))
 
-      (defun org-entries-associated-to-file-by-rank (file)
-        (let ((task-infos (or
-                           org-entry-task-infos
-                           (org-entry-update-task-infos)))
-              (matched '()))
-          (dolist (fn org-entry-associated-file-rank-fns matched)
-            (let ((partitions
-                   (reduce (lambda (task-info result)
-                             (if (funcall fn file task-info)
-                                 (push task-info (first  result))
-                                 (push task-info (second result)))
-                             result)
-                           task-infos
-                           :initial-value (list nil nil)
-                           :from-end t)))
-              (setq
-               task-infos (second partitions)
-               matched    (append matched (first partitions)))))))
+        (defun org-entry-tree-map-subheading (fun)
+          "Call FUN for every heading underneath the current one."
+          ;; (org-back-to-heading)
+          (let ((level (funcall outline-level))
+                (collection nil))
+            (save-excursion
+              (while (and (progn
+                            (outline-next-heading)
+                            (> (funcall outline-level) level))
+                          (not (eobp)))
+                (if (= (funcall outline-level) (1+ level))
+                    (push (funcall fun) collection))))
+            collection))
 
-      (defun org-entry-associated-to-file-by-rank (task-info file)
-        (if file
-            (apply '+
-                   (mapcar
-                    '(lambda (fn)
-                      (funcall fn file task-info))
-                    org-entry-associated-file-rank-fns))
-            0))
+        (defun org-entry-tree-collect-task-info (&optional file)
+          "org-collect-task-info"
+          (with-current-buffer (if file
+                                   (find-file-noselect file)
+                                   (current-buffer))
+            ;; (goto-char (point-min))
+            (let* ((entry
+                    (cadr (org-element-at-point)))
+                   (sub-tree
+                    (append
+                     (org-map-subheading 'org-collect-task-info)
+                     (let ((subtree-file
+                            (plist-get entry :SubtreeFile)))
+                       (if (and
+                            subtree-file
+                            (file-readable-p subtree-file))
+                           (org-collect-task-info subtree-file))))))
+              (if sub-tree
+                  (append entry (list :sub-tree sub-tree))
+                  entry))))
 
-      (setq org-entry-associated-file-rank-fns nil)
+        (defun org-entry-tree-task-infos-tree (file)
+          (org-entry-tree-collect-task-info file))
 
-      (defun org-entries-register-associated-to-file-rank-function (fn)
-        (add-to-list
-         'org-entry-associated-file-rank-fns
-         fn))
+        (defun org-entry-tree-get-task-infos (file)
+          (let ()
+            (org-entry-tree-collect-task-info file))))
 
-      (defun org-entry-associated-file-org-file-rank (file task-info)
-        "Predicate funtion to check if file matches to task-info's file attribute."
-        (if (string-equal
+      (deh-section "tree api"
+        (defun tree-mapcar-nodes (nodep fn tree)
+          (if (funcall nodep tree)
+              (list
+               (funcall fn tree)
+               :sub-tree
+               (mapcar
+                '(lambda (e)
+                  (tree-mapcar-nodes nodep fn e))
+                (funcall nodep tree)))
+              (funcall fn tree)))
+
+        (defun tree-mapc-nodes (nodep fn tree)
+          (if (funcall nodep tree)
+              (progn
+                (funcall fn tree)
+                (mapc
+                 '(lambda (e)
+                   (tree-mapc-nodes nodep fn e))
+                 (funcall nodep tree)))
+              (funcall fn tree)))
+
+        (defun tree-remove-if-not-nodes (nodep fn tree)
+          (if (funcall nodep tree)
+              (let ((rootele
+                     (if (funcall fn tree) tree))
+                    (subtree
+                     (remove
+                      nil
+                      (mapcar
+                       '(lambda (e)
+                         (tree-remove-if-not-nodes nodep fn e))
+                       (funcall nodep tree)))))
+                (if (or rootele subtree)
+                    (plist-put tree :sub-tree subtree)))
+              (if (funcall fn tree) tree)))
+
+        (defun tree-mapcar-task-infos (fn tree)
+          (tree-mapcar-nodes
+           '(lambda (tx) (plist-get tx :sub-tree))
+           fn
+           tree))
+
+        (defun tree-mapc-task-infos (fn tree)
+          (tree-mapc-nodes
+           '(lambda (tx) (plist-get tx :sub-tree))
+           fn
+           tree))
+
+        (defun tree-remove-if-not-task-infos (fn tree)
+          (tree-remove-if-not-nodes
+           '(lambda (tx)
+             (plist-get tx :sub-tree))
+           fn
+           tree))
+
+        ;; (testing
+        ;;  (setq
+        ;;   testxx-remove
+        ;;   (tree-remove-if-not-task-infos
+        ;;    '(lambda (e) (eq (plist-get e :pre-blank) 4))
+        ;;    testxx))
+
+        ;;  (setq testxxmapcar
+        ;;        (tree-mapcar-nodes '(lambda (tx) (plist-get tx :sub-tree))
+        ;;                           '(lambda (tx) (plist-get tx :title))
+        ;;                           ;; testxx
+        ;;                           (car (plist-get testxx :sub-tree))
+        ;;                           ))
+
+        ;;  (setq testxxmapc
+        ;;        (tree-mapc-nodes '(lambda (tx) (plist-get tx :sub-tree))
+        ;;                         '(lambda (tx) (plist-get tx :title))
+        ;;                         ;; testxx
+        ;;                         (car (plist-get testxx :sub-tree))
+        ;;                         )))
+        )) ;; (deh-section "org entries clocking APIs' API"
+
+    (deh-section "org entries clocking's API"
+
+      (deh-section "Org entries associated to file predicate functions"
+
+        (defvar org-entry-associated-file-predicate-fns nil)
+
+        (progn ;; api
+          (defun org-entries-associated-to-file-by-predicate-p (file)
+            (let ((task-infos (org-entry-list-update-task-infos))
+                  (matched '()))
+              (dolist (fn org-entry-associated-file-predicate-fns matched)
+                (let ((partitions
+                       (reduce (lambda (task-info result)
+                                 (if (funcall fn file task-info)
+                                     (push task-info (first  result))
+                                     (push task-info (second result)))
+                                 result)
+                               task-infos
+                               :initial-value (list nil nil)
+                               :from-end t)))
+                  (setq
+                   task-infos (second partitions)
+                   matched    (append matched (first partitions)))))))
+
+          (defun org-entry-associated-to-file-by-predicate-p (task-info file)
+            (if file
+                (some
+                 '(lambda (fn) (funcall fn file task-info))
+                 org-entry-associated-file-predicate-fns)))
+          (org-entry-clocking-api-set :predicate :entries 'org-entries-associated-to-file-by-predicate-p)
+          (org-entry-clocking-api-set :predicate :entry 'org-entry-associated-to-file-by-predicate-p))
+
+
+        (progn ;; functions
+          (setq org-entry-associated-file-predicate-fns nil)
+
+          (defun org-entries-register-associated-to-file-predicate-function (fn)
+            (add-to-list
+             'org-entry-associated-file-predicate-fns
+             fn))
+
+          (defun org-entry-associated-file-org-file-p (file task-info)
+            "Predicate funtion to check if file matches to task-info's file attribute."
+            (string-equal
              (file-truename file)
-             (file-truename
-              (org-entry-task-info-get-property task-info 'file)))
-            10
-            0))
-      (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-org-file-rank)
+             (file-truename (org-entry-task-info-get-property task-info 'file))))
+          (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-org-file-p)
 
-      (defun org-entry-associated-file-root-dir-rank (file task-info)
-        "Predicate funtion to check if file matches to task-info's file attribute."
-        (let* ((root
-                (org-entry-task-info-get-property task-info "Root"))
-               (root (if root (file-truename root))))
-          (if (and
-               root
-               (string-match root file))
-              (length root)
-              0)))
-      (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-root-dir-rank)
+          (defun org-entry-associated-file-root-dir-p (file task-info)
+            "Predicate funtion to check if file matches to task-info's file attribute."
+            (let ((root
+                   (org-entry-task-info-get-property task-info "Root")))
+              (if root
+                  (string-match
+                   (file-truename root)
+                   (file-truename file)))))
+          (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-root-dir-p)
 
-      (defun org-entry-associated-file-status-rank (file task-info)
-        "Predicate funtion to check if file matches to task-info's file attribute."
-        (let* ((status
-                (org-entry-task-info-get-property task-info 'status)))
-          (if (string-equal status "CLOSED") -30 0)))
-      (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-status-rank)
-
-      (defun org-entry-associated-file-task-rank (file task-info)
-        "Predicate funtion to check if file matches to task-info's file attribute."
-        (let* ((rank
-                (org-entry-task-info-get-property task-info "Rank")))
-          (if rank (string-to-number rank) 0)))
-      (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-task-rank)
-
-      (defun org-entry-associated-file-level-rank (file task-info)
-        "Predicate funtion to check if file matches to task-info's file attribute."
-        (let* ((level
-                (org-entry-task-info-get-property task-info 'level)))
-          level))
-      (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-level-rank)
-      )
-
-    (deh-section "Org entries associated to file rank functions1"
-      ;; TODO: matching should be merit based.
-      ;; TODO: logical AND OR method should be possible in match-fn results
-      ;; TODO: exclusion fecelities also should be present.
-      '(
-        '(matches
-          '(file based)x
-          '(dir based -merit) x
-          '(status based) x
-          '(user input based)
-          '(config based) x
-          '(time based recently opened)
-          '(heading level based)))
-
-
-
-
-      (defvar org-entry-associated-file-rank-fns nil)
-
-      (defun org-entries-associated-to-file-by-rank (file)
-        (let ((task-infos (or
-                           org-entry-task-infos
-                           (org-entry-update-task-infos)))
-              (matched '()))
-          (dolist (fn org-entry-associated-file-rank-fns matched)
-            ;; (tree-remove-if-not-task-infos fn task-infos)
-            (let ((partitions
-                   (reduce (lambda (task-info result)
-                             (if (funcall fn file task-info)
-                                 (push task-info (first  result))
-                                 (push task-info (second result)))
-                             result)
-                           task-infos
-                           :initial-value (list nil nil)
-                           :from-end t)))
-              (setq
-               task-infos (second partitions)
-               matched    (append matched (first partitions)))))))
-
-
-
-
-      (defun org-entry-associated-to-file-by-rank (task-info file)
-        (if file
-            (apply '+
-                   (mapcar
-                    '(lambda (fn)
-                      (funcall fn file task-info))
-                    org-entry-associated-file-rank-fns))
-            0))
-
-      (setq org-entry-associated-file-rank-fns nil)
-
-      (defun org-entries-register-associated-to-file-rank-function (fn)
-        (add-to-list
-         'org-entry-associated-file-rank-fns
-         fn))
-
-      (defun org-entry-associated-file-org-file-rank (file task-info)
-        "Predicate funtion to check if file matches to task-info's file attribute."
-        (if (string-equal
-             (file-truename file)
-             (file-truename
-              (org-entry-task-info-get-property task-info 'file)))
-            10
-            0))
-      (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-org-file-rank)
-
-      (defun org-entry-associated-file-root-dir-rank (file task-info)
-        "Predicate funtion to check if file matches to task-info's file attribute."
-        (let* ((root
-                (org-entry-task-info-get-property task-info "Root"))
-               (root (if root (file-truename root))))
-          (if (and
-               root
-               (string-match root file))
-              (length root)
-              0)))
-      (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-root-dir-rank)
-
-      (defun org-entry-associated-file-status-rank (file task-info)
-        "Predicate funtion to check if file matches to task-info's file attribute."
-        (let* ((status
-                (org-entry-task-info-get-property task-info 'status)))
-          (if (string-equal status "CLOSED") -30 0)))
-      (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-status-rank)
-
-      (defun org-entry-associated-file-task-rank (file task-info)
-        "Predicate funtion to check if file matches to task-info's file attribute."
-        (let* ((rank
-                (org-entry-task-info-get-property task-info "Rank")))
-          (if rank (string-to-number rank) 0)))
-      (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-task-rank)
-
-      (defun org-entry-associated-file-level-rank (file task-info)
-        "Predicate funtion to check if file matches to task-info's file attribute."
-        (let* ((level
-                (org-entry-task-info-get-property task-info 'level)))
-          level))
-      (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-level-rank)
-      )
-
-    (deh-section "org entries access api"
-      (defvar org-entry-task-infos nil "org entry task infos")
-      ;; (defvar org-)
-
-      (defun org-entry-collect-task-info ()
-        ;; (org-element-at-point)
-        (let ((heading-with-string-prop
-               (org-get-heading)))
-          (let ((heading (if heading-with-string-prop
-                             (substring-no-properties heading-with-string-prop)))
-                (root    (org-entry-get (point) "Root"))
-                (marker  (move-marker
-                          (make-marker)
-                          (point)
-                          (org-base-buffer (current-buffer))))
-                (file    (buffer-file-name))
-                (point   (point))
-                task-info)
-            (when heading
-              (if root   (push (cons "Root" root) task-info))
-              (if marker (push (cons 'marker marker) task-info))
-              (if file   (push (cons 'file file) task-info))
-              (if point  (push (cons 'point point) task-info))
-              (push heading task-info))
-            task-info)))
-
-      (defun org-entry-task-info-get-property (task-info property)
-        (cdr (assoc property (cdr task-info))))
-
-      (defun org-entry-get-task-infos (files)
+          ;; (defun org-entry-associated-file-xx-p (file task-info)
+          ;;   )
+          ;; (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-xx-p)
+          ;; )
+          )
         )
 
-      (defun org-entry-update-task-infos ()
-        (setq org-entry-task-infos
-              (org-entry-get-task-infos (org-all-task-files))))
+      (deh-section "Org entries associated to file rank functions"
+        ;; TODO: matching should be merit based.
+        ;; TODO: logical AND OR method should be possible in match-fn results
+        ;; TODO: exclusion fecelities also should be present.
+        '(
+          '(matches
+            '(file based)x
+            '(dir based -merit) x
+            '(status based) x
+            '(user input based)
+            '(config based) x
+            '(time based recently opened)
+            '(heading level based)))
 
-      (defun org-markers-associated-to-file (file)
-        (mapcar '(lambda (e)
-                  (cdr (assoc 'marker (cdr e))))
-                (funcall org-entries-associated-to-file file))))
 
-    (deh-section "list org"
-      (defvar org-entry-task-infos nil "org entry task infos")
 
-      (defun org-entry-collect-task-info ()
-        ;; (org-element-at-point)
-        (let ((heading-with-string-prop
-               (org-get-heading)))
-          (let ((heading (if heading-with-string-prop
-                             (substring-no-properties heading-with-string-prop)))
-                (root    (org-entry-get (point) "Root"))
-                (marker  (move-marker
-                          (make-marker)
-                          (point)
-                          (org-base-buffer (current-buffer))))
-                (file    (buffer-file-name))
-                (point   (point))
-                task-info)
-            (when heading
-              (if root   (push (cons "Root" root) task-info))
-              (if marker (push (cons 'marker marker) task-info))
-              (if file   (push (cons 'file file) task-info))
-              (if point  (push (cons 'point point) task-info))
-              (push heading task-info))
-            task-info)))
 
-      (defun org-entry-task-info-get-property (task-info property)
-        (cdr (assoc property (cdr task-info))))
+        (defvar org-entry-associated-file-rank-fns nil)
 
-      (defun org-entry-get-task-infos (files)
-        (let ()
-          (remove nil
-                  (org-map-entries
-                   'org-entry-collect-task-info
-                   t
-                   files))))
+        (progn ;; api
+          (defun org-entries-associated-to-file-by-rank-p (file)
+            (let ((task-infos (org-entry-list-update-task-infos))
+                  (matched '()))
+              (dolist (fn org-entry-associated-file-rank-fns matched)
+                (let ((partitions
+                       (reduce (lambda (task-info result)
+                                 (if (funcall fn file task-info)
+                                     (push task-info (first  result))
+                                     (push task-info (second result)))
+                                 result)
+                               task-infos
+                               :initial-value (list nil nil)
+                               :from-end t)))
+                  (setq
+                   task-infos (second partitions)
+                   matched    (append matched (first partitions)))))))
+          (defun org-entry-associated-to-file-by-rank-p (task-info file)
+            (if file
+                (apply '+
+                       (mapcar
+                        '(lambda (fn)
+                          (funcall fn file task-info))
+                        org-entry-associated-file-rank-fns))
+                0))
+          (org-entry-clocking-api-set :rank :entries 'org-entries-associated-to-file-by-rank-p)
+          (org-entry-clocking-api-set :rank :entry 'org-entry-associated-to-file-by-rank-p))
 
-      (defun org-entry-update-task-infos ()
-        (setq org-entry-task-infos
-              (org-entry-get-task-infos (org-all-task-files))))
+        (progn ;; functions
+          (setq org-entry-associated-file-rank-fns nil)
 
-      (defun org-markers-associated-to-file (file)
-        (mapcar '(lambda (e)
-                  (cdr (assoc 'marker (cdr e))))
-                (funcall org-entries-associated-to-file file))))
+          (defun org-entries-register-associated-to-file-rank-function (fn)
+            (add-to-list
+             'org-entry-associated-file-rank-fns
+             fn))
 
-    (deh-section "recursive org"
+          (defun org-entry-associated-file-org-file-rank (file task-info)
+            "Predicate funtion to check if file matches to task-info's file attribute."
+            (if (string-equal
+                 (file-truename file)
+                 (file-truename
+                  (org-entry-task-info-get-property task-info 'file)))
+                10
+                0))
+          (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-org-file-rank)
 
-      (defvar org-entry-task-infos nil "org entry task infos")
+          (defun org-entry-associated-file-root-dir-rank (file task-info)
+            "Predicate funtion to check if file matches to task-info's file attribute."
+            (let* ((root
+                    (org-entry-task-info-get-property task-info "Root"))
+                   (root (if root (file-truename root))))
+              (if (and
+                   root
+                   (string-match root file))
+                  (length root)
+                  0)))
+          (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-root-dir-rank)
 
-      (defvar org-task-info-root-org-file nil "org-task-info-root-org-file")
+          (defun org-entry-associated-file-status-rank (file task-info)
+            "Predicate funtion to check if file matches to task-info's file attribute."
+            (let* ((status
+                    (org-entry-task-info-get-property task-info 'status)))
+              (if (string-equal status "CLOSED") -30 0)))
+          (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-status-rank)
 
-      (defun org-map-subheading (fun)
-        "Call FUN for every heading underneath the current one."
-        ;; (org-back-to-heading)
-        (let ((level (funcall outline-level))
-              (collection nil))
-          (save-excursion
-            (while (and (progn
-                          (outline-next-heading)
-                          (> (funcall outline-level) level))
-                        (not (eobp)))
-              (if (= (funcall outline-level) (1+ level))
-                  (push (funcall fun) collection))))
-          collection))
+          (defun org-entry-associated-file-task-rank (file task-info)
+            "Predicate funtion to check if file matches to task-info's file attribute."
+            (let* ((rank
+                    (org-entry-task-info-get-property task-info "Rank")))
+              (if rank (string-to-number rank) 0)))
+          (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-task-rank)
 
-      (defun org-collect-task-info (&optional file)
-        "org-collect-task-info"
-        (with-current-buffer (if file
-                                 (find-file-noselect file)
-                                 (current-buffer))
-          ;; (goto-char (point-min))
-          (let* ((entry
-                  (cadr (org-element-at-point)))
-                 (sub-tree
-                  (append
-                   (org-map-subheading 'org-collect-task-info)
-                   (let ((subtree-file
-                          (plist-get entry :SubtreeFile)))
-                     (if (and
-                          subtree-file
-                          (file-readable-p subtree-file))
-                         (org-collect-task-info subtree-file))))))
-            (if sub-tree
-                (append entry (list :sub-tree sub-tree))
-                entry))))
+          (defun org-entry-associated-file-level-rank (file task-info)
+            "Predicate funtion to check if file matches to task-info's file attribute."
+            (let* ((level
+                    (org-entry-task-info-get-property task-info 'level)))
+              level))
+          (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-level-rank))
+        )
 
-      (defun org-task-infos-tree (file)
-        (org-collect-task-info file))
+      (deh-section "Org entries associated to file key functions on recursive taskinfos"
+        ;; TODO: matching should be merit based.
+        ;; TODO: logical AND OR method should be possible in match-fn results
+        ;; TODO: exclusion fecelities also should be present.
+        '(
+          '(matches
+            '(file based)x
+            '(dir based -merit) x
+            '(status based) x
+            '(user input based)
+            '(config based) x
+            '(time based recently opened)
+            '(heading level based)))
 
-      (defun tree-mapcar-nodes (nodep fn tree)
-        (if (funcall nodep tree)
-            (list
-             (funcall fn tree)
-             :sub-tree
-             (mapcar
-              '(lambda (e)
-                (tree-mapcar-nodes nodep fn e))
-              (funcall nodep tree)))
-            (funcall fn tree)))
+        (defvar org-entry-associated-file-key-fns nil)
 
-      (defun tree-mapc-nodes (nodep fn tree)
-        (if (funcall nodep tree)
-            (progn
-              (funcall fn tree)
-              (mapc
-               '(lambda (e)
-                 (tree-mapc-nodes nodep fn e))
-               (funcall nodep tree)))
-            (funcall fn tree)))
+        (progn ;; api
+          (defun org-entries-associated-to-file-by-keys-p (file)
+            (let ((task-infos (org-entry-tree-update-task-infos))
+                  (matched '()))
+              (dolist (task task-infos)
+                (if (> (org-entry-associated-to-file-by-keys task file) 0)
+                    (push task matched)))
+              matched))
 
-      (defun tree-remove-if-not-nodes (nodep fn tree)
-        (if (funcall nodep tree)
-            (let ((rootele
-                   (if (funcall fn tree) tree))
-                  (subtree
-                   (remove
-                    nil
-                    (mapcar
-                     '(lambda (e)
-                       (tree-remove-if-not-nodes nodep fn e))
-                     (funcall nodep tree)))))
-              (if (or rootele subtree)
-                  (plist-put tree :sub-tree subtree)))
-            (if (funcall fn tree) tree)))
+          (defun org-entry-associated-to-file-by-keys-p (task-info file)
+            (if file
+                (if (> (org-entries-associated-key-key :status task-info) -30)
+                    (+
+                     (org-entries-associated-key-key :root task-info)
+                     (org-entries-associated-key-key :org-file task-info)
+                     (org-entries-associated-key-key :task-info-key task-info)
+                     (org-entries-associated-key-key :heading-level task-info))
+                    0)
+                0))
 
-      (defun tree-mapcar-task-infos (fn tree)
-        (tree-mapcar-nodes
-         '(lambda (tx) (plist-get tx :sub-tree))
-         fn
-         tree))
+          (org-entry-clocking-api-set :keys :entries 'org-entries-associated-to-file-by-keys-p)
+          (org-entry-clocking-api-set :keys :entry 'org-entry-associated-to-file-by-keys-p)) ;; api
 
-      (defun tree-mapc-task-infos (fn tree)
-        (tree-mapc-nodes
-         '(lambda (tx) (plist-get tx :sub-tree))
-         fn
-         tree))
+        (progn ;; functions
+          (setq org-entry-associated-file-key-fns nil)
 
-      (defun tree-remove-if-not-task-infos (fn tree)
-        (tree-remove-if-not-nodes
-         '(lambda (tx)
-           (plist-get tx :sub-tree))
-         fn
-         tree))
+          (defun org-entries-register-associated-to-file-key-function (key fn)
+            (setq
+             org-entry-associated-file-key-fns
+             (plist-put
+              org-entry-associated-file-key-fns key fn)))
+          (defun org-entries-associated-key-function (key)
+            (plist-get org-entry-associated-file-key-fns key))
+          (defun org-entries-associated-key-key (key task-info)
+            (funcall
+             (plist-get org-entry-associated-file-key-fns key)
+             task-info))
 
-      ;; (testing
-      ;;  (setq
-      ;;   testxx-remove
-      ;;   (tree-remove-if-not-task-infos
-      ;;    '(lambda (e) (eq (plist-get e :pre-blank) 4))
-      ;;    testxx))
+          (defun org-entry-associated-file-org-file-key (file task-info)
+            "Predicate funtion to check if file matches to task-info's file attribute."
+            (if (string-equal
+                 (file-truename file)
+                 (file-truename
+                  (org-entry-task-info-get-property task-info 'file)))
+                10
+                0))
+          (org-entries-register-associated-to-file-key-function :org-file 'org-entry-associated-file-org-file-key)
 
-      ;;  (setq testxxmapcar
-      ;;        (tree-mapcar-nodes '(lambda (tx) (plist-get tx :sub-tree))
-      ;;                           '(lambda (tx) (plist-get tx :title))
-      ;;                           ;; testxx
-      ;;                           (car (plist-get testxx :sub-tree))
-      ;;                           ))
+          (defun org-entry-associated-file-root-dir-key (file task-info)
+            "Predicate funtion to check if file matches to task-info's file attribute."
+            (let* ((root
+                    (org-entry-task-info-get-property task-info "Root"))
+                   (root (if root (file-truename root))))
+              (if (and
+                   root
+                   (string-match root file))
+                  (length root)
+                  0)))
+          (org-entries-register-associated-to-file-key-function :root 'org-entry-associated-file-root-dir-key)
 
-      ;;  (setq testxxmapc
-      ;;        (tree-mapc-nodes '(lambda (tx) (plist-get tx :sub-tree))
-      ;;                         '(lambda (tx) (plist-get tx :title))
-      ;;                         ;; testxx
-      ;;                         (car (plist-get testxx :sub-tree))
-      ;;                         )))
+          (defun org-entry-associated-file-status-key (file task-info)
+            "Predicate funtion to check if file matches to task-info's file attribute."
+            (let* ((status
+                    (org-entry-task-info-get-property task-info 'status)))
+              (if (string-equal status "CLOSED") -30 0)))
+          (org-entries-register-associated-to-file-key-function :status 'org-entry-associated-file-status-key)
 
-      (defun org-entry-get-task-infos (file)
-        (let ()
-          (org-entry-collect-task-info file)))
+          (defun org-entry-associated-file-task-key (file task-info)
+            "Predicate funtion to check if file matches to task-info's file attribute."
+            (let* ((key
+                    (org-entry-task-info-get-property task-info "Key")))
+              (if key (string-to-number key) 0)))
+          (org-entries-register-associated-to-file-key-function :task-key 'org-entry-associated-file-task-key)
 
-      (defun org-entry-update-task-infos ()
-        (setq org-entry-task-infos
-              (org-entry-get-task-infos org-task-info-root-org-file)))
-
-      )
+          (defun org-entry-associated-file-level-key (file task-info)
+            "Predicate funtion to check if file matches to task-info's file attribute."
+            (let* ((level
+                    (org-entry-task-info-get-property task-info 'level)))
+              level))
+          (org-entries-register-associated-to-file-key-function :heading-level 'org-entry-associated-file-level-key))))
 
     (deh-section "task main work"
       (defvar task-current-file  nil)
@@ -635,8 +770,8 @@
       (defvar last-buffer-select-time (current-time))
       (defvar buffer-select-timer nil)
       (defvar update-current-file-msg "")
-      (defvar org-entries-associated-to-file 'org-entries-associated-to-file-by-predicate)
-      (defvar org-entry-associated-to-file-p 'org-entry-associated-to-file-by-predicate)
+      (defvar org-entries-associated-to-file-p (org-entry-clocking-api-get :predicate :entries))
+      (defvar org-entry-associated-to-file-p   (org-entry-clocking-api-get :predicate :entry))
 
 
 
@@ -816,38 +951,6 @@
         (setq buffer-list-update-hook nil)
         (remove-hook 'elscreen-screen-update-hook 'run-task-current-file-timer)
         (remove-hook 'elscreen-goto-hook 'run-task-current-file-timer))
-
-      (defvar org-entry-task-infos nil "org entry task infos")
-
-      (defun org-entry-collect-task-info ()
-        ;; (org-element-at-point)
-        (let ((heading-with-string-prop
-               (org-get-heading)))
-          (let ((heading (if heading-with-string-prop
-                             (substring-no-properties heading-with-string-prop)))
-                (root    (org-entry-get (point) "Root"))
-                (marker  (move-marker
-                          (make-marker)
-                          (point)
-                          (org-base-buffer (current-buffer))))
-                (file    (buffer-file-name))
-                (point   (point))
-                task-info)
-            (when heading
-              (if root   (push (cons "Root" root) task-info))
-              (if marker (push (cons 'marker marker) task-info))
-              (if file   (push (cons 'file file) task-info))
-              (if point  (push (cons 'point point) task-info))
-              (push heading task-info))
-            task-info)))
-
-      (defun org-entry-task-info-get-property (task-info property)
-        (cdr (assoc property (cdr task-info))))
-
-      (defun org-markers-associated-to-file (file)
-        (mapcar '(lambda (e)
-                  (cdr (assoc 'marker (cdr e))))
-                (funcall org-entries-associated-to-file file)))
       )
 
 
@@ -873,10 +976,7 @@
 
      (org-entry-associated-file-org-file-p
       "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"
-      (cadr org-entry-task-infos)))
-
-
-
+      (cadr org-entry-list-task-infos)))
     )
 
 
@@ -1410,6 +1510,19 @@ which other peoples are also working."
        (switch-to-buffer buf)
        (if (y-or-n-p (format "Should set %s current task" task))
            (setq *taskdir-current-task* task))))))
+
+(deh-section "Forgive"
+  (defun forgive/them ()
+    (interactive)
+    (if (and
+         (featurep 'develock)
+         (assq major-mode develock-keywords-alist))
+        (develock-mode -1))
+    (highlight-changes-visible-mode -1)))
+
+
+(provide 'office-config)
+
 
 (deh-section "Forgive"
   (defun forgive/them ()
