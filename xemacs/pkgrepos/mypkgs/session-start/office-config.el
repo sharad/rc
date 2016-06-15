@@ -296,8 +296,8 @@
   (deh-section "File based clocking"
 
     ;; API
-    ;; (org-entries-associated-to-file-p file)
-    ;; (org-entry-associated-to-file-p task-info file)
+    ;; (org-clocking-api-entries-associated-to-file-p file)
+    ;; (org-clocking-api-entry-associated-to-file-p task-info file)
 
     (deh-section "org-entry-clocking-api interface"
 
@@ -351,7 +351,7 @@
         (defun org-markers-associated-to-file (file)
           (mapcar '(lambda (e)
                     (cdr (assoc 'marker (cdr e))))
-                  (funcall org-entries-associated-to-file-p file))))
+                  (funcall org-clocking-api-entries-associated-to-file-p file))))
 
       (deh-section "org entries access api for list org"
         (defvar org-entry-list-task-infos nil "org entry task infos")
@@ -770,9 +770,27 @@
       (defvar last-buffer-select-time (current-time))
       (defvar buffer-select-timer nil)
       (defvar update-current-file-msg "")
-      (defvar org-entries-associated-to-file-p (org-entry-clocking-api-get :predicate :entries))
-      (defvar org-entry-associated-to-file-p   (org-entry-clocking-api-get :predicate :entry))
+      (defvar org-clocking-api-entries-associated-to-file-p (org-entry-clocking-api-get :predicate :entries))
+      (defvar org-clocking-api-entry-associated-to-file-p   (org-entry-clocking-api-get :predicate :entry))
 
+
+      (defun custom-plist-keys (in-plist)
+        (if (null in-plist)
+            in-plist
+            (cons (car in-plist) (custom-plist-keys (cddr in-plist)))))
+
+      (defun org-task-clocking-api ()
+        "org task clocking select api to use."
+        (interactive)
+        (let* ((api-keys (custom-plist-keys org-entry-clocking-api))
+               (api-name (ido-completing-read "org task clocking api: " (mapcar 'symbol-name api-keys) nil t))
+               (api-key (intern api-name)))
+          (if (and
+               (org-entry-clocking-api-get api-key :entries)
+               (org-entry-clocking-api-get api-key :entry))
+              (setq
+               org-clocking-api-entries-associated-to-file-p (org-entry-clocking-api-get api-key :entries)
+               org-clocking-api-entry-associated-to-file-p   (org-entry-clocking-api-get api-key :entry)))))
 
 
       (defun update-current-file ()
@@ -799,7 +817,7 @@
          (> (marker-position-nonil org-clock-marker) 0)
          (org-with-clock-position (list org-clock-marker)
            (let ((info (org-entry-collect-task-info)))
-             (if (funcall org-entry-associated-to-file-p (org-entry-collect-task-info) file)
+             (if (funcall org-clocking-api-entry-associated-to-file-p (org-entry-collect-task-info) file)
                  info)))))
 
       (defun org-entry-run-associated-clock (file)
