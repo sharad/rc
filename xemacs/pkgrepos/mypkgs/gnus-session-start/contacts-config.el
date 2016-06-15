@@ -25,10 +25,6 @@
 ;;; Code:
 
 (deh-require-maybe bbdb
-  (setq bbdb-use-pop-up t
-        bbdb-save-db-timeout 0) ;; I want it
-  (remove-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer)
-  (add-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer-for-some-time)
 
   (defun bbdb/gnus-pop-up-bbdb-buffer-for-some-time ()
     (bbdb/gnus-pop-up-bbdb-buffer)
@@ -38,7 +34,12 @@
       (when w
         ;; (run-at-time "4 sec" nil #'delete-window w))))
         (run-at-time "4 sec" nil #'old-delete-window w))))
-  (define-key gnus-summary-mode-map (kbd "s-c s-v")  'bbdb/gnus-pop-up-bbdb-buffer))
+  (define-key gnus-summary-mode-map (kbd "s-c s-v")  'bbdb/gnus-pop-up-bbdb-buffer)
+
+  (setq bbdb-use-pop-up t
+        bbdb-save-db-timeout 0) ;; I want it
+  (remove-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer)
+  (add-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer-for-some-time))
 
 ;;
 
