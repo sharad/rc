@@ -376,6 +376,9 @@
           )
         (defvar org-entry-tree-task-info-root-org-file nil "org-task-info-root-org-file")
 
+        (setq org-entry-tree-task-info-root-org-file
+              (expand-file-name "report.org "(task-party-dir)))
+
         (defun org-entry-tree-update-task-infos ()
           (or
            org-entry-tree-task-infos
