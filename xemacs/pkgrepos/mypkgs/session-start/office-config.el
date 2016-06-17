@@ -298,6 +298,7 @@
     ;; API
     ;; (org-clocking-api-entries-associated-to-file-p file)
     ;; (org-clocking-api-entry-associated-to-file-p task-info file)
+    ;; (org-clocking-api-entry-update-task-infos &optional force)
 
     (deh-section "org-entry-clocking-api interface"
 
@@ -351,7 +352,7 @@
 
         (defun org-markers-associated-to-file (file)
           (mapcar '(lambda (e)
-                    (cdr (assoc 'marker (cdr e))))
+                    (org-entry-task-info-get-property e :task-clock-marker))
                   (funcall org-clocking-api-entries-associated-to-file-p file))))
 
       (deh-section "org entries access api for list org"
@@ -364,12 +365,13 @@
                      t
                      files))))
 
-        (defun org-entry-list-update-task-infos ()
-          (or
-           org-entry-list-task-infos
-           (setq org-entry-list-task-infos
-                 (org-entry-list-get-task-infos (org-all-task-files))))))
-
+        (defun org-entry-list-update-task-infos (&optional force)
+          (interactive "P")
+          (unless (and (not force)
+                       org-entry-list-task-infos)
+            (setq org-entry-list-task-infos
+                  (org-entry-list-get-task-infos (org-all-task-files))))
+          org-entry-list-task-infos))
 
       (deh-section "org entries access api for recursive task"
         (defvar org-entry-tree-task-infos nil "org entry task infos")
@@ -382,10 +384,13 @@
                "start.org"
                *task-party-base-dir*))
 
-        (defun org-entry-tree-update-task-infos ()
-          (unless org-entry-tree-task-infos
+        (defun org-entry-tree-update-task-infos (&optional force)
+          (interactive "P")
+          (unless (and (not force)
+                       org-entry-tree-task-infos)
             (setq org-entry-tree-task-infos
-                  (org-entry-tree-get-task-infos org-entry-tree-task-info-root-org-file)))
+                  (org-entry-tree-get-task-infos
+                   org-entry-tree-task-info-root-org-file)))
           org-entry-tree-task-infos)
 
         (defun org-entry-tree-map-subheading (fun)
@@ -412,8 +417,17 @@
                    (sub-tree
                     (append
                      (org-entry-tree-map-subheading 'org-entry-tree-collect-task-info)
-                     (let ((subtree-file
-                            (org-entry-task-info-get-property entry :SUBTREEFILE)))
+                     (let* ((file (if file file (buffer-file-name)))
+                            (subtree-file
+                             (org-entry-task-info-get-property entry :SUBTREEFILE))
+                            (subtree-file
+                             (if (and subtree-file
+                                      (file-relative-name subtree-file))
+                                 (expand-file-name subtree-file
+                                                   (if file
+                                                       (file-name-directory file)
+                                                       default-directory))
+                                 subtree-file)))
                        (if (and
                             subtree-file
                             (file-readable-p subtree-file))
@@ -431,581 +445,631 @@
             (org-entry-tree-collect-task-info file)))
 
         (defun org-entry-tree-task-node-p (tx)
-          (org-entry-task-info-get-property tx :sub-tree)))
+          (org-entry-task-info-get-property tx :sub-tree))
 
-      (deh-section "tree api"
-        (defun tree-mapcar-nodes (nodep fn tree)
-          (list
-           (funcall fn tree)
-           :sub-tree
-           (mapcar
-            '(lambda (e)
-              (tree-mapcar-nodes nodep fn e))
-            (funcall nodep tree))))
+        (deh-section "tree api"
+          (defun tree-mapcar-nodes (nodep fn tree)
+            (list
+             (funcall fn tree)
+             :sub-tree
+             (mapcar
+              '(lambda (e)
+                (tree-mapcar-nodes nodep fn e))
+              (funcall nodep tree))))
 
-        (defun tree-mapc-nodes (nodep fn tree)
-          (funcall fn tree)
-          (mapc
-           '(lambda (e)
-             (tree-mapc-nodes nodep fn e))
-           (funcall nodep tree)))
+          (defun tree-mapc-nodes (nodep fn tree)
+            (funcall fn tree)
+            (mapc
+             '(lambda (e)
+               (tree-mapc-nodes nodep fn e))
+             (funcall nodep tree)))
 
-        (defun tree-remove-if-not-nodes (nodep fn tree)
-          (if (funcall nodep tree)
-              (let ((rootele
-                     (if (funcall fn tree) tree))
-                    (subtree
-                     (remove
-                      nil
-                      (mapcar
-                       '(lambda (e)
-                         (tree-remove-if-not-nodes nodep fn e))
-                       (funcall nodep tree)))))
-                (if (or rootele subtree)
-                    (plist-put tree :sub-tree subtree)))
-              (if (funcall fn tree) tree)))
+          (defun tree-remove-if-not-nodes (nodep fn tree)
+            (if (funcall nodep tree)
+                (let ((rootele
+                       (if (funcall fn tree) tree))
+                      (subtree
+                       (remove
+                        nil
+                        (mapcar
+                         '(lambda (e)
+                           (tree-remove-if-not-nodes nodep fn e))
+                         (funcall nodep tree)))))
+                  (if (or rootele subtree)
+                      (plist-put tree :sub-tree subtree)))
+                (if (funcall fn tree) tree)))
 
-        (defun tree-mapcar-task-infos (fn tree)
-          (tree-mapcar-nodes
-           'org-entry-tree-task-node-p fn tree))
+          (defun tree-mapcar-task-infos (fn tree)
+            (tree-mapcar-nodes
+             'org-entry-tree-task-node-p fn tree))
 
-        (defun tree-mapc-task-infos (fn tree)
-          (tree-mapc-nodes
-           'org-entry-tree-task-node-p fn tree))
+          (defun tree-mapc-task-infos (fn tree)
+            (tree-mapc-nodes
+             'org-entry-tree-task-node-p fn tree))
 
-        (defun tree-remove-if-not-task-infos (fn tree)
-          (tree-remove-if-not-nodes
-           'org-entry-tree-task-node-p fn tree))
+          (defun tree-remove-if-not-task-infos (fn tree)
+            (tree-remove-if-not-nodes
+             'org-entry-tree-task-node-p fn tree))
 
-        ;; (testing
-        ;;  (setq
-        ;;   testxx-remove
-        ;;   (tree-remove-if-not-task-infos
-        ;;    '(lambda (e) (eq (plist-get e :pre-blank) 4))
-        ;;    testxx))
+          ;; (testing
+          ;;  (setq
+          ;;   testxx-remove
+          ;;   (tree-remove-if-not-task-infos
+          ;;    '(lambda (e) (eq (plist-get e :pre-blank) 4))
+          ;;    testxx))
 
-        ;;  (setq testxxmapcar
-        ;;        (tree-mapcar-nodes '(lambda (tx) (plist-get tx :sub-tree))
-        ;;                           '(lambda (tx) (plist-get tx :title))
-        ;;                           ;; testxx
-        ;;                           (car (plist-get testxx :sub-tree))
-        ;;                           ))
+          ;;  (setq testxxmapcar
+          ;;        (tree-mapcar-nodes '(lambda (tx) (plist-get tx :sub-tree))
+          ;;                           '(lambda (tx) (plist-get tx :title))
+          ;;                           ;; testxx
+          ;;                           (car (plist-get testxx :sub-tree))
+          ;;                           ))
 
-        ;;  (setq testxxmapc
-        ;;        (tree-mapc-nodes '(lambda (tx) (plist-get tx :sub-tree))
-        ;;                         '(lambda (tx) (plist-get tx :title))
-        ;;                         ;; testxx
-        ;;                         (car (plist-get testxx :sub-tree))
-        ;;                         )))
-        )) ;; (deh-section "org entries clocking APIs' API"
+          ;;  (setq testxxmapc
+          ;;        (tree-mapc-nodes '(lambda (tx) (plist-get tx :sub-tree))
+          ;;                         '(lambda (tx) (plist-get tx :title))
+          ;;                         ;; testxx
+          ;;                         (car (plist-get testxx :sub-tree))
+          ;;                         )))
+          ))
 
-    (deh-section "org entries clocking's API"
+      (deh-section "Interactive utitlity API's for adding root subtree etc"
 
-      (deh-section "Org entries associated to file predicate functions"
-
-        (defvar org-entry-associated-file-predicate-fns nil)
-
-        (progn ;; api
-          (defun org-entries-associated-to-file-by-predicate-p (file)
-            (let ((task-infos (org-entry-list-update-task-infos))
-                  (matched '()))
-              (dolist (fn org-entry-associated-file-predicate-fns matched)
-                (let ((partitions
-                       (reduce (lambda (task-info result)
-                                 (if (funcall fn file task-info)
-                                     (push task-info (first  result))
-                                     (push task-info (second result)))
-                                 result)
-                               task-infos
-                               :initial-value (list nil nil)
-                               :from-end t)))
-                  (setq
-                   task-infos (second partitions)
-                   matched    (append matched (first partitions)))))))
-
-          (defun org-entry-associated-to-file-by-predicate-p (task-info file)
-            (if file
-                (some
-                 '(lambda (fn) (funcall fn file task-info))
-                 org-entry-associated-file-predicate-fns)))
-          (org-entry-clocking-api-set :predicate :entries 'org-entries-associated-to-file-by-predicate-p)
-          (org-entry-clocking-api-set :predicate :entry 'org-entry-associated-to-file-by-predicate-p))
+        (defun org-property-set-function (property fun)
+          "fun is like org-icompleting-read
+ (completing-read PROMPT COLLECTION &optional PREDICATE REQUIRE-MATCH INITIAL-INPUT HIST DEF INHERIT-INPUT-METHOD)"
+          (push
+           (cons property fun)
+           org-property-set-functions-alist))
 
 
-        (progn ;; functions
-          (setq org-entry-associated-file-predicate-fns nil)
+        ;; (setq org-property-set-functions-alist nil)
+        (org-property-set-function "Root"
+                                   '(lambda (&rest args)
+                                     (ido-read-directory-name
+                                      (car args)
+                                      default-directory default-directory)))
+        (org-property-set-function "SubtreeFile"
+                                   '(lambda (&rest args)
+                                     (file-relative-name
+                                      (ido-read-file-name ;; org-iread-file-name
+                                       (car args)
+                                       default-directory default-directory))))
 
-          (defun org-entries-register-associated-to-file-predicate-function (fn)
-            (add-to-list
-             'org-entry-associated-file-predicate-fns
-             fn))
+        (defun task-info-add-root ()
+          (interactive)
+          (org-set-property "Root" nil))
+        (defun task-info-add-subtree-file ()
+          (interactive)
+          (org-set-property "SubtreeFile" nil))) ;; "Interactive utitlity API's for adding root subtree etc"
 
-          (defun org-entry-associated-file-org-file-predicate (file task-info)
-            "Predicate funtion to check if file matches to task-info's file attribute."
-            (let ((org-file (org-entry-task-info-get-property task-info :task-clock-file)))
-              (if (and file org-file)
-               (string-equal
-                (file-truename file)
-                (file-truename org-file)))))
-          (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-org-file-predicate)
+        ) ;; (deh-section "org entries clocking APIs' API"
 
-          (defun org-entry-associated-file-root-dir-predicate (file task-info)
-            "Predicate funtion to check if file matches to task-info's file attribute."
-            (let ((root
-                   (org-entry-task-info-get-property task-info :ROOT)))
-              (if root
-                  (string-match
-                   (file-truename root)
-                   (file-truename file)))))
-          (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-root-dir-predicate)
+      (deh-section "org entries clocking's API"
 
-          ;; (defun org-entry-associated-file-xx-p (file task-info)
-          ;;   )
-          ;; (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-xx-p)
-          ;; )
+        (deh-section "Org entries associated to file predicate functions"
+
+          (defvar org-entry-associated-file-predicate-fns nil)
+
+          (progn ;; api
+            (defun org-entries-associated-to-file-by-predicate-p (file)
+              (let ((task-infos (org-entry-list-update-task-infos))
+                    (matched '()))
+                (dolist (fn org-entry-associated-file-predicate-fns matched)
+                  (let ((partitions
+                         (reduce (lambda (task-info result)
+                                   (if (funcall fn file task-info)
+                                       (push task-info (first  result))
+                                       (push task-info (second result)))
+                                   result)
+                                 task-infos
+                                 :initial-value (list nil nil)
+                                 :from-end t)))
+                    (setq
+                     task-infos (second partitions)
+                     matched    (append matched (first partitions)))))))
+
+            (defun org-entry-associated-to-file-by-predicate-p (task-info file)
+              (if file
+                  (some
+                   '(lambda (fn) (funcall fn file task-info))
+                   org-entry-associated-file-predicate-fns)))
+            (org-entry-clocking-api-set :predicate :entries 'org-entries-associated-to-file-by-predicate-p)
+            (org-entry-clocking-api-set :predicate :entry   'org-entry-associated-to-file-by-predicate-p)
+            (org-entry-clocking-api-set :predicate :update  'org-entry-list-update-task-infos))
+
+
+          (progn ;; functions
+            (setq org-entry-associated-file-predicate-fns nil)
+
+            (defun org-entries-register-associated-to-file-predicate-function (fn)
+              (add-to-list
+               'org-entry-associated-file-predicate-fns
+               fn))
+
+            (defun org-entry-associated-file-org-file-predicate (file task-info)
+              "Predicate funtion to check if file matches to task-info's file attribute."
+              (let ((org-file (org-entry-task-info-get-property task-info :task-clock-file)))
+                (if (and file org-file)
+                    (string-equal
+                     (file-truename file)
+                     (file-truename org-file)))))
+            (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-org-file-predicate)
+
+            (defun org-entry-associated-file-root-dir-predicate (file task-info)
+              "Predicate funtion to check if file matches to task-info's file attribute."
+              (let ((root
+                     (org-entry-task-info-get-property task-info :ROOT)))
+                (if root
+                    (string-match
+                     (file-truename root)
+                     (file-truename file)))))
+            (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-root-dir-predicate)
+
+            ;; (defun org-entry-associated-file-xx-p (file task-info)
+            ;;   )
+            ;; (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-xx-p)
+            ;; )
+            )
           )
-        )
 
-      (deh-section "Org entries associated to file rank functions"
-        ;; TODO: matching should be merit based.
-        ;; TODO: logical AND OR method should be possible in match-fn results
-        ;; TODO: exclusion fecelities also should be present.
-        '(
-          '(matches
-            '(file based)x
-            '(dir based -merit) x
-            '(status based) x
-            '(user input based)
-            '(config based) x
-            '(time based recently opened)
-            '(heading level based)))
-
+        (deh-section "Org entries associated to file rank functions"
+          ;; TODO: matching should be merit based.
+          ;; TODO: logical AND OR method should be possible in match-fn results
+          ;; TODO: exclusion fecelities also should be present.
+          '(
+            '(matches
+              '(file based)x
+              '(dir based -merit) x
+              '(status based) x
+              '(user input based)
+              '(config based) x
+              '(time based recently opened)
+              '(heading level based)))
 
 
 
-        (defvar org-entry-associated-file-rank-fns nil)
 
-        (progn ;; api
-          (defun org-entries-associated-to-file-by-rank-p (file)
-            (let ((task-infos (org-entry-list-update-task-infos))
-                  (matched '()))
-              (dolist (fn org-entry-associated-file-rank-fns matched)
-                (let ((partitions
-                       (reduce (lambda (task-info result)
-                                 (if (funcall fn file task-info)
-                                     (push task-info (first  result))
-                                     (push task-info (second result)))
-                                 result)
-                               task-infos
-                               :initial-value (list nil nil)
-                               :from-end t)))
-                  (setq
-                   task-infos (second partitions)
-                   matched    (append matched (first partitions)))))))
-          (defun org-entry-associated-to-file-by-rank-p (task-info file)
-            (if file
-                (apply '+
-                       (mapcar
-                        '(lambda (fn)
-                          (funcall fn file task-info))
-                        org-entry-associated-file-rank-fns))
-                0))
-          (org-entry-clocking-api-set :rank :entries 'org-entries-associated-to-file-by-rank-p)
-          (org-entry-clocking-api-set :rank :entry 'org-entry-associated-to-file-by-rank-p))
+          (defvar org-entry-associated-file-rank-fns nil)
 
-        (progn ;; functions
-          (setq org-entry-associated-file-rank-fns nil)
+          (progn ;; api
+            (defun org-entries-associated-to-file-by-rank-p (file)
+              (let ((task-infos (org-entry-list-update-task-infos))
+                    (matched '()))
+                (dolist (fn org-entry-associated-file-rank-fns matched)
+                  (let ((partitions
+                         (reduce (lambda (task-info result)
+                                   (if (funcall fn file task-info)
+                                       (push task-info (first  result))
+                                       (push task-info (second result)))
+                                   result)
+                                 task-infos
+                                 :initial-value (list nil nil)
+                                 :from-end t)))
+                    (setq
+                     task-infos (second partitions)
+                     matched    (append matched (first partitions)))))))
+            (defun org-entry-associated-to-file-by-rank-p (task-info file)
+              (if file
+                  (apply '+
+                         (mapcar
+                          '(lambda (fn)
+                            (funcall fn file task-info))
+                          org-entry-associated-file-rank-fns))
+                  0))
+            (org-entry-clocking-api-set :rank :entries 'org-entries-associated-to-file-by-rank-p)
+            (org-entry-clocking-api-set :rank :entry   'org-entry-associated-to-file-by-rank-p)
+            (org-entry-clocking-api-set :rank :update  'org-entry-list-update-task-infos))
 
-          (defun org-entries-register-associated-to-file-rank-function (fn)
-            (add-to-list
-             'org-entry-associated-file-rank-fns
-             fn))
+          (progn ;; functions
+            (setq org-entry-associated-file-rank-fns nil)
 
-          (defun org-entry-associated-file-org-file-rank (file task-info)
-            "Predicate funtion to check if file matches to task-info's file attribute."
-            (if (string-equal
-                 (file-truename file)
-                 (file-truename
-                  (org-entry-task-info-get-property task-info 'file)))
-                10
-                0))
-          (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-org-file-rank)
+            (defun org-entries-register-associated-to-file-rank-function (fn)
+              (add-to-list
+               'org-entry-associated-file-rank-fns
+               fn))
 
-          (defun org-entry-associated-file-root-dir-rank (file task-info)
-            "Predicate funtion to check if file matches to task-info's file attribute."
-            (let* ((root
-                    (org-entry-task-info-get-property task-info :ROOT))
-                   (root (if root (file-truename root))))
-              (if (and
-                   root
-                   (string-match root file))
-                  (length root)
-                  0)))
-          (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-root-dir-rank)
-
-          (defun org-entry-associated-file-status-rank (file task-info)
-            "Predicate funtion to check if file matches to task-info's file attribute."
-            (let* ((status
-                    (org-entry-task-info-get-property task-info 'status)))
-              (if (string-equal status "CLOSED") -30 0)))
-          (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-status-rank)
-
-          (defun org-entry-associated-file-task-rank (file task-info)
-            "Predicate funtion to check if file matches to task-info's file attribute."
-            (let* ((rank
-                    (org-entry-task-info-get-property task-info :RANK)))
-              (if rank (string-to-number rank) 0)))
-          (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-task-rank)
-
-          (defun org-entry-associated-file-level-rank (file task-info)
-            "Predicate funtion to check if file matches to task-info's file attribute."
-            (let* ((level
-                    (org-entry-task-info-get-property task-info :task-clock-level)))
-              level))
-          (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-level-rank))
-        )
-
-      (deh-section "Org entries associated to file key functions on recursive taskinfos"
-        ;; TODO: matching should be merit based.
-        ;; TODO: logical AND OR method should be possible in match-fn results
-        ;; TODO: exclusion fecelities also should be present.
-        '(
-          '(matches
-            '(file based)x
-            '(dir based -merit) x
-            '(status based) x
-            '(user input based)
-            '(config based) x
-            '(time based recently opened)
-            '(heading level based)))
-
-        (defvar org-entry-associated-file-key-fns nil)
-
-        (progn ;; api
-          (defun org-entries-associated-to-file-by-keys-p (file)
-            (let ((task-infos (org-entry-tree-update-task-infos))
-                  (matched '()))
-              (tree-mapc-task-infos
-               '(lambda (task)
-                 (when (org-entry-associated-to-file-by-keys-p task file)
-                   (push task matched)))
-               task-infos)
-              matched))
-
-          (defun org-entry-associated-to-file-by-keys-p (task-info file)
-            ;; (if file
-            ;;     (if (or t (> (org-entries-associated-key-fn-value :status task-info file) -20))
-            ;;         (>
-            ;;          (+
-            ;;           (org-entries-associated-key-fn-value :root task-info file)
-            ;;           ;; (org-entries-associated-key-fn-value :org-file task-info file)
-            ;;           (org-entries-associated-key-fn-value :task-info-key task-info file)
-            ;;           (org-entries-associated-key-fn-value :heading-level task-info file))
-            ;;          0)))
-            (> (org-entries-associated-key-fn-value :root task-info file) 0))
-
-          (org-entry-clocking-api-set :keys :entries 'org-entries-associated-to-file-by-keys-p)
-          (org-entry-clocking-api-set :keys :entry 'org-entry-associated-to-file-by-keys-p)) ;; api
-
-        (progn ;; functions
-          (setq org-entry-associated-file-key-fns nil)
-
-          (defun org-entries-register-associated-to-file-key-function (key fn)
-            (setq
-             org-entry-associated-file-key-fns
-             (plist-put
-              org-entry-associated-file-key-fns key fn)))
-          (defun org-entries-associated-key-function (key)
-            (plist-get org-entry-associated-file-key-fns key))
-          (defun org-entries-associated-key-fn-value (key task-info file)
-            (let ((keyfn (org-entries-associated-key-function key)))
-              (if keyfn
-                  (funcall keyfn task-info file)
-                  0)))
-
-          (defun org-entry-associated-file-org-file-key (task-info file)
-            "Predicate funtion to check if file matches to task-info's file attribute."
-            (let ((org-file (org-entry-task-info-get-property task-info :task-clock-file)))
-              (if (and file org-file
-                   (string-equal
-                    (file-truename file)
-                    (file-truename org-file)))
+            (defun org-entry-associated-file-org-file-rank (file task-info)
+              "Predicate funtion to check if file matches to task-info's file attribute."
+              (if (string-equal
+                   (file-truename file)
+                   (file-truename
+                    (org-entry-task-info-get-property task-info 'file)))
                   10
-                  0)))
-          (org-entries-register-associated-to-file-key-function :org-file 'org-entry-associated-file-org-file-key)
+                  0))
+            (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-org-file-rank)
 
-          (defun org-entry-associated-file-root-dir-key (task-info file)
-            "Predicate funtion to check if file matches to task-info's file attribute."
-            (let* ((root
-                    (org-entry-task-info-get-property task-info :ROOT))
-                   (root (if root (file-truename root)))
-                   (file (if file (file-truename file))))
-              (if (and root file
-                       (string-match root file))
-                  (length root)
-                  0)))
-          (org-entries-register-associated-to-file-key-function :root 'org-entry-associated-file-root-dir-key)
+            (defun org-entry-associated-file-root-dir-rank (file task-info)
+              "Predicate funtion to check if file matches to task-info's file attribute."
+              (let* ((root
+                      (org-entry-task-info-get-property task-info :ROOT))
+                     (root (if root (file-truename root))))
+                (if (and
+                     root
+                     (string-match root file))
+                    (length root)
+                    0)))
+            (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-root-dir-rank)
 
-          (defun org-entry-associated-file-status-key (task-info file)
-            "Predicate funtion to check if file matches to task-info's file attribute."
-            (let* ((status
-                    (org-entry-task-info-get-property task-info 'status)))
-              (if (string-equal status "CLOSED") -30 0)))
-          (org-entries-register-associated-to-file-key-function :status 'org-entry-associated-file-status-key)
+            (defun org-entry-associated-file-status-rank (file task-info)
+              "Predicate funtion to check if file matches to task-info's file attribute."
+              (let* ((status
+                      (org-entry-task-info-get-property task-info 'status)))
+                (if (string-equal status "CLOSED") -30 0)))
+            (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-status-rank)
 
-          (defun org-entry-associated-file-task-key (task-info file)
-            "Predicate funtion to check if file matches to task-info's file attribute."
-            (let* ((key (org-entry-task-info-get-property task-info :KEY)))
-              (if key (string-to-number key) 0)))
-          (org-entries-register-associated-to-file-key-function :task-key 'org-entry-associated-file-task-key)
+            (defun org-entry-associated-file-task-rank (file task-info)
+              "Predicate funtion to check if file matches to task-info's file attribute."
+              (let* ((rank
+                      (org-entry-task-info-get-property task-info :RANK)))
+                (if rank (string-to-number rank) 0)))
+            (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-task-rank)
 
-          (defun org-entry-associated-file-level-key (task-info file)
-            "Predicate funtion to check if file matches to task-info's file attribute."
-            (let* ((level
-                    (org-entry-task-info-get-property task-info :task-clock-level)))
-              (if level level 0)))
-          (org-entries-register-associated-to-file-key-function :heading-level 'org-entry-associated-file-level-key))))
+            (defun org-entry-associated-file-level-rank (file task-info)
+              "Predicate funtion to check if file matches to task-info's file attribute."
+              (let* ((level
+                      (org-entry-task-info-get-property task-info :task-clock-level)))
+                level))
+            (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-level-rank))
+          )
 
-    (deh-section "task main work"
-      (defvar task-current-file  nil)
-      (defvar task-previous-file nil)
-      (defvar task-current-file-time 2)
-      (defvar last-buffer-select-time (current-time))
-      (defvar buffer-select-timer nil)
-      (defvar update-current-file-msg "")
-      (defvar org-clocking-api-entries-associated-to-file-p (org-entry-clocking-api-get :predicate :entries))
-      (defvar org-clocking-api-entry-associated-to-file-p   (org-entry-clocking-api-get :predicate :entry))
+        (deh-section "Org entries associated to file key functions on recursive taskinfos"
+          ;; TODO: matching should be merit based.
+          ;; TODO: logical AND OR method should be possible in match-fn results
+          ;; TODO: exclusion fecelities also should be present.
+          '(
+            '(matches
+              '(file based)x
+              '(dir based -merit) x
+              '(status based) x
+              '(user input based)
+              '(config based) x
+              '(time based recently opened)
+              '(heading level based)))
 
+          (defvar org-entry-associated-file-key-fns nil)
 
-      (defun custom-plist-keys (in-plist)
-        (if (null in-plist)
-            in-plist
-            (cons (car in-plist) (custom-plist-keys (cddr in-plist)))))
+          (progn ;; api
+            (defun org-entries-associated-to-file-by-keys-p (file)
+              (let ((task-infos (org-entry-tree-update-task-infos))
+                    (matched '()))
+                (tree-mapc-task-infos
+                 '(lambda (task)
+                   (when (org-entry-associated-to-file-by-keys-p task file)
+                     (push task matched)))
+                 task-infos)
+                matched))
 
-      (defun org-task-clocking-api ()
-        "org task clocking select api to use."
-        (interactive)
-        (let* ((api-keys (custom-plist-keys org-entry-clocking-api))
-               (api-name (ido-completing-read "org task clocking api: " (mapcar 'symbol-name api-keys) nil t))
-               (api-key (intern api-name)))
-          (if (and
-               (org-entry-clocking-api-get api-key :entries)
-               (org-entry-clocking-api-get api-key :entry))
+            (defun org-entry-associated-to-file-by-keys-p (task-info file)
+              ;; (if file
+              ;;     (if (or t (> (org-entries-associated-key-fn-value :status task-info file) -20))
+              ;;         (>
+              ;;          (+
+              ;;           (org-entries-associated-key-fn-value :root task-info file)
+              ;;           ;; (org-entries-associated-key-fn-value :org-file task-info file)
+              ;;           (org-entries-associated-key-fn-value :task-info-key task-info file)
+              ;;           (org-entries-associated-key-fn-value :heading-level task-info file))
+              ;;          0)))
+              (> (org-entries-associated-key-fn-value :root task-info file) 0))
+
+            (org-entry-clocking-api-set :keys :entries 'org-entries-associated-to-file-by-keys-p)
+            (org-entry-clocking-api-set :keys :entry   'org-entry-associated-to-file-by-keys-p)
+            (org-entry-clocking-api-set :keys :update  'org-entry-tree-update-task-infos)) ;; api
+
+          (progn ;; functions
+            (setq org-entry-associated-file-key-fns nil)
+
+            (defun org-entries-register-associated-to-file-key-function (key fn)
               (setq
-               org-clocking-api-entries-associated-to-file-p (org-entry-clocking-api-get api-key :entries)
-               org-clocking-api-entry-associated-to-file-p   (org-entry-clocking-api-get api-key :entry)))))
+               org-entry-associated-file-key-fns
+               (plist-put
+                org-entry-associated-file-key-fns key fn)))
+            (defun org-entries-associated-key-function (key)
+              (plist-get org-entry-associated-file-key-fns key))
+            (defun org-entries-associated-key-fn-value (key task-info file)
+              (let ((keyfn (org-entries-associated-key-function key)))
+                (if keyfn
+                    (funcall keyfn task-info file)
+                    0)))
+
+            (defun org-entry-associated-file-org-file-key (task-info file)
+              "Predicate funtion to check if file matches to task-info's file attribute."
+              (let ((org-file (org-entry-task-info-get-property task-info :task-clock-file)))
+                (if (and file org-file
+                         (string-equal
+                          (file-truename file)
+                          (file-truename org-file)))
+                    10
+                    0)))
+            (org-entries-register-associated-to-file-key-function :org-file 'org-entry-associated-file-org-file-key)
+
+            (defun org-entry-associated-file-root-dir-key (task-info file)
+              "Predicate funtion to check if file matches to task-info's file attribute."
+              (let* ((root
+                      (org-entry-task-info-get-property task-info :ROOT))
+                     (root (if root (file-truename root)))
+                     (file (if file (file-truename file))))
+                (if (and root file
+                         (string-match root file))
+                    (length root)
+                    0)))
+            (org-entries-register-associated-to-file-key-function :root 'org-entry-associated-file-root-dir-key)
+
+            (defun org-entry-associated-file-status-key (task-info file)
+              "Predicate funtion to check if file matches to task-info's file attribute."
+              (let* ((status
+                      (org-entry-task-info-get-property task-info 'status)))
+                (if (string-equal status "CLOSED") -30 0)))
+            (org-entries-register-associated-to-file-key-function :status 'org-entry-associated-file-status-key)
+
+            (defun org-entry-associated-file-task-key (task-info file)
+              "Predicate funtion to check if file matches to task-info's file attribute."
+              (let* ((key (org-entry-task-info-get-property task-info :KEY)))
+                (if key (string-to-number key) 0)))
+            (org-entries-register-associated-to-file-key-function :task-key 'org-entry-associated-file-task-key)
+
+            (defun org-entry-associated-file-level-key (task-info file)
+              "Predicate funtion to check if file matches to task-info's file attribute."
+              (let* ((level
+                      (org-entry-task-info-get-property task-info :task-clock-level)))
+                (if level level 0)))
+            (org-entries-register-associated-to-file-key-function :heading-level 'org-entry-associated-file-level-key))))
+
+      (deh-section "task main work"
+        (defvar task-current-file  nil)
+        (defvar task-previous-file nil)
+        (defvar task-current-file-time 2)
+        (defvar last-buffer-select-time (current-time))
+        (defvar buffer-select-timer nil)
+        (defvar update-current-file-msg "")
+        (defvar org-entry-clocking-api-name :predicate "API")
+        (defvar org-clocking-api-entries-associated-to-file-p (org-entry-clocking-api-get org-entry-clocking-api-name :entries))
+        (defvar org-clocking-api-entry-associated-to-file-p   (org-entry-clocking-api-get org-entry-clocking-api-name :entry))
+        (defvar org-clocking-api-entry-update-task-infos      (org-entry-clocking-api-get org-entry-clocking-api-name :update))
 
 
-      (defun update-current-file ()
-        (if (> (float-time
-                (time-since last-buffer-select-time))
-               task-current-file-time)
-            (let* ((buff (window-buffer))
-                   (file (buffer-file-name buff)))
-              (unless (or
-                       (and
-                        (string-equal task-previous-file file)
-                        (string-equal task-current-file  file))
-                       (minibufferp buff))
+        (defun custom-plist-keys (in-plist)
+          (if (null in-plist)
+              in-plist
+              (cons (car in-plist) (custom-plist-keys (cddr in-plist)))))
+
+        (defun org-task-clocking-api ()
+          "org task clocking select api to use."
+          (interactive)
+          (let* ((api-keys (custom-plist-keys org-entry-clocking-api))
+                 (api-name (ido-completing-read
+                            "org task clocking api name: "
+                            (mapcar 'symbol-name api-keys)
+                            nil
+                            t
+                            (symbol-name org-entry-clocking-api-name)))
+                 (api-key (intern api-name)))
+            (setq org-entry-clocking-api-name api-key)
+            (if (and
+                 (org-entry-clocking-api-get org-entry-clocking-api-name :entries)
+                 (org-entry-clocking-api-get org-entry-clocking-api-name :entry)
+                 (org-entry-clocking-api-get org-entry-clocking-api-name :update))
                 (setq
-                 task-previous-file task-current-file
-                 task-current-file  file)
+                 org-clocking-api-entries-associated-to-file-p (org-entry-clocking-api-get org-entry-clocking-api-name :entries)
+                 org-clocking-api-entry-associated-to-file-p   (org-entry-clocking-api-get org-entry-clocking-api-name :entry)
+                 org-clocking-api-entry-update-task-infos      (org-entry-clocking-api-get org-entry-clocking-api-name :update)))))
 
-                (unless (org-clock-entry-associated-to-file-p file)
-                  (org-entry-run-associated-clock file))))))
+        (defun org-clocking-entry-update-task-infos (force)
+          "Update task infos"
+          (interactive "P")
+          (funcall org-clocking-api-entry-update-task-infos force))
 
-      (defun org-clock-entry-associated-to-file-p (file)
-        (and
-         ;; file
-         org-clock-marker
-         (> (marker-position-nonil org-clock-marker) 0)
-         (org-with-clock-position (list org-clock-marker)
-           (let ((info (org-entry-collect-task-info)))
-             (if (funcall org-clocking-api-entry-associated-to-file-p (org-entry-collect-task-info) file)
-                 info)))))
+        (defun update-current-file ()
+          (if (> (float-time
+                  (time-since last-buffer-select-time))
+                 task-current-file-time)
+              (let* ((buff (window-buffer))
+                     (file (buffer-file-name buff)))
+                (unless (or
+                         (and
+                          (string-equal task-previous-file file)
+                          (string-equal task-current-file  file))
+                         (minibufferp buff))
+                  (setq
+                   task-previous-file task-current-file
+                   task-current-file  file)
 
-      (defun org-entry-run-associated-clock (file)
-        (let ()
-          (let* ((matched-clocks (org-markers-associated-to-file file))
-                 (selected-clock (if (> (length matched-clocks) 1)
-                                     (org-clock-select-task-from-clocks matched-clocks)
-                                     (car matched-clocks))))
-            (if selected-clock
-                (let ((org-log-note-clock-out nil)
-                      (prev-org-clock-buff (marker-buffer org-clock-marker)))
+                  (unless (org-clock-entry-associated-to-file-p file)
+                    (org-entry-run-associated-clock file))))))
 
-                  (let ((prev-clock-buff-read-only
-                         (if prev-org-clock-buff
-                             (with-current-buffer (marker-buffer org-clock-marker)
-                               buffer-read-only))))
+        (defun org-clock-entry-associated-to-file-p (file)
+          (and
+           ;; file
+           org-clock-marker
+           (> (marker-position-nonil org-clock-marker) 0)
+           (org-with-clock-position (list org-clock-marker)
+             (let ((info (org-entry-collect-task-info)))
+               (if (funcall org-clocking-api-entry-associated-to-file-p (org-entry-collect-task-info) file)
+                   info)))))
 
-                    (if prev-org-clock-buff
-                        (with-current-buffer prev-org-clock-buff
-                          (setq buffer-read-only nil)))
+        (defun org-entry-run-associated-clock (file)
+          (let ()
+            (let* ((matched-clocks (org-markers-associated-to-file file))
+                   (selected-clock (if (> (length matched-clocks) 1)
+                                       (org-clock-select-task-from-clocks matched-clocks)
+                                       (car matched-clocks))))
+              (if selected-clock
+                  (let ((org-log-note-clock-out nil)
+                        (prev-org-clock-buff (marker-buffer org-clock-marker)))
 
-                    (setq update-current-file-msg org-clock-marker)
+                    (let ((prev-clock-buff-read-only
+                           (if prev-org-clock-buff
+                               (with-current-buffer (marker-buffer org-clock-marker)
+                                 buffer-read-only))))
 
-                    (with-current-buffer (marker-buffer selected-clock)
-                      (let ((buffer-read-only nil))
-                        (org-clock-clock-in (list selected-clock))))
+                      (if prev-org-clock-buff
+                          (with-current-buffer prev-org-clock-buff
+                            (setq buffer-read-only nil)))
 
-                    (if prev-org-clock-buff
-                        (with-current-buffer prev-org-clock-buff
-                          (setq buffer-read-only prev-clock-buff-read-only)))))
-                (setq update-current-file-msg "null clock")))))
+                      (setq update-current-file-msg org-clock-marker)
 
-      (defun run-task-current-file-timer ()
-        (let ()
-          (setq last-buffer-select-time (current-time))
-          (when buffer-select-timer
-            (cancel-timer buffer-select-timer)
-            (setq buffer-select-timer nil))
-          (setq buffer-select-timer
-                (run-with-timer
-                 (1+ task-current-file-time)
-                 nil
-                 'update-current-file))))
+                      (with-current-buffer (marker-buffer selected-clock)
+                        (let ((buffer-read-only nil))
+                          (org-clock-clock-in (list selected-clock))))
 
-      (defun org-entries-select (entries &optional prompt)
-        "Select a task that was recently associated with clocking."
-        (interactive)
-        (let (och
-              chl
-              sel-list
-              rpl
-              (i 0)
-              s)
-          ;; Remove successive dups from the clock history to consider
-          ;; (mapc (lambda (c) (if (not (equal c (car och))) (push c och)))
-          ;;       clocks)
-          (setq och (reverse och) chl (length och))
-          (if (zerop chl)
-              (user-error "No recent clock")
-              (save-window-excursion
-                (org-switch-to-buffer-other-window
-                 (get-buffer-create "*Clock Task Select*"))
-                (erase-buffer)
-                (insert (org-add-props "Recent Tasks\n" nil 'face 'bold))
-                (mapc
-                 (lambda (m)
-                   (when (marker-buffer m)
-                     (setq i (1+ i)
-                           s (org-clock-insert-selection-line
-                              (if (< i 10)
-                                  (+ i ?0)
-                                  (+ i (- ?A 10))) m))
-                     (if (fboundp 'int-to-char) (setf (car s) (int-to-char (car s))))
-                     (push s sel-list)))
-                 och)
-                (run-hooks 'org-clock-before-select-task-hook)
-                (goto-char (point-min))
-                ;; Set min-height relatively to circumvent a possible but in
-                ;; `fit-window-to-buffer'
-                (fit-window-to-buffer nil nil (if (< chl 10) chl (+ 5 chl)))
-                (message (or prompt "Select task for clocking:"))
-                (setq cursor-type nil rpl (read-char-exclusive))
-                (kill-buffer)
-                (cond
-                  ((eq rpl ?q) nil)
-                  ((eq rpl ?x) nil)
-                  ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
-                  (t (user-error "Invalid task choice %c" rpl)))))))
+                      (if prev-org-clock-buff
+                          (with-current-buffer prev-org-clock-buff
+                            (setq buffer-read-only prev-clock-buff-read-only)))))
+                  (setq update-current-file-msg "null clock")))))
 
-      (defun org-clock-select-task-from-clocks (clocks &optional prompt)
-        "Select a task that was recently associated with clocking."
-        (interactive)
-        (let (och chl sel-list rpl (i 0) s)
-          ;; Remove successive dups from the clock history to consider
-          (mapc (lambda (c) (if (not (equal c (car och))) (push c och)))
-                clocks)
-          (setq och (reverse och) chl (length och))
-          (if (zerop chl)
-              (user-error "No recent clock")
-              (save-window-excursion
-                (org-switch-to-buffer-other-window
-                 (get-buffer-create "*Clock Task Select*"))
-                (erase-buffer)
-                ;; (when (marker-buffer org-clock-default-task)
-                ;;   (insert (org-add-props "Default Task\n" nil 'face 'bold))
-                ;;   (setq s (org-clock-insert-selection-line ?d org-clock-default-task))
-                ;;   (push s sel-list))
-                ;; (when (marker-buffer org-clock-interrupted-task)
-                ;;   (insert (org-add-props "The task interrupted by starting the last one\n" nil 'face 'bold))
-                ;;   (setq s (org-clock-insert-selection-line ?i org-clock-interrupted-task))
-                ;;   (push s sel-list))
-                ;; (when (org-clocking-p)
-                ;;   (insert (org-add-props "Current Clocking Task\n" nil 'face 'bold))
-                ;;   (setq s (org-clock-insert-selection-line ?c org-clock-marker))
-                ;;   (push s sel-list))
-                (insert (org-add-props "Guessed Tasks\n" nil 'face 'bold))
-                (mapc
-                 (lambda (m)
-                   (when (marker-buffer m)
-                     (setq i (1+ i)
-                           s (org-clock-insert-selection-line
-                              (if (< i 10)
-                                  (+ i ?0)
-                                  (+ i (- ?A 10))) m))
-                     (if (fboundp 'int-to-char) (setf (car s) (int-to-char (car s))))
-                     (push s sel-list)))
-                 och)
-                (run-hooks 'org-clock-before-select-task-hook)
-                (goto-char (point-min))
-                ;; Set min-height relatively to circumvent a possible but in
-                ;; `fit-window-to-buffer'
-                (fit-window-to-buffer nil nil (if (< chl 10) chl (+ 5 chl)))
-                (message (or prompt "Select task for clocking:"))
-                (setq cursor-type nil rpl (read-char-exclusive))
-                (kill-buffer)
-                (cond
-                  ((eq rpl ?q) nil)
-                  ((eq rpl ?x) nil)
-                  ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
-                  (t (user-error "Invalid task choice %c" rpl)))))))
+        (defun run-task-current-file-timer ()
+          (let ()
+            (setq last-buffer-select-time (current-time))
+            (when buffer-select-timer
+              (cancel-timer buffer-select-timer)
+              (setq buffer-select-timer nil))
+            (setq buffer-select-timer
+                  (run-with-timer
+                   (1+ task-current-file-time)
+                   nil
+                   'update-current-file))))
 
-      (progn
-        (add-hook 'buffer-list-update-hook     'run-task-current-file-timer)
-        (add-hook 'elscreen-screen-update-hook 'run-task-current-file-timer)
-        (add-hook 'elscreen-goto-hook          'run-task-current-file-timer))
+        (defun org-entries-select (entries &optional prompt)
+          "Select a task that was recently associated with clocking."
+          (interactive)
+          (let (och
+                chl
+                sel-list
+                rpl
+                (i 0)
+                s)
+            ;; Remove successive dups from the clock history to consider
+            ;; (mapc (lambda (c) (if (not (equal c (car och))) (push c och)))
+            ;;       clocks)
+            (setq och (reverse och) chl (length och))
+            (if (zerop chl)
+                (user-error "No recent clock")
+                (save-window-excursion
+                  (org-switch-to-buffer-other-window
+                   (get-buffer-create "*Clock Task Select*"))
+                  (erase-buffer)
+                  (insert (org-add-props "Recent Tasks\n" nil 'face 'bold))
+                  (mapc
+                   (lambda (m)
+                     (when (marker-buffer m)
+                       (setq i (1+ i)
+                             s (org-clock-insert-selection-line
+                                (if (< i 10)
+                                    (+ i ?0)
+                                    (+ i (- ?A 10))) m))
+                       (if (fboundp 'int-to-char) (setf (car s) (int-to-char (car s))))
+                       (push s sel-list)))
+                   och)
+                  (run-hooks 'org-clock-before-select-task-hook)
+                  (goto-char (point-min))
+                  ;; Set min-height relatively to circumvent a possible but in
+                  ;; `fit-window-to-buffer'
+                  (fit-window-to-buffer nil nil (if (< chl 10) chl (+ 5 chl)))
+                  (message (or prompt "Select task for clocking:"))
+                  (setq cursor-type nil rpl (read-char-exclusive))
+                  (kill-buffer)
+                  (cond
+                    ((eq rpl ?q) nil)
+                    ((eq rpl ?x) nil)
+                    ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
+                    (t (user-error "Invalid task choice %c" rpl)))))))
 
-      (when nil
-        (remove-hook 'buffer-list-update-hook 'run-task-current-file-timer)
-        (setq buffer-list-update-hook nil)
-        (remove-hook 'elscreen-screen-update-hook 'run-task-current-file-timer)
-        (remove-hook 'elscreen-goto-hook 'run-task-current-file-timer))
-      )
+        (defun org-clock-select-task-from-clocks (clocks &optional prompt)
+          "Select a task that was recently associated with clocking."
+          (interactive)
+          (let (och chl sel-list rpl (i 0) s)
+            ;; Remove successive dups from the clock history to consider
+            (mapc (lambda (c) (if (not (equal c (car och))) (push c och)))
+                  clocks)
+            (setq och (reverse och) chl (length och))
+            (if (zerop chl)
+                (user-error "No recent clock")
+                (save-window-excursion
+                  (org-switch-to-buffer-other-window
+                   (get-buffer-create "*Clock Task Select*"))
+                  (erase-buffer)
+                  ;; (when (marker-buffer org-clock-default-task)
+                  ;;   (insert (org-add-props "Default Task\n" nil 'face 'bold))
+                  ;;   (setq s (org-clock-insert-selection-line ?d org-clock-default-task))
+                  ;;   (push s sel-list))
+                  ;; (when (marker-buffer org-clock-interrupted-task)
+                  ;;   (insert (org-add-props "The task interrupted by starting the last one\n" nil 'face 'bold))
+                  ;;   (setq s (org-clock-insert-selection-line ?i org-clock-interrupted-task))
+                  ;;   (push s sel-list))
+                  ;; (when (org-clocking-p)
+                  ;;   (insert (org-add-props "Current Clocking Task\n" nil 'face 'bold))
+                  ;;   (setq s (org-clock-insert-selection-line ?c org-clock-marker))
+                  ;;   (push s sel-list))
+                  (insert (org-add-props "Guessed Tasks\n" nil 'face 'bold))
+                  (mapc
+                   (lambda (m)
+                     (when (marker-buffer m)
+                       (setq i (1+ i)
+                             s (org-clock-insert-selection-line
+                                (if (< i 10)
+                                    (+ i ?0)
+                                    (+ i (- ?A 10))) m))
+                       (if (fboundp 'int-to-char) (setf (car s) (int-to-char (car s))))
+                       (push s sel-list)))
+                   och)
+                  (run-hooks 'org-clock-before-select-task-hook)
+                  (goto-char (point-min))
+                  ;; Set min-height relatively to circumvent a possible but in
+                  ;; `fit-window-to-buffer'
+                  (fit-window-to-buffer nil nil (if (< chl 10) chl (+ 5 chl)))
+                  (message (or prompt "Select task for clocking:"))
+                  (setq cursor-type nil rpl (read-char-exclusive))
+                  (kill-buffer)
+                  (cond
+                    ((eq rpl ?q) nil)
+                    ((eq rpl ?x) nil)
+                    ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
+                    (t (user-error "Invalid task choice %c" rpl)))))))
 
+        (progn
+          (add-hook 'buffer-list-update-hook     'run-task-current-file-timer)
+          (add-hook 'elscreen-screen-update-hook 'run-task-current-file-timer)
+          (add-hook 'elscreen-goto-hook          'run-task-current-file-timer))
 
-    (testing
-
-     (org-entry-run-associated-clock
-      (buffer-file-name))
-
-     (org-entry-run-associated-clock
-      "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
-
-     (org-markers-associated-to-file
-      (buffer-file-name))
-
-     (org-clock-entry-associated-to-file-p
-      (buffer-file-name))
-
-     (org-clock-entry-associated-to-file-p
-      "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
-
-     (org-clock-entry-associated-to-file-p
-      "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org")
-
-     ;; (org-entry-associated-file-org-file-p
-     ;;  "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"
-     ;;  (cadr org-entry-list-task-infos)))
+        (when nil
+          (remove-hook 'buffer-list-update-hook 'run-task-current-file-timer)
+          (setq buffer-list-update-hook nil)
+          (remove-hook 'elscreen-screen-update-hook 'run-task-current-file-timer)
+          (remove-hook 'elscreen-goto-hook 'run-task-current-file-timer))
+        )
 
 
-     (funcall org-clocking-api-entries-associated-to-file-p (buffer-file-name))
-     (funcall org-clocking-api-entries-associated-to-file-p "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
+      (testing
 
-     (org-entries-associated-to-file-by-keys-p (buffer-file-name))
-    )
+       (org-entry-run-associated-clock
+        (buffer-file-name))
+
+       (org-entry-run-associated-clock
+        "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
+
+       (org-markers-associated-to-file
+        (buffer-file-name))
+
+       (org-clock-entry-associated-to-file-p
+        (buffer-file-name))
+
+       (org-clock-entry-associated-to-file-p
+        "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
+
+       (org-clock-entry-associated-to-file-p
+        "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org")
+
+       ;; (org-entry-associated-file-org-file-p
+       ;;  "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"
+       ;;  (cadr org-entry-list-task-infos)))
+
+
+       (funcall org-clocking-api-entries-associated-to-file-p (buffer-file-name))
+       (org-markers-associated-to-file (buffer-file-name))
+       (funcall org-clocking-api-entries-associated-to-file-p "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
+
+       (org-entries-associated-to-file-by-keys-p (buffer-file-name))
+       )))
 
 
   (define-minor-mode office-mode

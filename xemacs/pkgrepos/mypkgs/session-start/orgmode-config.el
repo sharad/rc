@@ -790,6 +790,7 @@ If not, show simply the clocked time like 01:50."
      ;;   "Short Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
 
      (defun org-clock-start-check-timer ()
+       "Attempt to clock-in when already not clock found."
        (interactive)
        (org-clock-stop-check-timer)
        (setq
@@ -806,6 +807,7 @@ If not, show simply the clocked time like 01:50."
          nil)))
 
      (defun org-clock-stop-check-timer ()
+       "Stop attemptting to clock-in when already not clock found."
        (interactive)
        (progn
          ;; (when org-clock-check-short-timer
