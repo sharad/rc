@@ -62,14 +62,15 @@ With prefix arg C-u, copy region instad of killing it."
   (put 'org-with-refile 'lisp-indent-function 1)
 
   (defmacro org-with-file-headline (file headline &rest body)
-    `(let ((pos (save-excursion
-                  (find-file ,file)
-                  (org-find-exact-headline-in-buffer ,headline))))
-       (with-current-buffer (find-file-noselect ,file)
-         (save-excursion
-           (goto-char pos)
-           ,@body))))
-  (put 'org-with-file-headline 'lisp-indent-function 1)
+    `(with-current-buffer (if ,file (find-file-noselect ,file) (current-buffer))
+       (save-excursion
+         (goto-char (point-min))
+         (let ((pos (org-find-exact-headline-in-buffer ,headline)))
+           (when pos
+             (goto-char pos)
+             ,@body)
+           pos))))
+  (put 'org-with-file-headline 'lisp-indent-function 2)
 
   (defmacro org-with-clock-writeable-buffer (&rest body)
     (let ((buff (org-base-buffer (marker-buffer org-clock-marker))))
@@ -141,7 +142,7 @@ With prefix arg C-u, copy region instad of killing it."
                 (org-end-of-subtree))
             (insert (format org-refile-region-format text)))))))
 
-  (defvar org-refile-string-format " %s\n")
+  (defvar org-refile-string-format "%s\n")
 
   (defvar org-refile-string-position 'top
     "Where to refile a region. Use 'bottom to refile at the

@@ -539,11 +539,11 @@
         (defun task-info-add-root ()
           (interactive)
           (if (org-set-property "Root" nil)
-           (org-clocking-entry-update-task-infos)))
+              (org-clocking-entry-update-task-infos t)))
         (defun task-info-add-subtree-file ()
           (interactive)
           (if (org-set-property "SubtreeFile" nil)
-              (org-clocking-entry-update-task-infos)))) ;; "Interactive utitlity API's for adding root subtree etc"
+              (org-clocking-entry-update-task-infos t)))) ;; "Interactive utitlity API's for adding root subtree etc"
 
         ) ;; (deh-section "org entries clocking APIs' API"
 
@@ -856,7 +856,7 @@
                  org-clocking-api-entry-associated-to-file-p   (org-entry-clocking-api-get org-entry-clocking-api-name :entry)
                  org-clocking-api-entry-update-task-infos      (org-entry-clocking-api-get org-entry-clocking-api-name :update)))))
 
-        (defun org-clocking-entry-update-task-infos (force)
+        (defun org-clocking-entry-update-task-infos (&optional force)
           "Update task infos"
           (interactive "P")
           (funcall org-clocking-api-entry-update-task-infos force))
@@ -1184,6 +1184,7 @@ which other peoples are also working."
                (write-file ,file)
                (org-html-export-to-html))))
          (kill-buffer (find-buffer-visiting ,file))))
+    (put 'task-create-org-file 'lisp-indent-function 1)
 
     (defun task-select-party-dir ()
       (interactive)
@@ -1199,7 +1200,7 @@ which other peoples are also working."
           *taskdir-current-task*))
 
     (defun task-select-task-type (prompt)
-      (completing-read prompt (mapcar 'car task-config) nil t))
+      (ido-completing-read prompt (mapcar 'car task-config) nil t))
 
     ;;
     (defun task-party-dir (&optional party)
@@ -1231,10 +1232,10 @@ which other peoples are also working."
               (unless (file-exists-p org-master-file-path)
                 (let ((nfile org-master-file-path)) ;find alternate of find-file-noselect to get non-existing file.
                   (task-create-org-file nfile
-                                        (insert "\n\n")
-                                        (insert (format "* %s - %s: %s\n\n\n" (capitalize "party") (capitalize party) "tasks."))
-                                        (insert (format "* Reports\n\n\n"))
-                                        (insert (format "* %s\n" (task-party-org-heading party))))))
+                    (insert "\n\n")
+                    (insert (format "* %s - %s: %s\n\n\n" (capitalize "party") (capitalize party) "tasks."))
+                    (insert (format "* Reports\n\n\n"))
+                    (insert (format "* %s\n" (task-party-org-heading party))))))
 
               org-master-file)
             (error "party is not from task-parties"))))
@@ -1422,24 +1423,7 @@ which other peoples are also working."
                                     name
                                     file
                                     (capitalize (file-name-sans-extension file)))))
-                                 (concat description (format "\nend %s\n" task))))
-
-           ;; (dolist
-           ;;     (f (task-org-files task) description)
-           ;;   (setq description
-           ;;         (concat
-           ;;          description
-           ;;          "\n - "
-           ;;          (format "[[file:%s/%s/%s][%s]]"
-           ;;                  (pluralize-string task)
-           ;;                  name
-           ;;                  f
-           ;;                  (capitalize (file-name-sans-extension f))))))
-
-           ;; (setq
-           ;;  description
-           ;;  (concat description (format "\nend %s\n" task)))
-           )))
+                                 (concat description (format "\nend %s\n" task)))))))
 
     ;;
     (defun create-plan-task (task name desc task-dir)
@@ -1473,16 +1457,16 @@ which other peoples are also working."
             (heading (task-party-org-heading))
             (child-heading (task-get-org-description task name desc)))
         (org-with-file-headline file heading
-                                (org-insert-heading-to-file-headline
-                                 child-heading
-                                 file
-                                 (capitalize (pluralize-string task))))
+          (org-insert-heading-to-file-headline
+           child-heading
+           file
+           (capitalize (pluralize-string task))))
         (org-with-file-headline file child-heading
-                                (let ((buffer-read-only nil))
-                                  (org-entry-put nil "SubtreeFile"
-                                                 (concat task-dir "/" (task-first-org-master-file task)))
-                                  ;; (org-entry-put nil "Root" project-root-folder)
-                                  ))
+          (let ((buffer-read-only nil))
+            (org-entry-put nil "SubtreeFile"
+                           (concat task-dir "/" (task-first-org-master-file task)))
+            ;; (org-entry-put nil "Root" project-root-folder)
+            ))
         (with-current-buffer (find-file-noselect file)
           (let ((buffer-read-only nil))
             (save-buffer)))
@@ -1539,43 +1523,30 @@ which other peoples are also working."
                      (task-org-todo-file task)
                      (task-org-files task)))
             (when file
-              (let ((nfile (expand-file-name file (concat task-dir "/")))) ;find alternate of find-file-noselect to get non-existing file.
+              (let ((nfile (expand-file-name file task-dir))
+                    (heading (format
+                              "%s %s"
+                              (capitalize (file-name-sans-extension file))
+                              org-heading))) ;find alternate of find-file-noselect to get non-existing file.
+                (message "file %s" nfile)
                 (task-create-org-file nfile
-                                      (insert
-                                       (format
-                                        "\n\n* %s %s\n\n\n\n"
-                                        (capitalize (file-name-sans-extension file))
-                                        org-heading))))))
+                  (insert (format "\n\n* %s\n\n\n\n" heading))
+                  (org-with-file-headline nil heading
+                    (org-entry-put nil "Root" project-root-folder))))))
 
-          ;; (let ((file (task-org-todo-file task)))
-          ;;   (org-with-file-headline file (formet
-          ;;                                 "%s %s"
-          ;;                                 (capitalize (file-name-sans-extension file))
-          ;;                                 org-heading)
-          ;;                           (let ((buffer-read-only nil))
-          ;;                             (org-entry-put nil "Root" project-root-folder)
-          ;;                             (dolist
-          ;;                                 (of (task-org-files task))
-          ;;                               (insert
-          ;;                                "\n - "
-          ;;                                (format "[[file:%s][%s]]"
-          ;;                                        of
-          ;;                                        (capitalize (file-name-sans-extension of))))))))
-          ;; (message "")
-          ;; master files
-          (let ((file (task-org-master-file task)))
+          (let ((file (task-first-org-master-file task)))
             (when file
-              (let ((nfile (expand-file-name file (concat task-dir "/")))) ;find alternate of find-file-noselect to get non-existing file.
+              (let ((nfile (expand-file-name file task-dir))
+                    (heading (format "%s %s"
+                                     (capitalize (file-name-sans-extension file))
+                                     org-heading))) ;find alternate of find-file-noselect to get non-existing file.
                 (task-create-org-file nfile
-                                      (insert
-                                       (concat
-                                        (format "\n\n* %s %s\n\n\n\n"
-                                                (capitalize (file-name-sans-extension file))
-                                                org-heading)
-                                        (task-get-links-text task
-                                                             '(lambda (f)
-                                                               (format "[[file:%s][%s]]" f (capitalize (file-name-sans-extension f)))))
-                                        (format "\nend %s\n" task)))))))
+                  (insert (concat
+                           (format "\n\n* %s\n" heading)
+                           (task-get-links-text task
+                                                '(lambda (f)
+                                                  (format "[[file:%s][%s]]" f (capitalize (file-name-sans-extension f)))))
+                           (format "\nend %s\n" task)))))))
 
           ;; links
           (dolist (lp (cdr (assoc 'links (cdr (assoc task task-config)))))
@@ -1603,9 +1574,8 @@ which other peoples are also working."
               (create-plan-task task name desc task-dir)
               (create-org-task  task name desc task-dir project-main-file project-root-folder)
               (create-task-dir  task name desc task-dir project-root-folder)
-              (message "create-task-dir done")
               (create-pbm-task  task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
-              (message "create-pbm-task done")))
+              (org-clocking-entry-update-task-infos t)))
 
         (when (y-or-n-p (format "Should set %s current task" task-dir))
           (setq *taskdir-current-task* task-dir)
@@ -1645,6 +1615,7 @@ which other peoples are also working."
         (switch-to-buffer buf)
         (if (y-or-n-p (format "Should set %s current task" task))
             (setq *taskdir-current-task* task))))))
+
 
 (deh-section "Forgive"
   (defun forgive/them ()

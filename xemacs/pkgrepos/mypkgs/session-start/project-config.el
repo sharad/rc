@@ -303,7 +303,7 @@
      `(with-current-buffer ,pmb
         ,body))
 
-   (defun
+   (defun test-pjb ()
        (project-buffer-get-project-settings-data ))
 
    (project-buffer-get-current-project-name)

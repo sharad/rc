@@ -72,8 +72,8 @@ May either be a string or a list of strings.")
 (defvar pbm-file-handler
   (cons pbm-file-name-regexp 'pbm-file-handler))
 
-(defvar pbm-file-auto-mode-alist-entry
-  (list pbm-file-name-regexp nil 'pbm-file))
+;; (defvar pbm-file-auto-mode-alist-entry
+;;   (list pbm-file-name-regexp nil 'pbm-file))
 
 (defun pbm-file-name-regexp-update ()
   (interactive)
@@ -122,8 +122,7 @@ nodes either."
 	  ;; The rest of the file is defined by blocks:
 	  (while (project-buffer-read-block status data-buffer run-mode-hooks))
 	  )))
-    (run-hooks 'project-buffer-post-load-hook)
-    ))
+    (run-hooks 'project-buffer-post-load-hook)))
 
 (defun project-buffer-raw-save-with-real-handler (filename)
   "Save the project data in FILENAME; the project can later be
@@ -354,7 +353,7 @@ reloaded through `project-buffer-raw-load' function."
     (setq file-name-handler-alist
 	  (cons pbm-file-handler file-name-handler-alist))
     (add-hook 'find-file-hook 'pbm-file-find-file-hook)
-    (setq auto-mode-alist (cons pbm-file-auto-mode-alist-entry auto-mode-alist))
+    ;; (setq auto-mode-alist (cons pbm-file-auto-mode-alist-entry auto-mode-alist))
     (message "`pbm-file' enabled")))
 
 ;;;###autoload
@@ -365,8 +364,8 @@ reloaded through `project-buffer-raw-load' function."
 	(setq file-name-handler-alist
 	      (delq pbm-file-handler file-name-handler-alist))
 	(remove-hook 'find-file-hook 'pbm-file-find-file-hook)
-	(setq auto-mode-alist (delq pbm-file-auto-mode-alist-entry
-				    auto-mode-alist))
+	;; (setq auto-mode-alist (delq pbm-file-auto-mode-alist-entry
+	;; 			    auto-mode-alist))
 	(message "`pbm-file' disabled"))
     (message "`pbm-file' already disabled")))
 
@@ -442,8 +441,7 @@ Commands:
         (set-buffer-modified-p nil))
 
       ;; (local-unset-key (key "C-x C-s"))
-      (add-hook 'project-buffer-post-load-hook 'pbm-setup-local-key nil t)
-      )))
+      (add-hook 'project-buffer-post-load-hook 'pbm-setup-local-key nil t))))
 
 (add-to-list 'auto-mode-alist '("\\.pb\\'" . pbm-mode))
 
