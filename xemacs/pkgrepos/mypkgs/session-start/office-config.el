@@ -737,22 +737,37 @@
                     (matched '()))
                 (tree-mapc-task-infos
                  '(lambda (task)
-                   (when (org-entry-associated-to-file-by-keys-p task file)
-                     (push task matched)))
+                   (let ((result (org-entry-associated-to-file-by-keys-p task file)))
+                     (when result
+                       (push task matched))))
                  task-infos)
                 matched))
 
+            ;; (defun org-entry-associated-to-file-by-keys-p (task-info file)
+            ;;   (if file
+            ;;       (if (> (org-entries-associated-key-fn-value :current-clock task-info file) 0)
+            ;;           100
+            ;;           (if (> (org-entries-associated-key-fn-value :status task-info file) -20)
+            ;;               (+
+            ;;                (org-entries-associated-key-fn-value :root task-info file)
+            ;;                ;; (org-entries-associated-key-fn-value :org-file task-info file)
+            ;;                (org-entries-associated-key-fn-value :task-info-key task-info file)
+            ;;                (org-entries-associated-key-fn-value :heading-level task-info file))
+            ;;               0))
+            ;;       0))
+
             (defun org-entry-associated-to-file-by-keys-p (task-info file)
-              ;; (if file
-              ;;     (if (or t (> (org-entries-associated-key-fn-value :status task-info file) -20))
-              ;;         (>
-              ;;          (+
-              ;;           (org-entries-associated-key-fn-value :root task-info file)
-              ;;           ;; (org-entries-associated-key-fn-value :org-file task-info file)
-              ;;           (org-entries-associated-key-fn-value :task-info-key task-info file)
-              ;;           (org-entries-associated-key-fn-value :heading-level task-info file))
-              ;;          0)))
-              (> (org-entries-associated-key-fn-value :root task-info file) 0))
+              (if file
+                  (if (> (org-entries-associated-key-fn-value :status task-info file) -20)
+                      (>
+                       (+
+                        (org-entries-associated-key-fn-value :root task-info file)
+                        ;; (org-entries-associated-key-fn-value :org-file task-info file)
+                        (org-entries-associated-key-fn-value :task-info-key task-info file)
+                        (org-entries-associated-key-fn-value :heading-level task-info file))
+                       0))))
+              ;; (> (org-entries-associated-key-fn-value :root task-info file) 0)
+              )
 
             (org-entry-clocking-api-set :keys :entries 'org-entries-associated-to-file-by-keys-p)
             (org-entry-clocking-api-set :keys :entry   'org-entry-associated-to-file-by-keys-p)
@@ -815,7 +830,25 @@
               (let* ((level
                       (org-entry-task-info-get-property task-info :task-clock-level)))
                 (if level level 0)))
-            (org-entries-register-associated-to-file-key-function :heading-level 'org-entry-associated-file-level-key))))
+            (org-entries-register-associated-to-file-key-function :heading-level 'org-entry-associated-file-level-key)
+
+            ;; (defun org-entry-associated-file-current-clock-key (task-info file)
+            ;;   "Predicate funtion to check if file matches to task-info's file attribute."
+            ;;   (let* ((task-marker
+            ;;           (org-entry-task-info-get-property task-info :task-clock-marker)))
+            ;;     (if (and
+            ;;          org-clock-marker
+            ;;          task-marker
+            ;;          (equal
+            ;;           (marker-buffer org-clock-marker)
+            ;;           (marker-buffer task-marker))
+            ;;          (equal
+            ;;           (marker-position org-clock-marker)
+            ;;           (marker-position task-marker)))
+            ;;         100
+            ;;         0)))
+            ;; (org-entries-register-associated-to-file-key-function :current-clock 'org-entry-associated-file-current-clock-key)
+            )))
 
       (deh-section "task main work"
         (defvar task-current-file  nil)
@@ -885,8 +918,9 @@
            org-clock-marker
            (> (marker-position-nonil org-clock-marker) 0)
            (org-with-clock-position (list org-clock-marker)
+             (org-previous-visible-heading 1)
              (let ((info (org-entry-collect-task-info)))
-               (if (funcall org-clocking-api-entry-associated-to-file-p (org-entry-collect-task-info) file)
+               (if (funcall org-clocking-api-entry-associated-to-file-p info file)
                    info)))))
 
         (defun org-entry-run-associated-clock (file)
@@ -1055,6 +1089,22 @@
        (org-clock-entry-associated-to-file-p
         (buffer-file-name))
 
+       ;; sharad
+       (setq test-info-entry
+             (org-with-clock-position (list org-clock-marker)
+               (org-previous-visible-heading 1)
+               (org-entry-collect-task-info)
+               (let ((info (org-entry-collect-task-info)))
+                 (if (funcall org-clocking-api-entry-associated-to-file-p info (buffer-file-name))
+                     info))
+               ))
+
+       (test-info-entry)
+       (funcall org-clocking-api-entry-associated-to-file-p test-info-entry (buffer-file-name))
+
+       ;; org-clock-marker
+       (org-entries-associated-key-fn-value :current-clock test-info-entry (buffer-file-name))
+
        (org-clock-entry-associated-to-file-p
         "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
 
@@ -1066,11 +1116,25 @@
        ;;  (cadr org-entry-list-task-infos)))
 
 
-       (funcall org-clocking-api-entries-associated-to-file-p (buffer-file-name))
+       (length (funcall org-clocking-api-entries-associated-to-file-p (buffer-file-name)))
+
+       (length (funcall org-clocking-api-entries-associated-to-file-p "/home/s/paradise/releases/global/patch-upgrade/Makefile"))
+
        (org-markers-associated-to-file (buffer-file-name))
        (funcall org-clocking-api-entries-associated-to-file-p "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
 
        (org-entries-associated-to-file-by-keys-p (buffer-file-name))
+
+       (length
+        (org-entries-associated-to-file-by-keys-p "/home/s/paradise/releases/global/patch-upgrade/Makefile")
+        )
+
+       (org-clock-entry-associated-to-file-p "/home/s/paradise/releases/global/patch-upgrade/Makefile")
+
+       ;; (org-entry-associated-to-file-by-keys-p "/home/s/paradise/releases/global/patch-upgrade/Makefile")
+
+       (if (org-clock-entry-associated-to-file-p (buffer-file-name))
+         (message "current clock is with file")
        ))
 
 
@@ -1379,7 +1443,7 @@ which other peoples are also working."
           (setq description
                 (concat
                  description
-                 "\n - "
+                 ;; "\n - "
                  (funcall formatterfn f))))))
 
     (defun task-get-org-description (task name desc)
@@ -1418,7 +1482,7 @@ which other peoples are also working."
                     (task-first-org-master-file task))
             (task-get-links-text task
                                  '(lambda (file)
-                                   (format "[[file:%s/%s/%s][%s]]"
+                                   (format "\n - [[file:%s/%s/%s][%s]]"
                                     (pluralize-string task)
                                     name
                                     file
@@ -1464,7 +1528,15 @@ which other peoples are also working."
         (org-with-file-headline file child-heading
           (let ((buffer-read-only nil))
             (org-entry-put nil "SubtreeFile"
-                           (concat task-dir "/" (task-first-org-master-file task)))
+                           (format "%s/%s/%s"
+                            (pluralize-string task)
+                            name
+                            (task-first-org-master-file task))
+
+                           ;; (file-relative-name
+                           ;;  (concat task-dir "/" (task-first-org-master-file task))
+                           ;;  (file-name-directory file))
+                           )
             ;; (org-entry-put nil "Root" project-root-folder)
             ))
         (with-current-buffer (find-file-noselect file)
@@ -1536,6 +1608,7 @@ which other peoples are also working."
 
           (let ((file (task-first-org-master-file task)))
             (when file
+
               (let ((nfile (expand-file-name file task-dir))
                     (heading (format "%s %s"
                                      (capitalize (file-name-sans-extension file))
@@ -1544,9 +1617,22 @@ which other peoples are also working."
                   (insert (concat
                            (format "\n\n* %s\n" heading)
                            (task-get-links-text task
+                                                ;; '(lambda (f)
+                                                ;;   (format "[[file:%s][%s]]" f (capitalize (file-name-sans-extension f))))
                                                 '(lambda (f)
-                                                  (format "[[file:%s][%s]]" f (capitalize (file-name-sans-extension f)))))
-                           (format "\nend %s\n" task)))))))
+                                                  (format "** %s\n- [[file:%s][%s]]\n"
+                                                   (capitalize (file-name-sans-extension f))
+                                                   f
+                                                   "here"))))))
+
+                (dolist (sfile
+                          (cons
+                           (task-org-todo-file task)
+                           (task-org-files task)))
+                  (org-with-file-headline nfile (capitalize (file-name-sans-extension sfile))
+                    (with-writable-buffer
+                     (message "adding property %s in %s" sfile nfile)
+                     (org-entry-put nil "SubtreeFile" sfile)))))))
 
           ;; links
           (dolist (lp (cdr (assoc 'links (cdr (assoc task task-config)))))
