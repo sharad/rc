@@ -853,7 +853,7 @@ using three `C-u' prefix arguments."
                 (or
                  (ignore-errors (org-get-at-eol 'effort-minutes 1))
                  (if (org-entry-get nil "Effort")
-                     (org-timer-hms-to-secs (org-entry-get nil "Effort")))))
+                     (org-duration-string-to-minutes (org-entry-get nil "Effort")))))
                (remianing-effort-minutes (if (and
                                               effort-minutes
                                               clocked-time
