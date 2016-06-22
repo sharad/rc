@@ -945,6 +945,16 @@ using three `C-u' prefix arguments."
                          2
                          "\\(rip\\|stage\\)"))
 
+      (defun org-reset-agenda-files ()
+        (interactive)
+        (setq
+         org-agenda-files (directory-files-recursive
+                           (expand-file-name
+                            "~/Documents/CreatedContent/contents/org")
+                           "\\.org$"
+                           2
+                           "\\(rip\\|stage\\)")))
+
 
     (setq
      ;; http://orgmode.org/worg/agenda-optimization.html
