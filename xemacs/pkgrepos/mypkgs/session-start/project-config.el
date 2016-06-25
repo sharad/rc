@@ -24,6 +24,7 @@
 
 ;;; Code:
 
+(require 'init-config "~/.emacs.d/init-config.el")
 
 (deh-require-maybe (progn
                      eproject
@@ -272,8 +273,7 @@
                                    (concat " [default " (iproject-shorten-string iproject-last-base-directory-choosen 9) "]")
                                    "")))
               (setq base-virtual-folder (read-from-minibuffer (format "Enter the base directory in the project%s: " def-string)
-                                                              nil nil nil 'iproject-last-base-directory-history))))
-          )
+                                                              nil nil nil 'iproject-last-base-directory-history)))))
 
         (let (file-list user-data project-settings)
           ;; Collect the project's file

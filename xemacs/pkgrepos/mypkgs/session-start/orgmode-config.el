@@ -24,6 +24,7 @@
 
 ;;; Code:
 
+(require 'init-config "~/.emacs.d/init-config.el")
 (require 'macros-config)
 (require 'auto-load-config)
 (require 'publishing-config)
@@ -903,47 +904,114 @@ using three `C-u' prefix arguments."
 
   (deh-section "org-agenda"
 
-      (setq org-agenda-custom-commands
-            ;; http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
-            `(("P" "Project List"
-               ((tags "PROJECT")))
-              ("O" "Office"
-               ((agenda)
-                (tags-todo "OFFICE")))
-              ("W" "Weekly Plan"
-               ((agenda)
-                (todo "TODO")
-                (tags "PROJECT")))
-              ("H" "Home NA Lists"
-               ((agenda)
-                (tags-todo "HOME")
-                (tags-todo "COMPUTER")))
-              ("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
-                   "Meru Today" ;;  search ""
-               ((agenda ""
-                        ((org-agenda-span 'day)
-                         (org-agenda-prefix-format  "%e")))
-                (org-agenda-files
-                 ',(directory-files-recursive
-                    (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
-                   "\\.org$" 2 "\\(rip\\|stage\\)"))
+    (setq org-agenda-custom-commands nil)
 
-                ;; (org-agenda-sorting-strategy '(priority-up effort-down))
+    (defun add-to-org-agenda-custom-commands (spec)
+      (add-to-list
+       'org-agenda-custom-commands
+       spec))
+
+    ;; http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
+    (add-to-org-agenda-custom-commands
+     '("P" "Project List"
+       ((tags "PROJECT"))))
+
+    (add-to-org-agenda-custom-commands
+     '("O" "Office"
+       ((agenda)
+        (tags-todo "OFFICE"))))
+
+    (add-to-org-agenda-custom-commands
+     '("W" "Weekly Plan"
+       ((agenda)
+        (todo "TODO")
+        (tags "PROJECT"))))
+
+    (add-to-org-agenda-custom-commands
+     '("H" "Home NA Lists"
+       ((agenda)
+        (tags-todo "HOME")
+        (tags-todo "COMPUTER"))))
+
+    (add-to-org-agenda-custom-commands
+     `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
+       "Meru Today" ;;  search ""
+       ((agenda ""
+                ((org-agenda-span 'day)
+                 (org-agenda-prefix-format  "%e")))
+        (org-agenda-files
+         ',(directory-files-recursive
+            (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
+            "\\.org$" 2 "\\(rip\\|stage\\)"))
+
+        ;; (org-agenda-sorting-strategy '(priority-up effort-down))
+        )
+       ;; ("~/computer.html")
+       ))
+
+    (deh-section "Review Aganda" ;;http://stackoverflow.com/a/22440571
+      ;; define "R" as the prefix key for reviewing what happened in various
+      ;; time periods
+      (add-to-org-agenda-custom-commands
+       '("R" . "Review" ))
+
+      ;; Common settings for all reviews
+      (setq efs/org-agenda-review-settings
+            `((org-agenda-files
+               ',(directory-files-recursive
+                  (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
+                  "\\.org$" 2 "\\(rip\\|stage\\)"))
+              (org-agenda-show-all-dates t)
+              (org-agenda-start-with-log-mode t)
+              (org-agenda-start-with-clockreport-mode t)
+              (org-agenda-archives-mode t)
+              ;; I don't care if an entry was archived
+              (org-agenda-hide-tags-regexp
+               (concat org-agenda-hide-tags-regexp
+                "\\|ARCHIVE"))
+              ))
+      ;; Show the agenda with the log turn on, the clock table show and
+      ;; archived entries shown.  These commands are all the same exept for
+      ;; the time period.
+      (add-to-org-agenda-custom-commands
+       `("Rw" "Week in review"
+               agenda ""
+               ;; agenda settings
+               ,(append
+                 efs/org-agenda-review-settings
+                 '((org-agenda-span 'week)
+                   (org-agenda-start-on-weekday 0)
+                   (org-agenda-overriding-header "Week in Review"))
+                 )
+               ("~/org/review/week.html")))
+
+      (add-to-org-agenda-custom-commands
+       `("Rd" "Day in review"
+              agenda ""
+              ;; agenda settings
+              ,(append
+                efs/org-agenda-review-settings
+                '((org-agenda-span 'day)
+                  (org-agenda-overriding-header "Week in Review"))
                 )
-               ;; ("~/computer.html")
-               )))
+              ("~/org/review/day.html")))
+
+      (add-to-org-agenda-custom-commands
+       `("Rm" "Month in review"
+              agenda ""
+              ;; agenda settings
+              ,(append
+                efs/org-agenda-review-settings
+                '((org-agenda-span 'month)
+                  (org-agenda-start-day "01")
+                  (org-read-date-prefer-future nil)
+                  (org-agenda-overriding-header "Month in Review"))
+                )
+              ("~/org/review/month.html"))))
 
       (setq
        org-columns-default-format-org "%25ITEM %TODO %3PRIORITY %TAGS"
        org-columns-default-format     "%TODO %70ITEM(Task) %8Effort(Effort){:} %8CLOCKSUM{:} %8CLOCKSUM_T(Today){:} %CLOSED")
-
-      (setq
-       org-agenda-files (directory-files-recursive
-                         (expand-file-name
-                          "~/Documents/CreatedContent/contents/org")
-                         "\\.org$"
-                         2
-                         "\\(rip\\|stage\\)"))
 
       (defun org-reset-agenda-files ()
         (interactive)
@@ -954,6 +1022,8 @@ using three `C-u' prefix arguments."
                            "\\.org$"
                            2
                            "\\(rip\\|stage\\)")))
+
+      (org-reset-agenda-files)
 
 
     (setq

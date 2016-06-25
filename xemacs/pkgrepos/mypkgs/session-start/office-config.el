@@ -2,148 +2,6 @@
 ;; office.el
 ;; Login : <spratap@spratap>
 ;; Started on  Wed Dec  1 17:11:05 2010 Sharad Pratap
-;; $Id$
-;;
-;; Copyright (C) @YEAR@ Sharad Pratap
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2 of the License, or
-;; (at your option) any later version.
-;;
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-;;
-;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-;;
-
-(eval-when-compile
-  '(require 'macros-config))
-
-(require 'macros-config)
-(require 'files-config)
-
-(deh-require-maybe orgmode-config
-
-  (defun org-task-files (&optional party)
-    (let ((party (or party task-current-party)))
-      (directory-files-recursive
-       (task-party-dir party) "\\.org$" 7)))
-
-  (defun org-all-task-files ()
-    (let ()
-      (directory-files-recursive
-       (org-publish-get-attribute "tasks" "org" :base-directory)
-       "\\.org$" 7)))
-
-  (defun org-task-refile-target (party)
-    ;; (interactive)
-    (let* ((party (or party task-current-party))
-           (task-files (org-task-files party)))
-                                        ;all files returned by `org-task-files'
-      `((,task-files :maxlevel . 3))))
-
-  (defun org-clock-in-refile-task (party)
-    (interactive
-     (list (ido-completing-read
-            "Seletc Party: "
-            (mapcar 'car task-parties)
-            nil
-            t
-            task-current-party)))
-    (org-clock-in-refile (org-task-refile-target party)))
-
-  (when nil
-    (defun org-clock-select-task-from-clocks (clocks &optional prompt)
-      "Select a task that was recently associated with clocking."
-      (interactive)
-      (let (och chl sel-list rpl (i 0) s)
-        ;; Remove successive dups from the clock history to consider
-        (mapc (lambda (c) (if (not (equal c (car och))) (push c och)))
-              clocks)
-        (setq och (reverse och) chl (length och))
-        (if (zerop chl)
-            (user-error "No recent clock")
-            (save-window-excursion
-              (org-switch-to-buffer-other-window
-               (get-buffer-create "*Clock Task Select*"))
-              (erase-buffer)
-              ;; (when (marker-buffer org-clock-default-task)
-              ;;   (insert (org-add-props "Default Task\n" nil 'face 'bold))
-              ;;   (setq s (org-clock-insert-selection-line ?d org-clock-default-task))
-              ;;   (push s sel-list))
-              ;; (when (marker-buffer org-clock-interrupted-task)
-              ;;   (insert (org-add-props "The task interrupted by starting the last one\n" nil 'face 'bold))
-              ;;   (setq s (org-clock-insert-selection-line ?i org-clock-interrupted-task))
-              ;;   (push s sel-list))
-              ;; (when (org-clocking-p)
-              ;;   (insert (org-add-props "Current Clocking Task\n" nil 'face 'bold))
-              ;;   (setq s (org-clock-insert-selection-line ?c org-clock-marker))
-              ;;   (push s sel-list))
-              (insert (org-add-props "Recent Tasks\n" nil 'face 'bold))
-              (mapc
-               (lambda (m)
-                 (when (marker-buffer m)
-                   (setq i (1+ i)
-                         s (org-clock-insert-selection-line
-                            (if (< i 10)
-                                (+ i ?0)
-                                (+ i (- ?A 10))) m))
-                   (if (fboundp 'int-to-char) (setf (car s) (int-to-char (car s))))
-                   (push s sel-list)))
-               och)
-              (run-hooks 'org-clock-before-select-task-hook)
-              (goto-char (point-min))
-              ;; Set min-height relatively to circumvent a possible but in
-              ;; `fit-window-to-buffer'
-              (fit-window-to-buffer nil nil (if (< chl 10) chl (+ 5 chl)))
-              (message (or prompt "Select task for clocking:"))
-              (setq cursor-type nil rpl (read-char-exclusive))
-              (kill-buffer)
-              (cond
-                ((eq rpl ?q) nil)
-                ((eq rpl ?x) nil)
-                ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
-                (t (user-error "Invalid task choice %c" rpl)))))))
-
-    ;;     (defun org-clock-insert-selection-line (i marker)
-    ;;       "Insert a line for the clock selection menu.
-    ;; And return a cons cell with the selection character integer and the marker
-    ;; pointing to it."
-    ;;       (when (marker-buffer marker)
-    ;;         (let (file cat task heading prefix)
-    ;;           (with-current-buffer (org-base-buffer (marker-buffer marker))
-    ;;             (save-excursion
-    ;;               (save-restriction
-    ;;                 (widen)
-    ;;                 (ignore-errors
-    ;;                   (goto-char marker)
-    ;;                   (setq file (buffer-file-name (marker-buffer marker))
-    ;;                         cat (org-get-category)
-    ;;                         heading (org-get-heading 'notags)
-    ;;                         prefix (save-excursion
-    ;;                                  (org-back-to-heading t)
-    ;;                                  (looking-at org-outline-regexp)
-    ;;                                  (match-string 0))
-    ;;                         task (substring
-    ;;                               (org-fontify-like-in-org-mode
-    ;;                                (concat prefix heading)
-    ;;                                org-odd-levels-only)
-    ;;                               (length prefix)))))))
-    ;;           (when (and cat task)
-    ;;             (insert (format "[%c] %-12s  %s\n" i cat task))
-    ;;             (cons i marker)))))
-    )
-
-  ) ;; (deh-require-maybe orgmode-config
-
-;;
-;; office.el
-;; Login : <spratap@spratap>
-;; Started on  Wed Dec  1 17:11:05 2010 Sharad Pratap
 ;; $Id: office-config-backup.el.backup,v 1.1 2016/06/15 14:45:02 s Exp s $
 ;;
 ;; Copyright (C) @YEAR@ Sharad Pratap
@@ -162,11 +20,76 @@
 ;; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ;;
 
-(eval-when-compile
-  '(require 'macros-config))
-
-(require 'macros-config)
+(require 'init-config "~/.xemacs/init-config.el")
 (require 'files-config)
+
+(deh-section "task config"
+  (defvar *task-desc-file-name* ".task-desc" "*task-desc-file-name*")
+
+  (defvar *task-party-base-dir*
+    (org-publish-get-attribute "tasks" "org" :base-directory)
+    "Task Party Directory")
+
+  (defvar task-scratch-dir "~/SCRATCH/" "task scratch directory")
+
+  (defvar task-parties
+    '(("meru"
+       (org-master-file "report.org")
+       (org-heading     "Office related work")
+       (bugz-url        "https://bugzilla.merunetworks.com"))
+      ("personal"
+       (org-master-file "report.org")
+       (org-heading     "Office related work")
+       (bugz-url        "https://bugzilla.merunetworks.com"))))
+
+  (defvar task-current-party "meru")
+
+  (defvar task-file-properties '((buffer-read-only . t)
+                                 (fill-column . 172))
+    "Task file properties.")
+
+  (defvar task-org-headers
+    '("#+CATEGORY: Work"
+      "#+STARTUP: overview"
+      "#+STARTUP: hidestars"
+      "#+TAGS: PERFORCE(4)  BUGZILLA(b) SVN(v) SCMBUG(m) PROJECT(j)"
+      "#+TAGS: CVS(i) PHONE(p) INTERNET(i)"
+      "#+SEQ_TODO: TODO DONE")
+    "Desc")
+
+  (defvar *task-projbuffs-base-dir* (expand-file-name "contents/misc/projbuffs" *created-content-dir*))
+
+  (defvar task-config '(("bug"
+                         (org-master-file "report.org")
+                         (org-files       "todo.org" "notes.org" "analysis.org")
+                         (org-todo-file    "todo.org")
+                         (dirs            "logs" "programs" "patches" "deliverables")
+                         (links           ("notes.html" . "index.html"))
+                         (project         "bugs.pb")
+                         (name            "[0-9]+")) ;
+                        ("feature"
+                         (org-master-file "report.org")
+                         (org-files       "reqirement.org" "feasibility.org" "design.org" "todo.org" "notes.org" "analysis.org")
+                         (org-todo-file    "todo.org")
+                         (dirs            "logs" "programs" "patches" "deliverables")
+                         (links           ("notes.html" . "index.html"))
+                         (project         "features.pb"))
+                        ("work"
+                         (org-master-file "report.org")
+                         (org-files       "reqirement.org" "feasibility.org" "design.org" "todo.org" "notes.org" "analysis.org")
+                         (org-todo-file    "todo.org")
+                         (dirs            "logs" "programs" "patches" "deliverables")
+                         (links           ("notes.html" . "index.html"))
+                         (project         "works.pb"))))
+
+  (defvar *taskdir-current-task* nil "Current task")
+
+  (add-to-list
+   'desktop-globals-to-save
+   '*taskdir-current-task*)
+  (add-to-list
+   'session-globals-include
+   '(*taskdir-current-task* 100)))
 
 (deh-require-maybe orgmode-config
 
@@ -846,11 +769,14 @@
                org-entry-associated-file-key-fns
                (plist-put
                 org-entry-associated-file-key-fns key fn)))
-            (defmacro defassoc-file-key (name key args &rest body)
-              `(progn
-                 (defun ,name ,args
-                   ,@body)
-                 (org-entries-register-associated-to-file-key-function ,key ',name)))
+
+            (eval-when-compile
+             (defmacro defassoc-file-key (name key args &rest body)
+               `(progn
+                  (defun ,name ,args
+                    ,@body)
+                  (org-entries-register-associated-to-file-key-function ,key ',name))))
+
             (put 'defassoc-file-key 'lisp-indent-function 3)
             (defun org-entries-associated-key-function (key)
               (plist-get org-entry-associated-file-key-fns key))
@@ -1620,73 +1546,6 @@ which other peoples are also working."
       (error (message "Error: %s" e))))
 
   (deh-section "task"
-    (defvar *task-desc-file-name* ".task-desc" "*task-desc-file-name*")
-
-    (defvar *task-party-base-dir*
-      (org-publish-get-attribute "tasks" "org" :base-directory)
-      "Task Party Directory")
-
-    (defvar task-scratch-dir "~/SCRATCH/" "task scratch directory")
-
-    (defvar task-parties
-      '(("meru"
-         (org-master-file "report.org")
-         (org-heading     "Office related work")
-         (bugz-url        "https://bugzilla.merunetworks.com"))
-        ("personal"
-         (org-master-file "report.org")
-         (org-heading     "Office related work")
-         (bugz-url        "https://bugzilla.merunetworks.com"))))
-
-    (defvar task-current-party "meru")
-
-    (defvar task-file-properties '((buffer-read-only . t)
-                                   (fill-column . 172))
-      "Task file properties.")
-
-    (defvar task-org-headers
-      '("#+CATEGORY: Work"
-        "#+STARTUP: overview"
-        "#+STARTUP: hidestars"
-        "#+TAGS: PERFORCE(4)  BUGZILLA(b) SVN(v) SCMBUG(m) PROJECT(j)"
-        "#+TAGS: CVS(i) PHONE(p) INTERNET(i)"
-        "#+SEQ_TODO: TODO DONE")
-      "Desc")
-
-    (defvar *task-projbuffs-base-dir* (expand-file-name "contents/misc/projbuffs" *created-content-dir*))
-
-    (defvar task-config '(("bug"
-                           (org-master-file "report.org")
-                           (org-files       "todo.org" "notes.org" "analysis.org")
-                           (org-todo-file    "todo.org")
-                           (dirs            "logs" "programs" "patches" "deliverables")
-                           (links           ("notes.html" . "index.html"))
-                           (project         "bugs.pb")
-                           (name            "[0-9]+")) ;
-                          ("feature"
-                           (org-master-file "report.org")
-                           (org-files       "reqirement.org" "feasibility.org" "design.org" "todo.org" "notes.org" "analysis.org")
-                           (org-todo-file    "todo.org")
-                           (dirs            "logs" "programs" "patches" "deliverables")
-                           (links           ("notes.html" . "index.html"))
-                           (project         "features.pb"))
-                          ("work"
-                           (org-master-file "report.org")
-                           (org-files       "reqirement.org" "feasibility.org" "design.org" "todo.org" "notes.org" "analysis.org")
-                           (org-todo-file    "todo.org")
-                           (dirs            "logs" "programs" "patches" "deliverables")
-                           (links           ("notes.html" . "index.html"))
-                           (project         "works.pb"))))
-
-    (defvar *taskdir-current-task* nil "Current task")
-
-    (add-to-list
-     'desktop-globals-to-save
-     '*taskdir-current-task*)
-    (add-to-list
-     'session-globals-include
-     '(*taskdir-current-task* 100))
-
 
     (defmacro task-create-org-file (file &rest body)
       `(progn
@@ -2164,19 +2023,6 @@ which other peoples are also working."
         (switch-to-buffer buf)
         (if (y-or-n-p (format "Should set %s current task" task))
             (setq *taskdir-current-task* task))))))
-
-
-(deh-section "Forgive"
-  (defun forgive/them ()
-    (interactive)
-    (if (and
-         (featurep 'develock)
-         (assq major-mode develock-keywords-alist))
-        (develock-mode -1))
-    (highlight-changes-visible-mode -1)))
-
-
-(provide 'office-config)
 
 
 (deh-section "Forgive"

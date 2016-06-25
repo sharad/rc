@@ -24,17 +24,18 @@
 
 ;;; Code:
 
-(require 'macros-config)
+(require 'init-config)
 
 
 ;; TODO: [[http://tuhdo.github.io/c-ide.html][C/C++ Development Environment for Emacs]]
 
 (deh-require-maybe which-func
+
   (which-function-mode 1)
+
   (defface which-func
       '((((class color) (min-colors 88) (background dark)) (:foreground "Green")))
     "which-face")
-
 
   (defun copy-current-function ()
     (interactive)
@@ -43,7 +44,7 @@
           (kill-new fun-name)
           (message "Not able to get function.")))))
 
-(deh-require-maybe 'member-functions
+(deh-require-maybe member-functions
   ;; for C++ mode
   )
 
@@ -672,6 +673,44 @@ Add directory to search path for source files using the GDB command, dir."))
   ;;   M-x erefactor-check-eval-mode
 
 
+  (when nil
+    ;; code run by elint
+    (progn
+      (setq load-path
+            (append load-path 'nil))
+      (find-file "/home/s/hell/.xemacs/pkgrepos/mypkgs/session-start/office-config.el")
+      (goto-char
+       (point-min))
+      (condition-case err
+          (let
+              (sexp)
+            (while t
+              (setq sexp
+                    (read
+                     (current-buffer)))
+              (cond
+                ((memq
+                  (car-safe sexp)
+                  'require)
+                 (princ
+                  (format "Evaluating %s... " sexp))
+                 (eval sexp))
+                ((eq
+                  (car-safe sexp)
+                  'eval-when-compile)
+                 (princ
+                  (format "Evaluating %s... "
+                          `(progn ,@(cdr-safe sexp))))
+                 (eval
+                  `(progn ,@(cdr-safe sexp)))))))
+        (error nil))
+      (macroexpand
+       '(labels nil))
+      (elint-initialize)
+      (elint-current-buffer)
+      (with-current-buffer "*Elint*"
+        (princ
+         (buffer-string)))))
 
   )
 

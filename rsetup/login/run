@@ -65,10 +65,10 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
 	        # rm -f   \#.ido.last\#
                 pkill emacs
                 # export GDK_RGBA=0
-                # EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee ~/.emacs.d/startup.log
-                # GDK_RGBA=0 EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee ~/.emacs.d/startup.log
-                GDK_RGBA=0 EMACS_SERVER_NAME=$server timeout 240s emacs --daemon=$server |& tee ~/.emacs.d/startup.log
-                print "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> ~/.emacs.d/startup.log
+                # EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee ~/.emacs.d/autoconfig/startup/startup.log
+                # GDK_RGBA=0 EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee ~/.emacs.d/autoconfig/startup/startup.log
+                GDK_RGBA=0 EMACS_SERVER_NAME=$server timeout 240s emacs --daemon=$server |& tee ~/.emacs.d/autoconfig/startup/startup.log
+                print "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> ~/.emacs.d/autoconfig/startup/startup.log
 
                 # disown %emacs
             # else   #  it cause problem in autologin in GDM,  LightDM

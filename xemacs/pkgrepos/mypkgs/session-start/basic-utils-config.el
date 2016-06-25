@@ -20,6 +20,20 @@
 ;; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ;;
 
+(defun package-dir-add-to-loadpath (package-dir &optional recursive)
+  (when (file-directory-p package-dir)
+    (mapc
+     (if recursive
+         (lambda (path)
+           (add-to-list 'load-path path)
+           (let ((default-directory path))
+             (normal-top-level-add-subdirs-to-load-path)))
+         (lambda (path)
+           (add-to-list 'load-path path)))
+     (remove-if-not
+      'file-directory-p
+      (directory-files package-dir t "[a-zA-Z]+")))))
+
 (defun global-set-key-if-unbind (key cmd)
   "Set binding for key if there is no  existing binding for key."
   ;; (interactive)

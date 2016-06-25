@@ -1,7 +1,8 @@
+
 ;; ensure we elc files.
 
 
-(defvar old-messages-buffer-max-lines 100 "To keep all startup detail.")
+
 (defvar *emacs-in-init* t "Emacs is in init.")
 (defvar user-emacs-directory "~/.emacs.d")
 (setq user-emacs-directory "~/.emacs.d")
@@ -10,9 +11,11 @@
           (lambda ()
             (setq *emacs-in-init* nil)
             (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)))
-(setq
- old-messages-buffer-max-lines messages-buffer-max-lines
- messages-buffer-max-lines 2000)
+(when (or t (require 'subr nil t))
+  (defvar old-messages-buffer-max-lines 100 "To keep all startup detail.")
+  (setq
+   old-messages-buffer-max-lines messages-buffer-max-lines
+   messages-buffer-max-lines 2000))
 
 
 (eval-when-compile
@@ -28,83 +31,76 @@
          (message "loading init now.")
          ad-do-it))))
 
-(require 'macros-config      "~/.xemacs/pkgrepos/mypkgs/session-start/macros-config.el")
-(require 'basic-utils-config "~/.xemacs/pkgrepos/mypkgs/session-start/basic-utils-config.el")
+;; (require 'macros-config      "~/.xemacs/pkgrepos/mypkgs/session-start/macros-config.el")
+;; (require 'basic-utils-config "~/.xemacs/pkgrepos/mypkgs/session-start/basic-utils-config.el")
+(require 'loadpath-config      "~/.xemacs/pkgrepos/mypkgs/session-start/loadpath-config.el")
+;; (deh-section "General"
 
-(deh-section "General"
+;;   (deh-section "loadpath"                                ;add to loadpath
 
-  (deh-section "loadpath"                                ;add to loadpath
+;;     (add-to-list 'load-path "/usr/local/share/emacs/23.3/site-lisp") ;; need it for gtags.el gtags over tramp
 
-    (add-to-list 'load-path "/usr/local/share/emacs/23.3/site-lisp") ;; need it for gtags.el gtags over tramp
-
-    (defun package-dir-add-to-loadpath (package-dir &optional recursive)
-      (when (file-directory-p package-dir)
-        (mapc
-         (if recursive
-             (lambda (path)
-               (add-to-list 'load-path path)
-               (let ((default-directory path))
-                 (normal-top-level-add-subdirs-to-load-path)))
-             (lambda (path)
-               (add-to-list 'load-path path)))
-         (remove-if-not
-	  'file-directory-p
-	  (directory-files package-dir t "[a-zA-Z]+")))))
-
-
+;;     (defun package-dir-add-to-loadpath (package-dir &optional recursive)
+;;       (when (file-directory-p package-dir)
+;;         (mapc
+;;          (if recursive
+;;              (lambda (path)
+;;                (add-to-list 'load-path path)
+;;                (let ((default-directory path))
+;;                  (normal-top-level-add-subdirs-to-load-path)))
+;;              (lambda (path)
+;;                (add-to-list 'load-path path)))
+;;          (remove-if-not
+;; 	  'file-directory-p
+;; 	  (directory-files package-dir t "[a-zA-Z]+")))))
 
 
-    (mapc
-     '(lambda (dir)
-       (add-to-list 'load-path dir t))  ;auto-install at end as they are generally outdated.
-     `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
-       "~/.osetup/info.d/common/elisp"
-       ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp"))))
 
-    ;; (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/world")
-    (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/mypkgs")
-    (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/elpa")
-    (dolist (d (remove-if-not
-                'file-directory-p
-                (directory-files "~/.xemacs/pkgrepos/world/" t "[a-zA-Z]+")))
-      (package-dir-add-to-loadpath d t))
 
-  (deh-section "byte-compile"                                ;byte compile
-    (defun package-dir-byte-compile (package-dir)
-      (when (file-directory-p package-dir)
-        (mapc #'(lambda (dir)
-                  (ignore-errors (byte-recompile-directory dir 0)))
-              (directory-files package-dir t "[a-zA-Z]+"))))
+;;     (mapc
+;;      '(lambda (dir)
+;;        (add-to-list 'load-path dir t))  ;auto-install at end as they are generally outdated.
+;;      `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
+;;        "~/.osetup/info.d/common/elisp"
+;;        ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp"))))
 
-    ;; (package-dir-byte-compile "~/.xemacs/pkgrepos/world")
-    (package-dir-byte-compile "~/.xemacs/pkgrepos/mypkgs")
-    (package-dir-byte-compile "~/.xemacs/pkgrepos/elpa")
-    (package-dir-byte-compile "~/.xemacs/pkgrepos/world/misc")
-    (package-dir-byte-compile "~/.xemacs/pkgrepos/world/gits")
-    (package-dir-add-to-loadpath "/usr/local/share/emacs/site-lisp")
+;;     ;; (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/world")
+;;     (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/mypkgs")
+;;     (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/elpa")
+;;     (dolist (d (remove-if-not
+;;                 'file-directory-p
+;;                 (directory-files "~/.xemacs/pkgrepos/world/" t "[a-zA-Z]+")))
+;;       (package-dir-add-to-loadpath d t))
 
-    (mapc
-     '(lambda (dir)
-       (byte-recompile-directory dir 0))
-     `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
-       "~/.osetup/info.d/common/elisp"
-       ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp")))))
+;;   (deh-section "byte-compile"                                ;byte compile
+;;     (defun package-dir-byte-compile (package-dir)
+;;       (when (file-directory-p package-dir)
+;;         (mapc #'(lambda (dir)
+;;                   (ignore-errors (byte-recompile-directory dir 0)))
+;;               (directory-files package-dir t "[a-zA-Z]+"))))
+
+;;     ;; (package-dir-byte-compile "~/.xemacs/pkgrepos/world")
+;;     (package-dir-byte-compile "~/.xemacs/pkgrepos/mypkgs")
+;;     (package-dir-byte-compile "~/.xemacs/pkgrepos/elpa")
+;;     (package-dir-byte-compile "~/.xemacs/pkgrepos/world/misc")
+;;     (package-dir-byte-compile "~/.xemacs/pkgrepos/world/gits")
+;;     (package-dir-add-to-loadpath "/usr/local/share/emacs/site-lisp")
+
+;;     (mapc
+;;      '(lambda (dir)
+;;        (byte-recompile-directory dir 0))
+;;      `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
+;;        "~/.osetup/info.d/common/elisp"
+;;        ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp")))))
 
 
 (when (require 'cl nil) ; a rare necessary use of REQUIRE
   ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
   (defvar *emacs-load-start* (current-time)))
 
-(defconst *work-dir* "~/\.\./paradise")
+(defconst *work-dir*
+  (expand-file-name "paradise" "~/.."))
 ;;
-
-(require 'dot-emacs-helper nil nil)
-(require 'basic-config)
-(require 'general-testing)
-(require 'common-info nil t)
-(require 'auto-load-config)
-(require 'macros-config)
-(require 'basic-utils-config)
 
 
 (deh-section "custom setup"

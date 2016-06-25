@@ -54,8 +54,8 @@ At top-level, as an editor command, this simply beeps."
                  (<= level 0)))
         (apply 'message fmt args))))
 
-(defvar inhibit-debugger-default)
-(defvar debug-ignored-errors-default)
+(defvar inhibit-debugger-default inhibit-debugger)
+(defvar debug-ignored-errors-default debug-ignored-errors)
 
 
 (defun enable-backtrace-for-error ()
