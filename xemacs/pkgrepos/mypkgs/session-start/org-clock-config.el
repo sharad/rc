@@ -135,117 +135,117 @@ make this the default behavior.)"
             (set-buffer (org-base-buffer (marker-buffer selected-task)))
             (setq target-pos (marker-position selected-task))
             (move-marker selected-task nil))
-          (let ((buffer-read-only nil)) ;add my be -sharad
-           (save-excursion
-             (save-restriction
-               (widen)
-               (goto-char target-pos)
-               (org-back-to-heading t)
-               (or interrupting (move-marker org-clock-interrupted-task nil))
-               (run-hooks 'org-clock-in-prepare-hook)
-               (org-clock-history-push)
-               (setq org-clock-current-task (nth 4 (org-heading-components)))
-               (cond ((functionp org-clock-in-switch-to-state)
-                      (looking-at org-complex-heading-regexp)
-                      (let ((newstate (funcall org-clock-in-switch-to-state
-                                               (match-string 2))))
-                        (if newstate (org-todo newstate))))
-                     ((and org-clock-in-switch-to-state
-                           (not (looking-at (concat org-outline-regexp "[ \t]*"
-                                                    org-clock-in-switch-to-state
-                                                    "\\>"))))
-                      (org-todo org-clock-in-switch-to-state)))
-               (setq org-clock-heading
-                     (cond ((and org-clock-heading-function
-                                 (functionp org-clock-heading-function))
-                            (funcall org-clock-heading-function))
-                           ((nth 4 (org-heading-components))
-                            (replace-regexp-in-string
-                             "\\[\\[.*?\\]\\[\\(.*?\\)\\]\\]" "\\1"
-                             (match-string-no-properties 4)))
-                           (t "???")))
-               (org-clock-find-position org-clock-in-resume)
-               (cond
-                 ((and org-clock-in-resume
-                       (looking-at
-                        (concat "^[ \t]*" org-clock-string
-                                " \\[\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}"
-                                " *\\sw+.? +[012][0-9]:[0-5][0-9]\\)\\][ \t]*$")))
-                  (message "Matched %s" (match-string 1))
-                  (setq ts (concat "[" (match-string 1) "]"))
-                  (goto-char (match-end 1))
-                  (setq org-clock-start-time
-                        (apply 'encode-time
-                               (org-parse-time-string (match-string 1))))
-                  (setq org-clock-effort (org-entry-get (point) org-effort-property))
-                  (setq org-clock-total-time (org-clock-sum-current-item
-                                              (org-clock-get-sum-start))))
-                 ((eq org-clock-in-resume 'auto-restart)
-                  ;; called from org-clock-load during startup,
-                  ;; do not interrupt, but warn!
-                  (message "Cannot restart clock because task does not contain unfinished clock")
-                  (ding)
-                  (sit-for 2)
-                  (throw 'abort nil))
-                 (t
-                  (insert-before-markers "\n")
-                  (backward-char 1)
-                  (org-indent-line)
-                  (when (and (save-excursion
-                               (end-of-line 0)
-                               (org-in-item-p)))
-                    (beginning-of-line 1)
-                    (org-indent-line-to (- (org-get-indentation) 2)))
-                  (insert org-clock-string " ")
-                  (setq org-clock-effort (org-entry-get (point) org-effort-property))
-                  (setq org-clock-total-time (org-clock-sum-current-item
-                                              (org-clock-get-sum-start)))
-                  (setq org-clock-start-time
-                        (or (and org-clock-continuously org-clock-out-time)
-                            (and leftover
-                                 (y-or-n-p
-                                  (format
-                                   "You stopped another clock %d mins ago; start this one from then? "
-                                   (/ (- (org-float-time
-                                          (org-current-time org-clock-rounding-minutes t))
-                                         (org-float-time leftover)) 60)))
-                                 leftover)
-                            start-time
-                            (org-current-time org-clock-rounding-minutes t)))
-                  (setq ts (org-insert-time-stamp org-clock-start-time
-                                                  'with-hm 'inactive))))
-               (move-marker org-clock-marker (point) (buffer-base-buffer))
-               (move-marker org-clock-hd-marker
-                            (save-excursion (org-back-to-heading t) (point))
-                            (buffer-base-buffer))
-               (setq org-clock-has-been-used t)
-               ;; add to mode line
-               (when (or (eq org-clock-clocked-in-display 'mode-line)
-                         (eq org-clock-clocked-in-display 'both))
-                 (or global-mode-string (setq global-mode-string '("")))
-                 (or (memq 'org-mode-line-string global-mode-string)
-                     (setq global-mode-string
-                           (append global-mode-string '(org-mode-line-string)))))
-               ;; add to frame title
-               (when (or (eq org-clock-clocked-in-display 'frame-title)
-                         (eq org-clock-clocked-in-display 'both))
-                 (setq frame-title-format org-clock-frame-title-format))
-               (org-clock-update-mode-line)
-               (when org-clock-mode-line-timer
-                 (cancel-timer org-clock-mode-line-timer)
-                 (setq org-clock-mode-line-timer nil))
-               (when org-clock-clocked-in-display
-                 (setq org-clock-mode-line-timer
-                       (run-with-timer org-clock-update-period
-                                       org-clock-update-period
-                                       'org-clock-update-mode-line)))
-               (when org-clock-idle-timer
-                 (cancel-timer org-clock-idle-timer)
-                 (setq org-clock-idle-timer nil))
-               (setq org-clock-idle-timer
-                     (run-with-timer 60 60 'org-resolve-clocks-if-idle))
-               (message "Clock starts at %s - %s" ts org--msg-extra)
-               (run-hooks 'org-clock-in-hook))))))))
+          (save-excursion
+            (save-restriction
+              (let ((buffer-read-only nil)) ;add my be -sharad
+                (widen)
+                (goto-char target-pos)
+                (org-back-to-heading t)
+                (or interrupting (move-marker org-clock-interrupted-task nil))
+                (run-hooks 'org-clock-in-prepare-hook)
+                (org-clock-history-push)
+                (setq org-clock-current-task (nth 4 (org-heading-components)))
+                (cond ((functionp org-clock-in-switch-to-state)
+                       (looking-at org-complex-heading-regexp)
+                       (let ((newstate (funcall org-clock-in-switch-to-state
+                                                (match-string 2))))
+                         (if newstate (org-todo newstate))))
+                      ((and org-clock-in-switch-to-state
+                            (not (looking-at (concat org-outline-regexp "[ \t]*"
+                                                     org-clock-in-switch-to-state
+                                                     "\\>"))))
+                       (org-todo org-clock-in-switch-to-state)))
+                (setq org-clock-heading
+                      (cond ((and org-clock-heading-function
+                                  (functionp org-clock-heading-function))
+                             (funcall org-clock-heading-function))
+                            ((nth 4 (org-heading-components))
+                             (replace-regexp-in-string
+                              "\\[\\[.*?\\]\\[\\(.*?\\)\\]\\]" "\\1"
+                              (match-string-no-properties 4)))
+                            (t "???")))
+                (org-clock-find-position org-clock-in-resume)
+                (cond
+                  ((and org-clock-in-resume
+                        (looking-at
+                         (concat "^[ \t]*" org-clock-string
+                                 " \\[\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}"
+                                 " *\\sw+.? +[012][0-9]:[0-5][0-9]\\)\\][ \t]*$")))
+                   (message "Matched %s" (match-string 1))
+                   (setq ts (concat "[" (match-string 1) "]"))
+                   (goto-char (match-end 1))
+                   (setq org-clock-start-time
+                         (apply 'encode-time
+                                (org-parse-time-string (match-string 1))))
+                   (setq org-clock-effort (org-entry-get (point) org-effort-property))
+                   (setq org-clock-total-time (org-clock-sum-current-item
+                                               (org-clock-get-sum-start))))
+                  ((eq org-clock-in-resume 'auto-restart)
+                   ;; called from org-clock-load during startup,
+                   ;; do not interrupt, but warn!
+                   (message "Cannot restart clock because task does not contain unfinished clock")
+                   (ding)
+                   (sit-for 2)
+                   (throw 'abort nil))
+                  (t
+                   (insert-before-markers "\n")
+                   (backward-char 1)
+                   (org-indent-line)
+                   (when (and (save-excursion
+                                (end-of-line 0)
+                                (org-in-item-p)))
+                     (beginning-of-line 1)
+                     (org-indent-line-to (- (org-get-indentation) 2)))
+                   (insert org-clock-string " ")
+                   (setq org-clock-effort (org-entry-get (point) org-effort-property))
+                   (setq org-clock-total-time (org-clock-sum-current-item
+                                               (org-clock-get-sum-start)))
+                   (setq org-clock-start-time
+                         (or (and org-clock-continuously org-clock-out-time)
+                             (and leftover
+                                  (y-or-n-p
+                                   (format
+                                    "You stopped another clock %d mins ago; start this one from then? "
+                                    (/ (- (org-float-time
+                                           (org-current-time org-clock-rounding-minutes t))
+                                          (org-float-time leftover)) 60)))
+                                  leftover)
+                             start-time
+                             (org-current-time org-clock-rounding-minutes t)))
+                   (setq ts (org-insert-time-stamp org-clock-start-time
+                                                   'with-hm 'inactive))))
+                (move-marker org-clock-marker (point) (buffer-base-buffer))
+                (move-marker org-clock-hd-marker
+                             (save-excursion (org-back-to-heading t) (point))
+                             (buffer-base-buffer))
+                (setq org-clock-has-been-used t)
+                ;; add to mode line
+                (when (or (eq org-clock-clocked-in-display 'mode-line)
+                          (eq org-clock-clocked-in-display 'both))
+                  (or global-mode-string (setq global-mode-string '("")))
+                  (or (memq 'org-mode-line-string global-mode-string)
+                      (setq global-mode-string
+                            (append global-mode-string '(org-mode-line-string)))))
+                ;; add to frame title
+                (when (or (eq org-clock-clocked-in-display 'frame-title)
+                          (eq org-clock-clocked-in-display 'both))
+                  (setq frame-title-format org-clock-frame-title-format))
+                (org-clock-update-mode-line)
+                (when org-clock-mode-line-timer
+                  (cancel-timer org-clock-mode-line-timer)
+                  (setq org-clock-mode-line-timer nil))
+                (when org-clock-clocked-in-display
+                  (setq org-clock-mode-line-timer
+                        (run-with-timer org-clock-update-period
+                                        org-clock-update-period
+                                        'org-clock-update-mode-line)))
+                (when org-clock-idle-timer
+                  (cancel-timer org-clock-idle-timer)
+                  (setq org-clock-idle-timer nil))
+                (setq org-clock-idle-timer
+                      (run-with-timer 60 60 'org-resolve-clocks-if-idle))
+                (message "Clock starts at %s - %s" ts org--msg-extra)
+                (run-hooks 'org-clock-in-hook))))))))
   (defun org-clock-out (&optional switch-to-state fail-quietly at-time)
     "Stop the currently running clock.
 Throw an error if there is no running clock and FAIL-QUIETLY is nil.
@@ -270,10 +270,10 @@ to, overriding the existing value of `org-clock-out-switch-to-state'."
             (now (org-current-time org-clock-rounding-minutes))
             ts te s h m remove)
         (setq org-clock-out-time now)
-        (let ((buffer-read-only nil))
-          (save-excursion ; Do not replace this with `with-current-buffer'.
-            (org-no-warnings (set-buffer (org-clocking-buffer)))
-            (save-restriction
+        (save-excursion ; Do not replace this with `with-current-buffer'.
+          (org-no-warnings (set-buffer (org-clocking-buffer)))
+          (save-restriction
+            (let ((buffer-read-only nil))
               (widen)
               (goto-char org-clock-marker)
               (beginning-of-line 1)
@@ -355,6 +355,8 @@ to, overriding the existing value of `org-clock-out-switch-to-state'."
 (deh-section "redefined clock resolve"
 
   (require 'orgmode-config)
+
+  ;; (setq org-clock-idle-time 1)
 
   ;; org-refile-targets
   (defvar org-idle-other-clock-refile-targets
@@ -492,7 +494,7 @@ to be CLOCKED OUT."))))
              (org-clock-resolve-clock clock 'now nil t nil fail-quietly))
          (org-clock-jump-to-current-clock clock))
         ((or (null ch)
-             (not (memq ch '(?k ?K ?g ?G ?s ?S ?C))))
+             (not (memq ch '(?k ?K ?g ?G ?s ?S ?C ?o ?O))))
          (message ""))
         (t
          (org-clock-resolve-clock
@@ -528,6 +530,114 @@ to be CLOCKED OUT."))))
   (when (fboundp 'advice-add)
     (advice-add 'org-clock-resolve-clock :override #'my/org-clock-resolve-clock)
     (advice-add 'org-clock-resolve :override #'my/org-clock-resolve)))
+
+
+(deh-section "utils"
+
+  (require 'org)
+  (require 'org-clock)
+
+  (setq org-log-post-message "Stored the note.")
+
+  (defun org-store-log-note ()
+    "Finish taking a log note, and insert it to where it belongs."
+    (let ((txt (buffer-string)))
+      (kill-buffer (current-buffer))
+      (let ((note (cdr (assq org-log-note-purpose org-log-note-headings))) lines)
+        (while (string-match "\\`# .*\n[ \t\n]*" txt)
+          (setq txt (replace-match "" t t txt)))
+        (if (string-match "\\s-+\\'" txt)
+            (setq txt (replace-match "" t t txt)))
+        (setq lines (org-split-string txt "\n"))
+        (when (and note (string-match "\\S-" note))
+          (setq note
+                (org-replace-escapes
+                 note
+                 (list (cons "%u" (user-login-name))
+                       (cons "%U" user-full-name)
+                       (cons "%t" (format-time-string
+                                   (org-time-stamp-format 'long 'inactive)
+                                   org-log-note-effective-time))
+                       (cons "%T" (format-time-string
+                                   (org-time-stamp-format 'long nil)
+                                   org-log-note-effective-time))
+                       (cons "%d" (format-time-string
+                                   (org-time-stamp-format nil 'inactive)
+                                   org-log-note-effective-time))
+                       (cons "%D" (format-time-string
+                                   (org-time-stamp-format nil nil)
+                                   org-log-note-effective-time))
+                       (cons "%s" (cond
+                                    ((not org-log-note-state) "")
+                                    ((org-string-match-p org-ts-regexp
+                                                         org-log-note-state)
+                                     (format "\"[%s]\""
+                                             (substring org-log-note-state 1 -1)))
+                                    (t (format "\"%s\"" org-log-note-state))))
+                       (cons "%S"
+                             (cond
+                               ((not org-log-note-previous-state) "")
+                               ((org-string-match-p org-ts-regexp
+                                                    org-log-note-previous-state)
+                                (format "\"[%s]\""
+                                        (substring
+                                         org-log-note-previous-state 1 -1)))
+                               (t (format "\"%s\""
+                                          org-log-note-previous-state)))))))
+          (when lines (setq note (concat note " \\\\")))
+          (push note lines))
+        (when (or current-prefix-arg org-note-abort)
+          (when (org-log-into-drawer)
+            (org-remove-empty-drawer-at org-log-note-marker))
+          (setq lines nil))
+        (when lines
+          (with-current-buffer (marker-buffer org-log-note-marker)
+            (org-with-wide-buffer
+             (with-writable-buffer
+                 (goto-char org-log-note-marker)
+               (move-marker org-log-note-marker nil)
+               ;; Make sure point is at the beginning of an empty line.
+               (cond ((not (bolp)) (let ((inhibit-read-only t)) (insert "\n")))
+                     ((looking-at "[ \t]*\\S-") (save-excursion (insert "\n"))))
+               ;; In an existing list, add a new item at the top level.
+               ;; Otherwise, indent line like a regular one.
+               (let ((itemp (org-in-item-p)))
+                 (if itemp
+                     (org-indent-line-to
+                      (let ((struct (save-excursion
+                                      (goto-char itemp) (org-list-struct))))
+                        (org-list-get-ind (org-list-get-top-point struct) struct)))
+                     (org-indent-line)))
+               (insert (org-list-bullet-string "-") (pop lines))
+               (let ((ind (org-list-item-body-column (line-beginning-position))))
+                 (dolist (line lines)
+                   (insert "\n")
+                   (org-indent-line-to ind)
+                   (insert line)))
+               (message "Note stored")
+               (org-back-to-heading t)
+               (org-cycle-hide-drawers 'children)))
+            ;; Fix `buffer-undo-list' when `org-store-log-note' is called
+            ;; from within `org-add-log-note' because `buffer-undo-list'
+            ;; is then modified outside of `org-with-remote-undo'.
+            (when (eq this-command 'org-agenda-todo)
+              (setcdr buffer-undo-list (cddr buffer-undo-list)))))))
+    ;; Don't add undo information when called from `org-agenda-todo'
+    (let ((buffer-undo-list (eq this-command 'org-agenda-todo)))
+      (set-window-configuration org-log-note-window-configuration)
+      (with-current-buffer (marker-buffer org-log-note-return-to)
+        (goto-char org-log-note-return-to))
+      (move-marker org-log-note-return-to nil)
+      (and org-log-post-message (message "%s" org-log-post-message))))
+
+
+  (defun org-add-note-to-current-clock ()
+    (interactive)
+    (if (org-clock-is-active)
+        (org-with-clock (list org-clock-marker)
+          (with-writable-buffer
+              (org-add-note)))
+        (message "No current clock."))))
 
 
 (provide 'org-clock-config)
