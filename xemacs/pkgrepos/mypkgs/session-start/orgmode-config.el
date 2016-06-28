@@ -31,6 +31,10 @@
 (require 'files-config)
 (require 'timer-config)
 
+(deh-require-maybe (and
+                    org-bullets
+                    org-beautify-theme)
+  )
 
 (deh-require-maybe (and org-compat org)
   ;; publishing

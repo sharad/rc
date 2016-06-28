@@ -22,6 +22,8 @@
 
 (require 'init-config "~/.xemacs/init-config.el")
 (require 'files-config)
+(eval-when-compile
+ (require 'use-package))
 
 (deh-section "task config"
   (defvar *task-desc-file-name* ".task-desc" "*task-desc-file-name*")
@@ -2033,6 +2035,20 @@ which other peoples are also working."
          (assq major-mode develock-keywords-alist))
         (develock-mode -1))
     (highlight-changes-visible-mode -1)))
+
+(use-package timesheet
+    ;; https://github.com/tmarble/timesheet.el
+    :ensure t
+    :config
+    '())
+
+(when nil
+ (use-package wakatime-mode
+    ;; https://github.com/tmarble/timesheet.el
+    :ensure t
+    :config
+    (global-wakatime-mode)))
+
 
 
 (provide 'office-config)

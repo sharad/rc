@@ -39,7 +39,7 @@
 ;;      (expand-file-name "~/.xemacs/elpa/package.el"))
 ;;   (package-initialize))
 
-(require 'macros-config)
+(require 'init-config "~/.xemacs/init-config.el")
 
 (eval-after-load "package"
   '(progn

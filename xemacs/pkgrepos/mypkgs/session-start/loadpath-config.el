@@ -99,7 +99,8 @@
 (require 'auto-load-config)
 (require 'macros-config)
 (require 'basic-utils-config)
-
+(eval-when-compile
+ (require 'use-package))
 
 
 

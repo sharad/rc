@@ -536,10 +536,11 @@ from the dynamic block definition."
         (let ((maxlen 0))
           (apply #'max (mapcar #'length (split-string text "\n"))))
         0))
-  (defmacro custom-set-max (max value)
+  (eval-when-compile
+   (defmacro custom-set-max (max value)
     `(let ((val ,value))
        (if (< ,max val)
-           (setq ,max val))))
+           (setq ,max val)))))
   (defun org-report-get-max-line-length (tbl)
     (let ((max 0)
           (len 0))

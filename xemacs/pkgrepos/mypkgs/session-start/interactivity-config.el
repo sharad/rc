@@ -17,6 +17,10 @@
 ;;;;
 ;;;; ;;in the .emacs
 
+
+
+(require 'init-config "~/.xemacs/init-config.el")
+
 ;; (load-file "~/ido.elc")
 (eval-after-load "ido"
   '(defun ido-is-ftp-directory (&optional dir)
@@ -642,5 +646,22 @@
   ;; (cancel-timer zone-timer)
 
   )
+
+(when nil
+  (deh-section "swiper ivy etc"
+    ;; https://www.emacswiki.org/emacs/UsePackage
+    ;; http://oremacs.com/2015/04/16/ivy-mode/
+    ;; http://irreal.org/blog/
+    (use-package swiper
+        :ensure t
+        :config
+        (ivy-mode 1)
+        (setq ivy-use-virtual-buffers t)
+        (global-set-key-if-unbind (kbd "C-s") 'swiper)
+        (global-set-key-if-unbind (kbd "C-c C-r") 'ivy-resume)
+        (global-set-key-if-unbind (kbd "M-x") 'counsel-M-x)
+        (global-set-key-if-unbind (kbd "C-x C-f") 'counsel-find-file))
+    (use-package counsel
+        :ensure t)))
 
 (provide 'interactivity-config)
