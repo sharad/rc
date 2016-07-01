@@ -3,7 +3,7 @@
 ;; Copyright 2006 Ye Wenbin
 ;;
 ;; Author: wenbinye@163.com
-;; Time-stamp: <2013-03-02 10:11:55 s>
+;; Time-stamp: <2016-06-29 20:28:56 s>
 ;; Version: $Id: scroll-mode-line-mode.el,v 0.0 <2006-10-15 15:33:10> ywb Exp $
 ;; Keywords:
 ;; X-URL: not distributed yet

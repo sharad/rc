@@ -1253,6 +1253,24 @@ using three `C-u' prefix arguments."
          ;;  ?w "* %^{Title}\n\n  Source: %u, %c\n\n  %i" nil "Notes")
 
          (add-org-capture-templates
+          "c" "Current Clock")
+
+         (add-org-capture-templates
+          "ch" "Current Clock Heading"
+          'entry
+          '(clock))
+
+         (add-org-capture-templates
+          "ci" "Current Clock Item"
+          'item
+          '(clock))
+
+         (add-org-capture-templates
+          "cp" "Current Clock Plain"
+          'plain
+          '(clock))
+
+         (add-org-capture-templates
           "k" "Current Task"
           'entry
           `(file+headline
@@ -1339,7 +1357,7 @@ using three `C-u' prefix arguments."
           :empty-lines 1)
 
          (add-org-capture-templates
-          "c" "Contact" ;; contact
+          "ac" "Contact" ;; contact
           'entry
           `(file+headline ,(expand-file-name "contacts.org" org-parent-dir) "Contacts")
           "\n* %^{Name} :CONTACT:\n%[~/Documents/CreatedContent/contents/org/remember/templates/contact]\n %i\n [%a]\n"
