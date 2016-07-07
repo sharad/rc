@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(require 'init-config)
+(require 'init-config "~/.xemacs/init-config.el")
 
 
 ;; TODO: [[http://tuhdo.github.io/c-ide.html][C/C++ Development Environment for Emacs]]
@@ -721,6 +721,15 @@ Add directory to search path for source files using the GDB command, dir."))
   (deh-require-maybe desktop
    (add-to-list 'desktop-locals-to-save
                 'c-indentation-style)))
+
+
+
+(use-package uncrustify-mode
+    :ensure t
+    :config
+    (add-hook 'c-mode-common-hook
+              '(lambda ()
+                (uncrustify-mode 1)))
 
 (provide 'dev-config)
 ;;; dev-config.el ends here
