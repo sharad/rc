@@ -884,9 +884,8 @@ add_hook("kill_buffer_hook",
                $options = ["y", "n"]));
            yield co_return(result);
          });
-
+can_kill_last_buffer = false;
 // {{{
-
 
 //{{{ I think by the time kill_buffer_hook runs the buffer is gone so I
 // patch kill_buffer
@@ -1003,14 +1002,111 @@ define_key(default_global_keymap, "A-r",
           });
 //}}
 
+//{{ Limiting Buffers
+    // if (res == "y") { //
+    //   kill_buffer(buffer, true); //
+    // } //
+      // kill_buffer_to_limit_internal( (yield w.minibuffer.read_single_character_option($prompt = ("more than 10 buffers should kill buffer (y/n)"), $options = ["y", "n"])) );
+
+var max_buffer_hard_limit           = 30;
+var max_buffer_soft_limit           = 10;
+var max_buffer_soft_limit_increment = 5;
+var kill_buffer_to_limit_delay      = 3000;
+function kill_buffer_to_limit(buffer) {
+  var w = buffer.window;
+  w.setTimeout(
+    function() {
+      if (w.buffers.count > max_buffer_soft_limit) {
+        if (w.buffers.count > max_buffer_hard_limit ||
+            w.confirm("more than " + max_buffer_soft_limit +" buffers[" + w.buffers.count +"] should kill buffer")) {
+
+          kill_buffer(buffer, true);
+
+          if (w.buffers.count > max_buffer_hard_limit) {
+            w.minibuffer.message("killed the buffer it exceeding max hard limit " + max_buffer_hard_limit);
+          }
+
+        } else {
+
+          max_buffer_soft_limit += max_buffer_soft_limit_increment;
+          w.minibuffer.message("current max_buffer_soft_limit is incremented to " + max_buffer_soft_limit);
+
+        }
+      }
+    }, kill_buffer_to_limit_delay);
+}
+add_hook("create_buffer_late_hook", kill_buffer_to_limit);
+
+// interactive("test-xzy", //
+//             "Opens all bookmarks in the given group name.", //
+//            function (I) { //
+//              var w = I.window; //
+//              if (w.buffers.count > 1) { //
+//                w.alert("Hello"); //
+//                var res = yield w.minibuffer.read_single_character_option($prompt = ("more than 10 buffers[" + w.buffers.count +"] should kill buffer (y/n)"), $options = ["y", "n"]); //
+//                if (res == "y") //
+//                { //
+//                  w.alert("Hello"); //
+//                } //
+//              } //
+//            }); //
+// define_key(content_buffer_normal_keymap, "C-i", "test-xzy"); //
+
+//}}
+
+
+//{{ Bookmark Group [https://ericjmritz.name/2015/08/12/creating-bookmark-groups-in-conkeror/]
+let bookmark_groups = {
+  "NewsTech": [
+    "http://www.osnews.com",
+    "http://www.linuxtoday.com"
+  ],
+  "NewsIndia": [
+    "http://www.ndtv.com",
+    "http://www.jantakareporter.com"
+  ],
+  "Lua": [
+    "http://www.lua.org/manual/5.2/",
+    "http://www.love2d.org/wiki/Main_Page"
+  ],
+  "Reddit": [
+    "http://reddit.com/r/programming",
+    "http://reddit.com/r/emacs",
+    "http://reddit.com/r/coolgithubprojects",
+    "http://reddit.com/r/lua",
+  ],
+  "Scheme": [
+    "http://www.schemers.org/Documents/Standards/R5RS/HTML/",
+    "http://scsh.net/docu/html/man-Z-H-1.html#node_toc_start",
+    "http://scsh.net/docu/docu.html"
+  ],
+  "Bloodborne": [
+    "https://www.reddit.com/r/huntersbell/new/",
+    "http://bloodborne.wikidot.com/"
+  ]
+};
+
+interactive("open-bookmark-group",
+    "Opens all bookmarks in the given group name.",
+    function (I) {
+      var name = yield I.minibuffer.read(
+        $prompt = "Group", $history = "Group",
+        $completer = new prefix_completer($completions = Object.keys(bookmark_groups)),
+        $default_completion = "Plutono",
+        $require_match,
+        $auto_complete);
+
+      bookmark_groups[name].forEach(
+        function (element, index, array) {
+          load_url_in_new_buffer(element, I.window);
+      });
+    });
+
+define_key(content_buffer_normal_keymap, "C-c b", "open-bookmark-group");
+//}}
 
 
 tab_bar_mode(false); //disable
-
-
-
-
-
 
 // Local Variables: **
 // folded-file:t **
