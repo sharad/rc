@@ -1008,30 +1008,35 @@ define_key(default_global_keymap, "A-r",
     // } //
       // kill_buffer_to_limit_internal( (yield w.minibuffer.read_single_character_option($prompt = ("more than 10 buffers should kill buffer (y/n)"), $options = ["y", "n"])) );
 
-var max_buffer_hard_limit           = 30;
-var max_buffer_soft_limit           = 10;
-var max_buffer_soft_limit_increment = 5;
-var kill_buffer_to_limit_delay      = 3000;
+var fixed_max_buffer_hard_limit         = 30;
+var fixed_max_buffer_soft_limit         = 10;
+var dyn_max_buffer_soft_limit           = 10;
+var fixed_max_buffer_soft_limit_increment = 5;
+var kill_buffer_to_limit_delay          = 3000;
 function kill_buffer_to_limit(buffer) {
   var w = buffer.window;
   w.setTimeout(
     function() {
-      if (w.buffers.count > max_buffer_soft_limit) {
-        if (w.buffers.count > max_buffer_hard_limit ||
-            w.confirm("more than " + max_buffer_soft_limit +" buffers[" + w.buffers.count +"] should kill buffer")) {
+      if (w.buffers.count > dyn_max_buffer_soft_limit) {
+        if (w.buffers.count > fixed_max_buffer_hard_limit ||
+            w.confirm("more than " + dyn_max_buffer_soft_limit +" buffers[" + w.buffers.count +"] should kill buffer")) {
 
           kill_buffer(buffer, true);
 
-          if (w.buffers.count > max_buffer_hard_limit) {
-            w.minibuffer.message("killed the buffer it exceeding max hard limit " + max_buffer_hard_limit);
+          if (w.buffers.count > fixed_max_buffer_hard_limit) {
+            w.minibuffer.message("killed the buffer it exceeding max hard limit " + fixed_max_buffer_hard_limit);
           }
 
         } else {
 
-          max_buffer_soft_limit += max_buffer_soft_limit_increment;
-          w.minibuffer.message("current max_buffer_soft_limit is incremented to " + max_buffer_soft_limit);
+          dyn_max_buffer_soft_limit += fixed_max_buffer_soft_limit_increment;
+          w.minibuffer.message("current dyn_max_buffer_soft_limit is incremented to " + dyn_max_buffer_soft_limit);
 
         }
+      } else if (dyn_max_buffer_soft_limit > fixed_max_buffer_soft_limit &&
+                 dyn_max_buffer_soft_limit - w.buffers.count >= fixed_max_buffer_soft_limit_increment) {
+        dyn_max_buffer_soft_limit -= fixed_max_buffer_soft_limit_increment;
+        w.minibuffer.message("current dyn_max_buffer_soft_limit is decremented to " + dyn_max_buffer_soft_limit);
       }
     }, kill_buffer_to_limit_delay);
 }

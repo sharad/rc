@@ -714,6 +714,47 @@ Add directory to search path for source files using the GDB command, dir."))
 
   )
 
+
+(deh-section "editing case"
+  ;; http://stackoverflow.com/questions/9288181/converting-from-camelcase-to-in-emacs
+
+  (defun toggle-camelcase-underscores ()
+    "Toggle between camelcase and underscore notation for the symbol at point."
+    (interactive)
+    (save-excursion
+      (let* ((bounds (bounds-of-thing-at-point 'symbol))
+             (start (car bounds))
+             (end (cdr bounds))
+             (currently-using-underscores-p (progn (goto-char start)
+                                                   (re-search-forward "_" end t))))
+        (if currently-using-underscores-p
+            (progn
+              (upcase-initials-region start end)
+              (replace-string "_" "" nil start end)
+              (downcase-region start (1+ start)))
+            (replace-regexp "\\([A-Z]\\)" "_\\1" nil (1+ start) end)
+            (downcase-region start (cdr (bounds-of-thing-at-point 'symbol)))))))
+
+  (defun toggle-camelcase-underscores ()
+    "Toggle between camelcase and underscore notation for the symbol at point."
+    (interactive)
+    (save-excursion
+      (let* ((bounds (bounds-of-thing-at-point 'symbol))
+             (start (car bounds))
+             (end (cdr bounds))
+             (currently-using-underscores-p (progn (goto-char start)
+                                                   (re-search-forward "_" end t))))
+        (if currently-using-underscores-p
+            (progn
+              (upcase-initials-region start end)
+              (replace-string "_" "" nil start end)
+              (downcase-region start (1+ start)))
+            (replace-regexp "\\([A-Z]\\)" "_\\1" nil (1+ start) end)
+            (downcase-region start (cdr (bounds-of-thing-at-point 'symbol)))))))
+  ;; (local-set-key "\M-\C-C"  'un-camelcase-word-at-point)
+  )
+
+
 (deh-require-maybe cc-vars
   (deh-require-maybe session
    (add-to-list 'session-locals-include
