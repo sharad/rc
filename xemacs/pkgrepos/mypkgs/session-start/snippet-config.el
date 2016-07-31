@@ -28,12 +28,12 @@
 ;; (xrequire 'yasnippet-bundle) ;; not yasnippet-bundle
 
 (when (require 'expand-config)
-  (deh-require-maybe yasnippet ;; not yasnippet-bundle
+  (deh-require-maybe (and yasnippet-bundle yasnippet) ;; not yasnippet-bundle
     ;; Develop in ~/.xemacs/data/yasnippet/snippets/mysnippets, but also
     ;; try out snippets in ~/Downloads/interesting-snippets
     (defconst *mysnippet-dirs* "~/.xemacs/data/yasnippet/snippets/my")
     (defconst *downloaded-snippet-dirs* "~/.xemacs/data/yasnippet/snippets/downloaded")
-    (yas/initialize)
+    (when (fboundp 'yas/initialize) (yas/initialize))
     (setq yas/root-directory
           (append ; '("~/.xemacs/packages/yasnippet/snippets")
            (directory-files *mysnippet-dirs* t "^[a-zA-Z0-9-]+$")

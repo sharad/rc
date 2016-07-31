@@ -79,11 +79,13 @@
     ('file-error (message "error: %s" e) nil)))
 
 
+
+(when (and nil (boundp git-commit-mode-map))
 (deh-require-maybe magit
   ;; TODO: try to find instance when magit ask for key and recognize
   ;; it to set advice.
   (defadvice magit-push (before ad-update-ssh-agent-env activate)
-    (update-ssh-agent)))
+    (update-ssh-agent))))
 
 
 (provide 'vc-config)
