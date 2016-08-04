@@ -605,7 +605,7 @@
               "Predicate funtion to check if file matches to task-info's file attribute."
               (let ((root
                      (org-entry-task-info-get-property task-info :ROOT)))
-                (if root
+                (if (and root file)
                     (string-match
                      (file-truename root)
                      (file-truename file)))))
@@ -861,7 +861,8 @@
     (defvar last-buffer-select-time (current-time))
     (defvar buffer-select-timer nil)
     (defvar update-current-file-msg "")
-    (defvar org-entry-clocking-api-name :predicate "API")
+    ;; (defvar org-entry-clocking-api-name :predicate "API")
+    (defvar org-entry-clocking-api-name :keys "API")
     (defvar org-clocking-api-entries-associated-to-file-p (org-entry-clocking-api-get org-entry-clocking-api-name :entries))
     (defvar org-clocking-api-entry-associated-to-file-p   (org-entry-clocking-api-get org-entry-clocking-api-name :entry))
     (defvar org-clocking-api-entry-update-task-infos      (org-entry-clocking-api-get org-entry-clocking-api-name :update))

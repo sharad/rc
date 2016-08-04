@@ -468,10 +468,10 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
     echo # insert a empty line
 
     if whence -p rem > /dev/null 2>&1 ; then
-        command rem -ahq
+        command rem -ahq >& /dev/null
     elif whence -p remind > /dev/null 2>&1 ; then
         if [ -r $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem ] ; then
-            command remind -ahq $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem
+            command remind -ahq $HOME/Documents/CreatedContent/contents/misc/remind/Reminders/init.rem >& /dev/null
         fi
     fi
     if whence -p bugz >& /dev/null; then
