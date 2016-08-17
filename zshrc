@@ -317,7 +317,7 @@ else
 fi
 
 export GREP_COLOR=31
-export GREP_OPTIONS='--color=auto'
+# export GREP_OPTIONS='--color=auto' # deprecated
 export LESS='--RAW-CONTROL-CHARS' # --QUIT-AT-EOF --no-init
 export LESS='-R'                           #XE
 export MAILCHECK=1

@@ -33,6 +33,7 @@ maxage = 10
 [[Repository GmailLocal]]
 
 type = IMAP
+ssl = no
 remotehost = localhost
 remoteport = 143
 remoteusereval = get_username("localhost")
@@ -66,6 +67,7 @@ postsynchook = notmuch new
 [[Repository Office-Meru-Local]]
 type = IMAP
 # sep = /
+ssl = no
 remotehost = localhost
 remoteport = 143
 remoteusereval = get_username("localhost")
@@ -140,6 +142,7 @@ postsynchook = notmuch new
 [[Repository Office-Fortinet-Local]]
 type = IMAP
 # sep = /
+ssl = no
 remotehost = localhost
 remoteport = 143
 remoteusereval = get_username("localhost")

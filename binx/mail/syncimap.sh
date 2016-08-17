@@ -19,9 +19,11 @@ function main() {
         exit -1
     else
         # pkill offlineimap
-        if nm-tool | egrep -q 'DNS:[[:space:]]+[1-9]' ||
-           nm-tool | egrep -q 'State:[[:space:]]+connected' ||
-           true ; then
+        # if nm-tool | egrep -q 'DNS:[[:space:]]+[1-9]' ||
+        #   nm-tool | egrep -q 'State:[[:space:]]+connected' ||
+        #   true ; then
+	if true
+	then
             if ! pgrep offlineimap 2>&1 > /dev/null ; then
                 foreach acc ( $(echo ${account:-$OFFLINEIMAPACCOUNT}  | tr , ' ' ) ) {
 

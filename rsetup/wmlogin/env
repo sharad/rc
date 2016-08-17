@@ -22,9 +22,9 @@ else
 fi
 
 if ! pgrep gnome-keyring-d >& /dev/null ; then
-       echo Yes started gnome-keyring-daemon > ~/wmlogin.log
-       echo value of GNOME_KEYRING_CONTROL $GNOME_KEYRING_CONTROL  > ~/wmlogin.log
 # 	eval $(gnome-keyring-daemon --start )
+       echo Yes started gnome-keyring-daemon > ~/wmlogin.log
+       echo value of GNOME_KEYRING_CONTROL $GNOME_KEYRING_CONTROL  > ~/.wmlogin.log
 if
 
 

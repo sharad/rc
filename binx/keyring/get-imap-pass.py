@@ -50,11 +50,13 @@ def get_password(server):
 def main(argv):
    inputfile = ''
    outputfile = ''
+
    try:
-      opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
+      opts, args = getopt.getopt(argv,"hpui:o:",["ifile=","ofile="])
    except getopt.GetoptError:
       print 'get-imap-pass.py <server>'
       sys.exit(2)
+
    for opt, arg in opts:
       if opt == '-h':
          print 'test.py -i <inputfile> -o <outputfile>'
@@ -63,8 +65,13 @@ def main(argv):
          inputfile = arg
       elif opt in ("-o", "--ofile"):
          outputfile = arg
-   # print sys.argv[1]
-   print get_password(sys.argv[1])
+      elif opt == '-p':
+         print get_password(args[0])
+      elif opt == '-u':
+         print get_username(args[0])
+
+   # print args[0]
+
 
 if __name__ == "__main__":
    main(sys.argv[1:])
