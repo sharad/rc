@@ -1062,13 +1062,80 @@ add_hook("create_buffer_late_hook", kill_buffer_to_limit);
 
 //{{ Bookmark Group [https://ericjmritz.name/2015/08/12/creating-bookmark-groups-in-conkeror/]
 let bookmark_groups = {
-  "NewsTech": [
+  "NewsTechScience": [
     "http://www.osnews.com",
     "http://www.linuxtoday.com"
   ],
+  "NewsScience": [
+    "https://www.newscientist.com",
+    "https://www.sciencedaily.com",
+    "http://phys.org/",
+    "http://www.sciencemag.org",
+    "https://www.quantamagazine.org",
+    "http://www.nature.com",
+    "https://www.sciencenews.org"
+  ],
   "NewsIndia": [
+    "http://www.aninews.in",
+    "http://www.ptinews.com",
     "http://www.ndtv.com",
     "http://www.jantakareporter.com"
+  ],
+  "NewsWorld": [
+    "http://www.bbc.com",
+    "http://www.economist.com",
+    "http://www.huffingtonpost.com",
+    "http://www.theatlantic.com",
+    "http://sputniknews.com",
+    "https://www.theguardian.com",
+    "http://www.telegraph.co.uk",
+    "http://dunyanews.tv",
+    "http://www.dawn.com"
+  ],
+  "NewsOffBeats": [
+    "http://www.bbc.com/future",
+    "http://www.wired.com",
+    "http://www.messagetoeagle.com",
+    "http://www.sci-news.com"
+  ],
+  "NewsTv": [
+    "http://www.reuters.tv",
+  ],
+  "NewsHindi": [
+    "http://khabar.ndtv.com",
+    "http://www.bhaskar.com",
+    "http://www.amarujala.com",
+    "http://www.jagran.com",
+    "http://hindi.boldsky.com"
+  ],
+  "NewsElectronics": [
+    "https://www.quora.com/What-are-the-top-10-websites-electronics-communication-students-must-visit",
+    "http://www.physics-and-radio-electronics.com/electronic-devices-and-circuits.html",
+    "http://www.allaboutcircuits.com/",
+    "http://www.extremetech.com/category/electronics",
+    "http://www.circuitstoday.com",
+    "http://electronicdesign.com",
+    "http://www.eetimes.com",
+    "http://www.embedded.com"
+
+  ],
+  "NewsAgra": [
+    "http://www.amarujala.com/uttar-pradesh/agra",
+    "http://www.jagran.com/local/uttar-pradesh_agra-city-news-hindi.html",
+    "http://www.bhaskar.com/uttar-pradesh/agra/"
+  ],
+  "NewsGossip": [
+    "https://thedirty.com"
+  ],
+  "NewsIndianHistory": [
+    "http://www.stephen-knapp.com"
+  ],
+  "NewsPsychology": [
+    "http://www.apa.org",
+    "https://www.psychologytoday.com",
+  ],
+  "NewsDIY": [
+    "http://www.instructables.com"
   ],
   "Lua": [
     "http://www.lua.org/manual/5.2/",
