@@ -33,7 +33,8 @@
     (let ((w (get-buffer-window "*BBDB*")))
       (when w
         ;; (run-at-time "4 sec" nil #'delete-window w))))
-        (run-at-time "4 sec" nil #'old-delete-window w))))
+        (run-at-time "4 sec" nil #'(lambda (w)
+                                     (if (windowp w) (old-delete-window w))) w))))
   (define-key gnus-summary-mode-map (kbd "s-c s-v")  'bbdb/gnus-pop-up-bbdb-buffer)
 
   (setq bbdb-use-pop-up t

@@ -945,7 +945,10 @@
 
     (defun org-entry-run-associated-clock (file)
       (let ()
-        (let* ((matched-clocks (org-markers-associated-to-file file))
+        (let* ((matched-clocks
+                (remove-if-not
+                 '(lambda (marker) (marker-buffer marker))
+                 (org-markers-associated-to-file file)))
                (selected-clock (if (> (length matched-clocks) 1)
                                    (org-clock-select-task-from-clocks matched-clocks)
                                    (car matched-clocks))))
