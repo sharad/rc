@@ -23,7 +23,8 @@
 (require 'init-config "~/.xemacs/init-config.el")
 (require 'files-config)
 (eval-when-compile
- (require 'use-package))
+  (require 'use-package)
+  (require 'orgmode-config))
 
 (deh-section "task config"
   (defvar *task-desc-file-name* ".task-desc" "*task-desc-file-name*")
