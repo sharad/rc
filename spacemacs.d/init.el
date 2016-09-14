@@ -45,6 +45,7 @@ values."
      ;; editorconfig
      themes-megapack
      ;; perspectives
+     misc
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -277,7 +278,8 @@ you should place your code here."
     (set-face-attribute 'default nil ;(/ (* (x-display-mm-width) 121) 600)
                         :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)
                         :width  'normal))
-  (mycustom-face-set))
+  ;; (mycustom-face-set)
+  )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.

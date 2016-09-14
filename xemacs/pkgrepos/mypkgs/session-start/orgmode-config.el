@@ -518,6 +518,12 @@ With prefix arg C-u, copy region instad of killing it."
               (beginning-of-line)
               (let (buffer-read-only)
                 ,@forms)))))
+
+     (add-hook
+      'kill-emacs-hook
+      (lambda ()
+        (let (org-log-note-clock-out)
+          (org-clock-out))))
      ) ;; deh-section "miscellaneous"
 
     (deh-section "today time"

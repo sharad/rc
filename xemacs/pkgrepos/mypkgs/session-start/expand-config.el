@@ -121,6 +121,8 @@
 (deh-require-maybe yasnippet
   ;; inplace of tab I want it to use C->
   (setq yas/trigger-key "C->")
+
+  (setq-default yas-fallback-behavior '(apply indent-for-tab-command . nil))
   ;; do not want it.
   ;; (setq yas/trigger-key "")
   )
