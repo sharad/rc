@@ -53,6 +53,12 @@
 ;; epa-passphrase-callback-function
 ;; ;; (defun epa-passphrase-callback-function (context key-id handback)
 
+(add-hook 'emacs-startup-hook
+          '(lambda ()
+            (message-notify "Emacs" "Loaded Completely :)")
+            (message "\n\n\n\n")))
+
+
 (deh-section "set dbus env"
   (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
                           ":0.0"))
@@ -63,21 +69,19 @@
      (concat
       "~/.dbus/session-bus/"
       (trim-string (sharad/read-file "/var/lib/dbus/machine-id"))
-      "-" dismajor-str))))
+      "-" dismajor-str)))
 
-(add-hook 'emacs-startup-hook
-          '(lambda ()
-            (message-notify "Emacs" "Loaded Completely :)")
-            (message "\n\n\n\n")))
+  (defun set-dbus-session ()
+    (interactive)
+    (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
+                            ":0.0"))
+           (dismajor-str (if (>= (length display-str) 2)
+                             (substring display-str 1 2)
+                             "0")))
+      (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-" dismajor-str))))
 
-(add-hook 'sharad/enable-login-session-interrupting-feature-hook
-          '(lambda ()
-            (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
-                                    ":0.0"))
-                   (dismajor-str (if (>= (length display-str) 2)
-                                     (substring display-str 1 2)
-                                     "0")))
-              (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-" dismajor-str)))))
+  (add-hook 'sharad/enable-login-session-interrupting-feature-hook 'set-dbus-session)
+  (add-hook 'sharad/enable-startup-interrupting-feature-hook 'set-dbus-session))
 
 (provide 'startup-config)
 ;;; startup-config.el ends here

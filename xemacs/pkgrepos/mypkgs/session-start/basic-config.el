@@ -299,6 +299,20 @@ alkready should not exist.")
 
 ;;{{
 
+(defun run-at-time-or-now (time fn)
+  "Run FN at TIME if numeric is otherwise run now only."
+  (if (numberp time)
+      (run-with-timer time nil fn)
+      (funcall fn)))
+
+(defun run-at-time-or-now-arg (time fn arg)
+  "Run FN with ARG at TIME if numeric is otherwise run now only."
+  (if (numberp time)
+      (run-with-timer time nil
+                      (lambda (a) (funcall (car a) (cdr a)))
+                      (cons fn arg))
+      (funcall fn arg)))
+
 ;; (defvar startup-select-frame-fn #'select-frame "startup-select-frame-fn")
 (defvar startup-select-frame-fn #'select-frame-set-input-focus "startup-select-frame-fn")
 
@@ -432,6 +446,11 @@ startup in daemon mode."
 ;;{{
 (deh-section "login-session-interrupting-feature"
   (defvar *minimum-disable-login-session-frames* 3 "Minimum disable login session frames")
+
+  (defun any-frame-opened-p ()
+    (< (length (frame-list)) *minimum-disable-login-session-frames*))
+
+
   ;; don't mislead by login it is when no frame or 1 or more frame hook
   ;; basiclly used accross login where emacs daemon outlive.
   ;; can be used for other purpose.
@@ -451,7 +470,7 @@ startup in daemon mode."
          (run-each-hooks 'sharad/disable-login-session-interrupting-feature)))
 
    (defun sharad/disable-login-session-interrupting-feature-in-frame-once (f)
-     (when (< (length (frame-list)) *minimum-disable-login-session-frames*) ;last
+     (when (any-frame-opened-p) ;last
                                                                             ;frame
                                                                             ;then
                                                                             ;add.
@@ -483,7 +502,7 @@ startup in daemon mode."
       (funcall startup-select-frame-fn frame)
       ;; run and disable.
       (with-report-error "check"
-          (when (< (length (frame-list)) *minimum-disable-login-session-frames*)
+          (when (any-frame-opened-p)
             (sharad/enable-login-session-interrupting-feature))
           (remove-hook 'after-make-frame-functions 'sharad/enable-login-session-interrupting-feature-in-frame-once)
           (when t

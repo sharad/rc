@@ -31,15 +31,6 @@
 (require 'files-config)
 (require 'timer-config)
 
-(deh-require-maybe (and
-                    org-bullets
-                    ;; org-beautify-theme
-                    )
-  )
-
-(ignore-errors
-  (require 'org-beautify-theme nil))
-
 (deh-require-maybe (and org-compat org)
   ;; publishing
 
@@ -53,8 +44,9 @@
   ;;   "Regular expressions for special string conversion.")
 
 
-  (eval-when-compile
-    '(deh-section "org macro"
+  (progn
+    ;; eval-when-compile
+    (deh-section "org macro"
 
       (defmacro org-with-refile (refile-targets &rest body)
         "Refile the active region.
@@ -83,11 +75,11 @@ With prefix arg C-u, copy region instad of killing it."
       (put 'org-with-file-headline 'lisp-indent-function 2)
 
       (defmacro org-with-clock-writeable-buffer (&rest body)
-        (let ((buff (org-base-buffer (marker-buffer org-clock-marker))))
-          (when buff
-            (with-current-buffer buff
-              (let (buffer-read-only)
-                ,@body)))))))
+        `(let ((buff (org-base-buffer (marker-buffer org-clock-marker))))
+           (when buff
+             (with-current-buffer buff
+               (let (buffer-read-only)
+                 ,@body)))))))
 
 (deh-section "move org"
 
@@ -490,10 +482,13 @@ With prefix arg C-u, copy region instad of killing it."
 
      (add-hook 'sharad/enable-startup-interrupting-feature-hook
                '(lambda ()
-
                  (add-hook 'after-make-frame-functions
                   '(lambda (nframe)
-                    (org-clock-in-if-not)) t)
+                    (run-at-time-or-now 100
+                     '(lambda ()
+                       (if (any-frame-opened-p)
+                           (org-clock-in-if-not)))))
+                  t)
 
                  (add-hook 'delete-frame-functions
                   '(lambda (nframe)
@@ -502,7 +497,8 @@ With prefix arg C-u, copy region instad of killing it."
                          (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
                         (org-with-clock-writeable-buffer
                          (let (org-log-note-clock-out)
-                           (org-clock-out)))))))
+                           (if (org-clock-is-active)
+                               (org-clock-out))))))))
                t)
 
      (add-hook 'sharad/enable-desktop-restore-interrupting-feature
@@ -527,8 +523,14 @@ With prefix arg C-u, copy region instad of killing it."
      (add-hook
       'kill-emacs-hook
       (lambda ()
-        (let (org-log-note-clock-out)
-          (org-clock-out))))
+        (if (and
+             (org-clock-is-active)
+             ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
+             )
+            (org-with-clock-writeable-buffer
+             (let (org-log-note-clock-out)
+               (if (org-clock-is-active)
+                (org-clock-out)))))))
      ) ;; deh-section "miscellaneous"
 
     (deh-section "today time"
@@ -1491,6 +1493,15 @@ using three `C-u' prefix arguments."
         (setq x2 (search-backward "<"))
         (mm-url-decode-entities-string (buffer-substring-no-properties x1 x2))))))
 
+(deh-section "beautification"
+  (deh-require-maybe (and
+                      org-bullets
+                      ;; org-beautify-theme
+                      )
+    )
+
+  (ignore-errors
+    (require 'org-beautify-theme nil)))
 
 (provide 'orgmode-config)
 ;; orgmode-config.el ends here

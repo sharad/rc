@@ -576,7 +576,7 @@
            on-blur--timer)
       (cancel-timer on-blur--timer)))
 
- (add-hook 'sharad/enable-login-session-inperrupting-feature
+ (add-hook 'sharad/enable-login-session-interrupting-feature-hook
            '(lambda ()
              (if (and (featurep 'x) window-system)
                  (unless (and (boundp 'on-blur--timer)
@@ -584,7 +584,7 @@
                    (run-on-blur-timer))
                  (message "Not in Graphical Window system."))))
 
- (add-hook 'sharad/disable-login-session-inperrupting-feature
+ (add-hook 'sharad/disable-login-session-interrupting-feature-hook
            '(lambda ()
              (when (and
                     (featurep 'x)

@@ -1062,6 +1062,10 @@ add_hook("create_buffer_late_hook", kill_buffer_to_limit);
 
 //{{ Bookmark Group [https://ericjmritz.name/2015/08/12/creating-bookmark-groups-in-conkeror/]
 let bookmark_groups = {
+  "Krishan": [
+    "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects",
+    "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects"
+  ],
   "NewsTechScience": [
     "http://www.osnews.com",
     "http://www.linuxtoday.com"

@@ -530,6 +530,8 @@
 
     (require 'emacs-panel)
 
+    (defvar *desktop-vc-read-inprogress* nil "desktop-vc-read-inpgrogress")
+
     (defun frame-session-set-this-location (nframe &optional not-ask)
       (interactive
        (list (selected-frame)))
@@ -559,7 +561,7 @@
       (message "in frame-session-restore")
       (if (and
            *frame-session-restore*
-           (null *desktop-vc-read-inpgrogress*))
+           (null *desktop-vc-read-inprogress*))
           (progn
             (message "pass in frame-session-restore")
             (if nframe (select-frame nframe) (error "nframe is nil"))
@@ -571,11 +573,11 @@
             (message-notify
              "frame-session-restore"
              "not restoring screen session.")
-            (if *desktop-vc-read-inpgrogress*
+            (if *desktop-vc-read-inprogress*
                 (message-notify
                  "frame-session-restore"
-                 "as desktop restore is in progress *desktop-vc-read-inpgrogress* %s"
-                 *desktop-vc-read-inpgrogress*))
+                 "as desktop restore is in progress *desktop-vc-read-inprogress* %s"
+                 *desktop-vc-read-inprogress*))
             (if (null *frame-session-restore*)
                 (message-notify
                  "frame-session-restore"
@@ -603,15 +605,38 @@
 
 
     ;; (add-hook '*sharad/after-init-hook*
-    (add-hook 'sharad/enable-startup-interrupting-feature-hook
+    (add-hook 'sharad/enable-startup-interrupting-feature-hook ;new
               '(lambda ()
                 ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
-                (add-hook 'after-make-frame-functions '(lambda (nframe) (frame-session-restore nframe t)) t)
+                (add-hook
+                 'after-make-frame-functions
+                 '(lambda (nframe)
+                   (run-at-time-or-now-arg 3
+                    (lambda (frm)
+                      (let ((*frame-session-restore* t))
+                          (frame-session-restore frm t)))
+                    nframe))
+                  t)
                 (add-hook 'delete-frame-functions 'frame-session-save)
                 ;; (add-hook 'kill-emacs-hook 'save-all-frames-session)) ; done in save-all-sessions-auto-save
                 ;; t
                 )
               t)
+
+    (when nil                           ;old
+     (add-hook 'sharad/enable-startup-interrupting-feature-hook
+              '(lambda ()
+                ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
+                (add-hook
+                 'after-make-frame-functions
+                 '(lambda (nframe)
+                   (frame-session-restore nframe t))
+                 t)
+                (add-hook 'delete-frame-functions 'frame-session-save)
+                ;; (add-hook 'kill-emacs-hook 'save-all-frames-session)) ; done in save-all-sessions-auto-save
+                ;; t
+                )
+              t))
 
   (testing
      (frame-parameter (selected-frame) 'frame-spec-id)
@@ -620,7 +645,6 @@
      *sharad/after-init-hook*
      ))
   ;;}}
-
 
 (deh-require-maybe desktop
   ;; (testing
@@ -823,9 +847,6 @@ Also returns nil if pid is nil."
       (setq desktop-file-modtime (nth 5 (file-attributes desktop-save-filename
                                                          ;; (desktop-full-file-name)
                                                          )))))
-
-  (defvar *desktop-vc-read-inpgrogress* nil "desktop-vc-read-inpgrogress")
-
   ;; NOTE:
   ;; (setq desktop-restore-eager 2)
   (setq desktop-restore-eager 0) ;; for avoiding error from read only buffer when applying pabber-expand-mode
@@ -836,7 +857,7 @@ Also returns nil if pid is nil."
     (let* ((desktop-save-filename (or desktop-save-filename *desktop-save-filename*))
            (desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
       (prog1
-          (setq *desktop-vc-read-inpgrogress* t)
+          (setq *desktop-vc-read-inprogress* t)
         (if
 
 
@@ -850,7 +871,7 @@ Also returns nil if pid is nil."
 
          (desktop-read (dirname-of-file desktop-save-filename))
 
-            (setq *desktop-vc-read-inpgrogress* nil)
+            (setq *desktop-vc-read-inprogress* nil)
             (message "desktop read failed."))
         (message-notify "desktop-vc-read" "finished."))))
 
@@ -1161,7 +1182,8 @@ If there are no buffers left to create, kill the timer."
   ;; ;; ask user whether to restore desktop at start-up
   (add-hook ;; 'after-init-hook
    'sharad/enable-startup-interrupting-feature-hook
-   'sharad/desktop-session-restore)
+   '(lambda ()
+     (run-at-time-or-now 7 'sharad/desktop-session-restore)))
 
   ;; Then type ‘M-x session-save’, or ‘M-x session-restore’ whenever you want to save or restore a desktop. Restored desktops are deleted from disk.
 
