@@ -1,6 +1,6 @@
 ;; -*- truncate-lines: t; -*-
 
-(require 'macros-config)
+(require 'init-config "~/.xemacs/init-config.el")
 
 (defun increase-font-size (size)
   (custom-set-faces
@@ -96,6 +96,35 @@
 
   (deh-section "face size"
 
+    (defun maxmin-optimized-value (val scale div &optional max min)
+      (let ((opt (/ (* val scale) div)))
+        (if (and max
+                 (> max 0)
+                 (> opt max))
+            max
+            (if (and min
+                     (> min 0)
+                     (< opt min))
+                min
+                opt))))
+
+
+    ;; set attributes
+    (defun mycustom-face-set ()
+      "thisandthat."
+      (interactive)
+      (set-face-attribute 'default nil ;(/ (* (x-display-mm-width) 121) 600)
+                          ;; (x-display-pixel-height)
+                          :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)
+                          :width  'normal))
+
+
+    ;; (mycustom-face-set)
+    ;;:font FONT)
+    ;; get attributes
+    ;; (face-attribute 'default :font)
+    ;; (face-attribute 'default :height)
+
     (defvar *custom-xface-factor* 7)
 
     (defun set-default-face-height-by-resolution (&optional height)
@@ -103,18 +132,19 @@
        (list (read-number "Face height: "
                           (if (and (featurep 'x)
                                     window-system
-                                    (x-display-pixel-height))
-                              (/ (x-display-pixel-height) *custom-xface-factor*)
+                                    (x-display-mm-height))
+                              (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)
                               (face-attribute 'default :height)))))
       (if (and (featurep 'x) window-system)
-          (if (x-display-pixel-height)
-              (set-face-attribute 'default nil :height (/ (x-display-pixel-height) *custom-xface-factor*))
+          (if (x-display-mm-height)
+              (if (any-frame-opened-p)
+               (set-face-attribute 'default nil :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)))
               (message "(x-display-pixel-height) return nil"))
           (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
 
-    (add-hook 'sharad/enable-startup-interrupting-feature-hook 'set-default-face-height-by-resolution))
-
-
+    (add-hook 'sharad/enable-startup-interrupting-feature-hook
+              '(lambda ()
+                (run-at-time-or-now 3 '(lambda () (set-default-face-height-by-resolution))))))
 
 (deh-section "face help"
   ;; http://stackoverflow.com/questions/1242352/get-font-face-under-cursor-in-emacs

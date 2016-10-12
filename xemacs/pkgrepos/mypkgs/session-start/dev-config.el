@@ -128,6 +128,8 @@
 
 ;; remove-useless-whitespace
 (deh-require-maybe develock
+
+  ;; develock-mode
                   ;for now
   (when (ad-find-advice 'indent-region 'around 'remove-useless-whitespace)
     (ad-remove-advice 'indent-region 'around 'remove-useless-whitespace)

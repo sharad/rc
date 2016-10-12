@@ -603,27 +603,26 @@
       (dolist (f (frame-list))
 	(frame-session-save f)))
 
+    ;; ;; (add-hook '*sharad/after-init-hook*
+    ;; (add-hook 'sharad/enable-startup-interrupting-feature-hook ;new
+    ;;           '(lambda ()
+    ;;             ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
+    ;;             (add-hook
+    ;;              'after-make-frame-functions
+    ;;              '(lambda (nframe)
+    ;;                (run-at-time-or-now-arg 3
+    ;;                 (lambda (frm)
+    ;;                   (let ((*frame-session-restore* t))
+    ;;                       (frame-session-restore frm t)))
+    ;;                 nframe))
+    ;;               t)
+    ;;             (add-hook 'delete-frame-functions 'frame-session-save)
+    ;;             ;; (add-hook 'kill-emacs-hook 'save-all-frames-session)) ; done in save-all-sessions-auto-save
+    ;;             ;; t
+    ;;             )
+    ;;           t)
 
-    ;; (add-hook '*sharad/after-init-hook*
-    (add-hook 'sharad/enable-startup-interrupting-feature-hook ;new
-              '(lambda ()
-                ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
-                (add-hook
-                 'after-make-frame-functions
-                 '(lambda (nframe)
-                   (run-at-time-or-now-arg 3
-                    (lambda (frm)
-                      (let ((*frame-session-restore* t))
-                          (frame-session-restore frm t)))
-                    nframe))
-                  t)
-                (add-hook 'delete-frame-functions 'frame-session-save)
-                ;; (add-hook 'kill-emacs-hook 'save-all-frames-session)) ; done in save-all-sessions-auto-save
-                ;; t
-                )
-              t)
-
-    (when nil                           ;old
+    (when t                             ;old
      (add-hook 'sharad/enable-startup-interrupting-feature-hook
               '(lambda ()
                 ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
@@ -1119,6 +1118,11 @@ If there are no buffers left to create, kill the timer."
                 (if (sharad/desktop-saved-session)
                     (progn
                       (message-notify "sharad/desktop-session-restore" "sharad/desktop-session-restore")
+                      (progn            ;remove P4
+                       (setq vc-handled-backends (remove 'P4 vc-handled-backends))
+                       (add-hook 'sharad/enable-desktop-restore-interrupting-feature
+                                 '(lambda ()
+                                   (add-to-list 'vc-handled-backends 'P4))))
                       (if show-error
 
                           (if (desktop-vc-read *desktop-save-filename*)

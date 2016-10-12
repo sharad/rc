@@ -36,33 +36,5 @@
 ;; (x-display-mm-height) 286
 
 
-(defun maxmin-optimized-value (val scale div &optional max min)
-  (let ((opt (/ (* val scale) div)))
-    (if (and max
-             (> max 0)
-             (> opt max))
-        max
-        (if (and min
-                 (> min 0)
-                 (< opt min))
-            min
-            opt))))
-
-
-;; set attributes
-(defun mycustom-face-set ()
-  "thisandthat."
-  (interactive)
-  (set-face-attribute 'default nil ;(/ (* (x-display-mm-width) 121) 600)
-                      :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)
-                      :width  'normal))
-
-
-;; (mycustom-face-set)
-;;:font FONT)
-;; get attributes
-;; (face-attribute 'default :font)
-;; (face-attribute 'default :height)
-
 
 (provide 'display-config)

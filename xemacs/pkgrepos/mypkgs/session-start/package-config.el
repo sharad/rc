@@ -109,12 +109,15 @@ Usage: (package-require 'package)"
       (error (package-install package))))
 
   (add-hook 'sharad/enable-desktop-restore-interrupting-feature
+            ;; 'sharad/enable-startup-interrupting-feature-hook
             '(lambda ()
-              ;; Initialize installed packages
-              (package-initialize)
-              ;; package init not needed, since it is done anyway in emacs 24 after reading the init
-              ;; but we have to load the list of available packages
-              (package-refresh-contents))))
+              (run-at-time-or-now 7
+               '(lambda ()
+                 ;; Initialize installed packages
+                 (package-initialize)
+                 ;; package init not needed, since it is done anyway in emacs 24 after reading the init
+                 ;; but we have to load the list of available packages
+                 (package-refresh-contents))))))
 
 (defun sharad/update-installed-package-archive ()
   (interactive)
