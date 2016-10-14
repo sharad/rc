@@ -27,7 +27,7 @@ values."
    ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '()
+   dotspacemacs-configuration-layer-path '("~/.spacemacs-mycontribs/")
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
@@ -60,6 +60,12 @@ values."
      themes-megapack
      perspectives
      misc
+
+
+
+     ;; .spacemacs-mycontribution
+     basic-startup
+     basic-utils
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -269,7 +275,7 @@ values."
    dotspacemacs-line-numbers nil
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
-   dotspacemacs-folding-method 'evil
+   dotspacemacs-folding-method 'origami
    ;; If non-nil smartparens-strict-mode will be enabled in programming modes.
    ;; (default nil)
    dotspacemacs-smartparens-strict-mode nil
@@ -316,7 +322,24 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-  )
+  (defun maxmin-optimized-value (val scale div &optional max min)
+    (let ((opt (/ (* val scale) div)))
+      (if (and max
+               (> max 0)
+               (> opt max))
+          max
+        (if (and min
+                 (> min 0)
+                 (< opt min))
+            min
+          opt))))
+  ;; set attributes
+  (defun mycustom-face-set ()
+    "thisandthat."
+    (interactive)
+    (set-face-attribute 'default nil ;(/ (* (x-display-mm-width) 121) 600)
+                        :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)
+                        :width  'normal)))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
