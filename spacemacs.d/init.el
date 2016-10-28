@@ -64,14 +64,14 @@ values."
 
 
      ;; .spacemacs-mycontribution
-     basic-startup
+     ;; basic-startup
      basic-utils
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(elscreen)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -120,7 +120,7 @@ values."
    ;; (default 'vim)
    dotspacemacs-editing-style 'emacs
    ;; If non nil output loading progress in `*Messages*' buffer. (default nil)
-   dotspacemacs-verbose-loading nil
+   dotspacemacs-verbose-loading t
    ;; Specify the startup banner. Default value is `official', it displays
    ;; the official spacemacs logo. An integer value is the index of text
    ;; banner, `random' chooses a random text banner in `core/banners'
@@ -313,7 +313,9 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  )
+  (push "~/.spacemacs-mycontribs/local" load-path)
+  (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
+  (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -322,6 +324,7 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+  (push "~/.spacemacs-mycontribs/local" load-path)
   (defun maxmin-optimized-value (val scale div &optional max min)
     (let ((opt (/ (* val scale) div)))
       (if (and max

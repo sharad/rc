@@ -78,7 +78,7 @@ then
 		idle 0
 		EOF
 
-            screen -S $SCREEN4KEYCHAIN -c $screentmprc
+            screen -S $SCREEN4KEYCHAIN -c $screentmprc -d -m
             rm -f $screentmprc
 
         fi                  # if screen -x $SCREEN4KEYCHAIN -ls

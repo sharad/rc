@@ -482,14 +482,14 @@ With prefix arg C-u, copy region instad of killing it."
 
      (add-hook 'sharad/enable-startup-interrupting-feature-hook
                '(lambda ()
-                 (add-hook 'after-make-frame-functions
-                  '(lambda (nframe)
-                    (run-at-time-or-now 100
-                     '(lambda ()
-                       (if (any-frame-opened-p)
-                           (org-clock-in-if-not)))))
-                  t)
-
+                 (when nil
+                   (add-hook 'after-make-frame-functions
+                             '(lambda (nframe)
+                               (run-at-time-or-now 100
+                                '(lambda ()
+                                  (if (any-frame-opened-p)
+                                      (org-clock-in-if-not)))))
+                             t))
                  (add-hook 'delete-frame-functions
                   '(lambda (nframe)
                     (if (and

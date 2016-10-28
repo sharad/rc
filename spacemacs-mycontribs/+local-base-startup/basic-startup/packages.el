@@ -31,9 +31,11 @@
 
 (defconst basic-startup-packages
   '(
-    basic-macros
-    basic-utils
-    basic-session
+    (general-testing :location local)
+    (basic-macros :location local)
+    (basic-utils :location local)
+    (basic-startup-session :location local)
+    (dot-emacs-helper :location local)
     )
   "The list of Lisp packages required by the basic-startup layer.
 
@@ -62,5 +64,21 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+(defun basic-startup/init-basic-macros ()
+  )
+
+(defun basic-startup/init-basic-utils ()
+  (use-package basic-utils
+    :init))
+
+(defun basic-startup/init-basic-startup-session ()
+  (use-package basic-startup-session
+    :init))
+
+(defun basic-startup/init-dot-emacs-helper ()
+  (use-package dot-emacs-helper))
+
+(defun basic-startup/init-general-testing ()
+  )
 
 ;;; packages.el ends here

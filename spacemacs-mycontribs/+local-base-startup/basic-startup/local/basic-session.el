@@ -30,60 +30,60 @@
 ;; Some macros.
 
 
-;;{{{ start: http://emacs-fu.blogspot.com/2008/12/using-packages-functions-only-if-they.html
-
-(eval-when-compile
-  (require 'cl))
-;; If you place the macros somewhere in the beginning of your
-;; .emacs, you can use them as follows (just some examples):
-;; change cursor color based on mode (insert/overwrite)
-(when (require-maybe 'cursor-chg)  ; Load this library
-  (change-cursor-mode 1) ; On for overwrite/read-only/input mode
-  (toggle-cursor-type-when-idle 1)) ; On when idle
-;; and
-(when-available 'set-fringe-mode  ; emacs22+
-  (set-fringe-mode 2))            ; don't have too much space left of col1
-;;}}}
-
-
-
-
-;;;;;;; My loading function ;;;;;;;
-(defvar *desuffix* "sharad"
-  "User custom elisp feature name suffix
-Note it should be a unique name so *desuffix*-feature
-alkready should not exist.")
-
-;; (defun delete-suffix (suffix string)
-;;   (if (and suffix (string-match (concat "^" suffix "-") string))
-;;       (substring string (+ 1 (length suffix)))
-;;       string))
-
-
-
-
-;; (eq 'aa (intern "aa"))
-
-;; (user-require 'gnus)
-
-; (intern "asdfsdaf")
-
-;; (defun user-require (feature &optional suffix)
-;;   (let ((file (concat (delete-suffix
-;;                         (symbol-name suffix)
-;;                         (delete-suffix *desuffix* (symbol-name feature))) ".el"))
-;;         (load-path '("~/.xemacs/session-start.d" "~/.gnus.d")))
-;;     (require feature file)))
-
-(defvar *user-module-loaded* nil "sadfsd")
-(defvar *user-load-path* `("~/.xemacs/session-start.d"
-                           "~/.gnus.d"
-                           "~/.xemacs/secure"
-                           "~/.xemacs/info"
-                           "~/.osetup/info.d/common/elisp"
-                           ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp")) "sadfsd")
-
-(defvar reloading-libraries nil "used in session-conf.el")
+;;;;   ;;{{{ start: http://emacs-fu.blogspot.com/2008/12/using-packages-functions-only-if-they.html
+;;;;   
+;;;;   (eval-when-compile
+;;;;     (require 'cl))
+;;;;   ;; If you place the macros somewhere in the beginning of your
+;;;;   ;; .emacs, you can use them as follows (just some examples):
+;;;;   ;; change cursor color based on mode (insert/overwrite)
+;;;;   (when (require-maybe 'cursor-chg)  ; Load this library
+;;;;     (change-cursor-mode 1) ; On for overwrite/read-only/input mode
+;;;;     (toggle-cursor-type-when-idle 1)) ; On when idle
+;;;;   ;; and
+;;;;   (when-available 'set-fringe-mode  ; emacs22+
+;;;;     (set-fringe-mode 2))            ; don't have too much space left of col1
+;;;;   ;;}}}
+;;;;   
+;;;;   
+;;;;   
+;;;;   
+;;;;   ;;;;;;; My loading function ;;;;;;;
+;;;;   (defvar *desuffix* "sharad"
+;;;;     "User custom elisp feature name suffix
+;;;;   Note it should be a unique name so *desuffix*-feature
+;;;;   alkready should not exist.")
+;;;;   
+;;;;   ;; (defun delete-suffix (suffix string)
+;;;;   ;;   (if (and suffix (string-match (concat "^" suffix "-") string))
+;;;;   ;;       (substring string (+ 1 (length suffix)))
+;;;;   ;;       string))
+;;;;   
+;;;;   
+;;;;   
+;;;;   
+;;;;   ;; (eq 'aa (intern "aa"))
+;;;;   
+;;;;   ;; (user-require 'gnus)
+;;;;   
+;;;;   ; (intern "asdfsdaf")
+;;;;   
+;;;;   ;; (defun user-require (feature &optional suffix)
+;;;;   ;;   (let ((file (concat (delete-suffix
+;;;;   ;;                         (symbol-name suffix)
+;;;;   ;;                         (delete-suffix *desuffix* (symbol-name feature))) ".el"))
+;;;;   ;;         (load-path '("~/.xemacs/session-start.d" "~/.gnus.d")))
+;;;;   ;;     (require feature file)))
+;;;;   
+;;;;   (defvar *user-module-loaded* nil "sadfsd")
+;;;;   (defvar *user-load-path* `("~/.xemacs/session-start.d"
+;;;;                              "~/.gnus.d"
+;;;;                              "~/.xemacs/secure"
+;;;;                              "~/.xemacs/info"
+;;;;                              "~/.osetup/info.d/common/elisp"
+;;;;                              ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp")) "sadfsd")
+;;;;   
+;;;;   (defvar reloading-libraries nil "used in session-conf.el")
 
 (defun load-dir-files (dir)
   (let (load-file-with-errors)

@@ -30,7 +30,8 @@
 ;;; Code:
 
 (defconst basic-utils-packages
-  '(elsession)
+  '((elscreen :location local)
+    (sessions-config :location local))
   "The list of Lisp packages required by the basic-utils layer.
 
 Each entry is either:
@@ -58,5 +59,11 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+(defun basic-utils/init-sessions-config ()
+  (use-package sessions-config
+    :init))
+
+(defun basic-utils/init-elscreen ()
+  (use-package elscreen :init))
 
 ;;; packages.el ends here

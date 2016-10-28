@@ -125,9 +125,9 @@ then
                     then
                         if [ -t ]
                         then
-                            ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
+                            echo ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
                         else
-                            ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
+                            echo ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
                         fi
                     fi
                 fi                  # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
