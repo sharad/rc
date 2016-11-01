@@ -90,9 +90,12 @@ then
                         then
                         if mkdir -p ${KEYCHAINDIR}
                         then
-                            /usr/bin/keychain -q                                      \
+                            /usr/bin/keychain                                         \
+                                -q                                                    \
+                                --noask                                               \
                                 --ignore-missing                                      \
-                                --clear --lockwait 1                                  \
+                                --clear                                               \
+                                --lockwait 1                                          \
                                 --agents gpg,ssh                                      \
                                 --inherit local-once                                  \
                                 $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) \

@@ -181,9 +181,12 @@ then
                     then
                         if mkdir -p ${KEYCHAINDIR}
                         then
-                            /usr/bin/keychain -q                                      \
+                            /usr/bin/keychain                                         \
+                                -q                                                    \
+                                --noask                                               \
                                 --ignore-missing                                      \
-                                --clear --lockwait 1                                  \
+                                --clear                                               \
+                                --lockwait 1                                          \
                                 --agents gpg,ssh                                      \
                                 --inherit local-once                                  \
                                 $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) \
@@ -213,9 +216,9 @@ then
                             then
                                 if [ -t ]
                                 then
-                                    ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
+                                    echo ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
                                 else
-                                    ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
+                                    echo ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
                                 fi
                             fi
                         fi          # [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]

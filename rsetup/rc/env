@@ -87,17 +87,20 @@ function update-ssh-agent()
     fi  # if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
 }
 
-update-ssh-agent
+: update-ssh-agent              # use it when required.
 
 __comp=rc
 __subcomp=env
-if [ "x${HOST}" != "x" ] ; then
-    if [ -d ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ] ; then
+if [ "x${HOST}" != "x" ]
+then
+    if [ -d ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ]
+    then
         rm -rf ~/.rsetup/${__comp}/${__subcomp}.d/${HOST}
     fi
 
     tdir=$(readlink -m ~/.rsetup/${__comp}/${__subcomp}.d/)
-    if [ ! -d $tdir ] ; then
+    if [ ! -d $tdir ]
+    then
         mkdir -p $tdir
         cat <<'EOF' > $tdir/.gitignore
 *
@@ -106,11 +109,13 @@ if [ "x${HOST}" != "x" ] ; then
 EOF
         unset tdir
     fi
-    if [ ! -e ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ] ; then
+    if [ ! -e ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ]
+    then
         cp ~/.rsetup/${__comp}/${__subcomp}.tmpl ~/.rsetup/${__comp}/${__subcomp}.d/${HOST}
     fi
 
-    if [ -r ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ] ; then
+    if [ -r ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ]
+    then
         . ~/.rsetup/${__comp}/${__subcomp}.d/${HOST}
     fi
 
