@@ -4,7 +4,8 @@
 EDITOR='emacsclient -t -c -f ~/.emacs.d/server/general '
 VISUAL='emacsclient -t -c -f ~/.emacs.d/server/general '
 
-if [ "x${REMOTEEDITORHOST}" != "x" ] ; then
+if [ "x${REMOTEEDITORHOST}" != "x" ]
+then
     EDITOR=$HOME/bin/rgeneral-editor
 else
     EDITOR=$HOME/bin/general-editor
@@ -23,15 +24,18 @@ export SCREEN4KEYCHAIN=keychain
 # tis is for interactive shell, not for login shell which could be invoke ssh-agent already.
 export KEYCHAINDIR=$HOME/.keychain-screen
 
-if [ "x$DISPLAY" != "x" ] ; then
+if [ "x$DISPLAY" != "x" ]
+then
    _DISPLAYMAJOR=$(echo ${DISPLAY} | cut -f2 -d: | cut -d. -f1)
-   if [ -r /var/lib/dbus/machine-id -a -r ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-${_DISPLAYMAJOR} ] ; then
+   if [ -r /var/lib/dbus/machine-id -a -r ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-${_DISPLAYMAJOR} ]
+   then
       source ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-${_DISPLAYMAJOR}
       export DBUS_SESSION_BUS_ADDRESS
       unset _DISPLAYMAJOR
    fi
 else
-   if [ -r /var/lib/dbus/machine-id -a -r ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-0 ] ; then
+    if [ -r /var/lib/dbus/machine-id -a -r ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-0 ]
+    then
       source ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-0
       export DBUS_SESSION_BUS_ADDRESS
       unset _DISPLAYMAJOR
