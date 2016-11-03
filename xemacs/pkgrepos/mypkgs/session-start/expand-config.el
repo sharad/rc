@@ -122,7 +122,28 @@
   ;; inplace of tab I want it to use C->
   (setq yas/trigger-key "C->")
 
-  (setq-default yas-fallback-behavior '(apply indent-for-tab-command . nil))
+  ;; ;; pabbrev-expand-maybe
+  ;; ;; (pabbrev-get-previous-binding)
+
+  (defun yas--keybinding-beyond-yasnippet-advice (orig-fun &rest args)
+    ;; (let ((binding (apply orig-fun args)))
+    (let ((binding (apply orig-fun args)))
+      (if (eq binding 'pabbrev-expand-maybe)
+          'indent-for-tab-command
+          binding)))
+
+  (when (fboundp 'advice-add)
+    (advice-add 'yas--keybinding-beyond-yasnippet
+                :around
+                #'yas--keybinding-beyond-yasnippet-advice))
+
+  (advice-remove 'yas--keybinding-beyond-yasnippet
+                 #'yas--keybinding-beyond-yasnippet-advice)
+
+  ;; (setq-default yas-fallback-behavior '(apply indent-for-tab-command . nil))
+
+  (setq-default yas-fallback-behavior 'call-other-command)
+
   ;; do not want it.
   ;; (setq yas/trigger-key "")
   )

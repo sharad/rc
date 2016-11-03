@@ -286,17 +286,25 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
 
 
 (deh-section "setenv-from-file"
-  (defun setenv-from-file (file)
-    (if (file-exists-p file)
-        (mapc
-         (lambda (ev)
-           (let ((p (position ?\= ev)))
-             (setenv (substring ev 0 p)
-                     (substring ev (1+ p)))))
-         (remove-if-not (lambda (l)
-                          (and (not (string-match "^#" l))
-                               (string-match "\\w+=\\w+" l)))
-                        (split-string (sharad/read-file file) "\n"))))))
+  (defun setenv-from-file (file &optional buses)
+    (let ((buses (if (consp buses) buses (list buses))))
+      (if (file-exists-p file)
+          (mapc
+           (lambda (ev)
+             (let ((p (position ?\= ev)))
+               (setenv (substring ev 0 p)
+                       (substring ev (1+ p)))
+               (when (consp buses)
+                 (dolist (bus buses)
+                   (ignore-errors
+                     (dbus-setenv
+                      bus
+                      (substring ev 0 p)
+                      (substring ev (1+ p))))))))
+           (remove-if-not (lambda (l)
+                            (and (not (string-match "^#" l))
+                                 (string-match "\\w+=\\w+" l)))
+                          (split-string (sharad/read-file file) "\n")))))))
 
 
 

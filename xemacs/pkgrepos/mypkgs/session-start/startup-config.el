@@ -69,7 +69,8 @@
      (concat
       "~/.dbus/session-bus/"
       (trim-string (sharad/read-file "/var/lib/dbus/machine-id"))
-      "-" dismajor-str)))
+      "-" dismajor-str)
+     '(:system :session)))
 
   (defun set-dbus-session ()
     (interactive)
@@ -78,7 +79,13 @@
            (dismajor-str (if (>= (length display-str) 2)
                              (substring display-str 1 2)
                              "0")))
-      (setenv-from-file (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-" dismajor-str))))
+      (ignore-errors
+       (dbus-setenv :system "DISPLAY" display-str))
+      (ignore-errors
+       (dbus-setenv :session "DISPLAY" display-str))
+      (setenv-from-file
+       (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-" dismajor-str)
+       '(:system :session))))
 
   (add-hook 'sharad/enable-login-session-interrupting-feature-hook 'set-dbus-session)
   (add-hook 'sharad/enable-startup-interrupting-feature-hook 'set-dbus-session))
