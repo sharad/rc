@@ -80,8 +80,11 @@ then
 
             screen -S $SCREEN4KEYCHAIN -c $screentmprc -d -m
             rm -f $screentmprc
-
+        # else
+        #      notify-send "Screen check" "$(screen -x $SCREEN4KEYCHAIN -ls)"
         fi                  # if screen -x $SCREEN4KEYCHAIN -ls
+    # else
+    #     : notify-send UID check
     fi
     # }}}
 

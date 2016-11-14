@@ -42,3 +42,5 @@
   #     (sit-for 1))) \
 [push]
 	default = simple
+[color]
+	ui = auto
