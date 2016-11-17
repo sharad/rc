@@ -24,19 +24,21 @@ export SCREEN4KEYCHAIN=keychain
 # tis is for interactive shell, not for login shell which could be invoke ssh-agent already.
 export KEYCHAINDIR=$HOME/.keychain-screen
 
+MACHINE_ID=/var/lib/dbus/machine-id
+
 if [ "x$DISPLAY" != "x" ]
 then
    _DISPLAYMAJOR=$(echo ${DISPLAY} | cut -f2 -d: | cut -d. -f1)
-   if [ -r /var/lib/dbus/machine-id -a -r ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-${_DISPLAYMAJOR} ]
+   if [ -r "$MACHINE_ID" -a -r ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-${_DISPLAYMAJOR} ]
    then
-      source ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-${_DISPLAYMAJOR}
+      source ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-${_DISPLAYMAJOR}
       export DBUS_SESSION_BUS_ADDRESS
       unset _DISPLAYMAJOR
    fi
 else
-    if [ -r /var/lib/dbus/machine-id -a -r ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-0 ]
+    if [ -r "$MACHINE_ID" -a -r ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-0 ]
     then
-      source ~/.dbus/session-bus/$(cat /var/lib/dbus/machine-id )-0
+      source ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-0
       export DBUS_SESSION_BUS_ADDRESS
       unset _DISPLAYMAJOR
    fi
@@ -128,3 +130,5 @@ else
 fi
 unset __subcomp
 unset __comp
+
+unset MACHINE_ID

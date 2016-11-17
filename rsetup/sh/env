@@ -25,7 +25,11 @@ export EDITOR
 export VISUAL
 export BROWSER
 
-MY_DBUS_SESSION=$(cat /var/lib/dbus/machine-id)
+MACHINE_ID=/var/lib/dbus/machine-id
+if [ -r "$MACHINE_ID" ]
+then
+    MY_DBUS_SESSION=$(cat $MACHINE_ID)
+fi
 export MY_DBUS_SESSION
 
 
@@ -62,3 +66,5 @@ if [ "x${HOST}" != "x" ] ; then
 else
     echo env var HOST is not set $HOST
 fi
+
+unset MACHINE_ID

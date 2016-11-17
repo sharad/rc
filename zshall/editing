@@ -231,10 +231,10 @@ bindkey	-M	mymap	$key[Left]       backward-char                  # left arrow
 bindkey -M      mymap   $key[PageUp]	 beginning-of-buffer-or-history # page up
 bindkey -M      mymap   $key[PageDown]	 end-of-buffer-or-history       # page down
 
-[ $key[Control-Left] != $key[Left] ]   && bindkey -M      mymap   $key[Control-Left]  backward-word
-[ $key[Control-Right] != $key[Right] ] && bindkey -M      mymap   $key[Control-Right] forward-word
-[ $key[Control-Up] != $key[Up] ]       && bindkey -M      mymap   $key[Control-Up]    up-line-or-search
-[ $key[Control-Down] != $key[Down] ]   && bindkey -M      mymap   $key[Control-Down]  down-line-or-search
+[ "$key[Control-Left]"  != "$key[Left]" ]  && bindkey -M      mymap   $key[Control-Left]  backward-word
+[ "$key[Control-Right]" != "$key[Right]" ] && bindkey -M      mymap   $key[Control-Right] forward-word
+[ "$key[Control-Up]"    != "$key[Up]" ]    && bindkey -M      mymap   $key[Control-Up]    up-line-or-search
+[ "$key[Control-Down]"  != "$key[Down]" ]  && bindkey -M      mymap   $key[Control-Down]  down-line-or-search
 
 
 # Copy
