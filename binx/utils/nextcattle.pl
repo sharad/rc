@@ -9,13 +9,10 @@ use Data::Dumper;
 # use Cwd;
 # use File::Spec;
 
+our $opt = {};
 our $debug = 0;
 our $maxFileExtentionLength = 8;
-our @compressExtentions = qw( gz bz2 xz lzma);
-
-
-
-our $opt = {};
+our @compressExtentions = qw( gz bz2 xz lzma );
 
 
 sub main {
@@ -61,9 +58,9 @@ sub main {
 
 
 
-    debug( "currfile $currfile \n" );
-    debug( "re $re \n" );
-    debug( "dir $dir \n" );
+    debug( "currfile = $currfile \n" );
+    debug( "re       = $re \n" );
+    debug( "dir      = $dir \n" );
 
     if ( defined $dir and $dir ) {
         unless ( -d "$dir") {
@@ -89,7 +86,9 @@ sub main {
 
     debug( Dumper(\@matchedFiles) );
 
-    ( $currfileIndex )= grep { $matchedFiles[$_] eq $currfile } 0..$#matchedFiles;
+    unless ( $opt->{"latest"} ) {
+        ( $currfileIndex )= grep { $matchedFiles[$_] eq $currfile } 0..$#matchedFiles;
+    }
 
     if (defined $currfileIndex) {
         debug( "2. currfileIndex = $currfileIndex \n" );
@@ -112,21 +111,24 @@ sub main {
 
     my $next_file;
     if ( defined $matchedFiles[ $currfileIndex + $opt->{"seq"} ] ) {
-        if ( $opt->{"latest"} ) {
-            # $highest += ( $opt->{"seq"} > 0 ? $opt->{"seq"} : 1);
-            $highest += $opt->{"seq"};
-            ($next_file = $currfile) =~ s/$match/$highest$1/;
-        } else {
-            $next_file = $matchedFiles[ $currfileIndex + $opt->{"seq"} ];
-        }
+        # if ( $opt->{"latest"} ) {
+        #     # $highest += ( $opt->{"seq"} > 0 ? $opt->{"seq"} : 1);
+        #     $highest += $opt->{"seq"};
+        #     ($next_file = $currfile) =~ s/$match/$highest$1/;
+        # } else {
+        #     $next_file = $matchedFiles[ $currfileIndex + $opt->{"seq"} ];
+        # }
+        $next_file = $matchedFiles[ $currfileIndex + $opt->{"seq"} ];
     } else {
         debug( "else \$highest=$highest \n" );
-        if ( @matchedFiles ) {
-            $highest += $opt->{"seq"};
-            ($next_file = $currfile) =~ s/$match/$highest$1/;
-        } else {
-            $next_file = $currfile;
-        }
+        # if ( @matchedFiles ) {
+        #     $highest += $opt->{"seq"};
+        #     ($next_file = $currfile) =~ s/$match/$highest$1/;
+        # } else {
+        #     $next_file = $currfile;
+        # }
+        $highest += $opt->{"seq"};
+        ($next_file = $currfile) =~ s/$match/$highest$1/;
     }
 
 
@@ -154,6 +156,8 @@ sub process_arg {
             $opt->{"seq"} = ($arg + 0);
         } elsif ( $arg eq "-d" ) {
             $debug = $opt->{"debug"} = 1;
+        } elsif ( $arg eq "-n" ) {
+            $debug = $opt->{"nonexisting"} = 1;
         } elsif ( $arg eq "-h" ) {
             $opt->{"help"} = 1;
         } elsif ( $arg eq "-l" ) {
@@ -201,4 +205,4 @@ sub debug {
 
 
 
-main(@ARGV)
+main( @ARGV )
