@@ -47,14 +47,14 @@ sub main {
     debug( "dir $dir \n" );
 
 
-    my $match = '\d+([^\d]*(?:\.[^\.]{1,' . $maxFileExtentionLength . '})?' . $compressExtentions . '?)$';
+    my $match = '\d+([^\d]*(?:\.[^\.]{1,' . $maxFileExtentionLength . '})?' . $compressExtentions . '?' . ')$';
     my $replace_num_regex = "\(\\d\+\)\$1";
     my $replace_highest = '"$highest$1"';
 
     debug( "match = $match\n" );
 
     (my $re = $currfile) =~ s/$match/\(\\d\+\)$1/;
-    $re = '^' . $re . '$';
+    $re = '^' . $re . $compressExtentions . '?' . '$';
 
 
 
