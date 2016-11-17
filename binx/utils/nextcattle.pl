@@ -51,7 +51,7 @@ sub main {
     print "dir $dir \n" if $debug;
 
     if ( defined $dir and $dir ) {
-        unless ( -f "$dir") {
+        unless ( -d "$dir") {
             print STDERR "No such $dir directory exists.\n";
             exit -1;
         }
