@@ -7,6 +7,8 @@ use File::Basename;
 use Data::Dumper;
 
 our $debug = 0;
+our $fileExtentionMaxLength = 8;
+
 
 
 our $opt = {};
@@ -31,12 +33,14 @@ sub main {
     print "dir $dir \n" if $debug;
 
 
-    my $match = '\d+([^\d]*(?:.[^.]{1,8})?)$';
+    my $match = '\d+([^\d]*(?:\.[^\.]{1,' . $fileExtentionMaxLength . '})?)$';
     my $replace_num_regex = "\(\\d\+\)\$1";
     my $replace_highest = '"$highest$1"';
 
 
     (my $re = $currfile) =~ s/$match/\(\\d\+\)$1/;
+    $re = '^' . $re . '$';
+
 
 
     print "currfile $currfile \n" if $debug;
@@ -61,12 +65,24 @@ sub main {
 
     ( $currfileIndex )= grep { $matched_files[$_] eq $currfile } 0..$#matched_files;
 
+    if (defined $currfileIndex) {
+        print "2. currfileIndex = $currfileIndex \n" if $debug;
+    } else {
+       print "2. currfileIndex = undef \n" if $debug;
+    }
 
-    print "2. currfileIndex $currfileIndex \n" if $debug;
 
     $currfileIndex = 0 unless defined $currfileIndex;
 
-    print '$matched_files[ $opt->{"seq"} ] = ' . "$matched_files[ $opt->{seq} ] \n" if $debug;
+    if ( @matched_files ) {
+        if ( defined $matched_files[ $opt->{seq} ] ) {
+            print '$matched_files[ $opt->{"seq"} ] = ' . '$matched_files[ ' . $opt->{"seq"} . ' ] = ' . "$matched_files[ $opt->{seq} ] \n" if $debug;
+        } else {
+            print '$matched_files[ $opt->{"seq"} ] = ' . '$matched_files[ ' . $opt->{"seq"} . ' ] = ' . "undef \n" if $debug;
+        }
+    } else {
+        print '@matched_files empty' if $debug;
+    }
 
     my $next_file;
     if ( defined $matched_files[ $currfileIndex + $opt->{"seq"} ] ) {
@@ -113,7 +129,7 @@ sub process_arg {
         } elsif ( $arg eq "-n" ) {
             $opt->{"nonexistant"} = 1;
         } elsif ( $arg eq "-d" ) {
-            $opt->{"debug"} = 1;
+            $debug = $opt->{"debug"} = 1;
         } elsif ( $arg eq "-h" ) {
             $opt->{"help"} = 1;
         } elsif ( $arg !~ /$numpattern/ ) {
@@ -127,7 +143,7 @@ sub process_arg {
         }
     }
 
-    # print Dumper($opt) if $debug;
+    print Dumper($opt) if $debug;
 
     help() if $opt->{"help"};
 
