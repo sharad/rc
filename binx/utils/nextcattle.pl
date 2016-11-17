@@ -112,7 +112,7 @@ sub main {
 
     my $next_file;
     if ( defined $matchedFiles[ $currfileIndex + $opt->{"seq"} ] ) {
-        if ( $opt->{"nonexistant"} ) {
+        if ( $opt->{"latest"} ) {
             # $highest += ( $opt->{"seq"} > 0 ? $opt->{"seq"} : 1);
             $highest += $opt->{"seq"};
             ($next_file = $currfile) =~ s/$match/$highest$1/;
@@ -156,8 +156,8 @@ sub process_arg {
             $debug = $opt->{"debug"} = 1;
         } elsif ( $arg eq "-h" ) {
             $opt->{"help"} = 1;
-        } elsif ( $arg eq "-n" ) {
-            $opt->{"nonexistant"} = 1;
+        } elsif ( $arg eq "-l" ) {
+            $opt->{"latest"} = 1;
         } elsif ( $arg !~ /$numpattern/ and $arg ne "-d" and $arg ne "-h" and $arg ne "-n") {
             if (defined $opt->{"file"}) {
                 dieWithHelp("wrong argument");
@@ -185,7 +185,7 @@ sub process_arg {
 
 sub help {
     print <<EOF;
-$0: [-h] [-d] [[-|+]?NUM] FILENAME
+$0: [-d] [-h] [-n] [[-|+]?NUM] FILENAME
 EOF
     exit;
 }
