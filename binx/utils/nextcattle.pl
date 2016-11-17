@@ -85,6 +85,8 @@ sub main {
 
     map { /$re/ and $1 > $highest and $highest = $1 } @matchedFiles if (@matchedFiles);
 
+    print "highest = $highest \n" if $debug;
+
     print Dumper(\@matchedFiles) if $debug;
 
     ( $currfileIndex )= grep { $matchedFiles[$_] eq $currfile } 0..$#matchedFiles;
