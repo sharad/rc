@@ -87,7 +87,7 @@ sub main {
     debug( Dumper(\@matchedFiles) );
 
     unless ( defined $opt->{"latest"} ) {
-        debug( "latest defined \n");
+        debug( "latest not defined \n");
         ( $currfileIndex )= grep { $matchedFiles[$_] eq $currfile } 0..$#matchedFiles;
     }
 
