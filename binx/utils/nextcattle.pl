@@ -87,6 +87,7 @@ sub main {
     debug( Dumper(\@matchedFiles) );
 
     unless ( defined $opt->{"latest"} ) {
+        debug( "latest defined \n");
         ( $currfileIndex )= grep { $matchedFiles[$_] eq $currfile } 0..$#matchedFiles;
     }
 
@@ -200,7 +201,9 @@ sub dieWithHelp {
 }
 
 sub debug {
-    print shift if $debug;
+    my $line = shift;
+    chomp($line);
+    print $line . "\n" if $debug;
 }
 
 
