@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use autodie;
+# use autodie;
 use File::Basename;
 use Data::Dumper;
 
