@@ -6,6 +6,9 @@ use warnings;
 use File::Basename;
 use Data::Dumper;
 
+# use Cwd;
+# use File::Spec;
+
 our $debug = 0;
 our $fileExtentionMaxLength = 8;
 
@@ -48,7 +51,7 @@ sub main {
     print "dir $dir \n" if $debug;
 
 
-    opendir my $dh, ($dir or ".");
+    opendir my $dh, ("$dir" or ".") or die "Could not open '$dir' for reading '$!'\n";
     my @matched_files = sort { ($a =~ /$re/)[0] <=> ($b =~ /$re/)[0] } grep { /$re/ } map { $dir . $_ } readdir $dh;
     closedir $dh;
 
@@ -126,13 +129,13 @@ sub process_arg {
 
         if ( $arg =~ /$numpattern/ ) {
             $opt->{"seq"} = ($arg + 0);
-        } elsif ( $arg eq "-n" ) {
-            $opt->{"nonexistant"} = 1;
         } elsif ( $arg eq "-d" ) {
             $debug = $opt->{"debug"} = 1;
         } elsif ( $arg eq "-h" ) {
             $opt->{"help"} = 1;
-        } elsif ( $arg !~ /$numpattern/ ) {
+        } elsif ( $arg eq "-n" ) {
+            $opt->{"nonexistant"} = 1;
+        } elsif ( $arg !~ /$numpattern/ and $arg ne "-d" and $arg ne "-h" and $arg ne "-n") {
             if (defined $opt->{"file"}) {
                 die "wrong argument";
             } else {
