@@ -11,6 +11,7 @@ use Data::Dumper;
 
 our $debug = 0;
 our $maxFileExtentionLength = 8;
+our @compressExtentions = qw( gz bz2 xz lzma);
 
 
 
@@ -30,16 +31,30 @@ sub main {
 
     my $highest = 0;
     my $currfile=$opt->{"file"};
+
+
+
+
     my $dir = "";
+
+    my $compressExtentions = '(:?\.(:?' . (join "|", @compressExtentions) . '))';
+
+    print "compressExtentions = $compressExtentions\n"  if $debug;
+
+    print "currfile $currfile \n" if $debug;
+    $currfile =~ s/${compressExtentions}$//;
+    print "currfile $currfile \n" if $debug;
+
     ($dir = $opt->{"file"}) =~ s/\/[^\/]+$/\// if $opt->{"file"} =~ /\/[^\/]+$/;
 
     print "dir $dir \n" if $debug;
 
 
-    my $match = '\d+([^\d]*(?:\.[^\.]{1,' . $maxFileExtentionLength . '})?)$';
+    my $match = '\d+([^\d]*(?:\.[^\.]{1,' . $maxFileExtentionLength . '})?' . $compressExtentions . '?)$';
     my $replace_num_regex = "\(\\d\+\)\$1";
     my $replace_highest = '"$highest$1"';
 
+    print "match = $match\n"  if $debug;
 
     (my $re = $currfile) =~ s/$match/\(\\d\+\)$1/;
     $re = '^' . $re . '$';
@@ -68,7 +83,7 @@ sub main {
 
     print "1. currfileIndex $currfileIndex \n" if $debug;
 
-    map { /$re/ and $1 > $highest and $highest = $1 } @matchedFiles;
+    map { /$re/ and $1 > $highest and $highest = $1 } @matchedFiles if (@matchedFiles);
 
     print Dumper(\@matchedFiles) if $debug;
 
