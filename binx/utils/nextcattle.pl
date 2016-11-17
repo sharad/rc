@@ -114,7 +114,7 @@ sub main {
     if ( defined $matchedFiles[ $currfileIndex + $opt->{"seq"} ] ) {
         if ( $opt->{"nonexistant"} ) {
             # $highest += ( $opt->{"seq"} > 0 ? $opt->{"seq"} : 1);
-            $highest += $opt->{"seq"};
+            $highest += (1 + $opt->{"seq"});
             ($next_file = $currfile) =~ s/$match/$highest$1/;
         } else {
             $next_file = $matchedFiles[ $currfileIndex + $opt->{"seq"} ];
