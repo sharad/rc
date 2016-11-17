@@ -76,7 +76,7 @@ sub main {
     debug( "#matchedFiles $#matchedFiles \n" );
 
 
-    my $currfileIndex = $#matchedFiles;
+    my $currfileIndex = $#matchedFiles - 1;
 
     debug( "1. currfileIndex $currfileIndex \n" );
 
