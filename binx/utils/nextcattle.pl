@@ -108,9 +108,9 @@ sub main {
 
     if ( @matchedFiles ) {
         if ( defined $matchedFiles[ $currfileIndex + $opt->{seq} ] ) {
-            debug( '$matchedFiles[ $currfileIndex + $opt->{"seq"} ] = ' . '$matchedFiles[ ' . $currfileIndex + $opt->{"seq"} . ' ] = ' . "$matchedFiles[ $currfileIndex + $opt->{seq} ] \n" );
+            debug( '$matchedFiles[ $currfileIndex + $opt->{"seq"} ] = ' . '$matchedFiles[ ' . ($currfileIndex + $opt->{"seq"}) . ' ] = ' . "$matchedFiles[ $currfileIndex + $opt->{seq} ] \n" );
         } else {
-            debug( '$matchedFiles[ $currfileIndex + $opt->{"seq"} ] = ' . '$matchedFiles[ ' . $currfileIndex + $opt->{"seq"} . ' ] = ' . "undef \n" );
+            debug( '$matchedFiles[ $currfileIndex + $opt->{"seq"} ] = ' . '$matchedFiles[ ' . ($currfileIndex + $opt->{"seq"}) . ' ] = ' . "undef \n" );
         }
     } else {
         debug( '@matchedFiles empty' );
