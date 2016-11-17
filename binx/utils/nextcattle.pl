@@ -88,7 +88,8 @@ sub main {
 
     unless ( defined $opt->{"latest"} ) {
         debug( "latest not defined \n");
-        ( $currfileIndex )= grep { $matchedFiles[$_] eq $currfile } 0..$#matchedFiles;
+        # ( $currfileIndex )= grep { $matchedFiles[$_] eq $currfile } 0..$#matchedFiles;
+        ( $currfileIndex )= grep { $matchedFiles[$_] =~ /^${currfile}${compressExtentions}?$/ } 0..$#matchedFiles;
     }
 
     if (defined $currfileIndex) {
