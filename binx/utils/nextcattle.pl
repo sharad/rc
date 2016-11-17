@@ -118,22 +118,10 @@ sub main {
 
     my $next_file;
     if ( defined $matchedFiles[ $currfileIndex + $opt->{"seq"} ] ) {
-        # if ( $opt->{"latest"} ) {
-        #     # $highest += ( $opt->{"seq"} > 0 ? $opt->{"seq"} : 1);
-        #     $highest += $opt->{"seq"};
-        #     ($next_file = $currfile) =~ s/$match/$highest$1/;
-        # } else {
-        #     $next_file = $matchedFiles[ $currfileIndex + $opt->{"seq"} ];
-        # }
         $next_file = $matchedFiles[ $currfileIndex + $opt->{"seq"} ];
     } else {
         debug( "else \$highest=$highest \n" );
-        # if ( @matchedFiles ) {
-        #     $highest += $opt->{"seq"};
-        #     ($next_file = $currfile) =~ s/$match/$highest$1/;
-        # } else {
-        #     $next_file = $currfile;
-        # }
+
         $highest += $opt->{"seq"};
         ($next_file = $currfile) =~ s/$match/$highest$1/;
     }
