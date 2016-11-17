@@ -76,7 +76,7 @@ sub main {
     debug( "#matchedFiles $#matchedFiles \n" );
 
 
-    my $currfileIndex = $#matchedFiles - 1;
+    my $currfileIndex = $#matchedFiles;
 
     debug( "1. currfileIndex $currfileIndex \n" );
 
@@ -98,7 +98,7 @@ sub main {
     }
 
 
-    $currfileIndex = 0 unless defined $currfileIndex;
+    $currfileIndex = $#matchedFiles unless defined $currfileIndex;
 
     if ( @matchedFiles ) {
         if ( defined $matchedFiles[ $opt->{seq} ] ) {
