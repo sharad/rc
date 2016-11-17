@@ -10,7 +10,7 @@ use Data::Dumper;
 # use File::Spec;
 
 our $debug = 0;
-our $fileExtentionMaxLength = 8;
+our $maxFileExtentionLength = 8;
 
 
 
@@ -36,7 +36,7 @@ sub main {
     print "dir $dir \n" if $debug;
 
 
-    my $match = '\d+([^\d]*(?:\.[^\.]{1,' . $fileExtentionMaxLength . '})?)$';
+    my $match = '\d+([^\d]*(?:\.[^\.]{1,' . $maxFileExtentionLength . '})?)$';
     my $replace_num_regex = "\(\\d\+\)\$1";
     my $replace_highest = '"$highest$1"';
 
@@ -50,23 +50,29 @@ sub main {
     print "re $re \n" if $debug;
     print "dir $dir \n" if $debug;
 
+    if ( defined $dir and $dir ) {
+        unless ( -f "$dir") {
+            print STDERR "No such $dir directory exists.\n";
+            exit -1;
+        }
+    }
 
     opendir my $dh, ("$dir" or ".") or die "Could not open '$dir' for reading '$!'\n";
-    my @matched_files = sort { ($a =~ /$re/)[0] <=> ($b =~ /$re/)[0] } grep { /$re/ } map { $dir . $_ } readdir $dh;
+    my @matchedFiles = sort { ($a =~ /$re/)[0] <=> ($b =~ /$re/)[0] } grep { /$re/ } map { $dir . $_ } readdir $dh;
     closedir $dh;
 
-    print "#matched_files $#matched_files \n" if $debug;
+    print "#matchedFiles $#matchedFiles \n" if $debug;
 
 
-    my $currfileIndex = $#matched_files;
+    my $currfileIndex = $#matchedFiles;
 
     print "1. currfileIndex $currfileIndex \n" if $debug;
 
-    map { /$re/ and $1 > $highest and $highest = $1 } @matched_files;
+    map { /$re/ and $1 > $highest and $highest = $1 } @matchedFiles;
 
-    print Dumper(\@matched_files) if $debug;
+    print Dumper(\@matchedFiles) if $debug;
 
-    ( $currfileIndex )= grep { $matched_files[$_] eq $currfile } 0..$#matched_files;
+    ( $currfileIndex )= grep { $matchedFiles[$_] eq $currfile } 0..$#matchedFiles;
 
     if (defined $currfileIndex) {
         print "2. currfileIndex = $currfileIndex \n" if $debug;
@@ -77,28 +83,28 @@ sub main {
 
     $currfileIndex = 0 unless defined $currfileIndex;
 
-    if ( @matched_files ) {
-        if ( defined $matched_files[ $opt->{seq} ] ) {
-            print '$matched_files[ $opt->{"seq"} ] = ' . '$matched_files[ ' . $opt->{"seq"} . ' ] = ' . "$matched_files[ $opt->{seq} ] \n" if $debug;
+    if ( @matchedFiles ) {
+        if ( defined $matchedFiles[ $opt->{seq} ] ) {
+            print '$matchedFiles[ $opt->{"seq"} ] = ' . '$matchedFiles[ ' . $opt->{"seq"} . ' ] = ' . "$matchedFiles[ $opt->{seq} ] \n" if $debug;
         } else {
-            print '$matched_files[ $opt->{"seq"} ] = ' . '$matched_files[ ' . $opt->{"seq"} . ' ] = ' . "undef \n" if $debug;
+            print '$matchedFiles[ $opt->{"seq"} ] = ' . '$matchedFiles[ ' . $opt->{"seq"} . ' ] = ' . "undef \n" if $debug;
         }
     } else {
-        print '@matched_files empty' if $debug;
+        print '@matchedFiles empty' if $debug;
     }
 
     my $next_file;
-    if ( defined $matched_files[ $currfileIndex + $opt->{"seq"} ] ) {
+    if ( defined $matchedFiles[ $currfileIndex + $opt->{"seq"} ] ) {
         if ( $opt->{"nonexistant"} ) {
             # $highest += ( $opt->{"seq"} > 0 ? $opt->{"seq"} : 1);
             $highest += $opt->{"seq"};
             ($next_file = $currfile) =~ s/$match/$highest$1/;
         } else {
-            $next_file = $matched_files[ $currfileIndex + $opt->{"seq"} ];
+            $next_file = $matchedFiles[ $currfileIndex + $opt->{"seq"} ];
         }
     } else {
         print "else \$highest=$highest \n" if $debug;
-        if ( @matched_files ) {
+        if ( @matchedFiles ) {
             $highest += $opt->{"seq"};
             ($next_file = $currfile) =~ s/$match/$highest$1/;
         } else {
@@ -137,12 +143,12 @@ sub process_arg {
             $opt->{"nonexistant"} = 1;
         } elsif ( $arg !~ /$numpattern/ and $arg ne "-d" and $arg ne "-h" and $arg ne "-n") {
             if (defined $opt->{"file"}) {
-                die "wrong argument";
+                dieWithHelp("wrong argument");
             } else {
                 $opt->{"file"} = $arg;
             }
         } else {
-            die "wrong argument";
+            dieWithHelp("wrong argument");
         }
     }
 
@@ -152,11 +158,11 @@ sub process_arg {
 
 
     unless ( defined $opt->{"file"} ) {
-        die "file not passed."
+        dieWithHelp("file not passed.");
     }
 
     unless ( defined $opt->{"seq"} ) {
-        die "seq not known."
+        dieWithHelp("seq not known.");
     }
 }
 
@@ -166,6 +172,12 @@ $0: [-h] [-d] [[-|+]?NUM] FILENAME
 EOF
     exit;
 }
+
+sub dieWithHelp {
+    my $desc = shift;
+    help();
+}
+
 
 
 main(@ARGV)
