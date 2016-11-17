@@ -137,8 +137,9 @@
                 :around
                 #'yas--keybinding-beyond-yasnippet-advice))
 
-  (advice-remove 'yas--keybinding-beyond-yasnippet
-                 #'yas--keybinding-beyond-yasnippet-advice)
+  (when nil
+    (advice-remove 'yas--keybinding-beyond-yasnippet
+                   #'yas--keybinding-beyond-yasnippet-advice))
 
   ;; (setq-default yas-fallback-behavior '(apply indent-for-tab-command . nil))
 

@@ -977,6 +977,18 @@
                         (setq buffer-read-only prev-clock-buff-read-only)))))
               (setq update-current-file-msg "null clock")))))
 
+    ;; (defun run-task-current-file-timer ()
+    ;;   (let ()
+    ;;     (setq last-buffer-select-time (current-time))
+    ;;     (when buffer-select-timer
+    ;;       (cancel-timer buffer-select-timer)
+    ;;       (setq buffer-select-timer nil))
+    ;;     (setq buffer-select-timer
+    ;;           (run-with-timer
+    ;;            (1+ task-current-file-time)
+    ;;            nil
+    ;;            'update-current-file))))
+
     (defun run-task-current-file-timer ()
       (let ()
         (setq last-buffer-select-time (current-time))
@@ -984,7 +996,9 @@
           (cancel-timer buffer-select-timer)
           (setq buffer-select-timer nil))
         (setq buffer-select-timer
-              (run-with-timer
+              ;; distrubing while editing.
+              ;; (run-with-timer
+              (run-with-idle-timer
                (1+ task-current-file-time)
                nil
                'update-current-file))))
