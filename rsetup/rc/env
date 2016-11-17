@@ -29,14 +29,14 @@ MACHINE_ID=/var/lib/dbus/machine-id
 if [ "x$DISPLAY" != "x" ]
 then
    _DISPLAYMAJOR=$(echo ${DISPLAY} | cut -f2 -d: | cut -d. -f1)
-   if [ -r "$MACHINE_ID" -a -r ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-${_DISPLAYMAJOR} ]
+   if [ -r "$MACHINE_ID" ] && [ -r ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-${_DISPLAYMAJOR} ]
    then
       source ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-${_DISPLAYMAJOR}
       export DBUS_SESSION_BUS_ADDRESS
       unset _DISPLAYMAJOR
    fi
 else
-    if [ -r "$MACHINE_ID" -a -r ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-0 ]
+    if [ -r "$MACHINE_ID" ] && [ -r ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-0 ]
     then
       source ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-0
       export DBUS_SESSION_BUS_ADDRESS
