@@ -39,31 +39,31 @@ sub main {
 
     my $compressExtentions = '(:?\.(:?' . (join "|", @compressExtentions) . '))';
 
-    print "compressExtentions = $compressExtentions\n"  if $debug;
+    debug( "compressExtentions = $compressExtentions\n" );
 
-    print "currfile $currfile \n" if $debug;
+    debug( "currfile $currfile \n" );
     $currfile =~ s/${compressExtentions}$//;
-    print "currfile $currfile \n" if $debug;
+    debug( "currfile $currfile \n" );
 
     ($dir = $opt->{"file"}) =~ s/\/[^\/]+$/\// if $opt->{"file"} =~ /\/[^\/]+$/;
 
-    print "dir $dir \n" if $debug;
+    debug( "dir $dir \n" );
 
 
     my $match = '\d+([^\d]*(?:\.[^\.]{1,' . $maxFileExtentionLength . '})?' . $compressExtentions . '?)$';
     my $replace_num_regex = "\(\\d\+\)\$1";
     my $replace_highest = '"$highest$1"';
 
-    print "match = $match\n"  if $debug;
+    debug( "match = $match\n" );
 
     (my $re = $currfile) =~ s/$match/\(\\d\+\)$1/;
     $re = '^' . $re . '$';
 
 
 
-    print "currfile $currfile \n" if $debug;
-    print "re $re \n" if $debug;
-    print "dir $dir \n" if $debug;
+    debug( "currfile $currfile \n" );
+    debug( "re $re \n" );
+    debug( "dir $dir \n" );
 
     if ( defined $dir and $dir ) {
         unless ( -d "$dir") {
@@ -76,25 +76,25 @@ sub main {
     my @matchedFiles = sort { ($a =~ /$re/)[0] <=> ($b =~ /$re/)[0] } grep { /$re/ } map { $dir . $_ } readdir $dh;
     closedir $dh;
 
-    print "#matchedFiles $#matchedFiles \n" if $debug;
+    debug( "#matchedFiles $#matchedFiles \n" );
 
 
     my $currfileIndex = $#matchedFiles;
 
-    print "1. currfileIndex $currfileIndex \n" if $debug;
+    debug( "1. currfileIndex $currfileIndex \n" );
 
     map { /$re/ and $1 > $highest and $highest = $1 } @matchedFiles if (@matchedFiles);
 
-    print "highest = $highest \n" if $debug;
+    debug( "highest = $highest \n" );
 
-    print Dumper(\@matchedFiles) if $debug;
+    debug( Dumper(\@matchedFiles) );
 
     ( $currfileIndex )= grep { $matchedFiles[$_] eq $currfile } 0..$#matchedFiles;
 
     if (defined $currfileIndex) {
-        print "2. currfileIndex = $currfileIndex \n" if $debug;
+        debug( "2. currfileIndex = $currfileIndex \n" );
     } else {
-       print "2. currfileIndex = undef \n" if $debug;
+        debug( "2. currfileIndex = undef \n" );
     }
 
 
@@ -102,12 +102,12 @@ sub main {
 
     if ( @matchedFiles ) {
         if ( defined $matchedFiles[ $opt->{seq} ] ) {
-            print '$matchedFiles[ $opt->{"seq"} ] = ' . '$matchedFiles[ ' . $opt->{"seq"} . ' ] = ' . "$matchedFiles[ $opt->{seq} ] \n" if $debug;
+            debug( '$matchedFiles[ $opt->{"seq"} ] = ' . '$matchedFiles[ ' . $opt->{"seq"} . ' ] = ' . "$matchedFiles[ $opt->{seq} ] \n" );
         } else {
-            print '$matchedFiles[ $opt->{"seq"} ] = ' . '$matchedFiles[ ' . $opt->{"seq"} . ' ] = ' . "undef \n" if $debug;
+            debug( '$matchedFiles[ $opt->{"seq"} ] = ' . '$matchedFiles[ ' . $opt->{"seq"} . ' ] = ' . "undef \n" );
         }
     } else {
-        print '@matchedFiles empty' if $debug;
+        debug( '@matchedFiles empty' );
     }
 
     my $next_file;
@@ -120,7 +120,7 @@ sub main {
             $next_file = $matchedFiles[ $currfileIndex + $opt->{"seq"} ];
         }
     } else {
-        print "else \$highest=$highest \n" if $debug;
+        debug( "else \$highest=$highest \n" );
         if ( @matchedFiles ) {
             $highest += $opt->{"seq"};
             ($next_file = $currfile) =~ s/$match/$highest$1/;
@@ -130,7 +130,7 @@ sub main {
     }
 
 
-    print "Next file: $next_file\n" if $debug;
+    debug( "Next file: $next_file\n" );
 
     print "$next_file\n";
 
@@ -147,7 +147,7 @@ sub process_arg {
 
     while (defined (my $arg = shift) ) {
 
-        print "$arg \n" if $debug;
+        debug( "$arg \n" );
 
 
         if ( $arg =~ /$numpattern/ ) {
@@ -169,7 +169,7 @@ sub process_arg {
         }
     }
 
-    print Dumper($opt) if $debug;
+    debug( Dumper($opt) );
 
     help() if $opt->{"help"};
 
@@ -193,6 +193,10 @@ EOF
 sub dieWithHelp {
     my $desc = shift;
     help();
+}
+
+sub debug {
+    print shift if $debug;
 }
 
 
