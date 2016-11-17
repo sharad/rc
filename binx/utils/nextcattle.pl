@@ -100,6 +100,12 @@ sub main {
 
     $currfileIndex = $#matchedFiles unless defined $currfileIndex;
 
+    if (defined $currfileIndex) {
+        debug( "3. currfileIndex = $currfileIndex \n" );
+    } else {
+        debug( "3. currfileIndex = undef \n" );
+    }
+
     if ( @matchedFiles ) {
         if ( defined $matchedFiles[ $currfileIndex + $opt->{seq} ] ) {
             debug( '$matchedFiles[ $currfileIndex + $opt->{"seq"} ] = ' . '$matchedFiles[ ' . $currfileIndex + $opt->{"seq"} . ' ] = ' . "$matchedFiles[ $opt->{seq} ] \n" );
