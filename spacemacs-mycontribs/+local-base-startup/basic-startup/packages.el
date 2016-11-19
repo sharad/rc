@@ -32,9 +32,9 @@
 (defconst basic-startup-packages
   '(
     (general-testing :location local)
-    (basic-macros :location local)
-    (basic-utils :location local)
-    (basic-startup-session :location local)
+    (macros-config :location local)
+    (basic-utils-config :location local)
+    (basic-config :location local)
     (dot-emacs-helper :location local)
     )
   "The list of Lisp packages required by the basic-startup layer.

@@ -188,5 +188,3 @@
     (ad-remove-advice 'require 'around 'compile-if-fail)
     (ad-update 'require)))
 
-(provide 'basic-utils-config)
-;;; basic-utils-config.el ends here

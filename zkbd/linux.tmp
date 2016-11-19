@@ -1,0 +1,17 @@
+typeset -g -A key
+
+key[F1]='^[[D'
+key[F2]='^[[C'
+key[F3]='^[[D'
+key[F4]='^[[C'
+key[F5]='^[[D^[[D'
+key[F6]='^[[C'
+key[F7]='^[[D'
+key[F8]='^[[C'
+key[F9]='^[[D'
+key[F10]='^[[C'
+key[F11]='^[[D'
+key[F12]='^[[C'
+key[Backspace]='^[[D'
+key[Insert]='^[[C'
+key[Home]='^[[A'
