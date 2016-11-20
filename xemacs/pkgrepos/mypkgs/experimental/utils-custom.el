@@ -339,7 +339,7 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
       (let ((var 1))
         (save-excursion
           (setq var (eval '(progn
-                            (1+ var)
+                            (if (boundp 'var) (1+ var))
                             (list 'testing (backtrace))))))))))
 
 

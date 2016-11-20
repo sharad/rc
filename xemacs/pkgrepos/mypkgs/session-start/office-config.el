@@ -2046,15 +2046,6 @@ which other peoples are also working."
             (setq *taskdir-current-task* task))))))
 
 
-(deh-section "Forgive"
-  (defun forgive/them ()
-    (interactive)
-    (if (and
-         (featurep 'develock)
-         (assq major-mode develock-keywords-alist))
-        (develock-mode -1))
-    (highlight-changes-visible-mode -1)))
-
 (use-package timesheet
     ;; https://github.com/tmarble/timesheet.el
     :ensure t
