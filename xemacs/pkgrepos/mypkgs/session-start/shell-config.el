@@ -28,6 +28,9 @@
 (eval-when-compile '(require 'tree))
 
 (deh-require-maybe oneliner
+
+  (defvar buf nil)
+
   (load-library "oneliner")
   (require 'utils-config)
   (require 'tramp-config)

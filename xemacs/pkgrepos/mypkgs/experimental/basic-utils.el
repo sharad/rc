@@ -1,38 +1,47 @@
-;;
-;; utils.el
-;; Login : <s@taj>
-;; Started on  Thu Sep  2 02:33:29 2010 Sharad Pratap
-;; $Id$
-;;
-;; Copyright (C) @YEAR@ Sharad Pratap
+;;; basic-utils.el --- Basic utilities               -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2016  sharad
+
+;; Author: sharad <spratap@merunetworks.com>
+;; Keywords: convenience
+
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2 of the License, or
+;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-;;
+
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;;
+
 ;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
 ;;
 
-;; (defun package-dir-add-to-loadpath (package-dir &optional recursive)
-;;   (when (file-directory-p package-dir)
-;;     (mapc
-;;      (if recursive
-;;          (lambda (path)
-;;            (add-to-list 'load-path path)
-;;            (let ((default-directory path))
-;;              (normal-top-level-add-subdirs-to-load-path)))
-;;          (lambda (path)
-;;            (add-to-list 'load-path path)))
-;;      (remove-if-not
-;;       'file-directory-p
-;;       (directory-files package-dir t "[a-zA-Z]+")))))
+;;; Code:
+
+(defvar running-xemacs (string-match "XEmacs\\|Lucid" emacs-version))
+
+(defvar reloading-libraries nil "used in session-conf.el")
+
+
+(defun package-dir-add-to-loadpath (package-dir &optional recursive)
+  (when (file-directory-p package-dir)
+    (mapc
+     (if recursive
+         (lambda (path)
+           (add-to-list 'load-path path)
+           (let ((default-directory path))
+             (normal-top-level-add-subdirs-to-load-path)))
+         (lambda (path)
+           (add-to-list 'load-path path)))
+     (remove-if-not
+      'file-directory-p
+      (directory-files package-dir t "[a-zA-Z]+")))))
 
 (defun global-set-key-if-unbind (key cmd)
   "Set binding for key if there is no  existing binding for key."
@@ -188,3 +197,126 @@
     (ad-remove-advice 'require 'around 'compile-if-fail)
     (ad-update 'require)))
 
+
+(defun load-dir-files (dir)
+  (let (load-file-with-errors)
+   (when (file-directory-p dir)
+     (byte-recompile-directory dir 0)
+     (mapc '(lambda (f)
+             (if (not (ignore-errors (load-file f)))
+                 (push f load-file-with-errors)))
+           (directory-files dir t "^[a-zA-Z0-9-]+\.elc$"))
+     (if load-file-with-errors
+         (mapc 'load-file
+               load-file-with-errors)
+         t))))
+
+(defun require-dir-libs (dir)
+  (let (load-lib-with-errors
+        reloading-libraries)
+    (when (file-directory-p dir)
+      (ignore-errors (byte-recompile-directory dir 0))
+      (mapc (lambda (lib)
+              (let ((feature (if (string-match "\\(.\+\\)\.el" lib)
+                                 (intern (match-string 1 lib)))))
+                (if feature
+                  (unless
+                      (and
+                       (message "now loading %s.el" feature)
+                       (with-report-error "check"
+                           (require feature)))
+                    (push feature load-lib-with-errors)))))
+            (directory-files dir nil "^[a-zA-Z0-9-]+\.el$"))
+      (if load-lib-with-errors
+          (progn
+            (setq reloading-libraries t)
+            (message "now loading files ( %s ) with errors." load-lib-with-errors)
+            (mapc '(lambda (f)
+                    (message "now loading file with error %s.el" f)
+                    (with-report-error "check"
+                        (require f)))
+                  load-lib-with-errors))
+          (message "all library loaded in %s directory without error." dir))
+      t)))
+
+(defun add-element-to-lists (element lists)
+  (dolist (list lists)
+          (add-hook (intern (concat (symbol-name list) "-mode-hook")) element)))
+
+(defun remove-element-from-lists (element lists)
+  (dolist (list lists)
+          (remove-hook (intern (concat (symbol-name list) "-mode-hook")) element)))
+
+(defvar pgm-langs
+  '(java
+    c
+    c++
+    perl
+    lisp
+    emacs-lisp
+    cperl
+    js
+    espresso
+    ruby
+    sh
+    python) "Langauge modes.")
+
+(defvar text-langs
+  '(muse
+    text))
+
+(defvar reader-requester
+  '(rfcview) "Modes that need reader.")
+
+(defvar mode-used '(org planner)  "Modes used.")
+
+(setq mode-used (append mode-used pgm-langs))
+
+
+;;{{ Pathname Utilities
+(deh-section "Pathname Utilities"
+  (defun  pathname-end-with-/ (path)
+    "Check if path name end with /"
+    (equal (elt path (- (length path) 1)) ?/))
+
+  (defun pathname-delete-trailing-/ (path)
+    (if (pathname-end-with-/ path)
+        (pathname-delete-trailing-/ (subseq path 0 (- (length path) 2)))
+        path))
+
+  (defun pathname-equal (p1 p2)
+    "Pathname equality"
+    (apply #'string-equal
+           (mapcar #'pathname-delete-trailing-/ (list p1 p2))))
+
+  ;; (testing
+  ;;  (pathname-delete-trailing-/ "/sdfsd/sdgfdg////"))
+  )
+
+
+
+;;{{ --debug-init
+(message "debug-on-error %s" debug-on-error)
+;;}}
+
+
+;;{{
+
+(defun run-at-time-or-now (time fn)
+  "Run FN at TIME if numeric is otherwise run now only."
+  (if (numberp time)
+      (run-with-timer time nil fn)
+      (funcall fn)))
+
+(defun run-at-time-or-now-arg (time fn arg)
+  "Run FN with ARG at TIME if numeric is otherwise run now only."
+  (if (numberp time)
+      (run-with-timer time nil
+                      (lambda (a) (funcall (car a) (cdr a)))
+                      (cons fn arg))
+      (funcall fn arg)))
+
+
+
+(provide 'basic-utils)
+;;; basic-utils.el ends here

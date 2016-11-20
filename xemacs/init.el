@@ -31,8 +31,6 @@
          (message "loading init now.")
          ad-do-it))))
 
-;; (require 'macros-config      "~/.xemacs/pkgrepos/mypkgs/session-start/macros-config.el")
-;; (require 'basic-utils-config "~/.xemacs/pkgrepos/mypkgs/session-start/basic-utils-config.el")
 (require 'loadpath-config      "~/.xemacs/pkgrepos/mypkgs/session-start/loadpath-config.el")
 
 (when (require 'cl nil) ; a rare necessary use of REQUIRE

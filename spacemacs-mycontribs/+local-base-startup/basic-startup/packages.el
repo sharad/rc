@@ -31,11 +31,15 @@
 
 (defconst basic-startup-packages
   '(
-    (general-testing :location local)
-    (macros-config :location local)
-    (basic-utils-config :location local)
-    (basic-config :location local)
-    (dot-emacs-helper :location local)
+    ;; (general-testing :location local)
+    ;; (macros-config :location local)
+    ;; (basic-utils :location local)
+    ;; (utils-custom :location local)
+    ;; (dot-emacs-helper :location local)
+    ;; (startup-hooks :location local)
+    ;; (elscreen :location local)
+    ;; (notify :location elpa)
+    (sessions-mgr :location local)
     )
   "The list of Lisp packages required by the basic-startup layer.
 
@@ -64,21 +68,45 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun basic-startup/init-basic-macros ()
-  )
 
-(defun basic-startup/init-basic-utils ()
-  (use-package basic-utils
-    :init))
 
-(defun basic-startup/init-basic-startup-session ()
-  (use-package basic-startup-session
-    :init))
+;; (defun basic-startup/init-general-testing ()
+;;   (use-package general-testing))
 
-(defun basic-startup/init-dot-emacs-helper ()
-  (use-package dot-emacs-helper))
+;; (defun basic-startup/init-macros-config ()
+;;   (use-package macros-config))
 
-(defun basic-startup/init-general-testing ()
-  )
+;; (defun basic-startup/init-basic-utils ()
+;;   (use-package basic-utils))
+
+;; (defun basic-startup/init-utils-custom ()
+;;   (use-package utils-custom))
+
+;; (defun basic-startup/init-dot-emacs-helper ()
+;;   (use-package dot-emacs-helper))
+
+;; (defun basic-startup/init-startup-hooks ()
+;;   (use-package startup-hooks))
+
+
+(defun basic-startup/init-sessions-mgr ()
+  (use-package startup-hooks)
+  (use-package sessions-mgr
+      :config
+    (add-hook
+     'sharad/enable-startup-interrupting-feature-hook
+     'frame-session-restore-hook-func
+     t)
+
+    (add-hook ;; 'after-init-hook
+     'sharad/enable-startup-interrupting-feature-hook
+     '(lambda ()
+       (run-at-time-or-now 7 'sharad/desktop-session-restore)))))
+
+(defun basic-utils/init-elscreen ()
+  (use-package elscreen :init))
+
+
+
 
 ;;; packages.el ends here

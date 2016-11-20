@@ -64,8 +64,7 @@ values."
 
 
      ;; .spacemacs-mycontribution
-     ;; basic-startup
-     basic-utils
+     basic-startup
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -436,9 +435,10 @@ before packages are loaded. If you are unsure, you should try in setting them in
       (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init))
     )
 
-
-  ;; (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
+  (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
+  (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
   (push "~/.spacemacs-mycontribs/local" load-path)
+  (push "~/.xemacs/pkgrepos/mypkgs/testing" load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/session-start" load-path)
   (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
   (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path))
