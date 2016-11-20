@@ -384,7 +384,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
        (message (concat "SERVER: " server-name))
        (when (server-running-p (getenv "EMACS_SERVER_NAME"))
 	 (message (concat "YES SERVER: " server-name))))
-       ))
+       )
+     (setq indicate-empty-lines nil))
 
 
 
