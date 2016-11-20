@@ -48,6 +48,7 @@
 
 (require 'basic-utils)
 (require 'basic-macros)
+(require 'perforce-test)
 
 (add-hook 'after-init-hook
           #'(lambda ()

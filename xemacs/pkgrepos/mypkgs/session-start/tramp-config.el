@@ -55,7 +55,7 @@
 
 
   (setq ;; tramp-default-method "ssh"
-   ;; tramp-default-method "scpc" <- default
+   ;; tramp-default-method "scp" <- default
    tramp-debug-buffer t
    ;; tramp-verbose 10
    tramp-verbose 1

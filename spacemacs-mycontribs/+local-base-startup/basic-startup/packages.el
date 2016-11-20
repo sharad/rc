@@ -31,14 +31,6 @@
 
 (defconst basic-startup-packages
   '(
-    ;; (general-testing :location local)
-    ;; (macros-config :location local)
-    ;; (basic-utils :location local)
-    ;; (utils-custom :location local)
-    ;; (dot-emacs-helper :location local)
-    ;; (startup-hooks :location local)
-    ;; (elscreen :location local)
-    ;; (notify :location elpa)
     (sessions-mgr :location local)
     )
   "The list of Lisp packages required by the basic-startup layer.

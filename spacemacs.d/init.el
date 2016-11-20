@@ -435,6 +435,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
       (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init))
     )
 
+  (push (concat "~/.osetup/info.d/hosts/" (system-name) "/elisp") load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
   (push "~/.spacemacs-mycontribs/local" load-path)

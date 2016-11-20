@@ -758,15 +758,11 @@ Also returns nil if pid is nil."
 
   (setq desktop-path (auto-config-file "desktop/"))
 
+  (setq desktop-dirname (auto-config-file "desktop/"))
+
   (setq desktop-base-lock-name
         (concat
          ".emacs.desktop.lock"
-         (if (boundp 'server-name)
-             (concat "-" server-name))))
-
-  (setq desktop-base-file-name
-        (concat
-         "emacs-desktop"
          (if (boundp 'server-name)
              (concat "-" server-name))))
 
@@ -1117,22 +1113,24 @@ If there are no buffers left to create, kill the timer."
     ;; ask user about desktop to restore, and use it for session.
     ;; will set *desktop-save-filename*
     (if (desktop-get-desktop-save-filename)
-        (let ((enable-local-eval t                ;query
+        (let ((desktop-restore-frames nil)
+              (enable-local-eval t                ;query
                 )
               (enable-recursive-minibuffers t)
               (flymake-run-in-place nil)
-              (show-error (called-interactively-p 'interactive)))
+              (show-error (called-interactively-p 'interactive))
+              (*constructed-name-desktop-save-filename*
+               (concat "^" (getenv "HOME") "/.emacs.d/.cache/autoconfig/desktop/emacs-desktop-" server-name)))
           (setq debug-on-error t)
           (message-notify "sharad/desktop-session-restore" "entering sharad/desktop-session-restore")
 
-          (if (not (string-match (concat "^" (getenv "HOME") "/.emacs.d/autoconfig/desktop/emacs-desktop-" server-name)
-                                 *desktop-save-filename*))
+          (if (not (string-match *constructed-name-desktop-save-filename* *desktop-save-filename*))
               (progn
                 (message-notify "sharad/desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s"
-                                (concat (getenv "HOME") "/.emacs.d/emacs-desktop-" server-name)
+                                *constructed-name-desktop-save-filename*
                                 *desktop-save-filename*)
                 (if (y-or-n-p (format "sharad/desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s\nshould continue with it ? "
-                                      (concat (getenv "HOME") "/.emacs.d/emacs-desktop-" server-name)
+                                      *constructed-name-desktop-save-filename*
                                       *desktop-save-filename*))
                     (message "continuing..")
                     (error "desktop file %s is not correct" *desktop-save-filename*)))

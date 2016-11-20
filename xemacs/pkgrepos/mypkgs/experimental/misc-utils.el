@@ -38,10 +38,10 @@
      (if (file-name-directory file-path)
 	 (expand-file-name
 	  (file-name-directory file-path)
-	  (expand-file-name "autoconfig" user-emacs-directory))
-       (expand-file-name "autoconfig" user-emacs-directory))
+	  (expand-file-name ".cache/autoconfig" user-emacs-directory))
+       (expand-file-name ".cache/autoconfig" user-emacs-directory))
      t)
-    (expand-file-name file-path (expand-file-name "autoconfig" user-emacs-directory)))
+    (expand-file-name file-path (expand-file-name ".cache/autoconfig" user-emacs-directory)))
 
   (defun simple-no-final-slash (s)
     ;; Remove optional final slash from string S

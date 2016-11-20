@@ -59,8 +59,8 @@
 
 
 ;; Debugger entered--Lisp error: (wrong-type-argument number-or-marker-p ftp)
-;;   ido-file-name-all-completions("/scpc:s@localhost:/etc/acpi/")
-;;   ido-make-file-list-1("/scpc:s@localhost:/etc/acpi/")
+;;   ido-file-name-all-completions("/scp:s@localhost:/etc/acpi/")
+;;   ido-make-file-list-1("/scp:s@localhost:/etc/acpi/")
 ;;   ido-make-file-list(nil)
 ;;   ido-read-internal(file "Find file: " ido-file-history nil confirm-after-completion nil)
 ;;   ido-file-internal(raise-frame)
