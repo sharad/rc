@@ -273,93 +273,6 @@
 
       ;; based on reply article
       `(
-        (t                              ;global
-
-         ,@(if (member (system-name) office-host-names)
-               `(
-                 (name ,myname)
-                 (signature "Regards,\n-sharad")
-                 (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
-                 ;; ("Jabber-ID" ,office-email)
-                 (address ,office-email)
-                 )
-               `((name ,myname)
-                 (signature "Regards,\n-sharad")
-                 ("Jabber-ID" ,jabber-id)
-                 (address ,email-addr)))
-
-         ;; ("nnml:.*"
-         ;;  (From (with-current-buffer gnus-article-buffer
-         ;;          (message-fetch-field "to"))))
-
-         ;; Note: about Form header it if it is set it override
-         ;; `address' header that override user-mail-address, so Form
-         ;; > address > user-mail-address
-
-         ;; Rule means that you use the
-         ;; To address as the From address in all your outgoing
-         ;; replies, which might be handy if you fill many roles. You
-         ;; may also use message-alternative-emails instead.
-
-         ;; (From
-         ;;  (if (and message-reply-headers
-         ;;           (get-buffer gnus-article-buffer)) ; check it if it is current buffer
-         ;;      (with-current-buffer gnus-article-buffer
-         ;;        (message-fetch-field "to"))))
-
-         ;; http://www.gnu.org/software/emacs/manual/html_node/gnus/Posting-Styles.html
-         (From
-          (let* ((default-email (concat myname " <" email-addr ">"))
-                 (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
-                         (with-current-buffer gnus-article-buffer
-                           (message-fetch-field "to"))))
-                 (email (if to (car (mail-header-parse-address to))))
-                 (email-name (if email (assoc email sharad/gnus-name-emails-map))))
-            (if email
-                (if email-name
-                    (concat (cdr email-name) " <" (car email-name) ">")
-                    default-email)
-                default-email)))
-
-
-                                        ; try to get only to address, not all in CC Bcc)
-
-         ;; (eval ;; (if (equal (system-name) ,office-host-name)
-         ;;  (unless (equal (system-name) ,office-host-name)
-         ;;    (progn
-         ;;      (set (make-local-variable 'message-send-mail-function) 'message-send-mail-with-sendmail)
-         ;;      (set (make-local-variable 'sendmail-program) "/usr/bin/msmtp") ;; we substitute sendmail with msmtp
-         ;;      (set (make-local-variable 'message-sendmail-extra-arguments) nil)
-         ;;      (set (make-local-variable 'message-sendmail-f-is-evil) t)
-         ;;      (set (make-local-variable 'message-sendmail-envelope-from) 'header))))
-
-         )
-
-        (message-mail-p
-         ;; message is mail and this is not my system taj then do not save Gcc copy in sent-mail
-         (eval (unless (equal (system-name) "taj")
-                 (set (make-local-variable 'gnus-message-archive-group)
-                      '("sent"
-                        "sent-mail"
-                        ,(format-time-string "sent.%Y-%m")
-                        ,@(if (member (system-name) office-host-names)
-                              '("Office.Meru.Sent Items" "Office.Fortinet.Sent Items")))))))
-
-        (message-news-p
-         (name ,myname)
-         (signature "Regards,\n-sharad")
-         ("Jabber-ID" ,jabber-id)
-         (address ,email-addr)
-         (eval
-          (progn
-            (set (make-local-variable 'gnus-message-archive-group)
-                 '(,(format-time-string "sent.%Y-%m")
-                   "sent"
-                   "sent-news"))
-            (set (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)
-            (set (make-local-variable 'message-cite-reply-above) nil)
-            (set (make-local-variable 'message-cite-reply-position) 'traditional))))
-
         ("Gmail.*"
          (name ,myname)
          (signature "Regards,\n-sharad")
@@ -445,6 +358,97 @@
         ;;  (From
         ;;   (with-current-buffer gnus-article-buffer
         ;;     (message-fetch-field "to")))
+
+
+        (message-mail-p
+         ;; message is mail and this is not my system taj then do not save Gcc copy in sent-mail
+         (eval (unless (equal (system-name) "taj")
+                 (set (make-local-variable 'gnus-message-archive-group)
+                      '("sent"
+                        "sent-mail"
+                        ,(format-time-string "sent.%Y-%m")
+                        ,@(if (member (system-name) office-host-names)
+                              '("Office.Meru.Sent Items" "Office.Fortinet.Sent Items")))))))
+
+        (message-news-p
+         (name ,myname)
+         (signature "Regards,\n-sharad")
+         ("Jabber-ID" ,jabber-id)
+         (address ,email-addr)
+         (eval
+          (progn
+            (set (make-local-variable 'gnus-message-archive-group)
+                 '(,(format-time-string "sent.%Y-%m")
+                   "sent"
+                   "sent-news"))
+            (set (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)
+            (set (make-local-variable 'message-cite-reply-above) nil)
+            (set (make-local-variable 'message-cite-reply-position) 'traditional))))
+
+
+
+        (t                              ;global
+
+         ,@(if (member (system-name) office-host-names)
+               `(
+                 (name ,myname)
+                 (signature "Regards,\n-sharad")
+                 (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
+                 ;; ("Jabber-ID" ,office-email)
+                 (address ,office-email)
+                 )
+               `((name ,myname)
+                 (signature "Regards,\n-sharad")
+                 ("Jabber-ID" ,jabber-id)
+                 (address ,email-addr)))
+
+         ;; ("nnml:.*"
+         ;;  (From (with-current-buffer gnus-article-buffer
+         ;;          (message-fetch-field "to"))))
+
+         ;; Note: about Form header it if it is set it override
+         ;; `address' header that override user-mail-address, so Form
+         ;; > address > user-mail-address
+
+         ;; Rule means that you use the
+         ;; To address as the From address in all your outgoing
+         ;; replies, which might be handy if you fill many roles. You
+         ;; may also use message-alternative-emails instead.
+
+         ;; (From
+         ;;  (if (and message-reply-headers
+         ;;           (get-buffer gnus-article-buffer)) ; check it if it is current buffer
+         ;;      (with-current-buffer gnus-article-buffer
+         ;;        (message-fetch-field "to"))))
+
+         ;; http://www.gnu.org/software/emacs/manual/html_node/gnus/Posting-Styles.html
+         (From
+          (let* ((default-email (concat myname " <" email-addr ">"))
+                 (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
+                         (with-current-buffer gnus-article-buffer
+                           (message-fetch-field "to"))))
+                 (email (if to (car (mail-header-parse-address to))))
+                 (email-name (if email (assoc email sharad/gnus-name-emails-map))))
+            (if email
+                (if email-name
+                    (concat (cdr email-name) " <" (car email-name) ">")
+                    default-email)
+                default-email)))
+
+
+                                        ; try to get only to address, not all in CC Bcc)
+
+         ;; (eval ;; (if (equal (system-name) ,office-host-name)
+         ;;  (unless (equal (system-name) ,office-host-name)
+         ;;    (progn
+         ;;      (set (make-local-variable 'message-send-mail-function) 'message-send-mail-with-sendmail)
+         ;;      (set (make-local-variable 'sendmail-program) "/usr/bin/msmtp") ;; we substitute sendmail with msmtp
+         ;;      (set (make-local-variable 'message-sendmail-extra-arguments) nil)
+         ;;      (set (make-local-variable 'message-sendmail-f-is-evil) t)
+         ;;      (set (make-local-variable 'message-sendmail-envelope-from) 'header))))
+
+         )
+
 
         ))
 ;; {{ http://www.gnu.org/software/emacs/manual/html_node/gnus/Delayed-Articles.html

@@ -95,6 +95,11 @@ function update-ssh-agent()
 
 : update-ssh-agent              # use it when required.
 
+if ssh-add 2>&1 >/dev/null
+then
+    update-ssh-agent
+fi
+
 __comp=rc
 __subcomp=env
 if [ "x${HOST}" != "x" ]
