@@ -45,7 +45,7 @@ else
 
 fi
 
-function update-ssh-agent()
+function update-ssh-agent-unconditionally()
 {
     if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
         ps ${SSH_AGENT_PID} >/dev/null 2>&1                         && # if pid is set and working alive ssh-agent process.
@@ -93,11 +93,15 @@ function update-ssh-agent()
     fi  # if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
 }
 
+function update-ssh-agent()
+{
+    if ! ssh-add -l >/dev/null 2>&1
+    then
+        update-ssh-agent-unconditionally              # use it when required.
+    fi
+}
 
-if ! ssh-add -l >/dev/null 2>&1
-then
-    update-ssh-agent              # use it when required.
-fi
+update-ssh-agent
 
 __comp=rc
 __subcomp=env
