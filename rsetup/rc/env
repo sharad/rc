@@ -101,7 +101,7 @@ function update-ssh-agent()
     fi
 }
 
-update-ssh-agent
+update-ssh-agent                # use it when required.
 
 __comp=rc
 __subcomp=env
