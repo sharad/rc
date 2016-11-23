@@ -95,10 +95,19 @@ function update-ssh-agent-unconditionally()
 
 function update-ssh-agent()
 {
-    if ! ssh-add -l >/dev/null 2>&1
+    if [ $# -gt 0 ]
+    then
+      __force=0
+    else
+      __force=1
+    fi
+
+    ssh-add -l >/dev/null 2>&1
+    if [ $? -gt $__force ]
     then
         update-ssh-agent-unconditionally              # use it when required.
     fi
+    unset __force
 }
 
 update-ssh-agent                # use it when required.

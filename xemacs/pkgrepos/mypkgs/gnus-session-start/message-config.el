@@ -273,120 +273,6 @@
 
       ;; based on reply article
       `(
-        ("Gmail.*"
-         (name ,myname)
-         (signature "Regards,\n-sharad")
-         ;; (address ,email-addr)
-         )
-
-        ;; ("Gmail.official"
-        ;;  (address "Sharad Pratap <sharad@pratap.net.in>"))
-
-        ("Office.*"
-         (name ,myname)
-         (signature "Regards,\n-sharad")
-         (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
-         (address ,office-fortinet-email)
-         (eval (set (make-local-variable 'gnus-message-archive-group)
-                    '(,(format-time-string "sent.%Y-%m")
-                      "sent"
-                      "sent-mail"
-                      "Office.Fortinet.Sent Items"
-                      "Office.Meru.Sent Items"))))
-
-        ("Office.Fortinet.*"
-         (name ,myname)
-         (signature "Regards,\n-sharad")
-         (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
-         (address ,office-fortinet-email)
-         (eval (set (make-local-variable 'gnus-message-archive-group)
-                    '(,(format-time-string "sent.%Y-%m")
-                      "sent"
-                      "sent-mail"
-                      "Office.Fortinet.Sent Items"))))
-
-        ("Office.Meru.*"
-         (name ,myname)
-         (signature "Regards,\n-sharad")
-         (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
-         (address ,office-meru-email)
-         (eval (set (make-local-variable 'gnus-message-archive-group)
-                    '(,(format-time-string "sent.%Y-%m")
-                      "sent"
-                      "sent-mail"
-                      "Office.Meru.Sent Items"))))
-
-        ;; J sites
-        ((header "Received" "monster.co.in\\|naukri.com") ;reply
-         (signature nil)
-         (eval (progn
-                 ;; (set (make-local-variable 'message-cite-function) 'sc-cite-original)
-                 ;; (set (make-local-variable 'message-cite-reply-above) t)
-                 (set (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)
-                 (set (make-local-variable 'message-cite-reply-above) t)
-                 (set (make-local-variable 'message-cite-reply-position) 'above)
-                 (remove-hook 'message-setup-hook 'xsteve-message-citation t)
-                 ;; (add-hook 'gnus-message-setup-hook 'jreply nil t)
-                 (remove-hook (make-local-variable 'message-setup-hook) 'xsteve-message-citation)
-                 (add-hook (make-local-variable 'gnus-message-setup-hook) 'jreply nil t)
-                 ))
-         ;; (xsteve-message-citation)))
-         ;; (body :file "~/Documents/Template/j/reply")
-         ;; (body jreply)
-         ;; (signature (concat "Regards,\n" ,myname))
-         ;; (eval (add-hook 'message-setup-hook 'xsteve-message-citation t t)) ;; set in global hook
-         ;; (eval (add-hook 'message-signature-setup-hook 'xsteve-message-citation nil t))
-         ;; (eval (set (make-local-variable 'message-cite-function) 'sc-cite-original))
-         (x-url ,myurl))
-
-        ((save-excursion
-           (let ((article-buf
-                  (car (remove-if-not
-                        '(lambda (bn)
-                          (string-match "*Article" bn 0))
-                        (mapcar 'buffer-name (buffer-list))))))
-             (when article-buf
-               (set-buffer article-buf)
-               (> (count-lines (point-min) (point-max)) 30))))
-         (eval
-          (progn
-            (set (make-local-variable 'message-cite-reply-above) t)
-            (set (make-local-variable 'message-cite-reply-position) 'above))))
-
-
-        ;; (".*"
-        ;;  (From
-        ;;   (with-current-buffer gnus-article-buffer
-        ;;     (message-fetch-field "to")))
-
-
-        (message-mail-p
-         ;; message is mail and this is not my system taj then do not save Gcc copy in sent-mail
-         (eval (unless (equal (system-name) "taj")
-                 (set (make-local-variable 'gnus-message-archive-group)
-                      '("sent"
-                        "sent-mail"
-                        ,(format-time-string "sent.%Y-%m")
-                        ,@(if (member (system-name) office-host-names)
-                              '("Office.Meru.Sent Items" "Office.Fortinet.Sent Items")))))))
-
-        (message-news-p
-         (name ,myname)
-         (signature "Regards,\n-sharad")
-         ("Jabber-ID" ,jabber-id)
-         (address ,email-addr)
-         (eval
-          (progn
-            (set (make-local-variable 'gnus-message-archive-group)
-                 '(,(format-time-string "sent.%Y-%m")
-                   "sent"
-                   "sent-news"))
-            (set (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)
-            (set (make-local-variable 'message-cite-reply-above) nil)
-            (set (make-local-variable 'message-cite-reply-position) 'traditional))))
-
-
-
         (t                              ;global
 
          ,@(if (member (system-name) office-host-names)
@@ -401,6 +287,8 @@
                  (signature "Regards,\n-sharad")
                  ("Jabber-ID" ,jabber-id)
                  (address ,email-addr)))
+
+         ("Posting-style" "t")
 
          ;; ("nnml:.*"
          ;;  (From (with-current-buffer gnus-article-buffer
@@ -448,6 +336,139 @@
          ;;      (set (make-local-variable 'message-sendmail-envelope-from) 'header))))
 
          )
+
+
+        (message-news-p
+         (name ,myname)
+         (signature "Regards,\n-sharad")
+         ("Jabber-ID" ,jabber-id)
+         ("Posting-style" "message-news-p")
+         (address ,email-addr)
+         ("From" ,email-addr)
+         (eval
+          (progn
+            (set (make-local-variable 'gnus-message-archive-group)
+                 '(,(format-time-string "sent.%Y-%m")
+                   "sent"
+                   "sent-news"))
+            (set (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)
+            (set (make-local-variable 'message-cite-reply-above) nil)
+            (set (make-local-variable 'message-cite-reply-position) 'traditional))))
+
+
+        (message-mail-p
+         ;; message is mail and this is not my system taj then do not save Gcc copy in sent-mail
+         ("Posting-style" "message-mail-p")
+         (eval (unless (equal (system-name) "taj")
+                 (set (make-local-variable 'gnus-message-archive-group)
+                      '("sent"
+                        "sent-mail"
+                        ,(format-time-string "sent.%Y-%m")
+                        ,@(if (member (system-name) office-host-names)
+                              '("Office.Meru.Sent Items" "Office.Fortinet.Sent Items")))))))
+
+        ("Gmail.*"
+         (name ,myname)
+         (signature "Regards,\n-sharad")
+         ;; (address ,email-addr)
+         ("Posting-style" "Gmail.*")
+         )
+
+        ;; ("Gmail.official"
+        ;;  (address "Sharad Pratap <sharad@pratap.net.in>"))
+
+        ("Office.*"
+         (name ,myname)
+         (signature "Regards,\n-sharad")
+         (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
+         (address ,office-fortinet-email)
+         ("From" ,office-fortinet-email)
+         ("Posting-style" "Office.*")
+         (eval (set (make-local-variable 'gnus-message-archive-group)
+                    '(,(format-time-string "sent.%Y-%m")
+                      "sent"
+                      "sent-mail"
+                      "Office.Fortinet.Sent Items"
+                      "Office.Meru.Sent Items"))))
+
+        ("Office.Fortinet.*"
+         (name ,myname)
+         (signature "Regards,\n-sharad")
+         (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
+         (address ,office-fortinet-email)
+         ("From" ,office-fortinet-email)
+         ("Posting-style" "Office.Fortinet.*")
+         (eval (set (make-local-variable 'gnus-message-archive-group)
+                    '(,(format-time-string "sent.%Y-%m")
+                      "sent"
+                      "sent-mail"
+                      "Office.Fortinet.Sent Items"))))
+
+        ("Office.Meru.*"
+         (name ,myname)
+         (signature "Regards,\n-sharad")
+         (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
+         (address ,office-meru-email)
+         ("From" ,office-meru-email)
+         ("Posting-style" "Office.Meru.*")
+         (eval (set (make-local-variable 'gnus-message-archive-group)
+                    '(,(format-time-string "sent.%Y-%m")
+                      "sent"
+                      "sent-mail"
+                      "Office.Meru.Sent Items"))))
+
+        ;; J sites
+        ((header "Received monster.co.in\\|naukri.com") ;reply
+         (signature nil)
+         ("Posting-style" "(header \"Received\" \"monster.co.in\\|naukri.com\")")
+         (eval (progn
+                 ;; (set (make-local-variable 'message-cite-function) 'sc-cite-original)
+                 ;; (set (make-local-variable 'message-cite-reply-above) t)
+                 (set (make-local-variable 'message-citation-line-function) 'message-insert-formatted-citation-line)
+                 (set (make-local-variable 'message-cite-reply-above) t)
+                 (set (make-local-variable 'message-cite-reply-position) 'above)
+                 (remove-hook 'message-setup-hook 'xsteve-message-citation t)
+                 ;; (add-hook 'gnus-message-setup-hook 'jreply nil t)
+                 (remove-hook (make-local-variable 'message-setup-hook) 'xsteve-message-citation)
+                 (add-hook (make-local-variable 'gnus-message-setup-hook) 'jreply nil t)
+                 ))
+         ;; (xsteve-message-citation)))
+         ;; (body :file "~/Documents/Template/j/reply")
+         ;; (body jreply)
+         ;; (signature (concat "Regards,\n" ,myname))
+         ;; (eval (add-hook 'message-setup-hook 'xsteve-message-citation t t)) ;; set in global hook
+         ;; (eval (add-hook 'message-signature-setup-hook 'xsteve-message-citation nil t))
+         ;; (eval (set (make-local-variable 'message-cite-function) 'sc-cite-original))
+         (x-url ,myurl))
+
+        ((save-excursion
+           (let ((article-buf
+                  (car (remove-if-not
+                        '(lambda (bn)
+                          (string-match "*Article" bn 0))
+                        (mapcar 'buffer-name (buffer-list))))))
+             (when article-buf
+               (set-buffer article-buf)
+               (> (count-lines (point-min) (point-max)) 30))))
+         (eval
+          (progn
+            (set (make-local-variable 'message-cite-reply-above) t)
+            (set (make-local-variable 'message-cite-reply-position) 'above))))
+
+
+        ;; (".*"
+        ;;  (From
+        ;;   (with-current-buffer gnus-article-buffer
+        ;;     (message-fetch-field "to")))
+
+
+
+
+
+
+
+
+
 
 
         ))
