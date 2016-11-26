@@ -25,13 +25,14 @@
 
 (require 'host-info)
 
-(when (and (boundp 'gnus-lib-path) gnus-lib-path (file-directory-p gnus-lib-path))
-  (add-to-list 'load-path gnus-lib-path)
-  (require 'gnus-util (concat gnus-lib-path "/gnus-util.el"))
-  (load-file (concat gnus-lib-path "/gnus-util.el"))
-  (require 'gnus-util (concat gnus-lib-path "/gnus-util.el"))
-  (load-file (concat gnus-lib-path "/gnus-util.el"))
-  (load-file (concat gnus-lib-path "/mm-util.el")))
+(when nil
+  (when (and (boundp 'gnus-lib-path) gnus-lib-path (file-directory-p gnus-lib-path))
+    (add-to-list 'load-path gnus-lib-path)
+    (require 'gnus-util (concat gnus-lib-path "/gnus-util.el"))
+    (load-file (concat gnus-lib-path "/gnus-util.el"))
+    (require 'gnus-util (concat gnus-lib-path "/gnus-util.el"))
+    (load-file (concat gnus-lib-path "/gnus-util.el"))
+    (load-file (concat gnus-lib-path "/mm-util.el"))))
 
 ;;}}
 

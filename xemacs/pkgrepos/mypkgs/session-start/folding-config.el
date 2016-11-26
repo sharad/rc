@@ -316,7 +316,7 @@
 Note: this just replaces the existing value, you need to start
 it off by adding something like this to your file:
 
-# Local Variables:
+# [//] Local Variables:
 # omm-state:()
 # mode:omm-state
 # End:

@@ -391,7 +391,7 @@
                       "Office.Fortinet.Sent Items"
                       "Office.Meru.Sent Items"))))
 
-        ("Office.Fortinet.*"
+        ("Office.Fortinet.*\\|nnvirtual:Inbox-Sent\\|nnvirtual:Incoming"
          (name ,myname)
          (signature "Regards,\n-sharad")
          (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")

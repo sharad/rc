@@ -41,6 +41,7 @@ values."
      emacs-lisp
      helm
      git
+     gnus
      markdown
      org
      (shell :variables
@@ -314,136 +315,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
 
   (progn
-
-    (progn ;; at start
-     (defvar *emacs-in-init* t "Emacs is in init.")
-     (defvar user-emacs-directory "~/.emacs.d")
-     (defvar reloading-libraries nil "used in session-conf.el")
-     (setq user-emacs-directory "~/.emacs.d")
-     (setq *emacs-in-init* t)
-     (add-hook 'after-init-hook
-               (lambda ()
-                 (setq *emacs-in-init* nil)
-                 (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)))
-     (when (or t (require 'subr nil t))
-       (defvar old-messages-buffer-max-lines 100 "To keep all startup detail.")
-       (setq
-        old-messages-buffer-max-lines messages-buffer-max-lines
-        messages-buffer-max-lines 2000))
-
-
-     (eval-after-load "server"
-       '(progn
-         ;; server-auth-dir (auto-config-dir "server" t)
-         (defadvice server-create-window-system-frame
-             (around nocreate-in-init activate)
-           "remove-scratch-buffer"
-           (if *emacs-in-init*
-               (message "loading init now.")
-               ad-do-it))))
-
-
-     (when (require 'cl nil) ; a rare necessary use of REQUIRE
-                                        ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
-       (defvar *emacs-load-start* (current-time)))
-
-     (defconst *work-dir*
-       (expand-file-name "paradise" "~/.."))
-
-
-
-     (progn ;; "custom setup"
-       (defvar custom-override-file "~/.xemacs/hand-custom.el" "Hand Custom elisp")
-
-       (when (file-exists-p (setq custom-file "~/.xemacs/custom.el"))
-         (load-file custom-file))
-
-       (when (file-exists-p custom-override-file)
-         (load-file custom-override-file)))
-
-
-     (progn ;;  server
-       (setq
-        ;; server-auth-dir (auto-config-dir "server" t)
-        server-use-tcp t
-        server-name (or (getenv "EMACS_SERVER_NAME") server-name))
-       (setq server-host (system-name))
-
-       (when nil
-	(if (functionp 'server-running-p)
-           (when (not (server-running-p))
-             (condition-case e
-                 (server-start)
-               ('error
-                (progn
-                  (message "Error: %s, now trying to run with tcp." e)
-                  (let ((server-use-tcp nil))
-                    (setq server-use-tcp nil)
-                    (server-start))))))
-           (message "server %s already running" server-name))
-       (message (concat "SERVER: " server-name))
-       (when (server-running-p (getenv "EMACS_SERVER_NAME"))
-	 (message (concat "YES SERVER: " server-name))))
-       )
-     (setq indicate-empty-lines nil))
-
-
-
-    (when nil ;; deh-require-maybe server
-      (setq
-       ;; server-auth-dir (auto-config-dir "server" t)
-       server-use-tcp t
-       server-name (or (getenv "EMACS_SERVER_NAME") server-name))
-      (setq server-host (system-name))
-      (if (functionp 'server-running-p)
-          (when (not (server-running-p))
-            (condition-case e
-                (server-start)
-              ('error
-               (progn
-                 (message "Error: %s, now trying to run with tcp." e)
-                 (let ((server-use-tcp nil))
-                   (setq server-use-tcp nil)
-                   (server-start)))))))
-      (message (concat "SERVER: " server-name))
-      (when (server-running-p "general")
-        (message (concat "YES SERVER: " server-name))))
-
-
-    (when nil ;; run at end
-      (when nil
-        (put-file-in-rcs (auto-config-file "startup/startup.log"))
-        (with-current-buffer "*Messages*"
-          (setq messages-buffer-max-lines 2000
-                ;; old-messages-buffer-max-lines
-                )
-          ;; (append-to-buffer "*xxemacs-startup-log*" (point-min) (point-max))
-          (copy-to-buffer "*emacs-startup-log*" (point-min) (point-max)))
-
-        ;; (with-current-buffer "*emacs-startup-log*"
-        ;;   ;; (with-temp-file file body)
-        ;;   (set-buffer-file-coding-system
-        ;;    (if (coding-system-p 'utf-8-emacs)
-        ;;        'utf-8-emacs
-        ;;        'emacs-mule))
-        ;;   (write-region (point-min) (point-max) "~/.emacs.d/startup.log" t)
-        ;;   (put-file-in-rcs "~/.emacs.d/startup.log"))
-        )
-
-
-      ;; (redefine-function-remembered 'server-create-window-system-frame)
-      (setq *emacs-in-init* nil)              ;how to ensure it will run.
-      (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init))
-    )
-
-  (push (concat "~/.osetup/info.d/hosts/" (system-name) "/elisp") load-path)
-  (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
-  (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
-  (push "~/.spacemacs-mycontribs/local" load-path)
-  (push "~/.xemacs/pkgrepos/mypkgs/testing" load-path)
-  (push "~/.xemacs/pkgrepos/mypkgs/session-start" load-path)
-  (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
-  (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path))
+    (load-file "~/.spacemacs.d/user-init-utils.el")
+    (sharad/emacs-user-init-begin)))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -453,29 +326,8 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-
-
-
-
   (push "~/.spacemacs-mycontribs/local" load-path)
-  (defun maxmin-optimized-value (val scale div &optional max min)
-    (let ((opt (/ (* val scale) div)))
-      (if (and max
-               (> max 0)
-               (> opt max))
-          max
-        (if (and min
-                 (> min 0)
-                 (< opt min))
-            min
-          opt))))
-  ;; set attributes
-  (defun mycustom-face-set ()
-    "thisandthat."
-    (interactive)
-    (set-face-attribute 'default nil ;(/ (* (x-display-mm-width) 121) 600)
-                        :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)
-                        :width  'normal)))
+  (sharad/emacs-user-init-finish))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.

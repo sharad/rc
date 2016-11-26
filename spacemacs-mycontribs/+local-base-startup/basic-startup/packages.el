@@ -29,6 +29,11 @@
 
 ;;; Code:
 
+
+;;; Documentation
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
+
 (defconst basic-startup-packages
   '(
     (sessions-mgr :location local)
@@ -59,27 +64,6 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
-
-
-
-;; (defun basic-startup/init-general-testing ()
-;;   (use-package general-testing))
-
-;; (defun basic-startup/init-macros-config ()
-;;   (use-package macros-config))
-
-;; (defun basic-startup/init-basic-utils ()
-;;   (use-package basic-utils))
-
-;; (defun basic-startup/init-utils-custom ()
-;;   (use-package utils-custom))
-
-;; (defun basic-startup/init-dot-emacs-helper ()
-;;   (use-package dot-emacs-helper))
-
-;; (defun basic-startup/init-startup-hooks ()
-;;   (use-package startup-hooks))
-
 
 (defun basic-startup/init-sessions-mgr ()
   (use-package startup-hooks)
