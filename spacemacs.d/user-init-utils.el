@@ -1,5 +1,6 @@
 
 (defun sharad/emacs-user-init-begin ()
+  (message "loading sharad/emacs-user-init-begin begin")
   (push (concat "~/.osetup/info.d/hosts/" (system-name) "/elisp") load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
@@ -46,14 +47,21 @@
 
 
 
-  (progn ;; "custom setup"
+  (when t
+   (progn ;; "custom setup"
     (defvar custom-override-file "~/.xemacs/hand-custom.el" "Hand Custom elisp")
 
-    (when (file-exists-p (setq custom-file "~/.xemacs/custom.el"))
-      (load-file custom-file))
+    (defvar exclude-lib
+      (if (string-equal (system-name) "spratap")
+          '(tramp)))
 
-    (when (file-exists-p custom-override-file)
-      (load-file custom-override-file)))
+    (when nil
+      (when (file-exists-p (setq custom-file "~/.xemacs/custom.el"))
+        (load-file custom-file))
+
+      (when (file-exists-p custom-override-file)
+        (load-file custom-override-file)))
+    ))
 
 
   (progn ;;  server
@@ -79,10 +87,11 @@
       (when (server-running-p (getenv "EMACS_SERVER_NAME"))
         (message (concat "YES SERVER: " server-name))))
     )
-  )
+  (message "loading sharad/emacs-user-init-begin finished"))
 
 
 (defun sharad/emacs-user-init-finish ()
+  (message "loading sharad/emacs-user-init-finish begin")
   (when nil
     (put-file-in-rcs (auto-config-file "startup/startup.log"))
     (with-current-buffer "*Messages*"
@@ -115,13 +124,13 @@
 
   (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)
   (sharad/necessary-functionality)
-  )
+  (message "loading sharad/emacs-user-init-finish finished"))
 
 
 
 (defun sharad/necessary-functionality ()
   (interactive)
-
+  (message "loading sharad/necessary-functionality begin")
   (progn ;; expand
     (progn ;; yasnippet
       ;; inplace of tab I want it to use C->
@@ -282,4 +291,4 @@ variable."
   (remove-hook
    'sharad/enable-startup-interrupting-feature-hook
    'sharad/necessary-functionality)
-  )
+  (message "loading sharad/necessary-functionality finished"))

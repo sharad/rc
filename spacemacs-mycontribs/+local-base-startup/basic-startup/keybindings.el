@@ -26,4 +26,6 @@
       (global-unset-key [M-H-right])
       ;; (global-set-key-if-unbind [H-down]  'elscreen-previous)
       ;;}}
-      )))
+      ))
+
+  (spacemacs/sessions-mgr-enable))
