@@ -52,8 +52,22 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
 
     if whence -p emacs >& /dev/null || ! pgrep emacs >& /dev/null
     then
-	echo emacs >& /dev/null
-        foreach server (general) {
+	      echo emacs >& /dev/null
+
+        if [ "x$EMACS_SERVER_NAME" = "x" ]
+        then
+            EMACS_SERVER_NAME=general
+            export EMACS_SERVER_NAME
+        fi
+
+        if [ "x$EMACS_DIST_DIR" = "x" ]
+        then
+            EMACS_DIST_DIR=.xemacs
+            export EMACS_DIST_DIR
+        fi
+
+
+        foreach server ( $EMACS_SERVER_NAME ) {
             if [ ! -e ~/.emacs.d/server/${server} ] ||
        	        ! { # bundler command is not here for timeout it only for zsh
                 # do not delete: timeout [ TIMEOUT ] don't recognize command `command', it is only for zsh
@@ -66,23 +80,28 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
             # blow one is not allow gnus to read its ~/.gnus file automatically.
 	        # rm -f   \#.ido.last\#
                 pkill emacs
+
+                EMACS_STARTUP_LOG_DIR=~/.emacs.d/.cache/autoconfig/startup/$server/
+
+                mkdir -p $EMACS_STARTUP_LOG_DIR
+
                 # export GDK_RGBA=0
-                # EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee ~/.emacs.d/autoconfig/startup/startup.log
-                # GDK_RGBA=0 EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee ~/.emacs.d/autoconfig/startup/startup.log
+                # EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
+                # GDK_RGBA=0 EMACS_SERVER_NAME=$server command emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
                 if whence -p dbus-launch >& /dev/null
                 then
-                    GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=:0.0 timeout 240s dbus-launch --autolaunch=$MY_DBUS_SESSION emacs --daemon=$server |& tee ~/.emacs.d/autoconfig/startup/startup.log
+                    GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=:0.0 timeout 240s dbus-launch --autolaunch=$MY_DBUS_SESSION emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
                 else
-                    GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=:0.0 timeout 240s emacs --daemon=$server |& tee ~/.emacs.d/autoconfig/startup/startup.log
+                    GDK_RGBA=0 EMACS_SERVER_NAME=$server  DISPLAY=:0.0 timeout 240s emacs --daemon=$server |& tee $EMACS_STARTUP_LOG_DIR/startup.log
                 fi
-                print "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> ~/.emacs.d/autoconfig/startup/startup.log
+                print "Emacs Daemon started\n\n\n\nstatus $?\n\n" >> $EMACS_STARTUP_LOG_DIR/startup.log
+
+                unset EMACS_STARTUP_LOG_DIR
 
                 # disown %emacs
-            # else   #  it cause problem in autologin in GDM,  LightDM
-            #     command emacsclient -n -f ~/.emacs.d/server/${server}  -e '(progn (update-ssh-agent) (plan))';
             fi
         }
-	echo emacs1 >& /dev/null
+	      echo emacs1 >& /dev/null
     fi
 
     # foreach server (general) {

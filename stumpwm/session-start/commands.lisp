@@ -232,7 +232,7 @@
 
 ;; (defcommand emacsclient () ()
 ;;   (run-or-raise
-;;    (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "DISPLAY") "/emacs.d/server/general"))
+;;    (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "DISPLAY") "/emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general")))
 ;;    '(:class "Emacs")))
 
 (defun wait-for-program (pgm)
@@ -256,13 +256,13 @@
   (defcommand editor () ()
               ;;(if (wait-for-nwprogram "emacsclient")
               (run-wcli-command
-               (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(setq spec-id \"main\")")
+               (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general")) " -e '(setq spec-id \"main\")")
                ;; '(:class "Emacs")
                ))
 
   (defcommand xeditor () ()
               (run-wcli-command
-               (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/general")
+               (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general"))
                        " -e "
                        (prin1-to-string
                         (concat
@@ -272,7 +272,7 @@
 
   (defcommand emacsclient () ()
               (run-wcli-command
-               (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/general")
+               (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general"))
                        " -e "
                        (prin1-to-string
                         (concat "(progn (message "
@@ -283,30 +283,30 @@
 
   (defcommand mail-reader () ()
               (run-wcli-command
-               (concat "emacsclient -n -f " (concat (getenv "HOME") "/.emacs.d/server/general -e (make-mail-chat-frame)"))))
+               (concat "emacsclient -n -f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general") " -e (make-mail-chat-frame)"))))
 
   (defcommand new-mail () ()
               (if (wait-for-program "emacsclient")
                   (run-wcli-command
-                   (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus-group-mail)'"))))))
+                   (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general") " -e '(gnus-group-mail)'"))))))
 
 (defcommand gnus () ()
   (if (wait-for-nwprogram "emacsclient")
       (run-wcli-command
-       (concat "emacsclient -d " (getenv "DISPLAY")  "-f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus)'"))
+       (concat "emacsclient -d " (getenv "DISPLAY")  "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general") " -e '(gnus)'"))
        '(:class "EmacsGNU"))))
 
 
 ;; (defcommand mail-reader () ()
 ;;   (if (wait-for-program "emacsclient")
 ;;   (run-wcli-command
-;;    (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/general -e '(gnus)'")))))
+;;    (concat "emacsclient -n -c -d " (getenv "DISPLAY")  " -f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general") " -e '(gnus)'")))))
 
 
 (defcommand gnusclient () ()
   (if (wait-for-program "emacsclient")
   (run-or-pull
-   (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(gnus)'")
+   (concat "emacsclient -d " (getenv "DISPLAY") " -c " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general")) " -e '(gnus)'")
    '(:class "EmacsGNUS"))))
 
 ;; run-wcli-command
@@ -314,7 +314,7 @@
 (defcommand gnusclient () ()
   (if (wait-for-program "emacsclient")
   (run-wcli-command
-   (concat "emacsclient -d " (getenv "DISPLAY") " -f " (concat (getenv "HOME") "/.emacs.d/server/general") " -e '(gnus)'"))))
+   (concat "emacsclient -d " (getenv "DISPLAY") " -f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general")) " -e '(gnus)'"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; from window.lisp

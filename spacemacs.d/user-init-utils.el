@@ -1,12 +1,14 @@
 
 (defun sharad/emacs-user-init-begin ()
   (message "loading sharad/emacs-user-init-begin begin")
+  (push (concat "~/.osetup/info.d/common/elisp") load-path)
   (push (concat "~/.osetup/info.d/hosts/" (system-name) "/elisp") load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
   (push "~/.spacemacs-mycontribs/local" load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/testing" load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/session-start" load-path)
+  (push "~/.xemacs/pkgrepos/mypkgs/gnus-session-start" load-path)
   (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
   (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path)
 
@@ -118,9 +120,7 @@
   (add-hook
    'sharad/enable-startup-interrupting-feature-hook
    'sharad/necessary-functionality
-   )
-
-
+   t)
 
   (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)
   (sharad/necessary-functionality)
@@ -276,13 +276,14 @@ variable."
     (defun mycustom-face-set ()
       "thisandthat."
       (interactive)
-      (set-face-attribute 'default nil ;(/ (* (x-display-mm-width) 121) 600)
-                          :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)
-                          :width  'normal))
+      (ignore-errors
+       (set-face-attribute 'default nil ;(/ (* (x-display-mm-width) 121) 600)
+                           :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)
+                           :width  'normal)))
 
     ;; http://emacs.stackexchange.com/questions/19096/how-do-i-turn-off-spacemacs-s-tildes-on-empty-lines
     (when (fboundp 'spacemacs/toggle-vi-tilde-fringe-off)
-     (spacemacs/toggle-vi-tilde-fringe-off))
+      (spacemacs/toggle-vi-tilde-fringe-off))
 
     (delete-selection-mode 1)
 

@@ -77,12 +77,26 @@ Each entry is either:
     (add-hook ;; 'after-init-hook
      'sharad/enable-startup-interrupting-feature-hook
      '(lambda ()
-       (run-at-time-or-now 7 'sharad/desktop-session-restore)))))
+        (run-at-time-or-now 7 'sharad/desktop-session-restore))))
+
+  (use-package init-setup
+    :init
+    :config
+    (progn
+      (add-hook
+       'sharad/enable-login-session-interrupting-feature-hook
+       'set-dbus-session)
+      (add-hook
+       'sharad/enable-startup-interrupting-feature-hook
+       'set-dbus-session)
+
+      (add-hook 'emacs-startup-hook
+                '(lambda ()
+                   (message-notify "Emacs" "Loaded Completely :)")
+                   (message "\n\n\n\n")))))
+  )
 
 (defun basic-utils/init-elscreen ()
   (use-package elscreen :init))
-
-
-
 
 ;;; packages.el ends here

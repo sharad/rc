@@ -385,7 +385,6 @@
 
 ;;{{
 
-
 (require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/gnus-session-start")
 
 ;;}}
@@ -397,4 +396,3 @@
 
 
 ;; (directory-files *gnus-session-file-dir* t "^[a-zA-Z0-9-]+\.elc$")
-

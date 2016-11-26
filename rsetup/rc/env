@@ -106,7 +106,11 @@ function update-ssh-agent()
     if [ $? -gt $__force ]
     then
         update-ssh-agent-unconditionally              # use it when required.
-        ssh-add -l
+    fi
+
+    if [ $# -gt 0 ]
+    then
+       ssh-add -l
     fi
     unset __force
 }

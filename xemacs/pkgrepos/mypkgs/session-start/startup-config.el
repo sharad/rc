@@ -25,70 +25,10 @@
 ;;; Code:
 
 
-(require 'utils-config)
+(require 'init-setup)
 
-
-;; hack-local-variables-confirm (all-vars unsafe-vars risky-vars dir-name)
-
-;; (defadvice hack-local-variables-confirm (around bypass-success disable)
-(defadvice hack-local-variables-confirm (around bypass-success activate)
-  ;; check session-config.el
-  (if (and (boundp 'desktop-restore-in-progress)
-           desktop-restore-in-progress)
-      t
-      (unless (have-x-focus)
-        (message-notify "hack-local-variables-confirm" "Need attention.")
-        ad-do-it)))
-
-(ad-activate 'hack-local-variables-confirm)
-
-(defmacro defnotify-ad-before (fn)
-  `(defadvice fn (before (concat "notify-ad-" ,(symbol-name fn)) disable)
-     (unless (have-x-focus)
-       (message-notify ,(symbol-name fn) "Need attention."))))
-
-(defun activate-notify-ad-before (fn)
-  `(ad-activate ,fn))
-
-;; epa-passphrase-callback-function
-;; ;; (defun epa-passphrase-callback-function (context key-id handback)
-
-(add-hook 'emacs-startup-hook
-          '(lambda ()
-            (message-notify "Emacs" "Loaded Completely :)")
-            (message "\n\n\n\n")))
-
-
-(deh-section "set dbus env"
-  (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
-                          ":0.0"))
-         (dismajor-str (if (>= (length display-str) 2)
-                           (substring display-str 1 2)
-                           "0")))
-    (setenv-from-file
-     (concat
-      "~/.dbus/session-bus/"
-      (trim-string (sharad/read-file "/var/lib/dbus/machine-id"))
-      "-" dismajor-str)
-     '(:system :session)))
-
-  (defun set-dbus-session ()
-    (interactive)
-    (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
-                            ":0.0"))
-           (dismajor-str (if (>= (length display-str) 2)
-                             (substring display-str 1 2)
-                             "0")))
-      (ignore-errors
-       (dbus-setenv :system "DISPLAY" display-str))
-      (ignore-errors
-       (dbus-setenv :session "DISPLAY" display-str))
-      (setenv-from-file
-       (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-" dismajor-str)
-       '(:system :session))))
-
-  (add-hook 'sharad/enable-login-session-interrupting-feature-hook 'set-dbus-session)
-  (add-hook 'sharad/enable-startup-interrupting-feature-hook 'set-dbus-session))
+(add-hook 'sharad/enable-login-session-interrupting-feature-hook 'set-dbus-session)
+(add-hook 'sharad/enable-startup-interrupting-feature-hook 'set-dbus-session))
 
 (provide 'startup-config)
 ;;; startup-config.el ends here

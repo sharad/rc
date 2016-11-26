@@ -24,6 +24,9 @@
 
 ;;; Code:
 
+(require 'host-info)
+(require 'common-info)
+(require 'passwds)
 
 ;; stolen from:
 ;; http://linil.wordpress.com/2008/01/18/gnus-gmail
@@ -92,24 +95,24 @@
 ;; Here's an example value for this variable that might look nice if the background is dark:
 
 
+  (when (not (fboundp 'dotspacemacs/user-init))
+    (face-spec-set 'my-group-face-1
+                   '((t (:foreground "Red" :bold t))))
+    (face-spec-set 'my-group-face-2
+                   '((t (:foreground "SeaGreen" :bold t))))
+    (face-spec-set 'my-group-face-3
+                   '((t (:foreground "SpringGreen" :bold t))))
+    (face-spec-set 'my-group-face-4
+                   '((t (:foreground "SteelBlue" :bold t))))
+    (face-spec-set 'my-group-face-5
+                   '((t (:foreground "SkyBlue" :bold t))))
 
-(face-spec-set 'my-group-face-1
-               '((t (:foreground "Red" :bold t))))
-(face-spec-set 'my-group-face-2
-               '((t (:foreground "SeaGreen" :bold t))))
-(face-spec-set 'my-group-face-3
-               '((t (:foreground "SpringGreen" :bold t))))
-(face-spec-set 'my-group-face-4
-               '((t (:foreground "SteelBlue" :bold t))))
-(face-spec-set 'my-group-face-5
-               '((t (:foreground "SkyBlue" :bold t))))
-
-(setq gnus-group-highlight
-      '(((> unread 200) . my-group-face-1)
-        ((and (< level 3) (zerop unread)) . my-group-face-2)
-        ((< level 3) . my-group-face-3)
-        ((zerop unread) . my-group-face-4)
-        (t . my-group-face-5)))
+    (setq gnus-group-highlight
+          '(((> unread 200) . my-group-face-1)
+            ((and (< level 3) (zerop unread)) . my-group-face-2)
+            ((< level 3) . my-group-face-3)
+            ((zerop unread) . my-group-face-4)
+            (t . my-group-face-5))))
 
 ;; Also see section 8.6 Faces and Fonts.
 

@@ -30,6 +30,9 @@
 
 
 (require 'nnheader)
+(require 'host-info)
+(require 'common-info)
+(require 'passwds)
 
 ;; http://www.delorie.com/gnu/docs/emacs/gnus_316.html Q1.11
 ;; (require 'tm-setup)
