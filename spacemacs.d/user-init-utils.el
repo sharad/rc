@@ -105,9 +105,17 @@
 
   ;; (redefine-function-remembered 'server-create-window-system-frame)
   (setq *emacs-in-init* nil)              ;how to ensure it will run.
-  (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)
 
-  (sharad/necessary-functionality))
+  (add-hook
+   'sharad/enable-startup-interrupting-feature-hook
+   'sharad/necessary-functionality
+   )
+
+
+
+  (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)
+  (sharad/necessary-functionality)
+  )
 
 
 
@@ -243,8 +251,6 @@ variable."
     (global-set-key-if-unbind (kbd "C-+") 'toggle-hiding)
     (global-set-key-if-unbind (kbd "C-=") 'toggle-selective-display))
 
-
-
   (progn ;;
     (defun maxmin-optimized-value (val scale div &optional max min)
       (let ((opt (/ (* val scale) div)))
@@ -265,7 +271,15 @@ variable."
                           :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)
                           :width  'normal))
 
-    (mycustom-face-set)
     ;; http://emacs.stackexchange.com/questions/19096/how-do-i-turn-off-spacemacs-s-tildes-on-empty-lines
-    (spacemacs/toggle-vi-tilde-fringe-off)
-    (delete-selection-mode 1)))
+    (when (fboundp 'spacemacs/toggle-vi-tilde-fringe-off)
+     (spacemacs/toggle-vi-tilde-fringe-off))
+
+    (delete-selection-mode 1)
+
+    (when (any-frame-opened-p)
+      (mycustom-face-set)))
+  (remove-hook
+   'sharad/enable-startup-interrupting-feature-hook
+   'sharad/necessary-functionality)
+  )
