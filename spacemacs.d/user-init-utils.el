@@ -300,6 +300,14 @@ variable."
 
     (when (any-frame-opened-p)
       (mycustom-face-set)))
+  (progn ;; other
+    ;; (custom-available-themes)
+    (defun theme-current ()
+      (interactive)
+      (message "%s" custom-enabled-themes))
+    (defun theme-current-insert ()
+      (interactive)
+      (insert (format "%s" custom-enabled-themes))))
   (remove-hook
    'sharad/enable-startup-interrupting-feature-hook
    'sharad/necessary-functionality)
