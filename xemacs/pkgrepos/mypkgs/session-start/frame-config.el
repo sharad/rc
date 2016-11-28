@@ -1,113 +1,7 @@
-;;; frame-config.el --- Anything Config
 
-;; Copyright (C) 2011  Sharad Pratap
+(require 'frame-utils)
 
-;; Author:
-;; Keywords: lisp
-
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-;;; Commentary:
-
-;;
-
-;;; Code:
-
-
-(deh-require-maybe elscreen
-
-  ;; toggle-ibuffer-group
-  (require 'buffer-config)
-
-  (defun frame-launcher (name args &optional fun)
-    (if (progn
-          (ignore-errors
-            (select-frame-by-name name))
-          (equal (get-frame-name) name))
-        (message-notify "frame-launcher" "frame-launcher frame already exists, so not creating another frame.")
-        (condition-case e
-            (let ((*frame-session-restore* nil) ;not need to restore elsession for frames
-                  (org-donot-try-to-clock-in t)) ;no clock require to be clocked-in.
-              (let ((f (make-frame (list (cons 'name name))))
-                    (screennum 0)
-                    (first-screen t))
-                (select-frame f)
-                (dolist (a args)
-                  (when (or first-screen
-                            (setq screennum (elscreen-create)))
-                    (setq first-screen nil)
-                    (condition-case e
-                        (progn
-                          (if (if fun
-                                  (funcall fun a)
-                                  (funcall a))
-                              (sticky-buffer-mode t))
-                          (launcher-set-elscreen-altname (format "%s" a) f screennum))
-                      ('quit  (message-notify "frame-launcher" "Not able to start %s error %s" a e))
-                      ('error (message-notify "frame-launcher" "Not able to start %s error %s" a e)))))))
-          ('error (message-notify "frame-launcher" "Error in creating frame %s" e)))))
-
-  ;; (frame-parameter (selected-frame) 'altscreen)
-
-  (defun launcher-set-elscreen-altname (name &optional frame screennum)
-    (interactive "sname:")
-    (let* ((frame (or frame (selected-frame)))
-           (screennum (or screennum (elscreen-get-current-screen)))
-           (place (get-alist 'altscreen (frame-parameters frame))))
-      (unless (frame-parameter frame 'altscreen)
-        (set-frame-parameter frame 'altscreen nil))
-      (set-frame-parameter frame 'altscreen
-                           (put-alist screennum
-                                      name
-                                      place))))
-
-  (defun launcher-del-elscreen-altname (&optional frame screennum)
-    (interactive "sname: ")
-    (let* ((frame (or frame (selected-frame)))
-           (screennum (or screennum (elscreen-get-current-screen)))
-           (place (get-alist 'altscreen (frame-parameters frame))))
-      (unless (frame-parameter frame 'altscreen)
-        (set-frame-parameter frame 'altscreen nil))
-      (set-frame-parameter frame 'altscreen
-                           (del-alist screennum place))))
-
-  (defun launcher-get-elscreen-altname (&optional frame screennum)
-    (interactive)
-    (let* ((frame (or frame (selected-frame)))
-           (screennum (or screennum (elscreen-get-current-screen)))
-           (altscreen (frame-parameter frame 'altscreen)))
-      (if altscreen
-          (if (called-interactively-p 'any)
-              (message "altcreen: %s" (get-alist screennum altscreen))
-              (get-alist screennum altscreen)))))
-
-  ;; (add-hook 'elscreen-kill-hook #'launcher-del-elscreen-altname)
-
-  ;; advise (elscreen-kill-internal screen)
-
-  (defadvice elscreen-kill-internal (after lanucher-del-altname (screen) activate)
-    ;; (message "elscreen-kill-internal: in advise %d" screen)
-    (launcher-del-elscreen-altname (selected-frame) screen))
-
-  ;; (launcher-set-elscreen-altname "test" (selected-frame))
-  ;; (launcher-get-elscreen-altname)
-  ;; (launcher-del-elscreen-altname)
-)
-
-
-(deh-require-maybe 'elscreen
-
+(defun frame-utils-config ()
   (defun make-mail-chat-frame (&optional force)
     (interactive "P")
     (frame-launcher "mail-chat"
@@ -115,90 +9,17 @@
                     (if force
                         #'(lambda (group)
                             (toggle-ibuffer-group group t))
-                        #'toggle-ibuffer-group)))
+                      #'toggle-ibuffer-group)))
 
 
-  (defun make-mail-compose-frame ()
-    ))
+  (defun make-mail-compose-frame ())
 
-(deh-section "test"
-  (defun x-wm-hints (frame &optional source)
-    (mapcar '(lambda (field)
-              (if (consp field)
-                  (+ (lsh (car field) 16) (cdr field))
-                  field))
-            (x-window-property
-             "WM_HINTS" frame "WM_HINTS"
-             (if source
-                 source
-                 (string-to-number (frame-parameter frame 'outer-window-id)))
-             nil t)))
+  (require 'sessions-mgr)
 
-  (defun x-urgency-hinthf (frame arg)
-    (let* ((wm-hints (x-wm-hints frame))
-           (flags (car wm-hints)))
-      (setcar wm-hints (if arg
-                           (logior flags #x00000100)
-                           (logand flags #xFFFFFEFF)))
-      (x-change-window-property "WM_HINTS" wm-hints frame "WM_HINTS" 32 t))))
+  ;; (frame-launcher)
+  )
 
-
-(deh-section "misc"
-  ;; http://draketo.de/book/export/html/41
-
-
-  ;; urgency hint
-
-  ;; Make Emacs announce itself in the tray.
-
-  ;; let emacs blink when something interesting happens.
-  ;; in KDE this marks the active Emacs icon in the tray.
-  (defun x-urgency-hint (frame arg &optional source)
-    "Set the x-urgency hint for the frame to arg:
-
-- If arg is nil, unset the urgency.
-- If arg is any other value, set the urgency.
-
-If you unset the urgency, you still have to visit the frame to make the urgency setting disappear (at least in KDE)."
-    (let* ((wm-hints (append (x-window-property
-                              "WM_HINTS" frame "WM_HINTS"
-                              source nil t) nil))
-           (flags (car wm-hints)))
-                                        ; (message flags)
-      (setcar wm-hints
-              (if arg
-                  (logior flags #x00000100)
-                  (logand flags #x1ffffeff)))
-      (x-change-window-property "WM_HINTS" wm-hints frame "WM_HINTS" 32 t)))
-
-  (defun x-urgent (&optional arg)
-    "Mark the current emacs frame as requiring urgent attention.
-
-With a prefix argument which does not equal a boolean value of nil, remove the urgency flag (which might or might not change display, depending on the window manager)."
-    (interactive "P")
-    (let (frame (car (car (cdr (current-frame-configuration)))))
-      (x-urgency-hint frame (not arg))))
-
-
-  ;; frame-to-front
-
-  ;; Get the current Emacs frame to the front. You can for example call this via emacsclient and set it as a keyboard shortcut in your desktop (for me it is F12):
-
-  ;; emacsclient -e "(show-frame)"
-
-  ;; This sounds much easier than it proves to be in the end… but luckily you only have to solve it once, then you can google it anywhere…
-
-  (defun show-frame (&optional frame)
-    "Show the current Emacs frame or the FRAME given as argument.
-
-And make sure that it really shows up!"
-    (raise-frame)
-    ; yes, you have to call this twice. Don’t ask me why…
-    ; select-frame-set-input-focus calls x-focus-frame and does a bit of
-    ; additional magic.
-    (select-frame-set-input-focus (selected-frame))
-    (select-frame-set-input-focus (selected-frame))))
-
+(frame-utils-config)
 
 (provide 'frame-config)
 ;;; frame-config.el ends here

@@ -35,11 +35,11 @@
   ;; (funcall current-color-theme)
   )
 
-(defun color-theme-arjen/sharad ()
+(defun color-theme-arjen/sharad (&optional not-modeline)
   "Color theme by awiersma, created 2001-08-27."
-  (interactive)
+  (interactive "P")
   (color-theme-install
-   '(color-theme-arjen/sharad
+   `(color-theme-arjen/sharad
      ((background-color . "black")
       (background-mode . dark)
       (border-color . "black")
@@ -225,22 +225,24 @@
      (message-mml-face ((t (:bold t :foreground "Green3"))))
      (message-separator-face ((t (:foreground "blue3"))))
 
-     ;; see page http://www.gnu.org/software/libtool/manual/emacs/Standard-Faces.html Standard Faces
-     ;; q: which one is correct nodeline or mode-line ?
-     ;; a: modeline is working
-     ;; setup for `mode-line-highlight' face also
-     (modeline ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
-     (modeline-inactive ((t (:background "DarkGreen" :foreground "white" :box (:line-width 1 :style released-button)))))
-     (modeline-buffer-id ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
-     (modeline-mousable ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
-     (modeline-mousable-minor-mode ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
+     ,@(unless not-modeline
+         '(
+           ;; see page http://www.gnu.org/software/libtool/manual/emacs/Standard-Faces.html Standard Faces
+           ;; q: which one is correct nodeline or mode-line ?
+           ;; a: modeline is working
+           ;; setup for `mode-line-highlight' face also
+           (modeline ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
+           (modeline-inactive ((t (:background "DarkGreen" :foreground "white" :box (:line-width 1 :style released-button)))))
+           (modeline-buffer-id ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
+           (modeline-mousable ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
+           (modeline-mousable-minor-mode ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
 
 
-     (mode-line ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
-     (mode-line-inactive ((t (:background "DarkGreen" :foreground "white" :box (:line-width 1 :style released-button)))))
-     (mode-line-buffer-id ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
-     (mode-line-mousable ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
-     (mode-line-mousable-minor-mode ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
+           (mode-line ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
+           (mode-line-inactive ((t (:background "DarkGreen" :foreground "white" :box (:line-width 1 :style released-button)))))
+           (mode-line-buffer-id ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
+           (mode-line-mousable ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))
+           (mode-line-mousable-minor-mode ((t (:background "DarkRed" :foreground "white" :box (:line-width 1 :style released-button)))))))
 
 
      (p4-depot-added-face ((t (:foreground "blue"))))
@@ -276,7 +278,7 @@
      (yellow ((t (:foreground "yellow"))))
      (zmacs-region ((t (:background "snow" :foreground "blue")))))))
 
-(color-theme-arjen/sharad)
+(color-theme-arjen/sharad t)
 
 ;; info
 ;; get color name by `list-colors-display'
@@ -290,4 +292,3 @@
 ;; previous color themes.
 
 (provide 'color-config)
-

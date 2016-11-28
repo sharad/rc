@@ -52,11 +52,24 @@
    (load-file custom-override-file)))
 
 (deh-require-maybe server
+
+  (defun resolveip (host)
+    (= 0 (call-process "~/bin/resolveip" nil nil nil host)))
+
+  (defun host-accessable-p (&optional host)
+    (= 0 (call-process "ping" nil nil nil "-c" "1" "-W" "1"
+                       (if host host "www.google.com"))))
+
+  (defun host-resolvable-accessible-p (host)
+    (if (resolveip host)
+        (host-accessable-p host)))
+
   (setq
    ;; server-auth-dir (auto-config-dir "server" t)
    server-use-tcp t
-   server-name (or (getenv "EMACS_SERVER_NAME") server-name))
-  (setq server-host (system-name))
+   server-name (or (getenv "EMACS_SERVER_NAME") server-name)
+   server-host (if (host-resolvable-accessible-p (system-name)) (system-name) "localhost"))
+
   (if (functionp 'server-running-p)
       (when (not (server-running-p))
         (condition-case e
