@@ -2,8 +2,7 @@
 
 
 
-(when
-    (xrequire 'color-theme)
+(when (xrequire 'color-theme)
 
 
   ;; (if (not window-system)
@@ -278,7 +277,7 @@
      (yellow ((t (:foreground "yellow"))))
      (zmacs-region ((t (:background "snow" :foreground "blue")))))))
 
-(color-theme-arjen/sharad t)
+(color-theme-arjen/sharad nil)
 
 ;; info
 ;; get color name by `list-colors-display'

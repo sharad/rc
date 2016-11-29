@@ -54,17 +54,17 @@
 ;; ;; (defun epa-passphrase-callback-function (context key-id handback)
 
 (deh-section "set dbus env"
-  (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
-                          ":0.0"))
-         (dismajor-str (if (>= (length display-str) 2)
-                           (substring display-str 1 2)
-                           "0")))
-    (setenv-from-file
-     (concat
-      "~/.dbus/session-bus/"
-      (trim-string (sharad/read-file "/var/lib/dbus/machine-id"))
-      "-" dismajor-str)
-     '(:system :session)))
+  ;; (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
+  ;;                         ":0.0"))
+  ;;        (dismajor-str (if (>= (length display-str) 2)
+  ;;                          (substring display-str 1 2)
+  ;;                          "0")))
+  ;;   (setenv-from-file
+  ;;    (concat
+  ;;     "~/.dbus/session-bus/"
+  ;;     (trim-string (sharad/read-file "/var/lib/dbus/machine-id"))
+  ;;     "-" dismajor-str)
+  ;;    '(:system :session)))
 
   (defun set-dbus-session ()
     (interactive)
@@ -72,14 +72,18 @@
                             ":0.0"))
            (dismajor-str (if (>= (length display-str) 2)
                              (substring display-str 1 2)
-                             "0")))
+                           "0"))
+           (dbus-file
+            (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-" dismajor-str)))
       (ignore-errors
        (dbus-setenv :system "DISPLAY" display-str))
       (ignore-errors
        (dbus-setenv :session "DISPLAY" display-str))
       (setenv-from-file
-       (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-" dismajor-str)
-       '(:system :session)))))
+       dbus-file
+       '(:system :session))))
+
+  (set-dbus-session))
 
 
 (provide 'init-setup)

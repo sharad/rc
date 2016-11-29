@@ -282,11 +282,14 @@
                  (signature-file "~/.setup/osetup/data/emacs.d/gnus.d/message.d/signatures.d/office")
                  ;; ("Jabber-ID" ,office-email)
                  (address ,office-email)
+                 ;; ("From" ,office-email)
                  )
                `((name ,myname)
                  (signature "Regards,\n-sharad")
                  ("Jabber-ID" ,jabber-id)
-                 (address ,email-addr)))
+                 (address ,email-addr)
+                 ;; ("From" ,email-addr)
+                 ))
 
          ("Posting-style" "t")
 
@@ -343,8 +346,36 @@
          (signature "Regards,\n-sharad")
          ("Jabber-ID" ,jabber-id)
          ("Posting-style" "message-news-p")
-         (address ,email-addr)
-         ("From" ,email-addr)
+
+         ;; (address ,email-addr)
+         ;; ("From" ,email-addr)
+
+         (From
+          (let* ((default-email (concat myname " <" email-addr ">"))
+                 (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
+                         (with-current-buffer gnus-article-buffer
+                           (message-fetch-field "to"))))
+                 (email (if to (car (mail-header-parse-address to))))
+                 (email-name (if email (assoc email sharad/gnus-name-emails-map))))
+            (if email
+                (if email-name
+                    (concat (cdr email-name) " <" (car email-name) ">")
+                  default-email)
+              default-email)))
+
+         (address
+          (let* ((default-email (concat myname " <" email-addr ">"))
+                 (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
+                         (with-current-buffer gnus-article-buffer
+                           (message-fetch-field "to"))))
+                 (email (if to (car (mail-header-parse-address to))))
+                 (email-name (if email (assoc email sharad/gnus-name-emails-map))))
+            (if email
+                (if email-name
+                    (concat (cdr email-name) " <" (car email-name) ">")
+                  default-email)
+              default-email)))
+
          (eval
           (progn
             (set (make-local-variable 'gnus-message-archive-group)
@@ -359,6 +390,32 @@
         (message-mail-p
          ;; message is mail and this is not my system taj then do not save Gcc copy in sent-mail
          ("Posting-style" "message-mail-p")
+         (From
+          (let* ((default-email (concat myname " <" email-addr ">"))
+                 (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
+                         (with-current-buffer gnus-article-buffer
+                           (message-fetch-field "to"))))
+                 (email (if to (car (mail-header-parse-address to))))
+                 (email-name (if email (assoc email sharad/gnus-name-emails-map))))
+            (if email
+                (if email-name
+                    (concat (cdr email-name) " <" (car email-name) ">")
+                  default-email)
+              default-email)))
+
+         (address
+          (let* ((default-email (concat myname " <" email-addr ">"))
+                 (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
+                         (with-current-buffer gnus-article-buffer
+                           (message-fetch-field "to"))))
+                 (email (if to (car (mail-header-parse-address to))))
+                 (email-name (if email (assoc email sharad/gnus-name-emails-map))))
+            (if email
+                (if email-name
+                    (concat (cdr email-name) " <" (car email-name) ">")
+                  default-email)
+              default-email)))
+
          (eval (unless (equal (system-name) "taj")
                  (set (make-local-variable 'gnus-message-archive-group)
                       '("sent"

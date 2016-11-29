@@ -307,7 +307,11 @@ variable."
       (message "%s" custom-enabled-themes))
     (defun theme-current-insert ()
       (interactive)
-      (insert (format "%s" custom-enabled-themes))))
+      (insert (format "%s" custom-enabled-themes)))
+
+
+    (global-hl-line-mode -1))
+
   (remove-hook
    'sharad/enable-startup-interrupting-feature-hook
    'sharad/necessary-functionality)
