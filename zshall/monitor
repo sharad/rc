@@ -1,20 +1,23 @@
 # -*- Mode: shell-script; indent-tabs-mode: nil -*-
 
-      _spantime=15 # 15 mins, if don't want to pollute env, put its value directly.
-      preexec () { pgmname1=$1 pgmname2=$2 pgmname3=$3 starttime=`date +%s`; }
-      precmd () {
-          if (( $#starttime )) ; then
-              span=$( expr  `date +%s` - $starttime )
-              if ((  $span  >   ${_spantime:-15} * 60 )) ; then
-                  : mutt $LOGNAME@sasken.com -s "zmonitor: $span, $pgmname1, exit code $?" <<<"Hi $LOGNAME
+_spantime=15 # 15 mins, if don't want to pollute env, put its value directly.
+preexec_monitor () { pgmname1=$1 pgmname2=$2 pgmname3=$3 starttime=`date +%s`; }
+precmd_monitor () {
+    if (( $#starttime )) ; then
+        span=$( expr  `date +%s` - $starttime )
+        if ((  $span  >   ${_spantime:-15} * 60 )) ; then
+            : mutt $LOGNAME@sasken.com -s "zmonitor: $span, $pgmname1, exit code $?" <<<"Hi $LOGNAME
 #  command have taken more time $span seconds.
   $pgmname1
    exit code $?
   $pgmname2
   $pgmname3
   bye"
-              fi
-              unset span
-          fi
-          unset pgmname1 pgmname2 pgmname3 starttime
-      }
+        fi
+        unset span
+    fi
+    unset pgmname1 pgmname2 pgmname3 starttime
+}
+
+preexec_functions+=(preexec__monitor)
+precmd_functions+=(precmd__monitor)

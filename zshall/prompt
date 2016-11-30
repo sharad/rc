@@ -13,6 +13,8 @@ else
     x_unbold="%b"
 fi
 
+
+##{{ PROMPT PS1
 if [ "$SSH_CONNECTION" ] ; then
 
     if ! ps1_ssh_from_host=${$(timeout3 -t 1 resolveip -s ${${(z)SSH_CONNECTION}[1]} 2>/dev/null)//.*/} 2>/dev/null ; then
@@ -138,6 +140,7 @@ unset ps1shlv_n_screen_n_job spacing ps1_user_at_host \
 
 autoload -U promptinit; promptinit
 
+##}} PROMPT PS1
 
 #         periodic_functions=( show_agenda )
 #         function show_agenda {
@@ -146,3 +149,35 @@ autoload -U promptinit; promptinit
 #             fi
 #         }
 #         PERIOD=1
+
+
+##{{ PROMPT RPROMPT
+# https://coderwall.com/p/kmchbw/zsh-display-commands-runtime-in-prompt
+
+
+function preexec_duration_print() {
+  timer=${timer:-$SECONDS}
+}
+
+function precmd_duration_print() {
+    if [ $timer ]
+    then
+        __duration=$(($SECONDS - $timer))
+        if (( $__duration > 0 ))
+        then
+            __timer_show="%{$fg[cyan]%}${__duration}s%{$reset_color%}"
+            export RPROMPT="$__timer_show"
+        else
+            __timer_show=
+            export RPROMPT=
+        fi
+        unset timer
+  fi
+}
+preexec_functions+=(preexec_duration_print)
+precmd_functions+=(precmd_duration_print)
+##}} PROMPT PS1
+
+
+##{{ PROMPT PS1
+##}} PROMPT PS1
