@@ -36,6 +36,7 @@
 
 (require 'dot-emacs-helper)
 (require 'general-testing)
+;; testing
 (require 'rcs-backup)
 
 (require 'cl)
@@ -45,7 +46,9 @@
 
 
 (require 'basic-utils)
+;; run-at-time-or-now
 (require 'utils-custom)
+;; sharad/read-sexp
 (require 'misc-utils)
 
 (require 'desktop)
@@ -54,85 +57,92 @@
 (require 'emacs-panel)
 
 (defvar sharad/enable-desktop-restore-interrupting-feature nil
-      "feature that were disabled for proper restoring of desktop will get re-enabled here.")
+  "feature that were disabled for proper restoring of desktop will get re-enabled here.")
+
+(eval-when-compile
+  (defvar session-mgr-utils-notify nil)
+  (unless (null 'session-mgr-utils-notify)
+    (setq session-mgr-utils-notify
+          (lambda (title fmt &rest args)
+            (concat title ": "
+                    (apply 'message fmt args))))))
 
 ;; (sharad/elscreen-get-screen-to-name-alist)
-(eval-after-load "elscreen"
-  '(progn
-    (defun sharad/elscreen-get-screen-to-name-alist ()
-      ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
-      (elscreen-notify-screen-modification-suppress
-       (elscreen-set-window-configuration (elscreen-get-current-screen)
-                                          (elscreen-current-window-configuration))
-       (let* ((screen-list (sort (elscreen-get-screen-list) '<))
-              screen-name screen-to-name-alist nickname-type-map)
-         (elscreen-save-screen-excursion
-          (mapcar
-           (lambda (screen)
-             ;; If nickname exists, use it.
-             (setq screen-name (elscreen-get-screen-nickname screen))
-             ;; Nickname does not exist, so examine major-mode and buffer-name.
-             (when (null screen-name)
-               (elscreen-goto-internal screen)
+(with-eval-after-load "elscreen"
+  (defun sharad/elscreen-get-screen-to-name-alist ()
+    ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
+    (elscreen-notify-screen-modification-suppress
+     (elscreen-set-window-configuration (elscreen-get-current-screen)
+                                        (elscreen-current-window-configuration))
+     (let* ((screen-list (sort (elscreen-get-screen-list) '<))
+            screen-name screen-to-name-alist nickname-type-map)
+       (elscreen-save-screen-excursion
+        (mapcar
+         (lambda (screen)
+           ;; If nickname exists, use it.
+           (setq screen-name (elscreen-get-screen-nickname screen))
+           ;; Nickname does not exist, so examine major-mode and buffer-name.
+           (when (null screen-name)
+             (elscreen-goto-internal screen)
 
-               (setq nickname-type-map
+             (setq nickname-type-map
+                   (mapcar
+                    (lambda (window)
+                      (with-current-buffer (window-buffer window)
+                        (or (elscreen-get-alist-to-nickname
+                             elscreen-mode-to-nickname-alist-internal
+                             'string-match (symbol-name major-mode))
+                            (elscreen-get-alist-to-nickname
+                             elscreen-buffer-to-nickname-alist-internal
+                             'string-match (buffer-name))
+                            (cons 'buffer-name (cons (buffer-name) (buffer-file-name))))))
+                    (window-list)))
+
+             (let (nickname-list)
+               (while (> (length nickname-type-map) 0)
+                 (let ((type (caar nickname-type-map))
+                       (buff-file (cdar nickname-type-map)))
+                   (when buff-file
+                     (setq nickname-list (cons buff-file nickname-list)))
+                   (setq nickname-type-map
+                         (if (eq type 'nickname)
+                             (delete (car nickname-type-map) nickname-type-map)
+                             (cdr nickname-type-map)))))
+               ;; (setq screen-name
+               ;;       (mapconcat 'identity (reverse nickname-list) ":"))
+               (setq screen-name (reverse nickname-list))))
+
+           (set-alist 'screen-to-name-alist screen screen-name))
+         screen-list))
+
+       ;; (elscreen-set-screen-to-name-alist-cache screen-to-name-alist)
+       (reverse screen-to-name-alist))))
+
+  (defun sharad/elscreen-get-desktop-buffer-args-list ()
+    ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
+    (elscreen-notify-screen-modification-suppress
+     (elscreen-set-window-configuration (elscreen-get-current-screen)
+                                        (elscreen-current-window-configuration))
+     (let* ((screen-list (sort (elscreen-get-screen-list) '<))
+            screen-name)
+       (let ((desktop-buffers
+              (elscreen-save-screen-excursion
+               (remove-duplicates
+                (mapcan
+                 (lambda (screen)
+                   ;; If nickname exists, use it.
+                   (setq screen-name (elscreen-get-screen-nickname screen))
+                   ;; Nickname does not exist, so examine major-mode and buffer-name.
+                   (when (null screen-name)
+                     (elscreen-goto-internal screen)
                      (mapcar
                       (lambda (window)
-                        (with-current-buffer (window-buffer window)
-                          (or (elscreen-get-alist-to-nickname
-                               elscreen-mode-to-nickname-alist-internal
-                               'string-match (symbol-name major-mode))
-                              (elscreen-get-alist-to-nickname
-                               elscreen-buffer-to-nickname-alist-internal
-                               'string-match (buffer-name))
-                              (cons 'buffer-name (cons (buffer-name) (buffer-file-name))))))
-                      (window-list)))
+                        (window-buffer window))
+                      (window-list))))
+                 screen-list)))))
 
-               (let (nickname-list)
-                 (while (> (length nickname-type-map) 0)
-                   (let ((type (caar nickname-type-map))
-                         (buff-file (cdar nickname-type-map)))
-                     (when buff-file
-                       (setq nickname-list (cons buff-file nickname-list)))
-                     (setq nickname-type-map
-                           (if (eq type 'nickname)
-                               (delete (car nickname-type-map) nickname-type-map)
-                               (cdr nickname-type-map)))))
-                 ;; (setq screen-name
-                 ;;       (mapconcat 'identity (reverse nickname-list) ":"))
-                 (setq screen-name (reverse nickname-list))))
-
-             (set-alist 'screen-to-name-alist screen screen-name))
-           screen-list))
-
-         ;; (elscreen-set-screen-to-name-alist-cache screen-to-name-alist)
-         (reverse screen-to-name-alist))))
-
-    (defun sharad/elscreen-get-desktop-buffer-args-list ()
-      ;; (when (elscreen-screen-modified-p 'elscreen-get-screen-to-name-alist)
-      (elscreen-notify-screen-modification-suppress
-       (elscreen-set-window-configuration (elscreen-get-current-screen)
-                                          (elscreen-current-window-configuration))
-       (let* ((screen-list (sort (elscreen-get-screen-list) '<))
-              screen-name)
-         (let ((desktop-buffers
-                (elscreen-save-screen-excursion
-                 (remove-duplicates
-                  (mapcan
-                   (lambda (screen)
-                     ;; If nickname exists, use it.
-                     (setq screen-name (elscreen-get-screen-nickname screen))
-                     ;; Nickname does not exist, so examine major-mode and buffer-name.
-                     (when (null screen-name)
-                       (elscreen-goto-internal screen)
-                       (mapcar
-                        (lambda (window)
-                          (window-buffer window))
-                        (window-list))))
-                   screen-list)))))
-
-           (remove nil
-                   (mapcar 'desktop-make-create-buffer-list desktop-buffers))))))))
+         (remove nil
+                 (mapcar 'desktop-make-create-buffer-list desktop-buffers)))))))
 
 (with-eval-after-load "desktop"
   (defun desktop-make-create-buffer (buffer)
@@ -244,7 +254,7 @@
                 (let ((bufs (mapcar
                              '(lambda (bl) (nth 2 bl))
                              desktop-buffers)))
-                  (message-notify "elscreen-session-session-list-set"
+                  (session-mgr-utils-notify "elscreen-session-session-list-set"
                                   "Please wait I am busy to restore %d\nbuffers %s"
                                   (length desktop-buffers) bufs)
                   (let ((desktop-buffer-ok-count 0)
@@ -269,7 +279,7 @@
                                       (message "Hello 2")
                                       (message "restored %s" bufname)))
                                 (message "bufname: %s is not string" bufname))))))
-                  (message-notify "elscreen-session-session-list-set"
+                  (session-mgr-utils-notify "elscreen-session-session-list-set"
                                   "Restored %d\nbuffers %s"
                                   (length desktop-buffers) bufs))
                 (message "No desktop-buffers"))
@@ -545,118 +555,118 @@
   )
 
   ;;{{
-  (progn ;; "per frame session"
+(progn ;; "per frame session"
 
-    ;; (require 'emacs-panel)
+  ;; (require 'emacs-panel)
 
-    (defvar *desktop-vc-read-inprogress* nil "desktop-vc-read-inpgrogress")
+  (defvar *desktop-vc-read-inprogress* nil "desktop-vc-read-inpgrogress")
 
-    (defun frame-session-set-this-location (nframe &optional not-ask)
-      (interactive
-       (list (selected-frame)))
-      (if nframe (select-frame nframe) (error "nframe is nil"))
-      (message "in frame-session-set-this-location")
-      (let* ((xwin-enabled (custom-display-graphic-p))
-             (wm-hints
-              (if xwin-enabled
-                  (ignore-errors (emacs-panel-wm-hints))))
-             (desktop-name (if wm-hints
-                               (nth
-                                (cadr (assoc 'current-desktop wm-hints))
-                                (cdr (assoc 'desktop-names wm-hints)))))
-             (location (if (and not-ask
-                                desktop-name
-                                (member desktop-name (mapcar 'car *frames-elscreen-session*)))
-                           desktop-name
-                           (fmsession-read-location desktop-name))))
-        (if xwin-enabled
-            (unless wm-hints
-              (message "Some error in wm-hints")))
-        (message "frame-session-set-this-location: %s" location)
-        (set-frame-parameter nframe 'frame-spec-id location)
-        location))
+  (defun frame-session-set-this-location (nframe &optional not-ask)
+    (interactive
+     (list (selected-frame)))
+    (if nframe (select-frame nframe) (error "nframe is nil"))
+    (message "in frame-session-set-this-location")
+    (let* ((xwin-enabled (custom-display-graphic-p))
+           (wm-hints
+            (if xwin-enabled
+                (ignore-errors (emacs-panel-wm-hints))))
+           (desktop-name (if wm-hints
+                             (nth
+                              (cadr (assoc 'current-desktop wm-hints))
+                              (cdr (assoc 'desktop-names wm-hints)))))
+           (location (if (and not-ask
+                              desktop-name
+                              (member desktop-name (mapcar 'car *frames-elscreen-session*)))
+                         desktop-name
+                         (fmsession-read-location desktop-name))))
+      (if xwin-enabled
+          (unless wm-hints
+            (message "Some error in wm-hints")))
+      (message "frame-session-set-this-location: %s" location)
+      (set-frame-parameter nframe 'frame-spec-id location)
+      location))
 
-    (defun frame-session-restore (nframe &optional not-ask)
-      (message "in frame-session-restore")
-      (if (and
-           *frame-session-restore*
-           (null *desktop-vc-read-inprogress*))
-          (progn
-            (message "pass in frame-session-restore")
-            (if nframe (select-frame nframe) (error "nframe is nil"))
-            (fmsession-restore (frame-session-set-this-location nframe not-ask))
-            ;; nframe)
-            (display-about-screen)
-            nframe)
-          (progn
-            (message-notify
-             "frame-session-restore"
-             "not restoring screen session.")
-            (if *desktop-vc-read-inprogress*
-                (message-notify
-                 "frame-session-restore"
-                 "as desktop restore is in progress *desktop-vc-read-inprogress* %s"
-                 *desktop-vc-read-inprogress*))
-            (if (null *frame-session-restore*)
-                (message-notify
-                 "frame-session-restore"
-                 "as another frame session restore in progress *frame-session-restore* %s"
-                 *frame-session-restore*)))))
+  (defun frame-session-restore (nframe &optional not-ask)
+    (message "in frame-session-restore")
+    (if (and
+         *frame-session-restore*
+         (null *desktop-vc-read-inprogress*))
+        (progn
+          (message "pass in frame-session-restore")
+          (if nframe (select-frame nframe) (error "nframe is nil"))
+          (fmsession-restore (frame-session-set-this-location nframe not-ask))
+          ;; nframe)
+          (display-about-screen)
+          nframe)
+        (progn
+          (session-mgr-utils-notify
+           "frame-session-restore"
+           "not restoring screen session.")
+          (if *desktop-vc-read-inprogress*
+              (session-mgr-utils-notify
+               "frame-session-restore"
+               "as desktop restore is in progress *desktop-vc-read-inprogress* %s"
+               *desktop-vc-read-inprogress*))
+          (if (null *frame-session-restore*)
+              (session-mgr-utils-notify
+               "frame-session-restore"
+               "as another frame session restore in progress *frame-session-restore* %s"
+               *frame-session-restore*)))))
 
-    (defun frame-session-apply (nframe)
-      "Apply existing frame session to NFRAME."
-      (interactive
-       (list (selected-frame)))
-      (progn
-        (select-frame nframe)
-        (fmsession-restore (fmsession-read-location) nframe)))
+  (defun frame-session-apply (nframe)
+    "Apply existing frame session to NFRAME."
+    (interactive
+     (list (selected-frame)))
+    (progn
+      (select-frame nframe)
+      (fmsession-restore (fmsession-read-location) nframe)))
 
-    (defun frame-session-save (nframe)
-      (message "in frame-session-save:")
-      (let ((location (frame-parameter nframe 'frame-spec-id)))
-        (when location
-          (message "saved the session for %s" location)
-          (fmsession-store location nframe))))
+  (defun frame-session-save (nframe)
+    (message "in frame-session-save:")
+    (let ((location (frame-parameter nframe 'frame-spec-id)))
+      (when location
+        (message "saved the session for %s" location)
+        (fmsession-store location nframe))))
 
-    (defun save-all-frames-session ()
-      (dolist (f (frame-list))
-	(frame-session-save f)))
+  (defun save-all-frames-session ()
+    (dolist (f (frame-list))
+      (frame-session-save f)))
 
-    ;; ;; (add-hook '*sharad/after-init-hook*
-    ;; (add-hook 'sharad/enable-startup-interrupting-feature-hook ;new
-    ;;           '(lambda ()
-    ;;             ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
-    ;;             (add-hook
-    ;;              'after-make-frame-functions
-    ;;              '(lambda (nframe)
-    ;;                (run-at-time-or-now-arg 3
-    ;;                 (lambda (frm)
-    ;;                   (let ((*frame-session-restore* t))
-    ;;                       (frame-session-restore frm t)))
-    ;;                 nframe))
-    ;;               t)
-    ;;             (add-hook 'delete-frame-functions 'frame-session-save)
-    ;;             ;; (add-hook 'kill-emacs-hook 'save-all-frames-session)) ; done in save-all-sessions-auto-save
-    ;;             ;; t
-    ;;             )
-    ;;           t)
+  ;; ;; (add-hook '*sharad/after-init-hook*
+  ;; (add-hook 'sharad/enable-startup-interrupting-feature-hook ;new
+  ;;           '(lambda ()
+  ;;             ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
+  ;;             (add-hook
+  ;;              'after-make-frame-functions
+  ;;              '(lambda (nframe)
+  ;;                (run-at-time-or-now-arg 3
+  ;;                 (lambda (frm)
+  ;;                   (let ((*frame-session-restore* t))
+  ;;                       (frame-session-restore frm t)))
+  ;;                 nframe))
+  ;;               t)
+  ;;             (add-hook 'delete-frame-functions 'frame-session-save)
+  ;;             ;; (add-hook 'kill-emacs-hook 'save-all-frames-session)) ; done in save-all-sessions-auto-save
+  ;;             ;; t
+  ;;             )
+  ;;           t)
 
-    (defun frame-session-restore-hook-func ()
-      "Add to hook"
-      ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
-      (add-hook
-       'after-make-frame-functions
-       '(lambda (nframe)
-         (frame-session-restore nframe t))
-       t)
-      (add-hook 'delete-frame-functions 'frame-session-save))
+  (defun frame-session-restore-hook-func ()
+    "Add to hook"
+    ;; (add-hook 'after-make-frame-functions 'frame-session-set-this-location t)
+    (add-hook
+     'after-make-frame-functions
+     '(lambda (nframe)
+       (frame-session-restore nframe t))
+     t)
+    (add-hook 'delete-frame-functions 'frame-session-save))
 
   (testing
-     (frame-parameter (selected-frame) 'frame-spec-id)
-     after-make-frame-functions
-     delete-frame-functions
-     *sharad/after-init-hook*
-     ))
+   (frame-parameter (selected-frame) 'frame-spec-id)
+   after-make-frame-functions
+   delete-frame-functions
+   *sharad/after-init-hook*
+   ))
   ;;}}
 
 (with-eval-after-load "desktop"
@@ -873,7 +883,7 @@ Also returns nil if pid is nil."
 
   (defun desktop-vc-read (&optional desktop-save-filename)
     (interactive "fdesktop file: ")
-    (message-notify "desktop-vc-read" "desktop-restore-eager value is %s" desktop-restore-eager)
+    (session-mgr-utils-notify "desktop-vc-read" "desktop-restore-eager value is %s" desktop-restore-eager)
     (let* ((desktop-save-filename (or desktop-save-filename *desktop-save-filename*))
            (desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
       (prog1
@@ -893,7 +903,7 @@ Also returns nil if pid is nil."
 
             (setq *desktop-vc-read-inprogress* nil)
             (message "desktop read failed."))
-        (message-notify "desktop-vc-read" "finished."))))
+        (session-mgr-utils-notify "desktop-vc-read" "finished."))))
 
   ;; remove desktop after it's been read
   (add-hook 'desktop-after-read-hook
@@ -956,7 +966,7 @@ to restore in case of sudden emacs crash."
                           ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Save-Control.html#Auto-Save-Control
                           (> (float-time idle-time) save-all-sessions-auto-save-idle-time-interval-dynamic)))
                     (progn
-                      (message-notify "save-all-sessions-auto-save" "Started to save frame desktop and session.\ncurrent time %s, idle time %d idle-time-interval left %d"
+                      (session-mgr-utils-notify "save-all-sessions-auto-save" "Started to save frame desktop and session.\ncurrent time %s, idle time %d idle-time-interval left %d"
                                       (format-time-string time-format save-all-sessions-auto-save-time)
                                       (float-time idle-time)
                                       save-all-sessions-auto-save-idle-time-interval-dynamic)
@@ -971,23 +981,23 @@ to restore in case of sudden emacs crash."
                             (save-all-frames-session)
                             (session-vc-save-session)
                             (my-desktop-save)
-                            (message-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
+                            (session-mgr-utils-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
                             (message nil))
                           (condition-case e
                               (progn
                                 (save-all-frames-session)
                                 (session-vc-save-session)
                                 (my-desktop-save)
-                                (message-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
+                                (session-mgr-utils-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
                                 (message nil))
                             ('error
                              (progn
                                ;; make after 2 errors.
-                               (message-notify "save-all-sessions-auto-save" "Error: %s" e)
+                               (session-mgr-utils-notify "save-all-sessions-auto-save" "Error: %s" e)
                                (1+ *my-desktop-save-error-count* )
                                (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
                                  (setq *my-desktop-save-error-count* 0)
-                                 (message-notify "save-all-sessions-auto-save" "Error %s" e)
+                                 (session-mgr-utils-notify "save-all-sessions-auto-save" "Error %s" e)
                                  (sharad/disable-session-saving)))))))
                     (setq save-all-sessions-auto-save-idle-time-interval-dynamic
                           (1- save-all-sessions-auto-save-idle-time-interval-dynamic))))
@@ -1023,14 +1033,14 @@ to restore in case of sudden emacs crash."
     (interactive)
     (remove-hook 'auto-save-hook 'save-all-sessions-auto-save)
     (remove-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
-    (message-notify "sharad/disable-session-saving"  "Removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook"))
+    (session-mgr-utils-notify "sharad/disable-session-saving"  "Removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook"))
 
 
   (defun sharad/enable-session-saving-immediately ()
     (interactive)
     (add-hook 'auto-save-hook 'save-all-sessions-auto-save)
     (add-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
-    (message-notify "sharad/enable-session-saving" "Added save-all-sessions-auto-save to auto-save-hook and kill-emacs-hook"))
+    (session-mgr-utils-notify "sharad/enable-session-saving" "Added save-all-sessions-auto-save to auto-save-hook and kill-emacs-hook"))
 
   (defun sharad/enable-session-saving ()
     ;; (if (or
@@ -1092,7 +1102,7 @@ If there are no buffers left to create, kill the timer."
 
   (defadvice desktop-idle-create-buffers (after desktop-idle-complete-actions)
     (unless desktop-buffer-args-list
-      (message-notify "desktop-idle-complete-actions"
+      (session-mgr-utils-notify "desktop-idle-complete-actions"
                       "Enable session saving")
       (sharad/enable-session-saving-immediately)
       (progn
@@ -1122,11 +1132,11 @@ If there are no buffers left to create, kill the timer."
               (*constructed-name-desktop-save-filename*
                (concat "^" (getenv "HOME") "/.emacs.d/.cache/autoconfig/desktop/emacs-desktop-" server-name)))
           (setq debug-on-error t)
-          (message-notify "sharad/desktop-session-restore" "entering sharad/desktop-session-restore")
+          (session-mgr-utils-notify "sharad/desktop-session-restore" "entering sharad/desktop-session-restore")
 
           (if (not (string-match *constructed-name-desktop-save-filename* *desktop-save-filename*))
               (progn
-                (message-notify "sharad/desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s"
+                (session-mgr-utils-notify "sharad/desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s"
                                 *constructed-name-desktop-save-filename*
                                 *desktop-save-filename*)
                 (if (y-or-n-p (format "sharad/desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s\nshould continue with it ? "
@@ -1137,12 +1147,12 @@ If there are no buffers left to create, kill the timer."
 
               (progn
                 (unless (sharad/desktop-saved-session)
-                  (message-notify "sharad/desktop-session-restore" "%s not found so trying to checkout it." *desktop-save-filename*)
+                  (session-mgr-utils-notify "sharad/desktop-session-restore" "%s not found so trying to checkout it." *desktop-save-filename*)
                   (vc-checkout-file *desktop-save-filename*))
 
                 (if (sharad/desktop-saved-session)
                     (progn
-                      (message-notify "sharad/desktop-session-restore" "sharad/desktop-session-restore")
+                      (session-mgr-utils-notify "sharad/desktop-session-restore" "sharad/desktop-session-restore")
                       (progn            ;remove P4
                        (setq vc-handled-backends (remove 'P4 vc-handled-backends))
                        (add-hook 'sharad/enable-desktop-restore-interrupting-feature
@@ -1152,16 +1162,16 @@ If there are no buffers left to create, kill the timer."
 
                           (if (desktop-vc-read *desktop-save-filename*)
                               (progn
-                                (message-notify "sharad/desktop-session-restore" "desktop loaded successfully :)")
+                                (session-mgr-utils-notify "sharad/desktop-session-restore" "desktop loaded successfully :)")
                                 (sharad/enable-session-saving)
-                                (message-notify "sharad/desktop-session-restore" "Do you want to set session of frame? ")
+                                (session-mgr-utils-notify "sharad/desktop-session-restore" "Do you want to set session of frame? ")
                                 (when (y-or-n-p-with-timeout
                                        "Do you want to set session of frame? "
                                        10 t)
                                   (let ((*frame-session-restore* t))
                                     (frame-session-restore (selected-frame)))))
                               (progn
-                                (message-notify "sharad/desktop-session-restore" "desktop loading failed :(")
+                                (session-mgr-utils-notify "sharad/desktop-session-restore" "desktop loading failed :(")
                                 (run-at-time "1 sec" nil '(lambda () (insert "sharad/desktop-session-restore")))
                                 (execute-extended-command nil)
                                 nil))
@@ -1170,29 +1180,29 @@ If there are no buffers left to create, kill the timer."
                               (if (let ((desktop-restore-in-progress t))
                                     (desktop-vc-read *desktop-save-filename*))
                                   (progn
-                                    (message-notify "sharad/desktop-session-restore" "desktop loaded successfully :)")
+                                    (session-mgr-utils-notify "sharad/desktop-session-restore" "desktop loaded successfully :)")
                                     (sharad/enable-session-saving))
                                   (progn
-                                    (message-notify "sharad/desktop-session-restore" "desktop loading failed :(")
+                                    (session-mgr-utils-notify "sharad/desktop-session-restore" "desktop loading failed :(")
                                     nil))
                             ('error
-                             (message-notify "sharad/desktop-session-restore" "Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
-                             (message-notify "sharad/desktop-session-restore" "Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e)
+                             (session-mgr-utils-notify "sharad/desktop-session-restore" "Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
+                             (session-mgr-utils-notify "sharad/desktop-session-restore" "Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e)
                              (run-at-time "1 sec" nil '(lambda () (insert "sharad/desktop-session-restore")))
                              (condition-case e
                                  (execute-extended-command nil)
                                ('error (message "M-x sharad/desktop-session-restore %s" e))))))
                       t)
                     (when (y-or-n-p
-                           (message-notify "sharad/desktop-session-restore"
+                           (session-mgr-utils-notify "sharad/desktop-session-restore"
                                            "No desktop found. or you can check out old %s from VCS.\nShould I enable session saving in auto save, at kill-emacs ?"
                                            *desktop-save-filename*))
                       (sharad/enable-session-saving)))
                 (let ((enable-recursive-minibuffers t))
                   (when t ;(y-or-n-p-with-timeout "Do you want to set session of frame? " 7 t)
                     (frame-session-restore (selected-frame) t)))
-                (message-notify "sharad/desktop-session-restore" "leaving sharad/desktop-session-restore"))))
-        (message-notify "sharad/desktop-session-restore" "desktop-get-desktop-save-filename failed")))
+                (session-mgr-utils-notify "sharad/desktop-session-restore" "leaving sharad/desktop-session-restore"))))
+        (session-mgr-utils-notify "sharad/desktop-session-restore" "desktop-get-desktop-save-filename failed")))
 
   ;; (add-hook 'session-before-save-hook
   ;;           'my-desktop-save)

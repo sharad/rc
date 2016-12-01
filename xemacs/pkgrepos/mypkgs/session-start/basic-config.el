@@ -48,10 +48,15 @@
 
 (require 'startup-hooks)
 
-(add-hook 'after-make-frame-functions '(lambda (frame)
-                                        (message
-                                         "Frame %s Ready for editing!"
-                                         (frame-parameter frame 'name))) t)
+(progn
+  (defun startup-hooks-config ()
+    (add-hook 'after-make-frame-functions
+              '(lambda (frame)
+                (message
+                 "Frame %s Ready for editing!"
+                 (frame-parameter frame 'name))) t))
+
+  (startup-hooks-config))
 
 (provide 'basic-config)
 ;;; basic-config.el ends here

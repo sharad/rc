@@ -21,7 +21,8 @@
 ;;
 
 
-(require 'basic-utils "~/.xemacs/pkgrepos/mypkgs/experimental/basic-utils.el")
+;; (require 'basic-utils "~/.xemacs/pkgrepos/mypkgs/experimental/basic-utils.el")
+(require 'basic-utils)
 
 (provide 'basic-utils-config)
 ;;; basic-utils-config.el ends here

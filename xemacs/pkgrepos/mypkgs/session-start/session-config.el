@@ -28,17 +28,20 @@
 (require 'sessions-mgr)
 (require 'basic-utils)
 
+(progn
+  (defun sessions-mgr-config ()
+    (setq session-mgr-utils-notify 'message-notify)
+    (with-eval-after-load "startup-hooks"
+      (add-hook
+       'sharad/enable-startup-interrupting-feature-hook
+       'frame-session-restore-hook-func
+       t)
+      (add-hook ;; 'after-init-hook
+       'sharad/enable-startup-interrupting-feature-hook
+       '(lambda ()
+         (run-at-time-or-now 7 'sharad/desktop-session-restore)))))
 
-(add-hook
- 'sharad/enable-startup-interrupting-feature-hook
- 'frame-session-restore-hook-func
- t)
-
-(add-hook ;; 'after-init-hook
- 'sharad/enable-startup-interrupting-feature-hook
- '(lambda ()
-   (run-at-time-or-now 7 'sharad/desktop-session-restore)))
-
+  (sessions-mgr-config))
 
 (provide 'session-config)
 ;;; session-config.el ends here

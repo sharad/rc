@@ -56,15 +56,17 @@
                    (cons 'pabbrev-mode
                          (desktop-get-readonly-proof-mode pabbrev-mode))))
 
-    ;; (defun desktop-handler-pabbrev-mode (desktop-buffer-locals)
-    ;;   (unless desktop-buffer-read-only
-    ;;     (pabbrev-mode 1)))
-    ;; (desktop-get-readonly-proof-mode pabbrev-mode)
-    ;; (add-to-list 'desktop-minor-mode-handlers '(pabbrev-mode . desktop-handler-pabbrev-mode))
-    ;; (desktop-get-readonly-proof-mode flymake-mode)
-    ;; (add-to-list 'desktop-minor-mode-handlers '(flymake-mode . desktop-handler-flymake-mode))
-
     )))
+
+(progn
+
+  (defun uni-configuration/exapnd-config-pabber-init ()
+    (with-eval-after-load "session-mgr"
+      (add-to-list 'desktop-minor-mode-handlers
+                   (cons 'pabbrev-mode
+                         (desktop-get-readonly-proof-mode pabbrev-mode)))))
+  (uni-configuration/exapnd-config-pabber-init))
+
 ;;; Actually TAB is originally binded to indent-for-tab-command from indent.el
 ;;; But Pabbrev mode override it to pabbrev-expand-maybe that call
 ;;; pabbrev-get-previous-binding -> indent-for-tab-command
