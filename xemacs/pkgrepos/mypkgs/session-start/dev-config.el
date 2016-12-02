@@ -772,7 +772,53 @@ Add directory to search path for source files using the GDB command, dir."))
     :config
     (add-hook 'c-mode-common-hook
               '(lambda ()
-                (uncrustify-mode 1)))
+                (uncrustify-mode 1))))
+
+
+;; (defun generate-accessor ()
+;;   (interactive)
+;;   (let ((line ()))))
+
+(deh-section "c/c++"
+  (require 'srefactor)
+  (require 'srefactor-lisp)
+
+  (setq
+   srefactor--getter-prefix "get"
+   srefactor--setter-prefix "set"
+   srefactor--getter-setter-capitalize-p t)
+
+  ;; OPTIONAL: ADD IT ONLY IF YOU USE C/C++.
+  (semantic-mode 1) ;; -> this is optional for Lisp
+
+  ;; Very helpful mode
+  (define-key c-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
+  (define-key c++-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
+  (global-set-key (kbd "M-RET o") 'srefactor-lisp-one-line)
+  (global-set-key (kbd "M-RET m") 'srefactor-lisp-format-sexp)
+  (global-set-key (kbd "M-RET d") 'srefactor-lisp-format-defun)
+  (global-set-key (kbd "M-RET b") 'srefactor-lisp-format-buffer))
+
+(use-package srefactor
+    :ensure t
+    :config
+    (setq
+     srefactor--getter-prefix "get"
+     srefactor--setter-prefix "set"
+     srefactor--getter-setter-capitalize-p t)
+
+    ;; OPTIONAL: ADD IT ONLY IF YOU USE C/C++.
+    (semantic-mode 1) ;; -> this is optional for Lisp
+    (define-key c-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
+    (define-key c++-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
+
+    (progn
+
+      (global-set-key (kbd "M-RET o") 'srefactor-lisp-one-line)
+      (global-set-key (kbd "M-RET m") 'srefactor-lisp-format-sexp)
+      (global-set-key (kbd "M-RET d") 'srefactor-lisp-format-defun)
+      (global-set-key (kbd "M-RET b") 'srefactor-lisp-format-buffer))
+  )
 
 (provide 'dev-config)
 ;;; dev-config.el ends here
