@@ -21,18 +21,52 @@
 ;;
 
 
-;; from: http://www.emacswiki.org/emacs/AutoInstall
-(deh-require-maybe auto-install
+
+
+
+
+(defun configuration|common|autoinstall-config|auto-install|config ()
+  ;; from: http://www.emacswiki.org/emacs/AutoInstall
   (setq auto-install-use-wget t
         auto-install-directory "~/.xemacs/pkgrepos/autoinstalled/auto-install/")
-  ; (auto-install-update-emacswiki-package-name t)
-  (when (and (xrequire 'anything)
-             (xrequire 'anything-auto-install))
-    (setq anything-sources
+                                        ; (auto-install-update-emacswiki-package-name t)
+  (use-package anything-auto-install
+      :defer t
+      :config
+      (setq anything-sources
           (list
            anything-c-source-auto-install-from-emacswiki
            anything-c-source-auto-install-from-library))))
 
+;;;###autoload
+(defun configuration|common|autoinstall-config|packages ()
+  '(auto-install))
+
+;;;###autoload
+(defun configuration|common|autoinstall-config|auto-install|init ()
+    (use-package auto-install
+      :defer t
+      :config
+      (configuration|common|autoinstall-config|auto-install|config)))
+
+
+
+
+;;;###autoload
+(defun configuration|common|FILE|LIB|config ()
+  )
+
+;;;###autoload
+(defun configuration|common|FILE|LIB|init ()
+    (use-package boxes
+      :defer t
+      :config
+      (configuration|common|FILE|LIB|config)))
+
+;;;###autoload
+(defun configuration|common|FILE|packages ()
+  '(LIB))
+
+
 
 (provide 'autoinstall-config)
-

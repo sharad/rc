@@ -1,11 +1,5 @@
 ;; automatic text, at least adapt author!
 
-(deh-require-maybe template
-  (template-initialize)
-  ;; to ignore
-  (setq template-auto-update-disable-regexp "ido\\.last"))
-
-(deh-require-maybe template-simple)
 
 ;;{{ from: http://www.emacswiki.org/emacs/AutoInsertMode
 ;; I use Yasnippet for initial skeletons:
@@ -61,19 +55,28 @@ General Public License for more details.
     (comment-region (point-min) (+ (point-min) (length gpl)))))
 
 
-
-
 ;; (deh-require-maybe  text-language
 ;;   (add-element-to-lists 'text-language-mode text-langs)
 ;;   (add-element-to-lists 'text-language-guess-mode text-langs))
 
+;;;###autoload
+(defun configuration|common|autotext-config|template|config ()
+  (template-initialize)
+  ;; to ignore
+  (setq template-auto-update-disable-regexp "ido\\.last"))
 
-;;{{{ AUTOINSERT+
-(deh-require-maybe autoinsert+
+;;;###autoload
+(defun configuration|common|autotext-config|template|init ()
+    (use-package template
+      :defer t
+      :config
+      (configuration|common|autotext-config|template|config)))
 
+;;;###autoload
+(defun configuration|common|autotext-config|autoinsert+|config ()
   ;; (add-hook 'find-file-hooks 'auto-insert+)
 
-  (auto-insert+-mode 1)
+  ;; (auto-insert+-mode 1)
 
   (setq
    ;; auto-insert t
@@ -112,47 +115,47 @@ General Public License for more details.
   (define-auto-insert+
       "\\.\\(CC?\\|cc\\|cxx\\|cpp\\|c++\\)\\'"
       "C++ skeleton"
-      "test"
-      :skeleton
-      '("Short description: "
-        "/*" \n
-        (file-name-nondirectory (buffer-file-name))
-        " -- " str \n
-        " */" > \n \n
-        "#include <iostream>" \n \n
-        "using namespace std;" \n \n
-        "main()" \n
-        "{" \n
-        > _ \n
-        "}" > \n))
+    "test"
+    :skeleton
+    '("Short description: "
+      "/*" \n
+      (file-name-nondirectory (buffer-file-name))
+      " -- " str \n
+      " */" > \n \n
+      "#include <iostream>" \n \n
+      "using namespace std;" \n \n
+      "main()" \n
+      "{" \n
+      > _ \n
+      "}" > \n))
 
 
   (define-auto-insert+ "\\.c\\'" "C skeleton"
-      "test"
-      :skeleton
-      '(
-        "Short description: "
-        "/**\n * "
-        (file-name-nondirectory (buffer-file-name))
-        " -- " str \n
-        "*" \n
-        "* Written on " (format-time-string "%A, %e %B %Y.") \n
-        "*/" > \n \n
-        "#include <stdio.h>" \n
-        "#include \""
-        (file-name-sans-extension
-         (file-name-nondirectory (buffer-file-name)))
-        ".h\"" \n \n
-        "int main()" \n
-        "{" > \n
-        > _ \n
-        "}" > \n))
+    "test"
+    :skeleton
+    '(
+      "Short description: "
+      "/**\n * "
+      (file-name-nondirectory (buffer-file-name))
+      " -- " str \n
+      "*" \n
+      "* Written on " (format-time-string "%A, %e %B %Y.") \n
+      "*/" > \n \n
+      "#include <stdio.h>" \n
+      "#include \""
+      (file-name-sans-extension
+       (file-name-nondirectory (buffer-file-name)))
+      ".h\"" \n \n
+      "int main()" \n
+      "{" > \n
+      > _ \n
+      "}" > \n))
 
 
   (define-auto-insert+ 'perl-mode "Perl skeleton"
-      "test"
-      :skeleton
-      '("Description: "
+    "test"
+    :skeleton
+    '("Description: "
       "#!/usr/bin/env perl" \n
       \n
       "use strict;" \n
@@ -169,94 +172,36 @@ General Public License for more details.
       "This library is free software; you can redistribute it and/or" "\n"
       "modify it under the same terms as Perl itself." "\n\n"
       "=cut" "\n"))
-
-;; (deh-require-todo yasnippet
-  (deh-require-maybe yasnippet
-
-    ;;  (messageto "*Complains*" "Install yasnippet for good experience")
-
-    (require 'utils-config)
-
-
-
-    (when nil
-      (yas/expand-snippet "(defun $1 ()
-  \"DOCSTRING\"
-  (interactive)
-  (let (var1)
-    (setq var1 some)
-    $0
-  ))
-
-\(require $0 \)" ))
-
-    (defun my/autoinsert+-yas-expand ()
-      "Replace text in yasnippet template."
-      (yas/expand-snippet (buffer-string) (point-min) (point-max)))
-
-    (add-auto-insert+action-handler
-     :yestemp
-     '(lambda (ac)
-       (funcall
-        (plist-get auto-insert+action-handlers :plain-file)
-        ac)
-       (my/autoinsert+-yas-expand)))
-
-
-
-    (messageto "*Complains*" "Do not overwrite default value of auto-insert-alist try "
-               "to integrate default value also.")
-
-
-    (define-auto-insert+ "\\.\\([Hh]\\|hh\\|hpp\\)\\'" "C / C++ header" "yastemp" :yestemp "template.h")
-
-    (define-auto-insert+ "\\.\\([C]\\|cc\\|cpp\\)\\'" "C++ source" "yastemp" :yestemp "template.cc")
-
-
-    (define-auto-insert+ "\\.sh\\'" "Shell script"
-      "yastemp"  :yestemp "template.sh")
-
-    (define-auto-insert+ "\\.pl\\'" "Perl script"
-      "yastemp"
-      :yestemp
-      "template.pl")
-    (define-auto-insert+ "\\.pm\\'" "Perl module"
-      "yastemp"
-      :yestemp
-      "template.pm")
-
-    (define-auto-insert+ "\\.py\\'" "Python script"
-      "yastemp"
-      :yestemp
-      "template.py")
-
-    (define-auto-insert+ "[mM]akefile\\'" "Makefile"
-      "yastemp"
-      :yestemp
-      "Makefile")
-
-    (define-auto-insert+ "\\.tex\\'" "TeX/LaTeX"
-      "yastemp"
-      :yestemp
-      "template.tex")
-
-    (define-auto-insert+ "\\.el\\'" "Emacs Lisp"
-      "yastemp"
-      :yestemp
-      "template.el")
-
-
-
-
-    (deh-require-maybe auto-yasnippet
-      ;;   (require 'yasnippet)
-      ;;   (global-set-key (kbd "H-w") 'create-auto-yasnippet)
-      ;;   (global-set-key (kbd "H-y") 'expand-auto-yasnippet)
-      ))
-;;}}
-
   )
-;;}}}
 
+;;;###autoload
+(defun configuration|common|autotext-config|autoinsert+|init ()
+    (use-package autoinsert+
+      :defer t
+      :config
+      (configuration|common|autotext-config|autoinsert+|config))
+
+    (auto-insert+-mode 1))
+
+;;;###autoload
+(defun configuration|common|autotext-config|auto-yasnippet|config ()
+  ;;   (global-set-key (kbd "H-w") 'create-auto-yasnippet)
+  ;;   (global-set-key (kbd "H-y") 'expand-auto-yasnippet)
+  )
+
+;;;###autoload
+(defun configuration|common|autotext-config|auto-yasnippet|init ()
+    (use-package auto-yasnippet
+      :defer t
+      :config
+      (configuration|common|autotext-config|auto-yasnippet|config)))
+
+;;;###autoload
+(defun configuration|common|autotext-config|packages ()
+  '(template
+    template-simple
+    autoinsert+
+    yasnippet
+    auto-yasnippet))
 
 (provide 'autotext-config)

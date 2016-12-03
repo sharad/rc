@@ -239,6 +239,50 @@
           (message "all library loaded in %s directory without error." dir))
       t)))
 
+(progn
+ (defun load-lib-autoloads (feature)
+   (let* ((packagesfn (intern (format "configuration|common|%s|packages" feature)))
+          (packages (when (fboundp packagesfn) (funcall packagesfn))))
+     (dolist (package packages)
+       (let ((package-init-fn (intern (format "configuration|common|%s|%s|init" feature package)))
+             (package-config-fn (intern (format "configuration|common|%s|%s|config" feature package)))
+             (package-enable-fn (intern (format "configuration|common|%s|%s|enable" feature package)))
+             (package-disable-fn (intern (format "configuration|common|%s|%s|disable" feature package)))
+             (package-bind-fn (intern (format "configuration|common|%s|%s|bind" feature package)))
+             (package-unbind-fn (intern (format "configuration|common|%s|%s|unbind" feature package))))
+         (when (fboundp package-init-fn)
+           (message "loading %s" package-init-fn)
+           (funcall package-init-fn))))))
+
+ (defun autoload-dir-libs (dir)
+   (let (load-lib-with-errors
+         reloading-libraries)
+     (when (file-directory-p dir)
+       (ignore-errors (byte-recompile-directory dir 0))
+       (mapc (lambda (lib)
+               (let ((feature (if (string-match "\\(.\+\\)\.el" lib)
+                                  (intern (match-string 1 lib)))))
+                 (if feature
+                     (unless
+                         (and
+                          (message "now loading %s.el" feature)
+                          (with-report-error "check"
+                              (load-lib-autoloads feature)
+                              ))
+                       (push feature load-lib-with-errors)))))
+             (directory-files dir nil "^[a-zA-Z0-9-]+\.el$"))
+       (if load-lib-with-errors
+           (progn
+             (setq reloading-libraries t)
+             (message "now loading files ( %s ) with errors." load-lib-with-errors)
+             (mapc '(lambda (f)
+                     (message "now loading file with error %s.el" f)
+                     (with-report-error "check"
+                         (load-lib-autoloads f)))
+                   load-lib-with-errors))
+           (message "all library loaded in %s directory without error." dir))
+       t))))
+
 (defun add-element-to-lists (element lists)
   (dolist (list lists)
           (add-hook (intern (concat (symbol-name list) "-mode-hook")) element)))

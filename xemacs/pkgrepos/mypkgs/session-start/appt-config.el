@@ -1,14 +1,13 @@
 
+(defun configuration|common|appt-config|appt|init|config ()
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; from http://www.emacswiki.org/emacs/AppointmentMode
 ;; start
-
-(deh-require-maybe appt
-
   (if (featurep 'appt)
       (if (not running-xemacs)
-	  (appt-activate 1); use (appt-activate 1) for GNU Emacs
-	(appt-initialize))) ; XEmacs
+          (appt-activate 1); use (appt-activate 1) for GNU Emacs
+          (appt-initialize))) ; XEmacs
 
   (setq appt-msg-countdown-list '(10 5 1) ; XEmacs
         appt-audible (cons 3 .5)          ;
@@ -25,7 +24,6 @@
         (appt-initialize))
     (unless diary-display-function-old
       (message "Could disable it with disable-diary-appt-display-for function.")))
-  ) ; XEmacs
 
   (defun add-diary-save-hook ()
     "find-file-hooks hook to add the diary-save-hook when appropriate"
@@ -33,7 +31,7 @@
         (add-hook 'after-save-hook 'diary-save-hook)))
   (add-hook 'find-file-hooks 'add-diary-save-hook)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Heres nice way to highlight an appointment in a brighter face on the
   ;; modeline so that you actually notice its appeared! (Doesnt work for me
   ;; in GNU Emacs CVS unfortunately ColinMarquardt)
@@ -55,21 +53,21 @@
       (force-mode-line-update)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; end
-;; from http://www.emacswiki.org/emacs/AppointmentMode
+  ;; end
+  ;; from http://www.emacswiki.org/emacs/AppointmentMode
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; start
-;; from http://alfredobuttari.wordpress.com/2008/02/08/emacs-appt-mode-reminders-with-gtk-popups/
-(setq appt-display-format 'popup appt-audible t)
-;; (defvar appt-notifier (concat  "DISPLAY=0.0 dbus-launch --autolaunch=" (getenv "MY_DBUS_SESSION") " /usr/bin/notify-send 'Appointment' '%s'"))
-;; (defvar appt-notifier "zenity --info --title='Appointment' --text='%s'")
+  ;; start
+  ;; from http://alfredobuttari.wordpress.com/2008/02/08/emacs-appt-mode-reminders-with-gtk-popups/
+  (setq appt-display-format 'popup appt-audible t)
+  ;; (defvar appt-notifier (concat  "DISPLAY=0.0 dbus-launch --autolaunch=" (getenv "MY_DBUS_SESSION") " /usr/bin/notify-send 'Appointment' '%s'"))
+  ;; (defvar appt-notifier "zenity --info --title='Appointment' --text='%s'")
 
-(defvar appt-notifier
-  '("notify-send Appointment '%s'"
-    "pgrep osdsh && osdctl -s '%s'"))
+  (defvar appt-notifier
+    '("notify-send Appointment '%s'"
+      "pgrep osdsh && osdctl -s '%s'"))
 
   ;; (dolist (cmd appt-notifier)
   ;;         (shell-command (format cmd "asdfsdf")))
@@ -109,18 +107,31 @@ The variable `appt-audible' controls the audible reminder."
              (appt-notify string)))
       (if appt-audible (beep 1))))
 
-;; Note that you need zenity to be installed on your box. If you dont
-;; like popups maybe you can replace the zenity command with a
-;; notification from libnotify. Also, if you are a KDE userwellI assume
-;; theres something equivalent to zenity or libnotify but you have to
-;; figure it out by youself .
+  ;; Note that you need zenity to be installed on your box. If you dont
+  ;; like popups maybe you can replace the zenity command with a
+  ;; notification from libnotify. Also, if you are a KDE userwellI assume
+  ;; theres something equivalent to zenity or libnotify but you have to
+  ;; figure it out by youself .
 
-;; end
-;; from http://alfredobuttari.wordpress.com/2008/02/08/emacs-appt-mode-reminders-with-gtk-popups/
+  ;; end
+  ;; from http://alfredobuttari.wordpress.com/2008/02/08/emacs-appt-mode-reminders-with-gtk-popups/
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; start
-;; from
+  ;; start
+  ;; from
+  )
+
+;;;###autoload
+(defun configuration|common|appt-config|packages ()
+  '(appt))
+
+;;;###autoload
+(defun configuration|common|appt-config|appt|init ()
+  (use-package appt
+      :defer t
+      :config
+      (configuration|common|appt-config|appt|init|internal)))
+
 
 (provide 'appt-config)

@@ -25,42 +25,43 @@
 ;;; Code:
 
 
-(require 'macros-config)
+(defun configuration|common|annotate-config|org-annotate-file|config ()
+  ;; TODO: After adding annotation add it to a org file with link back to place where annotation were added.
+  ;; it could help to search annotation when the original place is forgotten.
+  ;; https://code.google.com/p/annot/
+  ;; * [C-x a]    -  add a new annotation/highlight or edit an existing annotation on point.
+  ;;                 You can also use [C-x C-a]. (annot-edit/add)
+  ;; * [C-x r]    -  remove annotation at point. (annot-remove)
+  ;; * [C-x w]    -  insert an image at point. (annot-add-image)
+  (setq
+   ;; annot-image-directory
+   annot-directory (auto-config-dir "annot/" t)
+   annot-enable-symlinking t)
 
-(deh-section "New"
-  (deh-require-maybe (progn ipa org-pua)
-    ;;http://www.emacswiki.org/emacs/InPlaceAnnotations
-    )
-  (deh-require-maybe alert
-    ;;http://www.emacswiki.org/emacs/alert.el
-    )
-  (deh-require-maybe org-pua
-    ;;http://www.emacswiki.org/emacs-es/org-pua.el
-    )
+  ;; (define-key ctl-x-map "a"    'annot-edit/add)
+  ;; (define-key ctl-x-map "\C-a" 'annot-edit/add)
+  ;; (define-key ctl-x-map "r"    'annot-remove)
+  ;; (define-key ctl-x-map "w"    'annot-add-image)
+  ;; (define-key ctl-x-map "A"    'annot-convert)
+  )
 
-  (deh-require-maybe org-annotate-file)
 
-  (deh-require-maybe annot
-    ;; TODO: After adding annotation add it to a org file with link back to place where annotation were added.
-    ;; it could help to search annotation when the original place is forgotten.
-    ;; https://code.google.com/p/annot/
-    ;; * [C-x a]    -  add a new annotation/highlight or edit an existing annotation on point.
-    ;;                 You can also use [C-x C-a]. (annot-edit/add)
-    ;; * [C-x r]    -  remove annotation at point. (annot-remove)
-    ;; * [C-x w]    -  insert an image at point. (annot-add-image)
-    (setq
-     ;; annot-image-directory
-     annot-directory (auto-config-dir "annot/" t)
-     annot-enable-symlinking t)
 
-    ;; (define-key ctl-x-map "a"    'annot-edit/add)
-    ;; (define-key ctl-x-map "\C-a" 'annot-edit/add)
-    ;; (define-key ctl-x-map "r"    'annot-remove)
-    ;; (define-key ctl-x-map "w"    'annot-add-image)
-    ;; (define-key ctl-x-map "A"    'annot-convert)
 
-    ))
 
+;;;###autoload
+(defun configuration|common|annotate-config|packages ()
+  '(ipa
+    org-pua
+    alert
+    org-annotate-file))
+
+;;;###autoload
+(defun configuration|common|annotate-config|org-annotate-file|init ()
+    (use-package org-annotate-file
+        :defer t
+        :config
+        (configuration|common|annotate-config|org-annotate-file|config)))
 
 (provide 'annotation-conf)
 ;;; annotation-conf.el ends here
