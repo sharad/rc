@@ -24,8 +24,9 @@
 
 ;;; Code:
 
-(require 'macros-config      "~/.xemacs/pkgrepos/mypkgs/session-start/macros-config.el")
-(require 'basic-utils-config "~/.xemacs/pkgrepos/mypkgs/session-start/basic-utils-config.el")
+(require 'macros-config      "~/.xemacs/pkgrepos/mypkgs/session-autoload/macros-config.el")
+;; (require 'basic-utils-config "~/.xemacs/pkgrepos/mypkgs/session-start/basic-utils-config.el")
+(require 'basic-utils-config "~/.xemacs/pkgrepos/mypkgs/session-autoload/basic-utils-config.el")
 
 (deh-section "General"
 

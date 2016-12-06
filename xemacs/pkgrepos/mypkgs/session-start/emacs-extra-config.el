@@ -1,6 +1,0 @@
-
-
-
-
-(provide 'emacs-extra-config)
-

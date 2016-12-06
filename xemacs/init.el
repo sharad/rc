@@ -89,8 +89,11 @@
 ;; load all files present in ~/\.xemacs/session-start\.d directory.
 
 (require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/session-start")
+(require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/session-later")
 (require-dir-libs "~/\.xemacs/pkgrepos/mypkgs/standalone")
+
 (autoload-dir-libs  "~/\.xemacs/pkgrepos/mypkgs/session-start")
+(autoload-dir-libs  "~/\.xemacs/pkgrepos/mypkgs/session-autoload")
 
 ;; (load-file "~/.xemacs/wrapper.el")
 (require 'wrappers-config)

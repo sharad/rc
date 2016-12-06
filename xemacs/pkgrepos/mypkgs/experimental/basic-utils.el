@@ -360,6 +360,14 @@
                       (cons fn arg))
       (funcall fn arg)))
 
+(defun my-delete-timer ()
+  (interactive)
+  (dolist (timer timer-list)
+    (let ()
+      (when (yes-or-no-p (format "Remove timer: %s" timer))
+        (message "removing timer %s" timer)
+        (delete timer timer-list)
+        (message "removed timer %s list is now %s" timer timer-list)))))
 
 
 (provide 'basic-utils)

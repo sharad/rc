@@ -39,7 +39,7 @@ fi
         # comes second
 local slash_b4_ps1screen="%(2L./.)"
         # some changes done in it, for getting it correct, any of these below two will work.
-if [[  $TERM == "XYZ" ]] ; then
+if [[  $TERM == "screen" ]] ; then
     [ $WINDOW ] && local ps1screen="${WINDOW+${slash_b4_ps1screen}$WINDOW}"
 else
     [ $WINDOW ] && local ps1screen="${WINDOW+${slash_b4_ps1screen}%{${fg[yellow]}$WINDOW%}\%{$reset_color%}"
@@ -60,14 +60,14 @@ fi
           # >= 1 job then put %{$fg[green]%}%j%{${reset_color}%}%(2L.. ) else nothing
           # %(2L.. ) # shell level >= 2 then nothing else a space.
         # local ps1job="%(1j./%{$fg[green]%}%j%{${reset_color}%}%(2L.. ).)"
-if [[  $TERM == "XYZ" ]] ; then
+if [[  $TERM == "screen" ]] ; then
     local ps1job="${slash_b4_ps1job}%j"
 else
     local ps1job="${slash_b4_ps1job}%{$fg[green]%}%j%{${reset_color}%}"
 fi
 unset slash_b4_ps1job
 
-if [[  $TERM == "XYZ" ]] ; then
+if [[  $TERM == "screen" ]] ; then
     local ps1shlv_n_screen_n_job="%(2L.${ps1shlv}.)${ps1screen}%(1j.${ps1job}.)"
 else
     local ps1shlv_n_screen_n_job="%(2L.${ps1shlv}.)${ps1screen}%(1j.${ps1job}.)"
@@ -105,20 +105,20 @@ else
     fi
 fi
 
-	# time at next hour
-if [[  $TERM == "XYZ" ]] ; then
+# time at next hour
+if [[  $TERM == "screen" ]] ; then
     local ps1_time_at_hour="%(0t.%t .)"
 else
-    if [[  $TERM == "screen" ]] ; then
-        local ps1_time_at_hour="%(0t.%t .)"
-    else
-        local ps1_time_at_hour="%(0t.%{$fg[red]%}%t%{$reset_color%} .)"
-    fi
+    local ps1_time_at_hour="%(0t.%{$fg[red]%}%t%{$reset_color%} .)"
 fi
 
 local ps1_dir='%2~'
-        # local ps1_dir='%(1~.%2~.)'
-local ps1_prompt_char='%(!.${x_bold}#${x_unbold}.%%)'
+# local ps1_dir='%(1~.%2~.)'
+if [[  $TERM == "screen" ]] ; then
+    local ps1_prompt_char='%(!.#.%%)'
+else
+    local ps1_prompt_char="%(!.${x_bold}#${x_unbold}.%%)"
+fi
 
 if [ $WINDOW ] ; then
     local spacing=" "
@@ -128,6 +128,7 @@ fi
 
 if [ ! $SUDO_USER ] ; then
     PS1="${ps1ssh_connection}${ps1shlv_n_screen_n_job}${spacing}${ps1_user_at_host:+${ps1_user_at_host} }${ps1_time_at_hour}${spacing_b4_ps1status}${ps1status}${ps1_dir}${ps1_prompt_char} "
+    # PS1="${ps1ssh_connection}${spacing}${ps1_user_at_host:+${ps1_user_at_host} }${ps1_time_at_hour}${spacing_b4_ps1status}${ps1status}${ps1_dir}${ps1_prompt_char} "
 else
     PS1='$ '
 fi
@@ -165,7 +166,12 @@ function precmd_duration_print() {
         __duration=$(($SECONDS - $timer))
         if (( $__duration > 0 ))
         then
-            __timer_show="%{$fg[cyan]%}${__duration}s%{$reset_color%}"
+            if [[  $TERM == "screen" ]]
+            then
+                __timer_show="${__duration}s"
+            else
+                __timer_show="%{$fg[cyan]%}${__duration}%{$reset_color%}s"
+            fi
             export RPROMPT="$__timer_show"
         else
             __timer_show=
