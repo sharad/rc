@@ -242,7 +242,10 @@
 (progn
  (defun load-lib-autoloads (feature)
    (let* ((packagesfn (intern (format "configuration|common|%s|packages" feature)))
+          (featureinitfn (intern (format "configuration|common|%s|init" feature)))
+          (featureconfigfn (intern (format "configuration|common|%s|init" feature)))
           (packages (when (fboundp packagesfn) (funcall packagesfn))))
+
      (dolist (package packages)
        (let ((package-init-fn (intern (format "configuration|common|%s|%s|init" feature package)))
              (package-config-fn (intern (format "configuration|common|%s|%s|config" feature package)))
@@ -252,7 +255,11 @@
              (package-unbind-fn (intern (format "configuration|common|%s|%s|unbind" feature package))))
          (when (fboundp package-init-fn)
            (message "loading %s" package-init-fn)
-           (funcall package-init-fn))))))
+           (funcall package-init-fn))))
+
+     (when (fboundp featureinitfn)
+       (message "loading %s" featureinitfn)
+       (funcall featureinitfn))))
 
  (defun autoload-dir-libs (dir)
    (let (load-lib-with-errors
