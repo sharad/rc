@@ -173,10 +173,13 @@ local _myhosts;                 # beautiful
 # _myhosts=( ${${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
 #            ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} )
 
-_myhosts=( ${${=${${(f)"$(cat {/etc/ssh_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
-           ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} )
+# _myhosts=( ${${=${${(f)"$(cat {/etc/ssh_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
+#           ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} )
 
 zstyle ':completion:*' hosts $_myhosts;
+_myhosts=( ${${=${${(f)"$(cat {/etc/ssh_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
+           ${=${(f)"$(sed -n '1,/###ADVERTISEMENT/p' /etc/hosts | head -300(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} )
+
 
 ## With commands like `rm' it's annoying if one gets offered the same filename
 ## again even if it is already on the command line. To avoid that:

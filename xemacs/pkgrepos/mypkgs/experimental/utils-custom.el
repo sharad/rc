@@ -269,7 +269,8 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
       (defun message-notify (title fmt &rest args)
         (let ((msg (apply 'format fmt args)))
           (message "%s: %s" title msg)
-          (notify title msg)
+          (ignore-errors
+            (notify title msg))
           msg))
       (defun message-notify (title fmt &rest args)
         (let ((msg (apply 'format fmt args)))

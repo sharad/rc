@@ -770,9 +770,10 @@ Add directory to search path for source files using the GDB command, dir."))
 (use-package uncrustify-mode
     :ensure t
     :config
-    (add-hook 'c-mode-common-hook
+    (when nil
+     (add-hook 'c-mode-common-hook
               '(lambda ()
-                (uncrustify-mode 1))))
+                (uncrustify-mode 1)))))
 
 
 ;; (defun generate-accessor ()
