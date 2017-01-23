@@ -22,21 +22,9 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
+(require 'use-package)
 
 (defvar configuration|common|ediff-config|package-list nil)
-
-
-
 
 ;;;###autoload
 (defun configuration|common|ediff-config|ediff|config ()
@@ -157,6 +145,7 @@ isn't there and triggers an error"
                                               (line-end-position)))
                              (y-or-n-p "The binary files differ, look at the differences in hexl-mode? ")))
                   (error (error-message-string err))))))))
+
 ;;;###autoload
 (defun configuration|common|ediff-config|ediff|init ()
   (configuration|common|ediff-config|ediff|config)
@@ -164,11 +153,9 @@ isn't there and triggers an error"
 (push 'ediff configuration|common|ediff-config|package-list)
 
 
-
 ;;;###autoload
 (defun configuration|common|ediff-config|config ()
   )
-
 
 ;;;###autoload
 (defun configuration|common|ediff-config|init ()

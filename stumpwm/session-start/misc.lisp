@@ -310,6 +310,17 @@
         (message "current package ~a" *package*))))
 ;;}}
 
+;;{{
+(defun head-force-refresh (screen new-heads)
+  (scale-screen screen new-heads)
+  (mapc 'group-sync-all-heads (screen-groups screen))
+  (update-mode-lines screen))
+
+(defcommand refresh-heads (&optional (screen (current-screen))) ()
+  "Refresh screens in case a monitor was connected, but a
+  ConfigureNotify event was snarfed by another program."
+  (head-force-refresh screen (make-screen-heads screen (screen-root screen))))
+;;}}
 
 ;; ;;{{ Example
 ;; As an example, here’s a new type called :smart-direction. The

@@ -176,9 +176,19 @@ local _myhosts;                 # beautiful
 # _myhosts=( ${${=${${(f)"$(cat {/etc/ssh_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
 #           ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} )
 
+if [ ! -e ~/.var/cache/zsh/etc_hosts ] ||
+   [[ /etc/hosts -nt ~/.var/cache/zsh/etc_hosts ]]
+then
+   echo ${=${(f)"$(sed -n '1,/###ADVERTISEMENT/p' /etc/hosts | head -300 (|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} > ~/.var/cache/zsh/etc_hosts
+fi
+
+
 zstyle ':completion:*' hosts $_myhosts;
-_myhosts=( ${${=${${(f)"$(cat {/etc/ssh_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
-           ${=${(f)"$(sed -n '1,/###ADVERTISEMENT/p' /etc/hosts | head -300(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*} )
+# _myhosts=( ${${=${${(f)"$(cat /etc/{ssh_,}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
+#            $(< ~/.var/cache/zsh/etc_hosts) )
+
+_myhosts=( ${${=${${(f)"$(cat /etc/ssh_hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ }:#\!*}
+           $(< ~/.var/cache/zsh/etc_hosts) )
 
 
 ## With commands like `rm' it's annoying if one gets offered the same filename

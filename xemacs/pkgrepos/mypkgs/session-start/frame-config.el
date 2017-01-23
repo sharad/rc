@@ -20,11 +20,15 @@
 
     (with-eval-after-load "sessions-mgr"
       (defadvice frame-launcher (around frame-launcher activate)
-      (let ((*frame-session-restore* nil)  ;not need to restore elsession for frames
-            (org-donot-try-to-clock-in t)) ;no clock require to be clocked-in.
-        ad-do-it))))
+        (let ((*frame-session-restore* nil)  ;not need to restore elsession for frames
+              (org-donot-try-to-clock-in t)) ;no clock require to be clocked-in.
+          ad-do-it))))
 
   (frame-utils-config))
+
+
+
+;; (pp (symbol-function #'frame-utils-config))
 
 (provide 'frame-config)
 ;;; frame-config.el ends here

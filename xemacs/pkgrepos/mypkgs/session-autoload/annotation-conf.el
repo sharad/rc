@@ -25,6 +25,10 @@
 ;;; Code:
 
 ;;;###autoload
+
+(require 'use-package)
+
+
 (defun configuration|common|annotate-config|org-annotate-file|config ()
   ;; TODO: After adding annotation add it to a org file with link back to place where annotation were added.
   ;; it could help to search annotation when the original place is forgotten.

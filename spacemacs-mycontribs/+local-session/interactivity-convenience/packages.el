@@ -66,13 +66,38 @@ Each entry is either:
 
 (defun interactivity-convenience/init-frame-utils ()
   (use-package frame-utils
-    :defer t
-    :config
-    (require 'frame-config)
-    (frame-utils-config)))
+      :defer t
+      :config
+      (progn
+        (defun frame-utils-config ()
+
+          (setq frame-utils-notify 'message-notify)
+
+          (defun make-mail-chat-frame (&optional force)
+            (interactive "P")
+            (frame-launcher "mail-chat"
+                            '("gnus" "erc")
+                            (if force
+                                #'(lambda (group)
+                                    (toggle-ibuffer-group group t))
+                                #'toggle-ibuffer-group)))
+
+
+          (defun make-mail-compose-frame ())
+
+          (with-eval-after-load "sessions-mgr"
+            (defadvice frame-launcher (around frame-launcher activate)
+              (let ((*frame-session-restore* nil)  ;not need to restore elsession for frames
+                    (org-donot-try-to-clock-in t)) ;no clock require to be clocked-in.
+                ad-do-it))))
+
+        (frame-utils-config))))
 
 (defun interactivity-convenience/init-buffer-utils ()
   (use-package buffer-utils
-    ))
+      :defer t
+      :config
+      (progn
+        )))
 
 ;;; packages.el ends here
