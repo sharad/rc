@@ -36,11 +36,14 @@
 
 (defconst lotus-javascript-packages
   '(
+    espresso
     sws-mode
     jade-mode ;; https://github.com/brianc/jade-mode
+    javascript
     js-mode
     js2-mode
     flymake-js
+    moz
     )
   "The list of Lisp packages required by the lotus-javascript layer.
 
@@ -77,275 +80,287 @@ Each entry is either:
         (setq
          js-indent-level 2 ;;4
          )
-        (add-to-list 'interpreter-mode-alist '("node" . js-mode)))))
+        (add-to-list 'interpreter-mode-alist '("node" . js-mode))
+
+        (with-eval-after-load moz
+            (progn
+              (add-hook 'js-mode-hook 'javascript-custom-setup))))))
 
 (defun lotus-javascript/init-js2-mode ()
   (use-package js2-mode
       :defer t
       :config
       (progn
-        (defalias 'js2-mode 'js-mode))))
+        (defalias 'js2-mode 'js-mode)
+        (with-eval-after-load moz
+            (progn
+              (add-hook 'js2-mode-hook 'javascript-custom-setup))))))
 
 (defun lotus-javascript/init-flymake-js ()
   (use-package flymake-js
       :defer t
       :config
       (progn
+        (progn
+          (with-eval-after-load javascript
+            (add-hook 'javascript-mode-hook 'flymake-jslint-load)))
 
-        ;; FlymakeJavaScript
+        (progn
 
-        ;; There are multiple options for checking Javascript syntax that can be used within flymake. The javascript engines SpiderMonkey and Rhino can both check Javascript syntax. Alternatively, you can use Douglas Crockford’s rather handy JSLint, which is much less forgiving of bad syntax, and can enforce a sensible coding style. Another option is JSHint, which is a fork of JSLint, modified to be not as strict and more configurable in its requirements than the original. The following describe some of these options.
-        ;; Contents
+          ;; FlymakeJavaScript
 
-        ;;    1. With JSLint on Rhino
-        ;;    2. With jslint command line from node.js
-        ;;    3. With JSLint server on node.js (lintnode)
-        ;;    4. With SpiderMonkey
-        ;;    5. With Rhino
-        ;;    6. With JSLINT or JSHINT on Windows using Cscript.exe
+          ;; There are multiple options for checking Javascript syntax that can be used within flymake. The javascript engines SpiderMonkey and Rhino can both check Javascript syntax. Alternatively, you can use Douglas Crockford’s rather handy JSLint, which is much less forgiving of bad syntax, and can enforce a sensible coding style. Another option is JSHint, which is a fork of JSLint, modified to be not as strict and more configurable in its requirements than the original. The following describe some of these options.
+          ;; Contents
 
-        ;; With JSLint on Rhino
+          ;;    1. With JSLint on Rhino
+          ;;    2. With jslint command line from node.js
+          ;;    3. With JSLint server on node.js (lintnode)
+          ;;    4. With SpiderMonkey
+          ;;    5. With Rhino
+          ;;    6. With JSLINT or JSHINT on Windows using Cscript.exe
 
-        ;; First, you will need to install Rhino (**not necessary on Windows, see below), and download jslint.js for Rhino [1]. I’ve got it located in ~/soft/jslint, and you will want to update the code below to match where you’ve put it.
+          ;; With JSLint on Rhino
 
-        ;; Next you will want to create a file called flymake-jslint.el on your LoadPath like the following
+          ;; First, you will need to install Rhino (**not necessary on Windows, see below), and download jslint.js for Rhino [1]. I’ve got it located in ~/soft/jslint, and you will want to update the code below to match where you’ve put it.
 
-        ;; http://lapin-bleu.net/riviera/?p=191
+          ;; Next you will want to create a file called flymake-jslint.el on your LoadPath like the following
 
+          ;; http://lapin-bleu.net/riviera/?p=191
 
-        ;; (setq flymake-err-line-patterns
-        ;;       (cons '("Error:\\([[:digit:]]+\\):\\([[:digit:]]+\\):\\(.*\\)$"
-        ;;       	nil 1 2 3)
-        ;;             flymake-err-line-patterns))
 
-        (defun flymake-jslint-init ()
-          "Construct a command that flymake can use to check javascript source."
-          (list flymake-jslint-command (list ;; "-process"
-                                        (flymake-init-create-temp-buffer-copy
-                                         'flymake-jslint--create-temp-in-system-tempdir))))
+          ;; (setq flymake-err-line-patterns
+          ;;       (cons '("Error:\\([[:digit:]]+\\):\\([[:digit:]]+\\):\\(.*\\)$"
+          ;;       	nil 1 2 3)
+          ;;             flymake-err-line-patterns))
 
+          (defun flymake-jslint-init ()
+            "Construct a command that flymake can use to check javascript source."
+            (list flymake-jslint-command (list ;; "-process"
+                                          (flymake-init-create-temp-buffer-copy
+                                           'flymake-jslint--create-temp-in-system-tempdir))))
 
-        (setq flymake-jslint-command "jslint"
-              flymake-jslint-err-line-patterns
-              '(("Error:\\([[:digit:]]+\\):\\([[:digit:]]+\\):\\(.*\\)$" nil 1 2 3)
-                ("^\\(.+\\)\:\\([0-9]+\\)\: \\(SyntaxError\:.+\\)\:$" nil 2 nil 3)
-                ("^\\(.+\\)(\\([0-9]+\\)): \\(SyntaxError:.+\\)$" nil 2 nil 3)
-                ("^\\(.+\\)(\\([0-9]+\\)): \\(lint \\)?\\(warning:.+\\)$" nil 2 nil 4)
-                )
-              flymake-jslint-trailing-comma-err-line-pattern
-              '("^\\(.+\\)\:\\([0-9]+\\)\: strict \\(warning: trailing comma.+\\)\:$" nil 2 nil 3))
 
+          (setq flymake-jslint-command "jslint"
+                flymake-jslint-err-line-patterns
+                '(("Error:\\([[:digit:]]+\\):\\([[:digit:]]+\\):\\(.*\\)$" nil 1 2 3)
+                  ("^\\(.+\\)\:\\([0-9]+\\)\: \\(SyntaxError\:.+\\)\:$" nil 2 nil 3)
+                  ("^\\(.+\\)(\\([0-9]+\\)): \\(SyntaxError:.+\\)$" nil 2 nil 3)
+                  ("^\\(.+\\)(\\([0-9]+\\)): \\(lint \\)?\\(warning:.+\\)$" nil 2 nil 4)
+                  )
+                flymake-jslint-trailing-comma-err-line-pattern
+                '("^\\(.+\\)\:\\([0-9]+\\)\: strict \\(warning: trailing comma.+\\)\:$" nil 2 nil 3))
 
 
-        ;; (defun flymake-jslint-init ()
-        ;;   (let* ((temp-file (flymake-init-create-temp-buffer-copy
-        ;; 		     'flymake-create-temp-inplace))
-        ;;          (local-file (file-relative-name
-        ;; 		      temp-file
-        ;; 		      (file-name-directory buffer-file-name))))
-        ;;     (list "rhino" (list (expand-file-name "~/soft/jslint/jslint.js") local-file))))
 
-        ;; (setq flymake-allowed-file-name-masks
-        ;;       (cons '(".+\\.js$"
-        ;; 	      flymake-jslint-init
-        ;; 	      flymake-simple-cleanup
-        ;; 	      flymake-get-real-file-name)
-        ;; 	    flymake-allowed-file-name-masks))
+          ;; (defun flymake-jslint-init ()
+          ;;   (let* ((temp-file (flymake-init-create-temp-buffer-copy
+          ;; 		     'flymake-create-temp-inplace))
+          ;;          (local-file (file-relative-name
+          ;; 		      temp-file
+          ;; 		      (file-name-directory buffer-file-name))))
+          ;;     (list "rhino" (list (expand-file-name "~/soft/jslint/jslint.js") local-file))))
 
-        ;; (setq flymake-err-line-patterns
-        ;;       (cons '("^Lint at line \\([[:digit:]]+\\) character \\([[:digit:]]+\\): \\(.+\\)$"
-        ;; 	      nil 1 2 3)
-        ;; 	    flymake-err-line-patterns))
+          ;; (setq flymake-allowed-file-name-masks
+          ;;       (cons '(".+\\.js$"
+          ;; 	      flymake-jslint-init
+          ;; 	      flymake-simple-cleanup
+          ;; 	      flymake-get-real-file-name)
+          ;; 	    flymake-allowed-file-name-masks))
 
-        ;; (provide 'flymake-jslint)
+          ;; (setq flymake-err-line-patterns
+          ;;       (cons '("^Lint at line \\([[:digit:]]+\\) character \\([[:digit:]]+\\): \\(.+\\)$"
+          ;; 	      nil 1 2 3)
+          ;; 	    flymake-err-line-patterns))
 
-        ;; and import it from your DotEmacs like so:
+          ;; (provide 'flymake-jslint)
 
-        ;; (require 'flymake-jslint)
-        ;; (add-hook 'javascript-mode-hook
-        ;; 	  (lambda () (flymake-mode t)))
+          ;; and import it from your DotEmacs like so:
 
-        ;; You can control options of JSLint by using special comments in
-        ;; your source code which are described in the documentation
-        ;; [2]. For example, the following is the same as using the
-        ;; recommended options on jslint.com, and also the assume a browser
-        ;; option. It also defines the name MochiKit, which is imported
-        ;; elsewhere.
+          ;; (require 'flymake-jslint)
+          ;; (add-hook 'javascript-mode-hook
+          ;; 	  (lambda () (flymake-mode t)))
 
-        ;; /*jslint browser: true, undef: true, eqeqeq: true, nomen: true, white: true */
+          ;; You can control options of JSLint by using special comments in
+          ;; your source code which are described in the documentation
+          ;; [2]. For example, the following is the same as using the
+          ;; recommended options on jslint.com, and also the assume a browser
+          ;; option. It also defines the name MochiKit, which is imported
+          ;; elsewhere.
 
-        ;; /*global MochiKit */
+          ;; /*jslint browser: true, undef: true, eqeqeq: true, nomen: true, white: true */
 
-        ;; Seems like you really want (flymake-mode 1) in that hook,
-        ;; not (flymake-mode t). According to the documentation, to turn on
-        ;; the minor mode explicitly requires that the arg be positive, not
-        ;; non-nil. --DinoChiesa
+          ;; /*global MochiKit */
 
-        ;; With jslint command line from node.js
+          ;; Seems like you really want (flymake-mode 1) in that hook,
+          ;; not (flymake-mode t). According to the documentation, to turn on
+          ;; the minor mode explicitly requires that the arg be positive, not
+          ;; non-nil. --DinoChiesa
 
-        ;; Install jslint from node
+          ;; With jslint command line from node.js
 
-        ;; $ npm -g install jslint
+          ;; Install jslint from node
 
-        ;; Now you should have a jslint command on your path, you can set it
-        ;; up in a similar way as the Rhino example above or put this in your
-        ;; .emacs
+          ;; $ npm -g install jslint
 
-        ;; (when (load "flymake" t)
-        ;;   (defun flymake-jslint-init ()
-        ;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
-        ;; 		       'flymake-create-temp-inplace))
-        ;;            (local-file (file-relative-name
-        ;;                         temp-file
-        ;;                         (file-name-directory buffer-file-name))))
-        ;;       (list "jslint" (list local-file))))
-
-        ;;   (setq flymake-err-line-patterns
-        ;; 	(cons '("^  [[:digit:]]+ \\([[:digit:]]+\\),\\([[:digit:]]+\\): \\(.+\\)$"
-        ;; 		nil 1 2 3)
-        ;; 	      flymake-err-line-patterns))
-
-        ;;   (add-to-list 'flymake-allowed-file-name-masks
-        ;;                '("\\.js\\'" flymake-jslint-init)))
+          ;; Now you should have a jslint command on your path, you can set it
+          ;; up in a similar way as the Rhino example above or put this in your
+          ;; .emacs
+
+          ;; (when (load "flymake" t)
+          ;;   (defun flymake-jslint-init ()
+          ;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
+          ;; 		       'flymake-create-temp-inplace))
+          ;;            (local-file (file-relative-name
+          ;;                         temp-file
+          ;;                         (file-name-directory buffer-file-name))))
+          ;;       (list "jslint" (list local-file))))
+
+          ;;   (setq flymake-err-line-patterns
+          ;; 	(cons '("^  [[:digit:]]+ \\([[:digit:]]+\\),\\([[:digit:]]+\\): \\(.+\\)$"
+          ;; 		nil 1 2 3)
+          ;; 	      flymake-err-line-patterns))
 
-        ;; Latest versions of node-jslint (as of 10-dec-2011) have changed
-        ;; the error reporting format, breaking the pattern regexp above
-        ;; and, even worse, reporting errors on two lines. See
-        ;; http://lapin-bleu.net/riviera/?p=191
+          ;;   (add-to-list 'flymake-allowed-file-name-masks
+          ;;                '("\\.js\\'" flymake-jslint-init)))
 
+          ;; Latest versions of node-jslint (as of 10-dec-2011) have changed
+          ;; the error reporting format, breaking the pattern regexp above
+          ;; and, even worse, reporting errors on two lines. See
+          ;; http://lapin-bleu.net/riviera/?p=191
 
-        ;; You can do
 
-        ;; $ npm -g install jshint
+          ;; You can do
 
-        ;; and then install flymake-jshint using marmalade
-        ;; (http://marmalade-repo.org/). You may need to do the following in
-        ;; /usr/local/bin:
+          ;; $ npm -g install jshint
 
-        ;; ln -s /usr/local/Cellar/node/0.6.6/lib/node_modules/csslint/cli.js
+          ;; and then install flymake-jshint using marmalade
+          ;; (http://marmalade-repo.org/). You may need to do the following in
+          ;; /usr/local/bin:
 
-        ;; and then put (add-to-list ‘exec-path “/usr/local/bin”) somwhere in your .emacs.
+          ;; ln -s /usr/local/Cellar/node/0.6.6/lib/node_modules/csslint/cli.js
 
-        ;; -Dave Dreisigmeyer
-        ;; With JSLint server on node.js (lintnode)
+          ;; and then put (add-to-list ‘exec-path “/usr/local/bin”) somwhere in your .emacs.
 
-        ;; If you run the above in a persistent server on v8 instead of
-        ;; invoking rhino every time, it goes about twice as fast. Server code
-        ;; with instructions is available at http://github.com/keturn/lintnode
-        ;; With SpiderMonkey
+          ;; -Dave Dreisigmeyer
+          ;; With JSLint server on node.js (lintnode)
 
-        ;; JavaScript? syntax checking using spidermonkey. This also detects object trailing comma like:
+          ;; If you run the above in a persistent server on v8 instead of
+          ;; invoking rhino every time, it goes about twice as fast. Server code
+          ;; with instructions is available at http://github.com/keturn/lintnode
+          ;; With SpiderMonkey
 
-        ;; var obj = {
-        ;;   a: 1,
-        ;;   b: 2,
-        ;; }; // this line is highlighted.
+          ;; JavaScript? syntax checking using spidermonkey. This also detects object trailing comma like:
 
-        ;; You’ll need Karl’s JavaScriptMode, spidermonkey 1.5 or greater and emacs 22.
+          ;; var obj = {
+          ;;   a: 1,
+          ;;   b: 2,
+          ;; }; // this line is highlighted.
 
-        ;; (defconst flymake-allowed-js-file-name-masks '(("\\.json$" flymake-js-init)
-        ;;                                                ("\\.js$" flymake-js-init)))
-        ;; (defcustom flymake-js-detect-trailing-comma t nil :type 'boolean)
-        ;; (defvar flymake-js-err-line-patterns '(("^\\(.+\\)\:\\([0-9]+\\)\: \\(SyntaxError\:.+\\)\:$" 1 2 nil 3)))
-        ;; (when flymake-js-detect-trailing-comma
-        ;;   (setq flymake-js-err-line-patterns (append flymake-js-err-line-patterns
-        ;;                                              '(("^\\(.+\\)\:\\([0-9]+\\)\: \\(strict warning: trailing comma.+\\)\:$" 1 2 nil 3)))))
+          ;; You’ll need Karl’s JavaScriptMode, spidermonkey 1.5 or greater and emacs 22.
 
-        ;; (defun flymake-js-init ()
-        ;;   (let* ((temp-file (flymake-init-create-temp-buffer-copy
-        ;;                      'flymake-create-temp-inplace))
-        ;;          (local-file (file-relative-name
-        ;;                       temp-file
-        ;;                       (file-name-directory buffer-file-name))))
-        ;;     (list "js" (list "-s" local-file))))
-        ;; (defun flymake-js-load ()
-        ;;   (interactive)
-        ;;   (defadvice flymake-post-syntax-check (before flymake-force-check-was-interrupted)
-        ;;     (setq flymake-check-was-interrupted t))
-        ;;   (ad-activate 'flymake-post-syntax-check)
-        ;;   (setq flymake-allowed-file-name-masks (append flymake-allowed-file-name-masks flymake-allowed-js-file-name-masks))
-        ;;   (setq flymake-err-line-patterns flymake-js-err-line-patterns)
-        ;;   (flymake-mode t))
+          ;; (defconst flymake-allowed-js-file-name-masks '(("\\.json$" flymake-js-init)
+          ;;                                                ("\\.js$" flymake-js-init)))
+          ;; (defcustom flymake-js-detect-trailing-comma t nil :type 'boolean)
+          ;; (defvar flymake-js-err-line-patterns '(("^\\(.+\\)\:\\([0-9]+\\)\: \\(SyntaxError\:.+\\)\:$" 1 2 nil 3)))
+          ;; (when flymake-js-detect-trailing-comma
+          ;;   (setq flymake-js-err-line-patterns (append flymake-js-err-line-patterns
+          ;;                                              '(("^\\(.+\\)\:\\([0-9]+\\)\: \\(strict warning: trailing comma.+\\)\:$" 1 2 nil 3)))))
 
-        ;; (add-hook 'javascript-mode-hook '(lambda () (flymake-js-load)))
+          ;; (defun flymake-js-init ()
+          ;;   (let* ((temp-file (flymake-init-create-temp-buffer-copy
+          ;;                      'flymake-create-temp-inplace))
+          ;;          (local-file (file-relative-name
+          ;;                       temp-file
+          ;;                       (file-name-directory buffer-file-name))))
+          ;;     (list "js" (list "-s" local-file))))
+          ;; (defun flymake-js-load ()
+          ;;   (interactive)
+          ;;   (defadvice flymake-post-syntax-check (before flymake-force-check-was-interrupted)
+          ;;     (setq flymake-check-was-interrupted t))
+          ;;   (ad-activate 'flymake-post-syntax-check)
+          ;;   (setq flymake-allowed-file-name-masks (append flymake-allowed-file-name-masks flymake-allowed-js-file-name-masks))
+          ;;   (setq flymake-err-line-patterns flymake-js-err-line-patterns)
+          ;;   (flymake-mode t))
 
-        ;; With Rhino
+          ;; (add-hook 'javascript-mode-hook '(lambda () (flymake-js-load)))
 
-        ;; There’s another implementation of Flymake JavaScript mode that sits on top of the Rhino engine.
+          ;; With Rhino
 
-        ;; I have some problems with this one. I assume it is a problem with the path to rhino.js and env.js, but I am not sure. I have placed those file in the folder c:/emacs/rhino-related/ which I mention in rhino.js (see below, is this correct?):
+          ;; There’s another implementation of Flymake JavaScript mode that sits on top of the Rhino engine.
 
-        ;;   // Where you store your files
-        ;;   var project_folder = 'c:/emacs/rhino-related/';
-        ;;   // Browser environment wrapper over Rhino
-        ;;   load(project_folder + 'env.js');
-        ;;   // For DOM constructing
-        ;;   window.location = project_folder + 'blank.html';
-        ;;   var my_script = arguments[0];
-        ;;   // If DOM ready
-        ;;   window.onload = function(){
-        ;;       // Avoid recursive inclusion
-        ;;       if ("rhino_flymake.js" != my_script) {
-        ;;           load(my_script);
-        ;;       }
-        ;;   }
+          ;; I have some problems with this one. I assume it is a problem with the path to rhino.js and env.js, but I am not sure. I have placed those file in the folder c:/emacs/rhino-related/ which I mention in rhino.js (see below, is this correct?):
 
-        ;; I get strange errors, like:
+          ;;   // Where you store your files
+          ;;   var project_folder = 'c:/emacs/rhino-related/';
+          ;;   // Browser environment wrapper over Rhino
+          ;;   load(project_folder + 'env.js');
+          ;;   // For DOM constructing
+          ;;   window.location = project_folder + 'blank.html';
+          ;;   var my_script = arguments[0];
+          ;;   // If DOM ready
+          ;;   window.onload = function(){
+          ;;       // Avoid recursive inclusion
+          ;;       if ("rhino_flymake.js" != my_script) {
+          ;;           load(my_script);
+          ;;       }
+          ;;   }
 
-        ;;   parsed 'Exception in thread "Thread-0" org.mozilla.javascript.WrappedException:
-        ;;   Wrapped java.net.MalformedURLException: unknown protocol: c',
-        ;;   no line-err-info
+          ;; I get strange errors, like:
 
-        ;; It looks like Rhino can not take care of the c: in the path. Anyone who understands what is happening? – LennartBorgman
+          ;;   parsed 'Exception in thread "Thread-0" org.mozilla.javascript.WrappedException:
+          ;;   Wrapped java.net.MalformedURLException: unknown protocol: c',
+          ;;   no line-err-info
 
-        ;; I do not have a Windows box to verify the fix below, but according to some forum posts, you should declare the path in scheme file:///C:/path/to/file.
+          ;; It looks like Rhino can not take care of the c: in the path. Anyone who understands what is happening? – LennartBorgman
 
-        ;;   var project_folder = 'file:///c:/emacs/rhino-related/';
+          ;; I do not have a Windows box to verify the fix below, but according to some forum posts, you should declare the path in scheme file:///C:/path/to/file.
 
-        ;; – Nyuhuhuu
+          ;;   var project_folder = 'file:///c:/emacs/rhino-related/';
 
-        ;; Thanks Nyuhuhuu, that made it work on Windows.
+          ;; – Nyuhuhuu
 
-        ;; Before I fixed the issue you speak of, I had to fix an apparent problem with ‘compilation-error-regexp-alist-alist’ in ‘flymake.el’. For details on that, please see this post on gnu.emacs.help.
+          ;; Thanks Nyuhuhuu, that made it work on Windows.
 
-        ;; After that was fixed, I was able to get the Java Rhino process running on target with this (using the Windows build of Emacs, on Windows XP):
+          ;; Before I fixed the issue you speak of, I had to fix an apparent problem with ‘compilation-error-regexp-alist-alist’ in ‘flymake.el’. For details on that, please see this post on gnu.emacs.help.
 
+          ;; After that was fixed, I was able to get the Java Rhino process running on target with this (using the Windows build of Emacs, on Windows XP):
 
-        ;;     var project_folder = 'c:\\Progra~1\\emacs\site\\rhino-web-browser-js-environment\\';
 
-        ;; Then in my ‘flymake-js-init’ function definition, I have this:
+          ;;     var project_folder = 'c:\\Progra~1\\emacs\site\\rhino-web-browser-js-environment\\';
 
-        ;; (list "java" (list "-jar" "c:/Progra~1/rhino1_6R7/js.jar" "c:/Progra~1/emacs/site/rhino-web-browser-js-environment/rhino_flymake.js" local-file))
+          ;; Then in my ‘flymake-js-init’ function definition, I have this:
 
-        ;; That said, after said success I ran into other problems, apparently unrelated to any of my previous fixes and configurations, down the road. Please see the last half of the third comment on this post on gnu.emacs.help.
+          ;; (list "java" (list "-jar" "c:/Progra~1/rhino1_6R7/js.jar" "c:/Progra~1/emacs/site/rhino-web-browser-js-environment/rhino_flymake.js" local-file))
 
-        ;; It would be very cool if this could be made to work. If we can figure it out, we could make a nice how-to on this that I bet a lot of people would benefit from.
+          ;; That said, after said success I ran into other problems, apparently unrelated to any of my previous fixes and configurations, down the road. Please see the last half of the third comment on this post on gnu.emacs.help.
 
-        ;;   -- ChristopherMBalz
+          ;; It would be very cool if this could be made to work. If we can figure it out, we could make a nice how-to on this that I bet a lot of people would benefit from.
 
-        ;; I get a lot of errors on the first line, like
+          ;;   -- ChristopherMBalz
 
-        ;;   - Context.Java(1757)
-        ;;   - MemberBox.java(187)
-        ;;   etc.
+          ;; I get a lot of errors on the first line, like
 
+          ;;   - Context.Java(1757)
+          ;;   - MemberBox.java(187)
+          ;;   etc.
 
-        ;; That is this?
-        ;; With JSLINT or JSHINT on Windows using Cscript.exe
 
-        ;; There’s no need to install Rhino on Windows; Windows has a built-in Javascript engine in WSH. Therefore you can run a JS program on any Windows, via WSH.
+          ;; That is this?
+          ;; With JSLINT or JSHINT on Windows using Cscript.exe
 
-        ;; Relying on WSH, the community provides flymake-for-jslint-for-wsh.el, to allow you to use jslint or JSHINT as the flymake tool for .js buffers on windows.
+          ;; There’s no need to install Rhino on Windows; Windows has a built-in Javascript engine in WSH. Therefore you can run a JS program on any Windows, via WSH.
 
-        ;; A sample of using jslint-for-wsh.js as a “compile” command in emacs:
+          ;; Relying on WSH, the community provides flymake-for-jslint-for-wsh.el, to allow you to use jslint or JSHINT as the flymake tool for .js buffers on windows.
 
-        ;; http://i49.tinypic.com/11kuypx.jpg
+          ;; A sample of using jslint-for-wsh.js as a “compile” command in emacs:
 
-        ;; A sample of using jslint-for-wsh in emacs, with flymake-for-jslint :
+          ;; http://i49.tinypic.com/11kuypx.jpg
 
-        ;; http://i47.tinypic.com/2mk1eh.jpg
+          ;; A sample of using jslint-for-wsh in emacs, with flymake-for-jslint :
 
-        )))
+          ;; http://i47.tinypic.com/2mk1eh.jpg
+
+          ))))
 
 (defun lotus-javascript/init-jade-mode ()
   (use-package jade-mode
@@ -370,6 +385,55 @@ Each entry is either:
 
 
 
+(defun lotus-javascript/init-moz ()
+  ;; C-c C-s: open a MozRepl interaction buffer and switch to it
+  ;; C-c C-l: save the current buffer and load it in MozRepl
+  ;; C-M-x: send the current function (as recognized by c-mark-function) to MozRepl
+  ;; C-c C-c: send the current function to MozRepl and switch to the interaction buffer
+  ;; C-c C-r: send the current region to MozRepl
+  ;;
+  ;; In the interaction buffer:
+  ;;
+  ;; C-c c: insert the current name of the REPL plus the dot operator (usually repl.)
+  (use-package moz
+      :defer t
+      :config
+      (progn
+        (autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
+        (defun javascript-custom-setup ()
+          (setq moz-repl-port 4747)
+          (moz-minor-mode 1))
+        (add-hook 'inferior-moz-hook 'javascript-custom-setup)
+        ;; (defun javascript-custom-setup ()
+        ;;   (deh-require-maybe moz
+        ;;     `(moz-minor-mode 1))
+        ;;
+        ;;     )
+
+
+
+
+(defun lotus-javascript/init-javascript ()
+  (use-package javascript
+      :defer t
+      :config
+      (progn
+        (with-eval-after-load flymake-js
+          (add-hook 'javascript-mode-hook 'flymake-jslint-load))
+        (with-eval-after-load moz
+            (progn
+              (add-hook 'javascript-mode-hook 'javascript-custom-setup))))))
+
+
+
+(defun lotus-javascript/init-espresso ()
+  ;; from: http://www.nongnu.org/espresso/
+  (use-package espresso
+      :defer t
+      :config
+      (progn
+        (add-to-list 'auto-mode-alist '("\\.js$" . espresso-mode))
+        (add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode)))))
 
 
 
