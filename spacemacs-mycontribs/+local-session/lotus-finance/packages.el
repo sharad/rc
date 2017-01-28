@@ -36,14 +36,13 @@
 
 (defconst lotus-finance-packages
   '(
-    creditcard
-    balance
+    (creditcard :location local)
+    (balance :location local)
     ;; http://code.google.com/p/emacs-easy-budget/
     emacs-easy-budget
     ample
     date-util
-
-    ledger
+    (ledger :location local)
     )
   "The list of Lisp packages required by the lotus-finance layer.
 

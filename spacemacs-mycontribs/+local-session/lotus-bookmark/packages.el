@@ -34,16 +34,16 @@
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-bookmarkS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
-(error '(require 'misc-config))
+;; (error '(require 'misc-config))
 
 (defconst lotus-bookmark-packages
   '(
     ;; (PACKAGE :location local)
     saveplace
-    breadcrumb
+    (breadcrumb :location local)
     bm
     bookmark+
-    linkd
+    (linkd :location local)
     )
   "The list of Lisp packages required by the lotus-bookmark layer.
 

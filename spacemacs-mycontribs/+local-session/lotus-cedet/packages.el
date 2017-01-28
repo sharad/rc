@@ -39,8 +39,8 @@
     ecb
     ede
     semantic
-    semantic/bovine/gcc
-    semantic/db-javap
+    ;; semantic/bovine/gcc
+    ;; semantic/db-javap
     imenu
     )
   "The list of Lisp packages required by the lotus-cedet layer.
@@ -94,10 +94,10 @@ Each entry is either:
                 ecb-other-window-behavior 'smart ;'all
                 )
 
-        (with-eval-after-load speedbar
+        (with-eval-after-load "speedbar"
           (setq  ecb-use-speedbar-instead-native-tree-buffer nil))
 
-        (with-eval-after-load winring
+        (with-eval-after-load "winring"
           (ecb-winman-winring-enable-support)
           (winring-initialize))))))
 
@@ -285,7 +285,7 @@ Each entry is either:
       :defer t
       :config
       (progn
-        (with-eval-after-load semantic
+        (with-eval-after-load "semantic"
           (defun my-semantic-hook ()
             ;; http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
             (imenu-add-to-menubar "TAGS"))

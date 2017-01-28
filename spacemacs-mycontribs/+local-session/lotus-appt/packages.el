@@ -68,7 +68,7 @@ Each entry is either:
 (defun lotus-appt/init-appt ()
   (use-package appt
       ;; :defer t
-      :init t
+    :defer nil
       :config
       (progn
         (progn

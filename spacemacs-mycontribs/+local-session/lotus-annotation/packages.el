@@ -40,7 +40,7 @@
     org-pua
     alert
     org-annotate-file
-    annot
+    (annot :location local)
     )
   "The list of Lisp packages required by the lotus-annotation layer.
 

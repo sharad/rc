@@ -70,10 +70,10 @@ Each entry is either:
 (defun lotus-bbdb/init-bbdb ()
   (use-package PACKAGE
       :defer t
-      :post
-      (progn
-        ;; save bbdb
-        (add-hook 'kill-emacs-hook 'bbdb-save-db))
+      ;; :post
+      ;; (progn
+      ;;   ;; save bbdb
+      ;;   (add-hook 'kill-emacs-hook 'bbdb-save-db))
       :config
       (progn
         (setq

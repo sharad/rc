@@ -80,9 +80,9 @@ Each entry is either:
 (defun lotus-autotext/init-autoinsert+ ()
   (use-package autoinsert+
       :defer t
-      :post
-      (progn
-        (auto-insert+-mode 1))
+      ;; :init
+      ;; (progn
+      ;;   (auto-insert+-mode 1))
       :config
       (progn
         (setq

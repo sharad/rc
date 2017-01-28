@@ -39,7 +39,7 @@
     eldoc
     eldoc-extension
     c-eldoc
-    clweb                               ;good
+    (clweb :location local)                               ;good
     )
   "The list of Lisp packages required by the lotus-doc layer.
 
@@ -75,9 +75,9 @@ Each entry is either:
       (progn
         (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
         (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-        (with-eval-after-load ielm
+        (with-eval-after-load "ielm"
           (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode))
-        (with-eval-after-load cperl
+        (with-eval-after-load "cperl"
           ;; for perl http://www.emacswiki.org/emacs/CPerlMode#toc10
           (defun my-cperl-eldoc-documentation-function ()
             "Return meaningful doc string for `eldoc-mode'."

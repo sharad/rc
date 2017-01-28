@@ -40,10 +40,10 @@
 
 (defconst lotus-editing-packages
   '(
-    common-win
-    light-symbol
+    (common-win :location local)
+    (light-symbol :location local)
     hilit-chg
-    show-wspace
+    (show-wspace :location local)
     )
   "The list of Lisp packages required by the lotus-editing layer.
 

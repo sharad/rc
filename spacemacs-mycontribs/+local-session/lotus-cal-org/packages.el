@@ -70,7 +70,7 @@ Each entry is either:
   (use-package calendar
       :defer t
       :config
-      (with-eval-after-load org
+      (with-eval-after-load "org"
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; from http://tsdh.wordpress.com/2008/07/03/some-calendar-and-org-mode-integration-stuff/
         ;; Some calendar and org-mode integration stuff
@@ -135,7 +135,7 @@ buffer."
         (setq g-html-handler 'w3m-buffer)
 
         ;; Write to Diary any entry added to Google Calendar
-        (with-eval-after-load gcal
+        (with-eval-after-load "gcal"
           '(progn
             (defun gcal-read-event (title content
                                     where

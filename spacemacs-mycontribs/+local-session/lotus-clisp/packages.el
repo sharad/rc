@@ -36,7 +36,7 @@
 
 (defconst lotus-clisp-packages
   '(
-    clisp
+    (clisp :location local)
     )
   "The list of Lisp packages required by the lotus-clisp layer.
 

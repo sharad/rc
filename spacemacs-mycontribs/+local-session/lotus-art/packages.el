@@ -36,7 +36,7 @@
 
 (defconst lotus-art-packages
   '(
-    boxes
+    (boxes :location local)
     )
   "The list of Lisp packages required by the lotus-art layer.
 
@@ -66,6 +66,7 @@ Each entry is either:
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
 (defun lotus-art/init-boxes ()
-  (use-package :defer t))
+  (use-package boxes
+    :defer t))
 
 ;;; packages.el ends here

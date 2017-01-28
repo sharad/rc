@@ -1,4 +1,58 @@
 
+
+
+
+(defun spacemacs-dist-layers-select ()
+  '(
+    ;; ----------------------------------------------------------------
+    ;; Example of useful layers you may want to use right away.
+    ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
+    ;; <M-m f e R> (Emacs style) to install them.
+    ;; ----------------------------------------------------------------
+    auto-completion
+    better-defaults
+    emacs-lisp
+    helm
+    git
+    gnus
+    markdown
+    org
+    (shell :variables
+     shell-default-height 30
+     shell-default-position 'bottom)
+    spell-checking
+    syntax-checking
+    version-control
+    company-mode
+    erlang
+    elixir
+    ;; osx
+    html
+    org
+    colors
+    editorconfig
+    themes-megapack
+    perspectives
+    misc
+
+
+
+    ;; .spacemacs-mycontribution
+    basic-startup
+    messaging
+    ;; interactivity-convenience
+    ))
+
+(defun lotus-dist-layers-select (&optional layer-dir)
+  (let ((layer-dir "~/.spacemacs-mycontribs/+local-session/"))
+    (when (file-directory-p layer-dir)
+      (mapcar
+       '(lambda (f)
+         (intern f))
+       (remove-if
+        'file-directory-p
+        (directory-files layer-dir nil "^lotus-[a-zA-Z]+"))))))
+
 (defun sharad/emacs-user-init-begin ()
   (message "loading sharad/emacs-user-init-begin begin")
   (push (concat "~/.osetup/info.d/common/elisp") load-path)
@@ -46,8 +100,6 @@
 
   (defconst *work-dir*
     (expand-file-name "paradise" "~/.."))
-
-
 
   (when t
    (progn ;; "custom setup"

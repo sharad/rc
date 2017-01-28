@@ -36,7 +36,7 @@
 
 (defconst lotus-ease-packages
   '(
-    one-key
+    (one-key :location local)
     )
   "The list of Lisp packages required by the lotus-ease layer.
 

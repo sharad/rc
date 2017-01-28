@@ -36,7 +36,7 @@
 
 (defconst lotus-journaling-packages
   '(
-    records
+    (records :location local)
     org-journal
     )
   "The list of Lisp packages required by the lotus-journaling layer.
@@ -53,7 +53,7 @@ Each entry is either:
 
     - :excluded (t or nil): Prevent the package from being loaded
       if value is non-nil
-
+c
     - :location: Specify a custom installation location.
       The following values are legal:
 
@@ -70,7 +70,7 @@ Each entry is either:
   (use-package records
       :defer t
       :config
-      (progn
+      (prognc
           (setq
    records-init-file (expand-file-name "~/.emacs.d/records")
    records-directory (expand-file-name "~/.Organize/emacs/records")))))
@@ -80,11 +80,12 @@ Each entry is either:
       :defer t
       :config
       (progn
-        (defvar org-journal-dir (org-publish-get-attribute "journal" "org" :base-directory))
-        (setq
-         org-journal-file-format "%Y-%m-%d.org"
-         org-journal-file-pattern (org-journal-format-string->regex org-journal-file-format)
-         org-journal-dir (org-publish-get-attribute "journal" "org" :base-directory))
-        (org-journal-update-auto-mode-alist))))
+        (when (functionp 'org-publish-get-attribute) ;; available in publishing-config.el
+          (defvar org-journal-dir (org-publish-get-attribute "journal" "org" :base-directory))
+          (setq
+           org-journal-file-format "%Y-%m-%d.org"
+           org-journal-file-pattern (org-jourcnal-format-string->regex org-journal-file-format)
+           org-journal-dir (org-publish-get-attribute "journal" "org" :base-directory))
+          (org-journal-update-auto-mode-alist)))))
 
 ;;; packages.el ends here

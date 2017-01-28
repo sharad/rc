@@ -36,7 +36,7 @@
 
 (defconst lotus-etask-packages
   '(
-    etask
+    (etask :location local)
     )
   "The list of Lisp packages required by the lotus-etask layer.
 

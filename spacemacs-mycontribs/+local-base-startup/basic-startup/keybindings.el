@@ -5,7 +5,7 @@
       ;;{{ elscreen
       ;; https://github.com/syl20bnr/spacemacs/issues/7372
       (define-key evil-emacs-state-map (kbd "C-z") nil)
-      ;; (global-unset-key [C-z])
+      (global-unset-key [C-z])
       (global-set-key [C-z c] 'elscreen-create)
       (global-set-key-if-unbind [s-right] 'elscreen-next)
       (global-set-key-if-unbind [s-left]  'elscreen-previous)
