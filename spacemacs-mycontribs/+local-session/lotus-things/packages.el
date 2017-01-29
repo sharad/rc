@@ -38,7 +38,7 @@
   '(
     thingatpt
     thing-cmds
-    thing-edit
+    (thing-edit :location local)
     )
   "The list of Lisp packages required by the lotus-things layer.
 

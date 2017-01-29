@@ -36,8 +36,8 @@
 
 (defconst lotus-stats-packages
   '(
-    uptime
-    uptimes
+    (uptime :location local)
+    (uptimes :location local)
     )
   "The list of Lisp packages required by the lotus-stats layer.
 

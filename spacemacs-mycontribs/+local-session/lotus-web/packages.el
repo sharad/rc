@@ -37,15 +37,15 @@
 (defconst lotus-web-packages
   '(
     ;; (PACKAGE :location local)
-    newpaste
-    paste2
-    pastie
+    (newpaste :location local)
+    (paste2 :location local)
+    (pastie :location local)
     dpaste
     pastebin
     w3m
-    w3m-load
-    w3m-session
-    w3m-lnum
+    (w3m-load :location local)
+    (w3m-session :location local)
+    (w3m-lnum :location local)
     browse-url
     )
   "The list of Lisp packages required by the lotus-web layer.

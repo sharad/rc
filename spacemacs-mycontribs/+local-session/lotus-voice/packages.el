@@ -36,7 +36,7 @@
 
 (defconst lotus-voice-packages
   '(
-    speechd
+    (speechd :location local)
     )
   "The list of Lisp packages required by the lotus-voice layer.
 

@@ -36,7 +36,8 @@
 
 (defconst lotus-screen-packages
   '(
-    elscreen-server
+    elscreen
+    (elscreen-server :location local)
     )
   "The list of Lisp packages required by the lotus-screen layer.
 

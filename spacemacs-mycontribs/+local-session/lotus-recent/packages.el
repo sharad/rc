@@ -38,7 +38,7 @@
   '(
     ;; (PACKAGE :location local)
     recentf
-    recentf-buffer
+    (recentf-buffer :location local)
     recentf-ext
     )
   "The list of Lisp packages required by the lotus-recent layer.

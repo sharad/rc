@@ -37,7 +37,7 @@
 (defconst lotus-timeclock-packages
   '(
     timeclock
-    timeclock-x
+    (timeclock-x :location local)
     )
   "The list of Lisp packages required by the lotus-timeclock layer.
 

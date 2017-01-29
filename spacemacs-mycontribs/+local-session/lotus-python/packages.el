@@ -38,7 +38,7 @@
   '(
     ;; (PACKAGE :location local)
     python
-    pymacs
+    (pymacs :location local)
     )
   "The list of Lisp packages required by the lotus-python layer.
 
