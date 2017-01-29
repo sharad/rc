@@ -1,4 +1,4 @@
-;;; packages.el --- lotus-stats layer packages file for Spacemacs.
+;;; packages.el --- lotus-unicode layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
@@ -18,27 +18,28 @@
 ;;
 ;;
 ;; Briefly, each package to be installed or configured by this layer should be
-;; added to `lotus-stats-packages'. Then, for each package PACKAGE:
+;; added to `lotus-unicode-packages'. Then, for each package PACKAGE:
 ;;
 ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
-;;   function `lotus-stats/init-PACKAGE' to load and initialize the package.
+;;   function `lotus-unicode/init-PACKAGE' to load and initialize the package.
 
 ;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
-;;   define the functions `lotus-stats/pre-init-PACKAGE' and/or
-;;   `lotus-stats/post-init-PACKAGE' to customize the package as it is loaded.
+;;   define the functions `lotus-unicode/pre-init-PACKAGE' and/or
+;;   `lotus-unicode/post-init-PACKAGE' to customize the package as it is loaded.
 
 ;;; Code:
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-statsS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-unicodeS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
-(defconst lotus-stats-packages
+(defconst lotus-unicode-packages
   '(
-    (PACKAGE :location local)
+    ;; (PACKAGE :location local)
+    open-unicode-template
     )
-  "The list of Lisp packages required by the lotus-stats layer.
+  "The list of Lisp packages required by the lotus-unicode layer.
 
 Each entry is either:
 
@@ -65,7 +66,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-stats/init-PACKAGE ()
+(defun lotus-unicode/init-PACKAGE ()
   (use-package PACKAGE
       :defer t
       :config

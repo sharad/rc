@@ -1,4 +1,4 @@
-;;; packages.el --- lotus-timeclock layer packages file for Spacemacs.
+;;; packages.el --- lotus-screen layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
@@ -18,27 +18,27 @@
 ;;
 ;;
 ;; Briefly, each package to be installed or configured by this layer should be
-;; added to `lotus-timeclock-packages'. Then, for each package PACKAGE:
+;; added to `lotus-screen-packages'. Then, for each package PACKAGE:
 ;;
 ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
-;;   function `lotus-timeclock/init-PACKAGE' to load and initialize the package.
+;;   function `lotus-screen/init-PACKAGE' to load and initialize the package.
 
 ;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
-;;   define the functions `lotus-timeclock/pre-init-PACKAGE' and/or
-;;   `lotus-timeclock/post-init-PACKAGE' to customize the package as it is loaded.
+;;   define the functions `lotus-screen/pre-init-PACKAGE' and/or
+;;   `lotus-screen/post-init-PACKAGE' to customize the package as it is loaded.
 
 ;;; Code:
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-timeclockS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-screenS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
-(defconst lotus-timeclock-packages
+(defconst lotus-screen-packages
   '(
-    (PACKAGE :location local)
+    elscreen-server
     )
-  "The list of Lisp packages required by the lotus-timeclock layer.
+  "The list of Lisp packages required by the lotus-screen layer.
 
 Each entry is either:
 
@@ -65,11 +65,36 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-timeclock/init-PACKAGE ()
-  (use-package PACKAGE
+(defun lotus-screen/init-elscreen-server ()
+  ;; I need it badly
+
+  ;; see http://code.google.com/p/maoxian/source/browse/trunk/lisps/elscreen/elscreen-w3m.el?r=86
+  ;; see elscreen-w3m
+  ;; elscreen-set-mode-to-nickname-alist is a compiled Lisp function.
+  ;; (elscreen-set-mode-to-nickname-alist MODE-TO-NICKNAME-ALIST-SYMBOL)
+  ;; thanks http://www.emacswiki.org/emacs-pt/EmacsLispScreen ElScreen-server
+  (use-package elscreen-server
       :defer t
       :config
       (progn
         )))
+
+(defun lotus-screen/init-elscreen ()
+  (use-package elscreen
+    :defer t
+    :config
+    (progn
+      (defun elscreen-move-right ()
+        (interactive)
+        (elscreen-next)
+        (elscreen-swap)
+        (elscreen-notify-screen-modification))
+
+      (defun elscreen-move-left ()
+        (interactive)
+        (elscreen-previous)
+        (elscreen-swap)
+        ;; (elscreen-next)
+        (elscreen-notify-screen-modification)))))
 
 ;;; packages.el ends here

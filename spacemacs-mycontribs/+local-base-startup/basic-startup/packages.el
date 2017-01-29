@@ -37,6 +37,7 @@
 (defconst basic-startup-packages
   '(
     (sessions-mgr :location local)
+    elscreen
     )
   "The list of Lisp packages required by the basic-startup layer.
 
@@ -97,6 +98,20 @@ Each entry is either:
   )
 
 (defun basic-utils/init-elscreen ()
-  (use-package elscreen :init))
+  (use-package elscreen
+    :defer t
+    :config
+    (defun elscreen-move-right ()
+      (interactive)
+      (elscreen-next)
+      (elscreen-swap)
+      (elscreen-notify-screen-modification))
+
+    (defun elscreen-move-left ()
+      (interactive)
+      (elscreen-previous)
+      (elscreen-swap)
+      ;; (elscreen-next)
+      (elscreen-notify-screen-modification))))
 
 ;;; packages.el ends here

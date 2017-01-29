@@ -1,9 +1,9 @@
-;;; stats-config.el --- Stats
+;;; config.el --- config                             -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013  Sharad Pratap
+;; Copyright (C) 2016  sharad
 
-;; Author: Sharad Pratap <spratap@merunetworks.com>
-;; Keywords: data
+;; Author: sharad <spratap@merunetworks.com>
+;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,17 +24,6 @@
 
 ;;; Code:
 
-(deh-section "Time stats"
-  (eval-after-load "uptimes"
-    (setq
-     uptimes-database  (auto-config-file "uptimes/uptimes")))
-  (deh-require-maybe uptimes
-    (setq
-     uptimes-database  (auto-config-file "uptimes/uptimes")))
-
- (deh-require-maybe uptime)
-
- (deh-section "emacs-uptime"
    ;; http://gnuvola.org/software/personal-elisp/dist/lisp/diversions/emacs-uptime.el
    (require 'cl)
 
@@ -42,7 +31,7 @@
 
    (setq
     *emacs-start-time* *emacs-load-start*)
-   ;;;###autoload
+
    (defun emacs-uptime (&optional start-time)
      "Gives Emacs' uptime, based on global var `*emacs-start-time*'."
      (interactive)
@@ -65,7 +54,7 @@
                                (null (cdr (assoc 'buffer-file-truename
                                                  (buffer-local-variables buf)))))))))))
 
-   (add-hook 'after-make-frame-functions '(lambda (f) (run-at-time "1 sec" nil 'emacs-uptime)) t)))
+   (add-hook 'after-make-frame-functions '(lambda (f) (run-at-time "1 sec" nil 'emacs-uptime)) t)
 
-(provide 'stats-config)
-;;; stats-config.el ends here
+;; (provide 'config)
+;;; config.el ends here

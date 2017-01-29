@@ -36,7 +36,9 @@
 
 (defconst lotus-things-packages
   '(
-    (PACKAGE :location local)
+    thingatpt
+    thing-cmds
+    thing-edit
     )
   "The list of Lisp packages required by the lotus-things layer.
 
@@ -65,11 +67,50 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-things/init-PACKAGE ()
-  (use-package PACKAGE
-      :defer t
-      :config
-      (progn
-        )))
+(defun lotus-things/init-thingatpt ()
+  (use-package thingatpt
+    :defer t
+    :config
+    (progn
+      ;;   Email addresses
+      (defvar thing-at-point-fullemail-regexp
+        "\\([a-zA-Z]+ \\)\\{1,2\\}<?[-+_.~a-zA-Z][-+_.~:a-zA-Z0-9]*@[-.a-zA-Z0-9]+>?"
+        "A regular expression probably matching an email address.
+This does not match the real name portion, only the address, optionally
+with angle brackets.")
+
+      ;; Haven't set 'forward-op on 'email nor defined 'forward-email' because
+      ;; not sure they're actually needed, and URL seems to skip them too.
+      ;; Note that (end-of-thing 'email) and (beginning-of-thing 'email)
+      ;; work automagically, though.
+
+      (put 'fullemail 'bounds-of-thing-at-point
+           (lambda ()
+             (let ((thing (thing-at-point-looking-at thing-at-point-fullemail-regexp)))
+               (if thing
+                   (let ((beginning (match-beginning 0))
+                         (end (match-end 0)))
+                     (cons beginning end))))))
+
+      (put 'fullemail 'thing-at-point
+           (lambda ()
+             (let ((boundary-pair (bounds-of-thing-at-point 'fullemail)))
+               (if boundary-pair
+                   (buffer-substring-no-properties
+                    (car boundary-pair) (cdr boundary-pair)))))))))
+
+(defun lotus-things/init-thing-cmds ()
+  (use-package thing-cmds
+    :defer t
+    :config
+    (progn
+      )))
+
+(defun lotus-things/init-thing-edit ()
+  (use-package thing-edit
+    :defer t
+    :config
+    (progn
+      )))
 
 ;;; packages.el ends here

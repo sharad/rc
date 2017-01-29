@@ -1,4 +1,4 @@
-;;; packages.el --- lotus-screen layer packages file for Spacemacs.
+;;; packages.el --- lotus-stats layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
@@ -18,27 +18,28 @@
 ;;
 ;;
 ;; Briefly, each package to be installed or configured by this layer should be
-;; added to `lotus-screen-packages'. Then, for each package PACKAGE:
+;; added to `lotus-stats-packages'. Then, for each package PACKAGE:
 ;;
 ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
-;;   function `lotus-screen/init-PACKAGE' to load and initialize the package.
+;;   function `lotus-stats/init-PACKAGE' to load and initialize the package.
 
 ;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
-;;   define the functions `lotus-screen/pre-init-PACKAGE' and/or
-;;   `lotus-screen/post-init-PACKAGE' to customize the package as it is loaded.
+;;   define the functions `lotus-stats/pre-init-PACKAGE' and/or
+;;   `lotus-stats/post-init-PACKAGE' to customize the package as it is loaded.
 
 ;;; Code:
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-screenS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-statsS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
-(defconst lotus-screen-packages
+(defconst lotus-stats-packages
   '(
-    (PACKAGE :location local)
+    uptime
+    uptimes
     )
-  "The list of Lisp packages required by the lotus-screen layer.
+  "The list of Lisp packages required by the lotus-stats layer.
 
 Each entry is either:
 
@@ -65,11 +66,19 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-screen/init-PACKAGE ()
-  (use-package PACKAGE
+(defun lotus-stats/init-uptime ()
+  (use-package uptime
       :defer t
       :config
       (progn
-        )))
+        (setq
+         uptimes-database  (auto-config-file "uptimes/uptimes")))))
+
+(defun lotus-stats/init-uptimes ()
+  (use-package uptimes
+    :defer t
+    :config
+    (progn
+      )))
 
 ;;; packages.el ends here
