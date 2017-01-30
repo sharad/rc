@@ -57,9 +57,9 @@
 
 (setf use-slime-config 'ubuntu)
 
-(testing
- (setq b 1)
- (assoc 'a `(nil (a . ,b))))
+;; (testing
+;;  (setq b 1)
+;;  (assoc 'a `(nil (a . ,b))))
 
 (defun get-slime-config-ele-from-configs (config ele)
   "Get slime config."

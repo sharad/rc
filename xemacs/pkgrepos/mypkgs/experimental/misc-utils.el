@@ -26,6 +26,7 @@
 
 (require 'dot-emacs-helper)
 (require 'basic-macros)
+(require 'basic-utils) ;; global-set-key-if-unbind
 
 (deh-section "autoconfig"
   (unless user-emacs-directory
@@ -260,7 +261,7 @@ The indirect buffer can have another major mode."
 ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Terminal-Coding.html
 ;; (set-keyboard-coding-system nil)
 
-(xrequire 'elscreen)
+;; (xrequire 'elscreen)
 
 ;; ;; From Eric Richmond
 ;; (if (not running-xemacs)

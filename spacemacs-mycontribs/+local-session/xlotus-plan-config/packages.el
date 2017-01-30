@@ -36,7 +36,31 @@
 
 (defconst lotus-plan-packages
   '(
-    (PACKAGE :location local)
+    ;; (PACKAGE :location local)
+    (publishing-config :location local)
+    (muse-config :location local)
+    planner
+    muse-wiki
+    muse
+    planner-gnus
+    planner-id
+    planner-cyclic
+    planner-multi
+    bbdb-com
+    planner-appt
+    timeclock planner-timeclock planner-timeclock-summary
+    planner-accomplishments
+    planner-registry
+    planner-report ;; for using      M-x planner-report-generate
+    planner-publish
+    planner-calendar
+    planner-authz
+    planner-experimental
+    planner-unix-mail
+    planner-gnus
+    planner-rmail
+    planner-bugz
+    planner-env
     )
   "The list of Lisp packages required by the lotus-plan layer.
 

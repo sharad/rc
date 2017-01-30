@@ -218,13 +218,10 @@ Each entry is either:
         ;; uncomment here
         (let ((helper (expand-file-name (concat quicklisp-path "/slime-helper.el"))))
           (if (file-exists-p helper)
-              (load helper)))
-
-
-        )
+              (load helper))))
 
       (defun slime-proxy-setup ()
         (interactive)
-        (slime-setup '(slime-proxy slime-parenscript))))))
+        (slime-setup '(slime-proxy slime-parenscript)))))
 
 ;;; packages.el ends here

@@ -1,5 +1,8 @@
 
-
+(defun dotspacemacs/reinit ()
+  (setq-default
+   dotspacemacs-which-key-delay 3.0)
+  )
 
 
 (defun spacemacs-dist-layers-select ()
@@ -35,8 +38,6 @@
     perspectives
     misc
 
-
-
     ;; .spacemacs-mycontribution
     basic-startup
     messaging
@@ -52,6 +53,29 @@
        (remove-if
         'file-directory-p
         (directory-files layer-dir nil "^lotus-[a-zA-Z]+"))))))
+
+(defun elscreen-keymap-setup ()
+  (progn ;; "Keybinding: Elscreen"
+    (when (featurep 'elscreen)
+      ;;{{ elscreen
+      ;; https://github.com/syl20bnr/spacemacs/issues/7372
+      (define-key evil-emacs-state-map (kbd "C-z") nil)
+      (global-unset-key [C-z])
+      ;; (global-set-key [C-z c] 'elscreen-create)
+      (funcall
+       '(lambda (symbol value)
+         (when (boundp 'elscreen-map)
+           (elscreen-set-prefix-key value))
+         (custom-set-default symbol value))
+       'elscreen-prefix-key "\C-z")
+      (global-set-key [s-right] 'elscreen-next)
+      (global-set-key [s-left]  'elscreen-previous)
+      (global-set-key [H-right] 'elscreen-move-right)
+      (global-set-key [H-left]  'elscreen-move-left)
+      (global-set-key [M-H-right]    'elscreen-swap)
+      ;; (global-set-key-if-unbind [H-down]  'elscreen-previous)
+      ;;}}
+      )))
 
 (defun sharad/emacs-user-init-begin ()
   (message "loading sharad/emacs-user-init-begin begin")
@@ -155,9 +179,9 @@
     )
   (message "loading sharad/emacs-user-init-begin finished"))
 
-
 (defun sharad/emacs-user-init-finish ()
   (message "loading sharad/emacs-user-init-finish begin")
+  (dotspacemacs/reinit)
   (when nil
     (put-file-in-rcs (auto-config-file "startup/startup.log"))
     (with-current-buffer "*Messages*"
@@ -224,8 +248,6 @@
       ;; do not want it.
       ;; (setq yas/trigger-key "")
       )
-
-
 
     (let (current-load-list)
 
@@ -352,6 +374,7 @@ variable."
 
     (when (any-frame-opened-p)
       (mycustom-face-set)))
+
   (progn ;; other
     ;; (custom-available-themes)
     (defun theme-current ()
@@ -361,8 +384,11 @@ variable."
       (interactive)
       (insert (format "%s" custom-enabled-themes)))
 
-
     (global-hl-line-mode -1))
+
+  (progn
+    (global-set-key (kbd "M-SPC") 'just-one-space)
+    (elscreen-keymap-setup))
 
   (remove-hook
    'sharad/enable-startup-interrupting-feature-hook
