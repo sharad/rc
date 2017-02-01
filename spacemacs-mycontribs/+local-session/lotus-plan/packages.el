@@ -463,7 +463,7 @@ instead of a string."
   (use-package bbdb-com          ;checking it as it fail emacs to move ahead.
       :defer t
       :config
-      (progno
+      (progn
         (use-package planner-bbdb
             :defer t
             ))))
