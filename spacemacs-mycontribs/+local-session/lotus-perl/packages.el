@@ -38,9 +38,8 @@
   '(
     ;; (PACKAGE :location local)
     cperl-mode
-    compile-dwim
-    pde-load
-    )
+    (compile-dwim :location local)
+    pde-load)
   "The list of Lisp packages required by the lotus-perl layer.
 
 Each entry is either:

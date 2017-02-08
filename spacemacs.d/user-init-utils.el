@@ -31,6 +31,7 @@
     elixir
     ;; osx
     html
+    javascript
     org
     colors
     editorconfig

@@ -31,14 +31,15 @@
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-planS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-plan-packages
   '(
     ;; (PACKAGE :location local)
-    (publishing-config :location local)
-    (muse-config :location local)
+    (publishing :location local)
+    (muse-publishing :location local)
+    (org-publishing :location local)
     (planner :location local)
     (muse-wiki :location local)
     muse
@@ -117,6 +118,8 @@ Each entry is either:
         ;;           ;; of Planner)
         ;;           :path "~/public_html/Plans")))
 
+        (require 'muse-publishing)
+
         (add-muse-project
          `("WikiPlanner"
            (,(concat *muse-top-dir* "/web/site/wiki/Organize/plan/Plans")  ;; Or wherever you want your planner files to be
@@ -136,7 +139,21 @@ Each entry is either:
                   ;; of Planner)
                   :path ,(concat *muse-generated-top-dir* "/web/site/wiki/Organize/plan/Plans/planner-xhtml")))))))
 
-(defun lotus-plan/init-muse-config ()
+(defun lotus-plan/init-publising ()
+  (use-package muse-config
+      :defer t
+      :config
+      (progn
+        )))
+
+(defun lotus-plan/init-muse-publising ()
+  (use-package muse-config
+      :defer t
+      :config
+      (progn
+        )))
+
+(defun lotus-plan/init-org-publising ()
   (use-package muse-config
       :defer t
       :config
