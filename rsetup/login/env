@@ -121,20 +121,23 @@ then
         ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
         ! ssh-add -l 2>&1 > /dev/null                                # key is not added
     then
-        if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
+        if false
         then
-            if [ -t ]
+            if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
             then
-                ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
-            else
-                ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
+                if [ -t ]
+                then
+                    ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
+                else
+                    ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
+                fi
             fi
-        fi
 
-        # else
-        #     unset SSH_AGENT_PID
-        #     unset SSH_AUTH_SOCK
-        #     rm -f ${KEYCHAINDIR}/${HOST}-sh
+            # else
+            #     unset SSH_AGENT_PID
+            #     unset SSH_AUTH_SOCK
+            #     rm -f ${KEYCHAINDIR}/${HOST}-sh
+        fi # false
     fi          # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
 
 

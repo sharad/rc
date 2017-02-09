@@ -41,7 +41,7 @@ if whence -p xmodmap ; then
     xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >&/dev/null
 fi
 
-xterm -e 'ish -s bash -- timeout -k 120 70 tail -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log' '~/.emacs.d/.cache/autoconfig/startup/'$EMACS_SERVER_NAME'/startup.log'  >&/dev/null &!
+xterm -e "ish -s bash -- timeout -k 120 70 tail -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/autoconfig/startup/$EMACS_SERVER_NAME/startup.log"  >&/dev/null &!
 
 if whence xte ; then
     xte <<EOF >&/dev/null

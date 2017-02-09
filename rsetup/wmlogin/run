@@ -60,6 +60,9 @@ fi
 ~/bin/stumpwm-setup &!
 
 
+emacs_daemon_start
+
+
 
 #### # if [ -x /usr/libexec/at-spi-registryd ] ; then
 #### #     DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/libexec/at-spi-registryd &!
