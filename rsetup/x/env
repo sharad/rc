@@ -30,10 +30,8 @@ export GNOME_KEYRING_SOCKET
 [ -r ~/.rsetup/x/env.d/${HOST} ] && . ~/.rsetup/x/env.d/${HOST}
 #}}
 
-
-
-EDITOR="emacsclient -d $DISPLAY -c -f ~/.emacs.d/server/general "
-VISUAL="emacsclient -d $DISPLAY -c -f ~/.emacs.d/server/general "
+EDITOR=general-xeditor
+VISUAL=general-xeditor
 
 if [ "x${REMOTEEDITORHOST}" != "x" ] ; then
     EDITOR=$HOME/bin/rgeneral-xeditor

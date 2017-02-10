@@ -11,7 +11,8 @@
 
 
 
-if [ "x${HOST}" != "x" ] ; then
+if [ "x${HOST}" != "x" ]
+then
     __comp=x
 
 
@@ -33,34 +34,45 @@ else
 fi
 
 
-if whence -p xrdb  >&/dev/null ; then
+if whence -p xrdb  >&/dev/null
+then
     m4 -I ~/.setup/m4 -I ~/.osetup/lib.d/m4.d -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init 2>/dev/null | xrdb -merge -  >&/dev/null
 fi
 
-if whence -p xmodmap ; then
+if whence -p xmodmap  >/dev/null 2>&1
+then
     xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >&/dev/null
 fi
 
-xterm -e "ish -s bash -- timeout -k 120 70 tail -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/autoconfig/startup/$EMACS_SERVER_NAME/startup.log"  >&/dev/null &!
+# show me what is happening...
+## http://askubuntu.com/a/481529
+xterm -fullscreen -hold -e "ish -s bash -- timeout -k 120 70 tail -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/autoconfig/startup/$EMACS_SERVER_NAME/startup.log"  >&/dev/null &!
 
-if whence xte ; then
-    xte <<EOF >&/dev/null
+if whence xte
+then
+    xte <<'EOF' >&/dev/null
 mousemove 42 42
 EOF
 fi
 
+emacs_daemon_start
 
-if which $HOME/bin/ecryptfs-mount-private 2>&1 ; then
+# if which $HOME/bin/ecryptfs-mount-private >/dev/null 2>&1
+# then
+#     if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
+#         timeout -k 10 7 $HOME/bin/ecryptfs-mount-private > /dev/null 2>&1
+#     fi
+# fi
 
-    if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
-        timeout -k 10 7 $HOME/bin/ecryptfs-mount-private
-    fi
+if false
+then
+    ~/bin/syncimap -r >& /dev/null               # it only get secinfo from x keyring; enable
 fi
 
+~/bin/syncimap -d  >& /dev/null               # it only get secinfo from x keyring; disable
 
-~/bin/syncimap -r >& /dev/null               # it only get secinfo from x keyring; enable
-
-if whence -p xhost >&/dev/null ; then
+if whence -p xhost >&/dev/null
+then
     xhost +local:mpd
 fi
 
@@ -107,12 +119,14 @@ if [ $DISPLAY ] ; then
     # DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
 
      if whence -p conky >& /dev/null &&
-         ! pgrep conky >& /dev/null ; then
-         conky  >&/dev/null  &!
+            ! pgrep conky >& /dev/null
+     then
+         conky  >&/dev/null &!
      fi
 
      if whence synclient >& /dev/null &&
-         ! pgrep synclient >& /dev/null ; then
+            ! pgrep synclient >& /dev/null
+     then
          synclient  TapButton1=1 >& /dev/null
      fi
 
@@ -120,28 +134,34 @@ if [ $DISPLAY ] ; then
     # xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
 
     # stop this bell.
-     if whence -p xset ; then
-         xset b off                  # peace
+     if whence -p xset  >/dev/null 2>&1
+     then
+         xset b off  >/dev/null 2>&1 # peace
      fi
 
     # set fonts
-    if [  -r ~/.emacs.d/server/general ] ; then
-        # emacsclient -n -d $DISPLAY -f ~/.emacs.d/server/general -e '(mycustom-face-set)'
-    fi
+     if [  -r ~/.emacs.d/server/general ]
+     then
+         # emacsclient -n -d $DISPLAY -f ~/.emacs.d/server/general -e '(mycustom-face-set)'
+         :
+     fi
 
 
     if whence -p osdsh >& /dev/null &&
-        ! pgrep osdsh >& /dev/null ; then
-        osdsh -n 10 &!
+           ! pgrep osdsh >& /dev/null
+    then
+        osdsh -n 10  >/dev/null 2>&1 &!
     fi
 
 
 
 fi
 
-if [ -e ~/.stumpwm.d/debug-output.log ] ; then
+if [ -e ~/.stumpwm.d/debug-output.log ]
+then
     # command rm -f ~/.stumpwm.d/debug-output.log
-    if [ -e ~/.stumpwm.d/debug-output.0.log ] ; then
+    if [ -e ~/.stumpwm.d/debug-output.0.log ]
+    then
         command mv ~/.stumpwm.d/debug-output.0.log ~/.stumpwm.d/debug-output.1.log
     fi
     command mv ~/.stumpwm.d/debug-output.log ~/.stumpwm.d/debug-output.0.log
@@ -149,27 +169,30 @@ fi
 
 if whence -c bingwallpaper >& /dev/null
 then
-    bingwallpaper -d 0
+    bingwallpaper -d 0  >/dev/null 2>&1
 fi
 
 # gconftool -s /apps/mail-notification/commands/new-mail/command "$EDITOR -e '(gnus)'"
 # gconftool -s /apps/mail-notification/commands/new-mail/enabled true
 
 
-if [ "x${HOST}" != "x" ] ; then
+if [ "x${HOST}" != "x" ]
+then
     __comp=x
 
-
-    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
         rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
     fi
-    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
         mkdir ~/.rsetup/${__comp}/run.d/
         cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
     fi
 
-    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-        ~/.rsetup/${__comp}/run.d/${HOST}
+    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
+        ~/.rsetup/${__comp}/run.d/${HOST}  >/dev/null 2>&1
     fi
 
     unset __comp

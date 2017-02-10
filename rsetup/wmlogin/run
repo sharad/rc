@@ -1,6 +1,7 @@
 #!/bin/zsh
 
-if [ "x${HOST}" != "x" ] ; then
+if [ "x${HOST}" != "x" ]
+then
     __comp=wmlogin
 
     if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
@@ -22,7 +23,8 @@ fi
 
 # give access to mpd
 
-if whence xte ; then
+if whence xte
+then
     xte <<EOF
 mousemove 42 42
 EOF
@@ -41,7 +43,8 @@ then
     conky &!
 fi
 
-if whence xte ; then
+if whence xte
+then
     xte <<EOF
 mousemove 42 42
 EOF
@@ -59,10 +62,7 @@ fi
 ~/bin/wallpaper-setup &!
 ~/bin/stumpwm-setup &!
 
-
-emacs_daemon_start
-
-
+emacs_daemon_start              # in case it were not started in x/run
 
 #### # if [ -x /usr/libexec/at-spi-registryd ] ; then
 #### #     DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/libexec/at-spi-registryd &!
@@ -275,4 +275,9 @@ if [ -x /usr/share/android-notifier-desktop/run.sh ] &&
         -jar /usr/share/android-notifier-desktop/android-notifier-desktop.jar -i |
     grep "not" ; then
     /usr/share/android-notifier-desktop/run.sh >& ~/.logs/android-notifier-desktop.log &!
+fi
+
+if [ "x" != "x$EMACS_SERVER_NAME" ]
+then
+    ( sleep 30s; emacsclient -d :0 -nc -f ~/.emacs.d/server/$EMACS_SERVER_NAME -e "(progn (message \"Default\")(display-about-screen))" ) &!
 fi

@@ -176,6 +176,10 @@ function state_unlocked () {
         whence stumpish >&/dev/null && timeout 2 stumpish pull-hidden-other &!
     fi
     wscreenlockoff
+    if type get_security_info >/dev/null 2>&1
+    then
+        get_security_info
+    fi
 }
 
 function screen_lock() {
@@ -254,4 +258,3 @@ function wscreenlockoff () {
 pgm=$(basename $0)
 
 main $@
-

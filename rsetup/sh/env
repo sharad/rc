@@ -107,8 +107,32 @@ function emacs_daemon_start()
     fi # if whence -p emacs >& /dev/null || ! pgrep emacs >& /dev/null
 }
 
+function mount_private_dir()
+{
+    if [ -r ~/.ecryptfs/Private.mnt ] &&
+           [ -d "$(cat ~/.ecryptfs/Private.mnt)" ] &&
+           [ -x $HOME/bin/ecryptfs-mount-private] &&
+           ! mount | grep $(cat ~/.ecryptfs/Private.mnt) >/dev/null 2>&1
+    then
+        # if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
+        #     [ -x $HOME/bin/ecryptfs-mount-private ] &&
+        #         timeout 7 $HOME/bin/ecryptfs-mount-private >&/dev/null
+        # fi
+        timeout 7 $HOME/bin/ecryptfs-mount-private >&/dev/null
+    fi
+}
 
+function enable_mail_sync()
+{
+    ~/bin/syncimap -r               # it only get secinfo from x keyring; enable
+}
 
+function get_security_info()
+{
+    mount_private_dir
+    sleep 1s
+    enable_mail_sync
+}
 
 if [ "x${HOST}" != "x" ] ; then
   __comp=sh
