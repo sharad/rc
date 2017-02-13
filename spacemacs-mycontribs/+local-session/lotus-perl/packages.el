@@ -39,7 +39,9 @@
     ;; (PACKAGE :location local)
     cperl-mode
     (compile-dwim :location local)
-    pde-load)
+    pde
+    pde-load
+    comint)
   "The list of Lisp packages required by the lotus-perl layer.
 
 Each entry is either:
@@ -231,9 +233,16 @@ Each entry is either:
           ;; For perl novice, it is common forgeting chmod before running perl
           ;; script. The library executable provide a solution for automatic chmod
           ;; when saving file.
-
-          (setq compilation-buffer-name-function 'pde-compilation-buffer-name)
-
+          (use-package pde
+              :defer t
+              :config
+              (progn
+                (add-hook 'cperl-mode-hook
+                          '(lambda ()
+                            (make-local-variable 'compilation-buffer-name-function)
+                            (setq
+                             compilation-buffer-name-function
+                             'pde-compilation-buffer-name)))))
 
           ;; Commands
           ;;     * C-c s compile-dwim-compile
@@ -279,6 +288,20 @@ Each entry is either:
 
 (defun lotus-perl/init-compile-dwim ()
   (use-package compile-dwim
+      :defer t
+      :config
+      (progn
+        )))
+
+(defun lotus-perl/init-pde ()
+  (use-package pde
+      :defer t
+      :config
+      (progn
+        )))
+
+(defun lotus-perl/init-pde-load ()
+  (use-package pde-load
       :defer t
       :config
       (progn

@@ -761,6 +761,56 @@ Add directory to search path for source files using the GDB command, dir."))
       :defer t
       :config
       (progn
+        ;; https://www.emacswiki.org/emacs/IndentingC
+        (progn
+          (add-hook
+           'c-mode-common-hook
+           '(lambda ()
+             (setq
+              c-default-style "stroustrup"
+              c-basic-offset 2)))
+
+
+          ;; Automatic Indentation
+
+          ;; Add the following to your ~/.emacs file. Whenever you type certain
+          ;; characters, a newline will be inserted automatically. Some like it,
+          ;; some hate it.
+
+          (use-package cc-cmds
+              :defer t
+              :config
+              (progn
+                (add-hook
+                 'c-mode-common-hook
+                 '(lambda ()
+                   (c-toggle-auto-state 1)))))
+
+          ;; If you like this you might also be interested in
+          ;; ‘c-toggle-hungry-state’, which will delete all characters until
+          ;; next non-whitespace when you delete whitespace. Another form of
+          ;; Automatic Indentation
+
+          ;; For people who don’t like automatic indentation, but don’t want to
+          ;; hit tab on every line, here’s another method:
+          (use-package cc-mode
+              :defer t
+              :config
+              (progn
+                (add-hook
+                 'c-mode-common-hook
+                 '(lambda ()
+                   (define-key c-mode-base-map (kbd "RET") 'newline-and-indent)))))
+
+          ;; This maps newline-and-indent (normally C-j) to the return key. It’s
+          ;; exactly equivalent to hitting tab after every time you hit return.
+
+          ;; Note: In order to add this to your .emacs you must add `(require
+          ;; ‘cc-mode)’ if you don’t have it already.
+
+
+          )
+
         (progn ;; "if0"
           ;; http://stackoverflow.com/questions/4549015/in-c-c-mode-in-emacs-change-face-of-code-in-if-0-endif-block-to-comment-f
 
