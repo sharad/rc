@@ -79,9 +79,11 @@ Each entry is either:
 
 (defun lotus-publishing/init-muse-publishing ()
   (use-package muse-publishing
-      :defer t
+      ;; :defer t
+      :demand t
       :config
       (progn
+        (require 'publishing)
         (progn
           (setq
            *muse-top-dir*           (expand-file-name "contents/muse" *created-content-dir*)
@@ -218,7 +220,8 @@ Each entry is either:
 
 (defun lotus-publishing/init-org-publishing ()
   (use-package org-publishing
-      :defer t
+      ;; :defer t
+      :demand t
       :config
       (progn
         (progn

@@ -93,68 +93,22 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-plan/init-publishing-config ()
-  (use-package publishing-config
-      :defer t
-      :config
-      (progn
-
-        ;; (add-muse-project
-        ;;  '("WikiPlanner"
-        ;;    ("~/.Organize/emacs/plan/Plans"   ;; Or wherever you want your planner files to be
-        ;;     :default "index"
-        ;;     ;; :major-mode #'planner-mode
-        ;;     :major-mode planner-mode
-        ;;     ;; :final muse-project-publish-file
-        ;;     :visit-link planner-visit-link)
-        ;;    ;; This next part is for specifying where Planner pages
-        ;;    ;; should be published and what Muse publishing style to
-        ;;    ;; use. In this example, we will use the XHTML publishing
-        ;;    ;; style.
-        ;;    (:base "planner-xhtml"
-        ;;           ;; where files are published to
-        ;;           ;; (the value of 'planner-publishing-directory', if
-        ;;           ;; if you have configuration for an older version
-        ;;           ;; of Planner)
-        ;;           :path "~/public_html/Plans")))
-
-        (require 'muse-publishing)
-
-        (add-muse-project
-         `("WikiPlanner"
-           (,(concat *muse-top-dir* "/web/site/wiki/Organize/plan/Plans")  ;; Or wherever you want your planner files to be
-             :default "index"
-             ;; :major-mode #'planner-mode
-             :major-mode planner-mode
-             ;; :final muse-project-publish-file
-             :visit-link planner-visit-link)
-           ;; This next part is for specifying where Planner pages
-           ;; should be published and what Muse publishing style to
-           ;; use. In this example, we will use the XHTML publishing
-           ;; style.
-           (:base "planner-xhtml"
-                  ;; where files are published to
-                  ;; (the value of 'planner-publishing-directory', if
-                  ;; if you have configuration for an older version
-                  ;; of Planner)
-                  :path ,(concat *muse-generated-top-dir* "/web/site/wiki/Organize/plan/Plans/planner-xhtml")))))))
-
-(defun lotus-plan/init-publising ()
-  (use-package muse-config
+(defun lotus-plan/init-publishing ()
+  (use-package publishing
       :defer t
       :config
       (progn
         )))
 
-(defun lotus-plan/init-muse-publising ()
-  (use-package muse-config
+(defun lotus-plan/init-muse-publishing ()
+  (use-package muse-publishing
       :defer t
       :config
       (progn
         )))
 
-(defun lotus-plan/init-org-publising ()
-  (use-package muse-config
+(defun lotus-plan/init-org-publishing ()
+  (use-package org-publishing
       :defer t
       :config
       (progn
@@ -165,6 +119,50 @@ Each entry is either:
       :defer t
       :config
       (progn
+        (use-package muse-publishing
+            :defer t
+            :config
+            (progn
+
+              ;; (add-muse-project
+              ;;  '("WikiPlanner"
+              ;;    ("~/.Organize/emacs/plan/Plans"   ;; Or wherever you want your planner files to be
+              ;;     :default "index"
+              ;;     ;; :major-mode #'planner-mode
+              ;;     :major-mode planner-mode
+              ;;     ;; :final muse-project-publish-file
+              ;;     :visit-link planner-visit-link)
+              ;;    ;; This next part is for specifying where Planner pages
+              ;;    ;; should be published and what Muse publishing style to
+              ;;    ;; use. In this example, we will use the XHTML publishing
+              ;;    ;; style.
+              ;;    (:base "planner-xhtml"
+              ;;           ;; where files are published to
+              ;;           ;; (the value of 'planner-publishing-directory', if
+              ;;           ;; if you have configuration for an older version
+              ;;           ;; of Planner)
+              ;;           :path "~/public_html/Plans")))
+
+              (add-muse-project
+               `("WikiPlanner"
+                 (,(concat *muse-top-dir* "/web/site/wiki/Organize/plan/Plans")  ;; Or wherever you want your planner files to be
+                   :default "index"
+                   ;; :major-mode #'planner-mode
+                   :major-mode planner-mode
+                   ;; :final muse-project-publish-file
+                   :visit-link planner-visit-link)
+                 ;; This next part is for specifying where Planner pages
+                 ;; should be published and what Muse publishing style to
+                 ;; use. In this example, we will use the XHTML publishing
+                 ;; style.
+                 (:base "planner-xhtml"
+                        ;; where files are published to
+                        ;; (the value of 'planner-publishing-directory', if
+                        ;; if you have configuration for an older version
+                        ;; of Planner)
+                        :path ,(concat *muse-generated-top-dir* "/web/site/wiki/Organize/plan/Plans/planner-xhtml"))))))
+
+        (require 'muse-publishing)
 
         (progn
           (setq
@@ -218,6 +216,7 @@ Each entry is either:
           (planner-install-extra-task-keybindings)
           (planner-install-extra-note-keybindings)
           (planner-install-extra-context-keybindings)
+
           (defun xsteve-planner-save ()
             (interactive)
             (planner-fix-tasks)

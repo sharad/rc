@@ -46,7 +46,7 @@ fi
 
 # show me what is happening...
 ## http://askubuntu.com/a/481529
-xterm -fullscreen -hold -e "ish -s bash -- timeout -k 120 70 tail -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/autoconfig/startup/$EMACS_SERVER_NAME/startup.log"  >&/dev/null &!
+xterm -fullscreen -hold -maximized -e "ish -s bash -- timeout -k 120 70 tail -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/autoconfig/startup/$EMACS_SERVER_NAME/startup.log"  >&/dev/null &!
 
 if whence xte
 then
