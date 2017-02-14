@@ -239,7 +239,7 @@ foreach prog (
         then
             $prog &!
             # echo started $prog >&2
-	    pgrep $prog[0,15]  >& /dev/null
+	          pgrep $prog[0,15]  >& /dev/null
             sleep 1s;
         else
             print Not starting $prog  >& /dev/null

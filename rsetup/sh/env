@@ -111,7 +111,7 @@ function mount_private_dir()
 {
     if [ -r ~/.ecryptfs/Private.mnt ] &&
            [ -d "$(cat ~/.ecryptfs/Private.mnt)" ] &&
-           [ -x $HOME/bin/ecryptfs-mount-private] &&
+           [ -x $HOME/bin/ecryptfs-mount-private ] &&
            ! mount | grep $(cat ~/.ecryptfs/Private.mnt) >/dev/null 2>&1
     then
         # if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
