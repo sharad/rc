@@ -220,36 +220,36 @@ emacs_daemon_start              # in case it were not started in x/run
 # pgrep xautolock >& /dev/null && xautolock -locknow &!
 if pgrep xautolock >& /dev/null
 then
-    xautolock -locknow &!
+    xautolock -locknow >> ~/.logs/wmlogin.log 2>&1 &!
 fi
 
 foreach prog (
     ## it is automatically started by gdm, so no need to start it.
     # gnome-keyring-daemon
     # gnome-power-manager
-    mail-notification
+    # mail-notification
     # blueman-adapters
     # blueman-applet
     # bluetoothd
     # empathy
     synergys
     ) {
-        if whence -p $prog >& /dev/null &&
-           ! pgrep $prog[0,15] >& /dev/null
+    if whence -p $prog >> ~/.logs/wmlogin.log 2>&1  &&
+           ! pgrep $prog[0,15] >> ~/.logs/wmlogin.log 2>&1
         then
             $prog &!
             # echo started $prog >&2
-	          pgrep $prog[0,15]  >& /dev/null
+	          pgrep $prog[0,15] >> ~/.logs/wmlogin.log 2>&1
             sleep 1s;
         else
-            print Not starting $prog  >& /dev/null
+            print Not starting $prog >> ~/.logs/wmlogin.log 2>&1
         fi
     }
 
-if whence -p keynav >& /dev/null &&
-   ! pgrep keynav >& /dev/null
+if whence -p keynav >> ~/.logs/wmlogin.log 2>&1  &&
+       ! pgrep keynav >> ~/.logs/wmlogin.log 2>&1
 then
-    keynav  >& /dev/null &!
+    keynav >> ~/.logs/wmlogin.log 2>&1  &!
 fi
 
 # if whence -p skyped >& /dev/null &&
@@ -260,7 +260,7 @@ fi
 
 # Android LinConnect
 if [ -x ~/.linconnect/LinConnectServer/update.sh ] &&
-    ! pgrep linconnect_serv >& /dev/null
+       ! pgrep linconnect_serv >> ~/.logs/wmlogin.log 2>&1
 then
     # https://github.com/hauckwill/linconnect-server
     # https://play.google.com/store/apps/details?id=com.willhauck.linconnectclient

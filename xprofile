@@ -2,10 +2,10 @@
 
 export __NO_SSH_AGENT_REQUIRED=yes
 for startup in sh login x ; do
-    [ -r ~/.rsetup/$startup/env ] && . ~/.rsetup/$startup/env
+    [ -r ~/.rsetup/$startup/env ] && . ~/.rsetup/$startup/env >> ~/.xsession-errors 2>&1
 done
 unset __NO_SSH_AGENT_REQUIRED
 
 for startup in sh login x ; do
-    [ -r ~/.rsetup/$startup/run ] && ~/.rsetup/$startup/run
+    [ -r ~/.rsetup/$startup/run ] && ~/.rsetup/$startup/run >> ~/.xsession-errors 2>&1
 done

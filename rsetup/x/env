@@ -13,7 +13,7 @@ if [ "x${HOST}" != "x" ] ; then
     fi
 
     if [ -r ~/.rsetup/${__comp}/env.d/${HOST} ] ; then
-        . ~/.rsetup/${__comp}/env.d/${HOST}
+        . ~/.rsetup/${__comp}/env.d/${HOST} >> ~/.xsession-errors 2>&1
     fi
 
     unset __comp
@@ -27,7 +27,7 @@ fi
 # eval "`gnome-keyring-daemon`"
 export GNOME_KEYRING_PID
 export GNOME_KEYRING_SOCKET
-[ -r ~/.rsetup/x/env.d/${HOST} ] && . ~/.rsetup/x/env.d/${HOST}
+[ -r ~/.rsetup/x/env.d/${HOST} ] && . ~/.rsetup/x/env.d/${HOST} >> ~/.xsession-errors 2>&1
 #}}
 
 EDITOR=general-xeditor

@@ -1,8 +1,8 @@
 # -*- mode: shell-script; -*-
 
 
-EDITOR='emacsclient -t -c -f ~/.emacs.d/server/general '
-VISUAL='emacsclient -t -c -f ~/.emacs.d/server/general '
+EDITOR=$HOME/bin/general-editor
+VISUAL=$HOME/bin/general-editor
 
 if [ "x${REMOTEEDITORHOST}" != "x" ]
 then

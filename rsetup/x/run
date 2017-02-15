@@ -15,7 +15,6 @@ if [ "x${HOST}" != "x" ]
 then
     __comp=x
 
-
     if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
         rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
     fi
@@ -25,7 +24,7 @@ then
     fi
 
     if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
-        ~/.rsetup/${__comp}/run.d/${HOST}
+        ~/.rsetup/${__comp}/run.d/${HOST} >> ~/.xsession-errors 2>&1
     fi
 
     unset __comp
@@ -34,23 +33,23 @@ else
 fi
 
 
-if whence -p xrdb  >&/dev/null
+if whence -p xrdb >> ~/.xsession-errors 2>&1
 then
-    m4 -I ~/.setup/m4 -I ~/.osetup/lib.d/m4.d -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init 2>/dev/null | xrdb -merge -  >&/dev/null
+    m4 -I ~/.setup/m4 -I ~/.osetup/lib.d/m4.d -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init 2>/dev/null | xrdb -merge - >> ~/.xsession-errors 2>&1
 fi
 
-if whence -p xmodmap  >/dev/null 2>&1
+if whence -p xmodmap >> ~/.xsession-errors 2>&1
 then
-    xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >&/dev/null
+    xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >> ~/.xsession-errors 2>&1
 fi
 
 # show me what is happening...
 ## http://askubuntu.com/a/481529
-xterm -fullscreen -hold -maximized -e "ish -s bash -- timeout -k 120 70 tail -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/autoconfig/startup/$EMACS_SERVER_NAME/startup.log"  >&/dev/null &!
+xterm -fullscreen -hold -maximized -e "ish -s bash -- timeout -k 120 70 tail -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/autoconfig/startup/$EMACS_SERVER_NAME/startup.log" >> ~/.xsession-errors 2>&1 &!
 
 if whence xte
 then
-    xte <<'EOF' >&/dev/null
+    xte <<'EOF' >> ~/.xsession-errors 2>&1
 mousemove 42 42
 EOF
 fi
@@ -66,14 +65,14 @@ emacs_daemon_start
 
 if false
 then
-    ~/bin/syncimap -r >& /dev/null               # it only get secinfo from x keyring; enable
+    ~/bin/syncimap -r >> ~/.xsession-errors 2>&1               # it only get secinfo from x keyring; enable
 fi
 
-~/bin/syncimap -d  >& /dev/null               # it only get secinfo from x keyring; disable
+~/bin/syncimap -d >> ~/.xsession-errors 2>&1               # it only get secinfo from x keyring; disable
 
-if whence -p xhost >&/dev/null
+if whence -p xhost >> ~/.xsession-errors 2>&1
 then
-    xhost +local:mpd
+    xhost +local:mpd >> ~/.xsession-errors 2>&1
 fi
 
 
@@ -98,13 +97,13 @@ if [ $DISPLAY ] ; then
     # xmodmap ~/.xmodmaprc	# excellent, why i was not knowing it before.
 
     # unset Caps Lock
-    python -c 'from ctypes import *; X11 = cdll.LoadLibrary("libX11.so.6"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'
+    python -c 'from ctypes import *; X11 = cdll.LoadLibrary("libX11.so.6"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'  >> ~/.xsession-errors 2>&1
 
     if whence -p xmodmap ; then
         if [ -e ~/.xmodmaprc  ] ; then
-            xmodmap ~/.xmodmaprc >&/dev/null
+            xmodmap ~/.xmodmaprc >&/dev/null >> ~/.xsession-errors 2>&1
         else
-            xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >&/dev/null
+            xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >&/dev/null >> ~/.xsession-errors 2>&1
         fi
     fi
 
@@ -118,25 +117,25 @@ if [ $DISPLAY ] ; then
 
     # DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
 
-     if whence -p conky >& /dev/null &&
-            ! pgrep conky >& /dev/null
+    if whence -p conky >> ~/.xsession-errors 2>&1 &&
+           ! pgrep conky >> ~/.xsession-errors 2>&1
      then
-         conky  >&/dev/null &!
+         conky >> ~/.xsession-errors 2>&1 &!
      fi
 
-     if whence synclient >& /dev/null &&
-            ! pgrep synclient >& /dev/null
+    if whence synclient >> ~/.xsession-errors 2>&1 &&
+           ! pgrep synclient >> ~/.xsession-errors 2>&1
      then
-         synclient  TapButton1=1 >& /dev/null
+         synclient  TapButton1=1 >> ~/.xsession-errors 2>&1
      fi
 
     # whence -p xmodmap &&
     # xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
 
     # stop this bell.
-     if whence -p xset  >/dev/null 2>&1
+    if whence -p xset >> ~/.xsession-errors 2>&1
      then
-         xset b off  >/dev/null 2>&1 # peace
+         xset b off >> ~/.xsession-errors 2>&1 # peace
      fi
 
     # set fonts
@@ -147,11 +146,11 @@ if [ $DISPLAY ] ; then
      fi
 
 
-    if whence -p osdsh >& /dev/null &&
-           ! pgrep osdsh >& /dev/null
-    then
-        osdsh -n 10  >/dev/null 2>&1 &!
-    fi
+     if whence -p osdsh >> ~/.xsession-errors 2>&1 &&
+            ! pgrep osdsh >> ~/.xsession-errors 2>&1
+     then
+         osdsh -n 10 >> ~/.xsession-errors 2>&1 &!
+     fi
 
 
 
@@ -167,9 +166,9 @@ then
     command mv ~/.stumpwm.d/debug-output.log ~/.stumpwm.d/debug-output.0.log
 fi
 
-if whence -c bingwallpaper >& /dev/null
+if whence -c bingwallpaper >> ~/.xsession-errors 2>&1
 then
-    bingwallpaper -d 0  >/dev/null 2>&1
+    bingwallpaper -d 0 >> ~/.xsession-errors 2>&1
 fi
 
 # gconftool -s /apps/mail-notification/commands/new-mail/command "$EDITOR -e '(gnus)'"
@@ -192,7 +191,7 @@ then
 
     if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ]
     then
-        ~/.rsetup/${__comp}/run.d/${HOST}  >/dev/null 2>&1
+        ~/.rsetup/${__comp}/run.d/${HOST} >> ~/.xsession-errors 2>&1
     fi
 
     unset __comp

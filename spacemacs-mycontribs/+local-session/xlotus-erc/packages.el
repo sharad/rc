@@ -37,6 +37,13 @@
 (defconst lotus-erc-packages
   '(
     (PACKAGE :location local)
+    erc
+    erc-join
+    erc-services
+    erc-nick-notify
+    h4x0r
+    bitlbee
+    opasswds
     )
   "The list of Lisp packages required by the lotus-erc layer.
 

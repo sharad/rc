@@ -129,9 +129,35 @@ function enable_mail_sync()
 
 function get_security_info()
 {
+ echo
+}
+
+function session_intrusive_run()
+{
     mount_private_dir
-    sleep 1s
     enable_mail_sync
+}
+
+function xsession_intrusive_run()
+{
+    if type session_intrusive_run >/dev/null 2>&1
+    then
+        session_intrusive_run
+    fi
+
+    for prog in mail-notification
+    do
+        if whence -p $prog >& /dev/null &&
+               ! pgrep $prog >> /dev/null 2>&1
+        then
+            $prog &!
+            # echo started $prog >&2
+	          pgrep $prog  >> /dev/null 2>&1
+            sleep 1s;
+        else
+            print Not starting $prog  >> /dev/null 2>&1
+        fi
+    done
 }
 
 if [ "x${HOST}" != "x" ] ; then
