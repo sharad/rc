@@ -35,10 +35,19 @@
             '("nnimap+localhost:nnimap+localhost:Gmail.INBOX"))))
 
 (when (xrequire 'gnus-notify+)
+  (defun gnus-notify+-around (orig-fun &rest args)
+    (when gnus-current-startup-file
+      (apply orig-fun args)))
+  (advice-add 'gnus-notify+ :around #'gnus-notify+-around)
   ;; adding (modeline-notify t) to group for gnus-notify+
   (set-or-nconc gnus-parameters           ;check for set-or-nconc in macros.el
                 `((,(mapconcat 'identity gnus-mst-notify-groups "\\|")
-                    '(modeline-notify t)))))
+                    '(modeline-notify t))))
+
+  ;; (add-hook 'gnus-summary-exit-hook 'gnus-notify+)
+  ;; (add-hook 'gnus-group-catchup-group-hook 'gnus-notify+)
+  ;; (add-hook 'mail-notify-pre-hook 'gnus-notify+)
+  )
 
 ;; (macroexpand `(set-or-nconc xgnus-parameters           ;check for set-or-nconc in macros.el
 ;;                             ( ,(mapconcat 'identity gnus-mst-notify-groups "|")

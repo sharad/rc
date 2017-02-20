@@ -1,0 +1,14 @@
+
+
+defshell /bin/zsh
+setenv SHELL /bin/zsh
+escape 
+vbell off # always
+backtick 0 30 30 sh -c 'screen -ls | grep --color=no -o "$PPID[^[:space:]]*"'
+hardstatus alwayslastline
+hardstatus string '%{= kC}|%`:%h|%=%{= kG}[%{G}%H%{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]'
+#hardstatus alwayslastline "%= %3n %t%? [%h]%? %="
+caption always "%= %-w%L>%{= BW}%n*%t%{-}%52<%+w %L="
+# http://aperiodic.net/screen/commands:idle
+# idle 600
+idle 0

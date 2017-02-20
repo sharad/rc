@@ -52,37 +52,16 @@ then
     if [ "$UID" != "0" ]        # start at least one screen what ever be the case.
     then
         if ! screen -x $SCREEN4KEYCHAIN -ls 2>/dev/null |
-            sed -n '/^There/,$p'                |
-            sed -n 2p                           |
-            awk '{ print $1 }'                  |
-            grep $SCREEN4KEYCHAIN 2>&1 > /dev/null
+           sed -n '/^There/,$p'                         |
+           sed -n 2p                                    |
+           awk '{ print $1 }'                           |
+           grep $SCREEN4KEYCHAIN 2>&1 > /dev/null
         then
-            if whence -p tempfile 2>&1 >/dev/null
+            if [ -r ~/.screenrc.d/keychain ]
             then
-                screentmprc=$(tempfile)
-            else
-                screentmprc=${TMP:-/tmp}/screenrc$$$RANDOM
-            fi
-            cat <<-'EOF' > $screentmprc
-		defshell /bin/zsh
-		setenv SHELL /bin/zsh
-		escape 
-		vbell off # always
-		backtick 0 30 30 sh -c 'screen -ls | grep --color=no -o "$PPID[^[:space:]]*"'
-		hardstatus alwayslastline
-		hardstatus string '%{= kC}|%`:%h|%=%{= kG}[%{G}%H%{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]'
-		#hardstatus alwayslastline "%= %3n %t%? [%h]%? %="
-		caption always "%= %-w%L>%{= BW}%n*%t%{-}%52<%+w %L="
-		# http://aperiodic.net/screen/commands:idle
-		# idle 600
-		idle 0
-		EOF
-
-            screen -S $SCREEN4KEYCHAIN -c $screentmprc -d -m
-            rm -f $screentmprc
-        # else
-        #      notify-send "Screen check" "$(screen -x $SCREEN4KEYCHAIN -ls)"
-        fi                  # if screen -x $SCREEN4KEYCHAIN -ls
+                screen -S $SCREEN4KEYCHAIN -c ~/.screenrc.d/keychain -d -m
+            fi  # if [ -r ~/.screenrc.d/keychain ]
+        fi      # if screen -x $SCREEN4KEYCHAIN -ls
     # else
     #     : notify-send UID check
     fi
