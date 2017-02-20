@@ -107,59 +107,6 @@ function emacs_daemon_start()
     fi # if whence -p emacs >& /dev/null || ! pgrep emacs >& /dev/null
 }
 
-function mount_private_dir()
-{
-    if [ -r ~/.ecryptfs/Private.mnt ] &&
-           [ -d "$(cat ~/.ecryptfs/Private.mnt)" ] &&
-           [ -x $HOME/bin/ecryptfs-mount-private ] &&
-           ! mount | grep $(cat ~/.ecryptfs/Private.mnt) >/dev/null 2>&1
-    then
-        # if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
-        #     [ -x $HOME/bin/ecryptfs-mount-private ] &&
-        #         timeout 7 $HOME/bin/ecryptfs-mount-private >&/dev/null
-        # fi
-        timeout 7 $HOME/bin/ecryptfs-mount-private >&/dev/null
-    fi
-}
-
-function enable_mail_sync()
-{
-    ~/bin/syncimap -r               # it only get secinfo from x keyring; enable
-}
-
-function get_security_info()
-{
- echo
-}
-
-function session_intrusive_run()
-{
-    mount_private_dir
-    enable_mail_sync
-}
-
-function xsession_intrusive_run()
-{
-    if type session_intrusive_run >/dev/null 2>&1
-    then
-        session_intrusive_run
-    fi
-
-    for prog in mail-notification
-    do
-        if whence -p $prog >& /dev/null &&
-               ! pgrep $prog >> /dev/null 2>&1
-        then
-            $prog &!
-            # echo started $prog >&2
-	          pgrep $prog  >> /dev/null 2>&1
-            sleep 1s;
-        else
-            print Not starting $prog  >> /dev/null 2>&1
-        fi
-    done
-}
-
 if [ "x${HOST}" != "x" ] ; then
   __comp=sh
 

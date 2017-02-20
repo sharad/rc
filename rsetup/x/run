@@ -54,7 +54,7 @@ mousemove 42 42
 EOF
 fi
 
-emacs_daemon_start
+emacs_daemon_start >/dev/null 2>&1 # already going into ~/.emacs.d/.cache/autoconfig/startup/$server/startup.log
 
 # if which $HOME/bin/ecryptfs-mount-private >/dev/null 2>&1
 # then

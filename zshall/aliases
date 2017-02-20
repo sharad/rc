@@ -57,74 +57,73 @@
 	alias oo=openoffice.org-2.0
 	alias rmail='command mutt -y -R'
 	alias tdrun='command ssh -qX td-cm-req@sunm21'
-        alias xlock='_reptime=$REPORTTIME; unset REPORTTIME; xlock ; REPORTTIME=10 ; REPORTTIME=$_reptime'
-        alias gtalk=empathy
-        # alias which='alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde'
-        alias rem='command rem -aqh | less -REX'
-        alias remind='command remind -aqh'
-        alias fetchmail='builtin :'
-        alias care='exec screen'
-        alias music='mp3blaster    ~/Music/{misc,ASHA.KISHORE/*}/*'
-        alias msuspend='pmi action suspend '
-        alias mhibernate='pmi action hibernate'
-        # GNUEmacs aliases
-        alias zz='python   /usr/lib/command-not-found  -- '
-        alias emacs='emacsclient -t'
-        alias e='emacsclient -t'
-        alias edit='emacsclient -t'
-        alias xemacs='emacsclient -n -d $DISPLAY'
-        alias xe='emacsclient -n -d $DISPLAY'
-        alias xedit='emacsclient -n -d $DISPLAY -f ~/.emacs.d/server/general'
-        # alias plan='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp nil)'\'''
-        # alias noteit='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp 4)'\'''
-        # alias onote='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp 1)'\'' '
-        # alias mynote='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp 2)'\'''
-        # alias agenda='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'\''org-agenda-mode-hook  '\''\'\'\''delete-other-windows)'\'' --eval '\''(org-agenda-list)'\''  --eval '\''(toggle-read-only)'\'''
-        alias plan='emacsclient  -nw -t --eval '\''(oremp nil)'\'''
-        alias noteit='emacsclient  -nw -t --eval '\''(oremp 4)'\'''
-        alias onote='emacsclient  -nw -t --eval '\''(oremp 1)'\'' '
-        alias mynote='emacsclient  -nw -t --eval '\''(oremp 2)'\'''
-        alias agenda='emacsclient  -nw -t --eval '\''(org-agenda-list)'\''  --eval '\''(toggle-read-only)'\'''
-        alias gnus='emacsclient  -nw -t --eval '\''(gnus)'\'''
-        alias bbdb='emacsclient  -nw -t --eval '\''(bbdb)'\'''
-        alias vncviewer='vncviewer -shared'
-        alias mancolor="TERMINFO=~/.terminfo/ LESS=C TERM=mostlike PAGER=less man"
-        alias last='last -awFx'
+  alias xlock='_reptime=$REPORTTIME; unset REPORTTIME; xlock ; REPORTTIME=10 ; REPORTTIME=$_reptime'
+  alias gtalk=empathy
+  # alias which='alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde'
+  alias rem='command rem -aqh | less -REX'
+  alias remind='command remind -aqh'
+  alias fetchmail='builtin :'
+  alias care='exec screen'
+  alias music='mp3blaster    ~/Music/{misc,ASHA.KISHORE/*}/*'
+  alias msuspend='pmi action suspend '
+  alias mhibernate='pmi action hibernate'
+  # GNUEmacs aliases
+  alias zz='python   /usr/lib/command-not-found  -- '
+  alias emacs='emacsclient -t'
+  alias e='emacsclient -t'
+  alias edit='emacsclient -t'
+  alias xemacs='emacsclient -n -d $DISPLAY'
+  alias xe='emacsclient -n -d $DISPLAY'
+  alias xedit='emacsclient -n -d $DISPLAY -f ~/.emacs.d/server/general'
+  # alias plan='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp nil)'\'''
+  # alias noteit='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp 4)'\'''
+  # alias onote='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp 1)'\'' '
+  # alias mynote='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'''\''remember-mode-hook  '\''\'\'''\''delete-other-windows)'\'' --eval '\''(oremp 2)'\'''
+  # alias agenda='emacsclient  -nw -t --eval '\''(add-hook '\''\'\'\''org-agenda-mode-hook  '\''\'\'\''delete-other-windows)'\'' --eval '\''(org-agenda-list)'\''  --eval '\''(toggle-read-only)'\'''
+  alias plan='emacsclient  -nw -t --eval '\''(oremp nil)'\'''
+  alias noteit='emacsclient  -nw -t --eval '\''(oremp 4)'\'''
+  alias onote='emacsclient  -nw -t --eval '\''(oremp 1)'\'' '
+  alias mynote='emacsclient  -nw -t --eval '\''(oremp 2)'\'''
+  alias agenda='emacsclient  -nw -t --eval '\''(org-agenda-list)'\''  --eval '\''(toggle-read-only)'\'''
+  alias gnus='emacsclient  -nw -t --eval '\''(gnus)'\'''
+  alias bbdb='emacsclient  -nw -t --eval '\''(bbdb)'\'''
+  alias vncviewer='vncviewer -shared'
+  alias mancolor="TERMINFO=~/.terminfo/ LESS=C TERM=mostlike PAGER=less man"
+  alias last='last -awFx'
 
-        #volume
-        alias palsactrl=pavucontrol
+  #volume
+  alias palsactrl=pavucontrol
 
-        # netcat alias
-        alias nsearch='sudo netstat -lnp | grep :6600'
+  # netcat alias
+  alias nsearch='sudo netstat -lnp | grep :6600'
 
-        if [ "${SSH_AUTH_SOCK}x" = "x" ]; then
-            # if we dont have an auth sock, dont use pub key identification
-            alias ssh='command ssh -qX -o PubkeyAuthentication=no'
-            alias scp='command scp -q  -o PubkeyAuthentication=no'
-            alias noninteractive-ssh='command ssh -qX -o PubkeyAuthentication=no -o VisualHostKey=yes'
-            alias noninteractive-scp='command scp -q  -o PubkeyAuthentication=no -o VisualHostKey=yes'
-        else
-            # We do have an auth sock, use auth forwarding
-            alias ssh='command ssh -qXA'
-            alias scp='command scp -q'
-            alias noninteractive-ssh='command ssh -qXA -o VisualHostKey=yes'
-            alias noninteractive-scp='command scp -q -o VisualHostKey=yes'
-        fi
+  if [ "${SSH_AUTH_SOCK}x" = "x" ]; then
+      # if we dont have an auth sock, dont use pub key identification
+      alias ssh='command ssh -qX -o PubkeyAuthentication=no'
+      alias scp='command scp -3 -q  -o PubkeyAuthentication=no'
+      alias noninteractive-ssh='command ssh -qX -o PubkeyAuthentication=no -o VisualHostKey=yes'
+      alias noninteractive-scp='command scp -q  -o PubkeyAuthentication=no -o VisualHostKey=yes'
+  else
+      # We do have an auth sock, use auth forwarding
+      alias ssh='command ssh -qXA'
+      alias scp='command scp -3 -q'
+      alias noninteractive-ssh='command ssh -qXA -o VisualHostKey=yes'
+      alias noninteractive-scp='command scp -q -o VisualHostKey=yes'
+  fi
 
 
-        #video
-        alias vlc='vlc --play-and-exit -f'
+  #video
+  alias vlc='vlc --play-and-exit -f'
 
-        ## XML aliases
-        alias xml=xmlstarlet
-        alias makeitxhtml='tidy -asxml 2>/dev/null | xmllint - | sed -e '\''s/&ndash;//g'\'' -e '\''s|xmlns="http://www.w3.org/1999/xhtml"||'\'' '
+  ## XML aliases
+  alias xml=xmlstarlet
+  alias makeitxhtml='tidy -asxml 2>/dev/null | xmllint - | sed -e '\''s/&ndash;//g'\'' -e '\''s|xmlns="http://www.w3.org/1999/xhtml"||'\'' '
 
-        ## ps
-        alias psfull='ps -H f '
-        alias pslongfull='ps -H lf '
-        alias psfullall='psfull -e -A'
-        alias pslongfullall='pslongfull -e -A'
-
+  ## ps
+  alias psfull='ps -H f '
+  alias pslongfull='ps -H lf '
+  alias psfullall='psfull -e -A'
+  alias pslongfullall='pslongfull -e -A'
 
 
 autoload -U is-at-least

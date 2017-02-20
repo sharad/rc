@@ -176,9 +176,9 @@ function state_unlocked () {
         whence stumpish >&/dev/null && timeout 2 stumpish pull-hidden-other &!
     fi
     wscreenlockoff
-    if type xsession_intrusive_run >/dev/null 2>&1
+    if whence -p ~/bin/xintrusion >/dev/null 2>&1
     then
-        xsession_intrusive_run
+        ~/bin/xintrusion
     fi
 }
 
