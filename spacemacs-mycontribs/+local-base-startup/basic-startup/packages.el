@@ -36,6 +36,9 @@
 
 (defconst basic-startup-packages
   '(
+    (utils-custom :location local)
+    (init-setup :location local)
+    (startup-hooks :location local)
     (sessions-mgr :location local)
     elscreen
     )
@@ -66,52 +69,89 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+(defun basic-utils/init-init-setup ()
+  (use-package init-setup
+      ;; :ensure t
+      :config
+      (progn
+        )))
+
+(defun basic-utils/init-utils-custom ()
+  (use-package utils-custom
+      ;; :ensure t
+      :config
+      (progn
+        )))
+
+(defun basic-utils/init-startup-hooks ()
+  (use-package startup-hooks
+      ;; :ensure t
+      :config
+      (progn
+        )))
+
 (defun basic-startup/init-sessions-mgr ()
   (use-package startup-hooks)
   (use-package sessions-mgr
+      ;; :ensure t
       :config
-    (add-hook
-     'sharad/enable-startup-interrupting-feature-hook
-     'frame-session-restore-hook-func
-     t)
+      (progn
+        (progn
+          (with-eval-after-load "utils-custom"
+            (setq session-mgr-utils-notify 'message-notify)))
+        (progn
+          ;; (add-hook
+          ;;  'sharad/enable-startup-interrupting-feature-hook
+          ;;  'frame-session-restore-hook-func
+          ;;  t)
 
-    (add-hook ;; 'after-init-hook
-     'sharad/enable-startup-interrupting-feature-hook
-     '(lambda ()
-        (run-at-time-or-now 7 'sharad/desktop-session-restore))))
+          ;; (add-hook ;; 'after-init-hook
+          ;;  'sharad/enable-startup-interrupting-feature-hook
+          ;;  '(lambda ()
+          ;;    (run-at-time-or-now 7 'sharad/desktop-session-restore)))
+
+          (with-eval-after-load "startup-hooks"
+            (add-hook
+             'sharad/enable-startup-interrupting-feature-hook
+             'frame-session-restore-hook-func
+             t)
+            (add-hook ;; 'after-init-hook
+             'sharad/enable-startup-interrupting-feature-hook
+             '(lambda ()
+               (run-at-time-or-now 7 'sharad/desktop-session-restore)))))))
 
   (use-package init-setup
-    :init
-    :config
-    (progn
-      (add-hook
-       'sharad/enable-login-session-interrupting-feature-hook
-       'set-dbus-session)
-      (add-hook
-       'sharad/enable-startup-interrupting-feature-hook
-       'set-dbus-session)
-
-      (add-hook 'emacs-startup-hook
-                '(lambda ()
-                   (message-notify "Emacs" "Loaded Completely :)")
-                   (message "\n\n\n\n")))))
-  )
+      ;; :ensure t
+      :config
+      (progn
+        (add-hook
+         'sharad/enable-login-session-interrupting-feature-hook
+         'set-dbus-session)
+        (add-hook
+         'sharad/enable-startup-interrupting-feature-hook
+         'set-dbus-session)
+        (with-eval-after-load "utils-custom"
+          (add-hook 'emacs-startup-hook
+                    '(lambda ()
+                      (message-notify "Emacs" "Loaded Completely :)")
+                      (message "\n\n\n\n")))))))
 
 (defun basic-utils/init-elscreen ()
   (use-package elscreen
-    :defer t
-    :config
-    (defun elscreen-move-right ()
-      (interactive)
-      (elscreen-next)
-      (elscreen-swap)
-      (elscreen-notify-screen-modification))
+      :defer t
+      :config
+      (progn
+        (defun elscreen-move-right ()
+          (interactive)
+          (elscreen-next)
+          (elscreen-swap)
+          (elscreen-notify-screen-modification))
 
-    (defun elscreen-move-left ()
-      (interactive)
-      (elscreen-previous)
-      (elscreen-swap)
-      ;; (elscreen-next)
-      (elscreen-notify-screen-modification))))
+        (defun elscreen-move-left ()
+          (interactive)
+          (elscreen-previous)
+          (elscreen-swap)
+          ;; (elscreen-next)
+          (elscreen-notify-screen-modification)))))
 
 ;;; packages.el ends here

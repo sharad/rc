@@ -7,6 +7,8 @@
 
 (defun spacemacs-dist-layers-select ()
   '(
+    javascript
+    markdown
     ;; ----------------------------------------------------------------
     ;; Example of useful layers you may want to use right away.
     ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -31,7 +33,6 @@
     elixir
     ;; osx
     html
-    javascript
     org
     colors
     editorconfig
@@ -54,6 +55,16 @@
        (remove-if
         'file-directory-p
         (directory-files layer-dir nil "^lotus-[a-zA-Z]+"))))))
+
+
+(defun cleanup-tty-process ()
+  (interactive)
+ (let ((tty-processes
+        (remove-if-not
+         'process-tty-name
+                       (process-list))))
+   (dolist (tp tty-processes)
+     (kill-process tp))))
 
 (defun elscreen-keymap-setup ()
   (progn ;; "Keybinding: Elscreen"
@@ -91,6 +102,7 @@
   (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
   (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path)
 
+  (require 'basic-utils)
 
   (defvar *emacs-in-init* t "Emacs is in init.")
   (defvar user-emacs-directory "~/.emacs.d")

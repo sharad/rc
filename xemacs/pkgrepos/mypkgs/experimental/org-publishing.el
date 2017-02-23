@@ -29,7 +29,8 @@
 (require 'cl)
 (require 'publishing)
 (require 'org)
-(require 'org-compact)
+(when (featurep 'org-compact)
+ (require 'org-compact))
 (require 'ox-publish)
 
 (defvar *org-top-dir*           (expand-file-name "contents/org" *created-content-dir*))

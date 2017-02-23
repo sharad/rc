@@ -67,6 +67,14 @@
             (concat title ": "
                     (apply 'message fmt args))))))
 
+(defvar session-mgr-utils-notify nil)
+
+(unless (null 'session-mgr-utils-notify)
+  (setq session-mgr-utils-notify
+        (lambda (title fmt &rest args)
+          (concat title ": "
+                  (apply 'message fmt args)))))
+
 ;; (sharad/elscreen-get-screen-to-name-alist)
 (with-eval-after-load "elscreen"
   (defun sharad/elscreen-get-screen-to-name-alist ()

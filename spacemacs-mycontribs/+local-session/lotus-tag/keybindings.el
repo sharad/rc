@@ -1,5 +1,5 @@
 
-(when (configuration-layer/gtags-usedp 'gtags)
+(when (configuration-layer/package-usedp 'gtags)
   (defun spacemacs/gtags-enable ()
     (progn ;; "Keybinding: Gtags"
       ;; ref: http://www.emacswiki.org/cgi-bin/wiki/EmacsTags
@@ -12,7 +12,7 @@
       ;; to use M-RET instead.
       (global-set-key (kbd "M-<return>") 'complete-tag)))
 
-  (defun spacemacs/gtags-disable ()
+  (defun spacemacs/package-disable ()
     (progn ;; "Keybinding: Gtags"
       (progn ;; "Keybinding: Gtags"
         ;; ref: http://www.emacswiki.org/cgi-bin/wiki/EmacsTags
@@ -25,4 +25,4 @@
         ;; to use M-RET instead.
         (global-unset-key (kbd "M-<return>")))))
 
-  (spacemacs/GTAGS-enable))
+  (spacemacs/gtags-enable))

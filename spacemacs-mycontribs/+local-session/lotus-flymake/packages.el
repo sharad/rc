@@ -37,6 +37,7 @@
 (defconst lotus-flymake-packages
   '(
     flymake
+    flymake-cursor
     )
   "The list of Lisp packages required by the lotus-flymake layer.
 
@@ -83,7 +84,11 @@ Each entry is either:
            ;; https://github.com/illusori/emacs-flymake/issues/1
            t)
 
-          (deh-require-maybe warnings
+          (use-package warnings
+            :defer t
+            :config
+            (progn
+           (progn
             ;; Overwrite flymake-display-warning so that no annoying dialog box is
             ;; used.
 
@@ -97,11 +102,7 @@ Each entry is either:
             ;; what not. If you prefer to recieve the warnings in the mini-buffer, use:
             (defun flymake-display-warning (warning)
               "Display a warning to the user, using lwarn"
-              (message warning)))
-
-          (deh-require-maybe flymake-cursor
-            ;; http://www.emacswiki.org/emacs/flymake-cursor.el
-            )
+              (message warning)))))
 
 
           ;;;; general init-cleanup and helper routines
@@ -120,14 +121,11 @@ copy."
                 (flymake-create-temp-inplace file-name prefix)
                 (flymake-create-temp-intemp file-name prefix)))
 
-          (eval-when-compile
-            '(progn
-              (require 'session-config)
-              (deh-require-maybe session-config
+          (with-eval-after-load "sessions-mgr"
+            (progn
                 (add-to-list
                  'desktop-minor-mode-handlers
-                 (cons 'flymake-mode (desktop-get-readonly-proof-mode flymake-mode))))))
-          (require 'session-config)
+                 (cons 'flymake-mode (desktop-get-readonly-proof-mode flymake-mode)))))
 
           ;; (deh-require-maybe session-config
           ;;   (add-to-list 'desktop-minor-mode-handlers (cons 'flymake-mode
@@ -136,5 +134,15 @@ copy."
 
 
         )))
+
+
+(defun lotus-flymake/init-flymake-cursor ()
+  ;; http://www.emacswiki.org/emacs/flymake-cursor.el
+  (use-package flymake-cursor
+    :defer t
+    :config
+    (progn
+      (progn
+        ))))
 
 ;;; packages.el ends here

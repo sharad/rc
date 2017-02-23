@@ -3,9 +3,9 @@
 ;; Copyright 2006 Ye Wenbin
 ;;
 ;; Author: wenbinye@163.com
-;; Time-stamp: <2014-02-26 12:59:21 s>
+;; Time-stamp: <Ye Wenbin 2006-10-15 18:35:43>
 ;; Version: $Id: list-process-mode.el,v 0.0 <2006-10-15 17:13:28> ywb Exp $
-;; Keywords:
+;; Keywords: 
 ;; X-URL: not distributed yet
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 
 ;;; Commentary:
 
-;;
+;; 
 
 ;; Put this file into your load-path and the following into your ~/.emacs:
 ;;   (autoload "list-processes+" 'list-processes+

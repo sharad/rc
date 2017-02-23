@@ -32,14 +32,6 @@ values."
    dotspacemacs-configuration-layers
    '(
      javascript
-     javascript
-     javascript
-     javascript
-     javascript
-     javascript
-     javascript
-     javascript
-     javascript
      markdown
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
