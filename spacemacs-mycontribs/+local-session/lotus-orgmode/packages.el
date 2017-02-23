@@ -195,14 +195,15 @@ Each entry is either:
           (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
           ;; see key binding in binding.el
 
-          (defun gtd ()
-            (interactive)
-            (find-file
-             (expand-file-name
-              "office"
-              (org-publish-get-attribute "notes" "org" :base-directory)))
-            ;;(org-show-todo-tree 4)
-            ))
+          (with-eval-after-load "org-publishing"
+            (defun gtd ()
+              (interactive)
+              (find-file
+               (expand-file-name
+                "office"
+                (org-publish-get-attribute "notes" "org" :base-directory)))
+              ;;(org-show-todo-tree 4)
+              )))
 
         (progn
           (with-eval-after-load "appt"
@@ -308,6 +309,8 @@ Each entry is either:
       (progn
         (progn
 
+          (require 'file-utils)
+
           (setq org-agenda-custom-commands nil)
 
           (defun add-to-org-agenda-custom-commands (spec)
@@ -337,81 +340,87 @@ Each entry is either:
               (tags-todo "HOME")
               (tags-todo "COMPUTER"))))
 
-          (add-to-org-agenda-custom-commands
-           `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
-             "Meru Today" ;;  search ""
-             ((agenda ""
-                      ((org-agenda-span 'day)
-                       (org-agenda-prefix-format  "%e")))
-              (org-agenda-files
-               ',(directory-files-recursive
-                  (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
-                  "\\.org$" 2 "\\(rip\\|stage\\)"))
+          (with-eval-after-load "org-publishing"
+            (add-to-org-agenda-custom-commands
+             `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
+               "Meru Today" ;;  search ""
+               ((agenda ""
+                        ((org-agenda-span 'day)
+                         (org-agenda-prefix-format  "%e")))
+                (org-agenda-files
+                 ',(directory-files-recursive
+                    (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
+                    "\\.org$" 2 "\\(rip\\|stage\\)"))
 
-              ;; (org-agenda-sorting-strategy '(priority-up effort-down))
-              )
-             ;; ("~/computer.html")
-             ))
+                ;; (org-agenda-sorting-strategy '(priority-up effort-down))
+                )
+               ;; ("~/computer.html")
+               )))
 
-          (deh-section "Review Aganda" ;;http://stackoverflow.com/a/22440571
+          (progn ;; "Review Aganda" ;;http://stackoverflow.com/a/22440571
             ;; define "R" as the prefix key for reviewing what happened in various
             ;; time periods
             (add-to-org-agenda-custom-commands
              '("R" . "Review" ))
 
-            ;; Common settings for all reviews
-            (setq efs/org-agenda-review-settings
-                  `((org-agenda-files
-                     ',(directory-files-recursive
-                        (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
-                        "\\.org$" 2 "\\(rip\\|stage\\)"))
-                    (org-agenda-show-all-dates t)
-                    (org-agenda-start-with-log-mode t)
-                    (org-agenda-start-with-clockreport-mode t)
-                    (org-agenda-archives-mode t)
-                    ;; I don't care if an entry was archived
-                    (org-agenda-hide-tags-regexp
-                     (concat org-agenda-hide-tags-regexp
-                             "\\|ARCHIVE"))
-                    ))
-            ;; Show the agenda with the log turn on, the clock table show and
-            ;; archived entries shown.  These commands are all the same exept for
-            ;; the time period.
-            (add-to-org-agenda-custom-commands
-             `("Rw" "Week in review"
-                    agenda ""
-                    ;; agenda settings
-                    ,(append
-                      efs/org-agenda-review-settings
-                      '((org-agenda-span 'week)
-                        (org-agenda-start-on-weekday 0)
-                        (org-agenda-overriding-header "Week in Review"))
-                      )
-                    ("~/org/review/week.html")))
+            (with-eval-after-load "org-publishing"
+              ;; Common settings for all reviews
+              (setq efs/org-agenda-review-settings
+                    `((org-agenda-files
+                       ',(directory-files-recursive
+                          (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
+                          "\\.org$" 2 "\\(rip\\|stage\\)"))
+                      (org-agenda-show-all-dates t)
+                      (org-agenda-start-with-log-mode t)
+                      (org-agenda-start-with-clockreport-mode t)
+                      (org-agenda-archives-mode t)
+                      ;; I don't care if an entry was archived
+                      (org-agenda-hide-tags-regexp
+                       (concat org-agenda-hide-tags-regexp
+                               "\\|ARCHIVE"))
+                      ))
 
-            (add-to-org-agenda-custom-commands
-             `("Rd" "Day in review"
-                    agenda ""
-                    ;; agenda settings
-                    ,(append
-                      efs/org-agenda-review-settings
-                      '((org-agenda-span 'day)
-                        (org-agenda-overriding-header "Week in Review"))
-                      )
-                    ("~/org/review/day.html")))
 
-            (add-to-org-agenda-custom-commands
-             `("Rm" "Month in review"
-                    agenda ""
-                    ;; agenda settings
-                    ,(append
-                      efs/org-agenda-review-settings
-                      '((org-agenda-span 'month)
-                        (org-agenda-start-day "01")
-                        (org-read-date-prefer-future nil)
-                        (org-agenda-overriding-header "Month in Review"))
-                      )
-                    ("~/org/review/month.html"))))
+              ;; Show the agenda with the log turn on, the clock table show and
+              ;; archived entries shown.  These commands are all the same exept for
+              ;; the time period.
+              (add-to-org-agenda-custom-commands
+               `("Rw" "Week in review"
+                 agenda ""
+                 ;; agenda settings
+                 ,(append
+                   efs/org-agenda-review-settings
+                   '((org-agenda-span 'week)
+                     (org-agenda-start-on-weekday 0)
+                     (org-agenda-overriding-header "Week in Review"))
+                   )
+                 ("~/org/review/week.html")))
+
+              (add-to-org-agenda-custom-commands
+               `("Rd" "Day in review"
+                 agenda ""
+                 ;; agenda settings
+                 ,(append
+                   efs/org-agenda-review-settings
+                   '((org-agenda-span 'day)
+                     (org-agenda-overriding-header "Week in Review"))
+                   )
+                 ("~/org/review/day.html")))
+
+              (add-to-org-agenda-custom-commands
+               `("Rm" "Month in review"
+                 agenda ""
+                 ;; agenda settings
+                 ,(append
+                   efs/org-agenda-review-settings
+                   '((org-agenda-span 'month)
+                     (org-agenda-start-day "01")
+                     (org-read-date-prefer-future nil)
+                     (org-agenda-overriding-header "Month in Review"))
+                   )
+                 ("~/org/review/month.html"))))
+
+            )
 
           (setq
            org-columns-default-format-org "%25ITEM %TODO %3PRIORITY %TAGS"
@@ -655,15 +664,16 @@ Each entry is either:
       :config
       (progn
         (progn
-          (setq org-feed-alist
-                `(("mybugs"
-                   "https://bugzilla.merunetworks.com/buglist.cgi?bug_status=NEEDINFO&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&email1=spratap%40merunetworks.com&emailassigned_to1=1&emailreporter1=1&emailtype1=exact&list_id=169890&query_format=advanced&title=Bug%20List&ctype=atom"
-                   ,(expand-file-name "meru/mybugs.org" (org-publish-get-attribute "tasks" "org" :base-directory))
-                   "My Bugs")
-                  ("OSNews"
-                   "http://www.osnews.com/feeds"
-                   ,(expand-file-name "../rss/osnews.org" (org-publish-get-attribute "tasks" "org" :base-directory))
-                   "OSNews Entries")))))))
+          (with-eval-after-load "org-publishing"
+            (setq org-feed-alist
+                  `(("mybugs"
+                     "https://bugzilla.merunetworks.com/buglist.cgi?bug_status=NEEDINFO&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&email1=spratap%40merunetworks.com&emailassigned_to1=1&emailreporter1=1&emailtype1=exact&list_id=169890&query_format=advanced&title=Bug%20List&ctype=atom"
+                     ,(expand-file-name "meru/mybugs.org" (org-publish-get-attribute "tasks" "org" :base-directory))
+                     "My Bugs")
+                    ("OSNews"
+                     "http://www.osnews.com/feeds"
+                     ,(expand-file-name "../rss/osnews.org" (org-publish-get-attribute "tasks" "org" :base-directory))
+                     "OSNews Entries"))))))))
 
 (defun lotus-orgmode/init-org2rem ()
   (use-package org2rem

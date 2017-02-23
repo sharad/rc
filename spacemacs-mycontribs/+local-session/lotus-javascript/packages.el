@@ -407,9 +407,8 @@ Each entry is either:
         ;; (defun javascript-custom-setup ()
         ;;   (deh-require-maybe moz
         ;;     `(moz-minor-mode 1))
-        ;;
         ;;     )
-
+	)))
 
 
 

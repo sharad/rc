@@ -95,7 +95,7 @@
 ;; Here's an example value for this variable that might look nice if the background is dark:
 
 
-  (when (not (fboundp 'dotspacemacs/user-init))
+  (when t
     (face-spec-set 'my-group-face-1
                    '((t (:foreground "Red" :bold t))))
     (face-spec-set 'my-group-face-2

@@ -319,46 +319,57 @@ Each entry is either:
                     ;;              `((regexp-quote ,hostname) nil nil))
                     )
 
-                  (progn ;; "sudo using different user for tramp-default-proxies-alist"
-                    (dolist (user (mapcar 'car (tree-node *tramp-default-proxies-config* 'sudo :test 'equal)))
-                      (if (tree-node *tramp-default-proxies-config* 'sudo user :test 'equal)
-                          (add-to-list 'tramp-default-proxies-alist
-                                       `((regexp-or
-                                          ,@(mapcar
-                                             (lambda (host)
-                                               (concat "\\`" host))
-                                             (tree-node *tramp-default-proxies-config* 'sudo user :test 'equal)))
-                                         "\\`root\\'"
-                                         ,(concat "ssh:" user "@%h")))))
+                  (progn
+                    (use-package mime-def
+                        :defer t
+                        :config
+                        (progn
+                          (progn  ;; "sudo using different user for tramp-default-proxies-alist"
+                            (progn
+                              (dolist (user (mapcar 'car (tree-node *tramp-default-proxies-config* 'sudo :test 'equal)))
+                                (if (tree-node *tramp-default-proxies-config* 'sudo user :test 'equal)
+                                    (add-to-list 'tramp-default-proxies-alist
+                                                 `((regexp-or
+                                                    ,@(mapcar
+                                                       (lambda (host)
+                                                         (concat "\\`" host))
+                                                       (tree-node *tramp-default-proxies-config* 'sudo user :test 'equal)))
+                                                   "\\`root\\'"
+                                                   ,(concat "ssh:" user "@%h"))))))
 
-                    (when nil ;; e.g.
-                      (add-to-list 'tramp-default-proxies-alist
-                                   '("\\`host" "\\`root\\'" "/ssh:user@%h:"))
+                            (when nil ;; e.g.
+                              (add-to-list 'tramp-default-proxies-alist
+                                           '("\\`host" "\\`root\\'" "/ssh:user@%h:"))
 
-                      (add-to-list 'tramp-default-proxies-alist
-                                   '("\\`simba" "\\`root\\'" "/ssh:meru@%h:")))))
+                              (add-to-list 'tramp-default-proxies-alist
+                                           '("\\`simba" "\\`root\\'" "/ssh:meru@%h:"))))
+
+                          (progn ;; "section for tramp-default-user-alist"
+
+                            (progn ;; "default user setup for tramp-default-user-alist"
+                              (defvar *tramp-default-user-config* nil "tramp default user config")
+
+                              (dolist (method (mapcar 'car (tree-node *tramp-default-user-config* :test 'equal)))
+                                (dolist (user (mapcar 'car (tree-node *tramp-default-user-config* method :test 'equal)))
+                                  (if (tree-node *tramp-default-user-config* method user :test 'equal)
+                                      (add-to-list 'tramp-default-user-alist
+                                                   `(,method
+                                                     ,(apply 'regexp-or
+                                                             (mapcar
+                                                              (lambda (host)
+                                                                (concat "\\`" host))
+                                                              (tree-node *tramp-default-user-config* method user :test 'equal)))
+                                                     ,user)))))
+
+                              (when nil ;; e.g.
+                                (add-to-list 'tramp-default-proxies-alist
+                                             '("\\`method" "\\`host\\'" user) t))))))
 
 
-                (progn ;; "section for tramp-default-user-alist"
+                    ))
 
-                  (progn ;; "default user setup for tramp-default-user-alist"
-                    (defvar *tramp-default-user-config* nil "tramp default user config")
 
-                    (dolist (method (mapcar 'car (tree-node *tramp-default-user-config* :test 'equal)))
-                      (dolist (user (mapcar 'car (tree-node *tramp-default-user-config* method :test 'equal)))
-                        (if (tree-node *tramp-default-user-config* method user :test 'equal)
-                            (add-to-list 'tramp-default-user-alist
-                                         `(,method
-                                           ,(apply 'regexp-or
-                                                   (mapcar
-                                                    (lambda (host)
-                                                      (concat "\\`" host))
-                                                    (tree-node *tramp-default-user-config* method user :test 'equal)))
-                                           ,user)))))
-
-                    (when nil ;; e.g.
-                      (add-to-list 'tramp-default-proxies-alist
-                                   '("\\`method" "\\`host\\'" user) t)))))))
+                )))
 
 
 
