@@ -485,6 +485,9 @@ Each entry is either:
       :defer t
       :config
       (progn
+        (eval-when-compile
+          (require 'org-misc-utils))
+
         (progn
           (setq
            ;; org-timer-default-timer 25

@@ -31,28 +31,22 @@
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-orgclocktaskS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-orgclocktask-packages
   '(
     ;; (PACKAGE :location local)
-    ;; find-files-unified
     org-clock-utils
     org-clock-daysummary
     org-clocktable-alt
-    ;; org-context-clocking-api
     org-context-clocking
     org-misc-utils
     org-nagora-report
     org-timesheet
-    ;; remember-idle
-    ;; remember-unified
-    ;; tagging
     timesheet
     wakatime-mode
-    task-manager
-    )
+    task-manager)
   "The list of Lisp packages required by the lotus-orgclocktask layer.
 
 Each entry is either:
