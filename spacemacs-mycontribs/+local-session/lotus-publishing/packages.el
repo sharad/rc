@@ -45,6 +45,8 @@
     org-oddmuse
     wikirel
     oddmuse-curl
+    erin
+    twiki
     )
   "The list of Lisp packages required by the lotus-publishing layer.
 
@@ -1097,9 +1099,17 @@ FILE and any extensions that are in `muse-ignored-extensions'."
         (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
         (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))))
 
-(defun lotus-muse/init-PACKAGE ()
-  (use-package PACKAGE
+(defun lotus-muse/init-erin ()
+  (use-package erin
       :defer t
+      :config
+      (progn
+        )))
+
+(defun lotus-muse/init-twiki ()
+  (use-package twiki
+      :defer t
+      :mode ("\\.twiki$" . twiki-mode)
       :config
       (progn
         )))
@@ -1107,13 +1117,7 @@ FILE and any extensions that are in `muse-ignored-extensions'."
 (defun lotus-muse/init-PACKAGE ()
   (use-package PACKAGE
       :defer t
-      :config
-      (progn
-        )))
 
-(defun lotus-muse/init-PACKAGE ()
-  (use-package PACKAGE
-      :defer t
       :config
       (progn
         )))

@@ -314,7 +314,7 @@
 
          ;; http://www.gnu.org/software/emacs/manual/html_node/gnus/Posting-Styles.html
          (From
-          (let* ((default-email (concat myname " <" email-addr ">"))
+          (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
                  (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
                          (with-current-buffer gnus-article-buffer
                            (message-fetch-field "to"))))
@@ -351,7 +351,7 @@
          ;; ("From" ,email-addr)
 
          (From
-          (let* ((default-email (concat myname " <" email-addr ">"))
+          (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
                  (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
                          (with-current-buffer gnus-article-buffer
                            (message-fetch-field "to"))))
@@ -364,7 +364,7 @@
               default-email)))
 
          (address
-          (let* ((default-email (concat myname " <" email-addr ">"))
+          (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
                  (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
                          (with-current-buffer gnus-article-buffer
                            (message-fetch-field "to"))))
@@ -391,7 +391,7 @@
          ;; message is mail and this is not my system taj then do not save Gcc copy in sent-mail
          ("Posting-style" "message-mail-p")
          (From
-          (let* ((default-email (concat myname " <" email-addr ">"))
+          (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
                  (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
                          (with-current-buffer gnus-article-buffer
                            (message-fetch-field "to"))))
@@ -404,7 +404,7 @@
               default-email)))
 
          (address
-          (let* ((default-email (concat myname " <" email-addr ">"))
+          (let* ((default-email (concat myname " <" (if (member (system-name) office-host-names) office-email email-addr) ">"))
                  (to (if (get-buffer gnus-article-buffer) ; check it if it is current buffer
                          (with-current-buffer gnus-article-buffer
                            (message-fetch-field "to"))))
