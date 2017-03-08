@@ -584,6 +584,25 @@ timestamp has not changed (e.g. with ftp or on Windows)."
                              'ido-plain-directory))))))))
 
   ;; set bindings
-  (ffap-bindings))
+  ;; (ffap-bindings)
+  (add-to-list 'helm-for-files-preferred-list
+               'helm-c-source-ffap-line)
+  (add-to-list 'helm-for-files-preferred-list
+               'helm-c-source-ffap-guesser)
+
+  (setq old-helm-for-files-preferred-list helm-for-files-preferred-list)
+
+  (setq helm-for-files-preferred-list
+    '(helm-c-source-ffap-line
+      helm-c-source-ffap-guesser
+      helm-c-source-buffers-list
+      helm-c-source-recentf
+      helm-c-source-bookmarks
+      helm-c-source-file-cache
+      helm-c-source-files-in-current-dir+
+      helm-c-source-locate)
+  )
+  ;; (helm-source-buffers-list helm-source-recentf helm-source-bookmarks helm-source-file-cache helm-source-files-in-current-dir helm-source-locate)
+  )
 
 ;;; packages.el ends here
