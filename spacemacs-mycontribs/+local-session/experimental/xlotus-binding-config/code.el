@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; bindings
-;; Time-stamp: <2014-02-27 14:45:52 s>
+;; Time-stamp: <2017-03-08 21:46:23 s>
 ;;
 
 ;; (deh-section "Key binding utils"
@@ -193,28 +193,28 @@ and their terminal equivalents.")
 (deh-require-maybe redo                  ;redo
   (global-set-key-if-unbind (kbd "s-=") 'redo))
 
-(deh-section "Comment"
-  (global-set-key-if-unbind (kbd "H-c H-c") 'comment-or-uncomment-region))
+;; (deh-section "Comment"
+;;   (global-set-key-if-unbind (kbd "H-c H-c") 'comment-or-uncomment-region))
 
 
-(deh-section "Box"
-  ;; find in ~/.xemacs/session-start.d/art.el
-  (global-set-key-if-unbind (kbd "H-c q") 'boxes-create)
-  (global-set-key-if-unbind (kbd "H-c r") 'boxes-remove))
+;; (deh-section "Box"
+;;   ;; find in ~/.xemacs/session-start.d/art.el
+;;   (global-set-key-if-unbind (kbd "H-c q") 'boxes-create)
+;;   (global-set-key-if-unbind (kbd "H-c r") 'boxes-remove))
 
 
-(deh-section "hide"
-  ;; note S is for Shift
-  ;; note s is for Super
-  (global-set-key-if-unbind (kbd "s-c")   'hs-hide-all-but-at-point)
-  (global-set-key-if-unbind (kbd "s-b")   'hs-hide-block-at-point)
-  (global-set-key-if-unbind (kbd "s-u")   'hs-show-all))
+;; (deh-section "hide"
+;;   ;; note S is for Shift
+;;   ;; note s is for Super
+;;   (global-set-key-if-unbind (kbd "s-c")   'hs-hide-all-but-at-point)
+;;   (global-set-key-if-unbind (kbd "s-b")   'hs-hide-block-at-point)
+;;   (global-set-key-if-unbind (kbd "s-u")   'hs-show-all))
 
 ;; it is find-file-read-only, find some other key combination.
 
-(deh-require-maybe tramp
-  ;; see function key-bnding
-  (global-set-key-if-unbind (kbd "C-c C-r") 'find-alternative-file-with-sudo))
+;; (deh-require-maybe tramp
+;;   ;; see function key-bnding
+;;   (global-set-key-if-unbind (kbd "C-c C-r") 'find-alternative-file-with-sudo))
 
 
 (deh-require-maybe planner
@@ -274,13 +274,13 @@ and their terminal equivalents.")
   (global-set-key [C-kp-subtract] 'inline-arithmetic-subtract))
 
 
-(deh-require-maybe folding
-  (global-set-key-if-unbind (kbd "C-+") 'toggle-hiding)
-  (global-set-key-if-unbind (kbd "C-\\") 'toggle-selective-display))
+;; (deh-require-maybe folding
+;;   (global-set-key-if-unbind (kbd "C-+") 'toggle-hiding)
+;;   (global-set-key-if-unbind (kbd "C-\\") 'toggle-selective-display))
 
 
-(deh-require-maybe db-config
-  (global-set-key [f12] 'enter-db-mode))
+;; (deh-require-maybe db-config
+;;   (global-set-key [f12] 'enter-db-mode))
 
 (deh-require-maybe org
   ;; (global-set-key "\C-cl" 'org-store-link)
@@ -456,8 +456,8 @@ and their terminal equivalents.")
   (global-set-key "\C-x4t" 'transpose-buffers)
 
 
-(deh-require-maybe recentf
-  (global-set-key-if-unbind (kbd "C-c C-o") 'recentf-open-files))
+;; (deh-require-maybe recentf
+;;   (global-set-key-if-unbind (kbd "C-c C-o") 'recentf-open-files))
 
 ;; (deh-require-maybe recentf-buffer
 ;;   (global-set-key [?\C-c ?r ?f] 'recentf-open-files-in-simply-buffer))

@@ -1,15 +1,13 @@
 
-(when (configuration-layer/package-usedp 'PACKAGE)
-  (defun spacemacs/PACKAGE-enable ()
+(when (configuration-layer/package-usedp 'tramp)
+  (defun spacemacs/tramp-enable ()
     (progn ;; "Keybinding: Elscreen"
-      ;;{{ elscreen
-      (define-key evil-emacs-state-map (kbd "") nil)
-      ;; (global-unset-key [C-z])
-      (global-set-key [] 'elscreen-create)))
+      (global-set-key-if-unbind (kbd "C-c C-r") 'find-alternative-file-with-sudo)
+      (global-set-key-if-unbind (kbd "C-c C-r") 'sudo-edit-current-file)))
 
-  (defun spacemacs/PACKAGE-disable ()
+  (defun spacemacs/tramp-disable ()
     (progn ;; "Keybinding: Elscreen"
-      (define-key evil-emacs-state-map nil)
-      (global-unset-key [])))
+      (global-unset-key-if-bound (kbd "C-c C-r") 'find-alternative-file-with-sudo)
+      (global-unset-key-if-bound (kbd "C-c C-r") 'sudo-edit-current-file)))
 
-  (spacemacs/PACKAGE-enable))
+  (spacemacs/tramp-enable))

@@ -43,12 +43,15 @@
     lusty-explorer
     ff-paths
     filecache
+    iswitchb
     iswitchb-fc
     ifind-mode
     ffw
     multibackup
     ff-relativedir
-    find-files-unified
+    ;; find-files-unified
+    locations
+    ffap
     )
   "The list of Lisp packages required by the lotus-files layer.
 
@@ -108,7 +111,32 @@ Each entry is either:
             (ad-disable-advice 'file-writable-p 'around 'my-overide-file-writeable-p)
             (ad-remove-advice 'file-writable-p 'around 'my-overide-file-writeable-p)
             (ad-update 'file-writable-p)
-            )))))
+            ))
+
+        (progn ;; "ff-mode"
+          (defvar ff-mode-map
+            (let ((map (make-sparse-keymap)))
+              ;; These bindings roughly imitate those used by Outline mode.
+              ;;(define-key map "\C-c@\C-c"	      'hs-toggle-hiding)
+              ;;(define-key map [(shift mouse-2)] 'hs-mouse-toggle-hiding)
+              map)
+            "Keymap for hideshow minor mode.")
+
+          (unless (and
+                   (boundp 'ff-mode-map)
+                   ff-mode-map) ; if it is not already defined
+            ;; from: http://ergoemacs.org/emacs/elisp_menu_for_major_mode.html
+            ;; assign command to keys
+            (setq ff-mode-map (make-sparse-keymap)))
+
+          (define-minor-mode ff-mode
+              "Prepare for working with collarative office project."
+            :init-value 1
+            ;; :lighter " all finder"
+            :global t
+            :keymap ff-mode-map
+            (when office-mode
+              (message "calling ff mode")))))))
 
 (defun lotus-files/init-find-dired ()
   (use-package find-dired
@@ -201,7 +229,7 @@ directory they are found in so that they are unique."
       :config
       (progn
         (progn ;; ff-paths
-          (ff-paths-install)
+          ;; (ff-paths-install)
 
           ;; FIX
           (defun ff-paths-locate (filename)
@@ -241,7 +269,9 @@ Return a string if a single match, or a list if many matches."
                            (<= ff-paths-locate-max-matches count))
                       (setq ff-paths-have-reached-locate-max t))
                   (kill-buffer ff-buffer)
-                  matches))))))))
+                  matches)))))))
+
+  (ff-paths-install))
 
 (defun lotus-files/init-filecache ()
   (use-package filecache
@@ -382,6 +412,63 @@ Bind this command to C-x C-f to get:
                             :test #'string-equal)))
               (if dirs (find-file-existing (concat (ido-completing-read "dirs: " dirs) "/" (file-name-nondirectory buffer-file-name))))))))))
 
+(defun lotus-files/init-iswitchb ()
+  (use-package iswitchb
+      :defer t
+      :config
+      (progn
+        ;; (global-set-key "\C-cf" 'file-cache-iswitchb-file)
+        (progn
+          ;; iswitchb-fc: Integrate file-cache with iswitchb
+
+          ;; http://tao.uab.es/cgi-bin/archzoom.cgi/jao@gnu.org--2004/unix--emacs--0--patch-23/other/iswitchb-fc.el?download
+
+          ;; That site seems no longer to be available (2012-07-23). This seems to work: https://github.com/emacsmirror/iswitchb-fc/blob/master/iswitchb-fc.el – DrewAdams
+
+          ;; I think iswitchb-fc is awesome!! – Anonymous
+
+          (defun iswitchb-fc-read-buffer (prompt &optional default existing)
+            (save-window-excursion (buffer-name (iswitchb))))
+          (defadvice read-buffer (around iswitchb-fc-read-buffer)
+            (setq ad-return-value (iswitchb-fc-read-buffer prompt)))
+
+          ;; patch to integrate find-file – rubikitch
+          ;; Using iswitchb to open files from file name cache -- take two
+
+          ;; Filecache rules but I did not like the way it completes the file names. Iswitchb-fc above is a really cool enhancement to filecache but I did not like that it was integrated with ‘C-x b’ (I guess I want to know what files I actually have open). Hence this little hack:
+
+          (defun file-cache-iswitchb-file ()
+            "Using iswitchb, interactively open file from file cache'.
+First select a file, matched using iswitchb against the contents
+in `file-cache-alist'. If the file exist in more than one
+directory, select directory. Lastly the file is opened."
+            (interactive)
+            (let* ((file (file-cache-iswitchb-read "File: "
+                                                   (mapcar
+                                                    (lambda (x)
+                                                      (car x))
+                                                    file-cache-alist)))
+                   (record (assoc file file-cache-alist)))
+              (find-file
+               (concat
+                (if (= (length record) 2)
+                    (car (cdr record))
+                    (file-cache-iswitchb-read
+                     (format "Find %s in dir: " file) (cdr record))) file))))
+
+          (defun file-cache-iswitchb-read (prompt choices)
+            (let ((iswitchb-make-buflist-hook
+                   (lambda ()
+                     (setq iswitchb-temp-buflist choices))))
+              (iswitchb-read-buffer prompt)))
+
+          ;; I bind ‘C-c f’ to it:
+
+          ;; (global-set-key "\C-cf" 'file-cache-iswitchb-file)
+
+          ;; Happy happy, joy joy! – MaDa
+          ))))
+
 (defun lotus-files/init-iswitchb-fc ()
   (use-package iswitchb-fc
       :defer t
@@ -401,9 +488,10 @@ Bind this command to C-x C-f to get:
 
 (defun lotus-files/init-ffw ()
   (use-package ffw
-      :defer t
+      :demand t
       :config
       (progn
+        (global-set-key-if-unbind (kbd "s-x s-f") 'find-file-wizard)
         )))
 
 (defun lotus-files/init-multibackup ()
@@ -420,11 +508,82 @@ Bind this command to C-x C-f to get:
       (progn
         )))
 
-(defun lotus-files/init-find-files-unified ()
-  (use-package find-files-unified
+;; (defun lotus-files/init-find-files-unified ()
+;;   (use-package find-files-unified
+;;       :defer t
+;;       :config
+;;       (progn
+;;         )))
+
+(defun lotus-files/init-locations ()
+  (use-package locations
       :defer t
       :config
       (progn
+        ;; may be good
+        ;; https://www.assembla.com/code/saintamh/subversion/nodes/2389/emacs/.emacsd/locations.el
         )))
+
+(defun lotus-files/init-ffap ()
+  (use-package ffap
+      :defer t
+      :config
+      (progn
+        (progn
+          (defun ignore-ffap-p (name abs default-directory)
+            (string-match "\\*\\*\\*\\*" name))
+
+          (defadvice ffap-file-at-point (around ignore-ffap activate)
+            "calculate ignore criteria to no call ffap"
+            ;; Note: this function does not need to look for url's, just
+            ;; filenames.  On the other hand, it is responsible for converting
+            ;; a pseudo-url "site.com://dir" to an ftp file name
+            (let* ((case-fold-search t)		; url prefixes are case-insensitive
+                   (data (match-data))
+                   (string (ffap-string-at-point)) ; uses mode alist
+                   (name
+                    (or (condition-case nil
+                            (and (not (string-match "//" string)) ; foo.com://bar
+                                 (substitute-in-file-name string))
+                          (error nil))
+                        string))
+                   (abs (file-name-absolute-p name))
+                   (default-directory default-directory)
+                   (oname name))
+              (unless (ignore-ffap-p name abs default-directory)
+                ad-do-it))))
+
+        (progn
+          (use-package ido
+              :defer t
+              :config
+              (progn
+                (defun ido-plain-directory ()
+                  "Read current directory again.
+May be useful if cached version is no longer valid, but directory
+timestamp has not changed (e.g. with ftp or on Windows)."
+                  (interactive)
+                  (if (and ido-mode (memq ido-cur-item '(file dir)))
+                      (progn
+                        (if (ido-is-unc-root)
+                            (setq ido-unc-hosts-cache t)
+                            (ido-remove-cached-dir ido-current-directory))
+                        (setq ido-current-directory default-directory)
+                        ;; (setq ido-text-init ido-text)
+                        (setq ido-text-init "")
+                        (setq ido-rotate-temp t)
+                        (setq ido-exit 'refresh)
+                        (exit-minibuffer))))
+
+                ;; ido-file-completion-map is only defined when ido-mode is called.
+                (add-hook 'ido-setup-hook
+                          (lambda ()
+                            (keymap-set-key-if-unbind
+                             ido-file-completion-map
+                             (kbd "C-.")
+                             'ido-plain-directory))))))))
+
+  ;; set bindings
+  (ffap-bindings))
 
 ;;; packages.el ends here

@@ -268,6 +268,7 @@ Special commands:
   (switch-to-buffer-other-window (db-get-buffer) t)
   (other-window -1))
 
+;;;###autoload
 (defun enter-db-mode ()
   (interactive)
   (switch-to-buffer "*sql*" t)

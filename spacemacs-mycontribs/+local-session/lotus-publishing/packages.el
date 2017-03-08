@@ -387,7 +387,7 @@ Each entry is either:
   (use-package muse
       :defer t
       :config
-      (progn
+      (when nil
         (require 'muse-publishing)
 
 
@@ -707,15 +707,7 @@ between the two tags."
             (custom-set-faces
              '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold))))))
 
-
-
-
-
-
-
-
-
-          (deh-section "many changes"
+          (progn ;; "many changes"
             (defun muse-help ()
               (interactive)
               (find-file-other-window "/usr/share/doc/muse-el/examples/QuickStart.muse"))

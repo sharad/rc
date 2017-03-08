@@ -340,22 +340,25 @@ Each entry is either:
               (tags-todo "HOME")
               (tags-todo "COMPUTER"))))
 
-          (with-eval-after-load "org-publishing"
-            (add-to-org-agenda-custom-commands
-             `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
-               "Meru Today" ;;  search ""
-               ((agenda ""
-                        ((org-agenda-span 'day)
-                         (org-agenda-prefix-format  "%e")))
-                (org-agenda-files
-                 ',(directory-files-recursive
-                    (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
-                    "\\.org$" 2 "\\(rip\\|stage\\)"))
+          (use-package org-publishing
+              :defer t
+              :config
+              (progn
+                (add-to-org-agenda-custom-commands
+                 `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
+                   "Meru Today" ;;  search ""
+                   ((agenda ""
+                            ((org-agenda-span 'day)
+                             (org-agenda-prefix-format  "%e")))
+                    (org-agenda-files
+                     ',(directory-files-recursive
+                        (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
+                        "\\.org$" 2 "\\(rip\\|stage\\)"))
 
-                ;; (org-agenda-sorting-strategy '(priority-up effort-down))
-                )
-               ;; ("~/computer.html")
-               )))
+                    ;; (org-agenda-sorting-strategy '(priority-up effort-down))
+                    )
+                   ;; ("~/computer.html")
+                   ))))
 
           (progn ;; "Review Aganda" ;;http://stackoverflow.com/a/22440571
             ;; define "R" as the prefix key for reviewing what happened in various

@@ -188,15 +188,15 @@ Each entry is either:
                     (setq fname (concat "/sudo:root@localhost:" fname)))
                 (find-alternate-file fname))))
 
-          ;; (defun sudo-edit (&optional arg)
-          ;;   (interactive "p")
-          ;;   (if arg
-          ;;       (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "File: ")))
-          ;;       (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+          (defun sudo-edit (&optional arg)
+            (interactive "p")
+            (if arg
+                (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "File: ")))
+                (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
-          ;; (defun sudo-edit-current-file ()
-          ;;   (interactive)
-          ;;   (find-alternate-file (concat "/sudo:root@localhost:" (buffer-file-name (current-buffer)))))
+          (defun sudo-edit-current-file ()
+            (interactive)
+            (find-alternate-file (concat "/sudo:root@localhost:" (buffer-file-name (current-buffer)))))
 
           ;; (global-set-key (kbd "C-c C-r") 'sudo-edit-current-file)
           )

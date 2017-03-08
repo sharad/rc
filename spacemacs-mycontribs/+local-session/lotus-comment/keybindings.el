@@ -1,15 +1,12 @@
 
-(when (configuration-layer/package-usedp 'PACKAGE)
-  (defun spacemacs/PACKAGE-enable ()
-    (progn ;; "Keybinding: Elscreen"
-      ;;{{ elscreen
-      (define-key evil-emacs-state-map (kbd "") nil)
-      ;; (global-unset-key [C-z])
-      (global-set-key [] 'elscreen-create)))
+(when (configuration-layer/package-usedp 'newcomment)
+  (defun spacemacs/newcomment-enable ()
+    (progn ;; "Keybinding: Newcomment"
+      ;;{{ newcomment
+      (global-set-key-if-unbind (kbd "H-c H-c") 'comment-or-uncomment-region)))
 
-  (defun spacemacs/PACKAGE-disable ()
-    (progn ;; "Keybinding: Elscreen"
-      (define-key evil-emacs-state-map nil)
-      (global-unset-key [])))
+  (defun spacemacs/newcomment-disable ()
+    (progn ;; "Keybinding: Newcomment"
+      (global-unset-key-if-bound (kbd "H-c H-c") 'comment-or-uncomment-region)))
 
-  (spacemacs/PACKAGE-enable))
+  (spacemacs/newcomment-enable))

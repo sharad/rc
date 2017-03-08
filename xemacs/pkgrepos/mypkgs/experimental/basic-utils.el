@@ -43,6 +43,7 @@
       'file-directory-p
       (directory-files package-dir t "[a-zA-Z]+")))))
 
+
 (defun global-set-key-if-unbind (key cmd)
   "Set binding for key if there is no  existing binding for key."
   ;; (interactive)
@@ -61,7 +62,7 @@
         (when (or (not *emacs-in-init*) (not reloading-libraries))
           (message "key %s already have binded with command %s, but binding to %s."
                    key bindedcmd cmd)))
-        (global-set-key key cmd)))
+    (global-set-key key cmd)))
 
 (defun keymap-set-key-if-unbind (map key cmd)
   "Set binding for key if there is no  existing binding for key."
@@ -72,6 +73,35 @@
           (message "key %s already have binded with command %s, can't bind to %s."
                    key bindedcmd cmd))
         (define-key map key cmd))))
+
+
+(defun global-unset-key-if-bound (key cmd)
+  "Set binding for key if there is no  existing binding for key."
+  ;; (interactive)
+  (let ((bindedcmd (key-binding key t)))
+    (if (equal bindedcmd cmd)
+        (global-unset-key key)
+        (message "key %s is not bounded with command %s, can't unset to %s."
+                   key bindedcmd cmd))))
+
+(defun global-unset-key-warn-if-bound (key cmd)
+  "Set binding for key if there is no  existing binding for key."
+  ;; (interactive)
+  (let ((bindedcmd (key-binding key t)))
+    (if (equal bindedcmd cmd)
+        (global-unset-key key)
+        (message "key %s is not bounded with command %s, can't unset to %s."
+                 key bindedcmd cmd))))
+
+(defun keymap-unset-key-if-bound (map key cmd)
+  "Set binding for key if there is no  existing binding for key."
+  ;; (interactive)
+  (let ((bindedcmd (key-binding key t)))
+    (if (equal bindedcmd cmd)
+        (define-key map key cmd)
+        (message "key %s is not bounded with command %s, can't unset to %s."
+                 key bindedcmd cmd))))
+
 
 
 

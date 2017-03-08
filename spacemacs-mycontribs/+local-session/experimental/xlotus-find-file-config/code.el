@@ -242,28 +242,7 @@
 
   (require 'ffap)
 
-  (defun ignore-ffap-p (name abs default-directory)
-  (string-match "\\*\\*\\*\\*" name))
 
-  (defadvice ffap-file-at-point (around ignore-ffap activate)
-    "calculate ignore criteria to no call ffap"
-    ;; Note: this function does not need to look for url's, just
-    ;; filenames.  On the other hand, it is responsible for converting
-    ;; a pseudo-url "site.com://dir" to an ftp file name
-    (let* ((case-fold-search t)		; url prefixes are case-insensitive
-           (data (match-data))
-           (string (ffap-string-at-point)) ; uses mode alist
-           (name
-            (or (condition-case nil
-                    (and (not (string-match "//" string)) ; foo.com://bar
-                         (substitute-in-file-name string))
-                  (error nil))
-                string))
-           (abs (file-name-absolute-p name))
-           (default-directory default-directory)
-           (oname name))
-      (unless (ignore-ffap-p name abs default-directory)
-        ad-do-it)))
 
 
 
@@ -273,30 +252,7 @@
 
     (deh-require-maybe (and ffap ido)
 
-      (defun ido-plain-directory ()
-        "Read current directory again.
-May be useful if cached version is no longer valid, but directory
-timestamp has not changed (e.g. with ftp or on Windows)."
-        (interactive)
-        (if (and ido-mode (memq ido-cur-item '(file dir)))
-            (progn
-              (if (ido-is-unc-root)
-                  (setq ido-unc-hosts-cache t)
-                  (ido-remove-cached-dir ido-current-directory))
-              (setq ido-current-directory default-directory)
-              ;; (setq ido-text-init ido-text)
-              (setq ido-text-init "")
-              (setq ido-rotate-temp t)
-              (setq ido-exit 'refresh)
-              (exit-minibuffer))))
-
-      ;; ido-file-completion-map is only defined when ido-mode is called.
-      (add-hook 'ido-setup-hook
-                (lambda ()
-                  (keymap-set-key-if-unbind
-                   ido-file-completion-map
-                   (kbd "C-.")
-                   'ido-plain-directory))))))
+      )))
 
 
 (provide 'find-file-config)

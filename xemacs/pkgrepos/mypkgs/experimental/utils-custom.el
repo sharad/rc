@@ -344,5 +344,39 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
                             (list 'testing (backtrace))))))))))
 
 
+(defun assq-delete-all-test (key alist &optional testf)
+  "Delete from ALIST all elements whose car is `eq' to KEY.
+Return the modified alist.
+Elements of ALIST that are not conses are ignored."
+  (let ((testf (or testf 'eq)))
+    (while (and (consp (car alist))
+                (funcall testf (car (car alist)) key))
+      (setq alist (cdr alist)))
+    (let ((tail alist)
+          tail-cdr)
+      (while (setq tail-cdr (cdr tail))
+        (if (and (consp (car tail-cdr))
+                 (funcall testf (car (car tail-cdr)) key))
+            (setcdr tail (cdr tail-cdr))
+            (setq tail tail-cdr))))
+    alist))
+
+(defun rassq-delete-all-test (value alist &optional testf)
+  "Delete from ALIST all elements whose cdr is `eq' to VALUE.
+Return the modified alist.
+Elements of ALIST that are not conses are ignored."
+  (let ((testf (or testf 'eq)))
+    (while (and (consp (car alist))
+                (funcall testf (cdr (car alist)) value))
+      (setq alist (cdr alist)))
+    (let ((tail alist) tail-cdr)
+      (while (setq tail-cdr (cdr tail))
+        (if (and (consp (car tail-cdr))
+                 (eq (cdr (car tail-cdr)) value))
+            (setcdr tail (cdr tail-cdr))
+            (setq tail tail-cdr))))
+    alist))
+
+
 (provide 'utils-custom)
 ;;; utils-custom.el ends here

@@ -1,15 +1,12 @@
 
-(when (configuration-layer/package-usedp 'PACKAGE)
-  (defun spacemacs/PACKAGE-enable ()
-    (progn ;; "Keybinding: Elscreen"
-      ;;{{ elscreen
-      (define-key evil-emacs-state-map (kbd "") nil)
-      ;; (global-unset-key [C-z])
-      (global-set-key [] 'elscreen-create)))
+(when (configuration-layer/package-usedp 'db)
+  (defun spacemacs/db-enable ()
+    (progn ;; "Keybinding: Db"
+      ;;{{ db
+      (global-set-key-if-unbind [f12] 'enter-db-mode)))
 
-  (defun spacemacs/PACKAGE-disable ()
-    (progn ;; "Keybinding: Elscreen"
-      (define-key evil-emacs-state-map nil)
-      (global-unset-key [])))
+  (defun spacemacs/db-disable ()
+    (progn ;; "Keybinding: Db"
+      (global-unset-key-if-bound [f12] 'enter-db-mode))
 
-  (spacemacs/PACKAGE-enable))
+  (spacemacs/db-enable))

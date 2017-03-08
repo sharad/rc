@@ -1,2 +1,2 @@
 
-(configuration-layer/declare-layer 'B)
+;; (configuration-layer/declare-layer 'B)

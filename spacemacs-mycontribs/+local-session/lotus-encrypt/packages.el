@@ -160,6 +160,9 @@ and AMBIGUOUS characters"
       :config
       (progn
         (progn
+
+          (require 'utils-custom)
+
           (defun epa-set-file-regex (prefix)
             (interactive "sprefix: ")
             (let ((regex (concat "\\." prefix "\\(~\\|\\.~[0-9]+~\\)?\\'")))
