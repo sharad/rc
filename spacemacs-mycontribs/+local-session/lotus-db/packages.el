@@ -68,6 +68,7 @@ Each entry is either:
 (defun lotus-db/init-db ()
   (use-package db
       :defer t
+      :commands (enter-db-mode)
       :config
       (progn
         )))

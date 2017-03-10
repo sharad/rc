@@ -31,7 +31,7 @@
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-orgmodeS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-orgmode-packages
@@ -342,27 +342,27 @@ Each entry is either:
 
           (require 'org-publishing)
 
-          (when nil
-          (use-package org-publishing
-              :defer t
-              :config
-              (progn
-                (add-to-org-agenda-custom-commands
-                 `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
-                   "Meru Today" ;;  search ""
-                   ((agenda ""
-                            ((org-agenda-span 'day)
-                             (org-agenda-prefix-format  "%e")))
-                    (org-agenda-files
-                     ',(directory-files-recursive
-                        (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
-                        "\\.org$" 2 "\\(rip\\|stage\\)"))
+          (when nil                     ;moved to lotus-publishing
+            (use-package org-publishing
+                :defer t
+                :config
+                (progn
+                  (add-to-org-agenda-custom-commands
+                   `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
+                     "Meru Today" ;;  search ""
+                     ((agenda ""
+                              ((org-agenda-span 'day)
+                               (org-agenda-prefix-format  "%e")))
+                      (org-agenda-files
+                       ',(directory-files-recursive
+                          (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
+                          "\\.org$" 2 "\\(rip\\|stage\\)"))
 
-                    ;; (org-agenda-sorting-strategy '(priority-up effort-down))
-                    )
-                   ;; ("~/computer.html")
-                   ))))
-          )
+                      ;; (org-agenda-sorting-strategy '(priority-up effort-down))
+                      )
+                     ;; ("~/computer.html")
+                     ))))
+            )
 
           (progn ;; "Review Aganda" ;;http://stackoverflow.com/a/22440571
             ;; define "R" as the prefix key for reviewing what happened in various
@@ -370,7 +370,7 @@ Each entry is either:
             (add-to-org-agenda-custom-commands
              '("R" . "Review" ))
 
-            (when nil
+            (when nil                     ;moved to lotus-publishing
             (use-package org-publishing
               :defer t
               :config

@@ -239,7 +239,7 @@ Each entry is either:
            *org-top-style-dir*     (expand-file-name "generic/org/style" *org-top-dir*)
            *org-generated-top-dir* (expand-file-name "gen/org" *created-content-dir*)
            *org-website-address*   (concat *website-address* "org/")))
-        
+
         (progn
           (setq org-publish-project-alist nil)
 
@@ -383,7 +383,94 @@ Each entry is either:
           (add-org-project
            "notes"
            :base-extension "org"
-           :components '("inherit-org-info-js" "generic-inherit" "notes-notes" "generic-static"))))))
+           :components '("inherit-org-info-js" "generic-inherit" "notes-notes" "generic-static")))
+
+        (progn
+          (use-package org-agenda
+              :defer t
+              :config
+              (progn
+                (progn
+                  (add-to-org-agenda-custom-commands
+                   `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
+                     "Meru Today" ;;  search ""
+                     ((agenda ""
+                              ((org-agenda-span 'day)
+                               (org-agenda-prefix-format  "%e")))
+                      (org-agenda-files
+                       ',(directory-files-recursive
+                          (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
+                          "\\.org$" 2 "\\(rip\\|stage\\)"))
+
+                      ;; (org-agenda-sorting-strategy '(priority-up effort-down))
+                      )
+                     ;; ("~/computer.html")
+                     )))
+                (progn ;; "org-publishing"
+
+                  ;; "Review Aganda" ;;http://stackoverflow.com/a/22440571
+                  ;; define "R" as the prefix key for reviewing what happened in various
+                  ;; time periods
+                  (add-to-org-agenda-custom-commands
+                   '("R" . "Review" ))
+
+                  ;; COMMON settings for all reviews
+                  (setq efs/org-agenda-review-settings
+                        `((org-agenda-files
+                           ',(directory-files-recursive
+                              (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
+                              "\\.org$" 2 "\\(rip\\|stage\\)"))
+                          (org-agenda-show-all-dates t)
+                          (org-agenda-start-with-log-mode t)
+                          (org-agenda-start-with-clockreport-mode t)
+                          (org-agenda-archives-mode t)
+                          ;; I don't care if an entry was archived
+                          (org-agenda-hide-tags-regexp
+                           (concat org-agenda-hide-tags-regexp
+                                   "\\|ARCHIVE"))
+                          ))
+
+
+                  ;; Show the agenda with the log turn on, the clock table show and
+                  ;; archived entries shown.  These commands are all the same exept for
+                  ;; the time period.
+                  (add-to-org-agenda-custom-commands
+                   `("Rw" "Week in review"
+                     agenda ""
+                     ;; agenda settings
+                     ,(append
+                       efs/org-agenda-review-settings
+                       '((org-agenda-span 'week)
+                         (org-agenda-start-on-weekday 0)
+                         (org-agenda-overriding-header "Week in Review"))
+                       )
+                     ("~/org/review/week.html")))
+
+                  (add-to-org-agenda-custom-commands
+                   `("Rd" "Day in review"
+                     agenda ""
+                     ;; agenda settings
+                     ,(append
+                       efs/org-agenda-review-settings
+                       '((org-agenda-span 'day)
+                         (org-agenda-overriding-header "Week in Review"))
+                       )
+                     ("~/org/review/day.html")))
+
+                  (add-to-org-agenda-custom-commands
+                   `("Rm" "Month in review"
+                     agenda ""
+                     ;; agenda settings
+                     ,(append
+                       efs/org-agenda-review-settings
+                       '((org-agenda-span 'month)
+                         (org-agenda-start-day "01")
+                         (org-read-date-prefer-future nil)
+                         (org-agenda-overriding-header "Month in Review"))
+                       )
+                     ("~/org/review/month.html")))))))
+
+        )))
 
 (defun lotus-muse/init-muse ()
   (use-package muse
@@ -900,7 +987,7 @@ FILE and any extensions that are in `muse-ignored-extensions'."
 
                 (add-to-list 'muse-publish-markup-regexps
                              '(4000 org-bracket-link-analytic-regexp++ 0 org-export-string-as-html-string)))))
-          
+
 
           (defvar custome/muse-ignore-existing-muse-file nil "custome/muse-ignore-existing-muse-file")
           (setq custome/muse-ignore-existing-muse-file t)
