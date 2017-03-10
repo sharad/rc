@@ -207,12 +207,16 @@ Each entry is either:
         (progn
           )
         (progn
-          (add-to-list
-           'desktop-globals-to-save
-           'tramp-default-proxies-alist)
-          (add-to-list
-           'desktop-globals-to-save
-           'tramp-default-proxies-alist))
+          (use-package desktop
+              :demand t
+              :config
+              (progn
+                (add-to-list
+                 'desktop-globals-to-save
+                 'tramp-default-proxies-alist)
+                (add-to-list
+                 'desktop-globals-to-save
+                 'tramp-default-proxies-alist))))
 
 
 
@@ -768,7 +772,7 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-remote/init-ido ()
+(defun lotus-remote/post-init-ido ()
   (use-package ido
       :defer t
       :config

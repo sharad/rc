@@ -84,7 +84,7 @@ c
           (defvar org-journal-dir (org-publish-get-attribute "journal" "org" :base-directory))
           (setq
            org-journal-file-format "%Y-%m-%d.org"
-           org-journal-file-pattern (org-jourcnal-format-string->regex org-journal-file-format)
+           org-journal-file-pattern (org-journal-format-string->regex org-journal-file-format)
            org-journal-dir (org-publish-get-attribute "journal" "org" :base-directory))
           (org-journal-update-auto-mode-alist)))))
 

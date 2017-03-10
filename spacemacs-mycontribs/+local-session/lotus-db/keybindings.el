@@ -7,6 +7,6 @@
 
   (defun spacemacs/db-disable ()
     (progn ;; "Keybinding: Db"
-      (global-unset-key-if-bound [f12] 'enter-db-mode))
+      (global-unset-key-if-bound [f12] 'enter-db-mode)))
 
   (spacemacs/db-enable))

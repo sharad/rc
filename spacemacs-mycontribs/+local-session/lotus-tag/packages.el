@@ -994,7 +994,7 @@ Each entry is either:
 ;; (ido-is-root-directory "/")
 
 
-(defun lotus-tag/init-elisp-slime-nav () ;; optional if installed via package.el
+(defun lotus-tag/post-init-elisp-slime-nav () ;; optional if installed via package.el
   (use-package PACKAGE
       :defer t
       :config

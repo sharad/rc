@@ -68,7 +68,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-recent/init-recentf ()
+(defun lotus-recent/post-init-recentf ()
   (use-package recentf
     :defer t
     :config

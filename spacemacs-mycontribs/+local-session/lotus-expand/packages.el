@@ -98,7 +98,7 @@ Each entry is either:
                          (cons 'pabbrev-mode
                                (desktop-get-readonly-proof-mode pabbrev-mode))))))))
 
-(defun lotus-expand/init-auto-complete ()
+(defun lotus-expand/post-init-auto-complete ()
   (use-package auto-complete
       :defer t
       :config
@@ -152,7 +152,7 @@ Each entry is either:
         ;; (global-set-key-if-unbind (kbd "C-M-=") 'pde-indent-dwim)
         )))
 
-(defun lotus-expand/init-comint ()
+(defun lotus-expand/post-init-comint ()
   (use-package comint
       :defer t
       :config
@@ -162,7 +162,7 @@ Each entry is either:
         ;; (global-set-key-if-unbind (kbd "C-c f") 'comint-dynamic-complete)
         )))
 
-(defun lotus-expand/init-yasnippet ()
+(defun lotus-expand/post-init-yasnippet ()
   (use-package yasnippet
       :defer t
       :config
@@ -200,7 +200,7 @@ Each entry is either:
           ;; inplace of tab I want it to use C->
           (setq yas/trigger-key "C->")))))
 
-(defun lotus-expand/init-hippie-exp ()
+(defun lotus-expand/post-init-hippie-exp ()
   ;; TAB used for indent-for-tab-command
   ;; Left key C-TAB C-M-TAB
   ;; nearest key to dabbrev-expand

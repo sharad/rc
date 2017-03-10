@@ -87,7 +87,7 @@ Each entry is either:
       (progn
         (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t))))
 
-(defun lotus-math/init-gnuplot ()
+(defun lotus-math/post-init-gnuplot ()
   (use-package gnuplot
       :defer t
       :config

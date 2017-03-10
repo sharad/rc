@@ -86,6 +86,7 @@ Each entry is either:
 (defun basic-utils/init-startup-hooks ()
   (use-package startup-hooks
       ;; :ensure t
+      :demand t
       :config
       (progn
         )))
@@ -94,6 +95,8 @@ Each entry is either:
   (use-package startup-hooks)
   (use-package sessions-mgr
       ;; :ensure t
+      :demand t
+      :commands 'sharad/desktop-session-restore
       :config
       (progn
         (progn

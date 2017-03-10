@@ -71,7 +71,7 @@
 (defun vc-checkout-file (file)
   (condition-case e
       (let ((default-directory (file-name-directory file)))
-        (vc-checkout (concat *desktop-save-filename*))
+        (vc-checkout file)
         t)
     ('file-error (message "error: %s" e) nil)))
 

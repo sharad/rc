@@ -98,7 +98,7 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-remember/init-org ()
+(defun lotus-remember/post-init-org ()
   (use-package org
       :defer t
       :config
@@ -325,7 +325,7 @@ Each entry is either:
 
           (org-capture-template-gen)))))
 
-(defun lotus-remember/init-planner ()
+(defun lotus-remember/post-init-planner ()
   (use-package planner
       :defer t
       :config

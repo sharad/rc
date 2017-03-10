@@ -66,7 +66,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-vc/init-magit ()
+(defun lotus-vc/post-init-magit ()
   (use-package magit
     :defer t
     :config
@@ -76,7 +76,7 @@ Each entry is either:
       (defadvice magit-push (before ad-update-ssh-agent-env activate)
         (update-ssh-agent)))))
 
-(defun lotus-vc/init-git-commit ()
+(defun lotus-vc/post-init-git-commit ()
   (use-package git-commit
     :defer t
     :config

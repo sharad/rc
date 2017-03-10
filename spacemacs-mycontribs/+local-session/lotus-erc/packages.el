@@ -1028,7 +1028,7 @@ waiting for responses from the server"
                         (add-hook 'erc-insert-pre-hook 'fb/maintain-human-names nil t)
                         )))))))
 
-(defun lotus-erc/init-passwds ()
+(defun lotus-erc/post-init-passwds ()
   (use-package passwds
       :defer t
       :config

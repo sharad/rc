@@ -280,7 +280,7 @@ Each entry is either:
                                  :localclasspath '("/relative/path.jar")
                                  :classpath '("/absolute/path.jar"))))))
 
-(defun lotus-cedet/init-imenu ()
+(defun lotus-cedet/post-init-imenu ()
   (use-package imenu
       :defer t
       :config

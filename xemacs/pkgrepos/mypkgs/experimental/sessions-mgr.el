@@ -784,6 +784,8 @@ Also returns nil if pid is nil."
          (if (boundp 'server-name)
              (concat "-" server-name))))
 
+  ;; (debug)
+
   (setq desktop-base-file-name
         (concat
          "emacs-desktop"
@@ -1124,6 +1126,9 @@ If there are no buffers left to create, kill the timer."
 
 
   ;; use session-restore to restore the desktop manually
+
+
+  ;; (debug)
 
   (defun sharad/desktop-session-restore ()
     "Restore a saved emacs session."

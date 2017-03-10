@@ -228,16 +228,18 @@ Each entry is either:
 
 (defun lotus-publishing/init-org-publishing ()
   (use-package org-publishing
-      ;; :defer t
-      :demand t
+      :defer t
+      ;; :demand t
       :config
       (progn
+        ;; (debug)
         (progn
           (setq
            *org-top-dir*           (expand-file-name "contents/org" *created-content-dir*)
            *org-top-style-dir*     (expand-file-name "generic/org/style" *org-top-dir*)
            *org-generated-top-dir* (expand-file-name "gen/org" *created-content-dir*)
            *org-website-address*   (concat *website-address* "org/")))
+        
         (progn
           (setq org-publish-project-alist nil)
 
@@ -867,33 +869,38 @@ FILE and any extensions that are in `muse-ignored-extensions'."
             (find-file-other-window "/usr/share/doc/muse-el/examples/QuickStart.muse"))
           (define-key muse-mode-local-map (kbd "C-c C-.") 'muse-help)
 
-          (deh-require-maybe (and org org-html)
-            ;; quick fix
+          (use-package org ;; org-html
+            :defer t
+            :config
             (progn
-              (push "org" muse-ignored-extensions)
-              (when (fboundp 'muse-update-ignored-extensions-regexp)
-                (muse-update-ignored-extensions-regexp
-                 'muse-ignored-extensions muse-ignored-extensions)))
+              (progn
+                ;; quick fix
+                (progn
+                  (push "org" muse-ignored-extensions)
+                  (when (fboundp 'muse-update-ignored-extensions-regexp)
+                    (muse-update-ignored-extensions-regexp
+                     'muse-ignored-extensions muse-ignored-extensions)))
 
 
-            ;; (defadvice muse-update-ignored-extensions-regexp ())
+                ;; (defadvice muse-update-ignored-extensions-regexp ())
 
 
-            ;; (setq html (org-export-region-as-html beg end t 'string))
-            (defun org-export-string-as-html-string (text)
-              (with-temp-buffer
-                (insert text)
-                (org-export-region-as-html 0 (point-max) t 'string)))
+                ;; (setq html (org-export-region-as-html beg end t 'string))
+                (defun org-export-string-as-html-string (text)
+                  (with-temp-buffer
+                    (insert text)
+                    (org-export-region-as-html 0 (point-max) t 'string)))
 
-            ;; Hurdle
-            ;; (string-match muse-explicit-link-regexp "[[/~s/tmp/xx.org][sdfds]]")
-            ;; (string-match muse-explicit-link-regexp "[[/~s/office/Adding tables to Controller-new.muse][Adding tables to Controller]]")
-            ;; (string-match org-bracket-link-analytic-regexp++ "[[/~s/tmp/xx.org][sdfds]]")
-            ;; (string-match org-bracket-link-analytic-regexp++ "[[/~s/tmp/xx.muse][sdfds]]")
-            ;; (string-match org-bracket-link-analytic-regexp++ "[[xx.muse][sdfds]]")
+                ;; Hurdle
+                ;; (string-match muse-explicit-link-regexp "[[/~s/tmp/xx.org][sdfds]]")
+                ;; (string-match muse-explicit-link-regexp "[[/~s/office/Adding tables to Controller-new.muse][Adding tables to Controller]]")
+                ;; (string-match org-bracket-link-analytic-regexp++ "[[/~s/tmp/xx.org][sdfds]]")
+                ;; (string-match org-bracket-link-analytic-regexp++ "[[/~s/tmp/xx.muse][sdfds]]")
+                ;; (string-match org-bracket-link-analytic-regexp++ "[[xx.muse][sdfds]]")
 
-            (add-to-list 'muse-publish-markup-regexps
-                         '(4000 org-bracket-link-analytic-regexp++ 0 org-export-string-as-html-string)))
+                (add-to-list 'muse-publish-markup-regexps
+                             '(4000 org-bracket-link-analytic-regexp++ 0 org-export-string-as-html-string)))))
+          
 
           (defvar custome/muse-ignore-existing-muse-file nil "custome/muse-ignore-existing-muse-file")
           (setq custome/muse-ignore-existing-muse-file t)

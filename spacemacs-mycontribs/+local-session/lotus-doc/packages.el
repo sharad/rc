@@ -68,7 +68,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-doc/init-eldoc ()
+(defun lotus-doc/post-init-eldoc ()
   (use-package eldoc
       :defer t
       :config
@@ -90,7 +90,7 @@ Each entry is either:
                       (set (make-local-variable 'eldoc-documentation-function)
                            'my-cperl-eldoc-documentation-function)))))))
 
-(defun lotus-doc/init-c-eldoc ()
+(defun lotus-doc/post-init-c-eldoc ()
   ;; for c http://www.emacswiki.org/emacs/CEldocMode#toc5o
   (use-package c-eldoc
       :defer t

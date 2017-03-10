@@ -72,7 +72,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-bookmark/init-saveplace ()
+(defun lotus-bookmark/post-init-saveplace ()
   (use-package saveplace
       :defer t
       :config

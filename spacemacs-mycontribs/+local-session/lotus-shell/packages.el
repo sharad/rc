@@ -204,7 +204,7 @@ Each entry is either:
           (ad-update 'tramp-open-connection-setup-interactive-shell)
           (ad-activate 'tramp-open-connection-setup-interactive-shell))))))
 
-(defun lotus-shell/init-eshell ()
+(defun lotus-shell/post-init-eshell ()
   (use-package eshell
     :defer t
     :config

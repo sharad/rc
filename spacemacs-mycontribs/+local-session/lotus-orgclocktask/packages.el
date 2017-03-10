@@ -142,6 +142,7 @@ Each entry is either:
 (defun lotus-orgclocktask/init-task-manager ()
   (use-package task-manager
       :defer t
+      :commands 'office-mode
       :config
       (progn
         (progn

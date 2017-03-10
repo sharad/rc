@@ -86,7 +86,7 @@ Each entry is either:
             (progn
               (add-hook 'js-mode-hook 'javascript-custom-setup))))))
 
-(defun lotus-javascript/init-js2-mode ()
+(defun lotus-javascript/post-init-js2-mode ()
   (use-package js2-mode
       :defer t
       :config

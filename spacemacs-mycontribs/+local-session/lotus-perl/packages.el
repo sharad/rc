@@ -307,7 +307,7 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-perl/init-comint ()
+(defun lotus-perl/post-init-comint ()
   (use-package comint
       :defer t
       :config

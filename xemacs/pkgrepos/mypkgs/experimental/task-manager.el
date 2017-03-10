@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(require org)
+(require 'org)
 ;; (require 'publishing)
 (require 'org-publishing)
 (require 'muse-publishing)

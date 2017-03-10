@@ -93,30 +93,31 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-plan/init-publishing ()
+(defun lotus-plan/post-init-publishing ()
   (use-package publishing
       :defer t
       :config
       (progn
         )))
 
-(defun lotus-plan/init-muse-publishing ()
+(defun lotus-plan/post-init-muse-publishing ()
   (use-package muse-publishing
       :defer t
       :config
       (progn
         )))
 
-(defun lotus-plan/init-org-publishing ()
-  (use-package org-publishing
-      :defer t
-      :config
-      (progn
-        )))
+;; (defun lotus-plan/post-init-org-publishing ()
+;;   (use-package org-publishing
+;;       :defer t
+;;       :config
+;;       (progn
+;;         )))
 
 (defun lotus-plan/init-planner ()
   (use-package planner
       :defer t
+      :commands (plan)
       :config
       (progn
         (use-package muse-publishing
@@ -164,6 +165,10 @@ Each entry is either:
 
         (require 'muse-publishing)
 
+        ;; (debug)
+
+        ;; (debug)
+
         (progn
           (setq
            planner-sections
@@ -190,12 +195,12 @@ Each entry is either:
           planner-annotation-strip-directory t
           planner-annotation-use-relative-file t
           planner-sort-tasks-key-function 'planner-sort-tasks-default-key
-;;;      possible vaules...
-;;;      `planner-sort-tasks-default-key', `planner-sort-tasks-basic',
-;;;      `planner-sort-tasks-by-date', and `planner-sort-tasks-by-link'.
-;;;      `planner-sort-tasks-by-rank', `planner-sort-tasks-by-importance', and
-;;;      `planner-sort-tasks-by-urgency'.
-          ;; planner-add-task-at-end-flag nil
+          ;;      possible vaules...
+          ;;      `planner-sort-tasks-default-key', `planner-sort-tasks-basic',
+          ;;      `planner-sort-tasks-by-date', and `planner-sort-tasks-by-link'.
+          ;;      `planner-sort-tasks-by-rank', `planner-sort-tasks-by-importance', and
+          ;;      `planner-sort-tasks-by-urgency'.
+          ;;       planner-add-task-at-end-flag nil
           planner-day-page-template
           (concat
            "* Tasks\n\n\n"
@@ -233,7 +238,7 @@ Each entry is either:
 
         (progn ;; "Day Pages Cleanup"
 
-          (require 'string) ;; from elib package
+          ;; (require 'string) ;; from elib package
 
           (defun planner-clean-page-section (section empty-string page-string)
             (or
@@ -544,7 +549,7 @@ instead of a string."
         (setq
          planner-appt-update-appts-on-save-flag t))))
 
-(defun lotus-plan/init-timeclock ()
+(defun lotus-plan/post-init-timeclock ()
   (use-package timeclock
       :defer t
       :config
@@ -600,12 +605,13 @@ instead of a string."
             (progn
              (add-hook 'sharad/enable-startup-interrupting-feature-hook ;; '*sharad/after-init-hook*
                       '(lambda ()
-                        (deh-require-maybe planner-registry
-                          (setq planner-registry-file "~/.emacs.d/autoconfig/planner/planner-registry.el")
-                          (save-excursion
-                            (save-window-excursion
-                              (plan 2)
-                              (planner-registry-insinuate)))))))))))
+                         (with-eval-after-load "planner-registry"
+                           (progn
+                             (setq planner-registry-file "~/.emacs.d/autoconfig/planner/planner-registry.el")
+                             (save-excursion
+                               (save-window-excursion
+                                 (plan 2)
+                                 (planner-registry-insinuate))))))))))))
 
 (defun lotus-plan/init-planner-report ()
   ;; for using      M-x planner-report-generate

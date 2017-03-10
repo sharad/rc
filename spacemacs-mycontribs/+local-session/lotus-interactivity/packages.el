@@ -81,7 +81,7 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-interactivity/init-frame-utils ()
+(defun lotus-interactivity/post-init-frame-utils ()
   (use-package frame-utils
       :demand t
       :config
@@ -110,7 +110,7 @@ Each entry is either:
 
         (frame-utils-config))))
 
-(defun lotus-interactivity/init-ido ()
+(defun lotus-interactivity/post-init-ido ()
   (use-package ido
       :defer t
       :config

@@ -86,7 +86,7 @@ Each entry is either:
         )))
 
 
-(defun lotus-comment/init-hide-comnt ()
+(defun lotus-comment/post-init-hide-comnt ()
   (use-package hide-comnt
       :defer t
       :config

@@ -139,7 +139,7 @@ Each entry is either:
         ;; http://www.emacswiki.org/emacs/DevelNotes
         )))
 
-(defun lotus-dev/init-sidebrain ()
+(defun lotus-dev/post-init-sidebrain ()
   (use-package sidebrain
       :defer t
       :config
@@ -175,7 +175,7 @@ Each entry is either:
         ;;       tree))
         )))
 
-(defun lotus-dev/init-subword ()
+(defun lotus-dev/post-init-subword ()
   (use-package subword
       :defer t
       :config
@@ -314,7 +314,7 @@ Each entry is either:
             (let ((dir (find-library-directory "devhelp-index")))
               (shell-command (concat dir "/devhelp-index.py"))))))))
 
-(defun lotus-dev/init-semantic ()
+(defun lotus-dev/post-init-semantic ()
   (use-package semantic
       :defer t
       :config
@@ -706,7 +706,7 @@ Add directory to search path for source files using the GDB command, dir."))
             (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ -I/usr/include/")
             (add-hook 'c-mode-common-hook 'c-turn-on-eldoc-mode))))))
 
-(defun lotus-dev/init-tramp ()
+(defun lotus-dev/post-init-tramp ()
   (use-package tramp
       :defer t
       :config
@@ -897,7 +897,7 @@ Add directory to search path for source files using the GDB command, dir."))
       (progn
         )))
 
-(defun lotus-dev/init-desktop ()
+(defun lotus-dev/post-init-desktop ()
   (use-package desktop
       :defer t
       :config

@@ -31,7 +31,7 @@
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-filesS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-files-packages
@@ -273,7 +273,7 @@ Return a string if a single match, or a list if many matches."
 
   (ff-paths-install))
 
-(defun lotus-files/init-filecache ()
+(defun lotus-files/post-init-filecache ()
   (use-package filecache
       :defer t
       :config
@@ -582,27 +582,51 @@ timestamp has not changed (e.g. with ftp or on Windows)."
                              ido-file-completion-map
                              (kbd "C-.")
                              'ido-plain-directory))))))))
+  (when nil
 
-  ;; set bindings
-  ;; (ffap-bindings)
-  (add-to-list 'helm-for-files-preferred-list
-               'helm-c-source-ffap-line)
-  (add-to-list 'helm-for-files-preferred-list
-               'helm-c-source-ffap-guesser)
+    ;; set bindings
+    ;; (ffap-bindings)
+    (add-to-list 'helm-for-files-preferred-list
+                 'helm-c-source-ffap-line)
+    (add-to-list 'helm-for-files-preferred-list
+                 'helm-c-source-ffap-guesser)
 
-  (setq old-helm-for-files-preferred-list helm-for-files-preferred-list)
+    (setq
+     helm-for-files-preferred-list
+     '(  helm-c-source-locate))
 
-  (setq helm-for-files-preferred-list
-    '(helm-c-source-ffap-line
-      helm-c-source-ffap-guesser
-      helm-c-source-buffers-list
-      helm-c-source-recentf
-      helm-c-source-bookmarks
-      helm-c-source-file-cache
-      helm-c-source-files-in-current-dir+
-      helm-c-source-locate)
-  )
-  ;; (helm-source-buffers-list helm-source-recentf helm-source-bookmarks helm-source-file-cache helm-source-files-in-current-dir helm-source-locate)
-  )
+    (pron
+     (require 'helm-config)
+     (require 'helm-misc)
+     (require 'helm-projectile)
+     (require 'helm-mode)
+     (require 'helm-match-plugin)
+     (require 'helm-buffers)
+     (require 'helm-files)
+     (require 'helm-locate))
+
+    (setq old-helm-for-files-preferred-list helm-for-files-preferred-list)
+    (setq helm-for-files-preferred-list old-helm-for-files-preferred-list )
+
+    (require 'helm-ffap)
+    (setq
+     helm-for-files-preferred-list
+     '(helm-source-buffers-list helm-source-recentf helm-source-bookmarks helm-source-file-cache helm-source-files-in-current-dir helm-source-locate))
+
+    (use-package helm-match-plugin
+        :ensure t)
+
+  ;; (setq helm-for-files-preferred-list
+  ;;   '(helm-c-source-ffap-line
+  ;;     helm-c-source-ffap-guesser
+  ;;     helm-c-source-buffers-list
+  ;;     helm-c-source-recentf
+  ;;     helm-c-source-bookmarks
+  ;;     helm-c-source-file-cache
+  ;;     helm-c-source-files-in-current-dir+
+  ;;     helm-c-source-locate)
+
+    ;; (helm-source-buffers-list helm-source-recentf helm-source-bookmarks helm-source-file-cache helm-source-files-in-current-dir helm-source-locate)
+  ))
 
 ;;; packages.el ends here

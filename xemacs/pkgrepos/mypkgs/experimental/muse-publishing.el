@@ -949,9 +949,10 @@ FILE and any extensions that are in `muse-ignored-extensions'."
   (defun muse-help ()
     (interactive)
     (find-file-other-window "/usr/share/doc/muse-el/examples/QuickStart.muse"))
+
   (define-key muse-mode-local-map (kbd "C-c C-.") 'muse-help)
 
-  (deh-require-maybe (and org org-html)
+  (when nil ;;  (deh-require-maybe  ;; (and org org-html)
     ;; quick fix
     (progn
       (push "org" muse-ignored-extensions)

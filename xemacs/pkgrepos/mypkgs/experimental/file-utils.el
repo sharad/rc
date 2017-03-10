@@ -226,7 +226,7 @@ to do VC operation."
 
 
 
-(deh-section "Tramp read-only file problem"
+(progn ;; "Tramp read-only file problem"
   (defun set-file-mode-to-truename (file)
     (interactive
      (list (ido-read-file-name "file: " default-directory buffer-file-name)))
@@ -257,7 +257,7 @@ to do VC operation."
 ;;     ))
 
 
-(deh-section "recursive"
+(progn ;; "recursive"
   ;; url: http://turingmachine.org/bl/2013-05-29-recursively-listing-directories-in-elisp.html
   ;;;
   ;;; Recursively list files in a given directory

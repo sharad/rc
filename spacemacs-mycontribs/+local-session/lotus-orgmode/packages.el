@@ -71,7 +71,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-orgmode/init-org ()
+(defun lotus-orgmode/post-init-org ()
   (use-package org
       :defer t
       :config
@@ -302,7 +302,7 @@ Each entry is either:
             )))
       ))
 
-(defun lotus-orgmode/init-org-agenda ()
+(defun lotus-orgmode/post-init-org-agenda ()
   (use-package org-agenda
       :defer t
       :config
@@ -340,6 +340,9 @@ Each entry is either:
               (tags-todo "HOME")
               (tags-todo "COMPUTER"))))
 
+          (require 'org-publishing)
+
+          (when nil
           (use-package org-publishing
               :defer t
               :config
@@ -359,6 +362,7 @@ Each entry is either:
                     )
                    ;; ("~/computer.html")
                    ))))
+          )
 
           (progn ;; "Review Aganda" ;;http://stackoverflow.com/a/22440571
             ;; define "R" as the prefix key for reviewing what happened in various
@@ -366,62 +370,67 @@ Each entry is either:
             (add-to-org-agenda-custom-commands
              '("R" . "Review" ))
 
-            (with-eval-after-load "org-publishing"
-              ;; Common settings for all reviews
-              (setq efs/org-agenda-review-settings
-                    `((org-agenda-files
-                       ',(directory-files-recursive
-                          (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
-                          "\\.org$" 2 "\\(rip\\|stage\\)"))
-                      (org-agenda-show-all-dates t)
-                      (org-agenda-start-with-log-mode t)
-                      (org-agenda-start-with-clockreport-mode t)
-                      (org-agenda-archives-mode t)
-                      ;; I don't care if an entry was archived
-                      (org-agenda-hide-tags-regexp
-                       (concat org-agenda-hide-tags-regexp
-                               "\\|ARCHIVE"))
-                      ))
+            (when nil
+            (use-package org-publishing
+              :defer t
+              :config
+              (progn
+                (progn ;; "org-publishing"
+                  ;; COMMON settings for all reviews
+                  (setq efs/org-agenda-review-settings
+                        `((org-agenda-files
+                           ',(directory-files-recursive
+                              (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
+                              "\\.org$" 2 "\\(rip\\|stage\\)"))
+                          (org-agenda-show-all-dates t)
+                          (org-agenda-start-with-log-mode t)
+                          (org-agenda-start-with-clockreport-mode t)
+                          (org-agenda-archives-mode t)
+                          ;; I don't care if an entry was archived
+                          (org-agenda-hide-tags-regexp
+                           (concat org-agenda-hide-tags-regexp
+                                   "\\|ARCHIVE"))
+                          ))
 
 
-              ;; Show the agenda with the log turn on, the clock table show and
-              ;; archived entries shown.  These commands are all the same exept for
-              ;; the time period.
-              (add-to-org-agenda-custom-commands
-               `("Rw" "Week in review"
-                 agenda ""
-                 ;; agenda settings
-                 ,(append
-                   efs/org-agenda-review-settings
-                   '((org-agenda-span 'week)
-                     (org-agenda-start-on-weekday 0)
-                     (org-agenda-overriding-header "Week in Review"))
-                   )
-                 ("~/org/review/week.html")))
+                  ;; Show the agenda with the log turn on, the clock table show and
+                  ;; archived entries shown.  These commands are all the same exept for
+                  ;; the time period.
+                  (add-to-org-agenda-custom-commands
+                   `("Rw" "Week in review"
+                     agenda ""
+                     ;; agenda settings
+                     ,(append
+                       efs/org-agenda-review-settings
+                       '((org-agenda-span 'week)
+                         (org-agenda-start-on-weekday 0)
+                         (org-agenda-overriding-header "Week in Review"))
+                       )
+                     ("~/org/review/week.html")))
 
-              (add-to-org-agenda-custom-commands
-               `("Rd" "Day in review"
-                 agenda ""
-                 ;; agenda settings
-                 ,(append
-                   efs/org-agenda-review-settings
-                   '((org-agenda-span 'day)
-                     (org-agenda-overriding-header "Week in Review"))
-                   )
-                 ("~/org/review/day.html")))
+                  (add-to-org-agenda-custom-commands
+                   `("Rd" "Day in review"
+                     agenda ""
+                     ;; agenda settings
+                     ,(append
+                       efs/org-agenda-review-settings
+                       '((org-agenda-span 'day)
+                         (org-agenda-overriding-header "Week in Review"))
+                       )
+                     ("~/org/review/day.html")))
 
-              (add-to-org-agenda-custom-commands
-               `("Rm" "Month in review"
-                 agenda ""
-                 ;; agenda settings
-                 ,(append
-                   efs/org-agenda-review-settings
-                   '((org-agenda-span 'month)
-                     (org-agenda-start-day "01")
-                     (org-read-date-prefer-future nil)
-                     (org-agenda-overriding-header "Month in Review"))
-                   )
-                 ("~/org/review/month.html"))))
+                  (add-to-org-agenda-custom-commands
+                   `("Rm" "Month in review"
+                     agenda ""
+                     ;; agenda settings
+                     ,(append
+                       efs/org-agenda-review-settings
+                       '((org-agenda-span 'month)
+                         (org-agenda-start-day "01")
+                         (org-read-date-prefer-future nil)
+                         (org-agenda-overriding-header "Month in Review"))
+                       )
+                     ("~/org/review/month.html")))))))
 
             )
 
