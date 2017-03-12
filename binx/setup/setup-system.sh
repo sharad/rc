@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 SSH_KEY_DUMP=$1
-SITEDIR=/usr/local/
+SITEDIR=/usr/local
 TMPDIR=~/setuptmp
 
 function main()
@@ -62,10 +62,12 @@ function setup_quicklisp_package()
     #      --eval '(quicklisp-quickstart:install :path "'$SITEDIR/share/common-lisp/source/quicklisp'")'       \
     #      --eval '(ql:add-to-init-file)'                \
     #      --eval '(quit)'
-
-    sbcl --load /usr/share/cl-quicklisp/quicklisp.lisp \
-         --eval '(quicklisp-quickstart:install :path "'$SITEDIR/share/common-lisp/source/quicklisp'")'       \
-         --eval '(quit)'
+    if [ ! -d $SITEDIR/share/common-lisp/source/quicklisp ]
+    then
+        sbcl --load /usr/share/cl-quicklisp/quicklisp.lisp \
+             --eval '(quicklisp-quickstart:install :path "'$SITEDIR/share/common-lisp/source/quicklisp'")'       \
+             --eval '(quit)'
+    fi
     # (quicklisp-quickstart:install)
 }
 
