@@ -47,6 +47,17 @@ else
 fi
 
 
+if [ "x$EMACS_SERVER_NAME" = "x" ]
+then
+    EMACS_SERVER_NAME=general
+    export EMACS_SERVER_NAME
+fi
+
+if [ "x$EMACS_DIST_DIR" = "x" ]
+then
+    EMACS_DIST_DIR=.xemacs
+    export EMACS_DIST_DIR
+fi
 
 
 function emacs_daemon_start()

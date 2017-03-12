@@ -111,7 +111,8 @@
 (progn
   (ql:quickload "quickproject")
   (ql:quickload "vecto")
-  (ql:quickload "sheeple"))
+  (ql:quickload "sheeple")
+  (ql:quickload "cl-cont"))
 
 ;; load my utils
 (if (member "IN.NET.SHARAD.UTILS" (mapcar #'package-name (list-all-packages)) :test #'string=)
