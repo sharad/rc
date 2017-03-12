@@ -28,16 +28,37 @@
 ;;;; QuickLisp :start --
 ;;; The following lines added by ql:add-to-init-file:
 #-quicklisp
+(progn
+  (when nil
+    (let* ((qlisp-parent-dir
+            (cond
+              ((string=  (machine-instance) "ubuntu-sharad") #p"/atlantic/opt/share/common-lisp/")
+              ((string=  (machine-instance) "lispm.genera.net") #p"/all/res/share/common-lisp/")
+              ((string=  (machine-instance) "lispm") #p"/all/res/share/common-lisp/")
+              (t #p"/atlantic/opt/share/common-lisp/")
+              ))
+           (quicklisp-init (merge-pathnames "quicklisp/setup.lisp" qlisp-parent-dir)))
+      (when (probe-file quicklisp-init)
+        (load quicklisp-init))))
+
+
 (let* ((qlisp-parent-dir
-        (cond
-          ((string=  (machine-instance) "ubuntu-sharad") #p"/atlantic/opt/share/common-lisp/")
-          ((string=  (machine-instance) "lispm.genera.net") #p"/all/res/share/common-lisp/")
-          ((string=  (machine-instance) "lispm") #p"/all/res/share/common-lisp/")
-          (t #p"/atlantic/opt/share/common-lisp/")
-          ))
-       (quicklisp-init (merge-pathnames "quicklisp/setup.lisp" qlisp-parent-dir)))
-  (when (probe-file quicklisp-init)
-    (load quicklisp-init)))
+        (car
+         (member-if
+          #'directory
+          '(
+            #p"/atlantic/opt/share/common-lisp/"
+            #p"/all/res/share/common-lisp/"
+            #p"/all/res/share/common-lisp/"
+            #p"/atlantic/opt/share/common-lisp/"
+            #p"/usr/local/share/common-lisp/source/"
+            ))))
+       (quicklisp-init (when qlisp-parent-dir
+                         (merge-pathnames "quicklisp/setup.lisp" qlisp-parent-dir))))
+  (when (and
+         quicklisp-init
+         (probe-file quicklisp-init))
+    (load quicklisp-init))))
 ;;;; QuickLisp :end
 
 
