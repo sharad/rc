@@ -109,7 +109,8 @@
 
 #+quicklisp
 (progn
-  (ql:quickload "quickproject"))
+  (ql:quickload "quickproject")
+  (ql:quickload "vecto"))
 
 ;; load my utils
 (if (member "IN.NET.SHARAD.UTILS" (mapcar #'package-name (list-all-packages)) :test #'string=)
