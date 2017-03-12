@@ -42,7 +42,7 @@ function set_keyboard()
 
 function setup_apt_packages()
 {
-    sudo apt install git-all ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu
+    sudo apt install git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu
 }
 
 function setup_ecrypt_private()
