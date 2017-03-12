@@ -141,7 +141,7 @@ function setup_git_repos()
 
 function setup_misc()
 {
-    cp -ar $SITEDIR/.repos/git/system/ubuntu/$SITEDIR/* $SITEDIR/
+    cp -ar $SITEDIR/.repos/git/system/system/ubuntu/$SITEDIR/* $SITEDIR/
 }
 
 main
