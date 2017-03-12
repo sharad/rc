@@ -104,7 +104,7 @@ function setup_clisp_packages()
 
 function setup_stumwpm_packages()
 {
-    sudo apt install autoconf
+    sudo apt install autoconf texinfo
 
     sudo mkdir -p $SITEDIR/build
     sudo chown ${USER}.${USER} -R $SITEDIR/build
