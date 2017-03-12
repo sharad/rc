@@ -115,9 +115,10 @@
 ;;; LineEdit
 
 #+quicklisp
-(defparameter *quicklisp-local-home-dir* (merge-pathnames "../paradise/opt/lisp/common-lisp/quicklisp/" (user-homedir-pathname)))
-(when (probe-file (merge-pathnames "local-projects" *quicklisp-local-home-dir*))
-  (nconc ql:*local-project-directories* (list (merge-pathnames "local-projects" *quicklisp-local-home-dir*))))
+(progn
+  (defparameter *quicklisp-local-home-dir* (merge-pathnames "../paradise/opt/lisp/common-lisp/quicklisp/" (user-homedir-pathname)))
+  (when (probe-file (merge-pathnames "local-projects" *quicklisp-local-home-dir*))
+    (nconc ql:*local-project-directories* (list (merge-pathnames "local-projects" *quicklisp-local-home-dir*)))))
 
 
 ;; load my utils
