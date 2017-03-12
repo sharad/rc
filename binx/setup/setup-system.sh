@@ -156,9 +156,9 @@ function setup_misc()
              xsessions/stumpwm.desktop \
              xsessions/stumpwm-gnome.desktop
     do
-        echo sudo mkdir -p $(dirname $f)
+        echo sudo mkdir -p /usr/share/$(dirname $f)
         echo sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f /usr/share/$f
-        sudo mkdir -p $(dirname $f)
+        sudo mkdir -p /usr/share/$(dirname $f)
         sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f /usr/share/$f
     done
     cd -
