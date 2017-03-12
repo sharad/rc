@@ -73,7 +73,6 @@ function setup_ssh_keys()
     fi
 }
 
-# exit
 function setup_git_repos()
 {
     mkdir -p ~/.repos/git/user ~/.repos/git/system
