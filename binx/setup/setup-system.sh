@@ -135,7 +135,7 @@ function setup_git_repos()
     if [ ! -L $SITEDIR/.system ]
     then
 	      rm -rf $SITEDIR/.system
-	      ln -sf .repos/git/user/system/system $SITEDIR/.system
+	      sudo ln -sf .repos/git/user/system/system $SITEDIR/.system
     fi
 }
 
