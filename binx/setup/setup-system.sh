@@ -147,6 +147,27 @@ function setup_git_repos()
 function setup_misc()
 {
     sudo cp -ar $SITEDIR/.repos/git/system/system/ubuntu/$SITEDIR/* $SITEDIR/
+
+
+    cd $SITEDIR/.repos/git/system/system/ubuntu/usr/share
+    for f in applications/stumpwm.desktop \
+             gnome-session/sessions/stumpwm.session \
+             keymaps/i386/include/sharad.inc.gz \
+             xsessions/stumpwm.desktop \
+             xsessions/stumpwm-gnome.desktop
+    do
+        sudo mkdir -p $(dirname $f)
+        sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f /usr/share/$f
+    done
+    cd -
+
+    cd $SITEDIR/.repos/git/system/system/ubuntu/usr/local/bin
+    for f in conkeror gnome-session-stumpwm  userifup  x-session-stumpwm
+    do
+        sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/local/bin/$f /usr/local/bin/$f
+    done
+    cd -
+
 }
 
 main
