@@ -65,7 +65,7 @@ function setup_quicklisp_package()
     if [ ! -d $SITEDIR/share/common-lisp/source/quicklisp ]
     then
         sbcl --load /usr/share/cl-quicklisp/quicklisp.lisp \
-             --eval '(quicklisp-quickstart:install :path "'$SITEDIR/share/common-lisp/source/quicklisp'")'       \
+             --eval '(quicklisp-quickstart:install :path "'$SITEDIR/share/common-lisp/source/quicklisp/quicklisp'")' \
              --eval '(quit)'
     fi
     # (quicklisp-quickstart:install)
@@ -81,7 +81,7 @@ function setup_clisp_packages()
     sudo mkdir -p $SITEDIR/share/common-lisp/systems
     sudo mkdir -p $SITEDIR/share/common-lisp/source/sharad
 
-    sudo chown ${USER}.${USER} -R $SITEDIR/share/common-lisp/source/
+    sudo chown ${USER}.${USER} -R $SITEDIR/share/common-lisp/
 
     if [ ! -d $SITEDIR/share/common-lisp/source/sharad/in.net.sharad.utils ]
     then
