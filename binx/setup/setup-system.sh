@@ -6,7 +6,7 @@ TMPDIR=~/setuptmp
 
 function main()
 {
-    mkdir -p $SITEDIR/.repos/git/system/
+    sudo mkdir -p $SITEDIR/.repos/git/system/
     setup_apt_packages
 
     setup_ssh_keys "$SSH_KEY_DUMP"
@@ -123,7 +123,7 @@ function setup_stumwpm_packages()
 
 function setup_git_repos()
 {
-    mkdir -p $SITEDIR/.repos/git/system/
+    sudo mkdir -p $SITEDIR/.repos/git/system/
 
     if [ ! -d $SITEDIR/.repos/git/system/system ]
     then
