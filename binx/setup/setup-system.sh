@@ -7,7 +7,7 @@ TMPDIR=~/setuptmp
 function main()
 {
     sudo mkdir -p $SITEDIR/.repos/git/system/
-    sudo chown ${{USER}.${USER} -R $SITEDIR/.repos/git/system/
+    sudo chown ${USER}.${USER} -R $SITEDIR/.repos/git/system/
     setup_apt_packages
 
     setup_ssh_keys "$SSH_KEY_DUMP"
@@ -56,7 +56,7 @@ function setup_quicklisp_package()
     sudo apt install cl-quicklisp
 
     sudo mkdir -p  $SITEDIR/share/common-lisp/source/
-    sudo chown $USER.$USER -R $SITEDIR/share/common-lisp/source/
+    sudo chown ${USER}.${USER} -R $SITEDIR/share/common-lisp/source/
 
     # sbcl --load /usr/share/cl-quicklisp/quicklisp.lisp \
     #      --eval '(quicklisp-quickstart:install :path "'$SITEDIR/share/common-lisp/source/quicklisp'")'       \
@@ -79,7 +79,7 @@ function setup_clisp_packages()
     sudo mkdir -p $SITEDIR/share/common-lisp/systems
     sudo mkdir -p $SITEDIR/share/common-lisp/source/sharad
 
-    sudo chown $USER.$USER -R $SITEDIR/share/common-lisp/source/
+    sudo chown ${USER}.${USER} -R $SITEDIR/share/common-lisp/source/
 
     if [ ! -d $SITEDIR/share/common-lisp/source/sharad/in.net.sharad.utils ]
     then
@@ -125,7 +125,7 @@ function setup_stumwpm_packages()
 function setup_git_repos()
 {
     sudo mkdir -p $SITEDIR/.repos/git/system/
-    sudo chown ${{USER}.${USER} -R $SITEDIR/.repos/git/system/
+    sudo chown ${USER}.${USER} -R $SITEDIR/.repos/git/system/
 
     if [ ! -d $SITEDIR/.repos/git/system/system ]
     then
