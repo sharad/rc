@@ -107,6 +107,9 @@
   (when (probe-file (merge-pathnames "local-projects" *quicklisp-local-home-dir*))
     (nconc ql:*local-project-directories* (list (merge-pathnames "local-projects" *quicklisp-local-home-dir*)))))
 
+#+quicklisp
+(progn
+  (ql:quickload "quickproject"))
 
 ;; load my utils
 (if (member "IN.NET.SHARAD.UTILS" (mapcar #'package-name (list-all-packages)) :test #'string=)
