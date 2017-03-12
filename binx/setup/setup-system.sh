@@ -123,7 +123,7 @@ function setup_stumwpm_packages()
     sudo make install
     cd -
     cd /usr/local/stow
-    stow stumpwm
+    sudo stow stumpwm
     cd -
 }
 
