@@ -20,7 +20,7 @@ function main()
 
 function setup_apt_packages()
 {
-    sudo apt install git openssl stow sbcl cl-clx-sbcl cl-quicklisp
+    sudo apt install git openssl stow sbcl cl-clx-sbcl cl-quicklisp  openssh-server
 }
 
 function setup_ssh_keys()
