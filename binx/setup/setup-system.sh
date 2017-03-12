@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 SSH_KEY_DUMP=$1
 SITEDIR=/usr/local/
@@ -102,6 +102,8 @@ function setup_clisp_packages()
 
 function setup_stumwpm_packages()
 {
+    sudo apt install autoconf
+
     sudo mkdir -p $SITEDIR/build
     sudo chown ${USER}.${USER} -R $SITEDIR/build
     if [ ! -d $SITEDIR/build/stumpwm ]
@@ -113,6 +115,7 @@ function setup_stumwpm_packages()
     fi
 
     cd $SITEDIR/build/stumpwm
+    ./autogen.sh
     ./configure --prefix=/usr/local/stow/stumpwm --with-lisp=sbcl
     make
     sudo make install
@@ -141,7 +144,7 @@ function setup_git_repos()
 
 function setup_misc()
 {
-    cp -ar $SITEDIR/.repos/git/system/system/ubuntu/$SITEDIR/* $SITEDIR/
+    sudo cp -ar $SITEDIR/.repos/git/system/system/ubuntu/$SITEDIR/* $SITEDIR/
 }
 
 main
