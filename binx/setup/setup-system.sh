@@ -7,6 +7,7 @@ TMPDIR=~/setuptmp
 function main()
 {
     sudo mkdir -p $SITEDIR/.repos/git/system/
+    sudo chown ${{USER}.${USER} -R $SITEDIR/.repos/git/system/
     setup_apt_packages
 
     setup_ssh_keys "$SSH_KEY_DUMP"
@@ -124,6 +125,7 @@ function setup_stumwpm_packages()
 function setup_git_repos()
 {
     sudo mkdir -p $SITEDIR/.repos/git/system/
+    sudo chown ${{USER}.${USER} -R $SITEDIR/.repos/git/system/
 
     if [ ! -d $SITEDIR/.repos/git/system/system ]
     then
