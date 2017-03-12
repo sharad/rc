@@ -37,20 +37,20 @@
 (defconst lotus-files-packages
   '(
     (PACKAGE :location local)
-    files
+    (files :location local)
     find-dired
     find-file-in-project
     lusty-explorer
-    ff-paths
+    (ff-paths :location local)
     filecache
-    iswitchb
-    iswitchb-fc
-    ifind-mode
-    ffw
-    multibackup
-    ff-relativedir
+    (iswitchb :location local)
+    (iswitchb-fc :location local)
+    (ifind-mode :location local)
+    (ffw :location local)
+    (multibackup :location local)
+    (ff-relativedir :location local)
     ;; find-files-unified
-    locations
+    (locations :location local)
     ffap
     )
   "The list of Lisp packages required by the lotus-files layer.

@@ -40,19 +40,19 @@
     eproject
     ;; eproject-ruby
     ;; eproject-another
-    mk-project ;; https://github.com/mattkeller/mk-project
-    projman ;; http://www.emacswiki.org/emacs/ProjmanMode
+    (mk-project :location local) ;; https://github.com/mattkeller/mk-project
+    (projman :location local) ;; http://www.emacswiki.org/emacs/ProjmanMode
     project-root
-    fsproject
+    (fsproject :location local)
     ;; perspective   ;; ecb bug
-    workspaces
+    (workspaces :location local)
     ;; ide-skel
-    project-buffer-mode
-    project-buffer-file
-    iproject
-    project-buffer-occur
-    project-buffer-mode+
-    sln-mode
+    (project-buffer-mode :location local)
+    (project-buffer-file :location local)
+    (iproject :location local)
+    (project-buffer-occur :location local)
+    (project-buffer-mode+ :location local)
+    (sln-mode :location local)
     )
   "The list of Lisp packages required by the lotus-project layer.
 

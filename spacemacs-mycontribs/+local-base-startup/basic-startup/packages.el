@@ -99,6 +99,27 @@ Each entry is either:
       :commands 'sharad/desktop-session-restore
       :config
       (progn
+
+        (progn
+          (add-hook 'sharad/disable-desktop-restore-interrupting-feature
+                    '(lambda ()
+                      (setq
+                       tags-add-tables nil)
+                      (setq vc-handled-backends (remove 'P4 vc-handled-backends))
+                      (when (fboundp 'spacemacs/check-large-file)
+                        (remove-hook
+                         'find-file-hook
+                         'spacemacs/check-large-file))))
+          (add-hook 'sharad/enable-desktop-restore-interrupting-feature
+                    '(lambda ()
+                      (setq
+                       tags-add-tables (default-value 'tags-add-tables))
+                      (add-to-list 'vc-handled-backends 'P4)
+                      (when (fboundp 'spacemacs/check-large-file)
+                        (add-hook
+                         'find-file-hook
+                         'spacemacs/check-large-file)))))
+
         (progn
           (with-eval-after-load "utils-custom"
             (setq session-mgr-utils-notify 'message-notify)))

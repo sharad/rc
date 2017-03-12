@@ -38,18 +38,18 @@
   '(
     (PACKAGE :location local)
     tramp
-    tramp-cache
-    tramp-cmds
-    tramp-compat
-    tramp-fish
-    tramp-ftp
+    (tramp-cache :location local)
+    (tramp-cmds :location local)
+    (tramp-compat :location local)
+    (tramp-fish :location local)
+    (tramp-ftp :location local)
     ;; tramp-gvfs
-    tramp-gw
-    tramp-imap
-    tramp-smb
-    tramp-uu
-    trampver
-    tramp-sh
+    (tramp-gw :location local)
+    (tramp-imap :location local)
+    (tramp-smb :location local)
+    (tramp-uu :location local)
+    (trampver :location local)
+    (tramp-sh :location local)
     ido
     password-cache
     )

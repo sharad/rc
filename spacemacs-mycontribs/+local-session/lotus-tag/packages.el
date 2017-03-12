@@ -38,8 +38,8 @@
   '(
     ;; (PACKAGE :location local)
     (tree :location local)
-    tags
-    gtags
+    (tags :location local)
+    (gtags :location local)
     xcscope
     elisp-slime-nav
     )

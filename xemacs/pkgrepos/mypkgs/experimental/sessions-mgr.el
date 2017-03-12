@@ -56,6 +56,9 @@
 (require 'elscreen)
 (require 'emacs-panel)
 
+(defvar sharad/disable-desktop-restore-interrupting-feature nil
+  "feature that need to be disabled for proper restoring of desktop.")
+
 (defvar sharad/enable-desktop-restore-interrupting-feature nil
   "feature that were disabled for proper restoring of desktop will get re-enabled here.")
 
@@ -898,6 +901,7 @@ Also returns nil if pid is nil."
            (desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
       (prog1
           (setq *desktop-vc-read-inprogress* t)
+        (run-each-hooks 'sharad/disable-desktop-restore-interrupting-feature)
         (if
 
 
@@ -1096,7 +1100,8 @@ to restore in case of sudden emacs crash."
   (defun desktop-idle-create-buffers ()
     "Create buffers until the user does something, then stop.
 If there are no buffers left to create, kill the timer."
-    (let ((repeat 1))
+    (let ((tags-add-tables nil))
+     (let ((repeat 1))
       (while (and repeat desktop-buffer-args-list)
         (unless (ignore-errors
                  (save-window-excursion
@@ -1108,7 +1113,7 @@ If there are no buffers left to create, kill the timer."
           (setq desktop-lazy-timer nil)
           (message "Lazy desktop load complete")
           (sit-for 3)
-          (message "")))))
+          (message ""))))))
 
   (defadvice desktop-idle-create-buffers (after desktop-idle-complete-actions)
     (unless desktop-buffer-args-list

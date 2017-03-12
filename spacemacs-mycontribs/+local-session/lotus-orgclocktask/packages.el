@@ -37,16 +37,16 @@
 (defconst lotus-orgclocktask-packages
   '(
     ;; (PACKAGE :location local)
-    org-clock-utils
-    org-clock-daysummary
-    org-clocktable-alt
-    org-context-clocking
-    org-misc-utils
-    org-nagora-report
-    org-timesheet
-    timesheet
+    (org-clock-utils :location local)
+    (org-clock-daysummary :location local)
+    (org-clocktable-alt :location local)
+    (org-context-clocking :location local)
+    (org-misc-utils :location local)
+    (org-nagora-report :location local)
+    (org-timesheet :location local)
+    (timesheet :location local)
     wakatime-mode
-    task-manager)
+    (task-manager :location local))
   "The list of Lisp packages required by the lotus-orgclocktask layer.
 
 Each entry is either:

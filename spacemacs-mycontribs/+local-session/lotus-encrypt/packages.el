@@ -38,7 +38,7 @@
   '(
     ;; (PACKAGE :location local)
     epa
-    epa-file
+    (epa-file :location local)
     )
   "The list of Lisp packages required by the lotus-encrypt layer.
 

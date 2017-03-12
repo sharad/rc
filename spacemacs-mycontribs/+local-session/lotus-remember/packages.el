@@ -39,20 +39,20 @@
     (PACKAGE :location local)
     remember
     org
-    org-remember
+    (org-remember :location local)
     planner
-    remember-planner
-    read-file-name
-    remember-blosxom
-    remember-experimental ;; will start mail at daemon startup time.
-    remember-autoloads
-    remember-diary ; merged in remember.el
-    remember-bbdb
+    (remember-planner :location local)
+    (read-file-name :location local)
+    (remember-blosxom :location local)
+    (remember-experimental :location local) ;; will start mail at daemon startup time.
+    (remember-autoloads :location local)
+    (remember-diary :location local) ; merged in remember.el
+    (remember-bbdb :location local)
     loadhist
-    remember-bibl
-     macs-wiki-journal
-    remember-unified
-    remember-idle
+    (remember-bibl :location local)
+     (macs-wiki-journal :location local)
+    (remember-unified :location local)
+    (remember-idle :location local)
     )
 
   "The list of Lisp packages required by the lotus-remember layer.

@@ -39,10 +39,10 @@
     ;; (PACKAGE :location local)
     org
     org-agenda
-    org-timer
-    org-clock
-    org2rem
-    org-feed
+    (org-timer :location local)
+    (org-clock :location local)
+    (org2rem :location local)
+    (org-feed :location local)
     )
   "The list of Lisp packages required by the lotus-orgmode layer.
 

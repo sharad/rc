@@ -39,11 +39,11 @@
     ;; (PACKAGE :location local)
     pabbrev
     auto-complete
-    pde-indent-dwim
+    (pde-indent-dwim :location local)
     comint
     yasnippet
     hippie-exp
-    yas-suggest
+    (yas-suggest :location local)
     )
   "The list of Lisp packages required by the lotus-expand layer.
 

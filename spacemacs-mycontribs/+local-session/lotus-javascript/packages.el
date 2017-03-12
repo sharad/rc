@@ -36,13 +36,13 @@
 
 (defconst lotus-javascript-packages
   '(
-    espresso
+    (espresso :location local)
     sws-mode
     jade-mode ;; https://github.com/brianc/jade-mode
-    javascript
-    js-mode
+    (javascript :location local)
+    (js-mode :location local)
     js2-mode
-    flymake-js
+    (flymake-js :location local)
     moz
     )
   "The list of Lisp packages required by the lotus-javascript layer.

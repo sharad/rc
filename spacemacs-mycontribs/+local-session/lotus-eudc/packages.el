@@ -37,7 +37,7 @@
 (defconst lotus-eudc-packages
   '(
     ;; (PACKAGE :location local)
-    passwds
+    (passwds :location local)
     eudc
     ldap
     )

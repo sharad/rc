@@ -39,7 +39,7 @@
     thingatpt
     thing-cmds
     (thing-edit :location local)
-    copywithoutsel
+    (copywithoutsel :location local)
     )
   "The list of Lisp packages required by the lotus-things layer.
 

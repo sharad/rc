@@ -38,10 +38,10 @@
   '(
     (PACKAGE :location local)
     erc
-    erc-join
-    erc-services
-    erc-nick-notify
-    h4x0r
+    (erc-join :location local)
+    (erc-services :location local)
+    (erc-nick-notify :location local)
+    (h4x0r :location local)
     bitlbee
     passwds
     )
