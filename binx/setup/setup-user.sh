@@ -15,18 +15,18 @@ function main()
     setup_ecrypt_private
     if ! ssh-add -l
     then
-	      if [ "x$SSH_KEY_DUMP" = "x" ]
-	      then
-	          echo ssh key encrypted dump no provided >&2
-	          exit -1
-	      fi
-	      setup_ssh_keys "$SSH_KEY_DUMP"
+	if [ "x$SSH_KEY_DUMP" = "x" ]
+	then
+	    echo ssh key encrypted dump no provided >&2
+	    exit -1
+	fi
+	setup_ssh_keys "$SSH_KEY_DUMP"
     fi
 
     if ! ssh-add -l
     then
-	      echo ssh key no available >&2
-	      exit -1
+	echo ssh key no available >&2
+	exit -1
     fi
     setup_git_repos
 

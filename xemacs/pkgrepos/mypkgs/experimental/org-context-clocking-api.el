@@ -196,11 +196,15 @@
 
     (defun org-entry-tree-update-task-infos (&optional force)
       (interactive "P")
-      (unless (and (not force)
-                   org-entry-tree-task-infos)
-        (setq org-entry-tree-task-infos
-              (org-entry-tree-get-task-infos
-               org-entry-tree-task-info-root-org-file)))
+      (if org-entry-tree-task-info-root-org-file
+          (if (file-exists-p org-entry-tree-task-info-root-org-file)
+              (unless (and (not force)
+                           org-entry-tree-task-infos)
+                (setq org-entry-tree-task-infos
+                      (org-entry-tree-get-task-infos
+                       org-entry-tree-task-info-root-org-file)))
+            (message "file %s not exists." org-entry-tree-task-info-root-org-file))
+        (message "org-entry-tree-task-info-root-org-file is nil"))
       org-entry-tree-task-infos)
 
     (defun org-entry-tree-map-subheading (fun)
