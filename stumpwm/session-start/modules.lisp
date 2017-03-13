@@ -12,6 +12,8 @@
       (if (ql:where-is-system module)
           (ql:quickload module))))
 
+(add-to-load-path #p"~/.stumpwm.d/modules")
+
 ;; ;;{{{ Load module
 (load-external-module "amixer")
 (load-external-module "aumix")

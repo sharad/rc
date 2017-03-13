@@ -13,6 +13,11 @@
 
 ;; Query replace (default /home/s/hell/.Organize/emacs/plan/Plans -> ~/Documents/CreatedContent/contents/muse/web/site/wiki/Organize/plan/Plans):
 
+(setq
+ calendar-mark-diary-entries-flag t
+ ;;   mark-diary-entries-in-calendar t
+ diary-file (auto-config-file "diary/diary"))
+
 (deh-require-maybe (and muse-config publishing-config planner)
   (setq planner-sections
         '((tasks . "Tasks")

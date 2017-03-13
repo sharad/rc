@@ -679,12 +679,14 @@
 ;; (no-error
 ;;     (require 'cl-xyzfail)
 ;;  )
+(when nil
 (progn
  ;; http://www.cliki.net/CPS
  ;; http://dunsmor.com/lisp/onlisp/onlisp_24.html
  ;;
  (require 'cl-cont)
  (use-package 'cl-cont))
+)
 
 
 

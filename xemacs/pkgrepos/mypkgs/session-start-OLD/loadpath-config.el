@@ -24,8 +24,11 @@
 
 ;;; Code:
 
-(require 'macros-config      "~/.xemacs/pkgrepos/mypkgs/session-start/macros-config.el")
-(require 'basic-utils-config "~/.xemacs/pkgrepos/mypkgs/session-start/basic-utils-config.el")
+(require 'macros-config      "~/.xemacs/pkgrepos/mypkgs/session-autoload/macros-config.el")
+;; (require 'basic-utils-config "~/.xemacs/pkgrepos/mypkgs/session-start/basic-utils-config.el")
+(require 'basic-utils-config "~/.xemacs/pkgrepos/mypkgs/session-autoload/basic-utils-config.el")
+
+(defalias 'make-local-hook 'ignore)
 
 (deh-section "General"
 
@@ -76,7 +79,7 @@
               (directory-files package-dir t "[a-zA-Z]+"))))
 
     ;; (package-dir-byte-compile "~/.xemacs/pkgrepos/world")
-    (package-dir-byte-compile "~/.xemacs/pkgrepos/mypkgs")
+    ;; (package-dir-byte-compile "~/.xemacs/pkgrepos/mypkgs")
     (package-dir-byte-compile "~/.xemacs/pkgrepos/elpa")
     (package-dir-byte-compile "~/.xemacs/pkgrepos/world/misc")
     (package-dir-byte-compile "~/.xemacs/pkgrepos/world/gits")

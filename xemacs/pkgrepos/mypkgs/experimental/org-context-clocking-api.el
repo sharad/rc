@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(require org-clock)
+(require 'org-clock)
 
 
 

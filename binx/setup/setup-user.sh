@@ -3,9 +3,13 @@
 SSH_KEY_DUMP=$1
 TMPDIR=~/setuptmp
 
+DEB_PKGS1="vim emacs emacs-goodies-el org-mode"
+DEB_PKGS2="rxvt-unicode-256color elscreen planner-el"
+
 function main()
 {
-    mkdir $TMPDIR
+    mkdir -p $TMPDIR
+    set_keyboard
     cd ~/
     setup_apt_packages
     setup_ecrypt_private
@@ -35,14 +39,19 @@ function main()
 
 function set_keyboard()
 {
-    mkdir $TMPDIR
-    wget 'https://raw.githubusercontent.com/sharad/rc/master/keymaps/Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt' -O $TMPDIR/keymap
+    if [ ! -f $TMPDIR/keymap ]
+    then
+        mkdir -p $TMPDIR
+        wget 'https://raw.githubusercontent.com/sharad/rc/master/keymaps/Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt' -O $TMPDIR/keymap
+    fi
     xmodmap $TMPDIR/keymap
 }
 
 function setup_apt_packages()
 {
     sudo apt install git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server
+    sudo apt install $DEB_PKGS1
+    sudo apt install $DEB_PKGS2
 }
 
 function setup_ecrypt_private()
@@ -81,17 +90,17 @@ function setup_git_repos()
     then
 	      git clone git@github.com:sharad/rc.git ~/.repos/git/user/rc
     fi
-    if [ ! -L ~/.repos/git/user/setup-trunk ]
+    if [ ! -L ~/.repos/git/user/setup-trunk -a -d ~/.repos/git/user/rc ]
     then
     	  rm -rf ~/.repos/git/user/setup-trunk
-	      ln -sf rc ~/.repos/git/user/setup-trunk
+	  ln -sf rc ~/.repos/git/user/setup-trunk
     fi
-    if [ ! -L ~/.setup-trunk ]
+    if [ ! -L ~/.setup-trunk -a -d ~/.repos/git/user/setup-trunk ]
     then
 	      rm -rf ~/.setup-trunk
 	      ln -sf .repos/git/user/setup-trunk ~/.setup-trunk
     fi
-    if [ ! -L ~/.setup ]
+    if [ ! -L ~/.setup -a -d ~/.setup-trunk ]
     then
 	      rm -rf ~/.setup
 	      ln -sf .setup-trunk ~/.setup
@@ -102,7 +111,7 @@ function setup_git_repos()
 	      git clone git@github.com:sharad/system.git ~/.repos/git/system/system
     fi
 
-    if [ ! -L ~/.system ]
+    if [ ! -L ~/.system -a -d ~/.repos/git/user/system/system ]
     then
 	      rm -rf ~/.system
 	      ln -sf .repos/git/user/system/system ~/.system
@@ -113,12 +122,22 @@ function setup_git_repos()
 	      git clone git@bitbucket.org:sh4r4d/stumpwm.git ~/.repos/git/system/stumpwm
     fi
 
+    if [ ! -d ~/.repos/git/system/stumpwm-contrib ]
+    then
+	git clone https://github.com/stumpwm/stumpwm-contrib.git ~/.repos/git/system/stumpwm-contrib
+    fi
+    if [ ! -L ~/.stumpwm.d/modules -a -d ~/.repos/git/system/stumpwm-contrib ]
+    then
+        rm -rf ~/.stumpwm.d/modules
+        ln -s ../.repos/git/system/stumpwm-contrib ~/.stumpwm.d/modules
+    fi
+
     if [ ! -d ~/.repos/git/user/osetup ]
     then
 	      git clone git@bitbucket.org:sh4r4d/osetup.git ~/.repos/git/user/osetup
     fi
 
-    if [ ! -L ~/.osetup ]
+    if [ ! -L ~/.osetup -a -d ~/.repos/git/user/osetup ]
     then
 	      rm -rf ~/.osetup
 	      ln -sf .repos/git/user/osetup ~/.osetup
@@ -129,7 +148,7 @@ function setup_git_repos()
 	      git clone git@bitbucket.org:sh4r4d/sysinfo.git ~/.repos/git/system/sysinfo
     fi
 
-    if [ ! -L ~/.sysinfo ]
+    if [ ! -L ~/.sysinfo -a -d ~/.repos/git/system/sysinfo ]
     then
 	      rm -rf ~/.sysinfo
 	      ln -sf .repos/git/system/sysinfo ~/.sysinfo
@@ -140,7 +159,7 @@ function setup_git_repos()
 	      git clone git@bitbucket.org:sh4r4d/secure.d.git ~/.repos/git/user/secure.d
     fi
 
-    if [ ! -d ~/.Private/secure.d ]
+    if [ ! -d ~/.Private/secure.d -a -d ~/.repos/git/user/secure.d ]
     then
 	      rm -rf ~/.Private/secure.d
 	      cp -ra ~/.repos/git/user/secure.d ~/.Private/secure.d
@@ -151,13 +170,10 @@ function setup_git_repos()
 	      git clone git@bitbucket.org:sh4r4d/orgp.git ~/.repos/git/user/orgp
     fi
 
-    if [ ! -d ~/.pi ]
+    if [ ! -d ~/.pi -a -d -d ~/.setup/pi ]
     then
-	      if [ -d ~/.setup/pi ]
-	      then
-	          ln -s .setup/pi ~/.pi
-	          ln -s ../.repos/git/user/orgp ~/.pi/org
-	      fi
+	ln -s .setup/pi ~/.pi
+	ln -s ../.repos/git/user/orgp ~/.pi/org
     fi
 
     if [ ! -d ~/.repos/git/user/opt ]
@@ -165,10 +181,10 @@ function setup_git_repos()
 	      git clone git@bitbucket.org:sh4r4d/opt.git ~/.repos/git/user/opt
     fi
 
-    if [ ! -L ~/.opt ]
+    if [ ! -L ~/.opt -a -d ~/.repos/git/user/opt ]
     then
 	      rm -rf ~/.opt
-	      ln -sf ~/.repos/git/user/opt ~/.opt
+	      ln -sf .repos/git/user/opt ~/.opt
     fi
 }
 
@@ -176,35 +192,47 @@ function setup_user_config_setup()
 {
     if [ -d ~/.setup ]
     then
-	      mkdir -p ~/.old_dot_filedirs
+	mkdir -p ~/.old_dot_filedirs
 
-	      mv ~/.setup/_home/.setup $TMPDIR/Xsetup
-	      cd ~/.setup/_home/
-	      for c in .[a-zA-Z]* *
-	      do
-	          if [ "$c" != ".setup" ]
-	          then
-		            if [ -e ~/$c ]
-		            then
-		                mv ~/$c ~/.old_dot_filedirs
-		                cp -a $c ~/$c
-		            fi
-	          fi
-	      done
-	      mv $TMPDIR/Xsetup ~/.setup/_home/.setup
-	      cd ~/
+	mv ~/.setup/_home/.setup $TMPDIR/Xsetup
+	cd ~/.setup/_home/
+	for c in .[a-zA-Z]* *
+	do
+            echo considering $c
+	    if [ "$c" != ".setup" -a "$c" != "." -a "$c" != ".." ]
+	    then
+		if [ -e ~/$c ]
+		then
+                    if [ ! -L ~/$c ] || [ "$(readlink $c)" != "$(readlink $c)" ]
+                    then
+		        mv ~/$c ~/.old_dot_filedirs
+		        cp -af $c ~/$c
+                        echo done setting up $c
+                    else
+                        echo not doing anything $c ~/$c
+                    fi
+                else
+                    cp -af $c ~/$c
+                    echo done setting up $c
+		fi
+            else
+                echo not setting up $c
+	    fi
+	done
+	mv $TMPDIR/Xsetup ~/.setup/_home/.setup
+	cd ~/
 
-	      for d in .repos .osetup .setup .setup-trunk .sysinfo .system .pi .config .gconf .ecryptfs
-	      do
-	          if [ -e ~/.old_dot_filedirs/$d ]
-	          then
-		            if [ ! -e ~/$d ]
-		            then
-		                echo mv ~/.old_dot_filedirs/$d ~/
-		                mv ~/.old_dot_filedirs/$d ~/
-		            fi
-	          fi
-	      done
+	for d in .repos .osetup .setup .setup-trunk .sysinfo .system .pi .config .gconf .ecryptfs
+	do
+	    if [ -e ~/.old_dot_filedirs/$d ]
+	    then
+		if [ ! -e ~/$d ]
+		then
+		    echo mv ~/.old_dot_filedirs/$d ~/
+		    mv ~/.old_dot_filedirs/$d ~/
+		fi
+	    fi
+	done
     fi
 }
 

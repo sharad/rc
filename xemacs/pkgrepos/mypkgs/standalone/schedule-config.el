@@ -174,7 +174,8 @@ This function returns a timer object which you can use in `cancel-timer'."
 ;; )
 
 
-(deh-require-maybe (and planner-interface midnight)
+(deh-require-maybe (and planner plan-config planner-interface midnight)
+  (require 'plan-config)
   ;; (midnight-delay-set 'midnight-delay 16200) ;; (eq (* 4.5 60 60) "4:30am")
   (midnight-delay-set 'midnight-delay "4:30am")
   (add-hook 'midnight-hook '(lambda ()
@@ -182,6 +183,8 @@ This function returns a timer object which you can use in `cancel-timer'."
                                  (save-excursion
                                    (save-window-excursion
                                      (message "Midnight: running calendar and planner")
+                                     (unless (file-exists-p (auto-config-file "diary/diary"))
+                                         (with-temp-buffer (write-file (auto-config-file "diary/diary"))))
                                      (calendar)
                                      ;; check planner-carry-tasks-forward
                                      (plan 7)

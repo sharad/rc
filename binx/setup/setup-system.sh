@@ -4,6 +4,7 @@ SSH_KEY_DUMP=$1
 SITEDIR=/usr/local
 TMPDIR=~/setuptmp
 
+
 function main()
 {
     sudo mkdir -p $SITEDIR/.repos/git/system/
@@ -41,9 +42,13 @@ function setup_ssh_keys()
 
 function setup_packages()
 {
+    sudo mkdir -p $SITEDIR/build
+    sudo chown ${USER}.${USER} -R $SITEDIR/build
+
     setup_clisp_packages
     setup_quicklisp_package
     setup_stumwpm_packages
+    setup_conkeror_package
 }
 
 function setup_quicklisp_package()
@@ -54,7 +59,6 @@ function setup_quicklisp_package()
     # sbcl --load quicklisp.lisp
 
     sudo apt install cl-quicklisp
-
     sudo mkdir -p  $SITEDIR/share/common-lisp/source/
     sudo chown ${USER}.${USER} -R $SITEDIR/share/common-lisp/source/
 
@@ -106,8 +110,6 @@ function setup_stumwpm_packages()
 {
     sudo apt install autoconf texinfo
 
-    sudo mkdir -p $SITEDIR/build
-    sudo chown ${USER}.${USER} -R $SITEDIR/build
     if [ ! -d $SITEDIR/build/stumpwm ]
     then
         git clone https://sharad@github.com/sharad/stumpwm.git $SITEDIR/build/stumpwm
@@ -129,12 +131,14 @@ function setup_stumwpm_packages()
 
 function setup_git_repos()
 {
-    sudo mkdir -p $SITEDIR/.repos/git/system/
-    sudo chown ${USER}.${USER} -R $SITEDIR/.repos/git/system/
+    sudo mkdir -p $SITEDIR/.repos
+    sudo chown ${USER}.${USER} -R $SITEDIR/.repos
+
 
     if [ ! -d $SITEDIR/.repos/git/system/system ]
     then
-	      git clone git@github.com:sharad/system.git $SITEDIR/.repos/git/system/system
+	mkdir -p $SITEDIR/.repos/git/system/
+	git clone git@github.com:sharad/system.git $SITEDIR/.repos/git/system/system
     fi
 
     if [ ! -L $SITEDIR/.system ]
@@ -142,6 +146,34 @@ function setup_git_repos()
 	      rm -rf $SITEDIR/.system
 	      sudo ln -sf .repos/git/user/system/system $SITEDIR/.system
     fi
+
+    if [ ! -d $SITEDIR/.repos/git/packages/misc/browser/conkeror ]
+    then
+	mkdir -p $SITEDIR/.repos/git/packages/misc/browser
+	git clone git://repo.or.cz/conkeror.git $SITEDIR/.repos/git/packages/misc/browser/conkeror
+    fi
+
+    if [ ! -d $SITEDIR/.repos/git/packages/common-lisp/source/sharad/in.net.sharad.utils ]
+    then
+	mkdir -p $SITEDIR/.repos/git/packages/common-lisp/source/sharad
+	git clone git@bitbucket.org:sh4r4d/in.net.sharad.utils $SITEDIR/.repos/git/packages/common-lisp/source/sharad/in.net.sharad.utils
+    fi
+
+    if [ ! -d $SITEDIR/.repos/git/packages/common-lisp/source/sharad/pa ]
+    then
+	mkdir -p $SITEDIR/.repos/git/packages/common-lisp/source/sharad
+        git clone git@bitbucket.org:sh4r4d/pa $SITEDIR/.repos/git/packages/common-lisp/source/sharad/pa
+    fi
+
+    if [ ! -d $SITEDIR/.repos/git/packages/common-lisp/source/sharad/stumpwm ]
+    then
+	mkdir -p $SITEDIR/.repos/git/packages/common-lisp/source/sharad
+        git clone https://sharad@github.com/sharad/stumpwm.git $SITEDIR/.repos/git/packages/common-lisp/source/sharad/stumpwm
+        cd $SITEDIR/.repos/git/packages/common-lisp/source/sharad/stumpwm
+        git checkout pa-point-timeout
+        cd -
+    fi
+
 }
 
 function setup_misc()
@@ -156,20 +188,41 @@ function setup_misc()
              xsessions/stumpwm.desktop \
              xsessions/stumpwm-gnome.desktop
     do
-        echo sudo mkdir -p /usr/share/$(dirname $f)
-        echo sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f /usr/share/$f
-        sudo mkdir -p /usr/share/$(dirname $f)
-        sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f /usr/share/$f
+	if [ ! -e /usr/share/$f ]
+	then
+            echo sudo mkdir -p /usr/share/$(dirname $f)
+            echo sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f /usr/share/$f
+            sudo mkdir -p /usr/share/$(dirname $f)
+            sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/share/$f /usr/share/$f
+	fi
     done
     cd -
 
     cd $SITEDIR/.repos/git/system/system/ubuntu/usr/local/bin
-    for f in conkeror gnome-session-stumpwm  userifup  x-session-stumpwm
+    for f in conkeror-old gnome-session-stumpwm  userifup  x-session-stumpwm
     do
-        sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/local/bin/$f /usr/local/bin/$f
+	if [ ! -e /usr/local/bin/$f ]
+	then
+            sudo cp -i $SITEDIR/.repos/git/system/system/ubuntu/usr/local/bin/$f /usr/local/bin/$f
+	fi
     done
     cd -
+}
 
+function setup_conkeror_package()
+{
+
+    if [ ! -d $SITEDIR/build/conkeror ]
+    then
+	mkdir -p $SITEDIR/build
+	git clone git://repo.or.cz/conkeror.git $SITEDIR/build/conkeror
+    fi
+
+    make PREFIX=/usr/local/stow/conkeror -C $SITEDIR/build/conkeror
+    sudo make PREFIX=/usr/local/stow/conkeror -C $SITEDIR/build/conkeror install
+    cd /usr/local/stow
+    sudo stow conkeror
+    cd -
 }
 
 main
