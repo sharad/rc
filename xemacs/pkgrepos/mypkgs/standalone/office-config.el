@@ -398,7 +398,7 @@
             (message "org-entry-tree-task-info-root-org-file is nil"))
           org-entry-tree-task-infos)
 
-        )
+        ;; )
 
         (defun org-entry-tree-map-subheading (fun)
           "Call FUN for every heading underneath the current one."
