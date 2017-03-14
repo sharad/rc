@@ -19,8 +19,9 @@ function main()
 	then
 	    echo ssh key encrypted dump no provided >&2
 	    exit -1
+        else
+	    setup_tmp_ssh_keys "$SSH_KEY_DUMP" "$TMPDIR/ssh"
 	fi
-	setup_ssh_keys "$SSH_KEY_DUMP"
     fi
 
     if ! ssh-add -l
@@ -28,9 +29,18 @@ function main()
 	echo ssh key no available >&2
 	exit -1
     fi
+
     setup_git_repos
 
     setup_user_config_setup
+
+    if [ "x$SSH_KEY_DUMP" = "x" ]
+    then
+	echo ssh key encrypted dump no provided >&2
+	exit -1
+    else
+	setup_ssh_keys "$SSH_KEY_DUMP"
+    fi
 
     setup_download_misc
 
@@ -56,136 +66,177 @@ function setup_apt_packages()
 
 function setup_ecrypt_private()
 {
-    if [ ! -f ~/.ecryptfs/wrapped-passphrase ]
+    if ! mount | grep $HOME/.Private
     then
-	      ecryptfs-setup-private
+        sudo apt install ecryptfs-utils
+
+        if [ ! -f ~/.ecryptfs/wrapped-passphrase ]
+        then
+	    ecryptfs-setup-private
+        fi
+
+        sed -i 's@/Private@/.Private@' ~/.ecryptfs/Private.mnt
+
+        ecryptfs-mount-private
     fi
+}
 
-    sed -i 's@/Private@/.Private@' ~/.ecryptfs/Private.mnt
+function setup_tmp_ssh_keys()
+{
+    sudo apt install openssl
+    SSH_KEY_ENC_DUMP=$1
+    SSH_DIR=$2
+    if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
+    then
+        ## bring the ssh keys
+        if [ ! -r $TMPDIR/ssh/nosecure.d/ssh/keys.d/github ]
+        then
+	    mkdir -p $SSH_DIR
+	    openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C $SSH_DIR
+        fi
 
-    ecryptfs-mount-private
+        if ! ssh-add -l
+        then
+	    ssh-add $SSH_DIR/nosecure.d/ssh/keys.d/github
+        fi
+    else
+        echo setup_tmp_ssh_keys: key file not provided or not exists.
+    fi
 }
 
 function setup_ssh_keys()
 {
     SSH_KEY_ENC_DUMP=$1
-    ## bring the ssh keys
-    if [ ! -r $TMPDIR/ssh/nosecure.d/ssh/keys.d/github ]
+    if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
     then
-	      mkdir -p $TMPDIR/ssh
-	      openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C $TMPDIR/ssh
-    fi
+        ## bring the ssh keys
+        if [ ! -r ~/.osetup/ssh/nosecure.d/ssh/keys.d/github ]
+        then
+            sudo apt install openssl
+            SSH_KEY_ENC_DUMP=$1
+            SSH_DIR=$2
+            if ! mount | grep "$USER/.Private"
+            then
+                ecryptfs-mount-private
+            fi
 
-    if ! ssh-add -l
-    then
-	      ssh-add $TMPDIR/ssh/nosecure.d/ssh/keys.d/github
+            if ! mount | grep "$USER/.Private"
+            then
+                if [ -d ~/.osetup ]
+                then
+                    if [ -d ~/.osetup/nosecure.d -a -L ~/.osetup/secure -a -d ~/.osetup/secure ]
+                    then
+                        if [ ! -e ~/.osetup/nosecure.d/ssh/authorized_keys ]
+                        then
+                            touch ~/.osetup/nosecure.d/ssh/authorized_keys
+                        fi
+
+                        if [ ! -e ~/.osetup/secure/ssh/known_hosts ]
+                        then
+                            touch ~/.osetup/secure/ssh/known_hosts
+                        fi
+
+                        openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C ~/.osetup/
+                    else
+                        echo setup_ssh_keys: directories ~/.osetup~/.osetup/nosecure.d or ~/.osetup/secure not exists.
+                    fi
+                else
+                    echo setup_ssh_keys: directory ~/.osetup not exists.
+                fi
+            else
+                echo setup_ssh_keys: "$USER/.Private" not mounted. >&2
+            fi
+        fi
+
+        if ! ssh-add -l
+        then
+	    ssh-add ~/.osetup/nosecure.d/ssh/keys.d/github
+        fi
+    else
+        echo setup_ssh_keys: key file not provided or not exists.
     fi
 }
 
 function setup_git_repos()
 {
-    mkdir -p ~/.repos/git/user ~/.repos/git/system
-
-    if [ ! -d ~/.repos/git/user/rc ]
+    mkdir -p ~/.repos
+    if [ ! -d ~/.repos/git ]
     then
-	      git clone git@github.com:sharad/rc.git ~/.repos/git/user/rc
-    fi
-    if [ ! -L ~/.repos/git/user/setup-trunk -a -d ~/.repos/git/user/rc ]
-    then
-    	  rm -rf ~/.repos/git/user/setup-trunk
-	  ln -sf rc ~/.repos/git/user/setup-trunk
-    fi
-    if [ ! -L ~/.setup-trunk -a -d ~/.repos/git/user/setup-trunk ]
-    then
-	      rm -rf ~/.setup-trunk
-	      ln -sf .repos/git/user/setup-trunk ~/.setup-trunk
-    fi
-    if [ ! -L ~/.setup -a -d ~/.setup-trunk ]
-    then
-	      rm -rf ~/.setup
-	      ln -sf .setup-trunk ~/.setup
+        git clone --recursive  git@github.com:sharad/userorg.git ~/.repos/git
+    else
+        git -C ~/.repos/git submodule update --remote
     fi
 
-    if [ ! -d ~/.repos/git/system/system ]
+    if true
     then
-	      git clone git@github.com:sharad/system.git ~/.repos/git/system/system
+        if [ ! -L ~/.repos/git/user/setup-trunk -a -d ~/.repos/git/user/rc ]
+        then
+    	    rm -rf ~/.repos/git/user/setup-trunk
+	    ln -sf rc ~/.repos/git/user/setup-trunk
+        fi
+        if [ ! -L ~/.setup-trunk -a -d ~/.repos/git/user/setup-trunk ]
+        then
+	    rm -rf ~/.setup-trunk
+	    ln -sf .repos/git/user/setup-trunk ~/.setup-trunk
+        fi
+        if [ ! -L ~/.setup -a -d ~/.setup-trunk ]
+        then
+	    rm -rf ~/.setup
+	    ln -sf .setup-trunk ~/.setup
+        fi
+
+        if [ ! -L ~/.system -a -d ~/.repos/git/user/system/system ]
+        then
+	    rm -rf ~/.system
+	    ln -sf .repos/git/user/system/system ~/.system
+        fi
+
+        if [ ! -L ~/.stumpwm.d/modules -a -d ~/.repos/git/system/stumpwm-contrib ]
+        then
+            rm -rf ~/.stumpwm.d/modules
+            ln -s ../.repos/git/system/stumpwm-contrib ~/.stumpwm.d/modules
+        fi
+
+        if [ ! -L ~/.osetup -a -d ~/.repos/git/user/osetup ]
+        then
+	    rm -rf ~/.osetup
+	    ln -sf .repos/git/user/osetup ~/.osetup
+        fi
+
+        if [ ! -L ~/.sysinfo -a -d ~/.repos/git/system/sysinfo ]
+        then
+	    rm -rf ~/.sysinfo
+	    ln -sf .repos/git/system/sysinfo ~/.sysinfo
+        fi
+
+        if mount | grep $HOME/.Private
+        then
+            if [ ! -d ~/.Private/secure.d -a -d ~/.repos/git/user/secure.d ]
+            then
+	        rm -rf ~/.Private/secure.d
+	        cp -ra ~/.repos/git/user/secure.d ~/.Private/secure.d
+            fi
+        fi
+
+        if [ ! -d ~/.pi -a -d -d ~/.setup/pi ]
+        then
+	    ln -s .setup/pi ~/.pi
+	    ln -s ../.repos/git/user/orgp ~/.pi/org
+        fi
+
+        if [ ! -L ~/.opt -a -d ~/.repos/git/user/opt ]
+        then
+	    rm -rf ~/.opt
+	    ln -sf .repos/git/user/opt ~/.opt
+        fi
+
+        # if [ ! -L ~/.opt -a -d ~/.repos/git/user/opt ]
+        # then
+	#     rm -rf ~/.opt
+	#     ln -sf .repos/git/user/opt ~/.opt
+        # fi
     fi
 
-    if [ ! -L ~/.system -a -d ~/.repos/git/user/system/system ]
-    then
-	      rm -rf ~/.system
-	      ln -sf .repos/git/user/system/system ~/.system
-    fi
-
-    if [ ! -d ~/.repos/git/system/stumpwm ]
-    then
-	      git clone git@bitbucket.org:sh4r4d/stumpwm.git ~/.repos/git/system/stumpwm
-    fi
-
-    if [ ! -d ~/.repos/git/system/stumpwm-contrib ]
-    then
-	git clone https://github.com/stumpwm/stumpwm-contrib.git ~/.repos/git/system/stumpwm-contrib
-    fi
-    if [ ! -L ~/.stumpwm.d/modules -a -d ~/.repos/git/system/stumpwm-contrib ]
-    then
-        rm -rf ~/.stumpwm.d/modules
-        ln -s ../.repos/git/system/stumpwm-contrib ~/.stumpwm.d/modules
-    fi
-
-    if [ ! -d ~/.repos/git/user/osetup ]
-    then
-	      git clone git@bitbucket.org:sh4r4d/osetup.git ~/.repos/git/user/osetup
-    fi
-
-    if [ ! -L ~/.osetup -a -d ~/.repos/git/user/osetup ]
-    then
-	      rm -rf ~/.osetup
-	      ln -sf .repos/git/user/osetup ~/.osetup
-    fi
-
-    if [ ! -d ~/.repos/git/system/sysinfo ]
-    then
-	      git clone git@bitbucket.org:sh4r4d/sysinfo.git ~/.repos/git/system/sysinfo
-    fi
-
-    if [ ! -L ~/.sysinfo -a -d ~/.repos/git/system/sysinfo ]
-    then
-	      rm -rf ~/.sysinfo
-	      ln -sf .repos/git/system/sysinfo ~/.sysinfo
-    fi
-
-    if [ ! -d ~/.repos/git/user/secure.d ]
-    then
-	      git clone git@bitbucket.org:sh4r4d/secure.d.git ~/.repos/git/user/secure.d
-    fi
-
-    if [ ! -d ~/.Private/secure.d -a -d ~/.repos/git/user/secure.d ]
-    then
-	      rm -rf ~/.Private/secure.d
-	      cp -ra ~/.repos/git/user/secure.d ~/.Private/secure.d
-    fi
-
-    if [ ! -d ~/.repos/git/user/orgp ]
-    then
-	      git clone git@bitbucket.org:sh4r4d/orgp.git ~/.repos/git/user/orgp
-    fi
-
-    if [ ! -d ~/.pi -a -d -d ~/.setup/pi ]
-    then
-	ln -s .setup/pi ~/.pi
-	ln -s ../.repos/git/user/orgp ~/.pi/org
-    fi
-
-    if [ ! -d ~/.repos/git/user/opt ]
-    then
-	      git clone git@bitbucket.org:sh4r4d/opt.git ~/.repos/git/user/opt
-    fi
-
-    if [ ! -L ~/.opt -a -d ~/.repos/git/user/opt ]
-    then
-	      rm -rf ~/.opt
-	      ln -sf .repos/git/user/opt ~/.opt
-    fi
 }
 
 function setup_user_config_setup()
@@ -209,14 +260,14 @@ function setup_user_config_setup()
 		        cp -af $c ~/$c
                         echo done setting up $c
                     else
-                        echo not doing anything $c ~/$c
+                        : echo not doing anything $c ~/$c
                     fi
                 else
                     cp -af $c ~/$c
                     echo done setting up $c
 		fi
             else
-                echo not setting up $c
+                : echo not setting up $c
 	    fi
 	done
 	mv $TMPDIR/Xsetup ~/.setup/_home/.setup
@@ -240,18 +291,26 @@ function setup_download_misc()
 {
     if [ ! -f /usr/local/bin/p4 ]
     then
-	      wget 'https://www.perforce.com/downloads/free/p4' -O $TMPDIR/p4
-	      sudo cp $TMPDIR/p4 /usr/local/bin/p4
-	      sudo chmod +x /usr/local/bin/p4
+	wget 'https://www.perforce.com/downloads/free/p4' -O $TMPDIR/p4
+	sudo cp $TMPDIR/p4 /usr/local/bin/p4
+	sudo chmod +x /usr/local/bin/p4
     fi
+}
+
+function setup_sshkeys()
+{
+    :
 }
 
 function setup_Documentation()
 {
-
+    :
 }
 
-
+function setup_mail()
+{
+    :
+}
 
 main
 

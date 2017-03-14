@@ -532,6 +532,41 @@ if whence -c w3m >& /dev/null && [ -x /usr/lib/w3m/w3mimgdisplay ] ; then
 fi
 ## images
 
+## http://stackoverflow.com/questions/5143795/how-can-i-check-in-a-bash-script-if-my-local-git-repo-has-changes
+function gitspull () {
+    if [ $# -gt 0 ] ; then
+        grepos=($*)
+    else
+        grepos=(~/.setup ~/.system ~/.sysinfo ~/.osetup ~/.opt ~/Documents ~/.pi/org)
+    fi
+    foreach gdir ($grepos)
+    {
+        if ssh-add -l >& /dev/null ; then
+            git -C $gdir remote update
+        fi
+
+        local remotebranch
+        if [ -r $gdir/.git/refs/remotes/origin/HEAD ] ; then
+            remotebranch=remotes/origin/HEAD
+        elif [ -r $gdir/.git/refs/remotes/origin/master ] ; then
+            remotebranch=remotes/origin/master
+        fi
+        if [ -d $gdir ] &&
+            ! ( git -C $gdir diff -s --ignore-submodules=all --exit-code &&
+                git -C $gdir diff -s --ignore-submodules=all --exit-code $remotebranch ); then
+            print start $gdir
+            git -C $gdir status
+            git -C $gdir pull
+            git -C $gdir status
+            # git -C $gdir commit -a -m "corrections"
+            # git -C $gdir push origin
+            # git -C $gdir status
+            print end $gdir
+        fi
+        unset remotebranch
+    }
+}
+
 function gitssync () {
     if [ $# -gt 0 ] ; then
         grepos=($*)
