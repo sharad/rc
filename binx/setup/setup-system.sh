@@ -140,50 +140,6 @@ function setup_git_repos()
     else
         git -C $SITEDIR/.repos/git submodule update --remote
     fi
-
-    if false
-    then
-
-        if [ ! -d $SITEDIR/.repos/git/system/system ]
-        then
-	    mkdir -p $SITEDIR/.repos/git/system/
-	    git clone git@github.com:sharad/system.git $SITEDIR/.repos/git/system/system
-        fi
-
-        if [ ! -L $SITEDIR/.system ]
-        then
-	    rm -rf $SITEDIR/.system
-	    sudo ln -sf .repos/git/user/system/system $SITEDIR/.system
-        fi
-
-        if [ ! -d $SITEDIR/.repos/git/packages/misc/browser/conkeror ]
-        then
-	    mkdir -p $SITEDIR/.repos/git/packages/misc/browser
-	    git clone git://repo.or.cz/conkeror.git $SITEDIR/.repos/git/packages/misc/browser/conkeror
-        fi
-
-        if [ ! -d $SITEDIR/.repos/git/packages/common-lisp/source/sharad/in.net.sharad.utils ]
-        then
-	    mkdir -p $SITEDIR/.repos/git/packages/common-lisp/source/sharad
-	    git clone git@bitbucket.org:sh4r4d/in.net.sharad.utils $SITEDIR/.repos/git/packages/common-lisp/source/sharad/in.net.sharad.utils
-        fi
-
-        if [ ! -d $SITEDIR/.repos/git/packages/common-lisp/source/sharad/pa ]
-        then
-	    mkdir -p $SITEDIR/.repos/git/packages/common-lisp/source/sharad
-            git clone git@bitbucket.org:sh4r4d/pa $SITEDIR/.repos/git/packages/common-lisp/source/sharad/pa
-        fi
-
-        if [ ! -d $SITEDIR/.repos/git/packages/common-lisp/source/sharad/stumpwm ]
-        then
-	    mkdir -p $SITEDIR/.repos/git/packages/common-lisp/source/sharad
-            git clone https://sharad@github.com/sharad/stumpwm.git $SITEDIR/.repos/git/packages/common-lisp/source/sharad/stumpwm
-            cd $SITEDIR/.repos/git/packages/common-lisp/source/sharad/stumpwm
-            git checkout pa-point-timeout
-            cd -
-        fi
-    fi
-
 }
 
 function setup_misc()
@@ -240,6 +196,10 @@ setup_postfix()
 
 }
 
+function setup_dir()
+{
+    sudo mkdir -p /srv
+}
 
 
 main
