@@ -6,6 +6,8 @@ TMPDIR=~/setuptmp
 DEB_PKGS1="vim emacs emacs-goodies-el org-mode"
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el"
 
+DEB_EXTRA_PKG1=" xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip"
+
 function main()
 {
     mkdir -p $TMPDIR
@@ -34,13 +36,13 @@ function main()
 
     setup_user_config_setup
 
-    if [ "x$SSH_KEY_DUMP" = "x" ]
-    then
-	echo ssh key encrypted dump no provided >&2
-	exit -1
-    else
-	setup_ssh_keys "$SSH_KEY_DUMP"
-    fi
+    # if [ "x$SSH_KEY_DUMP" = "x" ]
+    # then
+    #     echo ssh key encrypted dump no provided >&2
+    #     exit -1
+    # else
+    setup_ssh_keys "$SSH_KEY_DUMP"
+    # fi
 
     setup_download_misc
 
@@ -64,6 +66,7 @@ function setup_apt_packages()
     sudo apt install git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server
     sudo apt install $DEB_PKGS1
     sudo apt install $DEB_PKGS2
+    sudo apt install $DEB_EXTRA_PKG1
 }
 
 function setup_ecrypt_private()
