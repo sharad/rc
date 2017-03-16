@@ -44,6 +44,8 @@ function main()
 
     setup_download_misc
 
+    # make home dir and paradise in root ownership.
+
     rm -rf $TMPDIR
 }
 
