@@ -8,6 +8,9 @@ DEB_PKGS2="rxvt-unicode-256color elscreen planner-el"
 
 DEB_EXTRA_PKG1=" xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip"
 
+DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
+DEB_EXTRA_PKG_LISP="cl-swank"
+
 function main()
 {
     mkdir -p $TMPDIR
@@ -67,6 +70,8 @@ function setup_apt_packages()
     sudo apt install $DEB_PKGS1
     sudo apt install $DEB_PKGS2
     sudo apt install $DEB_EXTRA_PKG1
+    sudo apt install $DEB_EXTRA_PKG_FONTS
+    sudo apt install $DEB_EXTRA_PKG_LISP
 }
 
 function setup_ecrypt_private()
