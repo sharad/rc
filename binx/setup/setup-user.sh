@@ -3,10 +3,17 @@
 SSH_KEY_DUMP=$1
 TMPDIR=~/setuptmp
 
+DEB_PKG_NECESSARY="git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server"
 DEB_PKGS1="vim emacs emacs-goodies-el org-mode"
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el"
 
 DEB_EXTRA_PKG1=" xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip"
+
+DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skypeweb purple-skypeweb"
+
+APT_REPO_COMMPUNICATION="ppa:nilarimogard/webupd8"
+
+
 
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
 DEB_EXTRA_PKG_LISP="cl-swank"
@@ -66,12 +73,24 @@ function set_keyboard()
 
 function setup_apt_packages()
 {
-    sudo apt install git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server
-    sudo apt install $DEB_PKGS1
-    sudo apt install $DEB_PKGS2
-    sudo apt install $DEB_EXTRA_PKG1
-    sudo apt install $DEB_EXTRA_PKG_FONTS
-    sudo apt install $DEB_EXTRA_PKG_LISP
+    for repo in "$APT_REPO_COMMPUNICATION"
+    do
+        sudo add-apt-repository "$repo"
+    done
+
+    sudo apt update
+
+    for pkg in \
+        "$DEB_PKG_NECESSARY" \
+        "$DEB_PKGS1" \
+        "$DEB_PKGS2" \
+        "$DEB_EXTRA_PKG1" \
+        "$DEB_EXTRA_PKG_FONTS" \
+        "$DEB_EXTRA_PKG_LISP" \
+        "$DEB_EXTRA_PKG_COMMUNICATION"
+    do
+        eval sudo apt install $pkg
+    done
 }
 
 function setup_ecrypt_private()
@@ -117,10 +136,10 @@ function setup_tmp_ssh_keys()
 function setup_ssh_keys()
 {
     SSH_KEY_ENC_DUMP=$1
-    if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
-    then
         ## bring the ssh keys
-        if [ ! -r ~/.osetup/ssh/nosecure.d/ssh/keys.d/github ]
+    if [ ! -r ~/.osetup/nosecure.d/ssh/keys.d/github ]
+    then
+        if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
         then
             sudo apt install openssl
             SSH_KEY_ENC_DUMP=$1
@@ -156,14 +175,14 @@ function setup_ssh_keys()
             else
                 echo setup_ssh_keys: "$USER/.Private" not mounted. >&2
             fi
+        else
+            echo setup_ssh_keys: key file not provided or not exists.
         fi
+    fi
 
-        if ! ssh-add -l
-        then
-	    ssh-add ~/.osetup/nosecure.d/ssh/keys.d/github
-        fi
-    else
-        echo setup_ssh_keys: key file not provided or not exists.
+    if ! ssh-add -l
+    then
+	ssh-add ~/.osetup/nosecure.d/ssh/keys.d/github
     fi
 }
 
@@ -228,7 +247,7 @@ function setup_git_repos()
             fi
         fi
 
-        if [ ! -d ~/.pi -a -d -d ~/.setup/pi ]
+        if [ ! -d ~/.pi -a -d ~/.setup/pi ]
         then
 	    ln -s .setup/pi ~/.pi
 	    ln -s ../.repos/git/user/orgp ~/.pi/org
