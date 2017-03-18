@@ -5,18 +5,13 @@ DEBUG=1
 SSH_KEY_DUMP=$1
 TMPDIR=~/setuptmp
 
+APT_REPO_COMMPUNICATION="ppa:nilarimogard/webupd8"
+
 DEB_PKG_NECESSARY="git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server"
 DEB_PKGS1="vim emacs emacs-goodies-el org-mode"
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el"
-
 DEB_EXTRA_PKG1=" xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip"
-
 DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skypeweb purple-skypeweb telegram-purple"
-
-APT_REPO_COMMPUNICATION="ppa:nilarimogard/webupd8"
-
-
-
 DEB_EXTRA_PKG_VIRTUAL="docker docker-machine"
 
 
@@ -78,22 +73,24 @@ function setup_apt_repo()
             read _ UBUNTU_VERSION_NAME <<< "$VERSION"
             echo "Running Ubuntu $UBUNTU_VERSION_NAME"
         else
-            echo "Not running an Ubuntu distribution. ID=$ID, VERSION=$VERSION"
+            echo "Not running an Ubuntu distribution. ID=$ID, VERSION=$VERSION" >&2
+            exit -1
         fi
     else
-        echo "Not running a distribution with /etc/os-release available"
+        echo "Not running a distribution with /etc/os-release available" >&2
     fi
 
-    # /etc/apt/sources.list.d/nilarimogard-ubuntu-webupd8-xenial.list
+
 
 
 
 
     for repo in "$APT_REPO_COMMPUNICATION"
     do
-
-        REPO_NAME1=$(cut $APT_REPO_COMMPUNICATION | cut -d: -f2 | cut -d/ -f1)
-        REPO_NAME2=$(cut $APT_REPO_COMMPUNICATION | cut -d: -f2 | cut -d/ -f2)
+        # /etc/apt/sources.list.d/nilarimogard-ubuntu-webupd8-xenial.list
+        # echo repo=$repo
+        REPO_NAME1="$(echo $repo | cut -d: -f2 | cut -d/ -f1)"
+        REPO_NAME2="$(echo $repo | cut -d: -f2 | cut -d/ -f2)"
 
         REPO_FILE_PATH=/etc/apt/sources.list.d/${REPO_NAME1}-${ID}-${REPO_NAME2}-${VERSION_CODENAME}.list
 
@@ -125,7 +122,8 @@ function setup_apt_packages()
         "$DEB_EXTRA_PKG1" \
         "$DEB_EXTRA_PKG_FONTS" \
         "$DEB_EXTRA_PKG_LISP" \
-        "$DEB_EXTRA_PKG_COMMUNICATION"
+        "$DEB_EXTRA_PKG_COMMUNICATION" \
+        "$DEB_EXTRA_PKG_VIRTUAL"
     do
         eval sudo apt install $pkg
     done
