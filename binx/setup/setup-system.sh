@@ -4,6 +4,8 @@ SSH_KEY_DUMP=$1
 SITEDIR=/usr/local
 TMPDIR=~/setuptmp
 
+DEB_PKG_SYSTEM="openssl stow sbcl cl-clx-sbcl cl-quicklisp  openssh-server cl-swank"
+
 
 function main()
 {
@@ -21,8 +23,22 @@ function main()
 
 function setup_apt_packages()
 {
-    sudo apt install git openssl stow sbcl cl-clx-sbcl cl-quicklisp  openssh-server
+    sudo apt install git
 }
+
+function setup_apt_packages()
+{
+    setup_apt_repo
+
+    sudo apt update
+
+    for pkg in \
+        "$DEB_PKG_SYSTEM"
+    do
+        eval sudo apt install $pkg
+    done
+}
+
 
 function setup_ssh_keys()
 {
@@ -108,7 +124,7 @@ function setup_clisp_packages()
 
 function setup_stumwpm_packages()
 {
-    sudo apt install autoconf texinfo
+    sudo apt install autoconf texinfo swank
 
     if [ ! -d $SITEDIR/build/stumpwm ]
     then
