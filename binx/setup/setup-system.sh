@@ -4,7 +4,8 @@ SSH_KEY_DUMP=$1
 SITEDIR=/usr/local
 TMPDIR=~/setuptmp
 
-DEB_PKG_SYSTEM="openssl stow sbcl cl-clx-sbcl cl-quicklisp  openssh-server cl-swank"
+DEB_PKG_SYSTEM="git openssl stow sbcl cl-clx-sbcl cl-quicklisp  openssh-server cl-swank"
+DEB_PKG_SYSTEM1="gparted"
 
 
 function main()
@@ -28,12 +29,13 @@ function setup_apt_packages()
 
 function setup_apt_packages()
 {
-    setup_apt_repo
+    # setup_apt_repo
 
     sudo apt update
 
     for pkg in \
-        "$DEB_PKG_SYSTEM"
+        "$DEB_PKG_SYSTEM" \
+            "$DEB_PKG_SYSTEM1"
     do
         eval sudo apt install $pkg
     done

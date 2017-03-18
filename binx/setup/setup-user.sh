@@ -13,10 +13,9 @@ DEB_PKGS2="rxvt-unicode-256color elscreen planner-el"
 DEB_EXTRA_PKG1=" xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip"
 DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skypeweb purple-skypeweb telegram-purple"
 DEB_EXTRA_PKG_VIRTUAL="docker docker-machine"
-
-
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
 DEB_EXTRA_PKG_LISP="cl-swank"
+DEB_EXTRA_PKG2="homesick yadm"
 
 function main()
 {
@@ -120,6 +119,7 @@ function setup_apt_packages()
         "$DEB_PKGS1" \
         "$DEB_PKGS2" \
         "$DEB_EXTRA_PKG1" \
+        "$DEB_EXTRA_PKG2" \
         "$DEB_EXTRA_PKG_FONTS" \
         "$DEB_EXTRA_PKG_LISP" \
         "$DEB_EXTRA_PKG_COMMUNICATION" \
