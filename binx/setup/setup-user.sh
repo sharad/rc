@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DEBUG=1
+
 SSH_KEY_DUMP=$1
 TMPDIR=~/setuptmp
 
@@ -9,10 +11,13 @@ DEB_PKGS2="rxvt-unicode-256color elscreen planner-el"
 
 DEB_EXTRA_PKG1=" xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip"
 
-DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skypeweb purple-skypeweb"
+DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skypeweb purple-skypeweb telegram-purple"
 
 APT_REPO_COMMPUNICATION="ppa:nilarimogard/webupd8"
 
+
+
+DEB_EXTRA_PKG_VIRTUAL="docker docker-machine"
 
 
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
@@ -46,13 +51,7 @@ function main()
 
     setup_user_config_setup
 
-    # if [ "x$SSH_KEY_DUMP" = "x" ]
-    # then
-    #     echo ssh key encrypted dump no provided >&2
-    #     exit -1
-    # else
     setup_ssh_keys "$SSH_KEY_DUMP"
-    # fi
 
     setup_download_misc
 
@@ -71,12 +70,51 @@ function set_keyboard()
     xmodmap $TMPDIR/keymap
 }
 
-function setup_apt_packages()
+function setup_apt_repo()
 {
+    if [[ -r /etc/os-release ]]; then
+        . /etc/os-release
+        if [[ $ID = ubuntu ]]; then
+            read _ UBUNTU_VERSION_NAME <<< "$VERSION"
+            echo "Running Ubuntu $UBUNTU_VERSION_NAME"
+        else
+            echo "Not running an Ubuntu distribution. ID=$ID, VERSION=$VERSION"
+        fi
+    else
+        echo "Not running a distribution with /etc/os-release available"
+    fi
+
+    # /etc/apt/sources.list.d/nilarimogard-ubuntu-webupd8-xenial.list
+
+
+
+
     for repo in "$APT_REPO_COMMPUNICATION"
     do
-        sudo add-apt-repository "$repo"
+
+        REPO_NAME1=$(cut $APT_REPO_COMMPUNICATION | cut -d: -f2 | cut -d/ -f1)
+        REPO_NAME2=$(cut $APT_REPO_COMMPUNICATION | cut -d: -f2 | cut -d/ -f2)
+
+        REPO_FILE_PATH=/etc/apt/sources.list.d/${REPO_NAME1}-${ID}-${REPO_NAME2}-${VERSION_CODENAME}.list
+
+        if [ "$DEBUG" ]
+        then
+            echo REPO_FILE_PATH=$REPO_FILE_PATH
+        fi
+
+        if [ ! -f "$REPO_FILE_PATH" ]
+        then
+            sudo add-apt-repository "$repo"
+        else
+            echo "$REPO_FILE_PATH" already added.
+        fi
     done
+
+}
+
+function setup_apt_packages()
+{
+    setup_apt_repo
 
     sudo apt update
 
