@@ -10,7 +10,7 @@ APT_REPO_COMMPUNICATION="ppa:nilarimogard/webupd8"
 DEB_PKG_NECESSARY="git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server"
 DEB_PKGS1="vim emacs emacs-goodies-el org-mode"
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el"
-DEB_EXTRA_PKG1=" xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip"
+DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip "
 DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skypeweb purple-skypeweb telegram-purple"
 DEB_EXTRA_PKG_VIRTUAL="docker docker-machine"
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
@@ -250,11 +250,11 @@ function setup_git_repos()
 	    ln -sf .setup-trunk ~/.setup
         fi
 
-        if [ ! -L ~/.system -a -d ~/.repos/git/user/system/system ]
-        then
-	    rm -rf ~/.system
-	    ln -sf .repos/git/user/system/system ~/.system
-        fi
+        # if [ ! -L ~/.system -a -d ~/.repos/git/user/system/system ]
+        # then
+	#     rm -rf ~/.system
+	#     ln -sf .repos/git/user/system/system ~/.system
+        # fi
 
         if [ ! -L ~/.stumpwm.d/modules -a -d ~/.repos/git/system/stumpwm-contrib ]
         then
@@ -262,17 +262,17 @@ function setup_git_repos()
             ln -s ../.repos/git/system/stumpwm-contrib ~/.stumpwm.d/modules
         fi
 
-        if [ ! -L ~/.osetup -a -d ~/.repos/git/user/osetup ]
-        then
-	    rm -rf ~/.osetup
-	    ln -sf .repos/git/user/osetup ~/.osetup
-        fi
+        # if [ ! -L ~/.osetup -a -d ~/.repos/git/user/osetup ]
+        # then
+	#     rm -rf ~/.osetup
+	#     ln -sf .repos/git/user/osetup ~/.osetup
+        # fi
 
-        if [ ! -L ~/.sysinfo -a -d ~/.repos/git/system/sysinfo ]
-        then
-	    rm -rf ~/.sysinfo
-	    ln -sf .repos/git/system/sysinfo ~/.sysinfo
-        fi
+        # if [ ! -L ~/.sysinfo -a -d ~/.repos/git/system/sysinfo ]
+        # then
+	#     rm -rf ~/.sysinfo
+	#     ln -sf .repos/git/system/sysinfo ~/.sysinfo
+        # fi
 
         if mount | grep $HOME/.Private
         then
@@ -289,11 +289,11 @@ function setup_git_repos()
 	    ln -s ../.repos/git/user/orgp ~/.pi/org
         fi
 
-        if [ ! -L ~/.opt -a -d ~/.repos/git/user/opt ]
-        then
-	    rm -rf ~/.opt
-	    ln -sf .repos/git/user/opt ~/.opt
-        fi
+        # if [ ! -L ~/.opt -a -d ~/.repos/git/user/opt ]
+        # then
+	#     rm -rf ~/.opt
+	#     ln -sf .repos/git/user/opt ~/.opt
+        # fi
 
         # if [ ! -L ~/.opt -a -d ~/.repos/git/user/opt ]
         # then
