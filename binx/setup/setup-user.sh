@@ -49,7 +49,7 @@ function main()
 
     setup_download_misc
 
-    # make home dir and paradise in root ownership.
+    setup_dirs
 
     rm -rf $TMPDIR
 }
@@ -369,7 +369,22 @@ function setup_sshkeys()
 
 function setup_Documentation()
 {
-    :
+    if [  -d ~/.osetup/dirs.d/local.d/dirs.d/home -a ! -d ~/.osetup/dirs.d/local.d/dirs.d/home/Documents ]
+    then
+        ln -s ../.repos/git/user/doc ~/.osetup/dirs.d/local.d/dirs.d/home/Documents
+    fi
+}
+
+function setup_public_html()
+{
+    if [  -d ~/.osetup/dirs.d/local.d/dirs.d/home ]
+    then
+        mkdir -p ~/.osetup/dirs.d/local.d/dirs.d/home/public_html
+        if [  -L ~/.osetup/dirs.d/local.d/dirs.d/home/public_html/content ]
+        then
+            ln -s Documents/CreatedContent/gen ~/.osetup/dirs.d/local.d/dirs.d/home/public_html/content
+        fi
+    fi
 }
 
 function setup_mail()
@@ -379,9 +394,12 @@ function setup_mail()
 
 function setup_dirs()
 {
+    # make home dir and paradise in root ownership.
+    sudo chown root.root ~/paradise
+
     if [ ! -d ~/.osetup/dirs.d/local.d/dirs.d/home ]
     then
-        mkdir ~/.Local
+        mkdir ~/.LocalDir
         ln -s ../../../../../../../.Local ~/.osetup/dirs.d/local.d/dirs.d/home
         if [ -d "~/.osetup/dirs.d/home.d" ]
         then
@@ -392,12 +410,15 @@ function setup_dirs()
                 then
                     if [ ! -d "$(readlink -m $de)" ]
                     then
-                        mkdir -p "$(readlink -m $de)"
+                        echo mkdir -p "$(readlink -m $de)"
                     fi
                 fi
             done
         fi
     fi
+
+    setup_Documentation
+    setup_public_html
 }
 
 main
