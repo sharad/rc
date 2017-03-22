@@ -311,7 +311,7 @@ function setup_user_config_setup()
 	mkdir -p ~/.old_dot_filedirs
 
 	mv ~/.setup/_home/.setup $TMPDIR/Xsetup
-	cd ~/.setup/_home/
+	cd ~/.repos/git/user/setup/_home/
 	for c in .[a-zA-Z]* *
 	do
             echo considering $c
@@ -375,6 +375,29 @@ function setup_Documentation()
 function setup_mail()
 {
     :
+}
+
+function setup_dirs()
+{
+    if [ ! -d ~/.osetup/dirs.d/local.d/dirs.d/home ]
+    then
+        mkdir ~/.Local
+        ln -s ../../../../../../../.Local ~/.osetup/dirs.d/local.d/dirs.d/home
+        if [ -d "~/.osetup/dirs.d/home.d" ]
+        then
+            cd ~/.osetup/dirs.d/home.d
+            for de in *
+            do
+                if [ -L $de ]
+                then
+                    if [ ! -d "$(readlink -m $de)" ]
+                    then
+                        mkdir -p "$(readlink -m $de)"
+                    fi
+                fi
+            done
+        fi
+    fi
 }
 
 main

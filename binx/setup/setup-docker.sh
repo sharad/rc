@@ -21,6 +21,8 @@ function main()
 
     set_docker_machine
 
+    setup_apt_packages
+
     # make home dir and paradise in root ownership.
 
     rm -rf $TMPDIR
@@ -32,7 +34,7 @@ function set_docker_machine()
     STOWDIR="$(basename $STOWDIR_PATH)"
     STOWDIR_TMPDIR=$TMPDIR/$STOWDIR
 
-    if sudo apt install stow
+    if false && sudo apt install stow
     then
         mkdir -p $STOWDIR_TMPDIR/bin $STOWDIR_TMPDIR/etc/bash_completion.d $STOWDIR_TMPDIR/etc/zsh/completion
         if curl -L "https://github.com/docker/machine/releases/download/v0.10.0/docker-machine-$(uname -s)-$(uname -m)" > $STOWDIR_TMPDIR/bin/docker-machine &&
@@ -49,6 +51,12 @@ function set_docker_machine()
             cd -
         fi
     fi
+}
+
+function setup_apt_packages()
+{
+    sudo apt install docker docker.io
+    sudo apt install vagrant
 }
 
 function set_keyboard()

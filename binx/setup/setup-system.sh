@@ -45,16 +45,22 @@ function setup_apt_packages()
 function setup_ssh_keys()
 {
     SSH_KEY_ENC_DUMP=$1
-    ## bring the ssh keys
-    if [ ! -r $TMPDIR/ssh/nosecure.d/ssh/keys.d/github ]
-    then
-	      mkdir -p $TMPDIR/ssh
-	      openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C $TMPDIR/ssh
-    fi
-
     if ! ssh-add -l
     then
-	      ssh-add $TMPDIR/ssh/nosecure.d/ssh/keys.d/github
+        if [ "x" != "x$SSH_KEY_ENC_DUMP" ]
+        then
+            ## bring the ssh keys
+            if [ ! -r $TMPDIR/ssh/nosecure.d/ssh/keys.d/github ]
+            then
+	        mkdir -p $TMPDIR/ssh
+	        openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C $TMPDIR/ssh
+            fi
+
+            if ! ssh-add -l
+            then
+	        ssh-add $TMPDIR/ssh/nosecure.d/ssh/keys.d/github
+            fi
+        fi
     fi
 }
 
@@ -67,6 +73,9 @@ function setup_packages()
     setup_quicklisp_package
     setup_stumwpm_packages
     setup_conkeror_package
+
+    setup_postfix
+    setup_res_dir
 }
 
 function setup_quicklisp_package()
@@ -126,7 +135,7 @@ function setup_clisp_packages()
 
 function setup_stumwpm_packages()
 {
-    sudo apt install autoconf texinfo swank
+    sudo apt install autoconf texinfo cl-swank
 
     if [ ! -d $SITEDIR/build/stumpwm ]
     then
@@ -211,12 +220,37 @@ function setup_conkeror_package()
 
 setup_postfix()
 {
-
+    :
 }
 
-function setup_dir()
+function setup_res_dir()
 {
     sudo mkdir -p /srv
+    if sudo vgs --noheadings vgres01
+    then
+       sudo apt install reiserfsprogs
+       if ! sudo lvs --noheadings vgres01/lvreiser01
+       then
+           if sudo lvcreate vgres01 -n lvreiser01 -L 1G
+           then
+               if sudo mkreiserfs /dev/mapper/vgres01-lvreiser01
+               then
+                   if sudo mkdir -p /srv/res//vgres01/lvreiser01
+                   then
+                       if ! grep /srv/res/vgres01/lvreiser01 /etc/fstab
+                       then
+                           sudo cp /etc/fstab /etc/fstab-ORG
+                           sudo echo  >> /etc/fstab
+                           sudo echo /dev/mapper/vgres01-lvreiser01 /srv/res/vgres01/lvreiser01 reiserfs defaults,auto 1 1 >> /etc/fstab
+                           sudo echo  >> /etc/fstab
+                       fi
+                   fi
+               fi
+           fi
+       fi
+    else
+        echo vgres01 volume group do not exists. >&2
+    fi
 }
 
 
