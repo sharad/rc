@@ -12,10 +12,12 @@ DEB_PKGS1="vim emacs emacs-goodies-el org-mode"
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el"
 DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip "
 DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skypeweb purple-skypeweb telegram-purple"
-DEB_EXTRA_PKG_VIRTUAL="docker docker-machine"
+# DEB_EXTRA_PKG_VIRTUAL="docker docker-machine"
+DEB_EXTRA_PKG_VIRTUAL=""
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
 DEB_EXTRA_PKG_LISP="cl-swank"
 DEB_EXTRA_PKG2="homesick yadm"
+DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl"
 
 function main()
 {
@@ -120,6 +122,7 @@ function setup_apt_packages()
         "$DEB_PKGS2" \
         "$DEB_EXTRA_PKG1" \
         "$DEB_EXTRA_PKG2" \
+        "$DEB_EXTRA_PKG3" \
         "$DEB_EXTRA_PKG_FONTS" \
         "$DEB_EXTRA_PKG_LISP" \
         "$DEB_EXTRA_PKG_COMMUNICATION" \
@@ -250,29 +253,12 @@ function setup_git_repos()
 	    ln -sf .setup-trunk ~/.setup
         fi
 
-        # if [ ! -L ~/.system -a -d ~/.repos/git/user/system/system ]
-        # then
-	#     rm -rf ~/.system
-	#     ln -sf .repos/git/user/system/system ~/.system
-        # fi
-
         if [ ! -L ~/.stumpwm.d/modules -a -d ~/.repos/git/system/stumpwm-contrib ]
         then
             rm -rf ~/.stumpwm.d/modules
             ln -s ../.repos/git/system/stumpwm-contrib ~/.stumpwm.d/modules
         fi
 
-        # if [ ! -L ~/.osetup -a -d ~/.repos/git/user/osetup ]
-        # then
-	#     rm -rf ~/.osetup
-	#     ln -sf .repos/git/user/osetup ~/.osetup
-        # fi
-
-        # if [ ! -L ~/.sysinfo -a -d ~/.repos/git/system/sysinfo ]
-        # then
-	#     rm -rf ~/.sysinfo
-	#     ln -sf .repos/git/system/sysinfo ~/.sysinfo
-        # fi
 
         if mount | grep $HOME/.Private
         then
@@ -289,66 +275,56 @@ function setup_git_repos()
 	    ln -s ../.repos/git/user/orgp ~/.pi/org
         fi
 
-        # if [ ! -L ~/.opt -a -d ~/.repos/git/user/opt ]
-        # then
-	#     rm -rf ~/.opt
-	#     ln -sf .repos/git/user/opt ~/.opt
-        # fi
-
-        # if [ ! -L ~/.opt -a -d ~/.repos/git/user/opt ]
-        # then
-	#     rm -rf ~/.opt
-	#     ln -sf .repos/git/user/opt ~/.opt
-        # fi
     fi
 
 }
 
 function setup_user_config_setup()
 {
-    if [ -d ~/.setup ]
+    if [ -d ~/.repos/git/user/setup/_home/ ]
     then
-	mkdir -p ~/.old_dot_filedirs
-
-	mv ~/.setup/_home/.setup $TMPDIR/Xsetup
-	cd ~/.repos/git/user/setup/_home/
-	for c in .[a-zA-Z]* *
-	do
-            echo considering $c
-	    if [ "$c" != ".setup" -a "$c" != "." -a "$c" != ".." ]
-	    then
-		if [ -e ~/$c ]
-		then
-                    if [ ! -L ~/$c ] || [ "$(readlink $c)" != "$(readlink $c)" ]
-                    then
-		        mv ~/$c ~/.old_dot_filedirs
-		        cp -af $c ~/$c
-                        echo done setting up $c
+	if mkdir -p ~/_old_dot_filedirs
+        then
+	    # mv ~/.setup/_home/.setup $TMPDIR/Xsetup
+	    # cd ~/.repos/git/user/setup/_home/
+	    for c in .[a-zA-Z^.^..]* *
+	    do
+                echo considering $c
+	        if [ "$c" != ".repo" -a "$c" != "." -a "$c" != ".." ]
+	        then
+		    if [ -e ~/$c ]
+		    then
+                        if [ ! -L ~/$c -o "$(readlink ~/$c)" != "$(readlink $c)" ]
+                        then
+                            if [ ! -L ~/$c ]
+                            then
+		                echo mv ~/$c ~/_old_dot_filedirs
+                            fi
+                            if [ ! -e ~/$c ]
+                            then
+		                echo cp -af ~/.repos/git/user/setup/_home/$c ~/$c
+                                exit -1
+                            elif [ -L ~/$c ]
+                            then
+                                echo rm -f ~/$c
+                                echo cp -af ~/.repos/git/user/setup/_home/$c ~/$c
+                                exit -1
+                            fi
+                            echo done setting up $c
+                        else
+                            echo not doing anything ~/.repos/git/user/setup/_home/$c ~/$c
+                        fi
                     else
-                        : echo not doing anything $c ~/$c
-                    fi
+                        echo cp -af ~/.repos/git/user/setup/_home/$c ~/$c
+                        echo done setting up $c
+		    fi
                 else
-                    cp -af $c ~/$c
-                    echo done setting up $c
-		fi
-            else
-                : echo not setting up $c
-	    fi
-	done
-	mv $TMPDIR/Xsetup ~/.setup/_home/.setup
-	cd ~/
-
-	for d in .repos .osetup .setup .setup-trunk .sysinfo .system .pi .config .gconf .ecryptfs
-	do
-	    if [ -e ~/.old_dot_filedirs/$d ]
-	    then
-		if [ ! -e ~/$d ]
-		then
-		    echo mv ~/.old_dot_filedirs/$d ~/
-		    mv ~/.old_dot_filedirs/$d ~/
-		fi
-	    fi
-	done
+                    : echo not setting up $c
+	        fi
+	    done
+	    # mv $TMPDIR/Xsetup ~/.setup/_home/.setup
+	    # cd ~
+        fi
     fi
 }
 
@@ -395,7 +371,7 @@ function setup_mail()
 function setup_dirs()
 {
     # make home dir and paradise in root ownership.
-    sudo chown root.root ~/paradise
+    sudo chown root.root ~/../paradise
 
     if [ ! -d ~/.osetup/dirs.d/local.d/dirs.d/home ]
     then
