@@ -131,16 +131,17 @@
       (interactive
        (list (read-number "Face height: "
                           (if (and (featurep 'x)
-                                    window-system
-                                    (x-display-mm-height))
-                              (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)
-                              (face-attribute 'default :height)))))
-      (if (and (featurep 'x) window-system)
-          (if (x-display-mm-height)
-              (if (any-frame-opened-p)
-               (set-face-attribute 'default nil :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)))
+                                   window-system
+                                   (x-display-mm-height))
+                              (maxmin-optimized-value (x-display-mm-height) 110 600 120 90)
+                            (face-attribute 'default :height)))))
+      (let ((height (or height (maxmin-optimized-value (x-display-mm-height) 110 600 120 75))))
+        (if (and (featurep 'x) window-system)
+            (if (x-display-mm-height)
+                (if (any-frame-opened-p)
+                    (set-face-attribute 'default nil :height height))
               (message "(x-display-pixel-height) return nil"))
-          (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
+          (message "set-default-face-height-by-resolution: Not in Graphical Window system."))))
 
     (add-hook 'sharad/enable-startup-interrupting-feature-hook
               '(lambda ()

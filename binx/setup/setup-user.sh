@@ -281,12 +281,12 @@ function setup_git_repos()
 
 function setup_user_config_setup()
 {
-    if [ -d ~/.repos/git/user/setup/_home/ ]
+    if [ -d ~/.repos/git/user/rc/_home/ ]
     then
 	if mkdir -p ~/_old_dot_filedirs
         then
 	    # mv ~/.setup/_home/.setup $TMPDIR/Xsetup
-	    # cd ~/.repos/git/user/setup/_home/
+	    cd ~/.repos/git/user/rc/_home/
 	    for c in .[a-zA-Z^.^..]* *
 	    do
                 echo considering $c
@@ -302,20 +302,20 @@ function setup_user_config_setup()
                             fi
                             if [ ! -e ~/$c ]
                             then
-		                echo cp -af ~/.repos/git/user/setup/_home/$c ~/$c
+		                echo cp -af ~/.repos/git/user/rc/_home/$c ~/$c
                                 exit -1
                             elif [ -L ~/$c ]
                             then
                                 echo rm -f ~/$c
-                                echo cp -af ~/.repos/git/user/setup/_home/$c ~/$c
+                                echo cp -af ~/.repos/git/user/rc/_home/$c ~/$c
                                 exit -1
                             fi
                             echo done setting up $c
                         else
-                            echo not doing anything ~/.repos/git/user/setup/_home/$c ~/$c
+                            echo not doing anything ~/.repos/git/user/rc/_home/$c ~/$c
                         fi
                     else
-                        echo cp -af ~/.repos/git/user/setup/_home/$c ~/$c
+                        echo cp -af ~/.repos/git/user/rc/_home/$c ~/$c
                         echo done setting up $c
 		    fi
                 else
@@ -323,7 +323,7 @@ function setup_user_config_setup()
 	        fi
 	    done
 	    # mv $TMPDIR/Xsetup ~/.setup/_home/.setup
-	    # cd ~
+	    cd -
         fi
     fi
 }
