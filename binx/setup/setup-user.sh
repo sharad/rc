@@ -16,7 +16,7 @@ DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skypeweb purple-skypeweb telegram-pur
 DEB_EXTRA_PKG_VIRTUAL=""
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
 DEB_EXTRA_PKG_LISP="cl-swank"
-DEB_EXTRA_PKG2="homesick yadm macchanger xautolock sucklesstools xtrlock"
+DEB_EXTRA_PKG2="homesick yadm macchanger xautolock suckless-tools xtrlock"
 DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl"
 
 function main()
@@ -68,9 +68,11 @@ function set_keyboard()
 
 function setup_apt_repo()
 {
-    if [[ -r /etc/os-release ]]; then
+    if [ -r /etc/os-release ]
+    then
         . /etc/os-release
-        if [[ $ID = ubuntu ]]; then
+        if [ $ID = ubuntu ]
+        then
             read _ UBUNTU_VERSION_NAME <<< "$VERSION"
             echo "Running Ubuntu $UBUNTU_VERSION_NAME"
         else
