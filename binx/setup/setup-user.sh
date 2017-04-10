@@ -16,7 +16,7 @@ DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skypeweb purple-skypeweb telegram-pur
 DEB_EXTRA_PKG_VIRTUAL=""
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
 DEB_EXTRA_PKG_LISP="cl-swank"
-DEB_EXTRA_PKG2="homesick yadm macchanger xautolock suckless-tools xtrlock"
+DEB_EXTRA_PKG2="homesick yadm macchanger xautolock suckless-tools xtrlock xbacklight"
 DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl"
 
 function main()
@@ -130,7 +130,7 @@ function setup_apt_packages()
         "$DEB_EXTRA_PKG_COMMUNICATION" \
         "$DEB_EXTRA_PKG_VIRTUAL"
     do
-        eval sudo apt install $pkg
+        eval sudo apt -y install $pkg
     done
 }
 
