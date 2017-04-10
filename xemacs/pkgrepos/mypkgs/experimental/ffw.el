@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(deh-section "find-file-wizard"
+(progn ;; deh-section "find-file-wizard"
 
   (defvar *find-file-wizard-alist* nil "find-file-wizard-alist")
   (setq *find-file-wizard-alist* nil)

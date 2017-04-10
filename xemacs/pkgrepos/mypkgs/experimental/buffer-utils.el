@@ -318,7 +318,9 @@
 
 
 
-  (deh-require-maybe ibuf-ext
+  (progn ;; deh-require-maybe ibuf-ext
+
+    (require 'ibuf-ext)
 
     (defun sharad/get-ibuffer-filter-groups ()
       (cdr (assoc "default" ibuffer-saved-filter-groups)))

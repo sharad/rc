@@ -378,7 +378,11 @@ Each entry is either:
 
 
         (progn ;; "Get ssh-add pass from emacs only."
-          (defvar getpass-ssh-add-program (concat "timeout -k 16 10 ssh-add " ssh-key-file) "ssh-add command")
+
+          (defvar ssh-key-file "~/.ssh/login-keys.d/*.pub")
+
+          (defvar getpass-ssh-add-program
+            (concat "timeout -k 16 10 ssh-add " ssh-key-file) "ssh-add command")
 
           (defvar getpass-ssh-add-prompt "Enter passphrase for \\([^:]+\\):"
             "ssh-add prompt for passphrases")

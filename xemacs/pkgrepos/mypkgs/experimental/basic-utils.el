@@ -355,7 +355,7 @@
 
 
 ;;{{ Pathname Utilities
-(deh-section "Pathname Utilities"
+(progn ;; "Pathname Utilities"
   (defun  pathname-end-with-/ (path)
     "Check if path name end with /"
     (equal (elt path (- (length path) 1)) ?/))

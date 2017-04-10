@@ -171,7 +171,7 @@ Each entry is either:
           ;; /msg NickServ register <password> <email>
 
           ;; user #help channel
-
+          (require 'passwds)
           ;; join erc with this
           (defun erc-freenode ()
             (interactive)
@@ -551,6 +551,7 @@ If USER is omitted, close the current query buffer if one exists
       :defer t
       :config
       (progn
+        (require 'passwds)
         (erc-services-mode 1)
 
         (setq ;; erc-auto-query 'frame

@@ -15,7 +15,7 @@ DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skypeweb purple-skypeweb telegram-pur
 # DEB_EXTRA_PKG_VIRTUAL="docker docker-machine"
 DEB_EXTRA_PKG_VIRTUAL=""
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
-DEB_EXTRA_PKG_LISP="cl-swank"
+DEB_EXTRA_PKG_LISP="cl-swank slime"
 DEB_EXTRA_PKG2="homesick yadm macchanger xautolock suckless-tools xtrlock xbacklight"
 DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl"
 
@@ -275,6 +275,15 @@ function setup_git_repos()
         then
 	    ln -s .setup/pi ~/.pi
 	    ln -s ../.repos/git/user/orgp ~/.pi/org
+        fi
+
+        if [ ! -d ~/.emacs.d/.git ]
+        then
+	    if [ -d ~/.emacs.d ]
+            then
+              mv ~/.emacs.d ~/.emacs.d-old
+            fi
+	    ln -s .repos/git/user/spacemacs ~/.emacs.d
         fi
 
     fi
