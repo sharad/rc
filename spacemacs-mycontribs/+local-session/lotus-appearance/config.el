@@ -143,7 +143,7 @@
       (interactive)
       (set-face-attribute 'default nil ;(/ (* (x-display-mm-width) 121) 600)
                           ;; (x-display-pixel-height)
-                          :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)
+                          :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 90)
                           :width  'normal))
 
 
@@ -161,12 +161,12 @@
                           (if (and (featurep 'x)
                                     window-system
                                     (x-display-mm-height))
-                              (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)
+                              (maxmin-optimized-value (x-display-mm-height) 110 600 120 90)
                               (face-attribute 'default :height)))))
       (if (and (featurep 'x) window-system)
           (if (x-display-mm-height)
               (if (any-frame-opened-p)
-               (set-face-attribute 'default nil :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 75)))
+               (set-face-attribute 'default nil :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 90)))
               (message "(x-display-pixel-height) return nil"))
           (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
 
