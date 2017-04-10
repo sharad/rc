@@ -122,7 +122,11 @@
 ;; http://david.rothlis.net/emacs/customize_colors.html
   )
 
-  (progn ;; "face size"
+(progn ;; "face size"
+
+  (defvar face-scale-div-max-min '(110 600 120 80))
+
+  (setq face-scale-div-max-min '(110 600 120 80))
 
     (defun maxmin-optimized-value (val scale div &optional max min)
       (let ((opt (/ (* val scale) div)))
@@ -143,7 +147,7 @@
       (interactive)
       (set-face-attribute 'default nil ;(/ (* (x-display-mm-width) 121) 600)
                           ;; (x-display-pixel-height)
-                          :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 90)
+                          :height (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
                           :width  'normal))
 
 
@@ -161,12 +165,13 @@
                           (if (and (featurep 'x)
                                     window-system
                                     (x-display-mm-height))
-                              (maxmin-optimized-value (x-display-mm-height) 110 600 120 90)
+                              (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
                               (face-attribute 'default :height)))))
       (if (and (featurep 'x) window-system)
           (if (x-display-mm-height)
               (if (any-frame-opened-p)
-               (set-face-attribute 'default nil :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 90)))
+                  (set-face-attribute 'default nil
+                                      :height (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)))
               (message "(x-display-pixel-height) return nil"))
           (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
 

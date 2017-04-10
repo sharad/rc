@@ -12,7 +12,6 @@ DEB_PKGS1="vim emacs emacs-goodies-el org-mode"
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el"
 DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip "
 DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skypeweb purple-skypeweb telegram-purple"
-# DEB_EXTRA_PKG_VIRTUAL="docker docker-machine"
 DEB_EXTRA_PKG_VIRTUAL=""
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
 DEB_EXTRA_PKG_LISP="cl-swank slime"
@@ -22,25 +21,30 @@ DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl"
 function main()
 {
     mkdir -p $TMPDIR
+
     set_keyboard
+
     cd ~/
+
     setup_apt_packages
+
     setup_ecrypt_private
+
     if ! ssh-add -l
     then
-	if [ "x$SSH_KEY_DUMP" = "x" ]
-	then
-	    echo ssh key encrypted dump no provided >&2
-	    exit -1
+	      if [ "x$SSH_KEY_DUMP" = "x" ]
+	      then
+	          echo ssh key encrypted dump no provided >&2
+	          exit -1
         else
-	    setup_tmp_ssh_keys "$SSH_KEY_DUMP" "$TMPDIR/ssh"
-	fi
+	          setup_tmp_ssh_keys "$SSH_KEY_DUMP" "$TMPDIR/ssh"
+	      fi
     fi
 
     if ! ssh-add -l
     then
-	echo ssh key no available >&2
-	exit -1
+	      echo ssh key no available >&2
+	      exit -1
     fi
 
     setup_git_repos
@@ -52,6 +56,8 @@ function main()
     setup_download_misc
 
     setup_dirs
+
+    setup_spacemacs
 
     rm -rf $TMPDIR
 }
@@ -82,11 +88,6 @@ function setup_apt_repo()
     else
         echo "Not running a distribution with /etc/os-release available" >&2
     fi
-
-
-
-
-
 
     for repo in "$APT_REPO_COMMPUNICATION"
     do
@@ -142,7 +143,7 @@ function setup_ecrypt_private()
 
         if [ ! -f ~/.ecryptfs/wrapped-passphrase ]
         then
-	    ecryptfs-setup-private
+	          ecryptfs-setup-private
         fi
 
         sed -i 's@/Private@/.Private@' ~/.ecryptfs/Private.mnt
@@ -161,13 +162,13 @@ function setup_tmp_ssh_keys()
         ## bring the ssh keys
         if [ ! -r $TMPDIR/ssh/nosecure.d/ssh/keys.d/github ]
         then
-	    mkdir -p $SSH_DIR
-	    openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C $SSH_DIR
+	          mkdir -p $SSH_DIR
+	          openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C $SSH_DIR
         fi
 
         if ! ssh-add -l
         then
-	    ssh-add $SSH_DIR/nosecure.d/ssh/keys.d/github
+	          ssh-add $SSH_DIR/nosecure.d/ssh/keys.d/github
         fi
     else
         echo setup_tmp_ssh_keys: key file not provided or not exists.
@@ -406,6 +407,25 @@ function setup_dirs()
 
     setup_Documentation
     setup_public_html
+}
+
+function setup_spacemacs()
+{
+    if [ -f ~/.rsetup/login/$HOST ]
+    then
+        if ! grep spacemacs ~/.rsetup/login/$HOST
+        then
+            cat <<'EOF' >> ~/.rsetup/login/$HOST
+# EMACS_DIST_DIR=.xemacs
+EMACS_DIST_DIR=.emacs.d
+export EMACS_DIST_DIR
+
+# EMACS_SERVER_NAME=general
+EMACS_SERVER_NAME=spacemacs
+export EMACS_SERVER_NAME
+EOF
+        fi
+    fi
 }
 
 main

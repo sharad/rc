@@ -258,6 +258,9 @@
 
       (setq-default yas-fallback-behavior 'call-other-command)
 
+      (setq
+       x-select-enable-primary t)
+
       ;; do not want it.
       ;; (setq yas/trigger-key "")
       )
