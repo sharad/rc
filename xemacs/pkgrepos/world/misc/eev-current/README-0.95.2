@@ -1,0 +1,178 @@
+This is the `README-0.95.2' file of GNU eev.
+Author and version: Eduardo Ochs, 2007oct04.
+This file is in the Public Domain.
+  <http://angg.twu.net/eev-current/README-0.95.2>
+  <http://angg.twu.net/eev-current/README-0.95.2.html>
+  <http://article.gmane.org/gmane.emacs.sources/2705>
+
+
+
+Hello gnu.emacs.sources,
+
+I would like to call your attention to this package:
+
+    http://angg.twu.net/eev-current.tar.gz   (the tarball)
+    http://angg.twu.net/eev-article.html     (a doc)
+    http://angg.twu.net/emacs.html           (some more stuff)
+    http://angg.twu.net/                     (more pointers)
+
+About its status: eev has already received most - or all - the
+necessary "ok"s from the FSF years ago, but I felt that it still had
+too many rough edges... and now most of the "technical" rough edges
+have been solved:
+
+  * Installation: eev used to require patched rcfiles to be able to
+    send blocks of commands to external programs. For example, it
+    "sent" blocks of commands to shells by storing them into temporary
+    script files, and then the user would type "ee" at the shell to
+    source that temporary script; that required that the shell had
+    "ee" defined as a shell function. There's an awk script that helps
+    patching rcfiles (and it makes unpatching them very easy), but
+    now, thanks to an idea from Rubikitch (a function called
+    `eepitch'), there are ways to send commands to external programs
+    running in Emacs buffers that need no "installation" - i.e., no
+    rcfile changes.
+
+  * Upgrading: `M-x find-eev-update-links' generates a temporary
+    buffer with an update script.
+
+  * The internals are much cleaner (in the main source files).
+
+
+On the documentation
+====================
+The main document about eev is the "eev article", at
+<http://angg.twu.net/eev-article.html>. At this point ***I AM NOT
+INCLUDING IT IN THE TARBALL*** - it has too many important links
+pointing to outside the eev package. So: if you don't have a
+(semi-)permanent web connection then reading an offline copy of the
+"article" can be frustrating - please wait a bit more.
+
+At some point - soon, I hope - the program ("blogme") that generates
+the html of the article will be able to generate TeXinfo too, and then
+there will be an Info version and a printable (.dvi) version of it.
+
+I still need to rewrite the documentation to a bit to always mention
+<f8> (= eepitch, Rubikitch's trick) as soon as possible. The original
+way of sending blocks of commands out in eev, `M-x eev', is
+technically trivial, but it requires a temporary directory and a
+"prepared shell" at the receiving end; <f8> sends lines to a comint
+buffer and needs no installation.
+
+
+Conceptual rough edges
+======================
+Again: I am sorry for the delay, but eev is a big package, and even
+though its main features fit in very little code - see the
+"miniatures" at
+
+  http://angg.twu.net/eev-current/eev-mini.el.html
+  http://angg.twu.net/eev-current/eev-mini-steps.el.html
+  (find-eevfile "eev-mini.el")
+  (find-eevfile "eev-mini-steps.el")
+
+(but be aware that "eev-mini.el" has not been thoroughly tested!) -,
+most of the feedback that I was receiving indicated that the most
+important underlying ideas were not getting through... Namely:
+
+  (1) "Automating almost everything" - as in the "eev article" at
+      <http://angg.twu.net/eev-article.html>; mainly, it's hard to
+      convince people that as they write an e-script to automate
+      something they should also automate the access to the files and
+      documents that they looked at and found relevant while writing
+      the script...
+
+      This is related to doing research without ever forgetting that
+      there is a "me" who is thinking about the problems and
+      solutions; when I read an e-script after writing it I have
+      already forgotten half of what I wrote there - a next person
+      coming after me that will take a peek at this e-script will be
+      like this "me", but he or she will have "forgotten" even more...
+
+  (2) "Every action factors through eval-last-sexp". That `C-x C-f
+      /tmp/foo' "factors through" having this on a buffer
+
+          (find-file "/tmp/foo")
+
+      and typing `C-x C-e' (or `M-e' or `M-E', if eev-mode is on)
+      after it, this is easy to see; but that clicking on the button
+      pointing to "files.el" in the help for the function find-file
+      should be the same as evaluating a sexp, this is harder to
+      grasp, it seems - and producing a sexp hyperlink like
+
+          (find-efunction 'find-file)
+
+      requires hindsight (hint: `M-h M-f find-file' will show this
+      sexp and others) - and producing sexps like
+
+          (find-efunctiondescr 'find-file)
+          (find-efunctiondescr 'find-file "/files.")
+          (find-efunctiondescr 'find-file "/files." '(eek "RET"))
+          (find-efunctiondescr 'find-file "/files." '(eek "M-h M-k RET"))
+
+      is, I guess, mind-blowing for most people...
+      And something like, say, this, too.
+
+          (find-bgprocess "xdvi /tmp/texbook.dvi")
+
+
+There MUST be a way to express the idea in (2) convincingly in
+diagrams... The best that I have at this moment is something like
+this:
+                  C-x C-f
+    +---------+   /tmp/foo    +---------+
+    | State 1 | ------------> | State 2 |
+    +---------+  	      +---------+
+         .                         .
+         :                         :
+         v       (find-file        v
+    +---------+  "/tmp/foo")  +---------+
+    | State 1'| ------------> | State 2'|
+    +---------+  	      +---------+
+
+where we can use screenshots to represent these states, and the lower
+horizontal arrow means that we're executing the (find-file "/tmp/foo")
+in a buffer, with an eval-last-sexp...
+
+So: the upper horizontal arrow is the "usual" way of visiting
+/tmp/foo; the lower horizontal arrow is the "e-script-ish" way of
+visiting /tmp/foo, in which the find-file action can be redone with
+just a `M-e'; in the passage from the upper line to the lower line we
+are automating visiting that file. But what does that mean, precisely?
+States 2 and 2' are evidently similar (same screenshot) but the
+vertical arrow on the left is where all trouble lies -
+
+I give presentations about Emacs and eev from time to time at Free
+Software events - half for proselytizing, half for testing ideas - and
+the same haunting question always pops up at the end: "how do you
+automate making e-scripts?" - or, in other words, "how do you automate
+automating tasks?" - and I don't have a good answer for that... I have
+10 or 20 usage patterns and I record every step "by hand" as I do it,
+using certain commands to help me...
+
+Textual descriptions of these usage patterns don't always work - many
+people have short attention spans nowadays (and mine is not very big,
+either... 8-\) - so I've been experimenting with several kinds of
+"animations":
+
+    * "real" animations in SWF (a.k.a. "Flash"), as in
+      <http://angg.twu.net/eev-current/anim/>,
+
+    * demos made with `eesteps', meant to be run from inside Emacs
+      with eev-mode on; for example, `M-4 M-x eev-demos',
+
+    * low-tech "flipbooks", as in
+      <http://angg.twu.net/flipbooks/> and
+      <http://angg.twu.net/eev-current/eev-sshot.el.html#find-sshot>
+      (the support for viewing flipbooks in Emacs is a hurried hack),
+
+
+Well, let me stop here for now. I started to write this planning to
+explain in some detail why I kept the development of eev sort of
+underground for so long, and I ended up writing long release notes
+instead...
+
+  Cheers,
+    Eduardo Ochs
+    http://angg.twu.net/
+    eduardoochs@gmail.com
