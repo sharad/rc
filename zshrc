@@ -68,6 +68,13 @@ source ~/.rsetup/zsh/env
 ~/.rsetup/zsh/run
 # }}}
 
+# {{{
+[  -r ~/.rsetup/eev/env  ] &&
+    source ~/.rsetup/eev/env
+[  -r ~/.rsetup/eev/run ] &&
+    ~/.rsetup/eev/run
+# }}}
+
 
 # If not running interactively, don't do anything:
 [ -z "$PS1" ] && return

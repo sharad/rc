@@ -198,3 +198,10 @@ stty erase  susp 
 export CVSROOT=/home/c_sharad/rpstry
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
+# {{{
+[  -r ~/.rsetup/eev/env  ] &&
+    source ~/.rsetup/eev/env
+[  -r ~/.rsetup/eev/run ] &&
+    ~/.rsetup/eev/run
+# }}}

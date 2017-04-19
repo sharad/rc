@@ -1,0 +1,34 @@
+#!/bin/zsh
+
+echo XXXX >> /tmp/jvpn.log
+
+__comp=ifup
+__subcomp=run
+if [ "x${HOST}" != "x" ] ; then
+    if [ -d ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ] ; then
+        rm -rf ~/.rsetup/${__comp}/${__subcomp}.d/${HOST}
+    fi
+
+    tdir=$(readlink -m ~/.rsetup/${__comp}/${__subcomp}.d/)
+    if [ ! -d $tdir ] ; then
+        mkdir -p $tdir
+        cat <<'EOF' > $tdir/.gitignore
+*
+!.stub
+!.gitignore
+EOF
+        unset tdir
+    fi
+    if [ ! -e ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ] ; then
+        cp ~/.rsetup/${__comp}/${__subcomp}.tmpl ~/.rsetup/${__comp}/${__subcomp}.d/${HOST}
+    fi
+
+    if [ -r ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ] ; then
+        . ~/.rsetup/${__comp}/${__subcomp}.d/${HOST}
+    fi
+
+else
+    echo ${__subcomp} var HOST is not set $HOST
+fi
+unset __subcomp
+unset __comp

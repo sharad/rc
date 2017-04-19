@@ -414,3 +414,13 @@ end
 context-off
 
 printf "\n\nFor more info run context-on command, for less info context-on, to toggle run toggle-context\n\n"
+
+# Beginning of the eev block:
+# See: (find-eev "eev-rctool" "new_block_gdbinit")
+#      (find-eev-update-links)
+#
+define ee
+  source ~/.eev/ee.gdb
+end
+#
+# End of the eev block.
