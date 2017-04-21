@@ -1,8 +1,6 @@
 #!/bin/zsh
 
-echo XXXX >> /tmp/jvpn.log
-
-__comp=ifup
+__comp=eev
 __subcomp=run
 if [ "x${HOST}" != "x" ] ; then
     if [ -d ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ] ; then

@@ -1,4 +1,4 @@
-;;; packages.el --- demo layer packages file for Spacemacs.
+;;; packages.el --- lotus-demo layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
@@ -18,27 +18,27 @@
 ;;
 ;;
 ;; Briefly, each package to be installed or configured by this layer should be
-;; added to `demo-packages'. Then, for each package PACKAGE:
+;; added to `lotus-demo-packages'. Then, for each package PACKAGE:
 ;;
 ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
-;;   function `demo/init-PACKAGE' to load and initialize the package.
+;;   function `lotus-demo/init-PACKAGE' to load and initialize the package.
 
 ;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
 ;;   define the functions `LAYER/pre-init-PACKAGE' and/or
-;;   `demo/post-init-PACKAGE' to customize the package as it is loaded.
+;;   `lotus-demo/post-init-PACKAGE' to customize the package as it is loaded.
 
 ;;; Code:
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/demoS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-demoS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
-(defconst demo-packages
+(defconst lotus-demo-packages
   '(
     (eev-all :location local)
     )
-  "The list of Lisp packages required by the demo layer.
+  "The list of Lisp packages required by the lotus-demo layer.
 
 Each entry is either:
 
@@ -65,7 +65,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun demo/init-eev-all ()
+(defun lotus-demo/init-eev-all ()
   (use-package eev-all
       :load-path "~/.xemacs/pkgrepos/world/misc/eev-current"
       :commands 'eev-mode

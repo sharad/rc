@@ -1,6 +1,6 @@
 # -*- mode: shell-script; -*-
 
-__comp=ifup
+__comp=eev
 __subcomp=env
 if [ "x${HOST}" != "x" ] ; then
     if [ -d ~/.rsetup/${__comp}/${__subcomp}.d/${HOST} ] ; then
