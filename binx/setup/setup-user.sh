@@ -16,7 +16,7 @@ DEB_EXTRA_PKG_VIRTUAL=""
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
 DEB_EXTRA_PKG_LISP="cl-swank slime"
 DEB_EXTRA_PKG2="homesick yadm macchanger xautolock suckless-tools xtrlock xbacklight"
-DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl"
+DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools"
 
 function main()
 {
