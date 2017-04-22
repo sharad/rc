@@ -1,0 +1,196 @@
+
+ (find-eevanim "channels.swf" 600 400)
+
+The animation above shows Emacs sending commands to xterms one line at
+a time through "communication channels".
+
+When the user types <F9> Emacs checks if the current line starts with
+a ""; if it does, then the rest of the line is executed as Lisp code,
+and if doesn't then the line is sent to the program at the end of the
+current communication channel. The user only had to type a series of
+<F9>s at the Emacs window for all this to happen.
+
+The line
+
+   (eechannel-xterm "A") ;; create
+
+creates a xterm "listening to channel A", and sets the default channel
+to A; similarly,
+
+   (eechannel-xterm "B") ;; create
+
+creates a xterm "listening to channel A" and sets the default channel
+to B. After that some lines are send to the xterm at channel B, then
+
+   (eechannel "A") ;; change target
+
+sets the default channel to A; the next lines are sent to A, and so
+on.
+
+After executing/sending all those lines the user switches the focus to
+an xterm and types "exit" there to close it, and then does the same
+with the other xterm. Note that these xterms "listen" to the user's
+keystrokes as usual, but _in addition to that_ they also listen to
+input from Emacs.
+
+
+
+
+In diagrams
+===========
+Here's a diagram that shows roughly what we have when there's an emacs
+and an xterm windows running on X. Many details have been omitted -
+for examples, the real communication happens through fifos and ptys,
+that are not shown - but it's easy to build a complete diagram from
+this.
+
+             keyboard  mouse      display	    	  
+                 |       |           ^		   
+                 v       v           |		   
+            +----------------------------+          
+            |                            |	   
+            |             X              |	   
+            |                            |	   
+            +----------------------------+          
+   key/mouse | ^ display    key/mouse | ^ display   
+      events v | commands      events v | commands       
+         +---------+              +---------+       
+         |         |              |         |       
+         |  emacs  |              |  xterm  |       
+         |         |              |         |       
+         +---------+              +---------+       
+                            chars and | ^ chars and 
+                              signals v | signals   
+                                  +---------+       
+                                  |         |       
+                                  |   sh    |       
+                                  |         |       
+                                  +---------+       
+
+When we do (eexterm "A") in emacs, what happens is this:
+
+               +---------+
+               |         |
+               |    X    |
+               |         |
+               +---------+
+             /  ^       \  ^
+            v  /         v  \
+   +---------+            +------------+
+   |         | initiates  |            |
+   |  emacs  |:::::::::::>|   xterm    |
+   |         |            |            |
+   +---------+            +------------+
+                            ::   |  ^	
+                            \/   v  |   
+                          +------------+
+                          |            |
+            eeg.A.pid <-- | eegchannel |
+                          |            |
+                          +------------+
+                            ::   |  ^	
+                            \/   v  |	
+                          +------------+
+                          |            |
+                          |     sh     |
+                          |            |
+                          +------------+
+
+  emacs runs: (find-bgprocess "xterm -T 'channel A' -e eegchannel A /bin/sh")
+  xterm runs:                                          eegchannel A /bin/sh
+  eegchannel saves its pid at ~/.eev/eeg.A.pid and runs:            /bin/sh
+
+At this point the xterm is running a shell that is "listening on
+channel A"; eegchannel pretends to be transparent and passes all
+characters and signals in the vertical arrows transparently - but when
+it receives a certain signal (a SIGUSR1) it reads the contents from
+the file ~/.eev/eeg.A.str and passes it to the shell, as if those
+characters were coming from the xterm - i.e., as if the used had typed
+them.
+
+Here are the details of this "protocol":
+when we type F9 on a line containing "echo foo",
+
+                                    +------------+
+				    |            |
+				    |   xterm    |
+				    |            |
+				    +------------+
+   +-----------+                         |  ^	  
+   |           | --> eeg.A.str           v  |     
+   |   emacs   | <-- eeg.A.pid      +------------+
+   |           | -----------------> |            |
+   +-----------+     eeg.A.str ---> | eegchannel |
+                                    |            |
+				    +------------+
+                                         |  ^	
+				         v  |	
+				    +------------+
+				    |            |
+				    |     sh     |
+				    |            |
+				    +------------+
+
+  emacs saves the string "echo foo\n" into ~/.eev/A.str,
+  emacs reads the pid of eegchannel from ~/.eev/eeg.A.pid (say, "1022"),
+  emacs runs "kill -USR1 1022",
+  eegchannel reads the string from ~/.eev/A.str, and sends it to the shell.
+
+NOTE: one frequent question is: "why are you using two normal files
+and SIGUSR1s for the communication between emacs and eegchannel,
+instead of making them talk through a fifo?" - the answer is: try to
+explain the details of fifos - including creation - to someone who
+knows little about the inner workings of a *NIX kernel and who is
+uncomfortable to accept another kind of black box... The way with two
+files and SIGUSR1s is simpler, works well enough, and I've been able
+to write all the code for it in a few hours - and I still don't know
+enough about fifos to implement a fifo version of this.
+
+
+
+
+For more information:
+  The code that runs in the movie:     (find-eevex "anim.e" "movie1")
+  The preparatives for the recording:  (find-eevex "anim.e" "movie1_A0")
+  The code for F9:             (find-eev "eev.el" "eechannel-do-this-line")
+  An auxiliary program:        (find-eev "eegchannel")
+  The program that produced the animation:
+    <http://www.unixuser.org/~euske/vnc2swf/rec_vncserver.html>
+  Compiling vnc2swf (and some auxiliary libraries and programs):
+                                (find-eevex "anim.e" "compile-ming")
+  More about SWF:               (find-eevfile "anim/README")
+
+
+
+
+Update (2012): eepitch
+======================
+eechannel is non-trivial to set up: it invokes expect and xterm - as
+external programs -, it saves temporary files into the directory
+"~/.eev/" (by default), and it calls this Expect script, which should
+be in the PATH:
+
+  <http://angg.twu.net/eev-current/eegchannel.html>
+  <http://angg.twu.net/eev-current/eegchannel>
+                        (find-eev "eegchannel")
+
+Usually we can rely on the script "eev-rctool" to take care of all the
+copies of files and patches in rcfiles,
+
+  <http://angg.twu.net/eev-current/eev-rctool.html>
+  <http://angg.twu.net/eev-current/eev-rctool>
+                        (find-eev "eev-rctool")
+
+but there is a much simpler alternative. eechannel has been mostly
+superseded by another tool, `eepitch', which needs no setup at all,
+can be loaded with just `(load "eepitch.el")', does not depend on
+other files (it doesn't even depend on eev), and runs entirely inside
+Emacs - it sends lines to shell buffers instead of to xterms, and it
+comes with support for interacting with more than 50 languages and
+other interactive programs (eechannel by default interacts with a
+shell). For more information on eepitch.el, please see:
+
+  <http://angg.twu.net/eev-current/eepitch.readme.html>
+  <http://angg.twu.net/eev-current/eepitch.el.html>
+  <http://angg.twu.net/eev-current/eepitch.el>
+                        (find-eev "eepitch.el")

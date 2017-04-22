@@ -352,9 +352,49 @@ you should place your code here."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(evil-want-Y-yank-to-eol nil)
+ '(muse-blosxom-base-directory "/home/s/hell/Documents/CreatedContent/gen/web/site/blog")
+ '(muse-colors-autogen-headings (quote outline))
+ '(muse-colors-inline-image-method (quote muse-colors-use-publishing-directory))
+ '(muse-completing-read-function (quote ido-completing-read))
+ '(muse-html-charset-default "utf-8")
+ '(muse-html-encoding-default (quote utf-8))
+ '(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+ '(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+ '(muse-html-meta-content-encoding (quote utf-8))
+ '(muse-html-style-sheet
+   "<lisp>
+       (concat
+        (muse-insert-css-link \"all\" \"common.css\")
+        (muse-insert-css-link \"screen\" \"screen.css\")
+        (muse-insert-css-link \"print\" \"print.css\"))
+       </lisp>")
+ '(muse-latex-header "<lisp>(muse-insert-meta-file \"header.tex\")</lisp>")
+ '(muse-latex-pdf-browser "evince %s &")
+ '(muse-mode-hook (quote (flyspell-mode footnote-mode)))
+ '(muse-publish-comments-p t)
+ '(muse-publish-date-format "%b. %e, %Y")
+ '(muse-publish-desc-transforms
+   (quote
+    (muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL)))
+ '(muse-wiki-publish-small-title-words
+   (quote
+    ("the" "and" "at" "on" "of" "for" "in" "an" "a" "page")))
+ '(muse-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+ '(muse-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+ '(muse-xhtml-style-sheet
+   "<lisp>
+       (concat
+        (muse-insert-css-link \"all\" \"common.css\")
+        (muse-insert-css-link \"screen\" \"screen.css\")
+        (muse-insert-css-link \"print\" \"print.css\"))
+       </lisp>")
+ '(planner-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+ '(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
  '(safe-local-variable-values
    (quote
-    ((folded-file . t)
+    ((modes emacs-lisp-mode fundamental-mode)
+     (modes fundamental-mode emacs-lisp-mode escript-mode)
+     (folded-file . t)
      (elixir-enable-compilation-checking . t)
      (elixir-enable-compilation-checking))))
  '(session-use-package t nil (session)))
@@ -363,4 +403,5 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:background nil)))))
+ '(default ((t (:background nil))))
+ '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold)))))

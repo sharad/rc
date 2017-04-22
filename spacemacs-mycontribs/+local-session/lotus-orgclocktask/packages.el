@@ -83,10 +83,25 @@ Each entry is either:
 
 (defun lotus-orgclocktask/init-org-clock-daysummary ()
   (use-package org-clock-daysummary
-      :defer t
+      ;; :defer t
+      :demand t
+      :commands (org-clock-work-day-mode-line-add)
       :config
       (progn
-        )))
+        (use-package org-publishing
+          :defer t
+          :config
+          (progn
+            (let ((monitor-dir (expand-file-name
+                                "meru"
+                                (org-publish-get-attribute "tasks" "org" :base-directory))))
+              (if (file-directory-p monitor-dir)
+                  (progn
+                    (setq
+                     org-clock-monitor-files (directory-files-recursive monitor-dir "\\.org$" 2 "\\(rip\\|stage\\)"))
+                    (org-clock-work-day-mode-line-add t))
+                (message "org monitor dir %s not exists." monitor-dir))))))))
+
 
 (defun lotus-orgclocktask/init-org-clocktable-alt ()
   (use-package org-clocktable-alt
@@ -97,6 +112,7 @@ Each entry is either:
 
 (defun lotus-orgclocktask/init-org-context-clocking ()
   (use-package org-context-clocking
+      :commands (org-context-clocking-insinuate org-context-clocking-uninsinuate)
       :defer t
       :config
       (progn

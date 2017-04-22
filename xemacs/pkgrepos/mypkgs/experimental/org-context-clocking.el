@@ -92,6 +92,19 @@
           (unless (org-clock-entry-associated-to-file-p file)
             (org-entry-run-associated-clock file))))))
 
+
+(defun update-current-file-x ()
+  (if t
+      (let* ((buff (window-buffer))
+             (file (buffer-file-name buff)))
+        (unless nil
+          (setq
+           task-previous-file task-current-file
+           task-current-file  file)
+
+          (unless (org-clock-entry-associated-to-file-p file)
+            (org-entry-run-associated-clock file))))))
+
 (defun org-clock-entry-current-entry ()
   (and
    ;; file
@@ -274,12 +287,17 @@
             ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
             (t (user-error "Invalid task choice %c" rpl)))))))
 
-(progn
-  (add-hook 'buffer-list-update-hook     'run-task-current-file-timer)
-  (add-hook 'elscreen-screen-update-hook 'run-task-current-file-timer)
-  (add-hook 'elscreen-goto-hook          'run-task-current-file-timer))
+;;;###autoload
+(defun org-context-clocking-insinuate ()
+  (interactive)
+  (progn
+    (add-hook 'buffer-list-update-hook     'run-task-current-file-timer)
+    (add-hook 'elscreen-screen-update-hook 'run-task-current-file-timer)
+    (add-hook 'elscreen-goto-hook          'run-task-current-file-timer)))
 
-(when nil
+;;;###autoload
+(defun org-context-clocking-uninsinuate ()
+  (interactive)
   (remove-hook 'buffer-list-update-hook 'run-task-current-file-timer)
   (setq buffer-list-update-hook nil)
   (remove-hook 'elscreen-screen-update-hook 'run-task-current-file-timer)

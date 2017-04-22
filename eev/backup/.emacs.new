@@ -1,0 +1,9 @@
+;; Beginning of the eev block:
+;; See: (find-eev "eev-rctool" "new_block_emacs")
+;;      (find-eev-update-links)
+;;
+(add-to-list 'load-path "~/.xemacs/pkgrepos/world/misc/eev-current")
+(require 'eev-all)      ; (find-eev "eev-all.el")
+(eev-mode 1)
+;;
+;; End of the eev block.

@@ -1,0 +1,32 @@
+  M-?    eev-help-page ()         Evaluation:
+  C-_    undo			     C-x C-e   eval-last-sexp
+  C-g    keyboard-quit		     M-e       eek-eval-sexp-eol ()
+  M-x    execute-extended-command    M-E       eek-eval-last-sexp ()
+  TAB    indent/complete	     M-0 M-e, M-0 M-E  just highlight ()
+				        (* (+ 1 2) (+ 3 4))
+  C-w    kill-region (cut)
+  M-w    kill-ring-save (copy)	   "Return from hyperlinks":
+  C-y    yank (paste)		     M-k      kill-this-buffer ()
+				     M-K      bury-buffer ()
+  C-x C-s  save-buffer		     C-x C-b  buffer-menu
+  C-x C-c  save-buffers-kill-emacs 
+  C-x C-f  find-file 		   Main docs:			       
+				     (find-efunctiondescr 'eev-mode)   
+  C-x 0   delete-window 	     (find-eevfile "article/eev.txt")  
+  C-x 1   delete-other-windows	     (find-eevfile "doc/keys.e")       
+  C-x 2   split-window-vertically                                      
+  C-x o   other-window 		     (find-node "(emacs)Top")	       
+  C-x b   switch-to-buffer	     (find-node "(emacs)Concept Index")
+  C-x k   kill-buffer		     (find-node "(emacs)Command Index")
+				     (find-node "(emacs)Key Index")    
+				     (find-node "(elisp)Top")	       
+				     (find-node "(elisp)Index")	       
+				     (find-elinode "Index")            
+
+  [Used in a workshop about Emacs and eev:]
+  (tool-bar-mode)
+  (menu-bar-mode nil)
+  http://www.paulgraham.com/lib/paulgraham/jmc.ps
+  (code-ps "pgroots" "$S/http/www.paulgraham.com/lib/paulgraham/jmc.ps")
+  (find-pgrootspage 8)
+  (find-eev "eev-rctool" "create_help")

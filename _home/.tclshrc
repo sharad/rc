@@ -1,0 +1,7 @@
+# Beginning of the eev block:
+# See: (find-eev "eev-rctool" "new_block_tclshrc")
+#      (find-eev-update-links)
+#
+proc ee {} { global env; uplevel #0 source $env(EEVTMPDIR)/ee.tcl }
+#
+# End of the eev block.
