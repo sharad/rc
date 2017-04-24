@@ -32,6 +32,7 @@ values."
    dotspacemacs-configuration-layers
    '(
      d
+     yaml
      javascript
      markdown
      ;; ----------------------------------------------------------------

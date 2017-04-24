@@ -91,7 +91,10 @@
     (ignore-errors
       (stumpwm::load-external-module mod))))
 
-(load-all-modules)
+;; (load-all-modules)
+
+(defcommand load-all-external-modules () ()
+            (load-all-modules))
 
 ;;(load-external-module "wmii-like-stumpwmrc")
 ;;}}}
