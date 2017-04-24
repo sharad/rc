@@ -28,6 +28,8 @@ xftalpha 0.8
 # Print everything to stdout?
 # out_to_console no
 
+
+
 # MPD host/port
 # mpd_host localhost
 # mpd_port 6600
@@ -177,7 +179,7 @@ max_user_text 16384
 # color1 F8DF58
 
 # ${color 6694B2}${font OpenLogos:size=1} u t
-# ${color BADCDD}${font weather:size=1}${execi 600 ~/scripts/conditions.sh}${color}${font}${voffset -25}  ${execi 1200 ~/scripts/pogodynka.sh}
+# ${color BADCDD}${font weather:size=1}${execi 600 ~/bin/conky-conditions}${color}${font}${voffset -25}  ${execi 1200 ~/bin/conky-pogodynka}
 
 #    ${font weather:size=1}x ${font}HDD ${execi 1 ~/scripts/hddmonit.sh}°C
 
@@ -254,3 +256,10 @@ ${color #ddaa00}Outbound Connection ${alignr} Remote Service/Port$color
  ${tcp_portmon 32768 61000 rhost 3} ${alignr} ${tcp_portmon 32768 61000 rservice 3}
  ${tcp_portmon 32768 61000 rhost 4} ${alignr} ${tcp_portmon 32768 61000 rservice 4}
  ${tcp_portmon 32768 61000 rhost 5} ${alignr} ${tcp_portmon 32768 61000 rservice 5}
+## Rss feed
+# ${font Ubuntu:size=14:regular:bold}${color #00BEFF}Distribution News:
+# ${font Ubuntu:size=8:rugular:bold}${color #E89909}${execi 300 ~/bin/conky-rss http://distrowatch.com/news/dw.xml 5 1}
+# ${font Ubuntu:size=14:regular:bold}${color #00BEFF}OMG Ubuntu News:
+# ${font Ubuntu:size=8:rugular:bold}${color #E89909}${execi 300 ~/bin/conky-rss http://feeds.feedburner.com/d0od?format=xml 5 2}
+${font Ubuntu:size=14:regular:bold}${color #00BEFF}OSNews:
+${font Ubuntu:size=8:rugular:bold}${color #E89909}${execi 300 ~/bin/conky-rss http://www.osnews.com/files/recent.xml 10 2}

@@ -40,7 +40,7 @@ fi
 if whence -p conky >& /dev/null &&
     ! pgrep conky >& /dev/null
 then
-    conky &!
+    conky -c ~/.conkyrc/main/conkyrc &!
 fi
 
 if whence xte
