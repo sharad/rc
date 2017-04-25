@@ -16,7 +16,7 @@ DEB_EXTRA_PKG_VIRTUAL=""
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
 DEB_EXTRA_PKG_LISP="cl-swank slime"
 DEB_EXTRA_PKG2="homesick yadm macchanger xautolock suckless-tools xtrlock xbacklight"
-DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools"
+DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macchanger lm-sensors"
 
 function main()
 {
@@ -235,25 +235,26 @@ function setup_git_repos()
     then
         git clone --recursive  git@github.com:sharad/userorg.git ~/.repos/git
     else
-        git -C ~/.repos/git submodule update --remote
+        git -C ~/.repos/git submodule foreach git pull origin master
+        # git -C ~/.repos/git submodule update --remote
     fi
 
     if true
     then
         if [ ! -L ~/.repos/git/user/setup-trunk -a -d ~/.repos/git/user/rc ]
         then
-    	    rm -rf ~/.repos/git/user/setup-trunk
-	    ln -sf rc ~/.repos/git/user/setup-trunk
+    	      rm -rf ~/.repos/git/user/setup-trunk
+	          ln -sf rc ~/.repos/git/user/setup-trunk
         fi
         if [ ! -L ~/.setup-trunk -a -d ~/.repos/git/user/setup-trunk ]
         then
-	    rm -rf ~/.setup-trunk
-	    ln -sf .repos/git/user/setup-trunk ~/.setup-trunk
+	          rm -rf ~/.setup-trunk
+	          ln -sf .repos/git/user/setup-trunk ~/.setup-trunk
         fi
         if [ ! -L ~/.setup -a -d ~/.setup-trunk ]
         then
-	    rm -rf ~/.setup
-	    ln -sf .setup-trunk ~/.setup
+	          rm -rf ~/.setup
+	          ln -sf .setup-trunk ~/.setup
         fi
 
         if [ ! -L ~/.stumpwm.d/modules -a -d ~/.repos/git/system/stumpwm-contrib ]
@@ -267,24 +268,24 @@ function setup_git_repos()
         then
             if [ ! -d ~/.Private/secure.d -a -d ~/.repos/git/user/secure.d ]
             then
-	        rm -rf ~/.Private/secure.d
-	        cp -ra ~/.repos/git/user/secure.d ~/.Private/secure.d
+	              rm -rf ~/.Private/secure.d
+	              cp -ra ~/.repos/git/user/secure.d ~/.Private/secure.d
             fi
         fi
 
         if [ ! -d ~/.pi -a -d ~/.setup/pi ]
         then
-	    ln -s .setup/pi ~/.pi
-	    ln -s ../.repos/git/user/orgp ~/.pi/org
+	          ln -s .setup/pi ~/.pi
+	          ln -s ../.repos/git/user/orgp ~/.pi/org
         fi
 
         if [ ! -d ~/.emacs.d/.git ]
         then
-	    if [ -d ~/.emacs.d ]
+	          if [ -d ~/.emacs.d ]
             then
-              mv ~/.emacs.d ~/.emacs.d-old
+                mv ~/.emacs.d ~/.emacs.d-old
             fi
-	    ln -s .repos/git/user/spacemacs ~/.emacs.d
+	          ln -s .repos/git/user/spacemacs ~/.emacs.d
         fi
 
     fi
