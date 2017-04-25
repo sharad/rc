@@ -583,7 +583,7 @@ function gitssync () {
 
     if ssh-add -l >& /dev/null ; then
         print fetching changes
-        git -C ${superepo} submodule foreach git remote update
+        : git -C ${superepo} submodule foreach git remote update
     fi
 
     foreach gdir ( $(git -C ${superepo} submodule | cut -c2- | cut -f2 -d' ') "" )
@@ -598,6 +598,9 @@ function gitssync () {
         elif [ -r ${superepo}/$gdir/.git/refs/remotes/origin/master ] ; then
             remotebranch=remotes/origin/master
         fi
+
+        echo git -C ${superepo}/$gdir diff -s ${gdir+--ignore-submodules=all} --exit-code
+
         if [ -d ${superepo}/$gdir ] &&
                ! ( git -C ${superepo}/$gdir diff -s ${gdir+--ignore-submodules=all} --exit-code &&
                    git -C ${superepo}/$gdir diff -s ${gdir+--ignore-submodules=all} --exit-code $remotebranch ); then
@@ -608,8 +611,10 @@ function gitssync () {
             if [ -z "$gdir" ]
             then
                 git -C ${superepo}/$gdir commit -a -m "Updating the submodules to the latest version"
+                echo git -C ${superepo}/$gdir commit -a -m "Updating the submodules to the latest version"
             else
                 git -C ${superepo}/$gdir commit -a -m "corrections"
+                echo git -C ${superepo}/$gdir commit -a -m "corrections"
             fi
             git -C ${superepo}/$gdir push origin
             git -C ${superepo}/$gdir status
