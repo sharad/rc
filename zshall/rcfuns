@@ -599,11 +599,11 @@ function gitssync () {
             remotebranch=remotes/origin/master
         fi
 
-        echo git -C ${superepo}/$gdir diff -s ${gdir+--ignore-submodules=all} --exit-code
+        echo git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code
 
         if [ -d ${superepo}/$gdir ] &&
-               ! ( git -C ${superepo}/$gdir diff -s ${gdir+--ignore-submodules=all} --exit-code &&
-                   git -C ${superepo}/$gdir diff -s ${gdir+--ignore-submodules=all} --exit-code $remotebranch ); then
+               ! ( git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code &&
+                   git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code $remotebranch ); then
             print start $gdir
             git -C ${superepo}/$gdir status
             git -C ${superepo}/$gdir pull
