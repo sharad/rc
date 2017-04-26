@@ -534,18 +534,19 @@ fi
 
 ## http://stackoverflow.com/questions/5143795/how-can-i-check-in-a-bash-script-if-my-local-git-repo-has-changes
 function gitspull () {
+
     superepo=${1-~/.repos/git}
 
     if ssh-add -l >& /dev/null ; then
         print fetching changes
-        git -C ${superepo} submodule foreach git remote update
+        : git -C ${superepo} submodule foreach git remote update
     fi
 
     foreach gdir ( $(git -C ${superepo} submodule | cut -c2- | cut -f2 -d' ') "" )
     {
         print ${superepo}/$gdir
         if ssh-add -l >& /dev/null ; then
-            : git -C ${superepo}/$gdir remote update
+            git -C ${superepo}/$gdir remote update
         fi
         local remotebranch
         if [ -r ${superepo}/$gdir/.git/refs/remotes/origin/HEAD ] ; then
@@ -553,18 +554,24 @@ function gitspull () {
         elif [ -r ${superepo}/$gdir/.git/refs/remotes/origin/master ] ; then
             remotebranch=remotes/origin/master
         fi
+
+        echo git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code
+
         if [ -d ${superepo}/$gdir ] &&
-               ! ( git -C ${superepo}/$gdir diff -s ${gdir+--ignore-submodules=all} --exit-code &&
-                   git -C ${superepo}/$gdir diff -s ${gdir+--ignore-submodules=all} --exit-code $remotebranch ); then
+               ! ( git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code &&
+                   git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code $remotebranch ); then
             print start $gdir
             git -C ${superepo}/$gdir status
             git -C ${superepo}/$gdir pull
             git -C ${superepo}/$gdir status
+
             # if [ -z "$gdir" ]
             # then
             #     git -C ${superepo}/$gdir commit -a -m "Updating the submodules to the latest version"
+            #     echo git -C ${superepo}/$gdir commit -a -m "Updating the submodules to the latest version"
             # else
             #     git -C ${superepo}/$gdir commit -a -m "corrections"
+            #     echo git -C ${superepo}/$gdir commit -a -m "corrections"
             # fi
             # git -C ${superepo}/$gdir push origin
             # git -C ${superepo}/$gdir status
@@ -575,6 +582,7 @@ function gitspull () {
         unset remotebranch
     }
 
+
 }
 
 function gitssync () {
@@ -583,7 +591,7 @@ function gitssync () {
 
     if ssh-add -l >& /dev/null ; then
         print fetching changes
-        : git -C ${superepo} submodule foreach git remote update
+        git -C ${superepo} submodule foreach git remote update
     fi
 
     foreach gdir ( $(git -C ${superepo} submodule | cut -c2- | cut -f2 -d' ') "" )
@@ -608,6 +616,7 @@ function gitssync () {
             git -C ${superepo}/$gdir status
             git -C ${superepo}/$gdir pull
             git -C ${superepo}/$gdir status
+
             if [ -z "$gdir" ]
             then
                 git -C ${superepo}/$gdir commit -a -m "Updating the submodules to the latest version"
