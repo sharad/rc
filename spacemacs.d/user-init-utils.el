@@ -7,6 +7,7 @@
 
 (defun spacemacs-dist-layers-select ()
   '(
+    d
     javascript
     markdown
     ;; ----------------------------------------------------------------
@@ -43,6 +44,7 @@
     ;; .spacemacs-mycontribution
     basic-startup
     messaging
+    yaml
     ;; interactivity-convenience
     ))
 
