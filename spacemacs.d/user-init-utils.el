@@ -267,7 +267,8 @@
       ;; (setq yas/trigger-key "")
       )
 
-    (let (current-load-list)
+    (when nil                           ; FROM where this came.
+     (let (current-load-list)
 
       (defadvice indent-region (around remove-useless-whitespace
                                        (start end &optional column) activate)
@@ -316,7 +317,7 @@ variable."
                     (forward-line 1)))))
           ad-do-it))
 
-      ))
+      )))
 
 
   (deh-require-maybe folding

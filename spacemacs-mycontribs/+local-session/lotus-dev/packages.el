@@ -236,7 +236,8 @@ Each entry is either:
 
 (defun lotus-dev/init-develock ()
   (use-package develock
-      :defer t
+      ;; :defer t
+      :demand t
       :config
       (progn
         ;; remove-useless-whitespace
