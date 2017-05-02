@@ -40,12 +40,11 @@
     themes-megapack
     perspectives
     misc
-
+    python
+    yaml
     ;; .spacemacs-mycontribution
     basic-startup
     messaging
-    yaml
-    ;; interactivity-convenience
     ))
 
 (defun lotus-dist-layers-select (&optional layer-dir)

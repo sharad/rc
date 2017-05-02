@@ -17,6 +17,9 @@ DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
 DEB_EXTRA_PKG_LISP="cl-swank slime"
 DEB_EXTRA_PKG2="homesick yadm macchanger xautolock suckless-tools xtrlock xbacklight"
 DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macchanger lm-sensors"
+DEB_EXTRA_SEC_PKG1="systemd-ui " # policykit-1 policykit-1-gnome
+DEB_DEV_PKG1="python-pip"
+
 
 function main()
 {
@@ -126,6 +129,8 @@ function setup_apt_packages()
         "$DEB_EXTRA_PKG1" \
         "$DEB_EXTRA_PKG2" \
         "$DEB_EXTRA_PKG3" \
+        "$DEB_EXTRA_SEC_PKG1" \
+        "$DEB_DEV_PKG1" \
         "$DEB_EXTRA_PKG_FONTS" \
         "$DEB_EXTRA_PKG_LISP" \
         "$DEB_EXTRA_PKG_COMMUNICATION" \

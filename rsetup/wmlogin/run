@@ -52,6 +52,12 @@ fi
 
 # ~/bin/syncimap -r               # enable, done in rsetup/x/run
 
+# laptop power monitoring.
+if whence -p ~/bin/power-mon
+then
+    ~/bin/power-mon
+fi
+
 atq
 if [ $(atq | cut -f1 | wc -l) -gt 0 ] ; then
     atrm  $(atq | cut -f1)

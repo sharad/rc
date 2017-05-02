@@ -391,21 +391,22 @@ Each entry is either:
               :config
               (progn
                 (progn
-                  (add-to-org-agenda-custom-commands
-                   `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
-                     "Meru Today" ;;  search ""
-                     ((agenda ""
-                              ((org-agenda-span 'day)
-                               (org-agenda-prefix-format  "%e")))
-                      (org-agenda-files
-                       ',(directory-files-recursive
-                          (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
-                          "\\.org$" 2 "\\(rip\\|stage\\)"))
-
-                      ;; (org-agenda-sorting-strategy '(priority-up effort-down))
-                      )
-                     ;; ("~/computer.html")
-                     )))
+                  (let ((task-dir
+                         (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))))
+                    (when (file-directory-p task-dir)
+                      (add-to-org-agenda-custom-commands
+                       `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
+                         "Meru Today" ;;  search ""
+                         ((agenda ""
+                                  ((org-agenda-span 'day)
+                                   (org-agenda-prefix-format  "%e")))
+                          (org-agenda-files
+                           ',(directory-files-recursive task-dir
+                                                        "\\.org$" 2 "\\(rip\\|stage\\)"))
+                          ;; (org-agenda-sorting-strategy '(priority-up effort-down))
+                          )
+                         ;; ("~/computer.html")
+                         )))))
                 (progn ;; "org-publishing"
 
                   ;; "Review Aganda" ;;http://stackoverflow.com/a/22440571
@@ -416,19 +417,21 @@ Each entry is either:
 
                   ;; COMMON settings for all reviews
                   (setq efs/org-agenda-review-settings
-                        `((org-agenda-files
-                           ',(directory-files-recursive
-                              (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))
-                              "\\.org$" 2 "\\(rip\\|stage\\)"))
-                          (org-agenda-show-all-dates t)
-                          (org-agenda-start-with-log-mode t)
-                          (org-agenda-start-with-clockreport-mode t)
-                          (org-agenda-archives-mode t)
-                          ;; I don't care if an entry was archived
-                          (org-agenda-hide-tags-regexp
-                           (concat org-agenda-hide-tags-regexp
-                                   "\\|ARCHIVE"))
-                          ))
+                        ((org-agenda-files
+                          ',(let ((task-dir (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))))
+                                 (if (file-directory-p task-dir)
+                                     (directory-files-recursive
+                                      task-dir
+                                      "\\.org$" 2 "\\(rip\\|stage\\)"))))
+                         (org-agenda-show-all-dates t)
+                         (org-agenda-start-with-log-mode t)
+                         (org-agenda-start-with-clockreport-mode t)
+                         (org-agenda-archives-mode t)
+                         ;; I don't care if an entry was archived
+                         (org-agenda-hide-tags-regexp
+                          (concat org-agenda-hide-tags-regexp
+                                  "\\|ARCHIVE"))
+                         ))
 
 
                   ;; Show the agenda with the log turn on, the clock table show and
