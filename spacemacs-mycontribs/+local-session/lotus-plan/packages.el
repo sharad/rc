@@ -116,7 +116,8 @@ Each entry is either:
 
 (defun lotus-plan/init-planner ()
   (use-package planner
-      :defer t
+      ;; :defer t
+      :demand t
       :commands (plan)
       :config
       (progn
@@ -358,23 +359,43 @@ instead of a string."
                 (setq muse-wiki-allow-nonexistent-wikiword t)))
 
           (use-package planner-zoom :defer t)
-          (use-package planner-lisp :defer t))
+          (use-package planner-lisp :defer t)
+          (use-package planner-erc :defer t)
+          (use-package planner-w3m :defer t)
+          (use-package planner-bibtex :defer t)
+          (use-package planner-id :defer t)
+          (use-package planner-gnus :defer t)
+          (use-package planner-rank :defer t)
+          (use-package planner-trunk :defer t)
+          (use-package xtla
+              :defer t
+              :config
+              (use-package planner-xtla :defer t))
+          ;; (use-package planner-accomplishments :defer t) ; M-x planner-accomplishments-show after M-x plan
+          (use-package planner-tasks-overview :defer t) ; M-x planner-tasks-overview
+          )
 
-        (use-package planner-erc :defer t)
-        (use-package planner-w3m :defer t)
-        (use-package planner-bibtex :defer t)
-        (use-package planner-id :defer t)
-        (use-package planner-gnus :defer t)
-        (use-package planner-rank :defer t)
-        (use-package planner-trunk :defer t)
-        (use-package xtla
-            :defer t
-            :config
-            (use-package planner-xtla :defer t))
-        ;; (use-package planner-accomplishments :defer t) ; M-x planner-accomplishments-show after M-x plan
-        (use-package planner-tasks-overview :defer t) ; M-x planner-tasks-overview
 
-        )))
+        (progn
+          (when nil
+            (planner-registry-insinuate)))
+
+        (progn
+          (when t
+            (use-package startup-hooks
+                :defer t
+                :config
+                (progn
+                  (progn
+                    (add-hook 'sharad/enable-startup-interrupting-feature-hook ;; '*sharad/after-init-hook*
+                              '(lambda ()
+                                (with-eval-after-load "planner-registry"
+                                  (progn
+                                    (setq planner-registry-file "~/.emacs.d/autoconfig/planner/planner-registry.el")
+                                    (save-excursion
+                                      (save-window-excursion
+                                        (plan 2)
+                                        (planner-registry-insinuate)))))))))))))))
 
 (defun lotus-plan/init-muse-wiki ()
   (use-package muse-wiki
@@ -600,6 +621,7 @@ instead of a string."
 (defun lotus-plan/init-planner-registry ()
   (use-package planner-registry
       :defer t
+      :commands (planner-registry-insinuate)
       :config
       (progn
         (progn
@@ -611,7 +633,8 @@ instead of a string."
 
           (setq planner-registry-file (auto-config-file "planner/planner-registry.el")))
 
-        (use-package startup-hooks
+        (when nil
+         (use-package startup-hooks
             :defer t
             :config
             (progn
@@ -623,7 +646,7 @@ instead of a string."
                              (save-excursion
                                (save-window-excursion
                                  (plan 2)
-                                 (planner-registry-insinuate))))))))))))
+                                 (planner-registry-insinuate)))))))))))))
 
 (defun lotus-plan/init-planner-report ()
   ;; for using      M-x planner-report-generate

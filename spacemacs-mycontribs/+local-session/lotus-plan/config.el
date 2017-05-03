@@ -25,6 +25,30 @@
 ;;; Code:
 
 
+;; (when (configuration-layer/package-usedp 'planner)
+;;   (defun spacemacs/planner-enable ()
+;;     (progn ;;
+;;       (use-package startup-hooks
+;;           :defer t
+;;           :config
+;;           (progn
+;;             (add-hook 'sharad/enable-startup-interrupting-feature-hook ;; '*sharad/after-init-hook*
+;;                       '(lambda ()
+;;                         (with-eval-after-load "planner-registry"
+;;                           (progn
+;;                             (setq planner-registry-file "~/.emacs.d/autoconfig/planner/planner-registry.el")
+;;                             (save-excursion
+;;                               (save-window-excursion
+;;                                 (plan 2)
+;;                                 (planner-registry-insinuate)))))))))))
+
+;;   (defun spacemacs/planner-disable ()
+;;     (progn
+;;       ))
+
+;;   (spacemacs/planner-enable))
+
+
 
 ;; (provide 'config)
 ;;; config.el ends here

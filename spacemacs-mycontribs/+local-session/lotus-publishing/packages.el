@@ -417,7 +417,7 @@ Each entry is either:
 
                   ;; COMMON settings for all reviews
                   (setq efs/org-agenda-review-settings
-                        ((org-agenda-files
+                        `((org-agenda-files
                           ',(let ((task-dir (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))))
                                  (if (file-directory-p task-dir)
                                      (directory-files-recursive
