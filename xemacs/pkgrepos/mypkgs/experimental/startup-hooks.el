@@ -74,7 +74,7 @@
          enable-p4-login nil
          tramp-mode nil
          ido-mode nil)
-        (deh-featurep epa
+        (when (featurep 'epa)
           (if (fboundp 'epa-file-disable)
               (epa-file-disable))))
       (add-hook 'sharad/disable-startup-interrupting-feature-hook 'general-disable-startup-setting))
@@ -135,7 +135,7 @@ problem while emacs startup in daemon mode, non-interactively."
          enable-p4-login t
          tramp-mode t
          ido-mode t)
-        (deh-featurep epa
+        (when (featurep 'epa)
           (if (fboundp 'epa-file-enable)
               (epa-file-enable)))
         ;; do in add-hook
@@ -164,7 +164,9 @@ startup in daemon mode."
             ;;       (epa-file-enable)))
             (general-enable-startup-setting) ;could not run from sharad/enable-startup-interrupting-feature-hook
             ;as needed before the function in sharad/enable-startup-interrupting-feature-hook.
-            (deh-featurep (and light-symbol hilit-chg)
+            (when (and
+                   (featurep 'light-symbol)
+                   (featurep 'hilit-chg))
               (add-element-to-lists '(lambda ()
                                       (light-symbol-mode 1)
                                       (highlight-changes-visible-mode t)

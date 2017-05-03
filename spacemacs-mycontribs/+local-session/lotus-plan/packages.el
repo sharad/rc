@@ -144,24 +144,39 @@ Each entry is either:
               ;;           ;; of Planner)
               ;;           :path "~/public_html/Plans")))
 
-              (add-muse-project
-               `("WikiPlanner"
-                 (,(concat *muse-top-dir* "/web/site/wiki/Organize/plan/Plans")  ;; Or wherever you want your planner files to be
-                   :default "index"
-                   ;; :major-mode #'planner-mode
-                   :major-mode planner-mode
-                   ;; :final muse-project-publish-file
-                   :visit-link planner-visit-link)
-                 ;; This next part is for specifying where Planner pages
-                 ;; should be published and what Muse publishing style to
-                 ;; use. In this example, we will use the XHTML publishing
-                 ;; style.
-                 (:base "planner-xhtml"
-                        ;; where files are published to
-                        ;; (the value of 'planner-publishing-directory', if
-                        ;; if you have configuration for an older version
-                        ;; of Planner)
-                        :path ,(concat *muse-generated-top-dir* "/web/site/wiki/Organize/plan/Plans/planner-xhtml"))))))
+
+              (let* ((local-planner-relative-path "web/site/wiki/Organize/plan/Plans")
+                     (local-planner-directory
+                      (expand-file-name local-planner-relative-path *muse-top-dir*))
+                     (local-planner-output-directory
+                      (expand-file-name "planner-xhtml" (expand-file-name local-planner-relative-path *muse-generated-top-dir*))))
+                (if (file-directory-p local-planner-directory)
+                    (progn
+                      (setq
+                       ;; Setting up Planner
+                       ;; Add the files to your load-path. Change these paths as needed.
+                       planner-directory (expand-file-name local-planner-relative-path *muse-top-dir*)
+                       planner-project "WikiPlanner")
+
+                      (add-muse-project
+                       `("WikiPlanner"
+                         (,local-planner-directory  ;; Or wherever you want your planner files to be
+                          :default "index"
+                          ;; :major-mode #'planner-mode
+                          :major-mode planner-mode
+                          ;; :final muse-project-publish-file
+                          :visit-link planner-visit-link)
+                         ;; This next part is for specifying where Planner pages
+                         ;; should be published and what Muse publishing style to
+                         ;; use. In this example, we will use the XHTML publishing
+                         ;; style.
+                         (:base "planner-xhtml"
+                                ;; where files are published to
+                                ;; (the value of 'planner-publishing-directory', if
+                                ;; if you have configuration for an older version
+                                ;; of Planner)
+                                :path ,local-planner-output-directory))))
+                    (error "planner directory `%s' do not exists" local-planner-directory)))))
 
         (require 'muse-publishing)
 
@@ -175,39 +190,36 @@ Each entry is either:
            '((tasks . "Tasks")
              (notes . "Notes")
              (diary . "Diary")
-             (env   . "Environment"))
+             (env   . "Environment")))
 
-          ;; Setting up Planner
-          ;; Add the files to your load-path. Change these paths as needed.
-          planner-directory (concat *muse-top-dir* "/web/site/wiki/Organize/plan/Plans")
-          planner-project "WikiPlanner"
-          ;; faced muse-get-keyword void-variable planner-mode
-          planner-mode #'planner-mode
-          ;;(setq planner-renumber-tasks-automatically t)
-          planner-task-dates-favor-future-p t
-          planner-carry-tasks-forward 4 ;; 'scan-all ;; t ;; this value badly affect performance and speed or operation, so be careful.
-          planner-use-task-numbers t
-          planner-sort-tasks-automatically t
-          planner-align-tasks-automatically t
-          planner-renumber-tasks-automatically t
-          planner-renumber-notes-automatically t
-          planner-align-notes-automatically t
-          planner-annotation-strip-directory t
-          planner-annotation-use-relative-file t
-          planner-sort-tasks-key-function 'planner-sort-tasks-default-key
-          ;;      possible vaules...
-          ;;      `planner-sort-tasks-default-key', `planner-sort-tasks-basic',
-          ;;      `planner-sort-tasks-by-date', and `planner-sort-tasks-by-link'.
-          ;;      `planner-sort-tasks-by-rank', `planner-sort-tasks-by-importance', and
-          ;;      `planner-sort-tasks-by-urgency'.
-          ;;       planner-add-task-at-end-flag nil
-          planner-day-page-template
-          (concat
-           "* Tasks\n\n\n"
-           "* Schedule\n\n\n"
-           "* Notes\n\n\n"
-           )
-          ))
+          (setq
+           ;; faced muse-get-keyword void-variable planner-mode
+           planner-mode #'planner-mode
+           ;;(setq planner-renumber-tasks-automatically t)
+           planner-task-dates-favor-future-p t
+           planner-carry-tasks-forward 4 ;; 'scan-all ;; t ;; this value badly affect performance and speed or operation, so be careful.
+           planner-use-task-numbers t
+           planner-sort-tasks-automatically t
+           planner-align-tasks-automatically t
+           planner-renumber-tasks-automatically t
+           planner-renumber-notes-automatically t
+           planner-align-notes-automatically t
+           planner-annotation-strip-directory t
+           planner-annotation-use-relative-file t
+           planner-sort-tasks-key-function 'planner-sort-tasks-default-key
+           ;;      possible vaules...
+           ;;      `planner-sort-tasks-default-key', `planner-sort-tasks-basic',
+           ;;      `planner-sort-tasks-by-date', and `planner-sort-tasks-by-link'.
+           ;;      `planner-sort-tasks-by-rank', `planner-sort-tasks-by-importance', and
+           ;;      `planner-sort-tasks-by-urgency'.
+           ;;       planner-add-task-at-end-flag nil
+           planner-day-page-template
+           (concat
+            "* Tasks\n\n\n"
+            "* Schedule\n\n\n"
+            "* Notes\n\n\n"
+            )
+           ))
 
         (progn
 

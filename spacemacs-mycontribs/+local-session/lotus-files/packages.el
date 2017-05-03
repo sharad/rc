@@ -231,6 +231,9 @@ directory they are found in so that they are unique."
         (progn ;; ff-paths
           ;; (ff-paths-install)
 
+          ;;FIX
+          (setq buf nil)
+
           ;; FIX
           (defun ff-paths-locate (filename)
             "Try finding FILENAME using the locate command.
