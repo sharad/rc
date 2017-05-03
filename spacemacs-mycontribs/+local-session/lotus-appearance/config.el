@@ -168,10 +168,11 @@
                               (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
                               (face-attribute 'default :height)))))
       (if (and (featurep 'x) window-system)
-          (if (x-display-mm-height)
-              (if (any-frame-opened-p)
+          (if (or height (x-display-mm-height))
+              (if (or t (any-frame-opened-p))
                   (set-face-attribute 'default nil
-                                      :height (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)))
+                                      :height (or height (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)))
+                  (message "no frame is open now."))
               (message "(x-display-pixel-height) return nil"))
           (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
 

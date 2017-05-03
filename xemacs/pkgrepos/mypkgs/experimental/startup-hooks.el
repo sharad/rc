@@ -43,7 +43,7 @@
      "called before when last frame deleted, don't mislead by
     login it is for no frame or 1 or more frame hook basiclly
     used accross login where emacs daemon outlive.")
-(defvar *minimum-disable-login-session-frames* 3 "Minimum disable login session frames")
+(defvar *minimum-disable-login-session-frames* 2 "Minimum disable login session frames")
 
 
 (require 'basic-utils)
@@ -194,10 +194,10 @@ startup in daemon mode."
 ;;{{
 (progn ;; "login-session-interrupting-feature"
   (when nil
-   (defvar *minimum-disable-login-session-frames* 3 "Minimum disable login session frames"))
+   (defvar *minimum-disable-login-session-frames* 2 "Minimum disable login session frames"))
 
   (defun any-frame-opened-p ()
-    (< (length (frame-list)) *minimum-disable-login-session-frames*))
+    (>= (length (frame-list)) *minimum-disable-login-session-frames*))
 
 
   ;; don't mislead by login it is when no frame or 1 or more frame hook

@@ -562,7 +562,8 @@ function gitspull () {
                    git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code $remotebranch ); then
             print start $gdir
             git -C ${superepo}/$gdir status
-            git -C ${superepo}/$gdir pull
+            git -C ${superepo}/$gdir fetch
+            git -C ${superepo}/$gdir merge --ff-only
             git -C ${superepo}/$gdir status
 
             # if [ -z "$gdir" ]
@@ -614,7 +615,8 @@ function gitssync () {
                    git -C ${superepo}/$gdir diff -s ${gdir:+--ignore-submodules=all} --exit-code $remotebranch ); then
             print start $gdir
             git -C ${superepo}/$gdir status
-            git -C ${superepo}/$gdir pull
+            git -C ${superepo}/$gdir fetch
+            git -C ${superepo}/$gdir merge --ff-only
             git -C ${superepo}/$gdir status
 
             if [ -z "$gdir" ]
