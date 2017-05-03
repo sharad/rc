@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os, sys
 import subprocess
@@ -6,9 +6,9 @@ import time
 
 powerLowAction = {
     5: 'poweroff',
-    7: None
+    7: None,
     10: None,
-    20: None,
+    20: 'poweroff',
     70: None
 }
 
@@ -42,20 +42,20 @@ def take_action():
     while True:
         charge = int(read_status())
 
-        for key in powerLowAction:
+        for key in sorted(powerLowAction):
             if charge < key:
                 if times == 0:
                     subprocess.Popen(["/bin/bash", "-c", "notify-send 'charged below %s%%'" % key ])
-                    if isinstance(powerLowAction[key], str)
+                    if isinstance(powerLowAction[key], str):
                         subprocess.Popen(["/bin/bash", "-c", powerLowAction[key]])
                     times = 1
                 break
         else:
-            for key in powerHighAction:
+            for key in sorted(powerHighAction.keys()):
                 if charge > key:
                     if times == 0:
                         subprocess.Popen(["/bin/bash", "-c", "notify-send 'charged above %s%%'" % key ])
-                        if isinstance(powerHighAction[key], str)
+                        if isinstance(powerHighAction[key], str):
                             subprocess.Popen(["/bin/bash", "-c", powerLowAction[key]])
                         times = 1
                     break
