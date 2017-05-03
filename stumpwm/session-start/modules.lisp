@@ -2,17 +2,18 @@
 
 (in-package :stumpwm)
 
+#-quicklisp
+(defvar *contrib-dir* nil)
 
 (defun load-external-module (module)
   #+quicklisp
-      (when (ql:where-is-system module)
-        (ql:quickload module))
-
-      (when (and
-             #+quicklisp (not (ql:where-is-system module))
-             (boundp '*contrib-dir*)
-             (probe-file *contrib-dir*))
-        (stumpwm:load-module module)))
+  (when (ql:where-is-system module)
+    (ql:quickload module))
+  #-quicklisp
+  (when (and
+         (boundp '*contrib-dir*)
+         (probe-file *contrib-dir*))
+    (stumpwm:load-module module)))
 
 ;; (add-to-load-path #p"~/.stumpwm.d/modules")
 
@@ -67,7 +68,7 @@
           "globalwindows"
           "kbd-layouts"
           "logitech-g15-keysyms"
-          "notify"
+          ;; "notify"
           "numpad-layouts"
           "passwd"
           "perwindowlayout"
@@ -86,15 +87,17 @@
           "urgentwindows"
           "windowtags"
           "winner-mode"
+          "notify"
           ))
     (stumpwm::message "loading ~a" mod)
     (ignore-errors
       (stumpwm::load-external-module mod))))
 
-;; (load-all-modules)
+(load-all-modules)
 
 (defcommand load-all-external-modules () ()
             (load-all-modules))
 
-;;(load-external-module "wmii-like-stumpwmrc")
+;; (load-external-module "wmii-like-stumpwmrc")
+
 ;;}}}

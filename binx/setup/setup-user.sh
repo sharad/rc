@@ -16,7 +16,7 @@ DEB_EXTRA_PKG_VIRTUAL=""
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera"
 DEB_EXTRA_PKG_LISP="cl-swank slime"
 DEB_EXTRA_PKG2="homesick yadm macchanger xautolock suckless-tools xtrlock xbacklight"
-DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macchanger lm-sensors"
+DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macchanger lm-sensors tidy xmlstarlet"
 DEB_EXTRA_SEC_PKG1="systemd-ui " # policykit-1 policykit-1-gnome
 DEB_DEV_PKG1="python-pip"
 

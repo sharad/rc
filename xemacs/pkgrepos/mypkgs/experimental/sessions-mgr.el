@@ -44,7 +44,7 @@
 (eval-when-compile
   '(require 'cl))
 
-
+(require 'wrappers)
 (require 'basic-utils)
 ;; run-at-time-or-now
 (require 'utils-custom)

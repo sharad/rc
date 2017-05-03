@@ -5,15 +5,15 @@ import subprocess
 import time
 
 powerLowAction = {
-    5: 'poweroff',
-    7: None,
+    5:  'poweroff',
+    7:  None,
     10: None,
-    20: 'poweroff',
+    20: None,
     70: None
 }
 
 powerHighAction = {
-    5: None,
+    5:  None,
     10: None,
     20: None,
     70: None
