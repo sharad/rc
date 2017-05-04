@@ -335,7 +335,13 @@ instead of a string."
                 (setq
                  calendar-mark-diary-entries-flag t
                  ;;   mark-diary-entries-in-calendar t
-                 diary-file (auto-config-file "diary/diary"))))
+                 diary-file (auto-config-file "diary/diary"))
+                (require 'file-utils)
+                (unless (file-exists-p diary-file)
+                  (auto-config-dir (dirname-of-file diary-file) t)
+                  (with-temp-buffer
+                    (insert "")
+                    (write-file diary-file)))))
 
           (use-package muse-wiki ;; Allow wiki-links
               :defer t
@@ -377,7 +383,7 @@ instead of a string."
 
 
         (progn
-          (when nil
+          (when t
             (planner-registry-insinuate)))
 
         (progn
@@ -391,7 +397,10 @@ instead of a string."
                               '(lambda ()
                                 (with-eval-after-load "planner-registry"
                                   (progn
-                                    (setq planner-registry-file "~/.emacs.d/autoconfig/planner/planner-registry.el")
+                                    (setq
+                                     planner-registry-file (auto-config-file "planner/planner-registry.el"))
+                                    (unless (file-exists-p planner-registry-file)
+                                      (auto-config-dir (dirname-of-file planner-registry-file) t))
                                     (save-excursion
                                       (save-window-excursion
                                         (plan 2)
