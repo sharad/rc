@@ -1163,7 +1163,19 @@ let bookmark_groups = {
   "Bloodborne": [
     "https://www.reddit.com/r/huntersbell/new/",
     "http://bloodborne.wikidot.com/"
-  ]
+  ],
+    "Pending": [
+        "https://www.google.co.in/search?q=Xwindow+with+cairo+xlib++XCB+good+intro+book",
+        "https://tronche.com/gui/x/xlib-tutorial/2nd-program-anatomy.html",
+        "https://en.wikipedia.org/wiki/X_Toolkit_Intrinsics",
+        "https://www.google.co.in/search?q=Xorg+how+to+make+translucent+window",
+        "http://conky.pitstop.free.fr/wiki/index.php5?title=Goto/offset/voffset_(en)",
+        "https://insights.ubuntu.com/2015/06/30/publishing-lxd-images/",
+        "https://github.com/spencertipping/conky-compiler",
+        "https://www.google.co.in/search?q=X+window+writing+into+Root+Window"
+    ]
+
+
 };
 
 interactive("open-bookmark-group",
