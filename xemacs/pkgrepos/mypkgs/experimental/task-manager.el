@@ -31,29 +31,31 @@
 (require 'muse-publishing)
 (require 'iproject)
 (require 'project-buffer-file)
+(require 'file-utils)
 
 
 (defvar *task-desc-file-name* ".task-desc" "*task-desc-file-name*")
 
 (defvar *task-party-base-dir*
-  (org-publish-get-attribute "tasks" "org" :base-directory)
+  "~/Documents/org/tasks"
   "Task Party Directory")
 
 (defvar task-scratch-dir "~/SCRATCH/" "task scratch directory")
 
 (defvar task-parties
-  '(("meru"
+  '(("office"
      (org-master-file "report.org")
      (org-heading     "Office related work")
      (bugz-url        "https://bugzilla.merunetworks.com"))
     ("personal"
      (org-master-file "report.org")
-     (org-heading     "Office related work")
+     (org-heading     "Personal work")
      (bugz-url        "https://bugzilla.merunetworks.com"))))
 
-(defvar task-current-party "meru")
+(defvar task-current-party nil "Task current party")
+(defvar task-current-party-change-hook nil "run hook when task-current-party chnage.")
 
-(defvar task-file-properties '((buffer-read-only . t)
+(defvar task-file-properties '(;; (buffer-read-only . t)
                                (fill-column . 172))
   "Task file properties.")
 
@@ -102,25 +104,108 @@
 
 
 
+(defun task-party-base-dir (base-dir)
+  (interactive
+   (list (read-directory-name "Select task-party-base-dir: ")))
+  (setq
+   *task-party-base-dir* base-dir))
+
+(defun task-scratch-dir (scratch-dir)
+  (interactive
+   (list (read-directory-name "Select task-scratch-dir: ")))
+  (setq
+   task-scratch-dir scratch-dir))
+
+(defun task-projbuffs-base-dir (projbuffs-base-dir)
+  (interactive
+   (list (read-directory-name "Select task-projbuffs-base-dir: ")))
+  (setq
+   *task-projbuffs-base-dir* projbuffs-base-dir))
 
 
 
 
+;;;###autoload
+(defun task-add-task-party (name org-master-file org-heading bugz-url)
+  (push
+   `(,name
+     (org-master-file ,org-master-file)
+     (org-heading     ,org-heading)
+     (bugz-url        ,bugz-url))
+   task-parties)
+
+  (unless task-current-party
+    (task-current-party name)))
+
+;;;###autoload
+(defun task-current-party (&optional party)
+  (interactive
+   (let ((party
+          (ido-completing-read
+           "select party: "
+           (mapcar 'car task-parties))))
+     (list party)))
+  (let ()
+    (if (member party (mapcar 'car task-parties))
+        (when (setq task-current-party party)
+          (run-hooks task-current-party-change-hook)))
+    task-current-party))
+
+;;;###autoload
+(defun task-current-party-select-set (&optional prompt)
+  (interactive)
+  (let ((party (ido-completing-read
+                (or prompt "select party: ")
+                (mapcar 'car task-parties))))
+    (if (member party (mapcar 'car task-parties))
+        (task-current-party party)
+        (error "party is not from task-parties"))))
+
+;;;#autoload
+(defun task-select-party-dir ()
+  (interactive)
+  (ido-read-directory-name "dir: " *task-party-base-dir* nil t))
+
+;;;#autoload
+(defun find-task-dir (&optional force)
+  (interactive "P")
+  (if (or
+       force
+       (null *taskdir-current-task*))
+      (setq *taskdir-current-task*
+            (ido-read-directory-name "dir: " (task-party-dir) nil t))
+      *taskdir-current-task*))
+
+;;;###autoload
+(defun task-select-task-type (&optional prompt)
+  (ido-completing-read
+   (or prompt "select task type: ")
+   (mapcar 'car task-config) nil t))
+
+;;;###autoload
+(defun task-party-dir (&optional party)
+  "Task Directory"
+  (let ((party (or party (task-current-party))))
+    (if (member party (mapcar 'car task-parties))
+        (expand-file-name party
+                          (org-publish-get-attribute "tasks" "org" :base-directory))
+        (error "party is not from task-parties"))))
+
+;;;###autoload
+(defun task-party-dir-files-recursive ()
+  (directory-files-recursive (task-party-dir)
+                             "\\.org$" 2 "\\(rip\\|stage\\)"))
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+(defun task-party-org-heading (&optional party)
+  (let ((party (or party (task-current-party))))
+    (if (member party (mapcar 'car task-parties))
+        (cadr
+         (assoc 'org-heading
+                (cdr (assoc party task-parties))))
+        (error "party is not from task-parties"))))
 
 (defmacro task-create-org-file (file &rest body)
   `(progn
@@ -147,43 +232,8 @@
      (kill-buffer (find-buffer-visiting ,file))))
 (put 'task-create-org-file 'lisp-indent-function 1)
 
-;;;#autoload
-(defun task-select-party-dir ()
-  (interactive)
-  (ido-read-directory-name "dir: " *task-party-base-dir* nil t))
-
-;;;#autoload
-(defun find-task-dir (&optional force)
-  (interactive "P")
-  (if (or
-       force
-       (null *taskdir-current-task*))
-      (setq *taskdir-current-task*
-            (ido-read-directory-name "dir: " (task-party-dir) nil t))
-      *taskdir-current-task*))
-
-(defun task-select-task-type (prompt)
-  (ido-completing-read prompt (mapcar 'car task-config) nil t))
-
-;;
-(defun task-party-dir (&optional party)
-  "Task Directory"
-  (let ((party (or party task-current-party)))
-    (if (member party (mapcar 'car task-parties))
-        (expand-file-name party
-                          (org-publish-get-attribute "tasks" "org" :base-directory))
-        (error "party is not from task-parties"))))
-
-(defun task-party-org-heading (&optional party)
-  (let ((party (or party task-current-party)))
-    (if (member party (mapcar 'car task-parties))
-        (cadr
-         (assoc 'org-heading
-                (cdr (assoc party task-parties))))
-        (error "party is not from task-parties"))))
-
 (defun task-party-org-master-file (&optional party)
-  (let* ((party                (or party task-current-party))
+  (let* ((party                (or party (task-current-party)))
          (org-master-file      (cadr
                                 (assoc 'org-master-file
                                        (cdr (assoc party task-parties)))))
@@ -204,7 +254,7 @@
         (error "party is not from task-parties"))))
 
 (defun task-party-bugz-url (&optional party)
-  (let ((party (or party task-current-party)))
+  (let ((party (or party (task-current-party))))
     (if (member party (mapcar 'car task-parties))
         (cadr
          (assoc 'bugz-url
@@ -213,13 +263,13 @@
 
 (defun task-party-url-base (&optional party)
   "task-party-url-base"
-  (let ((party (or party task-current-party)))
+  (let ((party (or party (task-current-party))))
     (if (member party (mapcar 'car task-parties))
         (concat "/~s/tasks/" party)
         (error "party is not from task-parties"))))
 
 (defun task-projbuffs-dir (&optional party)
-  (let ((party (or party task-current-party)))
+  (let ((party (or party (task-current-party))))
     (if (member party (mapcar 'car task-parties))
         (expand-file-name party *task-projbuffs-base-dir*)
         (error "party is not from task-parties"))))
@@ -247,7 +297,7 @@
 
 ;;
 (defun task-get-task-name (prompt party task &optional new)
-  (let* ((party (or party task-current-party))
+  (let* ((party (or party (task-current-party)))
          (task-name (completing-read
                      prompt
                      (unless new (directory-files (concat (task-party-dir party) "/" (pluralize-string task) "/")))
@@ -284,7 +334,7 @@
                        (cdr (assoc "summary" bug))
                        (read-from-minibuffer (format "Desc of %s: " name)))))
         desc)
-      (let* ((task-dir       (task-get-task-dir task-current-party task name))
+      (let* ((task-dir       (task-get-task-dir (task-current-party) task name))
              (task-desc-file (expand-file-name task-dir *task-desc-file-name*)))
         (if (file-exists-p task-desc-file)
             (sharad/read-file task-desc-file)
@@ -295,9 +345,9 @@
 
 (defun task-get-task-data (&optional new)
   (let* ((task                (task-select-task-type "what: "))
-         (name                (task-get-task-name "name: " task-current-party task new))
-         (desc                (task-get-task-desc task task-current-party name))
-         (task-dir            (task-get-task-dir task-current-party task name)))
+         (name                (task-get-task-name "name: " (task-current-party) task new))
+         (desc                (task-get-task-desc task (task-current-party) name))
+         (task-dir            (task-get-task-dir (task-current-party) task name)))
     (list task name desc task-dir)))
 
 (defun task-get-task-data-all (&optional new)
@@ -618,7 +668,7 @@
 (require 'file-utils)
 
 (defun org-task-files (&optional party)
-  (let ((party (or party task-current-party)))
+  (let ((party (or party (task-current-party))))
     (directory-files-recursive
      (task-party-dir party) "\\.org$" 7)))
 
@@ -629,7 +679,7 @@
      "\\.org$" 7)))
 
 (defun org-task-refile-target (party)
-  (let* ((party (or party task-current-party))
+  (let* ((party (or party (task-current-party)))
          (task-files (org-task-files party)))
                                         ;all files returned by `org-task-files'
     `((,task-files :maxlevel . 3))))
@@ -642,7 +692,7 @@
           (mapcar 'car task-parties)
           nil
           t
-          task-current-party)))
+          (task-current-party))))
   (org-clock-in-refile (org-task-refile-target party)))
 ;; )
 

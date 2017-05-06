@@ -24,7 +24,12 @@
 
 ;;; Code:
 
-
+(progn                                  ;change default directory
+  (defconst *workdirectory* (expand-file-name "paradise/" "~/.."))
+  (when (and
+         (boundp '*workdirectory*)
+         (file-directory-p *workdirectory*))
+    (cd *workdirectory*)))
 
 (progn ;; "Tramp read-only file problem"
   (defun set-file-mode-to-truename (file)

@@ -36,7 +36,7 @@
 
 (defconst lotus-files-packages
   '(
-    (PACKAGE :location local)
+    ;; (PACKAGE :location local)
     (files :location local)
     find-dired
     find-file-in-project
@@ -85,6 +85,14 @@ Each entry is either:
       :defer t
       :config
       (progn
+
+        (progn
+          (defconst *workdirectory* (expand-file-name "paradise/" "~/.."))
+          (when (and
+                 (boundp '*workdirectory*)
+                 (file-directory-p *workdirectory*))
+            (cd *workdirectory*)))
+
         (progn
           (setq revert-without-query '("^/scp:" "^/ssh:")))
 

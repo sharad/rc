@@ -273,4 +273,6 @@ ${color #ddaa00}Outbound Connection ${alignr} Remote Service/Port$color
 # ${font Ubuntu:size=8:rugular:bold}${color #E89909}${execi 300 ~/bin/conky-rss http://feeds.feedburner.com/d0od?format=xml 5 2}
 ${font Ubuntu:size=14:regular:bold}${color #00BEFF}OSNews:
 ${font Ubuntu:size=8:rugular:bold}${color #E89909}${execi 300 ~/bin/conky-rss http://www.osnews.com/files/recent.xml 10 2}
+# ${goto 70}${voffset -400}${font Ubuntu:size=14:regular:bold}${color #00BEFF}NDTV:
+# ${goto 70}${voffset -90}${font Ubuntu:size=8:rugular:bold}${color #E89909}${execi 300 ~/bin/conky-rss 'http://feeds.feedburner.com/ndtvnews-top-stories?format=xml' 10 2}
 ]=];

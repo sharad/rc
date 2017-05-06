@@ -31,6 +31,7 @@
 ;; (require 'mode-line-config)
 
 (require 'org-publishing)
+(require 'file-utils)
 
 (defvar org-clock-work-day-hours 8 "work day hours")
 
@@ -196,8 +197,20 @@ If not, show simply the clocked time like 01:50."
                 work-done-str
                 work-day-time-str
                 work-day-left-str))
-    (message "org-clock-monitor-files is not set")))
+      (message "org-clock-monitor-files is not set")))
 
+(defun org-clock-monitor-files-set-from-dir (monitor-dir)
+  (setq
+   org-clock-monitor-files (directory-files-recursive monitor-dir "\\.org$" 2 "\\(rip\\|stage\\)")))
+
+(defun org-clock-monitor-files-add-from-dir (monitor-dir)
+  (setq
+   org-clock-monitor-files
+   (append
+    org-clock-monitor-files
+    (directory-files-recursive monitor-dir "\\.org$" 2 "\\(rip\\|stage\\)"))))
+
+;;;###autoload
 (defun org-clock-work-day-update-mode-line-internal (&optional force)
   ;; (defun org-clock-work-day-update-mode-line ()
   (if org-clock-monitor-files
@@ -221,6 +234,7 @@ If not, show simply the clocked time like 01:50."
         (force-mode-line-update))
     (message "org-clock-monitor-files is not set")))
 
+;;;###autoload
 (defun org-clock-work-day-update-mode-line (&optional force)
   "Update the timer time in the mode line."
   (if org-clock-monitor-files

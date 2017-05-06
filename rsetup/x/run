@@ -120,7 +120,7 @@ if [ $DISPLAY ] ; then
     if whence -p conky >> ~/.xsession-errors 2>&1 &&
            ! pgrep conky >> ~/.xsession-errors 2>&1
      then
-         conky >> ~/.xsession-errors 2>&1 &!
+         conky -d -c ~/.conkyrc/main/conkyrc >> ~/.xsession-errors 2>&1 &!
      fi
 
     if whence synclient >> ~/.xsession-errors 2>&1 &&

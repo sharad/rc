@@ -230,6 +230,7 @@ Each entry is either:
   (use-package org-publishing
       :defer t
       ;; :demand t
+      :commands (org-publish-get-attribute)
       :config
       (progn
         ;; (debug)
@@ -390,49 +391,56 @@ Each entry is either:
               :defer t
               :config
               (progn
+
                 (progn
-                  (let ((task-dir
-                         (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))))
-                    (when (file-directory-p task-dir)
-                      (add-to-org-agenda-custom-commands
-                       `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
-                         "Meru Today" ;;  search ""
-                         ((agenda ""
-                                  ((org-agenda-span 'day)
-                                   (org-agenda-prefix-format  "%e")))
-                          (org-agenda-files
-                           ',(directory-files-recursive task-dir
-                                                        "\\.org$" 2 "\\(rip\\|stage\\)"))
-                          ;; (org-agenda-sorting-strategy '(priority-up effort-down))
-                          )
-                         ;; ("~/computer.html")
-                         )))))
+                  (use-package task-manager
+                      :defer t
+                      :commands (office-mode task-party-dir task-select-party-dir find-task-dir)
+                      :config
+                      (progn
+                        (progn
+
+                          (add-hook
+                           'task-current-party-change-hook
+                           '(lambda ()
+                             (progn
+                               (let ((task-dir (task-party-dir)))
+                                 (when (file-directory-p task-dir)
+
+                                   (add-to-org-agenda-custom-commands
+                                    `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
+                                      ,(task-party-org-heading) ;;  search ""
+                                      ((agenda ""
+                                               ((org-agenda-span 'day)
+                                                (org-agenda-prefix-format  "%e")))
+                                       (org-agenda-files #'task-party-dir-files-recursive)
+                                       ;; (org-agenda-sorting-strategy '(priority-up effort-down))
+                                       )
+                                      ;; ("~/computer.html")
+                                      ))
+
+                                   ;; COMMON settings for all reviews
+                                   (setq efs/org-agenda-review-settings
+                                         '((org-agenda-files #'task-party-dir-files-recursive)
+                                           (org-agenda-show-all-dates t)
+                                           (org-agenda-start-with-log-mode t)
+                                           (org-agenda-start-with-clockreport-mode t)
+                                           (org-agenda-archives-mode t)
+                                           ;; I don't care if an entry was archived
+                                           (org-agenda-hide-tags-regexp
+                                            (concat org-agenda-hide-tags-regexp
+                                             "\\|ARCHIVE"))
+                                           )))))))))))
+
                 (progn ;; "org-publishing"
+
+                  (defvar efs/org-agenda-review-settings nil)
 
                   ;; "Review Aganda" ;;http://stackoverflow.com/a/22440571
                   ;; define "R" as the prefix key for reviewing what happened in various
                   ;; time periods
                   (add-to-org-agenda-custom-commands
                    '("R" . "Review" ))
-
-                  ;; COMMON settings for all reviews
-                  (setq efs/org-agenda-review-settings
-                        `((org-agenda-files
-                          ',(let ((task-dir (expand-file-name "meru" (org-publish-get-attribute "tasks" "org" :base-directory))))
-                                 (if (file-directory-p task-dir)
-                                     (directory-files-recursive
-                                      task-dir
-                                      "\\.org$" 2 "\\(rip\\|stage\\)"))))
-                         (org-agenda-show-all-dates t)
-                         (org-agenda-start-with-log-mode t)
-                         (org-agenda-start-with-clockreport-mode t)
-                         (org-agenda-archives-mode t)
-                         ;; I don't care if an entry was archived
-                         (org-agenda-hide-tags-regexp
-                          (concat org-agenda-hide-tags-regexp
-                                  "\\|ARCHIVE"))
-                         ))
-
 
                   ;; Show the agenda with the log turn on, the clock table show and
                   ;; archived entries shown.  These commands are all the same exept for

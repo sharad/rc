@@ -92,15 +92,24 @@ Each entry is either:
           :defer t
           :config
           (progn
-            (let ((monitor-dir (expand-file-name
-                                "meru"
-                                (org-publish-get-attribute "tasks" "org" :base-directory))))
-              (if (file-directory-p monitor-dir)
+            (progn
+              (use-package task-manager
+                  :defer t
+                  :commands (office-mode task-party-dir task-select-party-dir find-task-dir)
+                  :config
                   (progn
-                    (setq
-                     org-clock-monitor-files (directory-files-recursive monitor-dir "\\.org$" 2 "\\(rip\\|stage\\)"))
-                    (org-clock-work-day-mode-line-add t))
-                (message "org monitor dir %s not exists." monitor-dir))))))))
+                    (progn
+
+                      (add-hook
+                       'task-current-party-change-hook
+                       '(lambda ()
+                         (let ((monitor-dir (task-party-dir)))
+                           (if (file-directory-p monitor-dir)
+                               (progn
+                                 (org-clock-monitor-files-set-from-dir monitor-dir)
+                                 (org-clock-work-day-mode-line-add t))
+                               (message "org monitor dir %s not exists." monitor-dir)))))
+                      )))))))))
 
 
 (defun lotus-orgclocktask/init-org-clocktable-alt ()
@@ -158,9 +167,30 @@ Each entry is either:
 (defun lotus-orgclocktask/init-task-manager ()
   (use-package task-manager
       :defer t
-      :commands 'office-mode
+      :commands (office-mode task-party-dir task-select-party-dir find-task-dir)
       :config
       (progn
+
+        (progn
+
+          (task-party-base-dir (org-publish-get-attribute "tasks" "org" :base-directory))
+          (task-scratch-dir "~/SCRATCH/")
+          (task-projbuffs-base-dir (expand-file-name "contents/misc/projbuffs" *created-content-dir*))
+
+          (task-add-task-party
+           "personal"
+           "report.org"
+           "Personal work"
+           "https://bugzilla.merunetworks.com")
+
+          (task-add-task-party
+           "meru"
+           "report.org"
+           "Office related work"
+           "https://bugzilla.merunetworks.com")
+
+          (task-current-party "meru"))
+
         (progn
           (define-minor-mode office-mode
               "Prepare for working with collarative office project. This
