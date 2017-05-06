@@ -37,7 +37,8 @@
   ;; (x-window-property "_NET_DESKTOP_NAMES" nil nil 0 nil nil)
 
 
-(deh-section "test"
+(progn ;;
+  "test"
   ;; http://lists.gnu.org/archive/html/emacs-devel/2011-06/msg00340.html
   (require 'bindat)
 

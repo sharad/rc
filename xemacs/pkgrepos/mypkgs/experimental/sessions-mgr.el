@@ -783,9 +783,10 @@ Also returns nil if pid is nil."
 
   (setq desktop-base-lock-name
         (concat
-         ".emacs.desktop.lock"
+         ".emacs.desktop"
          (if (boundp 'server-name)
-             (concat "-" server-name))))
+             (concat "-" server-name))
+         ".lock"))
 
   ;; (debug)
 
@@ -837,16 +838,25 @@ Also returns nil if pid is nil."
   ;; in case of timeout and no timeout
   (defun find-desktop-file (prompt desktop-dir default-file)
     (let ((default-local-file (concat default-file "-local")))
-     (expand-file-name
-     (with-timeout (20 default-local-file)
-         (ido-read-file-name prompt
-                             desktop-dir
-                             default-local-file
-                             'confirm
-                             default-local-file
-                             (lambda (f)
-                               (string-match (concat "^" default-file "-") f))))
-     desktop-dirname)))
+      (if (file-directory-p desktop-dir)
+          (let ((default-file-path (expand-file-name default-local-file desktop-dir)))
+
+            ;; (vc-checkout-file default-file-path)
+
+            (expand-file-name
+             (with-timeout (20 default-local-file)
+               (ido-read-file-name prompt     ;promt
+                                   desktop-dir ;dir
+                                   default-local-file ;default file name
+                                   'confirm
+                                   default-local-file ;initial
+                                   (lambda (f)        ;predicate
+                                     (message "f: %s" f)
+                                     (string-match (concat "^" default-file "-") f))))
+             desktop-dir))
+          (error "desktop directory %s don't exists." desktop-dir))))
+
+  ;; (find-desktop-file "select desktop: " "~/tmp/" desktop-base-file-name)
 
   (defun desktop-get-desktop-save-filename ()
     (interactive)
