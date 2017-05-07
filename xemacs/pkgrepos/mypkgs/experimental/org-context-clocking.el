@@ -30,17 +30,17 @@
 
 
 
-(defvar task-current-file  nil)
-(defvar task-previous-file nil)
-(defvar task-current-file-time 2)
-(defvar last-buffer-select-time (current-time))
-(defvar buffer-select-timer nil)
-(defvar update-current-file-msg "")
-;; (defvar org-entry-clocking-api-name :predicate "API")
-(defvar org-entry-clocking-api-name :keys "API")
-(defvar org-clocking-api-entries-associated-to-file-p (org-entry-clocking-api-get org-entry-clocking-api-name :entries))
-(defvar org-clocking-api-entry-associated-to-file-p   (org-entry-clocking-api-get org-entry-clocking-api-name :entry))
-(defvar org-clocking-api-entry-update-task-infos      (org-entry-clocking-api-get org-entry-clocking-api-name :update))
+(defvar org-context-clocking-task-current-file  nil)
+(defvar org-context-clocking-task-previous-file nil)
+(defvar org-context-clocking-task-current-file-time 2)
+(defvar org-context-clocking-last-buffer-select-time (current-time))
+(defvar org-context-clocking-buffer-select-timer nil)
+(defvar org-context-clocking-update-current-file-msg "")
+;; (defvar org-context-clocking-api-name :predicate "API")
+(defvar org-context-clocking-api-name :keys "API")
+(defvar org-context-clocking-api-entries-associated-to-file-p (org-context-clocking-api-get org-context-clocking-api-name :entries))
+(defvar org-context-clocking-api-entry-associated-to-file-p   (org-context-clocking-api-get org-context-clocking-api-name :entry))
+(defvar org-context-clocking-api-entry-update-task-infos      (org-context-clocking-api-get org-context-clocking-api-name :update))
 
 
 (defun custom-plist-keys (in-plist)
@@ -57,37 +57,37 @@
                     (mapcar 'symbol-name api-keys)
                     nil
                     t
-                    (symbol-name org-entry-clocking-api-name)))
+                    (symbol-name org-context-clocking-api-name)))
          (api-key (intern api-name)))
-    (setq org-entry-clocking-api-name api-key)
+    (setq org-context-clocking-api-name api-key)
     (if (and
-         (org-entry-clocking-api-get org-entry-clocking-api-name :entries)
-         (org-entry-clocking-api-get org-entry-clocking-api-name :entry)
-         (org-entry-clocking-api-get org-entry-clocking-api-name :update))
+         (org-context-clocking-api-get org-context-clocking-api-name :entries)
+         (org-context-clocking-api-get org-context-clocking-api-name :entry)
+         (org-context-clocking-api-get org-context-clocking-api-name :update))
         (setq
-         org-clocking-api-entries-associated-to-file-p (org-entry-clocking-api-get org-entry-clocking-api-name :entries)
-         org-clocking-api-entry-associated-to-file-p   (org-entry-clocking-api-get org-entry-clocking-api-name :entry)
-         org-clocking-api-entry-update-task-infos      (org-entry-clocking-api-get org-entry-clocking-api-name :update)))))
+         org-context-clocking-api-entries-associated-to-file-p (org-context-clocking-api-get org-context-clocking-api-name :entries)
+         org-context-clocking-api-entry-associated-to-file-p   (org-context-clocking-api-get org-context-clocking-api-name :entry)
+         org-context-clocking-api-entry-update-task-infos      (org-context-clocking-api-get org-context-clocking-api-name :update)))))
 
 (defun org-clocking-entry-update-task-infos (&optional force)
   "Update task infos"
   (interactive "P")
-  (funcall org-clocking-api-entry-update-task-infos force))
+  (funcall org-context-clocking-api-entry-update-task-infos force))
 
 (defun update-current-file ()
   (if (> (float-time
-          (time-since last-buffer-select-time))
-         task-current-file-time)
+          (time-since org-context-clocking-last-buffer-select-time))
+         org-context-clocking-task-current-file-time)
       (let* ((buff (window-buffer))
              (file (buffer-file-name buff)))
         (unless (or
                  (and
-                  (string-equal task-previous-file file)
-                  (string-equal task-current-file  file))
+                  (string-equal org-context-clocking-task-previous-file file)
+                  (string-equal org-context-clocking-task-current-file  file))
                  (minibufferp buff))
           (setq
-           task-previous-file task-current-file
-           task-current-file  file)
+           org-context-clocking-task-previous-file org-context-clocking-task-current-file
+           org-context-clocking-task-current-file  file)
 
           (unless (org-clock-entry-associated-to-file-p file)
             (org-entry-run-associated-clock file))))))
@@ -99,8 +99,8 @@
              (file (buffer-file-name buff)))
         (unless nil
           (setq
-           task-previous-file task-current-file
-           task-current-file  file)
+           org-context-clocking-task-previous-file org-context-clocking-task-current-file
+           org-context-clocking-task-current-file  file)
 
           (unless (org-clock-entry-associated-to-file-p file)
             (org-entry-run-associated-clock file))))))
@@ -124,12 +124,12 @@
 ;;    (org-with-clock-position (list org-clock-marker)
 ;;      (org-previous-visible-heading 1)
 ;;      (let ((info (org-entry-collect-task-info)))
-;;        (if (funcall org-clocking-api-entry-associated-to-file-p info file)
+;;        (if (funcall org-context-clocking-api-entry-associated-to-file-p info file)
 ;;            info)))))
 
 (defun org-clock-entry-associated-to-file-p (file)
   (let ((info (org-clock-entry-current-entry)))
-    (funcall org-clocking-api-entry-associated-to-file-p info file)))
+    (funcall org-context-clocking-api-entry-associated-to-file-p info file)))
 
 (defun org-entry-run-associated-clock (file)
   (let ()
@@ -153,7 +153,7 @@
                   (with-current-buffer prev-org-clock-buff
                     (setq buffer-read-only nil)))
 
-              (setq update-current-file-msg org-clock-marker)
+              (setq org-context-clocking-update-current-file-msg org-clock-marker)
 
               (with-current-buffer (marker-buffer selected-clock)
                 (let ((buffer-read-only nil))
@@ -162,31 +162,31 @@
               (if prev-org-clock-buff
                   (with-current-buffer prev-org-clock-buff
                     (setq buffer-read-only prev-clock-buff-read-only)))))
-          (setq update-current-file-msg "null clock")))))
+          (setq org-context-clocking-update-current-file-msg "null clock")))))
 
-;; (defun run-task-current-file-timer ()
+;; (defun run-org-context-clocking-task-current-file-timer ()
 ;;   (let ()
-;;     (setq last-buffer-select-time (current-time))
-;;     (when buffer-select-timer
-;;       (cancel-timer buffer-select-timer)
-;;       (setq buffer-select-timer nil))
-;;     (setq buffer-select-timer
+;;     (setq org-context-clocking-last-buffer-select-time (current-time))
+;;     (when org-context-clocking-buffer-select-timer
+;;       (cancel-timer org-context-clocking-buffer-select-timer)
+;;       (setq org-context-clocking-buffer-select-timer nil))
+;;     (setq org-context-clocking-buffer-select-timer
 ;;           (run-with-timer
-;;            (1+ task-current-file-time)
+;;            (1+ org-context-clocking-task-current-file-time)
 ;;            nil
 ;;            'update-current-file))))
 
-(defun run-task-current-file-timer ()
+(defun run-org-context-clocking-task-current-file-timer ()
   (let ()
-    (setq last-buffer-select-time (current-time))
-    (when buffer-select-timer
-      (cancel-timer buffer-select-timer)
-      (setq buffer-select-timer nil))
-    (setq buffer-select-timer
+    (setq org-context-clocking-last-buffer-select-time (current-time))
+    (when org-context-clocking-buffer-select-timer
+      (cancel-timer org-context-clocking-buffer-select-timer)
+      (setq org-context-clocking-buffer-select-timer nil))
+    (setq org-context-clocking-buffer-select-timer
           ;; distrubing while editing.
           ;; (run-with-timer
           (run-with-idle-timer
-           (1+ task-current-file-time)
+           (1+ org-context-clocking-task-current-file-time)
            nil
            'update-current-file))))
 
@@ -291,17 +291,17 @@
 (defun org-context-clocking-insinuate ()
   (interactive)
   (progn
-    (add-hook 'buffer-list-update-hook     'run-task-current-file-timer)
-    (add-hook 'elscreen-screen-update-hook 'run-task-current-file-timer)
-    (add-hook 'elscreen-goto-hook          'run-task-current-file-timer)))
+    (add-hook 'buffer-list-update-hook     'run-org-context-clocking-task-current-file-timer)
+    (add-hook 'elscreen-screen-update-hook 'run-org-context-clocking-task-current-file-timer)
+    (add-hook 'elscreen-goto-hook          'run-org-context-clocking-task-current-file-timer)))
 
 ;;;###autoload
 (defun org-context-clocking-uninsinuate ()
   (interactive)
-  (remove-hook 'buffer-list-update-hook 'run-task-current-file-timer)
+  (remove-hook 'buffer-list-update-hook 'run-org-context-clocking-task-current-file-timer)
   (setq buffer-list-update-hook nil)
-  (remove-hook 'elscreen-screen-update-hook 'run-task-current-file-timer)
-  (remove-hook 'elscreen-goto-hook 'run-task-current-file-timer))
+  (remove-hook 'elscreen-screen-update-hook 'run-org-context-clocking-task-current-file-timer)
+  (remove-hook 'elscreen-goto-hook 'run-org-context-clocking-task-current-file-timer))
 
 
 (progn ;; "Org task clock reporting"
@@ -342,17 +342,17 @@
           (org-with-clock-position (list org-clock-marker)
             (org-previous-visible-heading 1)
             (let ((info (org-entry-collect-task-info)))
-              (if (funcall org-clocking-api-entry-associated-to-file-p info xfile)
+              (if (funcall org-context-clocking-api-entry-associated-to-file-p info xfile)
                   info))))
         )
 
-  (funcall org-clocking-api-entry-associated-to-file-p (org-clock-entry-current-entry) (buffer-file-name))
+  (funcall org-context-clocking-api-entry-associated-to-file-p (org-clock-entry-current-entry) (buffer-file-name))
 
 
 
 
   (test-info-entry)
-  (funcall org-clocking-api-entry-associated-to-file-p test-info-entry (buffer-file-name))
+  (funcall org-context-clocking-api-entry-associated-to-file-p test-info-entry (buffer-file-name))
 
   ;; org-clock-marker
   (org-entries-associated-key-fn-value :current-clock test-info-entry (buffer-file-name))
@@ -369,14 +369,14 @@
 
 
   (length
-   (funcall org-clocking-api-entries-associated-to-file-p (buffer-file-name))
+   (funcall org-context-clocking-api-entries-associated-to-file-p (buffer-file-name))
    )
 
-  (length (funcall org-clocking-api-entries-associated-to-file-p "/home/s/paradise/releases/global/patch-upgrade/Makefile"))
+  (length (funcall org-context-clocking-api-entries-associated-to-file-p "/home/s/paradise/releases/global/patch-upgrade/Makefile"))
 
   (org-markers-associated-to-file (buffer-file-name))
   (length
-   (funcall org-clocking-api-entries-associated-to-file-p "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
+   (funcall org-context-clocking-api-entries-associated-to-file-p "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
    )
 
   (org-entries-associated-to-file-by-keys-p (buffer-file-name))

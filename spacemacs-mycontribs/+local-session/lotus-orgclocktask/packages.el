@@ -95,7 +95,7 @@ Each entry is either:
             (progn
               (use-package task-manager
                   :defer t
-                  :commands (office-mode task-party-dir task-select-party-dir find-task-dir)
+                  :commands (office-mode task-current-party-select-set task-current-party task-party-dir task-select-party-dir find-task-dir)
                   :config
                   (progn
                     (progn
@@ -108,8 +108,7 @@ Each entry is either:
                                (progn
                                  (org-clock-monitor-files-set-from-dir monitor-dir)
                                  (org-clock-work-day-mode-line-add t))
-                               (message "org monitor dir %s not exists." monitor-dir)))))
-                      )))))))))
+                               (message "org monitor dir %s not exists." monitor-dir))))))))))))))
 
 
 (defun lotus-orgclocktask/init-org-clocktable-alt ()
@@ -167,7 +166,7 @@ Each entry is either:
 (defun lotus-orgclocktask/init-task-manager ()
   (use-package task-manager
       :defer t
-      :commands (office-mode task-party-dir task-select-party-dir find-task-dir)
+      :commands (office-mode task-current-party-select-set task-current-party task-party-dir task-select-party-dir find-task-dir)
       :config
       (progn
 

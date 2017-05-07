@@ -384,6 +384,7 @@ instead of a string."
 
         (progn
           (when t
+            (require 'planner-registry)
             (planner-registry-insinuate)))
 
         (progn

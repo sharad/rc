@@ -40,17 +40,23 @@
   "~/Documents/org/tasks"
   "Task Party Directory")
 
+(defvar *task-url-path* "/~s/tasks/" "task url path")
+
 (defvar task-scratch-dir "~/SCRATCH/" "task scratch directory")
 
 (defvar task-parties
-  '(("office"
-     (org-master-file "report.org")
-     (org-heading     "Office related work")
-     (bugz-url        "https://bugzilla.merunetworks.com"))
-    ("personal"
-     (org-master-file "report.org")
-     (org-heading     "Personal work")
-     (bugz-url        "https://bugzilla.merunetworks.com"))))
+  nil
+  "tasks parties
+ example
+  '((\"office\"
+    (org-master-file \"report.org\")
+    (org-heading     \"Office related work\")
+    (bugz-url        \"https://bugzilla.merunetworks.com\"))
+   (\"personal\"
+    (org-master-file \"report.org\")
+    (org-heading     \"Personal work\")
+    (bugz-url        \"https://bugzilla.merunetworks.com\")))"
+    )
 
 (defvar task-current-party nil "Task current party")
 (defvar task-current-party-change-hook nil "run hook when task-current-party chnage.")
@@ -104,23 +110,31 @@
 
 
 
-(defun task-party-base-dir (base-dir)
+(defun task-party-base-dir (&optional base-dir)
   (interactive
    (list (read-directory-name "Select task-party-base-dir: ")))
-  (setq
-   *task-party-base-dir* base-dir))
+  (when (and
+         base-dir
+         (file-directory-p base-dir))
+    (setq
+     *task-party-base-dir* base-dir))
+  *task-party-base-dir*)
 
-(defun task-scratch-dir (scratch-dir)
+(defun task-scratch-dir (&optional scratch-dir)
   (interactive
    (list (read-directory-name "Select task-scratch-dir: ")))
-  (setq
-   task-scratch-dir scratch-dir))
+  (when (file-directory-p scratch-dir)
+    (setq
+     task-scratch-dir scratch-dir))
+  task-scratch-dir)
 
-(defun task-projbuffs-base-dir (projbuffs-base-dir)
+(defun task-projbuffs-base-dir (&optional projbuffs-base-dir)
   (interactive
    (list (read-directory-name "Select task-projbuffs-base-dir: ")))
-  (setq
-   *task-projbuffs-base-dir* projbuffs-base-dir))
+  (when (file-directory-p projbuffs-base-dir)
+    (setq
+     *task-projbuffs-base-dir* projbuffs-base-dir))
+  projbuffs-base-dir)
 
 
 
@@ -148,7 +162,7 @@
   (let ()
     (if (member party (mapcar 'car task-parties))
         (when (setq task-current-party party)
-          (run-hooks task-current-party-change-hook)))
+          (run-hooks 'task-current-party-change-hook)))
     task-current-party))
 
 ;;;###autoload
@@ -188,7 +202,7 @@
   (let ((party (or party (task-current-party))))
     (if (member party (mapcar 'car task-parties))
         (expand-file-name party
-                          (org-publish-get-attribute "tasks" "org" :base-directory))
+                          (task-party-base-dir))
         (error "party is not from task-parties"))))
 
 ;;;###autoload
@@ -265,7 +279,7 @@
   "task-party-url-base"
   (let ((party (or party (task-current-party))))
     (if (member party (mapcar 'car task-parties))
-        (concat "/~s/tasks/" party)
+        (concat *task-url-path* party)
         (error "party is not from task-parties"))))
 
 (defun task-projbuffs-dir (&optional party)
@@ -439,7 +453,7 @@
         (concat description (format "\nend %s\n" task)))))))
 
 ;;;#autoload
-(defun create-plan-task (task name desc task-dir)
+(defun task-create-plan-task (task name desc task-dir)
   (interactive (task-get-task-data t))
   (let* ((plan-page
           (planner-read-non-date-page (planner-file-alist))))
@@ -456,12 +470,12 @@
     t))
 
 ;;;#autoload
-(defun delete-plan-task (task name desc task-dir)
+(defun task-delete-plan-task (task name desc task-dir)
   (interactive (task-get-task-data))
   (message "Not doing anything."))
 
 ;;;#autoload
-(defun create-org-task (task name desc task-dir project-main-file project-root-folder)
+(defun task-create-org-task (task name desc task-dir project-main-file project-root-folder)
   (interactive
    (let* ((task-data (task-get-task-data t))
           (project-root-folder (iproject-choose-root-folder project-main-file)))
@@ -496,7 +510,7 @@
     t))
 
 ;;;#autoload
-(defun delete-org-task (task name desc task-dir)
+(defun task-delete-org-task (task name desc task-dir)
   (interactive (task-get-task-data))
   (let ()
     (org-remove-heading-from-file-headline
@@ -507,7 +521,7 @@
 
 ;; Project-Buffer
 ;;;#autoload
-(defun create-pbm-task (task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
+(defun task-create-pbm-task (task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
   (interactive (task-get-task-data-all t))
   (let* ((project-name (concat task ":" name " - " desc)))
     (with-project-buffer (find-file-noselect
@@ -527,14 +541,14 @@
          doc-file-filter
          doc-base-virtual-folder)))))
 
-;; (defun delete-pbm-task (task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
+;; (defun task-delete-pbm-task (task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
 ;;;#autoload
-(defun delete-pbm-task (task name desc task-dir)
+(defun task-delete-pbm-task (task name desc task-dir)
   (interactive (task-get-task-data-all))
   (message "Not doing anything."))
 
 ;;;#autoload
-(defun create-task-dir (task name desc task-dir project-root-folder)
+(defun task-create-task-dir (task name desc task-dir project-root-folder)
   (interactive (task-get-task-data t))
   ;; (dolist (dname '("logs" "programs" "patches" "deliverables"))
   (let* ()
@@ -579,7 +593,6 @@
                                                                    (capitalize (file-name-sans-extension f))
                                                                    f
                                                                    "here"))))))
-
             (dolist (sfile
                       (cons
                        (task-org-todo-file task)
@@ -602,22 +615,22 @@
         (make-directory (concat task-dir "/" dname) t)))))
 
 ;;;#autoload
-(defun delete-task-dir (task name desc task-dir)
+(defun task-delete-task-dir (task name desc task-dir)
   (interactive (task-get-task-data))
   ;; (dolist (dname '("logs" "programs" "patches" "deliverables"))
   (delete-directory task-dir t))
 
 ;;;#autoload
-(defun create-task (task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
+(defun task-create-task (task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
   (interactive (task-get-task-data-all t))
   (let* ()
     (if (file-directory-p task-dir)
         (find-task task-dir)
         (progn
-          (create-plan-task task name desc task-dir)
-          (create-org-task  task name desc task-dir project-main-file project-root-folder)
-          (create-task-dir  task name desc task-dir project-root-folder)
-          (create-pbm-task  task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
+          (task-create-plan-task task name desc task-dir)
+          (task-create-org-task  task name desc task-dir project-main-file project-root-folder)
+          (task-create-task-dir  task name desc task-dir project-root-folder)
+          (task-create-pbm-task  task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
           (org-clocking-entry-update-task-infos t)))
 
     (when (y-or-n-p (format "Should set %s current task" task-dir))
@@ -625,15 +638,15 @@
       (find-file (expand-file-name (task-first-org-master-file task) task-dir)))))
 
 ;;;#autoload
-(defun delete-task (task name desc task-dir)
+(defun task-delete-task (task name desc task-dir)
   (interactive (task-get-task-data))
   (let* ()
     (progn
-      (delete-plan-task task name desc task-dir)
-      (delete-org-task  task name desc task-dir)
-      (delete-task-dir  task name desc task-dir)
-      ;; (delete-pbm-task  task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
-      (delete-pbm-task  task name desc task-dir))))
+      (task-delete-plan-task task name desc task-dir)
+      (task-delete-org-task  task name desc task-dir)
+      (task-delete-task-dir  task name desc task-dir)
+      ;; (task-delete-pbm-task  task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
+      (task-delete-pbm-task  task name desc task-dir))))
 
 ;;;#autoload
 (defun find-task (task)
@@ -667,21 +680,21 @@
 
 (require 'file-utils)
 
-(defun org-task-files (&optional party)
+(defun task-org-task-files (&optional party)
   (let ((party (or party (task-current-party))))
     (directory-files-recursive
      (task-party-dir party) "\\.org$" 7)))
 
-(defun org-all-task-files ()
+(defun task-org-all-task-files ()
   (let ()
     (directory-files-recursive
-     (org-publish-get-attribute "tasks" "org" :base-directory)
+     (task-party-base-dir)
      "\\.org$" 7)))
 
-(defun org-task-refile-target (party)
+(defun task-org-task-refile-target (party)
   (let* ((party (or party (task-current-party)))
-         (task-files (org-task-files party)))
-                                        ;all files returned by `org-task-files'
+         (task-files (task-org-task-files party)))
+                                        ;all files returned by `task-org-task-files'
     `((,task-files :maxlevel . 3))))
 
 ;;;#autoload
@@ -693,92 +706,92 @@
           nil
           t
           (task-current-party))))
-  (org-clock-in-refile (org-task-refile-target party)))
+  (org-clock-in-refile (task-org-task-refile-target party)))
 ;; )
 
 
 
-  (when nil
-    (defun org-clock-select-task-from-clocks (clocks &optional prompt)
-      "Select a task that was recently associated with clocking."
-      (interactive)
-      (let (och chl sel-list rpl (i 0) s)
-        ;; Remove successive dups from the clock history to consider
-        (mapc (lambda (c) (if (not (equal c (car och))) (push c och)))
-              clocks)
-        (setq och (reverse och) chl (length och))
-        (if (zerop chl)
-            (user-error "No recent clock")
-            (save-window-excursion
-              (org-switch-to-buffer-other-window
-               (get-buffer-create "*Clock Task Select*"))
-              (erase-buffer)
-              ;; (when (marker-buffer org-clock-default-task)
-              ;;   (insert (org-add-props "Default Task\n" nil 'face 'bold))
-              ;;   (setq s (org-clock-insert-selection-line ?d org-clock-default-task))
-              ;;   (push s sel-list))
-              ;; (when (marker-buffer org-clock-interrupted-task)
-              ;;   (insert (org-add-props "The task interrupted by starting the last one\n" nil 'face 'bold))
-              ;;   (setq s (org-clock-insert-selection-line ?i org-clock-interrupted-task))
-              ;;   (push s sel-list))
-              ;; (when (org-clocking-p)
-              ;;   (insert (org-add-props "Current Clocking Task\n" nil 'face 'bold))
-              ;;   (setq s (org-clock-insert-selection-line ?c org-clock-marker))
-              ;;   (push s sel-list))
-              (insert (org-add-props "Recent Tasks\n" nil 'face 'bold))
-              (mapc
-               (lambda (m)
-                 (when (marker-buffer m)
-                   (setq i (1+ i)
-                         s (org-clock-insert-selection-line
-                            (if (< i 10)
-                                (+ i ?0)
-                                (+ i (- ?A 10))) m))
-                   (if (fboundp 'int-to-char) (setf (car s) (int-to-char (car s))))
-                   (push s sel-list)))
-               och)
-              (run-hooks 'org-clock-before-select-task-hook)
-              (goto-char (point-min))
-              ;; Set min-height relatively to circumvent a possible but in
-              ;; `fit-window-to-buffer'
-              (fit-window-to-buffer nil nil (if (< chl 10) chl (+ 5 chl)))
-              (message (or prompt "Select task for clocking:"))
-              (setq cursor-type nil rpl (read-char-exclusive))
-              (kill-buffer)
-              (cond
-                ((eq rpl ?q) nil)
-                ((eq rpl ?x) nil)
-                ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
-                (t (user-error "Invalid task choice %c" rpl)))))))
+(when nil
+  (defun org-clock-select-task-from-clocks (clocks &optional prompt)
+    "Select a task that was recently associated with clocking."
+    (interactive)
+    (let (och chl sel-list rpl (i 0) s)
+      ;; Remove successive dups from the clock history to consider
+      (mapc (lambda (c) (if (not (equal c (car och))) (push c och)))
+            clocks)
+      (setq och (reverse och) chl (length och))
+      (if (zerop chl)
+          (user-error "No recent clock")
+          (save-window-excursion
+            (org-switch-to-buffer-other-window
+             (get-buffer-create "*Clock Task Select*"))
+            (erase-buffer)
+            ;; (when (marker-buffer org-clock-default-task)
+            ;;   (insert (org-add-props "Default Task\n" nil 'face 'bold))
+            ;;   (setq s (org-clock-insert-selection-line ?d org-clock-default-task))
+            ;;   (push s sel-list))
+            ;; (when (marker-buffer org-clock-interrupted-task)
+            ;;   (insert (org-add-props "The task interrupted by starting the last one\n" nil 'face 'bold))
+            ;;   (setq s (org-clock-insert-selection-line ?i org-clock-interrupted-task))
+            ;;   (push s sel-list))
+            ;; (when (org-clocking-p)
+            ;;   (insert (org-add-props "Current Clocking Task\n" nil 'face 'bold))
+            ;;   (setq s (org-clock-insert-selection-line ?c org-clock-marker))
+            ;;   (push s sel-list))
+            (insert (org-add-props "Recent Tasks\n" nil 'face 'bold))
+            (mapc
+             (lambda (m)
+               (when (marker-buffer m)
+                 (setq i (1+ i)
+                       s (org-clock-insert-selection-line
+                          (if (< i 10)
+                              (+ i ?0)
+                              (+ i (- ?A 10))) m))
+                 (if (fboundp 'int-to-char) (setf (car s) (int-to-char (car s))))
+                 (push s sel-list)))
+             och)
+            (run-hooks 'org-clock-before-select-task-hook)
+            (goto-char (point-min))
+            ;; Set min-height relatively to circumvent a possible but in
+            ;; `fit-window-to-buffer'
+            (fit-window-to-buffer nil nil (if (< chl 10) chl (+ 5 chl)))
+            (message (or prompt "Select task for clocking:"))
+            (setq cursor-type nil rpl (read-char-exclusive))
+            (kill-buffer)
+            (cond
+              ((eq rpl ?q) nil)
+              ((eq rpl ?x) nil)
+              ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
+              (t (user-error "Invalid task choice %c" rpl)))))))
 
-    ;;     (defun org-clock-insert-selection-line (i marker)
-    ;;       "Insert a line for the clock selection menu.
-    ;; And return a cons cell with the selection character integer and the marker
-    ;; pointing to it."
-    ;;       (when (marker-buffer marker)
-    ;;         (let (file cat task heading prefix)
-    ;;           (with-current-buffer (org-base-buffer (marker-buffer marker))
-    ;;             (save-excursion
-    ;;               (save-restriction
-    ;;                 (widen)
-    ;;                 (ignore-errors
-    ;;                   (goto-char marker)
-    ;;                   (setq file (buffer-file-name (marker-buffer marker))
-    ;;                         cat (org-get-category)
-    ;;                         heading (org-get-heading 'notags)
-    ;;                         prefix (save-excursion
-    ;;                                  (org-back-to-heading t)
-    ;;                                  (looking-at org-outline-regexp)
-    ;;                                  (match-string 0))
-    ;;                         task (substring
-    ;;                               (org-fontify-like-in-org-mode
-    ;;                                (concat prefix heading)
-    ;;                                org-odd-levels-only)
-    ;;                               (length prefix)))))))
-    ;;           (when (and cat task)
-    ;;             (insert (format "[%c] %-12s  %s\n" i cat task))
-    ;;             (cons i marker)))))
-    )
+  ;;     (defun org-clock-insert-selection-line (i marker)
+  ;;       "Insert a line for the clock selection menu.
+  ;; And return a cons cell with the selection character integer and the marker
+  ;; pointing to it."
+  ;;       (when (marker-buffer marker)
+  ;;         (let (file cat task heading prefix)
+  ;;           (with-current-buffer (org-base-buffer (marker-buffer marker))
+  ;;             (save-excursion
+  ;;               (save-restriction
+  ;;                 (widen)
+  ;;                 (ignore-errors
+  ;;                   (goto-char marker)
+  ;;                   (setq file (buffer-file-name (marker-buffer marker))
+  ;;                         cat (org-get-category)
+  ;;                         heading (org-get-heading 'notags)
+  ;;                         prefix (save-excursion
+  ;;                                  (org-back-to-heading t)
+  ;;                                  (looking-at org-outline-regexp)
+  ;;                                  (match-string 0))
+  ;;                         task (substring
+  ;;                               (org-fontify-like-in-org-mode
+  ;;                                (concat prefix heading)
+  ;;                                org-odd-levels-only)
+  ;;                               (length prefix)))))))
+  ;;           (when (and cat task)
+  ;;             (insert (format "[%c] %-12s  %s\n" i cat task))
+  ;;             (cons i marker)))))
+  )
 
 (provide 'task-manager)
 ;;; task-manager.el ends here
