@@ -45,7 +45,7 @@
                org-entry-list-task-infos)
     (setq org-entry-list-task-infos
           (org-entry-list-collect-task-infos (org-all-task-files))))
-  org-entry-list-task-infos))
+  org-entry-list-task-infos)
 
 (provide 'org-context-clocking-api-list)
 ;;; org-context-clocking-api-list.el ends here

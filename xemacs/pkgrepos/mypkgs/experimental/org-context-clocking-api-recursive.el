@@ -33,7 +33,7 @@
 (defvar org-entry-tree-task-info-root-org-file nil "org-entry-tree-task-info-root-org-file")
 
 (setq org-entry-tree-task-info-root-org-file
-      (expand-file-name "start.org" (task-party-dir)))
+      (expand-file-name "start.org" (task-party-base-dir)))
 
 (defun org-entry-tree-update-task-infos (&optional force)
   (interactive "P")
