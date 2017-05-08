@@ -200,10 +200,12 @@ If not, show simply the clocked time like 01:50."
       (message "org-clock-monitor-files is not set")))
 
 (defun org-clock-monitor-files-set-from-dir (monitor-dir)
+  (interactive "Dset org clock monitor dir: ")
   (setq
    org-clock-monitor-files (directory-files-recursive monitor-dir "\\.org$" 2 "\\(rip\\|stage\\)")))
 
 (defun org-clock-monitor-files-add-from-dir (monitor-dir)
+  (interactive "Dadd org clock monitor dir: ")
   (setq
    org-clock-monitor-files
    (append
@@ -253,15 +255,23 @@ If not, show simply the clocked time like 01:50."
   ;;           (append global-mode-string
   ;;                   '(org-mode-work-day-mode-line-string))))
 
-  (if (and
-       (boundp 'global-mode-line-list)
-       global-mode-line-list)
-      (progn
-        (or global-mode-line-list (setq global-mode-string '("")))
-        (or (memq 'org-mode-work-day-mode-line-string global-mode-line-list)
-            (setq global-mode-line-list
-                  (append global-mode-line-list
-                          '(org-mode-work-day-mode-line-string))))))
+  (when (and
+         (boundp 'global-mode-line-list)
+         global-mode-line-list)
+    (progn
+      (or global-mode-line-list (setq global-mode-string '("")))
+      (or (memq 'org-mode-work-day-mode-line-string global-mode-line-list)
+          (setq global-mode-line-list
+                (append global-mode-line-list
+                        '(org-mode-work-day-mode-line-string))))))
+
+  (when (fboundp 'spaceline-define-segment)
+    (spaceline-define-segment workdaysummary
+      "Test"
+      (powerline-raw
+       (s-trim org-mode-work-day-mode-line-string)))
+    (spaceline-toggle-workdaysummary-on)
+    (spaceline-spacemacs-theme 'workdaysummary))
 
   (when (eq org-mode-work-day-display 'mode-line)
     (org-clock-work-day-update-mode-line force)

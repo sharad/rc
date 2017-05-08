@@ -188,7 +188,13 @@ Each entry is either:
            "Office related work"
            "https://bugzilla.merunetworks.com")
 
-          (task-current-party "meru"))
+          (task-add-task-party
+           "intelipower"
+           "report.org"
+           "Office related work"
+           "https://bugzilla.merunetworks.com")
+
+          (task-current-party "intelipower"))
 
         (progn
           (define-minor-mode office-mode
