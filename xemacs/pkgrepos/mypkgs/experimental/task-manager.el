@@ -238,11 +238,14 @@
   (let ((party (or party (task-current-party))))
     (if (member party (mapcar 'car task-parties))
         (let ((party-dir (expand-file-name party (task-party-base-dir))))
-
           (unless (file-directory-p party-dir)
             (make-directory party-dir t))
           (when (file-directory-p party-dir)
-              (task-party-org-master-file party))
+            (task-party-org-master-file party))
+
+
+          ;; add org heading entry to (task-party-base-org-master-file)
+
           party-dir)
         (error "party is not from task-parties"))))
 
