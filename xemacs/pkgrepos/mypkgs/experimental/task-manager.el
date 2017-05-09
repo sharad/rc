@@ -36,6 +36,7 @@
 
 (defvar *task-desc-file-name* ".task-desc" "*task-desc-file-name*")
 
+(defvar *task-party-base-org-master-file* "start.org")
 (defvar *task-party-base-dir*
   "~/Documents/org/tasks"
   "Task Party Directory")
@@ -97,7 +98,8 @@
                        (org-todo-file    "todo.org")
                        (dirs            "logs" "programs" "patches" "deliverables")
                        (links           ("notes.html" . "index.html"))
-                       (project         "works.pb"))))
+                       (project         "works.pb"))
+                      ))
 
 (defvar *taskdir-current-task* nil "Current task")
 
@@ -108,32 +110,68 @@
  'session-globals-include
  '(*taskdir-current-task* 100))
 
+(defun task-party-base-org-master-file (&optional base-dir)
+  (let* ((party                 (or party (task-party-base-dir)))
+         (org-master-file       *task-party-base-org-master-file*)
+         (org-master-file-path (expand-file-name
+                                org-master-file
+                                (task-party-base-dir))))
+    (if (file-directory-p (task-party-base-dir))
+        (progn
+          (unless (file-exists-p org-master-file-path)
+            (let ((nfile org-master-file-path)) ;find alternate of find-file-noselect to get non-existing file.
+              (task-create-org-file nfile
+                                    (insert "\n\n")
+                                    (insert (format "* %s: %s\n\n\n" "start" "tasks."))
+                                    (insert (format "* Reports\n\n\n"))
+                                    ;; (insert (format "* %s\n" (task-party-org-heading party)))
+                                    )))
 
+          org-master-file)
+        (error "party is not from task-parties"))))
+
+(defun task-make-party-base-dir (&optioan base-dir)
+  (interactive
+   (list (read-directory-name "Select task-party-base-dir: ")))
+  (when base-dir
+    (unless (file-directory-p base-dir)
+      (make-directory base-dir t))
+    (when (file-directory-p base-dir)
+      (task-party-base-org-master-file base-dir))
+    base-dir))
 
 (defun task-party-base-dir (&optional base-dir)
   (interactive
    (list (read-directory-name "Select task-party-base-dir: ")))
-  (when (and
-         base-dir
-         (file-directory-p base-dir))
-    (setq
-     *task-party-base-dir* base-dir))
+  (when base-dir
+    (unless (file-directory-p base-dir)
+      (task-make-party-base-dir base-dir))
+    (when (file-directory-p base-dir)
+      (task-party-base-org-master-file base-dir)
+      (setq
+       *task-party-base-dir* base-dir)))
   *task-party-base-dir*)
 
 (defun task-scratch-dir (&optional scratch-dir)
   (interactive
    (list (read-directory-name "Select task-scratch-dir: ")))
-  (when (file-directory-p scratch-dir)
-    (setq
-     task-scratch-dir scratch-dir))
+  (when scratch-dir
+    (unless (file-directory-p scratch-dir)
+      (make-directory scratch-dir t))
+    (when (file-directory-p scratch-dir)
+     (setq
+      task-scratch-dir scratch-dir)))
   task-scratch-dir)
 
 (defun task-projbuffs-base-dir (&optional projbuffs-base-dir)
   (interactive
    (list (read-directory-name "Select task-projbuffs-base-dir: ")))
-  (when (file-directory-p projbuffs-base-dir)
-    (setq
-     *task-projbuffs-base-dir* projbuffs-base-dir))
+  (when projbuffs-base-dir
+    (unless (file-directory-p projbuffs-base-dir)
+      (make-directory projbuffs-base-dir t))
+    (when (file-directory-p projbuffs-base-dir)
+     (setq
+      *task-projbuffs-base-dir* projbuffs-base-dir)))
   projbuffs-base-dir)
 
 
@@ -196,22 +234,38 @@
    (or prompt "select task type: ")
    (mapcar 'car task-config) nil t))
 
+(defun task-make-party-dir (&optional party)
+  (let ((party (or party (task-current-party))))
+    (if (member party (mapcar 'car task-parties))
+        (let ((party-dir (expand-file-name party (task-party-base-dir))))
+          (unless (file-directory-p party-dir)
+            (make-directory party-dir t))
+          (when (file-directory-p party-dir)
+            (task-party-org-master-file party))
+
+
+          ;; add org heading entry to (task-party-base-org-master-file)
+
+          party-dir)
+        (error "party is not from task-parties"))))
+
 ;;;###autoload
 (defun task-party-dir (&optional party)
   "Task Directory"
   (let ((party (or party (task-current-party))))
     (if (member party (mapcar 'car task-parties))
-        (expand-file-name party
-                          (task-party-base-dir))
+        (let ((party-dir (expand-file-name party (task-party-base-dir))))
+          (unless (file-directory-p party-dir)
+            (task-make-party-dir party-dir))
+          (when (file-directory-p party-dir)
+           (task-party-org-master-file party))
+          party-dir)
         (error "party is not from task-parties"))))
 
 ;;;###autoload
 (defun task-party-dir-files-recursive ()
   (directory-files-recursive (task-party-dir)
                              "\\.org$" 2 "\\(rip\\|stage\\)"))
-
-
-
 
 (defun task-party-org-heading (&optional party)
   (let ((party (or party (task-current-party))))
@@ -247,9 +301,9 @@
 (put 'task-create-org-file 'lisp-indent-function 1)
 
 (defun task-party-org-master-file (&optional party)
-  (let* ((party                (or party (task-current-party)))
-         (org-master-file      (cadr
-                                (assoc 'org-master-file
+  (let* ((party                 (or party (task-current-party)))
+         (org-master-file       (cadr
+                                 (assoc 'org-master-file
                                        (cdr (assoc party task-parties)))))
          (org-master-file-path (expand-file-name
                                 org-master-file

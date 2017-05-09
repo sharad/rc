@@ -77,6 +77,10 @@ Each entry is either:
       :config
       (progn
         (progn
+          (when (fboundp 'spaceline-toggle-org-clock-on)
+            (spaceline-toggle-org-clock-on)))
+
+        (progn
           (with-eval-after-load "org-publishing"
             (setq
              org-directory          (org-publish-get-attribute "notes" "org" :base-directory)
