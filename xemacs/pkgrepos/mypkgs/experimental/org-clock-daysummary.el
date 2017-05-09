@@ -263,6 +263,18 @@ If not, show simply the clocked time like 01:50."
                   (append global-mode-line-list
                           '(org-mode-work-day-mode-line-string))))))
 
+  (progn
+    (when (fboundp 'spaceline-define-segment)
+      ;;display time in powerline
+      (spaceline-define-segment org-clock-workdaysummary
+        "Show the number of unread mails using mu. Requires mu4e-alert"
+        (when (and active (featurep 'org-clock-daysummary))
+          org-mode-work-day-mode-line-string)
+        :global-override ((:eval org-mode-work-day-mode-line-string)))))
+
+  (setq spaceline-org-clock-work-day-p t)
+
+
   (when (eq org-mode-work-day-display 'mode-line)
     (org-clock-work-day-update-mode-line force)
     (when org-mode-work-mode-line-timer
