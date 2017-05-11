@@ -131,7 +131,7 @@
 (defun org-markers-associated-to-file (file)
   (mapcar '(lambda (e)
             (org-entry-task-info-get-property e :task-clock-marker))
-          (funcall org-context-clocking-api-entries-associated-to-file-p file)))
+          (funcall org-context-clocking-api-entries-associated-to-file file)))
 
 (provide 'org-context-clocking-api-common)
 ;;; org-context-clocking-api-common.el ends here

@@ -30,7 +30,7 @@
 
 (progn ;; api
 
-  (defun org-entries-associated-to-file-by-predicate-p (file)
+  (defun org-entries-associated-to-file-by-predicate (file)
     (let ((task-infos (org-entry-list-update-task-infos))
           (matched '()))
       (dolist (fn org-entry-associated-file-predicate-fns matched)
@@ -53,8 +53,8 @@
          '(lambda (fn) (funcall fn file task-info))
          org-entry-associated-file-predicate-fns)))
 
-  (org-context-clocking-api-set :predicate :entries 'org-entries-associated-to-file-by-predicate-p)
-  (org-context-clocking-api-set :predicate :entry   'org-entry-associated-to-file-by-predicate-p)
+  (org-context-clocking-api-set :predicate :entries 'org-entries-associated-to-file-by-predicate)
+  (org-context-clocking-api-set :predicate :entryp   'org-entry-associated-to-file-by-predicate-p)
   (org-context-clocking-api-set :predicate :update  'org-entry-list-update-task-infos))
 
 

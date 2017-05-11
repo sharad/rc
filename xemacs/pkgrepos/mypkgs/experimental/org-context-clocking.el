@@ -38,8 +38,8 @@
 (defvar org-context-clocking-update-current-file-msg "")
 ;; (defvar org-context-clocking-api-name :predicate "API")
 (defvar org-context-clocking-api-name :keys "API")
-(defvar org-context-clocking-api-entries-associated-to-file-p (org-context-clocking-api-get org-context-clocking-api-name :entries))
-(defvar org-context-clocking-api-entry-associated-to-file-p   (org-context-clocking-api-get org-context-clocking-api-name :entry))
+(defvar org-context-clocking-api-entries-associated-to-file (org-context-clocking-api-get org-context-clocking-api-name :entries))
+(defvar org-context-clocking-api-entry-associated-to-file-p   (org-context-clocking-api-get org-context-clocking-api-name :entryp))
 (defvar org-context-clocking-api-entry-update-task-infos      (org-context-clocking-api-get org-context-clocking-api-name :update))
 
 
@@ -62,11 +62,11 @@
     (setq org-context-clocking-api-name api-key)
     (if (and
          (org-context-clocking-api-get org-context-clocking-api-name :entries)
-         (org-context-clocking-api-get org-context-clocking-api-name :entry)
+         (org-context-clocking-api-get org-context-clocking-api-name :entryp)
          (org-context-clocking-api-get org-context-clocking-api-name :update))
         (setq
-         org-context-clocking-api-entries-associated-to-file-p (org-context-clocking-api-get org-context-clocking-api-name :entries)
-         org-context-clocking-api-entry-associated-to-file-p   (org-context-clocking-api-get org-context-clocking-api-name :entry)
+         org-context-clocking-api-entries-associated-to-file (org-context-clocking-api-get org-context-clocking-api-name :entries)
+         org-context-clocking-api-entry-associated-to-file-p   (org-context-clocking-api-get org-context-clocking-api-name :entryp)
          org-context-clocking-api-entry-update-task-infos      (org-context-clocking-api-get org-context-clocking-api-name :update)))))
 
 (defun org-clocking-entry-update-task-infos (&optional force)
@@ -369,14 +369,14 @@
 
 
   (length
-   (funcall org-context-clocking-api-entries-associated-to-file-p (buffer-file-name))
+   (funcall org-context-clocking-api-entries-associated-to-file (buffer-file-name))
    )
 
-  (length (funcall org-context-clocking-api-entries-associated-to-file-p "/home/s/paradise/releases/global/patch-upgrade/Makefile"))
+  (length (funcall org-context-clocking-api-entries-associated-to-file "/home/s/paradise/releases/global/patch-upgrade/Makefile"))
 
   (org-markers-associated-to-file (buffer-file-name))
   (length
-   (funcall org-context-clocking-api-entries-associated-to-file-p "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
+   (funcall org-context-clocking-api-entries-associated-to-file "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
    )
 
   (org-entries-associated-to-file-by-keys-p (buffer-file-name))

@@ -28,21 +28,25 @@
 ;; TODO: matching should be merit based.
 ;; TODO: logical AND OR method should be possible in match-fn results
 ;; TODO: exclusion fecelities also should be present.
-(progn
-  '(
-    '(matches
-      '(file based)x
-      '(dir based -merit) x
-      '(status based) x
-      '(user input based)
-      '(config based) x
-      '(time based recently opened)
-      '(heading level based)))
+'(
+  '(matches
+    '(file based)x
+    '(dir based -merit) x
+    '(status based) x
+    '(user input based)
+    '(config based) x
+    '(time based recently opened)
+    '(heading level based)))
 
-(defvar org-entry-associated-file-key-fns nil)
+
+(require 'org-context-clocking-api-recursive)
+
+(defvar org-entry-associated-file-key-fns nil
+  "property list of KEY and API FUNCTIONS for key based association")
 
 (progn ;; api
-  (defun org-entries-associated-to-file-by-keys-p (file)
+  (defun org-entries-associated-to-file-by-keys (file)
+    "Retun org TASK-INFO entries for FILE which are associated based on list of functions for keys applied by ORG-ENTRY-ASSOCIATED-TO-FILE-BY-KEYS-P"
     (let ((task-infos (org-entry-tree-update-task-infos))
           (matched '()))
       (tree-mapc-task-infos
@@ -56,6 +60,8 @@
 
 
   (defun org-entry-associated-to-file-by-keys-p (task-info file)
+    "Test whether association of org TASK-INFO for FILE using list of functions for keys,
+using algorithm in this function"
     (if file
         (if (> (org-entries-associated-key-fn-value :status task-info file) -20)
             (>
@@ -65,13 +71,15 @@
               ;; (org-entries-associated-key-fn-value :org-file task-info file)
               (org-entries-associated-key-fn-value :task-info-key task-info file)
               (org-entries-associated-key-fn-value :heading-level task-info file))
-             0)))))
+             0))))
 
-(org-context-clocking-api-set :keys :entries 'org-entries-associated-to-file-by-keys-p)
-(org-context-clocking-api-set :keys :entry   'org-entry-associated-to-file-by-keys-p)
-(org-context-clocking-api-set :keys :update  'org-entry-tree-update-task-infos))
+  (org-context-clocking-api-set :keys :entries 'org-entries-associated-to-file-by-keys)
+  (org-context-clocking-api-set :keys :entryp  'org-entry-associated-to-file-by-keys-p)
+  (org-context-clocking-api-set :keys :update  'org-entry-tree-update-task-infos))
 
-(progn ;; functions
+
+
+(progn ;; Registration macro to add key property and functions list to ORG-ENTRY-ASSOCIATED-FILE-KEY-FNS
   (progn
     (setq org-entry-associated-file-key-fns nil)
 
@@ -81,8 +89,9 @@
        (plist-put
         org-entry-associated-file-key-fns key fn)))
 
-    (eval-when-compile
+    (eval-when-compile                  ;TODO auto generate name from KEY
       (defmacro defassoc-file-key (name key args &rest body)
+        "Registration macro to add key property and functions list to ORG-ENTRY-ASSOCIATED-FILE-KEY-FNS"
         `(progn
            (defun ,name ,args
              ,@body)

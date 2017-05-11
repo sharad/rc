@@ -44,7 +44,7 @@
 (defvar org-entry-associated-file-rank-fns nil)
 
 (progn ;; api
-  (defun org-entries-associated-to-file-by-rank-p (file)
+  (defun org-entries-associated-to-file-by-rank (file)
     (let ((task-infos (org-entry-list-update-task-infos))
           (matched '()))
       (dolist (fn org-entry-associated-file-rank-fns matched)
@@ -69,8 +69,8 @@
                 org-entry-associated-file-rank-fns))
         0))
 
-  (org-context-clocking-api-set :rank :entries 'org-entries-associated-to-file-by-rank-p)
-  (org-context-clocking-api-set :rank :entry   'org-entry-associated-to-file-by-rank-p)
+  (org-context-clocking-api-set :rank :entries 'org-entries-associated-to-file-by-rank)
+  (org-context-clocking-api-set :rank :entryp   'org-entry-associated-to-file-by-rank-p)
   (org-context-clocking-api-set :rank :update  'org-entry-list-update-task-infos))
 
 (progn ;; functions

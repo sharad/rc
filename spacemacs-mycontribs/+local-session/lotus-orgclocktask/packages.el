@@ -124,7 +124,13 @@ Each entry is either:
       :defer t
       :config
       (progn
-        )))
+        (progn
+          (use-package task-manager
+              :defer t
+              :config
+              (progn
+                (setq org-entry-tree-task-info-root-org-file
+                      (expand-file-name "start.org" (task-party-base-dir)))))))))
 
 (defun lotus-orgclocktask/init-org-misc-utils ()
   (use-package org-misc-utils
@@ -166,12 +172,10 @@ Each entry is either:
 (defun lotus-orgclocktask/init-task-manager ()
   (use-package task-manager
       :defer t
-      :commands (office-mode task-current-party-select-set task-current-party task-party-dir task-select-party-dir find-task-dir)
+      :commands (office-mode task-party-base-dir task-current-party-select-set task-current-party task-party-dir task-select-party-dir find-task-dir)
       :config
       (progn
-
         (progn
-
           (task-party-base-dir (org-publish-get-attribute "tasks" "org" :base-directory))
           (task-scratch-dir "~/SCRATCH/")
           (task-projbuffs-base-dir (expand-file-name "contents/misc/projbuffs" *created-content-dir*))

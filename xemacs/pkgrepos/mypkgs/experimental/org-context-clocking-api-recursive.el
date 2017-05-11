@@ -27,15 +27,19 @@
 
 ;; "org entries access api for recursive task"
 
-(defvar org-entry-tree-task-infos nil "org entry task infos")
+(defvar org-entry-tree-task-infos nil
+  "Recursive org entries tree")
+
 (defun org-entry-get-task-infos (files)
-  )
-(defvar org-entry-tree-task-info-root-org-file nil "org-entry-tree-task-info-root-org-file")
+  "Build recursive org entries tree from files"
+  (org-entry-tree-task-infos-tree files))
 
-(setq org-entry-tree-task-info-root-org-file
-      (expand-file-name "start.org" (task-party-base-dir)))
+(defvar org-entry-tree-task-info-root-org-file nil
+  "Root file to build recursive org entries tree")
 
-(defun org-entry-tree-update-task-infos (&optional force)
+;;;###autoload
+(defun org-entry-tree-update-task-infos (&optional force) ;[BUG not working for subtree]
+  "Update recursive org entries tree"
   (interactive "P")
   (if org-entry-tree-task-info-root-org-file
       (if (file-exists-p org-entry-tree-task-info-root-org-file)
@@ -49,7 +53,7 @@
   org-entry-tree-task-infos)
 
 (defun org-entry-tree-map-subheading (fun)
-  "Call FUN for every heading underneath the current one."
+  "Call FUN for every heading underneath the current heading"
   ;; (org-back-to-heading)
   (let ((level (funcall outline-level))
         (collection nil))
@@ -63,7 +67,7 @@
     collection))
 
 (defun org-entry-tree-build (collector &optional file)
-  "org-collect-task-info"
+  "Build recursive org entries from org FILE (or current buffer) using COLLECTOR function e.g. org-entry-collect-task-info"
   (with-current-buffer (if file
                            (find-file-noselect file)
                            (current-buffer))
@@ -93,59 +97,69 @@
           entry))))
 
 (defun org-entry-tree-collect-task-info (&optional file)
+  "Build recursive org entries from org FILE (or current buffer)"
   (org-entry-tree-build 'org-entry-collect-task-info file))
 
-(defun org-entry-tree-task-infos-tree (file)
+(defun org-entry-tree-task-infos-tree (&optional file)
+  "Build recursive org entries from org FILE (or current buffer)"
   (org-entry-tree-collect-task-info file))
 
-(defun org-entry-tree-get-task-infos (file)
+(defun org-entry-tree-get-task-infos (&optional file)
+  "Build recursive org entries from org FILE (or current buffer)"
   (let ()
     (org-entry-tree-collect-task-info file)))
 
 (defun org-entry-tree-task-node-p (tx)
+  "Test org TX is org entries tree non-leaf node"
   (org-entry-task-info-get-property tx :sub-tree))
 
 (progn ;; "tree api"
-  (defun tree-mapcar-nodes (nodep fn tree args)
+  (defun tree-mapcar-nodes (nonleafnodep fn tree args)
+    "Tree mapcar return result for FN for all TREE nodes with ARGS, function NONLEAFNODEP require to find nonleaf node"
     (list
      (funcall fn tree args)
      :sub-tree
      (mapcar
       '(lambda (e)
-        (tree-mapcar-nodes nodep fn e args))
-      (funcall nodep tree))))
+        (tree-mapcar-nodes nonleafnodep fn e args))
+      (funcall nonleafnodep tree))))
 
-  (defun tree-mapc-nodes (nodep fn tree args)
+  (defun tree-mapc-nodes (nonleafnodep fn tree args)
+    "Tree mapc run FN for all TREE nodes with ARGS, function NONLEAFNODEP require to find nonleaf node"
     (funcall fn tree args)
     (mapc
      '(lambda (e)
-       (tree-mapc-nodes nodep fn e args))
-     (funcall nodep tree)))
+       (tree-mapc-nodes nonleafnodep fn e args))
+     (funcall nonleafnodep tree)))
 
-  (defun tree-remove-if-not-nodes (nodep fn tree args)
-    (if (funcall nodep tree)
+  (defun tree-remove-if-not-nodes (nonleafnodep predicate tree args)
+    "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE, function NONLEAFNODEP require to find nonleaf node"
+    (if (funcall nonleafnodep tree)
         (let ((rootele
-               (if (funcall fn tree args) tree))
+               (if (funcall predicate tree args) tree))
               (subtree
                (remove
                 nil
                 (mapcar
                  '(lambda (e)
-                   (tree-remove-if-not-nodes nodep fn e args))
-                 (funcall nodep tree)))))
+                   (tree-remove-if-not-nodes nonleafnodep predicate e args))
+                 (funcall nonleafnodep tree)))))
           (if (or rootele subtree)
               (plist-put tree :sub-tree subtree)))
-        (if (funcall fn tree args) tree)))
+        (if (funcall predicate tree args) tree)))
 
   (defun tree-mapcar-task-infos (fn tree args)
+    "Tree mapcar return result for FN for all TREE nodes with ARGS"
     (tree-mapcar-nodes
      'org-entry-tree-task-node-p fn tree args))
 
   (defun tree-mapc-task-infos (fn tree args)
+    "Tree mapc run FN for all TREE nodes with ARGS"
     (tree-mapc-nodes
      'org-entry-tree-task-node-p fn tree args))
 
   (defun tree-remove-if-not-task-infos (fn tree args)
+    "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE"
     (tree-remove-if-not-nodes
      'org-entry-tree-task-node-p fn tree args))
 

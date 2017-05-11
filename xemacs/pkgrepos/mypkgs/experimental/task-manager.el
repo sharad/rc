@@ -77,29 +77,30 @@
 
 (defvar *task-projbuffs-base-dir* (expand-file-name "contents/misc/projbuffs" *created-content-dir*))
 
-(defvar task-config '(("bug"
-                       (org-master-file "report.org")
-                       (org-files       "todo.org" "notes.org" "analysis.org")
-                       (org-todo-file    "todo.org")
-                       (dirs            "logs" "programs" "patches" "deliverables")
-                       (links           ("notes.html" . "index.html"))
-                       (project         "bugs.pb")
-                       (name            "[0-9]+")) ;
-                      ("feature"
-                       (org-master-file "report.org")
-                       (org-files       "reqirement.org" "feasibility.org" "design.org" "todo.org" "notes.org" "analysis.org")
-                       (org-todo-file    "todo.org")
-                       (dirs            "logs" "programs" "patches" "deliverables")
-                       (links           ("notes.html" . "index.html"))
-                       (project         "features.pb"))
-                      ("work"
-                       (org-master-file "report.org")
-                       (org-files       "reqirement.org" "feasibility.org" "design.org" "todo.org" "notes.org" "analysis.org")
-                       (org-todo-file    "todo.org")
-                       (dirs            "logs" "programs" "patches" "deliverables")
-                       (links           ("notes.html" . "index.html"))
-                       (project         "works.pb"))
-                      ))
+(defvar *task-type-config*
+  '(("bug"
+     (org-master-file "report.org")
+     (org-files       "todo.org" "notes.org" "analysis.org")
+     (org-todo-file    "todo.org")
+     (dirs            "logs" "programs" "patches" "deliverables")
+     (links           ("notes.html" . "index.html"))
+     (project         "bugs.pb")
+     (name            "[0-9]+")) ;
+    ("feature"
+     (org-master-file "report.org")
+     (org-files       "reqirement.org" "feasibility.org" "design.org" "todo.org" "notes.org" "analysis.org")
+     (org-todo-file    "todo.org")
+     (dirs            "logs" "programs" "patches" "deliverables")
+     (links           ("notes.html" . "index.html"))
+     (project         "features.pb"))
+    ("work"
+     (org-master-file "report.org")
+     (org-files       "reqirement.org" "feasibility.org" "design.org" "todo.org" "notes.org" "analysis.org")
+     (org-todo-file    "todo.org")
+     (dirs            "logs" "programs" "patches" "deliverables")
+     (links           ("notes.html" . "index.html"))
+     (project         "works.pb"))
+    ))
 
 (defvar *taskdir-current-task* nil "Current task")
 
@@ -110,269 +111,284 @@
  'session-globals-include
  '(*taskdir-current-task* 100))
 
-(defun task-party-base-org-master-file (&optional base-dir)
-  (let* ((party                 (or base-dir (task-party-base-dir)))
-         (org-master-file       *task-party-base-org-master-file*)
-         (org-master-file-path (expand-file-name
-                                org-master-file
-                                (task-party-base-dir))))
-    (if (file-directory-p (task-party-base-dir))
-        (progn
-          (unless (file-exists-p org-master-file-path)
-            (let ((nfile org-master-file-path)) ;find alternate of find-file-noselect to get non-existing file.
-              (task-create-org-file nfile
-                                    (insert "\n\n")
-                                    (insert (format "* %s: %s\n\n\n" "start" "tasks."))
-                                    (insert (format "* Reports\n\n\n"))
-                                    ;; (insert (format "* %s\n" (task-party-org-heading party)))
-                                    )))
+(progn ;; base-dir function
+;;;{{{ task base
+  (defun task-party-base-org-master-file (base-dir)
+    (let* ((base-dir              base-dir)
+           (org-master-file       *task-party-base-org-master-file*)
+           (org-master-file-path (expand-file-name org-master-file base-dir)))
+      (if (file-directory-p base-dir)
+          (progn
+            (unless (file-exists-p org-master-file-path)
+              (let ((nfile org-master-file-path)) ;find alternate of find-file-noselect to get non-existing file.
+                (task-create-org-file nfile
+                  (insert "\n\n")
+                  (insert (format "* %s: %s\n\n\n" "start" "tasks."))
+                  (insert (format "* Reports\n\n\n"))
+                  ;; (insert (format "* %s\n" (task-party-org-heading party)))
+                  )))
 
-          org-master-file)
-        (error "party is not from task-parties"))))
+            org-master-file)
+          (error "directory %s not exists" base-dir))))
 
-(defun task-make-party-base-dir (&optioan base-dir)
-  (interactive
-   (list (read-directory-name "Select task-party-base-dir: ")))
-  (when base-dir
-    (unless (file-directory-p base-dir)
-      (make-directory base-dir t))
-    (when (file-directory-p base-dir)
-      (task-party-base-org-master-file base-dir))
-    base-dir))
+  (defun task-make-party-base-dir (base-dir)
+    (interactive
+     (list (read-directory-name "Select task-party-base-dir: ")))
+    (when base-dir
+      (unless (file-directory-p base-dir)
+        (make-directory base-dir t))
+      (when (file-directory-p base-dir)
+        (task-party-base-org-master-file base-dir))
+      base-dir))
 
-(defun task-party-base-dir (&optional base-dir)
-  (interactive
-   (list (read-directory-name "Select task-party-base-dir: ")))
-  (when base-dir
-    (unless (file-directory-p base-dir)
-      (task-make-party-base-dir base-dir))
-    (when (file-directory-p base-dir)
-      (task-party-base-org-master-file base-dir)
-      (setq
-       *task-party-base-dir* base-dir)))
-  *task-party-base-dir*)
+  (defun task-party-base-dir (&optional base-dir)
+    (interactive
+     (list (read-directory-name "Select task-party-base-dir: ")))
+    (when base-dir
+      (unless (file-directory-p base-dir)
+        (task-make-party-base-dir base-dir))
+      (when (file-directory-p base-dir)
+        (task-party-base-org-master-file base-dir)
+        (setq
+         *task-party-base-dir* base-dir)))
+    *task-party-base-dir*)
 
-(defun task-scratch-dir (&optional scratch-dir)
-  (interactive
-   (list (read-directory-name "Select task-scratch-dir: ")))
-  (when scratch-dir
-    (unless (file-directory-p scratch-dir)
-      (make-directory scratch-dir t))
-    (when (file-directory-p scratch-dir)
-     (setq
-      task-scratch-dir scratch-dir)))
-  task-scratch-dir)
+  (defun task-scratch-dir (&optional scratch-dir)
+    (interactive
+     (list (read-directory-name "Select task-scratch-dir: ")))
+    (when scratch-dir
+      (unless (file-directory-p scratch-dir)
+        (make-directory scratch-dir t))
+      (when (file-directory-p scratch-dir)
+        (setq
+         task-scratch-dir scratch-dir)))
+    task-scratch-dir)
 
-(defun task-projbuffs-base-dir (&optional projbuffs-base-dir)
-  (interactive
-   (list (read-directory-name "Select task-projbuffs-base-dir: ")))
-  (when projbuffs-base-dir
-    (unless (file-directory-p projbuffs-base-dir)
-      (make-directory projbuffs-base-dir t))
-    (when (file-directory-p projbuffs-base-dir)
-     (setq
-      *task-projbuffs-base-dir* projbuffs-base-dir)))
-  projbuffs-base-dir)
+  (defun task-projbuffs-base-dir (&optional projbuffs-base-dir)
+    (interactive
+     (list (read-directory-name "Select task-projbuffs-base-dir: ")))
+    (when projbuffs-base-dir
+      (unless (file-directory-p projbuffs-base-dir)
+        (make-directory projbuffs-base-dir t))
+      (when (file-directory-p projbuffs-base-dir)
+        (setq
+         *task-projbuffs-base-dir* projbuffs-base-dir)))
+    projbuffs-base-dir)
+;;;}}}
+  )
 
+(progn ;; party functions
+;;;{{{  party
+;;;###autoload
+  (defun task-add-task-party (name org-master-file org-heading bugz-url)
+    (push
+     `(,name
+       (org-master-file ,org-master-file)
+       (org-heading     ,org-heading)
+       (bugz-url        ,bugz-url))
+     task-parties)
 
-
+    (unless task-current-party
+      (task-current-party name)))
 
 ;;;###autoload
-(defun task-add-task-party (name org-master-file org-heading bugz-url)
-  (push
-   `(,name
-     (org-master-file ,org-master-file)
-     (org-heading     ,org-heading)
-     (bugz-url        ,bugz-url))
-   task-parties)
-
-  (unless task-current-party
-    (task-current-party name)))
-
-;;;###autoload
-(defun task-current-party (&optional party)
-  (interactive
-   (let ((party
-          (ido-completing-read
-           "select party: "
-           (mapcar 'car task-parties))))
-     (list party)))
-  (let ()
-    (if (member party (mapcar 'car task-parties))
-        (when (setq task-current-party party)
-          (run-hooks 'task-current-party-change-hook)))
-    task-current-party))
+  (defun task-current-party (&optional party)
+    (interactive
+     (let ((party
+            (ido-completing-read
+             "select party: "
+             (mapcar 'car task-parties))))
+       (list party)))
+    (let ()
+      (if (member party (mapcar 'car task-parties))
+          (when (setq task-current-party party)
+            (run-hooks 'task-current-party-change-hook)))
+      task-current-party))
 
 ;;;###autoload
-(defun task-current-party-select-set (&optional prompt)
-  (interactive)
-  (let ((party (ido-completing-read
-                (or prompt "select party: ")
-                (mapcar 'car task-parties))))
-    (if (member party (mapcar 'car task-parties))
-        (task-current-party party)
-        (error "party is not from task-parties"))))
+  (defun task-current-party-select-set (&optional prompt)
+    (interactive)
+    (let ((party (ido-completing-read
+                  (or prompt "select party: ")
+                  (mapcar 'car task-parties))))
+      (if (member party (mapcar 'car task-parties))
+          (task-current-party party)
+          (error "task-current-party-select-set: party `%s' is not from task-parties" party))))
 
 ;;;#autoload
-(defun task-select-party-dir ()
-  (interactive)
-  (ido-read-directory-name "dir: " *task-party-base-dir* nil t))
+  (defun task-select-party-dir ()
+    (interactive)
+    (ido-read-directory-name "dir: " *task-party-base-dir* nil t))
 
 ;;;#autoload
-(defun find-task-dir (&optional force)
-  (interactive "P")
-  (if (or
-       force
-       (null *taskdir-current-task*))
-      (setq *taskdir-current-task*
-            (ido-read-directory-name "dir: " (task-party-dir) nil t))
-      *taskdir-current-task*))
+  (defun find-task-dir (&optional force)
+    (interactive "P")
+    (if (or
+         force
+         (null *taskdir-current-task*))
+        (setq *taskdir-current-task*
+              (ido-read-directory-name "dir: " (task-party-dir) nil t))
+        *taskdir-current-task*))
 
 ;;;###autoload
-(defun task-select-task-type (&optional prompt)
-  (ido-completing-read
-   (or prompt "select task type: ")
-   (mapcar 'car task-config) nil t))
+  (defun task-select-task-type (&optional prompt)
+    (ido-completing-read
+     (or prompt "select task type: ")
+     (mapcar 'car *task-type-config*) nil t))
 
-(defun task-make-party-dir (&optional party)
-  (let ((party (or party (task-current-party))))
-    (if (member party (mapcar 'car task-parties))
-        (let ((party-dir (expand-file-name party (task-party-base-dir))))
-          (unless (file-directory-p party-dir)
-            (make-directory party-dir t))
-          (when (file-directory-p party-dir)
-            (task-party-org-master-file party))
+  (defun task-party-org-master-file (&optional party)
+    (let* ((party                 (or party (task-current-party)))
+           (party-dir             (expand-file-name party (task-party-base-dir)))
+           (org-master-file       (cadr
+                                   (assoc 'org-master-file
+                                          (cdr (assoc party task-parties)))))
+           (org-master-file-path (expand-file-name org-master-file party-dir)))
+      (if (member party (mapcar 'car task-parties))
+          (progn
+            (if (file-directory-p party-dir)
+                (unless (file-exists-p org-master-file-path)
+                  (let ((nfile org-master-file-path)) ;find alternate of find-file-noselect to get non-existing file.
+                    (task-create-org-file nfile
+                      (insert "\n\n")
+                      (insert (format "* %s - %s: %s\n\n\n" (capitalize "party") (capitalize party) "tasks."))
+                      (insert (format "* Reports\n\n\n"))
+                      (insert (format "* %s\n" (task-party-org-heading party))))))
+                (error "directory %s not exists" party-dir))
+            org-master-file)
+          (error "task-party-org-master-file: party `%s' is not from task-parties" party))))
+
+  (defun task-make-party-dir (party)
+    (let ((party party))
+      (if (member party (mapcar 'car task-parties))
+          (let ((party-dir (expand-file-name party (task-party-base-dir))))
+            (unless (file-directory-p party-dir)
+              (make-directory party-dir t))
+            (when (file-directory-p party-dir)
+              (task-party-org-master-file party))
 
 
-          ;; add org heading entry to (task-party-base-org-master-file)
+            ;; add org heading entry to (task-party-base-org-master-file)
 
-          party-dir)
-        (error "party is not from task-parties"))))
+            party-dir)
+          (error "task-make-party-dir: party `%s' is not from task-parties" party))))
 
 ;;;###autoload
-(defun task-party-dir (&optional party)
-  "Task Directory"
-  (let ((party (or party (task-current-party))))
-    (if (member party (mapcar 'car task-parties))
-        (let ((party-dir (expand-file-name party (task-party-base-dir))))
-          (unless (file-directory-p party-dir)
-            (task-make-party-dir party-dir))
-          (when (file-directory-p party-dir)
-           (task-party-org-master-file party))
-          party-dir)
-        (error "party is not from task-parties"))))
+  (defun task-party-dir (&optional party)
+    "Task Party Directory"
+    (let ((party (or party (task-current-party))))
+      (if (member party (mapcar 'car task-parties))
+          (let ((party-dir (expand-file-name party (task-party-base-dir))))
+            (unless (file-directory-p party-dir)
+              (task-make-party-dir party))
+            (when (file-directory-p party-dir)
+              (task-party-org-master-file party))
+            party-dir)
+          (error "task-party-dir: party `%s' is not from task-parties" party))))
 
 ;;;###autoload
-(defun task-party-dir-files-recursive ()
-  (directory-files-recursive (task-party-dir)
-                             "\\.org$" 2 "\\(rip\\|stage\\)"))
+  (defun task-party-dir-files-recursive ()
+    (directory-files-recursive (task-party-dir)
+                               "\\.org$" 2 "\\(rip\\|stage\\)"))
 
-(defun task-party-org-heading (&optional party)
-  (let ((party (or party (task-current-party))))
-    (if (member party (mapcar 'car task-parties))
-        (cadr
-         (assoc 'org-heading
-                (cdr (assoc party task-parties))))
-        (error "party is not from task-parties"))))
+  (defun task-party-org-heading (&optional party)
+    (let ((party (or party (task-current-party))))
+      (if (member party (mapcar 'car task-parties))
+          (cadr
+           (assoc 'org-heading
+                  (cdr (assoc party task-parties))))
+          (error "task-party-org-heading: party `%s' is not from task-parties" party))))
 
-(defmacro task-create-org-file (file &rest body)
-  `(progn
-     (let ((find-file-not-found-functions nil))
-       (with-current-buffer (or (find-buffer-visiting ,file)
-                                (find-file-noselect ,file))
-         (with-writable-buffer
-             ;; (if (goto-char (point-min))
-             ;;     (insert "# -*-  -*-\n"))
-             (dolist (pv task-file-properties)
-               (add-file-local-variable-prop-line (car pv) (cdr pv)))
-           (goto-char (point-max))
-           (insert (reduce '(lambda (a b) (concat a "\n" b)) task-org-headers))
-           (goto-char (point-max))
+  (defmacro task-create-org-file (file &rest body)
+    `(progn
+       (let ((find-file-not-found-functions nil))
+         (with-current-buffer (or (find-buffer-visiting ,file)
+                                  (find-file-noselect ,file))
+           (with-writable-buffer
+               ;; (if (goto-char (point-min))
+               ;;     (insert "# -*-  -*-\n"))
+               (dolist (pv task-file-properties)
+                 (add-file-local-variable-prop-line (car pv) (cdr pv)))
+             (goto-char (point-max))
+             (insert (reduce '(lambda (a b) (concat a "\n" b)) task-org-headers))
+             (goto-char (point-max))
 
-           ,@body
+             ,@body
 
-           (set-buffer-file-coding-system
-            (if (coding-system-p 'utf-8-emacs)
-                'utf-8-emacs
-                'emacs-mule))
-           (write-file ,file)
-           (org-html-export-to-html))))
-     (kill-buffer (find-buffer-visiting ,file))))
-(put 'task-create-org-file 'lisp-indent-function 1)
+             (set-buffer-file-coding-system
+              (if (coding-system-p 'utf-8-emacs)
+                  'utf-8-emacs
+                  'emacs-mule))
+             (write-file ,file)
+             (org-html-export-to-html))))
+       (kill-buffer (find-buffer-visiting ,file))))
+  (put 'task-create-org-file 'lisp-indent-function 1)
 
-(defun task-party-org-master-file (&optional party)
-  (let* ((party                 (or party (task-current-party)))
-         (org-master-file       (cadr
-                                 (assoc 'org-master-file
-                                       (cdr (assoc party task-parties)))))
-         (org-master-file-path (expand-file-name
-                                org-master-file
-                                (task-party-dir party))))
-    (if (member party (mapcar 'car task-parties))
-        (progn
-          (unless (file-exists-p org-master-file-path)
-            (let ((nfile org-master-file-path)) ;find alternate of find-file-noselect to get non-existing file.
-              (task-create-org-file nfile
-                                    (insert "\n\n")
-                                    (insert (format "* %s - %s: %s\n\n\n" (capitalize "party") (capitalize party) "tasks."))
-                                    (insert (format "* Reports\n\n\n"))
-                                    (insert (format "* %s\n" (task-party-org-heading party))))))
+  (defun task-party-bugz-url (&optional party)
+    (let ((party (or party (task-current-party))))
+      (if (member party (mapcar 'car task-parties))
+          (cadr
+           (assoc 'bugz-url
+                  (cdr (assoc party task-parties))))
+          (error "task-party-bugz-url: party `%s' is not from task-parties" party))))
 
-          org-master-file)
-        (error "party is not from task-parties"))))
+  (defun task-party-url-base (&optional party)
+    "task-party-url-base"
+    (let ((party (or party (task-current-party))))
+      (if (member party (mapcar 'car task-parties))
+          (concat *task-url-path* party)
+          (error "task-party-url-base: party `%s' is not from task-parties" party))))
 
-(defun task-party-bugz-url (&optional party)
-  (let ((party (or party (task-current-party))))
-    (if (member party (mapcar 'car task-parties))
-        (cadr
-         (assoc 'bugz-url
-                (cdr (assoc party task-parties))))
-        (error "party is not from task-parties"))))
+  (defun task-party-projbuffs-dir (&optional party)
+    (let ((party (or party (task-current-party))))
+      (if (member party (mapcar 'car task-parties))
+          (expand-file-name party *task-projbuffs-base-dir*)
+          (error "task-projbuffs-dir: party `%s' is not from task-parties" party))))
 
-(defun task-party-url-base (&optional party)
-  "task-party-url-base"
-  (let ((party (or party (task-current-party))))
-    (if (member party (mapcar 'car task-parties))
-        (concat *task-url-path* party)
-        (error "party is not from task-parties"))))
+;;;}}}
+  )
 
-(defun task-projbuffs-dir (&optional party)
-  (let ((party (or party (task-current-party))))
-    (if (member party (mapcar 'car task-parties))
-        (expand-file-name party *task-projbuffs-base-dir*)
-        (error "party is not from task-parties"))))
 
+
+
+
+
+
+
+
+
+
+;;;{{{
+(progn ;; task-type
+  (defun task-org-master-file (task-type)
+    (if (member task-type (mapcar 'car *task-type-config*))
+        (cdr (assoc 'org-master-file (cdr (assoc task-type *task-type-config*))))
+        (error "task-type is not from *task-type-config*")))
+
+  (defun task-first-org-master-file (task-type)
+    (if (member task-type (mapcar 'car *task-type-config*))
+        (cadr (assoc 'org-master-file (cdr (assoc task-type *task-type-config*))))
+        (error "task-type is not from *task-type-config*")))
+
+  (defun task-org-todo-file (task-type)
+    (if (member task-type (mapcar 'car *task-type-config*))
+        (cadr (assoc 'org-todo-file (cdr (assoc task-type *task-type-config*))))
+        (error "task-type is not from *task-type-config*")))
+
+  (defun task-org-files (task-type)
+    (if (member task-type (mapcar 'car *task-type-config*))
+        (cdr (assoc 'org-files (cdr (assoc task-type *task-type-config*))))
+        (error "task-type is not from *task-type-config*")))
+  )
 ;;
-(defun task-org-master-file (task)
-  (if (member task (mapcar 'car task-config))
-      (cdr (assoc 'org-master-file (cdr (assoc task task-config))))
-      (error "task is not from task-config")))
-
-(defun task-first-org-master-file (task)
-  (if (member task (mapcar 'car task-config))
-      (cadr (assoc 'org-master-file (cdr (assoc task task-config))))
-      (error "task is not from task-config")))
-
-(defun task-org-todo-file (task)
-  (if (member task (mapcar 'car task-config))
-      (cadr (assoc 'org-todo-file (cdr (assoc task task-config))))
-      (error "task is not from task-config")))
-
-(defun task-org-files (task)
-  (if (member task (mapcar 'car task-config))
-      (cdr (assoc 'org-files (cdr (assoc task task-config))))
-      (error "task is not from task-config")))
-
-;;
-(defun task-get-task-name (prompt party task &optional new)
+(defun task-get-task-name (prompt party-type task-type &optional new)
   (let* ((party (or party (task-current-party)))
          (task-name (completing-read
                      prompt
-                     (unless new (directory-files (concat (task-party-dir party) "/" (pluralize-string task) "/")))
+                     (unless new (directory-files (concat (task-party-dir party) "/" (pluralize-string task-type) "/")))
                      nil
                      (not new))))
     (if new
-        (let* ((predicate (cadr (assoc 'name (cdr (assoc task task-config)))))
+        (let* ((predicate (cadr (assoc 'name (cdr (assoc task-type *task-type-config*)))))
                (task-name-match
                 (cond
                   ((stringp predicate)
@@ -382,15 +398,15 @@
                   ((null predicate)
                    (> (length task-name) 0)))))
           (if task-name-match
-              (if (file-exists-p (task-get-task-dir party task task-name))
-                  (error "task %s name %s already exists." task task-name)
+              (if (file-exists-p (task-get-task-dir party task-type task-name))
+                  (error "task-type %s name %s already exists." task-type task-name)
                   task-name)
-              (error "task %s name %s not matching to %s" task task-name predicate)))
+              (error "task-type %s name %s not matching to %s" task-type task-name predicate)))
         task-name)))
 
-(defun task-get-task-desc (party task name &optional new)
+(defun task-get-task-desc (party task-type name &optional new)
   (if new
-      (let* ((bug (if (string-equal task "bug")
+      (let* ((bug (if (string-equal task-type "bug")
                       (car
                        (condition-case e
                            (bugzilla-get-bugs
@@ -402,21 +418,21 @@
                        (cdr (assoc "summary" bug))
                        (read-from-minibuffer (format "Desc of %s: " name)))))
         desc)
-      (let* ((task-dir       (task-get-task-dir (task-current-party) task name))
+      (let* ((task-dir       (task-get-task-dir (task-current-party) task-type name))
              (task-desc-file (expand-file-name task-dir *task-desc-file-name*)))
         (if (file-exists-p task-desc-file)
             (sharad/read-file task-desc-file)
-            (task-get-task-desc party task name t)))))
+            (task-get-task-desc party task-type name t)))))
 
-(defun task-get-task-dir (party task name)
-  (concat (task-party-dir party) "/" (pluralize-string task) "/" name))
+(defun task-get-task-dir (party task-type name)
+  (concat (task-party-dir party) "/" (pluralize-string task-type) "/" name))
 
 (defun task-get-task-data (&optional new)
-  (let* ((task                (task-select-task-type "what: "))
-         (name                (task-get-task-name "name: " (task-current-party) task new))
-         (desc                (task-get-task-desc task (task-current-party) name))
-         (task-dir            (task-get-task-dir (task-current-party) task name)))
-    (list task name desc task-dir)))
+  (let* ((task-type                (task-select-task-type "what: "))
+         (name                (task-get-task-name "name: " (task-current-party) task-type new))
+         (desc                (task-get-task-desc task-type (task-current-party) name))
+         (task-dir            (task-get-task-dir (task-current-party) task-type name)))
+    (list task-type name desc task-dir)))
 
 (defun task-get-task-data-all (&optional new)
   (let* ((task-data (task-get-task-data new))
@@ -432,44 +448,44 @@
     (append task-data (list project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder))))
 
 ;;
-(defun task-get-planner-description (task name desc)
+(defun task-get-planner-description (task-type name desc)
   (cl-flet ((my-formattor (id summary url)
                           ;; BUG: w f b
                           (format "[[%s][%c%s]]: %s %s"
-                                  (concat (task-party-url-base) "/" (pluralize-string task) "/" (number-to-string id))
-                                  (aref task 0)
+                                  (concat (task-party-url-base) "/" (pluralize-string task-type) "/" (number-to-string id))
+                                  (aref task-type 0)
                                   (number-to-string id) summary (concat "[[" url "][url]]"))))
     (let* ((planner-bugz-formattor #'my-formattor)
            (hname
             (if (task-party-url-base)
                 ;; BUG: w f b
-                (format "[[%s][%c%s]]:" (concat (task-party-url-base) "/" (pluralize-string task) "/" name) (aref task 0) name)
-                (format "%c%s:" (aref task 0) name)))
+                (format "[[%s][%c%s]]:" (concat (task-party-url-base) "/" (pluralize-string task-type) "/" name) (aref task-type 0) name)
+                (format "%c%s:" (aref task-type 0) name)))
            (task-description
             (cond
-              ((string-equal task "bug")     (planner-bugzilla-bug-to-task-name name (task-party-bugz-url)))
-              ((string-equal task "feature") (format "%s %s" hname desc))
-              ((string-equal task "work")    (format "%s %s" hname desc))
-              (t                             (error "task is not bound.")))))
+              ((string-equal task-type "bug")     (planner-bugzilla-bug-to-task-name name (task-party-bugz-url)))
+              ((string-equal task-type "feature") (format "%s %s" hname desc))
+              ((string-equal task-type "work")    (format "%s %s" hname desc))
+              (t                             (error "task-type is not bound.")))))
       task-description)))
 
-(defun task-get-links-text (task formatterfn)
+(defun task-get-links-text (task-type formatterfn)
   (let ((description ""))
     (dolist
-        (f (task-org-files task) description)
+        (f (task-org-files task-type) description)
       (setq description
             (concat
              description
              ;; "\n - "
              (funcall formatterfn f))))))
 
-(defun task-get-org-description (task name desc)
+(defun task-get-org-description (task-type name desc)
   (cl-flet ((my-formattor (id summary url)
                           ;; BUG: w f b
                           (format
                            "[[%s][%s - %s]]: %s %s"
-                           (concat (task-party-url-base) "/" (pluralize-string task) "/" (number-to-string id))
-                           (pluralize-string task)
+                           (concat (task-party-url-base) "/" (pluralize-string task-type) "/" (number-to-string id))
+                           (pluralize-string task-type)
                            (number-to-string id)
                            summary
                            (concat "[[" url "][url]]"))))
@@ -477,15 +493,15 @@
            (hname
             (if (task-party-url-base)
                 ;; BUG: w f b
-                ;; (format "[[%s][%s - %s]]:" (concat (task-party-url-base) "/" (pluralize-string task) "/" name) (capitalize task) name)
-                (format "%s - %s:" (capitalize task) name)
-                (format "%s - %s:" (capitalize task) name)))
+                ;; (format "[[%s][%s - %s]]:" (concat (task-party-url-base) "/" (pluralize-string task-type) "/" name) (capitalize task-type) name)
+                (format "%s - %s:" (capitalize task-type) name)
+                (format "%s - %s:" (capitalize task-type) name)))
            (task-description
             (cond
-              ((string-equal task "bug")     (planner-bugzilla-bug-to-task-name name (task-party-bugz-url)))
-              ((string-equal task "feature") (format "%s %s" hname desc))
-              ((string-equal task "work")    (format "%s %s" hname desc))
-              (t                             (error "task is not bound."))))
+              ((string-equal task-type "bug")     (planner-bugzilla-bug-to-task-name name (task-party-bugz-url)))
+              ((string-equal task-type "feature") (format "%s %s" hname desc))
+              ((string-equal task-type "work")    (format "%s %s" hname desc))
+              (t                             (error "task-type is not bound."))))
            (description ""))
 
       (setq
@@ -494,26 +510,26 @@
         description
         task-description
         (format "\n  [[file:%s/%s/%s][dir]]"
-                (pluralize-string task)
+                (pluralize-string task-type)
                 name
-                (task-first-org-master-file task))
+                (task-first-org-master-file task-type))
         (task-get-links-text task
                              '(lambda (file)
                                (format "\n - [[file:%s/%s/%s][%s]]"
-                                (pluralize-string task)
+                                (pluralize-string task-type)
                                 name
                                 file
                                 (capitalize (file-name-sans-extension file)))))
-        (concat description (format "\nend %s\n" task)))))))
+        (concat description (format "\nend %s\n" task-type)))))))
 
 ;;;#autoload
-(defun task-create-plan-task (task name desc task-dir)
+(defun task-create-plan-task (task-type name desc task-dir)
   (interactive (task-get-task-data t))
   (let* ((plan-page
           (planner-read-non-date-page (planner-file-alist))))
 
     (planner-create-task
-     (task-get-planner-description task name desc)
+     (task-get-planner-description task-type name desc)
      (let ((planner-expand-name-favor-future-p
             (or planner-expand-name-favor-future-p
                 planner-task-dates-favor-future-p)))
@@ -524,12 +540,12 @@
     t))
 
 ;;;#autoload
-(defun task-delete-plan-task (task name desc task-dir)
+(defun task-delete-plan-task (task-type name desc task-dir)
   (interactive (task-get-task-data))
   (message "Not doing anything."))
 
 ;;;#autoload
-(defun task-create-org-task (task name desc task-dir project-main-file project-root-folder)
+(defun task-create-org-task (task-type name desc task-dir project-main-file project-root-folder)
   (interactive
    (let* ((task-data (task-get-task-data t))
           (project-root-folder (iproject-choose-root-folder project-main-file)))
@@ -538,22 +554,22 @@
       (list project-main-file project-root-folder))))
   (let ((file    (expand-file-name (task-party-org-master-file) (task-party-dir)))
         (heading (task-party-org-heading))
-        (child-heading (task-get-org-description task name desc)))
+        (child-heading (task-get-org-description task-type name desc)))
     (org-with-file-headline file heading
                             (org-insert-heading-to-file-headline
                              child-heading
                              file
-                             (capitalize (pluralize-string task))))
+                             (capitalize (pluralize-string task-type))))
     (org-with-file-headline file child-heading
                             (let ((buffer-read-only nil))
                               (org-entry-put nil "SubtreeFile"
                                              (format "%s/%s/%s"
-                                                     (pluralize-string task)
+                                                     (pluralize-string task-type)
                                                      name
-                                                     (task-first-org-master-file task))
+                                                     (task-first-org-master-file task-type))
 
                                              ;; (file-relative-name
-                                             ;;  (concat task-dir "/" (task-first-org-master-file task))
+                                             ;;  (concat task-dir "/" (task-first-org-master-file task-type))
                                              ;;  (file-name-directory file))
                                              )
                               ;; (org-entry-put nil "Root" project-root-folder)
@@ -564,23 +580,23 @@
     t))
 
 ;;;#autoload
-(defun task-delete-org-task (task name desc task-dir)
+(defun task-delete-org-task (task-type name desc task-dir)
   (interactive (task-get-task-data))
   (let ()
     (org-remove-heading-from-file-headline
-     (task-get-org-description task name desc)
+     (task-get-org-description task-type name desc)
      (expand-file-name (task-party-org-master-file) (task-party-dir))
      (task-party-org-heading))
     t))
 
 ;; Project-Buffer
 ;;;#autoload
-(defun task-create-pbm-task (task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
+(defun task-create-pbm-task (task-type name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
   (interactive (task-get-task-data-all t))
-  (let* ((project-name (concat task ":" name " - " desc)))
+  (let* ((project-name (concat task-type ":" name " - " desc)))
     (with-project-buffer (find-file-noselect
                           (expand-file-name
-                           (concat (pluralize-string task) ".pb") (task-projbuffs-dir)))
+                           (concat (pluralize-string task-type) ".pb") (task-projbuffs-dir)))
       (iproject-add-project
        project-type                 ;project-type
        project-main-file            ;project-main-file
@@ -597,26 +613,26 @@
 
 ;; (defun task-delete-pbm-task (task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
 ;;;#autoload
-(defun task-delete-pbm-task (task name desc task-dir)
+(defun task-delete-pbm-task (task-type name desc task-dir)
   (interactive (task-get-task-data-all))
   (message "Not doing anything."))
 
 ;;;#autoload
-(defun task-create-task-dir (task name desc task-dir project-root-folder)
+(defun task-create-task-dir (task-type name desc task-dir project-root-folder)
   (interactive (task-get-task-data t))
   ;; (dolist (dname '("logs" "programs" "patches" "deliverables"))
   (let* ()
     (make-directory task-dir t)
     (sharad/write-file (expand-file-name *task-desc-file-name* task-dir) desc)
-    (make-directory (concat task-scratch-dir (pluralize-string task) "/" name) t)
-    (make-symbolic-link (concat task-scratch-dir (pluralize-string task) "/" name) (concat task-dir "/scratch"))
+    (make-directory (concat task-scratch-dir (pluralize-string task-type) "/" name) t)
+    (make-symbolic-link (concat task-scratch-dir (pluralize-string task-type) "/" name) (concat task-dir "/scratch"))
 
-    (let ((org-heading (format "%s - %s: %s" (capitalize task) name desc)))
+    (let ((org-heading (format "%s - %s: %s" (capitalize task-type) name desc)))
       ;; files
       (dolist (file
                 (cons
-                 (task-org-todo-file task)
-                 (task-org-files task)))
+                 (task-org-todo-file task-type)
+                 (task-org-files task-type)))
         (when file
           (let ((nfile (expand-file-name file task-dir))
                 (heading (format
@@ -629,7 +645,7 @@
                                   (org-with-file-headline nil heading
                                                           (org-entry-put nil "Root" project-root-folder))))))
 
-      (let ((file (task-first-org-master-file task)))
+      (let ((file (task-first-org-master-file task-type)))
         (when file
 
           (let ((nfile (expand-file-name file task-dir))
@@ -639,7 +655,7 @@
             (task-create-org-file nfile
                                   (insert (concat
                                            (format "\n\n* %s\n" heading)
-                                           (task-get-links-text task
+                                           (task-get-links-text task-type
                                                                 ;; '(lambda (f)
                                                                 ;;   (format "[[file:%s][%s]]" f (capitalize (file-name-sans-extension f))))
                                                                 '(lambda (f)
@@ -649,58 +665,58 @@
                                                                    "here"))))))
             (dolist (sfile
                       (cons
-                       (task-org-todo-file task)
-                       (task-org-files task)))
+                       (task-org-todo-file task-type)
+                       (task-org-files task-type)))
               (org-with-file-headline nfile (capitalize (file-name-sans-extension sfile))
                                       (with-writable-buffer
                                           (message "adding property %s in %s" sfile nfile)
                                         (org-entry-put nil "SubtreeFile" sfile)))))))
 
       ;; links
-      (dolist (lp (cdr (assoc 'links (cdr (assoc task task-config)))))
+      (dolist (lp (cdr (assoc 'links (cdr (assoc task-type *task-type-config*)))))
         (make-symbolic-link
          (car lp) ;; (expand-file-name (car lp) (concat task-dir "/"))
          (expand-file-name (cdr lp) (concat task-dir "/"))))
       ;; dirs
       (dolist
           (dname
-            (cdr (assoc 'dirs (cdr (assoc task task-config))))
+            (cdr (assoc 'dirs (cdr (assoc task-type *task-type-config*))))
            t)
         (make-directory (concat task-dir "/" dname) t)))))
 
 ;;;#autoload
-(defun task-delete-task-dir (task name desc task-dir)
+(defun task-delete-task-dir (task-type name desc task-dir)
   (interactive (task-get-task-data))
   ;; (dolist (dname '("logs" "programs" "patches" "deliverables"))
   (delete-directory task-dir t))
 
 ;;;#autoload
-(defun task-create-task (task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
+(defun task-create-task (task-type name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
   (interactive (task-get-task-data-all t))
   (let* ()
     (if (file-directory-p task-dir)
         (find-task task-dir)
         (progn
-          (task-create-plan-task task name desc task-dir)
-          (task-create-org-task  task name desc task-dir project-main-file project-root-folder)
-          (task-create-task-dir  task name desc task-dir project-root-folder)
-          (task-create-pbm-task  task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
+          (task-create-plan-task task-type name desc task-dir)
+          (task-create-org-task  task-type name desc task-dir project-main-file project-root-folder)
+          (task-create-task-dir  task-type name desc task-dir project-root-folder)
+          (task-create-pbm-task  task-type name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
           (org-clocking-entry-update-task-infos t)))
 
     (when (y-or-n-p (format "Should set %s current task" task-dir))
       (setq *taskdir-current-task* task-dir)
-      (find-file (expand-file-name (task-first-org-master-file task) task-dir)))))
+      (find-file (expand-file-name (task-first-org-master-file task-type) task-dir)))))
 
 ;;;#autoload
-(defun task-delete-task (task name desc task-dir)
+(defun task-delete-task (task-type name desc task-dir)
   (interactive (task-get-task-data))
   (let* ()
     (progn
-      (task-delete-plan-task task name desc task-dir)
-      (task-delete-org-task  task name desc task-dir)
-      (task-delete-task-dir  task name desc task-dir)
-      ;; (task-delete-pbm-task  task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
-      (task-delete-pbm-task  task name desc task-dir))))
+      (task-delete-plan-task task-type name desc task-dir)
+      (task-delete-org-task  task-type name desc task-dir)
+      (task-delete-task-dir  task-type name desc task-dir)
+      ;; (task-delete-pbm-task  task-type name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
+      (task-delete-pbm-task  task-type name desc task-dir))))
 
 ;;;#autoload
 (defun find-task (task)
@@ -846,6 +862,7 @@
   ;;             (insert (format "[%c] %-12s  %s\n" i cat task))
   ;;             (cons i marker)))))
   )
+;;;}}}
 
 (provide 'task-manager)
 ;;; task-manager.el ends here
