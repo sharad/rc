@@ -34,11 +34,11 @@
            (member-if
             #'directory
             '(
-              #p"/atlantic/opt/share/common-lisp/"
-              #p"/all/res/share/common-lisp/"
-              #p"/all/res/share/common-lisp/"
-              #p"/atlantic/opt/share/common-lisp/"
               #p"/usr/local/share/common-lisp/source/"
+              #p"/atlantic/opt/share/common-lisp/"
+              #p"/all/res/share/common-lisp/"
+              #p"/all/res/share/common-lisp/"
+              #p"/atlantic/opt/share/common-lisp/"
               ))))
          (quicklisp-init (when qlisp-parent-dir
                            (merge-pathnames "quicklisp/setup.lisp" qlisp-parent-dir))))

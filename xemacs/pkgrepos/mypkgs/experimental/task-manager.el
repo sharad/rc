@@ -111,7 +111,7 @@
  '(*taskdir-current-task* 100))
 
 (defun task-party-base-org-master-file (&optional base-dir)
-  (let* ((party                 (or party (task-party-base-dir)))
+  (let* ((party                 (or base-dir (task-party-base-dir)))
          (org-master-file       *task-party-base-org-master-file*)
          (org-master-file-path (expand-file-name
                                 org-master-file
