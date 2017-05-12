@@ -215,12 +215,12 @@
           (task-current-party party)
           (error "task-current-party-select-set: party `%s' is not from task-parties" party))))
 
-;;;#autoload
+;;;###autoload
   (defun task-select-party-dir ()
     (interactive)
     (ido-read-directory-name "dir: " *task-party-base-dir* nil t))
 
-;;;#autoload
+;;;###autoload
   (defun find-task-dir (&optional force)
     (interactive "P")
     (if (or
@@ -346,16 +346,6 @@
 
 ;;;}}}
   )
-
-
-
-
-
-
-
-
-
-
 
 ;;;{{{
 (progn ;; task-type
