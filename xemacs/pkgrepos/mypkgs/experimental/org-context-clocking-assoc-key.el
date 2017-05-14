@@ -89,7 +89,7 @@ using algorithm in this function"
        (plist-put
         org-entry-associated-file-key-fns key fn)))
 
-    (eval-when-compile                  ;TODO auto generate name from KEY
+    (eval-when-compile                  ;; TODO: auto generate name from KEY
       (defmacro defassoc-file-key (name key args &rest body)
         "Registration macro to add key property and functions list to ORG-ENTRY-ASSOCIATED-FILE-KEY-FNS"
         `(progn

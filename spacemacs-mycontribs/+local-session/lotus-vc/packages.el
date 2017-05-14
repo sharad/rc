@@ -38,6 +38,7 @@
   '(
     magit
     git-commit
+    commit-msg-mode
     )
   "The list of Lisp packages required by the lotus-vc layer.
 
@@ -86,7 +87,19 @@ Each entry is either:
         :config
         (add-hook 'git-commit-mode-hook 'turn-on-flyspell))
       (add-hook 'git-commit-mode-hook (lambda () (toggle-save-place 0)))
-      (add-to-list 'auto-mode-alist '("COMMIT_EDITMSG$" . commit-msg-mode))
       (add-to-list 'auto-mode-alist '("hg-editor-.*$" . commit-msg-mode)))))
+
+(defun lotus-vc/post-init-commit-msg-mode ()
+  (use-package commit-msg-mde
+      :defer t
+      :commands (commit-msg-mode)
+      :config
+      (progn
+        (use-package flyspell
+            :defer t
+            :config
+            (add-hook 'git-commit-mode-hook 'turn-on-flyspell))
+        (add-hook 'git-commit-mode-hook (lambda () (toggle-save-place 0)))
+        (add-to-list 'auto-mode-alist '("COMMIT_EDITMSG$" . commit-msg-mode)))))
 
 ;;; packages.el ends here
