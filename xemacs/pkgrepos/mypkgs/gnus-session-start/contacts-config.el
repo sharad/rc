@@ -30,14 +30,18 @@
     (bbdb/gnus-pop-up-bbdb-buffer)
     ;; (with-selected-window (get-buffer-window gnus-article-buffer)
     ;;   (gnus-summary-goto-subject (cdr gnus-article-current)))
-    (let ((w (get-buffer-window "*BBDB*")))
-      (when w
+    (let ((win-bbdb (get-buffer-window "*BBDB*")))
+      (when win-bbdb
         ;; (run-at-time "4 sec" nil #'delete-window w))))
         (run-at-time "4 sec" nil #'(lambda (w)
                                      (if (and
                                           (windowp w)
                                           (window-valid-p w))
-                                         (old-delete-window w))) w))))
+                                         ;; (old-delete-window w)
+                                         (progn
+                                           (delete-window w)
+                                           (message "deleted %s window" w))))
+                     win-bbdb))))
   (define-key gnus-summary-mode-map (kbd "s-c s-v")  'bbdb/gnus-pop-up-bbdb-buffer)
 
   (setq bbdb-use-pop-up t
