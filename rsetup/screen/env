@@ -73,7 +73,7 @@ then
 
         if  [ "$UID" != "0" ]
             then
-            if whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+            if which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
             then
 
                 if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ]
@@ -81,8 +81,15 @@ then
                     timeout 7 $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
                 fi
 
-                if [ -x /usr/bin/keychain ]
+                if [ -x /usr/bin/keychain -o -x ~/keychain ]
                 then
+                    if [ -x /usr/bin/keychain ]
+                    then
+                        _keychain_script=/usr/bin/keychain
+                    elif  [ -x ~/keychain ]
+                    then
+                        _keychain_script=~/keychain
+                    fi
 
                     #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
 
@@ -90,7 +97,7 @@ then
                         then
                         if mkdir -p ${KEYCHAINDIR}
                         then
-                            /usr/bin/keychain                                         \
+                            $_keychain_script                                         \
                                 -q                                                    \
                                 --noask                                               \
                                 --ignore-missing                                      \
@@ -104,6 +111,8 @@ then
                                 $SSH_KEYS_DIR/internet                                \
                                 070E69E5                                              \
                                 --dir ${KEYCHAINDIR}
+
+                            unset _keychain_script
                         fi
 
                         if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
@@ -134,7 +143,7 @@ then
                         fi
                     fi
                 fi                  # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
-            fi                      # whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+            fi                      # which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
         fi
     fi                              # ! ssh-add -l 2>&1
 # fi
