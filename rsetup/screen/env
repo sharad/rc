@@ -81,14 +81,14 @@ then
                     timeout 7 $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
                 fi
 
-                if [ -x /usr/bin/keychain -o -x ~/keychain ]
+                if [ -x /usr/bin/keychain -o -x ~/bin/keychain ]
                 then
                     if [ -x /usr/bin/keychain ]
                     then
                         _keychain_script=/usr/bin/keychain
                     elif  [ -x ~/keychain ]
                     then
-                        _keychain_script=~/keychain
+                        _keychain_script=~/bin/keychain
                     fi
 
                     #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
