@@ -7,6 +7,8 @@
 
 (defun spacemacs-dist-layers-select ()
   '(
+    go
+    python
     d
     javascript
     markdown
@@ -30,6 +32,7 @@
     syntax-checking
     version-control
     company-mode
+    company
     erlang
     elixir
     ;; osx
