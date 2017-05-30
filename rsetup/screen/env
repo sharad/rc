@@ -131,7 +131,7 @@ then
 
                 if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
                     ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
-                    ! ssh-add -l 2>&1 > /dev/null                                && # key is not added
+                    ! ssh-add -l 2>&1 > /dev/null                                   # key is not added
                 then
                     if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
                     then
