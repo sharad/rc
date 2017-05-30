@@ -86,7 +86,7 @@ then
                     if [ -x /usr/bin/keychain ]
                     then
                         _keychain_script=/usr/bin/keychain
-                    elif  [ -x ~/keychain ]
+                    elif  [ -x ~/bin/keychain ]
                     then
                         _keychain_script=~/bin/keychain
                     fi
@@ -94,7 +94,7 @@ then
                     #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
 
                     if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
-                        then
+                    then
                         if mkdir -p ${KEYCHAINDIR}
                         then
                             $_keychain_script                                         \
@@ -113,6 +113,8 @@ then
                                 --dir ${KEYCHAINDIR}
 
                             unset _keychain_script
+                        else
+                            echo can not make ${KEYCHAINDIR} directory
                         fi
 
                         if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
@@ -120,8 +122,12 @@ then
                             . ${KEYCHAINDIR}/${HOST}-sh
                             # trap "echo KILLING $SSH_AGENT_PID; echo kill $SSH_AGENT_PID ; [ -f ${KEYCHAINDIR}/${HOST}-sh ] && echo rm -f ${KEYCHAINDIR}/* " EXIT
                         fi              # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
+                    else
+                        echo no private key found
                     fi          # if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
 
+                else
+                    echo can not find keychain script
                 fi                  # [ -x /usr/bin/keychain ]
 
                 if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
