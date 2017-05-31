@@ -324,5 +324,6 @@ then
 
     [ -r $HOME/.rsetup/login/env.d/${HOST} ] && . $HOME/.rsetup/login/env.d/${HOST}
 
-
+else
+    echo LOGIN_ENV is set
 fi                              # [ "${LOGIN_ENV}x" = "x" ]

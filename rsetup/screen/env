@@ -73,7 +73,7 @@ then
 
         if  [ "$UID" != "0" ]
             then
-            if whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+            if which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
             then
 
                 if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ]
@@ -81,16 +81,23 @@ then
                     timeout 7 $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
                 fi
 
-                if [ -x /usr/bin/keychain ]
+                if [ -x /usr/bin/keychain -o -x ~/bin/keychain ]
                 then
+                    if [ -x /usr/bin/keychain ]
+                    then
+                        _keychain_script=/usr/bin/keychain
+                    elif  [ -x ~/bin/keychain ]
+                    then
+                        _keychain_script=~/bin/keychain
+                    fi
 
                     #/usr/bin/keychain -q -Q --lockwait 1 id_rsa id_dsa
 
                     if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
-                        then
+                    then
                         if mkdir -p ${KEYCHAINDIR}
                         then
-                            /usr/bin/keychain                                         \
+                            $_keychain_script                                         \
                                 -q                                                    \
                                 --noask                                               \
                                 --ignore-missing                                      \
@@ -104,6 +111,10 @@ then
                                 $SSH_KEYS_DIR/internet                                \
                                 070E69E5                                              \
                                 --dir ${KEYCHAINDIR}
+
+                            unset _keychain_script
+                        else
+                            echo can not make ${KEYCHAINDIR} directory
                         fi
 
                         if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
@@ -111,8 +122,12 @@ then
                             . ${KEYCHAINDIR}/${HOST}-sh
                             # trap "echo KILLING $SSH_AGENT_PID; echo kill $SSH_AGENT_PID ; [ -f ${KEYCHAINDIR}/${HOST}-sh ] && echo rm -f ${KEYCHAINDIR}/* " EXIT
                         fi              # if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
+                    else
+                        echo no private key found
                     fi          # if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
 
+                else
+                    echo can not find keychain script
                 fi                  # [ -x /usr/bin/keychain ]
 
                 if [ -f ${KEYCHAINDIR}/${HOST}-sh ]
@@ -122,7 +137,7 @@ then
 
                 if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is set
                     ps ${SSH_AGENT_PID} 2>&1 > /dev/null                         && # if pid is set and working alive ssh-agent process.
-                    ! ssh-add -l 2>&1 > /dev/null                                && # key is not added
+                    ! ssh-add -l 2>&1 > /dev/null                                   # key is not added
                 then
                     if [ $(command ls -1 $SSH_KEYS_DIR/ | egrep -v '.pub$' | wc -l ) -ne 0 ]
                     then
@@ -134,7 +149,7 @@ then
                         fi
                     fi
                 fi                  # if  [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ]
-            fi                      # whence -p $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
+            fi                      # which $HOME/bin/ecryptfs-mount-private 2>&1 > /dev/null
         fi
     fi                              # ! ssh-add -l 2>&1
 # fi

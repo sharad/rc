@@ -1,7 +1,7 @@
 
 
-defshell /bin/zsh
-setenv SHELL /bin/zsh
+# defshell /bin/zsh
+# setenv SHELL /bin/zsh
 escape 
 vbell off # always
 backtick 0 30 30 sh -c 'screen -ls | grep --color=no -o "$PPID[^[:space:]]*"'
