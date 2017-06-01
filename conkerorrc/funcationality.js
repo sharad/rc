@@ -713,20 +713,20 @@ for (let i = 0; i < 10; ++i) {
 
 // {{ Open Middle-Clicked Links in New Buffers
 
-// require("clicks-in-new-buffer.js");
+require("clicks-in-new-buffer.js");
 
 // You can control whether buffers are created in the foreground or
 // background (foreground is default).
 
 // Set to either OPEN_NEW_BUFFER or OPEN_NEW_BUFFER_BACKGROUND
-// clicks_in_new_buffer_target = OPEN_NEW_BUFFER_BACKGROUND; // Now
+clicks_in_new_buffer_target = OPEN_NEW_BUFFER_BACKGROUND; // Now
 // buffers open in background.
 
 // You can control the mouse button which triggers buffer creation
 // (middle is default).
 
 // Set to 0 = left mouse, 1 = middle mouse, 2 = right mouse
-// clicks_in_new_buffer_button = 2; //  Now right mouse follows links in new buffers.
+clicks_in_new_buffer_button = 2; //  Now right mouse follows links in new buffers.
 // }}
 
 // {{ Select Current Page with Browser Object Commands
