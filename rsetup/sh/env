@@ -78,6 +78,12 @@ function emacs_daemon_start()
             export EMACS_DIST_DIR
         fi
 
+        __cwd=$(pwd)
+
+        if [ -d ~/../paradise ]
+        then
+            cd ~/../paradise
+        fi
 
         for server in $EMACS_SERVER_NAME
         do
@@ -115,6 +121,9 @@ function emacs_daemon_start()
             fi
         done
 	      echo emacs1 >& /dev/null
+
+        cd $__cwd
+        unset __cwd
     fi # if whence -p emacs >& /dev/null || ! pgrep emacs >& /dev/null
 }
 
