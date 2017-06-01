@@ -100,3 +100,6 @@
 [submodule "xemacs/pkgrepos/world/gits/jade-mode"]
 	path = xemacs/pkgrepos/world/gits/jade-mode
 	url = https://github.com/brianc/jade-mode.git
+[submodule "xemacs/pkgrepos/world/gits/gnus-outlook-style"]
+	path = xemacs/pkgrepos/world/gits/gnus-outlook-style
+	url = git@github.com:sharad/gnus-outlook-style.git
