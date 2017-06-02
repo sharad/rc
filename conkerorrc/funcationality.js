@@ -123,8 +123,12 @@ define_key(content_buffer_normal_keymap, "z", "readability_arc90");
 // {{ 20. Integrate delicious with conkeror
 
 
-var delicious_api_server = 'api.del.icio.us';
+// var delicious_api_server = 'api.del.icio.us';
 // var delicious_api_server = 'del.icio.us';
+var delicious_api_server = 'api.pinboard.in';
+var delicious_api_version = 'v1';
+
+
 
 // Since moving from firefox to conkeror (great!), i haven't really
 // used bookmarks because i don't know how to import and i asked
@@ -147,7 +151,7 @@ var delicious_api_server = 'api.del.icio.us';
 
 // function deliciousSuggestions(uri, completions) {
 //     var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
-//     var xsendurl = 'https://' + delicious_api_server + '/v1/posts/suggest?&url='+encodeURIComponent(uri);
+//     var xsendurl = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/suggest?&url='+encodeURIComponent(uri);
 //     var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
 //     var c = domParser.parseFromString(xcontent.responseText, "text/xml");
 //     // I.window.alert(xcontent.responseText);
@@ -187,7 +191,7 @@ interactive("delicious-post-sel",
             {
               check_buffer(I.buffer, content_buffer);
               var domParser = Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance( Components.interfaces.nsIDOMParser );
-              var xsendurl  = 'https://' + delicious_api_server + '/v1/posts/suggest?&url=' + encodeURIComponent(I.buffer.top_frame.getSelection());
+              var xsendurl  = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/suggest?&url=' + encodeURIComponent(I.buffer.top_frame.getSelection());
               var xcontent  = (yield send_http_request(load_spec({uri: xsendurl})));
               var c         = domParser.parseFromString(xcontent.responseText, "text/xml");
 
@@ -204,7 +208,7 @@ interactive("delicious-post-sel",
 
               var sendurl =
                 // var sendurl = 'https://' + delicious_api_server + '/v2/posts/add?&url='+
-                'https://' + delicious_api_server + '/v1/posts/add?&url='                           +
+                'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/add?&url='                           +
                 encodeURIComponent(
                   (yield                    I.minibuffer.read(
                      $prompt = "url (required): ",
@@ -238,7 +242,7 @@ interactive("delicious-post-sel",
 
 
 
-// https://' + delicious_api_server + '/v1/posts/get?url={URL} get all tags for old url
+// https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?url={URL} get all tags for old url
 
 var delicious_shared = null;
 
@@ -258,177 +262,188 @@ interactive("delicious-shared-set",
 interactive("delicious-post",
             "bookmark the page via delicious",
             function (I) {
-              check_buffer(I.buffer, content_buffer);
-              var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
+                check_buffer(I.buffer, content_buffer);
+                var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
 
-              // {{ completer
-              var xsendurl = 'https://' + delicious_api_server + '/v1/posts/suggest?&url='+encodeURIComponent(I.buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
-              var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
-              var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
-              // I.window.alert(xcontent.responseText);
-              var completions = new Array();
-              var sug = cc.getElementsByTagName('recommended');
-              var pop = cc.getElementsByTagName('popular');
-              for (i = 0;
-                   i < sug.length;
-                   i++)
-              {
-                // I.window.alert(sug[i].attributes[0].textContent);
-                completions.push(sug[i].attributes[0].textContent);
-              }
-              for (i=0; i< pop.length; i++) {
-                // I.window.alert(pop[i].attributes[0].textContent);
-                completions.push(pop[i].attributes[0].textContent);
-              }
-              // var completer = prefix_completer($completions = completions);
-              var completer  = new prefix_completer($completions = completions);
-              // }}
+                // {{ completer
+                var xsendurl = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/suggest?&url='+encodeURIComponent(I.buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
+                var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
+                var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
+                // I.window.alert(xcontent.responseText);
+                var completions = new Array();
+                var sug = cc.getElementsByTagName('recommended');
+                if (sug)
+                {
+                    for (i = 0; i < sug.length; i++)
+                    {
+                        // I.window.alert(sug[i].attributes[0].textContent);
+                        if (sug[i].attributes[0]) completions.push(sug[i].attributes[0].textContent);
+                    }
+                }
+                var pop = cc.getElementsByTagName('popular');
+                if (pop)
+                {
+                    for (i=0; i< pop.length; i++) {
+                        // I.window.alert(pop[i].attributes[0].textContent);
+                        if (pop[i].attributes[0]) completions.push(pop[i].attributes[0].textContent);
+                    }
+                }
+                // var completer = prefix_completer($completions = completions);
+                var completer  = new prefix_completer($completions = completions);
+                // }}
 
-              // {{ initial value
-              var tsendurl   = 'https://' + delicious_api_server + '/v1/posts/get?url=' + encodeURIComponent(I.buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
-              var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
-              // I.window.alert(tagcontent.responseText);
-              var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
-              var post       = tc.getElementsByTagName('post');
-              var tags       = (post.length > 0)  ? post[0].attributes[6].textContent : "";
+                // {{ initial value
+                var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?url=' + encodeURIComponent(I.buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
+                var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
+                // I.window.alert(tagcontent.responseText);
+                var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
+                var post       = tc.getElementsByTagName('post');
+                var tags       = (post.length > 0)  ? post[0].attributes[6].textContent : "";
 
-              if (post.length > 0 &&
-                  post[0].attributes[0].textContent.length > 0) {
-                var desc = post[0].attributes[0].textContent.replace(/[^\x00-\x7F]/g, '');
-              } else {
-                var desc = (I.buffer.title == "" ? I.buffer.display_uri_string : I.buffer.title).replace(/[^\x00-\x7F]/g, '');
-              }
+                if (post.length > 0 &&
+                    post[0].attributes[0].textContent.length > 0) {
+                    var desc = post[0].attributes[0].textContent.replace(/[^\x00-\x7F]/g, '');
+                } else {
+                    var desc = (I.buffer.title == "" ? I.buffer.display_uri_string : I.buffer.title).replace(/[^\x00-\x7F]/g, '');
+                }
 
-              var shared = null;
-              if (post.length > 0 && post[0].attributes[5].textContent.length > 0) {
-                shared = post[0].attributes[5].textContent;
-              }
+                var shared = null;
+                if (post.length > 0 && post[0].attributes[5].textContent.length > 0) {
+                    shared = post[0].attributes[5].textContent;
+                }
 
-              // }}
+                // }}
 
 
-              var sendurl = 'https://' + delicious_api_server + '/v1/posts/add?&url='+
-                // var sendurl = 'https://' + delicious_api_server + '/v2/posts/add?&url='+
-                encodeURIComponent((yield I.minibuffer.read(
-                  $prompt = "url (required): ",
-                  // $initial_value = I.buffer.display_uri_string)))
-                  $initial_value = I.buffer.display_uri_string.replace(/[^\x00-\x7F]/g, '')))) +
-              // encodeURIComponent(I.buffer.display_uri_string) +
-                '&description=' +
-                encodeURIComponent((yield I.minibuffer.read(
-                  $prompt = "name (required): ",
-                  $initial_value = desc))) +
-                '&replace=yes' +
-                '&tags='+
-                encodeURIComponent((yield I.minibuffer.read(
-                  $prompt = "tags (space delimited): ",
-                  $completer = completer,
-                  $initial_value = tags + " " + read_from_x_primary_selection()
-                )).replace(new RegExp(/\s+/g), ','))+
-                '&extended=' +
-                encodeURIComponent((yield I.minibuffer.read(
-                  $prompt = "extended description: "))) +
-                '&shared=' +
-                (delicious_shared == null ?
-                 (("y" == (yield I.minibuffer.read_single_character_option(
-                   $prompt = ("Shared? (y/n)" +
-                              (shared ? (" [" + shared + "]") : "")),
-                   $options = ["y", "n"]))) ?
-                  "yes" : "no")  : delicious_shared );
+                var sendurl = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/add?&url='+
+                    // var sendurl = 'https://' + delicious_api_server + '/v2/posts/add?&url='+
+                    encodeURIComponent((yield I.minibuffer.read(
+                        $prompt = "url (required): ",
+                        // $initial_value = I.buffer.display_uri_string)))
+                        $initial_value = I.buffer.display_uri_string.replace(/[^\x00-\x7F]/g, '')))) +
+                    // encodeURIComponent(I.buffer.display_uri_string) +
+                    '&description=' +
+                    encodeURIComponent((yield I.minibuffer.read(
+                        $prompt = "name (required): ",
+                        $initial_value = desc))) +
+                    '&replace=yes' +
+                    '&tags='+
+                    encodeURIComponent((yield I.minibuffer.read(
+                        $prompt = "tags (space delimited): ",
+                        $completer = completer,
+                        $initial_value = tags + " " + read_from_x_primary_selection()
+                    )).replace(new RegExp(/\s+/g), ','))+
+                    '&extended=' +
+                    encodeURIComponent((yield I.minibuffer.read(
+                        $prompt = "extended description: "))) +
+                    '&shared=' +
+                    (delicious_shared == null ?
+                     (("y" == (yield I.minibuffer.read_single_character_option(
+                         $prompt = ("Shared? (y/n)" +
+                                    (shared ? (" [" + shared + "]") : "")),
+                         $options = ["y", "n"]))) ?
+                      "yes" : "no")  : delicious_shared );
 
-              var content = yield send_http_request(load_spec({uri: sendurl}));
-              I.window.minibuffer.message(content.responseText);
-              if (typeof(debug_level) != "undefined" && debug_level)
-                I.window.minibuffer.message(sendurl);
+                var content = yield send_http_request(load_spec({uri: sendurl}));
+                I.window.minibuffer.message(content.responseText);
+                if (typeof(debug_level) != "undefined" && debug_level)
+                    I.window.minibuffer.message(sendurl);
             });
 
 interactive("delicious-post-link",
             "bookmark the link via delicious",
             function (I) {
-              var bo = yield read_browser_object(I);
-              var mylink = load_spec_uri_string(load_spec(encodeURIComponent(bo))).replace(/[^\x00-\x7F]/g, '');
-              check_buffer(I.buffer, content_buffer);
+                var bo = yield read_browser_object(I);
+                var mylink = load_spec_uri_string(load_spec(encodeURIComponent(bo))).replace(/[^\x00-\x7F]/g, '');
+                check_buffer(I.buffer, content_buffer);
 
-              var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
-
-
-              // {{ completer
-              var xsendurl = 'https://' + delicious_api_server + '/v1/posts/suggest?&url='+mylink;
-              var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
-              // var xcontent = xcontent.replace(/[^\x00-\x7F]/g, '');
-              var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
-              // I.window.alert(xcontent.responseText);
-              var completions = new Array();
-              var sug = cc.getElementsByTagName('recommended');
-              var pop = cc.getElementsByTagName('popular');
-              for (i=0; i< sug.length; i++) {
-                // I.window.alert(sug[i].attributes[0].textContent);
-                completions.push(sug[i].attributes[0].textContent);
-              }
-              for (i=0; i< pop.length; i++) {
-                // I.window.alert(pop[i].attributes[0].textContent);
-                completions.push(pop[i].attributes[0].textContent);
-              }
-              // var completer = prefix_completer($completions = completions);
-              var completer = new prefix_completer($completions = completions);
-              // }}
-
-              // {{ initial value
-              var tsendurl   = 'https://' + delicious_api_server + '/v1/posts/get?url=' + mylink;
-              var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
-              // I.window.alert(tagcontent.responseText);
-              var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
-              var post       = tc.getElementsByTagName('post');
-              var tags       = (post.length > 0)  ? post[0].attributes[6].textContent : "";
-              if (post.length > 0 &&
-                  post[0].attributes[0].textContent.length > 0)
-              {
-                var desc = post[0].attributes[0].textContent.replace(/[^\x00-\x7F]/g, '');
-              }
-              else
-              {
-                var desc = (bo.textContent == "" ? bo : bo.textContent).replace(/[^\x00-\x7F]/g, '');
-              }
-
-              var shared = null;
-              if (post.length > 0 &&
-                  post[0].attributes[5].textContent.length > 0)
-              {
-                shared = post[0].attributes[5].textContent;
-              }
+                var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
 
 
-              // }}
+                // {{ completer
+                var xsendurl = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/suggest?&url='+mylink;
+                var xcontent = (yield send_http_request(load_spec({uri: xsendurl})));
+                // var xcontent = xcontent.replace(/[^\x00-\x7F]/g, '');
+                var cc = domParser.parseFromString(xcontent.responseText, "text/xml");
+                // I.window.alert(xcontent.responseText);
+                var completions = new Array();
+                var sug = cc.getElementsByTagName('recommended');
+                if (sug)
+                {
+                    for (i = 0; i < sug.length; i++)
+                    {
+                        // I.window.alert(sug[i].attributes[0].textContent);
+                        if (sug[i].attributes[0]) completions.push(sug[i].attributes[0].textContent);
+                    }
+                }
+                var pop = cc.getElementsByTagName('popular');
+                if (pop)
+                {
+                    for (i=0; i< pop.length; i++) {
+                        // I.window.alert(pop[i].attributes[0].textContent);
+                        if (pop[i].attributes[0]) completions.push(pop[i].attributes[0].textContent);
+                    }
+                }
+                // var completer = prefix_completer($completions = completions);
+                var completer = new prefix_completer($completions = completions);
+                // }}
+
+                // {{ initial value
+                var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?url=' + mylink;
+                var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
+                // I.window.alert(tagcontent.responseText);
+                var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
+                var post       = tc.getElementsByTagName('post');
+                var tags       = (post.length > 0)  ? post[0].attributes[6].textContent : "";
+                if (post.length > 0 &&
+                    post[0].attributes[0].textContent.length > 0)
+                {
+                    var desc = post[0].attributes[0].textContent.replace(/[^\x00-\x7F]/g, '');
+                }
+                else
+                {
+                    var desc = (bo.textContent == "" ? bo : bo.textContent).replace(/[^\x00-\x7F]/g, '');
+                }
+
+                var shared = null;
+                if (post.length > 0 &&
+                    post[0].attributes[5].textContent.length > 0)
+                {
+                    shared = post[0].attributes[5].textContent;
+                }
 
 
-              let sendurl = 'https://' + delicious_api_server + '/v1/posts/add?&url=' +
-                // mylink
-                encodeURIComponent((yield I.minibuffer.read(
-                  $prompt = "url (required): ",
-                  $initial_value = decodeURIComponent(mylink)))) +
-                  // $initial_value = bo // ))) +
-                '&description=' +
-                encodeURIComponent(
-                  (yield I.minibuffer.read(
-                    $prompt = "name (required): " , $initial_value = desc))) +
-                '&replace=yes' +
-                '&tags=' + encodeURIComponent((yield I.minibuffer.read(
-                  $prompt = "tags (space delimited): ",
-                  $completer = completer,
-                  $initial_value = tags + " " + read_from_x_primary_selection()
-                )).replace(new RegExp(/\s+/g), ',')) +
-                '&extended=' + encodeURIComponent((yield I.minibuffer.read($prompt = "extended description: "))) +
-                '&shared=' +
-                (delicious_shared == null ?
-                 (("y" == (yield I.minibuffer.read_single_character_option(
-                   $prompt = ("Shared? (y/n)" + (shared ? (" [" + shared + "]") : "")),
-                   $options = ["y", "n"]))) ? "yes" : "no")  : delicious_shared );
+                // }}
 
-              var content = yield send_http_request(
-                load_spec({uri: sendurl}));
-              I.window.minibuffer.message(content.responseText);
-              if (typeof(debug_level) != "undefined" && debug_level)
-                I.window.minibuffer.message(sendurl);
+
+                let sendurl = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/add?&url=' +
+                    // mylink
+                    encodeURIComponent((yield I.minibuffer.read(
+                        $prompt = "url (required): ",
+                        $initial_value = decodeURIComponent(mylink)))) +
+                    // $initial_value = bo // ))) +
+                    '&description=' +
+                    encodeURIComponent(
+                        (yield I.minibuffer.read(
+                            $prompt = "name (required): " , $initial_value = desc))) +
+                    '&replace=yes' +
+                    '&tags=' + encodeURIComponent((yield I.minibuffer.read(
+                        $prompt = "tags (space delimited): ",
+                        $completer = completer,
+                        $initial_value = tags + " " + read_from_x_primary_selection()
+                    )).replace(new RegExp(/\s+/g), ',')) +
+                    '&extended=' + encodeURIComponent((yield I.minibuffer.read($prompt = "extended description: "))) +
+                    '&shared=' +
+                    (delicious_shared == null ?
+                     (("y" == (yield I.minibuffer.read_single_character_option(
+                         $prompt = ("Shared? (y/n)" + (shared ? (" [" + shared + "]") : "")),
+                         $options = ["y", "n"]))) ? "yes" : "no")  : delicious_shared );
+
+                var content = yield send_http_request(
+                    load_spec({uri: sendurl}));
+                I.window.minibuffer.message(content.responseText);
+                if (typeof(debug_level) != "undefined" && debug_level)
+                    I.window.minibuffer.message(sendurl);
 
             },
             $browser_object = browser_object_links);
@@ -445,7 +460,7 @@ define_webjump("del", "http://delicious.com/search?p=%s&chk=&context=userposts%7
 //                 bo = yield read_browser_object(I) ;
 //                 mylink = load_spec_uri_string(load_spec(decodeURIComponent(bo)));
 //                 check_buffer(I.buffer, content_buffer);
-//                 // let sendurl = 'https://' + delicious_api_server + '/v1/posts/add?&url=' +
+//                 // let sendurl = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/add?&url=' +
 //                 return mylink;
 //             }, $browser_object = browser_object_links);
 
@@ -954,7 +969,7 @@ interactive("acition-link",
 
                 // here implement it so it will ask for function name like delicious
                 delicious(I, mylink);
-                // let sendurl = 'https://' + delicious_api_server + '/v1/posts/add?&url=' +
+                // let sendurl = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/add?&url=' +
             }, $browser_object = browser_object_links);
 
 // }}}
