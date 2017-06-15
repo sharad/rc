@@ -138,7 +138,9 @@
 
 (defun org-clock-entry-associated-to-file-p (file)
   (let ((info (org-clock-entry-current-entry)))
-    (funcall org-context-clocking-api-entry-associated-to-file-p info file)))
+    (if info
+        (funcall org-context-clocking-api-entry-associated-to-file-p info file)
+        0)))
 
 (defun org-entry-run-associated-clock (file)
   (let ()

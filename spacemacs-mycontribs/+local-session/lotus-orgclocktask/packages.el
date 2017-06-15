@@ -130,7 +130,28 @@ Each entry is either:
               :config
               (progn
                 (setq org-entry-tree-task-info-root-org-file
-                      (expand-file-name "start.org" (task-party-base-dir)))))))))
+                      (expand-file-name "start.org" (task-party-base-dir))))))
+
+        (progn
+          (setq org-entry-tree-task-info-root-org-file
+                (expand-file-name "start.org" (task-party-base-dir))))
+
+        (progn
+          (spaceline-toggle-org-clock-on))))
+
+  (progn
+
+    (add-hook
+     'sharad/enable-login-session-interrupting-feature-hook
+     '(lambda ()
+       (org-context-clocking-insinuate))
+     t)
+
+    (add-hook
+     'sharad/enable-startup-interrupting-feature-hook
+     '(lambda ()
+       (org-context-clocking-uninsinuate))
+     t)))
 
 (defun lotus-orgclocktask/init-org-misc-utils ()
   (use-package org-misc-utils
