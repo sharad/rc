@@ -81,10 +81,10 @@
       (let* ((buff (window-buffer))
              (file (buffer-file-name buff)))
         (if (or
-                 (and
-                  (string-equal org-context-clocking-task-previous-file file)
-                  (string-equal org-context-clocking-task-current-file  file))
-                 (minibufferp buff))
+             (and
+              (string-equal org-context-clocking-task-previous-file file)
+              (string-equal org-context-clocking-task-current-file  file))
+             (minibufferp buff))
 
             (message "update-current-file: file %s not suitable to associate" file)
 

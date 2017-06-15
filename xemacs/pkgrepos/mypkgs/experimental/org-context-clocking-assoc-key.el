@@ -55,9 +55,6 @@
            (let ((rank
                   (org-entry-associated-to-file-by-keys-p task args)))
              (unless rank (error "org-entries-associated-to-file-by-keys[lambda]: rank is null"))
-             ;; (message "task %s BEFORE MATCHED RANK %d file %s"
-             ;;          (org-entry-task-info-get-heading task)
-             ;;          (length matched) args)
              (when (> rank 0)
                (push task matched)
                (message "org-entries-associated-to-file-by-keys[lambda]: task %s MATCHED RANK %d"
