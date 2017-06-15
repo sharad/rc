@@ -49,7 +49,7 @@
     "Retun org TASK-INFO entries for FILE which are associated based on list of functions for keys applied by ORG-ENTRY-ASSOCIATED-TO-FILE-BY-KEYS-P"
     (let ((task-infos (org-entry-tree-update-task-infos))
           (matched '()))
-      (message "org-entries-associated-to-file-by-keys: BEFORE matched %s[%d]" matched (length matched))
+      (org-context-clock-debug "org-entries-associated-to-file-by-keys: BEFORE matched %s[%d]" matched (length matched))
       (tree-mapc-task-infos
        #'(lambda (task args)
            (let ((rank
@@ -57,13 +57,13 @@
              (unless rank (error "org-entries-associated-to-file-by-keys[lambda]: rank is null"))
              (when (> rank 0)
                (push task matched)
-               (message "org-entries-associated-to-file-by-keys[lambda]: task %s MATCHED RANK %d"
+               (org-context-clock-debug "org-entries-associated-to-file-by-keys[lambda]: task %s MATCHED RANK %d"
                         (org-entry-task-info-get-heading task)
                         (length matched)))))
        task-infos
        file)
 
-      (message "org-entries-associated-to-file-by-keys: AFTER matched %s[%d]" "matched" (length matched))
+      (org-context-clock-debug "org-entries-associated-to-file-by-keys: AFTER matched %s[%d]" "matched" (length matched))
 
       matched))
 
@@ -123,18 +123,18 @@ using algorithm in this function, return RANK"
                        rank
                        file
                        (org-entry-task-info-get-heading task-info)))
-              (message "org-entries-associated-key-fn-value: task %s key %s MATCHED %d rank"
+              (org-context-clock-debug "org-entries-associated-key-fn-value: task %s key %s MATCHED %d rank"
                        (org-entry-task-info-get-heading task-info)
                        key
                        rank)
               rank)
             (progn
-              (message "org-entries-associated-key-fn-value: task %s key %s kyfn is %s so how can match %d rank"
+              (org-context-clock-debug "org-entries-associated-key-fn-value: task %s key %s kyfn is %s so how can match %d rank"
                        (org-entry-task-info-get-heading task-info)
                        key
                        keyfn
                        0)
-             0)))))
+              0)))))
 
   (defassoc-file-key org-entry-associated-file-org-file-key :org-file (task-info file)
     "Predicate funtion to check if file matches to task-info's file attribute."

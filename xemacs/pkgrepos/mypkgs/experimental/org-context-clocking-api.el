@@ -24,6 +24,11 @@
 
 ;;; Code:
 
+(defgroup org-context-clock nil
+  "Emacs Org Context Clocking."
+  :tag "Org Clock"
+  :group 'org-progress)
+
 
 (require 'org-clock)
 
@@ -48,8 +53,15 @@
      (plist-get org-entry-clocking-api name)
      api)))
 
+
 ;; "org entries clocking's APIs' API"
 (require 'org-context-clocking-api-common) ;; "org entries accss common api"
+
+(defun org-context-clock-debug (message &rest args)
+  (apply 'lwarn 'org-context-clock :debug message args))
+
+;; (org-context-clock-debug "hello %s[%d]" "test" 11)
+
 
 (require 'org-context-clocking-api-list) ;; "org entries access api for list org"
 

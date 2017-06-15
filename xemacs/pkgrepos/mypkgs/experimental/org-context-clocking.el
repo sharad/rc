@@ -24,6 +24,11 @@
 
 ;;; Code:
 
+(defgroup org-context-clock nil
+  "Emacs Org Context Clocking."
+  :tag "Org Clock"
+  :group 'org-progress)
+
 
 (require 'org-clock)
 (require 'org-context-clocking-api)
@@ -86,7 +91,7 @@
               (string-equal org-context-clocking-task-current-file  file))
              (minibufferp buff))
 
-            (message "update-current-file: file %s not suitable to associate" file)
+            (org-context-clock-debug "update-current-file: file %s not suitable to associate" file)
 
             (progn
               (setq
@@ -94,12 +99,12 @@
                org-context-clocking-task-current-file  file)
 
               (if (> (org-clock-entry-associated-to-file-p file) 0)
-                  (message "update-current-file: Current entry already associate to %s" file)
+                  (org-context-clock-debug "update-current-file: Current entry already associate to %s" file)
                   (progn
-                    (message "update-current-file: Now really going to clock.")
+                    (org-context-clock-debug "update-current-file: Now really going to clock.")
                     (org-entry-run-associated-clock file)
-                    (message "update-current-file: Now really clock done."))))))
-      (message "update-current-file: not enough time passed.")))
+                    (org-context-clock-debug "update-current-file: Now really clock done."))))))
+      (org-context-clock-debug "update-current-file: not enough time passed.")))
 
 
 (defun update-current-file-x ()
