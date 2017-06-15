@@ -80,18 +80,26 @@
          org-context-clocking-task-current-file-time)
       (let* ((buff (window-buffer))
              (file (buffer-file-name buff)))
-        (unless (or
+        (if (or
                  (and
                   (string-equal org-context-clocking-task-previous-file file)
                   (string-equal org-context-clocking-task-current-file  file))
                  (minibufferp buff))
-          (setq
-           org-context-clocking-task-previous-file org-context-clocking-task-current-file
-           org-context-clocking-task-current-file  file)
 
-          (unless (org-clock-entry-associated-to-file-p file)
-            (org-entry-run-associated-clock file)
-            (message "Current entry already associate to %s" file))))))
+            (message "update-current-file: file %s not suitable to associate" file)
+
+            (progn
+              (setq
+               org-context-clocking-task-previous-file org-context-clocking-task-current-file
+               org-context-clocking-task-current-file  file)
+
+              (if (> (org-clock-entry-associated-to-file-p file) 0)
+                  (message "update-current-file: Current entry already associate to %s" file)
+                  (progn
+                    (message "update-current-file: Now really going to clock.")
+                    (org-entry-run-associated-clock file)
+                    (message "update-current-file: Now really clock done."))))))
+      (message "update-current-file: not enough time passed.")))
 
 
 (defun update-current-file-x ()

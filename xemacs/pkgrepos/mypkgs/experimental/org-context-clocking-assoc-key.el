@@ -49,24 +49,24 @@
     "Retun org TASK-INFO entries for FILE which are associated based on list of functions for keys applied by ORG-ENTRY-ASSOCIATED-TO-FILE-BY-KEYS-P"
     (let ((task-infos (org-entry-tree-update-task-infos))
           (matched '()))
-      (message "BEFORE matched %s[%d]" matched (length matched))
+      (message "org-entries-associated-to-file-by-keys: BEFORE matched %s[%d]" matched (length matched))
       (tree-mapc-task-infos
        #'(lambda (task args)
            (let ((rank
                   (org-entry-associated-to-file-by-keys-p task args)))
-             (unless rank (error "rank is null"))
+             (unless rank (error "org-entries-associated-to-file-by-keys[lambda]: rank is null"))
              ;; (message "task %s BEFORE MATCHED RANK %d file %s"
              ;;          (org-entry-task-info-get-heading task)
              ;;          (length matched) args)
              (when (> rank 0)
                (push task matched)
-               (message "task %s MATCHED RANK %d"
+               (message "org-entries-associated-to-file-by-keys[lambda]: task %s MATCHED RANK %d"
                         (org-entry-task-info-get-heading task)
                         (length matched)))))
        task-infos
        file)
 
-      (message "AFTER matched %s[%d]" "matched" (length matched))
+      (message "org-entries-associated-to-file-by-keys: AFTER matched %s[%d]" "matched" (length matched))
 
       matched))
 
@@ -94,8 +94,10 @@ using algorithm in this function, return RANK"
 
 
 (progn ;; Registration macro to add key property and functions list to ORG-ENTRY-ASSOCIATED-FILE-KEY-FNS
-  (progn
-    (setq org-entry-associated-file-key-fns nil)
+  (setq org-entry-associated-file-key-fns nil)
+  (message "NOTE: org-entry-associated-file-key-fns made to nil")
+
+  (progn ;; macros and accessor
 
     (defun org-entries-register-associated-to-file-key-function (key fn)
       (setq
@@ -119,20 +121,21 @@ using algorithm in this function, return RANK"
         (if keyfn
             (let ((rank (funcall keyfn task-info file)))
               (unless (numberp rank)
-                (error "fun %s returning nonnumeric %s for file %s for task %s"
+                (error "org-entries-associated-key-fn-value: fun %s returning nonnumeric %s for file %s for task %s"
                        keyfn
                        rank
                        file
                        (org-entry-task-info-get-heading task-info)))
-              (message "task %s key %s MATCHED %d rank"
+              (message "org-entries-associated-key-fn-value: task %s key %s MATCHED %d rank"
                        (org-entry-task-info-get-heading task-info)
                        key
                        rank)
               rank)
             (progn
-              (message "task %s key %s NOT matched %d rank"
+              (message "org-entries-associated-key-fn-value: task %s key %s kyfn is %s so how can match %d rank"
                        (org-entry-task-info-get-heading task-info)
                        key
+                       keyfn
                        0)
              0)))))
 
