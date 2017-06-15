@@ -49,29 +49,43 @@
     "Retun org TASK-INFO entries for FILE which are associated based on list of functions for keys applied by ORG-ENTRY-ASSOCIATED-TO-FILE-BY-KEYS-P"
     (let ((task-infos (org-entry-tree-update-task-infos))
           (matched '()))
+      (message "BEFORE matched %s[%d]" matched (length matched))
       (tree-mapc-task-infos
        #'(lambda (task args)
-         (let ((result
-                (org-entry-associated-to-file-by-keys-p task args)))
-           (when result
-             (push task matched))))
+           (let ((rank
+                  (org-entry-associated-to-file-by-keys-p task args)))
+             (unless rank (error "rank is null"))
+             ;; (message "task %s BEFORE MATCHED RANK %d file %s"
+             ;;          (org-entry-task-info-get-heading task)
+             ;;          (length matched) args)
+             (when (> rank 0)
+               (push task matched)
+               (message "task %s MATCHED RANK %d"
+                        (org-entry-task-info-get-heading task)
+                        (length matched)))))
        task-infos
-       file)))
+       file)
+
+      (message "AFTER matched %s[%d]" "matched" (length matched))
+
+      matched))
 
 
   (defun org-entry-associated-to-file-by-keys-p (task-info file)
     "Test whether association of org TASK-INFO for FILE using list of functions for keys,
-using algorithm in this function"
+using algorithm in this function, return RANK"
     (if file
         (if (> (org-entries-associated-key-fn-value :status task-info file) -20)
-            (>
-             (+
-              (org-entries-associated-key-fn-value :timebeing task-info file)
-              (org-entries-associated-key-fn-value :root task-info file)
-              ;; (org-entries-associated-key-fn-value :org-file task-info file)
-              (org-entries-associated-key-fn-value :task-info-key task-info file)
-              (org-entries-associated-key-fn-value :heading-level task-info file))
-             0))))
+            (let ((rank
+                   (+
+                    (org-entries-associated-key-fn-value :timebeing task-info file)
+                    (org-entries-associated-key-fn-value :root task-info file)
+                    ;; (org-entries-associated-key-fn-value :org-file task-info file)
+                    (org-entries-associated-key-fn-value :task-info-key task-info file)
+                    (org-entries-associated-key-fn-value :heading-level task-info file))))
+              rank)
+            -20)
+        0))
 
   (org-context-clocking-api-set :keys :entries 'org-entries-associated-to-file-by-keys)
   (org-context-clocking-api-set :keys :entryp  'org-entry-associated-to-file-by-keys-p)
@@ -103,8 +117,24 @@ using algorithm in this function"
     (defun org-entries-associated-key-fn-value (key task-info file)
       (let ((keyfn (org-entries-associated-key-function key)))
         (if keyfn
-            (funcall keyfn task-info file)
-            0))))
+            (let ((rank (funcall keyfn task-info file)))
+              (unless (numberp rank)
+                (error "fun %s returning nonnumeric %s for file %s for task %s"
+                       keyfn
+                       rank
+                       file
+                       (org-entry-task-info-get-heading task-info)))
+              (message "task %s key %s MATCHED %d rank"
+                       (org-entry-task-info-get-heading task-info)
+                       key
+                       rank)
+              rank)
+            (progn
+              (message "task %s key %s NOT matched %d rank"
+                       (org-entry-task-info-get-heading task-info)
+                       key
+                       0)
+             0)))))
 
   (defassoc-file-key org-entry-associated-file-org-file-key :org-file (task-info file)
     "Predicate funtion to check if file matches to task-info's file attribute."
@@ -122,6 +152,12 @@ using algorithm in this function"
             (org-entry-task-info-get-property task-info :ROOT))
            (root (if root (file-truename root)))
            (file (if file (file-truename file))))
+      (if root
+          (progn
+            (message "task %s root %s" (org-entry-task-info-get-heading task-info) root)
+            (message "task %s file %s" (org-entry-task-info-get-heading task-info) file))
+          (message "task %s root %s not present."
+                   (org-entry-task-info-get-heading task-info) root))
       (if (and root file
                (string-match root file))
           (length root)

@@ -90,7 +90,8 @@
            org-context-clocking-task-current-file  file)
 
           (unless (org-clock-entry-associated-to-file-p file)
-            (org-entry-run-associated-clock file))))))
+            (org-entry-run-associated-clock file)
+            (message "Current entry already associate to %s" file))))))
 
 
 (defun update-current-file-x ()
@@ -385,15 +386,18 @@
    (funcall org-context-clocking-api-entries-associated-to-file "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
    )
 
-  (org-entries-associated-to-file-by-keys-p (buffer-file-name))
+  (length
+   (org-entries-associated-to-file-by-keys (buffer-file-name))
+   )
+
 
   (length
-   (org-entries-associated-to-file-by-keys-p "/home/s/paradise/releases/global/patch-upgrade/Makefile")
+   (org-entries-associated-to-file-by-keys "/home/s/paradise/releases/global/patch-upgrade/Makefile")
    )
 
   (org-clock-entry-associated-to-file-p "/home/s/paradise/releases/global/patch-upgrade/Makefile")
 
-  ;; (org-entry-associated-to-file-by-keys-p "/home/s/paradise/releases/global/patch-upgrade/Makefile")
+  ;; (org-entry-associated-to-file-by-keys "/home/s/paradise/releases/global/patch-upgrade/Makefile")
 
   (if (org-clock-entry-associated-to-file-p (buffer-file-name))
       (message "current clock is with file")

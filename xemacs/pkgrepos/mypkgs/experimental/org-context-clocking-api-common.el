@@ -133,5 +133,14 @@
             (org-entry-task-info-get-property e :task-clock-marker))
           (funcall org-context-clocking-api-entries-associated-to-file file)))
 
+
+
+
+
+(progn                                  ;; general use function
+
+  (defun org-entry-task-info-get-heading (task-info)
+    (org-entry-task-info-get-property task-info :task-clock-heading)))
+
 (provide 'org-context-clocking-api-common)
 ;;; org-context-clocking-api-common.el ends here
