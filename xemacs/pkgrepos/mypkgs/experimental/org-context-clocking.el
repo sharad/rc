@@ -135,7 +135,7 @@
   (let ()
     (let* ((matched-clocks
             (remove-if-not
-             '(lambda (marker) (marker-buffer marker))
+             #'(lambda (marker) (marker-buffer marker))
              (org-markers-associated-to-file file)))
            (selected-clock (if (> (length matched-clocks) 1)
                                (org-clock-select-task-from-clocks matched-clocks)
@@ -328,6 +328,12 @@
    (buffer-file-name))
 
   (org-entry-run-associated-clock
+   "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
+
+  (org-markers-associated-to-file
+   "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
+
+  (org-clock-entry-associated-to-file-p
    "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
 
   (org-markers-associated-to-file

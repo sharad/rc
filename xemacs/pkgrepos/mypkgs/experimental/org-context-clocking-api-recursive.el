@@ -120,7 +120,7 @@
      (funcall fn tree args)
      :sub-tree
      (mapcar
-      '(lambda (e)
+      #'(lambda (e)
         (tree-mapcar-nodes nonleafnodep fn e args))
       (funcall nonleafnodep tree))))
 
@@ -128,7 +128,7 @@
     "Tree mapc run FN for all TREE nodes with ARGS, function NONLEAFNODEP require to find nonleaf node"
     (funcall fn tree args)
     (mapc
-     '(lambda (e)
+     #'(lambda (e)
        (tree-mapc-nodes nonleafnodep fn e args))
      (funcall nonleafnodep tree)))
 
@@ -141,7 +141,7 @@
                (remove
                 nil
                 (mapcar
-                 '(lambda (e)
+                 #'(lambda (e)
                    (tree-remove-if-not-nodes nonleafnodep predicate e args))
                  (funcall nonleafnodep tree)))))
           (if (or rootele subtree)
@@ -167,19 +167,19 @@
   ;;  (setq
   ;;   testxx-remove
   ;;   (tree-remove-if-not-task-infos
-  ;;    '(lambda (e) (eq (plist-get e :pre-blank) 4))
+  ;;    #'(lambda (e) (eq (plist-get e :pre-blank) 4))
   ;;    testxx))
 
   ;;  (setq testxxmapcar
-  ;;        (tree-mapcar-nodes '(lambda (tx) (plist-get tx :sub-tree))
-  ;;                           '(lambda (tx) (plist-get tx :title))
+  ;;        (tree-mapcar-nodes #'(lambda (tx) (plist-get tx :sub-tree))
+  ;;                           #'(lambda (tx) (plist-get tx :title))
   ;;                           ;; testxx
   ;;                           (car (plist-get testxx :sub-tree))
   ;;                           ))
 
   ;;  (setq testxxmapc
-  ;;        (tree-mapc-nodes '(lambda (tx) (plist-get tx :sub-tree))
-  ;;                         '(lambda (tx) (plist-get tx :title))
+  ;;        (tree-mapc-nodes #'(lambda (tx) (plist-get tx :sub-tree))
+  ;;                         #'(lambda (tx) (plist-get tx :title))
   ;;                         ;; testxx
   ;;                         (car (plist-get testxx :sub-tree))
   ;;                         )))

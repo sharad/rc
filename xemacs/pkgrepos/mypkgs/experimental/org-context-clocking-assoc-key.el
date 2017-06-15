@@ -50,7 +50,7 @@
     (let ((task-infos (org-entry-tree-update-task-infos))
           (matched '()))
       (tree-mapc-task-infos
-       '(lambda (task args)
+       #'(lambda (task args)
          (let ((result
                 (org-entry-associated-to-file-by-keys-p task args)))
            (when result
