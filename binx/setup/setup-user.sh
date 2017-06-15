@@ -6,6 +6,8 @@ SSH_KEY_DUMP=$1
 TMPDIR=~/setuptmp
 
 APT_REPO_COMMPUNICATION="ppa:nilarimogard/webupd8"
+APT_REPO_UTILS="ppa:yartsa/lvmeject"
+
 
 DEB_PKG_NECESSARY="git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server rcs"
 DEB_PKGS1="vim emacs emacs-goodies-el org-mode develock-el"
@@ -19,6 +21,8 @@ DEB_EXTRA_PKG2="homesick yadm macchanger xautolock suckless-tools xtrlock xbackl
 DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macchanger lm-sensors tidy xmlstarlet network-manager-openvpn-gnome "
 DEB_EXTRA_SEC_PKG1="systemd-ui " # policykit-1 policykit-1-gnome
 DEB_DEV_PKG1="python-pip"
+DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject"
+
 
 
 function main()
@@ -92,7 +96,7 @@ function setup_apt_repo()
         echo "Not running a distribution with /etc/os-release available" >&2
     fi
 
-    for repo in "$APT_REPO_COMMPUNICATION"
+    for repo in "$APT_REPO_COMMPUNICATION" "$APT_REPO_UTILS"
     do
         # /etc/apt/sources.list.d/nilarimogard-ubuntu-webupd8-xenial.list
         # echo repo=$repo
@@ -134,7 +138,8 @@ function setup_apt_packages()
         "$DEB_EXTRA_PKG_FONTS" \
         "$DEB_EXTRA_PKG_LISP" \
         "$DEB_EXTRA_PKG_COMMUNICATION" \
-        "$DEB_EXTRA_PKG_VIRTUAL"
+        "$DEB_EXTRA_PKG_VIRTUAL" \
+        "$DEB_EXTRA_PKG3_UTILS"
     do
         eval sudo apt -y install $pkg
     done

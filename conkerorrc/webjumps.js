@@ -62,6 +62,12 @@ define_webjump("tag",
 
 define_webjump("search/del",
                "http://del.icio.us/search?p=%s");
+
+
+define_webjump("pin",
+               "http://pinboard.in/u:sharad/t:%s");
+
+
 // webjumps -sharad
 define_webjump("blank",
                "about:blank");
