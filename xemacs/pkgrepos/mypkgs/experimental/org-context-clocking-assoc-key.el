@@ -154,9 +154,9 @@ using algorithm in this function, return RANK"
            (file (if file (file-truename file))))
       (if root
           (progn
-            (message "task %s root %s" (org-entry-task-info-get-heading task-info) root)
-            (message "task %s file %s" (org-entry-task-info-get-heading task-info) file))
-          (message "task %s root %s not present."
+            (org-context-clock-debug "task %s root %s" (org-entry-task-info-get-heading task-info) root)
+            (org-context-clock-debug "task %s file %s" (org-entry-task-info-get-heading task-info) file))
+          (org-context-clock-debug "task %s root %s not present."
                    (org-entry-task-info-get-heading task-info) root))
       (if (and root file
                (string-match root file))
