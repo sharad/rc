@@ -4,49 +4,52 @@ download_buffer_automatic_open_target = OPEN_NEW_BUFFER_BACKGROUND;
 
 ///{{{ temporary fix
 // http://bugs.conkeror.org/issue514
-browser_dom_window.prototype = {
-    constructor: browser_dom_window,
-    QueryInterface: generate_QI(Ci.nsIBrowserDOMWindow),
+// if (false)
+// {
+// browser_dom_window.prototype = {
+//     constructor: browser_dom_window,
+//     QueryInterface: generate_QI(Ci.nsIBrowserDOMWindow),
 
-    openURI: function (aURI, aOpener, aWhere, aContext) {
-        // Reference: http://www.xulplanet.com/references/xpcomref/ifaces/nsIBrowserDOMWindow.html
-        var target = this.next_target;
-        if (target == null || target == FOLLOW_DEFAULT)
-            target = browser_default_open_target;
-        this.next_target = null;
+//     openURI: function (aURI, aOpener, aWhere, aContext) {
+//         // Reference: http://www.xulplanet.com/references/xpcomref/ifaces/nsIBrowserDOMWindow.html
+//         var target = this.next_target;
+//         if (target == null || target == FOLLOW_DEFAULT)
+//             target = browser_default_open_target;
+//         this.next_target = null;
 
-        /* Determine the opener buffer */
-        var opener = get_buffer_from_frame(this.window, aOpener);
-        if (aOpener) {
-            this.browser.presetOpenerWindow(aOpener);
-        }
+//         /* Determine the opener buffer */
+//         var opener = get_buffer_from_frame(this.window, aOpener);
+//         if (aOpener) {
+//             this.browser.presetOpenerWindow(aOpener);
+//         }
 
-        switch (browser_default_open_target) {
-        case OPEN_CURRENT_BUFFER:
-            return aOpener.top;
-        case FOLLOW_CURRENT_FRAME:
-            return aOpener;
-        case OPEN_NEW_BUFFER:
-            var buffer = new content_buffer(this.window, $opener = opener);
-            this.window.buffers.current = buffer;
-            return buffer.top_frame;
-        case OPEN_NEW_BUFFER_BACKGROUND:
-            var buffer = new content_buffer(this.window, $opener = opener);
-            return buffer.top_frame;
-        case OPEN_NEW_WINDOW:
-        default: /* shouldn't be needed */
+//         switch (browser_default_open_target) {
+//         case OPEN_CURRENT_BUFFER:
+//             return aOpener.top;
+//         case FOLLOW_CURRENT_FRAME:
+//             return aOpener;
+//         case OPEN_NEW_BUFFER:
+//             var buffer = new content_buffer(this.window, $opener = opener);
+//             this.window.buffers.current = buffer;
+//             return buffer.top_frame;
+//         case OPEN_NEW_BUFFER_BACKGROUND:
+//             var buffer = new content_buffer(this.window, $opener = opener);
+//             return buffer.top_frame;
+//         case OPEN_NEW_WINDOW:
+//         default: /* shouldn't be needed */
 
-            /* We don't call make_window here, because that will result
-             * in the URL being loaded as the top-level document,
-             * instead of within a browser buffer.  Instead, we can
-             * rely on Mozilla using browser.chromeURL. */
-            window_set_extra_arguments(
-                {initial_buffer_creator: buffer_creator(content_buffer, $opener = opener)}
-            );
-            return null;
-        }
-    }
-};
+//             /* We don't call make_window here, because that will result
+//              * in the URL being loaded as the top-level document,
+//              * instead of within a browser buffer.  Instead, we can
+//              * rely on Mozilla using browser.chromeURL. */
+//             window_set_extra_arguments(
+//                 {initial_buffer_creator: buffer_creator(content_buffer, $opener = opener)}
+//             );
+//             return null;
+//         }
+//     }
+// };
+// }
 ///}}}
 
 
