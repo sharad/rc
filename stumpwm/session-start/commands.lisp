@@ -372,12 +372,24 @@
     ;'(:class "Firefox-bin")
     ))
 
-(defcommand torbrowser () ()
+(defcommand firefox-tor () ()
    (run-wcli-command
     (concat "firefox -P tor" ;; (getenv "XBPROFILE")
             )
     ;'(:class "Firefox-bin")
     ))
+
+(defcommand xbrowser () ()
+            (run-wcli-command
+             (or (getenv "XBROWSER") "conkeror -P Y")
+                                        ;'(:class "Mozilla")
+             ))
+
+(defcommand xbrowser-tor () ()
+            (run-wcli-command
+             "conkeror -P tor"
+                                        ;'(:class "Mozilla")
+             ))
 
 (defcommand seamonkey () ()
    (run-wcli-command
@@ -410,12 +422,6 @@
 ;;    (run-or-raise
 ;;     (getenv "XBROWSER")
 ;;     '(:class "Mozilla")))
-
-(defcommand xbrowser () ()
-  (run-wcli-command
-   (or (getenv "XBROWSER") "conkeror -P Y")
-   ;'(:class "Mozilla")
-   ))
 
 (defcommand slrn () ()
    (run-or-raise

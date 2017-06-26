@@ -365,11 +365,12 @@
 (defvar *term-commands-map* nil
   "The keymap for terminal emulator commands.")
 
+(defvar *browser-commands-map* nil
+  "The keymap for terminal emulator commands.")
+
 (fill-keymap *window-commands-map*
              (kbd "t") '*term-commands-map*
-             (kbd "b") "xbrowser"
-             (kbd "f") "firefox"
-             (kbd "T") "torbrowser"
+             (kbd "b") '*browser-commands-map*
              (kbd "e") "emacsclient"
              (kbd "m") "mail-reader"
              (kbd "n") "new-mail"
@@ -378,6 +379,12 @@
 (fill-keymap *term-commands-map*
              (kbd "u") "urxvt"
              (kbd "x") "xterm")
+
+(fill-keymap *browser-commands-map*
+             (kbd "b") "xbrowser"
+             (kbd "f") "firefox"
+             (kbd "t") "xbrowser-tor"
+             (kbd "T") "firefox-tor")
 
 (define-key *top-map* (kbd "XF86Mail") "mail-reader")
 

@@ -29,8 +29,7 @@ define_webjump("altsearch",
                'https://www.google.com/custom?hl=en&client=pub-6071644646659036&cof=FORID%3A13%3BAH%3Aleft%3BCX%3AGoogleBlackSearch%3BL%3Ahttp%3A%2F%2Fwww.google.com%2Fintl%2Fen%2Fimages%2Flogos%2Fcustom_search_logo_sm.gif%3BLH%3A30%3BLP%3A1%3BBGC%3A%23000000%3BT%3A%23ffffff%3BLC%3A%23008000%3BVLC%3A%2380ff00%3BGALT%3A%236f3c1b%3B&adkw=AELymgUvdaM8nU5n2tFte9c3we-XSQO146-wrqSqKoc_EeT1Af2TYUBtyH5YXsbKW9kVciGANHu1ixxAhIZRFHvWXqlj_4H-xAaU0CtJqzbtEjXILU5ETnL8n7T7u75eTDU4atKzzDJmZb3NGuvBBZN2cacxWvoKWBGc8hvpw12C8Slqnhf9usk0EP9ISXOXrZ_4a-TVA9xy&channel=1293889023&ie=ISO-8859-1&oe=ISO-8859-1&q=%s&btnG=Search&cx=partner-pub-6071644646659036%3A5wqdrnju8wy');
 //              "Search");
 
-define_webjump("search",
-               "https://www.google.co.in/search?q=%s&hl=en&source=hp&aq=f&aqi=g10&aql=&oq=&gs_rfai=");
+define_webjump("search", "https://www.google.com/search?q=%s");
 //              "Google");
 
 // I'm Feeling Lucky.

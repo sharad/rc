@@ -31,7 +31,7 @@
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-packageS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-package-packages
@@ -41,7 +41,9 @@
     (apt :location local)
     (apt-elserv :location local)
     (elget :location local)
-    (helm-apt :location local))
+    (helm-apt :location local)
+    (package :location local)
+    (package-x :location local))
   "The list of Lisp packages required by the lotus-package layer.
 
 Each entry is either:
@@ -237,5 +239,25 @@ Each entry is either:
 
       ;; install new packages and init already installed packages
       (el-get 'sync))))
+
+(defun lotus-package/post-init-package ()
+  (use-package package
+      :defer t
+      :config
+      (progn
+        (progn
+          (push
+           '("local" . "~/.xemacs/elpa/upload")
+           package-archives)))))
+
+(defun lotus-package/init-package-x ()
+  (use-package package-x
+      :defer t
+      :commands (package-upload-file package-upload-buffer)
+      :config
+      (progn
+        (setq
+         package-archive-upload-base
+         "~/.xemacs/elpa/upload"))))
 
 ;;; packages.el ends here
