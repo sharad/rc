@@ -37,16 +37,16 @@
 (defconst lotus-orgclocktask-packages
   '(
     ;; (PACKAGE :location local)
-    (org-clock-utils :location local)
+    org-clock-utils-lotus
     org-clock-daysummary
-    (org-clocktable-alt :location local)
-    (org-context-clocking :location local)
-    (org-misc-utils :location local)
+    (org-clocktable-alt :location local) ;TODO
+    org-context-clocking
+    org-misc-utils-lotus
     (org-nagora-report :location local)
     (org-timesheet :location local)
     (timesheet :location local)
     wakatime-mode
-    (task-manager :location local))
+    task-manager)
   "The list of Lisp packages required by the lotus-orgclocktask layer.
 
 Each entry is either:
@@ -74,8 +74,8 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-orgclocktask/init-org-clock-utils ()
-  (use-package org-clock-utils
+(defun lotus-orgclocktask/init-org-clock-utils-lotus ()
+  (use-package org-clock-utils-lotus
       :defer t
       :config
       (progn
@@ -153,8 +153,8 @@ Each entry is either:
        (org-context-clocking-uninsinuate))
      t)))
 
-(defun lotus-orgclocktask/init-org-misc-utils ()
-  (use-package org-misc-utils
+(defun lotus-orgclocktask/init-org-misc-utils-lotus ()
+  (use-package org-misc-utils-lotus
       :defer t
       :config
       (progn
