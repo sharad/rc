@@ -38,7 +38,7 @@
   '(
     ;; (PACKAGE :location local)
     (org-clock-utils :location local)
-    (org-clock-daysummary :location local)
+    org-clock-daysummary
     (org-clocktable-alt :location local)
     (org-context-clocking :location local)
     (org-misc-utils :location local)
