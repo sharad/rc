@@ -1,4 +1,4 @@
-;;; sessions-mgr.el --- session setting
+;;; sessions-unified.el --- session setting
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -63,17 +63,17 @@
   "feature that were disabled for proper restoring of desktop will get re-enabled here.")
 
 (eval-when-compile
-  (defvar session-mgr-utils-notify nil)
-  (unless (null 'session-mgr-utils-notify)
-    (setq session-mgr-utils-notify
+  (defvar sessions-unified-utils-notify nil)
+  (unless (null 'sessions-unified-utils-notify)
+    (setq sessions-unified-utils-notify
           (lambda (title fmt &rest args)
             (concat title ": "
                     (apply 'message fmt args))))))
 
-(defvar session-mgr-utils-notify nil)
+(defvar sessions-unified-utils-notify nil)
 
-(unless (null 'session-mgr-utils-notify)
-  (setq session-mgr-utils-notify
+(unless (null 'sessions-unified-utils-notify)
+  (setq sessions-unified-utils-notify
         (lambda (title fmt &rest args)
           (concat title ": "
                   (apply 'message fmt args)))))
@@ -265,7 +265,7 @@
                 (let ((bufs (mapcar
                              '(lambda (bl) (nth 2 bl))
                              desktop-buffers)))
-                  (funcall session-mgr-utils-notify "elscreen-session-session-list-set"
+                  (funcall sessions-unified-utils-notify "elscreen-session-session-list-set"
                                   "Please wait I am busy to restore %d\nbuffers %s"
                                   (length desktop-buffers) bufs)
                   (let ((desktop-buffer-ok-count 0)
@@ -290,7 +290,7 @@
                                       (message "Hello 2")
                                       (message "restored %s" bufname)))
                                 (message "bufname: %s is not string" bufname))))))
-                  (funcall session-mgr-utils-notify "elscreen-session-session-list-set"
+                  (funcall sessions-unified-utils-notify "elscreen-session-session-list-set"
                                   "Restored %d\nbuffers %s"
                                   (length desktop-buffers) bufs))
                 (message "No desktop-buffers"))
@@ -610,16 +610,16 @@
           (display-about-screen)
           nframe)
         (progn
-          (funcall session-mgr-utils-notify
+          (funcall sessions-unified-utils-notify
            "frame-session-restore"
            "not restoring screen session.")
           (if *desktop-vc-read-inprogress*
-              (funcall session-mgr-utils-notify
+              (funcall sessions-unified-utils-notify
                "frame-session-restore"
                "as desktop restore is in progress *desktop-vc-read-inprogress* %s"
                *desktop-vc-read-inprogress*))
           (if (null *frame-session-restore*)
-              (funcall session-mgr-utils-notify
+              (funcall sessions-unified-utils-notify
                "frame-session-restore"
                "as another frame session restore in progress *frame-session-restore* %s"
                *frame-session-restore*)))))
@@ -906,7 +906,7 @@ Also returns nil if pid is nil."
 
   (defun desktop-vc-read (&optional desktop-save-filename)
     (interactive "fdesktop file: ")
-    (funcall session-mgr-utils-notify "desktop-vc-read" "desktop-restore-eager value is %s" desktop-restore-eager)
+    (funcall sessions-unified-utils-notify "desktop-vc-read" "desktop-restore-eager value is %s" desktop-restore-eager)
     (let* ((desktop-save-filename (or desktop-save-filename *desktop-save-filename*))
            (desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
       (prog1
@@ -927,7 +927,7 @@ Also returns nil if pid is nil."
 
             (setq *desktop-vc-read-inprogress* nil)
             (message "desktop read failed."))
-        (funcall session-mgr-utils-notify "desktop-vc-read" "finished."))))
+        (funcall sessions-unified-utils-notify "desktop-vc-read" "finished."))))
 
   ;; remove desktop after it's been read
   (add-hook 'desktop-after-read-hook
@@ -990,7 +990,7 @@ to restore in case of sudden emacs crash."
                           ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Save-Control.html#Auto-Save-Control
                           (> (float-time idle-time) save-all-sessions-auto-save-idle-time-interval-dynamic)))
                     (progn
-                      (funcall session-mgr-utils-notify "save-all-sessions-auto-save" "Started to save frame desktop and session.\ncurrent time %s, idle time %d idle-time-interval left %d"
+                      (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Started to save frame desktop and session.\ncurrent time %s, idle time %d idle-time-interval left %d"
                                       (format-time-string time-format save-all-sessions-auto-save-time)
                                       (float-time idle-time)
                                       save-all-sessions-auto-save-idle-time-interval-dynamic)
@@ -1005,23 +1005,23 @@ to restore in case of sudden emacs crash."
                             (save-all-frames-session)
                             (session-vc-save-session)
                             (my-desktop-save)
-                            (funcall session-mgr-utils-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
+                            (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
                             (message nil))
                           (condition-case e
                               (progn
                                 (save-all-frames-session)
                                 (session-vc-save-session)
                                 (my-desktop-save)
-                                (funcall session-mgr-utils-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
+                                (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Saved frame desktop and session.")
                                 (message nil))
                             ('error
                              (progn
                                ;; make after 2 errors.
-                               (funcall session-mgr-utils-notify "save-all-sessions-auto-save" "Error: %s" e)
+                               (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Error: %s" e)
                                (1+ *my-desktop-save-error-count* )
                                (unless(< *my-desktop-save-error-count* *my-desktop-save-max-error-count*)
                                  (setq *my-desktop-save-error-count* 0)
-                                 (funcall session-mgr-utils-notify "save-all-sessions-auto-save" "Error %s" e)
+                                 (funcall sessions-unified-utils-notify "save-all-sessions-auto-save" "Error %s" e)
                                  (sharad/disable-session-saving)))))))
                     (setq save-all-sessions-auto-save-idle-time-interval-dynamic
                           (1- save-all-sessions-auto-save-idle-time-interval-dynamic))))
@@ -1057,14 +1057,14 @@ to restore in case of sudden emacs crash."
     (interactive)
     (remove-hook 'auto-save-hook 'save-all-sessions-auto-save)
     (remove-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
-    (funcall session-mgr-utils-notify "sharad/disable-session-saving"  "Removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook"))
+    (funcall sessions-unified-utils-notify "sharad/disable-session-saving"  "Removed save-all-sessions-auto-save from auto-save-hook and kill-emacs-hook"))
 
 
   (defun sharad/enable-session-saving-immediately ()
     (interactive)
     (add-hook 'auto-save-hook 'save-all-sessions-auto-save)
     (add-hook 'kill-emacs-hook '(lambda () (save-all-sessions-auto-save t)))
-    (funcall session-mgr-utils-notify "sharad/enable-session-saving" "Added save-all-sessions-auto-save to auto-save-hook and kill-emacs-hook"))
+    (funcall sessions-unified-utils-notify "sharad/enable-session-saving" "Added save-all-sessions-auto-save to auto-save-hook and kill-emacs-hook"))
 
   (defun sharad/enable-session-saving ()
     ;; (if (or
@@ -1127,7 +1127,7 @@ If there are no buffers left to create, kill the timer."
 
   (defadvice desktop-idle-create-buffers (after desktop-idle-complete-actions)
     (unless desktop-buffer-args-list
-      (funcall session-mgr-utils-notify "desktop-idle-complete-actions"
+      (funcall sessions-unified-utils-notify "desktop-idle-complete-actions"
                       "Enable session saving")
       (sharad/enable-session-saving-immediately)
       (progn
@@ -1161,11 +1161,11 @@ If there are no buffers left to create, kill the timer."
               (*constructed-name-desktop-save-filename*
                (concat "^" (getenv "HOME") "/.emacs.d/.cache/autoconfig/desktop/emacs-desktop-" server-name)))
           (setq debug-on-error t)
-          (funcall session-mgr-utils-notify "sharad/desktop-session-restore" "entering sharad/desktop-session-restore")
+          (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "entering sharad/desktop-session-restore")
 
           (if (not (string-match *constructed-name-desktop-save-filename* *desktop-save-filename*))
               (progn
-                (funcall session-mgr-utils-notify "sharad/desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s"
+                (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s"
                                 *constructed-name-desktop-save-filename*
                                 *desktop-save-filename*)
                 (if (y-or-n-p (format "sharad/desktop-session-restore" "*desktop-save-filename* is not equal to %s but %s\nshould continue with it ? "
@@ -1176,12 +1176,12 @@ If there are no buffers left to create, kill the timer."
 
               (progn
                 (unless (sharad/desktop-saved-session)
-                  (funcall session-mgr-utils-notify "sharad/desktop-session-restore" "%s not found so trying to checkout it." *desktop-save-filename*)
+                  (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "%s not found so trying to checkout it." *desktop-save-filename*)
                   (vc-checkout-file *desktop-save-filename*))
 
                 (if (sharad/desktop-saved-session)
                     (progn
-                      (funcall session-mgr-utils-notify "sharad/desktop-session-restore" "sharad/desktop-session-restore")
+                      (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "sharad/desktop-session-restore")
                       (progn            ;remove P4
                        (setq vc-handled-backends (remove 'P4 vc-handled-backends))
                        (add-hook 'sharad/enable-desktop-restore-interrupting-feature
@@ -1191,16 +1191,16 @@ If there are no buffers left to create, kill the timer."
 
                           (if (desktop-vc-read *desktop-save-filename*)
                               (progn
-                                (funcall session-mgr-utils-notify "sharad/desktop-session-restore" "desktop loaded successfully :)")
+                                (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "desktop loaded successfully :)")
                                 (sharad/enable-session-saving)
-                                (funcall session-mgr-utils-notify "sharad/desktop-session-restore" "Do you want to set session of frame? ")
+                                (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "Do you want to set session of frame? ")
                                 (when (y-or-n-p-with-timeout
                                        "Do you want to set session of frame? "
                                        10 t)
                                   (let ((*frame-session-restore* t))
                                     (frame-session-restore (selected-frame)))))
                               (progn
-                                (funcall session-mgr-utils-notify "sharad/desktop-session-restore" "desktop loading failed :(")
+                                (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "desktop loading failed :(")
                                 (run-at-time "1 sec" nil '(lambda () (insert "sharad/desktop-session-restore")))
                                 (execute-extended-command nil)
                                 nil))
@@ -1209,29 +1209,29 @@ If there are no buffers left to create, kill the timer."
                               (if (let ((desktop-restore-in-progress t))
                                     (desktop-vc-read *desktop-save-filename*))
                                   (progn
-                                    (funcall session-mgr-utils-notify "sharad/desktop-session-restore" "desktop loaded successfully :)")
+                                    (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "desktop loaded successfully :)")
                                     (sharad/enable-session-saving))
                                   (progn
-                                    (funcall session-mgr-utils-notify "sharad/desktop-session-restore" "desktop loading failed :(")
+                                    (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "desktop loading failed :(")
                                     nil))
                             ('error
-                             (funcall session-mgr-utils-notify "sharad/desktop-session-restore" "Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
-                             (funcall session-mgr-utils-notify "sharad/desktop-session-restore" "Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e)
+                             (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "Error in desktop-read: %s\n not adding save-all-sessions-auto-save to auto-save-hook" e)
+                             (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "Error in desktop-read: %s try it again by running M-x sharad/desktop-session-restore" e)
                              (run-at-time "1 sec" nil '(lambda () (insert "sharad/desktop-session-restore")))
                              (condition-case e
                                  (execute-extended-command nil)
                                ('error (message "M-x sharad/desktop-session-restore %s" e))))))
                       t)
                     (when (y-or-n-p
-                           (funcall session-mgr-utils-notify "sharad/desktop-session-restore"
+                           (funcall sessions-unified-utils-notify "sharad/desktop-session-restore"
                                            "No desktop found. or you can check out old %s from VCS.\nShould I enable session saving in auto save, at kill-emacs ?"
                                            *desktop-save-filename*))
                       (sharad/enable-session-saving)))
                 (let ((enable-recursive-minibuffers t))
                   (when t ;(y-or-n-p-with-timeout "Do you want to set session of frame? " 7 t)
                     (frame-session-restore (selected-frame) t)))
-                (funcall session-mgr-utils-notify "sharad/desktop-session-restore" "leaving sharad/desktop-session-restore"))))
-        (funcall session-mgr-utils-notify "sharad/desktop-session-restore" "desktop-get-desktop-save-filename failed")))
+                (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "leaving sharad/desktop-session-restore"))))
+        (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "desktop-get-desktop-save-filename failed")))
 
   ;; (add-hook 'session-before-save-hook
   ;;           'my-desktop-save)
@@ -1618,5 +1618,5 @@ It returns t if a desktop file was loaded, nil otherwise."
 
 
 
-(provide 'sessions-mgr)
+(provide 'sessions-unified)
 ;;; session-config.el ends here

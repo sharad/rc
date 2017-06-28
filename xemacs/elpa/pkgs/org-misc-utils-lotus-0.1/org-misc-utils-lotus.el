@@ -1,4 +1,4 @@
-;;; org-misc-utils.el --- copy config
+;;; org-misc-utils-lotus.el --- copy config
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -314,5 +314,5 @@ With prefix arg C-u, copy region instad of killing it."
         (move-marker org-log-note-marker nil)
         (and org-log-post-message (message "%s" org-log-post-message)))))
 
-(provide 'org-misc-utils)
-;;; org-misc-utils.el ends here
+(provide 'org-misc-utils-lotus)
+;;; org-misc-utils-lotus.el ends here

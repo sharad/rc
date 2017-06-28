@@ -39,7 +39,7 @@
     (utils-custom :location local)
     (init-setup :location local)
     (startup-hooks :location local)
-    (sessions-mgr :location local)
+    sessions-unified
     elscreen
     )
   "The list of Lisp packages required by the basic-startup layer.
@@ -91,9 +91,9 @@ Each entry is either:
       (progn
         )))
 
-(defun basic-startup/init-sessions-mgr ()
+(defun basic-startup/init-sessions-unified ()
   (use-package startup-hooks)
-  (use-package sessions-mgr
+  (use-package sessions-unified
       ;; :ensure t
       :demand t
       :commands 'sharad/desktop-session-restore
@@ -122,7 +122,7 @@ Each entry is either:
 
         (progn
           (with-eval-after-load "utils-custom"
-            (setq session-mgr-utils-notify 'message-notify)))
+            (setq sessions-unified-utils-notify 'message-notify)))
         (progn
           ;; (add-hook
           ;;  'sharad/enable-startup-interrupting-feature-hook

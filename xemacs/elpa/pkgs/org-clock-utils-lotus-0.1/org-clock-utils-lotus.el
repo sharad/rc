@@ -1,4 +1,4 @@
-;;; org-clock-utils.el --- copy config
+;;; org-clock-utils-lotus.el --- copy config
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -168,5 +168,5 @@ using three `C-u' prefix arguments."
                   (org-timer-set-mode-line 'on))
                 (message "No timer set")))))))
 
-(provide 'org-clock-utils)
-;;; org-clock-utils.el ends here
+(provide 'org-clock-utils-lotus)
+;;; org-clock-utils-lotus.el ends here
