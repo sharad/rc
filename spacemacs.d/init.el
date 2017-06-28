@@ -400,6 +400,7 @@ you should place your code here."
      (folded-file . t)
      (elixir-enable-compilation-checking . t)
      (elixir-enable-compilation-checking))))
+ '(send-mail-function (quote sendmail-send-it))
  '(session-use-package t nil (session)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
