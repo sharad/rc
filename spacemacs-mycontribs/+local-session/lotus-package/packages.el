@@ -256,6 +256,18 @@ Each entry is either:
       :commands (package-upload-file package-upload-buffer)
       :config
       (progn
+
+        (defun package-build-package-tar ()
+          ;; version is today date
+          )
+
+        (defun package-upload-package-tar ()
+          ;; version is today date
+          )
+
+        (defun package-install-package-tar ())
+
+
         (setq
          package-archive-upload-base
          "~/.xemacs/elpa/upload"))))
