@@ -344,7 +344,7 @@ Each entry is either:
               (tags-todo "HOME")
               (tags-todo "COMPUTER"))))
 
-          (require 'org-publishing)
+          ;; (require 'org-publishing)
 
           (when nil                     ;moved to lotus-publishing
             (use-package org-publishing
@@ -506,7 +506,7 @@ Each entry is either:
       :config
       (progn
         (eval-when-compile
-          (require 'org-misc-utils))
+          (require 'org-misc-utils-lotus))
 
         (progn
           (setq

@@ -423,4 +423,9 @@ define ee
   source ~/.eev/ee.gdb
 end
 #
+
+
+handle SIGUSR1 noprint nostop
+
+
 # End of the eev block.

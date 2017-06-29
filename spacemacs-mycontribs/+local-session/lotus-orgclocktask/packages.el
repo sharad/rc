@@ -84,7 +84,7 @@ Each entry is either:
 (defun lotus-orgclocktask/init-org-clock-daysummary ()
   (use-package org-clock-daysummary
       ;; :defer t
-      :demand t
+      :defer t
       :commands (org-clock-work-day-mode-line-add)
       :config
       (progn

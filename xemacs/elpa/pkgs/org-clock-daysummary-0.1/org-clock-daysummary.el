@@ -30,7 +30,6 @@
 
 ;; (require 'mode-line-config)
 
-(require 'org-publishing)
 (require 'file-utils)
 
 (defvar org-clock-work-day-hours 8 "work day hours")

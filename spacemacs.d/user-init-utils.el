@@ -108,6 +108,10 @@
   (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path)
 
+  (push
+   '("local" . "~/.xemacs/elpa/upload")
+   package-archives)
+
   (require 'basic-utils)
 
   (defvar *emacs-in-init* t "Emacs is in init.")

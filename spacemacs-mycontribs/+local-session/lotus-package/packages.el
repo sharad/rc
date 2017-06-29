@@ -240,15 +240,15 @@ Each entry is either:
       ;; install new packages and init already installed packages
       (el-get 'sync))))
 
-(defun lotus-package/post-init-package ()
+(defun lotus-package/init-package ()
   (use-package package
-      :defer t
-      :config
+    :defer t
+    :config
+    (progn
       (progn
-        (progn
-          (push
-           '("local" . "~/.xemacs/elpa/upload")
-           package-archives)))))
+        (push
+         '("local" . "~/.xemacs/elpa/upload")
+         package-archives)))))
 
 (defun lotus-package/init-package-x ()
   (use-package package-x

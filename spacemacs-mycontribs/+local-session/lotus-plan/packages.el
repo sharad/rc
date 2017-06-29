@@ -116,8 +116,8 @@ Each entry is either:
 
 (defun lotus-plan/init-planner ()
   (use-package planner
-      ;; :defer t
-      :demand t
+    :defer t
+
       :commands (plan)
       :config
       (progn
@@ -179,7 +179,7 @@ Each entry is either:
                                 :path ,local-planner-output-directory))))
                     (error "planner directory `%s' do not exists" local-planner-directory)))))
 
-        (require 'muse-publishing)
+        ;; (require 'muse-publishing)
 
         ;; (debug)
 
