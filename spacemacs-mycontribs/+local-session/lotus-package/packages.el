@@ -259,12 +259,10 @@ Each entry is either:
 
         (defun package-build-package-tar (dir)
           (interactive
-           (let ((dir (read-directory-name "package directory: ")))))
+           (let ((dir (read-directory-name "package directory: ")))
+             (list dir)))
           ;; version is today date
-          (let* ((dir-of-current-file
-                  (if (buffer-file-name)
-                      (directory-file-name
-                       (file-name-directory (buffer-file-name)))))
+          (let* ((dir-of-current-file (directory-file-name dir))
                  (pkg-name-version
                   (file-name-nondirectory dir-of-current-file))
                  (pkg-name
@@ -326,24 +324,41 @@ Each entry is either:
                   (write-file pkgdir-def-file)))
               (let ((default-directory tmp-dir))
                 (if (shell-command
-                     (format "tar czf %s/%s-%s.tar.gz -C %s %s-%s"
+                     (format "tar cf %s/%s-%s.tar -C %s %s-%s"
                              tmp-dir pkg-name version
                              tmp-dir
                              pkg-name version))
-                    (format "%s/%s-%s.tar.gz"
+                    (format "%s/%s-%s.tar"
                             tmp-dir pkg-name version))))))
 
+        (defun package-upload-package-tar (dir)
+          (interactive
+           (let ((dir (read-directory-name "package directory: ")))
+             (list dir)))
+          (let* ((pkg-tar (package-build-package-tar dir))
+                 (pkg-name
+                  (replace-regexp-in-string
+                   "-[0-9\.]\*\.tar\\(\.gz\\)?\$" "" pkg-tar)))
+            (when (string= (file-name-extension pkg-tar) "tar")
+              (package-upload-file pkg-tar)
+              (if (file-directory-p package-archive-upload-base)
+                  (progn
+                    (message "copy %s %s"
+                             pkg-tar
+                             package-archive-upload-base)
+                    (copy-file pkg-tar
+                               package-archive-upload-base
+                               t))
+                  (message "package-archive-upload-base not exists."))
+              (package-refresh-contents))
+            pkg-name))
 
-
-
-
-
-
-        (defun package-upload-package-tar ()
-          ;; version is today date
-          )
-
-        (defun package-install-package-tar ())
+        (defun package-install-package-tar (dir)
+          (interactive
+           (let ((dir (read-directory-name "package directory: ")))
+             (list dir)))
+          (let ((pkg-name (package-upload-package-tar dir)))
+            (package-install pkg-name)))
 
 
         (setq
