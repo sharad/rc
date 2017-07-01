@@ -257,9 +257,87 @@ Each entry is either:
       :config
       (progn
 
-        (defun package-build-package-tar ()
+        (defun package-build-package-tar (dir)
+          (interactive
+           (let ((dir (read-directory-name "package directory: ")))))
           ;; version is today date
-          )
+          (let* ((dir-of-current-file
+                  (if (buffer-file-name)
+                      (directory-file-name
+                       (file-name-directory (buffer-file-name)))))
+                 (pkg-name-version
+                  (file-name-nondirectory dir-of-current-file))
+                 (pkg-name
+                  (replace-regexp-in-string
+                   "-[0-9\.]\*\$" "" pkg-name-version))
+                 (version (format-time-string "%Y%m.%H%M"))
+                 (currdir-pkg-def-file
+                  (expand-file-name
+                   (format "%s-pkg.el" pkg-name)
+                   dir-of-current-file))
+                 (pkg-def
+                  (let ((pkg-def-file
+                         currdir-pkg-def-file))
+                  (if (file-exists-p pkg-def-file)
+                      (car
+                       (read-from-string
+                        (with-temp-buffer
+                          (insert-file-contents-literally pkg-def-file)
+                          (let ((contents
+                                 (condition-case e
+                                     ;; (read (current-buffer))
+                                     (buffer-string)
+                                   ('end-of-file nil))))
+                            contents))))
+                      `(define-package ,pkg-name ,version ni nil))))
+                 (tmp-dir (expand-file-name "elpa" (getenv "TMP")))
+                 (pkg-dir
+                  (expand-file-name
+                   (format "%s-%s" pkg-name version)
+                   tmp-dir)))
+            (when
+                (or (file-exists-p currdir-pkg-def-file)
+                    (y-or-n-p
+                     (format "Do you want to make package of %s from %s: "
+                             pkg-name
+                             dir-of-current-file)))
+              (copy-directory dir-of-current-file pkg-dir nil t t)
+              (progn
+                (setcar (nthcdr 2 pkg-def) version)
+                (unless (nth 3 pkg-def)
+                  (let ((desc
+                         (read-from-minibuffer (formet "package %s desc: " pkg-name))))
+                    (setcar (nthcdr 3 pkg-def) desc)))
+                (unless (nth 4 pkg-def)
+                  (let ((dep
+                         (read-from-string (read-from-minibuffer (formet "package %s dependency: " pkg-name)))))
+                    (setcar (nthcdr 4 pkg-def) dep))))
+              (let ((pkgdir-def-file (expand-file-name (format "%s-pkg.el" pkg-name) pkg-dir)))
+                (with-current-buffer
+                    (or (find-buffer-visiting pkgdir-def-file)
+                        (find-file-noselect pkgdir-def-file))
+                  ;; (expand-file-name (format "%s-pkg.el" pkg-name) pkg-dir)
+                  (set-buffer-file-coding-system
+                   (if (coding-system-p 'utf-8-emacs)
+                       'utf-8-emacs
+                       'emacs-mule))
+                  (erase-buffer)
+                  (insert (prin1-to-string pkg-def))
+                  (write-file pkgdir-def-file)))
+              (let ((default-directory tmp-dir))
+                (if (shell-command
+                     (format "tar czf %s/%s-%s.tar.gz -C %s %s-%s"
+                             tmp-dir pkg-name version
+                             tmp-dir
+                             pkg-name version))
+                    (format "%s/%s-%s.tar.gz"
+                            tmp-dir pkg-name version))))))
+
+
+
+
+
+
 
         (defun package-upload-package-tar ()
           ;; version is today date
