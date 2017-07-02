@@ -43,7 +43,8 @@
     (elget :location local)
     (helm-apt :location local)
     (package :location local)
-    (package-x :location local))
+    (package-x :location local)
+    package-dev-utils-lotus)
   "The list of Lisp packages required by the lotus-package layer.
 
 Each entry is either:
@@ -245,213 +246,23 @@ Each entry is either:
       :defer t
       :config
       (progn
-        (progn
-          (push
-           '("local" . "~/.xemacs/elpa/upload")
-           package-archives))
+        ;; (progn
+        ;;   (push
+        ;;    '("local" . "~/.xemacs/elpa/upload")
+        ;;    package-archives))
 
         (progn
 
-          (defvar package-source-path "~/.xemacs/elpa/pkgs")
+          (setq
+           package-source-path "~/.xemacs/elpa/pkgs"
+           package-local-dev-archive "local"
+           package-archive-upload-base "~/.xemacs/elpa/upload")
 
-          (defun package-make-package-desc (pkg-name &optional archive)
-            (let* ((archive (or archive "local"))
-                   (package (assoc
-                             (intern pkg-name)
-                             (let* ((contents-file (format "archives/%s/archive-contents" archive))
-                                    (contents (package--read-archive-file contents-file)))
-                               contents)))
-                     (name (car package))
-                     (version (package--ac-desc-version (cdr package)))
-                     (pkg-desc
-                      (package-desc-create
-                       :name name
-                       :version version
-                       :reqs (package--ac-desc-reqs (cdr package))
-                       :summary (package--ac-desc-summary (cdr package))
-                       :kind (package--ac-desc-kind (cdr package))
-                       :archive archive
-                       :extras (and (> (length (cdr package)) 4)
-                                    ;; Older archive-contents files have only 4
-                                    ;; elements here.
-                                    (package--ac-desc-extras (cdr package)))))
-                     ;; (existing-packages (assq name package-archive-contents))
-                     ;; (pinned-to-archive (assoc name package-pinned-packages))
-                     )
-              pkg-desc))
-
-          (defun package-build-package-dir (dir)
-            (interactive
-             (let ((dir (read-directory-name "package directory: ")))
-               (list dir)))
-            ;; version is today date
-            (let* ((dir-of-current-file (directory-file-name dir))
-                   (pkg-name-version
-                    (file-name-nondirectory dir-of-current-file))
-                   (pkg-name
-                    (replace-regexp-in-string
-                     "-[0-9\.]\*\$" "" pkg-name-version))
-                   (version (format-time-string "%Y%m.%H%M"))
-                   (currdir-pkg-def-file
-                    (expand-file-name
-                     (format "%s-pkg.el" pkg-name)
-                     dir-of-current-file))
-                   (pkg-def
-                    (let ((pkg-def-file
-                           currdir-pkg-def-file))
-                      (if (file-exists-p pkg-def-file)
-                          (car
-                           (read-from-string
-                            (with-temp-buffer
-                              (insert-file-contents-literally pkg-def-file)
-                              (let ((contents
-                                     (condition-case e
-                                         ;; (read (current-buffer))
-                                         (buffer-string)
-                                       ('end-of-file nil))))
-                                contents))))
-                          `(define-package ,pkg-name ,version ni nil))))
-                   (tmp-dir (expand-file-name "elpa" (getenv "TMP")))
-                   (pkg-dir
-                    (expand-file-name
-                     (format "%s-%s" pkg-name version)
-                     tmp-dir)))
-              (when
-                  (or (file-exists-p currdir-pkg-def-file)
-                      (y-or-n-p
-                       (format "Do you want to make package of %s from %s: "
-                               pkg-name
-                               dir-of-current-file)))
-                (copy-directory dir-of-current-file pkg-dir nil t t)
-
-                (when (file-directory-p package-source-path)
-                  (unless (string-match-p
-                           (concat "^"
-                                   (regexp-quote
-                                    (file-truename package-source-path)))
-                           (file-truename dir-of-current-file))
-                    (copy-directory
-                     dir-of-current-file
-                     (expand-file-name pkg-name package-source-path)
-                     nil t t)))
-
-                (progn
-                  (setcar (nthcdr 2 pkg-def) version)
-                  (unless (nth 3 pkg-def)
-                    (let ((desc
-                           (read-from-minibuffer (formet "package %s desc: " pkg-name))))
-                      (setcar (nthcdr 3 pkg-def) desc)))
-                  (unless (nth 4 pkg-def)
-                    (let ((dep
-                           (read-from-string (read-from-minibuffer (formet "package %s dependency: " pkg-name)))))
-                      (setcar (nthcdr 4 pkg-def) dep))))
-                (let ((pkgdir-def-file (expand-file-name (format "%s-pkg.el" pkg-name) pkg-dir)))
-                  (with-current-buffer
-                      (or (find-buffer-visiting pkgdir-def-file)
-                          (find-file-noselect pkgdir-def-file))
-                    ;; (expand-file-name (format "%s-pkg.el" pkg-name) pkg-dir)
-                    (set-buffer-file-coding-system
-                     (if (coding-system-p 'utf-8-emacs)
-                         'utf-8-emacs
-                         'emacs-mule))
-                    (erase-buffer)
-                    (insert (prin1-to-string pkg-def))
-                    (write-file pkgdir-def-file))
-
-                  ;; TODO: copy pkgdir-def-file dir-of-current-file/*-pkg.el
-                  (copy-file pkgdir-def-file currdir-pkg-def-file t)
-
-                  (let ((pkgdir-def-file-buff (find-buffer-visiting pkgdir-def-file)))
-                    (when pkgdir-def-file-buff (kill-buffer pkgdir-def-file-buff))))
-                (let ((default-directory tmp-dir))
-                  (if (shell-command
-                       (format "tar cf %s/%s-%s.tar -C %s %s-%s"
-                               tmp-dir pkg-name version
-                               tmp-dir
-                               pkg-name version))
-                      (format "%s/%s-%s.tar"
-                              tmp-dir pkg-name version))))))
-
-          (defun package-upload-package-dir (dir)
-            (interactive
-             (let ((dir (read-directory-name "package directory: ")))
-               (list dir)))
-            (let* ((pkg-tar (package-build-package-dir dir))
-                   (pkg-name
-                    (replace-regexp-in-string
-                     "-[0-9\.]\*\.tar\\(\.gz\\)?\$" ""
-                     (file-name-nondirectory pkg-tar))))
-              (when (string= (file-name-extension pkg-tar) "tar")
-                (package-upload-file pkg-tar)
-                (if (file-directory-p package-archive-upload-base)
-                    (progn
-                      (let ((old-pkgs (directory-files
-                                       package-archive-upload-base
-                                       t
-                                       (concat (regexp-quote pkg-name) "-[0-9\.]\+\.tar"))))
-                        (dolist (op old-pkgs)
-                          (delete-file op)))
-                      (message "copy %s %s"
-                               pkg-tar
-                               package-archive-upload-base)
-                      (copy-file pkg-tar
-                                 package-archive-upload-base
-                                 t))
-                    (message "package-archive-upload-base not exists."))
-                (package-refresh-contents))
-              (package-make-package-desc pkg-name "local")))
-
-          (defun package-install-package-dir (dir)
-            (interactive
-             (let ((dir (read-directory-name "package directory: ")))
-               (list dir)))
-            (let* ((pkg-desc (package-upload-package-dir dir))
-                   (pkg-sym (package-desc-name pkg-desc))
-                   (pkg-name (symbol-name pkg-sym)))
-              (when (package-installed-p pkg-sym)
-                (ignore-errors
-                 (package-delete pkg-desc)))
-              (let ((old-installed-pkgs (directory-files
-                               package-user-dir
-                               t
-                               (concat (regexp-quote pkg-name) "-[0-9\.]\+"))))
-                (dolist (oipdir old-installed-pkgs)
-                  (delete-directory oipdir t)))
-              (message "installing package %s" pkg-sym)
-              (package-install pkg-desc)))))))
-
-(when nil
-
-  (package-desc-name (package-make-package-desc "sessions-unified" "local"))
-
-  (package-install 'sessions-unified)
-
-  (package-delete (package-make-package-desc "org-context-clocking" "local"))
-
-  (package-install (package-make-package-desc "sessions-unified" "local"))
-
-  (package-delete (package-make-package-desc "sessions-unified" "local"))
-
-  (package-delete 'sessions-unified)
-
-  (package-read-archive-contents "local")
-
-  package-archives
-
-  (package-read-all-archive-contents)
-
-  (intern "xxx")
-
-  (package- 'semi)
-
-  (package-installed-p )
-
-  (package-install "semi")
-
-  (symbol-name (package-desc-name (package-make-package-desc "sessions-unified")))
-
-  (assoc 'sessions-unified (package--read-archive-file
-                            (expand-file-name "archive-contents" package-archive-upload-base))))
+          (when package-archive-upload-base
+            (unless (assoc package-local-dev-archive package-archives)
+              (push
+               (cons package-local-dev-archive package-archive-upload-base)
+               package-archives)))))))
 
 (defun lotus-package/init-package-x ()
   (use-package package-x
@@ -459,12 +270,27 @@ Each entry is either:
       :commands (package-upload-file package-upload-buffer)
       :config
       (progn
+        (progn
+          (setq
+           package-archive-upload-base
+           "~/.xemacs/elpa/upload")))))
 
 
-
-
+(defun lotus-package/init-package-dev-utils-lotus ()
+  (use-package package-dev-utils-lotus
+      :defer t
+      ;; :commands (package-upload-file package-upload-buffer)
+      :config
+      (progn
         (setq
-         package-archive-upload-base
-         "~/.xemacs/elpa/upload"))))
+         package-source-path "~/.xemacs/elpa/pkgs"
+         package-local-dev-archive "local"
+         package-archive-upload-base "~/.xemacs/elpa/upload")
+
+        (when package-archive-upload-base
+          (unless (assoc package-local-dev-archive package-archives)
+            (push
+             (cons package-local-dev-archive package-archive-upload-base)
+             package-archives))))))
 
 ;;; packages.el ends here
