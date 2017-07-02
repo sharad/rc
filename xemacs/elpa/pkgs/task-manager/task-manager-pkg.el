@@ -1,4 +1,1 @@
-
-(define-package "task-manager" "0.1"
-  "task manager."
-  'nil)
+(define-package "task-manager" "201707.2029" "task manager." (quote nil))

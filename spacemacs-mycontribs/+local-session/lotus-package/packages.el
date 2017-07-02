@@ -357,8 +357,12 @@ Each entry is either:
                     (erase-buffer)
                     (insert (prin1-to-string pkg-def))
                     (write-file pkgdir-def-file))
+
+                  ;; TODO: copy pkgdir-def-file dir-of-current-file/*-pkg.el
+                  (copy-file pkgdir-def-file currdir-pkg-def-file t)
+
                   (let ((pkgdir-def-file-buff (find-buffer-visiting pkgdir-def-file)))
-                    (when buff (kill-buffer pkgdir-def-file-buff))))
+                    (when pkgdir-def-file-buff (kill-buffer pkgdir-def-file-buff))))
                 (let ((default-directory tmp-dir))
                   (if (shell-command
                        (format "tar cf %s/%s-%s.tar -C %s %s-%s"
@@ -372,7 +376,7 @@ Each entry is either:
             (interactive
              (let ((dir (read-directory-name "package directory: ")))
                (list dir)))
-            (let* ((pkg-tar (package-build-package-tar dir))
+            (let* ((pkg-tar (package-build-package-dir dir))
                    (pkg-name
                     (replace-regexp-in-string
                      "-[0-9\.]\*\.tar\\(\.gz\\)?\$" ""
@@ -401,30 +405,34 @@ Each entry is either:
             (interactive
              (let ((dir (read-directory-name "package directory: ")))
                (list dir)))
-            (let* ((pkg-desc (package-upload-package-tar dir))
+            (let* ((pkg-desc (package-upload-package-dir dir))
                    (pkg-sym (package-desc-name pkg-desc))
                    (pkg-name (symbol-name pkg-sym)))
               (when (package-installed-p pkg-sym)
-                (package-delete pkg-desc))
+                (ignore-errors
+                 (package-delete pkg-desc)))
               (let ((old-installed-pkgs (directory-files
                                package-user-dir
                                t
                                (concat (regexp-quote pkg-name) "-[0-9\.]\+"))))
                 (dolist (oipdir old-installed-pkgs)
                   (delete-directory oipdir t)))
-              (package-install pkg-sym)))))))
+              (message "installing package %s" pkg-sym)
+              (package-install pkg-desc)))))))
 
-(progn
+(when nil
 
   (package-desc-name (package-make-package-desc "sessions-unified" "local"))
 
   (package-install 'sessions-unified)
 
+  (package-delete (package-make-package-desc "org-context-clocking" "local"))
+
   (package-install (package-make-package-desc "sessions-unified" "local"))
 
   (package-delete (package-make-package-desc "sessions-unified" "local"))
 
-  (package-delete (package-make-package-desc "sessions-unified" "local"))
+  (package-delete 'sessions-unified)
 
   (package-read-archive-contents "local")
 
