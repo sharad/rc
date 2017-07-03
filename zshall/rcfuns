@@ -698,3 +698,15 @@ function sshaddkey() {
     fi  # if [ "x${SSH_AGENT_PID}" != "x" -a "x${SSH_AUTH_SOCK}" != "x" ] && # ssh-agent pid is not set
 }
 #}}
+
+
+##{{ Display
+
+function runmidscreen() {
+    clear
+    tput cup $(( $(tput lines) / 2 )) $(( $(tput cols) / 2 ))
+    $@
+    tput cup $(( $(tput lines) ))
+}
+
+##}}
