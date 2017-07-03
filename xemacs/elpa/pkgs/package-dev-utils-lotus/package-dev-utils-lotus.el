@@ -33,8 +33,8 @@
 ;;; Code:
 
 
-(require package)
-(require package-x)
+(require 'package)
+(require 'package-x)
 
 (defvar package-source-path "~/.xemacs/elpa/pkgs" "Source code path for packages.")
 (defvar package-local-dev-archive "local" "Local archive specified in package-archives")
@@ -46,6 +46,33 @@
   (push
    (cons package-local-dev-archive package-archive-upload-base)
    package-archives))
+
+(unless (functionp 'directory-files-recursively)
+  (defun directory-files-recursively (directory regexp &optional include-directories)
+    "Return all files under DIRECTORY whose names match REGEXP. This function searches the specified directory and its sub-directories, recursively, for files whose basenames (i.e., without the leading directories) match the specified regexp, and returns a list of the absolute file names of the matching files (see absolute file names). The file names are returned in depth-first order, meaning that files in some sub-directory are returned before the files in its parent directory. In addition, matching files found in each subdirectory are sorted alphabetically by their basenames. By default, directories whose names match regexp are omitted from the list, but if the optional argument INCLUDE-DIRECTORIES is non-nil, they are included"
+    (let* ((files-list '())
+           (current-directory-list
+            (directory-files directory t)))
+      ;; while we are in the current directory
+      (while current-directory-list
+        (let ((f (car current-directory-list)))
+          (cond
+            ((and
+              (file-directory-p f)
+              (file-readable-p f)
+              (if include-directories (not (string-match regexp f)) t)
+              (not (string-equal ".." (substring f -2)))
+              (not (string-equal "." (substring f -1))))
+             ;; recurse only if necessary
+             (setq files-list (append files-list (directory-files-recursively f regexp include-directories))))
+            ((and
+              (file-regular-p f)
+              (file-readable-p f)
+              (string-match regexp f))
+             (setq files-list (cons f files-list)))
+            (t)))
+        (setq current-directory-list (cdr current-directory-list)))
+      files-list)))
 
 (defun package-make-package-desc (pkg-name &optional archive)
   (let* ((archive (or archive package-local-dev-archive))
@@ -110,24 +137,30 @@
           (expand-file-name
            (format "%s-%s" pkg-name version)
            tmp-dir)))
-    (when
-        (or (file-exists-p currdir-pkg-def-file)
-            (y-or-n-p
-             (format "Do you want to make package of %s from %s: "
-                     pkg-name
-                     dir-of-current-file)))
+    (when (or (file-exists-p currdir-pkg-def-file)
+              (y-or-n-p
+               (format "Do you want to make package of %s from %s: "
+                       pkg-name
+                       dir-of-current-file)))
+
       (copy-directory dir-of-current-file pkg-dir nil t t)
 
-      (when (file-directory-p package-source-path)
-        (unless (string-match-p
-                 (concat "^"
-                         (regexp-quote
-                          (file-truename package-source-path)))
-                 (file-truename dir-of-current-file))
-          (copy-directory
-           dir-of-current-file
-           (expand-file-name pkg-name package-source-path)
-           nil t t)))
+      ;; TODO remove unwanted files
+
+      (dolist (f (directory-files-recursively pkg-dir "~\\'"))
+        (delete-file f))
+
+      (if (file-directory-p package-source-path)
+          (unless (string-match-p
+                   (concat "^"
+                           (regexp-quote
+                            (file-truename package-source-path)))
+                   (file-truename dir-of-current-file))
+            (copy-directory
+             dir-of-current-file
+             (expand-file-name pkg-name package-source-path)
+             nil t t))
+          (error "package-source-path do ot exists."))
 
       (progn
         (setcar (nthcdr 2 pkg-def) version)
@@ -192,7 +225,7 @@
             (copy-file pkg-tar
                        package-archive-upload-base
                        t))
-          (message "package-archive-upload-base not exists."))
+          (error "package-archive-upload-base not exists."))
       (package-refresh-contents))
     (package-make-package-desc pkg-name (or archive package-local-dev-archive))))
 
@@ -217,39 +250,69 @@
     (package-install pkg-desc)))
 
 
+;;;###autoload
+(defun package-build-packages-from-source-path ()
+  (interactive)
+  (let ((base package-source-path))
+    (dolist (f (directory-files base))
+      (let ((pkgdir (expand-file-name f base)))
+        (when (and (file-directory-p pkgdir)
+                   (not (equal f ".."))
+                   (not (equal f ".")))
+          (package-build-package-dir pkgdir))))))
+;;;###autoload
+(defun package-upload-packages-from-source-path ()
+  (interactive)
+  (let ((base package-source-path))
+    (dolist (f (directory-files base))
+      (let ((pkgdir (expand-file-name f base)))
+        (when (and (file-directory-p pkgdir)
+                   (not (equal f ".."))
+                   (not (equal f ".")))
+          (package-upload-package-dir pkgdir))))))
+;;;###autoload
+(defun package-install-packages-from-source-path ()
+  (interactive)
+  (let ((base package-source-path))
+    (dolist (f (directory-files base))
+      (let ((pkgdir (expand-file-name f base)))
+        (when (and (file-directory-p pkgdir)
+                   (not (equal f ".."))
+                   (not (equal f ".")))
+          (package-install-package-dir pkgdir))))))
 
 (when nil
+  '(
+    (package-desc-name (package-make-package-desc "sessions-unified" "local"))
 
-  (package-desc-name (package-make-package-desc "sessions-unified" "local"))
+    (package-install 'sessions-unified)
 
-  (package-install 'sessions-unified)
+    (package-delete (package-make-package-desc "org-context-clocking" "local"))
 
-  (package-delete (package-make-package-desc "org-context-clocking" "local"))
+    (package-install (package-make-package-desc "sessions-unified" "local"))
 
-  (package-install (package-make-package-desc "sessions-unified" "local"))
+    (package-delete (package-make-package-desc "sessions-unified" "local"))
 
-  (package-delete (package-make-package-desc "sessions-unified" "local"))
+    (package-delete 'sessions-unified)
 
-  (package-delete 'sessions-unified)
+    (package-read-archive-contents "local")
 
-  (package-read-archive-contents "local")
+    package-archives
 
-  package-archives
+    (package-read-all-archive-contents)
 
-  (package-read-all-archive-contents)
+    (intern "xxx")
 
-  (intern "xxx")
+    (package- 'semi)
 
-  (package- 'semi)
+    (package-installed-p )
 
-  (package-installed-p )
+    (package-install "semi")
 
-  (package-install "semi")
+    (symbol-name (package-desc-name (package-make-package-desc "sessions-unified")))
 
-  (symbol-name (package-desc-name (package-make-package-desc "sessions-unified")))
-
-  (assoc 'sessions-unified (package--read-archive-file
-                            (expand-file-name "archive-contents" package-archive-upload-base))))
+    (assoc 'sessions-unified (package--read-archive-file
+                              (expand-file-name "archive-contents" package-archive-upload-base)))))
 
 (provide 'package-dev-utils-lotus)
 ;;; package-dev-utils-lotus.el ends here

@@ -1,4 +1,1 @@
-
-(define-package "activity" "0.1"
-  "Activity."
-  'nil)
+(define-package "activity" "201707.2022" "Activity." (quote nil))
