@@ -9,7 +9,7 @@ APT_REPO_COMMPUNICATION="ppa:nilarimogard/webupd8"
 APT_REPO_UTILS="ppa:yartsa/lvmeject"
 
 
-DEB_PKG_NECESSARY="git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server rcs"
+DEB_PKG_NECESSARY="git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server rcs lxappearance gnome-tweak-tool gnome-themes-standard"
 DEB_PKGS1="vim emacs emacs-goodies-el org-mode develock-el"
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el p7zip-full pdftk golang gocode"
 DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip "
