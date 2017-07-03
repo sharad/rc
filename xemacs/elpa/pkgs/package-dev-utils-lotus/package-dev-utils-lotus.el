@@ -150,16 +150,17 @@
       (dolist (f (directory-files-recursively pkg-dir "~\\'"))
         (delete-file f))
 
-      (when (file-directory-p package-source-path)
-        (unless (string-match-p
-                 (concat "^"
-                         (regexp-quote
-                          (file-truename package-source-path)))
-                 (file-truename dir-of-current-file))
-          (copy-directory
-           dir-of-current-file
-           (expand-file-name pkg-name package-source-path)
-           nil t t)))
+      (if (file-directory-p package-source-path)
+          (unless (string-match-p
+                   (concat "^"
+                           (regexp-quote
+                            (file-truename package-source-path)))
+                   (file-truename dir-of-current-file))
+            (copy-directory
+             dir-of-current-file
+             (expand-file-name pkg-name package-source-path)
+             nil t t))
+          (error "package-source-path do ot exists."))
 
       (progn
         (setcar (nthcdr 2 pkg-def) version)
@@ -224,7 +225,7 @@
             (copy-file pkg-tar
                        package-archive-upload-base
                        t))
-          (message "package-archive-upload-base not exists."))
+          (error "package-archive-upload-base not exists."))
       (package-refresh-contents))
     (package-make-package-desc pkg-name (or archive package-local-dev-archive))))
 
@@ -249,6 +250,36 @@
     (package-install pkg-desc)))
 
 
+;;;###autoload
+(defun package-build-packages-from-source-path ()
+  (interactive)
+  (let ((base package-source-path))
+    (dolist (f (directory-files base))
+      (let ((pkgdir (expand-file-name f base)))
+        (when (and (file-directory-p pkgdir)
+                   (not (equal f ".."))
+                   (not (equal f ".")))
+          (package-build-package-dir pkgdir))))))
+;;;###autoload
+(defun package-upload-packages-from-source-path ()
+  (interactive)
+  (let ((base package-source-path))
+    (dolist (f (directory-files base))
+      (let ((pkgdir (expand-file-name f base)))
+        (when (and (file-directory-p pkgdir)
+                   (not (equal f ".."))
+                   (not (equal f ".")))
+          (package-upload-package-dir pkgdir))))))
+;;;###autoload
+(defun package-install-packages-from-source-path ()
+  (interactive)
+  (let ((base package-source-path))
+    (dolist (f (directory-files base))
+      (let ((pkgdir (expand-file-name f base)))
+        (when (and (file-directory-p pkgdir)
+                   (not (equal f ".."))
+                   (not (equal f ".")))
+          (package-install-package-dir pkgdir))))))
 
 (when nil
   '(
