@@ -33,6 +33,19 @@ else
 fi
 
 
+if [ -e ~/.stumpwm.d/debug-output.log ]
+then
+    # command rm -f ~/.stumpwm.d/debug-output.log
+    if [ -e ~/.stumpwm.d/debug-output.0.log ]
+    then
+        command mv ~/.stumpwm.d/debug-output.0.log ~/.stumpwm.d/debug-output.1.log
+    fi
+    command mv ~/.stumpwm.d/debug-output.log ~/.stumpwm.d/debug-output.0.log
+fi
+
+
+
+
 if whence -p xrdb >> ~/.xsession-errors 2>&1
 then
     m4 -I ~/.setup/m4 -I ~/.osetup/lib.d/m4.d -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init 2>/dev/null | xrdb -merge - >> ~/.xsession-errors 2>&1
@@ -45,7 +58,7 @@ fi
 
 # show me what is happening...
 ## http://askubuntu.com/a/481529
-xterm -fullscreen -hold -maximized -e "ish -s bash -- timeout -k 120 70 tail -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/autoconfig/startup/$EMACS_SERVER_NAME/startup.log" >> ~/.xsession-errors 2>&1 &!
+xterm -fullscreen -hold -maximized -e "ish -s bash -- timeout -k 120 70 tail --retry -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/autoconfig/startup/$EMACS_SERVER_NAME/startup.log" >> ~/.xsession-errors 2>&1 &!
 
 if whence xte
 then
@@ -156,19 +169,9 @@ if [ $DISPLAY ] ; then
 
 fi
 
-if [ -e ~/.stumpwm.d/debug-output.log ]
-then
-    # command rm -f ~/.stumpwm.d/debug-output.log
-    if [ -e ~/.stumpwm.d/debug-output.0.log ]
-    then
-        command mv ~/.stumpwm.d/debug-output.0.log ~/.stumpwm.d/debug-output.1.log
-    fi
-    command mv ~/.stumpwm.d/debug-output.log ~/.stumpwm.d/debug-output.0.log
-fi
-
 if whence -c bingwallpaper >> ~/.xsession-errors 2>&1
 then
-    bingwallpaper -d 0 >> ~/.xsession-errors 2>&1
+    bingwallpaper -d 0 >> ~/.xsession-errors 2>&1 &!
 fi
 
 # gconftool -s /apps/mail-notification/commands/new-mail/command "$EDITOR -e '(gnus)'"
@@ -191,7 +194,7 @@ then
 
     if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ]
     then
-        ~/.rsetup/${__comp}/run.d/${HOST} >> ~/.xsession-errors 2>&1
+        ~/.rsetup/${__comp}/run.d/${HOST} >> ~/.xsession-errors 2>&1 &!
     fi
 
     unset __comp
