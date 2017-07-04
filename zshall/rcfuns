@@ -699,6 +699,12 @@ function sshaddkey() {
 }
 #}}
 
+##{{ kernel
+function kernel-pkgs() {
+    local version=$1
+    echo linux-headers-${version} linux-headers-${version}-generic linux-image-${version}-generic linux-image-extra-${version}-generic linux-signed-image-${version}-generic
+}
+##}}
 
 ##{{ Display
 
@@ -708,5 +714,4 @@ function runmidscreen() {
     $@
     tput cup $(( $(tput lines) ))
 }
-
 ##}}
