@@ -1,9 +1,9 @@
-;;; timer-config.el --- Timer Configuration
+;;; timer-utils-lotus.el --- copy config
 
-;; Copyright (C) 2015  sharad
+;; Copyright (C) 2012  Sharad Pratap
 
-;; Author: sharad;;; timer-config.el --- <spratap@merunetworks.com>
-;; Keywords:convenience
+;; Author: Sharad Pratap <spratap@merunetworks.com>
+;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,13 +20,14 @@
 
 ;;; Commentary:
 
-;; Timer configurations
+;;
 
 ;;; Code:
 
 (add-to-list 'debug-tags-level-list
              '(timer 4))
 
+;;;###autoload
 (defun run-with-nonobtrusive-aware-idle-timers (longdelay repeat shortdelay fn arg &optional cancel)
   "Run a function after idle time of N, but will try to run when user"
   (lexical-let* ((longdelay longdelay)
@@ -66,6 +67,7 @@
                                                                        func))))
                                fn))))
 
+;;;###autoload
 (defun run-with-nonobtrusive-timers (idledelay repeat useridlesec fn arg)
   ""
   (lexical-let* ((idledelay idledelay)
@@ -108,20 +110,5 @@
                                                    nil
                                                    t))))
 
-(setq
- display-time-world-time-format "%A %d %B %R %Z"
- display-time-world-time-format "    %10A %e %B, %Y  %r"
- display-time-world-list                ;; used by M-x display-time-world
- '(("America/Vancouver"   "Vancouver")
-   ("America/Los_Angeles" "California")
-   ("Asia/Calcutta"       "Bangalore")
-   ("Europe/London"       "London")
-   ("Europe/Paris"        "Paris")
-   ("Asia/Tokyo"          "Tokyo")
-   ("America/Los_Angeles" "Seattle")
-   ("America/New_York"    "New York")))
-
-(display-time-mode 1)
-
-(provide 'timer-config)
-;;; timer-config.el ends here
+(provide 'timer-utils-lotus)
+;;; timer-utils-lotus.el ends here

@@ -35,6 +35,7 @@
 
 (require 'package)
 (require 'package-x)
+(require 'package-build)
 
 (defvar package-source-path "~/.xemacs/elpa/pkgs" "Source code path for packages.")
 (defvar package-local-dev-archive "local" "Local archive specified in package-archives")
@@ -80,25 +81,27 @@
                    (intern pkg-name)
                    (let* ((contents-file (format "archives/%s/archive-contents" archive))
                           (contents (package--read-archive-file contents-file)))
-                     contents)))
-         (name (car package))
-         (version (package--ac-desc-version (cdr package)))
-         (pkg-desc
-          (package-desc-create
-           :name name
-           :version version
-           :reqs (package--ac-desc-reqs (cdr package))
-           :summary (package--ac-desc-summary (cdr package))
-           :kind (package--ac-desc-kind (cdr package))
-           :archive archive
-           :extras (and (> (length (cdr package)) 4)
-                        ;; Older archive-contents files have only 4
-                        ;; elements here.
-                        (package--ac-desc-extras (cdr package)))))
-         ;; (existing-packages (assq name package-archive-contents))
-         ;; (pinned-to-archive (assoc name package-pinned-packages))
-         )
-    pkg-desc))
+                     contents))))
+    (if package
+        (let* ((name (car package))
+               (version (package--ac-desc-version (cdr package)))
+               (pkg-desc
+                (package-desc-create
+                 :name name
+                 :version version
+                 :reqs (package--ac-desc-reqs (cdr package))
+                 :summary (package--ac-desc-summary (cdr package))
+                 :kind (package--ac-desc-kind (cdr package))
+                 :archive archive
+                 :extras (and (> (length (cdr package)) 4)
+                              ;; Older archive-contents files have only 4
+                              ;; elements here.
+                              (package--ac-desc-extras (cdr package)))))
+               ;; (existing-packages (assq name package-archive-contents))
+               ;; (pinned-to-archive (assoc name package-pinned-packages))
+               )
+          pkg-desc)
+        (error "not able to find package for %s" pkg-name))))
 
 ;;;###autoload
 (defun package-build-package-dir (dir)
@@ -112,7 +115,10 @@
          (pkg-name
           (replace-regexp-in-string
            "-[0-9\.]\*\$" "" pkg-name-version))
-         (version (format-time-string "%Y%m.%H%M"))
+         (version
+          (package-version-join
+           (package-build--valid-version
+            (format-time-string "%Y%m%d.%H%M"))))
          (currdir-pkg-def-file
           (expand-file-name
            (format "%s-pkg.el" pkg-name)
@@ -182,7 +188,7 @@
                'utf-8-emacs
                'emacs-mule))
           (erase-buffer)
-          (insert (prin1-to-string pkg-def))
+          (insert (pp-to-string pkg-def))
           (write-file pkgdir-def-file))
 
         ;; TODO: copy pkgdir-def-file dir-of-current-file/*-pkg.el
@@ -312,7 +318,12 @@
     (symbol-name (package-desc-name (package-make-package-desc "sessions-unified")))
 
     (assoc 'sessions-unified (package--read-archive-file
-                              (expand-file-name "archive-contents" package-archive-upload-base)))))
+                              (expand-file-name "archive-contents" package-archive-upload-base)))
+
+    (pp-to-string '(define-package "task-manager" "20170717.0116" "task manager." '((publishing "201707.2029")))
+
+     ))
+  )
 
 (provide 'package-dev-utils-lotus)
 ;;; package-dev-utils-lotus.el ends here

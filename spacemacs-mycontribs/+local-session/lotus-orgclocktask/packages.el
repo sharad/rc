@@ -99,7 +99,6 @@ Each entry is either:
                   :config
                   (progn
                     (progn
-
                       (add-hook
                        'task-current-party-change-hook
                        '(lambda ()

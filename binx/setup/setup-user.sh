@@ -9,7 +9,9 @@ APT_REPO_COMMPUNICATION="ppa:nilarimogard/webupd8"
 APT_REPO_UTILS="ppa:yartsa/lvmeject"
 
 
-DEB_PKG_NECESSARY="git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server rcs lxappearance gnome-tweak-tool gnome-themes-standard"
+DEB_PKG_NECESSARY="git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server rcs"
+DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev"
+DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp"
 DEB_PKGS1="vim emacs emacs-goodies-el org-mode develock-el"
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el p7zip-full pdftk golang gocode"
 DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip "
@@ -139,7 +141,9 @@ function setup_apt_packages()
         "$DEB_EXTRA_PKG_LISP" \
         "$DEB_EXTRA_PKG_COMMUNICATION" \
         "$DEB_EXTRA_PKG_VIRTUAL" \
-        "$DEB_EXTRA_PKG3_UTILS"
+        "$DEB_EXTRA_PKG3_UTILS" \
+        "$DEB_PKG_APPEARANCE" \
+        "$DEB_PKG_VIRTURALMACHINE"
     do
         eval sudo apt -y install $pkg
     done

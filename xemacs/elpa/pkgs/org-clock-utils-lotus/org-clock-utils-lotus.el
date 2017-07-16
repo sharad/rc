@@ -25,6 +25,7 @@
 ;;; Code:
 
 
+(require 'timer-utils-lotus)
 
 
 (defmacro org-with-clock-position (clock &rest forms)

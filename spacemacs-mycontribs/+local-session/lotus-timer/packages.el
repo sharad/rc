@@ -31,13 +31,13 @@
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-timerS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-timer-packages
   '(
-    (PACKAGE :location local)
-    )
+    timer-utils-lotus
+    (time :location local))
   "The list of Lisp packages required by the lotus-timer layer.
 
 Each entry is either:
@@ -65,11 +65,32 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-timer/init-PACKAGE ()
-  (use-package PACKAGE
+(defun lotus-timer/init-timer-utils-lotus ()
+  (use-package timer-utils-lotus
       :defer t
       :config
       (progn
         )))
+
+(defun lotus-timer/init-time ()
+  (use-package time
+      :defer t
+      :commands (display-time-mode)
+      :config
+      (progn
+        (progn
+          (setq
+           display-time-world-time-format "%A %d %B %R %Z"
+           display-time-world-time-format "    %10A %e %B, %Y  %r"
+           display-time-world-list                ;; used by M-x display-time-world
+           '(("America/Vancouver"   "Vancouver")
+             ("America/Los_Angeles" "California")
+             ("Asia/Calcutta"       "Bangalore")
+             ("Europe/London"       "London")
+             ("Europe/Paris"        "Paris")
+             ("Asia/Tokyo"          "Tokyo")
+             ("America/Los_Angeles" "Seattle")
+             ("America/New_York"    "New York"))))))
+  (display-time-mode 1))
 
 ;;; packages.el ends here

@@ -27,8 +27,8 @@
 
 (require 'org)
 ;; (require 'publishing)
-(require 'org-publishing)
-(require 'muse-publishing)
+;; (require 'org-publishing)
+;; (require 'muse-publishing)
 (require 'iproject)
 (require 'project-buffer-file)
 (require 'file-utils)
