@@ -1,1 +1,1 @@
-(define-package "org-clock-daysummary" "201707.2022" "Org clock day summary" (quote nil))
+(define-package "org-clock-daysummary" "20170717.1527" "Org clock day summary" 'nil)

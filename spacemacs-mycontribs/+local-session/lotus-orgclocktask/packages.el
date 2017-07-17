@@ -88,7 +88,7 @@ Each entry is either:
       :commands (org-clock-work-day-mode-line-add)
       :config
       (progn
-        (use-package org-publishing
+        (use-package publishing
           :defer t
           :config
           (progn

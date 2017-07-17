@@ -37,9 +37,9 @@
 (defconst lotus-plan-packages
   '(
     ;; (PACKAGE :location local)
-    (publishing :location local)
-    (muse-publishing :location local)
-    (org-publishing :location local)
+    publishing
+    ;; (muse-publishing :location local)
+    ;; (org-publishing :location local)
     (planner :location local)
     (muse-wiki :location local)
     muse
