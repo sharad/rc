@@ -98,6 +98,15 @@ Each entry is either:
                   :commands (office-mode task-current-party-select-set task-current-party task-party-dir task-select-party-dir find-task-dir)
                   :config
                   (progn
+
+                    (progn
+                      (let ((monitor-dir (task-party-dir)))
+                        (if (file-directory-p monitor-dir)
+                            (progn
+                              (org-clock-monitor-files-set-from-dir monitor-dir)
+                              (org-clock-work-day-mode-line-add t))
+                            (message "org monitor dir %s not exists." monitor-dir))))
+
                     (progn
                       (add-hook
                        'task-current-party-change-hook
