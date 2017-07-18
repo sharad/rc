@@ -82,41 +82,57 @@ Each entry is either:
         )))
 
 (defun lotus-orgclocktask/init-org-clock-daysummary ()
-  (use-package org-clock-daysummary
-      ;; :defer t
-      :defer t
-      :commands (org-clock-work-day-mode-line-add)
-      :config
+  (progn
+    (use-package org-clock-daysummary
+        ;; :defer t
+        :defer t
+        :commands (org-clock-work-day-mode-line-add)
+        :config
+        (progn
+          (use-package publishing
+              :defer t
+              :config
+              (progn
+                (progn
+                  (use-package task-manager
+                      :defer t
+                      :commands (office-mode task-current-party-select-set task-current-party task-party-dir task-select-party-dir find-task-dir)
+                      :config
+                      (progn
+
+                        (progn
+                          (let ((monitor-dir (task-party-dir)))
+                            (if (file-directory-p monitor-dir)
+                                (progn
+                                  (org-clock-monitor-files-set-from-dir monitor-dir)
+                                  (org-clock-work-day-mode-line-add t))
+                                (message "org monitor dir %s not exists." monitor-dir))))
+
+                        (progn
+                          (add-hook
+                           'task-current-party-change-hook
+                           '(lambda ()
+                             (let ((monitor-dir (task-party-dir)))
+                               (if (file-directory-p monitor-dir)
+                                   (progn
+                                     (org-clock-monitor-files-set-from-dir monitor-dir)
+                                     (org-clock-work-day-mode-line-add t))
+                                   (message "org monitor dir %s not exists." monitor-dir)))))))))))))
+
+    (progn
       (progn
-        (use-package publishing
-          :defer t
-          :config
-          (progn
-            (progn
-              (use-package task-manager
-                  :defer t
-                  :commands (office-mode task-current-party-select-set task-current-party task-party-dir task-select-party-dir find-task-dir)
-                  :config
-                  (progn
 
-                    (progn
-                      (let ((monitor-dir (task-party-dir)))
-                        (if (file-directory-p monitor-dir)
-                            (progn
-                              (org-clock-monitor-files-set-from-dir monitor-dir)
-                              (org-clock-work-day-mode-line-add t))
-                            (message "org monitor dir %s not exists." monitor-dir))))
+        (add-hook
+         'sharad/enable-login-session-interrupting-feature-hook
+         '(lambda ()
+           (org-clock-work-day-mode-line-add t))
+         t)
 
-                    (progn
-                      (add-hook
-                       'task-current-party-change-hook
-                       '(lambda ()
-                         (let ((monitor-dir (task-party-dir)))
-                           (if (file-directory-p monitor-dir)
-                               (progn
-                                 (org-clock-monitor-files-set-from-dir monitor-dir)
-                                 (org-clock-work-day-mode-line-add t))
-                               (message "org monitor dir %s not exists." monitor-dir))))))))))))))
+        (add-hook
+         'sharad/enable-startup-interrupting-feature-hook
+         '(lambda ()
+           (org-clock-work-day-mode-line-add t))
+         t)))))
 
 
 (defun lotus-orgclocktask/init-org-clocktable-alt ()
@@ -127,39 +143,40 @@ Each entry is either:
         )))
 
 (defun lotus-orgclocktask/init-org-context-clocking ()
-  (use-package org-context-clocking
-      :commands (org-context-clocking-insinuate org-context-clocking-uninsinuate)
-      :defer t
-      :config
-      (progn
-        (progn
-          (use-package task-manager
-              :defer t
-              :config
-              (progn
-                (setq org-entry-tree-task-info-root-org-file
-                      (expand-file-name "start.org" (task-party-base-dir))))))
-
-        (progn
-          (setq org-entry-tree-task-info-root-org-file
-                (expand-file-name "start.org" (task-party-base-dir))))
-
-        (progn
-          (spaceline-toggle-org-clock-on))))
-
   (progn
+    (use-package org-context-clocking
+        :commands (org-context-clocking-insinuate org-context-clocking-uninsinuate)
+        :defer t
+        :config
+        (progn
+          (progn
+            (use-package task-manager
+                :defer t
+                :config
+                (progn
+                  (setq org-entry-tree-task-info-root-org-file
+                        (expand-file-name "start.org" (task-party-base-dir))))))
 
-    (add-hook
-     'sharad/enable-login-session-interrupting-feature-hook
-     '(lambda ()
-       (org-context-clocking-insinuate))
-     t)
+          (progn
+            (setq org-entry-tree-task-info-root-org-file
+                  (expand-file-name "start.org" (task-party-base-dir))))
 
-    (add-hook
-     'sharad/enable-startup-interrupting-feature-hook
-     '(lambda ()
-       (org-context-clocking-uninsinuate))
-     t)))
+          (progn
+            (spaceline-toggle-org-clock-on))))
+
+    (progn
+
+      (add-hook
+       'sharad/enable-login-session-interrupting-feature-hook
+       '(lambda ()
+         (org-context-clocking-insinuate))
+       t)
+
+      (add-hook
+       'sharad/enable-startup-interrupting-feature-hook
+       '(lambda ()
+         (org-context-clocking-uninsinuate))
+       t))))
 
 (defun lotus-orgclocktask/init-org-misc-utils-lotus ()
   (use-package org-misc-utils-lotus
