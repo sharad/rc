@@ -1223,7 +1223,7 @@ define_key(content_buffer_normal_keymap, "C-c b", "open-bookmark-group");
 //}}
 
 
-//{ https://bugzilla.mozilla.org/show_bug.cgi?id=55181
+//{{ https://bugzilla.mozilla.org/show_bug.cgi?id=55181
 // https://bugzilla.mozilla.org/show_bug.cgi?id=55181#c92
 // Queries the HTTPAuth Manager and clears all sessions
 function httpAuthPasswordExpire() {
@@ -1249,8 +1249,7 @@ interactive("clear-http-auth",
 
 // define_key(content_buffer_normal_keymap, "C-c b", "open-bookmark-group");
 
-
-//}
+//}}
 
 tab_bar_mode(false); //disable
 
