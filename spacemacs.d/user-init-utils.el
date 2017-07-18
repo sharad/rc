@@ -417,6 +417,8 @@ variable."
     (global-set-key (kbd "M-SPC") 'just-one-space)
     (elscreen-keymap-setup))
 
+  (epa-file-enable)
+
   (remove-hook
    'sharad/enable-startup-interrupting-feature-hook
    'sharad/necessary-functionality)
