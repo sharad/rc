@@ -1,1 +1,1 @@
-(define-package "sessions-unified" "201707.2024" "Session unified." (quote nil))
+(define-package "sessions-unified" "20170718.1605" "Session unified." 'nil)

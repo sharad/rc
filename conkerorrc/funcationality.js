@@ -1223,6 +1223,35 @@ define_key(content_buffer_normal_keymap, "C-c b", "open-bookmark-group");
 //}}
 
 
+//{ https://bugzilla.mozilla.org/show_bug.cgi?id=55181
+// https://bugzilla.mozilla.org/show_bug.cgi?id=55181#c92
+// Queries the HTTPAuth Manager and clears all sessions
+function httpAuthPasswordExpire() {
+    var httpAuth = Components.classes['@mozilla.org/network/http-auth-manager;1'];
+    httpAuth = httpAuth.getService();
+    httpAuth = httpAuth.QueryInterface(Components.interfaces.nsIHttpAuthManager);
+    httpAuth.clearAll();
+}
+
+// Components.classes['@mozilla.org/network/http-auth-manager;1']. //
+//     getService(Components.interfaces.nsIHttpAuthManager). //
+//     clearAll(); //
+
+// var wallet = Components. //
+//     classes['@mozilla.org/wallet/wallet-service;1']. //
+//     getService(Components.interfaces.nsIWalletService); //
+
+interactive("clear-http-auth",
+            "Clear http auth.",
+            function (I) {
+                httpAuthPasswordExpire();
+            });
+
+// define_key(content_buffer_normal_keymap, "C-c b", "open-bookmark-group");
+
+
+//}
+
 tab_bar_mode(false); //disable
 
 // Local Variables: **
