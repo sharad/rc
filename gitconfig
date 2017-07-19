@@ -44,3 +44,6 @@
 	default = simple
 [color]
 	ui = auto
+
+[alias]
+sync = !git checkout ${2:-master} && git pull --rebase origin ${2:-master} && git checkout ${1:- -} && git rebase ${2:-master}
