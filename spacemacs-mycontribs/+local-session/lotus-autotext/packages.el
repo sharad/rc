@@ -36,7 +36,7 @@
 
 (defconst lotus-autotext-packages
   '(
-    (autoinsert+ :location local)
+    autoinsert+
     (template    :location local)
     (auto-yasnippet :location local)
     (template-simple :location local)

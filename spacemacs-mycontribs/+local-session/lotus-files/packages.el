@@ -47,7 +47,7 @@
     (iswitchb-fc :location local)
     (ifind-mode :location local)
     (ffw :location local)
-    (multibackup :location local)
+    multibackup
     (ff-relativedir :location local)
     ;; find-files-unified
     (locations :location local)
