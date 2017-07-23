@@ -31,13 +31,13 @@
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/xlotus-autosavebackupS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-autosavebackup-packages
   '(
     (real-auto-save :location local)
-    (rcs-backup     :location local))
+    rcs-backup)
 
   "The list of Lisp packages required by the xlotus-autosavebackup layer.
 
@@ -81,9 +81,18 @@ Each entry is either:
 (defun lotus-autosavebackup/init-rcs-backup ()
   (use-package rcs-backup
       :defer t
+      :commands (rcs-backup-mode)
       :config
       (progn
-        (rcs-backup-mode t))))
+        (rcs-backup-mode t)))
+
+  (progn
+    (progn
+      (add-hook
+       'sharad/enable-login-session-interrupting-feature-hook
+       '(lambda ()
+         (rcs-backup-mode t))
+       t))))
 
 (defun lotus-autosavebackup/init-files ()
   (use-package files
