@@ -137,7 +137,7 @@
                                (buffer-string)
                              ('end-of-file nil))))
                       contents))))
-                `(define-package ,pkg-name ,version ni nil))))
+                `(define-package ,pkg-name ,version ,(format "%s" pkg-name) nil))))
          (tmp-dir (expand-file-name "elpa" (getenv "TMP")))
          (pkg-dir
           (expand-file-name
