@@ -116,102 +116,64 @@
   (declare (ignore key key-seq cmd))
   (toggle-mode-line (current-screen) (current-head) (car *mode-line-fmts*)))
 
-(defun mode-line-show (screen head &optional (format '*screen-mode-line-format*))
-  "Toggle the state of the mode line for the specified screen"
-  (check-type format (or symbol list string))
-  (let ((ml (head-mode-line head)))
-    (unless ml
-      (progn
-        (setf (head-mode-line head) (make-head-mode-line screen head format))
-        (update-mode-line-color-context (head-mode-line head))
-        (resize-mode-line (head-mode-line head))
-        (xlib:map-window (mode-line-window (head-mode-line head)))
-        (redraw-mode-line (head-mode-line head))
-        (dformat 3 "modeline: ~s~%" (head-mode-line head))
-        ;; setup the timer
-        (turn-on-mode-line-timer)
-        (run-hook-with-args *new-mode-line-hook* (head-mode-line head))))
+(let ()
+ (defun mode-line-when-pointer-grabbed (key key-seq cmd)
+   ;; (declare (ignore key key-seq cmd))
+   (declare (ignore key key-seq))
+   (enable-mode-line
+    (current-screen)
+    (current-head)
+    (kmap-or-kmap-symbol-p cmd)))
 
-    (let ((ml (head-mode-line head)))
-      (case (mode-line-mode ml)
-        ;; (:visible
-        ;;  ;; ;; Hide it.
-        ;;  ;; (setf (mode-line-mode ml) :hidden)
-        ;;  ;; (xlib:unmap-window (mode-line-window ml))
-        ;;  )
-        (:hidden
-         ;; Show it.
-         (setf (mode-line-mode ml) :visible)
-         (xlib:map-window (mode-line-window ml)))
-        ;; (:stump
-        ;;  ;; Delete it
-        ;;  (run-hook-with-args *destroy-mode-line-hook* ml)
-        ;;  (xlib:destroy-window (mode-line-window ml))
-        ;;  (xlib:free-gcontext (mode-line-gc ml))
-        ;;  (setf (head-mode-line head) nil)
-        ;;  (maybe-cancel-mode-line-timer))
-        ))
+ (defcommand toggle-mode-line-enable () ()
+             (add-hook *key-press-hook* 'mode-line-when-pointer-grabbed))
 
-    (dolist (group (screen-groups screen))
-      (group-sync-head group head))))
+ (defcommand toggle-mode-line-disable () ()
+             (remove-hook *key-press-hook* 'mode-line-when-pointer-grabbed)))
 
-(defun mode-line-hide (screen head &optional (format '*screen-mode-line-format*))
-  "Toggle the state of the mode line for the specified screen"
-  (check-type format (or symbol list string))
-  (let ((ml (head-mode-line head)))
-    (unless ml
-      (progn
-        (setf (head-mode-line head) (make-head-mode-line screen head format))
-        (update-mode-line-color-context (head-mode-line head))
-        (resize-mode-line (head-mode-line head))
-        (xlib:map-window (mode-line-window (head-mode-line head)))
-        (redraw-mode-line (head-mode-line head))
-        (dformat 3 "modeline: ~s~%" (head-mode-line head))
-        ;; setup the timer
-        (turn-on-mode-line-timer)
-        (run-hook-with-args *new-mode-line-hook* (head-mode-line head))))
 
-    (let ((ml (head-mode-line head)))
-      (case (mode-line-mode ml)
-        (:visible
-         ;; Hide it.
-         (setf (mode-line-mode ml) :hidden)
-         (xlib:unmap-window (mode-line-window ml)))
-        ;; (:hidden
-        ;;  ;; ;; Show it.
-        ;;  ;; (setf (mode-line-mode ml) :visible)
-        ;;  ;; (xlib:map-window (mode-line-window ml))
-        ;;  )
-        (:stump
-         ;; Delete it
-         (run-hook-with-args *destroy-mode-line-hook* ml)
-         (xlib:destroy-window (mode-line-window ml))
-         (xlib:free-gcontext (mode-line-gc ml))
-         (setf (head-mode-line head) nil)
-         (maybe-cancel-mode-line-timer))))
+(let ()
+  (defun activate-fullscreen-if-not (window)
+    (unless (window-fullscreen window)
+      ;; (activate-fullscreen window)
+      (dformat 2 "client requests to go fullscreen~%")
+      (add-wm-state (window-xwin window) :_NET_WM_STATE_FULLSCREEN)
+      (setf (window-fullscreen window) t)
+      ;; (focus-window window)
+      ))
 
-    (dolist (group (screen-groups screen))
-      (group-sync-head group head))))
+  (defun deactivate-fullscreen-if-not (window)
+    (when (window-fullscreen window)
+      (deactivate-fullscreen window)))
 
-(defun mode-line-when-pointer-grabbed (key key-seq cmd)
-  ;; (declare (ignore key key-seq cmd))
-  (declare (ignore key key-seq))
-  (if (kmap-or-kmap-symbol-p cmd)
-      (mode-line-show (current-screen) (current-head) (car stumpwm::*mode-line-fmts*))
-      (mode-line-hide (current-screen) (current-head) (car stumpwm::*mode-line-fmts*))))
+  (defun fullscreen-pointer-not-grabbed (key key-seq cmd)
+    (declare (ignore key key-seq))
+    (when (current-window)
+      (if (kmap-or-kmap-symbol-p cmd)
+          (progn
+            (let ((w (other-window-in-frame (current-group))))
+              (when w (deactivate-fullscreen-if-not w)))
+            (deactivate-fullscreen-if-not (current-window))))))
 
-;; (mode-line-hide (current-screen) (current-head) (car stumpwm::*mode-line-fmts*))
-;; (setf *key-press-hook* nil)
-;; (add-hook *key-press-hook* 'mode-line-when-pointer-grabbed)
-;; (toggle-mode-line (current-screen) (current-head) '(eval: "(format \"Name\")"))
-;; (add-hook *key-press-hook* 'toggle-mode-line-hook)
-;; (add-hook *key-press-hook* 'toggle-mode-line)
+  (defun fullscreen-focus-window (cwin lwin)
+    (progn
+      (when cwin
+        (activate-fullscreen-if-not cwin))
+      (when lwin
+        (deactivate-fullscreen-if-not lwin))))
 
-(defcommand fullscreen-mode-enable () ()
-  (add-hook *key-press-hook* 'mode-line-when-pointer-grabbed))
+  (defun fullscreen-curr-post-command (cmd)
+    (activate-fullscreen-if-not (current-window)))
 
-(defcommand fullscreen-mode-disable () ()
-  (remove-hook *key-press-hook* 'mode-line-when-pointer-grabbed))
+  (defcommand toggle-fullscreen-pointer-not-grabbed-enable () ()
+              (add-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
+              ;; (add-hook *focus-window-hook* 'fullscreen-focus-window)
+              (add-hook *post-command-hook* 'fullscreen-curr-post-command))
+
+  (defcommand toggle-fullscreen-pointer-not-grabbed-disable () ()
+              (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
+              ;; (remove-hook *focus-window-hook* 'fullscreen-focus-window)
+              (remove-hook *post-command-hook* 'fullscreen-curr-post-command)))
 
 
 ;;}}} mode-line end
