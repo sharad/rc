@@ -208,6 +208,22 @@ startup in daemon mode."
    fn
    local))
 
+;;;###autoload
+(defun add-to-disable-startup-interrupting-feature-hook (fn &optional append local)
+  (interactive)
+  (add-hook
+   'sharad/disable-startup-interrupting-feature-hook
+   fn
+   append
+   local))
+
+;;;###autoload
+(defun remove-from-disable-startup-interrupting-feature-hook (fn &optional local)
+  (interactive)
+  (remove-hook
+   'sharad/disable-startup-interrupting-feature-hook
+   fn
+   local))
   ;; (sharad/enable-startup-interrupting-feature-in-frame-once (selected-frame))
 ;;}}
 
@@ -298,6 +314,22 @@ startup in daemon mode."
   (interactive)
   (remove-hook
    'sharad/enable-login-session-interrupting-feature-hook
+   fn
+   local))
+
+(defun add-to-disable-login-session-interrupting-feature-hook (fn &optional append local)
+  (interactive)
+  (add-hook
+   'sharad/disable-login-session-interrupting-feature-hook
+   fn
+   append
+   local))
+
+;;;###autoload
+(defun remove-from-disable-login-session-interrupting-feature-hook (fn &optional local)
+  (interactive)
+  (remove-hook
+   'sharad/disable-login-session-interrupting-feature-hook
    fn
    local))
 

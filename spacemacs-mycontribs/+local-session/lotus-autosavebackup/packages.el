@@ -88,10 +88,15 @@ Each entry is either:
 
   (progn
     (progn
-      (add-to-enable-login-session-interrupting-feature-hook
-       '(lambda ()
-         (rcs-backup-mode t))
-       t))))
+      (use-package startup-hooks
+        :defer t
+        :config
+        (progn
+          (progn
+            (add-to-enable-login-session-interrupting-feature-hook
+             '(lambda ()
+                (rcs-backup-mode t))
+             t)))))))
 
 (defun lotus-autosavebackup/init-files ()
   (use-package files

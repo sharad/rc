@@ -176,9 +176,13 @@
               (message "(x-display-pixel-height) return nil"))
           (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
 
-    (add-to-enable-startup-interrupting-feature-hook
-              '(lambda ()
-                (run-at-time-or-now 3 '(lambda () (set-default-face-height-by-resolution))))))
+    ;; (use-package startup-hooks
+    ;;              :defer t
+    ;;              :config
+    ;;              (add-to-enable-startup-interrupting-feature-hook
+    ;;               '(lambda ()
+    ;;                  (run-at-time-or-now 3 '(lambda () (set-default-face-height-by-resolution))))))
+    )
 
 (progn ;; "face help"
   ;; http://stackoverflow.com/questions/1242352/get-font-face-under-cursor-in-emacs
