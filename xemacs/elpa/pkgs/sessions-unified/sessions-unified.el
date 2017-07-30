@@ -56,10 +56,10 @@
 (require 'elscreen)
 (require 'emacs-panel)
 
-(defvar sharad/disable-desktop-restore-interrupting-feature nil
+(defvar sharad/disable-desktop-restore-interrupting-feature-hook nil
   "feature that need to be disabled for proper restoring of desktop.")
 
-(defvar sharad/enable-desktop-restore-interrupting-feature nil
+(defvar sharad/enable-desktop-restore-interrupting-feature-hook nil
   "feature that were disabled for proper restoring of desktop will get re-enabled here.")
 
 (eval-when-compile
@@ -77,6 +77,40 @@
         (lambda (title fmt &rest args)
           (concat title ": "
                   (apply 'message fmt args)))))
+
+
+;;;###autoload
+(defun add-to-enable-desktop-restore-interrupting-feature-hook (fn &optional append local)
+  (interactive)
+  (add-hook
+   'sharad/enable-desktop-restore-interrupting-feature-hook
+   fn
+   append
+   local))
+;;;###autoload
+(defun remove-from-enable-desktop-restore-interrupting-feature-hook (fn &optional local)
+  (interactive)
+  (remove-hook
+   'sharad/enable-desktop-restore-interrupting-feature-hook
+   fn
+   local))
+
+;;;###autoload
+(defun add-to-disable-desktop-restore-interrupting-feature-hook (fn &optional append local)
+  (interactive)
+  (add-hook
+   'sharad/disable-desktop-restore-interrupting-feature-hook
+   fn
+   append
+   local))
+;;;###autoload
+(defun remove-from-disable-desktop-restore-interrupting-feature-hook (fn &optional local)
+  (interactive)
+  (remove-hook
+   'sharad/disable-desktop-restore-interrupting-feature-hook
+   fn
+   local))
+
 
 ;; (sharad/elscreen-get-screen-to-name-alist)
 (with-eval-after-load "elscreen"
@@ -486,17 +520,23 @@
                              initial-input)
       ('quit nil)))
 
-  (defun fmsession-store (session-name &optional nframe)
-    "Store the elscreen tab configuration."
-    (interactive
-     (list (fmsession-read-location)))
-    (elscreen-session-store session-name nframe))
+  ;; (defun fmsession-store (session-name &optional nframe)
+  ;;   "Store the elscreen tab configuration."
+  ;;   (interactive
+  ;;    (list (fmsession-read-location)))
+  ;;   (elscreen-session-store session-name nframe))
 
   (defun fmsession-restore (session-name &optional nframe)
     "Restore the elscreen tab configuration."
     (interactive
      (list (fmsession-read-location)))
-    (elscreen-session-restore session-name nframe))
+    (if (and
+         (fboundp 'elscreen-get-conf-list)
+         (elscreen-get-conf-list 'screen-history))
+        (elscreen-session-restore session-name nframe)
+        (funcall sessions-unified-utils-notify
+                 "fmsession-restore"
+                 "not restoring screen session as screen-history config not found.")))
 
   ;; (elscreen-restore)
   ;;}}
@@ -911,7 +951,7 @@ Also returns nil if pid is nil."
            (desktop-base-file-name (file-name-nondirectory desktop-save-filename)))
       (prog1
           (setq *desktop-vc-read-inprogress* t)
-        (run-each-hooks 'sharad/disable-desktop-restore-interrupting-feature)
+        (run-each-hooks 'sharad/disable-desktop-restore-interrupting-feature-hook)
         (if
 
 
@@ -1044,6 +1084,7 @@ to restore in case of sudden emacs crash."
     (file-exists-p *desktop-save-filename*))
 
   ;; use session-save to save the desktop manually
+;;;###autoload
   (defun sharad/desktop-session-save ()
     "Save an emacs session."
     (interactive)
@@ -1103,7 +1144,7 @@ to restore in case of sudden emacs crash."
          (member '(lambda () (save-all-sessions-auto-save t)) kill-emacs-hook))))
 
   (when nil
-    (defvar sharad/enable-desktop-restore-interrupting-feature nil
+    (defvar sharad/enable-desktop-restore-interrupting-feature-hook nil
       "feature that were disabled for proper restoring of desktop will get re-enabled here.")
     )
 
@@ -1134,7 +1175,7 @@ If there are no buffers left to create, kill the timer."
         (ad-disable-advice 'desktop-idle-create-buffers 'after 'desktop-idle-complete-actions)
         (ad-update 'desktop-idle-create-buffers)
         (ad-activate 'desktop-idle-create-buffers))
-      (run-each-hooks 'sharad/enable-desktop-restore-interrupting-feature)))
+      (run-each-hooks 'sharad/enable-desktop-restore-interrupting-feature-hook)))
 
   (require 'vc-config)
 
@@ -1145,6 +1186,7 @@ If there are no buffers left to create, kill the timer."
 
   ;; (debug)
 
+;;;###autoload
   (defun sharad/desktop-session-restore ()
     "Restore a saved emacs session."
     (interactive)
@@ -1184,7 +1226,7 @@ If there are no buffers left to create, kill the timer."
                       (funcall sessions-unified-utils-notify "sharad/desktop-session-restore" "sharad/desktop-session-restore")
                       (progn            ;remove P4
                        (setq vc-handled-backends (remove 'P4 vc-handled-backends))
-                       (add-hook 'sharad/enable-desktop-restore-interrupting-feature
+                       (add-hook 'sharad/enable-desktop-restore-interrupting-feature-hook
                                  '(lambda ()
                                    (add-to-list 'vc-handled-backends 'P4))))
                       (if show-error

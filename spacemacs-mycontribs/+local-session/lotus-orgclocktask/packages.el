@@ -119,20 +119,20 @@ Each entry is either:
                                      (org-clock-work-day-mode-line-add t))
                                    (message "org monitor dir %s not exists." monitor-dir)))))))))))))
 
-    (progn
-      (progn
+    (use-package startup-hooks
+        :defer t
+        :config
+        (progn
+          (progn
+            (add-to-enable-login-session-interrupting-feature-hook
+             '(lambda ()
+               (org-clock-work-day-mode-line-add t))
+             t)
 
-        (add-hook
-         'sharad/enable-login-session-interrupting-feature-hook
-         '(lambda ()
-           (org-clock-work-day-mode-line-add t))
-         t)
-
-        (add-hook
-         'sharad/enable-startup-interrupting-feature-hook
-         '(lambda ()
-           (org-clock-work-day-mode-line-add t))
-         t)))))
+            (add-to-enable-startup-interrupting-feature-hook
+             '(lambda ()
+               (org-clock-work-day-mode-line-add t))
+             t))))))
 
 
 (defun lotus-orgclocktask/init-org-clocktable-alt ()
@@ -165,18 +165,35 @@ Each entry is either:
             (spaceline-toggle-org-clock-on))))
 
     (progn
+      (use-package sessions-unified
+          :defer t
+          :config
+          (progn
+            (progn
+              (add-to-enable-desktop-restore-interrupting-feature-hook
+               '(lambda ()
+                 (run-at-time-or-now 70
+                  (lambda ()
+                    (org-context-clocking-insinuate)))))))))
 
-      (add-hook
-       'sharad/enable-login-session-interrupting-feature-hook
-       '(lambda ()
-         (org-context-clocking-insinuate))
-       t)
+    (use-package startup-hooks
+        :defer t
+        :config
+        (progn
+          (progn
+            (add-to-enable-login-session-interrupting-feature-hook
+             '(lambda ()
+               (run-at-time-or-now 70
+                (lambda ()
+                  (org-context-clocking-insinuate))))
+             t)
 
-      (add-hook
-       'sharad/enable-startup-interrupting-feature-hook
-       '(lambda ()
-         (org-context-clocking-uninsinuate))
-       t))))
+            (add-to-enable-startup-interrupting-feature-hook
+             '(lambda ()
+               (run-at-time-or-now 70
+                (lambda ()
+                  (org-context-clocking-insinuate))))
+             t))))))
 
 (defun lotus-orgclocktask/init-org-misc-utils-lotus ()
   (use-package org-misc-utils-lotus

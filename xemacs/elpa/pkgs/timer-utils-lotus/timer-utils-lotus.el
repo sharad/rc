@@ -28,8 +28,9 @@
              '(timer 4))
 
 ;;;###autoload
-(defun run-with-nonobtrusive-aware-idle-timers (longdelay repeat shortdelay fn arg &optional cancel)
-  "Run a function after idle time of N, but will try to run when user"
+(defun run-with-nonobtrusive-aware-idle-timers (longdelay repeat shortdelay repeat-after-idle fn arg &optional cancel)
+  "Run a function after idle time of REPEAT + SHORTDELAY, and repeat running on every SHORTDELAY till emacs is idle if REPEAT-AFTER-IDLE is non nil.
+Benefit with this timer is that it will very much ensure before running that user is not typing in emacs."
   (lexical-let* ((longdelay longdelay)
                  (repeat repeat)
                  (shortdelay shortdelay)
@@ -41,7 +42,7 @@
                                  (unless subtimer
                                    (dmessage 'timer 7 "shortdelay %s running timer" shortdelay)
                                    (setq subtimer
-                                         (run-with-nonobtrusive-timers shortdelay shortdelay 4
+                                         (run-with-nonobtrusive-timers shortdelay (if repeat-after-idle shortdelay nil) 4
                                                                        (lambda (func1)
                                                                          (progn
                                                                            (dmessage 'timer 7 "shortdelay %s running fun" shortdelay)
@@ -69,7 +70,7 @@
 
 ;;;###autoload
 (defun run-with-nonobtrusive-timers (idledelay repeat useridlesec fn arg)
-  ""
+  "Run FN with ARG only when user is not typing."
   (lexical-let* ((idledelay idledelay)
                  (repeat repeat)
                  (useridlesec useridlesec)

@@ -63,6 +63,7 @@
     org-clock-check-long-timer-period
     org-clock-check-long-timer-period
     org-clock-check-short-timer-period
+    nil
     (lambda ()
       ;; (message "after 7 sec.")
       (unless (org-clock-is-active)

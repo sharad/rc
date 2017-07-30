@@ -190,6 +190,24 @@ startup in daemon mode."
             (setq sharad/enable-startup-interrupting-feature-in-frame-once-lock nil))))
 
     (add-hook 'after-make-frame-functions 'sharad/enable-startup-interrupting-feature-in-frame-once)))
+
+;;;###autoload
+(defun add-to-enable-startup-interrupting-feature-hook (fn &optional append local)
+  (interactive)
+  (add-hook
+   'sharad/enable-startup-interrupting-feature-hook
+   fn
+   append
+   local))
+
+;;;###autoload
+(defun remove-from-enable-startup-interrupting-feature-hook (fn &optional local)
+  (interactive)
+  (remove-hook
+   'sharad/enable-startup-interrupting-feature-hook
+   fn
+   local))
+
   ;; (sharad/enable-startup-interrupting-feature-in-frame-once (selected-frame))
 ;;}}
 
@@ -265,6 +283,24 @@ startup in daemon mode."
 
     ;; (sharad/enable-login-session-interrupting-feature-in-frame-once (selected-frame))
     (add-hook 'after-make-frame-functions 'sharad/enable-login-session-interrupting-feature-in-frame-once t)))
+
+;;;###autoload
+(defun add-to-enable-login-session-interrupting-feature-hook (fn &optional append local)
+  (interactive)
+  (add-hook
+   'sharad/enable-login-session-interrupting-feature-hook
+   fn
+   append
+   local))
+
+;;;###autoload
+(defun remove-from-enable-login-session-interrupting-feature-hook (fn &optional local)
+  (interactive)
+  (remove-hook
+   'sharad/enable-login-session-interrupting-feature-hook
+   fn
+   local))
+
 ;;}}
 
 (defalias 'make-local-hook 'ignore)
