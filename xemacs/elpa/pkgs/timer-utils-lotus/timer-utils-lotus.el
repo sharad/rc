@@ -33,6 +33,7 @@
 Benefit with this timer is that it will very much ensure before running that user is not typing in emacs."
   (lexical-let* ((longdelay longdelay)
                  (repeat repeat)
+                 (repeat-after-idle repeat-after-idle)
                  (shortdelay shortdelay)
                  (timer nil)
                  (subtimer nil))

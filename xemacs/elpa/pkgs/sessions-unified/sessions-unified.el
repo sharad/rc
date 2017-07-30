@@ -520,11 +520,11 @@
                              initial-input)
       ('quit nil)))
 
-  ;; (defun fmsession-store (session-name &optional nframe)
-  ;;   "Store the elscreen tab configuration."
-  ;;   (interactive
-  ;;    (list (fmsession-read-location)))
-  ;;   (elscreen-session-store session-name nframe))
+  (defun fmsession-store (session-name &optional nframe)
+    "Store the elscreen tab configuration."
+    (interactive
+     (list (fmsession-read-location)))
+    (elscreen-session-store session-name nframe))
 
   (defun fmsession-restore (session-name &optional nframe)
     "Restore the elscreen tab configuration."
