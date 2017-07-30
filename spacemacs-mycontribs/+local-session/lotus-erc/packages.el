@@ -584,7 +584,7 @@ If USER is omitted, close the current query buffer if one exists
           ;; from: http://www.enigmacurry.com/2008/08/07/emacs-irc-erc-with-noticeable-notifications/
           ;; http://www.emacswiki.org/cgi-bin/wiki/ErcPageMe
 
-          (add-hook 'sharad/enable-login-session-interrupting-feature-hook
+          (add-to-enable-login-session-interrupting-feature-hook
                     '(lambda ()
                       ;; update python DISPLAY env variable.
                       (if (and (getenv "DISPLAY" (selected-frame))

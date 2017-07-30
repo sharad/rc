@@ -76,7 +76,7 @@ Each entry is either:
          deft-use-filename-as-title nil
          deft-extension "org"
          deft-text-mode 'org-mode)
-        (add-hook 'sharad/enable-startup-interrupting-feature-hook 'deft t))))
+        (add-to-enable-startup-interrupting-feature-hook 'deft t))))
 
 (defun lotus-note/init-evernote-mode ()
   (use-package evernote-mode

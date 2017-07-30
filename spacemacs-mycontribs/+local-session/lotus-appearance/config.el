@@ -176,7 +176,7 @@
               (message "(x-display-pixel-height) return nil"))
           (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
 
-    (add-hook 'sharad/enable-startup-interrupting-feature-hook
+    (add-to-enable-startup-interrupting-feature-hook
               '(lambda ()
                 (run-at-time-or-now 3 '(lambda () (set-default-face-height-by-resolution))))))
 

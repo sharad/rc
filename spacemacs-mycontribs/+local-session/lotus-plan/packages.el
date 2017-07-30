@@ -394,7 +394,7 @@ instead of a string."
                 :config
                 (progn
                   (progn
-                    (add-hook 'sharad/enable-startup-interrupting-feature-hook ;; '*sharad/after-init-hook*
+                    (add-to-enable-startup-interrupting-feature-hook ;; '*sharad/after-init-hook*
                               '(lambda ()
                                 (with-eval-after-load "planner-registry"
                                   (progn
@@ -648,7 +648,7 @@ instead of a string."
             :defer t
             :config
             (progn
-             (add-hook 'sharad/enable-startup-interrupting-feature-hook ;; '*sharad/after-init-hook*
+             (add-to-enable-startup-interrupting-feature-hook ;; '*sharad/after-init-hook*
                       '(lambda ()
                          (with-eval-after-load "planner-registry"
                            (progn

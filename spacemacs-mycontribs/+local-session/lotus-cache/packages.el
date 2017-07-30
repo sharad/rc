@@ -79,8 +79,7 @@ Each entry is either:
         (defvar file-cache-directories nil "file-cache-directories")
 
         (with-eval-after-load "init-setup"
-         (add-hook
-         'sharad/enable-startup-interrupting-feature-hook
+         (add-to-enable-startup-interrupting-feature-hook
          '(lambda ()
            (condition-case e
                (dolist (dir file-cache-directories)

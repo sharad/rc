@@ -126,7 +126,7 @@ Each entry is either:
               ))
         (progn
           (setq tramp-persistency-file-name (auto-config-file "tramp/persistency"))
-          (add-hook 'sharad/disable-startup-interrupting-feature-hook
+          (add-to-disable-startup-interrupting-feature-hook
                     ;;will not be called.
                     '(lambda () ;very necessary.
                       (setq tramp-mode nil ido-mode nil))))

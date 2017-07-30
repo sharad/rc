@@ -88,8 +88,7 @@ Each entry is either:
 
   (progn
     (progn
-      (add-hook
-       'sharad/enable-login-session-interrupting-feature-hook
+      (add-to-enable-login-session-interrupting-feature-hook
        '(lambda ()
          (rcs-backup-mode t))
        t))))

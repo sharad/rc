@@ -363,7 +363,7 @@ Each entry is either:
           ;;         simple one.
 
 
-          (add-hook 'sharad/enable-startup-interrupting-feature-hook 'cfw:open-calendar-buffer t)))))
+          (add-to-enable-startup-interrupting-feature-hook 'cfw:open-calendar-buffer t)))))
 
 (defun lotus-schedule/init-calfw-howm ()
   (use-package calfw-howm

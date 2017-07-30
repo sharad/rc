@@ -135,12 +135,10 @@ Each entry is either:
           ;;    (run-at-time-or-now 7 'sharad/desktop-session-restore)))
 
           (with-eval-after-load "startup-hooks"
-            (add-hook
-             'sharad/enable-startup-interrupting-feature-hook
+            (add-to-enable-startup-interrupting-feature-hook
              'frame-session-restore-hook-func
              t)
-            (add-hook ;; 'after-init-hook
-             'sharad/enable-startup-interrupting-feature-hook
+            (add-to-enable-startup-interrupting-feature-hook
              '(lambda ()
                (run-at-time-or-now 7 'sharad/desktop-session-restore)))))))
 

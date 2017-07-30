@@ -75,11 +75,33 @@ Each entry is either:
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
 (defun lotus-orgclocktask/init-org-clock-utils-lotus ()
-  (use-package org-clock-utils-lotus
-      :defer t
-      :config
-      (progn
-        )))
+  (progn
+    (progn
+      (use-package org-clock-utils-lotus
+          :defer t
+          :config
+          (progn )))
+    (progn
+      (use-package org
+          :defer t
+          :config
+          (progn
+            (use-package sessions-unified
+                :defer t
+                :config
+                (add-to-enable-desktop-restore-interrupting-feature-hook
+                 '(lambda ()
+                   (if (fboundp 'org-clock-persistence-insinuate)
+                       (org-clock-persistence-insinuate)
+                       (message "Error: Org Clock function org-clock-persistence-insinuate not available.")))))))
+      (use-package sessions-unified
+          :defer t
+          :config
+          (progn
+            (add-to-enable-desktop-restore-interrupting-feature-hook
+             '(lambda ()
+               (if (fboundp 'org-clock-start-check-timer)
+                   (org-clock-start-check-timer)))))))))
 
 (defun lotus-orgclocktask/init-org-clock-daysummary ()
   (progn
