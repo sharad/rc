@@ -148,12 +148,10 @@ Each entry is either:
       ;; :ensure t
       :config
       (progn
-        (add-hook
-         'sharad/enable-login-session-interrupting-feature-hook
-         'set-dbus-session)
-        (add-hook
-         'sharad/enable-startup-interrupting-feature-hook
-         'set-dbus-session)
+        (add-to-enable-login-session-interrupting-feature-hook
+         #'set-dbus-session)
+        (add-to-enable-startup-interrupting-feature-hook
+         #'set-dbus-session)
         (with-eval-after-load "utils-custom"
           (add-hook 'emacs-startup-hook
                     '(lambda ()
