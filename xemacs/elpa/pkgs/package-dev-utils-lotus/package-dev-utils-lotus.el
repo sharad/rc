@@ -174,10 +174,11 @@
           (let ((desc
                  (read-from-minibuffer (format "package %s desc: " pkg-name))))
             (setcar (nthcdr 3 pkg-def) desc)))
-        (unless (nth 4 pkg-def)
+        (when nil
+         (unless (nth 4 pkg-def)
           (let ((dep
                  (car (read-from-string (read-from-minibuffer (format "package %s dependency: " pkg-name))))))
-            (setcar (nthcdr 4 pkg-def) dep))))
+            (setcar (nthcdr 4 pkg-def) dep)))))
       (let ((pkgdir-def-file (expand-file-name (format "%s-pkg.el" pkg-name) pkg-dir)))
         (with-current-buffer
             (or (find-buffer-visiting pkgdir-def-file)
@@ -285,7 +286,8 @@
         (when (and (file-directory-p pkgdir)
                    (not (equal f ".."))
                    (not (equal f ".")))
-          (package-install-package-dir pkgdir))))))
+          (ignore-errors
+           (package-install-package-dir pkgdir)))))))
 
 (when nil
   '(

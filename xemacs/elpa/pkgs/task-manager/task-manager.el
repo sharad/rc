@@ -145,6 +145,7 @@
             org-master-file)
           (error "directory %s not exists" base-dir))))
 
+;;;###autoload
   (defun task-make-party-base-dir (base-dir)
     (interactive
      (list (read-directory-name "Select task-party-base-dir: ")))
@@ -155,6 +156,7 @@
         (task-party-base-org-master-file base-dir))
       base-dir))
 
+;;;###autoload
   (defun task-party-base-dir (&optional base-dir)
     (interactive
      (list (read-directory-name "Select task-party-base-dir: ")))
@@ -167,6 +169,7 @@
          *task-party-base-dir* base-dir)))
     *task-party-base-dir*)
 
+;;;###autoload
   (defun task-scratch-dir (&optional scratch-dir)
     (interactive
      (list (read-directory-name "Select task-scratch-dir: ")))
@@ -178,6 +181,7 @@
          task-scratch-dir scratch-dir)))
     task-scratch-dir)
 
+;;;###autoload
   (defun task-projbuffs-base-dir (&optional projbuffs-base-dir)
     (interactive
      (list (read-directory-name "Select task-projbuffs-base-dir: ")))
