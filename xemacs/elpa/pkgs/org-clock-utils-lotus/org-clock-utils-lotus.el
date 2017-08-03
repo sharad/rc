@@ -83,12 +83,6 @@
       (cancel-timer org-clock-check-long-timer)
       (setq org-clock-check-long-timer nil))))
 
-
-
-
-
-
-
 (progn ;; "correction org-timer.el"
 
   (defun org-timer-set-timer (&optional opt)

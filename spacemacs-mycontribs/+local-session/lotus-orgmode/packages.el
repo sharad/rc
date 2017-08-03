@@ -529,6 +529,19 @@ Each entry is either:
            org-clock-out-remove-zero-time-clocks t))
 
         (progn
+
+          (defun his-tracing-function (orig-fun &rest args)
+            (message "display-buffer called with args %S" args)
+            (let ((res (apply orig-fun args)))
+              (message "display-buffer returned %S" res)
+              res))
+
+          (advice-add 'org-resolve-clocks-if-idle :around #'his-tracing-function)
+
+          ;; (advice-remove 'display-buffer #'his-tracing-function)
+          )
+
+        (progn
           (when nil
             (defvar org-clock-display-timer-delay 2 "Org clock display timer delay")
 

@@ -111,6 +111,20 @@
  'session-globals-include
  '(*taskdir-current-task* 100))
 
+;;;###autoload
+(defun add-to-task-current-party-change-hook (fn &optional append local)
+  (add-hook
+   'task-current-party-change-hook
+   fn
+   append
+   local))
+
+;;;###autoload
+(defun remove-task-current-party-change-hook (fn)
+  (remove-hook
+   'task-current-party-change-hook
+   fn))
+
 (progn ;; base-dir function
 ;;;{{{ task base
   (defun task-party-base-org-master-file (base-dir)

@@ -131,8 +131,7 @@ Each entry is either:
                                 (message "org monitor dir %s not exists." monitor-dir))))
 
                         (progn
-                          (add-hook
-                           'task-current-party-change-hook
+                          (add-to-task-current-party-change-hook
                            '(lambda ()
                              (let ((monitor-dir (task-party-dir)))
                                (if (file-directory-p monitor-dir)
@@ -167,7 +166,7 @@ Each entry is either:
 (defun lotus-orgclocktask/init-org-context-clocking ()
   (progn
     (use-package org-context-clocking
-        :commands (org-context-clocking-insinuate org-context-clocking-uninsinuate)
+        ;; :commands (org-context-clocking-insinuate org-context-clocking-uninsinuate)
         :defer t
         :config
         (progn
