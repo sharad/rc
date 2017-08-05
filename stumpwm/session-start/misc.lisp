@@ -141,6 +141,7 @@
         (add-wm-state (window-xwin window) :_NET_WM_STATE_FULLSCREEN)
         (setf (window-fullscreen window) t)
         ;; (focus-window window)
+        (update-mode-lines (current-screen))
         )))
 
   (defun deactivate-fullscreen-if-not (window)
@@ -149,8 +150,8 @@
         (setf (window-fullscreen window) nil)
         (dformat 2 "client requests to leave fullscreen~%")
         (remove-wm-state (window-xwin window) :_NET_WM_STATE_FULLSCREEN)
-        ;; (update-decoration window)
-        ;; (update-mode-lines (current-screen))
+        (update-decoration window)
+        (update-mode-lines (current-screen))
         )))
 
   (defun fullscreen-pointer-not-grabbed (key key-seq cmd)
@@ -158,12 +159,13 @@
     (if (kmap-or-kmap-symbol-p cmd)
         (progn
           (deactivate-fullscreen-if-not (current-window))
-
           ;; (let ((w (other-window-in-frame (current-group))))
           ;;    (deactivate-fullscreen-if-not w)
           ;;    (deactivate-fullscreen-if-not (current-window))
           ;;   )
-          )))
+          )
+        (progn
+          (activate-fullscreen-if-not (current-window)))))
 
   (defun fullscreen-focus-window (cwin lwin)
     (progn
@@ -189,7 +191,10 @@
 
               ;; (remove-hook *pre-command-hook* 'unfullscreen-curr-post-command)
               ;; (remove-hook *post-command-hook* 'fullscreen-curr-post-command)
-              ))
+              )
+
+  ;; enable it.
+  (toggle-fullscreen-pointer-not-grabbed-enable))
 
 
 ;;}}} mode-line end
