@@ -133,6 +133,8 @@
 
 
 (let ()
+  ;; TODO: disable fullscreen on inactivity
+
   (defun activate-fullscreen-if-not (window)
     (when window
       (unless (window-fullscreen window)
@@ -177,16 +179,21 @@
   (defun unfullscreen-curr-post-command (cmd)
     (deactivate-fullscreen-if-not (current-window)))
 
-  (defcommand toggle-fullscreen-pointer-not-grabbed-enable () ()
+  (defcommand fullscreen-on-ungrabbed-pointer-enable () ()
               (add-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
               (add-hook *focus-window-hook* 'fullscreen-focus-window))
 
-  (defcommand toggle-fullscreen-pointer-not-grabbed-disable () ()
+  (defcommand fullscreen-on-ungrabbed-pointer-disable () ()
               (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
               (remove-hook *focus-window-hook* 'fullscreen-focus-window))
 
+  (defcommand toggle-fullscreen-on-ungrabbed-pointer () ()
+              (if (member 'fullscreen-focus-window *focus-window-hook*)
+                  (fullscreen-on-ungrabbed-pointer-disable)
+                  (fullscreen-on-ungrabbed-pointer-enable)))
+
   ;; enable it.
-  (toggle-fullscreen-pointer-not-grabbed-enable))
+  (fullscreen-on-ungrabbed-pointer-enable))
 
 
 ;;}}} mode-line end
