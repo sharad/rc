@@ -134,26 +134,36 @@
 
 (let ()
   (defun activate-fullscreen-if-not (window)
-    (unless (window-fullscreen window)
-      ;; (activate-fullscreen window)
-      (dformat 2 "client requests to go fullscreen~%")
-      (add-wm-state (window-xwin window) :_NET_WM_STATE_FULLSCREEN)
-      (setf (window-fullscreen window) t)
-      ;; (focus-window window)
-      ))
+    (when window
+      (unless (window-fullscreen window)
+        ;; (activate-fullscreen window)
+        (dformat 2 "client requests to go fullscreen~%")
+        (add-wm-state (window-xwin window) :_NET_WM_STATE_FULLSCREEN)
+        (setf (window-fullscreen window) t)
+        ;; (focus-window window)
+        )))
 
   (defun deactivate-fullscreen-if-not (window)
-    (when (window-fullscreen window)
-      (deactivate-fullscreen window)))
+    (when window
+      (when (window-fullscreen window)
+        (setf (window-fullscreen window) nil)
+        (dformat 2 "client requests to leave fullscreen~%")
+        (remove-wm-state (window-xwin window) :_NET_WM_STATE_FULLSCREEN)
+        ;; (update-decoration window)
+        ;; (update-mode-lines (current-screen))
+        )))
 
   (defun fullscreen-pointer-not-grabbed (key key-seq cmd)
     (declare (ignore key key-seq))
-    (when (current-window)
-      (if (kmap-or-kmap-symbol-p cmd)
-          (progn
-            (let ((w (other-window-in-frame (current-group))))
-              (when w (deactivate-fullscreen-if-not w)))
-            (deactivate-fullscreen-if-not (current-window))))))
+    (if (kmap-or-kmap-symbol-p cmd)
+        (progn
+          (deactivate-fullscreen-if-not (current-window))
+
+          ;; (let ((w (other-window-in-frame (current-group))))
+          ;;    (deactivate-fullscreen-if-not w)
+          ;;    (deactivate-fullscreen-if-not (current-window))
+          ;;   )
+          )))
 
   (defun fullscreen-focus-window (cwin lwin)
     (progn
@@ -165,15 +175,21 @@
   (defun fullscreen-curr-post-command (cmd)
     (activate-fullscreen-if-not (current-window)))
 
+  (defun unfullscreen-curr-post-command (cmd)
+    (deactivate-fullscreen-if-not (current-window)))
+
   (defcommand toggle-fullscreen-pointer-not-grabbed-enable () ()
               (add-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
-              ;; (add-hook *focus-window-hook* 'fullscreen-focus-window)
-              (add-hook *post-command-hook* 'fullscreen-curr-post-command))
+              (add-hook *focus-window-hook* 'fullscreen-focus-window)
+              )
 
   (defcommand toggle-fullscreen-pointer-not-grabbed-disable () ()
               (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
-              ;; (remove-hook *focus-window-hook* 'fullscreen-focus-window)
-              (remove-hook *post-command-hook* 'fullscreen-curr-post-command)))
+              (remove-hook *focus-window-hook* 'fullscreen-focus-window)
+
+              ;; (remove-hook *pre-command-hook* 'unfullscreen-curr-post-command)
+              ;; (remove-hook *post-command-hook* 'fullscreen-curr-post-command)
+              ))
 
 
 ;;}}} mode-line end
