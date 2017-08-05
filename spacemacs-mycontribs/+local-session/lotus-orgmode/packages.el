@@ -530,15 +530,15 @@ Each entry is either:
 
         (progn
 
-          (defun his-tracing-function (orig-fun &rest args)
-            (message "display-buffer called with args %S" args)
+          (defun org-idle-tracing-function (orig-fun &rest args)
+            (message "org-resolve-clocks-if-idle called with args %S" args)
             (let ((res (apply orig-fun args)))
-              (message "display-buffer returned %S" res)
+              (message "org-resolve-clocks-if-idle returned %S" res)
               res))
 
-          (advice-add 'org-resolve-clocks-if-idle :around #'his-tracing-function)
+          (advice-add 'org-resolve-clocks-if-idle :around #'org-idle-tracing-function)
 
-          ;; (advice-remove 'display-buffer #'his-tracing-function)
+          ;; (advice-remove 'display-buffer #'org-idle-tracing-function)
           )
 
         (progn
