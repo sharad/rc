@@ -140,9 +140,8 @@
         (dformat 2 "client requests to go fullscreen~%")
         (add-wm-state (window-xwin window) :_NET_WM_STATE_FULLSCREEN)
         (setf (window-fullscreen window) t)
-        ;; (focus-window window)
-        (update-mode-lines (current-screen))
-        )))
+        (focus-window window)
+        (update-mode-lines (current-screen)))))
 
   (defun deactivate-fullscreen-if-not (window)
     (when window
@@ -151,8 +150,7 @@
         (dformat 2 "client requests to leave fullscreen~%")
         (remove-wm-state (window-xwin window) :_NET_WM_STATE_FULLSCREEN)
         (update-decoration window)
-        (update-mode-lines (current-screen))
-        )))
+        (update-mode-lines (current-screen)))))
 
   (defun fullscreen-pointer-not-grabbed (key key-seq cmd)
     (declare (ignore key key-seq))
@@ -165,14 +163,13 @@
           ;;   )
           )
         (progn
-          (activate-fullscreen-if-not (current-window)))))
+          ;; should not be here
+          ;; (activate-fullscreen-if-not (current-window))
+          )))
 
   (defun fullscreen-focus-window (cwin lwin)
-    (progn
-      (when cwin
-        (activate-fullscreen-if-not cwin))
-      (when lwin
-        (deactivate-fullscreen-if-not lwin))))
+    (activate-fullscreen-if-not cwin)
+    (deactivate-fullscreen-if-not lwin))
 
   (defun fullscreen-curr-post-command (cmd)
     (activate-fullscreen-if-not (current-window)))
@@ -182,16 +179,11 @@
 
   (defcommand toggle-fullscreen-pointer-not-grabbed-enable () ()
               (add-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
-              (add-hook *focus-window-hook* 'fullscreen-focus-window)
-              )
+              (add-hook *focus-window-hook* 'fullscreen-focus-window))
 
   (defcommand toggle-fullscreen-pointer-not-grabbed-disable () ()
               (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
-              (remove-hook *focus-window-hook* 'fullscreen-focus-window)
-
-              ;; (remove-hook *pre-command-hook* 'unfullscreen-curr-post-command)
-              ;; (remove-hook *post-command-hook* 'fullscreen-curr-post-command)
-              )
+              (remove-hook *focus-window-hook* 'fullscreen-focus-window))
 
   ;; enable it.
   (toggle-fullscreen-pointer-not-grabbed-enable))
