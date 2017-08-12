@@ -165,7 +165,12 @@
           ;;   )
           )
         (progn
+          (let ((win (other-hidden-window (current-group))))
+            (unless win
+              (activate-fullscreen-if-not (current-window))))
           ;; should not be here
+          ;; is required when one window is present in frame.
+          ;; but creates problem with conkeror.
           ;; (activate-fullscreen-if-not (current-window))
           )))
 
@@ -185,7 +190,8 @@
 
   (defcommand fullscreen-on-ungrabbed-pointer-disable () ()
               (remove-hook *key-press-hook* 'fullscreen-pointer-not-grabbed)
-              (remove-hook *focus-window-hook* 'fullscreen-focus-window))
+              (remove-hook *focus-window-hook* 'fullscreen-focus-window)
+              (deactivate-fullscreen-if-not (current-window)))
 
   (defcommand toggle-fullscreen-on-ungrabbed-pointer () ()
               (if (member 'fullscreen-focus-window *focus-window-hook*)
