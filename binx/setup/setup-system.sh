@@ -15,8 +15,8 @@ function main()
     setup_paradise
 
 
-    sudo mkdir -p $SITEDIR/.repos/git/system/
-    sudo chown ${USER}.${USER} -R $SITEDIR/.repos/git/system/
+    sudo mkdir -p $SITEDIR/.repos/
+    sudo chown ${USER}.${USER} -R $SITEDIR/.repos/
     setup_apt_packages
 
     setup_ssh_keys "$SSH_KEY_DUMP"
@@ -118,51 +118,66 @@ function setup_clisp_packages()
     sudo apt install stow
     sudo mkdir -p $SITEDIR/share/common-lisp/source
     sudo mkdir -p $SITEDIR/share/common-lisp/systems
-    sudo mkdir -p $SITEDIR/share/common-lisp/source/sharad
+    # sudo mkdir -p $SITEDIR/share/common-lisp/source/sharad
 
     sudo chown ${USER}.${USER} -R $SITEDIR/share/common-lisp/
 
-    if [ ! -d $SITEDIR/share/common-lisp/source/sharad/in.net.sharad.utils ]
+    if [ ! -d $SITEDIR/share/common-lisp/source/sharad ]
     then
-        git clone git@bitbucket.org:sh4r4d/in.net.sharad.utils $SITEDIR/share/common-lisp/source/sharad/in.net.sharad.utils
-    fi
+        # git clone https://sharad@github.com/sharad/stumpwm.git $SITEDIR/share/common-lisp/source/sharad/stumpwm
+        # cd $SITEDIR/share/common-lisp/source/sharad/stumpwm
+        # git checkout pa-point-timeout
+        # cd -
+        ln -s $SITEDIR/.repos/git/packages/common-lisp/source/sharad $SITEDIR/share/common-lisp/source/sharad
+        if [ -d $SITEDIR/share/common-lisp/source/sharad/stumpwm ]
+        then
+            cd $SITEDIR/share/common-lisp/source/sharad/stumpwm
+            git checkout pa-point-timeout
+            cd -
+        fi
 
-    if [ ! -d $SITEDIR/share/common-lisp/source/sharad/pa ]
-    then
-        git clone git@bitbucket.org:sh4r4d/pa $SITEDIR/share/common-lisp/source/sharad/pa
-    fi
+        # if [ ! -d $SITEDIR/share/common-lisp/source/sharad/in.net.sharad.utils ]
+        # then
+        #     git clone git@bitbucket.org:sh4r4d/in.net.sharad.utils $SITEDIR/share/common-lisp/source/sharad/in.net.sharad.utils
+        # fi
 
-    if [ ! -d $SITEDIR/share/common-lisp/source/sharad/stumpwm ]
-    then
-        git clone https://sharad@github.com/sharad/stumpwm.git $SITEDIR/share/common-lisp/source/sharad/stumpwm
-        cd $SITEDIR/share/common-lisp/source/sharad/stumpwm
-        git checkout pa-point-timeout
-        cd -
+        # if [ ! -d $SITEDIR/share/common-lisp/source/sharad/pa ]
+        # then
+        #     git clone git@bitbucket.org:sh4r4d/pa $SITEDIR/share/common-lisp/source/sharad/pa
+        # fi
+
+
+
     fi
 }
 
 function setup_clisp_ql_packages()
 {
     # https://www.quicklisp.org/beta/faq.html#local-project
-    sudo mkdir -p $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad
+    sudo mkdir -p $SITEDIR/share/common-lisp/source/quicklisp/local-projects/
     sudo chown ${USER}.${USER} -R $SITEDIR/share/common-lisp/source/quicklisp/local-projects
 
-    if [ ! -d $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/in.net.sharad.utils ]
+    if [ ! -d $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad ]
     then
-        git clone git@bitbucket.org:sh4r4d/in.net.sharad.utils $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/in.net.sharad.utils
-    fi
+        ln -s $SITEDIR/.repos/git/packages/common-lisp/source/sharad $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad
+        # git clone https://sharad@github.com/sharad/stumpwm.git $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/stumpwm
+        if [ -d $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/stumpwm ]
+        then
+            cd $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/stumpwm
+            git checkout pa-point-timeout
+            cd -
+        fi
 
-    if [ ! -d $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/pa ]
-    then
-        git clone git@bitbucket.org:sh4r4d/pa $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/pa
-    fi
+        # if [ ! -d $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/in.net.sharad.utils ]
+        # then
+        #     git clone git@bitbucket.org:sh4r4d/in.net.sharad.utils $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/in.net.sharad.utils
+        # fi
 
-    if [ ! -d $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/stumpwm ]
-    then
-        git clone https://sharad@github.com/sharad/stumpwm.git $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/stumpwm
-        cd $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/stumpwm
-        git checkout pa-point-timeout
-        cd -
+        # if [ ! -d $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/pa ]
+        # then
+        #     git clone git@bitbucket.org:sh4r4d/pa $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/pa
+        # fi
+
     fi
 }
 
@@ -172,21 +187,28 @@ function setup_stumwpm_packages()
 
     if [ ! -d $SITEDIR/build/stumpwm ]
     then
-        git clone https://sharad@github.com/sharad/stumpwm.git $SITEDIR/build/stumpwm
-        cd $SITEDIR/build/stumpwm
-        git checkout pa-point-timeout
-        cd -
+        # git clone https://sharad@github.com/sharad/stumpwm.git $SITEDIR/build/stumpwm
+        ln -s $SITEDIR/.repos/git/packages/common-lisp/source/sharad/stumpwm $SITEDIR/build/stumpwm
+        if [ -d $SITEDIR/build/stumpwm ]
+        then
+            cd $SITEDIR/build/stumpwm
+            git checkout pa-point-timeout
+            cd -
+        fi
     fi
 
-    cd $SITEDIR/build/stumpwm
-    ./autogen.sh
-    ./configure --prefix=/usr/local/stow/stumpwm --with-lisp=sbcl
-    make
-    sudo make install
-    cd -
-    cd /usr/local/stow
-    sudo stow stumpwm
-    cd -
+    if [ -d $SITEDIR/build/stumpwm ]
+    then
+        cd $SITEDIR/build/stumpwm
+        ./autogen.sh
+        ./configure --prefix=/usr/local/stow/stumpwm --with-lisp=sbcl
+        make
+        sudo make install
+        cd -
+        cd /usr/local/stow
+        sudo stow stumpwm
+        cd -
+    fi
 
 }
 
@@ -201,7 +223,8 @@ function setup_stumwpm_contrib_packages()
 
     if [ ! -d $SITEDIR/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib ]
     then
-        git clone https://github.com/stumpwm/stumpwm-contrib.git $SITEDIR/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib
+        ln -s $SITEDIR/.repos/git/packages/common-lisp/source/stumpwm-contrib $SITEDIR/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib
+        # git clone https://github.com/sharad/stumpwm-contrib.git $SITEDIR/share/common-lisp/source/quicklisp/local-projects/stumpwm-contrib
     fi
 }
 

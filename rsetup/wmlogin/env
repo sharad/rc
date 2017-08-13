@@ -61,5 +61,9 @@ function xsession_intrusive_run()
 }
 
 export GNOME_KEYRING_CONTROL
+
+XBPROFILE="Y"
+export XBPROFILE
+
 # export SSH_AUTH_SOCK
 # export GPG_AGENT_INFO

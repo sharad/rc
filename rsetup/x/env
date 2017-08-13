@@ -42,10 +42,12 @@ fi
 VISUAL=$EDITOR
 
 BROWSER="conkeror"
+XBPROFILE="Y"
 
 export EDITOR
 export VISUAL
 export BROWSER
+export XBPROFILE
 
 # https://bugzilla.gnome.org/show_bug.cgi?id=85715
 # https://bugzilla.gnome.org/show_bug.cgi?id=723740

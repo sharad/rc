@@ -381,7 +381,10 @@
 
 (defcommand xbrowser () ()
             (run-wcli-command
-             (or (getenv "XBROWSER") "conkeror -P Y")
+             (concat
+              (or (getenv "XBROWSER") "conkeror")
+              " -P "
+              (getenv "XBPROFILE"))
                                         ;'(:class "Mozilla")
              ))
 
@@ -405,7 +408,7 @@
 
 (defcommand conkeror () ()
    (run-wcli-command
-    "conkeror"
+    (concat "firefox -P " (getenv "XBPROFILE"))
     ;'(:class "Conkeror")
     ))
 
