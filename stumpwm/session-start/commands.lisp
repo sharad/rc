@@ -613,7 +613,12 @@
 
 
 (defcommand restart-conky () ()
-  (run-shell-command "killall conky ; conky"))
+   (run-shell-command
+    "killall conky ; conky -d -c ~/.conkyrc/main/conkyrc"))
+
+(defcommand conky () ()
+   (run-shell-command
+    "conky -d -c ~/.conkyrc/main/conkyrc"))
 
 (defcommand toggle-touchpad () ()
   "Toggle the laptop touchpad on/off.
