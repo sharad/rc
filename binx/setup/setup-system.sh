@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 SSH_KEY_DUMP=$1
 SITEDIR=/usr/local
@@ -318,7 +318,12 @@ function setup_zsh()
     fi
 }
 
-setup_postfix()
+function setup_postfix()
+{
+    :
+}
+
+function setup_offlineimap()
 {
     :
 }
@@ -341,9 +346,9 @@ function setup_res_dir()
                        then
                            sudo cp /etc/fstab /etc/fstab-ORG
                            echo copied /etc/fstab into /etc/fstab-ORG
-                           sudo echo  >> /etc/fstab
-                           sudo echo /dev/mapper/vgres01-lvreiser01 /srv/res/vgres01/lvreiser01 reiserfs defaults,auto 1 1 >> /etc/fstab
-                           sudo echo  >> /etc/fstab
+                           sudo bash -c 'echo  >> /etc/fstab'
+                           sudo bash -c 'echo /dev/mapper/vgres01-lvreiser01 /srv/res/vgres01/lvreiser01 reiserfs defaults,auto 1 1 >> /etc/fstab'
+                           sudo bash -c 'echo  >> /etc/fstab'
                        fi
                    fi
                fi
