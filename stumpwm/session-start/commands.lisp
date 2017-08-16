@@ -382,9 +382,9 @@
 (defcommand xbrowser () ()
             (run-wcli-command
              (concat
-              (or (getenv "XBROWSER") "conkeror")
-              " -P "
-              (getenv "XBPROFILE"))
+              (or (getenv "XBROWSER")
+                  (concat
+                   "conkeror" " -P " (getenv "XBPROFILE"))))
                                         ;'(:class "Mozilla")
              ))
 
