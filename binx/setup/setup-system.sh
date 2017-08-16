@@ -135,19 +135,6 @@ function setup_clisp_packages()
             git checkout pa-point-timeout
             cd -
         fi
-
-        # if [ ! -d $SITEDIR/share/common-lisp/source/sharad/in.net.sharad.utils ]
-        # then
-        #     git clone git@bitbucket.org:sh4r4d/in.net.sharad.utils $SITEDIR/share/common-lisp/source/sharad/in.net.sharad.utils
-        # fi
-
-        # if [ ! -d $SITEDIR/share/common-lisp/source/sharad/pa ]
-        # then
-        #     git clone git@bitbucket.org:sh4r4d/pa $SITEDIR/share/common-lisp/source/sharad/pa
-        # fi
-
-
-
     fi
 }
 
@@ -167,17 +154,6 @@ function setup_clisp_ql_packages()
             git checkout pa-point-timeout
             cd -
         fi
-
-        # if [ ! -d $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/in.net.sharad.utils ]
-        # then
-        #     git clone git@bitbucket.org:sh4r4d/in.net.sharad.utils $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/in.net.sharad.utils
-        # fi
-
-        # if [ ! -d $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/pa ]
-        # then
-        #     git clone git@bitbucket.org:sh4r4d/pa $SITEDIR/share/common-lisp/source/quicklisp/local-projects/sharad/pa
-        # fi
-
     fi
 }
 
@@ -347,7 +323,7 @@ function setup_res_dir()
                            sudo cp /etc/fstab /etc/fstab-ORG
                            echo copied /etc/fstab into /etc/fstab-ORG
                            sudo bash -c 'echo  >> /etc/fstab'
-                           sudo bash -c 'echo /dev/mapper/vgres01-lvreiser01 /srv/res/vgres01/lvreiser01 reiserfs defaults,auto 1 1 >> /etc/fstab'
+                           sudo bash -c 'echo /dev/mapper/vgres01-lvreiser01 /srv/volumes/res01/reiser01 reiserfs defaults,auto 1 1 >> /etc/fstab'
                            sudo bash -c 'echo  >> /etc/fstab'
                        fi
                    fi
