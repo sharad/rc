@@ -111,6 +111,7 @@
       )
 
     (defun office-activate ()
+      (interactive)
       (when run-office-activate
         (if (< run-office-activate-failed run-office-activate-failed-max)
             (let ((file (buffer-file-name)))
