@@ -221,6 +221,11 @@ Each entry is either:
       :defer t
       :config
       (progn
+        (setq org-refile-targets
+              '((nil :maxlevel . 3)           ; only the current file
+                (org-agenda-files :maxlevel . 3) ; all agenda files, 1st/2nd level
+                (org-files-list :maxlevel . 4)   ; all agenda and all open files
+                (my-org-files-list :maxlevel . 4)))
         )))
 
 (defun lotus-orgclocktask/init-org-nagora-report ()

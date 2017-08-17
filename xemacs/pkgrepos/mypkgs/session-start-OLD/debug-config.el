@@ -56,7 +56,7 @@ At top-level, as an editor command, this simply beeps."
 
 (defvar inhibit-debugger-default inhibit-debugger)
 (defvar debug-ignored-errors-default debug-ignored-errors)
-
+;; (setq-default debug-ignored-errors nil)
 
 (defun enable-backtrace-for-error ()
   (interactive)

@@ -88,9 +88,10 @@ With prefix arg C-u, copy region instad of killing it."
           (my-org-files-list :maxlevel . 4))) ;all files returned by `my-org-files-list'
 
   (defun my-org-files-list ()
-    (mapcar (lambda (buffer)
+    (remove nil
+     (mapcar (lambda (buffer)
               (buffer-file-name buffer))
-            (org-buffer-list 'files t)))
+            (org-buffer-list 'files t))))
 
   (defvar org-refile-region-format "\n%s\n")
 

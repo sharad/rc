@@ -304,7 +304,29 @@ Each entry is either:
                                     ;; remember-bibl
                                     ;; macs-wiki-journal
                                     ))
-            )))
+            ))
+
+
+        (progn
+          ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
+          (setq
+           org-refile-use-outline-path 'file ;; default nil
+           org-outline-path-complete-in-steps nil ;; default t
+           org-refile-allow-creating-parent-nodes 'confirm ;; default nil
+           )
+          )
+
+        (progn
+          ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org0c5d380
+          (setq org-expiry-inactive-timestamps t)
+          (setq org-clock-idle-time nil)
+          (setq org-log-done 'time)
+          (setq org-clock-continuously nil)
+          (setq org-clock-persist t)
+          (setq org-clock-in-switch-to-state "STARTED")
+          (setq org-clock-in-resume nil)
+          (setq org-show-notification-handler 'message)
+          (setq org-clock-report-include-clocking-task t)))
       ))
 
 (defun lotus-orgmode/post-init-org-agenda ()
