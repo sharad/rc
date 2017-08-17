@@ -279,6 +279,7 @@ Each entry is either:
           (task-current-party "meru"))
 
         (progn
+          ;; (magit-git-lines "remote" "-v")
           (define-minor-mode office-mode
               "Prepare for working with collarative office project. This
 is the mode to be enabled when I am working in some files on

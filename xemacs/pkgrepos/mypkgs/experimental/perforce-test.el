@@ -86,13 +86,35 @@
               t
               (shell-command-no-output "zenity --password | timeout -k 7 6 p4 login"))))
 
+    (defvar office-git-remote-regex "")
+
+    (defun office-file-p (file)
+      (progn
+
+        (when nil
+          (with-timeout (4 (progn (incf run-office-activate-failed) nil))
+            (login-to-perforce))
+          (with-timeout (4 (progn (incf run-office-activate-failed) nil))
+            (vc-p4-registered file)))
+
+        (or
+         (if (functionp 'magit-git-lines)
+             (string-match-p
+              office-git-remote-regex
+              (car
+               (remove-if-not
+                #'(lambda (s) (string-match-p "^origin" s))
+                (magit-git-lines "remote" "-v")))))))
+
+
+
+      )
+
     (defun office-activate ()
       (when run-office-activate
         (if (< run-office-activate-failed run-office-activate-failed-max)
             (let ((file (buffer-file-name)))
-              (when (and file
-                         (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (login-to-perforce))
-                         (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (vc-p4-registered file)))
+              (when (and file (office-file-p file))
                 ;; if file is handled by perforce than assume it is
                 ;; related to office perforce repository.
                 (office-mode 1)))
