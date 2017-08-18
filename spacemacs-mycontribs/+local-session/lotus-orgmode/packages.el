@@ -642,6 +642,7 @@ Each entry is either:
                       (save-buffer)
                       (org-save-all-org-buffers)))
 
+          ;; org-refile-targets is set in org-misc-utils-lotus package
           (defun org-clock-in-refile (refile-targets)
             (org-with-refile (or refile-targets org-refile-targets)
                              (let ((buffer-read-only nil))

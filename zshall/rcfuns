@@ -195,10 +195,14 @@ chpwd_functions=(${chpwd_functions[@]} "_dir_leave_hook")
 chpwd_functions=(${chpwd_functions[@]} "_dir_enter_hook")
 
 function scrmkcd () {
-    scratchdir=$(mktemp -d -u -p  IIIIIII  --tmpdir=/tmp --suffix=QQQ XXXXXXXXXXXXXXXX)
+
+    scratchdir=$(mktemp -d -u -p  IIIIIII  --tmpdir=${TMP:-/tmp} --suffix=${1:-SCRATCH} XXXXXXXXXXXXXXXX)
+
     [[ -n $rcdebug ]] && echo $scratchdir >&2
-    if mkdir -p ${scratchdir} && cd ${scratchdir} ; then
-        cat <<EOF > ${DIRLEAVEHOOKFILE:-.dirleavehook}
+
+    if mkdir -p ${scratchdir} && cd ${scratchdir}
+    then
+        cat <<-EOF > ${DIRLEAVEHOOKFILE:-.dirleavehook}
         if read -q resp"?Should I delete ${scratchdir}: [n] " ; then
          sched -o +60:0 rm -rf ${scratchdir} && echo && echo will removed ${scratchdir} after 1 hour. >&2
         fi
