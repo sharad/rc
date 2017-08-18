@@ -79,9 +79,9 @@ Each entry is either:
   ;; from http://www.emacswiki.org/emacs/EUDC
   (use-package eudc
       :defer t
+      :commands (lotus-enz-eudc-expand-inline)
       :config
       (progn
-
         (defun myeudc-ldap-format-query-as-rfc1558 (query)
           "Format the EUDC QUERY list as a RFC1558 LDAP search filter."
           (format "(|%s)"
@@ -212,7 +212,7 @@ attribute names are returned. Default to `person'"
             (backward-delete-char-untabify 1)))
 
 
-        (defun sharad/enz-eudc-expand-inline ()
+        (defun lotus-enz-eudc-expand-inline ()
           (interactive)
           (move-end-of-line 1)
           (insert "*")
@@ -224,7 +224,7 @@ attribute names are returned. Default to `person'"
 
 
 
-        (defun sharad/eudc-show-at-point (arg)
+        (defun lotus-eudc-show-at-point (arg)
           (interactive "P")
           ;; from .gnus.d/article.el
           (let ((email (thing-at-point 'fullemail)))
@@ -272,11 +272,11 @@ BEG and END delimit the text which is to be replaced."
         ;; Adds some hooks
 
         (eval-after-load "message"
-          '(define-key message-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))
+          '(define-key message-mode-map (kbd "H-c TAB") 'lotus-enz-eudc-expand-inline))
         (eval-after-load "sendmail"
-          '(define-key mail-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline))
+          '(define-key mail-mode-map (kbd "H-c TAB") 'lotus-enz-eudc-expand-inline))
         (eval-after-load "post"
-          '(define-key post-mode-map (kbd "H-c TAB") 'sharad/enz-eudc-expand-inline)))
+          '(define-key post-mode-map (kbd "H-c TAB") 'lotus-enz-eudc-expand-inline)))
 
       (progn ;; wrapper
 

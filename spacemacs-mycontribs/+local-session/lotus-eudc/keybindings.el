@@ -1,15 +1,29 @@
 
-(when (configuration-layer/package-usedp 'PACKAGE)
-  (defun spacemacs/PACKAGE-enable ()
-    (progn ;; "Keybinding: Elscreen"
-      ;;{{ elscreen
-      (define-key evil-emacs-state-map (kbd "") nil)
-      ;; (global-unset-key [C-z])
-      (global-set-key [] 'elscreen-create)))
+(when (configuration-layer/package-usedp 'eudc)
+  (defun spacemacs/eudc-enable ()
+    (progn ;; "Keybinding: Eudc"
 
-  (defun spacemacs/PACKAGE-disable ()
-    (progn ;; "Keybinding: Elscreen"
-      (define-key evil-emacs-state-map nil)
-      (global-unset-key [])))
+      ;;{{ eudc
+      (use-package message
+          :defer t
+          :config
+          (progn
+            (define-key message-mode-map (kbd "H-c TAB") 'lotus-enz-eudc-expand-inline)))
+      (use-package sendmail
+          :defer t
+          :config
+          (progn
+            (define-key mail-mode-map (kbd "H-c TAB") 'lotus-enz-eudc-expand-inline)))
+      (use-package post
+          :defer t
+          :config
+          (progn
+            (define-key post-mode-map (kbd "H-c TAB") 'lotus-enz-eudc-expand-inline)))))
 
-  (spacemacs/PACKAGE-enable))
+  (defun spacemacs/eudc-disable ()
+    (progn ;; "Keybinding: Eudc"
+      (define-key message-mode-map (kbd "H-c TAB") nil)
+      (define-key mail-mode-map    (kbd "H-c TAB") nil)
+      (define-key post-mode-map    (kbd "H-c TAB") nil)))
+
+  (spacemacs/eudc-enable))
