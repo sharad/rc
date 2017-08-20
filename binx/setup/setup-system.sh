@@ -296,12 +296,12 @@ function setup_zsh()
 
 function setup_postfix()
 {
-    :
+    sudo apt install postfix
 }
 
 function setup_offlineimap()
 {
-    :
+    sudo apt install offlineimap
 }
 
 function setup_res_dir()
