@@ -297,6 +297,18 @@ function setup_zsh()
 function setup_postfix()
 {
     sudo apt install postfix
+    if [ -d $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix ]
+    then
+        if [ -d /etc/postfix-ORG ]
+        then
+            echo /etc/postfix-ORG already present
+        else
+            sudo cp -ar /etc/postfix /etc/postfix-ORG
+        fi
+        cp $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix/* /etc/postfix/
+    else
+        echo $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix donot exists >&2
+    fi
 }
 
 function setup_offlineimap()
