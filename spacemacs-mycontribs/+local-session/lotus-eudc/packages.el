@@ -122,7 +122,8 @@ attribute names are returned. Default to `person'"
 
         (setq ldap-default-base "cn=accounts,dc=corp,dc=fortinet,dc=com")
 
-        (setq ;; eudc-default-return-attributes nil
+        (setq
+         ;; eudc-default-return-attributes nil
          eudc-default-return-attributes 'all
          eudc-strict-return-matches nil
          ;; ldap-ldapsearch-args '("-tt" "-LLL" "-x" "-ZZ")
@@ -171,8 +172,10 @@ attribute names are returned. Default to `person'"
          ;;                  passwd "your_password"))
          `(,(cdr (assoc eudc-office (eudc-ldap-datas))))
 
-         eudc-server-hotlist `(("" . bbdb)
-                               ( ,(car (cdr (assoc eudc-office (eudc-ldap-datas)))) . ldap ))
+         eudc-server-hotlist `(
+                               ("" . bbdb)
+                               ( ,(car (cdr (assoc eudc-office (eudc-ldap-datas)))) . ldap )
+                               ("" . bbdb) )
 
          eudc-inline-expansion-servers 'hotlist)
 

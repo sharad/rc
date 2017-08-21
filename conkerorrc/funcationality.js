@@ -16,7 +16,6 @@ function addCustomElement(doc, id, type, attribs)
 
     doc.getElementsByTagName("head")[0].appendChild( newEl );
 
-
     // if (document.createStyleSheet) { //
     //     document.createStyleSheet("javascript:'" + styles + "'"); //
     // } //
