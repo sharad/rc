@@ -8,39 +8,57 @@ define_key(content_buffer_normal_keymap, "d", "follow-new-buffer-background");
 
 
 // {{ darken_page: thanks very much for saving my eyes.
-function darken_page (I)
+function addCustomElement(doc, id, type, attribs)
 {
-  // var newSS, styles='* { background: black ! important; color: grey !important }'
-  // var newSS, styles='* { background: black ! important; color: white !important }'
-  // var newSS, styles='* { background: #EFFFEF ! important; color: white !important }'
-  // var newSS, styles='* { background: #428a42 ! important; color: white !important }'
-  // var newSS, styles='* { background: DarkGreen ! important; color: white !important }'
-  // var newSS, styles='* { background: DarkSlateGray  ! important; color: white !important }'
-  var newSS, styles='* { background: Black  ! important; color: grey !important }'
-    + ':link, :link * { color: #4986dd !important }'
-    + ':visited, :visited * { color: #d75047 !important }';
+    var newEl = doc.createElement(type);
+    newEl.id = id;
+    for(var k in attribs) newEl[k] = attribs[ k ];
 
-  var document = I.window.buffers.current.document;
+    doc.getElementsByTagName("head")[0].appendChild( newEl );
 
-  if (document.createStyleSheet) {
-    document.createStyleSheet("javascript:'" + styles + "'");
-  }
-  else {
-    newSS=document.createElement('link');
-    newSS.rel='stylesheet';
-    newSS.href='data:text/css,'+escape(styles);
-    document.getElementsByTagName("head")[0].appendChild(newSS);
-  }
+
+    // if (document.createStyleSheet) { //
+    //     document.createStyleSheet("javascript:'" + styles + "'"); //
+    // } //
+
 }
 
-interactive("darken-page",
+function removeCustomElement(doc, id, type)
+{
+    var delEl = doc.getElementById(id);
+    delEl.parentNode.removeChild(delEl);
+}
+
+function toggle_darken_page(I)
+{
+    // var newSS, styles='* { background: black ! important; color: grey !important }'
+    // var newSS, styles='* { background: black ! important; color: white !important }'
+    // var newSS, styles='* { background: #EFFFEF ! important; color: white !important }'
+    // var newSS, styles='* { background: #428a42 ! important; color: white !important }'
+    // var newSS, styles='* { background: DarkGreen ! important; color: white !important }'
+    // var newSS, styles='* { background: DarkSlateGray  ! important; color: white !important }'
+    var styles =
+        '* { background: Black  ! important; color: grey !important }'
+        + ':link, :link * { color: #4986dd !important }'
+        + ':visited, :visited * { color: #d75047 !important }';
+
+    var id = "_darken_page_";
+    var doc = I.window.buffers.current.document;
+    var attribs = { rel: "stylesheet", href: "data:text/css, " + escape(styles)};
+
+    if (doc.getElementById(id))
+        removeCustomElement(doc, id, "link");
+    else
+        addCustomElement(doc, id, "link", attribs);
+}
+
+interactive("toggle-darken-page",
             "Darken the page in an attempt to save your eyes.",
-            darken_page);
+            toggle_darken_page);
 
-// add_hook('buffer_loaded_hook', darken_page, true, true);
+add_hook('buffer_loaded_hook', toggle_darken_page, true, true);
 
-define_key(content_buffer_normal_keymap, "f1", "darken-page");
-
+define_key(content_buffer_normal_keymap, "f1", "toggle-darken-page");
 // }}
 
 // {{ Remember the last save directory for downloads

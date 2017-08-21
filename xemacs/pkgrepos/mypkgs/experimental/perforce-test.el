@@ -103,12 +103,8 @@
               office-git-remote-regex
               (car
                (remove-if-not
-                #'(lambda (s) (string-match-p "^origin" s))
-                (magit-git-lines "remote" "-v")))))))
-
-
-
-      )
+                #'(lambda (s) (if s (string-match-p "^origin" s)))
+                (magit-git-lines "remote" "-v"))))))))
 
     (defun office-activate ()
       (interactive)
