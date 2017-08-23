@@ -176,6 +176,7 @@ function setup_stumwpm_packages()
     if [ -d $SITEDIR/build/stumpwm ]
     then
         cd $SITEDIR/build/stumpwm
+        git checkout pa-point-timeout
         ./autogen.sh
         ./configure --prefix=/usr/local/stow/stumpwm --with-lisp=sbcl
         make
