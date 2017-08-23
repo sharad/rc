@@ -98,13 +98,17 @@
             (vc-p4-registered file)))
 
         (or
-         (if (functionp 'magit-git-lines)
-             (string-match-p
-              office-git-remote-regex
-              (car
-               (remove-if-not
-                #'(lambda (s) (if s (string-match-p "^origin" s)))
-                (magit-git-lines "remote" "-v"))))))))
+         (let ((remote-repo
+                (car
+                 (remove-if-not
+                  #'(lambda (s) (if s (string-match-p "^origin" s)))
+                  (magit-git-lines "remote" "-v")))))
+           (if (and
+                (functionp 'magit-git-lines)
+                remote-repo)
+               (string-match-p
+                office-git-remote-regex
+                remote-repo))))))
 
     (defun office-activate ()
       (interactive)
