@@ -306,7 +306,7 @@ function setup_postfix()
         else
             sudo cp -ar /etc/postfix /etc/postfix-ORG
         fi
-        cp $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix/* /etc/postfix/
+        sudo sh -c "cp $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix/* /etc/postfix/"
     else
         echo $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix donot exists >&2
     fi
@@ -319,24 +319,29 @@ function setup_offlineimap()
 
 function setup_res_dir()
 {
+
+    local MOUNTPOINT=/srv/volumes/res01/reiser01
+    local VOL_RESIER=vgres01
+    local LVOL_RESIER=lvreiser01
+
     sudo mkdir -p /srv
-    if sudo vgs --noheadings vgres01
+    if sudo vgs --noheadings $VOL_RESIER
     then
        sudo apt install reiserfsprogs
-       if ! sudo lvs --noheadings vgres01/lvreiser01
+       if ! sudo lvs --noheadings $VOL_RESIER/$LVOL_RESIER
        then
-           if sudo lvcreate vgres01 -n lvreiser01 -L 1G
+           if sudo lvcreate $VOL_RESIER -n $LVOL_RESIER -L 1G
            then
-               if sudo mkreiserfs /dev/mapper/vgres01-lvreiser01
+               if sudo mkreiserfs /dev/mapper/$VOL_RESIER-$LVOL_RESIER
                then
-                   if sudo mkdir -p /srv/res//vgres01/lvreiser01
+                   if sudo mkdir -p $MOUNTPOINT
                    then
-                       if ! grep /srv/res/vgres01/lvreiser01 /etc/fstab
+                       if ! grep /dev/mapper/$VOL_RESIER-$LVOL_RESIER /etc/fstab
                        then
                            sudo cp /etc/fstab /etc/fstab-ORG
                            echo copied /etc/fstab into /etc/fstab-ORG
                            sudo bash -c 'echo  >> /etc/fstab'
-                           sudo bash -c 'echo /dev/mapper/vgres01-lvreiser01 /srv/volumes/res01/reiser01 reiserfs defaults,auto 1 1 >> /etc/fstab'
+                           sudo bash -c 'echo /dev/mapper/$VOL_RESIER-$LVOL_RESIER $MOUNTPOINT reiserfs defaults,auto 1 1 >> /etc/fstab'
                            sudo bash -c 'echo  >> /etc/fstab'
                        fi
                    fi
@@ -344,7 +349,7 @@ function setup_res_dir()
            fi
        fi
     else
-        echo Warning: vgres01 volume group do not exists. >&2
+        echo Warning: $VOL_RESIER volume group do not exists. >&2
     fi
 }
 
