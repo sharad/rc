@@ -80,28 +80,33 @@ Each entry is either:
       (use-package org-clock-utils-lotus
           :defer t
           :config
-          (progn )))
+          (progn
+            (progn
+              ))))
+
     (progn
-      (use-package org
-          :defer t
-          :config
-          (progn
-            (use-package sessions-unified
-                :defer t
-                :config
-                (add-to-enable-desktop-restore-interrupting-feature-hook
-                 '(lambda ()
-                   (if (fboundp 'org-clock-persistence-insinuate)
-                       (org-clock-persistence-insinuate)
-                       (message "Error: Org Clock function org-clock-persistence-insinuate not available.")))))))
-      (use-package sessions-unified
-          :defer t
-          :config
-          (progn
-            (add-to-enable-desktop-restore-interrupting-feature-hook
-             '(lambda ()
-               (if (fboundp 'org-clock-start-check-timer)
-                   (org-clock-start-check-timer)))))))))
+      (progn
+        (use-package org
+            :defer t
+            :config
+            (progn
+              (use-package sessions-unified
+                  :defer t
+                  :config
+                  (add-to-enable-desktop-restore-interrupting-feature-hook
+                   '(lambda ()
+                     (if (fboundp 'org-clock-persistence-insinuate)
+                         (org-clock-persistence-insinuate)
+                         (message "Error: Org Clock function org-clock-persistence-insinuate not available."))))))))
+      (progn
+        (use-package sessions-unified
+            :defer t
+            :config
+            (progn
+              (add-to-enable-desktop-restore-interrupting-feature-hook
+               '(lambda ()
+                 (if (fboundp 'org-clock-start-check-timer)
+                     (org-clock-start-check-timer))))))))))
 
 (defun lotus-orgclocktask/init-org-clock-daysummary ()
   (progn
@@ -118,7 +123,10 @@ Each entry is either:
                 (progn
                   (use-package task-manager
                       :defer t
-                      :commands (office-mode task-current-party-select-set task-current-party task-party-dir task-select-party-dir find-task-dir)
+                      :commands (office-mode
+                                 task-current-party-select-set
+                                 task-current-party task-party-dir
+                                 task-select-party-dir find-task-dir)
                       :config
                       (progn
 
@@ -221,12 +229,62 @@ Each entry is either:
       :defer t
       :config
       (progn
-        (setq org-refile-targets
-              '((nil :maxlevel . 3)           ; only the current file
-                (org-agenda-files :maxlevel . 3) ; all agenda files, 1st/2nd level
-                (org-files-list :maxlevel . 4)   ; all agenda and all open files
-                (my-org-files-list :maxlevel . 4)))
-        )))
+        (progn
+          (setq org-refile-targets
+                '((nil :maxlevel . 3)           ; only the current file
+                  (org-agenda-files :maxlevel . 3) ; all agenda files, 1st/2nd level
+                  (org-files-list :maxlevel . 4)   ; all agenda and all open files
+                  (lotus-org-files-list :maxlevel . 4))))
+
+        (progn
+          (use-package startup-hooks
+              :defer t
+              :config
+              (progn
+                (progn
+                  (add-to-enable-startup-interrupting-feature-hook
+                   '(lambda ()
+                     (when nil
+                       (add-hook 'after-make-frame-functions
+                                 '(lambda (nframe)
+                                   (run-at-time-or-now 100
+                                    '(lambda ()
+                                      (if (any-frame-opened-p)
+                                          (org-clock-in-if-not)))))
+                                 t))
+                     (add-hook 'delete-frame-functions
+                      '(lambda (nframe)
+                        (if (and
+                             (org-clock-is-active)
+                             (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
+                            (org-with-clock-writeable-buffer
+                             (let (org-log-note-clock-out)
+                               (if (org-clock-is-active)
+                                   (org-clock-out))))))))
+                   t))
+
+                (progn
+                  (add-to-enable-desktop-restore-interrupting-feature-hook
+                   '(lambda ()
+                     (if (fboundp 'org-clock-persistence-insinuate)
+                         (org-clock-persistence-insinuate)
+                         (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
+                     (if (fboundp 'org-clock-start-check-timer)
+                         (org-clock-start-check-timer)))
+                   t)))))
+
+        (progn
+          (add-hook
+           'kill-emacs-hook
+           (lambda ()
+             (if (and
+                  (org-clock-is-active)
+                  ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
+                  )
+                 (org-with-clock-writeable-buffer
+                  (let (org-log-note-clock-out)
+                    (if (org-clock-is-active)
+                        (org-clock-out)))))))))))
 
 (defun lotus-orgclocktask/init-org-nagora-report ()
   (use-package org-nagora-report

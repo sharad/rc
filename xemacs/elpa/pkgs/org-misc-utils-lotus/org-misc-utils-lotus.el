@@ -85,9 +85,9 @@ With prefix arg C-u, copy region instad of killing it."
         '((nil :maxlevel . 3)           ; only the current file
           (org-agenda-files :maxlevel . 3) ; all agenda files, 1st/2nd level
           (org-files-list :maxlevel . 4)   ; all agenda and all open files
-          (my-org-files-list :maxlevel . 4))) ;all files returned by `my-org-files-list'
+          (lotus-org-files-list :maxlevel . 4))) ;all files returned by `lotus-org-files-list'
 
-  (defun my-org-files-list ()
+  (defun lotus-org-files-list ()
     (remove nil
      (mapcar (lambda (buffer)
               (buffer-file-name buffer))
