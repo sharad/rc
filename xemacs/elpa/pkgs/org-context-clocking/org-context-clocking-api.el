@@ -57,7 +57,7 @@
 ;; "org entries clocking's APIs' API"
 (require 'org-context-clocking-api-common) ;; "org entries accss common api"
 
-(defun org-context-clock-debug (message &rest args)
+(defun org-context-clocking-debug (message &rest args)
   (apply 'lwarn 'org-context-clock :debug message args))
 
 ;; (org-context-clock-debug "hello %s[%d]" "test" 11)

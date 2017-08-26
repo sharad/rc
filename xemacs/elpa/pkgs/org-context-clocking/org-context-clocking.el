@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(defgroup org-context-clock nil
+(defgroup org-context-clocking nil
   "Emacs Org Context Clocking."
   :tag "Org Clock"
   :group 'org-progress)
@@ -94,7 +94,7 @@
               (equal org-context-clocking-task-current-context-plist  context-plist))
              (if buff (minibufferp (plist-get context-plist :buffer)) t))
 
-            (org-context-clock-debug "org-context-clocking-update-current-context-plist: context-plist %s not suitable to associate" context-plist)
+            (org-context-clocking-debug "org-context-clocking-update-current-context-plist: context-plist %s not suitable to associate" context-plist)
 
             (progn
               (setq
@@ -102,12 +102,12 @@
                org-context-clocking-task-current-context-plist  context-plist)
 
               (if (> (org-context-clocking-entry-associated-to-context-plist-p context-plist) 0)
-                  (org-context-clock-debug "org-context-clocking-update-current-context-plist: Current entry already associate to %s" context-plist)
+                  (org-context-clocking-debug "org-context-clocking-update-current-context-plist: Current entry already associate to %s" context-plist)
                   (progn
-                    (org-context-clock-debug "org-context-clocking-update-current-context-plist: Now really going to clock.")
+                    (org-context-clocking-debug "org-context-clocking-update-current-context-plist: Now really going to clock.")
                     (org-context-clocking-entry-run-associated-clock context-plist)
-                    (org-context-clock-debug "org-context-clocking-update-current-context-plist: Now really clock done."))))))
-      (org-context-clock-debug "org-context-clocking-update-current-context-plist: not enough time passed.")))
+                    (org-context-clocking-debug "org-context-clocking-update-current-context-plist: Now really clock done."))))))
+      (org-context-clocking-debug "org-context-clocking-update-current-context-plist: not enough time passed.")))
 
 
 (defun org-context-clocking-update-current-context-plist-x ()
@@ -452,14 +452,14 @@
                       "~/Docume1nts/CreatedContent/contents/org/tasks/meru/report.org"))))
 
   (length
-   (org-entries-associated-to-context-plist-by-keys
+   (org-context-clocking-entries-associated-to-context-plist-by-keys
     (list
      :file (buffer-file-name)
      :buffer (current-buffer))))
 
 
   (length
-   (org-entries-associated-to-context-plist-by-keys
+   (org-context-clocking-entries-associated-to-context-plist-by-keys
     (list
      :file "/home/s/paradise/releases/global/patch-upgrade/Makefile"
      :buffer (find-buffer-visiting
@@ -472,7 +472,7 @@
     :buffer (find-buffer-visiting
              "/home/s/paradise/releases/global/patch-upgrade/Makefile")))
 
-  ;; (org-entry-associated-to-context-plist-by-keys "/home/s/paradise/releases/global/patch-upgrade/Makefile")
+  ;; (org-context-clocking-entry-associated-to-context-plist-by-keys "/home/s/paradise/releases/global/patch-upgrade/Makefile")
 
   (if (org-context-clocking-entry-associated-to-context-plist-p
        (list

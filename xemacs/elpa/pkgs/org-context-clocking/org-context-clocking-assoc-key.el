@@ -41,66 +41,66 @@
 
 (require 'org-context-clocking-api-recursive)
 
-(defvar org-context-clock-entry-associated-context-plist-key-fns nil
+(defvar org-context-clocking-entry-associated-context-plist-key-fns nil
   "property list of KEY and API FUNCTIONS for key based association")
 
 (progn ;; api
-  (defun org-context-clock-entries-associated-to-context-plist-by-keys (context-plist)
-    "Retun org TASK-INFO entries for FILE which are associated based on list of functions for keys applied by org-context-clock-entry-associated-TO-FILE-BY-KEYS-P"
+  (defun org-context-clocking-entries-associated-to-context-plist-by-keys (context-plist)
+    "Retun org TASK-INFO entries for FILE which are associated based on list of functions for keys applied by org-context-clocking-entry-associated-TO-FILE-BY-KEYS-P"
     (let ((task-infos (org-context-clocking-entry-tree-update-task-infos))
           (matched '()))
-      (org-context-clock-debug "org-entries-associated-to-context-plist-by-keys: BEFORE matched %s[%d]" matched (length matched))
+      (org-context-clocking-debug "org-context-clocking-entries-associated-to-context-plist-by-keys: BEFORE matched %s[%d]" matched (length matched))
       (org-context-clocking-tree-mapc-task-infos
        #'(lambda (task args)
            (let ((rank
-                  (org-entry-associated-to-context-plist-by-keys-p task args)))
-             (unless rank (error "org-entries-associated-to-context-plist-by-keys[lambda]: rank is null"))
+                  (org-context-clocking-entry-associated-to-context-plist-by-keys-p task args)))
+             (unless rank (error "org-context-clocking-entries-associated-to-context-plist-by-keys[lambda]: rank is null"))
              (when (> rank 0)
                (push task matched)
-               (org-context-clock-debug "org-entries-associated-to-context-plist-by-keys[lambda]: task %s MATCHED RANK %d"
+               (org-context-clocking-debug "org-context-clocking-entries-associated-to-context-plist-by-keys[lambda]: task %s MATCHED RANK %d"
                         (org-context-clocking-entry-task-info-get-heading task)
                         (length matched)))))
        task-infos
        context-plist)
 
-      (org-context-clock-debug "org-entries-associated-to-context-plist-by-keys: AFTER matched %s[%d]" "matched" (length matched))
+      (org-context-clocking-debug "org-context-clocking-entries-associated-to-context-plist-by-keys: AFTER matched %s[%d]" "matched" (length matched))
 
       matched))
 
 
-  (defun org-entry-associated-to-context-plist-by-keys-p (task-info context-plist)
+  (defun org-context-clocking-entry-associated-to-context-plist-by-keys-p (task-info context-plist)
     "Test whether association of org TASK-INFO for FILE using list of functions for keys,
 using algorithm in this function, return RANK"
     (if context-plist
-        (if (> (org-entries-associated-key-fn-value :status task-info context-plist) -20)
+        (if (> (org-context-clocking-entries-associated-key-fn-value :status task-info context-plist) -20)
             (let ((rank
                    (+
-                    (org-entries-associated-key-fn-value :timebeing task-info context-plist)
-                    (org-entries-associated-key-fn-value :root task-info context-plist)
-                    ;; (org-entries-associated-key-fn-value :org-file task-info context-plist)
-                    (org-entries-associated-key-fn-value :task-info-key task-info context-plist)
-                    (org-entries-associated-key-fn-value :heading-level task-info context-plist))))
+                    (org-context-clocking-entries-associated-key-fn-value :timebeing task-info context-plist)
+                    (org-context-clocking-entries-associated-key-fn-value :root task-info context-plist)
+                    ;; (org-context-clocking-entries-associated-key-fn-value :org-file task-info context-plist)
+                    (org-context-clocking-entries-associated-key-fn-value :task-info-key task-info context-plist)
+                    (org-context-clocking-entries-associated-key-fn-value :heading-level task-info context-plist))))
               rank)
             -20)
         0))
 
-  (org-context-clocking-api-set :keys :entries 'org-entries-associated-to-context-plist-by-keys)
-  (org-context-clocking-api-set :keys :entryp  'org-entry-associated-to-context-plist-by-keys-p)
+  (org-context-clocking-api-set :keys :entries 'org-context-clocking-entries-associated-to-context-plist-by-keys)
+  (org-context-clocking-api-set :keys :entryp  'org-context-clocking-entry-associated-to-context-plist-by-keys-p)
   (org-context-clocking-api-set :keys :update  'org-context-clocking-entry-tree-update-task-infos))
 
 
 
-(progn ;; REGISTRATION MACRO To add key property and functions list to ORG-CONTEXT-CLOCK-ENTRY-ASSOCIATED-FILE-KEY-FNS
-  (setq org-context-clock-entry-associated-context-plist-key-fns nil)
-  (message "NOTE: org-context-clock-entry-associated-context-plist-key-fns made to nil")
+(progn ;; REGISTRATION MACRO To add key property and functions list to ORG-CONTEXT-CLOCKING-ENTRY-ASSOCIATED-FILE-KEY-FNS
+  (setq org-context-clocking-entry-associated-context-plist-key-fns nil)
+  (message "NOTE: org-context-clocking-entry-associated-context-plist-key-fns made to nil")
 
   (progn ;; macros and accessor
 
-    (defun org-entries-register-associated-to-context-plist-key-function (key fn)
+    (defun org-context-clocking-entries-register-associated-to-context-plist-key-function (key fn)
       (setq
-       org-context-clock-entry-associated-context-plist-key-fns
+       org-context-clocking-entry-associated-context-plist-key-fns
        (plist-put
-        org-entry-associated-context-plist-key-fns key fn)))
+        org-context-clocking-entry-associated-context-plist-key-fns key fn)))
 
     (eval-when-compile                  ;; TODO: auto generate name from KEY
       (defmacro defassoc-context-plist-key (name key args &rest body)
@@ -108,28 +108,28 @@ using algorithm in this function, return RANK"
         `(progn
            (defun ,name ,args
              ,@body)
-           (org-entries-register-associated-to-context-plist-key-function ,key ',name))))
+           (org-context-clocking-entries-register-associated-to-context-plist-key-function ,key ',name))))
 
     (put 'defassoc-context-plist-key 'lisp-indent-function 3)
-    (defun org-context-clock-entries-associated-key-function (key)
-      (plist-get org-entry-associated-context-plist-key-fns key))
-    (defun org-entries-associated-key-fn-value (key task-info context-plist)
-      (let ((keyfn (org-entries-associated-key-function key)))
+    (defun org-context-clocking-entries-associated-key-function (key)
+      (plist-get org-context-clocking-entry-associated-context-plist-key-fns key))
+    (defun org-context-clocking-entries-associated-key-fn-value (key task-info context-plist)
+      (let ((keyfn (org-context-clocking-entries-associated-key-function key)))
         (if keyfn
             (let ((rank (funcall keyfn task-info context-plist)))
               (unless (numberp rank)
-                (error "org-entries-associated-key-fn-value: fun %s returning nonnumeric %s for context-plist %s for task %s"
+                (error "org-context-clocking-entries-associated-key-fn-value: fun %s returning nonnumeric %s for context-plist %s for task %s"
                        keyfn
                        rank
                        context-plist
                        (org-context-clocking-entry-task-info-get-heading task-info)))
-              (org-context-clock-debug "org-entries-associated-key-fn-value: task %s key %s MATCHED %d rank"
+              (org-context-clocking-debug "org-context-clocking-entries-associated-key-fn-value: task %s key %s MATCHED %d rank"
                        (org-context-clocking-entry-task-info-get-heading task-info)
                        key
                        rank)
               rank)
             (progn
-              (org-context-clock-debug "org-entries-associated-key-fn-value: task %s key %s kyfn is %s so how can match %d rank"
+              (org-context-clocking-debug "org-context-clocking-entries-associated-key-fn-value: task %s key %s kyfn is %s so how can match %d rank"
                        (org-context-clocking-entry-task-info-get-heading task-info)
                        key
                        keyfn
@@ -157,9 +157,9 @@ using algorithm in this function, return RANK"
              (file (if file (file-truename file))))
        (if root
            (progn
-             (org-context-clock-debug "task %s root %s" (org-context-clocking-entry-task-info-get-heading task-info) root)
-             (org-context-clock-debug "task %s file %s" (org-context-clocking-entry-task-info-get-heading task-info) file))
-           (org-context-clock-debug "task %s root %s not present."
+             (org-context-clocking-debug "task %s root %s" (org-context-clocking-entry-task-info-get-heading task-info) root)
+             (org-context-clocking-debug "task %s file %s" (org-context-clocking-entry-task-info-get-heading task-info) file))
+           (org-context-clocking-debug "task %s root %s not present."
                                     (org-context-clocking-entry-task-info-get-heading task-info) root))
        (if (and root file
                 (string-match root file))
