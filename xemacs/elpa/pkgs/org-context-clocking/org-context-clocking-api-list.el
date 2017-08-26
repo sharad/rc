@@ -26,9 +26,9 @@
 
 
 ;; "org entries access api for list org"
-(defvar org-entry-list-task-infos nil "org entry task infos")
+(defvar org-context-clocking-entry-list-task-infos nil "org entry task infos")
 
-(defun org-entry-list-build (collector files)
+(defun org-context-clocking-entry-list-build (collector files)
   (let ()
     (remove nil
             (org-map-entries
@@ -36,16 +36,16 @@
              t
              files))))
 
-(defun org-entry-list-collect-task-infos (files)
-  (org-entry-list-build 'org-entry-collect-task-info files))
+(defun org-context-clocking-entry-list-collect-task-infos (files)
+  (org-context-clocking-entry-list-build 'org-entry-collect-task-info files))
 
-(defun org-entry-list-update-task-infos (&optional force)
+(defun org-context-clocking-entry-list-update-task-infos (&optional force)
   (interactive "P")
   (unless (and (not force)
-               org-entry-list-task-infos)
-    (setq org-entry-list-task-infos
-          (org-entry-list-collect-task-infos (org-all-task-files))))
-  org-entry-list-task-infos)
+               org-context-clocking-entry-list-task-infos)
+    (setq org-context-clocking-entry-list-task-infos
+          (org-context-clocking-entry-list-collect-task-infos (org-all-task-files))))
+  org-context-clocking-entry-list-task-infos)
 
 (provide 'org-context-clocking-api-list)
 ;;; org-context-clocking-api-list.el ends here

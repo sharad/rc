@@ -183,11 +183,11 @@ Each entry is either:
                 :defer t
                 :config
                 (progn
-                  (setq org-entry-tree-task-info-root-org-file
+                  (setq org-context-clocking-entry-tree-task-info-root-org-file
                         (expand-file-name "start.org" (task-party-base-dir))))))
 
           (progn
-            (setq org-entry-tree-task-info-root-org-file
+            (setq org-context-clocking-entry-tree-task-info-root-org-file
                   (expand-file-name "start.org" (task-party-base-dir))))
 
           (progn

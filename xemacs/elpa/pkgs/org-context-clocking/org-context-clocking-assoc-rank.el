@@ -41,16 +41,16 @@
 
 
 
-(defvar org-entry-associated-file-rank-fns nil)
+(defvar org-context-clock-entry-associated-context-plist-rank-fns nil)
 
 (progn ;; api
-  (defun org-entries-associated-to-file-by-rank (file)
+  (defun org-context-clock-entries-associated-to-context-plist-by-rank (context-plist)
     (let ((task-infos (org-entry-list-update-task-infos))
           (matched '()))
-      (dolist (fn org-entry-associated-file-rank-fns matched)
+      (dolist (fn org-context-clock-entry-associated-context-plist-rank-fns matched)
         (let ((partitions
                (reduce (lambda (task-info result)
-                         (if (funcall fn file task-info)
+                         (if (funcall fn context-plist task-info)
                              (push task-info (first  result))
                              (push task-info (second result)))
                          result)
@@ -60,69 +60,72 @@
           (setq
            task-infos (second partitions)
            matched    (append matched (first partitions)))))))
-  (defun org-entry-associated-to-file-by-rank-p (task-info file)
-    (if file
+  (defun org-context-clock-entry-associated-to-context-plist-by-rank-p (task-info context-plist)
+    (if context-plist
         (apply '+
                (mapcar
                 '(lambda (fn)
-                  (funcall fn file task-info))
-                org-entry-associated-file-rank-fns))
+                  (funcall fn context-plist task-info))
+                org-context-clock-entry-associated-context-plist-rank-fns))
         0))
 
-  (org-context-clocking-api-set :rank :entries 'org-entries-associated-to-file-by-rank)
-  (org-context-clocking-api-set :rank :entryp   'org-entry-associated-to-file-by-rank-p)
+  (org-context-clocking-api-set :rank :entries 'org-context-clock-entries-associated-to-context-plist-by-rank)
+  (org-context-clocking-api-set :rank :entryp   'org-context-clock-entry-associated-to-context-plist-by-rank-p)
   (org-context-clocking-api-set :rank :update  'org-entry-list-update-task-infos))
 
 (progn ;; functions
-  (setq org-entry-associated-file-rank-fns nil)
+  (setq org-context-clock-entry-associated-context-plist-rank-fns nil)
 
-  (defun org-entries-register-associated-to-file-rank-function (fn)
+  (defun org-entries-register-associated-to-context-plist-rank-function (fn)
     (add-to-list
-     'org-entry-associated-file-rank-fns
+     'org-context-clock-entry-associated-context-plist-rank-fns
      fn))
 
-  (defun org-entry-associated-file-org-file-rank (file task-info)
+  (defun org-context-clock-entry-associated-context-plist-org-file-rank (context-plist task-info)
     "Predicate funtion to check if file matches to task-info's file attribute."
-    (if (string-equal
-         (file-truename file)
-         (file-truename
-          (org-entry-task-info-get-property task-info :task-clock-file)))
-        10
-        0))
-  (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-org-file-rank)
+    (let ((org-file (org-context-clocking-entry-task-info-get-property task-info :task-clock-file)))
+      (let* ((file (plist-get context-plist :file))
+             (file (if file (file-truename file))))
+      (if (string-equal (file-truename file) (file-truename
+            org-file))
+          10
+          0))))
+  (org-entries-register-associated-to-context-plist-rank-function 'org-context-clock-entry-associated-context-plist-org-file-rank)
 
-  (defun org-entry-associated-file-root-dir-rank (file task-info)
-    "Predicate funtion to check if file matches to task-info's file attribute."
+  (defun org-context-clock-entry-associated-context-plist-root-dir-rank (context-plist task-info)
+    "Predicate funtion to check if context-plist matches to task-info's file attribute."
     (let* ((root
-            (org-entry-task-info-get-property task-info :ROOT))
+            (org-context-clocking-entry-task-info-get-property task-info :ROOT))
            (root (if root (file-truename root))))
-      (if (and
-           root
-           (string-match root file))
-          (length root)
-          0)))
-  (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-root-dir-rank)
+      (let* ((file (plist-get context-plist :file))
+             (file (if file (file-truename file))))
+        (if (and
+             root
+             (string-match root file))
+            (length root)
+            0))))
+  (org-entries-register-associated-to-context-plist-rank-function 'org-context-clock-entry-associated-context-plist-root-dir-rank)
 
-  (defun org-entry-associated-file-status-rank (file task-info)
-    "Predicate funtion to check if file matches to task-info's file attribute."
+  (defun org-context-clock-entry-associated-context-plist-status-rank (context-plist task-info)
+    "Predicate funtion to check if context-plist matches to task-info's file attribute."
     (let* ((status
-            (org-entry-task-info-get-property task-info 'status)))
+            (org-context-clocking-entry-task-info-get-property task-info 'status)))
       (if (string-equal status "CLOSED") -30 0)))
-  (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-status-rank)
+  (org-entries-register-associated-to-context-plist-rank-function 'org-context-clock-entry-associated-context-plist-status-rank)
 
-  (defun org-entry-associated-file-task-rank (file task-info)
-    "Predicate funtion to check if file matches to task-info's file attribute."
+  (defun org-context-clock-entry-associated-context-plist-task-rank (context-plist task-info)
+    "Predicate funtion to check if context-plist matches to task-info's file attribute."
     (let* ((rank
-            (org-entry-task-info-get-property task-info :RANK)))
+            (org-context-clocking-entry-task-info-get-property task-info :RANK)))
       (if rank (string-to-number rank) 0)))
-  (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-task-rank)
+  (org-entries-register-associated-to-context-plist-rank-function 'org-context-clock-entry-associated-context-plist-task-rank)
 
-  (defun org-entry-associated-file-level-rank (file task-info)
-    "Predicate funtion to check if file matches to task-info's file attribute."
+  (defun org-context-clock-entry-associated-context-plist-level-rank (context-plist task-info)
+    "Predicate funtion to check if context-plist matches to task-info's file attribute."
     (let* ((level
-            (org-entry-task-info-get-property task-info :task-clock-level)))
+            (org-context-clocking-entry-task-info-get-property task-info :task-clock-level)))
       level))
-  (org-entries-register-associated-to-file-rank-function 'org-entry-associated-file-level-rank))
+  (org-entries-register-associated-to-context-plist-rank-function 'org-context-clock-entry-associated-context-plist-level-rank))
 
 
 

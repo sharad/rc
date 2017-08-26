@@ -27,32 +27,32 @@
 
 ;; "org entries access api for recursive task"
 
-(defvar org-entry-tree-task-infos nil
+(defvar org-context-clocking-entry-tree-task-infos nil
   "Recursive org entries tree")
 
 (defun org-entry-get-task-infos (files)
   "Build recursive org entries tree from files"
-  (org-entry-tree-task-infos-tree files))
+  (org-context-clocking-entry-tree-task-infos-tree files))
 
-(defvar org-entry-tree-task-info-root-org-file nil
+(defvar org-context-clocking-entry-tree-task-info-root-org-file nil
   "Root file to build recursive org entries tree")
 
 ;;;###autoload
-(defun org-entry-tree-update-task-infos (&optional force) ;[BUG not working for subtree]
+(defun org-context-clocking-entry-tree-update-task-infos (&optional force) ;[BUG not working for subtree]
   "Update recursive org entries tree"
   (interactive "P")
-  (if org-entry-tree-task-info-root-org-file
-      (if (file-exists-p org-entry-tree-task-info-root-org-file)
+  (if org-context-clocking-entry-tree-task-info-root-org-file
+      (if (file-exists-p org-context-clocking-entry-tree-task-info-root-org-file)
           (unless (and (not force)
-                       org-entry-tree-task-infos)
-            (setq org-entry-tree-task-infos
-                  (org-entry-tree-get-task-infos
-                   org-entry-tree-task-info-root-org-file)))
-          (message "file %s not exists." org-entry-tree-task-info-root-org-file))
-      (message "org-entry-tree-task-info-root-org-file is nil"))
-  org-entry-tree-task-infos)
+                       org-context-clocking-entry-tree-task-infos)
+            (setq org-context-clocking-entry-tree-task-infos
+                  (org-context-clocking-entry-tree-get-task-infos
+                   org-context-clocking-entry-tree-task-info-root-org-file)))
+          (message "file %s not exists." org-context-clocking-entry-tree-task-info-root-org-file))
+      (message "org-context-clocking-entry-tree-task-info-root-org-file is nil"))
+  org-context-clocking-entry-tree-task-infos)
 
-(defun org-entry-tree-map-subheading (fun)
+(defun org-context-clocking-entry-tree-map-subheading (fun)
   "Call FUN for every heading underneath the current heading"
   ;; (org-back-to-heading)
   (let ((level (funcall outline-level))
@@ -66,8 +66,8 @@
             (push (funcall fun) collection))))
     collection))
 
-(defun org-entry-tree-build (collector &optional file)
-  "Build recursive org entries from org FILE (or current buffer) using COLLECTOR function e.g. org-entry-collect-task-info"
+(defun org-context-clocking-entry-tree-build (collector &optional file)
+  "Build recursive org entries from org FILE (or current buffer) using COLLECTOR function e.g. org-context-clocking-entry-collect-task-info"
   (with-current-buffer (if file
                            (find-file-noselect file)
                            (current-buffer))
@@ -75,10 +75,10 @@
     (let* ((entry (funcall collector))
            (sub-tree
             (append
-             (org-entry-tree-map-subheading 'org-entry-tree-collect-task-info)
+             (org-context-clocking-entry-tree-map-subheading 'org-context-clocking-entry-tree-collect-task-info)
              (let* ((file (if file file (buffer-file-name)))
                     (subtree-file
-                     (org-entry-task-info-get-property entry :SUBTREEFILE))
+                     (org-context-clocking-entry-task-info-get-property entry :SUBTREEFILE))
                     (subtree-file
                      (if (and subtree-file
                               (file-relative-name subtree-file))
@@ -91,27 +91,27 @@
                     subtree-file
                     (file-readable-p subtree-file))
                    (list
-                    (org-entry-tree-collect-task-info subtree-file)))))))
+                    (org-context-clocking-entry-tree-collect-task-info subtree-file)))))))
       (if sub-tree
-          (org-entry-task-info-set-property entry :sub-tree sub-tree)
+          (org-context-clocking-entry-task-info-set-property entry :sub-tree sub-tree)
           entry))))
 
-(defun org-entry-tree-collect-task-info (&optional file)
+(defun org-context-clocking-entry-tree-collect-task-info (&optional file)
   "Build recursive org entries from org FILE (or current buffer)"
-  (org-entry-tree-build 'org-entry-collect-task-info file))
+  (org-context-clocking-entry-tree-build 'org-context-clocking-entry-collect-task-info file))
 
-(defun org-entry-tree-task-infos-tree (&optional file)
+(defun org-context-clocking-entry-tree-task-infos-tree (&optional file)
   "Build recursive org entries from org FILE (or current buffer)"
-  (org-entry-tree-collect-task-info file))
+  (org-context-clocking-entry-tree-collect-task-info file))
 
-(defun org-entry-tree-get-task-infos (&optional file)
+(defun org-context-clocking-entry-tree-get-task-infos (&optional file)
   "Build recursive org entries from org FILE (or current buffer)"
   (let ()
-    (org-entry-tree-collect-task-info file)))
+    (org-context-clocking-entry-tree-collect-task-info file)))
 
-(defun org-entry-tree-task-node-p (tx)
+(defun org-context-clocking-entry-tree-task-node-p (tx)
   "Test org TX is org entries tree non-leaf node"
-  (org-entry-task-info-get-property tx :sub-tree))
+  (org-context-clocking-entry-task-info-get-property tx :sub-tree))
 
 (progn ;; "tree api"
   (defun tree-mapcar-nodes (nonleafnodep fn tree args)
@@ -148,20 +148,20 @@
               (plist-put tree :sub-tree subtree)))
         (if (funcall predicate tree args) tree)))
 
-  (defun tree-mapcar-task-infos (fn tree args)
+  (defun org-context-clocking-tree-mapcar-task-infos (fn tree args)
     "Tree mapcar return result for FN for all TREE nodes with ARGS"
     (tree-mapcar-nodes
-     'org-entry-tree-task-node-p fn tree args))
+     'org-context-clocking-entry-tree-task-node-p fn tree args))
 
-  (defun tree-mapc-task-infos (fn tree args)
+  (defun org-context-clocking-tree-mapc-task-infos (fn tree args)
     "Tree mapc run FN for all TREE nodes with ARGS"
     (tree-mapc-nodes
-     'org-entry-tree-task-node-p fn tree args))
+     'org-context-clocking-entry-tree-task-node-p fn tree args))
 
-  (defun tree-remove-if-not-task-infos (fn tree args)
+  (defun org-context-clocking-tree-remove-if-not-task-infos (fn tree args)
     "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE"
     (tree-remove-if-not-nodes
-     'org-entry-tree-task-node-p fn tree args))
+     'org-context-clocking-entry-tree-task-node-p fn tree args))
 
   ;; (testing
   ;;  (setq

@@ -1,1 +1,1 @@
-(define-package "org-context-clocking" "20170803.2240" "Org clocking based on context." 'nil)
+(define-package "org-context-clocking" "20170826.2155" "Org clocking based on context." 'nil)

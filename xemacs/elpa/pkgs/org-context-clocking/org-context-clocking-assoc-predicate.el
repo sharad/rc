@@ -24,19 +24,19 @@
 
 ;;; Code:
 
-;; "Org entries associated to file predicate functions"
+;; "Org entries associated to context-plist predicate functions"
 
-(defvar org-entry-associated-file-predicate-fns nil)
+(defvar org-entry-associated-context-plist-predicate-fns nil)
 
 (progn ;; api
 
-  (defun org-entries-associated-to-file-by-predicate (file)
+  (defun org-entries-associated-to-context-plist-by-predicate (context-plist)
     (let ((task-infos (org-entry-list-update-task-infos))
           (matched '()))
-      (dolist (fn org-entry-associated-file-predicate-fns matched)
+      (dolist (fn org-entry-associated-context-plist-predicate-fns matched)
         (let ((partitions
                (reduce (lambda (task-info result)
-                         (if (funcall fn file task-info)
+                         (if (funcall fn context-plist task-info)
                              (push task-info (first  result))
                              (push task-info (second result)))
                          result)
@@ -47,47 +47,51 @@
            task-infos (second partitions)
            matched    (append matched (first partitions)))))))
 
-  (defun org-entry-associated-to-file-by-predicate-p (task-info file)
-    (if file
+  (defun org-entry-associated-to-context-plist-by-predicate-p (task-info context-plist)
+    (if context-plist
         (some
-         '(lambda (fn) (funcall fn file task-info))
-         org-entry-associated-file-predicate-fns)))
+         '(lambda (fn) (funcall fn context-plist task-info))
+         org-entry-associated-context-plist-predicate-fns)))
 
-  (org-context-clocking-api-set :predicate :entries 'org-entries-associated-to-file-by-predicate)
-  (org-context-clocking-api-set :predicate :entryp   'org-entry-associated-to-file-by-predicate-p)
+  (org-context-clocking-api-set :predicate :entries 'org-entries-associated-to-context-plist-by-predicate)
+  (org-context-clocking-api-set :predicate :entryp   'org-entry-associated-to-context-plist-by-predicate-p)
   (org-context-clocking-api-set :predicate :update  'org-entry-list-update-task-infos))
 
 
 (progn ;; functions
-  (setq org-entry-associated-file-predicate-fns nil)
+  (setq org-entry-associated-context-plist-predicate-fns nil)
 
-  (defun org-entries-register-associated-to-file-predicate-function (fn)
+  (defun org-entries-register-associated-to-context-plist-predicate-function (fn)
     (add-to-list
-     'org-entry-associated-file-predicate-fns
+     'org-entry-associated-context-plist-predicate-fns
      fn))
 
-  (defun org-entry-associated-file-org-file-predicate (file task-info)
-    "Predicate funtion to check if file matches to task-info's file attribute."
-    (let ((org-file (org-entry-task-info-get-property task-info :task-clock-file)))
-      (if (and file org-file)
-          (string-equal
-           (file-truename file)
-           (file-truename org-file)))))
-  (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-org-file-predicate)
+  (defun org-entry-associated-context-plist-org-file-predicate (context-plist task-info)
+    "Predicate funtion to check if context-plist matches to task-info's file attribute."
+    (let ((org-file (org-context-clocking-entry-task-info-get-property task-info :task-clock-file)))
+      (let* ((file (plist-get context-plist :file))
+             (file (if file (file-truename file))))
+       (if (and file org-file)
+           (string-equal
+            (file-truename file)
+            (file-truename org-file))))))
+  (org-entries-register-associated-to-context-plist-predicate-function 'org-entry-associated-context-plist-org-file-predicate)
 
-  (defun org-entry-associated-file-root-dir-predicate (file task-info)
-    "Predicate funtion to check if file matches to task-info's file attribute."
+  (defun org-entry-associated-context-plist-root-dir-predicate (context-plist task-info)
+    "Predicate funtion to check if context-plist matches to task-info's file attribute."
     (let ((root
-           (org-entry-task-info-get-property task-info :ROOT)))
-      (if (and root file)
-          (string-match
-           (file-truename root)
-           (file-truename file)))))
-  (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-root-dir-predicate)
+           (org-context-clocking-entry-task-info-get-property task-info :ROOT)))
+      (let* ((file (plist-get context-plist :file))
+             (file (if file (file-truename file))))
+        (if (and root file)
+            (string-match
+             (file-truename root)
+             (file-truename file))))))
+  (org-entries-register-associated-to-context-plist-predicate-function 'org-entry-associated-context-plist-root-dir-predicate)
 
-  ;; (defun org-entry-associated-file-xx-p (file task-info)
+  ;; (defun org-entry-associated-context-plist-xx-p (context-plist task-info)
   ;;   )
-  ;; (org-entries-register-associated-to-file-predicate-function 'org-entry-associated-file-xx-p)
+  ;; (org-entries-register-associated-to-context-plist-predicate-function 'org-entry-associated-context-plist-xx-p)
   ;; )
   )
 

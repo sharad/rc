@@ -35,16 +35,16 @@
 
 
 
-(defvar org-context-clocking-task-current-file  nil)
-(defvar org-context-clocking-task-previous-file nil)
-(defvar org-context-clocking-task-current-file-time 2)
+(defvar org-context-clocking-task-current-context-plist  nil)
+(defvar org-context-clocking-task-previous-context-plist nil)
+(defvar org-context-clocking-task-current-context-plist-time 2)
 (defvar org-context-clocking-last-buffer-select-time (current-time))
 (defvar org-context-clocking-buffer-select-timer nil)
-(defvar org-context-clocking-update-current-file-msg "")
+(defvar org-context-clocking-update-current-context-plist-msg "")
 ;; (defvar org-context-clocking-api-name :predicate "API")
 (defvar org-context-clocking-api-name :keys "API")
-(defvar org-context-clocking-api-entries-associated-to-file (org-context-clocking-api-get org-context-clocking-api-name :entries))
-(defvar org-context-clocking-api-entry-associated-to-file-p   (org-context-clocking-api-get org-context-clocking-api-name :entryp))
+(defvar org-context-clocking-api-entries-associated-to-context-plist (org-context-clocking-api-get org-context-clocking-api-name :entries))
+(defvar org-context-clocking-api-entry-associated-to-context-plist-p   (org-context-clocking-api-get org-context-clocking-api-name :entryp))
 (defvar org-context-clocking-api-entry-update-task-infos      (org-context-clocking-api-get org-context-clocking-api-name :update))
 
 
@@ -53,10 +53,11 @@
       in-plist
       (cons (car in-plist) (custom-plist-keys (cddr in-plist)))))
 
-(defun org-task-clocking-api ()
+;; defun org-task-clocking-api
+(defun org-context-clocking-api ()
   "org task clocking select api to use."
   (interactive)
-  (let* ((api-keys (custom-plist-keys org-entry-clocking-api))
+  (let* ((api-keys (custom-plist-keys org-context-clocking-entry-clocking-api))
          (api-name (ido-completing-read
                     "org task clocking api name: "
                     (mapcar 'symbol-name api-keys)
@@ -70,91 +71,97 @@
          (org-context-clocking-api-get org-context-clocking-api-name :entryp)
          (org-context-clocking-api-get org-context-clocking-api-name :update))
         (setq
-         org-context-clocking-api-entries-associated-to-file (org-context-clocking-api-get org-context-clocking-api-name :entries)
-         org-context-clocking-api-entry-associated-to-file-p   (org-context-clocking-api-get org-context-clocking-api-name :entryp)
+         org-context-clocking-api-entries-associated-to-context-plist (org-context-clocking-api-get org-context-clocking-api-name :entries)
+         org-context-clocking-api-entry-associated-to-context-plist-p   (org-context-clocking-api-get org-context-clocking-api-name :entryp)
          org-context-clocking-api-entry-update-task-infos      (org-context-clocking-api-get org-context-clocking-api-name :update)))))
 
-(defun org-clocking-entry-update-task-infos (&optional force)
+;; (defun org-clocking-entry-update-task-infos (&optional force)
+(defun org-context-clocking-entry-update-task-infos (&optional force)
   "Update task infos"
   (interactive "P")
   (funcall org-context-clocking-api-entry-update-task-infos force))
 
-(defun update-current-file ()
+(defun org-context-clocking-update-current-context-plist ()
   (if (> (float-time
           (time-since org-context-clocking-last-buffer-select-time))
-         org-context-clocking-task-current-file-time)
+         org-context-clocking-task-current-context-plist-time)
       (let* ((buff (window-buffer))
-             (file (buffer-file-name buff)))
+             (file (buffer-file-name buff))
+             (context-plist (list :file file :buffer buff)))
         (if (or
              (and
-              (string-equal org-context-clocking-task-previous-file file)
-              (string-equal org-context-clocking-task-current-file  file))
-             (minibufferp buff))
+              (equal org-context-clocking-task-previous-context-plist context-plist)
+              (equal org-context-clocking-task-current-context-plist  context-plist))
+             (if buff (minibufferp (plist-get context-plist :buffer)) t))
 
-            (org-context-clock-debug "update-current-file: file %s not suitable to associate" file)
+            (org-context-clock-debug "org-context-clocking-update-current-context-plist: context-plist %s not suitable to associate" context-plist)
 
             (progn
               (setq
-               org-context-clocking-task-previous-file org-context-clocking-task-current-file
-               org-context-clocking-task-current-file  file)
+               org-context-clocking-task-previous-context-plist org-context-clocking-task-current-context-plist
+               org-context-clocking-task-current-context-plist  context-plist)
 
-              (if (> (org-clock-entry-associated-to-file-p file) 0)
-                  (org-context-clock-debug "update-current-file: Current entry already associate to %s" file)
+              (if (> (org-context-clocking-entry-associated-to-context-plist-p context-plist) 0)
+                  (org-context-clock-debug "org-context-clocking-update-current-context-plist: Current entry already associate to %s" context-plist)
                   (progn
-                    (org-context-clock-debug "update-current-file: Now really going to clock.")
-                    (org-entry-run-associated-clock file)
-                    (org-context-clock-debug "update-current-file: Now really clock done."))))))
-      (org-context-clock-debug "update-current-file: not enough time passed.")))
+                    (org-context-clock-debug "org-context-clocking-update-current-context-plist: Now really going to clock.")
+                    (org-context-clocking-entry-run-associated-clock context-plist)
+                    (org-context-clock-debug "org-context-clocking-update-current-context-plist: Now really clock done."))))))
+      (org-context-clock-debug "org-context-clocking-update-current-context-plist: not enough time passed.")))
 
 
-(defun update-current-file-x ()
+(defun org-context-clocking-update-current-context-plist-x ()
   (if t
       (let* ((buff (window-buffer))
-             (file (buffer-file-name buff)))
+             (file (buffer-file-name buff))
+             (context-plist (list :file file :buffer buff)))
         (unless nil
           (setq
-           org-context-clocking-task-previous-file org-context-clocking-task-current-file
-           org-context-clocking-task-current-file  file)
+           org-context-clocking-task-previous-context-plist org-context-clocking-task-current-context-plist
+           org-context-clocking-task-current-context-plist  context-plist)
 
-          (unless (org-clock-entry-associated-to-file-p file)
-            (org-entry-run-associated-clock file))))))
+          (unless (org-context-clocking-entry-associated-to-context-plist-p context-plist)
+            (org-context-clocking-entry-run-associated-clock context-plist))))))
 
-(defun org-clock-entry-current-entry ()
+;;(defun org-context-Xclock-entry-current-entry ()
+(defun org-context-clocking-entry-current-entry ()
   (and
    ;; file
    org-clock-marker
    (> (marker-position-nonil org-clock-marker) 0)
    (org-with-clock-position (list org-clock-marker)
      (org-previous-visible-heading 1)
-     (let ((info (org-entry-collect-task-info)))
+     (let ((info (org-context-clocking-entry-collect-task-info)))
        info))))
 
 ;; not workiong
-;; (defun org-clock-entry-associated-to-file-p (file)
+;; (defun org-context-clocking-entry-associated-to-context-plist-p (context-plist)
 ;;   (and
 ;;    ;; file
 ;;    org-clock-marker
 ;;    (> (marker-position-nonil org-clock-marker) 0)
 ;;    (org-with-clock-position (list org-clock-marker)
 ;;      (org-previous-visible-heading 1)
-;;      (let ((info (org-entry-collect-task-info)))
-;;        (if (funcall org-context-clocking-api-entry-associated-to-file-p info file)
+;;      (let ((info (org-context-clocking-entry-collect-task-info)))
+;;        (if (funcall org-context-clocking-api-entry-associated-to-context-plist-p info context-plist)
 ;;            info)))))
 
-(defun org-clock-entry-associated-to-file-p (file)
-  (let ((info (org-clock-entry-current-entry)))
+;; (defun org-clock-entry-associated-to-context-plist-p (context-plist)
+(defun org-context-clocking-entry-associated-to-context-plist-p (context-plist)
+  (let ((info (org-context-clocking-entry-current-entry)))
     (if info
-        (funcall org-context-clocking-api-entry-associated-to-file-p info file)
+        (funcall org-context-clocking-api-entry-associated-to-context-plist-p info context-plist)
         0)))
 
-(defun org-entry-run-associated-clock (file)
+;; (defun org-Xentry-run-associated-clock (context-plist)
+(defun org-context-clocking-entry-run-associated-clock (context-plist)
   (let ()
     (let* ((matched-clocks
             (remove-if-not
              #'(lambda (marker) (marker-buffer marker))
-             (org-markers-associated-to-file file)))
+             (org-context-clocking-markers-associated-to-context-plist context-plist)))
            (selected-clock (if (> (length matched-clocks) 1)
-                               (org-clock-select-task-from-clocks matched-clocks)
+                               (org-context-clocking-select-task-from-clocks matched-clocks)
                                (car matched-clocks))))
       (if selected-clock
           (let ((org-log-note-clock-out nil)
@@ -169,7 +176,7 @@
                   (with-current-buffer prev-org-clock-buff
                     (setq buffer-read-only nil)))
 
-              (setq org-context-clocking-update-current-file-msg org-clock-marker)
+              (setq org-context-clocking-update-current-context-plist-msg org-clock-marker)
 
               (with-current-buffer (marker-buffer selected-clock)
                 (let ((buffer-read-only nil))
@@ -178,9 +185,11 @@
               (if prev-org-clock-buff
                   (with-current-buffer prev-org-clock-buff
                     (setq buffer-read-only prev-clock-buff-read-only)))))
-          (setq org-context-clocking-update-current-file-msg "null clock")))))
+          (progn
+            (setq org-context-clocking-update-current-context-plist-msg "null clock")
+            (message "No clock found please set a match fot this context-plist %s." context-plist))))))
 
-;; (defun run-org-context-clocking-task-current-file-timer ()
+;; (defun org-context-clocking-run-task-current-context-plist-timer ()
 ;;   (let ()
 ;;     (setq org-context-clocking-last-buffer-select-time (current-time))
 ;;     (when org-context-clocking-buffer-select-timer
@@ -188,11 +197,12 @@
 ;;       (setq org-context-clocking-buffer-select-timer nil))
 ;;     (setq org-context-clocking-buffer-select-timer
 ;;           (run-with-timer
-;;            (1+ org-context-clocking-task-current-file-time)
+;;            (1+ org-context-clocking-task-current-context-plist-time)
 ;;            nil
-;;            'update-current-file))))
+;;            'org-context-clocking-update-current-context-plist))))
 
-(defun run-org-context-clocking-task-current-file-timer ()
+;; (defun run-org-Xcontext-clocking-task-current-context-plist-timer ()
+(defun org-context-clocking-run-task-current-context-plist-timer ()
   (let ()
     (setq org-context-clocking-last-buffer-select-time (current-time))
     (when org-context-clocking-buffer-select-timer
@@ -202,10 +212,11 @@
           ;; distrubing while editing.
           ;; (run-with-timer
           (run-with-idle-timer
-           (1+ org-context-clocking-task-current-file-time)
+           (1+ org-context-clocking-task-current-context-plist-time)
            nil
-           'update-current-file))))
+           'org-context-clocking-update-current-context-plist))))
 
+;; (defun org-Xentries-select (entries &optional prompt)
 (defun org-entries-select (entries &optional prompt)
   "Select a task that was recently associated with clocking."
   (interactive)
@@ -251,7 +262,8 @@
             ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
             (t (user-error "Invalid task choice %c" rpl)))))))
 
-(defun org-clock-select-task-from-clocks (clocks &optional prompt)
+;; (defun org-clock-Xselect-task-from-clocks (clocks &optional prompt)
+(defun org-context-clocking-select-task-from-clocks (clocks &optional prompt)
   "Select a task that was recently associated with clocking."
   (interactive)
   (let (och chl sel-list rpl (i 0) s)
@@ -307,17 +319,17 @@
 (defun org-context-clocking-insinuate ()
   (interactive)
   (progn
-    (add-hook 'buffer-list-update-hook     'run-org-context-clocking-task-current-file-timer)
-    (add-hook 'elscreen-screen-update-hook 'run-org-context-clocking-task-current-file-timer)
-    (add-hook 'elscreen-goto-hook          'run-org-context-clocking-task-current-file-timer)))
+    (add-hook 'buffer-list-update-hook     'org-context-clocking-run-task-current-context-plist-timer)
+    (add-hook 'elscreen-screen-update-hook 'org-context-clocking-run-task-current-context-plist-timer)
+    (add-hook 'elscreen-goto-hook          'org-context-clocking-run-task-current-context-plist-timer)))
 
 ;;;###autoload
 (defun org-context-clocking-uninsinuate ()
   (interactive)
-  (remove-hook 'buffer-list-update-hook 'run-org-context-clocking-task-current-file-timer)
+  (remove-hook 'buffer-list-update-hook 'org-context-clocking-run-task-current-context-plist-timer)
   (setq buffer-list-update-hook nil)
-  (remove-hook 'elscreen-screen-update-hook 'run-org-context-clocking-task-current-file-timer)
-  (remove-hook 'elscreen-goto-hook 'run-org-context-clocking-task-current-file-timer))
+  (remove-hook 'elscreen-screen-update-hook 'org-context-clocking-run-task-current-context-plist-timer)
+  (remove-hook 'elscreen-goto-hook 'org-context-clocking-run-task-current-context-plist-timer))
 
 
 (progn ;; "Org task clock reporting"
@@ -340,83 +352,133 @@
 
 (when nil
 
-  (org-entry-run-associated-clock
+  (org-context-clocking-entry-run-associated-clock
    (buffer-file-name))
 
-  (org-entry-run-associated-clock
-   "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
+  (org-context-clocking-entry-run-associated-clock
+   (list
+    :file "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"
+    :buffer (find-buffer-visiting "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
 
-  (org-markers-associated-to-file
-   "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
+  (org-context-clocking-markers-associated-to-context-plist
+   (list
+    :file "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"
+    :buffer (find-buffer-visiting "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
 
-  (org-clock-entry-associated-to-file-p
-   "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
+  (org-context-clocking-entry-associated-to-context-plist-p
+   (list
+    :file "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"
+    :buffer (find-buffer-visiting "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
 
-  (org-markers-associated-to-file
+  (org-context-clocking-markers-associated-to-context-plist
    (buffer-file-name))
 
-  (org-clock-entry-associated-to-file-p
-   (buffer-file-name))
+  (org-context-clocking-entry-associated-to-context-plist-p
+   (list
+    :file (buffer-file-name)
+    :buffer (current-buffer)))
 
   ;; sharad
   (setq test-info-entry
-        (let ((xfile (buffer-file-name)))
+        (let ((xcontext-plist
+               (list
+                :file (buffer-file-name)
+                :buffer (current-buffer))))
           (org-with-clock-position (list org-clock-marker)
             (org-previous-visible-heading 1)
-            (let ((info (org-entry-collect-task-info)))
-              (if (funcall org-context-clocking-api-entry-associated-to-file-p info xfile)
-                  info))))
-        )
+            (let ((info (org-context-clocking-entry-collect-task-info)))
+              (if (funcall org-context-clocking-api-entry-associated-to-context-plist-p info xcontext-plist)
+                  info)))))
 
-  (funcall org-context-clocking-api-entry-associated-to-file-p (org-clock-entry-current-entry) (buffer-file-name))
+  (funcall org-context-clocking-api-entry-associated-to-context-plist-p
+           (org-context-clocking-entry-current-entry)
+           (list
+            :file (buffer-file-name)
+            :buffer (current-buffer)))
 
 
 
 
   (test-info-entry)
-  (funcall org-context-clocking-api-entry-associated-to-file-p test-info-entry (buffer-file-name))
+  (funcall org-context-clocking-api-entry-associated-to-context-plist-p
+           test-info-entry
+           (list
+            :file (buffer-file-name)
+            :buffer (current-buffer)))
 
   ;; org-clock-marker
-  (org-entries-associated-key-fn-value :current-clock test-info-entry (buffer-file-name))
+  (org-entries-associated-key-fn-value
+   :current-clock test-info-entry
+   (list
+    :file (buffer-file-name)
+    :buffer (current-buffer)) )
 
-  (org-clock-entry-associated-to-file-p
-   "~/Docume1nts/CreatedContent/contents/org/tasks/meru/report.org")
+  (org-context-clocking-entry-associated-to-context-plist-p
+   (list
+    :file "~/Docume1nts/CreatedContent/contents/org/tasks/meru/report.org"
+    :buffer (find-buffer-visiting
+             "~/Docume1nts/CreatedContent/contents/org/tasks/meru/report.org")))
 
-  (org-clock-entry-associated-to-file-p
-   "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org")
+  (org-context-clocking-entry-associated-to-context-plist-p
+   (list
+    :file "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org"
+    :buffer (find-buffer-visiting
+             "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org")))
 
-  ;; (org-entry-associated-file-org-file-p
+  ;; (org-entry-associated-context-plist-org-context-plist-p
   ;;  "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"
   ;;  (cadr org-entry-list-task-infos)))
 
 
   (length
-   (funcall org-context-clocking-api-entries-associated-to-file (buffer-file-name))
-   )
-
-  (length (funcall org-context-clocking-api-entries-associated-to-file "/home/s/paradise/releases/global/patch-upgrade/Makefile"))
-
-  (org-markers-associated-to-file (buffer-file-name))
-  (length
-   (funcall org-context-clocking-api-entries-associated-to-file "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")
-   )
+   (funcall org-context-clocking-api-entries-associated-to-context-plist
+            (list
+             :file (buffer-file-name)
+             :buffer (current-buffer))))
 
   (length
-   (org-entries-associated-to-file-by-keys (buffer-file-name))
-   )
+   (funcall org-context-clocking-api-entries-associated-to-context-plist
+            (list
+             :file "/home/s/paradise/releases/global/patch-upgrade/Makefile"
+             :buffer (find-buffer-visiting
+                      "/home/s/paradise/releases/global/patch-upgrade/Makefile"))))
+
+  (org-context-clocking-markers-associated-to-context-plist (buffer-file-name))
+  (length
+   (funcall org-context-clocking-api-entries-associated-to-context-plist
+            (list
+             :file "~/Docume1nts/CreatedContent/contents/org/tasks/meru/report.org"
+             :buffer (find-buffer-visiting
+                      "~/Docume1nts/CreatedContent/contents/org/tasks/meru/report.org"))))
+
+  (length
+   (org-entries-associated-to-context-plist-by-keys
+    (list
+     :file (buffer-file-name)
+     :buffer (current-buffer))))
 
 
   (length
-   (org-entries-associated-to-file-by-keys "/home/s/paradise/releases/global/patch-upgrade/Makefile")
+   (org-entries-associated-to-context-plist-by-keys
+    (list
+     :file "/home/s/paradise/releases/global/patch-upgrade/Makefile"
+     :buffer (find-buffer-visiting
+              "/home/s/paradise/releases/global/patch-upgrade/Makefile")))
    )
 
-  (org-clock-entry-associated-to-file-p "/home/s/paradise/releases/global/patch-upgrade/Makefile")
+  (org-context-clocking-entry-associated-to-context-plist-p
+   (list
+    :file "/home/s/paradise/releases/global/patch-upgrade/Makefile"
+    :buffer (find-buffer-visiting
+             "/home/s/paradise/releases/global/patch-upgrade/Makefile")))
 
-  ;; (org-entry-associated-to-file-by-keys "/home/s/paradise/releases/global/patch-upgrade/Makefile")
+  ;; (org-entry-associated-to-context-plist-by-keys "/home/s/paradise/releases/global/patch-upgrade/Makefile")
 
-  (if (org-clock-entry-associated-to-file-p (buffer-file-name))
-      (message "current clock is with file")
-      ))
+  (if (org-context-clocking-entry-associated-to-context-plist-p
+       (list
+        :file (buffer-file-name)
+        :buffer (current-buffer)))
+      (message "current clock is with current context or file")))
 
 (provide 'org-context-clocking)
 ;;; org-context-clocking.el ends here

@@ -95,19 +95,21 @@ Each entry is either:
           (add-to-list 'org-modules 'org-protocol))
 
         (progn
-          (setq org-todo-keywords ;; http://doc.norang.ca/org-mode.html#sec-5
-                (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+          (setq
+           org-todo-keywords ;; http://doc.norang.ca/org-mode.html#sec-5
+           '((sequence "TODO(t)" "STARTED" "NEXT(n)" "|" "DONE(d)")
+             (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))
 
-          (setq org-todo-keyword-faces ;; http://doc.norang.ca/org-mode.html#sec-5
-                (quote (("TODO" :foreground "red" :weight bold)
-                        ("NEXT" :foreground "blue" :weight bold)
-                        ("DONE" :foreground "forest green" :weight bold)
-                        ("WAITING" :foreground "orange" :weight bold)
-                        ("HOLD" :foreground "magenta" :weight bold)
-                        ("CANCELLED" :foreground "forest green" :weight bold)
-                        ("MEETING" :foreground "forest green" :weight bold)
-                        ("PHONE" :foreground "forest green" :weight bold)))))
+           org-todo-keyword-faces ;; http://doc.norang.ca/org-mode.html#sec-5
+           '(("TODO" :foreground "red" :weight bold)
+             ("STARTED" :foreground "red" :weight bold)
+             ("NEXT" :foreground "blue" :weight bold)
+             ("DONE" :foreground "forest green" :weight bold)
+             ("WAITING" :foreground "orange" :weight bold)
+             ("HOLD" :foreground "magenta" :weight bold)
+             ("CANCELLED" :foreground "forest green" :weight bold)
+             ("MEETING" :foreground "forest green" :weight bold)
+             ("PHONE" :foreground "forest green" :weight bold))))
 
         (progn ;; "url"
           ;; http://orgmode.org/worg/org-hacks.html
@@ -318,15 +320,16 @@ Each entry is either:
 
         (progn
           ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org0c5d380
-          (setq org-expiry-inactive-timestamps t)
-          (setq org-clock-idle-time nil)
-          (setq org-log-done 'time)
-          (setq org-clock-continuously nil)
-          (setq org-clock-persist t)
-          (setq org-clock-in-switch-to-state "STARTED")
-          (setq org-clock-in-resume nil)
-          (setq org-show-notification-handler 'message)
-          (setq org-clock-report-include-clocking-task t)))
+          (setq
+           org-expiry-inactive-timestamps t
+           org-clock-idle-time nil
+           org-log-done 'time
+           org-clock-continuously nil
+           org-clock-persist t
+           org-clock-in-switch-to-state "STARTED"
+           org-clock-in-resume nil
+           org-show-notification-handler 'message
+           org-clock-report-include-clocking-task t)))
       ))
 
 (defun lotus-orgmode/post-init-org-agenda ()

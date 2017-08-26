@@ -29,7 +29,8 @@
 ;; "org entries accss common api"
     ;; (defvar org-)
 
-(defun org-entry-collect-task-info ()
+;; (defun org-entry-collect-task-info ()
+(defun org-context-clocking-entry-collect-task-info ()
   ;; (org-element-at-point)
   (let ((heading-with-string-prop
          (unless (org-before-first-heading-p)
@@ -48,14 +49,15 @@
           (task-info (cadr (org-element-at-point))))
       (when heading
         ;; (if root   (push (cons "Root" root) task-info))
-        (if marker    (org-entry-task-info-set-property task-info :task-clock-marker marker))
-        (if file      (org-entry-task-info-set-property task-info :task-clock-file file))
-        (if point     (org-entry-task-info-set-property task-info :task-clock-point point))
-        (if heading   (org-entry-task-info-set-property task-info :task-clock-heading heading))
-        (if clock-sum (org-entry-task-info-set-property task-info :task-clock-clock-sum clock-sum)))
+        (if marker    (org-context-clocking-entry-task-info-set-property task-info :task-clock-marker marker))
+        (if file      (org-context-clocking-entry-task-info-set-property task-info :task-clock-file file))
+        (if point     (org-context-clocking-entry-task-info-set-property task-info :task-clock-point point))
+        (if heading   (org-context-clocking-entry-task-info-set-property task-info :task-clock-heading heading))
+        (if clock-sum (org-context-clocking-entry-task-info-set-property task-info :task-clock-clock-sum clock-sum)))
       task-info)))
 
-(defun org-entry-collect-task-clock-info ()
+;; (defun org-entry-collect-task-clock-info ()
+(defun org-context-clocking-entry-collect-task-clock-info ()
   ;; (org-element-at-point)
   (let ((heading-with-string-prop
          (unless (org-before-first-heading-p)
@@ -75,16 +77,17 @@
           (task-content-start ))
       (when heading
         ;; (if root   (push (cons "Root" root) task-info))
-        (if marker    (org-entry-task-info-set-property task-info :task-clock-marker marker))
-        (if file      (org-entry-task-info-set-property task-info :task-clock-file file))
-        (if point     (org-entry-task-info-set-property task-info :task-clock-point point))
-        (if heading   (org-entry-task-info-set-property task-info :task-clock-heading heading))
-        (if clock-sum (org-entry-task-info-set-property task-info :task-clock-clock-sum clock-sum))
+        (if marker    (org-context-clocking-entry-task-info-set-property task-info :task-clock-marker marker))
+        (if file      (org-context-clocking-entry-task-info-set-property task-info :task-clock-file file))
+        (if point     (org-context-clocking-entry-task-info-set-property task-info :task-clock-point point))
+        (if heading   (org-context-clocking-entry-task-info-set-property task-info :task-clock-heading heading))
+        (if clock-sum (org-context-clocking-entry-task-info-set-property task-info :task-clock-clock-sum clock-sum))
         (if heading-with-string-prop
-            (org-entry-task-info-set-property task-info :task-clock-content (org-heading-content-only))))
+            (org-context-clocking-entry-task-info-set-property task-info :task-clock-content (org-context-clocking-heading-content-only))))
       task-info)))
 
-(defun org-heading-content-only ()
+;; (defun org-Xheading-content-only ()
+(defun org-context-clocking-heading-content-only ()
   (if (org-at-heading-p)
       (save-excursion
         (save-restriction
@@ -104,7 +107,8 @@
     ;; (let ((re org-clock-string))
     ;;   (re-search-backward re nil t))
 
-(defun org-clock-items (&optional tstart tend)
+;; (defun org-Xclock-items (&optional tstart tend)
+(defun org-context-clocking-clock-items (&optional tstart tend)
   "Return time, clocked on current item in total."
   (if (org-at-heading-p)
       (save-excursion
@@ -122,16 +126,19 @@
                 (let ((clock (org-element-at-point)))
                   ))))))))
 
-(defun org-entry-task-info-get-property (task-info property)
+;; (defun org-Xentry-task-info-get-property (task-info property)
+(defun org-context-clocking-entry-task-info-get-property (task-info property)
   (plist-get task-info property))
 
-(defun org-entry-task-info-set-property (task-info property value)
+;; (defun org-Xentry-task-info-set-property (task-info property value)
+(defun org-context-clocking-entry-task-info-set-property (task-info property value)
   (plist-put task-info property value))
 
-(defun org-markers-associated-to-file (file)
+;; (defun org-context-clocking-markers-associated-to-context-plist (context-plist)
+(defun org-context-clocking-markers-associated-to-context-plist (context-plist)
   (mapcar '(lambda (e)
-            (org-entry-task-info-get-property e :task-clock-marker))
-          (funcall org-context-clocking-api-entries-associated-to-file file)))
+            (org-context-clocking-entry-task-info-get-property e :task-clock-marker))
+          (funcall org-context-clocking-api-entries-associated-to-context-plist context-plist)))
 
 
 
@@ -139,8 +146,8 @@
 
 (progn                                  ;; general use function
 
-  (defun org-entry-task-info-get-heading (task-info)
-    (org-entry-task-info-get-property task-info :task-clock-heading)))
+  (defun org-context-clocking-entry-task-info-get-heading (task-info)
+    (org-context-clocking-entry-task-info-get-property task-info :task-clock-heading)))
 
 (provide 'org-context-clocking-api-common)
 ;;; org-context-clocking-api-common.el ends here

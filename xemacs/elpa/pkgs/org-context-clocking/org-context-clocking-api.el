@@ -32,25 +32,25 @@
 
 (require 'org-clock)
 
-;; (org-context-clocking-api-entries-associated-to-file-p file)
-;; (org-context-clocking-api-entry-associated-to-file-p task-info file)
+;; (org-context-clocking-api-entries-associated-to-context-plist-p context-plist)
+;; (org-context-clocking-api-entry-associated-to-context-plist-p task-info context-plist)
 ;; (org-context-clocking-api-entry-update-task-infos &optional force)
 
-(progn ;; "org-entry-clocking-api interface"
+(progn ;; "org-context-clocking-entry-clocking-api interface"
 
-  (defvar org-entry-clocking-api nil)
+  (defvar org-context-clocking-entry-clocking-api nil)
 
   (defun org-context-clocking-api-set (name api fn)
-    (let ((pl (plist-get org-entry-clocking-api name)))
-      ;; (message "org-entry-clocking-api: %s, pl: %s " org-entry-clocking-api pl)
-      (setq org-entry-clocking-api
+    (let ((pl (plist-get org-context-clocking-entry-clocking-api name)))
+      ;; (message "org-context-clocking-entry-clocking-api: %s, pl: %s " org-context-clocking-entry-clocking-api pl)
+      (setq org-context-clocking-entry-clocking-api
             (plist-put
-             org-entry-clocking-api
+             org-context-clocking-entry-clocking-api
              name
              (plist-put pl api fn)))))
   (defun org-context-clocking-api-get (name api)
     (plist-get
-     (plist-get org-entry-clocking-api name)
+     (plist-get org-context-clocking-entry-clocking-api name)
      api)))
 
 
@@ -71,11 +71,11 @@
 
 
 ;; "org entries clocking's API"
-(require 'org-context-clocking-assoc-predicate) ;; "Org entries associated to file predicate functions"
+(require 'org-context-clocking-assoc-predicate) ;; "Org entries associated to context-plist predicate functions"
 
-(require 'org-context-clocking-assoc-rank) ;; "Org entries associated to file rank functions"
+(require 'org-context-clocking-assoc-rank) ;; "Org entries associated to context-plist rank functions"
 
-(require 'org-context-clocking-assoc-key) ;; "Org entries associated to file key functions on recursive taskinfos"
+(require 'org-context-clocking-assoc-key) ;; "Org entries associated to context-plist key functions on recursive taskinfos"
 
 ;; API end here
 

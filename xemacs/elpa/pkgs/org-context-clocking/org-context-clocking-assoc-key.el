@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-;; "Org entries associated to file key functions on recursive taskinfos"
+;; "Org entries associated to context-plist key functions on recursive taskinfos"
 ;; TODO: matching should be merit based.
 ;; TODO: logical AND OR method should be possible in match-fn results
 ;; TODO: exclusion fecelities also should be present.
@@ -41,149 +41,152 @@
 
 (require 'org-context-clocking-api-recursive)
 
-(defvar org-entry-associated-file-key-fns nil
+(defvar org-context-clock-entry-associated-context-plist-key-fns nil
   "property list of KEY and API FUNCTIONS for key based association")
 
 (progn ;; api
-  (defun org-entries-associated-to-file-by-keys (file)
-    "Retun org TASK-INFO entries for FILE which are associated based on list of functions for keys applied by ORG-ENTRY-ASSOCIATED-TO-FILE-BY-KEYS-P"
-    (let ((task-infos (org-entry-tree-update-task-infos))
+  (defun org-context-clock-entries-associated-to-context-plist-by-keys (context-plist)
+    "Retun org TASK-INFO entries for FILE which are associated based on list of functions for keys applied by org-context-clock-entry-associated-TO-FILE-BY-KEYS-P"
+    (let ((task-infos (org-context-clocking-entry-tree-update-task-infos))
           (matched '()))
-      (org-context-clock-debug "org-entries-associated-to-file-by-keys: BEFORE matched %s[%d]" matched (length matched))
-      (tree-mapc-task-infos
+      (org-context-clock-debug "org-entries-associated-to-context-plist-by-keys: BEFORE matched %s[%d]" matched (length matched))
+      (org-context-clocking-tree-mapc-task-infos
        #'(lambda (task args)
            (let ((rank
-                  (org-entry-associated-to-file-by-keys-p task args)))
-             (unless rank (error "org-entries-associated-to-file-by-keys[lambda]: rank is null"))
+                  (org-entry-associated-to-context-plist-by-keys-p task args)))
+             (unless rank (error "org-entries-associated-to-context-plist-by-keys[lambda]: rank is null"))
              (when (> rank 0)
                (push task matched)
-               (org-context-clock-debug "org-entries-associated-to-file-by-keys[lambda]: task %s MATCHED RANK %d"
-                        (org-entry-task-info-get-heading task)
+               (org-context-clock-debug "org-entries-associated-to-context-plist-by-keys[lambda]: task %s MATCHED RANK %d"
+                        (org-context-clocking-entry-task-info-get-heading task)
                         (length matched)))))
        task-infos
-       file)
+       context-plist)
 
-      (org-context-clock-debug "org-entries-associated-to-file-by-keys: AFTER matched %s[%d]" "matched" (length matched))
+      (org-context-clock-debug "org-entries-associated-to-context-plist-by-keys: AFTER matched %s[%d]" "matched" (length matched))
 
       matched))
 
 
-  (defun org-entry-associated-to-file-by-keys-p (task-info file)
+  (defun org-entry-associated-to-context-plist-by-keys-p (task-info context-plist)
     "Test whether association of org TASK-INFO for FILE using list of functions for keys,
 using algorithm in this function, return RANK"
-    (if file
-        (if (> (org-entries-associated-key-fn-value :status task-info file) -20)
+    (if context-plist
+        (if (> (org-entries-associated-key-fn-value :status task-info context-plist) -20)
             (let ((rank
                    (+
-                    (org-entries-associated-key-fn-value :timebeing task-info file)
-                    (org-entries-associated-key-fn-value :root task-info file)
-                    ;; (org-entries-associated-key-fn-value :org-file task-info file)
-                    (org-entries-associated-key-fn-value :task-info-key task-info file)
-                    (org-entries-associated-key-fn-value :heading-level task-info file))))
+                    (org-entries-associated-key-fn-value :timebeing task-info context-plist)
+                    (org-entries-associated-key-fn-value :root task-info context-plist)
+                    ;; (org-entries-associated-key-fn-value :org-file task-info context-plist)
+                    (org-entries-associated-key-fn-value :task-info-key task-info context-plist)
+                    (org-entries-associated-key-fn-value :heading-level task-info context-plist))))
               rank)
             -20)
         0))
 
-  (org-context-clocking-api-set :keys :entries 'org-entries-associated-to-file-by-keys)
-  (org-context-clocking-api-set :keys :entryp  'org-entry-associated-to-file-by-keys-p)
-  (org-context-clocking-api-set :keys :update  'org-entry-tree-update-task-infos))
+  (org-context-clocking-api-set :keys :entries 'org-entries-associated-to-context-plist-by-keys)
+  (org-context-clocking-api-set :keys :entryp  'org-entry-associated-to-context-plist-by-keys-p)
+  (org-context-clocking-api-set :keys :update  'org-context-clocking-entry-tree-update-task-infos))
 
 
 
-(progn ;; Registration macro to add key property and functions list to ORG-ENTRY-ASSOCIATED-FILE-KEY-FNS
-  (setq org-entry-associated-file-key-fns nil)
-  (message "NOTE: org-entry-associated-file-key-fns made to nil")
+(progn ;; REGISTRATION MACRO To add key property and functions list to ORG-CONTEXT-CLOCK-ENTRY-ASSOCIATED-FILE-KEY-FNS
+  (setq org-context-clock-entry-associated-context-plist-key-fns nil)
+  (message "NOTE: org-context-clock-entry-associated-context-plist-key-fns made to nil")
 
   (progn ;; macros and accessor
 
-    (defun org-entries-register-associated-to-file-key-function (key fn)
+    (defun org-entries-register-associated-to-context-plist-key-function (key fn)
       (setq
-       org-entry-associated-file-key-fns
+       org-context-clock-entry-associated-context-plist-key-fns
        (plist-put
-        org-entry-associated-file-key-fns key fn)))
+        org-entry-associated-context-plist-key-fns key fn)))
 
     (eval-when-compile                  ;; TODO: auto generate name from KEY
-      (defmacro defassoc-file-key (name key args &rest body)
+      (defmacro defassoc-context-plist-key (name key args &rest body)
         "Registration macro to add key property and functions list to ORG-ENTRY-ASSOCIATED-FILE-KEY-FNS"
         `(progn
            (defun ,name ,args
              ,@body)
-           (org-entries-register-associated-to-file-key-function ,key ',name))))
+           (org-entries-register-associated-to-context-plist-key-function ,key ',name))))
 
-    (put 'defassoc-file-key 'lisp-indent-function 3)
-    (defun org-entries-associated-key-function (key)
-      (plist-get org-entry-associated-file-key-fns key))
-    (defun org-entries-associated-key-fn-value (key task-info file)
+    (put 'defassoc-context-plist-key 'lisp-indent-function 3)
+    (defun org-context-clock-entries-associated-key-function (key)
+      (plist-get org-entry-associated-context-plist-key-fns key))
+    (defun org-entries-associated-key-fn-value (key task-info context-plist)
       (let ((keyfn (org-entries-associated-key-function key)))
         (if keyfn
-            (let ((rank (funcall keyfn task-info file)))
+            (let ((rank (funcall keyfn task-info context-plist)))
               (unless (numberp rank)
-                (error "org-entries-associated-key-fn-value: fun %s returning nonnumeric %s for file %s for task %s"
+                (error "org-entries-associated-key-fn-value: fun %s returning nonnumeric %s for context-plist %s for task %s"
                        keyfn
                        rank
-                       file
-                       (org-entry-task-info-get-heading task-info)))
+                       context-plist
+                       (org-context-clocking-entry-task-info-get-heading task-info)))
               (org-context-clock-debug "org-entries-associated-key-fn-value: task %s key %s MATCHED %d rank"
-                       (org-entry-task-info-get-heading task-info)
+                       (org-context-clocking-entry-task-info-get-heading task-info)
                        key
                        rank)
               rank)
             (progn
               (org-context-clock-debug "org-entries-associated-key-fn-value: task %s key %s kyfn is %s so how can match %d rank"
-                       (org-entry-task-info-get-heading task-info)
+                       (org-context-clocking-entry-task-info-get-heading task-info)
                        key
                        keyfn
                        0)
               0)))))
 
-  (defassoc-file-key org-entry-associated-file-org-file-key :org-file (task-info file)
-    "Predicate funtion to check if file matches to task-info's file attribute."
-    (let ((org-file (org-entry-task-info-get-property task-info :task-clock-file)))
-      (if (and file org-file
-               (string-equal
-                (file-truename file)
-                (file-truename org-file)))
-          10
-          0)))
+  (defassoc-context-plist-key org-entry-associated-context-plist-org-file-key :org-file (task-info context-plist)
+    "Predicate funtion to check if context-plist matches to task-info's file attribute."
+    (let ((org-file (org-context-clocking-entry-task-info-get-property task-info :task-clock-file)))
+      (let* ((file (plist-get context-plist :file))
+             (file (if file (file-truename file))))
+        (if (and file org-file
+                 (string-equal
+                  (file-truename file)
+                  (file-truename org-file)))
+            10
+            0))))
 
-  (defassoc-file-key org-entry-associated-file-root-dir-key :root (task-info file)
-    "Predicate funtion to check if file matches to task-info's file attribute."
+  (defassoc-context-plist-key org-entry-associated-context-plist-root-dir-key :root (task-info context-plist)
+    "Predicate funtion to check if context-plist matches to task-info's file attribute."
     (let* ((root
-            (org-entry-task-info-get-property task-info :ROOT))
-           (root (if root (file-truename root)))
-           (file (if file (file-truename file))))
-      (if root
-          (progn
-            (org-context-clock-debug "task %s root %s" (org-entry-task-info-get-heading task-info) root)
-            (org-context-clock-debug "task %s file %s" (org-entry-task-info-get-heading task-info) file))
-          (org-context-clock-debug "task %s root %s not present."
-                   (org-entry-task-info-get-heading task-info) root))
-      (if (and root file
-               (string-match root file))
-          (length root)
-          0)))
+            (org-context-clocking-entry-task-info-get-property task-info :ROOT))
+           (root (if root (file-truename root))))
+      (let* ((file (plist-get context-plist :file))
+             (file (if file (file-truename file))))
+       (if root
+           (progn
+             (org-context-clock-debug "task %s root %s" (org-context-clocking-entry-task-info-get-heading task-info) root)
+             (org-context-clock-debug "task %s file %s" (org-context-clocking-entry-task-info-get-heading task-info) file))
+           (org-context-clock-debug "task %s root %s not present."
+                                    (org-context-clocking-entry-task-info-get-heading task-info) root))
+       (if (and root file
+                (string-match root file))
+           (length root)
+           0))))
 
-  (defassoc-file-key org-entry-associated-file-status-key :status (task-info file)
-    "Predicate funtion to check if file matches to task-info's file attribute."
+  (defassoc-context-plist-key org-entry-associated-context-plist-status-key :status (task-info context-plist)
+    "Predicate funtion to check if context-plist matches to task-info's status attribute."
     (let* ((status
-            (org-entry-task-info-get-property task-info 'status)))
+            (org-context-clocking-entry-task-info-get-property task-info 'status)))
       (if (string-equal status "CLOSED") -30 0)))
 
-  (defassoc-file-key org-entry-associated-file-task-key :task-key (task-info file)
-    "Predicate funtion to check if file matches to task-info's file attribute."
-    (let* ((key (org-entry-task-info-get-property task-info :KEY)))
+  (defassoc-context-plist-key org-entry-associated-context-plist-task-key :task-key (task-info context-plist)
+    "Predicate funtion to check if context-plist matches to task-info's file attribute."
+    (let* ((key (org-context-clocking-entry-task-info-get-property task-info :KEY)))
       (if key (string-to-number key) 0)))
 
-  (defassoc-file-key org-entry-associated-file-level-key :heading-level (task-info file)
-    "Predicate funtion to check if file matches to task-info's file attribute."
+  (defassoc-context-plist-key org-entry-associated-context-plist-level-key :heading-level (task-info context-plist)
+    "Predicate funtion to check if context-plist matches to task-info's file attribute."
     (let* ((level
-            (org-entry-task-info-get-property task-info :task-clock-level)))
+            (org-context-clocking-entry-task-info-get-property task-info :task-clock-level)))
       (if level level 0)))
 
-  (defassoc-file-key org-entry-associated-file-timebeing-key :timebeing (task-info file)
-    (let ((timebeing (org-entry-task-info-get-property task-info :TIMEBEING)))
+  (defassoc-context-plist-key org-entry-associated-context-plist-timebeing-key :timebeing (task-info context-plist)
+    (let ((timebeing (org-context-clocking-entry-task-info-get-property task-info :TIMEBEING)))
       (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
-            (clocked-time   (org-entry-task-info-get-property task-info :task-clock-clock-sum)))
+            (clocked-time   (org-context-clocking-entry-task-info-get-property task-info :task-clock-clock-sum)))
         (if (and
              (numberp clocked-time)
              (numberp timebeing-time)
@@ -191,10 +194,10 @@ using algorithm in this function, return RANK"
             (- timebeing-time clocked-time)
             0))))
 
-  ;; (defassoc-file-key org-entry-associated-file-current-clock-key :current-clock (task-info file)
-  ;;   "Predicate funtion to check if file matches to task-info's file attribute."
+  ;; (defassoc-context-plist-key org-entry-associated-context-plist-current-clock-key :current-clock (task-info context-plist)
+  ;;   "Predicate funtion to check if context-plist matches to task-info's file attribute."
   ;;   (let* ((task-marker
-  ;;           (org-entry-task-info-get-property task-info :task-clock-marker)))
+  ;;           (org-context-clocking-entry-task-info-get-property task-info :task-clock-marker)))
   ;;     (if (and
   ;;          org-clock-marker
   ;;          task-marker
