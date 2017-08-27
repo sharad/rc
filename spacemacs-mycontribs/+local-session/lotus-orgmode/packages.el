@@ -548,7 +548,20 @@ Each entry is either:
            org-clock-persist t
            ;; org-clock-out-switch-to-state ;; good
            ;; org-clock-in-switch-to-state
-           org-clock-out-remove-zero-time-clocks t)))))
+           org-clock-out-remove-zero-time-clocks t))
+
+        (progn
+
+          (defun org-idle-tracing-function (orig-fun &rest args)
+            (message "org-resolve-clocks-if-idle called with args %S" args)
+            (let ((res (apply orig-fun args)))
+              (message "org-resolve-clocks-if-idle returned %S" res)
+              res))
+
+          (advice-add 'org-resolve-clocks-if-idle :around #'org-idle-tracing-function)
+
+          ;; (advice-remove 'display-buffer #'org-idle-tracing-function)
+          ))))
 
 (defun lotus-orgmode/init-org-feed ()
   (use-package org-feed

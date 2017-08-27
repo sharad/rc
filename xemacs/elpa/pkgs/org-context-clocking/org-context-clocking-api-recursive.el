@@ -38,6 +38,11 @@
   "Root file to build recursive org entries tree")
 
 ;;;###autoload
+(defun org-context-clocking-setup-entry-tree-task-info-root-org-file (file)
+  (setq
+   org-context-clocking-entry-tree-task-info-root-org-file file))
+
+;;;###autoload
 (defun org-context-clocking-entry-tree-update-task-infos (&optional force) ;[BUG not working for subtree]
   "Update recursive org entries tree"
   (interactive "P")
