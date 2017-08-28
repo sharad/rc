@@ -25,40 +25,42 @@
 ;;; Code:
 
 
-(progn ;; "org macro"
+;; (progn ;; "org macro"
 
-  (defmacro org-with-refile (refile-targets &rest body)
-    "Refile the active region.
+(defmacro org-with-refile (refile-targets &rest body)
+  "Refile the active region.
 If no region is active, refile the current paragraph.
 With prefix arg C-u, copy region instad of killing it."
-    ;; mark paragraph if no region is set
-    `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
-            (target (save-excursion (org-refile-get-location)))
-            (file (nth 1 target))
-            (pos (nth 3 target)))
-       (with-current-buffer (find-file-noselect file)
-         (save-excursion
-           (goto-char pos)
-           ,@body))))
-  (put 'org-with-refile 'lisp-indent-function 1)
-
-  (defmacro org-with-file-headline (file headline &rest body)
-    `(with-current-buffer (if ,file (find-file-noselect ,file) (current-buffer))
+  ;; mark paragraph if no region is set
+  `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
+          (target (save-excursion (org-refile-get-location)))
+          (file (nth 1 target))
+          (pos (nth 3 target)))
+     (with-current-buffer (find-file-noselect file)
        (save-excursion
-         (goto-char (point-min))
-         (let ((pos (org-find-exact-headline-in-buffer ,headline)))
-           (when pos
-             (goto-char pos)
-             ,@body)
-           pos))))
-  (put 'org-with-file-headline 'lisp-indent-function 2)
+         (goto-char pos)
+         ,@body))))
+(put 'org-with-refile 'lisp-indent-function 1)
 
-  (defmacro org-with-clock-writeable-buffer (&rest body)
-    `(let ((buff (org-base-buffer (marker-buffer org-clock-marker))))
-       (when buff
-         (with-current-buffer buff
-           (let (buffer-read-only)
-             ,@body))))))
+(defmacro org-with-file-headline (file headline &rest body)
+  `(with-current-buffer (if ,file (find-file-noselect ,file) (current-buffer))
+     (save-excursion
+       (goto-char (point-min))
+       (let ((pos (org-find-exact-headline-in-buffer ,headline)))
+         (when pos
+           (goto-char pos)
+           ,@body)
+         pos))))
+(put 'org-with-file-headline 'lisp-indent-function 2)
+
+(defmacro org-with-clock-writeable-buffer (&rest body)
+  `(let ((buff (org-base-buffer (marker-buffer org-clock-marker))))
+     (when buff
+       (with-current-buffer buff
+         (let (buffer-read-only)
+           ,@body)))))
+
+  ;;)
 
 
 
