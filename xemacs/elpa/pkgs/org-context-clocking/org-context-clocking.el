@@ -187,7 +187,8 @@
                     (setq buffer-read-only prev-clock-buff-read-only)))))
           (progn
             (setq org-context-clocking-update-current-context-plist-msg "null clock")
-            (message "No clock found please set a match fot this context-plist %s." context-plist))))))
+            (message "No clock found please set a match fot this context-plist %s, add it using M-x org-context-clocking-add-context-to-org-heading."
+                     context-plist))))))
 
 ;; (defun org-context-clocking-run-task-current-context-plist-timer ()
 ;;   (let ()

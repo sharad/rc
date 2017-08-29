@@ -57,5 +57,9 @@
       (org-clocking-entry-update-task-infos t)))
 
 
+(defun org-context-clocking-add-context-to-org-heading ()
+  (interactive)
+  (org-miniwin-with-refile nil nil))
+
 (provide 'org-context-clocking-api-interaction)
 ;;; org-context-clocking-api-interaction.el ends here
