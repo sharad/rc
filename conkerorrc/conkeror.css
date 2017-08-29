@@ -63,10 +63,11 @@ color: black;
 
 
 body {
-/* background-color: white; */
+background-color: white;
 /* background: Black  ! important; */
-background-color: Black  ! important;
-background: Black;
+/* background-color: Black  ! important; */
+background: white;
+/* background: Black; */
 /* color: black; */
 /* color: grey !important */
 color: grey;
