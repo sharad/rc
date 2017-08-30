@@ -26,37 +26,61 @@
 
 ;; "Interactive utitlity API's for adding root subtree etc"
 
-(defun org-property-set-function (property fun)
+
+
+(defvar org-context-clock-propery-set-functions-alist nil
+  "Propery setting function.")
+
+(defun org-context-clock-property-set-function (property fun)
   "fun is like org-icompleting-read
  (completing-read PROMPT COLLECTION &optional PREDICATE REQUIRE-MATCH INITIAL-INPUT HIST DEF INHERIT-INPUT-METHOD)"
   (push
    (cons property fun)
-   org-property-set-functions-alist))
+   org-context-clock-propery-set-functions-alist))
+
+(defun org-context-clock-property-get-function (property)
+  (cdr (assoc property org-context-clock-propery-set-functions-alist)))
+
+(defun org-context-clock-get-property (prop)
+  (org-get-property prop))
+
+(defun org-context-clock-set-property (prop value context-plist &rest args)
+  (org-set-property prop
+                    (if value
+                        value
+                        (funcall
+                         (org-context-clock-property-get-function prop)
+                         context-plist args))))
+
+
+
+
 
 
 (progn
   ;; (setq org-property-set-functions-alist nil)
-  (org-property-set-function "Root"
-                             '(lambda (&rest args)
-                               (let ((file (if context-plist (plist-get context-plist :file)))
-                                     (dir (if (stringp file) (file-name-directory file) default-directory)))
-                                (ido-read-directory-name
-                                 (car args)
-                                 dir dir))))
-  (org-property-set-function "SubtreeFile"
-                             '(lambda (&rest args)
-                               (file-relative-name
-                                (ido-read-file-name ;; org-iread-file-name
-                                 (car args)
-                                 default-directory default-directory)))))
-(defun task-info-add-root ()
-  (interactive)
-  (if (org-set-property "Root" nil)
-      (org-clocking-entry-update-task-infos t)))
-(defun task-info-add-subtree-file ()
-  (interactive)
-  (if (org-set-property "SubtreeFile" nil)
-      (org-clocking-entry-update-task-infos t)))
+  (org-context-clock-property-set-function "Root"
+                                           '(lambda (context-plist &rest args)
+                                             (let ((file (if context-plist (plist-get context-plist :file)))
+                                                   (dir (if (stringp file) (file-name-directory file) default-directory)))
+                                               (ido-read-directory-name
+                                                (car args)
+                                                dir dir))))
+  (org-context-clock-property-set-function "SubtreeFile"
+                                           '(lambda (context-plist&rest args)
+                                             (file-relative-name
+                                              (ido-read-file-name ;; org-iread-file-name
+                                               (car args)
+                                               default-directory default-directory)))))
+
+;; (defun task-info-add-root ()
+;;   (interactive)
+;;   (if (org-set-property "Root" nil)
+;;       (org-clocking-entry-update-task-infos t)))
+;; (defun task-info-add-subtree-file ()
+;;   (interactive)
+;;   (if (org-set-property "SubtreeFile" nil)
+;;       (org-clocking-entry-update-task-infos t)))
 
 (defun org-context-clocking-select-propetry (&optional prompt)
   (ido-completing-read
@@ -82,7 +106,7 @@
               (while (not
                       (string-equal "Done"
                                     (setq prop (org-context-clocking-select-propetry))))
-                (if (org-set-property prop nil)
+                (if (org-context-clock-set-property prop nil)
                     (org-clocking-entry-update-task-infos t)))
               (if win (delete-window win))
               (if timer (cancel-timer timer))))
