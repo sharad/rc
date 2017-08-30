@@ -73,7 +73,9 @@
            #'(lambda (w)
                (if (active-minibuffer-window)
                    (abort-recursive-edit))
-               (if w (delete-window w)))
+               (if (and
+                    w
+                    (windowp w)) (delete-window w)))
            win)
           (let ((buffer-read-only t))
             (let ((prop nil))
