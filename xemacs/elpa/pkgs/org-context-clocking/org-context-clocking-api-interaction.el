@@ -106,7 +106,7 @@
               (while (not
                       (string-equal "Done"
                                     (setq prop (org-context-clocking-select-propetry))))
-                (if (org-context-clock-set-property prop nil)
+                (if (org-context-clock-set-property prop nil context-plist)
                     (org-clocking-entry-update-task-infos t)))
               (if win (delete-window win))
               (if timer (cancel-timer timer))))

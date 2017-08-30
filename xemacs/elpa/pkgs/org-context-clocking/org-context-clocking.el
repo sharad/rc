@@ -206,6 +206,7 @@
 
 ;; (defun run-org-Xcontext-clocking-task-current-context-plist-timer ()
 (defun org-context-clocking-run-task-current-context-plist-timer ()
+  (interactive)
   (let ()
     (setq org-context-clocking-last-buffer-select-time (current-time))
     (when org-context-clocking-buffer-select-timer
