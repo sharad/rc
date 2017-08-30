@@ -4,21 +4,21 @@ border: 1px inset gray;
 background-color: white;
 background: #ffffff;
 /* color: black; */
--moz-appearance: none !important;
+/* -moz-appearance: none !important; */
 }
 
 textarea {
 border: 1px inset gray;
 background-color: black;
 color: white;
--moz-appearance: none !important;
+/* -moz-appearance: none !important; */
 }
 
 select {
 border: 1px inset gray;
 background-color: black;
 color: white;
--moz-appearance: none !important;
+/* -moz-appearance: none !important; */
 }
 
 input[type="radio"],
@@ -26,12 +26,12 @@ input[type="checkbox"] {
 border: 1px inset gray ! important;
 background-color: white ! important;
 color: ThreeDFace ! important;
--moz-appearance: none !important;
+/* -moz-appearance: none !important; */
 }
 
 *|*::-moz-radio {
 background-color: white;
--moz-appearance: none !important;
+/* -moz-appearance: none !important; */
 }
 
 button,
@@ -41,7 +41,7 @@ input[type="submit"] {
 border: 1px outset gray;
 background-color: #eeeeee;
 color: black;
--moz-appearance: none !important;
+/* -moz-appearance: none !important; */
 }
 
 
@@ -58,20 +58,21 @@ input[type="button"]:hover,
 input[type="submit"]:hover {
 background-color: lightgray !important;
 color: black;
--moz-appearance: none !important;
+/* -moz-appearance: none !important; */
 }
 
 
 body {
-background-color: white;
+background-color: black;
 /* background: Black  ! important; */
 /* background-color: Black  ! important; */
-background: white;
+/* background: white; */
 /* background: Black; */
 /* color: black; */
 /* color: grey !important */
-color: grey;
--moz-appearance: none !important;
+/* color: grey; */
+ color: white;
+ /* -moz-appearance: none !important; */
 }
 
 /* :link, :link * { color: #4986dd !important }; */

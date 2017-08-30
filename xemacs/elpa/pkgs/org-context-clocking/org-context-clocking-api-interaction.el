@@ -38,9 +38,11 @@
   ;; (setq org-property-set-functions-alist nil)
   (org-property-set-function "Root"
                              '(lambda (&rest args)
-                               (ido-read-directory-name
-                                (car args)
-                                default-directory default-directory)))
+                               (let ((file (if context-plist (plist-get context-plist :file)))
+                                     (dir (if (stringp file) (file-name-directory file) default-directory)))
+                                (ido-read-directory-name
+                                 (car args)
+                                 dir dir))))
   (org-property-set-function "SubtreeFile"
                              '(lambda (&rest args)
                                (file-relative-name
@@ -56,10 +58,41 @@
   (if (org-set-property "SubtreeFile" nil)
       (org-clocking-entry-update-task-infos t)))
 
+(defun org-context-clocking-select-propetry (&optional prompt)
+  (ido-completing-read
+   (or prompt "proptery: ")
+   (list "Root" "SubtreeFile" "Done") nil t))
 
-(defun org-context-clocking-add-context-to-org-heading ()
+(defun org-context-clocking-add-context-to-org-heading (context-plist)
   (interactive)
-  (org-miniwin-with-refile nil nil))
+  (org-miniwin-with-refile nil
+    (condition-case err
+        (progn
+          (run-with-idle-timer
+           17 nil
+           #'(lambda (w)
+               (if (active-minibuffer-window)
+                   (abort-recursive-edit))
+               (if w (delete-window w)))
+           win)
+          (let ((buffer-read-only t))
+            (let ((prop nil))
+              (while (not
+                      (string-equal "Done"
+                                    (setq prop (org-context-clocking-select-propetry))))
+                (if (org-set-property prop nil)
+                    (org-clocking-entry-update-task-infos t)))
+              (if win (delete-window win)))))
+      ((quit error)
+       (progn
+         (if win (delete-window win))
+         (signal (car err) (cdr err)))))))
+
+(defun org-context-clocking-add-context-to-org-heading-when-idle (arg)
+  (message "called add-context-to-org-heading-when-idle")
+  (run-with-idle-timer-nonobtrusive-simple
+   7 nil
+   'org-context-clocking-add-context-to-org-heading arg))
 
 (provide 'org-context-clocking-api-interaction)
 ;;; org-context-clocking-api-interaction.el ends here

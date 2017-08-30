@@ -39,38 +39,38 @@ Benefit with this timer is that it will very much ensure before running that use
                  (subtimer nil))
     (setq timer
           (run-with-idle-timer longdelay repeat
-                               (lambda (func)
-                                 (unless subtimer
-                                   (dmessage 'timer 7 "shortdelay %s running timer" shortdelay)
-                                   (setq subtimer
-                                         (run-with-nonobtrusive-timers shortdelay (if repeat-after-idle shortdelay nil) 4
-                                                                       (lambda (func1)
-                                                                         (progn
-                                                                           (dmessage 'timer 7 "shortdelay %s running fun" shortdelay)
-                                                                           (if (funcall func1)
+                               #'(lambda (func-arg)
+                                   (unless subtimer
+                                     (dmessage 'timer 7 "shortdelay %s running timer" shortdelay)
+                                     (setq subtimer
+                                           (run-with-nonobtrusive-timers shortdelay (if repeat-after-idle shortdelay nil) 4
+                                                                         (lambda (func-arg1)
+                                                                           (progn
+                                                                             (dmessage 'timer 7 "shortdelay %s running fun" shortdelay)
+                                                                             (if (funcall (car func-arg1) (cdr func-arg1))
 
-                                                                               ;; (when subtimer
-                                                                               ;;   (cancel-timer subtimer)
-                                                                               ;;   (setq subtimer nil))
+                                                                                 ;; (when subtimer
+                                                                                 ;;   (cancel-timer subtimer)
+                                                                                 ;;   (setq subtimer nil))
 
-                                                                               (when (and cancel timer)
-                                                                                 (cancel-timer timer)
-                                                                                 (setq timer nil)))
+                                                                                 (when (and cancel timer)
+                                                                                   (cancel-timer timer)
+                                                                                   (setq timer nil)))
 
-                                                                           (when subtimer
-                                                                             (cancel-timer subtimer)
-                                                                             (setq subtimer nil))
+                                                                             (when subtimer
+                                                                               (cancel-timer subtimer)
+                                                                               (setq subtimer nil))
 
-                                                                           ;; (when subtimer
-                                                                           ;;   (cancel-timer subtimer)
-                                                                           ;;   (setq subtimer nil))
+                                                                             ;; (when subtimer
+                                                                             ;;   (cancel-timer subtimer)
+                                                                             ;;   (setq subtimer nil))
 
-                                                                           ))
-                                                                       func))))
-                               fn))))
+                                                                             ))
+                                                                         func-arg))))
+                               (cons fn arg)))))
 
 ;;;###autoload
-(defun run-with-nonobtrusive-timers (idledelay repeat useridlesec fn arg)
+(defun run-with-nonobtrusive-timers (idledelay repeat useridlesec fn1 arg1)
   "Run FN with ARG only when user is not typing."
   (lexical-let* ((idledelay idledelay)
                  (repeat repeat)
@@ -81,12 +81,12 @@ Benefit with this timer is that it will very much ensure before running that use
           (run-with-idle-timer
            idledelay
            repeat
-           (lambda (func)
+           (lambda (func-arg2)
              (let ((current-idle-sec (float-time (or (current-idle-time) '(0 0 0)))))
                (if (>= current-idle-sec useridlesec-moving) ;NOTE
                    (progn
                      (dmessage 'timer 7 "shortob running fun useridlesec-moving %s" useridlesec-moving)
-                     (funcall (car func) (cdr func))
+                     (funcall (car func-arg2) (cdr func-arg2))
                      (setq useridlesec-moving useridlesec)
                      (when timer
                        (cancel-timer timer)
@@ -97,7 +97,30 @@ Benefit with this timer is that it will very much ensure before running that use
                      (unless (zerop useridlesec-moving)
                        (decf useridlesec-moving))
                      nil))))
-           (cons fn arg)))))
+           (cons fn1 arg1)))))
+
+
+
+(defun run-with-idle-timer-nonobtrusive (sec repeat sitfor stepsec fn &optional arg)
+  (lexical-let* ((sitfor sitfor)
+                 (sec sec)
+                 (idle-timer
+                  (run-with-idle-timer sec nil
+                                       #'(lambda (fnarg)
+                                           (let ((current-idle-sec (float-time (or (current-idle-time) '(0 0 0)))))
+                                             (if (>= current-idle-sec (+ sec sitfor))
+                                                 (progn
+                                                   (unless repeat
+                                                     (cancel-timer idle-timer))
+                                                   (funcall (car fnarg) (cdr fnarg)))
+                                                 (setq idle-timer
+                                                       ))))
+                                       (cons fn arg))))
+    ))
+
+
+(defun run-with-idle-timer-nonobtrusive-simple (sec repeat fn &optional arg)
+  (run-with-idle-timer sec repeat fn arg))
 
 (when nil
   (progn

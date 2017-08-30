@@ -8,47 +8,53 @@ define_key(content_buffer_normal_keymap, "d", "follow-new-buffer-background");
 
 
 //{{ darken_page: thanks very much for saving my eyes.
-function addCustomElement(doc, id, type, attribs)
+// var newSS, styles='* { background: black ! important; color: grey !important }'
+// var newSS, styles='* { background: black ! important; color: white !important }'
+// var newSS, styles='* { background: #EFFFEF ! important; color: white !important }'
+// var newSS, styles='* { background: #428a42 ! important; color: white !important }'
+// var newSS, styles='* { background: DarkGreen ! important; color: white !important }'
+// var newSS, styles='* { background: DarkSlateGray  ! important; color: white !important }'
+function generate_darken_css_attribs()
 {
+    var styles =
+        // '* { background-color: Black  ! important; color: grey !important }'
+        '* { background-color: Black; color: grey !important }'
+        + ':link, :link * { color: #4986dd !important }'
+        + ':visited, :visited * { color: #d75047 !important }';
+    var attribs = { rel: "stylesheet", href: "data:text/css, " + escape(styles)};
+    return attribs;
+}
+
+function createStyleElement(doc, id, type)
+{
+    var attribs = generate_darken_css_attribs();
     var newEl = doc.createElement(type);
     newEl.id = id;
     for(var k in attribs) newEl[k] = attribs[ k ];
+    return newEl;
+}
 
-    doc.getElementsByTagName("head")[0].appendChild( newEl );
-
-    // if (document.createStyleSheet) { //
-    //     document.createStyleSheet("javascript:'" + styles + "'"); //
-    // } //
-
+function addCustomElement(doc, id, type)
+{
+    doc.getElementsByTagName("head")[0]
+        .appendChild( createStyleElement(doc, id, type) );
 }
 
 function removeCustomElement(doc, id, type)
 {
     var delEl = doc.getElementById(id);
-    delEl.parentNode.removeChild(delEl);
+    if (delEl) delEl.parentNode.removeChild(delEl);
 }
 
 function toggle_local_darken_page(I)
 {
-    // var newSS, styles='* { background: black ! important; color: grey !important }'
-    // var newSS, styles='* { background: black ! important; color: white !important }'
-    // var newSS, styles='* { background: #EFFFEF ! important; color: white !important }'
-    // var newSS, styles='* { background: #428a42 ! important; color: white !important }'
-    // var newSS, styles='* { background: DarkGreen ! important; color: white !important }'
-    // var newSS, styles='* { background: DarkSlateGray  ! important; color: white !important }'
-    var styles =
-        '* { background: Black  ! important; color: grey !important }'
-        + ':link, :link * { color: #4986dd !important }'
-        + ':visited, :visited * { color: #d75047 !important }';
-
     var id = "_darken_page_";
     var doc = I.window.buffers.current.document;
-    var attribs = { rel: "stylesheet", href: "data:text/css, " + escape(styles)};
 
     if (doc.getElementById(id))
         removeCustomElement(doc, id, "link");
     else
-        addCustomElement(doc, id, "link", attribs);
+        addCustomElement(doc, id, "link");
 }
 
 interactive("toggle-local-darken-page",
@@ -62,13 +68,6 @@ define_key(content_buffer_normal_keymap, "f1", "toggle-local-darken-page");
 
 
 //{{
-
-// add_hook('buffer_loaded_hook', toggle_local_darken_page, true, true);
-// if (hook.indexOf(func) != -1)
-//     return func;
-
-
-
 function toggle_global_darken_page(I)
 {
     var hook = conkeror['buffer_loaded_hook'];
@@ -76,7 +75,7 @@ function toggle_global_darken_page(I)
         register_user_stylesheet(
             make_css_data_uri(
             [
-                "body {background-color: white; background: white; color: grey; color: grey !important; }",
+                "body {background-color: white; color: grey; color: grey !important; }",
             ]
         ));
         remove_hook('buffer_loaded_hook', toggle_local_darken_page, true, true);
@@ -85,7 +84,7 @@ function toggle_global_darken_page(I)
         register_user_stylesheet(
             make_css_data_uri(
                 [
-                "body {background-color: black; background: black; color: white; color: white !important; }",
+                "body {background-color: black; color: white; color: white !important; }",
                 ]));
         add_hook('buffer_loaded_hook', toggle_local_darken_page, true, true);
         I.window.minibuffer.message("added");
@@ -162,34 +161,34 @@ if (false ) {
 
 if (false) {
     // register_user_stylesheet('file://' + get_home_directory().path + "/.conkerorrc/conkeror.css");
-    // "data:text/css,"+escape("input { background-color: white; background: #ffffff; color: black;-moz-appearance: none !important;}")
+    // "data:text/css,"+escape("input { background-color: white; color: black;-moz-appearance: none !important;}")
 
     // white
     register_user_stylesheet(make_css_data_uri(
         [
-            "body {background-color: white; background: white; color: grey; color: grey !important; -moz-appearance: none !important; }",
-            "input, textarea { background-color: black; background: #ffffff; color: white; -moz-appearance: none !important;}"
+            "body {background-color: white; color: grey; color: grey !important; -moz-appearance: none !important; }",
+            "input, textarea { background-color: black; color: white; -moz-appearance: none !important;}"
         ]
     ));
 
     // black
     register_user_stylesheet(make_css_data_uri(
         [
-            "body {background-color: black; background: black; color: white; color: white !important; -moz-appearance: none !important; }",
-            "input, textarea { background-color: white; background: #000000; color: black; -moz-appearance: none !important;}"
+            "body {background-color: black; color: white; color: white !important; -moz-appearance: none !important; }",
+            "input, textarea { background-color: white; color: black; -moz-appearance: none !important;}"
         ]
     ));
 
     // white
     register_user_stylesheet(make_css_data_uri(
         [
-            "body {background-color: white; background: white; color: grey; color: grey !important; }",
+            "body {background-color: white; color: grey; color: grey !important; }",
         ]
     ));
     // black
     register_user_stylesheet(make_css_data_uri(
         [
-            "body {background-color: black; background: black; color: white; color: white !important; }",
+            "body {background-color: black; color: white; color: white !important; }",
         ]
     ));
 }
@@ -230,9 +229,4 @@ if (false)
 theme_load_paths.unshift(get_home_directory().path + "/.conkerorrc/themes/");
 theme_load("default");
 theme_load("tommytxtruong");
-
-
-
-
-
 //}}

@@ -24,6 +24,19 @@
 
 ;;; Code:
 
+(defvar safe-org-refile-get-location-modes
+  '(emacs-lisp-mode org-mode))
+
+(defun safe-org-refile-get-location-p ()
+  (if (member major-mode safe-org-refile-get-location-modes)
+      t))
+
+(defun safe-org-refile-get-location ()
+  (let ((org-refile-targets
+         (if (safe-org-refile-get-location-p)
+             org-refile-targets
+             (remove-if '(lambda (e) (null (car e))) org-refile-targets))))
+   (org-refile-get-location)))
 
 ;; (progn ;; "org macro"
 
@@ -33,7 +46,7 @@ If no region is active, refile the current paragraph.
 With prefix arg C-u, copy region instad of killing it."
   ;; mark paragraph if no region is set
   `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
-          (target (save-excursion (org-refile-get-location)))
+          (target (save-excursion (safe-org-refile-get-location)))
           (file (nth 1 target))
           (pos (nth 3 target)))
      (with-current-buffer (find-file-noselect file)
@@ -64,7 +77,7 @@ With prefix arg C-u, copy region instad of killing it."
   "Refile run body with file and loc set."
   ;; mark paragraph if no region is set
   `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
-          (target (save-excursion (org-refile-get-location)))
+          (target (save-excursion (safe-org-refile-get-location)))
           (file (nth 1 target))
           (pos (nth 3 target)))
      ,@body))
@@ -73,48 +86,49 @@ With prefix arg C-u, copy region instad of killing it."
 (defmacro org-miniwin-with-refile (refile-targets &rest body)
   `(org-file-loc-with-refile ,refile-targets
      (let ((target-buffer (find-file-noselect file)))
-       (let ((window-min-height 7))
+       (lexical-let* ((window-min-height 7)
+                      (win
+                       (split-window-below
+                        ;; If the mode line might interfere with the calculator
+                        ;; buffer, use 3 lines instead.
+                        (if (and (fboundp 'face-attr-construct)
+                                 (let* ((dh (plist-get (face-attr-construct 'default) :height))
+                                        (mf (face-attr-construct 'mode-line))
+                                        (mh (plist-get mf :height)))
+                                   ;; If the mode line is shorter than the default,
+                                   ;; stick with 2 lines.  (It may be necessary to
+                                   ;; check how much shorter.)
+                                   (and
+                                    (not
+                                     (or (and (integerp dh)
+                                              (integerp mh)
+                                              (< mh dh))
+                                         (and (numberp mh)
+                                              (not (integerp mh))
+                                              (< mh 1))))
+                                    (or
+                                     ;; If the mode line is taller than the default,
+                                     ;; use 3 lines.
+                                     (and (integerp dh)
+                                          (integerp mh)
+                                          (> mh dh))
+                                     (and (numberp mh)
+                                          (not (integerp mh))
+                                          (> mh 1))
+                                     ;; If the mode line has a box with non-negative line-width,
+                                     ;; use 3 lines.
+                                     (let* ((bx (plist-get mf :box))
+                                            (lh (plist-get bx :line-width)))
+                                       (and bx
+                                            (or
+                                             (not lh)
+                                             (> lh 0))))
+                                     ;; If the mode line has an overline, use 3 lines.
+                                     (plist-get (face-attr-construct 'mode-line) :overline)))))
+                            -12 -10))))
          ;; maybe leave two lines for our window because of the
          ;; normal `raised' mode line
-         (select-window
-          (split-window-below
-           ;; If the mode line might interfere with the calculator
-           ;; buffer, use 3 lines instead.
-           (if (and (fboundp 'face-attr-construct)
-                    (let* ((dh (plist-get (face-attr-construct 'default) :height))
-                           (mf (face-attr-construct 'mode-line))
-                           (mh (plist-get mf :height)))
-                      ;; If the mode line is shorter than the default,
-                      ;; stick with 2 lines.  (It may be necessary to
-                      ;; check how much shorter.)
-                      (and
-                       (not
-                        (or (and (integerp dh)
-                                 (integerp mh)
-                                 (< mh dh))
-                            (and (numberp mh)
-                                 (not (integerp mh))
-                                 (< mh 1))))
-                       (or
-                        ;; If the mode line is taller than the default,
-                        ;; use 3 lines.
-                        (and (integerp dh)
-                             (integerp mh)
-                             (> mh dh))
-                        (and (numberp mh)
-                             (not (integerp mh))
-                             (> mh 1))
-                        ;; If the mode line has a box with non-negative line-width,
-                        ;; use 3 lines.
-                        (let* ((bx (plist-get mf :box))
-                               (lh (plist-get bx :line-width)))
-                          (and bx
-                               (or
-                                (not lh)
-                                (> lh 0))))
-                        ;; If the mode line has an overline, use 3 lines.
-                        (plist-get (face-attr-construct 'mode-line) :overline)))))
-               -12 -10)))
+         (select-window win)
          (switch-to-buffer target-buffer)
          (goto-char pos)
          ,@body))))
@@ -143,7 +157,7 @@ With prefix arg C-u, copy region instad of killing it."
   (jay/refile-to "~/Org/bookmarks.org" "New")
   (org-mark-ring-goto))
 
-;; (save-excursion (org-refile-get-location))
+;; (save-excursion (safe-org-refile-get-location))
 
 (setq org-refile-targets
       '((nil :maxlevel . 3)           ; only the current file
