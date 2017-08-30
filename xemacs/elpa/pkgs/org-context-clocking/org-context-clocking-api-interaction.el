@@ -66,17 +66,17 @@
 (defun org-context-clocking-add-context-to-org-heading (context-plist)
   (interactive)
   (org-miniwin-with-refile nil
-    (condition-case err
-        (progn
-          (run-with-idle-timer
-           17 nil
-           #'(lambda (w)
-               (if (active-minibuffer-window)
-                   (abort-recursive-edit))
-               (if (and
-                    w
-                    (windowp w)) (delete-window w)))
-           win)
+    (let ((timer (run-with-idle-timer
+                  17 nil
+                  #'(lambda (w)
+                      (if (active-minibuffer-window)
+                          (abort-recursive-edit))
+                      (if (and
+                           w
+                           (windowp w)
+                           (window-valid-p w)) (delete-window w)))
+                  win)))
+      (condition-case err
           (let ((buffer-read-only t))
             (let ((prop nil))
               (while (not
@@ -84,11 +84,13 @@
                                     (setq prop (org-context-clocking-select-propetry))))
                 (if (org-set-property prop nil)
                     (org-clocking-entry-update-task-infos t)))
-              (if win (delete-window win)))))
-      ((quit error)
-       (progn
-         (if win (delete-window win))
-         (signal (car err) (cdr err)))))))
+              (if win (delete-window win))
+              (if timer (cancel-timer timer))))
+        ((quit error)
+         (progn
+           (if win (delete-window win))
+           (if timer (cancel-timer timer))
+           (signal (car err) (cdr err))))))))
 
 (defun org-context-clocking-add-context-to-org-heading-when-idle (arg)
   (message "called add-context-to-org-heading-when-idle")
