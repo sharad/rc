@@ -81,18 +81,23 @@
   (interactive "P")
   (funcall org-context-clocking-api-entry-update-task-infos force))
 
+(defun org-context-clocking-build-context-plist ()
+  (let* ((buff (window-buffer))
+         (file (buffer-file-name buff))
+         (context-plist (list :file file :buffer buff)))
+    context-plist))
+
 (defun org-context-clocking-update-current-context-plist ()
   (if (> (float-time
           (time-since org-context-clocking-last-buffer-select-time))
          org-context-clocking-task-current-context-plist-time)
-      (let* ((buff (window-buffer))
-             (file (buffer-file-name buff))
-             (context-plist (list :file file :buffer buff)))
+      (let* ((context-plist (org-context-clocking-build-context-plist))
+             (buff (plist-get context-plist :buffer)))
         (if (or
              (and
               (equal org-context-clocking-task-previous-context-plist context-plist)
               (equal org-context-clocking-task-current-context-plist  context-plist))
-             (if buff (minibufferp (plist-get context-plist :buffer)) t))
+             (if buff (minibufferp buff) t))
 
             (org-context-clocking-debug "org-context-clocking-update-current-context-plist: context-plist %s not suitable to associate" context-plist)
 
@@ -112,9 +117,7 @@
 
 (defun org-context-clocking-update-current-context-plist-x ()
   (if t
-      (let* ((buff (window-buffer))
-             (file (buffer-file-name buff))
-             (context-plist (list :file file :buffer buff)))
+      (let* ((context-plist (org-context-clocking-build-context-plist)))
         (unless nil
           (setq
            org-context-clocking-task-previous-context-plist org-context-clocking-task-current-context-plist
@@ -189,7 +192,7 @@
             (setq org-context-clocking-update-current-context-plist-msg "null clock")
             (message "No clock found please set a match fot this context-plist %s, add it using M-x org-context-clocking-add-context-to-org-heading."
                      context-plist)
-            (org-context-clocking-add-context-to-org-heading-when-idle context-plist)
+            (org-context-clocking-add-context-to-org-heading-when-idle context-plist 17)
             )))))
 
 ;; (defun org-context-clocking-run-task-current-context-plist-timer ()

@@ -87,40 +87,63 @@
    (or prompt "proptery: ")
    (list "Root" "SubtreeFile" "Done") nil t))
 
-(defun org-context-clocking-add-context-to-org-heading (context-plist)
-  (interactive)
-  (org-miniwin-with-refile nil
-    (let ((timer (run-with-idle-timer
-                  17 nil
-                  #'(lambda (w)
-                      (if (active-minibuffer-window)
-                          (abort-recursive-edit))
-                      (if (and
-                           w
-                           (windowp w)
-                           (window-valid-p w)) (delete-window w)))
-                  win)))
-      (condition-case err
-          (let ((buffer-read-only t))
-            (let ((prop nil))
-              (while (not
-                      (string-equal "Done"
-                                    (setq prop (org-context-clocking-select-propetry))))
-                (if (org-context-clock-set-property prop nil context-plist)
-                    (org-clocking-entry-update-task-infos t)))
-              (if win (delete-window win))
-              (if timer (cancel-timer timer))))
-        ((quit error)
-         (progn
-           (if win (delete-window win))
-           (if timer (cancel-timer timer))
-           (signal (car err) (cdr err))))))))
+(defun org-context-clocking-test (context-plist timeout)
+  (interactive '(nil nil))
+  (lexical-let* ((timeout (or timeout 17))
+                 (context-plist (or context-plist (org-context-clocking-build-context-plist)))
+                 (buff (plist-get context-plist :buffer)))
+    (message "test %s" timeout)))
 
-(defun org-context-clocking-add-context-to-org-heading-when-idle (arg)
+(defun org-context-clocking-add-context-to-org-heading (context-plist timeout)
+  (interactive '(nil nil))
+  (lexical-let* ((timeout (or timeout 17))
+                 (context-plist (or context-plist (org-context-clocking-build-context-plist)))
+                 (buff (plist-get context-plist :buffer)))
+    (if (and
+         (eq (current-buffer) buff)
+         (buffer-live-p buff)
+         (not
+          (eq buff
+              (get-buffer "*helm-mode-org-context-clocking-add-context-to-org-heading*"))))
+        (org-timed-miniwin-with-refile timeout nil
+          (message "called add-context-to-org-heading %s" (current-buffer))
+          (let ((timer (run-with-idle-timer timeout nil
+                                            #'(lambda (w)
+                                                (message "triggered timer for win %s" w)
+                                                (when (active-minibuffer-window)
+                                                  (abort-recursive-edit))
+                                                (when (and w (windowp w) (window-valid-p w))
+                                                  (delete-window w)))
+                                            win)))
+            (condition-case err
+                (let ((buffer-read-only t))
+                  (message "timer started for win %s" win)
+                  (let ((prop nil))
+                    (while (not
+                            (string-equal "Done"
+                                          (setq prop (org-context-clocking-select-propetry))))
+                      (when (org-context-clock-set-property prop nil context-plist)
+                        (org-clocking-entry-update-task-infos t)))
+                    (if win (delete-window win))
+                    (if timer (cancel-timer timer))))
+              ((quit error)
+               (progn
+                 (if win (delete-window win))
+                 (if timer (cancel-timer timer))
+                 (signal (car err) (cdr err)))))))
+        (progn
+          (message "not running add-context-to-org-heading 1 %s, 2 %s 3 %s"
+                   (eq (current-buffer) buff)
+                   (buffer-live-p buff)
+                   (eq buff
+                       (get-buffer "*helm-mode-org-context-clocking-add-context-to-org-heading*")))))))
+
+(defun org-context-clocking-add-context-to-org-heading-when-idle (context-plist timeout)
   (message "called add-context-to-org-heading-when-idle")
   (run-with-idle-timer-nonobtrusive-simple
    7 nil
-   'org-context-clocking-add-context-to-org-heading arg))
+   #'(lambda (args)
+       (apply 'org-context-clocking-add-context-to-org-heading args)) (cons context-plist timeout)))
 
 (provide 'org-context-clocking-api-interaction)
 ;;; org-context-clocking-api-interaction.el ends here
