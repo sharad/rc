@@ -247,25 +247,6 @@ using three `C-u' prefix arguments."
     ;; (org-clock-is-active)
     ;; )
 
-    (add-hook 'org-clock-in-hook
-              '(lambda ()
-                ;; ;; if effort is not present than add it.
-                ;; (unless (org-entry-get nil "Effort")
-                ;;   (save-excursion
-                ;;    (org-set-effort)))
-                ;; set timer
-                (when (not
-                       (and
-                        (boundp' org-timer-countdown-timer)
-                        org-timer-countdown-timer))
-                  (if (org-entry-get nil "Effort")
-                      (save-excursion
-                        (forward-line -2)
-                        (org-timer-set-timer nil))
-                      (call-interactively 'org-timer-set-timer)))
-                (save-buffer)
-                (org-save-all-org-buffers)))
-
     (defvar org-clock-default-effort "1:00")
     (defun lotus-org-mode-add-default-effort ()
       "Add a default effort estimation."
@@ -282,17 +263,6 @@ using three `C-u' prefix arguments."
                 (org-entry-get-multivalued-property (point) "Effort"))))
           (unless (equal effort "")
             (org-set-property "Effort" effort)))))
-
-
-    (add-hook 'org-clock-out-hook
-              '(lambda ()
-                (if (and
-                     (boundp' org-timer-countdown-timer)
-                     org-timer-countdown-timer)
-                    (org-timer-stop))
-                (org-clock-get-work-day-clock-string t)
-                (save-buffer)
-                (org-save-all-org-buffers)))
 
     ;; org-refile-targets is set in org-misc-utils-lotus package
     (defun org-clock-in-refile (refile-targets)
@@ -375,6 +345,38 @@ using three `C-u' prefix arguments."
     ;;         (let (org-log-note-clock-out)
     ;;           (if (org-clock-is-active)
     ;;               (org-clock-out)))))))
+
+
+    (defun lotus-org-clock-in/out-insinuate-hooks ()
+      (add-hook 'org-clock-in-hook
+                '(lambda ()
+                  ;; ;; if effort is not present than add it.
+                  ;; (unless (org-entry-get nil "Effort")
+                  ;;   (save-excursion
+                  ;;    (org-set-effort)))
+                  ;; set timer
+                  (when (not
+                         (and
+                          (boundp' org-timer-countdown-timer)
+                          org-timer-countdown-timer))
+                    (if (org-entry-get nil "Effort")
+                        (save-excursion
+                          (forward-line -2)
+                          (org-timer-set-timer nil))
+                        (call-interactively 'org-timer-set-timer)))
+                  (save-buffer)
+                  (org-save-all-org-buffers)))
+      (add-hook 'org-clock-out-hook
+                '(lambda ()
+                  (if (and
+                       (boundp' org-timer-countdown-timer)
+                       org-timer-countdown-timer)
+                      (org-timer-stop))
+                  (org-clock-get-work-day-clock-string t)
+                  (save-buffer)
+                  (org-save-all-org-buffers))))
+
+
     ))
 
 

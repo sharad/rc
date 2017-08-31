@@ -87,8 +87,7 @@ Each entry is either:
                   :defer t
                   :config
                   (progn
-                    (lotus-setup-org-refile-base-file
-                     (expand-file-name "start.org" (task-party-base-dir)))))
+                    ))
 
               (lotus-org-clock-in/out-insinuate-hooks)))))
 

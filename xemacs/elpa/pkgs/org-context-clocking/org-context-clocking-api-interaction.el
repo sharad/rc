@@ -143,7 +143,7 @@
   (run-with-idle-timer-nonobtrusive-simple
    7 nil
    #'(lambda (args)
-       (apply 'org-context-clocking-add-context-to-org-heading args)) (cons context-plist timeout)))
+       (apply 'org-context-clocking-add-context-to-org-heading args)) (list context-plist timeout)))
 
 (provide 'org-context-clocking-api-interaction)
 ;;; org-context-clocking-api-interaction.el ends here

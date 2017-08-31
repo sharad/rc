@@ -52,8 +52,9 @@
                                                      (when (active-minibuffer-window)
                                                        (abort-recursive-edit)))))
                                              buf-name)))
-    (safe-org-refile-get-location)
-    (cancel-timer timer)))
+    (prog1
+        (safe-org-refile-get-location)
+      (cancel-timer timer))))
 
 
 ;; (progn ;; "org macro"
@@ -101,57 +102,61 @@ With prefix arg C-u, copy region instad of killing it."
      ,@body))
 (put 'org-file-loc-with-refile 'lisp-indent-function 1)
 
+(defmacro org-with-new-win (file pos &rest body)
+  `(let ((target-buffer (find-file-noselect ,file)))
+     (lexical-let* ((window-min-height 7)
+                    (win
+                     (split-window-below
+                      ;; If the mode line might interfere with the calculator
+                      ;; buffer, use 3 lines instead.
+                      (if (and (fboundp 'face-attr-construct)
+                               (let* ((dh (plist-get (face-attr-construct 'default) :height))
+                                      (mf (face-attr-construct 'mode-line))
+                                      (mh (plist-get mf :height)))
+                                 ;; If the mode line is shorter than the default,
+                                 ;; stick with 2 lines.  (It may be necessary to
+                                 ;; check how much shorter.)
+                                 (and
+                                  (not
+                                   (or (and (integerp dh)
+                                            (integerp mh)
+                                            (< mh dh))
+                                       (and (numberp mh)
+                                            (not (integerp mh))
+                                            (< mh 1))))
+                                  (or
+                                   ;; If the mode line is taller than the default,
+                                   ;; use 3 lines.
+                                   (and (integerp dh)
+                                        (integerp mh)
+                                        (> mh dh))
+                                   (and (numberp mh)
+                                        (not (integerp mh))
+                                        (> mh 1))
+                                   ;; If the mode line has a box with non-negative line-width,
+                                   ;; use 3 lines.
+                                   (let* ((bx (plist-get mf :box))
+                                          (lh (plist-get bx :line-width)))
+                                     (and bx
+                                          (or
+                                           (not lh)
+                                           (> lh 0))))
+                                   ;; If the mode line has an overline, use 3 lines.
+                                   (plist-get (face-attr-construct 'mode-line) :overline)))))
+                          -12 -10))))
+       ;; maybe leave two lines for our window because of the
+       ;; normal `raised' mode line
+       (select-window win)
+       (switch-to-buffer target-buffer)
+       (goto-char ,pos)
+       ,@body)))
+(put 'org-with-new-win 'lisp-indent-function 1)
+
 (defmacro org-miniwin-with-refile (refile-targets &rest body)
   `(org-file-loc-with-refile ,refile-targets
-     (let ((target-buffer (find-file-noselect file)))
-       (lexical-let* ((window-min-height 7)
-                      (win
-                       (split-window-below
-                        ;; If the mode line might interfere with the calculator
-                        ;; buffer, use 3 lines instead.
-                        (if (and (fboundp 'face-attr-construct)
-                                 (let* ((dh (plist-get (face-attr-construct 'default) :height))
-                                        (mf (face-attr-construct 'mode-line))
-                                        (mh (plist-get mf :height)))
-                                   ;; If the mode line is shorter than the default,
-                                   ;; stick with 2 lines.  (It may be necessary to
-                                   ;; check how much shorter.)
-                                   (and
-                                    (not
-                                     (or (and (integerp dh)
-                                              (integerp mh)
-                                              (< mh dh))
-                                         (and (numberp mh)
-                                              (not (integerp mh))
-                                              (< mh 1))))
-                                    (or
-                                     ;; If the mode line is taller than the default,
-                                     ;; use 3 lines.
-                                     (and (integerp dh)
-                                          (integerp mh)
-                                          (> mh dh))
-                                     (and (numberp mh)
-                                          (not (integerp mh))
-                                          (> mh 1))
-                                     ;; If the mode line has a box with non-negative line-width,
-                                     ;; use 3 lines.
-                                     (let* ((bx (plist-get mf :box))
-                                            (lh (plist-get bx :line-width)))
-                                       (and bx
-                                            (or
-                                             (not lh)
-                                             (> lh 0))))
-                                     ;; If the mode line has an overline, use 3 lines.
-                                     (plist-get (face-attr-construct 'mode-line) :overline)))))
-                            -12 -10))))
-         ;; maybe leave two lines for our window because of the
-         ;; normal `raised' mode line
-         (select-window win)
-         (switch-to-buffer target-buffer)
-         (goto-char pos)
-         ,@body))))
-(put 'org-miniwin-with-refile 'lisp-indent-function 1)
+     (org-with-new-win file pos ,@body)))
 
+(put 'org-miniwin-with-refile 'lisp-indent-function 1)
 
 (defmacro org-timed-file-loc-with-refile (timeout refile-targets &rest body)
   "Refile run body with file and loc set."
@@ -160,65 +165,20 @@ With prefix arg C-u, copy region instad of killing it."
           (target (save-excursion (safe-timed-org-refile-get-location ,timeout)))
           (file (nth 1 target))
           (pos (nth 3 target)))
+     (assert file)
+     (assert pos)
      ,@body))
 (put 'org-timed-file-loc-with-refile 'lisp-indent-function 1)
 
 (defmacro org-timed-miniwin-with-refile (timeout refile-targets &rest body)
-  `(org-timed-file-loc-with-refile ,timeout ,refile-targets
-     (let ((target-buffer (find-file-noselect file)))
-       (lexical-let* ((window-min-height 7)
-                      (win
-                       (split-window-below
-                        ;; If the mode line might interfere with the calculator
-                        ;; buffer, use 3 lines instead.
-                        (if (and (fboundp 'face-attr-construct)
-                                 (let* ((dh (plist-get (face-attr-construct 'default) :height))
-                                        (mf (face-attr-construct 'mode-line))
-                                        (mh (plist-get mf :height)))
-                                   ;; If the mode line is shorter than the default,
-                                   ;; stick with 2 lines.  (It may be necessary to
-                                   ;; check how much shorter.)
-                                   (and
-                                    (not
-                                     (or (and (integerp dh)
-                                              (integerp mh)
-                                              (< mh dh))
-                                         (and (numberp mh)
-                                              (not (integerp mh))
-                                              (< mh 1))))
-                                    (or
-                                     ;; If the mode line is taller than the default,
-                                     ;; use 3 lines.
-                                     (and (integerp dh)
-                                          (integerp mh)
-                                          (> mh dh))
-                                     (and (numberp mh)
-                                          (not (integerp mh))
-                                          (> mh 1))
-                                     ;; If the mode line has a box with non-negative line-width,
-                                     ;; use 3 lines.
-                                     (let* ((bx (plist-get mf :box))
-                                            (lh (plist-get bx :line-width)))
-                                       (and bx
-                                            (or
-                                             (not lh)
-                                             (> lh 0))))
-                                     ;; If the mode line has an overline, use 3 lines.
-                                     (plist-get (face-attr-construct 'mode-line) :overline)))))
-                            -12 -10))))
-         ;; maybe leave two lines for our window because of the
-         ;; normal `raised' mode line
-         (select-window win)
-         (switch-to-buffer target-buffer)
-         (goto-char pos)
-         ,@body))))
+  `(org-timed-file-loc-with-refile
+       ,timeout ,refile-targets
+       (org-with-new-win file pos ,@body)))
 (put 'org-timed-miniwin-with-refile 'lisp-indent-function 1)
+
 ;; e.g.
 ;; (org-miniwin-with-refile nil nil)
 ;;)
-
-
-
 
 ;; (progn ;; "move org"
 
