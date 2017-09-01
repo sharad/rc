@@ -152,11 +152,11 @@ With prefix arg C-u, copy region instad of killing it."
        ,@body)))
 (put 'org-with-new-win 'lisp-indent-function 1)
 
-(defmacro org-miniwin-with-refile (refile-targets &rest body)
+(defmacro org-miniwin-file-loc-with-refile (refile-targets &rest body)
   `(org-file-loc-with-refile ,refile-targets
      (org-with-new-win file pos ,@body)))
 
-(put 'org-miniwin-with-refile 'lisp-indent-function 1)
+(put 'org-miniwin-file-loc-with-refile 'lisp-indent-function 1)
 
 (defmacro org-timed-file-loc-with-refile (timeout refile-targets &rest body)
   "Refile run body with file and loc set."
@@ -170,14 +170,14 @@ With prefix arg C-u, copy region instad of killing it."
      ,@body))
 (put 'org-timed-file-loc-with-refile 'lisp-indent-function 1)
 
-(defmacro org-timed-miniwin-with-refile (timeout refile-targets &rest body)
+(defmacro org-timed-miniwin-file-loc-with-refile (timeout refile-targets &rest body)
   `(org-timed-file-loc-with-refile
        ,timeout ,refile-targets
        (org-with-new-win file pos ,@body)))
-(put 'org-timed-miniwin-with-refile 'lisp-indent-function 1)
+(put 'org-timed-miniwin-file-loc-with-refile 'lisp-indent-function 1)
 
 ;; e.g.
-;; (org-miniwin-with-refile nil nil)
+;; (org-miniwin-file-loc-with-refile nil nil)
 ;;)
 
 ;; (progn ;; "move org"
@@ -432,7 +432,7 @@ With prefix arg C-u, copy region instad of killing it."
     (and org-log-post-message (message "%s" org-log-post-message))))
 ;; )
 
-;; (org-miniwin-with-refile nil nil)
+;; (org-miniwin-file-loc-with-refile nil nil)
 
 (provide 'org-misc-utils-lotus)
 ;;; org-misc-utils-lotus.el ends here

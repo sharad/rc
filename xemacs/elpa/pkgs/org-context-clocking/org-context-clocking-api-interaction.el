@@ -50,7 +50,7 @@
                         value
                         (funcall
                          (org-context-clock-property-get-function prop)
-                         context-plist args))))
+                         prop context-plist args))))
 
 
 
@@ -58,20 +58,22 @@
 
 
 (progn
-  ;; (setq org-property-set-functions-alist nil)
+  (setq org-property-set-functions-alist nil)
   (org-context-clock-property-set-function "Root"
-                                           '(lambda (context-plist &rest args)
-                                             (let ((file (if context-plist (plist-get context-plist :file)))
-                                                   (dir (if (stringp file) (file-name-directory file) default-directory)))
+                                           '(lambda (prop context-plist &rest args)
+                                             (let* ((file (if context-plist (plist-get context-plist :file)))
+                                                    (dir (if (stringp file) (file-name-directory file) default-directory))
+                                                    (prompt (concat prop ": ")))
                                                (ido-read-directory-name
-                                                (car args)
+                                                prompt
                                                 dir dir))))
   (org-context-clock-property-set-function "SubtreeFile"
-                                           '(lambda (context-plist&rest args)
-                                             (file-relative-name
-                                              (ido-read-file-name ;; org-iread-file-name
-                                               (car args)
-                                               default-directory default-directory)))))
+                                           '(lambda (prop context-plist &rest args)
+                                             (let ((prompt (concat prop ": ")))
+                                               (file-relative-name
+                                                (ido-read-file-name ;; org-iread-file-name
+                                                 prompt
+                                                 default-directory default-directory))))))
 
 ;; (defun task-info-add-root ()
 ;;   (interactive)
@@ -95,67 +97,95 @@
                  (buff (plist-get context-plist :buffer)))
     (message "test %s" timeout)))
 
+(defun org-flag-proprty-drawer-at-marker (marker flag)
+  (let ((buff (marker-buffer marker))
+        (loc (marker-position marker)))
+    (when (and buff loc)
+      (with-current-buffer buff
+        (goto-char loc)
+        (let ((range (org-get-property-block (point) 'force)))
+          ;; first show hreading
+          (when (eq org-cycle-subtree-status 'folded)
+            (unless flag (org-show-entry))
+            (org-unlogged-message "CHILDREN")
+            (setq org-cycle-subtree-status 'children))
+          ;; show expand property if flag is nil, else hide
+          (when range
+            (goto-char (1- (car range)))
+            (message "reached to drawer")
+            (if (org-at-drawer-p)
+                ;; show drawer
+                (let ((drawer (org-element-at-point)))
+                  (when (memq (org-element-type drawer) '(node-property drawer property-drawer))
+                    (message "trying to open drawer %s" drawer)
+                    (org-flag-drawer flag drawer)
+                    ;; Make sure to skip drawer entirely or we might flag
+                    ;; it another time when matching its ending line with
+                    ;; `org-drawer-regexp'.
+                    (goto-char (org-element-property :end drawer))))
+                (message "not at drawer"))
+            (message "reached to drawer1")))))))
+
 (defun org-context-clocking-add-context-to-org-heading (context-plist timeout)
   (interactive '(nil nil))
   (lexical-let* ((timeout (or timeout 17))
+                 (loc (point))
                  (context-plist (or context-plist (org-context-clocking-build-context-plist)))
-                 (buff (plist-get context-plist :buffer)))
+                 (buff (plist-get context-plist :buffer))
+                 (marker (make-marker)))
     (if (and
          (eq (current-buffer) buff)
          (buffer-live-p buff)
          (not
           (eq buff
               (get-buffer "*helm-mode-org-context-clocking-add-context-to-org-heading*"))))
-        (org-timed-miniwin-with-refile timeout nil
+
+        (org-timed-miniwin-file-loc-with-refile
+            timeout
+          nil
+          (set-marker marker (point))
+
           (message "called add-context-to-org-heading %s" (current-buffer))
           (let ((timer (run-with-idle-timer timeout nil
                                             #'(lambda (w)
                                                 (message "triggered timer for win %s" w)
+                                                (save-excursion
+                                                  (org-flag-proprty-drawer-at-marker marker t))
                                                 (when (active-minibuffer-window)
                                                   (abort-recursive-edit))
                                                 (when (and w (windowp w) (window-valid-p w))
                                                   (delete-window w)))
                                             win)))
             (condition-case err
-                (let ((buffer-read-only t))
+                (let ((buffer-read-only nil))
                   (message "timer started for win %s" win)
 
                   ;; show proptery drawer
-                  (let ((range (org-get-property-block (point) 'force)))
-                    (when (eq org-cycle-subtree-status 'folded)
-                      (org-show-entry)
-                      (org-unlogged-message "CHILDREN")
-                      (setq org-cycle-subtree-status 'children))
-                    (when range
-                      (goto-char (car range))
-                      (when (org-at-drawer-p)
-                        ;; show drawer
-                        (let ((drawer (org-element-at-point)))
-                          (when (memq (org-element-type drawer) '(drawer property-drawer))
-                            (org-flag-drawer nil drawer)
-                            ;; Make sure to skip drawer entirely or we might flag
-                            ;; it another time when matching its ending line with
-                            ;; `org-drawer-regexp'.
-                            (goto-char (org-element-property :end drawer)))))))
+                  (org-flag-proprty-drawer-at-marker marker nil)
 
+                  ;; try to read values of properties.
                   (let ((prop nil))
                     (while (not
-                            (string-equal "Done"
-                                          (setq prop (org-context-clocking-select-propetry))))
+                            (member (setq prop (org-context-clocking-select-propetry)) '("Edit" "Done")))
                       (when (org-context-clock-set-property prop nil context-plist)
                         (org-clocking-entry-update-task-infos t)))
                     (cond
                       ((string-equal "Done" prop)
+                       (save-excursion
+                         (org-flag-proprty-drawer-at-marker marker t))
                        (when (and win (windowp win) (window-valid-p win))
                          (delete-window win))
                        (when timer (cancel-timer timer)))
                       ((string-equal "Edit" prop)
-                       (select-window win t))
+                       (when (and win (windowp win) (window-valid-p win))
+                        (select-window win t)))
                       (t
+                       (save-excursion
+                         (org-flag-proprty-drawer-at-marker marker t))
                        (when (and win (windowp win) (window-valid-p win))
                          (delete-window win))
                        (when timer (cancel-timer timer))))))
-              ((quit error)
+              ((quit)
                (progn
                  (when (and win (windowp win) (window-valid-p win))
                    (delete-window win))
