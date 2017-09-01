@@ -123,9 +123,9 @@
           (expand-file-name
            (format "%s-pkg.el" pkg-name)
            dir-of-current-file))
+         (pkg-def-exists (file-exists-p currdir-pkg-def-file))
          (pkg-def
-          (let ((pkg-def-file
-                 currdir-pkg-def-file))
+          (let ((pkg-def-file currdir-pkg-def-file))
             (if (file-exists-p pkg-def-file)
                 (car
                  (read-from-string
@@ -167,18 +167,18 @@
              (expand-file-name pkg-name package-source-path)
              nil t t))
           (error "package-source-path do ot exists."))
-
-      (progn
-        (setcar (nthcdr 2 pkg-def) version)
-        (unless (nth 3 pkg-def)
-          (let ((desc
-                 (read-from-minibuffer (format "package %s desc: " pkg-name))))
-            (setcar (nthcdr 3 pkg-def) desc)))
-        (when nil
-         (unless (nth 4 pkg-def)
-          (let ((dep
-                 (car (read-from-string (read-from-minibuffer (format "package %s dependency: " pkg-name))))))
-            (setcar (nthcdr 4 pkg-def) dep)))))
+      (unless pkg-def-exists ;; version exist mean file -pkg.el was there presently, so need to ask any question.
+        (progn
+          (setcar (nthcdr 2 pkg-def) version)
+          (unless (nth 3 pkg-def)
+            (let ((desc
+                   (read-from-minibuffer (format "package %s desc: " pkg-name))))
+              (setcar (nthcdr 3 pkg-def) desc)))
+          (when nil
+            (unless (nth 4 pkg-def)
+              (let ((dep
+                     (car (read-from-string (read-from-minibuffer (format "package %s dependency: " pkg-name))))))
+                (setcar (nthcdr 4 pkg-def) dep))))))
       (let ((pkgdir-def-file (expand-file-name (format "%s-pkg.el" pkg-name) pkg-dir)))
         (with-current-buffer
             (or (find-buffer-visiting pkgdir-def-file)
