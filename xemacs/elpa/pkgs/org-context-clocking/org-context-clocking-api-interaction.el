@@ -118,6 +118,17 @@
             (condition-case err
                 (let ((buffer-read-only t))
                   (message "timer started for win %s" win)
+
+                  ;; show proptery drawer
+                  (let ((range (org-get-property-block (point) 'force)))
+                    (when (eq org-cycle-subtree-status 'folded)
+                      (org-show-entry)
+                      (setq org-cycle-subtree-status 'children))
+                    (when range
+                      (goto-char (car range))
+                      (when (org-at-drawer-p)
+                        (org-cycle 1))))
+
                   (let ((prop nil))
                     (while (not
                             (string-equal "Done"
