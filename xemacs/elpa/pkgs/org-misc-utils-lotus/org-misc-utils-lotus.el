@@ -28,8 +28,7 @@
   '(emacs-lisp-mode org-mode))
 
 (defun safe-org-refile-get-location-p ()
-  (if (member major-mode safe-org-refile-get-location-modes)
-      t))
+  (member major-mode safe-org-refile-get-location-modes))
 
 (defun safe-org-refile-get-location ()
   (let ((org-refile-targets
