@@ -123,11 +123,19 @@
                   (let ((range (org-get-property-block (point) 'force)))
                     (when (eq org-cycle-subtree-status 'folded)
                       (org-show-entry)
+                      (org-unlogged-message "CHILDREN")
                       (setq org-cycle-subtree-status 'children))
                     (when range
                       (goto-char (car range))
                       (when (org-at-drawer-p)
-                        (org-cycle 1))))
+                        ;; show drawer
+                        (let ((drawer (org-element-at-point)))
+                          (when (memq (org-element-type drawer) '(drawer property-drawer))
+                            (org-flag-drawer nil drawer)
+                            ;; Make sure to skip drawer entirely or we might flag
+                            ;; it another time when matching its ending line with
+                            ;; `org-drawer-regexp'.
+                            (goto-char (org-element-property :end drawer)))))))
 
                   (let ((prop nil))
                     (while (not
