@@ -83,9 +83,10 @@
 ;;       (org-clocking-entry-update-task-infos t)))
 
 (defun org-context-clocking-select-propetry (&optional prompt)
-  (ido-completing-read
+  ;; (ido-completing-read
+  (completing-read
    (or prompt "proptery: ")
-   (list "Root" "SubtreeFile" "Done") nil t))
+   (list "Root" "SubtreeFile" "Edit" "Done") nil t))
 
 (defun org-context-clocking-test (context-plist timeout)
   (interactive '(nil nil))
@@ -143,11 +144,21 @@
                                           (setq prop (org-context-clocking-select-propetry))))
                       (when (org-context-clock-set-property prop nil context-plist)
                         (org-clocking-entry-update-task-infos t)))
-                    (if win (delete-window win))
-                    (if timer (cancel-timer timer))))
+                    (cond
+                      ((string-equal "Done" prop)
+                       (when (and win (windowp win) (window-valid-p win))
+                         (delete-window win))
+                       (when timer (cancel-timer timer)))
+                      ((string-equal "Edit" prop)
+                       (select-window win t))
+                      (t
+                       (when (and win (windowp win) (window-valid-p win))
+                         (delete-window win))
+                       (when timer (cancel-timer timer))))))
               ((quit error)
                (progn
-                 (if win (delete-window win))
+                 (when (and win (windowp win) (window-valid-p win))
+                   (delete-window win))
                  (if timer (cancel-timer timer))
                  (signal (car err) (cdr err)))))))
         (progn
