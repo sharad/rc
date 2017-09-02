@@ -43,7 +43,7 @@
    org-context-clocking-entry-tree-task-info-root-org-file file))
 
 ;;;###autoload
-(defun org-context-clocking-entry-tree-update-task-infos (&optional force) ;[BUG not working for subtree]
+(defun org-context-clocking-entry-recursive-update-task-infos (&optional force) ;; API (org-context-clocking-api-set :predicate :update  'org-entry-list-update-task-infos)
   "Update recursive org entries tree"
   (interactive "P")
   (if org-context-clocking-entry-tree-task-info-root-org-file
@@ -190,6 +190,27 @@
   ;;                         )))
   )
 
+;; API (org-context-clocking-api-set :predicate :update  'org-entry-list-update-task-infos)
+(defun org-context-clocking-recursive-matching-entries (context-plist)
+  (let ((tasks (org-context-clocking-entry-recursive-update-task-infos))
+        (matched '()))
+      (org-context-clocking-debug "org-context-clocking-entries-associated-to-context-plist-by-keys: BEFORE matched %s[%d]" matched (length matched))
+      (org-context-clocking-tree-mapc-task-infos
+       #'(lambda (task args)
+           (let ((rank
+                  (funcall org-context-clocking-api-entry-associated-to-context-plist-p task args)))
+             (unless rank (error "org-context-clocking-entries-associated-to-context-plist-by-keys[lambda]: rank is null"))
+             (when (> rank 0)
+               (push task matched)
+               (org-context-clocking-debug "org-context-clocking-entries-associated-to-context-plist-by-keys[lambda]: task %s MATCHED RANK %d"
+                        (org-context-clocking-entry-task-info-get-heading task)
+                        (length matched)))))
+       tasks
+       context-plist)
+
+      (org-context-clocking-debug "org-context-clocking-entries-associated-to-context-plist-by-keys: AFTER matched %s[%d]" "matched" (length matched))
+
+      matched))
 
 (provide 'org-context-clocking-api-recursive)
 ;;; org-context-clocking-api-recursive.el ends here

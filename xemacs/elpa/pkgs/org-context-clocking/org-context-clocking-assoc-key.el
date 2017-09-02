@@ -84,9 +84,10 @@ using algorithm in this function, return RANK"
             -20)
         0))
 
-  (org-context-clocking-api-set :keys :entries 'org-context-clocking-entries-associated-to-context-plist-by-keys)
+  (org-context-clocking-api-set :keys :entries 'org-context-clocking-entries-associated-to-context-plist-by-keys) ;will be in api
   (org-context-clocking-api-set :keys :entryp  'org-context-clocking-entry-associated-to-context-plist-by-keys-p)
-  (org-context-clocking-api-set :keys :update  'org-context-clocking-entry-tree-update-task-infos))
+  (org-context-clocking-api-set :keys :update  'org-context-clocking-entry-tree-update-task-infos) ;will be in api
+  )
 
 
 

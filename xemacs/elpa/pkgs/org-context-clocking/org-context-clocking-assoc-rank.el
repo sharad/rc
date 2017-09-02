@@ -44,22 +44,24 @@
 (defvar org-context-clock-entry-associated-context-plist-rank-fns nil)
 
 (progn ;; api
-  (defun org-context-clock-entries-associated-to-context-plist-by-rank (context-plist)
-    (let ((task-infos (org-entry-list-update-task-infos))
-          (matched '()))
-      (dolist (fn org-context-clock-entry-associated-context-plist-rank-fns matched)
-        (let ((partitions
-               (reduce (lambda (task-info result)
-                         (if (funcall fn context-plist task-info)
-                             (push task-info (first  result))
-                             (push task-info (second result)))
-                         result)
-                       task-infos
-                       :initial-value (list nil nil)
-                       :from-end t)))
-          (setq
-           task-infos (second partitions)
-           matched    (append matched (first partitions)))))))
+
+  ;; (defun org-context-clock-entries-associated-to-context-plist-by-rank (context-plist)
+  ;;   (let ((task-infos (org-entry-list-update-task-infos))
+  ;;         (matched '()))
+  ;;     (dolist (fn org-context-clock-entry-associated-context-plist-rank-fns matched)
+  ;;       (let ((partitions
+  ;;              (reduce (lambda (task-info result)
+  ;;                        (if (funcall fn context-plist task-info)
+  ;;                            (push task-info (first  result))
+  ;;                            (push task-info (second result)))
+  ;;                        result)
+  ;;                      task-infos
+  ;;                      :initial-value (list nil nil)
+  ;;                      :from-end t)))
+  ;;         (setq
+  ;;          task-infos (second partitions)
+  ;;          matched    (append matched (first partitions)))))))
+
   (defun org-context-clock-entry-associated-to-context-plist-by-rank-p (task-info context-plist)
     (if context-plist
         (apply '+
@@ -69,9 +71,10 @@
                 org-context-clock-entry-associated-context-plist-rank-fns))
         0))
 
-  (org-context-clocking-api-set :rank :entries 'org-context-clock-entries-associated-to-context-plist-by-rank)
+  (org-context-clocking-api-set :rank :entries 'org-context-clock-entries-associated-to-context-plist-by-rank) ;will be in api
   (org-context-clocking-api-set :rank :entryp   'org-context-clock-entry-associated-to-context-plist-by-rank-p)
-  (org-context-clocking-api-set :rank :update  'org-entry-list-update-task-infos))
+  (org-context-clocking-api-set :rank :update  'org-entry-list-update-task-infos) ;will be in api
+  )
 
 (progn ;; functions
   (setq org-context-clock-entry-associated-context-plist-rank-fns nil)

@@ -30,22 +30,25 @@
 
 (progn ;; api
 
-  (defun org-entries-associated-to-context-plist-by-predicate (context-plist)
-    (let ((task-infos (org-entry-list-update-task-infos))
-          (matched '()))
-      (dolist (fn org-entry-associated-context-plist-predicate-fns matched)
-        (let ((partitions
-               (reduce (lambda (task-info result)
-                         (if (funcall fn context-plist task-info)
-                             (push task-info (first  result))
-                             (push task-info (second result)))
-                         result)
-                       task-infos
-                       :initial-value (list nil nil)
-                       :from-end t)))
-          (setq
-           task-infos (second partitions)
-           matched    (append matched (first partitions)))))))
+  ;; (defun org-entries-associated-to-context-plist-by-predicate (context-plist)
+  ;;   (let ((task-infos (org-entry-list-update-task-infos))
+  ;;         (matched '()))
+  ;;     (dolist (fn org-entry-associated-context-plist-predicate-fns matched)
+  ;;       (let ((partitions
+  ;;              (reduce (lambda (task-info result)
+  ;;                        (if (funcall fn context-plist task-info)
+  ;;                            (push task-info (first  result))
+  ;;                            (push task-info (second result)))
+  ;;                        result)
+  ;;                      task-infos
+  ;;                      :initial-value (list nil nil)
+  ;;                      :from-end t)))
+  ;;         (setq
+  ;;          task-infos (second partitions)
+  ;;          matched    (append matched (first partitions)))))))
+
+  ;; (defun org-entries-associated-to-context-plist-by-predicate (context-plist)
+  ;;   (org-context-clocking-list-matching-entries context-plist))
 
   (defun org-entry-associated-to-context-plist-by-predicate-p (task-info context-plist)
     (if context-plist
@@ -53,9 +56,10 @@
          '(lambda (fn) (funcall fn context-plist task-info))
          org-entry-associated-context-plist-predicate-fns)))
 
-  (org-context-clocking-api-set :predicate :entries 'org-entries-associated-to-context-plist-by-predicate)
+  (org-context-clocking-api-set :predicate :entries 'org-entries-associated-to-context-plist-by-predicate) ;will be in api
   (org-context-clocking-api-set :predicate :entryp   'org-entry-associated-to-context-plist-by-predicate-p)
-  (org-context-clocking-api-set :predicate :update  'org-entry-list-update-task-infos))
+  (org-context-clocking-api-set :predicate :update  'org-entry-list-update-task-infos) ;will be in api
+  )
 
 
 (progn ;; functions

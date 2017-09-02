@@ -51,8 +51,8 @@
                                                      (when (active-minibuffer-window)
                                                        (abort-recursive-edit)))))
                                              buf-name)))
-    (prog1
-        (safe-org-refile-get-location)
+    (unwind-protect
+         (safe-org-refile-get-location)
       (cancel-timer timer))))
 
 
