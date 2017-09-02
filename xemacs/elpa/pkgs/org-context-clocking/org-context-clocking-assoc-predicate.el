@@ -56,48 +56,48 @@
          '(lambda (fn) (funcall fn context-plist task-info))
          org-entry-associated-context-plist-predicate-fns)))
 
-  (org-context-clocking-api-set :predicate :entries 'org-entries-associated-to-context-plist-by-predicate) ;will be in api
+  ;; (org-context-clocking-api-set :predicate :entries 'org-entries-associated-to-context-plist-by-predicate) ;will be in api
   (org-context-clocking-api-set :predicate :entryp   'org-entry-associated-to-context-plist-by-predicate-p)
-  (org-context-clocking-api-set :predicate :update  'org-entry-list-update-task-infos) ;will be in api
+  ;; (org-context-clocking-api-set :predicate :update  'org-entry-list-update-task-infos) ;will be in api
   )
 
 
-(progn ;; functions
-  (setq org-entry-associated-context-plist-predicate-fns nil)
+;; (progn ;; functions
+;;   (setq org-entry-associated-context-plist-predicate-fns nil)
 
-  (defun org-entries-register-associated-to-context-plist-predicate-function (fn)
-    (add-to-list
-     'org-entry-associated-context-plist-predicate-fns
-     fn))
+;;   (defun org-entries-register-associated-to-context-plist-predicate-function (fn)
+;;     (add-to-list
+;;      'org-entry-associated-context-plist-predicate-fns
+;;      fn))
 
-  (defun org-entry-associated-context-plist-org-file-predicate (context-plist task-info)
-    "Predicate funtion to check if context-plist matches to task-info's file attribute."
-    (let ((org-file (org-context-clocking-entry-task-info-get-property task-info :task-clock-file)))
-      (let* ((file (plist-get context-plist :file))
-             (file (if file (file-truename file))))
-       (if (and file org-file)
-           (string-equal
-            (file-truename file)
-            (file-truename org-file))))))
-  (org-entries-register-associated-to-context-plist-predicate-function 'org-entry-associated-context-plist-org-file-predicate)
+;;   (defun org-entry-associated-context-plist-org-file-predicate (context-plist task-info)
+;;     "Predicate funtion to check if context-plist matches to task-info's file attribute."
+;;     (let ((org-file (org-context-clocking-entry-task-info-get-property task-info :task-clock-file)))
+;;       (let* ((file (plist-get context-plist :file))
+;;              (file (if file (file-truename file))))
+;;        (if (and file org-file)
+;;            (string-equal
+;;             (file-truename file)
+;;             (file-truename org-file))))))
+;;   (org-entries-register-associated-to-context-plist-predicate-function 'org-entry-associated-context-plist-org-file-predicate)
 
-  (defun org-entry-associated-context-plist-root-dir-predicate (context-plist task-info)
-    "Predicate funtion to check if context-plist matches to task-info's file attribute."
-    (let ((root
-           (org-context-clocking-entry-task-info-get-property task-info :ROOT)))
-      (let* ((file (plist-get context-plist :file))
-             (file (if file (file-truename file))))
-        (if (and root file)
-            (string-match
-             (file-truename root)
-             (file-truename file))))))
-  (org-entries-register-associated-to-context-plist-predicate-function 'org-entry-associated-context-plist-root-dir-predicate)
+;;   (defun org-entry-associated-context-plist-root-dir-predicate (context-plist task-info)
+;;     "Predicate funtion to check if context-plist matches to task-info's file attribute."
+;;     (let ((root
+;;            (org-context-clocking-entry-task-info-get-property task-info :ROOT)))
+;;       (let* ((file (plist-get context-plist :file))
+;;              (file (if file (file-truename file))))
+;;         (if (and root file)
+;;             (string-match
+;;              (file-truename root)
+;;              (file-truename file))))))
+;;   (org-entries-register-associated-to-context-plist-predicate-function 'org-entry-associated-context-plist-root-dir-predicate)
 
-  ;; (defun org-entry-associated-context-plist-xx-p (context-plist task-info)
-  ;;   )
-  ;; (org-entries-register-associated-to-context-plist-predicate-function 'org-entry-associated-context-plist-xx-p)
-  ;; )
-  )
+;;   ;; (defun org-entry-associated-context-plist-xx-p (context-plist task-info)
+;;   ;;   )
+;;   ;; (org-entries-register-associated-to-context-plist-predicate-function 'org-entry-associated-context-plist-xx-p)
+;;   ;; )
+;;   )
 
 
 (provide 'org-context-clocking-assoc-predicate)

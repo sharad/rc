@@ -47,6 +47,7 @@
     (setq org-context-clocking-entry-list-task-infos
           (org-context-clocking-entry-list-collect-task-infos (org-all-task-files))))
   org-context-clocking-entry-list-task-infos)
+(org-context-clocking-api-set :list :update  'org-context-clocking-entry-list-update-task-infos)
 
 ;; API (org-context-clocking-api-set :predicate :entryp   'org-entry-associated-to-context-plist-by-predicate-p)
 (defun org-context-clocking-list-matching-entries (context-plist)
@@ -56,6 +57,7 @@
      #'(lambda (task)
          (funcall org-context-clocking-api-entry-associated-to-context-plist-p task context-plist))
      tasks)))
+(org-context-clocking-api-set :list :match  'org-context-clocking-list-matching-entries)
 
 (provide 'org-context-clocking-api-list)
 ;;; org-context-clocking-api-list.el ends here

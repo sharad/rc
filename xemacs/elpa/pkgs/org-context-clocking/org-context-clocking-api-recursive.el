@@ -56,6 +56,7 @@
           (message "file %s not exists." org-context-clocking-entry-tree-task-info-root-org-file))
       (message "org-context-clocking-entry-tree-task-info-root-org-file is nil"))
   org-context-clocking-entry-tree-task-infos)
+(org-context-clocking-api-set :recursive :update  'org-context-clocking-entry-recursive-update-task-infos)
 
 (defun org-context-clocking-entry-tree-map-subheading (fun)
   "Call FUN for every heading underneath the current heading"
@@ -211,6 +212,7 @@
       (org-context-clocking-debug "org-context-clocking-entries-associated-to-context-plist-by-keys: AFTER matched %s[%d]" "matched" (length matched))
 
       matched))
+(org-context-clocking-api-set :recursive :match  'org-context-clocking-recursive-matching-entries)
 
 (provide 'org-context-clocking-api-recursive)
 ;;; org-context-clocking-api-recursive.el ends here
