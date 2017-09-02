@@ -53,7 +53,7 @@
       in-plist
       (cons (car in-plist) (custom-plist-keys (cddr in-plist)))))
 
-;; defun org-task-clocking-api
+;;;###autoload
 (defun org-context-clocking-api ()
   "org task clocking select api to use."
   (interactive)
@@ -75,7 +75,7 @@
          org-context-clocking-api-entry-associated-to-context-plist-p   (org-context-clocking-api-get org-context-clocking-api-name :entryp)
          org-context-clocking-api-entry-update-task-infos      (org-context-clocking-api-get org-context-clocking-api-name :update)))))
 
-;; (defun org-clocking-entry-update-task-infos (&optional force)
+;;;###autoload
 (defun org-context-clocking-entry-update-task-infos (&optional force)
   "Update task infos"
   (interactive "P")
@@ -87,6 +87,7 @@
          (context-plist (list :file file :buffer buff)))
     context-plist))
 
+;;;###autoload
 (defun org-context-clocking-update-current-context-plist ()
   (if (> (float-time
           (time-since org-context-clocking-last-buffer-select-time))
@@ -126,7 +127,7 @@
           (unless (org-context-clocking-entry-associated-to-context-plist-p context-plist)
             (org-context-clocking-entry-run-associated-clock context-plist))))))
 
-;;(defun org-context-Xclock-entry-current-entry ()
+;;;###autoload
 (defun org-context-clocking-entry-current-entry ()
   (and
    ;; file
@@ -149,14 +150,14 @@
 ;;        (if (funcall org-context-clocking-api-entry-associated-to-context-plist-p info context-plist)
 ;;            info)))))
 
-;; (defun org-clock-entry-associated-to-context-plist-p (context-plist)
+;;;###autoload
 (defun org-context-clocking-entry-associated-to-context-plist-p (context-plist)
   (let ((info (org-context-clocking-entry-current-entry)))
     (if info
         (funcall org-context-clocking-api-entry-associated-to-context-plist-p info context-plist)
         0)))
 
-;; (defun org-Xentry-run-associated-clock (context-plist)
+;;;###autoload
 (defun org-context-clocking-entry-run-associated-clock (context-plist)
   (let ()
     (let* ((matched-clocks
@@ -207,7 +208,7 @@
 ;;            nil
 ;;            'org-context-clocking-update-current-context-plist))))
 
-;; (defun run-org-Xcontext-clocking-task-current-context-plist-timer ()
+;;;###autoload
 (defun org-context-clocking-run-task-current-context-plist-timer ()
   (interactive)
   (let ()
@@ -223,7 +224,7 @@
            nil
            'org-context-clocking-update-current-context-plist))))
 
-;; (defun org-Xentries-select (entries &optional prompt)
+;;;###autoload
 (defun org-entries-select (entries &optional prompt)
   "Select a task that was recently associated with clocking."
   (interactive)
@@ -269,7 +270,7 @@
             ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
             (t (user-error "Invalid task choice %c" rpl)))))))
 
-;; (defun org-clock-Xselect-task-from-clocks (clocks &optional prompt)
+;;;###autoload
 (defun org-context-clocking-select-task-from-clocks (clocks &optional prompt)
   "Select a task that was recently associated with clocking."
   (interactive)

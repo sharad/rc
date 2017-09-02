@@ -128,6 +128,7 @@
                 (message "not at drawer"))
             (message "reached to drawer1")))))))
 
+;;;###autoload
 (defun org-context-clocking-add-context-to-org-heading (context-plist timeout)
   (interactive '(nil nil))
   (lexical-let* ((timeout (or timeout 17))
@@ -198,6 +199,7 @@
                    (eq buff
                        (get-buffer "*helm-mode-org-context-clocking-add-context-to-org-heading*")))))))
 
+;;;###autoload
 (defun org-context-clocking-add-context-to-org-heading-when-idle (context-plist timeout)
   (message "called add-context-to-org-heading-when-idle")
   (run-with-idle-timer-nonobtrusive-simple
