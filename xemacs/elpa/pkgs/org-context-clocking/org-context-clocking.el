@@ -35,17 +35,17 @@
 
 
 
-(defvar org-context-clocking-task-current-context-plist  nil)
-(defvar org-context-clocking-task-previous-context-plist nil)
-(defvar org-context-clocking-task-current-context-plist-time 2)
-(defvar org-context-clocking-last-buffer-select-time (current-time))
-(defvar org-context-clocking-buffer-select-timer nil)
-(defvar org-context-clocking-update-current-context-plist-msg "")
+(defvar *org-context-clocking-task-current-context-plist*  nil)
+(defvar *org-context-clocking-task-previous-context-plist* nil)
+(defvar *org-context-clocking-task-current-context-plist-time* 2)
+(defvar *org-context-clocking-last-buffer-select-time* (current-time))
+(defvar *org-context-clocking-buffer-select-timer* nil)
+(defvar *org-context-clocking-update-current-context-plist-msg* "")
 ;; (defvar org-context-clocking-api-name :predicate "API")
 (defvar org-context-clocking-api-name :keys "API")
-(defvar org-context-clocking-api-entries-associated-to-context-plist (org-context-clocking-api-get org-context-clocking-api-name :entries))
+(defvar org-context-clocking-api-entries-associated-to-context-plist   (org-context-clocking-api-get org-context-clocking-api-name :entries))
 (defvar org-context-clocking-api-entry-associated-to-context-plist-p   (org-context-clocking-api-get org-context-clocking-api-name :entryp))
-(defvar org-context-clocking-api-entry-update-task-infos      (org-context-clocking-api-get org-context-clocking-api-name :update))
+(defvar org-context-clocking-api-entry-update-task-infos               (org-context-clocking-api-get org-context-clocking-api-name :update))
 
 
 (defun custom-plist-keys (in-plist)
@@ -72,8 +72,8 @@
          (org-context-clocking-api-get org-context-clocking-api-name :update))
         (setq
          org-context-clocking-api-entries-associated-to-context-plist (org-context-clocking-api-get org-context-clocking-api-name :entries)
-         org-context-clocking-api-entry-associated-to-context-plist-p   (org-context-clocking-api-get org-context-clocking-api-name :entryp)
-         org-context-clocking-api-entry-update-task-infos      (org-context-clocking-api-get org-context-clocking-api-name :update)))))
+         org-context-clocking-api-entry-associated-to-context-plist-p (org-context-clocking-api-get org-context-clocking-api-name :entryp)
+         org-context-clocking-api-entry-update-task-infos             (org-context-clocking-api-get org-context-clocking-api-name :update)))))
 
 ;;;###autoload
 (defun org-context-clocking-entry-update-task-infos (&optional force)
@@ -90,29 +90,29 @@
 ;;;###autoload
 (defun org-context-clocking-update-current-context-plist ()
   (if (> (float-time
-          (time-since org-context-clocking-last-buffer-select-time))
-         org-context-clocking-task-current-context-plist-time)
+          (time-since *org-context-clocking-last-buffer-select-time*))
+         *org-context-clocking-task-current-context-plist-time*)
       (let* ((context-plist (org-context-clocking-build-context-plist))
-             (buff (plist-get context-plist :buffer)))
-        (if (or
-             (and
-              (equal org-context-clocking-task-previous-context-plist context-plist)
-              (equal org-context-clocking-task-current-context-plist  context-plist))
-             (if buff (minibufferp buff) t))
-
-            (org-context-clocking-debug "org-context-clocking-update-current-context-plist: context-plist %s not suitable to associate" context-plist)
-
+             (buff          (plist-get context-plist :buffer)))
+        (if (and buff
+                 (buffer-live-p buff)
+                 (not (minibufferp buff))
+                 (not (and
+                       (equal *org-context-clocking-task-previous-context-plist* context-plist)
+                       (equal *org-context-clocking-task-current-context-plist*  context-plist))))
             (progn
               (setq
-               org-context-clocking-task-previous-context-plist org-context-clocking-task-current-context-plist
-               org-context-clocking-task-current-context-plist  context-plist)
+               *org-context-clocking-task-previous-context-plist* *org-context-clocking-task-current-context-plist*
+               *org-context-clocking-task-current-context-plist*  context-plist)
 
               (if (> (org-context-clocking-entry-associated-to-context-plist-p context-plist) 0)
                   (org-context-clocking-debug "org-context-clocking-update-current-context-plist: Current entry already associate to %s" context-plist)
                   (progn
                     (org-context-clocking-debug "org-context-clocking-update-current-context-plist: Now really going to clock.")
                     (org-context-clocking-entry-run-associated-clock context-plist)
-                    (org-context-clocking-debug "org-context-clocking-update-current-context-plist: Now really clock done."))))))
+                    (org-context-clocking-debug "org-context-clocking-update-current-context-plist: Now really clock done."))))
+
+            (org-context-clocking-debug "org-context-clocking-update-current-context-plist: context-plist %s not suitable to associate" context-plist)))
       (org-context-clocking-debug "org-context-clocking-update-current-context-plist: not enough time passed.")))
 
 
@@ -121,8 +121,8 @@
       (let* ((context-plist (org-context-clocking-build-context-plist)))
         (unless nil
           (setq
-           org-context-clocking-task-previous-context-plist org-context-clocking-task-current-context-plist
-           org-context-clocking-task-current-context-plist  context-plist)
+           *org-context-clocking-task-previous-context-plist* *org-context-clocking-task-current-context-plist*
+           *org-context-clocking-task-current-context-plist*  context-plist)
 
           (unless (org-context-clocking-entry-associated-to-context-plist-p context-plist)
             (org-context-clocking-entry-run-associated-clock context-plist))))))
@@ -180,7 +180,7 @@
                   (with-current-buffer prev-org-clock-buff
                     (setq buffer-read-only nil)))
 
-              (setq org-context-clocking-update-current-context-plist-msg org-clock-marker)
+              (setq *org-context-clocking-update-current-context-plist-msg* org-clock-marker)
 
               (with-current-buffer (marker-buffer selected-clock)
                 (let ((buffer-read-only nil))
@@ -190,7 +190,7 @@
                   (with-current-buffer prev-org-clock-buff
                     (setq buffer-read-only prev-clock-buff-read-only)))))
           (progn
-            (setq org-context-clocking-update-current-context-plist-msg "null clock")
+            (setq *org-context-clocking-update-current-context-plist-msg* "null clock")
             (message "No clock found please set a match for this context-plist %s, add it using M-x org-context-clocking-add-context-to-org-heading."
                      context-plist)
             (org-context-clocking-add-context-to-org-heading-when-idle context-plist 17))))))
@@ -199,15 +199,15 @@
 (defun org-context-clocking-run-task-current-context-plist-timer ()
   (interactive)
   (let ()
-    (setq org-context-clocking-last-buffer-select-time (current-time))
-    (when org-context-clocking-buffer-select-timer
-      (cancel-timer org-context-clocking-buffer-select-timer)
-      (setq org-context-clocking-buffer-select-timer nil))
-    (setq org-context-clocking-buffer-select-timer
+    (setq *org-context-clocking-last-buffer-select-time* (current-time))
+    (when *org-context-clocking-buffer-select-timer*
+      (cancel-timer *org-context-clocking-buffer-select-timer*)
+      (setq *org-context-clocking-buffer-select-timer* nil))
+    (setq *org-context-clocking-buffer-select-timer*
           ;; distrubing while editing.
           ;; (run-with-timer
           (run-with-idle-timer
-           (1+ org-context-clocking-task-current-context-plist-time)
+           (1+ *org-context-clocking-task-current-context-plist-time*)
            nil
            'org-context-clocking-update-current-context-plist))))
 
@@ -287,7 +287,7 @@
 
 
 
-(when nil
+(when nil                               ;testing
 
   (org-context-clocking-entry-run-associated-clock
    (buffer-file-name))
