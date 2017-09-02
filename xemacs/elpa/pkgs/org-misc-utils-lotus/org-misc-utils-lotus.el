@@ -58,18 +58,18 @@
 
 ;; (progn ;; "org macro"
 
-(defmacro org-with-refile (refile-targets &rest body)
+(defmacro org-with-refile (file pos refile-targets &rest body)
   "Refile the active region.
 If no region is active, refile the current paragraph.
 With prefix arg C-u, copy region instad of killing it."
   ;; mark paragraph if no region is set
   `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
           (target (save-excursion (safe-org-refile-get-location)))
-          (file (nth 1 target))
-          (pos (nth 3 target)))
-     (with-current-buffer (find-file-noselect file)
+          (,file (nth 1 target))
+          (,pos (nth 3 target)))
+     (with-current-buffer (find-file-noselect ,file)
        (save-excursion
-         (goto-char pos)
+         (goto-char ,pos)
          ,@body))))
 (put 'org-with-refile 'lisp-indent-function 1)
 
@@ -91,13 +91,13 @@ With prefix arg C-u, copy region instad of killing it."
          (let (buffer-read-only)
            ,@body)))))
 
-(defmacro org-file-loc-with-refile (refile-targets &rest body)
+(defmacro org-file-loc-with-refile (file pos refile-targets &rest body)
   "Refile run body with file and loc set."
   ;; mark paragraph if no region is set
   `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
           (target (save-excursion (safe-org-refile-get-location)))
-          (file (nth 1 target))
-          (pos (nth 3 target)))
+          (,file (nth 1 target))
+          (,pos (nth 3 target)))
      ,@body))
 (put 'org-file-loc-with-refile 'lisp-indent-function 1)
 
@@ -151,28 +151,28 @@ With prefix arg C-u, copy region instad of killing it."
        ,@body)))
 (put 'org-with-new-win 'lisp-indent-function 1)
 
-(defmacro org-miniwin-file-loc-with-refile (refile-targets &rest body)
-  `(org-file-loc-with-refile ,refile-targets
-     (org-with-new-win file pos ,@body)))
+(defmacro org-miniwin-file-loc-with-refile (file pos refile-targets &rest body)
+  `(org-file-loc-with-refile ,file ,pos ,refile-targets
+     (org-with-new-win ,file ,pos ,@body)))
 
 (put 'org-miniwin-file-loc-with-refile 'lisp-indent-function 1)
 
-(defmacro org-timed-file-loc-with-refile (timeout refile-targets &rest body)
+(defmacro org-timed-file-loc-with-refile (file pos timeout refile-targets &rest body)
   "Refile run body with file and loc set."
   ;; mark paragraph if no region is set
   `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
           (target (save-excursion (safe-timed-org-refile-get-location ,timeout)))
-          (file (nth 1 target))
-          (pos (nth 3 target)))
-     (assert file)
-     (assert pos)
+          (,file (nth 1 target))
+          (,pos (nth 3 target)))
+     (assert ,file)
+     (assert ,pos)
      ,@body))
 (put 'org-timed-file-loc-with-refile 'lisp-indent-function 1)
 
-(defmacro org-timed-miniwin-file-loc-with-refile (timeout refile-targets &rest body)
+(defmacro org-timed-miniwin-file-loc-with-refile (file pos timeout refile-targets &rest body)
   `(org-timed-file-loc-with-refile
-       ,timeout ,refile-targets
-       (org-with-new-win file pos ,@body)))
+       ,file ,pos ,timeout ,refile-targets
+       (org-with-new-win ,file ,pos ,@body)))
 (put 'org-timed-miniwin-file-loc-with-refile 'lisp-indent-function 1)
 
 ;; e.g.
@@ -230,7 +230,7 @@ With prefix arg C-u, copy region instad of killing it."
                 (forward-paragraph)
                 (skip-chars-backward "\n\t ")
                 (point))))
-  (org-with-refile nil
+  (org-with-refile file pos nil
     (let ((text (buffer-substring-no-properties beg end)))
       (unless copy (kill-region beg end))
       (deactivate-mark)
@@ -255,7 +255,7 @@ If no region is active, refile the current paragraph.
 With prefix arg C-u, copy region instad of killing it."
   (interactive "sorg entry: \nP")
   ;; mark paragraph if no region is set
-  (org-with-refile nil
+  (org-with-refile file pos nil
     ;; (unless arg (kill-region beg end))
     ;; (deactivate-mark)
     (with-current-buffer (find-file-noselect file)
@@ -303,7 +303,7 @@ With prefix arg C-u, copy region instad of killing it."
    (let ((property (read-from-minibuffer "property: "))
          (value    (read-from-minibuffer "value: ")))
      (list property value)))
-  (org-with-refile nil
+  (org-with-refile file pos nil
     (let ((buffer-read-only nil))
       (org-entry-put nil property value))))
 
@@ -313,7 +313,7 @@ With prefix arg C-u, copy region instad of killing it."
    (let ((property (read-from-minibuffer "property: "))
          (value    (read-from-minibuffer "value: ")))
      (list property value)))
-  (org-with-refile nil
+  (org-with-refile file pos nil
     (let ((buffer-read-only nil))
       (org-entry-put-multivalued-property nil property values))))
     ;; )
