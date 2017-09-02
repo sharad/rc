@@ -193,20 +193,7 @@
             (setq org-context-clocking-update-current-context-plist-msg "null clock")
             (message "No clock found please set a match for this context-plist %s, add it using M-x org-context-clocking-add-context-to-org-heading."
                      context-plist)
-            (org-context-clocking-add-context-to-org-heading-when-idle context-plist 17)
-            )))))
-
-;; (defun org-context-clocking-run-task-current-context-plist-timer ()
-;;   (let ()
-;;     (setq org-context-clocking-last-buffer-select-time (current-time))
-;;     (when org-context-clocking-buffer-select-timer
-;;       (cancel-timer org-context-clocking-buffer-select-timer)
-;;       (setq org-context-clocking-buffer-select-timer nil))
-;;     (setq org-context-clocking-buffer-select-timer
-;;           (run-with-timer
-;;            (1+ org-context-clocking-task-current-context-plist-time)
-;;            nil
-;;            'org-context-clocking-update-current-context-plist))))
+            (org-context-clocking-add-context-to-org-heading-when-idle context-plist 17))))))
 
 ;;;###autoload
 (defun org-context-clocking-run-task-current-context-plist-timer ()
@@ -225,52 +212,6 @@
            'org-context-clocking-update-current-context-plist))))
 
 ;;;###autoload
-(defun org-entries-select (entries &optional prompt)
-  "Select a task that was recently associated with clocking."
-  (interactive)
-  (let (och
-        chl
-        sel-list
-        rpl
-        (i 0)
-        s)
-    ;; Remove successive dups from the clock history to consider
-    ;; (mapc (lambda (c) (if (not (equal c (car och))) (push c och)))
-    ;;       clocks)
-    (setq och (reverse och) chl (length och))
-    (if (zerop chl)
-        (user-error "No recent clock")
-        (save-window-excursion
-          (org-switch-to-buffer-other-window
-           (get-buffer-create "*Clock Task Select*"))
-          (erase-buffer)
-          (insert (org-add-props "Recent Tasks\n" nil 'face 'bold))
-          (mapc
-           (lambda (m)
-             (when (marker-buffer m)
-               (setq i (1+ i)
-                     s (org-clock-insert-selection-line
-                        (if (< i 10)
-                            (+ i ?0)
-                            (+ i (- ?A 10))) m))
-               (if (fboundp 'int-to-char) (setf (car s) (int-to-char (car s))))
-               (push s sel-list)))
-           och)
-          (run-hooks 'org-clock-before-select-task-hook)
-          (goto-char (point-min))
-          ;; Set min-height relatively to circumvent a possible but in
-          ;; `fit-window-to-buffer'
-          (fit-window-to-buffer nil nil (if (< chl 10) chl (+ 5 chl)))
-          (message (or prompt "Select task for clocking:"))
-          (setq cursor-type nil rpl (read-char-exclusive))
-          (kill-buffer)
-          (cond
-            ((eq rpl ?q) nil)
-            ((eq rpl ?x) nil)
-            ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
-            (t (user-error "Invalid task choice %c" rpl)))))))
-
-;;;###autoload
 (defun org-context-clocking-select-task-from-clocks (clocks &optional prompt)
   "Select a task that was recently associated with clocking."
   (interactive)
@@ -280,23 +221,11 @@
           clocks)
     (setq och (reverse och) chl (length och))
     (if (zerop chl)
-        (user-error "No recent clock")
+        (user-error "No matched org heading")
         (save-window-excursion
           (org-switch-to-buffer-other-window
            (get-buffer-create "*Clock Task Select*"))
           (erase-buffer)
-          ;; (when (marker-buffer org-clock-default-task)
-          ;;   (insert (org-add-props "Default Task\n" nil 'face 'bold))
-          ;;   (setq s (org-clock-insert-selection-line ?d org-clock-default-task))
-          ;;   (push s sel-list))
-          ;; (when (marker-buffer org-clock-interrupted-task)
-          ;;   (insert (org-add-props "The task interrupted by starting the last one\n" nil 'face 'bold))
-          ;;   (setq s (org-clock-insert-selection-line ?i org-clock-interrupted-task))
-          ;;   (push s sel-list))
-          ;; (when (org-clocking-p)
-          ;;   (insert (org-add-props "Current Clocking Task\n" nil 'face 'bold))
-          ;;   (setq s (org-clock-insert-selection-line ?c org-clock-marker))
-          ;;   (push s sel-list))
           (insert (org-add-props "Guessed Tasks\n" nil 'face 'bold))
           (mapc
            (lambda (m)
@@ -407,7 +336,8 @@
 
 
 
-  (test-info-entry)
+  ;; (test-info-entry)
+
   (funcall org-context-clocking-api-entry-associated-to-context-plist-p
            test-info-entry
            (list

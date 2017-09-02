@@ -145,8 +145,9 @@ With prefix arg C-u, copy region instad of killing it."
                           -12 -10))))
        ;; maybe leave two lines for our window because of the
        ;; normal `raised' mode line
-       (select-window win)
-       (switch-to-buffer target-buffer)
+       (select-window win 'norecord)
+       ;; (switch-to-buffer target-buffer 'norecord)
+       (set-buffer target-buffer)
        (goto-char ,pos)
        ,@body)))
 (put 'org-with-new-win 'lisp-indent-function 1)

@@ -21,10 +21,59 @@
 ;;; Commentary:
 
 ;;
+;; (use-package startup-hooks
+;;     :defer t
+;;     :config
+;;     (progn
+;;       (progn
+;;         (add-to-enable-startup-interrupting-feature-hook
+;;          '(lambda ()
+;;            (when nil
+;;              (add-hook 'after-make-frame-functions
+;;                        '(lambda (nframe)
+;;                          (run-at-time-or-now 100
+;;                           '(lambda ()
+;;                             (if (any-frame-opened-p)
+;;                                 (org-clock-in-if-not)))))
+;;                        t))
+;;            (add-hook 'delete-frame-functions
+;;             '(lambda (nframe)
+;;               (if (and
+;;                    (org-clock-is-active)
+;;                    (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
+;;                   (org-with-clock-writeable-buffer
+;;                    (let (org-log-note-clock-out)
+;;                      (if (org-clock-is-active)
+;;                          (org-clock-out))))))))
+;;          t))
+
+;;       (progn
+;;         (add-to-enable-desktop-restore-interrupting-feature-hook
+;;          '(lambda ()
+;;            (if (fboundp 'org-clock-persistence-insinuate)
+;;                (org-clock-persistence-insinuate)
+;;                (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
+;;            (if (fboundp 'org-clock-start-check-timer)
+;;                (org-clock-start-check-timer)))
+;;          t))))
+
+
+;; (add-hook
+;;  'kill-emacs-hook
+;;  (lambda ()
+;;    (if (and
+;;         (org-clock-is-active)
+;;         ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
+;;         )
+;;        (org-with-clock-writeable-buffer
+;;         (let (org-log-note-clock-out)
+;;           (if (org-clock-is-active)
+;;               (org-clock-out)))))))
 
 ;;; Code:
 
 (require 'org)
+(require 'org-timer)
 (require 'org-clock)
 (require 'timer-utils-lotus)
 
@@ -39,7 +88,6 @@
          (beginning-of-line)
          (let (buffer-read-only)
            ,@forms)))))
-
 
 (defvar org-clock-check-long-timer-period 7
   "Period of Long Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
@@ -65,10 +113,9 @@
     org-clock-check-long-timer-period
     org-clock-check-short-timer-period
     nil
-    (lambda ()
-      ;; (message "after 7 sec.")
-      (unless (org-clock-is-active)
-        (org-clock-in-if-not)))
+    #'(lambda ()
+        (unless (org-clock-is-active)
+          (org-clock-in-if-not)))
     nil
     nil)))
 
@@ -84,9 +131,8 @@
       (cancel-timer org-clock-check-long-timer)
       (setq org-clock-check-long-timer nil))))
 
-(progn ;; "correction org-timer.el"
-
-  (defun org-timer-set-timer (&optional opt)
+;; "correction org-timer.el"
+(defun replace-org-timer-set-timer (&optional opt)
     "Prompt for a duration in minutes or hh:mm:ss and set a timer.
 
 If `org-timer-default-timer' is not \"0\", suggest this value as
@@ -163,18 +209,108 @@ using three `C-u' prefix arguments."
                         (time-add (current-time) (seconds-to-time secs)))
                   (setq org-timer-pause-time nil)
                   (org-timer-set-mode-line 'on))
-                (message "No timer set")))))))
+                (message "No timer set"))))))
+
+(advice-add 'org-timer-set-timer :around #'replace-org-timer-set-timer)
+
+(eval-when-compile
+  (require 'org-misc-utils-lotus))
+(require 'org-misc-utils-lotus)
 
 
+;; (find
+;;   org-clock-leftover-time
+;;   org-clock-default-task ;; M-x org-clock-mark-default-task
+;;   M-x org-clock-select-task
+;; (org-clocking-buffer)
+;; (org-clock-sum-today)
+;; (org-clock-sum-custom nil 'today)
+;; (org-clock-is-active)
+;; )
 
+(defvar org-clock-default-effort "1:00")
 
+(defun lotus-org-mode-add-default-effort ()
+  "Add a default effort estimation."
+  (unless (org-entry-get (point) "Effort")
+    (org-set-property "Effort" org-clock-default-effort)))
+(add-hook 'org-clock-in-prepare-hook
+          'lotus-org-mode-ask-effort)
 
+(defun lotus-org-mode-ask-effort ()
+  "Ask for an effort estimate when clocking in."
+  (unless (org-entry-get (point) "Effort")
+    (let ((effort
+           (completing-read
+            "Effort: "
+            (org-entry-get-multivalued-property (point) "Effort"))))
+      (unless (equal effort "")
+        (org-set-property "Effort" effort)))))
 
+;; org-refile-targets is set in org-misc-utils-lotus package
+;;;###autoload
+(defun org-clock-in-refile (refile-targets)
+  (org-with-refile file loc (or refile-targets org-refile-targets)
+    (let ((buffer-read-only nil))
+      (org-clock-in))))
 
+(defvar org-donot-try-to-clock-in nil
+  "Not try to clock-in, require for properly creating frame especially for frame-launcher function.")
+;;;###autoload
+(defun org-clock-in-if-not ()
+  (interactive)
+  (unless (or
+           org-donot-try-to-clock-in
+           (org-clock-is-active))
+    ;; (org-clock-goto t)
+    (if org-clock-history
+        (let (buffer-read-only)
+          (org-clock-in '(4)))
+        ;; with-current-buffer should be some real file
+        (org-clock-in-refile nil))))
 
+;;;###autoload
+(defun org-clock-out-with-note (note &optional switch-to-state fail-quietly at-time)
+  (interactive
+   (let ((note (read-from-minibuffer "Closing notes: "))
+         (switch-to-state current-prefix-arg))
+     (list note switch-to-state)))
+  (let ((org-log-note-clock-out t))
+    (move-marker org-log-note-return-to nil)
+    (move-marker org-log-note-marker nil)
+    (org-clock-out switch-to-state fail-quietly at-time)
+    (remove-hook 'post-command-hook 'org-add-log-note)
+    (org-insert-log-note note)))
 
-
-
+;;;###autoload
+(defun lotus-org-clock-in/out-insinuate-hooks ()
+  (add-hook 'org-clock-in-hook
+            '(lambda ()
+              ;; ;; if effort is not present than add it.
+              ;; (unless (org-entry-get nil "Effort")
+              ;;   (save-excursion
+              ;;    (org-set-effort)))
+              ;; set timer
+              (when (not
+                     (and
+                      (boundp' org-timer-countdown-timer)
+                      org-timer-countdown-timer))
+                (if (org-entry-get nil "Effort")
+                    (save-excursion
+                      (forward-line -2)
+                      (org-timer-set-timer nil))
+                    (call-interactively 'org-timer-set-timer)))
+              (save-buffer)
+              (org-save-all-org-buffers)))
+  (add-hook 'org-clock-out-hook
+            '(lambda ()
+              (if (and
+                   (boundp' org-timer-countdown-timer)
+                   org-timer-countdown-timer)
+                  (org-timer-stop))
+              (org-clock-get-work-day-clock-string t)
+              (save-buffer)
+              (org-save-all-org-buffers))))
 
 
 
@@ -237,145 +373,6 @@ using three `C-u' prefix arguments."
       (add-hook 'org-mode-hook 'org-mode-setup-clock-display)))
 
   (progn
-    ;; (find
-    ;;   org-clock-leftover-time
-    ;;   org-clock-default-task ;; M-x org-clock-mark-default-task
-    ;;   M-x org-clock-select-task
-    ;; (org-clocking-buffer)
-    ;; (org-clock-sum-today)
-    ;; (org-clock-sum-custom nil 'today)
-    ;; (org-clock-is-active)
-    ;; )
-
-    (defvar org-clock-default-effort "1:00")
-    (defun lotus-org-mode-add-default-effort ()
-      "Add a default effort estimation."
-      (unless (org-entry-get (point) "Effort")
-        (org-set-property "Effort" org-clock-default-effort)))
-    (add-hook 'org-clock-in-prepare-hook
-              'lotus-org-mode-ask-effort)
-    (defun lotus-org-mode-ask-effort ()
-      "Ask for an effort estimate when clocking in."
-      (unless (org-entry-get (point) "Effort")
-        (let ((effort
-               (completing-read
-                "Effort: "
-                (org-entry-get-multivalued-property (point) "Effort"))))
-          (unless (equal effort "")
-            (org-set-property "Effort" effort)))))
-
-    ;; org-refile-targets is set in org-misc-utils-lotus package
-    (defun org-clock-in-refile (refile-targets)
-      (org-with-refile (or refile-targets org-refile-targets)
-        (let ((buffer-read-only nil))
-          (org-clock-in))))
-
-    (defvar org-donot-try-to-clock-in nil
-      "Not try to clock-in, require for properly creating frame especially for frame-launcher function.")
-
-    (defun org-clock-in-if-not ()
-      (interactive)
-      (unless (or
-               org-donot-try-to-clock-in
-               (org-clock-is-active))
-        ;; (org-clock-goto t)
-        (if org-clock-history
-            (let (buffer-read-only)
-              (org-clock-in '(4)))
-            ;; with-current-buffer should be some real file
-            (org-clock-in-refile nil))))
-
-    (defun org-clock-out-with-note (note &optional switch-to-state fail-quietly at-time)
-      (interactive
-       (let ((note (read-from-minibuffer "Closing notes: "))
-             (switch-to-state current-prefix-arg))
-         (list note switch-to-state)))
-      (let ((org-log-note-clock-out t))
-        (move-marker org-log-note-return-to nil)
-        (move-marker org-log-note-marker nil)
-        (org-clock-out switch-to-state fail-quietly at-time)
-        (remove-hook 'post-command-hook 'org-add-log-note)
-        (org-insert-log-note note)))
-
-    ;; (use-package startup-hooks
-    ;;     :defer t
-    ;;     :config
-    ;;     (progn
-    ;;       (progn
-    ;;         (add-to-enable-startup-interrupting-feature-hook
-    ;;          '(lambda ()
-    ;;            (when nil
-    ;;              (add-hook 'after-make-frame-functions
-    ;;                        '(lambda (nframe)
-    ;;                          (run-at-time-or-now 100
-    ;;                           '(lambda ()
-    ;;                             (if (any-frame-opened-p)
-    ;;                                 (org-clock-in-if-not)))))
-    ;;                        t))
-    ;;            (add-hook 'delete-frame-functions
-    ;;             '(lambda (nframe)
-    ;;               (if (and
-    ;;                    (org-clock-is-active)
-    ;;                    (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-    ;;                   (org-with-clock-writeable-buffer
-    ;;                    (let (org-log-note-clock-out)
-    ;;                      (if (org-clock-is-active)
-    ;;                          (org-clock-out))))))))
-    ;;          t))
-
-    ;;       (progn
-    ;;         (add-to-enable-desktop-restore-interrupting-feature-hook
-    ;;          '(lambda ()
-    ;;            (if (fboundp 'org-clock-persistence-insinuate)
-    ;;                (org-clock-persistence-insinuate)
-    ;;                (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
-    ;;            (if (fboundp 'org-clock-start-check-timer)
-    ;;                (org-clock-start-check-timer)))
-    ;;          t))))
-
-
-    ;; (add-hook
-    ;;  'kill-emacs-hook
-    ;;  (lambda ()
-    ;;    (if (and
-    ;;         (org-clock-is-active)
-    ;;         ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
-    ;;         )
-    ;;        (org-with-clock-writeable-buffer
-    ;;         (let (org-log-note-clock-out)
-    ;;           (if (org-clock-is-active)
-    ;;               (org-clock-out)))))))
-
-
-    (defun lotus-org-clock-in/out-insinuate-hooks ()
-      (add-hook 'org-clock-in-hook
-                '(lambda ()
-                  ;; ;; if effort is not present than add it.
-                  ;; (unless (org-entry-get nil "Effort")
-                  ;;   (save-excursion
-                  ;;    (org-set-effort)))
-                  ;; set timer
-                  (when (not
-                         (and
-                          (boundp' org-timer-countdown-timer)
-                          org-timer-countdown-timer))
-                    (if (org-entry-get nil "Effort")
-                        (save-excursion
-                          (forward-line -2)
-                          (org-timer-set-timer nil))
-                        (call-interactively 'org-timer-set-timer)))
-                  (save-buffer)
-                  (org-save-all-org-buffers)))
-      (add-hook 'org-clock-out-hook
-                '(lambda ()
-                  (if (and
-                       (boundp' org-timer-countdown-timer)
-                       org-timer-countdown-timer)
-                      (org-timer-stop))
-                  (org-clock-get-work-day-clock-string t)
-                  (save-buffer)
-                  (org-save-all-org-buffers))))
-
 
     ))
 

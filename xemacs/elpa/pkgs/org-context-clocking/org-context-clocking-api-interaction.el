@@ -54,11 +54,6 @@
                          (org-context-clock-property-get-function prop)
                          prop context-plist args))))
 
-
-
-
-
-
 (progn
   (setq org-property-set-functions-alist nil)
   (org-context-clock-property-set-function "Root"
@@ -178,8 +173,9 @@
                              (delete-window win))
                            (when timer (cancel-timer timer)))
                           ((string-equal "Edit" prop)
+                           (when timer (cancel-timer timer))
                            (when (and win (windowp win) (window-valid-p win))
-                             (select-window win t)))
+                             (select-window win 'norecord)))
                           (t
                            (save-excursion
                              (org-flag-proprty-drawer-at-marker marker t))
