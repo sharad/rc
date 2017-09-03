@@ -40,6 +40,7 @@
 
 
 (require 'org-context-clock-api-recursive)
+(require 'org-context-clock-assoc-api)
 
 ;; (defvar org-context-clock-task-associated-context-key-fns nil
 ;;   "property list of KEY and API FUNCTIONS for key based association")

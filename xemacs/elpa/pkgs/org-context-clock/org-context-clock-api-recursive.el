@@ -199,7 +199,7 @@
       (org-context-clock-tree-mapc-tasks
        #'(lambda (task args)
            (let ((rank
-                  (funcall org-context-clock-api-entry-associated-to-context-p task args)))
+                  (funcall org-context-clock-api-task-associated-to-context-p task args)))
              (unless rank (error "org-context-clock-entries-associated-to-context-by-keys[lambda]: rank is null"))
              (when (> rank 0)
                (push task matched)
