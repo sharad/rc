@@ -57,15 +57,15 @@
                        keyfn
                        rank
                        context
-                       (org-context-clock-task-task-get-heading task)))
+                       (org-context-clock-task-get-heading task)))
               (org-context-clock-debug "org-context-clock-tasks-associated-key-fn-value: task %s key %s MATCHED %d rank"
-                       (org-context-clock-task-task-get-heading task)
+                       (org-context-clock-task-get-heading task)
                        key
                        rank)
               rank)
             (progn
               (org-context-clock-debug "org-context-clock-tasks-associated-key-fn-value: task %s key %s kyfn is %s so how can match %d rank"
-                       (org-context-clock-task-task-get-heading task)
+                       (org-context-clock-task-get-heading task)
                        key
                        keyfn
                        0)
@@ -73,7 +73,7 @@
 
   (defassoc-context-key org-task-associated-context-org-file-key :org-file (task context)
     "Predicate funtion to check if context matches to task's file attribute."
-    (let ((org-file (org-context-clock-task-task-get-property task :task-clock-file)))
+    (let ((org-file (org-context-clock-task-get-property task :task-clock-file)))
       (let* ((file (plist-get context :file))
              (file (if file (file-truename file))))
         (if (and file org-file
@@ -86,16 +86,16 @@
   (defassoc-context-key org-task-associated-context-root-dir-key :root (task context)
     "Predicate funtion to check if context matches to task's file attribute."
     (let* ((root
-            (org-context-clock-task-task-get-property task :ROOT))
+            (org-context-clock-task-get-property task :ROOT))
            (root (if root (file-truename root))))
       (let* ((file (plist-get context :file))
              (file (if file (file-truename file))))
        (if root
            (progn
-             (org-context-clock-debug "task %s root %s" (org-context-clock-task-task-get-heading task) root)
-             (org-context-clock-debug "task %s file %s" (org-context-clock-task-task-get-heading task) file))
+             (org-context-clock-debug "task %s root %s" (org-context-clock-task-get-heading task) root)
+             (org-context-clock-debug "task %s file %s" (org-context-clock-task-get-heading task) file))
            (org-context-clock-debug "task %s root %s not present."
-                                    (org-context-clock-task-task-get-heading task) root))
+                                    (org-context-clock-task-get-heading task) root))
        (if (and root file
                 (string-match root file))
            (length root)
@@ -104,24 +104,24 @@
   (defassoc-context-key org-task-associated-context-status-key :status (task context)
     "Predicate funtion to check if context matches to task's status attribute."
     (let* ((status
-            (org-context-clock-task-task-get-property task 'status)))
+            (org-context-clock-task-get-property task 'status)))
       (if (string-equal status "CLOSED") -30 0)))
 
   (defassoc-context-key org-task-associated-context-task-key :task-key (task context)
     "Predicate funtion to check if context matches to task's file attribute."
-    (let* ((key (org-context-clock-task-task-get-property task :KEY)))
+    (let* ((key (org-context-clock-task-get-property task :KEY)))
       (if key (string-to-number key) 0)))
 
   (defassoc-context-key org-task-associated-context-level-key :heading-level (task context)
     "Predicate funtion to check if context matches to task's file attribute."
     (let* ((level
-            (org-context-clock-task-task-get-property task :task-clock-level)))
+            (org-context-clock-task-get-property task :task-clock-level)))
       (if level level 0)))
 
   (defassoc-context-key org-task-associated-context-timebeing-key :timebeing (task context)
-    (let ((timebeing (org-context-clock-task-task-get-property task :TIMEBEING)))
+    (let ((timebeing (org-context-clock-task-get-property task :TIMEBEING)))
       (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
-            (clocked-time   (org-context-clock-task-task-get-property task :task-clock-clock-sum)))
+            (clocked-time   (org-context-clock-task-get-property task :task-clock-clock-sum)))
         (if (and
              (numberp clocked-time)
              (numberp timebeing-time)
@@ -132,7 +132,7 @@
   ;; (defassoc-context-key org-task-associated-context-current-clock-key :current-clock (task context)
   ;;   "Predicate funtion to check if context matches to task's file attribute."
   ;;   (let* ((task-marker
-  ;;           (org-context-clock-task-task-get-property task :task-clock-marker)))
+  ;;           (org-context-clock-task-get-property task :task-clock-marker)))
   ;;     (if (and
   ;;          org-clock-marker
   ;;          task-marker

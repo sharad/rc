@@ -72,7 +72,7 @@
 
 ;;   (defun org-task-associated-context-org-file-predicate (context task)
 ;;     "Predicate funtion to check if context matches to task's file attribute."
-;;     (let ((org-file (org-context-clock-task-task-get-property task :task-clock-file)))
+;;     (let ((org-file (org-context-clock-task-get-property task :task-clock-file)))
 ;;       (let* ((file (plist-get context :file))
 ;;              (file (if file (file-truename file))))
 ;;        (if (and file org-file)
@@ -84,7 +84,7 @@
 ;;   (defun org-task-associated-context-root-dir-predicate (context task)
 ;;     "Predicate funtion to check if context matches to task's file attribute."
 ;;     (let ((root
-;;            (org-context-clock-task-task-get-property task :ROOT)))
+;;            (org-context-clock-task-get-property task :ROOT)))
 ;;       (let* ((file (plist-get context :file))
 ;;              (file (if file (file-truename file))))
 ;;         (if (and root file)

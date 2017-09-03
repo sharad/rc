@@ -84,7 +84,7 @@
              (org-context-clock-task-tree-map-subheading 'org-context-clock-task-tree-collect-task)
              (let* ((file (if file file (buffer-file-name)))
                     (subtree-file
-                     (org-context-clock-task-task-get-property entry :SUBTREEFILE))
+                     (org-context-clock-task-get-property entry :SUBTREEFILE))
                     (subtree-file
                      (if (and subtree-file
                               (file-relative-name subtree-file))
@@ -99,7 +99,7 @@
                    (list
                     (org-context-clock-task-tree-collect-task subtree-file)))))))
       (if sub-tree
-          (org-context-clock-task-task-set-property entry :sub-tree sub-tree)
+          (org-context-clock-task-set-property entry :sub-tree sub-tree)
           entry))))
 
 (defun org-context-clock-task-tree-collect-task (&optional file)
@@ -117,7 +117,7 @@
 
 (defun org-context-clock-task-tree-task-node-p (tx)
   "Test org TX is org tasks tree non-leaf node"
-  (org-context-clock-task-task-get-property tx :sub-tree))
+  (org-context-clock-task-get-property tx :sub-tree))
 
 (progn ;; "tree api"
   (defun tree-mapcar-nodes (nonleafnodep fn tree args)
@@ -204,7 +204,7 @@
              (when (> rank 0)
                (push task matched)
                (org-context-clock-debug "org-context-clock-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
-                        (org-context-clock-task-task-get-heading task)
+                        (org-context-clock-task-get-heading task)
                         (length matched)))))
        tasks
        context)

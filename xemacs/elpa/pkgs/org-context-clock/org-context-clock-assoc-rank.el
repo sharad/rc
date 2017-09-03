@@ -86,7 +86,7 @@
 
 ;;   (defun org-context-clock-task-associated-context-org-file-rank (context task)
 ;;     "Predicate funtion to check if file matches to task's file attribute."
-;;     (let ((org-file (org-context-clock-task-task-get-property task :task-clock-file)))
+;;     (let ((org-file (org-context-clock-task-get-property task :task-clock-file)))
 ;;       (let* ((file (plist-get context :file))
 ;;              (file (if file (file-truename file))))
 ;;       (if (string-equal (file-truename file) (file-truename
@@ -98,7 +98,7 @@
 ;;   (defun org-context-clock-task-associated-context-root-dir-rank (context task)
 ;;     "Predicate funtion to check if context matches to task's file attribute."
 ;;     (let* ((root
-;;             (org-context-clock-task-task-get-property task :ROOT))
+;;             (org-context-clock-task-get-property task :ROOT))
 ;;            (root (if root (file-truename root))))
 ;;       (let* ((file (plist-get context :file))
 ;;              (file (if file (file-truename file))))
@@ -112,21 +112,21 @@
 ;;   (defun org-context-clock-task-associated-context-status-rank (context task)
 ;;     "Predicate funtion to check if context matches to task's file attribute."
 ;;     (let* ((status
-;;             (org-context-clock-task-task-get-property task 'status)))
+;;             (org-context-clock-task-get-property task 'status)))
 ;;       (if (string-equal status "CLOSED") -30 0)))
 ;;   (org-tasks-register-associated-to-context-rank-function 'org-context-clock-task-associated-context-status-rank)
 
 ;;   (defun org-context-clock-task-associated-context-task-rank (context task)
 ;;     "Predicate funtion to check if context matches to task's file attribute."
 ;;     (let* ((rank
-;;             (org-context-clock-task-task-get-property task :RANK)))
+;;             (org-context-clock-task-get-property task :RANK)))
 ;;       (if rank (string-to-number rank) 0)))
 ;;   (org-tasks-register-associated-to-context-rank-function 'org-context-clock-task-associated-context-task-rank)
 
 ;;   (defun org-context-clock-task-associated-context-level-rank (context task)
 ;;     "Predicate funtion to check if context matches to task's file attribute."
 ;;     (let* ((level
-;;             (org-context-clock-task-task-get-property task :task-clock-level)))
+;;             (org-context-clock-task-get-property task :task-clock-level)))
 ;;       level))
 ;;   (org-tasks-register-associated-to-context-rank-function 'org-context-clock-task-associated-context-level-rank))
 
