@@ -44,9 +44,9 @@
 ;; (defvar org-context-clock-api-name :predicate "API")
 (defvar org-context-clock-access-api-name :recursive "Aceess API")
 (defvar org-context-clock-assoc-api-name :keys "Assoc API")
-(defvar org-context-clock-api-tasks-associated-to-context   (org-context-clock-assoc-api-get org-context-clock-access-api-name :tasks))
+(defvar org-context-clock-api-tasks-associated-to-context   (org-context-clock-access-api-get org-context-clock-access-api-name :tasks))
 (defvar org-context-clock-api-task-associated-to-context-p   (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp))
-(defvar org-context-clock-api-task-update-tasks               (org-context-clock-assoc-api-get org-context-clock-access-api-name :update))
+(defvar org-context-clock-api-task-update-tasks               (org-context-clock-access-api-get org-context-clock-access-api-name :update))
 
 
 (defun custom-plist-keys (in-plist)
@@ -64,7 +64,7 @@
                           (mapcar 'symbol-name assoc-api-keys)
                           nil
                           t
-                          (symbol-name org-context-clock-assoc-api-assoc-name)))
+                          (symbol-name org-context-clock-assoc-api-name)))
          (assoc-api-key (intern assoc-api-name))
 
          (access-api-keys (custom-plist-keys org-context-clock-task-clocking-access-api))
@@ -73,19 +73,19 @@
                           (mapcar 'symbol-name access-api-keys)
                           nil
                           t
-                          (symbol-name org-context-clock-access-api-access-name)))
+                          (symbol-name org-context-clock-access-api-name)))
          (access-api-key (intern access-api-name)))
     (setq
      org-context-clock-assoc-api-name assoc-api-key
      org-context-clock-access-api-name access-api-key)
     (if (and
-         (org-context-clock-assoc-api-get org-context-clock-access-api-name :tasks)
+         (org-context-clock-access-api-get org-context-clock-access-api-name :tasks)
          (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp)
-         (org-context-clock-assoc-api-get org-context-clock-access-api-name :update))
+         (org-context-clock-access-api-get org-context-clock-access-api-name :update))
         (setq
-         org-context-clock-api-tasks-associated-to-context (org-context-clock-assoc-api-get org-context-clock-access-api-name :tasks)
-         org-context-clock-api-task-associated-to-context-p (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp)
-         org-context-clock-api-task-update-tasks             (org-context-clock-assoc-api-get org-context-clock-access-api-name :update)))))
+         org-context-clock-api-tasks-associated-to-context   (org-context-clock-access-api-get org-context-clock-access-api-name :tasks)
+         org-context-clock-api-task-associated-to-context-p  (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp)
+         org-context-clock-api-task-update-tasks             (org-context-clock-access-api-get org-context-clock-access-api-name :update)))))
 
 ;;;###autoload
 (defun org-context-clock-task-update-tasks (&optional force)

@@ -57,7 +57,7 @@
      #'(lambda (task)
          (funcall org-context-clock-api-entry-associated-to-context-p task context))
      tasks)))
-(org-context-clock-access-api-set :list :match  'org-context-clock-list-matching-tasks)
+(org-context-clock-access-api-set :list :tasks  'org-context-clock-list-matching-tasks)
 
 (provide 'org-context-clock-api-list)
 ;;; org-context-clock-api-list.el ends here
