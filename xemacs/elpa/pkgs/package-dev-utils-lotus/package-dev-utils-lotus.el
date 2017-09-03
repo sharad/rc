@@ -247,8 +247,8 @@
          (pkg-sym (package-desc-name pkg-desc))
          (pkg-name (symbol-name pkg-sym)))
     (when (package-installed-p pkg-sym)
-      (package-delete pkg-desc)
-      (when nil
+      ;; (package-delete pkg-desc)
+      (when pkg-desc
         (ignore-errors
           (package-delete pkg-desc))))
 
