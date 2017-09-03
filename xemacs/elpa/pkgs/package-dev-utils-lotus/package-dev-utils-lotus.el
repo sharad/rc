@@ -167,6 +167,7 @@
              (expand-file-name pkg-name package-source-path)
              nil t t))
           (error "package-source-path do ot exists."))
+      (setcar (nthcdr 2 pkg-def) version)
       (unless pkg-def-exists ;; version exist mean file -pkg.el was there presently, so need to ask any question.
         (progn
           (setcar (nthcdr 2 pkg-def) version)
@@ -179,6 +180,7 @@
               (let ((dep
                      (car (read-from-string (read-from-minibuffer (format "package %s dependency: " pkg-name))))))
                 (setcar (nthcdr 4 pkg-def) dep))))))
+
       (let ((pkgdir-def-file (expand-file-name (format "%s-pkg.el" pkg-name) pkg-dir)))
         (with-current-buffer
             (or (find-buffer-visiting pkgdir-def-file)
@@ -245,8 +247,11 @@
          (pkg-sym (package-desc-name pkg-desc))
          (pkg-name (symbol-name pkg-sym)))
     (when (package-installed-p pkg-sym)
-      (ignore-errors
-        (package-delete pkg-desc)))
+      (package-delete pkg-desc)
+      (when nil
+        (ignore-errors
+          (package-delete pkg-desc))))
+
     (let ((old-installed-pkgs (directory-files
                                package-user-dir
                                t
@@ -283,6 +288,7 @@
   (let ((base package-source-path))
     (dolist (f (directory-files base))
       (let ((pkgdir (expand-file-name f base)))
+        (sleep-for 2)
         (when (and (file-directory-p pkgdir)
                    (not (equal f ".."))
                    (not (equal f ".")))
