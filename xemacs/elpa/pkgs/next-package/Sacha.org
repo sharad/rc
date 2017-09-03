@@ -1017,7 +1017,7 @@ Allow my use of =C-x C-q= while in peep-dired mode.
 
 #+begin_src emacs-lisp  :tangle no
 (use-package peep-dired
-  :bind (:map peep-dired-mode-map 
+  :bind (:map peep-dired-mode-map
          ("SPC" . nil)
          ("<backspace>" . nil)))
 #+end_src
@@ -1029,7 +1029,7 @@ Allow my use of =C-x C-q= while in peep-dired mode.
     (interactive "MName: ")
     (let* ((file (dired-get-filename))
            new-name)
-      (cond 
+      (cond
       ((string-match "CameraZOOM-\\([0-9][0-9][0-9][0-9]\\)\\([0-9][0-9]\\)\\([0-9][0-9]\\)\\([0-9][0-9]\\)\\([0-9][0-9]\\)\\([0-9][0-9]\\)\\([0-9][0-9][0-9]\\)" file)
         (setq new-name
               (format "%s-%s-%s %s.%s.%s.%s %s.jpg"
@@ -2462,7 +2462,7 @@ this with to-do items than with projects or headings."
   (setq org-agenda-sorting-strategy
         '((agenda time-up priority-down tag-up category-keep effort-up)
           ;; (todo user-defined-up todo-state-up priority-down effort-up)
-          (todo todo-state-up priority-down effort-up) 
+          (todo todo-state-up priority-down effort-up)
           (tags user-defined-up)
           (search category-keep)))
   (setq org-agenda-cmp-user-defined 'my/org-sort-agenda-items-user-defined)
@@ -2811,7 +2811,7 @@ forget to assign tasks a date. I also want to keep track of stuck projects.
                 (my/flickr-extract-links-for-review "c:/sacha/dropbox/bin/flickr_metadata.csv" start end))
                ((eq system-type 'gnu/linux)  ; Flickr
                 (shell-command-to-string
-                (format "cd /home/sacha/code/node; nodejs flickr-list.js -b \"%s\" -e \"%s\" -f \"%s\"" 
+                (format "cd /home/sacha/code/node; nodejs flickr-list.js -b \"%s\" -e \"%s\" -f \"%s\""
                  (or start "") (or end "") (or filter ""))))
                ;; below method not used at the moment, but useful if flickr is being weird
                ((and t (eq system-type 'gnu/linux)) ;; Create links to sketches.sachachua.com/URL-encoded; not used at the moment
@@ -3157,7 +3157,7 @@ top-down hierarchy. My old code for refiling to an Org heading in the
 current buffer didn't work any more, but =helm-org-in-buffer-headings=
 seems to be promising. I made it a speed command (see the value of
 =org-use-speed-commands= elsewhere in my config) so that I can easily
-refile. 
+refile.
 
 #+begin_src emacs-lisp :tangle yes
   (defvar my/org-last-refile-marker nil "Marker for last refile")
@@ -3405,6 +3405,8 @@ This snippet turns =- [X]= into ☑ and =- [ ]= into ☐, but leaves =[-]= alone
 #+end_src
 
 **** Share my Emacs configuration
+     :PROPERTIES:
+     :END:
 
  This code gets around the fact that my config is called Sacha.org, but
  I want it to export as sacha-emacs.org in my Dropbox's public
@@ -3495,7 +3497,7 @@ http://orgmode.org/cgit.cgi/org-mode.git/plain/etc/ORG-NEWS
 So that I can easily add links at point. Formatted as an Org list for now.
 
 #+begin_src emacs-lisp :tangle yes
-  (defun my/org-protocol-insert-link (info) 
+  (defun my/org-protocol-insert-link (info)
     "Store and insert the link at point based on INFO."
     (org-protocol-store-link info)
     (with-current-buffer (window-buffer (selected-window))
@@ -3736,7 +3738,7 @@ Probably should make this a dblock someday."
 
   (defun my/org-quantified-hours-table ()
     (my/org-quantified-format-detailed-hours-as-table
-     (apply 'my/org-quantified-get-detailed-hours-based-on-range 
+     (apply 'my/org-quantified-get-detailed-hours-based-on-range
             (org-entry-get-with-inheritance "QUANTIFIED_CATEGORY")
             (my/org-get-invoice-range-based-on-date (org-entry-get-with-inheritance "INVOICE_DATE")))))
 
@@ -3747,7 +3749,7 @@ Probably should make this a dblock someday."
 #+end_src
 
 *** Archiving
-    
+
 From http://stackoverflow.com/questions/6997387/how-to-archive-all-the-done-tasks-using-a-single-command
 #+begin_src emacs-lisp :tangle yes
 (defun my/org-archive-done-tasks ()
@@ -3779,7 +3781,7 @@ Also, don't ask me for confirmation:
 #+begin_src emacs-lisp :tangle yes
 (use-package ox-reveal :disabled t)
 #+end_src
-*** Allow dashes in tags 
+*** Allow dashes in tags
 
  #+begin_src emacs-lisp :tangle yes
  (defun my/org-add-dashes-to-tag-regexps ()
@@ -3910,7 +3912,7 @@ This setting puts Org ASCII export links right after the text instead of in a se
           (goto-char (match-beginning 0))
           (let ((feed (xml-parse-region (point) (point-max))))
             (mapconcat (lambda (entry)
-              (format "- [[%s][%s]]" 
+              (format "- [[%s][%s]]"
                (xml-get-attribute (car (xml-get-children entry 'link)) 'href)
                (elt (car (xml-get-children entry 'title)) 2)))
               (-filter (lambda (entry)
@@ -4061,7 +4063,7 @@ I wrote some code to allow me to take a table like this:
 | future - 3rd plu. - ago / agere         | agent      |
 
 I can call =my/make-fill-in-quiz= to get a quiz buffer that looks like
-this. If I get stuck, =?= shows me a hint in the echo area. 
+this. If I get stuck, =?= shows me a hint in the echo area.
 
 To make it easier, I've left =case-fold-search= set to =nil= so that I
 don't have to match the case (uppercase vowels = macrons), but I can
@@ -4079,8 +4081,8 @@ Here's the code to display the quiz buffer.
          ;; Asking for hint
          (message "%s" (widget-get widget :correct))
          (widget-value-set widget ""))
-        ;; Use string-match to obey case-fold-search 
-        ((string-match 
+        ;; Use string-match to obey case-fold-search
+        ((string-match
           (concat "^"
                   (regexp-quote (widget-get widget :correct))
                   "$")
@@ -4094,7 +4096,7 @@ Here's the code to display the quiz buffer.
 
    (defun my/make-fill-in-quiz (&optional quiz-table)
      "Create an fill-in quiz for the Org table at point.
-The Org table's first column should have the questions and the second column 
+The Org table's first column should have the questions and the second column
 should have the answers."
      (interactive (list (org-babel-read-table)))
      (with-current-buffer (get-buffer-create "*Quiz*")
@@ -4109,19 +4111,19 @@ should have the answers."
                               :size 15
                               :correct (cadr row)
                               :notify 'my/check-widget-value)
-               (widget-insert "\n"))    
+               (widget-insert "\n"))
              quiz-table)
        (widget-create 'push-button
                       :table quiz-table
                       :notify (lambda (widget &rest ignore)
-                                (my/make-fill-in-quiz (widget-get widget :table))) 
+                                (my/make-fill-in-quiz (widget-get widget :table)))
                       "Reset")
        (use-local-map widget-keymap)
        (widget-setup)
        (goto-char (point-min))
        (widget-forward 1)
        (switch-to-buffer (current-buffer))))
-#+end_src  
+#+end_src
 
 Incidentally, I generated the table above from a larger table of Latin verb conjugations in the appendix of Wheelock's Latin, specified like this:
 
@@ -4157,14 +4159,14 @@ with the code:
 ,#+begin_src emacs-lisp :var present=present-indicative-active :var imperfect=imperfect-indicative-active :var future=future-indicative-active
   (defun my/label-latin-with-verbs (table verbs persons tense)
     (apply 'append
-           (-zip-with (lambda (row person) 
+           (-zip-with (lambda (row person)
                         (-zip-with (lambda (word verb)
                                      (list word (format "%s - %s - %s" tense person verb)))
                                    row verbs))
                       table (-cycle persons))))
-  (apply 'append 
+  (apply 'append
          (mapcar (lambda (tense)
-                   (my/label-latin-with-verbs 
+                   (my/label-latin-with-verbs
                     (symbol-value tense)
                     '("laudo / laudare" "moneo / monEre" "ago / agere" "audiO / audIre" "capiO / capere")
                     '("1st sing." "2nd sing." "3rd sing." "1st plu." "2nd plu." "3rd plu.")
@@ -4918,7 +4920,7 @@ with HTTPS sites.
                            (format "chanserv op %s %s"
                                    (erc-default-target)
                                    (erc-current-nick)) nil))
-       
+
             (defun erc-cmd-DEOPME ()
               "Deop myself from current channel."
               (erc-cmd-DEOP (format "%s" (erc-current-nick))))
@@ -5239,14 +5241,14 @@ I like using [[http://gmane.org][Gmane]] to read mailing lists, and I use IMAP t
         '((nntp "news.gmane.org")
           ;; (nnmaildir "mail"
           ;;            (directory "~/Maildir")
-          ;;            (directory-files nnheader-directory-files-safe) 
+          ;;            (directory-files nnheader-directory-files-safe)
           ;;            (get-new-mail nil))
           ;; (nnimap "imap.gmail.com"
           ;;         (nnimap-address "imap.gmail.com")
           ;;         (nnimap-server-port 993)
           ;;         (nnimap-stream ssl)
           ;;         (nnimap-authenticator login))
-          (nnimap "localhost" 
+          (nnimap "localhost"
             (nnimap-address "localhost")
             (nnimap-stream network)
             (nnimap-user "sacha")
@@ -5351,7 +5353,7 @@ Make it easier to review my credit card transactions
 #+begin_src emacs-lisp :tangle yes
 (use-package ledger-mode
 :load-path "~/vendor/ledger/lisp"
-:mode "\\.ledger$" 
+:mode "\\.ledger$"
 )
 
 #+end_src
@@ -5496,7 +5498,7 @@ M-x edit-list makes it easier to edit an Emacs Lisp list.
 (use-package edit-list :commands edit-list)
 #+end_src
 
-*** Quickly jump to positions                                         
+*** Quickly jump to positions
     :PROPERTIES:
     :ID:       56f173e7-d2a2-4589-84d7-c6b435c8a5f8
     :DRILL_LAST_INTERVAL: 0.0
@@ -5664,7 +5666,7 @@ cool. On Windows, these things help a little.
           )
     )
 #+end_src
-** Encryption 
+** Encryption
 
 #+begin_src emacs-lisp :tangle yes
 (setq epa-file-encrypt-to '("sacha@sachachua.com"))
@@ -5713,7 +5715,7 @@ Consider only documented, non-obsolete functions."
   (let (result)
     (mapatoms
      (lambda (s)
-       (when (and (commandp s) 
+       (when (and (commandp s)
                   (documentation s t)
                   (null (get s 'byte-obsolete-info)))
          (setq result (cons s result)))))
@@ -5860,7 +5862,7 @@ Let's see how that goes!
 
                 ;; Sacha: Commented this section out so that my stylus
                 ;; clicks don't get reported as mouse movement
-              
+
 				  ;; (when (and mouse-1 (mouse-movement-p event))
 				  ;;   (push event unread-command-events)
 				  ;;   (setq event oevent)
@@ -5921,7 +5923,7 @@ Let's see how that goes!
 #+end_src
 * Inactive/infrequent things
 ** Org - mapping blog posts and image URLs from bulk exports
-#+begin_src emacs-lisp  :tangle no 
+#+begin_src emacs-lisp  :tangle no
   (defun my/org-map-blog-and-image-urls ()
     "Extract and map blog post / image URLs."
     (interactive)
@@ -6972,7 +6974,7 @@ recently-opened files first.
               (widget-create 'push-button
                              :notify (lambda (&rest ignore)
                                        (my/org-clock-in-and-track-by-name "Draw"))
-                             "Track: Draw")        
+                             "Track: Draw")
               (widget-create 'push-button
                              :notify (lambda (&rest ignore)
                                        (my/org-clock-in-and-track-by-name "Draw journal entries"))
@@ -6985,7 +6987,7 @@ recently-opened files first.
                              :notify (lambda (&rest ignore)
                                        (my/open-image (my/prepare-index-card-template nil (org-read-date))))
                              "Date")
-              (insert "\n")        
+              (insert "\n")
               (widget-create 'push-button
                              :notify (lambda (&rest ignore)
                                        (shell-command "~/bin/add-output-png"))
@@ -7001,7 +7003,7 @@ recently-opened files first.
                                        (my/rotate-screen 0)
                                        (delete-window)
                                        (my/rename-scanned-cards))
-                             "Rename")        
+                             "Rename")
               (widget-create 'push-button
                              :notify (lambda (&rest ignore)
                                        (my/rotate-screen 0)
@@ -7078,7 +7080,7 @@ recently-opened files first.
                                (-filter base (directory-files dir t ".*\\.\\(png\\|psd\\|tiff\\|jpg\\)?$"))
                              (directory-files
                               dir t
-                              (concat 
+                              (concat
                                "\\("
                                (if as-regexp base (regexp-quote base))
                                "\\)"
@@ -7109,7 +7111,7 @@ recently-opened files first.
       "Display a quick slideshow of sketches in LIST.
     If LIST is a string, look up those sketch filenames in my Flickr copy."
       (interactive "MFilter: \nP")
-      (apply 'call-process "feh" nil nil nil "-D" "1" "-F" (if shuffle "-z" """") 
+      (apply 'call-process "feh" nil nil nil "-D" "1" "-F" (if shuffle "-z" """")
              (-filter (lambda (x) (string-match "photostream" x))
                       (if (stringp list)
                           (my/list-sketches list t)
@@ -7128,7 +7130,7 @@ recently-opened files first.
                                 (if name
                                     (concat " "
                                             (my/convert-sketch-title-to-filename (or name "")))
-                                  "") 
+                                  "")
                                   "." (file-name-extension my/index-card-template-file))
                         directory))
             (unless (file-exists-p name) (copy-file template name))
@@ -7244,10 +7246,10 @@ Make it easy to follow up:
   Create an index card with it as a layer, and add the ref to the filename."
       (interactive (list (helm-read-file-name "Image: " :initial-input "~/sketches/")))
       ;; Allow the specification of a short identifier
-      (unless (file-exists-p filename) 
+      (unless (file-exists-p filename)
         (setq filename (car (directory-files "~/sketches" t (concat "^" filename)))))
       (let ((async-shell-command-buffer 'new-buffer)
-            (index-card (my/prepare-index-card-template      
+            (index-card (my/prepare-index-card-template
                          (format "-- index card ref %s"
                                  (and (string-match "^[^ \\.]+" (file-name-nondirectory filename))
                                       (match-string 0 (file-name-nondirectory filename)))))))
@@ -7629,9 +7631,9 @@ Aspect ratio is width / height
            (full-filename (my/get-index-card-filename filename)))
       (if full-filename
           (my/open-image full-filename)
-        (my/create-index-card-montage 
+        (my/create-index-card-montage
          (mapcar 'my/get-index-card-filename
-                 (my/extract-image-filenames (min (point) (mark)) (max (point) (mark)))) 
+                 (my/extract-image-filenames (min (point) (mark)) (max (point) (mark))))
          "2x"
          (my/prepare-index-card-template filename)))))
 

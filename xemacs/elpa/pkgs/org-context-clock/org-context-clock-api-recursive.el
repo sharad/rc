@@ -1,4 +1,4 @@
-;;; org-context-clocking-api-recursive.el --- org-context-clocking-api               -*- lexical-binding: t; -*-
+;;; org-context-clock-api-recursive.el --- org-context-clock-api               -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016  sharad
 
@@ -25,40 +25,40 @@
 ;;; Code:
 
 
-;; "org entries access api for recursive task"
+;; "org tasks access api for recursive task"
 
-(defvar org-context-clocking-entry-tree-task-infos nil
-  "Recursive org entries tree")
+(defvar org-context-clock-task-tree-tasks nil
+  "Recursive org tasks tree")
 
-(defun org-entry-get-task-infos (files)
-  "Build recursive org entries tree from files"
-  (org-context-clocking-entry-tree-task-infos-tree files))
+(defun org-task-get-tasks (files)
+  "Build recursive org tasks tree from files"
+  (org-context-clock-entry-tree-tasks-tree files))
 
-(defvar org-context-clocking-entry-tree-task-info-root-org-file nil
-  "Root file to build recursive org entries tree")
+(defvar org-context-clock-task-tree-task-root-org-file nil
+  "Root file to build recursive org tasks tree")
 
 ;;;###autoload
-(defun org-context-clocking-setup-entry-tree-task-info-root-org-file (file)
+(defun org-context-clock-setup-task-tree-task-root-org-file (file)
   (setq
-   org-context-clocking-entry-tree-task-info-root-org-file file))
+   org-context-clock-entry-tree-task-root-org-file file))
 
 ;;;###autoload
-(defun org-context-clocking-entry-recursive-update-task-infos (&optional force) ;; API (org-context-clocking-api-set :predicate :update  'org-entry-list-update-task-infos)
-  "Update recursive org entries tree"
+(defun org-context-clock-task-recursive-update-tasks (&optional force) ;; API (org-context-clock-api-set :predicate :update  'org-entry-list-update-tasks)
+  "Update recursive org tasks tree"
   (interactive "P")
-  (if org-context-clocking-entry-tree-task-info-root-org-file
-      (if (file-exists-p org-context-clocking-entry-tree-task-info-root-org-file)
+  (if org-context-clock-entry-tree-task-root-org-file
+      (if (file-exists-p org-context-clock-entry-tree-task-root-org-file)
           (unless (and (not force)
-                       org-context-clocking-entry-tree-task-infos)
-            (setq org-context-clocking-entry-tree-task-infos
-                  (org-context-clocking-entry-tree-get-task-infos
-                   org-context-clocking-entry-tree-task-info-root-org-file)))
-          (message "file %s not exists." org-context-clocking-entry-tree-task-info-root-org-file))
-      (message "org-context-clocking-entry-tree-task-info-root-org-file is nil"))
-  org-context-clocking-entry-tree-task-infos)
-(org-context-clocking-api-set :recursive :update  'org-context-clocking-entry-recursive-update-task-infos)
+                       org-context-clock-entry-tree-tasks)
+            (setq org-context-clock-entry-tree-tasks
+                  (org-context-clock-entry-tree-get-tasks
+                   org-context-clock-entry-tree-task-root-org-file)))
+          (message "file %s not exists." org-context-clock-entry-tree-task-root-org-file))
+      (message "org-context-clock-entry-tree-task-root-org-file is nil"))
+  org-context-clock-entry-tree-tasks)
+(org-context-clock-access-api-set :recursive :update  'org-context-clock-task-recursive-update-tasks)
 
-(defun org-context-clocking-entry-tree-map-subheading (fun)
+(defun org-context-clock-task-tree-map-subheading (fun)
   "Call FUN for every heading underneath the current heading"
   ;; (org-back-to-heading)
   (let ((level (funcall outline-level))
@@ -72,8 +72,8 @@
             (push (funcall fun) collection))))
     collection))
 
-(defun org-context-clocking-entry-tree-build (collector &optional file)
-  "Build recursive org entries from org FILE (or current buffer) using COLLECTOR function e.g. org-context-clocking-entry-collect-task-info"
+(defun org-context-clock-task-tree-build (collector &optional file)
+  "Build recursive org tasks from org FILE (or current buffer) using COLLECTOR function e.g. org-context-clock-entry-collect-task"
   (with-current-buffer (if file
                            (find-file-noselect file)
                            (current-buffer))
@@ -81,10 +81,10 @@
     (let* ((entry (funcall collector))
            (sub-tree
             (append
-             (org-context-clocking-entry-tree-map-subheading 'org-context-clocking-entry-tree-collect-task-info)
+             (org-context-clock-entry-tree-map-subheading 'org-context-clock-entry-tree-collect-task)
              (let* ((file (if file file (buffer-file-name)))
                     (subtree-file
-                     (org-context-clocking-entry-task-info-get-property entry :SUBTREEFILE))
+                     (org-context-clock-entry-task-get-property entry :SUBTREEFILE))
                     (subtree-file
                      (if (and subtree-file
                               (file-relative-name subtree-file))
@@ -97,27 +97,27 @@
                     subtree-file
                     (file-readable-p subtree-file))
                    (list
-                    (org-context-clocking-entry-tree-collect-task-info subtree-file)))))))
+                    (org-context-clock-entry-tree-collect-task subtree-file)))))))
       (if sub-tree
-          (org-context-clocking-entry-task-info-set-property entry :sub-tree sub-tree)
+          (org-context-clock-entry-task-set-property entry :sub-tree sub-tree)
           entry))))
 
-(defun org-context-clocking-entry-tree-collect-task-info (&optional file)
-  "Build recursive org entries from org FILE (or current buffer)"
-  (org-context-clocking-entry-tree-build 'org-context-clocking-entry-collect-task-info file))
+(defun org-context-clock-task-tree-collect-task (&optional file)
+  "Build recursive org tasks from org FILE (or current buffer)"
+  (org-context-clock-entry-tree-build 'org-context-clock-entry-collect-task file))
 
-(defun org-context-clocking-entry-tree-task-infos-tree (&optional file)
-  "Build recursive org entries from org FILE (or current buffer)"
-  (org-context-clocking-entry-tree-collect-task-info file))
+(defun org-context-clock-task-tree-tasks-tree (&optional file)
+  "Build recursive org tasks from org FILE (or current buffer)"
+  (org-context-clock-entry-tree-collect-task file))
 
-(defun org-context-clocking-entry-tree-get-task-infos (&optional file)
-  "Build recursive org entries from org FILE (or current buffer)"
+(defun org-context-clock-task-tree-get-tasks (&optional file)
+  "Build recursive org tasks from org FILE (or current buffer)"
   (let ()
-    (org-context-clocking-entry-tree-collect-task-info file)))
+    (org-context-clock-entry-tree-collect-task file)))
 
-(defun org-context-clocking-entry-tree-task-node-p (tx)
-  "Test org TX is org entries tree non-leaf node"
-  (org-context-clocking-entry-task-info-get-property tx :sub-tree))
+(defun org-context-clock-task-tree-task-node-p (tx)
+  "Test org TX is org tasks tree non-leaf node"
+  (org-context-clock-entry-task-get-property tx :sub-tree))
 
 (progn ;; "tree api"
   (defun tree-mapcar-nodes (nonleafnodep fn tree args)
@@ -154,25 +154,25 @@
               (plist-put tree :sub-tree subtree)))
         (if (funcall predicate tree args) tree)))
 
-  (defun org-context-clocking-tree-mapcar-task-infos (fn tree args)
+  (defun org-context-clock-tree-mapcar-tasks (fn tree args)
     "Tree mapcar return result for FN for all TREE nodes with ARGS"
     (tree-mapcar-nodes
-     'org-context-clocking-entry-tree-task-node-p fn tree args))
+     'org-context-clock-task-tree-task-node-p fn tree args))
 
-  (defun org-context-clocking-tree-mapc-task-infos (fn tree args)
+  (defun org-context-clock-tree-mapc-tasks (fn tree args)
     "Tree mapc run FN for all TREE nodes with ARGS"
     (tree-mapc-nodes
-     'org-context-clocking-entry-tree-task-node-p fn tree args))
+     'org-context-clock-entry-tree-task-node-p fn tree args))
 
-  (defun org-context-clocking-tree-remove-if-not-task-infos (fn tree args)
+  (defun org-context-clock-tree-remove-if-not-tasks (fn tree args)
     "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE"
     (tree-remove-if-not-nodes
-     'org-context-clocking-entry-tree-task-node-p fn tree args))
+     'org-context-clock-entry-tree-task-node-p fn tree args))
 
   ;; (testing
   ;;  (setq
   ;;   testxx-remove
-  ;;   (tree-remove-if-not-task-infos
+  ;;   (tree-remove-if-not-tasks
   ;;    #'(lambda (e) (eq (plist-get e :pre-blank) 4))
   ;;    testxx))
 
@@ -191,28 +191,28 @@
   ;;                         )))
   )
 
-;; API (org-context-clocking-api-set :predicate :update  'org-entry-list-update-task-infos)
-(defun org-context-clocking-recursive-matching-entries (context-plist)
-  (let ((tasks (org-context-clocking-entry-recursive-update-task-infos))
+;; API (org-context-clock-api-set :predicate :update  'org-task-list-update-tasks)
+(defun org-context-clock-recursive-matching-tasks (context)
+  (let ((tasks (org-context-clock-task-recursive-update-tasks))
         (matched '()))
-      (org-context-clocking-debug "org-context-clocking-entries-associated-to-context-plist-by-keys: BEFORE matched %s[%d]" matched (length matched))
-      (org-context-clocking-tree-mapc-task-infos
+      (org-context-clock-debug "org-context-clock-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
+      (org-context-clock-tree-mapc-tasks
        #'(lambda (task args)
            (let ((rank
-                  (funcall org-context-clocking-api-entry-associated-to-context-plist-p task args)))
-             (unless rank (error "org-context-clocking-entries-associated-to-context-plist-by-keys[lambda]: rank is null"))
+                  (funcall org-context-clock-api-entry-associated-to-context-p task args)))
+             (unless rank (error "org-context-clock-entries-associated-to-context-by-keys[lambda]: rank is null"))
              (when (> rank 0)
                (push task matched)
-               (org-context-clocking-debug "org-context-clocking-entries-associated-to-context-plist-by-keys[lambda]: task %s MATCHED RANK %d"
-                        (org-context-clocking-entry-task-info-get-heading task)
+               (org-context-clock-debug "org-context-clock-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
+                        (org-context-clock-entry-task-get-heading task)
                         (length matched)))))
        tasks
-       context-plist)
+       context)
 
-      (org-context-clocking-debug "org-context-clocking-entries-associated-to-context-plist-by-keys: AFTER matched %s[%d]" "matched" (length matched))
+      (org-context-clock-debug "org-context-clock-entries-associated-to-context-by-keys: AFTER matched %s[%d]" "matched" (length matched))
 
       matched))
-(org-context-clocking-api-set :recursive :match  'org-context-clocking-recursive-matching-entries)
+(org-context-clock-access-api-set :recursive :match  'org-context-clock-recursive-matching-tasks)
 
-(provide 'org-context-clocking-api-recursive)
-;;; org-context-clocking-api-recursive.el ends here
+(provide 'org-context-clock-api-recursive)
+;;; org-context-clock-api-recursive.el ends here

@@ -1,4 +1,4 @@
-;;; org-context-clocking-api-interaction.el --- org-context-clocking-api               -*- lexical-binding: t; -*-
+;;; org-context-clock-api-interaction.el --- org-context-clock-api               -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016  sharad
 
@@ -46,52 +46,52 @@
 (defun org-context-clock-get-property (prop)
   (org-get-property prop))
 
-(defun org-context-clock-set-property (prop value context-plist &rest args)
+(defun org-context-clock-set-property (prop value context &rest args)
   (org-set-property prop
                     (if value
                         value
                         (funcall
                          (org-context-clock-property-get-function prop)
-                         prop context-plist args))))
+                         prop context args))))
 
 (progn
   (setq org-property-set-functions-alist nil)
   (org-context-clock-property-set-function "Root"
-                                           '(lambda (prop context-plist &rest args)
-                                             (let* ((file (if context-plist (plist-get context-plist :file)))
+                                           '(lambda (prop context &rest args)
+                                             (let* ((file (if context (plist-get context :file)))
                                                     (dir (if (stringp file) (file-name-directory file) default-directory))
                                                     (prompt (concat prop ": ")))
                                                (ido-read-directory-name
                                                 prompt
                                                 dir dir))))
   (org-context-clock-property-set-function "SubtreeFile"
-                                           '(lambda (prop context-plist &rest args)
+                                           '(lambda (prop context &rest args)
                                              (let ((prompt (concat prop ": ")))
                                                (file-relative-name
                                                 (ido-read-file-name ;; org-iread-file-name
                                                  prompt
                                                  default-directory default-directory))))))
 
-;; (defun task-info-add-root ()
+;; (defun task-add-root ()
 ;;   (interactive)
 ;;   (if (org-set-property "Root" nil)
-;;       (org-clocking-entry-update-task-infos t)))
-;; (defun task-info-add-subtree-file ()
+;;       (org-clocking-task-update-tasks t)))
+;; (defun task-add-subtree-file ()
 ;;   (interactive)
 ;;   (if (org-set-property "SubtreeFile" nil)
-;;       (org-clocking-entry-update-task-infos t)))
+;;       (org-clocking-task-update-tasks t)))
 
-(defun org-context-clocking-select-propetry (&optional prompt)
+(defun org-context-clock-select-propetry (&optional prompt)
   ;; (ido-completing-read
   (completing-read
    (or prompt "proptery: ")
    (list "Root" "SubtreeFile" "Edit" "Done") nil t))
 
-(defun org-context-clocking-test (context-plist timeout)
+(defun org-context-clock-test (context timeout)
   (interactive '(nil nil))
   (lexical-let* ((timeout (or timeout 17))
-                 (context-plist (or context-plist (org-context-clocking-build-context-plist)))
-                 (buff (plist-get context-plist :buffer)))
+                 (context (or context (org-context-clock-build-context)))
+                 (buff (plist-get context :buffer)))
     (message "test %s" timeout)))
 
 (defun org-flag-proprty-drawer-at-marker (marker flag)
@@ -103,7 +103,7 @@
         (let ((range (org-get-property-block (point) 'force)))
           ;; first show hreading
           (when (eq org-cycle-subtree-status 'folded)
-            (unless flag (org-show-entry))
+            (unless flag (org-show-task))
             (org-unlogged-message "CHILDREN")
             (setq org-cycle-subtree-status 'children))
           ;; show expand property if flag is nil, else hide
@@ -124,17 +124,17 @@
             (message "reached to drawer1")))))))
 
 ;;;###autoload
-(defun org-context-clocking-add-context-to-org-heading (context-plist timeout)
+(defun org-context-clock-add-context-to-org-heading (context timeout)
   (interactive '(nil nil))
   (lexical-let* ((timeout (or timeout 17))
-                 (context-plist (or context-plist (org-context-clocking-build-context-plist)))
-                 (buff (plist-get context-plist :buffer)))
+                 (context (or context (org-context-clock-build-context)))
+                 (buff (plist-get context :buffer)))
     (if (and
          (eq (current-buffer) buff)
          (buffer-live-p buff)
          (not
           (eq buff
-              (get-buffer "*helm-mode-org-context-clocking-add-context-to-org-heading*"))))
+              (get-buffer "*helm-mode-org-context-clock-add-context-to-org-heading*"))))
 
         (org-timed-miniwin-file-loc-with-refile
             file loc timeout nil
@@ -162,9 +162,9 @@
                       ;; try to read values of properties.
                       (let ((prop nil))
                         (while (not
-                                (member (setq prop (org-context-clocking-select-propetry)) '("Edit" "Done")))
-                          (when (org-context-clock-set-property prop nil context-plist)
-                            (org-clocking-entry-update-task-infos t)))
+                                (member (setq prop (org-context-clock-select-propetry)) '("Edit" "Done")))
+                          (when (org-context-clock-set-property prop nil context)
+                            (org-context-clock-task-update-tasks t)))
                         (cond
                           ((string-equal "Done" prop)
                            (save-excursion
@@ -193,15 +193,15 @@
                    (eq (current-buffer) buff)
                    (buffer-live-p buff)
                    (eq buff
-                       (get-buffer "*helm-mode-org-context-clocking-add-context-to-org-heading*")))))))
+                       (get-buffer "*helm-mode-org-context-clock-add-context-to-org-heading*")))))))
 
 ;;;###autoload
-(defun org-context-clocking-add-context-to-org-heading-when-idle (context-plist timeout)
+(defun org-context-clock-add-context-to-org-heading-when-idle (context timeout)
   (message "called add-context-to-org-heading-when-idle")
   (run-with-idle-timer-nonobtrusive-simple
    7 nil
    #'(lambda (args)
-       (apply 'org-context-clocking-add-context-to-org-heading args)) (list context-plist timeout)))
+       (apply 'org-context-clock-add-context-to-org-heading args)) (list context timeout)))
 
-(provide 'org-context-clocking-api-interaction)
-;;; org-context-clocking-api-interaction.el ends here
+(provide 'org-context-clock-api-interaction)
+;;; org-context-clock-api-interaction.el ends here
