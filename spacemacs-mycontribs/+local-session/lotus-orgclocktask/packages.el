@@ -40,7 +40,7 @@
     org-clock-utils-lotus
     org-clock-daysummary
     (org-clocktable-alt :location local) ;TODO
-    org-context-clocking
+    org-context-clock
     org-misc-utils-lotus
     (org-nagora-report :location local)
     (org-timesheet :location local)
@@ -178,10 +178,10 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-orgclocktask/init-org-context-clocking ()
+(defun lotus-orgclocktask/init-org-context-clock ()
   (progn
-    (use-package org-context-clocking
-        ;; :commands (org-context-clocking-insinuate org-context-clocking-uninsinuate)
+    (use-package org-context-clock
+        ;; :commands (org-context-clock-insinuate org-context-clock-uninsinuate)
         :defer t
         :config
         (progn
@@ -190,11 +190,11 @@ Each entry is either:
                 :defer t
                 :config
                 (progn
-                  (org-context-clocking-setup-entry-tree-task-info-root-org-file
+                  (org-context-clock-setup-entry-tree-task-info-root-org-file
                    (expand-file-name "start.org" (task-party-base-dir))))))
 
           (progn
-            (setq org-context-clocking-entry-tree-task-info-root-org-file
+            (setq org-context-clock-entry-tree-task-info-root-org-file
                   (expand-file-name "start.org" (task-party-base-dir))))
 
           (progn
@@ -210,7 +210,7 @@ Each entry is either:
                '(lambda ()
                  (run-at-time-or-now 70
                   (lambda ()
-                    (org-context-clocking-insinuate)))))))))
+                    (org-context-clock-insinuate)))))))))
 
     (use-package startup-hooks
         :defer t
@@ -221,14 +221,14 @@ Each entry is either:
              '(lambda ()
                (run-at-time-or-now 70
                 (lambda ()
-                  (org-context-clocking-insinuate))))
+                  (org-context-clock-insinuate))))
              t)
 
             (add-to-enable-startup-interrupting-feature-hook
              '(lambda ()
                (run-at-time-or-now 70
                 (lambda ()
-                  (org-context-clocking-insinuate))))
+                  (org-context-clock-insinuate))))
              t))))))
 
 (defun lotus-orgclocktask/init-org-misc-utils-lotus ()
