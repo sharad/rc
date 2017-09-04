@@ -104,7 +104,7 @@
 
 (defun org-context-clock-task-tree-collect-task (&optional file)
   "Build recursive org tasks from org FILE (or current buffer)"
-  (org-context-clock-task-tree-build 'org-context-clock-task-collect-task file))
+  (org-context-clock-task-tree-build 'org-context-clock-collect-task file))
 
 (defun org-context-clock-task-tree-tasks-tree (&optional file)
   "Build recursive org tasks from org FILE (or current buffer)"
