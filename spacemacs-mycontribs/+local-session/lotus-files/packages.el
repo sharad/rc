@@ -37,6 +37,7 @@
 (defconst lotus-files-packages
   '(
     ;; (PACKAGE :location local)
+    helm
     (files :location local)
     find-dired
     find-file-in-project
@@ -80,6 +81,16 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+
+(defun lotus-files/post-init-helm ()
+  (use-package helm
+      :defer t
+      :config
+      (progn
+        (setq
+         helm-ff-skip-boring-files t
+         ))))
 
 (defun lotus-files/init-files ()
   (use-package files
