@@ -49,7 +49,8 @@
                                                    (when (and w (windowp w) (window-valid-p w))
                                                      (delete-window w)
                                                      (when (active-minibuffer-window)
-                                                       (abort-recursive-edit)))))
+                                                       (abort-recursive-edit)
+                                                       (message nil)))))
                                              buf-name)))
     (unwind-protect
          (safe-org-refile-get-location)

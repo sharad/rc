@@ -99,6 +99,11 @@ Each entry is either:
       (progn
 
         (progn
+          (setq
+           view-read-only t
+           ))
+
+        (progn
           (defconst *workdirectory* (expand-file-name "paradise/" "~/.."))
           (when (and
                  (boundp '*workdirectory*)

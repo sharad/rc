@@ -38,7 +38,7 @@
   '(
     (reader-mode :location local)
     page-ext
-    )
+    files)
   "The list of Lisp packages required by the lotus-reader layer.
 
 Each entry is either:
@@ -148,5 +148,15 @@ horizontal line of `page-break-string-char' characters."
         ;; (turn-on-page-break-mode)
         ;; (turn-off-page-break-mode)
         ))))
+
+(defun lotus-reader/post-init-files ()
+  (use-package files
+      :defer t
+      :config
+      (progn
+        (progn
+          (setq
+           view-read-only t
+           )))))
 
 ;;; packages.el ends here
