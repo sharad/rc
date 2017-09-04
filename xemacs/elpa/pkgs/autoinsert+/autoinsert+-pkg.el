@@ -1,1 +1,1 @@
-(define-package "autoinsert+" "20170904.232" "auto insert+" nil)
+(define-package "autoinsert+" "20170904.1539" "auto insert+" nil)
