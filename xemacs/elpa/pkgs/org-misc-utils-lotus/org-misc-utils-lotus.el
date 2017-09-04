@@ -53,7 +53,9 @@
                                                        (message nil)))))
                                              buf-name)))
     (unwind-protect
-         (safe-org-refile-get-location)
+         (progn
+           (safe-org-refile-get-location)
+           (cancel-timer timer))
       (cancel-timer timer))))
 
 
