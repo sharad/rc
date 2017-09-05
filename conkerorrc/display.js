@@ -14,30 +14,30 @@ define_key(content_buffer_normal_keymap, "d", "follow-new-buffer-background");
 // var newSS, styles='* { background: #428a42 ! important; color: white !important }'
 // var newSS, styles='* { background: DarkGreen ! important; color: white !important }'
 // var newSS, styles='* { background: DarkSlateGray  ! important; color: white !important }'
-function generate_darken_css_attribs()
+function generate_darken_css_attribs(heavy)
 {
     var styles =
         // '* { background-color: Black  ! important; color: grey !important }'
-        '* { background-color: Black; color: grey !important }'
+        '* { background-color: Black ' + (heavy ? "!important" : "") + '; color: grey !important }'
         + ':link, :link * { color: #4986dd !important }'
         + ':visited, :visited * { color: #d75047 !important }';
     var attribs = { rel: "stylesheet", href: "data:text/css, " + escape(styles)};
     return attribs;
 }
 
-function createStyleElement(doc, id, type)
+function createStyleElement(doc, id, type, heavy)
 {
-    var attribs = generate_darken_css_attribs();
+    var attribs = generate_darken_css_attribs(heavy);
     var newEl = doc.createElement(type);
     newEl.id = id;
     for(var k in attribs) newEl[k] = attribs[ k ];
     return newEl;
 }
 
-function addCustomElement(doc, id, type)
+function addCustomElement(doc, id, type, heavy)
 {
     doc.getElementsByTagName("head")[0]
-        .appendChild( createStyleElement(doc, id, type) );
+        .appendChild( createStyleElement(doc, id, type, heavy) );
 }
 
 function removeCustomElement(doc, id, type)
@@ -46,24 +46,39 @@ function removeCustomElement(doc, id, type)
     if (delEl) delEl.parentNode.removeChild(delEl);
 }
 
-function toggle_local_darken_page(I)
+function toggle_local_darken_page(doc, heavy)
 {
-    var id = "_darken_page_";
-    var doc = I.window.buffers.current.document;
+    var id = "_darken_page_" + (heavy ? "heavy" : "light") + "_";
 
     if (doc.getElementById(id))
         removeCustomElement(doc, id, "link");
     else
-        addCustomElement(doc, id, "link");
+        addCustomElement(doc, id, "link", heavy);
 }
 
-interactive("toggle-local-darken-page",
+function toggle_local_light_darken_page(I)
+{
+    var doc = I.window.buffers.current.document;
+    toggle_local_darken_page(doc, false);
+}
+
+function toggle_local_heavy_darken_page(I)
+{
+    var doc = I.window.buffers.current.document;
+    toggle_local_darken_page(doc, true);
+}
+
+interactive("toggle-local-light-darken-page",
             "Darken the page in an attempt to save your eyes.",
-            toggle_local_darken_page);
+            toggle_local_light_darken_page);
+interactive("toggle-local-heavy-darken-page",
+            "Darken the page in an attempt to save your eyes.",
+            toggle_local_heavy_darken_page);
 
 // add_hook('buffer_loaded_hook', toggle_local_darken_page, true, true);
 
-define_key(content_buffer_normal_keymap, "f1", "toggle-local-darken-page");
+define_key(content_buffer_normal_keymap, "f1", "toggle-local-light-darken-page");
+define_key(content_buffer_normal_keymap, "f2", "toggle-local-heavy-darken-page");
 //}}
 
 
