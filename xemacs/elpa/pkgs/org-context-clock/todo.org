@@ -1,0 +1,6 @@
+
+* Window to add property is not properly working, correct it.
+
+* Support for log-note with events
+- when writing mail
+- after detecting change of N number of lines, word etc.
