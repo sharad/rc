@@ -113,7 +113,7 @@
     org-clock-check-long-timer-period
     org-clock-check-short-timer-period
     nil
-    #'(lambda ()
+    #'(lambda (arg)
         (unless (org-clock-is-active)
           (org-clock-in-if-not)))
     nil
@@ -298,7 +298,7 @@ using three `C-u' prefix arguments."
                 (if (org-entry-get nil "Effort")
                     (save-excursion
                       (forward-line -2)
-                      (org-timer-set-timer nil))
+                      (org-timer-set-timer))
                     (call-interactively 'org-timer-set-timer)))
               (save-buffer)
               (org-save-all-org-buffers)))

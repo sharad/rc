@@ -40,6 +40,10 @@
              (remove-if '(lambda (e) (null (car e))) org-refile-targets))))
     (org-refile-get-location)))
 
+
+(defun quiet--select-frame (frame &optional norecord)
+  (select-frame frame norecord))
+
 (defun safe-timed-org-refile-get-location (timeout)
   (lexical-let* ((current-command (or (helm-this-command) this-command))
                  (str-command     (helm-symbol-name current-command))
@@ -53,14 +57,18 @@
                                                      (delete-window w)
                                                      (when (active-minibuffer-window)
                                                        (abort-recursive-edit)
-                                                       (message nil)))))
+                                                       (message nil))
+                                                     (when (fboundp 'remove-function)
+                                                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))
                                              buf-name)))
     (unwind-protect
          (progn
-           (safe-org-refile-get-location)
-           (cancel-timer timer))
+           (when (fboundp 'add-function)
+             (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+           (safe-org-refile-get-location))
+      (when (fboundp 'remove-function)
+        (remove-function (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
       (cancel-timer timer))))
-
 
 ;; (progn ;; "org macro"
 
