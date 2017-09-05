@@ -211,7 +211,9 @@ using three `C-u' prefix arguments."
                   (org-timer-set-mode-line 'on))
                 (message "No timer set"))))))
 
-(advice-add 'org-timer-set-timer :around #'replace-org-timer-set-timer)
+;; (advice-add 'org-timer-set-timer :around #'replace-org-timer-set-timer)
+
+(add-function :override (symbol-function 'org-timer-set-timer) #'replace-org-timer-set-timer)
 
 (eval-when-compile
   (require 'org-misc-utils-lotus))
