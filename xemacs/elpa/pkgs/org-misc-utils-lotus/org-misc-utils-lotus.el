@@ -27,6 +27,9 @@
 (defvar safe-org-refile-get-location-modes
   '(emacs-lisp-mode org-mode))
 
+(setq
+ safe-org-refile-get-location-modes '(org-mode))
+
 (defun safe-org-refile-get-location-p ()
   (member major-mode safe-org-refile-get-location-modes))
 
