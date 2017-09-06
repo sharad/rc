@@ -95,6 +95,10 @@
 
 (load-all-modules)
 
+;; enable
+(when (fboundp 'stumptray)
+    (stumptray))
+
 (defcommand load-all-external-modules () ()
             (load-all-modules))
 
