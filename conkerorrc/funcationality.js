@@ -759,7 +759,7 @@ interactive("enable_scrollbars", "Enable Scrollbars",
 
 interactive("open-gmail", "Go to gmail", "follow",
             $browser_object = "http://gmail.com/");
-define_key(content_buffer_normal_keymap, "f2", "open-gmail");
+define_key(content_buffer_normal_keymap, "f3", "open-gmail");
 // }}
 
 // {{ Disable fixed background image or opacity in CSS

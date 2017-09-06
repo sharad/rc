@@ -39,21 +39,34 @@ function addCustomElement(doc, id, type, heavy)
     doc.getElementsByTagName("head")[0]
         .appendChild( createStyleElement(doc, id, type, heavy) );
 }
-
 function removeCustomElement(doc, id, type)
 {
     var delEl = doc.getElementById(id);
     if (delEl) delEl.parentNode.removeChild(delEl);
 }
-
-function toggle_local_darken_page(doc, heavy)
+function build_darken_id(heavy)
 {
-    var id = "_darken_page_" + (heavy ? "heavy" : "light") + "_";
-
+    return "_darken_page_" + (heavy ? "heavy" : "light") + "_";
+}
+function disable_local_darken_page(doc, heavy)
+{
+    var id = build_darken_id(heavy);
     if (doc.getElementById(id))
         removeCustomElement(doc, id, "link");
-    else
+}
+function enable_local_darken_page(doc, heavy)
+{
+    var id = build_darken_id(heavy);
+    if (!doc.getElementById(id))
         addCustomElement(doc, id, "link", heavy);
+}
+function toggle_local_darken_page(doc, heavy)
+{
+    var id = build_darken_id(heavy);
+    if (!doc.getElementById(id))
+        enable_local_darken_page(doc, heavy);
+    else
+        disable_local_darken_page(doc, heavy);
 }
 
 function toggle_local_light_darken_page(I)
@@ -83,33 +96,53 @@ define_key(content_buffer_normal_keymap, "f2", "toggle-local-heavy-darken-page")
 
 
 //{{
-function toggle_global_darken_page(I)
+function disable_global_darken_page_internal(buffer)
 {
     var hook = conkeror['buffer_loaded_hook'];
     if (hook.indexOf(toggle_local_darken_page) != -1) {
         register_user_stylesheet(
             make_css_data_uri(
-            [
-                "body {background-color: white; color: grey; color: grey !important; }",
-            ]
-        ));
+                [
+                    "body {background-color: white; color: grey; color: grey !important; }",
+                ]
+            ));
         remove_hook('buffer_loaded_hook', toggle_local_darken_page, true, true);
-        I.window.minibuffer.message("removed");
-    } else {
+        if (buffer) buffer.message("removed");
+    }
+}
+function enable_global_darken_page_internal(buffer)
+{
+    var hook = conkeror['buffer_loaded_hook'];
+    if (hook.indexOf(toggle_local_darken_page) == -1) {
         register_user_stylesheet(
             make_css_data_uri(
                 [
-                "body {background-color: black; color: white; color: white !important; }",
+                    "body {background-color: black; color: white; color: white !important; }",
                 ]));
         add_hook('buffer_loaded_hook', toggle_local_darken_page, true, true);
-        I.window.minibuffer.message("added");
+        if (buffer) buffer.message("added");
     }
+}
+function toggle_global_darken_page_internal(buffer)
+{
+    var hook = conkeror['buffer_loaded_hook'];
+    if (hook.indexOf(toggle_local_darken_page) == -1) {
+        enable_global_darken_page_internal( buffer );
+    } else {
+        disable_global_darken_page_internal( buffer );
+    }
+}
+
+function toggle_global_darken_page(I)
+{
+    toggle_global_darken_page_internal( I.window.minibuffer );
 }
 interactive("toggle-global-darken-page",
             "Darken the page in an attempt to save your eyes.",
             toggle_global_darken_page);
 
 define_key(content_buffer_normal_keymap, "f7", "toggle-global-darken-page");
+toggle_global_darken_page_internal(); // enable it.
 //}}
 
 //{{ CSS
