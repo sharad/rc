@@ -9,7 +9,6 @@ define_key(content_buffer_normal_keymap, "d", "follow-new-buffer-background");
 
 //{{ darken_page: thanks very much for saving my eyes.
 {
-
     // var newSS, styles='* { background: black ! important; color: grey !important }'
     // var newSS, styles='* { background: black ! important; color: white !important }'
     // var newSS, styles='* { background: #EFFFEF ! important; color: white !important }'
@@ -124,12 +123,12 @@ define_key(content_buffer_normal_keymap, "d", "follow-new-buffer-background");
     interactive("is-local-light-darken-page",
                 "Darken the page in an attempt to save your eyes.",
                 is_local_light_darken_page);
-}
+// }
 //}}
 
 
 //{{
-{
+// {
     var local_light_darken_page_fn = enable_local_light_darken_page;
     function is_local_light_darken_page(I)
     {
@@ -199,7 +198,6 @@ define_key(content_buffer_normal_keymap, "d", "follow-new-buffer-background");
 //}}
 
 //{{ CSS
-
 // http://conkeror.org/Tips#Renderthewebpagewithdefault.28custom.29colors
 // 4.8. Render the web page with default (custom) colors
 
