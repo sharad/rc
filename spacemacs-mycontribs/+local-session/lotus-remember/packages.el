@@ -40,6 +40,7 @@
     remember
     org
     (org-remember :location local)
+    (org-capture :location local)
     planner
     (remember-planner :location local)
     (read-file-name :location local)
@@ -52,8 +53,7 @@
     (remember-bibl :location local)
      (macs-wiki-journal :location local)
     (remember-unified :location local)
-    (remember-idle :location local)
-    )
+    (remember-idle :location local))
 
   "The list of Lisp packages required by the lotus-remember layer.
 
