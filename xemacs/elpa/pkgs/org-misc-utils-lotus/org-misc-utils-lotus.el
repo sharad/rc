@@ -116,48 +116,58 @@ With prefix arg C-u, copy region instad of killing it."
      ,@body))
 (put 'org-file-loc-with-refile 'lisp-indent-function 1)
 
+(defun org-lotus-new-lower-win-size ()
+  (if (and (fboundp 'face-attr-construct)
+              (let* ((dh (plist-get (face-attr-construct 'default) :height))
+                     (mf (face-attr-construct 'mode-line))
+                     (mh (plist-get mf :height)))
+                ;; If the mode line is shorter than the default,
+                ;; stick with 2 lines.  (It may be necessary to
+                ;; check how much shorter.)
+                (and
+                 (not
+                  (or (and (integerp dh)
+                           (integerp mh)
+                           (< mh dh))
+                      (and (numberp mh)
+                           (not (integerp mh))
+                           (< mh 1))))
+                 (or
+                  ;; If the mode line is taller than the default,
+                  ;; use 3 lines.
+                  (and (integerp dh)
+                       (integerp mh)
+                       (> mh dh))
+                  (and (numberp mh)
+                       (not (integerp mh))
+                       (> mh 1))
+                  ;; If the mode line has a box with non-negative line-width,
+                  ;; use 3 lines.
+                  (let* ((bx (plist-get mf :box))
+                         (lh (plist-get bx :line-width)))
+                    (and bx
+                         (or
+                          (not lh)
+                          (> lh 0))))
+                  ;; If the mode line has an overline, use 3 lines.
+                  (plist-get (face-attr-construct 'mode-line) :overline)))))
+      -12 -10)
+
+  ;; If the mode line might interfere with the calculator
+  ;; buffer, use 3 lines instead.
+)
+
+(defun org-lotus-new-win ()
+  (let ((size              (org-lotus-new-lower-win-size))
+        (window-min-height 7))
+    (prog1
+        (split-window-below size)
+      (message "size %d" size))))
+
 (defmacro org-with-new-win (file pos &rest body)
   `(let ((target-buffer (find-file-noselect ,file)))
      (lexical-let* ((window-min-height 7)
-                    (win
-                     (split-window-below
-                      ;; If the mode line might interfere with the calculator
-                      ;; buffer, use 3 lines instead.
-                      (if (and (fboundp 'face-attr-construct)
-                               (let* ((dh (plist-get (face-attr-construct 'default) :height))
-                                      (mf (face-attr-construct 'mode-line))
-                                      (mh (plist-get mf :height)))
-                                 ;; If the mode line is shorter than the default,
-                                 ;; stick with 2 lines.  (It may be necessary to
-                                 ;; check how much shorter.)
-                                 (and
-                                  (not
-                                   (or (and (integerp dh)
-                                            (integerp mh)
-                                            (< mh dh))
-                                       (and (numberp mh)
-                                            (not (integerp mh))
-                                            (< mh 1))))
-                                  (or
-                                   ;; If the mode line is taller than the default,
-                                   ;; use 3 lines.
-                                   (and (integerp dh)
-                                        (integerp mh)
-                                        (> mh dh))
-                                   (and (numberp mh)
-                                        (not (integerp mh))
-                                        (> mh 1))
-                                   ;; If the mode line has a box with non-negative line-width,
-                                   ;; use 3 lines.
-                                   (let* ((bx (plist-get mf :box))
-                                          (lh (plist-get bx :line-width)))
-                                     (and bx
-                                          (or
-                                           (not lh)
-                                           (> lh 0))))
-                                   ;; If the mode line has an overline, use 3 lines.
-                                   (plist-get (face-attr-construct 'mode-line) :overline)))))
-                          -12 -10))))
+                    (win (org-lotus-new-win)))
        ;; maybe leave two lines for our window because of the
        ;; normal `raised' mode line
        (select-window win 'norecord)

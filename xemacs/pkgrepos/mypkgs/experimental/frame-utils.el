@@ -41,7 +41,6 @@
                     (apply 'message fmt args))))))
 
 (progn ;; deh-require-maybe elscreen
-
   ;; toggle-ibuffer-group
   (require 'buffer-utils)
 
