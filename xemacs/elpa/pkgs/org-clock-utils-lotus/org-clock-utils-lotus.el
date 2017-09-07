@@ -272,17 +272,85 @@ using three `C-u' prefix arguments."
         (org-clock-in-refile nil))))
 
 ;;;###autoload
-(defun org-clock-out-with-note (note &optional switch-to-state fail-quietly at-time)
+(defun org-clock-out-with-note (note &optional switch-to-state fail-quietly at-time) ;BUG TODO will it work or save-excursion save-restriction also required
   (interactive
    (let ((note (read-from-minibuffer "Closing notes: "))
          (switch-to-state current-prefix-arg))
      (list note switch-to-state)))
+
   (let ((org-log-note-clock-out t))
     (move-marker org-log-note-return-to nil)
     (move-marker org-log-note-marker nil)
     (org-clock-out switch-to-state fail-quietly at-time)
     (remove-hook 'post-command-hook 'org-add-log-note)
     (org-insert-log-note note)))
+
+
+(defun org-add-log-note-background (&optional _purpose)
+  "Pop up a window for taking a note, and add this note later."
+  (remove-hook 'post-command-hook 'org-add-log-note-background)
+  (setq org-log-note-window-configuration (current-window-configuration))
+  (delete-other-windows)
+  (move-marker org-log-note-return-to (point))
+  ;; (pop-to-buffer-same-window (marker-buffer org-log-note-marker))
+  ;; (goto-char org-log-note-marker)
+  (org-switch-to-buffer-other-window "*Org Note*")
+  (erase-buffer)
+  (if (memq org-log-note-how '(time state))
+      (let (current-prefix-arg) (org-store-log-note))
+    (let ((org-inhibit-startup t)) (org-mode))
+    (insert (format "# Insert note for %s.
+# Finish with C-c C-c, or cancel with C-c C-k.\n\n"
+		    (cond
+		     ((eq org-log-note-purpose 'clock-out) "stopped clock")
+		     ((eq org-log-note-purpose 'done)  "closed todo item")
+		     ((eq org-log-note-purpose 'state)
+		      (format "state change from \"%s\" to \"%s\""
+			      (or org-log-note-previous-state "")
+			      (or org-log-note-state "")))
+		     ((eq org-log-note-purpose 'reschedule)
+		      "rescheduling")
+		     ((eq org-log-note-purpose 'delschedule)
+		      "no longer scheduled")
+		     ((eq org-log-note-purpose 'redeadline)
+		      "changing deadline")
+		     ((eq org-log-note-purpose 'deldeadline)
+		      "removing deadline")
+		     ((eq org-log-note-purpose 'refile)
+		      "refiling")
+		     ((eq org-log-note-purpose 'note)
+		      "this entry")
+		     (t (error "This should not happen")))))
+    (when org-log-note-extra (insert org-log-note-extra))
+    (setq-local org-finish-function 'org-store-log-note)
+    (run-hooks 'org-log-buffer-setup-hook)))
+
+(defun org-add-log-setup-background (&optional purpose state prev-state how extra)
+  "Set up the post command hook to take a note.
+If this is about to TODO state change, the new state is expected in STATE.
+HOW is an indicator what kind of note should be created.
+EXTRA is additional text that will be inserted into the notes buffer."
+  (move-marker org-log-note-marker (point))
+  (setq org-log-note-purpose purpose
+        org-log-note-state state
+        org-log-note-previous-state prev-state
+        org-log-note-how how
+        org-log-note-extra extra
+        org-log-note-effective-time (org-current-effective-time))
+  (add-hook 'post-command-hook 'org-add-log-note-background 'append))
+
+(defmacro org-clock-lotus-with-current-clock (&rest body)
+  `(org-with-clock (cons org-clock-marker org-clock-start-time) ,@body))
+
+;;;##autoload
+(defun org-clock-lotus-log-note-current-clock-background (&optional fail-quietly)
+  (interactive)
+  (if (org-clocking-p)
+      (org-clock-lotus-with-current-clock
+       (org-add-log-setup-background
+        'note nil nil nil
+        (concat "# Task: " (org-get-heading t) "\n\n")))
+      (if fail-quietly (throw 'exit t) (user-error "No active clock"))))
 
 ;;;###autoload
 (defun lotus-org-clock-in/out-insinuate-hooks ()

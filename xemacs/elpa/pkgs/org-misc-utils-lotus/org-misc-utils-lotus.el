@@ -23,13 +23,106 @@
 ;;
 
 ;;; Code:
-
 (defvar safe-org-refile-get-location-modes
   '(emacs-lisp-mode org-mode))
 
 (setq
  safe-org-refile-get-location-modes '(org-mode))
 
+
+
+
+
+
+;; Misc Macros Starts
+(defmacro org-with-file-headline (file headline &rest body)
+  `(with-current-buffer (if ,file (find-file-noselect ,file) (current-buffer))
+     (save-excursion
+       (goto-char (point-min))
+       (let ((pos (org-find-exact-headline-in-buffer ,headline)))
+         (when pos
+           (goto-char pos)
+           ,@body)
+         pos))))
+(put 'org-with-file-headline 'lisp-indent-function 2)
+
+(defun org-lotus-new-lower-win-size ()
+  ;; If the mode line might interfere with the calculator
+  ;; buffer, use 3 lines instead.
+  (if (and
+       (fboundp 'face-attr-construct)
+       (let* ((dh (plist-get (face-attr-construct 'default) :height))
+              (mf (face-attr-construct 'mode-line))
+              (mh (plist-get mf :height)))
+         ;; If the mode line is shorter than the default,
+         ;; stick with 2 lines.  (It may be necessary to
+         ;; check how much shorter.)
+         (and
+          (not
+           (or (and (integerp dh)
+                    (integerp mh)
+                    (< mh dh))
+               (and (numberp mh)
+                    (not (integerp mh))
+                    (< mh 1))))
+          (or
+           ;; If the mode line is taller than the default,
+           ;; use 3 lines.
+           (and (integerp dh)
+                (integerp mh)
+                (> mh dh))
+           (and (numberp mh)
+                (not (integerp mh))
+                (> mh 1))
+           ;; If the mode line has a box with non-negative line-width,
+           ;; use 3 lines.
+           (let* ((bx (plist-get mf :box))
+                  (lh (plist-get bx :line-width)))
+             (and bx
+                  (or
+                   (not lh)
+                   (> lh 0))))
+           ;; If the mode line has an overline, use 3 lines.
+           (plist-get (face-attr-construct 'mode-line) :overline)))))
+      -12 -10))
+
+(defun org-lotus-new-win ()
+  (let ((size              (org-lotus-new-lower-win-size))
+        (window-min-height 7))
+    (prog1
+        (split-window-below size)
+      (message "size %d" size))))
+
+(defmacro org-with-new-win (file pos &rest body)
+  `(let ((target-buffer (find-file-noselect ,file)))
+     (lexical-let* ((window-min-height 7)
+                    (win (org-lotus-new-win)))
+       ;; maybe leave two lines for our window because of the
+       ;; normal `raised' mode line
+       (select-window win 'norecord)
+       ;; (switch-to-buffer target-buffer 'norecord)
+       (set-buffer target-buffer)
+       (goto-char ,pos)
+       ,@body)))
+(put 'org-with-new-win 'lisp-indent-function 1)
+;; Misc Macros Ends
+
+;; Marker Macros Starts
+(defmacro org-lotus-with-marker (marker &rest body)
+  (let ((buffer (marker-buffer ,marker)))
+    (save-excursion ; Do not replace this with `with-current-buffer'.
+      (with-no-warnings (set-buffer buffer))
+      (save-restriction
+        (widen)
+        (goto-char ,marker)
+        ,@body
+        ;; (org-add-log-setup
+        ;;  'note nil nil nil
+        ;;  (concat "# Task: " (org-get-heading t) "\n\n"))
+        ))))
+;; Marker Macros Ends
+
+;; Refile macros Starts
 (defun safe-org-refile-get-location-p ()
   (member major-mode safe-org-refile-get-location-modes))
 
@@ -71,8 +164,6 @@
         (remove-function (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
       (cancel-timer timer))))
 
-;; (progn ;; "org macro"
-
 (defmacro org-with-refile (file pos refile-targets &rest body)
   "Refile the active region.
 If no region is active, refile the current paragraph.
@@ -87,17 +178,6 @@ With prefix arg C-u, copy region instad of killing it."
          (goto-char ,pos)
          ,@body))))
 (put 'org-with-refile 'lisp-indent-function 1)
-
-(defmacro org-with-file-headline (file headline &rest body)
-  `(with-current-buffer (if ,file (find-file-noselect ,file) (current-buffer))
-     (save-excursion
-       (goto-char (point-min))
-       (let ((pos (org-find-exact-headline-in-buffer ,headline)))
-         (when pos
-           (goto-char pos)
-           ,@body)
-         pos))))
-(put 'org-with-file-headline 'lisp-indent-function 2)
 
 (defmacro org-with-clock-writeable-buffer (&rest body)
   `(let ((buff (org-base-buffer (marker-buffer org-clock-marker))))
@@ -116,71 +196,9 @@ With prefix arg C-u, copy region instad of killing it."
      ,@body))
 (put 'org-file-loc-with-refile 'lisp-indent-function 1)
 
-(defun org-lotus-new-lower-win-size ()
-  (if (and (fboundp 'face-attr-construct)
-              (let* ((dh (plist-get (face-attr-construct 'default) :height))
-                     (mf (face-attr-construct 'mode-line))
-                     (mh (plist-get mf :height)))
-                ;; If the mode line is shorter than the default,
-                ;; stick with 2 lines.  (It may be necessary to
-                ;; check how much shorter.)
-                (and
-                 (not
-                  (or (and (integerp dh)
-                           (integerp mh)
-                           (< mh dh))
-                      (and (numberp mh)
-                           (not (integerp mh))
-                           (< mh 1))))
-                 (or
-                  ;; If the mode line is taller than the default,
-                  ;; use 3 lines.
-                  (and (integerp dh)
-                       (integerp mh)
-                       (> mh dh))
-                  (and (numberp mh)
-                       (not (integerp mh))
-                       (> mh 1))
-                  ;; If the mode line has a box with non-negative line-width,
-                  ;; use 3 lines.
-                  (let* ((bx (plist-get mf :box))
-                         (lh (plist-get bx :line-width)))
-                    (and bx
-                         (or
-                          (not lh)
-                          (> lh 0))))
-                  ;; If the mode line has an overline, use 3 lines.
-                  (plist-get (face-attr-construct 'mode-line) :overline)))))
-      -12 -10)
-
-  ;; If the mode line might interfere with the calculator
-  ;; buffer, use 3 lines instead.
-)
-
-(defun org-lotus-new-win ()
-  (let ((size              (org-lotus-new-lower-win-size))
-        (window-min-height 7))
-    (prog1
-        (split-window-below size)
-      (message "size %d" size))))
-
-(defmacro org-with-new-win (file pos &rest body)
-  `(let ((target-buffer (find-file-noselect ,file)))
-     (lexical-let* ((window-min-height 7)
-                    (win (org-lotus-new-win)))
-       ;; maybe leave two lines for our window because of the
-       ;; normal `raised' mode line
-       (select-window win 'norecord)
-       ;; (switch-to-buffer target-buffer 'norecord)
-       (set-buffer target-buffer)
-       (goto-char ,pos)
-       ,@body)))
-(put 'org-with-new-win 'lisp-indent-function 1)
-
 (defmacro org-miniwin-file-loc-with-refile (file pos refile-targets &rest body)
   `(org-file-loc-with-refile ,file ,pos ,refile-targets
      (org-with-new-win ,file ,pos ,@body)))
-
 (put 'org-miniwin-file-loc-with-refile 'lisp-indent-function 1)
 
 (defmacro org-timed-file-loc-with-refile (file pos timeout refile-targets &rest body)
@@ -204,6 +222,7 @@ With prefix arg C-u, copy region instad of killing it."
 ;; e.g.
 ;; (org-miniwin-file-loc-with-refile nil nil)
 ;;)
+;; Refile macros Ends
 
 ;; (progn ;; "move org"
 
@@ -443,6 +462,7 @@ With prefix arg C-u, copy region instad of killing it."
            (org-back-to-heading t)
            (org-cycle-hide-drawers 'children))
           ;; Fix `buffer-undo-list' when `org-store-log-note' is called
+          - Test
           ;; from within `org-add-log-note' because `buffer-undo-list'
           ;; is then modified outside of `org-with-remote-undo'.
           (when (eq this-command 'org-agenda-todo)
