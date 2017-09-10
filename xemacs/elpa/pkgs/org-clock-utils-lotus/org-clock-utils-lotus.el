@@ -353,99 +353,87 @@ EXTRA is additional text that will be inserted into the notes buffer."
       (if fail-quietly (throw 'exit t) (user-error "No active clock"))))
 
 
-(when nil
+(defun lotus-buffer-changes-count ()
+  (let ((changes 0))
+    (undo-tree-mapc
+     (lambda (node)
+       (setq changes (+ changes 1;; (length (undo-tree-node-next node))
+                        )))
+     (undo-tree-root buffer-undo-tree))
+    changes))
 
-  ;; from https://www.emacswiki.org/emacs/download/goto-last-change.el
-  ;; from https://www.emacswiki.org/emacs/GotoLastChange
-  ;; from https://www.emacswiki.org/emacs/TrackChanges
-
-  ;; detect changes over the time and do pre-defined actions
 
 
-;;; Code:
-  (provide 'goto-last-change)
+(defvar lotus-last-buffer-undo-tree-count 0)
+(make-variable-buffer-local 'lotus-last-buffer-undo-tree-count)
 
-  (or (fboundp 'last)			; Emacs 20
-      (require 'cl))			; Emacs 19
+(defun lotus-action-on-buffer-undo-tree-change (action &optional minimal-changes)
+  (let ((chgcount (- (lotus-buffer-changes-count) lotus-last-buffer-undo-tree-count)))
+    (if (>= chgcount minimal-changes)
+        (if (funcall action)
+         (setq lotus-last-buffer-undo-tree-count chgcount)))))
 
-  (defvar goto-last-change-undo nil
-    "The `buffer-undo-list' entry of the previous \\[goto-last-change] command.")
-  (make-variable-buffer-local 'goto-last-change-undo)
-
-  Hello
-
+(defvar lotus-last-buffer-undo-list-pos nil)
+(make-variable-buffer-local 'lotus-last-buffer-undo-list-pos)
 ;;;###autoload
-  (defun goto-last-change (&optional mark-point minimal-line-distance)
-    "Set point to the position of the last change.
+(defun lotus-action-on-buffer-undo-list-change (action &optional minimal-char-changes)
+  "Set point to the position of the last change.
 Consecutive calls set point to the position of the previous change.
 With a prefix arg (optional arg MARK-POINT non-nil), set mark so \
 \\[exchange-point-and-mark]
 will return point to the current position."
-    (interactive "P")
-    ;; (unless (buffer-modified-p)
-    ;;   (error "Buffer not modified"))
-    (when (eq buffer-undo-list t)
-      (error "No undo information in this buffer"))
-    (when mark-point (push-mark))
-    (unless minimal-line-distance
-      (setq minimal-line-distance 10))
-    (let ((position nil)
-          (undo-list (if (and (eq this-command last-command)
-                              goto-last-change-undo)
-                         (cdr (memq goto-last-change-undo buffer-undo-list))
-                         buffer-undo-list))
-          undo)
-
-      (while (and undo-list
-                  (or (not position)
-                      (eql position (point))
-                      (and minimal-line-distance
-                           ;; The first invocation always goes to the last change, subsequent ones skip
-                           ;; changes closer to (point) then minimal-line-distance.
-                           (memq last-command '(goto-last-change
-                                                goto-last-change-with-auto-marks))
-                           (< (count-lines (min position (point-max)) (point))
-                              minimal-line-distance))))
-        (setq undo (car undo-list))
-        (cond
-          ((and (consp undo) (integerp (car undo)) (integerp (cdr undo)))
-               ;; (BEG . END)
-               (setq position (cdr undo)))
-          ((and (consp undo) (stringp (car undo))) ; (TEXT . POSITION)
-               (setq position (abs (cdr undo))))
-          ((and (consp undo) (eq (car undo) t))) ; (t HIGH . LOW)
-          ((and (consp undo) (null (car undo)))
-           ;; (nil PROPERTY VALUE BEG . END)
-           (setq position (cdr (last undo))))
-          ((and (consp undo) (markerp (car undo)))) ; (MARKER . DISTANCE)
-          ((integerp undo))		; POSITION
-          ((null undo))		; nil
-          (t (error "Invalid undo entry: %s" undo)))
-        (setq undo-list (cdr undo-list)))
-
+  ;; (interactive "P")
+  ;; (unless (buffer-modified-p)
+  ;;   (error "Buffer not modified"))
+  (when (eq buffer-undo-list t)
+    (error "No undo information in this buffer"))
+  ;; (when mark-point (push-mark))
+  (unless minimal-char-changes
+    (setq minimal-char-changes 10))
+  (let ((char-changes 0)
+        (undo-list (if lotus-last-buffer-undo-list-pos
+                       (cdr (memq lotus-last-buffer-undo-list-pos buffer-undo-list))
+                       buffer-undo-list))
+        undo)
+    (while (and undo-list
+                (car undo-list)
+                (< char-changes minimal-char-changes))
+      (setq undo (car undo-list))
       (cond
-        (position
-             (setq goto-last-change-undo undo)
-             (goto-char (min position (point-max))))
-        ((and (eq this-command last-command)
-              goto-last-change-undo)
-         (setq goto-last-change-undo nil)
-         (error "No further undo information"))
-        (t
-         (setq goto-last-change-undo nil)
-         (error "Buffer not modified")))))
+        ((and (consp undo) (integerp (car undo)) (integerp (cdr undo)))
+         ;; (BEG . END)
+         (setq char-changes (+ char-changes (abs (- (car undo) (cdr undo))))))
+        ((and (consp undo) (stringp (car undo))) ; (TEXT . POSITION)
+         (setq char-changes (+ char-changes (length (car undo)))))
+        ((and (consp undo) (eq (car undo) t))) ; (t HIGH . LOW)
+        ((and (consp undo) (null (car undo)))
+         ;; (nil PROPERTY VALUE BEG . END)
+         ;; (setq position (cdr (last undo)))
+         )
+        ((and (consp undo) (markerp (car undo)))) ; (MARKER . DISTANCE)
+        ((integerp undo))		; POSITION
+        ((null undo))		; nil
+        (t (error "Invalid undo entry: %s" undo)))
+      (setq undo-list (cdr undo-list)))
 
-  (defun goto-last-change-with-auto-marks (&optional minimal-line-distance)
-    "Calls goto-last-change and sets the mark at only the first invocations
-in a sequence of invocations."
-    (interactive "P")
-    (goto-last-change (not (or (eq last-command 'goto-last-change-with-auto-marks)
-                               (eq last-command t)))
-                      minimal-line-distance))
+    (cond
+      ((>= char-changes minimal-char-changes)
+       (if (funcall action)
+           (setq lotus-last-buffer-undo-list-pos undo)))
+      (t ))))
+(defun org-clock-lotus-log-note-on-change (buffer)
+  (when (eq buffer (current-buffer))
+    (if (car buffer-undo-list)
+        (lotus-action-on-buffer-undo-list-change #'org-clock-lotus-log-note-current-clock-background  50)
+        (lotus-action-on-buffer-undo-tree-change  #'org-clock-lotus-log-note-current-clock-background 10))))
 
-  ;; (global-set-key "\C-x\C-\\" 'goto-last-change)
-
-  )
+(defvar org-clock-lotus-log-note-on-change-timer nil)
+(make-variable-buffer-local 'org-clock-lotus-log-note-on-change-timer)
+(defun org-clock-lotus-log-note-on-change-start-timer ()
+  (if org-clock-lotus-log-note-on-change-timer
+      (cancel-timer org-clock-lotus-log-note-on-change-timer))
+  (setq
+   org-clock-lotus-log-note-on-change-timer (run-with-idle-timer 10 10 'org-clock-lotus-log-note-on-change (current-buffer))))
 
 ;;;###autoload
 (defun lotus-org-clock-in/out-insinuate-hooks ()
