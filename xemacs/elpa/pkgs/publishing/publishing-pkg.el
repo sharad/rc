@@ -1,1 +1,1 @@
-(define-package "publishing" "20170906.2152" "publishing for org and muse." 'nil)
+(define-package "publishing" "20170911.2126" "publishing for org and muse." 'nil)

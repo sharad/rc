@@ -410,17 +410,20 @@ EXTRA is additional text that will be inserted into the notes buffer."
     changes))
 
 
+(defvar lotus-minimum-char-changes 70)
+(defvar lotus-minimum-changes 70)
 
-(defvar lotus-last-buffer-undo-tree-count 0)
+(defvar lotus-last-buffer-undo-tree-count 0) ;internal
 (make-variable-buffer-local 'lotus-last-buffer-undo-tree-count)
 
 (defun lotus-action-on-buffer-undo-tree-change (action &optional minimal-changes)
   (let ((chgcount (- (lotus-buffer-changes-count) lotus-last-buffer-undo-tree-count)))
     (if (>= chgcount minimal-changes)
         (if (funcall action)
-         (setq lotus-last-buffer-undo-tree-count chgcount)))))
+            (setq lotus-last-buffer-undo-tree-count chgcount))
+        (message "buffer-undo-tree-change: only %d changes not more than %d" chgcount minimal-changes))))
 
-(defvar lotus-last-buffer-undo-list-pos nil)
+(defvar lotus-last-buffer-undo-list-pos nil) ;internal
 (make-variable-buffer-local 'lotus-last-buffer-undo-list-pos)
 ;;;###autoload
 (defun lotus-action-on-buffer-undo-list-change (action &optional minimal-char-changes)
@@ -471,8 +474,8 @@ will return point to the current position."
 (defun org-clock-lotus-log-note-on-change (buffer)
   (when (eq buffer (current-buffer))
     (if (car buffer-undo-list)
-        (lotus-action-on-buffer-undo-list-change #'org-clock-lotus-log-note-current-clock-background  50)
-        (lotus-action-on-buffer-undo-tree-change  #'org-clock-lotus-log-note-current-clock-background 10))))
+        (lotus-action-on-buffer-undo-list-change #'org-clock-lotus-log-note-current-clock-background  lotus-minimum-char-changes)
+        (lotus-action-on-buffer-undo-tree-change  #'org-clock-lotus-log-note-current-clock-background lotus-minimum-changes))))
 
 (defvar org-clock-lotus-log-note-on-change-timer nil)
 (make-variable-buffer-local 'org-clock-lotus-log-note-on-change-timer)
@@ -488,6 +491,7 @@ will return point to the current position."
 ;;;###autoload
 (defun org-clock-lotus-log-note-on-change-insinuate ()
   (interactive)
+  ;; message-send-mail-hook
   (org-clock-lotus-log-note-on-change-start-timer))
 
 
