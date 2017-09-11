@@ -409,11 +409,17 @@ EXTRA is additional text that will be inserted into the notes buffer."
      (undo-tree-root buffer-undo-tree))
     changes))
 
+(require 'desktop)
+(require 'session)
 
 (defvar lotus-minimum-char-changes 70)
 (defvar lotus-minimum-changes 70)
 
-(defvar lotus-last-buffer-undo-tree-count 0) ;internal
+(defvar lotus-last-buffer-undo-tree-count 0) ;internal add in session and desktop
+(when (featurep 'desktop)
+  (add-to-list 'desktop-locals-to-save 'lotus-last-buffer-undo-tree-count))
+(when (featurep 'session)
+  (add-to-list 'session-locals-include 'lotus-last-buffer-undo-tree-count))
 (make-variable-buffer-local 'lotus-last-buffer-undo-tree-count)
 
 (defun lotus-action-on-buffer-undo-tree-change (action &optional minimal-changes)
@@ -423,8 +429,12 @@ EXTRA is additional text that will be inserted into the notes buffer."
             (setq lotus-last-buffer-undo-tree-count chgcount))
         (message "buffer-undo-tree-change: only %d changes not more than %d" chgcount minimal-changes))))
 
-(defvar lotus-last-buffer-undo-list-pos nil) ;internal
+(defvar lotus-last-buffer-undo-list-pos nil) ;internal add in session and desktop
 (make-variable-buffer-local 'lotus-last-buffer-undo-list-pos)
+(when (featurep 'desktop)
+  (add-to-list 'desktop-locals-to-save 'lotus-last-buffer-undo-list-pos))
+(when (featurep 'session)
+  (add-to-list 'session-locals-include 'lotus-last-buffer-undo-list-pos))
 ;;;###autoload
 (defun lotus-action-on-buffer-undo-list-change (action &optional minimal-char-changes)
   "Set point to the position of the last change.
@@ -484,7 +494,9 @@ will return point to the current position."
 (defun org-clock-lotus-log-note-on-change-start-timer ()
   (interactive)
   (if org-clock-lotus-log-note-on-change-timer
-      (cancel-timer org-clock-lotus-log-note-on-change-timer))
+      (progn
+        (cancel-timer org-clock-lotus-log-note-on-change-timer)
+        (setq org-clock-lotus-log-note-on-change-timer nil)))
   (setq
    org-clock-lotus-log-note-on-change-timer (run-with-idle-timer 10 10 'org-clock-lotus-log-note-on-change (current-buffer))))
 
