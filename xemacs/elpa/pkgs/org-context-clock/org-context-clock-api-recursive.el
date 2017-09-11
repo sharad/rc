@@ -27,15 +27,22 @@
 
 ;; "org tasks access api for recursive task"
 
+(defvar org-context-clock-task-tree-task-root-org-file nil
+  "Root file to build recursive org tasks tree")
+
 (defvar org-context-clock-task-tree-tasks nil
   "Recursive org tasks tree")
 
-(defun org-task-get-tasks (files)
-  "Build recursive org tasks tree from files"
-  (org-context-clock-task-tree-tasks-tree files))
+(defvar org-context-clock-task-tree-files nil
+  "Recursive org tasks tree file")
 
-(defvar org-context-clock-task-tree-task-root-org-file nil
-  "Root file to build recursive org tasks tree")
+(defun org-task-get-tasks (file)
+  "Build recursive org tasks tree from file"
+  (org-context-clock-task-tree-tasks-tree file))
+
+(defun org-task-get-files ()
+  "Build recursive org tasks tree from file"
+  (org-context-clock-task-tree-tasks-files))
 
 ;;;###autoload
 (defun org-context-clock-setup-task-tree-task-root-org-file (file)
@@ -57,6 +64,16 @@
       (message "org-context-clock-task-tree-task-root-org-file is nil"))
   org-context-clock-task-tree-tasks)
 (org-context-clock-access-api-set :recursive :update  'org-context-clock-task-recursive-update-tasks)
+
+;;;###autoload
+(defun org-context-clock-task-recursive-update-files (&optional force)
+  (unless (and (not force)
+               org-context-clock-task-tree-files)
+    (org-context-clock-task-recursive-update-tasks force)
+    (setq
+     org-context-clock-task-tree-files (org-context-clock-task-tree-get-files)))
+  org-context-clock-task-tree-files)
+(org-context-clock-access-api-set :recursive :files  'org-context-clock-task-recursive-update-files)
 
 (defun org-context-clock-task-tree-map-subheading (fun)
   "Call FUN for every heading underneath the current heading"
@@ -114,6 +131,28 @@
   "Build recursive org tasks from org FILE (or current buffer)"
   (let ()
     (org-context-clock-task-tree-collect-task file)))
+
+(defun org-context-clock-task-tree-tasks-files ()
+  (let ((tasks (org-context-clock-task-recursive-update-tasks))
+        (files '()))
+      (org-context-clock-debug "org-context-clock-entries-associated-to-context-by-keys: BEFORE files %s[%d]" files (length files))
+      (org-context-clock-tree-mapc-tasks
+       #'(lambda (task args)
+           (push
+            (org-context-clock-task-get-property task :task-clock-file)
+            files))
+       tasks
+       nil)
+      (org-context-clock-debug "org-context-clock-entries-associated-to-context-by-keys: AFTER files %s[%d]" "files" (length files))
+      files))
+
+(defun org-context-clock-task-tree-get-files ()
+  "Build recursive org tasks from org FILE (or current buffer)"
+  (let ()
+    (remove nil
+            (delete-dups
+             (org-context-clock-task-tree-tasks-files)))))
+
 
 (defun org-context-clock-task-tree-task-node-p (tx)
   "Test org TX is org tasks tree non-leaf node"

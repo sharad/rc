@@ -88,7 +88,6 @@ Each entry is either:
                   :config
                   (progn
                     ))
-
               (lotus-org-clock-in/out-insinuate-hooks)))))
 
     (progn
@@ -112,8 +111,10 @@ Each entry is either:
             (progn
               (add-to-enable-desktop-restore-interrupting-feature-hook
                '(lambda ()
-                 (if (fboundp 'org-clock-start-check-timer)
-                     (org-clock-start-check-timer))))))))))
+                 (if (fboundp 'org-clock-start-check-timer-insiuate)
+                     (org-clock-start-check-timer-insiuate))
+                 (if (fboundp 'org-clock-lotus-log-note-on-change-insinuate)
+                     (org-clock-lotus-log-note-on-change-insinuate))))))))))
 
 (defun lotus-orgclocktask/init-org-clock-daysummary ()
   (progn
@@ -138,12 +139,13 @@ Each entry is either:
                       (progn
 
                         (progn
-                          (let ((monitor-dir (task-party-dir)))
-                            (if (file-directory-p monitor-dir)
-                                (progn
-                                  (org-clock-monitor-files-set-from-dir monitor-dir)
-                                  (org-clock-work-day-mode-line-add t))
-                                (message "org monitor dir %s not exists." monitor-dir))))
+                          ;; (let ((monitor-dir (task-party-dir)))
+                          ;;   (if (file-directory-p monitor-dir)
+                          ;;       (progn
+                          ;;         (org-clock-monitor-files-set-from-dir monitor-dir)
+                          ;;         (org-clock-work-day-mode-line-add t))
+                          ;;       (message "org monitor dir %s not exists." monitor-dir)))
+                          )
 
                         (progn
                           (add-to-task-current-party-change-hook
@@ -194,23 +196,31 @@ Each entry is either:
                    (expand-file-name "start.org" (task-party-base-dir))))))
 
           (progn
-            (setq org-context-clock-entry-tree-task-info-root-org-file
-                  (expand-file-name "start.org" (task-party-base-dir))))
+            ;; (setq org-context-clock-entry-tree-task-info-root-org-file
+            ;;       (expand-file-name "start.org" (task-party-base-dir)))
+            )
 
           (progn
             (spaceline-toggle-org-clock-on))))
 
-    (progn
+    (defun lotus-config-start-org-context-clock-insinuate-after-delay (delay)
+      (add-to-enable-desktop-restore-interrupting-feature-hook
+       #'(lambda ()
+         (run-at-time-or-now delay
+          (lambda ()
+            (org-context-clock-insinuate))))))
+
+    (defun lotus-config-start-org-context-clock-insinuate-after-delay-70sec ()
+      (lotus-config-start-org-context-clock-insinuate-after-delay 70))
+
+    (defun lotus-config-start-org-context-clock-insinuate-with-session-unified ()
       (use-package sessions-unified
           :defer t
           :config
           (progn
             (progn
               (add-to-enable-desktop-restore-interrupting-feature-hook
-               '(lambda ()
-                 (run-at-time-or-now 70
-                  (lambda ()
-                    (org-context-clock-insinuate)))))))))
+               'lotus-config-start-org-context-clock-insinuate-after-delay-70sec)))))
 
     (use-package startup-hooks
         :defer t
@@ -218,17 +228,11 @@ Each entry is either:
         (progn
           (progn
             (add-to-enable-login-session-interrupting-feature-hook
-             '(lambda ()
-               (run-at-time-or-now 70
-                (lambda ()
-                  (org-context-clock-insinuate))))
+             'lotus-config-start-org-context-clock-insinuate-with-session-unified
              t)
 
             (add-to-enable-startup-interrupting-feature-hook
-             '(lambda ()
-               (run-at-time-or-now 70
-                (lambda ()
-                  (org-context-clock-insinuate))))
+             'lotus-config-start-org-context-clock-insinuate-with-session-unified
              t))))))
 
 (defun lotus-orgclocktask/init-org-misc-utils-lotus ()
@@ -270,15 +274,16 @@ Each entry is either:
                                    (org-clock-out))))))))
                    t))
 
-                (progn
-                  (add-to-enable-desktop-restore-interrupting-feature-hook
-                   '(lambda ()
-                     (if (fboundp 'org-clock-persistence-insinuate)
-                         (org-clock-persistence-insinuate)
-                         (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
-                     (if (fboundp 'org-clock-start-check-timer)
-                         (org-clock-start-check-timer)))
-                   t)))))
+                ;; (progn
+                ;;   (add-to-enable-desktop-restore-interrupting-feature-hook
+                ;;    '(lambda ()
+                ;;      (if (fboundp 'org-clock-persistence-insinuate)
+                ;;          (org-clock-persistence-insinuate)
+                ;;          (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
+                ;;      (if (fboundp 'org-clock-start-check-timer-insiuate)
+                ;;          (org-clock-start-check-timer-insiuate)))
+                ;;    t))
+                )))
 
         (progn
           (add-hook

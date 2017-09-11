@@ -24,6 +24,12 @@
 
 ;;; Code:
 
+(defvar org-context-clock-entry-list-files nil "org entry task files")
+
+;;;###autoload
+(defun org-context-clock-setup-entry-list-files (files)
+  (setq
+   org-context-clock-entry-list-files file))
 
 ;; "org tasks access api for list org"
 (defvar org-context-clock-entry-list-tasks nil "org entry task infos")
@@ -37,6 +43,9 @@
              files))))
 
 (defun org-context-clock-entry-list-collect-tasks (files)
+  (unless org-context-clock-entry-list-files
+    (setq
+     org-context-clock-entry-list-files (remove nil (delete-dups files))))
   (org-context-clock-entry-list-build 'org-entry-collect-task files))
 
 ;; API (org-context-clock-api-set :predicate :update  'org-entry-list-update-tasks)
@@ -45,9 +54,22 @@
   (unless (and (not force)
                org-context-clock-entry-list-tasks)
     (setq org-context-clock-entry-list-tasks
-          (org-context-clock-entry-list-collect-tasks (org-all-task-files))))
+          ;; (org-context-clock-entry-list-collect-tasks (org-all-task-files))
+          (org-context-clock-entry-list-collect-tasks org-context-clock-entry-list-files)))
   org-context-clock-entry-list-tasks)
 (org-context-clock-access-api-set :list :update  'org-context-clock-entry-list-update-tasks)
+
+
+;; API (org-context-clock-api-set :predicate :update  'org-entry-list-update-tasks)
+(defun org-context-clock-entry-list-update-files (&optional force)
+  (interactive "P")
+  (unless (and (not force)
+               org-context-clock-entry-list-tasks)
+    (setq org-context-clock-entry-list-files
+          (org-context-clock-entry-list-collect-files (org-all-task-files))))
+  org-context-clock-entry-list-files)
+(org-context-clock-access-api-set :list :files  'org-context-clock-entry-list-update-files)
+
 
 ;; API (org-context-clock-api-set :predicate :entryp   'org-entry-associated-to-context-by-predicate-p)
 (defun org-context-clock-list-matching-tasks (context)

@@ -131,6 +131,14 @@
       (cancel-timer org-clock-check-long-timer)
       (setq org-clock-check-long-timer nil))))
 
+;;;###autoload
+(defun org-clock-start-check-timer-insiuate ()
+  (org-clock-start-check-timer))
+
+;;;###autoload
+(defun org-clock-start-check-timer-uninsiuate ()
+  (org-clock-stop-check-timer))
+
 ;; "correction org-timer.el"
 (defun replace-org-timer-set-timer (&optional opt)
     "Prompt for a duration in minutes or hh:mm:ss and set a timer.
@@ -270,6 +278,45 @@ using three `C-u' prefix arguments."
           (org-clock-in '(4)))
         ;; with-current-buffer should be some real file
         (org-clock-in-refile nil))))
+
+;;;###autoload
+(defun lotus-org-clock-in/out-insinuate-hooks ()
+  (add-hook 'org-clock-in-hook
+            '(lambda ()
+              ;; ;; if effort is not present than add it.
+              ;; (unless (org-entry-get nil "Effort")
+              ;;   (save-excursion
+              ;;    (org-set-effort)))
+              ;; set timer
+              (when (not
+                     (and
+                      (boundp' org-timer-countdown-timer)
+                      org-timer-countdown-timer))
+                (if (org-entry-get nil "Effort")
+                    (save-excursion
+                      (forward-line -2)
+                      (org-timer-set-timer))
+                    (call-interactively 'org-timer-set-timer)))
+              (save-buffer)
+              (org-save-all-org-buffers)))
+  (add-hook 'org-clock-out-hook
+            '(lambda ()
+              (if (and
+                   (boundp' org-timer-countdown-timer)
+                   org-timer-countdown-timer)
+                  (org-timer-stop))
+              (org-clock-get-work-day-clock-string t)
+              (save-buffer)
+              (org-save-all-org-buffers))))
+
+
+
+
+
+
+
+
+;;; note on change
 
 ;;;###autoload
 (defun org-clock-out-with-note (note &optional switch-to-state fail-quietly at-time) ;BUG TODO will it work or save-excursion save-restriction also required
@@ -429,41 +476,19 @@ will return point to the current position."
 
 (defvar org-clock-lotus-log-note-on-change-timer nil)
 (make-variable-buffer-local 'org-clock-lotus-log-note-on-change-timer)
+
+;;;###autoload
 (defun org-clock-lotus-log-note-on-change-start-timer ()
+  (interactive)
   (if org-clock-lotus-log-note-on-change-timer
       (cancel-timer org-clock-lotus-log-note-on-change-timer))
   (setq
    org-clock-lotus-log-note-on-change-timer (run-with-idle-timer 10 10 'org-clock-lotus-log-note-on-change (current-buffer))))
 
 ;;;###autoload
-(defun lotus-org-clock-in/out-insinuate-hooks ()
-  (add-hook 'org-clock-in-hook
-            '(lambda ()
-              ;; ;; if effort is not present than add it.
-              ;; (unless (org-entry-get nil "Effort")
-              ;;   (save-excursion
-              ;;    (org-set-effort)))
-              ;; set timer
-              (when (not
-                     (and
-                      (boundp' org-timer-countdown-timer)
-                      org-timer-countdown-timer))
-                (if (org-entry-get nil "Effort")
-                    (save-excursion
-                      (forward-line -2)
-                      (org-timer-set-timer))
-                    (call-interactively 'org-timer-set-timer)))
-              (save-buffer)
-              (org-save-all-org-buffers)))
-  (add-hook 'org-clock-out-hook
-            '(lambda ()
-              (if (and
-                   (boundp' org-timer-countdown-timer)
-                   org-timer-countdown-timer)
-                  (org-timer-stop))
-              (org-clock-get-work-day-clock-string t)
-              (save-buffer)
-              (org-save-all-org-buffers))))
+(defun org-clock-lotus-log-note-on-change-insinuate ()
+  (interactive)
+  (org-clock-lotus-log-note-on-change-start-timer))
 
 
 

@@ -47,6 +47,7 @@
 (defvar org-context-clock-api-tasks-associated-to-context   (org-context-clock-access-api-get org-context-clock-access-api-name :tasks))
 (defvar org-context-clock-api-task-associated-to-context-p   (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp))
 (defvar org-context-clock-api-task-update-tasks               (org-context-clock-access-api-get org-context-clock-access-api-name :update))
+(defvar org-context-clock-api-task-update-files               (org-context-clock-access-api-get org-context-clock-access-api-name :files))
 
 
 (defun custom-plist-keys (in-plist)
@@ -92,6 +93,12 @@
   "Update task infos"
   (interactive "P")
   (funcall org-context-clock-api-task-update-tasks force))
+
+;;;###autoload
+(defun org-context-clock-task-update-files (&optional force)
+  "Update task infos"
+  (interactive "P")
+  (funcall org-context-clock-api-task-update-files force))
 
 (defun org-context-clock-build-context ()
   (let* ((buff (window-buffer))

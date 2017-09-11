@@ -137,7 +137,7 @@
               (get-buffer "*helm-mode-org-context-clock-add-context-to-org-heading*"))))
 
         (org-timed-miniwin-file-loc-with-refile
-            file loc timeout nil
+            file loc timeout '((org-context-clock-task-update-files :maxlevel . 4))
             ;; (set-marker marker (point))
             (lexical-let* ((marker (make-marker)))
               (set-marker marker (point))
