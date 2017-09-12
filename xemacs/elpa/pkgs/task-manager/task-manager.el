@@ -32,7 +32,7 @@
 (require 'iproject)
 (require 'project-buffer-file)
 (require 'file-utils)
-
+(require 'inflections) ;; for pluralize-string
 
 (defvar *task-desc-file-name* ".task-desc" "*task-desc-file-name*")
 
@@ -399,7 +399,7 @@
 ;;
 
 ;;;###autoload
-(defun task-get-task-name (prompt party-type task-type &optional new)
+(defun task-get-task-name (prompt party task-type &optional new)
   (let* ((party (or party (task-current-party)))
          (task-name (completing-read
                      prompt
@@ -450,7 +450,7 @@
 
 ;;;###autoload
 (defun task-get-task-data (&optional new)
-  (let* ((task-type                (task-select-task-type "what: "))
+  (let* ((task-type           (task-select-task-type "what: "))
          (name                (task-get-task-name "name: " (task-current-party) task-type new))
          (desc                (task-get-task-desc task-type (task-current-party) name))
          (task-dir            (task-get-task-dir (task-current-party) task-type name)))
@@ -494,7 +494,7 @@
       task-description)))
 
 ;;;###autoload
-(defun task-get-links-text (task-type formatterfn)
+(defun task-get-links-text (name task-type formatterfn)
   (let ((description ""))
     (dolist
         (f (task-org-files task-type) description)
@@ -502,7 +502,7 @@
             (concat
              description
              ;; "\n - "
-             (funcall formatterfn f))))))
+             (funcall formatterfn name task-type f))))))
 
 ;;;###autoload
 (defun task-get-org-description (task-type name desc)
@@ -539,8 +539,8 @@
                 (pluralize-string task-type)
                 name
                 (task-first-org-master-file task-type))
-        (task-get-links-text task
-                             '(lambda (file)
+        (task-get-links-text name task-type
+                             '(lambda (name task-type file)
                                (format "\n - [[file:%s/%s/%s][%s]]"
                                 (pluralize-string task-type)
                                 name
@@ -578,6 +578,7 @@
      (append
       task-data
       (list project-main-file project-root-folder))))
+
   (let ((file    (expand-file-name (task-party-org-master-file) (task-party-dir)))
         (heading (task-party-org-heading))
         (child-heading (task-get-org-description task-type name desc)))
@@ -622,7 +623,10 @@
   (let* ((project-name (concat task-type ":" name " - " desc)))
     (with-project-buffer (find-file-noselect
                           (expand-file-name
-                           (concat (pluralize-string task-type) ".pb") (task-projbuffs-dir)))
+                           (concat
+                            (pluralize-string task-type) ".pb") ;; (task-projbuffs-dir)
+                           (task-party-projbuffs-dir)
+                           ))
       (iproject-add-project
        project-type                 ;project-type
        project-main-file            ;project-main-file
@@ -681,10 +685,8 @@
             (task-create-org-file nfile
                                   (insert (concat
                                            (format "\n\n* %s\n" heading)
-                                           (task-get-links-text task-type
-                                                                ;; '(lambda (f)
-                                                                ;;   (format "[[file:%s][%s]]" f (capitalize (file-name-sans-extension f))))
-                                                                '(lambda (f)
+                                           (task-get-links-text name task-type
+                                                                '(lambda (name task-type f)
                                                                   (format "** %s\n- [[file:%s][%s]]\n"
                                                                    (capitalize (file-name-sans-extension f))
                                                                    f
@@ -727,7 +729,7 @@
           (task-create-org-task  task-type name desc task-dir project-main-file project-root-folder)
           (task-create-task-dir  task-type name desc task-dir project-root-folder)
           (task-create-pbm-task  task-type name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
-          (org-clocking-entry-update-task-infos t)))
+          (org-context-clock-task-update-tasks t)))
 
     (when (y-or-n-p (format "Should set %s current task" task-dir))
       (setq *taskdir-current-task* task-dir)

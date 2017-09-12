@@ -102,6 +102,49 @@ May either be a string or a list of strings.")
 	(inhibit-file-name-operation operation))
     (apply operation args)))
 
+(defun project-buffer-file-insert-format (fmt &rest args)
+  (let ((str (apply #'format fmt args)))
+    (insert str)))
+
+(defun project-buffer-file-create-empty-file (filename)
+  (assert (not (file-exists-p filename)))
+
+  (condition-case nil
+      (pbm-file-run-real-handler #'file-local-copy (list file))
+    (error))
+
+  (with-temp-buffer ;; with-current-buffer (find-file-noselect filename)
+    (let ((rest-lines '("(begin locals)\n\n"
+                        "(project-buffer-view-mode . folder-view)\n\n"
+                        "(project-buffer-current-platform)\n\n"
+                        "(project-buffer-current-build-configuration)\n\n"
+                        "(end locals)\n\n"
+                        "(begin node-list)\n\n"
+                        "(end node-list)\n\n"
+                        "(one-line master-project nil)\n\n"
+                        "eof")))
+      (progn
+        (insert "\n")
+
+        (project-buffer-file-insert-format
+         "(project-buffer-mode %s \"%s\" \"%s\")\n\n"
+         project-buffer-mode-version
+         (file-name-nondirectory filename)
+         (directory-file-name
+          (expand-file-name
+           (file-name-directory filename))))
+
+        (dolist (line rest-lines)
+          (insert line))
+
+        ;; (write-region nil nil filename)
+
+        (pbm-file-run-real-handler
+         #'write-region
+         (list (buffer-string) nil filename))
+        ;; (save-buffer)
+        ))))
+
 (defun project-buffer-raw-load-with-real-handler (filename &optional set-buffer-name run-mode-hooks)
   "Load a project saved by `project-buffer-raw-data'.
 This function does not restore the mode and assume the
@@ -109,10 +152,14 @@ project-buffer-mode to be set.  It doesn't clear the existing
 nodes either."
   (unless project-buffer-status (error "Not in project-buffer buffer"))
   (let ((project-buffer (current-buffer))
-	(status project-buffer-status))
+        (status project-buffer-status))
     (with-temp-buffer
-      ;; (insert-file filename)
+
+      ;; (unless (file-exists-p filename)
+      ;;   (project-buffer-file-create-empty-file filename))
+
       (pbm-file-run-real-handler #'insert-file-contents (list filename))
+
       (goto-char (point-min))
       (let ((data-buffer (current-buffer))
 	    data-version
@@ -184,17 +231,21 @@ reloaded through `project-buffer-raw-load' function."
   (if (and visit (or beg end))
       (error "Attempt to visit less than an entire file"))
   (setq file (expand-file-name file))
+
+  (unless (file-exists-p file)
+    (project-buffer-file-create-empty-file file))
+
   (let* ((local-copy
-	  (condition-case nil
-	      (pbm-file-run-real-handler #'file-local-copy (list file))
-	    (error)))
-	 (local-file (or local-copy file))
-	 ;; (context (epg-make-context))
-	 string
+          (condition-case nil
+              (pbm-file-run-real-handler #'file-local-copy (list file))
+            (error)))
+         (local-file (or local-copy file))
+         ;; (context (epg-make-context))
+         string
          (length 0)
          entry)
     (if visit
-	(setq buffer-file-name file))
+        (setq buffer-file-name file))
     ;; (epg-context-set-passphrase-callback
     ;;  context
     ;;  (cons #'pbm-file-passphrase-callback-function
@@ -204,60 +255,60 @@ reloaded through `project-buffer-raw-load' function."
     ;;  (cons #'pbm-progress-callback-function
     ;;        (format "Decrypting %s" file)))
     (unwind-protect
-	(progn
-	  (if replace
-	      (goto-char (point-min)))
-	  ;; (condition-case error
-	  ;;     (setq string (epg-decrypt-file context local-file nil))
-	  ;;   (error
-	  ;;    (if (setq entry (assoc file pbm-file-passphrase-alist))
-	  ;;        (setcdr entry nil))
-	  ;;    ;; Hack to prevent find-file from opening empty buffer
-	  ;;    ;; when decryption failed (bug#6568).  See the place
-	  ;;    ;; where `find-file-not-found-functions' are called in
-	  ;;    ;; `find-file-noselect-1'.
-	  ;;    (when (file-exists-p local-file)
-	  ;;      (make-local-variable 'pbm-file-error)
-	  ;;      (setq pbm-file-error error)
-	  ;;      (add-hook 'find-file-not-found-functions
-	  ;;       	 'pbm-file--find-file-not-found-function
-	  ;;       	 nil t))
-	  ;;    (signal 'file-error
-	  ;;            (cons "Opening input file" (cdr error)))))
+         (progn
+           (if replace
+               (goto-char (point-min)))
+           ;; (condition-case error
+           ;;     (setq string (epg-decrypt-file context local-file nil))
+           ;;   (error
+           ;;    (if (setq entry (assoc file pbm-file-passphrase-alist))
+           ;;        (setcdr entry nil))
+           ;;    ;; Hack to prevent find-file from opening empty buffer
+           ;;    ;; when decryption failed (bug#6568).  See the place
+           ;;    ;; where `find-file-not-found-functions' are called in
+           ;;    ;; `find-file-noselect-1'.
+           ;;    (when (file-exists-p local-file)
+           ;;      (make-local-variable 'pbm-file-error)
+           ;;      (setq pbm-file-error error)
+           ;;      (add-hook 'find-file-not-found-functions
+           ;;       	 'pbm-file--find-file-not-found-function
+           ;;       	 nil t))
+           ;;    (signal 'file-error
+           ;;            (cons "Opening input file" (cdr error)))))
 
-	  ;; (make-local-variable 'pbm-file-encrypt-to)
+           ;; (make-local-variable 'pbm-file-encrypt-to)
 
-	  ;; (setq pbm-file-encrypt-to
-	  ;;       (mapcar #'car (epg-context-result-for context 'encrypted-to)))
+           ;; (setq pbm-file-encrypt-to
+           ;;       (mapcar #'car (epg-context-result-for context 'encrypted-to)))
 
-	  ;; (if (or beg end)
-	  ;;     (setq string (substring string (or beg 0) end)))
-	  (save-excursion
-	    ;; If visiting, bind off buffer-file-name so that
-	    ;; file-locking will not ask whether we should
-	    ;; really edit the buffer.
-	    (let ((buffer-file-name
-		   (if visit nil buffer-file-name)))
-	      ;; (save-restriction
-	      ;;   (narrow-to-region (point) (point))
-	      ;;   (pbm-file-decode-and-insert string file visit beg end replace)
-	      ;;   (setq length (- (point-max) (point-min))))
-              (when nil
-               (save-restriction
-                 (project-buffer-mode t)
-                 (project-buffer-raw-load-with-real-handler file nil t)
-                 (setq project-buffer-file-name file)
+           ;; (if (or beg end)
+           ;;     (setq string (substring string (or beg 0) end)))
+           (save-excursion
+             ;; If visiting, bind off buffer-file-name so that
+             ;; file-locking will not ask whether we should
+             ;; really edit the buffer.
+             (let ((buffer-file-name
+                    (if visit nil buffer-file-name)))
+               ;; (save-restriction
+               ;;   (narrow-to-region (point) (point))
+               ;;   (pbm-file-decode-and-insert string file visit beg end replace)
+               ;;   (setq length (- (point-max) (point-min))))
+               (when nil
+                 (save-restriction
+                   (project-buffer-mode t)
+                   (project-buffer-raw-load-with-real-handler file nil t)
+                   (setq project-buffer-file-name file)
 
-                 (setq length (- (point-max) (point-min)))))
+                   (setq length (- (point-max) (point-min)))))
 
-	      ;; (if replace
-	      ;;     (delete-region (point) (point-max)))
-              )
-	    (if visit
-		(set-visited-file-modtime))))
+               ;; (if replace
+               ;;     (delete-region (point) (point-max)))
+               )
+             (if visit
+                 (set-visited-file-modtime))))
       (if (and local-copy
-	       (file-exists-p local-copy))
-	  (delete-file local-copy)))
+               (file-exists-p local-copy))
+          (delete-file local-copy)))
     (list file length)))
 (put 'insert-file-contents 'pbm-file 'pbm-file-insert-file-contents)
 
