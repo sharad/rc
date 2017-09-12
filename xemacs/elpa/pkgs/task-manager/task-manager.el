@@ -639,7 +639,9 @@
          project-name ;; (project-buffer-get-master-project)
          root-folder
          doc-file-filter
-         doc-base-virtual-folder)))))
+         doc-base-virtual-folder))
+
+      (save-buffer))))
 
 ;; (defun task-delete-pbm-task (task name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
 ;;;#autoload
@@ -724,11 +726,18 @@
   (let* ()
     (if (file-directory-p task-dir)
         (find-task task-dir)
+        ;; (progn
+        ;;   (task-create-plan-task task-type name desc task-dir)
+        ;;   (task-create-org-task  task-type name desc task-dir project-main-file project-root-folder)
+        ;;   (task-create-task-dir  task-type name desc task-dir project-root-folder)
+        ;;   (task-create-pbm-task  task-type name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
+        ;;   (org-context-clock-task-update-tasks t))
+
         (progn
-          (task-create-plan-task task-type name desc task-dir)
-          (task-create-org-task  task-type name desc task-dir project-main-file project-root-folder)
           (task-create-task-dir  task-type name desc task-dir project-root-folder)
           (task-create-pbm-task  task-type name desc task-dir project-type project-main-file project-root-folder project-file-filter doc-file-filter doc-base-virtual-folder)
+          (task-create-plan-task task-type name desc task-dir)
+          (task-create-org-task  task-type name desc task-dir project-main-file project-root-folder)
           (org-context-clock-task-update-tasks t)))
 
     (when (y-or-n-p (format "Should set %s current task" task-dir))

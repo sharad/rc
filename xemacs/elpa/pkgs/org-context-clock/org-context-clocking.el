@@ -44,8 +44,8 @@
 ;; (defvar org-context-clock-api-name :predicate "API")
 (defvar org-context-clock-access-api-name :recursive "Aceess API")
 (defvar org-context-clock-assoc-api-name :keys "Assoc API")
-(defvar org-context-clock-api-tasks-associated-to-context   (org-context-clock-access-api-get org-context-clock-access-api-name :tasks))
-(defvar org-context-clock-api-task-associated-to-context-p   (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp))
+(defvar org-context-clock-api-tasks-associated-to-context     (org-context-clock-access-api-get org-context-clock-access-api-name :tasks))
+(defvar org-context-clock-api-task-associated-to-context-p    (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp))
 (defvar org-context-clock-api-task-update-tasks               (org-context-clock-access-api-get org-context-clock-access-api-name :update))
 (defvar org-context-clock-api-task-update-files               (org-context-clock-access-api-get org-context-clock-access-api-name :files))
 
