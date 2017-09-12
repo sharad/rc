@@ -488,7 +488,7 @@ will return point to the current position."
         (lotus-action-on-buffer-undo-tree-change  #'org-clock-lotus-log-note-current-clock-background lotus-minimum-changes))))
 
 (defvar org-clock-lotus-log-note-on-change-timer nil)
-(make-variable-buffer-local 'org-clock-lotus-log-note-on-change-timer)
+;; (make-variable-buffer-local 'org-clock-lotus-log-note-on-change-timer)
 
 ;;;###autoload
 (defun org-clock-lotus-log-note-on-change-start-timer ()

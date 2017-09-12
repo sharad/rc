@@ -111,10 +111,10 @@ Each entry is either:
             (progn
               (add-to-enable-desktop-restore-interrupting-feature-hook
                '(lambda ()
-                 (if (fboundp 'org-clock-start-check-timer-insiuate)
-                     (org-clock-start-check-timer-insiuate))
-                 (if (fboundp 'org-clock-lotus-log-note-on-change-insinuate)
-                     (org-clock-lotus-log-note-on-change-insinuate))))))))))
+                 (when (fboundp 'org-clock-start-check-timer-insiuate)
+                   (org-clock-start-check-timer-insiuate))
+                 (when (fboundp 'org-clock-lotus-log-note-on-change-insinuate)
+                   (org-clock-lotus-log-note-on-change-insinuate))))))))))
 
 (defun lotus-orgclocktask/init-org-clock-daysummary ()
   (progn
@@ -139,13 +139,12 @@ Each entry is either:
                       (progn
 
                         (progn
-                          ;; (let ((monitor-dir (task-party-dir)))
-                          ;;   (if (file-directory-p monitor-dir)
-                          ;;       (progn
-                          ;;         (org-clock-monitor-files-set-from-dir monitor-dir)
-                          ;;         (org-clock-work-day-mode-line-add t))
-                          ;;       (message "org monitor dir %s not exists." monitor-dir)))
-                          )
+                          (let ((monitor-dir (task-party-dir)))
+                            (if (file-directory-p monitor-dir)
+                                (progn
+                                  (org-clock-monitor-files-set-from-dir monitor-dir)
+                                  (org-clock-work-day-mode-line-add t))
+                                (message "org monitor dir %s not exists." monitor-dir))))
 
                         (progn
                           (add-to-task-current-party-change-hook
@@ -331,7 +330,7 @@ Each entry is either:
 (defun lotus-orgclocktask/init-task-manager ()
   (use-package task-manager
       :defer t
-      :commands (office-mode task-party-base-dir task-current-party-select-set task-current-party task-party-dir task-select-party-dir find-task-dir)
+      ;; :commands (office-mode task-party-base-dir task-current-party-select-set task-current-party task-party-dir task-select-party-dir find-task-dir)
       :config
       (progn
         (progn
@@ -354,7 +353,6 @@ Each entry is either:
           (task-current-party "meru"))
 
         (progn
-          ;; (magit-git-lines "remote" "-v")
           (define-minor-mode office-mode
               "Prepare for working with collarative office project. This
 is the mode to be enabled when I am working in some files on
