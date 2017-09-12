@@ -1,1 +1,1 @@
-(define-package "org-scahachua" "20170911.2125" "org-scahachua" nil)
+(define-package "org-scahachua" "20170912.1938" "org-scahachua" nil)

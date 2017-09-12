@@ -1,1 +1,1 @@
-(define-package "sessions-unified" "20170911.2127" "Session unified." 'nil)
+(define-package "sessions-unified" "20170912.1939" "Session unified." 'nil)
