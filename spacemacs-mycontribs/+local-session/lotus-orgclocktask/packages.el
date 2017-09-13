@@ -195,7 +195,7 @@ Each entry is either:
                    (expand-file-name "start.org" (task-party-base-dir))))))
 
           (progn
-            ;; (setq org-context-clock-entry-tree-task-info-root-org-file
+            ;; (setq org-context-clock-task-tree-task-root-org-file
             ;;       (expand-file-name "start.org" (task-party-base-dir)))
             )
 
@@ -205,7 +205,7 @@ Each entry is either:
     (defun lotus-config-start-org-context-clock-insinuate-after-delay (delay)
       (add-to-enable-desktop-restore-interrupting-feature-hook
        #'(lambda ()
-         (run-at-time-or-now delay
+         (run-at-time-or-now 70 ;;delay
           (lambda ()
             (org-context-clock-insinuate))))))
 

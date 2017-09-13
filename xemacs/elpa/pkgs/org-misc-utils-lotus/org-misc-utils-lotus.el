@@ -93,13 +93,13 @@
         (split-window-below size)
       (message "size %d" size))))
 
-(defmacro org-with-new-win (file pos &rest body)
+;; TODO: win clean should be done here
+(defmacro org-with-file-pos-new-win (win file pos &rest body)
   `(let ((target-buffer (find-file-noselect ,file)))
-     (lexical-let* ((window-min-height 7)
-                    (win (org-lotus-new-win)))
+     (lexical-let* ((,win (org-lotus-new-win)))
        ;; maybe leave two lines for our window because of the
        ;; normal `raised' mode line
-       (select-window win 'norecord)
+       (select-window ,win 'norecord)
        ;; (switch-to-buffer target-buffer 'norecord)
        (set-buffer target-buffer)
        (goto-char ,pos)
@@ -135,10 +135,55 @@
 
 ;; TODO (replace-buffer-in-windows)
 
+
+;; (defun select-frame-set-input-focus (frame &optional norecord)
+;;   "Select FRAME, raise it, and set input focus, if possible.
+;; If `mouse-autoselect-window' is non-nil, also move mouse pointer
+;; to FRAME's selected window.  Otherwise, if `focus-follows-mouse'
+;; is non-nil, move mouse cursor to FRAME.
+
+;; Optional argument NORECORD means to neither change the order of
+;; recently selected windows nor the buffer list."
+;;   (select-frame frame norecord)
+;;   (raise-frame frame)
+;;   ;; Ensure, if possible, that FRAME gets input focus.
+;;   (when (memq (window-system frame) '(x w32 ns))
+;;     (x-focus-frame frame))
+;;   ;; Move mouse cursor if necessary.
+;;   (cond
+;;    (mouse-autoselect-window
+;;     (let ((edges (window-inside-edges (frame-selected-window frame))))
+;;       ;; Move mouse cursor into FRAME's selected window to avoid that
+;;       ;; Emacs mouse-autoselects another window.
+;;       (set-mouse-position frame (nth 2 edges) (nth 1 edges))))
+;;    (focus-follows-mouse
+;;     ;; Move mouse cursor into FRAME to avoid that another frame gets
+;;     ;; selected by the window manager.
+;;     (set-mouse-position frame (1- (frame-width frame)) 0))))
+
 (defun quiet--select-frame (frame &optional norecord)
-  (select-frame frame norecord))
+  ;; (select-frame frame norecord)
+  (select-frame frame norecord)
+  ;; (raise-frame frame)
+  ;; Ensure, if possible, that FRAME gets input focus.
+  ;; (when (memq (window-system frame) '(x w32 ns))
+  ;;   (x-focus-frame frame))
+  ;; Move mouse cursor if necessary.
+  (cond
+    (mouse-autoselect-window
+     (let ((edges (window-inside-edges (frame-selected-window frame))))
+       ;; Move mouse cursor into FRAME's selected window to avoid that
+       ;; Emacs mouse-autoselects another window.
+       (set-mouse-position frame (nth 2 edges) (nth 1 edges))))
+    (focus-follows-mouse
+     ;; Move mouse cursor into FRAME to avoid that another frame gets
+     ;; selected by the window manager.
+     (set-mouse-position frame (1- (frame-width frame)) 0))))
+
+
 
 (defun safe-timed-org-refile-get-location (timeout)
+  ;; TODO: as clean up reset win configuration
   (lexical-let* ((current-command (or (helm-this-command) this-command))
                  (str-command     (helm-symbol-name current-command))
                  (buf-name        (format "*helm-mode-%s*" str-command))
@@ -196,9 +241,9 @@ With prefix arg C-u, copy region instad of killing it."
      ,@body))
 (put 'org-file-loc-with-refile 'lisp-indent-function 1)
 
-(defmacro org-miniwin-file-loc-with-refile (file pos refile-targets &rest body)
+(defmacro org-miniwin-file-loc-with-refile (win file pos refile-targets &rest body)
   `(org-file-loc-with-refile ,file ,pos ,refile-targets
-     (org-with-new-win ,file ,pos ,@body)))
+      (org-with-file-pos-new-win ,win ,file ,pos ,@body)))
 (put 'org-miniwin-file-loc-with-refile 'lisp-indent-function 1)
 
 (defmacro org-timed-file-loc-with-refile (file pos timeout refile-targets &rest body)

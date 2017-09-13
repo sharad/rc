@@ -123,9 +123,13 @@
                 (message "not at drawer"))
             (message "reached to drawer1")))))))
 
+(defvar org-context-clock-add-context-to-org-heading-win-config nil)
+
 ;;;###autoload
 (defun org-context-clock-add-context-to-org-heading (context timeout)
   (interactive '(nil nil))
+
+  ;; TODO: as clean up reset win configuration
   (lexical-let* ((timeout (or timeout 17))
                  (context (or context (org-context-clock-build-context)))
                  (buff (plist-get context :buffer)))
@@ -136,8 +140,12 @@
           (eq buff
               (get-buffer "*helm-mode-org-context-clock-add-context-to-org-heading*"))))
 
+        (setq org-context-clock-add-context-to-org-heading-win-config (current-window-configuration))
+        ;; TODO: do win clean uin in org-timed-miniwin-file-loc-with-refile macro not here.
+        ;;       and make and use it own org-context-clock-add-context-to-org-heading-win-config variable for it.
         (org-timed-miniwin-file-loc-with-refile
-            file loc timeout '((org-context-clock-task-update-files :maxlevel . 4))
+            win file loc timeout
+            '((org-context-clock-task-update-files :maxlevel . 4))
             ;; (set-marker marker (point))
             (lexical-let* ((marker (make-marker)))
               (set-marker marker (point))
@@ -150,7 +158,10 @@
                                                     (when (active-minibuffer-window)
                                                       (abort-recursive-edit))
                                                     (when (and w (windowp w) (window-valid-p w))
-                                                      (delete-window w)))
+                                                      (delete-window w))
+                                                    (when org-context-clock-add-context-to-org-heading-win-config
+                                                      (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
+                                                      (setq org-context-clock-add-context-to-org-heading-win-config nil)))
                                                 win)))
                 (condition-case err
                     (let ((buffer-read-only nil))
@@ -171,6 +182,9 @@
                              (org-flag-proprty-drawer-at-marker marker t))
                            (when (and win (windowp win) (window-valid-p win))
                              (delete-window win))
+                           (when org-context-clock-add-context-to-org-heading-win-config
+                             (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
+                             (setq org-context-clock-add-context-to-org-heading-win-config nil))
                            (when timer (cancel-timer timer)))
                           ((string-equal "Edit" prop)
                            (when timer (cancel-timer timer))
@@ -181,11 +195,17 @@
                              (org-flag-proprty-drawer-at-marker marker t))
                            (when (and win (windowp win) (window-valid-p win))
                              (delete-window win))
+                           (when org-context-clock-add-context-to-org-heading-win-config
+                             (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
+                             (setq org-context-clock-add-context-to-org-heading-win-config nil))
                            (when timer (cancel-timer timer))))))
                   ((quit)
                    (progn
                      (when (and win (windowp win) (window-valid-p win))
                        (delete-window win))
+                     (when org-context-clock-add-context-to-org-heading-win-config
+                       (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
+                       (setq org-context-clock-add-context-to-org-heading-win-config nil))
                      (if timer (cancel-timer timer))
                      (signal (car err) (cdr err))))))))
         (progn

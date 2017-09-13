@@ -482,13 +482,15 @@ will return point to the current position."
            (setq lotus-last-buffer-undo-list-pos undo)))
       (t ))))
 (defun org-clock-lotus-log-note-on-change (buffer)
-  (when (eq buffer (current-buffer))
+  (when (or t (eq buffer (current-buffer)))
     (if (car buffer-undo-list)
         (lotus-action-on-buffer-undo-list-change #'org-clock-lotus-log-note-current-clock-background  lotus-minimum-char-changes)
         (lotus-action-on-buffer-undo-tree-change  #'org-clock-lotus-log-note-current-clock-background lotus-minimum-changes))))
 
 (defvar org-clock-lotus-log-note-on-change-timer nil)
-;; (make-variable-buffer-local 'org-clock-lotus-log-note-on-change-timer)
+
+
+;; (unintern 'org-clock-lotus-log-note-on-change-timer)
 
 ;;;###autoload
 (defun org-clock-lotus-log-note-on-change-start-timer ()
