@@ -402,11 +402,12 @@ EXTRA is additional text that will be inserted into the notes buffer."
 
 (defun lotus-buffer-changes-count ()
   (let ((changes 0))
-    (undo-tree-mapc
-     (lambda (node)
-       (setq changes (+ changes 1;; (length (undo-tree-node-next node))
-                        )))
-     (undo-tree-root buffer-undo-tree))
+    (when buffer-undo-tree
+      (undo-tree-mapc
+       (lambda (node)
+         (setq changes (+ changes 1;; (length (undo-tree-node-next node))
+                          )))
+       (undo-tree-root buffer-undo-tree)))
     changes))
 
 (require 'desktop)
