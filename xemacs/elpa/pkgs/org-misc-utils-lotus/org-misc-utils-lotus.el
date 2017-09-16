@@ -86,6 +86,7 @@
            (plist-get (face-attr-construct 'mode-line) :overline)))))
       -12 -10))
 
+;; create smaller and proper sized window
 (defun org-lotus-new-win ()
   (let ((size              (org-lotus-new-lower-win-size))
         (window-min-height 7))

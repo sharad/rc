@@ -217,7 +217,8 @@ ${goto -600}${execi 120 python ~/bin/stocks ftnt} #arun
 # ${execi 300 ~/bin/currency-track USD INR}
 # ${alignr}
 # ${font}
-${execi 120 ~/bin/currency-track USD INR}
+# ${execi 120 ~/bin/currency-track USD INR}
+${execi 7 ~/bin/currency-track USD INR}
 
 $stippled_hr
 ${color lightgrey}Uptime:$color $uptime ${color lightgrey}- Load:$color $loadavg ${exec sensors | sed -n 3p | grep -n 'temp1' | awk -F'+' '{print $2}' | awk -F' ' '{print $1}'}

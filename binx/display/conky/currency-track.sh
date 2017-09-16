@@ -2,34 +2,15 @@
 
 currency1=$1
 currency2=$2
-
+# meta='ei%3DOIG6WYDHEti4ugS5u4S4DQ'
+proto="http"
+# domain="www.google.com"
+domain="finance.google.com"
+path="finance/converter"
 
 # from: https://github.com/alseambusher/conky-finance/blob/master/install
-# cp template conkyrc
-
-# find currency.conf/ \( ! -regex '.*/\..*' \) -type f -printf "%f\n"| while read _file
-# do
-# 	echo '${font Roboto-Light:size=20}${alignc}1 '$_file'${font}${voffset 10}' >> conkyrc
-# 	currency1=$(cat "currency.conf/$_file" | head -n1)
-# 	for currency2 in $(cat "currency.conf/$_file" | tail -n +2)
-# 	do
-# 		echo '${execi 300 curl -s "http://www.google.com/finance/converter?a=1&from='$currency1'&to='$currency2'" -o ~/.cache/conv}${font Roboto-Light:size=15}${execi 300  grep -m 1 "value=\"'$currency2'" ~/.cache/conv| cut -d ">" -f2|cut -d "<" -f1 |cut -d "(" -f1}${alignr}${execi 300 awk -F"[ >]" '"'"'/<div id=currency_converter_result>/ {printf "%.3f\n",$8}'"'"' ~/.cache/conv}${font}' >> conkyrc
-# 	done
-
-# 	echo '${color7}${hr}${color}' >> conkyrc
-# done
-
-# echo '${font Roboto-Light:size=20}${alignc}Stocks Today${font}${voffset 10}' >> conkyrc
-# for stock in $(cat stocks.conf)
-# do
-# 	echo '${execi 300  curl -s "http://download.finance.yahoo.com/d/quotes.csv?s='$stock'&f=c" >~/.cache/conv}' >>conkyrc
-# 	echo '${font Roboto-Light:size=15}'$stock'${alignr}${execi 300 curl -s "http://download.finance.yahoo.com/d/quotes.csv?s='$stock'&f=l1"}${font}' >> conkyrc
-# 	echo '${font Roboto-Light:size=15}${if_match ${execi 300 cut -d "\"" -f2 ~/.cache/conv| cut -d " " -f1} > 0}${color1}${else}${color4}${endif}${execi 300 cut -d "\"" -f2 ~/.cache/conv}${color}${font}' >>conkyrc
-# done
-# mv conkyrc ~/.conkyrc
-
-
-curl -s 'http://www.google.com/finance/converter?a=1&from='"$currency1"'&to='"$currency2" |
+# curl -s $proto'://'$domain/$path'?a=1&from='"$currency1"'&to='"$currency2"'&meta='"$meta"
+curl -s $proto'://'$domain/$path'?a=1&from='"$currency1"'&to='"$currency2" |
     tidy -q -numeric -asxhtml --show-warnings no  -f /dev/null |
     xmlstarlet sel -N h='http://www.w3.org/1999/xhtml' -t -v "/h:html/h:body//h:div[@id]"
 echo
