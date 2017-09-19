@@ -100,8 +100,16 @@
   (interactive "P")
   (funcall org-context-clock-api-task-update-files force))
 
-(defun org-context-clock-build-context ()
-  (let* ((buff (window-buffer))
+(defun org-context-clock-build-context (&optional buff)
+  (let* ((buff (if buff
+                   (if (bufferp buff)
+                       buff
+                       (if (stringp buff)
+                           (or
+                            (get-buffer buff)
+                            (if (file-exists-p buff)
+                                (get-file-buffer buff)))))
+                   (window-buffer)))
          (file (buffer-file-name buff))
          (context (list :file file :buffer buff)))
     context))
@@ -178,6 +186,8 @@
 
 ;;;###autoload
 (defun org-context-clock-task-run-associated-clock (context)
+  (interactive
+   (list (org-context-clock-build-context)))
   (let ()
     (let* ((matched-clocks
             (remove-if-not
@@ -308,31 +318,20 @@
 
 (when nil                               ;testing
 
-  (org-context-clock-task-run-associated-clock
-   (buffer-file-name))
+  (org-context-clock-task-run-associated-clock (org-context-clock-build-context))
 
   (org-context-clock-task-run-associated-clock
-   (list
-    :file "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"
-    :buffer (find-buffer-visiting "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
+   (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
 
   (org-context-clock-markers-associated-to-context
-   (list
-    :file "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"
-    :buffer (find-buffer-visiting "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
+   (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
 
   (org-context-clock-task-associated-to-context-p
-   (list
-    :file "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"
-    :buffer (find-buffer-visiting "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
+   (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
 
-  (org-context-clock-markers-associated-to-context
-   (buffer-file-name))
+  (org-context-clock-markers-associated-to-context (org-context-clock-build-context))
 
-  (org-context-clock-task-associated-to-context-p
-   (list
-    :file (buffer-file-name)
-    :buffer (current-buffer)))
+  (org-context-clock-task-associated-to-context-p (org-context-clock-build-context))
 
   ;; sharad
   (setq test-info-task
@@ -348,9 +347,7 @@
 
   (funcall org-context-clock-api-task-associated-to-context-p
            (org-context-clock-task-current-task)
-           (list
-            :file (buffer-file-name)
-            :buffer (current-buffer)))
+           (org-context-clock-build-context))
 
 
 
@@ -359,28 +356,18 @@
 
   (funcall org-context-clock-api-task-associated-to-context-p
            test-info-task
-           (list
-            :file (buffer-file-name)
-            :buffer (current-buffer)))
+           (org-context-clock-build-context))
 
   ;; org-clock-marker
   (org-tasks-associated-key-fn-value
    :current-clock test-info-task
-   (list
-    :file (buffer-file-name)
-    :buffer (current-buffer)) )
+   (org-context-clock-build-context) )
 
   (org-context-clock-task-associated-to-context-p
-   (list
-    :file "~/Docume1nts/CreatedContent/contents/org/tasks/meru/report.org"
-    :buffer (find-buffer-visiting
-             "~/Docume1nts/CreatedContent/contents/org/tasks/meru/report.org")))
+   (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
 
   (org-context-clock-task-associated-to-context-p
-   (list
-    :file "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org"
-    :buffer (find-buffer-visiting
-             "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org")))
+   (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org")))
 
   ;; (org-task-associated-context-org-context-p
   ;;  "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"
@@ -389,52 +376,34 @@
 
   (length
    (funcall org-context-clock-api-tasks-associated-to-context
-            (list
-             :file (buffer-file-name)
-             :buffer (current-buffer))))
+            (org-context-clock-build-context)))
 
   (length
    (funcall org-context-clock-api-tasks-associated-to-context
-            (list
-             :file "/home/s/paradise/releases/global/patch-upgrade/Makefile"
-             :buffer (find-buffer-visiting
-                      "/home/s/paradise/releases/global/patch-upgrade/Makefile"))))
+            (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile"))))
 
-  (org-context-clock-markers-associated-to-context (buffer-file-name))
+  (org-context-clock-markers-associated-to-context (org-context-clock-build-context))
+
   (length
    (funcall org-context-clock-api-tasks-associated-to-context
-            (list
-             :file "~/Docume1nts/CreatedContent/contents/org/tasks/meru/report.org"
-             :buffer (find-buffer-visiting
-                      "~/Docume1nts/CreatedContent/contents/org/tasks/meru/report.org"))))
+            (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"))))
 
   (length
    (org-context-clock-tasks-associated-to-context-by-keys
-    (list
-     :file (buffer-file-name)
-     :buffer (current-buffer))))
+    (org-context-clock-build-context)))
 
 
   (length
    (org-context-clock-tasks-associated-to-context-by-keys
-    (list
-     :file "/home/s/paradise/releases/global/patch-upgrade/Makefile"
-     :buffer (find-buffer-visiting
-              "/home/s/paradise/releases/global/patch-upgrade/Makefile")))
-   )
+    (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile"))))
 
   (org-context-clock-task-associated-to-context-p
-   (list
-    :file "/home/s/paradise/releases/global/patch-upgrade/Makefile"
-    :buffer (find-buffer-visiting
-             "/home/s/paradise/releases/global/patch-upgrade/Makefile")))
+   (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile")))
 
   ;; (org-context-clock-task-associated-to-context-by-keys "/home/s/paradise/releases/global/patch-upgrade/Makefile")
 
   (if (org-context-clock-task-associated-to-context-p
-       (list
-        :file (buffer-file-name)
-        :buffer (current-buffer)))
+       (org-context-clock-build-context))
       (message "current clock is with current context or file")))
 
 (provide 'org-context-clock)

@@ -482,11 +482,13 @@ will return point to the current position."
        (if (funcall action)
            (setq lotus-last-buffer-undo-list-pos undo)))
       (t ))))
-(defun org-clock-lotus-log-note-on-change (buffer)
-  (when (or t (eq buffer (current-buffer)))
-    (if (car buffer-undo-list)
-        (lotus-action-on-buffer-undo-list-change #'org-clock-lotus-log-note-current-clock-background  lotus-minimum-char-changes)
-        (lotus-action-on-buffer-undo-tree-change  #'org-clock-lotus-log-note-current-clock-background lotus-minimum-changes))))
+(defun org-clock-lotus-log-note-on-change ()
+  ;; (when (or t (eq buffer (current-buffer)))
+  (if (and
+       (consp buffer-undo-list)
+       (car buffer-undo-list))
+      (lotus-action-on-buffer-undo-list-change #'org-clock-lotus-log-note-current-clock-background  lotus-minimum-char-changes)
+      (lotus-action-on-buffer-undo-tree-change  #'org-clock-lotus-log-note-current-clock-background lotus-minimum-changes)))
 
 (defvar org-clock-lotus-log-note-on-change-timer nil)
 
@@ -501,7 +503,7 @@ will return point to the current position."
         (cancel-timer org-clock-lotus-log-note-on-change-timer)
         (setq org-clock-lotus-log-note-on-change-timer nil)))
   (setq
-   org-clock-lotus-log-note-on-change-timer (run-with-idle-timer 10 10 'org-clock-lotus-log-note-on-change (current-buffer))))
+   org-clock-lotus-log-note-on-change-timer (run-with-idle-timer 10 10 'org-clock-lotus-log-note-on-change)))
 
 ;;;###autoload
 (defun org-clock-lotus-log-note-on-change-insinuate ()

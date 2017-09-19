@@ -228,11 +228,11 @@ Each entry is either:
           (progn
             (add-to-enable-login-session-interrupting-feature-hook
              'lotus-config-start-org-context-clock-insinuate-with-session-unified
-             t)
+             nil)
 
             (add-to-enable-startup-interrupting-feature-hook
              'lotus-config-start-org-context-clock-insinuate-with-session-unified
-             t))))))
+             nil))))))
 
 (defun lotus-orgclocktask/init-org-misc-utils-lotus ()
   (use-package org-misc-utils-lotus

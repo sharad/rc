@@ -105,7 +105,7 @@
        (set-buffer target-buffer)
        (goto-char ,pos)
        ,@body)))
-(put 'org-with-new-win 'lisp-indent-function 1)
+(put 'org-with-file-pos-new-win 'lisp-indent-function 1)
 ;; Misc Macros Ends
 
 ;; Marker Macros Starts
@@ -259,10 +259,10 @@ With prefix arg C-u, copy region instad of killing it."
      ,@body))
 (put 'org-timed-file-loc-with-refile 'lisp-indent-function 1)
 
-(defmacro org-timed-miniwin-file-loc-with-refile (file pos timeout refile-targets &rest body)
+(defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets &rest body)
   `(org-timed-file-loc-with-refile
        ,file ,pos ,timeout ,refile-targets
-       (org-with-new-win ,file ,pos ,@body)))
+       (org-with-file-pos-new-win ,win ,file ,pos ,@body)))
 (put 'org-timed-miniwin-file-loc-with-refile 'lisp-indent-function 1)
 
 ;; e.g.
