@@ -1,1 +1,1 @@
-(define-package "package-dev-utils-lotus" "20170918.1055" "packahe dev utils" 'nil)
+(define-package "package-dev-utils-lotus" "20170919.1745" "packahe dev utils" 'nil)

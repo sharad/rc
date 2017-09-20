@@ -52,7 +52,8 @@
                         value
                         (funcall
                          (org-context-clock-property-get-function prop)
-                         prop context args))))
+                         prop context args)))
+  t)
 
 (progn
   (setq org-property-set-functions-alist nil)
