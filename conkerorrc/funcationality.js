@@ -1053,10 +1053,31 @@ let bookmark_groups = {
     "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects",
     "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects"
   ],
-  "NewsTechScience": [
+    "Crypto": [
+        "http://news.mit.edu/topic/cryptography",
+        "https://www.google.co.in/search?q=cryptography+News"
+    ],
+    "Coding": [
+        "https://www.securecoding.cert.org",
+        "http://resources.sei.cmu.edu/library/asset-view.cfm?assetid=473603"
+    ],
+    "SoftEngg": [
+        "https://www.cert.org",
+        "https://www.cert.org/news/"
+    ],
+    "Network": [
+        "https://tools.ietf.org/dailydose/",
+        "https://www.icann.org/news"
+        "https://www.similarweb.com/website/ietf.org#similarSites"
+    ],
+  "NewsTech": [
     "http://www.osnews.com",
-    "http://www.linuxtoday.com"
   ],
+    "Linux": [
+        "http://www.linuxtoday.com",
+        "http://xmodulo.com",
+        "http://planet.ubuntu.com"
+    ],
   "NewsScience": [
     "https://www.newscientist.com",
     "https://www.sciencedaily.com",
@@ -1064,7 +1085,8 @@ let bookmark_groups = {
     "http://www.sciencemag.org",
     "https://www.quantamagazine.org",
     "http://www.nature.com",
-    "https://www.sciencenews.org"
+    "https://www.sciencenews.org",
+    "https://plus.maths.org/content/News"
   ],
   "NewsIndia": [
     "http://www.aninews.in",
