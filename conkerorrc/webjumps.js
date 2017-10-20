@@ -1,3 +1,171 @@
+//{{ Bookmark Group [https://ericjmritz.name/2015/08/12/creating-bookmark-groups-in-conkeror/]
+var bookmark_groups = {
+    "Krishan": [
+        "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects",
+        "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects",
+    ],
+    "Crypto": [
+        "http://news.mit.edu/topic/cryptography",
+        "https://www.google.co.in/search?q=cryptography+News",
+    ],
+    "Coding": [
+        "https://www.securecoding.cert.org",
+        "http://resources.sei.cmu.edu/library/asset-view.cfm?assetid=473603",
+    ],
+    "SoftEngg": [
+        "https://www.cert.org",
+        "https://www.cert.org/news/",
+    ],
+    "ExploitsVulnerabilities": [
+        "https://www.exploit-db.com/",
+        "https://thehackernews.com/",
+        "https://www.securityweek.com",
+        "https://packetstormsecurity.com/",
+        "http://www.zdnet.com/blog/security/",
+        "https://cybersecurityventures.com",
+        "https://thehackernews.com",
+        "https://securityintelligence.com",
+    ],
+    "ZeroDay": [
+        "https://packetstormsecurity.com/news/tags/zero_day/",
+    ],
+    "Network": [
+        "https://tools.ietf.org/dailydose/",
+        "https://www.icann.org/news",
+        "https://www.similarweb.com/website/ietf.org#similarSites",
+    ],
+    "NewsTech": [
+        "http://www.osnews.com",
+    ],
+    "Linux": [
+        "http://www.linuxtoday.com",
+        "http://xmodulo.com",
+        "http://planet.ubuntu.com",
+    ],
+    "Math": [
+        "https://plus.maths.org/content/News",
+    ],
+    "NewsScience": [
+        "https://www.newscientist.com",
+        "https://www.sciencedaily.com",
+        "http://phys.org/",
+        "http://www.sciencemag.org",
+        "https://www.quantamagazine.org",
+        "http://www.nature.com",
+        "https://www.sciencenews.org",
+        "https://plus.maths.org/content/News",
+    ],
+    "NewsIndia": [
+        "http://www.aninews.in",
+        "http://www.ptinews.com",
+        "http://www.ndtv.com",
+        "http://www.jantakareporter.com",
+    ],
+    "NewsWorld": [
+        "http://www.bbc.com",
+        "http://www.economist.com",
+        "http://www.huffingtonpost.com",
+        "http://www.theatlantic.com",
+        "http://sputniknews.com",
+        "https://www.theguardian.com",
+        "http://www.telegraph.co.uk",
+        "http://dunyanews.tv",
+        "http://www.dawn.com",
+    ],
+    "NewsOffBeats": [
+        "http://www.bbc.com/future",
+        "http://www.wired.com",
+        "http://www.messagetoeagle.com",
+        "http://www.sci-news.com",
+    ],
+    "NewsTv": [
+        "http://www.reuters.tv",
+    ],
+    "NewsHindi": [
+        "http://khabar.ndtv.com",
+        "http://www.bhaskar.com",
+        "http://www.amarujala.com",
+        "http://www.jagran.com",
+        "http://hindi.boldsky.com",
+    ],
+    "NewsElectronics": [
+        "https://www.quora.com/What-are-the-top-10-websites-electronics-communication-students-must-visit",
+        "http://www.physics-and-radio-electronics.com/electronic-devices-and-circuits.html",
+        "http://www.allaboutcircuits.com/",
+        "http://www.extremetech.com/category/electronics",
+        "http://www.circuitstoday.com",
+        "http://electronicdesign.com",
+        "http://www.eetimes.com",
+        "http://www.embedded.com",
+
+    ],
+    "NewsAgra": [
+        "http://www.amarujala.com/uttar-pradesh/agra",
+        "http://www.jagran.com/local/uttar-pradesh_agra-city-news-hindi.html",
+        "http://www.bhaskar.com/uttar-pradesh/agra/",
+    ],
+    "NewsGossip": [
+        "https://thedirty.com",
+    ],
+    "NewsIndianHistory": [
+        "http://www.stephen-knapp.com",
+    ],
+    "NewsPsychology": [
+        "http://www.apa.org",
+        "https://www.psychologytoday.com",
+    ],
+    "NewsDIY": [
+        "http://www.instructables.com",
+    ],
+    "Lua": [
+        "http://www.lua.org/manual/5.2/",
+        "http://www.love2d.org/wiki/Main_Page",
+    ],
+    "Reddit": [
+        "http://reddit.com/r/programming",
+        "http://reddit.com/r/emacs",
+        "http://reddit.com/r/coolgithubprojects",
+        "http://reddit.com/r/lua",
+    ],
+    "Scheme": [
+        "http://www.schemers.org/Documents/Standards/R5RS/HTML/",
+        "http://scsh.net/docu/html/man-Z-H-1.html#node_toc_start",
+        "http://scsh.net/docu/docu.html",
+    ],
+    "Bloodborne": [
+        "https://www.reddit.com/r/huntersbell/new/",
+        "http://bloodborne.wikidot.com/",
+    ],
+    "Pending": [
+        "https://www.google.co.in/search?q=Xwindow+with+cairo+xlib++XCB+good+intro+book",
+        "https://tronche.com/gui/x/xlib-tutorial/2nd-program-anatomy.html",
+        "https://en.wikipedia.org/wiki/X_Toolkit_Intrinsics",
+        "https://www.google.co.in/search?q=Xorg+how+to+make+translucent+window",
+        "http://conky.pitstop.free.fr/wiki/index.php5?title=Goto/offset/voffset_(en)",
+        "https://insights.ubuntu.com/2015/06/30/publishing-lxd-images/",
+        "https://github.com/spencertipping/conky-compiler",
+        "https://www.google.co.in/search?q=X+window+writing+into+Root+Window",
+    ]
+};
+
+interactive("open-bookmark-group",
+            "Opens all bookmarks in the given group name.",
+            function (I) {
+                var name = yield I.minibuffer.read(
+                    $prompt = "Group", $history = "Group",
+                    $completer = new prefix_completer($completions = Object.keys(bookmark_groups)),
+                    $default_completion = "Plutono",
+                    $require_match,
+                    $auto_complete);
+
+                bookmark_groups[name].forEach(
+                    function (element, index, array) {
+                        load_url_in_new_buffer(element, I.window);
+                    });
+            });
+
+define_key(content_buffer_normal_keymap, "C-c o", "open-bookmark-group");
+//}}
 
 
 // web shortcuts
@@ -1112,175 +1280,3 @@ define_webjump("history", "http://www.historytoday.com/site-search/%s");
 //{ similar
 define_webjump("similarweb", "https://www.similarweb.com/website/%s#similarSites");
 //}
-
-
-
-
-//{{ Bookmark Group [https://ericjmritz.name/2015/08/12/creating-bookmark-groups-in-conkeror/]
-var bookmark_groups = {
-    "Krishan": [
-        "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects",
-        "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects",
-    ],
-    "Crypto": [
-        "http://news.mit.edu/topic/cryptography",
-        "https://www.google.co.in/search?q=cryptography+News",
-    ],
-    "Coding": [
-        "https://www.securecoding.cert.org",
-        "http://resources.sei.cmu.edu/library/asset-view.cfm?assetid=473603",
-    ],
-    "SoftEngg": [
-        "https://www.cert.org",
-        "https://www.cert.org/news/",
-    ],
-    "ExploitsVulnerabilities": [
-        "https://www.exploit-db.com/",
-        "https://thehackernews.com/",
-        "https://www.securityweek.com",
-        "https://packetstormsecurity.com/",
-        "http://www.zdnet.com/blog/security/",
-        "https://cybersecurityventures.com",
-        "https://thehackernews.com",
-        "https://securityintelligence.com",
-    ],
-    "ZeroDay": [
-        "https://packetstormsecurity.com/news/tags/zero_day/",
-    ],
-    "Network": [
-        "https://tools.ietf.org/dailydose/",
-        "https://www.icann.org/news",
-        "https://www.similarweb.com/website/ietf.org#similarSites",
-    ],
-    "NewsTech": [
-        "http://www.osnews.com",
-    ],
-    "Linux": [
-        "http://www.linuxtoday.com",
-        "http://xmodulo.com",
-        "http://planet.ubuntu.com",
-    ],
-    "Math": [
-        "https://plus.maths.org/content/News",
-    ],
-    "NewsScience": [
-        "https://www.newscientist.com",
-        "https://www.sciencedaily.com",
-        "http://phys.org/",
-        "http://www.sciencemag.org",
-        "https://www.quantamagazine.org",
-        "http://www.nature.com",
-        "https://www.sciencenews.org",
-        "https://plus.maths.org/content/News",
-    ],
-    "NewsIndia": [
-        "http://www.aninews.in",
-        "http://www.ptinews.com",
-        "http://www.ndtv.com",
-        "http://www.jantakareporter.com",
-    ],
-    "NewsWorld": [
-        "http://www.bbc.com",
-        "http://www.economist.com",
-        "http://www.huffingtonpost.com",
-        "http://www.theatlantic.com",
-        "http://sputniknews.com",
-        "https://www.theguardian.com",
-        "http://www.telegraph.co.uk",
-        "http://dunyanews.tv",
-        "http://www.dawn.com",
-    ],
-    "NewsOffBeats": [
-        "http://www.bbc.com/future",
-        "http://www.wired.com",
-        "http://www.messagetoeagle.com",
-        "http://www.sci-news.com",
-    ],
-    "NewsTv": [
-        "http://www.reuters.tv",
-    ],
-    "NewsHindi": [
-        "http://khabar.ndtv.com",
-        "http://www.bhaskar.com",
-        "http://www.amarujala.com",
-        "http://www.jagran.com",
-        "http://hindi.boldsky.com",
-    ],
-    "NewsElectronics": [
-        "https://www.quora.com/What-are-the-top-10-websites-electronics-communication-students-must-visit",
-        "http://www.physics-and-radio-electronics.com/electronic-devices-and-circuits.html",
-        "http://www.allaboutcircuits.com/",
-        "http://www.extremetech.com/category/electronics",
-        "http://www.circuitstoday.com",
-        "http://electronicdesign.com",
-        "http://www.eetimes.com",
-        "http://www.embedded.com",
-
-    ],
-    "NewsAgra": [
-        "http://www.amarujala.com/uttar-pradesh/agra",
-        "http://www.jagran.com/local/uttar-pradesh_agra-city-news-hindi.html",
-        "http://www.bhaskar.com/uttar-pradesh/agra/",
-    ],
-    "NewsGossip": [
-        "https://thedirty.com",
-    ],
-    "NewsIndianHistory": [
-        "http://www.stephen-knapp.com",
-    ],
-    "NewsPsychology": [
-        "http://www.apa.org",
-        "https://www.psychologytoday.com",
-    ],
-    "NewsDIY": [
-        "http://www.instructables.com",
-    ],
-    "Lua": [
-        "http://www.lua.org/manual/5.2/",
-        "http://www.love2d.org/wiki/Main_Page",
-    ],
-    "Reddit": [
-        "http://reddit.com/r/programming",
-        "http://reddit.com/r/emacs",
-        "http://reddit.com/r/coolgithubprojects",
-        "http://reddit.com/r/lua",
-    ],
-    "Scheme": [
-        "http://www.schemers.org/Documents/Standards/R5RS/HTML/",
-        "http://scsh.net/docu/html/man-Z-H-1.html#node_toc_start",
-        "http://scsh.net/docu/docu.html",
-    ],
-    "Bloodborne": [
-        "https://www.reddit.com/r/huntersbell/new/",
-        "http://bloodborne.wikidot.com/",
-    ],
-    "Pending": [
-        "https://www.google.co.in/search?q=Xwindow+with+cairo+xlib++XCB+good+intro+book",
-        "https://tronche.com/gui/x/xlib-tutorial/2nd-program-anatomy.html",
-        "https://en.wikipedia.org/wiki/X_Toolkit_Intrinsics",
-        "https://www.google.co.in/search?q=Xorg+how+to+make+translucent+window",
-        "http://conky.pitstop.free.fr/wiki/index.php5?title=Goto/offset/voffset_(en)",
-        "https://insights.ubuntu.com/2015/06/30/publishing-lxd-images/",
-        "https://github.com/spencertipping/conky-compiler",
-        "https://www.google.co.in/search?q=X+window+writing+into+Root+Window",
-    ]
-};
-
-interactive("open-bookmark-group",
-            "Opens all bookmarks in the given group name.",
-            function (I) {
-                var name = yield I.minibuffer.read(
-                    $prompt = "Group", $history = "Group",
-                    $completer = new prefix_completer($completions = Object.keys(bookmark_groups)),
-                    $default_completion = "Plutono",
-                    $require_match,
-                    $auto_complete);
-
-                bookmark_groups[name].forEach(
-                    function (element, index, array) {
-                        load_url_in_new_buffer(element, I.window);
-                    });
-            });
-
-define_key(content_buffer_normal_keymap, "C-c o", "open-bookmark-group");
-//}}
