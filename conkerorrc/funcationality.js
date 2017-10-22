@@ -1051,24 +1051,24 @@ add_hook("create_buffer_late_hook", kill_buffer_to_limit);
 let bookmark_groups = {
   "Krishan": [
     "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects",
-    "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects"
+      "https://www.mojarto.com/blogs/top-6-krishna-artworks-for-your-walls-this-janmashtami?pfrom=home-specialprojects",
   ],
     "Crypto": [
         "http://news.mit.edu/topic/cryptography",
-        "https://www.google.co.in/search?q=cryptography+News"
+        "https://www.google.co.in/search?q=cryptography+News",
     ],
     "Coding": [
         "https://www.securecoding.cert.org",
-        "http://resources.sei.cmu.edu/library/asset-view.cfm?assetid=473603"
+        "http://resources.sei.cmu.edu/library/asset-view.cfm?assetid=473603",
     ],
     "SoftEngg": [
         "https://www.cert.org",
-        "https://www.cert.org/news/"
+        "https://www.cert.org/news/",
     ],
     "Network": [
         "https://tools.ietf.org/dailydose/",
-        "https://www.icann.org/news"
-        "https://www.similarweb.com/website/ietf.org#similarSites"
+        "https://www.icann.org/news",
+        "https://www.similarweb.com/website/ietf.org#similarSites",
     ],
   "NewsTech": [
     "http://www.osnews.com",
@@ -1086,13 +1086,13 @@ let bookmark_groups = {
     "https://www.quantamagazine.org",
     "http://www.nature.com",
     "https://www.sciencenews.org",
-    "https://plus.maths.org/content/News"
+      "https://plus.maths.org/content/News",
   ],
   "NewsIndia": [
     "http://www.aninews.in",
     "http://www.ptinews.com",
     "http://www.ndtv.com",
-    "http://www.jantakareporter.com"
+      "http://www.jantakareporter.com",
   ],
   "NewsWorld": [
     "http://www.bbc.com",
@@ -1103,13 +1103,13 @@ let bookmark_groups = {
     "https://www.theguardian.com",
     "http://www.telegraph.co.uk",
     "http://dunyanews.tv",
-    "http://www.dawn.com"
+      "http://www.dawn.com",
   ],
   "NewsOffBeats": [
     "http://www.bbc.com/future",
     "http://www.wired.com",
     "http://www.messagetoeagle.com",
-    "http://www.sci-news.com"
+      "http://www.sci-news.com",
   ],
   "NewsTv": [
     "http://www.reuters.tv",
@@ -1119,7 +1119,7 @@ let bookmark_groups = {
     "http://www.bhaskar.com",
     "http://www.amarujala.com",
     "http://www.jagran.com",
-    "http://hindi.boldsky.com"
+      "http://hindi.boldsky.com",
   ],
   "NewsElectronics": [
     "https://www.quora.com/What-are-the-top-10-websites-electronics-communication-students-must-visit",
@@ -1129,30 +1129,30 @@ let bookmark_groups = {
     "http://www.circuitstoday.com",
     "http://electronicdesign.com",
     "http://www.eetimes.com",
-    "http://www.embedded.com"
+      "http://www.embedded.com",
 
   ],
   "NewsAgra": [
     "http://www.amarujala.com/uttar-pradesh/agra",
     "http://www.jagran.com/local/uttar-pradesh_agra-city-news-hindi.html",
-    "http://www.bhaskar.com/uttar-pradesh/agra/"
+      "http://www.bhaskar.com/uttar-pradesh/agra/",
   ],
   "NewsGossip": [
-    "https://thedirty.com"
+      "https://thedirty.com",
   ],
   "NewsIndianHistory": [
-    "http://www.stephen-knapp.com"
+      "http://www.stephen-knapp.com",
   ],
   "NewsPsychology": [
     "http://www.apa.org",
     "https://www.psychologytoday.com",
   ],
   "NewsDIY": [
-    "http://www.instructables.com"
+      "http://www.instructables.com",
   ],
   "Lua": [
     "http://www.lua.org/manual/5.2/",
-    "http://www.love2d.org/wiki/Main_Page"
+      "http://www.love2d.org/wiki/Main_Page",
   ],
   "Reddit": [
     "http://reddit.com/r/programming",
@@ -1163,11 +1163,11 @@ let bookmark_groups = {
   "Scheme": [
     "http://www.schemers.org/Documents/Standards/R5RS/HTML/",
     "http://scsh.net/docu/html/man-Z-H-1.html#node_toc_start",
-    "http://scsh.net/docu/docu.html"
+      "http://scsh.net/docu/docu.html",
   ],
   "Bloodborne": [
     "https://www.reddit.com/r/huntersbell/new/",
-    "http://bloodborne.wikidot.com/"
+      "http://bloodborne.wikidot.com/",
   ],
     "Pending": [
         "https://www.google.co.in/search?q=Xwindow+with+cairo+xlib++XCB+good+intro+book",
@@ -1177,7 +1177,7 @@ let bookmark_groups = {
         "http://conky.pitstop.free.fr/wiki/index.php5?title=Goto/offset/voffset_(en)",
         "https://insights.ubuntu.com/2015/06/30/publishing-lxd-images/",
         "https://github.com/spencertipping/conky-compiler",
-        "https://www.google.co.in/search?q=X+window+writing+into+Root+Window"
+        "https://www.google.co.in/search?q=X+window+writing+into+Root+Window",
     ]
 
 
@@ -1231,7 +1231,7 @@ interactive("clear-http-auth",
 
 //}}
 
-tab_bar_mode(false); //disable
+// tab_bar_mode(false); //disable
 
 // Local Variables: **
 // folded-file:t **
