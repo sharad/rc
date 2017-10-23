@@ -506,10 +506,24 @@ will return point to the current position."
    org-clock-lotus-log-note-on-change-timer (run-with-idle-timer 10 10 'org-clock-lotus-log-note-on-change)))
 
 ;;;###autoload
+(defun org-clock-lotus-log-note-on-change-stop-timer ()
+  (interactive)
+  (if org-clock-lotus-log-note-on-change-timer
+      (progn
+        (cancel-timer org-clock-lotus-log-note-on-change-timer)
+        (setq org-clock-lotus-log-note-on-change-timer nil))))
+
+;;;###autoload
 (defun org-clock-lotus-log-note-on-change-insinuate ()
   (interactive)
   ;; message-send-mail-hook
   (org-clock-lotus-log-note-on-change-start-timer))
+
+;;;###autoload
+(defun org-clock-lotus-log-note-on-change-uninsinuate ()
+  (interactive)
+  ;; message-send-mail-hook
+  (org-clock-lotus-log-note-on-change-stop-timer))
 
 
 
