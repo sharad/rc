@@ -177,6 +177,11 @@ fi
 # gconftool -s /apps/mail-notification/commands/new-mail/command "$EDITOR -e '(gnus)'"
 # gconftool -s /apps/mail-notification/commands/new-mail/enabled true
 
+# https://unix.stackexchange.com/questions/69033/mouse-cursor-became-a-big-x
+# https://unix.stackexchange.com/questions/371166/i-like-the-default-x-shaped-crosshair-cursor-in-linux-how-do-i-force-debian-t
+# xsetroot -cursor_name X_cursor
+xsetroot -cursor_name left_ptr
+
 
 if [ "x${HOST}" != "x" ]
 then

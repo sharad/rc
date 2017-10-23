@@ -74,6 +74,10 @@ if [ $(atq | cut -f1 | wc -l) -gt 0 ] ; then
     atrm  $(atq | cut -f1)
 fi
 
+# https://unix.stackexchange.com/questions/69033/mouse-cursor-became-a-big-x
+# https://unix.stackexchange.com/questions/371166/i-like-the-default-x-shaped-crosshair-cursor-in-linux-how-do-i-force-debian-t
+# xsetroot -cursor_name X_cursor
+xsetroot -cursor_name left_ptr
 
 # WM specific setup
 ~/bin/wallpaper-setup &!
