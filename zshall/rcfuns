@@ -719,3 +719,13 @@ function runmidscreen() {
     tput cup $(( $(tput lines) ))
 }
 ##}}
+
+
+##{{ Utils
+removelink() {
+    if [ -L "$1" ] && whence -p readlink >& /dev/null
+    then
+        cp --remove-destination "$(readlink "$1")" "$1"
+    fi
+}
+##}}
