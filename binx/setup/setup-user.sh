@@ -25,6 +25,10 @@ DEB_EXTRA_SEC_PKG1="systemd-ui " # policykit-1 policykit-1-gnome
 DEB_DEV_PKG1="python-pip silversearcher-ag silversearcher-ag-el ack-grep"
 DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject"
 
+DEB_PKG_DEV="valgrind"
+
+DEB_PKG_SYSTEM="cpuid inxi"
+
 
 
 function main()
@@ -143,7 +147,9 @@ function setup_apt_packages()
         "$DEB_EXTRA_PKG_VIRTUAL" \
         "$DEB_EXTRA_PKG3_UTILS" \
         "$DEB_PKG_APPEARANCE" \
-        "$DEB_PKG_VIRTURALMACHINE"
+        "$DEB_PKG_VIRTURALMACHINE" \
+        "$DEB_PKG_SYSTEM" \
+        "$DEB_PKG_DEV"
     do
         eval sudo apt -y install $pkg
     done
