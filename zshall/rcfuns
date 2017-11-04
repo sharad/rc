@@ -729,3 +729,18 @@ removelink() {
     fi
 }
 ##}}
+
+##{{
+function sshnopass() {
+    target=$1
+    if ! ssh -o PasswordAuthentication=no $target
+    then
+        echo you key not present in $target, supply it >&2
+        if ssh-copy-id -i ${LOCAL_SSH_PRIMARY_KEY:-~/.ssh/login-keys.d/work} $target
+        then
+            ssh -o PasswordAuthentication=no $target
+        fi
+    fi
+}
+
+##}}
