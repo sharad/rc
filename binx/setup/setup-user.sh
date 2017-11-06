@@ -29,6 +29,7 @@ DEB_PKG_DEV="valgrind"
 
 DEB_PKG_SYSTEM="cpuid inxi"
 
+DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer"
 
 
 function main()
