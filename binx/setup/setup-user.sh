@@ -27,7 +27,7 @@ DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject"
 
 DEB_PKG_DEV="valgrind"
 
-DEB_PKG_SYSTEM="cpuid inxi"
+DEB_PKG_SYSTEM="cpuid inxi redshift"
 
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer"
 
