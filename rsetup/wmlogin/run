@@ -69,6 +69,12 @@ then
     ~/bin/power-mon
 fi
 
+if whence -p redshift && ! pgrep redshift
+then
+    redshift -t 6500:5000 -b 1.0:0.8
+fi
+
+
 atq
 if [ $(atq | cut -f1 | wc -l) -gt 0 ] ; then
     atrm  $(atq | cut -f1)
