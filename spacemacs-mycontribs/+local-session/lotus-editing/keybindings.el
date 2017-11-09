@@ -21,3 +21,8 @@
       (global-unset-key-if-bind (kbd "M-\"") 'corral-double-quotes-backward)))
 
   (spacemacs/corral-enable))
+
+
+
+(global-set-key-if-unbind (kbd "H-SPC") '(lambda () (interactive) (insert "    ")))
+;; (global-set-key-if-unbind (kbd "S-SPC") '(lambda () (interactive) (insert "            ")))

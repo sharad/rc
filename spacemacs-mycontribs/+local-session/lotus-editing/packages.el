@@ -44,6 +44,8 @@
     (light-symbol :location local)
     hilit-chg
     (show-wspace :location local)
+    paren
+    corral
     )
   "The list of Lisp packages required by the lotus-editing layer.
 
@@ -177,7 +179,7 @@ Each entry is either:
             (when matching-text (message matching-text)))))))
 
 (defun lotus-editing/init-corral ()
-  ;; (https://github.com/nivekuil/corral)
+  ;; https://github.com/nivekuil/corral
   (use-package corral
       :defer t
       :config
