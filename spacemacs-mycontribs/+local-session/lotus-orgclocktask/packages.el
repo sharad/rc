@@ -39,13 +39,10 @@
     ;; (PACKAGE :location local)
     org-clock-utils-lotus
     org-clock-daysummary
-    ;; (org-clocktable-alt :location local) ;TODO
     org-clock-table-misc-lotus
     org-context-clock
     org-misc-utils-lotus
-    ;; (org-nagora-report :location local)
-    ;; (org-timesheet :location local)
-    (timesheet :location local)
+    timesheet
     wakatime-mode
     task-manager)
   "The list of Lisp packages required by the lotus-orgclocktask layer.
@@ -215,11 +212,10 @@ Each entry is either:
 
     (progn
       (defun lotus-config-start-org-context-clock-insinuate-after-delay (delay)
-        (add-to-enable-desktop-restore-interrupting-feature-hook
-         #'(lambda ()
-             (run-at-time-or-now 70 ;;delay
-                                 (lambda ()
-                                   (org-context-clock-insinuate))))))
+        #'(lambda ()
+            (run-at-time-or-now 70 ;;delay
+                                (lambda ()
+                                  (org-context-clock-insinuate)))))
 
       (defun lotus-config-start-org-context-clock-insinuate-after-delay-70sec ()
         (lotus-config-start-org-context-clock-insinuate-after-delay 70))
