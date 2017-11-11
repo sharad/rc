@@ -212,10 +212,9 @@ Each entry is either:
 
     (progn
       (defun lotus-config-start-org-context-clock-insinuate-after-delay (delay)
-        #'(lambda ()
-            (run-at-time-or-now 70 ;;delay
-                                (lambda ()
-                                  (org-context-clock-insinuate)))))
+        (run-at-time-or-now 70 ;;delay
+                            '(lambda ()
+                              (org-context-clock-insinuate))))
 
       (defun lotus-config-start-org-context-clock-insinuate-after-delay-70sec ()
         (lotus-config-start-org-context-clock-insinuate-after-delay 70))
