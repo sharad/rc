@@ -39,11 +39,12 @@
     ;; (PACKAGE :location local)
     org-clock-utils-lotus
     org-clock-daysummary
-    (org-clocktable-alt :location local) ;TODO
+    ;; (org-clocktable-alt :location local) ;TODO
+    org-clock-table-misc-lotus
     org-context-clock
     org-misc-utils-lotus
-    (org-nagora-report :location local)
-    (org-timesheet :location local)
+    ;; (org-nagora-report :location local)
+    ;; (org-timesheet :location local)
     (timesheet :location local)
     wakatime-mode
     task-manager)
@@ -172,8 +173,18 @@ Each entry is either:
              t))))))
 
 
-(defun lotus-orgclocktask/init-org-clocktable-alt ()
-  (use-package org-clocktable-alt
+(defun lotus-orgclocktask/init-org-clock-table-misc-lotus ()
+  (use-package org-clock-table-misc-lotus
+      :defer t
+      :config
+      (progn
+        ))
+  (use-package org-nagora-report
+      :defer t
+      :config
+      (progn
+        ))
+  (use-package org-timesheet
       :defer t
       :config
       (progn
@@ -202,24 +213,25 @@ Each entry is either:
           (progn
             (spaceline-toggle-org-clock-on))))
 
-    (defun lotus-config-start-org-context-clock-insinuate-after-delay (delay)
-      (add-to-enable-desktop-restore-interrupting-feature-hook
-       #'(lambda ()
-         (run-at-time-or-now 70 ;;delay
-          (lambda ()
-            (org-context-clock-insinuate))))))
+    (progn
+      (defun lotus-config-start-org-context-clock-insinuate-after-delay (delay)
+        (add-to-enable-desktop-restore-interrupting-feature-hook
+         #'(lambda ()
+             (run-at-time-or-now 70 ;;delay
+                                 (lambda ()
+                                   (org-context-clock-insinuate))))))
 
-    (defun lotus-config-start-org-context-clock-insinuate-after-delay-70sec ()
-      (lotus-config-start-org-context-clock-insinuate-after-delay 70))
+      (defun lotus-config-start-org-context-clock-insinuate-after-delay-70sec ()
+        (lotus-config-start-org-context-clock-insinuate-after-delay 70))
 
-    (defun lotus-config-start-org-context-clock-insinuate-with-session-unified ()
-      (use-package sessions-unified
-          :defer t
-          :config
-          (progn
+      (defun lotus-config-start-org-context-clock-insinuate-with-session-unified ()
+        (use-package sessions-unified
+            :defer t
+            :config
             (progn
-              (add-to-enable-desktop-restore-interrupting-feature-hook
-               'lotus-config-start-org-context-clock-insinuate-after-delay-70sec)))))
+              (progn
+                (add-to-enable-desktop-restore-interrupting-feature-hook
+                 'lotus-config-start-org-context-clock-insinuate-after-delay-70sec))))))
 
     (use-package startup-hooks
         :defer t
@@ -296,20 +308,6 @@ Each entry is either:
                   (let (org-log-note-clock-out)
                     (if (org-clock-is-active)
                         (org-clock-out)))))))))))
-
-(defun lotus-orgclocktask/init-org-nagora-report ()
-  (use-package org-nagora-report
-      :defer t
-      :config
-      (progn
-        )))
-
-(defun lotus-orgclocktask/init-org-timesheet ()
-  (use-package org-timesheet
-      :defer t
-      :config
-      (progn
-        )))
 
 (defun lotus-orgclocktask/init-timesheet ()
   ;; https://github.com/tmarble/timesheet.el

@@ -1,1 +1,1 @@
-(define-package "org-clock-table-misc-lotus" "20170919.1743" "org clock table misc lotus." 'nil)
+(define-package "org-clock-table-misc-lotus" "20171111.2049" "org clock table misc lotus." 'nil)

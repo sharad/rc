@@ -153,15 +153,6 @@ startup in daemon mode."
       (with-report-error "check"
           ;; why desktop-restore not running.
           (progn
-            ;; (setq enable-p4-login t
-            ;;       tramp-mode t
-            ;;       ido-mode 'both)
-            ;; (login-to-perforce)
-            ;; ;; (update-ssh-agent t) ;; should be called when tramp file accessed. - see how it will work in case sharad/desktop-session-restore.
-            ;;test
-            ;; (deh-featurep epa
-            ;;   (if (fboundp 'epa-file-enable)
-            ;;       (epa-file-enable)))
             (general-enable-startup-setting) ;could not run from sharad/enable-startup-interrupting-feature-hook
             ;as needed before the function in sharad/enable-startup-interrupting-feature-hook.
             (when (and
@@ -256,14 +247,15 @@ startup in daemon mode."
          (run-each-hooks 'sharad/disable-login-session-interrupting-feature)))
 
    (defun sharad/disable-login-session-interrupting-feature-in-frame-once (f)
-     (when (any-frame-opened-p) ;last
+     (if (any-frame-opened-p) ;last
                                                                             ;frame
                                                                             ;then
                                                                             ;add.
        (with-report-error "check"
            (sharad/disable-login-session-interrupting-feature)
            (add-hook 'after-make-frame-functions 'sharad/enable-login-session-interrupting-feature-in-frame-once t)
-           (message "added sharad/enable-login-session-interrupting-feature-in-frame-once"))))
+           (message "added sharad/enable-login-session-interrupting-feature-in-frame-once"))
+       (message "sharad/disable-login-session-interrupting-feature-in-frame-once: not running.")))
 
    (add-hook 'delete-frame-functions 'sharad/disable-login-session-interrupting-feature-in-frame-once))
 

@@ -102,10 +102,16 @@
            0))))
 
   (defassoc-context-key org-task-associated-context-status-key :status (task context)
+    ;; task closed criteria
     "Predicate funtion to check if context matches to task's status attribute."
-    (let* ((status
-            (org-context-clock-task-get-property task 'status)))
-      (if (string-equal status "CLOSED") -30 0)))
+    (let* ((todo-type
+            (org-context-clock-task-get-property task :todo-type))
+           (closed
+            (org-context-clock-task-get-property task :closed)))
+      (if (or
+           closed
+           (eql todo-type 'done))
+          -30 0)))
 
   (defassoc-context-key org-task-associated-context-task-key :task-key (task context)
     "Predicate funtion to check if context matches to task's file attribute."

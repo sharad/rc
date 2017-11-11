@@ -144,18 +144,33 @@
         result
         (if list (afind-if fun (cdr list))))))
 
+(eval-when-compile
+  '(when (featurep 'notify)
+    (require 'notify)))
 
-
+(defun lotus-message-notify (title fmt &rest body)
+  (message "%s: %s" title (apply 'format fmt body))
+  (when (fboundp 'notify)
+    (notify title
+            (apply 'format fmt body))))
 
 (defun run-each-hooks (hook)
   (dolist (f (symbol-value hook))
     (condition-case e
-        (funcall f)
-      (error (message "run-each-hooks Error: function %s error %s" f e)))))
+        (progn
+          (lotus-message-notify "run-each-hooks" "%s: running %s" hook f)
+          (funcall f))
+      (error
+       (lotus-message-notify "run-each-hooks Error: function %s error %s" f e)))))
 
 (defun run-each-debug-hooks (hook)
   (dolist (f (symbol-value hook))
-      (error (message "run-each-hooks Error: function %s error %s" f e))))
+    (condition-case e
+        (progn
+          (lotus-message-notify "run-each-hooks" "%s: running %s" hook f)
+          (funcall f))
+      (error
+       (lotus-message-notify "run-each-hooks Error: function %s error %s" f e)))))
 
 
 
@@ -385,6 +400,7 @@
 
 (defun run-at-time-or-now (time fn)
   "Run FN at TIME if numeric is otherwise run now only."
+  (lotus-message-notify "run-at-time-or-now" "will run %s after %d sec" fn time)
   (if (numberp time)
       (run-with-timer time nil fn)
       (funcall fn)))

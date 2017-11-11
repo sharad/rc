@@ -29,11 +29,6 @@
 (setq
  safe-org-refile-get-location-modes '(org-mode))
 
-
-
-
-
-
 ;; Misc Macros Starts
 (defmacro org-with-file-headline (file headline &rest body)
   `(with-current-buffer (if ,file (find-file-noselect ,file) (current-buffer))

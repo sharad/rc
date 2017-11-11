@@ -1155,5 +1155,5 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
 
       (funcall formatter ipos tbls params))))
 
-(provide 'org-clocktable-alt)
+(provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here
