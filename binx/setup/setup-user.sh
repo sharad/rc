@@ -27,8 +27,9 @@ DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject"
 
 DEB_PKG_DEV="valgrind"
 
-DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools pavucontrol"
+DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools pavucontrol redshift"
 
+DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer"
 
 
 function main()
