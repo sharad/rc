@@ -147,7 +147,7 @@
           (setq org-context-clock-add-context-to-org-heading-win-config (current-window-configuration))
           ;; TODO: do win clean uin in org-timed-miniwin-file-loc-with-refile macro not here.
           ;;       and make and use it own org-context-clock-add-context-to-org-heading-win-config variable for it.
-          (let (win file pos timeout)   ;pos is void error is seen ?
+          (progn  ;; let (win file pos timeout)   ;pos is void error is seen ?
             (org-timed-miniwin-file-loc-with-refile
                 win file pos timeout
                 '((org-context-clock-task-update-files :maxlevel . 4))
