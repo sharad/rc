@@ -132,7 +132,8 @@ Each entry is either:
                       :commands (office-mode
                                  task-current-party-select-set
                                  task-current-party task-party-dir
-                                 task-select-party-dir find-task-dir)
+                                 task-select-party-dir
+                                 find-task-dir)
                       :config
                       (progn
 
@@ -199,8 +200,31 @@ Each entry is either:
                 :defer t
                 :config
                 (progn
-                  (org-context-clock-setup-task-tree-task-root-org-file
-                   (expand-file-name "start.org" (task-party-base-dir))))))
+                  (progn
+                    (let* ((party-base-dir (task-party-base-dir))
+                           (start-file (expand-file-name "start.org" party-base-dir)))
+                      (if (and
+                           (file-directory-p party-base-dir)
+                           (file-exists-p start-file))
+                          (progn
+                            (org-context-clock-setup-task-tree-task-root-org-file start-file))
+                          (message "org party dir %s or file %s not exists."
+                                   party-base-dir
+                                   start-file))))
+
+                  (progn
+                    (add-to-task-current-party-change-hook
+                     '(lambda ()
+                       (let* ((party-base-dir (task-party-base-dir))
+                              (start-file (expand-file-name "start.org" party-base-dir)))
+                         (if (and
+                              (file-directory-p party-base-dir)
+                              (file-exists-p start-file))
+                             (progn
+                               (org-context-clock-setup-task-tree-task-root-org-file start-file))
+                             (message "org party dir %s or file %s not exists."
+                                      party-base-dir
+                                      start-file)))))))))
 
           (progn
             ;; (setq org-context-clock-task-tree-task-root-org-file
@@ -211,13 +235,23 @@ Each entry is either:
             (spaceline-toggle-org-clock-on))))
 
     (progn
-      (defun lotus-config-start-org-context-clock-insinuate-after-delay (delay)
-        (run-at-time-or-now 70 ;;delay
-                            '(lambda ()
-                              (org-context-clock-insinuate))))
+      (progn
+        (defun lotus-load-task-manager-delay (delay)
+          (run-at-time-or-now delay
+                              '(lambda ()
+                                (task-party-base-dir))))
 
-      (defun lotus-config-start-org-context-clock-insinuate-after-delay-70sec ()
-        (lotus-config-start-org-context-clock-insinuate-after-delay 70))
+        (defun lotus-load-task-manager-delay-time ()
+          (lotus-load-task-manager-delay 100)))
+
+      (progn
+        (defun lotus-config-start-org-context-clock-insinuate-after-delay (delay)
+          (run-at-time-or-now delay
+                              '(lambda ()
+                                (org-context-clock-insinuate))))
+
+        (defun lotus-config-start-org-context-clock-insinuate-after-delay-time ()
+          (lotus-config-start-org-context-clock-insinuate-after-delay 70)))
 
       (defun lotus-config-start-org-context-clock-insinuate-with-session-unified ()
         (use-package sessions-unified
@@ -226,7 +260,9 @@ Each entry is either:
             (progn
               (progn
                 (add-to-enable-desktop-restore-interrupting-feature-hook
-                 'lotus-config-start-org-context-clock-insinuate-after-delay-70sec))))))
+                 'lotus-config-start-org-context-clock-insinuate-after-delay-time)
+                (add-to-enable-desktop-restore-interrupting-feature-hook
+                 'lotus-load-task-manager-delay-time))))))
 
     (use-package startup-hooks
         :defer t
