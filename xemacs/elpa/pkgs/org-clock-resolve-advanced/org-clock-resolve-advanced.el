@@ -31,6 +31,10 @@
   (require 'org-misc-utils-lotus))
 
 
+(defun org-clock-steel-time ()
+  )
+
+
 (defvar org-clock-clocking-in nil)
 (defvar org-clock-resolving-clocks nil)
 (defvar org-clock-resolving-clocks-due-to-idleness nil)
@@ -113,13 +117,13 @@ thus, the heading it's under), and START-TIME is when the clock
 was started."
   (cl-assert clock)
   (let* ((ch
-	  (save-window-excursion
-	    (save-excursion
-	      (unless org-clock-resolving-clocks-due-to-idleness
-		(org-clock-jump-to-current-clock clock))
-	      (unless org-clock-resolve-expert
-		(with-output-to-temp-buffer "*Org Clock*"
-		  (princ (format-message "Select a Clock Resolution Command:
+          (save-window-excursion
+            (save-excursion
+              (unless org-clock-resolving-clocks-due-to-idleness
+                (org-clock-jump-to-current-clock clock))
+              (unless org-clock-resolve-expert
+                (with-output-to-temp-buffer "*Org Clock*"
+                  (princ (format-message "Select a Clock Resolution Command:
 
 i/q      Ignore this question; the same as keeping all the idle time.
 
@@ -142,66 +146,66 @@ j/J      Jump to the current clock, to make manual adjustments.
 
 For all these options, using uppercase makes your final state
 to be CLOCKED OUT."))))
-	      (org-fit-window-to-buffer (get-buffer-window "*Org Clock*"))
-	      (let (char-pressed)
-		(while (or (null char-pressed)
-			   (and (not (memq char-pressed
-					   '(?k ?K ?g ?G ?s ?S ?C
-						?j ?J ?i ?q)))
-				(or (ding) t)))
-		  (setq char-pressed
-			(read-char (concat (funcall prompt-fn clock)
-					   " [jkKgGSscCiq]? ")
-				   nil 45)))
-		(and (not (memq char-pressed '(?i ?q))) char-pressed)))))
-	 (default
-	   (floor (/ (float-time
-		      (time-subtract (current-time) last-valid)) 60)))
-	 (keep
-	  (and (memq ch '(?k ?K))
-	       (read-number "Keep how many minutes? " default)))
-	 (gotback
-	  (and (memq ch '(?g ?G))
-	       (read-number "Got back how many minutes ago? " default)))
-	 (subtractp (memq ch '(?s ?S)))
-	 (barely-started-p (< (- (float-time last-valid)
-				 (float-time (cdr clock))) 45))
-	 (start-over (and subtractp barely-started-p)))
+              (org-fit-window-to-buffer (get-buffer-window "*Org Clock*"))
+              (let (char-pressed)
+                (while (or (null char-pressed)
+                           (and (not (memq char-pressed
+                                           '(?k ?K ?g ?G ?s ?S ?C
+                                             ?j ?J ?i ?q)))
+                                (or (ding) t)))
+                  (setq char-pressed
+                        (read-char (concat (funcall prompt-fn clock)
+                                           " [jkKgGSscCiq]? ")
+                                   nil 45)))
+                (and (not (memq char-pressed '(?i ?q))) char-pressed)))))
+         (default
+          (floor (/ (float-time
+                     (time-subtract (current-time) last-valid)) 60)))
+         (keep
+          (and (memq ch '(?k ?K))
+               (read-number "Keep how many minutes? " default)))
+         (gotback
+          (and (memq ch '(?g ?G))
+               (read-number "Got back how many minutes ago? " default)))
+         (subtractp (memq ch '(?s ?S)))
+         (barely-started-p (< (- (float-time last-valid)
+                                 (float-time (cdr clock))) 45))
+         (start-over (and subtractp barely-started-p)))
     (cond
-     ((memq ch '(?j ?J))
-      (if (eq ch ?J)
-	  (org-clock-resolve-clock clock 'now nil t nil fail-quietly))
-      (org-clock-jump-to-current-clock clock))
-     ((or (null ch)
-	  (not (memq ch '(?k ?K ?g ?G ?s ?S ?C))))
-      (message ""))
-     (t
-      (org-clock-resolve-clock
-       clock (cond
-	      ((or (eq ch ?C)
-		   ;; If the time on the clock was less than a minute before
-		   ;; the user went away, and they've ask to subtract all the
-		   ;; time...
-		   start-over)
-	       nil)
-	      ((or subtractp
-		   (and gotback (= gotback 0)))
-	       last-valid)
-	      ((or (and keep (= keep default))
-		   (and gotback (= gotback default)))
-	       'now)
-	      (keep
-	       (time-add last-valid (seconds-to-time (* 60 keep))))
-	      (gotback
-	       (time-subtract (current-time)
-			      (seconds-to-time (* 60 gotback))))
-	      (t
-	       (error "Unexpected, please report this as a bug")))
-       (and gotback last-valid)
-       (memq ch '(?K ?G ?S))
-       (and start-over
-	    (not (memq ch '(?K ?G ?S ?C))))
-       fail-quietly)))))
+      ((memq ch '(?j ?J))
+       (if (eq ch ?J)
+           (org-clock-resolve-clock clock 'now nil t nil fail-quietly))
+       (org-clock-jump-to-current-clock clock))
+      ((or (null ch)
+           (not (memq ch '(?k ?K ?g ?G ?s ?S ?C))))
+       (message ""))
+      (t
+       (org-clock-resolve-clock
+        clock (cond
+                ((or (eq ch ?C)
+                     ;; If the time on the clock was less than a minute before
+                     ;; the user went away, and they've ask to subtract all the
+                     ;; time...
+                     start-over)
+                 nil)
+                ((or subtractp
+                     (and gotback (= gotback 0)))
+                 last-valid)
+                ((or (and keep (= keep default))
+                     (and gotback (= gotback default)))
+                 'now)
+                (keep
+                 (time-add last-valid (seconds-to-time (* 60 keep))))
+                (gotback
+                 (time-subtract (current-time)
+                                (seconds-to-time (* 60 gotback))))
+                (t
+                 (error "Unexpected, please report this as a bug")))
+        (and gotback last-valid)
+        (memq ch '(?K ?G ?S))
+        (and start-over
+             (not (memq ch '(?K ?G ?S ?C))))
+        fail-quietly)))))
 
 ;;;###autoload
 (defun org-resolve-clocks (&optional only-dangling-p prompt-fn last-valid)
