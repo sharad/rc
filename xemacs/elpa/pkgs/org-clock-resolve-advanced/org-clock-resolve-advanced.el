@@ -40,61 +40,61 @@
 (defvar org-clock-resolving-clocks-due-to-idleness nil)
 
 (defun org-clock-resolve-clock (clock resolve-to clock-out-time
-				      &optional close-p restart-p fail-quietly)
+                                &optional close-p restart-p fail-quietly)
   "Resolve `CLOCK' given the time `RESOLVE-TO', and the present.
 `CLOCK' is a cons cell of the form (MARKER START-TIME)."
   (let ((org-clock-resolving-clocks t))
     (cond
-     ((null resolve-to)
-      (org-clock-clock-cancel clock)
-      (if (and restart-p (not org-clock-clocking-in))
-	  (org-clock-clock-in clock)))
+      ((null resolve-to)
+       (org-clock-clock-cancel clock)
+       (if (and restart-p (not org-clock-clocking-in))
+           (org-clock-clock-in clock)))
 
-     ((eq resolve-to 'now)
-      (if restart-p
-	  (error "RESTART-P is not valid here"))
-      (if (or close-p org-clock-clocking-in)
-	  (org-clock-clock-out clock fail-quietly)
-	(unless (org-is-active-clock clock)
-	  (org-clock-clock-in clock t))))
+      ((eq resolve-to 'now)
+       (if restart-p
+           (error "RESTART-P is not valid here"))
+       (if (or close-p org-clock-clocking-in)
+           (org-clock-clock-out clock fail-quietly)
+           (unless (org-is-active-clock clock)
+             (org-clock-clock-in clock t))))
 
-     ((not (time-less-p resolve-to (current-time)))
-      (error "RESOLVE-TO must refer to a time in the past"))
+      ((not (time-less-p resolve-to (current-time)))
+       (error "RESOLVE-TO must refer to a time in the past"))
 
-     (t
-      (if restart-p
-	  (error "RESTART-P is not valid here"))
-      (org-clock-clock-out clock fail-quietly (or clock-out-time
-						  resolve-to))
-      (unless org-clock-clocking-in
-	(if close-p
-	    (setq org-clock-leftover-time (and (null clock-out-time)
-					       resolve-to))
-	  (org-clock-clock-in clock nil (and clock-out-time
-					     resolve-to))))))))
+      (t
+       (if restart-p
+           (error "RESTART-P is not valid here"))
+       (org-clock-clock-out clock fail-quietly (or clock-out-time
+                                                   resolve-to))
+       (unless org-clock-clocking-in
+         (if close-p
+             (setq org-clock-leftover-time (and (null clock-out-time)
+                                                resolve-to))
+             (org-clock-clock-in clock nil (and clock-out-time
+                                                resolve-to))))))))
 
 (defun org-clock-jump-to-current-clock (&optional effective-clock)
   (interactive)
   (let ((drawer (org-clock-into-drawer))
-	(clock (or effective-clock (cons org-clock-marker
-					 org-clock-start-time))))
+        (clock (or effective-clock (cons org-clock-marker
+                                         org-clock-start-time))))
     (unless (marker-buffer (car clock))
       (error "No clock is currently running"))
     (org-with-clock clock (org-clock-goto))
     (with-current-buffer (marker-buffer (car clock))
       (goto-char (car clock))
       (when drawer
-	(org-with-wide-buffer
-	 (let ((drawer-re (format "^[ \t]*:%s:[ \t]*$"
-				  (regexp-quote (if (stringp drawer) drawer "LOGBOOK"))))
-	       (beg (save-excursion (org-back-to-heading t) (point))))
-	   (catch 'exit
-	     (while (re-search-backward drawer-re beg t)
-	       (let ((element (org-element-at-point)))
-		 (when (eq (org-element-type element) 'drawer)
-		   (when (> (org-element-property :end element) (car clock))
-		     (org-flag-drawer nil element))
-		   (throw 'exit nil)))))))))))
+        (org-with-wide-buffer
+         (let ((drawer-re (format "^[ \t]*:%s:[ \t]*$"
+                                  (regexp-quote (if (stringp drawer) drawer "LOGBOOK"))))
+               (beg (save-excursion (org-back-to-heading t) (point))))
+           (catch 'exit
+             (while (re-search-backward drawer-re beg t)
+               (let ((element (org-element-at-point)))
+                 (when (eq (org-element-type element) 'drawer)
+                   (when (> (org-element-property :end element) (car clock))
+                     (org-flag-drawer nil element))
+                   (throw 'exit nil)))))))))))
 
 (defun org-clock-resolve (clock &optional prompt-fn last-valid fail-quietly)
   "Resolve an open Org clock.
@@ -216,30 +216,30 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
   (unless org-clock-resolving-clocks
     (let ((org-clock-resolving-clocks t))
       (dolist (file (org-files-list))
-	(let ((clocks (org-find-open-clocks file)))
-	  (dolist (clock clocks)
-	    (let ((dangling (or (not (org-clock-is-active))
-				(/= (car clock) org-clock-marker))))
-	      (if (or (not only-dangling-p) dangling)
-		  (org-clock-resolve
-		   clock
-		   (or prompt-fn
-		       (function
-            (lambda (clock)
-             (format
-              "Dangling clock started %d mins ago"
-              (floor (- (float-time)
-                        (float-time (cdr clock)))
-                     60)))))
-		   (or last-valid
-		       (cdr clock)))))))))))
+        (let ((clocks (org-find-open-clocks file)))
+          (dolist (clock clocks)
+            (let ((dangling (or (not (org-clock-is-active))
+                                (/= (car clock) org-clock-marker))))
+              (if (or (not only-dangling-p) dangling)
+                  (org-clock-resolve
+                   clock
+                   (or prompt-fn
+                       (function
+                        (lambda (clock)
+                         (format
+                          "Dangling clock started %d mins ago"
+                          (floor (- (float-time)
+                                    (float-time (cdr clock)))
+                                 60)))))
+                   (or last-valid
+                       (cdr clock)))))))))))
 
 (defun org-emacs-idle-seconds ()
   "Return the current Emacs idle time in seconds, or nil if not idle."
   (let ((idle-time (current-idle-time)))
     (if idle-time
-	(float-time idle-time)
-      0)))
+        (float-time idle-time)
+        0)))
 
 (defun org-mac-idle-seconds ()
   "Return the current Mac idle time in seconds."
@@ -262,12 +262,12 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
   "Return the number of seconds the user has been idle for.
 This routine returns a floating point number."
   (cond
-   ((eq system-type 'darwin)
-    (org-mac-idle-seconds))
-   ((and (eq window-system 'x) org-x11idle-exists-p)
-    (org-x11-idle-seconds))
-   (t
-    (org-emacs-idle-seconds))))
+    ((eq system-type 'darwin)
+     (org-mac-idle-seconds))
+    ((and (eq window-system 'x) org-x11idle-exists-p)
+     (org-x11-idle-seconds))
+    (t
+     (org-emacs-idle-seconds))))
 
 (defvar org-clock-user-idle-seconds)
 
