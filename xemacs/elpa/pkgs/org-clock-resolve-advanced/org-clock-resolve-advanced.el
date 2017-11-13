@@ -221,12 +221,12 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
 		   clock
 		   (or prompt-fn
 		       (function
-			(lambda (clock)
-			  (format
-			   "Dangling clock started %d mins ago"
-			   (floor (- (float-time)
-				     (float-time (cdr clock)))
-				  60)))))
+            (lambda (clock)
+             (format
+              "Dangling clock started %d mins ago"
+              (floor (- (float-time)
+                        (float-time (cdr clock)))
+                     60)))))
 		   (or last-valid
 		       (cdr clock)))))))))))
 
@@ -273,23 +273,23 @@ This is performed after `org-clock-idle-time' minutes, to check
 if the user really wants to stay clocked in after being idle for
 so long."
   (when (and org-clock-idle-time (not org-clock-resolving-clocks)
-	     org-clock-marker (marker-buffer org-clock-marker))
+             org-clock-marker (marker-buffer org-clock-marker))
     (let* ((org-clock-user-idle-seconds (org-user-idle-seconds))
-	   (org-clock-user-idle-start
-	    (time-subtract (current-time)
-			   (seconds-to-time org-clock-user-idle-seconds)))
-	   (org-clock-resolving-clocks-due-to-idleness t))
+           (org-clock-user-idle-start
+            (time-subtract (current-time)
+                           (seconds-to-time org-clock-user-idle-seconds)))
+           (org-clock-resolving-clocks-due-to-idleness t))
       (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-	  (org-clock-resolve
-	   (cons org-clock-marker
-		 org-clock-start-time)
-	   (lambda (_)
-	     (format "Clocked in & idle for %.1f mins"
-		     (/ (float-time
-			 (time-subtract (current-time)
-					org-clock-user-idle-start))
-			60.0)))
-	   org-clock-user-idle-start)))))
+          (org-clock-resolve
+           (cons org-clock-marker
+                 org-clock-start-time)
+           (lambda (_)
+             (format "Clocked in & idle for %.1f mins"
+                     (/ (float-time
+                         (time-subtract (current-time)
+                                        org-clock-user-idle-start))
+                        60.0)))
+           org-clock-user-idle-start)))))
 
 (defvar org-clock-current-task nil "Task currently clocked in.")
 (defvar org-clock-out-time nil) ; store the time of the last clock-out

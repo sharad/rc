@@ -71,6 +71,8 @@ function main()
 
     setup_dirs
 
+    setup_sourcecode_pro_font
+
     setup_spacemacs
 
     rm -rf $TMPDIR
@@ -448,6 +450,21 @@ export EMACS_SERVER_NAME
 EOF
         fi
     fi
+}
+
+function setup_sourcecode_pro_font()
+{
+    # http://programster.blogspot.in/2014/09/ubuntu-install-source-code-pro.html
+    local FONT_NAME="SourceCodePro"
+    local URL="https://github.com/adobe-fonts/source-code-pro/archive/1.017R.tar.gz"
+
+    mkdir /tmp/$FONT_NAME
+    cd /tmp/$FONT_NAME
+    wget $URL -O "`echo $FONT_NAME`.tar.gz"
+    tar --extract --gzip --file ${FONT_NAME}.tar.gz
+    sudo mkdir /usr/share/fonts/truetype/$FONT_NAME
+    sudo cp -rf /tmp/$FONT_NAME/. /usr/share/fonts/truetype/$FONT_NAME/.
+    fc-cache -f -v
 }
 
 main
