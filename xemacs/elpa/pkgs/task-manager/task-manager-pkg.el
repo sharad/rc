@@ -1,4 +1,4 @@
-(define-package "task-manager" "20170919.1746" "task manager."
+(define-package "task-manager" "20171113.1355" "task manager."
                 '((publishing "201707.2029")
                   (org "1")
                   (rinari "1")
