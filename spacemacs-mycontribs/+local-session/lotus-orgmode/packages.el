@@ -37,6 +37,7 @@
 (defconst lotus-orgmode-packages
   '(
     ;; (PACKAGE :location local)
+    ;; (org :location built-in)
     org
     org-agenda
     publishing
@@ -71,6 +72,11 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+
+(spacemacs|use-package-add-hook org
+  :pre-init
+  (package-initialize))
 
 (defun lotus-orgmode/post-init-org ()
   (use-package org

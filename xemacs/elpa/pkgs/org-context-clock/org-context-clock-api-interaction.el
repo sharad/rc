@@ -29,6 +29,8 @@
 
 (require 'timer-utils-lotus)
 (require 'org-misc-utils-lotus)
+(eval-when-compile
+  '(require 'org-misc-utils-lotus))
 
 (defvar org-context-clock-propery-set-functions-alist nil
   "Propery setting function.")
@@ -145,71 +147,72 @@
           (setq org-context-clock-add-context-to-org-heading-win-config (current-window-configuration))
           ;; TODO: do win clean uin in org-timed-miniwin-file-loc-with-refile macro not here.
           ;;       and make and use it own org-context-clock-add-context-to-org-heading-win-config variable for it.
-          (org-timed-miniwin-file-loc-with-refile
-              win file pos timeout
-              '((org-context-clock-task-update-files :maxlevel . 4))
-              ;; (set-marker marker (point))
-              (lexical-let* ((marker (make-marker)))
-                (set-marker marker (point))
-                (message "called add-context-to-org-heading %s" (current-buffer))
-                (let ((timer (run-with-idle-timer timeout nil
-                                                  #'(lambda (w)
-                                                      (message "triggered timer for win %s" w)
-                                                      (save-excursion
-                                                        (org-flag-proprty-drawer-at-marker marker t))
-                                                      (when (active-minibuffer-window)
-                                                        (abort-recursive-edit))
-                                                      (when (and w (windowp w) (window-valid-p w))
-                                                        (delete-window w))
-                                                      (when org-context-clock-add-context-to-org-heading-win-config
-                                                        (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
-                                                        (setq org-context-clock-add-context-to-org-heading-win-config nil)))
-                                                  win)))
-                  (condition-case err
-                      (let ((buffer-read-only nil))
-                        (message "timer started for win %s" win)
+          (progn  ;; let (win file pos timeout)   ;pos is void error is seen ?
+            (org-timed-miniwin-file-loc-with-refile
+                win file pos timeout
+                '((org-context-clock-task-update-files :maxlevel . 4))
+                ;; (set-marker marker (point))
+                (lexical-let* ((marker (make-marker)))
+                  (set-marker marker (point))
+                  (message "called add-context-to-org-heading %s" (current-buffer))
+                  (let ((timer (run-with-idle-timer timeout nil
+                                                    #'(lambda (w)
+                                                        (message "triggered timer for win %s" w)
+                                                        (save-excursion
+                                                          (org-flag-proprty-drawer-at-marker marker t))
+                                                        (when (active-minibuffer-window)
+                                                          (abort-recursive-edit))
+                                                        (when (and w (windowp w) (window-valid-p w))
+                                                          (delete-window w))
+                                                        (when org-context-clock-add-context-to-org-heading-win-config
+                                                          (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
+                                                          (setq org-context-clock-add-context-to-org-heading-win-config nil)))
+                                                    win)))
+                    (condition-case err
+                        (let ((buffer-read-only nil))
+                          (message "timer started for win %s" win)
 
-                        ;; show proptery drawer
-                        (org-flag-proprty-drawer-at-marker marker nil)
+                          ;; show proptery drawer
+                          (org-flag-proprty-drawer-at-marker marker nil)
 
-                        ;; try to read values of properties.
-                        (let ((prop nil))
-                          (while (not
-                                  (member (setq prop (org-context-clock-select-propetry)) '("Edit" "Done")))
-                            (when (org-context-clock-set-property prop nil context)
-                              (org-context-clock-task-update-tasks t)))
-                          (cond
-                            ((string-equal "Done" prop)
-                             (save-excursion
-                               (org-flag-proprty-drawer-at-marker marker t))
-                             (when (and win (windowp win) (window-valid-p win))
-                               (delete-window win))
-                             (when org-context-clock-add-context-to-org-heading-win-config
-                               (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
-                               (setq org-context-clock-add-context-to-org-heading-win-config nil))
-                             (when timer (cancel-timer timer)))
-                            ((string-equal "Edit" prop)
-                             (when timer (cancel-timer timer))
-                             (when (and win (windowp win) (window-valid-p win))
-                               (select-window win 'norecord)))
-                            (t
-                             (save-excursion
-                               (org-flag-proprty-drawer-at-marker marker t))
-                             (when (and win (windowp win) (window-valid-p win))
-                               (delete-window win))
-                             (when org-context-clock-add-context-to-org-heading-win-config
-                               (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
-                               (setq org-context-clock-add-context-to-org-heading-win-config nil))
-                             (when timer (cancel-timer timer))))))
-                    ((quit)
-                     (progn
-                       (when (and win (windowp win) (window-valid-p win))
-                         (delete-window win))
-                       (when org-context-clock-add-context-to-org-heading-win-config
-                         (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
-                         (setq org-context-clock-add-context-to-org-heading-win-config nil))
-                       (if timer (cancel-timer timer))
-                       (signal (car err) (cdr err)))))))))
+                          ;; try to read values of properties.
+                          (let ((prop nil))
+                            (while (not
+                                    (member (setq prop (org-context-clock-select-propetry)) '("Edit" "Done")))
+                              (when (org-context-clock-set-property prop nil context)
+                                (org-context-clock-task-update-tasks t)))
+                            (cond
+                              ((string-equal "Done" prop)
+                               (save-excursion
+                                 (org-flag-proprty-drawer-at-marker marker t))
+                               (when (and win (windowp win) (window-valid-p win))
+                                 (delete-window win))
+                               (when org-context-clock-add-context-to-org-heading-win-config
+                                 (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
+                                 (setq org-context-clock-add-context-to-org-heading-win-config nil))
+                               (when timer (cancel-timer timer)))
+                              ((string-equal "Edit" prop)
+                               (when timer (cancel-timer timer))
+                               (when (and win (windowp win) (window-valid-p win))
+                                 (select-window win 'norecord)))
+                              (t
+                               (save-excursion
+                                 (org-flag-proprty-drawer-at-marker marker t))
+                               (when (and win (windowp win) (window-valid-p win))
+                                 (delete-window win))
+                               (when org-context-clock-add-context-to-org-heading-win-config
+                                 (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
+                                 (setq org-context-clock-add-context-to-org-heading-win-config nil))
+                               (when timer (cancel-timer timer))))))
+                      ((quit)
+                       (progn
+                         (when (and win (windowp win) (window-valid-p win))
+                           (delete-window win))
+                         (when org-context-clock-add-context-to-org-heading-win-config
+                           (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
+                           (setq org-context-clock-add-context-to-org-heading-win-config nil))
+                         (if timer (cancel-timer timer))
+                         (signal (car err) (cdr err))))))))))
         (progn
           (message "not running add-context-to-org-heading 1 %s, 2 %s 3 %s"
                    (eq (current-buffer) buff)
