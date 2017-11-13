@@ -353,8 +353,9 @@ Each entry is either:
   (use-package wakatime-mode
       :defer t
       :config
-      (progn
-        (global-wakatime-mode))))
+      (progn                            ;do not need it now. will see later.
+        ;; (global-wakatime-mode)
+        )))
 
 (defun lotus-orgclocktask/init-task-manager ()
   (use-package task-manager

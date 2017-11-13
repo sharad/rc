@@ -76,7 +76,8 @@
 (require 'org-timer)
 (require 'org-clock)
 (require 'timer-utils-lotus)
-
+(eval-when-compile
+  (require 'org-misc-utils-lotus))
 
 (defmacro org-with-clock-position (clock &rest forms)
   "Evaluate FORMS with CLOCK as the current active clock."
