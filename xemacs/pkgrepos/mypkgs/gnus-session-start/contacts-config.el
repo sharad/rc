@@ -47,7 +47,12 @@
   (setq bbdb-use-pop-up t
         bbdb-save-db-timeout 0) ;; I want it
   (remove-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer)
-  (add-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer-for-some-time))
+  (add-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer-for-some-time)
+
+  (defun toggle-bbdb-use-pop-up ()
+    (interactive)
+    (setq
+     bbdb-use-pop-up (not bbdb-use-pop-up))))
 
 ;;
 
