@@ -107,10 +107,13 @@
     (let* ((todo-type
             (org-context-clock-task-get-property task :todo-type))
            (closed
-            (org-context-clock-task-get-property task :closed)))
+            (org-context-clock-task-get-property task :closed))
+           (status
+            (org-context-clock-task-get-property task :todo-keyword)))
       (if (or
            closed
-           (eql todo-type 'done))
+           (eql todo-type 'done)
+           (string-equal status "HOLD"))
           -30 0)))
 
   (defassoc-context-key org-task-associated-context-task-key :task-key (task context)

@@ -33,12 +33,14 @@
   (interactive "ffile: ")
   (let ((filename (or file (buffer-file-name (current-buffer)))))
     (if filename
-        (let ((ofile (expand-file-name (file-name-nondirectory filename) "/tmp/"))
-              ofilemode
-              (psfile (expand-file-name (concat (file-name-nondirectory filename) ".ps") "/tmp/"))
-              (pdffile (expand-file-name (concat (file-name-nondirectory filename) ".pdf") "/tmp/")))
+        (let* ((tmpdir (or (getenv "TMP") "/tmp/"))
+               (ofile (expand-file-name (file-name-nondirectory filename)
+                                        tmpdir))
+               ofilemode
+               (psfile (expand-file-name (concat (file-name-nondirectory filename) ".ps") tmpdir))
+               (pdffile (expand-file-name (concat (file-name-nondirectory filename) ".pdf") tmpdir)))
           (when (and (file-exists-p ofile)
-                   (not (file-writable-p ofile)))
+                     (not (file-writable-p ofile)))
             (setq ofilemode (file-modes ofile))
             (set-file-modes ofile 666))
           (copy-file filename ofile 1)

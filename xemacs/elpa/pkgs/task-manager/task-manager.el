@@ -72,7 +72,8 @@
     "#+STARTUP: hidestars"
     "#+TAGS: PERFORCE(4)  BUGZILLA(b) SVN(v) SCMBUG(m) PROJECT(j)"
     "#+TAGS: CVS(i) PHONE(p) INTERNET(i)"
-    "#+SEQ_TODO: TODO DONE")
+    ;; "#+SEQ_TODO: TODO STARTED DONE"
+    )
   "Desc")
 
 (defvar *task-projbuffs-base-dir* (expand-file-name "contents/misc/projbuffs" *created-content-dir*))
