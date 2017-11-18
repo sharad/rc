@@ -101,6 +101,24 @@
            (length root)
            0))))
 
+  (defassoc-context-key org-task-associated-context-currfile-dir-key :currfile (task context)
+    "Predicate funtion to check if context matches to task's file attribute."
+    (let* ((currfile
+            (org-context-clock-task-get-property task :CURRFILE))
+           (currfile (if currfile (file-truename currfile))))
+      (let* ((file (plist-get context :file))
+             (file (if file (file-truename file))))
+        (if currfile
+            (progn
+              (org-context-clock-debug "task %s currfile %s" (org-context-clock-task-get-heading task) currfile)
+              (org-context-clock-debug "task %s file %s" (org-context-clock-task-get-heading task) file))
+            (org-context-clock-debug "task %s currfile %s not present."
+                                     (org-context-clock-task-get-heading task) currfile))
+        (if (and currfile file
+                 (string-match currfile file))
+            (* 2 (length currfile))     ;as exact match to file giving double matching points.
+            0))))
+
   (defassoc-context-key org-task-associated-context-status-key :status (task context)
     ;; task closed criteria
     "Predicate funtion to check if context matches to task's status attribute."
