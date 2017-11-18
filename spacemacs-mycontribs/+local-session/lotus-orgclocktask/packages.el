@@ -295,6 +295,7 @@ Each entry is either:
               :config
               (progn
                 (progn
+                  ;; BUG: not getting included
                   (add-to-enable-startup-interrupting-feature-hook
                    '(lambda ()
                      (when nil
