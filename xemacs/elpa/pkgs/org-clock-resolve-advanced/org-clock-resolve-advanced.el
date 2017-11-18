@@ -202,22 +202,25 @@ to be CLOCKED OUT."))))
       (t
        (org-clock-resolve-clock
         clock                           ;clock
-        (cond                           ;resolve-to (nil t last-valid now time)
+        (cond                           ;check-out (nil t last-valid now time)
                 ((or (eq ch ?C)         ;cancel
                      ;; If the time on the clock was less than a minute before
                      ;; the user went away, and they've ask to subtract all the
                      ;; time...
                      start-over-p)        ;bool
                  nil)                     ;return bool
+
                 ((or subtractp
                      (and gotback (= gotback 0)))
                  last-valid)            ;return time
+
                 ((or (and keep (= keep default))
                      (and gotback (= gotback default)))
                  'now)                  ;return symbol
 
                 (keep
                  (time-add last-valid (seconds-to-time (* 60 keep)))) ;return time
+
                 (gotback last-valid) ;return time
                 (t
                  (error "Unexpected, please report this as a bug")))
