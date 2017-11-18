@@ -39,18 +39,24 @@
 (defvar org-clock-resolving-clocks nil)
 (defvar org-clock-resolving-clocks-due-to-idleness nil)
 
-(defun org-clock-resolve-clock (clock resolve-to clock-out-time
-                                &optional close-p restart-p fail-quietly)
-  "Resolve `CLOCK' given the time `RESOLVE-TO', and the present.
+(defun org-clock-resolve-clock (clock   ;considered clock
+                                clock-out-time ;nil will cancel clock, now is now
+                                clock-in-time
+                                &optional
+                                  close-p
+                                  restart-p
+                                  fail-quietly)
+  "Resolve `CLOCK' given the time `CLOCK-OUT-TIME', and the present.
 `CLOCK' is a cons cell of the form (MARKER START-TIME)."
   (let ((org-clock-resolving-clocks t))
     (cond
-      ((null resolve-to)
+
+      ((null clock-out-time)
        (org-clock-clock-cancel clock)
        (if (and restart-p (not org-clock-clocking-in))
            (org-clock-clock-in clock)))
 
-      ((eq resolve-to 'now)
+      ((eq clock-out-time 'now)
        (if restart-p
            (error "RESTART-P is not valid here"))
        (if (or close-p org-clock-clocking-in)
@@ -58,20 +64,19 @@
            (unless (org-is-active-clock clock)
              (org-clock-clock-in clock t))))
 
-      ((not (time-less-p resolve-to (current-time)))
-       (error "RESOLVE-TO must refer to a time in the past"))
+      ((not (time-less-p clock-out-time (current-time)))
+       (error "CLOCK-OUT-TIME must refer to a time in the past"))
 
       (t
        (if restart-p
            (error "RESTART-P is not valid here"))
-       (org-clock-clock-out clock fail-quietly (or clock-out-time
-                                                   resolve-to))
+
+       (org-clock-clock-out clock fail-quietly clock-out-time)
        (unless org-clock-clocking-in
          (if close-p
              (setq org-clock-leftover-time (and (null clock-out-time)
-                                                resolve-to))
-             (org-clock-clock-in clock nil (and clock-out-time
-                                                resolve-to))))))))
+                                                clock-out-time))
+             (org-clock-clock-in clock nil clock-in-time)))))))
 
 (defun org-clock-jump-to-current-clock (&optional effective-clock)
   (interactive)
@@ -96,7 +101,11 @@
                      (org-flag-drawer nil element))
                    (throw 'exit nil)))))))))))
 
-(defun org-clock-resolve (clock &optional prompt-fn last-valid fail-quietly)
+(defun org-clock-resolve (clock
+                          &optional
+                            prompt-fn
+                            last-valid  ;last active (not idle) time
+                            fail-quietly)
   "Resolve an open Org clock.
 An open clock was found, with `dangling' possibly being non-nil.
 If this function was invoked with a prefix argument, non-dangling
@@ -125,6 +134,8 @@ was started."
                 (with-output-to-temp-buffer "*Org Clock*"
                   (princ (format-message "Select a Clock Resolution Command:
 
+Remember that using shift will always leave you clocked out, no matter which option you choose.
+
 i/q      Ignore this question; the same as keeping all the idle time.
 
 k/K      Keep X minutes of the idle time (default is all).  If this
@@ -149,10 +160,11 @@ to be CLOCKED OUT."))))
               (org-fit-window-to-buffer (get-buffer-window "*Org Clock*"))
               (let (char-pressed)
                 (while (or (null char-pressed)
-                           (and (not (memq char-pressed
-                                           '(?k ?K ?g ?G ?s ?S ?C
-                                             ?j ?J ?i ?q)))
-                                (or (ding) t)))
+                           (and
+                            (not (memq char-pressed
+                                       '(?k ?K ?g ?G ?s ?S ?C
+                                         ?j ?J ?i ?q)))
+                            (or (ding) t)))
                   (setq char-pressed
                         (read-char (concat (funcall prompt-fn clock)
                                            " [jkKgGSscCiq]? ")
@@ -170,42 +182,60 @@ to be CLOCKED OUT."))))
          (subtractp (memq ch '(?s ?S)))
          (barely-started-p (< (- (float-time last-valid)
                                  (float-time (cdr clock))) 45))
-         (start-over (and subtractp barely-started-p)))
+         (start-over-p (and subtractp barely-started-p))) ;bool
     (cond
       ((memq ch '(?j ?J))
        (if (eq ch ?J)
-           (org-clock-resolve-clock clock 'now nil t nil fail-quietly))
+           (org-clock-resolve-clock
+            clock                       ;clock
+            'now                        ;resolve-to
+            nil                         ;clock-out-time
+            t                           ;close-p
+            nil                         ;restart-p
+            fail-quietly))
        (org-clock-jump-to-current-clock clock))
+
       ((or (null ch)
-           (not (memq ch '(?k ?K ?g ?G ?s ?S ?C))))
+           (not (memq ch '(?k ?K ?g ?o ?G ?s ?S ?C ?O))))
        (message ""))
+
       (t
        (org-clock-resolve-clock
-        clock (cond
-                ((or (eq ch ?C)
+        clock                           ;clock
+        (cond                           ;resolve-to (nil t last-valid now time)
+                ((or (eq ch ?C)         ;cancel
                      ;; If the time on the clock was less than a minute before
                      ;; the user went away, and they've ask to subtract all the
                      ;; time...
-                     start-over)
-                 nil)
+                     start-over-p)        ;bool
+                 nil)                     ;return bool
                 ((or subtractp
                      (and gotback (= gotback 0)))
-                 last-valid)
+                 last-valid)            ;return time
                 ((or (and keep (= keep default))
                      (and gotback (= gotback default)))
-                 'now)
+                 'now)                  ;return symbol
+
                 (keep
-                 (time-add last-valid (seconds-to-time (* 60 keep))))
-                (gotback
-                 (time-subtract (current-time)
-                                (seconds-to-time (* 60 gotback))))
+                 (time-add last-valid (seconds-to-time (* 60 keep)))) ;return time
+                (gotback last-valid) ;return time
                 (t
                  (error "Unexpected, please report this as a bug")))
-        (and gotback last-valid)
-        (memq ch '(?K ?G ?S))
-        (and start-over
-             (not (memq ch '(?K ?G ?S ?C))))
+        (cond               ;check-in
+          (keep last-valid)
+          (gotback
+           (time-subtract (current-time)
+                          (seconds-to-time (* 60 gotback)))))
+        (memq ch '(?K ?G ?O ?S))        ;close-p
+        (and start-over-p               ;restart-p
+             (not (memq ch '(?C ?K ?G ?O ?S))))
         fail-quietly)))))
+
+
+
+
+
+
 
 ;;;###autoload
 (defun org-resolve-clocks (&optional only-dangling-p prompt-fn last-valid)

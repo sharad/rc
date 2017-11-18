@@ -23,7 +23,7 @@ DEB_EXTRA_PKG2="homesick yadm macchanger xautolock suckless-tools xtrlock xbackl
 DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macchanger lm-sensors tidy xmlstarlet network-manager-openvpn-gnome "
 DEB_EXTRA_SEC_PKG1="systemd-ui " # policykit-1 policykit-1-gnome
 DEB_DEV_PKG1="python-pip silversearcher-ag silversearcher-ag-el ack-grep doxygen doxymacs"
-DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject"
+DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject adcli"
 
 DEB_PKG_DEV="valgrind"
 
