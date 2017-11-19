@@ -332,5 +332,128 @@ so long."
 (defvar org-clock-out-time nil) ; store the time of the last clock-out
 (defvar org--msg-extra)
 
+
+(defvar org-resolve-opts
+  (
+   ))
+
+(assoc "a"
+                 '(("a" . 1)
+                   ("b" . 2)))
+(setq org-resolve-opts-common
+      '(("include-in-other" . include-in-next)
+        ("sustract" . sustract)))
+
+(setq org-resolve-opts-pre
+      '(("cancel-pre-p" . cancel-pre-p)
+        ("include-in-pre" . include-in-pre)))
+
+(setq org-resolve-opts-next
+      '(("cancel-next-p" . cancel-next-p)
+        ("include-in-next" . include-in-next)))
+
+
+(defun org-rl-clock-start-time (clock)
+  (cadr clock))
+
+(defun org-rl-clock-stop-time (clock)
+  (caddr clock))
+
+(defun org-rl-clock-marker (clock)
+  (car clock))
+
+(defun org-rl-clock-start-time-set (clock time)
+  (setf (cadr clock) time))
+
+(defun org-rl-clock-stop-time-set (clock time)
+  (setf (caddr clock) time))
+
+(defun org-rl-clock-marker-set (clock marker)
+  (setf (car clock) marker))
+
+(defun org-resolve-time (pre
+                         next
+                         &optional
+                           immediate-p)
+  (interactive)
+  ""
+  (unless (zerop timelength)
+    (let* ((default
+            (/
+             (float-time
+              (time-subtract
+               (if next (org-rl-clock-start-time  next) (current-time))
+               (if pre (org-rl-clock-stop-time prev) (time-subtract (current-time) (seconds-to-time (* 60 60))))))
+             60))
+           (timelen
+            (read-number "how many minutes? " default))
+           (options
+            (append
+             (when pre  org-resolve-opts-pre)
+             (when next org-resolve-opts-next)
+             org-resolve-opts-common))
+           (opt
+            (cdr
+             (assoc
+              (completing-read "Select option: " options)
+              options)))
+
+           (barely-started-p (< (- (float-time last-valid)
+                                   (float-time (cdr clock))) 45))
+           (start-over-p (and subtractp barely-started-p)))
+      ;; cancel pre and add to time
+
+      (when (> (abs timelen) default)
+        (message "Erro")
+        (org-resolve-time pre default next))
+
+      (cond
+        ((eq opt cancel-pre-p)
+         (progn
+           (org-clock-clock-cancel pre)
+           (let ((pre-start (cdr pre)))
+             (setq pre
+                   (list nil nil (org-rl-clock-start-time pre))))))
+
+        ((eq opt cancel-next-p)
+         ;; cancel next clock
+         ;; add next clock time
+         (progn
+           (org-clock-clock-cancel next)
+           (let ((next-start (cdr next)))
+             (setq next
+                   (list nil (org-rl-clock-stop-time pre) nil)))))
+
+        ((eq opt include-in-pre)
+         (if (> timelen 0)
+             (let ((update-stop-time (time-add (org-rl-clock-stop-time pre) timelen)))
+               (clockout pre update-stop-time)
+               (org-rl-clock-stop-time-set pre update-stop-time))
+             (progn
+               (org-rl-clock-stop-time pre (org-rl-clock-stop-time pre))
+               ))
+         ;; include timelen in pre
+         ;; update timelength
+             )
+        ((eq opt include-in-next)
+         ;; include timelen in next
+         ;; update timelength
+         )
+        ((eq opt include-in-other)
+         ;; select other clock
+         ;; include timelen in other
+         ;; update timelength
+         )
+        ((eq opt substract)
+         )
+        ;; subtract timelen from timelength
+        )
+
+      (org-resolve-time pre timeleght next immediate-p))))
+
+
+
+
+
 (provide 'org-clock-resolve-advanced)
 ;;; org-clock-utils-lotus.el ends here
