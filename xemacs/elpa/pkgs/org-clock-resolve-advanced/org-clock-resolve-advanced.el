@@ -371,6 +371,13 @@ so long."
 (defun org-rl-clock-marker-set (clock marker)
   (setf (car clock) marker))
 
+;; helpers
+;; - org-clock-clock-out
+;; - org-clock-clock-in
+(defun org-clock-clock-in-out (clock &optional start-time stop-time &optional fail-quietly)
+  (org-clock-clock-in clock nil start-time)
+  (org-clock-clock-out clock fail-quietly start-time))
+
 (defun org-resolve-time (pre next &optional close-p)
   (interactive)
   ""
