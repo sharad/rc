@@ -415,6 +415,16 @@ Yes
 **** Improve understanding of org-agenda to
 **** Try to implement stack pop push based task flow and integrate it also.
 **** Try to add unit test using ERT (Emacs Regression Test)
+*** Reminding pending tasks (think about it.)
+**** whether use agenda
+**** or time to time present remaining unfinished task
+**** Categorizing task that can be done on computer, and other which can not done on computer
+**** Adding reminder with events like
+***** when browsing a sites related tasks will be remined
+      same with some other thing etc.
+***** when connected to perticular wifi ssid, network etc, remind related tasks.
+
+
 
 * Tableview
 #+BEGIN: columnview :hlines 1 :id local
