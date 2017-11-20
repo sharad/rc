@@ -394,6 +394,7 @@ Yes
      :Root:     ~/.xemacs/elpa/pkgs/org-clock-resolve-advanced/
      :END:
      :LOGBOOK:
+     CLOCK: [2017-11-20 Mon 21:28]
      CLOCK: [2017-11-20 Mon 20:06]--[2017-11-20 Mon 20:11] =>  0:05
      CLOCK: [2017-11-20 Mon 19:21]--[2017-11-20 Mon 19:24] =>  0:03
      CLOCK: [2017-11-19 Sun 14:27]--[2017-11-20 Mon 19:21] => 28:54
