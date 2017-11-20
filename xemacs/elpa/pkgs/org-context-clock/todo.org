@@ -22,6 +22,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-11-20 Mon 21:30]
    CLOCK: [2017-11-20 Mon 19:24]--[2017-11-20 Mon 20:06] =>  0:42
    CLOCK: [2017-11-18 Sat 16:47]--[2017-11-18 Sat 17:00] =>  0:13
    CLOCK: [2017-11-18 Sat 16:25]--[2017-11-18 Sat 16:41] =>  0:16
@@ -394,7 +395,7 @@ Yes
      :Root:     ~/.xemacs/elpa/pkgs/org-clock-resolve-advanced/
      :END:
      :LOGBOOK:
-     CLOCK: [2017-11-20 Mon 21:28]
+     CLOCK: [2017-11-20 Mon 21:28]--[2017-11-20 Mon 21:30] =>  0:02
      CLOCK: [2017-11-20 Mon 20:06]--[2017-11-20 Mon 20:11] =>  0:05
      CLOCK: [2017-11-20 Mon 19:21]--[2017-11-20 Mon 19:24] =>  0:03
      CLOCK: [2017-11-19 Sun 14:27]--[2017-11-20 Mon 19:21] => 28:54
@@ -405,8 +406,10 @@ Yes
 **** Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
      for this may need to understand undo-tree or may be see any other method to used for it.
 
-**** Find way to specify importance, type(bug, feature etc) of task (whether using tag.
+**** Find way to specify importance, type(bug, feature etc) of task (whether using tag).
 **** One sending mail, chat, or any other important action offer to add log note should be presented.
+**** Add method to create task from mail, chat etc and link it SEE DETAIL hint org-capture
+- may be org-capture will help
 **** Track/Trace shell actions e.g. change dir, commands run etc, make report for it.
 **** Track/Trace browser actions e.g. change url etc, make report for it.
 **** Track/Trace any important application actions, make report for it.
