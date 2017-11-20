@@ -106,7 +106,7 @@
         (let ((range (org-get-property-block (point) 'force)))
           ;; first show hreading
           (when (eq org-cycle-subtree-status 'folded)
-            (unless flag (org-show-task))
+            (unless flag (org-show-entry)) ; changed from org-show-task to org-show-entry
             (org-unlogged-message "CHILDREN")
             (setq org-cycle-subtree-status 'children))
           ;; show expand property if flag is nil, else hide

@@ -22,6 +22,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-11-20 Mon 19:24]--[2017-11-20 Mon 20:06] =>  0:42
    CLOCK: [2017-11-18 Sat 16:47]--[2017-11-18 Sat 17:00] =>  0:13
    CLOCK: [2017-11-18 Sat 16:25]--[2017-11-18 Sat 16:41] =>  0:16
    CLOCK: [2017-11-15 Wed 20:50]--[2017-11-15 Wed 20:53] =>  0:03
@@ -386,21 +387,24 @@ Yes
      CLOSED: [2017-11-18 Sat 20:29]
 **** DONE Implement dynamic adding of property to org task
      CLOSED: [2017-11-18 Sat 20:30]
+**** BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
 **** STARTED Resolve Idle clock should provide options to clock other task that is with amount of time idle.
      :PROPERTIES:
      :Effort:   7h
      :Root:     ~/.xemacs/elpa/pkgs/org-clock-resolve-advanced/
      :END:
      :LOGBOOK:
-     CLOCK: [2017-11-19 Sun 14:27]
+     CLOCK: [2017-11-20 Mon 20:06]--[2017-11-20 Mon 20:11] =>  0:05
+     CLOCK: [2017-11-20 Mon 19:21]--[2017-11-20 Mon 19:24] =>  0:03
+     CLOCK: [2017-11-19 Sun 14:27]--[2017-11-20 Mon 19:21] => 28:54
      CLOCK: [2017-11-18 Sat 17:00]--[2017-11-18 Sat 23:56] =>  6:56
      CLOCK: [2017-11-18 Sat 16:41]--[2017-11-18 Sat 16:47] =>  0:06
      :END:
-
 **** Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
 **** Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
      for this may need to understand undo-tree or may be see any other method to used for it.
 
+**** Find way to specify importance, type(bug, feature etc) of task (whether using tag.
 **** One sending mail, chat, or any other important action offer to add log note should be presented.
 **** Track/Trace shell actions e.g. change dir, commands run etc, make report for it.
 **** Track/Trace browser actions e.g. change url etc, make report for it.
@@ -413,7 +417,9 @@ Yes
 **** Improve org-capture to automatically pop up in important event and on time intervals
 **** WM should also directed to change dir if it were specified in clocked-in task
 **** Improve understanding of org-agenda to
-**** Try to implement stack pop push based task flow and integrate it also.
+**** Try to implement stack pop push based task flow and integrate it also SEE DETAIL
+***** possible implementation
+- could copy properties from property drawer to next/previous/parent task, this way it could be easily implemented
 **** Try to add unit test using ERT (Emacs Regression Test)
 *** Reminding pending tasks (think about it.)
 **** whether use agenda

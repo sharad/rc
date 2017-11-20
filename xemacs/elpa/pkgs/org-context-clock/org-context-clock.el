@@ -132,7 +132,7 @@
                *org-context-clock-task-previous-context* *org-context-clock-task-current-context*
                *org-context-clock-task-current-context*  context)
 
-              (if (> (org-context-clock-task-associated-to-context-p context) 0)
+              (if (> (org-context-clock-current-task-associated-to-context-p context) 0)
                   (org-context-clock-debug "org-context-clock-update-current-context: Current task already associate to %s" context)
                   (progn
                     (org-context-clock-debug "org-context-clock-update-current-context: Now really going to clock.")
@@ -151,7 +151,7 @@
            *org-context-clock-task-previous-context* *org-context-clock-task-current-context*
            *org-context-clock-task-current-context*  context)
 
-          (unless (org-context-clock-task-associated-to-context-p context)
+          (unless (org-context-clock-current-task-associated-to-context-p context)
             (org-context-clock-task-run-associated-clock context))))))
 
 ;;;###autoload
@@ -166,7 +166,7 @@
        info))))
 
 ;; not workiong
-;; (defun org-context-clock-task-associated-to-context-p (context)
+;; (defun org-context-clock-current-task-associated-to-context-p (context)
 ;;   (and
 ;;    ;; file
 ;;    org-clock-marker
@@ -177,12 +177,15 @@
 ;;        (if (funcall org-context-clock-api-task-associated-to-context-p info context)
 ;;            info)))))
 
+(defun org-context-clock-task-associated-to-context-p (task context)
+  (if task
+      (funcall org-context-clock-api-task-associated-to-context-p task context)
+      0))
+
 ;;;###autoload
-(defun org-context-clock-task-associated-to-context-p (context)
-  (let ((info (org-context-clock-task-current-task)))
-    (if info
-        (funcall org-context-clock-api-task-associated-to-context-p info context)
-        0)))
+(defun org-context-clock-current-task-associated-to-context-p (context)
+  (let ((task (org-context-clock-task-current-task)))
+    (org-context-clock-task-associated-to-context-p task context)))
 
 ;;;###autoload
 (defun org-context-clock-task-run-associated-clock (context)
@@ -193,10 +196,10 @@
             (remove-if-not
              #'(lambda (marker) (marker-buffer marker))
              (org-context-clock-markers-associated-to-context context)))
-           (selected-clock (if (> (length matched-clocks) 1)
+           (selected-clocks (if (> (length matched-clocks) 1)
                                (org-context-clock-select-task-from-clocks matched-clocks)
                                (car matched-clocks))))
-      (if selected-clock
+      (if selected-clocks
           (let ((org-log-note-clock-out nil)
                 (prev-org-clock-buff (marker-buffer org-clock-marker)))
 
@@ -211,9 +214,9 @@
 
               (setq *org-context-clock-update-current-context-msg* org-clock-marker)
 
-              (with-current-buffer (marker-buffer selected-clock)
+              (with-current-buffer (marker-buffer selected-clocks)
                 (let ((buffer-read-only nil))
-                  (org-clock-clock-in (list selected-clock))))
+                  (org-clock-clock-in (list selected-clocks))))
 
               (if prev-org-clock-buff
                   (with-current-buffer prev-org-clock-buff
@@ -326,12 +329,12 @@
   (org-context-clock-markers-associated-to-context
    (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
 
-  (org-context-clock-task-associated-to-context-p
+  (org-context-clock-current-task-associated-to-context-p
    (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
 
   (org-context-clock-markers-associated-to-context (org-context-clock-build-context))
 
-  (org-context-clock-task-associated-to-context-p (org-context-clock-build-context))
+  (org-context-clock-current-task-associated-to-context-p (org-context-clock-build-context))
 
   ;; sharad
   (setq test-info-task
@@ -363,10 +366,10 @@
    :current-clock test-info-task
    (org-context-clock-build-context) )
 
-  (org-context-clock-task-associated-to-context-p
+  (org-context-clock-current-task-associated-to-context-p
    (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
 
-  (org-context-clock-task-associated-to-context-p
+  (org-context-clock-current-task-associated-to-context-p
    (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org")))
 
   ;; (org-task-associated-context-org-context-p
@@ -397,12 +400,12 @@
    (org-context-clock-tasks-associated-to-context-by-keys
     (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile"))))
 
-  (org-context-clock-task-associated-to-context-p
+  (org-context-clock-current-task-associated-to-context-p
    (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile")))
 
   ;; (org-context-clock-task-associated-to-context-by-keys "/home/s/paradise/releases/global/patch-upgrade/Makefile")
 
-  (if (org-context-clock-task-associated-to-context-p
+  (if (org-context-clock-current-task-associated-to-context-p
        (org-context-clock-build-context))
       (message "current clock is with current context or file")))
 
