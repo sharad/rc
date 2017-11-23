@@ -106,9 +106,14 @@ function update-ssh-agent()
     fi
 
     ssh-add -l >/dev/null 2>&1
-    if [ $? -gt $__force ]
+    retstatus=$?
+
+    # echo retstatus=$retstatus __force=$__force
+ 
+    if [ $retstatus -gt $__force ]
     then
-        echo calling update-ssh-agent-unconditionally '?' $?
+        # echo retstatus $retstatus
+        # echo calling update-ssh-agent-unconditionally '$?'=$? __force=$__force
         update-ssh-agent-unconditionally              # use it when required.
     fi
 
@@ -119,7 +124,11 @@ function update-ssh-agent()
     unset __force
 }
 
-update-ssh-agent                # use it when required.
+# it is to be used interactively, should not distrub flow login process etc.
+# update-ssh-agent                # use it when required.
+
+
+
 
 
 IN_API_KEY=4b4f1599407c4f789e8b79e02762934a
