@@ -106,8 +106,10 @@ then
             then
                 if [ -t ]
                 then
+                    echo calling from login/env term ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
                     ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
                 else
+                    echo calling from login/env noterm ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' )
                     ssh-add $(command ls -d1 $SSH_KEYS_DIR/* | egrep -v '.pub$' ) </dev/null
                 fi
             fi
