@@ -31,7 +31,7 @@
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-xmlS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-xml-packages
@@ -75,28 +75,46 @@ Each entry is either:
     :config
     (progn
       (progn
-        ;; http://stackoverflow.com/a/11409099
-        (setq rng-nxml-auto-validate-flag nil)
+        ;; #16449 - 24.3.50; emacs hangs while deleting comment in xml file with flyspell-mode on - GNU bug report logs
+        ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=16449
+        (add-hook 'nxml-mode-hook
+                  (function
+                   (lambda ()
+                    (flyspell-mode-off))))ae)
+      (progn
 
-        ;; http://stackoverflow.com/a/11409099
-        (setq rng-nxml-auto-validate-flag nil
-              nxml-slash-auto-complete-flag t
-              )
+        (setq
+         ;; Emacs - nxhtml-mode - memory full - Stack Overflow
+         ;; https://stackoverflow.com/questions/11247666/emacs-nxhtml-mode-memory-full/11409099#11409099
+         ;; http://stackoverflow.com/a/11409099
+         rng-nxml-auto-validate-flag nil
+
+         nxml-slash-auto-complete-flag t)
+
         (setq nxml-child-indent 2))
-      (use-package xslt-process
-        :defer t
-        :config
-        ;; (require 'string)
-        (autoload 'xslt-process-mode "xslt-process" "Emacs XSLT processing" t)
-        (autoload 'xslt-process-install-docbook "xslt-process"
-          "Register the DocBook package with XSLT-process" t)
-        (add-hook 'sgml-mode-hook 'xslt-process-mode)
-        (add-hook 'xml-mode-hook 'xslt-process-mode)
-        (add-hook 'xsl-mode-hook 'xslt-process-mode)
 
-        (defadvice xml-mode (after run-xml-mode-hooks act)
-          "Invoke `xml-mode-hook' hooks in the XML mode."
-          (run-hooks 'xml-mode-hook))))))
+      (progn
+        ;;TODO
+        ;;Showing XPath in modeline
+        ;;Commenting comments
+        ;;from: https://www.emacswiki.org/emacs/NxmlMode
+        )
+
+      (progn
+        (use-package xslt-process
+            :defer t
+            :config
+            ;; (require 'string)
+            (autoload 'xslt-process-mode "xslt-process" "Emacs XSLT processing" t)
+            (autoload 'xslt-process-install-docbook "xslt-process"
+              "Register the DocBook package with XSLT-process" t)
+            (add-hook 'sgml-mode-hook 'xslt-process-mode)
+            (add-hook 'xml-mode-hook 'xslt-process-mode)
+            (add-hook 'xsl-mode-hook 'xslt-process-mode)
+
+            (defadvice xml-mode (after run-xml-mode-hooks act)
+              "Invoke `xml-mode-hook' hooks in the XML mode."
+              (run-hooks 'xml-mode-hook)))))))
 
 (defun lotus-xml/init-xquery-mode ()
   (use-package xquery-mode
