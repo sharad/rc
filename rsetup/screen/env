@@ -42,6 +42,8 @@ KEYCHAINDIR=$HOME/.keychain-screen
 export SCREEN4KEYCHAIN
 export KEYCHAINDIR
 
+echo Add to ssh-agent using \"update-ssh-agent force\"
+
 if [ "${LOGIN_ENV}x" = "x" ]
 then
     LOGIN_ENV=LOGIN_ENV
