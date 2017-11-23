@@ -259,6 +259,8 @@ foreach prog (
     # blueman-applet
     # bluetoothd
     # empathy
+    gnome-settings-daemon       # need for low disk space warning. https://bugs.launchpad.net/ubuntu/+source/gnome-settings-daemon/+bug/881376
+    # https://blogs.n1zyy.com/n1zyy/2009/02/06/ubuntu-housekeeping/
     synergys
     ) {
     if whence -p $prog >> ~/.logs/wmlogin.log 2>&1  &&

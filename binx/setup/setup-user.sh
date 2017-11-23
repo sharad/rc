@@ -10,7 +10,7 @@ APT_REPO_UTILS="ppa:yartsa/lvmeject"
 
 
 DEB_PKG_NECESSARY="git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server rcs"
-DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev"
+DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev console-data"
 DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp"
 DEB_PKGS1="vim emacs emacs-goodies-el org-mode develock-el dash-el s-el"
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el p7zip-full pdftk golang gocode"
@@ -20,7 +20,7 @@ DEB_EXTRA_PKG_VIRTUAL=""
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera texlive-latex-extra texlive-fonts-recommended"
 DEB_EXTRA_PKG_LISP="cl-swank slime"
 DEB_EXTRA_PKG2="homesick yadm macchanger xautolock suckless-tools xtrlock xbacklight xautomation ffmpeg"
-DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macchanger lm-sensors tidy xmlstarlet network-manager-openvpn-gnome "
+DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macchanger lm-sensors tidy xmlstarlet network-manager-openvpn-gnome duc"
 DEB_EXTRA_SEC_PKG1="systemd-ui " # policykit-1 policykit-1-gnome
 DEB_DEV_PKG1="python-pip silversearcher-ag silversearcher-ag-el s-el ack-grep doxygen doxymacs"
 DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject adcli"
@@ -31,6 +31,7 @@ DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools pavucontrol redshift"
 
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer"
 
+DEB_SYS_PKG1="duc baobab"
 
 function main()
 {

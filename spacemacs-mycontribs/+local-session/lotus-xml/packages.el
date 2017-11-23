@@ -1,4 +1,4 @@
-;;; packages.el --- lotus-xml layer packages file for Spacemacs.
+ae;;; packages.el --- lotus-xml layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
@@ -79,8 +79,7 @@ Each entry is either:
         ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=16449
         (add-hook 'nxml-mode-hook
                   (function
-                   (lambda ()
-                    (flyspell-mode-off))))ae)
+                   (lambda () (flyspell-mode-off)))))
       (progn
 
         (setq

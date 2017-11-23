@@ -69,6 +69,10 @@ fi
 # defining setcursor
 function setcursor {
 
+    console_fonts=(/usr/share/consolefonts/t850b.psf.gz /usr/share/consolefonts/Lat15-Terminus14.psf.gz)
+
+    findex=$(shuf -i1-$#console_fonts -n1)
+
     if [[ $TERM == xterm || $TERM == screen ]] ; then
         :
         	# echo -ne "\033]12;ivory\007"
@@ -79,12 +83,14 @@ function setcursor {
                 echo -n \\033\[\?17\;0\;60c ;		# for zshell
     elif [[ $TERM == linux ]] ; then
         if [ -r /usr/share/consolefonts/t850b.psf.gz ] ; then
-            if which consolechars > /dev/null 2>&1 ; then
-                # consolechars -f /usr/share/consolefonts/t850b.psf.gz
-            elif which setfont    > /dev/null 2>&1 ; then
+            if which consolechars > /dev/null 2>&1
+            then
+                consolechars -f $console_fonts[$findex]
+            elif which setfont    > /dev/null 2>&1
+            then
+                setfont $console_fonts[$findex]
                 # setfont /usr/share/consolefonts/t850b.psf.gz -u xyz
                 # setfont /usr/share/consolefonts/Lat15-Terminus14.psf.gz
-
             fi
         else
             :
