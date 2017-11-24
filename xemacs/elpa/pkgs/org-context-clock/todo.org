@@ -22,6 +22,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-11-24 Fri 19:32]
    CLOCK: [2017-11-20 Mon 21:30]--[2017-11-21 Tue 17:41] => 20:11
    CLOCK: [2017-11-20 Mon 19:24]--[2017-11-20 Mon 20:06] =>  0:42
    CLOCK: [2017-11-18 Sat 16:47]--[2017-11-18 Sat 17:00] =>  0:13
@@ -425,6 +426,11 @@ Yes
 ***** possible implementation
 - could copy properties from property drawer to next/previous/parent task, this way it could be easily implemented
 **** Try to add unit test using ERT (Emacs Regression Test)
+**** On moving to next task, old task should ask to add context, so person can use that context to continue if he restart task after long time.
+**** And when starting to restart a task it old context must be showed to remind user what was there.
+*** Obtrusive
+**** Window should be marked to reappear/popup when something started were done.
+e.g. In urxvt we should be able to mark window to reappear when build is done, by that user is browsing or editing or doing some other work.
 *** Reminding pending tasks (think about it.)
 **** whether use agenda
 **** or time to time present remaining unfinished task
@@ -433,8 +439,9 @@ Yes
 ***** when browsing a sites related tasks will be remined
       same with some other thing etc.
 ***** when connected to perticular wifi ssid, network etc, remind related tasks.
-
-
+*** Advanced
+**** When asking task estimate time and the expected datetime when it claimed to be completed,
+     do calculate where all other task estimated time and this task estimated will fit into the expected datetime
 
 * Tableview
 #+BEGIN: columnview :hlines 1 :id local
