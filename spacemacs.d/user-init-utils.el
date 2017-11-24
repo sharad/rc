@@ -130,6 +130,15 @@
      messages-buffer-max-lines 2000))
 
 
+    ;; (progn
+    ;;    ;; server-auth-dir (auto-config-dir "server" t)
+    ;;    (defadvice server-create-window-system-frame
+    ;;        (around nocreate-in-init activate)
+    ;;      "remove-scratch-buffer"
+    ;;      (if *emacs-in-init*
+    ;;          (message "loading init now.")
+    ;;        ad-do-it)))
+
   (eval-after-load "server"
     '(progn
        ;; server-auth-dir (auto-config-dir "server" t)
