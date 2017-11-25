@@ -346,15 +346,17 @@ so long."
         '(("cancel-next-p" . cancel-next-p)
           ("include-in-next" . include-in-next)))
 
+  (defun org-rl-clock-open-p (clock)
+    (nth 3 clock))
 
   (defun org-rl-clock-start-time (clock)
-    (cadr clock))
+    (nth 1 clock))
 
   (defun org-rl-clock-stop-time (clock)
-    (caddr clock))
+    (nth 2 clock))
 
   (defun org-rl-clock-marker (clock)
-    (car clock))
+    (nth 0 clock))
 
   (defun org-rl-clock-start-time-set (clock time)
     (setf (cadr clock) time))
@@ -368,6 +370,9 @@ so long."
   ;; helpers
   ;; - org-clock-clock-out
   ;; - org-clock-clock-in
+  (defun org-clock-clock-remove-last-clock (clock)
+    )
+
   (defun org-clock-clock-in-out (clock &optional start-time stop-time &optional fail-quietly)
     (org-clock-clock-in clock nil start-time)
     (org-clock-clock-out clock fail-quietly start-time))
@@ -500,6 +505,12 @@ so long."
                    (if (> timelen 0)
                        (let ((other-start-time (time-subtract
                                                 (org-rl-clock-start-time next) timelensec-time)))
+                         (when (org-rl-clock-open-p prev)
+                           (org-clock-clock-out
+                            (org-rl-clock-marker prev)
+                            (org-rl-clock-stop-time prev))
+                           ;; org-clock-clock-remove-last-clock
+                           )
                          (when other-marker
                            (org-clock-clock-in-out other-marker
                                                    other-start-time
@@ -540,7 +551,38 @@ so long."
 
 
 
+(defun org-find-open-clocks (file)
+  "Search through the given file and find all open clocks."
+  (let ((buf (or (get-file-buffer file)
+                 (find-file-noselect file)))
+        (org-clock-re (concat org-clock-string " \\(\\[.*?\\]\\)$"))
+        clocks)
+    (with-current-buffer buf
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward org-clock-re nil t)
+          (push (cons (copy-marker (match-end 1) t)
+                      (org-time-string-to-time (match-string 1))) clocks))))
+    clocks))
 
+(defsubst org-is-active-clock (clock)
+  "Return t if CLOCK is the currently active clock."
+  (and (org-clock-is-active)
+       (= org-clock-marker (car clock))))
+
+
+
+(defun clock ()
+  (let ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
+                    org-clock-string
+                    "[ \t]*\\(?:\\(\\[.*?\\]\\)-+\\(\\[.*?\\]\\)\\|=>[ \t]+\\([0-9]+\\):\\([0-9]+\\)\\)"))
+        (lmax 30)
+        (ltimes (make-vector lmax 0))
+        (t1 0)
+        (level 0)
+        ts te dt
+        time))
+  )
 
 
 (provide 'org-clock-resolve-advanced)
