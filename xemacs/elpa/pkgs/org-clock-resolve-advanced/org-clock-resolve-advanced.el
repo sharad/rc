@@ -503,14 +503,16 @@ so long."
                  (let ((other-marker
                         (if (eq opt 'include-in-other) (select-other-clock) nil)))
                    (if (> timelen 0)
+                       (when (and
+                              (not (eq (org-rl-clock-stop-time prev) (org-rl-clock-start-time next)))
+                              (org-rl-clock-open-p prev))
+                         (org-clock-clock-out
+                          (org-rl-clock-marker prev)
+                          (org-rl-clock-stop-time prev))
+                         ;; org-clock-clock-remove-last-clock
+                         )
                        (let ((other-start-time (time-subtract
                                                 (org-rl-clock-start-time next) timelensec-time)))
-                         (when (org-rl-clock-open-p prev)
-                           (org-clock-clock-out
-                            (org-rl-clock-marker prev)
-                            (org-rl-clock-stop-time prev))
-                           ;; org-clock-clock-remove-last-clock
-                           )
                          (when other-marker
                            (org-clock-clock-in-out other-marker
                                                    other-start-time
