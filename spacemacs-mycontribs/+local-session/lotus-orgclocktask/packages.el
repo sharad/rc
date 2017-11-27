@@ -298,7 +298,7 @@ Each entry is either:
                   ;; BUG: not getting included
                   (add-to-enable-startup-interrupting-feature-hook
                    #'(lambda ()
-                       (when nil            ;BUG: may be causing emacs to crash when no frame is open.
+                       (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
                          (add-hook 'after-make-frame-functions
                                    '(lambda (nframe)
                                      (run-at-time-or-now 100
