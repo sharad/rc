@@ -82,7 +82,7 @@
 ;;;###autoload
 (defun add-to-enable-desktop-restore-interrupting-feature-hook (fn &optional append local)
   (interactive)
-  (add-hook
+  (add-to-hook
    'sharad/enable-desktop-restore-interrupting-feature-hook
    fn
    append
@@ -98,7 +98,7 @@
 ;;;###autoload
 (defun add-to-disable-desktop-restore-interrupting-feature-hook (fn &optional append local)
   (interactive)
-  (add-hook
+  (add-to-hook
    'sharad/disable-desktop-restore-interrupting-feature-hook
    fn
    append

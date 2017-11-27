@@ -114,7 +114,7 @@
 
 ;;;###autoload
 (defun add-to-task-current-party-change-hook (fn &optional append local)
-  (add-hook
+  (add-to-hook
    'task-current-party-change-hook
    fn
    append

@@ -185,7 +185,7 @@ startup in daemon mode."
 ;;;###autoload
 (defun add-to-enable-startup-interrupting-feature-hook (fn &optional append local)
   (interactive)
-  (add-hook
+  (add-to-hook
    'sharad/enable-startup-interrupting-feature-hook
    fn
    append
@@ -202,7 +202,7 @@ startup in daemon mode."
 ;;;###autoload
 (defun add-to-disable-startup-interrupting-feature-hook (fn &optional append local)
   (interactive)
-  (add-hook
+  (add-to-hook
    'sharad/disable-startup-interrupting-feature-hook
    fn
    append
@@ -295,7 +295,7 @@ startup in daemon mode."
 ;;;###autoload
 (defun add-to-enable-login-session-interrupting-feature-hook (fn &optional append local)
   (interactive)
-  (add-hook
+  (add-to-hook
    'sharad/enable-login-session-interrupting-feature-hook
    fn
    append
@@ -311,7 +311,7 @@ startup in daemon mode."
 
 (defun add-to-disable-login-session-interrupting-feature-hook (fn &optional append local)
   (interactive)
-  (add-hook
+  (add-to-hook
    'sharad/disable-login-session-interrupting-feature-hook
    fn
    append

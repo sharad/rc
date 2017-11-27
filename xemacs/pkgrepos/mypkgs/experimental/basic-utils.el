@@ -154,6 +154,15 @@
     (notify title
             (apply 'format fmt body))))
 
+(defun add-to-hook (hook fn &optional append local)
+  (interactive)
+  (lotus-message-notify "add-to-hook" "add-to-hook: adding %s to %s" fn hook)
+  (add-hook
+   hook
+   fn
+   append
+   local))
+
 (defun run-each-hooks (hook)
   (dolist (f (symbol-value hook))
     (condition-case e
