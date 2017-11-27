@@ -22,6 +22,8 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-11-27 Mon 17:32]
+   CLOCK: [2017-11-27 Mon 17:25]--[2017-11-27 Mon 17:24] => -1:59
    CLOCK: [2017-11-20 Mon 21:30]--[2017-11-21 Tue 17:41] => 20:11
    CLOCK: [2017-11-20 Mon 19:24]--[2017-11-20 Mon 20:06] =>  0:42
    CLOCK: [2017-11-18 Sat 16:47]--[2017-11-18 Sat 17:00] =>  0:13
@@ -382,7 +384,6 @@ Yes
    CLOCK: [2016-02-03 Wed 17:42]--[2016-02-04 Thu 00:27] =>  6:45
    CLOCK: [2016-02-03 Wed 01:10]--[2016-02-03 Wed 01:30] =>  0:20
    :END:
-
 *** Unobtrusive Dynamic Contextual Org Clock
 **** DONE Implement dynamic clocking based on mapping of org task property to current file buffer
      CLOSED: [2017-11-18 Sat 20:29]
@@ -395,7 +396,7 @@ Yes
      :Root:     ~/.xemacs/elpa/pkgs/org-clock-resolve-advanced/
      :END:
      :LOGBOOK:
-     CLOCK: [2017-11-25 Sat 16:05]
+     CLOCK: [2017-11-25 Sat 16:05]--[2017-11-27 Mon 17:25] => 49:20
      CLOCK: [2017-11-20 Mon 21:28]--[2017-11-20 Mon 21:30] =>  0:02
      CLOCK: [2017-11-20 Mon 20:06]--[2017-11-20 Mon 20:11] =>  0:05
      CLOCK: [2017-11-20 Mon 19:21]--[2017-11-20 Mon 19:24] =>  0:03
@@ -440,8 +441,9 @@ e.g. In urxvt we should be able to mark window to reappear when build is done, b
       same with some other thing etc.
 ***** when connected to perticular wifi ssid, network etc, remind related tasks.
 *** Advanced
-**** When asking task estimate time and the expected datetime when it claimed to be completed,
-     do calculate where all other task estimated time and this task estimated will fit into the expected datetime
+**** When asking task estimate time and the expected completion datetime when it claimed to be completed,
+     do calculate where all other task estimated time and this task estimated will fit into the expected completion datetime
+**** Here should all three kind of estimate pessimistic, pragmatic, optimistic
 
 * Tableview
 #+BEGIN: columnview :hlines 1 :id local

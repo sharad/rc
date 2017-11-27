@@ -525,7 +525,7 @@ so long."
                           (null (org-rl-clock-stop-time prev))
                           (org-rl-clock-stop-time next))
                      (org-clock-clock-out
-                      (org-rl-clock-marker prev)
+                      (cons (org-rl-clock-marker prev) (org-rl-clock-start-time prev))
                       t
                       (org-rl-clock-stop-time next)))
 
@@ -533,7 +533,7 @@ so long."
                        (let ((other-start-time (time-subtract
                                                 (org-rl-clock-start-time next) timelensec-time)))
                          (when other-marker
-                           (org-clock-clock-in-out other-marker
+                           (org-clock-clock-in-out (cons other-marker other-start-time)
                                                    other-start-time
                                                    (org-rl-clock-start-time next)))
                          (setq next
