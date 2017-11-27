@@ -98,21 +98,21 @@ Each entry is either:
                   :defer t
                   :config
                   (add-to-enable-desktop-restore-interrupting-feature-hook
-                   '(lambda ()
-                     (if (fboundp 'org-clock-persistence-insinuate)
-                         (org-clock-persistence-insinuate)
-                         (message "Error: Org Clock function org-clock-persistence-insinuate not available."))))))))
+                   #'(lambda ()
+                       (if (fboundp 'org-clock-persistence-insinuate)
+                           (org-clock-persistence-insinuate)
+                           (message "Error: Org Clock function org-clock-persistence-insinuate not available."))))))))
       (progn
         (use-package sessions-unified
             :defer t
             :config
             (progn
               (add-to-enable-desktop-restore-interrupting-feature-hook
-               '(lambda ()
-                 (when (fboundp 'org-clock-start-check-timer-insiuate)
-                   (org-clock-start-check-timer-insiuate))
-                 (when (fboundp 'org-clock-lotus-log-note-on-change-insinuate)
-                   (org-clock-lotus-log-note-on-change-insinuate))))))))))
+               #'(lambda ()
+                   (when (fboundp 'org-clock-start-check-timer-insiuate)
+                     (org-clock-start-check-timer-insiuate))
+                   (when (fboundp 'org-clock-lotus-log-note-on-change-insinuate)
+                     (org-clock-lotus-log-note-on-change-insinuate))))))))))
 
 (defun lotus-orgclocktask/init-org-clock-daysummary ()
   (progn
@@ -147,13 +147,13 @@ Each entry is either:
 
                         (progn
                           (add-to-task-current-party-change-hook
-                           '(lambda ()
-                             (let ((monitor-dir (task-party-dir)))
-                               (if (file-directory-p monitor-dir)
-                                   (progn
-                                     (org-clock-monitor-files-set-from-dir monitor-dir)
-                                     (org-clock-work-day-mode-line-add t))
-                                   (message "org monitor dir %s not exists." monitor-dir)))))))))))))
+                           #'(lambda ()
+                               (let ((monitor-dir (task-party-dir)))
+                                 (if (file-directory-p monitor-dir)
+                                     (progn
+                                       (org-clock-monitor-files-set-from-dir monitor-dir)
+                                       (org-clock-work-day-mode-line-add t))
+                                     (message "org monitor dir %s not exists." monitor-dir)))))))))))))
 
     (use-package startup-hooks
         :defer t
@@ -161,13 +161,13 @@ Each entry is either:
         (progn
           (progn
             (add-to-enable-login-session-interrupting-feature-hook
-             '(lambda ()
-               (org-clock-work-day-mode-line-add t))
+             #'(lambda ()
+                 (org-clock-work-day-mode-line-add t))
              t)
 
             (add-to-enable-startup-interrupting-feature-hook
-             '(lambda ()
-               (org-clock-work-day-mode-line-add t))
+             #'(lambda ()
+                 (org-clock-work-day-mode-line-add t))
              t))))))
 
 
@@ -214,17 +214,17 @@ Each entry is either:
 
                   (progn
                     (add-to-task-current-party-change-hook
-                     '(lambda ()
-                       (let* ((party-base-dir (task-party-base-dir))
-                              (start-file (expand-file-name "start.org" party-base-dir)))
-                         (if (and
-                              (file-directory-p party-base-dir)
-                              (file-exists-p start-file))
-                             (progn
-                               (org-context-clock-setup-task-tree-task-root-org-file start-file))
-                             (message "org party dir %s or file %s not exists."
-                                      party-base-dir
-                                      start-file)))))))))
+                     #'(lambda ()
+                         (let* ((party-base-dir (task-party-base-dir))
+                                (start-file (expand-file-name "start.org" party-base-dir)))
+                           (if (and
+                                (file-directory-p party-base-dir)
+                                (file-exists-p start-file))
+                               (progn
+                                 (org-context-clock-setup-task-tree-task-root-org-file start-file))
+                               (message "org party dir %s or file %s not exists."
+                                        party-base-dir
+                                        start-file)))))))))
 
           (progn
             ;; (setq org-context-clock-task-tree-task-root-org-file
@@ -238,8 +238,8 @@ Each entry is either:
       (progn
         (defun lotus-load-task-manager-delay (delay)
           (run-at-time-or-now delay
-                              '(lambda ()
-                                (task-party-base-dir))))
+                              #'(lambda ()
+                                  (task-party-base-dir))))
 
         (defun lotus-load-task-manager-delay-time ()
           (lotus-load-task-manager-delay 100)))
@@ -247,8 +247,8 @@ Each entry is either:
       (progn
         (defun lotus-config-start-org-context-clock-insinuate-after-delay (delay)
           (run-at-time-or-now delay
-                              '(lambda ()
-                                (org-context-clock-insinuate))))
+                              #'(lambda ()
+                                  (org-context-clock-insinuate))))
 
         (defun lotus-config-start-org-context-clock-insinuate-after-delay-time ()
           (lotus-config-start-org-context-clock-insinuate-after-delay 70)))
@@ -297,41 +297,42 @@ Each entry is either:
                 (progn
                   ;; BUG: not getting included
                   (add-to-enable-startup-interrupting-feature-hook
-                   '(lambda ()
-                     (when nil
-                       (add-hook 'after-make-frame-functions
-                                 '(lambda (nframe)
-                                   (run-at-time-or-now 100
-                                    '(lambda ()
-                                      (if (any-frame-opened-p)
-                                          (org-clock-in-if-not)))))
-                                 t))
-                     (add-hook 'delete-frame-functions
-                      '(lambda (nframe)
-                        (if (and
-                             (org-clock-is-active)
-                             (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-                            (org-with-clock-writeable-buffer
-                             (let (org-log-note-clock-out)
-                               (if (org-clock-is-active)
-                                   (org-clock-out))))))))
+                   #'(lambda ()
+                       (when nil            ;BUG: may be causing emacs to crash when no frame is open.
+                         (add-hook 'after-make-frame-functions
+                                   '(lambda (nframe)
+                                     (run-at-time-or-now 100
+                                      '(lambda ()
+                                        (if (any-frame-opened-p)
+                                            (org-clock-in-if-not)))))
+                                   t))
+                       (add-hook
+                        'delete-frame-functions
+                        #'(lambda (nframe)
+                            (if (and
+                                 (org-clock-is-active)
+                                 (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
+                                (org-with-clock-writeable-buffer
+                                 (let (org-log-note-clock-out)
+                                   (if (org-clock-is-active)
+                                       (org-clock-out))))))))
                    t))
 
                 ;; (progn
                 ;;   (add-to-enable-desktop-restore-interrupting-feature-hook
-                ;;    '(lambda ()
-                ;;      (if (fboundp 'org-clock-persistence-insinuate)
-                ;;          (org-clock-persistence-insinuate)
-                ;;          (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
-                ;;      (if (fboundp 'org-clock-start-check-timer-insiuate)
-                ;;          (org-clock-start-check-timer-insiuate)))
-                ;;    t))
+                ;;    #'(lambda ()
+                ;;       (if (fboundp 'org-clock-persistence-insinuate)
+                ;;           (org-clock-persistence-insinuate)
+                ;;           (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
+                ;;       (if (fboundp 'org-clock-start-check-timer-insiuate)
+                ;;           (org-clock-start-check-timer-insiuate)))
+                ;;     t))
                 )))
 
         (progn
           (add-hook
            'kill-emacs-hook
-           (lambda ()
+           #'(lambda ()
              (if (and
                   (org-clock-is-active)
                   ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
