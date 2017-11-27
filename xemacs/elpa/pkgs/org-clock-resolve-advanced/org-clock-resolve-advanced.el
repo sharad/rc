@@ -370,9 +370,21 @@ so long."
   (defun org-clock-clock-remove-last-clock (clock)
     )
 
-  (defun org-clock-clock-in-out (clock &optional start-time stop-time &optional fail-quietly)
-    (org-clock-clock-in clock nil start-time)
-    (org-clock-clock-out clock fail-quietly start-time))
+  (defun org-rl-clock-clock-in-out (clock &optional resume fail-quietly)
+    (org-clock-clock-in clock resume)
+    (org-clock-clock-out clock fail-quietly))
+
+  (defun org-rl-clock-clock-in (clock &optional resume)
+    (org-clock-clock-in
+     (org-rl-clock-marker clock)
+     resume
+     (org-rl-clock-start-time clock)))
+
+  (defun org-rl-clock-clock-out (clock &optional fail-quietly)
+    (org-clock-clock-out
+     (org-rl-clock-marker clock)
+     fail-quietly
+     (org-rl-clock-stop-time clock)))
 
   (defun org-resolve-time-debug (prev next &optional prompt stop)
     (let* ((base 120)
@@ -524,31 +536,31 @@ so long."
                    (when (and
                           (null (org-rl-clock-stop-time prev))
                           (org-rl-clock-stop-time next))
-                     (org-clock-clock-out
-                      (cons (org-rl-clock-marker prev) (org-rl-clock-start-time prev))
-                      t
-                      (org-rl-clock-stop-time next)))
+                     (org-rl-clock-clock-out prev t))
 
                    (if (> timelen 0)
-                       (let ((other-start-time (time-subtract
-                                                (org-rl-clock-start-time next) timelensec-time)))
+                       (let* ((other-start-time (time-subtract
+                                                 (org-rl-clock-start-time next) timelensec-time))
+                              (other-clock
+                               (list other-marker other-start-time (org-rl-clock-start-time next))))
                          (when other-marker
-                           (org-clock-clock-in-out (cons other-marker other-start-time)
-                                                   other-start-time
-                                                   (org-rl-clock-start-time next)))
+                           (org-clock-clock-in-out other-clock))
                          (setq next
                                (list
                                 other-marker
                                 other-start-time
                                 (org-rl-clock-stop-time next))))
 
-                       (let ((other-stop-time
-                              (time-subtract (org-rl-clock-stop-time prev) timelensec-time)))
-                         (when other-marker
-                           (org-clock-clock-in-out other-marker
-                                                   (org-rl-clock-start-time next)
-                                                   (time-subtract
-                                                    (org-rl-clock-stop-time prev) timelensec-time)))
+                       (let* ((other-stop-time
+                               (time-subtract (org-rl-clock-stop-time prev) timelensec-time))
+                              (other-clock
+                               (list
+                                other-marker
+                                (org-rl-clock-start-time next)
+                                (time-subtract
+                                 (org-rl-clock-stop-time prev) timelensec-time))))
+
+                         (when other-marker (org-clock-clock-in-out other-clock))
                          (setq prev
                                (list
                                 other-marker
