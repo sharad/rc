@@ -418,6 +418,8 @@ so long."
 
 
   (defun org-resolve-time (prev next &optional close-p)
+    ;; BUG how to handle current time == 'now
+    ;; BUG how to handle when prev == next
     (interactive)
     ""
     (let ((debug-prompt t)
@@ -464,7 +466,7 @@ so long."
             ;; cancel prev and add to time
 
             (when (> (abs timelen) default)
-              (message "Erro")
+              (message "Error given time %d can not be greater than %d" timelen default)
               (org-resolve-time prev next))
 
             (let ((timelensec-time (seconds-to-time (* timelen 60))))
@@ -484,12 +486,11 @@ so long."
                  ;; add next clock time
                  (progn
                    (org-rl-clock-clock-cancel next)
-                   (let ((next-start (cdr next)))
-                     (setq next
-                           (list
-                            nil
-                            (org-rl-clock-stop-time prev)
-                            nil)))))
+                   (setq next
+                         (list
+                          nil
+                          (org-rl-clock-stop-time prev)
+                          nil))))
 
                 ((eq opt 'include-in-prev)
                  ;; include timelen in prev
@@ -507,7 +508,6 @@ so long."
                        (org-clock-clock-in-out next))))
 
                 ((eq opt 'include-in-next)
-
                  (when (and             ;clock out if prev is open clock and next is specifying idle time.
                         (null (org-rl-clock-stop-time prev))
                         (org-rl-clock-stop-time next))
@@ -515,7 +515,6 @@ so long."
                     (list (org-rl-clock-marker prev)
                           (org-rl-clock-start-time next)
                           (org-rl-clock-stop-time next))))
-
                  ;; include timelen in next
                  ;; update timelength
                  (if (> timelen 0)

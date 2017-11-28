@@ -429,6 +429,12 @@ Yes
 **** Try to add unit test using ERT (Emacs Regression Test)
 **** On moving to next task, old task should ask to add context, so person can use that context to continue if he restart task after long time.
 **** And when starting to restart a task it old context must be showed to remind user what was there.
+**** Interface to add new task which should provide options
+***** whether it is subtask of current task or existing task, now required its name
+***** whether it sudden random unrealted task from current task or existing task
+***** adding timeout bound task like sleep for 5 mins
+***** etc
+***** adding new task also try to copy or move property from related task
 *** Obtrusive
 **** Window should be marked to reappear/popup when something started were done.
 e.g. In urxvt we should be able to mark window to reappear when build is done, by that user is browsing or editing or doing some other work.
@@ -444,7 +450,8 @@ e.g. In urxvt we should be able to mark window to reappear when build is done, b
 **** When asking task estimate time and the expected completion datetime when it claimed to be completed,
      do calculate where all other task estimated time and this task estimated will fit into the expected completion datetime
 **** Here should all three kind of estimate pessimistic, pragmatic, optimistic
-
+**** For CPM and PERT how task sequencing as well as hierarchy should be done
+**** Hwo related task should get it property by copying or moving etc.
 * Tableview
 #+BEGIN: columnview :hlines 1 :id local
 
@@ -466,4 +473,4 @@ e.g. In urxvt we should be able to mark window to reappear when build is done, b
 
 #+BEGIN: columnview  :hlines 1 :id global
 
-#+END
+#+EN
