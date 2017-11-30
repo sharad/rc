@@ -417,7 +417,7 @@ so long."
 
 
 
-  (defun org-resolve-time (prev next &optional close-p)
+  (defun org-resolve-time (prev next &optional force close-p)
     ;; BUG how to handle current time == 'now
     ;; BUG how to handle when prev == next
     (interactive)
@@ -434,9 +434,8 @@ so long."
                 (org-rl-clock-stop-time next)))))
             60)))
 
-      (if (zerop default)
-          (if close-p
-              (org-clock-out))
+      (when (and (zerop default) close-p)
+        (org-clock-out)
 
           (let* ((timelen
                   (read-number
