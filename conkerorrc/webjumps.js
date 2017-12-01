@@ -145,6 +145,13 @@ var bookmark_groups = {
         "https://insights.ubuntu.com/2015/06/30/publishing-lxd-images/",
         "https://github.com/spencertipping/conky-compiler",
         "https://www.google.co.in/search?q=X+window+writing+into+Root+Window",
+    ],
+    "Insat" [
+        "http://satellite.imd.gov.in/dynamic/insat_3DR.htm",
+        "http://satellite.imd.gov.in/img/3Dglobe_vis.jpg",
+        "http://satellite.imd.gov.in/img/3Dasiasec_swir.jpg",
+        "http://satellite.imd.gov.in/img/3Dasiasec_vis.jpg",
+        "http://satellite.imd.gov.in/img/3Dsnd_lwir6_b1.jpg",
     ]
 };
 
