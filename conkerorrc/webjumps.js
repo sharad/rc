@@ -146,13 +146,13 @@ var bookmark_groups = {
         "https://github.com/spencertipping/conky-compiler",
         "https://www.google.co.in/search?q=X+window+writing+into+Root+Window",
     ],
-    "Insat" [
+    "Insat": [
         "http://satellite.imd.gov.in/dynamic/insat_3DR.htm",
         "http://satellite.imd.gov.in/img/3Dglobe_vis.jpg",
         "http://satellite.imd.gov.in/img/3Dasiasec_swir.jpg",
         "http://satellite.imd.gov.in/img/3Dasiasec_vis.jpg",
         "http://satellite.imd.gov.in/img/3Dsnd_lwir6_b1.jpg",
-    ]
+    ],
 };
 
 interactive("open-bookmark-group",
