@@ -566,7 +566,9 @@ so long."
              ;; (if debug-prompt (org-resolve-time-debug prev next t "include-in-other"))
 
              (let ((other-marker
-                    (if (eq opt 'include-in-other) (select-other-clock) nil)))
+                    (if (eq opt 'include-in-other)
+                        (select-other-clock)
+                        nil)))
 
                (when (and
                       (null (org-rl-clock-stop-time prev))
@@ -611,16 +613,17 @@ so long."
       )))
 
 
-(let ((currtime (current-time)))
-  (org-resolve-time
-   (list
-    org-clock-marker
-    org-clock-start-time
-    nil)
-   (list
-    nil
-    'now
-    (time-subtract currtime (seconds-to-time (* 8 60))))))
+(when nil                               ;testing
+  (let ((currtime (current-time)))
+    (org-resolve-time
+     (list
+      org-clock-marker
+      org-clock-start-time
+      nil)
+     (list
+      nil
+      'now
+      (time-subtract currtime (seconds-to-time (* 8 60)))))))
 
 
 

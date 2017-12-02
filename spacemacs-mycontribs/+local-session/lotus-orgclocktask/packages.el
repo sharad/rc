@@ -89,46 +89,7 @@ Each entry is either:
               (lotus-org-clock-in/out-insinuate-hooks))
 
             (progn
-              (use-package startup-hooks
-                  :defer t
-                  :config
-                  (progn
-                    (progn ;code will not get run as when
-                                        ;`enable-startup-interrupting-feature-hook' run at early start,
-                                        ;that time package `org-misc-utils-lotus' did not get loaded.
-                      ;; BUG: not getting included
-                      (add-to-enable-startup-interrupting-feature-hook
-                       #'(lambda ()
-                           (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
-                             (add-hook 'after-make-frame-functions
-                                       '(lambda (nframe)
-                                         (run-at-time-or-now 100
-                                          '(lambda ()
-                                            (if (any-frame-opened-p)
-                                                (org-clock-in-if-not)))))
-                                       t))
-                           (add-hook
-                            'delete-frame-functions
-                            #'(lambda (nframe)
-                                (if (and
-                                     (org-clock-is-active)
-                                     (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-                                    (org-with-clock-writeable-buffer
-                                     (let (org-log-note-clock-out)
-                                       (if (org-clock-is-active)
-                                           (org-clock-out))))))))
-                       t))
-
-                    ;; (progn
-                    ;;   (add-to-enable-desktop-restore-interrupting-feature-hook
-                    ;;    #'(lambda ()
-                    ;;       (if (fboundp 'org-clock-persistence-insinuate)
-                    ;;           (org-clock-persistence-insinuate)
-                    ;;           (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
-                    ;;       (if (fboundp 'org-clock-start-check-timer-insiuate)
-                    ;;           (org-clock-start-check-timer-insiuate)))
-                    ;;     t))
-                    ))))))
+              ))))
 
     (progn
       (progn
@@ -154,7 +115,49 @@ Each entry is either:
                    (when (fboundp 'org-clock-start-check-timer-insiuate)
                      (org-clock-start-check-timer-insiuate))
                    (when (fboundp 'org-clock-lotus-log-note-on-change-insinuate)
-                     (org-clock-lotus-log-note-on-change-insinuate))))))))))
+                     (org-clock-lotus-log-note-on-change-insinuate)))))))
+
+      (progn
+        (use-package startup-hooks
+            :defer t
+            :config
+            (progn
+              (progn ;code will not get run as when
+                                        ;`enable-startup-interrupting-feature-hook' run at early start,
+                                        ;that time package `org-misc-utils-lotus' did not get loaded.
+                ;; BUG: not getting included
+                (add-to-enable-startup-interrupting-feature-hook
+                 #'(lambda ()
+                     (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
+                       (add-hook 'after-make-frame-functions
+                                 '(lambda (nframe)
+                                   (run-at-time-or-now 100
+                                    '(lambda ()
+                                      (if (any-frame-opened-p)
+                                          (org-clock-in-if-not)))))
+                                 t))
+                     (add-hook
+                      'delete-frame-functions
+                      #'(lambda (nframe)
+                          (if (and
+                               (org-clock-is-active)
+                               (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
+                              (org-with-clock-writeable-buffer
+                               (let (org-log-note-clock-out)
+                                 (if (org-clock-is-active)
+                                     (org-clock-out))))))))
+                 t))
+
+              ;; (progn
+              ;;   (add-to-enable-desktop-restore-interrupting-feature-hook
+              ;;    #'(lambda ()
+              ;;       (if (fboundp 'org-clock-persistence-insinuate)
+              ;;           (org-clock-persistence-insinuate)
+              ;;           (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
+              ;;       (if (fboundp 'org-clock-start-check-timer-insiuate)
+              ;;           (org-clock-start-check-timer-insiuate)))
+              ;;     t))
+              ))))))
 
 (defun lotus-orgclocktask/init-org-clock-daysummary ()
   (progn

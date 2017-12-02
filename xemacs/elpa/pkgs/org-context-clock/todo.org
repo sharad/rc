@@ -407,6 +407,7 @@ Yes
 **** Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
 **** Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
      for this may need to understand undo-tree or may be see any other method to used for it.
+     TODO: take printout of undi-tree.el
 
 **** Find way to specify importance, type(bug, feature etc) of task (whether using tag).
 **** One sending mail, chat, or any other important action offer to add log note should be presented.
@@ -430,7 +431,7 @@ Yes
 **** On moving to next task, old task should ask to add context, so person can use that context to continue if he restart task after long time.
 **** And when starting to restart a task it old context must be showed to remind user what was there.
 **** Interface to add new task which should provide options
-***** whether it is subtask of current task or existing task, now required its name
+***** whether it is subtask of current task or existing task, now required its separate naming, similar way to merge child task to parent.
 ***** whether it sudden random unrealted task from current task or existing task
 ***** adding timeout bound task like sleep for 5 mins
 ***** etc
