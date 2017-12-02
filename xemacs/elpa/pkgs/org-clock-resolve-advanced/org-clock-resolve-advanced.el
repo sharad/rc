@@ -334,35 +334,46 @@ so long."
 
 
 (progn
-  (setq org-resolve-opts-common
+  (setq org-resolve-opts-common-with-time
         '(("include-in-other" . include-in-next)
           ("subtract" . subtract)))
-
   (setq org-resolve-opts-prev
-        '(("cancel-prev-p" . cancel-prev-p)
-          ("include-in-prev" . include-in-prev)))
-
+        '(("cancel-prev-p" . cancel-prev-p)))
+  (setq org-resolve-opts-prev-with-time
+        '(("include-in-prev" . include-in-prev)))
   (setq org-resolve-opts-next
-        '(("cancel-next-p" . cancel-next-p)
-          ("include-in-next" . include-in-next)))
+        '(("cancel-next-p" . cancel-next-p)))
+  (setq org-resolve-opts-next-with-time
+        '(("include-in-next" . include-in-next)))
+
+  (defun time-get-rl-time (time)
+    (cond
+      ((eq time 'now)
+       (current-time))
+      ((eq time nil) nil)
+      (time time)
+      (t nil)))
 
   (defun org-rl-clock-start-time (clock)
-    (nth 1 clock))
+    (time-get-rl-time (nth 1 clock)))
 
   (defun org-rl-clock-stop-time (clock)
-    (nth 2 clock))
+    (time-get-rl-time (nth 2 clock)))
 
   (defun org-rl-clock-marker (clock)
     (nth 0 clock))
 
   (defun org-rl-clock-start-time-set (clock time)
-    (setf (cadr clock) time))
+    (setf (cadr clock) (time-get-rl-time time))
+    clock)
 
   (defun org-rl-clock-stop-time-set (clock time)
-    (setf (caddr clock) time))
+    (setf (caddr clock) (time-get-rl-time time))
+    clock)
 
   (defun org-rl-clock-marker-set (clock marker)
-    (setf (car clock) marker))
+    (setf (car clock) marker)
+    clock)
 
   ;; helpers
   ;; - org-clock-clock-out
@@ -378,7 +389,9 @@ so long."
     (if (org-rl-clock-marker clock)
         (if (org-rl-clock-start-time clock)
             (org-clock-clock-in
-             (org-rl-clock-marker clock)
+             (cons
+              (org-rl-clock-marker clock)
+              (org-rl-clock-start-time clock))
              resume
              (org-rl-clock-start-time clock))
             (error "%s start time is null" (org-rl-clock-start-time clock)))
@@ -388,7 +401,9 @@ so long."
     (if (org-rl-clock-marker clock)
         (if (org-rl-clock-stop-time clock)
             (org-clock-clock-out
-             (org-rl-clock-marker clock)
+             (cons
+              (org-rl-clock-marker clock)
+              (org-rl-clock-start-time clock))
              fail-quietly
              (org-rl-clock-stop-time clock))
             (error "%s stop time is null" (org-rl-clock-stop-time clock)))
@@ -398,7 +413,9 @@ so long."
     (if (org-rl-clock-marker clock)
         (if (org-rl-clock-start-time clock)
             (org-clock-clock-cancel
-             (org-rl-clock-marker clock))
+             (cons
+              (org-rl-clock-marker clock)
+              (org-rl-clock-start-time clock)))
             (error "%s start time is null" (org-rl-clock-start-time clock)))
         (error "%s clock is null" (org-rl-clock-marker clock))))
 
@@ -434,154 +451,164 @@ so long."
                 (org-rl-clock-stop-time next)))))
             60)))
 
-      (when (and (zerop default) close-p)
-        (org-clock-out)
-
-          (let* ((timelen
+      (let* ((options
+              (append
+               (when (org-rl-clock-marker prev)
+                 (append
+                  org-resolve-opts-prev
+                  (unless (zerop default) org-resolve-opts-prev-with-time)))
+               (when (org-rl-clock-marker next)
+                 (append
+                  org-resolve-opts-next
+                  (unless (zerop default) org-resolve-opts-next-with-time)))
+               (unless (zerop default) org-resolve-opts-common-with-time)))
+             (opt
+              (cdr
+               (assoc
+                (completing-read
+                 (if debug-prompt
+                     (format "%s Select option [%d]: " (org-resolve-time-debug prev next) default)
+                     (format "Select option [%d]: " default))
+                 options)
+                options)))
+             (timelen
+              (if (zerop default)
+                  default
                   (read-number
                    (if debug-prompt
-                       (format "%s how many minutes? " (org-resolve-time-debug prev next))
-                       "how many minutes? ")
-                   default))
-                 (options
-                  (append
-                   (when (org-rl-clock-marker prev) org-resolve-opts-prev)
-                   (when (org-rl-clock-marker next) org-resolve-opts-next)
-                   org-resolve-opts-common))
-                 (opt
-                  (cdr
-                   (assoc
-                    (completing-read
-                     (if debug-prompt
-                         (format "%s Select option: " (org-resolve-time-debug prev next))
-                         "Select option: ")
-                     options)
-                    options)))
+                       (format "%s how many minutes? [%d] " (org-resolve-time-debug prev next) default)
+                       (format "how many minutes? [%d] " default))
+                   default)))
 
-                 ;; (barely-started-p (< (- (float-time last-valid)
-                 ;;                         (float-time (cdr clock))) 45))
-                 ;; (start-over-p (and subtractp barely-started-p))
-                 )
-            ;; cancel prev and add to time
+             ;; (barely-started-p (< (- (float-time last-valid)
+             ;;                         (float-time (cdr clock))) 45))
+             ;; (start-over-p (and subtractp barely-started-p))
+             )
+        ;; cancel prev and add to time
 
-            (when (> (abs timelen) default)
-              (message "Error given time %d can not be greater than %d" timelen default)
-              (org-resolve-time prev next))
+        (when (> (abs timelen) default)
+          (message "Error given time %d can not be greater than %d" timelen default)
+          (org-resolve-time prev next))
 
-            (let ((timelensec-time (seconds-to-time (* timelen 60))))
-              (cond
-                ((eq opt 'cancel-prev-p)
-                 (progn
-                   (org-rl-clock-clock-cancel prev)
-                   (let ((prev-start (cdr prev)))
+        (let ((timelensec-time (seconds-to-time (* timelen 60))))
+          (cond
+            ((eq opt 'cancel-prev-p)
+             (progn
+               (org-rl-clock-clock-cancel prev)
+               (let ((prev-start (cdr prev)))
+                 (setq prev
+                       (list
+                        nil
+                        nil
+                        (org-rl-clock-start-time prev))))))
+
+            ((eq opt 'cancel-next-p)
+             ;; cancel next clock
+             ;; add next clock time
+             (progn
+               (org-rl-clock-clock-cancel next)
+               (setq next
+                     (list
+                      nil
+                      (org-rl-clock-stop-time prev)
+                      nil))))
+
+            ((eq opt 'include-in-prev)
+             ;; include timelen in prev
+             ;; update timelength
+             (if (> timelen 0)
+                 (let ((updated-stop-time (time-add
+                                           (org-rl-clock-stop-time prev) timelensec-time)))
+                   (org-rl-clock-stop-time-set prev updated-stop-time)
+                   (org-rl-clock-clock-out prev))
+                 (let ((updated-start-time (time-add
+                                            (org-rl-clock-start-time next) timelensec-time)))
+                   (org-rl-clock-clock-out prev)
+                   (setq next (list
+                               (org-rl-clock-marker prev) updated-start-time (org-rl-clock-start-time next)))
+                   (org-clock-clock-in-out next))))
+
+            ((eq opt 'include-in-next)
+             (when (and             ;clock out if prev is open clock and next is specifying idle time.
+                    (null (org-rl-clock-stop-time prev))
+                    (org-rl-clock-stop-time next))
+               (org-rl-clock-clock-out
+                (list (org-rl-clock-marker prev)
+                      (org-rl-clock-start-time next)
+                      (org-rl-clock-stop-time next))))
+             ;; include timelen in next
+             ;; update timelength
+             (if (> timelen 0)
+
+                 (let ((updated-start-time (time-add
+                                            (org-rl-clock-start-time next) timelensec-time)))
+                   (org-rl-clock-start-time-set next updated-stop-time)
+                   (when (org-rl-clock-marker next)
+                     (org-rl-clock-clock-in next))) ;? imple
+
+                 (let ((updated-stop-time (time-add
+                                           (org-rl-clock-start-time prev) timelensec-time)))
+
+                   (setq prev (list
+                               (org-rl-clock-marker next)
+                               (org-rl-clock-start-time prev)
+                               updated-stop-time))
+                   ;; make prev is clocked out
+                   (when (org-rl-clock-marker prev) (org-rl-clock-clock-in-out prev))
+                   ;; (org-clock-clock-in (org-rl-clock-stop-time prev))
+
+                   )))
+            ((memq opt '(include-in-other
+                         subtract)) ;; subtract timelen from timelength
+             ;; select other clock
+             ;; include timelen in other
+             ;; update timelength
+             ;; (if debug-prompt (org-resolve-time-debug prev next t "include-in-other"))
+
+             (let ((other-marker
+                    (if (eq opt 'include-in-other) (select-other-clock) nil)))
+
+               (when (and
+                      (null (org-rl-clock-stop-time prev))
+                      (org-rl-clock-stop-time next))
+                 (org-rl-clock-stop-time-set prev (org-rl-clock-stop-time next))
+                 (org-rl-clock-clock-out prev t))
+
+               (if (> timelen 0)
+                   (let* ((other-start-time (time-subtract
+                                             (org-rl-clock-start-time next) timelensec-time))
+                          (other-clock
+                           (list other-marker other-start-time (org-rl-clock-start-time next))))
+                     (when other-marker
+                       (org-clock-clock-in-out other-clock))
+                     (setq next
+                           (list
+                            other-marker
+                            other-start-time
+                            (org-rl-clock-stop-time next))))
+
+                   (let* ((other-stop-time
+                           (time-subtract (org-rl-clock-stop-time prev) timelensec-time))
+                          (other-clock
+                           (list
+                            other-marker
+                            (org-rl-clock-start-time next)
+                            (time-subtract
+                             (org-rl-clock-stop-time prev) timelensec-time))))
+
+                     (when other-marker (org-clock-clock-in-out other-clock))
                      (setq prev
                            (list
-                            nil
-                            nil
-                            (org-rl-clock-start-time prev))))))
-
-                ((eq opt 'cancel-next-p)
-                 ;; cancel next clock
-                 ;; add next clock time
-                 (progn
-                   (org-rl-clock-clock-cancel next)
-                   (setq next
-                         (list
-                          nil
-                          (org-rl-clock-stop-time prev)
-                          nil))))
-
-                ((eq opt 'include-in-prev)
-                 ;; include timelen in prev
-                 ;; update timelength
-                 (if (> timelen 0)
-                     (let ((updated-stop-time (time-add
-                                               (org-rl-clock-stop-time prev) timelensec-time)))
-                       (org-rl-clock-stop-time-set prev updated-stop-time)
-                       (org-rl-clock-clock-out prev))
-                     (let ((updated-start-time (time-add
-                                                (org-rl-clock-start-time next) timelensec-time)))
-                       (org-rl-clock-clock-out prev)
-                       (setq next (list
-                                   (org-rl-clock-marker prev) updated-start-time (org-rl-clock-start-time next)))
-                       (org-clock-clock-in-out next))))
-
-                ((eq opt 'include-in-next)
-                 (when (and             ;clock out if prev is open clock and next is specifying idle time.
-                        (null (org-rl-clock-stop-time prev))
-                        (org-rl-clock-stop-time next))
-                   (org-rl-clock-clock-out
-                    (list (org-rl-clock-marker prev)
-                          (org-rl-clock-start-time next)
-                          (org-rl-clock-stop-time next))))
-                 ;; include timelen in next
-                 ;; update timelength
-                 (if (> timelen 0)
-
-                     (let ((updated-start-time (time-add
-                                                (org-rl-clock-start-time next) timelensec-time)))
-                       (org-rl-clock-start-time-set next updated-stop-time)
-                       (when (org-rl-clock-marker next)
-                         (org-rl-clock-clock-in next))) ;? imple
-
-                     (let ((updated-stop-time (time-add
-                                               (org-rl-clock-start-time prev) timelensec-time)))
-
-                       (setq prev (list
-                                   (org-rl-clock-marker next)
-                                   (org-rl-clock-start-time prev)
-                                   updated-stop-time))
-                       ;; make prev is clocked out
-                       (when (org-rl-clock-marker prev) (org-rl-clock-clock-in-out prev))
-                       ;; (org-clock-clock-in (org-rl-clock-stop-time prev))
-
-                       )))
-                ((memq opt '(include-in-other
-                             subtract)) ;; subtract timelen from timelength
-                 ;; select other clock
-                 ;; include timelen in other
-                 ;; update timelength
-                 ;; (if debug-prompt (org-resolve-time-debug prev next t "include-in-other"))
-
-                 (let ((other-marker
-                        (if (eq opt 'include-in-other) (select-other-clock) nil)))
-
-                   (when (and
-                          (null (org-rl-clock-stop-time prev))
-                          (org-rl-clock-stop-time next))
-                     (org-rl-clock-clock-out prev t))
-
-                   (if (> timelen 0)
-                       (let* ((other-start-time (time-subtract
-                                                 (org-rl-clock-start-time next) timelensec-time))
-                              (other-clock
-                               (list other-marker other-start-time (org-rl-clock-start-time next))))
-                         (when other-marker
-                           (org-clock-clock-in-out other-clock))
-                         (setq next
-                               (list
-                                other-marker
-                                other-start-time
-                                (org-rl-clock-stop-time next))))
-
-                       (let* ((other-stop-time
-                               (time-subtract (org-rl-clock-stop-time prev) timelensec-time))
-                              (other-clock
-                               (list
-                                other-marker
-                                (org-rl-clock-start-time next)
-                                (time-subtract
-                                 (org-rl-clock-stop-time prev) timelensec-time))))
-
-                         (when other-marker (org-clock-clock-in-out other-clock))
-                         (setq prev
-                               (list
-                                other-marker
-                                (org-rl-clock-start-time next)
-                                (time-subtract
-                                 (org-rl-clock-stop-time prev) timelensec-time)))))))
-                (t (error "Error"))))
-            (org-resolve-time prev next close-p))))))
+                            other-marker
+                            (org-rl-clock-start-time next)
+                            (time-subtract
+                             (org-rl-clock-stop-time prev) timelensec-time)))))))
+            ((eq opt 'done)
+             (when (and (zerop default) close-p)
+               (org-clock-out)))
+            (t (error "Error"))))
+        (org-resolve-time prev next close-p))
+      )))
 
 
 (let ((currtime (current-time)))
@@ -592,7 +619,7 @@ so long."
     nil)
    (list
     nil
-    currtime
+    'now
     (time-subtract currtime (seconds-to-time (* 8 60))))))
 
 
