@@ -35,48 +35,9 @@
   )
 
 
-(defvar org-clock-clocking-in nil)
-(defvar org-clock-resolving-clocks nil)
-(defvar org-clock-resolving-clocks-due-to-idleness nil)
-
-(defun org-clock-resolve-clock (clock   ;considered clock
-                                clock-out-time ;nil will cancel clock, now is now
-                                clock-in-time
-                                &optional
-                                  close-p
-                                  restart-p
-                                  fail-quietly)
-  "Resolve `CLOCK' given the time `CLOCK-OUT-TIME', and the present.
-`CLOCK' is a cons cell of the form (MARKER START-TIME)."
-  (let ((org-clock-resolving-clocks t))
-    (cond
-
-      ((null clock-out-time)
-       (org-clock-clock-cancel clock)
-       (if (and restart-p (not org-clock-clocking-in))
-           (org-clock-clock-in clock)))
-
-      ((eq clock-out-time 'now)
-       (if restart-p
-           (error "RESTART-P is not valid here"))
-       (if (or close-p org-clock-clocking-in)
-           (org-clock-clock-out clock fail-quietly)
-           (unless (org-is-active-clock clock)
-             (org-clock-clock-in clock t))))
-
-      ((not (time-less-p clock-out-time (current-time)))
-       (error "CLOCK-OUT-TIME must refer to a time in the past"))
-
-      (t
-       (if restart-p
-           (error "RESTART-P is not valid here"))
-
-       (org-clock-clock-out clock fail-quietly clock-out-time)
-       (unless org-clock-clocking-in
-         (if close-p
-             (setq org-clock-leftover-time (and (null clock-out-time)
-                                                clock-out-time))
-             (org-clock-clock-in clock nil clock-in-time)))))))
+;; (defvar org-clock-clocking-in nil)
+;; (defvar org-clock-resolving-clocks nil)
+;; (defvar org-clock-resolving-clocks-due-to-idleness nil)
 
 (defun org-clock-jump-to-current-clock (&optional effective-clock)
   (interactive)
@@ -100,238 +61,6 @@
                    (when (> (org-element-property :end element) (car clock))
                      (org-flag-drawer nil element))
                    (throw 'exit nil)))))))))))
-
-(defun org-clock-resolve (clock
-                          &optional
-                            prompt-fn
-                            last-valid  ;last active (not idle) time
-                            fail-quietly)
-  "Resolve an open Org clock.
-An open clock was found, with `dangling' possibly being non-nil.
-If this function was invoked with a prefix argument, non-dangling
-open clocks are ignored.  The given clock requires some sort of
-user intervention to resolve it, either because a clock was left
-dangling or due to an idle timeout.  The clock resolution can
-either be:
-
-  (a) deleted, the user doesn't care about the clock
-  (b) restarted from the current time (if no other clock is open)
-  (c) closed, giving the clock X minutes
-  (d) closed and then restarted
-  (e) resumed, as if the user had never left
-
-The format of clock is (CONS MARKER START-TIME), where MARKER
-identifies the buffer and position the clock is open at (and
-thus, the heading it's under), and START-TIME is when the clock
-was started."
-  (cl-assert clock)
-  (let* ((ch
-          (save-window-excursion
-            (save-excursion
-              (unless org-clock-resolving-clocks-due-to-idleness
-                (org-clock-jump-to-current-clock clock))
-              (unless org-clock-resolve-expert
-                (with-output-to-temp-buffer "*Org Clock*"
-                  (princ (format-message "Select a Clock Resolution Command:
-
-Remember that using shift will always leave you clocked out, no matter which option you choose.
-
-i/q      Ignore this question; the same as keeping all the idle time.
-
-k/K      Keep X minutes of the idle time (default is all).  If this
-         amount is less than the default, you will be clocked out
-         that many minutes after the time that idling began, and then
-         clocked back in at the present time.
-
-g/G      Indicate that you \"got back\" X minutes ago.  This is quite
-         different from `k': it clocks you out from the beginning of
-         the idle period and clock you back in X minutes ago.
-
-s/S      Subtract the idle time from the current clock.  This is the
-         same as keeping 0 minutes.
-
-C        Cancel the open timer altogether.  It will be as though you
-         never clocked in.
-
-j/J      Jump to the current clock, to make manual adjustments.
-
-For all these options, using uppercase makes your final state
-to be CLOCKED OUT."))))
-              (org-fit-window-to-buffer (get-buffer-window "*Org Clock*"))
-              (let (char-pressed)
-                (while (or (null char-pressed)
-                           (and
-                            (not (memq char-pressed
-                                       '(?k ?K ?g ?G ?s ?S ?C
-                                         ?j ?J ?i ?q)))
-                            (or (ding) t)))
-                  (setq char-pressed
-                        (read-char (concat (funcall prompt-fn clock)
-                                           " [jkKgGSscCiq]? ")
-                                   nil 45)))
-                (and (not (memq char-pressed '(?i ?q))) char-pressed)))))
-         (default
-          (floor (/ (float-time
-                     (time-subtract (current-time) last-valid)) 60)))
-         (keep
-          (and (memq ch '(?k ?K))
-               (read-number "Keep how many minutes? " default)))
-         (gotback
-          (and (memq ch '(?g ?G))
-               (read-number "Got back how many minutes ago? " default)))
-         (subtractp (memq ch '(?s ?S)))
-         (barely-started-p (< (- (float-time last-valid)
-                                 (float-time (cdr clock))) 45))
-         (start-over-p (and subtractp barely-started-p))) ;bool
-    (cond
-      ((memq ch '(?j ?J))
-       (if (eq ch ?J)
-           (org-clock-resolve-clock
-            clock                       ;clock
-            'now                        ;resolve-to
-            nil                         ;clock-out-time
-            t                           ;close-p
-            nil                         ;restart-p
-            fail-quietly))
-       (org-clock-jump-to-current-clock clock))
-
-      ((or (null ch)
-           (not (memq ch '(?k ?K ?g ?o ?G ?s ?S ?C ?O))))
-       (message ""))
-
-      (t
-       (org-clock-resolve-clock
-        clock                           ;clock
-        (cond                           ;check-out (nil t last-valid now time)
-                ((or (eq ch ?C)         ;cancel
-                     ;; If the time on the clock was less than a minute before
-                     ;; the user went away, and they've ask to subtract all the
-                     ;; time...
-                     start-over-p)        ;bool
-                 nil)                     ;return bool
-
-                ((or subtractp
-                     (and gotback (= gotback 0)))
-                 last-valid)            ;return time
-
-                ((or (and keep (= keep default))
-                     (and gotback (= gotback default)))
-                 'now)                  ;return symbol
-
-                (keep
-                 (time-add last-valid (seconds-to-time (* 60 keep)))) ;return time
-
-                (gotback last-valid) ;return time
-                (t
-                 (error "Unexpected, please report this as a bug")))
-        (cond               ;check-in
-          (keep last-valid)
-          (gotback
-           (time-subtract (current-time)
-                          (seconds-to-time (* 60 gotback)))))
-        (memq ch '(?K ?G ?O ?S))        ;close-p
-        (and start-over-p               ;restart-p
-             (not (memq ch '(?C ?K ?G ?O ?S))))
-        fail-quietly)))))
-
-
-
-
-
-
-
-;;;###autoload
-(defun org-resolve-clocks (&optional only-dangling-p prompt-fn last-valid)
-  "Resolve all currently open Org clocks.
-If `only-dangling-p' is non-nil, only ask to resolve dangling
-\(i.e., not currently open and valid) clocks."
-  (interactive "P")
-  (unless org-clock-resolving-clocks
-    (let ((org-clock-resolving-clocks t))
-      (dolist (file (org-files-list))
-        (let ((clocks (org-find-open-clocks file)))
-          (dolist (clock clocks)
-            (let ((dangling (or (not (org-clock-is-active))
-                                (/= (car clock) org-clock-marker))))
-              (if (or (not only-dangling-p) dangling)
-                  (org-clock-resolve
-                   clock
-                   (or prompt-fn
-                       (function
-                        (lambda (clock)
-                         (format
-                          "Dangling clock started %d mins ago"
-                          (floor (- (float-time)
-                                    (float-time (cdr clock)))
-                                 60)))))
-                   (or last-valid
-                       (cdr clock)))))))))))
-
-(defun org-emacs-idle-seconds ()
-  "Return the current Emacs idle time in seconds, or nil if not idle."
-  (let ((idle-time (current-idle-time)))
-    (if idle-time
-        (float-time idle-time)
-        0)))
-
-(defun org-mac-idle-seconds ()
-  "Return the current Mac idle time in seconds."
-  (string-to-number (shell-command-to-string "ioreg -c IOHIDSystem | perl -ane 'if (/Idle/) {$idle=(pop @F)/1000000000; print $idle; last}'")))
-
-(defvar org-x11idle-exists-p
-  ;; Check that x11idle exists
-  (and (eq window-system 'x)
-       (eq 0 (call-process-shell-command
-              (format "command -v %s" org-clock-x11idle-program-name)))
-       ;; Check that x11idle can retrieve the idle time
-       ;; FIXME: Why "..-shell-command" rather than just `call-process'?
-       (eq 0 (call-process-shell-command org-clock-x11idle-program-name))))
-
-(defun org-x11-idle-seconds ()
-  "Return the current X11 idle time in seconds."
-  (/ (string-to-number (shell-command-to-string org-clock-x11idle-program-name)) 1000))
-
-(defun org-user-idle-seconds ()
-  "Return the number of seconds the user has been idle for.
-This routine returns a floating point number."
-  (cond
-    ((eq system-type 'darwin)
-     (org-mac-idle-seconds))
-    ((and (eq window-system 'x) org-x11idle-exists-p)
-     (org-x11-idle-seconds))
-    (t
-     (org-emacs-idle-seconds))))
-
-(defvar org-clock-user-idle-seconds)
-
-(defun org-resolve-clocks-if-idle ()
-  "Resolve all currently open Org clocks.
-This is performed after `org-clock-idle-time' minutes, to check
-if the user really wants to stay clocked in after being idle for
-so long."
-  (when (and org-clock-idle-time (not org-clock-resolving-clocks)
-             org-clock-marker (marker-buffer org-clock-marker))
-    (let* ((org-clock-user-idle-seconds (org-user-idle-seconds))
-           (org-clock-user-idle-start
-            (time-subtract (current-time)
-                           (seconds-to-time org-clock-user-idle-seconds)))
-           (org-clock-resolving-clocks-due-to-idleness t))
-      (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-          (org-clock-resolve
-           (cons org-clock-marker
-                 org-clock-start-time)
-           (lambda (_)
-             (format "Clocked in & idle for %.1f mins"
-                     (/ (float-time
-                         (time-subtract (current-time)
-                                        org-clock-user-idle-start))
-                        60.0)))
-           org-clock-user-idle-start)))))
-
-(defvar org-clock-current-task nil "Task currently clocked in.")
-(defvar org-clock-out-time nil) ; store the time of the last clock-out
-(defvar org--msg-extra)
-
 
 (progn
   (setq org-resolve-opts-common
@@ -384,32 +113,35 @@ so long."
     )
 
   (defun org-rl-clock-clock-in-out (clock &optional resume fail-quietly)
-    (org-clock-clock-in clock resume)
-    (org-clock-clock-out clock fail-quietly))
+    (when (not org-clock-clocking-in)
+      (org-clock-clock-in clock resume)
+      (org-clock-clock-out clock fail-quietly)))
 
   (defun org-rl-clock-clock-in (clock &optional resume)
-    (if (org-rl-clock-marker clock)
-        (if (org-rl-clock-start-time clock)
-            (org-clock-clock-in
-             (cons
-              (org-rl-clock-marker clock)
-              (org-rl-clock-start-time clock))
-             resume
-             (org-rl-clock-start-time clock))
-            (error "%s start time is null" (org-rl-clock-start-time clock)))
-        (error "%s clock is null" (org-rl-clock-marker clock))))
+    (when (not org-clock-clocking-in)
+      (if (org-rl-clock-marker clock)
+          (if (org-rl-clock-start-time clock)
+              (org-clock-clock-in
+               (cons
+                (org-rl-clock-marker clock)
+                (org-rl-clock-start-time clock))
+               resume
+               (org-rl-clock-start-time clock))
+              (error "%s start time is null" (org-rl-clock-start-time clock)))
+          (error "%s clock is null" (org-rl-clock-marker clock)))))
 
   (defun org-rl-clock-clock-out (clock &optional fail-quietly)
-    (if (org-rl-clock-marker clock)
-        (if (org-rl-clock-stop-time clock)
-            (org-clock-clock-out
-             (cons
-              (org-rl-clock-marker clock)
-              (org-rl-clock-start-time clock))
-             fail-quietly
-             (org-rl-clock-stop-time clock))
-            (error "%s stop time is null" (org-rl-clock-stop-time clock)))
-        (error "%s clock is null" (org-rl-clock-marker clock))))
+    (when (not org-clock-clocking-in)
+      (if (org-rl-clock-marker clock)
+          (if (org-rl-clock-stop-time clock)
+              (org-clock-clock-out
+               (cons
+                (org-rl-clock-marker clock)
+                (org-rl-clock-start-time clock))
+               fail-quietly
+               (org-rl-clock-stop-time clock))
+              (error "%s stop time is null" (org-rl-clock-stop-time clock)))
+          (error "%s clock is null" (org-rl-clock-marker clock)))))
 
   (defun org-rl-clock-clock-cancel (clock &optional fail-quietly)
     (if (org-rl-clock-marker clock)
@@ -518,7 +250,9 @@ so long."
                        (list
                         nil
                         nil
-                        (org-rl-clock-start-time prev))))))
+                        (org-rl-clock-start-time prev)))))
+             ;; set org-clock-leftover-time here
+             )
 
             ((eq opt 'cancel-next-p)
              ;; cancel next clock
@@ -544,7 +278,11 @@ so long."
                    (org-rl-clock-clock-out prev)
                    (setq next (list
                                (org-rl-clock-marker prev) updated-start-time (org-rl-clock-start-time next)))
-                   (org-clock-clock-in-out next))))
+                   (org-clock-clock-in-out next)))
+
+             ;; set org-clock-leftover-time here
+
+             )
 
             ((eq opt 'include-in-next)
              (when (and             ;clock out if prev is open clock and next is specifying idle time.
@@ -633,7 +371,7 @@ so long."
       'now
       (time-subtract currtime (seconds-to-time (* 8 60)))))))
 
-
+;;;###autoload
 (defun org-rl-resolve-clocks-if-idle ()
   "Resolve all currently open Org clocks.
 This is performed after `org-clock-idle-time' minutes, to check
@@ -654,54 +392,34 @@ so long."
          (list org-clock-marker org-clock-start-time nil)
          (list 'imaginary 'now (time-subtract (current-time)
                                               org-clock-user-idle-start)))
-        (message "Idle time now %d" (/ org-clock-user-idle-seconds 60))))))
+        (message "Idle time now sec[%d] min[%d]"
+                 org-clock-user-idle-seconds
+                 (/ org-clock-user-idle-seconds 60))))))
 
-(defalias 'org-resolve-clocks-if-idle #'org-rl-resolve-clocks-if-idle)
+(defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
 
-
-(defun foo () "foo")
-
-(defun bar () "bar")
-
-(defalias 'foo 'bar)
-
-
-
-(defun org-find-open-clocks (file)
-  "Search through the given file and find all open clocks."
-  (let ((buf (or (get-file-buffer file)
-                 (find-file-noselect file)))
-        (org-clock-re (concat org-clock-string " \\(\\[.*?\\]\\)$"))
-        clocks)
-    (with-current-buffer buf
-      (save-excursion
-        (goto-char (point-min))
-        (while (re-search-forward org-clock-re nil t)
-          (push (cons (copy-marker (match-end 1) t)
-                      (org-time-string-to-time (match-string 1))) clocks))))
-    clocks))
-
-(defsubst org-is-active-clock (clock)
-  "Return t if CLOCK is the currently active clock."
-  (and (org-clock-is-active)
-       (= org-clock-marker (car clock))))
+;;;###autoload
+(defun org-rl-resolve-clocks (&optional only-dangling-p prompt-fn last-valid)
+  "Resolve all currently open Org clocks.
+If `only-dangling-p' is non-nil, only ask to resolve dangling
+\(i.e., not currently open and valid) clocks."
+  (interactive "P")
+  (unless org-clock-resolving-clocks
+    (let ((org-clock-resolving-clocks t))
+      (dolist (file (org-files-list))
+        (let ((clocks (org-find-open-clocks file)))
+          (dolist (clock clocks)
+            (let ((dangling (or (not (org-clock-is-active))
+                                (/= (car clock) org-clock-marker))))
+              (if (or (not only-dangling-p) dangling)
+                  (org-resolve-time
+                   (list (car clock) (cdr clock) nil)
+                   (list 'imaginary 'now (cdr clock)))))))))))
 
 
+(defalias 'org-resolve-clocks 'org-rl-resolve-clocks)
 
-(defun clock ()
-  (let ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
-                    org-clock-string
-                    "[ \t]*\\(?:\\(\\[.*?\\]\\)-+\\(\\[.*?\\]\\)\\|=>[ \t]+\\([0-9]+\\):\\([0-9]+\\)\\)"))
-        (lmax 30)
-        (ltimes (make-vector lmax 0))
-        (t1 0)
-        (level 0)
-        ts te dt
-        time))
-  )
-
-
-
+;;;###autoload
 (defun org-clock-resolve-clocks (clocks)
   (let ((next (pop clocks))
         (prev (pop clocks)))
