@@ -277,7 +277,6 @@ With prefix arg C-u, copy region instad of killing it."
 (defmacro org-with-timed-new-win (win timeout &rest body)
   (let ((temp-win-config (make-symbol "org-with-timed-new-win-config"))
         (clean-fun-name (make-symbol "org-with-timed-new-win-clean-fun-name")))
-
     `(let* ((,temp-win-config (current-window-configuration))
             (,clean-fun-name #'(lambda (w)
                                  (message "triggered timer for win %s" w)
