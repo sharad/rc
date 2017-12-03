@@ -22,7 +22,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-04 Mon 03:25]
+   CLOCK: [2017-12-04 Mon 03:25]--[2017-12-04 Mon 03:36] =>  0:11
    CLOCK: [2017-12-04 Mon 03:15]--[2017-12-04 Mon 03:16] =>  0:01
    CLOCK: [2017-12-04 Mon 02:39]--[2017-12-04 Mon 03:14] =>  0:35
    CLOCK: [2017-12-03 Sun 23:50]--[2017-12-04 Mon 00:04] =>  0:14
@@ -416,6 +416,7 @@ Yes
      :END:
 **** join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
 So both can be handled at one place, it will duplication of code, and here we could support multi-valued property also.
+**** When closing emacs frame along with clock out option it should tell which all frames are still opened.
 **** show In matched tasks selection buffer show task rank which was calculated.
 **** Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
 **** Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
