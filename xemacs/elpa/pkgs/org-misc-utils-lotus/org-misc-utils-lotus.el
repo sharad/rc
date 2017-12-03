@@ -275,28 +275,33 @@ With prefix arg C-u, copy region instad of killing it."
 (put 'org-with-new-win 'lisp-indent-function 1)
 
 (defmacro org-with-timed-new-win (win timeout &rest body)
-  `(org-with-new-win win
-                     (lexical-let* ((,win (org-lotus-new-win))
-                                    (timer (run-with-idle-timer ,timeout nil
-                                                                #'(lambda (w)
-                                                                    (message "triggered timer for win %s" w)
-                                                                    (save-excursion
-                                                                      (org-flag-proprty-drawer-at-marker marker t))
-                                                                    (when (active-minibuffer-window)
-                                                                      (abort-recursive-edit))
-                                                                    (when (and w (windowp w) (window-valid-p w))
-                                                                      (delete-window w))
-                                                                    (when org-context-clock-add-context-to-org-heading-win-config
-                                                                      (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
-                                                                      (setq org-context-clock-add-context-to-org-heading-win-config nil)))
-                                                                ,win)))
-                       ;; maybe leave two lines for our window because of the
-                       ;; normal `raised' mode line
-                       (select-window ,win 'norecord)
-                       ;; (switch-to-buffer target-buffer 'norecord)
-                       ;; (set-buffer target-buffer)
-                       ;; (goto-char ,pos)
-                       ,@body)))
+  (let ((temp-win-config (make-symbol "org-with-timed-new-win-config"))
+        (clean-fun-name (make-symbol "org-with-timed-new-win-clean-fun-name")))
+
+    `(let* ((,temp-win-config (current-window-configuration))
+            (,clean-fun-name #'(lambda (w)
+                                 (message "triggered timer for win %s" w)
+                                 (when (active-minibuffer-window)
+                                   (abort-recursive-edit))
+                                 (when (and w (windowp w) (window-valid-p w))
+                                   (delete-window w))
+                                 (when ,temp-win-config
+                                   (set-window-configuration ,temp-win-config)
+                                   (setq ,temp-win-config nil)))))
+       (condition-case err
+           (org-with-new-win win
+                             (lexical-let* ((timer (run-with-idle-timer ,timeout nil
+                                                                        ,clean-fun-name
+                                                                        ,win)))
+                               ;; maybe leave two lines for our window because of the
+                               ;; normal `raised' mode line
+                               (select-window ,win 'norecord)
+                               ;; (switch-to-buffer target-buffer 'norecord)
+                               ;; (set-buffer target-buffer)
+                               ;; (goto-char ,pos)
+                               ,@body))
+         ((quit)
+          (funcall ,clean-fun-name))))))
 (put 'org-with-timed-new-win 'lisp-indent-function 1)
 
 (defmacro org-clock-lotus-with-current-clock (&rest body)
