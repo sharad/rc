@@ -197,11 +197,11 @@
 
       (let* ((options
               (append
-               (when (org-rl-clock-marker prev)
+               (when (markerp (org-rl-clock-marker prev))
                  (append
                   org-resolve-opts-prev
                   (unless (zerop default) org-resolve-opts-prev-with-time)))
-               (when (org-rl-clock-marker next)
+               (when (markerp (org-rl-clock-marker next))
                  (append
                   org-resolve-opts-next
                   (unless (zerop default) org-resolve-opts-next-with-time)))

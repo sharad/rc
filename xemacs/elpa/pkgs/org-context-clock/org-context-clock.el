@@ -243,6 +243,31 @@
            nil
            'org-context-clock-update-current-context))))
 
+(defun org-context-clock-insert-selection-line (i marker)
+  "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the marker
+pointing to it."
+  (when (marker-buffer marker)
+    (let (cat task heading prefix)
+      (with-current-buffer (org-base-buffer (marker-buffer marker))
+        (org-with-wide-buffer
+         (ignore-errors
+           (goto-char marker)
+           (setq cat (org-get-category)
+                 heading (org-get-heading 'notags)
+                 prefix (save-excursion
+                          (org-back-to-heading t)
+                          (looking-at org-outline-regexp)
+                          (match-string 0))
+                 task (substring
+                       (org-fontify-like-in-org-mode
+                        (concat prefix heading)
+                        org-odd-levels-only)
+                       (length prefix))))))
+      (when (and cat task)
+        (insert (format "[%c] %-12s  %s\n" i cat task))
+        (cons i marker)))))
+
 ;;;###autoload
 (defun org-context-clock-select-task-from-clocks (clocks &optional prompt)
   "Select a task that was recently associated with clocking."
@@ -258,12 +283,12 @@
           (org-switch-to-buffer-other-window
            (get-buffer-create "*Clock Task Select*"))
           (erase-buffer)
-          (insert (org-add-props "Guessed Tasks\n" nil 'face 'bold))
+          (insert (org-add-props "Tasks matched to current context\n" nil 'face 'bold))
           (mapc
            (lambda (m)
              (when (marker-buffer m)
                (setq i (1+ i)
-                     s (org-clock-insert-selection-line
+                     s (org-context-clock-insert-selection-line
                         (if (< i 10)
                             (+ i ?0)
                             (+ i (- ?A 10))) m))

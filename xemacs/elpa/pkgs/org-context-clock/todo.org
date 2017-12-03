@@ -22,6 +22,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-12-03 Sun 23:50]
    - Note taken on [2017-12-03 Sun 23:44] \\
      Hello
    CLOCK: [2017-12-03 Sun 22:43]--[2017-12-03 Sun 23:44] =>  1:01
@@ -409,6 +410,7 @@ Yes
      CLOCK: [2017-11-18 Sat 17:00]--[2017-11-18 Sat 23:56] =>  6:56
      CLOCK: [2017-11-18 Sat 16:41]--[2017-11-18 Sat 16:47] =>  0:06
      :END:
+**** show In matched tasks selection buffer show task rank which was calculated.
 **** Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
 **** Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
      for this may need to understand undo-tree or may be see any other method to used for it.
