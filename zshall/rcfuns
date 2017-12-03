@@ -552,7 +552,7 @@ function gitspull () {
         superepos="$@"
     fi
 
-    foreach superepo $superepos
+    foreach superepo ( $superepos )
     {
 
 
@@ -619,7 +619,7 @@ function gitssync () {
         superepos="$@"
     fi
 
-    foreach superepo $superepos
+    foreach superepo ( $superepos )
     {
 
         if ssh-add -l >& /dev/null
@@ -685,7 +685,7 @@ function gitsstatus () {
         superepos="$@"
     fi
 
-    foreach superepo $superepos
+    foreach superepo ( $superepos )
     {
 
         if ssh-add -l >& /dev/null

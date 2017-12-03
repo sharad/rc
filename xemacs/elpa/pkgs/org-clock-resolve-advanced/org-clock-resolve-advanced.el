@@ -69,11 +69,13 @@
         '(("include-in-other" . include-in-next)
           ("subtract" . subtract)))
   (setq org-resolve-opts-prev
-        '(("cancel-prev-p" . cancel-prev-p)))
+        '(("cancel-prev-p" . cancel-prev-p)
+          ("jump-prev-p" . jump-prev-p)))
   (setq org-resolve-opts-prev-with-time
         '(("include-in-prev" . include-in-prev)))
   (setq org-resolve-opts-next
-        '(("cancel-next-p" . cancel-next-p)))
+        '(("cancel-next-p" . cancel-next-p)
+          ("jump-next-p" . jump-next-p)))
   (setq org-resolve-opts-next-with-time
         '(("include-in-next" . include-in-next)))
 
@@ -152,6 +154,13 @@
               (org-rl-clock-start-time clock)))
             (error "%s start time is null" (org-rl-clock-start-time clock)))
         (error "%s clock is null" (org-rl-clock-marker clock))))
+
+  (defun org-rl-clock-clock-jump-to (clock)
+    (if (org-rl-clock-marker clock)
+        (org-clock-jump-to-current-clock
+         (cons
+          (org-rl-clock-marker clock)
+          (org-rl-clock-start-time clock)))))
 
   (defun org-rl-select-other-clock (&optional target)
     (interactive)
@@ -242,6 +251,10 @@
 
         (let ((timelensec-time (seconds-to-time (* timelen 60))))
           (cond
+            ((eq opt 'jump-prev-p)
+             (org-rl-clock-clock-jump-to prev))
+            ((eq opt 'jump-next-p)
+             (org-rl-clock-clock-jump-to next))
             ((eq opt 'cancel-prev-p)
              (progn
                (org-rl-clock-clock-cancel prev)
