@@ -22,7 +22,8 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-04 Mon 02:39]
+   CLOCK: [2017-12-04 Mon 03:15]--[2017-12-04 Mon 03:16] =>  0:01
+   CLOCK: [2017-12-04 Mon 02:39]--[2017-12-04 Mon 03:14] =>  0:35
    CLOCK: [2017-12-03 Sun 23:50]--[2017-12-04 Mon 00:04] =>  0:14
    - Note taken on [2017-12-03 Sun 23:44] \\
      Hello
@@ -401,6 +402,7 @@ Yes
      :Root:     ~/.xemacs/elpa/pkgs/org-clock-resolve-advanced/
      :END:
      :LOGBOOK:
+     CLOCK: [2017-12-04 Mon 03:16]
      CLOCK: [2017-12-03 Sun 23:44]--[2017-12-03 Sun 23:46] =>  0:02
      CLOCK: [2017-12-03 Sun 18:21]--[2017-12-03 Sun 22:43] =>  4:22
      CLOCK: [2017-11-25 Sat 16:05]--[2017-11-27 Mon 17:25] => 49:20
