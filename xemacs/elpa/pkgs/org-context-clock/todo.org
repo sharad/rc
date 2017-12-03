@@ -22,7 +22,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-03 Sun 23:50]
+   CLOCK: [2017-12-03 Sun 23:50]--[2017-12-04 Mon 00:04] =>  0:14
    - Note taken on [2017-12-03 Sun 23:44] \\
      Hello
    CLOCK: [2017-12-03 Sun 22:43]--[2017-12-03 Sun 23:44] =>  1:01
