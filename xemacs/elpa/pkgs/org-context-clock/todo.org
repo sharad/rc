@@ -22,6 +22,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-12-04 Mon 03:25]
    CLOCK: [2017-12-04 Mon 03:15]--[2017-12-04 Mon 03:16] =>  0:01
    CLOCK: [2017-12-04 Mon 02:39]--[2017-12-04 Mon 03:14] =>  0:35
    CLOCK: [2017-12-03 Sun 23:50]--[2017-12-04 Mon 00:04] =>  0:14
@@ -402,7 +403,7 @@ Yes
      :Root:     ~/.xemacs/elpa/pkgs/org-clock-resolve-advanced/
      :END:
      :LOGBOOK:
-     CLOCK: [2017-12-04 Mon 03:16]
+     CLOCK: [2017-12-04 Mon 03:16]--[2017-12-04 Mon 03:25] =>  0:09
      CLOCK: [2017-12-03 Sun 23:44]--[2017-12-03 Sun 23:46] =>  0:02
      CLOCK: [2017-12-03 Sun 18:21]--[2017-12-03 Sun 22:43] =>  4:22
      CLOCK: [2017-11-25 Sat 16:05]--[2017-11-27 Mon 17:25] => 49:20
@@ -413,6 +414,8 @@ Yes
      CLOCK: [2017-11-18 Sat 17:00]--[2017-11-18 Sat 23:56] =>  6:56
      CLOCK: [2017-11-18 Sat 16:41]--[2017-11-18 Sat 16:47] =>  0:06
      :END:
+**** join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
+So both can be handled at one place, it will duplication of code, and here we could support multi-valued property also.
 **** show In matched tasks selection buffer show task rank which was calculated.
 **** Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
 **** Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
