@@ -83,7 +83,7 @@
 
 ;; create smaller and proper sized window
 (defun org-lotus-new-win ()
-  (let ((size              (org-lotus-new-lower-win-size))
+  (let ((size (org-lotus-new-lower-win-size))
         (window-min-height 7))
     (prog1
         (split-window-below size)
@@ -259,6 +259,49 @@ With prefix arg C-u, copy region instad of killing it."
        ,file ,pos ,timeout ,refile-targets
        (org-with-file-pos-new-win ,win ,file ,pos ,@body)))
 (put 'org-timed-miniwin-file-loc-with-refile 'lisp-indent-function 1)
+
+
+
+(defmacro org-with-new-win (win &rest body)
+  `(let ()
+     (lexical-let* ((,win (org-lotus-new-win)))
+       ;; maybe leave two lines for our window because of the
+       ;; normal `raised' mode line
+       (select-window ,win 'norecord)
+       ;; (switch-to-buffer target-buffer 'norecord)
+       ;; (set-buffer target-buffer)
+       ;; (goto-char ,pos)
+       ,@body)))
+(put 'org-with-new-win 'lisp-indent-function 1)
+
+(defmacro org-with-timed-new-win (win timeout &rest body)
+  `(org-with-new-win win
+                     (lexical-let* ((,win (org-lotus-new-win))
+                                    (timer (run-with-idle-timer ,timeout nil
+                                                                #'(lambda (w)
+                                                                    (message "triggered timer for win %s" w)
+                                                                    (save-excursion
+                                                                      (org-flag-proprty-drawer-at-marker marker t))
+                                                                    (when (active-minibuffer-window)
+                                                                      (abort-recursive-edit))
+                                                                    (when (and w (windowp w) (window-valid-p w))
+                                                                      (delete-window w))
+                                                                    (when org-context-clock-add-context-to-org-heading-win-config
+                                                                      (set-window-configuration org-context-clock-add-context-to-org-heading-win-config)
+                                                                      (setq org-context-clock-add-context-to-org-heading-win-config nil)))
+                                                                ,win)))
+                       ;; maybe leave two lines for our window because of the
+                       ;; normal `raised' mode line
+                       (select-window ,win 'norecord)
+                       ;; (switch-to-buffer target-buffer 'norecord)
+                       ;; (set-buffer target-buffer)
+                       ;; (goto-char ,pos)
+                       ,@body)))
+(put 'org-with-timed-new-win 'lisp-indent-function 1)
+
+(defmacro org-clock-lotus-with-current-clock (&rest body)
+  `(org-with-clock (cons org-clock-marker org-clock-start-time) ,@body))
+(put 'org-clock-lotus-with-current-clock 'lisp-indent-function 1)
 
 ;; e.g.
 ;; (org-miniwin-file-loc-with-refile nil nil)
