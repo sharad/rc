@@ -399,7 +399,7 @@ Yes
      :Root:     ~/.xemacs/elpa/pkgs/org-clock-resolve-advanced/
      :END:
      :LOGBOOK:
-     CLOCK: [2017-12-03 Sun 23:44]
+     CLOCK: [2017-12-03 Sun 23:44]--[2017-12-03 Sun 23:46] =>  0:02
      CLOCK: [2017-12-03 Sun 18:21]--[2017-12-03 Sun 22:43] =>  4:22
      CLOCK: [2017-11-25 Sat 16:05]--[2017-11-27 Mon 17:25] => 49:20
      CLOCK: [2017-11-20 Mon 21:28]--[2017-11-20 Mon 21:30] =>  0:02
