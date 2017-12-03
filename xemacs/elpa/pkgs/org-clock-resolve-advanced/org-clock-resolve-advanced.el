@@ -639,21 +639,33 @@ so long."
 This is performed after `org-clock-idle-time' minutes, to check
 if the user really wants to stay clocked in after being idle for
 so long."
-  (when (and org-clock-idle-time (not org-clock-resolving-clocks)
-             org-clock-marker (marker-buffer org-clock-marker))
+  (when (and
+         org-clock-idle-time
+         (not org-clock-resolving-clocks)
+         org-clock-marker
+         (marker-buffer org-clock-marker))
     (let* ((org-clock-user-idle-seconds (org-user-idle-seconds))
            (org-clock-user-idle-start
             (time-subtract (current-time)
                            (seconds-to-time org-clock-user-idle-seconds)))
            (org-clock-resolving-clocks-due-to-idleness t))
-      (when (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-
+      (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
         (org-resolve-time
          (list org-clock-marker org-clock-start-time nil)
          (list 'imaginary 'now (time-subtract (current-time)
-                                              org-clock-user-idle-start)))))))
+                                              org-clock-user-idle-start)))
+        (message "Idle time now %d" (/ org-clock-user-idle-seconds 60))))))
 
-(defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
+(defalias 'org-resolve-clocks-if-idle #'org-rl-resolve-clocks-if-idle)
+
+
+(defun foo () "foo")
+
+(defun bar () "bar")
+
+(defalias 'foo 'bar)
+
+
 
 (defun org-find-open-clocks (file)
   "Search through the given file and find all open clocks."
