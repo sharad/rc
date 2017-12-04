@@ -10,7 +10,7 @@ APT_REPO_UTILS="ppa:yartsa/lvmeject"
 
 
 DEB_PKG_NECESSARY="git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server rcs"
-DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev console-data"
+DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev console-data gnome-session gnome-settings-daemon gnome-panel"
 DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp"
 DEB_PKGS1="vim emacs emacs-goodies-el org-mode develock-el dash-el s-el zile keychain undistract-me"
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el p7zip-full pdftk golang gocode"
