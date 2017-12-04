@@ -22,6 +22,11 @@
 
 ;;; note on change
 
+(eval-when-compile
+  (require 'org-misc-utils-lotus))
+(require 'org-misc-utils-lotus)
+
+
 ;;;###autoload
 (defun org-clock-out-with-note (note &optional switch-to-state fail-quietly at-time) ;BUG TODO will it work or save-excursion save-restriction also required
   (interactive
