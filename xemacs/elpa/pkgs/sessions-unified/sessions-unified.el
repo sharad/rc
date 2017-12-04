@@ -486,6 +486,7 @@
     (interactive
      (list
       (fmsession-read-location)))
+    (message "elscreen-session-restore: start")
     (let ((elscreen-session-list
            (cdr (assoc elscreen-session *frames-elscreen-session*))))
       (testing
@@ -530,6 +531,7 @@
     "Restore the elscreen tab configuration."
     (interactive
      (list (fmsession-read-location)))
+    (message "fmsession-restore: start")
     (if (and
          (fboundp 'elscreen-get-conf-list)
          (elscreen-get-conf-list 'screen-history))
@@ -543,7 +545,7 @@
 
   ;;{{
 
-  (defvar *frame-session-restore* nil "*frame-session-restore*")
+  (defvar *frame-session-restore* nil "*frame-session-restore* if it is true than only frame session will get restored.")
   (defun server-create-frame-before-adrun ()
     "remove-scratch-buffer"
     (setq *frame-session-restore* t))
