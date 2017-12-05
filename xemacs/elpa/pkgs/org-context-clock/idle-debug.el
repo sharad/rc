@@ -4,13 +4,16 @@
   (defvar emacs-idle-times-list nil)
   (if print
       (progn
-        (cancel-timer *test-timer*)
+        (if *test-timer* (cancel-timer *test-timer*))
         (when t
           (setq
            *test-timer*
            (run-with-timer 1 2
                            '(lambda ()
-                             (message "Test: From timer idle for org %d secs emacs %d secs" (org-emacs-idle-seconds) (float-time (current-idle-time)))
+                              ;; (message "Test: From timer idle for org %d secs emacs %d secs" (org-emacs-idle-seconds) (float-time (current-idle-time)))
+                              (let* ((idle (float-time (current-idle-time)))
+                                    (idle (or idle 0)))
+                               (message "Test: From timer idle for secs emacs %d secs" idle))
                              ;; (push (org-emacs-idle-seconds) emacs-idle-times-list)
                              )))))
       (cancel-timer *test-timer*)))
