@@ -7,13 +7,15 @@
 
 (defun load-external-module (module)
   #+quicklisp
-  (when (ql:where-is-system module)
-    (ql:quickload module))
+  (if (ql:where-is-system module)
+      (ql:quickload module)
+      (message "failed to load ~a" module))
   #-quicklisp
   (when (and
          (boundp '*contrib-dir*)
          (probe-file *contrib-dir*))
-    (stumpwm:load-module module)))
+    (stumpwm:load-module module)
+    (stumpwm::message "failed to load ~a" module)))
 
 ;; (add-to-load-path #p"~/.stumpwm.d/modules")
 
