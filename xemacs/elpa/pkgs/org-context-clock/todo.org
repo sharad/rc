@@ -22,6 +22,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-12-05 Tue 13:25]--[2017-12-05 Tue 13:46] =>  0:21
    CLOCK: [2017-12-04 Mon 21:19]--[2017-12-04 Mon 21:38] =>  0:19
    CLOCK: [2017-12-04 Mon 03:25]--[2017-12-04 Mon 03:36] =>  0:11
    CLOCK: [2017-12-04 Mon 03:15]--[2017-12-04 Mon 03:16] =>  0:01
@@ -399,6 +400,7 @@ Yes
      CLOSED: [2017-11-18 Sat 20:30]
 **** BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
 **** STARTED Resolve Idle clock should provide options to clock other task that is with amount of time idle.
+****
      :PROPERTIES:
      :Effort:   7h
      :Root:     ~/.xemacs/elpa/pkgs/org-clock-resolve-advanced/
@@ -415,6 +417,10 @@ Yes
      CLOCK: [2017-11-18 Sat 17:00]--[2017-11-18 Sat 23:56] =>  6:56
      CLOCK: [2017-11-18 Sat 16:41]--[2017-11-18 Sat 16:47] =>  0:06
      :END:
+**** BUG org-resolve-clock-idle is not getting called
+**** org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame
+So normal frame and utilities frame have to distinguished.
+**** org-clock-out should be call when last frame is closed without asking any question it should not count make-reader-frame
 **** join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
 So both can be handled at one place, it will duplication of code, and here we could support multi-valued property also.
 **** When closing emacs frame along with clock out option it should tell which all frames are still opened.
