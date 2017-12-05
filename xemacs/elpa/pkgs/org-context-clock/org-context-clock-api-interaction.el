@@ -222,7 +222,7 @@
 
 ;;;###autoload
 (defun org-context-clock-add-context-to-org-heading-when-idle (context timeout)
-  (message "called add-context-to-org-heading-when-idle")
+  (org-context-clock-message 6 "called add-context-to-org-heading-when-idle")
   (run-with-idle-timer-nonobtrusive-simple
    7 nil
    #'(lambda (args)
