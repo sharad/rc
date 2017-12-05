@@ -244,7 +244,10 @@
 
   (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)
   (sharad/necessary-functionality)
-  (message "loading sharad/emacs-user-init-finish finished"))
+  (message "loading sharad/emacs-user-init-finish finished")
+  ;; limiting gnus messages
+  (setq gnus-verbose 1)
+  )
 
 (defun sharad/necessary-functionality ()
   (interactive)
@@ -431,4 +434,6 @@ variable."
   (remove-hook
    'sharad/enable-startup-interrupting-feature-hook
    'sharad/necessary-functionality)
-  (message "loading sharad/necessary-functionality finished"))
+  (message "loading sharad/necessary-functionality finished")
+  ;; limiting gnus messages
+  (setq gnus-verbose 1))

@@ -214,7 +214,7 @@
                          (if timer (cancel-timer timer))
                          (signal (car err) (cdr err))))))))))
         (progn
-          (message "not running add-context-to-org-heading 1 %s, 2 %s 3 %s"
+          (org-context-clock-message 6 "not running add-context-to-org-heading 1 %s, 2 %s 3 %s"
                    (eq (current-buffer) buff)
                    (buffer-live-p buff)
                    (eq buff

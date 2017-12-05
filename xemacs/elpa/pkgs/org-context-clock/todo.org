@@ -22,6 +22,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-12-05 Tue 14:55]
    CLOCK: [2017-12-05 Tue 13:25]--[2017-12-05 Tue 13:46] =>  0:21
    CLOCK: [2017-12-04 Mon 21:19]--[2017-12-04 Mon 21:38] =>  0:19
    CLOCK: [2017-12-04 Mon 03:25]--[2017-12-04 Mon 03:36] =>  0:11
@@ -400,7 +401,6 @@ Yes
      CLOSED: [2017-11-18 Sat 20:30]
 **** BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
 **** STARTED Resolve Idle clock should provide options to clock other task that is with amount of time idle.
-****
      :PROPERTIES:
      :Effort:   7h
      :Root:     ~/.xemacs/elpa/pkgs/org-clock-resolve-advanced/
@@ -421,6 +421,14 @@ Yes
 **** org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame
 So normal frame and utilities frame have to distinguished.
 **** org-clock-out should be call when last frame is closed without asking any question it should not count make-reader-frame
+**** disable org-context-clocking when when last frame is closed
+**** Very fast Interface to add new task which should provide options
+***** whether it is subtask of current task or existing task, now required its separate naming, similar way to merge child task to parent.
+***** whether it sudden random unrealted task from current task or existing task
+***** adding timeout bound task like sleep for 5 mins
+***** etc
+***** adding new task also try to copy or move property from related task
+
 **** join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
 So both can be handled at one place, it will duplication of code, and here we could support multi-valued property also.
 **** When closing emacs frame along with clock out option it should tell which all frames are still opened.
@@ -451,12 +459,6 @@ So both can be handled at one place, it will duplication of code, and here we co
 **** Try to add unit test using ERT (Emacs Regression Test)
 **** On moving to next task, old task should ask to add context, so person can use that context to continue if he restart task after long time.
 **** And when starting to restart a task it old context must be showed to remind user what was there.
-**** Interface to add new task which should provide options
-***** whether it is subtask of current task or existing task, now required its separate naming, similar way to merge child task to parent.
-***** whether it sudden random unrealted task from current task or existing task
-***** adding timeout bound task like sleep for 5 mins
-***** etc
-***** adding new task also try to copy or move property from related task
 *** Obtrusive
 **** Window should be marked to reappear/popup when something started were done.
 e.g. In urxvt we should be able to mark window to reappear when build is done, by that user is browsing or editing or doing some other work.

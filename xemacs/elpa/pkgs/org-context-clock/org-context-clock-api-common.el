@@ -28,6 +28,30 @@
 
 ;; "org tasks accss common api"
     ;; (defvar org-)
+(defvar org-context-clock-verbose 0)
+
+(defun org-context-clock-message (level &rest args)
+  "If LEVEL is lower than `gnus-verbose' print ARGS using `message'.
+
+Guideline for numbers:
+1 - error messages, 3 - non-serious error messages, 5 - messages for things
+that take a long time, 7 - not very important messages on stuff, 9 - messages
+inside loops."
+  (if (<= level org-context-clock-verbose)
+      (let (
+            ;; (message
+            ;;  (if gnus-add-timestamp-to-message
+            ;;      (apply 'gnus-message-with-timestamp args)
+            ;;      (apply 'message args)))
+            )
+        ;; (when (and (consp gnus-action-message-log)
+        ;;            (<= level 3))
+        ;;   (push message gnus-action-message-log))
+        message)
+      ;; We have to do this format thingy here even if the result isn't
+      ;; shown - the return value has to be the same as the return value
+      ;; from `message'.
+      (apply 'format args)))
 
 ;; (defun org-task-collect-task ()
 (defun org-context-clock-collect-task ()

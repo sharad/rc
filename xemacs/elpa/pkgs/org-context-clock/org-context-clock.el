@@ -223,7 +223,8 @@
                     (setq buffer-read-only prev-clock-buff-read-only)))))
           (progn
             (setq *org-context-clock-update-current-context-msg* "null clock")
-            (message "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
+            (org-context-clock-message 6
+             "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
                      context)
             (org-context-clock-add-context-to-org-heading-when-idle context 17))))))
 

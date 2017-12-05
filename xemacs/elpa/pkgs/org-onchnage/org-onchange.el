@@ -171,14 +171,22 @@ EXTRA is additional text that will be inserted into the notes buffer."
     ))
 
 ;;;##autoload
+;; (defun org-clock-lotus-log-note-current-clock-background (&optional fail-quietly)
+;;   (interactive)
+;;   (if (org-clocking-p)
+;;       (org-clock-lotus-with-current-clock
+;;        (org-add-log-setup-background
+;;         'note nil nil nil
+;;         (concat "# Task: " (org-get-heading t) "\n\n")))
+;;       (if fail-quietly (throw 'exit t) (user-error "No active clock"))))
+
 (defun org-clock-lotus-log-note-current-clock-background (&optional fail-quietly)
   (interactive)
-  (if (org-clocking-p)
+  (when (org-clocking-p)
       (org-clock-lotus-with-current-clock
        (org-add-log-setup-background
         'note nil nil nil
-        (concat "# Task: " (org-get-heading t) "\n\n")))
-      (if fail-quietly (throw 'exit t) (user-error "No active clock"))))
+        (concat "# Task: " (org-get-heading t) "\n\n")))))
 
 
 (defun lotus-buffer-changes-count ()
@@ -209,7 +217,8 @@ EXTRA is additional text that will be inserted into the notes buffer."
     (if (>= chgcount minimal-changes)
         (if (funcall action)
             (setq lotus-last-buffer-undo-tree-count chgcount))
-        (message "buffer-undo-tree-change: only %d changes not more than %d" chgcount minimal-changes))))
+        (when nil
+         (message "buffer-undo-tree-change: only %d changes not more than %d" chgcount minimal-changes)))))
 
 (defvar lotus-last-buffer-undo-list-pos nil) ;internal add in session and desktop
 (make-variable-buffer-local 'lotus-last-buffer-undo-list-pos)

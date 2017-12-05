@@ -369,9 +369,11 @@ so long."
            (list org-clock-marker org-clock-start-time nil)
            (list 'imaginary 'now (time-subtract (current-time)
                                                 org-clock-user-idle-start)))
-          (message "Idle time now sec[%d] min[%d]"
-                   org-clock-user-idle-seconds
-                   (/ org-clock-user-idle-seconds 60))))))
+          (when nil
+            (message "Idle time now sec[%d] min[%d]"
+                     org-clock-user-idle-seconds
+                     (/ org-clock-user-idle-seconds 60)))
+          ))))
 
 (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
 
