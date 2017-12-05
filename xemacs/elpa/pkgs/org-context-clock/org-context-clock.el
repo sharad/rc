@@ -226,7 +226,9 @@
             (org-context-clock-message 6
              "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
                      context)
-            (org-context-clock-add-context-to-org-heading-when-idle context 17))))))
+            (when nil                   ;disabling to check why current-idle-time no working properly.
+             (org-context-clock-add-context-to-org-heading-when-idle context 17))
+            )))))
 
 ;;;###autoload
 (defun org-context-clock-run-task-current-context-timer ()

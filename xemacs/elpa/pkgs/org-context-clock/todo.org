@@ -22,7 +22,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-05 Tue 14:55]
+   CLOCK: [2017-12-05 Tue 14:55]--[2017-12-05 Tue 23:54] =>  8:59
    CLOCK: [2017-12-05 Tue 13:25]--[2017-12-05 Tue 13:46] =>  0:21
    CLOCK: [2017-12-04 Mon 21:19]--[2017-12-04 Mon 21:38] =>  0:19
    CLOCK: [2017-12-04 Mon 03:25]--[2017-12-04 Mon 03:36] =>  0:11
@@ -445,6 +445,7 @@ So both can be handled at one place, it will duplication of code, and here we co
 **** Track/Trace shell actions e.g. change dir, commands run etc, make report for it.
 **** Track/Trace browser actions e.g. change url etc, make report for it.
 **** Track/Trace any important application actions, make report for it.
+https://github.com/hardaker/elisp-buffer-timer
 **** Track/Trace in emacs all major action like changing buffer, saving buffer, opening new file etc
      and integrate with current task and prepare nice report.
 
@@ -476,6 +477,13 @@ e.g. In urxvt we should be able to mark window to reappear when build is done, b
 **** Here should all three kind of estimate pessimistic, pragmatic, optimistic
 **** For CPM and PERT how task sequencing as well as hierarchy should be done
 **** How related task should get it property by copying or moving properties etc.
+
+*** Bookmarks
+https://elpa.emacs-china.org/melpa-stable/with-simulated-input-2.1.el
+https://github.com/hardaker/elisp-buffer-timer
+http://blog.danielgempesaw.com/post/109767231148/using-emacs-for-daily-reminders-to-write-in-my
+
+
 * Tableview
 #+BEGIN: columnview :hlines 1 :id local
 

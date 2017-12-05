@@ -157,7 +157,7 @@
                   (message "called add-context-to-org-heading %s" (current-buffer))
                   (let ((timer (run-with-idle-timer timeout nil
                                                     #'(lambda (w)
-                                                        (message "triggered timer for win %s" w)
+                                                        (org-context-clock-message 6 "triggered timer for win %s" w)
                                                         (save-excursion
                                                           (org-flag-proprty-drawer-at-marker marker t))
                                                         (when (active-minibuffer-window)
