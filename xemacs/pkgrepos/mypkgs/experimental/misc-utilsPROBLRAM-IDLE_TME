@@ -387,70 +387,6 @@ The indirect buffer can have another major mode."
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-(progn ;; deh-section "General"
-
-  (defun general-disable-startup-setting ()
-    (setq pabbrev-read-only-error nil)
-    (setq
-     enable-p4-login nil
-     tramp-mode nil
-     ido-mode nil)
-    (deh-featurep epa
-      (if (fboundp 'epa-file-disable)
-          (epa-file-disable))))
-
-  (defun general-enable-startup-setting ()
-    (setq pabbrev-read-only-error nil)
-
-    (setq enable-p4-login t
-          tramp-mode t
-          ido-mode 'both)
-    (login-to-perforce)
-    ;; (update-ssh-agent t) ;; should be called when tramp file accessed. - see how it will work in case lotus-desktop-session-restore.
-    ;;test
-    (deh-featurep epa
-      (if (fboundp 'epa-file-disable)
-          (epa-file-enable)))
-    (deh-featurep (and light-symbol hilit-chg)
-      (add-element-to-lists '(lambda ()
-                              (light-symbol-mode 1)
-                              (highlight-changes-visible-mode t)
-                              (highlight-changes-mode t)) pgm-langs)))
-
-  (add-hook 'lotus-enable-startup-interrupting-feature-hook 'general-enable-startup-setting)
-  (add-hook 'lotus-disable-startup-interrupting-feature-hook 'general-disable-startup-setting))
-
-
-
-
-
-
-
-
-
-
-
-
-
-(progn
-
-  (progn
-
-    (progn
-
-      (progn
 (deh-section "crontab-mode"
   (autoload 'crontab-mode "crontab-mode.el" "Major mode for editing your crontab file." t)
   (eval-after-load "crontab-mode"
@@ -465,6 +401,8 @@ The indirect buffer can have another major mode."
          (setq
           buffer-file-name crontab-default-file
           default-directory (file-name-directory buffer-file-name)))))))
+
+
 
 (deh-section "centered-cursor-mode"
   (defun centered-cursor-stay-same-pos ()
@@ -502,149 +440,143 @@ The indirect buffer can have another major mode."
   (defalias 'ccm-unstay 'centered-cursor-unstay-same-pos)
 
   (defalias 'ccm 'centered-cursor-mode))
-)
-
-(progn
-  (progn
-   (deh-section "Emacs Code Jump"
-     ;; http://lists.gnu.org/archive/html/help-gnu-emacs/2009-09/msg00669.html
-
-     (defun elisp-disassemble (function)
-       (interactive (list (function-called-at-point)))
-       (disassemble function))
-
-     (defun elisp-pp (sexp)
-       (with-output-to-temp-buffer "*Pp Eval Output*"
-         (pp sexp)
-         (with-current-buffer standard-output
-           (emacs-lisp-mode))))
-
-     (defun elisp-macroexpand (form)
-       (interactive (list (form-at-point 'sexp)))
-       (elisp-pp (macroexpand form)))
-
-     ;; (defun elisp-macroexpand-all (form)
-     ;;   (interactive (list (form-at-point 'sexp)))
-     ;;   (elisp-pp (cl-macroexpand-all form)))
-
-     (defun elisp-macroexpand-all (form)
-       (interactive (list (form-at-point 'sexp)))
-       (elisp-pp (macroexpand-all form)))
-
-     (defun elisp-push-point-marker ()
-       (require 'etags)
-       (cond ((featurep 'xemacs)
-              (push-tag-mark))
-             (t (ring-insert find-tag-marker-ring (point-marker)))))
-
-     (defun elisp-pop-found-function ()
-       (interactive)
-       (cond ((featurep 'xemacs) (pop-tag-mark nil))
-             (t (pop-tag-mark))))
-
-     (defun elisp-find-definition (name)
-       "Jump to the definition of the function (or variable) at point."
-       (interactive (list (thing-at-point 'symbol)))
-       (cond (name
-              (let ((symbol (intern-soft name))
-                    (search (lambda (fun sym)
-                              (let* ((r (save-excursion (funcall fun sym)))
-                                     (buffer (car r))
-                                     (point (cdr r)))
-                                (cond ((not point)
-                                       (error "Found no definition for %s in %s"
-                                              name buffer))
-                                      (t
-                                       (switch-to-buffer buffer)
-                                       (goto-char point)
-                                       (recenter 1)))))))
-                (cond ((fboundp symbol)
-                       (elisp-push-point-marker)
-                       (funcall search 'find-function-noselect symbol))
-                      ((boundp symbol)
-                       (elisp-push-point-marker)
-                       (funcall search 'find-variable-noselect symbol))
-                      (t
-                       (message "Symbol not bound: %S" symbol)))))
-             (t (message "No symbol at point"))))
-
-     (defun elisp-bytecompile-and-load ()
-       (interactive)
-       (or buffer-file-name
-           (error "The buffer must be saved in a file first"))
-       (require 'bytecomp)
-       ;; Recompile if file or buffer has changed since last compilation.
-       (when  (and (buffer-modified-p)
-                   (y-or-n-p (format "save buffer %s first? " (buffer-name))))
-         (save-buffer))
-       (let ((filename (expand-file-name buffer-file-name)))
-         (with-temp-buffer
-           (byte-compile-file filename t))))
-
-     (when nil
-       (defvar elisp-extra-keys
-         '(((kbd "C-c d")   'elisp-disassemble)
-           ((kbd "C-c m")   'elisp-macroexpand)
-           ((kbd "C-c M")   'elisp-macroexpand-all)
-           ((kbd "C-c C-c") 'compile-defun)
-           ((kbd "C-c C-k") 'elisp-bytecompile-and-load)
-           ((kbd "C-c C-l") 'load-file)
-           ((kbd "C-c p")   'pp-eval-last-sexp)
-           ((kbd "M-.")     'elisp-find-definition)
-           ((kbd "M-,")     'elisp-pop-found-function)
-           ((kbd "C-c <")   'list-callers)))
-
-       (dolist (binding elisp-extra-keys)
-         (let ((key (eval (car binding))) (val (eval (cadr binding))))
-           (define-key emacs-lisp-mode-map key val)
-           (define-key lisp-interaction-mode-map key val))))
 
 
 
 
-     (deh-section "Emacs jump"
-       ;; with output following C-h v or C-h f I use `jump-to-form' -
-       ;; bound here to f12:
 
-       (defun jump-to-form ()
-         (interactive)
-         (if (featurep 'xemacs)
-             (progn
-               (forward-char 1)
-               (let ((name (symbol-atpt))
-                     (file (progn (search-forward "\"" nil t 1)(thing-at-point
-                                                                'filename))))
-                 (forward-char 1)
-                 (help-find-source-or-scroll-up (point))
-                 (switch-to-buffer (current-buffer))
-                 (kill-new name)
-                 (search-forward name)))
-             (other-window 1)
-             (forward-button 1)
-             ;; (find-file (filename-atpt))
-             (push-button)))))
-   )
 
-  (progn
-    (deh-section "New"
-      '(deh-require-maybe (progn
-                            ipa         ;problem resetting current-idle-time
-                            org-pua
-                            )
-        ;;http://www.emacswiki.org/emacs/InPlaceAnnotations
-        )
-      (deh-require-maybe alert
-        ;;http://www.emacswiki.org/emacs/alert.el
-        )
-      (deh-require-maybe org-pua
-        ;;http://www.emacswiki.org/emacs-es/org-pua.el
-        ))
+(deh-section "Emacs Code Jump"
+  ;; http://lists.gnu.org/archive/html/help-gnu-emacs/2009-09/msg00669.html
+
+  (defun elisp-disassemble (function)
+    (interactive (list (function-called-at-point)))
+    (disassemble function))
+
+  (defun elisp-pp (sexp)
+    (with-output-to-temp-buffer "*Pp Eval Output*"
+      (pp sexp)
+      (with-current-buffer standard-output
+        (emacs-lisp-mode))))
+
+  (defun elisp-macroexpand (form)
+    (interactive (list (form-at-point 'sexp)))
+    (elisp-pp (macroexpand form)))
+
+  ;; (defun elisp-macroexpand-all (form)
+  ;;   (interactive (list (form-at-point 'sexp)))
+  ;;   (elisp-pp (cl-macroexpand-all form)))
+
+  (defun elisp-macroexpand-all (form)
+    (interactive (list (form-at-point 'sexp)))
+    (elisp-pp (macroexpand-all form)))
+
+  (defun elisp-push-point-marker ()
+    (require 'etags)
+    (cond ((featurep 'xemacs)
+           (push-tag-mark))
+          (t (ring-insert find-tag-marker-ring (point-marker)))))
+
+  (defun elisp-pop-found-function ()
+    (interactive)
+    (cond ((featurep 'xemacs) (pop-tag-mark nil))
+          (t (pop-tag-mark))))
+
+  (defun elisp-find-definition (name)
+    "Jump to the definition of the function (or variable) at point."
+    (interactive (list (thing-at-point 'symbol)))
+    (cond (name
+           (let ((symbol (intern-soft name))
+                 (search (lambda (fun sym)
+                           (let* ((r (save-excursion (funcall fun sym)))
+                                  (buffer (car r))
+                                  (point (cdr r)))
+                             (cond ((not point)
+                                    (error "Found no definition for %s in %s"
+                                           name buffer))
+                                   (t
+                                    (switch-to-buffer buffer)
+                                    (goto-char point)
+                                    (recenter 1)))))))
+             (cond ((fboundp symbol)
+                    (elisp-push-point-marker)
+                    (funcall search 'find-function-noselect symbol))
+                   ((boundp symbol)
+                    (elisp-push-point-marker)
+                    (funcall search 'find-variable-noselect symbol))
+                   (t
+                    (message "Symbol not bound: %S" symbol)))))
+          (t (message "No symbol at point"))))
+
+  (defun elisp-bytecompile-and-load ()
+    (interactive)
+    (or buffer-file-name
+        (error "The buffer must be saved in a file first"))
+    (require 'bytecomp)
+    ;; Recompile if file or buffer has changed since last compilation.
+    (when  (and (buffer-modified-p)
+                (y-or-n-p (format "save buffer %s first? " (buffer-name))))
+      (save-buffer))
+    (let ((filename (expand-file-name buffer-file-name)))
+      (with-temp-buffer
+        (byte-compile-file filename t))))
+
+  (when nil
+    (defvar elisp-extra-keys
+      '(((kbd "C-c d")   'elisp-disassemble)
+        ((kbd "C-c m")   'elisp-macroexpand)
+        ((kbd "C-c M")   'elisp-macroexpand-all)
+        ((kbd "C-c C-c") 'compile-defun)
+        ((kbd "C-c C-k") 'elisp-bytecompile-and-load)
+        ((kbd "C-c C-l") 'load-file)
+        ((kbd "C-c p")   'pp-eval-last-sexp)
+        ((kbd "M-.")     'elisp-find-definition)
+        ((kbd "M-,")     'elisp-pop-found-function)
+        ((kbd "C-c <")   'list-callers)))
+
+    (dolist (binding elisp-extra-keys)
+      (let ((key (eval (car binding))) (val (eval (cadr binding))))
+        (define-key emacs-lisp-mode-map key val)
+        (define-key lisp-interaction-mode-map key val))))
+
+
+
+
+  (deh-section "Emacs jump"
+    ;; with output following C-h v or C-h f I use `jump-to-form' -
+    ;; bound here to f12:
+
+    (defun jump-to-form ()
+      (interactive)
+      (if (featurep 'xemacs)
+          (progn
+            (forward-char 1)
+            (let ((name (symbol-atpt))
+                  (file (progn (search-forward "\"" nil t 1)(thing-at-point
+                                                             'filename))))
+              (forward-char 1)
+              (help-find-source-or-scroll-up (point))
+              (switch-to-buffer (current-buffer))
+              (kill-new name)
+              (search-forward name)))
+          (other-window 1)
+          (forward-button 1)
+          ;; (find-file (filename-atpt))
+          (push-button)))))
+
+
+(deh-section "New"
+  (deh-require-maybe (progn ipa org-pua)
+    ;;http://www.emacswiki.org/emacs/InPlaceAnnotations
     )
-)
-)
+  (deh-require-maybe alert
+    ;;http://www.emacswiki.org/emacs/alert.el
+    )
+  (deh-require-maybe org-pua
+    ;;http://www.emacswiki.org/emacs-es/org-pua.el
+    ))
 
-;; check here
-(progn
+
 
 (deh-require-maybe point-stack
   (global-set-key-if-unbind '[(f5)] 'point-stack-push)
@@ -655,12 +587,50 @@ The indirect buffer can have another major mode."
   (global-set-key-if-unbind (kbd "s-<left>") 'point-stack-pop)
   (global-set-key-if-unbind (kbd "s-<left>") 'point-stack-forward-stack-pop))
 
+
+(deh-section "General"
+
+  (defun general-disable-startup-setting ()
+    (setq pabbrev-read-only-error nil)
+    (setq
+     enable-p4-login nil
+     tramp-mode nil
+     ido-mode nil)
+    (deh-featurep epa
+      (if (fboundp 'epa-file-disable)
+          (epa-file-disable))))
+
+  (defun general-enable-startup-setting ()
+    (setq pabbrev-read-only-error nil)
+
+
+    (setq enable-p4-login t
+          tramp-mode t
+          ido-mode 'both)
+    (login-to-perforce)
+    ;; (update-ssh-agent t) ;; should be called when tramp file accessed. - see how it will work in case lotus-desktop-session-restore.
+    ;;test
+    (deh-featurep epa
+      (if (fboundp 'epa-file-disable)
+          (epa-file-enable)))
+    (deh-featurep (and light-symbol hilit-chg)
+      (add-element-to-lists '(lambda ()
+                              (light-symbol-mode 1)
+                              (highlight-changes-visible-mode t)
+                              (highlight-changes-mode t)) pgm-langs)))
+
+  (add-hook 'lotus-enable-startup-interrupting-feature-hook 'general-enable-startup-setting)
+  (add-hook 'lotus-disable-startup-interrupting-feature-hook 'general-disable-startup-setting))
+
+
+
 (deh-require-maybe byte-code-cache)
 
 (when nil                               ;obslete
   (deh-require-maybe lazy-lock
   ;; http://www.opensource.apple.com/source/emacs/emacs-54/emacs/lisp/lazy-lock.el
   ))
+
 
 (deh-section "misc"
   ;; from: http://www.zerny.dk/emacs/dot-emacs.el
@@ -684,8 +654,7 @@ The indirect buffer can have another major mode."
       (with-current-buffer buf
         (prin1 (eval (read var)) buf)
         (terpri)))))
-)
-)
+
 
 (deh-section "vim"
   ;; viper-mode
@@ -758,7 +727,6 @@ The indirect buffer can have another major mode."
   (add-to-list 'auto-mode-alist '(".*\\.ini$" . any-ini-mode))
   (add-to-list 'auto-mode-alist '(".*\\.conf$" . any-ini-mode)))
 
-)
 
 (provide 'misc-utils)
 ;;; misc-utils.el ends here

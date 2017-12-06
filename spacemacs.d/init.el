@@ -395,7 +395,18 @@ you should place your code here."
  '(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
  '(safe-local-variable-values
    (quote
-    ((modes emacs-lisp-mode fundamental-mode)
+    ((eval font-lock-add-keywords nil
+           (\`
+            (((\,
+               (concat "("
+                       (regexp-opt
+                        (quote
+                         ("sp-do-move-op" "sp-do-move-cl" "sp-do-put-op" "sp-do-put-cl" "sp-do-del-op" "sp-do-del-cl"))
+                        t)
+                       "\\_>"))
+              1
+              (quote font-lock-variable-name-face)))))
+     (modes emacs-lisp-mode fundamental-mode)
      (modes fundamental-mode emacs-lisp-mode escript-mode)
      (folded-file . t)
      (elixir-enable-compilation-checking . t)

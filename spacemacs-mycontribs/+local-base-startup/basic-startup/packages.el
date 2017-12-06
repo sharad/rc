@@ -113,7 +113,7 @@ Each entry is either:
       (progn
 
         (progn
-          (setq *session-unified-desktop-enabled* nil))
+          (setq *session-unified-desktop-enabled* t))
 
         (progn
           (add-to-disable-desktop-restore-interrupting-feature-hook

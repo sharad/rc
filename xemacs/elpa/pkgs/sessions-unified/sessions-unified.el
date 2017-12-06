@@ -901,13 +901,17 @@ Also returns nil if pid is nil."
                                 (abort-recursive-edit))
                               default-local-file))
                (read-file-name prompt     ;promt
-                                   desktop-dir ;dir
-                                   default-local-file ;default file name
-                                   'confirm           ;mustmatch
-                                   default-local-file ;initial
-                                   (lambda (f)        ;predicate
-                                     (message "f: %s" f)
-                                     (string-match (concat "^" default-file "-") f))))
+                               desktop-dir ;dir
+                               default-local-file ;default file name
+                               'confirm           ;mustmatch
+                               default-local-file ;initial
+                               (lambda (f)        ;predicate  BUG failing this cause bugs
+                                 (message "f: %s" f)
+                                 (string-match
+                                  (concat "^"
+                                          (file-truename (expand-file-name default-file desktop-dir)) "-")
+                                  ;; (concat "^" desktop-dir "/" default-file "-")
+                                  (file-truename f)))))
              desktop-dir))
           (error "desktop directory %s don't exists." desktop-dir))))
 

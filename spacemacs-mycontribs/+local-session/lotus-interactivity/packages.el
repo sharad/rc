@@ -145,7 +145,8 @@ Each entry is either:
         (progn ;; ido
 
           (require 'misc-utils)
-            (setq ido-save-directory-list-file (auto-config-file "ido/ido.last"))
+
+          (setq ido-save-directory-list-file (auto-config-file "ido/ido.last"))
 
             (defun ido-is-ftp-directory (&optional dir)
               (string-match
@@ -196,7 +197,7 @@ Each entry is either:
               )
 
 
-            (progn ;; "bookmark"
+            (when nil ;; "bookmark"
               (with-eval-after-load "bookmark"
                 ;; http://www.emacswiki.org/emacs/InteractivelyDoThings#toc10
 
@@ -509,7 +510,7 @@ Each entry is either:
         (progn
 
 
-
+          (require 'misc-utils)
 
           ))))
 

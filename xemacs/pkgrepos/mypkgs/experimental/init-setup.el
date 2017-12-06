@@ -68,7 +68,7 @@
 
   (defun set-dbus-session ()
     (interactive)
-    (when nil
+    (when t
       (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
                               ":0.0"))
              (dismajor-str (if (>= (length display-str) 2)

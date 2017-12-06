@@ -440,6 +440,7 @@ variable."
    'lotus-necessary-functionality)
   ;; limiting gnus messages
   (setq gnus-verbose 1)
+  (set-default-face-height-by-resolution)
   (message "loading lotus-necessary-functionality finished"))
 
 (defun idle-prints (print)
@@ -464,4 +465,3 @@ variable."
 (defun lotus-necessary-test ()
   (interactive)
   (idle-prints t))
-

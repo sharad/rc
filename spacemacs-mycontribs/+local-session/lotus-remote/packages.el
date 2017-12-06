@@ -36,7 +36,7 @@
 
 (defconst lotus-remote-packages
   '(
-    (PACKAGE :location local)
+    ;; (PACKAGE :location local)
     tramp
     (tramp-cache :location local)
     (tramp-cmds :location local)
@@ -83,6 +83,7 @@ Each entry is either:
 (defun lotus-remote/init-tramp ()
   (use-package tramp
       :defer t
+      :commands (tramp-file-prefix)
       :config
       (progn
 

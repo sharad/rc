@@ -22,6 +22,10 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-12-06 Wed 23:28]
+   CLOCK: [2017-12-06 Wed 23:14]--[2017-12-06 Wed 23:23] =>  0:09
+   CLOCK: [2017-12-06 Wed 22:33]--[2017-12-06 Wed 22:34] =>  0:01
+   CLOCK: [2017-12-06 Wed 22:09]--[2017-12-06 Wed 22:15] =>  0:06
    CLOCK: [2017-12-06 Wed 14:56]--[2017-12-06 Wed 17:29] =>  2:33
    CLOCK: [2017-12-05 Tue 14:55]--[2017-12-05 Tue 23:54] =>  8:59
    CLOCK: [2017-12-05 Tue 13:25]--[2017-12-05 Tue 13:46] =>  0:21
@@ -395,72 +399,97 @@ Yes
    CLOCK: [2016-02-03 Wed 17:42]--[2016-02-04 Thu 00:27] =>  6:45
    CLOCK: [2016-02-03 Wed 01:10]--[2016-02-03 Wed 01:30] =>  0:20
    :END:
+*** Critical BUGS are here
+**** It is still not known why (require 'misc-utils) in
+lotus-interactivity/packages.el of (lotus-interactivity/post-init-ido)
+is only casing speacemacs to load properly with all features and themes
+
+**** why only loading (require 'misc-uitls') in lotus-interactivity/packages.el cause spacemacs to load properly with themes and packages
+**** why loading (require 'misc-uitls') in lotus-interactivity/packages.el cause current-idle-time to get reset very often which now is not seen.
+**** Make a unit test code to check current-idle-time behaviour and report it.
+**** remove all deh-require's and deh-section's
+**** many lotus-*/packages.el lotus-*/config.el  lotus-*/code.el  lotus-*/keybinding.el  requires heavy re-factoring.
+**** lotus-remote/packages.el tramp, lotus-interactivity/packages.el ido require heavy re-factoring
+**** remove all dependencies of ~/.xemacs/pkgrepos/mypkgs/experimental/*.el
+**** lots of lib in ~/.xemacs/pkgrepos/mypkgs/experimental need cleanup
+**** remove dependency basic-utils.el misc-utils.el etc from ~/.xemacs/pkgrepos/mypkgs/experimental
+**** (dotspacemacs/user-config) in turn (lotus-emacs-user-init-finish) were not getting called without (require 'misc-uitls') in lotus-interactivity/packages.el
+**** smartparens-global-mode is not getting loaded without misc-utils
+
 *** Unobtrusive Dynamic Contextual Org Clock
-**** DONE Implement dynamic clocking based on mapping of org task property to current file buffer
-     CLOSED: [2017-11-18 Sat 20:29]
-**** DONE Implement dynamic adding of property to org task
-     CLOSED: [2017-11-18 Sat 20:30]
-**** BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
-**** STARTED Resolve Idle clock should provide options to clock other task that is with amount of time idle.
-     :PROPERTIES:
-     :Effort:   7h
-     :Root:     ~/.xemacs/elpa/pkgs/org-clock-resolve-advanced/
-     :END:
-     :LOGBOOK:
-     CLOCK: [2017-12-04 Mon 03:16]--[2017-12-04 Mon 03:25] =>  0:09
-     CLOCK: [2017-12-03 Sun 23:44]--[2017-12-03 Sun 23:46] =>  0:02
-     CLOCK: [2017-12-03 Sun 18:21]--[2017-12-03 Sun 22:43] =>  4:22
-     CLOCK: [2017-11-25 Sat 16:05]--[2017-11-27 Mon 17:25] => 49:20
-     CLOCK: [2017-11-20 Mon 21:28]--[2017-11-20 Mon 21:30] =>  0:02
-     CLOCK: [2017-11-20 Mon 20:06]--[2017-11-20 Mon 20:11] =>  0:05
-     CLOCK: [2017-11-20 Mon 19:21]--[2017-11-20 Mon 19:24] =>  0:03
-     CLOCK: [2017-11-19 Sun 14:27]--[2017-11-20 Mon 19:21] => 28:54
-     CLOCK: [2017-11-18 Sat 17:00]--[2017-11-18 Sat 23:56] =>  6:56
-     CLOCK: [2017-11-18 Sat 16:41]--[2017-11-18 Sat 16:47] =>  0:06
-     :END:
-**** BUG org-resolve-clock-idle is not getting called
-**** org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame
-So normal frame and utilities frame have to distinguished.
-**** org-clock-out should be call when last frame is closed without asking any question it should not count make-reader-frame
-**** disable org-context-clocking when when last frame is closed
-**** Very fast Interface to add new task which should provide options
-***** whether it is subtask of current task or existing task, now required its separate naming, similar way to merge child task to parent.
-***** whether it sudden random unrealted task from current task or existing task
-***** adding timeout bound task like sleep for 5 mins
-***** etc
-***** adding new task also try to copy or move property from related task
+**** BUGS
+***** BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
+***** BUG (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change) both tries to capture mini-buffer together
+ TODO check what exactly happening
+ TODO make a unit test to check it in future.
+ TODO synchronize them.
+***** BUG org-resolve-clock-idle is not getting called
+**** FEATURE
+***** DONE Implement dynamic clocking based on mapping of org task property to current file buffer
+      CLOSED: [2017-11-18 Sat 20:29]
+***** DONE Implement dynamic adding of property to org task
+      CLOSED: [2017-11-18 Sat 20:30]
+***** STARTED Resolve Idle clock should provide options to clock other task that is with amount of time idle.
+      :PROPERTIES:
+      :Effort:   7h
+      :Root:     ~/.xemacs/elpa/pkgs/org-clock-resolve-advanced/
+      :END:
+      :LOGBOOK:
+      CLOCK: [2017-12-04 Mon 03:16]--[2017-12-04 Mon 03:25] =>  0:09
+      CLOCK: [2017-12-03 Sun 23:44]--[2017-12-03 Sun 23:46] =>  0:02
+      CLOCK: [2017-12-03 Sun 18:21]--[2017-12-03 Sun 22:43] =>  4:22
+      CLOCK: [2017-11-25 Sat 16:05]--[2017-11-27 Mon 17:25] => 49:20
+      CLOCK: [2017-11-20 Mon 21:28]--[2017-11-20 Mon 21:30] =>  0:02
+      CLOCK: [2017-11-20 Mon 20:06]--[2017-11-20 Mon 20:11] =>  0:05
+      CLOCK: [2017-11-20 Mon 19:21]--[2017-11-20 Mon 19:24] =>  0:03
+      CLOCK: [2017-11-19 Sun 14:27]--[2017-11-20 Mon 19:21] => 28:54
+      CLOCK: [2017-11-18 Sat 17:00]--[2017-11-18 Sat 23:56] =>  6:56
+      CLOCK: [2017-11-18 Sat 16:41]--[2017-11-18 Sat 16:47] =>  0:06
+      :END:
+***** make (org-timed-miniwin-file-loc-with-refile) to use (org-with-new-win)
+***** cleanup (org-context-clock-add-context-to-org-heading) so it do not need to handle clean up of WIN which will be done by (org-with-new-win) through (org-timed-miniwin-file-loc-with-refile)
+***** org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame
+ So normal frame and utilities frame have to distinguished.
+***** org-clock-out should be call when last frame is closed without asking any question it should not count make-reader-frame
+***** disable org-context-clocking when when last frame is closed
+***** Very fast Interface to add new task which should provide options
+****** whether it is subtask of current task or existing task, now required its separate naming, similar way to merge child task to parent.
+****** whether it sudden random unrealted task from current task or existing task
+****** adding timeout bound task like sleep for 5 mins
+****** etc
+****** adding new task also try to copy or move property from related task
 
-**** join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
-So both can be handled at one place, it will duplication of code, and here we could support multi-valued property also.
-**** When closing emacs frame along with clock out option it should tell which all frames are still opened.
-**** show In matched tasks selection buffer show task rank which was calculated.
-**** Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
-**** Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
-     for this may need to understand undo-tree or may be see any other method to used for it.
-     TODO: take printout of undi-tree.el
+***** join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
+ So both can be handled at one place, it will duplication of code, and here we could support multi-valued property also.
+***** When closing emacs frame along with clock out option it should tell which all frames are still opened.
+***** show In matched tasks selection buffer show task rank which was calculated.
+***** Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
+***** Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
+      for this may need to understand undo-tree or may be see any other method to used for it.
+      TODO: take printout of undi-tree.el
 
-**** Find way to specify importance, type(bug, feature etc) of task (whether using tag).
-**** One sending mail, chat, or any other important action offer to add log note should be presented.
-**** Add method to create task from mail, chat etc and link it SEE DETAIL hint org-capture
-- may be org-capture will help
-**** Track/Trace shell actions e.g. change dir, commands run etc, make report for it.
-**** Track/Trace browser actions e.g. change url etc, make report for it.
-**** Track/Trace any important application actions, make report for it.
-https://github.com/hardaker/elisp-buffer-timer
-**** Track/Trace in emacs all major action like changing buffer, saving buffer, opening new file etc
-     and integrate with current task and prepare nice report.
+***** Find way to specify importance, type(bug, feature etc) of task (whether using tag).
+***** One sending mail, chat, or any other important action offer to add log note should be presented.
+***** Add method to create task from mail, chat etc and link it SEE DETAIL hint org-capture
+ - may be org-capture will help
+***** Track/Trace shell actions e.g. change dir, commands run etc, make report for it.
+***** Track/Trace browser actions e.g. change url etc, make report for it.
+***** Track/Trace any important application actions, make report for it.
+ https://github.com/hardaker/elisp-buffer-timer
+***** Track/Trace in emacs all major action like changing buffer, saving buffer, opening new file etc
+      and integrate with current task and prepare nice report.
 
-**** Improve report preparation
-**** Automatically mailing report in time intervals
-**** Improve org-capture to automatically pop up in important event and on time intervals
-**** WM should also directed to change dir if it were specified in clocked-in task
-**** Improve understanding of org-agenda to
-**** Try to implement stack pop push based task flow and integrate it also SEE DETAIL
-***** possible implementation
-- could copy properties from property drawer to next/previous/parent task, this way it could be easily implemented
-**** Try to add unit test using ERT (Emacs Regression Test)
-**** On moving to next task, old task should ask to add context, so person can use that context to continue if he restart task after long time.
-**** And when starting to restart a task it old context must be showed to remind user what was there.
+***** Improve report preparation
+***** Automatically mailing report in time intervals
+***** Improve org-capture to automatically pop up in important event and on time intervals
+***** WM should also directed to change dir if it were specified in clocked-in task
+***** Improve understanding of org-agenda to
+***** Try to implement stack pop push based task flow and integrate it also SEE DETAIL
+****** possible implementation
+ - could copy properties from property drawer to next/previous/parent task, this way it could be easily implemented
+***** Try to add unit test using ERT (Emacs Regression Test)
+***** On moving to next task, old task should ask to add context, so person can use that context to continue if he restart task after long time.
+***** And when starting to restart a task it old context must be showed to remind user what was there.
 *** Obtrusive
 **** Window should be marked to reappear/popup when something started were done.
 e.g. In urxvt we should be able to mark window to reappear when build is done, by that user is browsing or editing or doing some other work.
