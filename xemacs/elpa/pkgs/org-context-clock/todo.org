@@ -403,7 +403,14 @@ Yes
 **** It is still not known why (require 'misc-utils) in
 lotus-interactivity/packages.el of (lotus-interactivity/post-init-ido)
 is only casing speacemacs to load properly with all features and themes
+**** Solve the issue with sessions-unified.el when setting (setq *session-unified-desktop-enabled* nil) not running lotus-enable-desktop-restore-interrupting-feature-hook
+        (progn
+          (lotus-enable-session-saving-immediately)
+          (run-each-hooks 'lotus-enable-desktop-restore-interrupting-feature-hook)
+          (message
+           "*session-unified-desktop-enabled* %s" *session-unified-desktop-enabled*))
 
+which is responsible to load many features.
 **** why only loading (require 'misc-uitls') in lotus-interactivity/packages.el cause spacemacs to load properly with themes and packages
 **** why loading (require 'misc-uitls') in lotus-interactivity/packages.el cause current-idle-time to get reset very often which now is not seen.
 **** Make a unit test code to check current-idle-time behaviour and report it.
@@ -424,6 +431,8 @@ is only casing speacemacs to load properly with all features and themes
  TODO make a unit test to check it in future.
  TODO synchronize them.
 ***** BUG org-resolve-clock-idle is not getting called
+***** BUG org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame
+ So normal frame and utilities frame have to distinguished.
 **** FEATURE
 ***** DONE Implement dynamic clocking based on mapping of org task property to current file buffer
       CLOSED: [2017-11-18 Sat 20:29]
@@ -448,8 +457,6 @@ is only casing speacemacs to load properly with all features and themes
       :END:
 ***** make (org-timed-miniwin-file-loc-with-refile) to use (org-with-new-win)
 ***** cleanup (org-context-clock-add-context-to-org-heading) so it do not need to handle clean up of WIN which will be done by (org-with-new-win) through (org-timed-miniwin-file-loc-with-refile)
-***** org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame
- So normal frame and utilities frame have to distinguished.
 ***** org-clock-out should be call when last frame is closed without asking any question it should not count make-reader-frame
 ***** disable org-context-clocking when when last frame is closed
 ***** Very fast Interface to add new task which should provide options
