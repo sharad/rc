@@ -127,7 +127,7 @@ Each entry is either:
                                      my-override-mode-on-save
                                      ad-do-it)))
 
-            (defun sharad/override-toggle-read-only ()
+            (defun lotus-override-toggle-read-only ()
               "Toggle buffer's read-only status, keeping `my-override-mode-on-save' in sync."
               (interactive)
               (setq my-override-mode-on-save (not my-override-mode-on-save))

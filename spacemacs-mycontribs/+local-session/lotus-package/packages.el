@@ -99,7 +99,7 @@ Each entry is either:
           (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa"))
           "package-user-dir")
 
-        (defvar sharad/package-installed-archive (expand-file-name "installed-archive.el" package-user-dir) "Known Installed packages.")
+        (defvar lotus-package-installed-archive (expand-file-name "installed-archive.el" package-user-dir) "Known Installed packages.")
 
         (defconst *elpa-package-dir* "~/.xemacs/pkgrepos/elpa")
 
@@ -109,7 +109,7 @@ Each entry is either:
          package-user-dir
          (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa"))
 
-         sharad/package-installed-archive (expand-file-name "installed-archive.el" package-user-dir))
+         lotus-package-installed-archive (expand-file-name "installed-archive.el" package-user-dir))
 
         ;; *elpa-package-dir* "~/.xemacs/pkgrepos/elpa"
 
@@ -130,10 +130,10 @@ Each entry is either:
           (byte-recompile-directory *elpa-package-dir*))
 
         (when nil
-         (when (file-exists-p sharad/package-installed-archive)
-          (when (set-difference (mapcar 'car (sharad/read-sexp sharad/package-installed-archive))
+         (when (file-exists-p lotus-package-installed-archive)
+          (when (set-difference (mapcar 'car (lotus-read-sexp lotus-package-installed-archive))
                                 (mapcar 'car package-alist))
-            (message "Your do not have all packages installed.\n install it will sharad/package-install-from-installed-archive.")))))
+            (message "Your do not have all packages installed.\n install it will lotus-package-install-from-installed-archive.")))))
 
       (progn
         (autoload 'package-list-packages "package" "Elap Package" t)

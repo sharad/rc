@@ -62,26 +62,27 @@
   ;;   (setenv-from-file
   ;;    (concat
   ;;     "~/.dbus/session-bus/"
-  ;;     (trim-string (sharad/read-file "/var/lib/dbus/machine-id"))
+  ;;     (trim-string (lotus-read-file "/var/lib/dbus/machine-id"))
   ;;     "-" dismajor-str)
   ;;    '(:system :session)))
 
   (defun set-dbus-session ()
     (interactive)
-    (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
-                            ":0.0"))
-           (dismajor-str (if (>= (length display-str) 2)
-                             (substring display-str 1 2)
-                           "0"))
-           (dbus-file
-            (concat "~/.dbus/session-bus/" (trim-string (sharad/read-file "/var/lib/dbus/machine-id")) "-" dismajor-str)))
-      (ignore-errors
-       (dbus-setenv :system "DISPLAY" display-str))
-      (ignore-errors
-       (dbus-setenv :session "DISPLAY" display-str))
-      (setenv-from-file
-       dbus-file
-       '(:system :session))))
+    (when nil
+      (let* ((display-str (or (getenv "DISPLAY" (selected-frame))
+                              ":0.0"))
+             (dismajor-str (if (>= (length display-str) 2)
+                               (substring display-str 1 2)
+                               "0"))
+             (dbus-file
+              (concat "~/.dbus/session-bus/" (trim-string (lotus-read-file "/var/lib/dbus/machine-id")) "-" dismajor-str)))
+        (ignore-errors
+          (dbus-setenv :system "DISPLAY" display-str))
+        (ignore-errors
+          (dbus-setenv :session "DISPLAY" display-str))
+        (setenv-from-file
+         dbus-file
+         '(:system :session)))))
 
   (set-dbus-session))
 

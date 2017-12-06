@@ -27,8 +27,8 @@
 
 (require 'init-setup)
 
-(add-hook 'sharad/enable-login-session-interrupting-feature-hook 'set-dbus-session)
-(add-hook 'sharad/enable-startup-interrupting-feature-hook 'set-dbus-session)
+(add-hook 'lotus-enable-login-session-interrupting-feature-hook 'set-dbus-session)
+(add-hook 'lotus-enable-startup-interrupting-feature-hook 'set-dbus-session)
 
 (provide 'startup-config)
 ;;; startup-config.el ends here

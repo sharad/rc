@@ -39,7 +39,7 @@
   (with-eval-after-load "startup-hooks"
     (message "tramp-mode %s" tramp-mode)
     (add-hook
-     'sharad/enable-startup-interrupting-feature-hook
+     'lotus-enable-startup-interrupting-feature-hook
      '(lambda ()
        (condition-case e
            (dolist (dir file-cache-directories)

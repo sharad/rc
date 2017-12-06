@@ -102,7 +102,7 @@ Each entry is either:
             (setq                                 ;very necessary.
              tramp-mode nil
              ido-mode nil)
-            (sharad/disable-startup-interrupting-feature)))
+            (lotus-disable-startup-interrupting-feature)))
 
         (progn
           (dolist (lib '(

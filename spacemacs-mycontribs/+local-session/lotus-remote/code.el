@@ -87,7 +87,7 @@
 (autoload 'password-in-cache-p "password-cache")
 
 ;; believe it need not be here
-;; (sharad/disable-startup-interrupting-feature)
+;; (lotus-disable-startup-interrupting-feature)
 
 
 

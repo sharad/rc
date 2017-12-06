@@ -225,7 +225,7 @@
       message-cite-reply-position 'traditional
       message-cite-reply-position 'above)     ;default
 
-(defun sharad/message-signature-present ()
+(defun lotus-message-signature-present ()
   (save-excursion
     (if (message-goto-signature)
         (eobp))))
@@ -240,7 +240,7 @@
              (message-in-body-p))
         (progn
           ;;(sharad-message-citation-delete)
-          (when (sharad/message-signature-present)
+          (when (lotus-message-signature-present)
             (message-kill-to-signature)
             (message-remove-signature))
           (insert "\n")
@@ -319,7 +319,7 @@
                          (with-current-buffer gnus-article-buffer
                            (message-fetch-field "to"))))
                  (email (if to (car (mail-header-parse-address to))))
-                 (email-name (if email (assoc email sharad/gnus-name-emails-map))))
+                 (email-name (if email (assoc email lotus-gnus-name-emails-map))))
             (if email
                 (if email-name
                     (concat (cdr email-name) " <" (car email-name) ">")
@@ -356,7 +356,7 @@
                          (with-current-buffer gnus-article-buffer
                            (message-fetch-field "to"))))
                  (email (if to (car (mail-header-parse-address to))))
-                 (email-name (if email (assoc email sharad/gnus-name-emails-map))))
+                 (email-name (if email (assoc email lotus-gnus-name-emails-map))))
             (if email
                 (if email-name
                     (concat (cdr email-name) " <" (car email-name) ">")
@@ -369,7 +369,7 @@
                          (with-current-buffer gnus-article-buffer
                            (message-fetch-field "to"))))
                  (email (if to (car (mail-header-parse-address to))))
-                 (email-name (if email (assoc email sharad/gnus-name-emails-map))))
+                 (email-name (if email (assoc email lotus-gnus-name-emails-map))))
             (if email
                 (if email-name
                     (concat (cdr email-name) " <" (car email-name) ">")
@@ -396,7 +396,7 @@
                          (with-current-buffer gnus-article-buffer
                            (message-fetch-field "to"))))
                  (email (if to (car (mail-header-parse-address to))))
-                 (email-name (if email (assoc email sharad/gnus-name-emails-map))))
+                 (email-name (if email (assoc email lotus-gnus-name-emails-map))))
             (if email
                 (if email-name
                     (concat (cdr email-name) " <" (car email-name) ">")
@@ -409,7 +409,7 @@
                          (with-current-buffer gnus-article-buffer
                            (message-fetch-field "to"))))
                  (email (if to (car (mail-header-parse-address to))))
-                 (email-name (if email (assoc email sharad/gnus-name-emails-map))))
+                 (email-name (if email (assoc email lotus-gnus-name-emails-map))))
             (if email
                 (if email-name
                     (concat (cdr email-name) " <" (car email-name) ">")

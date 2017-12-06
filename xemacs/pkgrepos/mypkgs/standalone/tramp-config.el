@@ -14,7 +14,7 @@
 
 (eval-after-load "tramp"
   '(when *emacs-in-init*
-    (sharad/disable-startup-interrupting-feature)))
+    (lotus-disable-startup-interrupting-feature)))
 
 (eval-when-compile
   '(require 'tramp))
@@ -24,7 +24,7 @@
   (require 'utils-config)
 
   (setq tramp-persistency-file-name (auto-config-file "tramp/persistency"))
-  (add-hook 'sharad/disable-startup-interrupting-feature-hook
+  (add-hook 'lotus-disable-startup-interrupting-feature-hook
             ;;will not be called.
             '(lambda () ;very necessary.
               (setq tramp-mode nil ido-mode nil)))
@@ -545,7 +545,7 @@
 (autoload 'password-in-cache-p "password-cache")
 
 ;; believe it need not be here
-;; (sharad/disable-startup-interrupting-feature)
+;; (lotus-disable-startup-interrupting-feature)
 
 
 

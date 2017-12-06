@@ -301,12 +301,12 @@ and their terminal equivalents.")
 ;; not 'xsteve-gnus
 (deh-require-maybe ibuf-ext
   (global-set-key-if-unbind [(meta f7)] 'toggle-ibuffer-group)
-  (global-set-key-if-unbind (kbd "C-c b") 'sharad/context-switch-buffer))
+  (global-set-key-if-unbind (kbd "C-c b") 'lotus-context-switch-buffer))
 
 
 (deh-require-maybe remember
-  (global-set-key-if-unbind (kbd "s-s r p") 'sharad/remember-planner)
-  (global-set-key-if-unbind (kbd "s-s r o") 'sharad/remember-org))
+  (global-set-key-if-unbind (kbd "s-s r p") 'lotus-remember-planner)
+  (global-set-key-if-unbind (kbd "s-s r o") 'lotus-remember-org))
 
 (when (xrequire 'ibuffer)
   (global-set-key (kbd "C-x C-b") 'ibuffer) ;force

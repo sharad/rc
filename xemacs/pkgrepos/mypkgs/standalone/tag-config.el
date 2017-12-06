@@ -368,12 +368,12 @@
 
     (defun tags-dir-store-config ()
       (let* ((readfile (expand-file-name tag-dir-config-file (gtags-root-dir))))
-        (sharad/write-file readfile (prin1-to-string tag-dir-config))
+        (lotus-write-file readfile (prin1-to-string tag-dir-config))
         tag-dir-config))
 
     (defun tags-dir-restore-config ()
       (let* ((readfile (expand-file-name tag-dir-config-file (gtags-root-dir))))
-        (setq tag-dir-config (sharad/read-sexp readfile))))
+        (setq tag-dir-config (lotus-read-sexp readfile))))
 
     (defun tags-dir-get-config (variable)
       (interactive

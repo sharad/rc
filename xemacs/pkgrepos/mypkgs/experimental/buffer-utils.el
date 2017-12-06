@@ -40,7 +40,7 @@
 
 ;; believe it need not be here
 ;; (eval-after-load "ido"
-;;   '(sharad/disable-startup-interrupting-feature))
+;;   '(lotus-disable-startup-interrupting-feature))
 
 ;; (deh-require-maybe buffer-move)
 
@@ -322,7 +322,7 @@
 
     (require 'ibuf-ext)
 
-    (defun sharad/get-ibuffer-filter-groups ()
+    (defun lotus-get-ibuffer-filter-groups ()
       (cdr (assoc "default" ibuffer-saved-filter-groups)))
 
 
@@ -336,20 +336,20 @@
                                        ((eq cmd nil) #'(lambda (x) t))
                                        (t #'identity))
                                (cdr (assoc g group-start-fun-alist))))
-                            (mapcar #'car (sharad/get-ibuffer-filter-groups)))
+                            (mapcar #'car (lotus-get-ibuffer-filter-groups)))
                            nil
                            nil
                            nil
                            nil
                            (or (if (stringp default-group) default-group)
-                               (sharad/ibuffer-containing-group-of-buffer (current-buffer)))))
+                               (lotus-ibuffer-containing-group-of-buffer (current-buffer)))))
 
 
 
-    (defun sharad/ibuffer-included-in-group-p (buf group &optional nodefault)
+    (defun lotus-ibuffer-included-in-group-p (buf group &optional nodefault)
       (let* ((filter-group-alist (if nodefault
-                                     (sharad/get-ibuffer-filter-groups)
-                                     (append (sharad/get-ibuffer-filter-groups)
+                                     (lotus-get-ibuffer-filter-groups)
+                                     (append (lotus-get-ibuffer-filter-groups)
                                              (list (cons "Default" nil)))))
              (group-with-filterset (assoc group filter-group-alist))
              (filterset (cdr group-with-filterset)))
@@ -357,27 +357,27 @@
             (error "no such group: %s" group)
             (ibuffer-included-in-filters-p buf filterset))))
 
-    (defun sharad/ibuffer-included-in-groups-p (buf &rest groups)
+    (defun lotus-ibuffer-included-in-groups-p (buf &rest groups)
       (let (ret)
         (while (and (not ret) groups)
-          (setq ret (sharad/ibuffer-included-in-group-p buf (car groups))
+          (setq ret (lotus-ibuffer-included-in-group-p buf (car groups))
                 groups (cdr groups)))
         ret))
 
-    (defun sharad/ibuffer-containing-group-of-buffer (buf &optional default)
+    (defun lotus-ibuffer-containing-group-of-buffer (buf &optional default)
       (let (ret
             (filter-group-alist (if (not default)
-                                    (sharad/get-ibuffer-filter-groups)
-                                    (append (sharad/get-ibuffer-filter-groups)
+                                    (lotus-get-ibuffer-filter-groups)
+                                    (append (lotus-get-ibuffer-filter-groups)
                                             (list (cons "Default" nil))))))
         (while (and (not ret) filter-group-alist)
-          (setq ret (if (sharad/ibuffer-included-in-group-p buf (caar filter-group-alist))
+          (setq ret (if (lotus-ibuffer-included-in-group-p buf (caar filter-group-alist))
                         (caar filter-group-alist))
                 filter-group-alist (cdr filter-group-alist)))
         ret))
 
-    (defun sharad/ibuffer-get-group-buffers (group &optional current-last)
-      (let* ((filter-group-alist (append (sharad/get-ibuffer-filter-groups)
+    (defun lotus-ibuffer-get-group-buffers (group &optional current-last)
+      (let* ((filter-group-alist (append (lotus-get-ibuffer-filter-groups)
                                          (list (cons "Default" nil))))
              (group-with-filterset (assoc group filter-group-alist))
              (filterset (cdr group-with-filterset))
@@ -391,19 +391,19 @@
                                (ibuffer-included-in-filters-p buf filterset)) buffers))))
 
     (testing
-     (sharad/ibuffer-included-in-groups-p (current-buffer) "gnus" "Default")
-     (sharad/ibuffer-containing-group-of-buffer (current-buffer) t)
-     (sharad/ibuffer-get-group-buffers "gnus")
-     (sharad/ibuffer-included-in-group-p (current-buffer) "Default"))
+     (lotus-ibuffer-included-in-groups-p (current-buffer) "gnus" "Default")
+     (lotus-ibuffer-containing-group-of-buffer (current-buffer) t)
+     (lotus-ibuffer-get-group-buffers "gnus")
+     (lotus-ibuffer-included-in-group-p (current-buffer) "Default"))
 
 
-    (defun sharad/context-switch-buffer (&optional arg)
+    (defun lotus-context-switch-buffer (&optional arg)
       (interactive "P")
-      (let ((group (sharad/ibuffer-containing-group-of-buffer (current-buffer) t)))
+      (let ((group (lotus-ibuffer-containing-group-of-buffer (current-buffer) t)))
         (switch-to-buffer
          (ido-completing-read
           (format "Buffer from %s group: " group)
-          (mapcar #'buffer-name (sharad/ibuffer-get-group-buffers group t))))))
+          (mapcar #'buffer-name (lotus-ibuffer-get-group-buffers group t))))))
 
 
 
@@ -414,16 +414,16 @@
   (setq
    group-start-fun-alist
    '(("gnus"    . (gnus-unplugged . gnus-group-exit))
-     ("erc"     . (sharad/erc-start-or-switch))
+     ("erc"     . (lotus-erc-start-or-switch))
      ("planner" . (plan))))
 
-  (defun sharad/ibuffer-bury-group (group &optional buflist)
+  (defun lotus-ibuffer-bury-group (group &optional buflist)
     ;; Should use current buffer's group
     (interactive)
-    (dolist (buf (or buflist (sharad/ibuffer-get-group-buffers group))
+    (dolist (buf (or buflist (lotus-ibuffer-get-group-buffers group))
               (bury-buffer buf))))
 
-  (defun sharad/hide-group (&optional group call-stop-up-cmd)
+  (defun lotus-hide-group (&optional group call-stop-up-cmd)
     ;; Should use current buffer's group
     (interactive "P")
     (when (or call-stop-up-cmd
@@ -440,11 +440,11 @@
            (group (or
                    (unless (called-interactively-p 'any) group)
                    (get-ibuffer-group nil (if call-stop-up-cmd 'stop))))
-           (buflist (sharad/ibuffer-get-group-buffers group)))
+           (buflist (lotus-ibuffer-get-group-buffers group)))
       (when buflist
-        (when (equal group (sharad/ibuffer-containing-group-of-buffer (current-buffer)))
+        (when (equal group (lotus-ibuffer-containing-group-of-buffer (current-buffer)))
           (set-assoc group (elscreen-current-window-configuration) group-window-configuration-alist))
-        (sharad/ibuffer-bury-group group buflist)
+        (lotus-ibuffer-bury-group group buflist)
         (delete-other-windows))))
 
 
@@ -459,13 +459,13 @@
           (funcall fun)
           (message "No %s command associated with: `%s' group" cmd-type group))))
 
-  (defun sharad/ibuffer-unbury-group (group &optional buflist)
+  (defun lotus-ibuffer-unbury-group (group &optional buflist)
     ;; should ask for group.
     (interactive))
-    ;; (dolist (buf (or buflist (sharad/ibuffer-get-group-buffers group))
+    ;; (dolist (buf (or buflist (lotus-ibuffer-get-group-buffers group))
     ;;          (unbury-buffer buf))))
 
-  (defun sharad/unhide-group (&optional group call-start-up-cmd)
+  (defun lotus-unhide-group (&optional group call-start-up-cmd)
     ;; should ask for group.
     (interactive "P")
     (let* ((call-start-up-cmd
@@ -474,10 +474,10 @@
            (group (or
                    (unless (called-interactively-p 'any) group)
                    (get-ibuffer-group nil (if call-start-up-cmd 'start))))
-           (buflist (sharad/ibuffer-get-group-buffers group)))
+           (buflist (lotus-ibuffer-get-group-buffers group)))
       (if buflist
           (progn
-            (sharad/ibuffer-unbury-group group buflist)
+            (lotus-ibuffer-unbury-group group buflist)
             (switch-to-buffer (car buflist))
             (if (assoc group group-window-configuration-alist)
                 ;;                 (set-window-configuration (cdr (assoc group group-window-configuration-alist)))
@@ -505,59 +505,59 @@
            (group (or
                    (unless (called-interactively-p 'any) group)
                    (get-ibuffer-group nil (if force-call-cmd 'any)))))
-      (if (sharad/ibuffer-included-in-group-p (current-buffer) group)
-          (sharad/hide-group group force-call-cmd)
-          (sharad/unhide-group group force-call-cmd)))))
+      (if (lotus-ibuffer-included-in-group-p (current-buffer) group)
+          (lotus-hide-group group force-call-cmd)
+          (lotus-unhide-group group force-call-cmd)))))
 
 ;;}}
 
-  (defvar sharad/context-ignore-buffer t "Allow to enable context-ignore-buffer")
+  (defvar lotus-context-ignore-buffer t "Allow to enable context-ignore-buffer")
 
   (defun toggle-context-ignore-buffer ()
     (interactive)
-    (setq sharad/context-ignore-buffer (not sharad/context-ignore-buffer)))
+    (setq lotus-context-ignore-buffer (not lotus-context-ignore-buffer)))
 
-  (defun sharad/context-ignore-buffer (name)
+  (defun lotus-context-ignore-buffer (name)
     (interactive "P")
-    (let ((group (sharad/ibuffer-containing-group-of-buffer (current-buffer) t))
+    (let ((group (lotus-ibuffer-containing-group-of-buffer (current-buffer) t))
           (buff (get-buffer name)))
-      (if (and sharad/context-ignore-buffer buff)
-          (not (sharad/ibuffer-included-in-group-p buff group))
+      (if (and lotus-context-ignore-buffer buff)
+          (not (lotus-ibuffer-included-in-group-p buff group))
           t)))
 
-  ;; (defun sharad/context-ignore-buffer (name)
+  ;; (defun lotus-context-ignore-buffer (name)
   ;;   (interactive "P")
   ;;   (message "cib: %s" (type-of name))
   ;;   nil)
 
   ;; (type-of (current-buffer))
 
-  (defun sharad/context-switch-other-buffer (buffer)
-    (let ((group (sharad/ibuffer-containing-group-of-buffer buffer t)))
+  (defun lotus-context-switch-other-buffer (buffer)
+    (let ((group (lotus-ibuffer-containing-group-of-buffer buffer t)))
       (find-if
        (lambda (buff)
-         (if (sharad/ibuffer-included-in-group-p buff group)
+         (if (lotus-ibuffer-included-in-group-p buff group)
              (not (eq buff buffer))))
        (buffer-list))))
 
-  (setq ido-ignore-buffers '(sharad/context-ignore-buffer
+  (setq ido-ignore-buffers '(lotus-context-ignore-buffer
                              "\\` "))
 
 
   (defadvice other-buffer (around context-buffer (&optional buffer visible-ok frame) activate)
     (let* ((buffer (or buffer (current-buffer)))
-           (group (sharad/ibuffer-containing-group-of-buffer buffer t))
+           (group (lotus-ibuffer-containing-group-of-buffer buffer t))
            (obuff (get-buffer ad-do-it)))
       (setq
        ad-return-value
-       (if (and sharad/context-ignore-buffer
-                (sharad/ibuffer-included-in-group-p obuff group))
+       (if (and lotus-context-ignore-buffer
+                (lotus-ibuffer-included-in-group-p obuff group))
            obuff
-           (let ((cbuff (sharad/context-switch-other-buffer buffer)))
+           (let ((cbuff (lotus-context-switch-other-buffer buffer)))
              (or cbuff obuff))))))
 
-  ;; (sharad/ibuffer-included-in-group-p (other-buffer (current-buffer)) "emacs-lisp")
-  ;; (sharad/context-switch-other-buffer (current-buffer))
+  ;; (lotus-ibuffer-included-in-group-p (other-buffer (current-buffer)) "emacs-lisp")
+  ;; (lotus-context-switch-other-buffer (current-buffer))
   ;; (other-buffer (current-buffer))
   )
 
@@ -609,7 +609,7 @@
   ;; then M-x sticky-buffer-mode.
   )
 ;; believe it need not be here
-;; (sharad/disable-startup-interrupting-feature)
+;; (lotus-disable-startup-interrupting-feature)
 
 ;; (setq debug-on-error t)
 

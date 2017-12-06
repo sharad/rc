@@ -1,5 +1,5 @@
 
-(defun sharad/gnus-start-config ()
+(defun lotus-gnus-start-config ()
   ;;{{ Good :: Excellent beautiful Great!! Thanks XSteve
   ;; Use the keybinding M-F7 to toggle between the gnus window configuration and your normal editing windows.
   (defun xsteve-gnus ()
@@ -86,7 +86,7 @@ depending on network status."
   ;;}}
   )
 
-(defun sharad/gnus-group-config ()
+(defun lotus-gnus-group-config ()
   ;; stolen from:
   ;; http://linil.wordpress.com/2008/01/18/gnus-gmail
   (setq
@@ -244,17 +244,17 @@ depending on network status."
       (setq gnus-parameters
             `(
               (".*"
-               (gnus-summary-line-format ,sharad/gnus/global-summry-line-format)
+               (gnus-summary-line-format ,lotus-gnus/global-summry-line-format)
                (gnus-summary-display-arrow t)
                (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
                (gnus-article-sort-functions '(gnus-article-sort-by-date gnus-article-sort-by-score)))
               ;"Gnus: %g [%A] %Z"
 
               ("nnimap.*\\.bugs"
-               (gnus-summary-line-format ,sharad/gnus/bugzilla-summry-line-format))
+               (gnus-summary-line-format ,lotus-gnus/bugzilla-summry-line-format))
 
               ("nnimap.*\\.sent-mail\\|.*sent"
-               (gnus-summary-line-format ,sharad/gnus/sent-summry-line-format)
+               (gnus-summary-line-format ,lotus-gnus/sent-summry-line-format)
                (gnus-summary-display-arrow t)
                (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
                ;"Gnus: %g [%A] %Z"
@@ -290,7 +290,7 @@ depending on network status."
   ;;}}
   )
 
-(defun sharad/gnus-summary-config ()
+(defun lotus-gnus-summary-config ()
   ;; x-bugzilla-target-milestone: 6.1.0.0
   ;; x-bugzilla-url: https://bugzilla/
   ;; x-bugzilla-changed-fields: Status CC
@@ -423,9 +423,9 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 
 
-    (defvar sharad/gnus/global-summry-line-format   nil "")
-    (defvar sharad/gnus/bugzilla-summry-line-format nil "")
-    (defvar sharad/gnus/sent-summry-line-format     nil "")
+    (defvar lotus-gnus/global-summry-line-format   nil "")
+    (defvar lotus-gnus/bugzilla-summry-line-format nil "")
+    (defvar lotus-gnus/sent-summry-line-format     nil "")
 
 
     ;; Alias for the content-type function:
@@ -463,10 +463,10 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
            ;(bugzilla-who "%4{%-20,20ub%}")
            )
       (setq
-       sharad/gnus/global-summry-line-format   (concat marks date lines from sp pipe sp thread-mark subject nl)
-       ; sharad/gnus/bugzilla-summry-line-format (concat attachment marks date lines bugzilla-who sp pipe sp thread-mark subject nl)
-       sharad/gnus/bugzilla-summry-line-format (concat marks date lines from sp pipe sp thread-mark subject nl)
-       sharad/gnus/sent-summry-line-format     (concat marks date lines from sp pipe sp thread-mark subject nl)))
+       lotus-gnus/global-summry-line-format   (concat marks date lines from sp pipe sp thread-mark subject nl)
+       ; lotus-gnus/bugzilla-summry-line-format (concat attachment marks date lines bugzilla-who sp pipe sp thread-mark subject nl)
+       lotus-gnus/bugzilla-summry-line-format (concat marks date lines from sp pipe sp thread-mark subject nl)
+       lotus-gnus/sent-summry-line-format     (concat marks date lines from sp pipe sp thread-mark subject nl)))
 
 
 
@@ -508,7 +508,7 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
   ;;  "%s\n")
   )
 
-(defun sharad/gnus-article-config ()
+(defun lotus-gnus-article-config ()
   (defun gnus-article-mst-show-country ()
     ;; from http://dishevelled.net/elisp/gnus-mst-show-country.el
     (interactive)
@@ -670,7 +670,7 @@ always hide."
   ;;}}
   )
 
-(defun sharad/gnu-attachment-config ()
+(defun lotus-gnu-attachment-config ()
 
 
   ;;{{ http://www.inference.phy.cam.ac.uk/cjb/dotfiles/dotgnus
@@ -776,7 +776,7 @@ always hide."
 
   )
 
-(defun sharad/gnus-binding-config ()
+(defun lotus-gnus-binding-config ()
   (add-hook 'gnus-summary-mode-hook
             (lambda ()
               (local-set-key (kbd "<tab>") 'gnus-summary-next-unread-article)
@@ -806,7 +806,7 @@ always hide."
                   (local-set-key "f"  'gnus-summary-followup)
                 (local-set-key "f"  'gnus-summary-mail-forward)))))
 
-(defun sharad/gnus-citation-config ()
+(defun lotus-gnus-citation-config ()
   (require 'nnheader)
 
   ;;{{ XSteve, insert Hi Hello Name
@@ -947,7 +947,7 @@ always hide."
 
   )
 
-(defun sharad/gnus-contacts-config ()
+(defun lotus-gnus-contacts-config ()
   (deh-require-maybe bbdb
 
     (defun bbdb/gnus-pop-up-bbdb-buffer-for-some-time ()
@@ -969,7 +969,7 @@ always hide."
     (remove-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer)
     (add-hook 'gnus-article-prepare-hook 'bbdb/gnus-pop-up-bbdb-buffer-for-some-time)))
 
-(defun sharad/gnus-image-config ()
+(defun lotus-gnus-image-config ()
   (require 'gravatar)
   (require 'gnus-art)
   (require 'mail-extr) ;; Because of binding `mail-extr-disable-voodoo'.
@@ -1222,7 +1222,7 @@ You can provide a list of argument to pass to CB in CBARGS."
 
   )
 
-(defun sharad/gnus-template-config ()
+(defun lotus-gnus-template-config ()
   (defvar message-template-directory "~/.xemacs/gnustmpls/")
 
   (defun gnus-insert-temple ()
@@ -1259,7 +1259,7 @@ You can provide a list of argument to pass to CB in CBARGS."
 
   )
 
-(defun sharad/gnus-misc-config ()
+(defun lotus-gnus-misc-config ()
   ;; Integration to bbdb and dired
   (deh-require-maybe bbdb
     (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus))
@@ -1451,7 +1451,7 @@ You can provide a list of argument to pass to CB in CBARGS."
   ;;}}
   )
 
-(defun sharad/gnus-schedule-config ()
+(defun lotus-gnus-schedule-config ()
 
 
   (deh-require-maybe (and diary-lib mm-decode)
@@ -1523,7 +1523,7 @@ You can provide a list of argument to pass to CB in CBARGS."
 
   )
 
-(defun sharad/gnus-header-config ()
+(defun lotus-gnus-header-config ()
 
 
   (deh-section "Header and ignored From address."
@@ -1587,7 +1587,7 @@ You can provide a list of argument to pass to CB in CBARGS."
 
   )
 
-(defun sharad/gnus-crypt-config ()
+(defun lotus-gnus-crypt-config ()
 
   (deh-require-maybe mailcrypt
     ;; http://www.suse.de/~garloff/Writings/mutt_gpg/node18.html
@@ -1627,7 +1627,7 @@ You can provide a list of argument to pass to CB in CBARGS."
 
   )
 
-(defun sharad/gnus-mailto-config ()
+(defun lotus-gnus-mailto-config ()
 
   ;; from: http://journal.wjsullivan.net/185095.html
 
@@ -1706,7 +1706,7 @@ You can provide a list of argument to pass to CB in CBARGS."
               (insert body))))))
   )
 
-(defun sharad/gnus-message-config ()
+(defun lotus-gnus-message-config ()
   (require 'citation-config)
 
 
@@ -1908,7 +1908,7 @@ You can provide a list of argument to pass to CB in CBARGS."
         message-cite-reply-position 'traditional
         message-cite-reply-position 'above)     ;default
 
-  (defun sharad/message-signature-present ()
+  (defun lotus-message-signature-present ()
     (save-excursion
       (if (message-goto-signature)
           (eobp))))
@@ -1923,7 +1923,7 @@ You can provide a list of argument to pass to CB in CBARGS."
                (message-in-body-p))
           (progn
             ;;(sharad-message-citation-delete)
-            (when (sharad/message-signature-present)
+            (when (lotus-message-signature-present)
               (message-kill-to-signature)
               (message-remove-signature))
             (insert "\n")
@@ -1999,7 +1999,7 @@ You can provide a list of argument to pass to CB in CBARGS."
                            (with-current-buffer gnus-article-buffer
                              (message-fetch-field "to"))))
                    (email (if to (car (mail-header-parse-address to))))
-                   (email-name (if email (assoc email sharad/gnus-name-emails-map))))
+                   (email-name (if email (assoc email lotus-gnus-name-emails-map))))
               (if email
                   (if email-name
                       (concat (cdr email-name) " <" (car email-name) ">")
@@ -2208,7 +2208,7 @@ You can provide a list of argument to pass to CB in CBARGS."
   ;; }}
   )
 
-(defun sharad/gnus-nm-config ()
+(defun lotus-gnus-nm-config ()
   ;;{{ from http://www.emacswiki.org/emacs/GnusNetworkManager
   ;(when (and nil (xrequire 'dbus))
   (when (xrequire 'dbus)
@@ -2294,7 +2294,7 @@ when Gnus hangs on network outs or changes."
   ;;}} (gnus-nm-disable)
   )
 
-(defun sharad/gnus-notif-config ()
+(defun lotus-gnus-notif-config ()
 
   ;;{{ from: http://www.emacswiki.org/emacs/GnusNotify
   ;; I am using gnus-notify+
@@ -2501,7 +2501,7 @@ when Gnus hangs on network outs or changes."
 
   )
 
-(defun sharad/gnus-notmuch-config ()
+(defun lotus-gnus-notmuch-config ()
 
   (deh-require-maybe notmuch
 
@@ -2512,7 +2512,7 @@ when Gnus hangs on network outs or changes."
       (if (file-exists-p notmuch-address-command)
           (notmuch-address-message-insinuate)))
 
-    (defun sharad/gnu-notmuch-current-message-id ()
+    (defun lotus-gnu-notmuch-current-message-id ()
       (interactive)
       (let ((id (with-current-buffer gnus-original-article-buffer
                   (nnheader-narrow-to-headers)
@@ -2538,14 +2538,14 @@ when Gnus hangs on network outs or changes."
                         (concat "id:" search-id-string)))))
             tag-list)))
 
-    (defun sharad/notmuch-add-jobapply-tag (tag)
+    (defun lotus-notmuch-add-jobapply-tag (tag)
       (interactive
        (list (notmuch-select-tag-with-completion "Tag to add: ")))
-      (let ((search-id-string (sharad/gnu-notmuch-current-message-id)))
+      (let ((search-id-string (lotus-gnu-notmuch-current-message-id)))
         (notmuch-call-notmuch-process "tag" (concat "+" "jobapply") (concat "id:" search-id-string)))))
   )
 
-(defun sharad/gnus-pres-config ()
+(defun lotus-gnus-pres-config ()
   (deh-require-maybe gnus-pers
 
     (defvar gnus-personality-activate nil "")
@@ -2569,7 +2569,7 @@ when Gnus hangs on network outs or changes."
 
     (gnus-personality-init/sharad)))
 
-(defun sharad/gnus-reply-config ()
+(defun lotus-gnus-reply-config ()
   ;;{{ from: http://www.emacswiki.org/emacs/GnusAndPine
   ;; Second, two commands for replying to mail. If there are several
   ;; senders and recipients or a CC: field, then you will be prompted
@@ -2646,7 +2646,7 @@ when Gnus hangs on network outs or changes."
   ;;}}
   )
 
-(defun sharad/gnus-search-config ()
+(defun lotus-gnus-search-config ()
 
   (deh-section "Notmuch"
 
@@ -2750,7 +2750,7 @@ article."
     (add-hook 'midnight-hook 'xsteve-gnus-update-namazu-index))
   )
 
-(defun sharad/gnus-server-config ()
+(defun lotus-gnus-server-config ()
   (require 'nnheader)
 
   ;; http://www.delorie.com/gnu/docs/emacs/gnus_316.html Q1.11
@@ -2817,7 +2817,7 @@ article."
 
   )
 
-(defun sharad/gnus-shumbun-config ()
+(defun lotus-gnus-shumbun-config ()
   (deh-require (and shimbun sb-rss-blogs)
 
     (add-to-list 'shimbun-rss-blogs-group-url-regexp
@@ -2843,7 +2843,7 @@ article."
 
   )
 
-(defun sharad/gnus-stat-config ()
+(defun lotus-gnus-stat-config ()
   (deh-section "statistics"
     ;;{{
     ;; from: http://www.ichimusai.org/pub/dot-gnus
@@ -2905,7 +2905,7 @@ article."
 
     ))
 
-(defun sharad/gnus-utils-config ()
+(defun lotus-gnus-utils-config ()
 
 
   (require 'thingatpt+)
@@ -2938,7 +2938,7 @@ article."
 
   )
 
-(defun sharad/gnus-window-config ()
+(defun lotus-gnus-window-config ()
 
 
   (deh-section "Toggle Article Window"

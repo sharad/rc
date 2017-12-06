@@ -134,9 +134,9 @@ Each entry is either:
           ;; use it.
           ;; (defun erc-cmd-UPTIME (&rest ignore)
 
-          ;; (message "loading defun sharad/erc-start-or-switch")
+          ;; (message "loading defun lotus-erc-start-or-switch")
 
-          (defun sharad/erc-start-or-switch ()
+          (defun lotus-erc-start-or-switch ()
             "Connect to ERC, or switch to last active buffer"
             (interactive)
             (if (or (get-buffer "localhost:6667")	;; ERC already active?
@@ -486,7 +486,7 @@ If USER is omitted, close the current query buffer if one exists
           ;;   (select-frame (make-frame '((name . "Emacs IRC")
           ;;                               (minibuffer . t))))
           ;;   ;; (call-interactively 'erc-ircnet)
-          ;;   (call-interactively 'sharad/start-erc))
+          ;;   (call-interactively 'lotus-start-erc))
 
           ;;http://www.emacswiki.org/emacs/ErcAutoJoin
           ;; (setq erc-autojoin-channels-alist
@@ -496,7 +496,7 @@ If USER is omitted, close the current query buffer if one exists
           ;;         ;; ("localhost" "#bitlbee")
           ;;         ("localhost" "&bitlbee")))
 
-          ;;   (defun sharad/start-erc ()
+          ;;   (defun lotus-start-erc ()
           ;;     (interactive)
           ;;     (erc :server "irc.freenode.net" :port 6667 :nick "sharad" :password "ctrplmqw")
           ;;     (erc :server "localhost" :port 6667 :nick "sharad" :password "qwe123"))
@@ -711,7 +711,7 @@ If USER is omitted, close the current query buffer if one exists
 
           (progn ;; "monitor"
 
-            (defvar sharad/erc-monitor-user-list nil "list")
+            (defvar lotus-erc-monitor-user-list nil "list")
 
             (defun erc-cmd-MONITOR (user &optional server)
               "Display whois information for USER.
@@ -720,14 +720,14 @@ If SERVER is non-nil, use that, rather than the current server."
               ;; FIXME: is the above docstring correct?  -- Lawrence 2004-01-08
               (let ()
                 (message "name %s server %s" user server)
-                (push user sharad/erc-monitor-user-list))
+                (push user lotus-erc-monitor-user-list))
               t)
 
             (defun erc-notify-MONITOR (proc parsed)
               (let ((nick (car (erc-parse-user (erc-response.sender parsed))))
                     (target (car (erc-response.command-args parsed)))
                     (msg (erc-response.contents parsed)))
-                (when (member nick sharad/erc-monitor-user-list)
+                (when (member nick lotus-erc-monitor-user-list)
                   ;;Handle true private/direct messages (non channel)
                   (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
                              (erc-current-nick-p target)
@@ -743,7 +743,7 @@ If SERVER is non-nil, use that, rather than the current server."
                   ;;Handle channel messages when my nick is mentioned
                   (when (and (not (erc-is-message-ctcp-and-not-action-p msg))
                              (string-match (erc-current-nick) msg)
-                             (member nick sharad/erc-monitor-user-list)
+                             (member nick lotus-erc-monitor-user-list)
                              (erc-notify-allowed nick target))
                                         ;Do actual notification
                     ;; (message "ttttttttt")
@@ -811,7 +811,7 @@ If SERVER is non-nil, use that, rather than the current server."
             ))
 
         (progn
-          (defun sharad/erc-bnc4free-connect ()
+          (defun lotus-erc-bnc4free-connect ()
             (interactive)
             (save-window-excursion
               (when (get-buffer "Grape.bnc4free.com:1337")
@@ -829,7 +829,7 @@ If SERVER is non-nil, use that, rather than the current server."
                  )
 
             (sleep-for 0 500)
-            (sharad/erc-bnc4free-connect)))
+            (lotus-erc-bnc4free-connect)))
 
         (progn
           ;; (concat bnc4free-username ":" bnc4free-password)

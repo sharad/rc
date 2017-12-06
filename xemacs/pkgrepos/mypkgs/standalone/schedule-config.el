@@ -377,7 +377,7 @@ This function returns a timer object which you can use in `cancel-timer'."
   ;;         simple one.
 
 
-  (add-hook 'sharad/enable-startup-interrupting-feature-hook 'cfw:open-calendar-buffer t))
+  (add-hook 'lotus-enable-startup-interrupting-feature-hook 'cfw:open-calendar-buffer t))
 
 (provide 'schedule-config)
 ;;; schedule.el ends here

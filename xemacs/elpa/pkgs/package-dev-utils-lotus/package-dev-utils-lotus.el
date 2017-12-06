@@ -21,14 +21,14 @@
 ;;; Commentary:
 
 ;; function frame-session-restore-hook-func
-;; (add-hook 'sharad/enable-startup-interrupting-feature-hook
+;; (add-hook 'lotus-enable-startup-interrupting-feature-hook
 ;;           'frame-session-restore-hook-func
 ;;           t)
 
 ;; (add-hook ;; 'after-init-hook
-;;  'sharad/enable-startup-interrupting-feature-hook
+;;  'lotus-enable-startup-interrupting-feature-hook
 ;;  '(lambda ()
-;;    (run-at-time-or-now 7 'sharad/desktop-session-restore)))
+;;    (run-at-time-or-now 7 'lotus-desktop-session-restore)))
 
 ;;; Code:
 

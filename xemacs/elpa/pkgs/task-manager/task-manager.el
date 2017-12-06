@@ -442,7 +442,7 @@
       (let* ((task-dir       (task-get-task-dir (task-current-party) task-type name))
              (task-desc-file (expand-file-name task-dir *task-desc-file-name*)))
         (if (file-exists-p task-desc-file)
-            (sharad/read-file task-desc-file)
+            (lotus-read-file task-desc-file)
             (task-get-task-desc party task-type name t)))))
 
 ;;;###autoload
@@ -656,7 +656,7 @@
   ;; (dolist (dname '("logs" "programs" "patches" "deliverables"))
   (let* ()
     (make-directory task-dir t)
-    (sharad/write-file (expand-file-name *task-desc-file-name* task-dir) desc)
+    (lotus-write-file (expand-file-name *task-desc-file-name* task-dir) desc)
     (make-directory (concat task-scratch-dir (pluralize-string task-type) "/" name) t)
     (make-symbolic-link (concat task-scratch-dir (pluralize-string task-type) "/" name) (concat task-dir "/scratch"))
 

@@ -48,19 +48,19 @@
                         )
 
 
-  (defvar sharad/remember-functions-alist nil "")
+  (defvar lotus-remember-functions-alist nil "")
 
   (defvar remember-organizer 'planner "")
 
   (require 'tree)
 
   (progn
-    (setf (tree-node* sharad/remember-functions-alist 'org 'annotation) '(org-remember-annotation))
-    (setf (tree-node* sharad/remember-functions-alist 'planner 'annotation) planner-annotation-functions)
-    (setf (tree-node* sharad/remember-functions-alist 'org 'handler) '(org-remember-handler))
-    (setf (tree-node* sharad/remember-functions-alist 'planner 'handler) '(remember-planner-append))
-    (setf (tree-node* sharad/remember-functions-alist 'org 'hook) '(org-remember-apply-template))
-    (setf (tree-node* sharad/remember-functions-alist 'planner 'hook) nil))
+    (setf (tree-node* lotus-remember-functions-alist 'org 'annotation) '(org-remember-annotation))
+    (setf (tree-node* lotus-remember-functions-alist 'planner 'annotation) planner-annotation-functions)
+    (setf (tree-node* lotus-remember-functions-alist 'org 'handler) '(org-remember-handler))
+    (setf (tree-node* lotus-remember-functions-alist 'planner 'handler) '(remember-planner-append))
+    (setf (tree-node* lotus-remember-functions-alist 'org 'hook) '(org-remember-apply-template))
+    (setf (tree-node* lotus-remember-functions-alist 'planner 'hook) nil))
 
 
   (when nil ;;get interactive
@@ -111,11 +111,11 @@
        `(defadvice ,fun (around ,adname ,(help-function-arglist fun) activate)
           ;; ,(help-function-interactive 'fun)
           (let ((remember-annotation-functions
-                 (tree-node  sharad/remember-functions-alist remember-organizer 'annotation :test 'equal))
+                 (tree-node  lotus-remember-functions-alist remember-organizer 'annotation :test 'equal))
                 (remember-handler-functions
-                 (tree-node sharad/remember-functions-alist remember-organizer 'handler :test 'equal))
+                 (tree-node lotus-remember-functions-alist remember-organizer 'handler :test 'equal))
                 (remember-mode-hook
-                 (tree-node sharad/remember-functions-alist remember-organizer 'hook :test 'equal)))
+                 (tree-node lotus-remember-functions-alist remember-organizer 'hook :test 'equal)))
             ad-do-it))))
     (ad-enable-advice fun 'around adname)
     (ad-activate fun)
@@ -191,7 +191,7 @@
              (ido-completing-read "Organizer: "
                                   (mapcar (lambda (e)
                                             (symbol-name (car e)))
-                                          sharad/remember-functions-alist)
+                                          lotus-remember-functions-alist)
                                   nil t)))))
       (setq remember-organizer organizer)))
 
@@ -210,7 +210,7 @@
 
   ;; org-ignore-region
 
-  (defun sharad/remember-org (&optional initial)
+  (defun lotus-remember-org (&optional initial)
     (interactive
      (list (when current-prefix-arg
              (buffer-substring (point) (mark)))))
@@ -218,7 +218,7 @@
       (setq remember-organizer organizer)
       (remember initial)))
 
-  (defun sharad/remember-planner (&optional initial)
+  (defun lotus-remember-planner (&optional initial)
     (interactive
      (list (when current-prefix-arg
              (buffer-substring (point) (mark)))))

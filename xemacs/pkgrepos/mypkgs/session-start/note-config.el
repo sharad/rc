@@ -31,7 +31,7 @@
    deft-use-filename-as-title nil
    deft-extension "org"
    deft-text-mode 'org-mode)
-  (add-hook 'sharad/enable-startup-interrupting-feature-hook 'deft t))
+  (add-hook 'lotus-enable-startup-interrupting-feature-hook 'deft t))
 
 (when (xrequire 'evernote-mode)
   ;; http://emacs-evernote-mode.googlecode.com/svn-history/r190/trunk/doc/readme_en.html#sec-7

@@ -93,8 +93,8 @@
       ;;}}
       )))
 
-(defun sharad/emacs-user-init-begin ()
-  (message "loading sharad/emacs-user-init-begin begin")
+(defun lotus-emacs-user-init-begin ()
+  (message "loading lotus-emacs-user-init-begin begin")
   (push (concat "~/.osetup/info.d/common/elisp") load-path)
   (push (concat "~/.osetup/info.d/hosts/" (system-name) "/elisp") load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
@@ -209,10 +209,14 @@
       (when (server-running-p (getenv "EMACS_SERVER_NAME"))
         (message (concat "YES SERVER: " server-name))))
     )
-  (message "loading sharad/emacs-user-init-begin finished"))
 
-(defun sharad/emacs-user-init-finish ()
-  (message "loading sharad/emacs-user-init-finish begin")
+
+  (lotus-necessary-test)
+
+  (message "loading lotus-emacs-user-init-begin finished"))
+
+(defun lotus-emacs-user-init-finish ()
+  (message "loading lotus-emacs-user-init-finish begin")
   (dotspacemacs/reinit)
   (when nil
     (put-file-in-rcs (auto-config-file "startup/startup.log"))
@@ -238,20 +242,20 @@
   (setq *emacs-in-init* nil)              ;how to ensure it will run.
 
   (add-hook
-   'sharad/enable-startup-interrupting-feature-hook
-   'sharad/necessary-functionality
+   'lotus-enable-startup-interrupting-feature-hook
+   'lotus-necessary-functionality
    t)
 
   (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)
-  (sharad/necessary-functionality)
-  (message "loading sharad/emacs-user-init-finish finished")
+  (lotus-necessary-functionality)
+  (lotus-necessary-test)
   ;; limiting gnus messages
   (setq gnus-verbose 1)
-  )
+  (message "loading lotus-emacs-user-init-finish finished"))
 
-(defun sharad/necessary-functionality ()
+(defun lotus-necessary-functionality ()
   (interactive)
-  (message "loading sharad/necessary-functionality begin")
+  (message "loading lotus-necessary-functionality begin")
   (progn ;; expand
     (progn ;; yasnippet
       ;; inplace of tab I want it to use C->
@@ -432,8 +436,32 @@ variable."
   (epa-file-enable)
 
   (remove-hook
-   'sharad/enable-startup-interrupting-feature-hook
-   'sharad/necessary-functionality)
-  (message "loading sharad/necessary-functionality finished")
+   'lotus-enable-startup-interrupting-feature-hook
+   'lotus-necessary-functionality)
   ;; limiting gnus messages
-  (setq gnus-verbose 1))
+  (setq gnus-verbose 1)
+  (message "loading lotus-necessary-functionality finished"))
+
+(defun idle-prints (print)
+  (defvar *test-timer* nil)
+  (defvar emacs-idle-times-list nil)
+  (if print
+      (progn
+        (if *test-timer* (cancel-timer *test-timer*))
+        (when t
+          (setq
+           *test-timer*
+           (run-with-timer 1 2
+                           '(lambda ()
+                              ;; (message "Test: From timer idle for org %d secs emacs %d secs" (org-emacs-idle-seconds) (float-time (current-idle-time)))
+                              (let* ((idle (float-time (current-idle-time)))
+                                     (idle (or idle 0)))
+                                (message "Test: From timer idle for secs emacs %d secs" idle))
+                              ;; (push (org-emacs-idle-seconds) emacs-idle-times-list)
+                              )))))
+    (cancel-timer *test-timer*)))
+
+(defun lotus-necessary-test ()
+  (interactive)
+  (idle-prints t))
+

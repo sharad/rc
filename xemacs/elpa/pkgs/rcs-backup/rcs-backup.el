@@ -186,7 +186,7 @@
 ;; (vc-default-mode-line-string buffer-file-name)
 
 ;; (vc-mode-line buffer-file-name 'RCS)
-;; (sharad/vc-mode-line buffer-file-name 'RCS)
+;; (lotus-vc-mode-line buffer-file-name 'RCS)
 
 (eval
  `(defadvice backup-buffer-copy (after

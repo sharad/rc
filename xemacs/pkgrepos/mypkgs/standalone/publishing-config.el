@@ -449,20 +449,20 @@
                 (error "file %s not exists" src-file))))
         dst-file)
 
-      ;; (defun sharad/muse-find-or-create-meta-file (filename &optional fnslist)
+      ;; (defun lotus-muse-find-or-create-meta-file (filename &optional fnslist)
       ;;   "asfds"
       ;;   (let ((fnslist (or fnslist *muse-meta-style-dirname-fns*)))
       ;;     (muse-with-project-style
-      ;;      (sharad/muse-find-or-create-meta-file-main filename fnslist))))
+      ;;      (lotus-muse-find-or-create-meta-file-main filename fnslist))))
 
-      (defun sharad/muse-find-or-create-meta-file (filename &optional dirfnslist)
+      (defun lotus-muse-find-or-create-meta-file (filename &optional dirfnslist)
         "asfds"
         (let ((dirfnslist (or dirfnslist *muse-meta-style-dirname-fns*)))
-          (sharad/muse-find-or-create-meta-file-main filename dirfnslist)))
+          (lotus-muse-find-or-create-meta-file-main filename dirfnslist)))
 
-      (defun sharad/muse-find-or-create-meta-file-main (filename dirfnslist)
+      (defun lotus-muse-find-or-create-meta-file-main (filename dirfnslist)
         "sdfds"
-        ;; (message "calling sharad/muse-find-or-create-meta-file-main filename %s dirfnslist %s (cadar dirfnslist) %s" filename dirfnslist (cadar dirfnslist))
+        ;; (message "calling lotus-muse-find-or-create-meta-file-main filename %s dirfnslist %s (cadar dirfnslist) %s" filename dirfnslist (cadar dirfnslist))
         (if dirfnslist
             (let* ((style-dirname-list (car dirfnslist))
                    (style-name (car style-dirname-list))
@@ -494,7 +494,7 @@
                          ;; (message "Xfilepath: %s" filepath)
                          (if (file-exists-p filepath)
                              filepath
-                             (let ((parent-filepath (sharad/muse-find-or-create-meta-file-main filename (cdr dirfnslist))))
+                             (let ((parent-filepath (lotus-muse-find-or-create-meta-file-main filename (cdr dirfnslist))))
                                ;; (message "Have come here")
                                (if parent-filepath
                                    (if (file-exists-p parent-filepath)
@@ -506,11 +506,11 @@
                                      (message "You need to create %s file manually" filepath)
                                      (error "Can not file futher %s file now." filename))))))))
                   ((eq dirpath 'pass)
-                   (sharad/muse-find-or-create-meta-file-main filename (cdr dirfnslist)))
+                   (lotus-muse-find-or-create-meta-file-main filename (cdr dirfnslist)))
                   (t (error "can not get dirpath %s from style %s" dirpath style-name)))))
             (error "can not get parent file for %s" filename)))
 
-      (defun sharad/muse-get-meta-path-plist (&optional dirfnslist)
+      (defun lotus-muse-get-meta-path-plist (&optional dirfnslist)
         "sdfds"
         (interactive)
         (let ((dirfnslist (or dirfnslist *muse-meta-style-dirname-fns*)))
@@ -530,18 +530,18 @@
                                       (t (error "error"))))))
                           dirfnslist))))
 
-      (defun sharad/muse-edit-meta-file ()
+      (defun lotus-muse-edit-meta-file ()
         (interactive)
-        (let* ((path-alist (sharad/muse-get-meta-path-plist *muse-meta-style-dirname-fns*))
+        (let* ((path-alist (lotus-muse-get-meta-path-plist *muse-meta-style-dirname-fns*))
                (name
                 (funcall muse-completing-read-function
                          "Get dir: " path-alist nil t))
                (path (cdr (assoc name path-alist))))
           (ido-find-file-in-dir path)))
 
-      (defun sharad/muse-delete-meta-file ()
+      (defun lotus-muse-delete-meta-file ()
         (interactive)
-        (let* ((path-alist (sharad/muse-get-meta-path-plist *muse-meta-style-dirname-fns*))
+        (let* ((path-alist (lotus-muse-get-meta-path-plist *muse-meta-style-dirname-fns*))
                (name
                 (funcall muse-completing-read-function
                          "Get dir: " path-alist nil t))
@@ -554,12 +554,12 @@
       (defun muse-insert-css-link (media filename)
         (muse-make-css-link media
                             (file-relative-name
-                             (sharad/muse-find-or-create-meta-file filename)
+                             (lotus-muse-find-or-create-meta-file filename)
                              (plist-get muse-publishing-current-style :path))))
 
       (defun muse-insert-meta-file (filename)
         (get-string-from-file
-         (sharad/muse-find-or-create-meta-file filename)))))
+         (lotus-muse-find-or-create-meta-file filename)))))
 
   (deh-section "org publishing utils"
 

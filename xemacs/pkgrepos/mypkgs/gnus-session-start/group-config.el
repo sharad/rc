@@ -185,17 +185,17 @@
     (setq gnus-parameters
           `(
             (".*"
-             (gnus-summary-line-format ,sharad/gnus/global-summry-line-format)
+             (gnus-summary-line-format ,lotus-gnus/global-summry-line-format)
              (gnus-summary-display-arrow t)
              (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
              (gnus-article-sort-functions '(gnus-article-sort-by-date gnus-article-sort-by-score)))
                                         ;"Gnus: %g [%A] %Z"
 
             ("nnimap.*\\.bugs"
-             (gnus-summary-line-format ,sharad/gnus/bugzilla-summry-line-format))
+             (gnus-summary-line-format ,lotus-gnus/bugzilla-summry-line-format))
 
             ("nnimap.*\\.sent-mail\\|.*sent"
-             (gnus-summary-line-format ,sharad/gnus/sent-summry-line-format)
+             (gnus-summary-line-format ,lotus-gnus/sent-summry-line-format)
              (gnus-summary-display-arrow t)
              (gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
                                         ;"Gnus: %g [%A] %Z"

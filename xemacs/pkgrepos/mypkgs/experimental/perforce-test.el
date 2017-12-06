@@ -64,7 +64,7 @@
                "office-activate"
                "perforce is not reachable, so disabling office-activate and removing P4 from vc-handled-backends.")
               (setq vc-handled-backends (remove 'P4 vc-handled-backends))
-              (add-hook 'sharad/enable-desktop-restore-interrupting-feature
+              (add-hook 'lotus-enable-desktop-restore-interrupting-feature
                         '(lambda ()
                           (add-to-list 'vc-handled-backends 'P4)))
               (setq run-office-activate nil)))))
@@ -124,7 +124,7 @@
                "office-activate"
                "perforce is not reachable, so disabling office-activate and removing P4 from vc-handled-backends.")
               (setq vc-handled-backends (remove 'P4 vc-handled-backends))
-              (add-hook 'sharad/enable-desktop-restore-interrupting-feature
+              (add-hook 'lotus-enable-desktop-restore-interrupting-feature
                         '(lambda ()
                           (add-to-list 'vc-handled-backends 'P4)))
               (setq run-office-activate nil)))))

@@ -70,24 +70,24 @@ Each entry is either:
   (use-package sessions-mgr
       :config
     (add-hook
-     'sharad/enable-startup-interrupting-feature-hook
+     'lotus-enable-startup-interrupting-feature-hook
      'frame-session-restore-hook-func
      t)
 
     (add-hook ;; 'after-init-hook
-     'sharad/enable-startup-interrupting-feature-hook
+     'lotus-enable-startup-interrupting-feature-hook
      '(lambda ()
-        (run-at-time-or-now 7 'sharad/desktop-session-restore))))
+        (run-at-time-or-now 7 'lotus-desktop-session-restore))))
 
   (use-package init-setup
     :init
     :config
     (progn
       (add-hook
-       'sharad/enable-login-session-interrupting-feature-hook
+       'lotus-enable-login-session-interrupting-feature-hook
        'set-dbus-session)
       (add-hook
-       'sharad/enable-startup-interrupting-feature-hook
+       'lotus-enable-startup-interrupting-feature-hook
        'set-dbus-session)
 
       (add-hook 'emacs-startup-hook

@@ -158,9 +158,9 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 
 
-  (defvar sharad/gnus/global-summry-line-format   nil "")
-  (defvar sharad/gnus/bugzilla-summry-line-format nil "")
-  (defvar sharad/gnus/sent-summry-line-format     nil "")
+  (defvar lotus-gnus/global-summry-line-format   nil "")
+  (defvar lotus-gnus/bugzilla-summry-line-format nil "")
+  (defvar lotus-gnus/sent-summry-line-format     nil "")
 
 
   ;; Alias for the content-type function:
@@ -198,10 +198,10 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
          ;(bugzilla-who "%4{%-20,20ub%}")
          )
     (setq
-     sharad/gnus/global-summry-line-format   (concat marks date lines from sp pipe sp thread-mark subject nl)
-   ; sharad/gnus/bugzilla-summry-line-format (concat attachment marks date lines bugzilla-who sp pipe sp thread-mark subject nl)
-     sharad/gnus/bugzilla-summry-line-format (concat marks date lines from sp pipe sp thread-mark subject nl)
-     sharad/gnus/sent-summry-line-format     (concat marks date lines from sp pipe sp thread-mark subject nl)))
+     lotus-gnus/global-summry-line-format   (concat marks date lines from sp pipe sp thread-mark subject nl)
+   ; lotus-gnus/bugzilla-summry-line-format (concat attachment marks date lines bugzilla-who sp pipe sp thread-mark subject nl)
+     lotus-gnus/bugzilla-summry-line-format (concat marks date lines from sp pipe sp thread-mark subject nl)
+     lotus-gnus/sent-summry-line-format     (concat marks date lines from sp pipe sp thread-mark subject nl)))
 
 
 

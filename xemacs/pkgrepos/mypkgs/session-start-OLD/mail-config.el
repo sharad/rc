@@ -53,8 +53,8 @@ If this is a function, the function should return a list of e-mail addresses.")
 
 ;; In end of data:
 ;; remember-config.el:219:1:Warning: the following functions are not known to be defined:
-;;     feature-symbols, sharad/remember-fun-set-orgnizer,
-;;     sharad/remember-set-orgnizer, reader-mode
+;;     feature-symbols, lotus-remember-fun-set-orgnizer,
+;;     lotus-remember-set-orgnizer, reader-mode
 
 
 ;;}}

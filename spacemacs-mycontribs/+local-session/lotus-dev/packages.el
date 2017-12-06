@@ -150,12 +150,12 @@ Each entry is either:
         ;; (add-hook 'find-file-hook
         ;;           #'sidebrain-read-todo-from-comments)
 
-        ;; (add-hook 'sharad/enable-login-session-interrupting-feature-hook
+        ;; (add-hook 'lotus-enable-login-session-interrupting-feature-hook
         ;;           #'(lambda ()
         ;;               (add-hook 'find-file-hook
         ;;                         #'sidebrain-read-todo-from-comments)) t)
 
-        ;; (add-hook 'sharad/disable-login-session-interrupting-feature-hook
+        ;; (add-hook 'lotus-disable-login-session-interrupting-feature-hook
         ;;           #'(lambda ()
         ;;               (remove-hook 'find-file-hook
         ;;                            #'sidebrain-read-todo-from-comments)) t)

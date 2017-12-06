@@ -76,11 +76,11 @@ run body and report error in echo area and message buffer
 
 ;;;***
 
-;;;### (autoloads (sharad/read-file) "utils-config" "utils-config.el"
+;;;### (autoloads (lotus-read-file) "utils-config" "utils-config.el"
 ;;;;;;  (21901 1609 737022 585000))
 ;;; Generated autoloads from utils-config.el
 
-(autoload 'sharad/read-file "utils-config" "\
+(autoload 'lotus-read-file "utils-config" "\
 
 
 \(fn FILENAME)" nil nil)

@@ -42,8 +42,8 @@ Usage: (package-require 'package)"
       (error (package-install package))))
 
   (when nil
-    (add-hook 'sharad/enable-desktop-restore-interrupting-feature
-              ;; 'sharad/enable-startup-interrupting-feature-hook
+    (add-hook 'lotus-enable-desktop-restore-interrupting-feature
+              ;; 'lotus-enable-startup-interrupting-feature-hook
               '(lambda ()
                  (run-at-time-or-now 7
                                      '(lambda ()
@@ -53,7 +53,7 @@ Usage: (package-require 'package)"
                                         ;; but we have to load the list of available packages
                                         (package-refresh-contents)))))))
 
-(defun sharad/update-installed-package-archive ()
+(defun lotus-update-installed-package-archive ()
   (interactive)
   (require 'package)
   (if package-alist
@@ -61,14 +61,14 @@ Usage: (package-require 'package)"
        (with-output-to-string
            (pp package-alist))
        ;; (prin1-to-string package-alist)
-       nil sharad/package-installed-archive)
+       nil lotus-package-installed-archive)
       (error "package-alist is not defiend, not doing anything.")))
 
-(defun sharad/package-install-from-installed-archive ()
+(defun lotus-package-install-from-installed-archive ()
   (interactive)
   (require 'cl)
   (let* ((packages-from-installed-archive
-          (mapcar 'car (sharad/read-sexp sharad/package-installed-archive)))
+          (mapcar 'car (lotus-read-sexp lotus-package-installed-archive)))
          (packages-from-package-alist (mapcar 'car package-alist))
              (packages-missing (set-difference packages-from-installed-archive packages-from-package-alist)))
     (if packages-missing

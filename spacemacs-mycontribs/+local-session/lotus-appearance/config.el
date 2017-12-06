@@ -124,9 +124,10 @@
 
 (progn ;; "face size"
 
+
   (defvar face-scale-div-max-min '(110 600 120 80))
 
-  (setq face-scale-div-max-min '(110 600 120 80))
+  (setq face-scale-div-max-min '(110 210 120 80))
 
     (defun maxmin-optimized-value (val scale div &optional max min)
       (let ((opt (/ (* val scale) div)))

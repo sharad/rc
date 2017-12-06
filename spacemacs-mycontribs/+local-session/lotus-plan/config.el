@@ -32,7 +32,7 @@
 ;;           :defer t
 ;;           :config
 ;;           (progn
-;;             (add-hook 'sharad/enable-startup-interrupting-feature-hook ;; '*sharad/after-init-hook*
+;;             (add-hook 'lotus-enable-startup-interrupting-feature-hook ;; '*lotus-after-init-hook*
 ;;                       '(lambda ()
 ;;                         (with-eval-after-load "planner-registry"
 ;;                           (progn

@@ -334,7 +334,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   (progn
     (load-file "~/.spacemacs.d/user-init-utils.el")
-    (sharad/emacs-user-init-begin)))
+    (lotus-emacs-user-init-begin)))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -343,9 +343,9 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-
-  (push "~/.spacemacs-mycontribs/local" load-path)
-  (sharad/emacs-user-init-finish))
+  (progn
+    (push "~/.spacemacs-mycontribs/local" load-path)
+    (lotus-emacs-user-init-finish)))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.

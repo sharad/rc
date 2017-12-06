@@ -36,9 +36,11 @@
 
 (defconst basic-startup-packages
   '(
-    (utils-custom :location local)
+    (basic-utils :location local)
     (init-setup :location local)
+    (utils-custom :location local)
     (startup-hooks :location local)
+
     sessions-unified
     elscreen
     )
@@ -69,21 +71,31 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun basic-utils/init-init-setup ()
+(defun basic-startup/init-basic-utils ()
+  (use-package basic-utils
+      ;; :ensure t
+      ;; :defer t
+      :demand t
+      :commands (add-to-hook)
+      :config
+    (progn
+      )))
+
+(defun basic-startup/init-init-setup ()
   (use-package init-setup
       ;; :ensure t
       :config
       (progn
         )))
 
-(defun basic-utils/init-utils-custom ()
+(defun basic-startup/init-utils-custom ()
   (use-package utils-custom
       ;; :ensure t
       :config
       (progn
         )))
 
-(defun basic-utils/init-startup-hooks ()
+(defun basic-startup/init-startup-hooks ()
   (use-package startup-hooks
       ;; :ensure t
       :demand t
@@ -96,9 +108,12 @@ Each entry is either:
   (use-package sessions-unified
       ;; :ensure t
       :demand t
-      :commands 'sharad/desktop-session-restore
+      :commands 'lotus-desktop-session-restore
       :config
       (progn
+
+        (progn
+          (setq *session-unified-desktop-enabled* nil))
 
         (progn
           (add-to-disable-desktop-restore-interrupting-feature-hook
@@ -125,14 +140,14 @@ Each entry is either:
             (setq sessions-unified-utils-notify 'message-notify)))
         (progn
           ;; (add-hook
-          ;;  'sharad/enable-startup-interrupting-feature-hook
+          ;;  'lotus-enable-startup-interrupting-feature-hook
           ;;  'frame-session-restore-hook-func
           ;;  t)
 
           ;; (add-hook ;; 'after-init-hook
-          ;;  'sharad/enable-startup-interrupting-feature-hook
+          ;;  'lotus-enable-startup-interrupting-feature-hook
           ;;  '(lambda ()
-          ;;    (run-at-time-or-now 7 'sharad/desktop-session-restore)))
+          ;;    (run-at-time-or-now 7 'lotus-desktop-session-restore)))
 
           (with-eval-after-load "startup-hooks"
             (add-to-enable-startup-interrupting-feature-hook
@@ -140,7 +155,7 @@ Each entry is either:
              t)
             (add-to-enable-startup-interrupting-feature-hook
              '(lambda ()
-               (run-at-time-or-now 7 'sharad/desktop-session-restore)))))))
+               (run-at-time-or-now 7 'lotus-desktop-session-restore)))))))
 
   (use-package init-setup
       ;; :ensure t
@@ -156,7 +171,7 @@ Each entry is either:
                       (message-notify "Emacs" "Loaded Completely :)")
                       (message "\n\n\n\n")))))))
 
-(defun basic-utils/init-elscreen ()
+(defun basic-startup/init-elscreen ()
   (use-package elscreen
       :defer t
       :config

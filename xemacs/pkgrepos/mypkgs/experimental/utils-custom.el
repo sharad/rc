@@ -103,7 +103,7 @@
 
 
 ;;;###autoload
-(defun sharad/read-file (filename)
+(defun lotus-read-file (filename)
   (when (file-exists-p filename)
     (with-temp-buffer
       (insert-file-contents-literally filename)
@@ -114,12 +114,12 @@
                ('end-of-file nil))))
         contents))))
 
-(defun sharad/read-sexp (filename)
+(defun lotus-read-sexp (filename)
   (when (file-exists-p filename)
-    (car (read-from-string (sharad/read-file filename)))))
+    (car (read-from-string (lotus-read-file filename)))))
 
 
-(defun sharad/write-file (filename content)
+(defun lotus-write-file (filename content)
   (with-current-buffer (or (find-buffer-visiting filename)
                            (find-file-noselect filename))
     (set-buffer-file-coding-system
@@ -130,7 +130,7 @@
     (insert content)
     (write-file filename)))
 
-(defun sharad/write-append-file (filename content)
+(defun lotus-write-append-file (filename content)
   (when (file-exists-p filename)
     (write-region content nil filename t)
     (put-file-in-rcs filename)))
@@ -329,7 +329,7 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
            (remove-if-not (lambda (l)
                             (and (not (string-match "^#" l))
                                  (string-match "\\w+=\\w+" l)))
-                          (split-string (sharad/read-file file) "\n")))))))
+                          (split-string (lotus-read-file file) "\n")))))))
 
 
 

@@ -94,7 +94,7 @@
 
 
 
-(defadvice kill-emacs (around sharad/noexit activate)
+(defadvice kill-emacs (around lotus-noexit activate)
     "Only kill emacs if the variable is true"
     ad-do-it
     ;; (message "Getting killed")

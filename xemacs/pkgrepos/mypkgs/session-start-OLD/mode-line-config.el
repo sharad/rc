@@ -56,7 +56,7 @@
                      (concat
                       " "
                       (frame-parameter (selected-frame) 'frame-spec-id)
-                      (unless (sharad/check-session-saving)
+                      (unless (lotus-check-session-saving)
                         " noAutoSave"))))
                (cons
                 '(:eval
@@ -332,7 +332,7 @@ want to use in the modeline *in lieu of* the original.")
                                                     (concat ,gap-white-space (propertize (frame-parameter (selected-frame) 'frame-spec-id) 'help-echo "Frame Session name")))))
 
       (setf (tree-node* *mode-line-tree* 2 10) `(:eval
-                                                 (unless (sharad/check-session-saving)
+                                                 (unless (lotus-check-session-saving)
                                                    (concat ,separator (propertize "noAutoSave" 'help-echo "Session auto save is not working.")))))
 
       (setf (tree-node* *mode-line-tree* 2 11) `(:eval (if (car sidebrain-current-stack) (concat ,separator (car sidebrain-current-stack)))))
@@ -361,7 +361,7 @@ want to use in the modeline *in lieu of* the original.")
   (message "setting up mode-line")
   (setup-mode-line)
 
-  (add-hook 'sharad/enable-startup-interrupting-feature-hook
+  (add-hook 'lotus-enable-startup-interrupting-feature-hook
             '(lambda ()
               (add-hook 'after-make-frame-functions
                '(lambda (nframe)

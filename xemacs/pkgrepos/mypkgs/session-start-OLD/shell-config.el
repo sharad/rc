@@ -148,7 +148,7 @@
     (message "start-oneliner: tramp-locked %s tramp-locker %s" tramp-locked tramp-locker)
     ad-return-value)
 
-  (add-hook 'sharad/enable-startup-interrupting-feature-hook
+  (add-hook 'lotus-enable-startup-interrupting-feature-hook
             '(lambda ()
               (ad-enable-advice 'tramp-open-connection-setup-interactive-shell 'after 'start-oneliner)
               (ad-update 'tramp-open-connection-setup-interactive-shell)

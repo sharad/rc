@@ -36,7 +36,7 @@
     (defvar file-cache-directories nil "file-cache-directories")
 
     '(add-hook
-      'sharad/enable-startup-interrupting-feature-hook
+      'lotus-enable-startup-interrupting-feature-hook
       '(lambda ()
         (condition-case e
             (dolist (dir file-cache-directories)

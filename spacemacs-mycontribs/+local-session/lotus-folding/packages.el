@@ -233,7 +233,7 @@ Each entry is either:
           ;; (add-element-to-lists 'hs-hide-initial-comment-block  pgm-langs)
 
           (with-eval-after-load "session-mgr"
-            (add-hook 'sharad/enable-desktop-restore-interrupting-feature
+            (add-hook 'lotus-enable-desktop-restore-interrupting-feature
                       '(lambda ()
                         (add-hook 'find-file-hook 'hs-hide-initial-comment-block)
                         (add-hook 'find-file-hook '(lambda () (ignore-errors (hs-hide-level 2)))))))

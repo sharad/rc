@@ -480,7 +480,7 @@ With prefix arg C-u, copy region instad of killing it."
          (remove-hook 'post-command-hook 'org-add-log-note)
          (org-insert-log-note note)))
 
-     (add-hook 'sharad/enable-startup-interrupting-feature-hook
+     (add-hook 'lotus-enable-startup-interrupting-feature-hook
                '(lambda ()
                  (when nil
                    (add-hook 'after-make-frame-functions
@@ -501,7 +501,7 @@ With prefix arg C-u, copy region instad of killing it."
                                (org-clock-out))))))))
                t)
 
-     (add-hook 'sharad/enable-desktop-restore-interrupting-feature
+     (add-hook 'lotus-enable-desktop-restore-interrupting-feature
                '(lambda ()
                  (if (fboundp 'org-clock-persistence-insinuate)
                      (org-clock-persistence-insinuate)

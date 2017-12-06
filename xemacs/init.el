@@ -138,7 +138,7 @@
 
 
 
-;; (sharad/enable-startup-inperrupting-feature)
+;; (lotus-enable-startup-inperrupting-feature)
 
 (message "emacs ~/.xemacs/init.el loaded")
 

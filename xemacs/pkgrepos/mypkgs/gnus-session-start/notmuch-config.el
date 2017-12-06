@@ -33,7 +33,7 @@
     (if (file-exists-p notmuch-address-command)
         (notmuch-address-message-insinuate)))
 
-  (defun sharad/gnu-notmuch-current-message-id ()
+  (defun lotus-gnu-notmuch-current-message-id ()
     (interactive)
     (let ((id (with-current-buffer gnus-original-article-buffer
                 (nnheader-narrow-to-headers)
@@ -59,10 +59,10 @@
                         (concat "id:" search-id-string)))))
           tag-list)))
 
-  (defun sharad/notmuch-add-jobapply-tag (tag)
+  (defun lotus-notmuch-add-jobapply-tag (tag)
     (interactive
      (list (notmuch-select-tag-with-completion "Tag to add: ")))
-    (let ((search-id-string (sharad/gnu-notmuch-current-message-id)))
+    (let ((search-id-string (lotus-gnu-notmuch-current-message-id)))
       (notmuch-call-notmuch-process "tag" (concat "+" "jobapply") (concat "id:" search-id-string)))))
 
 

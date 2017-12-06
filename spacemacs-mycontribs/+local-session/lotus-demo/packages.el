@@ -36,7 +36,7 @@
 
 (defconst lotus-demo-packages
   '(
-    (eev-all :location local)
+    ;; (eev-all :location local)
     )
   "The list of Lisp packages required by the lotus-demo layer.
 

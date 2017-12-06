@@ -26,20 +26,20 @@
 
 ;;{{ Run after init
 
-(defvar *sharad/after-init-hook* nil "sharad/after-init-hook")
-(defvar sharad/enable-startup-interrupting-feature-hook nil
+(defvar *lotus-after-init-hook* nil "lotus-after-init-hook")
+(defvar lotus-enable-startup-interrupting-feature-hook nil
   "Run only once when when very frame got created after emacs
   startup. Feature that were disabled for proper startup of emacs
   will get re-enabled here.")
-(defvar sharad/disable-startup-interrupting-feature-hook nil
+(defvar lotus-disable-startup-interrupting-feature-hook nil
            "Run only when emacs start from this file only, it
            basically run when this ful get loaded at emacs start
            time")
-(defvar sharad/enable-login-session-interrupting-feature-hook nil
+(defvar lotus-enable-login-session-interrupting-feature-hook nil
       "called before when first frame created, don't mislead by
     login it is for no frame or 1 or more frame hook basiclly
     used accross login where emacs daemon outlive.")
-(defvar sharad/disable-login-session-interrupting-feature nil
+(defvar lotus-disable-login-session-interrupting-feature nil
      "called before when last frame deleted, don't mislead by
     login it is for no frame or 1 or more frame hook basiclly
     used accross login where emacs daemon outlive.")
@@ -52,7 +52,7 @@
 
 (add-hook 'after-init-hook
           #'(lambda ()
-              (run-each-hooks '*sharad/after-init-hook*)))
+              (run-each-hooks '*lotus-after-init-hook*)))
 
 ;;}}
 
@@ -64,7 +64,7 @@
 
   (progn "disable-startup-interrupting-feature"
          (when nil
-          (defvar sharad/disable-startup-interrupting-feature-hook nil
+          (defvar lotus-disable-startup-interrupting-feature-hook nil
       "Run only when emacs start from this file only, it basically run when this ful get loaded at emacs start time"))
     (progn ;;  "xxdis"
       (defun general-disable-startup-setting ()
@@ -77,9 +77,9 @@
         (when (featurep 'epa)
           (if (fboundp 'epa-file-disable)
               (epa-file-disable))))
-      (add-hook 'sharad/disable-startup-interrupting-feature-hook 'general-disable-startup-setting))
+      (add-hook 'lotus-disable-startup-interrupting-feature-hook 'general-disable-startup-setting))
 
-    (defun sharad/disable-startup-interrupting-feature ()
+    (defun lotus-disable-startup-interrupting-feature ()
       "Run only when emacs start from this file only,
 it basically run when this ful get loaded at emacs start time,
 its purpose to disable all interrupting feature that may cause
@@ -97,34 +97,34 @@ problem while emacs startup in daemon mode, non-interactively."
           ;;   (if (fboundp 'epa-file-disable)
           ;;       (epa-file-disable)))
           ;; (global-pabbrev-mode -1)
-          ;; (run-hooks 'sharad/disable-startup-interrupting-feature-hook)
-          (run-each-hooks 'sharad/disable-startup-interrupting-feature-hook)
-          (message "sharad/disable-startup-interrupting-feature() completed Seen.")))
+          ;; (run-hooks 'lotus-disable-startup-interrupting-feature-hook)
+          (run-each-hooks 'lotus-disable-startup-interrupting-feature-hook)
+          (message "lotus-disable-startup-interrupting-feature() completed Seen.")))
 
     ;; run now
-    ;; (sharad/disable-startup-interrupting-feature)
+    ;; (lotus-disable-startup-interrupting-feature)
 
 
 
-    (defun sharad/disable-startup-interrupting-feature-in-frame-once (&optional frame)
+    (defun lotus-disable-startup-interrupting-feature-in-frame-once (&optional frame)
       ;; NOTE: Can not be called in hook.
       ;; (funcall startup-select-frame-fn frame)
       ;; (with-report-error "check"
-      ;;                    (sharad/enable-startup-interrupting-feature))
-      (sharad/disable-startup-interrupting-feature)
-      (remove-hook 'after-init-hook 'sharad/disable-startup-interrupting-feature-in-frame-once))
+      ;;                    (lotus-enable-startup-interrupting-feature))
+      (lotus-disable-startup-interrupting-feature)
+      (remove-hook 'after-init-hook 'lotus-disable-startup-interrupting-feature-in-frame-once))
 
-    ;;(add-hook 'after-init-hook 'sharad/disable-startup-interrupting-feature-in-frame-once)
+    ;;(add-hook 'after-init-hook 'lotus-disable-startup-interrupting-feature-in-frame-once)
     ;; cause problems at the end of deamon strtup, consider implementing after, before lib loads.
 
     ;; run now
-    (sharad/disable-startup-interrupting-feature-in-frame-once))
+    (lotus-disable-startup-interrupting-feature-in-frame-once))
 
 
 
   (progn ;; "enable-startup-interrupting-feature"
    (when nil
-     (defvar sharad/enable-startup-interrupting-feature-hook nil
+     (defvar lotus-enable-startup-interrupting-feature-hook nil
       "Run only once when when very frame got created after emacs startup. Feature that were disabled for proper startup of emacs will get re-enabled here."))
 
     (progn ;; "xxen"
@@ -142,9 +142,9 @@ problem while emacs startup in daemon mode, non-interactively."
         ;; (when (fboundp 'login-to-perforce)
         ;;  (login-to-perforce))
         )
-      (add-hook 'sharad/enable-startup-interrupting-feature-hook 'general-enable-startup-setting t))
+      (add-hook 'lotus-enable-startup-interrupting-feature-hook 'general-enable-startup-setting t))
 
-    (defun sharad/enable-startup-interrupting-feature ()
+    (defun lotus-enable-startup-interrupting-feature ()
       "Run only once when when very frame got created after emacs startup.
 its purpose to re/enable all feature that may have cuused problem in emacs
 startup in daemon mode."
@@ -153,8 +153,8 @@ startup in daemon mode."
       (with-report-error "check"
           ;; why desktop-restore not running.
           (progn
-            (general-enable-startup-setting) ;could not run from sharad/enable-startup-interrupting-feature-hook
-            ;as needed before the function in sharad/enable-startup-interrupting-feature-hook.
+            (general-enable-startup-setting) ;could not run from lotus-enable-startup-interrupting-feature-hook
+            ;as needed before the function in lotus-enable-startup-interrupting-feature-hook.
             (when (and
                    (featurep 'light-symbol)
                    (featurep 'hilit-chg))
@@ -162,31 +162,31 @@ startup in daemon mode."
                                       (light-symbol-mode 1)
                                       (highlight-changes-visible-mode t)
                                       (highlight-changes-mode t)) pgm-langs)))
-          (run-each-hooks 'sharad/enable-startup-interrupting-feature-hook)
-          ;; (sharad/desktop-session-restore)
-          (message "sharad/enable-startup-interrupting-feature() completed Seen.")
+          (run-each-hooks 'lotus-enable-startup-interrupting-feature-hook)
+          ;; (lotus-desktop-session-restore)
+          (message "lotus-enable-startup-interrupting-feature() completed Seen.")
         (setq debug-on-error t )))
 
-    (defvar sharad/enable-startup-interrupting-feature-in-frame-once-lock nil "Lock for sharad/enable-startup-interrupting-feature-in-frame-once")
-    (defun sharad/enable-startup-interrupting-feature-in-frame-once (frame)
-      (if sharad/enable-startup-interrupting-feature-in-frame-once-lock
-          (message-notify "sharad/enable-startup-interrupting-feature-in-frame-once" "locked due to sharad/enable-startup-interrupting-feature-in-frame-once-lock is t")
+    (defvar lotus-enable-startup-interrupting-feature-in-frame-once-lock nil "Lock for lotus-enable-startup-interrupting-feature-in-frame-once")
+    (defun lotus-enable-startup-interrupting-feature-in-frame-once (frame)
+      (if lotus-enable-startup-interrupting-feature-in-frame-once-lock
+          (message-notify "lotus-enable-startup-interrupting-feature-in-frame-once" "locked due to lotus-enable-startup-interrupting-feature-in-frame-once-lock is t")
           (progn
-            (setq sharad/enable-startup-interrupting-feature-in-frame-once-lock t)
+            (setq lotus-enable-startup-interrupting-feature-in-frame-once-lock t)
             (funcall startup-select-frame-fn frame)
             ;; (with-report-error "check"
-            ;;                    (sharad/enable-startup-interrupting-feature))
-            (sharad/enable-startup-interrupting-feature)
-            (remove-hook 'after-make-frame-functions 'sharad/enable-startup-interrupting-feature-in-frame-once)
-            (setq sharad/enable-startup-interrupting-feature-in-frame-once-lock nil))))
+            ;;                    (lotus-enable-startup-interrupting-feature))
+            (lotus-enable-startup-interrupting-feature)
+            (remove-hook 'after-make-frame-functions 'lotus-enable-startup-interrupting-feature-in-frame-once)
+            (setq lotus-enable-startup-interrupting-feature-in-frame-once-lock nil))))
 
-    (add-hook 'after-make-frame-functions 'sharad/enable-startup-interrupting-feature-in-frame-once)))
+    (add-hook 'after-make-frame-functions 'lotus-enable-startup-interrupting-feature-in-frame-once)))
 
 ;;;###autoload
 (defun add-to-enable-startup-interrupting-feature-hook (fn &optional append local)
   (interactive)
   (add-to-hook
-   'sharad/enable-startup-interrupting-feature-hook
+   'lotus-enable-startup-interrupting-feature-hook
    fn
    append
    local))
@@ -195,7 +195,7 @@ startup in daemon mode."
 (defun remove-from-enable-startup-interrupting-feature-hook (fn &optional local)
   (interactive)
   (remove-hook
-   'sharad/enable-startup-interrupting-feature-hook
+   'lotus-enable-startup-interrupting-feature-hook
    fn
    local))
 
@@ -203,7 +203,7 @@ startup in daemon mode."
 (defun add-to-disable-startup-interrupting-feature-hook (fn &optional append local)
   (interactive)
   (add-to-hook
-   'sharad/disable-startup-interrupting-feature-hook
+   'lotus-disable-startup-interrupting-feature-hook
    fn
    append
    local))
@@ -212,10 +212,10 @@ startup in daemon mode."
 (defun remove-from-disable-startup-interrupting-feature-hook (fn &optional local)
   (interactive)
   (remove-hook
-   'sharad/disable-startup-interrupting-feature-hook
+   'lotus-disable-startup-interrupting-feature-hook
    fn
    local))
-  ;; (sharad/enable-startup-interrupting-feature-in-frame-once (selected-frame))
+  ;; (lotus-enable-startup-interrupting-feature-in-frame-once (selected-frame))
 ;;}}
 
 ;;{{
@@ -233,41 +233,41 @@ startup in daemon mode."
   (progn ;; "disable-login-session-interrupting-feature"
 
     (when nil
-      (defvar sharad/disable-login-session-interrupting-feature nil
+      (defvar lotus-disable-login-session-interrupting-feature nil
      "called before when last frame deleted, don't mislead by
     login it is for no frame or 1 or more frame hook basiclly
     used accross login where emacs daemon outlive."))
 
-   (defun sharad/disable-login-session-interrupting-feature ()
+   (defun lotus-disable-login-session-interrupting-feature ()
      (interactive)
      ;; (login-to-perforce)
      ;; (update-ssh-agent t)
      (setq debug-on-error nil)           ;for planner
      (with-report-error "check"
-         (run-each-hooks 'sharad/disable-login-session-interrupting-feature)))
+         (run-each-hooks 'lotus-disable-login-session-interrupting-feature)))
 
-   (defun sharad/disable-login-session-interrupting-feature-in-frame-once (f)
+   (defun lotus-disable-login-session-interrupting-feature-in-frame-once (f)
      (if (any-frame-opened-p) ;last
                                                                             ;frame
                                                                             ;then
                                                                             ;add.
        (with-report-error "check"
-           (sharad/disable-login-session-interrupting-feature)
-           (add-hook 'after-make-frame-functions 'sharad/enable-login-session-interrupting-feature-in-frame-once t)
-           (message "added sharad/enable-login-session-interrupting-feature-in-frame-once"))
-       (message "sharad/disable-login-session-interrupting-feature-in-frame-once: not running.")))
+           (lotus-disable-login-session-interrupting-feature)
+           (add-hook 'after-make-frame-functions 'lotus-enable-login-session-interrupting-feature-in-frame-once t)
+           (message "added lotus-enable-login-session-interrupting-feature-in-frame-once"))
+       (message "lotus-disable-login-session-interrupting-feature-in-frame-once: not running.")))
 
-   (add-hook 'delete-frame-functions 'sharad/disable-login-session-interrupting-feature-in-frame-once))
+   (add-hook 'delete-frame-functions 'lotus-disable-login-session-interrupting-feature-in-frame-once))
 
   (progn ;; "enable-login-session-interrupting-feature"
 
     (when nil
-      (defvar sharad/enable-login-session-interrupting-feature-hook nil
+      (defvar lotus-enable-login-session-interrupting-feature-hook nil
       "called before when first frame created, don't mislead by
     login it is for no frame or 1 or more frame hook basiclly
     used accross login where emacs daemon outlive."))
 
-    (defun sharad/enable-login-session-interrupting-feature ()
+    (defun lotus-enable-login-session-interrupting-feature ()
       (interactive)
       ;; (setenv "DISPLAY" ":1")
       (with-report-error "check"
@@ -275,28 +275,28 @@ startup in daemon mode."
           ;; (when (fboundp 'login-to-perforce)
           ;;   (login-to-perforce))
           ;; (update-ssh-agent t)  ; test
-          ;; (update-ssh-agent) ;; should be called when tramp file accessed. - see how it will work in case sharad/desktop-session-restore.
+          ;; (update-ssh-agent) ;; should be called when tramp file accessed. - see how it will work in case lotus-desktop-session-restore.
           (setq debug-on-error t)           ;for planner
-          (run-each-hooks 'sharad/enable-login-session-interrupting-feature-hook)))
+          (run-each-hooks 'lotus-enable-login-session-interrupting-feature-hook)))
 
-    (defun sharad/enable-login-session-interrupting-feature-in-frame-once (frame)
+    (defun lotus-enable-login-session-interrupting-feature-in-frame-once (frame)
       (funcall startup-select-frame-fn frame)
       ;; run and disable.
       (with-report-error "check"
           (when (any-frame-opened-p)
-            (sharad/enable-login-session-interrupting-feature))
-          (remove-hook 'after-make-frame-functions 'sharad/enable-login-session-interrupting-feature-in-frame-once)
+            (lotus-enable-login-session-interrupting-feature))
+          (remove-hook 'after-make-frame-functions 'lotus-enable-login-session-interrupting-feature-in-frame-once)
           (when t
-            (message "removed sharad/enable-login-session-interrupting-feature-in-frame-once"))))
+            (message "removed lotus-enable-login-session-interrupting-feature-in-frame-once"))))
 
-    ;; (sharad/enable-login-session-interrupting-feature-in-frame-once (selected-frame))
-    (add-hook 'after-make-frame-functions 'sharad/enable-login-session-interrupting-feature-in-frame-once t)))
+    ;; (lotus-enable-login-session-interrupting-feature-in-frame-once (selected-frame))
+    (add-hook 'after-make-frame-functions 'lotus-enable-login-session-interrupting-feature-in-frame-once t)))
 
 ;;;###autoload
 (defun add-to-enable-login-session-interrupting-feature-hook (fn &optional append local)
   (interactive)
   (add-to-hook
-   'sharad/enable-login-session-interrupting-feature-hook
+   'lotus-enable-login-session-interrupting-feature-hook
    fn
    append
    local))
@@ -305,14 +305,14 @@ startup in daemon mode."
 (defun remove-from-enable-login-session-interrupting-feature-hook (fn &optional local)
   (interactive)
   (remove-hook
-   'sharad/enable-login-session-interrupting-feature-hook
+   'lotus-enable-login-session-interrupting-feature-hook
    fn
    local))
 
 (defun add-to-disable-login-session-interrupting-feature-hook (fn &optional append local)
   (interactive)
   (add-to-hook
-   'sharad/disable-login-session-interrupting-feature-hook
+   'lotus-disable-login-session-interrupting-feature-hook
    fn
    append
    local))
@@ -321,7 +321,7 @@ startup in daemon mode."
 (defun remove-from-disable-login-session-interrupting-feature-hook (fn &optional local)
   (interactive)
   (remove-hook
-   'sharad/disable-login-session-interrupting-feature-hook
+   'lotus-disable-login-session-interrupting-feature-hook
    fn
    local))
 

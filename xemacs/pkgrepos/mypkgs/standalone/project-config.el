@@ -114,7 +114,7 @@
     (deh-require-maybe iproject
       ;; http://www.emacswiki.org/emacs/IProject
       (iproject-key-binding)
-      (add-hook '*sharad/after-init-hook*
+      (add-hook '*lotus-after-init-hook*
                 '(lambda ()
                   (iproject-key-binding))))
 
