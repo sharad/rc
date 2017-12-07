@@ -1,3 +1,3 @@
-(define-package "org-context-clock" "20171206.1725" "org-context-clock"
+(define-package "org-context-clock" "20171208.243" "org-context-clock"
                 '((timer-utils-lotus "1")
                   (org-misc-utils-lotus "1")))

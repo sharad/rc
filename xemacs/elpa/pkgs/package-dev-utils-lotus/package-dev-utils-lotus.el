@@ -39,7 +39,7 @@
 
 (defvar package-source-path "~/.xemacs/elpa/pkgs" "Source code path for packages.")
 (defvar package-local-dev-archive "local" "Local archive specified in package-archives")
-
+(defvar *package-install-packages-wait-secs-in-install* 7)
 
 (setq package-archive-upload-base "~/.xemacs/elpa/upload")
 
@@ -288,7 +288,7 @@
   (let ((base package-source-path))
     (dolist (f (directory-files base))
       (let ((pkgdir (expand-file-name f base)))
-        (sleep-for 2)
+        (sleep-for *package-install-packages-wait-secs-in-install*)
         (when (and (file-directory-p pkgdir)
                    (not (equal f ".."))
                    (not (equal f ".")))
