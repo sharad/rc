@@ -6,11 +6,12 @@
 #+TAGS: CVS(i) PHONE(p) INTERNET(i)
 #+SEQ_TODO: TODO STARTED DONE
 
-* Work - emacs: Emacs for me.
+* STARTED Work - emacs: Emacs for me.
   :PROPERTIES:
   :Effort:   4d 4:00
   :END:
   :LOGBOOK:
+  CLOCK: [2017-12-07 Thu 22:53]
   CLOCK: [2016-09-17 Sat 19:40]--[2016-09-17 Sat 19:41] =>  0:01
   :END:
 Yes
@@ -22,7 +23,10 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-06 Wed 23:28]
+   CLOCK: [2017-12-07 Thu 22:11]--[2017-12-07 Thu 22:35] =>  0:24
+   CLOCK: [2017-12-07 Thu 15:22]--[2017-12-07 Thu 22:02] =>  6:40
+   CLOCK: [2017-12-07 Thu 00:46]--[2017-12-07 Thu 00:51] =>  0:05
+   CLOCK: [2017-12-06 Wed 23:28]--[2017-12-07 Thu 00:23] =>  0:55
    CLOCK: [2017-12-06 Wed 23:14]--[2017-12-06 Wed 23:23] =>  0:09
    CLOCK: [2017-12-06 Wed 22:33]--[2017-12-06 Wed 22:34] =>  0:01
    CLOCK: [2017-12-06 Wed 22:09]--[2017-12-06 Wed 22:15] =>  0:06

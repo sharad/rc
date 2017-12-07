@@ -49,6 +49,14 @@
 (defun get-alist (key alist)
   (cdr (assoc key alist)))
 
+(defun elscreen--del-alist (key alist)
+  "Delete an element whose car equals KEY from ALIST.
+Return the modified ALIST."
+  (let ((pair (assoc key alist)))
+    (if pair
+        (delq pair alist)
+        alist)))
+
 (progn ;; deh-require-maybe elscreen
   ;; toggle-ibuffer-group
   (require 'buffer-utils)
@@ -104,7 +112,7 @@
       (unless (frame-parameter frame 'altscreen)
         (set-frame-parameter frame 'altscreen nil))
       (set-frame-parameter frame 'altscreen
-                           (del-alist screennum place))))
+                           (elscreen--del-alist screennum place))))
 ;;;###autoload
   (defun launcher-get-elscreen-altname (&optional frame screennum)
     (interactive)

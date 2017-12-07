@@ -407,6 +407,26 @@ document bpwithcmds
   Test
 end
 
+define tracef
+  # https://stackoverflow.com/questions/17672701/automate-gdb-to-print-stack-frame-at-a-particular-breakpoint
+  # set var $bpoint = $arg0
+  break $arg0
+  commands
+    print "called ", $arg0
+    shell date
+    bt
+    continue
+  end
+
+  set pagination off
+  set logging file gdb.txt
+  set logging on
+end
+document tracef
+  trace function
+end
+
+
 # https://stackoverflow.com/questions/16480045/print-the-whole-linked-list-in-gdb
 define count_linklistnodes
   set var $n = $arg0
@@ -472,5 +492,15 @@ end
 
 handle SIGUSR1 noprint nostop
 
+# tracef keyboard.c:2876
+tracef timer_stop_idle
+
+break keyboard.c:2896
+commands
+  print c
+  continue
+end
+
+continue
 
 # End of the eev block.
