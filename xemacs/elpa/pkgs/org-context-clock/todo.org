@@ -11,7 +11,7 @@
   :Effort:   4d 4:00
   :END:
   :LOGBOOK:
-  CLOCK: [2017-12-07 Thu 22:53]
+  CLOCK: [2017-12-07 Thu 22:53]--[2017-12-07 Thu 23:14] =>  0:21
   CLOCK: [2016-09-17 Sat 19:40]--[2016-09-17 Sat 19:41] =>  0:01
   :END:
 Yes
@@ -23,6 +23,9 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-12-07 Thu 23:53]
+   CLOCK: [2017-12-07 Thu 23:25]--[2017-12-07 Thu 23:49] =>  0:24
+   CLOCK: [2017-12-07 Thu 23:20]--[2017-12-07 Thu 23:23] =>  0:03
    CLOCK: [2017-12-07 Thu 22:11]--[2017-12-07 Thu 22:35] =>  0:24
    CLOCK: [2017-12-07 Thu 15:22]--[2017-12-07 Thu 22:02] =>  6:40
    CLOCK: [2017-12-07 Thu 00:46]--[2017-12-07 Thu 00:51] =>  0:05
@@ -404,6 +407,76 @@ Yes
    CLOCK: [2016-02-03 Wed 01:10]--[2016-02-03 Wed 01:30] =>  0:20
    :END:
 *** Critical BUGS are here
+**** lucid-menu-bar-dirty-flag is getting set cause resetting of current-idle-time
+TODO: DEBUG it how it gets dirty
+trace it who on earth making it dirty so often using (set-menubar-dirty-flag)
+it is here /usr/share/emacs/24.5/lisp/obsolete/lmenu.el.gz
+***** Normal case
+ #+BEGIN_SRC gdb
+ Thread 1 "emacs" hit Breakpoint 1, read_char (commandflag=0x1, map=map@entry=0x8508766, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef1ccb, end_time=end_time@entry=0x0) at keyboard.c:2916
+ 2916	in keyboard.c
+ $768 = void
+ Thu Dec  7 23:33:41 IST 2017
+ #0  read_char (commandflag=0x1, map=map@entry=0x8508766, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef1ccb, end_time=end_time@entry=0x0) at keyboard.c:2916
+ #1  0x00000000004edc0d in read_key_sequence (keybuf=keybuf@entry=0x7ffea9ef1da0, prompt=0xbd3f72, dont_downcase_last=dont_downcase_last@entry=0x0, can_return_switch_frame=can_return_switch_frame@entry=0x1, fix_current_buffer=fi
+ x_current_buffer@entry=0x1, prevent_redisplay=prevent_redisplay@entry=0x0, bufsize=0x1e) at keyboard.c:9089
+ #2  0x00000000004ef970 in command_loop_1 () at keyboard.c:1453
+ #3  0x0000000000553327 in internal_condition_case (bfun=bfun@entry=0x4ef770 <command_loop_1>, handlers=<optimized out>, hfun=hfun@entry=0x4e6420 <cmd_error>) at eval.c:1348
+ #4  0x00000000004e189e in command_loop_2 (ignore=ignore@entry=0xbd3f72) at keyboard.c:1178
+ #5  0x000000000055320b in internal_catch (tag=0xbf1ed2, func=func@entry=0x4e1880 <command_loop_2>, arg=0xbd3f72) at eval.c:1112
+ #6  0x00000000004e5f96 in command_loop () at keyboard.c:1149
+ #7  recursive_edit_1 () at keyboard.c:778
+ #8  0x000000000050ed8f in read_minibuf (map=map@entry=0xbcf6e6, initial=initial@entry=0xbd3f72, prompt=<optimized out>, prompt@entry=0x5de64c1, expflag=<optimized out>, histvar=histvar@entry=0xbfbce2, histpos=<optimized out>, d
+ efalt=0x8623006, allow_props=0x0, inherit_input_method=0x0) at minibuf.c:674
+ #9  0x000000000050f39f in Fread_from_minibuffer (prompt=0x5de64c1, initial_contents=0xbd3f72, keymap=0xbcf6e6, read=0xbd3f72, hist=<optimized out>, default_value=0x8623006, inherit_input_method=0xbd3f72) at minibuf.c:957
+ #10 0x0000000000555037 in Ffuncall (nargs=<optimized out>, args=args@entry=0x7ffea9ef2138) at eval.c:2844
+ #11 0x000000000058a2a3 in exec_byte_code (bytestr=<optimized out>, vector=0x86b24d, maxdepth=<optimized out>, args_template=<optimized out>, nargs=nargs@entry=0x2, args=<optimized out>, args@entry=0x86b229 <pure+122249>) at byt
+ ecode.c:916
+ #12 0x0000000000554bc7 in funcall_lambda (fun=0x7ffea9ef2340, nargs=nargs@entry=0x2, arg_vector=0x86b229 <pure+122249>, arg_vector@entry=0x7ffea9ef22d8) at eval.c:2978
+ #13 0x0000000000554ecb in Ffuncall (nargs=0x3, args=args@entry=0x7ffea9ef22d0) at eval.c:2872
+ #14 0x000000000058a2a3 in exec_byte_code (bytestr=<optimized out>, vector=0x92b53d, maxdepth=<optimized out>, args_template=<optimized out>, nargs=<optimized out>, args=<optimized out>) at bytecode.c:916
+ #15 0x00000000005543f3 in eval_sub (form=form@entry=0x92b4ee) at eval.c:2187
+ #16 0x0000000000557be4 in Feval (form=form@entry=0x92b4ee, lexical=<optimized out>) at eval.c:1996
+ #17 0x0000000000550c16 in Fcall_interactively (function=0xf4d172, record_flag=0xbd3f72, keys=0xbdc6bd) at callint.c:345
+ #18 0x000000000055509d in Ffuncall (nargs=<optimized out>, args=args@entry=0x7ffea9ef2618) at eval.c:2818
+ #19 0x000000000058a2a3 in exec_byte_code (bytestr=<optimized out>, vector=0x92d575, maxdepth=<optimized out>, args_template=<optimized out>, nargs=nargs@entry=0x1, args=<optimized out>, args@entry=0x92d551 <pure+917681>) at byt
+ ecode.c:916
+ #20 0x0000000000554bc7 in funcall_lambda (fun=0x0, nargs=nargs@entry=0x1, arg_vector=0x92d551 <pure+917681>, arg_vector@entry=0x7ffea9ef2778) at eval.c:2978
+ #21 0x0000000000554ecb in Ffuncall (nargs=nargs@entry=0x2, args=args@entry=0x7ffea9ef2770) at eval.c:2872
+ #22 0x00000000005551ea in call1 (fn=<optimized out>, arg1=<optimized out>) at eval.c:2610
+
+ #23 0x00000000004efb0d in command_loop_1 () at keyboard.c:1560 NOTE
+ #24 0x0000000000553327 in internal_condition_case (bfun=bfun@entry=0x4ef770 <command_loop_1>, handlers=<optimized out>, hfun=hfun@entry=0x4e6420 <cmd_error>) at eval.c:1348
+ #25 0x00000000004e189e in command_loop_2 (ignore=ignore@entry=0xbd3f72) at keyboard.c:1178
+ #26 0x000000000055320b in internal_catch (tag=0xbdf7a2, func=func@entry=0x4e1880 <command_loop_2>, arg=0xbd3f72) at eval.c:1112
+ #27 0x00000000004e6007 in command_loop () at keyboard.c:1157
+ #28 recursive_edit_1 () at keyboard.c:778
+ #29 0x00000000004e6348 in Frecursive_edit () at keyboard.c:849
+ #30 0x0000000000413ff1 in main (argc=<optimized out>, argv=0x7ffea9ef2b38) at emacs.c:1642
+ #+END_SRC
+
+***** Buggy case
+#+BEGIN_SRC gdb
+ Thread 1 "emacs" hit Breakpoint 1, read_char (commandflag=0x1, map=map@entry=0x547b0a6, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef26fb, end_time=end_time@entry=0x0) at keyboard.c:2916
+ 2916	in keyboard.c
+ $875 = void
+ Thu Dec  7 23:34:16 IST 2017
+ #0  read_char (commandflag=0x1, map=map@entry=0x547b0a6, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef26fb, end_time=end_time@entry=0x0) at keyboard.c:2916
+ #1  0x00000000004edc0d in read_key_sequence (keybuf=keybuf@entry=0x7ffea9ef27d0, prompt=0xbd3f72, dont_downcase_last=dont_downcase_last@entry=0x0, can_return_switch_frame=can_return_switch_frame@entry=0x1, fix_current_buffer=fi
+ x_current_buffer@entry=0x1, prevent_redisplay=prevent_redisplay@entry=0x0, bufsize=0x1e) at keyboard.c:9089
+
+ #2  0x00000000004ef970 in command_loop_1 () at keyboard.c:1453  NOTE
+ #3  0x0000000000553327 in internal_condition_case (bfun=bfun@entry=0x4ef770 <command_loop_1>, handlers=<optimized out>, hfun=hfun@entry=0x4e6420 <cmd_error>) at eval.c:1348
+ #4  0x00000000004e189e in command_loop_2 (ignore=ignore@entry=0xbd3f72) at keyboard.c:1178
+ #5  0x000000000055320b in internal_catch (tag=0xbdf7a2, func=func@entry=0x4e1880 <command_loop_2>, arg=0xbd3f72) at eval.c:1112
+ #6  0x00000000004e6007 in command_loop () at keyboard.c:1157
+ #7  recursive_edit_1 () at keyboard.c:778
+ #8  0x00000000004e6348 in Frecursive_edit () at keyboard.c:849
+ #9  0x0000000000413ff1 in main (argc=<optimized out>, argv=0x7ffea9ef2b38) at emacs.c:1642
+#+END_SRC
+
+
+
 **** It is still not known why (require 'misc-utils) in
 lotus-interactivity/packages.el of (lotus-interactivity/post-init-ido)
 is only casing speacemacs to load properly with all features and themes

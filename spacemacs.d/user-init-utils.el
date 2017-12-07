@@ -455,8 +455,8 @@ variable."
            (run-with-timer 1 2
                            '(lambda ()
                               ;; (message "Test: From timer idle for org %d secs emacs %d secs" (org-emacs-idle-seconds) (float-time (current-idle-time)))
-                              (let* ((idle (float-time (current-idle-time)))
-                                     (idle (or idle 0)))
+                             (let* ((idle (current-idle-time))
+                                    (idle (if idle (float-time (current-idle-time)) 0)))
                                 (message "Test: From timer idle for secs emacs %d secs" idle))
                               ;; (push (org-emacs-idle-seconds) emacs-idle-times-list)
                               )))))

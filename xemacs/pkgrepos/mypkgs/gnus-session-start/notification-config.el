@@ -34,7 +34,8 @@
             '("nnimap+localhost:Office.INBOX" "nnimap+localhost:Office.lists.info.india" "nnimap+localhost:Office.lists.info.india-misc")
             '("nnimap+localhost:nnimap+localhost:Gmail.INBOX"))))
 
-(when (xrequire 'gnus-notify+)
+(when nil                               ;guess this is the culprit
+ (when (xrequire 'gnus-notify+)
   (defun gnus-notify+-around (orig-fun &rest args)
     (when gnus-current-startup-file
       (apply orig-fun args)))
@@ -42,12 +43,12 @@
   ;; adding (modeline-notify t) to group for gnus-notify+
   (set-or-nconc gnus-parameters           ;check for set-or-nconc in macros.el
                 `((,(mapconcat 'identity gnus-mst-notify-groups "\\|")
-                    '(modeline-notify t))))
+                    '(modeline-notify t)))) ;BUG here this modeline-notify must be causing trouble.
 
   ;; (add-hook 'gnus-summary-exit-hook 'gnus-notify+)
   ;; (add-hook 'gnus-group-catchup-group-hook 'gnus-notify+)
   ;; (add-hook 'mail-notify-pre-hook 'gnus-notify+)
-  )
+  ))
 
 ;; (macroexpand `(set-or-nconc xgnus-parameters           ;check for set-or-nconc in macros.el
 ;;                             ( ,(mapconcat 'identity gnus-mst-notify-groups "|")
