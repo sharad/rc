@@ -30,6 +30,11 @@
 
 ;; (require 'mode-line-config)
 
+(require 'spaceline)
+
+(eval-when-compile
+  '(require 'spaceline))
+
 (require 'file-utils)
 
 (defvar org-clock-work-day-hours 8 "work day hours")

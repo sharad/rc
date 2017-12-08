@@ -1,1 +1,1 @@
-(define-package "remember-unified" "20171208.245" "remember-unified" nil)
+(define-package "remember-unified" "20171209.40" "remember-unified" nil)

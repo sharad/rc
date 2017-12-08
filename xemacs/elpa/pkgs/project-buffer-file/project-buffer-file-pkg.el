@@ -1,1 +1,1 @@
-(define-package "project-buffer-file" "20171208.244" "project-buffer-file" nil)
+(define-package "project-buffer-file" "20171209.39" "project-buffer-file" nil)

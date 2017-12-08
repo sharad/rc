@@ -295,43 +295,43 @@
           (ignore-errors
            (package-install-package-from-dir pkgdir)))))))
 
-(when nil
-  '(
-    (package-desc-name (package-make-package-desc "sessions-unified" "local"))
+;; (when nil
+;;   '(
+;;     (package-desc-name (package-make-package-desc "sessions-unified" "local"))
 
-    (package-install 'sessions-unified)
+;;     (package-install 'sessions-unified)
 
-    (package-delete (package-make-package-desc "org-context-clocking" "local"))
+;;     (package-delete (package-make-package-desc "org-context-clocking" "local"))
 
-    (package-install (package-make-package-desc "sessions-unified" "local"))
+;;     (package-install (package-make-package-desc "sessions-unified" "local"))
 
-    (package-delete (package-make-package-desc "sessions-unified" "local"))
+;;     (package-delete (package-make-package-desc "sessions-unified" "local"))
 
-    (package-delete 'sessions-unified)
+;;     (package-delete 'sessions-unified)
 
-    (package-read-archive-contents "local")
+;;     (package-read-archive-contents "local")
 
-    package-archives
+;;     package-archives
 
-    (package-read-all-archive-contents)
+;;     (package-read-all-archive-contents)
 
-    (intern "xxx")
+;;     (intern "xxx")
 
-    (package- 'semi)
+;;     (package- 'semi)
 
-    (package-installed-p )
+;;     (package-installed-p )
 
-    (package-install "semi")
+;;     (package-install "semi")
 
-    (symbol-name (package-desc-name (package-make-package-desc "sessions-unified")))
+;;     (symbol-name (package-desc-name (package-make-package-desc "sessions-unified")))
 
-    (assoc 'sessions-unified (package--read-archive-file
-                              (expand-file-name "archive-contents" package-archive-upload-base)))
+;;     (assoc 'sessions-unified (package--read-archive-file
+;;                               (expand-file-name "archive-contents" package-archive-upload-base)))
 
-    (pp-to-string '(define-package "task-manager" "20170717.0116" "task manager." '((publishing "201707.2029")))
+;;     (pp-to-string '(define-package "task-manager" "20170717.0116" "task manager." '((publishing "201707.2029")))
 
-     ))
-  )
+;;      ))
+;;   )
 
 (provide 'package-dev-utils-lotus)
 ;;; package-dev-utils-lotus.el ends here

@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+(defvar debug-tags-level-list)          ;prepare debug it is in xlotus-debug-config
+
 (add-to-list 'debug-tags-level-list
              '(timer 4))
 

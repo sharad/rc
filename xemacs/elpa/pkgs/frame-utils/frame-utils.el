@@ -96,7 +96,7 @@ Return the modified ALIST."
     (interactive "sname:")
     (let* ((frame (or frame (selected-frame)))
            (screennum (or screennum (elscreen-get-current-screen)))
-           (place (get-alist 'altscreen (frame-parametersq frame))))
+           (place (get-alist 'altscreen (frame-parameters frame))))
       (unless (frame-parameter frame 'altscreen)
         (set-frame-parameter frame 'altscreen nil))
       (set-frame-parameter frame 'altscreen
