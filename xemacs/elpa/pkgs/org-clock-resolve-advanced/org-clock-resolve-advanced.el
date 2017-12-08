@@ -178,7 +178,7 @@
   (interactive)
   ""
   (let ((debug-prompt t)
-        (default (org-rl-get-time-gap)))
+        (default (org-rl-get-time-gap prev next)))
 
     (let* ((options
             (append
@@ -202,7 +202,7 @@
                options)
               options)))
            (timelen
-            (let ((default (org-rl-get-time-gap)))
+            (let ((default (org-rl-get-time-gap prev next)))
               (if (or (zerop default)
                       (memq opt
                             '(done

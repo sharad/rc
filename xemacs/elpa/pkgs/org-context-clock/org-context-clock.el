@@ -124,7 +124,7 @@
         (if (and buff
                  (buffer-live-p buff)
                  (not (minibufferp buff))
-                 (not (and
+                 (not (and              ;Reconsider whether it is catching case after some delay.
                        (equal *org-context-clock-task-previous-context* context)
                        (equal *org-context-clock-task-current-context*  context))))
             (progn
@@ -226,9 +226,8 @@
             (org-context-clock-message 6
              "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
                      context)
-            (when nil                   ;disabling to check why current-idle-time no working properly.
-             (org-context-clock-add-context-to-org-heading-when-idle context 17))
-            )))))
+            (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
+             (org-context-clock-add-context-to-org-heading-when-idle context 17)))))))
 
 ;;;###autoload
 (defun org-context-clock-run-task-current-context-timer ()
