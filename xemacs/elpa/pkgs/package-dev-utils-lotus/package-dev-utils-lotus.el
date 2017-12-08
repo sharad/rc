@@ -104,7 +104,7 @@
         (error "not able to find package for %s" pkg-name))))
 
 ;;;###autoload
-(defun package-build-package-dir (dir)
+(defun package-build-package-from-dir (dir)
   (interactive
    (let ((dir (read-directory-name "package directory: ")))
      (list dir)))
@@ -209,11 +209,11 @@
                     tmp-dir pkg-name version))))))
 
 ;;;###autoload
-(defun package-upload-package-dir (dir &optional archive)
+(defun package-upload-package-from-dir (dir &optional archive)
   (interactive
    (let ((dir (read-directory-name "package directory: ")))
      (list dir)))
-  (let* ((pkg-tar (package-build-package-dir dir))
+  (let* ((pkg-tar (package-build-package-from-dir dir))
          (pkg-name
           (replace-regexp-in-string
            "-[0-9\.]\*\.tar\\(\.gz\\)?\$" ""
@@ -239,11 +239,11 @@
     (package-make-package-desc pkg-name (or archive package-local-dev-archive))))
 
 ;;;###autoload
-(defun package-install-package-dir (dir)
+(defun package-install-package-from-dir (dir)
   (interactive
    (let ((dir (read-directory-name "package directory: ")))
      (list dir)))
-  (let* ((pkg-desc (package-upload-package-dir dir))
+  (let* ((pkg-desc (package-upload-package-from-dir dir))
          (pkg-sym (package-desc-name pkg-desc))
          (pkg-name (symbol-name pkg-sym)))
     (when (package-installed-p pkg-sym)
@@ -271,7 +271,7 @@
         (when (and (file-directory-p pkgdir)
                    (not (equal f ".."))
                    (not (equal f ".")))
-          (package-build-package-dir pkgdir))))))
+          (package-build-package-from-dir pkgdir))))))
 ;;;###autoload
 (defun package-upload-packages-from-source-path ()
   (interactive)
@@ -281,7 +281,7 @@
         (when (and (file-directory-p pkgdir)
                    (not (equal f ".."))
                    (not (equal f ".")))
-          (package-upload-package-dir pkgdir))))))
+          (package-upload-package-from-dir pkgdir))))))
 ;;;###autoload
 (defun package-install-packages-from-source-path ()
   (interactive)
@@ -293,7 +293,7 @@
                    (not (equal f ".."))
                    (not (equal f ".")))
           (ignore-errors
-           (package-install-package-dir pkgdir)))))))
+           (package-install-package-from-dir pkgdir)))))))
 
 (when nil
   '(
