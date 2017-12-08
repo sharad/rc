@@ -124,7 +124,7 @@
         (if (and buff
                  (buffer-live-p buff)
                  (not (minibufferp buff))
-                 (not (and              ;Reconsider whether it is catching case after some delay.
+                 (not (and              ;BUG: Reconsider whether it is catching case after some delay.
                        (equal *org-context-clock-task-previous-context* context)
                        (equal *org-context-clock-task-current-context*  context))))
             (progn

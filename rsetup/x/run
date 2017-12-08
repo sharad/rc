@@ -151,12 +151,12 @@ if [ $DISPLAY ] ; then
          xset b off >> ~/.xsession-errors 2>&1 # peace
      fi
 
-    # set fonts
-     if [  -r ~/.emacs.d/server/general ]
-     then
-         # emacsclient -n -d $DISPLAY -f ~/.emacs.d/server/general -e '(mycustom-face-set)'
-         :
-     fi
+    # # set fonts
+    #  if [  -r ~/.emacs.d/server/general ]
+    #  then
+    #      # emacsclient -n -d $DISPLAY -f ~/.emacs.d/server/general -e '(mycustom-face-set)'
+    #      :
+    #  fi
 
 
      if whence -p osdsh >> ~/.xsession-errors 2>&1 &&
