@@ -522,7 +522,7 @@ which is responsible to load many features.
       :Root:     ~/.xemacs/elpa/pkgs/org-clock-resolve-advanced/
       :END:
       :LOGBOOK:
-      CLOCK: [2017-12-08 Fri 17:41]
+      CLOCK: [2017-12-08 Fri 17:41]--[2017-12-08 Fri 21:31] =>  3:50
       CLOCK: [2017-12-08 Fri 17:40]
       CLOCK: [2017-12-04 Mon 03:16]--[2017-12-04 Mon 03:25] =>  0:09
       CLOCK: [2017-12-03 Sun 23:44]--[2017-12-03 Sun 23:46] =>  0:02
