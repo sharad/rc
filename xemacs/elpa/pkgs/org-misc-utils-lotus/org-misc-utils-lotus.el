@@ -55,6 +55,7 @@ v;;; org-misc-utils-lotus.el --- copy config
 (put 'org-with-file-headline 'lisp-indent-function 2)
 
 (defun org-lotus-new-lower-win-size ()
+  ;; TODO: improve it.
   ;; If the mode line might interfere with the calculator
   ;; buffer, use 3 lines instead.
   (if (and

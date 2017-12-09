@@ -1,7 +1,7 @@
 
 (defun dotspacemacs/reinit ()
   (setq-default
-   dotspacemacs-which-key-delay 3.0)
+   dotspacemacs-which-key-delay 3.0)    ;BUG not working
   )
 
 
