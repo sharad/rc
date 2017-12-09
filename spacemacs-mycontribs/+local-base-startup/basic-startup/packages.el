@@ -39,8 +39,7 @@
     (basic-utils :location local)
     (init-setup :location local)
     (utils-custom :location local)
-    (startup-hooks :location local)
-
+    startup-hooks
     sessions-unified
     elscreen
     )

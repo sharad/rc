@@ -184,6 +184,9 @@ startup in daemon mode."
 
 ;;;###autoload
 (defun add-to-enable-startup-interrupting-feature-hook (fn &optional append local)
+  "Run only once when when very frame got created after emacs
+  startup. Feature that were disabled for proper startup of emacs
+  will get re-enabled here."
   (interactive)
   (add-to-hook
    'lotus-enable-startup-interrupting-feature-hook
@@ -193,6 +196,9 @@ startup in daemon mode."
 
 ;;;###autoload
 (defun remove-from-enable-startup-interrupting-feature-hook (fn &optional local)
+  "Run only once when when very frame got created after emacs
+  startup. Feature that were disabled for proper startup of emacs
+  will get re-enabled here."
   (interactive)
   (remove-hook
    'lotus-enable-startup-interrupting-feature-hook
@@ -201,6 +207,9 @@ startup in daemon mode."
 
 ;;;###autoload
 (defun add-to-disable-startup-interrupting-feature-hook (fn &optional append local)
+  "Run only once when when very frame got created after emacs
+  startup. Feature that were disabled for proper startup of emacs
+  will get re-enabled here."
   (interactive)
   (add-to-hook
    'lotus-disable-startup-interrupting-feature-hook
@@ -294,6 +303,9 @@ startup in daemon mode."
 
 ;;;###autoload
 (defun add-to-enable-login-session-interrupting-feature-hook (fn &optional append local)
+  "called before when first frame created, don't mislead by
+    login it is for no frame or 1 or more frame hook basiclly
+    used accross login where emacs daemon outlive."
   (interactive)
   (add-to-hook
    'lotus-enable-login-session-interrupting-feature-hook
@@ -303,6 +315,9 @@ startup in daemon mode."
 
 ;;;###autoload
 (defun remove-from-enable-login-session-interrupting-feature-hook (fn &optional local)
+  "called before when first frame created, don't mislead by
+    login it is for no frame or 1 or more frame hook basiclly
+    used accross login where emacs daemon outlive."
   (interactive)
   (remove-hook
    'lotus-enable-login-session-interrupting-feature-hook
@@ -310,6 +325,9 @@ startup in daemon mode."
    local))
 
 (defun add-to-disable-login-session-interrupting-feature-hook (fn &optional append local)
+  "called before when first frame created, don't mislead by
+    login it is for no frame or 1 or more frame hook basiclly
+    used accross login where emacs daemon outlive."
   (interactive)
   (add-to-hook
    'lotus-disable-login-session-interrupting-feature-hook

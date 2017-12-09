@@ -27,6 +27,7 @@
 (require 'org-timer)
 (require 'org-clock)
 (require 'timer-utils-lotus)
+(require 'org-misc-utils-lotus)
 (eval-when-compile
   (require 'org-misc-utils-lotus))
 
@@ -88,6 +89,7 @@
 ;; - org-clock-clock-out
 ;; - org-clock-clock-in
 (defun org-clock-clock-remove-last-clock (clock)
+  ;; TODO
   )
 
 (defun org-rl-clock-clock-in-out (clock &optional resume fail-quietly)
@@ -372,8 +374,7 @@ so long."
           (when nil
             (message "Idle time now sec[%d] min[%d]"
                      org-clock-user-idle-seconds
-                     (/ org-clock-user-idle-seconds 60)))
-          ))))
+                     (/ org-clock-user-idle-seconds 60)))))))
 
 (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
 

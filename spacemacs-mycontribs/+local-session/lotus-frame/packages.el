@@ -36,7 +36,7 @@
 
 (defconst lotus-frame-packages
   '(
-    (frame-utils :location local)
+    frame-utils
     )
   "The list of Lisp packages required by the lotus-frame layer.
 

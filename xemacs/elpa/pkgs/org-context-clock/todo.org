@@ -23,7 +23,6 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-09 Sat 20:14]
    CLOCK: [2017-12-07 Thu 23:53]--[2017-12-08 Fri 00:15] =>  0:22
    CLOCK: [2017-12-07 Thu 23:25]--[2017-12-07 Thu 23:49] =>  0:24
    CLOCK: [2017-12-07 Thu 23:20]--[2017-12-07 Thu 23:23] =>  0:03
@@ -508,8 +507,9 @@ which is responsible to load many features.
  TODO check what exactly happening
  TODO make a unit test to check it in future.
  TODO synchronize them.
-***** BUG org-resolve-clock-idle is not getting called
-***** BUG org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame
+***** DONE BUG org-resolve-clock-idle is not getting called
+      CLOSED: [2017-12-09 Sat 21:35]
+***** STARTED BUG org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame
  So normal frame and utilities frame have to distinguished.
 **** FEATURE
 ***** DONE Implement dynamic clocking based on mapping of org task property to current file buffer

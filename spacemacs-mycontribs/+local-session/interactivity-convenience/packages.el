@@ -31,8 +31,8 @@
 
 (defconst interactivity-convenience-packages
   '(
-    (frame-utils :location local)
-    (buffer-utils :location local)
+    frame-utils
+    buffer-utils
     )
   "The list of Lisp packages required by the interactivity-convenience layer.
 

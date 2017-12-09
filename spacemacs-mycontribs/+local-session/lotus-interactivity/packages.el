@@ -37,8 +37,8 @@
 (defconst lotus-interactivity-packages
   '(
     ;; (PACKAGE :location local)
-    (frame-utils :location local)
-    (buffer-utils :location local)
+    frame-utils
+    buffer-utils
     ido
     smex
     idomenu
