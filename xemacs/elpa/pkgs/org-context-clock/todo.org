@@ -23,7 +23,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-08 Fri 16:12]
+   CLOCK: [2017-12-09 Sat 20:14]
    CLOCK: [2017-12-07 Thu 23:53]--[2017-12-08 Fri 00:15] =>  0:22
    CLOCK: [2017-12-07 Thu 23:25]--[2017-12-07 Thu 23:49] =>  0:24
    CLOCK: [2017-12-07 Thu 23:20]--[2017-12-07 Thu 23:23] =>  0:03
@@ -523,7 +523,6 @@ which is responsible to load many features.
       :END:
       :LOGBOOK:
       CLOCK: [2017-12-08 Fri 17:41]--[2017-12-08 Fri 21:31] =>  3:50
-      CLOCK: [2017-12-08 Fri 17:40]
       CLOCK: [2017-12-04 Mon 03:16]--[2017-12-04 Mon 03:25] =>  0:09
       CLOCK: [2017-12-03 Sun 23:44]--[2017-12-03 Sun 23:46] =>  0:02
       CLOCK: [2017-12-03 Sun 18:21]--[2017-12-03 Sun 22:43] =>  4:22
