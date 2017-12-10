@@ -1,4 +1,4 @@
-v;;; org-misc-utils-lotus.el --- copy config
+;;; org-misc-utils-lotus.el --- copy config
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -116,27 +116,27 @@ v;;; org-misc-utils-lotus.el --- copy config
 (defmacro org-with-timed-new-win (timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
   (let ((temp-win-config (make-symbol "org-with-timed-new-win-config"))
         (clean-fun-name (make-symbol "org-with-timed-new-win-clean-fun-name")))
-    `(let* ((,temp-win-config (current-window-configuration))
-            (,cleanupfn-newwin #'(lambda (w localfn)
-                                   (message "triggered timer for newwin %s" w)
-                                   (funcall localfn)
-                                   (when (active-minibuffer-window)
-                                     (abort-recursive-edit))
-                                   (when (and w (windowp w) (window-valid-p w))
-                                     (delete-window w))
-                                   (when ,temp-win-config
-                                     (set-window-configuration ,temp-win-config)
-                                     (setq ,temp-win-config nil)))))
-           (org-with-new-win ,newwin
-                             (lexical-let* ((,timer (run-with-idle-timer ,timeout nil
-                                                                        ,cleanupfn-newwin
-                                                                        ,newwin
-                                                                        ,cleanupfn-local)))
-                               (condition-case err
-                                   (progn
-                                     (select-window ,newwin 'norecord)
-                                     ,@body)
-                                 ((quit) (funcall ,cleanupfn-newwin ,newwin ,cleanupfn-local))))))))
+    `(lexical-let* ((,temp-win-config (current-window-configuration))
+                    (,cleanupfn-newwin #'(lambda (w localfn)
+                                           (message "triggered timer for newwin %s" w)
+                                           (funcall localfn)
+                                           (when (active-minibuffer-window)
+                                             (abort-recursive-edit))
+                                           (when (and w (windowp w) (window-valid-p w))
+                                             (delete-window w))
+                                           (when ,temp-win-config
+                                             (set-window-configuration ,temp-win-config)
+                                             (setq ,temp-win-config nil)))))
+       (org-with-new-win ,newwin
+         (lexical-let* ((,timer (run-with-idle-timer ,timeout nil
+                                                     ,cleanupfn-newwin
+                                                     ,newwin
+                                                     ,cleanupfn-local)))
+           (condition-case err
+               (progn
+                 (select-window ,newwin 'norecord)
+                 ,@body)
+             ((quit) (funcall ,cleanupfn-newwin ,newwin ,cleanupfn-local))))))))
 (put 'org-with-timed-new-win 'lisp-indent-function 1)
 
 ;; TODO: newwin clean should be done here
