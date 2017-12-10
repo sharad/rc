@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(require org-context-clock-assoc-common)
+(require 'org-context-clock-assoc-common)
 
 ;;; REGISTRATION MACRO To add key property and functions list to ORG-CONTEXT-CLOCKING-TASK-ASSOCIATED-FILE-KEY-FNS
 

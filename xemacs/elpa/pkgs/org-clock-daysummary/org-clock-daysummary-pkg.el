@@ -1,2 +1,2 @@
-(define-package "org-clock-daysummary" "20171210.1130" "Org clock day summary"
+(define-package "org-clock-daysummary" "20171211.10" "Org clock day summary"
                 '((spaceline "1")))

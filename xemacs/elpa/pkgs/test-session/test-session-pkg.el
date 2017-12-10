@@ -1,1 +1,1 @@
-(define-package "test-session" "20171208.246" "test-session" nil)
+(define-package "test-session" "20171211.14" "test-session" nil)

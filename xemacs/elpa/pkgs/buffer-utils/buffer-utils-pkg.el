@@ -1,1 +1,1 @@
-(define-package "buffer-utils" "20171210.1129" "buffer-utils" nil)
+(define-package "buffer-utils" "20171211.9" "buffer-utils" nil)

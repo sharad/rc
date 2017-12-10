@@ -1,1 +1,1 @@
-(define-package "org-misc-utils-lotus" "20171210.1131" "org-misc-utils-lotus." 'nil)
+(define-package "org-misc-utils-lotus" "20171211.11" "org-misc-utils-lotus." 'nil)
