@@ -32,17 +32,16 @@
   startup. Feature that were disabled for proper startup of emacs
   will get re-enabled here.")
 (defvar lotus-disable-startup-interrupting-feature-hook nil
-           "Run only when emacs start from this file only, it
-           basically run when this ful get loaded at emacs start
-           time")
+  "Run only when emacs start from this file only, it basically
+  run when this ful get loaded at emacs start time")
 (defvar lotus-enable-login-session-interrupting-feature-hook nil
-      "called before when first frame created, don't mislead by
-    login it is for no frame or 1 or more frame hook basiclly
-    used accross login where emacs daemon outlive.")
+  "called before when first frame created, don't mislead by
+   login it is for no frame or 1 or more frame hook basiclly
+   used accross login where emacs daemon outlive.")
 (defvar lotus-disable-login-session-interrupting-feature nil
-     "called before when last frame deleted, don't mislead by
-    login it is for no frame or 1 or more frame hook basiclly
-    used accross login where emacs daemon outlive.")
+  "called before when last frame deleted, don't mislead by
+   login it is for no frame or 1 or more frame hook basiclly
+   used accross login where emacs daemon outlive.")
 (defvar *minimum-disable-login-session-frames* 2 "Minimum disable login session frames")
 
 

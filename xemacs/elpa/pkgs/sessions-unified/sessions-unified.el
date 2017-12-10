@@ -34,7 +34,8 @@
 
 
 
-(require 'dot-emacs-helper)
+;; (require 'dot-emacs-helper)
+
 (require 'general-testing)
 ;; testing
 (require 'rcs-backup)
@@ -55,6 +56,9 @@
 (require 'session)
 (require 'elscreen)
 (require 'emacs-panel)
+
+;; ;; BUG TODO
+;; (require 'vc-config)
 
 (defvar *session-unified-desktop-enabled* t "Enable desktop restoration.")
 (defvar *session-unified-session-enabled* t "Enable session restoration.")
@@ -82,6 +86,23 @@
           (concat title ": "
                   (apply 'message fmt args)))))
 
+
+(defun sessions-unified-put-alist (key value alist)
+  "Set cdr of an element (KEY . ...) in ALIST to VALUE and return ALIST.
+If there is no such element, create a new pair (KEY . VALUE) and
+return a new alist whose car is the new pair and cdr is ALIST."
+  (let ((elm (assoc key alist)))
+    (if elm
+        (progn
+          (setcdr elm value)
+          alist)
+        (cons (cons key value) alist))))
+
+(defun sessions-unified-set-alist (symbol key value)
+  "Set cdr of an element (KEY . ...) in the alist bound to SYMBOL to VALUE."
+  (or (boundp symbol)
+      (set symbol nil))
+  (set symbol (sessions-unified-put-alist key value (symbol-value symbol))))
 
 ;;;###autoload
 (defun add-to-enable-desktop-restore-interrupting-feature-hook (fn &optional append local)
@@ -127,41 +148,41 @@
             screen-name screen-to-name-alist nickname-type-map)
        (elscreen-save-screen-excursion
         (mapcar
-         (lambda (screen)
-           ;; If nickname exists, use it.
-           (setq screen-name (elscreen-get-screen-nickname screen))
-           ;; Nickname does not exist, so examine major-mode and buffer-name.
-           (when (null screen-name)
-             (elscreen-goto-internal screen)
+         #'(lambda (screen)
+             ;; If nickname exists, use it.
+             (setq screen-name (elscreen-get-screen-nickname screen))
+             ;; Nickname does not exist, so examine major-mode and buffer-name.
+             (when (null screen-name)
+               (elscreen-goto-internal screen)
 
-             (setq nickname-type-map
-                   (mapcar
-                    (lambda (window)
-                      (with-current-buffer (window-buffer window)
-                        (or (elscreen-get-alist-to-nickname
-                             elscreen-mode-to-nickname-alist-internal
-                             'string-match (symbol-name major-mode))
-                            (elscreen-get-alist-to-nickname
-                             elscreen-buffer-to-nickname-alist-internal
-                             'string-match (buffer-name))
-                            (cons 'buffer-name (cons (buffer-name) (buffer-file-name))))))
-                    (window-list)))
+               (setq nickname-type-map
+                     (mapcar
+                      (lambda (window)
+                        (with-current-buffer (window-buffer window)
+                          (or (elscreen-get-alist-to-nickname
+                               elscreen-mode-to-nickname-alist-internal
+                               'string-match (symbol-name major-mode))
+                              (elscreen-get-alist-to-nickname
+                               elscreen-buffer-to-nickname-alist-internal
+                               'string-match (buffer-name))
+                              (cons 'buffer-name (cons (buffer-name) (buffer-file-name))))))
+                      (window-list)))
 
-             (let (nickname-list)
-               (while (> (length nickname-type-map) 0)
-                 (let ((type (caar nickname-type-map))
-                       (buff-file (cdar nickname-type-map)))
-                   (when buff-file
-                     (setq nickname-list (cons buff-file nickname-list)))
-                   (setq nickname-type-map
-                         (if (eq type 'nickname)
-                             (delete (car nickname-type-map) nickname-type-map)
-                             (cdr nickname-type-map)))))
-               ;; (setq screen-name
-               ;;       (mapconcat 'identity (reverse nickname-list) ":"))
-               (setq screen-name (reverse nickname-list))))
+               (let (nickname-list)
+                 (while (> (length nickname-type-map) 0)
+                   (let ((type (caar nickname-type-map))
+                         (buff-file (cdar nickname-type-map)))
+                     (when buff-file
+                       (setq nickname-list (cons buff-file nickname-list)))
+                     (setq nickname-type-map
+                           (if (eq type 'nickname)
+                               (delete (car nickname-type-map) nickname-type-map)
+                               (cdr nickname-type-map)))))
+                 ;; (setq screen-name
+                 ;;       (mapconcat 'identity (reverse nickname-list) ":"))
+                 (setq screen-name (reverse nickname-list))))
 
-           (set-alist 'screen-to-name-alist screen screen-name))
+             (sessions-unified-set-alist 'screen-to-name-alist screen screen-name))
          screen-list))
 
        ;; (elscreen-set-screen-to-name-alist-cache screen-to-name-alist)
@@ -1181,6 +1202,8 @@ If there are no buffers left to create, kill the timer."
           (message ""))))))
 
   (defadvice desktop-idle-create-buffers (after desktop-idle-complete-actions)
+    "This advice will finally run lotus-enable-desktop-restore-interrupting-feature-hook
+when all buffer were creaed idly."
     (unless desktop-buffer-args-list
       (funcall sessions-unified-utils-notify "desktop-idle-complete-actions"
                       "Enable session saving")
@@ -1190,11 +1213,6 @@ If there are no buffers left to create, kill the timer."
         (ad-update 'desktop-idle-create-buffers)
         (ad-activate 'desktop-idle-create-buffers))
       (run-each-hooks 'lotus-enable-desktop-restore-interrupting-feature-hook)))
-
-  ;; BUG TODO
-  (require 'vc-config)
-
-
 
   ;; use session-restore to restore the desktop manually
 

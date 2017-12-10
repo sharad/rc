@@ -403,11 +403,14 @@ variable."
     (defun mycustom-face-set ()
       "thisandthat."
       (interactive)
-      (ignore-errors
-        (spacemacs/set-default-font dotspacemacs-default-font)
-        (set-face-attribute 'default nil ;(/ (* (x-display-mm-width) 121) 600)
-                            :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 90)
-                            :width  'normal)))
+      (when (and
+             (fboundp 'any-frame-opened-p)
+             (any-frame-opened-p))
+        (ignore-errors
+          (spacemacs/set-default-font dotspacemacs-default-font)
+          (set-face-attribute 'default nil ;(/ (* (x-display-mm-width) 121) 600)
+                              :height (maxmin-optimized-value (x-display-mm-height) 110 600 120 90)
+                              :width  'normal))))
 
     ;; http://emacs.stackexchange.com/questions/19096/how-do-i-turn-off-spacemacs-s-tildes-on-empty-lines
     (when (fboundp 'spacemacs/toggle-vi-tilde-fringe-off)
@@ -415,8 +418,7 @@ variable."
 
     (delete-selection-mode 1)
 
-    (when (any-frame-opened-p)
-      (mycustom-face-set)))
+      (mycustom-face-set))
 
   (progn ;; other
     ;; (custom-available-themes)

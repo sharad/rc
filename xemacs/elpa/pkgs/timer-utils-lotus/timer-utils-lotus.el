@@ -24,10 +24,10 @@
 
 ;;; Code:
 
-(defvar debug-tags-level-list)          ;prepare debug it is in xlotus-debug-config
+;; (defvar debug-tags-level-list)          ;prepare debug it is in xlotus-debug-config
 
-(add-to-list 'debug-tags-level-list
-             '(timer 4))
+;; (add-to-list 'debug-tags-level-list
+;;             '(timer 4))
 
 ;;;###autoload
 (defun run-with-nonobtrusive-aware-idle-timers (longdelay repeat shortdelay repeat-after-idle fn arg &optional cancel)
@@ -43,12 +43,12 @@ Benefit with this timer is that it will very much ensure before running that use
           (run-with-idle-timer longdelay repeat
                                #'(lambda (func-arg)
                                    (unless subtimer
-                                     (dmessage 'timer 7 "shortdelay %s running timer" shortdelay)
+                                     (message "shortdelay %s running timer" shortdelay)
                                      (setq subtimer
                                            (run-with-nonobtrusive-timers shortdelay (if repeat-after-idle shortdelay nil) 4
                                                                          (lambda (func-arg1)
                                                                            (progn
-                                                                             (dmessage 'timer 7 "shortdelay %s running fun" shortdelay)
+                                                                             (message "shortdelay %s running fun" shortdelay)
                                                                              (if (funcall (car func-arg1) (cdr func-arg1))
 
                                                                                  ;; (when subtimer
@@ -87,7 +87,7 @@ Benefit with this timer is that it will very much ensure before running that use
              (let ((current-idle-sec (float-time (or (current-idle-time) '(0 0 0)))))
                (if (>= current-idle-sec useridlesec-moving) ;NOTE
                    (progn
-                     (dmessage 'timer 7 "shortob running fun useridlesec-moving %s" useridlesec-moving)
+                     (message "shortob running fun useridlesec-moving %s" useridlesec-moving)
                      (funcall (car func-arg2) (cdr func-arg2))
                      (setq useridlesec-moving useridlesec)
                      (when timer
@@ -95,7 +95,7 @@ Benefit with this timer is that it will very much ensure before running that use
                        (setq timer nil))
                      t)
                    (progn
-                     (dmessage 'timer 7 "shortob not running fun useridlesec-moving %s" useridlesec-moving)
+                     (message "shortob not running fun useridlesec-moving %s" useridlesec-moving)
                      (unless (zerop useridlesec-moving)
                        (decf useridlesec-moving))
                      nil))))
@@ -131,7 +131,7 @@ Benefit with this timer is that it will very much ensure before running that use
     (setq nonobtrusive-test-timer
           (run-with-nonobtrusive-aware-idle-timers 4 4 2
                                                    (lambda ()
-                                                     (dmessage 'timer 7 "Hello Hi World")
+                                                     (message "Hello Hi World")
                                                      (if nonobtrusive-test-timer (cancel-timer nonobtrusive-test-timer))
                                                      (setq nonobtrusive-test-timer nil))
                                                    nil

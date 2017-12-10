@@ -78,13 +78,28 @@ Each entry is either:
         ;; the minibuffer. The completion is done for the given directory.
         (defvar file-cache-directories nil "file-cache-directories")
 
-        (with-eval-after-load "init-setup"
-         (add-to-enable-startup-interrupting-feature-hook
-         '(lambda ()
-           (condition-case e
-               (dolist (dir file-cache-directories)
-                 (file-cache-add-directory dir))
-             ('error (message "problem happened in %s fun call."
-                              'file-cache-add-directory)))))))))
+        (progn
+          (use-package startup-hooks
+              :defert t
+              :config
+              (progn
+                (progn
+                  (add-to-enable-startup-interrupting-feature-hook
+                   '(lambda ()
+                     (condition-case e
+                         (dolist (dir file-cache-directories)
+                           (file-cache-add-directory dir))
+                       ('error (message "problem happened in %s fun call."
+                                        'file-cache-add-directory)))))))))
+
+        ;; (with-eval-after-load "startup-hooks"
+        ;;  (add-to-enable-startup-interrupting-feature-hook
+        ;;  '(lambda ()
+        ;;    (condition-case e
+        ;;        (dolist (dir file-cache-directories)
+        ;;          (file-cache-add-directory dir))
+        ;;      ('error (message "problem happened in %s fun call."
+        ;;                       'file-cache-add-directory))))))
+        )))
 
 ;;; packages.el ends here

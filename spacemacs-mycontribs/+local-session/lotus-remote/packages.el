@@ -99,11 +99,17 @@ Each entry is either:
           )
 
         (progn ;; "All Tramp"
-          (when *emacs-in-init*
-            (setq                                 ;very necessary.
-             tramp-mode nil
-             ido-mode nil)
-            (lotus-disable-startup-interrupting-feature)))
+
+          (use-package startup-hooks
+              :defer t
+              :config
+              (progn
+                (progn
+                  (when *emacs-in-init*
+                    (setq                                 ;very necessary.
+                     tramp-mode nil
+                     ido-mode nil)
+                    (lotus-disable-startup-interrupting-feature))))))
 
         (progn
           (dolist (lib '(

@@ -396,7 +396,6 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
                    (list (car clock) (cdr clock) nil)
                    (list 'imaginary 'now (cdr clock)))))))))))
 
-
 (defalias 'org-resolve-clocks 'org-rl-resolve-clocks)
 
 ;;;###autoload
@@ -405,6 +404,14 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
         (prev (pop clocks)))
     (org-resolve-time (next prev))))
 
+;;;###autoload
+(defun org-clock-resolve-advanced-insinuate ()
+  (interactive)
+  (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
+  (defalias 'org-resolve-clocks 'org-rl-resolve-clocks))
+
+(defun org-clock-resolve-advanced-uninsinuate ()
+  )
 
 (when nil                               ;testing
   (let ((currtime (current-time)))
@@ -417,5 +424,6 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
       nil
       'now
       (time-subtract currtime (seconds-to-time (* 8 60)))))))
+
 (provide 'org-clock-resolve-advanced)
 ;;; org-clock-utils-lotus.el ends here

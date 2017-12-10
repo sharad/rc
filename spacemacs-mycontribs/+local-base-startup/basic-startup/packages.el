@@ -154,21 +154,27 @@ Each entry is either:
              t)
             (add-to-enable-startup-interrupting-feature-hook
              '(lambda ()
-               (run-at-time-or-now 7 'lotus-desktop-session-restore)))))))
+               (run-at-time-or-now 7 'lotus-desktop-session-restore))))))
 
   (use-package init-setup
       ;; :ensure t
       :config
+    (progn
       (progn
-        (add-to-enable-login-session-interrupting-feature-hook
-         #'set-dbus-session)
-        (add-to-enable-startup-interrupting-feature-hook
-         #'set-dbus-session)
-        (with-eval-after-load "utils-custom"
-          (add-hook 'emacs-startup-hook
-                    '(lambda ()
-                      (message-notify "Emacs" "Loaded Completely :)")
-                      (message "\n\n\n\n")))))))
+        (use-package startup-hooks
+            :defer t
+            :config
+            (progn
+              (progn
+                (add-to-enable-login-session-interrupting-feature-hook
+                 #'set-dbus-session)
+                (add-to-enable-startup-interrupting-feature-hook
+                 #'set-dbus-session)
+                (with-eval-after-load "utils-custom"
+                  (add-hook 'emacs-startup-hook
+                            '(lambda ()
+                              (message-notify "Emacs" "Loaded Completely :)")
+                              (message "\n\n\n\n"))))))))))))
 
 (defun basic-startup/init-elscreen ()
   (use-package elscreen

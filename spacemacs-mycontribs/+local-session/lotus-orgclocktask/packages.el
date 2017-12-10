@@ -37,11 +37,12 @@
 (defconst lotus-orgclocktask-packages
   '(
     ;; (PACKAGE :location local)
+    org-misc-utils-lotus
     org-clock-utils-lotus
     org-clock-daysummary
     org-clock-table-misc-lotus
     org-context-clock
-    org-misc-utils-lotus
+    org-clock-resolve-advanced
     timesheet
     wakatime-mode
     task-manager
@@ -72,6 +73,61 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+(defun lotus-orgclocktask/init-org-misc-utils-lotus ()
+  (use-package org-misc-utils-lotus
+      :defer t
+      :config
+      (progn
+        (progn
+          (setq org-refile-targets
+                '((nil :maxlevel . 3)           ; only the current file
+                  (org-agenda-files :maxlevel . 3) ; all agenda files, 1st/2nd level
+                  (org-files-list :maxlevel . 4)   ; all agenda and all open files
+                  (lotus-org-files-list :maxlevel . 4))))
+
+        (progn
+          ;; (use-package startup-hooks
+          ;;     :defer t
+          ;;     :config
+          ;;     (progn
+          ;;       (progn ;code will not get run as when
+          ;;              ;`enable-startup-interrupting-feature-hook' run at start,
+          ;;              ;that time package `org-misc-utils-lotus' did not get
+          ;;              ;loaded.
+          ;;         ;; BUG: not getting included
+          ;;         (add-to-enable-startup-interrupting-feature-hook
+          ;;          #'(lambda ()
+          ;;              (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
+          ;;                (add-hook 'after-make-frame-functions
+          ;;                          '(lambda (nframe)
+          ;;                            (org-clock-in-if-not-at-time 100))
+          ;;                          t))
+          ;;              (add-hook
+          ;;               'delete-frame-functions
+          ;;               #'(lambda (nframe)
+          ;;                   (if (and
+          ;;                        (org-clock-is-active)
+          ;;                        (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
+          ;;                       (org-with-clock-writeable-buffer
+          ;;                        (let (org-log-note-clock-out)
+          ;;                          (if (org-clock-is-active)
+          ;;                              (org-clock-out))))))))
+          ;;          t))))
+          )
+
+        (progn
+          (add-hook
+           'kill-emacs-hook
+           #'(lambda ()
+             (if (and
+                  (org-clock-is-active)
+                  ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
+                  )
+                 (org-with-clock-writeable-buffer
+                  (let (org-log-note-clock-out)
+                    (if (org-clock-is-active)
+                        (org-clock-out)))))))))))
 
 (defun lotus-orgclocktask/init-org-clock-utils-lotus ()
   (progn
@@ -343,60 +399,22 @@ Each entry is either:
              'lotus-config-start-org-context-clock-insinuate-with-session-unified
              nil))))))
 
-(defun lotus-orgclocktask/init-org-misc-utils-lotus ()
-  (use-package org-misc-utils-lotus
+(defun lotus-orgclocktask/init-org-clock-resolve-advanced ()
+  (use-package org-clock-resolve-advanced
       :defer t
       :config
       (progn
         (progn
-          (setq org-refile-targets
-                '((nil :maxlevel . 3)           ; only the current file
-                  (org-agenda-files :maxlevel . 3) ; all agenda files, 1st/2nd level
-                  (org-files-list :maxlevel . 4)   ; all agenda and all open files
-                  (lotus-org-files-list :maxlevel . 4))))
-
-        (progn
-          ;; (use-package startup-hooks
-          ;;     :defer t
-          ;;     :config
-          ;;     (progn
-          ;;       (progn ;code will not get run as when
-          ;;              ;`enable-startup-interrupting-feature-hook' run at start,
-          ;;              ;that time package `org-misc-utils-lotus' did not get
-          ;;              ;loaded.
-          ;;         ;; BUG: not getting included
-          ;;         (add-to-enable-startup-interrupting-feature-hook
-          ;;          #'(lambda ()
-          ;;              (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
-          ;;                (add-hook 'after-make-frame-functions
-          ;;                          '(lambda (nframe)
-          ;;                            (org-clock-in-if-not-at-time 100))
-          ;;                          t))
-          ;;              (add-hook
-          ;;               'delete-frame-functions
-          ;;               #'(lambda (nframe)
-          ;;                   (if (and
-          ;;                        (org-clock-is-active)
-          ;;                        (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-          ;;                       (org-with-clock-writeable-buffer
-          ;;                        (let (org-log-note-clock-out)
-          ;;                          (if (org-clock-is-active)
-          ;;                              (org-clock-out))))))))
-          ;;          t))))
           )
-
         (progn
-          (add-hook
-           'kill-emacs-hook
-           #'(lambda ()
-             (if (and
-                  (org-clock-is-active)
-                  ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
-                  )
-                 (org-with-clock-writeable-buffer
-                  (let (org-log-note-clock-out)
-                    (if (org-clock-is-active)
-                        (org-clock-out)))))))))))
+          )))
+
+  (use-package startup-hooks
+      :defer t
+      :config
+      (progn
+        (progn
+          (org-clock-resolve-advanced-insinuate)))))
 
 (defun lotus-orgclocktask/init-timesheet ()
   ;; https://github.com/tmarble/timesheet.el
