@@ -1,1 +1,1 @@
-(define-package "frame-utils" "20171209.46" "frame-utils" nil)
+(define-package "frame-utils" "20171210.1130" "frame-utils" nil)

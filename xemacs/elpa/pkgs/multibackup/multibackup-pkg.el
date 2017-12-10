@@ -1,1 +1,1 @@
-(define-package "multibackup" "20171209.37" "multi backup" nil)
+(define-package "multibackup" "20171210.1130" "multi backup" nil)
