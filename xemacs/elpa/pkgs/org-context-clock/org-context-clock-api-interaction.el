@@ -126,8 +126,6 @@
                 (message "not at drawer"))
             (message "reached to drawer1")))))))
 
-(defvar org-context-clock-add-context-to-org-heading-win-config nil)
-
 ;;;###autoload
 (defun org-context-clock-add-context-to-org-heading (context timeout)
   (interactive '(nil nil))
