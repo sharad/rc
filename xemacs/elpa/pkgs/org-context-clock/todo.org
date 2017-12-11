@@ -413,10 +413,32 @@ Yes
    CLOCK: [2016-02-03 Wed 01:10]--[2016-02-03 Wed 01:30] =>  0:20
    :END:
 *** Critical BUGS are here
-**** lucid-menu-bar-dirty-flag is getting set cause resetting of current-idle-time
+**** continuous file-notify event causing resetting of current-idle-time
+Basically some unwanted files have been get added into it
+e.g. ~/.xsession-errors ~/.wget-hsts
 TODO: DEBUG it how it gets dirty
 trace it who on earth making it dirty so often using (set-menubar-dirty-flag)
 it is here /usr/share/emacs/24.5/lisp/obsolete/lmenu.el.gz
+***** Gdb trace
+#+BEGIN_SRC gdb
+define emacs-idle
+  set pagination off
+  display c
+  trace-simple-f keyboard.c:2916
+  trace-simple-f keyboard.c:2941
+  trace-simple-f keyboard.c:2947
+  trace-simple-f keyboard.c:2952
+  trace-simple-f keyboard.c:2954
+  trace-simple-f keyboard.c:2959
+  trace-simple-f keyboard.c:3232
+
+  dont-repeat
+end
+document emacs-idle
+  trace function
+end
+#+END_SRC
+
 ***** Normal case
  #+BEGIN_SRC gdb
  Thread 1 "emacs" hit Breakpoint 1, read_char (commandflag=0x1, map=map@entry=0x8508766, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef1ccb, end_time=end_time@entry=0x0) at keyboard.c:2916
