@@ -450,6 +450,7 @@ variable."
   (defvar emacs-idle-times-list nil)
   (if print
       (progn
+        (defvar known-last-input-event nil)
         (if *test-timer* (cancel-timer *test-timer*))
         (when t
           (setq
@@ -457,11 +458,13 @@ variable."
            (run-with-timer 1 2
                            '(lambda ()
                               ;; (message "Test: From timer idle for org %d secs emacs %d secs" (org-emacs-idle-seconds) (float-time (current-idle-time)))
-                             (let* ((idle (current-idle-time))
+                             (let* (display-last-input-event
+                                    (idle (current-idle-time))
                                     (idle (if idle (float-time (current-idle-time)) 0)))
-                                (message "Test: From timer idle for secs emacs %d secs" idle))
-                              ;; (push (org-emacs-idle-seconds) emacs-idle-times-list)
-                              )))))
+                               (unless (eq known-last-input-event last-input-event)
+                                 (setq display-last-input-event last-input-event
+                                       known-last-input-event last-input-event))
+                               (message "Test: From timer idle for secs emacs %d secs %s" idle display-last-input-event)))))))
     (cancel-timer *test-timer*)))
 
 (defun lotus-necessary-test ()
