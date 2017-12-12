@@ -77,7 +77,7 @@ Each entry is either:
       :defer t
       :config
       (progn
-        (setq save-place-file (auto-config-file "autoconfig/save-place/places")))))
+        (setq save-place-file (auto-config-file "save-place/places")))))
 
 (defun lotus-bookmark/init-breadcrumb ()
   (use-package breadcrumb
