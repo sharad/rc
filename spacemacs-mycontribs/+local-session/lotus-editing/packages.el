@@ -46,6 +46,7 @@
     (show-wspace :location local)
     paren
     corral
+    (autorevert :location local)
     )
   "The list of Lisp packages required by the lotus-editing layer.
 
@@ -186,12 +187,57 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-editing/init-PACKAGE ()
-  (use-package PACKAGE
+(defun lotus-editing/init-autorevert ()
+  (use-package autorevert
       :defer t
       :config
       (progn
-        )))
+        (defun correct-auto-revert-notify-add-watch ()
+          "Enable file notification for current buffer's associated file."
+          ;; We can assume that `buffer-file-name' and
+          ;; `auto-revert-use-notify' are non-nil.
+          (if (or (string-match auto-revert-notify-exclude-dir-regexp
+                                (expand-file-name default-directory))
+                  (file-symlink-p buffer-file-name))
+              ;; Fallback to file checks.
+              (set (make-local-variable 'auto-revert-use-notify) nil)
+
+              (when (not auto-revert-notify-watch-descriptor)
+                (setq auto-revert-notify-watch-descriptor
+                      (ignore-errors
+                        (file-notify-add-watch
+                         (expand-file-name buffer-file-name default-directory)
+                         '(change attribute-change) 'auto-revert-notify-handler)))
+                (if auto-revert-notify-watch-descriptor
+                    (progn
+                      (puthash
+                       auto-revert-notify-watch-descriptor
+                       (cons (current-buffer)
+                             (gethash auto-revert-notify-watch-descriptor
+                                      auto-revert-notify-watch-descriptor-hash-list))
+                       auto-revert-notify-watch-descriptor-hash-list)
+                      (add-hook (make-local-variable 'kill-buffer-hook)
+                                'auto-revert-notify-rm-watch))
+                    ;; Fallback to file checks.
+                    (set (make-local-variable 'auto-revert-use-notify) nil)))))
+
+        (defalias 'auto-revert-notify-add-watch #'correct-auto-revert-notify-add-watch)
+
+        (defun auto-revert-notify-exclude-dir-regexp-reset-default ()
+          (setq auto-revert-notify-exclude-dir-regexp ;;default value
+                (concat
+                 ;; No mounted file systems.
+                 "^" (regexp-opt '("/afs/" "/media/" "/mnt" "/net/" "/tmp_mnt/"))
+                 ;; No remote files.
+                 (unless auto-revert-remote-files "\\|^/[^/|:][^/|]+:"))))
+
+        (defun auto-revert-notify-exclude-dir-regexp-add-regex (re)
+          (concat auto-revert-notify-exclude-dir-regexp re))
+
+        (setq
+         auto-revert-use-notify t       ;default
+         auto-revert-notify-exclude-dir-regexp (auto-revert-notify-exclude-dir-regexp-add-regex
+                                                (concat "\\|" "^" (expand-file-name "." "~") "/$"))))))
 
 (defun lotus-editing/init-PACKAGE ()
   (use-package PACKAGE
