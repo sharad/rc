@@ -103,14 +103,15 @@ Each entry is either:
         (progn
           (setq
            org-todo-keywords ;; http://doc.norang.ca/org-mode.html#sec-5
-           '((sequence "TODO(t)" "STARTED" "NEXT(n)" "|" "DONE(d)")
-             (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))
+           '((sequence "TODO(t)" "STARTED" "NEXT(n)" "|" "DONE(d@/!)" "|" "CLOSED(c@/!)")
+             (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(C@/!)" "PHONE" "MEETING"))
 
            org-todo-keyword-faces ;; http://doc.norang.ca/org-mode.html#sec-5
            '(("TODO" :foreground "red" :weight bold)
              ("STARTED" :foreground "red" :weight bold)
              ("NEXT" :foreground "blue" :weight bold)
              ("DONE" :foreground "forest green" :weight bold)
+             ("CLOSED" :foreground "forest green" :weight bold)
              ("WAITING" :foreground "orange" :weight bold)
              ("HOLD" :foreground "magenta" :weight bold)
              ("CANCELLED" :foreground "forest green" :weight bold)
