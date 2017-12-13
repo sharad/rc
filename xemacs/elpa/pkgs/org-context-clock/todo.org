@@ -4,7 +4,7 @@
 #+STARTUP: hidestars
 #+TAGS: PERFORCE(4)  BUGZILLA(b) SVN(v) SCMBUG(m) PROJECT(j) STARTED(s
 #+TAGS: CVS(i) PHONE(p) INTERNET(i)
-#+SEQ_TODO: TODO STARTED DONE
+
 
 * STARTED Work - emacs: Emacs for me.
   :PROPERTIES:
@@ -23,7 +23,11 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-10 Sun 20:26]
+   CLOCK: [2017-12-12 Tue 16:55]--[2017-12-12 Tue 20:53] =>  3:58
+   CLOCK: [2017-12-12 Tue 12:55]--[2017-12-12 Tue 13:01] =>  0:06
+   CLOCK: [2017-12-12 Tue 00:33]--[2017-12-12 Tue 00:59] =>  0:26
+   CLOCK: [2017-12-11 Mon 16:07]--[2017-12-11 Mon 23:26] =>  7:19
+   CLOCK: [2017-12-10 Sun 20:26]--[2017-12-10 Sun 21:37] =>  1:11
    CLOCK: [2017-12-10 Sun 20:07]--[2017-12-10 Sun 20:09] =>  0:02
    CLOCK: [2017-12-10 Sun 19:48]--[2017-12-10 Sun 20:02] =>  0:14
    CLOCK: [2017-12-10 Sun 19:17]--[2017-12-10 Sun 19:45] =>  0:28
@@ -411,10 +415,45 @@ Yes
    CLOCK: [2016-02-03 Wed 01:10]--[2016-02-03 Wed 01:30] =>  0:20
    :END:
 *** Critical BUGS are here
-**** lucid-menu-bar-dirty-flag is getting set cause resetting of current-idle-time
+**** CLOSED continuous file-notify event causing resetting of current-idle-time
+     CLOSED: [2017-12-12 Tue 20:27]
+     :LOGBOOK:
+     - State "CLOSED"      from "DONE"       [2017-12-12 Tue 20:36] \\
+       filenotify.el g-file-notify and autorevert.el responsible Here for any file open
+       autorevert(filenotify) register for g-file-notify in this case g-file-notify not
+       only notify for this it also notify for all files in the containing directory of
+       opened file, these event are also treated like any key input event in emacs and
+       causing current-idle-time to get reset.
+
+       In this case when ~/.bbdb or and file in home dir opened than all file changes
+       (edit, remove, add, modification) in home dir were reported and here ~/.xsession-errors
+       and ~/.wget-hsts were continuously getting modified.
+     :END:
+Basically some unwanted files have been get added into it
+e.g. ~/.xsession-errors ~/.wget-hsts
 TODO: DEBUG it how it gets dirty
 trace it who on earth making it dirty so often using (set-menubar-dirty-flag)
 it is here /usr/share/emacs/24.5/lisp/obsolete/lmenu.el.gz
+***** Gdb trace
+#+BEGIN_SRC gdb
+define emacs-idle
+  set pagination off
+  display c
+  trace-simple-f keyboard.c:2916
+  trace-simple-f keyboard.c:2941
+  trace-simple-f keyboard.c:2947
+  trace-simple-f keyboard.c:2952
+  trace-simple-f keyboard.c:2954
+  trace-simple-f keyboard.c:2959
+  trace-simple-f keyboard.c:3232
+
+  dont-repeat
+end
+document emacs-idle
+  trace function
+end
+#+END_SRC
+
 ***** Normal case
  #+BEGIN_SRC gdb
  Thread 1 "emacs" hit Breakpoint 1, read_char (commandflag=0x1, map=map@entry=0x8508766, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef1ccb, end_time=end_time@entry=0x0) at keyboard.c:2916
@@ -480,8 +519,8 @@ it is here /usr/share/emacs/24.5/lisp/obsolete/lmenu.el.gz
 #+END_SRC
 
 
-
-**** It is still not known why (require 'misc-utils) in
+**** DONE It is still not known why (require 'misc-utils) in
+     CLOSED: [2017-12-12 Tue 20:29]
 lotus-interactivity/packages.el of (lotus-interactivity/post-init-ido)
 is only casing speacemacs to load properly with all features and themes
 **** Solve the issue with sessions-unified.el when setting (setq *session-unified-desktop-enabled* nil) not running lotus-enable-desktop-restore-interrupting-feature-hook
@@ -492,7 +531,12 @@ is only casing speacemacs to load properly with all features and themes
            "*session-unified-desktop-enabled* %s" *session-unified-desktop-enabled*))
 
 which is responsible to load many features.
-**** why only loading (require 'misc-uitls') in lotus-interactivity/packages.el cause spacemacs to load properly with themes and packages
+**** HOLD why only loading (require 'misc-uitls') in lotus-interactivity/packages.el cause spacemacs to load properly with themes and packages
+     :LOGBOOK:
+     - State "HOLD"       from              [2017-12-12 Tue 20:29] \\
+       modeline code in elscreen.el trying to access modeline list but while spacemacs load it
+       modeline is not a list but a string.
+     :END:
 **** why loading (require 'misc-uitls') in lotus-interactivity/packages.el cause current-idle-time to get reset very often which now is not seen.
 **** Make a unit test code to check current-idle-time behaviour and report it.
 **** remove all deh-require's and deh-section's

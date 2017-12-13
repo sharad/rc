@@ -9,7 +9,7 @@ APT_REPO_COMMPUNICATION="ppa:nilarimogard/webupd8"
 APT_REPO_UTILS="ppa:yartsa/lvmeject"
 
 
-DEB_PKG_EMACS="elpa-magit elpa-magit-popup elpa-with-editor emacs-goodies-el enscript flim"
+DEB_PKG_EMACS="elpa-magit elpa-magit-popup elpa-with-editor emacs-goodies-el enscript flim lm-sensors"
 DEB_PKG_NECESSARY_MORE="xaos xnee xnee-doc xzgv yatex zsh-doc zutils"
 DEB_PKG_NECESSARY_MORE="gnu-smalltalk-doc gnu-fdisk gnu-standards gnuit gnulib gnupg2 gnuplot-doc gvpe gtypist hello hello-traditional ht id-utils indent integrit jed latex-mk ledger libaws-doc "
 DEB_PKG_NECESSARY_MORE="libcommoncpp2-doc libconfig-dev libsocket++-dev licenseutils lookup-el lyskom-server macchanger mboxgrep mew-beta mit-scheme-doc mmm-mode ocaml-doc oneliner-el org-mode-doc parted-doc pcb-common"

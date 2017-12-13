@@ -85,37 +85,6 @@ Each entry is either:
                   (org-agenda-files :maxlevel . 3) ; all agenda files, 1st/2nd level
                   (org-files-list :maxlevel . 4)   ; all agenda and all open files
                   (lotus-org-files-list :maxlevel . 4))))
-
-        (progn
-          ;; (use-package startup-hooks
-          ;;     :defer t
-          ;;     :config
-          ;;     (progn
-          ;;       (progn ;code will not get run as when
-          ;;              ;`enable-startup-interrupting-feature-hook' run at start,
-          ;;              ;that time package `org-misc-utils-lotus' did not get
-          ;;              ;loaded.
-          ;;         ;; BUG: not getting included
-          ;;         (add-to-enable-startup-interrupting-feature-hook
-          ;;          #'(lambda ()
-          ;;              (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
-          ;;                (add-hook 'after-make-frame-functions
-          ;;                          '(lambda (nframe)
-          ;;                            (org-clock-in-if-not-at-time 100))
-          ;;                          t))
-          ;;              (add-hook
-          ;;               'delete-frame-functions
-          ;;               #'(lambda (nframe)
-          ;;                   (if (and
-          ;;                        (org-clock-is-active)
-          ;;                        (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-          ;;                       (org-with-clock-writeable-buffer
-          ;;                        (let (org-log-note-clock-out)
-          ;;                          (if (org-clock-is-active)
-          ;;                              (org-clock-out))))))))
-          ;;          t))))
-          )
-
         (progn
           (add-hook
            'kill-emacs-hook
@@ -195,8 +164,7 @@ Each entry is either:
                               (org-with-clock-writeable-buffer
                                (let (org-log-note-clock-out)
                                  (if (org-clock-is-active)
-                                     (org-clock-out))))))))
-                 t)
+                                     (org-clock-out)))))))) t)
 
                 (add-to-enable-login-session-interrupting-feature-hook
                    #'(lambda ()
@@ -213,15 +181,13 @@ Each entry is either:
                                 (org-with-clock-writeable-buffer
                                  (let (org-log-note-clock-out)
                                    (if (org-clock-is-active)
-                                       (org-clock-out))))))))
-                   t)
+                                       (org-clock-out)))))))) t)
 
                   (add-to-disable-login-session-interrupting-feature-hook
                    #'(lambda ()
                        (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
                          (remove-hook 'after-make-frame-functions
-                                      'org-clock-in-if-not-at-time-delay-frame-fn)))
-                   t))
+                                      'org-clock-in-if-not-at-time-delay-frame-fn))) t))
 
               ;; (progn
               ;;   (add-to-enable-desktop-restore-interrupting-feature-hook
@@ -282,13 +248,11 @@ Each entry is either:
           (progn
             (add-to-enable-login-session-interrupting-feature-hook
              #'(lambda ()
-                 (org-clock-work-day-mode-line-add t))
-             t)
+                 (org-clock-work-day-mode-line-add t)) t)
 
             (add-to-enable-startup-interrupting-feature-hook
              #'(lambda ()
-                 (org-clock-work-day-mode-line-add t))
-             t))))))
+                 (org-clock-work-day-mode-line-add t)) t))))))
 
 
 (defun lotus-orgclocktask/init-org-clock-table-misc-lotus ()

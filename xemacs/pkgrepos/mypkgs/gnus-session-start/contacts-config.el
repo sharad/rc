@@ -26,6 +26,9 @@
 
 (deh-require-maybe bbdb
 
+
+  (setq bbdb-file (auto-config-file "bbdb/bbdb"))
+
   (defun bbdb/gnus-pop-up-bbdb-buffer-for-some-time ()
     (bbdb/gnus-pop-up-bbdb-buffer)
     ;; (with-selected-window (get-buffer-window gnus-article-buffer)

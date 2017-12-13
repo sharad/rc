@@ -407,22 +407,43 @@ document bpwithcmds
   Test
 end
 
-define tracef
+define trace-with-bt-f
   # https://stackoverflow.com/questions/17672701/automate-gdb-to-print-stack-frame-at-a-particular-breakpoint
   # set var $bpoint = $arg0
   break $arg0
   commands
     print "called ", $arg0
-    shell date
+    # shell date
     bt
     continue
   end
 
   set pagination off
-  set logging file gdb.txt
-  set logging on
+  # set logging file gdb.txt
+  # set logging on
+  dont-repeat
 end
-document tracef
+document trace-with-bt-f
+  trace function
+end
+
+define trace-simple-f
+  # https://stackoverflow.com/questions/17672701/automate-gdb-to-print-stack-frame-at-a-particular-breakpoint
+  # set var $bpoint = $arg0
+  break $arg0
+  commands
+    print "called ", $arg0
+    # shell date
+    # bt
+    continue
+  end
+
+  set pagination off
+  # set logging file gdb.txt
+  # set logging on
+  dont-repeat
+end
+document trace-simple-f
   trace function
 end
 
@@ -493,14 +514,83 @@ end
 handle SIGUSR1 noprint nostop
 
 # tracef keyboard.c:2876
-tracef timer_stop_idle
+# tracef timer_stop_idle
 
-break keyboard.c:2896
-commands
-  print c
-  continue
+define emacs-trace
+  trace-simple-f keyboard.c:9002
+  trace-simple-f keyboard.c:9070
+  trace-simple-f keyboard.c:9085
+  trace-simple-f keyboard.c:1453
+  trace-simple-f keyboard.c:1560
+  trace-with-bt-f timer_stop_idle
+
+  dont-repeat
+end
+document emacs-trace
+  trace function
 end
 
-continue
+
+define emacs-readchar
+  trace-simple-f keyboard.c:2653
+  trace-simple-f keyboard.c:2695
+  trace-simple-f keyboard.c:2894
+  trace-simple-f keyboard.c:2896
+  trace-simple-f keyboard.c:2908
+  trace-simple-f keyboard.c:2915
+  trace-simple-f keyboard.c:2916
+  trace-simple-f keyboard.c:2919
+  trace-simple-f keyboard.c:2925
+
+
+  dont-repeat
+end
+document emacs-trace
+  trace function
+end
+
+define emacs-debug-idle
+  display c
+  set pagination off
+  break keyboard.c:2898
+  commands
+    continue
+  ends
+
+  # set logging file gdb.txt
+  # set logging on
+  dont-repeat
+end
+document emacs-debug-idle
+  trace function
+end
+
+
+
+define emacs-idle
+  set pagination off
+  display c
+
+
+  trace-simple-f keyboard.c:2916
+  trace-simple-f keyboard.c:2941
+  trace-simple-f keyboard.c:2947
+  trace-simple-f keyboard.c:2952
+  trace-simple-f keyboard.c:2954
+  trace-simple-f keyboard.c:2959
+  trace-simple-f keyboard.c:3232
+
+  dont-repeat
+end
+document emacs-idle
+  trace function
+end
+
+# break keyboard.c:2896
+# commands
+#   print c
+#   continue
+# end
+# continue
 
 # End of the eev block.
