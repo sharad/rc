@@ -531,13 +531,13 @@ is only casing speacemacs to load properly with all features and themes
            "*session-unified-desktop-enabled* %s" *session-unified-desktop-enabled*))
 
 which is responsible to load many features.
-**** HOLD why only loading (require 'misc-uitls') in lotus-interactivity/packages.el cause spacemacs to load properly with themes and packages
+**** HOLD why only loading (require 'misc-uitls) in lotus-interactivity/packages.el cause spacemacs to load properly with themes and packages
      :LOGBOOK:
      - State "HOLD"       from              [2017-12-12 Tue 20:29] \\
        modeline code in elscreen.el trying to access modeline list but while spacemacs load it
        modeline is not a list but a string.
      :END:
-**** why loading (require 'misc-uitls') in lotus-interactivity/packages.el cause current-idle-time to get reset very often which now is not seen.
+**** why loading (require 'misc-uitls) in lotus-interactivity/packages.el cause current-idle-time to get reset very often which now is not seen.
 **** Make a unit test code to check current-idle-time behaviour and report it.
 **** remove all deh-require's and deh-section's
 **** many lotus-*/packages.el lotus-*/config.el  lotus-*/code.el  lotus-*/keybinding.el  requires heavy re-factoring.
@@ -545,7 +545,7 @@ which is responsible to load many features.
 **** remove all dependencies of ~/.xemacs/pkgrepos/mypkgs/experimental/*.el
 **** lots of lib in ~/.xemacs/pkgrepos/mypkgs/experimental need cleanup
 **** remove dependency basic-utils.el misc-utils.el etc from ~/.xemacs/pkgrepos/mypkgs/experimental
-**** (dotspacemacs/user-config) in turn (lotus-emacs-user-init-finish) were not getting called without (require 'misc-uitls') in lotus-interactivity/packages.el
+**** (dotspacemacs/user-config) in turn (lotus-emacs-user-init-finish) were not getting called without (require 'misc-uitls) in lotus-interactivity/packages.el
 **** smartparens-global-mode is not getting loaded without misc-utils
 
 *** Unobtrusive Dynamic Contextual Org Clock
