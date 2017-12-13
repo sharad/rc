@@ -464,7 +464,7 @@ variable."
                                (unless (eq known-last-input-event last-input-event)
                                  (setq display-last-input-event last-input-event
                                        known-last-input-event last-input-event))
-                               (message "Test: From timer idle for secs emacs %d secs %s" idle display-last-input-event)))))))
+                               (message "Test: From timer idle for %s secs emacs, and last even is %s" idle display-last-input-event)))))))
     (cancel-timer *test-timer*)))
 
 (defun lotus-necessary-test ()
