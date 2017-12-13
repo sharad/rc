@@ -625,6 +625,12 @@ which is responsible to load many features.
 ***** Try to add unit test using ERT (Emacs Regression Test)
 ***** On moving to next task, old task should ask to add context, so person can use that context to continue if he restart task after long time.
 ***** And when starting to restart a task it old context must be showed to remind user what was there.
+***** Here should be context feature, at time of leaving office or pausing task, context should be asked and when it is restarted the context will be displayed
+***** To implement above here should be some sign-in and sign-off in the day feature, here sign-off will ask to add context for all tasks attempted today
+and sign-in will ensure that org-context-clock loaded and working it will also present previous unfinished tasks context to carry on today.
+For these we may have to measure that how much time today a task has consumed if it has consumed more than 20 mins then it is entitled to save context for later reference
+similar way if more than 5 mins today gone on the task it mean this task is going to be continued, so it context must be shown to user for reminding where it was left.
+We may have to track with task whether its context had been shown to user or not.
 *** Obtrusive
 **** Window should be marked to reappear/popup when something started were done.
 e.g. In urxvt we should be able to mark window to reappear when build is done, by that user is browsing or editing or doing some other work.
