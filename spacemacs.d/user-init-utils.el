@@ -445,28 +445,32 @@ variable."
   (set-default-face-height-by-resolution)
   (message "loading lotus-necessary-functionality finished"))
 
-(defun idle-prints (print)
-  (defvar *test-timer* nil)
-  (defvar emacs-idle-times-list nil)
-  (if print
-      (progn
-        (defvar known-last-input-event nil)
-        (if *test-timer* (cancel-timer *test-timer*))
-        (when t
-          (setq
-           *test-timer*
-           (run-with-timer 1 2
-                           '(lambda ()
-                              ;; (message "Test: From timer idle for org %d secs emacs %d secs" (org-emacs-idle-seconds) (float-time (current-idle-time)))
-                             (let* (display-last-input-event
-                                    (idle (current-idle-time))
-                                    (idle (if idle (float-time (current-idle-time)) 0)))
-                               (unless (eq known-last-input-event last-input-event)
-                                 (setq display-last-input-event last-input-event
-                                       known-last-input-event last-input-event))
-                               (message "Test: From timer idle for %s secs emacs, and last even is %s" idle display-last-input-event)))))))
-    (cancel-timer *test-timer*)))
+(progn                                  ;debug testing code
+  (defvar *test-idle-prints-timer* nil)
+  (defun test-idle-prints (print)
+    (if print
+        (progn
+          (defvar known-last-input-event nil)
+          (if *test-idle-prints-timer* (cancel-timer *test-idle-prints-timer*))
+          (when t
+            (setq
+             *test-idle-prints-timer*
+             (run-with-timer 1 2
+                             '(lambda ()
+                               ;; (message "Test: From timer idle for org %d secs emacs %d secs" (org-emacs-idle-seconds) (float-time (current-idle-time)))
+                               (let* (display-last-input-event
+                                      (idle (current-idle-time))
+                                      (idle (if idle (float-time (current-idle-time)) 0)))
+                                 (unless (eq known-last-input-event last-input-event)
+                                   (setq display-last-input-event last-input-event
+                                         known-last-input-event last-input-event))
+                                 (message "Test: From timer idle for %f secs emacs, and last even is %s" idle display-last-input-event)))))))
+        (when *test-idle-prints-timer*
+          (cancel-timer *test-idle-prints-timer*))))
+  (defun toggle-test-idle-prints ()
+    (interactive)
+    (test-idle-prints (null *test-idle-prints-timer*)))
 
-(defun lotus-necessary-test ()
-  (interactive)
-  (idle-prints t))
+  (defun lotus-necessary-test ()
+    (interactive)
+    (idle-prints t)))
