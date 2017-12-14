@@ -22,6 +22,9 @@
 
 ;;; note on change
 
+(require 'desktop)
+(require 'session)
+
 (eval-when-compile
   (require 'org-misc-utils-lotus))
 (require 'org-misc-utils-lotus)
@@ -198,9 +201,6 @@ EXTRA is additional text that will be inserted into the notes buffer."
                           )))
        (undo-tree-root buffer-undo-tree)))
     changes))
-
-(require 'desktop)
-(require 'session)
 
 (defvar lotus-minimum-char-changes 70)
 (defvar lotus-minimum-changes 70)
