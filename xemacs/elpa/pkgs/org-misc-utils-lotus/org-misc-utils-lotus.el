@@ -110,12 +110,12 @@
        ;; maybe leave two lines for our window because of the
        ;; normal `raised' mode line
        (select-window ,newwin 'norecord)
-       ,@body)))
+       (progn
+         ,@body))))
 (put 'org-with-new-win 'lisp-indent-function 1)
 
 (defmacro org-with-timed-new-win (timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
-  (let ((temp-win-config (make-symbol "org-with-timed-new-win-config"))
-        (clean-fun-name (make-symbol "org-with-timed-new-win-clean-fun-name")))
+  (lexical-let ((temp-win-config (make-symbol "test-org-with-timed-new-win-config")))
     `(lexical-let* ((,temp-win-config (current-window-configuration))
                     (,cleanupfn-newwin #'(lambda (w localfn)
                                            (message "triggered timer for newwin %s" w)
@@ -132,9 +132,10 @@
                                                      ,cleanupfn-newwin
                                                      ,newwin
                                                      ,cleanupfn-local)))
+           (message "started timer %s" ,timer)
            (condition-case err
                (progn
-                 (select-window ,newwin 'norecord)
+                 ;; (select-window ,newwin 'norecord) ;alread done by org-with-new-win macro
                  ,@body)
              ((quit) (funcall ,cleanupfn-newwin ,newwin ,cleanupfn-local))))))))
 (put 'org-with-timed-new-win 'lisp-indent-function 1)
@@ -143,7 +144,9 @@
 (defmacro org-with-file-pos-new-win (file pos newwin &rest body)
   `(let ((target-buffer (find-file-noselect ,file)))
      (org-with-new-win ,newwin
-       (set-buffer target-buffer)
+       (message "org-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
+       ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
+       (switch-to-buffer target-buffer)
        (goto-char ,pos)
        ,@body)))
 (put 'org-with-file-pos-new-win 'lisp-indent-function 1)
@@ -152,7 +155,9 @@
 (defmacro org-with-file-pos-timed-new-win (file pos timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
   `(let ((target-buffer (find-file-noselect ,file)))
      (org-with-timed-new-win ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
-       (set-buffer target-buffer)
+       (message "org-with-file-pos-timed-new-win: selecting buf %s in %s win" target-buffer ,newwin)
+       ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
+       (switch-to-buffer target-buffer)
        (goto-char ,pos)
        ,@body)))
 (put 'org-with-file-pos-timed-new-win 'lisp-indent-function 1)

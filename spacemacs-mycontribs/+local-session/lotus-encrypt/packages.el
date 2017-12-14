@@ -31,7 +31,7 @@
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-encryptS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-encrypt-packages
@@ -78,6 +78,12 @@ Each entry is either:
         (progn
           (epa-passphrase-cleanup-start)
           (epa-add-exception-for "~/.authinfo.gpg" 100000)
-          (setq epa-file-cache-passphrase-for-symmetric-encryption t)))))
+          (setq epa-file-cache-passphrase-for-symmetric-encryption t))))
+
+  (use-package startup-hooks
+      :defer t
+      :config
+      (progn
+        (epa-passphrase-cleanup-start))))
 
 ;;; packages.el ends here

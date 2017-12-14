@@ -23,7 +23,10 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-12 Tue 16:55]--[2017-12-12 Tue 20:53] =>  3:58
+   CLOCK: [2017-12-14 Thu 20:14]
+   - Note taken on [2017-12-14 Thu 14:25] \\
+     No change
+   CLOCK: [2017-12-12 Tue 16:55]--[2017-12-14 Thu 20:13] => 51:18
    CLOCK: [2017-12-12 Tue 12:55]--[2017-12-12 Tue 13:01] =>  0:06
    CLOCK: [2017-12-12 Tue 00:33]--[2017-12-12 Tue 00:59] =>  0:26
    CLOCK: [2017-12-11 Mon 16:07]--[2017-12-11 Mon 23:26] =>  7:19
@@ -631,6 +634,7 @@ and sign-in will ensure that org-context-clock loaded and working it will also p
 For these we may have to measure that how much time today a task has consumed if it has consumed more than 20 mins then it is entitled to save context for later reference
 similar way if more than 5 mins today gone on the task it mean this task is going to be continued, so it context must be shown to user for reminding where it was left.
 We may have to track with task whether its context had been shown to user or not.
+***** TYPE of task 1. todo 2. simple reminder, 3. event, 4. meeting etc should be accommodated.
 *** Obtrusive
 **** Window should be marked to reappear/popup when something started were done.
 e.g. In urxvt we should be able to mark window to reappear when build is done, by that user is browsing or editing or doing some other work.

@@ -141,11 +141,9 @@
           (eq buff
               (get-buffer "*helm-mode-org-context-clock-add-context-to-org-heading*"))))
 
-        (let ((local-cleanup #'(lambda ()
-                                 (save-excursion
-                                   (org-flag-proprty-drawer-at-marker marker t)))))
+        (let (local-cleanup)
           ;; (setq org-context-clock-add-context-to-org-heading-win-config (current-window-configuration))
-          ;; TODO: do win clean uin in org-timed-miniwin-file-loc-with-refile macro not here.
+          ;; TODO: do win cleanup in org-timed-miniwin-file-loc-with-refile macro not here.
           ;;       and make and use it own org-context-clock-add-context-to-org-heading-win-config variable for it.
           (progn  ;; let (win file pos timeout)   ;pos is void error is seen ?
             (org-with-file-loc-timed-refile-timed-new-win
@@ -154,7 +152,15 @@
                 timeout timer cleanup local-cleanup win
                 ;; (set-marker marker (point))
                 (lexical-let* ((marker (make-marker)))
+
                   (set-marker marker (point))
+
+                  (setq                 ;redefining it
+                   local-cleanup
+                   #'(lambda ()
+                       (save-excursion ;what to do here
+                         (org-flag-proprty-drawer-at-marker marker t))))
+
                   (message "called add-context-to-org-heading %s" (current-buffer))
                   (progn
                     (condition-case err
