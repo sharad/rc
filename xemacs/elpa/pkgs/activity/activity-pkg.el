@@ -1,1 +1,1 @@
-(define-package "activity" "20171211.8" "Activity." 'nil)
+(define-package "activity" "20171215.102" "Activity." 'nil)

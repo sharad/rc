@@ -75,6 +75,12 @@
         (setq current-directory-list (cdr current-directory-list)))
       files-list)))
 
+(defun package-install-local (pkg-desc)
+  (let ((package-archives (list
+                           (cons package-local-dev-archive package-archive-upload-base))))
+    (message "Installing locally")
+    (package-install pkg-desc)))
+
 (defun package-make-package-desc (pkg-name &optional archive)
   (let* ((archive (or archive package-local-dev-archive))
          (package (assoc
@@ -259,7 +265,8 @@
       (dolist (oipdir old-installed-pkgs)
         (delete-directory oipdir t)))
     (message "installing package %s" pkg-sym)
-    (package-install pkg-desc)))
+    (unless (package-install-local pkg-desc)
+      (package-install pkg-desc))))
 
 
 ;;;###autoload

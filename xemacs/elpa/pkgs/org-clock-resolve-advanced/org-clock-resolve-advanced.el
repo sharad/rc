@@ -322,8 +322,8 @@
                          (list other-marker other-start-time (org-rl-clock-start-time next))))
 
                    (setq next
-                         (if (eq (org-rl-clock-marker next) 'imagenary)
-                             (org-rl-clock-start-time-set other-start-time)
+                         (if (eq (org-rl-clock-marker next) 'imaginary)
+                             (org-rl-clock-start-time-set next other-start-time)
                              other-clock))
                    (when other-marker
                      (org-clock-clock-in-out other-clock)))
@@ -391,7 +391,7 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
           (dolist (clock clocks)
             (let ((dangling (or (not (org-clock-is-active))
                                 (/= (car clock) org-clock-marker))))
-              (if (or (not only-dangling-p) dangling)
+              (when (or (not only-dangling-p) dangling)
                   (org-resolve-time
                    (list (car clock) (cdr clock) nil)
                    (list 'imaginary 'now (cdr clock)))))))))))
