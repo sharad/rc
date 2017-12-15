@@ -579,6 +579,7 @@ It is very important and need to completed as soon as possible.
 ***** Report generation
 
 **** BUGS
+***** cleanup lotus-timer-utils timer not working properly and unable to cancel them.
 ***** BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
 ***** BUG (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change) both tries to capture mini-buffer together
  TODO check what exactly happening

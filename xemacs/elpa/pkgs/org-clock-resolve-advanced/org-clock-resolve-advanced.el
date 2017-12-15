@@ -414,14 +414,21 @@ so long."
       (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
           (org-resolve-time
            (list org-clock-marker org-clock-start-time nil)
-           (list 'imaginary 'now (time-subtract (current-time)
-                                                org-clock-user-idle-start)))
+           (list 'imaginary 'now org-clock-user-idle-start))
           (when nil
             (message "Idle time now sec[%d] min[%d]"
                      org-clock-user-idle-seconds
                      (/ org-clock-user-idle-seconds 60)))))))
 
 (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
+
+(defun org-rl-clock-set-correct-idle-timer ()
+  (when org-clock-idle-timer
+    (cancel-timer org-clock-idle-timer))
+  (setq org-clock-idle-timer
+        (run-with-idle-timer
+         (+ (* org-clock-idle-time 60) 10) nil
+         #'org-rl-resolve-clocks-if-idle)))
 
 ;;;###autoload
 (defun org-rl-resolve-clocks (&optional only-dangling-p prompt-fn last-valid)
@@ -453,10 +460,13 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
 (defun org-clock-resolve-advanced-insinuate ()
   (interactive)
   (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
+  (add-hook 'org-clock-in-hook
+            #'org-rl-clock-set-correct-idle-timer)
   (defalias 'org-resolve-clocks 'org-rl-resolve-clocks))
 
 (defun org-clock-resolve-advanced-uninsinuate ()
-  )
+  (remove-hook 'org-clock-in-hook
+               #'org-rl-clock-set-correct-idle-timer))
 
 (when nil                               ;testing
   (let ((currtime (current-time)))
