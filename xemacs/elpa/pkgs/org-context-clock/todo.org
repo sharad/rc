@@ -552,15 +552,17 @@ which is responsible to load many features.
 **** (dotspacemacs/user-config) in turn (lotus-emacs-user-init-finish) were not getting called without (require 'misc-uitls) in lotus-interactivity/packages.el
 **** smartparens-global-mode is not getting loaded without misc-utils
 
-*** Basic
+*** Basic (what is left to be working)
 ***** Very fast Interface to add new task which should provide options
 ****** whether it is subtask of current task or existing task, now required its separate naming, similar way to merge child task to parent.
 ****** whether it sudden random unrealted task from current task or existing task
 ****** adding timeout bound task like sleep for 5 mins
 ****** etc
 ****** adding new task also try to copy or move property from related task
-
-
+***** org-resolve-idle appear many time when idle for multiples of 5 mins
+***** join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
+ So both can be handled at one place, it will duplication of code, and here we could support multi-valued property also.
+***** Report generation
 *** Unobtrusive Dynamic Contextual Org Clock
 **** BUGS
 ***** BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
@@ -596,12 +598,15 @@ which is responsible to load many features.
       CLOCK: [2017-11-18 Sat 17:00]--[2017-11-18 Sat 23:56] =>  6:56
       CLOCK: [2017-11-18 Sat 16:41]--[2017-11-18 Sat 16:47] =>  0:06
       :END:
-***** make (org-timed-miniwin-file-loc-with-refile) to use (org-with-new-win)
+***** CLOSED make (org-timed-miniwin-file-loc-with-refile) to use (org-with-new-win)
+      CLOSED: [2017-12-15 Fri 18:33]
+      :LOGBOOK:
+      - State "CLOSED"     from              [2017-12-15 Fri 18:33] \\
+        finished, but another new bug appear
+      :END:
 ***** cleanup (org-context-clock-add-context-to-org-heading) so it do not need to handle clean up of WIN which will be done by (org-with-new-win) through (org-timed-miniwin-file-loc-with-refile)
 ***** org-clock-out should be call when last frame is closed without asking any question it should not count make-reader-frame
 ***** disable org-context-clocking when when last frame is closed
-***** join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
- So both can be handled at one place, it will duplication of code, and here we could support multi-valued property also.
 ***** When closing emacs frame along with clock out option it should tell which all frames are still opened.
 ***** show In matched tasks selection buffer show task rank which was calculated.
 ***** Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
@@ -654,6 +659,9 @@ e.g. In urxvt we should be able to mark window to reappear when build is done, b
      do calculate where all other task estimated time and this task estimated will fit into the expected completion datetime
 **** Here should all three kind of estimate pessimistic, pragmatic, optimistic
 **** For CPM and PERT how task sequencing as well as hierarchy should be done
+1. parent heading should tell all sibling headings will treated as sequential or concurrent flow
+2. by default if you see that we take same level list of heading as concurrent
+3. if parent heading had not specified flow one default should be assumed.
 **** How related task should get it property by copying or moving properties etc.
 
 *** Bookmarks

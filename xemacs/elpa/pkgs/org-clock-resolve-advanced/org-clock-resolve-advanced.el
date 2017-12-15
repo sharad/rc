@@ -52,10 +52,6 @@
 (defun org-resolve-opts-common (clock)
   (list (cons "Done" 'done)))
 
-(setq org-resolve-opts-common-with-time
-      '(("include-in-other" . include-in-next)
-        ("subtract" . subtract)))
-
 (defun org-resolve-opts-common-with-time (clock)
   (let ((heading (org-get-heading-from-clock clock)))
     (list
@@ -63,10 +59,6 @@
      (cons
       (format "subtract from prev %s" heading)
       'subtract))))
-
-(setq org-resolve-opts-prev
-      '(("cancel-prev-p" . cancel-prev-p)
-        ("jump-prev-p" . jump-prev-p)))
 
 (defun org-resolve-opts-prev (clock)
   (let ((heading (org-get-heading-from-clock clock)))
@@ -78,19 +70,12 @@
       (format "Jump to prev %s" heading)
       'jump-prev-p))))
 
-(setq org-resolve-opts-prev-with-time
-      '(("include-in-prev" . include-in-prev)))
-
 (defun org-resolve-opts-prev-with-time (clock)
   (let ((heading (org-get-heading-from-clock clock)))
     (list
      (cons
       (format "Include in prev %s" heading)
       'include-in-prev))))
-
-(setq org-resolve-opts-next
-      '(("cancel-next-p" . cancel-next-p)
-        ("jump-next-p" . jump-next-p)))
 
 (defun org-resolve-opts-next (clock)
   (let ((heading (org-get-heading-from-clock clock)))
@@ -101,9 +86,6 @@
      (cons
       (format "Jump to next %s" heading)
       'jump-next-p))))
-
-(setq org-resolve-opts-next-with-time
-      '(("include-in-next" . include-in-next)))
 
 (defun org-resolve-opts-next-with-time (clock)
   (let ((heading (org-get-heading-from-clock clock)))
@@ -288,9 +270,13 @@
       (let ((timelensec-time (seconds-to-time (* timelen 60))))
         (cond
           ((eq opt 'jump-prev-p)
+           ;; finish here
            (org-rl-clock-clock-jump-to prev))
+
           ((eq opt 'jump-next-p)
+           ;; finish here
            (org-rl-clock-clock-jump-to next))
+
           ((eq opt 'cancel-prev-p)
            (progn
              (org-rl-clock-clock-cancel prev)
@@ -327,7 +313,7 @@
                  (org-rl-clock-clock-out prev)
                  (setq next (list
                              (org-rl-clock-marker prev) updated-start-time (org-rl-clock-start-time next)))
-                 (org-clock-clock-in-out next)))
+                 (org-rl-clock-clock-in-out next)))
 
            ;; set org-clock-leftover-time here
 
@@ -347,7 +333,7 @@
 
                (let ((updated-start-time (time-add
                                           (org-rl-clock-start-time next) timelensec-time)))
-                 (org-rl-clock-start-time-set next updated-stop-time)
+                 (org-rl-clock-start-time-set next updated-start-time)
                  (when (org-rl-clock-marker next)
                    (org-rl-clock-clock-in next))) ;? imple
 
@@ -360,6 +346,7 @@
                  ;; make prev is clocked out
                  (when (org-rl-clock-marker prev)
                    (org-rl-clock-clock-in-out prev)))))
+
           ((memq opt '(include-in-other
                        subtract)) ;; subtract timelen from timelength
            ;; select other clock
@@ -384,7 +371,7 @@
                              (org-rl-clock-start-time-set next other-start-time)
                              other-clock))
                    (when other-marker
-                     (org-clock-clock-in-out other-clock)))
+                     (org-rl-clock-clock-in-out other-clock)))
 
                  (let* ((other-stop-time
                          (time-subtract (org-rl-clock-stop-time prev) timelensec-time))
@@ -398,7 +385,7 @@
                      (org-rl-clock-clock-out prev t))
 
                    (setq prev other-clock)
-                   (when other-marker (org-clock-clock-in-out other-clock))))))
+                   (when other-marker (org-rl-clock-clock-in-out other-clock))))))
 
           ((eq opt 'done) )
           (t (error "Error"))))
@@ -460,7 +447,7 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
 (defun org-clock-resolve-clocks (clocks) ;TODO
   (let ((next (pop clocks))
         (prev (pop clocks)))
-    (org-resolve-time (next prev))))
+    (org-resolve-time next prev)))
 
 ;;;###autoload
 (defun org-clock-resolve-advanced-insinuate ()
