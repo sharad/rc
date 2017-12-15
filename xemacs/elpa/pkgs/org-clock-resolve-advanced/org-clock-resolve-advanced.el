@@ -40,21 +40,77 @@
 ;; (defvar org-clock-resolving-clocks nil)
 ;; (defvar org-clock-resolving-clocks-due-to-idleness nil)
 
+(defun org-get-heading-from-clock (clock)
+  (if (markerp (car clock))
+      (org-lotus-with-marker (car clock)
+                             (org-get-heading t))
+      "imaginary"))
+
 (setq org-resolve-opts-common
       '(("Done" . done)))
+
+(defun org-resolve-opts-common (clock)
+  (list (cons "Done" 'done)))
+
 (setq org-resolve-opts-common-with-time
       '(("include-in-other" . include-in-next)
         ("subtract" . subtract)))
+
+(defun org-resolve-opts-common-with-time (clock)
+  (let ((heading (org-get-heading-from-clock clock)))
+    (list
+     (cons "Include in other" 'include-in-next)
+     (cons
+      (format "subtract from prev %s" heading)
+      'subtract))))
+
 (setq org-resolve-opts-prev
       '(("cancel-prev-p" . cancel-prev-p)
         ("jump-prev-p" . jump-prev-p)))
+
+(defun org-resolve-opts-prev (clock)
+  (let ((heading (org-get-heading-from-clock clock)))
+    (list
+     (cons
+      (format "Cancel prev %s" heading)
+      cancel-prev-p)
+     (cons
+      (format "Jump to prev %s" heading)
+      jump-prev-p))))
+
 (setq org-resolve-opts-prev-with-time
       '(("include-in-prev" . include-in-prev)))
+
+(defun org-resolve-opts-prev-with-time (clock)
+  (let ((heading (org-get-heading-from-clock clock)))
+    (list
+     (cons
+      (format "Include in prev %s" heading)
+      include-in-prev))))
+
 (setq org-resolve-opts-next
       '(("cancel-next-p" . cancel-next-p)
         ("jump-next-p" . jump-next-p)))
+
+(defun org-resolve-opts-next (clock)
+  (let ((heading (org-get-heading-from-clock clock)))
+    (list
+     (cons
+      (format "Cancel next %s" heading)
+      cancel-next-p)
+     (cons
+      (format "Jump to next %s" heading)
+      jump-next-p))))
+
 (setq org-resolve-opts-next-with-time
       '(("include-in-next" . include-in-next)))
+
+(defun org-resolve-opts-next-with-time (clock)
+  (let ((heading (org-get-heading-from-clock clock)))
+    (list
+     (cons
+      (format "Include in next %s" heading)
+      include-in-next))))
 
 (defun time-get-rl-time (time)
   (cond
@@ -178,22 +234,24 @@
   ;; BUG how to handle current time == 'now
   ;; BUG how to handle when prev == next
   (interactive)
-  ""
+  "Resolve clock time"
   (let ((debug-prompt t)
         (default (org-rl-get-time-gap prev next)))
+
+    (assert (> default 0))
 
     (let* ((options
             (append
              (when (markerp (org-rl-clock-marker prev))
                (append
-                org-resolve-opts-prev
-                (unless (zerop default) org-resolve-opts-prev-with-time)))
+                (org-resolve-opts-prev prev)
+                (unless (zerop default) (org-resolve-opts-prev-with-time prev))))
              (when (markerp (org-rl-clock-marker next))
                (append
-                org-resolve-opts-next
-                (unless (zerop default) org-resolve-opts-next-with-time)))
-             (unless (zerop default) org-resolve-opts-common-with-time)
-             org-resolve-opts-common))
+                (org-resolve-opts-next next)
+                (unless (zerop default) (org-resolve-opts-next-with-time next))))
+             (unless (zerop default) (org-resolve-opts-common-with-time prev))
+             (org-resolve-opts-common prev)))
            (opt
             (cdr
              (assoc
@@ -421,7 +479,7 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
       org-clock-start-time
       nil)
      (list
-      nil
+      'imaginary
       'now
       (time-subtract currtime (seconds-to-time (* 8 60)))))))
 

@@ -23,7 +23,8 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-15 Fri 01:57]
+   CLOCK: [2017-12-15 Fri 16:10]
+   CLOCK: [2017-12-15 Fri 01:57]--[2017-12-15 Fri 02:16] =>  0:19
    - Note taken on [2017-12-14 Thu 14:25] \\
      No change
    CLOCK: [2017-12-12 Tue 16:55]--[2017-12-14 Thu 20:13] => 51:18
@@ -551,6 +552,15 @@ which is responsible to load many features.
 **** (dotspacemacs/user-config) in turn (lotus-emacs-user-init-finish) were not getting called without (require 'misc-uitls) in lotus-interactivity/packages.el
 **** smartparens-global-mode is not getting loaded without misc-utils
 
+*** Basic
+***** Very fast Interface to add new task which should provide options
+****** whether it is subtask of current task or existing task, now required its separate naming, similar way to merge child task to parent.
+****** whether it sudden random unrealted task from current task or existing task
+****** adding timeout bound task like sleep for 5 mins
+****** etc
+****** adding new task also try to copy or move property from related task
+
+
 *** Unobtrusive Dynamic Contextual Org Clock
 **** BUGS
 ***** BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
@@ -590,13 +600,6 @@ which is responsible to load many features.
 ***** cleanup (org-context-clock-add-context-to-org-heading) so it do not need to handle clean up of WIN which will be done by (org-with-new-win) through (org-timed-miniwin-file-loc-with-refile)
 ***** org-clock-out should be call when last frame is closed without asking any question it should not count make-reader-frame
 ***** disable org-context-clocking when when last frame is closed
-***** Very fast Interface to add new task which should provide options
-****** whether it is subtask of current task or existing task, now required its separate naming, similar way to merge child task to parent.
-****** whether it sudden random unrealted task from current task or existing task
-****** adding timeout bound task like sleep for 5 mins
-****** etc
-****** adding new task also try to copy or move property from related task
-
 ***** join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
  So both can be handled at one place, it will duplication of code, and here we could support multi-valued property also.
 ***** When closing emacs frame along with clock out option it should tell which all frames are still opened.
