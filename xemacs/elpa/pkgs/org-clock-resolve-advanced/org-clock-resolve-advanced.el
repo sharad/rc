@@ -73,10 +73,10 @@
     (list
      (cons
       (format "Cancel prev %s" heading)
-      cancel-prev-p)
+      'cancel-prev-p)
      (cons
       (format "Jump to prev %s" heading)
-      jump-prev-p))))
+      'jump-prev-p))))
 
 (setq org-resolve-opts-prev-with-time
       '(("include-in-prev" . include-in-prev)))
@@ -86,7 +86,7 @@
     (list
      (cons
       (format "Include in prev %s" heading)
-      include-in-prev))))
+      'include-in-prev))))
 
 (setq org-resolve-opts-next
       '(("cancel-next-p" . cancel-next-p)
@@ -97,10 +97,10 @@
     (list
      (cons
       (format "Cancel next %s" heading)
-      cancel-next-p)
+      'cancel-next-p)
      (cons
       (format "Jump to next %s" heading)
-      jump-next-p))))
+      'jump-next-p))))
 
 (setq org-resolve-opts-next-with-time
       '(("include-in-next" . include-in-next)))
@@ -110,7 +110,7 @@
     (list
      (cons
       (format "Include in next %s" heading)
-      include-in-next))))
+      'include-in-next))))
 
 (defun time-get-rl-time (time)
   (cond
