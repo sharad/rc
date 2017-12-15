@@ -422,162 +422,189 @@ Yes
    CLOCK: [2016-02-03 Wed 17:42]--[2016-02-04 Thu 00:27] =>  6:45
    CLOCK: [2016-02-03 Wed 01:10]--[2016-02-03 Wed 01:30] =>  0:20
    :END:
+
+*** Why it is important
+It is very important and need to completed as soon as possible.
 *** Critical BUGS are here
-**** CLOSED continuous file-notify event causing resetting of current-idle-time
-     CLOSED: [2017-12-12 Tue 20:27]
-     :LOGBOOK:
-     - State "CLOSED"      from "DONE"       [2017-12-12 Tue 20:36] \\
-       filenotify.el g-file-notify and autorevert.el responsible Here for any file open
-       autorevert(filenotify) register for g-file-notify in this case g-file-notify not
-       only notify for this it also notify for all files in the containing directory of
-       opened file, these event are also treated like any key input event in emacs and
-       causing current-idle-time to get reset.
+**** BUGS
+***** CLOSED continuous file-notify event causing resetting of current-idle-time
+      CLOSED: [2017-12-12 Tue 20:27]
+      :LOGBOOK:
+      - State "CLOSED"      from "DONE"       [2017-12-12 Tue 20:36] \\
+        filenotify.el g-file-notify and autorevert.el responsible Here for any file open
+        autorevert(filenotify) register for g-file-notify in this case g-file-notify not
+        only notify for this it also notify for all files in the containing directory of
+        opened file, these event are also treated like any key input event in emacs and
+        causing current-idle-time to get reset.
 
-       In this case when ~/.bbdb or and file in home dir opened than all file changes
-       (edit, remove, add, modification) in home dir were reported and here ~/.xsession-errors
-       and ~/.wget-hsts were continuously getting modified.
-     :END:
-Basically some unwanted files have been get added into it
-e.g. ~/.xsession-errors ~/.wget-hsts
-TODO: DEBUG it how it gets dirty
-trace it who on earth making it dirty so often using (set-menubar-dirty-flag)
-it is here /usr/share/emacs/24.5/lisp/obsolete/lmenu.el.gz
-***** Gdb trace
-#+BEGIN_SRC gdb
-define emacs-idle
-  set pagination off
-  display c
-  trace-simple-f keyboard.c:2916
-  trace-simple-f keyboard.c:2941
-  trace-simple-f keyboard.c:2947
-  trace-simple-f keyboard.c:2952
-  trace-simple-f keyboard.c:2954
-  trace-simple-f keyboard.c:2959
-  trace-simple-f keyboard.c:3232
-
-  dont-repeat
-end
-document emacs-idle
-  trace function
-end
-#+END_SRC
-
-***** Normal case
+        In this case when ~/.bbdb or and file in home dir opened than all file changes
+        (edit, remove, add, modification) in home dir were reported and here ~/.xsession-errors
+        and ~/.wget-hsts were continuously getting modified.
+      :END:
+ Basically some unwanted files have been get added into it
+ e.g. ~/.xsession-errors ~/.wget-hsts
+ TODO: DEBUG it how it gets dirty
+ trace it who on earth making it dirty so often using (set-menubar-dirty-flag)
+ it is here /usr/share/emacs/24.5/lisp/obsolete/lmenu.el.gz
+****** Gdb trace
  #+BEGIN_SRC gdb
- Thread 1 "emacs" hit Breakpoint 1, read_char (commandflag=0x1, map=map@entry=0x8508766, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef1ccb, end_time=end_time@entry=0x0) at keyboard.c:2916
- 2916	in keyboard.c
- $768 = void
- Thu Dec  7 23:33:41 IST 2017
- #0  read_char (commandflag=0x1, map=map@entry=0x8508766, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef1ccb, end_time=end_time@entry=0x0) at keyboard.c:2916
- #1  0x00000000004edc0d in read_key_sequence (keybuf=keybuf@entry=0x7ffea9ef1da0, prompt=0xbd3f72, dont_downcase_last=dont_downcase_last@entry=0x0, can_return_switch_frame=can_return_switch_frame@entry=0x1, fix_current_buffer=fi
- x_current_buffer@entry=0x1, prevent_redisplay=prevent_redisplay@entry=0x0, bufsize=0x1e) at keyboard.c:9089
- #2  0x00000000004ef970 in command_loop_1 () at keyboard.c:1453
- #3  0x0000000000553327 in internal_condition_case (bfun=bfun@entry=0x4ef770 <command_loop_1>, handlers=<optimized out>, hfun=hfun@entry=0x4e6420 <cmd_error>) at eval.c:1348
- #4  0x00000000004e189e in command_loop_2 (ignore=ignore@entry=0xbd3f72) at keyboard.c:1178
- #5  0x000000000055320b in internal_catch (tag=0xbf1ed2, func=func@entry=0x4e1880 <command_loop_2>, arg=0xbd3f72) at eval.c:1112
- #6  0x00000000004e5f96 in command_loop () at keyboard.c:1149
- #7  recursive_edit_1 () at keyboard.c:778
- #8  0x000000000050ed8f in read_minibuf (map=map@entry=0xbcf6e6, initial=initial@entry=0xbd3f72, prompt=<optimized out>, prompt@entry=0x5de64c1, expflag=<optimized out>, histvar=histvar@entry=0xbfbce2, histpos=<optimized out>, d
- efalt=0x8623006, allow_props=0x0, inherit_input_method=0x0) at minibuf.c:674
- #9  0x000000000050f39f in Fread_from_minibuffer (prompt=0x5de64c1, initial_contents=0xbd3f72, keymap=0xbcf6e6, read=0xbd3f72, hist=<optimized out>, default_value=0x8623006, inherit_input_method=0xbd3f72) at minibuf.c:957
- #10 0x0000000000555037 in Ffuncall (nargs=<optimized out>, args=args@entry=0x7ffea9ef2138) at eval.c:2844
- #11 0x000000000058a2a3 in exec_byte_code (bytestr=<optimized out>, vector=0x86b24d, maxdepth=<optimized out>, args_template=<optimized out>, nargs=nargs@entry=0x2, args=<optimized out>, args@entry=0x86b229 <pure+122249>) at byt
- ecode.c:916
- #12 0x0000000000554bc7 in funcall_lambda (fun=0x7ffea9ef2340, nargs=nargs@entry=0x2, arg_vector=0x86b229 <pure+122249>, arg_vector@entry=0x7ffea9ef22d8) at eval.c:2978
- #13 0x0000000000554ecb in Ffuncall (nargs=0x3, args=args@entry=0x7ffea9ef22d0) at eval.c:2872
- #14 0x000000000058a2a3 in exec_byte_code (bytestr=<optimized out>, vector=0x92b53d, maxdepth=<optimized out>, args_template=<optimized out>, nargs=<optimized out>, args=<optimized out>) at bytecode.c:916
- #15 0x00000000005543f3 in eval_sub (form=form@entry=0x92b4ee) at eval.c:2187
- #16 0x0000000000557be4 in Feval (form=form@entry=0x92b4ee, lexical=<optimized out>) at eval.c:1996
- #17 0x0000000000550c16 in Fcall_interactively (function=0xf4d172, record_flag=0xbd3f72, keys=0xbdc6bd) at callint.c:345
- #18 0x000000000055509d in Ffuncall (nargs=<optimized out>, args=args@entry=0x7ffea9ef2618) at eval.c:2818
- #19 0x000000000058a2a3 in exec_byte_code (bytestr=<optimized out>, vector=0x92d575, maxdepth=<optimized out>, args_template=<optimized out>, nargs=nargs@entry=0x1, args=<optimized out>, args@entry=0x92d551 <pure+917681>) at byt
- ecode.c:916
- #20 0x0000000000554bc7 in funcall_lambda (fun=0x0, nargs=nargs@entry=0x1, arg_vector=0x92d551 <pure+917681>, arg_vector@entry=0x7ffea9ef2778) at eval.c:2978
- #21 0x0000000000554ecb in Ffuncall (nargs=nargs@entry=0x2, args=args@entry=0x7ffea9ef2770) at eval.c:2872
- #22 0x00000000005551ea in call1 (fn=<optimized out>, arg1=<optimized out>) at eval.c:2610
+ define emacs-idle
+   set pagination off
+   display c
+   trace-simple-f keyboard.c:2916
+   trace-simple-f keyboard.c:2941
+   trace-simple-f keyboard.c:2947
+   trace-simple-f keyboard.c:2952
+   trace-simple-f keyboard.c:2954
+   trace-simple-f keyboard.c:2959
+   trace-simple-f keyboard.c:3232
 
- #23 0x00000000004efb0d in command_loop_1 () at keyboard.c:1560 NOTE
- #24 0x0000000000553327 in internal_condition_case (bfun=bfun@entry=0x4ef770 <command_loop_1>, handlers=<optimized out>, hfun=hfun@entry=0x4e6420 <cmd_error>) at eval.c:1348
- #25 0x00000000004e189e in command_loop_2 (ignore=ignore@entry=0xbd3f72) at keyboard.c:1178
- #26 0x000000000055320b in internal_catch (tag=0xbdf7a2, func=func@entry=0x4e1880 <command_loop_2>, arg=0xbd3f72) at eval.c:1112
- #27 0x00000000004e6007 in command_loop () at keyboard.c:1157
- #28 recursive_edit_1 () at keyboard.c:778
- #29 0x00000000004e6348 in Frecursive_edit () at keyboard.c:849
- #30 0x0000000000413ff1 in main (argc=<optimized out>, argv=0x7ffea9ef2b38) at emacs.c:1642
+   dont-repeat
+ end
+ document emacs-idle
+   trace function
+ end
  #+END_SRC
 
-***** Buggy case
-#+BEGIN_SRC gdb
- Thread 1 "emacs" hit Breakpoint 1, read_char (commandflag=0x1, map=map@entry=0x547b0a6, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef26fb, end_time=end_time@entry=0x0) at keyboard.c:2916
- 2916	in keyboard.c
- $875 = void
- Thu Dec  7 23:34:16 IST 2017
- #0  read_char (commandflag=0x1, map=map@entry=0x547b0a6, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef26fb, end_time=end_time@entry=0x0) at keyboard.c:2916
- #1  0x00000000004edc0d in read_key_sequence (keybuf=keybuf@entry=0x7ffea9ef27d0, prompt=0xbd3f72, dont_downcase_last=dont_downcase_last@entry=0x0, can_return_switch_frame=can_return_switch_frame@entry=0x1, fix_current_buffer=fi
- x_current_buffer@entry=0x1, prevent_redisplay=prevent_redisplay@entry=0x0, bufsize=0x1e) at keyboard.c:9089
+****** Normal case
+  #+BEGIN_SRC gdb
+  Thread 1 "emacs" hit Breakpoint 1, read_char (commandflag=0x1, map=map@entry=0x8508766, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef1ccb, end_time=end_time@entry=0x0) at keyboard.c:2916
+  2916	in keyboard.c
+  $768 = void
+  Thu Dec  7 23:33:41 IST 2017
+  #0  read_char (commandflag=0x1, map=map@entry=0x8508766, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef1ccb, end_time=end_time@entry=0x0) at keyboard.c:2916
+  #1  0x00000000004edc0d in read_key_sequence (keybuf=keybuf@entry=0x7ffea9ef1da0, prompt=0xbd3f72, dont_downcase_last=dont_downcase_last@entry=0x0, can_return_switch_frame=can_return_switch_frame@entry=0x1, fix_current_buffer=fi
+  x_current_buffer@entry=0x1, prevent_redisplay=prevent_redisplay@entry=0x0, bufsize=0x1e) at keyboard.c:9089
+  #2  0x00000000004ef970 in command_loop_1 () at keyboard.c:1453
+  #3  0x0000000000553327 in internal_condition_case (bfun=bfun@entry=0x4ef770 <command_loop_1>, handlers=<optimized out>, hfun=hfun@entry=0x4e6420 <cmd_error>) at eval.c:1348
+  #4  0x00000000004e189e in command_loop_2 (ignore=ignore@entry=0xbd3f72) at keyboard.c:1178
+  #5  0x000000000055320b in internal_catch (tag=0xbf1ed2, func=func@entry=0x4e1880 <command_loop_2>, arg=0xbd3f72) at eval.c:1112
+  #6  0x00000000004e5f96 in command_loop () at keyboard.c:1149
+  #7  recursive_edit_1 () at keyboard.c:778
+  #8  0x000000000050ed8f in read_minibuf (map=map@entry=0xbcf6e6, initial=initial@entry=0xbd3f72, prompt=<optimized out>, prompt@entry=0x5de64c1, expflag=<optimized out>, histvar=histvar@entry=0xbfbce2, histpos=<optimized out>, d
+  efalt=0x8623006, allow_props=0x0, inherit_input_method=0x0) at minibuf.c:674
+  #9  0x000000000050f39f in Fread_from_minibuffer (prompt=0x5de64c1, initial_contents=0xbd3f72, keymap=0xbcf6e6, read=0xbd3f72, hist=<optimized out>, default_value=0x8623006, inherit_input_method=0xbd3f72) at minibuf.c:957
+  #10 0x0000000000555037 in Ffuncall (nargs=<optimized out>, args=args@entry=0x7ffea9ef2138) at eval.c:2844
+  #11 0x000000000058a2a3 in exec_byte_code (bytestr=<optimized out>, vector=0x86b24d, maxdepth=<optimized out>, args_template=<optimized out>, nargs=nargs@entry=0x2, args=<optimized out>, args@entry=0x86b229 <pure+122249>) at byt
+  ecode.c:916
+  #12 0x0000000000554bc7 in funcall_lambda (fun=0x7ffea9ef2340, nargs=nargs@entry=0x2, arg_vector=0x86b229 <pure+122249>, arg_vector@entry=0x7ffea9ef22d8) at eval.c:2978
+  #13 0x0000000000554ecb in Ffuncall (nargs=0x3, args=args@entry=0x7ffea9ef22d0) at eval.c:2872
+  #14 0x000000000058a2a3 in exec_byte_code (bytestr=<optimized out>, vector=0x92b53d, maxdepth=<optimized out>, args_template=<optimized out>, nargs=<optimized out>, args=<optimized out>) at bytecode.c:916
+  #15 0x00000000005543f3 in eval_sub (form=form@entry=0x92b4ee) at eval.c:2187
+  #16 0x0000000000557be4 in Feval (form=form@entry=0x92b4ee, lexical=<optimized out>) at eval.c:1996
+  #17 0x0000000000550c16 in Fcall_interactively (function=0xf4d172, record_flag=0xbd3f72, keys=0xbdc6bd) at callint.c:345
+  #18 0x000000000055509d in Ffuncall (nargs=<optimized out>, args=args@entry=0x7ffea9ef2618) at eval.c:2818
+  #19 0x000000000058a2a3 in exec_byte_code (bytestr=<optimized out>, vector=0x92d575, maxdepth=<optimized out>, args_template=<optimized out>, nargs=nargs@entry=0x1, args=<optimized out>, args@entry=0x92d551 <pure+917681>) at byt
+  ecode.c:916
+  #20 0x0000000000554bc7 in funcall_lambda (fun=0x0, nargs=nargs@entry=0x1, arg_vector=0x92d551 <pure+917681>, arg_vector@entry=0x7ffea9ef2778) at eval.c:2978
+  #21 0x0000000000554ecb in Ffuncall (nargs=nargs@entry=0x2, args=args@entry=0x7ffea9ef2770) at eval.c:2872
+  #22 0x00000000005551ea in call1 (fn=<optimized out>, arg1=<optimized out>) at eval.c:2610
 
- #2  0x00000000004ef970 in command_loop_1 () at keyboard.c:1453  NOTE
- #3  0x0000000000553327 in internal_condition_case (bfun=bfun@entry=0x4ef770 <command_loop_1>, handlers=<optimized out>, hfun=hfun@entry=0x4e6420 <cmd_error>) at eval.c:1348
- #4  0x00000000004e189e in command_loop_2 (ignore=ignore@entry=0xbd3f72) at keyboard.c:1178
- #5  0x000000000055320b in internal_catch (tag=0xbdf7a2, func=func@entry=0x4e1880 <command_loop_2>, arg=0xbd3f72) at eval.c:1112
- #6  0x00000000004e6007 in command_loop () at keyboard.c:1157
- #7  recursive_edit_1 () at keyboard.c:778
- #8  0x00000000004e6348 in Frecursive_edit () at keyboard.c:849
- #9  0x0000000000413ff1 in main (argc=<optimized out>, argv=0x7ffea9ef2b38) at emacs.c:1642
-#+END_SRC
+  #23 0x00000000004efb0d in command_loop_1 () at keyboard.c:1560 NOTE
+  #24 0x0000000000553327 in internal_condition_case (bfun=bfun@entry=0x4ef770 <command_loop_1>, handlers=<optimized out>, hfun=hfun@entry=0x4e6420 <cmd_error>) at eval.c:1348
+  #25 0x00000000004e189e in command_loop_2 (ignore=ignore@entry=0xbd3f72) at keyboard.c:1178
+  #26 0x000000000055320b in internal_catch (tag=0xbdf7a2, func=func@entry=0x4e1880 <command_loop_2>, arg=0xbd3f72) at eval.c:1112
+  #27 0x00000000004e6007 in command_loop () at keyboard.c:1157
+  #28 recursive_edit_1 () at keyboard.c:778
+  #29 0x00000000004e6348 in Frecursive_edit () at keyboard.c:849
+  #30 0x0000000000413ff1 in main (argc=<optimized out>, argv=0x7ffea9ef2b38) at emacs.c:1642
+  #+END_SRC
+
+****** Buggy case
+ #+BEGIN_SRC gdb
+  Thread 1 "emacs" hit Breakpoint 1, read_char (commandflag=0x1, map=map@entry=0x547b0a6, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef26fb, end_time=end_time@entry=0x0) at keyboard.c:2916
+  2916	in keyboard.c
+  $875 = void
+  Thu Dec  7 23:34:16 IST 2017
+  #0  read_char (commandflag=0x1, map=map@entry=0x547b0a6, prev_event=0xbd3f72, used_mouse_menu=used_mouse_menu@entry=0x7ffea9ef26fb, end_time=end_time@entry=0x0) at keyboard.c:2916
+  #1  0x00000000004edc0d in read_key_sequence (keybuf=keybuf@entry=0x7ffea9ef27d0, prompt=0xbd3f72, dont_downcase_last=dont_downcase_last@entry=0x0, can_return_switch_frame=can_return_switch_frame@entry=0x1, fix_current_buffer=fi
+  x_current_buffer@entry=0x1, prevent_redisplay=prevent_redisplay@entry=0x0, bufsize=0x1e) at keyboard.c:9089
+
+  #2  0x00000000004ef970 in command_loop_1 () at keyboard.c:1453  NOTE
+  #3  0x0000000000553327 in internal_condition_case (bfun=bfun@entry=0x4ef770 <command_loop_1>, handlers=<optimized out>, hfun=hfun@entry=0x4e6420 <cmd_error>) at eval.c:1348
+  #4  0x00000000004e189e in command_loop_2 (ignore=ignore@entry=0xbd3f72) at keyboard.c:1178
+  #5  0x000000000055320b in internal_catch (tag=0xbdf7a2, func=func@entry=0x4e1880 <command_loop_2>, arg=0xbd3f72) at eval.c:1112
+  #6  0x00000000004e6007 in command_loop () at keyboard.c:1157
+  #7  recursive_edit_1 () at keyboard.c:778
+  #8  0x00000000004e6348 in Frecursive_edit () at keyboard.c:849
+  #9  0x0000000000413ff1 in main (argc=<optimized out>, argv=0x7ffea9ef2b38) at emacs.c:1642
+ #+END_SRC
 
 
-**** DONE It is still not known why (require 'misc-utils) in
-     CLOSED: [2017-12-12 Tue 20:29]
-lotus-interactivity/packages.el of (lotus-interactivity/post-init-ido)
-is only casing speacemacs to load properly with all features and themes
-**** Solve the issue with sessions-unified.el when setting (setq *session-unified-desktop-enabled* nil) not running lotus-enable-desktop-restore-interrupting-feature-hook
-        (progn
-          (lotus-enable-session-saving-immediately)
-          (run-each-hooks 'lotus-enable-desktop-restore-interrupting-feature-hook)
-          (message
-           "*session-unified-desktop-enabled* %s" *session-unified-desktop-enabled*))
+***** DONE It is still not known why (require 'misc-utils) in
+      CLOSED: [2017-12-12 Tue 20:29]
+ lotus-interactivity/packages.el of (lotus-interactivity/post-init-ido)
+ is only casing speacemacs to load properly with all features and themes
+***** Solve the issue with sessions-unified.el when setting (setq *session-unified-desktop-enabled* nil) not running lotus-enable-desktop-restore-interrupting-feature-hook
+         (progn
+           (lotus-enable-session-saving-immediately)
+           (run-each-hooks 'lotus-enable-desktop-restore-interrupting-feature-hook)
+           (message
+            "*session-unified-desktop-enabled* %s" *session-unified-desktop-enabled*))
 
-which is responsible to load many features.
-**** HOLD why only loading (require 'misc-uitls) in lotus-interactivity/packages.el cause spacemacs to load properly with themes and packages
-     :LOGBOOK:
-     - State "HOLD"       from              [2017-12-12 Tue 20:29] \\
-       modeline code in elscreen.el trying to access modeline list but while spacemacs load it
-       modeline is not a list but a string.
-     :END:
-**** why loading (require 'misc-uitls) in lotus-interactivity/packages.el cause current-idle-time to get reset very often which now is not seen.
-**** Make a unit test code to check current-idle-time behaviour and report it.
-**** remove all deh-require's and deh-section's
-**** many lotus-*/packages.el lotus-*/config.el  lotus-*/code.el  lotus-*/keybinding.el  requires heavy re-factoring.
-**** lotus-remote/packages.el tramp, lotus-interactivity/packages.el ido require heavy re-factoring
-**** remove all dependencies of ~/.xemacs/pkgrepos/mypkgs/experimental/*.el
-**** lots of lib in ~/.xemacs/pkgrepos/mypkgs/experimental need cleanup
-**** remove dependency basic-utils.el misc-utils.el etc from ~/.xemacs/pkgrepos/mypkgs/experimental
-**** (dotspacemacs/user-config) in turn (lotus-emacs-user-init-finish) were not getting called without (require 'misc-uitls) in lotus-interactivity/packages.el
-**** smartparens-global-mode is not getting loaded without misc-utils
+ which is responsible to load many features.
+***** HOLD why only loading (require 'misc-uitls) in lotus-interactivity/packages.el cause spacemacs to load properly with themes and packages
+      :LOGBOOK:
+      - State "HOLD"       from              [2017-12-12 Tue 20:29] \\
+        modeline code in elscreen.el trying to access modeline list but while spacemacs load it
+        modeline is not a list but a string.
+      :END:
+***** why loading (require 'misc-uitls) in lotus-interactivity/packages.el cause current-idle-time to get reset very often which now is not seen.
+***** Make a unit test code to check current-idle-time behaviour and report it.
+***** remove all deh-require's and deh-section's
+***** many lotus-*/packages.el lotus-*/config.el  lotus-*/code.el  lotus-*/keybinding.el  requires heavy re-factoring.
+***** lotus-remote/packages.el tramp, lotus-interactivity/packages.el ido require heavy re-factoring
+***** remove all dependencies of ~/.xemacs/pkgrepos/mypkgs/experimental/*.el
+***** lots of lib in ~/.xemacs/pkgrepos/mypkgs/experimental need cleanup
+***** remove dependency basic-utils.el misc-utils.el etc from ~/.xemacs/pkgrepos/mypkgs/experimental
+***** (dotspacemacs/user-config) in turn (lotus-emacs-user-init-finish) were not getting called without (require 'misc-uitls) in lotus-interactivity/packages.el
+***** smartparens-global-mode is not getting loaded without misc-utils
 
 *** Basic (what is left to be working)
+**** FEATURES
 ***** Very fast Interface to add new task which should provide options
 ****** whether it is subtask of current task or existing task, now required its separate naming, similar way to merge child task to parent.
 ****** whether it sudden random unrealted task from current task or existing task
 ****** adding timeout bound task like sleep for 5 mins
 ****** etc
 ****** adding new task also try to copy or move property from related task
-***** org-resolve-idle appear many time when idle for multiples of 5 mins
-***** join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
- So both can be handled at one place, it will duplication of code, and here we could support multi-valued property also.
+***** When adding a task an interface to further break it down in small sub tasks
+***** TYPE of task 1. todo 2. simple reminder, 3. event, 4. meeting etc should be accommodated.
+- todo
+- simple reminder
+- event
+- meeting
+- outsourced
+
 ***** Report generation
-*** Unobtrusive Dynamic Contextual Org Clock
+
 **** BUGS
 ***** BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
 ***** BUG (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change) both tries to capture mini-buffer together
  TODO check what exactly happening
  TODO make a unit test to check it in future.
  TODO synchronize them.
-***** DONE BUG org-resolve-clock-idle is not getting called
+***** CLOSED BUG org-resolve-clock-idle is not getting called
       CLOSED: [2017-12-09 Sat 21:35]
+      :LOGBOOK:
+      - State "CLOSED"     from "DONE"       [2017-12-15 Fri 22:40]
+      :END:
+***** org-resolve-idle appear many time when idle for multiples of 5 mins
+***** correct org-clock-resolve-idle default time is coming more than thousands
+***** correct log-not-on-change not working properly
+***** Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
+***** Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
+      for this may need to understand undo-tree or may be see any other method to used for it.
+      TODO: take printout of undi-tree.el
+
+***** correct org-context-clock-add-context-to-org-heading-when-idle
+***** join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
+ So both can be handled at one place, it will duplication of code, and here we could support multi-valued property also.
+
 ***** STARTED BUG org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame
  So normal frame and utilities frame have to distinguished.
+*** Unobtrusive Dynamic Contextual Org Clock
+**** BUGS
 **** FEATURE
 ***** DONE Implement dynamic clocking based on mapping of org task property to current file buffer
       CLOSED: [2017-11-18 Sat 20:29]
@@ -613,11 +640,6 @@ which is responsible to load many features.
 ***** disable org-context-clocking when when last frame is closed
 ***** When closing emacs frame along with clock out option it should tell which all frames are still opened.
 ***** show In matched tasks selection buffer show task rank which was calculated.
-***** Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
-***** Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
-      for this may need to understand undo-tree or may be see any other method to used for it.
-      TODO: take printout of undi-tree.el
-
 ***** Find way to specify importance, type(bug, feature etc) of task (whether using tag).
 ***** One sending mail, chat, or any other important action offer to add log note should be presented.
 ***** Add method to create task from mail, chat etc and link it SEE DETAIL hint org-capture
@@ -646,7 +668,7 @@ and sign-in will ensure that org-context-clock loaded and working it will also p
 For these we may have to measure that how much time today a task has consumed if it has consumed more than 20 mins then it is entitled to save context for later reference
 similar way if more than 5 mins today gone on the task it mean this task is going to be continued, so it context must be shown to user for reminding where it was left.
 We may have to track with task whether its context had been shown to user or not.
-***** TYPE of task 1. todo 2. simple reminder, 3. event, 4. meeting etc should be accommodated.
+
 *** Obtrusive
 **** Window should be marked to reappear/popup when something started were done.
 e.g. In urxvt we should be able to mark window to reappear when build is done, by that user is browsing or editing or doing some other work.
