@@ -23,7 +23,9 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-15 Fri 21:31]
+   CLOCK: [2017-12-15 Fri 23:22]
+   CLOCK: [2017-12-15 Fri 23:11]--[2017-12-15 Fri 23:21] =>  0:10
+   CLOCK: [2017-12-15 Fri 21:31]--[2017-12-15 Fri 23:10] =>  1:39
    CLOCK: [2017-12-15 Fri 21:16]--[2017-12-15 Fri 21:26] =>  0:10
    CLOCK: [2017-12-15 Fri 19:55]--[2017-12-15 Fri 19:57] =>  0:02
    CLOCK: [2017-12-15 Fri 19:32]--[2017-12-15 Fri 19:52] =>  0:20
@@ -580,8 +582,8 @@ It is very important and need to completed as soon as possible.
 
 **** BUGS
 ***** cleanup lotus-timer-utils timer not working properly and unable to cancel them.
-***** BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
-***** BUG (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change) both tries to capture mini-buffer together
+***** TODO BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
+***** TODO BUG (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change) both tries to capture mini-buffer together
  TODO check what exactly happening
  TODO make a unit test to check it in future.
  TODO synchronize them.
@@ -590,16 +592,26 @@ It is very important and need to completed as soon as possible.
       :LOGBOOK:
       - State "CLOSED"     from "DONE"       [2017-12-15 Fri 22:40]
       :END:
-***** org-resolve-idle appear many time when idle for multiples of 5 mins
-***** correct org-clock-resolve-idle default time is coming more than thousands
-***** correct log-not-on-change not working properly
-***** Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
-***** Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
+***** DONE org-resolve-idle appear many time when idle for multiples of 5 mins
+      CLOSED: [2017-12-15 Fri 23:08]
+      :LOGBOOK:
+      - State "DONE"       from              [2017-12-15 Fri 23:08] \\
+        Guess fix will work
+      :END:
+***** DONE correct org-clock-resolve-idle default time is coming more than thousands
+      CLOSED: [2017-12-15 Fri 23:08]
+      :LOGBOOK:
+      - State "DONE"       from              [2017-12-15 Fri 23:08] \\
+        Guess fix will work
+      :END:
+***** TODO correct log-not-on-change not working properly
+***** TODO Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
+***** TODO Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
       for this may need to understand undo-tree or may be see any other method to used for it.
       TODO: take printout of undi-tree.el
 
-***** correct org-context-clock-add-context-to-org-heading-when-idle
-***** join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
+***** TODO correct org-context-clock-add-context-to-org-heading-when-idle
+***** TODO join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
  So both can be handled at one place, it will duplication of code, and here we could support multi-valued property also.
 
 ***** STARTED BUG org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame

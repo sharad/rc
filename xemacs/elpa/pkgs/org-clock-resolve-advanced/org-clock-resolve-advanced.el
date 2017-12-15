@@ -480,5 +480,37 @@ If `only-dangling-p' is non-nil, only ask to resolve dangling
       'now
       (time-subtract currtime (seconds-to-time (* 8 60)))))))
 
+
+(defun test-org-rl-resolve-clocks-if-idle (idle-sec)
+  "Resolve all currently open Org clocks.
+This is performed after `org-clock-idle-time' minutes, to check
+if the user really wants to stay clocked in after being idle for
+so long."
+  (when (and
+         org-clock-idle-time
+         (not org-clock-resolving-clocks)
+         org-clock-marker
+         (marker-buffer org-clock-marker))
+    (let* ((org-clock-user-idle-seconds idle-sec)
+           (org-clock-user-idle-start
+            (time-subtract (current-time)
+                           (seconds-to-time org-clock-user-idle-seconds)))
+           (org-clock-resolving-clocks-due-to-idleness t))
+      (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
+          (org-resolve-time
+           (list org-clock-marker org-clock-start-time nil)
+           (list 'imaginary 'now org-clock-user-idle-start))
+          (when nil
+            (message "Idle time now sec[%d] min[%d]"
+                     org-clock-user-idle-seconds
+                     (/ org-clock-user-idle-seconds 60)))))))
+
+
+
+(when nil
+  (test-org-rl-resolve-clocks-if-idle 310)
+  )
+
+
 (provide 'org-clock-resolve-advanced)
 ;;; org-clock-utils-lotus.el ends here
