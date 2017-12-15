@@ -95,9 +95,12 @@ Each entry is either:
         )))
 
 (defun basic-startup/init-startup-hooks ()
+  (add-hook 'after-init-hook #'startup-hooks-insinuate)
   (use-package startup-hooks
       ;; :ensure t
-      :demand t
+      ;; :demand t
+      :defer t
+      :comands (startup-hooks-insuniate)
       :config
       (progn
         )))
