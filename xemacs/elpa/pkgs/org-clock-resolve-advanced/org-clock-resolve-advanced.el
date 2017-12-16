@@ -78,10 +78,13 @@
       'include-in-prev))))
 
 (defun org-resolve-opts-next (clock)
-  (let ((heading (org-get-heading-from-clock clock)))
+  (let ((heading (org-get-heading-from-clock clock))
+        (marker (car clock)))
     (list
      (cons
-      (format "Cancel next %s" heading)
+      (if (eq marker 'imaginary)
+          "Ignore idle time"
+          (format "Cancel next %s" heading))
       'cancel-next-p)
      (cons
       (format "Jump to next %s" heading)

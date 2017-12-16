@@ -23,7 +23,8 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-16 Sat 18:00]
+   CLOCK: [2017-12-16 Sat 18:33]
+   CLOCK: [2017-12-16 Sat 18:00]--[2017-12-16 Sat 18:01] =>  0:01
    CLOCK: [2017-12-15 Fri 23:11]--[2017-12-15 Fri 23:21] =>  0:10
    CLOCK: [2017-12-15 Fri 21:31]--[2017-12-15 Fri 23:10] =>  1:39
    CLOCK: [2017-12-15 Fri 21:16]--[2017-12-15 Fri 21:26] =>  0:10
@@ -649,6 +650,7 @@ It is very important and need to completed as soon as possible.
       - State "CLOSED"     from              [2017-12-15 Fri 18:33] \\
         finished, but another new bug appear
       :END:
+***** If child tasking is matched than parent task heading should be unmatched.
 ***** cleanup (org-context-clock-add-context-to-org-heading) so it do not need to handle clean up of WIN which will be done by (org-with-new-win) through (org-timed-miniwin-file-loc-with-refile)
 ***** org-clock-out should be call when last frame is closed without asking any question it should not count make-reader-frame
 ***** disable org-context-clocking when when last frame is closed

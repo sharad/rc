@@ -1,1 +1,1 @@
-(define-package "rcs-backup" "20171215.106" "rcs backup" nil)
+(define-package "rcs-backup" "20171216.1824" "rcs backup" nil)

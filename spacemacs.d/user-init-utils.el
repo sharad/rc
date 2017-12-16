@@ -474,4 +474,4 @@ variable."
 
   (defun lotus-necessary-test ()
     (interactive)
-    (idle-prints t)))
+    (test-idle-prints nil)))
