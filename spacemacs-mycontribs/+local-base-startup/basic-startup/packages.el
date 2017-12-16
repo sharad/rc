@@ -97,10 +97,13 @@ Each entry is either:
 (defun basic-startup/init-startup-hooks ()
   (use-package startup-hooks
       ;; :ensure t
-      :demand t
+      ;; :demand t
+      :defer t
+      :commands (startup-hooks-insuniate)
       :config
       (progn
-        )))
+        ))
+  (add-hook 'after-init-hook #'startup-hooks-insinuate))
 
 (defun basic-startup/init-sessions-unified ()
   (use-package startup-hooks)

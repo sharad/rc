@@ -191,7 +191,8 @@
      ;; server-auth-dir (auto-config-dir "server" t)
      server-use-tcp t
      server-name (or (getenv "EMACS_SERVER_NAME") server-name)
-     server-host (if (host-resolvable-accessible-p (system-name)) (system-name) "localhost"))
+     server-host "0.0.0.0";; (if (host-resolvable-accessible-p (system-name)) (system-name) "localhost")
+     )
 
     (when nil
       (if (functionp 'server-running-p)

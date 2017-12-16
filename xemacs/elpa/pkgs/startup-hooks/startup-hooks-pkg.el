@@ -1,1 +1,1 @@
-(define-package "startup-hooks" "20171211.14" "startup-hooks" nil)
+(define-package "startup-hooks" "20171215.1948" "startup-hooks" nil)

@@ -165,17 +165,18 @@
 
 ;; Marker Macros Starts
 (defmacro org-lotus-with-marker (marker &rest body)
-  (let ((buffer (marker-buffer ,marker)))
-    (save-excursion ; Do not replace this with `with-current-buffer'.
-      (with-no-warnings (set-buffer buffer))
-      (save-restriction
-        (widen)
-        (goto-char ,marker)
-        ,@body
-        ;; (org-add-log-setup
-        ;;  'note nil nil nil
-        ;;  (concat "# Task: " (org-get-heading t) "\n\n"))
-        ))))
+  `(let ((buffer (marker-buffer ,marker)))
+     (save-excursion ; Do not replace this with `with-current-buffer'.
+       (with-no-warnings (set-buffer buffer))
+       (save-restriction
+         (widen)
+         (goto-char ,marker)
+         (progn
+           ,@body)
+         ;; (org-add-log-setup
+         ;;  'note nil nil nil
+         ;;  (concat "# Task: " (org-get-heading t) "\n\n"))
+         ))))
 ;; Marker Macros Ends
 
 ;; Refile macros Starts
