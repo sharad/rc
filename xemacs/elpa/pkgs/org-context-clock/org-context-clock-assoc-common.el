@@ -40,6 +40,9 @@
    (plist-put
     org-context-clock-task-associated-context-key-fns key fn)))
 
+
+
+
 (eval-when-compile                  ;; TODO: auto generate name from KEY
   (defmacro defassoc-context-key (name key args &rest body)
     "Registration macro to add key property and functions list to ORG-TASK-ASSOCIATED-FILE-KEY-FNS"
@@ -48,6 +51,54 @@
          ,@body)
        (org-context-clock-tasks-register-associated-to-context-key-function ,key ',name))))
 (put 'defassoc-context-key 'lisp-indent-function 3)
+
+
+'(
+  (defmacro defassoc-context-key (name key context task args task-key-conext-associator key-value-getter)
+    "Registration macro to add key property and functions list to ORG-TASK-ASSOCIATED-FILE-KEY-FNS"
+    (let* ((name-string ,(symbol-name name))
+           (task-key-conext-matcher-fn (intern (concat name-string "-associate")))
+           (key-value-getter-fn (intern (concat name-string "-get"))))
+      `(progn
+         (defun ,task-key-conext-matcher-fn (,key ,task ,context)
+           ,task-key-conext-matcher)
+         (defun ,key-value-getter-fn (,key ,task ,context)
+           ,key-value-getter)
+         (org-context-clock-tasks-register-associated-to-context-key-function ,key ',name))))
+
+  (lambda (prop context &rest args)
+    (let* ((file (if context (plist-get context :file)))
+           (dir (if (stringp file) (file-name-directory file) default-directory))
+           (prompt (concat prop ": ")))
+      (ido-read-directory-name
+       prompt
+       dir dir)))
+
+  (defassoc-context-key org-task-associated-context-root-dir :root context task ()
+                        "Predicate funtion to check if context matches to task's file attribute."
+                        (let* ((root
+                                (org-context-clock-task-get-property task :ROOT))
+                               (root (if root (file-truename root))))
+                          (let* ((file (plist-get context :file))
+                                 (file (if file (file-truename file))))
+                            (if root
+                                (progn
+                                  (org-context-clock-debug "task %s root %s" (org-context-clock-task-get-heading task) root)
+                                  (org-context-clock-debug "task %s file %s" (org-context-clock-task-get-heading task) file))
+                                (org-context-clock-debug "task %s root %s not present."
+                                                         (org-context-clock-task-get-heading task) root))
+                            (if (and root file
+                                     (string-match root file))
+                                (length root)
+                                0)))
+
+                        (let* ((file (if context (plist-get context :file)))
+                               (dir (if (stringp file) (file-name-directory file) default-directory))
+                               (prompt (concat prop ": ")))
+                          (ido-read-directory-name
+                           prompt
+                           dir dir))))
+
 
 (defun org-context-clock-tasks-associated-key-function (key)
   (plist-get org-context-clock-task-associated-context-key-fns key))
@@ -77,3 +128,14 @@
 
 (provide 'org-context-clock-assoc-common)
 ;;; org-context-clock-assoc-common.el ends here
+
+'(testing
+
+  (defmacro mtest (x)
+    `(list ',(intern (concat (symbol-name x) "-key"))))
+
+
+  (defmacro mtest1 (x)
+    (symbol-name x))
+
+  (mtest y))
