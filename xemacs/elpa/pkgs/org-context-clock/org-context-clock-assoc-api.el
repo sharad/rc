@@ -28,7 +28,7 @@
 
 ;;; REGISTRATION MACRO To add key property and functions list to ORG-CONTEXT-CLOCKING-TASK-ASSOCIATED-FILE-KEY-FNS
 
-(def-task-functions org-task-associated-context-org-file :org-file (task context args)
+(define-keyop-functions org-task-associated-context-org-file :org-file (task context args)
   (associator
    "Predicate funtion to check if context matches to task's file attribute."
    (let ((org-file (org-context-clock-task-get-property task :task-clock-file)))
@@ -41,7 +41,7 @@
            10
            0)))))
 
-(def-task-functions org-task-associated-context-root-dir :root (task context args)
+(define-keyop-functions org-task-associated-context-root-dir :root (task context args)
   (associator
    "Predicate funtion to check if context matches to task's file attribute."
    (let* ((root
@@ -68,7 +68,7 @@
       prompt
       dir dir))))
 
-(def-task-functions org-task-associated-context-currfile-dir :currfile (task context args)
+(define-keyop-functions org-task-associated-context-currfile-dir :currfile (task context args)
   (associator
    "Predicate funtion to check if context matches to task's file attribute."
    (let* ((currfile
@@ -87,7 +87,7 @@
            (* 2 (length currfile))     ;as exact match to file giving double matching points.
            0)))))
 
-(def-task-functions org-task-associated-context-status :status (task context args)
+(define-keyop-functions org-task-associated-context-status :status (task context args)
   (associator
    ;; task closed criteria
    "Predicate funtion to check if context matches to task's status attribute."
@@ -103,20 +103,20 @@
           (string-equal status "HOLD"))
          -30 0))))
 
-(def-task-functions org-task-associated-context-task :task-key (task context args)
+(define-keyop-functions org-task-associated-context-task :task-key (task context args)
   (associator
    "Predicate funtion to check if context matches to task's file attribute."
    (let* ((key (org-context-clock-task-get-property task :KEY)))
      (if key (string-to-number key) 0))))
 
-(def-task-functions org-task-associated-context-level :heading-level (task context args)
+(define-keyop-functions org-task-associated-context-level :heading-level (task context args)
   (associator
    "Predicate funtion to check if context matches to task's file attribute."
    (let* ((level
            (org-context-clock-task-get-property task :task-clock-level)))
      (if level level 0))))
 
-(def-task-functions org-task-associated-context-timebeing :timebeing (task context args)
+(define-keyop-functions org-task-associated-context-timebeing :timebeing (task context args)
   (associator
    (let ((timebeing (org-context-clock-task-get-property task :TIMEBEING)))
      (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
@@ -128,7 +128,7 @@
            (- timebeing-time clocked-time)
            0)))))
 
-(def-task-functions org-task-associte-subtree :subtreefile (task context args)
+(define-keyop-functions org-task-associte-subtree :subtreefile (task context args)
   (getter
    (let ((prompt (concat key ": ")))
      (file-relative-name
@@ -136,7 +136,7 @@
        prompt
        default-directory default-directory)))))
 
-;; (def-task-functions org-task-associated-context-current-clock :current-clock (task context args)
+;; (define-keyop-functions org-task-associated-context-current-clock :current-clock (task context args)
 ;;   "Predicate funtion to check if context matches to task's file attribute."
 ;;   (let* ((task-marker
 ;;           (org-context-clock-task-get-property task :task-clock-marker)))

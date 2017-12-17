@@ -28,7 +28,7 @@
 (defvar org-context-clock-key-operation-functions nil
   "Alist of operation plist of key functions accepting (key task context args) arguments.")
 
-(defmacro def-task-functions (name key args &rest bindings)
+(defmacro define-keyop-functions (name key args &rest bindings)
   (let (binds
         (name-string (symbol-name name)))
     (dolist (binding bindings)
@@ -92,7 +92,7 @@
                                    0)
           0))))
 
-;; (def-task-functions test :file (task context args)
+;; (define-keyop-functions test :file (task context args)
 ;;   (associator
 ;;    "Test"
 ;;    (let ()
