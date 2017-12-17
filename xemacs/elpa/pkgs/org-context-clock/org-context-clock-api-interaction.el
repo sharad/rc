@@ -111,7 +111,7 @@
           ;; TODO: do win cleanup in org-timed-miniwin-file-loc-with-refile macro not here.
           ;;       and make and use it own org-context-clock-add-context-to-org-heading-win-config variable for it.
           (progn  ;; let (win file pos timeout)   ;pos is void error is seen ?
-            (org-with-file-loc-timed-refile-timed-new-win
+            (org-with-file-loc-timed-refile-timed-new-win ;break it in two macro call to accommodate local-cleanup
                 file pos
                 timeout '((org-context-clock-task-update-files :maxlevel . 4))
                 timeout timer cleanup local-cleanup win
