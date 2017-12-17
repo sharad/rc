@@ -23,6 +23,8 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-12-18 Mon 02:07]
+   CLOCK: [2017-12-18 Mon 02:03]--[2017-12-18 Mon 02:04] =>  0:01
    CLOCK: [2017-12-17 Sun 22:51]--[2017-12-17 Sun 23:08] =>  0:17
    CLOCK: [2017-12-16 Sat 18:33]--[2017-12-16 Sat 23:21] =>  4:48
    CLOCK: [2017-12-16 Sat 18:00]--[2017-12-16 Sat 18:01] =>  0:01
@@ -662,6 +664,11 @@ It is very important and need to completed as soon as possible.
 ***** When closing emacs frame along with clock out option it should tell which all frames are still opened.
 ***** show In matched tasks selection buffer show task rank which was calculated.
 ***** Find way to specify importance, type(bug, feature etc) of task (whether using tag).
+***** When current context do not match current clock than task should be checked out with few options
+- to continue for sometime
+- or immediately checkout
+- or to include current context to current task
+- etc
 ***** One sending mail, chat, or any other important action offer to add log note should be presented.
 ***** Add method to create task from mail, chat etc and link it SEE DETAIL hint org-capture
  - may be org-capture will help
