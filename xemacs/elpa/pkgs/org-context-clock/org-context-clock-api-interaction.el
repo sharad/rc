@@ -32,6 +32,9 @@
 (eval-when-compile
   '(require 'org-misc-utils-lotus))
 
+(eval-when-compile
+  (require 'org-context-clock-assoc-common))
+
 (require 'org-context-clock-assoc-common)
 
 (defun org-context-clock-get-property (prop)

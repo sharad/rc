@@ -72,7 +72,7 @@
 (defun org-context-clock-tasks-associated-key-fn-value (key task context)
   (let ((keyfn (org-context-clock-key-fun key :associator)))
     (if keyfn
-        (let ((rank (funcall keyfn task context)))
+        (let ((rank (funcall keyfn key task context)))
           (unless (numberp rank)
             (error "org-context-clock-tasks-associated-key-fn-value: fun %s returning nonnumeric %s for context %s for task %s"
                    keyfn
