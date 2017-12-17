@@ -23,7 +23,8 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-16 Sat 18:33]
+   CLOCK: [2017-12-17 Sun 17:46]
+   CLOCK: [2017-12-16 Sat 18:33]--[2017-12-16 Sat 23:21] =>  4:48
    CLOCK: [2017-12-16 Sat 18:00]--[2017-12-16 Sat 18:01] =>  0:01
    CLOCK: [2017-12-15 Fri 23:11]--[2017-12-15 Fri 23:21] =>  0:10
    CLOCK: [2017-12-15 Fri 21:31]--[2017-12-15 Fri 23:10] =>  1:39
@@ -583,29 +584,11 @@ It is very important and need to completed as soon as possible.
 ***** Report generation
 
 **** BUGS
-***** cleanup lotus-timer-utils timer not working properly and unable to cancel them.
 ***** TODO BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
 ***** TODO BUG (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change) both tries to capture mini-buffer together
  TODO check what exactly happening
  TODO make a unit test to check it in future.
  TODO synchronize them.
-***** CLOSED BUG org-resolve-clock-idle is not getting called
-      CLOSED: [2017-12-09 Sat 21:35]
-      :LOGBOOK:
-      - State "CLOSED"     from "DONE"       [2017-12-15 Fri 22:40]
-      :END:
-***** DONE org-resolve-idle appear many time when idle for multiples of 5 mins
-      CLOSED: [2017-12-15 Fri 23:08]
-      :LOGBOOK:
-      - State "DONE"       from              [2017-12-15 Fri 23:08] \\
-        Guess fix will work
-      :END:
-***** DONE correct org-clock-resolve-idle default time is coming more than thousands
-      CLOSED: [2017-12-15 Fri 23:08]
-      :LOGBOOK:
-      - State "DONE"       from              [2017-12-15 Fri 23:08] \\
-        Guess fix will work
-      :END:
 ***** TODO correct log-not-on-change not working properly
 ***** TODO Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
 ***** TODO Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
@@ -618,6 +601,28 @@ It is very important and need to completed as soon as possible.
 
 ***** STARTED BUG org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame
  So normal frame and utilities frame have to distinguished.
+***** cleanup lotus-timer-utils timer not working properly and unable to cancel them.
+***** CLOSED BUG org-resolve-clock-idle is not getting called
+      CLOSED: [2017-12-09 Sat 21:35]
+      :LOGBOOK:
+      - State "CLOSED"     from "DONE"       [2017-12-15 Fri 22:40]
+      :END:
+***** CLOSED org-resolve-idle appear many time when idle for multiples of 5 mins
+      CLOSED: [2017-12-15 Fri 23:08]
+      :LOGBOOK:
+      - State "CLOSED"     from "DONE"       [2017-12-17 Sun 17:48] \\
+        guess it is fixed now.
+      - State "DONE"       from              [2017-12-15 Fri 23:08] \\
+        Guess fix will work
+      :END:
+***** CLOSED correct org-clock-resolve-idle default time is coming more than thousands
+      CLOSED: [2017-12-15 Fri 23:08]
+      :LOGBOOK:
+      - State "CLOSED"     from "DONE"       [2017-12-17 Sun 17:48] \\
+        guess it is fixed now.
+      - State "DONE"       from              [2017-12-15 Fri 23:08] \\
+        Guess fix will work
+      :END:
 *** Unobtrusive Dynamic Contextual Org Clock
 **** BUGS
 **** FEATURE

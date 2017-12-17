@@ -1,1 +1,1 @@
-(define-package "remember-idle" "20171216.1825" "remember-idle" nil)
+(define-package "remember-idle" "20171216.2339" "remember-idle" nil)

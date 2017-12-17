@@ -32,63 +32,25 @@
 (eval-when-compile
   '(require 'org-misc-utils-lotus))
 
-(defvar org-context-clock-propery-set-functions-alist nil
-  "Propery setting function.")
-
-(defun org-context-clock-property-set-function (property fun)
-  "fun is like org-icompleting-read
- (completing-read PROMPT COLLECTION &optional PREDICATE REQUIRE-MATCH INITIAL-INPUT HIST DEF INHERIT-INPUT-METHOD)"
-  (push
-   (cons property fun)
-   org-context-clock-propery-set-functions-alist))
-
-(defun org-context-clock-property-get-function (property)
-  (cdr (assoc property org-context-clock-propery-set-functions-alist)))
+(require 'org-context-clock-assoc-common)
 
 (defun org-context-clock-get-property (prop)
   (org-get-property prop))
 
-(defun org-context-clock-set-property (prop value context &rest args)
+(defun org-context-clock-set-property (key value context &rest args)
   (org-set-property prop
                     (if value
                         value
                         (funcall
-                         (org-context-clock-property-get-function prop)
-                         prop context args)))
+                         (org-context-clock-key-fun key :getter)
+                         nil context args)))
   t)
-
-(progn
-  (setq org-property-set-functions-alist nil)
-  (org-context-clock-property-set-function "Root"
-                                           '(lambda (prop context &rest args)
-                                             (let* ((file (if context (plist-get context :file)))
-                                                    (dir (if (stringp file) (file-name-directory file) default-directory))
-                                                    (prompt (concat prop ": ")))
-                                               (ido-read-directory-name
-                                                prompt
-                                                dir dir))))
-  (org-context-clock-property-set-function "SubtreeFile"
-                                           '(lambda (prop context &rest args)
-                                             (let ((prompt (concat prop ": ")))
-                                               (file-relative-name
-                                                (ido-read-file-name ;; org-iread-file-name
-                                                 prompt
-                                                 default-directory default-directory))))))
-
-;; (defun task-add-root ()
-;;   (interactive)
-;;   (if (org-set-property "Root" nil)
-;;       (org-clocking-task-update-tasks t)))
-;; (defun task-add-subtree-file ()
-;;   (interactive)
-;;   (if (org-set-property "SubtreeFile" nil)
-;;       (org-clocking-task-update-tasks t)))
 
 (defun org-context-clock-select-propetry (&optional prompt)
   ;; (ido-completing-read
   (completing-read
    (or prompt "proptery: ")
-   (list "Root" "SubtreeFile" "Edit" "Done") nil t))
+   (org-context-clock-keys-with-operation :getter) nil t))
 
 (defun org-context-clock-test (context timeout)
   (interactive '(nil nil))

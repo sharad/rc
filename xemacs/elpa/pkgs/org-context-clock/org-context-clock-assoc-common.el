@@ -25,85 +25,52 @@
 ;;; Code:
 
 
-(defvar org-context-clock-task-associated-context-key-fns nil
-  "Assoc api func")
+(defvar org-context-clock-key-operation-functions nil
+  "Alist of operation plist of key functions accepting (key task context args) arguments.")
 
-
-(setq org-context-clock-task-associated-context-key-fns nil)
-(message "NOTE: org-context-clock-task-associated-context-key-fns made to nil")
-
-
-
-(defun org-context-clock-tasks-register-associated-to-context-key-function (key fn)
-  (setq
-   org-context-clock-task-associated-context-key-fns
-   (plist-put
-    org-context-clock-task-associated-context-key-fns key fn)))
-
-
-
-
-(eval-when-compile                  ;; TODO: auto generate name from KEY
-  (defmacro defassoc-context-key (name key args &rest body)
-    "Registration macro to add key property and functions list to ORG-TASK-ASSOCIATED-FILE-KEY-FNS"
+(defmacro def-task-functions (name key args &rest bindings)
+  (let (binds
+        (name-string (symbol-name name)))
+    (dolist (binding bindings)
+      (message "binding %s" binding)
+      (let* ((operation (car binding))
+             (fn (intern (concat name-string "-" (symbol-name operation)))))
+        (message "fn %s" fn)
+        (push
+         `(progn
+            (defun ,fn (key ,@args)
+              ,@(cdr binding))
+            (unless (assoc ,key org-context-clock-key-operation-functions)
+              (push (cons ,key nil) org-context-clock-key-operation-functions))
+            (setf
+             (cdr (assoc ,key org-context-clock-key-operation-functions))
+             (plist-put
+              (cdr (assoc ,key org-context-clock-key-operation-functions))
+              ,(intern (concat ":" (symbol-name operation)))
+              #',fn)))
+         binds)))
     `(progn
-       (defun ,name ,args
-         ,@body)
-       (org-context-clock-tasks-register-associated-to-context-key-function ,key ',name))))
-(put 'defassoc-context-key 'lisp-indent-function 3)
+       ,@binds)))
+(put 'def-task-functions 'lisp-indent-function 3)
 
 
-'(
-  (defmacro defassoc-context-key (name key context task args task-key-conext-associator key-value-getter)
-    "Registration macro to add key property and functions list to ORG-TASK-ASSOCIATED-FILE-KEY-FNS"
-    (let* ((name-string ,(symbol-name name))
-           (task-key-conext-matcher-fn (intern (concat name-string "-associate")))
-           (key-value-getter-fn (intern (concat name-string "-get"))))
-      `(progn
-         (defun ,task-key-conext-matcher-fn (,key ,task ,context)
-           ,task-key-conext-matcher)
-         (defun ,key-value-getter-fn (,key ,task ,context)
-           ,key-value-getter)
-         (org-context-clock-tasks-register-associated-to-context-key-function ,key ',name))))
-
-  (lambda (prop context &rest args)
-    (let* ((file (if context (plist-get context :file)))
-           (dir (if (stringp file) (file-name-directory file) default-directory))
-           (prompt (concat prop ": ")))
-      (ido-read-directory-name
-       prompt
-       dir dir)))
-
-  (defassoc-context-key org-task-associated-context-root-dir :root context task ()
-                        "Predicate funtion to check if context matches to task's file attribute."
-                        (let* ((root
-                                (org-context-clock-task-get-property task :ROOT))
-                               (root (if root (file-truename root))))
-                          (let* ((file (plist-get context :file))
-                                 (file (if file (file-truename file))))
-                            (if root
-                                (progn
-                                  (org-context-clock-debug "task %s root %s" (org-context-clock-task-get-heading task) root)
-                                  (org-context-clock-debug "task %s file %s" (org-context-clock-task-get-heading task) file))
-                                (org-context-clock-debug "task %s root %s not present."
-                                                         (org-context-clock-task-get-heading task) root))
-                            (if (and root file
-                                     (string-match root file))
-                                (length root)
-                                0)))
-
-                        (let* ((file (if context (plist-get context :file)))
-                               (dir (if (stringp file) (file-name-directory file) default-directory))
-                               (prompt (concat prop ": ")))
-                          (ido-read-directory-name
-                           prompt
-                           dir dir))))
 
 
-(defun org-context-clock-tasks-associated-key-function (key)
-  (plist-get org-context-clock-task-associated-context-key-fns key))
+
+(defun org-context-clock-key-fun (key operation)
+  (let ((keyfns (assoc key org-context-clock-key-operation-functions)))
+    (plist-get (cdr keyfns) operation)))
+
+(defun org-context-clock-keys-with-operation (operation)
+  (remove-if-not
+   #'(lambda (key)
+       (message "%s: %s" key operation)
+       (org-context-clock-key-fun key operation))
+   (mapcar 'car org-context-clock-key-operation-functions)))
+
+;; TODO rename it with proper name.
 (defun org-context-clock-tasks-associated-key-fn-value (key task context)
-  (let ((keyfn (org-context-clock-tasks-associated-key-function key)))
+  (let ((keyfn (org-context-clock-key-fun key :associator)))
     (if keyfn
         (let ((rank (funcall keyfn task context)))
           (unless (numberp rank)
@@ -125,17 +92,15 @@
                                    0)
           0))))
 
+;; (def-task-functions test :file (task context args)
+;;   (associator
+;;    "Test"
+;;    (let ()
+;;      "Hello"))
+;;   (getter
+;;    "Test"
+;;    (let ()
+;;      "Yes")))
 
 (provide 'org-context-clock-assoc-common)
 ;;; org-context-clock-assoc-common.el ends here
-
-'(testing
-
-  (defmacro mtest (x)
-    `(list ',(intern (concat (symbol-name x) "-key"))))
-
-
-  (defmacro mtest1 (x)
-    (symbol-name x))
-
-  (mtest y))
