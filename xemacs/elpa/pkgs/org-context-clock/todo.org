@@ -607,6 +607,9 @@ Add test with timer to check what exactly happens when org-clock-lotus-log-note-
 ***** STARTED BUG org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame
  So normal frame and utilities frame have to distinguished.
 ***** TODO cleanup lotus-timer-utils timer not working properly and unable to cancel them.
+***** TODO Not all ORG file should be considered for time tracking todo, find way to limit them at present lot of unnecessary heading shown for all operation
+      many file are simple data or log, or just for information purpose there is no meaning of TODO
+      device a way to limit them.
 ***** CLOSED join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
       CLOSED: [2017-12-18 Mon 19:28]
       :LOGBOOK:
@@ -709,8 +712,8 @@ similar way if more than 5 mins today gone on the task it mean this task is goin
 We may have to track with task whether its context had been shown to user or not.
 ***** Add note or heading event completion for e.g. sending mail etc.
 ***** Create a daemon while command and timerange and will ensure that command should be running in that timerange and vice verse
-***** define function, so with task heading it will trigger a pre-define action like opening main file in :root directory
-***** Trying to remember it should be in basic
+***** define a function, so with task heading it will trigger a pre-define action like opening main file in :root directory and it should be able to be used in org agenda buffer also.
+***** Implementation for clock table report with mail message like or/gnu bug report function do
 *** Obtrusive
 **** Window should be marked to reappear/popup when something started were done.
 e.g. In urxvt we should be able to mark window to reappear when build is done, by that user is browsing or editing or doing some other work.
@@ -736,7 +739,6 @@ e.g. In urxvt we should be able to mark window to reappear when build is done, b
 https://elpa.emacs-china.org/melpa-stable/with-simulated-input-2.1.el
 https://github.com/hardaker/elisp-buffer-timer
 http://blog.danielgempesaw.com/post/109767231148/using-emacs-for-daily-reminders-to-write-in-my
-
 
 * Tableview
 #+BEGIN: columnview :hlines 1 :id local
