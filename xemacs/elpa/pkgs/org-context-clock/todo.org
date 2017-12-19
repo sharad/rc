@@ -610,6 +610,9 @@ Add test with timer to check what exactly happens when org-clock-lotus-log-note-
 ***** TODO Not all ORG file should be considered for time tracking todo, find way to limit them at present lot of unnecessary heading shown for all operation
       many file are simple data or log, or just for information purpose there is no meaning of TODO
       device a way to limit them.
+***** Believe we should only consider heading without child or node heading for clocking else we should make it configurable. detail
+if we go in detail then here may be many thing will come like virtual umbrella heading task with actual children tasks etc.
+
 ***** CLOSED join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
       CLOSED: [2017-12-18 Mon 19:28]
       :LOGBOOK:
