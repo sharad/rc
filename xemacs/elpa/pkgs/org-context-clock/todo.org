@@ -23,7 +23,8 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-19 Tue 13:21]
+   CLOCK: [2017-12-19 Tue 16:14]--[2017-12-19 Tue 17:07] =>  0:53
+   CLOCK: [2017-12-19 Tue 13:21]--[2017-12-19 Tue 13:30] =>  0:09
    CLOCK: [2017-12-18 Mon 18:19]--[2017-12-18 Mon 23:32] =>  5:13
    CLOCK: [2017-12-18 Mon 17:56]--[2017-12-18 Mon 18:13] =>  0:17
    CLOCK: [2017-12-18 Mon 15:28]--[2017-12-18 Mon 15:34] =>  0:06
@@ -433,9 +434,11 @@ Yes
    CLOCK: [2016-02-03 Wed 17:42]--[2016-02-04 Thu 00:27] =>  6:45
    CLOCK: [2016-02-03 Wed 01:10]--[2016-02-03 Wed 01:30] =>  0:20
    :END:
-
 *** Why it is important
 It is very important and need to completed as soon as possible.
+*** Goals [very incomplete]
+**** We should be able to do thing without visiting org file with task heading
+**** report generation, context clocking etc.
 *** Critical BUGS are here
 **** BUGS
 ***** CLOSED continuous file-notify event causing resetting of current-idle-time
@@ -610,7 +613,7 @@ Add test with timer to check what exactly happens when org-clock-lotus-log-note-
 ***** TODO Not all ORG file should be considered for time tracking todo, find way to limit them at present lot of unnecessary heading shown for all operation
       many file are simple data or log, or just for information purpose there is no meaning of TODO
       device a way to limit them.
-***** Believe we should only consider heading without child or node heading for clocking else we should make it configurable. detail
+***** TODO Believe we should only consider heading without child or node heading for clocking else we should make it configurable. detail
 if we go in detail then here may be many thing will come like virtual umbrella heading task with actual children tasks etc.
 
 ***** CLOSED join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
