@@ -37,6 +37,8 @@
 (defconst lotus-art-packages
   '(
     (boxes :location local)
+    (wordcloud :location local)
+    thinks
     )
   "The list of Lisp packages required by the lotus-art layer.
 
@@ -67,6 +69,14 @@ Each entry is either:
 
 (defun lotus-art/init-boxes ()
   (use-package boxes
-    :defer t))
+      :defer t))
+
+(defun lotus-art/init-wordcloud ()
+  (use-package wordcloud
+      :defer t))
+
+(defun lotus-art/init-thinks ()
+  (use-package thinks
+      :defer t))
 
 ;;; packages.el ends here
