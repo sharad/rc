@@ -23,6 +23,10 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-12-19 Tue 13:21]
+   CLOCK: [2017-12-18 Mon 18:19]--[2017-12-18 Mon 23:32] =>  5:13
+   CLOCK: [2017-12-18 Mon 17:56]--[2017-12-18 Mon 18:13] =>  0:17
+   CLOCK: [2017-12-18 Mon 15:28]--[2017-12-18 Mon 15:34] =>  0:06
    CLOCK: [2017-12-18 Mon 02:07]--[2017-12-18 Mon 02:36] =>  0:29
    CLOCK: [2017-12-18 Mon 02:03]--[2017-12-18 Mon 02:04] =>  0:01
    CLOCK: [2017-12-17 Sun 22:51]--[2017-12-17 Sun 23:08] =>  0:17
@@ -586,6 +590,8 @@ It is very important and need to completed as soon as possible.
 ***** Report generation
 
 **** BUGS
+***** TODO mini window size coming in less than zero with (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change)
+Add test with timer to check what exactly happens when org-clock-lotus-log-note-on-change run from timer
 ***** TODO BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
 ***** TODO BUG (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change) both tries to capture mini-buffer together
  TODO check what exactly happening
@@ -598,12 +604,17 @@ It is very important and need to completed as soon as possible.
       TODO: take printout of undi-tree.el
 
 ***** TODO correct org-context-clock-add-context-to-org-heading-when-idle
-***** TODO join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
- So both can be handled at one place, it will duplication of code, and here we could support multi-valued property also.
-
 ***** STARTED BUG org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame
  So normal frame and utilities frame have to distinguished.
-***** cleanup lotus-timer-utils timer not working properly and unable to cancel them.
+***** TODO cleanup lotus-timer-utils timer not working properly and unable to cancel them.
+***** CLOSED join org-context-clock-task-associated-context-key-fns and org-property-set-functions-alist mean join assoc api with org-property-set-functions-alist
+      CLOSED: [2017-12-18 Mon 19:28]
+      :LOGBOOK:
+      - State "CLOSED"     from "TODO"       [2017-12-18 Mon 19:28] \\
+        done
+      :END:
+ So both can be handled at one place, it will stop duplication of code, and here we could support multi-valued property also.
+
 ***** CLOSED BUG org-resolve-clock-idle is not getting called
       CLOSED: [2017-12-09 Sat 21:35]
       :LOGBOOK:
@@ -696,7 +707,10 @@ and sign-in will ensure that org-context-clock loaded and working it will also p
 For these we may have to measure that how much time today a task has consumed if it has consumed more than 20 mins then it is entitled to save context for later reference
 similar way if more than 5 mins today gone on the task it mean this task is going to be continued, so it context must be shown to user for reminding where it was left.
 We may have to track with task whether its context had been shown to user or not.
-
+***** Add note or heading event completion for e.g. sending mail etc.
+***** Create a daemon while command and timerange and will ensure that command should be running in that timerange and vice verse
+***** define function, so with task heading it will trigger a pre-define action like opening main file in :root directory
+***** Trying to remember it should be in basic
 *** Obtrusive
 **** Window should be marked to reappear/popup when something started were done.
 e.g. In urxvt we should be able to mark window to reappear when build is done, by that user is browsing or editing or doing some other work.
