@@ -8,10 +8,10 @@
 
 * STARTED Work - emacs: Emacs for me.
   :PROPERTIES:
-  :Effort:   4d 4:00
+  :EFFORT:   7:00
   :END:
   :LOGBOOK:
-  CLOCK: [2017-12-07 Thu 22:53]--[2017-12-07 Thu 23:14] =>  0:21
+  CLOCK: [2017-12-07 Thu 22:53]--[2017-12-20 Wed 23:00] => 312:07
   CLOCK: [2016-09-17 Sat 19:40]--[2016-09-17 Sat 19:41] =>  0:01
   :END:
 Yes
@@ -19,11 +19,14 @@ Yes
 ** STARTED Tuning my emacs to look like me
    :PROPERTIES:
    :Root:     ~/.xemacs/
-   :Effort:   100h
+   :EFFORT:   7:00
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-20 Wed 00:24]
+   CLOCK: [2017-12-20 Wed 23:00]
+   CLOCK: [2017-12-20 Wed 19:54]
+   CLOCK: [2017-12-20 Wed 17:16]--[2017-12-20 Wed 17:43] =>  0:27
+   CLOCK: [2017-12-20 Wed 16:13]--[2017-12-20 Wed 16:57] =>  0:44
    CLOCK: [2017-12-19 Tue 16:14]--[2017-12-19 Tue 17:07] =>  0:53
    CLOCK: [2017-12-19 Tue 13:21]--[2017-12-19 Tue 13:30] =>  0:09
    CLOCK: [2017-12-18 Mon 18:19]--[2017-12-18 Mon 23:32] =>  5:13
@@ -440,6 +443,8 @@ It is very important and need to completed as soon as possible.
 *** Goals [very incomplete]
 **** We should be able to do thing without visiting org file with task heading
 **** report generation, context clocking etc.
+*** When it will called minimally working and self hosting
+**** When all time were accounted.
 *** Critical BUGS are here
 **** BUGS
 ***** CLOSED continuous file-notify event causing resetting of current-idle-time
@@ -597,10 +602,14 @@ It is very important and need to completed as soon as possible.
 ***** TODO mini window size coming in less than zero with (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change)
 Add test with timer to check what exactly happens when org-clock-lotus-log-note-on-change run from timer
 ***** TODO BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
-***** TODO BUG (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change) both tries to capture mini-buffer together
- TODO check what exactly happening
- TODO make a unit test to check it in future.
- TODO synchronize them.
+***** TODO BUG (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change) both tries to capture mini-buffer together :urgent:
+also include org-resolve-clock-idle
+One way to solve is check for active minibuffer before again opening minibuffer
+
+- TODO check what exactly happening
+- TODO make a unit test to check it in future.
+- TODO synchronize them.
+
 ***** TODO correct log-not-on-change not working properly
 ***** TODO Improve org-clock-lotus-log-not-on-change to use timed out window and not as command-post-hook
 ***** TODO Improve org-clock-lotus-log-not-on-change detection of proper manual changes, which now do very simple count from tree.
@@ -649,6 +658,7 @@ if we go in detail then here may be many thing will come like virtual umbrella h
 *** Unobtrusive Dynamic Contextual Org Clock
 **** BUGS
 **** FEATURE
+***** Automatic task heading creation [think more about it.] for perticular events (will be very nice feature.)
 ***** DONE Implement dynamic clocking based on mapping of org task property to current file buffer
       CLOSED: [2017-11-18 Sat 20:29]
 ***** DONE Implement dynamic adding of property to org task
@@ -746,6 +756,9 @@ e.g. In urxvt we should be able to mark window to reappear when build is done, b
 https://elpa.emacs-china.org/melpa-stable/with-simulated-input-2.1.el
 https://github.com/hardaker/elisp-buffer-timer
 http://blog.danielgempesaw.com/post/109767231148/using-emacs-for-daily-reminders-to-write-in-my
+
+
+
 
 * Tableview
 #+BEGIN: columnview :hlines 1 :id local
