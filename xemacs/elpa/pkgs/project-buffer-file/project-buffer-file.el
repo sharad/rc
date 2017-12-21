@@ -110,7 +110,7 @@ May either be a string or a list of strings.")
   (assert (not (file-exists-p filename)))
 
   (condition-case nil
-      (pbm-file-run-real-handler #'file-local-copy (list file))
+      (pbm-file-run-real-handler #'file-local-copy (list filename))
     (error))
 
   (with-temp-buffer ;; with-current-buffer (find-file-noselect filename)

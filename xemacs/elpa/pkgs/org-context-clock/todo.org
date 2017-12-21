@@ -439,6 +439,8 @@ Yes
    CLOCK: [2016-02-03 Wed 01:10]--[2016-02-03 Wed 01:30] =>  0:20
    :END:
 *** Why it is important
+    :PROPERTIES:
+    :END:
 It is very important and need to completed as soon as possible.
 *** Goals [very incomplete]
 **** We should be able to do thing without visiting org file with task heading

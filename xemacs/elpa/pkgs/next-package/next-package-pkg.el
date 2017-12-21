@@ -1,1 +1,1 @@
-(define-package "next-package" "20171216.2335" "next-package" nil)
+(define-package "next-package" "20171221.2319" "next-package" nil)
