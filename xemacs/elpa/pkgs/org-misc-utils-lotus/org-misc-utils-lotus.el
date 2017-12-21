@@ -245,7 +245,7 @@
        ,minibuffer-body
        (progn
          ,@body)))
-(put 'org-with-no-active-minibuffer 'lisp-indent-function 0)
+(put 'org-with-no-active-minibuffer 'lisp-indent-function 1)
 
 (defmacro org-with-override-minibuffer (&rest body)
   `(progn

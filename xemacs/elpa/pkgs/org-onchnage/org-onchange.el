@@ -121,44 +121,50 @@
       (let ((cleanupfn-local #'(lambda () nil)))
         (org-with-timed-new-win
             3 timer cleanupfn-newwin cleanupfn-local win
-            (let ((target-buffer (get-buffer-create "*Org Note*")))
+            (condition-case err
+                (let ((target-buffer (get-buffer-create "*Org Note*")))
 
-              ;; (pop-to-buffer-same-window (marker-buffer org-log-note-marker))
-              ;; (goto-char org-log-note-marker)
-              ;; (org-switch-to-buffer-other-window "*Org Note*")
+                  ;; (pop-to-buffer-same-window (marker-buffer org-log-note-marker))
+                  ;; (goto-char org-log-note-marker)
+                  ;; (org-switch-to-buffer-other-window "*Org Note*")
 
-              (switch-to-buffer target-buffer 'norecord)
-              (set-buffer target-buffer)
-              (erase-buffer)
+                  (switch-to-buffer target-buffer 'norecord)
+                  (set-buffer target-buffer)
+                  (erase-buffer)
 
-              (if (memq org-log-note-how '(time state))
-                  (let (current-prefix-arg) (org-store-log-note))
-                  (let ((org-inhibit-startup t)) (org-mode))
-                  (insert (format "# Insert note for %s.
+                  (if (memq org-log-note-how '(time state))
+                      (let (current-prefix-arg) (org-store-log-note))
+                      (let ((org-inhibit-startup t)) (org-mode))
+                      (insert (format "# Insert note for %s.
 # Finish with C-c C-c, or cancel with C-c C-k.\n\n"
-                                  (cond
-                                    ((eq org-log-note-purpose 'clock-out) "stopped clock")
-                                    ((eq org-log-note-purpose 'done)  "closed todo item")
-                                    ((eq org-log-note-purpose 'state)
-                                     (format "state change from \"%s\" to \"%s\""
-                                             (or org-log-note-previous-state "")
-                                             (or org-log-note-state "")))
-                                    ((eq org-log-note-purpose 'reschedule)
-                                     "rescheduling")
-                                    ((eq org-log-note-purpose 'delschedule)
-                                     "no longer scheduled")
-                                    ((eq org-log-note-purpose 'redeadline)
-                                     "changing deadline")
-                                    ((eq org-log-note-purpose 'deldeadline)
-                                     "removing deadline")
-                                    ((eq org-log-note-purpose 'refile)
-                                     "refiling")
-                                    ((eq org-log-note-purpose 'note)
-                                     "this entry")
-                                    (t (error "This should not happen")))))
-                  (when org-log-note-extra (insert org-log-note-extra))
-                  (setq-local org-finish-function 'org-store-log-note)
-                  (run-hooks 'org-log-buffer-setup-hook)))))))
+                                      (cond
+                                        ((eq org-log-note-purpose 'clock-out) "stopped clock")
+                                        ((eq org-log-note-purpose 'done)  "closed todo item")
+                                        ((eq org-log-note-purpose 'state)
+                                         (format "state change from \"%s\" to \"%s\""
+                                                 (or org-log-note-previous-state "")
+                                                 (or org-log-note-state "")))
+                                        ((eq org-log-note-purpose 'reschedule)
+                                         "rescheduling")
+                                        ((eq org-log-note-purpose 'delschedule)
+                                         "no longer scheduled")
+                                        ((eq org-log-note-purpose 'redeadline)
+                                         "changing deadline")
+                                        ((eq org-log-note-purpose 'deldeadline)
+                                         "removing deadline")
+                                        ((eq org-log-note-purpose 'refile)
+                                         "refiling")
+                                        ((eq org-log-note-purpose 'note)
+                                         "this entry")
+                                        (t (error "This should not happen")))))
+                      (when org-log-note-extra (insert org-log-note-extra))
+                      (setq-local org-finish-function 'org-store-log-note)
+                      (run-hooks 'org-log-buffer-setup-hook)))
+              ((quit)
+               (progn
+                 (funcall cleanup win local-cleanup)
+                 (if timer (cancel-timer timer))
+                 (signal (car err) (cdr err)))))))))
 
   (defun org-add-log-setup-background (&optional purpose state prev-state how extra)
     "Set up the post command hook to take a note.
