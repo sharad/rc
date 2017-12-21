@@ -95,73 +95,75 @@
 (defun org-context-clock-add-context-to-org-heading (context timeout)
   (interactive '(nil nil))
 
-  ;; TODO: as clean up reset win configuration
-  (lexical-let* ((timeout (or timeout 17))
-                 (context (or context (org-context-clock-build-context)))
-                 (buff (plist-get context :buffer)))
-    (if (and
-         (eq (current-buffer) buff)
-         (buffer-live-p buff)
-         (not
-          (eq buff
-              (get-buffer "*helm-mode-org-context-clock-add-context-to-org-heading*"))))
+  (org-with-no-active-minibuffer
+    (message "add-context-to-org-heading: minibuffer already active quitting")
+    (lexical-let* ((timeout (or timeout 17))
+                   (context (or context (org-context-clock-build-context)))
+                   (buff (plist-get context :buffer)))
+      (if (and
+           (eq (current-buffer) buff)
+           (buffer-live-p buff)
+           (not
+            (eq buff
+                (get-buffer "*helm-mode-org-context-clock-add-context-to-org-heading*"))))
 
-        (let (local-cleanup)
-          ;; (setq org-context-clock-add-context-to-org-heading-win-config (current-window-configuration))
-          ;; TODO: do win cleanup in org-timed-miniwin-file-loc-with-refile macro not here.
-          ;;       and make and use it own org-context-clock-add-context-to-org-heading-win-config variable for it.
-          (progn  ;; let (win file pos timeout)   ;pos is void error is seen ?
-            (org-with-file-loc-timed-refile-timed-new-win ;break it in two macro call to accommodate local-cleanup
-                file pos
-                timeout '((org-context-clock-task-update-files :maxlevel . 4))
-                timeout timer cleanup local-cleanup win
-                ;; (set-marker marker (point))
-                (lexical-let* ((marker (make-marker)))
+          (progn
+            ;; (setq org-context-clock-add-context-to-org-heading-win-config (current-window-configuration))
+            ;; TODO: do win cleanup in org-timed-miniwin-file-loc-with-refile macro not here.
+            ;;       and make and use it own org-context-clock-add-context-to-org-heading-win-config variable for it.
+            (progn  ;; let (win file pos timeout)   ;pos is void error is seen ?
+              (org-with-file-loc-timed-refile
+                  file pos
+                  timeout '((org-context-clock-task-update-files :maxlevel . 4))
+                  (lexical-let* ((marker (make-marker))
+                                 (local-cleanup
+                                  #'(lambda ()
+                                      (save-excursion ;what to do here
+                                        (org-flag-proprty-drawer-at-marker marker t)))))
+                    (set-marker marker (point))
+                    (org-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
+                        timeout timer cleanup local-cleanup win
 
-                  (set-marker marker (point))
+                        ;; (set-marker marker (point))
 
-                  (setq                 ;redefining it
-                   local-cleanup
-                   #'(lambda ()
-                       (save-excursion ;what to do here
-                         (org-flag-proprty-drawer-at-marker marker t))))
 
-                  (message "called add-context-to-org-heading %s" (current-buffer))
-                  (progn
-                    (condition-case err
-                        (let ((buffer-read-only nil))
-                          (message "timer started for win %s" win)
 
-                          ;; show proptery drawer
-                          (org-flag-proprty-drawer-at-marker marker nil)
+                        (message "called add-context-to-org-heading %s" (current-buffer))
+                        (progn
+                          (condition-case err
+                              (let ((buffer-read-only nil))
+                                (message "timer started for win %s" win)
 
-                          ;; try to read values of properties.
-                          (let ((prop nil))
-                            (while (not
-                                    (member (setq prop (org-context-clock-select-propetry)) '("Edit" "Done")))
-                              (when (org-context-clock-set-property prop nil context)
-                                (org-context-clock-task-update-tasks t)))
-                            (cond
-                              ((string-equal "Done" prop)
-                               (funcall cleanup win local-cleanup))
-                              ((string-equal "Edit" prop)
-                               (when timer (cancel-timer timer))
-                               (when (and win (windowp win) (window-valid-p win))
-                                 (select-window win 'norecord)))
-                              (t
+                                ;; show proptery drawer
+                                (org-flag-proprty-drawer-at-marker marker nil)
+
+                                ;; try to read values of properties.
+                                (let ((prop nil))
+                                  (while (not
+                                          (member (setq prop (org-context-clock-select-propetry)) '("Edit" "Done")))
+                                    (when (org-context-clock-set-property prop nil context)
+                                      (org-context-clock-task-update-tasks t)))
+                                  (cond
+                                    ((string-equal "Done" prop)
+                                     (funcall cleanup win local-cleanup))
+                                    ((string-equal "Edit" prop)
+                                     (when timer (cancel-timer timer))
+                                     (when (and win (windowp win) (window-valid-p win))
+                                       (select-window win 'norecord)))
+                                    (t
+                                     (funcall cleanup win local-cleanup)
+                                     (when timer (cancel-timer timer))))))
+                            ((quit)
+                             (progn
                                (funcall cleanup win local-cleanup)
-                               (when timer (cancel-timer timer))))))
-                      ((quit)
-                       (progn
-                         (funcall cleanup win local-cleanup)
-                         (if timer (cancel-timer timer))
-                         (signal (car err) (cdr err))))))))))
-        (progn
-          (org-context-clock-message 6 "not running add-context-to-org-heading 1 %s, 2 %s 3 %s"
-                                     (eq (current-buffer) buff)
-                                     (buffer-live-p buff)
-                                     (eq buff
-                                         (get-buffer "*helm-mode-org-context-clock-add-context-to-org-heading*")))))))
+                               (if timer (cancel-timer timer))
+                               (signal (car err) (cdr err)))))))))))
+          (progn
+            (org-context-clock-message 6 "not running add-context-to-org-heading 1 %s, 2 %s 3 %s"
+                                       (eq (current-buffer) buff)
+                                       (buffer-live-p buff)
+                                       (eq buff
+                                           (get-buffer "*helm-mode-org-context-clock-add-context-to-org-heading*"))))))))
 
 ;;;###autoload
 (defun org-context-clock-add-context-to-org-heading-when-idle (context timeout)

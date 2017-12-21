@@ -211,8 +211,6 @@
      ;; selected by the window manager.
      (set-mouse-position frame (1- (frame-width frame)) 0))))
 
-
-
 (defun safe-timed-org-refile-get-location (timeout)
   ;; TODO: as clean up reset newwin configuration
   (lexical-let* ((current-command (or
@@ -241,6 +239,22 @@
       (when (fboundp 'remove-function)
         (remove-function (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
       (cancel-timer timer))))
+
+(defmacro org-with-no-active-minibuffer (minibuffer-body &rest body)
+  `(if (active-minibuffer-window)
+       ,minibuffer-body
+       (progn
+         ,@body)))
+(put 'org-with-no-active-minibuffer 'lisp-indent-function 0)
+
+(defmacro org-with-override-minibuffer (&rest body)
+  `(progn
+     (when (active-minibuffer-window)
+       (abort-recursive-edit))
+     (unless (active-minibuffer-window)
+       (progn
+         ,@body))))
+(put 'org-with-override-minibuffer 'lisp-indent-function 0)
 
 (defmacro org-with-refile (file pos refile-targets &rest body)
   "Refile the active region.
