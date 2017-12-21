@@ -119,7 +119,7 @@
     `(lexical-let* ((,temp-win-config (current-window-configuration))
                     (,cleanupfn-newwin #'(lambda (w localfn)
                                            (message "triggered timer for newwin %s" w)
-                                           (funcall localfn)
+                                           (when localfn (funcall localfn))
                                            (when (active-minibuffer-window)
                                              (abort-recursive-edit))
                                            (when (and w (windowp w) (window-valid-p w))

@@ -115,7 +115,9 @@
 
     ;; (move-marker org-log-note-return-to (point))
     (org-with-no-active-minibuffer
-      (message "add-log-note-background: minibuffer already active quitting")
+      (progn
+        (message "add-log-note-background: minibuffer already active quitting")
+        (message nil))
       (let ((cleanupfn-local #'(lambda () nil)))
         (org-with-timed-new-win
             3 timer cleanupfn-newwin cleanupfn-local win

@@ -100,7 +100,9 @@
   (interactive '(nil nil))
 
   (org-with-no-active-minibuffer
-    (message "add-context-to-org-heading: minibuffer already active quitting")
+    (progn
+      (message "add-context-to-org-heading: minibuffer already active quitting")
+      (message nil))
     (lexical-let* ((timeout (or timeout 17))
                    (context (or context (org-context-clock-build-context)))
                    (buff (plist-get context :buffer)))
