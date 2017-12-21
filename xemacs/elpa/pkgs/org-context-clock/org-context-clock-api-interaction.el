@@ -93,6 +93,10 @@
 
 ;;;###autoload
 (defun org-context-clock-add-context-to-org-heading (context timeout)
+  "add-context-to-org-heading"
+
+  ;; TODO: make helm conditional when it is used than only it should be handled.
+
   (interactive '(nil nil))
 
   (org-with-no-active-minibuffer
@@ -120,44 +124,48 @@
                                   #'(lambda ()
                                       (save-excursion ;what to do here
                                         (org-flag-proprty-drawer-at-marker marker t)))))
+
                     (set-marker marker (point))
+
                     (org-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
                         timeout timer cleanup local-cleanup win
 
-                        ;; (set-marker marker (point))
+                        (let ((target-buffer (find-file-noselect file)))
+
+                          (switch-to-buffer target-buffer)
+                          (goto-char pos)
 
 
+                          (message "called add-context-to-org-heading %s" (current-buffer))
+                          (progn
+                            (condition-case err
+                                (let ((buffer-read-only nil))
+                                  (message "timer started for win %s" win)
 
-                        (message "called add-context-to-org-heading %s" (current-buffer))
-                        (progn
-                          (condition-case err
-                              (let ((buffer-read-only nil))
-                                (message "timer started for win %s" win)
+                                  ;; show proptery drawer
+                                  (org-flag-proprty-drawer-at-marker marker nil)
 
-                                ;; show proptery drawer
-                                (org-flag-proprty-drawer-at-marker marker nil)
-
-                                ;; try to read values of properties.
-                                (let ((prop nil))
-                                  (while (not
-                                          (member (setq prop (org-context-clock-select-propetry)) '("Edit" "Done")))
-                                    (when (org-context-clock-set-property prop nil context)
-                                      (org-context-clock-task-update-tasks t)))
-                                  (cond
-                                    ((string-equal "Done" prop)
-                                     (funcall cleanup win local-cleanup))
-                                    ((string-equal "Edit" prop)
-                                     (when timer (cancel-timer timer))
-                                     (when (and win (windowp win) (window-valid-p win))
-                                       (select-window win 'norecord)))
-                                    (t
-                                     (funcall cleanup win local-cleanup)
-                                     (when timer (cancel-timer timer))))))
-                            ((quit)
-                             (progn
-                               (funcall cleanup win local-cleanup)
-                               (if timer (cancel-timer timer))
-                               (signal (car err) (cdr err)))))))))))
+                                  ;; try to read values of properties.
+                                  (let ((prop nil))
+                                    (while (not
+                                            (member (setq prop (org-context-clock-select-propetry)) '("Edit" "Done")))
+                                      (when (org-context-clock-set-property prop nil context)
+                                        (org-context-clock-task-update-tasks t)))
+                                    (cond
+                                      ((string-equal "Done" prop)
+                                       (funcall cleanup win local-cleanup))
+                                      ((string-equal "Edit" prop)
+                                       (when timer (cancel-timer timer))
+                                       (when (and win (windowp win) (window-valid-p win))
+                                         (select-window win 'norecord)))
+                                      (t
+                                       (funcall cleanup win local-cleanup)
+                                       (when timer (cancel-timer timer))))))
+                              ((quit)
+                               (progn
+                                 (funcall cleanup win local-cleanup)
+                                 (if timer (cancel-timer timer))
+                                 (signal (car err) (cdr err))))))))))))
           (progn
             (org-context-clock-message 6 "not running add-context-to-org-heading 1 %s, 2 %s 3 %s"
                                        (eq (current-buffer) buff)
