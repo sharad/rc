@@ -109,8 +109,53 @@
           pkg-desc)
         (error "not able to find package for %s" pkg-name))))
 
+(defun package-desc-package-from-dir (dir &optional archive)
+  (let* ((dir-of-current-file (directory-file-name dir))
+         (pkg-name-version
+          (file-name-nondirectory dir-of-current-file))
+         (pkg-name
+          (replace-regexp-in-string
+           "-[0-9\.]\*\$" "" pkg-name-version))
+         (version
+          (package-version-join
+           (package-build--valid-version
+            (format-time-string "%Y%m%d.%H%M")))))
+    (package-make-package-desc pkg-name package-local-dev-archive)))
+
+(defun package-requirements-package-from-dir (dir)
+  (let* ((dir-of-current-file (directory-file-name dir))
+         (pkg-name-version
+          (file-name-nondirectory dir-of-current-file))
+         (pkg-name
+          (replace-regexp-in-string
+           "-[0-9\.]\*\$" "" pkg-name-version))
+         (version
+          (package-version-join
+           (package-build--valid-version
+            (format-time-string "%Y%m%d.%H%M"))))
+         (currdir-pkg-def-file
+          (expand-file-name
+           (format "%s-pkg.el" pkg-name)
+           dir-of-current-file))
+         (pkg-def-exists (file-exists-p currdir-pkg-def-file))
+         (pkg-def
+          (let ((pkg-def-file currdir-pkg-def-file))
+            (if (file-exists-p pkg-def-file)
+                (car
+                 (read-from-string
+                  (with-temp-buffer
+                    (insert-file-contents-literally pkg-def-file)
+                    (let ((contents
+                           (condition-case e
+                               ;; (read (current-buffer))
+                               (buffer-string)
+                             ('end-of-file nil))))
+                      contents))))
+                `(define-package ,pkg-name ,version ,(format "%s" pkg-name) nil)))))
+    (cadr (nth 4 pkg-def))))
+
 ;;;###autoload
-(defun package-build-package-from-dir (dir)
+(defun package-build-package-from-dir (dir &optional update-source-pkg-desc)
   (interactive
    (let ((dir (read-directory-name "package directory: ")))
      (list dir)))
@@ -149,6 +194,8 @@
           (expand-file-name
            (format "%s-%s" pkg-name version)
            tmp-dir)))
+
+    (message "building package %s" pkg-name)
     (when (or (file-exists-p currdir-pkg-def-file)
               (y-or-n-p
                (format "Do you want to make package of %s from %s: "
@@ -200,19 +247,24 @@
           (insert (pp-to-string pkg-def))
           (write-file pkgdir-def-file))
 
-        ;; TODO: copy pkgdir-def-file dir-of-current-file/*-pkg.el
-        (copy-file pkgdir-def-file currdir-pkg-def-file t)
+        (when (or (not pkg-def-exists)
+                  update-source-pkg-desc)
+          (message "Creating %s file" currdir-pkg-def-file)
+          ;; TODO: copy pkgdir-def-file dir-of-current-file/*-pkg.el
+          (copy-file pkgdir-def-file currdir-pkg-def-file t))
 
         (let ((pkgdir-def-file-buff (find-buffer-visiting pkgdir-def-file)))
           (when pkgdir-def-file-buff (kill-buffer pkgdir-def-file-buff))))
       (let ((default-directory tmp-dir))
-        (if (shell-command
-             (format "tar cf %s/%s-%s.tar -C %s %s-%s"
-                     tmp-dir pkg-name version
-                     tmp-dir
-                     pkg-name version))
-            (format "%s/%s-%s.tar"
-                    tmp-dir pkg-name version))))))
+        (prog1
+            (if (shell-command
+                 (format "tar cf %s/%s-%s.tar -C %s %s-%s"
+                         tmp-dir pkg-name version
+                         tmp-dir
+                         pkg-name version))
+                (format "%s/%s-%s.tar"
+                        tmp-dir pkg-name version))
+          (message "built package %s" pkg-name))))))
 
 ;;;###autoload
 (defun package-upload-package-from-dir (dir &optional archive)
@@ -224,6 +276,7 @@
           (replace-regexp-in-string
            "-[0-9\.]\*\.tar\\(\.gz\\)?\$" ""
            (file-name-nondirectory pkg-tar))))
+    (message "uploading package %s" pkg-name)
     (when (string= (file-name-extension pkg-tar) "tar")
       (package-upload-file pkg-tar)
       (if (file-directory-p package-archive-upload-base)
@@ -242,6 +295,7 @@
                        t))
           (error "package-archive-upload-base not exists."))
       (package-refresh-contents))
+    (message "uploaded package %s" pkg-name)
     (package-make-package-desc pkg-name (or archive package-local-dev-archive))))
 
 ;;;###autoload
@@ -266,13 +320,14 @@
         (delete-directory oipdir t)))
     (message "installing package %s" pkg-sym)
     (unless (package-install-local pkg-desc)
-      (package-install pkg-desc))))
+      (package-install pkg-desc))
+    (message "installed package %s" pkg-sym)))
 
 
 ;;;###autoload
-(defun package-build-packages-from-source-path ()
+(defun package-build-packages-from-source-path (&optional base)
   (interactive)
-  (let ((base package-source-path))
+  (let ((base (or base package-source-path)))
     (dolist (f (directory-files base))
       (let ((pkgdir (expand-file-name f base)))
         (when (and (file-directory-p pkgdir)
@@ -280,9 +335,9 @@
                    (not (equal f ".")))
           (package-build-package-from-dir pkgdir))))))
 ;;;###autoload
-(defun package-upload-packages-from-source-path ()
+(defun package-upload-packages-from-source-path (&optional base)
   (interactive)
-  (let ((base package-source-path))
+  (let ((base (or base package-source-path)))
     (dolist (f (directory-files base))
       (let ((pkgdir (expand-file-name f base)))
         (when (and (file-directory-p pkgdir)
@@ -290,9 +345,9 @@
                    (not (equal f ".")))
           (package-upload-package-from-dir pkgdir))))))
 ;;;###autoload
-(defun package-install-packages-from-source-path ()
+(defun package-install-packages-from-source-path (&optional base)
   (interactive)
-  (let ((base package-source-path))
+  (let ((base (or base package-source-path)))
     (dolist (f (directory-files base))
       (let ((pkgdir (expand-file-name f base)))
         (sleep-for *package-install-packages-wait-secs-in-install*)
@@ -300,7 +355,96 @@
                    (not (equal f ".."))
                    (not (equal f ".")))
           (ignore-errors
-           (package-install-package-from-dir pkgdir)))))))
+            (package-install-package-from-dir pkgdir))
+          (message "Installed %s" pkgdir))))
+    (message "Installed all packages from %s" base)))
+
+;;;###autoload
+(defun package-install-packages-from-source-path-fast (&optional base)
+  (interactive)
+  (let ((base (or base package-source-path)))
+    ;; (package-upload-packages-from-source-path base)
+
+    (message "Uploaded all packages from %s" base)
+
+    (let* ((subdirs
+            (remove-if-not
+             #'(lambda (d) (file-directory-p (expand-file-name d base)))
+             (remove ".."(remove "." (directory-files base)))))
+           (subdir-paths
+            (mapcar
+             #'(lambda (d) (expand-file-name d base))
+             subdirs))
+           (subdir-paths
+            (remove-if-not
+             #'file-directory-p
+             subdir-paths))
+           (dependencies-with-version
+            (apply #'append
+                   (remove nil
+                           (mapcar
+                            #'package-requirements-package-from-dir
+                            subdir-paths))))
+           (dependencies-without-version
+            (mapcar 'car dependencies-with-version))
+           (dependencies-external
+            (remove-if
+             #'(lambda (d)
+                 (file-directory-p
+                  (expand-file-name (symbol-name d) base)))
+             dependencies-without-version)))
+
+      (message "depecdencies to be installed %s"
+               dependencies-external)
+
+      ;; try to install dependencies first
+      (dolist (dep dependencies-external)
+        (let ((dep-desc (cadr (assoc dep package-archive-contents))))
+          (if (package-installed-p dep-desc)
+              (message "dependency package %s already installed." dep)
+              (progn
+                (message "installing dep %s" dep-desc)
+                (package-install dep-desc)
+                (message "Installed dependency package %s" dep)))))
+
+      (progn
+        (dolist (pkg-path subdir-paths)
+          ;; as already uploaded.
+          (let (;; (dep-desc (cadr (assoc dep package-archive-contents)))
+                (pkg (package-desc-package-from-dir pkg-path)))
+            (package-install pkg)
+            (message "Installed %s" pkg)))))
+
+    (message "Installed all packages from %s" base)))
+
+
+(package-installed-p (car (assoc 'elscreen package-archive-contents)))
+
+(package-install (intern (completing-read
+               "Install package: "
+               (delq nil
+                     (mapcar (lambda (elt)
+                               (unless (package-installed-p (car elt))
+                                 (symbol-name (car elt))))
+                             package-archive-contents))
+               nil t)))
+
+(package-install "package-dev-utils-lotus")
+
+(defun package-requirement-from-package (pkg) ;uploaded package
+  (let ((pkg-desc (if (package-desc-p pkg) pkg (package-make-package-desc pkg))))
+    (mapcar 'car '(package-desc-reqs pkg-desc))))
+
+;; (package-requirements-package-from-dir "~/.xemacs/elpa/pkgs/org-context-clock")
+
+;; (package-install-packages-from-source-path-fast)
+
+
+;; (package-compute-transaction (list pkg-desc)
+;;                              (package-desc-reqs pkg-desc))
+
+;; (package-compute-transaction (package-make-package-desc "package-dev-utils-lotus")
+;;                              (package-desc-reqs  (package-make-package-desc "org-context-clock")))
 
 ;; (when nil
 ;;   '(

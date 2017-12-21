@@ -585,7 +585,6 @@ With prefix arg C-u, copy region instad of killing it."
            (org-back-to-heading t)
            (org-cycle-hide-drawers 'children))
           ;; Fix `buffer-undo-list' when `org-store-log-note' is called
-          - Test
           ;; from within `org-add-log-note' because `buffer-undo-list'
           ;; is then modified outside of `org-with-remote-undo'.
           (when (eq this-command 'org-agenda-todo)
