@@ -394,8 +394,7 @@
                   (expand-file-name (symbol-name d) base)))
              dependencies-without-version)))
 
-      (message "depecdencies to be installed %s"
-               dependencies-external)
+      (message "depecdencies to be installed %s" dependencies-external)
 
       ;; try to install dependencies first
       (dolist (dep dependencies-external)
@@ -403,7 +402,7 @@
           (if (package-installed-p dep-desc)
               (message "dependency package %s already installed." dep)
               (progn
-                (message "installing dep %s" dep-desc)
+                (message "installing dep %s" dep)
                 (package-install dep-desc)
                 (message "Installed dependency package %s" dep)))))
 
@@ -412,28 +411,28 @@
           ;; as already uploaded.
           (let (;; (dep-desc (cadr (assoc dep package-archive-contents)))
                 (pkg (package-desc-package-from-dir pkg-path)))
+            (message "Installing %s" pkg-path)
             (package-install pkg)
-            (message "Installed %s" pkg)))))
+            (message "Installed %s" pkg-path)))))
 
     (message "Installed all packages from %s" base)))
-
-
-(package-installed-p (car (assoc 'elscreen package-archive-contents)))
-
-(package-install (intern (completing-read
-               "Install package: "
-               (delq nil
-                     (mapcar (lambda (elt)
-                               (unless (package-installed-p (car elt))
-                                 (symbol-name (car elt))))
-                             package-archive-contents))
-               nil t)))
-
-(package-install "package-dev-utils-lotus")
 
 (defun package-requirement-from-package (pkg) ;uploaded package
   (let ((pkg-desc (if (package-desc-p pkg) pkg (package-make-package-desc pkg))))
     (mapcar 'car '(package-desc-reqs pkg-desc))))
+
+;; (package-installed-p (car (assoc 'elscreen package-archive-contents)))
+
+;; (package-install (intern (completing-read
+;;                "Install package: "
+;;                (delq nil
+;;                      (mapcar (lambda (elt)
+;;                                (unless (package-installed-p (car elt))
+;;                                  (symbol-name (car elt))))
+;;                              package-archive-contents))
+;;                nil t)))
+
+;; (package-install "package-dev-utils-lotus")
 
 ;; (package-requirements-package-from-dir "~/.xemacs/elpa/pkgs/org-context-clock")
 
