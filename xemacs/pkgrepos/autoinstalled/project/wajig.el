@@ -295,7 +295,7 @@ pkg is the package name to operate on."
 	 (docstring
 	  (progn		       ; show help from `wajig commands'
 	    (string-match (format "^ %s.*" command)
-			  wajig-commands-string)
+                    wajig-commands-string)
 	    (match-string 0 wajig-commands-string)))
 	 (interactive
 	  (if arglist
