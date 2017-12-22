@@ -23,6 +23,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-12-23 Sat 01:33]--[2017-12-23 Sat 01:38] =>  0:05
    CLOCK: [2017-12-22 Fri 15:22]--[2017-12-22 Fri 22:48] =>  7:26
    CLOCK: [2017-12-22 Fri 04:17]--[2017-12-22 Fri 15:10] => 10:53
    CLOCK: [2017-12-22 Fri 04:06]--[2017-12-22 Fri 04:14] =>  0:08
@@ -592,6 +593,16 @@ It is very important and need to completed as soon as possible.
 ****** adding timeout bound task like sleep for 5 mins
 ****** etc
 ****** adding new task also try to copy or move property from related task
+***** Add Unnamed task no context match and no manually clocked in task present. :concept:
+****** Detection when a New Unnamed task should be created or one of Previous Unnamed tasks should be used will have many details.
+****** These should be prompted to be  renamed and refiled later to correct task
+****** Refile interface should have two binding RET to make child of selected heading and M-RET to merge into selected heading.
+***** When Manually clocked in task detected then context clock and Unnamed task should not interrupt, BUT
+it should only remind only that some other task should be clocked in if current context match to some other task OR
+if manually clock-in task is detected to be prolonged for long time than also it should remind that may user not working for current task AND
+finally after very long time manually clocked-in task should be clocked-out.
+
+*****
 ***** When adding a task an interface to further break it down in small sub tasks
 ***** TYPE of task 1. todo 2. simple reminder, 3. event, 4. meeting etc should be accommodated.
 - todo
