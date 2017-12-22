@@ -520,8 +520,8 @@ function setup_bpkg_installler()
 
 function setup_bpkg_pkgs()
 {
-    cd
-    bpkg install gitwatch
+    PREFIX=/usr/local/stow/gitwatch sudo bpkg install -g gitwatch
+    cd /usr/local/stow/ && sudo stow gitwatch
     cd -
 }
 
