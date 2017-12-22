@@ -15,6 +15,9 @@ DEB_PKG_NECESSARY_MORE="gnu-smalltalk-doc gnu-fdisk gnu-standards gnuit gnulib g
 DEB_PKG_NECESSARY_MORE="libcommoncpp2-doc libconfig-dev libsocket++-dev licenseutils lookup-el lyskom-server macchanger mboxgrep mew-beta mit-scheme-doc mmm-mode ocaml-doc oneliner-el org-mode-doc parted-doc pcb-common"
 DEB_PKG_NECESSARY_MORE="pinfo psgml qingy r-doc-info r5rs-doc semi sepia sharutils slime source-highlight spell ssed stow rlwrap teseq time trueprint turnin-ng units vera wcalc wdiff wizzytex wysihtml-el"
 DEB_PKG_GAME="gnugo "
+
+DEB_PKGS_BACKUP="bup git-annex tahoe-lafs unison unison-all"
+
 DEB_PKG_NECESSARY="git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server rcs apt-src jargon cutils complexity-doc dejagnu diffutils edb extract festival ffe gccintro gddrescue geda-doc genparse"
 DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev console-data gnome-session gnome-settings-daemon gnome-panel"
 DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp"

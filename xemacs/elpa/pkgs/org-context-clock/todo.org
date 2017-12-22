@@ -23,7 +23,8 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-22 Fri 04:17]--[2017-12-22 Fri 04:29] =>  0:12
+   CLOCK: [2017-12-22 Fri 15:22]
+   CLOCK: [2017-12-22 Fri 04:17]--[2017-12-22 Fri 15:10] => 10:53
    CLOCK: [2017-12-22 Fri 04:06]--[2017-12-22 Fri 04:14] =>  0:08
    CLOCK: [2017-12-22 Fri 01:24]--[2017-12-22 Fri 03:57] =>  2:33
    CLOCK: [2017-12-20 Wed 23:00]--[2017-12-21 Thu 00:07] =>  1:07
@@ -554,7 +555,6 @@ It is very important and need to completed as soon as possible.
   #9  0x0000000000413ff1 in main (argc=<optimized out>, argv=0x7ffea9ef2b38) at emacs.c:1642
  #+END_SRC
 
-
 ***** DONE It is still not known why (require 'misc-utils) in
       CLOSED: [2017-12-12 Tue 20:29]
  lotus-interactivity/packages.el of (lotus-interactivity/post-init-ido)
@@ -606,7 +606,12 @@ It is very important and need to completed as soon as possible.
 ***** TODO mini window size coming in less than zero with (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change)
 Add test with timer to check what exactly happens when org-clock-lotus-log-note-on-change run from timer
 ***** TODO BUG Fix when clocked-in is correct matching task, context-clock still offer to choose if multiple task are matching presently.
-***** TODO BUG (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change) both tries to capture mini-buffer together :urgent:
+***** DONE BUG (org-context-clock-add-context-to-org-heading-when-idle) and (org-clock-lotus-log-note-on-change) both tries to capture mini-buffer together :urgent:
+      CLOSED: [2017-12-22 Fri 17:23]
+      :LOGBOOK:
+      - State "DONE"       from "TODO"       [2017-12-22 Fri 17:23] \\
+        Almost done
+      :END:
 also include org-resolve-clock-idle
 One way to solve is check for active minibuffer before again opening minibuffer
 
@@ -624,7 +629,8 @@ One way to solve is check for active minibuffer before again opening minibuffer
 ***** STARTED BUG org-clock-in-if-not should be removed from after-make-frame-functions when no frame left it should not count make-reader-frame
  So normal frame and utilities frame have to distinguished.
 ***** TODO cleanup lotus-timer-utils timer not working properly and unable to cancel them.
-***** TODO Not all ORG file should be considered for time tracking todo, find way to limit them at present lot of unnecessary heading shown for all operation
+***** TODO Not all ORG file should be considered for time tracking todo, find way to limit them at present lot of unnecessary heading shown for all operation :urgent:
+      DEADLINE: <2017-12-23 Sat> SCHEDULED: <2017-12-22 Fri>
       many file are simple data or log, or just for information purpose there is no meaning of TODO
       device a way to limit them.
 ***** TODO Believe we should only consider heading without child or node heading for clocking else we should make it configurable. detail

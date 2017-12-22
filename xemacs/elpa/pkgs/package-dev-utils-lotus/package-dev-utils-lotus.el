@@ -363,6 +363,7 @@
 (defun package-install-packages-from-source-path-fast (&optional base)
   (interactive)
   (let ((base (or base package-source-path)))
+
     ;; (package-upload-packages-from-source-path base)
 
     (message "Uploaded all packages from %s" base)

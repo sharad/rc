@@ -326,8 +326,6 @@ using three `C-u' prefix arguments."
 
 
 
-
-
 (progn
   (eval-when-compile
     (require 'org-misc-utils-lotus))

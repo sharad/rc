@@ -103,3 +103,6 @@
 [submodule "xemacs/pkgrepos/world/gits/gnus-outlook-style"]
 	path = xemacs/pkgrepos/world/gits/gnus-outlook-style
 	url = git@github.com:sharad/gnus-outlook-style.git
+[submodule "gitsubmodules/utils/vcs/git/git-sync"]
+	path = gitsubmodules/utils/vcs/git/git-sync
+	url = https://github.com/simonthum/git-sync.git

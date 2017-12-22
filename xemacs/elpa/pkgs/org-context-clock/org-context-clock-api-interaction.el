@@ -53,7 +53,10 @@
   ;; (ido-completing-read
   (completing-read
    (or prompt "proptery: ")
-   (org-context-clock-keys-with-operation :getter) nil t))
+   (append
+    (org-context-clock-keys-with-operation :getter)
+    '("Edit" "Done"))
+   nil t))
 
 (defun org-context-clock-test (context timeout)
   (interactive '(nil nil))
