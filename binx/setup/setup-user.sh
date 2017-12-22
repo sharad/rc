@@ -85,6 +85,14 @@ function main()
 
     setup_spacemacs
 
+    setup_clib_installer
+
+    setup_clib_pkgs
+
+    setup_bpkg_installler
+
+    setup_bpkg_pkgs
+
     rm -rf $TMPDIR
 }
 
@@ -476,6 +484,47 @@ function setup_sourcecode_pro_font()
     sudo cp -rf /tmp/$FONT_NAME/. /usr/share/fonts/truetype/$FONT_NAME/.
     fc-cache -f -v
 }
+
+
+function setup_clib_installer()
+{
+    sudo apt-get install libcurl4-gnutls-dev -qq
+    if [ ! -d /usr/local/stow/clib/ ]
+    then
+        if git clone https://github.com/clibs/clib.git $TMPDIR/clib
+        then
+            cd $TMPDIR/clib
+            make PREFIX=/usr/local/stow/clib/
+            sudo make PREFIX=/usr/local/stow/clib/ install
+            cd /usr/local/stow && sudo stow clib
+            cd -
+        fi
+    else
+        echo clib is already present. >&2
+    fi
+}
+
+function setup_clib_pkgs()
+{
+}
+
+function setup_bpkg_installler()
+{
+    if [ ! -d /usr/local/stow/bpkg ]
+    then
+        PREFIX=/usr/local/stow/bpkg clib install bpkg/bpkg -o /usr/local/stow/bpkg
+        cd /usr/local/stow && sudo stow bpkg
+        cd -
+    fi
+}
+
+function setup_bpkg_pkgs()
+{
+    cd
+    bpkg install gitwatch
+    cd -
+}
+
 
 main
 
