@@ -23,6 +23,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-12-23 Sat 02:26]--[2017-12-23 Sat 03:15] =>  0:49
    CLOCK: [2017-12-23 Sat 01:33]--[2017-12-23 Sat 01:38] =>  0:05
    CLOCK: [2017-12-22 Fri 15:22]--[2017-12-22 Fri 22:48] =>  7:26
    CLOCK: [2017-12-22 Fri 04:17]--[2017-12-22 Fri 15:10] => 10:53
@@ -593,6 +594,7 @@ It is very important and need to completed as soon as possible.
 ****** adding timeout bound task like sleep for 5 mins
 ****** etc
 ****** adding new task also try to copy or move property from related task
+***** Automatic task heading creation [think more about it.] for perticular events (will be very nice feature.)
 ***** Add Unnamed task no context matched and no manually clocked in task present. :concept:
 ****** Criteria for Detection when a New Unnamed task should be created or one of Previous Unnamed tasks should be used will have many details.
 ****** When an Unnamed task were clocked-in than all events should be recorded in it and in it property drawer like =\
@@ -612,11 +614,6 @@ it should only remind only that some other task should be clocked in if current 
 if manually clock-in task is detected to be prolonged for long time than also it should remind that may user not working for current task AND
 finally after very long time manually clocked-in task should be clocked-out.
 
-***** Lot of org file problem Solutions
-****** if we want to keep clock-able org file information below directories than we should not put other org file in these directories physically but it could
-kept there using symbolic link files or files in symbolic link directory.
-and here we can simple only consider file actually present physically below directories as clock-able, rest others should be ignored.
-****** Think another
 ***** When adding a task an interface to further break it down in small sub tasks
 ***** TYPE of task 1. todo 2. simple reminder, 3. event, 4. meeting etc should be accommodated.
 - todo
@@ -658,6 +655,12 @@ One way to solve is check for active minibuffer before again opening minibuffer
       DEADLINE: <2017-12-23 Sat> SCHEDULED: <2017-12-22 Fri>
       many file are simple data or log, or just for information purpose there is no meaning of TODO
       device a way to limit them.
+****** Lot of org file problem Solutions
+******* TODO if we want to keep clock-able org file information below directories than we should not put other org file in these directories physically but it could
+ kept there using symbolic link files or files in symbolic link directory.
+ and here we can simple only consider file actually present physically below directories as clock-able, rest others should be ignored.
+******* TODO Think another
+
 ***** TODO Believe we should only consider heading without child or node heading for clocking else we should make it configurable. detail
 if we go in detail then here may be many thing will come like virtual umbrella heading task with actual children tasks etc.
 
@@ -693,7 +696,6 @@ if we go in detail then here may be many thing will come like virtual umbrella h
 *** Unobtrusive Dynamic Contextual Org Clock
 **** BUGS
 **** FEATURE
-***** Automatic task heading creation [think more about it.] for perticular events (will be very nice feature.)
 ***** DONE Implement dynamic clocking based on mapping of org task property to current file buffer
       CLOSED: [2017-11-18 Sat 20:29]
 ***** DONE Implement dynamic adding of property to org task

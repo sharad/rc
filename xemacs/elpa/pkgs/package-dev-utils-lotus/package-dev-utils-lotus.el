@@ -364,9 +364,10 @@
   (interactive)
   (let ((base (or base package-source-path)))
 
-    ;; (package-upload-packages-from-source-path base)
-
-    (message "Uploaded all packages from %s" base)
+    ;; First build and upload all subdirs
+    (progn
+      (package-upload-packages-from-source-path base)
+      (message "Uploaded all packages from %s" base))
 
     (let* ((subdirs
             (remove-if-not
@@ -387,26 +388,35 @@
                             #'package-requirements-package-from-dir
                             subdir-paths))))
            (dependencies-without-version
-            (mapcar 'car dependencies-with-version))
+            (delete-dups
+             (mapcar 'car dependencies-with-version)))
            (dependencies-external
             (remove-if
              #'(lambda (d)
                  (file-directory-p
                   (expand-file-name (symbol-name d) base)))
-             dependencies-without-version)))
+             dependencies-without-version))
+           ;; (dependencies-external
+           ;;  (delete-dups
+           ;;   dependencies-external))
+           )
 
-      (message "depecdencies to be installed %s" dependencies-external)
-
+      ;; Than find all dependencies and install them
       ;; try to install dependencies first
-      (dolist (dep dependencies-external)
-        (let ((dep-desc (cadr (assoc dep package-archive-contents))))
-          (if (package-installed-p dep-desc)
-              (message "dependency package %s already installed." dep)
-              (progn
-                (message "installing dep %s" dep)
-                (package-install dep-desc)
-                (message "Installed dependency package %s" dep)))))
+      (progn
+        (message "depecdencies to be installed %s" dependencies-external)
+        (dolist (dep dependencies-external)
+          (let ((dep-sym  (car (assoc dep package-archive-contents)))
+                (dep-desc (cadr (assoc dep package-archive-contents))))
+            (if (package-installed-p dep-sym)
+                (message "dependency package %s already installed." dep)
+                (progn
+                  (message "installing dep %s %s" dep (symbolp dep))
+                  (package-install dep-desc)
+                  (message "Installed dependency package %s" dep)))))
+        (message "dependencies installed %s" dependencies-external))
 
+      ;; now install all subdirs.
       (progn
         (dolist (pkg-path subdir-paths)
           ;; as already uploaded.
@@ -414,15 +424,15 @@
                 (pkg (package-desc-package-from-dir pkg-path)))
             (message "Installing %s" pkg-path)
             (package-install pkg)
-            (message "Installed %s" pkg-path)))))
-
-    (message "Installed all packages from %s" base)))
+            (message "Installed %s" pkg-path)))
+        (message "Installed all packages from %s" base)))))
 
 (defun package-requirement-from-package (pkg) ;uploaded package
   (let ((pkg-desc (if (package-desc-p pkg) pkg (package-make-package-desc pkg))))
     (mapcar 'car '(package-desc-reqs pkg-desc))))
 
-;; (package-installed-p (car (assoc 'elscreen package-archive-contents)))
+;; (package-installed-p (car (assoc 'rinari package-archive-contents)))
+;; (package-install (cadr (assoc 'rinari package-archive-contents)))
 
 ;; (package-install (intern (completing-read
 ;;                "Install package: "
