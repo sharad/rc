@@ -593,16 +593,30 @@ It is very important and need to completed as soon as possible.
 ****** adding timeout bound task like sleep for 5 mins
 ****** etc
 ****** adding new task also try to copy or move property from related task
-***** Add Unnamed task no context match and no manually clocked in task present. :concept:
-****** Detection when a New Unnamed task should be created or one of Previous Unnamed tasks should be used will have many details.
-****** These should be prompted to be  renamed and refiled later to correct task
+***** Add Unnamed task no context matched and no manually clocked in task present. :concept:
+****** Criteria for Detection when a New Unnamed task should be created or one of Previous Unnamed tasks should be used will have many details.
+****** When an Unnamed task were clocked-in than all events should be recorded in it and in it property drawer like =\
+- which all file for what times visited and/or edited,
+- which all Code functions was visited and/or edited
+- what all mail were read and prepared and sent, and
+- what all were the previous tasks,
+- etc.
+******* activity.el and org-activity.el may need to implemented properly.
+This will user help the user to rename and refile this Unnamed task.
+
+****** These should be duly prompted to be renamed and refiled later to correct task
 ****** Refile interface should have two binding RET to make child of selected heading and M-RET to merge into selected heading.
+****** To account offline time, Could add a special Unnamed e.g. "UNNAMED Away from Emacs" from the last seen clock when emacs start and offer to resolve it.
 ***** When Manually clocked in task detected then context clock and Unnamed task should not interrupt, BUT
 it should only remind only that some other task should be clocked in if current context match to some other task OR
 if manually clock-in task is detected to be prolonged for long time than also it should remind that may user not working for current task AND
 finally after very long time manually clocked-in task should be clocked-out.
 
-*****
+***** Lot of org file problem Solutions
+****** if we want to keep clock-able org file information below directories than we should not put other org file in these directories physically but it could
+kept there using symbolic link files or files in symbolic link directory.
+and here we can simple only consider file actually present physically below directories as clock-able, rest others should be ignored.
+****** Think another
 ***** When adding a task an interface to further break it down in small sub tasks
 ***** TYPE of task 1. todo 2. simple reminder, 3. event, 4. meeting etc should be accommodated.
 - todo
@@ -750,7 +764,7 @@ similar way if more than 5 mins today gone on the task it mean this task is goin
 We may have to track with task whether its context had been shown to user or not.
 ***** Add note or heading event completion for e.g. sending mail etc.
 ***** Create a daemon while command and timerange and will ensure that command should be running in that timerange and vice verse
-***** define a function, so with task heading it will trigger a pre-define action like opening main file in :root directory and it should be able to be used in org agenda buffer also.
+***** define a function, so with task heading it will trigger a pre-define action like opening main file in :root directory and it should be usable in org agenda buffer also.
 ***** Implementation for clock table report with mail message like or/gnu bug report function do
 *** Obtrusive
 **** Window should be marked to reappear/popup when something started were done.
