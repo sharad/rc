@@ -106,6 +106,3 @@
 [submodule "gitsubmodules/utils/vcs/git/git-sync"]
 	path = gitsubmodules/utils/vcs/git/git-sync
 	url = https://github.com/simonthum/git-sync.git
-[submodule "gitsubmodules/utils/vcs/git/gitwatch"]
-	path = gitsubmodules/utils/vcs/git/gitwatch
-	url = https://github.com/gitwatch/gitwatch.git
