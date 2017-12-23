@@ -77,22 +77,31 @@ function main()
 
     setup_user_config_setup
 
+    echo Running setup_ssh_keys
     setup_ssh_keys "$SSH_KEY_DUMP"
 
+    echo Running setup_download_misc
     setup_download_misc
 
+    echo Running setup_dirs
     setup_dirs
 
+    echo Running setup_sourcecode_pro_font
     setup_sourcecode_pro_font
 
+    echo Running setup_spacemacs
     setup_spacemacs
 
+    echo Running setup_clib_installer
     setup_clib_installer
 
+    echo Running setup_clib_pkgs
     setup_clib_pkgs
 
+    echo Running setup_bpkg_installler
     setup_bpkg_installler
 
+    echo Running setup_bpkg_pkgs
     setup_bpkg_pkgs
 
     rm -rf $TMPDIR
@@ -488,13 +497,16 @@ function setup_sourcecode_pro_font()
     local FONT_NAME="SourceCodePro"
     local URL="https://github.com/adobe-fonts/source-code-pro/archive/1.017R.tar.gz"
 
-    mkdir /tmp/$FONT_NAME
-    cd /tmp/$FONT_NAME
-    wget $URL -O "`echo $FONT_NAME`.tar.gz"
-    tar --extract --gzip --file ${FONT_NAME}.tar.gz
-    sudo mkdir /usr/share/fonts/truetype/$FONT_NAME
-    sudo cp -rf /tmp/$FONT_NAME/. /usr/share/fonts/truetype/$FONT_NAME/.
-    fc-cache -f -v
+    if [ ! -d /usr/share/fonts/truetype/$FONT_NAME/ ]
+    then
+        mkdir /tmp/$FONT_NAME
+        cd /tmp/$FONT_NAME
+        wget $URL -O "`echo $FONT_NAME`.tar.gz"
+        tar --extract --gzip --file ${FONT_NAME}.tar.gz
+        sudo mkdir /usr/share/fonts/truetype/$FONT_NAME
+        sudo cp -rf /tmp/$FONT_NAME/. /usr/share/fonts/truetype/$FONT_NAME/.
+        fc-cache -f -v
+    fi
 }
 
 
