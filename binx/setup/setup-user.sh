@@ -506,6 +506,7 @@ function setup_clib_installer()
 
 function setup_clib_pkgs()
 {
+    :
 }
 
 function setup_bpkg_installler()
