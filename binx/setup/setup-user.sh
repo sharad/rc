@@ -52,8 +52,10 @@ function main()
 
     cd ~/
 
+    echo Running setup_apt_packages
     setup_apt_packages
 
+    echo Running setup_ecrypt_private
     setup_ecrypt_private
 
     if ! ssh-add -l
@@ -73,8 +75,10 @@ function main()
 	      exit -1
     fi
 
+    echo Running setup_git_repos
     setup_git_repos
 
+    echo Running setup_user_config_setup
     setup_user_config_setup
 
     echo Running setup_ssh_keys
@@ -286,7 +290,7 @@ function setup_ssh_keys()
 
     if ! ssh-add -l
     then
-	ssh-add ~/.osetup/nosecure.d/ssh/keys.d/github
+	      ssh-add ~/.osetup/nosecure.d/ssh/keys.d/github
     fi
 }
 
@@ -358,26 +362,26 @@ function setup_user_config_setup()
 {
     if [ -d ~/.repos/git/user/rc/_home/ ]
     then
-	if mkdir -p ~/_old_dot_filedirs
+	      if mkdir -p ~/_old_dot_filedirs
         then
-	    # mv ~/.setup/_home/.setup $TMPDIR/Xsetup
-	    cd ~/.repos/git/user/rc/_home/
-	    for c in .[a-zA-Z^.^..]* *
-	    do
+	          # mv ~/.setup/_home/.setup $TMPDIR/Xsetup
+	          cd ~/.repos/git/user/rc/_home/
+	          for c in .[a-zA-Z^.^..]* *
+	          do
                 echo considering $c
-	        if [ "$c" != ".repo" -a "$c" != "." -a "$c" != ".." ]
-	        then
-		    if [ -e ~/$c ]
-		    then
+	              if [ "$c" != ".repo" -a "$c" != "." -a "$c" != ".." ]
+	              then
+		                if [ -e ~/$c ]
+		                then
                         if [ ! -L ~/$c -o "$(readlink ~/$c)" != "$(readlink $c)" ]
                         then
                             if [ ! -L ~/$c ]
                             then
-		                echo mv ~/$c ~/_old_dot_filedirs
+		                            echo mv ~/$c ~/_old_dot_filedirs
                             fi
                             if [ ! -e ~/$c ]
                             then
-		                echo cp -af ~/.repos/git/user/rc/_home/$c ~/$c
+		                            echo cp -af ~/.repos/git/user/rc/_home/$c ~/$c
                                 exit -1
                             elif [ -L ~/$c ]
                             then
@@ -392,13 +396,13 @@ function setup_user_config_setup()
                     else
                         echo cp -af ~/.repos/git/user/rc/_home/$c ~/$c
                         echo done setting up $c
-		    fi
+		                fi
                 else
                     : echo not setting up $c
-	        fi
-	    done
-	    # mv $TMPDIR/Xsetup ~/.setup/_home/.setup
-	    cd -
+	              fi
+	          done
+	          # mv $TMPDIR/Xsetup ~/.setup/_home/.setup
+	          cd -
         fi
     fi
 }
@@ -407,9 +411,9 @@ function setup_download_misc()
 {
     if [ ! -f /usr/local/bin/p4 ]
     then
-	wget 'https://www.perforce.com/downloads/free/p4' -O $TMPDIR/p4
-	sudo cp $TMPDIR/p4 /usr/local/bin/p4
-	sudo chmod +x /usr/local/bin/p4
+	      wget 'https://www.perforce.com/downloads/free/p4' -O $TMPDIR/p4
+	      sudo cp $TMPDIR/p4 /usr/local/bin/p4
+	      sudo chmod +x /usr/local/bin/p4
     fi
 }
 
