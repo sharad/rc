@@ -542,7 +542,7 @@ function setup_bpkg_installler()
 {
     if [ ! -d /usr/local/stow/bpkg ]
     then
-        PREFIX=/usr/local/stow/bpkg clib install bpkg/bpkg -o /usr/local/stow/bpkg
+        sudo sh -c 'PREFIX=/usr/local/stow/bpkg clib install bpkg/bpkg -o /usr/local/stow/bpkg'
         cd /usr/local/stow && sudo stow bpkg
         cd -
     fi
