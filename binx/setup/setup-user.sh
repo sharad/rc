@@ -387,7 +387,8 @@ function setup_user_config_setup()
                             then
                                 echo rm -f ~/$c
                                 echo cp -af ~/.repos/git/user/rc/_home/$c ~/$c
-                                exit -1
+                                # exit -1
+                                continue
                             fi
                             echo done setting up $c
                         else
