@@ -11,7 +11,8 @@ APT_REPO_UTILS="ppa:yartsa/lvmeject"
 
 DEB_PKG_EMACS="elpa-magit elpa-magit-popup elpa-with-editor emacs-goodies-el enscript flim lm-sensors"
 DEB_PKG_NECESSARY_MORE1="xaos xnee xnee-doc xzgv yatex zsh-doc zutils"
-DEB_PKG_NECESSARY_MORE2="gnu-smalltalk-doc gnu-fdisk gnu-standards gnuit gnulib gnupg2 gnuplot-doc gvpe gtypist hello hello-traditional ht id-utils indent integrit jed latex-mk ledger libaws-doc "
+DEB_PKG_NECESSARY_MORE2="gnu-smalltalk-doc gnu-fdisk gnu-standards gnuit gnulib gnupg2 gnuplot-doc gvpe gtypist hello ht id-utils indent integrit jed latex-mk ledger libaws-doc "
+##  hello-traditional
 DEB_PKG_NECESSARY_MORE3="libcommoncpp2-doc libconfig-dev libsocket++-dev licenseutils lookup-el lyskom-server macchanger mboxgrep mew-beta mit-scheme-doc mmm-mode ocaml-doc oneliner-el org-mode-doc parted-doc pcb-common"
 DEB_PKG_NECESSARY_MORE4="pinfo psgml qingy r-doc-info r5rs-doc semi sepia sharutils slime source-highlight spell ssed stow rlwrap teseq time trueprint turnin-ng units vera wcalc wdiff wizzytex wysihtml-el"
 DEB_PKG_GAME="gnugo "
@@ -169,35 +170,35 @@ function setup_apt_packages()
     sudo apt update
 
     for pkg in \
-        "$DEB_PKG_NECESSARY" \
-        "$DEB_PKGS1" \
-        "$DEB_PKGS2" \
-        "$DEB_EXTRA_PKG1" \
-        "$DEB_EXTRA_PKG2" \
-        "$DEB_EXTRA_PKG3" \
-        "$DEB_EXTRA_SEC_PKG1" \
-        "$DEB_DEV_PKG1" \
-        "$DEB_EXTRA_PKG_FONTS" \
-        "$DEB_EXTRA_PKG_LISP" \
-        "$DEB_EXTRA_PKG_COMMUNICATION" \
-        "$DEB_EXTRA_PKG_VIRTUAL" \
-        "$DEB_EXTRA_PKG3_UTILS" \
-        "$DEB_PKG_APPEARANCE" \
-        "$DEB_PKG_VIRTURALMACHINE" \
-        "$DEB_PKG_SYSTEM" \
-        "$DEB_PKG_DEV" \
-        "$DEB_PKG_EMACS" \
-        "$DEB_PKG_TOOL_TEST" \
-        "$DEB_SYS_PKG1" \
-        "$DEB_PKGS_BACKUP" \
-        "$DEB_PKG_GAME" \
-        "$DEB_PKG_NECESSARY_MORE1" \
-        "$DEB_PKG_NECESSARY_MORE2" \
-        "$DEB_PKG_NECESSARY_MORE3" \
-        "$DEB_PKG_NECESSARY_MORE4"
+        "DEB_PKG_NECESSARY" \
+				"DEB_PKGS1" \
+				"DEB_PKGS2" \
+				"DEB_EXTRA_PKG1" \
+				"DEB_EXTRA_PKG2" \
+				"DEB_EXTRA_PKG3" \
+				"DEB_EXTRA_SEC_PKG1" \
+				"DEB_DEV_PKG1" \
+				"DEB_EXTRA_PKG_FONTS" \
+				"DEB_EXTRA_PKG_LISP" \
+				"DEB_EXTRA_PKG_COMMUNICATION" \
+				"DEB_EXTRA_PKG_VIRTUAL" \
+				"DEB_EXTRA_PKG3_UTILS" \
+				"DEB_PKG_APPEARANCE" \
+				"DEB_PKG_VIRTURALMACHINE" \
+				"DEB_PKG_SYSTEM" \
+				"DEB_PKG_DEV" \
+				"DEB_PKG_EMACS" \
+				"DEB_PKG_TOOL_TEST" \
+				"DEB_SYS_PKG1" \
+				"DEB_PKGS_BACKUP" \
+				"DEB_PKG_GAME" \
+				"DEB_PKG_NECESSARY_MORE1" \
+				"DEB_PKG_NECESSARY_MORE2" \
+				"DEB_PKG_NECESSARY_MORE3" \
+				"DEB_PKG_NECESSARY_MORE4"
 
     do
-        eval sudo apt -y install $pkg
+        eval sudo apt -y install \$$pkg
     done
 }
 
@@ -527,9 +528,24 @@ function setup_clib_installer()
             sudo make PREFIX=/usr/local/stow/clib/ install
             cd /usr/local/stow && sudo stow clib
             cd -
+            rm -rf $TMPDIR/clib
         fi
     else
         echo clib is already present. >&2
+    fi
+}
+
+function install_clib_pkg()
+{
+    local pkgfull="$1"
+    local pkg="$(basename $pkgfull)"
+    if [ ! -d /usr/local/stow/$pkg ]
+    then
+        sudo sh -c "PREFIX=/usr/local/stow/$pkg clib install $pkgfull -o /usr/local/stow/$pkg"
+        cd /usr/local/stow && sudo stow $pkg
+        cd -
+    else
+        echo $pkgfull is already present. >&2
     fi
 }
 
@@ -540,21 +556,28 @@ function setup_clib_pkgs()
 
 function setup_bpkg_installler()
 {
-    if [ ! -d /usr/local/stow/bpkg ]
+    install_clib_pkg bpkg/bpkg
+}
+
+function install_bpkg_pkg()
+{
+    local pkgfull="$1"
+    local pkg="$(basename $pkgfull)"
+    if [ ! -d /usr/local/stow/$pkg ]
     then
-        sudo sh -c 'PREFIX=/usr/local/stow/bpkg clib install bpkg/bpkg -o /usr/local/stow/bpkg'
-        cd /usr/local/stow && sudo stow bpkg
+        sudo mkdir -p "/usr/local/stow/$pkg/bin"
+        sudo sh -c "PREFIX=/usr/local/stow/$pkg bpkg install -g $pkgfull"
+        cd /usr/local/stow/ && sudo stow $pkg
         cd -
+    else
+        echo $pkgfull is already present. >&2
     fi
 }
 
 function setup_bpkg_pkgs()
 {
-    sudo sh -c 'PREFIX=/usr/local/stow/gitwatch bpkg install -g gitwatch'
-    cd /usr/local/stow/ && sudo stow gitwatch
-    cd -
+    install_bpkg_pkg nevik/gitwatch
 }
-
 
 main
 
