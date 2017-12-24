@@ -11,21 +11,18 @@ APT_REPO_UTILS="ppa:yartsa/lvmeject"
 
 DEB_PKG_EMACS="elpa-magit elpa-magit-popup elpa-with-editor emacs-goodies-el enscript flim lm-sensors"
 DEB_PKG_NECESSARY_MORE1="xaos xnee xnee-doc xzgv yatex zsh-doc zutils"
-DEB_PKG_NECESSARY_MORE2="gnu-smalltalk-doc gnu-fdisk gnu-standards gnuit gnulib gnupg2 gnuplot-doc gvpe gtypist hello ht id-utils indent integrit jed latex-mk ledger libaws-doc "
+DEB_PKG_NECESSARY_MORE2="gnu-smalltalk-doc gnu-fdisk gnu-standards gnuit gnulib gnupg2 gnuplot-doc gvpe gtypist hello ht id-utils indent integrit jed latex-mk ledger libaws-doc"
 ##  hello-traditional
 DEB_PKG_NECESSARY_MORE3="libcommoncpp2-doc libconfig-dev libsocket++-dev licenseutils lookup-el lyskom-server macchanger mboxgrep mew-beta mit-scheme-doc mmm-mode ocaml-doc oneliner-el org-mode-doc parted-doc pcb-common"
 DEB_PKG_NECESSARY_MORE4="pinfo psgml qingy r-doc-info r5rs-doc semi sepia sharutils slime source-highlight spell ssed stow rlwrap teseq time trueprint turnin-ng units vera wcalc wdiff wizzytex wysihtml-el"
-DEB_PKG_GAME="gnugo "
-
+DEB_PKG_GAME="gnugo"
 DEB_PKGS_BACKUP="bup git-annex tahoe-lafs unison unison-all"
-
 DEB_PKG_NECESSARY="git ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server rcs apt-src jargon cutils complexity-doc dejagnu diffutils edb extract festival ffe gccintro gddrescue geda-doc genparse"
 DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev console-data gnome-session gnome-settings-daemon gnome-panel"
 DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp"
-
 DEB_PKGS1="vim emacs emacs-goodies-el org-mode develock-el dash-el s-el zile keychain undistract-me"
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el p7zip-full pdftk golang gocode"
-DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip "
+DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip"
 DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skypeweb purple-skypeweb telegram-purple tor"
 DEB_EXTRA_PKG_VIRTUAL=""
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera texlive-latex-extra texlive-fonts-recommended"
@@ -35,13 +32,9 @@ DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macch
 DEB_EXTRA_SEC_PKG1="systemd-ui " # policykit-1 policykit-1-gnome
 DEB_DEV_PKG1="python-pip silversearcher-ag silversearcher-ag-el s-el ack-grep doxygen doxymacs"
 DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject adcli"
-
 DEB_PKG_DEV="valgrind"
-
 DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools pavucontrol redshift"
-
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer"
-
 DEB_SYS_PKG1="duc baobab"
 
 
@@ -127,7 +120,7 @@ function setup_apt_repo()
     if [ -r /etc/os-release ]
     then
         . /etc/os-release
-        if [ $ID = ubuntu ]
+        if [ ubuntu = $ID ]
         then
             read _ UBUNTU_VERSION_NAME <<< "$VERSION"
             echo "Running Ubuntu $UBUNTU_VERSION_NAME"
@@ -196,7 +189,6 @@ function setup_apt_packages()
 				"DEB_PKG_NECESSARY_MORE2" \
 				"DEB_PKG_NECESSARY_MORE3" \
 				"DEB_PKG_NECESSARY_MORE4"
-
     do
         eval sudo apt -y install \$$pkg
     done
