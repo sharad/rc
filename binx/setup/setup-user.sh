@@ -36,6 +36,8 @@ DEB_PKG_DEV="valgrind"
 DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools pavucontrol redshift"
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer"
 DEB_SYS_PKG1="duc baobab"
+DEB_SYS_MAIL="dovecot-core dovecot-imapd ntpdate postfix"
+
 
 
 function main()
@@ -86,6 +88,9 @@ function main()
 
     echo Running setup_sourcecode_pro_font
     setup_sourcecode_pro_font
+
+    echo Running setup_mail
+    setup_mail
 
     echo Running setup_spacemacs
     setup_spacemacs
@@ -438,7 +443,22 @@ function setup_public_html()
 
 function setup_mail()
 {
-    :
+    sudo apt -y install dovecot-core dovecot-imapd ntpdate postfix
+    if [ ! -d /etc/postfix-ORG ]
+    then
+        cp -ar /etc/postfix /etc/postfix-ORG
+        for f in ~/.system/ubuntu/etc/postfix/*
+        do
+            b=$(basename $f)
+            cp $f /etc/postfix/%b
+        done
+    fi
+
+    if [ ! -d /etc/dovecot-ORG ]
+    then
+        cp -ar /etc/dovecot /etc/dovecot-ORG
+        cp ~/.system/ubuntu/etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
+    fi
 }
 
 function setup_dirs()
