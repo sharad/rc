@@ -23,7 +23,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-26 Tue 21:45]
+   CLOCK: [2017-12-26 Tue 21:45]--[2017-12-26 Tue 23:58] =>  2:13
    - Note taken on [2017-12-26 Tue 21:05] \\
      Yes at least one thing got fixed about on change log note basically here timeout
      time required to be greater than the lunching functions own timeout, otherwise
