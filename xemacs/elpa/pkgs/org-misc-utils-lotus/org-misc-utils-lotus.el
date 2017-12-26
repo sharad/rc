@@ -118,7 +118,7 @@
   (lexical-let ((temp-win-config (make-symbol "test-org-with-timed-new-win-config")))
     `(lexical-let* ((,temp-win-config (current-window-configuration))
                     (,cleanupfn-newwin #'(lambda (w localfn)
-                                           ;; (message "triggered timer for newwin %s" w)
+                                           ;; (message "cleaning up newwin and triggered timer for newwin %s" w)
                                            (when localfn (funcall localfn))
                                            (when (active-minibuffer-window)
                                              (abort-recursive-edit))
@@ -132,12 +132,11 @@
                                                      ,cleanupfn-newwin
                                                      ,newwin
                                                      ,cleanupfn-local)))
-           (message "started timer %s" ,timer)
            (condition-case err
                (progn
-                 ;; (select-window ,newwin 'norecord) ;alread done by org-with-new-win macro
                  ,@body)
-             ((quit) (funcall ,cleanupfn-newwin ,newwin ,cleanupfn-local))))))))
+             ((quit)
+              (funcall ,cleanupfn-newwin ,newwin ,cleanupfn-local))))))))
 (put 'org-with-timed-new-win 'lisp-indent-function 1)
 
 ;; TODO: newwin clean should be done here

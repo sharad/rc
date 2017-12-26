@@ -107,7 +107,7 @@
 
 (progn                                  ;new
 
-  (defun org-add-log-note-background (&optional _purpose)
+  (defun org-add-log-note-background (win-timeout &optional _purpose)
     "Pop up a window for taking a note, and add this note later."
     ;; (remove-hook 'post-command-hook 'org-add-log-note-background)
     ;; (setq org-log-note-window-configuration (current-window-configuration))
@@ -118,9 +118,11 @@
       (progn                            ;could schedule in little further.
         (message "add-log-note-background: minibuffer already active quitting")
         (message nil))
-      (let ((cleanupfn-local nil))
+      (let ((win-timeout (or win-timeout 17))
+            (cleanupfn-local nil))
+        (setq org-log-note-window-configuration (current-window-configuration))
         (org-with-timed-new-win
-            3 timer cleanupfn-newwin cleanupfn-local win
+            win-timeout timer cleanupfn-newwin cleanupfn-local win
             (condition-case err
                 (let ((target-buffer (get-buffer-create "*Org Note*")))
 
@@ -129,7 +131,7 @@
                   ;; (org-switch-to-buffer-other-window "*Org Note*")
 
                   (switch-to-buffer target-buffer 'norecord)
-                  (set-buffer target-buffer)
+                  ;; (set-buffer target-buffer)
                   (erase-buffer)
 
                   (if (memq org-log-note-how '(time state))
@@ -162,23 +164,24 @@
                       (run-hooks 'org-log-buffer-setup-hook)))
               ((quit)
                (progn
-                 (funcall cleanup win local-cleanup)
+                 (funcall cleanupfn-newwin win cleanupfn-local)
                  (if timer (cancel-timer timer))
                  (signal (car err) (cdr err)))))))))
 
-  (defun org-add-log-setup-background (&optional purpose state prev-state how extra)
+  (defun org-add-log-setup-background (win-timeout &optional purpose state prev-state how extra)
     "Set up the post command hook to take a note.
 If this is about to TODO state change, the new state is expected in STATE.
 HOW is an indicator what kind of note should be created.
 EXTRA is additional text that will be inserted into the notes buffer."
-    (move-marker org-log-note-marker (point))
-    (setq org-log-note-purpose purpose
-          org-log-note-state state
-          org-log-note-previous-state prev-state
-          org-log-note-how how
-          org-log-note-extra extra
-          org-log-note-effective-time (org-current-effective-time))
-    (org-add-log-note-background)
+    (let ((win-timeout (or win-timeout 17)))
+      (move-marker org-log-note-marker (point))
+      (setq org-log-note-purpose purpose
+            org-log-note-state state
+            org-log-note-previous-state prev-state
+            org-log-note-how how
+            org-log-note-extra extra
+            org-log-note-effective-time (org-current-effective-time)))
+    (org-add-log-note-background  win-timeout)
     ;; (add-hook 'post-command-hook 'org-add-log-note-background 'append)
     ))
 
@@ -192,14 +195,15 @@ EXTRA is additional text that will be inserted into the notes buffer."
 ;;         (concat "# Task: " (org-get-heading t) "\n\n")))
 ;;       (if fail-quietly (throw 'exit t) (user-error "No active clock"))))
 
-(defun org-clock-lotus-log-note-current-clock-background (&optional fail-quietly)
+(defun org-clock-lotus-log-note-current-clock-background (win-timeout &optional fail-quietly)
   (interactive)
-  (when (org-clocking-p)
-    (move-marker org-log-note-return-to (point))
-    (org-clock-lotus-with-current-clock
-       (org-add-log-setup-background
-        'note nil nil nil
-        (concat "# Task: " (org-get-heading t) "\n\n")))))
+  (let ((win-timeout  (or win-timeout  17)))
+    (when (org-clocking-p)
+      (move-marker org-log-note-return-to (point))
+      (org-clock-lotus-with-current-clock
+          (org-add-log-setup-background win-timeout
+                                        'note nil nil nil
+                                        (concat "# Task: " (org-get-heading t) "\n\n"))))))
 
 
 (defun lotus-buffer-changes-count ()
@@ -222,10 +226,11 @@ EXTRA is additional text that will be inserted into the notes buffer."
   (add-to-list 'session-locals-include 'lotus-last-buffer-undo-tree-count))
 (make-variable-buffer-local 'lotus-last-buffer-undo-tree-count)
 
-(defun lotus-action-on-buffer-undo-tree-change (action &optional minimal-changes)
-  (let ((chgcount (- (lotus-buffer-changes-count) lotus-last-buffer-undo-tree-count)))
+(defun lotus-action-on-buffer-undo-tree-change (action &optional minimal-changes win-timeout)
+  (let ((win-timeout (or win-timeout 17))
+        (chgcount (- (lotus-buffer-changes-count) lotus-last-buffer-undo-tree-count)))
     (if (>= chgcount minimal-changes)
-        (if (funcall action)
+        (if (funcall action win-timeout)
             (setq lotus-last-buffer-undo-tree-count chgcount))
         (when nil
          (message "buffer-undo-tree-change: only %d changes not more than %d" chgcount minimal-changes)))))
@@ -237,7 +242,7 @@ EXTRA is additional text that will be inserted into the notes buffer."
 (when (featurep 'session)
   (add-to-list 'session-locals-include 'lotus-last-buffer-undo-list-pos))
 ;;;###autoload
-(defun lotus-action-on-buffer-undo-list-change (action &optional minimal-char-changes)
+(defun lotus-action-on-buffer-undo-list-change (action &optional minimal-char-changes win-timeout)
   "Set point to the position of the last change.
 Consecutive calls set point to the position of the previous change.
 With a prefix arg (optional arg MARK-POINT non-nil), set mark so \
@@ -246,64 +251,72 @@ will return point to the current position."
   ;; (interactive "P")
   ;; (unless (buffer-modified-p)
   ;;   (error "Buffer not modified"))
-  (when (eq buffer-undo-list t)
-    (error "No undo information in this buffer"))
-  ;; (when mark-point (push-mark))
-  (unless minimal-char-changes
-    (setq minimal-char-changes 10))
-  (let ((char-changes 0)
-        (undo-list (if lotus-last-buffer-undo-list-pos
-                       (cdr (memq lotus-last-buffer-undo-list-pos buffer-undo-list))
-                       buffer-undo-list))
-        undo)
-    (while (and undo-list
-                (car undo-list)
-                (< char-changes minimal-char-changes))
-      (setq undo (car undo-list))
+  (let ((win-timeout (or win-timeout 17)))
+    (when (eq buffer-undo-list t)
+      (error "No undo information in this buffer"))
+    ;; (when mark-point (push-mark))
+    (unless minimal-char-changes
+      (setq minimal-char-changes 10))
+    (let ((char-changes 0)
+          (undo-list (if lotus-last-buffer-undo-list-pos
+                         (cdr (memq lotus-last-buffer-undo-list-pos buffer-undo-list))
+                         buffer-undo-list))
+          undo)
+      (while (and undo-list
+                  (car undo-list)
+                  (< char-changes minimal-char-changes))
+        (setq undo (car undo-list))
+        (cond
+          ((and (consp undo) (integerp (car undo)) (integerp (cdr undo)))
+           ;; (BEG . END)
+           (setq char-changes (+ char-changes (abs (- (car undo) (cdr undo))))))
+          ((and (consp undo) (stringp (car undo))) ; (TEXT . POSITION)
+           (setq char-changes (+ char-changes (length (car undo)))))
+          ((and (consp undo) (eq (car undo) t))) ; (t HIGH . LOW)
+          ((and (consp undo) (null (car undo)))
+           ;; (nil PROPERTY VALUE BEG . END)
+           ;; (setq position (cdr (last undo)))
+           )
+          ((and (consp undo) (markerp (car undo)))) ; (MARKER . DISTANCE)
+          ((integerp undo))		; POSITION
+          ((null undo))		; nil
+          (t (error "Invalid undo entry: %s" undo)))
+        (setq undo-list (cdr undo-list)))
+
       (cond
-        ((and (consp undo) (integerp (car undo)) (integerp (cdr undo)))
-         ;; (BEG . END)
-         (setq char-changes (+ char-changes (abs (- (car undo) (cdr undo))))))
-        ((and (consp undo) (stringp (car undo))) ; (TEXT . POSITION)
-         (setq char-changes (+ char-changes (length (car undo)))))
-        ((and (consp undo) (eq (car undo) t))) ; (t HIGH . LOW)
-        ((and (consp undo) (null (car undo)))
-         ;; (nil PROPERTY VALUE BEG . END)
-         ;; (setq position (cdr (last undo)))
-         )
-        ((and (consp undo) (markerp (car undo)))) ; (MARKER . DISTANCE)
-        ((integerp undo))		; POSITION
-        ((null undo))		; nil
-        (t (error "Invalid undo entry: %s" undo)))
-      (setq undo-list (cdr undo-list)))
-
-    (cond
-      ((>= char-changes minimal-char-changes)
-       (if (funcall action)
-           (setq lotus-last-buffer-undo-list-pos undo)))
-      (t ))))
-(defun org-clock-lotus-log-note-on-change ()
+        ((>= char-changes minimal-char-changes)
+         (if (funcall action win-timeout)
+             (setq lotus-last-buffer-undo-list-pos undo)))
+        (t )))))
+(defun org-clock-lotus-log-note-on-change (&optional win-timeout)
   ;; (when (or t (eq buffer (current-buffer)))
-  (if (and
-       (consp buffer-undo-list)
-       (car buffer-undo-list))
-      (lotus-action-on-buffer-undo-list-change #'org-clock-lotus-log-note-current-clock-background  lotus-minimum-char-changes)
-      (lotus-action-on-buffer-undo-tree-change  #'org-clock-lotus-log-note-current-clock-background lotus-minimum-changes)))
+  (let ((win-timeout (or win-timeout 17)))
+    (if (and
+         (consp buffer-undo-list)
+         (car buffer-undo-list))
+        (lotus-action-on-buffer-undo-list-change #'org-clock-lotus-log-note-current-clock-background  lotus-minimum-char-changes win-timeout)
+        (lotus-action-on-buffer-undo-tree-change  #'org-clock-lotus-log-note-current-clock-background lotus-minimum-changes win-timeout))))
 
-(defvar org-clock-lotus-log-note-on-change-timer nil)
+(defvar org-clock-lotus-log-note-on-change-timer nil
+  "Time for on change log note.")
 
 
 ;; (unintern 'org-clock-lotus-log-note-on-change-timer)
 
 ;;;###autoload
-(defun org-clock-lotus-log-note-on-change-start-timer ()
+(defun org-clock-lotus-log-note-on-change-start-timer (&optional idle-timeout win-timeout)
   (interactive)
-  (if org-clock-lotus-log-note-on-change-timer
-      (progn
-        (cancel-timer org-clock-lotus-log-note-on-change-timer)
-        (setq org-clock-lotus-log-note-on-change-timer nil)))
-  (setq
-   org-clock-lotus-log-note-on-change-timer (run-with-idle-timer 10 10 'org-clock-lotus-log-note-on-change)))
+  (let ((idle-timeout (or idle-timeout 10))
+        (win-timeout (or win-timeout 7)))
+    (if org-clock-lotus-log-note-on-change-timer
+        (progn
+          (cancel-timer org-clock-lotus-log-note-on-change-timer)
+          (setq org-clock-lotus-log-note-on-change-timer nil)))
+    (setq
+     org-clock-lotus-log-note-on-change-timer (run-with-idle-timer
+                                               idle-timeout
+                                               idle-timeout
+                                               #'org-clock-lotus-log-note-on-change (+ idle-timeout win-timeout)))))
 
 ;;;###autoload
 (defun org-clock-lotus-log-note-on-change-stop-timer ()
@@ -317,7 +330,7 @@ will return point to the current position."
 (defun org-clock-lotus-log-note-on-change-insinuate ()
   (interactive)
   ;; message-send-mail-hook
-  (org-clock-lotus-log-note-on-change-start-timer))
+  (org-clock-lotus-log-note-on-change-start-timer 10 7))
 
 ;;;###autoload
 (defun org-clock-lotus-log-note-on-change-uninsinuate ()
