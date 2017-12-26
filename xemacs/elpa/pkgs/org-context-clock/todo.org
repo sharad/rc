@@ -23,12 +23,12 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-12-26 Tue 21:45]
    - Note taken on [2017-12-26 Tue 21:05] \\
      Yes at least one thing got fixed about on change log note basically here timeout
      time required to be greater than the lunching functions own timeout, otherwise
      the timeout function of onchange new timed window also get trigger which result
      into cleanup of new-win.
-   CLOCK: [2017-12-26 Tue 20:42]
    CLOCK: [2017-12-26 Tue 17:46]--[2017-12-26 Tue 18:27] =>  0:41
    CLOCK: [2017-12-24 Sun 01:03]--[2017-12-24 Sun 04:10] =>  3:07
    CLOCK: [2017-12-23 Sat 17:31]--[2017-12-23 Sat 18:48] =>  1:17
