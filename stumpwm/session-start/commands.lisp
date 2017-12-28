@@ -656,10 +656,13 @@
   (run-shell-command "reb00t"))
 
 (defcommand start-wm-components () ()
-  (run-shell-command
-   (concat
-    (getenv "HOME")
-    "/.rsetup/wmlogin/run")))
+ (message "started start-wm-components")
+ (prog1
+     (run-shell-command
+      (concat
+       (getenv "HOME")
+       "/.rsetup/wmlogin/run"))
+   (message "done start-wm-components")))
 
 (defcommand bye () ()
 #+pa

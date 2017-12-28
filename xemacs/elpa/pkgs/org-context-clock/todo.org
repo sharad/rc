@@ -23,6 +23,9 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2017-12-28 Thu 22:52]
+   - Note taken on [2017-12-28 Thu 22:25] \\
+     doing something
    CLOCK: [2017-12-26 Tue 21:45]--[2017-12-26 Tue 23:58] =>  2:13
    - Note taken on [2017-12-26 Tue 21:05] \\
      Yes at least one thing got fixed about on change log note basically here timeout

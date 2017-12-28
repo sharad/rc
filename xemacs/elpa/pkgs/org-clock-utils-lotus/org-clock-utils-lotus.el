@@ -388,5 +388,64 @@ using three `C-u' prefix arguments."
     ))
 
 
+;; https://emacs.stackexchange.com/questions/3970/org-mode-warning-when-scheduling-task-on-top-of-another-task
+(defun check-availability (&optional date)
+  "Doc-string."
+  (interactive)
+  (let* (
+         not-available
+         (date (if date date (read-string "Date:  ")))
+         (date-parsed (parse-time-string date))
+         (date-time
+          (cond
+            ((and
+              (not (null (nth 0 date-parsed)))
+              (not (null (nth 1 date-parsed)))
+              (not (null (nth 2 date-parsed))))
+             (date-to-time date))
+            ((and
+              (null (nth 0 date-parsed))
+              (null (nth 1 date-parsed))
+              (null (nth 2 date-parsed)))
+             (date-to-time (concat date " 00:00")))))
+         (date-seconds (time-to-seconds date-time)) )
+    (with-current-buffer (get-buffer ".todo")
+      (save-excursion
+        (goto-char (point-max))
+        (catch 'found
+          (while (re-search-backward "\\* \\(TODO\\|WORK\\|DONE\\)" nil t)
+            (unless (org-at-heading-p)
+              (org-back-to-heading t))
+            (let* (
+                   (element (org-element-at-point))
+                   (deadline (org-element-property :deadline element))
+                   (deadline-seconds
+                    (when deadline
+                      (time-to-seconds
+                       (org-time-string-to-time
+                        (org-element-property :raw-value deadline)))))
+                   (scheduled (org-element-property :scheduled element))
+                   (scheduled-seconds
+                    (when scheduled
+                      (time-to-seconds
+                       (org-time-string-to-time
+                        (org-element-property :raw-value scheduled))))) )
+              (when
+                  (or
+                   (and
+                    deadline-seconds
+                    (= date-seconds deadline-seconds))
+                   (and
+                    scheduled-seconds
+                    (= date-seconds scheduled-seconds)))
+                (setq not-available t)
+                (throw 'found (message "Not Available!")))))))
+      (unless not-available
+        (message "Congratulations -- you are available!")))))
+
+(defune org-clock-make-child-task-and-clock-in ()
+  )
+
+
 (provide 'org-clock-utils-lotus)
 ;;; org-clock-utils-lotus.el ends here

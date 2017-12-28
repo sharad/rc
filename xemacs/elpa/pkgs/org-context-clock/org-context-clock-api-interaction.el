@@ -123,7 +123,9 @@
                              (local-cleanup
                               #'(lambda ()
                                   (save-excursion ;what to do here
-                                    (org-flag-proprty-drawer-at-marker marker t)))))
+                                    (org-flag-proprty-drawer-at-marker marker t))
+                                  (when (active-minibuffer-window) ;required here, this function itself using minibuffer via helm-refile and org-context-clock-select-propetry
+                                    (abort-recursive-edit)))))
 
                 (set-marker marker (point))
 

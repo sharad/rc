@@ -120,8 +120,8 @@
                     (,cleanupfn-newwin #'(lambda (w localfn)
                                            ;; (message "cleaning up newwin and triggered timer for newwin %s" w)
                                            (when localfn (funcall localfn))
-                                           (when (active-minibuffer-window) ;not required here. it is just creating timed new-win
-                                             (abort-recursive-edit))
+                                           ;; (when (active-minibuffer-window) ;not required here. it is just creating timed new-win
+                                           ;;   (abort-recursive-edit))
                                            (when (and w (windowp w) (window-valid-p w))
                                              (delete-window w))
                                            (when ,temp-win-config
