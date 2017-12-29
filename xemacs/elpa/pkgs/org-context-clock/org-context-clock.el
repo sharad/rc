@@ -133,14 +133,14 @@
                *org-context-clock-task-current-context*  context)
 
               (if (> (org-context-clock-current-task-associated-to-context-p context) 0)
-                  (org-context-clock-debug "org-context-clock-update-current-context: Current task already associate to %s" context)
+                  (org-context-clock-debug :debug "org-context-clock-update-current-context: Current task already associate to %s" context)
                   (progn
-                    (org-context-clock-debug "org-context-clock-update-current-context: Now really going to clock.")
+                    (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really going to clock.")
                     (org-context-clock-task-run-associated-clock context)
-                    (org-context-clock-debug "org-context-clock-update-current-context: Now really clock done."))))
+                    (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really clock done."))))
 
-            (org-context-clock-debug "org-context-clock-update-current-context: context %s not suitable to associate" context)))
-      (org-context-clock-debug "org-context-clock-update-current-context: not enough time passed.")))
+            (org-context-clock-debug :debug "org-context-clock-update-current-context: context %s not suitable to associate" context)))
+      (org-context-clock-debug :debug "org-context-clock-update-current-context: not enough time passed.")))
 
 
 (defun org-context-clock-update-current-context-x ()
@@ -187,6 +187,30 @@
   (let ((task (org-context-clock-task-current-task)))
     (org-context-clock-task-associated-to-context-p task context)))
 
+(defun org-context-clock-clockin-marker (selected-marker)
+  (message "org-context-clock-clockin-marker %s" selected-marker)
+  (let ((org-log-note-clock-out nil)
+        (prev-org-clock-buff (marker-buffer org-clock-marker)))
+    (message "clocking in %s" selected-marker)
+    (let ((prev-clock-buff-read-only
+           (if prev-org-clock-buff
+               (with-current-buffer (marker-buffer org-clock-marker)
+                 buffer-read-only))))
+
+      (if prev-org-clock-buff
+          (with-current-buffer prev-org-clock-buff
+            (setq buffer-read-only nil)))
+
+      (setq *org-context-clock-update-current-context-msg* org-clock-marker)
+
+      (with-current-buffer (marker-buffer selected-marker)
+        (let ((buffer-read-only nil))
+          (org-clock-clock-in (list selected-marker))))
+
+      (if prev-org-clock-buff
+          (with-current-buffer prev-org-clock-buff
+            (setq buffer-read-only prev-clock-buff-read-only))))))
+
 ;;;###autoload
 (defun org-context-clock-task-run-associated-clock (context)
   (interactive
@@ -196,38 +220,42 @@
             (remove-if-not
              #'(lambda (marker) (marker-buffer marker))
              (org-context-clock-markers-associated-to-context context)))
-           (selected-clocks (if (> (length matched-clocks) 1)
-                               (org-context-clock-select-task-from-clocks matched-clocks)
-                               (car matched-clocks))))
-      (if selected-clocks
-          (let ((org-log-note-clock-out nil)
-                (prev-org-clock-buff (marker-buffer org-clock-marker)))
+           (selected-clock ))
+      (if matched-clocks
+          (if (> (length matched-clocks) 1)
+              (if nil
+                  (org-context-clock-clockin-marker (org-context-clock-select-task-from-clocks matched-clocks))
+                  (sacha/helm-org-refile-read-location matched-clocks #'org-context-clock-clockin-marker))
+              (org-context-clock-clockin-marker (car matched-clocks)))
+          ;; (org-context-clock-clockin-marker selected-clock)
+          ;; (let ((org-log-note-clock-out nil)
+          ;;       (prev-org-clock-buff (marker-buffer org-clock-marker)))
 
-            (let ((prev-clock-buff-read-only
-                   (if prev-org-clock-buff
-                       (with-current-buffer (marker-buffer org-clock-marker)
-                         buffer-read-only))))
+          ;;   (let ((prev-clock-buff-read-only
+          ;;          (if prev-org-clock-buff
+          ;;              (with-current-buffer (marker-buffer org-clock-marker)
+          ;;                buffer-read-only))))
 
-              (if prev-org-clock-buff
-                  (with-current-buffer prev-org-clock-buff
-                    (setq buffer-read-only nil)))
+          ;;     (if prev-org-clock-buff
+          ;;         (with-current-buffer prev-org-clock-buff
+          ;;           (setq buffer-read-only nil)))
 
-              (setq *org-context-clock-update-current-context-msg* org-clock-marker)
+          ;;     (setq *org-context-clock-update-current-context-msg* org-clock-marker)
 
-              (with-current-buffer (marker-buffer selected-clocks)
-                (let ((buffer-read-only nil))
-                  (org-clock-clock-in (list selected-clocks))))
+          ;;     (with-current-buffer (marker-buffer selected-clock)
+          ;;       (let ((buffer-read-only nil))
+          ;;         (org-clock-clock-in (list selected-clock))))
 
-              (if prev-org-clock-buff
-                  (with-current-buffer prev-org-clock-buff
-                    (setq buffer-read-only prev-clock-buff-read-only)))))
+          ;;     (if prev-org-clock-buff
+          ;;         (with-current-buffer prev-org-clock-buff
+          ;;           (setq buffer-read-only prev-clock-buff-read-only)))))
           (progn
             (setq *org-context-clock-update-current-context-msg* "null clock")
             (org-context-clock-message 6
              "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
                      context)
             (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
-             (org-context-clock-add-context-to-org-heading-when-idle context 17)))))))
+              (org-context-clock-add-context-to-org-heading-when-idle context 17)))))))
 
 ;;;###autoload
 (defun org-context-clock-run-task-current-context-timer ()
@@ -311,21 +339,82 @@ pointing to it."
             ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
             (t (user-error "Invalid task choice %c" rpl)))))))
 
+
+(defun sacha-org-context-clock-selection-line (marker)
+  "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the marker
+pointing to it."
+  (when (marker-buffer marker)
+    (let (cat task heading prefix)
+      (with-current-buffer (org-base-buffer (marker-buffer marker))
+        (org-with-wide-buffer
+         (ignore-errors
+           (goto-char marker)
+           (setq cat (org-get-category)
+                 heading (org-get-heading 'notags)
+                 prefix (save-excursion
+                          (org-back-to-heading t)
+                          (looking-at org-outline-regexp)
+                          (match-string 0))
+                 task (substring
+                       (org-fontify-like-in-org-mode
+                        (concat prefix heading)
+                        org-odd-levels-only)
+                       (length prefix))))))
+      (when (and cat task)
+        ;; (insert (format "[%c] %-12s  %s\n" i cat task))
+        ;; marker
+        (cons task marker)))))
+
+(defun sacha/helm-org-refile-read-location (clocks clockin-fn)
+  (message "sacha marker %s" (car clocks))
+  ;; (setq sacha/helm-org-refile-locations tbl)
+  (progn
+    (helm
+     (list
+      (helm-build-sync-source "Select matching clock"
+        :candidates (mapcar 'sacha-org-context-clock-selection-line clocks)
+        :action (list ;; (cons "Select" 'identity)
+                      (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
+        :history 'org-refile-history)
+      ;; (helm-build-dummy-source "Create task"
+      ;;   :action (helm-make-actions
+      ;;            "Create task"
+      ;;            'sacha/helm-org-create-task))
+      ))))
+;; org-context-clock-task-run-associated-clock
+
+;; (sacha/helm-org-refile-read-location (org-context-clock-markers-associated-to-context (org-context-clock-build-context)))
+;; (sacha/helm-org-refile-read-location (org-context-clock-markers-associated-to-context (org-context-clock-build-context (find-file-noselect "~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.el"))))
+
 ;;;###autoload
 (defun org-context-clock-insinuate ()
   (interactive)
   (progn
     (add-hook 'buffer-list-update-hook     'org-context-clock-run-task-current-context-timer)
     (add-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
-    (add-hook 'elscreen-goto-hook          'org-context-clock-run-task-current-context-timer)))
+    (add-hook 'elscreen-goto-hook          'org-context-clock-run-task-current-context-timer))
+
+  (dolist (prop (org-context-clock-keys-with-operation :getter))
+    (let ((propstr
+           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
+      (unless (member propstr org-use-property-inheritance)
+        (push propstr org-use-property-inheritance)))))
 
 ;;;###autoload
 (defun org-context-clock-uninsinuate ()
   (interactive)
-  (remove-hook 'buffer-list-update-hook 'org-context-clock-run-task-current-context-timer)
-  (setq buffer-list-update-hook nil)
-  (remove-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
-  (remove-hook 'elscreen-goto-hook 'org-context-clock-run-task-current-context-timer))
+  (progn
+    (remove-hook 'buffer-list-update-hook 'org-context-clock-run-task-current-context-timer)
+    ;; (setq buffer-list-update-hook nil)
+    (remove-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
+    (remove-hook 'elscreen-goto-hook 'org-context-clock-run-task-current-context-timer))
+
+  (dolist (prop (org-context-clock-keys-with-operation :getter))
+    (let ((propstr
+           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
+      (unless (member propstr org-use-property-inheritance)
+        (delete propstr org-use-property-inheritance)))))
 
 
 (progn ;; "Org task clock reporting"
@@ -414,6 +503,23 @@ pointing to it."
 
   (org-context-clock-markers-associated-to-context (org-context-clock-build-context))
 
+  ;; test it
+  (length
+   (funcall org-context-clock-api-tasks-associated-to-context (org-context-clock-build-context)))
+
+  (org-context-clock-task-get-property
+   (car (funcall org-context-clock-api-tasks-associated-to-context (org-context-clock-build-context)))
+   :task-clock-marker)
+
+  (org-context-clock-clockin-marker
+   (org-context-clock-task-get-property
+    (car (funcall org-context-clock-api-tasks-associated-to-context (org-context-clock-build-context)))
+    :task-clock-marker))
+
+  (org-context-clock-task-associated-to-context-by-keys-p
+   (car (funcall org-context-clock-api-tasks-associated-to-context (org-context-clock-build-context)))
+   (org-context-clock-build-context))
+
   (length
    (funcall org-context-clock-api-tasks-associated-to-context
             (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"))))
@@ -432,8 +538,7 @@ pointing to it."
 
   ;; (org-context-clock-task-associated-to-context-by-keys "/home/s/paradise/releases/global/patch-upgrade/Makefile")
 
-  (if (org-context-clock-current-task-associated-to-context-p
-       (org-context-clock-build-context))
+  (if (org-context-clock-current-task-associated-to-context-p (org-context-clock-build-context))
       (message "current clock is with current context or file")))
 
 (provide 'org-context-clock)

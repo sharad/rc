@@ -64,7 +64,7 @@
 (defun org-context-clock-keys-with-operation (operation)
   (remove-if-not
    #'(lambda (key)
-       (message "%s: %s" key operation)
+       ;; (message "%s: %s" key operation)
        (org-context-clock-key-fun key operation))
    (mapcar 'car org-context-clock-key-operation-functions)))
 
@@ -79,13 +79,13 @@
                    rank
                    context
                    (org-context-clock-task-get-heading task)))
-          (org-context-clock-debug "org-context-clock-tasks-associated-key-fn-value: task %s key %s MATCHED %d rank"
+          (org-context-clock-debug :debug "org-context-clock-tasks-associated-key-fn-value: task %s key %s MATCHED %d rank"
                                    (org-context-clock-task-get-heading task)
                                    key
                                    rank)
           rank)
         (progn
-          (org-context-clock-debug "org-context-clock-tasks-associated-key-fn-value: task %s key %s kyfn is %s so how can match %d rank"
+          (org-context-clock-debug :debug "org-context-clock-tasks-associated-key-fn-value: task %s key %s kyfn is %s so how can match %d rank"
                                    (org-context-clock-task-get-heading task)
                                    key
                                    keyfn

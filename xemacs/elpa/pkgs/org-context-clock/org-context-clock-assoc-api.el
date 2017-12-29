@@ -48,15 +48,15 @@
   (associator
    "Predicate funtion to check if context matches to task's file attribute."
    (let* ((root
-           (org-context-clock-task-get-property task :ROOT))
+           (org-context-clock-task-get-property task :root))
           (root (if root (file-truename root))))
      (let* ((file (plist-get context :file))
             (file (if file (file-truename file))))
        (if root
            (progn
-             (org-context-clock-debug "task %s root %s" (org-context-clock-task-get-heading task) root)
-             (org-context-clock-debug "task %s file %s" (org-context-clock-task-get-heading task) file))
-           (org-context-clock-debug "task %s root %s not present."
+             (org-context-clock-debug :debug "task %s root %s" (org-context-clock-task-get-heading task) root)
+             (org-context-clock-debug :debug "task %s file %s" (org-context-clock-task-get-heading task) file))
+           (org-context-clock-debug :debug "task %s root %s not present."
                                     (org-context-clock-task-get-heading task) root))
        (if (and root file
                 (string-match root file))
@@ -75,15 +75,15 @@
   (associator
    "Predicate funtion to check if context matches to task's file attribute."
    (let* ((currfile
-           (org-context-clock-task-get-property task :CURRFILE))
+           (org-context-clock-task-get-property task :currfile))
           (currfile (if currfile (file-truename currfile))))
      (let* ((file (plist-get context :file))
             (file (if file (file-truename file))))
        (if currfile
            (progn
-             (org-context-clock-debug "task %s currfile %s" (org-context-clock-task-get-heading task) currfile)
-             (org-context-clock-debug "task %s file %s" (org-context-clock-task-get-heading task) file))
-           (org-context-clock-debug "task %s currfile %s not present."
+             (org-context-clock-debug :debug "task %s currfile %s" (org-context-clock-task-get-heading task) currfile)
+             (org-context-clock-debug :debug "task %s file %s" (org-context-clock-task-get-heading task) file))
+           (org-context-clock-debug :debug "task %s currfile %s not present."
                                     (org-context-clock-task-get-heading task) currfile))
        (if (and currfile file
                 (string-match currfile file))
@@ -94,17 +94,26 @@
   (associator
    ;; task closed criteria
    "Predicate funtion to check if context matches to task's status attribute."
-   (let* ((todo-type
-           (org-context-clock-task-get-property task :todo-type))
-          (closed
-           (org-context-clock-task-get-property task :closed))
-          (status
-           (org-context-clock-task-get-property task :todo-keyword)))
+   (let ((todo-type
+          (org-context-clock-task-get-property task :todo-type))
+         (closed
+          (org-context-clock-task-get-property task :closed))
+         (status
+          (org-context-clock-task-get-property task :todo-keyword)))
      (if (or
           closed
           (eql todo-type 'done)
           (string-equal status "HOLD"))
          -30 0))))
+
+(define-keyop-functions org-task-associated-context-sub-tree :sub-tree (task context &rest args)
+                        (associator
+                         ;; task closed criteria
+                         "Predicate funtion to check if context matches to task's status attribute."
+                         (let ((sub-tree
+                                (org-context-clock-task-get-property task :sub-tree)))
+                           (org-context-clock-debug :debug "task %s subtree %s" (org-context-clock-task-get-heading task) (null (null sub-tree)))
+                           (if sub-tree -30 0))))
 
 (define-keyop-functions org-task-associated-context-task :task-key (task context &rest args)
   (associator
@@ -121,7 +130,7 @@
 
 (define-keyop-functions org-task-associated-context-timebeing :timebeing (task context &rest args)
   (associator
-   (let ((timebeing (org-context-clock-task-get-property task :TIMEBEING)))
+   (let ((timebeing (org-context-clock-task-get-property task :timebeing)))
      (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
            (clocked-time   (org-context-clock-task-get-property task :task-clock-clock-sum)))
        (if (and

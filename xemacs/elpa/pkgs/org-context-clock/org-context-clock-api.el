@@ -68,10 +68,28 @@
 ;; "org tasks clocking's APIs' API"
 (require 'org-context-clock-api-common) ;; "org tasks accss common api"
 
-(defun org-context-clock-debug (message &rest args)
-  (apply 'lwarn 'org-context-clock :debug message args))
+(defun org-context-clock-debug (level message &rest args)
+  (apply 'lwarn 'org-context-clock level message args)
+  ;; (apply #'message message args)
+  )
 
-;; (org-context-clock-debug "hello %s[%d]" "test" 11)
+;;;###autoload
+(defun org-context-clock-start-debug ()
+  (interactive)
+  (setq
+   warning-minimum-log-level :debug
+   warning-minimum-level :debug))
+
+;;;###autoload
+(defun org-context-clock-stop-debug ()
+  (interactive)
+  (setq
+   warning-minimum-log-level :warning
+   warning-minimum-level :warning))
+
+
+
+;; (org-context-clock-debug :debug "hello %s[%d]" "test" 11)
 
 
 (require 'org-context-clock-api-list) ;; "org tasks access api for list org"

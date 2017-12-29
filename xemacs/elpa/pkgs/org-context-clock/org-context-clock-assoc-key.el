@@ -46,7 +46,9 @@
   "Test whether association of org TASK-INFO for FILE using list of functions for keys,
 using algorithm in this function, return RANK"
   (if context
-      (if (> (org-context-clock-tasks-associated-key-fn-value :status task context) -20)
+      (if (and
+           (>= (org-context-clock-tasks-associated-key-fn-value :sub-tree task context) 0) ;IMPORTANT NOTE: only node tasks
+           (>= (org-context-clock-tasks-associated-key-fn-value :status task context) 0))
           (let ((rank
                  (+
                   (org-context-clock-tasks-associated-key-fn-value :timebeing task context)

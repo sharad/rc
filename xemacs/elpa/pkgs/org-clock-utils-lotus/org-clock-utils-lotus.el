@@ -229,17 +229,6 @@ using three `C-u' prefix arguments."
 
 
 
-
-;; (find
-;;   org-clock-leftover-time
-;;   org-clock-default-task ;; M-x org-clock-mark-default-task
-;;   M-x org-clock-select-task
-;; (org-clocking-buffer)
-;; (org-clock-sum-today)
-;; (org-clock-sum-custom nil 'today)
-;; (org-clock-is-active)
-;; )
-
 (defvar org-clock-default-effort "1:00")
 
 (defun lotus-org-mode-add-default-effort ()
@@ -416,8 +405,7 @@ using three `C-u' prefix arguments."
           (while (re-search-backward "\\* \\(TODO\\|WORK\\|DONE\\)" nil t)
             (unless (org-at-heading-p)
               (org-back-to-heading t))
-            (let* (
-                   (element (org-element-at-point))
+            (let* ((element (org-element-at-point))
                    (deadline (org-element-property :deadline element))
                    (deadline-seconds
                     (when deadline
@@ -447,6 +435,33 @@ using three `C-u' prefix arguments."
   ;; TODO
   "Implement"
   )
+
+
+
+
+;;{{{ https://stackoverflow.com/questions/4872088/is-there-any-way-for-subtasks-to-inherit-deadlines-in-org-mode
+
+;;How about a function for adding subtasks? This one adds a deadline to the
+;;subtask if its parent has one:
+
+(defun my-org-insert-sub-task ()
+  (interactive)
+  (let ((parent-deadline (org-get-deadline-time nil)))
+    (org-goto-sibling)
+    (org-insert-todo-subheading t)
+    (when parent-deadline
+      (org-deadline nil parent-deadline))))
+
+;; Don't forget to bind it to a key:
+
+;; (define-key org-mode-map (kbd "C-c s") 'my-org-insert-sub-task)
+
+;; Also you might find these settings useful:
+
+(setq org-enforce-todo-dependencies t)
+(setq org-agenda-dim-blocked-tasks 'invisible)
+;;}}}
+
 
 
 (provide 'org-clock-utils-lotus)

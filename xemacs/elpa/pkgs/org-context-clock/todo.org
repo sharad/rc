@@ -23,7 +23,11 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
-   CLOCK: [2017-12-28 Thu 23:12]
+   CLOCK: [2017-12-29 Fri 21:49]--[2017-12-29 Fri 22:16] =>  0:27
+   CLOCK: [2017-12-29 Fri 21:38]--[2017-12-29 Fri 21:44] =>  0:06
+   CLOCK: [2017-12-29 Fri 21:26]--[2017-12-29 Fri 21:38] =>  0:12
+   CLOCK: [2017-12-29 Fri 16:46]--[2017-12-29 Fri 17:39] =>  0:53
+   CLOCK: [2017-12-28 Thu 23:12]--[2017-12-28 Thu 23:26] =>  0:14
    - Note taken on [2017-12-28 Thu 22:25] \\
      doing something
    CLOCK: [2017-12-26 Tue 21:45]--[2017-12-26 Tue 23:58] =>  2:13
@@ -455,8 +459,13 @@ Yes
    CLOCK: [2016-02-03 Wed 17:42]--[2016-02-04 Thu 00:27] =>  6:45
    CLOCK: [2016-02-03 Wed 01:10]--[2016-02-03 Wed 01:30] =>  0:20
    :END:
-*** Why it is important
+*** STARTED Why it is important
     :PROPERTIES:
+    :Effort:   10m
+    :END:
+    :LOGBOOK:
+    CLOCK: [2017-12-29 Fri 22:18]
+    CLOCK: [2017-12-29 Fri 22:17]--[2017-12-29 Fri 22:18] =>  0:01
     :END:
 It is very important and need to completed as soon as possible.
 *** Goals [very incomplete]
@@ -573,7 +582,10 @@ It is very important and need to completed as soon as possible.
       CLOSED: [2017-12-12 Tue 20:29]
  lotus-interactivity/packages.el of (lotus-interactivity/post-init-ido)
  is only casing speacemacs to load properly with all features and themes
-***** Solve the issue with sessions-unified.el when setting (setq *session-unified-desktop-enabled* nil) not running lotus-enable-desktop-restore-interrupting-feature-hook
+***** HOLD Solve the issue with sessions-unified.el when setting (setq *session-unified-desktop-enabled* nil) not running lotus-enable-desktop-restore-interrupting-feature-hook
+      :LOGBOOK:
+      - State "HOLD"       from              [2017-12-29 Fri 16:33]
+      :END:
          (progn
            (lotus-enable-session-saving-immediately)
            (run-each-hooks 'lotus-enable-desktop-restore-interrupting-feature-hook)
@@ -600,6 +612,7 @@ It is very important and need to completed as soon as possible.
 
 *** Basic (what is left to be working)
 **** FEATURES
+***** check http://sachachua.com/blog/2015/03/getting-helm-org-refile-clock-create-tasks/
 ***** Very fast Interface to add new task which should provide options
 ****** whether it is subtask of current task or existing task, now required its separate naming, similar way to merge child task to parent.
 ****** whether it sudden random unrealted task from current task or existing task

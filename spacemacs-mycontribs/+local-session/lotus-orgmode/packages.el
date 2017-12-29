@@ -337,7 +337,29 @@ Each entry is either:
            org-clock-in-resume nil
            org-show-notification-handler 'message
            org-clock-report-include-clocking-task t)))
-      ))
+      )
+  (use-package task-manager
+      :defer t
+      :config
+      (progn
+        (progn
+          (use-package org-context-clock
+              :defer t
+              :config
+              (progn
+                (progn
+                  (let* ((party-base-dir (task-party-base-dir))
+                         (start-file (expand-file-name "start.org" party-base-dir)))
+                    (setq
+                     org-agenda-files (org-context-clock-task-update-files)))
+
+                  (progn
+                    (add-to-task-current-party-change-hook
+                     #'(lambda ()
+                         (let* ((party-base-dir (task-party-base-dir))
+                                (start-file (expand-file-name "start.org" party-base-dir)))
+                           (setq
+                            org-agenda-files (org-context-clock-task-update-files)))))))))))))
 
 (defun lotus-orgmode/post-init-org-agenda ()
   (use-package org-agenda

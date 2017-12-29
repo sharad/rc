@@ -135,7 +135,7 @@
 (defun org-context-clock-task-tree-tasks-files ()
   (let ((tasks (org-context-clock-task-recursive-update-tasks))
         (files '()))
-      (org-context-clock-debug "org-context-clock-entries-associated-to-context-by-keys: BEFORE files %s[%d]" files (length files))
+      (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys: BEFORE files %s[%d]" files (length files))
       (org-context-clock-tree-mapc-tasks
        #'(lambda (task args)
            (push
@@ -143,7 +143,7 @@
             files))
        tasks
        nil)
-      (org-context-clock-debug "org-context-clock-entries-associated-to-context-by-keys: AFTER files %s[%d]" "files" (length files))
+      (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys: AFTER files %s[%d]" "files" (length files))
       files))
 
 (defun org-context-clock-task-tree-get-files ()
@@ -234,7 +234,7 @@
 (defun org-context-clock-recursive-matching-tasks (context)
   (let ((tasks (org-context-clock-task-recursive-update-tasks))
         (matched '()))
-      (org-context-clock-debug "org-context-clock-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
+      (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
       (org-context-clock-tree-mapc-tasks
        #'(lambda (task args)
            (let ((rank
@@ -242,13 +242,13 @@
              (unless rank (error "org-context-clock-entries-associated-to-context-by-keys[lambda]: rank is null"))
              (when (> rank 0)
                (push task matched)
-               (org-context-clock-debug "org-context-clock-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
+               (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
                         (org-context-clock-task-get-heading task)
                         (length matched)))))
        tasks
        context)
 
-      (org-context-clock-debug "org-context-clock-entries-associated-to-context-by-keys: AFTER matched %s[%d]" "matched" (length matched))
+      (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys: AFTER matched %s[%d]" "matched" (length matched))
 
       matched))
 (org-context-clock-access-api-set :recursive :tasks  'org-context-clock-recursive-matching-tasks)
