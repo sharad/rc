@@ -156,12 +156,13 @@
 
 (defun add-to-hook (hook fn &optional append local)
   (interactive)
-  (lotus-message-notify "add-to-hook" "add-to-hook: adding %s to %s" fn hook)
   (add-hook
    hook
    fn
    append
-   local))
+   local)
+  (ignore-errors
+    (lotus-message-notify "add-to-hook" "add-to-hook: adding %s to %s" fn hook)))
 
 (defun run-each-hooks (hook)
   (dolist (f (symbol-value hook))

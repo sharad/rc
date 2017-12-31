@@ -431,7 +431,7 @@ using three `C-u' prefix arguments."
       (unless not-available
         (message "Congratulations -- you are available!")))))
 
-(defune org-clock-make-child-task-and-clock-in ()
+(defun org-clock-make-child-task-and-clock-in ()
   ;; TODO
   "Implement"
   )
