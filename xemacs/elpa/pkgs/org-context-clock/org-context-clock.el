@@ -532,7 +532,7 @@ pointing to it."
   (length
    (org-context-clock-tasks-associated-to-context-by-keys
     (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile"))))
-
+k
   (org-context-clock-current-task-associated-to-context-p
    (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile")))
 
