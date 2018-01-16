@@ -431,14 +431,6 @@ using three `C-u' prefix arguments."
       (unless not-available
         (message "Congratulations -- you are available!")))))
 
-(defun org-clock-make-child-task-and-clock-in ()
-  ;; TODO
-  "Implement"
-  )
-
-
-
-
 ;;{{{ https://stackoverflow.com/questions/4872088/is-there-any-way-for-subtasks-to-inherit-deadlines-in-org-mode
 
 ;;How about a function for adding subtasks? This one adds a deadline to the
@@ -462,7 +454,16 @@ using three `C-u' prefix arguments."
 (setq org-agenda-dim-blocked-tasks 'invisible)
 ;;}}}
 
-
+;;;{{{ Emacs tasks https://emacs.stackexchange.com/questions/29128/programmatically-setting-an-org-mode-heading
+(defvar *lotus-org-unnamed-task-file* "~/Unnamed.org")
+(defun lotus-org-create-unnamed-and-clock-in ()
+  (with-current-buffer (find-file-noselect *lotus-org-unnamed-task-file*)
+    ))
+(defun org-clock-make-child-task-and-clock-in ()
+  ;; TODO
+  "Implement"
+  )
+;;;}}}
 
 (provide 'org-clock-utils-lotus)
 ;;; org-clock-utils-lotus.el ends here
