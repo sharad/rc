@@ -4,35 +4,9 @@
 #
 # sychronize tracking repositories
 #
-# 2012 by Simon Thum
+# 2018 by Sharad
 # Licensed as: CC0
 #
-# This scrips intends to sync via git near-automatically
-# in "tracking" repositories where a nice history is not
-# crucial as having one.
-#
-# Unlike the myriad of scripts to do just that already available,
-# it follows the KISS principle: It is small, requires nothing but
-# git and bash, but does not even try to shield you from git.
-#
-# Mode sync (default)
-#
-# Sync will likely get from you from a dull normal git repo with trivial
-# changes to an updated dull normal git repo equal to origin. No more,
-# no less. The intent is to do everything that's needed to sync
-# automatically, and resort to manual intervention as soon
-# as something non-trivial occurs. It is designed to be safe
-# in that it will likely refuse to do anything not known to
-# be safe.
-#
-# Mode check
-#
-# Check only performs the basic checks sync checks for to
-# make sure the repository is in a state sufficiently "normal"
-# to continue syncing, i.e. committing changes, pull etc. without
-# losing any data. When check returns 0, sync can start immediately.
-# This does not, however, indicate that syncing is at all likely to
-# succeed.
 
 function main()
 {
