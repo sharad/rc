@@ -46,9 +46,14 @@
 	ui = auto
 
 [alias]
-# sync = !git checkout ${2:-master} && git pull --rebase origin ${2:-master} && git checkout ${1:- -} && git rebase ${2:-master}
-wdiff = diff -b -w --ignore-space-at-eol --ignore-blank-lines
-wapply = apply --ignore-whitespace
+  # sync = !git checkout ${2:-master} && git pull --rebase origin ${2:-master} && git checkout ${1:- -} && git rebase ${2:-master}
+	wdiff = diff -b -w --ignore-space-at-eol --ignore-blank-lines
+	wapply = apply --ignore-whitespace
+	# https://stackoverflow.com/questions/6127328/how-can-i-delete-all-git-branches-which-have-been-merged?noredirect=1&lq=1
+	sweep = "!git branch --merged | grep  -v '\\*\\|master\\|develop' | xargs -n 1 git branch -d"
+	# sweep = "!echo grep  -v '\\*|master|develop'"
+	# sweep = "!git branch --merged | grep  -v '\\*\\|master\\|develop' | xargs -n 1 echo"
+
 
 # from https://gist.github.com/robmiller/6018582
 #
