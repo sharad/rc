@@ -11,16 +11,17 @@
 function main()
 {
     process_arg $@
+
     CURR_BRANCH=$(git rev-parse --abbrev-ref HEAD)
     if [ "HEAD" != "$CURR_BRANCH" ]
     then
         BRANCH_REMOTE=$(git config branch.${CURR_BRANCH}.remote )
-        BRANCH_MERGE=$(git config branch.${CURR_BRANCH}.merge )
+        BRANCH_MERGE=$(basename $(git config branch.${CURR_BRANCH}.merge ))
         if [ 0 = $? ] && [ "x" != "x$BRANCH_MERGE" ]
         then
             if [ $stash ]
             then
-                if git diff --exit-code --quiet
+                if ! git diff --exit-code --quiet
                 then
                     STASH_FOR_REBASE=1
                     running git stash save "stating to rebase $CURR_BRANCH"
@@ -30,10 +31,10 @@ function main()
 
             if [ $recursive ]
             then
-                if [ "." != "$BRANCH_REMOTE" ]
+                if [ "." = "$BRANCH_REMOTE" ]
                 then
                     running git checkout $BRANCH_MERGE
-                    running $0
+                    running $pgm $@
                     running git checkout $CURR_BRANCH
                 fi
             fi # if [ $force ]
@@ -58,15 +59,17 @@ function process_arg() {
     warn=1
     error=1
 
-    if ! set -- $(getopt -n $pgm -o hdrsiu:vwea:t: -- $@)
+    if ! set -- $(getopt -n $pgm -o rnsehvw -- $@)
     then
         verbose Wrong command line.
     fi
+
     while [ $# -gt 0 ]
     do
+        echo 1=$1
         case $1 in
             (-r) recursive=1;;
-            (-n) stash="";;
+            (-s) stash=1;;
             (-n) noaction="";;
             (-v) verbose=1;;
             (-w) warn="";;
@@ -83,11 +86,13 @@ function process_arg() {
 
 function running()
 {
-    echo $@
+    echo running $@
     if [ ! $noaction ]
     then
         $@
     fi
 }
 
-main
+pgm=$0
+
+main $@
