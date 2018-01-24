@@ -270,6 +270,7 @@ using three `C-u' prefix arguments."
         ;; with-current-buffer should be some real file
         (org-clock-in-refile nil))))
 
+(defvar org-clock-in-if-not-at-time-timer nil)
 (defun org-clock-in-if-not-at-time (delay)
   (setq org-clock-in-if-not-at-time-timer
         (run-at-time-or-now delay
@@ -457,8 +458,11 @@ using three `C-u' prefix arguments."
 ;;;{{{ Emacs tasks https://emacs.stackexchange.com/questions/29128/programmatically-setting-an-org-mode-heading
 (defvar *lotus-org-unnamed-task-file* "~/Unnamed.org")
 (defun lotus-org-create-unnamed-and-clock-in ()
-  (with-current-buffer (find-file-noselect *lotus-org-unnamed-task-file*)
-    ))
+  (org-with-file-headline *lotus-org-unnamed-task-file* "Unnamed tasks"
+    (org-insert-subheading-to-file-headline
+     (format "Unnamed task %d" 1)
+     *lotus-org-unnamed-task-file*
+     "Unnamed tasks")))
 (defun org-clock-make-child-task-and-clock-in ()
   ;; TODO
   "Implement"
