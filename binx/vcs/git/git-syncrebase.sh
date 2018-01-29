@@ -66,7 +66,6 @@ function process_arg() {
 
     while [ $# -gt 0 ]
     do
-        echo 1=$1
         case $1 in
             (-r) recursive=1;;
             (-s) stash=1;;

@@ -25,7 +25,7 @@ function main()
         while [ "." = "$BRANCH_REMOTE" ]
         do
             BRANCH_REMOTE=$(git config branch.${BRANCH_MERGE}.remote )
-            BRANCH_MERGE=$(git config branch.${BRANCH_MERGE}.merge )
+            BRANCH_MERGE=$(basename $(git config branch.${BRANCH_MERGE}.merge ))
         done
 
         git diff $BRANCH_MERGE --
@@ -38,16 +38,16 @@ function process_arg() {
     warn=1
     error=1
 
-    if ! set -- $(getopt -n $pgm -o hdrsiu:vwea:t: -- $@)
+    if ! set -- $(getopt -n $pgm -o ehvw -- $@)
     then
         verbose Wrong command line.
     fi
     while [ $# -gt 0 ]
     do
         case $1 in
-            (-r) recursive=1;;
-            (-n) stash="";;
-            (-n) noaction="";;
+            # (-r) recursive=1;;
+            # (-s) stash="";;
+            # (-n) noaction="";;
             (-v) verbose=1;;
             (-w) warn="";;
             (-e) error="";;
