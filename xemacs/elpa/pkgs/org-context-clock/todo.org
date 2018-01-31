@@ -23,6 +23,7 @@ Yes
    :ATTACH_DIR_INHERIT: t
    :END:
    :LOGBOOK:
+   CLOCK: [2018-01-30 Tue 11:32]--[2018-01-31 Wed 21:48] => 34:16
    CLOCK: [2018-01-20 Sat 18:21]--[2018-01-29 Mon 21:39] => 219:18
    - Note taken on [2018-01-17 Wed 12:44] \\
      started
@@ -470,6 +471,7 @@ Yes
     :Effort:   10m
     :END:
     :LOGBOOK:
+    CLOCK: [2018-01-31 Wed 21:48]--[2018-01-31 Wed 22:01] =>  0:13
     CLOCK: [2017-12-29 Fri 22:17]--[2017-12-29 Fri 22:18] =>  0:01
     :END:
 It is very important and need to completed as soon as possible.

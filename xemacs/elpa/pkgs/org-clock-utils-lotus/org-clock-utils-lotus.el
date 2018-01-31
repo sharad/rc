@@ -457,15 +457,38 @@ using three `C-u' prefix arguments."
 
 ;;;{{{ Emacs tasks https://emacs.stackexchange.com/questions/29128/programmatically-setting-an-org-mode-heading
 (defvar *lotus-org-unnamed-task-file* "~/Unnamed.org")
-(defun lotus-org-create-unnamed-and-clock-in ()
-  (org-with-file-headline *lotus-org-unnamed-task-file* "Unnamed tasks"
-    (org-insert-subheading-to-file-headline
-     (format "Unnamed task %d" 1)
-     *lotus-org-unnamed-task-file*
-     "Unnamed tasks")))
+(defun lotus-org-create-unnamed-task (file task)
+  (interactive
+   (let ((file *lotus-org-unnamed-task-file*)
+         (task "Unnamed tasks"))
+     (list file task)))
+  (let ((file (or file *lotus-org-unnamed-task-file*))
+        (task (or task "Unnamed tasks")))
+   (org-with-file-headline file task
+     (org-insert-subheading-to-file-headline
+      (format "Unnamed task %d" 1)
+      file
+      task))))
+
+(defun lotus-org-create-unnamed-task-task-clock-in (file parent-task task)
+  (interactive
+   (let ((file *lotus-org-unnamed-task-file*)
+         (parent-task "Unnamed tasks")
+         (task (format "Unnamed task %d" 1)))
+     (list file parent-task task)))
+  (let ((file (or file *lotus-org-unnamed-task-file*))
+        (parent-task (or parent-task "Unnamed tasks"))
+        (task (or task (format "Unnamed task %d" 1))))
+    (lotus-org-create-unnamed-task file parent-task)
+    (org-with-file-headline file task
+      (org-clock-in))))
+
 (defun org-clock-make-child-task-and-clock-in ()
   ;; TODO
   "Implement"
+  )
+
+(defun lotus-org-clockin-last-time (min)
   )
 ;;;}}}
 
