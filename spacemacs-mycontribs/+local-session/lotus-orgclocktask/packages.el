@@ -423,24 +423,35 @@ Each entry is either:
           (task-current-party "meru"))
 
         (progn
-          (define-minor-mode office-mode
-              "Prepare for working with collarative office project. This
-is the mode to be enabled when I am working in some files on
-which other peoples are also working."
-            :initial-value nil
-            :lighter " Office"
-            :global nil
-            (condition-case e
-                (when office-mode
-                  (message "calling office mode")
-                  (when (or (eq major-mode 'c-mode)
-                            (eq major-mode 'c++-mode))
-                    (setq tab-width 8)
-                    (c-set-style "stroustrup" 1))
-                  (set (make-local-variable 'before-save-hook) before-save-hook)
-                  (remove-hook 'before-save-hook 'delete-trailing-whitespace t)
-                  (message "called office mode"))
-              (error (message "Error: %s" e))))))))
+
+          (defvar office-git-remote-regex "")
+
+          (setq office-git-remote-regex "fortinet")
+
+          (defun office-file-p (file)
+            (let ((remote-repo
+                   (car
+                    (remove-if-not
+                     #'(lambda (s) (if s (string-match-p "^origin" s)))
+                     (magit-git-lines "remote" "-v")))))
+              (if (and
+                   (functionp 'magit-git-lines)
+                   remote-repo)
+                  (string-match-p
+                   office-git-remote-regex
+                   remote-repo))))
+
+          (defun office-activate ()
+            (interactive)
+            (let ((file (buffer-file-name)))
+              (when (and file (office-file-p file))
+                ;; if file is handled by perforce than assume it is
+                ;; related to office perforce repository.
+                (office-mode 1))))
+
+          (add-hook 'c-mode-common-hook 'office-activate)
+          (add-hook 'sh-mode-hook 'office-activate)
+          (add-hook 'cperl-mode-hook 'office-activate)))))
 
 
 (defun lotus-orgclocktask/post-init-startup-hooks () ;getting run when run-each-hooks called at last
