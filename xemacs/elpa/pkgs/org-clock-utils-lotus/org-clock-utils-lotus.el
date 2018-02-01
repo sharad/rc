@@ -455,8 +455,53 @@ using three `C-u' prefix arguments."
 (setq org-agenda-dim-blocked-tasks 'invisible)
 ;;}}}
 
+
+;;;{{{ https://orgmode.org/worg/org-hacks.html#org86e75a5
+(defun jump-to-org-agenda ()
+  (interactive)
+  (let ((buf (get-buffer "*Org Agenda*"))
+        wind)
+    (if buf
+        (if (setq wind (get-buffer-window buf))
+            (select-window wind)
+            (if (called-interactively-p)
+                (progn
+                  (select-window (display-buffer buf t t))
+                  (org-fit-window-to-buffer)
+                  ;; (org-agenda-redo)
+                  )
+                (with-selected-window (display-buffer buf)
+                  (org-fit-window-to-buffer)
+                  ;; (org-agenda-redo)
+                  )))
+        (call-interactively 'org-agenda-list)))
+  ;;(let ((buf (get-buffer "*Calendar*")))
+  ;;  (unless (get-buffer-window buf)
+  ;;    (org-agenda-goto-calendar)))
+  )
+
+(run-with-idle-timer 300 t 'jump-to-org-agenda)
+;;;}}}
+
 ;;;{{{ Emacs tasks https://emacs.stackexchange.com/questions/29128/programmatically-setting-an-org-mode-heading
 (defvar *lotus-org-unnamed-task-file* "~/Unnamed.org")
+
+
+
+(defun lotus-org-create-or-find-heading (file heading)
+  (interactive
+   (let ((file *lotus-org-unnamed-task-file*)
+         (heading "Unnamed tasks"))
+     (list file heading)))
+  ;; - find heading or create it
+  (with-current-buffer (find-file-noselect file)
+    (let ((heading-marker (org-find-exact-headline-in-buffer heading)))
+      (unless heading-marker
+        (goto-char (point-max))
+        (insert (format "* %s\n" heading))
+        (setq heading-marker (org-find-exact-headline-in-buffer heading)))
+      heading-marker)))
+
 (defun lotus-org-create-unnamed-task (file task)
   (interactive
    (let ((file *lotus-org-unnamed-task-file*)
@@ -464,11 +509,12 @@ using three `C-u' prefix arguments."
      (list file task)))
   (let ((file (or file *lotus-org-unnamed-task-file*))
         (task (or task "Unnamed tasks")))
-   (org-with-file-headline file task
-     (org-insert-subheading-to-file-headline
-      (format "Unnamed task %d" 1)
-      file
-      task))))
+    (lotus-org-create-or-find-heading file task)
+    (org-with-file-headline file task
+      (org-insert-subheading-to-file-headline
+       (format "Unnamed task %d" 1)
+       file
+       task))))
 
 (defun lotus-org-create-unnamed-task-task-clock-in (file parent-task task)
   (interactive
