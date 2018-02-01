@@ -484,47 +484,89 @@ using three `C-u' prefix arguments."
 ;;;}}}
 
 ;;;{{{ Emacs tasks https://emacs.stackexchange.com/questions/29128/programmatically-setting-an-org-mode-heading
+(progn
 (defvar *lotus-org-unnamed-task-file* "~/Unnamed.org")
-
-
+(defvar *lotus-org-unnamed-parent-task-name* "Unnamed tasks")
+(defvar *lotus-org-unnamed-task-name-fmt* "Unnamed task %d")
 
 (defun lotus-org-create-or-find-heading (file heading)
   (interactive
    (let ((file *lotus-org-unnamed-task-file*)
-         (heading "Unnamed tasks"))
+         (heading *lotus-org-unnamed-parent-task-name*))
      (list file heading)))
-  ;; - find heading or create it
-  (with-current-buffer (find-file-noselect file)
-    (let ((heading-marker (org-find-exact-headline-in-buffer heading)))
-      (unless heading-marker
-        (goto-char (point-max))
-        (insert (format "* %s\n" heading))
-        (setq heading-marker (org-find-exact-headline-in-buffer heading)))
-      heading-marker)))
+  (let ((file (or file *lotus-org-unnamed-task-file*))
+        (heading (or heading *lotus-org-unnamed-parent-task-name*)))
+    ;; - find heading or create it
+    (with-current-buffer (find-file-noselect file)
+      (let ((heading-marker (org-find-exact-headline-in-buffer heading)))
+        (unless heading-marker
+          (goto-char (point-max))
+          (insert (format "* %s\n" heading))
+          (setq heading-marker (org-find-exact-headline-in-buffer heading)))
+        heading-marker))))
+
+(defmacro lotus-with-org-narrow-to-marker (marker &rest body)
+  `(progn
+     (with-current-buffer (marker-buffer ,marker)
+       (goto-char marker)
+       (org-narrow-to-subtree
+        ,@body))))
+
+(defmacro lotus-with-org-narrow-to-file-heading-subtree (file heading &rest body)
+  `(let ((marker (lotus-org-create-or-find-heading ,file ,heading)))
+     (lotus-with-org-narrow-to-marker marker
+       (org-narrow-to-subtree
+        ,@body)
+       (widen))))
+
+(defun org-insert-subheading-to-file-headline (text file headline)
+  (lotus-with-org-narrow-to-file-heading-subtree
+      file headline
+    (let ((buffer-read-only nil))
+      (if (eql org-refile-string-position 'bottom)
+          (org-end-of-subtree)
+          ;; (org-end-of-meta-data-and-drawers)
+          ;; (org-end-of-meta-data)
+          (org-end-of-subtree))
+      (org-insert-subheading nil)
+      (insert (format org-refile-string-format text)))))
+
+(defun org-insert-heading-to-file-headline (text file headline)
+  (lotus-with-org-narrow-to-file-heading-subtree
+      file headline
+    (let ((buffer-read-only nil))
+      (if (eql org-refile-string-position 'bottom)
+          (org-end-of-subtree)
+          ;; (org-end-of-meta-data-and-drawers)
+          ;; (org-end-of-meta-data)
+          (org-end-of-subtree))
+      (org-insert-heading nil)
+      (insert (format org-refile-string-format text)))))
+
+(defun org-find-exact-subheadline-in-headline ())
 
 (defun lotus-org-create-unnamed-task (file task)
   (interactive
    (let ((file *lotus-org-unnamed-task-file*)
-         (task "Unnamed tasks"))
+         (task *lotus-org-unnamed-parent-task-name*))
      (list file task)))
+
   (let ((file (or file *lotus-org-unnamed-task-file*))
-        (task (or task "Unnamed tasks")))
-    (lotus-org-create-or-find-heading file task)
-    (org-with-file-headline file task
-      (org-insert-subheading-to-file-headline
-       (format "Unnamed task %d" 1)
-       file
-       task))))
+        (task (or task *lotus-org-unnamed-parent-task-name*)))
+    (org-insert-subheading-to-file-headline
+     (format *lotus-org-unnamed-task-name-fmt* 1)
+     file
+     task)))
 
 (defun lotus-org-create-unnamed-task-task-clock-in (file parent-task task)
   (interactive
    (let ((file *lotus-org-unnamed-task-file*)
-         (parent-task "Unnamed tasks")
-         (task (format "Unnamed task %d" 1)))
+         (parent-task *lotus-org-unnamed-parent-task-name*)
+         (task (format *lotus-org-unnamed-task-name-fmt* 1)))
      (list file parent-task task)))
   (let ((file (or file *lotus-org-unnamed-task-file*))
-        (parent-task (or parent-task "Unnamed tasks"))
-        (task (or task (format "Unnamed task %d" 1))))
+        (parent-task (or parent-task *lotus-org-unnamed-parent-task-name*))
+        (task (or task (format *lotus-org-unnamed-task-name-fmt* 1))))
     (lotus-org-create-unnamed-task file parent-task)
     (org-with-file-headline file task
       (org-clock-in))))
@@ -535,7 +577,7 @@ using three `C-u' prefix arguments."
   )
 
 (defun lotus-org-clockin-last-time (min)
-  )
+  ))
 ;;;}}}
 
 (provide 'org-clock-utils-lotus)
