@@ -440,9 +440,34 @@ With prefix arg C-u, copy region instad of killing it."
           (org-insert-subheading nil)
           (insert (format org-refile-string-format text)))))))
 
-(defun org-insert-subheading-to-file-headline (text file headline)
-  (org-with-file-headline
-      file headline
+(defun lotus-org-find-heading (file heading &optional create)
+  (with-current-buffer (find-file-noselect file)
+    (let ((heading-marker (org-find-exact-headline-in-buffer heading)))
+      (if create
+          (unless heading-marker
+            (goto-char (point-max))
+            (insert (format "* %s\n" heading))
+            (setq heading-marker (org-find-exact-headline-in-buffer heading))))
+      heading-marker)))
+
+(defmacro lotus-with-org-narrow-to-marker (marker &rest body)
+  `(if ,marker
+       (with-current-buffer (marker-buffer ,marker)
+         (goto-char marker)
+         (save-excursion
+           (save-restriction
+             (org-narrow-to-subtree
+              ,@body))))
+       (error "marker is nil")))
+
+(defmacro lotus-with-org-narrow-to-file-heading-subtree (file heading create &rest body)
+  `(let ((marker (lotus-org-find-heading ,file ,heading ,create)))
+     (when marker
+       (lotus-with-org-narrow-to-marker marker ,@body))))
+
+(defun org-insert-subheading-to-file-headline (text file headline &optional create)
+  (lotus-with-org-narrow-to-file-heading-subtree
+      file headline create
     (let ((buffer-read-only nil))
       (if (eql org-refile-string-position 'bottom)
           (org-end-of-subtree)
@@ -452,9 +477,9 @@ With prefix arg C-u, copy region instad of killing it."
       (org-insert-subheading nil)
       (insert (format org-refile-string-format text)))))
 
-(defun org-insert-heading-to-file-headline (text file headline)
-  (org-with-file-headline
-      file headline
+(defun org-insert-heading-to-file-headline (text file headline &optional create)
+  (lotus-with-org-narrow-to-file-heading-subtree
+      file headline create
     (let ((buffer-read-only nil))
       (if (eql org-refile-string-position 'bottom)
           (org-end-of-subtree)
@@ -463,6 +488,9 @@ With prefix arg C-u, copy region instad of killing it."
           (org-end-of-subtree))
       (org-insert-heading nil)
       (insert (format org-refile-string-format text)))))
+
+(defun org-find-exact-subheadline-in-headline ()
+  )
   ;; )
 
 

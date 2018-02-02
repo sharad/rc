@@ -489,62 +489,6 @@ using three `C-u' prefix arguments."
 (defvar *lotus-org-unnamed-parent-task-name* "Unnamed tasks")
 (defvar *lotus-org-unnamed-task-name-fmt* "Unnamed task %d")
 
-(defun lotus-org-create-or-find-heading (file heading)
-  (interactive
-   (let ((file *lotus-org-unnamed-task-file*)
-         (heading *lotus-org-unnamed-parent-task-name*))
-     (list file heading)))
-  (let ((file (or file *lotus-org-unnamed-task-file*))
-        (heading (or heading *lotus-org-unnamed-parent-task-name*)))
-    ;; - find heading or create it
-    (with-current-buffer (find-file-noselect file)
-      (let ((heading-marker (org-find-exact-headline-in-buffer heading)))
-        (unless heading-marker
-          (goto-char (point-max))
-          (insert (format "* %s\n" heading))
-          (setq heading-marker (org-find-exact-headline-in-buffer heading)))
-        heading-marker))))
-
-(defmacro lotus-with-org-narrow-to-marker (marker &rest body)
-  `(progn
-     (with-current-buffer (marker-buffer ,marker)
-       (goto-char marker)
-       (org-narrow-to-subtree
-        ,@body))))
-
-(defmacro lotus-with-org-narrow-to-file-heading-subtree (file heading &rest body)
-  `(let ((marker (lotus-org-create-or-find-heading ,file ,heading)))
-     (lotus-with-org-narrow-to-marker marker
-       (org-narrow-to-subtree
-        ,@body)
-       (widen))))
-
-(defun org-insert-subheading-to-file-headline (text file headline)
-  (lotus-with-org-narrow-to-file-heading-subtree
-      file headline
-    (let ((buffer-read-only nil))
-      (if (eql org-refile-string-position 'bottom)
-          (org-end-of-subtree)
-          ;; (org-end-of-meta-data-and-drawers)
-          ;; (org-end-of-meta-data)
-          (org-end-of-subtree))
-      (org-insert-subheading nil)
-      (insert (format org-refile-string-format text)))))
-
-(defun org-insert-heading-to-file-headline (text file headline)
-  (lotus-with-org-narrow-to-file-heading-subtree
-      file headline
-    (let ((buffer-read-only nil))
-      (if (eql org-refile-string-position 'bottom)
-          (org-end-of-subtree)
-          ;; (org-end-of-meta-data-and-drawers)
-          ;; (org-end-of-meta-data)
-          (org-end-of-subtree))
-      (org-insert-heading nil)
-      (insert (format org-refile-string-format text)))))
-
-(defun org-find-exact-subheadline-in-headline ())
-
 (defun lotus-org-create-unnamed-task (file task)
   (interactive
    (let ((file *lotus-org-unnamed-task-file*)
@@ -556,7 +500,8 @@ using three `C-u' prefix arguments."
     (org-insert-subheading-to-file-headline
      (format *lotus-org-unnamed-task-name-fmt* 1)
      file
-     task)))
+     task
+     t)))
 
 (defun lotus-org-create-unnamed-task-task-clock-in (file parent-task task)
   (interactive
