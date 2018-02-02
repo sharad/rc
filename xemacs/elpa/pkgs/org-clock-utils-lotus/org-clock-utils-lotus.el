@@ -464,7 +464,7 @@ using three `C-u' prefix arguments."
     (if buf
         (if (setq wind (get-buffer-window buf))
             (select-window wind)
-            (if (called-interactively-p)
+            (if (called-interactively-p 'interactive)
                 (progn
                   (select-window (display-buffer buf t t))
                   (org-fit-window-to-buffer)
