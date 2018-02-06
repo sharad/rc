@@ -40,8 +40,8 @@ Xautolock.notify: 60
 xautolock*notify: 60
 ! Xautolock.notifier: [ esyscmd(echo -n $HOST) = taj ] && xdaliclock
 ! xautolock*notifier: [ esyscmd(echo -n $HOST) = taj ] && xdaliclock
-Xautolock.notifier: [ esyscmd(echo -n $HOST) = taj ]
-xautolock*notifier: [ esyscmd(echo -n $HOST) = taj ]
+Xautolock.notifier: idlenotify
+xautolock*notifier: idlenotify
 
 
 

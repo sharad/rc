@@ -485,9 +485,9 @@ using three `C-u' prefix arguments."
 
 ;;;{{{ Emacs tasks https://emacs.stackexchange.com/questions/29128/programmatically-setting-an-org-mode-heading
 (progn
-(defvar *lotus-org-unnamed-task-file* "~/Unnamed.org")
+(defvar *lotus-org-unnamed-task-file*        "~/Unnamed.org")
 (defvar *lotus-org-unnamed-parent-task-name* "Unnamed tasks")
-(defvar *lotus-org-unnamed-task-name-fmt* "Unnamed task %d")
+(defvar *lotus-org-unnamed-task-name-fmt*    "Unnamed task %d")
 
 (defun lotus-org-create-unnamed-task (file task)
   (interactive

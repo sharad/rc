@@ -66,12 +66,12 @@ fi
 # laptop power monitoring.
 if whence -p ~/bin/power-mon
 then
-    ~/bin/power-mon
+    ~/bin/power-mon &!
 fi
 
 if whence -p redshift && ! pgrep redshift
 then
-    redshift -t 6500:5000 -b 1.0:0.8
+    redshift -t 6500:5000 -b 1.0:0.8 &!
 fi
 
 
