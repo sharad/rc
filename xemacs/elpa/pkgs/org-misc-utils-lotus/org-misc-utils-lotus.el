@@ -104,7 +104,7 @@
       (message "size %d" size))))
 
 
-(defmacro org-with-new-win (newwin &rest body)
+(defmacro lotus-with-new-win (newwin &rest body)
   `(let ()
      (lexical-let* ((,newwin (org-lotus-new-win)))
        ;; maybe leave two lines for our window because of the
@@ -112,7 +112,7 @@
        (select-window ,newwin 'norecord)
        (progn
          ,@body))))
-(put 'org-with-new-win 'lisp-indent-function 1)
+(put 'lotus-with-new-win 'lisp-indent-function 1)
 
 (defmacro org-with-timed-new-win (timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
   (lexical-let ((temp-win-config (make-symbol "test-org-with-timed-new-win-config")))
@@ -127,7 +127,7 @@
                                            (when ,temp-win-config
                                              (set-window-configuration ,temp-win-config)
                                              (setq ,temp-win-config nil)))))
-       (org-with-new-win ,newwin
+       (lotus-with-new-win ,newwin
          (lexical-let* ((,timer (run-with-idle-timer ,timeout nil
                                                      ,cleanupfn-newwin
                                                      ,newwin
@@ -142,7 +142,7 @@
 ;; TODO: newwin clean should be done here
 (defmacro org-with-file-pos-new-win (file pos newwin &rest body)
   `(let ((target-buffer (find-file-noselect ,file)))
-     (org-with-new-win ,newwin
+     (lotus-with-new-win ,newwin
        (message "org-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
        ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
        (switch-to-buffer target-buffer)
