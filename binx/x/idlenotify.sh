@@ -51,7 +51,8 @@ function main() {
 }
 
 function get_screens() {
-    xrandr --listactivemonitors | sed 1d | tr -s ' \t' | cut -d' ' -f5
+    $(xrandr --listactivemonitors | sed 1d | tr -s ' \t' | cut -d' ' -f5)
+
 }
 
 function get_brightness() {

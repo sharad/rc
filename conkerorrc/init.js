@@ -21,16 +21,58 @@ require("tab-bar.js");
 
 // http://conkeror.org/BreakingChanges
 
+var al_load_dir;
+var __rcfile = make_file((get_pref("conkeror.rcfile")));
+var al_load_dir = make_file(__rcfile.target).parent;
 
-let (conkerorhome = get_home_directory().path + "/.conkerorrc/") {
-    for (f in ["custom.js", "display.js", "webjumps.js", "proxy.js", "misc.js", "office.js", "extention.js", "repl.js", "utils.js", "commands.js", "utils1.js", "behaviour.js", "modes.js", "gsearch.js"]) {
-        if (typeof load_rc_file == 'function') {
-            load_rc_file(conkerorhome + f);
-        } else if (typeof load_rc == 'function') {
-            load_rc(conkerorhome + f);
+function al_load (relpath) {
+    var file = al_load_dir.clone();
+    file.appendRelativePath( relpath );
+    if (file.exists())
+        load(file);
+    else
+        dumpln("WARNING: file '" + file.path + "' does not exist");
+}
+
+function load_rc_files() {
+    let (conkerorhome = get_home_directory().path + "/.conkerorrc/") {
+
+        var rc_files = ["local/security.js",
+                        "local/office.js",
+                        "custom.js",
+                        "display.js",
+                        "webjumps.js",
+                        "proxy.js",
+                        "misc.js",
+                        "office.js",
+                        "extention.js",
+                        "repl.js",
+                        "utils.js",
+                        "commands.js",
+                        "utils1.js",
+                        "behaviour.js",
+                        "modes.js",
+                        "gsearch.js"
+                       ]
+
+        for (var f in rc_files) {
+            // load(conkerorhome + rc_files[f]);
+            al_load(rc_files[f]);
         }
     }
-};
+}
+function load_files()
+{
+    var files = ["/home/s/hell/.conkerorrc/local/security.js",
+                 "/home/s/hell/.conkerorrc/local/office.js"];
+    for(f in files) {
+        sec = make_file(files[f])
+        load(sec);
+    }
+}
+
+load_files();
+load_rc_files();
 
 //{{
 for (var i = 0; i < get_recent_conkeror_window().buffers.count; i++)

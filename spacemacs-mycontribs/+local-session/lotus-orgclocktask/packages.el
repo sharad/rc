@@ -449,9 +449,7 @@ Each entry is either:
                 ;; related to office perforce repository.
                 (office-mode 1))))
 
-          (add-hook 'c-mode-common-hook 'office-activate)
-          (add-hook 'sh-mode-hook 'office-activate)
-          (add-hook 'cperl-mode-hook 'office-activate)))))
+          (add-hook 'prog-mode-hook 'office-activate)))))
 
 
 (defun lotus-orgclocktask/post-init-startup-hooks () ;getting run when run-each-hooks called at last
