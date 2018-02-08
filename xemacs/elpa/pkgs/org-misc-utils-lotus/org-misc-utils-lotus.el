@@ -39,12 +39,13 @@
            ,@body)))))
 
 (defmacro org-clock-lotus-with-current-clock (&rest body)
-  `(org-with-clock (cons org-clock-marker org-clock-start-time)
-     ,@body))
+  `(when (marker-buffer org-clock-marker)
+     (org-with-clock (cons org-clock-marker org-clock-start-time)
+       ,@body)))
 (put 'org-clock-lotus-with-current-clock 'lisp-indent-function 1)
 
-(defmacro org-with-file-headline (file headline &rest body)
-  `(with-current-buffer (if ,file (find-file-noselect ,file) (current-buffer))
+(defmacro org-with-buffer-headline (buffer headline &rest body)
+  `(with-current-buffer (if ,buffer ,buffer (current-buffer))
      (save-excursion
        (goto-char (point-min))
        (let ((pos (org-find-exact-headline-in-buffer ,headline)))
@@ -52,108 +53,53 @@
            (goto-char pos)
            ,@body)
          pos))))
+(put 'org-with-buffer-headline 'lisp-indent-function 2)
+
+(defmacro org-with-file-headline (file headline &rest body)
+  `(org-with-buffer-headline
+    (find-file-noselect ,file)
+    ,headline
+    ,@body))
 (put 'org-with-file-headline 'lisp-indent-function 2)
 
-(defun org-lotus-new-lower-win-size ()
-  ;; TODO: improve it.
-  ;; If the mode line might interfere with the calculator
-  ;; buffer, use 3 lines instead.
-  (if (and
-       (fboundp 'face-attr-construct)
-       (let* ((dh (plist-get (face-attr-construct 'default) :height))
-              (mf (face-attr-construct 'mode-line))
-              (mh (plist-get mf :height)))
-         ;; If the mode line is shorter than the default,
-         ;; stick with 2 lines.  (It may be necessary to
-         ;; check how much shorter.)
-         (and
-          (not
-           (or (and (integerp dh)
-                    (integerp mh)
-                    (< mh dh))
-               (and (numberp mh)
-                    (not (integerp mh))
-                    (< mh 1))))
-          (or
-           ;; If the mode line is taller than the default,
-           ;; use 3 lines.
-           (and (integerp dh)
-                (integerp mh)
-                (> mh dh))
-           (and (numberp mh)
-                (not (integerp mh))
-                (> mh 1))
-           ;; If the mode line has a box with non-negative line-width,
-           ;; use 3 lines.
-           (let* ((bx (plist-get mf :box))
-                  (lh (plist-get bx :line-width)))
-             (and bx
-                  (or
-                   (not lh)
-                   (> lh 0))))
-           ;; If the mode line has an overline, use 3 lines.
-           (plist-get (face-attr-construct 'mode-line) :overline)))))
-      -12 -10))
-
-;; create smaller and proper sized window
-(defun org-lotus-new-win ()
-  (let ((size (org-lotus-new-lower-win-size))
-        (window-min-height 7))
-    (prog1
-        (split-window-below size)
-      (message "size %d" size))))
-
-
-(defmacro lotus-with-new-win (newwin &rest body)
-  `(let ()
-     (lexical-let* ((,newwin (org-lotus-new-win)))
-       ;; maybe leave two lines for our window because of the
-       ;; normal `raised' mode line
-       (select-window ,newwin 'norecord)
-       (progn
-         ,@body))))
-(put 'lotus-with-new-win 'lisp-indent-function 1)
-
-(defmacro org-with-timed-new-win (timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
-  (lexical-let ((temp-win-config (make-symbol "test-org-with-timed-new-win-config")))
-    `(lexical-let* ((,temp-win-config (current-window-configuration))
-                    (,cleanupfn-newwin #'(lambda (w localfn)
-                                           ;; (message "cleaning up newwin and triggered timer for newwin %s" w)
-                                           (when localfn (funcall localfn))
-                                           ;; (when (active-minibuffer-window) ;not required here. it is just creating timed new-win
-                                           ;;   (abort-recursive-edit))
-                                           (when (and w (windowp w) (window-valid-p w))
-                                             (delete-window w))
-                                           (when ,temp-win-config
-                                             (set-window-configuration ,temp-win-config)
-                                             (setq ,temp-win-config nil)))))
+(defmacro org-with-marker-new-win (marker newwin &rest body)
+  `(when (marker-buffer ,marker)
+     (let ((target-buffer (marker-buffer   ,marker))
+           (pos           (marker-position ,marker)))
        (lotus-with-new-win ,newwin
-         (lexical-let* ((,timer (run-with-idle-timer ,timeout nil
-                                                     ,cleanupfn-newwin
-                                                     ,newwin
-                                                     ,cleanupfn-local)))
-           (condition-case err
-               (progn
-                 ,@body)
-             ((quit)
-              (funcall ,cleanupfn-newwin ,newwin ,cleanupfn-local))))))))
-(put 'org-with-timed-new-win 'lisp-indent-function 1)
+         (message "org-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
+         ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
+         (switch-to-buffer target-buffer)
+         (if (<= pos (point-max))
+             (progn
+               (goto-char ,pos)
+               ,@body)
+             (error "position %d greater than point max %d" pos (point-max)))))))
+(put 'org-with-marker-new-win 'lisp-indent-function 1)
 
-;; TODO: newwin clean should be done here
-(defmacro org-with-file-pos-new-win (file pos newwin &rest body)
-  `(let ((target-buffer (find-file-noselect ,file)))
+(defmacro org-with-buffer-pos-new-win (buffer pos newwin &rest body)
+  `(let ((target-buffer (if ,buffer ,buffer (current-buffer))))
      (lotus-with-new-win ,newwin
-       (message "org-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
+       (message "org-with-buffer-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
        ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
        (switch-to-buffer target-buffer)
-       (goto-char ,pos)
-       ,@body)))
+       (if (<= pos (point-max))
+           (progn
+             (goto-char ,pos)
+             ,@body)
+           (error "position %d greater than point max %d" pos (point-max))))))
+(put 'org-with-buffer-pos-new-win 'lisp-indent-function 1)
+
+(defmacro org-with-file-pos-new-win (file pos newwin &rest body)
+  `(org-with-buffer-pos-new-win
+    (find-file-noselect ,file) pos
+    ,@body))
 (put 'org-with-file-pos-new-win 'lisp-indent-function 1)
 
 ;; TODO: newwin clean should be done here
 (defmacro org-with-file-pos-timed-new-win (file pos timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
   `(let ((target-buffer (find-file-noselect ,file)))
-     (org-with-timed-new-win ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
+     (lotus-with-timed-new-win ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
        (message "org-with-file-pos-timed-new-win: selecting buf %s in %s win" target-buffer ,newwin)
        ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
        (switch-to-buffer target-buffer)

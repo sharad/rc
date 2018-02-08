@@ -129,7 +129,7 @@
 
                 (set-marker marker (point))
 
-                (org-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
+                (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
                     timeout timer cleanup local-cleanup win
 
                     (let ((target-buffer (find-file-noselect file)))

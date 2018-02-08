@@ -121,7 +121,7 @@
       (let ((win-timeout (or win-timeout 17))
             (cleanupfn-local nil))
         (setq org-log-note-window-configuration (current-window-configuration))
-        (org-with-timed-new-win
+        (lotus-with-timed-new-win
             win-timeout timer cleanupfn-newwin cleanupfn-local win
             (condition-case err
                 (let ((target-buffer (get-buffer-create "*Org Note*")))
