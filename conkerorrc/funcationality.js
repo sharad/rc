@@ -212,7 +212,7 @@ interactive("delicious-post-sel",
 
 
 
-// https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  'url={URL} get all tags for old url
+// https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  '&url={URL} get all tags for old url
 
 var delicious_shared = null;
 
@@ -262,11 +262,12 @@ function  delicious_post_internal(buffer, window, minibuffer,
     // }}
 
     // {{ initial value
-    var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  'url=' + encodeURIComponent(buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
+    var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  '&url=' + encodeURIComponent(buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
     var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
     var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
     var post       = tc.getElementsByTagName('post');
     var tags       = (post.length > 0)  ? post[0].attributes['tag'].textContent : "";
+    // window.alert(tsendurl);
 
     if (post.length > 0 &&
         post[0].attributes['description'].textContent.length > 0) {
@@ -293,7 +294,7 @@ function  delicious_post_internal(buffer, window, minibuffer,
             (yield minibuffer.read( $prompt = "name (required): ", $initial_value = desc)));
 
     var post_tags = encodeURIComponent( (post_tags ?
-                                         post_tags :
+                                         tags + post_tags :
                                          (yield minibuffer.read( $prompt = "tags (space delimited): ",
                                                                    $completer = completer,
                                                                    $initial_value = tags + " " + read_from_x_primary_selection()
@@ -335,7 +336,7 @@ function delicious_post_all(buffer, post_tags) {
     {
         var buff = buffers.get_buffer(i);
         // {{ initial value
-        var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  'url=' + encodeURIComponent(buff.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
+        var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  '&url=' + encodeURIComponent(buff.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
         var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
         var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
         var post       = tc.getElementsByTagName('post');
@@ -413,7 +414,7 @@ interactive("delicious-post-link",
                 // }}
 
                 // {{ initial value
-                var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  'url=' + mylink;
+                var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  '&url=' + mylink;
                 var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
                 // I.window.alert(tagcontent.responseText);
                 var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
