@@ -37,7 +37,7 @@ DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools pavucontrol redshift"
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer"
 DEB_SYS_PKG1="duc baobab"
 DEB_SYS_MAIL="dovecot-core dovecot-imapd ntpdate postfix"
-
+DEB_DEV_GTD="tomboy zim mnemosyne mnemosyne-blog"
 
 
 function main()
@@ -193,7 +193,8 @@ function setup_apt_packages()
 				"DEB_PKG_NECESSARY_MORE1" \
 				"DEB_PKG_NECESSARY_MORE2" \
 				"DEB_PKG_NECESSARY_MORE3" \
-				"DEB_PKG_NECESSARY_MORE4"
+				"DEB_PKG_NECESSARY_MORE4" \
+        "DEB_DEV_GTD"
     do
         eval sudo apt -y install \$$pkg
     done

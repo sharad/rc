@@ -787,3 +787,18 @@ function sshnopass() {
 }
 
 ##}}
+
+
+##{{ genpass
+function genpasswd() {
+    local len=$1
+    [ "$len" = "" ] && len=16
+    tr -dc A-Za-z0-9_ < /dev/urandom | head -c ${len} | xargs
+}
+##}}
+
+##{{ bk
+function bk() {
+    cp -arv $1{,-bk$(date +%Y%h%d_%H%M%S)}
+}
+##}}
