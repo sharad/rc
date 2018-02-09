@@ -66,28 +66,32 @@
   `(when (marker-buffer ,marker)
      (let ((target-buffer (marker-buffer   ,marker))
            (pos           (marker-position ,marker)))
-       (lotus-with-new-win ,newwin
-         (message "org-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
-         ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
-         (switch-to-buffer target-buffer)
-         (if (<= pos (point-max))
-             (progn
-               (goto-char ,pos)
-               ,@body)
-             (error "position %d greater than point max %d" pos (point-max)))))))
+       (if target-buffer
+           (lotus-with-new-win ,newwin
+             (message "org-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
+             ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
+             (switch-to-buffer target-buffer)
+             (if (<= pos (point-max))
+                 (progn
+                   (goto-char ,pos)
+                   ,@body)
+                 (error "position %d greater than point max %d" pos (point-max))))
+           (error "No buffer")))))
 (put 'org-with-marker-new-win 'lisp-indent-function 1)
 
 (defmacro org-with-buffer-pos-new-win (buffer pos newwin &rest body)
   `(let ((target-buffer (if ,buffer ,buffer (current-buffer))))
-     (lotus-with-new-win ,newwin
-       (message "org-with-buffer-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
-       ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
-       (switch-to-buffer target-buffer)
-       (if (<= pos (point-max))
-           (progn
-             (goto-char ,pos)
-             ,@body)
-           (error "position %d greater than point max %d" pos (point-max))))))
+     (if target-buffer
+         (lotus-with-new-win ,newwin
+           (message "org-with-buffer-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
+           ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
+           (switch-to-buffer target-buffer)
+           (if (<= pos (point-max))
+               (progn
+                 (goto-char ,pos)
+                 ,@body)
+               (error "position %d greater than point max %d" pos (point-max))))
+         (error "No buffer"))))
 (put 'org-with-buffer-pos-new-win 'lisp-indent-function 1)
 
 (defmacro org-with-file-pos-new-win (file pos newwin &rest body)

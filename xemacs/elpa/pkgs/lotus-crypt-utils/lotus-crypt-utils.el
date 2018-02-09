@@ -301,5 +301,13 @@ and AMBIGUOUS characters"
         (message "number of combinations is 10^%d with a bit equivalence of %d" (round number) (round bits))
         (list bits number))))
 
+(defun find-file-sec ()
+  (interactive)
+  (let ((directory "~/.pi/"))
+    (find-file
+     (read-file-name "file: "
+                     directory
+                     (expand-file-name "i.org.gpg" directory)))))
+
 (provide 'lotus-crypt-utils)
 ;;; lotus-crypt-utils.el ends here

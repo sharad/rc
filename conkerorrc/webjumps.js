@@ -384,7 +384,8 @@ define_webjump("youtube-user", "http://youtube.com/profile_videos?user=%s");
 
 // 2.4.1. Google Finance
 
-define_webjump("finance", "https://www.google.com/finance?q=%s");
+define_webjump("finance1", "https://www.google.com/finance?q=%s");
+define_webjump("finance", "https://finance.google.com/finance?q=%s");
 
 // 2.5. Games
 
