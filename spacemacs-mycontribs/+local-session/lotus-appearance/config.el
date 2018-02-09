@@ -127,29 +127,23 @@
 
   (defvar face-scale-div-max-min '(110 600 120 80))
 
-  (setq face-scale-div-max-min '(110 210 120 80))
+  (setq face-scale-div-max-min '(110 210 92 92))
 
-    (defun maxmin-optimized-value (val scale div &optional max min)
-      (let ((opt (/ (* val scale) div)))
-        (if (and max
-                 (> max 0)
-                 (> opt max))
-            max
-            (if (and min
-                     (> min 0)
-                     (< opt min))
-                min
-                opt))))
+  (defun maxmin-optimized-value (val scale div &optional max min)
+    (let ((opt (/ (* val scale) div)))
+      (if (and max
+               (> max 0)
+               (> opt max))
+          max
+          (if (and min
+                   (> min 0)
+                   (< opt min))
+              min
+              opt))))
 
 
     ;; set attributes
-    (defun mycustom-face-set ()
-      "thisandthat."
-      (interactive)
-      (set-face-attribute 'default nil ;(/ (* (x-display-mm-width) 121) 600)
-                          ;; (x-display-pixel-height)
-                          :height (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
-                          :width  'normal))
+
 
 
     ;; (mycustom-face-set)
@@ -164,19 +158,23 @@
       (interactive
        (list (read-number "Face height: "
                           (if (and (featurep 'x)
-                                    window-system
-                                    (x-display-mm-height))
+                                   window-system
+                                   (x-display-mm-height))
                               (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
                               (face-attribute 'default :height)))))
       (if (and (featurep 'x) window-system)
           (if (or height (x-display-mm-height))
-              (if (or t (any-frame-opened-p))
-                  (set-face-attribute 'default nil
-                                      :height (or height (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)))
+              (if (any-frame-opened-p)
+                  (progn
+                    (spacemacs/set-default-font dotspacemacs-default-font)
+                    (set-face-attribute 'default nil
+                                        :height (or height (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min))))
                   (message "no frame is open now."))
               (message "(x-display-pixel-height) return nil"))
           (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
 
+    (when (fboundp 'set-default-face-height-by-resolution)
+      (defalias 'mycustom-face-set #'set-default-face-height-by-resolution))
     ;; (use-package startup-hooks
     ;;              :defer t
     ;;              :config

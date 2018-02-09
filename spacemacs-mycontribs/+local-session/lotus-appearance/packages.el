@@ -70,6 +70,7 @@ Each entry is either:
       :defer t
       :config
       (progn
+        (setq face-scale-div-max-min '(110 210 100 92))
         )))
 
 ;;; packages.el ends here
