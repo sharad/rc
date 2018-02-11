@@ -543,7 +543,11 @@ using three `C-u' prefix arguments."
 (defun lotus-org-clock-declare-last-clockout-of-day ()
   )
 
+(defun org-clock-add-schedule-on-clockin-if-not ()
+  )
 
+(defun org-clock-add-deadline-on-clockin-if-not ()
+  )
 ;;;}}}
 
 
