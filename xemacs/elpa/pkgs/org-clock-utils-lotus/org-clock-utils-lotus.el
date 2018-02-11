@@ -533,7 +533,19 @@ using three `C-u' prefix arguments."
 
 (defun lotus-org-clockin-last-time (min)
   ))
+
+
+(defun lotus-org-clock-detect-first-clockin-of-day ()
+  ;; do necessary stuff
+  ;; like context presentation etc.
+  )
+
+(defun lotus-org-clock-declare-last-clockout-of-day ()
+  )
+
+
 ;;;}}}
+
 
 (provide 'org-clock-utils-lotus)
 ;;; org-clock-utils-lotus.el ends here
