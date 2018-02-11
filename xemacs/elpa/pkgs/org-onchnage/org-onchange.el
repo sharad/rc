@@ -114,7 +114,7 @@
     ;; (delete-other-windows)
 
     ;; (move-marker org-log-note-return-to (point))
-    (org-with-no-active-minibuffer
+    (lotus-with-no-active-minibuffer
       (progn                            ;could schedule in little further.
         (message "add-log-note-background: minibuffer already active quitting")
         (message nil))

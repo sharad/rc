@@ -45,7 +45,7 @@
 
 (defun org-get-heading-from-clock (clock)
   (if (markerp (car clock))
-      (org-lotus-with-marker (car clock)
+      (lotus-with-marker (car clock)
                              (org-get-heading t))
       "imaginary"))
 
@@ -223,7 +223,7 @@
   ;; BUG how to handle when prev == next
   "Resolve clock time"
   (interactive)
-  (org-with-override-minibuffer
+  (lotus-with-override-minibuffer
     (let ((debug-prompt t)
           (default (org-rl-get-time-gap prev next)))
 

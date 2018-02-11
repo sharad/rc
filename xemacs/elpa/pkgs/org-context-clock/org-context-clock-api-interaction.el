@@ -102,7 +102,7 @@
 
   (interactive '(nil nil))
 
-  (org-with-no-active-minibuffer
+  (lotus-with-no-active-minibuffer
       (progn
         (message "add-context-to-org-heading: minibuffer already active quitting")
         (message nil))

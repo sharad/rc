@@ -23,6 +23,17 @@
 ;;
 
 ;;; Code:
+
+(eval-when-compile
+  (require 'lotus-misc-utils))
+
+(require 'lotus-misc-utils)
+
+(eval-when-compile
+  (require 'cl))
+
+(require 'cl)
+
 (defvar safe-org-refile-get-location-modes
   '(emacs-lisp-mode org-mode))
 
@@ -51,7 +62,7 @@
        (let ((pos (org-find-exact-headline-in-buffer ,headline)))
          (if (<= pos (point-max))
              (progn
-               (goto-char ,pos)
+               (goto-char pos)
                ,@body)
              (error "position %d greater than point max %d" pos (point-max)))))))
 (put 'org-with-buffer-headline 'lisp-indent-function 2)
@@ -65,147 +76,6 @@
           ,@body))
      (error "can not open file %f" file)))
 (put 'org-with-file-headline 'lisp-indent-function 2)
-
-
-
-
-
-(defmacro lotus-with-marker (marker &rest body)
-  `(when (marker-buffer ,marker)
-     (let ((target-buffer (marker-buffer   ,marker))
-           (pos           (marker-position ,marker)))
-       (if target-buffer
-           (with-current-buffer target-buffer
-             (message "org-with-file-pos-new-win: selecting buf %s" target-buffer)
-             (if (<= pos (point-max))
-                 (progn
-                   (goto-char ,pos)
-                   ,@body)
-                 (error "position %d greater than point max %d" pos (point-max))))
-           (error "No buffer")))))
-(put 'lotus-with-marker 'lisp-indent-function 1)
-
-(defmacro lotus-with-buffer-pos (buffer pos &rest body)
-  `(let ((target-buffer (if ,buffer ,buffer (current-buffer))))
-     (if target-buffer
-         (with-current-buffer target-buffer
-           (message "org-with-buffer-pos-new-win: selecting buf %s" target-buffer)
-           (if (<= ,pos (point-max))
-               (progn
-                 (goto-char ,pos)
-                 ,@body)
-               (error "position %d greater than point max %d" ,pos (point-max))))
-         (error "No buffer"))))
-(put 'lotus-with-buffer-pos 'lisp-indent-function 1)
-
-(defmacro lotus-with-file-pos (file pos &rest body)
-  `(let ((buff (find-file-noselect ,file)))
-     (if buff
-         (lotus-with-buffer-pos
-          buff ,pos
-          ,@body)
-         (error "can not open file %f" file))))
-(put 'lotus-with-file-pos 'lisp-indent-function 1)
-
-
-
-
-
-(defmacro org-with-marker-new-win (marker newwin &rest body)
-  `(when (marker-buffer ,marker)
-     (let ((target-buffer (marker-buffer   ,marker))
-           (pos           (marker-position ,marker)))
-       (if target-buffer
-           (lotus-with-new-win ,newwin
-             (message "org-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
-             ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
-             (switch-to-buffer target-buffer)
-             (if (<= pos (point-max))
-                 (progn
-                   (goto-char ,pos)
-                   ,@body)
-                 (error "position %d greater than point max %d" pos (point-max))))
-           (error "No buffer")))))
-(put 'org-with-marker-new-win 'lisp-indent-function 1)
-
-(defmacro org-with-buffer-pos-new-win (buffer pos newwin &rest body)
-  `(let ((target-buffer (if ,buffer ,buffer (current-buffer))))
-     (if target-buffer
-         (lotus-with-new-win ,newwin
-           (message "org-with-buffer-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
-           ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
-           (switch-to-buffer target-buffer)
-           (if (<= ,pos (point-max))
-               (progn
-                 (goto-char ,pos)
-                 ,@body)
-               (error "position %d greater than point max %d" ,pos (point-max))))
-         (error "No buffer"))))
-(put 'org-with-buffer-pos-new-win 'lisp-indent-function 1)
-
-(defmacro org-with-file-pos-new-win (file pos newwin &rest body)
-  `(let ((buff (find-file-noselect ,file)))
-     (if buff
-         (org-with-buffer-pos-new-win
-          buff ,pos
-          ,@body)
-         (error "can not open file %f" file))))
-(put 'org-with-file-pos-new-win 'lisp-indent-function 1)
-
-;; TODO: newwin clean should be done here
-(defmacro org-with-marker-timed-new-win (marker timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
-  `(when (marker-buffer ,marker)
-     (let ((target-buffer (marker-buffer   ,marker))
-           (pos           (marker-position ,marker)))
-       (lotus-with-timed-new-win
-           ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
-           (message "org-with-marker-timed-new-win: selecting buf %s in %s win" target-buffer ,newwin)
-           ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
-           (switch-to-buffer target-buffer)
-           (if (<= pos (point-max))
-               (progn
-                 (goto-char ,pos)
-                 ,@body)
-               (error "position %d greater than point max %d" pos (point-max)))))))
-(put 'org-with-marker-timed-new-win 'lisp-indent-function 1)
-
-(defmacro org-with-buffer-pos-timed-new-win (buffer pos timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
-  `(let ((target-buffer (if ,buffer ,buffer (current-buffer))))
-     (lotus-with-timed-new-win
-         ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
-         (message "org-with-buffer-pos-timed-new-win: selecting buf %s in %s win" target-buffer ,newwin)
-         ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
-         (switch-to-buffer target-buffer)
-         (if (<= ,pos (point-max))
-             (progn
-               (goto-char ,pos)
-               ,@body)
-             (error "position %d greater than point max %d" ,pos (point-max))))))
-(put 'org-with-buffer-pos-timed-new-win 'lisp-indent-function 1)
-
-(defmacro org-with-file-pos-timed-new-win (file pos timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
-  `(let ((target-buffer (find-file-noselect ,file)))
-     (org-with-buffer-pos-timed-new-win
-      ,file ,pos ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
-      ,@body)))
-(put 'org-with-file-pos-timed-new-win 'lisp-indent-function 1)
-;; Misc Macros Ends
-
-;; Marker Macros Starts
-(defmacro org-lotus-with-marker (marker &rest body)
-  `(let ((buffer (marker-buffer ,marker)))
-     (save-excursion ; Do not replace this with `with-current-buffer'.
-       (with-no-warnings (set-buffer buffer))
-       (save-restriction
-         (widen)
-         (goto-char ,marker)
-         (progn
-           ,@body)
-         ;; (org-add-log-setup
-         ;;  'note nil nil nil
-         ;;  (concat "# Task: " (org-get-heading t) "\n\n"))
-         ))))
-;; Marker Macros Ends
 
 ;; Refile macros Starts
 (defun safe-org-refile-get-location-p ()
@@ -268,23 +138,6 @@
         (remove-function (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
       (cancel-timer timer))))
 
-(defmacro org-with-no-active-minibuffer (minibuffer-body &rest body)
-  ;;could schedule in little further.
-  `(if (active-minibuffer-window)
-       ,minibuffer-body
-       (progn
-         ,@body)))
-(put 'org-with-no-active-minibuffer 'lisp-indent-function 1)
-
-(defmacro org-with-override-minibuffer (&rest body)
-  `(progn
-     (when (active-minibuffer-window)
-       (abort-recursive-edit))
-     (unless (active-minibuffer-window)
-       (progn
-         ,@body))))
-(put 'org-with-override-minibuffer 'lisp-indent-function 0)
-
 (defmacro org-with-refile (file pos refile-targets &rest body)
   "Refile the active region.
 If no region is active, refile the current paragraph.
@@ -329,7 +182,7 @@ With prefix arg C-u, copy region instad of killing it."
 (defmacro org-with-file-loc-refile-new-win (file pos refile-targets newwin &rest body)
   `(org-file-loc-with-refile
        ,file ,pos ,refile-targets
-       (org-with-file-pos-new-win
+       (lotus-with-file-pos-new-win
            ,file ,pos ,newwin
            ,@body)))
 (put 'org-miniwin-file-loc-with-refile 'lisp-indent-function 1)
@@ -338,7 +191,7 @@ With prefix arg C-u, copy region instad of killing it."
 (defmacro org-with-file-loc-timed-refile-new-win (file pos timeout refile-targets newwin &rest body)
   `(org-with-file-loc-timed-refile
        ,file ,pos ,timeout ,refile-targets
-       (org-with-file-pos-new-win
+       (lotus-with-file-pos-new-win
            ,file ,pos ,newwin
            ,@body)))
 (put 'org-with-file-loc-timed-refile-new-win 'lisp-indent-function 1)
@@ -347,7 +200,7 @@ With prefix arg C-u, copy region instad of killing it."
 (defmacro org-with-file-loc-timed-refile-timed-new-win (file pos timeout-refile refile-targets timeout-newwin timer-newwin cleanupfn-newwin cleanupfn-local newwin &rest body)
   `(org-with-file-loc-timed-refile
     ,file ,pos ,timeout-refile ,refile-targets
-    (org-with-file-pos-timed-new-win
+    (lotus-with-file-pos-timed-new-win
      ,file ,pos ,timeout-newwin ,timer-newwin ,cleanupfn-newwin ,cleanupfn-local ,newwin ,@body)))
 (put 'org-with-file-loc-timed-refile-timed-new-win 'lisp-indent-function 1)
 
@@ -476,7 +329,7 @@ With prefix arg C-u, copy region instad of killing it."
           (org-insert-subheading nil)
           (insert (format org-refile-string-format text)))))))
 
-(defun lotus-org-find-heading (file heading &optional create)
+(defun org-find-heading-marker (file heading &optional create)
   (with-current-buffer (find-file-noselect file)
     (let ((heading-marker (org-find-exact-headline-in-buffer heading)))
       (if create
@@ -486,23 +339,24 @@ With prefix arg C-u, copy region instad of killing it."
             (setq heading-marker (org-find-exact-headline-in-buffer heading))))
       heading-marker)))
 
-(defmacro lotus-with-org-narrow-to-marker (marker &rest body)
+(defmacro org-with-narrow-to-marker (marker &rest body)
   `(if ,marker
        (with-current-buffer (marker-buffer ,marker)
          (goto-char marker)
          (save-excursion
            (save-restriction
-             (org-narrow-to-subtree
-              ,@body))))
+             (org-narrow-to-subtree)
+             (progn
+               ,@body))))
        (error "marker is nil")))
 
-(defmacro lotus-with-org-narrow-to-file-heading-subtree (file heading create &rest body)
-  `(let ((marker (lotus-org-find-heading ,file ,heading ,create)))
+(defmacro org-with-narrow-to-file-heading-subtree (file heading create &rest body)
+  `(let ((marker (org-find-heading-marker ,file ,heading ,create)))
      (when marker
-       (lotus-with-org-narrow-to-marker marker ,@body))))
+       (org-with-narrow-to-marker marker ,@body))))
 
 (defun org-insert-subheading-to-file-headline (text file headline &optional create)
-  (lotus-with-org-narrow-to-file-heading-subtree
+  (org-with-narrow-to-file-heading-subtree
       file headline create
     (let ((buffer-read-only nil))
       (if (eql org-refile-string-position 'bottom)
@@ -514,7 +368,7 @@ With prefix arg C-u, copy region instad of killing it."
       (insert (format org-refile-string-format text)))))
 
 (defun org-insert-heading-to-file-headline (text file headline &optional create)
-  (lotus-with-org-narrow-to-file-heading-subtree
+  (org-with-narrow-to-file-heading-subtree
       file headline create
     (let ((buffer-read-only nil))
       (if (eql org-refile-string-position 'bottom)
@@ -634,7 +488,7 @@ With prefix arg C-u, copy region instad of killing it."
            ;; Otherwise, indent line like a regular one.
            (let ((itemp (org-in-item-p)))
              (if itemp
-                 (org-indent-line-to
+                 (indent-line-to
                   (let ((struct (save-excursion
                                   (goto-char itemp) (org-list-struct))))
                     (org-list-get-ind (org-list-get-top-point struct) struct)))
@@ -643,7 +497,7 @@ With prefix arg C-u, copy region instad of killing it."
            (let ((ind (org-list-item-body-column (line-beginning-position))))
              (dolist (line lines)
                (insert "\n")
-               (org-indent-line-to ind)
+               (indent-line-to ind)
                (insert line)))
            (message "Note stored")
            (org-back-to-heading t)
@@ -665,6 +519,12 @@ With prefix arg C-u, copy region instad of killing it."
 
 ;; (org-miniwin-file-loc-with-refile nil nil)
 
+
+
+
+
+
+
 ;; https://gist.github.com/tonyday567/4343164
 (defun org-random-entry (&optional arg)
   "Select and goto a random todo item from the global agenda"
@@ -672,7 +532,8 @@ With prefix arg C-u, copy region instad of killing it."
   (if org-agenda-overriding-arguments
       (setq arg org-agenda-overriding-arguments))
   (if (and (stringp arg) (not (string-match "\\S-" arg))) (setq arg nil))
-  (let* ((today (org-today))
+  (let* (entries
+         (today (org-today))
          (date (calendar-gregorian-from-absolute today))
          (kwds org-todo-keywords-for-agenda)
          (lucky-entry nil)
@@ -686,8 +547,8 @@ With prefix arg C-u, copy region instad of killing it."
          rtn rtnall files file pos marker buffer)
     (when (equal arg '(4))
       (setq org-select-this-todo-keyword
-            (org-icompleting-read "Keyword (or KWD1|K2D2|...): "
-                                  (mapcar 'list kwds) nil nil)))
+            (completing-read "Keyword (or KWD1|K2D2|...): "
+                             (mapcar 'list kwds) nil nil)))
     (and (equal 0 arg) (setq org-select-this-todo-keyword nil))
     (catch 'exit
       (org-compile-prefix-format 'todo)
@@ -711,7 +572,7 @@ With prefix arg C-u, copy region instad of killing it."
                          (org-agenda-error)))
         (setq buffer (marker-buffer marker))
         (setq pos (marker-position marker))
-        (org-pop-to-buffer-same-window buffer)
+        (pop-to-buffer-same-window buffer)
         (widen)
         (goto-char pos)
         (when (derived-mode-p 'org-mode)
