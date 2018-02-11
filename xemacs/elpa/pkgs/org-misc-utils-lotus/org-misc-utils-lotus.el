@@ -73,8 +73,8 @@
          (org-with-buffer-headline
           buff
           ,headline
-          ,@body))
-     (error "can not open file %f" file)))
+          ,@body)
+         (error "can not open file %s" file))))
 (put 'org-with-file-headline 'lisp-indent-function 2)
 
 ;; Refile macros Starts
@@ -355,29 +355,73 @@ With prefix arg C-u, copy region instad of killing it."
      (when marker
        (org-with-narrow-to-marker marker ,@body))))
 
-(defun org-insert-subheading-to-file-headline (text file headline &optional create)
+(defun org-heading-has-child-p ()
+  (save-excursion
+    (org-goto-first-child)))
+
+(defun org-number-of-subheadings ()
+  (let ((curr-level (org-current-level)))
+    (length
+     (remove nil
+            (org-map-entries
+             #'(lambda ()
+                 (= (1+ curr-level) (org-current-level)))
+             nil
+             'tree)))))
+
+(defun org-goto-last-child ()
+  (let ((curr-level (org-current-level)))
+    (if (numberp curr-level)
+        (when (org-heading-has-child-p)
+          (org-end-of-subtree)
+          (while (/= (1+ curr-level) (org-current-level))
+            (outline-previous-visible-heading 1))))))
+
+(defun org-insert-grandsubheading-to-file-headline (text file headline &optional create)
   (org-with-narrow-to-file-heading-subtree
       file headline create
-    (let ((buffer-read-only nil))
+      (let ((buffer-read-only nil)
+            (subheading (cond
+                          ((stringp text) text)
+                          ((functionp text) (funcall text)))))
       (if (eql org-refile-string-position 'bottom)
           (org-end-of-subtree)
           ;; (org-end-of-meta-data-and-drawers)
           ;; (org-end-of-meta-data)
           (org-end-of-subtree))
       (org-insert-subheading nil)
-      (insert (format org-refile-string-format text)))))
+      (insert (format org-refile-string-format subheading)))))
 
-(defun org-insert-heading-to-file-headline (text file headline &optional create)
+(defun org-insert-sibling-heading-to-file-headline (text file headline &optional create)
+  (org-with-narrow-to-file-heading-subtree
+   file headline create
+   (let ((buffer-read-only nil)
+         (subheading (cond
+                       ((stringp text) text)
+                       ((functionp text) (funcall text)))))
+     ;; (if (eql org-refile-string-position 'bottom)
+     ;;     (org-end-of-subtree)
+     ;;     ;; (org-end-of-meta-data-and-drawers)
+     ;;     ;; (org-end-of-meta-data)
+     ;;     (org-end-of-subtree))
+
+     (org-insert-heading-after-current)
+     (insert (format org-refile-string-format subheading)))))
+
+(defun org-insert-subheading-to-file-headline (text file headline &optional create)
   (org-with-narrow-to-file-heading-subtree
       file headline create
-    (let ((buffer-read-only nil))
-      (if (eql org-refile-string-position 'bottom)
-          (org-end-of-subtree)
-          ;; (org-end-of-meta-data-and-drawers)
-          ;; (org-end-of-meta-data)
-          (org-end-of-subtree))
-      (org-insert-heading nil)
-      (insert (format org-refile-string-format text)))))
+      (let ((buffer-read-only nil)
+            (subheading (cond
+                          ((stringp text) text)
+                          ((functionp text) (funcall text))
+                          (t (error "no subheading")))))
+        (if (org-heading-has-child-p)
+            (progn
+              (org-goto-last-child)
+              (org-insert-heading-after-current))
+            (org-insert-subheading nil))
+      (insert (format org-refile-string-format subheading)))))
 
 (defun org-find-exact-subheadline-in-headline ()
   )
@@ -518,12 +562,6 @@ With prefix arg C-u, copy region instad of killing it."
 ;; )
 
 ;; (org-miniwin-file-loc-with-refile nil nil)
-
-
-
-
-
-
 
 ;; https://gist.github.com/tonyday567/4343164
 (defun org-random-entry (&optional arg)
