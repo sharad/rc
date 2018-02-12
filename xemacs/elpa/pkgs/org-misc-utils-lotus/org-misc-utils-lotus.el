@@ -405,6 +405,8 @@ With prefix arg C-u, copy region instad of killing it."
      ;;     ;; (org-end-of-meta-data)
      ;;     (org-end-of-subtree))
 
+     (beginning-of-line)
+     (forward-char 1)
      (org-insert-heading-after-current)
      (insert (format org-refile-string-format subheading)))))
 
@@ -419,8 +421,13 @@ With prefix arg C-u, copy region instad of killing it."
         (if (org-heading-has-child-p)
             (progn
               (org-goto-last-child)
+              (beginning-of-line)
+              (forward-char 1)
               (org-insert-heading-after-current))
-            (org-insert-subheading nil))
+            (progn
+              (beginning-of-line)
+              (forward-char 1)
+              (org-insert-subheading nil)))
       (insert (format org-refile-string-format subheading)))))
 
 (defun org-find-exact-subheadline-in-headline ()

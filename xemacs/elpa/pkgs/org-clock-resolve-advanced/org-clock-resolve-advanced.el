@@ -27,9 +27,14 @@
 (require 'org-timer)
 (require 'org-clock)
 (require 'timer-utils-lotus)
+(eval-when-compile
+  (require 'timer-utils-lotus))
 (require 'org-misc-utils-lotus)
 (eval-when-compile
   (require 'org-misc-utils-lotus))
+(require 'lotus-misc-utils)
+(eval-when-compile
+  (require 'lotus-misc-utils))
 
 
 (defun org-clock-steel-time ()
@@ -46,7 +51,7 @@
 (defun org-get-heading-from-clock (clock)
   (if (markerp (car clock))
       (lotus-with-marker (car clock)
-                             (org-get-heading t))
+        (org-get-heading t))
       "imaginary"))
 
 (setq org-resolve-opts-common

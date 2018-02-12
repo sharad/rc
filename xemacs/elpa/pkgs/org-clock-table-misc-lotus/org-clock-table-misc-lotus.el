@@ -27,6 +27,17 @@
 (require 'org-table)
 (require 'org-clock)
 
+(require 'timer-utils-lotus)
+(eval-when-compile
+  (require 'timer-utils-lotus))
+(require 'org-misc-utils-lotus)
+(eval-when-compile
+  (require 'org-misc-utils-lotus))
+(require 'lotus-misc-utils)
+(eval-when-compile
+  (require 'lotus-misc-utils))
+
+
 (defcustom org-clock-clocktable-alt-formatter 'org-clocktable-alt-write-default
   "Function to turn clocking data into a table.
 For more information, see `org-clocktable-write-default'."

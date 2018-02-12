@@ -584,10 +584,10 @@
         (heading (task-party-org-heading))
         (child-heading (task-get-org-description task-type name desc)))
     (org-with-file-headline file heading
-                            (org-insert-heading-to-file-headline
-                             child-heading
-                             file
-                             (capitalize (pluralize-string task-type))))
+      (org-insert-subheading-to-file-headline
+       child-heading
+       file
+       (capitalize (pluralize-string task-type))))
     (org-with-file-headline file child-heading
                             (let ((buffer-read-only nil))
                               (org-entry-put nil "SubtreeFile"
