@@ -802,3 +802,29 @@ function bk() {
     cp -arv $1{,-bk$(date +%Y%h%d_%H%M%S)}
 }
 ##}}
+
+
+##{{ emacs
+# from: https://jpace.wordpress.com/2016/12/01/current-file-and-directory-in-emacs-and-z-shell/
+cde () {
+    cd ${(Q)~$(emacsclient -f ~/.emacs.d/server/$EMACS_SERVER_NAME \
+                           -e '(with-current-buffer
+                              (window-buffer (selected-window))
+                              default-directory) ' | sed '/emacsclient:/d')}
+}
+ecf() {
+    echo ${(Q)~$(emacsclient -f ~/.emacs.d/server/$EMACS_SERVER_NAME \
+                             -e '(with-current-buffer
+                                  (window-buffer (selected-window))
+                                   buffer-file-name) ' | sed '/emacsclient:/d')}
+}
+ecd() {
+    echo ${(Q)~$(emacsclient -f ~/.emacs.d/server/$EMACS_SERVER_NAME \
+                 -e '(with-current-buffer
+                       (window-buffer (selected-window))
+                         default-directory) ' | sed '/emacsclient:/d')}
+}
+cde () {
+    cd `ecd`
+}
+##}}
