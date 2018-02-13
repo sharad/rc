@@ -93,7 +93,7 @@ Each entry is either:
                   (org-clock-is-active)
                   ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
                   )
-                 (org-with-clock-writeable-buffer
+                 (org-with-clock-writeable
                   (let (org-log-note-clock-out)
                     (if (org-clock-is-active)
                         (org-clock-out)))))))))))
@@ -161,7 +161,7 @@ Each entry is either:
                           (if (and
                                (org-clock-is-active)
                                (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-                              (org-with-clock-writeable-buffer
+                              (org-with-clock-writeable
                                (let (org-log-note-clock-out)
                                  (if (org-clock-is-active)
                                      (org-clock-out)))))))) t)
@@ -178,7 +178,7 @@ Each entry is either:
                             (if (and
                                  (org-clock-is-active)
                                  (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-                                (org-with-clock-writeable-buffer
+                                (org-with-clock-writeable
                                  (let (org-log-note-clock-out)
                                    (if (org-clock-is-active)
                                        (org-clock-out)))))))) t)
@@ -477,7 +477,7 @@ Each entry is either:
                     (if (and
                          (org-clock-is-active)
                          (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-                        (org-with-clock-writeable-buffer
+                        (org-with-clock-writeable
                          (let (org-log-note-clock-out)
                            (if (org-clock-is-active)
                                (org-clock-out))))))))
