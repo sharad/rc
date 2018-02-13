@@ -377,6 +377,16 @@ With prefix arg C-u, copy region instad of killing it."
           (while (/= (1+ curr-level) (org-current-level))
             (outline-previous-visible-heading 1))))))
 
+(defun org-goto-end-of-headline ()
+  (let ((element (org-element-at-point)))
+    (if (and
+         element
+         (eq (car element) 'headline))
+        (let ((begin (plist-get (cadr element) :begin))
+              (level (plist-get (cadr element) :level))
+              (title (plist-get (cadr element) :title)))
+         (goto-char (+ begin level (length title)))))))
+
 (defun org-insert-grandsubheading-to-file-headline (text file headline &optional create)
   (org-with-narrow-to-file-heading-subtree
       file headline create
@@ -406,7 +416,7 @@ With prefix arg C-u, copy region instad of killing it."
      ;;     (org-end-of-subtree))
 
      (beginning-of-line)
-     (forward-char 1)
+     (end-of-line 1)
      (org-insert-heading-after-current)
      (insert (format org-refile-string-format subheading)))))
 
@@ -422,11 +432,11 @@ With prefix arg C-u, copy region instad of killing it."
             (progn
               (org-goto-last-child)
               (beginning-of-line)
-              (forward-char 1)
+              (end-of-line 1)
               (org-insert-heading-after-current))
             (progn
               (beginning-of-line)
-              (forward-char 1)
+              (end-of-line 1)
               (org-insert-subheading nil)))
       (insert (format org-refile-string-format subheading)))))
 

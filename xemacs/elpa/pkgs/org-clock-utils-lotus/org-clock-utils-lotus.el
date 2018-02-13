@@ -504,6 +504,7 @@ using three `C-u' prefix arguments."
 
   (let ((file (or file *lotus-org-unnamed-task-file*))
         (task (or task *lotus-org-unnamed-parent-task-name*)))
+    (org-find-heading-marker file task t)
     (org-insert-subheading-to-file-headline
      (format *lotus-org-unnamed-task-name-fmt*
              ;; (lotus-org-get-incr-tasknum (find-file-noselect file))

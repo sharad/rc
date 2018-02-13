@@ -809,22 +809,20 @@ function bk() {
 cde () {
     cd ${(Q)~$(emacsclient -f ~/.emacs.d/server/$EMACS_SERVER_NAME \
                            -e '(with-current-buffer
-                              (window-buffer (selected-window))
-                              default-directory) ' | sed '/emacsclient:/d')}
+                                 (window-buffer (selected-window))
+                                   default-directory) ' | sed -e '1!b' -e '/emacsclient: connected to remote socket at/d')}
 }
 ecf() {
     echo ${(Q)~$(emacsclient -f ~/.emacs.d/server/$EMACS_SERVER_NAME \
                              -e '(with-current-buffer
-                                  (window-buffer (selected-window))
-                                   buffer-file-name) ' | sed '/emacsclient:/d')}
+                                   (window-buffer (selected-window))
+                                     buffer-file-name) ' | sed '1{/"emacsclient: connected to remote socket at"/!d}')}
 }
 ecd() {
     echo ${(Q)~$(emacsclient -f ~/.emacs.d/server/$EMACS_SERVER_NAME \
                  -e '(with-current-buffer
                        (window-buffer (selected-window))
-                         default-directory) ' | sed '/emacsclient:/d')}
+                         default-directory) ' | sed -e '1!b' -e '/emacsclient: connected to remote socket at/d')}
 }
-cde () {
-    cd `ecd`
-}
+cde () { cd `ecd` }
 ##}}
