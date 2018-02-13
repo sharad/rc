@@ -27,11 +27,11 @@
 
 (ert-deftest test-task-run-associated-clock ()
   (should
-   org-context-clock-insinuate   )
-  (should
-   ))
+   (progn
+     (org-context-clock-insinuate))   )
+  (should (progn)))
 
-(ert-deftest )
+;; (ert-deftest )
 
 
 (provide 'test-session)

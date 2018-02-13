@@ -125,29 +125,53 @@
          (context (list :file file :buffer buff)))
     context))
 
+(defvar *org-context-clock-unassocate-context-start-time* (current-time))
+(defvar *org-context-clock-swapen-unnamed-threashold-interval* (* 60 2)) ;2 mins
+(defun org-context-clock-can-create-unnamed-task-p ()
+  (let ((unassociate-context-start-time *org-context-clock-unassociate-context-start-time*))
+    (prog1
+        (>
+         (float (time-since unassociate-context-start-time))
+         *org-context-clock-swapen-unnamed-threashold-interval*)
+      (setq *org-context-clock-unassociate-context-start-time* (current-time)))))
+
+(defun org-context-clock-maybe-create-unnamed-task ()
+    (when (org-context-clock-can-create-unnamed-task-p)
+      (let ((org-log-note-clock-out nil))
+        (lotus-org-create-unnamed-task-task-clock-in))))
+(defun org-context-clock-changable-p ()
+  (if org-clock-start-time
+      (let ((clock-duration (float-time (time-since org-clock-start-time))))
+        (or
+         (< clock-duration 60)
+         (> clock-duration 120)))
+    t))
+
 ;;;###autoload
 (defun org-context-clock-update-current-context ()
-  (if (> (float-time
-          (time-since *org-context-clock-last-buffer-select-time*))
+  (if (> (float-time (time-since *org-context-clock-last-buffer-select-time*))
          *org-context-clock-task-current-context-time*)
       (let* ((context (org-context-clock-build-context))
              (buff          (plist-get context :buffer)))
-        (if (and buff
-                 (buffer-live-p buff)
-                 (not (minibufferp buff))
-                 (not (and              ;BUG: Reconsider whether it is catching case after some delay.
-                       (equal *org-context-clock-task-previous-context* context)
-                       (equal *org-context-clock-task-current-context*  context))))
+        (setq *org-context-clock-task-current-context*  context)
+        (if (and
+             (org-context-clock-changable-p)
+             buff (buffer-live-p buff)
+             (not (minibufferp buff))
+             (not              ;BUG: Reconsider whether it is catching case after some delay.
+              (equal *org-context-clock-task-previous-context* *org-context-clock-task-current-context*)))
+
             (progn
               (setq
-               *org-context-clock-task-previous-context* *org-context-clock-task-current-context*
-               *org-context-clock-task-current-context*  context)
+               *org-context-clock-task-previous-context* *org-context-clock-task-current-context*)
 
               (if (> (org-context-clock-current-task-associated-to-context-p context) 0)
                   (org-context-clock-debug :debug "org-context-clock-update-current-context: Current task already associate to %s" context)
-                  (progn
+                  (progn                ;current clock is not matching
                     (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really going to clock.")
-                    (org-context-clock-task-run-associated-clock context)
+                    (unless (org-context-clock-task-run-associated-clock context)
+                      ;; not able to find associated, or intentionally not selecting a clock
+                      (org-context-clock-maybe-create-unnamed-task))
                     (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really clock done."))))
 
             (org-context-clock-debug :debug "org-context-clock-update-current-context: context %s not suitable to associate" context)))
@@ -163,7 +187,9 @@
            *org-context-clock-task-current-context*  context)
 
           (unless (org-context-clock-current-task-associated-to-context-p context)
-            (org-context-clock-task-run-associated-clock context))))))
+            (unless (org-context-clock-task-run-associated-clock context)
+              ;; not able to find associated, or intentionally not selecting a clock
+              (org-context-clock-maybe-create-unnamed-task)))))))
 
 ;;;###autoload
 (defun org-context-clock-task-current-task ()
@@ -233,40 +259,23 @@
              (org-context-clock-markers-associated-to-context context)))
            (selected-clock ))
       (if matched-clocks
-          (if (> (length matched-clocks) 1)
-              (if nil
-                  (org-context-clock-clockin-marker (org-context-clock-select-task-from-clocks matched-clocks))
-                  (sacha/helm-org-refile-read-location matched-clocks #'org-context-clock-clockin-marker))
-              (org-context-clock-clockin-marker (car matched-clocks)))
-          ;; (org-context-clock-clockin-marker selected-clock)
-          ;; (let ((org-log-note-clock-out nil)
-          ;;       (prev-org-clock-buff (marker-buffer org-clock-marker)))
-
-          ;;   (let ((prev-clock-buff-read-only
-          ;;          (if prev-org-clock-buff
-          ;;              (with-current-buffer (marker-buffer org-clock-marker)
-          ;;                buffer-read-only))))
-
-          ;;     (if prev-org-clock-buff
-          ;;         (with-current-buffer prev-org-clock-buff
-          ;;           (setq buffer-read-only nil)))
-
-          ;;     (setq *org-context-clock-update-current-context-msg* org-clock-marker)
-
-          ;;     (with-current-buffer (marker-buffer selected-clock)
-          ;;       (let ((buffer-read-only nil))
-          ;;         (org-clock-clock-in (list selected-clock))))
-
-          ;;     (if prev-org-clock-buff
-          ;;         (with-current-buffer prev-org-clock-buff
-          ;;           (setq buffer-read-only prev-clock-buff-read-only)))))
+          (condition-case e
+              (if (> (length matched-clocks) 1)
+                  (sacha/helm-org-refile-read-location matched-clocks #'org-context-clock-clockin-marker)
+                  ;; (if nil
+                  ;;     (org-context-clock-clockin-marker (org-context-clock-select-task-from-clocks matched-clocks))
+                  ;;     (sacha/helm-org-refile-read-location matched-clocks #'org-context-clock-clockin-marker))
+                  (org-context-clock-clockin-marker (car matched-clocks))
+                  t)
+              (quit nil))
           (progn
             (setq *org-context-clock-update-current-context-msg* "null clock")
             (org-context-clock-message 6
              "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
-                     context)
+             context)
             (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
-              (org-context-clock-add-context-to-org-heading-when-idle context 17)))))))
+              (org-context-clock-add-context-to-org-heading-when-idle context 17)
+              nil))))))
 
 ;;;###autoload
 (defun org-context-clock-run-task-current-context-timer ()

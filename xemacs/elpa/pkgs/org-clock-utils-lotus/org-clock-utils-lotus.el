@@ -556,6 +556,59 @@ for e.g. implementing lvm support for guixsd what all steps a person have to tak
 he has to read scheme, guixsd details, than see similar module and try to implement it."
   (interactive)
   )
+
+(defun org-log-not-on-event (start end event)
+  )
+;;;}}}
+
+
+;;;{{{ https://emacs.stackexchange.com/questions/34905/how-to-clock-offline-hours-quickly
+
+
+;; The following command inserts the typical org logbook entry, a time range
+;; starting from N minutes ago:
+
+(defun org-insert-clock-range (&optional n)
+  (interactive "NTime Offset (in min): ")
+  (let* ((ctime (cdr (decode-time (current-time))))
+         (min (car ctime))
+         (start (apply 'encode-time 0 (- min n) (cdr ctime))))
+    (org-insert-time-stamp start t t "CLOCK: ")
+    (insert "--")
+    (org-insert-time-stamp (current-time) t t)))
+
+
+
+
+;; mutbuerger's answer helped me a lot. It's my first time programming in elisp
+;; other than configuration. His answer was close to the mark, but I still
+;; wanted the normal functionality of clock-in and clock-out for finding or
+;; creating the logbook under the closest heading, and adding a note.
+
+;; My amended solution was this:
+
+(defun offset-current-time (n)
+  (let* ((ctime (cdr (decode-time (current-time))))
+         (minutes (car ctime)))
+    (apply 'encode-time 0 (- minutes n) (cdr ctime))))
+
+(defun org-insert-clock-range (&optional n)
+  (interactive "NTime Offset (in min): ")
+  (org-clock-in nil (offset-current-time n))
+  (org-clock-out))
+
+(defadvice org-clock-out (after org-clock-out-after activate) (org-update-all-dblocks))
+
+(add-hook 'org-mode-hook
+          (lambda ()
+                                        ; Keys for org mode
+                                        ;snip
+            (define-key evil-normal-state-map (kbd "gl") 'org-insert-clock-range)
+                                        ;snip
+
+            ))
+
+
 ;;;}}}
 
 
