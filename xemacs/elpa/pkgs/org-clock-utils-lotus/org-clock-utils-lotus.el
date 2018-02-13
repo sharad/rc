@@ -41,7 +41,7 @@
 ;;               (if (and
 ;;                    (org-clock-is-active)
 ;;                    (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-;;                   (org-with-clock-writeable-buffer
+;;                   (org-with-clock-writeable
 ;;                    (let (org-log-note-clock-out)
 ;;                      (if (org-clock-is-active)
 ;;                          (org-clock-out))))))))
@@ -65,7 +65,7 @@
 ;;         (org-clock-is-active)
 ;;         ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
 ;;         )
-;;        (org-with-clock-writeable-buffer
+;;        (org-with-clock-writeable
 ;;         (let (org-log-note-clock-out)
 ;;           (if (org-clock-is-active)
 ;;               (org-clock-out)))))))
@@ -548,6 +548,13 @@ using three `C-u' prefix arguments."
   )
 
 (defun org-clock-add-deadline-on-clockin-if-not ()
+  )
+
+(defun org-define-a-task ()
+  "This function is used to create a org tree to complete a task.
+for e.g. implementing lvm support for guixsd what all steps a person have to take
+he has to read scheme, guixsd details, than see similar module and try to implement it."
+  (interactive)
   )
 ;;;}}}
 

@@ -135,32 +135,33 @@
            (error "No buffer")))))
 (put 'lotus-with-marker 'lisp-indent-function 1)
 
-(defmacro lotus-with-buffer-pos (buffer pos &rest body)
-  `(let ((target-buffer (if ,buffer ,buffer (current-buffer))))
-     (if target-buffer
-         (with-current-buffer target-buffer
-           (message "lotus-with-buffer-pos-new-win: selecting buf %s" target-buffer)
-           (if (<= ,pos (point-max))
-               (progn
-                 (goto-char ,pos)
-                 ,@body)
-               (error "position %d greater than point max %d" ,pos (point-max))))
-         (error "No buffer"))))
-(put 'lotus-with-buffer-pos 'lisp-indent-function 1)
+(defmacro lotus-with-pos (pos &rest body)
+  `(progn
+     (message "lotus-with-buffer-pos-new-win: selecting buf %s" (current-buffer))
+     (if (<= ,pos (point-max))
+         (progn
+           (goto-char ,pos)
+           ,@body)
+         (error "position %d greater than point max %d" ,pos (point-max)))))
+(put 'lotus-with-pos 'lisp-indent-function 1)
+
+;; (defmacro lotus-with-buffer-pos (buffer pos &rest body)
+;;   `(let ((target-buffer (if ,buffer ,buffer (current-buffer))))
+;;      (if target-buffer
+;;          (with-current-buffer target-buffer
+;;            (lotus-with-pos ,@body))
+;;          (error "No buffer"))))
+;; (put 'lotus-with-buffer-pos 'lisp-indent-function 1)
 
 (defmacro lotus-with-file-pos (file pos &rest body)
   `(let ((buff (find-file-noselect ,file)))
      (if buff
-         (lotus-with-buffer-pos
-          buff ,pos
-          ,@body)
-         (error "can not open file %f" file))))
+         (with-current-buffer buff
+           (lotus-with-pos ,pos ,@body))
+         (error "can not open file %f" ,file))))
 (put 'lotus-with-file-pos 'lisp-indent-function 1)
 
 
-
-
-;; move out
 (defmacro lotus-with-marker-new-win (marker newwin &rest body)
   `(when (marker-buffer ,marker)
      (let ((target-buffer (marker-buffer   ,marker))
@@ -177,6 +178,21 @@
                  (error "position %d greater than point max %d" pos (point-max))))
            (error "No buffer")))))
 (put 'org-with-marker-new-win 'lisp-indent-function 1)
+
+(defmacro lotus-with-pos-new-win (pos newwin &rest body)
+  `(let ((target-buffer (current-buffer)))
+     (if target-buffer
+         (lotus-with-new-win ,newwin
+           (message "lotus-with-file-pos-new-win: selecting buf %s in %s win" target-buffer ,newwin)
+           ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
+           (switch-to-buffer target-buffer)
+           (if (<= ,pos (point-max))
+               (progn
+                 (goto-char ,pos)
+                 ,@body)
+               (error "position %d greater than point max %d" ,pos (point-max))))
+         (error "No buffer"))))
+(put 'lotus-with-pos-new-win 'lisp-indent-function 1)
 
 (defmacro lotus-with-buffer-pos-new-win (buffer pos newwin &rest body)
   `(let ((target-buffer (if ,buffer ,buffer (current-buffer))))
@@ -196,10 +212,11 @@
 (defmacro lotus-with-file-pos-new-win (file pos newwin &rest body)
   `(let ((buff (find-file-noselect ,file)))
      (if buff
-         (lotus-with-buffer-pos-new-win
-          buff ,pos
-          ,@body)
-         (error "can not open file %f" file))))
+         (with-current-buffer buff
+           (lotus-with-pos-new-win
+            buff ,pos
+            ,@body))
+         (error "can not open file %f" ,file))))
 (put 'lotus-with-file-pos-new-win 'lisp-indent-function 1)
 
 ;; (query-replace-regexp "org-with-marker-timed-new-win" "lotus-with-marker-timed-new-win" t nil nil nil)
@@ -223,8 +240,8 @@
                (error "position %d greater than point max %d" pos (point-max)))))))
 (put 'lotus-with-marker-timed-new-win 'lisp-indent-function 1)
 
-(defmacro lotus-with-buffer-pos-timed-new-win (buffer pos timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
-  `(let ((target-buffer (if ,buffer ,buffer (current-buffer))))
+(defmacro lotus-with-pos-timed-new-win (pos timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
+  `(let ((target-buffer (current-buffer)))
      (lotus-with-timed-new-win
          ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
          (message "lotus-with-buffer-pos-timed-new-win: selecting buf %s in %s win" target-buffer ,newwin)
@@ -235,13 +252,32 @@
                (goto-char ,pos)
                ,@body)
              (error "position %d greater than point max %d" ,pos (point-max))))))
+(put 'lotus-with-pos-timed-new-win 'lisp-indent-function 1)
+
+(defmacro lotus-with-buffer-pos-timed-new-win (buffer pos timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
+  `(let ((target-buffer (if ,buffer ,buffer (current-buffer))))
+     (if target-buffer
+         (lotus-with-timed-new-win
+             ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
+             (message "lotus-with-buffer-pos-timed-new-win: selecting buf %s in %s win" target-buffer ,newwin)
+             ;; (set-buffer target-buffer) ;; it work temporarily so can not use.
+             (switch-to-buffer target-buffer)
+             (if (<= ,pos (point-max))
+                 (progn
+                   (goto-char ,pos)
+                   ,@body)
+                 (error "position %d greater than point max %d" ,pos (point-max))))
+         (error "No buffer"))))
 (put 'lotus-with-buffer-pos-timed-new-win 'lisp-indent-function 1)
 
 (defmacro lotus-with-file-pos-timed-new-win (file pos timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
   `(let ((target-buffer (find-file-noselect ,file)))
-     (lotus-with-buffer-pos-timed-new-win
-      ,file ,pos ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
-      ,@body)))
+     (if target-buffer
+         (with-current-buffer target-buffer
+           (lotus-with-pos-timed-new-win
+            ,pos ,timeout ,timer ,cleanupfn-newwin ,cleanupfn-local ,newwin
+            ,@body))
+         (error "can not open file %f" ,file))))
 (put 'lotus-with-file-pos-timed-new-win 'lisp-indent-function 1)
 ;; move out
 ;; Misc Macros Ends

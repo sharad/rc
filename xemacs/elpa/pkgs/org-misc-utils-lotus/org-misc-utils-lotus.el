@@ -42,7 +42,7 @@
 
 ;; Misc Macros Starts
 
-(defmacro org-with-clock-writeable-buffer (&rest body)
+(defmacro org-with-clock-writeable (&rest body)
   `(let ((buff (org-base-buffer (marker-buffer org-clock-marker))))
      (when buff
        (with-current-buffer buff
@@ -55,16 +55,20 @@
        ,@body)))
 (put 'org-clock-lotus-with-current-clock 'lisp-indent-function 1)
 
+(defmacro org-with-headline (headline &rest body)
+  `(save-excursion
+     (goto-char (point-min))
+     (let ((pos (org-find-exact-headline-in-buffer ,headline)))
+       (if (<= pos (point-max))
+           (progn
+             (goto-char pos)
+             ,@body)
+           (error "position %d greater than point max %d" pos (point-max))))))
+(put 'org-with-headline 'lisp-indent-function 2)
+
 (defmacro org-with-buffer-headline (buffer headline &rest body)
   `(with-current-buffer (if ,buffer ,buffer (current-buffer))
-     (save-excursion
-       (goto-char (point-min))
-       (let ((pos (org-find-exact-headline-in-buffer ,headline)))
-         (if (<= pos (point-max))
-             (progn
-               (goto-char pos)
-               ,@body)
-             (error "position %d greater than point max %d" pos (point-max)))))))
+     (org-with-headline ,@body)))
 (put 'org-with-buffer-headline 'lisp-indent-function 2)
 
 (defmacro org-with-file-headline (file headline &rest body)
@@ -76,185 +80,6 @@
           ,@body)
          (error "can not open file %s" file))))
 (put 'org-with-file-headline 'lisp-indent-function 2)
-
-;; Refile macros Starts
-(defun safe-org-refile-get-location-p ()
-  (member major-mode safe-org-refile-get-location-modes))
-
-(defun safe-org-refile-get-location ()
-  (let ((org-refile-targets
-         (if (safe-org-refile-get-location-p)
-             org-refile-targets
-             (remove-if '(lambda (e) (null (car e))) org-refile-targets))))
-    (org-refile-get-location)))
-
-;; TODO (replace-buffer-in-windows)
-
-(defun quiet--select-frame (frame &optional norecord)
-  ;; (select-frame frame norecord)
-  (select-frame frame norecord)
-  ;; (raise-frame frame)
-  ;; Ensure, if possible, that FRAME gets input focus.
-  ;; (when (memq (window-system frame) '(x w32 ns))
-  ;;   (x-focus-frame frame))
-  ;; Move mouse cursor if necessary.
-  (cond
-    (mouse-autoselect-window
-     (let ((edges (window-inside-edges (frame-selected-window frame))))
-       ;; Move mouse cursor into FRAME's selected window to avoid that
-       ;; Emacs mouse-autoselects another window.
-       (set-mouse-position frame (nth 2 edges) (nth 1 edges))))
-    (focus-follows-mouse
-     ;; Move mouse cursor into FRAME to avoid that another frame gets
-     ;; selected by the window manager.
-     (set-mouse-position frame (1- (frame-width frame)) 0))))
-
-(defun safe-timed-org-refile-get-location (timeout)
-  ;; TODO: as clean up reset newwin configuration
-  (lexical-let* ((current-command (or
-                                   (helm-this-command)
-                                   this-command))
-                 (str-command     (helm-symbol-name current-command))
-                 (buf-name        (format "*helm-mode-%s*" str-command))
-                 (timer (run-with-idle-timer timeout nil
-                                             #'(lambda (buffname)
-                                                 (let* ((buff (get-buffer buffname))
-                                                        (w (if buff (get-buffer-window buff))))
-                                                   (message "triggered timer for new-win %s" w)
-                                                   (when (and w (windowp w) (window-valid-p w))
-                                                     (delete-window w)
-                                                     (when (active-minibuffer-window)
-                                                       (abort-recursive-edit)
-                                                       (message nil))
-                                                     (when (fboundp 'remove-function)
-                                                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))
-                                             buf-name)))
-    (unwind-protect
-         (progn
-           (when (fboundp 'add-function)
-             (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
-           (safe-org-refile-get-location))
-      (when (fboundp 'remove-function)
-        (remove-function (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
-      (cancel-timer timer))))
-
-(defmacro org-with-refile (file pos refile-targets &rest body)
-  "Refile the active region.
-If no region is active, refile the current paragraph.
-With prefix arg C-u, copy region instad of killing it."
-  ;; mark paragraph if no region is set
-  `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
-          (target (save-excursion (safe-org-refile-get-location)))
-          (,file (nth 1 target))
-          (,pos (nth 3 target)))
-     (with-current-buffer (find-file-noselect ,file)
-       (save-excursion
-         (goto-char ,pos)
-         ,@body))))
-(put 'org-with-refile 'lisp-indent-function 1)
-
-(defmacro org-file-loc-with-refile (file pos refile-targets &rest body)
-  "Refile run body with file and loc set."
-  ;; mark paragraph if no region is set
-  `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
-          (target (save-excursion (safe-org-refile-get-location)))
-          (,file (nth 1 target))
-          (,pos (nth 3 target)))
-     (lotus-with-file-pos ,file ,pos
-                          ,@body)))
-(put 'org-file-loc-with-refile 'lisp-indent-function 1)
-
-;; (defmacro org-timed-file-loc-with-refile (file pos timeout refile-targets &rest body)
-(defmacro org-with-file-loc-timed-refile (file pos timeout refile-targets &rest body)
-  "Refile run body with file and loc set."
-  ;; mark paragraph if no region is set
-  `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
-          (target (save-excursion (safe-timed-org-refile-get-location ,timeout)))
-          (,file (nth 1 target))
-          (,pos (nth 3 target)))
-     (assert ,file)
-     (assert ,pos)
-     (lotus-with-file-pos ,file ,pos
-                          ,@body)))
-(put 'org-with-file-loc-timed-refile 'lisp-indent-function 1)
-
-;; (defmacro org-miniwin-file-loc-with-refile (win file pos refile-targets &rest body)
-(defmacro org-with-file-loc-refile-new-win (file pos refile-targets newwin &rest body)
-  `(org-file-loc-with-refile
-       ,file ,pos ,refile-targets
-       (lotus-with-file-pos-new-win
-           ,file ,pos ,newwin
-           ,@body)))
-(put 'org-miniwin-file-loc-with-refile 'lisp-indent-function 1)
-
-;; (defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets &rest body)
-(defmacro org-with-file-loc-timed-refile-new-win (file pos timeout refile-targets newwin &rest body)
-  `(org-with-file-loc-timed-refile
-       ,file ,pos ,timeout ,refile-targets
-       (lotus-with-file-pos-new-win
-           ,file ,pos ,newwin
-           ,@body)))
-(put 'org-with-file-loc-timed-refile-new-win 'lisp-indent-function 1)
-
-;; (defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets &rest body)
-(defmacro org-with-file-loc-timed-refile-timed-new-win (file pos timeout-refile refile-targets timeout-newwin timer-newwin cleanupfn-newwin cleanupfn-local newwin &rest body)
-  `(org-with-file-loc-timed-refile
-    ,file ,pos ,timeout-refile ,refile-targets
-    (lotus-with-file-pos-timed-new-win
-     ,file ,pos ,timeout-newwin ,timer-newwin ,cleanupfn-newwin ,cleanupfn-local ,newwin ,@body)))
-(put 'org-with-file-loc-timed-refile-timed-new-win 'lisp-indent-function 1)
-
-
-
-;; e.g.
-;; (org-miniwin-file-loc-with-refile nil nil)
-;;)
-;; Refile macros Ends
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;; (progn ;; "move org"
-
-(defun jay/refile-to (file headline)
-  "Move current headline to specified location"
-  (let ((pos (save-excursion
-               (find-file file)
-               (org-find-exact-headline-in-buffer headline))))
-    (org-refile nil nil (list headline file nil pos))))
-
-(defun jay/refile-to-bookmarks ()
-  "Move current headline to bookmarks"
-  (interactive)
-  (org-mark-ring-push)
-  (jay/refile-to "~/Org/bookmarks.org" "New")
-  (org-mark-ring-goto))
-
-;; (save-excursion (safe-org-refile-get-location))
 
 (setq org-refile-targets
       '((nil :maxlevel . 3)           ; only the current file
@@ -274,7 +99,7 @@ With prefix arg C-u, copy region instad of killing it."
   "Where to refile a region. Use 'bottom to refile at the
 end of the subtree. ")
 
-(defun my/org-refile-region (beg end copy)
+(defun lotus-org-refile-region (beg end copy)
   "Refile the active region.
 If no region is active, refile the current paragraph.
 With prefix arg C-u, copy region instad of killing it."
@@ -466,6 +291,192 @@ With prefix arg C-u, copy region instad of killing it."
     (let ((buffer-read-only nil))
       (org-entry-put-multivalued-property nil property values))))
     ;; )
+
+
+;; Refile macros Starts
+(defun safe-org-refile-get-location-p ()
+  (member major-mode safe-org-refile-get-location-modes))
+
+(defun safe-org-refile-get-location ()
+  (let ((org-refile-targets
+         (if (safe-org-refile-get-location-p)
+             org-refile-targets
+             (remove-if '(lambda (e) (null (car e))) org-refile-targets))))
+    (org-refile-get-location)))
+
+;; TODO (replace-buffer-in-windows)
+
+(defun quiet--select-frame (frame &optional norecord)
+  ;; (select-frame frame norecord)
+  (select-frame frame norecord)
+  ;; (raise-frame frame)
+  ;; Ensure, if possible, that FRAME gets input focus.
+  ;; (when (memq (window-system frame) '(x w32 ns))
+  ;;   (x-focus-frame frame))
+  ;; Move mouse cursor if necessary.
+  (cond
+    (mouse-autoselect-window
+     (let ((edges (window-inside-edges (frame-selected-window frame))))
+       ;; Move mouse cursor into FRAME's selected window to avoid that
+       ;; Emacs mouse-autoselects another window.
+       (set-mouse-position frame (nth 2 edges) (nth 1 edges))))
+    (focus-follows-mouse
+     ;; Move mouse cursor into FRAME to avoid that another frame gets
+     ;; selected by the window manager.
+     (set-mouse-position frame (1- (frame-width frame)) 0))))
+
+(defun safe-timed-org-refile-get-location (timeout)
+  ;; TODO: as clean up reset newwin configuration
+  (lexical-let* ((current-command (or
+                                   (helm-this-command)
+                                   this-command))
+                 (str-command     (helm-symbol-name current-command))
+                 (buf-name        (format "*helm-mode-%s*" str-command))
+                 (timer (run-with-idle-timer timeout nil
+                                             #'(lambda (buffname)
+                                                 (let* ((buff (get-buffer buffname))
+                                                        (w (if buff (get-buffer-window buff))))
+                                                   (message "triggered timer for new-win %s" w)
+                                                   (when (and w (windowp w) (window-valid-p w))
+                                                     (delete-window w)
+                                                     (when (active-minibuffer-window)
+                                                       (abort-recursive-edit)
+                                                       (message nil))
+                                                     (when (fboundp 'remove-function)
+                                                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))
+                                             buf-name)))
+    (unwind-protect
+         (progn
+           (when (fboundp 'add-function)
+             (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+           (safe-org-refile-get-location))
+      (when (fboundp 'remove-function)
+        (remove-function (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+      (cancel-timer timer))))
+
+(defmacro org-with-refile (file pos refile-targets &rest body)
+  "Refile the active region.
+If no region is active, refile the current paragraph.
+With prefix arg C-u, copy region instad of killing it."
+  ;; mark paragraph if no region is set
+  `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
+          (target (save-excursion (safe-org-refile-get-location)))
+          (,file (nth 1 target))
+          (,pos (nth 3 target)))
+     (with-current-buffer (find-file-noselect ,file)
+       (save-excursion
+         (goto-char ,pos)
+         ,@body))))
+(put 'org-with-refile 'lisp-indent-function 1)
+
+(defmacro org-file-loc-with-refile (file pos refile-targets &rest body)
+  "Refile run body with file and loc set."
+  ;; mark paragraph if no region is set
+  `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
+          (target (save-excursion (safe-org-refile-get-location)))
+          (,file (nth 1 target))
+          (,pos (nth 3 target)))
+     (lotus-with-file-pos ,file ,pos
+                          ,@body)))
+(put 'org-file-loc-with-refile 'lisp-indent-function 1)
+
+;; (defmacro org-timed-file-loc-with-refile (file pos timeout refile-targets &rest body)
+(defmacro org-with-file-loc-timed-refile (file pos timeout refile-targets &rest body)
+  "Refile run body with file and loc set."
+  ;; mark paragraph if no region is set
+  `(let* ((org-refile-targets (or ,refile-targets org-refile-targets))
+          (target (save-excursion (safe-timed-org-refile-get-location ,timeout)))
+          (,file (nth 1 target))
+          (,pos (nth 3 target)))
+     (assert ,file)
+     (assert ,pos)
+     (lotus-with-file-pos ,file ,pos
+                          ,@body)))
+(put 'org-with-file-loc-timed-refile 'lisp-indent-function 1)
+
+;; (defmacro org-miniwin-file-loc-with-refile (win file pos refile-targets &rest body)
+(defmacro org-with-file-loc-refile-new-win (file pos refile-targets newwin &rest body)
+  `(org-file-loc-with-refile
+       ,file ,pos ,refile-targets
+       (lotus-with-file-pos-new-win
+           ,file ,pos ,newwin
+           ,@body)))
+(put 'org-miniwin-file-loc-with-refile 'lisp-indent-function 1)
+
+;; (defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets &rest body)
+(defmacro org-with-file-loc-timed-refile-new-win (file pos timeout refile-targets newwin &rest body)
+  `(org-with-file-loc-timed-refile
+       ,file ,pos ,timeout ,refile-targets
+       (lotus-with-file-pos-new-win
+           ,file ,pos ,newwin
+           ,@body)))
+(put 'org-with-file-loc-timed-refile-new-win 'lisp-indent-function 1)
+
+;; (defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets &rest body)
+(defmacro org-with-file-loc-timed-refile-timed-new-win (file pos
+                                                        timeout-refile refile-targets
+                                                        timeout-newwin timer-newwin
+                                                        cleanupfn-newwin cleanupfn-local
+                                                        newwin
+                                                        &rest body)
+  `(org-with-file-loc-timed-refile
+    ,file ,pos ,timeout-refile ,refile-targets
+    (lotus-with-file-pos-timed-new-win
+     ,file ,pos ,timeout-newwin ,timer-newwin ,cleanupfn-newwin ,cleanupfn-local ,newwin ,@body)))
+(put 'org-with-file-loc-timed-refile-timed-new-win 'lisp-indent-function 1)
+
+
+
+;; e.g.
+;; (org-miniwin-file-loc-with-refile nil nil)
+;;)
+;; Refile macros Ends
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; (progn ;; "move org"
+
+(defun jay/refile-to (file headline)
+  "Move current headline to specified location"
+  (let ((pos (save-excursion
+               (find-file file)
+               (org-find-exact-headline-in-buffer headline))))
+    (org-refile nil nil (list headline file nil pos))))
+
+(defun jay/refile-to-bookmarks ()
+  "Move current headline to bookmarks"
+  (interactive)
+  (org-mark-ring-push)
+  (jay/refile-to "~/Org/bookmarks.org" "New")
+  (org-mark-ring-goto))
+
+;; (save-excursion (safe-org-refile-get-location))
+
 
   ;; (progn ;; "org log note"
 (setq org-log-into-drawer "LOGBOOK")
