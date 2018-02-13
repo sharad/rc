@@ -612,5 +612,9 @@ he has to read scheme, guixsd details, than see similar module and try to implem
 ;;;}}}
 
 
+
+;;; FOR WORKING FAST START CREATING TEMPLATE OR EMPTY FUNCTION BODY.
+
+
 (provide 'org-clock-utils-lotus)
 ;;; org-clock-utils-lotus.el ends here
