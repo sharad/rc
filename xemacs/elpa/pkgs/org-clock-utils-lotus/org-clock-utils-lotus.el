@@ -496,7 +496,7 @@ using three `C-u' prefix arguments."
       (org-global-put-property "TASKNUM" (number-to-string (1+ tasknum)))
       tasknum)))
 
-(defun lotus-org-create-unnamed-task (file task)
+(defun lotus-org-create-unnamed-task (&optional file task)
   (interactive
    (let ((file *lotus-org-unnamed-task-file*)
          (task *lotus-org-unnamed-parent-task-name*))
@@ -514,7 +514,7 @@ using three `C-u' prefix arguments."
      t)
     task))
 
-(defun lotus-org-create-unnamed-task-task-clock-in (file parent-task task)
+(defun lotus-org-create-unnamed-task-task-clock-in (&optional file parent-task task)
   (interactive
    (let ((file *lotus-org-unnamed-task-file*)
          (parent-task *lotus-org-unnamed-parent-task-name*)
