@@ -140,15 +140,19 @@
          (float-time (time-since unassociate-context-start-time))
          *org-context-clock-swapen-unnamed-threashold-interval*))))
 
+(defun org-clock-marker-is-unnamed-clock-p (clock)
+  (let ((clock (or clock org-clock-marker)))
+    (and
+     clock
+     *lotus-org-unnamed-task-clock-marker*
+     (equal
+      (marker-buffer org-clock-marker)
+      (marker-buffer *lotus-org-unnamed-task-clock-marker*)))))
+
 (defun org-context-clock-maybe-create-unnamed-task ()
   (when (org-context-clock-can-create-unnamed-task-p)
     (let ((org-log-note-clock-out nil))
-      (if (and
-           org-clock-marker
-           *lotus-org-unnamed-task-clock-marker*
-           (equal
-            (marker-buffer org-clock-marker)
-            (marker-buffer *lotus-org-unnamed-task-clock-marker*)))
+      (if (org-clock-marker-is-unnamed-clock-p)
           (org-context-clock-debug :debug "org-context-clock-maybe-create-unnamed-task: Already clockin unnamed task")
           (prog1
               (lotus-org-create-unnamed-task-task-clock-in)
@@ -185,7 +189,9 @@
             (progn
               (setq
                *org-context-clock-task-previous-context* *org-context-clock-task-current-context*)
-              (if (> (org-context-clock-current-task-associated-to-context-p context) 0)
+              (if (and
+                   (not (org-clock-marker-is-unnamed-clock-p))
+                   (> (org-context-clock-current-task-associated-to-context-p context) 0))
                   (progn
                     (org-context-clock-debug :debug "org-context-clock-update-current-context: Current task already associate to %s" context))
 
