@@ -488,6 +488,7 @@ using three `C-u' prefix arguments."
 (defvar *lotus-org-unnamed-task-file*        "~/Unnamed.org")
 (defvar *lotus-org-unnamed-parent-task-name* "Unnamed tasks")
 (defvar *lotus-org-unnamed-task-name-fmt*    "Unnamed task %d")
+(defvar *lotus-org-unnamed-task-clock-marker* nil)
 
 (defun lotus-org-get-incr-tasknum (&optional buffer)
   (with-current-buffer (or buffer (current-buffer))
@@ -503,16 +504,17 @@ using three `C-u' prefix arguments."
      (list file task)))
 
   (let ((file (or file *lotus-org-unnamed-task-file*))
-        (task (or task *lotus-org-unnamed-parent-task-name*)))
+        (task (or task *lotus-org-unnamed-parent-task-name*))
+        (subtask (format *lotus-org-unnamed-task-name-fmt*
+                         ;; (lotus-org-get-incr-tasknum (find-file-noselect file))
+                         (1+ (org-with-file-headline file task (org-number-of-subheadings))))))
     (org-find-heading-marker file task t)
     (org-insert-subheading-to-file-headline
-     (format *lotus-org-unnamed-task-name-fmt*
-             ;; (lotus-org-get-incr-tasknum (find-file-noselect file))
-             (1+ (org-with-file-headline file task (org-number-of-subheadings))))
+     subtask
      file
      task
      t)
-    task))
+    subtask))
 
 (defun lotus-org-create-unnamed-task-task-clock-in (&optional file parent-task task)
   (interactive
@@ -525,7 +527,12 @@ using three `C-u' prefix arguments."
     (org-with-file-headline
         file
         (lotus-org-create-unnamed-task file parent-task)
-      (org-clock-in))))
+      (org-clock-in)
+      (setq
+       *lotus-org-unnamed-task-clock-marker*
+       (mark-marker)))))
+
+(lotus-org-create-unnamed-task "~/Unnamed.org" "Unnamed tasks")
 
 (defun org-clock-make-child-task-and-clock-in ()
   ;; TODO

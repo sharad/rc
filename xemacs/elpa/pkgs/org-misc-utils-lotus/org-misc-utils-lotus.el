@@ -68,16 +68,14 @@
 
 (defmacro org-with-buffer-headline (buffer headline &rest body)
   `(with-current-buffer (if ,buffer ,buffer (current-buffer))
-     (org-with-headline ,@body)))
+     (org-with-headline ,headline ,@body)))
 (put 'org-with-buffer-headline 'lisp-indent-function 2)
 
 (defmacro org-with-file-headline (file headline &rest body)
   `(let ((buff (find-file-noselect ,file)))
      (if buff
-         (org-with-buffer-headline
-          buff
-          ,headline
-          ,@body)
+         (with-current-buffer buff
+           (org-with-headline ,headline ,@body))
          (error "can not open file %s" file))))
 (put 'org-with-file-headline 'lisp-indent-function 2)
 
@@ -262,6 +260,7 @@ With prefix arg C-u, copy region instad of killing it."
             (progn
               (beginning-of-line)
               (end-of-line 1)
+              (org-end-of-subtree)
               (org-insert-subheading nil)))
       (insert (format org-refile-string-format subheading)))))
 
