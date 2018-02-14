@@ -156,8 +156,23 @@
       (let ((org-log-note-clock-out nil))
         (lotus-org-create-unnamed-task-task-clock-in))))
 
+(defun org-context-clock-update-current-context-unconditionally (context)
+  (progn
+   (if (> (org-context-clock-current-task-associated-to-context-p context) 0)
+       (progn
+         (org-context-clock-debug :debug "org-context-clock-update-current-context: Current task already associate to %s" context))
+
+       (progn                ;current clock is not matching
+         (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really going to clock.")
+         (if (org-context-clock-task-run-associated-clock context)
+             (org-context-clock-unassociate-context-start-time-reset)
+             ;; not able to find associated, or intentionally not selecting a clock
+             (org-context-clock-maybe-create-unnamed-task))
+         (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really clock done.")))))
+
 ;;;###autoload
-(defun org-context-clock-update-current-context ()
+(defun org-context-clock-update-current-context (&optional force)
+  (interactive "P")
   (if (> (float-time (time-since *org-context-clock-last-buffer-select-time*))
          *org-context-clock-task-current-context-time*)
       (let* ((context (org-context-clock-build-context))
@@ -173,17 +188,16 @@
             (progn
               (setq
                *org-context-clock-task-previous-context* *org-context-clock-task-current-context*)
-
               (if (> (org-context-clock-current-task-associated-to-context-p context) 0)
                   (progn
                     (org-context-clock-debug :debug "org-context-clock-update-current-context: Current task already associate to %s" context))
 
                   (progn                ;current clock is not matching
                     (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really going to clock.")
-                    (if (org-context-clock-task-run-associated-clock context)
-                        (org-context-clock-unassociate-context-start-time-reset)
-                        ;; not able to find associated, or intentionally not selecting a clock
-                        (org-context-clock-maybe-create-unnamed-task))
+                    (unless (org-context-clock-task-run-associated-clock context)
+                      (org-context-clock-unassociate-context-start-time-reset)
+                      ;; not able to find associated, or intentionally not selecting a clock
+                      (org-context-clock-maybe-create-unnamed-task))
                     (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really clock done."))))
 
             (org-context-clock-debug :debug "org-context-clock-update-current-context: context %s not suitable to associate" context)))
