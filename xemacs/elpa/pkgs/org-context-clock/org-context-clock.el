@@ -127,13 +127,16 @@
 
 (defvar *org-context-clock-unassociate-context-start-time* (current-time))
 (defvar *org-context-clock-swapen-unnamed-threashold-interval* (* 60 2)) ;2 mins
+
+(defun org-context-clock-unassociate-context-start-time-reset ()
+  (setq *org-context-clock-unassociate-context-start-time* (current-time)))
+
 (defun org-context-clock-can-create-unnamed-task-p ()
   (let ((unassociate-context-start-time *org-context-clock-unassociate-context-start-time*))
     (prog1
         (>
          (float-time (time-since unassociate-context-start-time))
-         *org-context-clock-swapen-unnamed-threashold-interval*)
-      (setq *org-context-clock-unassociate-context-start-time* (current-time)))))
+         *org-context-clock-swapen-unnamed-threashold-interval*))))
 
 (defun org-context-clock-changable-p ()
   (if org-clock-start-time
@@ -172,13 +175,15 @@
                *org-context-clock-task-previous-context* *org-context-clock-task-current-context*)
 
               (if (> (org-context-clock-current-task-associated-to-context-p context) 0)
-                  (org-context-clock-debug :debug "org-context-clock-update-current-context: Current task already associate to %s" context)
+                  (progn
+                    (org-context-clock-debug :debug "org-context-clock-update-current-context: Current task already associate to %s" context))
 
                   (progn                ;current clock is not matching
                     (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really going to clock.")
-                    (unless (org-context-clock-task-run-associated-clock context)
-                      ;; not able to find associated, or intentionally not selecting a clock
-                      (org-context-clock-maybe-create-unnamed-task))
+                    (if (org-context-clock-task-run-associated-clock context)
+                        (org-context-clock-unassociate-context-start-time-reset)
+                        ;; not able to find associated, or intentionally not selecting a clock
+                        (org-context-clock-maybe-create-unnamed-task))
                     (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really clock done."))))
 
             (org-context-clock-debug :debug "org-context-clock-update-current-context: context %s not suitable to associate" context)))
