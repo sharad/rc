@@ -148,11 +148,25 @@
   '(when (featurep 'notify)
     (require 'notify)))
 
-(defun lotus-message-notify (title fmt &rest body)
-  (message "%s: %s" title (apply 'format fmt body))
+;; (defun lotus-message-notify (title fmt &rest args)
+;;   (message "%s: %s"
+;;            title
+;;            (apply 'format fmt
+;;                   (mapcar #'prin1-to-string args)))
+;;   (when (fboundp 'notify)
+;;     (notify title
+;;             (apply 'format fmt
+;;                    (mapcar #'prin1-to-string args)))))
+
+(defun lotus-message-notify (title fmt &rest args)
+  (message "%s: %s"
+           title
+           (apply 'format fmt
+                  args))
   (when (fboundp 'notify)
     (notify title
-            (apply 'format fmt body))))
+            (apply 'format fmt
+                   args))))
 
 (defun add-to-hook (hook fn &optional append local)
   (interactive)

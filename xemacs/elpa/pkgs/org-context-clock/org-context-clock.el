@@ -125,27 +125,33 @@
          (context (list :file file :buffer buff)))
     context))
 
-(defvar *org-context-clock-unassocate-context-start-time* (current-time))
+(defvar *org-context-clock-unassociate-context-start-time* (current-time))
 (defvar *org-context-clock-swapen-unnamed-threashold-interval* (* 60 2)) ;2 mins
 (defun org-context-clock-can-create-unnamed-task-p ()
   (let ((unassociate-context-start-time *org-context-clock-unassociate-context-start-time*))
     (prog1
         (>
-         (float (time-since unassociate-context-start-time))
+         (float-time (time-since unassociate-context-start-time))
          *org-context-clock-swapen-unnamed-threashold-interval*)
       (setq *org-context-clock-unassociate-context-start-time* (current-time)))))
+
+(defun org-context-clock-changable-p ()
+  (if org-clock-start-time
+      (let ((clock-duration
+             (if (and
+                  (stringp org-clock-start-time)
+                  (string-equal "" org-clock-start-time))
+                 0
+                 (float-time (time-since org-clock-start-time)))))
+        (or
+         (< clock-duration 60)
+         (> clock-duration 120)))
+      t))
 
 (defun org-context-clock-maybe-create-unnamed-task ()
     (when (org-context-clock-can-create-unnamed-task-p)
       (let ((org-log-note-clock-out nil))
         (lotus-org-create-unnamed-task-task-clock-in))))
-(defun org-context-clock-changable-p ()
-  (if org-clock-start-time
-      (let ((clock-duration (float-time (time-since org-clock-start-time))))
-        (or
-         (< clock-duration 60)
-         (> clock-duration 120)))
-    t))
 
 ;;;###autoload
 (defun org-context-clock-update-current-context ()
@@ -167,6 +173,7 @@
 
               (if (> (org-context-clock-current-task-associated-to-context-p context) 0)
                   (org-context-clock-debug :debug "org-context-clock-update-current-context: Current task already associate to %s" context)
+
                   (progn                ;current clock is not matching
                     (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really going to clock.")
                     (unless (org-context-clock-task-run-associated-clock context)

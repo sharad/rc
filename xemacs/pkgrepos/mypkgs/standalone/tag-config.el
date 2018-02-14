@@ -420,6 +420,7 @@
       ad-do-it
       (gtags-reset-env))
 
+    ;; (ad-disable-advice 'gtags-find-tag 'around 'set-gtags-libdirs)
     ;; (ad-disable-advice 'gtags-find-tag 'before 'set-gtags-libdirs)
     ;; (ad-enable-advice 'gtags-find-tag 'before 'set-gtags-libdirs)
     ;; (ad-update 'gtags-find-tag)
