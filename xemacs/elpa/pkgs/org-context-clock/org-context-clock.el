@@ -125,14 +125,15 @@
          (context (list :file file :buffer buff)))
     context))
 
-(defvar *org-context-clock-unassociate-context-start-time* (current-time))
+(defvar *org-context-clock-unassociate-context-start-time* nil)
 (defvar *org-context-clock-swapen-unnamed-threashold-interval* (* 60 2)) ;2 mins
 
 (defun org-context-clock-unassociate-context-start-time-reset ()
-  (unless *org-context-clock-unassociate-context-start-time*
-    (setq *org-context-clock-unassociate-context-start-time* (current-time))))
+  (setq *org-context-clock-unassociate-context-start-time* nil))
 
 (defun org-context-clock-can-create-unnamed-task-p ()
+  (unless *org-context-clock-unassociate-context-start-time*
+    (setq *org-context-clock-unassociate-context-start-time* (current-time)))
   (let ((unassociate-context-start-time *org-context-clock-unassociate-context-start-time*))
     (prog1
         (>
@@ -149,7 +150,9 @@
             (marker-buffer org-clock-marker)
             (marker-buffer *lotus-org-unnamed-task-clock-marker*)))
           (org-context-clock-debug :debug "org-context-clock-maybe-create-unnamed-task: Already clockin unnamed task")
-          (lotus-org-create-unnamed-task-task-clock-in)))))
+          (prog1
+              (lotus-org-create-unnamed-task-task-clock-in)
+            (org-context-clock-unassociate-context-start-time-reset))))))
 
 (defun org-context-clock-changable-p ()
   (if org-clock-start-time
@@ -190,7 +193,6 @@
                     (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really going to clock.")
                     (unless (org-context-clock-task-run-associated-clock context)
                       ;; not able to find associated, or intentionally not selecting a clock
-                      (org-context-clock-unassociate-context-start-time-reset)
                       (org-context-clock-maybe-create-unnamed-task))
                     (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really clock done."))))
 
