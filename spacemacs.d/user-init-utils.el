@@ -436,6 +436,13 @@ variable."
   ;; limiting gnus messages
   (setq gnus-verbose 1)
   (set-default-face-height-by-resolution)
+
+  (progn
+    ;; BUG TODO INQ(inquery)
+    ;; don't why it is not happening in spacemacs, while vanilla emacs has this
+    ;; it can be found in bindings.el
+    ;; why it was not loaded, can be load it in spacemacs.
+   (define-key ctl-x-map "r" ctl-x-r-map))
   (message "loading lotus-necessary-functionality finished"))
 
 (progn                                  ;debug testing code
