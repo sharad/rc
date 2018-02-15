@@ -527,7 +527,7 @@ using three `C-u' prefix arguments."
     (org-with-file-headline
         file
         (lotus-org-create-unnamed-task file parent-task)
-      (org-entry-put nil "Effort" "10m")
+      (org-entry-put nil "Effort" "0:10")
       (org-clock-in)
       (setq
        *lotus-org-unnamed-task-clock-marker*
