@@ -384,8 +384,8 @@ define_webjump("youtube-user", "http://youtube.com/profile_videos?user=%s");
 
 // 2.4.1. Google Finance
 
-define_webjump("finance1", "https://www.google.com/finance?q=%s");
-define_webjump("finance", "https://finance.google.com/finance?q=%s");
+define_webjump("finance1/stock/google", "https://www.google.com/finance?q=%s");
+define_webjump("finance/stock/google", "https://finance.google.com/finance?q=%s");
 
 // 2.5. Games
 
@@ -892,19 +892,19 @@ define_webjump("lispdocfull",
 
 // "http://search.businessweek.com/Search?q=%s&resultsperpage=20&searchterm=%s&sortby=relevance&u1=searchterm"
 
-define_webjump("company",
+define_webjump("finance/company/bw",
                "http://search.businessweek.com/Search?searchTerm=%s&resultsPerPage=20");
 
-define_webjump("stock-us",
+define_webjump("finance/stock-us/bw",
                "http://investing.businessweek.com/research/stocks/snapshot/snapshot.asp?ticker=%s:US");
 
-define_webjump("stock-india",
+define_webjump("finance/stock-india/bw",
                "http://investing.businessweek.com/research/stocks/snapshot/snapshot.asp?ticker=%s:IN");
 
-define_webjump("stock",
+define_webjump("finance/stock/bw",
                "http://investing.businessweek.com/research/common/symbollookup/symbollookup.asp?textIn=%s");
 
-define_webjump("trade",
+define_webjump("finance/trade/etrade",
                "https://us.etrade.com/e/t/home");
 
 define_webjump("book/flipkart",
@@ -931,7 +931,7 @@ define_webjump("clip",
 
 
 //{{ Stock
-define_webjump("stock/income-statement",
+define_webjump("finance/stock/yahoo/income-statement",
                "http://finance.yahoo.com/q/is?s=%s");
 //}} Stock
 

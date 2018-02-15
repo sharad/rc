@@ -46,7 +46,10 @@
              (mapcar
               '(lambda (fn)
                 (funcall fn context task))
-              org-context-clock-task-associated-context-rank-fns))
+
+              ;; BUG TODO below one is free variable
+              org-context-clock-task-associated-context-rank-fns
+              ))
       0))
 
 (org-context-clock-assoc-api-set :rank :taskp   'org-context-clock-task-associated-to-context-by-rank-p)

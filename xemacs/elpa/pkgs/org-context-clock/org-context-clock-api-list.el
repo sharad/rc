@@ -29,7 +29,7 @@
 ;;;###autoload
 (defun org-context-clock-setup-entry-list-files (files)
   (setq
-   org-context-clock-entry-list-files file))
+   org-context-clock-entry-list-files files))
 
 ;; "org tasks access api for list org"
 (defvar org-context-clock-entry-list-tasks nil "org entry task infos")

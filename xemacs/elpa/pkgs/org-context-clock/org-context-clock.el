@@ -146,7 +146,7 @@
          (float-time (time-since unassociate-context-start-time))
          *org-context-clock-swapen-unnamed-threashold-interval*))))
 
-(defun org-clock-marker-is-unnamed-clock-p (clock)
+(defun org-clock-marker-is-unnamed-clock-p (&optional clock)
   (let ((clock (or clock org-clock-marker)))
     (and
      clock

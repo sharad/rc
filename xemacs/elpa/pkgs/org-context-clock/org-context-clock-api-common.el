@@ -47,7 +47,9 @@ inside loops."
         ;; (when (and (consp gnus-action-message-log)
         ;;            (<= level 3))
         ;;   (push message gnus-action-message-log))
-        message)
+        (progn
+          ;; not doing anything
+          ))
       ;; We have to do this format thingy here even if the result isn't
       ;; shown - the return value has to be the same as the return value
       ;; from `message'.
