@@ -148,25 +148,36 @@
   '(when (featurep 'notify)
     (require 'notify)))
 
-;; (defun lotus-message-notify (title fmt &rest args)
-;;   (message "%s: %s"
-;;            title
-;;            (apply 'format fmt
-;;                   (mapcar #'prin1-to-string args)))
-;;   (when (fboundp 'notify)
-;;     (notify title
-;;             (apply 'format fmt
-;;                    (mapcar #'prin1-to-string args)))))
+(defun lotus-may-stringfy (obj)
+  (cond
+    ((numberp obj) obj)
+    (t (prin1-to-string obj))))
 
 (defun lotus-message-notify (title fmt &rest args)
+  (unless (stringp title)
+    (error "lotus-message-notify title %s argument is not string." title))
+  (unless (stringp fmt)
+    (error "lotus-message-notify fmt %s argument is not string." fmt))
   (message "%s: %s"
            title
            (apply 'format fmt
-                  args))
+                  (mapcar #'lotus-may-stringfy args)))
   (when (fboundp 'notify)
     (notify title
             (apply 'format fmt
-                   args))))
+                   (mapcar #'lotus-may-stringfy args)))))
+
+;; (defun lotus-message-notify (title fmt &rest args)
+;;   (unless (stringp title)
+;;     (error "lotus-message-notify title %s argument is not string." title))
+;;   (unless (stringp fmt)
+;;     (error "lotus-message-notify fmt %s argument is not string." fmt))
+;;   (message "%s: %s"
+;;            title
+;;            args)
+;;   (when (fboundp 'notify)
+;;     (notify title
+;;             args)))
 
 (defun add-to-hook (hook fn &optional append local)
   (interactive)
@@ -185,7 +196,7 @@
           (lotus-message-notify "run-each-hooks" "%s: running %s" hook f)
           (funcall f))
       (error
-       (lotus-message-notify "run-each-hooks Error: function %s error %s" f e)))))
+       (lotus-message-notify "run-each-hooks" "Error: function %s error %s" f e)))))
 
 (defun run-each-debug-hooks (hook)
   (dolist (f (symbol-value hook))
@@ -194,7 +205,7 @@
           (lotus-message-notify "run-each-hooks" "%s: running %s" hook f)
           (funcall f))
       (error
-       (lotus-message-notify "run-each-hooks Error: function %s error %s" f e)))))
+       (lotus-message-notify "run-each-hooks" "Error: function %s error %s" f e)))))
 
 
 

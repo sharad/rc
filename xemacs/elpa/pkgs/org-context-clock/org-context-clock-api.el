@@ -92,19 +92,19 @@
 ;; (org-context-clock-debug :debug "hello %s[%d]" "test" 11)
 
 
-(require 'org-context-clock-api-list) ;; "org tasks access api for list org"
+;; (require 'org-context-clock-api-list) ;; "org tasks access api for list org"
 
-(require 'org-context-clock-api-recursive) ;; "org tasks access api for recursive task"
+;; (require 'org-context-clock-api-recursive) ;; "org tasks access api for recursive task"
 
-(require 'org-context-clock-api-interaction) ;; "Interactive utitlity API's for adding root subtree etc"
+;; (require 'org-context-clock-api-interaction) ;; "Interactive utitlity API's for adding root subtree etc"
 
 
-;; "org tasks clocking's API"
-(require 'org-context-clock-assoc-predicate) ;; "Org tasks associated to context predicate functions"
+;; ;; "org tasks clocking's API"
+;; (require 'org-context-clock-assoc-predicate) ;; "Org tasks associated to context predicate functions"
 
-(require 'org-context-clock-assoc-rank) ;; "Org tasks associated to context rank functions"
+;; (require 'org-context-clock-assoc-rank) ;; "Org tasks associated to context rank functions"
 
-(require 'org-context-clock-assoc-key) ;; "Org tasks associated to context key functions on recursive taskinfos"
+;; (require 'org-context-clock-assoc-key) ;; "Org tasks associated to context key functions on recursive taskinfos"
 
 ;; API end here
 

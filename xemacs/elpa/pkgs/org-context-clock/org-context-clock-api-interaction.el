@@ -37,11 +37,11 @@
 
 (require 'org-context-clock-assoc-common)
 
-(defun org-context-clock-get-property (prop)
-  (org-get-property prop))
+(defun org-context-clock-get-property (prop-key)
+  (org-get-property prop-key))
 
-(defun org-context-clock-set-property (key value context &rest args)
-  (org-set-property prop
+(defun org-context-clock-set-property (prop-key value context &rest args)
+  (org-set-property prop-key
                     (if value
                         value
                         (funcall
