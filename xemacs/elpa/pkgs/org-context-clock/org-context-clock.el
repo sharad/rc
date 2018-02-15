@@ -54,7 +54,7 @@
 
 (defvar *org-context-clock-task-current-context*  nil)
 (defvar *org-context-clock-task-previous-context* nil)
-(defvar *org-context-clock-task-current-context-time* 2)
+(defvar *org-context-clock-task-current-context-time-interval* 7)
 (defvar *org-context-clock-last-buffer-select-time* (current-time))
 (defvar *org-context-clock-buffer-select-timer* nil)
 (defvar *org-context-clock-update-current-context-msg* "")
@@ -181,7 +181,7 @@
 (defun org-context-clock-update-current-context (&optional force)
   (interactive "P")
   (if (> (float-time (time-since *org-context-clock-last-buffer-select-time*))
-         *org-context-clock-task-current-context-time*)
+         *org-context-clock-task-current-context-time-interval*)
       (let* ((context (org-context-clock-build-context))
              (buff          (plist-get context :buffer)))
         (setq *org-context-clock-task-current-context*  context)
@@ -323,7 +323,7 @@
           ;; distrubing while editing.
           ;; (run-with-timer
           (run-with-idle-timer
-           (1+ *org-context-clock-task-current-context-time*)
+           (1+ *org-context-clock-task-current-context-time-interval*)
            nil
            'org-context-clock-update-current-context))))
 
