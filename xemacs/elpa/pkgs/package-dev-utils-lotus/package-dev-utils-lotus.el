@@ -413,6 +413,7 @@
                 (progn
                   (message "installing dep %s %s" dep (symbolp dep))
                   (package-install dep-desc)
+                  (sleep-for *package-install-packages-wait-secs-in-install*)
                   (message "Installed dependency package %s" dep)))))
         (message "dependencies installed %s" dependencies-external))
 
@@ -424,6 +425,7 @@
                 (pkg (package-desc-package-from-dir pkg-path)))
             (message "Installing %s" pkg-path)
             (package-install pkg)
+            (sleep-for *package-install-packages-wait-secs-in-install*)
             (message "Installed %s" pkg-path)))
         (message "Installed all packages from %s" base)))))
 

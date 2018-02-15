@@ -27,6 +27,8 @@
 
 ;; "org tasks access api for recursive task"
 
+(require 'org-context-clock-api)
+
 (defvar org-context-clock-task-tree-task-root-org-file nil
   "Root file to build recursive org tasks tree")
 
