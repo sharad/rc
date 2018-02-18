@@ -72,6 +72,11 @@
       in-plist
       (cons (car in-plist) (custom-plist-keys (cddr in-plist)))))
 
+(defun org-context-clock-disable-for (time)
+  "Disable context clocking for TIME period."
+  ;; Implement
+  )
+
 ;;;###autoload
 (defun org-context-clock-api ()
   "org task clocking select api to use."

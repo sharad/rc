@@ -309,7 +309,7 @@ using three `C-u' prefix arguments."
       (org-deadline nil))))
 
 (defun org-clock-add-schedule-if-not-clockin-hook ()
-  (let ((schedule (org-get-schedule-time nil)))
+  (let ((schedule (org-get-scheduled-time nil)))
     (unless schedule
       (org-schedule nil))))
 
@@ -317,10 +317,10 @@ using three `C-u' prefix arguments."
 (defun org-clock-add-deadline-schedule-if-not-clockin-hook ()
   (unless (lotus-org-unnamed-task-at-point-p)
     (org-clock-add-schedule-if-not-clockin-hook)
-    (when (org-get-schedule-time nil)
+    (when (org-get-scheduled-time nil)
       (org-clock-add-deadline-if-not-clockin-hook))))
 
-
+;; (org-update-all-dblocks) check about it
 
 (defun org-timer-cleanup-clockout-hook ()
   (if (and
