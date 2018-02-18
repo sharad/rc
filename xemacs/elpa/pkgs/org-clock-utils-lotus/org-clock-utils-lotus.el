@@ -533,7 +533,12 @@ using three `C-u' prefix arguments."
        *lotus-org-unnamed-task-clock-marker*
        (mark-marker)))))
 
-(lotus-org-create-unnamed-task "~/Unnamed.org" "Unnamed tasks")
+;; (lotus-org-create-unnamed-task "~/Unnamed.org" "Unnamed tasks")
+
+(defun lotus-org-merge-unnamed-task-at-point ()
+  (interactive)
+  ;; Implement
+  )
 
 (defun org-clock-make-child-task-and-clock-in ()
   ;; TODO
