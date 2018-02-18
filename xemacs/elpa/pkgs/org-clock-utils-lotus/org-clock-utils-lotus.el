@@ -284,35 +284,63 @@ using three `C-u' prefix arguments."
 (defun org-clock-in-if-not-at-time-delay-frame-fn ()
   (org-clock-in-if-not-at-time-delay))
 
+(defun org-add-effort-if-not-clockin-hook ()
+  ;; ;; if effort is not present than add it.
+  ;; (unless (org-entry-get nil "Effort")
+  ;;   (save-excursion
+  ;;    (org-set-effort)))
+  ;; set timer
+  (unless (lotus-org-unnamed-task-at-point-p)
+    (when (not
+           (and
+            (boundp' org-timer-countdown-timer)
+            org-timer-countdown-timer))
+      (if (org-entry-get nil "Effort")
+          (save-excursion
+            (forward-line -2)
+            (org-timer-set-timer))
+          (call-interactively 'org-timer-set-timer)))
+    (save-buffer)
+    (org-save-all-org-buffers)))
+
+(defun org-clock-add-deadline-if-not-clockin-hook ()
+  (let ((deadline (org-get-deadline-time nil)))
+    (unless deadline
+      (org-deadline nil))))
+
+(defun org-clock-add-schedule-if-not-clockin-hook ()
+  (let ((schedule (org-get-schedule-time nil)))
+    (unless schedule
+      (org-schedule nil))))
+
+
+(defun org-clock-add-deadline-schedule-if-not-clockin-hook ()
+  (unless (lotus-org-unnamed-task-at-point-p)
+    (org-clock-add-schedule-if-not-clockin-hook)
+    (when (org-get-schedule-time nil)
+      (org-clock-add-deadline-if-not-clockin-hook))))
+
+
+
+(defun org-timer-cleanup-clockout-hook ()
+  (if (and
+       (boundp' org-timer-countdown-timer)
+       org-timer-countdown-timer)
+      (org-timer-stop))
+  (org-clock-get-work-day-clock-string t)
+  (save-buffer)
+  (org-save-all-org-buffers))
+
 ;;;###autoload
 (defun lotus-org-clock-in/out-insinuate-hooks ()
   (add-hook 'org-clock-in-hook
-            '(lambda ()
-              ;; ;; if effort is not present than add it.
-              ;; (unless (org-entry-get nil "Effort")
-              ;;   (save-excursion
-              ;;    (org-set-effort)))
-              ;; set timer
-              (when (not
-                     (and
-                      (boundp' org-timer-countdown-timer)
-                      org-timer-countdown-timer))
-                (if (org-entry-get nil "Effort")
-                    (save-excursion
-                      (forward-line -2)
-                      (org-timer-set-timer))
-                    (call-interactively 'org-timer-set-timer)))
-              (save-buffer)
-              (org-save-all-org-buffers)))
+            #'org-clock-add-deadline-schedule-if-not-clockin-hook)
+  (add-hook 'org-clock-in-hook
+            #'org-add-effort-if-not-clockin-hook)
+
+
   (add-hook 'org-clock-out-hook
-            '(lambda ()
-              (if (and
-                   (boundp' org-timer-countdown-timer)
-                   org-timer-countdown-timer)
-                  (org-timer-stop))
-              (org-clock-get-work-day-clock-string t)
-              (save-buffer)
-              (org-save-all-org-buffers))))
+            #'org-timer-cleanup-clockout-hook))
 
 
 
@@ -533,7 +561,28 @@ using three `C-u' prefix arguments."
        *lotus-org-unnamed-task-clock-marker*
        (mark-marker)))))
 
-(lotus-org-create-unnamed-task "~/Unnamed.org" "Unnamed tasks")
+(defun org-clock-marker-is-unnamed-clock-p (&optional clock)
+  (let ((clock (or clock org-clock-marker)))
+    (and
+     clock
+     *lotus-org-unnamed-task-clock-marker*
+     (equal
+      (marker-buffer org-clock-marker)
+      (marker-buffer *lotus-org-unnamed-task-clock-marker*)))))
+
+(defun lotus-org-unnamed-task-at-point-p ()
+  (let ((element (org-element-at-point)))
+    (if (and
+         element
+         (eq (car element) 'headline))
+        (let (;; (begin (plist-get (cadr element) :begin))
+              ;; (level (plist-get (cadr element) :level))
+              (title (plist-get (cadr element) :title)))
+          (string-match-p "Unnamed task [0-9]+" title)))))
+
+
+
+;; (lotus-org-create-unnamed-task "~/Unnamed.org" "Unnamed tasks")
 
 (defun org-clock-make-child-task-and-clock-in ()
   ;; TODO

@@ -322,6 +322,7 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
 
 ;;{{ move to previous window when current window destroyed
 (defun jump-to-previous-window (&optional window (current-window))
+  ;; BUG TODO Need lots of improvements.
   (let ((group (current-group)))
     (if (group-current-window group)
         (focus-prev-window group)
