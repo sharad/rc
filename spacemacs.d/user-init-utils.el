@@ -219,6 +219,16 @@
 (defun lotus-emacs-user-init-finish ()
   (message "loading lotus-emacs-user-init-finish begin")
   (dotspacemacs/reinit)
+
+
+  (setq
+   dotspacemacs-default-font '("Source Code Pro"
+                               :size 9
+                               :weight normal
+                               :width normal
+                               :powerline-scale 1.1))
+  ;; (spacemacs/set-default-font dotspacemacs-default-font)
+
   (when nil
     (put-file-in-rcs (auto-config-file "startup/startup.log"))
     (with-current-buffer "*Messages*"
