@@ -536,19 +536,18 @@ using three `C-u' prefix arguments."
         (subtask (format *lotus-org-unnamed-task-name-fmt*
                          ;; (lotus-org-get-incr-tasknum (find-file-noselect file))
                          (1+ (org-with-file-headline file task (org-number-of-subheadings))))))
-    (org-find-heading-marker file task t)
-    (org-insert-subheading-to-file-headline
+    (org-find-file-heading-marker file task t)
+    (org-insert-subheadline-to-file-headline
      subtask
      file
      task
      t)
     subtask))
 
-(defun lotus-org-create-unnamed-task-task-clock-in (&optional file parent-task task)
+(defun lotus-org-create-unnamed-task-task-clock-in (&optional file parent-task)
   (interactive
    (let ((file *lotus-org-unnamed-task-file*)
-         (parent-task *lotus-org-unnamed-parent-task-name*)
-         (task (format *lotus-org-unnamed-task-name-fmt* 1)))
+         (parent-task *lotus-org-unnamed-parent-task-name*))
      (list file parent-task task)))
   (let ((file (or file *lotus-org-unnamed-task-file*))
         (parent-task (or parent-task *lotus-org-unnamed-parent-task-name*)))
@@ -561,7 +560,17 @@ using three `C-u' prefix arguments."
        *lotus-org-unnamed-task-clock-marker*
        (mark-marker)))))
 
-;; (lotus-org-create-unnamed-task "~/Unnamed.org" "Unnamed tasks")
+(when nil
+
+  (lotus-org-create-unnamed-task
+   *lotus-org-unnamed-task-file*
+   *lotus-org-unnamed-parent-task-name*)
+
+  (lotus-org-create-unnamed-task-task-clock-in
+   *lotus-org-unnamed-task-file*
+   *lotus-org-unnamed-parent-task-name*)
+
+  )
 
 (defun lotus-org-merge-unnamed-task-at-point ()
   (interactive)
@@ -578,14 +587,17 @@ using three `C-u' prefix arguments."
       (marker-buffer *lotus-org-unnamed-task-clock-marker*)))))
 
 (defun lotus-org-unnamed-task-at-point-p ()
-  (let ((element (org-element-at-point)))
-    (if (and
-         element
-         (eq (car element) 'headline))
-        (let (;; (begin (plist-get (cadr element) :begin))
-              ;; (level (plist-get (cadr element) :level))
-              (title (plist-get (cadr element) :title)))
-          (string-match-p "Unnamed task [0-9]+" title)))))
+  (save-restriction
+    (save-excursion
+      (org-back-to-heading t)
+      (let ((element (org-element-at-point)))
+        (if (and
+             element
+             (eq (car element) 'headline))
+            (let (;; (begin (plist-get (cadr element) :begin))
+                  ;; (level (plist-get (cadr element) :level))
+                  (title (plist-get (cadr element) :title)))
+              (string-match-p "Unnamed task [0-9]+" title)))))))
 
 ;; (lotus-org-create-unnamed-task "~/Unnamed.org" "Unnamed tasks")
 

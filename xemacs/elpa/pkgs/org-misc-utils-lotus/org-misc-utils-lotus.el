@@ -55,29 +55,29 @@
        ,@body)))
 (put 'org-clock-lotus-with-current-clock 'lisp-indent-function 1)
 
-(defmacro org-with-headline (headline &rest body)
+(defmacro org-with-heading (heading &rest body)
   `(save-excursion
      (goto-char (point-min))
-     (let ((pos (org-find-exact-headline-in-buffer ,headline)))
+     (let ((pos (org-find-exact-headline-in-buffer ,heading)))
        (if (<= pos (point-max))
            (progn
              (goto-char pos)
              ,@body)
            (error "position %d greater than point max %d" pos (point-max))))))
-(put 'org-with-headline 'lisp-indent-function 2)
+(put 'org-with-heading 'lisp-indent-function 2)
 
-(defmacro org-with-buffer-headline (buffer headline &rest body)
+(defmacro org-with-buffer-headline (buffer heading &rest body)
   `(with-current-buffer (if ,buffer ,buffer (current-buffer))
-     (org-with-headline ,headline ,@body)))
-(put 'org-with-buffer-headline 'lisp-indent-function 2)
+     (org-with-heading ,heading ,@body)))
+(put 'org-with-buffer-heading 'lisp-indent-function 2)
 
-(defmacro org-with-file-headline (file headline &rest body)
+(defmacro org-with-file-headline (file heading &rest body)
   `(let ((buff (find-file-noselect ,file)))
      (if buff
          (with-current-buffer buff
-           (org-with-headline ,headline ,@body))
+           (org-with-heading ,heading ,@body))
          (error "can not open file %s" file))))
-(put 'org-with-file-headline 'lisp-indent-function 2)
+(put 'org-with-file-heading 'lisp-indent-function 2)
 
 (setq org-refile-targets
       '((nil :maxlevel . 3)           ; only the current file
@@ -152,15 +152,18 @@ With prefix arg C-u, copy region instad of killing it."
           (org-insert-subheading nil)
           (insert (format org-refile-string-format text)))))))
 
-(defun org-find-heading-marker (file heading &optional create)
+(defun org-find-heading-marker (heading &optional create)
+  (let ((heading-marker (org-find-exact-headline-in-buffer heading)))
+    (when create
+      (unless heading-marker
+        (goto-char (point-max))
+        (insert (format "* %s\n" heading))
+        (setq heading-marker (org-find-exact-heading-in-buffer heading))))
+    heading-marker))
+
+(defun org-find-file-heading-marker (file heading &optional create)
   (with-current-buffer (find-file-noselect file)
-    (let ((heading-marker (org-find-exact-headline-in-buffer heading)))
-      (if create
-          (unless heading-marker
-            (goto-char (point-max))
-            (insert (format "* %s\n" heading))
-            (setq heading-marker (org-find-exact-headline-in-buffer heading))))
-      heading-marker)))
+    (org-find-heading-marker heading create)))
 
 (defmacro org-with-narrow-to-marker (marker &rest body)
   `(if ,marker
@@ -173,8 +176,15 @@ With prefix arg C-u, copy region instad of killing it."
                ,@body))))
        (error "marker is nil")))
 
+(defmacro org-with-narrow-to-heading-subtree (heading create &rest body)
+  `(let ((marker (org-find-heading-marker ,heading ,create)))
+     (when marker
+       (org-with-narrow-to-marker marker ,@body))))
+
 (defmacro org-with-narrow-to-file-heading-subtree (file heading create &rest body)
-  `(let ((marker (org-find-heading-marker ,file ,heading ,create)))
+  `(let ((marker
+          (with-current-buffer (find-file-noselect ,file)
+            (org-find-heading-marker ,heading ,create))))
      (when marker
        (org-with-narrow-to-marker marker ,@body))))
 
@@ -200,19 +210,19 @@ With prefix arg C-u, copy region instad of killing it."
           (while (/= (1+ curr-level) (org-current-level))
             (outline-previous-visible-heading 1))))))
 
-(defun org-goto-end-of-headline ()
+(defun org-goto-end-of-heading ()
   (let ((element (org-element-at-point)))
     (if (and
          element
-         (eq (car element) 'headline))
+         (eq (car element) 'heading))
         (let ((begin (plist-get (cadr element) :begin))
               (level (plist-get (cadr element) :level))
               (title (plist-get (cadr element) :title)))
          (goto-char (+ begin level (length title)))))))
 
-(defun org-insert-grandsubheading-to-file-headline (text file headline &optional create)
+(defun org-insert-grandsubheading-to-file-headline (text file heading &optional create)
   (org-with-narrow-to-file-heading-subtree
-      file headline create
+      file heading create
       (let ((buffer-read-only nil)
             (subheading (cond
                           ((stringp text) text)
@@ -225,9 +235,9 @@ With prefix arg C-u, copy region instad of killing it."
       (org-insert-subheading nil)
       (insert (format org-refile-string-format subheading)))))
 
-(defun org-insert-sibling-heading-to-file-headline (text file headline &optional create)
-  (org-with-narrow-to-file-heading-subtree
-   file headline create
+(defun org-insert-sibling-headline-to-file-headline (text file heading &optional create)
+  (org-with-narrow-to-file-headine-subtree
+   file heading create
    (let ((buffer-read-only nil)
          (subheading (cond
                        ((stringp text) text)
@@ -243,9 +253,9 @@ With prefix arg C-u, copy region instad of killing it."
      (org-insert-heading-after-current)
      (insert (format org-refile-string-format subheading)))))
 
-(defun org-insert-subheading-to-file-headline (text file headline &optional create)
-  (org-with-narrow-to-file-heading-subtree
-      file headline create
+(defun org-insert-subheadline-to-file-headline (text file heading &optional create)
+  (org-with-narrow-to-file-headline-subtree
+      file heading create
       (let ((buffer-read-only nil)
             (subheading (cond
                           ((stringp text) text)
@@ -265,8 +275,10 @@ With prefix arg C-u, copy region instad of killing it."
       (insert (format org-refile-string-format subheading)))))
 
 
-(defun org-find-exact-subheadline-in-headline ()
-  )
+(defun org-find-exact-subheading-in-heading (heading subheading)
+  (org-with-narrow-to-heading-subtree
+   heading nil
+   (org-find-exact-headline-in-buffer subheading)))
   ;; )
 
 
@@ -461,15 +473,15 @@ With prefix arg C-u, copy region instad of killing it."
 
 ;; (progn ;; "move org"
 
-(defun jay/refile-to (file headline)
-  "Move current headline to specified location"
+(defun jay/refile-to (file heading)
+  "Move current heading to specified location"
   (let ((pos (save-excursion
                (find-file file)
-               (org-find-exact-headline-in-buffer headline))))
+               (org-find-exact-headline-in-buffer heading))))
     (org-refile nil nil (list headline file nil pos))))
 
 (defun jay/refile-to-bookmarks ()
-  "Move current headline to bookmarks"
+  "Move current heading to bookmarks"
   (interactive)
   (org-mark-ring-push)
   (jay/refile-to "~/Org/bookmarks.org" "New")
