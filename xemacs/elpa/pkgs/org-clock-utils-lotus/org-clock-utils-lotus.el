@@ -303,16 +303,21 @@ using three `C-u' prefix arguments."
     (save-buffer)
     (org-save-all-org-buffers)))
 
-(defun org-clock-add-deadline-if-not-clockin-hook ()
+(defun org-clock-add-schedule-on-clockin-if-not ()
+  (let ((schedule (org-get-scheduled-time nil)))
+    (unless schedule
+      (org-schedule nil))))
+
+(defun org-clock-add-deadline-on-clockin-if-not ()
   (let ((deadline (org-get-deadline-time nil)))
     (unless deadline
       (org-deadline nil))))
 
 (defun org-clock-add-schedule-if-not-clockin-hook ()
-  (let ((schedule (org-get-scheduled-time nil)))
-    (unless schedule
-      (org-schedule nil))))
+  (org-clock-add-schedule-on-clockin-if-not))
 
+(defun org-clock-add-deadline-if-not-clockin-hook ()
+  (org-clock-add-deadline-on-clockin-if-not))
 
 (defun org-clock-add-deadline-schedule-if-not-clockin-hook ()
   (unless (lotus-org-unnamed-task-at-point-p)
@@ -604,10 +609,12 @@ using three `C-u' prefix arguments."
 (defun org-clock-make-child-task-and-clock-in ()
   ;; TODO
   "Implement"
-  )
+  (if org-clock-marker
+      ))
 
 (defun lotus-org-clockin-last-time (min)
-  ))
+  )
+)
 
 
 (defun lotus-org-clock-detect-first-clockin-of-day ()
@@ -616,12 +623,6 @@ using three `C-u' prefix arguments."
   )
 
 (defun lotus-org-clock-declare-last-clockout-of-day ()
-  )
-
-(defun org-clock-add-schedule-on-clockin-if-not ()
-  )
-
-(defun org-clock-add-deadline-on-clockin-if-not ()
   )
 
 (defun org-define-a-task ()
