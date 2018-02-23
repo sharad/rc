@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+;; ORG here is issue of naming heading vs headline
+
 (eval-when-compile
   (require 'lotus-misc-utils))
 
