@@ -285,11 +285,7 @@ using three `C-u' prefix arguments."
   (org-clock-in-if-not-at-time-delay))
 
 (defun org-add-effort-if-not-clockin-hook ()
-  ;; ;; if effort is not present than add it.
-  ;; (unless (org-entry-get nil "Effort")
-  ;;   (save-excursion
-  ;;    (org-set-effort)))
-  ;; set timer
+  "if effort is not present than ask for it."
   (unless (lotus-org-unnamed-task-at-point-p)
     (when (not
            (and
