@@ -78,7 +78,7 @@
      (if buff
          (with-current-buffer buff
            (org-with-heading ,heading ,@body))
-         (error "can not open file %s" file))))
+         (error "can not open file %s" ,file))))
 (put 'org-with-file-heading 'lisp-indent-function 2)
 
 (setq org-refile-targets
@@ -284,8 +284,8 @@ With prefix arg C-u, copy region instad of killing it."
           (org-insert-grandsubheading-to-headline text heading create))
         (error "can not open file %s" file))))
 
-(defun org-insert-sibling-headline-to-file-headline (text heading &optional create)
-  (org-with-narrow-to-headine-subtree
+(defun org-insert-sibling-headline-to-headline (text heading &optional create)
+  (org-with-narrow-to-heading-subtree
    heading create
    (org-insert-sibling-headline-at-point text)))
 
@@ -293,7 +293,7 @@ With prefix arg C-u, copy region instad of killing it."
   (let ((buff (find-file-noselect file)))
     (if buff
         (with-current-buffer buff
-          (org-insert-sibling-headline-to-file-headline text heading create))
+          (org-insert-sibling-headline-to-headline text heading create))
         (error "can not open file %s" file))))
 
 (defun org-insert-subheadline-to-headline (text heading &optional create)
@@ -511,7 +511,7 @@ With prefix arg C-u, copy region instad of killing it."
   (let ((pos (save-excursion
                (find-file file)
                (org-find-exact-headline-in-buffer heading))))
-    (org-refile nil nil (list headline file nil pos))))
+    (org-refile nil nil (list heading file nil pos))))
 
 (defun jay/refile-to-bookmarks ()
   "Move current heading to bookmarks"
