@@ -170,7 +170,7 @@ With prefix arg C-u, copy region instad of killing it."
 (defmacro org-with-narrow-to-marker (marker &rest body)
   `(if ,marker
        (with-current-buffer (marker-buffer ,marker)
-         (goto-char marker)
+         (goto-char ,marker)
          (save-excursion
            (save-restriction
              (org-narrow-to-subtree)
@@ -222,60 +222,91 @@ With prefix arg C-u, copy region instad of killing it."
               (title (plist-get (cadr element) :title)))
          (goto-char (+ begin level (length title)))))))
 
-(defun org-insert-grandsubheading-to-file-headline (text file heading &optional create)
-  (org-with-narrow-to-file-heading-subtree
-      file heading create
-      (let ((buffer-read-only nil)
-            (subheading (cond
-                          ((stringp text) text)
-                          ((functionp text) (funcall text)))))
-      (if (eql org-refile-string-position 'bottom)
+(defun org-insert-subheading-at-point (subheading)
+  (let ((buffer-read-only nil)
+        (subheading (cond
+                      ((stringp subheading) subheading)
+                      ((functionp subheading) (funcall subheading))
+                      (t (error "no subheading")))))
+    (if (org-heading-has-child-p)
+        (progn
+          (org-goto-last-child)
+          (beginning-of-line)
+          (end-of-line 1)
+          (org-insert-heading-after-current))
+        (progn
+          (beginning-of-line)
+          (end-of-line 1)
           (org-end-of-subtree)
-          ;; (org-end-of-meta-data-and-drawers)
-          ;; (org-end-of-meta-data)
-          (org-end-of-subtree))
-      (org-insert-subheading nil)
-      (insert (format org-refile-string-format subheading)))))
+          (org-insert-subheading nil)))
+    (insert (format org-refile-string-format subheading))))
+
+(defun org-insert-grandsubheading-at-point (subheading)
+  (let ((buffer-read-only nil)
+        (subheading (cond
+                      ((stringp subheading) subheading)
+                      ((functionp subheading) (funcall subheading))
+                      (t (error "no subheading")))))
+    (if (eql org-refile-string-position 'bottom)
+        (org-end-of-subtree)
+        ;; (org-end-of-meta-data-and-drawers)
+        ;; (org-end-of-meta-data)
+        (org-end-of-subtree))
+    (org-insert-subheading nil)
+    (insert (format org-refile-string-format subheading))))
+
+(defun org-insert-sibling-headline-at-point (subheading)
+  (let ((buffer-read-only nil)
+        (subheading (cond
+                      ((stringp subheading) subheading)
+                      ((functionp subheading) (funcall subheading))
+                      (t (error "no subheading")))))
+    ;; (if (eql org-refile-string-position 'bottom)
+    ;;     (org-end-of-subtree)
+    ;;     ;; (org-end-of-meta-data-and-drawers)
+    ;;     ;; (org-end-of-meta-data)
+    ;;     (org-end-of-subtree))
+
+    (beginning-of-line)
+    (end-of-line 1)
+    (org-insert-heading-after-current)
+    (insert (format org-refile-string-format subheading))))
+
+(defun org-insert-grandsubheading-to-headline (text heading &optional create)
+  (org-with-narrow-to-heading-subtree
+   heading create
+   (org-insert-grandsubheading-at-point text)))
+
+(defun org-insert-grandsubheading-to-file-headline (text file heading &optional create)
+  (let ((buff (find-file-noselect file)))
+    (if buff
+        (with-current-buffer buff
+          (org-insert-grandsubheading-to-headline text heading create))
+        (error "can not open file %s" file))))
+
+(defun org-insert-sibling-headline-to-file-headline (text heading &optional create)
+  (org-with-narrow-to-headine-subtree
+   heading create
+   (org-insert-sibling-headline-at-point text)))
 
 (defun org-insert-sibling-headline-to-file-headline (text file heading &optional create)
-  (org-with-narrow-to-file-headine-subtree
-   file heading create
-   (let ((buffer-read-only nil)
-         (subheading (cond
-                       ((stringp text) text)
-                       ((functionp text) (funcall text)))))
-     ;; (if (eql org-refile-string-position 'bottom)
-     ;;     (org-end-of-subtree)
-     ;;     ;; (org-end-of-meta-data-and-drawers)
-     ;;     ;; (org-end-of-meta-data)
-     ;;     (org-end-of-subtree))
+  (let ((buff (find-file-noselect file)))
+    (if buff
+        (with-current-buffer buff
+          (org-insert-sibling-headline-to-file-headline text heading create))
+        (error "can not open file %s" file))))
 
-     (beginning-of-line)
-     (end-of-line 1)
-     (org-insert-heading-after-current)
-     (insert (format org-refile-string-format subheading)))))
+(defun org-insert-subheadline-to-headline (text heading &optional create)
+  (org-with-narrow-to-heading-subtree
+      heading create
+      (org-insert-subheading-at-point text)))
 
 (defun org-insert-subheadline-to-file-headline (text file heading &optional create)
-  (org-with-narrow-to-file-heading-subtree
-      file heading create
-      (let ((buffer-read-only nil)
-            (subheading (cond
-                          ((stringp text) text)
-                          ((functionp text) (funcall text))
-                          (t (error "no subheading")))))
-        (if (org-heading-has-child-p)
-            (progn
-              (org-goto-last-child)
-              (beginning-of-line)
-              (end-of-line 1)
-              (org-insert-heading-after-current))
-            (progn
-              (beginning-of-line)
-              (end-of-line 1)
-              (org-end-of-subtree)
-              (org-insert-subheading nil)))
-      (insert (format org-refile-string-format subheading)))))
-
+  (let ((buff (find-file-noselect file)))
+    (if buff
+        (with-current-buffer buff
+          (org-insert-subheadline-to-headline text heading create))
+        (error "can not open file %s" file))))
 
 (defun org-find-exact-subheading-in-heading (heading subheading)
   (org-with-narrow-to-heading-subtree

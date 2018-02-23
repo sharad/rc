@@ -549,7 +549,7 @@ using three `C-u' prefix arguments."
   (interactive
    (let ((file *lotus-org-unnamed-task-file*)
          (parent-task *lotus-org-unnamed-parent-task-name*))
-     (list file parent-task task)))
+     (list file parent-task)))
   (let ((file (or file *lotus-org-unnamed-task-file*))
         (parent-task (or parent-task *lotus-org-unnamed-parent-task-name*)))
     (org-with-file-headline
@@ -605,8 +605,13 @@ using three `C-u' prefix arguments."
 (defun org-clock-make-child-task-and-clock-in ()
   ;; TODO
   "Implement"
+  (interactive)
   (if org-clock-marker
-      ))
+      (org-with-narrow-to-marker org-clock-marker
+       (org-insert-subheading-at-point
+        (read-from-minibuffer "Subtask: "))
+       (org-entry-put nil "Effort" "10")
+       (org-clock-in))))
 
 (defun lotus-org-clockin-last-time (min)
   )
