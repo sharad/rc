@@ -158,7 +158,7 @@ With prefix arg C-u, copy region instad of killing it."
       (unless heading-marker
         (goto-char (point-max))
         (insert (format "* %s\n" heading))
-        (setq heading-marker (org-find-exact-heading-in-buffer heading))))
+        (setq heading-marker (org-find-exact-headline-in-buffer heading))))
     heading-marker))
 
 (defun org-find-file-heading-marker (file heading &optional create)
@@ -254,7 +254,7 @@ With prefix arg C-u, copy region instad of killing it."
      (insert (format org-refile-string-format subheading)))))
 
 (defun org-insert-subheadline-to-file-headline (text file heading &optional create)
-  (org-with-narrow-to-file-headline-subtree
+  (org-with-narrow-to-file-heading-subtree
       file heading create
       (let ((buffer-read-only nil)
             (subheading (cond
