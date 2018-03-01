@@ -626,6 +626,18 @@ using three `C-u' prefix arguments."
 (defun lotus-org-clock-declare-last-clockout-of-day ()
   )
 
+(define lotus-org-clock-offline-time ()
+;; clock the time from last known clock to now
+  )
+
+(defun lll ()
+  ;; schedule deadline to honour end of day time also.
+ )
+
+(defun lll ()
+  ;; calculate schedule deadline whether available in given time
+ )
+
 (defun org-define-a-task ()
   "This function is used to create a org tree to complete a task.
 for e.g. implementing lvm support for guixsd what all steps a person have to take
