@@ -1,3 +1,7 @@
+;; Preamble
+
+
+;; [[file:org-context-clock.org::*Preamble][Preamble:1]]
 ;;; org-context-clock.el --- org-context-clock               -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016  sharad
@@ -23,13 +27,19 @@
 ;;
 
 ;;; Code:
+;; Preamble:1 ends here
 
+;; [[file:org-context-clock.org::*Preamble][Preamble:2]]
 (defgroup org-context-clock nil
   "Emacs Org Context Clocking."
   :tag "Org Clock"
   :group 'org-progress)
+;; Preamble:2 ends here
+
+;; Required libraries
 
 
+;; [[file:org-context-clock.org::*Required%20libraries][Required libraries:1]]
 (require 'org-clock)
 
 (require 'timer-utils-lotus)
@@ -41,7 +51,12 @@
 (require 'lotus-misc-utils)
 (eval-when-compile
   (require 'lotus-misc-utils))
+;; Required libraries:1 ends here
 
+;; It is divided into multiple files for different functionality
+
+
+;; [[file:org-context-clock.org::*It%20is%20divided%20into%20multiple%20files%20for%20different%20functionality][It is divided into multiple files for different functionality:1]]
 (require 'org-context-clock-api)
 (require 'org-context-clock-api-list) ;; "org tasks access api for list org"
 (require 'org-context-clock-api-recursive) ;; "org tasks access api for recursive task"
@@ -49,9 +64,11 @@
 (require 'org-context-clock-assoc-predicate) ;; "org tasks associated to context predicate functions"
 (require 'org-context-clock-assoc-rank) ;; "Org tasks associated to context rank functions"
 (require 'org-context-clock-assoc-key) ;; "org tasks associated to context key functions on recursive taskinfos"
+;; It is divided into multiple files for different functionality:1 ends here
 
+;; Global variables
 
-
+;; [[file:org-context-clock.org::*Global%20variables][Global variables:1]]
 (defvar *org-context-clock-task-current-context*  nil)
 (defvar *org-context-clock-task-previous-context* nil)
 (defvar *org-context-clock-task-current-context-time-interval* 7)
@@ -65,18 +82,30 @@
 (defvar org-context-clock-api-task-associated-to-context-p    (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp))
 (defvar org-context-clock-api-task-update-tasks               (org-context-clock-access-api-get org-context-clock-access-api-name :update))
 (defvar org-context-clock-api-task-update-files               (org-context-clock-access-api-get org-context-clock-access-api-name :files))
+;; Global variables:1 ends here
 
+;; Simple function
 
+;; [[file:org-context-clock.org::*Simple%20function][Simple function:1]]
 (defun custom-plist-keys (in-plist)
   (if (null in-plist)
       in-plist
       (cons (car in-plist) (custom-plist-keys (cddr in-plist)))))
+;; Simple function:1 ends here
 
+;; Disable for some time
+
+;; [[file:org-context-clock.org::*Disable%20for%20some%20time][Disable for some time:1]]
 (defun org-context-clock-disable-for (time)
   "Disable context clocking for TIME period."
   ;; Implement
   )
+;; Disable for some time:1 ends here
 
+;; Context clock API
+
+
+;; [[file:org-context-clock.org::*Context%20clock%20API][Context clock API:1]]
 ;;;###autoload
 (defun org-context-clock-api ()
   "org task clocking select api to use."
@@ -109,7 +138,12 @@
          org-context-clock-api-tasks-associated-to-context   (org-context-clock-access-api-get org-context-clock-access-api-name :tasks)
          org-context-clock-api-task-associated-to-context-p  (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp)
          org-context-clock-api-task-update-tasks             (org-context-clock-access-api-get org-context-clock-access-api-name :update)))))
+;; Context clock API:1 ends here
 
+;; Update tasks
+
+
+;; [[file:org-context-clock.org::*Update%20tasks][Update tasks:1]]
 ;;;###autoload
 (defun org-context-clock-task-update-tasks (&optional force)
   "Update task infos"
@@ -121,7 +155,12 @@
   "Update task infos"
   (interactive "P")
   (funcall org-context-clock-api-task-update-files force))
+;; Update tasks:1 ends here
 
+;; Build context
+
+
+;; [[file:org-context-clock.org::*Build%20context][Build context:1]]
 (defun org-context-clock-build-context (&optional buff)
   (let* ((buff (if buff
                    (if (bufferp buff)
@@ -135,10 +174,18 @@
          (file (buffer-file-name buff))
          (context (list :file file :buffer buff)))
     context))
+;; Build context:1 ends here
 
+;; Unnamed task related global variable
+
+;; [[file:org-context-clock.org::*Unnamed%20task%20related%20global%20variable][Unnamed task related global variable:1]]
 (defvar *org-context-clock-unassociate-context-start-time* nil)
 (defvar *org-context-clock-swapen-unnamed-threashold-interval* (* 60 2)) ;2 mins
+;; Unnamed task related global variable:1 ends here
 
+;; Unnamed task functions
+
+;; [[file:org-context-clock.org::*Unnamed%20task%20functions][Unnamed task functions:1]]
 (defun org-context-clock-unassociate-context-start-time-reset ()
   (setq *org-context-clock-unassociate-context-start-time* nil))
 
@@ -181,7 +228,11 @@
          (< clock-duration 60)
          (> clock-duration 120)))
       t))
+;; Unnamed task functions:1 ends here
 
+;; Main context clock function update-current-context
+
+;; [[file:org-context-clock.org::*Main%20context%20clock%20function%20update-current-context][Main context clock function update-current-context:1]]
 ;;;###autoload
 (defun org-context-clock-update-current-context (&optional force)
   (interactive "P")
@@ -229,7 +280,11 @@
             (unless (org-context-clock-task-run-associated-clock context)
               ;; not able to find associated, or intentionally not selecting a clock
               (org-context-clock-maybe-create-unnamed-task)))))))
+;; Main context clock function update-current-context:1 ends here
 
+;; Create task info out of current clock
+
+;; [[file:org-context-clock.org::*Create%20task%20info%20out%20of%20current%20clock][Create task info out of current clock:1]]
 ;;;###autoload
 (defun org-context-clock-task-current-task ()
   (and
@@ -252,17 +307,27 @@
 ;;      (let ((info (org-context-clock-collect-task)))
 ;;        (if (funcall org-context-clock-api-task-associated-to-context-p info context)
 ;;            info)))))
+;; Create task info out of current clock:1 ends here
 
+;; Test if TASK is associate to CONTEXT
+
+;; [[file:org-context-clock.org::*Test%20if%20TASK%20is%20associate%20to%20CONTEXT][Test if TASK is associate to CONTEXT:1]]
 (defun org-context-clock-task-associated-to-context-p (task context)
   (if task
       (funcall org-context-clock-api-task-associated-to-context-p task context)
       0))
+;; Test if TASK is associate to CONTEXT:1 ends here
 
+;; Collect and return task matching to CONTEXT
+
+;; [[file:org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:1]]
 ;;;###autoload
 (defun org-context-clock-current-task-associated-to-context-p (context)
   (let ((task (org-context-clock-task-current-task)))
     (org-context-clock-task-associated-to-context-p task context)))
+;; Collect and return task matching to CONTEXT:1 ends here
 
+;; [[file:org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:2]]
 (defun org-context-clock-clockin-marker (selected-marker)
   (message "org-context-clock-clockin-marker %s" selected-marker)
   (let ((org-log-note-clock-out nil)
@@ -286,7 +351,9 @@
       (if prev-org-clock-buff
           (with-current-buffer prev-org-clock-buff
             (setq buffer-read-only prev-clock-buff-read-only))))))
+;; Collect and return task matching to CONTEXT:2 ends here
 
+;; [[file:org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:3]]
 ;;;###autoload
 (defun org-context-clock-task-run-associated-clock (context)
   (interactive
@@ -315,7 +382,9 @@
             (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
               (org-context-clock-add-context-to-org-heading-when-idle context 17)
               nil))))))
+;; Collect and return task matching to CONTEXT:3 ends here
 
+;; [[file:org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:4]]
 ;;;###autoload
 (defun org-context-clock-run-task-current-context-timer ()
   (interactive)
@@ -330,8 +399,10 @@
           (run-with-idle-timer
            (1+ *org-context-clock-task-current-context-time-interval*)
            nil
-           'org-context-clock-update-current-context))))
+           'org-context-clock-update-current-context)))))
+;; Collect and return task matching to CONTEXT:4 ends here
 
+;; [[file:org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:5]]
 (defun org-context-clock-insert-selection-line (i marker)
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
@@ -356,7 +427,9 @@ pointing to it."
       (when (and cat task)
         (insert (format "[%c] %-12s  %s\n" i cat task))
         (cons i marker)))))
+;; Collect and return task matching to CONTEXT:5 ends here
 
+;; [[file:org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:6]]
 ;;;###autoload
 (defun org-context-clock-select-task-from-clocks (clocks &optional prompt)
   "Select a task that was recently associated with clocking."
@@ -397,8 +470,9 @@ pointing to it."
             ((eq rpl ?x) nil)
             ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
             (t (user-error "Invalid task choice %c" rpl)))))))
+;; Collect and return task matching to CONTEXT:6 ends here
 
-
+;; [[file:org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:7]]
 (defun sacha-org-context-clock-selection-line (marker)
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
@@ -424,7 +498,9 @@ pointing to it."
         ;; (insert (format "[%c] %-12s  %s\n" i cat task))
         ;; marker
         (cons task marker)))))
+;; Collect and return task matching to CONTEXT:7 ends here
 
+;; [[file:org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:8]]
 (defun sacha/helm-org-refile-read-location (clocks clockin-fn)
   (message "sacha marker %s" (car clocks))
   ;; (setq sacha/helm-org-refile-locations tbl)
@@ -441,11 +517,14 @@ pointing to it."
       ;;            "Create task"
       ;;            'sacha/helm-org-create-task))
       ))))
+
 ;; org-context-clock-task-run-associated-clock
 
 ;; (sacha/helm-org-refile-read-location (org-context-clock-markers-associated-to-context (org-context-clock-build-context)))
 ;; (sacha/helm-org-refile-read-location (org-context-clock-markers-associated-to-context (org-context-clock-build-context (find-file-noselect "~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.el"))))
+;; Collect and return task matching to CONTEXT:8 ends here
 
+;; [[file:org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:9]]
 ;;;###autoload
 (defun org-context-clock-insinuate ()
   (interactive)
@@ -474,8 +553,9 @@ pointing to it."
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
         (delete propstr org-use-property-inheritance)))))
+;; Collect and return task matching to CONTEXT:9 ends here
 
-
+;; [[file:org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:10]]
 (progn ;; "Org task clock reporting"
   ;; #+BEGIN: task-clock-report-with-comment :parameter1 value1 :parameter2 value2 ...
   ;; #+END:
@@ -486,14 +566,9 @@ pointing to it."
 
   (progn ;; "time sheet"
     ))
+;; Collect and return task matching to CONTEXT:10 ends here
 
-
-
-
-
-
-
-
+;; [[file:org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:11]]
 (when nil                               ;testing
 
   (org-context-clock-task-run-associated-clock (org-context-clock-build-context))
@@ -599,6 +674,9 @@ pointing to it."
 
   (if (org-context-clock-current-task-associated-to-context-p (org-context-clock-build-context))
       (message "current clock is with current context or file")))
+;; Collect and return task matching to CONTEXT:11 ends here
 
+;; [[file:org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:12]]
 (provide 'org-context-clock)
 ;;; org-context-clock.el ends here
+;; Collect and return task matching to CONTEXT:12 ends here

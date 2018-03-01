@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# from: https://github.com/ivoarch/.dot-org-files
+
 function clone_repo() {
 DOT_ORG_DIR=$HOME/.dot-org-files
 
