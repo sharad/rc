@@ -1,0 +1,20 @@
+#+TITLE: xprofile
+#+PROPERTY: header-args :tangle xprofile :padline ys :comments both :noweb yes
+
+
+
+* xprofile
+
+#+begin-src fundamental
+# it is sourced in /etc/X11/xsession
+
+export __NO_SSH_AGENT_REQUIRED=yes
+for startup in sh login x ; do
+    [ -r ~/.rsetup/$startup/env ] && . ~/.rsetup/$startup/env >> ~/.xsession-errors 2>&1
+done
+unset __NO_SSH_AGENT_REQUIRED
+
+for startup in sh login x ; do
+    [ -r ~/.rsetup/$startup/run ] && ~/.rsetup/$startup/run >> ~/.xsession-errors 2>&1
+done
+#+end-src

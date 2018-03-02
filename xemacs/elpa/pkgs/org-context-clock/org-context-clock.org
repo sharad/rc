@@ -1,5 +1,5 @@
 #+TITLE org context clock
-#+PROPERTY: header-args :tangle yes :comments both :noweb yes
+#+PROPERTY: header-args :tangle yes :padline ys :comments both :noweb yes
 
 * Org context clock
 A context based clocking
