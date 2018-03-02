@@ -45,9 +45,9 @@
     misc
     python
     yaml
-    ;; .spacemacs-mycontribution
-    basic-startup
-    messaging
+    ;; ;; .spacemacs-mycontribution
+    ;; basic-startup
+    ;; messaging
     ))
 
 (defun lotus-dist-layers-select (&optional layer-dir)
@@ -425,6 +425,11 @@ variable."
 
   (progn ;; other
     ;; (custom-available-themes)
+
+    ;; custom-enabled-themes
+    ;; theme using (ujelly)
+
+
     (defun theme-current ()
       (interactive)
       (message "%s" custom-enabled-themes))
@@ -452,7 +457,17 @@ variable."
     ;; don't why it is not happening in spacemacs, while vanilla emacs has this
     ;; it can be found in bindings.el
     ;; why it was not loaded, can be load it in spacemacs.
-   (define-key ctl-x-map "r" ctl-x-r-map))
+    (define-key ctl-x-map "r" ctl-x-r-map))
+
+  (progn
+    ;; org babel pain
+    ;; https://stackoverflow.com/questions/26290924/fontify-r-code-blocks-in-org-mode-8
+    ;; https://emacs.stackexchange.com/questions/14824/org-block-background-font-not-having-effect
+    ;; https://www.reddit.com/r/emacs/comments/415imd/prettier_orgmode_source_code_blocks/
+    ;; https://github.com/jabranham/mixed-pitch/issues/2#issuecomment-349385937
+    (add-to-list 'org-src-block-faces
+                 '("emacs-lisp"
+                   (:foreground "#FFFFFF"))))
   (message "loading lotus-necessary-functionality finished"))
 
 (progn                                  ;debug testing code
