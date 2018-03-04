@@ -166,6 +166,16 @@ A context based clocking
 
 #+END_SRC
 
+*** TODO Add function to do updating if any of update-files were changes
+use something
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(save-buffer)
+    (org-save-all-org-buffers)
+#+END_SRC
+
+it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
+
 ** Build context
 
 #+BEGIN_SRC  emacs-lisp
@@ -580,6 +590,7 @@ A context based clocking
 
 #+END_SRC
 
+** Test functions
 
 #+BEGIN_SRC  emacs-lisp
 
@@ -691,7 +702,6 @@ A context based clocking
     (org-context-clock-tasks-associated-to-context-by-keys
      (org-context-clock-build-context)))
 
-
    (length
     (org-context-clock-tasks-associated-to-context-by-keys
      (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile"))))
@@ -705,7 +715,7 @@ A context based clocking
        (message "current clock is with current context or file")))
 #+END_SRC
 
-
+** Provide this file
 #+BEGIN_SRC  emacs-lisp
 
  (provide 'org-context-clock)

@@ -79,6 +79,12 @@ Each entry is either:
       :defer t
       :config
       (progn
+
+        (progn                          ;settings
+          (setq
+           ;; https://stackoverflow.com/questions/8281604/remove-done-tasks-from-agenda-view
+           org-agenda-skip-scheduled-if-done t))
+
         (progn
           (setq org-refile-targets
                 '((nil :maxlevel . 3)           ; only the current file

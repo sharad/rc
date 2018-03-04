@@ -372,10 +372,11 @@ Each entry is either:
 
           (setq org-agenda-custom-commands nil)
 
-          (defun add-to-org-agenda-custom-commands (spec)
-            (add-to-list
-             'org-agenda-custom-commands
-             spec))
+          (defun add-to-org-agenda-custom-commands (&rest specs)
+            (dolist (spec specs)
+              (add-to-list
+               'org-agenda-custom-commands
+               spec)))
 
           ;; http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
           (add-to-org-agenda-custom-commands
@@ -398,6 +399,16 @@ Each entry is either:
              ((agenda)
               (tags-todo "HOME")
               (tags-todo "COMPUTER"))))
+
+          (add-to-org-agenda-custom-commands
+           ;; https://emacs.stackexchange.com/questions/16551/how-do-i-view-all-org-mode-todos-that-are-not-recurring-or-not-scheduled
+           '("c" . "My Custom Agendas")
+           '("cu" "Unscheduled TODO"
+              ((todo ""
+                     ((org-agenda-overriding-header "\nUnscheduled TODO")
+                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
+              nil
+              nil))
 
           ;; (require 'org-publishing)
 

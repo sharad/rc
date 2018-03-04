@@ -95,7 +95,7 @@
 
 (defun lotus-emacs-user-init-begin ()
   (message "loading lotus-emacs-user-init-begin begin")
-  (push (concat "~/.osetup/info.d/common/elisp") load-path)
+  (push "~/.osetup/info.d/common/elisp" load-path)
   (push (concat "~/.osetup/info.d/hosts/" (system-name) "/elisp") load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
@@ -211,6 +211,8 @@
         (message (concat "YES SERVER: " server-name))))
     )
 
+  (setq
+   dotspacemacs-excluded-packages '(vi-tilde-fringe))
 
   (lotus-necessary-test)
 
@@ -419,6 +421,9 @@ variable."
     (when (fboundp 'spacemacs/toggle-vi-tilde-fringe-off)
       (spacemacs/toggle-vi-tilde-fringe-off))
 
+    (when (fboundp 'global-vi-tilde-fringe-mode)
+      (global-vi-tilde-fringe-mode -1))
+
     (delete-selection-mode 1)
 
     (mycustom-face-set))
@@ -471,6 +476,10 @@ variable."
     (set-face-attribute 'org-block nil :inherit 'src-block)
     )
   (message "loading lotus-necessary-functionality finished"))
+
+
+
+
 
 (progn                                  ;debug testing code
   (defvar *test-idle-prints-timer* nil)
