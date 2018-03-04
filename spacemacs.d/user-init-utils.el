@@ -465,9 +465,10 @@ variable."
     ;; https://emacs.stackexchange.com/questions/14824/org-block-background-font-not-having-effect
     ;; https://www.reddit.com/r/emacs/comments/415imd/prettier_orgmode_source_code_blocks/
     ;; https://github.com/jabranham/mixed-pitch/issues/2#issuecomment-349385937
-    (add-to-list 'org-src-block-faces
-                 '("emacs-lisp"
-                   (:foreground "#FFFFFF"))))
+    ;; (add-to-list 'org-src-block-faces
+    ;;              '("prog"
+    ;;                (:foreground "#FFFFFF")))
+    )
   (message "loading lotus-necessary-functionality finished"))
 
 (progn                                  ;debug testing code
