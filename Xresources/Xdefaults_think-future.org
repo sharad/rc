@@ -1,0 +1,63 @@
+#+TITLE: Xdefaults_think-future
+#+PROPERTY: header-args :tangle Xdefaults_think-future :padline ys :comments both :noweb yes
+
+
+* Xdefaults_think-future
+
+#+begin_src conf-xdefaults
+!!! $Id:$
+!!! Last checkout: $Date:$
+!!! Created: 2003-06-12, 11:00:33 Nils.Radtke_@_no-spam-Think-Future.de
+!!! Last modified: gio 2005-05-05, 14:19:36 CEST (+0200) -> radtkens
+
+
+!xterm*font: -misc-fixed-medium-r-normal--15-140-75-75-c-90-iso8859-15
+!xterm*font: 16x20
+!xterm*locale:  iso8859-15
+!xterm*font:     -misc-fixed-medium-r-normal-*-*-120-*-*-c-*-iso8859-15
+!xterm*VT100*font2: -misc-fixed-medium-r-normal-*-*-70-*-*-c-*-iso8859-15
+!xterm*VT100*font3: -misc-fixed-medium-r-normal-*-*-100-*-*-c-*-iso8859-15
+!xterm*VT100*font4: -misc-fixed-medium-r-normal-*-*-120-*-*-c-*-iso8859-15
+!xterm*VT100*font5: -misc-fixed-medium-r-normal-*-*-140-*-*-c-*-iso8859-15
+!xterm*VT100*font6: -misc-fixed-medium-r-normal-*-*-200-*-*-c-*-iso8859-15
+!!! group all non-whitespace characters together:
+!33-127:48,161-255:48
+!!! Tilde, exclamation mark, percent sign, dash, period, slash, and ampersand
+!!! 58:48 is colon. See man ascii.
+!XTerm.charClass: 33:48,35:48,37:48,43:48,45-47:48,58:48,64:48,95:48,126:48,35:48
+!xterm*charClass:  33:48,37:48,43:48,45-47:48,64:48,126:48,95:48
+!!!  exclamation mark, percent sign, dash, period, slash, and  ampersand
+! xterm*charClass: 126:48,33:48,37:48,45-47:48,64:48
+!xterm*charClass:  33:48,37:48,45-47:48,64:48
+!xterm*font: 6x13euro
+!xterm*background:       LightYellow2
+!xterm*background:       white
+!!! exclamation mark, percent sign, dash, period, slash, and ampersand
+!xterm*charClass:        33:48,37:48,45-47:48,64:48
+!xterm.eightBitInput:    true
+!xterm.eightBitOutput:   true
+!xterm*multiScroll:      on
+!xterm*scrollKey:        on
+!xterm*scrollLines:      20
+!xterm*jumpScroll:       on
+!xterm*foreground:       black
+! xterm*font: -adobe-courier-bold-r-normal--14-140-75-75-m-90-iso8859-1
+xterm*resize:  NorthWest
+xterm*scrollBar:  false
+xterm*visualBell:  false
+! xterm*colorMode:  true
+xterm*SaveLine: 10000
+!!! hold prevents window destruction
+! xterm*hold: false
+xterm*saveLines: 10000
+! xterm*background:       grey95
+! xterm*foreground:       black
+! xterm*utf8: 1
+!xterm*Background: linen
+!xterm*Foreground: black
+!xterm*font: 9x15
+! xterm*HiForeColor: white
+! xterm*HiBackColor: #c06077
+xterm*font:             9x15
+XTerm*geometry: 86x28
+#+end_src
