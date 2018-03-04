@@ -37,3 +37,14 @@
               (error "%s is already is org file." file-name)))
         (error "buffer not associated with any file."))))
 #+end_src
+
+* Face correction src block
+Can notice 'org-block face is inherited from 'src-block face
+if we examine it than it will inherit as shadow
+#+begin_src emacs-lisp
+
+;; (set-face-attribute
+;;    'org-block nil :foreground "#FFFFFF")
+
+(set-face-attribute 'org-block nil :inherit 'src-block)
+#+end_src

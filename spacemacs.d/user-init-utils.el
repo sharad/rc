@@ -468,6 +468,7 @@ variable."
     ;; (add-to-list 'org-src-block-faces
     ;;              '("prog"
     ;;                (:foreground "#FFFFFF")))
+    (set-face-attribute 'org-block nil :inherit 'src-block)
     )
   (message "loading lotus-necessary-functionality finished"))
 

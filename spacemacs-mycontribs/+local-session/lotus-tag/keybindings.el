@@ -10,7 +10,12 @@
       ;; be opened showing them all. This used to be bound to M-TAB by default
       ;; but as many window managers use this to switch between windows, I tend
       ;; to use M-RET instead.
-      (global-set-key (kbd "M-<return>") 'complete-tag)))
+
+
+      ;; TODO: find some other binding as this is used in org-mode also by spacemacs
+
+      ;; (global-set-key (kbd "M-<return>") 'complete-tag)
+      ))
 
   (defun spacemacs/package-disable ()
     (progn ;; "Keybinding: Gtags"
@@ -23,6 +28,10 @@
         ;; be opened showing them all. This used to be bound to M-TAB by default
         ;; but as many window managers use this to switch between windows, I tend
         ;; to use M-RET instead.
-        (global-unset-key (kbd "M-<return>")))))
+
+        ;; TODO: find some other binding as this is used in org-mode also by spacemacs
+
+        ;; (global-unset-key (kbd "M-<return>"))
+        )))
 
   (spacemacs/gtags-enable))
