@@ -216,6 +216,11 @@
 
   (lotus-necessary-test)
 
+  (spacemacs|use-package-add-hook org
+    ;; https://github.com/syl20bnr/spacemacs/issues/8334#issuecomment-326200914
+    :pre-init
+    (package-initialize))
+
   (message "loading lotus-emacs-user-init-begin finished"))
 
 (defun lotus-emacs-user-init-finish ()
