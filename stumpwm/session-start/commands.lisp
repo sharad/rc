@@ -265,19 +265,20 @@
                (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general"))
                        " -e "
                        (prin1-to-string
-                        (concat
-                         "(progn (message "
-                         (prin1-to-string (format nil "~a" (substitute #\_ #\Space (prin1-to-string (group-name (current-group))))))
-                         ")(display-about-screen))")))))
+                        (concat "(serve-window-manager-request "
+                                (prin1-to-string (format nil "~a" (substitute #\_ #\Space (stumpwm::group-name (stumpwm::current-group)))))
+                                ")")))
+               ;; '(:class "Emacs")
+               ))
 
   (defcommand emacsclient () ()
               (run-wcli-command
                (concat "emacsclient -d " (getenv "DISPLAY") " -nc " "-f " (concat (getenv "HOME") "/.emacs.d/server/" (or (getenv "EMACS_SERVER_NAME") "general"))
                        " -e "
                        (prin1-to-string
-                        (concat "(progn (message "
+                        (concat "(serve-window-manager-request "
                                 (prin1-to-string (format nil "~a" (substitute #\_ #\Space (stumpwm::group-name (stumpwm::current-group)))))
-                                ")(display-about-screen))")))
+                                ")")))
                ;; '(:class "Emacs")
                ))
 

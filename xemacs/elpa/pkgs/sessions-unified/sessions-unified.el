@@ -674,7 +674,14 @@ return a new alist whose car is the new pair and cdr is ALIST."
           (if nframe (select-frame nframe) (error "nframe is nil"))
           (fmsession-restore (frame-session-set-this-location nframe not-ask))
           ;; nframe)
-          (display-about-screen)
+
+          (when nil                     ;presently disabling it.
+            (display-about-screen))
+          (when nil                     ;we may add spacemacs
+            (spacemacs-buffer/goto-buffer))
+
+          (spacemacs-buffer/goto-buffer)
+
           nframe)
         (progn
           (funcall sessions-unified-utils-notify

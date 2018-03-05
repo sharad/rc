@@ -515,3 +515,10 @@ variable."
   (defun lotus-necessary-test ()
     (interactive)
     (test-idle-prints nil)))
+
+
+
+(defun serve-window-manager-request (&rest args)
+  (message "%s" args)
+  ;; (display-about-screen)
+  )
