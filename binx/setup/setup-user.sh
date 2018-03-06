@@ -10,7 +10,8 @@ APT_REPO_UTILS="ppa:yartsa/lvmeject"
 
 
 DEB_PKG_EMACS="elpa-magit elpa-magit-popup elpa-with-editor emacs-goodies-el enscript flim lm-sensors"
-DEB_PKG_NECESSARY_MORE1="xaos xnee xnee-doc xzgv yatex zsh-doc zutils"
+DEB_PKG_NECESSARY_MORE1="xaos xnee xnee-doc xzgv yatex zsh zsh-doc zutils"
+# TODO BUG set zsh as login shell
 DEB_PKG_NECESSARY_MORE2="gnu-smalltalk-doc gnu-fdisk gnu-standards gnuit gnulib gnupg2 gnuplot-doc gvpe gtypist hello ht id-utils indent integrit jed latex-mk ledger libaws-doc"
 ##  hello-traditional
 DEB_PKG_NECESSARY_MORE3="libcommoncpp2-doc libconfig-dev libsocket++-dev licenseutils lookup-el lyskom-server macchanger mboxgrep mew-beta mit-scheme-doc mmm-mode ocaml-doc oneliner-el org-mode-doc parted-doc pcb-common"
@@ -230,6 +231,7 @@ function setup_tmp_ssh_keys()
         if [ ! -r $TMPDIR/ssh/nosecure.d/ssh/keys.d/github ]
         then
 	          mkdir -p $SSH_DIR
+            # TODO BUG not working
 	          openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C $SSH_DIR
         fi
 
