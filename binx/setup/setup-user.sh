@@ -329,12 +329,20 @@ function setup_git_repos()
 	          ln -sf .setup-trunk ~/.setup
         fi
 
-        if [ ! -L ~/.stumpwm.d/modules -a -d ~/.repos/git/system/stumpwm-contrib ]
+        if [ ! -L ~/.repos/git/user/osetup -a -d ~/.repos/git/user/osetup ]
         then
-            rm -rf ~/.stumpwm.d/modules
-            ln -s ../.repos/git/system/stumpwm-contrib ~/.stumpwm.d/modules
+            if [ ! -L ~/.osetup ]
+            then
+                rm -f ~/.osetup
+                ln -sf .repos/git/user/osetup ~/.osetup
+            fi
         fi
 
+        # if [ ! -L ~/.stumpwm.d/modules -a -d ~/.repos/git/system/stumpwm-contrib ]
+        # then
+        #     rm -rf ~/.stumpwm.d/modules
+        #     ln -s ../.repos/git/system/stumpwm-contrib ~/.stumpwm.d/modules
+        # fi
 
         if mount | grep $HOME/.Private
         then
@@ -375,43 +383,49 @@ function setup_user_config_setup()
 	          for c in .[a-zA-Z^.^..]* *
 	          do
                 echo considering $c
-	              if [ "$c" != ".repo" -a "$c" != "." -a "$c" != ".." ]
+                clink=$(readlink $c)
+	              if [ "$c" != ".repo" -a "$c" != "." -a "$c" != ".." -a $clink != ".." ]
 	              then
 		                if [ -e ~/$c ]
 		                then
                         if [ ! -L ~/$c -o "$(readlink ~/$c)" != "$(readlink $c)" ]
                         then
-                            if [ ! -L ~/$c ]
+
+                            if [ ! -L ~/$c ] # backup
                             then
-		                            echo mv ~/$c ~/_old_dot_filedirs
+		                            mv ~/$c ~/_old_dot_filedirs
                             fi
+
                             if [ ! -e ~/$c ]
                             then
-		                            echo cp -af ~/.repos/git/user/rc/_home/$c ~/$c
-                                exit -1
+		                            cp -af $c ~/$c
+                                # exit -1
                             elif [ -L ~/$c ]
                             then
-                                echo rm -f ~/$c
-                                echo cp -af ~/.repos/git/user/rc/_home/$c ~/$c
+                                rm -f ~/$c
+                                cp -af $c ~/$c
                                 # exit -1
                                 continue
                             fi
                             echo done setting up $c
                         else
-                            echo not doing anything ~/.repos/git/user/rc/_home/$c ~/$c
+                            echo not doing anything $c ~/$c
                         fi
                     else
-                        echo cp -af ~/.repos/git/user/rc/_home/$c ~/$c
+                        echo cp -af $c ~/$c
                         echo done setting up $c
 		                fi
                 else
-                    : echo not setting up $c
+                    echo not setting up $c
 	              fi
 	          done
 	          # mv $TMPDIR/Xsetup ~/.setup/_home/.setup
 	          cd -
         fi
     fi
+
+    rm -f ~/.setup
+    ln -sf .setup-trunk ~/.setup
 }
 
 function setup_download_misc()
@@ -466,8 +480,8 @@ function setup_mail()
 
         if [ ! -d /etc/dovecot-ORG ]
         then
-            cp -ar /etc/dovecot /etc/dovecot-ORG
-            cp ~/.system/ubuntu/etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
+            sudo cp -ar /etc/dovecot /etc/dovecot-ORG
+            sudo cp ~/.system/ubuntu/etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
         fi
     else
         echo ~/.system/ubuntu/etc/postfix not exists >&2
@@ -486,16 +500,19 @@ function setup_login_shell()
 
 function setup_dirs()
 {
-    curhomedir="$(getent passwd $USER | cut -d: -f6)/hell"
+    curhomedir="$(getent passwd $USER | cut -d: -f6)"
     if [ "$(basename $curhomedir)" != hell ]
     then
+        sudo rm -rf $curhomedir/hell # if exists
         newhomedir=$curhomedir/hell
-        usermod -d "$newhomedir" $USER
-        mv $curhomedir ${curhomedir}_tmp
-        mkdir -p $curhomedir
-        mv ${curhomedir}_tmp "$newhomedir"
-        sudo mkdir -p "$newhomedir"
-        export $HOME="$newhomedir"
+        sudo mv $curhomedir ${curhomedir}_tmp
+        sudo mkdir -p $curhomedir
+        sudo mv ${curhomedir}_tmp "$newhomedir"
+        # sudo mkdir -p "$newhomedir"
+        sudo usermod -d "$newhomedir" $USER
+        echo first change home dir to $newhomedir
+        exit -1
+        export HOME="$newhomedir"
     fi
 
     sudo mkdir -p  ~/../paradise
@@ -504,7 +521,7 @@ function setup_dirs()
 
     if [ ! -d ~/.osetup/dirs.d/local.d/dirs.d/home ]
     then
-        mkdir ~/.LocalDir
+        mkdir -p ~/.LocalDir
         ln -s ../../../../../../../.Local ~/.osetup/dirs.d/local.d/dirs.d/home
         if [ -d "~/.osetup/dirs.d/home.d" ]
         then
