@@ -89,7 +89,7 @@
 (defmacro deh-featurep (feature &rest forms)
   "Dot Emacs featurep"
   (declare (indent 1))
-  (labels ((refine (feature)
+  (cl-labels ((refine (feature)
              (if (consp feature)
                  (cond
                    ((or (equal (car feature) 'or)
@@ -109,7 +109,7 @@
   "Dot Emacs require or act"
   ;; master
   (declare (indent 1))
-  (labels ((refine (feature)
+  (cl-labels ((refine (feature)
              (if (consp feature)
                  (cond
                    ((or (equal (car feature) 'or)
@@ -138,7 +138,7 @@
 (defmacro deh-require-todo (feature todo-if-no-feature &rest forms)
   "Dot Emacs require TODO"
   (declare (indent 1))
-  (labels ((refine (feature)
+  (cl-labels ((refine (feature)
              (if (consp feature)
                  (cond
                    ((or (equal (car feature) 'or)
@@ -158,7 +158,7 @@
 (defmacro deh-require-maybe (feature &rest forms)
   "Dot Emacs require Maybe"
   (declare (indent 1))
-  (labels ((refine (feature)
+  (cl-labels ((refine (feature)
              (if (consp feature)
                  (cond
                    ((or (equal (car feature) 'or)
@@ -177,7 +177,7 @@
 (defmacro deh-require-mustbe (feature &rest forms)
   "Dot Emacs require Must"
   (declare (indent 1))
-  (labels ((refine (feature)
+  (cl-labels ((refine (feature)
              (if (consp feature)
                  (cond
                    ((or (equal (car feature) 'or)

@@ -89,7 +89,7 @@
 (eval-when-compile
   (defmacro deh-featurep (feature &rest forms)
     (declare (indent 1))
-    (labels ((refine (feature)
+    (cl-labels ((refine (feature)
                (if (consp feature)
                    (cond
                      ((or (equal (car feature) 'or)
@@ -107,7 +107,7 @@
   (defmacro deh-require-or-act (feature act &rest forms)
     ;; master
     (declare (indent 1))
-    (labels ((refine (feature)
+    (cl-labels ((refine (feature)
                (if (consp feature)
                    (cond
                      ((or (equal (car feature) 'or)
@@ -132,7 +132,7 @@
 
   (defmacro deh-require-maybe (feature &rest forms)
     (declare (indent 1))
-    (labels ((refine (feature)
+    (cl-labels ((refine (feature)
                (if (consp feature)
                    (cond
                      ((or (equal (car feature) 'or)
@@ -151,7 +151,7 @@
 
   (defmacro deh-require-mustbe (feature &rest forms)
     (declare (indent 1))
-    (labels ((refine (feature)
+    (cl-labels ((refine (feature)
                (if (consp feature)
                    (cond
                      ((or (equal (car feature) 'or)
