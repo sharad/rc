@@ -48,13 +48,18 @@
                                      (concat (car (last (directory-files
                                                          (concat quicklisp-path "/dists/quicklisp/software" ) t "slime[a-zA-Z0-9-]+cvs"))) "/")))
                      (slime-backend . "swank-loader.lisp"))))
-   (ubuntu .
+    (ubuntu .
            ((slime-path . ,(expand-file-name
                             (concat "/usr/share/"
                                     (if (boundp 'flavor) (symbol-name flavor)
                                         "emacs")
                                     "/site-lisp/slime")))
-            (slime-backend . "/usr/share/common-lisp/source/slime/swank-loader.lisp"))))
+            (slime-backend . "/usr/share/common-lisp/source/slime/swank-loader.lisp")))
+
+
+
+    ;; "/usr/share/emacs/site-lisp/elpa-src/slime-2.20/slime.el"
+    )
   "Available")
 
 (setf use-slime-config 'ubuntu)
@@ -80,7 +85,11 @@
 
 (defun load-slime ()
   (interactive)
-  (load-file (concat (get-slime-config 'slime-path) "/slime.el")))
+  (load-file (concat
+              (if (file-directory-p  (get-slime-config 'slime-path))
+                  (get-slime-config 'slime-path)
+                  "/usr/share/emacs/site-lisp/elpa-src/slime-2.20/slime.el")
+              "/slime.el")))
 
 (load-slime)
 
