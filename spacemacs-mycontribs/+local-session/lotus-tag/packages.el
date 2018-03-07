@@ -94,7 +94,7 @@ Each entry is either:
           ;; (let ((tg 'gtags))
           ;;   (tree-node *tags-config* 'files tg))
 
-          (setf (tree-node* *tags-config* 'files 'cscope) '("cscope.out"))
+          ;; (setf (tree-node* *tags-config* 'files 'cscope) '("cscope.out"))
           (setf (tree-node* *tags-config* 'files 'etags)  '("TAGS"))
           (setf (tree-node* *tags-config* 'files 'gtags)  '("GTAGS" "GRTAGS" "GPATH"
                                                             ;; "GSYMS"
