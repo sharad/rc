@@ -72,78 +72,79 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(when nil
+;; (when t
+
  (defun lotus-package/init-package ()
-  (use-package package
-    :defer t
-    :config
-    (progn
-      (progn
+   (use-package package
+       :defer t
+       :config
+       (progn
+         (progn
 
 
-        ;;; This was installed by package-install.el.
-        ;;; This provides support for the package system and
-        ;;; interfacing with ELPA, the package archive.
-        ;;; Move this code earlier if you want to reference
-        ;;; packages in your .emacs.
+           ;;; This was installed by package-install.el.
+           ;;; This provides support for the package system and
+           ;;; interfacing with ELPA, the package archive.
+           ;;; Move this code earlier if you want to reference
+           ;;; packages in your .emacs.
 
-        ;; (when
-        ;;     (load
-        ;;      (expand-file-name "~/.xemacs/elpa/package.el"))
-        ;;   (package-initialize))
+           ;; (when
+           ;;     (load
+           ;;      (expand-file-name "~/.xemacs/elpa/package.el"))
+           ;;   (package-initialize))
 
-        ;; (require 'cl)
-        ;; (require 'utils-config)
+           ;; (require 'cl)
+           ;; (require 'utils-config)
 
-        (defvar package-user-dir
-          (expand-file-name (convert-standard-filename "~/.emacs.d/elpa"))
-          "package-user-dir")
+           (defvar package-user-dir
+             (expand-file-name (convert-standard-filename "~/.emacs.d/elpa"))
+             "package-user-dir")
 
-        (defvar lotus-package-installed-archive (expand-file-name "installed-archive.el" package-user-dir) "Known Installed packages.")
+           (defvar lotus-package-installed-archive (expand-file-name "installed-archive.el" package-user-dir) "Known Installed packages.")
 
-        (defconst *elpa-package-dir* "~/.emacs.d/elpa")
+           (defconst *elpa-package-dir* "~/.emacs.d/elpa")
 
-        (defvar package-archives nil "package archive")
+           (defvar package-archives nil "package archive")
 
-        (setq
-         package-user-dir
-         (expand-file-name (convert-standard-filename "~/.emacs.d/elpa"))
+           (setq
+            package-user-dir (expand-file-name (convert-standard-filename "~/.emacs.d/elpa"))
 
-         lotus-package-installed-archive (expand-file-name "installed-archive.el" package-user-dir))
+            lotus-package-installed-archive (expand-file-name "installed-archive.el" package-user-dir))
 
-        ;; *elpa-package-dir* "~/.emacs.d/elpa"
+           ;; *elpa-package-dir* "~/.emacs.d/elpa"
 
-        (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+           (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
-        (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
+           (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
 
-        (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+           (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
-        (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
+           (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
 
 
-        (when nil (package-initialize))
+           (when nil (package-initialize))
 
-        (when (file-directory-p *elpa-package-dir*)
-          (mapc #'(lambda (path)
-                    (when (file-directory-p path)
-                      (add-to-list 'load-path path)))
-                (directory-files *elpa-package-dir* t "[a-zA-Z]+"))
-          (byte-recompile-directory *elpa-package-dir*))
+           (when (file-directory-p *elpa-package-dir*)
+             (mapc #'(lambda (path)
+                       (when (file-directory-p path)
+                         (add-to-list 'load-path path)))
+                   (directory-files *elpa-package-dir* t "[a-zA-Z]+"))
+             (byte-recompile-directory *elpa-package-dir*))
 
-        (when nil
-         (when (file-exists-p lotus-package-installed-archive)
-          (when (set-difference (mapcar 'car (lotus-read-sexp lotus-package-installed-archive))
-                                (mapcar 'car package-alist))
-            (message "Your do not have all packages installed.\n install it will lotus-package-install-from-installed-archive.")))))
+           (when nil
+             (when (file-exists-p lotus-package-installed-archive)
+               (when (set-difference (mapcar 'car (lotus-read-sexp lotus-package-installed-archive))
+                                     (mapcar 'car package-alist))
+                 (message "Your do not have all packages installed.\n install it will lotus-package-install-from-installed-archive.")))))
 
-      (progn
-        (autoload 'package-list-packages "package" "Elap Package" t)
-        (autoload 'list-packages         "package" "Elap Package" t)
-        (autoload 'package-install       "package" "Elap Package" t)
-        (autoload 'package-require       "package" "Elap Package" nil)
-        (autoload 'package-activate       "package" "Elap Package" nil)
-        )))))
+         (progn
+           (autoload 'package-list-packages "package" "Elap Package" t)
+           (autoload 'list-packages         "package" "Elap Package" t)
+           (autoload 'package-install       "package" "Elap Package" t)
+           (autoload 'package-require       "package" "Elap Package" nil)
+           (autoload 'package-activate       "package" "Elap Package" nil)
+           ))))
+ ;; )
 
 (defun lotus-package/init-apt-mode ()
   (use-package apt-mode
