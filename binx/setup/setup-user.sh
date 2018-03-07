@@ -44,6 +44,9 @@ DEB_PKG_LEARNING="gpodder"
 
 function main()
 {
+
+    process_arg $@
+
     mkdir -p $TMPDIR
 
     set_keyboard
@@ -395,17 +398,17 @@ function setup_user_config_setup()
 
                             if [ ! -L ~/$c ] # backup
                             then
-		                            mv ~/$c ~/_old_dot_filedirs
+		                            running mv ~/$c ~/_old_dot_filedirs
                             fi
 
                             if [ ! -e ~/$c ]
                             then
-		                            cp -af $c ~/$c
+		                            running cp -af $c ~/$c
                                 # exit -1
                             elif [ -L ~/$c ]
                             then
-                                rm -f ~/$c
-                                cp -af $c ~/$c
+                                running rm -f ~/$c
+                                running cp -af $c ~/$c
                                 # exit -1
                                 # continue
                             fi
@@ -414,7 +417,7 @@ function setup_user_config_setup()
                             echo not doing anything $c ~/$c
                         fi
                     else
-                        echo cp -af $c ~/$c
+                        running cp -af $c ~/$c
                         echo done setting up $c
 		                fi
                 else
@@ -649,6 +652,43 @@ function install_bpkg_pkg()
 function setup_bpkg_pkgs()
 {
     install_bpkg_pkg nevik/gitwatch
+}
+
+function process_arg() {
+    warn=1
+    error=1
+
+    if ! set -- $(getopt -n $pgm -o rnsehvw -- $@)
+    then
+        verbose Wrong command line.
+    fi
+
+    while [ $# -gt 0 ]
+    do
+        case $1 in
+            (-r) recursive=1;;
+            (-s) stash=1;;
+            (-n) noaction="";;
+            (-v) verbose=1;;
+            (-w) warn="";;
+            (-e) error="";;
+            (-h) help;
+                 exit;;
+            (--) shift; break;;
+            (-*) echo "$0: error - unrecognized option $1" 1>&2; help; exit 1;;
+            (*)  break;;
+        esac
+        shift
+    done
+}
+
+function running()
+{
+    echo running $@
+    if [ ! $noaction ]
+    then
+        $@
+    fi
 }
 
 main
