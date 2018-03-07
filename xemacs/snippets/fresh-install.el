@@ -1,5 +1,5 @@
 
-
+;; TODO BUG ensure this will loaded automatically for fresh system.
 (defun setup-emacs-in-fresh-system ()
   (interactive)
   (progn

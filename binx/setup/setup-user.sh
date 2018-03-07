@@ -544,11 +544,13 @@ function setup_dirs()
 
 function setup_spacemacs()
 {
-    if [ -f ~/.rsetup/login/$HOST ]
+    login_env_dir=~/.rsetup/login/env.d
+    mkdir -p $login_env_dir
+    if [ -f $login_env_dir/$HOST ]
     then
-        if ! grep spacemacs ~/.rsetup/login/$HOST
+        if ! grep spacemacs $login_env_dir/$HOST
         then
-            cat <<'EOF' >> ~/.rsetup/login/$HOST
+            cat <<'EOF' >> $login_env_dir/$HOST
 # EMACS_DIST_DIR=.xemacs
 EMACS_DIST_DIR=.emacs.d
 export EMACS_DIST_DIR

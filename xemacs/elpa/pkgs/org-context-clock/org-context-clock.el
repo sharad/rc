@@ -406,7 +406,7 @@
           (run-with-idle-timer
            (1+ *org-context-clock-task-current-context-time-interval*)
            nil
-           'org-context-clock-update-current-context)))))
+           'org-context-clock-update-current-context))))
 ;; function to setup context clock timer:1 ends here
 
 ;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:2]]
