@@ -533,6 +533,7 @@ function setup_dirs()
         fi
         ln -sf ../../../../../../.LocalDir ~/.osetup/dirs.d/local.d/dirs.d
         if [ -d "~/.osetup/dirs.d/local.d/dirs.d" ]
+        then
            if [ -d "~/.osetup/dirs.d/home.d" ]
            then
                cd ~/.osetup/dirs.d/home.d
