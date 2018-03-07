@@ -522,20 +522,25 @@ function setup_dirs()
     if [ ! -d ~/.osetup/dirs.d/local.d/dirs.d/home ]
     then
         mkdir -p ~/.LocalDir
-        ln -s ../../../../../../../.LocalDir ~/.osetup/dirs.d/local.d/dirs.d/home
-        if [ -d "~/.osetup/dirs.d/home.d" ]
-        then
-            cd ~/.osetup/dirs.d/home.d
-            for de in *
-            do
-                if [ -L $de ]
-                then
-                    if [ ! -d "$(readlink -m $de)" ]
-                    then
-                        echo mkdir -p "$(readlink -m $de)"
-                    fi
-                fi
-            done
+        if [ -d "~/.LocalDir/home.d" ]
+           ln -sf dir/for/all/folders ~/.LocalDir/home.d
+        fi
+        ln -sf ../../../../../../.LocalDir ~/.osetup/dirs.d/local.d/dirs.d
+        if [ -d "~/.osetup/dirs.d/local.d/dirs.d" ]
+           if [ -d "~/.osetup/dirs.d/home.d" ]
+           then
+               cd ~/.osetup/dirs.d/home.d
+               for de in *
+               do
+                   if [ -L $de ]
+                   then
+                       if [ ! -d "$(readlink -m $de)" ]
+                       then
+                           echo mkdir -p "$(readlink -m $de)"
+                       fi
+                   fi
+               done
+           fi
         fi
     fi
 
