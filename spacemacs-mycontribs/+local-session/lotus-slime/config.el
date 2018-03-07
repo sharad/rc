@@ -88,7 +88,7 @@
   (load-file (concat
               (if (file-directory-p  (get-slime-config 'slime-path))
                   (get-slime-config 'slime-path)
-                  "/usr/share/emacs/site-lisp/elpa-src/slime-2.20/slime.el")
+                  "/usr/share/emacs/site-lisp/elpa-src/slime-2.20")
               "/slime.el")))
 
 (load-slime)
