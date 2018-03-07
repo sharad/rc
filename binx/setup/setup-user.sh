@@ -53,11 +53,10 @@ function main()
 
     cd ~/
 
-    echo Running setup_apt_packages
-    setup_apt_packages
+    running setup_apt_packages
 
-    echo Running setup_ecrypt_private
-    setup_ecrypt_private
+    running setup_ecrypt_private
+
 
     if ! ssh-add -l
     then
@@ -76,44 +75,31 @@ function main()
 	      exit -1
     fi
 
-    echo Running setup_git_repos
-    setup_git_repos
+    running setup_git_repos
 
-    echo Running setup_user_config_setup
-    setup_user_config_setup
+    running setup_user_config_setup
 
-    echo Running setup_ssh_keys
-    setup_ssh_keys "$SSH_KEY_DUMP"
+    running setup_ssh_keys "$SSH_KEY_DUMP"
 
-    echo Running setup_download_misc
-    setup_download_misc
+    running setup_download_misc
 
-    echo Running setup_login_shell
-    setup_login_shell
+    running setup_login_shell
 
-    echo Running setup_dirs
-    setup_dirs
+    running setup_dirs
 
-    echo Running setup_sourcecode_pro_font
-    setup_sourcecode_pro_font
+    running setup_sourcecode_pro_font
 
-    echo Running setup_mail
-    setup_mail
+    running setup_mail
 
-    echo Running setup_spacemacs
-    setup_spacemacs
+    running setup_spacemacs
 
-    echo Running setup_clib_installer
-    setup_clib_installer
+    running setup_clib_installer
 
-    echo Running setup_clib_pkgs
-    setup_clib_pkgs
+    running setup_clib_pkgs
 
-    echo Running setup_bpkg_installler
-    setup_bpkg_installler
+    running setup_bpkg_installler
 
-    echo Running setup_bpkg_pkgs
-    setup_bpkg_pkgs
+    running setup_bpkg_pkgs
 
     rm -rf $TMPDIR
 }
