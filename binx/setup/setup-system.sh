@@ -5,7 +5,7 @@ SITEDIR=/usr/local
 TMPDIR=~/setuptmp
 
 DEB_PKG_SYSTEM="git openssl stow sbcl cl-clx-sbcl cl-quicklisp  openssh-server cl-swank libfixposix-dev zsh"
-DEB_PKG_SYSTEM1="gparted xterm"
+DEB_PKG_SYSTEM1="gparted xterm rxvt-unicode-256color"
 
 
 function main()
