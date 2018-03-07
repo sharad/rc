@@ -96,7 +96,15 @@
 (defun lotus-emacs-user-init-begin ()
   (message "loading lotus-emacs-user-init-begin begin")
   (push "~/.osetup/info.d/common/elisp" load-path)
-  (push (concat "~/.osetup/info.d/hosts/" (system-name) "/elisp") load-path)
+  (let ((default-local-lib
+         (concat "~/.osetup/info.d/hosts/default/elisp"))
+        (local-lib
+         (concat "~/.osetup/info.d/hosts/" (system-name) "/elisp")))
+    (push
+     (if (file-directory-p local-lib)
+         local-lib
+         default-local-lib)
+     load-path))
   (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
   (push "~/.spacemacs-mycontribs/local" load-path)
