@@ -471,11 +471,21 @@ function setup_mail()
     fi
 }
 
+function setup_login_shell()
+{
+    curshell="$(getent passwd $USER | cut -d: -f7)"
+    if [ "$curshell" != "/bin/zsh" ]
+    then
+        sudo apt -y install zsh
+        chsh -s /bin/zsh
+    fi
+}
+
 function setup_dirs()
 {
 
     curhomedir="$(getent passwd $USER | cut -d: -f6)/hell"
-    if [ "$curhomedir" != hell ]
+    if [ "$(basename $curhomedir)" != hell ]
     then
         newhomedir=$curhomedir/hell
         usermod -d "$newhomedir" $USER
