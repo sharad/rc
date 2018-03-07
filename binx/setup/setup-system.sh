@@ -12,20 +12,20 @@ function main()
 {
     process_arg $@
 
-    run setup_zsh
-    run setup_paradise
+    running setup_zsh
+    running setup_paradise
 
 
     sudo mkdir -p $SITEDIR/.repos/
     sudo chown ${USER}.${USER} -R $SITEDIR/.repos/
-    run setup_apt_packages
+    running setup_apt_packages
 
-    run setup_ssh_keys "$SSH_KEY_DUMP"
+    running setup_ssh_keys "$SSH_KEY_DUMP"
 
-    run setup_git_repos
+    running setup_git_repos
 
-    run setup_packages
-    run setup_misc
+    running setup_packages
+    running setup_misc
 }
 
 
@@ -76,15 +76,15 @@ function setup_packages()
     sudo mkdir -p $SITEDIR/build
     sudo chown ${USER}.${USER} -R $SITEDIR/build
 
-    run setup_clisp_packages
-    run setup_quicklisp_package
-    run setup_clisp_ql_packages
-    run setup_stumwpm_packages
-    run setup_stumwpm_contrib_packages
-    run setup_conkeror_package
+    running setup_clisp_packages
+    running setup_quicklisp_package
+    running setup_clisp_ql_packages
+    running setup_stumwpm_packages
+    running setup_stumwpm_contrib_packages
+    running setup_conkeror_package
 
-    run setup_postfix
-    run setup_res_dir
+    running setup_postfix
+    running setup_res_dir
 }
 
 function setup_quicklisp_package()
