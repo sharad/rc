@@ -281,7 +281,7 @@ using three `C-u' prefix arguments."
 (defun org-clock-in-if-not-at-time-delay ()
   (org-clock-in-if-not-at-time org-clock-in-if-not-delay))
 
-(defun org-clock-in-if-not-at-time-delay-frame-fn ()
+(defun org-clock-in-if-not-at-time-delay-fn ()
   (org-clock-in-if-not-at-time-delay))
 
 (defun org-add-effort-if-not-clockin-hook ()

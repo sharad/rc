@@ -167,9 +167,9 @@ Each entry is either:
                 ;;loaded.
                 ;; BUG: not getting included
 
-                (defun call-org-clock-in-if-not-at-time-delay-frame-fn ()
-                  (if (functionp 'org-clock-in-if-not-at-time-delay-frame-fn)
-                      (org-clock-in-if-not-at-time-delay-frame-fn)
+                (defun call-org-clock-in-if-not-at-time-delay-frame-fn (frame)
+                  (if (functionp 'org-clock-in-if-not-at-time-delay-fn)
+                      (org-clock-in-if-not-at-time-delay-fn)
                       (warn "function org-clock-in-if-not-at-time-delay-frame-fn not defined.")))
 
                 (add-to-enable-startup-interrupting-feature-hook
@@ -189,7 +189,7 @@ Each entry is either:
                    #'(lambda ()
                        (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
                          (add-hook 'after-make-frame-functions
-                                   'call-org-clock-in-if-not-at-time-delay-frame-fn
+                                   #'call-org-clock-in-if-not-at-time-delay-fn
                                    t))
                        (add-hook
                         'delete-frame-functions
@@ -206,7 +206,7 @@ Each entry is either:
                    #'(lambda ()
                        (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
                          (remove-hook 'after-make-frame-functions
-                                      'call-org-clock-in-if-not-at-time-delay-frame-fn))) t))
+                                      #'call-org-clock-in-if-not-at-time-delay-fn))) t))
 
               ;; (progn
               ;;   (add-to-enable-desktop-restore-interrupting-feature-hook
