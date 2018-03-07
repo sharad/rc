@@ -22,7 +22,8 @@ DEB_PKG_NECESSARY="git legit git-flow git-sh git-extras git-crypt ecryptfs-utils
 DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev console-data gnome-session gnome-settings-daemon gnome-panel"
 DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp virtualbox-dkms virtualbox-guest-x11 vagrant"
 DEB_PKGS1="vim emacs emacs-goodies-el org-mode develock-el dash-el s-el zile keychain undistract-me"
-DEB_PKGS2="rxvt-unicode-256color elscreen planner-el p7zip-full pdftk golang gocode"
+
+               DEB_PKGS2="rxvt-unicode-256color elscreen planner-el p7zip-full pdftk golang gocode"
 DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip"
 DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skypeweb purple-skypeweb telegram-purple tor"
 DEB_EXTRA_PKG_VIRTUAL=""
@@ -438,7 +439,7 @@ function setup_Documentation()
 {
     if [  -d ~/.osetup/dirs.d/local.d/dirs.d/home -a ! -d ~/.osetup/dirs.d/local.d/dirs.d/home/Documents ]
     then
-        ln -s ../.repos/git/user/doc ~/.osetup/dirs.d/local.d/dirs.d/home/Documents
+        ln -s ../../.repos/git/user/doc ~/.osetup/dirs.d/local.d/dirs.d/home/Documents
     fi
 }
 
