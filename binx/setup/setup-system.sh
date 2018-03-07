@@ -22,6 +22,7 @@ function main()
     setup_ssh_keys "$SSH_KEY_DUMP"
 
     setup_git_repos
+
     setup_packages
     setup_misc
 }
@@ -29,7 +30,7 @@ function main()
 
 function setup_apt_packages()
 {
-    sudo apt install git
+    sudo apt -y install git
 }
 
 function setup_apt_packages()
@@ -42,7 +43,7 @@ function setup_apt_packages()
         "$DEB_PKG_SYSTEM" \
             "$DEB_PKG_SYSTEM1"
     do
-        eval sudo apt install $pkg
+        eval sudo apt -y install $pkg
     done
 }
 
@@ -92,7 +93,7 @@ function setup_quicklisp_package()
     # gpg --verify quicklisp.lisp.asc quicklisp.lisp
     # sbcl --load quicklisp.lisp
 
-    sudo apt install cl-quicklisp
+    sudo apt -y install cl-quicklisp
     sudo mkdir -p  $SITEDIR/share/common-lisp/source/
     sudo chown ${USER}.${USER} -R $SITEDIR/share/common-lisp/source/
 
@@ -115,7 +116,7 @@ function setup_clisp_packages()
     mkdir -p ~/.config/common-lisp/source-registry.conf.d/
     echo '(:tree #p"'$SITEDIR/share/common-lisp/'")' > ~/.config/common-lisp/source-registry.conf.d/projects.conf
 
-    sudo apt install stow
+    sudo apt -y install stow
     sudo mkdir -p $SITEDIR/share/common-lisp/source
     sudo mkdir -p $SITEDIR/share/common-lisp/systems
     # sudo mkdir -p $SITEDIR/share/common-lisp/source/sharad
@@ -159,7 +160,7 @@ function setup_clisp_ql_packages()
 
 function setup_stumwpm_packages()
 {
-    sudo apt install autoconf stow texinfo cl-swank
+    sudo apt -y install autoconf stow texinfo cl-swank
 
     if [ ! -d $SITEDIR/build/stumpwm ]
     then
@@ -191,7 +192,7 @@ function setup_stumwpm_packages()
 
 function setup_stumwpm_contrib_packages()
 {
-    sudo apt install libfixposix-dev
+    sudo apt -y install libfixposix-dev
     # https://www.quicklisp.org/beta/faq.html#local-project
     if [ ! -d $SITEDIR/share/common-lisp/source/quicklisp/local-projects ]
     then
@@ -254,7 +255,7 @@ function setup_misc()
 function setup_conkeror_package()
 {
 
-    sudo apt install stow
+    sudo apt -y install stow
 
     if [ ! -d $SITEDIR/build/conkeror ]
     then
@@ -288,7 +289,7 @@ function setup_paradise()
 
 function setup_zsh()
 {
-    sudo apt install zsh
+    sudo apt -y install zsh
     if [ "$(getent passwd $USER | cut -d: -f7)" != "/bin/zsh" ]
     then
         chsh -s /bin/zsh
@@ -297,7 +298,7 @@ function setup_zsh()
 
 function setup_postfix()
 {
-    sudo apt install postfix
+    sudo apt -y install postfix
     if [ -d $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix ]
     then
         if [ -d /etc/postfix-ORG ]
@@ -314,7 +315,7 @@ function setup_postfix()
 
 function setup_offlineimap()
 {
-    sudo apt install offlineimap
+    sudo apt -y install offlineimap
 }
 
 function setup_res_dir()
@@ -327,7 +328,7 @@ function setup_res_dir()
     sudo mkdir -p /srv
     if sudo vgs --noheadings $VOL_RESIER
     then
-       sudo apt install reiserfsprogs
+       sudo apt -y install reiserfsprogs
        if ! sudo lvs --noheadings $VOL_RESIER/$LVOL_RESIER
        then
            if sudo lvcreate $VOL_RESIER -n $LVOL_RESIER -L 1G

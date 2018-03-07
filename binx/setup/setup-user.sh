@@ -405,7 +405,7 @@ function setup_user_config_setup()
                                 rm -f ~/$c
                                 cp -af $c ~/$c
                                 # exit -1
-                                continue
+                                # continue
                             fi
                             echo done setting up $c
                         else
