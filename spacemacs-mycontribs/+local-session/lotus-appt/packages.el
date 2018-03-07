@@ -83,6 +83,7 @@ Each entry is either:
                 appt-announce-method 'appt-persistent-message-announce  ; XEmacs
                 appt-display-duration 59)
 
+          (defvar diary-display-function-old nil "diary-display-function-old")
           (defvar show-diary-entries-and-appts t "show-diary-entries-and-appts")
 
           (defun diary-save-hook ()

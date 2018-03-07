@@ -96,28 +96,30 @@ Each entry is either:
         ;; (require 'utils-config)
 
         (defvar package-user-dir
-          (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa"))
+          (expand-file-name (convert-standard-filename "~/.emacs.d/elpa"))
           "package-user-dir")
 
         (defvar lotus-package-installed-archive (expand-file-name "installed-archive.el" package-user-dir) "Known Installed packages.")
 
-        (defconst *elpa-package-dir* "~/.xemacs/pkgrepos/elpa")
+        (defconst *elpa-package-dir* "~/.emacs.d/elpa")
 
         (defvar package-archives nil "package archive")
 
         (setq
          package-user-dir
-         (expand-file-name (convert-standard-filename "~/.xemacs/pkgrepos/elpa"))
+         (expand-file-name (convert-standard-filename "~/.emacs.d/elpa"))
 
          lotus-package-installed-archive (expand-file-name "installed-archive.el" package-user-dir))
 
-        ;; *elpa-package-dir* "~/.xemacs/pkgrepos/elpa"
+        ;; *elpa-package-dir* "~/.emacs.d/elpa"
 
         (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
         (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
 
         (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+
+        (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
 
 
         (when nil (package-initialize))

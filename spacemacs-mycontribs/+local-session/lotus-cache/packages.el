@@ -80,7 +80,7 @@ Each entry is either:
 
         (progn
           (use-package startup-hooks
-              :defert t
+              :defer t
               :config
               (progn
                 (progn

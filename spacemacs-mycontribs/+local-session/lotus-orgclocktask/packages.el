@@ -37,6 +37,7 @@
 (defconst lotus-orgclocktask-packages
   '(
     ;; (PACKAGE :location local)
+    org-doing
     org-misc-utils-lotus
     org-clock-utils-lotus
     org-clock-daysummary
@@ -73,6 +74,13 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+(defun lotus-orgclocktask/init-org-doing ()
+  (use-package org-doing
+      :defer t
+      :config
+      (progn
+        )))
 
 (defun lotus-orgclocktask/init-org-misc-utils-lotus ()
   (use-package org-misc-utils-lotus
@@ -159,6 +167,11 @@ Each entry is either:
                 ;;loaded.
                 ;; BUG: not getting included
 
+                (defun call-org-clock-in-if-not-at-time-delay-frame-fn ()
+                  (if (functionp 'org-clock-in-if-not-at-time-delay-frame-fn)
+                      (org-clock-in-if-not-at-time-delay-frame-fn)
+                      (warn "function org-clock-in-if-not-at-time-delay-frame-fn not defined.")))
+
                 (add-to-enable-startup-interrupting-feature-hook
                  #'(lambda ()
                      (add-hook
@@ -176,7 +189,7 @@ Each entry is either:
                    #'(lambda ()
                        (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
                          (add-hook 'after-make-frame-functions
-                                   'org-clock-in-if-not-at-time-delay-frame-fn
+                                   'call-org-clock-in-if-not-at-time-delay-frame-fn
                                    t))
                        (add-hook
                         'delete-frame-functions
@@ -193,7 +206,7 @@ Each entry is either:
                    #'(lambda ()
                        (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
                          (remove-hook 'after-make-frame-functions
-                                      'org-clock-in-if-not-at-time-delay-frame-fn))) t))
+                                      'call-org-clock-in-if-not-at-time-delay-frame-fn))) t))
 
               ;; (progn
               ;;   (add-to-enable-desktop-restore-interrupting-feature-hook

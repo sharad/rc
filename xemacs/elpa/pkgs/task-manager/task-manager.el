@@ -76,7 +76,7 @@
     )
   "Desc")
 
-(defvar *task-projbuffs-base-dir* (expand-file-name "contents/misc/projbuffs" *created-content-dir*))
+(defvar *task-projbuffs-base-dir* "~/Documents/org/tasks")
 
 (defvar *task-type-config*
   '(("bug"
