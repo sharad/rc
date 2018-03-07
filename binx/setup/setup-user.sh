@@ -449,25 +449,44 @@ function setup_public_html()
 function setup_mail()
 {
     sudo apt -y install dovecot-core dovecot-imapd ntpdate postfix
-    if [ ! -d /etc/postfix-ORG ]
+    if [ -d ~/.system/ubuntu/etc/postfix ]
     then
-        cp -ar /etc/postfix /etc/postfix-ORG
-        for f in ~/.system/ubuntu/etc/postfix/*
-        do
-            b=$(basename $f)
-            cp $f /etc/postfix/%b
-        done
-    fi
+        if [ ! -d /etc/postfix-ORG ]
+        then
+            sudo cp -ar /etc/postfix /etc/postfix-ORG
+            for f in ~/.system/ubuntu/etc/postfix/*
+            do
+                b=$(basename $f)
+                cp $f /etc/postfix/%b
+            done
+        fi
 
-    if [ ! -d /etc/dovecot-ORG ]
-    then
-        cp -ar /etc/dovecot /etc/dovecot-ORG
-        cp ~/.system/ubuntu/etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
+        if [ ! -d /etc/dovecot-ORG ]
+        then
+            cp -ar /etc/dovecot /etc/dovecot-ORG
+            cp ~/.system/ubuntu/etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
+        fi
+    else
+        echo ~/.system/ubuntu/etc/postfix not exists >&2
     fi
 }
 
 function setup_dirs()
 {
+
+    curhomedir="$(getent passwd $USER | cut -d: -f6)/hell"
+    if [ "$curhomedir" != hell ]
+    then
+        newhomedir=$curhomedir/hell
+        usermod -d "$newhomedir" $USER
+        mv $curhomedir ${curhomedir}_tmp
+        mkdir -p $curhomedir
+        mv ${curhomedir}_tmp "$newhomedir"
+        sudo mkdir -p "$newhomedir"
+        export $HOME="$newhomedir"
+    fi
+
+    sudo mkdir -p  ~/../paradise
     # make home dir and paradise in root ownership.
     sudo chown root.root ~/../paradise
 
