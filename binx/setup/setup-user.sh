@@ -85,6 +85,9 @@ function main()
     echo Running setup_download_misc
     setup_download_misc
 
+    echo Running setup_login_shell
+    setup_login_shell
+
     echo Running setup_dirs
     setup_dirs
 
@@ -483,7 +486,6 @@ function setup_login_shell()
 
 function setup_dirs()
 {
-
     curhomedir="$(getent passwd $USER | cut -d: -f6)/hell"
     if [ "$(basename $curhomedir)" != hell ]
     then
