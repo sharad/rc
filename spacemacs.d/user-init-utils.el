@@ -138,7 +138,6 @@
 
   ;; BUG settle these
   (require 'basic-utils)
-  (require 'misc-utils)
 
     ;; (progn
     ;;    ;; server-auth-dir (auto-config-dir "server" t)
@@ -183,6 +182,7 @@
         (load-file custom-override-file)))
     ))
 
+  (require 'misc-utils)
 
   (progn ;;  server
 
