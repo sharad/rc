@@ -78,7 +78,10 @@ Each entry is either:
       :defer t
       :config
       (progn
-        (progn
+        ))
+
+  (when nil                             ;load post tree BUG TODO
+    (progn
           (require 'debug-config)
           ;; debug
           (add-to-list 'debug-tags-level-list '(tag 4))
@@ -94,8 +97,12 @@ Each entry is either:
           ;; (let ((tg 'gtags))
           ;;   (tree-node *tags-config* 'files tg))
 
-          ;; (setf (tree-node* *tags-config* 'files 'cscope) '("cscope.out"))
+          (setf (tree-node* *tags-config* 'files 'cscope) '("cscope.out"))
+
           (setf (tree-node* *tags-config* 'files 'etags)  '("TAGS"))
+
+          ;; (let* ((v *tags-config*)) (\(setf\ tree-node*\) (quote ("TAGS")) v (quote files) (quote etags)))
+
           (setf (tree-node* *tags-config* 'files 'gtags)  '("GTAGS" "GRTAGS" "GPATH"
                                                             ;; "GSYMS"
                                                             ))
@@ -239,7 +246,9 @@ Each entry is either:
                "Automatically create tags file."
                (unless (tag-file-existp ',tag-sys default-directory)
                  (create-tags ',tag-sys default-directory))))
-          ))))
+          ))
+
+  )
 
 (defun lotus-tag/init-tags ()
   (use-package tags
