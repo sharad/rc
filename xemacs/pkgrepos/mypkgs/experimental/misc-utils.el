@@ -382,9 +382,10 @@ The indirect buffer can have another major mode."
 
   )
 
-
-(deh-require-maybe (progn pastie pastbin paste2)
-  )
+(when nil
+  ;; BUG
+  (deh-require-maybe (progn pastie pastbin paste2)
+    ))
 
 
 
