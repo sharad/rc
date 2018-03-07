@@ -10,21 +10,22 @@ DEB_PKG_SYSTEM1="gparted"
 
 function main()
 {
+    process_arg $@
 
-    setup_zsh
-    setup_paradise
+    run setup_zsh
+    run setup_paradise
 
 
     sudo mkdir -p $SITEDIR/.repos/
     sudo chown ${USER}.${USER} -R $SITEDIR/.repos/
-    setup_apt_packages
+    run setup_apt_packages
 
-    setup_ssh_keys "$SSH_KEY_DUMP"
+    run setup_ssh_keys "$SSH_KEY_DUMP"
 
-    setup_git_repos
+    run setup_git_repos
 
-    setup_packages
-    setup_misc
+    run setup_packages
+    run setup_misc
 }
 
 
@@ -75,15 +76,15 @@ function setup_packages()
     sudo mkdir -p $SITEDIR/build
     sudo chown ${USER}.${USER} -R $SITEDIR/build
 
-    setup_clisp_packages
-    setup_quicklisp_package
-    setup_clisp_ql_packages
-    setup_stumwpm_packages
-    setup_stumwpm_contrib_packages
-    setup_conkeror_package
+    run setup_clisp_packages
+    run setup_quicklisp_package
+    run setup_clisp_ql_packages
+    run setup_stumwpm_packages
+    run setup_stumwpm_contrib_packages
+    run setup_conkeror_package
 
-    setup_postfix
-    setup_res_dir
+    run setup_postfix
+    run setup_res_dir
 }
 
 function setup_quicklisp_package()
@@ -351,6 +352,43 @@ function setup_res_dir()
        fi
     else
         echo Warning: $VOL_RESIER volume group do not exists. >&2
+    fi
+}
+
+function process_arg() {
+    warn=1
+    error=1
+
+    if ! set -- $(getopt -n $pgm -o rnsehvw -- $@)
+    then
+        verbose Wrong command line.
+    fi
+
+    while [ $# -gt 0 ]
+    do
+        case $1 in
+            (-r) recursive=1;;
+            (-s) stash=1;;
+            (-n) noaction="";;
+            (-v) verbose=1;;
+            (-w) warn="";;
+            (-e) error="";;
+            (-h) help;
+                 exit;;
+            (--) shift; break;;
+            (-*) echo "$0: error - unrecognized option $1" 1>&2; help; exit 1;;
+            (*)  break;;
+        esac
+        shift
+    done
+}
+
+function running()
+{
+    echo running $@
+    if [ ! $noaction ]
+    then
+        $@
     fi
 }
 

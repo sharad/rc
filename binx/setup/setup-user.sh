@@ -217,7 +217,9 @@ function setup_ecrypt_private()
 	          ecryptfs-setup-private
         fi
 
+        # TODO BUG check for changes in homedir
         sed -i 's@/Private@/.Private@' ~/.ecryptfs/Private.mnt
+        echo $HOME/.Private > ~/.ecryptfs/Private.mnt
 
         ecryptfs-mount-private
     fi
