@@ -182,6 +182,10 @@ function setup_stumwpm_packages()
         mkdir -p $TMPDIR
         ./autogen.sh
         ./configure --prefix=/usr/local/stow/stumpwm --with-lisp=sbcl
+
+        sbcl --eval '(ql:quickload "quickproject")' \
+             --eval '(quit)'
+
         make
         sudo make install
         cd -
