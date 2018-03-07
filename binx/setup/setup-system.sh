@@ -59,8 +59,8 @@ function setup_ssh_keys()
             ## bring the ssh keys
             if [ ! -r $TMPDIR/ssh/nosecure.d/ssh/keys.d/github ]
             then
-	        mkdir -p $TMPDIR/ssh
-	        openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C $TMPDIR/ssh
+	              mkdir -p $TMPDIR/ssh
+	              openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C $TMPDIR/ssh
             fi
 
             if ! ssh-add -l
@@ -179,6 +179,7 @@ function setup_stumwpm_packages()
     then
         cd $SITEDIR/build/stumpwm
         git checkout pa-point-timeout
+        mkdir -p $TMPDIR
         ./autogen.sh
         ./configure --prefix=/usr/local/stow/stumpwm --with-lisp=sbcl
         make
