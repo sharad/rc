@@ -528,6 +528,7 @@ function setup_dirs()
     then
         mkdir -p ~/.LocalDir
         if [ -d "~/.LocalDir/home.d" ]
+        then
            ln -sf dir/for/all/folders ~/.LocalDir/home.d
         fi
         ln -sf ../../../../../../.LocalDir ~/.osetup/dirs.d/local.d/dirs.d
