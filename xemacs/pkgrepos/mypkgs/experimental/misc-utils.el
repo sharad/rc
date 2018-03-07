@@ -355,12 +355,13 @@ The indirect buffer can have another major mode."
 (deh-require-maybe thingatpt)
 (deh-require-maybe thingatpt+)
 
-;; BUG not working
-;; (deh-require-maybe (progn help+ help-fns+ help-macro+ help-mode+)
-;;   )
+(when nil
+  ;; BUG for new system
+ (deh-require-maybe (progn help+ help-fns+ help-macro+ help-mode+)
+  )
 
 (deh-require-maybe (progn ido-load-library kill-ring-ido kill-ring-search)
-  )
+  ))
 
 
 (deh-section "Close all frame"
