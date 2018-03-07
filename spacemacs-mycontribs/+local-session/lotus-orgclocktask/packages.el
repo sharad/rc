@@ -297,7 +297,9 @@ Each entry is either:
                            (file-directory-p party-base-dir)
                            (file-exists-p start-file))
                           (progn
-                            (org-context-clock-setup-task-tree-task-root-org-file start-file))
+                            (if (functionp 'org-context-clock-setup-task-tree-task-root-org-file)
+                                (org-context-clock-setup-task-tree-task-root-org-file start-file)
+                                (warn "function org-context-clock-setup-task-tree-task-root-org-file not available.")))
                           (message "org party dir %s or file %s not exists."
                                    party-base-dir
                                    start-file))))
@@ -311,7 +313,9 @@ Each entry is either:
                                 (file-directory-p party-base-dir)
                                 (file-exists-p start-file))
                                (progn
-                                 (org-context-clock-setup-task-tree-task-root-org-file start-file))
+                                 (if (functionp 'org-context-clock-setup-task-tree-task-root-org-file)
+                                     (org-context-clock-setup-task-tree-task-root-org-file start-file)
+                                     (warn "function org-context-clock-setup-task-tree-task-root-org-file not available.")))
                                (message "org party dir %s or file %s not exists."
                                         party-base-dir
                                         start-file)))))))))
@@ -338,7 +342,9 @@ Each entry is either:
         (defun lotus-config-start-org-context-clock-insinuate-after-delay (delay)
           (run-at-time-or-now delay
                               #'(lambda ()
-                                  (org-context-clock-insinuate))))
+                                  (if (functionp 'org-context-clock-insinuate)
+                                      (org-context-clock-insinuate)
+                                      (warn "function org-context-clock-insinuate not available.")))))
 
         (defun lotus-config-start-org-context-clock-insinuate-after-delay-time ()
           (lotus-config-start-org-context-clock-insinuate-after-delay 70)))
@@ -384,7 +390,9 @@ Each entry is either:
       :config
       (progn
         (progn
-          (org-clock-resolve-advanced-insinuate)))))
+          (if (functionp 'org-clock-resolve-advanced-insinuate)
+              (org-clock-resolve-advanced-insinuate)
+              (warn "function org-clock-resolve-advanced-insinuate not available."))))))
 
 (defun lotus-orgclocktask/init-timesheet ()
   ;; https://github.com/tmarble/timesheet.el
