@@ -208,14 +208,15 @@
            ("dired" (mode . dired-mode))
            ("perl" (mode . cperl-mode))
            ("erc" (mode . erc-mode))
-           ("planner" (or
+           (when (featurep 'planner)
+            ("planner" (or
                        (name . "^\\*Calendar\\*$")
                        (name . "^diary$")
                        (name . "planner-cyclic-diary-file")
                        (name . "private")
                        (name . "public")
                        (name . ,(concat planner-date-regexp ".muse"))
-                       (mode . planner-mode)))
+                       (mode . planner-mode))))
            ("wiki" (or
                     (name . "^\\.muse$")
                     (mode . muse-mode)))
