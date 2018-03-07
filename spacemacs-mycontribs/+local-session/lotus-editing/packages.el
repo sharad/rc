@@ -198,7 +198,9 @@ Each entry is either:
           ;; `auto-revert-use-notify' are non-nil.
           (if (or (string-match auto-revert-notify-exclude-dir-regexp
                                 (expand-file-name default-directory))
-                  (file-symlink-p buffer-file-name))
+                  (and
+                   buffer-file-name
+                   (file-symlink-p buffer-file-name)))
               ;; Fallback to file checks.
               (set (make-local-variable 'auto-revert-use-notify) nil)
 
