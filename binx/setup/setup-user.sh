@@ -522,7 +522,7 @@ function setup_dirs()
     if [ ! -d ~/.osetup/dirs.d/local.d/dirs.d/home ]
     then
         mkdir -p ~/.LocalDir
-        ln -s ../../../../../../../.Local ~/.osetup/dirs.d/local.d/dirs.d/home
+        ln -s ../../../../../../../.LocalDir ~/.osetup/dirs.d/local.d/dirs.d/home
         if [ -d "~/.osetup/dirs.d/home.d" ]
         then
             cd ~/.osetup/dirs.d/home.d
