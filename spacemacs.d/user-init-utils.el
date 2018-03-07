@@ -120,7 +120,9 @@
    '("local" . "~/.xemacs/elpa/upload")
    package-archives)
 
+  ;; BUG settle these
   (require 'basic-utils)
+  (require 'misc-utils)
 
   (defvar *emacs-in-init* t "Emacs is in init.")
   (defvar user-emacs-directory "~/.emacs.d")
