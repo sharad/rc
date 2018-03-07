@@ -120,9 +120,6 @@
    '("local" . "~/.xemacs/elpa/upload")
    package-archives)
 
-  ;; BUG settle these
-  (require 'basic-utils)
-  (require 'misc-utils)
 
   (defvar *emacs-in-init* t "Emacs is in init.")
   (defvar user-emacs-directory "~/.emacs.d")
@@ -139,6 +136,9 @@
      old-messages-buffer-max-lines messages-buffer-max-lines
      messages-buffer-max-lines 2000))
 
+  ;; BUG settle these
+  (require 'basic-utils)
+  (require 'misc-utils)
 
     ;; (progn
     ;;    ;; server-auth-dir (auto-config-dir "server" t)
