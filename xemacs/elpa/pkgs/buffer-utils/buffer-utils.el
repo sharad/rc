@@ -36,7 +36,7 @@
 
 (require 'ibuffer)
 (require 'uniquify)
-(require 'planner)
+;; (require 'planner)
 
 ;; believe it need not be here
 ;; (eval-after-load "ido"
