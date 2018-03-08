@@ -437,19 +437,23 @@ function setup_sshkeys()
 
 function setup_Documentation()
 {
-    if [  ! -L ~/.LocalDirs.d/home.d/Documents -o "$(readlink -m ~/.LocalDirs.d/home.d/Documents)" != "$HOME/.repos/git/user/doc" ]
+    if [  ! -L ~/Documents -a "$(readlink -m ~/Documents)" != "$HOME/.repos/git/user/doc" ]
     then
-        rm -f ~/.LocalDirs.d/home.d/Documents
-        ln -s ../../.repos/git/user/doc ~/.LocalDirs.d/home.d/Documents
+        # rm -f ~/.LocalDirs.d/home.d/Documents
+        # ln -s ../../.repos/git/user/doc ~/.LocalDirs.d/home.d/Documents
+        rm -f ~/Documents
+        cp -a ~/.setup/_home/Documents ~/
     fi
 }
 
 function setup_public_html()
 {
-    if [  ! -L ~/.LocalDirs.d/home.d/public_html -o "$(readlink -m ~/.LocalDirs.d/home.d/public_html)" != "$HOME/.repos/git/user/doc/Public/Published/html" ]
+    if [  ! -L ~/public_html -o "$(readlink -m ~/public_html)" != "$HOME/.repos/git/user/doc/Public/Published/html" ]
     then
-        rm -f ~/.LocalDirs.d/home.d/public_html
-        ln -s Documents/Public/Published/html ~/.LocalDirs.d/home.d/public_html
+        # rm -f ~/.LocalDirs.d/home.d/public_html
+        # ln -s Documents/Public/Published/html ~/.LocalDirs.d/home.d/public_html
+        rm -f ~/public_html
+        cp -a ~/.setup/_home/public_html ~/
     fi
 }
 
@@ -510,7 +514,7 @@ function setup_dirs()
 {
     # running setup_paradise
 
-    for l in ~/.osetup/dirs.d/control.d/*/*
+    for l in ~/.osetup/dirs.d/model.d/*/*
     do
         if [ -L "$l" ]
         then

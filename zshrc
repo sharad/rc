@@ -461,6 +461,14 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
 {
     cat ~/.logs/stderr/zshall/*
     echo Could see all messages in '~/.logs/stderr/zshall/*'
+
+    if [ -d ~/Sink/ ]
+    then
+        print 'ls ~/Sink'
+        ls -C ~/Sink/
+        echo
+    fi
+
     if whence -p ncal > /dev/null 2>&1 ; then
     	# ncal -3 -w
     	# ncal -3
