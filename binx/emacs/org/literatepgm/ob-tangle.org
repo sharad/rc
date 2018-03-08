@@ -1,5 +1,5 @@
 #+TITLE tangle
-#+PROPERTY: header-args :tangle tangle.esh :padline yes :comments both :noweb yes
+#+PROPERTY: header-args :tangle ob-tangle.esh :padline yes :comments both :noweb yes
 
 
 * tangle
