@@ -1,56 +1,8 @@
-;;; org-onchnage.el --- copy config
-
-;; Copyright (C) 2012  Sharad Pratap
-
-;; Author: Sharad Pratap <spratap@merunetworks.com>
-;; Keywords: convenience
-
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-;;; Commentary:
-
-;;; note on change
-
-(require 'desktop)
-(require 'session)
-
-(require 'timer-utils-lotus)
-(eval-when-compile
-  (require 'timer-utils-lotus))
-(require 'org-misc-utils-lotus)
-(eval-when-compile
-  (require 'org-misc-utils-lotus))
-(require 'lotus-misc-utils)
-(eval-when-compile
-  (require 'lotus-misc-utils))
+;; Org insert log note un-interactively
 
 
-;;;###autoload
-(defun org-clock-out-with-note (note &optional switch-to-state fail-quietly at-time) ;BUG TODO will it work or save-excursion save-restriction also required
-  (interactive
-   (let ((note (read-from-minibuffer "Closing notes: "))
-         (switch-to-state current-prefix-arg))
-     (list note switch-to-state)))
-
-  (let ((org-log-note-clock-out t))
-    (move-marker org-log-note-return-to nil)
-    (move-marker org-log-note-marker nil)
-    (org-clock-out switch-to-state fail-quietly at-time)
-    (remove-hook 'post-command-hook 'org-add-log-note)
-    (org-insert-log-note note)))
-
-(defun org-insert-log-note (txt)
+;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20insert%20log%20note%20un-interactively][Org insert log note un-interactively:1]]
+(defun org-insert-log-note (txt &optional purpose effective-time state previous-state)
   "Finish taking a log note, and insert it to where it belongs."
   (let* ((txt txt)
          (note-purpose purpose)
@@ -136,9 +88,76 @@
          ;; is then modified outside of `org-with-remote-undo'.
          (when (eq this-command 'org-agenda-todo)
            (setcdr buffer-undo-list (cddr buffer-undo-list))))))))
+;; Org insert log note un-interactively:1 ends here
 
-                                        ;new
+;; Preamble
 
+;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Preamble][Preamble:1]]
+;;; org-onchnage.el --- copy config
+
+;; Copyright (C) 2012  Sharad Pratap
+
+;; Author: Sharad Pratap <spratap@merunetworks.com>
+;; Keywords: convenience
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;;; Code:
+;; Preamble:1 ends here
+
+;; Libraries required
+
+
+;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Libraries%20required][Libraries required:1]]
+(require 'desktop)
+(require 'session)
+
+(require 'timer-utils-lotus)
+(eval-when-compile
+  (require 'timer-utils-lotus))
+(require 'org-misc-utils-lotus)
+(eval-when-compile
+  (require 'org-misc-utils-lotus))
+(require 'lotus-misc-utils)
+(eval-when-compile
+  (require 'lotus-misc-utils))
+;; Libraries required:1 ends here
+
+;; Clock out with NOTE
+
+
+;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Clock%20out%20with%20NOTE][Clock out with NOTE:1]]
+;;;###autoload
+(defun org-clock-out-with-note (note &optional switch-to-state fail-quietly at-time) ;BUG TODO will it work or save-excursion save-restriction also required
+  (interactive
+   (let ((note (read-from-minibuffer "Closing notes: "))
+         (switch-to-state current-prefix-arg))
+     (list note switch-to-state)))
+
+  (let ((org-log-note-clock-out t))
+    (move-marker org-log-note-return-to nil)
+    (move-marker org-log-note-marker nil)
+    (org-clock-out switch-to-state fail-quietly at-time)
+    (remove-hook 'post-command-hook 'org-add-log-note)
+    (org-insert-log-note note)))
+;; Clock out with NOTE:1 ends here
+
+;; Org add log note background
+
+;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20add%20log%20note%20background][Org add log note background:1]]
 (defun org-add-log-note-background (win-timeout &optional _purpose)
   "Pop up a window for taking a note, and add this note later."
   ;; (remove-hook 'post-command-hook 'org-add-log-note-background)
@@ -236,8 +255,12 @@ EXTRA is additional text that will be inserted into the notes buffer."
           (org-add-log-setup-background win-timeout
                                         'note nil nil nil
                                         (concat "# Task: " (org-get-heading t) "\n\n"))))))
+;; Org add log note background:1 ends here
+
+;; Org detect change to log note
 
 
+;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20detect%20change%20to%20log%20note][Org detect change to log note:1]]
 (defun lotus-buffer-changes-count ()
   (let ((changes 0))
     (when buffer-undo-tree
@@ -328,7 +351,11 @@ will return point to the current position."
          (car buffer-undo-list))
         (lotus-action-on-buffer-undo-list-change #'org-clock-lotus-log-note-current-clock-background  lotus-minimum-char-changes win-timeout)
         (lotus-action-on-buffer-undo-tree-change  #'org-clock-lotus-log-note-current-clock-background lotus-minimum-changes win-timeout))))
+;; Org detect change to log note:1 ends here
 
+;; Org log note on change timer
+
+;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20log%20note%20on%20change%20timer][Org log note on change timer:1]]
 (defvar org-clock-lotus-log-note-on-change-timer nil
   "Time for on change log note.")
 
@@ -369,15 +396,11 @@ will return point to the current position."
   (interactive)
   ;; message-send-mail-hook
   (org-clock-lotus-log-note-on-change-stop-timer))
+;; Org log note on change timer:1 ends here
 
+;; Org log note change from different sources
 
-
-
-
-
-
-
-
+;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20log%20note%20change%20from%20different%20sources][Org log note change from different sources:1]]
 ;;{{
 ;; https://emacs.stackexchange.com/questions/101/how-can-i-create-an-org-link-for-each-email-sent-by-mu4e
 ;; My first suggestion would be to try the following.
@@ -477,16 +500,16 @@ subsequent sends. could save them all in a logbook?
   (setq *email-heading-point* (set-marker (make-marker) (point)))
   (org-mark-subtree)
   (let ((content (buffer-substring (point) (mark)))
-	(TO (org-entry-get (point) "TO" t))
-	(CC (org-entry-get (point) "CC" t))
-	(BCC (org-entry-get (point) "BCC" t))
-	(SUBJECT (nth 4 (org-heading-components)))
-	(OTHER-HEADERS (eval (org-entry-get (point) "OTHER-HEADERS")))
-	(continue nil)
-	(switch-function nil)
-	(yank-action nil)
-	(send-actions '((email-send-action . nil)))
-	(return-action '(email-heading-return)))
+  (TO (org-entry-get (point) "TO" t))
+  (CC (org-entry-get (point) "CC" t))
+  (BCC (org-entry-get (point) "BCC" t))
+  (SUBJECT (nth 4 (org-heading-components)))
+  (OTHER-HEADERS (eval (org-entry-get (point) "OTHER-HEADERS")))
+  (continue nil)
+  (switch-function nil)
+  (yank-action nil)
+  (send-actions '((email-send-action . nil)))
+  (return-action '(email-heading-return)))
 
     (compose-mail TO SUBJECT OTHER-HEADERS continue switch-function yank-action send-actions return-action)
     (message-goto-body)
@@ -498,7 +521,7 @@ subsequent sends. could save them all in a logbook?
       (message-goto-bcc)
       (insert BCC))
     (if TO
-	(message-goto-body)
+  (message-goto-body)
       (message-goto-to))
     ))
 
@@ -508,5 +531,11 @@ subsequent sends. could save them all in a logbook?
 ;; done, I can easily navigate to the task to mark it off. Pretty handy.
 
 ;;}}
+;; Org log note change from different sources:1 ends here
+
+;; Provide this file
+
+;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Provide%20this%20file][Provide this file:1]]
 (provide 'org-onchnage)
 ;;; org-onchnage.el ends here
+;; Provide this file:1 ends here

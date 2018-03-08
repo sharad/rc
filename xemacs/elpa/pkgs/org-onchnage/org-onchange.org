@@ -1,5 +1,5 @@
 #+TITLE Org on change
-#+PROPERTY: header-args :tangle yes :padline ys :comments both :noweb yes
+#+PROPERTY: header-args :tangle yes :padline yes :comments both :noweb yes
 
 * Org on change
 ** Preamble

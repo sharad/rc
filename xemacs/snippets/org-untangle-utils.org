@@ -5,37 +5,49 @@
 * org-untangle-utils
 
 #+begin_src emacs-lisp
-(defun org-babel-untangle ()
-  (interactive)
-  (let ((file-name (buffer-file-name))
-        (file-major-mode (replace-regexp-in-string
-                          "-mode\$"
-                          ""
-                          (symbol-name major-mode))))
-    (if file-name
-        (let* ((file-name-san-ext (file-name-sans-extension (file-name-nondirectory file-name)))
-               (org-file-name  (concat file-name-san-ext ".org"))
-               (file-extention (file-name-extension file-name))
-               (tangle-file (if file-extention "yes" file-name-san-ext)))
-          (if (not
-               (or
-                (eq file-extention "org")
-                (eq 'org-mode major-mode)))
-              (with-current-buffer (find-file-noselect org-file-name)
-                (insert (format "#+TITLE: %s\n" file-name-san-ext))
-                (insert (format
-                         "#+PROPERTY: header-args :tangle %s :padline ys :comments both :noweb yes\n"
-                         tangle-file))
-                (insert "\n\n")
-                (insert (format "* %s\n\n" file-name-san-ext))
-                (insert (format "#+begin-src %s\n" file-major-mode))
-                (goto-char (+
-                            (point)
-                            (nth 1 (insert-file-contents file-name))))
-                (insert "#+end-src\n")
-                (save-buffer))
-              (error "%s is already is org file." file-name)))
-        (error "buffer not associated with any file."))))
+  (defun org-babel-untangle ()
+    (interactive)
+    (let ((file-name (buffer-file-name))
+          (file-major-mode (replace-regexp-in-string
+                            "-mode\$"
+                            ""
+                            (symbol-name major-mode))))
+      (if file-name
+          (let* ((file-name-san-ext (file-name-sans-extension (file-name-nondirectory file-name)))
+                 (org-file-name  (concat file-name-san-ext ".org"))
+                 (file-extention (file-name-extension file-name))
+                 (tangle-file (if file-extention "yes" file-name-san-ext)))
+            (if (not
+                 (or
+                  (eq file-extention "org")
+                  (eq 'org-mode major-mode)))
+                (with-current-buffer (find-file-noselect org-file-name)
+
+
+
+                  (insert (format "#+TITLE %s\n" file-name-san-ext))
+                  (insert (format
+                           "#+PROPERTY: header-args :tangle %s :padline yes :comments both :noweb yes\n"
+                           tangle-file))
+                  (insert "\n\n")
+                  (insert (format "* %s\n\n" file-name-san-ext))
+
+                  (progn
+                    (insert (format "** Interpreter\n\n"))
+                    (insert (formet "#+begin_src %s :padline no :comments no"))
+                    (insert (format "#!/bin/zsh"))
+                    (insert (format "# -*- major-mode: %s; -*-" file-major-mode))
+                    (format (format "#+end_src")))
+
+                  (insert (format "** Rest\n\n"))
+                  (insert (format "#+begin_src %s\n" file-major-mode))
+                  (goto-char (+
+                              (point)
+                              (nth 1 (insert-file-contents file-name))))
+                  (insert "#+end_src\n")
+                  (save-buffer))
+                (error "%s is already is org file." file-name)))
+          (error "buffer not associated with any file."))))
 #+end_src
 
 * Face correction src block
