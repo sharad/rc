@@ -488,7 +488,7 @@ function setup_login_shell()
     fi
 }
 
-function setup_dirs()
+function setup_paradise()
 {
     curhomedir="$(getent passwd $USER | cut -d: -f6)"
     if [ "$(basename $curhomedir)" != hell ]
@@ -504,6 +504,11 @@ function setup_dirs()
         exit -1
         export HOME="$newhomedir"
     fi
+}
+
+function setup_dirs()
+{
+    # running setup_paradise
 
     for l in ~/.osetup/dirs.d/control.d/*/*
     do
