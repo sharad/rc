@@ -30,6 +30,8 @@ fi
 #    [ -r ~/.rsetup/$startup/run ] && ~/.rsetup/$startup/run
 # done
 
+# cleaup home dir [only]
+~/bin/tidydir ~
 
 if [ ${SSH_AGENT_PID+1} == 1 ]; then
     ssh-add -D
