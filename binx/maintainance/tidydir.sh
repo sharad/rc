@@ -3,7 +3,7 @@
 
 # script
 
-# [[file:~/.setup/binx/maintainance/tidydir.org::*script][script:1]]
+# [[file:tidydir.org::*script][script:1]]
 function main()
 {
     if [ ! -d ~/Sink ]

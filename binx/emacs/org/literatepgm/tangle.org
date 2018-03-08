@@ -15,13 +15,13 @@
 
 ** rest
 #+BEGIN_SRC emacs-lisp
-
+(defun untangle-files (&rest files)
   ;; The subdirectory ~/.emacs.d is to be added to the top-level elisp
   ;; file search.
   ;; (progn (cd "~/.emacs.d") (normal-top-level-add-subdirs-to-load-path))
 
-  (let ((default-directory ~/.emacs.d))
-      (normal-top-level-add-subdirs-to-load-path))
+  (let ((default-directory "~/.emacs.d"))
+    (normal-top-level-add-subdirs-to-load-path))
   ;; Org-Mode, Org-Babel, and the tangle library are required, if we are
   ;; to proceed further.
   (require 'org-install)
@@ -35,8 +35,11 @@
   (require 'ob-lisp)
 
   ;; Tangle all files given.
-  (dolist (file command-line-args-left)
+  (dolist (file files)
     (princ file)
-    (org-babel-tangle-file file))
+    (org-babel-tangle-file file)
+    (princ (format "\n"))))
+
+(apply #'untangle-files command-line-args-left)
 
 #+END_SRC
