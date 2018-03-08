@@ -437,21 +437,19 @@ function setup_sshkeys()
 
 function setup_Documentation()
 {
-    if [  -d ~/.osetup/dirs.d/local.d/dirs.d/home -a ! -d ~/.osetup/dirs.d/local.d/dirs.d/home/Documents ]
+    if [  ! -L ~/.LocalDirs.d/home.d/Documents -o "$(readlink -m ~/.LocalDirs.d/home.d/Documents)" != "$HOME/.repos/git/user/doc" ]
     then
-        ln -s ../../.repos/git/user/doc ~/.osetup/dirs.d/local.d/dirs.d/home/Documents
+        rm -f ~/.LocalDirs.d/home.d/Documents
+        ln -s ../../.repos/git/user/doc ~/.LocalDirs.d/home.d/Documents
     fi
 }
 
 function setup_public_html()
 {
-    if [  -d ~/.osetup/dirs.d/local.d/dirs.d/home ]
+    if [  ! -L ~/.LocalDirs.d/home.d/public_html -o "$(readlink -m ~/.LocalDirs.d/home.d/public_html)" != "$HOME/.repos/git/user/doc/Public/Published/html" ]
     then
-        mkdir -p ~/.osetup/dirs.d/local.d/dirs.d/home/public_html
-        if [  -L ~/.osetup/dirs.d/local.d/dirs.d/home/public_html/content ]
-        then
-            ln -s Documents/CreatedContent/gen ~/.osetup/dirs.d/local.d/dirs.d/home/public_html/content
-        fi
+        rm -f ~/.LocalDirs.d/home.d/public_html
+        ln -s Documents/Public/Published/html ~/.LocalDirs.d/home.d/public_html
     fi
 }
 
@@ -507,39 +505,23 @@ function setup_dirs()
         export HOME="$newhomedir"
     fi
 
-    sudo mkdir -p  ~/../paradise
-    # make home dir and paradise in root ownership.
-    sudo chown root.root ~/../paradise
-
-    if [ ! -d ~/.osetup/dirs.d/local.d/dirs.d/home ]
-    then
-        mkdir -p ~/.LocalDir
-        if [ -d "~/.LocalDir/home.d" ]
+    for l in ~/.osetup/dirs.d/control.d/*/*
+    do
+        if [ -L "$l" ]
         then
-           ln -sf dir/for/all/folders ~/.LocalDir/home.d
+            r="$(dirname $l)/$(readlink $l)"
+            if [ ! -L "$r" -a ! -d "$r" ]
+            then
+                running rm -f "$r"
+                running mkdir -p "$r"
+            fi
         fi
-        ln -sf ../../../../../../.LocalDir ~/.osetup/dirs.d/local.d/dirs.d
-        if [ -d "~/.osetup/dirs.d/local.d/dirs.d" ]
-        then
-           if [ -d "~/.osetup/dirs.d/home.d" ]
-           then
-               cd ~/.osetup/dirs.d/home.d
-               for de in *
-               do
-                   if [ -L $de ]
-                   then
-                       if [ ! -d "$(readlink -m $de)" ]
-                       then
-                           echo mkdir -p "$(readlink -m $de)"
-                       fi
-                   fi
-               done
-           fi
-        fi
-    fi
+    done
 
     setup_Documentation
     setup_public_html
+
+    sudo chown root.root -R ~/.LocalDirs.d/
 }
 
 function setup_spacemacs()
