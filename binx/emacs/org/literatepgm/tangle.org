@@ -8,8 +8,7 @@
 
 ** Interperter
 
-#+BEGIN_SRC emacs-lisp :padline no :comments no
-#!/usr/bin/emacs --script
+#+BEGIN_SRC emacs-lisp :padline no :comments no :shebang "#!/usr/bin/emacs --script"
 ;; -*- major-mode: emacs-lisp; -*-
 
 #+END_SRC
