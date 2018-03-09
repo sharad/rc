@@ -3,9 +3,11 @@
 
 * tidydir
 
+Script to tidy up given directory.
+
+
 ** Interperter
 #+BEGIN_SRC sh :padline no :comments no :shebang "#!/bin/zsh"
-
 # -*- major-mode: sh; -*-
 #+END_SRC
 
