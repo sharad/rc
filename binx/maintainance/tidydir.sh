@@ -3,7 +3,7 @@
 
 # script
 
-# [[file:tidydir.org::*script][script:1]]
+# [[file:~/.repos/git/user/rc/binx/maintainance/tidydir.org::*script][script:1]]
 function main()
 {
     if [ ! -d ~/Sink ]
@@ -19,7 +19,7 @@ function main()
     then
         dirFile_tmp=${dirFile}_tmp
         dirFile_extra=${dirFile}_extra
-        command ls -1 > $dirFile_tmp
+        command ls -1 $dir > $dirFile_tmp
         comm -31 $dirFile $dirFile_tmp > $dirFile_extra
         if [ "$(cat $dirFile_extra |wc -l)" -gt 0 ]
         then
@@ -29,7 +29,7 @@ function main()
         rm -f $dirFile_tmp
         rm -f $dirFile_extra
     else
-        command ls -1 > $dirFile
+        command ls -1 $dir > $dirFile
     fi
 }
 
