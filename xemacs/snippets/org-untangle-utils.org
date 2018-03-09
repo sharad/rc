@@ -1,5 +1,5 @@
 #+TITLE: org-untangle-utils
-#+PROPERTY: header-args :tangle yes :padline ys :comments both :noweb yes
+#+PROPERTY: header-args :tangle yes :padline yes :comments both :noweb yes
 
 
 * org-untangle-utils
@@ -11,7 +11,13 @@
           (file-major-mode (replace-regexp-in-string
                             "-mode\$"
                             ""
-                            (symbol-name major-mode))))
+                            (symbol-name major-mode)))
+          (shebang (let ((first-line (save-excursion
+                                       (goto-char (point-min))
+                                       (buffer-substring-no-properties (line-beginning-position)
+                                                                       (line-end-position)))))
+                     (when (string-match auto-mode-interpreter-regexp first-line)
+                       first-line))))
       (if file-name
           (let* ((file-name-san-ext (file-name-sans-extension (file-name-nondirectory file-name)))
                  (org-file-name  (concat file-name-san-ext ".org"))
@@ -22,31 +28,38 @@
                   (eq file-extention "org")
                   (eq 'org-mode major-mode)))
                 (with-current-buffer (find-file-noselect org-file-name)
+                  (save-excursion
+                    (widen)
+                    (erase-buffer)
 
+                    (insert (format "#+TITLE %s\n" file-name-san-ext))
+                    (insert (format
+                             "#+PROPERTY: header-args :tangle %s :padline yes :comments both :noweb yes\n"
+                             tangle-file))
+                    (insert "\n\n")
+                    (insert (format "* %s\n\n" file-name-san-ext))
 
+                    (progn
+                      (insert (format "** Preamble\n"))
+                        (insert
+                         (concat
+                          (format "#+begin_src %s :padline no :comments no :noweb no"
+                                  file-major-mode)
+                          (when (stringp shebang)
+                            (format " :shebang %s" shebang))))
+                        (insert "\n")
+                      (insert (format "# -*- major-mode: %s; -*-\n" file-major-mode))
+                      (insert (format "#+end_src\n")))
 
-                  (insert (format "#+TITLE %s\n" file-name-san-ext))
-                  (insert (format
-                           "#+PROPERTY: header-args :tangle %s :padline yes :comments both :noweb yes\n"
-                           tangle-file))
-                  (insert "\n\n")
-                  (insert (format "* %s\n\n" file-name-san-ext))
-
-                  (progn
-                    (insert (format "** Interpreter\n\n"))
-                    (insert (formet "#+begin_src %s :padline no :comments no"))
-                    (insert (format "#!/bin/zsh"))
-                    (insert (format "# -*- major-mode: %s; -*-" file-major-mode))
-                    (format (format "#+end_src")))
-
-                  (insert (format "** Rest\n\n"))
-                  (insert (format "#+begin_src %s\n" file-major-mode))
-                  (goto-char (+
-                              (point)
-                              (nth 1 (insert-file-contents file-name))))
-                  (insert "#+end_src\n")
-                  (save-buffer))
-                (error "%s is already is org file." file-name)))
+                    (insert (format "** Rest\n"))
+                    (insert (format "#+begin_src %s\n" file-major-mode))
+                    (goto-char (+
+                                (point)
+                                (nth 1 (insert-file-contents file-name))))
+                    (goto-char (point-max))
+                    (insert "#+end_src\n")
+                    (save-buffer)))
+                  (error "%s is already is org file." file-name)))
           (error "buffer not associated with any file."))))
 #+end_src
 

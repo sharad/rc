@@ -1,6 +1,14 @@
-browser_default_open_target = OPEN_NEW_BUFFER_BACKGROUND;
-clicks_in_new_buffer_target = OPEN_NEW_BUFFER_BACKGROUND;
-download_buffer_automatic_open_target = OPEN_NEW_BUFFER_BACKGROUND;
+
+// see http://conkeror.org/UserVariables
+require("clicks-in-new-buffer.js")
+// browser_default_open_target = OPEN_NEW_BUFFER_BACKGROUND;
+// browser_default_open_target = OPEN_NEW_BUFFER;
+browser_default_open_target = OPEN_CURRENT_BUFFER;
+// clicks_in_new_buffer_target = OPEN_NEW_BUFFER_BACKGROUND;
+// clicks_in_new_buffer_target = OPEN_NEW_BUFFER;
+clicks_in_new_buffer_target = OPEN_CURRENT_BUFFER;
+// download_buffer_automatic_open_target = OPEN_NEW_BUFFER_BACKGROUND;
+download_buffer_automatic_open_target = 100;
 
 ///{{{ temporary fix
 // http://bugs.conkeror.org/issue514
