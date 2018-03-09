@@ -5,24 +5,44 @@
 * org-untangle-utils
 
 #+begin_src emacs-lisp
+(defmacro with-major-mode-buffer (major-mode &rest body)
+  `(with-temp-buffer
+     (funcall ,major-mode)
+     (progn
+       ,@body)
+     (buffer-substring-no-properties
+      (point-min)
+      (point-max))))
+
 (defun org-babel-untangle ()
   (interactive)
-  (let ((file-name (buffer-file-name))
-        (file-major-mode (replace-regexp-in-string
-                          "-mode\$"
-                          ""
-                          (symbol-name major-mode)))
-        (shebang (let ((first-line (save-excursion
-                                     (goto-char (point-min))
-                                     (buffer-substring-no-properties (line-beginning-position)
-                                                                     (line-end-position)))))
-                   (when (string-match auto-mode-interpreter-regexp first-line)
-                     first-line))))
+  (let ((file-name (buffer-file-name)))
     (if file-name
         (let* ((file-name-san-ext (file-name-sans-extension (file-name-nondirectory file-name)))
                (org-file-name  (concat file-name-san-ext ".org"))
                (file-extention (file-name-extension file-name))
-               (tangle-file (if file-extention "yes" file-name-san-ext)))
+               (tangle-file (if file-extention "yes" file-name-san-ext))
+               (file-major-mode (replace-regexp-in-string
+                                 "-mode\$"
+                                 ""
+                                 (symbol-name major-mode)))
+               (first-line (save-excursion
+                             (goto-char (point-min))
+                             (buffer-substring-no-properties (line-beginning-position)
+                                                             (line-end-position))))
+               (second-line (save-excursion
+                              (goto-char (point-min))
+                              (forward-line 1)
+                              (buffer-substring-no-properties (line-beginning-position)
+                                                              (line-end-position))))
+               (shebang (when (string-match auto-mode-interpreter-regexp first-line)
+                          first-line))
+               (file-prop-line-regexp "[ \t]*\\([^ \t\n\r:;]+\\)\\([ \t]*-\\*-\\)")
+               (prop-line (cond
+                            ((string-match file-prop-line-regexp first-line)
+                             first-line)
+                            ((string-match file-prop-line-regexp second-line)
+                             second-line))))
           (if (not
                (or
                 (eq file-extention "org")
@@ -41,33 +61,68 @@
 
                   (progn
                     (insert (format "** Preamble\n"))
-                      (insert
-                       (concat
-                        (format "#+begin_src %s :padline no :comments no :noweb no"
-                                file-major-mode)
-                        (when (stringp shebang)
-                          (format " :shebang %s" shebang))))
-                      (insert "\n")
-                    (insert (format "# -*- major-mode: %s; -*-\n" file-major-mode))
+                    (insert
+                     (concat
+                      (format "#+begin_src %s :padline no :comments no :noweb no"
+                              file-major-mode)
+                      (when (stringp shebang)
+                        (format " :shebang %s" shebang))))
+                    (insert "\n")
+
+                    (insert
+                     (with-major-mode-buffer major-mode
+                       (if prop-line
+                           (insert (format "%s" prop-line))
+                           (progn
+                             (insert (format " -*- major-mode: %s; -*-" file-major-mode))
+                             (progn
+                               (comment-region
+                                (line-beginning-position)
+                                (line-end-position)))))
+                       (insert "\n")))
+
                     (insert (format "#+end_src\n")))
 
                   (insert (format "** Rest\n"))
                   (insert (format "#+begin_src %s\n" file-major-mode))
-                  (goto-char (+
-                              (point)
-                              (nth 1 (insert-file-contents file-name))))
-                  (goto-char (point-max))
+                  (insert
+                   (with-major-mode-buffer major-mode
+                     (let ((max-point (+
+                                       (point)
+                                       (nth 1 (insert-file-contents file-name)))))
+                       (let ((first-insert-line
+                              (buffer-substring-no-properties
+                               (line-beginning-position)
+                               (line-end-position)))
+                             (second-insert-line
+                              (save-excursion
+                                (goto-char (point-min))
+                                (forward-line 1)
+                                (buffer-substring-no-properties (line-beginning-position)
+                                                                (line-end-position)))))
+                         (if (or
+                              (string-match auto-mode-interpreter-regexp first-insert-line)
+                              (string-match file-prop-line-regexp second-insert-line))
+                             (progn
+                               (kill-whole-line)
+                               (when (string-match file-prop-line-regexp second-insert-line)
+                                 (kill-whole-line)))
+                             (when (string-match file-prop-line-regexp second-insert-line)
+                               (forward-line 1)
+                               (kill-whole-line)))))
+                     (goto-char (point-max))))
+
                   (insert "#+end_src\n")
                   (save-buffer)))
-                (error "%s is already is org file." file-name)))
+              (error "%s is already is org file." file-name)))
         (error "buffer not associated with any file."))))
 #+end_src
 
 * Face correction src block
 Can notice 'org-block face is inherited from 'src-block face
 if we examine it than it will inherit as shadow
-#+begin_src emacs-lisp
 
+#+begin_src emacs-lisp
 (progn
   ;; (set-face-attribute
   ;;    'org-block nil :foreground "#FFFFFF")
@@ -87,5 +142,5 @@ if we examine it than it will inherit as shadow
   (spacemacs/add-to-hooks (if dotspacemacs-smartparens-strict-mode
                               'smartparens-strict-mode
                               'smartparens-mode)
-                          '(org-mode-hook )))
+                          '(org-mode-hook)))
 #+end_src

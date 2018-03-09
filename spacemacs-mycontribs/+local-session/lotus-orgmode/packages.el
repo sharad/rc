@@ -40,6 +40,7 @@
     ;; (org :location built-in)
     org
     org-agenda
+    ob-tangle
     publishing
     (org-timer :location local)
     (org-clock :location local)
@@ -529,6 +530,42 @@ Each entry is either:
            ;; http://orgmode.org/worg/agenda-optimization.html
            ;; org-agenda-inhibit-startup t
            )))))
+
+(defun lotus-orgmode/post-init-ob-tangle ()
+  (use-package org-notmuch
+      ;; http://notmuchmail.org/emacstips/
+      ;; (add-to-list 'load-path "/usr/share/org-mode/lisp")
+      :defer t
+      :config
+      (progn
+        (progn
+          ;; (set-face-attribute
+          ;;    'org-block nil :foreground "#FFFFFF")
+
+          (set-face-attribute 'org-block nil :inherit 'src-block)
+
+          ;; https://emacs.stackexchange.com/questions/26603/how-to-run-the-tangled-file
+          (unless (require 'ob-sh nil 'noerror)
+            (require 'ob-shell))
+
+          ;; http://explog.in/dot/emacs/config.html
+          (setq
+           org-src-fontify-natively t
+           org-src-tab-acts-natively t
+           org-edit-src-content-indentation 0)
+
+          (spacemacs/add-to-hooks (if dotspacemacs-smartparens-strict-mode
+                                      'smartparens-strict-mode
+                                      'smartparens-mode)
+                                  '( org-mode-hook ))
+
+
+          (dolist (f prog-mode-hook)
+            (spacemacs/add-to-hooks
+             f
+             '(org-mode-hook))))
+
+        (load "~/.xemacs/snippets/org-untangle-utils.el"))))
 
 (defun lotus-orgmode/init-org-timer ()
   (use-package org-timer

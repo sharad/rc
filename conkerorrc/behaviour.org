@@ -4,9 +4,9 @@
 
 * behaviour
 
-** Interpreter
+** Preamble
 #+begin_src js :padline no :comments no :noweb no
-# -*- major-mode: js; -*-
+// -*- major-mode: js; -*-
 #+end_src
 ** Rest
 #+begin_src js
