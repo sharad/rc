@@ -414,7 +414,8 @@ you should place your code here."
  '(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
  '(safe-local-variable-values
    (quote
-    ((ee-comment-prefix . ";;")
+    ((major-mode . sh)
+     (ee-comment-prefix . ";;")
      (ee-anchor-format . "defun %s ")
      (eval font-lock-add-keywords nil
            (\`

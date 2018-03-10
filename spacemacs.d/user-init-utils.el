@@ -45,6 +45,7 @@
     misc
     python
     yaml
+    bibtex
     ;; ;; .spacemacs-mycontribution
     ;; basic-startup
     ;; messaging

@@ -465,7 +465,7 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
     if [ -d ~/Sink/ ]
     then
         print 'ls ~/Sink'
-        ls -C ~/Sink/
+        ls --color=always -F -C ~/Sink/
         echo
     fi
 
