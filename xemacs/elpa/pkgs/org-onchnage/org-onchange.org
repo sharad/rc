@@ -61,6 +61,7 @@ Set up the post command hook to take a note.
 If this is about to TODO state change, the new state is expected in STATE.
 HOW is an indicator what kind of note should be created.
 EXTRA is additional text that will be inserted into the notes buffer.
+
 (add-hook 'post-command-hook 'org-add-log-note 'append)
 
 *** org-add-log-note (&optional _purpose)
