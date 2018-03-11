@@ -48,9 +48,34 @@
 #+END_SRC
 
 ** Functions
+
+*** Note start
+(defun org-add-note ()
+  "Add a note to the current entry.
+This is done in the same way as adding a state change note."
+  (interactive)
+  (org-add-log-setup 'note))
+
+*** org-add-log-setup (&optional purpose state prev-state how extra)
+Set up the post command hook to take a note.
+If this is about to TODO state change, the new state is expected in STATE.
+HOW is an indicator what kind of note should be created.
+EXTRA is additional text that will be inserted into the notes buffer.
+(add-hook 'post-command-hook 'org-add-log-note 'append)
+
+*** org-add-log-note (&optional _purpose)
+Pop up a window for taking a note, and add this note later.
+(setq-local org-finish-function 'org-store-log-note)
+
+*** org-store-log-note ()
+Finish taking a log note, and insert it to where it belongs.
+
+
+
 *** Org insert log note un-interactively
 
 #+BEGIN_SRC elisp
+;; org-store-log-note
 (defun org-insert-log-note (txt &optional purpose effective-time state previous-state)
   "Finish taking a log note, and insert it to where it belongs."
   (let* ((txt txt)
@@ -166,6 +191,8 @@ add note but in this case it is not shown so background word is used.
 
  #+begin_src emacs-lisp
 
+
+;; copy of org-add-log-note
  (defun org-note-xx (target-buffer)
    ;; (pop-to-buffer-same-window (marker-buffer org-log-note-marker))
    ;; (goto-char org-log-note-marker)

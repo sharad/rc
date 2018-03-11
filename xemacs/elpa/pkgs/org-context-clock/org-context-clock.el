@@ -410,30 +410,30 @@
 ;; function to setup context clock timer:1 ends here
 
 ;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:2]]
-(defun org-context-clock-insert-selection-line (i marker)
-  "Insert a line for the clock selection menu.
+(defun sacha-org-context-clock-selection-line (marker)
+    "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
-  (when (marker-buffer marker)
-    (let (cat task heading prefix)
+    (when (marker-buffer marker)
       (with-current-buffer (org-base-buffer (marker-buffer marker))
         (org-with-wide-buffer
-         (ignore-errors
+         (progn ;; ignore-errors
            (goto-char marker)
-           (setq cat (org-get-category)
-                 heading (org-get-heading 'notags)
-                 prefix (save-excursion
-                          (org-back-to-heading t)
-                          (looking-at org-outline-regexp)
-                          (match-string 0))
-                 task (substring
-                       (org-fontify-like-in-org-mode
-                        (concat prefix heading)
-                        org-odd-levels-only)
-                       (length prefix))))))
-      (when (and cat task)
-        (insert (format "[%c] %-12s  %s\n" i cat task))
-        (cons i marker)))))
+           (let* ((cat (org-get-category))
+                  (heading (org-get-heading 'notags))
+                  (prefix (save-excursion
+                            (org-back-to-heading t)
+                            (looking-at org-outline-regexp)
+                            (match-string 0)))
+                  (task (substring
+                         (org-fontify-like-in-org-mode
+                          (concat prefix heading)
+                          org-odd-levels-only)
+                         (length prefix))))
+             (when task ;; (and cat task)
+               ;; (insert (format "[%c] %-12s  %s\n" i cat task))
+               ;; marker
+               (cons task marker))))))))
 ;; function to setup context clock timer:2 ends here
 
 ;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:3]]

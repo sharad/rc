@@ -430,31 +430,30 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
 
 
 #+BEGIN_SRC  emacs-lisp
- (defun org-context-clock-insert-selection-line (i marker)
-   "Insert a line for the clock selection menu.
- And return a cons cell with the selection character integer and the marker
- pointing to it."
-   (when (marker-buffer marker)
-     (let (cat task heading prefix)
-       (with-current-buffer (org-base-buffer (marker-buffer marker))
-         (org-with-wide-buffer
-          (ignore-errors
-            (goto-char marker)
-            (setq cat (org-get-category)
-                  heading (org-get-heading 'notags)
-                  prefix (save-excursion
-                           (org-back-to-heading t)
-                           (looking-at org-outline-regexp)
-                           (match-string 0))
-                  task (substring
-                        (org-fontify-like-in-org-mode
-                         (concat prefix heading)
-                         org-odd-levels-only)
-                        (length prefix))))))
-       (when (and cat task)
-         (insert (format "[%c] %-12s  %s\n" i cat task))
-         (cons i marker)))))
-
+   (defun sacha-org-context-clock-selection-line (marker)
+    "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the marker
+pointing to it."
+    (when (marker-buffer marker)
+      (with-current-buffer (org-base-buffer (marker-buffer marker))
+        (org-with-wide-buffer
+         (progn ;; ignore-errors
+           (goto-char marker)
+           (let* ((cat (org-get-category))
+                  (heading (org-get-heading 'notags))
+                  (prefix (save-excursion
+                            (org-back-to-heading t)
+                            (looking-at org-outline-regexp)
+                            (match-string 0)))
+                  (task (substring
+                         (org-fontify-like-in-org-mode
+                          (concat prefix heading)
+                          org-odd-levels-only)
+                         (length prefix))))
+             (when task ;; (and cat task)
+               ;; (insert (format "[%c] %-12s  %s\n" i cat task))
+               ;; marker
+               (cons task marker))))))))
 #+END_SRC
 
 
