@@ -142,6 +142,7 @@
 ;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Clock%20out%20with%20NOTE][Clock out with NOTE:1]]
 ;;;###autoload
 (defun org-clock-out-with-note (note &optional switch-to-state fail-quietly at-time) ;BUG TODO will it work or save-excursion save-restriction also required
+  "org-clock-out-with-note"
   (interactive
    (let ((note (read-from-minibuffer "Closing notes: "))
          (switch-to-state current-prefix-arg))
@@ -156,6 +157,10 @@
 ;; Clock out with NOTE:1 ends here
 
 ;; Org add log note background
+
+;; background in name is misleading it at present log-note show org file buffer to
+;; add note but in this case it is not shown so background word is used.
+
 
 ;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20add%20log%20note%20background][Org add log note background:1]]
 (defun org-add-log-note-background (win-timeout &optional _purpose)
@@ -237,15 +242,6 @@ EXTRA is additional text that will be inserted into the notes buffer."
   )
 
 ;;;##autoload
-;; (defun org-clock-lotus-log-note-current-clock-background (&optional fail-quietly)
-;;   (interactive)
-;;   (if (org-clocking-p)
-;;       (org-clock-lotus-with-current-clock
-;;        (org-add-log-setup-background
-;;         'note nil nil nil
-;;         (concat "# Task: " (org-get-heading t) "\n\n")))
-;;       (if fail-quietly (throw 'exit t) (user-error "No active clock"))))
-
 (defun org-clock-lotus-log-note-current-clock-background (win-timeout &optional fail-quietly)
   (interactive)
   (let ((win-timeout  (or win-timeout  17)))
@@ -255,6 +251,15 @@ EXTRA is additional text that will be inserted into the notes buffer."
           (org-add-log-setup-background win-timeout
                                         'note nil nil nil
                                         (concat "# Task: " (org-get-heading t) "\n\n"))))))
+
+;; (defun org-clock-lotus-log-note-current-clock-background (&optional fail-quietly)
+;;   (interactive)
+;;   (if (org-clocking-p)
+;;       (org-clock-lotus-with-current-clock
+;;        (org-add-log-setup-background
+;;         'note nil nil nil
+;;         (concat "# Task: " (org-get-heading t) "\n\n")))
+;;       (if fail-quietly (throw 'exit t) (user-error "No active clock"))))
 ;; Org add log note background:1 ends here
 
 ;; Org detect change to log note

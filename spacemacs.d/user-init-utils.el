@@ -45,7 +45,7 @@
     misc
     python
     yaml
-    bibtex
+    ;; bibtex -- org-ref is not available
     ;; ;; .spacemacs-mycontribution
     ;; basic-startup
     ;; messaging

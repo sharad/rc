@@ -126,7 +126,11 @@ Each entry is either:
                   (progn
                     ))
               (lotus-org-clock-in/out-insinuate-hooks))
-
+            (progn
+              (setq
+               *lotus-org-unnamed-task-file*        (expand-file-name "Unnamed.org" (task-party-dir "personal"))
+               *lotus-org-unnamed-parent-task-name* "Unnamed tasks"
+               *lotus-org-unnamed-task-name-fmt*    "Unnamed task %d"))
             (progn
               ))))
 
