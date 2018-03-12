@@ -436,7 +436,7 @@ Each entry is either:
       (progn
         (progn
           (task-party-base-dir (org-publish-get-attribute "tasks" "org" :base-directory))
-          (task-scratch-dir "~/SCRATCH/")
+          (task-scratch-dir "~/Scratches/main")
           (task-projbuffs-base-dir (expand-file-name "contents/misc/projbuffs" *created-content-dir*))
 
           (task-add-task-party

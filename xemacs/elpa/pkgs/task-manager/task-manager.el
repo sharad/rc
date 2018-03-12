@@ -657,8 +657,11 @@
   (let* ()
     (make-directory task-dir t)
     (lotus-write-file (expand-file-name *task-desc-file-name* task-dir) desc)
-    (make-directory (concat task-scratch-dir (pluralize-string task-type) "/" name) t)
-    (make-symbolic-link (concat task-scratch-dir (pluralize-string task-type) "/" name) (concat task-dir "/scratch"))
+    (if (file-directory-p task-scratch-dir)
+        (progn
+          (make-directory (concat task-scratch-dir (pluralize-string task-type) "/" name) t)
+          (make-symbolic-link (concat task-scratch-dir (pluralize-string task-type) "/" name) (concat task-dir "/scratch")))
+        (warn "Ensure to create task-scratch-dir %s directory" task-scratch-dir))
 
     (let ((org-heading (format "%s - %s: %s" (capitalize task-type) name desc)))
       ;; files
