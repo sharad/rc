@@ -49,27 +49,28 @@
 
 ** Functions
 
-*** Note start
-(defun org-add-note ()
-  "Add a note to the current entry.
-This is done in the same way as adding a state change note."
-  (interactive)
-  (org-add-log-setup 'note))
+*** Base functions
+**** Note start
+ (defun org-add-note ()
+   "Add a note to the current entry.
+ This is done in the same way as adding a state change note."
+   (interactive)
+   (org-add-log-setup 'note))
 
-*** org-add-log-setup (&optional purpose state prev-state how extra)
-Set up the post command hook to take a note.
-If this is about to TODO state change, the new state is expected in STATE.
-HOW is an indicator what kind of note should be created.
-EXTRA is additional text that will be inserted into the notes buffer.
+**** org-add-log-setup (&optional purpose state prev-state how extra)
+ Set up the post command hook to take a note.
+ If this is about to TODO state change, the new state is expected in STATE.
+ HOW is an indicator what kind of note should be created.
+ EXTRA is additional text that will be inserted into the notes buffer.
 
-(add-hook 'post-command-hook 'org-add-log-note 'append)
+ (add-hook 'post-command-hook 'org-add-log-note 'append)
 
-*** org-add-log-note (&optional _purpose)
-Pop up a window for taking a note, and add this note later.
-(setq-local org-finish-function 'org-store-log-note)
+**** org-add-log-note (&optional _purpose)
+ Pop up a window for taking a note, and add this note later.
+ (setq-local org-finish-function 'org-store-log-note)
 
-*** org-store-log-note ()
-Finish taking a log note, and insert it to where it belongs.
+**** org-store-log-note ()
+ Finish taking a log note, and insert it to where it belongs.
 
 
 
