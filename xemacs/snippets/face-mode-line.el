@@ -1,4 +1,8 @@
+;; -*- major-mode: emacs-lisp; -*-
 
+;; Rest
+
+;; [[file:~/.repos/git/user/rc/xemacs/snippets/face-mode-line.org::*Rest][Rest:1]]
 ;; https://emacs.stackexchange.com/questions/1030/how-can-i-set-different-font-sizes-for-buffers-and-for-the-mode-line
 (defun lotus-set-condense-mode-line-face ()
   (interactive)
@@ -13,3 +17,4 @@
                              :font (face-attribute 'default :font)
                              :height 110))
      faces)))
+;; Rest:1 ends here

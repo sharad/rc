@@ -5,6 +5,7 @@
 * org-untangle-utils
 
 #+begin_src emacs-lisp
+
 (defmacro with-major-mode-buffer (major-mode &rest body)
   `(with-temp-buffer
      (funcall ,major-mode)
