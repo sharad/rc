@@ -4,7 +4,10 @@
 
 ;;; Store emails that are send/forwarded/replied to
 
-;; Invoking lotus-org-mu4e-capture-next-message or setting lotus-org-mu4e-must-capture-message before composing a message will call org-capture after the email was sent successfully (using the capture template from lotus-mu4e-org-mode-capture-template-for-sent-email)
+;; Invoking lotus-org-mu4e-capture-next-message or setting
+;; lotus-org-mu4e-must-capture-message before composing a message will call
+;; org-capture after the email was sent successfully (using the capture template
+;; from lotus-mu4e-org-mode-capture-template-for-sent-email)
 
 (defvar lotus-org-mu4e-must-capture-message nil
   "If set, the next composed mu4e message will automatically be captured with the template specified in lotus-mu4e-org-mode-capture-template-for-sent-email")
@@ -53,8 +56,8 @@
   (interactive)
   (if lotus-org-mu4e-must-capture-message
       (let* ((org-store-link-plist lotus-mu4e-captured-message-p)
-	     (org-capture-link-is-already-stored t))
-	(org-capture nil lotus-mu4e-org-mode-capture-template-for-sent-email))))
+             (org-capture-link-is-already-stored t))
+        (org-capture nil lotus-mu4e-org-mode-capture-template-for-sent-email))))
 
 (defun lotus-org-mu4e-capture-cancel ()
   (interactive)
