@@ -369,49 +369,34 @@
 
 (defcommand firefox () ()
    (run-wcli-command
-    (concat "firefox -P " (getenv "XBPROFILE"))
-    ;'(:class "Firefox-bin")
-    ))
+    (concat "firefox -P " (getenv "XBPROFILE"))))
 
 (defcommand firefox-tor () ()
    (run-wcli-command
-    (concat "firefox -P tor" ;; (getenv "XBPROFILE")
-            )
-    ;'(:class "Firefox-bin")
-    ))
+    (concat "firefox -P tor")))
 
 (defcommand xbrowser () ()
             (run-wcli-command
              (concat
               (or (getenv "XBROWSER")
                   (concat
-                   "conkeror" " -P " (getenv "XBPROFILE"))))
-                                        ;'(:class "Mozilla")
-             ))
+                   "/home/s/hell/bin/conkeror-redirected" " -P " (getenv "XBPROFILE"))))
+             nil nil))
 
 (defcommand xbrowser-tor () ()
-            (run-wcli-command
-             "conkeror -P tor"
-                                        ;'(:class "Mozilla")
-             ))
+            (run-wcli-command "conkeror -P tor"))
 
 (defcommand seamonkey () ()
    (run-wcli-command
-    (concat "seamonkey -P " (getenv "XBPROFILE"))
-    ;'(:class "Seamonkey-bin")
-    ))
+    (concat "seamonkey -P " (getenv "XBPROFILE"))))
 
 (defcommand mozilla () ()
    (run-wcli-command
-    (concat "mozilla -P " (getenv "XBPROFILE"))
-    ;'(:class "Mozilla-bin")
-    ))
+    (concat "mozilla -P " (getenv "XBPROFILE"))))
 
 (defcommand conkeror () ()
    (run-wcli-command
-    (concat "firefox -P " (getenv "XBPROFILE"))
-    ;'(:class "Conkeror")
-    ))
+    (concat "firefox -P " (getenv "XBPROFILE"))))
 
 (defcommand virt-manager () ()
             "virt-manager"
