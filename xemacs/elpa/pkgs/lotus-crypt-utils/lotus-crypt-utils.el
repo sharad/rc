@@ -301,13 +301,21 @@ and AMBIGUOUS characters"
         (message "number of combinations is 10^%d with a bit equivalence of %d" (round number) (round bits))
         (list bits number))))
 
-(defun find-file-sec ()
+(defun epa-file-find-secure ()
   (interactive)
   (let ((directory "~/.pi/"))
     (find-file
      (read-file-name "file: "
                      directory
                      (expand-file-name "i.org.gpg" directory)))))
+
+(defalias 'file-find-secure #'epa-file-find-secure)
+
+(defun epa-pop-last-entry ()
+  (interactive)
+  (when (y-or-n-p
+         (format "remove %s: " (caar epa-file-passphrase-alist)))
+    (pop epa-file-passphrase-alist)))
 
 (provide 'lotus-crypt-utils)
 ;;; lotus-crypt-utils.el ends here

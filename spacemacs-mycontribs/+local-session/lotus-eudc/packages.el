@@ -371,34 +371,34 @@ see `eudc-inline-expansion-servers'"
                                           (if eudc-inline-expansion-format
                                               (list eudc-inline-expansion-format))))
                                 (setq inline-expansion-format (car inline-expansion-formats))
-                                (dmessage 'eudc 7 "X: inline-expansion-formats %s\nX: query-formats %s\n" inline-expansion-formats query-formats)
+                                (lwarn 'eudc :debug "X: inline-expansion-formats %s\nX: query-formats %s\n" inline-expansion-formats query-formats)
                                 (while inline-expansion-formats
                                   (setq response
                                         (eudc-query
                                          (eudc-format-query query-words (car query-formats))
                                          (eudc-translate-attribute-list
                                           (cdr inline-expansion-format))))
-                                  (dmessage 'eudc 7 "O: inline-expansion-formats %s\nO: query-formats %s\n response %s\n" inline-expansion-formats query-formats response)
+                                  (lwarn 'eudc :debug "O: inline-expansion-formats %s\nO: query-formats %s\n response %s\n" inline-expansion-formats query-formats response)
                                   (setq response (remove nil response))
-                                  (dmessage 'eudc 7 "O: inline-expansion-formats %s\nO: query-formats %s\n response %s\n" inline-expansion-formats query-formats response)
+                                  (lwarn 'eudc :debug "O: inline-expansion-formats %s\nO: query-formats %s\n response %s\n" inline-expansion-formats query-formats response)
                                   (if response
                                       (throw 'found response))
                                   (setq inline-expansion-formats (cdr inline-expansion-formats))
                                   (setq inline-expansion-format (car inline-expansion-formats)))
 
-                                (dmessage 'eudc 7 "Z: inline-expansion-formats %s\nZ: query-formats %s\n" inline-expansion-formats query-formats)
+                                (lwarn 'eudc :debug "Z: inline-expansion-formats %s\nZ: query-formats %s\n" inline-expansion-formats query-formats)
 
                                 (setq query-formats (cdr query-formats)))
                               (setq servers (cdr servers)))
                             ;; No more servers to try... no match found
                             nil)))
-                   (dmessage 'eudc 7 "Y: inline-expansion-format %s\nY: response %s\nY: query-formats %s\n" inline-expansion-format response query-formats)
+                   (lwarn 'eudc :debug "Y: inline-expansion-format %s\nY: response %s\nY: query-formats %s\n" inline-expansion-format response query-formats)
 
                    (if (null response)
                        (error "No match")
 
 
-                       (dmessage 'eudc 7 "N: inline-expansion-format %s\nN: response %s\n" inline-expansion-format response)
+                       (lwarn 'eudc :debug "N: inline-expansion-format %s\nN: response %s\n" inline-expansion-format response)
                        ;; Process response through eudc-inline-expansion-format
                        (while response
 
@@ -408,7 +408,7 @@ see `eudc-inline-expansion-servers'"
                                  (or
                                   (catch 'fmtfound
                                     (while formats
-                                      (dmessage 'eudc 7 "L: format %s\nL: carresp %s\nL:diff %s\n"
+                                      (lwarn 'eudc :debug "L: format %s\nL: carresp %s\nL:diff %s\n"
                                                 (eudc-translate-attribute-list
                                                  (cdr (car formats)))
                                                 carresp
@@ -421,7 +421,7 @@ see `eudc-inline-expansion-servers'"
                                                (eudc-translate-attribute-list
                                                 (cdr (car formats))))
                                         (throw 'fmtfound (car formats)))
-                                      (dmessage 'eudc 7 "P: format %s\nP: carresp %s\n"
+                                      (lwarn 'eudc :debug "P: format %s\nP: carresp %s\n"
                                                 (eudc-translate-attribute-list
                                                  (cdr (car formats)))
                                                 carresp)
