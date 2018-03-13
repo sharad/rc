@@ -113,13 +113,15 @@ Each entry is either:
 
            ;; *elpa-package-dir* "~/.emacs.d/elpa"
 
-           (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+           (progn
 
-           (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
+             (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 
-           (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+             (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
 
-           (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
+             (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+
+             (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/")))
 
 
            (when nil (package-initialize))

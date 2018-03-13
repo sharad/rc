@@ -45,6 +45,7 @@
     misc
     python
     yaml
+    bibtex
     ;; bibtex -- org-ref is not available
     ;; ;; .spacemacs-mycontribution
     ;; basic-startup
@@ -121,6 +122,15 @@
    '("local" . "~/.xemacs/elpa/upload")
    package-archives)
 
+  (progn
+
+    (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+
+    (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
+
+    (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+
+    (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/")))
 
   (defvar *emacs-in-init* t "Emacs is in init.")
   (defvar user-emacs-directory "~/.emacs.d")
@@ -238,6 +248,7 @@
   (message "loading lotus-emacs-user-init-finish begin")
   (dotspacemacs/reinit)
 
+  (package-initialize)
 
   (setq
    dotspacemacs-default-font '("Source Code Pro"
