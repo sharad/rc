@@ -41,7 +41,7 @@ PRIVATE_DIR=$HOME/.Private
 SSH_KEYS_DIR=$HOME/.ssh/login-keys.d
 SCREEN4KEYCHAIN=keychain
 KEYCHAINDIR=$HOME/.keychain-login
-EMACS_SSH_AGENT_FILE=~/.emacs.d/autoconfig/ssh/ssh-agent-$HOST.el
+EMACS_SSH_AGENT_FILE=~/.emacs.d/.cache/autoconfig/ssh/ssh-agent-$HOST.el
 export SCREEN4KEYCHAIN
 export KEYCHAINDIR
 
