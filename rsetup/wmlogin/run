@@ -43,7 +43,12 @@ fi
 if whence -p conky >& /dev/null &&
        ! pgrep conky >& /dev/null
 then
-    conky -d -c ~/.conkyrc/main/conkyrc >& /dev/null
+    if whence watch >& /dev/null
+    then
+        watch -t -n7 conky -d -c ~/.conkyrc/main/conkyrc >& /dev/null &!
+    else
+        conky -d -c ~/.conkyrc/main/conkyrc >& /dev/null &!
+    fi
 fi
 
 # while true
@@ -75,7 +80,12 @@ fi
 if whence -p redshift >& /dev/null &&
        ! pgrep redshift >& /dev/null
 then
-    redshift -t 6500:5000 -b 1.0:0.8  >>& ~/.xsession-errors &!
+    if whence watch >& /dev/null
+    then
+        watch -t -n3 redshift -t 6500:5000 -b 1.0:0.8  >>& ~/.xsession-errors &!
+    else
+        redshift -t 6500:5000 -b 1.0:0.8  >>& ~/.xsession-errors &!
+    fi
 fi
 
 

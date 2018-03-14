@@ -33,11 +33,11 @@ DEB_EXTRA_PKG2="homesick yadm macchanger xautolock suckless-tools xtrlock xbackl
 DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macchanger lm-sensors tidy xmlstarlet network-manager-openvpn-gnome duc"
 DEB_EXTRA_SEC_PKG1="systemd-ui " # policykit-1 policykit-1-gnome
 DEB_DEV_PKG1="python-pip silversearcher-ag silversearcher-ag-el s-el ack-grep doxygen doxymacs"
-DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject adcli partclone gpodder"
+DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject adcli partclone gpodder parallel"
 DEB_PKG_DEV="valgrind"
 DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools pavucontrol redshift"
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer"
-DEB_SYS_PKG1="duc baobab agedu tpb"
+DEB_SYS_PKG1="duc baobab agedu tpb daemontools sysstat isag"
 DEB_SYS_MAIL="dovecot-core dovecot-imapd ntpdate postfix augeas-tools augeas-lenses"
 DEB_DEV_GTD="tomboy zim anki mnemosyne mnemosyne-blog "
 DEB_PKG_LEARNING="gpodder"
@@ -192,7 +192,8 @@ function setup_apt_packages()
 				"DEB_PKG_NECESSARY_MORE3" \
 				"DEB_PKG_NECESSARY_MORE4" \
         "DEB_DEV_GTD" \
-        "DEB_PKG_LEARNING"
+        "DEB_PKG_LEARNING" \
+        "DEB_PKG_TOOL_GUI"
     do
         eval sudo apt -y install \$$pkg
     done
