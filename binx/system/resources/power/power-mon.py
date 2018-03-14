@@ -6,7 +6,9 @@ import time
 
 powerLowAction = {
     5:  'poweroff',
-    7:  None,
+    7:  'zenity --warning --text "Battery is only at 7%, will poweroff it at 5%"',
+    8:  'zenity --warning --text "Battery is only at 8%, will poweroff it at 5%"',
+    9:  'zenity --warning --text "Battery is only at 9%, will poweroff it at 5%"',
     10: None,
     20: None,
     70: None
