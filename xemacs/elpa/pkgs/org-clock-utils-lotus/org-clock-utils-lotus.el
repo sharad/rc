@@ -626,7 +626,7 @@ using three `C-u' prefix arguments."
 (defun lotus-org-clock-declare-last-clockout-of-day ()
   )
 
-(define lotus-org-clock-offline-time ()
+(defun lotus-org-clock-offline-time ()
 ;; clock the time from last known clock to now
   )
 

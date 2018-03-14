@@ -63,8 +63,8 @@
           (if (boundp )))
 
         `(progn
-           ()
-           (define configuration|common|FILE|packages ()
+           (progn)
+           (defun configuration|common|FILE|packages ()
              )))))
 
 
