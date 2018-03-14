@@ -37,10 +37,11 @@ DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject adcli partclone gpodder"
 DEB_PKG_DEV="valgrind"
 DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools pavucontrol redshift"
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer"
-DEB_SYS_PKG1="duc baobab agedu"
+DEB_SYS_PKG1="duc baobab agedu tpb"
 DEB_SYS_MAIL="dovecot-core dovecot-imapd ntpdate postfix augeas-tools augeas-lenses"
 DEB_DEV_GTD="tomboy zim anki mnemosyne mnemosyne-blog "
 DEB_PKG_LEARNING="gpodder"
+DEB_PKG_TOOL_GUI="osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin"
 
 
 function main()

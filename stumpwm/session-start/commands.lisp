@@ -600,7 +600,7 @@
 
 (defcommand restart-conky () ()
    (run-shell-command
-    "killall conky ; conky -d -c ~/.conkyrc/main/conkyrc"))
+    "killall conky ; conky -d -c ~/.conkyrc/main/conkyrc 2>&1 >/dev/null"))
 
 (defcommand conky () ()
    (run-shell-command

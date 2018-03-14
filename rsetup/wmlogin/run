@@ -4,15 +4,18 @@ if [ "x${HOST}" != "x" ]
 then
     __comp=wmlogin
 
-    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
         rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
     fi
-    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
         mkdir ~/.rsetup/${__comp}/run.d/
         cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
     fi
 
-    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
         ~/.rsetup/${__comp}/run.d/${HOST}
     fi
 
@@ -23,24 +26,24 @@ fi
 
 # give access to mpd
 
-if whence xte
+if whence xte >& /dev/null
 then
-    xte <<EOF
+    xte <<EOF >>& ~/.xsession-errors
 mousemove 42 42
 EOF
 fi
 
 ## ssh-agent access needed.
 if whence -p xautolock >& /dev/null &&
-    ! pgrep xautolock >& /dev/null
+       ! pgrep xautolock >& /dev/null
 then
-    xautolock -detectsleep &!
+    xautolock -detectsleep >>& ~/.xsession-errors &!
 fi
 
 if whence -p conky >& /dev/null &&
        ! pgrep conky >& /dev/null
 then
-    conky -d -c ~/.conkyrc/main/conkyrc
+    conky -d -c ~/.conkyrc/main/conkyrc >& /dev/null
 fi
 
 # while true
@@ -54,9 +57,9 @@ fi
 # done &!
 
 
-if whence xte
+if whence xte >& /dev/null
 then
-    xte <<EOF
+    xte <<EOF >>& ~/.xsession-errors
 mousemove 42 42
 EOF
 fi
@@ -64,42 +67,46 @@ fi
 # ~/bin/syncimap -r               # enable, done in rsetup/x/run
 
 # laptop power monitoring.
-if whence -p ~/bin/power-mon
+if whence -p ~/bin/power-mon >& /dev/null
 then
-    ~/bin/power-mon &!
+    ~/bin/power-mon >>& ~/.xsession-errors &!
 fi
 
-if whence -p redshift && ! pgrep redshift
+if whence -p redshift >& /dev/null &&
+       ! pgrep redshift >& /dev/null
 then
-    redshift -t 6500:5000 -b 1.0:0.8 &!
+    redshift -t 6500:5000 -b 1.0:0.8  >>& ~/.xsession-errors &!
 fi
 
 
 atq
-if [ $(atq | cut -f1 | wc -l) -gt 0 ] ; then
+if [ $(atq | cut -f1 | wc -l) -gt 0 ]
+then
     atrm  $(atq | cut -f1)
 fi
 
-if whence -p xsetroot
+if whence -p xsetroot >& /dev/null
 then
     # https://unix.stackexchange.com/questions/69033/mouse-cursor-became-a-big-x
     # https://unix.stackexchange.com/questions/371166/i-like-the-default-x-shaped-crosshair-cursor-in-linux-how-do-i-force-debian-t
     # xsetroot -cursor_name X_cursor
-    xsetroot -cursor_name left_ptr
+    xsetroot -cursor_name left_ptr >>& ~/.xsession-errors
 fi
 
-if whence -p ~/bin/wallpaper-setup
+if whence -p ~/bin/wallpaper-setup >& /dev/null
 then
     # WM specific setup
-    ~/bin/wallpaper-setup &!
+    ~/bin/wallpaper-setup >>& ~/.xsession-errors &!
     # ~/bin/stumpwm-setup &!
 fi
 
 emacs_daemon_start              # in case it were not started in x/run
 
-#### # if [ -x /usr/libexec/at-spi-registryd ] ; then
+#### # if [ -x /usr/libexec/at-spi-registryd ]
+#### then
 #### #     DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/libexec/at-spi-registryd &!
-#### #  elif [  -x  /usr/lib/at-spi2-core/at-spi2-registryd ] ; then
+#### #  elif [  -x  /usr/lib/at-spi2-core/at-spi2-registryd ]
+#### then
 #### #     DISPLAY=:0.0 dbus-launch --autolaunch=$MY_DBUS_SESSION /usr/lib/at-spi2-core/at-spi2-registryd &!
 #### # fi
 ####
@@ -108,9 +115,11 @@ emacs_daemon_start              # in case it were not started in x/run
 #### # pgrep gnome-screensaver ||
 #### # gnome-screensaver &!
 ####
-#### if [ -x /usr/lib/gnome-settings-daemon/gnome-settings-daemon ] ; then
+#### if [ -x /usr/lib/gnome-settings-daemon/gnome-settings-daemon ]
+#### then
 ####     pgrep gnome-settings >& /dev/null || /usr/lib/gnome-settings-daemon/gnome-settings-daemon &!
-#### elif [ -x /usr/libexec/gnome-settings-daemon ] ; then
+#### elif [ -x /usr/libexec/gnome-settings-daemon ]
+#### then
 ####     pgrep gnome-settings >& /dev/null || /usr/libexec/gnome-settings-daemon &!
 #### else
 ####     whence -p gnome-settings-daemon &&
@@ -121,10 +130,12 @@ emacs_daemon_start              # in case it were not started in x/run
 ####
 ####
 ####
-#### if [ -x  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] ; then
+#### if [ -x  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ]
+##### then
 ####     pgrep gnome-settings >& /dev/null ||  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &!
 ####     sleep 1s;
-#### elif [ -x /usr/libexec/polkit-gnome-authentication-agent-1 ] ; then
+#### elif [ -x /usr/libexec/polkit-gnome-authentication-agent-1 ]
+#### then
 ####     pgrep gnome-settings >& /dev/null || /usr/libexec/polkit-gnome-authentication-agent-1 &!
 ####     sleep 1s;
 #### else
@@ -155,7 +166,8 @@ emacs_daemon_start              # in case it were not started in x/run
 ####     sleep 1s;
 #### fi
 ####
-#### if [ -x /usr/lib/gvfs/gvfsd ] ; then
+#### if [ -x /usr/lib/gvfs/gvfsd ]
+#### then
 ####     ! pgrep gvfsd || /usr/lib/gvfs/gvfsd -r ~/.gvfs &!
 #### fi
 ####
@@ -202,7 +214,8 @@ emacs_daemon_start              # in case it were not started in x/run
 #### echo stumpwmrc end here >&2
 ####
 #### atq
-#### if [ $(atq | cut -f1 | wc -l) -gt 0 ] ; then
+#### if [ $(atq | cut -f1 | wc -l) -gt 0 ]
+#### then
 ####     atrm  $(atq | cut -f1)
 #### fi
 ####
@@ -268,21 +281,21 @@ foreach prog (
     gnome-settings-daemon       # need for low disk space warning. https://bugs.launchpad.net/ubuntu/+source/gnome-settings-daemon/+bug/881376
     # https://blogs.n1zyy.com/n1zyy/2009/02/06/ubuntu-housekeeping/
     synergys
-    ) {
+) {
     if whence -p $prog >> ~/.logs/wmlogin.log 2>&1  &&
            ! pgrep $prog[0,15] >> ~/.logs/wmlogin.log 2>&1
-        then
-            $prog &!
-            # echo started $prog >&2
-	          pgrep $prog[0,15] >> ~/.logs/wmlogin.log 2>&1
-            sleep 1s;
-        else
-            print Not starting $prog >> ~/.logs/wmlogin.log 2>&1
-        fi
-    }
+    then
+        $prog &!
+        # echo started $prog >&2
+	      pgrep $prog[0,15] >> ~/.logs/wmlogin.log 2>&1
+        sleep 1s;
+    else
+        print Not starting $prog >> ~/.logs/wmlogin.log 2>&1
+    fi
+}
 
-if whence -p keynav >> ~/.logs/wmlogin.log 2>&1  &&
-       ! pgrep keynav >> ~/.logs/wmlogin.log 2>&1
+if whence -p keynav >& /dev/null  &&
+       ! pgrep keynav >& /dev/null
 then
     keynav >> ~/.logs/wmlogin.log 2>&1  &!
 fi
@@ -301,14 +314,14 @@ then
     # https://play.google.com/store/apps/details?id=com.willhauck.linconnectclient
     rm -f ~/.logs/linconnect.1
     mv ~/.logs/linconnect ~/.logs/linconnect.1
-    ~/.linconnect/LinConnectServer/main/linconnect_server.py >& ~/.logs/linconnect &!
+    ~/.linconnect/LinConnectServer/main/linconnect_server.py >& ~/.logs/linconnect >>& ~/.xsession-errors &!
 fi
 
 if [ -x /usr/share/android-notifier-desktop/run.sh ] &&
-    java -DconfigDir=~/.config -Djava.util.prefs.userRoot=$configDir/android-notifier-desktop \
-        -Djava.net.preferIPv4Stack=true -client -Xms8m -Xmx32m \
-        -jar /usr/share/android-notifier-desktop/android-notifier-desktop.jar -i |
-    grep "not" ; then
+       java -DconfigDir=~/.config -Djava.util.prefs.userRoot=$configDir/android-notifier-desktop \
+            -Djava.net.preferIPv4Stack=true -client -Xms8m -Xmx32m \
+            -jar /usr/share/android-notifier-desktop/android-notifier-desktop.jar -i |
+           grep "not" ; then
     /usr/share/android-notifier-desktop/run.sh >& ~/.logs/android-notifier-desktop.log &!
 fi
 

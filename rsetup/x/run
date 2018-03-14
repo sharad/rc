@@ -15,15 +15,18 @@ if [ "x${HOST}" != "x" ]
 then
     __comp=x
 
-    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    if [ -d ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
         rm -rf ~/.rsetup/${__comp}/run.d/${HOST}
     fi
-    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    if [ ! -x ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
         mkdir ~/.rsetup/${__comp}/run.d/
         cp ~/.rsetup/${__comp}/run.tmpl ~/.rsetup/${__comp}/run.d/${HOST}
     fi
 
-    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ] ; then
+    if [ -r ~/.rsetup/${__comp}/run.d/${HOST} ]
+    then
         ~/.rsetup/${__comp}/run.d/${HOST} >> ~/.xsession-errors 2>&1
     fi
 
@@ -46,21 +49,24 @@ fi
 
 
 
-if whence -p xrdb >> ~/.xsession-errors 2>&1
+if whence -p xrdb >& /dev/null
 then
     m4 -I ~/.setup/m4 -I ~/.osetup/lib.d/m4.d -I ~/.osetup/info/common/m4.d -I ~/.osetup/info/hosts/${HOST}/m4.d -I ~/.Xresources ~/.Xresources/init 2>/dev/null | xrdb -merge - >> ~/.xsession-errors 2>&1
 fi
 
-if whence -p xmodmap >> ~/.xsession-errors 2>&1
+if whence -p xmodmap >& /dev/null
 then
     xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >> ~/.xsession-errors 2>&1
 fi
 
 # show me what is happening...
 ## http://askubuntu.com/a/481529
-xterm -fullscreen -hold -maximized -e "ish -s bash -- timeout -k 120 70 tail --retry -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/autoconfig/startup/$EMACS_SERVER_NAME/startup.log" >> ~/.xsession-errors 2>&1 &!
+xterm \
+    -fullscreen \
+    -hold -maximized \
+    -e "ish -s bash -- timeout -k 120 70 tail --retry -n 100 -f ~/.xsession-errors ~/.stumpwm.d/debug-output.log ~/.emacs.d/.cache/autoconfig/startup/$EMACS_SERVER_NAME/startup.log" >> ~/.xsession-errors 2>&1 &!
 
-if whence xte
+if whence -p xte >& /dev/null
 then
     xte <<'EOF' >> ~/.xsession-errors 2>&1
 mousemove 42 42
@@ -71,9 +77,10 @@ emacs_daemon_start >/dev/null 2>&1 # already going into ~/.emacs.d/.cache/autoco
 
 # if which $HOME/bin/ecryptfs-mount-private >/dev/null 2>&1
 # then
-#     if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ] ; then
-#         timeout -k 10 7 $HOME/bin/ecryptfs-mount-private > /dev/null 2>&1
-#     fi
+#   if [  -e $PRIVATE_DIR ] && [ "x" != "x$DISPLAY" ]
+#   then
+#      timeout -k 10 7 $HOME/bin/ecryptfs-mount-private > /dev/null 2>&1
+#   fi
 # fi
 
 if false
@@ -83,28 +90,31 @@ fi
 
 ~/bin/syncimap -d >> ~/.xsession-errors 2>&1               # it only get secinfo from x keyring; disable
 
-if whence -p xhost >> ~/.xsession-errors 2>&1
+if whence -p xhost >& /dev/null
 then
     xhost +local:mpd >> ~/.xsession-errors 2>&1
 fi
 
 
 
-if [ $DISPLAY ] ; then
+if [ $DISPLAY ]
+then
     :
-# Why don't the message windows disappear?
-# mit-clx, used with clisp, doesn't support timeouts. Use new-clx
-# instead. Alternatively, the problem can be worked around by
-# periodically sending meaningless X events, thereby breaking
-# mit-clx's blocking read and returning control to StumpWM (to do
-# things like unmap those message windows.)
-# Put the following in your ~/.xinitrc file, before the call to stumpwm:
-    # if [[ $WM -eq "stumpwm" ]] ; then
+    # Why don't the message windows disappear?
+    # mit-clx, used with clisp, doesn't support timeouts. Use new-clx
+    # instead. Alternatively, the problem can be worked around by
+    # periodically sending meaningless X events, thereby breaking
+    # mit-clx's blocking read and returning control to StumpWM (to do
+    # things like unmap those message windows.)
+    # Put the following in your ~/.xinitrc file, before the call to stumpwm:
+    # if [[ $WM -eq "stumpwm" ]]
+    # then
     #     (while sleep 1; do xprop -root -f FOO 8s -set FOO foo; done )&
     # fi
 fi
 
-if [ $DISPLAY ] ; then
+if [ $DISPLAY ]
+then
 
     # which  gnubiff &&  gnubiff  -n &
     # xmodmap ~/.xmodmaprc	# excellent, why i was not knowing it before.
@@ -112,8 +122,10 @@ if [ $DISPLAY ] ; then
     # unset Caps Lock
     python -c 'from ctypes import *; X11 = cdll.LoadLibrary("libX11.so.6"); display = X11.XOpenDisplay(None); X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0)); X11.XCloseDisplay(display)'  >> ~/.xsession-errors 2>&1
 
-    if whence -p xmodmap ; then
-        if [ -e ~/.xmodmaprc  ] ; then
+    if whence -p xmodmap >& /dev/null
+    then
+        if [ -e ~/.xmodmaprc  ]
+        then
             xmodmap ~/.xmodmaprc >&/dev/null >> ~/.xsession-errors 2>&1
         else
             xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt >&/dev/null >> ~/.xsession-errors 2>&1
@@ -121,7 +133,8 @@ if [ $DISPLAY ] ; then
     fi
 
     # if whence -p urxvtd >& /dev/null &&
-    #     ! pgrep urxvtd >& /dev/null ; then
+    #     ! pgrep urxvtd >& /dev/null
+    # then
     #     urxvtd \
     #         --quiet \
     #         --opendisplay \
@@ -130,26 +143,26 @@ if [ $DISPLAY ] ; then
 
     # DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION empathy &!
 
-    if whence -p conky >> ~/.xsession-errors 2>&1 &&
-           ! pgrep conky >> ~/.xsession-errors 2>&1
-     then
-         conky -d -c ~/.conkyrc/main/conkyrc >> ~/.xsession-errors 2>&1 &!
-     fi
+    if whence -p conky >& /dev/null &&
+           ! pgrep conky >& /dev/null 2>&1
+    then
+        conky -d -c ~/.conkyrc/main/conkyrc >> ~/.xsession-errors 2>&1 &!
+    fi
 
-    if whence synclient >> ~/.xsession-errors 2>&1 &&
-           ! pgrep synclient >> ~/.xsession-errors 2>&1
-     then
-         synclient  TapButton1=1 >> ~/.xsession-errors 2>&1
-     fi
+    if whence synclient >& /dev/null &&
+           ! pgrep synclient >& /dev/null
+    then
+        synclient  TapButton1=1 >> ~/.xsession-errors 2>&1
+    fi
 
     # whence -p xmodmap &&
     # xmodmap ~/.Xmodmaps/xmodmaprc-swap-alt-ctrl-caps=alt
 
     # stop this bell.
-    if whence -p xset >> ~/.xsession-errors 2>&1
-     then
-         xset b off >> ~/.xsession-errors 2>&1 # peace
-     fi
+    if whence -p xset >& /dev/null
+    then
+        xset b off >> ~/.xsession-errors 2>&1 # peace
+    fi
 
     # # set fonts
     #  if [  -r ~/.emacs.d/server/general ]
@@ -159,17 +172,17 @@ if [ $DISPLAY ] ; then
     #  fi
 
 
-     if whence -p osdsh >> ~/.xsession-errors 2>&1 &&
-            ! pgrep osdsh >> ~/.xsession-errors 2>&1
-     then
-         osdsh -n 10 >> ~/.xsession-errors 2>&1 &!
-     fi
+    if whence -p osdsh >& /dev/null &&
+           ! pgrep osdsh >& /dev/null 2>&1
+    then
+        osdsh -n 10 >> ~/.xsession-errors 2>&1 &!
+    fi
 
 
 
 fi
 
-if whence -c bingwallpaper >> ~/.xsession-errors 2>&1
+if whence -c bingwallpaper >& /dev/null
 then
     bingwallpaper -d 0 >> ~/.xsession-errors 2>&1 &!
 fi
@@ -177,10 +190,13 @@ fi
 # gconftool -s /apps/mail-notification/commands/new-mail/command "$EDITOR -e '(gnus)'"
 # gconftool -s /apps/mail-notification/commands/new-mail/enabled true
 
-# https://unix.stackexchange.com/questions/69033/mouse-cursor-became-a-big-x
-# https://unix.stackexchange.com/questions/371166/i-like-the-default-x-shaped-crosshair-cursor-in-linux-how-do-i-force-debian-t
-# xsetroot -cursor_name X_cursor
-xsetroot -cursor_name left_ptr
+if whence -p xsetroot  >& /dev/null
+then
+    # https://unix.stackexchange.com/questions/69033/mouse-cursor-became-a-big-x
+    # https://unix.stackexchange.com/questions/371166/i-like-the-default-x-shaped-crosshair-cursor-in-linux-how-do-i-force-debian-t
+    # xsetroot -cursor_name X_cursor
+    xsetroot -cursor_name left_ptr
+fi
 
 
 if [ "x${HOST}" != "x" ]
