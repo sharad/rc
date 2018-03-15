@@ -1,0 +1,1 @@
+.repos/git/readonly/public/user/spacemacs
