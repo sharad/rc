@@ -43,9 +43,9 @@ fi
 if whence -p conky >& /dev/null &&
        ! pgrep conky >& /dev/null
 then
-    if whence watch >& /dev/null
+    if whence -p watch >& /dev/null
     then
-        watch -t -n7 conky -d -c ~/.conkyrc/main/conkyrc >& /dev/null &!
+        watch -t -n7 conky -c ~/.conkyrc/main/conkyrc >& /dev/null &!
     else
         conky -d -c ~/.conkyrc/main/conkyrc >& /dev/null &!
     fi
