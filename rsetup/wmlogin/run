@@ -51,17 +51,6 @@ then
     fi
 fi
 
-# while true
-# do
-#    sleep 10s
-#    if whence -p conky >& /dev/null &&
-#           ! pgrep conky >& /dev/null
-#    then
-#        conky -d -c ~/.conkyrc/main/conkyrc
-#    fi
-# done &!
-
-
 if whence xte >& /dev/null
 then
     xte <<EOF >>& ~/.xsession-errors
