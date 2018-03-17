@@ -8,6 +8,8 @@ TMPDIR=~/setuptmp
 APT_REPO_COMMPUNICATION="ppa:nilarimogard/webupd8"
 APT_REPO_UTILS="ppa:yartsa/lvmeject"
 
+APT_REPO_KOI="ppa:team-xbmc/ppa"
+
 
 DEB_PKG_EMACS="elpa-magit elpa-magit-popup elpa-with-editor emacs-goodies-el enscript flim lm-sensors "
 DEB_PKG_NECESSARY_MORE1="xaos xnee xnee-doc xzgv yatex zsh zsh-doc zutils byobu ccze shutdown-at-night sitesummary xterm rxvt-unicode-256color"
@@ -35,13 +37,15 @@ DEB_EXTRA_SEC_PKG1="systemd-ui " # policykit-1 policykit-1-gnome
 DEB_DEV_PKG1="python-pip silversearcher-ag silversearcher-ag-el s-el ack-grep doxygen doxymacs"
 DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject adcli partclone gpodder parallel"
 DEB_PKG_DEV="valgrind"
-DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools pavucontrol redshift daemontools god circus"
+DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools pavucontrol redshift daemontools god circus software-properties-common"
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer"
 DEB_SYS_PKG1="duc baobab agedu tpb daemontools sysstat isag"
 DEB_SYS_MAIL="dovecot-core dovecot-imapd ntpdate postfix augeas-tools augeas-lenses"
 DEB_DEV_GTD="tomboy zim anki mnemosyne mnemosyne-blog "
 DEB_PKG_LEARNING="gpodder"
 DEB_PKG_TOOL_GUI="osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin"
+
+DEB_PKG_MEDIA="kodi"
 
 
 function main()
