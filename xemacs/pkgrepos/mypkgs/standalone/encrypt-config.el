@@ -168,7 +168,7 @@
 ;; (setq epa-file-passphrase-alist nil)
 
 ;; (assq-delete-all-test
-;;  (concat (getenv "HOME") "/.setup-trunk/spaa.cresh")
+;;  (concat (getenv "HOME") "/.setup/spaa.cresh")
 ;;  epa-file-passphrase-alist
 ;;  'string-equal)
 

@@ -40,5 +40,5 @@
 ;; (define-key remem-command-map (kbd "h") 'remem-create-help-page)
 
 
-(require 'remem "~/.setup-trunk/xemacs/pkgrepos/autoinstalled/auto-install/remem.el")
+(require 'remem "~/.setup/xemacs/pkgrepos/autoinstalled/auto-install/remem.el")
 ;;; config.el ends here

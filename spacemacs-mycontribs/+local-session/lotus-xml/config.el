@@ -114,7 +114,7 @@
 
   ;; (set (make-local-variable imenu-create-index-function) xml-imenu-get-tree)
   ;; [[file:/usr/share/emacs/23.4/lisp/imenu.el.gz::imenu%20el%20framework%20for%20mode%20specific%20buffer%20indexes][imenu.el]]
-  ;; [[file:~/.setup-trunk/xemacs/pkgrepos/world/misc/pde/imenu-tree.el::A%20list%20to%20search%20icon%20for%20the%20button%20in%20the%20tree][imenu-tree.el]]
+  ;; [[file:~/.setup/xemacs/pkgrepos/world/misc/pde/imenu-tree.el::A%20list%20to%20search%20icon%20for%20the%20button%20in%20the%20tree][imenu-tree.el]]
   )
 
 
