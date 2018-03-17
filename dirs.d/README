@@ -1,0 +1,4 @@
+
+depends on ../osetup/dirs.d/view.d/
+
+
