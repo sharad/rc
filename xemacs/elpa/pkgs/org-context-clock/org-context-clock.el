@@ -1,7 +1,7 @@
 ;; Preamble
 
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Preamble][Preamble:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Preamble][Preamble:1]]
 ;;; org-context-clock.el --- org-context-clock               -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016  sharad
@@ -29,7 +29,7 @@
 ;;; Code:
 ;; Preamble:1 ends here
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Preamble][Preamble:2]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Preamble][Preamble:2]]
 (defgroup org-context-clock nil
   "Emacs Org Context Clocking."
   :tag "Org Clock"
@@ -39,7 +39,7 @@
 ;; Required libraries
 
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Required%20libraries][Required libraries:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Required%20libraries][Required libraries:1]]
 (require 'org-clock)
 
 (require 'timer-utils-lotus)
@@ -56,7 +56,7 @@
 ;; It is divided into multiple files for different functionality
 
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*It%20is%20divided%20into%20multiple%20files%20for%20different%20functionality][It is divided into multiple files for different functionality:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*It%20is%20divided%20into%20multiple%20files%20for%20different%20functionality][It is divided into multiple files for different functionality:1]]
 (require 'org-context-clock-api)
 (require 'org-context-clock-api-list) ;; "org tasks access api for list org"
 (require 'org-context-clock-api-recursive) ;; "org tasks access api for recursive task"
@@ -68,7 +68,7 @@
 
 ;; Global variables
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Global%20variables][Global variables:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Global%20variables][Global variables:1]]
 (defvar *org-context-clock-task-current-context*  nil)
 (defvar *org-context-clock-task-previous-context* nil)
 (defvar *org-context-clock-task-current-context-time-interval* 7)
@@ -87,7 +87,7 @@
 ;; Simple function
 
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Simple%20function][Simple function:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Simple%20function][Simple function:1]]
 (defun custom-plist-keys (in-plist)
   (if (null in-plist)
       in-plist
@@ -96,7 +96,7 @@
 
 ;; Disable for some time
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Disable%20for%20some%20time][Disable for some time:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Disable%20for%20some%20time][Disable for some time:1]]
 (defun org-context-clock-disable-for (time)
   "Disable context clocking for TIME period."
   ;; Implement
@@ -106,7 +106,7 @@
 ;; Context clock API
 
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Context%20clock%20API][Context clock API:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Context%20clock%20API][Context clock API:1]]
 ;;;###autoload
 (defun org-context-clock-api ()
   "org task clocking select api to use."
@@ -144,7 +144,7 @@
 ;; Update tasks
 
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Update%20tasks][Update tasks:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Update%20tasks][Update tasks:1]]
 ;;;###autoload
 (defun org-context-clock-task-update-tasks (&optional force)
   "Update task infos"
@@ -161,7 +161,7 @@
 ;; Build context
 
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Build%20context][Build context:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Build%20context][Build context:1]]
 (defun org-context-clock-build-context (&optional buff)
   (let* ((buff (if buff
                    (if (bufferp buff)
@@ -179,14 +179,14 @@
 
 ;; Unnamed task related global variable
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Unnamed%20task%20related%20global%20variable][Unnamed task related global variable:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Unnamed%20task%20related%20global%20variable][Unnamed task related global variable:1]]
 (defvar *org-context-clock-unassociate-context-start-time* nil)
 (defvar *org-context-clock-swapen-unnamed-threashold-interval* (* 60 2)) ;2 mins
 ;; Unnamed task related global variable:1 ends here
 
 ;; Unnamed task functions
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Unnamed%20task%20functions][Unnamed task functions:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Unnamed%20task%20functions][Unnamed task functions:1]]
 (defun org-context-clock-unassociate-context-start-time-reset ()
   (setq *org-context-clock-unassociate-context-start-time* nil))
 
@@ -233,7 +233,7 @@
 
 ;; Main context clock function update-current-context
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Main%20context%20clock%20function%20update-current-context][Main context clock function update-current-context:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Main%20context%20clock%20function%20update-current-context][Main context clock function update-current-context:1]]
 ;;;###autoload
 (defun org-context-clock-update-current-context (&optional force)
   (interactive "P")
@@ -285,7 +285,7 @@
 
 ;; Create task info out of current clock
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Create%20task%20info%20out%20of%20current%20clock][Create task info out of current clock:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Create%20task%20info%20out%20of%20current%20clock][Create task info out of current clock:1]]
 ;;;###autoload
 (defun org-context-clock-task-current-task ()
   (and
@@ -312,7 +312,7 @@
 
 ;; Test if TASK is associate to CONTEXT
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Test%20if%20TASK%20is%20associate%20to%20CONTEXT][Test if TASK is associate to CONTEXT:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Test%20if%20TASK%20is%20associate%20to%20CONTEXT][Test if TASK is associate to CONTEXT:1]]
 (defun org-context-clock-task-associated-to-context-p (task context)
   (if task
       (funcall org-context-clock-api-task-associated-to-context-p task context)
@@ -321,14 +321,14 @@
 
 ;; Collect and return task matching to CONTEXT
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:1]]
 ;;;###autoload
 (defun org-context-clock-current-task-associated-to-context-p (context)
   (let ((task (org-context-clock-task-current-task)))
     (org-context-clock-task-associated-to-context-p task context)))
 ;; Collect and return task matching to CONTEXT:1 ends here
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:2]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:2]]
 (defun org-context-clock-clockin-marker (selected-marker)
   (message "org-context-clock-clockin-marker %s" selected-marker)
   (let ((org-log-note-clock-out nil)
@@ -357,7 +357,7 @@
 ;; Clock-into one of associated tasks
 
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Clock-into%20one%20of%20associated%20tasks][Clock-into one of associated tasks:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Clock-into%20one%20of%20associated%20tasks][Clock-into one of associated tasks:1]]
 ;;;###autoload
 (defun org-context-clock-task-run-associated-clock (context)
   (interactive
@@ -391,25 +391,25 @@
 ;; function to setup context clock timer
 
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:1]]
 ;;;###autoload
 (defun org-context-clock-run-task-current-context-timer ()
   (interactive)
-  (let ()
-    (setq *org-context-clock-last-buffer-select-time* (current-time))
+  (progn
+  (setq *org-context-clock-last-buffer-select-time* (current-time))
     (when *org-context-clock-buffer-select-timer*
       (cancel-timer *org-context-clock-buffer-select-timer*)
       (setq *org-context-clock-buffer-select-timer* nil))
     (setq *org-context-clock-buffer-select-timer*
           ;; distrubing while editing.
-          ;; (run-with-timer
+          ;; run-with-timer
           (run-with-idle-timer
-           (1+ *org-context-clock-task-current-context-time-interval*)
-           nil
-           'org-context-clock-update-current-context)))))
+          (1+ *org-context-clock-task-current-context-time-interval*)
+          nil
+          'org-context-clock-update-current-context))))
 ;; function to setup context clock timer:1 ends here
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:2]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:2]]
 (defun sacha-org-context-clock-selection-line (marker)
     "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
@@ -436,7 +436,7 @@ pointing to it."
                (cons task marker))))))))
 ;; function to setup context clock timer:2 ends here
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:3]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:3]]
 ;;;###autoload
 (defun org-context-clock-select-task-from-clocks (clocks &optional prompt)
   "Select a task that was recently associated with clocking."
@@ -479,7 +479,7 @@ pointing to it."
             (t (user-error "Invalid task choice %c" rpl)))))))
 ;; function to setup context clock timer:3 ends here
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:4]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:4]]
 (defun sacha-org-context-clock-selection-line (marker)
     "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
@@ -506,7 +506,7 @@ pointing to it."
                (cons task marker))))))))
 ;; function to setup context clock timer:4 ends here
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:5]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:5]]
 (defun sacha/helm-org-refile-read-location (clocks clockin-fn)
   (message "sacha marker %s" (car clocks))
   ;; (setq sacha/helm-org-refile-locations tbl)
@@ -530,7 +530,7 @@ pointing to it."
 ;; (sacha/helm-org-refile-read-location (org-context-clock-markers-associated-to-context (org-context-clock-build-context (find-file-noselect "~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.el"))))
 ;; function to setup context clock timer:5 ends here
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:6]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:6]]
 ;;;###autoload
 (defun org-context-clock-insinuate ()
   (interactive)
@@ -564,7 +564,7 @@ pointing to it."
 ;; Test functions
 
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Test%20functions][Test functions:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Test%20functions][Test functions:1]]
 (progn ;; "Org task clock reporting"
   ;; #+BEGIN: task-clock-report-with-comment :parameter1 value1 :parameter2 value2 ...
   ;; #+END:
@@ -577,7 +577,7 @@ pointing to it."
     ))
 ;; Test functions:1 ends here
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Test%20functions][Test functions:2]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Test%20functions][Test functions:2]]
 (when nil                               ;testing
 
   (org-context-clock-task-run-associated-clock (org-context-clock-build-context))
@@ -703,7 +703,7 @@ pointing to it."
 
 ;; Provide this file
 
-;; [[file:~/.repos/git/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Provide%20this%20file][Provide this file:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Provide%20this%20file][Provide this file:1]]
 (provide 'org-context-clock)
 ;;; org-context-clock.el ends here
 ;; Provide this file:1 ends here
