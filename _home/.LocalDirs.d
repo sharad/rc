@@ -1,1 +1,1 @@
-.repos/git/readwrite/public/user/localdirs
+../dirs.d/rc.d/localdirs
