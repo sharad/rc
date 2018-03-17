@@ -1,1 +1,1 @@
-../dirs.d/rc.d/localdirs
+.dirs.d/rc.d/localdirs
