@@ -68,6 +68,9 @@ def take_action():
 
 
 def main():
+    """
+    Implement -d option for daemon
+    """
     fpid = os.fork()
     if fpid!=0:
     # Running as daemon now. PID is fpid
