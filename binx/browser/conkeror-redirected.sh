@@ -1,4 +1,4 @@
 #!/bin/sh
 
 
-conkeror -P $2 2>&1 >/dev/null
+conkeror -P $2 >/dev/null 2>&1

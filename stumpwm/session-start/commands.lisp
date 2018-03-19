@@ -380,8 +380,7 @@
              (concat
               (or (getenv "XBROWSER")
                   (concat
-                   "/home/s/hell/bin/conkeror-redirected" " -P " (getenv "XBPROFILE"))))
-             nil nil))
+                   (getenv "HOME") "/bin/conkeror-redirected" " -P " (getenv "XBPROFILE"))))))
 
 (defcommand xbrowser-tor () ()
             (run-wcli-command "conkeror -P tor"))

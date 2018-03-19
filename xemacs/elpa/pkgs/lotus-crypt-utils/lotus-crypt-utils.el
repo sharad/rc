@@ -301,7 +301,7 @@ and AMBIGUOUS characters"
         (message "number of combinations is 10^%d with a bit equivalence of %d" (round number) (round bits))
         (list bits number))))
 
-(defun epa-file-find-secure ()
+(defun epa-find-file-secure ()
   (interactive)
   (let ((directory "~/.pi/"))
     (find-file
@@ -309,13 +309,23 @@ and AMBIGUOUS characters"
                      directory
                      (expand-file-name "i.org.gpg" directory)))))
 
-(defalias 'file-find-secure #'epa-file-find-secure)
+(defalias 'find-file-secure #'epa-file-find-secure)
 
-(defun epa-pop-last-entry ()
+(defun epa-pop-last-passphrase ()
   (interactive)
   (when (y-or-n-p
          (format "remove %s: " (caar epa-file-passphrase-alist)))
     (pop epa-file-passphrase-alist)))
+
+(defun epa-delete-passphrase ()
+  (interactive)
+  (let ((epa-file
+         (completing-read "epa file: " (mapcar #'car epa-file-passphrase-alist))))
+    (setq epa-file-passphrase-alist
+          (delq (assoc epa-file epa-file-passphrase-alist) epa-file-passphrase-alist))))
+
+
+
 
 (provide 'lotus-crypt-utils)
 ;;; lotus-crypt-utils.el ends here
