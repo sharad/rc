@@ -518,7 +518,7 @@ Each entry is either:
             (setq
              org-agenda-files (directory-files-recursive
                                (expand-file-name
-                                "~/Documents/CreatedContent/contents/org")
+                                "~/Documents/CreatedContent/contents/virtual/org/default")
                                "\\.org$"
                                2
                                "\\(rip\\|stage\\)")))

@@ -90,7 +90,7 @@ Each entry is either:
             (require 'publishing)
             (progn
               (setq
-               *muse-top-dir*           (expand-file-name "contents/muse" *created-content-dir*)
+               *muse-top-dir*           (expand-file-name "contents/virtual/muse/default" *created-content-dir*)
                *muse-top-style-dir*     (expand-file-name "generic/muse/style" *muse-top-dir*)
                *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*)
                *muse-website-address*   (concat *website-address* "muse/")))
@@ -220,15 +220,14 @@ Each entry is either:
                             :major-mode planner-mode
                             :visit-link planner-visit-link)
                           (:base "planner-xhtml"
-                                 :path ,(content-muse-publishing-dir "web/site/wiki/plans/html"))))))
-          )
+                                 :path ,(content-muse-publishing-dir "web/site/wiki/plans/html")))))))
 
         (progn ;; org
           (progn
             ;; (debug)
             (progn
               (setq
-               *org-top-dir*           (expand-file-name "contents/org" *created-content-dir*)
+               *org-top-dir*           (expand-file-name "contents/virtual/org/default" *created-content-dir*)
                *org-top-style-dir*     (expand-file-name "generic/org/style" *org-top-dir*)
                *org-generated-top-dir* (expand-file-name "gen/org" *created-content-dir*)
                *org-website-address*   (concat *website-address* "org/")))
@@ -396,6 +395,8 @@ Each entry is either:
                                'task-current-party-change-hook
                                '(lambda ()
                                  (progn
+                                   (unless task-current-party
+                                    (task-current-party "meru"))
                                    (let ((task-dir (task-party-dir)))
                                      (when (file-directory-p task-dir)
 

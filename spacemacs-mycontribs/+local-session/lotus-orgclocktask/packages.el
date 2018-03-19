@@ -257,6 +257,8 @@ Each entry is either:
                         (progn
                           (add-to-task-current-party-change-hook
                            #'(lambda ()
+                               (unless task-current-party
+                                 (task-current-party "meru"))
                                (let ((monitor-dir (task-party-dir)))
                                  (if (file-directory-p monitor-dir)
                                      (progn
@@ -324,6 +326,8 @@ Each entry is either:
                   (progn
                     (add-to-task-current-party-change-hook
                      #'(lambda ()
+                         (unless task-current-party
+                           (task-current-party "meru"))
                          (let* ((party-base-dir (task-party-base-dir))
                                 (start-file (expand-file-name "start.org" party-base-dir)))
                            (if (and
@@ -437,7 +441,7 @@ Each entry is either:
         (progn
           (task-party-base-dir (org-publish-get-attribute "tasks" "org" :base-directory))
           (task-scratch-dir "~/Scratches/main")
-          (task-projbuffs-base-dir (expand-file-name "contents/misc/projbuffs" *created-content-dir*))
+          (task-projbuffs-base-dir (expand-file-name "contents/virtual/misc/projbuffs" *created-content-dir*))
 
           (task-add-task-party
            "personal"
