@@ -435,7 +435,11 @@ Each entry is either:
 (defun lotus-orgclocktask/init-task-manager ()
   (use-package task-manager
       :defer t
-      ;; :commands (office-mode task-party-base-dir task-current-party-select-set task-current-party task-party-dir task-select-party-dir find-task-dir)
+      :commands (office-mode
+                 task-current-party-select-set
+                 task-current-party task-party-dir
+                 task-select-party-dir
+                 find-task-dir)
       :config
       (progn
         (progn
