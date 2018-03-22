@@ -2,26 +2,30 @@
 
 exit
 
+OLDREPO=~/.repos/git/user
+NEWREPO=~/.repos/git/main/resource/userorg
+NEWDOCORG=~/.repos/git/main/resource/info/doc/
 
-cp -a  ~/.emacs.d/elpa ~/.emacs.d/.cache ~/.emacs.d/autoconfig ~/.repos/git/main/resource/userorg/main/readonly/public/user/spacemacs
+cp -a $OLDREPO/spacemacs/{elpa,.cache,autoconfig} $NEWREPO/main/readonly/public/user/spacemacs
+cp -a  $OLDREPO/rc/xemacs/elpa/upload $NEWREPO/main/readwrite/public/user/rc/xemacs/elpa/upload
+
 rm -f ~/.localdirs ;  cp -a  main/readwrite/public/user/rc/_home/.localdirs ~/.localdirs
 
-cd ~/.osetup;
+cd $OLDREPO/osetup;
 for f in  setup.d/rsetup.d/*/*/*
 do
-    mkdir -p $(dirname ~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/$f)
-    cp -a $f ~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/$f
+    mkdir -p $(dirname $NEWREPO/main/readwrite/public/user/osetup/$f)
+    cp -a $f $NEWREPO/main/readwrite/public/user/osetup/$f
 done
 cd -
 
-cp  ~/.osetup/nosecure.d/ssh/authorized_keys  ~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/nosecure.d/ssh/
-cp  ~/.osetup/nosecure.d/ssh/keys.d/{internet,fortinet,github,work}  ~/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/nosecure.d/ssh/keys.d/
+cp  $OLDREPO/osetup/osetup/nosecure.d/ssh/authorized_keys  $NEWREPO/main/readwrite/public/user/osetup/nosecure.d/ssh/
+cp  $OLDREPO/osetup/osetup/nosecure.d/ssh/keys.d/{internet,fortinet,github,work}  $NEWREPO/main/readwrite/public/user/osetup/nosecure.d/ssh/keys.d/
 
-mkdir -p ~/.repos/git/main/resource/info/doc/orgs/private/doc/contents
-mkdir -p ~/.repos/git/main/resource/info/doc/orgs/ftnt/doc/contents
-ln -s ../../orgs/ftnt/contents/org  ~/.repos/git/main/resource/userorg/main/readwrite/public/user/doc/CreatedContent/contents/virtual/org/ftnt
-ln -s ../../orgs/ftnt/contents/muse  ~/.repos/git/main/resource/userorg/main/readwrite/public/user/doc/CreatedContent/contents/virtual/muse/ftnt
-ln -s ../../orgs/ftnt/contents/misc  ~/.repos/git/main/resource/userorg/main/readwrite/public/user/doc/CreatedContent/contents/virtual/misc/ftnt
+mkdir -p $NEWDOCORG/orgs/ftnt/doc/contents
+ln -s ../../orgs/ftnt/contents/org  $NEWREPO/main/readwrite/public/user/doc/CreatedContent/contents/virtual/org/ftnt
+ln -s ../../orgs/ftnt/contents/muse  $NEWREPO/main/readwrite/public/user/doc/CreatedContent/contents/virtual/muse/ftnt
+ln -s ../../orgs/ftnt/contents/misc  $NEWREPO/main/readwrite/public/user/doc/CreatedContent/contents/virtual/misc/ftnt
 
 if mkdir ~/.backup
 then
@@ -29,26 +33,26 @@ then
     do
         cp -a ~/$d ~/.backup
         rm -f ~/$d
-        cp -a ~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/_home/$d ~/
+        cp -a $NEWREPO/main/readwrite/public/user/rc/_home/$d ~/
     done
 fi
 
 
 if mkdir -p ~/.backup/localdirs/home.d
 then
-    cd ~/.repos/git/user/localdirs/home.d
+    cd $OLDREPO/localdirs/home.d
     for d in *
     do
-        cp -a $d ~/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/home.d/
+        cp -a $d $NEWREPO/main/readwrite/public/user/localdirs/home.d/
     done
 fi
 
-cp -ar ~/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/deps.d/model.d/machine.d/lispm  ~/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/deps.d/model.d/machine.d/$HOST
-ln -s $HOST ~/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/deps.d/model.d/machine.d/default
+cp -ar $NEWREPO/main/readwrite/public/user/localdirs/deps.d/model.d/machine.d/lispm  $NEWREPO/main/readwrite/public/user/localdirs/deps.d/model.d/machine.d/$HOST
+ln -s $HOST $NEWREPO/main/readwrite/public/user/localdirs/deps.d/model.d/machine.d/default
 
 
-cp -ra ~/Documents/CreatedContent/*  ~/.repos/git/main/resource/info/doc/orgs/ftnt/doc/
+cp -ra $OLDREPO/doc/CreatedContent/*  $NEWDOCORG/orgs/ftnt/doc/
 
-ll ~/.repos/git/main/resource/userorg/main/readwrite/public/user/doc/CreatedContent/contents/virtual/misc/default
-ll ~/.repos/git/main/resource/userorg/main/readwrite/public/user/doc/CreatedContent/contents/virtual/muse/default
-ll ~/.repos/git/main/resource/userorg/main/readwrite/public/user/doc/CreatedContent/contents/virtual/org/default
+ll $NEWREPO/main/readwrite/public/user/doc/CreatedContent/contents/virtual/misc/default
+ll $NEWREPO/main/readwrite/public/user/doc/CreatedContent/contents/virtual/muse/default
+ll $NEWREPO/main/readwrite/public/user/doc/CreatedContent/contents/virtual/org/default
