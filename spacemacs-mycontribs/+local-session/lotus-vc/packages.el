@@ -31,7 +31,7 @@
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-vcS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-vc-packages
@@ -40,6 +40,7 @@
     git-commit
     commit-msg-mode
     gitconfig-mode
+    git-link
     )
   "The list of Lisp packages required by the lotus-vc layer.
 
@@ -120,6 +121,18 @@ Each entry is either:
                 "/git/config\\'"
                 "/\\.gitmodules\\'"
                 "/etc/gitconfig\\'"))
-    (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode)))))
+      (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode)))))
+
+
+(defun lotus-vc/post-git-link ()
+  (use-package git-link
+      :defer t
+      :config
+      (progn
+        (progn
+          (add-to-list 'git-link-remote-alist
+                       '("dops-git-in\\.fortinet-us\\.com" git-link-github))
+          (add-to-list 'git-link-commit-remote-alist
+                       '("dops-git-in\\.fortinet-us\\.com" git-link-commit-github))))))
 
 ;;; packages.el ends here
