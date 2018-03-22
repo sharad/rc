@@ -115,7 +115,9 @@ Each entry is either:
       (progn
 
         (progn
-          (setq *session-unified-desktop-enabled* t))
+          (setq
+           *session-unified-desktop-enabled* t
+           *frame-session-restore-screen-display-function* #'spacemacs-buffer/goto-buffer))
 
         (progn
           (add-to-disable-desktop-restore-interrupting-feature-hook
@@ -141,16 +143,6 @@ Each entry is either:
           (with-eval-after-load "utils-custom"
             (setq sessions-unified-utils-notify 'message-notify)))
         (progn
-          ;; (add-hook
-          ;;  'lotus-enable-startup-interrupting-feature-hook
-          ;;  'frame-session-restore-hook-func
-          ;;  t)
-
-          ;; (add-hook ;; 'after-init-hook
-          ;;  'lotus-enable-startup-interrupting-feature-hook
-          ;;  '(lambda ()
-          ;;    (run-at-time-or-now 7 'lotus-desktop-session-restore)))
-
           (with-eval-after-load "startup-hooks"
             (add-to-enable-startup-interrupting-feature-hook
              'frame-session-restore-hook-func

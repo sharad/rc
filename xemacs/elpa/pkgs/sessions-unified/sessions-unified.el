@@ -298,6 +298,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
         (push (cons 'desktop-buffers (lotus-elscreen-get-desktop-buffer-args-list)) session-list))))
 
   (defun elscreen-session-session-list-set (session-list &optional nframe)
+    ;; TODO BUG minibuffer should not get windows, which is happening now
     (if session-list                    ;may causing error
         (with-selected-frame (or nframe (selected-frame))
           (let* ((desktop-buffers
@@ -664,6 +665,9 @@ return a new alist whose car is the new pair and cdr is ALIST."
       (set-frame-parameter nframe 'frame-spec-id location)
       location))
 
+  (defvar *frame-session-restore-screen-display-function* #'display-about-screen
+    "function to display screen with frame-session-restore, e.g. display-about-screen, spacemacs-buffer/goto-buffer")
+
   (defun frame-session-restore (nframe &optional not-ask)
     (message "in frame-session-restore")
     (if (and
@@ -675,13 +679,10 @@ return a new alist whose car is the new pair and cdr is ALIST."
           (fmsession-restore (frame-session-set-this-location nframe not-ask))
           ;; nframe)
 
-          (when nil                     ;presently disabling it.
-            (display-about-screen))
-          (when nil                     ;we may add spacemacs
-            (spacemacs-buffer/goto-buffer))
-
-          (spacemacs-buffer/goto-buffer)
-
+          (when (and
+                 *frame-session-restore-screen-display-function*
+                 (functionp '*frame-session-restore-screen-display-function*))
+            (funcall *frame-session-restore-screen-display-function*))
           nframe)
         (progn
           (funcall sessions-unified-utils-notify

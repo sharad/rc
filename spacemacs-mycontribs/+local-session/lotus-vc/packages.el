@@ -130,6 +130,9 @@ Each entry is either:
       :config
       (progn
         (progn
+
+          (setq git-link-open-in-browser nil)
+
           (add-to-list 'git-link-remote-alist
                        '("dops-git-in\\.fortinet-us\\.com" git-link-github))
           (add-to-list 'git-link-commit-remote-alist
