@@ -377,9 +377,11 @@ Each entry is either:
             (progn
               (progn
                 (add-to-enable-desktop-restore-interrupting-feature-hook
-                 'lotus-config-start-org-context-clock-insinuate-after-delay-time)
-                (add-to-enable-desktop-restore-interrupting-feature-hook
                  'lotus-load-task-manager-delay-time)
+
+                (add-to-enable-desktop-restore-interrupting-feature-hook
+                 'lotus-config-start-org-context-clock-insinuate-after-delay-time)
+
                 (add-to-enable-desktop-restore-interrupting-feature-hook
                  'spaceline-toggle-org-clock-on))))))
 

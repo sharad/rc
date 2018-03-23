@@ -826,3 +826,20 @@ ecd() {
 }
 cde () { cd `ecd` }
 ##}}
+
+##{{ symlink
+function symlink-final ()
+{
+  if [ "$1" ]
+  then
+    symlink="$1"
+    if [ -L "$symlink" ]
+    then
+      readsymlink="$(readlink -m $symlink)"
+      rm -f $symlink
+      ln -s "$readsymlink" $symlink 
+    fi
+  fi
+}
+
+##}}

@@ -168,6 +168,10 @@
       (task-party-base-org-master-file base-dir)
       (setq
        *task-party-base-dir* base-dir)))
+  (message
+   "task-projbuffs-base-dir: changing supplied base-dir %s and task-projbuffs-base-dir to %s"
+   base-dir
+   *task-party-base-dir*)
   *task-party-base-dir*)
 
 ;;;###autoload
@@ -218,7 +222,7 @@
            "select party: "
            (mapcar 'car task-parties))))
      (list party)))
-  (let ()
+  (progn
     (if (member party (mapcar 'car task-parties))
         (when (setq task-current-party party)
           (run-hooks 'task-current-party-change-hook)))
