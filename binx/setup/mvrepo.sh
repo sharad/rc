@@ -11,7 +11,8 @@ cp -a  $OLDREPO/rc/xemacs/elpa/upload $NEWREPO/main/readwrite/public/user/rc/xem
 cp -a  $OLDREPO/rc/ssh/config $NEWREPO/main/readwrite/public/user/rc/rc/ssh/config
 mkdir -p $NEWREPO/main/readwrite/public/user/rc/rc/ssh/tmp
 cp $OLDREPO/rc/notmuch-config $NEWREPO/main/readwrite/public/user/rc/
-
+cp $OLDREPO/rc/offlineimaprc $NEWREPO/main/readwrite/public/user/rc/offlineimaprc
+# make sure ~/.offlineimap link point to correct dir.
 
 
 
