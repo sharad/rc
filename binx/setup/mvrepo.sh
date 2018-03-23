@@ -8,6 +8,13 @@ NEWDOCORG=~/.repos/git/main/resource/info/doc/
 
 cp -a $OLDREPO/spacemacs/{elpa,.cache,autoconfig} $NEWREPO/main/readonly/public/user/spacemacs
 cp -a  $OLDREPO/rc/xemacs/elpa/upload $NEWREPO/main/readwrite/public/user/rc/xemacs/elpa/upload
+cp -a  $OLDREPO/rc/ssh/config $NEWREPO/main/readwrite/public/user/rc/rc/ssh/config
+mkdir -p $NEWREPO/main/readwrite/public/user/rc/rc/ssh/tmp
+cp $OLDREPO/rc/notmuch-config $NEWREPO/main/readwrite/public/user/rc/
+
+
+
+
 
 rm -f ~/.localdirs ;  cp -a  main/readwrite/public/user/rc/_home/.localdirs ~/.localdirs
 
@@ -21,6 +28,7 @@ cd -
 
 cp  $OLDREPO/osetup/osetup/nosecure.d/ssh/authorized_keys  $NEWREPO/main/readwrite/public/user/osetup/nosecure.d/ssh/
 cp  $OLDREPO/osetup/osetup/nosecure.d/ssh/keys.d/{internet,fortinet,github,work}  $NEWREPO/main/readwrite/public/user/osetup/nosecure.d/ssh/keys.d/
+cp $OLDREPO/osetup/data.d/emacs.d/gnus.d/message.d/signatures.d/* $NEWREPO/main/readwrite/public/user/osetup/data.d/emacs.d/gnus.d/message.d/signatures.d
 
 mkdir -p $NEWDOCORG/orgs/ftnt/doc/contents
 ln -s ../../orgs/ftnt/contents/org  $NEWREPO/main/readwrite/public/user/doc/CreatedContent/contents/virtual/org/ftnt
