@@ -685,7 +685,9 @@ he has to read scheme, guixsd details, than see similar module and try to implem
   (org-clock-in nil (offset-current-time n))
   (org-clock-out))
 
-(defadvice org-clock-out (after org-clock-out-after activate) (org-update-all-dblocks))
+(defadvice org-clock-out (after org-clock-out-after activate)
+  (ignore-errors                        ;for now
+   (when nil (org-update-all-dblocks))))
 
 (add-hook 'org-mode-hook
           (lambda ()
