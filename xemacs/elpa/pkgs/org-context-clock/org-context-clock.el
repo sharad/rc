@@ -4,7 +4,7 @@
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Preamble][Preamble:1]]
 ;;; org-context-clock.el --- org-context-clock               -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016  sharad
+;; Copyright (C) 2016  Sharad
 
 ;; Author: sharad <spratap@merunetworks.com>
 ;; Keywords: convenience

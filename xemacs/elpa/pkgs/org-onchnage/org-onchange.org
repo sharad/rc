@@ -62,7 +62,7 @@
  If this is about to TODO state change, the new state is expected in STATE.
  HOW is an indicator what kind of note should be created.
  EXTRA is additional text that will be inserted into the notes buffer.
-#+BEGIN_SRC emacs-lisp :tabgle nil
+#+BEGIN_SRC emacs-lisp :tangle no
   (defun org-add-log-setup (&optional purpose state prev-state how extra)
     "Set up the post command hook to take a note.
   If this is about to TODO state change, the new state is expected in STATE.
@@ -77,13 +77,12 @@
           org-log-note-effective-time (org-current-effective-time))
     (add-hook 'post-command-hook 'org-add-log-note 'append))
 
-  (add-hook 'post-command-hook 'org-add-log-note 'append)
 #+END_SRC
 
 **** org-add-log-note (&optional _purpose)
  Pop up a window for taking a note, and add this note later.
  (setq-local org-finish-function 'org-store-log-note)
-#+BEGIN_SRC elisp :tangle nil
+#+BEGIN_SRC elisp :tangle no
   (defun org-add-log-note (&optional _purpose)
     "Pop up a window for taking a note, and add this note later."
     (remove-hook 'post-command-hook 'org-add-log-note)
@@ -126,7 +125,7 @@
 
 **** org-store-log-note ()
  Finish taking a log note, and insert it to where it belongs.
-#+BEGIN_SRC elisp :tangle nil
+#+BEGIN_SRC elisp :tangle no
   (defvar org-note-abort nil) ; dynamically scoped
   (defun org-store-log-note ()
     "Finish taking a log note, and insert it to where it belongs."
@@ -285,7 +284,8 @@
                 (org-with-wide-buffer
                  ;; Find location for the new note.
                  (goto-char note-marker)
-                 (set-marker note-marker nil)
+                 ;; (set-marker note-marker nil)
+
                  ;; Note associated to a clock is to be located right after
                  ;; the clock.  Do not move point.
                  (unless (eq note-purpose 'clock-out)
@@ -315,8 +315,7 @@
                 ;; from within `org-add-log-note' because `buffer-undo-list'
                 ;; is then modified outside of `org-with-remote-undo'.
                 (when (eq this-command 'org-agenda-todo)
-                  (setcdr buffer-undo-list (cddr buffer-undo-list)))))
-            )
+                  (setcdr buffer-undo-list (cddr buffer-undo-list))))))
           (error "merker %s buffer is nil" marker))))
 
  #+END_SRC

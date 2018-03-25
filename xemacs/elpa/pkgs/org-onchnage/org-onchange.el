@@ -61,7 +61,8 @@
               (org-with-wide-buffer
                ;; Find location for the new note.
                (goto-char note-marker)
-               (set-marker note-marker nil)
+               ;; (set-marker note-marker nil)
+
                ;; Note associated to a clock is to be located right after
                ;; the clock.  Do not move point.
                (unless (eq note-purpose 'clock-out)
@@ -91,8 +92,7 @@
               ;; from within `org-add-log-note' because `buffer-undo-list'
               ;; is then modified outside of `org-with-remote-undo'.
               (when (eq this-command 'org-agenda-todo)
-                (setcdr buffer-undo-list (cddr buffer-undo-list)))))
-          )
+                (setcdr buffer-undo-list (cddr buffer-undo-list))))))
         (error "merker %s buffer is nil" marker))))
 ;; Org insert log note un-interactively:1 ends here
 
@@ -141,30 +141,6 @@
 (eval-when-compile
   (require 'lotus-misc-utils))
 ;; Libraries required:1 ends here
-
-;; org-add-log-setup (&optional purpose state prev-state how extra)
-;;  Set up the post command hook to take a note.
-;;  If this is about to TODO state change, the new state is expected in STATE.
-;;  HOW is an indicator what kind of note should be created.
-;;  EXTRA is additional text that will be inserted into the notes buffer.
-
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*org-add-log-setup%20(&optional%20purpose%20state%20prev-state%20how%20extra)][org-add-log-setup (&optional purpose state prev-state how extra):1]]
-(defun org-add-log-setup (&optional purpose state prev-state how extra)
-  "Set up the post command hook to take a note.
-If this is about to TODO state change, the new state is expected in STATE.
-HOW is an indicator what kind of note should be created.
-EXTRA is additional text that will be inserted into the notes buffer."
-  (move-marker org-log-note-marker (point))
-  (setq org-log-note-purpose purpose
-        org-log-note-state state
-        org-log-note-previous-state prev-state
-        org-log-note-how how
-        org-log-note-extra extra
-        org-log-note-effective-time (org-current-effective-time))
-  (add-hook 'post-command-hook 'org-add-log-note 'append))
-
-(add-hook 'post-command-hook 'org-add-log-note 'append)
-;; org-add-log-setup (&optional purpose state prev-state how extra):1 ends here
 
 ;; Clock out with NOTE
 

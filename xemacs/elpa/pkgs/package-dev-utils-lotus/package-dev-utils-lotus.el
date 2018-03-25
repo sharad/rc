@@ -201,8 +201,15 @@
                (format "Do you want to make package of %s from %s: "
                        pkg-name
                        dir-of-current-file)))
-
+      ;; add org-tangel-file here
+      (let ((default-directory dir-of-current-file))
+        (dolist (org-file (directory-files dir-of-current-file t "'\*\.org$"))
+          (org-babel-tangle-file org-file)))
       (copy-directory dir-of-current-file pkg-dir nil t t)
+      ;; delete unnecessary files
+      (let ((default-directory pkg-dir))
+        (dolist (del-file (directory-files pkg-dir t "'\*~$\\|'RCS$"))
+          (delete-file del-file)))
 
       ;; TODO remove unwanted files
 
