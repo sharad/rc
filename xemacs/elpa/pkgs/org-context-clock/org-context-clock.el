@@ -4,7 +4,7 @@
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Preamble][Preamble:1]]
 ;;; org-context-clock.el --- org-context-clock               -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2016  Sharad
+;; Copyright (C) 2016  sharad
 
 ;; Author: sharad <spratap@merunetworks.com>
 ;; Keywords: convenience
@@ -79,7 +79,7 @@
 (defvar org-context-clock-access-api-name :recursive "Aceess API")
 (defvar org-context-clock-assoc-api-name :keys "Assoc API")
 (defvar org-context-clock-api-tasks-associated-to-context     (org-context-clock-access-api-get org-context-clock-access-api-name :tasks))
-(defvar org-context-clock-api-task-associated-to-context-p    (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp))
+(defvar org-context-clock-api-task-associated-to-context-p    (org-context-clock-assoc-api-get  org-context-clock-assoc-api-name :taskp))
 (defvar org-context-clock-api-task-update-tasks               (org-context-clock-access-api-get org-context-clock-access-api-name :update))
 (defvar org-context-clock-api-task-update-files               (org-context-clock-access-api-get org-context-clock-access-api-name :files))
 ;; Global variables:1 ends here
@@ -240,7 +240,7 @@
   (if (> (float-time (time-since *org-context-clock-last-buffer-select-time*))
          *org-context-clock-task-current-context-time-interval*)
       (let* ((context (org-context-clock-build-context))
-             (buff          (plist-get context :buffer)))
+             (buff    (plist-get context :buffer)))
         (setq *org-context-clock-task-current-context*  context)
         (if (and
              (org-context-clock-changable-p)
@@ -257,7 +257,6 @@
                    (> (org-context-clock-current-task-associated-to-context-p context) 0))
                   (progn
                     (org-context-clock-debug :debug "org-context-clock-update-current-context: Current task already associate to %s" context))
-
                   (progn                ;current clock is not matching
                     (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really going to clock.")
                     (unless (org-context-clock-task-run-associated-clock context)
@@ -329,29 +328,32 @@
 ;; Collect and return task matching to CONTEXT:1 ends here
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:2]]
-(defun org-context-clock-clockin-marker (selected-marker)
-  (message "org-context-clock-clockin-marker %s" selected-marker)
-  (let ((org-log-note-clock-out nil)
-        (prev-org-clock-buff (marker-buffer org-clock-marker)))
-    (message "clocking in %s" selected-marker)
-    (let ((prev-clock-buff-read-only
-           (if prev-org-clock-buff
-               (with-current-buffer (marker-buffer org-clock-marker)
-                 buffer-read-only))))
+(defun org-context-clock-clockin-marker (marker)
+  (message "org-context-clock-clockin-marker %s" marker)
+  (when (and
+         marker
+         (marker-buffer marker))
+    (let ((org-log-note-clock-out nil)
+          (prev-org-clock-buff (marker-buffer org-clock-marker)))
+      (message "clocking in %s" marker)
+      (let ((prev-clock-buff-read-only
+             (if prev-org-clock-buff
+                 (with-current-buffer (marker-buffer org-clock-marker)
+                   buffer-read-only))))
 
-      (if prev-org-clock-buff
-          (with-current-buffer prev-org-clock-buff
-            (setq buffer-read-only nil)))
+        (if prev-org-clock-buff
+            (with-current-buffer prev-org-clock-buff
+              (setq buffer-read-only nil)))
 
-      (setq *org-context-clock-update-current-context-msg* org-clock-marker)
+        (setq *org-context-clock-update-current-context-msg* org-clock-marker)
 
-      (with-current-buffer (marker-buffer selected-marker)
-        (let ((buffer-read-only nil))
-          (org-clock-clock-in (list selected-marker))))
+        (with-current-buffer (marker-buffer marker)
+          (let ((buffer-read-only nil))
+            (org-clock-clock-in (list marker))))
 
-      (if prev-org-clock-buff
-          (with-current-buffer prev-org-clock-buff
-            (setq buffer-read-only prev-clock-buff-read-only))))))
+        (if prev-org-clock-buff
+            (with-current-buffer prev-org-clock-buff
+              (setq buffer-read-only prev-clock-buff-read-only)))))))
 ;; Collect and return task matching to CONTEXT:2 ends here
 
 ;; Clock-into one of associated tasks
@@ -369,14 +371,10 @@
              (org-context-clock-markers-associated-to-context context)))
            (selected-clock ))
       (if matched-clocks
-          (condition-case e
-              (progn
-                (org-context-clock-clockin-marker
-                 (if (> (length matched-clocks) 1)
-                     (sacha/helm-select-clock matched-clocks)
-                     (org-context-clock-clockin-marker (car matched-clocks))))
-                t)
-              (quit nil))
+          (org-context-clock-clockin-marker
+           (if (> (length matched-clocks) 1)
+               (sacha/helm-select-clock matched-clocks)
+               (org-context-clock-clockin-marker (car matched-clocks))))
           (progn
             (setq *org-context-clock-update-current-context-msg* "null clock")
             (org-context-clock-message 6
@@ -508,8 +506,7 @@ pointing to it."
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:5]]
 (defun sacha/helm-select-clock (clocks)
   (message "sacha marker %s" (car clocks))
-  ;; (setq sacha/helm-org-refile-locations tbl)
-  (progn
+  (condition-case err
     (helm
      (list
       (helm-build-sync-source "Select matching clock"
@@ -521,8 +518,8 @@ pointing to it."
       ;;   :action (helm-make-actions
       ;;            "Create task"
       ;;            'sacha/helm-org-create-task))
-      ))))
-
+      ))
+    (quit nil)))
 
 (defun sacha/helm-clock-action (clocks clockin-fn)
   (message "sacha marker %s" (car clocks))

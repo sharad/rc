@@ -50,7 +50,18 @@
 
 (unless (functionp 'directory-files-recursively)
   (defun directory-files-recursively (directory regexp &optional include-directories)
-    "Return all files under DIRECTORY whose names match REGEXP. This function searches the specified directory and its sub-directories, recursively, for files whose basenames (i.e., without the leading directories) match the specified regexp, and returns a list of the absolute file names of the matching files (see absolute file names). The file names are returned in depth-first order, meaning that files in some sub-directory are returned before the files in its parent directory. In addition, matching files found in each subdirectory are sorted alphabetically by their basenames. By default, directories whose names match regexp are omitted from the list, but if the optional argument INCLUDE-DIRECTORIES is non-nil, they are included"
+    "Return all files under DIRECTORY whose names match REGEXP.
+This function searches the specified directory and its
+sub-directories, recursively, for files whose basenames (i.e.,
+without the leading directories) match the specified regexp, and
+returns a list of the absolute file names of the matching
+files (see absolute file names). The file names are returned in
+depth-first order, meaning that files in some sub-directory are
+returned before the files in its parent directory. In addition,
+matching files found in each subdirectory are sorted
+alphabetically by their basenames. By default, directories whose
+names match regexp are omitted from the list, but if the optional
+argument INCLUDE-DIRECTORIES is non-nil, they are included"
     (let* ((files-list '())
            (current-directory-list
             (directory-files directory t)))
@@ -201,20 +212,15 @@
                (format "Do you want to make package of %s from %s: "
                        pkg-name
                        dir-of-current-file)))
-      ;; add org-tangel-file here
+      ;; add org-tangle-file here
       (let ((default-directory dir-of-current-file))
         (dolist (org-file (directory-files dir-of-current-file t "'\*\.org$"))
           (org-babel-tangle-file org-file)))
       (copy-directory dir-of-current-file pkg-dir nil t t)
       ;; delete unnecessary files
       (let ((default-directory pkg-dir))
-        (dolist (del-file (directory-files pkg-dir t "'\*~$\\|'RCS$"))
+        (dolist (del-file (directory-files-recursively pkg-dir "'\*~$\\|'RCS$"))
           (delete-file del-file)))
-
-      ;; TODO remove unwanted files
-
-      (dolist (f (directory-files-recursively pkg-dir "~\\'"))
-        (delete-file f))
 
       (if (file-directory-p package-source-path)
           (unless (string-match-p
