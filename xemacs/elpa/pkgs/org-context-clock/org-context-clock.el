@@ -335,7 +335,7 @@
          (marker-buffer marker))
     (let ((org-log-note-clock-out nil)
           (prev-org-clock-buff (marker-buffer org-clock-marker)))
-      (message "clocking in %s" marker)
+      (org-context-clock-debug :debug "clocking in %s" marker)
       (let ((prev-clock-buff-read-only
              (if prev-org-clock-buff
                  (with-current-buffer (marker-buffer org-clock-marker)
@@ -371,10 +371,14 @@
              (org-context-clock-markers-associated-to-context context)))
            (selected-clock ))
       (if matched-clocks
-          (org-context-clock-clockin-marker
-           (if (> (length matched-clocks) 1)
-               (sacha/helm-select-clock matched-clocks)
-               (org-context-clock-clockin-marker (car matched-clocks))))
+          (let ((sel-clock (if (> (length matched-clocks) 1)
+                               (sacha/helm-select-clock-timed matched-clocks)
+                               (org-context-clock-clockin-marker (car matched-clocks)))))
+            (when (and
+                   sel-clock
+                   (markerp sel-clock)
+                   (marker-buffer sel-clock))
+              (org-context-clock-clockin-marker sel-clock)))
           (progn
             (setq *org-context-clock-update-current-context-msg* "null clock")
             (org-context-clock-message 6
@@ -505,21 +509,24 @@ pointing to it."
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:5]]
 (defun sacha/helm-select-clock (clocks)
-  (message "sacha marker %s" (car clocks))
-  (condition-case err
-    (helm
-     (list
-      (helm-build-sync-source "Select matching clock"
-        :candidates (mapcar 'sacha-org-context-clock-selection-line clocks)
-        :action (list ;; (cons "Select" 'identity)
-                      (cons "Clock in and track" #'identity))
-        :history 'org-refile-history)
-      ;; (helm-build-dummy-source "Create task"
-      ;;   :action (helm-make-actions
-      ;;            "Create task"
-      ;;            'sacha/helm-org-create-task))
-      ))
-    (quit nil)))
+  (org-context-clock-debug :debug "sacha marker %s" (car clocks))
+  (helm
+   (list
+    (helm-build-sync-source "Select matching clock"
+      :candidates (mapcar 'sacha-org-context-clock-selection-line clocks)
+      :action (list ;; (cons "Select" 'identity)
+               (cons "Clock in and track" #'identity))
+      :history 'org-refile-history)
+    ;; (helm-build-dummy-source "Create task"
+    ;;   :action (helm-make-actions
+    ;;            "Create task"
+    ;;            'sacha/helm-org-create-task))
+    )))
+
+(defun sacha/helm-select-clock-timed (clocks)
+  (helm-timed (+ 7 (1+ *org-context-clock-task-current-context-time-interval*))
+    (message "running sacha/helm-select-clock")
+    (sacha/helm-select-clock clocks)))
 
 (defun sacha/helm-clock-action (clocks clockin-fn)
   (message "sacha marker %s" (car clocks))

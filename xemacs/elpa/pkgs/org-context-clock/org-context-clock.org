@@ -549,7 +549,7 @@ pointing to it."
       )))
 
   (defun sacha/helm-select-clock-timed (clocks)
-    (helm-timed (+ 7 (1+ *org-context-clock-task-current-context-time-interval*))
+    (helm-timed (+ 10 (1+ *org-context-clock-task-current-context-time-interval*))
       (message "running sacha/helm-select-clock")
       (sacha/helm-select-clock clocks)))
 

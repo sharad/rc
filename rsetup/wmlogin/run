@@ -327,5 +327,10 @@ fi
 if [ "x" != "x$EMACS_SERVER_NAME" ]
 then
     echo Trying to run emacsclient
-    ( sleep 30s; emacsclient -d :0 -nc -f ~/.emacs.d/server/$EMACS_SERVER_NAME -e "(progn (message \"Default\")(display-about-screen))" ) &!
+    if pgrep stumpwm >& /dev/null && whence -p stumpish >& /dev/null
+    then
+        ( sleep 30s; stumpish emacsclient ) &!
+    else
+        ( sleep 30s; emacsclient -d :0 -nc -f ~/.emacs.d/server/$EMACS_SERVER_NAME -e "(progn (message \"Default\"))" ) &!
+    fi
 fi
