@@ -97,7 +97,7 @@
                                              (set-window-configuration ,temp-win-config)
                                              (setq ,temp-win-config nil)))))
        (lotus-with-new-win ,newwin
-         (lexical-let* ((,timer (run-with-idle-timer ,timeout nil
+         (lexical-let* ((,timer (run-with-idle-timer ,(+ (float-time (current-idle-time)) timeout) nil
                                                      ,cleanupfn-newwin
                                                      ,newwin
                                                      ,cleanupfn-local)))

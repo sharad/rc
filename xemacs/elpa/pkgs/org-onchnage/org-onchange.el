@@ -223,7 +223,7 @@
         (progn                            ;could schedule in little further.
           (message "add-log-note-background: minibuffer already active quitting")
           (message nil))
-      (let ((win-timeout (or win-timeout 17))
+      (let ((win-timeout (or win-timeout 7))
             (cleanupfn-local nil))
         (setq org-log-note-window-configuration (current-window-configuration))
         (lotus-with-timed-new-win
@@ -242,7 +242,7 @@
   If this is about to TODO state change, the new state is expected in STATE.
   HOW is an indicator what kind of note should be created.
   EXTRA is additional text that will be inserted into the notes buffer."
-    (let ((win-timeout (or win-timeout 17)))
+    (let ((win-timeout (or win-timeout 7)))
       (move-marker org-log-note-marker (point))
       (setq org-log-note-purpose purpose
             org-log-note-state state
@@ -257,7 +257,7 @@
   ;;;##autoload
   (defun org-clock-lotus-log-note-current-clock-with-timed-new-win (win-timeout &optional fail-quietly)
     (interactive)
-    (let ((win-timeout  (or win-timeout  17)))
+    (let ((win-timeout  (or win-timeout  7)))
       (when (org-clocking-p)
         (move-marker org-log-note-return-to (point))
         (org-clock-lotus-with-current-clock
@@ -300,7 +300,7 @@
 (make-variable-buffer-local 'lotus-last-buffer-undo-tree-count)
 
 (defun lotus-action-on-buffer-undo-tree-change (action &optional minimal-changes win-timeout)
-  (let ((win-timeout (or win-timeout 17))
+  (let ((win-timeout (or win-timeout 7))
         (chgcount (- (lotus-buffer-changes-count) lotus-last-buffer-undo-tree-count)))
     (if (>= chgcount minimal-changes)
         (if (funcall action win-timeout)
@@ -324,7 +324,7 @@ will return point to the current position."
   ;; (interactive "P")
   ;; (unless (buffer-modified-p)
   ;;   (error "Buffer not modified"))
-  (let ((win-timeout (or win-timeout 17)))
+  (let ((win-timeout (or win-timeout 7)))
     (when (eq buffer-undo-list t)
       (error "No undo information in this buffer"))
     ;; (when mark-point (push-mark))
@@ -363,7 +363,7 @@ will return point to the current position."
         (t )))))
 (defun org-clock-lotus-log-note-on-change (&optional win-timeout)
   ;; (when (or t (eq buffer (current-buffer)))
-  (let ((win-timeout (or win-timeout 17)))
+  (let ((win-timeout (or win-timeout 7)))
     (if (and
          (consp buffer-undo-list)
          (car buffer-undo-list))

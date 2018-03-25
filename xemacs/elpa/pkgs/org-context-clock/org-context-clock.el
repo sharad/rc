@@ -385,7 +385,7 @@
              "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
              context)
             (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
-              (org-context-clock-add-context-to-org-heading-when-idle context 17)
+              (org-context-clock-add-context-to-org-heading-when-idle context 7)
               nil))))))
 ;; Clock-into one of associated tasks:1 ends here
 
@@ -524,7 +524,7 @@ pointing to it."
     )))
 
 (defun sacha/helm-select-clock-timed (clocks)
-  (helm-timed (+ 7 (1+ *org-context-clock-task-current-context-time-interval*))
+  (helm-timed 7
     (message "running sacha/helm-select-clock")
     (sacha/helm-select-clock clocks)))
 

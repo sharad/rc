@@ -378,7 +378,7 @@ With prefix arg C-u, copy region instad of killing it."
                                       this-command))
                     (str-command     (helm-symbol-name current-command))
                     (buf-name        (format "*helm-mode-%s*" str-command))
-                    (timer (run-with-idle-timer ,timeout nil
+                    (timer (run-with-idle-timer ,(+ (float-time (current-idle-time)) timeout) nil
                                                 #'(lambda (buffname)
                                                     (let* ((buff (or
                                                                   (get-buffer buffname)
@@ -414,7 +414,7 @@ With prefix arg C-u, copy region instad of killing it."
                                    this-command))
                  (str-command     (helm-symbol-name current-command))
                  (buf-name        (format "*helm-mode-%s*" str-command))
-                 (timer (run-with-idle-timer timeout nil
+                 (timer (run-with-idle-timer (+ (float-time (current-idle-time)) timeout) nil
                                              #'(lambda (buffname)
                                                  (let* ((buff (get-buffer buffname))
                                                         (w (if buff (get-buffer-window buff))))

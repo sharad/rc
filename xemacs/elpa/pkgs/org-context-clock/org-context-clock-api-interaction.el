@@ -60,7 +60,7 @@
 
 (defun org-context-clock-test (context timeout)
   (interactive '(nil nil))
-  (lexical-let* ((timeout (or timeout 17))
+  (lexical-let* ((timeout (or timeout 7))
                  (context (or context (org-context-clock-build-context)))
                  (buff (plist-get context :buffer)))
     (message "test %s" timeout)))
@@ -106,7 +106,7 @@
       (progn
         (message "add-context-to-org-heading: minibuffer already active quitting")
         (message nil))
-    (lexical-let* ((timeout (or timeout 17))
+    (lexical-let* ((timeout (or timeout 7))
                    (context (or context (org-context-clock-build-context)))
                    (buff (plist-get context :buffer)))
       (if (and
@@ -179,10 +179,12 @@
 ;;;###autoload
 (defun org-context-clock-add-context-to-org-heading-when-idle (context timeout)
   (org-context-clock-message 6 "called add-context-to-org-heading-when-idle")
-  (run-with-idle-timer-nonobtrusive-simple
-   7 nil
-   #'(lambda (args)
-       (apply 'org-context-clock-add-context-to-org-heading args)) (list context timeout)))
+  (org-context-clock-add-context-to-org-heading context timeout)
+  ;; (run-with-idle-timer-nonobtrusive-simple
+  ;;  7 nil
+  ;;  #'(lambda (args)
+  ;;      (apply 'org-context-clock-add-context-to-org-heading args)) (list context timeout))
+  )
 
 (provide 'org-context-clock-api-interaction)
 ;;; org-context-clock-api-interaction.el ends here
