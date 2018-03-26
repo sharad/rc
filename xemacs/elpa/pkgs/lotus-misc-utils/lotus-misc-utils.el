@@ -29,7 +29,7 @@
 (defun run-with-idle-plus-timer (secs repeat function &rest args)
   (let* ((idle-time (current-idle-time))
          (secs (+ (if idle-time (float-time idle-time) 0) secs)))
-    (message "will run fun %s after %s + %d" function idle-time secs)
+    ;; (message "will run fun %s after %s + %d" function idle-time secs)
     (apply #'run-with-idle-timer secs repeat function args)))
 
 (defun lotus-new-lower-win-size ()
