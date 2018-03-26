@@ -318,13 +318,14 @@ function delicious_post_I(I) {
 function delicious_toread(buffer, window, minibuffer) {
     var undf;
     return delicious_post_internal(buffer, window, minibuffer,
-                                   undf, // url//
-                                   "",     // description//
-                                   "",       // tags//
-                                   "",         // extended//
-                                   "yes",        // shared//
-                                   "yes");          //  toread//
+                                   undf,    //  url//
+                                   " ",     //  description//
+                                   " ",     //  tags//
+                                   " ",     //  extended//
+                                   "yes",   //  shared//
+                                   "yes");  //  toread//
 }
+
 
 function delicious_toread_I(I) {
     return delicious_toread( I.buffer, I.window, I.minibuffer );

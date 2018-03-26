@@ -26,6 +26,7 @@
 
 (require 'timer)
 ;; timer
+
 (defun run-with-idle-plus-timer (secs repeat function &rest args)
   (let* ((idle-time (current-idle-time))
          (secs (+ (if idle-time (float-time idle-time) 0) secs)))
