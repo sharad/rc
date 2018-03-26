@@ -159,7 +159,7 @@
     (move-marker org-log-note-marker nil)
     (org-clock-out switch-to-state fail-quietly at-time)
     (remove-hook 'post-command-hook 'org-add-log-note)
-    (org-insert-log-note note)))
+    (org-insert-log-note org-clock-marker note)))
 ;; Clock out with NOTE:1 ends here
 
 ;; Org add log note with-timed-new-win

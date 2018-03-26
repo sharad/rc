@@ -23,6 +23,15 @@
 ;;
 
 ;;; Code:
+
+(require 'timer)
+;; timer
+(defun run-with-idle-plus-timer (secs repeat function &rest args)
+  (let* ((idle-time (current-idle-time))
+         (secs (+ (if idle-time (float-time idle-time) 0) secs)))
+    (message "will run fun %s after %s + %d" function idle-time secs)
+    (apply #'run-with-idle-timer secs repeat function args)))
+
 (defun lotus-new-lower-win-size ()
   ;; TODO: improve it.
   ;; If the mode line might interfere with the calculator
@@ -97,7 +106,7 @@
                                              (set-window-configuration ,temp-win-config)
                                              (setq ,temp-win-config nil)))))
        (lotus-with-new-win ,newwin
-         (lexical-let* ((,timer (run-with-idle-timer (+ (float-time (current-idle-time)) ,timeout)
+         (lexical-let* ((,timer (run-with-idle-plus-timer ,timeout
                                                      nil
                                                      ,cleanupfn-newwin
                                                      ,newwin
