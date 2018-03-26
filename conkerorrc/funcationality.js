@@ -157,8 +157,11 @@ var delicious_auth_token  = 'auth_token=' + delicious_api_token;
 
 // https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  '&url={URL} get all tags for old url
 
+// https://pinboard.in/api/
+// toread	yes/no	Marks the bookmark as unread. Default is "no"
 var conkeror_debug = 0;
 var delicious_shared = null;
+var delicious_toread = null;
 
 interactive("delicious-shared-set",
             "bookmark setting delicious shared.",
@@ -173,8 +176,21 @@ interactive("delicious-shared-set",
                  "yes" : "no");
             });
 
+interactive("delicious-toread-set",
+            "bookmark setting delicious toread.",
+            function (I)
+            {
+                delicious_toread =
+                    (("y" ==
+                      (yield I.minibuffer.read_single_character_option(
+                          $prompt = "Toread? (y/n)",
+                          $initial_value = "y",
+                          $options = ["y", "n"]))) ?
+                     "yes" : "no");
+            });
+
 function  delicious_post_internal(buffer, window, minibuffer,
-                                  post_url, post_description, post_tags, post_extended, post_shared) {
+                                  post_url, post_description, post_tags, post_extended, post_shared, post_toread) {
     check_buffer(buffer, content_buffer);
     var domParser=Components.classes["@mozilla.org/xmlextras/domparser;1"].createInstance(Components.interfaces.nsIDOMParser);
 
@@ -207,6 +223,11 @@ function  delicious_post_internal(buffer, window, minibuffer,
 
     // {{ initial value
     var tsendurl   = 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/get?' + delicious_auth_token +  '&url=' + encodeURIComponent(buffer.display_uri_string.replace(/[^\x00-\x7F]/g, ''));
+
+    if (conkeror_debug > 7)
+        window.alert("url for inquiring existing bm:\n" + tsendurl);
+
+
     var tagcontent = (yield send_http_request(load_spec({uri: tsendurl})));
     var tc         = domParser.parseFromString(tagcontent.responseText, "text/xml");
     var post       = tc.getElementsByTagName('post');
@@ -220,9 +241,16 @@ function  delicious_post_internal(buffer, window, minibuffer,
         var desc = (buffer.title == "" ? buffer.display_uri_string : buffer.title).replace(/[^\x00-\x7F]/g, '');
     }
 
+    // correct it
     var shared = null;
     if (post.length > 0 && post[0].attributes[5].textContent.length > 0) {
         shared = post[0].attributes[5].textContent;
+    }
+
+    // correct it
+    var toread = null;
+    if (post.length > 0 && post[0].attributes[6].textContent.length > 0) {
+        toread = post[0].attributes[6].textContent;
     }
     // }}
 
@@ -257,6 +285,14 @@ function  delicious_post_internal(buffer, window, minibuffer,
                                                                                              $options = ["y", "n"]))) ?
                                                    "yes" : "no")  : delicious_shared );
 
+    var post_toread =
+        post_toread ?
+        post_toread :
+        (delicious_toread == null ? (("y" == (yield minibuffer.read_single_character_option( $prompt = ("To Read Later? (y/n)" +
+                                                                                                        (toread ? (" [" + toread + "]") : "")),
+                                                                                             $options = ["y", "n"]))) ?
+                                     "yes" : "no")  : delicious_toread );
+
     var sendurl =
         'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/add?' + delicious_auth_token +
         '&url='+ post_url +
@@ -267,12 +303,31 @@ function  delicious_post_internal(buffer, window, minibuffer,
         '&shared=' + post_shared;
 
     if (conkeror_debug > 7)
-        window.alert(sendurl);
+        window.alert("url for adding bm:\n" + sendurl);
 
     var content = yield send_http_request(load_spec({uri: sendurl}));
     window.minibuffer.message(content.responseText);
     if (typeof(debug_level) != "undefined" && debug_level)
         window.minibuffer.message(sendurl);
+}
+
+function delicious_post_I(I) {
+    return delicious_post_internal( I.buffer, I.window, I.minibuffer );
+}
+
+function delicious_toread(buffer, window, minibuffer) {
+    var undf;
+    return delicious_post_internal(buffer, window, minibuffer,
+                                   undf, // url//
+                                   "",     // description//
+                                   "",       // tags//
+                                   "",         // extended//
+                                   "yes",        // shared//
+                                   "yes");          //  toread//
+}
+
+function delicious_toread_I(I) {
+    return delicious_toread( I.buffer, I.window, I.minibuffer );
 }
 
 function delicious_post_all(buffer, post_tags) {
@@ -314,10 +369,6 @@ interactive("delicious-post-all",
             "bookmark the page via delicious",
             function(I){ return delicious_post_all( I.buffer, "later session readlater" ); });
 
-function delicious_post_I(I) {
-    return delicious_post_internal( I.buffer, I.window, I.minibuffer );
-}
-
 
 interactive("delicious-post-sel",
             "bookmark the page via delicious",
@@ -344,7 +395,7 @@ interactive("delicious-post-sel",
                 // var sendurl = 'https://' + delicious_api_server + '/v2/posts/add?' + delicious_auth_token + '&url='+
                 'https://' + delicious_api_server + '/' + delicious_api_version + '/posts/add?' + delicious_auth_token + '&url='                           +
                 encodeURIComponent(
-                  (yield                    I.minibuffer.read(
+                  (yield I.minibuffer.read(
                      $prompt = "url (required): ",
                      $initial_value =
                        I.buffer.top_frame.getSelection().toString()))) +
@@ -374,11 +425,13 @@ interactive("delicious-post-sel",
               I.window.minibuffer.message(content.responseText);
             });
 
-
-
 interactive("delicious-post",
             "bookmark the page via delicious",
             delicious_post_I);
+
+interactive("delicious-toread",
+            "toread the page via delicious",
+            delicious_toread_I);
 
 interactive("delicious-post-link",
             "bookmark the link via delicious",

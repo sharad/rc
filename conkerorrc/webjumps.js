@@ -239,7 +239,8 @@ define_webjump("search/del",
 
 
 define_webjump("pin",
-               "http://pinboard.in/u:sharad/t:%s");
+               "http://pinboard.in/u:sharad/t:%s",
+               $alternative = "http://pinboard.in/u:sharad");
 
 
 // webjumps -sharad
