@@ -514,6 +514,10 @@ using three `C-u' prefix arguments."
 ;;;}}}
 
 ;;;{{{ Emacs tasks https://emacs.stackexchange.com/questions/29128/programmatically-setting-an-org-mode-heading
+;; https://emacs.stackexchange.com/questions/21713/how-to-get-property-values-from-org-file-headers
+
+;; BUG org-global-get-property and org-global-put-property are not defined.
+
 (progn
 (defvar *lotus-org-unnamed-task-file*        "~/Unnamed.org")
 (defvar *lotus-org-unnamed-parent-task-name* "Unnamed tasks")

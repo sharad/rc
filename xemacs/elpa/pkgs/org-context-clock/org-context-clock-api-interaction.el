@@ -37,6 +37,8 @@
 
 (require 'org-context-clock-assoc-common)
 
+;; BUG `org-get-property' is not known to be defined.
+
 (defun org-context-clock-get-property (prop-key)
   (org-get-property prop-key))
 
@@ -45,7 +47,7 @@
                     (if value
                         value
                         (funcall
-                         (org-context-clock-key-fun key :getter)
+                         (org-context-clock-key-fun prop-key :getter)
                          nil context args)))
   t)
 
@@ -100,7 +102,7 @@
 
   ;; TODO: make helm conditional when it is used than only it should be handled.
 
-  (interactive '(nil nil))
+  (interactive '(nil 7))
 
   (lotus-with-no-active-minibuffer
       (progn

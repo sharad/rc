@@ -378,7 +378,7 @@ With prefix arg C-u, copy region instad of killing it."
                                       this-command))
                     (str-command     (helm-symbol-name current-command))
                     (buf-name        (format "*helm-mode-%s*" str-command))
-                    (timer (run-with-idle-timer ,(+ (float-time (current-idle-time)) timeout) nil
+                    (timer (run-with-idle-timer (+ (float-time (current-idle-time)) ,timeout) nil
                                                 #'(lambda (buffname)
                                                     (let* ((buff (or
                                                                   (get-buffer buffname)
@@ -565,112 +565,112 @@ With prefix arg C-u, copy region instad of killing it."
   ;; (progn ;; "org log note"
 (setq org-log-into-drawer "LOGBOOK")
 
-(defun org-insert-log-note (txt)
-  "Finish taking a log note, and insert it to where it belongs."
-  ;; (setq org-log-note-purpose purpose
-  ;;       org-log-note-state state
-  ;;       org-log-note-previous-state prev-state
-  ;;       org-log-note-how how
-  ;;       org-log-note-extra extra
-  ;;       org-log-note-effective-time (org-current-effective-time))
-  (unless (> (marker-position-nonil org-log-note-return-to) 0)
-    (move-marker org-log-note-return-to (point)))
-  (unless (> (marker-position-nonil org-log-note-marker) 0)
-    (move-marker org-log-note-marker (point)))
-  ;; Preserve position even if a property drawer is inserted in the
-  ;; process.
-  (set-marker-insertion-type org-log-note-marker t)
-  (let ((txt txt)
-        (org-log-note-purpose 'clock-out)
-        (org-log-note-effective-time (org-current-effective-time)))
-    ;; (kill-buffer (current-buffer))
-    (let ((note (cdr (assq org-log-note-purpose org-log-note-headings)))
-          lines)
-      ;; (while (string-match "\\`# .*\n[ \t\n]*" txt)
-      ;;   (setq txt (replace-match "" t t txt)))
-      ;; (if (string-match "\\s-+\\'" txt)
-      ;;     (setq txt (replace-match "" t t txt)))
-      (setq lines (org-split-string txt "\n"))
-      (when (and note (string-match "\\S-" note))
-        (setq note
-              (org-replace-escapes
-               note
-               (list (cons "%u" (user-login-name))
-                     (cons "%U" user-full-name)
-                     (cons "%t" (format-time-string
-                                 (org-time-stamp-format 'long 'inactive)
-                                 org-log-note-effective-time))
-                     (cons "%T" (format-time-string
-                                 (org-time-stamp-format 'long nil)
-                                 org-log-note-effective-time))
-                     (cons "%d" (format-time-string
-                                 (org-time-stamp-format nil 'inactive)
-                                 org-log-note-effective-time))
-                     (cons "%D" (format-time-string
-                                 (org-time-stamp-format nil nil)
-                                 org-log-note-effective-time))
-                     (cons "%s" (cond
-                                  ((not org-log-note-state) "")
-                                  ((org-string-match-p org-ts-regexp
-                                                       org-log-note-state)
-                                   (format "\"[%s]\""
-                                           (substring org-log-note-state 1 -1)))
-                                  (t (format "\"%s\"" org-log-note-state))))
-                     (cons "%S"
-                           (cond
-                             ((not org-log-note-previous-state) "")
-                             ((org-string-match-p org-ts-regexp
-                                                  org-log-note-previous-state)
-                              (format "\"[%s]\""
-                                      (substring
-                                       org-log-note-previous-state 1 -1)))
-                             (t (format "\"%s\""
-                                        org-log-note-previous-state)))))))
-        (when lines (setq note (concat note " \\\\")))
-        (push note lines))
-      (when (or current-prefix-arg org-note-abort)
-        (when (org-log-into-drawer)
-          (org-remove-empty-drawer-at org-log-note-marker))
-        (setq lines nil))
-      (when lines
-        (with-current-buffer (marker-buffer org-log-note-marker)
-          (org-with-wide-buffer
-           (goto-char org-log-note-marker)
-           (move-marker org-log-note-marker nil)
-           ;; Make sure point is at the beginning of an empty line.
-           (cond ((not (bolp)) (let ((inhibit-read-only t)) (insert "\n")))
-                 ((looking-at "[ \t]*\\S-") (save-excursion (insert "\n"))))
-           ;; In an existing list, add a new item at the top level.
-           ;; Otherwise, indent line like a regular one.
-           (let ((itemp (org-in-item-p)))
-             (if itemp
-                 (indent-line-to
-                  (let ((struct (save-excursion
-                                  (goto-char itemp) (org-list-struct))))
-                    (org-list-get-ind (org-list-get-top-point struct) struct)))
-                 (org-indent-line)))
-           (insert (org-list-bullet-string "-") (pop lines))
-           (let ((ind (org-list-item-body-column (line-beginning-position))))
-             (dolist (line lines)
-               (insert "\n")
-               (indent-line-to ind)
-               (insert line)))
-           (message "Note stored")
-           (org-back-to-heading t)
-           (org-cycle-hide-drawers 'children))
-          ;; Fix `buffer-undo-list' when `org-store-log-note' is called
-          ;; from within `org-add-log-note' because `buffer-undo-list'
-          ;; is then modified outside of `org-with-remote-undo'.
-          (when (eq this-command 'org-agenda-todo)
-            (setcdr buffer-undo-list (cddr buffer-undo-list)))))))
-  ;; Don't add undo information when called from `org-agenda-todo'
-  (let ((buffer-undo-list (eq this-command 'org-agenda-todo)))
-    (set-window-configuration org-log-note-window-configuration)
-    (with-current-buffer (marker-buffer org-log-note-return-to)
-      (goto-char org-log-note-return-to))
-    (move-marker org-log-note-return-to nil)
-    (move-marker org-log-note-marker nil)
-    (and org-log-post-message (message "%s" org-log-post-message))))
+;; (defun org-insert-log-note (txt)
+;;   "Finish taking a log note, and insert it to where it belongs."
+;;   ;; (setq org-log-note-purpose purpose
+;;   ;;       org-log-note-state state
+;;   ;;       org-log-note-previous-state prev-state
+;;   ;;       org-log-note-how how
+;;   ;;       org-log-note-extra extra
+;;   ;;       org-log-note-effective-time (org-current-effective-time))
+;;   (unless (> (marker-position-nonil org-log-note-return-to) 0)
+;;     (move-marker org-log-note-return-to (point)))
+;;   (unless (> (marker-position-nonil org-log-note-marker) 0)
+;;     (move-marker org-log-note-marker (point)))
+;;   ;; Preserve position even if a property drawer is inserted in the
+;;   ;; process.
+;;   (set-marker-insertion-type org-log-note-marker t)
+;;   (let ((txt txt)
+;;         (org-log-note-purpose 'clock-out)
+;;         (org-log-note-effective-time (org-current-effective-time)))
+;;     ;; (kill-buffer (current-buffer))
+;;     (let ((note (cdr (assq org-log-note-purpose org-log-note-headings)))
+;;           lines)
+;;       ;; (while (string-match "\\`# .*\n[ \t\n]*" txt)
+;;       ;;   (setq txt (replace-match "" t t txt)))
+;;       ;; (if (string-match "\\s-+\\'" txt)
+;;       ;;     (setq txt (replace-match "" t t txt)))
+;;       (setq lines (org-split-string txt "\n"))
+;;       (when (and note (string-match "\\S-" note))
+;;         (setq note
+;;               (org-replace-escapes
+;;                note
+;;                (list (cons "%u" (user-login-name))
+;;                      (cons "%U" user-full-name)
+;;                      (cons "%t" (format-time-string
+;;                                  (org-time-stamp-format 'long 'inactive)
+;;                                  org-log-note-effective-time))
+;;                      (cons "%T" (format-time-string
+;;                                  (org-time-stamp-format 'long nil)
+;;                                  org-log-note-effective-time))
+;;                      (cons "%d" (format-time-string
+;;                                  (org-time-stamp-format nil 'inactive)
+;;                                  org-log-note-effective-time))
+;;                      (cons "%D" (format-time-string
+;;                                  (org-time-stamp-format nil nil)
+;;                                  org-log-note-effective-time))
+;;                      (cons "%s" (cond
+;;                                   ((not org-log-note-state) "")
+;;                                   ((org-string-match-p org-ts-regexp
+;;                                                        org-log-note-state)
+;;                                    (format "\"[%s]\""
+;;                                            (substring org-log-note-state 1 -1)))
+;;                                   (t (format "\"%s\"" org-log-note-state))))
+;;                      (cons "%S"
+;;                            (cond
+;;                              ((not org-log-note-previous-state) "")
+;;                              ((org-string-match-p org-ts-regexp
+;;                                                   org-log-note-previous-state)
+;;                               (format "\"[%s]\""
+;;                                       (substring
+;;                                        org-log-note-previous-state 1 -1)))
+;;                              (t (format "\"%s\""
+;;                                         org-log-note-previous-state)))))))
+;;         (when lines (setq note (concat note " \\\\")))
+;;         (push note lines))
+;;       (when (or current-prefix-arg org-note-abort)
+;;         (when (org-log-into-drawer)
+;;           (org-remove-empty-drawer-at org-log-note-marker))
+;;         (setq lines nil))
+;;       (when lines
+;;         (with-current-buffer (marker-buffer org-log-note-marker)
+;;           (org-with-wide-buffer
+;;            (goto-char org-log-note-marker)
+;;            (move-marker org-log-note-marker nil)
+;;            ;; Make sure point is at the beginning of an empty line.
+;;            (cond ((not (bolp)) (let ((inhibit-read-only t)) (insert "\n")))
+;;                  ((looking-at "[ \t]*\\S-") (save-excursion (insert "\n"))))
+;;            ;; In an existing list, add a new item at the top level.
+;;            ;; Otherwise, indent line like a regular one.
+;;            (let ((itemp (org-in-item-p)))
+;;              (if itemp
+;;                  (indent-line-to
+;;                   (let ((struct (save-excursion
+;;                                   (goto-char itemp) (org-list-struct))))
+;;                     (org-list-get-ind (org-list-get-top-point struct) struct)))
+;;                  (org-indent-line)))
+;;            (insert (org-list-bullet-string "-") (pop lines))
+;;            (let ((ind (org-list-item-body-column (line-beginning-position))))
+;;              (dolist (line lines)
+;;                (insert "\n")
+;;                (indent-line-to ind)
+;;                (insert line)))
+;;            (message "Note stored")
+;;            (org-back-to-heading t)
+;;            (org-cycle-hide-drawers 'children))
+;;           ;; Fix `buffer-undo-list' when `org-store-log-note' is called
+;;           ;; from within `org-add-log-note' because `buffer-undo-list'
+;;           ;; is then modified outside of `org-with-remote-undo'.
+;;           (when (eq this-command 'org-agenda-todo)
+;;             (setcdr buffer-undo-list (cddr buffer-undo-list)))))))
+;;   ;; Don't add undo information when called from `org-agenda-todo'
+;;   (let ((buffer-undo-list (eq this-command 'org-agenda-todo)))
+;;     (set-window-configuration org-log-note-window-configuration)
+;;     (with-current-buffer (marker-buffer org-log-note-return-to)
+;;       (goto-char org-log-note-return-to))
+;;     (move-marker org-log-note-return-to nil)
+;;     (move-marker org-log-note-marker nil)
+;;     (and org-log-post-message (message "%s" org-log-post-message))))
 ;; )
 
 ;; (org-miniwin-file-loc-with-refile nil nil)
