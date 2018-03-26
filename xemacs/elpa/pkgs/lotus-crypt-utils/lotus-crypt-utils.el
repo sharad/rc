@@ -27,6 +27,7 @@
 
 ;;; Code:
 
+(require 'epg)
 (require 'epa)
 (require 'epa-file)
 
