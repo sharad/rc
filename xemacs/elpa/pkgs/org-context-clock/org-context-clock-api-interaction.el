@@ -26,6 +26,7 @@
 
 ;; "Interactive utitlity API's for adding root subtree etc"
 
+(require 'org)
 
 (require 'timer-utils-lotus)
 (require 'org-misc-utils-lotus)
@@ -38,6 +39,9 @@
 (require 'org-context-clock-assoc-common)
 
 ;; BUG `org-get-property' is not known to be defined.
+
+(defun org-get-property (prop-key)
+  (org-entry-get nil prop-key))
 
 (defun org-context-clock-get-property (prop-key)
   (org-get-property prop-key))
