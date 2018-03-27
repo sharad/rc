@@ -77,9 +77,20 @@
                 (context context))
     (remove-if-not
      #'(lambda (task)
-         (funcall org-context-clock-api-task-associated-to-context-p task context))
+         (> (funcall org-context-clock-api-task-associated-to-context-p task context) 0))
      tasks)))
 (org-context-clock-access-api-set :list :tasks  'org-context-clock-list-matching-tasks)
+
+(defun org-context-clock-list-matching-ranktasks (context)
+  (lexical-let ((tasks (org-context-clock-entry-list-update-tasks))
+                (context context))
+    (remove-if-not #'(lambda (ranktask) (> (car ranktask) 0))
+                   (mapcar #'(lambda (task)
+                               (cons
+                                (funcall org-context-clock-api-task-associated-to-context-p task context)
+                                task))
+                           tasks))))
+(org-context-clock-access-api-set :list :ranktasks  'org-context-clock-list-matching-ranktasks)
 
 (provide 'org-context-clock-api-list)
 ;;; org-context-clock-api-list.el ends here

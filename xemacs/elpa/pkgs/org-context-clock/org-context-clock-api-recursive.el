@@ -255,5 +255,27 @@
       matched))
 (org-context-clock-access-api-set :recursive :tasks  'org-context-clock-recursive-matching-tasks)
 
+(defun org-context-clock-recursive-matching-ranktasks (context)
+  (let ((tasks (org-context-clock-task-recursive-update-tasks))
+        (matched '()))
+      (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
+      (org-context-clock-tree-mapc-tasks
+       #'(lambda (task args)
+           (let ((rank
+                  (funcall org-context-clock-api-task-associated-to-context-p task args)))
+             (unless rank (error "org-context-clock-entries-associated-to-context-by-keys[lambda]: rank is null"))
+             (when (> rank 0)
+               (push task (cons rank matched))
+               (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
+                        (org-context-clock-task-get-heading task)
+                        (length matched)))))
+       tasks
+       context)
+
+      (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys: AFTER matched %s[%d]" "matched" (length matched))
+
+      matched))
+(org-context-clock-access-api-set :recursive :ranktasks  'org-context-clock-recursive-matching-ranktasks)
+
 (provide 'org-context-clock-api-recursive)
 ;;; org-context-clock-api-recursive.el ends here

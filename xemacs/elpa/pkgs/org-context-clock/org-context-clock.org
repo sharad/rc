@@ -383,6 +383,7 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
 #+BEGIN_SRC  emacs-lisp
   ;;;###autoload
   (defun org-context-clock-task-run-associated-clock (context)
+    "only marker version"
     (interactive
      (list (org-context-clock-build-context)))
     (progn
@@ -408,6 +409,37 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
               (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
                 (org-context-clock-add-context-to-org-heading-when-idle context 7)
                 nil))))))
+
+
+
+    ;;;###autoload
+  (defun org-context-clock-ranktask-run-associated-clock (context)
+    "marker and ranked version"
+      (interactive
+       (list (org-context-clock-build-context)))
+      (progn
+        (let* ((matched-rankclocks
+                (remove-if-not
+                 #'(lambda (marker) (marker-buffer marker))
+                 (org-context-clock-rankmarkers-associated-to-context context)))
+               (selected-clock ))
+          (if matched-rankclocks
+              (let ((sel-clock (if (> (length matched-rankclocks) 1)
+                                   (cdr (sacha/helm-select-rankclock-timed matched-rankclocks))
+                                   (org-context-clock-clockin-marker (cdar matched-rankclocks)))))
+                (when (and
+                       sel-clock
+                       (markerp sel-clock)
+                       (marker-buffer sel-clock))
+                  (org-context-clock-clockin-marker sel-clock)))
+              (progn
+                (setq *org-context-clock-update-current-context-msg* "null clock")
+                (org-context-clock-message 6
+                 "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
+                 context)
+                (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
+                  (org-context-clock-add-context-to-org-heading-when-idle context 7)
+                  nil))))))
 #+END_SRC
 
 ** function to setup context clock timer

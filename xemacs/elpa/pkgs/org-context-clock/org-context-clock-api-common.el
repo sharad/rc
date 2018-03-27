@@ -171,11 +171,25 @@ inside loops."
 (defun org-context-clock-task-set-property (task property value)
   (plist-put task property value))
 
+(defun org-context-clock-tasks-associated-to-context (context)
+  (funcall org-context-clock-api-tasks-associated-to-context context))
+
 ;; (defun org-context-clock-markers-associated-to-context (context)
 (defun org-context-clock-markers-associated-to-context (context)
-  (mapcar '(lambda (e)
-            (org-context-clock-task-get-property e :task-clock-marker))
-          (funcall org-context-clock-api-tasks-associated-to-context context)))
+  (mapcar #'(lambda (e)
+              (org-context-clock-task-get-property e :task-clock-marker))
+          (org-context-clock-tasks-associated-to-context context)))
+
+(defun org-context-clock-ranktasks-associated-to-context (context)
+  (funcall org-context-clock-api-ranktasks-associated-to-context context))
+
+;; (defun org-context-clock-markers-associated-to-context (context)
+(defun org-context-clock-rankmarkers-associated-to-context (context)
+  (mapcar #'(lambda (e)
+              (cons
+               (car e)
+               (org-context-clock-task-get-property (cdr e) :task-clock-marker)))
+          (org-context-clock-ranktasks-associated-to-context context)))
 
 (progn                                  ;; general use function
 

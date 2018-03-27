@@ -35,7 +35,7 @@
        org-context-clock-task-associated-context-predicate-fns)))
 
 
-(org-context-clock-assoc-api-set :predicate :taskp   'org-context-clock-task-associated-to-context-by-predicate-p)
+(org-context-clock-assoc-api-set :predicate :taskp 'org-context-clock-task-associated-to-context-by-predicate-p)
 
 (provide 'org-context-clock-assoc-predicate)
 ;;; org-context-clock-assoc-predicate.el ends here
