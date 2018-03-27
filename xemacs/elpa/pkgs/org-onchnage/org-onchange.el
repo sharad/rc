@@ -7,10 +7,10 @@
   "Finish taking a log note, and insert it to where it belongs."
   (let* ((note-marker marker)
          (txt txt)
-         (note-purpose purpose)
+         (note-purpose (or purpose 'note))
          (effective-time (or effective-time (org-current-effective-time)))
-         (state (or state 'note))
-         (previous-state previous-state))
+         (note-state state)
+         (note-previous-state previous-state))
     (if (marker-buffer marker)
         (let ((note (cdr (assq note-purpose org-log-note-headings)))
               lines)
@@ -38,21 +38,21 @@
                                      (org-time-stamp-format nil nil)
                                      effective-time))
                          (cons "%s" (cond
-                                      ((not state) "")
-                                      ((string-match-p org-ts-regexp state)
+                                      ((not note-state) "")
+                                      ((string-match-p org-ts-regexp note-state)
                                        (format "\"[%s]\""
-                                               (substring state 1 -1)))
-                                      (t (format "\"%s\"" state))))
+                                               (substring note-state 1 -1)))
+                                      (t (format "\"%s\"" note-state))))
                          (cons "%S"
                                (cond
-                                 ((not org-log-note-previous-state) "")
+                                 ((not note-previous-state) "")
                                  ((string-match-p org-ts-regexp
-                                                  previous-state)
+                                                  note-previous-state)
                                   (format "\"[%s]\""
                                           (substring
-                                           previous-state 1 -1)))
+                                           note-previous-state 1 -1)))
                                  (t (format "\"%s\""
-                                            previous-state)))))))
+                                            note-previous-state)))))))
             (when lines (setq note (concat note " \\\\")))
             (push note lines))
 

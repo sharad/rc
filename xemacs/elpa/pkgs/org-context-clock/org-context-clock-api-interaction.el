@@ -186,6 +186,10 @@
 (defun org-context-clock-add-context-to-org-heading-when-idle (context timeout)
   "Return value is important to decide next action to (create unnamed task.)"
   (org-context-clock-message 6 "called add-context-to-org-heading-when-idle")
+  ;; timed-newwin of org-context-clock-add-context-to-org-heading pass quit
+  ;; signal to caller mean here, so need to be handled, else this function can
+  ;; not return any value to its caller, which result into no next-action in
+  ;; caller function.
   (condition-case nil
       (org-context-clock-add-context-to-org-heading context timeout)
       ((quit)))
