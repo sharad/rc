@@ -33,6 +33,19 @@
     ;; (message "will run fun %s after %s + %d" function idle-time secs)
     (apply #'run-with-idle-timer secs repeat function args)))
 
+(defmacro eval-if-focus (focus-body unfocus-body)
+  "Eval FOCUS-BODY if focus, else eval UNFOCUS-BODY"
+  `(if (has-focus)
+      ,focus-body
+      ,unfocus-body))
+
+(defmacro eval-with-focus (&rest body)
+  "Eval BODY with focus"
+  `(progn
+     (unless (has-focus)
+       (grab-focus))
+     ,@body))
+
 (defun lotus-new-lower-win-size ()
   ;; TODO: improve it.
   ;; If the mode line might interfere with the calculator

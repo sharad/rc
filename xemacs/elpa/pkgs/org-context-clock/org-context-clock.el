@@ -78,7 +78,6 @@
 ;; (defvar org-context-clock-api-name :predicate "API")
 (defvar org-context-clock-access-api-name :recursive "Aceess API")
 (defvar org-context-clock-assoc-api-name :keys "Assoc API")
-(defvar org-context-clock-api-ranktasks-associated-to-context (org-context-clock-access-api-get org-context-clock-access-api-name :ranktasks))
 (defvar org-context-clock-api-tasks-associated-to-context     (org-context-clock-access-api-get org-context-clock-access-api-name :tasks))
 (defvar org-context-clock-api-task-associated-to-context-p    (org-context-clock-assoc-api-get  org-context-clock-assoc-api-name :taskp))
 (defvar org-context-clock-api-task-update-tasks               (org-context-clock-access-api-get org-context-clock-access-api-name :update))
@@ -365,6 +364,7 @@
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Clock-into%20one%20of%20associated%20tasks][Clock-into one of associated tasks:1]]
 ;;;###autoload
 (defun org-context-clock-task-run-associated-clock (context)
+  "only marker version"
   (interactive
    (list (org-context-clock-build-context)))
   (progn
@@ -390,6 +390,37 @@
             (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
               (org-context-clock-add-context-to-org-heading-when-idle context 7)
               nil))))))
+
+
+
+  ;;;###autoload
+(defun org-context-clock-ranktask-run-associated-clock (context)
+  "marker and ranked version"
+    (interactive
+     (list (org-context-clock-build-context)))
+    (progn
+      (let* ((matched-rankclocks
+              (remove-if-not
+               #'(lambda (marker) (marker-buffer marker))
+               (org-context-clock-rankmarkers-associated-to-context context)))
+             (selected-clock ))
+        (if matched-rankclocks
+            (let ((sel-clock (if (> (length matched-rankclocks) 1)
+                                 (cdr (sacha/helm-select-rankclock-timed matched-rankclocks))
+                                 (org-context-clock-clockin-marker (cdar matched-rankclocks)))))
+              (when (and
+                     sel-clock
+                     (markerp sel-clock)
+                     (marker-buffer sel-clock))
+                (org-context-clock-clockin-marker sel-clock)))
+            (progn
+              (setq *org-context-clock-update-current-context-msg* "null clock")
+              (org-context-clock-message 6
+               "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
+               context)
+              (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
+                (org-context-clock-add-context-to-org-heading-when-idle context 7)
+                nil))))))
 ;; Clock-into one of associated tasks:1 ends here
 
 ;; function to setup context clock timer
@@ -547,6 +578,48 @@ pointing to it."
       ;;            "Create task"
       ;;            'sacha/helm-org-create-task))
       ))))
+
+
+;; rank based
+
+  (defun sacha/helm-select-rankclock (rankclocks)
+    (org-context-clock-debug :debug "sacha marker %s" (car rankclocks))
+    (helm
+     (list
+      (helm-build-sync-source "Select matching clock"
+        :candidates (mapcar 'sacha-org-context-clock-selection-line rankclocks)
+        :action (list ;; (cons "Select" 'identity)
+                 (cons "Clock in and track" #'identity))
+        :history 'org-refile-history)
+      ;; (helm-build-dummy-source "Create task"
+      ;;   :action (helm-make-actions
+      ;;            "Create task"
+      ;;            'sacha/helm-org-create-task))
+      )))
+
+  (defun sacha/helm-select-rankclock-timed (rankclocks)
+    (helm-timed 7
+      (message "running sacha/helm-select-clock")
+      (sacha/helm-select-clock rankclocks)))
+
+  (defun sacha/helm-rankclock-action (rankclocks clockin-fn)
+    (message "sacha marker %s" (car rankclocks))
+    ;; (setq sacha/helm-org-refile-locations tbl)
+    (progn
+      (helm
+       (list
+        (helm-build-sync-source "Select matching clock"
+          :candidates (mapcar 'sacha-org-context-clock-selection-line rankclocks)
+          :action (list ;; (cons "Select" 'identity)
+                        (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
+          :history 'org-refile-history)
+        ;; (helm-build-dummy-source "Create task"
+        ;;   :action (helm-make-actions
+        ;;            "Create task"
+        ;;            'sacha/helm-org-create-task))
+        ))))
+
+
 
 ;; org-context-clock-task-run-associated-clock
 
