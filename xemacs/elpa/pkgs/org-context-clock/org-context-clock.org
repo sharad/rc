@@ -604,6 +604,48 @@ pointing to it."
         ;;            'sacha/helm-org-create-task))
         ))))
 
+
+  ;; rank based
+
+    (defun sacha/helm-select-rankclock (rankclocks)
+      (org-context-clock-debug :debug "sacha marker %s" (car rankclocks))
+      (helm
+       (list
+        (helm-build-sync-source "Select matching clock"
+          :candidates (mapcar 'sacha-org-context-clock-selection-line rankclocks)
+          :action (list ;; (cons "Select" 'identity)
+                   (cons "Clock in and track" #'identity))
+          :history 'org-refile-history)
+        ;; (helm-build-dummy-source "Create task"
+        ;;   :action (helm-make-actions
+        ;;            "Create task"
+        ;;            'sacha/helm-org-create-task))
+        )))
+
+    (defun sacha/helm-select-rankclock-timed (rankclocks)
+      (helm-timed 7
+        (message "running sacha/helm-select-clock")
+        (sacha/helm-select-clock rankclocks)))
+
+    (defun sacha/helm-rankclock-action (rankclocks clockin-fn)
+      (message "sacha marker %s" (car rankclocks))
+      ;; (setq sacha/helm-org-refile-locations tbl)
+      (progn
+        (helm
+         (list
+          (helm-build-sync-source "Select matching clock"
+            :candidates (mapcar 'sacha-org-context-clock-selection-line rankclocks)
+            :action (list ;; (cons "Select" 'identity)
+                          (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
+            :history 'org-refile-history)
+          ;; (helm-build-dummy-source "Create task"
+          ;;   :action (helm-make-actions
+          ;;            "Create task"
+          ;;            'sacha/helm-org-create-task))
+          ))))
+
+
+
   ;; org-context-clock-task-run-associated-clock
 
   ;; (sacha/helm-clock-action (org-context-clock-markers-associated-to-context (org-context-clock-build-context)) #'org-context-clock-clockin-marker)
