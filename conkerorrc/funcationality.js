@@ -249,7 +249,7 @@ function  delicious_post_internal(buffer, window, minibuffer,
 
     // correct it
     var toread = null;
-    if (post.length > 0 && post[0].attributes[6].textContent.length > 0) {
+    if (post.length > 0 && post[0].attributes[6] && post[0].attributes[6].textContent.length > 0) {
         toread = post[0].attributes[6].textContent;
     }
     // }}

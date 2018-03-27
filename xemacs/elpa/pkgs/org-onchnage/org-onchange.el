@@ -1,7 +1,7 @@
 ;; Org insert log note un-interactively
 
 
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20insert%20log%20note%20un-interactively][Org insert log note un-interactively:1]]
+;; [[file:~/.setup/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20insert%20log%20note%20un-interactively][Org insert log note un-interactively:1]]
 ;; copy of org-store-log-note
 (defun org-insert-log-note (marker txt &optional purpose effective-time state previous-state)
   "Finish taking a log note, and insert it to where it belongs."
@@ -98,7 +98,7 @@
 
 ;; Preamble
 
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Preamble][Preamble:1]]
+;; [[file:~/.setup/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Preamble][Preamble:1]]
 ;;; org-onchnage.el --- copy config
 
 ;; Copyright (C) 2012  Sharad Pratap
@@ -127,7 +127,7 @@
 ;; Libraries required
 
 
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Libraries%20required][Libraries required:1]]
+;; [[file:~/.setup/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Libraries%20required][Libraries required:1]]
 (require 'desktop)
 (require 'session)
 
@@ -145,7 +145,7 @@
 ;; Clock out with NOTE
 
 
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Clock%20out%20with%20NOTE][Clock out with NOTE:1]]
+;; [[file:~/.setup/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Clock%20out%20with%20NOTE][Clock out with NOTE:1]]
 ;;;###autoload
 (defun org-clock-out-with-note (note &optional switch-to-state fail-quietly at-time) ;BUG TODO will it work or save-excursion save-restriction also required
   "org-clock-out-with-note"
@@ -170,7 +170,7 @@
 ;;         main work is only done by _org-store-log-note_
 
 
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20add%20log%20note%20with-timed-new-win][Org add log note with-timed-new-win:1]]
+;; [[file:~/.setup/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20add%20log%20note%20with-timed-new-win][Org add log note with-timed-new-win:1]]
 ;; copy of org-add-log-note
  (defun org-add-log-note-buffer (target-buffer)
    "Prepare buffer for taking a note, to add this note later."
@@ -278,7 +278,7 @@
 ;; Org detect change to log note
 
 
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20detect%20change%20to%20log%20note][Org detect change to log note:1]]
+;; [[file:~/.setup/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20detect%20change%20to%20log%20note][Org detect change to log note:1]]
 (defun lotus-buffer-changes-count ()
   (let ((changes 0))
     (when buffer-undo-tree
@@ -373,7 +373,7 @@ will return point to the current position."
 
 ;; Org log note on change timer
 
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20log%20note%20on%20change%20timer][Org log note on change timer:1]]
+;; [[file:~/.setup/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20log%20note%20on%20change%20timer][Org log note on change timer:1]]
 (defvar org-clock-lotus-log-note-on-change-timer nil
   "Time for on change log note.")
 
@@ -418,7 +418,7 @@ will return point to the current position."
 
 ;; Org log note change from different sources
 
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20log%20note%20change%20from%20different%20sources][Org log note change from different sources:1]]
+;; [[file:~/.setup/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Org%20log%20note%20change%20from%20different%20sources][Org log note change from different sources:1]]
 ;;{{
  ;; https://emacs.stackexchange.com/questions/101/how-can-i-create-an-org-link-for-each-email-sent-by-mu4e
  ;; My first suggestion would be to try the following.
@@ -556,7 +556,7 @@ will return point to the current position."
 
 ;; Provide this file
 
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Provide%20this%20file][Provide this file:1]]
+;; [[file:~/.setup/xemacs/elpa/pkgs/org-onchnage/org-onchange.org::*Provide%20this%20file][Provide this file:1]]
 (provide 'org-onchnage)
 ;;; org-onchnage.el ends here
 ;; Provide this file:1 ends here

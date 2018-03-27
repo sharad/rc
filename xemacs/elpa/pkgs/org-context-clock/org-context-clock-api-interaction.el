@@ -184,8 +184,11 @@
 
 ;;;###autoload
 (defun org-context-clock-add-context-to-org-heading-when-idle (context timeout)
+  "Return value is important to decide next action to (create unnamed task.)"
   (org-context-clock-message 6 "called add-context-to-org-heading-when-idle")
-  (org-context-clock-add-context-to-org-heading context timeout)
+  (condition-case nil
+      (org-context-clock-add-context-to-org-heading context timeout)
+      ((quit)))
   ;; (run-with-idle-timer-nonobtrusive-simple
   ;;  7 nil
   ;;  #'(lambda (args)
