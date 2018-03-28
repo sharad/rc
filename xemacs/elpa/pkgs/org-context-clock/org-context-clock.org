@@ -142,6 +142,7 @@ A context based clocking
          (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp)
          (org-context-clock-access-api-get org-context-clock-access-api-name :update))
         (setq
+         org-context-clock-api-ranktasks-associated-to-context   (org-context-clock-access-api-get org-context-clock--api-name :ranktasks)
          org-context-clock-api-tasks-associated-to-context   (org-context-clock-access-api-get org-context-clock-access-api-name :tasks)
          org-context-clock-api-task-associated-to-context-p  (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp)
          org-context-clock-api-task-update-tasks             (org-context-clock-access-api-get org-context-clock-access-api-name :update)))))
