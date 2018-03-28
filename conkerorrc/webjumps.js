@@ -1289,3 +1289,9 @@ define_webjump("history", "http://www.historytoday.com/site-search/%s");
 //{ similar
 define_webjump("similarweb", "https://www.similarweb.com/website/%s#similarSites");
 //}
+
+//{{
+define_webjump("company/usgov", "https://www.sec.gov/cgi-bin/browse-edgar?company=%s&owner=exclude&action=getcompany");
+define_webjump("company/in/nw-tofler", "https://www.tofler.in/search?cin=&q=%s");
+define_webjump("company/in/tofler", "https://www.google.com/search?hl=en&&q=tofler+%s&btnI=1");
+//}}
