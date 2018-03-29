@@ -13,20 +13,24 @@ session_auto_save_auto_load = true; // auto-load session
 // Setup how long in days, history entries are kept before being automatically expired.
 session_pref('browser.history_expire_days', 30);
 
-let _session_stop_loading_buffers = function (b) {
+function session_stop_loading_buffers(window) {
+    if (!window) window = get_recent_conkeror_window();
+    for (var i = 0; i < window.buffers.count; i++)
+    {
+        stop_loading( window.buffers.get_buffer(i) );
+    }
+}
+
+let _session_stop_loading_buffers = function (window) {
     remove_hook("window_initialize_late_hook", _session_stop_loading_buffers);
     // spawn(_session_auto_save_auto_load(user_gave_urls));
-    for (var i = 0; i < get_recent_conkeror_window().buffers.count; i++)
-    {
-        stop_loading(get_recent_conkeror_window().buffers.get_buffer(i));
-    }
+    session_stop_loading_buffers();
 };
+
 add_hook("window_initialize_late_hook", _session_stop_loading_buffers);
 
-for (var i = 0; i < get_recent_conkeror_window().buffers.count; i++)
-{
-  stop_loading(get_recent_conkeror_window().buffers.get_buffer(i));
-}
+session_stop_loading_buffers();
+
 //}}
 
 // tab bar
