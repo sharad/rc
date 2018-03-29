@@ -31,7 +31,14 @@
 
 (defun debug-message (fmt &rest args)
   (when nil
-   (apply #'message fmt args)))
+    (apply #'message fmt args)))
+
+;;;###autoload
+(defun run-with-idle-plus-timer (secs repeat function &rest args)
+  (let* ((idle-time (current-idle-time))
+         (secs (+ (if idle-time (float-time idle-time) 0) secs)))
+    ;; (message "will run fun %s after %s + %d" function idle-time secs)
+    (apply #'run-with-idle-timer secs repeat function args)))
 
 ;;;###autoload
 (defun run-with-nonobtrusive-aware-idle-timers (longdelay repeat shortdelay repeat-after-idle fn arg &optional cancel)
