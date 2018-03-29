@@ -25,13 +25,8 @@
 ;;; Code:
 
 (require 'timer)
+(require 'timer-utils-lotus)
 ;; timer
-
-(defun run-with-idle-plus-timer (secs repeat function &rest args)
-  (let* ((idle-time (current-idle-time))
-         (secs (+ (if idle-time (float-time idle-time) 0) secs)))
-    ;; (message "will run fun %s after %s + %d" function idle-time secs)
-    (apply #'run-with-idle-timer secs repeat function args)))
 
 (defmacro eval-if-focus (focus-body unfocus-body)
   "Eval FOCUS-BODY if focus, else eval UNFOCUS-BODY"
