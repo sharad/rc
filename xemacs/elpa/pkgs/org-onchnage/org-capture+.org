@@ -5,6 +5,32 @@
 * Org capture plus
 
 ** Preamble
+#+BEGIN_SRC emacs-lisp
+;;; org-capture+.el --- org capture plus
+
+;; Copyright (C) 2012  Sharad Pratap
+
+;; Author: Sharad Pratap <>
+;; Keywords: convenience
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;;; Code:
+
+#+END_SRC
 
 ** Rest
 
@@ -31,7 +57,7 @@
      (`plain (org-capture-place-plain-text))
      (`item (org-capture-place-item))
      (`checkitem (org-capture-place-item))
-     (`note (org-capture-place-note)))
+     (`log-note (org-capture-place-log-note)))
    (org-capture-mode 1)
    (setq-local org-capture-current-plist org-capture-plist))
 
@@ -41,7 +67,7 @@
 
 #+BEGIN_SRC emacs-lisp
 
-  (defun org-capture-place-note ()
+  (defun org-capture-place-log-note ()
     "Place the template plainly.
   If the target locator points at an Org node, place the template into
   the text of the entry, before the first child.  If not, place the
@@ -139,7 +165,7 @@
                 (insert "\n")
                 (indent-line-to ind)
                 (insert line)))
-            (message "Note stored")
+            ;; (message "Note stored")
             ;; (org-capture-empty-lines-after)
             (org-capture-position-for-last-stored beg)
             (setq end (point))
@@ -166,4 +192,10 @@
       ;;       (replace-match "")))
       ))
 
+#+END_SRC
+
+** Provide this file
+#+BEGIN_SRC emacs-lisp
+(provide 'org-capture+)
+;;; org-capture+.el ends here
 #+END_SRC
