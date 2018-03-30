@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2012  Sharad Pratap
 
-;; Author: Sharad Pratap <spratap@merunetworks.com>
+;; Author: Sharad Pratap <>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
