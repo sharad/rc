@@ -231,6 +231,7 @@ function read_proxy_session_X (I, server, port) {
     var window = I.window;
     var buffer = I.buffer;
 
+    // see how to make YIELD working
     // if (!server)
     //     server = (read_yield(I.minibuffer, "server [" + tor_proxy_server_default + "] or N: ").next());
     // if (!port)
