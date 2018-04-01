@@ -255,7 +255,7 @@
       matched))
 (org-context-clock-access-api-set :recursive :tasks  'org-context-clock-recursive-matching-tasks)
 
-(defun org-context-clock-recursive-matching-ranktasks (context)
+(defun org-context-clock-recursive-matching-dyntaskpls (context)
   (let ((tasks (org-context-clock-task-recursive-update-tasks))
         (matched '()))
       (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
@@ -265,17 +265,20 @@
                   (funcall org-context-clock-api-task-associated-to-context-p task args)))
              (unless rank (error "org-context-clock-entries-associated-to-context-by-keys[lambda]: rank is null"))
              (when (> rank 0)
-               (push task (cons rank matched))
+               (push (list :rank rank :task task) matched)
                (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
-                        (org-context-clock-task-get-heading task)
-                        (length matched)))))
+                                        (org-context-clock-task-get-heading task)
+                                        (length matched)))))
        tasks
        context)
 
       (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys: AFTER matched %s[%d]" "matched" (length matched))
-
       matched))
-(org-context-clock-access-api-set :recursive :ranktasks  'org-context-clock-recursive-matching-ranktasks)
+(org-context-clock-access-api-set :recursive :dyntaskpls  'org-context-clock-recursive-matching-dyntaskpls)
+
+(defun org-context-clock-recursive-dyntaskpl-print (dyntaskpl heading)
+  (format "%[%d] %s" (plist-get dyntaskpl :rank) heading))
+(org-context-clock-access-api-set :recursive :dyntaskplprint  'org-context-clock-recursive-dyntaskpl-print)
 
 (provide 'org-context-clock-api-recursive)
 ;;; org-context-clock-api-recursive.el ends here

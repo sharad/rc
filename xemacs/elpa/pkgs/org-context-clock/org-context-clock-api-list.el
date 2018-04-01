@@ -81,16 +81,19 @@
      tasks)))
 (org-context-clock-access-api-set :list :tasks  'org-context-clock-list-matching-tasks)
 
-(defun org-context-clock-list-matching-ranktasks (context)
+(defun org-context-clock-list-matching-dyntaskpls (context)
   (lexical-let ((tasks (org-context-clock-entry-list-update-tasks))
                 (context context))
-    (remove-if-not #'(lambda (ranktask) (> (car ranktask) 0))
+    (remove-if-not #'(lambda (dyntaskpl) (> (car dyntaskpl) 0))
                    (mapcar #'(lambda (task)
-                               (cons
-                                (funcall org-context-clock-api-task-associated-to-context-p task context)
-                                task))
+                               (list :rank (funcall org-context-clock-api-task-associated-to-context-p task context) :task task))
                            tasks))))
-(org-context-clock-access-api-set :list :ranktasks  'org-context-clock-list-matching-ranktasks)
+(org-context-clock-access-api-set :list :dyntaskpls  'org-context-clock-list-matching-dyntaskpls)
+
+
+(defun org-context-clock-list-dyntaskpl-print (dyntaskpl heading)
+  (format "%[%d] %s" (plist-get dyntaskpl :rank) heading))
+(org-context-clock-access-api-set :recursive :dyntaskplprint  'org-context-clock-list-dyntaskpl-print)
 
 (provide 'org-context-clock-api-list)
 ;;; org-context-clock-api-list.el ends here

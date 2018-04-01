@@ -33,8 +33,7 @@
 #+END_SRC
 
 ** Rest
-
-*** Overiding org-capture-place-template function
+*** Overriding org-capture-place-template function
 
  #+BEGIN_SRC emacs-lisp
 
@@ -53,11 +52,11 @@
    (setq-local outline-level 'org-outline-level)
    (pcase (org-capture-get :type)
      ((or `nil `entry) (org-capture-place-entry))
-     (`table-line (org-capture-place-table-line))
-     (`plain (org-capture-place-plain-text))
-     (`item (org-capture-place-item))
-     (`checkitem (org-capture-place-item))
-     (`log-note (org-capture-place-log-note)))
+     (`table-line      (org-capture-place-table-line))
+     (`plain           (org-capture-place-plain-text))
+     (`item            (org-capture-place-item))
+     (`checkitem       (org-capture-place-item))
+     (`log-note        (org-capture-place-log-note)))
    (org-capture-mode 1)
    (setq-local org-capture-current-plist org-capture-plist))
 
@@ -175,22 +174,7 @@
                     (re-search-forward "%\\?" end t))
                 (replace-match ""))
             (org-back-to-heading t)
-            (org-cycle-hide-drawers 'children)))
-
-      ;; (progn
-      ;;   (or (bolp) (newline))
-      ;;   (org-capture-empty-lines-before)
-      ;;   (setq beg (point))
-      ;;   (insert txt)
-      ;;   (org-capture-empty-lines-after)
-      ;;   (org-capture-position-for-last-stored beg)
-      ;;   (setq end (point))
-      ;;   (org-capture-mark-kill-region beg (1- end))
-      ;;   (org-capture-narrow beg (1- end))
-      ;;   (if (or (re-search-backward "%\\?" beg t)
-      ;;           (re-search-forward "%\\?" end t))
-      ;;       (replace-match "")))
-      ))
+            (org-cycle-hide-drawers 'children)))))
 
 #+END_SRC
 

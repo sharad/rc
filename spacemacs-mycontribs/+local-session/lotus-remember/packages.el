@@ -35,9 +35,7 @@
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-remember-packages
-  '(
-    (PACKAGE :location local)
-    remember
+  '(remember
     org
     (org-remember :location local)
     (org-capture :location local)
@@ -411,13 +409,6 @@ Each entry is either:
 
 (defun lotus-remember/init-remember-idle ()
   (use-package remember-idle
-      :defer t
-      :config
-      (progn
-        )))
-
-(defun lotus-remember/init-PACKAGE ()
-  (use-package PACKAGE
       :defer t
       :config
       (progn

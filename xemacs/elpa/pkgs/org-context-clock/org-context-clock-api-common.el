@@ -180,21 +180,31 @@ inside loops."
               (org-context-clock-task-get-property e :task-clock-marker))
           (org-context-clock-tasks-associated-to-context context)))
 
-(defun org-context-clock-ranktasks-associated-to-context (context)
-  (funcall org-context-clock-api-ranktasks-associated-to-context context))
+;; ;; (defun org-context-clock-markers-associated-to-context (context)
+;; (defun org-context-clock-rankmarkers-associated-to-context (context)
+;;   (mapcar #'(lambda (e)
+;;               (cons
+;;                (car e)
+;;                (org-context-clock-task-get-property (cdr e) :task-clock-marker)))
+;;           (org-context-clock-ranktasks-associated-to-context context)))
 
-;; (defun org-context-clock-markers-associated-to-context (context)
-(defun org-context-clock-rankmarkers-associated-to-context (context)
+;; Dynamic plist task format
+;; plist of :rank :marker :task etc
+
+(defun org-context-clock-dyntaskpls-associated-to-context (context)
   (mapcar #'(lambda (e)
-              (cons
-               (car e)
-               (org-context-clock-task-get-property (cdr e) :task-clock-marker)))
-          (org-context-clock-ranktasks-associated-to-context context)))
+              (plist-put e
+                         :marker
+                         (org-context-clock-task-get-property (plist-get e :task) :task-clock-marker)))
+          (funcall org-context-clock-api-dyntaskpls-associated-to-context context)))
 
 (progn                                  ;; general use function
 
   (defun org-context-clock-task-get-heading (task)
     (org-context-clock-task-get-property task :task-clock-heading)))
+
+(defun org-context-clock-dyntaskpl-print (dyntaskpl heading)
+  (funcall org-context-clock-api-dyntaskpl-print dyntaskpl heading))
 
 (provide 'org-context-clock-api-common)
 ;;; org-context-clock-api-common.el ends here
