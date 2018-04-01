@@ -277,7 +277,7 @@
 (org-context-clock-access-api-set :recursive :dyntaskpls  'org-context-clock-recursive-matching-dyntaskpls)
 
 (defun org-context-clock-recursive-dyntaskpl-print (dyntaskpl heading)
-  (format "%[%d] %s" (plist-get dyntaskpl :rank) heading))
+  (format "[%d] %s" (plist-get dyntaskpl :rank) heading))
 (org-context-clock-access-api-set :recursive :dyntaskplprint  'org-context-clock-recursive-dyntaskpl-print)
 
 (provide 'org-context-clock-api-recursive)

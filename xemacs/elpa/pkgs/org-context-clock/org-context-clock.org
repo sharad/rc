@@ -88,6 +88,8 @@ A context based clocking
 (defvar org-context-clock-api-dyntaskpl-print                  (org-context-clock-access-api-get org-context-clock-access-api-name :dyntaskplprint))
 (defvar org-context-clock-api-dyntaskpls-associated-to-context (org-context-clock-access-api-get org-context-clock-access-api-name :dyntaskpls))
 (defvar org-context-clock-api-tasks-associated-to-context     (org-context-clock-access-api-get org-context-clock-access-api-name :tasks))
+(defvar org-context-clock-matching-dyntaskpls (org-context-clock-access-api-get org-context-clock-access-api-name :dyntaskpls))
+(defvar org-context-clock-matching-tasks     (org-context-clock-access-api-get org-context-clock-access-api-name :tasks))
 (defvar org-context-clock-api-task-associated-to-context-p    (org-context-clock-assoc-api-get  org-context-clock-assoc-api-name :taskp))
 (defvar org-context-clock-api-task-update-tasks               (org-context-clock-access-api-get org-context-clock-access-api-name :update))
 (defvar org-context-clock-api-task-update-files               (org-context-clock-access-api-get org-context-clock-access-api-name :files))
@@ -149,6 +151,8 @@ A context based clocking
          org-context-clock-api-dyntaskpl-print                  (org-context-clock-access-api-get org-context-clock-access-api-name :dyntaskplprint)
          org-context-clock-api-dyntaskpls-associated-to-context (org-context-clock-access-api-get org-context-clock-access-api-name :dyntaskpls)
          org-context-clock-api-tasks-associated-to-context      (org-context-clock-access-api-get org-context-clock-access-api-name :tasks)
+         org-context-clock-matching-dyntaskpls                  (org-context-clock-access-api-get org-context-clock-access-api-name :dyntaskpls)
+         org-context-clock-matching-tasks                       (org-context-clock-access-api-get org-context-clock-access-api-name :tasks)
          org-context-clock-api-task-associated-to-context-p     (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp)
          org-context-clock-api-task-update-tasks                (org-context-clock-access-api-get org-context-clock-access-api-name :update)))))
 
@@ -770,34 +774,34 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
 
 
    (length
-    (funcall org-context-clock-api-tasks-associated-to-context
+    (funcall org-context-clock-matching-tasks
              (org-context-clock-build-context)))
 
    (length
-    (funcall org-context-clock-api-tasks-associated-to-context
+    (funcall org-context-clock-matching-tasks
              (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile"))))
 
    (org-context-clock-markers-associated-to-context (org-context-clock-build-context))
 
    ;; test it
    (length
-    (funcall org-context-clock-api-tasks-associated-to-context (org-context-clock-build-context)))
+    (funcall org-context-clock-matching-tasks (org-context-clock-build-context)))
 
    (org-context-clock-task-get-property
-    (car (funcall org-context-clock-api-tasks-associated-to-context (org-context-clock-build-context)))
+    (car (funcall org-context-clock-matching-tasks (org-context-clock-build-context)))
     :task-clock-marker)
 
    (org-context-clock-clockin-marker
     (org-context-clock-task-get-property
-     (car (funcall org-context-clock-api-tasks-associated-to-context (org-context-clock-build-context)))
+     (car (funcall org-context-clock-matching-tasks (org-context-clock-build-context)))
      :task-clock-marker))
 
    (org-context-clock-task-associated-to-context-by-keys-p
-    (car (funcall org-context-clock-api-tasks-associated-to-context (org-context-clock-build-context)))
+    (car (funcall org-context-clock-matching-tasks (org-context-clock-build-context)))
     (org-context-clock-build-context))
 
    (length
-    (funcall org-context-clock-api-tasks-associated-to-context
+    (funcall org-context-clock-matching-tasks
              (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"))))
 
    (length

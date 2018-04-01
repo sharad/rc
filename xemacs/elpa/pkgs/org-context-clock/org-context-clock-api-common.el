@@ -172,7 +172,8 @@ inside loops."
   (plist-put task property value))
 
 (defun org-context-clock-tasks-associated-to-context (context)
-  (funcall org-context-clock-api-tasks-associated-to-context context))
+  ;; (funcall org-context-clock-api-tasks-associated-to-context context)
+  (funcall org-context-clock-matching-tasks context))
 
 ;; (defun org-context-clock-markers-associated-to-context (context)
 (defun org-context-clock-markers-associated-to-context (context)
@@ -196,7 +197,8 @@ inside loops."
               (plist-put e
                          :marker
                          (org-context-clock-task-get-property (plist-get e :task) :task-clock-marker)))
-          (funcall org-context-clock-api-dyntaskpls-associated-to-context context)))
+          ;; (funcall org-context-clock-api-dyntaskpls-associated-to-context context)
+          (funcall org-context-clock-matching-dyntaskpls context)))
 
 (progn                                  ;; general use function
 
