@@ -108,5 +108,153 @@ using three `C-u' prefix arguments."
 
 (add-function :override (symbol-function 'org-timer-set-timer) #'replace-org-timer-set-timer)
 
+
+
+
+
+
+
+
+
+
+(defun lotus-org-marker-selection-line (marker)
+  "Insert a line for the clock selection menu.
+  And return a cons cell with the selection character integer and the marker
+  pointing to it."
+  (when (marker-buffer marker)
+    (with-current-buffer (org-base-buffer (marker-buffer marker))
+      (org-with-wide-buffer
+       (progn ;; ignore-errors
+         (goto-char marker)
+         (let* ((cat (org-get-category))
+                (heading (org-get-heading 'notags))
+                (prefix (save-excursion
+                          (org-back-to-heading t)
+                          (looking-at org-outline-regexp)
+                          (match-string 0)))
+                (task (substring
+                       (org-fontify-like-in-org-mode
+                        (concat prefix heading)
+                        org-odd-levels-only)
+                       (length prefix))))
+           (when task ;; (and cat task)
+             ;; (insert (format "[%c] %-12s  %s\n" i cat task))
+             ;; marker
+             (cons task marker))))))))
+
+(defun replace-org-clock-select-task (prompt)
+  (let (helm-sources)
+    (when (marker-buffer org-clock-default-task)
+      (push
+       (helm-build-sync-source "Default Task"
+        :candidates (list (lotus-org-marker-selection-line org-clock-default-task))
+        :action (list ;; (cons "Select" 'identity)
+                 (cons "Clock in and track" #'identity)))
+       helm-sources))
+
+    (when (marker-buffer org-clock-interrupted-task)
+      (push
+       (helm-build-sync-source "The task interrupted by starting the last one"
+         :candidates (list (lotus-org-marker-selection-line org-clock-interrupted-task))
+         :action (list ;; (cons "Select" 'identity)
+                  (cons "Clock in and track" #'identity)))
+       helm-sources))
+
+    (when (and
+           (org-clocking-p)
+           (marker-buffer org-clock-marker))
+      (push
+       (helm-build-sync-source "Current Clocking Task"
+         :candidates (list (lotus-org-marker-selection-line org-clock-marker))
+         :action (list ;; (cons "Select" 'identity)
+                  (cons "Clock in and track" #'identity)))
+       helm-sources))
+
+    (when org-clock-history
+      (push
+       (helm-build-sync-source "Recent Tasks"
+         :candidates (mapcar #'lotus-org-marker-selection-line org-clock-history)
+         :action (list ;; (cons "Select" 'identity)
+                  (cons "Clock in and track" #'identity)))
+       helm-sources))
+
+    (helm
+     helm-sources)))
+
+(add-function :override (symbol-function 'org-clock-select-task) #'replace-org-clock-select-task)
+
+
+(when nil
+  (progn
+    (defun sacha/helm-select-clock (clocks)
+      (org-context-clock-debug :debug "sacha marker %s" (car clocks))
+      (helm
+       (list
+        (helm-build-sync-source "Select matching clock"
+          :candidates (mapcar 'lotus-org-marker-selection-line clocks)
+          :action (list ;; (cons "Select" 'identity)
+                   (cons "Clock in and track" #'identity))
+          :history 'org-refile-history)
+        ;; (helm-build-dummy-source "Create task"
+        ;;   :action (helm-make-actions
+        ;;            "Create task"
+        ;;            'sacha/helm-org-create-task))
+        ))))
+  (progn
+    (helm
+     (list
+      (helm-build-sync-source "Select matching clock"
+        :candidates (mapcar 'lotus-org-marker-selection-line clocks)
+        :action (list ;; (cons "Select" 'identity)
+                 (cons "Clock in and track" #'identity))
+        :history 'org-refile-history)
+
+      ;; (helm-build-dummy-source "Create task"
+      ;;   :action (helm-make-actions
+      ;;            "Create task"
+      ;;            'sacha/helm-org-create-task))
+      )))
+
+  (progn
+    ;; http://kitchingroup.cheme.cmu.edu/blog/2015/01/30/More-adventures-in-helm-more-than-one-action/
+    (setq data '(("John" . "john@email.com")
+                 ("Jim" . "jim@email.com")
+                 ("Jane" . "jane@email.com")
+                 ("Jill" . "jill@email.com")))
+
+
+    (defun open-email (candidates)
+      "Compose an email to the candidates. Fill in the addresses and
+move point to the subject."
+      (compose-mail)
+      (message-goto-to)
+      (insert
+       (mapconcat
+        'identity
+        (helm-marked-candidates)
+        ","))
+      (message-goto-subject))
+
+    (setq some-helm-source
+          `((name . "HELM at the Emacs")
+            (candidates . ,data)
+            (action . (("show email address" . (lambda (candidate)
+                                                 (message-box
+                                                  "selected: %s"
+                                                  (helm-marked-candidates))))
+                       ("send email" . open-email)))))
+
+    (setq some-other-helm-source
+          `((name . "HELM at the Test")
+            (candidates . ,data)
+            (action . (("show email address" . (lambda (candidate)
+                                                 (message-box
+                                                  "selected: %s"
+                                                  (helm-marked-candidates))))
+                       ("send email" . open-email)))))
+
+    ;; (helm :sources '(some-helm-source some-other-helm-source))
+    ))
+
 (provide 'org-clock-wrapper)
 ;;; org-clock-wrapper.el ends here

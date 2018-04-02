@@ -72,6 +72,12 @@
 
 ;;; Code:
 
+(require 'org-clock-check)
+(require 'org-hooks)
+(require 'org-clock-experimental)
+(require 'org-clock-unnamed-task)
+(require 'org-clock-wrappers)
+
 (require 'org)
 (require 'org-timer)
 (require 'org-clock)
@@ -80,6 +86,9 @@
 (eval-when-compile
   (require 'org-misc-utils-lotus))
 (require 'org-misc-utils-lotus)
+
+
+
 
 
 (defmacro org-with-clock-position (clock &rest forms)
