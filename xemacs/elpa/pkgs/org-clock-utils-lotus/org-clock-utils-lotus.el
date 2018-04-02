@@ -93,56 +93,6 @@
          (let (buffer-read-only)
            ,@forms)))))
 
-(defvar org-clock-check-long-timer-period 7
-  "Period of Long Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
-
-(defvar org-clock-check-long-timer nil
-  "Long Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
-
-(defvar org-clock-check-short-timer-period 2
-  "Period Short Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
-
-;; (defvar org-clock-check-short-timer nil
-;;   "Short Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
-
-;;;###autoload
-(defun org-clock-start-check-timer ()
-  "Attempt to clock-in when already not clock found."
-  (interactive)
-  (org-clock-stop-check-timer)
-  (setq
-   org-clock-check-long-timer
-   (run-with-nonobtrusive-aware-idle-timers
-    org-clock-check-long-timer-period
-    org-clock-check-long-timer-period
-    org-clock-check-short-timer-period
-    nil
-    #'(lambda (arg)
-        (unless (org-clock-is-active)
-          (org-clock-in-if-not)))
-    nil
-    nil)))
-
-;;;###autoload
-(defun org-clock-stop-check-timer ()
-  "Stop attemptting to clock-in when already not clock found."
-  (interactive)
-  (progn
-    ;; (when org-clock-check-short-timer
-    ;;   (cancel-timer org-clock-check-short-timer)
-    ;;   (setq org-clock-check-short-timer nil))
-    (when org-clock-check-long-timer
-      (cancel-timer org-clock-check-long-timer)
-      (setq org-clock-check-long-timer nil))))
-
-;;;###autoload
-(defun org-clock-start-check-timer-insiuate ()
-  (org-clock-start-check-timer))
-
-;;;###autoload
-(defun org-clock-start-check-timer-uninsiuate ()
-  (org-clock-stop-check-timer))
-
 ;; "correction org-timer.el"
 (defun replace-org-timer-set-timer (&optional opt)
     "Prompt for a duration in minutes or hh:mm:ss and set a timer.
@@ -228,6 +178,59 @@ using three `C-u' prefix arguments."
 (add-function :override (symbol-function 'org-timer-set-timer) #'replace-org-timer-set-timer)
 
 
+(defvar org-clock-check-long-timer-period 7
+  "Period of Long Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
+
+(defvar org-clock-check-long-timer nil
+  "Long Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
+
+(defvar org-clock-check-short-timer-period 2
+  "Period Short Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
+
+;; (defvar org-clock-check-short-timer nil
+;;   "Short Timer to remind to clock-in after some time of clockout or if no clock found at start of emacs.")
+
+;;;###autoload
+(defun org-clock-start-check-timer ()
+  "Attempt to clock-in when already not clock found."
+  (interactive)
+  (org-clock-stop-check-timer)
+  (setq
+   org-clock-check-long-timer
+   (run-with-nonobtrusive-aware-idle-timers
+    org-clock-check-long-timer-period
+    org-clock-check-long-timer-period
+    org-clock-check-short-timer-period
+    nil
+    #'(lambda (arg)
+        (unless (org-clock-is-active)
+          (org-clock-in-if-not)))
+    nil
+    nil)))
+
+;;;###autoload
+(defun org-clock-stop-check-timer ()
+  "Stop attemptting to clock-in when already not clock found."
+  (interactive)
+  (progn
+    ;; (when org-clock-check-short-timer
+    ;;   (cancel-timer org-clock-check-short-timer)
+    ;;   (setq org-clock-check-short-timer nil))
+    (when org-clock-check-long-timer
+      (cancel-timer org-clock-check-long-timer)
+      (setq org-clock-check-long-timer nil))))
+
+;;;###autoload
+(defun org-clock-start-check-timer-insiuate ()
+  (org-clock-start-check-timer))
+
+;;;###autoload
+(defun org-clock-start-check-timer-uninsiuate ()
+  (org-clock-stop-check-timer))
+
+
+
+
 
 (defvar org-clock-default-effort "1:00")
 
@@ -235,6 +238,7 @@ using three `C-u' prefix arguments."
   "Add a default effort estimation."
   (unless (org-entry-get (point) "Effort")
     (org-set-property "Effort" org-clock-default-effort)))
+
 (add-hook 'org-clock-in-prepare-hook
           'lotus-org-mode-ask-effort)
 
@@ -298,7 +302,8 @@ using three `C-u' prefix arguments."
             (org-timer-set-timer))
           (call-interactively 'org-timer-set-timer)))
     (save-buffer)
-    (org-save-all-org-buffers)))
+    ;; (org-save-all-org-buffers)
+    ))
 
 (defun org-clock-add-schedule-on-clockin-if-not ()
   (let ((schedule (org-get-scheduled-time nil)))
@@ -331,7 +336,8 @@ using three `C-u' prefix arguments."
       (org-timer-stop))
   (org-clock-get-work-day-clock-string t)
   (save-buffer)
-  (org-save-all-org-buffers))
+  ;; (org-save-all-org-buffers)
+  )
 
 ;;;###autoload
 (defun lotus-org-clock-in/out-insinuate-hooks ()
@@ -406,35 +412,6 @@ using three `C-u' prefix arguments."
   (progn
 
     ))
-
-
-
-;;;{{{ https://orgmode.org/worg/org-hacks.html#org86e75a5
-(defun jump-to-org-agenda ()
-  (interactive)
-  (let ((buf (get-buffer "*Org Agenda*"))
-        wind)
-    (if buf
-        (if (setq wind (get-buffer-window buf))
-            (select-window wind)
-            (if (called-interactively-p 'interactive)
-                (progn
-                  (select-window (display-buffer buf t t))
-                  (org-fit-window-to-buffer)
-                  ;; (org-agenda-redo)
-                  )
-                (with-selected-window (display-buffer buf)
-                  (org-fit-window-to-buffer)
-                  ;; (org-agenda-redo)
-                  )))
-        (call-interactively 'org-agenda-list)))
-  ;;(let ((buf (get-buffer "*Calendar*")))
-  ;;  (unless (get-buffer-window buf)
-  ;;    (org-agenda-goto-calendar)))
-  )
-
-(run-with-idle-timer 300 t 'jump-to-org-agenda)
-;;;}}}
 
 (defun lotus-org-clock-detect-first-clockin-of-day ()
   ;; do necessary stuff
