@@ -168,18 +168,26 @@ A context based clocking
 
 #+BEGIN_SRC  emacs-lisp
 
-;;;###autoload
-(defun org-context-clock-task-update-tasks (&optional force)
-  "Update task infos"
-  (interactive "P")
-  (funcall org-context-clock-api-task-update-tasks force))
+  ;;;###autoload
+  (defun org-context-clock-task-update-tasks (&optional force)
+    "Update task infos"
+    (interactive "P")
+    (funcall org-context-clock-api-task-update-tasks force))
 
-;;;###autoload
-(defun org-context-clock-task-update-files (&optional force)
-  "Update task infos"
-  (interactive "P")
-  (funcall org-context-clock-api-task-update-files force))
+  ;;;###autoload
+  (defun org-context-clock-task-update-files (&optional force)
+    "Update task infos"
+    (interactive "P")
+    (funcall org-context-clock-api-task-update-files force))
 
+  (defun org-context-clock-build-tasks (file)
+    (when (member file (org-context-clock-task-update-files))
+      (org-context-clock-task-update-tasks t)))
+
+  (defun org-context-clock-after-save-hook ()
+    (when (and (eq major-mode 'org-mode)
+               (buffer-file-name))
+      (org-context-clock-build-tasks (buffer-file-name))))
 #+END_SRC
 
 *** TODO Add function to do updating if any of update-files were changes
@@ -675,34 +683,36 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
 
 
 #+BEGIN_SRC  emacs-lisp
- ;;;###autoload
- (defun org-context-clock-insinuate ()
-   (interactive)
-   (progn
-     (add-hook 'buffer-list-update-hook     'org-context-clock-run-task-current-context-timer)
-     (add-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
-     (add-hook 'elscreen-goto-hook          'org-context-clock-run-task-current-context-timer))
+   ;;;###autoload
+   (defun org-context-clock-insinuate ()
+     (interactive)
+     (progn
+       (add-hook 'buffer-list-update-hook     'org-context-clock-run-task-current-context-timer)
+       (add-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
+       (add-hook 'elscreen-goto-hook          'org-context-clock-run-task-current-context-timer)
+       (add-hook 'after-save-hook             'org-context-clock-after-save-hook nil t))
 
-   (dolist (prop (org-context-clock-keys-with-operation :getter))
-     (let ((propstr
-            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
-       (unless (member propstr org-use-property-inheritance)
-         (push propstr org-use-property-inheritance)))))
+     (dolist (prop (org-context-clock-keys-with-operation :getter))
+       (let ((propstr
+              (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
+         (unless (member propstr org-use-property-inheritance)
+           (push propstr org-use-property-inheritance)))))
 
- ;;;###autoload
- (defun org-context-clock-uninsinuate ()
-   (interactive)
-   (progn
-     (remove-hook 'buffer-list-update-hook 'org-context-clock-run-task-current-context-timer)
-     ;; (setq buffer-list-update-hook nil)
-     (remove-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
-     (remove-hook 'elscreen-goto-hook 'org-context-clock-run-task-current-context-timer))
+   ;;;###autoload
+   (defun org-context-clock-uninsinuate ()
+     (interactive)
+     (progn
+       (remove-hook 'buffer-list-update-hook 'org-context-clock-run-task-current-context-timer)
+       ;; (setq buffer-list-update-hook nil)
+       (remove-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
+       (remove-hook 'elscreen-goto-hook 'org-context-clock-run-task-current-context-timer)
+       (remove-hook 'after-save-hook             'org-context-clock-after-save-hook t))
 
-   (dolist (prop (org-context-clock-keys-with-operation :getter))
-     (let ((propstr
-            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
-       (unless (member propstr org-use-property-inheritance)
-         (delete propstr org-use-property-inheritance)))))
+     (dolist (prop (org-context-clock-keys-with-operation :getter))
+       (let ((propstr
+              (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
+         (unless (member propstr org-use-property-inheritance)
+           (delete propstr org-use-property-inheritance)))))
 
 #+END_SRC
 

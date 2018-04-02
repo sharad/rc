@@ -172,6 +172,15 @@
   "Update task infos"
   (interactive "P")
   (funcall org-context-clock-api-task-update-files force))
+
+(defun org-context-clock-build-tasks (file)
+  (when (member file (org-context-clock-task-update-files))
+    (org-context-clock-task-update-tasks t)))
+
+(defun org-context-clock-after-save-hook ()
+  (when (and (eq major-mode 'org-mode)
+             (buffer-file-name))
+    (org-context-clock-build-tasks (buffer-file-name))))
 ;; Update tasks:1 ends here
 
 ;; Build context
@@ -656,7 +665,8 @@ pointing to it."
   (progn
     (add-hook 'buffer-list-update-hook     'org-context-clock-run-task-current-context-timer)
     (add-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
-    (add-hook 'elscreen-goto-hook          'org-context-clock-run-task-current-context-timer))
+    (add-hook 'elscreen-goto-hook          'org-context-clock-run-task-current-context-timer)
+    (add-hook 'after-save-hook             'org-context-clock-after-save-hook nil t))
 
   (dolist (prop (org-context-clock-keys-with-operation :getter))
     (let ((propstr
@@ -671,7 +681,8 @@ pointing to it."
     (remove-hook 'buffer-list-update-hook 'org-context-clock-run-task-current-context-timer)
     ;; (setq buffer-list-update-hook nil)
     (remove-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
-    (remove-hook 'elscreen-goto-hook 'org-context-clock-run-task-current-context-timer))
+    (remove-hook 'elscreen-goto-hook 'org-context-clock-run-task-current-context-timer)
+    (remove-hook 'after-save-hook             'org-context-clock-after-save-hook t))
 
   (dolist (prop (org-context-clock-keys-with-operation :getter))
     (let ((propstr
