@@ -73,10 +73,10 @@
 ;;; Code:
 
 (require 'org-clock-check)
-(require 'org-hooks)
+(require 'org-clock-hooks)
 (require 'org-clock-experimental)
 (require 'org-clock-unnamed-task)
-(require 'org-clock-wrappers)
+(require 'org-clock-wrapper)
 
 (require 'org)
 (require 'org-timer)

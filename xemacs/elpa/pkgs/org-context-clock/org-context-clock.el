@@ -197,6 +197,7 @@
                             (if (file-exists-p buff)
                                 (get-file-buffer buff)))))
                    (window-buffer)))
+         (buf (org-base-buffer buf))
          (file (buffer-file-name buff))
          (context (list :file file :buffer buff)))
     context))
