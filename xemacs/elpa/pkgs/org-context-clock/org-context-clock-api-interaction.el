@@ -64,6 +64,9 @@
 
 ;; (org-context-clock-set-property (intern ":root") nil (list :file "/home/s/paradise/git/main/src/wnc/security/authenticator/ieee802_1x.cpp" :buffer (get-buffer "ieee802_1x.cpp")))
 
+(defun org-context-clock-completing-read (prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
+  (let ((helm-always-two-windows nil))
+    (completing-read prompt collection predicate require-match initial-input hist def inherit-input-method)))
 
 (defun org-context-clock-select-propetry (context &optional prompt)
   (let ((prompt (or prompt "proptery: "))
@@ -71,7 +74,7 @@
                       (append
                        (org-context-clock-keys-with-operation :getter context)
                        '(edit done)))))
-    (cdr (assoc (completing-read prompt keys  nil t) keys))))
+    (cdr (assoc (org-context-clock-completing-read prompt keys  nil t) keys))))
 
 (defun org-context-clock-test (context timeout)
   (interactive '(nil nil))
@@ -151,9 +154,10 @@
 
                     (let ((target-buffer (find-file-noselect file)))
 
-                      (switch-to-buffer target-buffer)
-                      (goto-char pos)
-                      (set-marker marker (point))
+                      (when target-buffer
+                        (switch-to-buffer target-buffer)
+                        (goto-char pos)
+                        (set-marker marker (point)))
                       ;; (message "2 marker %s" marker)
 
                       (message "called add-context-to-org-heading %s" (current-buffer))

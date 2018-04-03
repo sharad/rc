@@ -92,13 +92,12 @@
 
 
 (defmacro lotus-with-new-win (newwin &rest body)
-  `(let ()
-     (lexical-let* ((,newwin (lotus-make-new-win)))
+  `(lexical-let* ((,newwin (lotus-make-new-win)))
        ;; maybe leave two lines for our window because of the
        ;; normal `raised' mode line
        (select-window ,newwin 'norecord)
        (progn
-         ,@body))))
+         ,@body)))
 (put 'lotus-with-new-win 'lisp-indent-function 1)
 
 (defmacro lotus-with-timed-new-win (timeout timer cleanupfn-newwin cleanupfn-local newwin &rest body)
