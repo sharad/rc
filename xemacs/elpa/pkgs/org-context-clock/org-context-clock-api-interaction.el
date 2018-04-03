@@ -48,12 +48,12 @@
 
 (defun org-context-clock-set-property (prop-key value context &rest args)
   (let ((prop-key-str (if (eq (elt prop-key 0 ) ?\:) (substring prop-key 1))))
-   (org-set-property prop-key
-                    (if value
-                        value
-                        (funcall
-                         (org-context-clock-key-fun (intern prop-key) :getter)
-                         prop-key nil context args))))
+    (org-set-property prop-key
+                      (if value
+                          value
+                          (funcall
+                           (org-context-clock-key-fun prop-key :getter)
+                           prop-key nil context args))))
   t)
 
 ;; (eq (elt ":root" 0) ?\:)
@@ -66,13 +66,12 @@
 
 
 (defun org-context-clock-select-propetry (context &optional prompt)
-  ;; (ido-completing-read
-  (completing-read
-   (or prompt "proptery: ")
-   (append
-    (org-context-clock-keys-with-operation :getter context)
-    '("Edit" "Done"))
-   nil t))
+  (let ((prompt (or prompt "proptery: "))
+        (keys (mapcar #'(lambda (k) (cons (symbol-name k) k))
+                      (append
+                       (org-context-clock-keys-with-operation :getter context)
+                       '(edit done)))))
+    (cdr (assoc (completing-read prompt keys  nil t) keys))))
 
 (defun org-context-clock-test (context timeout)
   (interactive '(nil nil))
@@ -135,6 +134,7 @@
           (org-with-file-loc-timed-refile
               file pos
               timeout '((org-context-clock-task-update-files :maxlevel . 4))
+
               (lexical-let* ((marker (make-marker))
                              (local-cleanup
                               #'(lambda ()
@@ -144,6 +144,7 @@
                                     (abort-recursive-edit)))))
 
                 (set-marker marker (point))
+                ;; (message "1 marker %s" marker)
 
                 (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
                     timeout timer cleanup local-cleanup win
@@ -152,7 +153,8 @@
 
                       (switch-to-buffer target-buffer)
                       (goto-char pos)
-
+                      (set-marker marker (point))
+                      ;; (message "2 marker %s" marker)
 
                       (message "called add-context-to-org-heading %s" (current-buffer))
                       (progn
@@ -166,15 +168,18 @@
                               ;; try to read values of properties.
                               (let ((prop nil))
                                 (while (not
-                                        (member (setq prop (org-context-clock-select-propetry context)) '("Edit" "Done")))
+                                        (member
+                                         (setq prop (org-context-clock-select-propetry context))
+                                         '(edit done)))
                                   (when (org-context-clock-set-property prop nil context)
                                     (org-context-clock-task-update-tasks t)))
                                 (cond
-                                  ((string-equal "Done" prop)
+                                  ((eql 'done prop)
                                    (funcall cleanup win local-cleanup)
                                    (when timer (cancel-timer timer)))
-                                  ((string-equal "Edit" prop)
-                                   (funcall cleanup win local-cleanup)
+                                  ((eql 'edit prop)
+                                   ;; (funcall cleanup win local-cleanup)
+                                   (message "debug editing")
                                    (when timer (cancel-timer timer))
                                    (when (and win (windowp win) (window-valid-p win))
                                      (select-window win 'norecord)))

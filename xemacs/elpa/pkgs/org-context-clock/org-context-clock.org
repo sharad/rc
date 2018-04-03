@@ -472,9 +472,8 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
               (org-context-clock-message 6
                                          "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
                                          context)
-              (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
-                (org-context-clock-add-context-to-org-heading-when-idle context 7)
-                nil))))))
+              (org-context-clock-add-context-to-org-heading-when-idle context 7)
+              nil)))))
 #+END_SRC
 
 ** function to setup context clock timer
