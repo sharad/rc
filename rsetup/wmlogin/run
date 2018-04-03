@@ -334,3 +334,14 @@ then
         ( sleep 30s; emacsclient -d :0 -nc -f ~/.emacs.d/server/$EMACS_SERVER_NAME -e "(progn (message \"Default\"))" ) &!
     fi
 fi
+
+(sleep 60s ;
+ echo 'URxvt.font: xft:DejaVu Sans Mono:size=12' |  xrdb -merge - >&/dev/null ;
+ if ! timeout 2s get-imap-pass -u localhost >& /dev/null ;
+ then
+     pkill gnome-key >& /dev/null ;
+     sleep 1s ;
+     gnome-keyring-daemon --daemonize  >& /dev/null ;
+ fi;
+ timeout 7 get-imap-pass -u localhost >& /dev/null || pkill gnome-keyr  >& /dev/null;
+) &!

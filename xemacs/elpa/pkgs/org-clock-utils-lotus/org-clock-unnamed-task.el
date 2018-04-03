@@ -36,6 +36,31 @@
 (defvar *lotus-org-unnamed-task-name-fmt*    "Unnamed task %d")
 (defvar *lotus-org-unnamed-task-clock-marker* nil)
 
+;;;###autoload
+(defun lotus-org-unnamed-task-file (&optional file)
+  (if file
+      (setq *lotus-org-unnamed-task-file* file)
+      *lotus-org-unnamed-task-file*))
+
+;;;###autoload
+(defun lotus-org-unnamed-parent-task-name (&optional name)
+  (if name
+      (setq *lotus-org-unnamed-parent-task-name* name)
+      *lotus-org-unnamed-parent-task-name*))
+
+;;;###autoload
+(defun lotus-org-unnamed-task-name-fmt (&optional fmt)
+  (if fmt
+      (setq *lotus-org-unnamed-task-name-fmt* fmt)
+      *lotus-org-unnamed-task-name-fmt*))
+
+;;;###autoload
+(defun lotus-org-unnamed-task-clock-marker (&optional marker)
+  (if marker
+      (setq *lotus-org-unnamed-task-clock-marker* marker)
+      *lotus-org-unnamed-task-clock-marker*))
+
+;;;###autoload
 (defun lotus-org-get-incr-tasknum (&optional buffer)
   (with-current-buffer (or buffer (current-buffer))
     (let* ((tasknumstr (or (org-global-get-property "TASKNUM") "0"))
@@ -43,6 +68,7 @@
       (org-global-put-property "TASKNUM" (number-to-string (1+ tasknum)))
       tasknum)))
 
+;;;###autoload
 (defun lotus-org-create-unnamed-task (&optional file task)
   (interactive
    (let ((file *lotus-org-unnamed-task-file*)
@@ -62,6 +88,7 @@
      t)
     subtask))
 
+;;;###autoload
 (defun lotus-org-create-unnamed-task-task-clock-in (&optional file parent-task)
   (interactive
    (let ((file *lotus-org-unnamed-task-file*)
@@ -89,12 +116,13 @@
    *lotus-org-unnamed-parent-task-name*)
 
   )
-
+;;;###autoload
 (defun lotus-org-merge-unnamed-task-at-point ()
   (interactive)
   ;; Implement
   )
 
+;;;###autoload
 (defun org-clock-marker-is-unnamed-clock-p (&optional clock)
   (let ((clock (or clock org-clock-marker)))
     (and
@@ -104,6 +132,7 @@
       (marker-buffer org-clock-marker)
       (marker-buffer *lotus-org-unnamed-task-clock-marker*)))))
 
+;;;###autoload
 (defun lotus-org-unnamed-task-at-point-p ()
   (save-restriction
     (save-excursion
@@ -118,7 +147,7 @@
               (string-match-p "Unnamed task [0-9]+" title)))))))
 
 ;; (lotus-org-create-unnamed-task "~/Unnamed.org" "Unnamed tasks")
-
+;;;###autoload
 (defun org-clock-make-child-task-and-clock-in ()
   ;; TODO
   "Implement"

@@ -48,6 +48,8 @@
             (org-clock-in-refile nil)))))
 
 (defvar org-clock-in-if-not-at-time-timer nil)
+
+;;;###autoload
 (defun org-clock-in-if-not-at-time (delay)
   (setq org-clock-in-if-not-at-time-timer
         (run-at-time-or-now delay
@@ -55,9 +57,11 @@
                                 (if (any-frame-opened-p)
                                     (org-clock-in-if-not))))))
 
+;;;###autoload
 (defun org-clock-in-if-not-at-time-delay ()
   (org-clock-in-if-not-at-time org-clock-in-if-not-delay))
 
+;;;###autoload
 (defun org-clock-in-if-not-at-time-delay-fn ()
   (org-clock-in-if-not-at-time-delay))
 

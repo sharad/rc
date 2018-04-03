@@ -127,7 +127,9 @@
 
   (defvar face-scale-div-max-min '(110 600 120 80))
 
-  (setq face-scale-div-max-min '(110 210 92 92))
+  (setq face-scale-div-max-min '(110 224 120 92))
+
+  ;; (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
 
   (defun maxmin-optimized-value (val scale div &optional max min)
     (let ((opt (/ (* val scale) div)))
@@ -258,5 +260,10 @@
              (propertize (concat "The quick brown fox jumps over the lazy dog 1 l; 0 O o ("
                                  font-family ")\n") 'face `((:family ,font-family) italic)))))))
     ))
+
+
+
+(add-hook 'after-make-frame-functions
+          #'(lambda (frame) (set-default-face-height-by-resolution)) t)
 
 ;;; config.el ends here

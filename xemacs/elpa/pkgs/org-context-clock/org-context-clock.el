@@ -229,10 +229,10 @@
   (let ((clock (or clock org-clock-marker)))
     (and
      clock
-     *lotus-org-unnamed-task-clock-marker*
+     (lotus-org-unnamed-task-clock-marker)
      (equal
       (marker-buffer org-clock-marker)
-      (marker-buffer *lotus-org-unnamed-task-clock-marker*)))))
+      (marker-buffer (lotus-org-unnamed-task-clock-marker))))))
 
 (defun org-context-clock-maybe-create-unnamed-task ()
   (when (org-context-clock-can-create-unnamed-task-p)

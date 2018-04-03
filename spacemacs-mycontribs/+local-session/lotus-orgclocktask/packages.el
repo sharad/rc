@@ -166,7 +166,7 @@ Each entry is either:
             :defer t
             :config
             (progn
-              (progn ;code will not get run as when
+              (progn ;code will not get to run as when
                 ;;`enable-startup-interrupting-feature-hook' run at start,
                 ;;that time package `org-misc-utils-lotus' did not get
                 ;;loaded.
