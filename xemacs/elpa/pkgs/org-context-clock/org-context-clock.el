@@ -295,7 +295,8 @@
       (org-context-clock-debug :debug "org-context-clock-update-current-context: not enough time passed.")))
 
 
-(defun org-context-clock-update-current-context-x ()
+(defun org-context-clock-update-current-context-x (force)
+  (interactive "P")
   (if t
       (let* ((context (org-context-clock-build-context)))
         (unless nil
@@ -303,7 +304,9 @@
            *org-context-clock-task-previous-context* *org-context-clock-task-current-context*
            *org-context-clock-task-current-context*  context)
 
-          (unless (org-context-clock-current-task-associated-to-context-p context)
+          (unless (and
+                   (not (org-clock-marker-is-unnamed-clock-p))
+                   (> (org-context-clock-current-task-associated-to-context-p context) 0))
             (unless (org-context-clock-dyntaskpl-run-associated-dyntaskpl context)
               (org-context-clock-debug :debug "trying to create unnamed task.")
               ;; not able to find associated, or intentionally not selecting a clock

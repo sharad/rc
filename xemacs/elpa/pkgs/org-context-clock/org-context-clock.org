@@ -311,7 +311,8 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
           (org-context-clock-debug :debug "org-context-clock-update-current-context: not enough time passed.")))
 
 
-    (defun org-context-clock-update-current-context-x ()
+    (defun org-context-clock-update-current-context-x (force)
+      (interactive "P")
       (if t
           (let* ((context (org-context-clock-build-context)))
             (unless nil
@@ -319,7 +320,9 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
                *org-context-clock-task-previous-context* *org-context-clock-task-current-context*
                *org-context-clock-task-current-context*  context)
 
-              (unless (org-context-clock-current-task-associated-to-context-p context)
+              (unless (and
+                       (not (org-clock-marker-is-unnamed-clock-p))
+                       (> (org-context-clock-current-task-associated-to-context-p context) 0))
                 (unless (org-context-clock-dyntaskpl-run-associated-dyntaskpl context)
                   (org-context-clock-debug :debug "trying to create unnamed task.")
                   ;; not able to find associated, or intentionally not selecting a clock
@@ -372,9 +375,11 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
 
 #+END_SRC
 
+** TODO add org-insert-log-not
 
 #+BEGIN_SRC  emacs-lisp
   (defun org-context-clock-clockin-marker (marker)
+    ;;TODO add org-insert-log-not
     (message "org-context-clock-clockin-marker %s" marker)
     (when (and
            marker
@@ -428,8 +433,8 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
             (progn
               (setq *org-context-clock-update-current-context-msg* "null clock")
               (org-context-clock-message 6
-               "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
-               context)
+                                         "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
+                                         context)
               (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
                 (org-context-clock-add-context-to-org-heading-when-idle context 7)
                 nil))))))
@@ -439,34 +444,37 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
     ;;;###autoload
   (defun org-context-clock-dyntaskpl-run-associated-dyntaskpl (context)
     "marker and ranked version"
-      (interactive
-       (list (org-context-clock-build-context)))
-      (progn
-        (let* ((matched-dyntaskpls
-                (remove-if-not
-                 #'(lambda (dyntaskpl)
-                     (and
-                      (plist-get dyntaskpl :marker)
-                      (marker-buffer (plist-get dyntaskpl :marker))))
-                 (org-context-clock-dyntaskpls-associated-to-context context))))
-          (if matched-dyntaskpls
-              (let ((sel-dyntaskpl
-                      (if (> (length matched-dyntaskpls) 1)
-                          (cdr (sacha/helm-select-dyntaskpl-timed matched-dyntaskpls))
-                          (cdar matched-dyntaskpls))))
-                (when (and
-                       sel-dyntaskpl
-                       (markerp sel-dyntaskpl)
-                       (marker-buffer sel-dyntaskpl))
-                  (org-context-clock-clockin-marker (plist-get sel-dyntaskpl :marker))))
-              (progn
-                (setq *org-context-clock-update-current-context-msg* "null clock")
-                (org-context-clock-message 6
-                 "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
-                 context)
-                (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
-                  (org-context-clock-add-context-to-org-heading-when-idle context 7)
-                  nil))))))
+    (interactive
+     (list (org-context-clock-build-context)))
+    (progn
+      (let* ((matched-dyntaskpls
+              (remove-if-not
+               #'(lambda (dyntaskpl)
+                   (and
+                    (plist-get dyntaskpl :marker)
+                    (marker-buffer (plist-get dyntaskpl :marker))))
+               (org-context-clock-dyntaskpls-associated-to-context context))))
+        (if matched-dyntaskpls
+            (let* ((sel-dyntaskpl
+                    (if (> (length matched-dyntaskpls) 1)
+                        (sacha/helm-select-dyntaskpl-timed matched-dyntaskpls)
+                        (car matched-dyntaskpls)))
+                   (sel-task  (plist-get sel-dyntaskpl :task))
+                   (sel-marker (plist-get sel-task :task-clock-marker)))
+              (message "sel-dyntaskpl %s sel-task %s sel-marker %s" sel-dyntaskpl sel-task sel-marker)
+              (when (and
+                     sel-marker
+                     (markerp sel-marker)
+                     (marker-buffer sel-marker))
+                (org-context-clock-clockin-marker sel-marker)))
+            (progn
+              (setq *org-context-clock-update-current-context-msg* "null clock")
+              (org-context-clock-message 6
+                                         "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
+                                         context)
+              (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
+                (org-context-clock-add-context-to-org-heading-when-idle context 7)
+                nil))))))
 #+END_SRC
 
 ** function to setup context clock timer
@@ -739,6 +747,15 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
  (when nil                               ;testing
 
    (org-context-clock-dyntaskpl-run-associated-dyntaskpl (org-context-clock-build-context))
+
+   (org-context-clock-dyntaskpls-associated-to-context (org-context-clock-build-context))
+
+    (remove-if-not
+                 #'(lambda (dyntaskpl)
+                     (and
+                      (plist-get dyntaskpl :marker)
+                      (marker-buffer (plist-get dyntaskpl :marker))))
+                 (org-context-clock-dyntaskpls-associated-to-context (org-context-clock-build-context)))
 
    (org-context-clock-dyntaskpl-run-associated-dyntaskpl
     (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
