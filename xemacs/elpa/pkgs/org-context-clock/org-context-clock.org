@@ -384,43 +384,52 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
 
 ** TODO add org-insert-log-not
 #+BEGIN_SRC  emacs-lisp
-    (defun org-context-clock-clockin-dyntaskpl (dyntaskpl)
-      ;;TODO add org-insert-log-not
-      (org-context-clock-debug :debug "org-context-clock-clockin-marker %s" dyntaskpl)
-      (let* ((task (plist-get dyntaskpl :task))
-             (new-marker (if task (plist-get task  :task-clock-marker)))
-             (new-heading (if task (plist-get task :task-clock-heading)))
-             (old-heading "TODO Test"))
-      (when (and
-             new-marker
-             (marker-buffer new-marker))
-        (let* ((org-log-note-clock-out nil)
-               (prev-org-clock-marker org-clock-marker)
-               (prev-org-clock-buff (marker-buffer prev-org-clock-marker)))
-          (org-context-clock-debug :debug "clocking in %s" new-marker)
-          (let ((prev-clock-buff-read-only
-                 (if prev-org-clock-buff
-                     (with-current-buffer (marker-buffer prev-org-clock-marker)
-                       buffer-read-only))))
+       (defun org-context-clock-clockin-dyntaskpl (dyntaskpl)
+         ;;TODO add org-insert-log-not
+         (org-context-clock-debug :debug "org-context-clock-clockin-marker %s" dyntaskpl)
+         (let* (retval
+                (task (plist-get dyntaskpl :task))
+                (new-marker (if task (plist-get task  :task-clock-marker)))
+                (new-heading (if task (plist-get task :task-clock-heading)))
+                (old-heading "TODO Test"))
+         (when (and
+                new-marker
+                (marker-buffer new-marker))
+           (let* ((org-log-note-clock-out nil)
+                  (prev-org-clock-marker org-clock-marker)
+                  (prev-org-clock-buff (marker-buffer prev-org-clock-marker)))
+             (org-context-clock-debug :debug "clocking in %s" new-marker)
+             (let ((prev-clock-buff-read-only
+                    (if prev-org-clock-buff
+                        (with-current-buffer (marker-buffer prev-org-clock-marker)
+                          buffer-read-only))))
 
-            (if prev-org-clock-buff
-                (with-current-buffer prev-org-clock-buff
-                  (setq buffer-read-only nil)))
+               (if prev-org-clock-buff
+                   (with-current-buffer prev-org-clock-buff
+                     (setq buffer-read-only nil)))
 
-            (setq *org-context-clock-update-current-context-msg* prev-org-clock-marker)
+               (setq *org-context-clock-update-current-context-msg* prev-org-clock-marker)
 
-            (when prev-org-clock-marker
-              (org-insert-log-note prev-org-clock-marker (format "clocking out to clockin to <%s>" new-heading)))
+               (when prev-org-clock-marker
+                 (org-insert-log-note prev-org-clock-marker (format "clocking out to clockin to <%s>" new-heading)))
 
-            (with-current-buffer (marker-buffer new-marker)
-              (let ((buffer-read-only nil))
-                (when old-heading
-                  (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
-                (org-clock-clock-in (list new-marker))))
+               (with-current-buffer (marker-buffer new-marker)
+                 (let ((buffer-read-only nil))
+                   (when old-heading
+                     (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
+                   (condition-case err
+                       (progn
+                         (org-clock-clock-in (list new-marker))
+                         (setq retval t))
+                     ((error)
+                      (progn
+                        (setq retval nil)
+                        (signal (car err) (cdr err)))))))
 
-            (if prev-org-clock-buff
-                (with-current-buffer prev-org-clock-buff
-                  (setq buffer-read-only prev-clock-buff-read-only))))))))
+               (if prev-org-clock-buff
+                   (with-current-buffer prev-org-clock-buff
+                     (setq buffer-read-only prev-clock-buff-read-only)))
+               retval)))))
 #+END_SRC
 
 *** Clock-into one of associated tasks
@@ -532,55 +541,9 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
                  (when task ;; (and cat task)
                    ;; (insert (format "[%c] %-12s  %s\n" i cat task))
                    ;; marker
-                   (cons (org-context-clock-dyntaskpl-print dyntaskpl task) marker)))))))))
+                   (cons (org-context-clock-dyntaskpl-print dyntaskpl task) dyntaskpl)))))))))
 #+END_SRC
 
-
-#+BEGIN_SRC  emacs-lisp
- ;;;###autoload
- (defun org-context-clock-select-task-from-clocks (clocks &optional prompt)
-
-   ;; not in use
-
-   "Select a task that was recently associated with clocking."
-   (interactive)
-   (let (och chl sel-list rpl (i 0) s)
-     ;; Remove successive dups from the clock history to consider
-     (mapc (lambda (c) (if (not (equal c (car och))) (push c och)))
-           clocks)
-     (setq och (reverse och) chl (length och))
-     (if (zerop chl)
-         (user-error "No matched org heading")
-         (save-window-excursion
-           (org-switch-to-buffer-other-window
-            (get-buffer-create "*Clock Task Select*"))
-           (erase-buffer)
-           (insert (org-add-props "Tasks matched to current context\n" nil 'face 'bold))
-           (mapc
-            (lambda (m)
-              (when (marker-buffer m)
-                (setq i (1+ i)
-                      s (org-context-clock-insert-selection-line
-                         (if (< i 10)
-                             (+ i ?0)
-                             (+ i (- ?A 10))) m))
-                (if (fboundp 'int-to-char) (setf (car s) (int-to-char (car s))))
-                (push s sel-list)))
-            och)
-           (run-hooks 'org-clock-before-select-task-hook)
-           (goto-char (point-min))
-           ;; Set min-height relatively to circumvent a possible but in
-           ;; `fit-window-to-buffer'
-           (fit-window-to-buffer nil nil (if (< chl 10) chl (+ 5 chl)))
-           (message (or prompt "Select task for clocking:"))
-           (setq cursor-type nil rpl (read-char-exclusive))
-           (kill-buffer)
-           (cond
-             ((eq rpl ?q) nil)
-             ((eq rpl ?x) nil)
-             ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
-             (t (user-error "Invalid task choice %c" rpl)))))))
-#+END_SRC
 
 #+BEGIN_SRC  emacs-lisp
   ;; rank based

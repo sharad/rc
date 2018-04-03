@@ -165,6 +165,7 @@
 (defun org-context-clock-task-update-tasks (&optional force)
   "Update task infos"
   (interactive "P")
+  (message "calling org-context-clock-task-update-tasks")
   (funcall org-context-clock-api-task-update-tasks force))
 
 ;;;###autoload
@@ -174,7 +175,13 @@
   (funcall org-context-clock-api-task-update-files force))
 
 (defun org-context-clock-build-tasks (file)
-  (when (member file (org-context-clock-task-update-files))
+  (when (member*
+              file
+              (org-context-clock-task-update-files)
+              :test #'(lambda (f1 f2)
+                        (string-equal
+                         (file-truename f1)
+                         (file-truename f2))))
     (org-context-clock-task-update-tasks t)))
 
 (defun org-context-clock-after-save-hook ()
@@ -358,100 +365,80 @@
     (org-context-clock-task-associated-to-context-p task context)))
 ;; Collect and return task matching to CONTEXT:1 ends here
 
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:2]]
-(defun org-context-clock-clockin-marker (marker)
-  (message "org-context-clock-clockin-marker %s" marker)
+;; TODO add org-insert-log-not
+
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*add%20org-insert-log-not][add org-insert-log-not:1]]
+(defun org-context-clock-clockin-dyntaskpl (dyntaskpl)
+  ;;TODO add org-insert-log-not
+  (org-context-clock-debug :debug "org-context-clock-clockin-marker %s" dyntaskpl)
+  (let* ((task (plist-get dyntaskpl :task))
+         (new-marker (if task (plist-get task  :task-clock-marker)))
+         (new-heading (if task (plist-get task :task-clock-heading)))
+         (old-heading "TODO Test"))
   (when (and
-         marker
-         (marker-buffer marker))
-    (let ((org-log-note-clock-out nil)
-          (prev-org-clock-buff (marker-buffer org-clock-marker)))
-      (org-context-clock-debug :debug "clocking in %s" marker)
+         new-marker
+         (marker-buffer new-marker))
+    (let* ((org-log-note-clock-out nil)
+           (prev-org-clock-marker org-clock-marker)
+           (prev-org-clock-buff (marker-buffer prev-org-clock-marker)))
+      (org-context-clock-debug :debug "clocking in %s" new-marker)
       (let ((prev-clock-buff-read-only
              (if prev-org-clock-buff
-                 (with-current-buffer (marker-buffer org-clock-marker)
+                 (with-current-buffer (marker-buffer prev-org-clock-marker)
                    buffer-read-only))))
 
         (if prev-org-clock-buff
             (with-current-buffer prev-org-clock-buff
               (setq buffer-read-only nil)))
 
-        (setq *org-context-clock-update-current-context-msg* org-clock-marker)
+        (setq *org-context-clock-update-current-context-msg* prev-org-clock-marker)
 
-        (with-current-buffer (marker-buffer marker)
+        (when prev-org-clock-marker
+          (org-insert-log-note prev-org-clock-marker (format "clocking out to clockin to <%s>" new-heading)))
+
+        (with-current-buffer (marker-buffer new-marker)
           (let ((buffer-read-only nil))
-            (org-clock-clock-in (list marker))))
+            (when old-heading
+              (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
+            (org-clock-clock-in (list new-marker))))
 
         (if prev-org-clock-buff
             (with-current-buffer prev-org-clock-buff
-              (setq buffer-read-only prev-clock-buff-read-only)))))))
-;; Collect and return task matching to CONTEXT:2 ends here
+              (setq buffer-read-only prev-clock-buff-read-only))))))))
+;; add org-insert-log-not:1 ends here
 
 ;; Clock-into one of associated tasks
 
-
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Clock-into%20one%20of%20associated%20tasks][Clock-into one of associated tasks:1]]
 ;;;###autoload
-(defun org-context-clock-task-run-associated-clock (context)
-  "only marker version"
+(defun org-context-clock-dyntaskpl-run-associated-dyntaskpl (context)
+  "marker and ranked version"
   (interactive
    (list (org-context-clock-build-context)))
   (progn
-    (let* ((matched-clocks
+    (let* ((matched-dyntaskpls
             (remove-if-not
-             #'(lambda (marker) (marker-buffer marker))
-             (org-context-clock-markers-associated-to-context context))))
-      (if matched-clocks
-          (let ((sel-clock (if (> (length matched-clocks) 1)
-                               (sacha/helm-select-clock-timed matched-clocks)
-                               (car matched-clocks))))
-            (when (and
-                   sel-clock
-                   (markerp sel-clock)
-                   (marker-buffer sel-clock))
-              (org-context-clock-clockin-marker sel-clock)))
+             #'(lambda (dyntaskpl)
+                 (and
+                  (plist-get dyntaskpl :marker)
+                  (marker-buffer (plist-get dyntaskpl :marker))))
+             (org-context-clock-dyntaskpls-associated-to-context context))))
+      (if matched-dyntaskpls
+          (let* ((sel-dyntaskpl
+                  (if (> (length matched-dyntaskpls) 1)
+                      (sacha/helm-select-dyntaskpl-timed matched-dyntaskpls)
+                      (car matched-dyntaskpls)))
+                 (sel-task  (plist-get sel-dyntaskpl :task))
+                 (sel-marker (plist-get sel-task :task-clock-marker)))
+            (message "sel-dyntaskpl %s sel-task %s sel-marker %s" sel-dyntaskpl sel-task sel-marker)
+            (org-context-clock-clockin-dyntaskpl sel-dyntaskpl))
           (progn
             (setq *org-context-clock-update-current-context-msg* "null clock")
             (org-context-clock-message 6
-             "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
-             context)
-            (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
-              (org-context-clock-add-context-to-org-heading-when-idle context 7)
-              nil))))))
-
-
-
-  ;;;###autoload
-(defun org-context-clock-dyntaskpl-run-associated-dyntaskpl (context)
-  "marker and ranked version"
-    (interactive
-     (list (org-context-clock-build-context)))
-    (progn
-      (let* ((matched-dyntaskpls
-              (remove-if-not
-               #'(lambda (dyntaskpl)
-                   (and
-                    (plist-get dyntaskpl :marker)
-                    (marker-buffer (plist-get dyntaskpl :marker))))
-               (org-context-clock-dyntaskpls-associated-to-context context))))
-        (if matched-dyntaskpls
-            (let ((sel-dyntaskpl
-                    (if (> (length matched-dyntaskpls) 1)
-                        (cdr (sacha/helm-select-dyntaskpl-timed matched-dyntaskpls))
-                        (cdar matched-dyntaskpls))))
-              (when (and
-                     sel-dyntaskpl
-                     (markerp sel-dyntaskpl)
-                     (marker-buffer sel-dyntaskpl))
-                (org-context-clock-clockin-marker (plist-get sel-dyntaskpl :marker))))
-            (progn
-              (setq *org-context-clock-update-current-context-msg* "null clock")
-              (org-context-clock-message 6
-               "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
-               context)
-              (when t ; [renabled] ;disabling to check why current-idle-time no working properly.
-                (org-context-clock-add-context-to-org-heading-when-idle context 7)
-                nil))))))
+                                       "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
+                                       context)
+            (org-context-clock-add-context-to-org-heading-when-idle context 7)
+            nil)))))
 ;; Clock-into one of associated tasks:1 ends here
 
 ;; function to setup context clock timer
@@ -576,46 +563,7 @@ pointing to it."
 ;; function to setup context clock timer:3 ends here
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:4]]
-(defun sacha/helm-select-clock (clocks)
-  (org-context-clock-debug :debug "sacha marker %s" (car clocks))
-  (helm
-   (list
-    (helm-build-sync-source "Select matching clock"
-      :candidates (mapcar 'sacha-org-context-clock-selection-line clocks)
-      :action (list ;; (cons "Select" 'identity)
-               (cons "Clock in and track" #'identity))
-      :history 'org-refile-history)
-    ;; (helm-build-dummy-source "Create task"
-    ;;   :action (helm-make-actions
-    ;;            "Create task"
-    ;;            'sacha/helm-org-create-task))
-    )))
-
-(defun sacha/helm-select-clock-timed (clocks)
-  (helm-timed 7
-    (message "running sacha/helm-select-clock")
-    (sacha/helm-select-clock clocks)))
-
-(defun sacha/helm-clock-action (clocks clockin-fn)
-  (message "sacha marker %s" (car clocks))
-  ;; (setq sacha/helm-org-refile-locations tbl)
-  (progn
-    (helm
-     (list
-      (helm-build-sync-source "Select matching clock"
-        :candidates (mapcar 'sacha-org-context-clock-selection-line clocks)
-        :action (list ;; (cons "Select" 'identity)
-                      (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
-        :history 'org-refile-history)
-      ;; (helm-build-dummy-source "Create task"
-      ;;   :action (helm-make-actions
-      ;;            "Create task"
-      ;;            'sacha/helm-org-create-task))
-      ))))
-
-
 ;; rank based
-
   (defun sacha/helm-select-dyntaskpl (dyntaskpls)
     (org-context-clock-debug :debug "sacha marker %s" (car dyntaskpls))
     (helm
@@ -655,7 +603,7 @@ pointing to it."
 
 
 
-;; org-context-clock-task-run-associated-clock
+;; org-context-clock-dyntaskpl-run-associated-dyntaskpl
 
 ;; (sacha/helm-clock-action (org-context-clock-markers-associated-to-context (org-context-clock-build-context)) #'org-context-clock-clockin-marker)
 ;; (sacha/helm-select-clock (org-context-clock-markers-associated-to-context (org-context-clock-build-context)))
@@ -715,6 +663,15 @@ pointing to it."
 (when nil                               ;testing
 
   (org-context-clock-dyntaskpl-run-associated-dyntaskpl (org-context-clock-build-context))
+
+  (org-context-clock-dyntaskpls-associated-to-context (org-context-clock-build-context))
+
+   (remove-if-not
+                #'(lambda (dyntaskpl)
+                    (and
+                     (plist-get dyntaskpl :marker)
+                     (marker-buffer (plist-get dyntaskpl :marker))))
+                (org-context-clock-dyntaskpls-associated-to-context (org-context-clock-build-context)))
 
   (org-context-clock-dyntaskpl-run-associated-dyntaskpl
    (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
