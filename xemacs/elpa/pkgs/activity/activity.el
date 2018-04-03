@@ -61,6 +61,12 @@
   :type 'string
   :group 'wakatime)
 
+(defclass event ()
+  ()
+  :document "Event class"
+  :abstract t)
+
+
 
 (defun wakatime-client-command (savep &optional dont-use-key)
   "Return client command executable and arguments.

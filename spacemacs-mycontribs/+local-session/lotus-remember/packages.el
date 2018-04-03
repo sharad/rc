@@ -333,6 +333,13 @@ Each entry is either:
 
           (org-capture-template-gen)))))
 
+(defun lotus-remember/init-org-capture+ ()
+  (use-package org-capture+
+      :defer t
+      :config
+      (progn
+        )))
+
 (when nil
  (defun org-goto-refile (&optional refile-targets)
    "Refile goto."

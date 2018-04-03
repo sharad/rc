@@ -112,6 +112,15 @@
                 (message "not at drawer"))
             (message "reached to drawer1")))))))
 
+(defun org-get-flag-proprty-drawer-at-marker (marker)
+  (let ((buff (marker-buffer marker))
+        (loc (marker-position marker)))
+    (when (and buff loc)
+      (with-current-buffer buff
+        (when (goto-char loc)
+          (let ((range (org-get-property-block (point) 'force)))
+            org-cycle-subtree-status))))))
+
 ;;;###autoload
 (defun org-context-clock-add-context-to-org-heading (context timeout)
   "add-context-to-org-heading"
