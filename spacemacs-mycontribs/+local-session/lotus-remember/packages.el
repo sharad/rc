@@ -320,9 +320,34 @@ Each entry is either:
                  "** %^{BriefDesc} %U %^g\n%?\n [%a]\n"
                  :empty-lines 1)
 
+
+
+                (add-org-capture-templates
+                 "r" "Refile"
+                 'entry
+                 (function org-goto-refile)
+                 "* TODO %? %^g\n %i\n [%a]\n"
+                 :empty-lines 1)
+
                 )))
 
           (org-capture-template-gen)))))
+
+(when nil
+ (defun org-goto-refile (&optional refile-targets)
+   "Refile goto."
+   ;; mark paragraph if no region is set
+   (let* ((org-refile-targets (or refile-targets org-refile-targets))
+          (target (save-excursion (safe-org-refile-get-location)))
+          (file (nth 1 target))
+          (pos (nth 3 target)))
+     (when (switch-to-buffer (find-file-noselect file) 'norecord)
+       (goto-char pos))))
+
+ (let ((reversed? nil))
+   (funcall 'org-goto-refile)
+   (if reversed? (outline-next-heading) (org-end-of-subtree t t))
+   (org-capture 0 "r")))
 
 (defun lotus-remember/post-init-planner ()
   (use-package planner

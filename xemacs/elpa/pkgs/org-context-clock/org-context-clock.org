@@ -398,6 +398,9 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
 
           (setq *org-context-clock-update-current-context-msg* org-clock-marker)
 
+          (when org-clock-marker
+             (org-insert-log-note org-clock-marker ""))
+
           (with-current-buffer (marker-buffer marker)
             (let ((buffer-read-only nil))
               (org-clock-clock-in (list marker))))
@@ -405,6 +408,46 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
           (if prev-org-clock-buff
               (with-current-buffer prev-org-clock-buff
                 (setq buffer-read-only prev-clock-buff-read-only)))))))
+
+
+
+    (defun org-context-clock-clockin-dyntaskpl (dyntaskpl)
+      ;;TODO add org-insert-log-not
+      (org-context-clock-debug :debug "org-context-clock-clockin-marker %s" dyntaskpl)
+      (let* ((task (plist-get dyntaskpl :task))
+             (new-marker (if task (plist-get task  :task-clock-marker)))
+             (new-heading (if task (plist-get task :task-clock-heading)))
+             (old-heading "TODO Test"))
+      (when (and
+             new-marker
+             (marker-buffer new-marker))
+        (let* ((org-log-note-clock-out nil)
+               (prev-org-clock-marker org-clock-marker)
+               (prev-org-clock-buff (marker-buffer prev-org-clock-marker)))
+          (org-context-clock-debug :debug "clocking in %s" new-marker)
+          (let ((prev-clock-buff-read-only
+                 (if prev-org-clock-buff
+                     (with-current-buffer (marker-buffer prev-org-clock-marker)
+                       buffer-read-only))))
+
+            (if prev-org-clock-buff
+                (with-current-buffer prev-org-clock-buff
+                  (setq buffer-read-only nil)))
+
+            (setq *org-context-clock-update-current-context-msg* prev-org-clock-marker)
+
+            (when prev-org-clock-marker
+              (org-insert-log-note prev-org-clock-marker (format "clockingout to clockin to %s" new-heading)))
+
+            (with-current-buffer (marker-buffer new-marker)
+              (let ((buffer-read-only nil))
+                (when old-heading
+                  (org-insert-log-note new-marker (format "clockin to here from last clock %s" old-heading)))
+                (org-clock-clock-in (list new-marker))))
+
+            (if prev-org-clock-buff
+                (with-current-buffer prev-org-clock-buff
+                  (setq buffer-read-only prev-clock-buff-read-only))))))))
 
 #+END_SRC
 
@@ -462,11 +505,7 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
                    (sel-task  (plist-get sel-dyntaskpl :task))
                    (sel-marker (plist-get sel-task :task-clock-marker)))
               (message "sel-dyntaskpl %s sel-task %s sel-marker %s" sel-dyntaskpl sel-task sel-marker)
-              (when (and
-                     sel-marker
-                     (markerp sel-marker)
-                     (marker-buffer sel-marker))
-                (org-context-clock-clockin-marker sel-marker)))
+              (org-context-clock-clockin-dyntaskpl sel-dyntaskpl))
             (progn
               (setq *org-context-clock-update-current-context-msg* "null clock")
               (org-context-clock-message 6
