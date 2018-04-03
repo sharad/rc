@@ -53,15 +53,11 @@
        ,@binds)))
 (put 'def-task-functions 'lisp-indent-function 3)
 
-
-
-
-
 (defun org-context-clock-key-fun (key operation)
   (let ((keyfns (assoc key org-context-clock-key-operation-functions)))
     (plist-get (cdr keyfns) operation)))
 
-(defun org-context-clock-keys-with-operation (operation)
+(defun org-context-clock-keys-with-operation (operation context)
   (remove-if-not
    #'(lambda (key)
        ;; (message "%s: %s" key operation)

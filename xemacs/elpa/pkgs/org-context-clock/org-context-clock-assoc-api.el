@@ -65,7 +65,7 @@
   (getter
    "Get root dir"
    (let* ((file (if context (plist-get context :file)))
-          (dir (if (stringp file) (file-name-directory file) default-directory))
+          (dir (if (stringp file) (file-name-directory file) (dirname-of-file (plist-get :file context))))
           (prompt (concat key ": ")))
      (ido-read-directory-name
       prompt

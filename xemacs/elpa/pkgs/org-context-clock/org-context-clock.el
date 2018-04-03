@@ -669,7 +669,7 @@ pointing to it."
     (add-hook 'elscreen-goto-hook          'org-context-clock-run-task-current-context-timer)
     (add-hook 'after-save-hook             'org-context-clock-after-save-hook nil t))
 
-  (dolist (prop (org-context-clock-keys-with-operation :getter))
+  (dolist (prop (org-context-clock-keys-with-operation :getter nil))
     (let ((propstr
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
@@ -685,7 +685,7 @@ pointing to it."
     (remove-hook 'elscreen-goto-hook 'org-context-clock-run-task-current-context-timer)
     (remove-hook 'after-save-hook             'org-context-clock-after-save-hook t))
 
-  (dolist (prop (org-context-clock-keys-with-operation :getter))
+  (dolist (prop (org-context-clock-keys-with-operation :getter nil))
     (let ((propstr
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)

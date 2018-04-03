@@ -47,20 +47,30 @@
   (org-get-property prop-key))
 
 (defun org-context-clock-set-property (prop-key value context &rest args)
-  (org-set-property prop-key
+  (let ((prop-key-str (if (eq (elt prop-key 0 ) ?\:) (substring prop-key 1))))
+   (org-set-property prop-key
                     (if value
                         value
                         (funcall
-                         (org-context-clock-key-fun prop-key :getter)
-                         nil context args)))
+                         (org-context-clock-key-fun (intern prop-key) :getter)
+                         prop-key nil context args))))
   t)
 
-(defun org-context-clock-select-propetry (&optional prompt)
+;; (eq (elt ":root" 0) ?\:)
+
+;; (org-context-clock-select-propetry nil)
+
+;; (org-context-clock-keys-with-operation :getter nil)
+
+;; (org-context-clock-set-property (intern ":root") nil (list :file "/home/s/paradise/git/main/src/wnc/security/authenticator/ieee802_1x.cpp" :buffer (get-buffer "ieee802_1x.cpp")))
+
+
+(defun org-context-clock-select-propetry (context &optional prompt)
   ;; (ido-completing-read
   (completing-read
    (or prompt "proptery: ")
    (append
-    (org-context-clock-keys-with-operation :getter)
+    (org-context-clock-keys-with-operation :getter context)
     '("Edit" "Done"))
    nil t))
 
@@ -156,7 +166,7 @@
                               ;; try to read values of properties.
                               (let ((prop nil))
                                 (while (not
-                                        (member (setq prop (org-context-clock-select-propetry)) '("Edit" "Done")))
+                                        (member (setq prop (org-context-clock-select-propetry context)) '("Edit" "Done")))
                                   (when (org-context-clock-set-property prop nil context)
                                     (org-context-clock-task-update-tasks t)))
                                 (cond
@@ -164,6 +174,7 @@
                                    (funcall cleanup win local-cleanup)
                                    (when timer (cancel-timer timer)))
                                   ((string-equal "Edit" prop)
+                                   (funcall cleanup win local-cleanup)
                                    (when timer (cancel-timer timer))
                                    (when (and win (windowp win) (window-valid-p win))
                                      (select-window win 'norecord)))

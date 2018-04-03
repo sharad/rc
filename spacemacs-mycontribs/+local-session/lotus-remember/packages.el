@@ -39,6 +39,7 @@
     org
     (org-remember :location local)
     (org-capture :location local)
+    org-capture+
     planner
     (remember-planner :location local)
     (read-file-name :location local)
