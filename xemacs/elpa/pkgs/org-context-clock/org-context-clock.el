@@ -371,7 +371,8 @@
 (defun org-context-clock-clockin-dyntaskpl (dyntaskpl)
   ;;TODO add org-insert-log-not
   (org-context-clock-debug :debug "org-context-clock-clockin-marker %s" dyntaskpl)
-  (let* ((task (plist-get dyntaskpl :task))
+  (let* (retval
+         (task (plist-get dyntaskpl :task))
          (new-marker (if task (plist-get task  :task-clock-marker)))
          (new-heading (if task (plist-get task :task-clock-heading)))
          (old-heading "TODO Test"))
@@ -400,11 +401,19 @@
           (let ((buffer-read-only nil))
             (when old-heading
               (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
-            (org-clock-clock-in (list new-marker))))
+            (condition-case err
+                (progn
+                  (org-clock-clock-in (list new-marker))
+                  (setq retval t))
+              ((error)
+               (progn
+                 (setq retval nil)
+                 (signal (car err) (cdr err)))))))
 
         (if prev-org-clock-buff
             (with-current-buffer prev-org-clock-buff
-              (setq buffer-read-only prev-clock-buff-read-only))))))))
+              (setq buffer-read-only prev-clock-buff-read-only)))
+        retval)))))
 ;; add org-insert-log-not:1 ends here
 
 ;; Clock-into one of associated tasks
@@ -513,56 +522,10 @@ pointing to it."
                (when task ;; (and cat task)
                  ;; (insert (format "[%c] %-12s  %s\n" i cat task))
                  ;; marker
-                 (cons (org-context-clock-dyntaskpl-print dyntaskpl task) marker)))))))))
+                 (cons (org-context-clock-dyntaskpl-print dyntaskpl task) dyntaskpl)))))))))
 ;; function to setup context clock timer:2 ends here
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:3]]
-;;;###autoload
-(defun org-context-clock-select-task-from-clocks (clocks &optional prompt)
-
-  ;; not in use
-
-  "Select a task that was recently associated with clocking."
-  (interactive)
-  (let (och chl sel-list rpl (i 0) s)
-    ;; Remove successive dups from the clock history to consider
-    (mapc (lambda (c) (if (not (equal c (car och))) (push c och)))
-          clocks)
-    (setq och (reverse och) chl (length och))
-    (if (zerop chl)
-        (user-error "No matched org heading")
-        (save-window-excursion
-          (org-switch-to-buffer-other-window
-           (get-buffer-create "*Clock Task Select*"))
-          (erase-buffer)
-          (insert (org-add-props "Tasks matched to current context\n" nil 'face 'bold))
-          (mapc
-           (lambda (m)
-             (when (marker-buffer m)
-               (setq i (1+ i)
-                     s (org-context-clock-insert-selection-line
-                        (if (< i 10)
-                            (+ i ?0)
-                            (+ i (- ?A 10))) m))
-               (if (fboundp 'int-to-char) (setf (car s) (int-to-char (car s))))
-               (push s sel-list)))
-           och)
-          (run-hooks 'org-clock-before-select-task-hook)
-          (goto-char (point-min))
-          ;; Set min-height relatively to circumvent a possible but in
-          ;; `fit-window-to-buffer'
-          (fit-window-to-buffer nil nil (if (< chl 10) chl (+ 5 chl)))
-          (message (or prompt "Select task for clocking:"))
-          (setq cursor-type nil rpl (read-char-exclusive))
-          (kill-buffer)
-          (cond
-            ((eq rpl ?q) nil)
-            ((eq rpl ?x) nil)
-            ((assoc rpl sel-list) (cdr (assoc rpl sel-list)))
-            (t (user-error "Invalid task choice %c" rpl)))))))
-;; function to setup context clock timer:3 ends here
-
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:4]]
 ;; rank based
   (defun sacha/helm-select-dyntaskpl (dyntaskpls)
     (org-context-clock-debug :debug "sacha marker %s" (car dyntaskpls))
@@ -608,9 +571,9 @@ pointing to it."
 ;; (sacha/helm-clock-action (org-context-clock-markers-associated-to-context (org-context-clock-build-context)) #'org-context-clock-clockin-marker)
 ;; (sacha/helm-select-clock (org-context-clock-markers-associated-to-context (org-context-clock-build-context)))
 ;; (sacha/helm-clock-action (org-context-clock-markers-associated-to-context (org-context-clock-build-context (find-file-noselect "~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.el"))))
-;; function to setup context clock timer:4 ends here
+;; function to setup context clock timer:3 ends here
 
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:5]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:4]]
 ;;;###autoload
 (defun org-context-clock-insinuate ()
   (interactive)
@@ -641,7 +604,7 @@ pointing to it."
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
         (delete propstr org-use-property-inheritance)))))
-;; function to setup context clock timer:5 ends here
+;; function to setup context clock timer:4 ends here
 
 ;; Test functions
 

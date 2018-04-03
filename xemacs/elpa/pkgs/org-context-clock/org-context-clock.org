@@ -44,6 +44,30 @@ A context based clocking
 
 #+END_SRC
 
+** TODO spaceline-org-clock-format-function
+#+BEGIN_SRC elisp :tangle no
+(defun org-clock-get-clock-string ()
+  "Form a clock-string, that will be shown in the mode line.
+If an effort estimate was defined for the current item, use
+01:30/01:50 format (clocked/estimated).
+If not, show simply the clocked time like 01:50."
+  (let ((clocked-time (org-clock-get-clocked-time)))
+    (if org-clock-effort
+	(let* ((effort-in-minutes (org-duration-to-minutes org-clock-effort))
+	       (work-done-str
+		(propertize (org-duration-from-minutes clocked-time)
+			    'face
+			    (if (and org-clock-task-overrun
+				     (not org-clock-task-overrun-text))
+				'org-mode-line-clock-overrun
+			      'org-mode-line-clock)))
+	       (effort-str (org-duration-from-minutes effort-in-minutes)))
+	  (format (propertize " [%s/%s] (%s)" 'face 'org-mode-line-clock)
+		  work-done-str effort-str org-clock-heading))
+      (format (propertize " [%s] (%s)" 'face 'org-mode-line-clock)
+	      (org-duration-from-minutes clocked-time)
+	      org-clock-heading))))
+#+END_SRC
 ** Required libraries
 
  #+BEGIN_SRC  emacs-lisp
