@@ -37,7 +37,7 @@
 (defconst lotus-journaling-packages
   '(
     (records :location local)
-    org-journal
+    ;; org-journal
     )
   "The list of Lisp packages required by the lotus-journaling layer.
 
@@ -75,6 +75,7 @@ c
    records-init-file (expand-file-name "~/.emacs.d/records")
    records-directory (expand-file-name "~/.Organize/emacs/records")))))
 
+(when nil
 (defun lotus-journaling/init-org-journal ()
   (use-package org-journal
       :defer t
@@ -87,5 +88,6 @@ c
            org-journal-file-pattern (org-journal-format-string->regex org-journal-file-format)
            org-journal-dir (org-publish-get-attribute "journal" "org" :base-directory))
           (org-journal-update-auto-mode-alist)))))
+)
 
 ;;; packages.el ends here
