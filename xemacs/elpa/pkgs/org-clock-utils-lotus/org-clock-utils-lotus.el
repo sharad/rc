@@ -192,6 +192,21 @@ he has to read scheme, guixsd details, than see similar module and try to implem
 
 (defun org-log-not-on-event (start end event)
   )
+
+(defun org-goto-refile (&optional refile-targets)
+  "Refile goto."
+  ;; mark paragraph if no region is set
+  (let* ((org-refile-targets (or refile-targets org-refile-targets))
+         (target (save-excursion (safe-org-refile-get-location)))
+         (file (nth 1 target))
+         (pos (nth 3 target)))
+    (when (set-buffer (find-file-noselect file)) ;; (switch-to-buffer (find-file-noselect file) 'norecord)
+      (goto-char pos))))
+
+(defun org-clock-new-task ()
+  (interactive)
+  (org-capture nil "x"))
+
 ;;;}}}
 
 
