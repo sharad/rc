@@ -335,13 +335,18 @@ then
     fi
 fi
 
+
+# need to run in temporary terminal
 (sleep 60s ;
  echo 'URxvt.font: xft:DejaVu Sans Mono:size=12' |  xrdb -merge - >&/dev/null ;
  if ! timeout 2s get-imap-pass -u localhost >& /dev/null ;
  then
-     pkill gnome-key >& /dev/null ;
-     sleep 1s ;
-     gnome-keyring-daemon --daemonize  >& /dev/null ;
+     pkill gnome-keyr >& /dev/null ;
+     sleep 1s
+     gnome-keyring-daemon --daemonize  >& /dev/null
+     if timeout 7 get-imap-pass -u localhost >& /dev/null
+     then
+         pkill gnome-keyr  >& /dev/null
+     fi
  fi;
- timeout 7 get-imap-pass -u localhost >& /dev/null || pkill gnome-keyr  >& /dev/null;
 ) &!

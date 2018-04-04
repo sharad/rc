@@ -291,6 +291,7 @@
   (lotus-necessary-test)
   ;; limiting gnus messages
   (setq gnus-verbose 1)
+  (setq org-agenda-files nil)
   (message "loading lotus-emacs-user-init-finish finished"))
 
 (defun lotus-necessary-functionality ()

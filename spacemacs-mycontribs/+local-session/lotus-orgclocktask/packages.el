@@ -39,6 +39,10 @@
     ;; (PACKAGE :location local)
     org-doing
     org-misc-utils-lotus
+    org-clock-unnamed-task
+    org-clock-hooks
+    org-clock-check
+    org-clock-in-if-not
     org-clock-utils-lotus
     org-clock-daysummary
     org-clock-table-misc-lotus
@@ -112,6 +116,123 @@ Each entry is either:
                     (if (org-clock-is-active)
                         (org-clock-out)))))))))))
 
+
+(defun lotus-orgclocktask/init-org-clock-unnamed-task ()
+  (use-package org-clock-unnamed-task
+      :defer t
+      :config
+      (progn
+        (progn
+          )
+        (progn
+          )
+        (progn
+          (setq
+           *lotus-org-unnamed-task-file*        (expand-file-name "Unnamed.org" (task-party-base-dir))
+           *lotus-org-unnamed-parent-task-name* "Unnamed tasks"
+           *lotus-org-unnamed-task-name-fmt*    "Unnamed task %d")))))
+
+(defun lotus-orgclocktask/init-org-clock-hooks ()
+  (use-package org-clock-hooks
+      :defer t
+      :config
+      (progn
+        (progn
+          )
+        (progn
+          )
+        (progn
+          (lotus-org-clock-in/out-insinuate-hooks)))))
+
+(defun lotus-orgclocktask/init-org-clock-check ()
+  (use-package org-clock-check
+      :defer t
+      :config
+      (progn
+        (progn
+          )
+        (progn
+          )))
+
+  (progn
+    (use-package sessions-unified
+        :defer t
+        :config
+        (progn
+          (add-to-enable-desktop-restore-interrupting-feature-hook
+           #'(lambda ()
+               (when (fboundp 'org-clock-start-check-timer-insiuate)
+                 (org-clock-start-check-timer-insiuate))
+               (when (fboundp 'org-clock-lotus-log-note-on-change-insinuate)
+                 (org-clock-lotus-log-note-on-change-insinuate)))))))
+  (progn
+    (use-package startup-hooks
+        :defer t
+        :config
+        )))
+
+(defun lotus-orgclocktask/init-org-clock-in-if-not ()
+  (use-package org-clock-in-if-not
+    :defer t
+    :config
+    (progn
+      (progn
+        )
+      (progn
+        )))
+  (progn
+    (use-package startup-hooks
+      :defer t
+      :config
+      (progn
+
+        (progn ;code will not get to run as when
+          ;;`enable-startup-interrupting-feature-hook' run at start,
+          ;;that time package `org-misc-utils-lotus' did not get
+          ;;loaded.
+          ;; BUG: not getting included
+
+          (defun call-org-clock-in-if-not-at-time-delay-frame-fn (frame)
+            (if (functionp 'org-clock-in-if-not-at-time-delay-fn)
+                (org-clock-in-if-not-at-time-delay-fn)
+              (warn "function org-clock-in-if-not-at-time-delay-frame-fn not defined.")))
+
+          (add-to-enable-startup-interrupting-feature-hook
+           #'(lambda ()
+               (add-hook
+                'delete-frame-functions
+                #'(lambda (nframe)
+                    (if (and
+                         (org-clock-is-active)
+                         (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
+                        (org-with-clock-writeable
+                         (let (org-log-note-clock-out)
+                           (if (org-clock-is-active)
+                               (org-clock-out)))))))) t)
+
+          (add-to-enable-login-session-interrupting-feature-hook
+           #'(lambda ()
+               (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
+                 (add-hook 'after-make-frame-functions
+                           #'call-org-clock-in-if-not-at-time-delay-fn
+                           t))
+               (add-hook
+                'delete-frame-functions
+                #'(lambda (nframe)
+                    (if (and
+                         (org-clock-is-active)
+                         (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
+                        (org-with-clock-writeable
+                         (let (org-log-note-clock-out)
+                           (if (org-clock-is-active)
+                               (org-clock-out)))))))) t)
+
+          (add-to-disable-login-session-interrupting-feature-hook
+           #'(lambda ()
+               (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
+                 (remove-hook 'after-make-frame-functions
+                              #'call-org-clock-in-if-not-at-time-delay-fn))) t))))))
+
 (defun lotus-orgclocktask/init-org-clock-utils-lotus ()
   (progn
     (progn
@@ -125,13 +246,6 @@ Each entry is either:
                   :config
                   (progn
                     )))
-            (progn
-              (lotus-org-clock-in/out-insinuate-hooks))
-            (progn
-              (setq
-               *lotus-org-unnamed-task-file*        (expand-file-name "Unnamed.org" (task-party-base-dir))
-               *lotus-org-unnamed-parent-task-name* "Unnamed tasks"
-               *lotus-org-unnamed-task-name-fmt*    "Unnamed task %d"))
             (progn
               ))))
 
@@ -148,81 +262,8 @@ Each entry is either:
                    #'(lambda ()
                        (if (fboundp 'org-clock-persistence-insinuate)
                            (org-clock-persistence-insinuate)
-                           (message "Error: Org Clock function org-clock-persistence-insinuate not available."))))))))
-      (progn
-        (use-package sessions-unified
-            :defer t
-            :config
-            (progn
-              (add-to-enable-desktop-restore-interrupting-feature-hook
-               #'(lambda ()
-                   (when (fboundp 'org-clock-start-check-timer-insiuate)
-                     (org-clock-start-check-timer-insiuate))
-                   (when (fboundp 'org-clock-lotus-log-note-on-change-insinuate)
-                     (org-clock-lotus-log-note-on-change-insinuate)))))))
+                           (message "Error: Org Clock function org-clock-persistence-insinuate not available.")))))))))))
 
-      (progn
-        (use-package startup-hooks
-            :defer t
-            :config
-            (progn
-              (progn ;code will not get to run as when
-                ;;`enable-startup-interrupting-feature-hook' run at start,
-                ;;that time package `org-misc-utils-lotus' did not get
-                ;;loaded.
-                ;; BUG: not getting included
-
-                (defun call-org-clock-in-if-not-at-time-delay-frame-fn (frame)
-                  (if (functionp 'org-clock-in-if-not-at-time-delay-fn)
-                      (org-clock-in-if-not-at-time-delay-fn)
-                      (warn "function org-clock-in-if-not-at-time-delay-frame-fn not defined.")))
-
-                (add-to-enable-startup-interrupting-feature-hook
-                 #'(lambda ()
-                     (add-hook
-                      'delete-frame-functions
-                      #'(lambda (nframe)
-                          (if (and
-                               (org-clock-is-active)
-                               (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-                              (org-with-clock-writeable
-                               (let (org-log-note-clock-out)
-                                 (if (org-clock-is-active)
-                                     (org-clock-out)))))))) t)
-
-                (add-to-enable-login-session-interrupting-feature-hook
-                   #'(lambda ()
-                       (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
-                         (add-hook 'after-make-frame-functions
-                                   #'call-org-clock-in-if-not-at-time-delay-fn
-                                   t))
-                       (add-hook
-                        'delete-frame-functions
-                        #'(lambda (nframe)
-                            (if (and
-                                 (org-clock-is-active)
-                                 (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-                                (org-with-clock-writeable
-                                 (let (org-log-note-clock-out)
-                                   (if (org-clock-is-active)
-                                       (org-clock-out)))))))) t)
-
-                  (add-to-disable-login-session-interrupting-feature-hook
-                   #'(lambda ()
-                       (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
-                         (remove-hook 'after-make-frame-functions
-                                      #'call-org-clock-in-if-not-at-time-delay-fn))) t))
-
-              ;; (progn
-              ;;   (add-to-enable-desktop-restore-interrupting-feature-hook
-              ;;    #'(lambda ()
-              ;;       (if (fboundp 'org-clock-persistence-insinuate)
-              ;;           (org-clock-persistence-insinuate)
-              ;;           (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
-              ;;       (if (fboundp 'org-clock-start-check-timer-insiuate)
-              ;;           (org-clock-start-check-timer-insiuate)))
-              ;;     t))
-              ))))))
 
 (defun lotus-orgclocktask/init-org-clock-daysummary ()
   (progn
@@ -247,13 +288,13 @@ Each entry is either:
                       :config
                       (progn
 
-                        (progn
-                          (let ((monitor-dir (task-party-dir)))
-                            (if (file-directory-p monitor-dir)
-                                (progn
-                                  (org-clock-monitor-files-set-from-dir monitor-dir)
-                                  (org-clock-work-day-mode-line-add t))
-                                (message "org monitor dir %s not exists." monitor-dir))))
+                        ;; (progn
+                        ;;   (let ((monitor-dir (task-party-dir)))
+                        ;;     (if (file-directory-p monitor-dir)
+                        ;;         (progn
+                        ;;           (org-clock-monitor-files-set-from-dir monitor-dir)
+                        ;;           (org-clock-work-day-mode-line-add t))
+                        ;;         (message "org monitor dir %s not exists." monitor-dir))))
 
                         (progn
                           (add-to-task-current-party-change-hook
