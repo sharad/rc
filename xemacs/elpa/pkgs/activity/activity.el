@@ -41,6 +41,114 @@
 (defvar wakatime-init-finished nil)
 (defvar wakatime-python-path nil)
 
+
+
+
+
+
+
+
+
+
+
+(defclass event ()
+  ()
+  :document "Event class"
+  :abstract t)
+
+
+
+(defclass record () ; No superclasses
+  ((name :initarg :name
+         :initform ""
+         :type string
+         :custom string
+         :documentation "The name of a person.")
+   (birthday :initarg :birthday
+             :initform "Jan 1, 1970"
+             :custom string
+             :type string
+             :documentation "The person's birthday.")
+   (phone :initarg :phone
+          :initform ""
+          :documentation "Phone number."))
+  "A single record for tracking people I know.")
+
+
+(defclass name superclass slots &rest options-and-doc)
+
+(setq rec (record "rand" :name "Random Sample" :birthday "01/01/2000" :phone "555-5555"))
+
+
+(defmethod call-record ((rec record) &optional scriptname)
+  "Dial the phone for the record REC.
+   Execute the program SCRIPTNAME as to dial the phone."
+  (message "Dialing the phone for %s"  (oref rec name))
+  ;; to be implemented...
+  )
+
+
+(record-p rec)
+
+(oref rec :birthday)
+
+(oset rec :phone "555-5566")
+(oref rec :phone)
+
+(call-record rec)
+
+
+(defclass abroad-record (record)
+  ((country :initarg :country
+            :initform "DE"
+            :documentation "Country this person is living in."))
+  "Special class for people living abroad.")
+
+(defmethod call-record :before ((rec abroad-record) &optional scriptname)
+  "Prepend country code to phone number, then dial the phone for REC.
+   Execute the program SCRIPTNAME as to dial the phone"
+  (message "Prepending country code to phone number.")
+  (unless (string-match "^00" (oref rec :phone))
+    (let ((country (oref rec :country)))
+      (cond
+        ;; just an example...
+        ((string= country "IT")
+         (oset rec :phone (concat "0043" (oref rec :phone)))))))
+  )
+
+
+
+;; This function just prepends the country code for Italy if necessary. If you
+;; think all this 'oset' and 'oref' stuff is tedious - you are right. But you
+;; can define so called "accessor" functions: in the slot definition you can
+;; write
+
+;; :accessor get-phone
+
+
+(setq abroadrec (abroad-record "friend" :name "Good Friend" :birthday "01/01/2000" :phone "555-5555" :country "IT"))
+(call-record abroadrec)
+
+(eieio-customize-object rec)
+
+
+;; (call-next-method)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (defgroup wakatime nil
   "Customizations for WakaTime"
   :group 'convenience
@@ -61,10 +169,6 @@
   :type 'string
   :group 'wakatime)
 
-(defclass event ()
-  ()
-  :document "Event class"
-  :abstract t)
 
 
 
