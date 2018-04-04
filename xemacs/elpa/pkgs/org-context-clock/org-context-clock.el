@@ -394,7 +394,9 @@
 
         (setq *org-context-clock-update-current-context-msg* prev-org-clock-marker)
 
-        (when prev-org-clock-marker
+        (when (and
+                prev-org-clock-marker
+                (marker-buffer prev-org-clock-marker))
           (org-insert-log-note prev-org-clock-marker (format "clocking out to clockin to <%s>" new-heading)))
 
         (with-current-buffer (marker-buffer new-marker)

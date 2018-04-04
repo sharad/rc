@@ -72,11 +72,11 @@
 
 ;;; Code:
 
-(require 'org-clock-check)
-(require 'org-clock-hooks)
-(require 'org-clock-experimental)
-(require 'org-clock-unnamed-task)
-(require 'org-clock-wrapper)
+;; (require 'org-clock-check)
+;; (require 'org-clock-hooks)
+;; (require 'org-clock-experimental)
+;; (require 'org-clock-unnamed-task)
+;; (require 'org-clock-wrapper)
 
 (require 'org)
 (require 'org-timer)

@@ -122,6 +122,16 @@
 ;; http://david.rothlis.net/emacs/customize_colors.html
   )
 
+
+
+
+
+
+
+
+
+;; (face-attribute 'default :width nil)
+
 (progn ;; "face size"
 
 
@@ -154,26 +164,89 @@
     ;; (face-attribute 'default :font)
     ;; (face-attribute 'default :height)
 
-    (defvar *custom-xface-factor* 7)
 
-    (defun set-default-face-height-by-resolution (&optional height)
-      (interactive
-       (list (read-number "Face height: "
-                          (if (and (featurep 'x)
-                                   window-system
-                                   (x-display-mm-height))
-                              (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
-                              (face-attribute 'default :height)))))
-      (if (and (featurep 'x) window-system)
-          (if (or height (x-display-mm-height))
+
+  (defvar face-size-display-matrix
+    '(
+      ((1080 1920 285 508) (:height 90 :width normal :machine "lispm"))
+      )
+    "Enter here all machine details of
+
+   ((pixel-height pixel-width mm-height mm-width) . (height width))")
+
+  (defun assoc-attribs-in-matrix ()
+    (let ((phy-attribs
+           (list
+            (x-display-pixel-height)
+            (x-display-pixel-width)
+            (x-display-mm-height)
+            (x-display-mm-width))))
+      (cadr (assoc phy-attribs face-size-display-matrix))))
+
+  (defun get-current-attribes-matrix-row ()
+    (interactive)
+    (let ((disp-attribs (cons
+                         (list
+                          (x-display-pixel-height)
+                          (x-display-pixel-width)
+                          (x-display-mm-height)
+                          (x-display-mm-width))
+                         (list
+                          (list
+                           :height (face-attribute 'default :height nil)
+                           :width (face-attribute 'default :width nil)
+                           :machine (system-name))))))
+      (if (interactive-p)
+          (progn
+            (message "copies %s to kill-ring"
+                     (prin1-to-string disp-attribs))
+            (kill-new (prin1-to-string disp-attribs))))
+      disp-attribs))
+
+  (defvar *custom-xface-factor* 7)
+
+  (defun set-default-face-height-by-resolution (&optional height width)
+    (interactive
+     (let* ((disp-attrib (assoc-attribs-in-matrix))
+            (height
+             (read-number "Face height: "
+                          (or
+                           (plist-get disp-attrib :height)
+                           (if (and (featurep 'x)
+                                    window-system
+                                    (x-display-mm-height))
+                               (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
+                               (face-attribute 'default :height)))))
+            (width
+             (read
+              (read-minibuffer "Face width: "
+                               (prin1-to-string (or
+                                                 (plist-get disp-attrib :width)
+                                                 (face-attribute 'default :width)))))))
+       (list height width)))
+    (if (and (featurep 'x) window-system)
+        (let* ((disp-attrib (assoc-attribs-in-matrix))
+               (height
+                (or
+                 (plist-get disp-attrib :height)
+                 (if (and (featurep 'x)
+                          window-system
+                          (x-display-mm-height))
+                     (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
+                     (face-attribute 'default :height))))
+               (width
+                (or
+                 (plist-get disp-attrib :width)
+                 (face-attribute 'default :width))))
+          (if (x-display-mm-height)
               (if (any-frame-opened-p)
                   (progn
                     (spacemacs/set-default-font dotspacemacs-default-font)
-                    (set-face-attribute 'default nil
-                                        :height (or height (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min))))
+                    (when height (set-face-attribute 'default nil :height height))
+                    (when width (set-face-attribute 'default nil :width width)))
                   (message "no frame is open now."))
-              (message "(x-display-pixel-height) return nil"))
-          (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
+              (message "(x-display-pixel-height) return nil")))
+        (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
 
     (when (fboundp 'set-default-face-height-by-resolution)
       (defalias 'mycustom-face-set #'set-default-face-height-by-resolution))
