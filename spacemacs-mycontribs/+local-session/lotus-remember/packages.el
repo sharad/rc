@@ -323,9 +323,9 @@ Each entry is either:
 
 
                 (add-org-capture-templates
-                 "r" "Refile"
+                 "x" "Refile"
                  'entry
-                 (function org-goto-refile)
+                 '(function org-goto-refile)
                  "* TODO %? %^g\n %i\n [%a]\n"
                  :empty-lines 1)
 
