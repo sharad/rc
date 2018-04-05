@@ -39,15 +39,13 @@ agenda will use the date at point as the default date.  Then, a
 `C-1' prefix will tell the capture process to use the HH:MM time
 of the day at point (if any) or the current HH:MM time."
   (interactive "P")
+
   (when (and org-capture-use-agenda-date
              (eq major-mode 'org-agenda-mode))
     (setq org-overriding-default-time
           (org-get-cursor-date (equal goto 1))))
-  (cond
-    ((equal goto '(4)) (org-capture-goto-target))
-    ((equal goto '(16)) (org-capture-goto-last-stored))
-    (t
-     (let* ((orig-buf (current-buffer))
+
+  (let* ((orig-buf (current-buffer))
             (annotation (if (and (boundp 'org-capture-link-is-already-stored)
                                  org-capture-link-is-already-stored)
                             (plist-get org-store-link-plist :annotation)
@@ -62,13 +60,8 @@ of the day at point (if any) or the current HH:MM time."
        (when (stringp annotation)
          (remove-text-properties 0 (length annotation)
                                  '(read-only t) annotation))
-       (cond
-         ((equal entry "C")
-          (customize-variable 'org-capture-templates))
-         ((equal entry "q")
-          (user-error "Abort"))
-         (t
-          (org-capture-set-plist entry)
+
+       (org-capture-set-plist entry)
           (org-capture-get-template)
           (org-capture-put :original-buffer orig-buf
                            :original-file (or (buffer-file-name orig-buf)
@@ -119,7 +112,7 @@ of the day at point (if any) or the current HH:MM time."
                     (error
                      "Could not start the clock in this capture buffer")))
               (if (org-capture-get :immediate-finish)
-                  (org-capture-finalize)))))))))
+                  (org-capture-finalize)))))
 ;; new capture:1 ends here
 
 ;; Preamble
