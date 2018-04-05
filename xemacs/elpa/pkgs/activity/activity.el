@@ -79,25 +79,10 @@
 
 ;; (defclass name superclass slots &rest options-and-doc)
 
-(setq act
-      (activity "rand" :name "Random Sample"))
-
-
-(defmethod call-activity ((act actord) &optional scriptname)
+(defmethod call-activity ((act activity) &optional scriptname)
   "Dial the phone for the actord ACT.
    Execute the program SCRIPTNAME as to dial the phone."
   (message "Dialing the phone for %s"  (oref act name)))
-
-
-(activity-p act)
-
-(oref act :birthday)
-
-(oset act :phone "555-5566")
-(oref act :phone)
-
-(call-activity act)
-
 
 (defclass buffer-activity (activity)
   ((country :initarg :country
@@ -116,21 +101,76 @@
         ((string= country "IT")
          (oset act :phone (concat "0043" (oref act :phone))))))))
 
+(defmethod record-org :before ((act buffer-activity) &optional scriptname)
+  "Prepend country code to phone number, then dial the phone for REC.
+   Execute the program SCRIPTNAME as to dial the phone"
+  (message "Prepending country code to phone number.")
+  (unless (string-match "^00" (oref act :phone))
+    (let ((country (oref act :country)))
+      (cond
+        ;; just an example...
+        ((string= country "IT")
+         (oset act :phone (concat "0043" (oref act :phone))))))))
+
+(defmethod record-elisp :before ((act buffer-activity) &optional scriptname)
+  "Prepend country code to phone number, then dial the phone for REC.
+   Execute the program SCRIPTNAME as to dial the phone"
+  (message "Prepending country code to phone number.")
+  (unless (string-match "^00" (oref act :phone))
+    (let ((country (oref act :country)))
+      (cond
+        ;; just an example...
+        ((string= country "IT")
+         (oset act :phone (concat "0043" (oref act :phone))))))))
+
+(defmethod log-note :before ((act buffer-activity) &optional scriptname)
+  "Prepend country code to phone number, then dial the phone for REC.
+   Execute the program SCRIPTNAME as to dial the phone"
+  (message "Prepending country code to phone number.")
+  (unless (string-match "^00" (oref act :phone))
+    (let ((country (oref act :country)))
+      (cond
+        ;; just an example...
+        ((string= country "IT")
+         (oset act :phone (concat "0043" (oref act :phone))))))))
+
+(defmethod log-note-interact :before ((act buffer-activity) &optional scriptname)
+  "Prepend country code to phone number, then dial the phone for REC.
+   Execute the program SCRIPTNAME as to dial the phone"
+  (message "Prepending country code to phone number.")
+  (unless (string-match "^00" (oref act :phone))
+    (let ((country (oref act :country)))
+      (cond
+        ;; just an example...
+        ((string= country "IT")
+         (oset act :phone (concat "0043" (oref act :phone))))))))
 
 
-;; This function just prepends the country code for Italy if necessary. If you
-;; think all this 'oset' and 'oref' stuff is tedious - you are right. But you
-;; can define so called "accessor" functions: in the slot definition you can
-;; write
+(when nil
+  ;; This function just prepends the country code for Italy if necessary. If you
+  ;; think all this 'oset' and 'oref' stuff is tedious - you are right. But you
+  ;; can define so called "accessor" functions: in the slot definition you can
+  ;; write
 
-;; :accessor get-phone
+  ;; :accessor get-phone
 
+  (setq act
+        (activity "rand" :name "Random Sample"))
 
-(setq buffact (buffer-activity "friend" :name "Good Friend" :birthday "01/01/2000" :phone "555-5555" :country "IT"))
+  (activity-p act)
 
-(call-activity buffact)
+  (oref act :birthday)
 
-(eieio-customize-object act)
+  (oset act :phone "555-5566")
+  (oref act :phone)
+
+  (call-activity act)
+
+  (setq buffact (buffer-activity "friend" :name "Good Friend" :birthday "01/01/2000" :phone "555-5555" :country "IT"))
+
+  (call-activity buffact)
+
+  (eieio-customize-object act))
 
 
 ;; (call-next-method)
