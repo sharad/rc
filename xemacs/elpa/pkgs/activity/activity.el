@@ -58,63 +58,63 @@
 
 
 
-(defclass record () ; No superclasses
+(defclass activity () ; No superclasses
   ((name :initarg :name
          :initform ""
          :type string
          :custom string
-         :documentation "The name of a person.")
-   (birthday :initarg :birthday
-             :initform "Jan 1, 1970"
-             :custom string
-             :type string
-             :documentation "The person's birthday.")
-   (phone :initarg :phone
-          :initform ""
-          :documentation "Phone number."))
-  "A single record for tracking people I know.")
+         :documentation "The name of a activity.")
+   (occurredon
+    :initarg :occurredon
+    :initform (current-time)
+    :custom list
+    :type list
+    :documentation "Activity occurrence time.")
+   (buffer :initarg :buffer
+           :initform (current-buffer)
+           :type buffer
+           :documentation "Current buffer."))
+  "An activity for tracking.")
 
 
-(defclass name superclass slots &rest options-and-doc)
+;; (defclass name superclass slots &rest options-and-doc)
 
-(setq rec (record "rand" :name "Random Sample" :birthday "01/01/2000" :phone "555-5555"))
+(setq act
+      (activity "rand" :name "Random Sample"))
 
 
-(defmethod call-record ((rec record) &optional scriptname)
-  "Dial the phone for the record REC.
+(defmethod call-activity ((act actord) &optional scriptname)
+  "Dial the phone for the actord ACT.
    Execute the program SCRIPTNAME as to dial the phone."
-  (message "Dialing the phone for %s"  (oref rec name))
-  ;; to be implemented...
-  )
+  (message "Dialing the phone for %s"  (oref act name)))
 
 
-(record-p rec)
+(activity-p act)
 
-(oref rec :birthday)
+(oref act :birthday)
 
-(oset rec :phone "555-5566")
-(oref rec :phone)
+(oset act :phone "555-5566")
+(oref act :phone)
 
-(call-record rec)
+(call-activity act)
 
 
-(defclass abroad-record (record)
+(defclass buffer-activity (activity)
   ((country :initarg :country
             :initform "DE"
             :documentation "Country this person is living in."))
   "Special class for people living abroad.")
 
-(defmethod call-record :before ((rec abroad-record) &optional scriptname)
+(defmethod call-activity :before ((act buffer-activity) &optional scriptname)
   "Prepend country code to phone number, then dial the phone for REC.
    Execute the program SCRIPTNAME as to dial the phone"
   (message "Prepending country code to phone number.")
-  (unless (string-match "^00" (oref rec :phone))
-    (let ((country (oref rec :country)))
+  (unless (string-match "^00" (oref act :phone))
+    (let ((country (oref act :country)))
       (cond
         ;; just an example...
         ((string= country "IT")
-         (oset rec :phone (concat "0043" (oref rec :phone)))))))
-  )
+         (oset act :phone (concat "0043" (oref act :phone))))))))
 
 
 
@@ -126,10 +126,11 @@
 ;; :accessor get-phone
 
 
-(setq abroadrec (abroad-record "friend" :name "Good Friend" :birthday "01/01/2000" :phone "555-5555" :country "IT"))
-(call-record abroadrec)
+(setq buffact (buffer-activity "friend" :name "Good Friend" :birthday "01/01/2000" :phone "555-5555" :country "IT"))
 
-(eieio-customize-object rec)
+(call-activity buffact)
+
+(eieio-customize-object act)
 
 
 ;; (call-next-method)

@@ -18,7 +18,7 @@ powerHighAction = {
     5:  None,
     10: None,
     20: None,
-    70: None
+    70: "notify-send 'charge up to 70%'"
 }
 
 def read_status():
@@ -38,31 +38,26 @@ def take_action():
     limit again.
     """
     # the two commands to run if charged over 80% or below 60%
-    command_ = "notify-send 'charged over 80'%"
-    command_below = "notify-send 'charged below 80%'"
-    times = 0
-    while True:
-        charge = int(read_status())
+    command_over         = "notify-send 'charged over %d%%'"
+    command_below        = "notify-send 'charged below %d%%'"
+    nofti_percent_factor = 10
+    prev_charge          = int(read_status())
 
-        for key in sorted(powerLowAction):
-            if charge < key:
-                if times == 0:
-                    subprocess.Popen(["/bin/bash", "-c", "notify-send 'charged below %s%%'" % key ])
-                    if isinstance(powerLowAction[key], str):
-                        subprocess.Popen(["/bin/bash", "-c", powerLowAction[key]])
-                    times = 1
-                break
-        else:
-            for key in sorted(powerHighAction.keys()):
-                if charge > key:
-                    if times == 0:
-                        subprocess.Popen(["/bin/bash", "-c", "notify-send 'charged above %s%%'" % key ])
-                        if isinstance(powerHighAction[key], str):
-                            subprocess.Popen(["/bin/bash", "-c", powerLowAction[key]])
-                        times = 1
-                    break
-            else:
-                times = 0
+    while True:
+        curr_charge = int(read_status())
+
+        if curr_charge > prev_charge:
+            if isinstance(powerHighAction[key], str):
+                subprocess.Popen(["/bin/bash", "-c", powerHighAction[key]])
+            elif curr_charge % nofti_percent_factor == 0:
+                subprocess.Popen(["/bin/bash", "-c", command_hight % key ])
+        elif curr_charge < prev_charge:
+            if isinstance(powerHighAction[key], str):
+                subprocess.Popen(["/bin/bash", "-c", powerLowAction[key]])
+            elif curr_charge % nofti_percent_factor == 0:
+                subprocess.Popen(["/bin/bash", "-c", command_low % key ])
+
+        prev_charge = curr_charge
 
         time.sleep(10)
 
