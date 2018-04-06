@@ -169,6 +169,7 @@
   (defvar face-size-display-matrix
     '(
       ((1080 1920 285 508) (:height 90 :width normal :machine "lispm"))
+      ((900 2966 238 785)  (:height 120 :width normal :machine "think530-spratap"))
       )
     "Enter here all machine details of
 
