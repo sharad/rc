@@ -201,37 +201,23 @@ Each entry is either:
            #'(lambda ()
                (add-hook
                 'delete-frame-functions
-                #'(lambda (nframe)
-                    (if (and
-                         (org-clock-is-active)
-                         (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-                        (org-with-clock-writeable
-                         (let (org-log-note-clock-out)
-                           (if (org-clock-is-active)
-                               (org-clock-out)))))))) t)
+                #'(lambda (nframe) org-clock-out-if-active))) t)
 
           (add-to-enable-login-session-interrupting-feature-hook
            #'(lambda ()
                (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
                  (add-hook 'after-make-frame-functions
-                           #'call-org-clock-in-if-not-at-time-delay-fn
+                           #'call-org-clock-in-if-not-at-time-delay-frame-fn
                            t))
                (add-hook
                 'delete-frame-functions
-                #'(lambda (nframe)
-                    (if (and
-                         (org-clock-is-active)
-                         (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-                        (org-with-clock-writeable
-                         (let (org-log-note-clock-out)
-                           (if (org-clock-is-active)
-                               (org-clock-out)))))))) t)
+                #'(lambda (nframe) (org-clock-out-if-active)))) t)
 
           (add-to-disable-login-session-interrupting-feature-hook
            #'(lambda ()
                (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
                  (remove-hook 'after-make-frame-functions
-                              #'call-org-clock-in-if-not-at-time-delay-fn))) t))))))
+                              #'call-org-clock-in-if-not-at-time-delay-frame-fn))) t))))))
 
 (defun lotus-orgclocktask/init-org-clock-utils-lotus ()
   (progn

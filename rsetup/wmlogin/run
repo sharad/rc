@@ -337,16 +337,23 @@ fi
 
 
 # need to run in temporary terminal
-(sleep 60s ;
- echo 'URxvt.font: xft:DejaVu Sans Mono:size=12' |  xrdb -merge - >&/dev/null ;
- if ! timeout 2s get-imap-pass -u localhost >& /dev/null ;
+(echo sleep 60s;
+ sleep 60s ;
+ echo 'URxvt.font: xft:DejaVu Sans Mono:size=12' |  xrdb -merge -
+ echo timeout 2s ~/bin/get-imap-pass -u localhost
+ if ! timeout 2s ~/bin/get-imap-pass -u localhost >& /dev/null ;
  then
-     pkill gnome-keyr >& /dev/null ;
+     echo pkill gnome-keyr
+     pkill gnome-keyr
+     echo sleep 1s
      sleep 1s
-     gnome-keyring-daemon --daemonize  >& /dev/null
-     if timeout 7 get-imap-pass -u localhost >& /dev/null
+     echo gnome-keyring-daemon --daemonize
+     gnome-keyring-daemon --daemonize
+     echo timeout 7s ~/bin/get-imap-pass -u localhost
+     if timeout 7s ~/bin/get-imap-pass -u localhost
      then
-         pkill gnome-keyr  >& /dev/null
+         echo pkill gnome-keyr
+         pkill gnome-keyr
      fi
- fi;
+ fi
 ) &!

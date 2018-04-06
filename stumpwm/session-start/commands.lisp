@@ -649,6 +649,16 @@
        "/.rsetup/wmlogin/run"))
    (message "done start-wm-components")))
 
+
+(defcommand start-wm-test-components () ()
+  (message "started start-wm-test-components")
+  (prog1
+      (run-shell-command
+       (concat
+        (getenv "HOME")
+        "/tmp/test.sh"))
+    (message "done start-wm-test-components")))
+
 (defcommand bye () ()
 #+pa
   (in.net.sharad.pa-backend-emacs-planner::emacs-eval-nooutput "(close-all-frames)")

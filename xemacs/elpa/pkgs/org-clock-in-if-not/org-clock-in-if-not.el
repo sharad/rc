@@ -65,5 +65,14 @@
 (defun org-clock-in-if-not-at-time-delay-fn ()
   (org-clock-in-if-not-at-time-delay))
 
+(defun org-clock-out-if-active ()
+  (if (and
+       (org-clock-is-active)
+       (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
+      (org-with-clock-writeable
+       (let (org-log-note-clock-out)
+         (if (org-clock-is-active)
+             (org-clock-out))))))
+
 (provide 'org-clock-in-if-not)
 ;;; org-clock-in-if-not.el ends here
