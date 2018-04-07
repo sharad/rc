@@ -260,49 +260,49 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
 
 ** Unnamed task functions
 #+BEGIN_SRC  emacs-lisp
-(defun org-context-clock-unassociate-context-start-time-reset ()
-  (setq *org-context-clock-unassociate-context-start-time* nil))
+  (defun org-context-clock-unassociate-context-start-time-reset ()
+    (setq *org-context-clock-unassociate-context-start-time* nil))
 
-(defun org-context-clock-can-create-unnamed-task-p ()
-  (unless *org-context-clock-unassociate-context-start-time*
-    (setq *org-context-clock-unassociate-context-start-time* (current-time)))
-  (let ((unassociate-context-start-time *org-context-clock-unassociate-context-start-time*))
-    (prog1
-        (>
-         (float-time (time-since unassociate-context-start-time))
-         *org-context-clock-swapen-unnamed-threashold-interval*))))
+  (defun org-context-clock-can-create-unnamed-task-p ()
+    (unless *org-context-clock-unassociate-context-start-time*
+      (setq *org-context-clock-unassociate-context-start-time* (current-time)))
+    (let ((unassociate-context-start-time *org-context-clock-unassociate-context-start-time*))
+      (prog1
+          (>
+           (float-time (time-since unassociate-context-start-time))
+           *org-context-clock-swapen-unnamed-threashold-interval*))))
 
-(defun org-clock-marker-is-unnamed-clock-p (&optional clock)
-  (let ((clock (or clock org-clock-marker)))
-    (and
-     clock
-     (lotus-org-unnamed-task-clock-marker)
-     (equal
-      (marker-buffer org-clock-marker)
-      (marker-buffer (lotus-org-unnamed-task-clock-marker))))))
+  (defun org-clock-marker-is-unnamed-clock-p (&optional clock)
+    (let ((clock (or clock org-clock-marker)))
+      (when (and
+             clock
+             (lotus-org-unnamed-task-clock-marker))
+       (equal
+        (marker-buffer org-clock-marker)
+        (marker-buffer (lotus-org-unnamed-task-clock-marker))))))
 
-(defun org-context-clock-maybe-create-unnamed-task ()
-  (when (org-context-clock-can-create-unnamed-task-p)
-    (let ((org-log-note-clock-out nil))
-      (if (org-clock-marker-is-unnamed-clock-p)
-          (org-context-clock-debug :debug "org-context-clock-maybe-create-unnamed-task: Already clockin unnamed task")
-          (prog1
-              (lotus-org-create-unnamed-task-task-clock-in)
-            (org-context-clock-unassociate-context-start-time-reset))))))
+  (defun org-context-clock-maybe-create-unnamed-task ()
+    (when (org-context-clock-can-create-unnamed-task-p)
+      (let ((org-log-note-clock-out nil))
+        (if (org-clock-marker-is-unnamed-clock-p)
+            (org-context-clock-debug :debug "org-context-clock-maybe-create-unnamed-task: Already clockin unnamed task")
+            (prog1
+                (lotus-org-create-unnamed-task-task-clock-in)
+              (org-context-clock-unassociate-context-start-time-reset))))))
 
-(defun org-context-clock-changable-p ()
-  "Stay with a clock at least 2 mins."
-  (if org-clock-start-time
-      (let ((clock-duration
-             (if (and
-                  (stringp org-clock-start-time)
-                  (string-equal "" org-clock-start-time))
-                 0
-                 (float-time (time-since org-clock-start-time)))))
-        (or
-         (< clock-duration 60)
-         (> clock-duration 120)))
-      t))
+  (defun org-context-clock-changable-p ()
+    "Stay with a clock at least 2 mins."
+    (if org-clock-start-time
+        (let ((clock-duration
+               (if (and
+                    (stringp org-clock-start-time)
+                    (string-equal "" org-clock-start-time))
+                   0
+                   (float-time (time-since org-clock-start-time)))))
+          (or
+           (< clock-duration 60)
+           (> clock-duration 120)))
+        t))
 
 #+END_SRC
 
@@ -374,21 +374,21 @@ see here[[https://emacs.stackexchange.com/questions/9530/how-can-i-get-an-org-mo
     (when (and
            org-clock-marker
            (> (marker-position-nonil org-clock-marker) 0))
-     (org-with-clock-position (list org-clock-marker)
-       (let ((buff (current-buffer))
-             (clone-buffer (concat "<tree>-" (buffer-name))))
-                  (unwind-protect
-                       (progn
-                         (clone-indirect-buffer clone-buffer nil t)
-                         (set-buffer clone-buffer)
-                         (goto-char (marker-position-nonil org-clock-marker))
-                         (show-all)
-                         (read-only-mode)
-                         (org-previous-visible-heading 1)
-                         (let ((info (org-context-clock-collect-task)))
-                           info))
-                         (when buff (set-buffer buff))
-                         (kill-buffer clone-buffer))))))
+      (org-with-clock-position (list org-clock-marker)
+        (let ((buff (current-buffer))
+              (clone-buffer (concat "<tree>-" (buffer-name))))
+          (unwind-protect
+               (progn
+                 (clone-indirect-buffer clone-buffer nil t)
+                 (set-buffer clone-buffer)
+                 (goto-char (marker-position-nonil org-clock-marker))
+                 (show-all)
+                 (read-only-mode)
+                 (org-previous-visible-heading 1)
+                 (let ((info (org-context-clock-collect-task)))
+                   info))
+            (when buff (set-buffer buff))
+            (kill-buffer clone-buffer))))))
 #+END_SRC
 
 ** Context and Task relater tester and collector functions

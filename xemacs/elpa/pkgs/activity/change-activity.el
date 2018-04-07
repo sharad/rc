@@ -41,8 +41,18 @@
   ((buffer :initarg :buffer
            :initform (current-buffer)
            :type buffer
-           :documentation "Current buffer."))
+           :documentation "Current buffer.")
+   (marker :initarg :marker
+           :initform (point-marker)
+           :type marker
+           :documentation "Current point marker."))
   "A buffer activity.")
+
+
+
+
+
+
 
 
 
@@ -132,6 +142,23 @@
              (setq lotus-last-buffer-undo-list-pos undo)))
         (t )))))
 
+(defun org-clock-lotus-log-note-current-clock-with-timed-new-win (win-timeout &optional fail-quietly)
+  (interactive)
+  (let ((win-timeout  (or win-timeout  7)))
+    (when (org-clocking-p)
+      (move-marker org-log-note-return-to (point))
+      (org-clock-lotus-with-current-clock
+          (org-add-log-setup-with-timed-new-win win-timeout
+                                                'note nil nil nil
+                                                (concat "# Task: " (org-get-heading t) "\n\n"))))))
+
+
+(defun org-clock-lotus-log-note-current-clock-with-timed-new-win (win-timeout &optional fail-quietly)
+  (interactive)
+  (let ((chgact nil))
+    (setq chgact
+          (change-activity "test"))))
+
 (defun org-clock-lotus-log-note-on-change (&optional win-timeout)
   ;; (when (or t (eq buffer (current-buffer)))
   (let ((win-timeout (or win-timeout 7)))
@@ -140,10 +167,6 @@
          (car buffer-undo-list))
         (lotus-action-on-buffer-undo-list-change #'org-clock-lotus-log-note-current-clock-with-timed-new-win  lotus-minimum-char-changes win-timeout)
         (lotus-action-on-buffer-undo-tree-change #'org-clock-lotus-log-note-current-clock-with-timed-new-win lotus-minimum-changes win-timeout))))
-
-
-
-
 
 (provide 'change-activity)
 ;;; change-activity.el ends here
