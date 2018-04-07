@@ -251,6 +251,7 @@
             (org-context-clock-unassociate-context-start-time-reset))))))
 
 (defun org-context-clock-changable-p ()
+  ""
   (if org-clock-start-time
       (let ((clock-duration
              (if (and
@@ -321,6 +322,9 @@
 ;; Main context clock function update-current-context:1 ends here
 
 ;; Create task info out of current clock
+;; When org-clock-marker was hidden that time (org-context-clock-collect-task) not able to
+;; collect correct task, so here cloned buffer need to be created.
+;; [[https://emacs.stackexchange.com/questions/9530/how-can-i-get-an-org-mode-outline-in-a-2nd-buffer-as-a-dynamic-table-of-contents][How can I get an org-mode outline in a 2nd buffer as a dynamic table of contents?]]
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Create%20task%20info%20out%20of%20current%20clock][Create task info out of current clock:1]]
 ;;;###autoload
@@ -330,9 +334,20 @@
    org-clock-marker
    (> (marker-position-nonil org-clock-marker) 0)
    (org-with-clock-position (list org-clock-marker)
-     (org-previous-visible-heading 1)
-     (let ((info (org-context-clock-collect-task)))
-       info))))
+     (let ((buff (current-buffer))
+           (clone-buffer (concat "<tree>" (buffer-name))))
+                (unwind-protect
+                     (progn
+                       (clone-indirect-buffer clone-buffer nil t)
+                       (set-buffer clone-buffer)
+                       (goto-char (marker-position-nonil org-clock-marker))
+                       (show-all)
+                       (read-only-mode)
+                       (org-previous-visible-heading 1)
+                       (let ((info (org-context-clock-collect-task)))
+                         info))
+                       (when buff (set-buffer buff))
+                       (kill-buffer clone-buffer))))))
 
 ;; not workiong
 ;; (defun org-context-clock-current-task-associated-to-context-p (context)
