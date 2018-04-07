@@ -291,7 +291,7 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
             (org-context-clock-unassociate-context-start-time-reset))))))
 
 (defun org-context-clock-changable-p ()
-  ""
+  "Stay with a clock at least 2 mins."
   (if org-clock-start-time
       (let ((clock-duration
              (if (and
@@ -308,64 +308,66 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
 
 ** Main context clock function update-current-context
 #+BEGIN_SRC  emacs-lisp
-    ;;;###autoload
-    (defun org-context-clock-update-current-context (&optional force)
-      (interactive "P")
-      (if (> (float-time (time-since *org-context-clock-last-buffer-select-time*))
+      ;;;###autoload
+      (defun org-context-clock-update-current-context (&optional force)
+        (interactive "P")
+        (if (>
+             (float-time (time-since *org-context-clock-last-buffer-select-time*))
              *org-context-clock-task-current-context-time-interval*)
-          (let* ((context (org-context-clock-build-context))
-                 (buff    (plist-get context :buffer)))
-            (setq *org-context-clock-task-current-context*  context)
-            (if (and
-                 (org-context-clock-changable-p)
-                 buff (buffer-live-p buff)
-                 (not (minibufferp buff))
-                 (not              ;BUG: Reconsider whether it is catching case after some delay.
-                  (equal *org-context-clock-task-previous-context* *org-context-clock-task-current-context*)))
+            (let* ((context (org-context-clock-build-context))
+                   (buff    (plist-get context :buffer)))
+              (setq *org-context-clock-task-current-context*  context)
+              (if (and
+                   (org-context-clock-changable-p)
+                   buff (buffer-live-p buff)
+                   (not (minibufferp buff))
+                   (not              ;BUG: Reconsider whether it is catching case after some delay.
+                    (equal *org-context-clock-task-previous-context* *org-context-clock-task-current-context*)))
 
-                (progn
-                  (setq
-                   *org-context-clock-task-previous-context* *org-context-clock-task-current-context*)
-                  (if (and
-                       (not (org-clock-marker-is-unnamed-clock-p))
-                       (> (org-context-clock-current-task-associated-to-context-p context) 0))
-                      (progn
-                        (org-context-clock-debug :debug "org-context-clock-update-current-context: Current task already associate to %s" context))
-                      (progn                ;current clock is not matching
-                        (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really going to clock.")
-                        (unless (org-context-clock-dyntaskpl-run-associated-dyntaskpl context)
-                          ;; not able to find associated, or intentionally not selecting a clock
-                          (org-context-clock-debug :debug "trying to create unnamed task.")
-                          (org-context-clock-maybe-create-unnamed-task))
-                        (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really clock done."))))
+                  (progn
+                    (setq
+                     *org-context-clock-task-previous-context* *org-context-clock-task-current-context*)
+                    (if (and
+                         (not (org-clock-marker-is-unnamed-clock-p))
+                         (> (org-context-clock-current-task-associated-to-context-p context) 0))
+                        (progn
+                          (org-context-clock-debug :debug "org-context-clock-update-current-context: Current task already associate to %s" context))
+                        (progn                ;current clock is not matching
+                          (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really going to clock.")
+                          (unless (org-context-clock-dyntaskpl-run-associated-dyntaskpl context)
+                            ;; not able to find associated, or intentionally not selecting a clock
+                            (org-context-clock-debug :debug "trying to create unnamed task.")
+                            (org-context-clock-maybe-create-unnamed-task))
+                          (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really clock done."))))
 
-                (org-context-clock-debug :debug "org-context-clock-update-current-context: context %s not suitable to associate" context)))
-          (org-context-clock-debug :debug "org-context-clock-update-current-context: not enough time passed.")))
+                  (org-context-clock-debug :debug "org-context-clock-update-current-context: context %s not suitable to associate" context)))
+            (org-context-clock-debug :debug "org-context-clock-update-current-context: not enough time passed.")))
 
 
-    (defun org-context-clock-update-current-context-x (force)
-      (interactive "P")
-      (if t
-          (let* ((context (org-context-clock-build-context)))
-            (unless nil
-              (setq
-               *org-context-clock-task-previous-context* *org-context-clock-task-current-context*
-               *org-context-clock-task-current-context*  context)
+      (defun org-context-clock-update-current-context-x (force)
+        (interactive "P")
+        (if t
+            (let* ((context (org-context-clock-build-context)))
+              (unless nil
+                (setq
+                 *org-context-clock-task-previous-context* *org-context-clock-task-current-context*
+                 *org-context-clock-task-current-context*  context)
 
-              (unless (and
-                       (not (org-clock-marker-is-unnamed-clock-p))
-                       (> (org-context-clock-current-task-associated-to-context-p context) 0))
-                (unless (org-context-clock-dyntaskpl-run-associated-dyntaskpl context)
-                  (org-context-clock-debug :debug "trying to create unnamed task.")
-                  ;; not able to find associated, or intentionally not selecting a clock
-                  (org-context-clock-maybe-create-unnamed-task)))))))
+                (unless (and
+                         (not (org-clock-marker-is-unnamed-clock-p))
+                         (> (org-context-clock-current-task-associated-to-context-p context) 0))
+                  (unless (org-context-clock-dyntaskpl-run-associated-dyntaskpl context)
+                    (org-context-clock-debug :debug "trying to create unnamed task.")
+                    ;; not able to find associated, or intentionally not selecting a clock
+                    (org-context-clock-maybe-create-unnamed-task)))))))
 
 #+END_SRC
 
 ** Create task info out of current clock
 When org-clock-marker was hidden that time (org-context-clock-collect-task) not able to
 collect correct task, so here cloned buffer need to be created.
-[[https://emacs.stackexchange.com/questions/9530/how-can-i-get-an-org-mode-outline-in-a-2nd-buffer-as-a-dynamic-table-of-contents][How can I get an org-mode outline in a 2nd buffer as a dynamic table of contents?]]
+see here[[https://emacs.stackexchange.com/questions/9530/how-can-i-get-an-org-mode-outline-in-a-2nd-buffer-as-a-dynamic-table-of-contents][ How can I get an org-mode outline in a 2nd buffer as a dynamic table of contents?]]
+
 #+BEGIN_SRC  emacs-lisp
   ;;;###autoload
   (defun org-context-clock-task-current-task ()

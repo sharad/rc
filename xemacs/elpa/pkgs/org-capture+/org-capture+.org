@@ -78,7 +78,8 @@
   template at the beginning or end of the file.
   Of course, if exact position has been required, just put it there."
     (let* ((txt (org-capture-get :template))
-           beg end)
+           beg end
+           (note-purpose (or note-purpose 'note))
       ;; (cond
       ;;   ((org-capture-get :exact-position)
       ;;    (goto-char (org-capture-get :exact-position)))
