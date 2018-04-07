@@ -142,7 +142,26 @@ Each entry is either:
         (progn
           )
         (progn
-          (lotus-org-clock-in/out-insinuate-hooks)))))
+          (lotus-org-clock-in/out-insinuate-hooks))))
+
+  (progn
+    (use-package sessions-unified
+        :defer t
+        :config
+        (progn
+          (add-to-enable-desktop-restore-interrupting-feature-hook
+           #'(lambda ()
+               (lotus-org-clock-in/out-insinuate-hooks))))))
+
+  (progn
+    (use-package startup-hooks
+        :defer t
+        :config
+        (progn
+          (progn
+            (add-to-enable-startup-interrupting-feature-hook
+             #'(lambda ()
+                 (lotus-org-clock-in/out-insinuate-hooks)) t))))))
 
 (defun lotus-orgclocktask/init-org-clock-check ()
   (use-package org-clock-check
