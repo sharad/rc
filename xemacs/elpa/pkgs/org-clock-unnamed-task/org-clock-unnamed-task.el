@@ -79,17 +79,18 @@
   (let* ((file (or file *lotus-org-unnamed-task-file*))
          (task (or task *lotus-org-unnamed-parent-task-name*))
          (subtask (format *lotus-org-unnamed-task-name-fmt*
-                          ;; (lotus-org-get-incr-tasknum (find-file-noselect file))
                           (1+ (org-with-file-headline file task (org-number-of-subheadings))))))
     (assert file)
     (org-find-file-heading-marker file task t)
-    (cons
-     subtask
-     (org-insert-subheadline-to-file-headline
-      subtask
-      file
-      task
-      t))))
+    (let ((marker (org-insert-subheadline-to-file-headline
+                   subtask
+                   file
+                   task
+                   t)))
+      (with-current-buffer (marker-buffer marker)
+        (goto-char marker)
+        (org-entry-put nil "Effort" "10"))
+     (cons subtask marker))))
 
 ;;;###autoload
 (defun lotus-org-create-unnamed-task-task-clock-in (&optional file parent-task)

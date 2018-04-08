@@ -466,59 +466,59 @@ see here[[https://emacs.stackexchange.com/questions/9530/how-can-i-get-an-org-mo
 
 ** TODO add org-insert-log-not
 #+BEGIN_SRC  emacs-lisp
-         (defun org-context-clock-clockin-dyntaskpl (dyntaskpl)
-           ;;TODO add org-insert-log-not
-           (org-context-clock-debug :debug "org-context-clock-clockin-marker %s" dyntaskpl)
-           (let* (retval
-                  (task (plist-get dyntaskpl :task))
-                  (new-marker (if task (plist-get task  :task-clock-marker)))
-                  (new-heading (if task (plist-get task :task-clock-heading)))
-                  (old-heading "TODO Test")
-                  (old-clocked-dyntaskpl-context (car *org-context-clock-clocked-dyntaskpl-context-history*)))
-           (when (and
-                  new-marker
-                  (marker-buffer new-marker))
+  (defun org-context-clock-clockin-dyntaskpl (new-dyntaskpl)
+    ;;TODO add org-insert-log-not
+    (org-context-clock-debug :debug "org-context-clock-clockin-marker %s" new-dyntaskpl)
+    (let* (retval
+           (old-dyntaskpl (car *org-context-clock-clocked-dyntaskpl-context-history*))
+           (new-task    (plist-get new-dyntaskpl :task))
+           (new-marker  (if new-task (plist-get new-task :task-clock-marker)))
+           (new-heading (if new-task (plist-get new-task :task-clock-heading)))
+           (old-heading (if new-task (plist-get old-dyntaskpl :task-clock-heading))))
+    (when (and
+           new-marker
+           (marker-buffer new-marker))
 
-             (let* ((org-log-note-clock-out nil)
-                    (prev-org-clock-marker org-clock-marker)
-                    (prev-org-clock-buff (marker-buffer prev-org-clock-marker)))
+      (let* ((org-log-note-clock-out nil)
+             (prev-org-clock-marker org-clock-marker)
+             (prev-org-clock-buff (marker-buffer prev-org-clock-marker)))
 
-               (org-context-clock-debug :debug "clocking in %s" new-marker)
+        (org-context-clock-debug :debug "clocking in %s" new-marker)
 
-               (let ((prev-clock-buff-read-only
-                      (if prev-org-clock-buff
-                          (with-current-buffer (marker-buffer prev-org-clock-marker)
-                            buffer-read-only))))
+        (let ((prev-clock-buff-read-only
+               (if prev-org-clock-buff
+                   (with-current-buffer (marker-buffer prev-org-clock-marker)
+                     buffer-read-only))))
 
-                 (if prev-org-clock-buff
-                     (with-current-buffer prev-org-clock-buff
-                       (setq buffer-read-only nil)))
+          (if prev-org-clock-buff
+              (with-current-buffer prev-org-clock-buff
+                (setq buffer-read-only nil)))
 
-                 (setq *org-context-clock-update-current-context-msg* prev-org-clock-marker)
+          (setq *org-context-clock-update-current-context-msg* prev-org-clock-marker)
 
-                 (when (and
-                         prev-org-clock-marker
-                         (marker-buffer prev-org-clock-marker))
-                   (org-insert-log-note prev-org-clock-marker (format "clocking out to clockin to <%s>" new-heading)))
+          (when (and
+                  prev-org-clock-marker
+                  (marker-buffer prev-org-clock-marker))
+            (org-insert-log-note prev-org-clock-marker (format "clocking out to clockin to <%s>" new-heading)))
 
-                 (with-current-buffer (marker-buffer new-marker)
-                   (let ((buffer-read-only nil))
-                     (when old-heading
-                       (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
-                     (condition-case err
-                         (progn
-                           (org-clock-clock-in (list new-marker))
-                           (setq retval t)
-                           (push dyntaskpl *org-context-clock-clocked-dyntaskpl-context-history*))
-                       ((error)
-                        (progn
-                          (setq retval nil)
-                          (signal (car err) (cdr err)))))))
+          (with-current-buffer (marker-buffer new-marker)
+            (let ((buffer-read-only nil))
+              (when old-heading
+                (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
+              (condition-case err
+                  (progn
+                    (org-clock-clock-in (list new-marker))
+                    (setq retval t)
+                    (push new-dyntaskpl *org-context-clock-clocked-dyntaskpl-context-history*))
+                ((error)
+                 (progn
+                   (setq retval nil)
+                   (signal (car err) (cdr err)))))))
 
-                 (if prev-org-clock-buff
-                     (with-current-buffer prev-org-clock-buff
-                       (setq buffer-read-only prev-clock-buff-read-only)))
-                 retval)))))
+          (if prev-org-clock-buff
+              (with-current-buffer prev-org-clock-buff
+                (setq buffer-read-only prev-clock-buff-read-only)))
+          retval)))))
 #+END_SRC
 
 *** Clock-into one of associated tasks
