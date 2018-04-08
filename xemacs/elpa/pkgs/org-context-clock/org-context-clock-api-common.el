@@ -63,6 +63,8 @@ inside loops."
            (org-get-heading))))
     (let ((heading (if heading-with-string-prop
                        (substring-no-properties heading-with-string-prop)))
+          (heading-prop (if heading-with-string-prop
+                            heading-with-string-prop))
           (marker  (move-marker
                     (make-marker)
                     (point)
@@ -79,6 +81,7 @@ inside loops."
         (if file      (org-context-clock-task-set-property task :task-clock-file file))
         (if point     (org-context-clock-task-set-property task :task-clock-point point))
         (if heading   (org-context-clock-task-set-property task :task-clock-heading heading))
+        (if heading-prop (org-context-clock-task-set-property task :task-clock-heading-prop heading-prop))
         (if clock-sum (org-context-clock-task-set-property task :task-clock-clock-sum clock-sum))
         (let ((inherited-props (org-context-clock-keys-with-operation :getter nil)))
           (dolist (prop inherited-props)
@@ -90,12 +93,15 @@ inside loops."
 
 ;; (defun org-task-collect-task-clock-info ()
 (defun org-context-clock-collect-task-from-clock ()
+  ;; NOT used anywhere
   ;; (org-element-at-point)
   (let ((heading-with-string-prop
          (unless (org-before-first-heading-p)
            (org-get-heading))))
     (let ((heading (if heading-with-string-prop
                        (substring-no-properties heading-with-string-prop)))
+          (heading-prop (if heading-with-string-prop
+                            heading-with-string-prop))
           (marker  (move-marker
                     (make-marker)
                     (point)
@@ -113,6 +119,7 @@ inside loops."
         (if file      (org-context-clock-task-set-property task :task-clock-file file))
         (if point     (org-context-clock-task-set-property task :task-clock-point point))
         (if heading   (org-context-clock-task-set-property task :task-clock-heading heading))
+        (if heading-prop   (org-context-clock-task-set-property task :task-clock-heading-prop heading-prop))
         (if clock-sum (org-context-clock-task-set-property task :task-clock-clock-sum clock-sum))
         (let ((inherited-props (org-context-clock-keys-with-operation :getter nil)))
           (dolist (prop inherited-props)
@@ -192,13 +199,11 @@ inside loops."
 ;; Dynamic plist task format
 ;; plist of :rank :marker :task etc
 
+(defun org-context-clock-build-dyntaskpl (task context)
+  (funcall org-context-clock-build-dyntaskpl task context))
+
 (defun org-context-clock-dyntaskpls-associated-to-context (context)
-  (mapcar #'(lambda (e)
-              (plist-put e
-                         :marker
-                         (org-context-clock-task-get-property (plist-get e :task) :task-clock-marker)))
-          ;; (funcall org-context-clock-api-dyntaskpls-associated-to-context context)
-          (funcall org-context-clock-matching-dyntaskpls context)))
+  (funcall org-context-clock-matching-dyntaskpls context))
 
 (progn                                  ;; general use function
 

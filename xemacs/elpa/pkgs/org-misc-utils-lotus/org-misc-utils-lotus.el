@@ -190,6 +190,62 @@ With prefix arg C-u, copy region instad of killing it."
      (when marker
        (org-with-narrow-to-marker marker ,@body))))
 
+
+(defmacro org-with-cloned-buffer (buff clone &rest body)
+  `(let ((buff (or ,buff (current-buffer)))
+         (clone-name (concat (or ,clone "<clone>") "-" (buffer-name))))
+     (with-current-buffer buff
+       (let ((pos (point)))
+         (unwind-protect
+              (progn
+                (clone-indirect-buffer clone-name nil t)
+                (set-buffer clone-name)
+                (widen)
+                (show-all)
+                (org-mode)
+
+                ,@body
+
+                (setq pos (point))
+                (when buff
+                  (set-buffer buff)
+                  (goto-char pos)))
+         (when buff
+           (setq pos (point))
+           (set-buffer buff)
+           (goto-char pos))
+         (kill-buffer clone-name))))))
+(put 'org-with-cloned-buffer 'lisp-indent-function 2)
+
+
+(defmacro org-with-cloned-marker (marker clone &rest body)
+  `(let ((clone-name (concat (or ,clone "<clone>") "-" (buffer-name)))
+         (marker ,marker)
+         (buff (marker-buffer ,marker)))
+     (with-current-buffer (marker-buffer marker)
+       (let ((pos (point)))
+        (unwind-protect
+            (progn
+              (clone-indirect-buffer clone-name nil t)
+              (set-buffer clone-name)
+              (goto-char (marker-position-nonil marker))
+              (widen)
+              (show-all)
+              (org-mode)
+
+              ,@body
+
+              (setq pos (point))
+              (when buff
+                (set-buffer buff)
+                (goto-char pos)))
+          (setq pos (point))
+          (when buff
+            (set-buffer buff)
+            (goto-char pos))
+         (kill-buffer clone-name))))))
+(put 'org-with-cloned-marker 'lisp-indent-function 2)
+
 (defun org-heading-has-child-p ()
   (save-excursion
     (org-goto-first-child)))
@@ -223,23 +279,29 @@ With prefix arg C-u, copy region instad of killing it."
          (goto-char (+ begin level (length title)))))))
 
 (defun org-insert-subheading-at-point (subheading)
+  "return marker"
   (let ((buffer-read-only nil)
         (subheading (cond
                       ((stringp subheading) subheading)
                       ((functionp subheading) (funcall subheading))
                       (t (error "no subheading")))))
-    (if (org-heading-has-child-p)
-        (progn
-          (org-goto-last-child)
-          (beginning-of-line)
-          (end-of-line 1)
-          (org-insert-heading-after-current))
-        (progn
-          (beginning-of-line)
-          (end-of-line 1)
-          (org-end-of-subtree)
-          (org-insert-subheading nil)))
-    (insert (format org-refile-string-format subheading))))
+    (org-with-cloned-buffer (current-buffer) "<tree>"
+      (show-all)
+      (if (org-heading-has-child-p)
+          (progn
+            (org-goto-last-child)
+            (beginning-of-line)
+            (end-of-line 1)
+            (org-insert-heading-after-current))
+          (progn
+            (beginning-of-line)
+            (end-of-line 1)
+            (org-end-of-subtree)
+            (org-insert-subheading nil)))
+      (insert (format org-refile-string-format subheading)))
+    (let ((marker (make-marker)))
+      (move-marker marker (point))
+      marker)))
 
 (defun org-insert-grandsubheading-at-point (subheading)
   (let ((buffer-read-only nil)
@@ -247,13 +309,15 @@ With prefix arg C-u, copy region instad of killing it."
                       ((stringp subheading) subheading)
                       ((functionp subheading) (funcall subheading))
                       (t (error "no subheading")))))
-    (if (eql org-refile-string-position 'bottom)
-        (org-end-of-subtree)
-        ;; (org-end-of-meta-data-and-drawers)
-        ;; (org-end-of-meta-data)
-        (org-end-of-subtree))
-    (org-insert-subheading nil)
-    (insert (format org-refile-string-format subheading))))
+    (org-with-cloned-buffer (current-buffer) "<tree>"
+      (show-all)
+      (if (eql org-refile-string-position 'bottom)
+          (org-end-of-subtree)
+          ;; (org-end-of-meta-data-and-drawers)
+          ;; (org-end-of-meta-data)
+          (org-end-of-subtree))
+      (org-insert-subheading nil)
+      (insert (format org-refile-string-format subheading)))))
 
 (defun org-insert-sibling-headline-at-point (subheading)
   (let ((buffer-read-only nil)
@@ -267,10 +331,12 @@ With prefix arg C-u, copy region instad of killing it."
     ;;     ;; (org-end-of-meta-data)
     ;;     (org-end-of-subtree))
 
-    (beginning-of-line)
-    (end-of-line 1)
-    (org-insert-heading-after-current)
-    (insert (format org-refile-string-format subheading))))
+    (org-with-cloned-buffer (current-buffer) "<tree>"
+      (show-all)
+      (beginning-of-line)
+      (end-of-line 1)
+      (org-insert-heading-after-current)
+      (insert (format org-refile-string-format subheading)))))
 
 (defun org-insert-grandsubheading-to-headline (text heading &optional create)
   (org-with-narrow-to-heading-subtree
@@ -297,11 +363,13 @@ With prefix arg C-u, copy region instad of killing it."
         (error "can not open file %s" file))))
 
 (defun org-insert-subheadline-to-headline (text heading &optional create)
+  "return marker"
   (org-with-narrow-to-heading-subtree
       heading create
       (org-insert-subheading-at-point text)))
 
 (defun org-insert-subheadline-to-file-headline (text file heading &optional create)
+  "Create subheading with text in heading, return marker."
   (let ((buff (find-file-noselect file)))
     (if buff
         (with-current-buffer buff
@@ -490,7 +558,11 @@ With prefix arg C-u, copy region instad of killing it."
 ;; (defmacro org-timed-miniwin-file-loc-with-refile (win file pos timeout refile-targets &rest body)
 (defmacro org-with-file-loc-timed-refile-new-win (file pos timeout refile-targets newwin &rest body)
   `(org-with-file-loc-timed-refile
-       ,file ,pos ,timeout ,refile-targets
+       ,file ,pos ,timeout(show-all)
+           (read-only-mode)
+           (org-previous-visible-heading 1)
+           (let ((info (org-context-clock-collect-task)))
+             info) ,refile-targets
        (lotus-with-file-pos-new-win
            ,file ,pos ,newwin
            ,@body)))
@@ -508,8 +580,6 @@ With prefix arg C-u, copy region instad of killing it."
     (lotus-with-file-pos-timed-new-win
      ,file ,pos ,timeout-newwin ,timer-newwin ,cleanupfn-newwin ,cleanupfn-local ,newwin ,@body)))
 (put 'org-with-file-loc-timed-refile-timed-new-win 'lisp-indent-function 1)
-
-
 
 ;; e.g.
 ;; (org-miniwin-file-loc-with-refile nil nil)

@@ -70,23 +70,26 @@
 
 ;;;###autoload
 (defun lotus-org-create-unnamed-task (&optional file task)
+  "return newly created subtask and marker (suntask . marker)"
   (interactive
    (let ((file *lotus-org-unnamed-task-file*)
          (task *lotus-org-unnamed-parent-task-name*))
      (list file task)))
 
-  (let ((file (or file *lotus-org-unnamed-task-file*))
-        (task (or task *lotus-org-unnamed-parent-task-name*))
-        (subtask (format *lotus-org-unnamed-task-name-fmt*
-                         ;; (lotus-org-get-incr-tasknum (find-file-noselect file))
-                         (1+ (org-with-file-headline file task (org-number-of-subheadings))))))
+  (let* ((file (or file *lotus-org-unnamed-task-file*))
+         (task (or task *lotus-org-unnamed-parent-task-name*))
+         (subtask (format *lotus-org-unnamed-task-name-fmt*
+                          ;; (lotus-org-get-incr-tasknum (find-file-noselect file))
+                          (1+ (org-with-file-headline file task (org-number-of-subheadings))))))
+    (assert file)
     (org-find-file-heading-marker file task t)
-    (org-insert-subheadline-to-file-headline
+    (cons
      subtask
-     file
-     task
-     t)
-    subtask))
+     (org-insert-subheadline-to-file-headline
+      subtask
+      file
+      task
+      t))))
 
 ;;;###autoload
 (defun lotus-org-create-unnamed-task-task-clock-in (&optional file parent-task)

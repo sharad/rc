@@ -81,19 +81,28 @@
      tasks)))
 (org-context-clock-access-api-set :list :tasks  'org-context-clock-list-matching-tasks)
 
+(defun org-context-clock-list-build-dyntaskpl (task context)
+  (list
+   :rank (funcall org-context-clock-api-task-associated-to-context-p task context)
+   :task task
+   :marker (org-context-clock-task-get-property task :task-clock-marker)))
+(org-context-clock-access-api-set :list :dyntaskpl  'org-context-clock-list-build-dyntaskpl)
+
 (defun org-context-clock-list-matching-dyntaskpls (context)
   (lexical-let ((tasks (org-context-clock-entry-list-update-tasks))
                 (context context))
     (remove-if-not #'(lambda (dyntaskpl) (> (car dyntaskpl) 0))
                    (mapcar #'(lambda (task)
-                               (list :rank (funcall org-context-clock-api-task-associated-to-context-p task context) :task task))
+                               (org-context-clock-build-dyntaskpl task context))
                            tasks))))
 (org-context-clock-access-api-set :list :dyntaskpls  'org-context-clock-list-matching-dyntaskpls)
 
-
 (defun org-context-clock-list-dyntaskpl-print (dyntaskpl heading)
-  (format "[%d] %s" (plist-get dyntaskpl :rank) heading))
-(org-context-clock-access-api-set :recursive :dyntaskplprint  'org-context-clock-list-dyntaskpl-print)
+  (let ((task (plist-get dyntaskpl :task)))
+    (format "[%d] %s"
+            (plist-get dyntaskpl :rank)
+            (org-context-clock-task-get-property task :task-clock-heading-prop))))
+(org-context-clock-access-api-set :list :dyntaskplprint  'org-context-clock-list-dyntaskpl-print)
 
 (provide 'org-context-clock-api-list)
 ;;; org-context-clock-api-list.el ends here

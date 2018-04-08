@@ -292,20 +292,21 @@ Each entry is either:
                                  find-task-dir)
                       :config
                       (progn
-
-                        ;; (progn
-                        ;;   (let ((monitor-dir (task-party-dir)))
-                        ;;     (if (file-directory-p monitor-dir)
-                        ;;         (progn
-                        ;;           (org-clock-monitor-files-set-from-dir monitor-dir)
-                        ;;           (org-clock-work-day-mode-line-add t))
-                        ;;         (message "org monitor dir %s not exists." monitor-dir))))
+                        (progn
+                          (unless task-current-party
+                            (task-current-party "meru"))
+                          (let ((monitor-dir (task-party-dir)))
+                            (if (file-directory-p monitor-dir)
+                                (progn
+                                  (org-clock-monitor-files-set-from-dir monitor-dir)
+                                  (org-clock-work-day-mode-line-add t))
+                                (message "org monitor dir %s not exists." monitor-dir))))
 
                         (progn
                           (add-to-task-current-party-change-hook
                            #'(lambda ()
-                               (unless task-current-party
-                                 (task-current-party "meru"))
+                               ;; (unless task-current-party
+                               ;;   (task-current-party "meru"))
                                (let ((monitor-dir (task-party-dir)))
                                  (if (file-directory-p monitor-dir)
                                      (progn
@@ -320,10 +321,28 @@ Each entry is either:
           (progn
             (add-to-enable-login-session-interrupting-feature-hook
              #'(lambda ()
+                 (unless task-current-party
+                   (task-current-party "meru"))
+                 (unless org-clock-monitor-files
+                   (let ((monitor-dir (task-party-dir)))
+                     (if (file-directory-p monitor-dir)
+                         (progn
+                           (org-clock-monitor-files-set-from-dir monitor-dir)
+                           (org-clock-work-day-mode-line-add t))
+                         (message "org monitor dir %s not exists." monitor-dir))))
                  (org-clock-work-day-mode-line-add t)) t)
 
             (add-to-enable-startup-interrupting-feature-hook
              #'(lambda ()
+                 (unless task-current-party
+                   (task-current-party "meru"))
+                 (unless org-clock-monitor-files
+                   (let ((monitor-dir (task-party-dir)))
+                     (if (file-directory-p monitor-dir)
+                         (progn
+                           (org-clock-monitor-files-set-from-dir monitor-dir)
+                           (org-clock-work-day-mode-line-add t))
+                         (message "org monitor dir %s not exists." monitor-dir))))
                  (org-clock-work-day-mode-line-add t)) t))))))
 
 
