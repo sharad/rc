@@ -277,9 +277,7 @@
          (org-context-clock-maybe-create-unnamed-task))
         (unnamed-dyntaskpl
          (if unnamed-task
-             (org-context-clock-build-dyntaskpl
-              unnamed-task
-              context))))
+           (org-context-clock-build-dyntaskpl unnamed-task context))))
     unnamed-dyntaskpl))
 
 (defun org-context-clock-maybe-create-clockedin-unnamed-dyntaskpl (context)
@@ -289,7 +287,9 @@
       (if (org-clock-marker-is-unnamed-clock-p)
           (org-context-clock-debug :debug "org-context-clock-maybe-create-unnamed-task: Already clockin unnamed task")
           (prog1
-            (org-context-clock-maybe-create-unnamed-dyntaskpl context)
+              (org-context-clock-clockin-dyntaskpl
+               (org-context-clock-maybe-create-unnamed-dyntaskpl context))
+            (message "clockin to unnnamed task.")
             (org-context-clock-unassociate-context-start-time-reset))))))
 
 (defun org-context-clock-changable-p ()
@@ -425,15 +425,15 @@
 ;; TODO add org-insert-log-not
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*add%20org-insert-log-not][add org-insert-log-not:1]]
-(defun org-context-clock-clockin-dyntaskpl (dyntaskpl)
+(defun org-context-clock-clockin-dyntaskpl (new-dyntaskpl)
   ;;TODO add org-insert-log-not
-  (org-context-clock-debug :debug "org-context-clock-clockin-marker %s" dyntaskpl)
+  (org-context-clock-debug :debug "org-context-clock-clockin-marker %s" new-dyntaskpl)
   (let* (retval
-         (task (plist-get dyntaskpl :task))
-         (new-marker (if task (plist-get task  :task-clock-marker)))
-         (new-heading (if task (plist-get task :task-clock-heading)))
-         (old-heading "TODO Test")
-         (old-clocked-dyntaskpl-context (car *org-context-clock-clocked-dyntaskpl-context-history*)))
+         (old-dyntaskpl (car *org-context-clock-clocked-dyntaskpl-context-history*))
+         (new-task    (plist-get new-dyntaskpl :task))
+         (new-marker  (if new-task (plist-get new-task :task-clock-marker)))
+         (new-heading (if new-task (plist-get new-task :task-clock-heading)))
+         (old-heading (if new-task (plist-get old-dyntaskpl :task-clock-heading))))
   (when (and
          new-marker
          (marker-buffer new-marker))
@@ -468,7 +468,7 @@
                 (progn
                   (org-clock-clock-in (list new-marker))
                   (setq retval t)
-                  (push dyntaskpl *org-context-clock-clocked-dyntaskpl-context-history*))
+                  (push new-dyntaskpl *org-context-clock-clocked-dyntaskpl-context-history*))
               ((error)
                (progn
                  (setq retval nil)

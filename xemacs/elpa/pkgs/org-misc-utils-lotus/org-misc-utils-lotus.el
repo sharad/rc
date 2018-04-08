@@ -285,8 +285,7 @@ With prefix arg C-u, copy region instad of killing it."
                       ((stringp subheading) subheading)
                       ((functionp subheading) (funcall subheading))
                       (t (error "no subheading")))))
-    (org-with-cloned-buffer (current-buffer) "<tree>"
-      (show-all)
+    (progn
       (if (org-heading-has-child-p)
           (progn
             (org-goto-last-child)
@@ -309,8 +308,7 @@ With prefix arg C-u, copy region instad of killing it."
                       ((stringp subheading) subheading)
                       ((functionp subheading) (funcall subheading))
                       (t (error "no subheading")))))
-    (org-with-cloned-buffer (current-buffer) "<tree>"
-      (show-all)
+    (progn
       (if (eql org-refile-string-position 'bottom)
           (org-end-of-subtree)
           ;; (org-end-of-meta-data-and-drawers)
@@ -331,42 +329,46 @@ With prefix arg C-u, copy region instad of killing it."
     ;;     ;; (org-end-of-meta-data)
     ;;     (org-end-of-subtree))
 
-    (org-with-cloned-buffer (current-buffer) "<tree>"
-      (show-all)
+    (progn
       (beginning-of-line)
       (end-of-line 1)
       (org-insert-heading-after-current)
       (insert (format org-refile-string-format subheading)))))
 
 (defun org-insert-grandsubheading-to-headline (text heading &optional create)
-  (org-with-narrow-to-heading-subtree
-   heading create
-   (org-insert-grandsubheading-at-point text)))
+  (org-with-cloned-buffer (current-buffer) "<tree>"
+    (org-with-narrow-to-heading-subtree
+     heading create
+     (org-insert-grandsubheading-at-point text))))
 
 (defun org-insert-grandsubheading-to-file-headline (text file heading &optional create)
   (let ((buff (find-file-noselect file)))
     (if buff
         (with-current-buffer buff
-          (org-insert-grandsubheading-to-headline text heading create))
+          (org-with-cloned-buffer (current-buffer) "<tree>"
+            (org-insert-grandsubheading-to-headline text heading create)))
         (error "can not open file %s" file))))
 
 (defun org-insert-sibling-headline-to-headline (text heading &optional create)
-  (org-with-narrow-to-heading-subtree
-   heading create
-   (org-insert-sibling-headline-at-point text)))
+  (org-with-cloned-buffer (current-buffer) "<tree>"
+    (org-with-narrow-to-heading-subtree
+     heading create
+     (org-insert-sibling-headline-at-point text))))
 
 (defun org-insert-sibling-headline-to-file-headline (text file heading &optional create)
   (let ((buff (find-file-noselect file)))
     (if buff
         (with-current-buffer buff
-          (org-insert-sibling-headline-to-headline text heading create))
+          (org-with-cloned-buffer (current-buffer) "<tree>"
+            (org-insert-sibling-headline-to-headline text heading create)))
         (error "can not open file %s" file))))
 
 (defun org-insert-subheadline-to-headline (text heading &optional create)
   "return marker"
-  (org-with-narrow-to-heading-subtree
-      heading create
-      (org-insert-subheading-at-point text)))
+  (org-with-cloned-buffer (current-buffer) "<tree>"
+    (org-with-narrow-to-heading-subtree
+     heading create
+     (org-insert-subheading-at-point text))))
 
 (defun org-insert-subheadline-to-file-headline (text file heading &optional create)
   "Create subheading with text in heading, return marker."

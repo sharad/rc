@@ -92,6 +92,16 @@
         (org-entry-put nil "Effort" "10"))
      (cons subtask marker))))
 
+(when nil
+  (progn
+    (org-find-file-heading-marker *lotus-org-unnamed-task-file* *lotus-org-unnamed-parent-task-name* t)
+
+    (org-insert-subheadline-to-file-headline
+     (format *lotus-org-unnamed-task-name-fmt*
+             (1+ (org-with-file-headline *lotus-org-unnamed-task-file* *lotus-org-unnamed-parent-task-name* (org-number-of-subheadings))))
+     *lotus-org-unnamed-task-file*
+     *lotus-org-unnamed-parent-task-name*
+     t)))
 ;;;###autoload
 (defun lotus-org-create-unnamed-task-task-clock-in (&optional file parent-task)
   (interactive
