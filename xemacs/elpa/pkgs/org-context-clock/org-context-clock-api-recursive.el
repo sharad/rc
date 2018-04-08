@@ -286,7 +286,7 @@
   (let ((task (plist-get dyntaskpl :task)))
     (format "[%d] %s"
             (plist-get dyntaskpl :rank)
-            (org-context-clock-task-get-property task :task-clock-heading-prop))))
+            (org-context-clock-fontify-like-in-org-mode task))))
 (org-context-clock-access-api-set :recursive :dyntaskplprint  'org-context-clock-recursive-dyntaskpl-print)
 
 (provide 'org-context-clock-api-recursive)

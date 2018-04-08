@@ -60,7 +60,7 @@ inside loops."
   ;; (org-element-at-point)
   (let ((heading-with-string-prop
          (unless (org-before-first-heading-p)
-           (org-get-heading))))
+           (org-get-heading 'notags))))
     (let ((heading (if heading-with-string-prop
                        (substring-no-properties heading-with-string-prop)))
           (heading-prop (if heading-with-string-prop
@@ -97,7 +97,7 @@ inside loops."
   ;; (org-element-at-point)
   (let ((heading-with-string-prop
          (unless (org-before-first-heading-p)
-           (org-get-heading))))
+           (org-get-heading 'notags))))
     (let ((heading (if heading-with-string-prop
                        (substring-no-properties heading-with-string-prop)))
           (heading-prop (if heading-with-string-prop
@@ -151,6 +151,22 @@ inside loops."
 
     ;; (let ((re org-clock-string))
     ;;   (re-search-backward re nil t))
+
+
+(defun org-context-clock-fontify-like-in-org-mode (task)
+  (let* ((level   (or (org-context-clock-task-get-property task :level) 0))
+         (heading (org-context-clock-task-get-property task :task-clock-heading-prop))
+         (prefix  (concat (make-string level ?\*) " ")))
+    (if nil ;; if test without else with prefix
+        (substring
+         (org-fontify-like-in-org-mode
+          (concat prefix heading)
+          org-odd-levels-only)
+         (1+ level))
+
+        (org-fontify-like-in-org-mode
+         (concat prefix heading)
+         org-odd-levels-only))))
 
 ;; (defun org-Xclock-items (&optional tstart tend)
 (defun org-context-clock-clock-items (&optional tstart tend)
