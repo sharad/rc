@@ -272,7 +272,7 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
       (prog1
           (>
            (float-time (time-since unassociate-context-start-time))
-           *org-context-clock-swapen-unnamed-threashold-interval*))))
+           ,*org-context-clock-swapen-unnamed-threashold-interval*))))
 
   (defun org-clock-marker-is-unnamed-clock-p (&optional clock)
     (let ((clock (or clock org-clock-marker)))
@@ -317,9 +317,7 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
            (org-context-clock-maybe-create-unnamed-task))
           (unnamed-dyntaskpl
            (if unnamed-task
-               (org-context-clock-build-dyntaskpl
-                unnamed-task
-                context))))
+             (org-context-clock-build-dyntaskpl unnamed-task context))))
       unnamed-dyntaskpl))
 
   (defun org-context-clock-maybe-create-clockedin-unnamed-dyntaskpl (context)
@@ -329,7 +327,9 @@ it is currently getting used in clock-in-hook in org-lock-utils-lotus.el.
         (if (org-clock-marker-is-unnamed-clock-p)
             (org-context-clock-debug :debug "org-context-clock-maybe-create-unnamed-task: Already clockin unnamed task")
             (prog1
-              (org-context-clock-maybe-create-unnamed-dyntaskpl context)
+                (org-context-clock-clockin-dyntaskpl
+                 (org-context-clock-maybe-create-unnamed-dyntaskpl context))
+              (message "clockin to unnnamed task.")
               (org-context-clock-unassociate-context-start-time-reset))))))
 
   (defun org-context-clock-changable-p ()
