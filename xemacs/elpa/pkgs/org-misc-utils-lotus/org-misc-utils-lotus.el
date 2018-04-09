@@ -152,7 +152,8 @@ With prefix arg C-u, copy region instad of killing it."
               ;; (org-end-of-meta-data)
               (org-end-of-subtree))
           (org-insert-subheading nil)
-          (insert (format org-refile-string-format text)))))))
+          (insert
+           (format org-refile-string-format text)))))))
 
 (defun org-find-heading-marker (heading &optional create)
   (let ((heading-marker (org-find-exact-headline-in-buffer heading)))

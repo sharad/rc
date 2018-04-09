@@ -32,11 +32,12 @@
 (require 'org-misc-utils-lotus)
 (eval-when-compile
   '(require 'org-misc-utils-lotus))
-
+(require 'org-capture+)
 (eval-when-compile
   (require 'org-context-clock-assoc-common))
-
 (require 'org-context-clock-assoc-common)
+
+
 
 ;; BUG `org-get-property' is not known to be defined.
 
@@ -227,6 +228,71 @@
   ;;  #'(lambda (args)
   ;;      (apply 'org-context-clock-add-context-to-org-heading args)) (list context timeout))
   )
+
+
+(defun org-context-clock-helm-select-dyntaskpl (selector action)
+  ;; here
+  ;; (org-context-clock-debug :debug "sacha marker %s" (car dyntaskpls))
+  (let (helm-sources
+        (context (org-context-clock-build-context)))
+    (let ((dyntaskpls
+           (org-context-clock-dyntaskpls-associated-to-context context)))
+     (push
+      (helm-build-sync-source "Select matching task"
+        :candidates (mapcar
+                     'sacha-org-context-clock-dyntaskpl-selection-line
+                     dyntaskpls)
+        :action (list
+                 (cons "Clock in and track" selector))
+        :history 'org-refile-history)
+      helm-sources))
+
+    (when (and
+           (org-clocking-p)
+           (marker-buffer org-clock-marker))
+      (push
+       (helm-build-sync-source "Current Clocking Task"
+         :candidates (list (sacha-org-context-clock-dyntaskpl-selection-line
+                            (org-context-clock-build-dyntaskpl
+                             (org-context-clock-task-current-task)
+                             context)))
+         :action (list
+                  (cons "Clock in and track" selector)))
+       helm-sources))
+
+    (funcall action (helm helm-sources))))
+
+(defun org-context-clock-set-to-marker (marker)
+  (if (and
+       (markerp marker)
+       (marker-buffer marker))
+      (progn
+        (set-buffer (marker-buffer marker))
+        (goto-char marker))
+      (error "marker %s invalid." marker)))
+
+(defun org-context-clock-set-to-task ()
+  (org-context-clock-helm-select-dyntaskpl
+   #'org-context-clock-dyntaskpl-get-marker
+   #'org-context-clock-set-to-marker))
+
+(defun org-context-clock-create-child-task ()
+  (interactive)
+  (org-capture-alt
+   'entry
+   '(function org-context-clock-set-to-task)
+   "* TODO %? %^g\n %i\n [%a]\n"
+   :empty-lines 1))
+
+(defun org-context-clock-create-child-task ()
+  (interactive)
+  (org-capture-immediate                ;TODO
+   'entry
+   '(function org-context-clock-set-to-task)
+   "* TODO %? %^g\n %i\n [%a]\n"
+   :empty-lines 1))
+
+;; (org-context-clock-helm-select-dyntaskpl #'org-context-clock-dyntaskpl-get-marker)
 
 (provide 'org-context-clock-api-interaction)
 ;;; org-context-clock-api-interaction.el ends here

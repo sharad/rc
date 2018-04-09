@@ -218,13 +218,21 @@ inside loops."
 (defun org-context-clock-build-dyntaskpl (task context)
   (funcall org-context-clock-build-dyntaskpl task context))
 
+(defun org-context-clock-dyntaskpl-get-task (dyntaskpl)
+  (plist-get dyntaskpl :task))
+
+(defun org-context-clock-dyntaskpl-get-marker (dyntaskpl)
+  (let ((task (plist-get dyntaskpl :task)))
+    (plist-get task :task-clock-marker)))
+
+(defun org-context-clock-task-get-marker (task)
+  (plist-get task :task-clock-marker))
+
 (defun org-context-clock-dyntaskpls-associated-to-context (context)
   (funcall org-context-clock-matching-dyntaskpls context))
 
-(progn                                  ;; general use function
-
-  (defun org-context-clock-task-get-heading (task)
-    (org-context-clock-task-get-property task :task-clock-heading)))
+(defun org-context-clock-task-get-heading (task)
+  (org-context-clock-task-get-property task :task-clock-heading))
 
 (defun org-context-clock-dyntaskpl-print (dyntaskpl heading)
   (funcall org-context-clock-api-dyntaskpl-print dyntaskpl heading))

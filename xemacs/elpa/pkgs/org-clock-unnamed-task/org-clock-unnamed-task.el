@@ -79,7 +79,11 @@
   (let* ((file (or file *lotus-org-unnamed-task-file*))
          (task (or task *lotus-org-unnamed-parent-task-name*))
          (subtask (format *lotus-org-unnamed-task-name-fmt*
-                          (1+ (org-with-file-headline file task (org-number-of-subheadings))))))
+                          (1+
+                           (org-with-file-headline
+                            file
+                            task
+                            (org-number-of-subheadings))))))
     (assert file)
     (org-find-file-heading-marker file task t)
     (let ((marker (org-insert-subheadline-to-file-headline
