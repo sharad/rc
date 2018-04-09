@@ -87,6 +87,8 @@
                    file
                    task
                    t)))
+      (unless (markerp marker)
+        (error "No marker %s returned" marker))
       (with-current-buffer (marker-buffer marker)
         (goto-char marker)
         (org-entry-put nil "Effort" "10"))
@@ -101,7 +103,15 @@
              (1+ (org-with-file-headline *lotus-org-unnamed-task-file* *lotus-org-unnamed-parent-task-name* (org-number-of-subheadings))))
      *lotus-org-unnamed-task-file*
      *lotus-org-unnamed-parent-task-name*
-     t)))
+     t)
+    )
+
+  (let ((marker (point-marker)))
+    (unless (markerp marker)
+      (error "No marker %s returned" marker)))
+
+
+  )
 ;;;###autoload
 (defun lotus-org-create-unnamed-task-task-clock-in (&optional file parent-task)
   (interactive

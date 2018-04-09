@@ -327,28 +327,32 @@ With prefix arg C-u, copy region instad of killing it."
   (org-with-cloned-buffer (current-buffer) "<tree>"
     (org-with-narrow-to-heading-subtree
      heading create
-     (org-insert-grandsubheading-at-point text))))
+     (org-insert-grandsubheading-at-point text)
+     (point-marker))))
 
 (defun org-insert-grandsubheading-to-file-headline (text file heading &optional create)
   (let ((buff (find-file-noselect file)))
     (if buff
         (with-current-buffer buff
           (org-with-cloned-buffer (current-buffer) "<tree>"
-            (org-insert-grandsubheading-to-headline text heading create)))
+            (org-insert-grandsubheading-to-headline text heading create)
+            (point-marker)))
         (error "can not open file %s" file))))
 
 (defun org-insert-sibling-headline-to-headline (text heading &optional create)
   (org-with-cloned-buffer (current-buffer) "<tree>"
     (org-with-narrow-to-heading-subtree
      heading create
-     (org-insert-sibling-headline-at-point text))))
+     (org-insert-sibling-headline-at-point text)
+     (point-marker))))
 
 (defun org-insert-sibling-headline-to-file-headline (text file heading &optional create)
   (let ((buff (find-file-noselect file)))
     (if buff
         (with-current-buffer buff
           (org-with-cloned-buffer (current-buffer) "<tree>"
-            (org-insert-sibling-headline-to-headline text heading create)))
+            (org-insert-sibling-headline-to-headline text heading create)
+            (point-marker)))
         (error "can not open file %s" file))))
 
 (defun org-insert-subheadline-to-headline (text heading &optional create)
