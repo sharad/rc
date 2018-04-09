@@ -295,24 +295,26 @@ Each entry is either:
                         (progn
                           (unless task-current-party
                             (task-current-party "meru"))
-                          (let ((monitor-dir (task-party-dir)))
-                            (if (file-directory-p monitor-dir)
-                                (progn
-                                  (org-clock-monitor-files-set-from-dir monitor-dir)
-                                  (org-clock-work-day-mode-line-add t))
-                                (message "org monitor dir %s not exists." monitor-dir))))
+                          (when (task-current-party)
+                            (let ((monitor-dir (task-party-dir)))
+                              (if (file-directory-p monitor-dir)
+                                  (progn
+                                    (org-clock-monitor-files-set-from-dir monitor-dir)
+                                    (org-clock-work-day-mode-line-add t))
+                                  (message "[1]org monitor dir %s not exists." monitor-dir)))))
 
                         (progn
                           (add-to-task-current-party-change-hook
                            #'(lambda ()
-                               ;; (unless task-current-party
+                               ;; (unless (task-current-party)
                                ;;   (task-current-party "meru"))
-                               (let ((monitor-dir (task-party-dir)))
-                                 (if (file-directory-p monitor-dir)
-                                     (progn
-                                       (org-clock-monitor-files-set-from-dir monitor-dir)
-                                       (org-clock-work-day-mode-line-add t))
-                                     (message "org monitor dir %s not exists." monitor-dir)))))))))))))
+                               (when (task-current-party)
+                                 (let ((monitor-dir (task-party-dir)))
+                                   (if (file-directory-p monitor-dir)
+                                       (progn
+                                         (org-clock-monitor-files-set-from-dir monitor-dir)
+                                         (org-clock-work-day-mode-line-add t))
+                                       (message "[2]org monitor dir %s not exists." monitor-dir))))))))))))))
 
     (use-package startup-hooks
         :defer t
@@ -327,12 +329,13 @@ Each entry is either:
                      (task-current-party "meru"))
                    (org-clock-work-day-mode-line-add t)
                    (unless org-clock-monitor-files
-                     (let ((monitor-dir (task-party-dir)))
-                       (if (file-directory-p monitor-dir)
-                           (progn
-                             (org-clock-monitor-files-set-from-dir monitor-dir)
-                             (org-clock-work-day-mode-line-add t))
-                           (message "org monitor dir %s not exists." monitor-dir))))
+                     (when (task-current-party)
+                       (let ((monitor-dir (task-party-dir)))
+                         (if (file-directory-p monitor-dir)
+                             (progn
+                               (org-clock-monitor-files-set-from-dir monitor-dir)
+                               (org-clock-work-day-mode-line-add t))
+                             (message "[3]org monitor dir %s not exists." monitor-dir)))))
                    (org-clock-work-day-mode-line-add t))) t)
 
             (add-to-enable-startup-interrupting-feature-hook
@@ -340,12 +343,13 @@ Each entry is either:
                  (unless task-current-party
                    (task-current-party "meru"))
                  (unless org-clock-monitor-files
-                   (let ((monitor-dir (task-party-dir)))
-                     (if (file-directory-p monitor-dir)
-                         (progn
-                           (org-clock-monitor-files-set-from-dir monitor-dir)
-                           (org-clock-work-day-mode-line-add t))
-                         (message "org monitor dir %s not exists." monitor-dir))))
+                   (when (task-current-party)
+                     (let ((monitor-dir (task-party-dir)))
+                       (if (file-directory-p monitor-dir)
+                           (progn
+                             (org-clock-monitor-files-set-from-dir monitor-dir)
+                             (org-clock-work-day-mode-line-add t))
+                           (message "[4]org monitor dir %s not exists." monitor-dir)))))
                  (org-clock-work-day-mode-line-add t)) t))))))
 
 
@@ -397,18 +401,19 @@ Each entry is either:
                      #'(lambda ()
                          (unless task-current-party
                            (task-current-party "meru"))
-                         (let* ((party-base-dir (task-party-base-dir))
-                                (start-file (expand-file-name "start.org" party-base-dir)))
-                           (if (and
-                                (file-directory-p party-base-dir)
-                                (file-exists-p start-file))
-                               (progn
-                                 (if (functionp 'org-context-clock-setup-task-tree-task-root-org-file)
-                                     (org-context-clock-setup-task-tree-task-root-org-file start-file)
-                                     (warn "function org-context-clock-setup-task-tree-task-root-org-file not available.")))
-                               (message "org party dir %s or file %s not exists."
-                                        party-base-dir
-                                        start-file)))))))))
+                         (when (task-current-party)
+                           (let* ((party-base-dir (task-party-base-dir))
+                                  (start-file (expand-file-name "start.org" party-base-dir)))
+                             (if (and
+                                  (file-directory-p party-base-dir)
+                                  (file-exists-p start-file))
+                                 (progn
+                                   (if (functionp 'org-context-clock-setup-task-tree-task-root-org-file)
+                                       (org-context-clock-setup-task-tree-task-root-org-file start-file)
+                                       (warn "function org-context-clock-setup-task-tree-task-root-org-file not available.")))
+                                 (message "org party dir %s or file %s not exists."
+                                          party-base-dir
+                                          start-file))))))))))
 
           (progn
             ;; (setq org-context-clock-task-tree-task-root-org-file
@@ -514,6 +519,8 @@ Each entry is either:
       :config
       (progn
         (progn
+          (task-current-party "meru")
+          ;; BUG: TODO: will load publishing which agian trigger task-manager configs
           (task-party-base-dir (org-publish-get-attribute "tasks" "org" :base-directory))
           (task-scratch-dir "~/Scratches/main")
           (task-projbuffs-base-dir (expand-file-name "contents/virtual/misc/projbuffs" *created-content-dir*))

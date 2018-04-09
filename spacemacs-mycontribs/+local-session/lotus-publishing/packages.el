@@ -87,7 +87,7 @@ Each entry is either:
 
         (progn ;; muse
           (progn
-            (require 'publishing)
+            ;; (require 'publishing)
             (progn
               (setq
                *muse-top-dir*           (expand-file-name "contents/virtual/muse/default" *created-content-dir*)
@@ -390,40 +390,39 @@ Each entry is either:
                           :config
                           (progn
                             (progn
-
                               (add-hook
                                'task-current-party-change-hook
-                               '(lambda ()
-                                 (progn
-                                   (unless task-current-party
-                                    (task-current-party "meru"))
-                                   (let ((task-dir (task-party-dir)))
-                                     (when (file-directory-p task-dir)
+                               #'(lambda ()
+                                   (progn
+                                     (unless task-current-party
+                                       (task-current-party "meru"))
+                                     (let ((task-dir (task-party-dir)))
+                                       (when (file-directory-p task-dir)
 
-                                       (add-to-org-agenda-custom-commands
-                                        `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
-                                          ,(task-party-org-heading) ;;  search ""
-                                          ((agenda ""
-                                                   ((org-agenda-span 'day)
-                                                    (org-agenda-prefix-format  "%e")))
-                                           (org-agenda-files #'task-party-dir-files-recursive)
-                                           ;; (org-agenda-sorting-strategy '(priority-up effort-down))
-                                           )
-                                          ;; ("~/computer.html")
-                                          ))
+                                         (add-to-org-agenda-custom-commands
+                                          `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
+                                            ,(task-party-org-heading) ;;  search ""
+                                            ((agenda ""
+                                                     ((org-agenda-span 'day)
+                                                      (org-agenda-prefix-format  "%e")))
+                                             (org-agenda-files #'task-party-dir-files-recursive)
+                                             ;; (org-agenda-sorting-strategy '(priority-up effort-down))
+                                             )
+                                            ;; ("~/computer.html")
+                                            ))
 
-                                       ;; COMMON settings for all reviews
-                                       (setq efs/org-agenda-review-settings
-                                             '((org-agenda-files #'task-party-dir-files-recursive)
-                                               (org-agenda-show-all-dates t)
-                                               (org-agenda-start-with-log-mode t)
-                                               (org-agenda-start-with-clockreport-mode t)
-                                               (org-agenda-archives-mode t)
-                                               ;; I don't care if an entry was archived
-                                               (org-agenda-hide-tags-regexp
-                                                (concat org-agenda-hide-tags-regexp
-                                                 "\\|ARCHIVE"))
-                                               )))))))))))
+                                         ;; COMMON settings for all reviews
+                                         (setq efs/org-agenda-review-settings
+                                               '((org-agenda-files #'task-party-dir-files-recursive)
+                                                 (org-agenda-show-all-dates t)
+                                                 (org-agenda-start-with-log-mode t)
+                                                 (org-agenda-start-with-clockreport-mode t)
+                                                 (org-agenda-archives-mode t)
+                                                 ;; I don't care if an entry was archived
+                                                 (org-agenda-hide-tags-regexp
+                                                  (concat org-agenda-hide-tags-regexp
+                                                   "\\|ARCHIVE"))
+                                                 )))))))))))
 
                     (progn ;; "org-publishing"
 
