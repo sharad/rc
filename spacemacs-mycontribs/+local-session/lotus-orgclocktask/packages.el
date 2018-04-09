@@ -44,6 +44,7 @@
     org-clock-check
     org-clock-in-if-not
     org-clock-utils-lotus
+    org-clock-wrapper
     org-clock-daysummary
     org-clock-table-misc-lotus
     org-context-clock
@@ -268,6 +269,19 @@ Each entry is either:
                        (if (fboundp 'org-clock-persistence-insinuate)
                            (org-clock-persistence-insinuate)
                            (message "Error: Org Clock function org-clock-persistence-insinuate not available.")))))))))))
+
+(defun lotus-orgclocktask/init-org-clock-wrapper ()
+  (progn
+    (progn
+      (use-package org-clock-wrapper
+          :defer t
+          :config
+          (progn
+            (progn
+              ))))
+
+    (progn ;; Need it.
+     (org-wrapper-insuniate))))
 
 
 (defun lotus-orgclocktask/init-org-clock-daysummary ()
