@@ -199,11 +199,12 @@ With prefix arg C-u, copy region instad of killing it."
          (unwind-protect
               (progn
                 (clone-indirect-buffer clone-name nil t)
-                (set-buffer clone-name)
-                (widen)
-                (show-all)
-                ;; (org-mode)
-                ,@body)
+                ;; (set-buffer clone-name)
+                (with-current-buffer (get-buffer clone-name)
+                  (widen)
+                  (show-all)
+                  ;; (org-mode)
+                  ,@body))
            (when buff
              (setq pos (point))
              (set-buffer buff)
@@ -221,13 +222,14 @@ With prefix arg C-u, copy region instad of killing it."
          (unwind-protect
               (progn
                 (clone-indirect-buffer clone-name nil t)
-                (set-buffer clone-name)
-                (goto-char (marker-position-nonil marker))
-                (widen)
-                (show-all)
-                (org-mode)
-
-                ,@body)
+                ;; (set-buffer clone-name)
+                (with-current-buffer (get-buffer clone-name)
+                  (goto-char (point-min))
+                  (widen)
+                  (show-all)
+                  (goto-char (marker-position-nonil marker))
+                  ;; (org-mode)
+                  ,@body))
            (setq pos (point))
            (when buff
              (setq pos (point))

@@ -534,7 +534,7 @@ see here[[https://emacs.stackexchange.com/questions/9530/how-can-i-get-an-org-mo
                         (car matched-dyntaskpls)))
                    (sel-task  (plist-get sel-dyntaskpl :task))
                    (sel-marker (plist-get sel-task :task-clock-marker)))
-              (message "sel-dyntaskpl %s sel-task %s sel-marker %s" sel-dyntaskpl sel-task sel-marker)
+                   (org-context-clock-message 6 "sel-dyntaskpl %s sel-task %s sel-marker %s" sel-dyntaskpl sel-task sel-marker)
               (org-context-clock-clockin-dyntaskpl sel-dyntaskpl))
             (progn
               ;; here create unnamed task
