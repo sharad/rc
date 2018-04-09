@@ -213,7 +213,7 @@ With prefix arg C-u, copy region instad of killing it."
 
 
 (defmacro org-with-cloned-marker (marker clone &rest body)
-  `(with-current-buffer (marker-buffer marker)
+  `(with-current-buffer (marker-buffer ,marker)
      (let ((clone-name (concat (or ,clone "<clone>") "-" (buffer-name)))
            (marker ,marker)
            (buff (marker-buffer ,marker)))
