@@ -180,7 +180,7 @@
                     (re-search-forward "%\\?" end t))
                 (replace-match ""))
             (org-back-to-heading t)
-            (org-cycle-hide-drawers 'children)))))
+            (org-cycle-hide-drawers 'children))))))
 #+END_SRC
 
 *** set target improved

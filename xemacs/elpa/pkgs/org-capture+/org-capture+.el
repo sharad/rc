@@ -203,20 +203,21 @@ If `org-capture-use-agenda-date' is non-nil, capturing from the
 agenda will use the date at point as the default date.  Then, a
 `C-1' prefix will tell the capture process to use the HH:MM time
 of the day at point (if any) or the current HH:MM time."
-  (interactive "P")
+  ;; (interactive "P")
 
   (when (and org-capture-use-agenda-date
              (eq major-mode 'org-agenda-mode))
     (setq org-overriding-default-time
-          (org-get-cursor-date (equal goto 1))))
+          (org-get-cursor-date t ;; (equal goto 1)
+                               )))
 
   (let* ((orig-buf (current-buffer))
          (annotation (if (and (boundp 'org-capture-link-is-already-stored)
                               org-capture-link-is-already-stored)
                          (plist-get org-store-link-plist :annotation)
                          (ignore-errors (org-store-link nil))))
-         ;; (capture-template-entry (or org-capture-entry (org-capture-select-template keys)))
-         (capture-template-entry (or org-capture-entry capture-template-entry))
+         ;; (template (or org-capture-entry (org-capture-select-template keys)))
+         (template (or org-capture-entry template))
          initial)
     (setq initial (or org-capture-initial
                       (and (org-region-active-p)
@@ -229,7 +230,7 @@ of the day at point (if any) or the current HH:MM time."
 
 
 
-    (org-capture-set-plist capture-template-entry)
+    ;; (org-capture-set-plist template)
 
     (setq org-capture-plist plist)
     (org-capture-put
@@ -276,7 +277,9 @@ of the day at point (if any) or the current HH:MM time."
        (error "Capture abort: %s" error)))
 
     (setq org-capture-clock-keep (org-capture-get :clock-keep))
-    (if (equal goto 0)
+    (if (and
+         (not (org-capture-get :target))
+         (eq 'immdediate (car (org-capture-get :target)))) ;; (equal goto 0)
         ;;insert at point
         (org-capture-insert-template-here)
         (condition-case error
@@ -304,6 +307,18 @@ of the day at point (if any) or the current HH:MM time."
         (if (org-capture-get :immediate-finish)
             (org-capture-finalize)))))
 ;; new capture:1 ends here
+
+;; Application
+
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Application][Application:1]]
+(defun org-create-new-task ()
+  (interactive)
+  (org-capture-alt
+   'entry
+   '(function org-goto-refile)
+   "* TODO %? %^g\n %i\n [%a]\n"
+   :empty-lines 1))
+;; Application:1 ends here
 
 ;; Preamble
 
@@ -372,7 +387,8 @@ the text of the entry, before the first child.  If not, place the
 template at the beginning or end of the file.
 Of course, if exact position has been required, just put it there."
   (let* ((txt (org-capture-get :template))
-         beg end)
+         beg end
+         (note-purpose (or note-purpose 'note))
     ;; (cond
     ;;   ((org-capture-get :exact-position)
     ;;    (goto-char (org-capture-get :exact-position)))
@@ -473,7 +489,7 @@ Of course, if exact position has been required, just put it there."
                   (re-search-forward "%\\?" end t))
               (replace-match ""))
           (org-back-to-heading t)
-          (org-cycle-hide-drawers 'children)))))
+          (org-cycle-hide-drawers 'children))))))
 ;; Providing log note function for capture:1 ends here
 
 ;; Provide this file
