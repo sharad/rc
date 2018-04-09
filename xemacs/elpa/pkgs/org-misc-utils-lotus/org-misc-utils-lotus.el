@@ -269,7 +269,7 @@ With prefix arg C-u, copy region instad of killing it."
          (goto-char (+ begin level (length title)))))))
 
 (defun org-insert-subheading-at-point (subheading)
-  "return marker"
+  "return point"
   (let ((buffer-read-only nil)
         (subheading (cond
                       ((stringp subheading) subheading)
@@ -288,7 +288,7 @@ With prefix arg C-u, copy region instad of killing it."
             (org-end-of-subtree)
             (org-insert-subheading nil)))
       (insert (format org-refile-string-format subheading))
-      (point-marker))))
+      (point))))
 
 (defun org-insert-grandsubheading-at-point (subheading)
   (let ((buffer-read-only nil)
@@ -303,7 +303,8 @@ With prefix arg C-u, copy region instad of killing it."
           ;; (org-end-of-meta-data)
           (org-end-of-subtree))
       (org-insert-subheading nil)
-      (insert (format org-refile-string-format subheading)))))
+      (insert (format org-refile-string-format subheading))
+      (point))))
 
 (defun org-insert-sibling-headline-at-point (subheading)
   (let ((buffer-read-only nil)
@@ -321,48 +322,48 @@ With prefix arg C-u, copy region instad of killing it."
       (beginning-of-line)
       (end-of-line 1)
       (org-insert-heading-after-current)
-      (insert (format org-refile-string-format subheading)))))
+      (insert (format org-refile-string-format subheading))
+      (point))))
 
 (defun org-insert-grandsubheading-to-headline (text heading &optional create)
-  (org-with-cloned-buffer (current-buffer) "<tree>"
-    (org-with-narrow-to-heading-subtree
-     heading create
-     (org-insert-grandsubheading-at-point text)
-     (point-marker))))
+  (let ((pos (org-with-cloned-buffer (current-buffer) "<tree>"
+               (org-with-narrow-to-heading-subtree
+                heading create
+                (org-insert-grandsubheading-at-point text)))))
+    (copy-marker pos)))
 
 (defun org-insert-grandsubheading-to-file-headline (text file heading &optional create)
   (let ((buff (find-file-noselect file)))
     (if buff
-        (with-current-buffer buff
-          (org-with-cloned-buffer (current-buffer) "<tree>"
-            (org-insert-grandsubheading-to-headline text heading create)
-            (point-marker)))
+        (let ((pos (with-current-buffer buff
+                     (org-with-cloned-buffer (current-buffer) "<tree>"
+                       (org-insert-grandsubheading-to-headline text heading create)))))
+          (copy-marker pos))
         (error "can not open file %s" file))))
 
 (defun org-insert-sibling-headline-to-headline (text heading &optional create)
-  (org-with-cloned-buffer (current-buffer) "<tree>"
-    (org-with-narrow-to-heading-subtree
-     heading create
-     (org-insert-sibling-headline-at-point text)
-     (point-marker))))
+  (let ((pos (org-with-cloned-buffer (current-buffer) "<tree>"
+               (org-with-narrow-to-heading-subtree
+                heading create
+                (org-insert-sibling-headline-at-point text)))))
+    (copy-marker pos)))
 
 (defun org-insert-sibling-headline-to-file-headline (text file heading &optional create)
   (let ((buff (find-file-noselect file)))
     (if buff
         (with-current-buffer buff
-          (org-with-cloned-buffer (current-buffer) "<tree>"
-            (org-insert-sibling-headline-to-headline text heading create)
-            (point-marker)))
+          (let ((pos (org-with-cloned-buffer (current-buffer) "<tree>"
+                       (org-insert-sibling-headline-to-headline text heading create))))
+            (copy-marker pos)))
         (error "can not open file %s" file))))
 
 (defun org-insert-subheadline-to-headline (text heading &optional create)
   "return marker"
-  (let ((pos 0))
-    (org-with-cloned-buffer (current-buffer) "<tree>"
-      (org-with-narrow-to-heading-subtree
-       heading create
-       (org-insert-subheading-at-point text)))
-    (point-marker)))
+  (let ((pos (org-with-cloned-buffer (current-buffer) "<tree>"
+               (org-with-narrow-to-heading-subtree
+                heading create
+                (org-insert-subheading-at-point text)))))
+    (copy-marker pos)))
 
 (defun org-insert-subheadline-to-file-headline (text file heading &optional create)
   "Create subheading with text in heading, return marker."

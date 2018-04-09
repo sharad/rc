@@ -241,6 +241,7 @@
            (lotus-org-unnamed-task-clock-marker))
      (equal
       (marker-buffer org-clock-marker)
+      ;; id:x11 make org-context-clock version
       (marker-buffer (lotus-org-unnamed-task-clock-marker))))))
 
 (defun org-context-clock-maybe-create-clockedin-unnamed-heading ()
@@ -286,11 +287,15 @@
     (let ((org-log-note-clock-out nil))
       (if (org-clock-marker-is-unnamed-clock-p)
           (org-context-clock-debug :debug "org-context-clock-maybe-create-unnamed-task: Already clockin unnamed task")
-          (prog1
-              (org-context-clock-clockin-dyntaskpl
-               (org-context-clock-maybe-create-unnamed-dyntaskpl context))
-            (message "clockin to unnnamed task.")
-            (org-context-clock-unassociate-context-start-time-reset))))))
+          (let* ((unnamed-dyntaskpl (org-context-clock-maybe-create-unnamed-dyntaskpl context))
+                 (unnamed-task (plist-get unnamed-dyntaskpl :task))
+                 (unnamed-marker (plist-get unnamed-task :task-clock-marker)))
+            (prog1
+                (org-context-clock-clockin-dyntaskpl unnamed-dyntaskpl)
+              ;; id:x11 make org-context-clock version
+              (lotus-org-unnamed-task-clock-marker unnamed-marker)
+              (message "clockin to unnnamed task.")
+              (org-context-clock-unassociate-context-start-time-reset)))))))
 
 (defun org-context-clock-changable-p ()
   "Stay with a clock at least 2 mins."
@@ -375,27 +380,7 @@
 (defun org-context-clock-task-current-task ()
   (when (and
          org-clock-marker
-         (> (marker-position-nonil org-clock-marker) 0))
-    (org-with-clock-position (list org-clock-marker)
-      (let ((buff (current-buffer))
-            (clone-buffer (concat "<tree>-" (buffer-name))))
-        (unwind-protect
-             (progn
-               (clone-indirect-buffer clone-buffer nil t)
-               (set-buffer clone-buffer)
-               (goto-char (marker-position-nonil org-clock-marker))
-               (show-all)
-               (read-only-mode)
-               (org-previous-visible-heading 1)
-               (let ((info (org-context-clock-collect-task)))
-                 info))
-          (when buff (set-buffer buff))
-          (kill-buffer clone-buffer))))))
-
-
-(defun org-context-clock-task-current-task ()
-  (when (and
-         org-clock-marker
+         (markerp org-clock-marker)
          (> (marker-position-nonil org-clock-marker) 0))
     (org-with-cloned-marker org-clock-marker "<tree>"
       (read-only-mode)
