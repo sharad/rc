@@ -486,13 +486,63 @@
 *** Application
 #+BEGIN_SRC elisp
 
-  (defun org-create-new-task ()
-    (interactive)
-    (org-capture-alt
-     'entry
-     '(function org-goto-refile)
-     "* TODO %? %^g\n %i\n [%a]\n"
-     :empty-lines 1))
+  (defun org-goto-refile (&optional refile-targets)
+    "Refile goto."
+    ;; mark paragraph if no region is set
+    (let* ((org-refile-targets (or refile-targets org-refile-targets))
+           (target (save-excursion (safe-org-refile-get-location)))
+           (file (nth 1 target))
+           (pos (nth 3 target)))
+      (when (set-buffer (find-file-noselect file)) ;; (switch-to-buffer (find-file-noselect file) 'norecord)
+        (goto-char pos))))
+
+    (defun org-create-new-task ()
+      (interactive)
+      (org-capture-alt
+       'entry
+       '(function org-goto-refile)
+       "* TODO %? %^g\n %i\n [%a]\n"
+       :empty-lines 1))
+
+  (when nil
+  (let (helm-sources)
+      ;; (when (marker-buffer org-clock-default-task)
+      ;;   (push
+      ;;    (helm-build-sync-source "Default Task"
+      ;;     :candidates (list (lotus-org-marker-selection-line org-clock-default-task))
+      ;;     :action (list ;; (cons "Select" 'identity)
+      ;;              (cons "Clock in and track" #'identity)))
+      ;;    helm-sources))
+
+      ;; (when (marker-buffer org-clock-interrupted-task)
+      ;;   (push
+      ;;    (helm-build-sync-source "The task interrupted by starting the last one"
+      ;;      :candidates (list (lotus-org-marker-selection-line org-clock-interrupted-task))
+      ;;      :action (list ;; (cons "Select" 'identity)
+      ;;               (cons "Clock in and track" #'identity)))
+      ;;    helm-sources))
+
+      (when (and
+             (org-clocking-p)
+             (marker-buffer org-clock-marker))
+        (push
+         (helm-build-sync-source "Current Clocking Task"
+           :candidates (list (lotus-org-marker-selection-line org-clock-marker))
+           :action (list ;; (cons "Select" 'identity)
+                    (cons "Clock in and track" #'identity)))
+         helm-sources))
+
+      ;; (when org-clock-history
+      ;;   (push
+      ;;    (helm-build-sync-source "Recent Tasks"
+      ;;      :candidates (mapcar 'sacha-org-context-clock-dyntaskpl-selection-line dyntaskpls)
+      ;;      :action (list ;; (cons "Select" 'identity)
+      ;;               (cons "Clock in and track" #'(lambda (dyntaskpl) (plist-get dyntaskpl ))))
+      ;;    helm-sources)))
+
+      (helm
+       helm-sources)))
+
 
 #+END_SRC
 ** Provide this file
