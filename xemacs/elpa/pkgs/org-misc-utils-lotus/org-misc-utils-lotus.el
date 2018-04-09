@@ -192,9 +192,9 @@ With prefix arg C-u, copy region instad of killing it."
 
 
 (defmacro org-with-cloned-buffer (buff clone &rest body)
-  `(let ((buff (or ,buff (current-buffer)))
-         (clone-name (concat (or ,clone "<clone>") "-" (buffer-name))))
-     (with-current-buffer buff
+  `(with-current-buffer buff
+     (let ((buff (or ,buff (current-buffer)))
+           (clone-name (concat (or ,clone "<clone>") "-" (buffer-name))))
        (let ((pos (point)))
          (unwind-protect
               (progn
@@ -202,48 +202,38 @@ With prefix arg C-u, copy region instad of killing it."
                 (set-buffer clone-name)
                 (widen)
                 (show-all)
-                (org-mode)
-
-                ,@body
-
-                (setq pos (point))
-                (when buff
-                  (set-buffer buff)
-                  (goto-char pos)))
-         (when buff
-           (setq pos (point))
-           (set-buffer buff)
-           (goto-char pos))
-         (kill-buffer clone-name))))))
+                ;; (org-mode)
+                ,@body)
+           (when buff
+             (setq pos (point))
+             (set-buffer buff)
+             (goto-char pos))
+           (kill-buffer clone-name))))))
 (put 'org-with-cloned-buffer 'lisp-indent-function 2)
 
 
 (defmacro org-with-cloned-marker (marker clone &rest body)
-  `(let ((clone-name (concat (or ,clone "<clone>") "-" (buffer-name)))
-         (marker ,marker)
-         (buff (marker-buffer ,marker)))
-     (with-current-buffer (marker-buffer marker)
+  `(with-current-buffer (marker-buffer marker)
+     (let ((clone-name (concat (or ,clone "<clone>") "-" (buffer-name)))
+           (marker ,marker)
+           (buff (marker-buffer ,marker)))
        (let ((pos (point)))
-        (unwind-protect
-            (progn
-              (clone-indirect-buffer clone-name nil t)
-              (set-buffer clone-name)
-              (goto-char (marker-position-nonil marker))
-              (widen)
-              (show-all)
-              (org-mode)
+         (unwind-protect
+              (progn
+                (clone-indirect-buffer clone-name nil t)
+                (set-buffer clone-name)
+                (goto-char (marker-position-nonil marker))
+                (widen)
+                (show-all)
+                (org-mode)
 
-              ,@body
-
-              (setq pos (point))
-              (when buff
-                (set-buffer buff)
-                (goto-char pos)))
-          (setq pos (point))
-          (when buff
-            (set-buffer buff)
-            (goto-char pos))
-         (kill-buffer clone-name))))))
+                ,@body)
+           (setq pos (point))
+           (when buff
+             (setq pos (point))
+             (set-buffer buff)
+             (goto-char pos))
+           (kill-buffer clone-name))))))
 (put 'org-with-cloned-marker 'lisp-indent-function 2)
 
 (defun org-heading-has-child-p ()
@@ -297,10 +287,8 @@ With prefix arg C-u, copy region instad of killing it."
             (end-of-line 1)
             (org-end-of-subtree)
             (org-insert-subheading nil)))
-      (insert (format org-refile-string-format subheading)))
-    (let ((marker (make-marker)))
-      (move-marker marker (point))
-      marker)))
+      (insert (format org-refile-string-format subheading))
+      (point-marker))))
 
 (defun org-insert-grandsubheading-at-point (subheading)
   (let ((buffer-read-only nil)
@@ -365,10 +353,12 @@ With prefix arg C-u, copy region instad of killing it."
 
 (defun org-insert-subheadline-to-headline (text heading &optional create)
   "return marker"
-  (org-with-cloned-buffer (current-buffer) "<tree>"
-    (org-with-narrow-to-heading-subtree
-     heading create
-     (org-insert-subheading-at-point text))))
+  (let ((pos 0))
+    (org-with-cloned-buffer (current-buffer) "<tree>"
+      (org-with-narrow-to-heading-subtree
+       heading create
+       (org-insert-subheading-at-point text)))
+    (point-marker)))
 
 (defun org-insert-subheadline-to-file-headline (text file heading &optional create)
   "Create subheading with text in heading, return marker."

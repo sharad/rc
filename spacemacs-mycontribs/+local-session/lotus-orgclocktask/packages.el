@@ -321,16 +321,19 @@ Each entry is either:
           (progn
             (add-to-enable-login-session-interrupting-feature-hook
              #'(lambda ()
-                 (unless task-current-party
-                   (task-current-party "meru"))
-                 (unless org-clock-monitor-files
-                   (let ((monitor-dir (task-party-dir)))
-                     (if (file-directory-p monitor-dir)
-                         (progn
-                           (org-clock-monitor-files-set-from-dir monitor-dir)
-                           (org-clock-work-day-mode-line-add t))
-                         (message "org monitor dir %s not exists." monitor-dir))))
-                 (org-clock-work-day-mode-line-add t)) t)
+                 (org-clock-work-day-mode-line-add t)
+                 (when nil
+                   (unless task-current-party
+                     (task-current-party "meru"))
+                   (org-clock-work-day-mode-line-add t)
+                   (unless org-clock-monitor-files
+                     (let ((monitor-dir (task-party-dir)))
+                       (if (file-directory-p monitor-dir)
+                           (progn
+                             (org-clock-monitor-files-set-from-dir monitor-dir)
+                             (org-clock-work-day-mode-line-add t))
+                           (message "org monitor dir %s not exists." monitor-dir))))
+                   (org-clock-work-day-mode-line-add t))) t)
 
             (add-to-enable-startup-interrupting-feature-hook
              #'(lambda ()
