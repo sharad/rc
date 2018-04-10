@@ -45,6 +45,7 @@
 (defun org-context-clock-task-associated-to-context-by-keys-p (task context)
   "Test whether association of org TASK-INFO for FILE using list of functions for keys,
 using algorithm in this function, return RANK"
+  ;; TODO add :current-clock also
   (if context
       (if (and
            (>= (org-context-clock-tasks-associated-key-fn-value :sub-tree task context) 0) ;IMPORTANT NOTE: only node tasks
