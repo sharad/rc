@@ -154,18 +154,13 @@
                          (let* ((task-marker
                                  (org-context-clock-task-get-property task :task-clock-marker)))
                            (if (and
-                                org-clock-hd-marker
-                                task-marker
-                                (equal
-                                 (marker-buffer org-clock-hd-marker)
-                                 (marker-buffer task-marker))
-                                (equal
-                                 (marker-position org-clock-hd-marker)
-                                 (marker-position task-marker)))
-
-
+                                (markerp org-clock-hd-marker)
+                                (markerp task-marker)
+                                (equal org-clock-hd-marker org-clock-hd-marker))
                                100
                                0))))
+
+
 
 
 (provide 'org-context-clock-assoc-api)

@@ -276,6 +276,9 @@
    #'org-context-clock-dyntaskpl-get-marker
    #'org-context-clock-set-to-marker))
 
+
+
+
 (defun org-context-clock-create-child-task ()
   (interactive)
   (org-capture-alt
