@@ -72,7 +72,7 @@ using algorithm in this function, return RANK"
                  (org-context-clock-tasks-associated-key-fn-value rankkey task context))
               (mapcar 'car org-context-clock-key-operation-functions)))
       0))
-(org-context-clock-assoc-api-set :keys :taskp  'org-context-clock-task-associated-to-context-by-keys-newalt-p)
+;; (org-context-clock-assoc-api-set :keys :taskp  'org-context-clock-task-associated-to-context-by-keys-newalt-p)
 
 
 (provide 'org-context-clock-assoc-key)
