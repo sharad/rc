@@ -40,16 +40,26 @@
 
 
 
+;; (defun org-context-clock-task-associated-to-context-by-rank-p (task context)
+;;   (if context
+;;       (apply '+
+;;              (mapcar
+;;               '(lambda (fn)
+;;                 (funcall fn context task))
+;;
+;;               ;; BUG TODO below one is free variable
+;;               org-context-clock-task-associated-context-rank-fns
+;;               ))
+;;       0))
+
+
 (defun org-context-clock-task-associated-to-context-by-rank-p (task context)
   (if context
       (apply '+
              (mapcar
-              '(lambda (fn)
-                (funcall fn context task))
-
-              ;; BUG TODO below one is free variable
-              org-context-clock-task-associated-context-rank-fns
-              ))
+              #'(lambda (rankkey)
+                  (org-context-clock-tasks-associated-key-fn-value rankkey task context))
+              (mapcar 'car org-context-clock-key-operation-functions)))
       0))
 
 (org-context-clock-assoc-api-set :rank :taskp   'org-context-clock-task-associated-to-context-by-rank-p)

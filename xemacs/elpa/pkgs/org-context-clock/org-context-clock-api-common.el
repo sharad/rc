@@ -231,6 +231,11 @@ inside loops."
 (defun org-context-clock-dyntaskpls-associated-to-context (context)
   (funcall org-context-clock-matching-dyntaskpls context))
 
+(defun org-context-clock-dyntaskpls-associated-to-context-filtered (context)
+  ;; TODO Here do variance based filtering.
+  (funcall org-context-clock-matching-dyntaskpls context))
+
+
 (defun org-context-clock-task-get-heading (task)
   (org-context-clock-task-get-property task :task-clock-heading))
 

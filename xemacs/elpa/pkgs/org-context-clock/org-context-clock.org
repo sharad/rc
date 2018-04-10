@@ -525,7 +525,7 @@ see here[[https://emacs.stackexchange.com/questions/9530/how-can-i-get-an-org-mo
                        (and
                         (plist-get dyntaskpl :marker)
                         (marker-buffer (plist-get dyntaskpl :marker))))
-                   (org-context-clock-dyntaskpls-associated-to-context context))))
+                   (org-context-clock-dyntaskpls-associated-to-context-filtered context))))
             (if matched-dyntaskpls
                 (let* ((sel-dyntaskpl
                         (if (> (length matched-dyntaskpls) 1)
