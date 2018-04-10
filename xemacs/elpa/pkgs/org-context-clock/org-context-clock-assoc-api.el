@@ -140,7 +140,7 @@
            (- timebeing-time clocked-time)
            0)))))
 
-(define-keyop-functions org-task-associte-subtree :subtreefile (task context &rest args)
+(define-keyop-functions org-task-associate-subtree :subtreefile (task context &rest args)
   (getter
    (let ((prompt (concat key ": ")))
      (file-relative-name
@@ -148,21 +148,24 @@
        prompt
        default-directory default-directory)))))
 
-;; (define-keyop-functions org-task-associated-context-current-clock :current-clock (task context &rest args)
-;;   "Predicate funtion to check if context matches to task's file attribute."
-;;   (let* ((task-marker
-;;           (org-context-clock-task-get-property task :task-clock-marker)))
-;;     (if (and
-;;          org-clock-marker
-;;          task-marker
-;;          (equal
-;;           (marker-buffer org-clock-marker)
-;;           (marker-buffer task-marker))
-;;          (equal
-;;           (marker-position org-clock-marker)
-;;           (marker-position task-marker)))
-;;         100
-;;         0)))
+(define-keyop-functions org-task-associated-context-current-clock :current-clock (task context &rest args)
+                        ;; "Predicate funtion to check if context matches to task's file attribute."
+                        (associator
+                         (let* ((task-marker
+                                 (org-context-clock-task-get-property task :task-clock-marker)))
+                           (if (and
+                                org-clock-hd-marker
+                                task-marker
+                                (equal
+                                 (marker-buffer org-clock-hd-marker)
+                                 (marker-buffer task-marker))
+                                (equal
+                                 (marker-position org-clock-hd-marker)
+                                 (marker-position task-marker)))
+
+
+                               100
+                               0))))
 
 
 (provide 'org-context-clock-assoc-api)
