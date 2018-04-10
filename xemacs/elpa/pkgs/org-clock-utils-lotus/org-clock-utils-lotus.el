@@ -210,8 +210,18 @@ he has to read scheme, guixsd details, than see similar module and try to implem
 ;;;}}}
 
 
+(defun get-last-cloc (tstart)
+  (save-excursion
+    (save-restriction
+      (org-narrow-to-subtree)
+      (org-clock-sum tstart))))
 
+;; (org-back-to-heading t)
 
+;; macro org-with-silent-modifications
+
+;; (org-element-type (org-element-context))
+;; (eq (org-element-type (save-match-data (org-element-at-point))) 'clock)
 
 ;;; FOR WORKING FAST START CREATING TEMPLATE OR EMPTY FUNCTION BODY.
 

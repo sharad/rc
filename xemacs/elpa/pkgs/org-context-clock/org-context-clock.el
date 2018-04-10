@@ -415,35 +415,38 @@
   (org-context-clock-debug :debug "org-context-clock-clockin-marker %s" new-dyntaskpl)
   (let* (retval
          (old-dyntaskpl (car *org-context-clock-clocked-dyntaskpl-context-history*))
+         (old-task    (plist-get old-dyntaskpl :task))
+         (old-marker  (or (if old-task (plist-get old-task :task-clock-marker)) org-clock-hd-marker))
+         (old-heading (if old-task (plist-get old-task :task-clock-heading)))
          (new-task    (plist-get new-dyntaskpl :task))
          (new-marker  (if new-task (plist-get new-task :task-clock-marker)))
-         (new-heading (if new-task (plist-get new-task :task-clock-heading)))
-         (old-heading (if new-task (plist-get old-dyntaskpl :task-clock-heading))))
+         (new-heading (if new-task (plist-get new-task :task-clock-heading))))
   (when (and
          new-marker
          (marker-buffer new-marker))
 
     (let* ((org-log-note-clock-out nil)
-           (prev-org-clock-marker org-clock-marker)
-           (prev-org-clock-buff (marker-buffer prev-org-clock-marker)))
+           (old-marker org-clock-marker)
+           (old-buff   (marker-buffer old-marker)))
 
       (org-context-clock-debug :debug "clocking in %s" new-marker)
 
-      (let ((prev-clock-buff-read-only
-             (if prev-org-clock-buff
-                 (with-current-buffer (marker-buffer prev-org-clock-marker)
+      (let ((old-buff-read-only
+             (if old-buff
+                 (with-current-buffer (marker-buffer old-marker)
                    buffer-read-only))))
 
-        (if prev-org-clock-buff
-            (with-current-buffer prev-org-clock-buff
+        (if old-buff
+            (with-current-buffer old-buff
               (setq buffer-read-only nil)))
 
-        (setq *org-context-clock-update-current-context-msg* prev-org-clock-marker)
+        (setq *org-context-clock-update-current-context-msg* old-marker)
 
         (when (and
-                prev-org-clock-marker
-                (marker-buffer prev-org-clock-marker))
-          (org-insert-log-note prev-org-clock-marker (format "clocking out to clockin to <%s>" new-heading)))
+               new-heading
+               old-marker
+               (marker-buffer old-marker))
+          (org-insert-log-note old-marker (format "clocking out to clockin to <%s>" new-heading)))
 
         (with-current-buffer (marker-buffer new-marker)
           (let ((buffer-read-only nil))
@@ -458,10 +461,9 @@
                (progn
                  (setq retval nil)
                  (signal (car err) (cdr err)))))))
-
-        (if prev-org-clock-buff
-            (with-current-buffer prev-org-clock-buff
-              (setq buffer-read-only prev-clock-buff-read-only)))
+        (if old-buff
+            (with-current-buffer old-buff
+              (setq buffer-read-only old-buff-read-only)))
         retval)))))
 ;; add org-insert-log-not:1 ends here
 
@@ -481,22 +483,19 @@
                  (and
                   (plist-get dyntaskpl :marker)
                   (marker-buffer (plist-get dyntaskpl :marker))))
-             (org-context-clock-dyntaskpls-associated-to-context context)))
-           ;; (matched-dyntaskpls
-           ;;  (or matched-dyntaskpls
-           ;;      (org-context-clock-maybe-create-unnamed-task)))
-           )
+             (org-context-clock-dyntaskpls-associated-to-context context))))
       (if matched-dyntaskpls
           (let* ((sel-dyntaskpl
                   (if (> (length matched-dyntaskpls) 1)
                       (sacha/helm-select-dyntaskpl-timed matched-dyntaskpls)
                       (car matched-dyntaskpls)))
-                 (sel-task  (plist-get sel-dyntaskpl :task))
-                 (sel-marker (plist-get sel-task :task-clock-marker)))
+                 (sel-task   (if sel-dyntaskpl (plist-get sel-dyntaskpl :task)))
+                 (sel-marker (if sel-task      (plist-get sel-task      :task-clock-marker))))
                  (org-context-clock-message 6 "sel-dyntaskpl %s sel-task %s sel-marker %s" sel-dyntaskpl sel-task sel-marker)
-            (org-context-clock-clockin-dyntaskpl sel-dyntaskpl))
+                 (if sel-dyntaskpl
+                     (org-context-clock-clockin-dyntaskpl sel-dyntaskpl)))
           (progn
-            ;; here create unnamed task
+            ;; here create unnamed task, no need
             (setq *org-context-clock-update-current-context-msg* "null clock")
             (org-context-clock-message 6
                                        "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
@@ -590,10 +589,10 @@ pointing to it."
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:3]]
 ;; rank based
   (defun sacha/helm-select-dyntaskpl (dyntaskpls)
-    (org-context-clock-debug :debug "sacha marker %s" (car dyntaskpls))
+    ;; (org-context-clock-debug :debug "sacha marker %s" (car dyntaskpls))
     (helm
      (list
-      (helm-build-sync-source "Select matching clock"
+      (helm-build-sync-source "Select matching tasks"
         :candidates (mapcar 'sacha-org-context-clock-dyntaskpl-selection-line dyntaskpls)
         :action (list ;; (cons "Select" 'identity)
                  (cons "Clock in and track" #'identity))
@@ -610,12 +609,12 @@ pointing to it."
       (sacha/helm-select-dyntaskpl dyntaskpls)))
 
   (defun sacha/helm-dyntaskpl-action (dyntaskpls clockin-fn)
-    (message "sacha marker %s" (car dyntaskpls))
+    ;; (message "sacha marker %s" (car dyntaskpls))
     ;; (setq sacha/helm-org-refile-locations tbl)
     (progn
       (helm
        (list
-        (helm-build-sync-source "Select matching clock"
+        (helm-build-sync-source "Select matching tasks"
           :candidates (mapcar 'sacha-org-context-clock-dyntaskpl-selection-line dyntaskpls)
           :action (list ;; (cons "Select" 'identity)
                         (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
