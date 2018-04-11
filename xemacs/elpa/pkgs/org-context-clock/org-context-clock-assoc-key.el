@@ -62,6 +62,17 @@ using algorithm in this function, return RANK"
       0))
 (org-context-clock-assoc-api-set :keys :taskp  'org-context-clock-task-associated-to-context-by-keys-p)
 
+(defun org-context-clock-task-associated-to-context-by-keys-p (task context)
+  "Test whether association of org TASK-INFO for FILE using list of functions for keys,
+using algorithm in this function, return RANK"
+  (if context
+      (apply '+
+             (mapcar
+              #'(lambda (rankkey)
+                  (org-context-clock-tasks-associated-key-fn-value rankkey task context))
+              (mapcar 'car org-context-clock-key-operation-functions)))
+      0))
+
 (defun org-context-clock-task-associated-to-context-by-keys-newalt-p (task context)
   "Test whether association of org TASK-INFO for FILE using list of functions for keys,
 using algorithm in this function, return RANK"
@@ -72,7 +83,7 @@ using algorithm in this function, return RANK"
                  (org-context-clock-tasks-associated-key-fn-value rankkey task context))
               (mapcar 'car org-context-clock-key-operation-functions)))
       0))
-;; (org-context-clock-assoc-api-set :keys :taskp  'org-context-clock-task-associated-to-context-by-keys-newalt-p)
+(org-context-clock-assoc-api-set :keys :taskp  'org-context-clock-task-associated-to-context-by-keys-newalt-p)
 
 
 (provide 'org-context-clock-assoc-key)

@@ -383,7 +383,8 @@
          (markerp org-clock-marker)
          (> (marker-position-nonil org-clock-marker) 0))
     (org-with-cloned-marker org-clock-marker "<tree>"
-      (let ((view-read-only nil))
+      (let ((view-read-only nil)
+            (buffer-read-only t))
         (read-only-mode)
         (org-previous-visible-heading 1)
         (let ((info (org-context-clock-collect-task)))

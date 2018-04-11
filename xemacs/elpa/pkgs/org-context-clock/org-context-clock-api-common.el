@@ -240,7 +240,7 @@ inside loops."
          (varirank   (sqrt
                       (/
                        (reduce #'+
-                               (mapcar #'(lambda (rank - avgrank) (expt (rank) 2)) rankslist))
+                               (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
                        (length rankslist)))))
     (remove-if-not
      #'(lambda (dyntaskpl)
