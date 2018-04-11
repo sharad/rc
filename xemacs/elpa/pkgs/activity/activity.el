@@ -34,12 +34,12 @@
 
 ;;; Code:
 
-(defconst activity-version "1.0.2")
+(defconst activity-version    "1.0.2")
 (defconst activity-user-agent "emacs-activity")
-(defvar activity-noprompt nil)
-(defvar activity-init-started nil)
+(defvar activity-noprompt      nil)
+(defvar activity-init-started  nil)
 (defvar activity-init-finished nil)
-(defvar activity-python-path nil)
+(defvar activity-python-path   nil)
 
 (defgroup activity nil
   "Customizations for Activity"
@@ -163,23 +163,24 @@
 
   ;; :accessor get-phone
 
-  (setq act
-        (activity "rand" :name "Random Sample"))
+  (progn
+    (setq act
+          (activity "rand" :name "Random Sample"))
 
-  (activity-p act)
+    (activity-p act)
 
-  (oref act :birthday)
+    (oref act :birthday)
 
-  (oset act :phone "555-5566")
-  (oref act :phone)
+    (oset act :phone "555-5566")
+    (oref act :phone)
 
-  (call-activity act)
+    (call-activity act)
 
-  (setq buffact (buffer-activity "friend" :name "Good Friend" :birthday "01/01/2000" :phone "555-5555" :country "IT"))
+    (setq buffact (buffer-activity "friend" :name "Good Friend" :birthday "01/01/2000" :phone "555-5555" :country "IT"))
 
-  (call-activity buffact)
+    (call-activity buffact)
 
-  (eieio-customize-object act))
+    (eieio-customize-object act)))
 
 
 ;; (call-next-method)
