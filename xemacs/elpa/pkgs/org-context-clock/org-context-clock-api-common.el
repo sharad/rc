@@ -242,7 +242,10 @@ inside loops."
                        (reduce #'+
                                (mapcar #'(lambda (rank - avgrank) (expt (rank) 2)) rankslist))
                        (length rankslist)))))
-    dyntaskpls))
+    (remove-if-not
+     #'(lambda (dyntaskpl)
+         (>= (plist-get dyntaskpl :rank) avgrank))
+     dyntaskpls)))
 
 
 
