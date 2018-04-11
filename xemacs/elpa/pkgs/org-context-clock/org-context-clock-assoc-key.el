@@ -42,6 +42,11 @@
 (require 'org-context-clock-api-recursive)
 (require 'org-context-clock-assoc-api)
 
+
+
+
+
+;; HERE only create dyntaskpl by adding per associator key rank in org-context-clock-task-associated-to-context-by-keys-p
 (defun org-context-clock-task-associated-to-context-by-keys-p (task context)
   "Test whether association of org TASK-INFO for FILE using list of functions for keys,
 using algorithm in this function, return RANK"
@@ -61,6 +66,9 @@ using algorithm in this function, return RANK"
           -20)
       0))
 (org-context-clock-assoc-api-set :keys :taskp  'org-context-clock-task-associated-to-context-by-keys-p)
+
+
+
 
 (defun org-context-clock-task-associated-to-context-by-keys-p (task context)
   "Test whether association of org TASK-INFO for FILE using list of functions for keys,
