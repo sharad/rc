@@ -165,11 +165,11 @@
 
   (progn
     (setq act
-          (activity "rand" :name "Random Sample"))
+          (buffer-activity "rand" :name "Random Sample"))
 
-    (activity-p act)
+    (buffer-activity-p act)
 
-    (oref act :birthday)
+    (oref act :buffer)
 
     (oset act :phone "555-5566")
     (oref act :phone)

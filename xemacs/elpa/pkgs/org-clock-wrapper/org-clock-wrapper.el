@@ -255,7 +255,7 @@ move point to the subject."
                                                   (helm-marked-candidates))))
                        ("send email" . open-email)))))
 
-    ;; (helm :sources '(some-helm-source some-other-helm-source))
+    (helm :sources '(some-helm-source some-other-helm-source))
     ))
 
 (provide 'org-clock-wrapper)

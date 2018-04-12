@@ -236,7 +236,9 @@ inside loops."
   (let* ((dyntaskpls (funcall org-context-clock-matching-dyntaskpls context))
          (rankslist  (mapcar #'(lambda (dyntaskpl) (plist-get dyntaskpl :rank))
                              dyntaskpls))
-         (avgrank    (/ (reduce #'+ rankslist) (length rankslist)))
+         (avgrank    (/
+                      (reduce #'+ rankslist)
+                      (length rankslist)))
          (varirank   (sqrt
                       (/
                        (reduce #'+
@@ -246,9 +248,6 @@ inside loops."
      #'(lambda (dyntaskpl)
          (>= (plist-get dyntaskpl :rank) avgrank))
      dyntaskpls)))
-
-
-
 
 (defun org-context-clock-task-get-heading (task)
   (org-context-clock-task-get-property task :task-clock-heading))

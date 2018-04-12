@@ -229,12 +229,13 @@
   ;;      (apply 'org-context-clock-add-context-to-org-heading args)) (list context timeout))
   )
 
-
+;;;###autoload
 (defun org-context-clock-helm-select-dyntaskpl (selector action)
   ;; here
   ;; (org-context-clock-debug :debug "sacha marker %s" (car dyntaskpls))
   (let (helm-sources
         (context (org-context-clock-build-context)))
+
     (let ((dyntaskpls
            (org-context-clock-dyntaskpls-associated-to-context context)))
      (push
@@ -262,6 +263,7 @@
 
     (funcall action (helm helm-sources))))
 
+;;;###autoload
 (defun org-context-clock-set-to-marker (marker)
   (if (and
        (markerp marker)
@@ -271,14 +273,13 @@
         (goto-char marker))
       (error "marker %s invalid." marker)))
 
+;;;###autoload
 (defun org-context-clock-set-to-task ()
   (org-context-clock-helm-select-dyntaskpl
    #'org-context-clock-dyntaskpl-get-marker
    #'org-context-clock-set-to-marker))
 
-
-
-
+;;;###autoload
 (defun org-context-clock-create-child-task ()
   (interactive)
   (org-capture-alt
@@ -287,6 +288,7 @@
    "* TODO %? %^g\n %i\n [%a]\n"
    :empty-lines 1))
 
+;;;###autoload
 (defun org-context-clock-create-child-task ()
   (interactive)
   (org-capture-immediate                ;TODO
