@@ -34,6 +34,8 @@
 
 ;;; Code:
 
+(require '@)
+
 (defconst activity-version    "1.0.2")
 (defconst activity-user-agent "emacs-activity")
 (defvar activity-noprompt      nil)
@@ -46,23 +48,26 @@
   :group 'convenience
   :prefix "activity-")
 
-(defclass activity () ; No superclasses
-  ((name :initarg :name
-         :initform ""
-         :type string
-         :custom string
-         :documentation "The name of a activity.")
-   (occurredon
-    :initarg :occurredon
-    :initform (current-time)
-    :custom list
-    :type list
-    :documentation "Activity occurrence time."))
-  "An activity for tracking."
-  :abstract t)
+
+(defvar @activity
+  (@extend :name "Class Activity" :occuredon (current-time)))
+
+(def@ @activity :log ()
+      (message "Time %s" @:occuredon))
+
+(def@ :message)
+
+
+(defvar @buffer-activity
+  (@extend @activity
+           :name "Class Buffer Activity"
+           :buffer (current-buffer)))
+
+
 
 
-;; (defclass name superclass slots &rest options-and-doc)
+
+
 
 (defmethod call-activity ((act activity) &optional scriptname)
   "Dial the phone for the actord ACT.
@@ -97,7 +102,6 @@
                :initform (current-buffer)
                :type string
                :documentation "brief-body")))
-
 
 (defmethod call-activity :before ((act buffer-activity) &optional scriptname)
   "Prepend country code to phone number, then dial the phone for REC.
@@ -192,15 +196,17 @@
 
 (defun activity-bind-hooks ()
   "Watch for activity in buffers."
-  (add-hook 'after-save-hook 'activity-save nil t)
-  (add-hook 'auto-save-hook 'activity-save nil t)
-  (add-hook 'first-change-hook 'activity-ping nil t))
+  ;; (add-hook 'after-save-hook 'activity-save nil t)
+  ;; (add-hook 'auto-save-hook 'activity-save nil t)
+  ;; (add-hook 'first-change-hook 'activity-ping nil t)
+  )
 
 (defun activity-unbind-hooks ()
   "Stop watching for activity in buffers."
-  (remove-hook 'after-save-hook 'activity-save t)
-  (remove-hook 'auto-save-hook 'activity-save t)
-  (remove-hook 'first-change-hook 'activity-ping t))
+  ;; (remove-hook 'after-save-hook 'activity-save t)
+  ;; (remove-hook 'auto-save-hook 'activity-save t)
+  ;; (remove-hook 'first-change-hook 'activity-ping t)
+  )
 
 (defun activity-turn-on (defer)
   "Turn on Activity."
@@ -219,7 +225,7 @@
 ;;;###autoload
 (define-minor-mode activity-mode
   "Toggle Activity (Activity mode)."
-  :lighter    " waka"
+  :lighter    " act"
   :init-value nil
   :global     nil
   :group      'activity
@@ -232,24 +238,24 @@
 (define-globalized-minor-mode global-activity-mode activity-mode
   (lambda () (activity-mode 1)))
 
-(define-minor-mode activity-mode
-      "Prepare for working with collarative office project. This
-is the mode to be enabled when I am working in some files on
-which other peoples are also working."
-    :initial-value nil
-    :lighter " Act"
-    :global t
-    (condition-case e
-        (when office-mode
-          (message "calling office mode")
-          (if (or (eq major-mode 'c-mode)
-                  (eq major-mode 'c++-mode))
-              (c-set-style "stroustrup" 1))
-          (set (make-local-variable 'before-save-hook) before-save-hook)
-          (remove-hook 'before-save-hook 'delete-trailing-whitespace t)
-          (message "called office mode"))
-      (error (message "Error: %s" e))))
 
+
+
+
+(progn
+  (defvar @squares (@extend))
+
+  (def@ @squares :get (property)
+        (if (numberp property)
+            (expt property 2)
+            (@^:get property)))  ; explained in a moment
+
+  (mapcar (lambda (n) (@ @squares n)) '(0 1 2 3 4))
+                                        ; => (0 1 4 9 16)
+
+
+
+  )
 
 (provide 'activity)
 ;;; activity.el ends here
