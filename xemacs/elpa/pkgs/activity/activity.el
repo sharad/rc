@@ -24,7 +24,7 @@
 ;; user which could further utilized to visualize activity of user
 ;; during period of time or editing session.
 
-;; Enable Activity for the current buffer by invoking
+;; Enable Activity for the current buffer by invokingi
 ;; `activity-mode'. If you wish to activate it globally, use
 ;; `global-activity-mode'.
 
@@ -55,137 +55,50 @@
 (def@ @activity :log ()
       (message "Time %s" @:occuredon))
 
-(def@ :message)
+(def@ @activity :message ()
+      (error "No :message function found."))
+
+(defvar @dispatchable (@extend :name "Class Dispatchable"))
+
+(def@ @dispatchable dispatch ()
+      ())
+
+(defvar @defferred-dispatchable (@extend :name "Class Deferred Dispatchable"))
 
 
 (defvar @buffer-activity
   (@extend @activity
            :name "Class Buffer Activity"
            :buffer (current-buffer)))
-
 
+(defvar @clock-activity
+  (@extend @buffer-activity
+           :clock-marker nil
+           :heading nil))
 
+(def@ @clock-activity :setclock-marker (marker)
+      (@! @:clock-marker marker))
 
+(defvar @clock-in-activity
+  (@extend @clock-activity
+           :prev-clock nil))
 
+(defvar @clock-out-activity
+  (@extend @clock-activity
+           :next-clock nil))
 
+(def@ @clock-out-activity :message ()
+      (if @:next-clock
+          (format
+           "clocking out from [%s] to clocking in to [%s]"
+           @:heading
+           (@! @:next-clock :headign))
+          (format
+           "clocking out from [%s]"
+           @:heading)))
 
-(defmethod call-activity ((act activity) &optional scriptname)
-  "Dial the phone for the actord ACT.
-   Execute the program SCRIPTNAME as to dial the phone."
-  (message "Dialing the phone for %s"  (oref act name)))
-
-(defclass buffer-activity (activity)
-  ((buffer :initarg :buffer
-           :initform (current-buffer)
-           :type buffer
-           :documentation "Current buffer."))
-  "A buffer activity.")
-
-(defclass mail-activity (buffer-activity)
-  ((message-id :initarg :message-id
-               :initform (current-buffer)
-               :type string
-               :documentation "message-id.")
-   (to :initarg :to
-       :initform (current-buffer)
-       :type string
-       :documentation "to")
-   (from :initarg :from
-         :initform (current-buffer)
-         :type string
-         :documentation "from")
-   (subject :initarg :subject
-            :initform (current-buffer)
-            :type string
-            :documentation "subject")
-   (brief-body :initarg :brief-body
-               :initform (current-buffer)
-               :type string
-               :documentation "brief-body")))
-
-(defmethod call-activity :before ((act buffer-activity) &optional scriptname)
-  "Prepend country code to phone number, then dial the phone for REC.
-   Execute the program SCRIPTNAME as to dial the phone"
-  (message "Prepending country code to phone number.")
-  (unless (string-match "^00" (oref act :phone))
-    (let ((country (oref act :country)))
-      (cond
-        ;; just an example...
-        ((string= country "IT")
-         (oset act :phone (concat "0043" (oref act :phone))))))))
-
-(defmethod record-org :before ((act buffer-activity) &optional scriptname)
-  "Prepend country code to phone number, then dial the phone for REC.
-   Execute the program SCRIPTNAME as to dial the phone"
-  (message "Prepending country code to phone number.")
-  (unless (string-match "^00" (oref act :phone))
-    (let ((country (oref act :country)))
-      (cond
-        ;; just an example...
-        ((string= country "IT")
-         (oset act :phone (concat "0043" (oref act :phone))))))))
-
-(defmethod record-elisp :before ((act buffer-activity) &optional scriptname)
-  "Prepend country code to phone number, then dial the phone for REC.
-   Execute the program SCRIPTNAME as to dial the phone"
-  (message "Prepending country code to phone number.")
-  (unless (string-match "^00" (oref act :phone))
-    (let ((country (oref act :country)))
-      (cond
-        ;; just an example...
-        ((string= country "IT")
-         (oset act :phone (concat "0043" (oref act :phone))))))))
-
-(defmethod record-log-note :before ((act buffer-activity) &optional scriptname)
-  "Prepend country code to phone number, then dial the phone for REC.
-   Execute the program SCRIPTNAME as to dial the phone"
-  (message "Prepending country code to phone number.")
-  (unless (string-match "^00" (oref act :phone))
-    (let ((country (oref act :country)))
-      (cond
-        ;; just an example...
-        ((string= country "IT")
-         (oset act :phone (concat "0043" (oref act :phone))))))))
-
-(defmethod record-log-note-interact :before ((act buffer-activity) &optional scriptname)
-  "Prepend country code to phone number, then dial the phone for REC.
-   Execute the program SCRIPTNAME as to dial the phone"
-  (message "Prepending country code to phone number.")
-  (unless (string-match "^00" (oref act :phone))
-    (let ((country (oref act :country)))
-      (cond
-        ;; just an example...
-        ((string= country "IT")
-         (oset act :phone (concat "0043" (oref act :phone))))))))
-
-
-(when nil
-  ;; This function just prepends the country code for Italy if necessary. If you
-  ;; think all this 'oset' and 'oref' stuff is tedious - you are right. But you
-  ;; can define so called "accessor" functions: in the slot definition you can
-  ;; write
-
-  ;; :accessor get-phone
-
-  (progn
-    (setq act
-          (buffer-activity "rand" :name "Random Sample"))
-
-    (buffer-activity-p act)
-
-    (oref act :buffer)
-
-    (oset act :phone "555-5566")
-    (oref act :phone)
-
-    (call-activity act)
-
-    (setq buffact (buffer-activity "friend" :name "Good Friend" :birthday "01/01/2000" :phone "555-5555" :country "IT"))
-
-    (call-activity buffact)
-
-    (eieio-customize-object act)))
-
+;; (@! @clock-out-activity :message)
+
 
 ;; (call-next-method)
 
