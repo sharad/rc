@@ -60,7 +60,7 @@
 
 (defvar @dispatchable (@extend :name "Class Dispatchable"))
 
-(def@ @dispatchable dispatch ()
+(def@ @dispatchable :dispatch ()
       ())
 
 (defvar @defferred-dispatchable (@extend :name "Class Deferred Dispatchable"))
@@ -96,6 +96,11 @@
           (format
            "clocking out from [%s]"
            @:heading)))
+
+(def@ @clock-out-activity :init ()
+      (message "test1"))
+
+;; (setf test (@! @clock-out-activity :new))
 
 ;; (@! @clock-out-activity :message)
 
