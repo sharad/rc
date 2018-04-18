@@ -242,6 +242,8 @@
     :pre-init
     (package-initialize))
 
+  (global-set-key (kbd "s-d") 'debug)
+
   (message "loading lotus-emacs-user-init-begin finished"))
 
 (defun lotus-emacs-user-init-finish ()
