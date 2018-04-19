@@ -557,6 +557,9 @@ define_webjump("acronyms/abbreviations", "http://www.abbreviations.com/%s");
 define_webjump("acronyms/acronyms", "http://acronyms.thefreedictionary.com/%s");
 define_webjump("acronyms/acronymsfinder", "http://www.acronymfinder.com/~/search/af.aspx?Acronym=%s&Find=find&string=exact");
 
+
+define_webjump("lang/latin", "https://www.online-latin-dictionary.com/latin-english-dictionary.php?parola=%s");
+
 // 2.8. Network Tools
 
 // 2.8.1. Down for everyone or just me?

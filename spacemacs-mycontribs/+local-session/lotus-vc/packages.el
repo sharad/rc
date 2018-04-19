@@ -91,7 +91,7 @@ Each entry is either:
       (add-hook 'git-commit-mode-hook (lambda () (toggle-save-place 0)))
       (add-to-list 'auto-mode-alist '("hg-editor-.*$" . commit-msg-mode)))))
 
-(defun lotus-vc/post-init-commit-msg-mode ()
+(defun lotus-vc/init-commit-msg-mode ()
   (use-package commit-msg-mde
       :defer t
       :commands (commit-msg-mode)
@@ -140,7 +140,7 @@ Each entry is either:
       (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode)))))
 
 
-(defun lotus-vc/post-git-link ()
+(defun lotus-vc/post-init-git-link ()
   (use-package git-link
       :defer t
       :config
