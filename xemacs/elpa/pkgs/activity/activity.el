@@ -66,6 +66,11 @@
 (defvar @defferred-dispatchable (@extend :name "Class Deferred Dispatchable"))
 
 
+(defvar @transition (@extend :name "Class Transition")
+  )
+
+
+
 (defvar @buffer-activity
   (@extend @activity
            :name "Class Buffer Activity"
