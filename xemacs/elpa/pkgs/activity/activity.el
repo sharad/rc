@@ -33,6 +33,7 @@
 ;; (activity-cli.py).
 
 ;; See http://nullprogram.com/blog/2013/04/07/ for help
+;; add example code directly here for quick reference.
 
 ;;; Code:
 
