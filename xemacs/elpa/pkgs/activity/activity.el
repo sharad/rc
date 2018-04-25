@@ -32,6 +32,8 @@
 ;; `activity-cli-path' to the absolute path of the CLI script
 ;; (activity-cli.py).
 
+;; See http://nullprogram.com/blog/2013/04/07/ for help
+
 ;;; Code:
 
 (require '@)
@@ -47,11 +49,44 @@
   "Customizations for Activity"
   :group 'convenience
   :prefix "activity-")
+
+(defvar @immutable (@extend))
 
+(def@ @immutable :set (property _value)
+      (error "Object is immutable, cannot set %s" property))
+
+(def@ @ :freeze ()
+  "Make this object immutable."
+  (push @immutable @:proto))
+
+(defvar @watchable (@extend :watchers nil))
+
+(def@ @watchable :watch (callback)
+      (push callback @:watchers))
+
+(def@ @watchable :unwatch (callback)
+      (setf @:watchers (remove callback @:watchers)))
+
+(def@ @watchable :set (property new)
+      (dolist (callback @:watchers)
+        (funcall callback @@ property new))
+      (@^:set property new))
+
+;; example
+(defvar @rectangle (@extend :name "Class Rectangle"))
+(def@ @rectangle :init (width height)
+      (@^:init)
+      (setf @:width width @:height height))
+
+;; (@! (@! @rectangle :new 13.2 2.1) :area)
 
 (defvar @activity
   (@extend :name "Class Activity"
            :occuredon (current-time)))
+
+(def@ @activity :init ()
+      (@^:init)
+      (setf @:occuredon (current-time)))
 
 (def@ @activity :log ()
       (message "Time %s" @:occuredon))
@@ -64,8 +99,13 @@
 
 (def@ @dispatchable :dispatch ()
       ())
+
+(def@ @dispatchable :init ()
+      (@^:init)
+      ;; (setf @:)
+      )
 
-(defvar @dispatchable-immdediate
+(defvar @dispatchable-immediate
   (@extend @dispatchable :name "Class Deferred Dispatchable"))
 
 (defvar @dispatchable-defferred
@@ -74,16 +114,28 @@
 
 (defvar @transition
   (@extend @activity :name "Class Transition"))
-
 
+(def@ @transition :init (old new)
+      (@^:init)
+      (setf
+       @:old old
+       @:new new))
 
-(defvar @clock
-  (@extend @transition
+(defvar @buffer-transition
+  (@extend @transition @dispatchable-immediate
+           :buffer-marker nil
+           :heading nil))
+
+(def@ @buffer-transition :init (old-buffer newnews-buffer)
+      (@^:init old-marker newnews-marker))
+
+(defvar @clock-transition
+  (@extend @transition @dispatchable-immediate
            :clock-marker nil
            :heading nil))
 
-(def@ @clock-activity :setclock-marker (marker)
-      (@! @:clock-marker marker))
+(def@ @clock-transition :init (old-marker newnews-marker)
+      (@^:init old-marker newnews-marker))
 
 (def@ @clock-out-activity :message ()
       (if @:next-clock
