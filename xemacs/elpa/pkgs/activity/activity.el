@@ -50,7 +50,8 @@
 
 
 (defvar @activity
-  (@extend :name "Class Activity" :occuredon (current-time)))
+  (@extend :name "Class Activity"
+           :occuredon (current-time)))
 
 (def@ @activity :log ()
       (message "Time %s" @:occuredon))
@@ -58,39 +59,31 @@
 (def@ @activity :message ()
       (error "No :message function found."))
 
-(defvar @dispatchable (@extend :name "Class Dispatchable"))
+(defvar @dispatchable
+  (@extend @activity :name "Class Dispatchable"))
 
 (def@ @dispatchable :dispatch ()
       ())
 
-(defvar @defferred-dispatchable (@extend :name "Class Deferred Dispatchable"))
+(defvar @dispatchable-immdediate
+  (@extend @dispatchable :name "Class Deferred Dispatchable"))
+
+(defvar @dispatchable-defferred
+  (@extend @dispatchable :name "Class Deferred Dispatchable"))
 
 
-(defvar @transition (@extend :name "Class Transition")
-  )
+(defvar @transition
+  (@extend @activity :name "Class Transition"))
 
 
 
-(defvar @buffer-activity
-  (@extend @activity
-           :name "Class Buffer Activity"
-           :buffer (current-buffer)))
-
-(defvar @clock-activity
-  (@extend @buffer-activity
+(defvar @clock
+  (@extend @transition
            :clock-marker nil
            :heading nil))
 
 (def@ @clock-activity :setclock-marker (marker)
       (@! @:clock-marker marker))
-
-(defvar @clock-in-activity
-  (@extend @clock-activity
-           :prev-clock nil))
-
-(defvar @clock-out-activity
-  (@extend @clock-activity
-           :next-clock nil))
 
 (def@ @clock-out-activity :message ()
       (if @:next-clock
