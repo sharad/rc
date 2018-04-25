@@ -84,15 +84,32 @@ Each entry is either:
     :defer t
     :config
     (progn
-      (use-package flyspell
+      (progn
+       (use-package flyspell
         :defer t
         :config
-        (add-hook 'git-commit-mode-hook 'turn-on-flyspell))
-      (add-hook 'git-commit-mode-hook (lambda () (toggle-save-place 0)))
-      (add-to-list 'auto-mode-alist '("hg-editor-.*$" . commit-msg-mode)))))
+        (add-hook 'git-commit-mode-hook 'turn-on-flyspell)))
+      (progn
+        (add-hook 'git-commit-mode-hook (lambda () (toggle-save-place 0)))
+        (add-to-list 'auto-mode-alist '("hg-editor-.*$" . commit-msg-mode)))
+      (progn
+        (progn
+          (unless (version<= "25" emacs-version)
+            (remove-hook 'git-commit-mode-hook 'fci-mode)))
+        (progn
+          (use-package flyspell
+              :defer t
+              :config
+              (progn
+                (progn
+                  (add-hook 'git-commit-mode-hook 'turn-on-flyspell)))))
+        (progn
+          (progn
+            (unless (version<= "25" emacs-version)
+              (remove-hook 'git-commit-mode-hook 'fci-mode))))))))
 
 (defun lotus-vc/init-commit-msg-mode ()
-  (use-package commit-msg-mde
+  (use-package commit-msg-mode
       :defer t
       :commands (commit-msg-mode)
       :config
