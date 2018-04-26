@@ -38,7 +38,7 @@
   '(
     magit
     git-commit
-    commit-msg-mode
+    ;; commit-msg-mode ;; - elpa pk not available
     gitconfig-mode
     git-link
     )
@@ -91,7 +91,8 @@ Each entry is either:
         (add-hook 'git-commit-mode-hook 'turn-on-flyspell)))
       (progn
         (add-hook 'git-commit-mode-hook (lambda () (toggle-save-place 0)))
-        (add-to-list 'auto-mode-alist '("hg-editor-.*$" . commit-msg-mode)))
+        ;; (add-to-list 'auto-mode-alist '("hg-editor-.*$" . commit-msg-mode))
+        )
       (progn
         (progn
           (unless (version<= "25" emacs-version)
@@ -108,34 +109,35 @@ Each entry is either:
             (unless (version<= "25" emacs-version)
               (remove-hook 'git-commit-mode-hook 'fci-mode))))))))
 
-(defun lotus-vc/init-commit-msg-mode ()
-  (use-package commit-msg-mode
-      :defer t
-      :commands (commit-msg-mode)
-      :config
-      (progn
+(when nil
+  (defun lotus-vc/init-commit-msg-mode ()
+    (use-package commit-msg-mode
+        :defer t
+        :commands (commit-msg-mode)
+        :config
         (progn
-          (add-to-list 'auto-mode-alist '("COMMIT_EDITMSG$" . commit-msg-mode)))
-        (progn
-          (add-hook 'git-commit-mode-hook (lambda () (toggle-save-place 0))))
-        (progn
-          (unless (version<= "25" emacs-version)
-            (remove-hook 'git-commit-mode-hook 'fci-mode)))
-        (progn
-          (use-package flyspell
-              :defer t
-              :config
-              (progn
+          (progn
+            (add-to-list 'auto-mode-alist '("COMMIT_EDITMSG$" . commit-msg-mode)))
+          (progn
+            (add-hook 'git-commit-mode-hook (lambda () (toggle-save-place 0))))
+          (progn
+            (unless (version<= "25" emacs-version)
+              (remove-hook 'git-commit-mode-hook 'fci-mode)))
+          (progn
+            (use-package flyspell
+                :defer t
+                :config
                 (progn
-                 (add-hook 'git-commit-mode-hook 'turn-on-flyspell)))))
-        (progn
-          (use-package git-commit
-              :defer t
-              :config
-              (progn
+                  (progn
+                    (add-hook 'git-commit-mode-hook 'turn-on-flyspell)))))
+          (progn
+            (use-package git-commit
+                :defer t
+                :config
                 (progn
-                  (unless (version<= "25" emacs-version)
-                    (remove-hook 'git-commit-mode-hook 'fci-mode)))))))))
+                  (progn
+                    (unless (version<= "25" emacs-version)
+                      (remove-hook 'git-commit-mode-hook 'fci-mode))))))))))
 
 (defun lotus-vc/init-gitconfig-mode ()
   (use-package gitconfig-mode
