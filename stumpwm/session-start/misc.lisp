@@ -323,38 +323,38 @@
 ;; command handle that.
 
 
-;; (define-stumpwm-type :smart-direction (input prompt)
-;;   (let ((valid-dirs
-;;          (loop  ; gather all the directions in which there's a neighbouring frame
-;;             with values = '(("up" :up)
-;;                             ("down" :down)
-;;                             ("left" :left)
-;;                             ("right" :right))
-;;             with frame-set =
-;;               (group-frames (window-group (current-window)))
-;;             for dir in values
-;;             for neighbour = (neighbour
-;;                              (second dir)
-;;                              (window-frame (current-window)) frame-set)
-;;             if (and neighbour (frame-window neighbour))
-;;             collect dir))
-;;         (arg (argument-pop input)))  ; store a possible argument
-;;     (cond ((null valid-dirs)  ; no directions, bail out
-;;            (throw 'error "No valid directions"))
-;;           (arg  ; an arg was bound, but is it valid?
-;;            (or (second (assoc arg valid-dirs :test #'string=))
-;;                (throw 'error "Not a valid direction")))
-;;           ((= 1 (length valid-dirs))  ; only one valid direction
-;;            (second (car valid-dirs)))
-;;           (t  ; multiple possibilities, prompt for direction
-;;            (second (assoc (completing-read input prompt valid-dirs
-;;                                            :require-match t)
-;;                           valid-dirs :test #'string=))))))
+(define-stumpwm-type :smart-direction (input prompt)
+  (let ((valid-dirs
+         (loop  ; gather all the directions in which there's a neighbouring frame
+            with values = '(("up" :up)
+                            ("down" :down)
+                            ("left" :left)
+                            ("right" :right))
+            with frame-set =
+              (group-frames (window-group (current-window)))
+            for dir in values
+            for neighbour = (neighbour
+                             (second dir)
+                             (window-frame (current-window)) frame-set)
+            if (and neighbour (frame-window neighbour))
+            collect dir))
+        (arg (argument-pop input)))  ; store a possible argument
+    (cond ((null valid-dirs)  ; no directions, bail out
+           (throw 'error "No valid directions"))
+          (arg  ; an arg was bound, but is it valid?
+           (or (second (assoc arg valid-dirs :test #'string=))
+               (throw 'error "Not a valid direction")))
+          ((= 1 (length valid-dirs))  ; only one valid direction
+           (second (car valid-dirs)))
+          (t  ; multiple possibilities, prompt for direction
+           (second (assoc (completing-read input prompt valid-dirs
+                                           :require-match t)
+                          valid-dirs :test #'string=))))))
 
-;; (defcommand smarty (dir) ((:smart-direction "Pick a direction: "))
-;;   ;; `dir' is a keyword here
-;;   (message "You're going ~a" (string-downcase dir)))
+(defcommand smarty (dir) ((:smart-direction "Pick a direction: "))
+  ;; `dir' is a keyword here
+  (message "You're going ~a" (string-downcase dir)))
 
-;; (define-key *root-map* (kbd "R") "smarty right")
+(define-key *root-map* (kbd "R") "smarty right")
 
 ;; ;;}}
