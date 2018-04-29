@@ -169,7 +169,6 @@
        @:new new))
 
 ;; (setq test (@! @transition :new 1 2))
-
 
 
 
