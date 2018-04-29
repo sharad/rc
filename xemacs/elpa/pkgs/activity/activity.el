@@ -94,6 +94,11 @@
 
 (def@ @activity :message ()
       (error "No :message function found."))
+
+(def@ @activity :object-sexp ()
+      (error "No :object-sexp function found."))
+
+(describe-@ @activity :name)
 
 (defvar @dispatchable
   (@extend @activity :name "Class Dispatchable"
@@ -105,26 +110,53 @@
 (def@ @watchable :remove-dipatcher (callback)
       (setf @:dispatchers (remove callback @:dispatchers)))
 
-(def@ @dispatchable :dispatch ()
-      (dolist (cb @:dispatchers)
-        (funcall cb)))
+(defmacro def-dispatcher@ (object name params &body)
+  `(progn
+     (def@ ,object ,name params
+           ,@body)
+     (@! ,object
+         :add-dispatcher
+         (@ ,object ,name))))
+(put 'def-dispatcher@ 'lisp-indent-function 3)
+
+(defmacro undef-dispatcher@ (object name)
+  `(progn
+     (@! ,object
+         :remove-dispatcher
+         (@ ,object ,name))))
+(put 'undef-dispatcher@ 'lisp-indent-function 1)
+
+(def-dispatcher@ @dispatchable :log-in-message ()
+  (message (@:message)))
+
+(def-dispatcher@ @dispatchable :log-to-clock ()
+  (when (marker-buffer org-clock-marker)
+    (org-insert-log-note
+     org-clock-hd-marker
+     (@:message)
+     'note)))
 
 (def@ @dispatchable :init ()
-      (@:dispatch)
       (@^:init))
 
-(def@ @dispatchable :log-in-message ()
-      (message (@:message)))
-
-(@! @dispatchable :add-dispatcher (@ @dispatchable :log-in-message))
-
+;; (setf (@ @dispatchable :dispatchers) nil)
 
 
 (defvar @dispatchable-immediate
   (@extend @dispatchable :name "Class Deferred Dispatchable"))
+
+(def@ @dispatchable-immediate :dispatch ()
+      (dolist (cb @:dispatchers)
+        (funcall cb @@)))
 
 (defvar @dispatchable-defferred
   (@extend @dispatchable :name "Class Deferred Dispatchable"))
+
+(def@ @dispatchable-defferred :dispatch (sec)
+      (run-with-idle-plus-timer sec nil
+                                (lambda ()
+                                  (dolist (cb @:dispatchers)
+                                    (funcall cb @@)))))
 
 
 (defvar @transition
@@ -149,7 +181,7 @@
 
 
 
-(defvar @buffer-transition
+(setf @buffer-transition
   (@extend @transition @dispatchable-immediate))
 
 (def@ @buffer-transition :init (old-buffer new-buffer)
@@ -161,14 +193,26 @@
               (buffer-name @:new)
               (format-time-string "%Y-%m-%d" @:occuredon)))
 
-(setq buff-tran
-      (@! @buffer-transition :new
-          (current-buffer)
-          (get-buffer "*scratch*")))
+(def@ @buffer-transition :object-sexp ()
+      (list
+       'buffer-transition
+       :old (buffer-name @:old)
+       :new (buffer-name @:new)
+       (list
+        'activity
+        occuredon (format-time-string "%Y-%m-%d" @:occuredon))))
 
-;; (funcall (@ buff-tran :dispatch))
-;; (funcall (car (@ buff-tran :dispatchers)))
-;; (@! buff-tran :message)
+(defvar buffer-transition-prev-buff nil)
+(defun buffer-transition-action ()
+  (unless (equal
+           buffer-transition-prev-buff
+           (current-buffer))
+   (let* ((buff-trans
+          (@! @buffer-transition :new
+              (current-buffer)
+              (get-buffer "*scratch*"))))
+    (setq buffer-transition-prev-buff (current-buffer))
+    (@! buff-tran :dispatch))))
 
 
 (defvar @clock-transition
@@ -266,6 +310,51 @@
 
 
   )
+
+
+
+
+
+
+
+
+
+
+(progn
+
+  (setf @baseobj (@extend))
+
+  (def@ @baseobj :initialize ()
+        )
+
+  (setf @obj1 (@extend @baseobj :name "obj1"))
+  (def@ @obj1 :init ()
+        (message "Hello from obj1")
+        (@^:init))
+
+  (setf @obj2 (@extend @baseobj :name "obj2"))
+  (def@ @obj2 :init ()
+        (message "Hello from obj2")
+        (@^:init))
+
+  (setf @drivedobj1 (@extend @obj1 @obj2))
+  (def@ @drivedobj1 :init ()
+        (message "Hello from drivedobj1")
+        (@^:init))
+
+
+  (setf instdrivedobj1 (@! @drivedobj1 :new))
+
+  (length  (@ instdrivedobj1 :proto))
+
+  (length (@ @drivedobj1 :proto))
+
+  )
+
+
+
+
+
 
 (provide 'activity)
 ;;; activity.el ends here
