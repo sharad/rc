@@ -96,15 +96,29 @@
       (error "No :message function found."))
 
 (defvar @dispatchable
-  (@extend @activity :name "Class Dispatchable"))
+  (@extend @activity :name "Class Dispatchable"
+           :dispatchers nil))
+
+(def@ @dispatchable :add-dispatcher (callback)
+      (push callback @:dispatchers))
+
+(def@ @watchable :remove-dipatcher (callback)
+      (setf @:dispatchers (remove callback @:dispatchers)))
 
 (def@ @dispatchable :dispatch ()
-      ())
+      (dolist (cb @:dispatchers)
+        (funcall cb)))
 
 (def@ @dispatchable :init ()
-      (@^:init)
-      ;; (setf @:)
-      )
+      (@:dispatch)
+      (@^:init))
+
+(def@ @dispatchable :log-in-message ()
+      (message (@:message)))
+
+(@! @dispatchable :add-dispatcher (@ @dispatchable :log-in-message))
+
+
 
 (defvar @dispatchable-immediate
   (@extend @dispatchable :name "Class Deferred Dispatchable"))
@@ -121,14 +135,41 @@
       (setf
        @:old old
        @:new new))
+
+;; (setq test (@! @transition :new 1 2))
+
+
+
+
+
+
+
+
+
+
+
 
 (defvar @buffer-transition
-  (@extend @transition @dispatchable-immediate
-           :buffer-marker nil
-           :heading nil))
+  (@extend @transition @dispatchable-immediate))
 
-(def@ @buffer-transition :init (old-buffer newnews-buffer)
-      (@^:init old-marker newnews-marker))
+(def@ @buffer-transition :init (old-buffer new-buffer)
+      (@^:init old-buffer new-buffer))
+
+(def@ @buffer-transition :message ()
+      (format "changed from %s buffer to %s buffer on %s"
+              (buffer-name @:old)
+              (buffer-name @:new)
+              (format-time-string "%Y-%m-%d" @:occuredon)))
+
+(setq buff-tran
+      (@! @buffer-transition :new
+          (current-buffer)
+          (get-buffer "*scratch*")))
+
+;; (funcall (@ buff-tran :dispatch))
+;; (funcall (car (@ buff-tran :dispatchers)))
+;; (@! buff-tran :message)
+
 
 (defvar @clock-transition
   (@extend @transition @dispatchable-immediate
