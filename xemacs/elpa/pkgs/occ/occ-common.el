@@ -25,6 +25,8 @@
 
 ;; TODO org-base-buffer
 
+;; https://stackoverflow.com/questions/12262220/add-created-date-property-to-todos-in-org-mode
+
 ;; "org tasks accss common api"
     ;; (defvar org-)
 (defvar occ-verbose 0)
