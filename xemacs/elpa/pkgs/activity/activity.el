@@ -110,7 +110,7 @@
 (def@ @watchable :remove-dipatcher (callback)
       (setf @:dispatchers (remove callback @:dispatchers)))
 
-(defmacro def-dispatcher@ (object name params &body)
+(defmacro def-dispatcher@ (object name params &rest body)
   `(progn
      (def@ ,object ,name params
            ,@body)
