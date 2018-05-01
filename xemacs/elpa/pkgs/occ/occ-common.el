@@ -32,39 +32,43 @@
 (defvar occ-verbose 0)
 
 (defclass occ-obj ()
-  )
+  ((name
+    :initarg :name
+    :custom string))
+  :abstract t)
+
 (defclass occ-task (occ-obj)
-  )
+  ((name
+    :initarg :name
+    :custom string)
+   (heading
+    :initarg :heading
+    :custom string)
+   (marker
+    :initarg :marker
+    :custom marker)
+   (file
+    :initarg :file
+    :custom string)
+   (point
+    :initarg :point
+    :custom string)
+   (clock-sum
+    :initarg :clock-sum
+    :custom string)
+   (plist
+    :initarg :plist
+    :custom list)))
+
 (defclass occ-context (occ-obj)
-  )
+  ((name
+    :initarg :name
+    :custom string)))
+
 (defclass occ-context-task (occ-obj)
-  )
-
-
-(defun occ-message (level &rest args)
-  "If LEVEL is lower than `gnus-verbose' print ARGS using `message'.
-
-Guideline for numbers:
-1 - error messages, 3 - non-serious error messages, 5 - messages for things
-that take a long time, 7 - not very important messages on stuff, 9 - messages
-inside loops."
-  (if (<= level occ-verbose)
-      (let (
-            ;; (message
-            ;;  (if gnus-add-timestamp-to-message
-            ;;      (apply 'gnus-message-with-timestamp args)
-            ;;      (apply 'message args)))
-            )
-        ;; (when (and (consp gnus-action-message-log)
-        ;;            (<= level 3))
-        ;;   (push message gnus-action-message-log))
-        (progn
-          ;; not doing anything
-          ))
-      ;; We have to do this format thingy here even if the result isn't
-      ;; shown - the return value has to be the same as the return value
-      ;; from `message'.
-      (apply 'format args)))
+  ((name
+    :initarg :name
+    :custom string)))
 
 ;; (defun org-task-collect-task ()
 (defun occ-collect-task ()
@@ -102,46 +106,6 @@ inside loops."
                 (occ-task-set-property task prop val))))))
       task)))
 
-;; (defun org-task-collect-task-clock-info ()
-(defun occ-collect-task-from-clock ()
-  ;; NOT used anywhere
-  ;; (org-element-at-point)
-  (let ((heading-with-string-prop
-         (unless (org-before-first-heading-p)
-           (org-get-heading 'notags))))
-    (let ((heading (if heading-with-string-prop
-                       (substring-no-properties heading-with-string-prop)))
-          (heading-prop (if heading-with-string-prop
-                            heading-with-string-prop))
-          (marker  (move-marker
-                    (make-marker)
-                    (point)
-                    (org-base-buffer (current-buffer))))
-          (file    (buffer-file-name))
-          (point   (point))
-          (clock-sum (if (org-before-first-heading-p)
-                         0
-                         (org-clock-sum-current-item)))
-          (task (cadr (org-element-at-point)))
-          (task-content-start ))
-      (when heading
-        ;; (if root   (push (cons "Root" root) task))
-        (if marker    (occ-task-set-property task :task-clock-marker marker))
-        (if file      (occ-task-set-property task :task-clock-file file))
-        (if point     (occ-task-set-property task :task-clock-point point))
-        (if heading   (occ-task-set-property task :task-clock-heading heading))
-        (if heading-prop   (occ-task-set-property task :task-clock-heading-prop heading-prop))
-        (if clock-sum (occ-task-set-property task :task-clock-clock-sum clock-sum))
-        (let ((inherited-props (occ-keys-with-operation :getter nil)))
-          (dolist (prop inherited-props)
-            (let* ((propstr (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))
-                   (val (org-entry-get nil propstr t)))
-              (unless (occ-task-get-property task prop)
-                (occ-task-set-property task prop val)))))
-        (if heading-with-string-prop
-            (occ-task-set-property task :task-clock-content (occ-heading-content-only))))
-      task)))
-
 ;; (defun org-Xheading-content-only ()
 (defun occ-heading-content-only ()
   (if (org-at-heading-p)
@@ -163,6 +127,31 @@ inside loops."
 ;; (let ((re org-clock-string))
 ;;   (re-search-backward re nil t))
 
+(defun occ-message (level &rest args)
+  "If LEVEL is lower than `gnus-verbose' print ARGS using `message'.
+
+Guideline for numbers:
+1 - error messages, 3 - non-serious error messages, 5 - messages for things
+that take a long time, 7 - not very important messages on stuff, 9 - messages
+inside loops."
+  (if (<= level occ-verbose)
+      (let (
+            ;; (message
+            ;;  (if gnus-add-timestamp-to-message
+            ;;      (apply 'gnus-message-with-timestamp args)
+            ;;      (apply 'message args)))
+            )
+        ;; (when (and (consp gnus-action-message-log)
+        ;;            (<= level 3))
+        ;;   (push message gnus-action-message-log))
+        (progn
+          ;; not doing anything
+          ))
+      ;; We have to do this format thingy here even if the result isn't
+      ;; shown - the return value has to be the same as the return value
+      ;; from `message'.
+      (apply 'format args)))
+
 
 (defun occ-fontify-like-in-org-mode (task)
   (let* ((level   (or (occ-task-get-property task :level) 0))
@@ -178,24 +167,6 @@ inside loops."
         (org-fontify-like-in-org-mode
          (concat prefix heading)
          org-odd-levels-only))))
-
-;; (defun org-Xclock-items (&optional tstart tend)
-(defun occ-clock-items (&optional tstart tend)
-  "Return time, clocked on current item in total."
-  (if (org-at-heading-p)
-      (save-excursion
-        (save-restriction
-          (let ((ele (org-element-at-point))
-                (re org-clock-string))
-            (let ((start (org-element-property :contents-begin ele))
-                  (end (progn
-                         (outline-next-heading)
-                         ;; (org-next-visible-heading 1)
-                         (point))))
-              (narrow-to-region start end)
-              (goto-char (point-max))
-              (while (re-search-backward re nil t)
-                (let ((clock (org-element-at-point)))))))))))
 
 ;; (defun org-Xtask-get-property (task property)
 (defun occ-task-get-property (task property)
@@ -214,14 +185,6 @@ inside loops."
   (mapcar #'(lambda (e)
               (occ-task-get-property e :task-clock-marker))
           (occ-tasks-associated-to-context context)))
-
-;; ;; (defun occ-markers-associated-to-context (context)
-;; (defun occ-rankmarkers-associated-to-context (context)
-;;   (mapcar #'(lambda (e)
-;;               (cons
-;;                (car e)
-;;                (occ-task-get-property (cdr e) :task-clock-marker)))
-;;           (occ-ranktasks-associated-to-context context)))
 
 ;; Dynamic plist task format
 ;; plist of :rank :marker :task etc
