@@ -1,1 +1,1 @@
-.repos/git/readonly/public/user/spacemacs
+.repos/git/main/resource/userorg/main/readonly/public/user/spacemacs
