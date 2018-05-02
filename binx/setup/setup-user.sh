@@ -367,7 +367,7 @@ function setup_git_repos()
 
 function setup_user_config_setup()
 {
-    RCHOME="~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc/_home/"
+    RCHOME="$HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc/_home/"
     if [ -d "${RCHOME}" ]
     then
 	      if mkdir -p ~/_old_dot_filedirs
@@ -416,10 +416,9 @@ function setup_user_config_setup()
 	          # mv $TMPDIR/Xsetup ~/.setup/_home/.setup
 	          cd -
         fi
-    fi
-
-    rm -f ~/.setup
-    ln -sf .setup-trunk ~/.setup
+    else
+        echo "${RCHOME}" not exists >&2
+    fi # if [ -d "${RCHOME}" ]
 }
 
 function setup_download_misc()
