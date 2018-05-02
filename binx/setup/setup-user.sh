@@ -5,6 +5,9 @@ DEBUG=1
 SSH_KEY_DUMP=$1
 TMPDIR=~/setuptmp
 
+RESOURCEPATH=".repos/git/main/resource"
+USERORGMAIN="userorg/main"
+
 APT_REPO_COMMPUNICATION="ppa:nilarimogard/webupd8"
 APT_REPO_UTILS="ppa:yartsa/lvmeject"
 
@@ -301,61 +304,52 @@ function setup_ssh_keys()
 
 function setup_git_repos()
 {
-    mkdir -p ~/.repos
-    if [ ! -d ~/.repos/git ]
+    # RESOURCEPATH=".repos/git/main/resource"
+    # USERORGMAIN="userorg/main"
+
+    mkdir -p ~/${RESOURCEPATH}/
+    if [ ! -d ~/${RESOURCEPATH}/userorg ]
     then
-        git clone --recursive  git@github.com:sharad/userorg.git ~/.repos/git
+        git clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
     else
-        git -C ~/.repos/git submodule foreach git pull origin master
+        git -C ~/${RESOURCEPATH}/userorg submodule foreach git pull origin master
         # git -C ~/.repos/git submodule update --remote
     fi
 
     if true
     then
-        if [ ! -L ~/.repos/git/user/setup-trunk -a -d ~/.repos/git/user/rc ]
+
+        if [ ! -L ~/.localdirs -a -d ~/.localdirs ]
         then
-    	      rm -rf ~/.repos/git/user/setup-trunk
-	          ln -sf rc ~/.repos/git/user/setup-trunk
+    	      rm -rf ~/.localdirs
+	          ln -sf ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs ~/.localdirs
         fi
-        if [ ! -L ~/.setup-trunk -a -d ~/.repos/git/user/setup-trunk ]
-        then
-	          rm -rf ~/.setup-trunk
-	          ln -sf .repos/git/user/setup-trunk ~/.setup-trunk
-        fi
-        if [ ! -L ~/.setup -a -d ~/.setup-trunk ]
+
+        if [ ! -L ~/.setup ]
         then
 	          rm -rf ~/.setup
-	          ln -sf .setup-trunk ~/.setup
+	          ln -sf .localdirs/rc.d/setup ~/.setup
         fi
 
-        if [ ! -L ~/.repos/git/user/osetup -a -d ~/.repos/git/user/osetup ]
+        if [ ! -L ~/.osetup ]
         then
-            if [ ! -L ~/.osetup ]
-            then
-                rm -f ~/.osetup
-                ln -sf .repos/git/user/osetup ~/.osetup
-            fi
+            rm -f ~/.osetup
+            ln -sf .localdirs/rc.d/osetup ~/.osetup
         fi
-
-        # if [ ! -L ~/.stumpwm.d/modules -a -d ~/.repos/git/system/stumpwm-contrib ]
-        # then
-        #     rm -rf ~/.stumpwm.d/modules
-        #     ln -s ../.repos/git/system/stumpwm-contrib ~/.stumpwm.d/modules
-        # fi
 
         if mount | grep $HOME/.Private
         then
-            if [ ! -d ~/.Private/secure.d -a -d ~/.repos/git/user/secure.d ]
+            if [ ! -d ~/.Private/secure.d -a -d ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/secure.d ]
             then
 	              rm -rf ~/.Private/secure.d
-	              cp -ra ~/.repos/git/user/secure.d ~/.Private/secure.d
+	              cp -ra ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/secure.d ~/.Private/secure.d
             fi
         fi
 
         if [ ! -d ~/.pi -a -d ~/.setup/pi ]
         then
 	          ln -s .setup/pi ~/.pi
-	          ln -s ../.repos/git/user/orgp ~/.pi/org
+	          ln -s ../${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/orgp ~/.pi/org
         fi
 
         if [ ! -d ~/.emacs.d/.git ]
@@ -364,21 +358,21 @@ function setup_git_repos()
             then
                 mv ~/.emacs.d ~/.emacs.d-old
             fi
-	          ln -s .repos/git/user/spacemacs ~/.emacs.d
+	          ln -s ${RESOURCEPATH}/${USERORGMAIN}/readonly/public/user/spacemacs ~/.emacs.d
         fi
 
     fi
-
 }
 
 function setup_user_config_setup()
 {
-    if [ -d ~/.repos/git/user/rc/_home/ ]
+    RCHOME="~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc/_home/"
+    if [ -d "${RCHOME}" ]
     then
 	      if mkdir -p ~/_old_dot_filedirs
         then
 	          # mv ~/.setup/_home/.setup $TMPDIR/Xsetup
-	          cd ~/.repos/git/user/rc/_home/
+	          cd "${RCHOME}"
 	          for c in .[a-zA-Z^.^..]* *
 	          do
                 echo considering $c
@@ -442,7 +436,7 @@ function setup_sshkeys()
     :
 }
 
-function setup_Documentation()
+function setup_Documentation()  # TODO
 {
     if [  ! -L ~/Documents -a "$(readlink -m ~/Documents)" != "$HOME/.repos/git/user/doc" ]
     then
@@ -453,7 +447,7 @@ function setup_Documentation()
     fi
 }
 
-function setup_public_html()
+function setup_public_html()    # TODO
 {
     if [  ! -L ~/public_html -o "$(readlink -m ~/public_html)" != "$HOME/.repos/git/user/doc/Public/Published/html" ]
     then
@@ -534,8 +528,8 @@ function setup_dirs()
         fi
     done
 
-    setup_Documentation
-    setup_public_html
+    # setup_Documentation
+    # setup_public_html
 
     sudo chown root.root -R ~/.LocalDirs.d/
 }

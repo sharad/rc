@@ -42,6 +42,11 @@
   "interface object class"
   :abstract t)
 
+(defclass occ-prop (occ-obj)
+  ((name
+    :initarg :name))
+  :abstract t)
+
 (defclass occ-task (occ-obj)
   ((name
     :initarg :name
@@ -150,7 +155,7 @@
 (defun occ-task-get-property (task property)
   (plist-get task property))
 
-;; (defun org-Xtask-set-property (task property value)
+;; (defun org-Xtask-set-property (task property value)x50
 (defun occ-task-set-property (task property value)
   (plist-put task property value))
 
