@@ -313,6 +313,7 @@ function setup_git_repos()
     then
         $GIT_COMMAND clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
     else
+        $GIT_COMMAND -C ~/${RESOURCEPATH}/userorg pull origin master
         $GIT_COMMAND -C ~/${RESOURCEPATH}/userorg submodule foreach $GIT_COMMAND pull origin master
         # $GIT_COMMAND -C ~/.repos/git submodule update --remote
     fi
