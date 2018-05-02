@@ -5,6 +5,7 @@ DEBUG=1
 SSH_KEY_DUMP=$1
 TMPDIR=~/setuptmp
 
+GIT_COMMAND="git -c core.sshCommand='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'"
 RESOURCEPATH=".repos/git/main/resource"
 USERORGMAIN="userorg/main"
 
@@ -310,10 +311,10 @@ function setup_git_repos()
     mkdir -p ~/${RESOURCEPATH}/
     if [ ! -d ~/${RESOURCEPATH}/userorg ]
     then
-        git clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
+        $GIT_COMMAND clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
     else
-        git -C ~/${RESOURCEPATH}/userorg submodule foreach git pull origin master
-        # git -C ~/.repos/git submodule update --remote
+        $GIT_COMMAND -C ~/${RESOURCEPATH}/userorg submodule foreach $GIT_COMMAND pull origin master
+        # $GIT_COMMAND -C ~/.repos/git submodule update --remote
     fi
 
     if true
@@ -579,7 +580,7 @@ function setup_clib_installer()
     sudo apt-get install libcurl4-gnutls-dev -qq
     if [ ! -d /usr/local/stow/clib/ ]
     then
-        if git clone https://github.com/clibs/clib.git $TMPDIR/clib
+        if $GIT_COMMAND clone https://github.com/clibs/clib.git $TMPDIR/clib
         then
             cd $TMPDIR/clib
             make PREFIX=/usr/local/stow/clib/
