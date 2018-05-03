@@ -41,8 +41,8 @@ if [ -f "$WRAPPED_PASSPHRASE_FILE" -a -f "$MOUNT_PASSPHRASE_SIG_FILE" ]; then
 		echo -n "$MESSAGE"
 		[ $DISPLAY ] || stty -echo
                 if [ $DISPLAY ] ; then
-		    # LOGINPASS=`ssh-askpass-fullscreen | head -n1`
-		    LOGINPASS=$(gksu -pg  -D "ecryptfs_private password:" -m "ecryptfs_private password:"  | head -n1)
+		    LOGINPASS=$(ssh-askpass-fullscreen | head -n1)
+		    # LOGINPASS=$(gksu -pg  -D "ecryptfs_private password:" -m "ecryptfs_private password:"  | head -n1)
                 else
 		    LOGINPASS=`head -n1`
                 fi
