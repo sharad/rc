@@ -2,30 +2,32 @@
 
 TMPDIR=~/tmp
 
-ls -l /etc/hosts
-head -10 /etc/hosts
+# URL='https://hosts-file.net/download/hosts.zip'
+URL='https://hosts-file.net/download/hosts.txt'
+HOSTFILEADS=$(basename $URL)
 
-if cd ~/tmp
+if [ -r /etc/hosts.orignal ]
 then
-    if [ ! -r hosts.txt ]
+    ls -l /etc/hosts
+    head -10 /etc/hosts
+    if cd ~/tmp
     then
-        if wget -c 'https://hosts-file.net/download/hosts.zip'
+        if [ ! -r ${HOSTFILEADS} ]
         then
-            if unzip hosts.zip
+            if wget -c $URL
             then
-                dos2unix hosts.txt || rm -f hosts.txt
+                : dos2unix $HOSTFILEADS || rm -f $HOSTFILEADS
             fi
         fi
-    fi
 
-    if [ -r hosts.txt ]
-    then
-        cp /etc/hosts.orignal $TMPDIR/hosts
-        echo "\n\n\n" >> $TMPDIR/hosts
-        sed -n '/BAD HOSTS BEGIN HERE/,$p' hosts.txt >> $TMPDIR/hosts
-        sudo cp $TMPDIR/hosts /etc/hosts
+        if [ -r  ${HOSTFILEADS} ]
+        then
+            cp /etc/hosts.orignal $TMPDIR/hosts
+            echo -e "\n\n\n" >> $TMPDIR/hosts
+            sed -n '/BAD HOSTS BEGIN HERE/,$p' ${HOSTFILEADS} >> $TMPDIR/hosts
+            sudo cp $TMPDIR/hosts /etc/hosts
+        fi
     fi
+    head -20 /etc/hosts
+    ls -l /etc/hosts
 fi
-
-head -20 /etc/hosts
-ls -l /etc/hosts
