@@ -211,7 +211,7 @@ function setup_ecrypt_private()
 {
     if ! mount | grep $HOME/.Private
     then
-        sudo apt install ecryptfs-utils
+        sudo apt -y install ecryptfs-utils
 
         if [ ! -f ~/.ecryptfs/wrapped-passphrase ]
         then
@@ -228,7 +228,7 @@ function setup_ecrypt_private()
 
 function setup_tmp_ssh_keys()
 {
-    sudo apt install openssl
+    sudo apt -y install openssl
     SSH_KEY_ENC_DUMP=$1
     SSH_DIR=$2
     if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
@@ -258,7 +258,7 @@ function setup_ssh_keys()
     then
         if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
         then
-            sudo apt install openssl
+            sudo apt -y install openssl
             SSH_KEY_ENC_DUMP=$1
             SSH_DIR=$2
             if ! mount | grep "$USER/.Private"
@@ -577,7 +577,7 @@ function setup_sourcecode_pro_font()
 
 function setup_clib_installer()
 {
-    sudo apt-get install libcurl4-gnutls-dev -qq
+    sudo apt-get -y install libcurl4-gnutls-dev -qq
     if [ ! -d /usr/local/stow/clib/ ]
     then
         if $GIT_COMMAND clone https://github.com/clibs/clib.git $TMPDIR/clib
