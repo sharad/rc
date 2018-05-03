@@ -293,6 +293,12 @@ foreach prog (
     fi
 }
 
+if [ -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ]
+then
+    pgrep polkit-gnome-au >& /dev/null || /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &!
+fi
+
+
 if whence -p keynav >& /dev/null  &&
        ! pgrep keynav >& /dev/null
 then
