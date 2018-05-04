@@ -14,7 +14,7 @@ APT_REPO_UTILS="ppa:yartsa/lvmeject"
 
 APT_REPO_KOI="ppa:team-xbmc/ppa"
 
-
+DEB_PKG_FIRST_INTERCATIVE_QA="macchanger postfix cyrus-clients lyskom-server"
 DEB_PKG_EMACS="elpa-magit elpa-magit-popup elpa-with-editor emacs-goodies-el enscript flim lm-sensors "
 DEB_PKG_NECESSARY_MORE1="xaos xnee xnee-doc xzgv yatex zsh zsh-doc zutils byobu ccze shutdown-at-night sitesummary xterm rxvt-unicode-256color"
 # TODO BUG set zsh as login shell
@@ -41,7 +41,7 @@ DEB_EXTRA_SEC_PKG1="systemd-ui " # policykit-1 policykit-1-gnome
 DEB_DEV_PKG1="python-pip silversearcher-ag silversearcher-ag-el s-el ack-grep doxygen doxymacs"
 DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject adcli partclone gpodder parallel"
 DEB_PKG_DEV="valgrind"
-DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools pavucontrol redshift daemontools god circus software-properties-common at"
+DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools pavucontrol redshift daemontools god circus software-properties-common at hibernate"
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer-accountd prayer"
 DEB_SYS_PKG1="duc baobab agedu tpb daemontools sysstat isag dos2unix"
 DEB_SYS_MAIL="dovecot-core dovecot-imapd ntpdate postfix augeas-tools augeas-lenses"
@@ -173,6 +173,7 @@ function setup_apt_packages()
     sudo apt update
 
     for pkg in \
+        "DEB_PKG_FIRST_INTERCATIVE_QA" \
         "DEB_PKG_NECESSARY" \
 				"DEB_PKGS1" \
 				"DEB_PKGS2" \
