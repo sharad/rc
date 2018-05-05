@@ -117,6 +117,7 @@ Benefit with this timer is that it will very much ensure before running that use
 (defun run-with-idle-timer-nonobtrusive (sec repeat sitfor stepsec fn &optional arg)
   (lexical-let* ((sitfor sitfor)
                  (sec sec)
+                 (idle-timer nil)
                  (idle-timer
                   (run-with-idle-timer sec nil
                                        #'(lambda (fnarg)
@@ -126,8 +127,7 @@ Benefit with this timer is that it will very much ensure before running that use
                                                    (unless repeat
                                                      (cancel-timer idle-timer))
                                                    (funcall (car fnarg) (cdr fnarg)))
-                                                 (setq idle-timer
-                                                       ))))
+                                                 (setq idle-timer nil))))
                                        (cons fn arg))))
     ))
 
