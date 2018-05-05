@@ -204,7 +204,14 @@ function setup_apt_packages()
         "DEB_PKG_LEARNING" \
         "DEB_PKG_TOOL_GUI"
     do
-        eval sudo apt -y install \$$pkg
+        if ! eval sudo apt -y install \$$pkg
+        then
+            for p in $(eval echo \$$pkg)
+            do
+                echo sudo apt -y install ${p}
+                sudo apt -y install ${p}
+            done
+        fi
     done
 }
 
