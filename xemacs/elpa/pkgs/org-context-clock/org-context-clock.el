@@ -473,37 +473,37 @@
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Clock-into%20one%20of%20associated%20tasks][Clock-into one of associated tasks:1]]
 ;;;###autoload
-    (defun org-context-clock-dyntaskpl-run-associated-dyntaskpl (context)
-      "marker and ranked version"
-      (interactive
-       (list (org-context-clock-build-context)))
-      (progn
-        (let* ((context (or context (org-context-clock-build-context)))
-               (matched-dyntaskpls
-                (remove-if-not
-                 #'(lambda (dyntaskpl)
-                     (and
-                      (plist-get dyntaskpl :marker)
-                      (marker-buffer (plist-get dyntaskpl :marker))))
-                 (org-context-clock-dyntaskpls-associated-to-context-filtered context))))
-          (if matched-dyntaskpls
-              (let* ((sel-dyntaskpl
-                      (if (> (length matched-dyntaskpls) 1)
-                          (sacha/helm-select-dyntaskpl-timed matched-dyntaskpls)
-                          (car matched-dyntaskpls)))
-                     (sel-task   (if sel-dyntaskpl (plist-get sel-dyntaskpl :task)))
-                     (sel-marker (if sel-task      (plist-get sel-task      :task-clock-marker))))
-                     (org-context-clock-message 6 "sel-dyntaskpl %s sel-task %s sel-marker %s" sel-dyntaskpl sel-task sel-marker)
-                     (if sel-dyntaskpl
-                         (org-context-clock-clockin-dyntaskpl sel-dyntaskpl)))
-              (progn
-                ;; here create unnamed task, no need
-                (setq *org-context-clock-update-current-context-msg* "null clock")
-                (org-context-clock-message 6
-                                           "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
-                                           context)
-                (org-context-clock-add-context-to-org-heading-when-idle context 7)
-                nil)))))
+(defun org-context-clock-dyntaskpl-run-associated-dyntaskpl (context)
+  "marker and ranked version"
+  (interactive
+   (list (org-context-clock-build-context)))
+  (progn
+    (let* ((context (or context (org-context-clock-build-context)))
+           (matched-dyntaskpls
+            (remove-if-not
+             #'(lambda (dyntaskpl)
+                 (and
+                  (plist-get dyntaskpl :marker)
+                  (marker-buffer (plist-get dyntaskpl :marker))))
+             (org-context-clock-dyntaskpls-associated-to-context-filtered context))))
+      (if matched-dyntaskpls
+          (let* ((sel-dyntaskpl
+                  (if (> (length matched-dyntaskpls) 1)
+                      (sacha/helm-select-dyntaskpl-timed matched-dyntaskpls)
+                      (car matched-dyntaskpls)))
+                 ;; (sel-task   (if sel-dyntaskpl (plist-get sel-dyntaskpl :task)))
+                 ;; (sel-marker (if sel-task      (plist-get sel-task      :task-clock-marker)))
+                 )
+            ;; (org-context-clock-message 6 "sel-dyntaskpl %s sel-task %s sel-marker %s" sel-dyntaskpl sel-task sel-marker)
+            (if sel-dyntaskpl (org-context-clock-clockin-dyntaskpl sel-dyntaskpl)))
+          (progn
+            ;; here create unnamed task, no need
+            (setq *org-context-clock-update-current-context-msg* "null clock")
+            (org-context-clock-message 6
+                                       "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
+                                       context)
+            (org-context-clock-add-context-to-org-heading-when-idle context 7)
+            nil)))))
 
 (when nil                               ;testing
   (sacha/helm-select-dyntaskpl-timed
@@ -512,7 +512,7 @@
         (and
          (plist-get dyntaskpl :marker)
          (marker-buffer (plist-get dyntaskpl :marker))))
-    (org-context-clock-dyntaskpls-associated-to-context (org-context-clock-build-context))))
+    (org-context-clock-dyntaskpls-associated-to-context-filtered (org-context-clock-build-context))))
   )
 ;; Clock-into one of associated tasks:1 ends here
 

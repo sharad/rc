@@ -160,7 +160,8 @@
                                             (with-vc-properties
                                                 (list org-nfile)
                                               (progn
-                                                (vc-call-backend 'RCS 'checkin (list org-nfile) nil "autobackup")
+                                                ;; (vc-call-backend 'RCS 'checkin (list org-nfile) nil "autobackup")
+                                                (vc-call-backend 'RCS 'checkin (list org-nfile) "autobackup")
                                                 (mapc 'vc-delete-automatic-version-backups (list org-nfile))
                                                 ;; (message "Checked in %s" org-nfile)
                                                 )
