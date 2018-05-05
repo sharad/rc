@@ -35,7 +35,7 @@
 
 (require 'package)
 (require 'package-x)
-(require 'package-build)
+(require 'package-build "~/.emacs.d/core/libs/package-build.el")
 
 (defvar package-source-path "~/.xemacs/elpa/pkgs" "Source code path for packages.")
 (defvar package-local-dev-archive "local" "Local archive specified in package-archives")
