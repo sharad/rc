@@ -46,6 +46,7 @@ endif
 "{{{ Spell check
 " https://www.linux.com/learn/tutorials/357267:using-spell-checking-in-vim
 set spell spelllang=en_us
+set nospell
 "}}}
 
 "{{{
