@@ -496,7 +496,7 @@ function setup_mail()
             for f in ~/.system/ubuntu/etc/postfix/*
             do
                 b=$(basename $f)
-                cp $f /etc/postfix/%b
+                cp $f /etc/postfix/
             done
         fi
 
