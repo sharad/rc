@@ -171,6 +171,23 @@ function setup_apt_packages()
 {
     setup_apt_repo
 
+
+sudo apt autoremove
+sudo apt autoclean
+sudo apt update
+sudo apt-file update
+sudo apt autoremove
+sudo apt autoclean
+sudo apt upgrade
+sudo apt autoremove
+sudo apt autoclean
+sudo apt autoremove
+sudo apt autoclean
+
+
+
+
+
     sudo apt update
 
     for pkg in \
