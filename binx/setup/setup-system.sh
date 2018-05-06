@@ -273,6 +273,10 @@ function setup_conkeror_package()
     sudo make PREFIX=/usr/local/stow/conkeror -C $SITEDIR/build/conkeror install
     cd /usr/local/stow
     sudo stow conkeror
+    if [ -r /usr/local/bin/conkeror ]
+    then
+        sed -i 's@exec firefox@exec /opt/firefox/firefox@' $(readlink -m /usr/local/bin/conkeror)
+    fi
     cd -
 }
 
