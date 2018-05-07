@@ -90,6 +90,7 @@
           "windowtags"
           "winner-mode"
           "notify"
+          ;; "stumpwm.contrib.dbus"
           ))
     (stumpwm::message "loading ~a" mod)
     (ignore-errors
