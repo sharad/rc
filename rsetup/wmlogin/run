@@ -348,16 +348,16 @@ then
     eval $(dbus-launch --sh-syntax --exit-with-session)
 fi
 
-autocutsel -f
+autocutsel -f &!
 
-xcompmgr -a &
+xcompmgr -a &!
 
 
 ### fonts start
 
-gsettings set org.gnome.desktop.interface monospace-font-name 'Ubuntu Mono 08'
-gsettings set org.gnome.desktop.interface document-font-name 'Sans 08'
-gsettings set org.gnome.desktop.interface font-name 'Ubuntu 08'
+gsettings set org.gnome.desktop.interface monospace-font-name 'Ubuntu Mono 08'&!
+gsettings set org.gnome.desktop.interface document-font-name 'Sans 08' &!
+gsettings set org.gnome.desktop.interface font-name 'Ubuntu 08' &!
 
 
 ### fonts end
@@ -379,7 +379,7 @@ gsettings set org.gnome.desktop.interface font-name 'Ubuntu 08'
      if timeout 7s ~/bin/get-imap-pass -u localhost
      then
          echo pkill gnome-keyr
-         pkill gnome-keyr
+         : pkill gnome-keyr
      fi
  fi
 ) &!

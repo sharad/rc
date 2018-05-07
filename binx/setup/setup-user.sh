@@ -31,7 +31,7 @@ DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp virt
 DEB_PKGS1="vim emacs emacs-goodies-el org-mode develock-el dash-el s-el zile keychain undistract-me"
 
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el p7zip-full pdftk golang gocode"
-DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip"
+DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip python3-secretstorage"
 DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skype pidgin-skypeweb purple-skypeweb telegram-purple pidgin-plugin-pack bitlbee tor"
 DEB_EXTRA_PKG_VIRTUAL=""
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera texlive-latex-extra texlive-fonts-recommended"
@@ -48,7 +48,7 @@ DEB_SYS_PKG1="duc baobab agedu tpb daemontools sysstat isag dos2unix powermanage
 DEB_SYS_MAIL="dovecot-core dovecot-imapd ntpdate postfix augeas-tools augeas-lenses notmuch afew"
 DEB_DEV_GTD="tomboy zim anki mnemosyne mnemosyne-blog sqlitebrowser"
 DEB_PKG_LEARNING="gpodder"
-DEB_PKG_TOOL_GUI="osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin gpointing-device-settings touchfreeze bash-completion libinput-tools" # xserver-xorg-input-synaptics
+DEB_PKG_TOOL_GUI="osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin gpointing-device-settings touchfreeze bash-completion libinput-tools keynav" # xserver-xorg-input-synaptics
 DEB_PKG_XWM="xcompmgr autocutsel sakura"
 DEB_PKG_MEDIA="kodi"
 
@@ -222,7 +222,8 @@ sudo apt autoclean
 				"DEB_PKG_NECESSARY_MORE4" \
         "DEB_DEV_GTD" \
         "DEB_PKG_LEARNING" \
-        "DEB_PKG_TOOL_GUI"
+        "DEB_PKG_TOOL_GUI" \
+        "DEB_PKG_XWM"
     do
         if ! eval sudo apt -y install \$$pkg
         then
