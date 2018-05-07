@@ -50,6 +50,7 @@ DEB_DEV_GTD="tomboy zim anki mnemosyne mnemosyne-blog sqlitebrowser"
 DEB_PKG_LEARNING="gpodder"
 DEB_PKG_TOOL_GUI="osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin gpointing-device-settings touchfreeze bash-completion libinput-tools keynav" # xserver-xorg-input-synaptics
 DEB_PKG_XWM="xcompmgr autocutsel sakura"
+DEB_PKG_XML="libxml2-utils xsltproc"
 DEB_PKG_MEDIA="kodi"
 
 
@@ -223,7 +224,8 @@ sudo apt autoclean
         "DEB_DEV_GTD" \
         "DEB_PKG_LEARNING" \
         "DEB_PKG_TOOL_GUI" \
-        "DEB_PKG_XWM"
+        "DEB_PKG_XWM" \
+        "DEB_PKG_XML"
     do
         if ! eval sudo apt -y install \$$pkg
         then
