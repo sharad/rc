@@ -107,6 +107,13 @@
   (when (probe-file (merge-pathnames "local-projects" *quicklisp-local-home-dir*))
     (nconc ql:*local-project-directories* (list (merge-pathnames "local-projects" *quicklisp-local-home-dir*)))))
 
+
+#+quicklisp
+(progn
+  (ql:update-dist "quicklisp") ; To get updated software
+  (ql:update-client)           ; To update the Quicklisp client
+  )
+
 #+quicklisp
 (progn
   (ql:quickload "quickproject")

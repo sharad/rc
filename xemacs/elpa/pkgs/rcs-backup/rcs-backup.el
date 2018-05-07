@@ -192,7 +192,8 @@
 (eval
  `(defadvice backup-buffer-copy (after
                                  backup-buffer-copy-in-rcs
-                                 ,(help-function-arglist 'backup-buffer-copy)
+                                 ;; ,(help-function-arglist 'backup-buffer-copy)
+                                 ()
                                  disable)
     ;; (message "defadvise filename %s %s" from-name to-name)
     (condition-case e
