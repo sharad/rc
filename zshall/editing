@@ -160,6 +160,15 @@ accept-line-disable-xtrace () {
     zle .accept-line
 }
 
+x-set-selection () {
+    if [ "$BUFFER" ]
+    then
+        echo -n $BUFFER | xclip -i
+    else
+        echo $BUFFER not doing anything
+    fi
+}
+
 ## grml https://github.com/grml/grml-etc-core/blob/master/etc/zsh/zshrc
 #f5# Create directory under cursor or the selected area
 function inplaceMkDirs () {
@@ -218,6 +227,7 @@ zle	-N	tetris
 
 zle	-N	accept-line-enable-xtrace
 zle	-N	accept-line-disable-xtrace
+zle -N  x-set-selection
 
 # create mymap out of emacs map
 bindkey	-N	mymap	emacs
@@ -260,6 +270,8 @@ bindkey	-M	mymap	'\ew'	        copy-region-as-kill
 
 bindkey	-M	mymap	'\C-x\e\C-m'	accept-line-enable-xtrace
 bindkey	-M	mymap	'\C-x\C-m'	accept-line-disable-xtrace
+
+bindkey	-M	mymap	"\C-x\e'"	x-set-selection
 
 # Move  # used for _most_recent_history widget
 # bindkey	-M	mymap	'\e/'	        forward-to-/

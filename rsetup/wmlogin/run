@@ -352,6 +352,16 @@ autocutsel -f
 
 xcompmgr -a &
 
+
+### fonts start
+
+gsettings set org.gnome.desktop.interface monospace-font-name 'Ubuntu Mono 10'
+gsettings set org.gnome.desktop.interface document-font-name 'Sans 10'
+gsettings set org.gnome.desktop.interface font-name 'Ubuntu 10'
+
+
+### fonts end
+
 # need to run in temporary terminal
 (echo sleep 60s;
  sleep 60s ;
