@@ -7,7 +7,7 @@ function main() {
 
     process_arg $@
 
-    gnome-keyring-attach
+    # gnome-keyring-attach
 
     if [ -e $disable_file ] ; then
         notify "Syncimap is disabled"
