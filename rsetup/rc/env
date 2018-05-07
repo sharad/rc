@@ -27,24 +27,39 @@ export SCREEN4KEYCHAIN=keychain
 export KEYCHAINDIR=$HOME/.keychain-screen
 
 MACHINE_ID=/var/lib/dbus/machine-id
-
-if [ "x$DISPLAY" != "x" ]
+if test -z "$DBUS_SESSION_BUS_ADDRESS"
 then
-   _DISPLAYMAJOR=$(echo ${DISPLAY} | cut -f2 -d: | cut -d. -f1)
-   if [ -r "$MACHINE_ID" ] && [ -r ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-${_DISPLAYMAJOR} ]
-   then
-      source ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-${_DISPLAYMAJOR}
-      export DBUS_SESSION_BUS_ADDRESS
-      unset _DISPLAYMAJOR
-   fi
-else
-    if [ -r "$MACHINE_ID" ] && [ -r ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-0 ]
+    if [ "x$DISPLAY" != "x" ]
     then
-      source ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-0
-      export DBUS_SESSION_BUS_ADDRESS
-      unset _DISPLAYMAJOR
-   fi
-
+        _DISPLAYMAJOR=$(echo ${DISPLAY} | cut -f2 -d: | cut -d. -f1)
+        if [ -r "$MACHINE_ID" ] && [ -r ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-${_DISPLAYMAJOR} ]
+        then
+            source ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-${_DISPLAYMAJOR}
+            if test -n "$DBUS_SESSION_BUS_PID" && ps $DBUS_SESSION_BUS_PID
+            then
+                export DBUS_SESSION_BUS_ADDRESS
+            else
+                unset DBUS_SESSION_BUS_ADDRESS
+                unset DBUS_SESSION_BUS_PID
+                unset DBUS_SESSION_BUS_WINDOWID
+            fi
+            unset _DISPLAYMAJOR
+        fi
+    else
+        if [ -r "$MACHINE_ID" ] && [ -r ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-0 ]
+        then
+            source ~/.dbus/session-bus/$(cat "$MACHINE_ID" )-0
+            if test -n "$DBUS_SESSION_BUS_PID" && ps $DBUS_SESSION_BUS_PID
+            then
+                export DBUS_SESSION_BUS_ADDRESS
+            else
+                unset DBUS_SESSION_BUS_ADDRESS
+                unset DBUS_SESSION_BUS_PID
+                unset DBUS_SESSION_BUS_WINDOWID
+            fi
+            unset _DISPLAYMAJOR
+        fi
+    fi
 fi
 
 function update-ssh-agent-unconditionally()
@@ -109,7 +124,7 @@ function update-ssh-agent()
     retstatus=$?
 
     # echo retstatus=$retstatus __force=$__force
- 
+
     if [ $retstatus -gt $__force ]
     then
         # echo retstatus $retstatus

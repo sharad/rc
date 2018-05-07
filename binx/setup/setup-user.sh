@@ -49,7 +49,7 @@ DEB_SYS_MAIL="dovecot-core dovecot-imapd ntpdate postfix augeas-tools augeas-len
 DEB_DEV_GTD="tomboy zim anki mnemosyne mnemosyne-blog sqlitebrowser"
 DEB_PKG_LEARNING="gpodder"
 DEB_PKG_TOOL_GUI="osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin gpointing-device-settings touchfreeze bash-completion libinput-tools" # xserver-xorg-input-synaptics
-
+DEB_PKG_XWM="xcompmgr autocutsel sakura"
 DEB_PKG_MEDIA="kodi"
 
 

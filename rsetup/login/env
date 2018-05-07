@@ -339,3 +339,24 @@ then
 else
     echo LOGIN_ENV is set
 fi                              # [ "${LOGIN_ENV}x" = "x" ]
+
+
+DBUS_LOG=~/.logs/debug.log
+date >> $DBUS_LOG
+echo rsetup/login/env before >> $DBUS_LOG
+echo DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS >> $DBUS_LOG
+echo DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID >> $DBUS_LOG
+echo DBUS_SESSION_BUS_WINDOWID=$DBUS_SESSION_BUS_WINDOWID >> $DBUS_LOG
+echo rsetup/login/env before >> $DBUS_LOG
+date >> $DBUS_LOG
+if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"
+then
+    eval $(dbus-launch --sh-syntax --exit-with-session)
+    date >> $DBUS_LOG
+    echo rsetup/login/env after >> $DBUS_LOG
+    echo DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS >> $DBUS_LOG
+    echo DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID >> $DBUS_LOG
+    echo DBUS_SESSION_BUS_WINDOWID=$DBUS_SESSION_BUS_WINDOWID >> $DBUS_LOG
+    echo rsetup/login/env after >> $DBUS_LOG
+    date >> $DBUS_LOG
+fi

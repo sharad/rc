@@ -332,3 +332,14 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
 
 ;; (nconc *destroy-window-hook* (list #'jump-to-previous-window))
 ;;}}
+
+
+(defun get-dbus-conf ()
+  (let ((dbus-parms
+         (mapcar
+          #'(lambda (envstr) (format nil "~a=~a" envstr (getenv envstr)))
+          '("DBUS_SESSION_BUS_ADDRESS" "DBUS_SESSION_BUS_PID" "DBUS_SESSION_BUS_WINDOWID"))))
+    (format nil "~{~a~%~}" dbus-parms)))
+
+(defcommand get-dbus-config () ()
+            (message "~a" (get-dbus-conf)))

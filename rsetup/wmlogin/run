@@ -341,6 +341,16 @@ then
     fi
 fi
 
+## https://www.juev.org/2009/09/27/stumpwm/
+# D-bus
+if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"
+then
+    eval $(dbus-launch --sh-syntax --exit-with-session)
+fi
+
+autocutsel -f
+
+xcompmgr -a &
 
 # need to run in temporary terminal
 (echo sleep 60s;
