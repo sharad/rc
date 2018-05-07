@@ -355,9 +355,9 @@ xcompmgr -a &
 
 ### fonts start
 
-gsettings set org.gnome.desktop.interface monospace-font-name 'Ubuntu Mono 10'
-gsettings set org.gnome.desktop.interface document-font-name 'Sans 10'
-gsettings set org.gnome.desktop.interface font-name 'Ubuntu 10'
+gsettings set org.gnome.desktop.interface monospace-font-name 'Ubuntu Mono 08'
+gsettings set org.gnome.desktop.interface document-font-name 'Sans 08'
+gsettings set org.gnome.desktop.interface font-name 'Ubuntu 08'
 
 
 ### fonts end
@@ -365,7 +365,7 @@ gsettings set org.gnome.desktop.interface font-name 'Ubuntu 10'
 # need to run in temporary terminal
 (echo sleep 60s;
  sleep 60s ;
- echo 'URxvt.font: xft:DejaVu Sans Mono:size=12' |  xrdb -merge -
+ echo 'URxvt.font: xft:DejaVu Sans Mono:size=07' |  xrdb -merge -
  echo timeout 2s ~/bin/get-imap-pass -u localhost
  if ! timeout 2s ~/bin/get-imap-pass -u localhost >& /dev/null ;
  then
