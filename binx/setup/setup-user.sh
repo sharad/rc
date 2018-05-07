@@ -21,7 +21,7 @@ DEB_PKG_NECESSARY_MORE1="xaos xnee xnee-doc xzgv yatex zsh zsh-doc zutils screen
 DEB_PKG_NECESSARY_MORE2="gnu-smalltalk-doc gnu-fdisk gnu-standards gnuit gnulib gnupg2 gnuplot-doc gvpe gtypist hello ht id-utils indent integrit jed latex-mk ledger libaws-doc"
 ##  hello-traditional
 DEB_PKG_NECESSARY_MORE3="libcommoncpp2-doc libconfig-dev libsocket++-dev licenseutils lookup-el lyskom-server macchanger mboxgrep mew-beta mit-scheme-doc mmm-mode ocaml-doc oneliner-el org-mode-doc parted-doc pcb-common"
-DEB_PKG_NECESSARY_MORE4="pinfo psgml qingy r-doc-info r5rs-doc semi sepia sharutils slime source-highlight spell ssed stow rlwrap teseq time trueprint turnin-ng units vera wcalc wdiff wizzytex wysihtml-el"
+DEB_PKG_NECESSARY_MORE4="pinfo psgml qingy r-doc-info r5rs-doc semi sepia sharutils slime source-highlight spell ssed stow rlwrap teseq time trueprint turnin-ng units vera wcalc gnome-calculator wdiff wizzytex wysihtml-el"
 DEB_PKG_GAME="gnugo"
 DEB_PKGS_BACKUP="bup git-annex tahoe-lafs unison unison-all inotify-tools"
 DEB_PKG_NECESSARY="git git-review legit git-extras git-flow git-sh git-extras git-crypt ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server rcs apt-src apt-file jargon cutils complexity-doc dejagnu diffutils extract festival ffe gccintro gddrescue geda-doc genparse gpodder gnutls-bin"
@@ -51,6 +51,7 @@ DEB_PKG_LEARNING="gpodder"
 DEB_PKG_TOOL_GUI="osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin gpointing-device-settings touchfreeze bash-completion libinput-tools keynav" # xserver-xorg-input-synaptics
 DEB_PKG_XWM="xcompmgr autocutsel sakura"
 DEB_PKG_XML="libxml2-utils xsltproc"
+DEB_PKG_UTILS="gcalcli"
 DEB_PKG_MEDIA="kodi"
 
 
@@ -225,7 +226,8 @@ sudo apt autoclean
         "DEB_PKG_LEARNING" \
         "DEB_PKG_TOOL_GUI" \
         "DEB_PKG_XWM" \
-        "DEB_PKG_XML"
+        "DEB_PKG_XML" \
+        "DEB_PKG_UTILS"
     do
         if ! eval sudo apt -y install \$$pkg
         then
