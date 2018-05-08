@@ -669,9 +669,15 @@
     "/.rsetup/wmlogout/run"))
   (quit))
 
+(defcommand bye-with-cleanup () ()
+            (bye))
+
 (defcommand bye-with-confirmation () ()
-            (when (y-or-n-p "Logout from stumpwm: ")
-              (bye)))
+            (let ((*message-window-gravity* :center))
+              (fclear)
+              (if (y-or-n-p "^5^BLogout from stumpwm:^b ^2")
+                  (bye-with-cleanup)
+                  (pull-hidden-other))))
 
 (defcommand display-root-map () ()
     (display-bindings-for-keymaps  nil *top-map*))
@@ -701,13 +707,6 @@
  (require 'cl-cont)
  (use-package 'cl-cont))
 )
-
-
-
-
-(defcommand bye-with-cleanup () ()
-            )
-
 
 (defcommand gnext-nonempty () ()
             )
