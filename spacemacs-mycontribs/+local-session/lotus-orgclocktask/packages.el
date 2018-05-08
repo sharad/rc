@@ -281,7 +281,7 @@ Each entry is either:
               ))))
 
     (progn ;; Need it.
-     (org-wrapper-insuniate))))
+      (org-clock-wrapper-insinuate))))
 
 
 (defun lotus-orgclocktask/init-org-clock-daysummary ()

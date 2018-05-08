@@ -174,14 +174,14 @@ using three `C-u' prefix arguments."
 
 
 ;;;###autoload
-(defun org-wrapper-insuniate ()
+(defun org-clock-wrapper-insinuate ()
   (interactive)
   (add-function
    :override (symbol-function 'org-clock-select-task)
    #'replace-org-clock-select-task))
 
 ;;;###autoload
-(defun org-wrapper-uninsuniate ()
+(defun org-clock-wrapper-uninsinuate ()
   (interactive)
   (remove-function
    (symbol-function 'org-clock-select-task)

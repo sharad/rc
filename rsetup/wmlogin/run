@@ -1,5 +1,9 @@
 #!/bin/zsh
 
+mkdir -p ~/.logs/
+
+echo > ~/.logs/wmlogin.log
+
 if [ "x${HOST}" != "x" ]
 then
     __comp=wmlogin
@@ -24,11 +28,19 @@ else
     print env var HOST is not set $HOST
 fi
 
+
+
+
+
 # give access to mpd
+
+notify-send wmlogin/run "starting wmlogin/run" &!
+
+echo wmlogin/run "starting wmlogin/run" >>& ~/.logs/wmlogin.log &!
 
 if whence xte >& /dev/null
 then
-    xte <<EOF >>& ~/.xsession-errors
+    xte <<EOF >>& ~/.logs/wmlogin.log &!
 mousemove 42 42
 EOF
 fi
@@ -37,23 +49,27 @@ fi
 if whence -p xautolock >& /dev/null &&
        ! pgrep xautolock >& /dev/null
 then
-    xautolock -detectsleep >>& ~/.xsession-errors &!
+    xautolock -detectsleep >>& ~/.logs/wmlogin.log &!
 fi
 
 if whence -p conky >& /dev/null &&
        ! pgrep conky >& /dev/null
 then
-    if whence -p watch >& /dev/null
-    then
-        watch -t -n7 conky -c ~/.conkyrc/main/conkyrc >& /dev/null &!
-    else
-        conky -d -c ~/.conkyrc/main/conkyrc >& /dev/null &!
-    fi
+    conky -d -c ~/.conkyrc/main/conkyrc >& /dev/null &!
+    ## NOTE watch need attached terminal to work.
+    # if whence -p watch >& /dev/null
+    # then
+    #     echo NOTE running watch -t -n7 conky -c ~/.conkyrc/main/conkyrc >>& ~/.logs/wmlogin.log &!
+    #     watch -t -n7 conky -c ~/.conkyrc/main/conkyrc >& /dev/null &!
+    # else
+    #     echo NOTE running conky -d -c ~/.conkyrc/main/conkyrc >>& ~/.logs/wmlogin.log &!
+    #     conky -d -c ~/.conkyrc/main/conkyrc >& /dev/null &!
+    # fi
 fi
 
 if whence xte >& /dev/null
 then
-    xte <<EOF >>& ~/.xsession-errors
+    xte <<EOF >>& ~/.logs/wmlogin.log
 mousemove 42 42
 EOF
 fi
@@ -63,18 +79,22 @@ fi
 # laptop power monitoring.
 if whence -p ~/bin/power-mon >& /dev/null
 then
-    ~/bin/power-mon >>& ~/.xsession-errors &!
+    ~/bin/power-mon >>& ~/.logs/wmlogin.log &!
 fi
 
 if whence -p redshift >& /dev/null &&
        ! pgrep redshift >& /dev/null
 then
-    if whence watch >& /dev/null
-    then
-        watch -t -n3 redshift -t 6500:5000 -b 1.0:0.8  >>& ~/.xsession-errors &!
-    else
-        redshift -t 6500:5000 -b 1.0:0.8  >>& ~/.xsession-errors &!
-    fi
+    redshift -t 6500:5000 -b 1.0:0.8  >>& ~/.logs/wmlogin.log &!
+    ## NOTE watch need attached terminal to work.
+    # if whence -p watch >& /dev/null
+    # then
+    #     echo NOTE running watch -t -n3 redshift -t 6500:5000 -b 1.0:0.8  >>& ~/.logs/wmlogin.log &!
+    #     watch -t -n3 redshift -t 6500:5000 -b 1.0:0.8  >>& ~/.logs/wmlogin.log &!
+    # else
+    #     echo NOTE running redshift -t 6500:5000 -b 1.0:0.8  >>& ~/.logs/wmlogin.log &!
+    #     redshift -t 6500:5000 -b 1.0:0.8  >>& ~/.logs/wmlogin.log &!
+    # fi
 fi
 
 
@@ -89,13 +109,14 @@ then
     # https://unix.stackexchange.com/questions/69033/mouse-cursor-became-a-big-x
     # https://unix.stackexchange.com/questions/371166/i-like-the-default-x-shaped-crosshair-cursor-in-linux-how-do-i-force-debian-t
     # xsetroot -cursor_name X_cursor
-    xsetroot -cursor_name left_ptr >>& ~/.xsession-errors
+    echo NOTE running xsetroot -cursor_name left_ptr >>& ~/.logs/wmlogin.log &!
+    xsetroot -cursor_name left_ptr >>& ~/.logs/wmlogin.log &!
 fi
 
 if whence -p ~/bin/wallpaper-setup >& /dev/null
 then
     # WM specific setup
-    ~/bin/wallpaper-setup >>& ~/.xsession-errors &!
+    ~/bin/wallpaper-setup >>& ~/.logs/wmlogin.log &!
     # ~/bin/stumpwm-setup &!
 fi
 
@@ -319,7 +340,7 @@ then
     # https://play.google.com/store/apps/details?id=com.willhauck.linconnectclient
     rm -f ~/.logs/linconnect.1
     mv ~/.logs/linconnect ~/.logs/linconnect.1
-    ~/.linconnect/LinConnectServer/main/linconnect_server.py >& ~/.logs/linconnect >>& ~/.xsession-errors &!
+    ~/.linconnect/LinConnectServer/main/linconnect_server.py >& ~/.logs/linconnect >>& ~/.logs/wmlogin.log &!
 fi
 
 if [ -x /usr/share/android-notifier-desktop/run.sh ] &&
@@ -339,13 +360,6 @@ then
     else
         ( sleep 30s; emacsclient -d :0 -nc -f ~/.emacs.d/server/$EMACS_SERVER_NAME -e "(progn (message \"Default\"))" ) &!
     fi
-fi
-
-## https://www.juev.org/2009/09/27/stumpwm/
-# D-bus
-if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"
-then
-    eval $(dbus-launch --sh-syntax --exit-with-session)
 fi
 
 autocutsel -f &!
@@ -383,3 +397,13 @@ gsettings set org.gnome.desktop.interface font-name 'Ubuntu 08' &!
      fi
  fi
 ) &!
+
+
+
+xterm -e "ish -s bash -- echo Completed wmlogin/run " >> ~/.logs/wmlogin.log 2>&1 &!
+
+
+notify-send test test &!
+echo notify-send test test >>& ~/.logs/wmlogin.log &!
+
+cat ~/.logs/wmlogin.log >> ~/.logs/wmlogin.log

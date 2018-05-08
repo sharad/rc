@@ -50,7 +50,7 @@ containing it, until no links are left at any level.
 	       (rest (substring filename (match-end 0))))
 	   (setq filename (concat (expand-file-name first-part) rest)))))
 
-  (or counter (setq counter (list file-truename-link-cycle-counter)))
+  (or counter (setq counter (list replace-file-truename-link-cycle-counter)))
   (let (done
 	;; For speed, remove the ange-ftp completion handler from the list.
 	;; We know it's not needed here.

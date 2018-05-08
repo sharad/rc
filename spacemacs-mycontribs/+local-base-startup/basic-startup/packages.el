@@ -201,6 +201,6 @@ Each entry is either:
               ))))
 
     (progn ;; Need it.
-      (org-wrapper-insuniate))))
+      (lotus-wrapper-insinuate))))
 
 ;;; packages.el ends here
