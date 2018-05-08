@@ -3,6 +3,36 @@
 
 (in-package :stumpwm)
 
+
+;;;{{{ https://www.juev.org/2009/09/27/stumpwm/
+;; define keys
+(defmacro defkey-top (key cmd)
+  `(define-key *top-map* (kbd ,key) ,cmd))
+
+(defmacro defkeys-top (&rest keys)
+  (let ((ks (mapcar #'(lambda (k) (cons 'defkey-top k)) keys)))
+    `(progn ,@ks)))
+
+(defmacro defkey-root (key cmd)
+  `(define-key *root-map* (kbd ,key) ,cmd))
+
+(defmacro defkeys-root (&rest keys)
+  (let ((ks (mapcar #'(lambda (k) (cons 'defkey-root k)) keys)))
+    `(progn ,@ks)))
+
+(defkeys-top
+    ("s-RET"     "exec sakura")
+    ("s-p"       "dmenu")
+    ("s-R"       "reinit")
+    ("s-Q"       "quit")
+    ("s-b"       "mode-line")
+    ("C-M-Delete"   "bye-with-confirmation"))
+
+;; (define-key *top-map* (kbd "C-M-Delete") "bye-with-confirmation")
+;;;}}}
+
+
+
 ;;{{{ Additional keysyms
 
 (define-keysym #x1008ff31 "XF86AudioPause")

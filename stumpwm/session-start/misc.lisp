@@ -359,35 +359,35 @@
 
 ;; ;;}}
 
-
+(when nil
+  ;; DONE in stumpwm-contrib media/amixer/amixer.lisp
 ;;;{{ volume
 ;;; A command to create volume-control commands
-(defun def-volcontrol (channel amount)
-  "Commands for controling the volume"
-  (define-stumpwm-command
-    (concat "amixer-" channel "-" (or amount "toggle")) ()
-    (echo-string
-     (current-screen)
-     (concat channel " " (or amount "toggled") "
+ (defun def-volcontrol (channel amount)
+   "Commands for controling the volume"
+   (defcommand (intern (concat "amixer-" channel "-" (or amount "toggle"))) () ()
+     (echo-string
+      (current-screen)
+      (concat channel " " (or amount "toggled") "
 "
-             (run-shell-command
-              (concat "amixer sset " channel " " (or amount "toggle") "| grep '^[ ]*Front'") t)))))
+              (run-shell-command
+               (concat "amixer sset " channel " " (or amount "toggle") "| grep '^[ ]*Front'") t)))))
 
-(defvar amixer-channels '("PCM" "Master" "Headphone"))
-(defvar amixer-options '(nil "1+" "1-"))
+ (defvar amixer-channels '("PCM" "Master" "Headphone"))
+ (defvar amixer-options '(nil "1+" "1-"))
 
-(let ((channels amixer-channels))
-  (loop while channels do
+ (let ((channels amixer-channels))
+   (loop while channels do
         (let ((options amixer-options))
           (loop while options do
-                (def-volcontrol (car channels) (car options))
-                (setq options (cdr options))))
+               (def-volcontrol (car channels) (car options))
+               (setq options (cdr options))))
         (setq channels (cdr channels))))
 
-(define-stumpwm-command "amixer-sense-toggle" ()
-  (echo-string
-   (current-screen)
-   (concat "Headphone Jack Sense toggled
+ (defcommand "amixer-sense-toggle" () ()
+   (echo-string
+    (current-screen)
+    (concat "Headphone Jack Sense toggled
 "
-           (run-shell-command "amixer sset 'Headphone Jack Sense' toggle" t))))
+            (run-shell-command "amixer sset 'Headphone Jack Sense' toggle" t)))))
 ;;;}}

@@ -669,7 +669,9 @@
     "/.rsetup/wmlogout/run"))
   (quit))
 
-
+(defcommand bye-with-confirmation () ()
+            (when (y-or-n-p "Logout from stumpwm: ")
+              (bye)))
 
 (defcommand display-root-map () ()
     (display-bindings-for-keymaps  nil *top-map*))
