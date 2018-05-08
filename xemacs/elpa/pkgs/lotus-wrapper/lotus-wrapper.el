@@ -26,7 +26,7 @@
 
 (defvar replace-file-truename-link-cycle-counter 150)
 
-(defun replace-file-truename (original-fun filename &optional counter prev-dirs)
+(defun replace-file-truename (filename &optional counter prev-dirs)
   "Return the truename of FILENAME.
 If FILENAME is not absolute, first expands it against `default-directory'.
 The truename of a file name is found by chasing symbolic links
@@ -139,7 +139,7 @@ containing it, until no links are left at any level.
 (defun lotus-wrapper-insinuate ()
   (interactive)
   (add-function
-   :around (symbol-function 'file-truename)
+   :override (symbol-function 'file-truename)
    #'replace-file-truename))
 
 ;;;###autoload

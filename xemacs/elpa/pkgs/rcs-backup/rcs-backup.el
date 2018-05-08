@@ -191,7 +191,7 @@
 
 (eval
  `(defadvice backup-buffer-copy (after
-                                 backup-buffer-copy-in-rcs
+                                 backup-buffer-copy-After-in-rcs-depricated
                                  ;; ,(help-function-arglist 'backup-buffer-copy)
                                  ()
                                  disable)
@@ -200,16 +200,16 @@
         (put-file-in-rcs-for-backup from-name)
       ('error (message "Error: %s" e)))))
 
-(defun backup-buffer-copy-in-rcs (from-name to-name modes extended-attributes)
+(defun backup-buffer-copy-After-in-rcs (from-name to-name modes extended-attributes)
   (condition-case e
       (put-file-in-rcs-for-backup from-name)
     ('error (message "Error: %s" e))))
 
-(defadvice vc-rcs-find-file-hook (after backup-buffer-copy-in-rcs-ff () disable)
-  ;; (message "yes in backup-buffer-copy-in-rcs-ff")
+(defadvice vc-rcs-find-file-hook (after vc-rcs-find-file-hook-After-in-rcs-depricated () disable)
+  ;; (message "yes in backup-buffer-copy-After-in-rcs-ff")
   (set (make-local-variable 'backup-inhibited) nil))
 
-(defun backup-buffer-copy-in-rcs-ff ()
+(defun vc-rcs-find-file-hook-After-in-rcs ()
   (set (make-local-variable 'backup-inhibited) nil))
 
 
@@ -218,26 +218,26 @@
       (progn
         (add-function
          :after (symbol-function 'backup-buffer-copy)
-         #'backup-buffer-copy-in-rcs)
+         #'backup-buffer-copy-After-in-rcs)
         (add-function
          :after (symbol-function 'vc-rcs-find-file-hook)
-         #'backup-buffer-copy-in-rcs-ff))
+         #'vc-rcs-find-file-hook-After-in-rcs))
     (progn
-      (ad-enable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-in-rcs)
-      (ad-enable-advice 'vc-rcs-find-file-hook 'after 'backup-buffer-copy-in-rcs-ff))))
+      (ad-enable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-After-in-rcs-depricated)
+      (ad-enable-advice 'vc-rcs-find-file-hook 'after 'vc-rcs-find-file-hook-After-in-rcs-depricated))))
 
 (defun rcs-backup-mode-disable ()
   (if (version<= "25" emacs-version)
       (progn
         (remove-function
          (symbol-function 'backup-buffer-copy)
-         #'backup-buffer-copy-in-rcs)
+         #'backup-buffer-copy-After-in-rcs)
         (remove-function
          (symbol-function 'vc-rcs-find-file-hook)
-         #'backup-buffer-copy-in-rcs-ff))
+         #'vc-rcs-find-file-hook-After-in-rcs))
     (progn
-      (ad-disable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-in-rcs)
-      (ad-disable-advice 'vc-rcs-find-file-hook 'after 'backup-buffer-copy-in-rcs-ff))))
+      (ad-disable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-After-in-rcs-depricated)
+      (ad-disable-advice 'vc-rcs-find-file-hook 'after 'vc-rcs-find-file-hook-After-in-rcs-depricated))))
 
 ;;;###autoload
 (define-minor-mode rcs-backup-mode

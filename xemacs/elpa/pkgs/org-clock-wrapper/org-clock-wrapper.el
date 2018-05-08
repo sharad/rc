@@ -133,8 +133,8 @@ using three `C-u' prefix arguments."
              ;; marker
              (cons task marker))))))))
 
-(defun replace-org-clock-select-task (original-fun prompt)
-  (let (helm-sources)
+(defun replace-org-clock-select-task (&optional prompt)
+  (let ((helm-sources nil))
     (when (marker-buffer org-clock-default-task)
       (push
        (helm-build-sync-source "Default Task"
@@ -175,18 +175,22 @@ using three `C-u' prefix arguments."
 
 ;;;###autoload
 (defun org-wrapper-insuniate ()
+  (interactive)
   (add-function
    :override (symbol-function 'org-clock-select-task)
    #'replace-org-clock-select-task))
 
 ;;;###autoload
 (defun org-wrapper-uninsuniate ()
+  (interactive)
   (remove-function
    (symbol-function 'org-clock-select-task)
    #'replace-org-clock-select-task))
 
+;; (replace-org-clock-select-task org-clock-history)
+;; (org-clock-select-task org-clock-history)
 
-(when nil
+(when nil ;;testing
   (progn
     (defun sacha/helm-select-clock (clocks)
       (org-context-clock-debug :debug "sacha marker %s" (car clocks))
