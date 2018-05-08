@@ -4,7 +4,8 @@ TMPDIR=~/tmp
 
 # URL='https://hosts-file.net/download/hosts.zip'
 URL='https://hosts-file.net/download/hosts.txt'
-HOSTFILEADS=$(basename $URL)
+URL='https://hosts-file.net/download/HOSTS-Optimized.txt'
+HOSTFILEADS=hosts-ads.txt
 
 if [ -r /etc/hosts.orignal ]
 then
@@ -14,9 +15,16 @@ then
     then
         if [ ! -r ${HOSTFILEADS} ]
         then
-            if wget -c $URL
+            wget -c $URL -O ${HOSTFILEADS}
+        fi
+
+        if [ -e $HOSTFILEADS ]
+        then
+            if ! dos2unix $HOSTFILEADS
             then
-                : dos2unix $HOSTFILEADS || rm -f $HOSTFILEADS
+                rm -f $HOSTFILEADS
+                echo Error >&2
+                exit
             fi
         fi
 

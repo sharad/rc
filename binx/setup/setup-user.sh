@@ -32,7 +32,7 @@ DEB_PKGS1="vim emacs emacs-goodies-el org-mode develock-el dash-el s-el zile key
 
 DEB_PKGS2="rxvt-unicode-256color elscreen planner-el p7zip-full pdftk golang gocode"
 DEB_EXTRA_PKG1=" libpam-tmpdir xdg-utils xdg-user-dirs menu-xdg extra-xdg-menus obsession keyringer menu tree wipe xclip python3-secretstorage"
-DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skype pidgin-skypeweb purple-skypeweb telegram-purple pidgin-plugin-pack bitlbee tor"
+DEB_EXTRA_PKG_COMMUNICATION="pidgin pidgin-skype pidgin-skypeweb empathy empathy-skype purple-skypeweb telegram-purple pidgin-plugin-pack bitlbee tor"
 DEB_EXTRA_PKG_VIRTUAL=""
 DEB_EXTRA_PKG_FONTS="ttf-bitstream-vera texlive-latex-extra texlive-fonts-recommended"
 DEB_EXTRA_PKG_LISP="cl-swank slime"
@@ -54,6 +54,8 @@ DEB_PKG_XML="libxml2-utils xsltproc"
 DEB_PKG_UTILS="gcalcli"
 DEB_PKG_MEDIA="kodi"
 
+
+PY_PIP_PKG="termdown"
 
 function main()
 {
@@ -237,6 +239,11 @@ sudo apt autoclean
                 sudo apt -y install ${p}
             done
         fi
+    done
+
+    for $pkg in PY_PIP_PKG
+    do
+        eval sudo pip install $PY_PIP_PKG
     done
 }
 
