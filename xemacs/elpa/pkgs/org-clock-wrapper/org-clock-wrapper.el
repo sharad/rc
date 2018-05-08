@@ -133,7 +133,7 @@ using three `C-u' prefix arguments."
              ;; marker
              (cons task marker))))))))
 
-(defun replace-org-clock-select-task (prompt)
+(defun replace-org-clock-select-task (original-fun prompt)
   (let (helm-sources)
     (when (marker-buffer org-clock-default-task)
       (push

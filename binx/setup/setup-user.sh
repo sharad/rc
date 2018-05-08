@@ -5,7 +5,7 @@ DEBUG=1
 SSH_KEY_DUMP=$1
 TMPDIR=~/setuptmp
 
-GIT_COMMAND="git -c core.sshCommand='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'"
+GIT_OPTION="-c core.sshCommand='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'"
 RESOURCEPATH=".repos/git/main/resource"
 USERORGMAIN="userorg/main"
 
@@ -351,11 +351,11 @@ function setup_git_repos()
     mkdir -p ~/${RESOURCEPATH}/
     if [ ! -d ~/${RESOURCEPATH}/userorg ]
     then
-        $GIT_COMMAND clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
+        git $GIT_OPTION clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
     else
-        $GIT_COMMAND -C ~/${RESOURCEPATH}/userorg pull origin master
-        $GIT_COMMAND -C ~/${RESOURCEPATH}/userorg submodule foreach $GIT_COMMAND pull origin master
-        # $GIT_COMMAND -C ~/.repos/git submodule update --remote
+        git $GIT_OPTION -C ~/${RESOURCEPATH}/userorg pull origin master
+        git $GIT_OPTION -C ~/${RESOURCEPATH}/userorg submodule foreach git $GIT_OPTION pull origin master
+        # git $GIT_OPTION -C ~/.repos/git submodule update --remote
     fi
 
     if true
@@ -460,6 +460,18 @@ function setup_user_config_setup()
     else
         echo "${RCHOME}" not exists >&2
     fi # if [ -d "${RCHOME}" ]
+
+    if [ -d ~/.setup/_home/acyclicsymlinkfix ]
+    then
+        for symlnk in      ~/.setup/_home/acyclicsymlinkfix/.Volumes \
+                           ~/.setup/_home/acyclicsymlinkfix/Desktop \
+                           ~/.setup/_home/acyclicsymlinkfix/Downloads \
+                           ~/.setup/_home/acyclicsymlinkfix/Music \
+                           ~/.setup/_home/acyclicsymlinkfix/Pictures
+        do
+            cp -a $symlnk ~/
+        done
+    fi
 }
 
 function setup_download_misc()
@@ -625,7 +637,7 @@ function setup_clib_installer()
     sudo apt-get -y install libcurl4-gnutls-dev -qq
     if [ ! -d /usr/local/stow/clib/ ]
     then
-        if $GIT_COMMAND clone https://github.com/clibs/clib.git $TMPDIR/clib
+        if git $GIT_OPTION clone https://github.com/clibs/clib.git $TMPDIR/clib
         then
             cd $TMPDIR/clib
             make PREFIX=/usr/local/stow/clib/

@@ -200,10 +200,44 @@
         (put-file-in-rcs-for-backup from-name)
       ('error (message "Error: %s" e)))))
 
+(defun backup-buffer-copy-in-rcs (from-name to-name modes extended-attributes)
+  (condition-case e
+      (put-file-in-rcs-for-backup from-name)
+    ('error (message "Error: %s" e))))
 
 (defadvice vc-rcs-find-file-hook (after backup-buffer-copy-in-rcs-ff () disable)
   ;; (message "yes in backup-buffer-copy-in-rcs-ff")
   (set (make-local-variable 'backup-inhibited) nil))
+
+(defun backup-buffer-copy-in-rcs-ff ()
+  (set (make-local-variable 'backup-inhibited) nil))
+
+
+(defun rcs-backup-mode-enable ()
+  (if (version<= "25" emacs-version)
+      (progn
+        (add-function
+         :after (symbol-function 'backup-buffer-copy)
+         #'backup-buffer-copy-in-rcs)
+        (add-function
+         :after (symbol-function 'vc-rcs-find-file-hook)
+         #'backup-buffer-copy-in-rcs-ff))
+    (progn
+      (ad-enable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-in-rcs)
+      (ad-enable-advice 'vc-rcs-find-file-hook 'after 'backup-buffer-copy-in-rcs-ff))))
+
+(defun rcs-backup-mode-disable ()
+  (if (version<= "25" emacs-version)
+      (progn
+        (remove-function
+         (symbol-function 'backup-buffer-copy)
+         #'backup-buffer-copy-in-rcs)
+        (remove-function
+         (symbol-function 'vc-rcs-find-file-hook)
+         #'backup-buffer-copy-in-rcs-ff))
+    (progn
+      (ad-disable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-in-rcs)
+      (ad-disable-advice 'vc-rcs-find-file-hook 'after 'backup-buffer-copy-in-rcs-ff))))
 
 ;;;###autoload
 (define-minor-mode rcs-backup-mode
@@ -213,17 +247,14 @@
   :lighter 'rcb
   :global t
   (if rcs-backup-mode
-      (progn
-        (ad-enable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-in-rcs)
-        (ad-enable-advice 'vc-rcs-find-file-hook 'after 'backup-buffer-copy-in-rcs-ff))
-      (progn
-        (ad-disable-advice 'backup-buffer-copy 'after 'backup-buffer-copy-in-rcs)
-        (ad-disable-advice 'vc-rcs-find-file-hook 'after 'backup-buffer-copy-in-rcs-ff)))
-  ;; user ad-remove-advice to remove advice/advise.
-  (ad-activate #'backup-buffer-copy)
-  (ad-update #'backup-buffer-copy)
-  (ad-activate #'vc-rcs-find-file-hook)
-  (ad-update #'vc-rcs-find-file-hook))
+      (rcs-backup-mode-enable)
+    (rcs-backup-mode-disable))
+  (unless (version<= "25" emacs-version)
+    ;; user ad-remove-advice to remove advice/advise.
+    (ad-activate #'backup-buffer-copy)
+    (ad-update #'backup-buffer-copy)
+    (ad-activate #'vc-rcs-find-file-hook)
+    (ad-update #'vc-rcs-find-file-hook)))
 
 
 (provide 'rcs-backup)

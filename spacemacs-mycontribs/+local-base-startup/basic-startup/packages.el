@@ -42,6 +42,7 @@
     startup-hooks
     sessions-unified
     elscreen
+    lotus-wrapper
     )
   "The list of Lisp packages required by the basic-startup layer.
 
@@ -188,5 +189,18 @@ Each entry is either:
           (elscreen-swap)
           ;; (elscreen-next)
           (elscreen-notify-screen-modification)))))
+
+(defun lotus-orgclocktask/init-lotus-wrapper ()
+  (progn
+    (progn
+      (use-package lotus-wrapper
+          :defer t
+          :config
+          (progn
+            (progn
+              ))))
+
+    (progn ;; Need it.
+      (org-wrapper-insuniate))))
 
 ;;; packages.el ends here
