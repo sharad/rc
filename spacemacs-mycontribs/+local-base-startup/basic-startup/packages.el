@@ -207,6 +207,7 @@ Each entry is either:
             (progn
               (add-to-enable-startup-interrupting-feature-hook #'lotus-wrapper-insinuate))))
       (progn ;; Need it.
+        (warn  "running lotus-wrapper-insinuate")
         (add-hook 'after-init-hook #'lotus-wrapper-insinuate)
         (lotus-wrapper-insinuate)))))
 
