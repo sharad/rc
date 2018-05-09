@@ -181,7 +181,7 @@ function setup_apt_packages()
 sudo apt -y autoremove
 sudo apt -y autoclean
 sudo apt -y update
-sudo apt-file -y update
+sudo apt-file update
 sudo apt -y autoremove
 sudo apt -y autoclean
 sudo apt -y upgrade
