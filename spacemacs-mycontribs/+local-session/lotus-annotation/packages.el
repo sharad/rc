@@ -93,7 +93,4 @@ Each entry is either:
         ;; (define-key ctl-x-map "A"    'annot-convert)
         )))
 
-(defun basic-utils/init-elscreen ()
-  )
-
 ;;; packages.el ends here

@@ -987,7 +987,7 @@ Add directory to search path for source files using the GDB command, dir."))
                (buffer-string))))))))
 
 
-(defun lotus-erc/init-uncrustify-mode ()
+(defun lotus-dev/init-uncrustify-mode ()
   (use-package uncrustify-mode
       :defer t
       :config
@@ -997,14 +997,14 @@ Add directory to search path for source files using the GDB command, dir."))
                     (uncrustify-mode -1))))))
 
 
-(defun lotus-erc/init-srefactor ()
+(defun lotus-dev/init-srefactor ()
   (use-package srefactor
       :defer t
       :config
       (progn
         )))
 
-(defun lotus-erc/init-srefactor-lisp ()
+(defun lotus-dev/init-srefactor-lisp ()
   (use-package srefactor-lisp
       :defer t
       :config
@@ -1013,7 +1013,7 @@ Add directory to search path for source files using the GDB command, dir."))
         (semantic-mode 1) ;; -> this is optional for Lisp
         )))
 
-(defun lotus-erc/init-PACKAGE ()
+(defun lotus-dev/init-PACKAGE ()
   (use-package PACKAGE
       :defer t
       :config
@@ -1028,7 +1028,7 @@ Add directory to search path for source files using the GDB command, dir."))
           (semantic-mode 1) ;; -> this is optional for Lisp
           ))))
 
-(defun lotus-erc/init-PACKAGE ()
+(defun lotus-dev/init-PACKAGE ()
   (use-package PACKAGE
       :defer t
       :config

@@ -126,7 +126,7 @@ buffer."
         )))
 
 
-(defun lotus-cal/init-g ()
+(defun lotus-cal-org/init-g ()
   (use-package g
       :defer t
       :config

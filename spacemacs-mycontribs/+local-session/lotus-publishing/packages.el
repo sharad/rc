@@ -473,7 +473,7 @@ Each entry is either:
                                 )
                               ("~/org/review/month.html"))))))))))))
 
-(defun lotus-muse/init-muse ()
+(defun lotus-publishing/init-muse ()
   (use-package muse
       :defer t
       :config
@@ -1108,14 +1108,14 @@ FILE and any extensions that are in `muse-ignored-extensions'."
 
             )))))
 
-(defun lotus-muse/init-oddmuse ()
+(defun lotus-publishing/init-oddmuse ()
   (use-package oddmuse
       :defer t
       :config
       (progn
         )))
 
-(defun lotus-muse/init-yaoddmuse ()
+(defun lotus-publishing/init-yaoddmuse ()
   ;; http://www.emacswiki.org/emacs/Yaoddmuse
   ;; http://www.emacswiki.org/emacs/Yaoddmuse#toc8
   (use-package yaoddmuseo
@@ -1140,7 +1140,7 @@ FILE and any extensions that are in `muse-ignored-extensions'."
 
         )))
 
-(defun lotus-muse/init-org-oddmuse ()
+(defun lotus-publishing/init-org-oddmuse ()
   (use-package org-oddmuse
       ;; http://www.emacswiki.org/emacs/OddmuseMode
       :defer t
@@ -1148,14 +1148,14 @@ FILE and any extensions that are in `muse-ignored-extensions'."
       (progn
         )))
 
-(defun lotus-muse/init-wikirel ()
+(defun lotus-publishing/init-wikirel ()
   (use-package wikirel
       :defer t
       :config
       (progn
         )))
 
-(defun lotus-muse/init-wikirel ()
+(defun lotus-publishing/init-wikirel ()
   (use-package wikirel
       :defer t
       :config
@@ -1175,7 +1175,7 @@ FILE and any extensions that are in `muse-ignored-extensions'."
 ;;end ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; lib muse-texinfo
-(defun lotus-muse/init-markdown-mode ()
+(defun lotus-publishing/init-markdown-mode ()
   (use-package markdown-mode
       :defer t
       :config
@@ -1186,14 +1186,14 @@ FILE and any extensions that are in `muse-ignored-extensions'."
         (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
         (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))))
 
-(defun lotus-muse/init-erin ()
+(defun lotus-publishing/init-erin ()
   (use-package erin
       :defer t
       :config
       (progn
         )))
 
-(defun lotus-muse/init-twiki ()
+(defun lotus-publishing/init-twiki ()
   (use-package twiki
       :defer t
       :mode ("\\.twiki$" . twiki-mode)
@@ -1201,7 +1201,7 @@ FILE and any extensions that are in `muse-ignored-extensions'."
       (progn
         )))
 
-(defun lotus-muse/init-PACKAGE ()
+(defun lotus-publishing/init-PACKAGE ()
   (use-package PACKAGE
       :defer t
 
