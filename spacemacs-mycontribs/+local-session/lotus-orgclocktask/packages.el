@@ -288,8 +288,8 @@ Each entry is either:
           (progn
             (add-to-enable-startup-interrupting-feature-hook #'org-clock-wrapper-insinuate))))
       (progn
-        (warn  "running org-clock-wrapper-insinuate")
-        (add-hook 'after-init-hook #'org-clock-wrapper-insinuate)
+        ;; (warn  "running org-clock-wrapper-insinuate")
+        ;; (add-hook 'after-init-hook #'org-clock-wrapper-insinuate)
         (org-clock-wrapper-insinuate)))))
 
 

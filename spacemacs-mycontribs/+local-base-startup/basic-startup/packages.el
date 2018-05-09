@@ -190,7 +190,7 @@ Each entry is either:
           ;; (elscreen-next)
           (elscreen-notify-screen-modification)))))
 
-(defun lotus-orgclocktask/init-lotus-wrapper ()
+(defun basic-startup/init-lotus-wrapper ()
   (progn
     (progn
       (use-package lotus-wrapper
@@ -207,8 +207,8 @@ Each entry is either:
             (progn
               (add-to-enable-startup-interrupting-feature-hook #'lotus-wrapper-insinuate))))
       (progn ;; Need it.
-        (warn  "running lotus-wrapper-insinuate")
-        (add-hook 'after-init-hook #'lotus-wrapper-insinuate)
+        ;; (warn  "running lotus-wrapper-insinuate")
+        ;; (add-hook 'after-init-hook #'lotus-wrapper-insinuate)
         (lotus-wrapper-insinuate)))))
 
 ;;; packages.el ends here
