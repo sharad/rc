@@ -46,6 +46,7 @@
     python
     yaml
     bibtex
+    semantic
     ;; bibtex -- org-ref is not available
     ;; ;; .spacemacs-mycontribution
     ;; basic-startup
