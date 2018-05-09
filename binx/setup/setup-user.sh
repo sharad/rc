@@ -105,6 +105,8 @@ function main()
 
     running setup_sourcecode_pro_font
 
+    running setup_apache_usermod
+
     running setup_mail
 
     running setup_crontab
@@ -631,6 +633,32 @@ function setup_sourcecode_pro_font()
     fi
 }
 
+function setup_apache_usermod()
+{
+    if [ -r /etc/apache2/apache2.conf ]
+    then
+        if [ ! -d /usr/local/etc/apache ]
+        then
+            mkdir -p /usr/local/etc/
+            cp -r ~/.system/ubuntu/usr/local/etc/apache /usr/local/etc/apache
+        fi
+
+        if ! grep /usr/local/etc/apache /etc/apache2/apache2.conf
+        then
+            cp /etc/apache2/apache2.conf $TMP/apache2.conf
+            cat <<EOF >> $TMP/apache2.conf
+
+# Include the virtual host configurations:
+Include /usr/local/etc/apache/sites-enabled/*.conf
+
+# Include generic snippets of statements
+Include /usr/local/etc/apache/conf-enabled/*.conf
+
+EOF
+            sudo cp $TMP/apache2.conf /etc/apache2/apache2.conf
+        fi
+    fi
+}
 
 function setup_clib_installer()
 {
