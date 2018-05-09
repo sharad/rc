@@ -178,17 +178,17 @@ function setup_apt_packages()
     setup_apt_repo
 
 
-sudo apt autoremove
-sudo apt autoclean
-sudo apt update
-sudo apt-file update
-sudo apt autoremove
-sudo apt autoclean
-sudo apt upgrade
-sudo apt autoremove
-sudo apt autoclean
-sudo apt autoremove
-sudo apt autoclean
+sudo apt -y autoremove
+sudo apt -y autoclean
+sudo apt -y update
+sudo apt-file -y update
+sudo apt -y autoremove
+sudo apt -y autoclean
+sudo apt -y upgrade
+sudo apt -y autoremove
+sudo apt -y autoclean
+sudo apt -y autoremove
+sudo apt -y autoclean
 
 
 
