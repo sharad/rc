@@ -400,7 +400,7 @@ gsettings set org.gnome.desktop.interface font-name 'Ubuntu 08' &!
 
 
 
-xterm -e "ish -s bash -- echo Completed wmlogin/run " >> ~/.logs/wmlogin.log 2>&1 &!
+# xterm -e "ish -s bash -- echo Completed wmlogin/run " >> ~/.logs/wmlogin.log 2>&1 &!
 
 
 notify-send test test &!

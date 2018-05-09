@@ -281,7 +281,15 @@ Each entry is either:
               ))))
 
     (progn ;; Need it.
-      (org-clock-wrapper-insinuate))))
+      (progn
+        (use-package startup-hooks
+          :defer t
+          :config
+          (progn
+            (add-to-enable-startup-interrupting-feature-hook #'org-clock-wrapper-insinuate))))
+      (progn
+        (add-hook 'after-init-hook #'org-clock-wrapper-insinuate)
+        (org-clock-wrapper-insinuate)))))
 
 
 (defun lotus-orgclocktask/init-org-clock-daysummary ()

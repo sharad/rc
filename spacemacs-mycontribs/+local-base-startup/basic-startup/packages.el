@@ -199,8 +199,15 @@ Each entry is either:
           (progn
             (progn
               ))))
-
-    (progn ;; Need it.
-      (lotus-wrapper-insinuate))))
+    (progn
+      (progn
+        (use-package startup-hooks
+            :defer t
+            :config
+            (progn
+              (add-to-enable-startup-interrupting-feature-hook #'lotus-wrapper-insinuate))))
+      (progn ;; Need it.
+        (add-hook 'after-init-hook #'lotus-wrapper-insinuate)
+        (lotus-wrapper-insinuate)))))
 
 ;;; packages.el ends here
