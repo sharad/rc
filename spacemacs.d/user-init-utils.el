@@ -295,6 +295,22 @@
   ;; limiting gnus messages
   (setq gnus-verbose 1)
   (setq org-agenda-files nil)
+
+  (progn ;; spacemacs
+    (defun spacemacs/lazy-load-srefactor ()
+      "Lazy load the package."
+      (require 'srefactor)
+      ;; currently, evil-mode overrides key mapping of srefactor menu
+      ;; must expplicity enable evil-emacs-state. This is ok since
+      ;; srefactor supports j,k,/ and ? commands when Evil is
+      ;; available
+      (add-hook 'srefactor-ui-menu-mode-hook 'evil-emacs-state))
+
+    (defun spacemacs/lazy-load-stickyfunc-enhance ()
+      "Lazy load the package."
+      (require 'stickyfunc-enhance))
+    )
+
   (message "loading lotus-emacs-user-init-finish finished"))
 
 (defun lotus-necessary-functionality ()
