@@ -31,105 +31,56 @@
 
 ;; https://stackoverflow.com/questions/12262220/add-created-date-property-to-todos-in-org-mode
 
+;; https://stackoverflow.com/questions/40884764/lisp-get-all-slot-names-from-an-class-instance
+
 ;; "org tasks accss common api"
     ;; (defvar org-)
 (defvar occ-verbose 0)
 
-(defclass occ-obj ()
-  ((name
-    :initarg :name
-    :custom string))
-  "interface object class"
-  :abstract t)
+(defstruct occ-obj)
 
-(defclass occ-prop (occ-obj)
-  ((name
-    :initarg :name))
-  :abstract t)
+(defstruct occ-obj
+  name)
 
-(defclass occ-task (occ-obj)
-  ((name
-    :initarg :name
-    :custom string)
-   (heading
-    :initarg :heading
-    :custom string)
-   (marker
-    :initarg :marker
-    :custom marker)
-   (file
-    :initarg :file
-    :custom string)
-   (point
-    :initarg :point
-    :custom string)
-   (clock-sum
-    :initarg :clock-sum
-    :custom string)
-   (plist
-    :initarg :plist
-    :custom list))
-  "interface task class."
-  :abstract t)
+(defstruct (occ-prop (:include occ-obj))
+  prop)
 
-(defclass occ-treetask (occ-task)
-  ((name
-    :initarg :name
-    :custom string)
-   (subtree
-    :initarg :subtree
-    :custom (list occ-treetask)))
-  "tree task class.")
+(defstruct (occ-task (:include occ-obj))
+  heading
+  marker
+  file
+  point
+  clock-sum
+  plist)
 
-(defclass occ-listtask (occ-task)
-  ((name
-    :initarg :name
-    :custom string))
-  "list task class.")
+(defstruct (occ-treetask (:include occ-task))
+  subtree)
 
-(defclass occ-context (occ-obj)
-  ((name
-    :initarg :name
-    :custom string))
-  "context class")
+(defstruct (occ-listtask (:include occ-task))
+  )
 
-(defclass occ-contextualtask (occ-obj)
-  ((name
-    :initarg :name
-    :custom string)
-   (context
-    :initarg :context
-    :custom string)
-   (task
-    :initarg :task
-    :custom string)))
+(defstruct (occ-context (:include occ-obj))
+  )
+
+(defstruct (occ-contextualtask (:include occ-obj))
+  (context
+   task))
 
 (defgeneric occ-matching-contextualtasks (context)
   )
 
-(defclass occ-task-tree-task-collection (occ-obj)
-  ((name
-    :initarg :name
-    :custom string)
-   (tree
-    :initarg :tree
-    :custom (task))
-   ))
+(defstruct (occ-task-tree-task-collection (:include occ-obj))
+  (tree))
 
-(defclass occ-task-tree-list-collection (occ-obj)
-  ((name
-    :initarg :name
-    :custom string)
-   (tree
-    :initarg :tree
-    :custom (task))
-   ))
+(defstruct occ-task-tree-list-collection (occ-obj)
+  (list))
 
-(defclass occ-property (occ-obj)
-  ((name
-    :initarg :name
-    :custom string))
-  )
+;; (mapcar #'slot-definition-name (class-slots occ-task))
+
+(mapcar
+ #'(lambda (slot) (aref slot 1))
+ (cl--struct-class-slots
+  (cl--struct-get-class 'occ-task)))
 
 (defgeneric set (prop value task context)
   )
@@ -138,7 +89,7 @@
 (defgeneric assoc (prop value task context)
   )
 
-(defclass occ-root-prop (occ-property)
+(defstruct occ-root-prop (occ-property)
   ((name
     :initarg :name
     :custom string)))
