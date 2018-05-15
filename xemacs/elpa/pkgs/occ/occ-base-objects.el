@@ -37,15 +37,13 @@
     ;; (defvar org-)
 (defvar occ-verbose 0)
 
-(defstruct occ-obj)
-
 (defstruct occ-obj
   name)
 
-(defstruct (occ-prop (:include occ-obj))
-  prop)
+(defstruct< (occ-prop (:include occ-obj))
+  value)
 
-(defstruct (occ-task (:include occ-obj))
+(cl-defstruct (occ-task (:include occ-obj))
   heading
   marker
   file
@@ -53,34 +51,54 @@
   clock-sum
   plist)
 
-(defstruct (occ-treetask (:include occ-task))
+(cl-defstruct (occ-tree-task (:include occ-task))
   subtree)
 
-(defstruct (occ-listtask (:include occ-task))
+(cl-defstruct (occ-list-task (:include occ-task))
   )
 
-(defstruct (occ-context (:include occ-obj))
+(cl-defstruct (occ-context (:include occ-obj))
   )
 
-(defstruct (occ-contextualtask (:include occ-obj))
-  (context
-   task))
+(cl-defstruct (occ-contextual-task (:include occ-obj))
+  context
+  task)
 
-(defgeneric occ-matching-contextualtasks (context)
+(cl-defgeneric occ-matching-contextual-tasks (context)
   )
 
-(defstruct (occ-task-tree-task-collection (:include occ-obj))
-  (tree))
+(cl-defstruct (occ-task-tree-task-collection (:include occ-obj))
+  tree)
 
-(defstruct occ-task-tree-list-collection (occ-obj)
-  (list))
+(cl-defstruct occ-task-tree-list-collection (occ-obj)
+  list)
 
 ;; (mapcar #'slot-definition-name (class-slots occ-task))
 
-(mapcar
- #'(lambda (slot) (aref slot 1))
- (cl--struct-class-slots
-  (cl--struct-get-class 'occ-task)))
+(defun class-slots (class)
+  (mapcar
+   #'(lambda (slot) (aref slot 1))
+   (cl--struct-class-slots
+    (cl--struct-get-class class))))
+
+(cl-defgeneric isassoc (obj context)
+  "isassoc")
+
+(cl-defmethod isassoc ((prop (head :root)) (context occ-context))
+  (message "Root %s" prop))
+
+(cl-defmethod isassoc ((prop (head :test))  (context occ-context))
+  (message "Test %s" prop))
+
+(isassoc '(:root 1) (make-occ-context))
+
+(cl-defmethod isassoc ((task occ-task)
+                       (context occ-context))
+  (message "match isassoc"))
+
+(isassoc (make-occ-tree-task) (make-occ-context))
+
+
 
 (defgeneric set (prop value task context)
   )
@@ -89,7 +107,7 @@
 (defgeneric assoc (prop value task context)
   )
 
-(defstruct occ-root-prop (occ-property)
+(cl-defstruct occ-root-prop (occ-property)
   ((name
     :initarg :name
     :custom string)))
