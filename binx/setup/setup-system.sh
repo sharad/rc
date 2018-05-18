@@ -3,6 +3,7 @@
 SSH_KEY_DUMP=$1
 SITEDIR=/usr/local
 TMPDIR=~/setuptmp
+UBUNTU_SYSTEM=$SITEDIR/.repos/git/system/system/ubuntu
 
 DEB_PKG_SYSTEM="git openssl stow sbcl cl-clx-sbcl cl-quicklisp  openssh-server cl-swank libfixposix-dev zsh"
 DEB_PKG_SYSTEM1="gparted xterm rxvt-unicode-256color"

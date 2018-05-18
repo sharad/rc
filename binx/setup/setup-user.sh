@@ -103,6 +103,8 @@ function main()
 
     running setup_dirs
 
+    running setup_deps_mode
+
     running setup_sourcecode_pro_font
 
     running setup_apache_usermod
@@ -588,10 +590,46 @@ function setup_dirs()
         fi
     done
 
+    # check local home model.d directory
+    if [ -L ~/.localdirs -a -d ~/.localdirs -a -d ~/.localdirs/deps.d/model.d/machine.d]
+    then
+        if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST ]
+        then
+            mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST
+            ln -s ../../../../../../../../../../../../../../ ~/.localdirs/deps.d/model.d/machine.d/$HOST/home
+            mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d
+        fi
+    fi
+
     # setup_Documentation
     # setup_public_html
 
-    sudo chown root.root -R ~/.LocalDirs.d/
+    # sudo chown root.root -R ~/.LocalDirs.d/
+
+}
+
+function setup_deps_mode()
+{
+    # check local home model.d directory
+    if [ -L ~/.localdirs -a -d ~/.localdirs -a -d ~/.localdirs/deps.d/model.d/machine.d]
+    then
+        if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST ]
+        then
+            mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST
+            ln -s ../../../../../../../../../../../../../../ ~/.localdirs/deps.d/model.d/machine.d/$HOST/home
+            mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d
+            if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d -a -d /srv/volumes/ ]
+            then
+                for vgd in /srv/volumes/*
+                do
+                    for vld in ${vgd}/*
+                    do
+                        ln -s $vld/users/$USER "$(basename $vgd)-$(basename $vld)"
+                    done
+                done
+            fi
+        fi
+    fi
 }
 
 function setup_spacemacs()
