@@ -103,7 +103,7 @@ function main()
 
     running setup_dirs
 
-    running setup_deps_mode
+    running setup_deps_model_dirs
 
     running setup_sourcecode_pro_font
 
@@ -608,14 +608,21 @@ function setup_dirs()
 
 }
 
-function setup_deps_mode()
+function setup_deps_model_dirs()
 {
     # check local home model.d directory
-    if [ -L ~/.localdirs -a -d ~/.localdirs -a -d ~/.localdirs/deps.d/model.d/machine.d]
+    if [ -L ~/.localdirs -a -d ~/.localdirs -a -d ~/.localdirs/deps.d/model.d/machine.d ]
     then
         if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST ]
         then
             mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST
+
+            if [ ! -L ~/.localdirs/deps.d/model.d/machine.d/default ]
+            then
+                rm -rf ~/.localdirs/deps.d/model.d/machine.d/default
+                ln -s $HOST ~/.localdirs/deps.d/model.d/machine.d/default
+            fi
+
             ln -s ../../../../../../../../../../../../../../ ~/.localdirs/deps.d/model.d/machine.d/$HOST/home
             mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d
             if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d -a -d /srv/volumes/ ]
