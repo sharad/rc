@@ -264,6 +264,8 @@ function setup_misc()
 function setup_conkeror_package()
 {
 
+    # Download firefox from https://ftp.mozilla.org/pub/firefox/release setup in
+    # /opt, and change /usr/local/bin/conkeror file also.
     sudo apt -y install stow
 
     if [ ! -d $SITEDIR/build/conkeror ]
