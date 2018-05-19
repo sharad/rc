@@ -3,7 +3,6 @@
 SSH_KEY_DUMP=$1
 SITEDIR=/usr/local
 TMPDIR=~/setuptmp
-UBUNTU_SYSTEM=$SITEDIR/.repos/git/system/system/ubuntu
 
 DEB_PKG_SYSTEM="git openssl stow sbcl cl-clx-sbcl cl-quicklisp  openssh-server cl-swank libfixposix-dev zsh"
 DEB_PKG_SYSTEM1="gparted xterm rxvt-unicode-256color"
@@ -264,7 +263,7 @@ function setup_misc()
 function setup_conkeror_package()
 {
 
-    # Download firefox from https://ftp.mozilla.org/pub/firefox/release setup in
+    # Download firefox from https://ftp.mozilla.org/pub/firefox/releases/46.0/ setup in
     # /opt, and change /usr/local/bin/conkeror file also.
     sudo apt -y install stow
 
