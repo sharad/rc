@@ -80,11 +80,13 @@
          (task (or task *lotus-org-unnamed-parent-task-name*))
          (subtask (format *lotus-org-unnamed-task-name-fmt*
                           (1+
-                           (org-with-file-headline
-                            file
-                            task
-                            (org-number-of-subheadings))))))
-    (assert file)
+                           (if (org-find-file-heading-marker file task)
+                               (org-with-file-headline
+                                file
+                                task
+                                (org-number-of-subheadings))
+                             0)))))
+    ;; (assert file)
     (org-find-file-heading-marker file task t)
     (let ((marker (org-insert-subheadline-to-file-headline
                    subtask
@@ -110,11 +112,13 @@
      t)
     )
 
+
+
   (let ((marker (point-marker)))
     (unless (markerp marker)
       (error "No marker %s returned" marker)))
 
-
+  (lotus-org-create-unnamed-task)
   )
 ;;;###autoload
 (defun lotus-org-create-unnamed-task-task-clock-in (&optional file parent-task)

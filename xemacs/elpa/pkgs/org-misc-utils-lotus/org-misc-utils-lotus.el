@@ -58,14 +58,16 @@
 (put 'org-clock-lotus-with-current-clock 'lisp-indent-function 1)
 
 (defmacro org-with-heading (heading &rest body)
-  `(save-excursion
+  `(progn
      (goto-char (point-min))
      (let ((pos (org-find-exact-headline-in-buffer ,heading)))
-       (if (<= pos (point-max))
+       (if (and
+            (markerp pos)
+            (<= (marker-position pos) (point-max)))
            (progn
              (goto-char pos)
              ,@body)
-           (error "position %d greater than point max %d" pos (point-max))))))
+           (error "position %s greater than point max %d" pos (point-max))))))
 (put 'org-with-heading 'lisp-indent-function 2)
 
 (defmacro org-with-buffer-headline (buffer heading &rest body)
@@ -165,7 +167,8 @@ With prefix arg C-u, copy region instad of killing it."
     heading-marker))
 
 (defun org-find-file-heading-marker (file heading &optional create)
-  (with-current-buffer (find-file-noselect file)
+  (org-with-cloned-buffer (find-file-noselect file) "-<tree>"
+  ;; (with-current-buffer (find-file-noselect file)
     (org-find-heading-marker heading create)))
 
 (defmacro org-with-narrow-to-marker (marker &rest body)
@@ -193,7 +196,7 @@ With prefix arg C-u, copy region instad of killing it."
 
 
 (defmacro org-with-cloned-buffer (buff clone &rest body)
-  `(with-current-buffer buff
+  `(with-current-buffer ,buff
      (let ((buff (or ,buff (current-buffer)))
            (clone-name (concat (or ,clone "<clone>") "-" (buffer-name))))
        (let ((pos (point)))
