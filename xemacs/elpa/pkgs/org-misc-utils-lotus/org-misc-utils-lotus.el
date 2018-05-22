@@ -68,7 +68,19 @@
              (goto-char pos)
              ,@body)
            (error "position %s greater than point max %d" pos (point-max))))))
-(put 'org-with-heading 'lisp-indent-function 2)
+(put 'org-with-heading 'lisp-indent-function 1)
+
+(defmacro org-with-heading-pos (pos heading &rest body)
+  `(progn
+     (goto-char (point-min))
+     (let ((,pos (org-find-exact-headline-in-buffer ,heading)))
+       (progn
+         (when (and
+                (markerp ,pos)
+                (<= (marker-position ,pos) (point-max)))
+           (goto-char ,pos))
+         ,@body))))
+(put 'org-with-heading-pos 'lisp-indent-function 2)
 
 (defmacro org-with-buffer-headline (buffer heading &rest body)
   `(with-current-buffer (if ,buffer ,buffer (current-buffer))

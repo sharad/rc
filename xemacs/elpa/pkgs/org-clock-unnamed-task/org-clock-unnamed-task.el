@@ -80,12 +80,11 @@
          (task (or task *lotus-org-unnamed-parent-task-name*))
          (subtask (format *lotus-org-unnamed-task-name-fmt*
                           (1+
-                           (if (org-find-file-heading-marker file task)
-                               (org-with-file-headline
-                                file
-                                task
-                                (org-number-of-subheadings))
-                             0)))))
+                           (with-current-buffer (find-file-noselect file)
+                             (org-with-heading-pos pos task
+                               (if pos
+                                   (org-number-of-subheadings)
+                                 0)))))))
     ;; (assert file)
     (org-find-file-heading-marker file task t)
     (let ((marker (org-insert-subheadline-to-file-headline
