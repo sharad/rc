@@ -679,7 +679,7 @@
                   (bye-with-cleanup)
                   (pull-hidden-other))))
 
-(defcommand display-root-map () ()
+(defcommand display-top-map () ()
     (display-bindings-for-keymaps  nil *top-map*))
 
 (defun xwin-kill (window)

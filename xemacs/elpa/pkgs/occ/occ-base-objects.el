@@ -84,6 +84,10 @@
 (cl-defgeneric isassoc (obj context)
   "isassoc")
 
+(cl-defmethod isassoc ((task occ-task) (context occ-context))
+  (mapcar (task)
+          (slot (class-slot 'occ-task))))
+
 (cl-defmethod isassoc ((prop (head :root)) (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((root
@@ -172,15 +176,6 @@
          (equal org-clock-hd-marker org-clock-hd-marker))
         100
       0)))
-
-(cl-defmethod isassoc ((prop (head :test1) (context occ-context)))
-  )
-
-(cl-defmethod isassoc ((prop (head :test2) (context occ-context)))
-  )
-
-(cl-defmethod isassoc ((prop (head :test3) (context occ-context)))
-  )
 
 (when nil
   (isassoc '(:root 1) (make-occ-context))

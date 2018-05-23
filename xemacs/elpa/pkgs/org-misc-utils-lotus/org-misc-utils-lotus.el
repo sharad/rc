@@ -180,7 +180,8 @@ With prefix arg C-u, copy region instad of killing it."
 
 (defun org-find-file-heading-marker (file heading &optional create)
   (org-with-cloned-buffer (find-file-noselect file) "-<tree>"
-  ;; (with-current-buffer (find-file-noselect file)
+    (org-mode)
+    ;; (with-current-buffer (find-file-noselect file)
     (org-find-heading-marker heading create)))
 
 (defmacro org-with-narrow-to-marker (marker &rest body)

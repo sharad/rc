@@ -766,7 +766,7 @@ function install_bpkg_pkg()
 
 function setup_bpkg_pkgs()
 {
-    install_bpkg_pkg nevik/gitwatch
+    install_bpkg_pkg sharad/gitwatch
 }
 
 function process_arg() {
