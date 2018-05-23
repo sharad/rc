@@ -182,35 +182,15 @@
 (cl-defmethod isassoc ((prop (head :test3) (context occ-context)))
   )
 
-(isassoc '(:root 1) (make-occ-context))
+(when nil
+  (isassoc '(:root 1) (make-occ-context))
 
-(cl-defmethod isassoc ((task occ-task)
-                       (context occ-context))
-  (message "match isassoc"))
+  (cl-defmethod isassoc ((task occ-task)
+                         (context occ-context))
+    (message "match isassoc"))
 
-(isassoc (make-occ-tree-task) (make-occ-context))
-
-
-
-(defgeneric set (prop value task context)
+  (isassoc (make-occ-tree-task) (make-occ-context))
   )
-(defgeneric get (prop value task context)
-  )
-(defgeneric assoc (prop value task context)
-  )
-
-(cl-defstruct occ-root-prop (occ-property)
-  ((name
-    :initarg :name
-    :custom string)))
-
-(defmethod set ((prop occ-root-prop) value task context)
-  )
-(defmethod get ((prop occ-root-prop) value task context)
-  )
-(defmethod assoc ((prop occ-root-prop) value task context)
-  )
-
 
 ;; (defun org-Xtask-get-property (task property)
 (defun occ-task-get-property (task property)
