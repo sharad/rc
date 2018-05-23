@@ -26,7 +26,8 @@
     ("s-R"       "reinit")
     ("s-Q"       "quit")
     ("s-b"       "mode-line")
-    ("C-M-Delete"   "bye-with-confirmation"))
+    ("C-M-Delete" "bye-with-confirmation")
+    ("S-s-t"      "display-top-map"))
 
 ;; (define-key *top-map* (kbd "C-M-Delete") "bye-with-confirmation")
 ;;;}}}
