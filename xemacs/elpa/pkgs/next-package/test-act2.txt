@@ -1,0 +1,18 @@
+@startuml
+skinparam activity {
+BackgroundColor<<New>> Cyan
+}
+
+title test - 
+note left: test
+(*) --> "test"
+if "" then
+  -> [condition] ==IF1==
+  --> ==IF1M1==
+  -left-> ==IF1M2==
+else
+end if
+--> ==IF1M2==
+--> (*)
+
+@enduml

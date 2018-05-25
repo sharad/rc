@@ -1,0 +1,34 @@
+@startuml
+skinparam activity {
+BackgroundColor<<New>> Cyan
+}
+
+title test - 
+note left: test
+(*) --> "test"
+if "" then
+  -> [condition] ==IF1==
+  --> ==IF1M1==
+  -left-> ==IF1M2==
+else
+end if
+--> ==IF1M2==
+if "" then
+  -> [condition] ==IF2==
+  --> ==IF2M1==
+  -left-> ==IF2M2==
+else
+end if
+--> ==IF2M2==
+--> ==LOOP1==
+note left: Loop1: For each line in file
+--> ==ENDLOOP1==
+note left: Loop1: End for each line in file
+--> ==LOOP2==
+note left: Loop2: For each address in addressbook
+--> ==ENDLOOP2==
+note left: Loop2: End for each address in addressbook
+
+--> (*)
+
+@enduml
