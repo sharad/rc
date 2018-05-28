@@ -353,7 +353,7 @@ see `eudc-inline-expansion-servers'"
                           (catch 'found
                             ;; Loop on the servers
                             (while servers
-                              (eudc-set-server (eudc-caar servers) (eudc-cdar servers) t)
+                              (eudc-set-server (caar servers) (eudc-cdar servers) t)
 
                               ;; Determine which formats apply in the query-format list
                               (setq query-formats
