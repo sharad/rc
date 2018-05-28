@@ -236,7 +236,7 @@ attribute names are returned. Default to `person'"
                  (eudc-display-records (eudc-query (list (cons 'mail (car (ietf-drums-parse-address email)))) ) arg)
                  (message "Not able to parse any email at point."))))
 
-         (defun eudc-select-deprecated (choices beg end)
+         (defun eudc-select (choices beg end)
            "Choose one from CHOICES using a completion.
 BEG and END delimit the text which is to be replaced."
            (let ((replacement)
@@ -554,7 +554,7 @@ queries the server for the existing fields and displays a corresponding form."
 
 
 
-         (defun eudc-query-form-deprecated (&optional get-fields-from-server)
+         (defun eudc-query-form (&optional get-fields-from-server)
            "Display a form to query the directory server.
 If given a non-nil argument GET-FIELDS-FROM-SERVER, the function first
 queries the server for the existing fields and displays a corresponding form."
