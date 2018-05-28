@@ -220,3 +220,96 @@
 (defvar *org-context-clock-unassociate-context-start-time* nil)
 (defvar *org-context-clock-swapen-unnamed-threashold-interval* (* 60 2)) ;2 mins
 ;; Unnamed task related global variable:1 ends here
+
+;; Unnamed task functions
+
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Unnamed%20task%20functions][Unnamed task functions:1]]
+(defun org-context-clock-unassociate-context-start-time-reset ()
+  (setq *org-context-clock-unassociate-context-start-time* nil))
+
+(defun org-context-clock-can-create-unnamed-task-p ()
+  (unless *org-context-clock-unassociate-context-start-time*
+    (setq *org-context-clock-unassociate-context-start-time* (current-time)))
+  (let ((unassociate-context-start-time *org-context-clock-unassociate-context-start-time*))
+    (prog1
+        (>
+         (float-time (time-since unassociate-context-start-time))
+         *org-context-clock-swapen-unnamed-threashold-interval*))))
+
+(defun org-clock-marker-is-unnamed-clock-p (&optional clock)
+  (let ((clock (or clock org-clock-marker)))
+    (when (and
+           clock
+           (lotus-org-unnamed-task-clock-marker))
+     (equal
+      (marker-buffer org-clock-marker)
+      ;; id:x11 make org-context-clock version
+      (marker-buffer (lotus-org-unnamed-task-clock-marker))))))
+
+(defun org-context-clock-maybe-create-clockedin-unnamed-heading ()
+  (when (org-context-clock-can-create-unnamed-task-p)
+    (let ((org-log-note-clock-out nil))
+      (if (org-clock-marker-is-unnamed-clock-p)
+          (org-context-clock-debug :debug "org-context-clock-maybe-create-unnamed-task: Already clockin unnamed task")
+          (prog1
+              (lotus-org-create-unnamed-task-task-clock-in)
+            (org-context-clock-unassociate-context-start-time-reset))))))
+
+(defun org-context-clock-maybe-create-unnamed-heading ()
+  (when (org-context-clock-can-create-unnamed-task-p)
+    (let ((org-log-note-clock-out nil))
+      (if (org-clock-marker-is-unnamed-clock-p)
+          (org-context-clock-debug :debug "org-context-clock-maybe-create-unnamed-task: Already clockin unnamed task")
+          (cdr (lotus-org-create-unnamed-task))))))
+
+
+(defun org-context-clock-maybe-create-unnamed-task ()
+  ;; back
+  (let* ((unnamed-heading-marker
+         (cdr (lotus-org-create-unnamed-task)))
+        (unnamed-task
+         (when unnamed-heading-marker
+           (with-current-buffer (marker-buffer unnamed-heading-marker)
+             (goto-char unnamed-heading-marker)
+             (org-context-clock-collect-task)))))
+    unnamed-task))
+
+(defun org-context-clock-maybe-create-unnamed-dyntaskpl (context)
+  ;; back
+  (let* ((unnamed-task
+         (org-context-clock-maybe-create-unnamed-task))
+        (unnamed-dyntaskpl
+         (if unnamed-task
+           (org-context-clock-build-dyntaskpl unnamed-task context))))
+    unnamed-dyntaskpl))
+
+(defun org-context-clock-maybe-create-clockedin-unnamed-dyntaskpl (context)
+  ;; back
+  (when (org-context-clock-can-create-unnamed-task-p)
+    (let ((org-log-note-clock-out nil))
+      (if (org-clock-marker-is-unnamed-clock-p)
+          (org-context-clock-debug :debug "org-context-clock-maybe-create-unnamed-task: Already clockin unnamed task")
+          (let* ((unnamed-dyntaskpl (org-context-clock-maybe-create-unnamed-dyntaskpl context))
+                 (unnamed-task (plist-get unnamed-dyntaskpl :task))
+                 (unnamed-marker (plist-get unnamed-task :task-clock-marker)))
+            (prog1
+                (org-context-clock-clockin-dyntaskpl unnamed-dyntaskpl)
+              ;; id:x11 make org-context-clock version
+              (lotus-org-unnamed-task-clock-marker unnamed-marker)
+              (message "clockin to unnnamed task.")
+              (org-context-clock-unassociate-context-start-time-reset)))))))
+
+(defun org-context-clock-changable-p ()
+  "Stay with a clock at least 2 mins."
+  (if org-clock-start-time
+      (let ((clock-duration
+             (if (and
+                  (stringp org-clock-start-time)
+                  (string-equal "" org-clock-start-time))
+                 0
+                 (float-time (time-since org-clock-start-time)))))
+        (or
+         (< clock-duration 60)
+         (> clock-duration 120)))
+      t))
+;; Unnamed task functions:1 ends here
