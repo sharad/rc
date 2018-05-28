@@ -313,3 +313,91 @@
          (> clock-duration 120)))
       t))
 ;; Unnamed task functions:1 ends here
+
+;; Main context clock function update-current-context
+
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Main%20context%20clock%20function%20update-current-context][Main context clock function update-current-context:1]]
+;;;###autoload
+(defun org-context-clock-update-current-context (&optional force)
+  (interactive "P")
+  (if (>
+       (float-time (time-since *org-context-clock-last-buffer-select-time*))
+       *org-context-clock-task-current-context-time-interval*)
+      (let* ((context (org-context-clock-build-context))
+             (buff    (plist-get context :buffer)))
+        (setq *org-context-clock-task-current-context*  context)
+        (if (and
+             (org-context-clock-changable-p)
+             buff (buffer-live-p buff)
+             (not (minibufferp buff))
+             (not              ;BUG: Reconsider whether it is catching case after some delay.
+              (equal *org-context-clock-task-previous-context* *org-context-clock-task-current-context*)))
+
+            (progn
+              (setq
+               *org-context-clock-task-previous-context* *org-context-clock-task-current-context*)
+              (if (and
+                   (not (org-clock-marker-is-unnamed-clock-p))
+                   (> (org-context-clock-current-task-associated-to-context-p context) 0))
+                  (progn
+                    (org-context-clock-debug :debug "org-context-clock-update-current-context: Current task already associate to %s" context))
+                  (progn                ;current clock is not matching
+                    (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really going to clock.")
+                    (unless (org-context-clock-dyntaskpl-run-associated-dyntaskpl context)
+                      ;; not able to find associated, or intentionally not selecting a clock
+                      (org-context-clock-debug :debug "trying to create unnamed task.")
+                      (org-context-clock-maybe-create-clockedin-unnamed-dyntaskpl context))
+                    (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really clock done."))))
+
+            (org-context-clock-debug :debug "org-context-clock-update-current-context: context %s not suitable to associate" context)))
+      (org-context-clock-debug :debug "org-context-clock-update-current-context: not enough time passed.")))
+
+
+(defun org-context-clock-update-current-context-x (force)
+  (interactive "P")
+  (if t
+      (let* ((context (org-context-clock-build-context)))
+        (unless nil
+          (setq
+           *org-context-clock-task-previous-context* *org-context-clock-task-current-context*
+           *org-context-clock-task-current-context*  context)
+
+          (unless (and
+                   (not (org-clock-marker-is-unnamed-clock-p))
+                   (> (org-context-clock-current-task-associated-to-context-p context) 0))
+            (unless (org-context-clock-dyntaskpl-run-associated-dyntaskpl context)
+              (org-context-clock-debug :debug "trying to create unnamed task.")
+              ;; not able to find associated, or intentionally not selecting a clock
+              (org-context-clock-maybe-create-clockedin-unnamed-dyntaskpl context)))))))
+;; Main context clock function update-current-context:1 ends here
+
+;; Create task info out of current clock
+;; When org-clock-marker was hidden that time (org-context-clock-collect-task) not able to
+;; collect correct task, so here cloned buffer need to be created.
+;; see here[[https://emacs.stackexchange.com/questions/9530/how-can-i-get-an-org-mode-outline-in-a-2nd-buffer-as-a-dynamic-table-of-contents][ How can I get an org-mode outline in a 2nd buffer as a dynamic table of contents?]]
+
+
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Create%20task%20info%20out%20of%20current%20clock][Create task info out of current clock:1]]
+;;;###autoload
+(defun org-context-clock-task-current-task ()
+  (when (and
+         org-clock-marker
+         (markerp org-clock-marker)
+         (> (marker-position-nonil org-clock-marker) 0))
+    (org-with-cloned-marker org-clock-marker "<tree>"
+      (let ((view-read-only nil)
+            (buffer-read-only t))
+        (read-only-mode)
+        (org-previous-visible-heading 1)
+        (let ((info (org-context-clock-collect-task)))
+          info)))))
+;; Create task info out of current clock:1 ends here
+
+;; Test if TASK is associate to CONTEXT
+
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Test%20if%20TASK%20is%20associate%20to%20CONTEXT][Test if TASK is associate to CONTEXT:1]]
+(defun org-context-clock-task-associated-to-context-p (task context)
+  (if task
+      (funcall org-context-clock-api-task-associated-to-context-p task context)
+      0))
+;; Test if TASK is associate to CONTEXT:1 ends here
