@@ -284,7 +284,7 @@ BEG and END delimit the text which is to be replaced."
 
        (progn ;; wrapper
 
-         (defun eudc-expand-inline (&optional replace)
+         (defun eudc-expand-inline-old (&optional replace)
            "Query the directory server, and expand the query string before point.
 The query string consists of the buffer substring from the point back to
 the preceding comma, colon or beginning of line.
