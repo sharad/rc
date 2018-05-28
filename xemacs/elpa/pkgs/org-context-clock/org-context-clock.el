@@ -647,3 +647,36 @@ pointing to it."
 ;; (sacha/helm-select-clock (org-context-clock-markers-associated-to-context (org-context-clock-build-context)))
 ;; (sacha/helm-clock-action (org-context-clock-markers-associated-to-context (org-context-clock-build-context (find-file-noselect "~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.el"))))
 ;; function to setup context clock timer:3 ends here
+
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:4]]
+;;;###autoload
+(defun org-context-clock-insinuate ()
+  (interactive)
+  (progn
+    (add-hook 'buffer-list-update-hook     'org-context-clock-run-task-current-context-timer)
+    (add-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
+    (add-hook 'elscreen-goto-hook          'org-context-clock-run-task-current-context-timer)
+    (add-hook 'after-save-hook             'org-context-clock-after-save-hook nil t))
+
+  (dolist (prop (org-context-clock-keys-with-operation :getter nil))
+    (let ((propstr
+           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
+      (unless (member propstr org-use-property-inheritance)
+        (push propstr org-use-property-inheritance)))))
+
+;;;###autoload
+(defun org-context-clock-uninsinuate ()
+  (interactive)
+  (progn
+    (remove-hook 'buffer-list-update-hook 'org-context-clock-run-task-current-context-timer)
+    ;; (setq buffer-list-update-hook nil)
+    (remove-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
+    (remove-hook 'elscreen-goto-hook 'org-context-clock-run-task-current-context-timer)
+    (remove-hook 'after-save-hook             'org-context-clock-after-save-hook t))
+
+  (dolist (prop (org-context-clock-keys-with-operation :getter nil))
+    (let ((propstr
+           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
+      (unless (member propstr org-use-property-inheritance)
+        (delete propstr org-use-property-inheritance)))))
+;; function to setup context clock timer:4 ends here
