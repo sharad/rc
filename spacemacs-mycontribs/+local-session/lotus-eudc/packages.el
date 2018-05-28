@@ -473,7 +473,7 @@ see `eudc-inline-expansion-servers'"
 
          )
 
-       (progn ;; wrapper
+       (progn ;; wrapper old
 
          (defun eudc-expand-inline-old (&optional replace)
            "Query the directory server, and expand the query string before point.
