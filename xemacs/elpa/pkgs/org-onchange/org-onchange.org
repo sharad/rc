@@ -4,7 +4,7 @@
 * Org on change
 ** Preamble
  #+BEGIN_SRC emacs-lisp
-;;; org-onchnage.el --- copy config
+;;; org-onchange.el --- copy config
 
 ;; Copyright (C) 2012  Sharad Pratap
 
