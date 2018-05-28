@@ -160,3 +160,63 @@
          org-context-clock-api-task-associated-to-context-p     (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp)
          org-context-clock-api-task-update-tasks                (org-context-clock-access-api-get org-context-clock-access-api-name :update)))))
 ;; Context clock API:1 ends here
+
+;; Update tasks
+
+
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Update%20tasks][Update tasks:1]]
+;;;###autoload
+(defun org-context-clock-task-update-tasks (&optional force)
+  "Update task infos"
+  (interactive "P")
+  (message "calling org-context-clock-task-update-tasks")
+  (funcall org-context-clock-api-task-update-tasks force))
+
+;;;###autoload
+(defun org-context-clock-task-update-files (&optional force)
+  "Update task infos"
+  (interactive "P")
+  (funcall org-context-clock-api-task-update-files force))
+
+(defun org-context-clock-build-tasks (file)
+  (when (member*
+              file
+              (org-context-clock-task-update-files)
+              :test #'(lambda (f1 f2)
+                        (string-equal
+                         (file-truename f1)
+                         (file-truename f2))))
+    (org-context-clock-task-update-tasks t)))
+
+(defun org-context-clock-after-save-hook ()
+  (when (and (eq major-mode 'org-mode)
+             (buffer-file-name))
+    (org-context-clock-build-tasks (buffer-file-name))))
+;; Update tasks:1 ends here
+
+;; Build context
+
+
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Build%20context][Build context:1]]
+(defun org-context-clock-build-context (&optional buff)
+  (let* ((buff (if buff
+                   (if (bufferp buff)
+                       buff
+                       (if (stringp buff)
+                           (or
+                            (get-buffer buff)
+                            (if (file-exists-p buff)
+                                (get-file-buffer buff)))))
+                   (window-buffer)))
+         (buf (org-base-buffer buf))
+         (file (buffer-file-name buff))
+         (context (list :file file :buffer buff)))
+    context))
+;; Build context:1 ends here
+
+;; Unnamed task related global variable
+
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Unnamed%20task%20related%20global%20variable][Unnamed task related global variable:1]]
+(defvar *org-context-clock-unassociate-context-start-time* nil)
+(defvar *org-context-clock-swapen-unnamed-threashold-interval* (* 60 2)) ;2 mins
+;; Unnamed task related global variable:1 ends here
