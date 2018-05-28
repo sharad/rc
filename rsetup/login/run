@@ -82,10 +82,11 @@ fi                              # if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ;
 
 ## updae git if no current change present.
 
-
+if ! ps -u $USER | grep gitwatch 
+then
 echo starting new gitwatch $(date) >> ~/.logs/gitwatch.log
 gitwatch -r origin ~/.setup/ >>& ~/.logs/gitwatch.log &!
-
+fi
 __comp=login
 __subcomp=run
 if [ "x${HOST}" != "x" ] ; then
