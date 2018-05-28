@@ -5,4 +5,5 @@
                   (org-clock-wrapper "1")
                   (org-misc-utils-lotus "1")
                   (lotus-misc-utils "1")
-                  (org-capture+ "1")))
+                  (org-capture+ "1")
+                  (org-onchange "1")))
