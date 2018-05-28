@@ -284,7 +284,7 @@ BEG and END delimit the text which is to be replaced."
 
        (progn ;; wrapper
 
-         (defun eudc-expand-inline-deprecated (&optional replace)
+         (defun eudc-expand-inline (&optional replace)
            "Query the directory server, and expand the query string before point.
 The query string consists of the buffer substring from the point back to
 the preceding comma, colon or beginning of line.
@@ -353,7 +353,7 @@ see `eudc-inline-expansion-servers'"
                           (catch 'found
                             ;; Loop on the servers
                             (while servers
-                              (eudc-set-server (caar servers) (eudc-cdar servers) t)
+                              (eudc-set-server (caar servers) (cdar servers) t)
 
                               ;; Determine which formats apply in the query-format list
                               (setq query-formats
