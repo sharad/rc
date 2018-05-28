@@ -557,6 +557,6 @@ will return point to the current position."
 ;; Provide this file
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-onchange/org-onchange.org::*Provide%20this%20file][Provide this file:1]]
-(provide 'org-onchnage)
+(provide 'org-onchange)
 ;;; org-onchnage.el ends here
 ;; Provide this file:1 ends here
