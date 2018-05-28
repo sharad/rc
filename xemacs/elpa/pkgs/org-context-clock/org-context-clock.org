@@ -83,6 +83,8 @@ If not, show simply the clocked time like 01:50."
  (eval-when-compile
    (require 'lotus-misc-utils))
 
+(require 'org-onchange)
+
  #+END_SRC
 
 ** It is divided into multiple files for different functionality
