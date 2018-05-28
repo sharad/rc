@@ -226,6 +226,7 @@
 #+BEGIN_SRC elisp
 
   ;; copy of org-store-log-note
+;;;###autoload
   (defun org-insert-log-note (marker txt &optional purpose effective-time state previous-state)
     "Finish taking a log note, and insert it to where it belongs."
     (let* ((note-marker marker)
