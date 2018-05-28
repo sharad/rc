@@ -554,3 +554,10 @@ will return point to the current position."
 
  ;;}}
 ;; Org log note change from different sources:1 ends here
+
+;; Provide this file
+
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-onchange/org-onchange.org::*Provide%20this%20file][Provide this file:1]]
+(provide 'org-onchange)
+;;; org-onchange.el ends here
+;; Provide this file:1 ends here
