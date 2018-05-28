@@ -739,6 +739,6 @@ add note but in this case it is not shown so background word is used.
 
 ** Provide this file
 #+BEGIN_SRC emacs-lisp
-(provide 'org-onchnage)
+(provide 'org-onchange)
 ;;; org-onchnage.el ends here
 #+END_SRC
