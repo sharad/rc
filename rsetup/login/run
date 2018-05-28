@@ -81,12 +81,12 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
 fi                              # if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connection, and when user is root.
 
 ## updae git if no current change present.
-
 if ! ps -u $USER | grep gitwatch 
 then
-echo starting new gitwatch $(date) >> ~/.logs/gitwatch.log
-gitwatch -r origin ~/.setup/ >>& ~/.logs/gitwatch.log &!
+  echo starting new gitwatch $(date) >> ~/.logs/gitwatch.log
+  gitwatch -r origin ~/.setup/ >>& ~/.logs/gitwatch.log &!
 fi
+
 __comp=login
 __subcomp=run
 if [ "x${HOST}" != "x" ] ; then
