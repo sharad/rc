@@ -327,7 +327,7 @@ see `eudc-inline-expansion-servers'"
                                              "[ \t]+"))
 
                   (query-words (mapcar
-                                '(lambda (w) (concat "*" w "*"))
+                                '(lambda (w) (concat w "*"))
                                 (split-string (buffer-substring-no-properties beg end)
                                               "[ \t]+")))
                   query-formats
