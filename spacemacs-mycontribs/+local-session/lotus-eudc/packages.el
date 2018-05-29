@@ -486,8 +486,10 @@ see `eudc-inline-expansion-servers'"
                         ;; Process response through eudc-inline-expansion-format
                         (while response
 
+
                           (let ((carresp (mapcar 'car (car response)))
                                 (formats eudc-inline-expansion-formats))
+                            (lwarn 'eudc :debug "S: using format inline-expansion-format = %s" inline-expansion-format)
                             (setq inline-expansion-format
                                   (or
                                    (catch 'fmtfound
