@@ -181,8 +181,9 @@ attribute names are returned. Default to `person'"
 
           eudc-inline-expansion-servers 'hotlist)
 
-         (eudc-protocol-set 'eudc-protocol-attributes-translation-alist
-                            'eudc-ldap-attributes-translation-alist 'ldap)
+         (when nil
+           (eudc-protocol-set 'eudc-protocol-attributes-translation-alist
+                              'eudc-ldap-attributes-translation-alist 'ldap))
 
          (eudc-set-server (car (cdr (assoc eudc-office (eudc-ldap-datas)))) 'ldap t)
 
