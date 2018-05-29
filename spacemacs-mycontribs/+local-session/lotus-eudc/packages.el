@@ -290,7 +290,7 @@ BEG and END delimit the text which is to be replaced."
        (progn
 
          (defun eudc-expand-inline (&optional replace)
-  "Query the directory server, and expand the query string before point.
+           "Query the directory server, and expand the query string before point.
 The query string consists of the buffer substring from the point back to
 the preceding comma, colon or beginning of line.
 The variable `eudc-inline-query-format' controls how to associate the
@@ -301,241 +301,241 @@ If REPLACE is non-nil, then this expansion replaces the name in the buffer.
 `eudc-expansion-overwrites-query' being non-nil inverts the meaning of REPLACE.
 Multiple servers can be tried with the same query until one finds a match,
 see `eudc-inline-expansion-servers'"
-  (interactive)
-  (cond
-    ((eq eudc-inline-expansion-servers 'current-server)
-     (or eudc-server
-         (call-interactively 'eudc-set-server)))
-    ((eq eudc-inline-expansion-servers 'server-then-hotlist)
-     (or eudc-server
-         ;; Allow server to be nil if hotlist is set.
-         eudc-server-hotlist
-         (call-interactively 'eudc-set-server)))
-    ((eq eudc-inline-expansion-servers 'hotlist)
-     (or eudc-server-hotlist
-         (error "No server in the hotlist")))
-    (t
-     (error "Wrong value for `eudc-inline-expansion-servers': %S"
-            eudc-inline-expansion-servers)))
-  (let* ((end (point))
-         (beg (save-excursion
-                (if (re-search-backward "\\([:,]\\|^\\)[ \t]*"
-                                        (point-at-bol) 'move)
-                    (goto-char (match-end 0)))
-                (point)))
-         (query-words (split-string (buffer-substring-no-properties beg end)
-                                    "[ \t]+"))
-         query-formats
-         response
-         response-string
-         response-strings
-         (eudc-former-server eudc-server)
-         (eudc-former-protocol eudc-protocol)
-         servers)
+           (interactive)
+           (cond
+             ((eq eudc-inline-expansion-servers 'current-server)
+              (or eudc-server
+                  (call-interactively 'eudc-set-server)))
+             ((eq eudc-inline-expansion-servers 'server-then-hotlist)
+              (or eudc-server
+                  ;; Allow server to be nil if hotlist is set.
+                  eudc-server-hotlist
+                  (call-interactively 'eudc-set-server)))
+             ((eq eudc-inline-expansion-servers 'hotlist)
+              (or eudc-server-hotlist
+                  (error "No server in the hotlist")))
+             (t
+              (error "Wrong value for `eudc-inline-expansion-servers': %S"
+                     eudc-inline-expansion-servers)))
+           (let* ((end (point))
+                  (beg (save-excursion
+                         (if (re-search-backward "\\([:,]\\|^\\)[ \t]*"
+                                                 (point-at-bol) 'move)
+                             (goto-char (match-end 0)))
+                         (point)))
+                  (query-words (split-string (buffer-substring-no-properties beg end)
+                                             "[ \t]+"))
+                  query-formats
+                  response
+                  response-string
+                  response-strings
+                  (eudc-former-server eudc-server)
+                  (eudc-former-protocol eudc-protocol)
+                  servers)
 
-    ;; Prepare the list of servers to query
-    (setq servers (copy-sequence eudc-server-hotlist))
-    (setq servers
-          (cond
-            ((eq eudc-inline-expansion-servers 'hotlist)
-             eudc-server-hotlist)
-            ((eq eudc-inline-expansion-servers 'server-then-hotlist)
-             (if eudc-server
-                 (cons (cons eudc-server eudc-protocol)
-                       (delete (cons eudc-server eudc-protocol) servers))
-               eudc-server-hotlist))
-            ((eq eudc-inline-expansion-servers 'current-server)
-             (list (cons eudc-server eudc-protocol)))))
-    (if (and eudc-max-servers-to-query
-             (> (length servers) eudc-max-servers-to-query))
-        (setcdr (nthcdr (1- eudc-max-servers-to-query) servers) nil))
+             ;; Prepare the list of servers to query
+             (setq servers (copy-sequence eudc-server-hotlist))
+             (setq servers
+                   (cond
+                     ((eq eudc-inline-expansion-servers 'hotlist)
+                      eudc-server-hotlist)
+                     ((eq eudc-inline-expansion-servers 'server-then-hotlist)
+                      (if eudc-server
+                          (cons (cons eudc-server eudc-protocol)
+                                (delete (cons eudc-server eudc-protocol) servers))
+                        eudc-server-hotlist))
+                     ((eq eudc-inline-expansion-servers 'current-server)
+                      (list (cons eudc-server eudc-protocol)))))
+             (if (and eudc-max-servers-to-query
+                      (> (length servers) eudc-max-servers-to-query))
+                 (setcdr (nthcdr (1- eudc-max-servers-to-query) servers) nil))
 
-    (unwind-protect
-         (progn
+             (unwind-protect
+                  (progn
 
-           (if nil
-             (setq response
-                   (catch 'found
-                     ;; Loop on the servers
-                     (while servers
-                       (eudc-set-server (caar servers) (cdar servers) t)
+                    (if nil
+                        (setq response
+                              (catch 'found
+                                ;; Loop on the servers
+                                (while servers
+                                  (eudc-set-server (caar servers) (cdar servers) t)
 
-                       ;; Determine which formats apply in the query-format list
-                       (setq query-formats
-                             (or
-                              (eudc-extract-n-word-formats eudc-inline-query-format
-                                                           (length query-words))
-                              (if (null eudc-protocol-has-default-query-attributes)
-                                  '(name))))
+                                  ;; Determine which formats apply in the query-format list
+                                  (setq query-formats
+                                        (or
+                                         (eudc-extract-n-word-formats eudc-inline-query-format
+                                                                      (length query-words))
+                                         (if (null eudc-protocol-has-default-query-attributes)
+                                             '(name))))
 
-                       ;; Loop on query-formats
-                       (while query-formats
-                         (setq response
-                               (eudc-query
-                                (eudc-format-query query-words (car query-formats))
-                                (eudc-translate-attribute-list
-                                 (cdr eudc-inline-expansion-format))))
-                         (if response
-                             (throw 'found response))
-                         (setq query-formats (cdr query-formats)))
-                       (setq servers (cdr servers)))
-                     ;; No more servers to try... no match found
-                     nil))
+                                  ;; Loop on query-formats
+                                  (while query-formats
+                                    (setq response
+                                          (eudc-query
+                                           (eudc-format-query query-words (car query-formats))
+                                           (eudc-translate-attribute-list
+                                            (cdr eudc-inline-expansion-format))))
+                                    (if response
+                                        (throw 'found response))
+                                    (setq query-formats (cdr query-formats)))
+                                  (setq servers (cdr servers)))
+                                ;; No more servers to try... no match found
+                                nil))
 
-             (setq response
-                   (remove-if
-                    #'null
-                    (catch 'found
-                      ;; Loop on the servers
-                      (while servers
-                        (eudc-set-server (caar servers) (cdar servers) t)
+                      (setq response
+                            (remove-if
+                             #'null
+                             (catch 'found
+                               ;; Loop on the servers
+                               (while servers
+                                 (eudc-set-server (caar servers) (cdar servers) t)
 
-                        ;; Determine which formats apply in the query-format list
-                        (setq query-formats
-                              (or
-                               (eudc-extract-n-word-formats eudc-inline-query-format
-                                                            (length query-words))
-                               (if (null eudc-protocol-has-default-query-attributes)
-                                   '(name))))
+                                 ;; Determine which formats apply in the query-format list
+                                 (setq query-formats
+                                       (or
+                                        (eudc-extract-n-word-formats eudc-inline-query-format
+                                                                     (length query-words))
+                                        (if (null eudc-protocol-has-default-query-attributes)
+                                            '(name))))
 
-                        ;; Loop on query-formats
-                        (while query-formats
-                          (setq inline-expansion-formats
-                                (if eudc-inline-expansion-formats
-                                    eudc-inline-expansion-formats
-                                  (if eudc-inline-expansion-format
-                                      (list eudc-inline-expansion-format))))
-                          (setq inline-expansion-format (car inline-expansion-formats))
-                          (lwarn 'eudc :debug "X: inline-expansion-formats %s\nX: query-formats %s\n" inline-expansion-formats query-formats)
-                          (while inline-expansion-formats
-                            (setq response
-                                  (eudc-query
-                                   (eudc-format-query query-words (car query-formats))
-                                   (eudc-translate-attribute-list
-                                    (cdr inline-expansion-format))))
-                            (lwarn 'eudc :debug "O: inline-expansion-formats %s\nO: query-formats %s\n response %s\n" inline-expansion-formats query-formats response)
-                            (setq response (remove nil response))
-                            (lwarn 'eudc :debug "O: inline-expansion-formats %s\nO: query-formats %s\n response %s\n" inline-expansion-formats query-formats response)
-                            (if response
-                                (throw 'found response))
-                            (setq inline-expansion-formats (cdr inline-expansion-formats))
-                            (setq inline-expansion-format (car inline-expansion-formats)))
+                                 ;; Loop on query-formats
+                                 (while query-formats
+                                   (setq inline-expansion-formats
+                                         (if eudc-inline-expansion-formats
+                                             eudc-inline-expansion-formats
+                                           (if eudc-inline-expansion-format
+                                               (list eudc-inline-expansion-format))))
+                                   (setq inline-expansion-format (car inline-expansion-formats))
+                                   (lwarn 'eudc :debug "X: inline-expansion-formats %s\nX: query-formats %s\n" inline-expansion-formats query-formats)
+                                   (while inline-expansion-formats
+                                     (setq response
+                                           (eudc-query
+                                            (eudc-format-query query-words (car query-formats))
+                                            (eudc-translate-attribute-list
+                                             (cdr inline-expansion-format))))
+                                     (lwarn 'eudc :debug "O: inline-expansion-formats %s\nO: query-formats %s\n response %s\n" inline-expansion-formats query-formats response)
+                                     (setq response (remove nil response))
+                                     (lwarn 'eudc :debug "O: inline-expansion-formats %s\nO: query-formats %s\n response %s\n" inline-expansion-formats query-formats response)
+                                     (if response
+                                         (throw 'found response))
+                                     (setq inline-expansion-formats (cdr inline-expansion-formats))
+                                     (setq inline-expansion-format (car inline-expansion-formats)))
 
-                          (lwarn 'eudc :debug "Z: inline-expansion-formats %s\nZ: query-formats %s\n" inline-expansion-formats query-formats)
+                                   (lwarn 'eudc :debug "Z: inline-expansion-formats %s\nZ: query-formats %s\n" inline-expansion-formats query-formats)
 
-                          (setq query-formats (cdr query-formats)))
-                        (setq servers (cdr servers)))
-                      ;; No more servers to try... no match found
-                      nil)
-                    )))
+                                   (setq query-formats (cdr query-formats)))
+                                 (setq servers (cdr servers)))
+                               ;; No more servers to try... no match found
+                               nil)
+                             )))
 
-           (if nil
-               (if (null response)
-                   (error "No match")
+                    (if nil
+                        (if (null response)
+                            (error "No match")
 
-                 ;; Process response through eudc-inline-expansion-format
-                 (while response
-                   (setq response-string
-                         (apply 'format
-                                (car eudc-inline-expansion-format)
-                                (mapcar (function
-                                         (lambda (field)
-                                          (or (cdr (assq field (car response)))
-                                              "")))
-                                        (eudc-translate-attribute-list
-                                         (cdr eudc-inline-expansion-format)))))
-                   (if (> (length response-string) 0)
-                       (setq response-strings
-                             (cons response-string response-strings)))
-                   (setq response (cdr response)))
+                          ;; Process response through eudc-inline-expansion-format
+                          (while response
+                            (setq response-string
+                                  (apply 'format
+                                         (car eudc-inline-expansion-format)
+                                         (mapcar (function
+                                                  (lambda (field)
+                                                   (or (cdr (assq field (car response)))
+                                                       "")))
+                                                 (eudc-translate-attribute-list
+                                                  (cdr eudc-inline-expansion-format)))))
+                            (if (> (length response-string) 0)
+                                (setq response-strings
+                                      (cons response-string response-strings)))
+                            (setq response (cdr response)))
 
-                 (if (or
-                      (and replace (not eudc-expansion-overwrites-query))
-                      (and (not replace) eudc-expansion-overwrites-query))
-                     (kill-ring-save beg end))
-                 (cond
-                   ((or (= (length response-strings) 1)
-                        (null eudc-multiple-match-handling-method)
-                        (eq eudc-multiple-match-handling-method 'first))
-                    (delete-region beg end)
-                    (insert (car response-strings)))
-                   ((eq eudc-multiple-match-handling-method 'select)
-                    (eudc-select response-strings beg end))
-                   ((eq eudc-multiple-match-handling-method 'all)
-                    (delete-region beg end)
-                    (insert (mapconcat 'identity response-strings ", ")))
-                   ((eq eudc-multiple-match-handling-method 'abort)
-                    (error "There is more than one match for the query"))))
+                          (if (or
+                               (and replace (not eudc-expansion-overwrites-query))
+                               (and (not replace) eudc-expansion-overwrites-query))
+                              (kill-ring-save beg end))
+                          (cond
+                            ((or (= (length response-strings) 1)
+                                 (null eudc-multiple-match-handling-method)
+                                 (eq eudc-multiple-match-handling-method 'first))
+                             (delete-region beg end)
+                             (insert (car response-strings)))
+                            ((eq eudc-multiple-match-handling-method 'select)
+                             (eudc-select response-strings beg end))
+                            ((eq eudc-multiple-match-handling-method 'all)
+                             (delete-region beg end)
+                             (insert (mapconcat 'identity response-strings ", ")))
+                            ((eq eudc-multiple-match-handling-method 'abort)
+                             (error "There is more than one match for the query"))))
 
-             (if (null response)
-                 (error "No match")
-
-
-               (lwarn 'eudc :debug "N: inline-expansion-format %s\nN: response %s\n" inline-expansion-format response)
-               ;; Process response through eudc-inline-expansion-format
-               (while response
-
-                 (let ((carresp (mapcar 'car (car response)))
-                       (formats eudc-inline-expansion-formats))
-                   (setq inline-expansion-format
-                         (or
-                          (catch 'fmtfound
-                            (while formats
-                              (lwarn 'eudc :debug "L: format %s\nL: carresp %s\nL:diff %s\n"
-                                     (eudc-translate-attribute-list
-                                      (cdr (car formats)))
-                                     carresp
-                                     (set-exclusive-or
-                                      carresp
-                                      (eudc-translate-attribute-list
-                                       (cdr (car formats)))))
-                              (unless (set-exclusive-or
-                                       carresp
-                                       (eudc-translate-attribute-list
-                                        (cdr (car formats))))
-                                (throw 'fmtfound (car formats)))
-                              (lwarn 'eudc :debug "P: format %s\nP: carresp %s\n"
-                                     (eudc-translate-attribute-list
-                                      (cdr (car formats)))
-                                     carresp)
-                              (setq formats (cdr formats))
-                              nil))
-                          inline-expansion-format)))
+                      (if (null response)
+                          (error "No match")
 
 
-                 (setq response-string (apply 'format
-                                              (car inline-expansion-format)
-                                              (mapcar (function
-                                                       (lambda (field)
-                                                        (or (cdr (assq field (car response)))
-                                                            "")))
-                                                      (eudc-translate-attribute-list
-                                                       (cdr inline-expansion-format)))))
-                 (if (> (length response-string) 0)
-                     (setq response-strings
-                           (cons response-string response-strings)))
-                 (setq response (cdr response)))
+                        (lwarn 'eudc :debug "N: inline-expansion-format %s\nN: response %s\n" inline-expansion-format response)
+                        ;; Process response through eudc-inline-expansion-format
+                        (while response
 
-               (if (or
-                    (and replace (not eudc-expansion-overwrites-query))
-                    (and (not replace) eudc-expansion-overwrites-query))
-                   (kill-ring-save beg end))
-               (cond
-                 ((or (= (length response-strings) 1)
-                      (null eudc-multiple-match-handling-method)
-                      (eq eudc-multiple-match-handling-method 'first))
-                  (delete-region beg end)
-                  (insert (car response-strings)))
-                 ((eq eudc-multiple-match-handling-method 'select)
-                  (eudc-select response-strings beg end))
-                 ((eq eudc-multiple-match-handling-method 'all)
-                  (delete-region beg end)
-                  (insert (mapconcat 'identity response-strings ", ")))
-                 ((eq eudc-multiple-match-handling-method 'abort)
-                  (error "There is more than one match for the query"))))))
-      (or (and (equal eudc-server eudc-former-server)
-               (equal eudc-protocol eudc-former-protocol))
-          (eudc-set-server eudc-former-server eudc-former-protocol t)))))
+                          (let ((carresp (mapcar 'car (car response)))
+                                (formats eudc-inline-expansion-formats))
+                            (setq inline-expansion-format
+                                  (or
+                                   (catch 'fmtfound
+                                     (while formats
+                                       (lwarn 'eudc :debug "L: format %s\nL: carresp %s\nL:diff %s\n"
+                                              (eudc-translate-attribute-list
+                                               (cdr (car formats)))
+                                              carresp
+                                              (set-exclusive-or
+                                               carresp
+                                               (eudc-translate-attribute-list
+                                                (cdr (car formats)))))
+                                       (unless (set-exclusive-or
+                                                carresp
+                                                (eudc-translate-attribute-list
+                                                 (cdr (car formats))))
+                                         (throw 'fmtfound (car formats)))
+                                       (lwarn 'eudc :debug "P: format %s\nP: carresp %s\n"
+                                              (eudc-translate-attribute-list
+                                               (cdr (car formats)))
+                                              carresp)
+                                       (setq formats (cdr formats))
+                                       nil))
+                                   inline-expansion-format)))
+
+
+                          (setq response-string (apply 'format
+                                                       (car inline-expansion-format)
+                                                       (mapcar (function
+                                                                (lambda (field)
+                                                                 (or (cdr (assq field (car response)))
+                                                                     "")))
+                                                               (eudc-translate-attribute-list
+                                                                (cdr inline-expansion-format)))))
+                          (if (> (length response-string) 0)
+                              (setq response-strings
+                                    (cons response-string response-strings)))
+                          (setq response (cdr response)))
+
+                        (if (or
+                             (and replace (not eudc-expansion-overwrites-query))
+                             (and (not replace) eudc-expansion-overwrites-query))
+                            (kill-ring-save beg end))
+                        (cond
+                          ((or (= (length response-strings) 1)
+                               (null eudc-multiple-match-handling-method)
+                               (eq eudc-multiple-match-handling-method 'first))
+                           (delete-region beg end)
+                           (insert (car response-strings)))
+                          ((eq eudc-multiple-match-handling-method 'select)
+                           (eudc-select response-strings beg end))
+                          ((eq eudc-multiple-match-handling-method 'all)
+                           (delete-region beg end)
+                           (insert (mapconcat 'identity response-strings ", ")))
+                          ((eq eudc-multiple-match-handling-method 'abort)
+                           (error "There is more than one match for the query"))))))
+               (or (and (equal eudc-server eudc-former-server)
+                        (equal eudc-protocol eudc-former-protocol))
+                   (eudc-set-server eudc-former-server eudc-former-protocol t)))))
 
 
          )
