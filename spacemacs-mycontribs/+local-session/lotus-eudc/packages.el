@@ -252,6 +252,8 @@ BEG and END delimit the text which is to be replaced."
              (insert replacement)))
 
 
+         (when nil
+
          (eudc-protocol-set 'eudc-attribute-display-method-alist
                             '(("jpegphoto" . eudc-display-jpeg-inline)
                               ("thumbnailphoto" . eudc-display-jpeg-inline)
@@ -270,7 +272,7 @@ BEG and END delimit the text which is to be replaced."
                               ("labeleduri" . eudc-display-url)
                               ("mail" . eudc-display-mail)
                               ("url" . eudc-display-url))
-                            )
+                            ))
 
 
          ;; Adds some hooks
