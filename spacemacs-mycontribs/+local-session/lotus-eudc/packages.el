@@ -443,7 +443,7 @@ see `eudc-inline-expansion-servers'"
                         (if (null response)
                             (error "No match")
 
-                          (lwarn 'eudc :debug "Z: response %s\n" inline-expansion-formats query-formats)
+                          (lwarn 'eudc :debug "Z: response= %s\n" response)
                           ;; Process response through eudc-inline-expansion-format
                           (while response
                             (setq response-string
