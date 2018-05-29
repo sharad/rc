@@ -323,8 +323,8 @@ see `eudc-inline-expansion-servers'"
                                                  (point-at-bol) 'move)
                              (goto-char (match-end 0)))
                          (point)))
-                  ;; (query-words (split-string (buffer-substring-no-properties beg end)
-                  ;;                            "[ \t]+"))
+                  (query-words (split-string (buffer-substring-no-properties beg end)
+                                             "[ \t]+"))
 
                   (query-words (mapcar
                                 '(lambda (w) (concat "*" w "*"))
