@@ -441,7 +441,7 @@ see `eudc-inline-expansion-servers'"
                              )))
 
                     (if nil
-                        (if (null response)
+                        (if (null response) ;old
                             (error "No match")
 
                           (lwarn 'eudc :debug "Z: response= %s\n" response)
