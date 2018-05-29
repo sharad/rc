@@ -522,7 +522,7 @@ see `eudc-inline-expansion-servers'"
                                                                      "")))
                                                                (eudc-translate-attribute-list
                                                                 (cdr inline-expansion-format)))))
-                          (if (> (length response-string) 0)
+                          (when (> (length response-string) 0)
                               (setq response-strings
                                     (cons response-string response-strings)))
                           (setq response (cdr response)))
