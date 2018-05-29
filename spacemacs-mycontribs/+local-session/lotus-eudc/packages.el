@@ -332,6 +332,11 @@ see `eudc-inline-expansion-servers'"
                   ;;                             "[ \t]+")))
                   query-formats
                   response
+
+                  inline-expansion-formats
+                  inline-expansion-format
+
+
                   response-string
                   response-strings
                   (eudc-former-server eudc-server)
