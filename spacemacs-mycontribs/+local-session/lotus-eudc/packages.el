@@ -254,25 +254,25 @@ BEG and END delimit the text which is to be replaced."
 
          (when nil
 
-         (eudc-protocol-set 'eudc-attribute-display-method-alist
-                            '(("jpegphoto" . eudc-display-jpeg-inline)
-                              ("thumbnailphoto" . eudc-display-jpeg-inline)
-                              ("labeledurl" . eudc-display-url)
-                              ("audio" . eudc-display-sound)
-                              ("labeleduri" . eudc-display-url)
-                              ("mail" . eudc-display-mail)
-                              ("url" . eudc-display-url))
-                            'ldap)
+           (eudc-protocol-set 'eudc-attribute-display-method-alist
+                              '(("jpegphoto" . eudc-display-jpeg-inline)
+                                ("thumbnailphoto" . eudc-display-jpeg-inline)
+                                ("labeledurl" . eudc-display-url)
+                                ("audio" . eudc-display-sound)
+                                ("labeleduri" . eudc-display-url)
+                                ("mail" . eudc-display-mail)
+                                ("url" . eudc-display-url))
+                              'ldap)
 
-         (eudc-protocol-set 'eudc-attribute-display-method-alist
-                            '(("jpegphoto" . eudc-display-jpeg-inline)
-                              ("thumbnailphoto" . eudc-display-jpeg-inline)
-                              ("labeledurl" . eudc-display-url)
-                              ("audio" . eudc-display-sound)
-                              ("labeleduri" . eudc-display-url)
-                              ("mail" . eudc-display-mail)
-                              ("url" . eudc-display-url))
-                            ))
+           (eudc-protocol-set 'eudc-attribute-display-method-alist
+                              '(("jpegphoto" . eudc-display-jpeg-inline)
+                                ("thumbnailphoto" . eudc-display-jpeg-inline)
+                                ("labeledurl" . eudc-display-url)
+                                ("audio" . eudc-display-sound)
+                                ("labeleduri" . eudc-display-url)
+                                ("mail" . eudc-display-mail)
+                                ("url" . eudc-display-url))
+                              ))
 
 
          ;; Adds some hooks
