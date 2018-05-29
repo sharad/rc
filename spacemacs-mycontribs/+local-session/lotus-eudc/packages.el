@@ -479,8 +479,6 @@ see `eudc-inline-expansion-servers'"
                     (eudc-set-server eudc-former-server eudc-former-protocol t))
                 (signal (car signal) (cdr signal))))))
 
-
-
          (defun email-eudc-query-form (&optional attribute-value-alist get-fields-from-server)
            "Display a form to query the directory server.
 If given a non-nil argument GET-FIELDS-FROM-SERVER, the function first
