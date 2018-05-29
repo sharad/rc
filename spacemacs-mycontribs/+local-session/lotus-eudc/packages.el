@@ -326,10 +326,10 @@ see `eudc-inline-expansion-servers'"
                   (query-words (split-string (buffer-substring-no-properties beg end)
                                              "[ \t]+"))
 
-                  (query-words (mapcar
-                                '(lambda (w) (concat w "*"))
-                                (split-string (buffer-substring-no-properties beg end)
-                                              "[ \t]+")))
+                  ;; (query-words (mapcar
+                  ;;               '(lambda (w) (concat "*" w "*"))
+                  ;;               (split-string (buffer-substring-no-properties beg end)
+                  ;;                             "[ \t]+")))
                   query-formats
                   response
                   response-string
