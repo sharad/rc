@@ -523,8 +523,10 @@ see `eudc-inline-expansion-servers'"
                                                                (eudc-translate-attribute-list
                                                                 (cdr inline-expansion-format)))))
                           (when (> (length response-string) 0)
+                            (progn
+                              (lwarn 'eudc :debug "adding response-string %s in list" response-string)
                               (setq response-strings
-                                    (cons response-string response-strings)))
+                                    (cons response-string response-strings))))
                           (setq response (cdr response)))
 
                         (if (or
