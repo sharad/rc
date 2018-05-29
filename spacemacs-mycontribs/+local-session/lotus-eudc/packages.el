@@ -194,7 +194,7 @@ attribute names are returned. Default to `person'"
               (name . sn)
               (firstname . givenName)
               (email . mail)
-              (displayname . displayName)
+              (displayName . displayname)
               (phone . telephoneNumber))
 
             eudc-inline-query-format '(
@@ -365,7 +365,7 @@ see `eudc-inline-expansion-servers'"
                   (progn
 
                     (if nil
-                        (setq response
+                        (setq response  ;old
                               (catch 'found
                                 ;; Loop on the servers
                                 (while servers
