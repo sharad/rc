@@ -489,7 +489,7 @@ see `eudc-inline-expansion-servers'"
 
                           (let ((carresp (mapcar 'car (car response)))
                                 (formats eudc-inline-expansion-formats))
-                            (lwarn 'eudc :debug "S: using format inline-expansion-format = %s" inline-expansion-format)
+                            (lwarn 'eudc :debug "X: carresp = %s" carresp)
                             (setq inline-expansion-format
                                   (or
                                    (catch 'fmtfound
