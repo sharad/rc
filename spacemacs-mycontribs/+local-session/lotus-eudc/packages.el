@@ -514,6 +514,7 @@ see `eudc-inline-expansion-servers'"
                                    inline-expansion-format)))
 
 
+                          (lwarn 'eudc :debug "S: using format inline-expansion-format = %s" inline-expansion-format)
                           (setq response-string (apply 'format
                                                        (car inline-expansion-format)
                                                        (mapcar (function
