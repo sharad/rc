@@ -111,8 +111,9 @@ attribute names are returned. Default to `person'"
                         (cons "objectClass" "group")))
                       eudc-server nil t))))
 
-         (eudc-protocol-set 'eudc-list-attributes-function 'broad-eudc-ldap-get-field-list
-                            'ldap)
+         (when nil
+          (eudc-protocol-set 'eudc-list-attributes-function 'broad-eudc-ldap-get-field-list
+                            'ldap))
 
          ;; (setq eudc-office 'meru)
          (setq eudc-office 'fortinet)
