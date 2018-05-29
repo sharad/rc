@@ -481,7 +481,7 @@ see `eudc-inline-expansion-servers'"
                       (if (null response)
                           (error "No match")
 
-
+                        (lwarn 'eudc :debug "Z: result => response= %s\n" response)
                         (lwarn 'eudc :debug "N: inline-expansion-format %s\nN: response %s\n" inline-expansion-format response)
                         ;; Process response through eudc-inline-expansion-format
                         (while response
