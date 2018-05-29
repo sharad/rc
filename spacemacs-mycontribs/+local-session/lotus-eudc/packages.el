@@ -194,6 +194,7 @@ attribute names are returned. Default to `person'"
               (name . sn)
               (firstname . givenName)
               (email . mail)
+              (displayname . displayName)
               (phone . telephoneNumber))
 
             eudc-inline-query-format '(
