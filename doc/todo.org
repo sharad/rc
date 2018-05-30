@@ -20,3 +20,5 @@
 *** WM
 **** stumpwm
      Add support for sending SIG especially SIGSTOP and SIGCONT to window
+*** On Screen Display or conky or OSD kind of information rendering system for wide information
+    with capability for interactivity.
