@@ -5,7 +5,6 @@
 ** Terminal
 *** URXVT add support for checking inactivity activity, activity followed by inactivity, inactivity followed by activity.
 **** We need to implement support for dialog box to receive character strings.
-
 ** Internet
 *** Browser
 
