@@ -7,7 +7,6 @@
 **** We need to implement support for dialog box to receive character strings.
 ** Internet
 *** Browser
-
 **** Add support for auto bookmark based on based on activity time on site
 
 **** Add support for session bookmark
@@ -19,4 +18,4 @@
 In line of cron, anacron, it will be inactivity-cron
 ** UI => GUI => WM
 *** stumpwm
-Add support for sending SIG especially SIGSTOP and SIGCONT to window
+    Add support for sending SIG especially SIGSTOP and SIGCONT to window
