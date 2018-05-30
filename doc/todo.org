@@ -7,7 +7,6 @@
 **** We need to implement support for dialog box to receive character strings.
 
 ** Internet
-
 *** Browser
 
 **** Add support for auto bookmark based on based on activity time on site
