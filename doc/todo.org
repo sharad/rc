@@ -13,3 +13,7 @@
 **** Add support for auto bookmark based on based on activity time on site
 
 **** Add support for session bookmark
+
+** Security
+
+*** Keymanager gpg-agent ssh-agent and gnome-keyring etc need to be locked or identities need to be flushed on inactivity or locking.
