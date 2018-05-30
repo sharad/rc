@@ -9,13 +9,13 @@
 *** Browser
 **** Add support for auto bookmark based on based on activity time on site
 
-**** Add support for session bookmark
+**** Add support for session bookmarks
 ** Security
 *** Keymanager gpg-agent ssh-agent and gnome-keyring etc need to be locked or identities need to be flushed on inactivity or locking.
     again need to be asked when logging-in back.
 ** Automation
 *** Script to run heavy tasks on detecting inactivity and low system usages.
-In line of cron, anacron, it will be inactivity-cron
+    In line of cron, anacron, it will be inactivity-cron
 ** UI => GUI => WM
 *** stumpwm
     Add support for sending SIG especially SIGSTOP and SIGCONT to window
