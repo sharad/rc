@@ -28,6 +28,9 @@
         (if heading   (org-context-clock-task-set-property task :task-clock-heading heading))
         (if heading-prop (org-context-clock-task-set-property task :task-clock-heading-prop heading-prop))
         (if clock-sum (org-context-clock-task-set-property task :task-clock-clock-sum clock-sum))
+
+        (make-occ-task )
+
         (let ((inherited-props (org-context-clock-keys-with-operation :getter nil)))
           (dolist (prop inherited-props)
             (let* ((propstr (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))
