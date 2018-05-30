@@ -29,7 +29,8 @@
         (if heading-prop (org-context-clock-task-set-property task :task-clock-heading-prop heading-prop))
         (if clock-sum (org-context-clock-task-set-property task :task-clock-clock-sum clock-sum))
 
-        (make-occ-task )
+        (make-occ-task :heading heading
+                       :file file)
 
         (let ((inherited-props (org-context-clock-keys-with-operation :getter nil)))
           (dolist (prop inherited-props)
