@@ -1,0 +1,15 @@
+
+* Setup user TODOs
+
+** Utilities
+*** Add proper support for gitwatch auto-checkin and updates
+** Terminal
+*** URXVT add support for checking inactivity activity, activity followed by inactivity, inactivity followed by activity.
+
+** Internet
+
+*** Browser
+
+**** Add support for auto bookmark based on based on activity time on site
+
+**** Add support for session bookmark
