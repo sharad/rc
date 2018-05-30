@@ -40,7 +40,7 @@
 (defstruct occ-obj
   name)
 
-(defstruct< (occ-prop (:include occ-obj))
+(defstruct (occ-prop (:include occ-obj))
   value)
 
 (cl-defstruct (occ-task (:include occ-obj))
