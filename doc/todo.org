@@ -16,6 +16,7 @@
 ** Automation
 *** Script to run heavy tasks on detecting inactivity and low system usages.
     In line of cron, anacron, it will be inactivity-cron
-** UI => GUI => WM
-*** stumpwm
-    Add support for sending SIG especially SIGSTOP and SIGCONT to window
+** UI => GUI
+*** WM
+**** stumpwm
+     Add support for sending SIG especially SIGSTOP and SIGCONT to window
