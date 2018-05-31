@@ -41,7 +41,8 @@
 
 (symbol-value (aref baseobj1 0))
 
-(defun cl-get-class (inst))
+(defun cl-get-class (inst)
+  (aref task 0))
 
 (cl-defmethod occ-get-property ((task occ-task) prop)
   (if (memq prop (class-slots (aref task 0)))
