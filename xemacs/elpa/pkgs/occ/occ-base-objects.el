@@ -98,13 +98,6 @@
 
 
 
-;; (defun org-Xtask-get-property (task property)
-(defun occ-task-get-property (task property)
-  (plist-get task property))
-
-;; (defun org-Xtask-set-property (task property value)x50
-(defun occ-task-set-property (task property value)
-  (plist-put task property value))
 
 (defun occ-tasks-associated-to-context (context)
   ;; (funcall occ-api-tasks-associated-to-context context)
