@@ -41,6 +41,10 @@
   (cl-defstruct (point :conc-name)
     (x 0) (y 0))
 
+  (setf point (make-point :x 5 :y 3))
+  (slot-value point 'x)
+
+
 
   (cl-defstruct base
     baseattr)
