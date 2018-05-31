@@ -1,7 +1,7 @@
 
 (require 'occ-base-objects)
 
-(defun occ-make-task-at-point ()
+(defun occ-make-task-at-point (fn)
   ;; (org-element-at-point)
   (let ((heading-with-string-prop
          (unless (org-before-first-heading-p)
