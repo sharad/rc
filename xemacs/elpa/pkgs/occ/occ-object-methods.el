@@ -28,10 +28,10 @@
 
 (when nil ;; https://curiousprogrammer.wordpress.com/2010/07/19/emacs-defstruct-vs-other-languages/
 
-  (defun get-field (object field)
+  (defun cl-get-field (object field)
     (cl-struct-slot-value (cl-classname object) field object))
 
-  (defun set-field (object field value)
+  (defun cl-set-field (object field value)
     (setf (cl-struct-slot-value (cl-classname object) field object) value))
 
   (get-field dave 'name)
