@@ -39,10 +39,10 @@
 (when nil
 
   (cl-defstruct xpoint
-    (x 0) (y 0))
+    x y)
 
   (setf point (make-point :x 5 :y 3))
-  (setf (slot-value point 'x) 1)
+  (setf (slot-value point :x) 1)
 
 
 
