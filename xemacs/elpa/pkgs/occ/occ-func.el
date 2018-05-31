@@ -22,10 +22,10 @@
           (task (cadr (org-element-at-point))))
       (when heading
         (make-occ-tree-task :heading heading
-                       :file file
-                       :point point
-                       :heading-prop heading-prop
-                       :clock-sum clock-sum)
+                            :file file
+                            :point point
+                            :heading-prop heading-prop
+                            :clock-sum clock-sum)
 
         (let ((inherited-props (org-context-clock-keys-with-operation :getter nil)))
           (dolist (prop inherited-props)
