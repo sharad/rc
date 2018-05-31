@@ -35,7 +35,7 @@
             (let* ((propstr (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))
                    (val (org-entry-get nil propstr t)))
               (unless (org-context-clock-task-get-property task prop)
-                (org-context-clock-task-set-property task prop val))))))
+                (aref task prop val))))))
       task)))
 
 ;; (defun org-task-collect-task-clock-info ()
