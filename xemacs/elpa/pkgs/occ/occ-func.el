@@ -30,7 +30,8 @@
         (if clock-sum (org-context-clock-task-set-property task :task-clock-clock-sum clock-sum))
 
         (make-occ-task :heading heading
-                       :file file)
+                       :file file
+                       :point point)
 
         (let ((inherited-props (org-context-clock-keys-with-operation :getter nil)))
           (dolist (prop inherited-props)
