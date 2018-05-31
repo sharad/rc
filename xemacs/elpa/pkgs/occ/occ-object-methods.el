@@ -31,7 +31,7 @@
     (cdr (assoc field (symbol-value (aref object 1)))))
 
   (defun get-field (object field)
-    (cl-struct-slot-value (cl-classname object) prop task))
+    (cl-struct-slot-value (cl-classname object) prop object))
 
   (defun set-field (object field value)
     (setf (aref object (get-index object field)) value))
