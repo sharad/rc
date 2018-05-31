@@ -43,7 +43,7 @@
 
 (cl-defmethod occ-get-property ((task occ-task) prop)
   (if (memq prop (class-slots (aref task 0)))
-      (cl-struct-slot-value 'xpoint prop point)
+      (cl-struct-slot-value  prop task)
     (plist-get (aref task :plist) prop)))
 
 (cl-defmethod occ-set-property ((task occ-task) prop val)
