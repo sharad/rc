@@ -21,7 +21,7 @@
                          (org-clock-sum-current-item)))
           (task (cadr (org-element-at-point))))
       (when heading
-        (make-occ-task :heading heading
+        (make-occ-tree-task :heading heading
                        :file file
                        :point point
                        :heading-prop heading-prop
