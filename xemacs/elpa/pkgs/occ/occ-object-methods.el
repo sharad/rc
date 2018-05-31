@@ -34,7 +34,7 @@
     (cl-struct-slot-value (cl-classname object) field object))
 
   (defun set-field (object field value)
-    (setf (aref object (get-index object field)) value))
+    (setf (cl-struct-slot-value (cl-classname object) field object) value))
 
   (get-field dave 'name)
   (set-field dave 'name "Simon Smith"))
