@@ -36,18 +36,19 @@
 ;; "org tasks accss common api"
 ;; (defvar org-)
 
-(cl-defstruct base
-  baseattr)
+(when nil
+  (cl-defstruct base
+   baseattr)
 
-(cl-defstruct (drived (:include base))
-              drivedattr)
+ (cl-defstruct (drived (:include base))
+   drivedattr)
 
-(setf baseobj1 (make-base :baseattr "xbaseattr"))
+ (setf baseobj1 (make-base :baseattr "xbaseattr"))
 
-(setf drivedobj1
-      (make-drived
-       :baseattr "xbaseattr"
-       :drivedattr "xdrivedattr"))
+ (setf drivedobj1
+       (make-drived
+        :baseattr "xbaseattr"
+        :drivedattr "xdrivedattr")))
 
 (defvar occ-verbose 0)
 
