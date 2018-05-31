@@ -38,7 +38,7 @@
 
 (when nil
 
-  (cl-defstruct point
+  (cl-defstruct xpoint
     (x 0) (y 0))
 
   (setf point (make-point :x 5 :y 3))
