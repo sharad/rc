@@ -28,7 +28,7 @@
 
 
 (cl-defmethod occ-get-property ((task occ-task) prop)
-  (if (aref task prop)
+  (if (class-slots 'occ-task)
       (aref task prop)
     (plist-get (aref task :plist) prop)))
 
