@@ -42,12 +42,14 @@
 (cl-defstruct drived (:include base)
               drivedattr)
 
-(make-drived
- :baseattr "xbaseattr"
- :drivedattr "xdrivedattr")
+
 
 (setf baseobj1 (make-base :baseattr "xbaseattr"))
 
+(setf drivedobj
+      (make-drived
+       :baseattr "xbaseattr"
+       :drivedattr "xdrivedattr"))
 
 (defvar occ-verbose 0)
 
