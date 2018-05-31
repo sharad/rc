@@ -40,7 +40,7 @@
       task)))
 
 ;; (defun org-task-collect-task-clock-info ()
-(defun occ-make-task-from-clock ()
+(defun occ-make-task-from-clock (builder)
   ;; NOT used anywhere
   ;; (org-element-at-point)
   (let ((heading-with-string-prop
