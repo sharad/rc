@@ -46,7 +46,7 @@
 
 (setf baseobj1 (make-base :baseattr "xbaseattr"))
 
-(setf drivedobj
+(setf drivedobj1
       (make-drived
        :baseattr "xbaseattr"
        :drivedattr "xdrivedattr"))
