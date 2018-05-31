@@ -34,7 +34,7 @@
           (dolist (prop inherited-props)
             (let* ((propstr (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))
                    (val (org-entry-get nil propstr t)))
-              (unless (plist-put (aref task :plist) prop val)
+              (unless (plist-get (aref task :plist) prop)
                 (plist-put (aref task :plist) prop val))))))
       task)))
 
