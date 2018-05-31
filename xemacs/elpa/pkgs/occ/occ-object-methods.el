@@ -26,17 +26,18 @@
 (require 'occ-base-objects)
 
 
-(defsubst get-index (object field)
-  (cdr (assoc field (symbol-value (aref object 1)))))
+(when nil ;; https://curiousprogrammer.wordpress.com/2010/07/19/emacs-defstruct-vs-other-languages/
+  (defsubst get-index (object field)
+    (cdr (assoc field (symbol-value (aref object 1)))))
 
-(defun get-field (object field)
-  (aref object (get-index object field)))
+  (defun get-field (object field)
+    (aref object (get-index object field)))
 
-(defun set-field (object field value)
-  (setf (aref object (get-index object field)) value))
+  (defun set-field (object field value)
+    (setf (aref object (get-index object field)) value))
 
-(get-field dave 'name)
-(set-field dave 'name "Simon Smith")
+  (get-field dave 'name)
+  (set-field dave 'name "Simon Smith"))
 
 (cl-defmethod occ-get-property ((task occ-task) prop)
   (if (memq prop (class-slots (aref baseobj1 0)))
