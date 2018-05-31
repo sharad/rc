@@ -37,12 +37,16 @@
 ;; (defvar org-)
 
 (cl-defstruct base
-  :baseattr)
+  baseattr)
 
 (cl-defstruct drived (:include base)
-              :drivedattr)
+              drivedattr)
 
-(make-drived (make-base "baseattr"))
+(make-drived
+ :baseattr "xbaseattr"
+ :drivedattr "xdrivedattr")
+
+(setf baseobj1 (make-base :baseattr "xbaseattr"))
 
 
 (defvar occ-verbose 0)
