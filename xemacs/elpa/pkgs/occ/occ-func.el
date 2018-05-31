@@ -35,7 +35,7 @@
             (let* ((propstr (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))
                    (val (org-entry-get nil propstr t)))
               (unless (org-context-clock-task-get-property task prop)
-                (push  prop val
+                (plist-put prop val
                        (aref task :plist)))))))
       task)))
 
