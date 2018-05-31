@@ -1,6 +1,23 @@
 
 (require 'occ-base-objects)
 
+(defun occ-heading-content-only ()
+  (if (org-at-heading-p)
+      (save-excursion
+        (save-restriction
+          (let ((start (progn
+                         (goto-char (org-element-property :contents-begin (org-element-at-point)))
+                         (while (org-at-drawer-p)
+                           (goto-char (org-element-property :end (org-element-at-point))))
+                         ;; (if (org-at-heading-p) (backward-char))
+                         (point))))
+            (unless (org-at-heading-p)
+              (progn
+                (outline-next-heading)
+                ;; (outline-next-visible-heading 1)
+                (backward-char)
+                (buffer-substring start (point)))))))))
+
 (defun occ-make-task-at-point (builder)
   ;; (org-element-at-point)
   (let (task
@@ -77,7 +94,7 @@
               (unless (plist-get (aref task :plist) prop)
                 (plist-put (aref task :plist) prop val)))))
         (if heading-with-string-prop
-            (plist-put (aref task :plist) :task-clock-content (org-context-clock-heading-content-only))))
+            (plist-put (aref task :plist) :task-clock-content (occ-heading-content-only))))
       task)))
 
 
