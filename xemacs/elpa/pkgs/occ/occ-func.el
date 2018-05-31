@@ -59,7 +59,7 @@
           (clock-sum (if (org-before-first-heading-p)
                          0
                          (org-clock-sum-current-item)))
-          (task (cadr (org-element-at-point)))
+          (task-plist (cadr (org-element-at-point)))
           (task-content-start ))
       (when heading
         (setf task
@@ -77,7 +77,7 @@
               (unless (plist-get (aref task :plist) prop)
                 (plist-put (aref task :plist) prop val)))))
         (if heading-with-string-prop
-            (org-context-clock-task-set-property task :task-clock-content (org-context-clock-heading-content-only))))
+            (plist-put (aref task :plist) :task-clock-content (org-context-clock-heading-content-only))))
       task)))
 
 
