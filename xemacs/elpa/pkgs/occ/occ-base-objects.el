@@ -42,6 +42,9 @@
 (cl-defstruct drived (:include base)
               :drivedattr)
 
+(make-base "baseattr")
+
+
 (defvar occ-verbose 0)
 
 (defstruct occ-obj
