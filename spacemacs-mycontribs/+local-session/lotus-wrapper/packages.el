@@ -1,4 +1,4 @@
-;;; packages.el --- LAYER layer packages file for Spacemacs.
+;;; packages.el --- lotus-wrapper layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
@@ -18,27 +18,27 @@
 ;;
 ;;
 ;; Briefly, each package to be installed or configured by this layer should be
-;; added to `LAYER-packages'. Then, for each package PACKAGE:
+;; added to `lotus-wrapper-packages'. Then, for each package PACKAGE:
 ;;
 ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
-;;   function `LAYER/init-PACKAGE' to load and initialize the package.
+;;   function `lotus-wrapper/init-PACKAGE' to load and initialize the package.
 
 ;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
-;;   define the functions `LAYER/pre-init-PACKAGE' and/or
-;;   `LAYER/post-init-PACKAGE' to customize the package as it is loaded.
+;;   define the functions `lotus-wrapper/pre-init-PACKAGE' and/or
+;;   `lotus-wrapper/post-init-PACKAGE' to customize the package as it is loaded.
 
 ;;; Code:
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-wrapperS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
-(defconst LAYER-packages
+(defconst lotus-wrapper-packages
   '(
     (PACKAGE :location local)
     )
-  "The list of Lisp packages required by the LAYER layer.
+  "The list of Lisp packages required by the lotus-wrapper layer.
 
 Each entry is either:
 
@@ -65,7 +65,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun LAYER/init-PACKAGE ()
+(defun lotus-wrapper/init-PACKAGE ()
   (use-package PACKAGE
       :defer t
       :config
