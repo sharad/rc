@@ -34,7 +34,14 @@
 ;; https://stackoverflow.com/questions/40884764/lisp-get-all-slot-names-from-an-class-instance
 
 ;; "org tasks accss common api"
-    ;; (defvar org-)
+;; (defvar org-)
+
+(cl-defstruct base
+  :baseattr)
+
+(cl-defstruct drived (:include base)
+              :drivedattr)
+
 (defvar occ-verbose 0)
 
 (defstruct occ-obj
