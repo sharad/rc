@@ -31,7 +31,7 @@
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-wrapperS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-wrapper-packages
