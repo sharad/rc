@@ -52,7 +52,7 @@
 (cl-defmethod occ-set-property ((task occ-task) prop val)
   (if (memq prop (class-slots (cl-classname task)))
       (setf (cl-struct-slot-value (cl-classname task) prop task) val)
-    (plist-put (aref task :plist) prop val)))
+    (plist-put (cl-struct-slot-value (cl-classname task) 'plist task) prop val)))
 
 (cl-defmethod occ-fontify-like-in-org-mode ((task occ-task))
   (let* ((level   (or (occ-get-property task :level) 0))
