@@ -28,7 +28,8 @@
                        :file file
                        :point point
                        :heading-prop heading-prop
-                       :clock-sum clock-sum))
+                       :clock-sum clock-sum
+                       :plist task-plist))
 
         (let ((inherited-props (org-context-clock-keys-with-operation :getter nil)))
           (dolist (prop inherited-props)
