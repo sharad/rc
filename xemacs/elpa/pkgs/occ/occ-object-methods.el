@@ -39,6 +39,7 @@
   (get-field dave 'name)
   (set-field dave 'name "Simon Smith"))
 
+(symbol-value (aref baseobj1 0))
 
 (cl-defmethod occ-get-property ((task occ-task) prop)
   (if (memq prop (class-slots (aref task 0)))
