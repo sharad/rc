@@ -20,8 +20,7 @@
           (clock-sum (if (org-before-first-heading-p)
                          0
                          (org-clock-sum-current-item)))
-          ;; (task-plist (cadr (org-element-at-point)))
-          )
+          (task-plist (cadr (org-element-at-point))))
       (when heading
         (setf task
               (funcall builder
