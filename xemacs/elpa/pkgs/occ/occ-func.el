@@ -3,7 +3,8 @@
 
 (defun occ-make-task-at-point (builder)
   ;; (org-element-at-point)
-  (let ((heading-with-string-prop
+  (let (task
+        (heading-with-string-prop
          (unless (org-before-first-heading-p)
            (org-get-heading 'notags))))
     (let ((heading (if heading-with-string-prop
