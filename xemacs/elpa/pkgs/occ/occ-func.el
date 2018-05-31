@@ -60,6 +60,7 @@
                          0
                          (org-clock-sum-current-item)))
           (task-plist (cadr (org-element-at-point))))
+      ;; (task-content-start )
       (when heading
         (setf task
               (funcall builder
