@@ -41,8 +41,8 @@
   (cl-defstruct xpoint
     x y)
 
-  (setf point (make-point :x 5 :y 3))
-  (setf (slot-value point :x) 1)
+  (setf point (make-xpoint :x 5 :y 3))
+  
 
 
 
