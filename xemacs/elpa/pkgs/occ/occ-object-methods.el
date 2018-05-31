@@ -27,8 +27,6 @@
 
 
 (when nil ;; https://curiousprogrammer.wordpress.com/2010/07/19/emacs-defstruct-vs-other-languages/
-  (defsubst get-index (object field)
-    (cdr (assoc field (symbol-value (aref object 1)))))
 
   (defun get-field (object field)
     (cl-struct-slot-value (cl-classname object) field object))
