@@ -37,6 +37,11 @@
 ;; (defvar org-)
 
 (when nil
+
+  (cl-defstruct (point :conc-name)
+    (x 0) (y 0))
+
+
   (cl-defstruct base
     baseattr)
 
