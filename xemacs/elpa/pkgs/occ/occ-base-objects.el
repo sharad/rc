@@ -39,10 +39,8 @@
 (cl-defstruct base
   baseattr)
 
-(cl-defstruct drived (:include base)
+(cl-defstruct (drived (:include base))
               drivedattr)
-
-
 
 (setf baseobj1 (make-base :baseattr "xbaseattr"))
 
