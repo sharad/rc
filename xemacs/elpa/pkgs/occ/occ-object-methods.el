@@ -41,6 +41,10 @@
 
 (defun cl-classname (inst)
   (aref inst 0))
+(defun cl-get-field (object field)
+  (cl-struct-slot-value (cl-classname object) field object))
+(defun cl-set-field (object field value)
+  (setf (cl-struct-slot-value (cl-classname object) field object) value))
 
 (cl-defmethod occ-get-property ((task occ-task) prop)
   (if (memq prop (class-slots (cl-classname task)))
