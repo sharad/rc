@@ -25,6 +25,7 @@
 
 (require 'occ-common)
 (require 'occ-base-objects)
+(require 'occ-object-methods)
 
 (defun occ-heading-content-only ()
   (if (org-at-heading-p)
