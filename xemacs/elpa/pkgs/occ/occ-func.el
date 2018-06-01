@@ -118,6 +118,7 @@
               (unless (occ-get-property task prop)
                 (occ-set-property task prop val)))))
         (if heading-with-string-prop
+            (occ-set-property task 'task-clock-content val)
             (plist-put (aref task :plist) :task-clock-content (occ-heading-content-only))))
       task)))
 
