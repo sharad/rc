@@ -161,7 +161,7 @@
    (cl-classname occ-global-tree-task-collection)
    'tree))
 
-(defmethod occ-collect-task ())
+(defmethod occ-collect-task ((collection occ-tree-task-cllection)))
 
 (defvar occ-global-list-task-collection nil)
 (defun occ-make-list-task-collection (root-dir)
