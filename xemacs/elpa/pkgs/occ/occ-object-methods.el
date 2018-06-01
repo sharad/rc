@@ -39,7 +39,9 @@
 
 
 (defun sym2key (sym)
-  (if (keywordp sym)))
+  (if (keywordp sym)
+      sym
+    (intern-soft (concat ":" (symbol-name sym)))))
 (defun cl-classname (inst)
   (aref inst 0))
 (defun cl-get-field (object field)
