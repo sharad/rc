@@ -154,7 +154,7 @@
   (unless occ-global-tree-task-collection
     (let ((collection (make-occ-tree-task-collection
                        :name nil)))
-      (occ-set-property ))))
+      (cl-struct-slot-value (cl-classname task) 'plist task))))
 
 (defvar occ-global-list-task-collection nil)
 (defun occ-make-list-task-collection ()
