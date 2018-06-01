@@ -143,7 +143,7 @@
                    :buffer buff)))
     context))
 
-(defmethod occ-make-contextual-task ()
+(defmethod occ-make-contextual-task ((task occ-task) (occ-context))
   )
 
 (defvar occ-global-tree-task-collection nil)
