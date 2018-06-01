@@ -124,7 +124,7 @@
       task)))
 
 
-(defun occ-build-context (&optional buff)
+(defun occ-make-context (&optional buff)
   (let* ((buff (if buff
                    (if (bufferp buff)
                        buff
