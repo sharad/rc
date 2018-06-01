@@ -67,6 +67,7 @@
       (when heading
         (setf task
               (funcall builder
+                       :name    heading
                        :heading heading
                        :file file
                        :point point
@@ -123,7 +124,6 @@
         (if heading-with-string-prop
             (occ-set-property task 'task-clock-content (occ-heading-content-only))))
       task)))
-
 
 (defun occ-make-context (&optional buff)
   (let* ((buff (if buff
