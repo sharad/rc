@@ -23,6 +23,7 @@
 
 ;;; Code:
 
+(require 'occ-common)
 (require 'occ-base-objects)
 
 
