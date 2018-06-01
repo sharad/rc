@@ -160,7 +160,7 @@
   (unless (cl-struct-slot-value
            (cl-classname occ-global-tree-task-collection)
            'tree)
-    (occ-collect-task occ-global-list-task-collection)))
+    (occ-collect-task occ-global-tree-task-collection)))
 
 (defmethod occ-collect-task ((collection occ-tree-task-cllection))
   )
