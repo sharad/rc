@@ -170,7 +170,7 @@
       (setf occ-global-list-task-collection collection)))
 
   (cl-struct-slot-value
-   (cl-classname collection)
+   (cl-classname occ-global-list-task-collection)
    'list))
 
 (provide 'occ-func)
