@@ -162,7 +162,8 @@
 (defun occ-make-list-task-collection (root-dir)
   (unless occ-global-list-task-collection
     (let ((collection (make-occ-list-task-collection
-                       :name nil)))
+                       :name nil
+                       :root-dir root-dir)))
       (cl-struct-slot-value (cl-classname collection) 'list)
       (setf occ-global-list-task-collection collection))))
 
