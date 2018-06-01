@@ -71,6 +71,7 @@
 
 (cl-defstruct (occ-task (:include occ-obj))
   heading
+  heading-prop
   marker
   file
   point
