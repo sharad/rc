@@ -150,11 +150,11 @@
    :context context))
 
 (defvar occ-global-tree-task-collection nil)
-(defun occ-make-tree-task-collection (file)
+(defun occ-make-tree-task-collection (top-file)
   (unless occ-global-tree-task-collection
     (let ((collection (make-occ-tree-task-collection
                        :name nil
-                       :top-file file)))
+                       :top-file top-file)))
       (cl-struct-slot-value (cl-classname collection) 'tree)
       (setf occ-global-tree-task-collection collection))))
 
