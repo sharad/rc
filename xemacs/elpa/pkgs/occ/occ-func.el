@@ -153,7 +153,8 @@
 (defun occ-make-tree-task-collection (file)
   (unless occ-global-tree-task-collection
     (let ((collection (make-occ-tree-task-collection
-                       :name nil)))
+                       :name nil
+                       :top-file file)))
       (cl-struct-slot-value (cl-classname collection) 'tree)
       (setf occ-global-tree-task-collection collection))))
 
