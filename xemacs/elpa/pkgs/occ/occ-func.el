@@ -136,7 +136,10 @@
                  (window-buffer)))
          (buf (org-base-buffer buf))
          (file (buffer-file-name buff))
-         (context (make-occ-context :file file :buffer buff)))
+         (context (make-occ-context
+                   :name nil
+                   :file file
+                   :buffer buff)))
     context))
 
 (provide 'occ-func)
