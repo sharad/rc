@@ -96,10 +96,10 @@
 (cl-defgeneric occ-matching-contextual-tasks (context)
   )
 
-(cl-defstruct (occ-task-tree-task-collection (:include occ-obj))
+(cl-defstruct (occ-tree-task-collection (:include occ-obj))
   tree)
 
-(cl-defstruct (occ-task-tree-list-collection (:include occ-obj))
+(cl-defstruct (occ-list-task-collection (:include occ-obj))
   list)
 
 ;; (mapcar #'slot-definition-name (class-slots occ-task))
