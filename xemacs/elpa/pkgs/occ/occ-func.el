@@ -175,7 +175,7 @@
   (unless (cl-struct-slot-value
            (cl-classname occ-global-list-task-collection)
            'list)
-    (occ-collect-task)))
+    (occ-collect-task occ-global-list-task-collection)))
 
 (defmethod occ-collect-task ((collection occ-list-task-cllection))
   )
