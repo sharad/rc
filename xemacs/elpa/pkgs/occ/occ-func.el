@@ -150,6 +150,8 @@
    :context context))
 
 (defvar occ-global-tree-task-collection nil)
+(defmethod occ-collect-task ((collection occ-tree-task-cllection))
+  )
 (defun occ-make-tree-task-collection (root-file)
   (unless occ-global-tree-task-collection
     (let ((collection (make-occ-tree-task-collection
@@ -162,10 +164,10 @@
            'tree)
     (occ-collect-task occ-global-tree-task-collection)))
 
-(defmethod occ-collect-task ((collection occ-tree-task-cllection))
-  )
 
 (defvar occ-global-list-task-collection nil)
+(defmethod occ-collect-task ((collection occ-list-task-cllection))
+  )
 (defun occ-make-list-task-collection (root-dir)
   (unless occ-global-list-task-collection
     (let ((collection (make-occ-list-task-collection
@@ -178,8 +180,7 @@
            'list)
     (occ-collect-task occ-global-list-task-collection)))
 
-(defmethod occ-collect-task ((collection occ-list-task-cllection))
-  )
+
 
 (provide 'occ-func)
 ;;; occ-func.el ends here
