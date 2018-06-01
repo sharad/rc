@@ -143,7 +143,8 @@
                    :buffer buff)))
     context))
 
-(defun occ-make-tree-task-collection)
+(defun occ-make-tree-task-collection ()
+  )
 
 (provide 'occ-func)
 ;;; occ-func.el ends here
