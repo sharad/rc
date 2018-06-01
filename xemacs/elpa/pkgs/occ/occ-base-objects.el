@@ -43,7 +43,7 @@
 
   (setf point (make-xpoint :x 5 :y 3))
   
-
+  (setf (cl-struct-slot-value 'xpoint 'x point) 3)
 
 
   (cl-defstruct base
