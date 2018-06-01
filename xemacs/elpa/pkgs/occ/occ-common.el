@@ -38,7 +38,8 @@
       sym
     (intern-soft (concat ":" (symbol-name sym)))))
 (defun cl-classname (inst)
-  ((aref inst 0)))
+  (
+   (aref inst 0)))
 (cl-classname (make-occ-task))
 (defun cl-get-field (object field)
   (cl-struct-slot-value (cl-classname object) field object))
