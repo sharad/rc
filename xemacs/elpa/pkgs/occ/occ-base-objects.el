@@ -99,7 +99,7 @@
   tree)
 
 (cl-defstruct occ-task-tree-list-collection (occ-obj)
-  list)
+              list)
 
 ;; (mapcar #'slot-definition-name (class-slots occ-task))
 
