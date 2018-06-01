@@ -150,7 +150,8 @@
 
 (defvar occ-global-list-task-collection nil)
 (defun occ-make-list-task-collection ()
-  )
+  (unless occ-global-list-task-collection
+    ))
 
 (provide 'occ-func)
 ;;; occ-func.el ends here
