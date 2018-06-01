@@ -159,10 +159,10 @@
 
 (defvar occ-global-list-task-collection nil)
 (defun occ-make-list-task-collection ()
-  (unless occ-global-tree-task-collection
-    (let ((collection (make-occ-tree-task-collection
+  (unless occ-global-list-task-collection
+    (let ((collection (make-occ-list-task-collection
                        :name nil)))
-      (cl-struct-slot-value (cl-classname collection) 'tree)
+      (cl-struct-slot-value (cl-classname collection) 'list)
       )))
 
 (provide 'occ-func)
