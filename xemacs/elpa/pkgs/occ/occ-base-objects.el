@@ -101,15 +101,6 @@
 
 ;; (mapcar #'slot-definition-name (class-slots occ-task))
 
-(defun class-slots (class)
-  (mapcar
-   #'(lambda (slot) (aref slot 1))
-   (cl--struct-class-slots
-    (cl--struct-get-class class))))
-
-
-
-
 (defun occ-tasks-associated-to-context (context)
   ;; (funcall occ-api-tasks-associated-to-context context)
   (funcall occ-matching-tasks context))
