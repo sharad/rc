@@ -168,7 +168,10 @@
                        :name nil
                        :root-dir root-dir)))
       (setf occ-global-list-task-collection collection)))
-  (cl-struct-slot-value (cl-classname collection) 'list))
+
+  (cl-struct-slot-value
+   (cl-classname collection)
+   'list))
 
 (provide 'occ-func)
 ;;; occ-func.el ends here
