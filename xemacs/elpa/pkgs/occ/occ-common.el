@@ -54,7 +54,7 @@
    (cl--struct-class-slots
     (cl--struct-get-class class))))
 
-(cl-get-field (make-occ-task) 'cl-tag-slot)
+
 
 (provide 'occ-api-common)
 ;;; occ-api-common.el ends here
