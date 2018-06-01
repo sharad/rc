@@ -155,8 +155,9 @@
     (let ((collection (make-occ-tree-task-collection
                        :name nil
                        :root-file root-file)))
-      (cl-struct-slot-value (cl-classname collection) 'tree)
-      (setf occ-global-tree-task-collection collection))))
+      (setf occ-global-tree-task-collection collection)))
+
+  (cl-struct-slot-value (cl-classname collection) 'tree))
 
 (defvar occ-global-list-task-collection nil)
 (defun occ-make-list-task-collection (root-dir)
