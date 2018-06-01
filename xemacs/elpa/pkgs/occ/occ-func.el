@@ -176,5 +176,8 @@
    (cl-classname occ-global-list-task-collection)
    'list))
 
+(defmethod occ-collect-task ((collection occ-list-task-cllection))
+  )
+
 (provide 'occ-func)
 ;;; occ-func.el ends here
