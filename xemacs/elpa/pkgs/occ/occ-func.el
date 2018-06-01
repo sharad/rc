@@ -172,9 +172,10 @@
                        :root-dir root-dir)))
       (setf occ-global-list-task-collection collection)))
 
-  (cl-struct-slot-value
-   (cl-classname occ-global-list-task-collection)
-   'list))
+  (unless (cl-struct-slot-value
+           (cl-classname occ-global-list-task-collection)
+           'list)
+    (occ-collect-task)))
 
 (defmethod occ-collect-task ((collection occ-list-task-cllection))
   )
