@@ -76,7 +76,7 @@
           (dolist (prop inherited-props)
             (let* ((propstr (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))
                    (val (org-entry-get nil propstr t)))
-              (unless (plist-get (aref task :plist) prop)
+              (unless (occ-get-property task prop)
                 (occ-set-property task prop val))))))
       task)))
 
