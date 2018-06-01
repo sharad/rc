@@ -159,7 +159,7 @@
       (setf occ-global-tree-task-collection collection))))
 
 (defvar occ-global-list-task-collection nil)
-(defun occ-make-list-task-collection ()
+(defun occ-make-list-task-collection (root-dir)
   (unless occ-global-list-task-collection
     (let ((collection (make-occ-list-task-collection
                        :name nil)))
