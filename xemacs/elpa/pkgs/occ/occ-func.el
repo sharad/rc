@@ -163,7 +163,7 @@
     (let ((collection (make-occ-list-task-collection
                        :name nil)))
       (cl-struct-slot-value (cl-classname collection) 'list)
-      )))
+      (setf occ-global-list-task-collection collection))))
 
 (provide 'occ-func)
 ;;; occ-func.el ends here
