@@ -97,6 +97,7 @@
   )
 
 (cl-defstruct (occ-tree-task-collection (:include occ-obj))
+  root-file
   tree)
 
 (cl-defstruct (occ-list-task-collection (:include occ-obj))
