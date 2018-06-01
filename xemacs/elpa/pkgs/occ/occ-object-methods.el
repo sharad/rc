@@ -37,7 +37,7 @@
   (get-field dave 'name)
   (set-field dave 'name "Simon Smith"))
 
-(symbol-value (aref baseobj1 0))
+
 
 (defun cl-classname (inst)
   (aref inst 0))
