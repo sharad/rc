@@ -143,11 +143,12 @@
                    :buffer buff)))
     context))
 
-(defvar occ-global-tree-trask-collection nil)
+(defvar occ-global-tree-task-collection nil)
 
 (defun occ-make-tree-task-collection ()
   )
 
+(defvar occ-global-list-task-collection nil)
 (defun occ-make-list-task-collection ()
   )
 
