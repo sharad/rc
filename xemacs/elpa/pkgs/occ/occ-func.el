@@ -146,5 +146,8 @@
 (defun occ-make-tree-task-collection ()
   )
 
+(defun occ-make-list-task-collection ()
+  )
+
 (provide 'occ-func)
 ;;; occ-func.el ends here
