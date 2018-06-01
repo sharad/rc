@@ -143,7 +143,7 @@
                    :buffer buff)))
     context))
 
-(defmethod occ-make-contextual-task ((task occ-task) (occ-context))
+(defmethod occ-make-contextual-task ((task occ-task) (context occ-context))
   (make-occ-contextual-task
    :name nil
    :task task
