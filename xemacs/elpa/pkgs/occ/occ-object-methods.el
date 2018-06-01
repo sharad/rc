@@ -60,7 +60,7 @@
     (plist-put (cl-struct-slot-value (cl-classname task) 'plist task) prop val)))
 
 (cl-defmethod occ-fontify-like-in-org-mode ((task occ-task))
-  (let* ((level   (or (occ-get-property task :level) 0))
+  (let* ((level   (or (occ-get-property task 'level) 0))
          (heading (occ-get-property task :task-clock-heading-prop))
          (prefix  (concat (make-string level ?\*) " ")))
     (if nil ;; if test without else with prefix
