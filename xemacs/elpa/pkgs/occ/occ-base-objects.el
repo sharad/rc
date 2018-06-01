@@ -24,7 +24,7 @@
 ;;; Code:
 
 
-;; (require 'occ-common)
+(require 'occ-common)
 ;; (require 'eieio)
 
 ;; TODO org-base-buffer
@@ -41,10 +41,11 @@
   (cl-defstruct xpoint
     x y)
 
-  (setf point (make-xpoint :x 5 :y 3))
+  (setf zpoint (make-xpoint :x 5 :y 3))
   
   (setf (cl-struct-slot-value 'xpoint 'x point) 3)
 
+  (cl--find-class 'xpoint)
 
   (cl-defstruct base
     baseattr)
