@@ -154,7 +154,7 @@
   (unless occ-global-tree-task-collection
     (let ((collection (make-occ-tree-task-collection
                        :name nil
-                       :top-file top-file)))
+                       :root-file root-file)))
       (cl-struct-slot-value (cl-classname collection) 'tree)
       (setf occ-global-tree-task-collection collection))))
 
