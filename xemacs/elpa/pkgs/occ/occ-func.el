@@ -157,9 +157,10 @@
                        :root-file root-file)))
       (setf occ-global-tree-task-collection collection)))
 
-  (cl-struct-slot-value
-   (cl-classname occ-global-tree-task-collection)
-   'tree))
+  (unless (cl-struct-slot-value
+           (cl-classname occ-global-tree-task-collection)
+           'tree)
+    (occ-collect-task occ-global-list-task-collection)))
 
 (defmethod occ-collect-task ((collection occ-tree-task-cllection))
   )
