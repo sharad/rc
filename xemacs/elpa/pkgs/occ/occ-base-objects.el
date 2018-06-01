@@ -101,6 +101,7 @@
   tree)
 
 (cl-defstruct (occ-list-task-collection (:include occ-obj))
+  top-dir
   list)
 
 ;; (mapcar #'slot-definition-name (class-slots occ-task))
