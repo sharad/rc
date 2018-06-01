@@ -86,7 +86,8 @@
   )
 
 (cl-defstruct (occ-context (:include occ-obj))
-  )
+  buffer
+  file)
 
 (cl-defstruct (occ-contextual-task (:include occ-obj))
   context
