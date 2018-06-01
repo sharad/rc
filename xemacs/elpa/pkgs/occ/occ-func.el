@@ -150,7 +150,7 @@
    :context context))
 
 (defvar occ-global-tree-task-collection nil)
-(defun occ-make-tree-task-collection ()
+(defun occ-make-tree-task-collection (file)
   (unless occ-global-tree-task-collection
     (let ((collection (make-occ-tree-task-collection
                        :name nil)))
