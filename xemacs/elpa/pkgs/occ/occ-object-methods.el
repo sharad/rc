@@ -39,7 +39,7 @@
 
 
 (defun sym2key (sym)
-  )
+  (if (keywordp sym)))
 (defun cl-classname (inst)
   (aref inst 0))
 (defun cl-get-field (object field)
