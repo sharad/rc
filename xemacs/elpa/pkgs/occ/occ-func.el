@@ -152,8 +152,8 @@
 (defvar occ-global-tree-task-collection nil)
 (defun occ-make-tree-task-collection ()
   (unless occ-global-tree-task-collection
-    (let (((make-occ-tree-task-collection
-            :name nil))))))
+    (let ((collection (make-occ-tree-task-collection
+                       :name nil))))))
 
 (defvar occ-global-list-task-collection nil)
 (defun occ-make-list-task-collection ()
