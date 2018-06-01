@@ -98,8 +98,8 @@
 (cl-defstruct (occ-task-tree-task-collection (:include occ-obj))
   tree)
 
-(cl-defstruct occ-task-tree-list-collection (occ-obj)
-              list)
+(cl-defstruct (occ-task-tree-list-collection (:include occ-obj))
+  list)
 
 ;; (mapcar #'slot-definition-name (class-slots occ-task))
 
