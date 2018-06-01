@@ -107,6 +107,7 @@
       (when heading
         (setf task
               (funcall builder
+                       :name nil
                        :heading heading
                        :file file
                        :point point
