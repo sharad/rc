@@ -42,8 +42,6 @@
    (substring
     (symbol-name (aref inst 0))
     (length "cl-struct-"))))
-;; (cl-classname (make-occ-task))
-
 (defun cl-get-field (object field)
   (cl-struct-slot-value (cl-classname object) field object))
 (defun cl-set-field (object field value)
