@@ -144,7 +144,10 @@
     context))
 
 (defmethod occ-make-contextual-task ((task occ-task) (occ-context))
-  )
+  (make-occ-contextual-task
+   :name nil
+   :task task
+   :context context))
 
 (defvar occ-global-tree-task-collection nil)
 (defun occ-make-tree-task-collection ()
