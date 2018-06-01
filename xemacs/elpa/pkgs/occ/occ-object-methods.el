@@ -121,9 +121,9 @@
            (file (if file (file-truename file))))
       (if root
           (progn
-            (org-context-clock-debug :debug "task %s root %s" (org-context-clock-task-get-heading task) root)
-            (org-context-clock-debug :debug "task %s file %s" (org-context-clock-task-get-heading task) file))
-        (org-context-clock-debug :debug "task %s root %s not present."
+            (occ-debug :debug "task %s root %s" (org-context-clock-task-get-heading task) root)
+            (occ-debug :debug "task %s file %s" (org-context-clock-task-get-heading task) file))
+        (occ-debug :debug "task %s root %s not present."
                                  (org-context-clock-task-get-heading task) root))
       (if (and root file
                (string-match root file))
@@ -139,9 +139,9 @@
            (file (if file (file-truename file))))
       (if currfile
           (progn
-            (org-context-clock-debug :debug "task %s currfile %s" (org-context-clock-task-get-heading task) currfile)
-            (org-context-clock-debug :debug "task %s file %s" (org-context-clock-task-get-heading task) file))
-        (org-context-clock-debug :debug "task %s currfile %s not present."
+            (occ-debug :debug "task %s currfile %s" (org-context-clock-task-get-heading task) currfile)
+            (occ-debug :debug "task %s file %s" (org-context-clock-task-get-heading task) file))
+        (occ-debug :debug "task %s currfile %s not present."
                                  (org-context-clock-task-get-heading task) currfile))
       (if (and currfile file
                (string-match currfile file))
@@ -166,7 +166,7 @@
   "Predicate funtion to check if context matches to task's status attribute."
   (let ((sub-tree
          (occ-get-property task 'sub-tree)))
-    (org-context-clock-debug :debug "task %s subtree %s" (org-context-clock-task-get-heading task) (null (null sub-tree)))
+    (occ-debug :debug "task %s subtree %s" (org-context-clock-task-get-heading task) (null (null sub-tree)))
     (if sub-tree -30 0)))
 
 (cl-defmethod isassoc ((prop (head :task-key) (context occ-context)))
