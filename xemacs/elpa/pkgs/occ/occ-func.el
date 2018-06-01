@@ -144,7 +144,6 @@
     context))
 
 (defvar occ-global-tree-task-collection nil)
-
 (defun occ-make-tree-task-collection ()
   )
 
