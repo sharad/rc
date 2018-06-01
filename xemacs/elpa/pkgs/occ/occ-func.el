@@ -115,8 +115,8 @@
           (dolist (prop inherited-props)
             (let* ((propstr (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))
                    (val (org-entry-get nil propstr t)))
-              (unless (plist-get (aref task :plist) prop)
-                (plist-put (aref task :plist) prop val)))))
+              (unless (occ-get-property task prop)
+                (occ-set-property task prop val)))))
         (if heading-with-string-prop
             (plist-put (aref task :plist) :task-clock-content (occ-heading-content-only))))
       task)))
