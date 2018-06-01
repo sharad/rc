@@ -33,6 +33,22 @@
 
 
 
+(defun sym2key (sym)
+  (if (keywordp sym)
+      sym
+    (intern-soft (concat ":" (symbol-name sym)))))
+(defun cl-classname (inst)
+  (aref inst 0))
+(defun cl-get-field (object field)
+  (cl-struct-slot-value (cl-classname object) field object))
+(defun cl-set-field (object field value)
+  (setf (cl-struct-slot-value (cl-classname object) field object) value))
+(defun class-slots (class)
+  (mapcar
+   #'(lambda (slot) (aref slot 1))
+   (cl--struct-class-slots
+    (cl--struct-get-class class))))
+
 
 (provide 'occ-api-common)
 ;;; occ-api-common.el ends here
