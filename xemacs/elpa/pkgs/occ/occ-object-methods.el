@@ -51,7 +51,6 @@
      (cl-struct-slot-value (cl-classname task) 'plist task)
      (sym2key prop) val)))
 
-
 (cl-defmethod occ-fontify-like-in-org-mode ((task occ-task))
   (let* ((level   (or (occ-get-property task 'level) 0))
          (heading (occ-get-property task 'task-clock-heading-prop))
@@ -192,7 +191,10 @@
       0)))
 
 (when nil
-  (isassoc '(:root 1) (make-occ-context))
+  (cl-defmethod isassoc ((prop (head :root)) (context list))
+    (message "%s" prop))
+
+  (isassoc '(:root . 1) '())
 
   (cl-defmethod isassoc ((task occ-task)
                          (context occ-context))

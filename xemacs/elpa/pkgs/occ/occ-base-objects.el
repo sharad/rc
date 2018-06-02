@@ -42,7 +42,7 @@
     x y)
 
   (setf zpoint (make-xpoint :x 5 :y 3))
-  
+
   (setf (cl-struct-slot-value 'xpoint 'x point) 3)
 
   (cl--find-class 'xpoint)
@@ -55,7 +55,7 @@
 
   (setf baseobj1 (make-base :baseattr "xbaseattr"))
 
-  
+
 
   (setf drivedobj1
         (make-drived
@@ -96,12 +96,13 @@
 (cl-defgeneric occ-matching-contextual-tasks (context)
   )
 
-(cl-defstruct (occ-tree-task-collection (:include occ-obj))
-  root-file
+(cl-defstruct (occ-task-collection (:include occ-obj))
+  root-files)
+
+(cl-defstruct (occ-tree-task-collection (:include occ-task-collection))
   tree)
 
-(cl-defstruct (occ-list-task-collection (:include occ-obj))
-  root-dir
+(cl-defstruct (occ-list-task-collection (:include occ-task-collection))
   list)
 
 ;; (mapcar #'slot-definition-name (class-slots occ-task))

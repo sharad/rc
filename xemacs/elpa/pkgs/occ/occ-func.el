@@ -145,40 +145,46 @@
 
 (defmethod occ-make-contextual-task ((task occ-task) (context occ-context))
   (make-occ-contextual-task
-   :name nil
-   :task task
+   :name    nil
+   :task    task
    :context context))
 
-(defvar occ-global-tree-task-collection nil)
-(defmethod occ-collect-task ((collection occ-tree-task-cllection))
-  )
-(defun occ-make-tree-task-collection (root-file)
-  (unless occ-global-tree-task-collection
+(defvar occ-global-task-collection nil)
+
+(defmethod occ-make-task-collection ((file-spec (head :tree)))
+  (unless occ-global-task-collection
     (let ((collection (make-occ-tree-task-collection
-                       :name nil
-                       :root-file root-file)))
-      (setf occ-global-tree-task-collection collection)))
+                       :name "task collection tree"
+                       :root-files (cdr file-spec))))
+      (setf occ-global-task-collection collection))))
 
-  (unless (cl-struct-slot-value
-           (cl-classname occ-global-tree-task-collection)
-           'tree)
-    (occ-collect-task occ-global-tree-task-collection)))
-
-
-(defvar occ-global-list-task-collection nil)
-(defmethod occ-collect-task ((collection occ-list-task-cllection))
-  )
-(defun occ-make-list-task-collection (root-dir)
-  (unless occ-global-list-task-collection
+(defmethod occ-make-task-collection ((file-spec (head :list)))
+  (unless occ-global-task-collection
     (let ((collection (make-occ-list-task-collection
-                       :name nil
-                       :root-dir root-dir)))
-      (setf occ-global-list-task-collection collection)))
+                       :name "task collection list"
+                       :root-files (cdr dir-spec))))
+      (setf occ-global-task-collection collection))))
 
+(defmethod occ-collect-tasks ((collection occ-tree-task-collection) force)
   (unless (cl-struct-slot-value
-           (cl-classname occ-global-list-task-collection)
+           (cl-classname collection)
+           'tree)
+    ;; do necessary
+    ))
+
+(defmethod occ-collect-tasks ((collection occ-list-task-collection) force)
+  (unless (cl-struct-slot-value
+           (cl-classname collection)
            'list)
-    (occ-collect-task occ-global-list-task-collection)))
+    (setf
+     (occ-list-task-collection-list collection)
+     (remove nil
+             (org-map-entries
+              #'(lambda ()
+                  (occ-make-task-at-point #'make-occ-list-task))
+              t
+              (occ-list-task-collection-root-files collection))))))
+
 
 
 
