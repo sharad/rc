@@ -151,10 +151,10 @@
          (string-equal status "HOLD"))
         -30 0)))
 
-(cl-defmethod isassoc ((task (head 'sub-tree) (context occ-context)))
+(cl-defmethod isassoc ((task (head 'subtree) (context occ-context)))
   "Predicate funtion to check if context matches to task's status attribute."
   (let ((sub-tree
-         (occ-get-property task 'sub-tree)))
+         (occ-get-property task 'subtree)))
     (occ-debug :debug "task %s subtree %s" (occ-task-heading task) (null (null sub-tree)))
     (if sub-tree -30 0)))
 
