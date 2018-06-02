@@ -186,8 +186,5 @@
               t
               (occ-list-task-collection-root-files collection))))))
 
-
-
-
 (provide 'occ-func)
 ;;; occ-func.el ends here
