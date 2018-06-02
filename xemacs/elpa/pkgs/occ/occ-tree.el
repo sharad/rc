@@ -94,7 +94,7 @@
   (defun occ-tree-mapcar-tasks (fn tree args)
     "Tree mapcar return result for FN for all TREE nodes with ARGS"
     (tree-mapcar-nodes
-     'occ-task-tree-task-node-p fn tree args))
+     'occ-task-tree-task-subtree fn tree args))
 
   (defun occ-tree-mapc-tasks (fn tree args)
     "Tree mapc run FN for all TREE nodes with ARGS"
