@@ -121,12 +121,10 @@
             (push (funcall fun) collection))))
     collection))
 
-(defun occ-task-tree-collect-task (&optional file)
+(defun occ-task-tree-collect-task (collector &optional file)
   "Build recursive org tasks from org FILE (or current buffer)"
   (occ-task-tree-build
-   #'(lambda ()
-       (occ-make-task-at-point #'make-occ-tree-task))
-   file))
+   'occ-collect-task file))
 
 (defun occ-task-tree-build (collector &optional file)
   "Build recursive org tasks from org FILE (or current buffer) using COLLECTOR function e.g. occ-task-collect-task"
@@ -134,13 +132,13 @@
                            (find-file-noselect file)
                            (current-buffer))
     (if file (goto-char (point-min)))
-    (let* ((task (funcall collector))
+    (let* ((entry (funcall collector))
            (sub-tree
             (append
              (occ-task-tree-map-subheading 'occ-task-tree-collect-task)
              (let* ((file (if file file (buffer-file-name)))
                     (subtree-file
-                     (occ-get-property task :SUBTREEFILE))
+                     (occ-get-property entry :SUBTREEFILE))
                     (subtree-file
                      (if (and subtree-file
                               (file-relative-name subtree-file))
@@ -155,8 +153,8 @@
                    (list
                     (occ-task-tree-collect-task subtree-file)))))))
       (if sub-tree
-          (occ-set-property task 'subtree sub-tree)
-          task))))
+          (occ-set-property entry 'subtree sub-tree)
+          entry))))
 
 ;;;###autoload
 (defun occ-task-recursive-update-tasks (&optional force) ;; API (occ-api-set :predicate :update  'org-entry-list-update-tasks)
