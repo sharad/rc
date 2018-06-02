@@ -171,7 +171,7 @@
     ))
 
 (defmethod occ-collect-tasks ((collection occ-list-task-collection) force)
-  (unless (occ-list-task-collection-tree collection)
+  (unless (occ-list-task-collection-list collection)
     (setf
      (occ-list-task-collection-list collection)
      (remove nil
