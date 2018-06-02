@@ -124,7 +124,8 @@
 (defun occ-task-tree-collect-task (&optional file)
   "Build recursive org tasks from org FILE (or current buffer)"
   (occ-task-tree-build
-   '(occ-collect-task)
+   #'(lambda ()
+       (occ-make-task-at-point #'make-occ-tree-task))
    file))
 
 (defun occ-task-tree-build (collector &optional file)
