@@ -129,7 +129,7 @@
       (if currfile
           (progn
             (occ-debug :debug "task %s currfile %s" (occ-task-heading (cdr task-pair)) currfile)
-            (occ-debug :debug "task %s file %s" (occ-task-heading (cdr task-pair)) file))
+            (occ-debug :debug "task %s file %s"     (occ-task-heading (cdr task-pair)) file))
         (occ-debug :debug "task %s currfile %s not present."
                    (occ-task-heading (cdr task-pair)) currfile))
       (if (and currfile file
