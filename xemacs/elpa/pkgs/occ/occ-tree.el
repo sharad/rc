@@ -103,21 +103,6 @@
      'occ-task-tree-task-node-p fn tree args)))
 
 
-;;;###autoload
-(defun occ-task-recursive-update-tasks (&optional force) ;; API (occ-api-set :predicate :update  'org-entry-list-update-tasks)
-  "Update recursive org tasks tree"
-  (interactive "P")
-  (if occ-task-tree-task-root-org-file
-      (if (file-exists-p occ-task-tree-task-root-org-file)
-          (unless (and (not force)
-                       occ-task-tree-tasks)
-            (setq occ-task-tree-tasks
-                  (occ-task-tree-get-tasks
-                   occ-task-tree-task-root-org-file)))
-        (message "file %s not exists." occ-task-tree-task-root-org-file))
-    (message "occ-task-tree-task-root-org-file is nil"))
-  occ-task-tree-tasks)
-
 (defun occ-task-tree-map-subheading (fun)
   "Call FUN for every heading underneath the current heading"
   ;; (org-back-to-heading)
@@ -161,6 +146,21 @@
       (if sub-tree
           (occ-task-set-property entry :subtree sub-tree)
           entry))))
+
+;;;###autoload
+(defun occ-task-recursive-update-tasks (&optional force) ;; API (occ-api-set :predicate :update  'org-entry-list-update-tasks)
+  "Update recursive org tasks tree"
+  (interactive "P")
+  (if occ-task-tree-task-root-org-file
+      (if (file-exists-p occ-task-tree-task-root-org-file)
+          (unless (and (not force)
+                       occ-task-tree-tasks)
+            (setq occ-task-tree-tasks
+                  (occ-task-tree-get-tasks
+                   occ-task-tree-task-root-org-file)))
+        (message "file %s not exists." occ-task-tree-task-root-org-file))
+    (message "occ-task-tree-task-root-org-file is nil"))
+  occ-task-tree-tasks)
 
 (defun occ-task-tree-tasks-files ()
   (let ((tasks (occ-task-recursive-update-tasks))
