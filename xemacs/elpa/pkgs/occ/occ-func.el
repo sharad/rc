@@ -204,9 +204,7 @@
        (or
         (occ-make-task-at-point #'make-occ-list-task)
         (make-occ-list-task))) ;; note: only using first file of root-files
-   org-context-clock-task-tree-task-root-org-file)
-
-  )
+   org-context-clock-task-tree-task-root-org-file))
 
 (provide 'occ-func)
 ;;; occ-func.el ends here
