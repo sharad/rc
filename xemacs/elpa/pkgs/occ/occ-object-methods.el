@@ -104,16 +104,16 @@
 (cl-defmethod isassoc ((task-pair (head 'root)) (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((root
-          (occ-get-property task 'root))
+          (occ-get-property (cdr task) 'root))
          (root (if root (file-truename root))))
     (let* ((file (plist-get context :file))
            (file (if file (file-truename file))))
       (if root
           (progn
-            (occ-debug :debug "task %s root %s" (occ-task-heading task) root)
-            (occ-debug :debug "task %s file %s" (occ-task-heading task) file))
+            (occ-debug :debug "task %s root %s" (occ-task-heading (cdr task)) root)
+            (occ-debug :debug "task %s file %s" (occ-task-heading (cdr task)) file))
         (occ-debug :debug "task %s root %s not present."
-                                 (occ-task-heading task) root))
+                                 (occ-task-heading (cdr task)) root))
       (if (and root file
                (string-match root file))
           (length root)
@@ -122,16 +122,16 @@
 (cl-defmethod isassoc ((task-pair (head 'currfile) (context occ-context)))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((currfile
-          (occ-get-property task 'currfile))
+          (occ-get-property (cdr task) 'currfile))
          (currfile (if currfile (file-truename currfile))))
     (let* ((file (plist-get context :file))
            (file (if file (file-truename file))))
       (if currfile
           (progn
-            (occ-debug :debug "task %s currfile %s" (occ-task-heading task) currfile)
-            (occ-debug :debug "task %s file %s" (occ-task-heading task) file))
+            (occ-debug :debug "task %s currfile %s" (occ-task-heading (cdr task)) currfile)
+            (occ-debug :debug "task %s file %s" (occ-task-heading (cdr task)) file))
         (occ-debug :debug "task %s currfile %s not present."
-                                 (occ-task-heading task) currfile))
+                                 (occ-task-heading (cdr task)) currfile))
       (if (and currfile file
                (string-match currfile file))
           (* 2 (length currfile))     ;as exact match to file giving double matching points.
@@ -140,11 +140,11 @@
 (cl-defmethod isassoc ((task-pair (head 'status) (context occ-context)))
   "Predicate funtion to check if context matches to task's status attribute."
   (let ((todo-type
-         (occ-get-property task 'todo-type))
+         (occ-get-property (cdr task) 'todo-type))
         (closed
-         (occ-get-property task 'closed))
+         (occ-get-property (cdr task) 'closed))
         (status
-         (occ-get-property task 'todo-keyword)))
+         (occ-get-property (cdr task) 'todo-keyword)))
     (if (or
          closed
          (eql todo-type 'done)
@@ -154,25 +154,25 @@
 (cl-defmethod isassoc ((task-pair (head 'subtree) (context occ-context)))
   "Predicate funtion to check if context matches to task's status attribute."
   (let ((sub-tree
-         (occ-get-property task 'subtree)))
-    (occ-debug :debug "task %s subtree %s" (occ-task-heading task) (null (null sub-tree)))
+         (occ-get-property (cdr task) 'subtree)))
+    (occ-debug :debug "task %s subtree %s" (occ-task-heading (cdr task)) (null (null sub-tree)))
     (if sub-tree -30 0)))
 
 (cl-defmethod isassoc ((task-pair (head 'task-key) (context occ-context)))
   "Predicate funtion to check if context matches to task's file attribute."
-  (let* ((key (occ-get-property task 'KEY)))
+  (let* ((key (occ-get-property (cdr task) 'KEY)))
     (if key (string-to-number key) 0)))
 
 (cl-defmethod isassoc ((task-pair (head 'heading-level) (context occ-context)))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((level
-          (occ-get-property task 'task-clock-level)))
+          (occ-get-property (cdr task) 'task-clock-level)))
     (if level level 0)))
 
 (cl-defmethod isassoc ((task-pair (head 'timebeing) (context occ-context)))
-  (let ((timebeing (occ-get-property task 'timebeing)))
+  (let ((timebeing (occ-get-property (cdr task) 'timebeing)))
     (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
-          (clocked-time   (occ-get-property task 'task-clock-clock-sum)))
+          (clocked-time   (occ-get-property (cdr task) 'task-clock-clock-sum)))
       (if (and
            (numberp clocked-time)
            (numberp timebeing-time)
@@ -182,7 +182,7 @@
 
 (cl-defmethod isassoc ((task-pair (head 'current-clock) (context occ-context)))
   (let* ((task-marker
-          (occ-get-property task 'task-clock-marker)))
+          (occ-get-property (cdr task) 'task-clock-marker)))
     (if (and
          (markerp org-clock-hd-marker)
          (markerp task-marker)
