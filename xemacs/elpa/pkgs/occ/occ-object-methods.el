@@ -101,7 +101,7 @@
   (mapcar (task)
           (slot (class-slot (cl-classname task)))))
 
-(cl-defmethod isassoc ((prop (head :root)) (context occ-context))
+(cl-defmethod isassoc ((task (head 'root)) (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((root
           (occ-get-property task 'root))
@@ -119,7 +119,7 @@
           (length root)
         0))))
 
-(cl-defmethod isassoc ((prop (head :currfile) (context occ-context)))
+(cl-defmethod isassoc ((task (head 'currfile) (context occ-context)))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((currfile
           (occ-get-property task 'currfile))
@@ -137,7 +137,7 @@
           (* 2 (length currfile))     ;as exact match to file giving double matching points.
         0))))
 
-(cl-defmethod isassoc ((prop (head :status) (context occ-context)))
+(cl-defmethod isassoc ((task (head 'status) (context occ-context)))
   "Predicate funtion to check if context matches to task's status attribute."
   (let ((todo-type
          (occ-get-property task 'todo-type))
@@ -151,25 +151,25 @@
          (string-equal status "HOLD"))
         -30 0)))
 
-(cl-defmethod isassoc ((prop (head :sub-tree) (context occ-context)))
+(cl-defmethod isassoc ((task (head 'sub-tree) (context occ-context)))
   "Predicate funtion to check if context matches to task's status attribute."
   (let ((sub-tree
          (occ-get-property task 'sub-tree)))
     (occ-debug :debug "task %s subtree %s" (org-context-clock-task-get-heading task) (null (null sub-tree)))
     (if sub-tree -30 0)))
 
-(cl-defmethod isassoc ((prop (head :task-key) (context occ-context)))
+(cl-defmethod isassoc ((task (head 'task-key) (context occ-context)))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((key (occ-get-property task 'KEY)))
     (if key (string-to-number key) 0)))
 
-(cl-defmethod isassoc ((prop (head :heading-level) (context occ-context)))
+(cl-defmethod isassoc ((task (head 'heading-level) (context occ-context)))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((level
           (occ-get-property task 'task-clock-level)))
     (if level level 0)))
 
-(cl-defmethod isassoc ((prop (head :timebeing) (context occ-context)))
+(cl-defmethod isassoc ((task (head 'timebeing) (context occ-context)))
   (let ((timebeing (occ-get-property task 'timebeing)))
     (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
           (clocked-time   (occ-get-property task 'task-clock-clock-sum)))
@@ -180,7 +180,7 @@
           (- timebeing-time clocked-time)
         0))))
 
-(cl-defmethod isassoc ((prop (head :current-clock) (context occ-context)))
+(cl-defmethod isassoc ((task (head 'current-clock) (context occ-context)))
   (let* ((task-marker
           (occ-get-property task 'task-clock-marker)))
     (if (and
@@ -191,7 +191,7 @@
       0)))
 
 (when nil
-  (cl-defmethod isassoc ((prop (head :root)) (context list))
+  (cl-defmethod isassoc ((task (head 'root)) (context list))
     (message "%s" prop))
 
   (isassoc '(:root . 1) '())
