@@ -166,7 +166,7 @@
       (setf occ-global-task-collection collection))))
 
 (defmethod occ-collect-tasks ((collection occ-tree-task-collection) force)
-  (unless (cl-struct-slot-value
+  (unless (occ-list-task-collection-tree
            (cl-classname collection)
            'tree)
     ;; do necessary
