@@ -144,7 +144,7 @@
                    (list
                     (occ-task-tree-collect-task subtree-file)))))))
       (if sub-tree
-          (occ-set-property entry :subtree sub-tree)
+          (occ-set-property entry 'subtree sub-tree)
           entry))))
 
 ;;;###autoload
