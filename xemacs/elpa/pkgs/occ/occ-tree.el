@@ -104,7 +104,7 @@
   (defun occ-tree-remove-if-not-tasks (fn tree args)
     "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE"
     (tree-remove-if-not-nodes
-     'occ-task-tree-task-node-p fn tree args)))
+     'occ-task-tree-task-subtree fn tree args)))
 
 
 (defun occ-task-tree-map-subheading (fun)
