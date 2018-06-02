@@ -121,6 +121,10 @@
             (push (funcall fun) collection))))
     collection))
 
+(defun occ-task-tree-collect-task (&optional file)
+  "Build recursive org tasks from org FILE (or current buffer)"
+  (occ-task-tree-build 'occ-collect-task file))
+
 (defun occ-task-tree-build (collector &optional file)
   "Build recursive org tasks from org FILE (or current buffer) using COLLECTOR function e.g. occ-task-collect-task"
   (with-current-buffer (if file
