@@ -93,9 +93,6 @@
   context
   task)
 
-(cl-defgeneric occ-matching-contextual-tasks (context)
-  )
-
 (cl-defstruct (occ-task-collection (:include occ-obj))
   root-files)
 
@@ -127,24 +124,6 @@
               (occ-task-get-property e :task-clock-marker))
           (occ-tasks-associated-to-context context)))
 
-;; Dynamic plist task format
-;; plist of :rank :marker :task etc
-
-(defun occ-build-dyntaskpl (task context)
-  (funcall occ-build-dyntaskpl task context))
-
-(defun occ-dyntaskpl-get-task (dyntaskpl)
-  (plist-get dyntaskpl :task))
-
-(defun occ-dyntaskpl-get-marker (dyntaskpl)
-  (let ((task (plist-get dyntaskpl :task)))
-    (plist-get task :task-clock-marker)))
-
-(defun occ-task-get-marker (task)
-  (plist-get task :task-clock-marker))
-
-(defun occ-dyntaskpls-associated-to-context (context)
-  (funcall occ-matching-dyntaskpls context))
 
 (defun occ-dyntaskpls-associated-to-context-filtered (context)
   ;; TODO Here do variance based filtering.
@@ -163,9 +142,6 @@
      #'(lambda (dyntaskpl)
          (>= (plist-get dyntaskpl :rank) avgrank))
      dyntaskpls)))
-
-(defun occ-task-get-heading (task)
-  (occ-task-get-property task :task-clock-heading))
 
 (defun occ-dyntaskpl-print (dyntaskpl heading)
   (funcall occ-api-dyntaskpl-print dyntaskpl heading))

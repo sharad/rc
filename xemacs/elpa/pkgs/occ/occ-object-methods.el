@@ -66,33 +66,6 @@
        (concat prefix heading)
        org-odd-levels-only))))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (cl-defgeneric isassoc (obj context)
   "isassoc")
@@ -203,6 +176,9 @@
   (isassoc (make-occ-tree-task) (make-occ-context))
   )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(cl-defgeneric occ-matching-contextual-tasks (context)
+  )
 
 (provide 'occ-object-methods)
 ;;; occ-object-methods.el ends here

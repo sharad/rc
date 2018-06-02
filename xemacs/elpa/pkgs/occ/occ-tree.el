@@ -123,39 +123,39 @@
 
 (defun occ-task-tree-collect-task (collector &optional file)
   "Build recursive org tasks from org FILE (or current buffer)"
-  (occ-task-tree-build
-   'occ-collect-task file))
+  (occ-task-tree-build collector file))
 
 (defun occ-task-tree-build (collector &optional file)
   "Build recursive org tasks from org FILE (or current buffer) using COLLECTOR function e.g. occ-task-collect-task"
   (with-current-buffer (if file
                            (find-file-noselect file)
-                           (current-buffer))
+                         (current-buffer))
     (if file (goto-char (point-min)))
-    (let* ((entry (funcall collector))
-           (sub-tree
-            (append
-             (occ-task-tree-map-subheading #'(lambda ()
-                                               (occ-task-tree-collect-task collector)))
-             (let* ((file (if file file (buffer-file-name)))
-                    (subtree-file
-                     (occ-get-property entry :SUBTREEFILE))
-                    (subtree-file
-                     (if (and subtree-file
-                              (file-relative-name subtree-file))
-                         (expand-file-name subtree-file
-                                           (if file
-                                               (file-name-directory file)
-                                               default-directory))
-                         subtree-file)))
-               (if (and
-                    subtree-file
-                    (file-readable-p subtree-file))
-                   (list
-                    (occ-task-tree-collect-task subtree-file)))))))
-      (if sub-tree
-          (occ-set-property entry 'subtree sub-tree)
-          entry))))
+    (let ((entry (funcall collector)))
+      (when entry
+        (let* ((sub-tree
+                (append
+                 (occ-task-tree-map-subheading #'(lambda ()
+                                                   (occ-task-tree-collect-task collector)))
+                 (let* ((file (if file file (buffer-file-name)))
+                        (subtree-file
+                         (occ-get-property entry :SUBTREEFILE))
+                        (subtree-file
+                         (if (and subtree-file
+                                  (file-relative-name subtree-file))
+                             (expand-file-name subtree-file
+                                               (if file
+                                                   (file-name-directory file)
+                                                 default-directory))
+                           subtree-file)))
+                   (if (and
+                        subtree-file
+                        (file-readable-p subtree-file))
+                       (list
+                        (occ-task-tree-collect-task collector subtree-file)))))))
+          (if sub-tree
+              (occ-set-property entry 'subtree sub-tree)
+            entry))))))
 
 ;;;###autoload
 (defun occ-task-recursive-update-tasks (&optional force) ;; API (occ-api-set :predicate :update  'org-entry-list-update-tasks)

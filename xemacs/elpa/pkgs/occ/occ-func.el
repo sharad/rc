@@ -139,7 +139,7 @@
          (buf (org-base-buffer buf))
          (file (buffer-file-name buff))
          (context (make-occ-context
-                   :name nil
+                   :name (buffer-name buff)
                    :file file
                    :buffer buff)))
     context))
@@ -167,13 +167,15 @@
       (setf occ-global-task-collection collection))))
 
 (defmethod occ-collect-tasks ((collection occ-tree-task-collection) force)
-  (unless (occ-list-task-collection-tree collection)
+  (unless (occ-tree-task-collection-tree collection)
     (setf
      (occ-tree-task-collection-tree collection)
      (occ-task-tree-build
       #'(lambda ()
-          (occ-make-task-at-point #'make-occ-tree-task)) ;; note: only using first file of root-files
-      (car (occ-list-task-collection-root-files collection))))))
+          (or
+           (occ-make-task-at-point #'make-occ-list-task)
+           (make-occ-tree-task))) ;; note: only using first file of root-files
+      (car (occ-tree-task-collection-root-files collection))))))
 
 (defmethod occ-collect-tasks ((collection occ-list-task-collection) force)
   (unless (occ-list-task-collection-list collection)
@@ -182,9 +184,29 @@
      (remove nil
              (org-map-entries
               #'(lambda ()
-                  (occ-make-task-at-point #'make-occ-list-task))
+                  (or
+                   (occ-make-task-at-point #'make-occ-list-task)
+                   (make-occ-list-task)))
               t
               (occ-list-task-collection-root-files collection))))))
+
+
+(when nil
+  (setq occ-global-task-collection nil)
+  (occ-make-task-collection (list :tree org-context-clock-task-tree-task-root-org-file))
+  (occ-tree-task-collection-tree occ-global-task-collection)
+  (occ-collect-tasks occ-global-task-collection t)
+  (occ-tree-task-collection-root-files occ-global-task-collection)
+
+
+  (occ-task-tree-build
+   #'(lambda ()
+       (or
+        (occ-make-task-at-point #'make-occ-list-task)
+        (make-occ-list-task))) ;; note: only using first file of root-files
+   org-context-clock-task-tree-task-root-org-file)
+
+  )
 
 (provide 'occ-func)
 ;;; occ-func.el ends here
