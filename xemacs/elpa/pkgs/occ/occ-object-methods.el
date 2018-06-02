@@ -113,7 +113,7 @@
             (occ-debug :debug "task %s root %s" (occ-task-heading (cdr task-pair)) root)
             (occ-debug :debug "task %s file %s" (occ-task-heading (cdr task-pair)) file))
         (occ-debug :debug "task %s root %s not present."
-                                 (occ-task-heading (cdr task-pair)) root))
+                   (occ-task-heading (cdr task-pair)) root))
       (if (and root file
                (string-match root file))
           (length root)
@@ -131,7 +131,7 @@
             (occ-debug :debug "task %s currfile %s" (occ-task-heading (cdr task-pair)) currfile)
             (occ-debug :debug "task %s file %s" (occ-task-heading (cdr task-pair)) file))
         (occ-debug :debug "task %s currfile %s not present."
-                                 (occ-task-heading (cdr task-pair)) currfile))
+                   (occ-task-heading (cdr task-pair)) currfile))
       (if (and currfile file
                (string-match currfile file))
           (* 2 (length currfile))     ;as exact match to file giving double matching points.
