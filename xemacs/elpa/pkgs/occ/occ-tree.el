@@ -24,27 +24,27 @@
 ;;; Code:
 
 (progn ;; "tree api"
-  (defun tree-mapcar-nodes (subtree fn tree args)
-    "Tree mapcar return result for FN for all TREE nodes with ARGS, function SUBTREE require to find nonleaf node"
+  (defun tree-mapcar-nodes (subtreefn fn tree args)
+    "Tree mapcar return result for FN for all TREE nodes with ARGS, function SUBTREEFN require to find nonleaf node"
     (list
      (funcall fn tree args)
      :subtree
      (mapcar
       #'(lambda (e)
-        (tree-mapcar-nodes subtree fn e args))
-      (funcall subtree tree))))
+        (tree-mapcar-nodes subtreefn fn e args))
+      (funcall subtreefn tree))))
 
-  (defun tree-mapc-nodes (subtree fn tree args)
-    "Tree mapc run FN for all TREE nodes with ARGS, function SUBTREE require to find nonleaf node"
+  (defun tree-mapc-nodes (subtreefn fn tree args)
+    "Tree mapc run FN for all TREE nodes with ARGS, function SUBTREEFN require to find nonleaf node"
     (funcall fn tree args)
     (mapc
      #'(lambda (e)
-       (tree-mapc-nodes subtree fn e args))
-     (funcall subtree tree)))
+       (tree-mapc-nodes subtreefn fn e args))
+     (funcall subtreefn tree)))
 
-  (defun tree-remove-if-not-nodes (subtree predicate tree args)
-    "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE, function SUBTREE require to find nonleaf node"
-    (if (funcall subtree tree)
+  (defun tree-remove-if-not-nodes (subtreefn predicate tree args)
+    "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE, function SUBTREEFN require to find nonleaf node"
+    (if (funcall subtreefn tree)
         (let ((rootele
                (if (funcall predicate tree args) tree))
               (subtree
@@ -52,8 +52,8 @@
                 nil
                 (mapcar
                  #'(lambda (e)
-                   (tree-remove-if-not-nodes subtree predicate e args))
-                 (funcall subtree tree)))))
+                   (tree-remove-if-not-nodes subtreefn predicate e args))
+                 (funcall subtreefn tree)))))
           (if (or rootele subtree)
               (plist-put tree :subtree subtree)))
         (if (funcall predicate tree args) tree)))
