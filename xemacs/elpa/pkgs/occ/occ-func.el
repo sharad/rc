@@ -169,7 +169,7 @@
 (defmethod occ-collect-tasks ((collection occ-tree-task-collection) force)
   (unless (occ-list-task-collection-tree collection)
     (setf
-     (occ-tree-task-collection-list collection)
+     (occ-tree-task-collection-tree collection)
      (occ-task-tree-build
       #'(lambda ()
           (occ-make-task-at-point #'make-occ-tree-task)) ;; note: only using first file of root-files
