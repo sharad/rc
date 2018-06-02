@@ -168,9 +168,11 @@
 (defmethod occ-collect-tasks ((collection occ-tree-task-collection) force)
   (unless (occ-list-task-collection-tree collection)
     ;; do necessary
-    (occ-task-tree-build
-     #'(lambda ()
-         (occ-make-task-at-point #'make-occ-list-task)))
+    (setf
+     (occ-list-task-collection-list collection)
+     (occ-task-tree-build
+      #'(lambda ()
+          (occ-make-task-at-point #'make-occ-tree-task))))
     ))
 
 (defmethod occ-collect-tasks ((collection occ-list-task-collection) force)
