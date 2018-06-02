@@ -99,7 +99,7 @@
   (defun occ-tree-mapc-tasks (fn tree args)
     "Tree mapc run FN for all TREE nodes with ARGS"
     (tree-mapc-nodes
-     'occ-task-tree-task-node-p fn tree args))
+     'occ-task-tree-task-subtree fn tree args))
 
   (defun occ-tree-remove-if-not-tasks (fn tree args)
     "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE"
