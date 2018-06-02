@@ -1,4 +1,4 @@
-;;; occ-api-common.el --- occ-api               -*- lexical-binding: t; -*-
+;;; occ-base-objects.el --- occ-api               -*- lexical-binding: t; -*-
 ;; Copyright (C) 2016  sharad
 
 ;; Author: sharad <spratap@merunetworks.com>
@@ -170,5 +170,5 @@
 (defun occ-dyntaskpl-print (dyntaskpl heading)
   (funcall occ-api-dyntaskpl-print dyntaskpl heading))
 
-(provide 'occ-api-common)
-;;; occ-api-common.el ends here
+(provide 'occ-base-objects)
+;;; occ-base-objects.el ends here
