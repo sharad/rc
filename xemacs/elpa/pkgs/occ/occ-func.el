@@ -172,8 +172,7 @@
      (occ-tree-task-collection-list collection)
      (occ-task-tree-build
       #'(lambda ()
-          (occ-make-task-at-point #'make-occ-tree-task))))
-    ))
+          (occ-make-task-at-point #'make-occ-tree-task))))))
 
 (defmethod occ-collect-tasks ((collection occ-list-task-collection) force)
   (unless (occ-list-task-collection-list collection)
