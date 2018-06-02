@@ -87,7 +87,7 @@
     "Test org TX is org tasks tree non-leaf node"
     (occ-get-property tx 'subtree))
 
-  (defun occ-task-tree-task-node-p (tx)
+  (defun occ-task-tree-task-subtree (tx)
     "Test org TX is org tasks tree non-leaf node"
     (occ-get-property tx 'subtree))
 
