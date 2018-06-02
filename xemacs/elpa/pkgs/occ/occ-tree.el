@@ -134,13 +134,13 @@
                            (find-file-noselect file)
                            (current-buffer))
     (if file (goto-char (point-min)))
-    (let* ((entry (funcall collector))
+    (let* ((task (funcall collector))
            (sub-tree
             (append
              (occ-task-tree-map-subheading 'occ-task-tree-collect-task)
              (let* ((file (if file file (buffer-file-name)))
                     (subtree-file
-                     (occ-get-property entry :SUBTREEFILE))
+                     (occ-get-property task :SUBTREEFILE))
                     (subtree-file
                      (if (and subtree-file
                               (file-relative-name subtree-file))
@@ -155,8 +155,8 @@
                    (list
                     (occ-task-tree-collect-task subtree-file)))))))
       (if sub-tree
-          (occ-set-property entry 'subtree sub-tree)
-          entry))))
+          (occ-set-property task 'subtree sub-tree)
+          task))))
 
 ;;;###autoload
 (defun occ-task-recursive-update-tasks (&optional force) ;; API (occ-api-set :predicate :update  'org-entry-list-update-tasks)
