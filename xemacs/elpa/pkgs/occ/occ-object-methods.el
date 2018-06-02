@@ -110,10 +110,10 @@
            (file (if file (file-truename file))))
       (if root
           (progn
-            (occ-debug :debug "task %s root %s" (org-context-clock-task-get-heading task) root)
-            (occ-debug :debug "task %s file %s" (org-context-clock-task-get-heading task) file))
+            (occ-debug :debug "task %s root %s" (occ-task-heading task) root)
+            (occ-debug :debug "task %s file %s" (occ-task-heading task) file))
         (occ-debug :debug "task %s root %s not present."
-                                 (org-context-clock-task-get-heading task) root))
+                                 (occ-task-heading task) root))
       (if (and root file
                (string-match root file))
           (length root)
@@ -128,10 +128,10 @@
            (file (if file (file-truename file))))
       (if currfile
           (progn
-            (occ-debug :debug "task %s currfile %s" (org-context-clock-task-get-heading task) currfile)
-            (occ-debug :debug "task %s file %s" (org-context-clock-task-get-heading task) file))
+            (occ-debug :debug "task %s currfile %s" (occ-task-heading task) currfile)
+            (occ-debug :debug "task %s file %s" (occ-task-heading task) file))
         (occ-debug :debug "task %s currfile %s not present."
-                                 (org-context-clock-task-get-heading task) currfile))
+                                 (occ-task-heading task) currfile))
       (if (and currfile file
                (string-match currfile file))
           (* 2 (length currfile))     ;as exact match to file giving double matching points.
@@ -155,7 +155,7 @@
   "Predicate funtion to check if context matches to task's status attribute."
   (let ((sub-tree
          (occ-get-property task 'sub-tree)))
-    (occ-debug :debug "task %s subtree %s" (org-context-clock-task-get-heading task) (null (null sub-tree)))
+    (occ-debug :debug "task %s subtree %s" (occ-task-heading task) (null (null sub-tree)))
     (if sub-tree -30 0)))
 
 (cl-defmethod isassoc ((task (head 'task-key) (context occ-context)))
