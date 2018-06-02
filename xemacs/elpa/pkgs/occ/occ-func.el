@@ -167,7 +167,6 @@
 
 (defmethod occ-collect-tasks ((collection occ-tree-task-collection) force)
   (unless (occ-list-task-collection-tree collection)
-    ;; do necessary
     (setf
      (occ-tree-task-collection-list collection)
      (occ-task-tree-build
