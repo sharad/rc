@@ -171,9 +171,7 @@
     ))
 
 (defmethod occ-collect-tasks ((collection occ-list-task-collection) force)
-  (unless (cl-struct-slot-value
-           (cl-classname collection)
-           'list)
+  (unless (occ-list-task-collection-tree collection)
     (setf
      (occ-list-task-collection-list collection)
      (remove nil
