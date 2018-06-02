@@ -83,7 +83,6 @@
 
 
 (progn
-
   (defun occ-task-tree-task-node-p (tx)
     "Test org TX is org tasks tree non-leaf node"
     (occ-get-property tx 'subtree))
