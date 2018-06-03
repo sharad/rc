@@ -78,7 +78,7 @@
   "isassoc")
 
 (cl-defmethod isassoc ((task occ-task) (context occ-context))
-  (rank
+  (match-rank
    (reduce #'+
            (mapcar
             #'(lambda (slot)
