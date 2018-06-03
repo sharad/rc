@@ -74,7 +74,7 @@
        org-odd-levels-only))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(cl-defmethod associated ((context occ-context))
+(cl-defmethod associated-contextaul-task ((context occ-context))
     ;; TODO Here do variance based filtering.
     (let* ((dyntaskpls (funcall occ-matching-dyntaskpls context))
            (rankslist  (mapcar #'(lambda (dyntaskpl) (plist-get dyntaskpl :rank))
