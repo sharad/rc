@@ -37,7 +37,7 @@
   (if (keywordp sym)
       sym
     (intern-soft (concat ":" (symbol-name sym)))))
-(defun sym2key (sym)
+(defun key2sym (sym)
   (if (keywordp sym)
       (intern-soft (substring (symbol-name sym) 1))
     sym))
