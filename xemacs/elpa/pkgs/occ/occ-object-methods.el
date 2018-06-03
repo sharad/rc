@@ -53,7 +53,8 @@
 
 (cl-defmethod occ-cloass-slot ((obj occ-obj))
   (let* ((plist (cl-struct-slot-value (cl-classname obj) 'plist obj))
-        (slots (class-slot (cl-classname task))))
+         (plist-get-keys)
+         (slots (class-slot (cl-classname task))))
     ))
 
 (cl-defmethod occ-fontify-like-in-org-mode ((task occ-task))
