@@ -45,8 +45,8 @@
                 (backward-char)
                 (buffer-substring start (point)))))))))
 
-(cl-defmethod occ-make-task ((m marker))
-  (message "point %s" m))
+(cl-defmethod occ-make-task ((n number))
+  (message "point %s" n))
 
 (cl-defmethod occ-make-task ((m marker))
   (message "point %s" m))
