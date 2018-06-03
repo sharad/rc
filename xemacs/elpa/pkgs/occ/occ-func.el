@@ -177,6 +177,17 @@
            (make-occ-tree-task))) ;; note: only using first file of root-files
       (car (occ-tree-task-collection-root-files collection))))))
 
+(defmethod occ-collect-tasks ((collection occ-tree-task-collection) force)
+  (unless (occ-tree-task-collection-tree collection)
+    (setf
+     (occ-tree-task-collection-tree collection)
+     (occ-task-tree-build
+      #'(lambda ()
+          (or
+           (occ-make-task-at-point #'make-occ-list-task)
+           (make-occ-tree-task))) ;; note: only using first file of root-files
+      (car (occ-tree-task-collection-root-files collection))))))
+
 (defmethod occ-collect-tasks ((collection occ-list-task-collection) force)
   (unless (occ-list-task-collection-list collection)
     (setf
