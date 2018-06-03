@@ -51,8 +51,9 @@
      (cl-struct-slot-value (cl-classname task) 'plist task)
      (sym2key prop) val)))
 
-(cl-defmethod occ-cloass-slot ()
-  (class-slot (cl-classname task)))
+(cl-defmethod occ-cloass-slot ((task occ-task))
+  (class-slot (cl-classname task))
+  )
 
 (cl-defmethod occ-fontify-like-in-org-mode ((task occ-task))
   (let* ((level   (or (occ-get-property task 'level) 0))
