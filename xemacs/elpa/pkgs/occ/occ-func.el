@@ -156,7 +156,8 @@
   (make-occ-contextual-task
    :name    nil
    :task    task
-   :context context))
+   :context context
+   :rank    rank))
 
 (defvar occ-global-task-collection nil)
 
