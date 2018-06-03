@@ -179,7 +179,7 @@
     (occ-tree-mapc-tasks
      #'(lambda (task args)
          (push
-          (occ-get-property task 'task-clock-file)
+          (occ-get-property task 'file)
           files))
      tasks
      nil)
