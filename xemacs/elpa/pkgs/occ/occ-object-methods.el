@@ -55,7 +55,7 @@
   (let* ((plist (cl-struct-slot-value (cl-classname obj) 'plist obj))
          (plist-keys (plist-get-keys plist))
          (slots (class-slot (cl-classname task))))
-    ))
+    (append slots plist)))
 
 (cl-defmethod occ-fontify-like-in-org-mode ((task occ-task))
   (let* ((level   (or (occ-get-property task 'level) 0))
