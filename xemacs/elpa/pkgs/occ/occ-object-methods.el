@@ -52,6 +52,7 @@
      (sym2key prop) val)))
 
 (cl-defmethod occ-cloass-slot ((task occ-obj))
+  ()
   (class-slot (cl-classname task))
   )
 
