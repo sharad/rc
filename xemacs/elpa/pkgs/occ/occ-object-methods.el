@@ -125,7 +125,7 @@
     matched))
 
 (cl-defmethod isassoc ((collection occ-list-task-collection) (context occ-context))
-  (lexical-let ((tasks (org-context-clock-entry-list-update-tasks))
+  (lexical-let ((tasks (occ-collection collection))
                 (context context))
     (remove-if-not #'(lambda (dyntaskpl) (> (car dyntaskpl) 0))
                    (mapcar #'(lambda (task)
