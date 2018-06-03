@@ -77,6 +77,15 @@
 (cl-defgeneric isassoc (obj context)
   "isassoc")
 
+(cl-defmethod isassoc ((task occ-task) (context occ-context))
+  (let ((rank
+         (reduce #'+
+                 (mapcar
+                  #'(lambda (slot)
+                      (isassoc (cons slot task) context))
+                  (occ-class-slot (cl-classname task))))))
+    (make-occ-contextual-task :task task :context context :rank rank)))
+
 (cl-defmethod isassoc ((task-pair (head 'root)) (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((root
