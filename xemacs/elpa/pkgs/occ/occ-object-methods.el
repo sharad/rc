@@ -95,7 +95,8 @@
        contextual-tasks)))
 
 (cl-defgeneric isassoc (obj context)
-  "isassoc")
+  "isassoc"
+  )
 
 (cl-defmethod isassoc ((task occ-task) (context occ-context))
   (let ((rank
