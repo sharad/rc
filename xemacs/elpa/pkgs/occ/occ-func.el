@@ -201,6 +201,8 @@
               t
               (occ-list-task-collection-root-files collection))))))
 
+(cl-defmethod occ-collection)
+
 
 (when nil
   (setq occ-global-task-collection nil)
