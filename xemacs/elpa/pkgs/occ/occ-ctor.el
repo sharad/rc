@@ -154,7 +154,8 @@
                               force)
   (error "first argument should be of type (or occ-tree-task-collection occ-list-task-collection)"))
 
-(defmethod occ-collect-tasks ((collection occ-tree-task-collection) force)
+(defmethod occ-collect-tasks ((collection occ-tree-task-collection)
+                              force)
   (unless (occ-tree-task-collection-tree collection)
     (setf
      (occ-tree-task-collection-tree collection)
@@ -165,7 +166,8 @@
            (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
       (car (occ-tree-task-collection-root-files collection))))))
 
-(defmethod occ-collect-tasks ((collection occ-list-task-collection) force)
+(defmethod occ-collect-tasks ((collection occ-list-task-collection)
+                              force)
   (unless (occ-list-task-collection-list collection)
     (setf
      (occ-list-task-collection-list collection)
