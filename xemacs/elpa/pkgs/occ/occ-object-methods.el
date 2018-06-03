@@ -46,7 +46,9 @@
     (plist-get
      (cl-struct-slot-value (cl-classname task) 'plist task)
      (sym2key prop))))
-(cl-defmethod occ-set-property ((task occ-task) prop val)
+(cl-defmethod occ-set-property ((task occ-task)
+                                prop
+                                val)
   (if (memq prop (class-slots (cl-classname task)))
       (setf (cl-struct-slot-value (cl-classname task) prop task) val)
     (plist-put
@@ -109,7 +111,8 @@
                   (occ-class-slot (cl-classname task))))))
     (occ-make-contextual-task task context rank)))
 
-(cl-defmethod isassoc ((collection occ-tree-task-collection) (context occ-context))
+(cl-defmethod isassoc ((collection occ-tree-task-collection)
+                       (context occ-context))
   (let ((tasks (occ-collection collection))
         (matched '()))
     (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
