@@ -74,6 +74,25 @@
        org-odd-levels-only))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(cl-defmethod isassoc ((context occ-context))
+  (defun occ-dyntaskpls-associated-to-context-filtered (context)
+    ;; TODO Here do variance based filtering.
+    (let* ((dyntaskpls (funcall occ-matching-dyntaskpls context))
+           (rankslist  (mapcar #'(lambda (dyntaskpl) (plist-get dyntaskpl :rank))
+                               dyntaskpls))
+           (avgrank    (/
+                        (reduce #'+ rankslist)
+                        (length rankslist)))
+           (varirank   (sqrt
+                        (/
+                         (reduce #'+
+                                 (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
+                         (length rankslist)))))
+      (remove-if-not
+       #'(lambda (dyntaskpl)
+           (>= (plist-get dyntaskpl :rank) avgrank))
+       dyntaskpls))))
+
 (cl-defgeneric isassoc (obj context)
   "isassoc")
 
