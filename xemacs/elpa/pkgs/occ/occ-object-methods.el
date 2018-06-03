@@ -130,7 +130,7 @@
     (remove-if-not
      #'(lambda (dyntaskpl) (> (car dyntaskpl) 0))
      (mapcar #'(lambda (task)
-                 (org-context-clock-build-dyntaskpl task context))
+                 (isassoc task context))
              tasks))))
 
 (cl-defmethod isassoc ((task-pair (head 'root)) (context occ-context))
