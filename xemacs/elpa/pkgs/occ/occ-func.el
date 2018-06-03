@@ -45,6 +45,8 @@
                 (backward-char)
                 (buffer-substring start (point)))))))))
 
+(cl-defmethod occ-make-task)
+
 (defun occ-make-task-at-point (builder)
   ;; (org-element-at-point)
   (let (task
