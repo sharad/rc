@@ -88,7 +88,8 @@
 (cl-defmethod occ-make-task ((m marker) builder)
   (message "point %s" m)
   (if (and
-       (marker-buffer m))))
+       (marker-buffer m)
+       (merker-position))))
 
 (occ-make-task (point-marker))
 
