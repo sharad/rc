@@ -92,7 +92,8 @@
           (goto-char n)
           (occ-make-task-at-point)))))
 
-(cl-defmethod occ-make-task ((m marker) builder)
+(cl-defmethod occ-make-task ((m marker)
+                             builder)
   (message "point %s" m)
   (if (and
        (marker-buffer m)
@@ -123,7 +124,9 @@
                    :buffer buff)))
     context))
 
-(defmethod occ-make-contextual-task ((task occ-task) (context occ-context) (rank number))
+(defmethod occ-make-contextual-task ((task occ-task)
+                                     (context occ-context)
+                                     (rank number))
   (make-occ-contextual-task
    :name    nil
    :task    task
