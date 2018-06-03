@@ -208,7 +208,7 @@
   (occ-tree-task-collection-list occ-global-task-collection))
 
 (defun occ-collection-object ()
-  (occ-collection occ-global-task-collection))
+  occ-global-task-collection)
 
 
 
