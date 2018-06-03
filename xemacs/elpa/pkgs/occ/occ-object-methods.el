@@ -187,7 +187,8 @@
           (* 2 (length currfile))     ;as exact match to file giving double matching points.
         0))))
 
-(cl-defmethod isassoc ((task-pair (head status) (context occ-context)))
+(cl-defmethod isassoc ((task-pair (head status))
+                       (context occ-context))
   "Predicate funtion to check if context matches to task's status attribute."
   (let ((todo-type
          (occ-get-property (cdr task-pair) 'todo-type))
