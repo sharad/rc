@@ -86,7 +86,7 @@
                   (occ-class-slot (cl-classname task))))))
     (make-occ-contextual-task :task task :context context :rank rank)))
 
-(cl-defmethod isassoc ((task occ-task) (context occ-context))
+(cl-defmethod isassoc ((task occ-task-collection) (context occ-context))
   )
 
 (cl-defmethod isassoc ((task-pair (head 'root)) (context occ-context))
