@@ -204,7 +204,7 @@
    #'(lambda ()
        (or
         (occ-make-task-at-point #'make-occ-list-task)
-        (make-occ-tree-task :name "empty tree task")make-occ-list-task))) ;; note: only using first file of root-files
+        (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
    org-context-clock-task-tree-task-root-org-file))
 
 (provide 'occ-ctor)
