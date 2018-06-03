@@ -104,10 +104,7 @@
                   #'(lambda (slot)
                       (isassoc (cons slot task) context))
                   (occ-class-slot (cl-classname task))))))
-    (occ-make-contextual-task
-     :task task
-     :context context
-     :rank rank)))
+    (occ-make-contextual-task task context rank)))
 
 (cl-defmethod isassoc ((collection occ-tree-task-collection) (context occ-context))
   (let ((tasks (occ-collection collection))
