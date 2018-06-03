@@ -52,7 +52,7 @@
      (sym2key prop) val)))
 
 (cl-defmethod occ-cloass-slot ((obj occ-obj))
-  (cl-struct-slot-value (cl-classname obj) 'plist task)
+  (cl-struct-slot-value (cl-classname obj) 'plist obj)
   (class-slot (cl-classname task))
   )
 
