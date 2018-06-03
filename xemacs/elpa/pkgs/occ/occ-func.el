@@ -48,7 +48,7 @@
 (cl-defmethod occ-make-task ((n number) builder)
   (message "point %s" n))
 
-(cl-defmethod occ-make-task ((m marker))
+(cl-defmethod occ-make-task ((m marker) builder)
   (message "point %s" m))
 
 (occ-make-task (point-marker))
