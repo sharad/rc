@@ -91,7 +91,8 @@
 
 (cl-defstruct (occ-contextual-task (:include occ-obj))
   context
-  task)
+  task
+  rank)
 
 (cl-defstruct (occ-task-collection (:include occ-obj))
   root-files)
