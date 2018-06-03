@@ -89,7 +89,7 @@
                          (length rankslist)))))
       (remove-if-not
        #'(lambda (contextual-task)
-           (>= (plist-get contextual-task :rank) avgrank))
+           (>= (occ-contextual-task-rank contextual-task :rank) avgrank))
        contextual-tasks)))
 
 (cl-defgeneric isassoc (obj context)
