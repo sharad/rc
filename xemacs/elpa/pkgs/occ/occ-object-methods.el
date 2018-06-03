@@ -53,7 +53,7 @@
 
 (cl-defmethod occ-cloass-slot ((obj occ-obj))
   (let* ((plist (cl-struct-slot-value (cl-classname obj) 'plist obj))
-         (plist-get-keys)
+         (plist-get-keys plist)
          (slots (class-slot (cl-classname task))))
     ))
 
