@@ -127,7 +127,8 @@
 (cl-defmethod isassoc ((collection occ-list-task-collection) (context occ-context))
   (lexical-let ((tasks (occ-collection collection))
                 (context context))
-    (remove-if-not #'(lambda (dyntaskpl) (> (car dyntaskpl) 0))
+    (remove-if-not
+     #'(lambda (dyntaskpl) (> (car dyntaskpl) 0))
                    (mapcar #'(lambda (task)
                                (org-context-clock-build-dyntaskpl task context))
                            tasks))))
