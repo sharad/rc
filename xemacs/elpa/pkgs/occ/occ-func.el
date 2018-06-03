@@ -204,7 +204,7 @@
 (cl-defmethod occ-collection ()
   occ-global-task-collection)
 
-(cl-defmethod occ-collection ((collection occ-list-task-collection))
+(cl-defmethod occ-collection ((collection occ-tree-task-collection))
   (occ-global-task-collection))
 
 (cl-defmethod occ-collection ((collection occ-list-task-collection))
