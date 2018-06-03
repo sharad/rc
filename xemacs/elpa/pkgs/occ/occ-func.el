@@ -179,8 +179,7 @@
 (cl-defmethod occ-collection ((collection occ-list-task-collection))
   (occ-tree-task-collection-list occ-global-task-collection))
 
-(defun occ-collection-object ()
-  occ-global-task-collection)
+(defun occ-collection-object () occ-global-task-collection)
 
 
 
