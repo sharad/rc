@@ -89,6 +89,9 @@
 (cl-defmethod isassoc ((collection occ-tree-task-collection) (context occ-context))
   )
 
+(cl-defmethod isassoc ((collection occ-tree-task-collection) (context occ-context))
+  )
+
 (cl-defmethod isassoc ((task-pair (head 'root)) (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((root
