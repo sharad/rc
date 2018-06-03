@@ -150,7 +150,8 @@
                        :root-files (cdr dir-spec))))
       (setf occ-global-task-collection collection))))
 
-(defmethod occ-collect-tasks (collection force)
+(defmethod occ-collect-tasks (collection
+                              force)
   (error "first argument should be of type (or occ-tree-task-collection occ-list-task-collection)"))
 
 (defmethod occ-collect-tasks ((collection occ-tree-task-collection) force)
