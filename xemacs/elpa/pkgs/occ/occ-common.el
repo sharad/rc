@@ -31,7 +31,7 @@
     ;; (defvar org-)
 (defvar occ-verbose 0)
 
-(defun occ-debug ())
+(defun occ-debug (level &rest args))
 
 (defun sym2key (sym)
   (if (keywordp sym)
