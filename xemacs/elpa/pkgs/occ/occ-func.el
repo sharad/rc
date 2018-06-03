@@ -89,7 +89,7 @@
   (message "point %s" m)
   (if (and
        (marker-buffer m)
-       (merker-position))))
+       (numberp (merker-position m)))))
 
 (occ-make-task (point-marker))
 
