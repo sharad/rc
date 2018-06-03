@@ -76,7 +76,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (cl-defmethod associated-contextaul-task ((context occ-context))
     ;; TODO Here do variance based filtering.
-    (let* ((dyntaskpls (isassoc context))
+  (let* ((dyntaskpls (isassoc (occ-collection-object) context))
            (rankslist  (mapcar #'(lambda (dyntaskpl) (plist-get dyntaskpl :rank))
                                dyntaskpls))
            (avgrank    (/
