@@ -76,9 +76,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (cl-defmethod associated-contextaul-task ((context occ-context))
     ;; TODO Here do variance based filtering.
-  (let* ((dyntaskpls (isassoc (occ-collection-object) context))
-           (rankslist  (mapcar #'(lambda (dyntaskpl) (plist-get dyntaskpl :rank))
-                               dyntaskpls))
+  (let* ((contextual-tasks (isassoc (occ-collection-object) context))
+           (rankslist  (mapcar #'(lambda (contextual-task) (plist-get contextual-task :rank))
+                               contextual-tasks))
            (avgrank    (/
                         (reduce #'+ rankslist)
                         (length rankslist)))
@@ -88,9 +88,9 @@
                                  (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
                          (length rankslist)))))
       (remove-if-not
-       #'(lambda (dyntaskpl)
-           (>= (plist-get dyntaskpl :rank) avgrank))
-       dyntaskpls)))
+       #'(lambda (contextual-task)
+           (>= (plist-get contextual-task :rank) avgrank))
+       contextual-tasks)))
 
 (cl-defgeneric isassoc (obj context)
   "isassoc")
