@@ -102,7 +102,8 @@
   "isassoc"
   )
 
-(cl-defmethod isassoc ((task occ-task) (context occ-context))
+(cl-defmethod isassoc ((task occ-task)
+                       (context occ-context))
   (let ((rank
          (reduce #'+
                  (mapcar
