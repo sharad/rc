@@ -93,7 +93,7 @@
     (occ-tree-mapc-tasks
      #'(lambda (task args)
          (let ((rank
-                (funcall occ-api-task-associated-to-context-p task args)))
+                (isassoc task args)))
            (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
            (when (> rank 0)
              (push task matched)
