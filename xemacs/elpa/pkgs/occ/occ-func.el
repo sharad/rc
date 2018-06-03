@@ -45,25 +45,6 @@
                 (backward-char)
                 (buffer-substring start (point)))))))))
 
-(cl-defmethod occ-make-task ((n number) builder)
-  (message "point %s" n)
-  (if (<= n (point-max))
-      (save-restriction
-        (save-excursion
-          (goto-char n)
-          (occ-make-task-at-point)))))
-
-(cl-defmethod occ-make-task ((m marker) builder)
-  (message "point %s" m)
-  (if (and
-       (marker-buffer m)
-       (numberp (merker-position m)))
-      (with-current-buffer (marker-buffer m)
-        (if (<= (occ-make-task (merker-position m)) (point-max))
-            (occ-make-task (merker-position m))))))
-
-;; (occ-make-task (point-marker))
-
 (defun occ-make-task-at-point (builder)
   ;; (org-element-at-point)
   (let (task
@@ -102,6 +83,27 @@
               (unless (occ-get-property task prop)
                 (occ-set-property task prop val))))))
       task)))
+
+(cl-defmethod occ-make-task ((n number) builder)
+  (message "point %s" n)
+  (if (<= n (point-max))
+      (save-restriction
+        (save-excursion
+          (goto-char n)
+          (occ-make-task-at-point)))))
+
+(cl-defmethod occ-make-task ((m marker) builder)
+  (message "point %s" m)
+  (if (and
+       (marker-buffer m)
+       (numberp (merker-position m)))
+      (with-current-buffer (marker-buffer m)
+        (if (<= (occ-make-task (merker-position m)) (point-max))
+            (occ-make-task (merker-position m))))))
+
+;; (occ-make-task (point-marker))
+
+
 
 (defun occ-make-context (&optional buff)
   (let* ((buff (if buff
