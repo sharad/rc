@@ -89,7 +89,7 @@
 (cl-defmethod isassoc ((collection occ-tree-task-collection) (context occ-context))
   )
 
-(cl-defmethod isassoc ((collection occ-tree-task-collection) (context occ-context))
+(cl-defmethod isassoc ((collection occ-list-task-collection) (context occ-context))
   )
 
 (cl-defmethod isassoc ((task-pair (head 'root)) (context occ-context))
