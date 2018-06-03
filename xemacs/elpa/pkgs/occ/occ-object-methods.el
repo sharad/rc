@@ -202,25 +202,25 @@
          (string-equal status "HOLD"))
         -30 0)))
 
-(cl-defmethod isassoc ((task-pair (head subtree) (context occ-context)))
+(cl-defmethod isassoc ((task-pair (head subtree)) (context occ-context))
   "Predicate funtion to check if context matches to task's status attribute."
   (let ((sub-tree
          (occ-get-property (cdr task-pair) 'subtree)))
     (occ-debug :debug "task %s subtree %s" (occ-task-heading (cdr task-pair)) (null (null sub-tree)))
     (if sub-tree -30 0)))
 
-(cl-defmethod isassoc ((task-pair (head key) (context occ-context)))
+(cl-defmethod isassoc ((task-pair (head key)) (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((key (occ-get-property (cdr task-pair) 'KEY)))
     (if key (string-to-number key) 0)))
 
-(cl-defmethod isassoc ((task-pair (head heading-level) (context occ-context)))
+(cl-defmethod isassoc ((task-pair (head heading-level)) (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((level
           (occ-get-property (cdr task-pair) 'level)))
     (if level level 0)))
 
-(cl-defmethod isassoc ((task-pair (head timebeing) (context occ-context)))
+(cl-defmethod isassoc ((task-pair (head timebeing)) (context occ-context))
   (let ((timebeing (occ-get-property (cdr task-pair) 'timebeing)))
     (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
           (clocked-time   (occ-get-property (cdr task-pair) 'clock-sum)))
@@ -231,7 +231,7 @@
           (- timebeing-time clocked-time)
         0))))
 
-(cl-defmethod isassoc ((task-pair (head current-clock) (context occ-context)))
+(cl-defmethod isassoc ((task-pair (head current-clock)) (context occ-context))
   (let* ((task-marker
           (occ-get-property (cdr task-pair) 'marker)))
     (if (and
