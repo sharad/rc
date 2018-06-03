@@ -48,7 +48,7 @@
 (cl-defmethod occ-make-task ((n number) builder)
   (message "point %s" n)
   (if (<= n (point-max))
-      (let (task
+      ((let (task
             (heading-with-string-prop
              (unless (org-before-first-heading-p)
                (org-get-heading 'notags))))
@@ -83,7 +83,7 @@
                        (val (org-entry-get nil propstr t)))
                   (unless (occ-get-property task prop)
                     (occ-set-property task prop val))))))
-          task))))
+          task)))))
 
 (cl-defmethod occ-make-task ((m marker) builder)
   (message "point %s" m)
