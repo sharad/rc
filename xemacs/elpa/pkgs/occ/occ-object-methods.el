@@ -147,7 +147,7 @@
 
 
 (cl-defmethod isassoc (task-pair context)
-  0)
+  'x)
 
 (cl-defmethod isassoc ((task-pair (head root))
                        (context occ-context))
