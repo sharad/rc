@@ -104,8 +104,7 @@
                   #'(lambda (slot)
                       (isassoc (cons slot task) context))
                   (occ-class-slot (cl-classname task))))))
-    (make-occ-contextual-task
-     :name nil
+    (occ-make-contextual-task
      :task task
      :context context
      :rank rank)))
