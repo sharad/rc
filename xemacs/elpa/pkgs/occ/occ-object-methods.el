@@ -80,8 +80,8 @@
 (cl-defmethod isassoc ((task occ-task) (context occ-context))
   (mapcar
    (lambda ()
-     (isassoc (task)))
-   (slots (occ-class-slot (cl-classname task)))))
+     (isassoc (cons task)))
+   (occ-class-slot (cl-classname task))))
 
 (cl-defmethod isassoc ((task-pair (head 'root)) (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
