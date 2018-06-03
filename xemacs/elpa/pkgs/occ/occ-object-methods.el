@@ -226,7 +226,7 @@
 
 (when nil
   (cl-defmethod isassoc ((task-pair (head 'root)) (context list))
-    (message "%s" prop))
+    (message "%s" task-pair))
 
   (isassoc '(root . 1) '())
 
