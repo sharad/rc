@@ -77,7 +77,7 @@
 (cl-defmethod associated-contextaul-task ((context occ-context))
     ;; TODO Here do variance based filtering.
   (let* ((contextual-tasks (isassoc (occ-collection-object) context))
-           (rankslist  (mapcar #'(lambda (contextual-task) (plist-get contextual-task :rank))
+         (rankslist  (mapcar #'(lambda (contextual-task) (occ-contextual-task-rank contextual-task))
                                contextual-tasks))
            (avgrank    (/
                         (reduce #'+ rankslist)
@@ -89,7 +89,7 @@
                          (length rankslist)))))
       (remove-if-not
        #'(lambda (contextual-task)
-           (>= (occ-contextual-task-rank contextual-task :rank) avgrank))
+           (>= (occ-contextual-task-rank contextual-task) avgrank))
        contextual-tasks)))
 
 (cl-defgeneric isassoc (obj context)
