@@ -46,7 +46,7 @@
                 (buffer-substring start (point)))))))))
 
 (cl-defmethod occ-make-task ((p point))
-  )
+  (message "point %s" p))
 
 (defun occ-make-task-at-point (builder)
   ;; (org-element-at-point)
