@@ -48,7 +48,7 @@
 (cl-defmethod occ-make-task ((m marker))
   (message "point %s" m))
 
-(occ-make-task (point))
+(occ-make-task (make-marker))
 
 (defun occ-make-task-at-point (builder)
   ;; (org-element-at-point)
