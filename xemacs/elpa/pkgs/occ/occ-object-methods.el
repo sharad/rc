@@ -226,7 +226,8 @@
 
 (when nil
 
-  (cl-defmethod isassoc (task-pair context))
+  (cl-defmethod isassoc (task-pair context)
+    0)
 
   (cl-defmethod isassoc ((task-pair (head 'root)) (context list))
     (message "%s" task-pair))
