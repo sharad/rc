@@ -94,7 +94,7 @@
      #'(lambda (task args)
          (let ((contextual-task (isassoc task args)))
            (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
-           (when (> (contextual-task) 0)
+           (when (> (occ-contextual-task-rank contextual-task) 0)
              (push task matched)
              (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
                         (occ-task-get-heading task)
