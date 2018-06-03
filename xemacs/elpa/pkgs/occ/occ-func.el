@@ -47,7 +47,7 @@
 
 (cl-defmethod occ-make-task ((n number) builder)
   (message "point %s" n)
-  (let ()
+  (if (<= n (point-max))
     (let (task
           (heading-with-string-prop
            (unless (org-before-first-heading-p)
