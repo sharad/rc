@@ -177,7 +177,7 @@
       #'(lambda ()
           (or
            (occ-make-task-at-point #'make-occ-list-task)
-           (make-occ-tree-task :name "empty"))) ;; note: only using first file of root-files
+           (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
       (car (occ-tree-task-collection-root-files collection))))))
 
 (defmethod occ-collect-tasks ((collection occ-list-task-collection) force)
