@@ -162,7 +162,7 @@
      (occ-task-tree-build
       #'(lambda ()
           (or
-           (occ-make-task-at-point #'make-occ-list-task)
+           (occ-make-task-at-point #'make-occ-tree-task)
            (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
       (car (occ-tree-task-collection-root-files collection))))))
 
