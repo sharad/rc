@@ -62,7 +62,7 @@
         (if (<= (occ-make-task (merker-position m)) (point-max))
             (occ-make-task (merker-position m))))))
 
-(occ-make-task (point-marker))
+;; (occ-make-task (point-marker))
 
 (defun occ-make-task-at-point (builder)
   ;; (org-element-at-point)
