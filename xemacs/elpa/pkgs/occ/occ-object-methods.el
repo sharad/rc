@@ -223,7 +223,8 @@
           (occ-get-property (cdr task-pair) 'level)))
     (if level level 0)))
 
-(cl-defmethod isassoc ((task-pair (head timebeing)) (context occ-context))
+(cl-defmethod isassoc ((task-pair (head timebeing))
+                       (context occ-context))
   (let ((timebeing (occ-get-property (cdr task-pair) 'timebeing)))
     (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
           (clocked-time   (occ-get-property (cdr task-pair) 'clock-sum)))
@@ -234,7 +235,8 @@
           (- timebeing-time clocked-time)
         0))))
 
-(cl-defmethod isassoc ((task-pair (head current-clock)) (context occ-context))
+(cl-defmethod isassoc ((task-pair (head current-clock))
+                       (context occ-context))
   (let* ((task-marker
           (occ-get-property (cdr task-pair) 'marker)))
     (if (and
