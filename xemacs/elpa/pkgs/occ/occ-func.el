@@ -202,7 +202,7 @@
               (occ-list-task-collection-root-files collection))))))
 
 (cl-defmethod occ-collection ()
-  )
+  (occ-global-task-collection))
 
 
 (when nil
