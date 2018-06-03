@@ -87,7 +87,7 @@
     (make-occ-contextual-task :task task :context context :rank rank)))
 
 (cl-defmethod isassoc ((collection occ-tree-task-collection) (context occ-context))
-  (let ((tasks (occ-get-collection))
+  (let ((tasks (occ-get-collection collection))
         (matched '()))
     (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
     (occ-tree-mapc-tasks
@@ -102,7 +102,6 @@
      tasks
      context)
     (occ-debug :debug "occ-entries-associated-to-context-by-keys: AFTER matched %s[%d]" "matched" (length matched))
-
     matched))
 
 (cl-defmethod isassoc ((collection occ-list-task-collection) (context occ-context))
