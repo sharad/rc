@@ -79,7 +79,8 @@
 
 (cl-defmethod isassoc ((task occ-task) (context occ-context))
   (mapcar
-
+   (lambda ()
+     (isassoc))
    (slots (occ-class-slot (cl-classname task)))))
 
 (cl-defmethod isassoc ((task-pair (head 'root)) (context occ-context))
