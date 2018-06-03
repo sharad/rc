@@ -129,9 +129,9 @@
                 (context context))
     (remove-if-not
      #'(lambda (dyntaskpl) (> (car dyntaskpl) 0))
-                   (mapcar #'(lambda (task)
-                               (org-context-clock-build-dyntaskpl task context))
-                           tasks))))
+     (mapcar #'(lambda (task)
+                 (org-context-clock-build-dyntaskpl task context))
+             tasks))))
 
 (cl-defmethod isassoc ((task-pair (head 'root)) (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
