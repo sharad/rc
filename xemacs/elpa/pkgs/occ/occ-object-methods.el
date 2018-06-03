@@ -26,6 +26,7 @@
 (require 'occ-common)
 (require 'occ-base-objects)
 (require 'occ-tree)
+(require 'occ-ctor)
 
 (when nil ;; https://curiousprogrammer.wordpress.com/2010/07/19/emacs-defstruct-vs-other-languages/
 
