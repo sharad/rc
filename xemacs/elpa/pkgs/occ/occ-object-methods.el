@@ -135,6 +135,10 @@
           (isassoc task context))
       tasks))))
 
+
+(cl-defmethod isassoc (task-pair context)
+  0)
+
 (cl-defmethod isassoc ((task-pair (head 'root)) (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((root
