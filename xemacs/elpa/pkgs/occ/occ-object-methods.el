@@ -228,7 +228,7 @@
   (cl-defmethod isassoc ((task-pair (head 'root)) (context list))
     (message "%s" task-pair))
 
-  (isassoc '(root . 1) '())
+  (isassoc '(root  1) '())
 
   (cl-defmethod isassoc ((task occ-task)
                          (context occ-context))
