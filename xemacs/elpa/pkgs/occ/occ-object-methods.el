@@ -168,8 +168,7 @@
           (length root)
         0))))
 
-(cl-defmethod isassoc ((task-pair (head currfile)
-                                  (context occ-context)))
+(cl-defmethod isassoc ((task-pair (head currfile)) (context occ-context)))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((currfile
           (occ-get-property (cdr task-pair) 'currfile))
