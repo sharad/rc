@@ -166,7 +166,7 @@
                        :root-files (cdr dir-spec))))
       (setf occ-global-task-collection collection))))
 
-(defmethod occ-collect-tasks ((collection occ-tree-task-collection) force)
+(defmethod occ-collect-tasks (collection force)
   (unless (occ-tree-task-collection-tree collection)
     (setf
      (occ-tree-task-collection-tree collection)
