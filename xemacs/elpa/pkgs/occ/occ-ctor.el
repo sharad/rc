@@ -1,4 +1,4 @@
-;;; occ-func.el --- occ-api               -*- lexical-binding: t; -*-
+;;; occ-ctor.el --- occ-api               -*- lexical-binding: t; -*-
 ;; Copyright (C) 2016  sharad
 
 ;; Author: sharad <spratap@merunetworks.com>
@@ -199,5 +199,5 @@
         (make-occ-list-task))) ;; note: only using first file of root-files
    org-context-clock-task-tree-task-root-org-file))
 
-(provide 'occ-func)
-;;; occ-func.el ends here
+(provide 'occ-ctor)
+;;; occ-ctor.el ends here
