@@ -189,7 +189,7 @@
               #'(lambda ()
                   (or
                    (occ-make-task-at-point #'make-occ-list-task)
-                   (make-occ-list-task)))
+                   (make-occ-list-task :name "empty")))
               t
               (occ-list-task-collection-root-files collection))))))
 
