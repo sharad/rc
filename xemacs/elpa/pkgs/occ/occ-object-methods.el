@@ -114,7 +114,7 @@
     (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
     (occ-tree-mapc-tasks
      #'(lambda (task args)
-         (occ-debug :debug "isassoc task = %s heading = %s" task (oc-task-heading task))
+         (occ-debug :debug "isassoc task = %s heading = %s" task (occ-task-heading task))
          (let* ((contextual-task (isassoc task args))
                 (rank (occ-contextual-task-rank contextual-task)))
            (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
