@@ -230,6 +230,8 @@
 
   (isassoc '(root  1) nil)
 
+  (isassoc '(root  1) nil)
+
   (cl-defmethod isassoc ((task occ-task)
                          (context occ-context))
     (message "match isassoc"))
