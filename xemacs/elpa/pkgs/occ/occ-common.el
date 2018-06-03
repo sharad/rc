@@ -37,6 +37,10 @@
   (if (keywordp sym)
       sym
     (intern-soft (concat ":" (symbol-name sym)))))
+(defun sym2key (sym)
+  (if (keywordp sym)
+      sym
+    (intern-soft (concat ":" (symbol-name sym)))))
 (defun cl-classname (inst)
   (intern
    (substring
