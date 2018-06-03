@@ -50,7 +50,8 @@
   (if (<= n (point-max))
       (save-restriction
         (save-excursion
-         (occ-make-task-at-point)))))
+          (goto-char n)
+          (occ-make-task-at-point)))))
 
 (cl-defmethod occ-make-task ((m marker) builder)
   (message "point %s" m)
