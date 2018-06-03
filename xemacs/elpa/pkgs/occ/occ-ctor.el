@@ -84,7 +84,8 @@
                 (occ-set-property task prop val))))))
       task)))
 
-(cl-defmethod occ-make-task ((n number) builder)
+(cl-defmethod occ-make-task ((n number)
+                             builder)
   (message "point %s" n)
   (if (<= n (point-max))
       (save-restriction
