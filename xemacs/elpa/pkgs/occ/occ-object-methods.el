@@ -102,7 +102,7 @@
          (reduce #'+
                  (mapcar
                   #'(lambda (slot)
-                      (isassoc (cons slot task) context)) ;TODO: check if method exist or not.
+                      (isassoc (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
                   (occ-class-slot (cl-classname task))))))
     (occ-make-contextual-task task context rank)))
 
