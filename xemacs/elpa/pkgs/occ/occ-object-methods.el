@@ -128,7 +128,8 @@
   (lexical-let ((tasks (occ-collection collection))
                 (context context))
     (remove-if-not
-     #'(lambda (contextual-task) (> (car dyntaskpl) 0))
+     #'(lambda (contextual-task)
+         (> (occ-contextual-task-rank contextual-task) 0))
      (mapcar
       #'(lambda (task)
           (isassoc task context))
