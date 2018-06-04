@@ -25,7 +25,7 @@
 
 (require 'occ-common)
 (require 'occ-base-objects)
-(require 'occ-object-methods)
+;; (require 'occ-object-methods)
 (require 'occ-tree)
 
 (defun occ-heading-content-only ()
@@ -193,9 +193,6 @@
 
 (when nil
 
-
-
-
   (setq occ-global-task-collection nil)
   (occ-make-task-collection (list :tree org-context-clock-task-tree-task-root-org-file))
   (occ-tree-task-collection-tree occ-global-task-collection)
@@ -222,6 +219,14 @@
               (occ-make-task-at-point #'make-occ-tree-task)
               (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
          org-context-clock-task-tree-task-root-org-file))
+
+  (occ-task-tree-map-subheading
+   #'(lambda ()
+       (occ-task-tree-collect-task
+        #'(lambda ()
+            (or
+             (occ-make-task-at-point #'make-occ-tree-task)
+             (make-occ-tree-task :name "empty tree task"))))))
 
   )
 
