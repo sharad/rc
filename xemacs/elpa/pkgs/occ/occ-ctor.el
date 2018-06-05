@@ -50,8 +50,9 @@
   (let (task
         (heading-with-string-prop
          (if (org-before-first-heading-p)
+             "empty heading"
            (org-get-heading 'notags))))
-    (let ((heading (if heading-with-string-prop
+    (let ((heading (when heading-with-string-prop
                        (substring-no-properties heading-with-string-prop)))
           (heading-prop (if heading-with-string-prop
                             heading-with-string-prop))
