@@ -227,8 +227,11 @@
          org-context-clock-task-tree-task-root-org-file))
 
 
-  (occ-task-tree-map-subheading #'(lambda ()
-                                    (occ-task-tree-collect-task collector nil)))
+  (occ-task-tree-map-subheading
+   #'(lambda ()
+       (occ-task-tree-collect-task
+        collector
+        nil)))
 
   )
 
