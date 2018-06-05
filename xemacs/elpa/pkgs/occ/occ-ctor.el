@@ -197,7 +197,7 @@
 
 
   (setq occ-global-task-collection nil)
-  (occ-make-task-collection (list :tree org-context-clock-task-tree-task-root-org-file))
+  (occ-make-task-collection (list :tree "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/xx.org"))
   (occ-tree-task-collection-tree occ-global-task-collection)
   (occ-collect-tasks occ-global-task-collection t)
   (occ-tree-task-collection-root-files occ-global-task-collection)
