@@ -137,7 +137,6 @@
                 (append
                  (occ-task-tree-map-subheading #'(lambda ()
                                                    (occ-task-tree-build collector nil)
-                                                   ;; (occ-task-tree-collect-task collector nil)
                                                    ))
                  (let ((subtree-file-prop (occ-get-property entry :SUBTREEFILE)))
                    (when subtree-file-prop
@@ -154,8 +153,7 @@
                             subtree-file
                             (file-readable-p subtree-file))
                            (list
-                            (occ-task-tree-build collector subtree-file)
-                            ))))))))
+                            (occ-task-tree-build collector subtree-file)))))))))
           (occ-set-property entry 'subtree sub-tree)
           entry)))))
 
