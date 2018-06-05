@@ -41,7 +41,7 @@
 
 (cl-defmethod occ-get-property ((task occ-task)
                                 prop)
-  (if (memq prop (class-slots (cl-classname task)))
+  (if (memq prop (cl-class-slots (cl-classname task)))
       (cl-get-field task prop)
     (plist-get
      (cl-struct-slot-value (cl-classname task) 'plist task)
@@ -49,7 +49,7 @@
 (cl-defmethod occ-set-property ((task occ-task)
                                 prop
                                 val)
-  (if (memq prop (class-slots (cl-classname task)))
+  (if (memq prop (cl-class-slots (cl-classname task)))
       (setf (cl-struct-slot-value (cl-classname task) prop task) val)
     (plist-put
      (cl-struct-slot-value (cl-classname task) 'plist task)
@@ -58,7 +58,7 @@
 (cl-defmethod occ-class-slots ((obj occ-obj))
   (let* ((plist (cl-struct-slot-value (cl-classname obj) 'plist obj))
          (plist-keys (plist-get-keys plist))
-         (slots (class-slots (cl-classname task))))
+         (slots (cl-class-slots (cl-classname task))))
     (append slots
             (mapcar #'key2sym plist-keys))))
 
