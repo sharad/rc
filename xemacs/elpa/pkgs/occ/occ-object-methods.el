@@ -58,7 +58,7 @@
 (cl-defmethod occ-class-slot ((obj occ-obj))
   (let* ((plist (cl-struct-slot-value (cl-classname obj) 'plist obj))
          (plist-keys (plist-get-keys plist))
-         (slots (class-slot (cl-classname task))))
+         (slots (class-slots (cl-classname task))))
     (append slots
             (mapcar #'key2sym plist-keys))))
 
