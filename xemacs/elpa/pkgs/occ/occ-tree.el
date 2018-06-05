@@ -139,7 +139,7 @@
                                                    (occ-task-tree-build collector nil)
                                                    ;; (occ-task-tree-collect-task collector nil)
                                                    ))
-                 (let ((subtree-file
+                 (let ((subtree-file-prop
                         (occ-get-property entry :SUBTREEFILE)))
                  (when (occ-get-property entry :SUBTREEFILE)
                    (let* ((file (if file file (buffer-file-name)))
