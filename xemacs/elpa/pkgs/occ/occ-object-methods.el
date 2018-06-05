@@ -90,7 +90,9 @@
                          (/
                           (reduce #'+ rankslist)
                           (length rankslist))))
-           (varirank   ((sqrt
+         (varirank   (if (= 0 (length rankslist))
+                         0
+                      (sqrt
                         (/
                          (reduce #'+
                                  (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
