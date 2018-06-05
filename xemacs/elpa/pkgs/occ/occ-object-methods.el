@@ -90,11 +90,11 @@
                          (/
                           (reduce #'+ rankslist)
                           (length rankslist))))
-           (varirank   (sqrt
+           (varirank   ((sqrt
                         (/
                          (reduce #'+
                                  (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
-                         (length rankslist)))))
+                         (length rankslist))))))
       (remove-if-not
        #'(lambda (contextual-task)
            (>= (occ-contextual-task-rank contextual-task) avgrank))
