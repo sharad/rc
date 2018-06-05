@@ -230,7 +230,10 @@
   (occ-task-tree-map-subheading
    #'(lambda ()
        (occ-task-tree-collect-task
-        collector
+        #'(lambda ()
+            (or
+             (occ-make-task-at-point #'make-occ-tree-task)
+             (make-occ-tree-task :name "empty tree task")))
         nil)))
 
   )
