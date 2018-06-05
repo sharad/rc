@@ -41,7 +41,7 @@
 
 (cl-defmethod occ-get-property ((task occ-task)
                                 prop)
-  (if (memq prop (cl-class-slots (cl-classname task)))
+  (if (memq prop (class-slots (cl-classname task)))
       (cl-get-field task prop)
     (plist-get
      (cl-struct-slot-value (cl-classname task) 'plist task)
