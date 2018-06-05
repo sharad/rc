@@ -52,7 +52,8 @@
          (unless (org-before-first-heading-p)
            (org-get-heading 'notags))))
     (let ((heading (if heading-with-string-prop
-                       (substring-no-properties heading-with-string-prop)))
+                       (substring-no-properties heading-with-string-prop)
+                     "empty heading"))
           (heading-prop (if heading-with-string-prop
                             heading-with-string-prop))
           (marker  (move-marker
