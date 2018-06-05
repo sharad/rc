@@ -86,6 +86,7 @@
                           (occ-contextual-task-rank contextual-task))
                       contextual-tasks))
          (avgrank    (if (= 0 (length rankslist))
+                         0
                          (/
                           (reduce #'+ rankslist)
                           (length rankslist))))
