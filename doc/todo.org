@@ -10,7 +10,7 @@
 **** Add support for auto bookmark based on based on activity time on site
 
 **** Add support for adding session bookmarks
-****
+**** Add support to detect of focused buffer running video or Youtube thn not lock screen
 ** Security
 *** Keymanager gpg-agent ssh-agent and gnome-keyring etc need to be locked or identities need to be flushed on inactivity or locking.
     again need to be asked when logging-in back.
