@@ -79,7 +79,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (cl-defmethod associated-contextaul-tasks ((context occ-context))
-    ;; TODO Here do variance based filtering.
+  ;; TODO Here do variance based filtering.
   (let* ((contextual-tasks (isassoc (occ-collection-object) context))
          (rankslist  (mapcar
                       #'(lambda (contextual-task)
@@ -87,20 +87,20 @@
                       contextual-tasks))
          (avgrank    (if (= 0 (length rankslist))
                          0
-                         (/
-                          (reduce #'+ rankslist)
-                          (length rankslist))))
+                       (/
+                        (reduce #'+ rankslist)
+                        (length rankslist))))
          (varirank   (if (= 0 (length rankslist))
                          0
-                      (sqrt
+                       (sqrt
                         (/
                          (reduce #'+
                                  (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
                          (length rankslist))))))
-      (remove-if-not
-       #'(lambda (contextual-task)
-           (>= (occ-contextual-task-rank contextual-task) avgrank))
-       contextual-tasks)))
+    (remove-if-not
+     #'(lambda (contextual-task)
+         (>= (occ-contextual-task-rank contextual-task) avgrank))
+     contextual-tasks)))
 
 (cl-defgeneric isassoc (obj context)
   "isassoc"
