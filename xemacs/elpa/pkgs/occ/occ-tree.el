@@ -159,8 +159,7 @@
                           ;; (occ-task-tree-collect-task collector subtree-file)
                           ))))
                  )))
-          (when sub-tree
-              (occ-set-property entry 'subtree sub-tree))
+          (occ-set-property entry 'subtree sub-tree)
           entry)))))
 
 ;;;###autoload
