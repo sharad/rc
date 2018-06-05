@@ -126,7 +126,7 @@
                    :buffer buff)))
     context))
 
-(defmethod occ-make-contextual-task ((task occ-task)
+(cl-defmethod occ-make-contextual-task ((task occ-task)
                                      (context occ-context)
                                      (rank number))
   (make-occ-contextual-task
