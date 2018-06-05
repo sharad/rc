@@ -156,7 +156,8 @@
                  ;;          (occ-task-tree-collect-task collector subtree-file)))))
                  )))
           (if sub-tree
-              (occ-set-property entry 'subtree sub-tree)))))))
+              (occ-set-property entry 'subtree sub-tree))
+          entry)))))
 
 ;;;###autoload
 (defun occ-task-recursive-update-tasks (&optional force) ;; API (occ-api-set :predicate :update  'org-entry-list-update-tasks)
