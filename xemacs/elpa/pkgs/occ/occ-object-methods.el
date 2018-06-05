@@ -55,7 +55,7 @@
      (cl-struct-slot-value (cl-classname task) 'plist task)
      (sym2key prop) val)))
 
-(cl-defmethod occ-class-slot ((obj occ-obj))
+(cl-defmethod occ-class-slots ((obj occ-obj))
   (let* ((plist (cl-struct-slot-value (cl-classname obj) 'plist obj))
          (plist-keys (plist-get-keys plist))
          (slots (class-slots (cl-classname task))))
@@ -109,7 +109,7 @@
                  (mapcar
                   #'(lambda (slot)
                       (isassoc (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
-                  (occ-class-slot task)))))
+                  (occ-class-slots task)))))
     (occ-make-contextual-task task context rank)))
 
 (cl-defmethod isassoc ((collection occ-tree-task-collection)
