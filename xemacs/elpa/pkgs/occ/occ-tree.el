@@ -146,7 +146,7 @@
                           (subtree-file
                            (if (and subtree-file-prop
                                     (file-relative-name subtree-file-prop))
-                               (expand-file-name subtree-file
+                               (expand-file-name subtree-file-prop
                                                  (if file
                                                      (file-name-directory file)
                                                    default-directory))
