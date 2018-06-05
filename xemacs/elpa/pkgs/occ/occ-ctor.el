@@ -226,16 +226,17 @@
               (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
          org-context-clock-task-tree-task-root-org-file))
 
-
-  (setf occ-file-subtree
-        (occ-task-tree-map-subheading
-         #'(lambda ()
-             (occ-task-tree-collect-task
-              #'(lambda ()
-                  (or
-                   (occ-make-task-at-point #'make-occ-tree-task)
-                   (make-occ-tree-task :name "empty tree task")))
-              ))))
+  (with-current-buffer (find-file-noselect "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/xx.org")
+    (goto-char (point-min))
+    (setf occ-file-subtree
+          (occ-task-tree-map-subheading
+           #'(lambda ()
+               (occ-task-tree-collect-task
+                #'(lambda ()
+                    (or
+                     (occ-make-task-at-point #'make-occ-tree-task)
+                     (make-occ-tree-task :name "empty tree task")))
+                )))))
 
   )
 
