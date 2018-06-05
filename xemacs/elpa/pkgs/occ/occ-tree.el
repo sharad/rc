@@ -141,7 +141,7 @@
                                                    ))
                  (let ((subtree-file-prop
                         (occ-get-property entry :SUBTREEFILE)))
-                 (when (occ-get-property entry :SUBTREEFILE)
+                   (when subtree-file-prop
                    (let* ((file (if file file (buffer-file-name)))
                           (subtree-file
                            (if (and subtree-file-prop
