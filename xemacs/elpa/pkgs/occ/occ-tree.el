@@ -156,8 +156,7 @@
                            (list
                             (occ-task-tree-build collector subtree-file)
                             ;; (occ-task-tree-collect-task collector subtree-file)
-                            )))))
-                 )))
+                            ))))))))
           (occ-set-property entry 'subtree sub-tree)
           entry)))))
 
