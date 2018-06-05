@@ -137,25 +137,25 @@
 
 (defvar occ-global-task-collection nil)
 
-(defmethod occ-make-task-collection ((file-spec (head :tree)))
+(cl-defmethod occ-make-task-collection ((file-spec (head :tree)))
   (unless occ-global-task-collection
     (let ((collection (make-occ-tree-task-collection
                        :name "task collection tree"
                        :root-files (cdr file-spec))))
       (setf occ-global-task-collection collection))))
 
-(defmethod occ-make-task-collection ((file-spec (head :list)))
+(cl-defmethod occ-make-task-collection ((file-spec (head :list)))
   (unless occ-global-task-collection
     (let ((collection (make-occ-list-task-collection
                        :name "task collection list"
                        :root-files (cdr dir-spec))))
       (setf occ-global-task-collection collection))))
 
-(defmethod occ-collect-tasks (collection
+(cl-defmethod occ-collect-tasks (collection
                               force)
   (error "first argument should be of type (or occ-tree-task-collection occ-list-task-collection)"))
 
-(defmethod occ-collect-tasks ((collection occ-tree-task-collection)
+(cl-defmethod occ-collect-tasks ((collection occ-tree-task-collection)
                               force)
   (unless (occ-tree-task-collection-tree collection)
     (setf
@@ -167,7 +167,7 @@
            (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
       (car (occ-tree-task-collection-root-files collection))))))
 
-(defmethod occ-collect-tasks ((collection occ-list-task-collection)
+(cl-defmethod occ-collect-tasks ((collection occ-list-task-collection)
                               force)
   (unless (occ-list-task-collection-list collection)
     (setf
