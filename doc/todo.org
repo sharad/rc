@@ -2,7 +2,7 @@
 * Setup user TODOs
 ** Utilities
 *** Add proper support for gitwatch auto-checkin and updates
-*** Add support to not lock screen if video is palying.
+*** Add support to not lock screen if video is playing.
 ** Terminal
 *** URXVT add support for checking inactivity activity, activity followed by inactivity, inactivity followed by activity.
 **** We need to implement support for dialog box to receive character strings.
