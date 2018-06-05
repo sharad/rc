@@ -227,14 +227,15 @@
          org-context-clock-task-tree-task-root-org-file))
 
 
-  (occ-task-tree-map-subheading
-   #'(lambda ()
-       (occ-task-tree-collect-task
-        #'(lambda ()
-            (or
-             (occ-make-task-at-point #'make-occ-tree-task)
-             (make-occ-tree-task :name "empty tree task")))
-        nil)))
+  (setf occ-file-subtree
+        (occ-task-tree-map-subheading
+         #'(lambda ()
+             (occ-task-tree-collect-task
+              #'(lambda ()
+                  (or
+                   (occ-make-task-at-point #'make-occ-tree-task)
+                   (make-occ-tree-task :name "empty tree task")))
+              nil))))
 
   )
 
