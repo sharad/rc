@@ -153,7 +153,7 @@
                           subtree-file
                           (file-readable-p subtree-file))
                          (list
-                          (occ-task-tree-build collector file)
+                          (occ-task-tree-build collector subtree-file)
                           ;; (occ-task-tree-collect-task collector subtree-file)
                           ))))
                  )))
