@@ -226,6 +226,10 @@
               (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
          org-context-clock-task-tree-task-root-org-file))
 
+
+  (occ-task-tree-map-subheading #'(lambda ()
+                                    (occ-task-tree-collect-task collector nil)))
+
   )
 
 (provide 'occ-ctor)
