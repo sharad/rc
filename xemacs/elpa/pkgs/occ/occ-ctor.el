@@ -235,7 +235,7 @@
                   (or
                    (occ-make-task-at-point #'make-occ-tree-task)
                    (make-occ-tree-task :name "empty tree task")))
-              nil))))
+              "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/xx.org"))))
 
   )
 
