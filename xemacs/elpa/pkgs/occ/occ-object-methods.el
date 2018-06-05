@@ -85,9 +85,10 @@
                       #'(lambda (contextual-task)
                           (occ-contextual-task-rank contextual-task))
                       contextual-tasks))
-           (avgrank    (/
-                        (reduce #'+ rankslist)
-                        (length rankslist)))
+         (avgrank    (if (= 0 (length rankslist))
+                         (/
+                          (reduce #'+ rankslist)
+                          (length rankslist))))
            (varirank   (sqrt
                         (/
                          (reduce #'+
