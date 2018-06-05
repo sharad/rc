@@ -134,26 +134,25 @@
     (let ((entry (funcall collector)))
       (when entry
         (let* ((sub-tree
-                ;; (append
-                ;;  (occ-task-tree-map-subheading #'(lambda ()
-                ;;                                    (occ-task-tree-collect-task collector)))
-                ;;  (let* ((file (if file file (buffer-file-name)))
-                ;;         (subtree-file
-                ;;          (occ-get-property entry :SUBTREEFILE))
-                ;;         (subtree-file
-                ;;          (if (and subtree-file
-                ;;                   (file-relative-name subtree-file))
-                ;;              (expand-file-name subtree-file
-                ;;                                (if file
-                ;;                                    (file-name-directory file)
-                ;;                                  default-directory))
-                ;;            subtree-file)))
-                ;;    (if (and
-                ;;         subtree-file
-                ;;         (file-readable-p subtree-file))
-                ;;        (list
-                ;;         (occ-task-tree-collect-task collector subtree-file)))))
-                 ))
+                (append
+                 (occ-task-tree-map-subheading #'(lambda ()
+                                                   (occ-task-tree-collect-task collector)))
+                 (let* ((file (if file file (buffer-file-name)))
+                        (subtree-file
+                         (occ-get-property entry :SUBTREEFILE))
+                        (subtree-file
+                         (if (and subtree-file
+                                  (file-relative-name subtree-file))
+                             (expand-file-name subtree-file
+                                               (if file
+                                                   (file-name-directory file)
+                                                 default-directory))
+                           subtree-file)))
+                   (if (and
+                        subtree-file
+                        (file-readable-p subtree-file))
+                       (list
+                        (occ-task-tree-collect-task collector subtree-file)))))))
           (if sub-tree
               (occ-set-property entry 'subtree sub-tree)
             entry))))))
