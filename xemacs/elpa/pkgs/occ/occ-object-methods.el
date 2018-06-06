@@ -298,7 +298,8 @@
      contextual-tasks)))
 
 (when nil
- (length
+
+  (length
   (occ-matching-contextual-tasks
    (occ-make-context
     (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp"))))
