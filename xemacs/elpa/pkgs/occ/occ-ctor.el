@@ -212,7 +212,6 @@
          (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
     "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/xx.org"))
 
-
   (setq occ-test-gtree
         (occ-task-tree-build
          #'(lambda ()
