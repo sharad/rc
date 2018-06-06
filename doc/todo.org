@@ -27,7 +27,7 @@ To directly go to window with frame
 Here I also got analogical method which is followed by many like swiftkey
 which guess some word if user delete back than revert back to original typed.
 
-some kind of similar thing we could put here move-foucs DIR jump to WIN in DIR but if user do following reverse operation
+some kind of similar thing we could put here move-focus DIR jump to WIN in DIR but if user do following reverse operation
 than come back to old behaviour.
 
 *** On Screen Display or conky or OSD kind of information rendering system for wide information
