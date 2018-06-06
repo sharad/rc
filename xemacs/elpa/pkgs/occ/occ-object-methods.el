@@ -120,6 +120,7 @@
                        (context occ-context))
   (let ((tasks (occ-collection collection))
         (matched '()))
+    (when tasks
     (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
     (occ-tree-mapc-tasks
      #'(lambda (task args)
@@ -133,7 +134,7 @@
                         (occ-task-get-heading task)
                         (length matched)))))
      tasks
-     context)
+     context))
     (occ-debug :debug "occ-entries-associated-to-context-by-keys: AFTER matched %s[%d]" "matched" (length matched))
     matched))
 
