@@ -130,7 +130,7 @@
              (when (> (occ-contextual-task-rank contextual-task) 0)
                (push contextual-task matched)
                (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
-                          (occ-task-get-heading task)
+                          (occ-task-heading task)
                           (length matched)))))
        tasks
        context))
