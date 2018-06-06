@@ -304,8 +304,7 @@
 
 (length
  (occ-matching-contextual-tasks
-  (occ-make-context
-   (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp"))))
+  (occ-make-context (current-buffer))))
 
 (provide 'occ-object-methods)
 ;;; occ-object-methods.el ends here
