@@ -88,7 +88,7 @@
 
 (cl-defmethod occ-make-task ((n number)
                              builder)
-  (message "point %s" n)
+  (occ-debug :debug "point %s" n)
   (if (<= n (point-max))
       (save-restriction
         (save-excursion
@@ -97,7 +97,7 @@
 
 (cl-defmethod occ-make-task ((m marker)
                              builder)
-  (message "point %s" m)
+  (occ-debug :debug "point %s" m)
   (if (and
        (marker-buffer m)
        (numberp (merker-position m)))
