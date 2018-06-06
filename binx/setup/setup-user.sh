@@ -200,7 +200,7 @@ function setup_apt_packages()
 {
     running setup_apt_repo
 
-    setup_apt_upgrade_system
+    running setup_apt_upgrade_system
 
     sudo apt update
 
