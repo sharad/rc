@@ -41,6 +41,7 @@
 
 (cl-defmethod occ-get-property ((obj occ-obj)
                                 prop)
+  ;; mainly used by occ-task only
   (if (memq prop (cl-class-slots (cl-classname task)))
       (cl-get-field task prop)
     (plist-get
