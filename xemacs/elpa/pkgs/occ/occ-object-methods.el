@@ -296,7 +296,7 @@
          (>= (occ-contextual-task-rank contextual-task) avgrank))
      contextual-tasks)))
 
-(occ-matching-contextual-tasks (occ-make-context (find-file-noselect )))
+(occ-matching-contextual-tasks (occ-make-context (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp")))
 
 (provide 'occ-object-methods)
 ;;; occ-object-methods.el ends here
