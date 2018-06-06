@@ -54,7 +54,6 @@
     (plist-put
      (cl-struct-slot-value (cl-classname task) 'plist task)
      (sym2key prop) val)))
-
 (cl-defmethod occ-class-slots ((obj occ-obj))
   (let* ((plist (cl-struct-slot-value (cl-classname obj) 'plist obj))
          (plist-keys (plist-get-keys plist))
