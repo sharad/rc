@@ -296,7 +296,7 @@
          (>= (occ-contextual-task-rank contextual-task) avgrank))
      contextual-tasks)))
 
-(occ-matching-contextual-tasks (occ-make-context (current-buffer)))
+(occ-matching-contextual-tasks (occ-make-context (find-file-noselect )))
 
 (provide 'occ-object-methods)
 ;;; occ-object-methods.el ends here
