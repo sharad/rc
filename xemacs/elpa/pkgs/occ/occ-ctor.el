@@ -105,10 +105,6 @@
         (if (<= (occ-make-task (merker-position m)) (point-max))
             (occ-make-task (merker-position m) builder)))))
 
-;; (occ-make-task (point-marker))
-
-
-
 (defun occ-make-context (&optional buff)
   (let* ((buff (if buff
                    (if (bufferp buff)
