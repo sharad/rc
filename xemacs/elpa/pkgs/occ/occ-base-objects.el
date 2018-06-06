@@ -36,32 +36,6 @@
 ;; "org tasks accss common api"
 ;; (defvar org-)
 
-(when nil
-
-  (cl-defstruct xpoint
-    x y)
-
-  (setf zpoint (make-xpoint :x 5 :y 3))
-
-  (setf (cl-struct-slot-value 'xpoint 'x point) 3)
-
-  (cl--find-class 'xpoint)
-
-  (cl-defstruct base
-    baseattr)
-
-  (cl-defstruct (drived (:include base))
-    drivedattr)
-
-  (setf baseobj1 (make-base :baseattr "xbaseattr"))
-
-
-
-  (setf drivedobj1
-        (make-drived
-         :baseattr "xbaseattr"
-         :drivedattr "xdrivedattr")))
-
 (defvar occ-verbose 0)
 
 (defstruct occ-obj
@@ -103,5 +77,34 @@
 (cl-defstruct (occ-list-task-collection (:include occ-task-collection))
   list)
 
+
+
+
+
+(when nil
+
+  (cl-defstruct xpoint
+    x y)
+
+  (setf zpoint (make-xpoint :x 5 :y 3))
+
+  (setf (cl-struct-slot-value 'xpoint 'x point) 3)
+
+  (cl--find-class 'xpoint)
+
+  (cl-defstruct base
+    baseattr)
+
+  (cl-defstruct (drived (:include base))
+    drivedattr)
+
+  (setf baseobj1 (make-base :baseattr "xbaseattr"))
+
+
+
+  (setf drivedobj1
+        (make-drived
+         :baseattr "xbaseattr"
+         :drivedattr "xdrivedattr")))
 (provide 'occ-base-objects)
 ;;; occ-base-objects.el ends here
