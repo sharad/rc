@@ -103,7 +103,5 @@
 (cl-defstruct (occ-list-task-collection (:include occ-task-collection))
   list)
 
-;; (mapcar #'slot-definition-name (class-slots occ-task))
-
 (provide 'occ-base-objects)
 ;;; occ-base-objects.el ends here
