@@ -105,47 +105,5 @@
 
 ;; (mapcar #'slot-definition-name (class-slots occ-task))
 
-
-
-
-
-
-
-
-
-
-
-(defun occ-tasks-associated-to-context (context)
-  ;; (funcall occ-api-tasks-associated-to-context context)
-  (funcall occ-matching-tasks context))
-
-;; (defun occ-markers-associated-to-context (context)
-(defun occ-markers-associated-to-context (context)
-  (mapcar #'(lambda (e)
-              (occ-task-get-property e :task-clock-marker))
-          (occ-tasks-associated-to-context context)))
-
-
-(defun occ-dyntaskpls-associated-to-context-filtered (context)
-  ;; TODO Here do variance based filtering.
-  (let* ((dyntaskpls (funcall occ-matching-dyntaskpls context))
-         (rankslist  (mapcar #'(lambda (dyntaskpl) (plist-get dyntaskpl :rank))
-                             dyntaskpls))
-         (avgrank    (/
-                      (reduce #'+ rankslist)
-                      (length rankslist)))
-         (varirank   (sqrt
-                      (/
-                       (reduce #'+
-                               (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
-                       (length rankslist)))))
-    (remove-if-not
-     #'(lambda (dyntaskpl)
-         (>= (plist-get dyntaskpl :rank) avgrank))
-     dyntaskpls)))
-
-(defun occ-dyntaskpl-print (dyntaskpl heading)
-  (funcall occ-api-dyntaskpl-print dyntaskpl heading))
-
 (provide 'occ-base-objects)
 ;;; occ-base-objects.el ends here
