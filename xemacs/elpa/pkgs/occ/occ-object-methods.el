@@ -178,7 +178,7 @@
   (let* ((currfile
           (occ-get-property (cdr task-pair) 'currfile))
          (currfile (if currfile (file-truename currfile))))
-    (let* ((file (occ-get-property context 'file))
+    (let* ((file (occ-context-file context))
            (file (if file (file-truename file))))
       (if currfile
           (progn
