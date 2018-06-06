@@ -273,7 +273,7 @@
 (cl-defgeneric occ-matching-contextual-tasks (context)
   )
 
-(associated-contextaul-tasks (occ-make-context nil))
+(associated-contextaul-tasks (occ-make-context (current-buffer)))
 
 (provide 'occ-object-methods)
 ;;; occ-object-methods.el ends here
