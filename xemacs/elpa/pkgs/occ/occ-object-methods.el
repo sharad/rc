@@ -46,7 +46,7 @@
     (plist-get
      (cl-struct-slot-value (cl-classname task) 'plist task)
      (sym2key prop))))
-(cl-defmethod occ-set-property ((task occ-task)
+(cl-defmethod occ-set-property ((obj occ-obj)
                                 prop
                                 val)
   (if (memq prop (cl-class-slots (cl-classname task)))
