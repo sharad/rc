@@ -203,7 +203,6 @@
     (setf occ-gtree
           (occ-tree-task-collection-tree occ-global-task-collection)))
 
-
   (setf
    occ-test-gtree
    (occ-task-tree-build
@@ -231,9 +230,7 @@
                 #'(lambda ()
                     (or
                      (occ-make-task-at-point #'make-occ-tree-task)
-                     (make-occ-tree-task :name "empty tree task"))))))))
-
-  )
+                     (make-occ-tree-task :name "empty tree task")))))))))
 
 (provide 'occ-ctor)
 ;;; occ-ctor.el ends here
