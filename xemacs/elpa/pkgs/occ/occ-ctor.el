@@ -71,6 +71,7 @@
               (funcall builder
                        :name    heading
                        :heading heading
+                       :marker  marker
                        :file file
                        :point point
                        :heading-prop heading-prop
