@@ -102,7 +102,7 @@
        (numberp (merker-position m)))
       (with-current-buffer (marker-buffer m)
         (if (<= (occ-make-task (merker-position m)) (point-max))
-            (occ-make-task (merker-position m))))))
+            (occ-make-task (merker-position m) builder)))))
 
 ;; (occ-make-task (point-marker))
 
