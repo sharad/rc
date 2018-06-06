@@ -194,26 +194,26 @@
 
 
 (when nil
-  (when nil
-   (setq occ-global-task-collection nil)
-   (occ-make-task-collection (list :tree org-context-clock-task-tree-task-root-org-file))
-   (occ-tree-task-collection-tree occ-global-task-collection)
-   (occ-collect-tasks occ-global-task-collection t)
-   (occ-tree-task-collection-root-files occ-global-task-collection)
+  (progn
+    (setq occ-global-task-collection nil)
+    (occ-make-task-collection (list :tree org-context-clock-task-tree-task-root-org-file))
+    (occ-tree-task-collection-tree occ-global-task-collection)
+    (occ-collect-tasks occ-global-task-collection t)
+    (occ-tree-task-collection-root-files occ-global-task-collection)
 
 
-   (setf occ-gtree
-         (occ-tree-task-collection-tree occ-global-task-collection)))
+    (setf occ-gtree
+          (occ-tree-task-collection-tree occ-global-task-collection)))
 
 
   (setf
    occ-test-gtree
    (occ-task-tree-build
-   #'(lambda ()
-       (or
-        (occ-make-task-at-point #'make-occ-tree-task)
-        (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
-   "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/xx.org"))
+    #'(lambda ()
+        (or
+         (occ-make-task-at-point #'make-occ-tree-task)
+         (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
+    "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/xx.org"))
 
 
   (setq occ-test-gtree
