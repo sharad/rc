@@ -290,6 +290,7 @@
                          (reduce #'+
                                  (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
                          (length rankslist))))))
+    (message "matched contexttasks %s" (length contextual-tasks))
     (remove-if-not
      #'(lambda (contextual-task)
          (>= (occ-contextual-task-rank contextual-task) avgrank))
