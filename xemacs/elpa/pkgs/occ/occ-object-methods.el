@@ -159,7 +159,7 @@
   (let* ((root
           (occ-get-property (cdr task-pair) 'root))
          (root (if root (file-truename root))))
-    (let* ((file (occ-get-property context 'file))
+    (let* ((file (occ-context-file context))
            (file (if file (file-truename file))))
       (if root
           (progn
