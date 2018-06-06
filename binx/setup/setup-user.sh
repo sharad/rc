@@ -244,8 +244,7 @@ function setup_apt_packages()
         then
             for p in $(eval echo \$$pkg)
             do
-                echo sudo apt -y install ${p}
-                sudo apt -y install ${p}
+                running sudo apt -y install ${p}
             done
         fi
     done
