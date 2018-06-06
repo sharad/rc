@@ -121,20 +121,20 @@
   (let ((tasks (occ-collection collection))
         (matched '()))
     (when tasks
-    (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
-    (occ-tree-mapc-tasks
-     #'(lambda (task args)
-         ;; (occ-debug :debug "isassoc heading = %s" (occ-task-heading task))
-         (let* ((contextual-task (isassoc task args))
-                (rank (occ-contextual-task-rank contextual-task)))
-           (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
-           (when (> (occ-contextual-task-rank contextual-task) 0)
-             (push contextual-task matched)
-             (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
-                        (occ-task-get-heading task)
-                        (length matched)))))
-     tasks
-     context))
+      (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
+      (occ-tree-mapc-tasks
+       #'(lambda (task args)
+           ;; (occ-debug :debug "isassoc heading = %s" (occ-task-heading task))
+           (let* ((contextual-task (isassoc task args))
+                  (rank (occ-contextual-task-rank contextual-task)))
+             (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
+             (when (> (occ-contextual-task-rank contextual-task) 0)
+               (push contextual-task matched)
+               (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
+                          (occ-task-get-heading task)
+                          (length matched)))))
+       tasks
+       context))
     (occ-debug :debug "occ-entries-associated-to-context-by-keys: AFTER matched %s[%d]" "matched" (length matched))
     matched))
 
