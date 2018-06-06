@@ -2,6 +2,7 @@
 * Setup user TODOs
 ** Utilities
 *** Add proper support for gitwatch auto-checkin and updates
+*** Add support to not lock screen if video is playing.
 ** Terminal
 *** URXVT add support for checking inactivity activity, activity followed by inactivity, inactivity followed by activity.
 **** We need to implement support for dialog box to receive character strings.
@@ -10,6 +11,7 @@
 **** Add support for auto bookmark based on based on activity time on site
 
 **** Add support for adding session bookmarks
+**** Add support to detect of focused buffer running video or Youtube than not lock screen
 ** Security
 *** Keymanager gpg-agent ssh-agent and gnome-keyring etc need to be locked or identities need to be flushed on inactivity or locking.
     again need to be asked when logging-in back.
@@ -19,6 +21,14 @@
 ** UI => GUI
 *** WM
 **** stumpwm
-     Add support for sending SIG especially SIGSTOP and SIGCONT to window
+***** Add support for sending SIG especially SIGSTOP and SIGCONT to window
+***** move-focus [left|right|down|up] same way move-focus-to-window-maybe [left|right|down|up]
+To directly go to window with frame
+Here I also got analogical method which is followed by many like swiftkey
+which guess some word if user delete back than revert back to original typed.
+
+some kind of similar thing we could put here move-focus DIR jump to WIN in DIR but if user do following reverse operation
+than come back to old behaviour.
+
 *** On Screen Display or conky or OSD kind of information rendering system for wide information
     with capability for interactivity.

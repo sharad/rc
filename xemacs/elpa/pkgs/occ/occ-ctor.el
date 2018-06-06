@@ -49,9 +49,10 @@
   ;; (org-element-at-point)
   (let (task
         (heading-with-string-prop
-         (unless (org-before-first-heading-p)
+         (if (org-before-first-heading-p)
+             "empty heading"
            (org-get-heading 'notags))))
-    (let ((heading (if heading-with-string-prop
+    (let ((heading (when heading-with-string-prop
                        (substring-no-properties heading-with-string-prop)))
           (heading-prop (if heading-with-string-prop
                             heading-with-string-prop))
@@ -70,13 +71,14 @@
               (funcall builder
                        :name    heading
                        :heading heading
+                       :heading-prop heading-prop
+                       :marker  marker
                        :file file
                        :point point
-                       :heading-prop heading-prop
                        :clock-sum clock-sum
                        :plist task-plist))
 
-        (let ((inherited-props (org-context-clock-keys-with-operation :getter nil)))
+        (let ((inherited-props (org-context-clock-keys-with-operation :getter nil))) ;TODO
           (dolist (prop inherited-props)
             (let* ((propstr (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))
                    (val (org-entry-get nil propstr t)))
@@ -86,26 +88,22 @@
 
 (cl-defmethod occ-make-task ((n number)
                              builder)
-  (message "point %s" n)
+  (occ-debug :debug "point %s" n)
   (if (<= n (point-max))
       (save-restriction
         (save-excursion
           (goto-char n)
-          (occ-make-task-at-point)))))
+          (occ-make-task-at-point builder)))))
 
 (cl-defmethod occ-make-task ((m marker)
                              builder)
-  (message "point %s" m)
+  (occ-debug :debug "point %s" m)
   (if (and
        (marker-buffer m)
        (numberp (merker-position m)))
       (with-current-buffer (marker-buffer m)
         (if (<= (occ-make-task (merker-position m)) (point-max))
-            (occ-make-task (merker-position m))))))
-
-;; (occ-make-task (point-marker))
-
-
+            (occ-make-task (merker-position m) builder)))))
 
 (defun occ-make-context (&optional buff)
   (let* ((buff (if buff
@@ -125,7 +123,7 @@
                    :buffer buff)))
     context))
 
-(defmethod occ-make-contextual-task ((task occ-task)
+(cl-defmethod occ-make-contextual-task ((task occ-task)
                                      (context occ-context)
                                      (rank number))
   (make-occ-contextual-task
@@ -136,25 +134,25 @@
 
 (defvar occ-global-task-collection nil)
 
-(defmethod occ-make-task-collection ((file-spec (head :tree)))
+(cl-defmethod occ-make-task-collection ((file-spec (head :tree)))
   (unless occ-global-task-collection
     (let ((collection (make-occ-tree-task-collection
                        :name "task collection tree"
                        :root-files (cdr file-spec))))
       (setf occ-global-task-collection collection))))
 
-(defmethod occ-make-task-collection ((file-spec (head :list)))
+(cl-defmethod occ-make-task-collection ((file-spec (head :list)))
   (unless occ-global-task-collection
     (let ((collection (make-occ-list-task-collection
                        :name "task collection list"
                        :root-files (cdr dir-spec))))
       (setf occ-global-task-collection collection))))
 
-(defmethod occ-collect-tasks (collection
+(cl-defmethod occ-collect-tasks (collection
                               force)
   (error "first argument should be of type (or occ-tree-task-collection occ-list-task-collection)"))
 
-(defmethod occ-collect-tasks ((collection occ-tree-task-collection)
+(cl-defmethod occ-collect-tasks ((collection occ-tree-task-collection)
                               force)
   (unless (occ-tree-task-collection-tree collection)
     (setf
@@ -166,7 +164,7 @@
            (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
       (car (occ-tree-task-collection-root-files collection))))))
 
-(defmethod occ-collect-tasks ((collection occ-list-task-collection)
+(cl-defmethod occ-collect-tasks ((collection occ-list-task-collection)
                               force)
   (unless (occ-list-task-collection-list collection)
     (setf
@@ -192,6 +190,7 @@
 
 
 (when nil
+<<<<<<< HEAD
 
   (setq occ-global-task-collection nil)
   (occ-make-task-collection (list :tree org-context-clock-task-tree-task-root-org-file))
@@ -211,6 +210,25 @@
         (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
    org-context-clock-task-tree-task-root-org-file)
 
+=======
+  (progn
+    (setq occ-global-task-collection nil)
+    (occ-make-task-collection (list :tree org-context-clock-task-tree-task-root-org-file))
+    (occ-tree-task-collection-tree occ-global-task-collection)
+    (occ-collect-tasks occ-global-task-collection t)
+    (occ-tree-task-collection-root-files occ-global-task-collection)
+    (setf occ-gtree
+          (occ-tree-task-collection-tree occ-global-task-collection)))
+
+  (setf
+   occ-test-gtree
+   (occ-task-tree-build
+    #'(lambda ()
+        (or
+         (occ-make-task-at-point #'make-occ-tree-task)
+         (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
+    "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/xx.org"))
+>>>>>>> 5c17929a0a818092449c3c8e4c12c0cf17d3ce25
 
   (setq occ-test-gtree
         (occ-task-tree-build
@@ -220,6 +238,7 @@
               (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
          org-context-clock-task-tree-task-root-org-file))
 
+<<<<<<< HEAD
   (occ-task-tree-map-subheading
    #'(lambda ()
        (occ-task-tree-collect-task
@@ -229,6 +248,18 @@
              (make-occ-tree-task :name "empty tree task"))))))
 
   )
+=======
+  (with-current-buffer (find-file-noselect "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/xx.org")
+    (goto-char (point-min))
+    (setf occ-file-subtree
+          (occ-task-tree-map-subheading
+           #'(lambda ()
+               (occ-task-tree-collect-task
+                #'(lambda ()
+                    (or
+                     (occ-make-task-at-point #'make-occ-tree-task)
+                     (make-occ-tree-task :name "empty tree task")))))))))
+>>>>>>> 5c17929a0a818092449c3c8e4c12c0cf17d3ce25
 
 (provide 'occ-ctor)
 ;;; occ-ctor.el ends here

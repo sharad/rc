@@ -36,32 +36,6 @@
 ;; "org tasks accss common api"
 ;; (defvar org-)
 
-(when nil
-
-  (cl-defstruct xpoint
-    x y)
-
-  (setf zpoint (make-xpoint :x 5 :y 3))
-
-  (setf (cl-struct-slot-value 'xpoint 'x point) 3)
-
-  (cl--find-class 'xpoint)
-
-  (cl-defstruct base
-    baseattr)
-
-  (cl-defstruct (drived (:include base))
-    drivedattr)
-
-  (setf baseobj1 (make-base :baseattr "xbaseattr"))
-
-
-
-  (setf drivedobj1
-        (make-drived
-         :baseattr "xbaseattr"
-         :drivedattr "xdrivedattr")))
-
 (defvar occ-verbose 0)
 
 (defstruct occ-obj
@@ -103,49 +77,34 @@
 (cl-defstruct (occ-list-task-collection (:include occ-task-collection))
   list)
 
-;; (mapcar #'slot-definition-name (class-slots occ-task))
 
 
 
 
+(when nil
+
+  (cl-defstruct xpoint
+    x y)
+
+  (setf zpoint (make-xpoint :x 5 :y 3))
+
+  (setf (cl-struct-slot-value 'xpoint 'x point) 3)
+
+  (cl--find-class 'xpoint)
+
+  (cl-defstruct base
+    baseattr)
+
+  (cl-defstruct (drived (:include base))
+    drivedattr)
+
+  (setf baseobj1 (make-base :baseattr "xbaseattr"))
 
 
 
-
-
-
-
-(defun occ-tasks-associated-to-context (context)
-  ;; (funcall occ-api-tasks-associated-to-context context)
-  (funcall occ-matching-tasks context))
-
-;; (defun occ-markers-associated-to-context (context)
-(defun occ-markers-associated-to-context (context)
-  (mapcar #'(lambda (e)
-              (occ-task-get-property e :task-clock-marker))
-          (occ-tasks-associated-to-context context)))
-
-
-(defun occ-dyntaskpls-associated-to-context-filtered (context)
-  ;; TODO Here do variance based filtering.
-  (let* ((dyntaskpls (funcall occ-matching-dyntaskpls context))
-         (rankslist  (mapcar #'(lambda (dyntaskpl) (plist-get dyntaskpl :rank))
-                             dyntaskpls))
-         (avgrank    (/
-                      (reduce #'+ rankslist)
-                      (length rankslist)))
-         (varirank   (sqrt
-                      (/
-                       (reduce #'+
-                               (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
-                       (length rankslist)))))
-    (remove-if-not
-     #'(lambda (dyntaskpl)
-         (>= (plist-get dyntaskpl :rank) avgrank))
-     dyntaskpls)))
-
-(defun occ-dyntaskpl-print (dyntaskpl heading)
-  (funcall occ-api-dyntaskpl-print dyntaskpl heading))
-
+  (setf drivedobj1
+        (make-drived
+         :baseattr "xbaseattr"
+         :drivedattr "xdrivedattr")))
 (provide 'occ-base-objects)
 ;;; occ-base-objects.el ends here

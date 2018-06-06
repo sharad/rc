@@ -39,26 +39,27 @@
   (get-field dave 'name)
   (set-field dave 'name "Simon Smith"))
 
-(cl-defmethod occ-get-property ((task occ-task)
+(cl-defmethod occ-get-property ((obj occ-obj)
                                 prop)
-  (if (memq prop (class-slots (cl-classname task)))
+  ;; mainly used by occ-task only
+  (if (memq prop (cl-class-slots (cl-classname task)))
       (cl-get-field task prop)
     (plist-get
      (cl-struct-slot-value (cl-classname task) 'plist task)
      (sym2key prop))))
-(cl-defmethod occ-set-property ((task occ-task)
+(cl-defmethod occ-set-property ((obj occ-obj)
                                 prop
                                 val)
-  (if (memq prop (class-slots (cl-classname task)))
+  ;; mainly used by occ-task only
+  (if (memq prop (cl-class-slots (cl-classname task)))
       (setf (cl-struct-slot-value (cl-classname task) prop task) val)
     (plist-put
      (cl-struct-slot-value (cl-classname task) 'plist task)
      (sym2key prop) val)))
-
-(cl-defmethod occ-class-slot ((obj occ-obj))
+(cl-defmethod occ-class-slots ((obj occ-obj))
   (let* ((plist (cl-struct-slot-value (cl-classname obj) 'plist obj))
          (plist-keys (plist-get-keys plist))
-         (slots (class-slot (cl-classname task))))
+         (slots (cl-class-slots (cl-classname obj))))
     (append slots
             (mapcar #'key2sym plist-keys))))
 
@@ -77,27 +78,6 @@
        (concat prefix heading)
        org-odd-levels-only))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(cl-defmethod associated-contextaul-tasks ((context occ-context))
-    ;; TODO Here do variance based filtering.
-  (let* ((contextual-tasks (isassoc (occ-collection-object) context))
-         (rankslist  (mapcar
-                      #'(lambda (contextual-task)
-                          (occ-contextual-task-rank contextual-task))
-                      contextual-tasks))
-           (avgrank    (/
-                        (reduce #'+ rankslist)
-                        (length rankslist)))
-           (varirank   (sqrt
-                        (/
-                         (reduce #'+
-                                 (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
-                         (length rankslist)))))
-      (remove-if-not
-       #'(lambda (contextual-task)
-           (>= (occ-contextual-task-rank contextual-task) avgrank))
-       contextual-tasks)))
-
 (cl-defgeneric isassoc (obj context)
   "isassoc"
   )
@@ -109,27 +89,28 @@
                  (mapcar
                   #'(lambda (slot)
                       (isassoc (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
-                  (occ-class-slot (cl-classname task))))))
+                  (occ-class-slots task)))))
     (occ-make-contextual-task task context rank)))
 
 (cl-defmethod isassoc ((collection occ-tree-task-collection)
                        (context occ-context))
   (let ((tasks (occ-collection collection))
         (matched '()))
-    (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
-    (occ-tree-mapc-tasks
-     #'(lambda (task args)
-         ;; (occ-debug :debug "isassoc heading = %s" (occ-task-heading task))
-         (let* ((contextual-task (isassoc task args))
-                (rank (occ-contextual-task-rank contextual-task)))
-           (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
-           (when (> (occ-contextual-task-rank contextual-task) 0)
-             (push contextual-task matched)
-             (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
-                        (occ-task-get-heading task)
-                        (length matched)))))
-     tasks
-     context)
+    (when tasks
+      (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
+      (occ-tree-mapc-tasks
+       #'(lambda (task args)
+           ;; (occ-debug :debug "isassoc heading = %s" (occ-task-heading task))
+           (let* ((contextual-task (isassoc task args))
+                  (rank (occ-contextual-task-rank contextual-task)))
+             (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
+             (when (> (occ-contextual-task-rank contextual-task) 0)
+               (push contextual-task matched)
+               (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
+                          (occ-task-heading task)
+                          (length matched)))))
+       tasks
+       context))
     (occ-debug :debug "occ-entries-associated-to-context-by-keys: AFTER matched %s[%d]" "matched" (length matched))
     matched))
 
@@ -147,7 +128,7 @@
 
 
 (cl-defmethod isassoc (task-pair context)
-  'x)
+  0)
 
 (cl-defmethod isassoc ((task-pair (head root))
                        (context occ-context))
@@ -155,7 +136,7 @@
   (let* ((root
           (occ-get-property (cdr task-pair) 'root))
          (root (if root (file-truename root))))
-    (let* ((file (plist-get context :file))
+    (let* ((file (occ-context-file context))
            (file (if file (file-truename file))))
       (if root
           (progn
@@ -174,7 +155,7 @@
   (let* ((currfile
           (occ-get-property (cdr task-pair) 'currfile))
          (currfile (if currfile (file-truename currfile))))
-    (let* ((file (plist-get context :file))
+    (let* ((file (occ-context-file context))
            (file (if file (file-truename file))))
       (if currfile
           (progn
@@ -266,10 +247,45 @@
   )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-defgeneric occ-matching-contextual-tasks (context)
-  )
+(cl-defmethod occ-matching-contextual-tasks ((context occ-context))
+  ;; TODO Here do variance based filtering.
+  (let* ((contextual-tasks (isassoc (occ-collection-object) context))
+         (rankslist  (mapcar
+                      #'(lambda (contextual-task)
+                          (occ-contextual-task-rank contextual-task))
+                      contextual-tasks))
+         (avgrank    (if (= 0 (length rankslist))
+                         0
+                       (/
+                        (reduce #'+ rankslist)
+                        (length rankslist))))
+         (varirank   (if (= 0 (length rankslist))
+                         0
+                       (sqrt
+                        (/
+                         (reduce #'+
+                                 (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
+                         (length rankslist))))))
+    (occ-debug :debug "matched contexttasks %s" (length contextual-tasks))
+    (remove-if-not
+     #'(lambda (contextual-task)
+         (>= (occ-contextual-task-rank contextual-task) avgrank))
+     contextual-tasks)))
 
+(when nil
+
+  (length
+  (occ-matching-contextual-tasks
+   (occ-make-context
+    (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp"))))
+
+<<<<<<< HEAD
 ;; (associated-contextaul-tasks (occ-make-context nil))
+=======
+ (length
+  (occ-matching-contextual-tasks
+   (occ-make-context (current-buffer)))))
+>>>>>>> 5c17929a0a818092449c3c8e4c12c0cf17d3ce25
 
 (provide 'occ-object-methods)
 ;;; occ-object-methods.el ends here
