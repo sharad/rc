@@ -198,12 +198,9 @@ function setup_apt_upgrade_system()
 }
 function setup_apt_packages()
 {
-    setup_apt_repo
+    running setup_apt_repo
 
     setup_apt_upgrade_system
-
-
-
 
     sudo apt update
 
