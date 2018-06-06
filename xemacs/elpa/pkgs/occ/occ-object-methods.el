@@ -39,7 +39,7 @@
   (get-field dave 'name)
   (set-field dave 'name "Simon Smith"))
 
-(cl-defmethod occ-get-property ((task occ-task)
+(cl-defmethod occ-get-property ((obj occ-obj)
                                 prop)
   (if (memq prop (cl-class-slots (cl-classname task)))
       (cl-get-field task prop)
