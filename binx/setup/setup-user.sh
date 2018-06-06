@@ -178,6 +178,24 @@ function setup_apt_repo()
 
 }
 
+function setup_apt_upgrade_system()
+{
+    sudo apt -y clean
+    sudo apt -y autoremove
+    sudo apt -y autoclean
+    sudo apt -y update
+    sudo apt-file update
+    sudo apt -y clean
+    sudo apt -y autoremove
+    sudo apt -y autoclean
+    sudo apt -y upgrade
+    sudo apt -y clean
+    sudo apt -y autoremove
+    sudo apt -y autoclean
+    sudo apt -y clean
+    sudo apt -y autoremove
+    sudo apt -y autoclean
+}
 function setup_apt_packages()
 {
     setup_apt_repo
