@@ -22,6 +22,6 @@
 *** WM
 **** stumpwm
 ***** Add support for sending SIG especially SIGSTOP and SIGCONT to window
-*****
+***** move-focus [left|right|down|up] same way move-focus-to-window-maybe [left|right|down|up]
 *** On Screen Display or conky or OSD kind of information rendering system for wide information
     with capability for interactivity.
