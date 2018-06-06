@@ -50,6 +50,7 @@
 (cl-defmethod occ-set-property ((obj occ-obj)
                                 prop
                                 val)
+  ;; mainly used by occ-task only
   (if (memq prop (cl-class-slots (cl-classname task)))
       (setf (cl-struct-slot-value (cl-classname task) prop task) val)
     (plist-put
