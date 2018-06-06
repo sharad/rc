@@ -160,7 +160,7 @@
   (let* ((root
           (occ-get-property (cdr task-pair) 'root))
          (root (if root (file-truename root))))
-    (let* ((file (plist-get context :file))
+    (let* ((file (occ-get-property context 'file))
            (file (if file (file-truename file))))
       (if root
           (progn
@@ -179,7 +179,7 @@
   (let* ((currfile
           (occ-get-property (cdr task-pair) 'currfile))
          (currfile (if currfile (file-truename currfile))))
-    (let* ((file (plist-get context :file))
+    (let* ((file (occ-get-property context 'file))
            (file (if file (file-truename file))))
       (if currfile
           (progn
