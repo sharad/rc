@@ -194,19 +194,16 @@
 
 
 (when nil
+  (when nil
+   (setq occ-global-task-collection nil)
+   (occ-make-task-collection (list :tree org-context-clock-task-tree-task-root-org-file))
+   (occ-tree-task-collection-tree occ-global-task-collection)
+   (occ-collect-tasks occ-global-task-collection t)
+   (occ-tree-task-collection-root-files occ-global-task-collection)
 
 
-
-
-  (setq occ-global-task-collection nil)
-  (occ-make-task-collection (list :tree org-context-clock-task-tree-task-root-org-file))
-  (occ-tree-task-collection-tree occ-global-task-collection)
-  (occ-collect-tasks occ-global-task-collection t)
-  (occ-tree-task-collection-root-files occ-global-task-collection)
-
-
-  (setf occ-gtree
-        (occ-tree-task-collection-tree occ-global-task-collection))
+   (setf occ-gtree
+         (occ-tree-task-collection-tree occ-global-task-collection)))
 
 
   (setf
