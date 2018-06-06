@@ -92,7 +92,7 @@
       (save-restriction
         (save-excursion
           (goto-char n)
-          (occ-make-task-at-point)))))
+          (occ-make-task-at-point builder)))))
 
 (cl-defmethod occ-make-task ((m marker)
                              builder)
