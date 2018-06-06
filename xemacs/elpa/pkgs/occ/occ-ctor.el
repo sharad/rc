@@ -71,10 +71,10 @@
               (funcall builder
                        :name    heading
                        :heading heading
+                       :heading-prop heading-prop
                        :marker  marker
                        :file file
                        :point point
-                       :heading-prop heading-prop
                        :clock-sum clock-sum
                        :plist task-plist))
 
