@@ -190,27 +190,6 @@
 
 
 (when nil
-<<<<<<< HEAD
-
-  (setq occ-global-task-collection nil)
-  (occ-make-task-collection (list :tree org-context-clock-task-tree-task-root-org-file))
-  (occ-tree-task-collection-tree occ-global-task-collection)
-  (occ-collect-tasks occ-global-task-collection t)
-  (occ-tree-task-collection-root-files occ-global-task-collection)
-
-
-  (setf occ-gtree
-        (occ-tree-task-collection-tree occ-global-task-collection))
-
-
-  (occ-task-tree-build
-   #'(lambda ()
-       (or
-        (occ-make-task-at-point #'make-occ-list-task)
-        (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
-   org-context-clock-task-tree-task-root-org-file)
-
-=======
   (progn
     (setq occ-global-task-collection nil)
     (occ-make-task-collection (list :tree org-context-clock-task-tree-task-root-org-file))
@@ -228,7 +207,6 @@
          (occ-make-task-at-point #'make-occ-tree-task)
          (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
     "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/xx.org"))
->>>>>>> 5c17929a0a818092449c3c8e4c12c0cf17d3ce25
 
   (setq occ-test-gtree
         (occ-task-tree-build
@@ -238,17 +216,6 @@
               (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
          org-context-clock-task-tree-task-root-org-file))
 
-<<<<<<< HEAD
-  (occ-task-tree-map-subheading
-   #'(lambda ()
-       (occ-task-tree-collect-task
-        #'(lambda ()
-            (or
-             (occ-make-task-at-point #'make-occ-tree-task)
-             (make-occ-tree-task :name "empty tree task"))))))
-
-  )
-=======
   (with-current-buffer (find-file-noselect "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/xx.org")
     (goto-char (point-min))
     (setf occ-file-subtree
@@ -259,7 +226,6 @@
                     (or
                      (occ-make-task-at-point #'make-occ-tree-task)
                      (make-occ-tree-task :name "empty tree task")))))))))
->>>>>>> 5c17929a0a818092449c3c8e4c12c0cf17d3ce25
 
 (provide 'occ-ctor)
 ;;; occ-ctor.el ends here

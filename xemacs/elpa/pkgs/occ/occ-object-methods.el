@@ -275,17 +275,13 @@
 (when nil
 
   (length
-  (occ-matching-contextual-tasks
-   (occ-make-context
-    (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp"))))
+   (occ-matching-contextual-tasks
+    (occ-make-context
+     (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp"))))
 
-<<<<<<< HEAD
-;; (associated-contextaul-tasks (occ-make-context nil))
-=======
- (length
-  (occ-matching-contextual-tasks
-   (occ-make-context (current-buffer)))))
->>>>>>> 5c17929a0a818092449c3c8e4c12c0cf17d3ce25
+  (length
+   (occ-matching-contextual-tasks
+    (occ-make-context (current-buffer)))))
 
 (provide 'occ-object-methods)
 ;;; occ-object-methods.el ends here
