@@ -187,11 +187,14 @@ sudo apt -y autoremove
 sudo apt -y autoclean
 sudo apt -y update
 sudo apt-file update
+sudo apt -y clean
 sudo apt -y autoremove
 sudo apt -y autoclean
 sudo apt -y upgrade
+sudo apt -y clean
 sudo apt -y autoremove
 sudo apt -y autoclean
+sudo apt -y clean
 sudo apt -y autoremove
 sudo apt -y autoclean
 
