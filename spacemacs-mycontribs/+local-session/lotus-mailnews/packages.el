@@ -82,9 +82,9 @@ Each entry is either:
         (progn
           (setq
            lsdb-file
-           (auto-conf-file "lsdb/lsdb")
-           (unless (file-exists-p lsdb-file)
-             (auto-config-dir (dirname-of-file lsdb-file) t)))))))
+           (auto-conf-file "lsdb/lsdb"))
+          (unless (file-exists-p lsdb-file)
+            (auto-config-dir (dirname-of-file lsdb-file) t))))))
 
 
 ;;; packages.el ends here
