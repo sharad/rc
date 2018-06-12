@@ -232,7 +232,7 @@
 (cl-defmethod readprop ((task-pair (head subtree)))
   )
 
-(cl-defmethod write ((task-pair (head subtree)))
+(cl-defmethod writeprop ((task-pair (head subtree)))
   )
 
 (when nil
