@@ -53,7 +53,7 @@ DEB_PKG_TOOL_GUI="osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin gp
 DEB_PKG_XWM="xcompmgr autocutsel sakura"
 DEB_PKG_XML="libxml2-utils xsltproc docbook5-xml docbook-xsl-ns"
 DEB_PKG_UTILS="gcalcli"
-DEB_PKG_MEDIA="kodi"
+DEB_PKG_MEDIA="kodi sox mpg123 mpg321"
 
 
 PY_PIP_PKG="termdown"
