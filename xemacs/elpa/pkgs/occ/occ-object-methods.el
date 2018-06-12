@@ -242,6 +242,8 @@
       prompt
       default-directory default-directory))))
 
+(cl--generic ')
+
 (cl-defmethod writeprop ((task-pair (head subtree)))
   )
 
