@@ -238,10 +238,11 @@
 
 (cl-defmethod readprop ((task-pair (head root))
                         (context occ-context))
-  (let* ((file (if context (occ-context-file context)))
-         (dir (if (stringp file) (file-name-directory file) (dirname-of-file file)))
-         (prompt (concat key ": ")))
-    (ido-read-directory-name prompt dir dir)))
+  (let ((prompt (concat key ": ")))
+    (file-relative-name
+     (ido-read-file-name ;; org-iread-file-name
+      prompt
+      default-directory default-directory))))
 
 (cl-defmethod writeprop ((task-pair (head subtree)))
   )
