@@ -236,7 +236,7 @@
          (prompt (concat key ": ")))
     (ido-read-directory-name prompt dir dir)))
 
-(cl-defmethod readprop ((task-pair (head root))
+(cl-defmethod readprop ((task-pair (head subtree))
                         (context occ-context))
   (let ((prompt (concat key ": ")))
     (file-relative-name
