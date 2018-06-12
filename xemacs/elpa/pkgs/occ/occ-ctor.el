@@ -78,7 +78,7 @@
                        :clock-sum clock-sum
                        :plist task-plist))
 
-        (let ((inherited-props (cl-method-first-arg :getter nil))) ;TODO
+        (let ((inherited-props (cl-method-first-arg 'readprop))) ;TODO
           (dolist (prop inherited-props)
             (let* ((propstr (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))
                    (val (org-entry-get nil propstr t)))
