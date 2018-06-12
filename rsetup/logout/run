@@ -55,5 +55,8 @@ fi
 if ! command ps f -u $USER | grep -v grep | grep gitwatch
 then
     GITWATCHPID=$(command ps f -u $USER | grep -v grep | grep gitwatch | cut -d' ' -f1)
-    kill $GITWATCHPID
+    if [ "$GITWATCHPID" ]
+    then
+        kill $GITWATCHPID
+    fi
 fi
