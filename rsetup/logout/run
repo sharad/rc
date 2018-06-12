@@ -54,4 +54,5 @@ fi
 ## updae git if no current change present.
 if ! command ps f -u $USER | grep -v grep | grep gitwatch
 then
+    command ps f -u $USER | grep -v grep | grep gitwatch
 fi
