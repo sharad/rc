@@ -23,7 +23,7 @@
 
 ;;; Code:
 
-(defcustom *occ-last-buffer-select-time* nil)
+(defcustom *occ-last-buffer-select-time* nil "*occ-last-buffer-select-time*")
 
 (defun occ-update-current-context (&optional force)
   (interactive "P")
