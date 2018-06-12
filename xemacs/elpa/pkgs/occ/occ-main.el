@@ -29,7 +29,7 @@
        (float-time (time-since *occ-last-buffer-select-time*))
        *occ-task-current-context-time-interval*)
       (let* ((context (occ-make-context))
-             (buff    (plist-get context :buffer)))
+             (buff    (occ-context-buffer context)))
         (setq *occ-task-current-context*  context)
         (if (and
              (occ-changable-p)
