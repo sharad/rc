@@ -636,7 +636,6 @@ Each entry is either:
         )))
 
 (defun lotus-orgclocktask/init-counsel-org-clock ()
-  ;; https://github.com/tmarble/timesheet.el
   (use-package counsel-org-clock
       :defer t
       :config
