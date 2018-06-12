@@ -247,8 +247,7 @@
   (car (aref (cl--generic 'readprop) 3)) 1))
 
 (mapcar
- (lambda (fspec)
-   (cadar fspec))
+ (lambda (fspec) (cadar fspec))
  (aref (cl--generic 'readprop) 3))
 
 (cl-defmethod writeprop ((task-pair (head subtree)))
