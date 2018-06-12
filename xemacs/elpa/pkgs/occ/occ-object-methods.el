@@ -238,7 +238,7 @@
 
 (cl-defmethod readprop ((task-pair (head subtree))
                         (context occ-context))
-  (let ((prompt (concat (car task-pair) ": ")))
+  (let ((prompt (concat (symbol-name (car task-pair)) ": ")))
     (file-relative-name
      (ido-read-file-name ;; org-iread-file-name
       prompt
