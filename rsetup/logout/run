@@ -50,3 +50,10 @@ if pgrep leave >& /dev/null ; then
     pkill leave >& /dev/null
     pkill -9 leave >& /dev/null
 fi
+
+## updae git if no current change present.
+if ! command ps f -u $USER | grep -v grep | grep gitwatch
+then
+    echo starting new gitwatch $(date) >> ~/.logs/gitwatch.log
+    gitwatch -r origin ~/.setup/ >>& ~/.logs/gitwatch.log &!
+fi
