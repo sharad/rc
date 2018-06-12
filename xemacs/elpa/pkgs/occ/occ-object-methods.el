@@ -230,7 +230,12 @@
 
 
 (cl-defmethod readprop ((task-pair (head root)))
-  )
+  (let* ((file (if context (plist-get context :file)))
+         (dir (if (stringp file) (file-name-directory file) (dirname-of-file (plist-get :file context))))
+         (prompt (concat key ": ")))
+    (ido-read-directory-name
+     prompt
+     dir dir)))
 
 (cl-defmethod writeprop ((task-pair (head subtree)))
   )
