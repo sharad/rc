@@ -57,6 +57,11 @@
    (cl--struct-class-slots
     (cl--struct-get-class class))))
 
+(defun
+    (mapcar
+     #'(lambda (fspec) (cadar (aref fspec 1)))
+     (aref (cl--generic 'readprop) 3)))
+
 
 
 (provide 'occ-common)
