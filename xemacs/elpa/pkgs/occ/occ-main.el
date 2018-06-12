@@ -23,6 +23,39 @@
 
 ;;; Code:
 
+(defun org-context-clock-update-current-context (&optional force)
+  (interactive "P")
+  (if (>
+       (float-time (time-since *org-context-clock-last-buffer-select-time*))
+       *org-context-clock-task-current-context-time-interval*)
+      (let* ((context (org-context-clock-build-context))
+             (buff    (plist-get context :buffer)))
+        (setq *org-context-clock-task-current-context*  context)
+        (if (and
+             (org-context-clock-changable-p)
+             buff (buffer-live-p buff)
+             (not (minibufferp buff))
+             (not              ;BUG: Reconsider whether it is catching case after some delay.
+              (equal *org-context-clock-task-previous-context* *org-context-clock-task-current-context*)))
+
+            (progn
+              (setq
+               *org-context-clock-task-previous-context* *org-context-clock-task-current-context*)
+              (if (and
+                   (not (org-clock-marker-is-unnamed-clock-p))
+                   (> (org-context-clock-current-task-associated-to-context-p context) 0))
+                  (progn
+                    (org-context-clock-debug :debug "org-context-clock-update-current-context: Current task already associate to %s" context))
+                  (progn                ;current clock is not matching
+                    (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really going to clock.")
+                    (unless (org-context-clock-dyntaskpl-run-associated-dyntaskpl context)
+                      ;; not able to find associated, or intentionally not selecting a clock
+                      (org-context-clock-debug :debug "trying to create unnamed task.")
+                      (org-context-clock-maybe-create-clockedin-unnamed-dyntaskpl context))
+                    (org-context-clock-debug :debug "org-context-clock-update-current-context: Now really clock done."))))
+
+            (org-context-clock-debug :debug "org-context-clock-update-current-context: context %s not suitable to associate" context)))
+    (org-context-clock-debug :debug "org-context-clock-update-current-context: not enough time passed.")))
 
 (provide 'occ-main)
 ;;; occ-main.el ends here
