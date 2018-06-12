@@ -54,5 +54,6 @@ fi
 ## updae git if no current change present.
 if ! command ps f -u $USER | grep -v grep | grep gitwatch
 then
-    gitwatchpid=$(command ps f -u $USER | grep -v grep | grep gitwatch | cut -d' ' -f1)
+    GITWATCHPID=$(command ps f -u $USER | grep -v grep | grep gitwatch | cut -d' ' -f1)
+    kill $GITWATCHPID
 fi
