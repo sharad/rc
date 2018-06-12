@@ -23,7 +23,7 @@
 
 ;;; Code:
 
-(defcustom read uniread page book )
+(defcustom *occ-last-buffer-select-time* nil)
 
 (defun occ-update-current-context (&optional force)
   (interactive "P")
