@@ -56,11 +56,10 @@
    #'(lambda (slot) (aref slot 1))
    (cl--struct-class-slots
     (cl--struct-get-class class))))
-
 (defun cl-method-first-arg (method)
     (mapcar
      #'(lambda (fspec) (cadar (aref fspec 1)))
-     (aref (cl--generic 'readprop) 3)))
+     (aref (cl--generic method) 3)))
 
 
 
