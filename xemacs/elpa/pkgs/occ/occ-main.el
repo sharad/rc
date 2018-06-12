@@ -23,6 +23,8 @@
 
 ;;; Code:
 
+(defcustom read uniread page book )
+
 (defun occ-update-current-context (&optional force)
   (interactive "P")
   (if (>
