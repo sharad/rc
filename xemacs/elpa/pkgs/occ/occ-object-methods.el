@@ -229,7 +229,7 @@
 
 
 
-(cl-defmethod prop ((task-pair (head current-clock)))
+(cl-defmethod read ((task-pair (head current-clock)))
   )
 
 (when nil
