@@ -244,8 +244,10 @@
 
 (cadar
  (aref
-  (car (aref (cl--generic 'readprop) 3))
-  1))
+  (car (aref (cl--generic 'readprop) 3)) 1))
+
+(mapcar
+ (aref (cl--generic 'readprop) 3))
 
 (cl-defmethod writeprop ((task-pair (head subtree)))
   )
