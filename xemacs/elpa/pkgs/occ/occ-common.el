@@ -57,7 +57,7 @@
    (cl--struct-class-slots
     (cl--struct-get-class class))))
 
-(defun
+(defun cl-method-first-arg
     (mapcar
      #'(lambda (fspec) (cadar (aref fspec 1)))
      (aref (cl--generic 'readprop) 3)))
