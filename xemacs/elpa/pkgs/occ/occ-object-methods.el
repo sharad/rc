@@ -232,6 +232,9 @@
 (cl-defmethod read ((task-pair (head current-clock)))
   )
 
+(cl-defmethod write ((task-pair (head current-clock)))
+  )
+
 (when nil
 
   (cl-defmethod isassoc (task-pair context)
