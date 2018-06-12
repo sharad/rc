@@ -227,6 +227,11 @@
         100
       0)))
 
+
+
+(cl-defmethod prop ((task-pair (head current-clock)))
+  )
+
 (when nil
 
   (cl-defmethod isassoc (task-pair context)
@@ -245,6 +250,10 @@
 
   (isassoc (make-occ-tree-task) (make-occ-context))
   )
+
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (cl-defmethod occ-matching-contextual-tasks ((context occ-context))
