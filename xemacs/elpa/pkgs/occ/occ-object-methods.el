@@ -227,13 +227,11 @@
         100
       0)))
 
-
-
 (cl-defmethod readprop ((task-pair (head root))
                         (context occ-context))
   (let* ((file (if context (occ-context-file context)))
          (dir (if (stringp file) (file-name-directory file) (dirname-of-file file)))
-         (prompt (concat key ": ")))
+         (prompt (concat (symbol-name (car task-pair)) ": ")))
     (ido-read-directory-name prompt dir dir)))
 
 (cl-defmethod readprop ((task-pair (head subtree))
