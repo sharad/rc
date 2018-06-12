@@ -232,7 +232,7 @@
 (cl-defmethod read ((task-pair (head subtree)))
   )
 
-(cl-defmethod write ((task-pair (head current-clock)))
+(cl-defmethod write ((task-pair (head subtree)))
   )
 
 (when nil
