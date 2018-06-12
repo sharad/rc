@@ -231,7 +231,7 @@
 
 (cl-defmethod readprop ((task-pair (head root))
                         (context occ-context))
-  (let* ((file (if context (occ-context-file context :file)))
+  (let* ((file (if context (occ-context-file context)))
          (dir (if (stringp file) (file-name-directory file) (dirname-of-file (plist-get :file context))))
          (prompt (concat key ": ")))
     (ido-read-directory-name
