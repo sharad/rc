@@ -635,4 +635,12 @@ Each entry is either:
         ;;     t))
         )))
 
+(defun lotus-orgclocktask/init-timesheet ()
+  ;; https://github.com/tmarble/timesheet.el
+  (use-package timesheet
+      :defer t
+      :config
+      (progn
+        )))
+
 ;;; packages.el ends here
