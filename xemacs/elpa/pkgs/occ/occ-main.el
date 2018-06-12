@@ -24,6 +24,7 @@
 ;;; Code:
 
 (defcustom *occ-last-buffer-select-time* nil "*occ-last-buffer-select-time*")
+(defvar *occ-task-current-context-time-interval* nil)
 
 (defun occ-update-current-context (&optional force)
   (interactive "P")
