@@ -28,7 +28,7 @@
   (if (>
        (float-time (time-since *occ-last-buffer-select-time*))
        *occ-task-current-context-time-interval*)
-      (let* ((context (occ-build-context))
+      (let* ((context (occ-make-context))
              (buff    (plist-get context :buffer)))
         (setq *occ-task-current-context*  context)
         (if (and
