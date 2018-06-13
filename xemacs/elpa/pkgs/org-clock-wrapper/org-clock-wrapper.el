@@ -171,7 +171,8 @@ using three `C-u' prefix arguments."
 
     (condition-case nil
         (helm
-         helm-sources))))
+         helm-sources)
+      ((quit error) (message "ignored")))))
 
 
 ;;;###autoload
