@@ -169,8 +169,9 @@ using three `C-u' prefix arguments."
                   (cons "Clock in and track" #'identity)))
        helm-sources))
 
-    (helm
-     helm-sources)))
+    (condition-case nil
+        (helm
+         helm-sources))))
 
 
 ;;;###autoload
