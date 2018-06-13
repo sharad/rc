@@ -24,9 +24,9 @@
 ;;; Code:
 
 (defcustom *occ-last-buffer-select-time* nil "*occ-last-buffer-select-time*")
-(defvar *occ-task-current-context-time-interval* nil)
-(defvar *occ-task-previous-context* nil)
-(defvar *occ-task-current-context*  nil)
+(defvar    *occ-task-current-context-time-interval* nil)
+(defvar    *occ-task-previous-context* nil)
+(defvar    *occ-task-current-context*  nil)
 
 (defun occ-update-current-context (&optional force)
   (interactive "P")
