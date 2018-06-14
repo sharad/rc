@@ -840,14 +840,15 @@ which other peoples are also working."
   :lighter " Office"
   :global nil
   (condition-case e
-      (when office-mode
+      (if office-mode
+      (when
         (message "calling office mode")
         (if (or (eq major-mode 'c-mode)
                 (eq major-mode 'c++-mode))
             (c-set-style "stroustrup" 1))
         (set (make-local-variable 'before-save-hook) before-save-hook)
         (remove-hook 'before-save-hook 'delete-trailing-whitespace t)
-        (message "called office mode"))
+        (message "called office mode")))
     (error (message "Error: %s" e))))
 
 (when nil
