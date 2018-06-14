@@ -841,14 +841,14 @@ which other peoples are also working."
   :global nil
   (condition-case e
       (if office-mode
-      (when
-        (message "calling office mode")
-        (if (or (eq major-mode 'c-mode)
-                (eq major-mode 'c++-mode))
-            (c-set-style "stroustrup" 1))
-        (set (make-local-variable 'before-save-hook) before-save-hook)
-        (remove-hook 'before-save-hook 'delete-trailing-whitespace t)
-        (message "called office mode")))
+          (progn
+              (message "calling office mode")
+            (if (or (eq major-mode 'c-mode)
+                    (eq major-mode 'c++-mode))
+                (c-set-style "stroustrup" 1))
+            (set (make-local-variable 'before-save-hook) before-save-hook)
+            (remove-hook 'before-save-hook 'delete-trailing-whitespace t)
+            (message "called office mode")))
     (error (message "Error: %s" e))))
 
 (when nil
