@@ -850,7 +850,18 @@ which other peoples are also working."
               (c-set-style "stroustrup" 1))
             (set (make-local-variable 'before-save-hook) before-save-hook)
             (remove-hook 'before-save-hook 'delete-trailing-whitespace t)
-            (message "called office mode")))
+            (message "called office mode"))
+
+        (progn
+          (message "calling office mode")
+          (when (or
+                 (eq major-mode 'c-mode)
+                 (eq major-mode 'c++-mode))
+            (setq tab-width 8)
+            (c-set-style "stroustrup" 1))
+          (set (make-local-variable 'before-save-hook) before-save-hook)
+          (remove-hook 'before-save-hook 'delete-trailing-whitespace t)
+          (message "called office mode")))
     (error (message "Error: %s" e))))
 
 (when nil
