@@ -858,7 +858,7 @@ which other peoples are also working."
                  (eq major-mode 'c-mode)
                  (eq major-mode 'c++-mode))
             (setq tab-width (custom-reevaluate-setting 'tab-width))
-            (c-set-style "stroustrup" 1)
+            ;; (c-set-style "stroustrup" 1)
             )
           (set (make-local-variable 'before-save-hook) before-save-hook)
           (add-hook 'before-save-hook 'delete-trailing-whitespace t)
