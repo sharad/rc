@@ -843,7 +843,7 @@ which other peoples are also working."
       (if office-mode
           (progn
             (message "calling office mode")
-            (if (or (eq major-mode 'c-mode)
+            (when (or (eq major-mode 'c-mode)
                     (eq major-mode 'c++-mode))
                 (c-set-style "stroustrup" 1))
             (set (make-local-variable 'before-save-hook) before-save-hook)
