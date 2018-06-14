@@ -842,7 +842,7 @@ which other peoples are also working."
   (condition-case e
       (if office-mode
           (progn
-            (message "calling office mode")
+            (message "calling enable office mode")
             (when (or
                    (eq major-mode 'c-mode)
                    (eq major-mode 'c++-mode))
