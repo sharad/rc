@@ -853,7 +853,7 @@ which other peoples are also working."
             (message "called office mode"))
 
         (progn
-          (message "calling office mode")
+          (message "calling disable office mode")
           (when (or
                  (eq major-mode 'c-mode)
                  (eq major-mode 'c++-mode))
