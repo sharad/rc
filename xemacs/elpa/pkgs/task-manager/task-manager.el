@@ -850,7 +850,7 @@ which other peoples are also working."
               (c-set-style "stroustrup" 1))
             (set (make-local-variable 'before-save-hook) before-save-hook)
             (remove-hook 'before-save-hook 'delete-trailing-whitespace t)
-            (message "called disable office mode"))
+            (message "called enable office mode"))
 
         (progn
           (message "calling disable office mode")
