@@ -860,7 +860,7 @@ which other peoples are also working."
             (setq tab-width (custom-reevaluate-setting 'tab-width))
             (c-set-style "stroustrup" 1))
           (set (make-local-variable 'before-save-hook) before-save-hook)
-          (remove-hook 'before-save-hook 'delete-trailing-whitespace t)
+          (add-hook 'before-save-hook 'delete-trailing-whitespace t)
           (message "called disable office mode")))
     (error (message "Error: %s" e))))
 
