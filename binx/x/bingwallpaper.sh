@@ -75,7 +75,7 @@ function main() {
     mkdir -p $imgpath
 
     # Saving Image to collection
-    resolveDownloadImg $imgpath$imgName $reqImgURL
+    resolveDownloadImg $reqImgURL $imgpath$imgName
 
     #Logging
     echo "Saving image to $imgpath$imgName"
