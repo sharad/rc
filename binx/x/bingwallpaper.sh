@@ -89,7 +89,7 @@ function main() {
 
 function resolveImg() {
     reqImgURL="$1"
-    file $reqImgURL
+    file $reqImgURL | grep -q HTML
 }
 
 function gnomewallpaper() {
