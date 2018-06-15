@@ -96,6 +96,7 @@ function resolveDownloadImg() {
         newReqImgURL="$(xmlstarlet sel -t -v  'html/body/h2/a/@href' $reqImgURL)"
         if [ "$newReqImgURL" ]
         then
+            echo Now downloading "$newReqImgURL"
             resolveDownloadImg "$newReqImgURL" $localPath
         fi
     fi
