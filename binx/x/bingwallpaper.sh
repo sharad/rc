@@ -87,7 +87,9 @@ function main() {
     exit
 }
 
-function resolveImg()
+function resolveImg() {
+    reqImgURL="$1"
+}
 
 function gnomewallpaper() {
     image=$1
