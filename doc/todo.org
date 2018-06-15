@@ -36,4 +36,4 @@ than come back to old behaviour.
 ** Emacs
 
 *** Automate Recurring
-**** forgive/them
+**** forgive/them should be automated
