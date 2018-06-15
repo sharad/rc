@@ -852,10 +852,11 @@ which other peoples are also working."
             (remove-hook 'before-save-hook 'delete-trailing-whitespace t)
             (run-with-timer
              7 nil
-             (lambda (buff)
-               (when (bufferp buff)
-                (with-current-buffer (buff)
-                 (forgive/them)))))
+             #'(lambda (buff)
+                 (when (bufferp buff)
+                   (with-current-buffer (buff)
+                     (forgive/them))))
+             (current-buffer))
             (message "called enable office mode"))
 
         (progn
