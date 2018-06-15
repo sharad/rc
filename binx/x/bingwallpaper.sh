@@ -92,6 +92,7 @@ function resolveImg() {
     if file $reqImgURL | grep -q HTML
     then
         echo $(xmlstarlet sel -t -v  "html/body/h2/a/@href" $reqImgURL)
+    else
     fi
 }
 
