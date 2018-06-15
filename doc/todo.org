@@ -32,3 +32,8 @@ than come back to old behaviour.
 
 *** On Screen Display or conky or OSD kind of information rendering system for wide information
     with capability for interactivity.
+
+** Emacs
+
+*** Automate Recurring
+**** forgive/them
