@@ -93,7 +93,7 @@ function resolveImg() {
     curl -s -o $localPath $reqImgURL
     if file $reqImgURL | grep -q HTML
     then
-        resolveImg "$(xmlstarlet sel -t -v  'html/body/h2/a/@href' $reqImgURL)"
+        resolveImg "$(xmlstarlet sel -t -v  'html/body/h2/a/@href' $reqImgURL)" $localPath
     else
     fi
 }
