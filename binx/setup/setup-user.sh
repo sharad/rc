@@ -43,7 +43,7 @@ DEB_EXTRA_SEC_PKG1="systemd-ui " # policykit-1 policykit-1-gnome
 DEB_DEV_PKG1="python-pip silversearcher-ag silversearcher-ag-el s-el ack-grep doxygen doxymacs libjson-glib-dev cmake"
 DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject adcli partclone gpodder parallel libpam-fprintd fprint-demo"
 DEB_PKG_DEV="valgrind"
-DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools pavucontrol redshift daemontools god circus software-properties-common at hibernate ps-watcher daemonfs daemonize daemon "
+DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools redshift daemontools god circus software-properties-common at hibernate ps-watcher daemonfs daemonize daemon "
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer-accountd prayer"
 DEB_SYS_PKG1="duc baobab agedu tpb daemontools sysstat isag dos2unix powermanagement-interface grub2-splashimages grub2-themes-ubuntu-mate offlineimap libsecret-tools"
 DEB_SYS_MAIL="dovecot-core dovecot-imapd ntpdate postfix augeas-tools augeas-lenses notmuch afew ldap-utils bbdb3 elpa-lbdb lsdb mu-cite"
@@ -53,7 +53,7 @@ DEB_PKG_TOOL_GUI="osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin gp
 DEB_PKG_XWM="xcompmgr autocutsel sakura"
 DEB_PKG_XML="libxml2-utils xsltproc docbook5-xml docbook-xsl-ns"
 DEB_PKG_UTILS="gcalcli"
-DEB_PKG_MEDIA="kodi sox mpg123 mpg321"
+DEB_PKG_MEDIA="pavucontrol kodi sox mpg123 mpg321 "
 
 
 PY_PIP_PKG="termdown"
