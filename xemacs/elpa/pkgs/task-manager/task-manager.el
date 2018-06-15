@@ -854,7 +854,7 @@ which other peoples are also working."
              7 nil
              (lambda (buff)
                (with-current-buffer (buff)
-                (forgive/them))))
+                 (forgive/them))))
             (message "called enable office mode"))
 
         (progn
