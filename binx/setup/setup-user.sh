@@ -10,7 +10,7 @@ RESOURCEPATH=".repos/git/main/resource"
 USERORGMAIN="userorg/main"
 
 APT_REPO_COMMPUNICATION="ppa:nilarimogard/webupd8"
-APT_REPO_UTILS="ppa:yartsa/lvmeject"
+APT_REPO_UTILS="ppa:yartsa/lvmeject ppa:mikhailnov/pulseeffects"
 
 APT_REPO_KOI="ppa:team-xbmc/ppa"
 
