@@ -853,8 +853,9 @@ which other peoples are also working."
             (run-with-timer
              7 nil
              (lambda (buff)
-               (with-current-buffer (buff)
-                 (forgive/them))))
+               (when (bufferp buff)
+                (with-current-buffer (buff)
+                 (forgive/them)))))
             (message "called enable office mode"))
 
         (progn
