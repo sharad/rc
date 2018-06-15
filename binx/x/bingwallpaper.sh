@@ -99,7 +99,7 @@ function resolveDownloadImg() {
             echo Now downloading "$newReqImgURL" >&2
             resolveDownloadImg "$newReqImgURL" $localPath
         else
-            echo "$newReqImgURL" Not found proper image URL for "$reqImgURL" >&2
+            echo Not found proper image URL for "$reqImgURL" >&2
         fi
     else
         echo Downloading finish for "$reqImgURL" >&2
