@@ -854,7 +854,7 @@ which other peoples are also working."
              7 nil
              #'(lambda (buff)
                  (when (bufferp buff)
-                   (with-current-buffer (buff)
+                   (with-current-buffer buff
                      (forgive/them))))
              (current-buffer))
             (message "called enable office mode"))
