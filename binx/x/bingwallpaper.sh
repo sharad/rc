@@ -98,7 +98,6 @@ function resolveDownloadImg() {
         then
             echo Now downloading "$newReqImgURL"
             resolveDownloadImg "$newReqImgURL" $localPath
-        else
         fi
     fi
 }
