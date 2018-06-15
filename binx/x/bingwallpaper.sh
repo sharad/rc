@@ -87,6 +87,8 @@ function main() {
     exit
 }
 
+function resolveImg()
+
 function gnomewallpaper() {
     image=$1
     # Set the wallpaper both unity anf gnome3
