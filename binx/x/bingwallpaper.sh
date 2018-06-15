@@ -94,7 +94,7 @@ function resolveDownloadImg() {
     if file $localPath | grep -q HTML
     then
         newReqImgURL="$(xmlstarlet sel -t -v  'html/body/h2/a/@href' $reqImgURL)"
-        if [ "$newReqImgURL" ]
+        if [ -n "$newReqImgURL" ]
         then
             echo Now downloading "$newReqImgURL"
             resolveDownloadImg "$newReqImgURL" $localPath
