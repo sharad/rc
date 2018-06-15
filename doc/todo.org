@@ -36,4 +36,8 @@ than come back to old behaviour.
 ** Emacs
 
 *** Automate Recurring
-**** forgive/them should be automated
+**** DONE forgive/them should be automated
+     CLOSED: [2018-06-15 Fri 12:33]
+     :LOGBOOK:
+     - State "DONE"       from              [2018-06-15 Fri 12:33]
+     :END:
