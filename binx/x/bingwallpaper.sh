@@ -89,6 +89,7 @@ function main() {
 
 function resolveImg() {
     reqImgURL="$1"
+    file $reqImgURL
 }
 
 function gnomewallpaper() {
