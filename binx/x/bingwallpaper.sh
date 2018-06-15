@@ -60,7 +60,8 @@ function main() {
     reqImgURL=$bing$(echo $apiResp | grep -oP "urlbase\":\"[^\"]*" | cut -d "\"" -f 3)"_"$size$extn
 
     # Trying to check if reqImgURL exists
-    if ! wget --quiet --spider $reqImgURL; then
+    if ! wget --quiet --spider $reqImgURL
+    then
         reqImgURL=$defImgURL
     fi
 
