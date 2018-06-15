@@ -102,7 +102,7 @@ function resolveDownloadImg() {
             echo "$newReqImgURL" Not found proper image URL for "$reqImgURL" >&2
         fi
     else
-        echo downloading finish for "$reqImgURL" >&2
+        echo Downloading finish for "$reqImgURL" >&2
     fi
 }
 
