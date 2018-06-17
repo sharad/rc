@@ -88,6 +88,121 @@
        (concat prefix heading)
        org-odd-levels-only))))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun sacha-occ-selection-line (marker)
+  "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the marker
+pointing to it."
+  (when (marker-buffer marker)
+    (with-current-buffer (org-base-buffer (marker-buffer marker))
+      (org-with-wide-buffer
+       (progn ;; ignore-errors
+         (goto-char marker)
+         (let* ((cat (org-get-category))
+                (heading (org-get-heading 'notags))
+                (prefix (save-excursion
+                          (org-back-to-heading t)
+                          (looking-at org-outline-regexp)
+                          (match-string 0)))
+                (task (substring
+                       (org-fontify-like-in-org-mode
+                        (concat prefix heading)
+                        org-odd-levels-only)
+                       (length prefix))))
+           (when task ;; (and cat task)
+             ;; (insert (format "[%c] %-12s  %s\n" i cat task))
+             ;; marker
+             (cons task marker))))))))
+
+(defun sacha-occcontextual-task-selection-line (dyntaskpl)
+  "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the marker
+pointing to it."
+  (let ((marker (plist-get dyntaskpl :marker))
+        (rank   (plist-get dyntaskpl :rank)))
+    (when (marker-buffer marker)
+      (with-current-buffer (org-base-buffer (marker-buffer marker))
+        (org-with-wide-buffer
+         (progn ;; ignore-errors
+           (goto-char marker)
+           (let* ((cat (org-get-category))
+                  (heading (org-get-heading 'notags))
+                  (prefix (save-excursion
+                            (org-back-to-heading t)
+                            (looking-at org-outline-regexp)
+                            (match-string 0)))
+                  (task (substring
+                         (org-fontify-like-in-org-mode
+                          (concat prefix heading)
+                          org-odd-levels-only)
+                         (length prefix))))
+             (when task ;; (and cat task)
+               ;; (insert (format "[%c] %-12s  %s\n" i cat task))
+               ;; marker
+               (cons (occcontextual-task-print dyntaskpl task) dyntaskpl)))))))))
+
+
+(defun sacha-occcontextual-task-selection-line (dyntaskpl)
+  "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the marker
+pointing to it."
+  (cons (occcontextual-task-print dyntaskpl nil) dyntaskpl))
+;; function to setup context clock timer:2 ends here
+
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:3]]
+;; rank based
+(defun sacha/helm-selectcontextual-task (dyntaskpls)
+  ;; (occ-debug :debug "sacha marker %s" (car dyntaskpls))
+  (helm
+   (list
+    (helm-build-sync-source "Select matching tasks"
+      :candidates (mapcar 'sacha-occcontextual-task-selection-line dyntaskpls)
+      :action (list ;; (cons "Select" 'identity)
+               (cons "Clock in and track" #'identity))
+      :history 'org-refile-history)
+    ;; (helm-build-dummy-source "Create task"
+    ;;   :action (helm-make-actions
+    ;;            "Create task"
+    ;;            'sacha/helm-org-create-task))
+    )))
+
+(defun sacha/helm-selectcontextual-task-timed (dyntaskpls)
+  (helm-timed 7
+    (message "running sacha/helm-select-clock")
+    (sacha/helm-selectcontextual-task dyntaskpls)))
+
+(defun sacha/helmcontextual-task-action (dyntaskpls clockin-fn)
+  ;; (message "sacha marker %s" (car dyntaskpls))
+  ;; (setq sacha/helm-org-refile-locations tbl)
+  (progn
+    (helm
+     (list
+      (helm-build-sync-source "Select matching tasks"
+        :candidates (mapcar 'sacha-occcontextual-task-selection-line dyntaskpls)
+        :action (list ;; (cons "Select" 'identity)
+                 (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
+        :history 'org-refile-history)
+      ;; (helm-build-dummy-source "Create task"
+      ;;   :action (helm-make-actions
+      ;;            "Create task"
+      ;;            'sacha/helm-org-create-task))
+      ))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (cl-defmethod occ-clockin-contextual-task ((new-contextual-task occ-contextual-task))
   ;;TODO add org-insert-log-not
   (occ-debug :debug "occ-clockin-marker %s" new-contextual-task)
