@@ -42,19 +42,19 @@
 (cl-defmethod occ-get-property ((obj occ-obj)
                                 prop)
   ;; mainly used by occ-task only
-  (if (memq prop (cl-class-slots (cl-classname task)))
-      (cl-get-field task prop)
+  (if (memq prop (cl-class-slots (cl-classname obj)))
+      (cl-get-field obj prop)
     (plist-get
-     (cl-struct-slot-value (cl-classname task) 'plist task)
+     (cl-struct-slot-value (cl-classname obj) 'plist obj)
      (sym2key prop))))
 (cl-defmethod occ-set-property ((obj occ-obj)
                                 prop
                                 val)
   ;; mainly used by occ-task only
-  (if (memq prop (cl-class-slots (cl-classname task)))
-      (setf (cl-struct-slot-value (cl-classname task) prop task) val)
+  (if (memq prop (cl-class-slots (cl-classname obj)))
+      (setf (cl-struct-slot-value (cl-classname obj) prop obj) val)
     (plist-put
-     (cl-struct-slot-value (cl-classname task) 'plist task)
+     (cl-struct-slot-value (cl-classname obj) 'plist obj)
      (sym2key prop) val)))
 (cl-defmethod occ-class-slots ((obj occ-obj))
   (let* ((plist (cl-struct-slot-value (cl-classname obj) 'plist obj))
@@ -62,6 +62,16 @@
          (slots (cl-class-slots (cl-classname obj))))
     (append slots
             (mapcar #'key2sym plist-keys))))
+
+
+(defun occ-task-builder ()
+  (let ((classname (cl-classname occ-global-task-collection)))
+    (cond
+      ((eq 'occ-list-task-collection classname)
+       #'make-occ-list-task)
+      ((eq 'occ-tree-task-collection classname)
+       #'make-occ-tree-task)
+      (t (error "occ-global-task-collection is not from occ-list-task-collection or occ-tree-task-collection class")))))
 
 (cl-defmethod occ-fontify-like-in-org-mode ((task occ-task))
   (let* ((level   (or (occ-get-property task 'level) 0))
@@ -77,6 +87,94 @@
       (org-fontify-like-in-org-mode
        (concat prefix heading)
        org-odd-levels-only))))
+
+(cl-defmethod occ-clockin-contextual-task ((new-contextual-task occ-contextual-task))
+  ;;TODO add org-insert-log-not
+  (occ-debug :debug "occ-clockin-marker %s" new-contextual-task)
+  (let* (retval
+         (old-contextual-task (car *occ-clocked-contextual-task-context-history*))
+         (old-task            (when old-contextual-task (occ-contextual-task-task old-contextual-task)))
+         (old-marker          (or (if old-task (occ-task-marker old-task)) org-clock-hd-marker))
+         (old-heading         (if old-task (occ-task-heading old-task)))
+         (new-task            (occ-contextual-task-task new-contextual-task))
+         (new-marker          (if new-task (occ-task-marker new-task)))
+         (new-heading         (if new-task (occ-task-heading new-task))))
+  (when (and
+         new-marker
+         (marker-buffer new-marker))
+
+    (let* ((org-log-note-clock-out nil)
+           (old-marker org-clock-marker)
+           (old-buff   (marker-buffer old-marker)))
+
+      (occ-debug :debug "clocking in %s" new-marker)
+
+      (let ((old-buff-read-only
+             (if old-buff
+                 (with-current-buffer (marker-buffer old-marker)
+                   buffer-read-only))))
+
+        (if old-buff
+            (with-current-buffer old-buff
+              (setq buffer-read-only nil)))
+
+        (setq *occ-update-current-context-msg* old-marker)
+
+        (when (and
+               new-heading
+               old-marker
+               (marker-buffer old-marker))
+          (org-insert-log-note old-marker (format "clocking out to clockin to <%s>" new-heading)))
+
+        (with-current-buffer (marker-buffer new-marker)
+          (let ((buffer-read-only nil))
+            (when old-heading
+              (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
+            (condition-case err
+                (progn
+                  (org-clock-clock-in (list new-marker))
+                  (setq retval t)
+                  (push new-contextual-task *occ-clocked-contextual-task-context-history*))
+              ((error)
+               (progn
+                 (setq retval nil)
+                 (signal (car err) (cdr err)))))))
+        (if old-buff
+            (with-current-buffer old-buff
+              (setq buffer-read-only old-buff-read-only)))
+        retval)))))
+
+(cl-defmethod occ-contextual-task-run-associated-contextual-task ((new-contextual-task occ-contextual-task))
+  "marker and ranked version"
+  (interactive
+   (list (occ-build-context)))
+  (progn
+    (let* ((context (or context (occ-build-context)))
+           (matched-contextual-tasks
+            (remove-if-not
+             #'(lambda (contextual-task)
+                 (and
+                  (plist-get contextual-task :marker)
+                  (marker-buffer (plist-get contextual-task :marker))))
+             (occ-contextual-tasks-associated-to-context-filtered context))))
+      (if matched-contextual-tasks
+          (let* ((sel-contextual-task
+                  (if (> (length matched-contextual-tasks) 1)
+                      (sacha/helm-select-contextual-task-timed matched-contextual-tasks)
+                      (car matched-contextual-tasks)))
+                 ;; (sel-task   (if sel-contextual-task (plist-get sel-contextual-task :task)))
+                 ;; (sel-marker (if sel-task      (plist-get sel-task      :task-clock-marker)))
+                 )
+            ;; (occ-message 6 "sel-contextual-task %s sel-task %s sel-marker %s" sel-contextual-task sel-task sel-marker)
+            (if sel-contextual-task (occ-clockin-contextual-task sel-contextual-task)))
+          (progn
+            ;; here create unnamed task, no need
+            (setq *occ-update-current-context-msg* "null clock")
+            (occ-message 6
+                                       "No clock found please set a match for this context %s, add it using M-x occ-add-context-to-org-heading."
+                                       context)
+            (occ-add-context-to-org-heading-when-idle context 7)
+            nil)))))
 
 (cl-defgeneric isassoc (obj context)
   "isassoc"

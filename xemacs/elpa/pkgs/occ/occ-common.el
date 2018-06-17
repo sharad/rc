@@ -57,9 +57,10 @@
    (cl--struct-class-slots
     (cl--struct-get-class class))))
 (defun cl-method-first-arg (method)
-    (mapcar
-     #'(lambda (fspec) (cadar (aref fspec 1)))
-     (aref (cl--generic method) 3)))
+  (let ((methods (cl--generic method)))
+   (mapcar
+   #'(lambda (fspec) (cadar (aref fspec 1)))
+   (when methods (aref methods 3)))))
 
 
 

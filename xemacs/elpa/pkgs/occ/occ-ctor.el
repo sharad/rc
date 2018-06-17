@@ -24,8 +24,7 @@
 ;;; Code:
 
 (require 'occ-common)
-(require 'occ-base-objects)
-;; (require 'occ-object-methods)
+(require 'occ-object-methods)
 (require 'occ-tree)
 
 (defun occ-heading-content-only ()
