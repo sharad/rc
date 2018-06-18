@@ -53,7 +53,7 @@
                     (occ-debug :debug "occ-update-current-context: Current task already associate to %s" context))
                   (progn                ;current clock is not matching
                     (occ-debug :debug "occ-update-current-context: Now really going to clock.")
-                    (unless (occ-contextual-task-run-associated-contextual-task context)
+                    (unless (occ-run-associated context)
                       ;; not able to find associated, or intentionally not selecting a clock
                       (occ-debug :debug "trying to create unnamed task.")
                       (occ-maybe-create-clockedin-unnamed-contextual-task context))
