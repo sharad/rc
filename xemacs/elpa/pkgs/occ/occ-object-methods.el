@@ -447,7 +447,7 @@ pointing to it."
          (prompt (concat (symbol-name (car task-pair)) ": ")))
     (ido-read-directory-name prompt dir dir)))
 
-(cl-defmethod readprop ((task-pair (head subtree))
+(cl-defmethod occ-readprop ((task-pair (head subtree))
                         (context occ-context))
   (let ((prompt (concat (symbol-name (car task-pair)) ": ")))
     (file-relative-name
@@ -455,7 +455,7 @@ pointing to it."
       prompt
       default-directory default-directory))))
 
-(cl-defmethod writeprop ((task-pair (head subtree)))
+(cl-defmethod occ-writeprop ((task-pair (head subtree)))
   )
 
 (when nil
