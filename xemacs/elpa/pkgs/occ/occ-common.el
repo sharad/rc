@@ -62,7 +62,5 @@
    #'(lambda (fspec) (cadar (aref fspec 1)))
    (when methods (aref methods 3)))))
 
-
-
 (provide 'occ-common)
 ;;; occ-common.el ends here

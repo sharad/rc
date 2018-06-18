@@ -203,15 +203,15 @@ pointing to it."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-defmethod occ-clockin-contextual-task ((new-contextual-task occ-contextual-task))
+(cl-defmethod occ-clockin ((new-contextask occ-contextual-task))
   ;;TODO add org-insert-log-not
-  (occ-debug :debug "occ-clockin-marker %s" new-contextual-task)
+  (occ-debug :debug "occ-clockin-marker %s" new-contextask)
   (let* (retval
          (old-contextual-task (car *occ-clocked-contextual-task-context-history*))
          (old-task            (when old-contextual-task (occ-contextual-task-task old-contextual-task)))
          (old-marker          (or (if old-task (occ-task-marker old-task)) org-clock-hd-marker))
          (old-heading         (if old-task (occ-task-heading old-task)))
-         (new-task            (occ-contextual-task-task new-contextual-task))
+         (new-task            (occ-contextual-task-task new-contextask))
          (new-marker          (if new-task (occ-task-marker new-task)))
          (new-heading         (if new-task (occ-task-heading new-task))))
   (when (and
@@ -249,7 +249,7 @@ pointing to it."
                 (progn
                   (org-clock-clock-in (list new-marker))
                   (setq retval t)
-                  (push new-contextual-task *occ-clocked-contextual-task-context-history*))
+                  (push new-contextask *occ-clocked-contextual-task-context-history*))
               ((error)
                (progn
                  (setq retval nil)
@@ -281,7 +281,7 @@ pointing to it."
                  ;; (sel-marker (if sel-task      (plist-get sel-task      :task-clock-marker)))
                  )
             ;; (occ-message 6 "sel-contextual-task %s sel-task %s sel-marker %s" sel-contextual-task sel-task sel-marker)
-            (if sel-contextual-task (occ-clockin-contextual-task sel-contextual-task)))
+            (if sel-contextual-task (occ-clockin sel-contextual-task)))
           (progn
             ;; here create unnamed task, no need
             (setq *occ-update-current-context-msg* "null clock")
