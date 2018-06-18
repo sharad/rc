@@ -264,7 +264,7 @@ pointing to it."
   (interactive
    (list (occ-build-context)))
   (progn
-    (let* ((context (or context (occ-build-context)))
+    (let* ((context (or context (occ-make-context)))
            (matched-contextual-tasks
             (remove-if-not
              #'(lambda (contextual-task)
