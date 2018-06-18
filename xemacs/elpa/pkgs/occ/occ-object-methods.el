@@ -262,7 +262,7 @@ pointing to it."
 (cl-defmethod occ-run-associated ((new-contextual-task occ-contextual-task))
   "marker and ranked version"
   (interactive
-   (list (occ-build-context)))
+   (list (occ-make-context)))
   (progn
     (let* ((context (or context (occ-make-context)))
            (matched-contextual-tasks
