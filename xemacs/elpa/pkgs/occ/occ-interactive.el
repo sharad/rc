@@ -212,7 +212,8 @@
   )
 
 ;;;###autoload
-(defun occ-helm-select-contextask (selector action)
+(defun occ-helm-select-contextask (selector
+                                   action)
   ;; here
   ;; (occ-debug :debug "sacha marker %s" (car contextasks))
   (let (helm-sources
