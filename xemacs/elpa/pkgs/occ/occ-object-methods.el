@@ -352,7 +352,7 @@ pointing to it."
     (occ-make-contextual-task task context rank)))
 
 (cl-defmethod occ-isassoc ((collection occ-tree-task-collection)
-                       (context occ-context))
+                           (context occ-context))
   (let ((tasks (occ-collection collection))
         (matched '()))
     (when tasks
