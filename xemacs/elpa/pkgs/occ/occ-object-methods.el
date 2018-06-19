@@ -493,31 +493,6 @@ pointing to it."
          ctxual-tasks))
     (error "(occ-collection-object) returned nil")))
 
-;; ISSUE? should it return rank or occ-ctxual-tasks map
-(cl-defmethod occ-matching-ctxual-tasks ((collection occ-tree-task-collection)
-                                         (ctx occ-ctx))
-  (let ((tasks (occ-collection collection))
-        (matched '()))
-    (when tasks
-      (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE matched %s[%d]" matched (length matched))
-      (occ-tree-mapc-tasks
-       #'(lambda (task args)
-           ;; (occ-debug :debug "occ-rank heading = %s" (occ-task-heading task))
-           (let* ((ctxual-task (occ-build-ctxual-task task args))
-                  (rank (occ-ctxual-task-rank ctxual-task)))
-             (unless rank (error "occ-entries-associated-to-ctx-by-keys[lambda]: rank is null"))
-             (when (> (occ-ctxual-task-rank ctxual-task) 0)
-               (push ctxual-task matched)
-               (occ-debug :debug "occ-entries-associated-to-ctx-by-keys[lambda]: task %s MATCHED RANK %d"
-                          (occ-task-heading task)
-                          (length matched)))))
-       tasks
-       ctx))
-    (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER matched %s[%d]" "matched" (length matched))
-    matched))
-
-
-
 ;; ISSUE? should it return rank or occ-ctxual-tasks list
 (cl-defmethod occ-matching-ctxual-tasks ((collection occ-list-task-collection)
                                          (ctx occ-ctx))
