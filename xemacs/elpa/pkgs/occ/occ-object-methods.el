@@ -343,6 +343,8 @@ pointing to it."
             (occ-add-to-org-heading-when-idle context 7)
             nil)))))
 
+
+
 (cl-defgeneric occ-isassoc (obj context)
   "occ-isassoc"
   )
