@@ -122,7 +122,7 @@
     collection))
 
 (defun occ-tree-build (collector &optional file)
-  "Build recursive org tasks from org FILE (or current buffer) using COLLECTOR function e.g. occ-task-collect-task"
+  "Build recursive org tasks from org FILE (or current buffer) using COLLECTOR function e.g. occ-collect-task"
   (with-current-buffer (if file
                            (find-file-noselect file)
                          (current-buffer))
@@ -153,7 +153,7 @@
           entry)))))
 
 ;;;###autoload
-(defun occ-task-recursive-update-tasks (&optional force) ;; API (occ-api-set :predicate :update  'org-entry-list-update-tasks)
+(defun occ-recursive-update-tasks (&optional force) ;; API (occ-api-set :predicate :update  'org-entry-list-update-tasks)
   "Update recursive org tasks tree"
   (interactive "P")
   (if occ-tree-task-root-org-file
@@ -168,7 +168,7 @@
   occ-tree-tasks)
 
 (defun occ-tree-tasks-files ()
-  (let ((tasks (occ-task-recursive-update-tasks))
+  (let ((tasks (occ-recursive-update-tasks))
         (files '()))
     (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE files %s[%d]" files (length files))
     (occ-tree-mapc-tasks
@@ -194,7 +194,7 @@
 
 ;; API (occ-api-set :predicate :update  'org-task-list-update-tasks)
 (defun occ-recursive-matching-tasks (ctx)
-  (let ((tasks (occ-task-recursive-update-tasks))
+  (let ((tasks (occ-recursive-update-tasks))
         (matched '()))
       (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE matched %s[%d]" matched (length matched))
       (occ-tree-mapc-tasks
@@ -205,7 +205,7 @@
              (when (> rank 0)
                (push task matched)
                (occ-debug :debug "occ-entries-associated-to-ctx-by-keys[lambda]: task %s MATCHED RANK %d"
-                        (occ-task-get-heading task)
+                        (occ-get-heading task)
                         (length matched)))))
        tasks
        ctx)
