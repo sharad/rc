@@ -235,7 +235,7 @@
            (marker-buffer org-clock-marker))
       (push
        (helm-build-sync-source "Current Clocking Task"
-         :candidates (list (sacha-occ-contextask-selection-line
+         :candidates (list (sacha-occ-selection-line
                             (occ-build-contextask (occ-task-current-task)
                              context)))
          :action (list
