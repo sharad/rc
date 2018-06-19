@@ -28,7 +28,7 @@
 (require 'occ-interactive)
 
 (defcustom *occ-last-buffer-select-time*        (current-time) "*occ-last-buffer-select-time*")
-(defvar    *occ-task-current-ctx-time-interval* nil)
+(defvar    *occ-task-current-ctx-time-interval* 7)
 (defvar    *occ-task-previous-ctx*              nil)
 (defvar    *occ-task-current-ctx*               nil)
 (defvar    occ-tree-task-root-org-file org-context-clock-task-tree-task-root-org-file)
