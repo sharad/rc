@@ -125,7 +125,7 @@
                                 (ctx occ-ctx))
   (if task
       (occ-rank task ctx)
-      0))
+    0))
 ;; Test if TASK is associate to CTX:1 ends here
 
 ;; Collect and return task matching to CTX
@@ -263,50 +263,50 @@ pointing to it."
          (new-task            (occ-ctxual-task-task new-ctxask))
          (new-marker          (if new-task (occ-task-marker new-task)))
          (new-heading         (if new-task (occ-task-heading new-task))))
-  (when (and
-         new-marker
-         (marker-buffer new-marker))
+    (when (and
+           new-marker
+           (marker-buffer new-marker))
 
-    (let* ((org-log-note-clock-out nil)
-           (old-marker org-clock-marker)
-           (old-buff   (marker-buffer old-marker)))
+      (let* ((org-log-note-clock-out nil)
+             (old-marker org-clock-marker)
+             (old-buff   (marker-buffer old-marker)))
 
-      (occ-debug :debug "clocking in %s" new-marker)
+        (occ-debug :debug "clocking in %s" new-marker)
 
-      (let ((old-buff-read-only
-             (if old-buff
-                 (with-current-buffer (marker-buffer old-marker)
-                   buffer-read-only))))
+        (let ((old-buff-read-only
+               (if old-buff
+                   (with-current-buffer (marker-buffer old-marker)
+                     buffer-read-only))))
 
-        (if old-buff
-            (with-current-buffer old-buff
-              (setq buffer-read-only nil)))
+          (if old-buff
+              (with-current-buffer old-buff
+                (setq buffer-read-only nil)))
 
-        (setq *occ-update-current-ctx-msg* old-marker)
+          (setq *occ-update-current-ctx-msg* old-marker)
 
-        (when (and
-               new-heading
-               old-marker
-               (marker-buffer old-marker))
-          (org-insert-log-note old-marker (format "clocking out to clockin to <%s>" new-heading)))
+          (when (and
+                 new-heading
+                 old-marker
+                 (marker-buffer old-marker))
+            (org-insert-log-note old-marker (format "clocking out to clockin to <%s>" new-heading)))
 
-        (with-current-buffer (marker-buffer new-marker)
-          (let ((buffer-read-only nil))
-            (when old-heading
-              (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
-            (condition-case err
-                (progn
-                  (org-clock-clock-in (list new-marker))
-                  (setq retval t)
-                  (push new-ctxask *occ-clocked-ctxual-task-ctx-history*))
-              ((error)
-               (progn
-                 (setq retval nil)
-                 (signal (car err) (cdr err)))))))
-        (if old-buff
-            (with-current-buffer old-buff
-              (setq buffer-read-only old-buff-read-only)))
-        retval)))))
+          (with-current-buffer (marker-buffer new-marker)
+            (let ((buffer-read-only nil))
+              (when old-heading
+                (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
+              (condition-case err
+                  (progn
+                    (org-clock-clock-in (list new-marker))
+                    (setq retval t)
+                    (push new-ctxask *occ-clocked-ctxual-task-ctx-history*))
+                ((error)
+                 (progn
+                   (setq retval nil)
+                   (signal (car err) (cdr err)))))))
+          (if old-buff
+              (with-current-buffer old-buff
+                (setq buffer-read-only old-buff-read-only)))
+          retval)))))
 
 (cl-defmethod occ-run-associated-task ((ctx occ-ctx))
   "marker and ranked version"
@@ -327,20 +327,20 @@ pointing to it."
           (let* ((sel-ctxual-task
                   (if (> (length matched-ctxual-tasks) 1)
                       (occ-sacha-helm-select-timed matched-ctxual-tasks)
-                      (car matched-ctxual-tasks)))
+                    (car matched-ctxual-tasks)))
                  ;; (sel-task   (if sel-ctxual-task (plist-get sel-ctxual-task :task)))
                  ;; (sel-marker (if sel-task      (plist-get sel-task      :task-clock-marker)))
                  )
             ;; (occ-message 6 "sel-ctxual-task %s sel-task %s sel-marker %s" sel-ctxual-task sel-task sel-marker)
             (if sel-ctxual-task (occ-clockin sel-ctxual-task)))
-          (progn
-            ;; here create unnamed task, no need
-            (setq *occ-update-current-ctx-msg* "null clock")
-            (occ-message 6
-                                       "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
-                                       ctx)
-            (occ-add-to-org-heading-when-idle ctx 7)
-            nil)))))
+        (progn
+          ;; here create unnamed task, no need
+          (setq *occ-update-current-ctx-msg* "null clock")
+          (occ-message 6
+                       "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
+                       ctx)
+          (occ-add-to-org-heading-when-idle ctx 7)
+          nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -352,7 +352,7 @@ pointing to it."
   0)
 
 (cl-defmethod occ-rank ((task-pair (head root))
-                           (ctx occ-ctx))
+                        (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to task's file attribute."
   (let* ((root
           (occ-get-property (cdr task-pair) 'root))
@@ -371,7 +371,7 @@ pointing to it."
         0))))
 
 (cl-defmethod occ-rank ((task-pair (head currfile))
-                           (ctx occ-ctx))
+                        (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to task's file attribute."
   (let* ((currfile
           (occ-get-property (cdr task-pair) 'currfile))
@@ -390,7 +390,7 @@ pointing to it."
         0))))
 
 (cl-defmethod occ-rank ((task-pair (head status))
-                           (ctx occ-ctx))
+                        (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to task's status attribute."
   (let ((todo-type
          (occ-get-property (cdr task-pair) 'todo-type))
@@ -405,7 +405,7 @@ pointing to it."
         -30 0)))
 
 (cl-defmethod occ-rank ((task-pair (head subtree))
-                           (ctx occ-ctx))
+                        (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to task's status attribute."
   (let ((sub-tree
          (occ-get-property (cdr task-pair) 'subtree)))
@@ -413,20 +413,20 @@ pointing to it."
     (if sub-tree -30 0)))
 
 (cl-defmethod occ-rank ((task-pair (head key))
-                           (ctx occ-ctx))
+                        (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to task's file attribute."
   (let* ((key (occ-get-property (cdr task-pair) 'KEY)))
     (if key (string-to-number key) 0)))
 
 (cl-defmethod occ-rank ((task-pair (head heading-level))
-                           (ctx occ-ctx))
+                        (ctx occ-ctx))
   "Predicate funtion to check if ctx matches to task's file attribute."
   (let* ((level
           (occ-get-property (cdr task-pair) 'level)))
     (if level level 0)))
 
 (cl-defmethod occ-rank ((task-pair (head timebeing))
-                           (ctx occ-ctx))
+                        (ctx occ-ctx))
   (let ((timebeing (occ-get-property (cdr task-pair) 'timebeing)))
     (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
           (clocked-time   (occ-get-property (cdr task-pair) 'clock-sum)))
@@ -438,7 +438,7 @@ pointing to it."
         0))))
 
 (cl-defmethod occ-rank ((task-pair (head current-clock))
-                           (ctx occ-ctx))
+                        (ctx occ-ctx))
   (let* ((task-marker
           (occ-get-property (cdr task-pair) 'marker)))
     (if (and
@@ -450,7 +450,7 @@ pointing to it."
 
 ;; ISSUE? should it return rank or occ-ctxual-task
 (cl-defmethod occ-rank ((task occ-task)
-                           (ctx occ-ctx))
+                        (ctx occ-ctx))
   (let ((rank
          (reduce #'+
                  (mapcar
@@ -460,14 +460,14 @@ pointing to it."
     rank))
 
 (cl-defmethod occ-build-ctxual-task ((task occ-task) ;ctor
-                                         (ctx occ-ctx))
+                                     (ctx occ-ctx))
   (occ-make-ctxual-task task
-                            ctx
-                            (occ-rank task ctx)))
+                        ctx
+                        (occ-rank task ctx)))
 
 ;; ISSUE? should it return rank or occ-ctxual-tasks map
 (cl-defmethod occ-matching-ctxual-tasks ((collection occ-tree-task-collection)
-                                             (ctx occ-ctx))
+                                         (ctx occ-ctx))
   (let ((tasks (occ-collection collection))
         (matched '()))
     (when tasks
@@ -490,7 +490,7 @@ pointing to it."
 
 ;; ISSUE? should it return rank or occ-ctxual-tasks list
 (cl-defmethod occ-matching-ctxual-tasks :around ((collection occ-list-task-collection)
-                                                     (ctx occ-ctx))
+                                                 (ctx occ-ctx))
   (lexical-let ((tasks (cl-call-next-method))
                 (ctx ctx))
     (remove-if-not
@@ -534,7 +534,7 @@ pointing to it."
   (occ-rank '(n  1) nil)
 
   (cl-defmethod occ-rank ((task occ-task)
-                             (ctx occ-ctx))
+                          (ctx occ-ctx))
     (message "match occ-rank"))
 
   (occ-rank (make-occ-tree-task) (make-occ-ctx))
@@ -546,7 +546,7 @@ pointing to it."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;TODO: make it after method
 (cl-defmethod occ-matching-ctxual-tasks ((collection occ-list-task-collection)
-                                             (ctx occ-ctx)) ;TODO: make it after method
+                                         (ctx occ-ctx)) ;TODO: make it after method
   ;; TODO Here do variance based filtering.
   (if (occ-collection-object)
       (let* ((ctxual-tasks (occ-matching-ctxual-tasks collection ctx))
