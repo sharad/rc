@@ -101,7 +101,7 @@
 
 ;; could be handled with
 ;;
-;; (cl-defmethod occ-isassoc ((task-pair (head current-clock))
+;; (cl-defmethod occ-rank ((task-pair (head current-clock))
 ;;                            (context occ-context))
 (defun occ-current-task ()
   (when (and
@@ -124,7 +124,7 @@
 (cl-defmethod occ-associated-p ((task occ-task)
                                 (context occ-context))
   (if task
-      (occ-isassoc task context)
+      (occ-rank task context)
       0))
 ;; Test if TASK is associate to CONTEXT:1 ends here
 
@@ -132,7 +132,7 @@
 ;;;###autoload
 (cl-defmethod occ-current-associated-p ((context occ-context))
   (let ((task (occ-task-current-task)))
-    (when task (occ-isassoc task context))))
+    (when task (occ-rank task context))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (cl-defmethod occ-print ((contextask occ-contextual-task))
@@ -344,14 +344,14 @@ pointing to it."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-defgeneric occ-isassoc (obj context)
-  "occ-isassoc"
+(cl-defgeneric occ-rank (obj context)
+  "occ-rank"
   )
 
-(cl-defmethod occ-isassoc (task-pair context)
+(cl-defmethod occ-rank (task-pair context)
   0)
 
-(cl-defmethod occ-isassoc ((task-pair (head root))
+(cl-defmethod occ-rank ((task-pair (head root))
                            (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((root
@@ -370,7 +370,7 @@ pointing to it."
           (length root)
         0))))
 
-(cl-defmethod occ-isassoc ((task-pair (head currfile))
+(cl-defmethod occ-rank ((task-pair (head currfile))
                            (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((currfile
@@ -389,7 +389,7 @@ pointing to it."
           (* 2 (length currfile))     ;as exact match to file giving double matching points.
         0))))
 
-(cl-defmethod occ-isassoc ((task-pair (head status))
+(cl-defmethod occ-rank ((task-pair (head status))
                            (context occ-context))
   "Predicate funtion to check if context matches to task's status attribute."
   (let ((todo-type
@@ -404,7 +404,7 @@ pointing to it."
          (string-equal status "HOLD"))
         -30 0)))
 
-(cl-defmethod occ-isassoc ((task-pair (head subtree))
+(cl-defmethod occ-rank ((task-pair (head subtree))
                            (context occ-context))
   "Predicate funtion to check if context matches to task's status attribute."
   (let ((sub-tree
@@ -412,20 +412,20 @@ pointing to it."
     (occ-debug :debug "task %s subtree %s" (occ-task-heading (cdr task-pair)) (null (null sub-tree)))
     (if sub-tree -30 0)))
 
-(cl-defmethod occ-isassoc ((task-pair (head key))
+(cl-defmethod occ-rank ((task-pair (head key))
                            (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((key (occ-get-property (cdr task-pair) 'KEY)))
     (if key (string-to-number key) 0)))
 
-(cl-defmethod occ-isassoc ((task-pair (head heading-level))
+(cl-defmethod occ-rank ((task-pair (head heading-level))
                            (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((level
           (occ-get-property (cdr task-pair) 'level)))
     (if level level 0)))
 
-(cl-defmethod occ-isassoc ((task-pair (head timebeing))
+(cl-defmethod occ-rank ((task-pair (head timebeing))
                            (context occ-context))
   (let ((timebeing (occ-get-property (cdr task-pair) 'timebeing)))
     (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
@@ -437,7 +437,7 @@ pointing to it."
           (- timebeing-time clocked-time)
         0))))
 
-(cl-defmethod occ-isassoc ((task-pair (head current-clock))
+(cl-defmethod occ-rank ((task-pair (head current-clock))
                            (context occ-context))
   (let* ((task-marker
           (occ-get-property (cdr task-pair) 'marker)))
@@ -449,13 +449,13 @@ pointing to it."
       0)))
 
 ;; ISSUE? should it return rank or occ-contextual-task
-(cl-defmethod occ-isassoc ((task occ-task)
+(cl-defmethod occ-rank ((task occ-task)
                            (context occ-context))
   (let ((rank
          (reduce #'+
                  (mapcar
                   #'(lambda (slot)
-                      (occ-isassoc (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
+                      (occ-rank (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
                   (occ-class-slots task)))))
     rank))
 
@@ -463,10 +463,10 @@ pointing to it."
                                          (context occ-context))
   (occ-make-contextual-task task
                             context
-                            (occ-isassoc task context)))
+                            (occ-rank task context)))
 
 ;; ISSUE? should it return rank or occ-contextual-tasks map
-(cl-defmethod occ-isassoc ((collection occ-tree-task-collection)
+(cl-defmethod occ-rank ((collection occ-tree-task-collection)
                            (context occ-context))
   (let ((tasks (occ-collection collection))
         (matched '()))
@@ -474,7 +474,7 @@ pointing to it."
       (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
       (occ-tree-mapc-tasks
        #'(lambda (task args)
-           ;; (occ-debug :debug "occ-isassoc heading = %s" (occ-task-heading task))
+           ;; (occ-debug :debug "occ-rank heading = %s" (occ-task-heading task))
            (let* ((contextual-task (occ-build-contextual-task task args))
                   (rank (occ-contextual-task-rank contextual-task)))
              (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
@@ -489,7 +489,7 @@ pointing to it."
     matched))
 
 ;; ISSUE? should it return rank or occ-contextual-tasks list
-(cl-defmethod occ-isassoc ((collection occ-list-task-collection)
+(cl-defmethod occ-rank ((collection occ-list-task-collection)
                            (context occ-context))
   (lexical-let ((tasks (occ-collection collection))
                 (context context))
@@ -523,21 +523,21 @@ pointing to it."
 
 (when nil
 
-  (cl-defmethod occ-isassoc (task-pair context)
+  (cl-defmethod occ-rank (task-pair context)
     0)
 
-  (cl-defmethod occ-isassoc ((task-pair (head root)) (context list))
+  (cl-defmethod occ-rank ((task-pair (head root)) (context list))
     (message "%s" task-pair))
 
-  (occ-isassoc '(root  1) nil)
+  (occ-rank '(root  1) nil)
 
-  (occ-isassoc '(n  1) nil)
+  (occ-rank '(n  1) nil)
 
-  (cl-defmethod occ-isassoc ((task occ-task)
+  (cl-defmethod occ-rank ((task occ-task)
                              (context occ-context))
-    (message "match occ-isassoc"))
+    (message "match occ-rank"))
 
-  (occ-isassoc (make-occ-tree-task) (make-occ-context))
+  (occ-rank (make-occ-tree-task) (make-occ-context))
   )
 
 
@@ -548,7 +548,7 @@ pointing to it."
 (cl-defmethod occ-matching-contextual-tasks ((context occ-context))
   ;; TODO Here do variance based filtering.
   (if (occ-collection-object)
-   (let* ((contextual-tasks (occ-isassoc (occ-collection-object) context))
+   (let* ((contextual-tasks (occ-rank (occ-collection-object) context))
           (rankslist  (mapcar
                        #'(lambda (contextual-task)
                            (occ-contextual-task-rank contextual-task))
