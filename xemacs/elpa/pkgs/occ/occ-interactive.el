@@ -118,7 +118,7 @@
         (message nil))
     (lexical-let* ((timeout (or timeout 7))
                    (context (or context (occ-make-context)))
-                   (buff (plist-get context :buffer)))
+                   (buff (occ-context-buffer context)))
       (if (and
            (eq (current-buffer) buff)
            (buffer-live-p buff)
