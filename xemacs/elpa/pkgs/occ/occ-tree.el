@@ -96,7 +96,7 @@
     (tree-mapcar-nodes
      'occ-tree-task-subtree fn tree args))
 
-  (defun occ-tree-mapc-tasks (fn tree args)
+  (defun occ-mapc-tree-tasks (fn tree args)
     "Tree mapc run FN for all TREE nodes with ARGS"
     (tree-mapc-nodes
      'occ-tree-task-subtree fn tree args))
@@ -171,7 +171,7 @@
   (let ((tasks (occ-recursive-update-tasks))
         (files '()))
     (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE files %s[%d]" files (length files))
-    (occ-tree-mapc-tasks
+    (occ-mapc-tree-tasks
      #'(lambda (task args)
          (push
           (occ-get-property task 'file)
@@ -197,7 +197,7 @@
   (let ((tasks (occ-recursive-update-tasks))
         (matched '()))
       (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE matched %s[%d]" matched (length matched))
-      (occ-tree-mapc-tasks
+      (occ-mapc-tree-tasks
        #'(lambda (task args)
            (let ((rank
                   (funcall occ-api-task-associated-to-ctx-p task args)))
