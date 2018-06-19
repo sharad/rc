@@ -47,7 +47,7 @@
               (setq
                *occ-task-previous-context* *occ-task-current-context*)
               (if (and
-                   (not (org-clock-marker-is-unnamed-clock-p))
+                   (not (occ-clock-marker-is-unnamed-clock-p))
                    (> (occ-current-task-associated-to-context-p context) 0))
                   (progn
                     (occ-debug :debug "occ-update-current-context: Current task already associate to %s" context))
