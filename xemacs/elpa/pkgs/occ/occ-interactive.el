@@ -105,7 +105,7 @@
             org-cycle-subtree-status))))))
 
 ;;;###autoload
-(defun occ-add-context-to-org-heading (context timeout)
+(defun occ-add-to-org-heading (context timeout)
   "add-context-to-org-heading"
 
   ;; TODO: make helm conditional when it is used than only it should be handled.
@@ -124,7 +124,7 @@
            (buffer-live-p buff)
            (not
             (eq buff
-                (get-buffer "*helm-mode-occ-add-context-to-org-heading*"))))
+                (get-buffer "*helm-mode-occ-add-to-org-heading*"))))
 
           (org-with-file-loc-timed-refile
               file pos
@@ -192,23 +192,23 @@
                                        (eq (current-buffer) buff)
                                        (buffer-live-p buff)
                                        (eq buff
-                                           (get-buffer "*helm-mode-occ-add-context-to-org-heading*"))))))))
+                                           (get-buffer "*helm-mode-occ-add-to-org-heading*"))))))))
 
 ;;;###autoload
-(defun occ-add-context-to-org-heading-when-idle (context timeout)
+(defun occ-add-to-org-heading-when-idle (context timeout)
   "Return value is important to decide next action to (create unnamed task.)"
   (occ-message 6 "called add-context-to-org-heading-when-idle")
-  ;; timed-newwin of occ-add-context-to-org-heading pass quit
+  ;; timed-newwin of occ-add-to-org-heading pass quit
   ;; signal to caller mean here, so need to be handled, else this function can
   ;; not return any value to its caller, which result into no next-action in
   ;; caller function.
   (condition-case nil
-      (occ-add-context-to-org-heading context timeout)
+      (occ-add-to-org-heading context timeout)
       ((quit)))
   ;; (run-with-idle-timer-nonobtrusive-simple
   ;;  7 nil
   ;;  #'(lambda (args)
-  ;;      (apply 'occ-add-context-to-org-heading args)) (list context timeout))
+  ;;      (apply 'occ-add-to-org-heading args)) (list context timeout))
   )
 
 ;;;###autoload
