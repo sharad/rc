@@ -92,7 +92,8 @@
 
 
 
-
+(cl-defmethod occ-contextual-task-marker ((contextask occ-contextual-task))
+  )
 
 
 
