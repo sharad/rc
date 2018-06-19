@@ -34,7 +34,8 @@
 
 (setq occ-global-task-collection-spec
       (list :tree org-context-clock-task-tree-task-root-org-file))
-(defun occ-set-global-task-collection-spec)
+(defun occ-set-global-task-collection-spec (spec)
+  )
 
 (defun occ-update-current-context (&optional force)
   (interactive "P")
