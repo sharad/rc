@@ -132,6 +132,7 @@
    :context context
    :rank    rank))
 
+(defvar occ-global-task-collection-spec nil)
 (defvar occ-global-task-collection nil)
 
 (cl-defmethod occ-make-task-collection ((file-spec (head :tree)))
