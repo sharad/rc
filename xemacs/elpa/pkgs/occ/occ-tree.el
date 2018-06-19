@@ -170,7 +170,7 @@
 (defun occ-task-tree-tasks-files ()
   (let ((tasks (occ-task-recursive-update-tasks))
         (files '()))
-    (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE files %s[%d]" files (length files))
+    (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE files %s[%d]" files (length files))
     (occ-tree-mapc-tasks
      #'(lambda (task args)
          (push
@@ -178,7 +178,7 @@
           files))
      tasks
      nil)
-    (occ-debug :debug "occ-entries-associated-to-context-by-keys: AFTER files %s[%d]" "files" (length files))
+    (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER files %s[%d]" "files" (length files))
     files))
 
 (defun occ-task-tree-get-files ()
@@ -193,24 +193,24 @@
 
 
 ;; API (occ-api-set :predicate :update  'org-task-list-update-tasks)
-(defun occ-recursive-matching-tasks (context)
+(defun occ-recursive-matching-tasks (ctx)
   (let ((tasks (occ-task-recursive-update-tasks))
         (matched '()))
-      (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
+      (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE matched %s[%d]" matched (length matched))
       (occ-tree-mapc-tasks
        #'(lambda (task args)
            (let ((rank
-                  (funcall occ-api-task-associated-to-context-p task args)))
-             (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
+                  (funcall occ-api-task-associated-to-ctx-p task args)))
+             (unless rank (error "occ-entries-associated-to-ctx-by-keys[lambda]: rank is null"))
              (when (> rank 0)
                (push task matched)
-               (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
+               (occ-debug :debug "occ-entries-associated-to-ctx-by-keys[lambda]: task %s MATCHED RANK %d"
                         (occ-task-get-heading task)
                         (length matched)))))
        tasks
-       context)
+       ctx)
 
-      (occ-debug :debug "occ-entries-associated-to-context-by-keys: AFTER matched %s[%d]" "matched" (length matched))
+      (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER matched %s[%d]" "matched" (length matched))
 
       matched))
 
