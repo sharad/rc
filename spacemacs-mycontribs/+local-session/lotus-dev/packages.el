@@ -772,7 +772,6 @@ Add directory to search path for source files using the GDB command, dir."))
               c-default-style "stroustrup"
               c-basic-offset 2)))
 
-
           ;; Automatic Indentation
 
           ;; Add the following to your ~/.emacs file. Whenever you type certain
