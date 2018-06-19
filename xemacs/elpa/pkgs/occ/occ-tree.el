@@ -91,7 +91,7 @@
     "Test org TX is org tasks tree non-leaf node"
     (occ-get-property tx 'subtree))
 
-  (defun occ-tree-mapcar-tasks (fn tree args)
+  (defun occ-mapcar-tree-tasks (fn tree args)
     "Tree mapcar return result for FN for all TREE nodes with ARGS"
     (tree-mapcar-nodes
      'occ-tree-task-subtree fn tree args))
