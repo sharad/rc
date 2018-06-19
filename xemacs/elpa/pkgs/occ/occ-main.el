@@ -40,13 +40,7 @@
 (occ-set-global-task-collection-spec
  (list :tree org-ctx-clock-task-tree-task-root-org-file))
 
-(defun occ-update-current-ctx (&optional force)
-  (interactive "P")
-  (occ-update-current (occ-make-context)))
-
-
 (cl-defmethod occ-update-current ((ctx occ-ctx))
-  (interactive (list (occ-make-ctx)))
   (if (>
        (float-time (time-since *occ-last-buffer-select-time*))
        *occ-task-current-ctx-time-interval*)
