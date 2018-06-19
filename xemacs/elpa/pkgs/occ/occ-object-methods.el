@@ -167,7 +167,7 @@ pointing to it."
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:3]]
 ;; rank based
-(defun occ-sacha-helm-select ((contextask occ-contextual-task))
+(cl-defmethod occ-sacha-helm-select ((contextask occ-contextual-task))
   ;; (occ-debug :debug "sacha marker %s" (car dyntaskpls))
   (helm
    (list
