@@ -473,7 +473,7 @@ pointing to it."
       (occ-tree-mapc-tasks
        #'(lambda (task args)
            ;; (occ-debug :debug "occ-isassoc heading = %s" (occ-task-heading task))
-           (let* ((contextual-task (occ-isassoc task args))
+           (let* ((contextual-task (occ-build-contextual-task task args))
                   (rank (occ-contextual-task-rank contextual-task)))
              (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
              (when (> (occ-contextual-task-rank contextual-task) 0)
