@@ -504,6 +504,7 @@ pointing to it."
     (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER matched %s[%d]" "matched" (length matched))
     matched))
 
+;;TODO: make it after method
 (cl-defmethod occ-matching-ctxual-tasks :around ((collection occ-task-collection)
                                                  (ctx occ-ctx)) ;TODO: make it after method
   ;; TODO Here do variance based filtering.
@@ -531,9 +532,6 @@ pointing to it."
              (>= (occ-ctxual-task-rank ctxual-task) avgrank))
          ctxual-tasks))
     (error "(occ-collection-object) returned nil")))
-
-;;TODO: make it after method
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
