@@ -271,6 +271,7 @@ pointing to it."
            (matched-contextual-tasks
             (remove-if-not
              #'(lambda (contextual-task)
+                 (occ-contextual-task-marker contextual-task)
                  (let* ((task (occ-contextual-task-task contextual-task))
                         (marker (occ-task-marker task)))
                    (and
