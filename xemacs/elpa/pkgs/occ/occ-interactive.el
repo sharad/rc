@@ -195,7 +195,7 @@
                                            (get-buffer "*helm-mode-occ-add-to-org-heading*"))))))))
 
 ;;;###autoload
-(defun occ-add-to-org-heading-when-idle ((context occ-context) timeout)
+(cl-defmethod occ-add-to-org-heading-when-idle ((context occ-context) timeout)
   "Return value is important to decide next action to (create unnamed task.)"
   (occ-message 6 "called add-context-to-org-heading-when-idle")
   ;; timed-newwin of occ-add-to-org-heading pass quit
