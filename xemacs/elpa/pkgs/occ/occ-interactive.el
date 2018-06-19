@@ -212,7 +212,7 @@
   )
 
 ;;;###autoload
-(defun occ-helm-select-contextask (selector
+(defun occ-helm-select-contextual-task (selector
                                    action)
   ;; here
   ;; (occ-debug :debug "sacha marker %s" (car contextasks))
@@ -256,7 +256,7 @@
 
 ;;;###autoload
 (defun occ-set-to-task ()
-  (occ-helm-select-contextask
+  (occ-helm-select-contextual-task
    #'occ-contextual-task-marker
    #'occ-set-to-marker))
 
