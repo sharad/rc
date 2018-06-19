@@ -220,7 +220,7 @@
         (context (occ-make-context)))
 
     (let ((contextasks
-           (occ-matching-contextual-tasks context)))
+           (occ-matching-contextual-tasks (occ-collection-object) context)))
      (push
       (helm-build-sync-source "Select matching task"
         :candidates (mapcar

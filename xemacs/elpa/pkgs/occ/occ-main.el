@@ -34,7 +34,7 @@
 
 (defun occ-set-global-task-collection-spec (spec)
   (setq
-   occ-global-task-collection nil
+   occ-global-task-collection      nil
    occ-global-task-collection-spec spec))
 
 (occ-set-global-task-collection-spec
