@@ -98,6 +98,8 @@
     marker))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (cl-defmethod occ-isassoc ((task-pair (head current-clock))
+;;                            (context occ-context))
 
 (defun occ-current-task ()
   (when (and
