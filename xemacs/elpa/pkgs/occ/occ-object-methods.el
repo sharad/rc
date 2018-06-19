@@ -137,6 +137,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (cl-defgeneric occ-sacha-selection-line (obj)
   )
+
 (cl-defmethod occ-sacha-selection-line (marker)
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
