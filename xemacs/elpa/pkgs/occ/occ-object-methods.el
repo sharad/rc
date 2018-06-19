@@ -455,6 +455,16 @@ pointing to it."
                   #'(lambda (slot)
                       (occ-isassoc (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
                   (occ-class-slots task)))))
+    (occ-make-contextual-task task context rank)))
+
+(cl-defmethod occ-isassoc ((task occ-task)
+                           (context occ-context))
+  (let ((rank
+         (reduce #'+
+                 (mapcar
+                  #'(lambda (slot)
+                      (occ-isassoc (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
+                  (occ-class-slots task)))))
     rank))
 
 ;; ISSUE? should it return rank or occ-contextual-tasks map
@@ -467,12 +477,11 @@ pointing to it."
       (occ-tree-mapc-tasks
        #'(lambda (task args)
            ;; (occ-debug :debug "occ-isassoc heading = %s" (occ-task-heading task))
-           (let* ((rank (occ-isassoc task args)))
+           (let* ((contextual-task (occ-isassoc task args))
+                  (rank (occ-contextual-task-rank contextual-task)))
              (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
-             (when (> rank 0)
-               (push
-                (occ-make-contextual-task task context rank)
-                matched)
+             (when (> (occ-contextual-task-rank contextual-task) 0)
+               (push contextual-task matched)
                (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
                           (occ-task-heading task)
                           (length matched)))))
@@ -487,7 +496,7 @@ pointing to it."
   (lexical-let ((tasks (occ-collection collection))
                 (context context))
     (remove-if-not
-     #'(lambda (rank)
+     #'(lambda (contextual-task)
          (> (occ-contextual-task-rank contextual-task) 0))
      (mapcar
       #'(lambda (task)
