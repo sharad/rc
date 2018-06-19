@@ -272,8 +272,7 @@ pointing to it."
             (remove-if-not
              #'(lambda (contextual-task)
 
-                 (let* ((task (occ-contextual-task-task contextual-task))
-                        (marker (occ-contextual-task-marker contextual-task)))
+                 (let* ((marker (occ-contextual-task-marker contextual-task)))
                    (and
                     marker
                     (marker-buffer marker))))
