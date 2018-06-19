@@ -132,9 +132,9 @@
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:1]]
 ;;;###autoload
-(defun occ-current-task-associated-to-context-p (context)
+(defun occ-current-associated-p (context)
   (let ((task (occ-task-current-task)))
-    (occ-task-associated-to-context-p task context)))
+    (occ-isassoc task context)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
