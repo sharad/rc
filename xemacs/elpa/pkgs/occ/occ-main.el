@@ -78,7 +78,7 @@
   (if (>
        (float-time (time-since *occ-last-buffer-select-time*))
        *occ-task-current-ctx-time-interval*)
-      (let* ((ctx     (occ-make-ctx))
+      (let* (
              (buff    (occ-ctx-buffer ctx)))
         (setq *occ-task-current-ctx* ctx)
         (if (and
