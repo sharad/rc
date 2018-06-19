@@ -236,7 +236,7 @@
       (push
        (helm-build-sync-source "Current Clocking Task"
          :candidates (list (occ-sacha-selection-line
-                            (occ-make-contextual-task context (occ-task-current-task))))
+                            (occ-make-contextual-task context (occ-task-current-task) 0)))
          :action (list
                   (cons "Clock in and track" selector)))
        helm-sources))
