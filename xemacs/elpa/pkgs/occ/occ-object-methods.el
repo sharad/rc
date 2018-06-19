@@ -577,6 +577,7 @@ pointing to it."
 
   (length
    (occ-matching-contextual-tasks
+    (occ-collection-object)
     (occ-make-context
      (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp"))))
 
