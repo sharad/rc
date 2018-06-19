@@ -32,6 +32,9 @@
 (defvar    *occ-task-previous-context*              nil)
 (defvar    *occ-task-current-context*               nil)
 
+(setq occ-global-task-collection-spec
+      (list :tree org-context-clock-task-tree-task-root-org-file))
+
 (defun occ-update-current-context (&optional force)
   (interactive "P")
   (if (>
