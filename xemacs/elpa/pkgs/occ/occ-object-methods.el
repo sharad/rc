@@ -136,6 +136,7 @@ pointing to it."
             (occ-contextual-task-rank contextask)
             (occ-fontify-like-in-org-mode task))))
 
+;; deprecated
 (cl-defmethod occ-sacha-selection-line ((contextask occ-contextual-task))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
