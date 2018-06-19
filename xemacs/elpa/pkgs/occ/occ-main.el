@@ -42,7 +42,7 @@
 
 (defun occ-update-current-ctx (&optional force)
   (interactive "P")
-  )
+  (occ-update-current (occ-make-context)))
 
 
 (cl-defmethod occ-update-current ((ctx occ-ctx))
