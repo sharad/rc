@@ -47,7 +47,7 @@
        *occ-task-current-ctx-time-interval*)
       (let* ((ctx (occ-make-ctx))
              (buff    (occ-ctx-buffer ctx)))
-        (setq *occ-task-current-ctx*  ctx)
+        (setq *occ-task-current-ctx* ctx)
         (if (and
              (occ-changable-p)
              buff (buffer-live-p buff)
