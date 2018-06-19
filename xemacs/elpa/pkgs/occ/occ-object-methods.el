@@ -123,9 +123,9 @@
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Test%20if%20TASK%20is%20associate%20to%20CONTEXT][Test if TASK is associate to CONTEXT:1]]
 (defun occ-task-associated-to-context-p (task context)
-  (occ-isassoc task context)
+
   (if task
-      (funcall occ-api-task-associated-to-context-p task context)
+      (occ-isassoc task context)
       0))
 ;; Test if TASK is associate to CONTEXT:1 ends here
 
