@@ -133,7 +133,7 @@ pointing to it."
 (cl-defmethod occ-print ((contextask occ-contextual-task))
   (let ((task (occ-contextual-task-task contextask)))
     (format "[%4d] %s"
-            (occ-contextual-task-rank dyntaskpl)
+            (occ-contextual-task-rank contextask)
             (org-context-clock-fontify-like-in-org-mode task))))
 
 (cl-defmethod occ-sacha-selection-line ((contextask occ-contextual-task))
