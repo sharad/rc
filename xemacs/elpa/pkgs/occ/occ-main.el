@@ -56,14 +56,11 @@
               (equal *occ-task-previous-ctx* *occ-task-current-ctx*)))
 
             (progn
-
               (setq *occ-task-previous-ctx* *occ-task-current-ctx*)
-
               (if (and
                    (not (occ-clock-marker-is-unnamed-clock-p))
                    (> (occ-current-task-associated-to-ctx-p ctx) 0))
-                  (progn
-                    (occ-debug :debug "occ-update-current-ctx: Current task already associate to %s" ctx))
+                  (occ-debug :debug "occ-update-current-ctx: Current task already associate to %s" ctx)
                   (progn                ;current clock is not matching
                     (occ-debug :debug "occ-update-current-ctx: Now really going to clock.")
                     (unless (occ-run-associated-task ctx)
