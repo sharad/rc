@@ -447,7 +447,7 @@ pointing to it."
       0)))
 
 ;; ISSUE? should it return rank or occ-contextual-task
-(cl-defmethod occ-isassoc ((task occ-task)
+(cl-defmethod occ-assoc ((task occ-task)
                            (context occ-context))
   (let ((rank
          (reduce #'+
