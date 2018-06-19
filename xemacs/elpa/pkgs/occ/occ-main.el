@@ -33,7 +33,9 @@
 (defvar    *occ-task-current-context*               nil)
 
 (defun occ-set-global-task-collection-spec (spec)
-  (setq occ-global-task-collection-spec spec))
+  (setq
+   occ-global-task-collection nil
+   occ-global-task-collection-spec spec))
 
 (occ-set-global-task-collection-spec
  (list :tree org-context-clock-task-tree-task-root-org-file))
