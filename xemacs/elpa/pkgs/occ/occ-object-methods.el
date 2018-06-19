@@ -172,7 +172,7 @@ pointing to it."
   (helm
    (list
     (helm-build-sync-source "Select matching tasks"
-      :candidates (mapcar 'occ-sacha-selection-line dyntaskpls)
+      :candidates (mapcar 'occ-sacha-selection-line contextask)
       :action (list ;; (cons "Select" 'identity)
                (cons "Clock in and track" #'identity))
       :history 'org-refile-history)
