@@ -121,7 +121,7 @@
             (push (funcall fun) collection))))
     collection))
 
-(defun occ-tree-build (task-builder &optional file)
+(defun occ-tree-task-build (task-builder &optional file)
   "Build recursive org tasks from org FILE (or current buffer) using TASK-BUILDER function e.g. occ-collect-task"
   (with-current-buffer (if file
                            (find-file-noselect file)
@@ -132,7 +132,7 @@
         (let* ((sub-tree
                 (append
                  (occ-org-map-subheading #'(lambda ()
-                                                   (occ-tree-build task-builder nil)))
+                                                   (occ-tree-task-build task-builder nil)))
                  (let ((subtree-file-prop (occ-get-property entry :SUBTREEFILE)))
                    (when subtree-file-prop
                      (let* ((file (if file file (buffer-file-name)))
@@ -148,7 +148,7 @@
                             subtree-file
                             (file-readable-p subtree-file))
                            (list
-                            (occ-tree-build task-builder subtree-file)))))))))
+                            (occ-tree-task-build task-builder subtree-file)))))))))
           (occ-set-property entry 'subtree sub-tree)
           entry)))))
 
