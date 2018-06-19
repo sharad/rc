@@ -390,7 +390,7 @@ pointing to it."
   0)
 
 (cl-defmethod occ-isassoc ((task-pair (head root))
-                       (context occ-context))
+                           (context occ-context))
   "Predicate funtion to check if context matches to task's file attribute."
   (let* ((root
           (occ-get-property (cdr task-pair) 'root))
