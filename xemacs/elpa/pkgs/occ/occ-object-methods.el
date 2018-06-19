@@ -349,53 +349,6 @@ pointing to it."
   "occ-isassoc"
   )
 
-;; ISSUE? should it return rank or occ-contextual-task
-(cl-defmethod occ-isassoc ((task occ-task)
-                           (context occ-context))
-  (let ((rank
-         (reduce #'+
-                 (mapcar
-                  #'(lambda (slot)
-                      (occ-isassoc (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
-                  (occ-class-slots task)))))
-    (occ-make-contextual-task task context rank)))
-
-;; ISSUE? should it return rank or occ-contextual-tasks map
-(cl-defmethod occ-isassoc ((collection occ-tree-task-collection)
-                           (context occ-context))
-  (let ((tasks (occ-collection collection))
-        (matched '()))
-    (when tasks
-      (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
-      (occ-tree-mapc-tasks
-       #'(lambda (task args)
-           ;; (occ-debug :debug "occ-isassoc heading = %s" (occ-task-heading task))
-           (let* ((contextual-task (occ-isassoc task args))
-                  (rank (occ-contextual-task-rank contextual-task)))
-             (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
-             (when (> (occ-contextual-task-rank contextual-task) 0)
-               (push contextual-task matched)
-               (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
-                          (occ-task-heading task)
-                          (length matched)))))
-       tasks
-       context))
-    (occ-debug :debug "occ-entries-associated-to-context-by-keys: AFTER matched %s[%d]" "matched" (length matched))
-    matched))
-
-;; ISSUE? should it return rank or occ-contextual-tasks list
-(cl-defmethod occ-isassoc ((collection occ-list-task-collection)
-                           (context occ-context))
-  (lexical-let ((tasks (occ-collection collection))
-                (context context))
-    (remove-if-not
-     #'(lambda (contextual-task)
-         (> (occ-contextual-task-rank contextual-task) 0))
-     (mapcar
-      #'(lambda (task)
-          (occ-isassoc task context))
-      tasks))))
-
 (cl-defmethod occ-isassoc (task-pair context)
   0)
 
@@ -495,6 +448,53 @@ pointing to it."
          (equal org-clock-hd-marker org-clock-hd-marker))
         100
       0)))
+
+;; ISSUE? should it return rank or occ-contextual-task
+(cl-defmethod occ-isassoc ((task occ-task)
+                           (context occ-context))
+  (let ((rank
+         (reduce #'+
+                 (mapcar
+                  #'(lambda (slot)
+                      (occ-isassoc (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
+                  (occ-class-slots task)))))
+    (occ-make-contextual-task task context rank)))
+
+;; ISSUE? should it return rank or occ-contextual-tasks map
+(cl-defmethod occ-isassoc ((collection occ-tree-task-collection)
+                           (context occ-context))
+  (let ((tasks (occ-collection collection))
+        (matched '()))
+    (when tasks
+      (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
+      (occ-tree-mapc-tasks
+       #'(lambda (task args)
+           ;; (occ-debug :debug "occ-isassoc heading = %s" (occ-task-heading task))
+           (let* ((contextual-task (occ-isassoc task args))
+                  (rank (occ-contextual-task-rank contextual-task)))
+             (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
+             (when (> (occ-contextual-task-rank contextual-task) 0)
+               (push contextual-task matched)
+               (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
+                          (occ-task-heading task)
+                          (length matched)))))
+       tasks
+       context))
+    (occ-debug :debug "occ-entries-associated-to-context-by-keys: AFTER matched %s[%d]" "matched" (length matched))
+    matched))
+
+;; ISSUE? should it return rank or occ-contextual-tasks list
+(cl-defmethod occ-isassoc ((collection occ-list-task-collection)
+                           (context occ-context))
+  (lexical-let ((tasks (occ-collection collection))
+                (context context))
+    (remove-if-not
+     #'(lambda (contextual-task)
+         (> (occ-contextual-task-rank contextual-task) 0))
+     (mapcar
+      #'(lambda (task)
+          (occ-isassoc task context))
+      tasks))))
 
 (cl-defmethod occ-readprop ((task-pair (head root))
                             (context occ-context))
