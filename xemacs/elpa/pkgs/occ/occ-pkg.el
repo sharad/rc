@@ -1,4 +1,4 @@
-(define-package "occ" "20171222.128" "org-context-clock"
+(define-package "occ" "20171222.128" "occ"
                 '((timer-utils-lotus "1")
                   (org-clock-utils-lotus "1")
                   (org-clock-hooks "1")
