@@ -62,7 +62,7 @@
 (defun occ-test (context timeout)
   (interactive '(nil nil))
   (lexical-let* ((timeout (or timeout 7))
-                 (context (or context (occ-build-context)))
+                 (context (or context (occ-make-context)))
                  (buff (plist-get context :buffer)))
     (message "test %s" timeout)))
 
