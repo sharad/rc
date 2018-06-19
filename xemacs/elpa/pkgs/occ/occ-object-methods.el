@@ -489,7 +489,7 @@ pointing to it."
     matched))
 
 ;; ISSUE? should it return rank or occ-contextual-tasks list
-(cl-defmethod occ-matching-contextual-tasks ((collection occ-list-task-collection)
+(cl-defmethod occ-matching-contextual-tasks :around ((collection occ-list-task-collection)
                                              (context occ-context))
   (lexical-let ((tasks (occ-collection collection))
                 (context context))
