@@ -449,14 +449,8 @@ pointing to it."
 ;; ISSUE? should it return rank or occ-contextual-task
 (cl-defmethod occ-build-contextual-task ((task occ-task)
                                               (context occ-context))
-  (let ((rank
-         (reduce #'+
-                 (mapcar
-                  #'(lambda (slot)
-                      (occ-isassoc (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
-                  (occ-class-slots task)))))
     (occ-make-contextual-task task context
-                              (occ-isassoc task context))))
+                              (occ-isassoc task context)))
 
 (cl-defmethod occ-isassoc ((task occ-task)
                            (context occ-context))
