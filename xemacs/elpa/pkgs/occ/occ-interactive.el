@@ -219,7 +219,7 @@
         (context (occ-make-context)))
 
     (let ((contextasks
-           (occ-contextasks-associated-to-context context)))
+           (occ-associated-to-context context)))
      (push
       (helm-build-sync-source "Select matching task"
         :candidates (mapcar
@@ -235,7 +235,7 @@
            (marker-buffer org-clock-marker))
       (push
        (helm-build-sync-source "Current Clocking Task"
-         :candidates (list (sacha-occ-selection-line
+         :candidates (list (occ-sacha-selection-line
                             (occ-build-contextask (occ-task-current-task)
                              context)))
          :action (list
