@@ -135,7 +135,7 @@ pointing to it."
 And return a cons cell with the selection character integer and the marker
 pointing to it."
   (let ((marker (occ-contextual-task-marker dyntaskpl))
-        (rank   (plist-get dyntaskpl :rank)))
+        (rank   (occ-contextual-task-rank :rank)))
     (when (marker-buffer marker)
       (with-current-buffer (org-base-buffer (marker-buffer marker))
         (org-with-wide-buffer
