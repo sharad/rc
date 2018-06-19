@@ -505,7 +505,7 @@ pointing to it."
                                                  (ctx occ-ctx)) ;TODO: make it after method
   ;; TODO Here do variance based filtering.
   (if (occ-collection-object)
-      (let* ((ctxual-tasks (occ-matching-ctxual-tasks collection ctx))
+      (let* ((ctxual-tasks (cl-call-next-method))
              (rankslist  (mapcar
                           #'(lambda (ctxual-task)
                               (occ-ctxual-task-rank ctxual-task))
