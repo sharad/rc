@@ -170,7 +170,7 @@ pointing to it."
             (occ-contextual-task-rank contextask)
             (occ-fontify-like-in-org-mode task))))
 
-(cl-defmethod occ-print ((contextask occ-contextual-task))
+(cl-defmethod occ-print ((task occ-task))
   (let ((task (occ-contextual-task-task contextask)))
     (format "[%4d] %s"
             (occ-contextual-task-rank contextask)
