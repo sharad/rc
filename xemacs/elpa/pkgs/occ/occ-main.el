@@ -74,9 +74,7 @@
 
 
 (cl-defmethod occ-update-current-ctx ((ctx occ-ctx))
-  (interactive
-   (list
-    (occ-make-ctx)))
+  (interactive (list (occ-make-ctx)))
   (if (>
        (float-time (time-since *occ-last-buffer-select-time*))
        *occ-task-current-ctx-time-interval*)
