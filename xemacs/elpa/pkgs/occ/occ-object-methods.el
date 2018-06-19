@@ -109,7 +109,7 @@
             (buffer-read-only t))
         (read-only-mode)
         (org-previous-visible-heading 1)
-        (let ((task (occ-make-task)))
+        (let ((task (occ-make-task (or org-clock-hd-marker org-clock-marker))))
           task)))))
 ;; Create task info out of current clock:1 ends here
 
