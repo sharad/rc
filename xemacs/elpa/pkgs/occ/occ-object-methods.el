@@ -134,8 +134,8 @@ pointing to it."
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
-  (let ((marker (occ-contextual-task-marker dyntaskpl))
-        (rank   (occ-contextual-task-rank dyntaskpl)))
+  (let ((marker (occ-contextual-task-marker contextask))
+        (rank   (occ-contextual-task-rank   contextask)))
     (when (marker-buffer marker)
       (with-current-buffer (org-base-buffer (marker-buffer marker))
         (org-with-wide-buffer
