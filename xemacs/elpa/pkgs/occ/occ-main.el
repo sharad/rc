@@ -56,7 +56,9 @@
               (equal *occ-task-previous-ctx* *occ-task-current-ctx*)))
 
             (progn
+
               (setq *occ-task-previous-ctx* *occ-task-current-ctx*)
+
               (if (and
                    (not (occ-clock-marker-is-unnamed-clock-p))
                    (> (occ-current-task-associated-to-ctx-p ctx) 0))
