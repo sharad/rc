@@ -99,7 +99,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun org-context-clock-task-current-task ()
+(defun occ-task-current-task ()
   (when (and
          org-clock-marker
          (markerp org-clock-marker)
@@ -109,16 +109,16 @@
             (buffer-read-only t))
         (read-only-mode)
         (org-previous-visible-heading 1)
-        (let ((info (org-context-clock-collect-task)))
+        (let ((info (occ-collect-task)))
           info)))))
 ;; Create task info out of current clock:1 ends here
 
 ;; Test if TASK is associate to CONTEXT
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Test%20if%20TASK%20is%20associate%20to%20CONTEXT][Test if TASK is associate to CONTEXT:1]]
-(defun org-context-clock-task-associated-to-context-p (task context)
+(defun occ-task-associated-to-context-p (task context)
   (if task
-      (funcall org-context-clock-api-task-associated-to-context-p task context)
+      (funcall occ-api-task-associated-to-context-p task context)
       0))
 ;; Test if TASK is associate to CONTEXT:1 ends here
 
@@ -126,9 +126,9 @@
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:1]]
 ;;;###autoload
-(defun occ-task-associated-to-context-p (context)
-  (let ((task (org-context-clock-task-current-task)))
-    (org-context-clock-task-associated-to-context-p task context)))
+(defun occ-current-task-associated-to-context-p (context)
+  (let ((task (occ-task-current-task)))
+    (occ-task-associated-to-context-p task context)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
