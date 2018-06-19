@@ -127,7 +127,7 @@ pointing to it."
              ;; marker
              (cons task marker))))))))
 
-(cl-defmethod sacha-occcontextual-task-selection-line ((contextask occ-contextual-task))
+(cl-defmethod occ-sacha-selection-line ((contextask occ-contextual-task))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
@@ -155,7 +155,7 @@ pointing to it."
                (cons (occcontextual-task-print dyntaskpl task) dyntaskpl)))))))))
 
 
-(defun sacha-occcontextual-task-selection-line ((contextask occ-contextual-task))
+(defun occ-sacha-selection-line ((contextask occ-contextual-task))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
@@ -169,7 +169,7 @@ pointing to it."
   (helm
    (list
     (helm-build-sync-source "Select matching tasks"
-      :candidates (mapcar 'sacha-occcontextual-task-selection-line dyntaskpls)
+      :candidates (mapcar 'occ-sacha-selection-line dyntaskpls)
       :action (list ;; (cons "Select" 'identity)
                (cons "Clock in and track" #'identity))
       :history 'org-refile-history)
@@ -191,7 +191,7 @@ pointing to it."
     (helm
      (list
       (helm-build-sync-source "Select matching tasks"
-        :candidates (mapcar 'sacha-occcontextual-task-selection-line dyntaskpls)
+        :candidates (mapcar 'occ-sacha-selection-line dyntaskpls)
         :action (list ;; (cons "Select" 'identity)
                  (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
         :history 'org-refile-history)
