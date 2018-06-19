@@ -107,7 +107,7 @@
      'occ-tree-task-subtree fn tree args)))
 
 
-(defun occ-tree-map-subheading (fun)
+(defun occ-org-map-subheading (fun)
   "Call FUN for every heading underneath the current heading"
   ;; (org-back-to-heading)
   (let ((level (funcall outline-level))
@@ -131,7 +131,7 @@
       (when entry
         (let* ((sub-tree
                 (append
-                 (occ-tree-map-subheading #'(lambda ()
+                 (occ-org-map-subheading #'(lambda ()
                                                    (occ-tree-build collector nil)))
                  (let ((subtree-file-prop (occ-get-property entry :SUBTREEFILE)))
                    (when subtree-file-prop
