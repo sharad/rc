@@ -23,21 +23,21 @@
 
 ;;; Code:
 
-(defun org-get-property (prop-key)
-  (org-entry-get nil prop-key))
+;; (defun org-get-property (prop-key)
+;;   (org-entry-get nil prop-key))
 
-(defun occ-get-property (prop-key)
-  (org-get-property prop-key))
+;; (defun occ-get-property (prop-key)
+;;   (org-get-property prop-key))
 
-(defun occ-set-property (prop-key value context &rest args)
-  (let ((prop-key-str (if (eq (elt prop-key 0 ) ?\:) (substring prop-key 1))))
-    (org-set-property prop-key
-                      (if value
-                          value
-                          (funcall
-                           (occ-key-fun prop-key :getter)
-                           prop-key nil context args))))
-  t)
+;; (defun occ-set-property (prop-key value context &rest args)
+;;   (let ((prop-key-str (if (eq (elt prop-key 0 ) ?\:) (substring prop-key 1))))
+;;     (org-set-property prop-key
+;;                       (if value
+;;                           value
+;;                           (funcall
+;;                            (occ-key-fun prop-key :getter)
+;;                            prop-key nil context args))))
+;;   t)
 
 ;; (eq (elt ":root" 0) ?\:)
 
