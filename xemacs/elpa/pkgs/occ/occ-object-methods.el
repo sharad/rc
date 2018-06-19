@@ -569,7 +569,8 @@ pointing to it."
      (remove-if-not
       #'(lambda (contextual-task)
           (>= (occ-contextual-task-rank contextual-task) avgrank))
-      contextual-tasks))))
+      contextual-tasks))
+    (error "(occ-collection-object) returned nil")))
 
 (when nil
 
