@@ -231,7 +231,7 @@ pointing to it."
     (message "running sacha/helm-select-clock")
     (occ-sacha-helm-select ctxask)))
 
-(defun occ-sacha-helm-action ((ctxask occ-ctxual-task) clockin-fn)
+(cl-defmethod occ-sacha-helm-action ((ctxask occ-ctxual-task) clockin-fn)
   ;; (message "sacha marker %s" (car dyntaskpls))
   ;; (setq sacha/helm-org-refile-locations tbl)
   (progn
