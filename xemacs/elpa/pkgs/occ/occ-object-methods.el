@@ -613,7 +613,7 @@ pointing to it."
      (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp"))))
 
 
-  (occ-ctx-task
+  (occ-ctxual-task-task
    (car
    (occ-matching-ctxual-tasks
     (occ-collection-object)
