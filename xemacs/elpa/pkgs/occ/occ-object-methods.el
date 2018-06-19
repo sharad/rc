@@ -95,9 +95,7 @@
 (cl-defmethod occ-contextual-task-marker ((contextask occ-contextual-task))
   (let* ((task (occ-contextual-task-task contextask))
          (marker (occ-task-marker task)))
-    (and
-     marker
-     (marker-buffer marker))))
+    marker))
 
 
 
