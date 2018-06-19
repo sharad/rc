@@ -259,7 +259,7 @@ pointing to it."
               (setq buffer-read-only old-buff-read-only)))
         retval)))))
 
-(cl-defmethod occ-run-associated-task ((new-contextual-task occ-context))
+(cl-defmethod occ-run-associated-task ((context occ-context))
   "marker and ranked version"
   (interactive
    (list (occ-make-context)))
