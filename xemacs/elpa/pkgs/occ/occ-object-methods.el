@@ -455,7 +455,8 @@ pointing to it."
                   #'(lambda (slot)
                       (occ-isassoc (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
                   (occ-class-slots task)))))
-    (occ-make-contextual-task task context rank)))
+    (occ-make-contextual-task task context
+                              (occ-isassoc task context))))
 
 (cl-defmethod occ-isassoc ((task occ-task)
                            (context occ-context))
