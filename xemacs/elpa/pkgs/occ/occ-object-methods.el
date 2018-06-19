@@ -270,9 +270,9 @@ pointing to it."
              #'(lambda (contextual-task)
                  (let* ((task (occ-contextual-task-task contextual-task))
                         (marker (occ-task-marker task)))
-                  (and
-                  (plist-get contextual-task :marker)
-                  (marker-buffer (plist-get contextual-task :marker)))))
+                   (and
+                    marker
+                  (marker-buffer marker))))
              (occ-contextual-tasks-associated-to-context-filtered context))))
       (if matched-contextual-tasks
           (let* ((sel-contextual-task
