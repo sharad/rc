@@ -519,8 +519,8 @@ pointing to it."
 
 
 ;; ISSUE? should it return rank or occ-ctxual-tasks list
-(cl-defmethod occ-matching-ctxual-tasks :around ((collection occ-list-task-collection)
-                                                 (ctx occ-ctx))
+(cl-defmethod occ-matching-ctxual-tasks ((collection occ-list-task-collection)
+                                         (ctx occ-ctx))
   (lexical-let ((tasks (occ-collection collection))
                 (ctx ctx))
     (remove-if-not
