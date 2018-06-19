@@ -457,7 +457,7 @@ pointing to it."
                   (occ-class-slots task)))))
     rank))
 
-(cl-defmethod occ-build-contextual-task ((task occ-task)
+(cl-defmethod occ-build-contextual-task ((task occ-task) ;ctor
                                          (context occ-context))
   (occ-make-contextual-task task
                             context
