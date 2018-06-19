@@ -358,7 +358,7 @@ pointing to it."
                   (occ-class-slots task)))))
     (occ-make-contextual-task task context rank)))
 
-;; ISSUE? should it return rank or occ-contextual-task
+;; ISSUE? should it return rank or occ-contextual-tasks map
 (cl-defmethod occ-isassoc ((collection occ-tree-task-collection)
                            (context occ-context))
   (let ((tasks (occ-collection collection))
