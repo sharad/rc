@@ -92,8 +92,8 @@
 
 
 
-(cl-defmethod occ-contextual-task-marker ((contextask occ-contextual-task))
-  (let* ((task (occ-contextual-task-task contextask))
+(cl-defmethod occ-ctxual-task-marker ((ctxask occ-ctxual-task))
+  (let* ((task (occ-ctxual-task-task ctxask))
          (marker (occ-task-marker task)))
     marker))
 
@@ -102,7 +102,7 @@
 ;; could be handled with
 ;;
 ;; (cl-defmethod occ-rank ((task-pair (head current-clock))
-;;                            (context occ-context))
+;;                            (ctx occ-ctx))
 (defun occ-current-task ()
   (when (and
          org-clock-marker
@@ -119,26 +119,26 @@
           task)))))
 ;; Create task info out of current clock:1 ends here
 
-;; Test if TASK is associate to CONTEXT
+;; Test if TASK is associate to CTX
 
 (cl-defmethod occ-associated-p ((task occ-task)
-                                (context occ-context))
+                                (ctx occ-ctx))
   (if task
-      (occ-rank task context)
+      (occ-rank task ctx)
       0))
-;; Test if TASK is associate to CONTEXT:1 ends here
+;; Test if TASK is associate to CTX:1 ends here
 
-;; Collect and return task matching to CONTEXT
+;; Collect and return task matching to CTX
 ;;;###autoload
-(cl-defmethod occ-current-associated-p ((context occ-context))
+(cl-defmethod occ-current-associated-p ((ctx occ-ctx))
   (let ((task (occ-task-current-task)))
-    (when task (occ-rank task context))))
+    (when task (occ-rank task ctx))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(cl-defmethod occ-print ((contextask occ-contextual-task))
-  (let ((task (occ-contextual-task-task contextask)))
+(cl-defmethod occ-print ((ctxask occ-ctxual-task))
+  (let ((task (occ-ctxual-task-task ctxask)))
     (format "[%4d] %s"
-            (occ-contextual-task-rank contextask)
+            (occ-ctxual-task-rank ctxask)
             (occ-fontify-like-in-org-mode task))))
 
 (cl-defmethod occ-print ((task occ-task))
@@ -175,12 +175,12 @@ pointing to it."
              (cons task marker))))))))
 
 ;; deprecated
-(cl-defmethod occ-sacha-selection-line ((contextask occ-contextual-task))
+(cl-defmethod occ-sacha-selection-line ((ctxask occ-ctxual-task))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
-  (let ((marker (occ-contextual-task-marker contextask))
-        (rank   (occ-contextual-task-rank   contextask)))
+  (let ((marker (occ-ctxual-task-marker ctxask))
+        (rank   (occ-ctxual-task-rank   ctxask)))
     (when (marker-buffer marker)
       (with-current-buffer (org-base-buffer (marker-buffer marker))
         (org-with-wide-buffer
@@ -200,23 +200,23 @@ pointing to it."
              (when task ;; (and cat task)
                ;; (insert (format "[%c] %-12s  %s\n" i cat task))
                ;; marker
-               (cons (occ-print contextask) contextask))))))))) ;TODO
+               (cons (occ-print ctxask) ctxask))))))))) ;TODO
 
 
-(cl-defmethod occ-sacha-selection-line ((contextask occ-contextual-task))
+(cl-defmethod occ-sacha-selection-line ((ctxask occ-ctxual-task))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
-  (cons (occ-print contextask) contextask))
-;; function to setup context clock timer:2 ends here
+  (cons (occ-print ctxask) ctxask))
+;; function to setup ctx clock timer:2 ends here
 
 ;; rank based
-(cl-defmethod occ-sacha-helm-select ((contextask occ-contextual-task))
+(cl-defmethod occ-sacha-helm-select ((ctxask occ-ctxual-task))
   ;; (occ-debug :debug "sacha marker %s" (car dyntaskpls))
   (helm
    (list
     (helm-build-sync-source "Select matching tasks"
-      :candidates (mapcar 'occ-sacha-selection-line contextask)
+      :candidates (mapcar 'occ-sacha-selection-line ctxask)
       :action (list ;; (cons "Select" 'identity)
                (cons "Clock in and track" #'identity))
       :history 'org-refile-history)
@@ -226,19 +226,19 @@ pointing to it."
     ;;            'sacha/helm-org-create-task))
     )))
 
-(cl-defmethod occ-sacha-helm-select-timed ((contextask occ-contextual-task))
+(cl-defmethod occ-sacha-helm-select-timed ((ctxask occ-ctxual-task))
   (helm-timed 7
     (message "running sacha/helm-select-clock")
-    (occ-sacha-helm-select contextask)))
+    (occ-sacha-helm-select ctxask)))
 
-(defun occ-sacha-helm-action ((contextask occ-contextual-task) clockin-fn)
+(defun occ-sacha-helm-action ((ctxask occ-ctxual-task) clockin-fn)
   ;; (message "sacha marker %s" (car dyntaskpls))
   ;; (setq sacha/helm-org-refile-locations tbl)
   (progn
     (helm
      (list
       (helm-build-sync-source "Select matching tasks"
-        :candidates (mapcar 'occ-sacha-selection-line contextask)
+        :candidates (mapcar 'occ-sacha-selection-line ctxask)
         :action (list ;; (cons "Select" 'identity)
                  (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
         :history 'org-refile-history)
@@ -250,17 +250,17 @@ pointing to it."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar *occ-clocked-contextual-task-context-history* nil)
+(defvar *occ-clocked-ctxual-task-ctx-history* nil)
 
-(cl-defmethod occ-clockin ((new-contextask occ-contextual-task))
+(cl-defmethod occ-clockin ((new-ctxask occ-ctxual-task))
   ;;TODO add org-insert-log-not
-  (occ-debug :debug "occ-clockin-marker %s" new-contextask)
+  (occ-debug :debug "occ-clockin-marker %s" new-ctxask)
   (let* (retval
-         (old-contextual-task (car *occ-clocked-contextual-task-context-history*))
-         (old-task            (when old-contextual-task (occ-contextual-task-task old-contextual-task)))
+         (old-ctxual-task (car *occ-clocked-ctxual-task-ctx-history*))
+         (old-task            (when old-ctxual-task (occ-ctxual-task-task old-ctxual-task)))
          (old-marker          (or (if old-task (occ-task-marker old-task)) org-clock-hd-marker))
          (old-heading         (if old-task (occ-task-heading old-task)))
-         (new-task            (occ-contextual-task-task new-contextask))
+         (new-task            (occ-ctxual-task-task new-ctxask))
          (new-marker          (if new-task (occ-task-marker new-task)))
          (new-heading         (if new-task (occ-task-heading new-task))))
   (when (and
@@ -282,7 +282,7 @@ pointing to it."
             (with-current-buffer old-buff
               (setq buffer-read-only nil)))
 
-        (setq *occ-update-current-context-msg* old-marker)
+        (setq *occ-update-current-ctx-msg* old-marker)
 
         (when (and
                new-heading
@@ -298,7 +298,7 @@ pointing to it."
                 (progn
                   (org-clock-clock-in (list new-marker))
                   (setq retval t)
-                  (push new-contextask *occ-clocked-contextual-task-context-history*))
+                  (push new-ctxask *occ-clocked-ctxual-task-ctx-history*))
               ((error)
                (progn
                  (setq retval nil)
@@ -308,56 +308,56 @@ pointing to it."
               (setq buffer-read-only old-buff-read-only)))
         retval)))))
 
-(cl-defmethod occ-run-associated-task ((context occ-context))
+(cl-defmethod occ-run-associated-task ((ctx occ-ctx))
   "marker and ranked version"
   (interactive
-   (list (occ-make-context)))
+   (list (occ-make-ctx)))
   (progn
-    (let* ((context (or context (occ-make-context)))
-           (matched-contextual-tasks
+    (let* ((ctx (or ctx (occ-make-ctx)))
+           (matched-ctxual-tasks
             (remove-if-not
-             #'(lambda (contextual-task)
+             #'(lambda (ctxual-task)
 
-                 (let* ((marker (occ-contextual-task-marker contextual-task)))
+                 (let* ((marker (occ-ctxual-task-marker ctxual-task)))
                    (and
                     marker
                     (marker-buffer marker))))
-             (occ-matching-contextual-tasks (occ-collection-object) context))))
-      (if matched-contextual-tasks
-          (let* ((sel-contextual-task
-                  (if (> (length matched-contextual-tasks) 1)
-                      (occ-sacha-helm-select-timed matched-contextual-tasks)
-                      (car matched-contextual-tasks)))
-                 ;; (sel-task   (if sel-contextual-task (plist-get sel-contextual-task :task)))
+             (occ-matching-ctxual-tasks (occ-collection-object) ctx))))
+      (if matched-ctxual-tasks
+          (let* ((sel-ctxual-task
+                  (if (> (length matched-ctxual-tasks) 1)
+                      (occ-sacha-helm-select-timed matched-ctxual-tasks)
+                      (car matched-ctxual-tasks)))
+                 ;; (sel-task   (if sel-ctxual-task (plist-get sel-ctxual-task :task)))
                  ;; (sel-marker (if sel-task      (plist-get sel-task      :task-clock-marker)))
                  )
-            ;; (occ-message 6 "sel-contextual-task %s sel-task %s sel-marker %s" sel-contextual-task sel-task sel-marker)
-            (if sel-contextual-task (occ-clockin sel-contextual-task)))
+            ;; (occ-message 6 "sel-ctxual-task %s sel-task %s sel-marker %s" sel-ctxual-task sel-task sel-marker)
+            (if sel-ctxual-task (occ-clockin sel-ctxual-task)))
           (progn
             ;; here create unnamed task, no need
-            (setq *occ-update-current-context-msg* "null clock")
+            (setq *occ-update-current-ctx-msg* "null clock")
             (occ-message 6
-                                       "No clock found please set a match for this context %s, add it using M-x occ-add-to-org-heading."
-                                       context)
-            (occ-add-to-org-heading-when-idle context 7)
+                                       "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
+                                       ctx)
+            (occ-add-to-org-heading-when-idle ctx 7)
             nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-defgeneric occ-rank (obj context)
+(cl-defgeneric occ-rank (obj ctx)
   "occ-rank"
   )
 
-(cl-defmethod occ-rank (task-pair context)
+(cl-defmethod occ-rank (task-pair ctx)
   0)
 
 (cl-defmethod occ-rank ((task-pair (head root))
-                           (context occ-context))
-  "Predicate funtion to check if context matches to task's file attribute."
+                           (ctx occ-ctx))
+  "Predicate funtion to check if ctx matches to task's file attribute."
   (let* ((root
           (occ-get-property (cdr task-pair) 'root))
          (root (if root (file-truename root))))
-    (let* ((file (occ-context-file context))
+    (let* ((file (occ-ctx-file ctx))
            (file (if file (file-truename file))))
       (if root
           (progn
@@ -371,12 +371,12 @@ pointing to it."
         0))))
 
 (cl-defmethod occ-rank ((task-pair (head currfile))
-                           (context occ-context))
-  "Predicate funtion to check if context matches to task's file attribute."
+                           (ctx occ-ctx))
+  "Predicate funtion to check if ctx matches to task's file attribute."
   (let* ((currfile
           (occ-get-property (cdr task-pair) 'currfile))
          (currfile (if currfile (file-truename currfile))))
-    (let* ((file (occ-context-file context))
+    (let* ((file (occ-ctx-file ctx))
            (file (if file (file-truename file))))
       (if currfile
           (progn
@@ -390,8 +390,8 @@ pointing to it."
         0))))
 
 (cl-defmethod occ-rank ((task-pair (head status))
-                           (context occ-context))
-  "Predicate funtion to check if context matches to task's status attribute."
+                           (ctx occ-ctx))
+  "Predicate funtion to check if ctx matches to task's status attribute."
   (let ((todo-type
          (occ-get-property (cdr task-pair) 'todo-type))
         (closed
@@ -405,28 +405,28 @@ pointing to it."
         -30 0)))
 
 (cl-defmethod occ-rank ((task-pair (head subtree))
-                           (context occ-context))
-  "Predicate funtion to check if context matches to task's status attribute."
+                           (ctx occ-ctx))
+  "Predicate funtion to check if ctx matches to task's status attribute."
   (let ((sub-tree
          (occ-get-property (cdr task-pair) 'subtree)))
     (occ-debug :debug "task %s subtree %s" (occ-task-heading (cdr task-pair)) (null (null sub-tree)))
     (if sub-tree -30 0)))
 
 (cl-defmethod occ-rank ((task-pair (head key))
-                           (context occ-context))
-  "Predicate funtion to check if context matches to task's file attribute."
+                           (ctx occ-ctx))
+  "Predicate funtion to check if ctx matches to task's file attribute."
   (let* ((key (occ-get-property (cdr task-pair) 'KEY)))
     (if key (string-to-number key) 0)))
 
 (cl-defmethod occ-rank ((task-pair (head heading-level))
-                           (context occ-context))
-  "Predicate funtion to check if context matches to task's file attribute."
+                           (ctx occ-ctx))
+  "Predicate funtion to check if ctx matches to task's file attribute."
   (let* ((level
           (occ-get-property (cdr task-pair) 'level)))
     (if level level 0)))
 
 (cl-defmethod occ-rank ((task-pair (head timebeing))
-                           (context occ-context))
+                           (ctx occ-ctx))
   (let ((timebeing (occ-get-property (cdr task-pair) 'timebeing)))
     (let ((timebeing-time (if timebeing (org-duration-string-to-minutes timebeing) 0))
           (clocked-time   (occ-get-property (cdr task-pair) 'clock-sum)))
@@ -438,7 +438,7 @@ pointing to it."
         0))))
 
 (cl-defmethod occ-rank ((task-pair (head current-clock))
-                           (context occ-context))
+                           (ctx occ-ctx))
   (let* ((task-marker
           (occ-get-property (cdr task-pair) 'marker)))
     (if (and
@@ -448,70 +448,70 @@ pointing to it."
         100
       0)))
 
-;; ISSUE? should it return rank or occ-contextual-task
+;; ISSUE? should it return rank or occ-ctxual-task
 (cl-defmethod occ-rank ((task occ-task)
-                           (context occ-context))
+                           (ctx occ-ctx))
   (let ((rank
          (reduce #'+
                  (mapcar
                   #'(lambda (slot)
-                      (occ-rank (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
+                      (occ-rank (cons slot task) ctx)) ;TODO: check if method exist or not, or use some default method.
                   (occ-class-slots task)))))
     rank))
 
-(cl-defmethod occ-build-contextual-task ((task occ-task) ;ctor
-                                         (context occ-context))
-  (occ-make-contextual-task task
-                            context
-                            (occ-rank task context)))
+(cl-defmethod occ-build-ctxual-task ((task occ-task) ;ctor
+                                         (ctx occ-ctx))
+  (occ-make-ctxual-task task
+                            ctx
+                            (occ-rank task ctx)))
 
-;; ISSUE? should it return rank or occ-contextual-tasks map
-(cl-defmethod occ-matching-contextual-tasks ((collection occ-tree-task-collection)
-                                             (context occ-context))
+;; ISSUE? should it return rank or occ-ctxual-tasks map
+(cl-defmethod occ-matching-ctxual-tasks ((collection occ-tree-task-collection)
+                                             (ctx occ-ctx))
   (let ((tasks (occ-collection collection))
         (matched '()))
     (when tasks
-      (occ-debug :debug "occ-entries-associated-to-context-by-keys: BEFORE matched %s[%d]" matched (length matched))
+      (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE matched %s[%d]" matched (length matched))
       (occ-tree-mapc-tasks
        #'(lambda (task args)
            ;; (occ-debug :debug "occ-rank heading = %s" (occ-task-heading task))
-           (let* ((contextual-task (occ-build-contextual-task task args))
-                  (rank (occ-contextual-task-rank contextual-task)))
-             (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
-             (when (> (occ-contextual-task-rank contextual-task) 0)
-               (push contextual-task matched)
-               (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
+           (let* ((ctxual-task (occ-build-ctxual-task task args))
+                  (rank (occ-ctxual-task-rank ctxual-task)))
+             (unless rank (error "occ-entries-associated-to-ctx-by-keys[lambda]: rank is null"))
+             (when (> (occ-ctxual-task-rank ctxual-task) 0)
+               (push ctxual-task matched)
+               (occ-debug :debug "occ-entries-associated-to-ctx-by-keys[lambda]: task %s MATCHED RANK %d"
                           (occ-task-heading task)
                           (length matched)))))
        tasks
-       context))
-    (occ-debug :debug "occ-entries-associated-to-context-by-keys: AFTER matched %s[%d]" "matched" (length matched))
+       ctx))
+    (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER matched %s[%d]" "matched" (length matched))
     matched))
 
-;; ISSUE? should it return rank or occ-contextual-tasks list
-(cl-defmethod occ-matching-contextual-tasks :around ((collection occ-list-task-collection)
-                                                     (context occ-context))
+;; ISSUE? should it return rank or occ-ctxual-tasks list
+(cl-defmethod occ-matching-ctxual-tasks :around ((collection occ-list-task-collection)
+                                                     (ctx occ-ctx))
   (lexical-let ((tasks (cl-call-next-method))
-                (context context))
+                (ctx ctx))
     (remove-if-not
-     #'(lambda (contextual-task)
-         (> (occ-contextual-task-rank contextual-task) 0))
+     #'(lambda (ctxual-task)
+         (> (occ-ctxual-task-rank ctxual-task) 0))
      (mapcar
       #'(lambda (task)
-          (occ-build-contextual-task task context))
+          (occ-build-ctxual-task task ctx))
       tasks))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (cl-defmethod occ-readprop ((task-pair (head root))
-                            (context occ-context))
-  (let* ((file (if context (occ-context-file context)))
+                            (ctx occ-ctx))
+  (let* ((file (if ctx (occ-ctx-file ctx)))
          (dir (if (stringp file) (file-name-directory file) (dirname-of-file file)))
          (prompt (concat (symbol-name (car task-pair)) ": ")))
     (ido-read-directory-name prompt dir dir)))
 
 (cl-defmethod occ-readprop ((task-pair (head subtree))
-                            (context occ-context))
+                            (ctx occ-ctx))
   (let ((prompt (concat (symbol-name (car task-pair)) ": ")))
     (file-relative-name
      (ido-read-file-name ;; org-iread-file-name
@@ -523,10 +523,10 @@ pointing to it."
 
 (when nil
 
-  (cl-defmethod occ-rank (task-pair context)
+  (cl-defmethod occ-rank (task-pair ctx)
     0)
 
-  (cl-defmethod occ-rank ((task-pair (head root)) (context list))
+  (cl-defmethod occ-rank ((task-pair (head root)) (ctx list))
     (message "%s" task-pair))
 
   (occ-rank '(root  1) nil)
@@ -534,10 +534,10 @@ pointing to it."
   (occ-rank '(n  1) nil)
 
   (cl-defmethod occ-rank ((task occ-task)
-                             (context occ-context))
+                             (ctx occ-ctx))
     (message "match occ-rank"))
 
-  (occ-rank (make-occ-tree-task) (make-occ-context))
+  (occ-rank (make-occ-tree-task) (make-occ-ctx))
   )
 
 
@@ -545,15 +545,15 @@ pointing to it."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;TODO: make it after method
-(cl-defmethod occ-matching-contextual-tasks ((collection occ-list-task-collection)
-                                             (context occ-context)) ;TODO: make it after method
+(cl-defmethod occ-matching-ctxual-tasks ((collection occ-list-task-collection)
+                                             (ctx occ-ctx)) ;TODO: make it after method
   ;; TODO Here do variance based filtering.
   (if (occ-collection-object)
-      (let* ((contextual-tasks (occ-matching-contextual-tasks collection context))
+      (let* ((ctxual-tasks (occ-matching-ctxual-tasks collection ctx))
              (rankslist  (mapcar
-                          #'(lambda (contextual-task)
-                              (occ-contextual-task-rank contextual-task))
-                          contextual-tasks))
+                          #'(lambda (ctxual-task)
+                              (occ-ctxual-task-rank ctxual-task))
+                          ctxual-tasks))
              (avgrank    (if (= 0 (length rankslist))
                              0
                            (/
@@ -566,25 +566,25 @@ pointing to it."
                              (reduce #'+
                                      (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
                              (length rankslist))))))
-        (occ-debug :debug "matched contexttasks %s" (length contextual-tasks))
+        (occ-debug :debug "matched ctxtasks %s" (length ctxual-tasks))
         (remove-if-not
-         #'(lambda (contextual-task)
-             (>= (occ-contextual-task-rank contextual-task) avgrank))
-         contextual-tasks))
+         #'(lambda (ctxual-task)
+             (>= (occ-ctxual-task-rank ctxual-task) avgrank))
+         ctxual-tasks))
     (error "(occ-collection-object) returned nil")))
 
 (when nil
 
   (length
-   (occ-matching-contextual-tasks
+   (occ-matching-ctxual-tasks
     (occ-collection-object)
-    (occ-make-context
+    (occ-make-ctx
      (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp"))))
 
   (length
-   (occ-matching-contextual-tasks
+   (occ-matching-ctxual-tasks
     (occ-collection-object)
-    (occ-make-context (current-buffer)))))
+    (occ-make-ctx (current-buffer)))))
 
 (provide 'occ-object-methods)
 ;;; occ-object-methods.el ends here
