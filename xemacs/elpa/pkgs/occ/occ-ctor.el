@@ -185,7 +185,9 @@
   (occ-tree-task-collection-tree occ-global-task-collection))
 
 (cl-defmethod occ-collection ((collection occ-list-task-collection))
-  (occ-tree-task-collection-list occ-global-task-collection))
+  (unless (occ-tree-task-collection-tree occ-global-task-collection)
+    (occ-collect-tasks occ-global-task-collection nil))
+  (occ-tree-task-collection-tree occ-global-task-collection))
 
 (defun occ-collection-object ()
   (unless occ-global-task-collection
