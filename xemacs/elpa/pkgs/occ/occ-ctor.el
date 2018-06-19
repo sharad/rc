@@ -192,7 +192,8 @@
   occ-global-task-collection)
 
 
-
+(setq occ-global-task-collection-spec
+      (list :tree org-context-clock-task-tree-task-root-org-file))
 
 (when nil
   (progn
