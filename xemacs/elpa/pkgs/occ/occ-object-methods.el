@@ -182,7 +182,7 @@ pointing to it."
     ;;            'sacha/helm-org-create-task))
     )))
 
-(defun occ-sacha-helm-select-timed ((contextask occ-contextual-task))
+(cl-defmethod occ-sacha-helm-select-timed ((contextask occ-contextual-task))
   (helm-timed 7
     (message "running sacha/helm-select-clock")
     (occ-sacha-helm-select contextask)))
