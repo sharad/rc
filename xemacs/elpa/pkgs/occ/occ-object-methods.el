@@ -469,7 +469,7 @@ pointing to it."
            ;; (occ-debug :debug "occ-isassoc heading = %s" (occ-task-heading task))
            (let* ((rank (occ-isassoc task args)))
              (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
-             (when (> (occ-contextual-task-rank contextual-task) 0)
+             (when (> rank 0)
                (push contextual-task matched)
                (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
                           (occ-task-heading task)
