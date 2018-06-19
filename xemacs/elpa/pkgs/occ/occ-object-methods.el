@@ -547,28 +547,29 @@ pointing to it."
 
 (cl-defmethod occ-matching-contextual-tasks ((context occ-context))
   ;; TODO Here do variance based filtering.
-  (let* ((contextual-tasks (occ-isassoc (occ-collection-object) context))
-         (rankslist  (mapcar
-                      #'(lambda (contextual-task)
-                          (occ-contextual-task-rank contextual-task))
-                      contextual-tasks))
-         (avgrank    (if (= 0 (length rankslist))
-                         0
-                       (/
-                        (reduce #'+ rankslist)
-                        (length rankslist))))
-         (varirank   (if (= 0 (length rankslist))
-                         0
-                       (sqrt
+  (if (occ-collection-object)
+   (let* ((contextual-tasks (occ-isassoc (occ-collection-object) context))
+          (rankslist  (mapcar
+                       #'(lambda (contextual-task)
+                           (occ-contextual-task-rank contextual-task))
+                       contextual-tasks))
+          (avgrank    (if (= 0 (length rankslist))
+                          0
                         (/
-                         (reduce #'+
-                                 (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
-                         (length rankslist))))))
-    (occ-debug :debug "matched contexttasks %s" (length contextual-tasks))
-    (remove-if-not
-     #'(lambda (contextual-task)
-         (>= (occ-contextual-task-rank contextual-task) avgrank))
-     contextual-tasks)))
+                         (reduce #'+ rankslist)
+                         (length rankslist))))
+          (varirank   (if (= 0 (length rankslist))
+                          0
+                        (sqrt
+                         (/
+                          (reduce #'+
+                                  (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
+                          (length rankslist))))))
+     (occ-debug :debug "matched contexttasks %s" (length contextual-tasks))
+     (remove-if-not
+      #'(lambda (contextual-task)
+          (>= (occ-contextual-task-rank contextual-task) avgrank))
+      contextual-tasks))))
 
 (when nil
 
