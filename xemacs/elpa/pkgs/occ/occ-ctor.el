@@ -188,7 +188,8 @@
 (defun occ-collection-object ()
   (unless occ-global-task-collection
     (occ-make-task-collection occ-global-task-collection-spec)
-    (occ-collect-tasks occ-global-task-collection t)))
+    (occ-collect-tasks occ-global-task-collection t))
+  occ-global-task-collection)
 
 
 
