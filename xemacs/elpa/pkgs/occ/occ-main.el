@@ -24,6 +24,7 @@
 ;;; Code:
 
 (require 'occ-object-methods)
+(require 'occ-unnamed)
 (require 'occ-interactive)
 
 (defcustom *occ-last-buffer-select-time*            nil "*occ-last-buffer-select-time*")
