@@ -487,7 +487,7 @@ pointing to it."
   (lexical-let ((tasks (occ-collection collection))
                 (context context))
     (remove-if-not
-     #'(lambda (contextual-task)
+     #'(lambda (rank)
          (> (occ-contextual-task-rank contextual-task) 0))
      (mapcar
       #'(lambda (task)
