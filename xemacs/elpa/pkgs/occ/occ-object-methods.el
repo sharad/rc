@@ -467,7 +467,7 @@ pointing to it."
 
 ;; ISSUE? should it return rank or occ-contextual-tasks map
 (cl-defmethod occ-matching-contextual-tasks ((collection occ-tree-task-collection)
-                                          (context occ-context))
+                                             (context occ-context))
   (let ((tasks (occ-collection collection))
         (matched '()))
     (when tasks
