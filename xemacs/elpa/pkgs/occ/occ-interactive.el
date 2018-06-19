@@ -212,19 +212,19 @@
   )
 
 ;;;###autoload
-(defun occ-helm-select-dyntaskpl (selector action)
+(defun occ-helm-select-contextask (selector action)
   ;; here
-  ;; (occ-debug :debug "sacha marker %s" (car dyntaskpls))
+  ;; (occ-debug :debug "sacha marker %s" (car contextasks))
   (let (helm-sources
         (context (occ-make-context)))
 
-    (let ((dyntaskpls
-           (occ-dyntaskpls-associated-to-context context)))
+    (let ((contextasks
+           (occ-contextasks-associated-to-context context)))
      (push
       (helm-build-sync-source "Select matching task"
         :candidates (mapcar
-                     'sacha-occ-dyntaskpl-selection-line
-                     dyntaskpls)
+                     'sacha-occ-contextask-selection-line
+                     contextasks)
         :action (list
                  (cons "Clock in and track" selector))
         :history 'org-refile-history)
@@ -235,8 +235,8 @@
            (marker-buffer org-clock-marker))
       (push
        (helm-build-sync-source "Current Clocking Task"
-         :candidates (list (sacha-occ-dyntaskpl-selection-line
-                            (occ-build-dyntaskpl
+         :candidates (list (sacha-occ-contextask-selection-line
+                            (occ-build-contextask
                              (occ-task-current-task)
                              context)))
          :action (list
