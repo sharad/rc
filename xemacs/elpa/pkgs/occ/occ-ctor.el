@@ -104,7 +104,7 @@
         (if (<= (occ-make-task (merker-position m)) (point-max))
             (occ-make-task (merker-position m) builder)))))
 
-(defun occ-make-context (&optional buff)
+(defun occ-make-ctx (&optional buff)
   (let* ((buff (if buff
                    (if (bufferp buff)
                        buff
@@ -116,20 +116,20 @@
                  (window-buffer)))
          (buf (org-base-buffer buf))
          (file (buffer-file-name buff))
-         (context (make-occ-context
+         (ctx (make-occ-ctx
                    :name (buffer-name buff)
                    :file file
                    :buffer buff)))
-    context))
+    ctx))
 
-(cl-defmethod occ-make-contextual-task ((task occ-task)
-                                        (context occ-context)
+(cl-defmethod occ-make-ctxual-task ((task occ-task)
+                                        (ctx occ-ctx)
                                         (rank number))
-  ;; use occ-build-contextual-task
-  (make-occ-contextual-task
+  ;; use occ-build-ctxual-task
+  (make-occ-ctxual-task
    :name    nil
    :task    task
-   :context context
+   :ctx ctx
    :rank    rank))
 
 (defvar occ-global-task-collection-spec nil)
@@ -197,12 +197,12 @@
 
 
 (setq occ-global-task-collection-spec
-      (list :tree org-context-clock-task-tree-task-root-org-file))
+      (list :tree org-ctx-clock-task-tree-task-root-org-file))
 
 (when nil
   (progn
     (setq occ-global-task-collection nil)
-    (occ-make-task-collection (list :tree org-context-clock-task-tree-task-root-org-file))
+    (occ-make-task-collection (list :tree org-ctx-clock-task-tree-task-root-org-file))
     (occ-tree-task-collection-tree occ-global-task-collection)
     (occ-collect-tasks occ-global-task-collection t)
     (occ-tree-task-collection-root-files occ-global-task-collection)
@@ -224,7 +224,7 @@
              (or
               (occ-make-task-at-point #'make-occ-tree-task)
               (make-occ-tree-task :name "empty tree task"))) ;; note: only using first file of root-files
-         org-context-clock-task-tree-task-root-org-file))
+         org-ctx-clock-task-tree-task-root-org-file))
 
   (with-current-buffer (find-file-noselect "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/xx.org")
     (goto-char (point-min))

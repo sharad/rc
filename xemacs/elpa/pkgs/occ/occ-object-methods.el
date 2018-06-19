@@ -583,6 +583,7 @@ pointing to it."
 
   (length
    (occ-matching-contextual-tasks
+    (occ-collection-object)
     (occ-make-context (current-buffer)))))
 
 (provide 'occ-object-methods)
