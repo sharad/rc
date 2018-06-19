@@ -131,7 +131,7 @@ pointing to it."
              (cons task marker))))))))
 
 (cl-defmethod occ-print ((contextask occ-contextual-task))
-  (let ((task (plist-get contextask)))
+  (let ((task (occ-contextual-task-task contextask)))
     (format "[%4d] %s"
             (plist-get dyntaskpl :rank)
             (org-context-clock-fontify-like-in-org-mode task))))
