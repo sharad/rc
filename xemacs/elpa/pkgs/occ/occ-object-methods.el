@@ -98,13 +98,39 @@
     marker))
 
 
+(defun org-context-clock-task-current-task ()
+  (when (and
+         org-clock-marker
+         (markerp org-clock-marker)
+         (> (marker-position-nonil org-clock-marker) 0))
+    (org-with-cloned-marker org-clock-marker "<tree>"
+      (let ((view-read-only nil)
+            (buffer-read-only t))
+        (read-only-mode)
+        (org-previous-visible-heading 1)
+        (let ((info (org-context-clock-collect-task)))
+          info)))))
+;; Create task info out of current clock:1 ends here
 
+;; Test if TASK is associate to CONTEXT
 
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Test%20if%20TASK%20is%20associate%20to%20CONTEXT][Test if TASK is associate to CONTEXT:1]]
+(defun org-context-clock-task-associated-to-context-p (task context)
+  (if task
+      (funcall org-context-clock-api-task-associated-to-context-p task context)
+      0))
+;; Test if TASK is associate to CONTEXT:1 ends here
 
+;; Collect and return task matching to CONTEXT
 
-
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Collect%20and%20return%20task%20matching%20to%20CONTEXT][Collect and return task matching to CONTEXT:1]]
+;;;###autoload
+(defun org-context-clock-current-task-associated-to-context-p (context)
+  (let ((task (org-context-clock-task-current-task)))
+    (org-context-clock-task-associated-to-context-p task context)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun occ-sacha-selection-line (marker)
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
