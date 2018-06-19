@@ -213,7 +213,7 @@ pointing to it."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar *occ-clocked-contextual-task-context-history*)
+(defvar *occ-clocked-contextual-task-context-history* nil)
 
 (cl-defmethod occ-clockin ((new-contextask occ-contextual-task))
   ;;TODO add org-insert-log-not
@@ -289,7 +289,7 @@ pointing to it."
       (if matched-contextual-tasks
           (let* ((sel-contextual-task
                   (if (> (length matched-contextual-tasks) 1)
-                      (sacha/helm-select-contextual-task-timed matched-contextual-tasks)
+                      (occ-sacha-helm-select-timed matched-contextual-tasks)
                       (car matched-contextual-tasks)))
                  ;; (sel-task   (if sel-contextual-task (plist-get sel-contextual-task :task)))
                  ;; (sel-marker (if sel-task      (plist-get sel-task      :task-clock-marker)))
