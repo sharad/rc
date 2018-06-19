@@ -41,7 +41,7 @@
          (float-time (time-since unassociate-context-start-time))
          *occ-swapen-unnamed-threashold-interval*))))
 
-(defun org-clock-marker-is-unnamed-clock-p (&optional clock)
+(defun occ-clock-marker-is-unnamed-clock-p (&optional clock)
   (let ((clock (or clock org-clock-marker)))
     (when (and
            clock
@@ -54,7 +54,7 @@
 (defun occ-maybe-create-clockedin-unnamed-heading ()
   (when (occ-can-create-unnamed-task-p)
     (let ((org-log-note-clock-out nil))
-      (if (org-clock-marker-is-unnamed-clock-p)
+      (if (occ-clock-marker-is-unnamed-clock-p)
           (occ-debug :debug "occ-maybe-create-unnamed-task: Already clockin unnamed task")
           (prog1
               (lotus-org-create-unnamed-task-task-clock-in)
@@ -63,7 +63,7 @@
 (defun occ-maybe-create-unnamed-heading ()
   (when (occ-can-create-unnamed-task-p)
     (let ((org-log-note-clock-out nil))
-      (if (org-clock-marker-is-unnamed-clock-p)
+      (if (occ-clock-marker-is-unnamed-clock-p)
           (occ-debug :debug "occ-maybe-create-unnamed-task: Already clockin unnamed task")
           (cdr (lotus-org-create-unnamed-task))))))
 
@@ -90,7 +90,7 @@
   ;; back
   (when (occ-can-create-unnamed-task-p)
     (let ((org-log-note-clock-out nil))
-      (if (org-clock-marker-is-unnamed-clock-p)
+      (if (occ-clock-marker-is-unnamed-clock-p)
           (occ-debug :debug "occ-maybe-create-unnamed-task: Already clockin unnamed task")
         (let* ((unnamed-contextual-task (occ-maybe-create-unnamed-contextual-task context))
                (unnamed-task            (occ-contextual-task-task unnamed-contextual-task))
