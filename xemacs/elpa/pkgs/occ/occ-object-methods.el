@@ -517,7 +517,7 @@ pointing to it."
   (occ-isassoc '(n  1) nil)
 
   (cl-defmethod occ-isassoc ((task occ-task)
-                         (context occ-context))
+                             (context occ-context))
     (message "match occ-isassoc"))
 
   (occ-isassoc (make-occ-tree-task) (make-occ-context))
