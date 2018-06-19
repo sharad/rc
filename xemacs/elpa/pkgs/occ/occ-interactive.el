@@ -117,7 +117,7 @@
         (message "add-context-to-org-heading: minibuffer already active quitting")
         (message nil))
     (lexical-let* ((timeout (or timeout 7))
-                   (context (or context (occ-build-context)))
+                   (context (or context (occ-make-context)))
                    (buff (plist-get context :buffer)))
       (if (and
            (eq (current-buffer) buff)
