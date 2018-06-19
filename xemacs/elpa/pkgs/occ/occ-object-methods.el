@@ -347,7 +347,7 @@ pointing to it."
   "occ-isassoc"
   )
 
-;; ISSUE? should it return rank or occ-contextual-task map
+;; ISSUE? should it return rank or occ-contextual-task
 (cl-defmethod occ-isassoc ((task occ-task)
                            (context occ-context))
   (let ((rank
