@@ -134,7 +134,7 @@
 ;;;###autoload
 (defun occ-current-associated-p (context)
   (let ((task (occ-task-current-task)))
-    (occ-isassoc task context)))
+    (when task (occ-isassoc task context))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
