@@ -129,7 +129,6 @@
 ;; Test if TASK is associate to CONTEXT:1 ends here
 
 ;; Collect and return task matching to CONTEXT
-
 ;;;###autoload
 (cl-defmethod occ-current-associated-p ((context occ-context))
   (let ((task (occ-task-current-task)))
