@@ -785,7 +785,8 @@ Add directory to search path for source files using the GDB command, dir."))
                 (add-hook
                  'c-mode-common-hook
                  '(lambda ()
-                   (c-toggle-auto-state 1)))))
+                   ;; (c-toggle-auto-state 1)
+                   (c-toggle-auto-state 0)))))
 
           ;; If you like this you might also be interested in
           ;; ‘c-toggle-hungry-state’, which will delete all characters until
