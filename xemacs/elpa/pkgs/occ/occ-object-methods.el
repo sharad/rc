@@ -110,7 +110,7 @@
         (read-only-mode)
         (org-previous-visible-heading 1)
         (let ((task (occ-collect-task)))
-          info)))))
+          task)))))
 ;; Create task info out of current clock:1 ends here
 
 ;; Test if TASK is associate to CONTEXT
