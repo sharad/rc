@@ -73,7 +73,7 @@
     (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
 
 
-(defun occ-update-current-ctx (&optional force)
+(cl-defmethod occ-update-current-ctx (&optional force)
   (interactive "P")
   (if (>
        (float-time (time-since *occ-last-buffer-select-time*))
