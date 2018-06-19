@@ -764,6 +764,7 @@ Add directory to search path for source files using the GDB command, dir."))
       (progn
         ;; https://www.emacswiki.org/emacs/IndentingC
         (progn
+
           (add-hook
            'c-mode-common-hook
            '(lambda ()
