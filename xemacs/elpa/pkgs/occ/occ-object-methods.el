@@ -501,7 +501,7 @@ pointing to it."
     (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER matched %s[%d]" "matched" (length matched))
     matched))
 
-(cl-defmethod occ-matching-ctxual-tasks :around ((collection occ-list-task-collection)
+(cl-defmethod occ-matching-ctxual-tasks :around ((collection occ-task-collection)
                                                  (ctx occ-ctx)) ;TODO: make it after method
   ;; TODO Here do variance based filtering.
   (if (occ-collection-object)
