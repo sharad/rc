@@ -167,7 +167,7 @@ pointing to it."
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:3]]
 ;; rank based
-(defun sacha/helm-selectcontextual-task ((contextask occ-contextual-task))
+(defun occ-sacha-helm-select ((contextask occ-contextual-task))
   ;; (occ-debug :debug "sacha marker %s" (car dyntaskpls))
   (helm
    (list
@@ -182,10 +182,10 @@ pointing to it."
     ;;            'sacha/helm-org-create-task))
     )))
 
-(defun sacha/helm-selectcontextual-task-timed ((contextask occ-contextual-task))
+(defun occ-sacha-helm-select-timed ((contextask occ-contextual-task))
   (helm-timed 7
     (message "running sacha/helm-select-clock")
-    (sacha/helm-selectcontextual-task dyntaskpls)))
+    (occ-sacha-helm-select dyntaskpls)))
 
 (defun sacha/helmcontextual-task-action ((contextask occ-contextual-task) clockin-fn)
   ;; (message "sacha marker %s" (car dyntaskpls))
