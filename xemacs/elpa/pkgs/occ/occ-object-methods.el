@@ -121,7 +121,6 @@
 
 ;; Test if TASK is associate to CONTEXT
 
-;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Test%20if%20TASK%20is%20associate%20to%20CONTEXT][Test if TASK is associate to CONTEXT:1]]
 (cl-defmethod occ-associated-p ((task occ-task)
                                 (context occ-context))
   (if task
