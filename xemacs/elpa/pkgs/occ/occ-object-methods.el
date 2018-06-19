@@ -548,7 +548,7 @@ pointing to it."
 (cl-defmethod occ-matching-contextual-tasks ((context occ-context))
   ;; TODO Here do variance based filtering.
   (if (occ-collection-object)
-   (let* ((contextual-tasks (occ-rank (occ-collection-object) context))
+      (let* ((contextual-tasks (occ-build-contextual-tasks (occ-collection-object) context))
           (rankslist  (mapcar
                        #'(lambda (contextual-task)
                            (occ-contextual-task-rank contextual-task))
