@@ -158,7 +158,7 @@ pointing to it."
                (cons (occ-print contextask task) contextask))))))))) ;TODO
 
 
-(defun occ-sacha-selection-line ((contextask occ-contextual-task))
+(cl-defmethod occ-sacha-selection-line ((contextask occ-contextual-task))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
