@@ -457,6 +457,12 @@ pointing to it."
                   (occ-class-slots task)))))
     rank))
 
+(cl-defmethod occ-build-contextual-task ((task occ-task)
+                                         (context occ-context))
+  (occ-make-contextual-task task
+                            context
+                            (occ-isassoc task context)))
+
 ;; ISSUE? should it return rank or occ-contextual-tasks map
 (cl-defmethod occ-isassoc ((collection occ-tree-task-collection)
                            (context occ-context))
