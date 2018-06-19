@@ -544,7 +544,7 @@ pointing to it."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                                        ;TODO: make it after method
+;;TODO: make it after method
 (cl-defmethod occ-matching-contextual-tasks ((collection occ-list-task-collection)
                                              (context occ-context)) ;TODO: make it after method
   ;; TODO Here do variance based filtering.
