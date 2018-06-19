@@ -70,5 +70,9 @@
             (occ-debug :debug "occ-update-current-ctx: ctx %s not suitable to associate" ctx)))
     (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
 
+(defun occ-update-current-ctx (&optional force)
+  (interactive "P")
+  (occ-update-current (occ-make-context)))
+
 (provide 'occ-main)
 ;;; occ-main.el ends here
