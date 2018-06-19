@@ -187,7 +187,7 @@
 
 (defun occ-collection-object ()
   (unless occ-global-task-collection
-    (occ-make-task-collection (list :tree org-context-clock-task-tree-task-root-org-file))
+    (occ-make-task-collection occ-global-task-collection-spec)
     (occ-collect-tasks occ-global-task-collection t)))
 
 
