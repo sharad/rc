@@ -73,7 +73,7 @@
     (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
 
 
-(cl-defmethod occ-update-current-ctx ((ctx occ-ctx) &optional force)
+(cl-defmethod occ-update-current-ctx ((ctx occ-ctx))
   (interactive
    (list
     (occ-make-ctx)
