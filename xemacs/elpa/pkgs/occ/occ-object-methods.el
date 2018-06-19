@@ -612,6 +612,14 @@ pointing to it."
     (occ-make-ctx
      (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp"))))
 
+
+  (occ-ctx-task
+   (car
+   (occ-matching-ctxual-tasks
+    (occ-collection-object)
+    (occ-make-ctx
+     (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp")))))
+
   (length
    (occ-matching-ctxual-tasks
     (occ-collection-object)
