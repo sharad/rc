@@ -171,9 +171,9 @@ pointing to it."
             (occ-fontify-like-in-org-mode task))))
 
 (cl-defmethod occ-print ((task occ-task))
-    (format "[%4d] %s"
-            0
-            (occ-fontify-like-in-org-mode task)))
+  (format "[%4d] %s"
+          0
+          (occ-fontify-like-in-org-mode task)))
 
 ;; deprecated
 (cl-defmethod occ-sacha-selection-line ((contextask occ-contextual-task))
