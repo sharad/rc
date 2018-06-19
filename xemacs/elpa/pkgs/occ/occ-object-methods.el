@@ -300,9 +300,9 @@ pointing to it."
             ;; here create unnamed task, no need
             (setq *occ-update-current-context-msg* "null clock")
             (occ-message 6
-                                       "No clock found please set a match for this context %s, add it using M-x occ-add-context-to-org-heading."
+                                       "No clock found please set a match for this context %s, add it using M-x occ-add-to-org-heading."
                                        context)
-            (occ-add-context-to-org-heading-when-idle context 7)
+            (occ-add-to-org-heading-when-idle context 7)
             nil)))))
 
 (cl-defgeneric occ-isassoc (obj context)
