@@ -105,7 +105,7 @@
             org-cycle-subtree-status))))))
 
 ;;;###autoload
-(defun occ-add-to-org-heading (context timeout)
+(defun occ-add-to-org-heading ((context occ-context) timeout)
   "add-context-to-org-heading"
 
   ;; TODO: make helm conditional when it is used than only it should be handled.
