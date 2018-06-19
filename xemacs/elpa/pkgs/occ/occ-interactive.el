@@ -257,7 +257,7 @@
 ;;;###autoload
 (defun occ-set-to-task ()
   (occ-helm-select-contextask
-   #'occ-dyntaskpl-get-marker
+   #'occ-contextual-task-marker
    #'occ-set-to-marker))
 
 ;;;###autoload
