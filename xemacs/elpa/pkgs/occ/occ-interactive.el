@@ -29,14 +29,14 @@
 ;; (defun occ-get-property (prop-key)
 ;;   (org-get-property prop-key))
 
-;; (defun occ-set-property (prop-key value context &rest args)
+;; (defun occ-set-property (prop-key value ctx &rest args)
 ;;   (let ((prop-key-str (if (eq (elt prop-key 0 ) ?\:) (substring prop-key 1))))
 ;;     (org-set-property prop-key
 ;;                       (if value
 ;;                           value
 ;;                           (funcall
 ;;                            (occ-key-fun prop-key :getter)
-;;                            prop-key nil context args))))
+;;                            prop-key nil ctx args))))
 ;;   t)
 
 ;; (eq (elt ":root" 0) ?\:)
@@ -51,19 +51,19 @@
   (let ((helm-always-two-windows nil))
     (completing-read prompt collection predicate require-match initial-input hist def inherit-input-method)))
 
-(defun occ-select-propetry (context &optional prompt)
+(defun occ-select-propetry (ctx &optional prompt)
   (let ((prompt (or prompt "proptery: "))
         (keys (mapcar #'(lambda (k) (cons (symbol-name k) k))
                       (append
-                       (occ-keys-with-operation :getter context)
+                       (occ-keys-with-operation :getter ctx)
                        '(edit done)))))
     (cdr (assoc (occ-completing-read prompt keys  nil t) keys))))
 
-(defun occ-test (context timeout)
+(defun occ-test (ctx timeout)
   (interactive '(nil nil))
   (lexical-let* ((timeout (or timeout 7))
-                 (context (or context (occ-make-context)))
-                 (buff (occ-context-buffer context)))
+                 (ctx (or ctx (occ-make-ctx)))
+                 (buff (occ-ctx-buffer ctx)))
     (message "test %s" timeout)))
 
 (defun org-flag-proprty-drawer-at-marker (marker flag)
@@ -105,8 +105,8 @@
             org-cycle-subtree-status))))))
 
 ;;;###autoload
-(cl-defmethod occ-add-to-org-heading ((context occ-context) timeout)
-  "add-context-to-org-heading"
+(cl-defmethod occ-add-to-org-heading ((ctx occ-ctx) timeout)
+  "add-ctx-to-org-heading"
 
   ;; TODO: make helm conditional when it is used than only it should be handled.
 
@@ -114,11 +114,11 @@
 
   (lotus-with-no-active-minibuffer
       (progn
-        (message "add-context-to-org-heading: minibuffer already active quitting")
+        (message "add-ctx-to-org-heading: minibuffer already active quitting")
         (message nil))
     (lexical-let* ((timeout (or timeout 7))
-                   (context (or context (occ-make-context)))
-                   (buff (occ-context-buffer context)))
+                   (ctx (or ctx (occ-make-ctx)))
+                   (buff (occ-ctx-buffer ctx)))
       (if (and
            (eq (current-buffer) buff)
            (buffer-live-p buff)
@@ -152,7 +152,7 @@
                         (set-marker marker (point)))
                       ;; (message "2 marker %s" marker)
 
-                      (message "called add-context-to-org-heading %s" (current-buffer))
+                      (message "called add-ctx-to-org-heading %s" (current-buffer))
                       (progn
                         (condition-case err
                             (let ((buffer-read-only nil))
@@ -165,9 +165,9 @@
                               (let ((prop nil))
                                 (while (not
                                         (member
-                                         (setq prop (occ-select-propetry context))
+                                         (setq prop (occ-select-propetry ctx))
                                          '(edit done)))
-                                  (when (occ-set-property prop nil context)
+                                  (when (occ-set-property prop nil ctx)
                                     (occ-task-update-tasks t)))
                                 (cond
                                   ((eql 'done prop)
@@ -188,44 +188,44 @@
                              (if timer (cancel-timer timer))
                              (signal (car err) (cdr err))))))))))
           (progn
-            (occ-message 6 "not running add-context-to-org-heading 1 %s, 2 %s 3 %s"
+            (occ-message 6 "not running add-ctx-to-org-heading 1 %s, 2 %s 3 %s"
                                        (eq (current-buffer) buff)
                                        (buffer-live-p buff)
                                        (eq buff
                                            (get-buffer "*helm-mode-occ-add-to-org-heading*"))))))))
 
 ;;;###autoload
-(cl-defmethod occ-add-to-org-heading-when-idle ((context occ-context) timeout)
+(cl-defmethod occ-add-to-org-heading-when-idle ((ctx occ-ctx) timeout)
   "Return value is important to decide next action to (create unnamed task.)"
-  (occ-message 6 "called add-context-to-org-heading-when-idle")
+  (occ-message 6 "called add-ctx-to-org-heading-when-idle")
   ;; timed-newwin of occ-add-to-org-heading pass quit
   ;; signal to caller mean here, so need to be handled, else this function can
   ;; not return any value to its caller, which result into no next-action in
   ;; caller function.
   (condition-case nil
-      (occ-add-to-org-heading context timeout)
+      (occ-add-to-org-heading ctx timeout)
       ((quit)))
   ;; (run-with-idle-timer-nonobtrusive-simple
   ;;  7 nil
   ;;  #'(lambda (args)
-  ;;      (apply 'occ-add-to-org-heading args)) (list context timeout))
+  ;;      (apply 'occ-add-to-org-heading args)) (list ctx timeout))
   )
 
 ;;;###autoload
-(defun occ-helm-select-contextual-task (selector
+(defun occ-helm-select-ctxual-task (selector
                                         action)
   ;; here
-  ;; (occ-debug :debug "sacha marker %s" (car contextasks))
+  ;; (occ-debug :debug "sacha marker %s" (car ctxasks))
   (let (helm-sources
-        (context (occ-make-context)))
+        (ctx (occ-make-ctx)))
 
-    (let ((contextasks
-           (occ-matching-contextual-tasks (occ-collection-object) context)))
+    (let ((ctxasks
+           (occ-matching-ctxual-tasks (occ-collection-object) ctx)))
      (push
       (helm-build-sync-source "Select matching task"
         :candidates (mapcar
                      'occ-sacha-selection-line
-                     contextasks)
+                     ctxasks)
         :action (list
                  (cons "Clock in and track" selector))
         :history 'org-refile-history)
@@ -237,7 +237,7 @@
       (push
        (helm-build-sync-source "Current Clocking Task"
          :candidates (list (occ-sacha-selection-line
-                            (occ-build-contextual-task context (occ-current-task))))
+                            (occ-build-ctxual-task ctx (occ-current-task))))
          :action (list
                   (cons "Clock in and track" selector)))
        helm-sources))
@@ -256,8 +256,8 @@
 
 ;;;###autoload
 (defun occ-set-to-task ()
-  (occ-helm-select-contextual-task
-   #'occ-contextual-task-marker
+  (occ-helm-select-ctxual-task
+   #'occ-ctxual-task-marker
    #'occ-set-to-marker))
 
 ;;;###autoload
