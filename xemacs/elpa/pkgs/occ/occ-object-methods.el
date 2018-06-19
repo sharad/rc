@@ -544,9 +544,9 @@ pointing to it."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+                                        ;TODO: make it after method
 (cl-defmethod occ-matching-contextual-tasks ((collection occ-list-task-collection)
-                                             (context occ-context)) ;make it after method
+                                             (context occ-context)) ;TODO: make it after method
   ;; TODO Here do variance based filtering.
   (if (occ-collection-object)
       (let* ((contextual-tasks (occ-matching-contextual-tasks collection context))
