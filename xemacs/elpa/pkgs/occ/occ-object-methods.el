@@ -134,7 +134,7 @@ pointing to it."
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
-  (let ((marker (plist-get dyntaskpl :marker))
+  (let ((marker (occ-contextual-task-marker dyntaskpl :marker))
         (rank   (plist-get dyntaskpl :rank)))
     (when (marker-buffer marker)
       (with-current-buffer (org-base-buffer (marker-buffer marker))
