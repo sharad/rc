@@ -63,7 +63,7 @@
   (interactive '(nil nil))
   (lexical-let* ((timeout (or timeout 7))
                  (context (or context (occ-make-context)))
-                 (buff (plist-get context :buffer)))
+                 (buff (occ-context-buffer context)))
     (message "test %s" timeout)))
 
 (defun org-flag-proprty-drawer-at-marker (marker flag)
