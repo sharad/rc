@@ -86,7 +86,7 @@
            (occ-build-ctxual-task unnamed-task ctx))))
     unnamed-ctxual-task))
 
-(defun occ-maybe-create-clockedin-unnamed-ctxual-task ((ctx occ-ctx))
+(cl-defmethod occ-maybe-create-clockedin-unnamed-ctxual-task ((ctx occ-ctx))
   ;; back
   (when (occ-can-create-unnamed-task-p)
     (let ((org-log-note-clock-out nil))
