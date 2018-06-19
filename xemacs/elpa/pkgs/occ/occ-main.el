@@ -77,7 +77,7 @@
   (interactive
    (list
     (occ-make-ctx)
-    (call-interactively)))
+    ))
   (if (>
        (float-time (time-since *occ-last-buffer-select-time*))
        *occ-task-current-ctx-time-interval*)
