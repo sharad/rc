@@ -113,7 +113,9 @@
             (buffer-read-only t))
         (read-only-mode)
         (org-previous-visible-heading 1)
-        (let ((task (occ-make-task (or org-clock-hd-marker org-clock-marker))))
+        (let ((task (occ-make-task
+                     (or org-clock-hd-marker org-clock-marker)
+                     (occ-task-builder))))
           task)))))
 ;; Create task info out of current clock:1 ends here
 
@@ -340,7 +342,7 @@ pointing to it."
   )
 
 (cl-defmethod occ-isassoc ((task occ-task)
-                       (context occ-context))
+                           (context occ-context))
   (let ((rank
          (reduce #'+
                  (mapcar
