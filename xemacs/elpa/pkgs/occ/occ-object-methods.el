@@ -162,7 +162,7 @@ pointing to it."
              (when task ;; (and cat task)
                ;; (insert (format "[%c] %-12s  %s\n" i cat task))
                ;; marker
-               (cons (occ-print contextask task) contextask))))))))) ;TODO
+               (cons (occ-print contextask) contextask))))))))) ;TODO
 
 
 (cl-defmethod occ-sacha-selection-line ((contextask occ-contextual-task))
