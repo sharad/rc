@@ -457,15 +457,15 @@ pointing to it."
                   (occ-class-slots task)))))
     (occ-make-contextual-task task context rank)))
 
-(cl-defmethod occ-isassoc ((task occ-task)
-                           (context occ-context))
-  (let ((rank
-         (reduce #'+
-                 (mapcar
-                  #'(lambda (slot)
-                      (occ-isassoc (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
-                  (occ-class-slots task)))))
-    rank))
+;; (cl-defmethod occ-isassoc ((task occ-task)
+;;                            (context occ-context))
+;;   (let ((rank
+;;          (reduce #'+
+;;                  (mapcar
+;;                   #'(lambda (slot)
+;;                       (occ-isassoc (cons slot task) context)) ;TODO: check if method exist or not, or use some default method.
+;;                   (occ-class-slots task)))))
+;;     rank))
 
 ;; ISSUE? should it return rank or occ-contextual-tasks map
 (cl-defmethod occ-isassoc ((collection occ-tree-task-collection)
