@@ -155,14 +155,14 @@ pointing to it."
              (when task ;; (and cat task)
                ;; (insert (format "[%c] %-12s  %s\n" i cat task))
                ;; marker
-               (cons (occ-contextual-task-print contextask task) contextask))))))))) ;TODO
+               (cons (occ-print contextask task) contextask))))))))) ;TODO
 
 
 (defun occ-sacha-selection-line ((contextask occ-contextual-task))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
-  (cons (occ-contextual-task-print dyntaskpl nil) dyntaskpl))
+  (cons (occ-print dyntaskpl nil) dyntaskpl))
 ;; function to setup context clock timer:2 ends here
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:3]]
