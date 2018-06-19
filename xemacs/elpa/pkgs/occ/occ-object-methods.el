@@ -471,7 +471,7 @@ pointing to it."
              (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
              (when (> rank 0)
                (push
-                (occ-make-contextual-task)
+                (occ-make-contextual-task task context rank)
                 matched)
                (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
                           (occ-task-heading task)
