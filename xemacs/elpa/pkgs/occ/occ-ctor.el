@@ -125,6 +125,7 @@
 (cl-defmethod occ-make-contextual-task ((task occ-task)
                                         (context occ-context)
                                         (rank number))
+  ;; use occ-build-contextual-task
   (make-occ-contextual-task
    :name    nil
    :task    task
