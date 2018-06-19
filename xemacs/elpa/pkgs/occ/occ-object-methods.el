@@ -130,7 +130,7 @@ pointing to it."
              ;; marker
              (cons task marker))))))))
 
-(cl-defmethod occ-print (dyntaskpl heading)
+(cl-defmethod occ-print ((contextask occ-contextual-task))
   (let ((task (plist-get dyntaskpl :task)))
     (format "[%4d] %s"
             (plist-get dyntaskpl :rank)
