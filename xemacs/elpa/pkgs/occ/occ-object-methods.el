@@ -322,7 +322,7 @@ pointing to it."
                    (and
                     marker
                     (marker-buffer marker))))
-             (occ-matching-contextual-tasks context))))
+             (occ-matching-contextual-tasks (occ-collection-object) context))))
       (if matched-contextual-tasks
           (let* ((sel-contextual-task
                   (if (> (length matched-contextual-tasks) 1)
