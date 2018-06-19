@@ -162,7 +162,7 @@ pointing to it."
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
-  (cons (occ-print dyntaskpl nil) dyntaskpl))
+  (cons (occ-print contextask nil) contextask))
 ;; function to setup context clock timer:2 ends here
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:3]]
