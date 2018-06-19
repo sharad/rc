@@ -470,7 +470,9 @@ pointing to it."
            (let* ((rank (occ-isassoc task args)))
              (unless rank (error "occ-entries-associated-to-context-by-keys[lambda]: rank is null"))
              (when (> rank 0)
-               (push contextual-task matched)
+               (push
+                (occ-make-contextual-task)
+                matched)
                (occ-debug :debug "occ-entries-associated-to-context-by-keys[lambda]: task %s MATCHED RANK %d"
                           (occ-task-heading task)
                           (length matched)))))
