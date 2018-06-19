@@ -31,6 +31,7 @@
 (defvar    *occ-task-current-ctx-time-interval* nil)
 (defvar    *occ-task-previous-ctx*              nil)
 (defvar    *occ-task-current-ctx*               nil)
+(defvar    occ-tree-task-root-org-file org-context-clock-task-tree-task-root-org-file)
 
 (defun occ-set-global-task-collection-spec (spec)
   (setq
@@ -38,7 +39,7 @@
    occ-global-task-collection-spec spec))
 
 (occ-set-global-task-collection-spec
- (list :tree org-ctx-clock-task-tree-task-root-org-file))
+ (list :tree occ-tree-task-root-org-file))
 
 (cl-defmethod occ-update-current ((ctx occ-ctx))
   (if (>

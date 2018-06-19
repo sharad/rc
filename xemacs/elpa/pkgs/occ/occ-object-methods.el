@@ -488,7 +488,7 @@ pointing to it."
         (matched '()))
     (when tasks
       (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE matched %s[%d]" matched (length matched))
-      (occ-tree-mapc-tasks
+      (occ-mapc-tree-tasks
        #'(lambda (task args)
            ;; (occ-debug :debug "occ-rank heading = %s" (occ-task-heading task))
            (let* ((ctxual-task (occ-build-ctxual-task task args))
