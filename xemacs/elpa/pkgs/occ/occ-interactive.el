@@ -245,7 +245,7 @@
     (funcall action (helm helm-sources))))
 
 ;;;###autoload
-(defun occ-set-to-marker (marker)
+(defun occ-goto-marker (marker)
   (if (and
        (markerp marker)
        (marker-buffer marker))
@@ -258,7 +258,7 @@
 (defun occ-set-to-task ()
   (occ-helm-select-ctxual-task
    #'occ-ctxual-task-marker
-   #'occ-set-to-marker))
+   #'occ-goto-marker))
 
 ;;;###autoload
 (defun occ-create-child-task ()
