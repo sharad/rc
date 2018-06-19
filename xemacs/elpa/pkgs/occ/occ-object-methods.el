@@ -490,7 +490,7 @@ pointing to it."
 
 ;; ISSUE? should it return rank or occ-contextual-tasks list
 (cl-defmethod occ-matching-contextual-tasks :around ((collection occ-list-task-collection)
-                                             (context occ-context))
+                                                     (context occ-context))
   (lexical-let ((tasks (occ-collection collection))
                 (context context))
     (remove-if-not
