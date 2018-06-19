@@ -181,7 +181,7 @@
 
 (cl-defmethod occ-collection ((collection occ-tree-task-collection))
   (unless (occ-tree-task-collection-tree occ-global-task-collection)
-    (occ-collect-tasks)))
+    (occ-collect-tasks occ-global-task-collection)))
 
 (cl-defmethod occ-collection ((collection occ-list-task-collection))
   (occ-tree-task-collection-list occ-global-task-collection))
