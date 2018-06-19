@@ -268,9 +268,9 @@ pointing to it."
            (matched-contextual-tasks
             (remove-if-not
              #'(lambda (contextual-task)
-                 (and
+                 ((and
                   (plist-get contextual-task :marker)
-                  (marker-buffer (plist-get contextual-task :marker))))
+                  (marker-buffer (plist-get contextual-task :marker)))))
              (occ-contextual-tasks-associated-to-context-filtered context))))
       (if matched-contextual-tasks
           (let* ((sel-contextual-task
