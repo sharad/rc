@@ -213,6 +213,8 @@ pointing to it."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defvar *occ-clocked-contextual-task-context-history*)
+
 (cl-defmethod occ-clockin ((new-contextask occ-contextual-task))
   ;;TODO add org-insert-log-not
   (occ-debug :debug "occ-clockin-marker %s" new-contextask)
