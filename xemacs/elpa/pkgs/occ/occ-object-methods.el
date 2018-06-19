@@ -394,7 +394,6 @@ pointing to it."
           (occ-isassoc task context))
       tasks))))
 
-
 (cl-defmethod occ-isassoc (task-pair context)
   0)
 
