@@ -223,7 +223,7 @@
      (push
       (helm-build-sync-source "Select matching task"
         :candidates (mapcar
-                     'sacha-occ-contextask-selection-line
+                     'occ-sacha-selection-line
                      contextasks)
         :action (list
                  (cons "Clock in and track" selector))
