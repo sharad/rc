@@ -158,7 +158,7 @@
   (unless (occ-tree-task-collection-tree collection)
     (setf
      (occ-tree-task-collection-tree collection)
-     (occ-tree-build
+     (occ-tree-task-build
       #'(lambda ()
           (or
            (occ-make-task-at-point #'make-occ-tree-task)
