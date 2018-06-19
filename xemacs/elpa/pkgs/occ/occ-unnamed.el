@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(require 'occ-object-method)
+(require 'occ-object-methods)
 
 (defvar *occ-unassociate-context-start-time* nil)
 (defvar *occ-swapen-unnamed-threashold-interval* (* 60 2)) ;2 mins

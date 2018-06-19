@@ -135,6 +135,17 @@
     (when task (occ-isassoc task context))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(cl-defmethod occ-print ((contextask occ-contextual-task))
+  (let ((task (occ-contextual-task-task contextask)))
+    (format "[%4d] %s"
+            (occ-contextual-task-rank contextask)
+            (occ-fontify-like-in-org-mode task))))
+
+(cl-defmethod occ-print ((task occ-task))
+  (format "[%4d] %s"
+          0
+          (occ-fontify-like-in-org-mode task)))
+
 (cl-defgeneric occ-sacha-selection-line (obj)
   )
 
@@ -162,17 +173,6 @@ pointing to it."
              ;; (insert (format "[%c] %-12s  %s\n" i cat task))
              ;; marker
              (cons task marker))))))))
-
-(cl-defmethod occ-print ((contextask occ-contextual-task))
-  (let ((task (occ-contextual-task-task contextask)))
-    (format "[%4d] %s"
-            (occ-contextual-task-rank contextask)
-            (occ-fontify-like-in-org-mode task))))
-
-(cl-defmethod occ-print ((task occ-task))
-  (format "[%4d] %s"
-          0
-          (occ-fontify-like-in-org-mode task)))
 
 ;; deprecated
 (cl-defmethod occ-sacha-selection-line ((contextask occ-contextual-task))
