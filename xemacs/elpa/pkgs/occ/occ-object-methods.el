@@ -496,7 +496,7 @@ pointing to it."
          (> (occ-contextual-task-rank contextual-task) 0))
      (mapcar
       #'(lambda (task)
-          (occ-isassoc task context))
+          (occ-build-contextual-task task context))
       tasks))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
