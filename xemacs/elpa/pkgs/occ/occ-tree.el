@@ -83,31 +83,31 @@
 
 
 (progn
-  (defun occ-task-tree-task-node-p (tx)
+  (defun occ-tree-task-node-p (tx)
     "Test org TX is org tasks tree non-leaf node"
     (occ-get-property tx 'subtree))
 
-  (defun occ-task-tree-task-subtree (tx)
+  (defun occ-tree-task-subtree (tx)
     "Test org TX is org tasks tree non-leaf node"
     (occ-get-property tx 'subtree))
 
   (defun occ-tree-mapcar-tasks (fn tree args)
     "Tree mapcar return result for FN for all TREE nodes with ARGS"
     (tree-mapcar-nodes
-     'occ-task-tree-task-subtree fn tree args))
+     'occ-tree-task-subtree fn tree args))
 
   (defun occ-tree-mapc-tasks (fn tree args)
     "Tree mapc run FN for all TREE nodes with ARGS"
     (tree-mapc-nodes
-     'occ-task-tree-task-subtree fn tree args))
+     'occ-tree-task-subtree fn tree args))
 
   (defun occ-tree-remove-if-not-tasks (fn tree args)
     "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE"
     (tree-remove-if-not-nodes
-     'occ-task-tree-task-subtree fn tree args)))
+     'occ-tree-task-subtree fn tree args)))
 
 
-(defun occ-task-tree-map-subheading (fun)
+(defun occ-tree-map-subheading (fun)
   "Call FUN for every heading underneath the current heading"
   ;; (org-back-to-heading)
   (let ((level (funcall outline-level))
@@ -121,7 +121,7 @@
             (push (funcall fun) collection))))
     collection))
 
-(defun occ-task-tree-build (collector &optional file)
+(defun occ-tree-build (collector &optional file)
   "Build recursive org tasks from org FILE (or current buffer) using COLLECTOR function e.g. occ-task-collect-task"
   (with-current-buffer (if file
                            (find-file-noselect file)
@@ -131,8 +131,8 @@
       (when entry
         (let* ((sub-tree
                 (append
-                 (occ-task-tree-map-subheading #'(lambda ()
-                                                   (occ-task-tree-build collector nil)))
+                 (occ-tree-map-subheading #'(lambda ()
+                                                   (occ-tree-build collector nil)))
                  (let ((subtree-file-prop (occ-get-property entry :SUBTREEFILE)))
                    (when subtree-file-prop
                      (let* ((file (if file file (buffer-file-name)))
@@ -148,7 +148,7 @@
                             subtree-file
                             (file-readable-p subtree-file))
                            (list
-                            (occ-task-tree-build collector subtree-file)))))))))
+                            (occ-tree-build collector subtree-file)))))))))
           (occ-set-property entry 'subtree sub-tree)
           entry)))))
 
@@ -156,18 +156,18 @@
 (defun occ-task-recursive-update-tasks (&optional force) ;; API (occ-api-set :predicate :update  'org-entry-list-update-tasks)
   "Update recursive org tasks tree"
   (interactive "P")
-  (if occ-task-tree-task-root-org-file
-      (if (file-exists-p occ-task-tree-task-root-org-file)
+  (if occ-tree-task-root-org-file
+      (if (file-exists-p occ-tree-task-root-org-file)
           (unless (and (not force)
-                       occ-task-tree-tasks)
-            (setq occ-task-tree-tasks
-                  (occ-task-tree-get-tasks
-                   occ-task-tree-task-root-org-file)))
-        (message "file %s not exists." occ-task-tree-task-root-org-file))
-    (message "occ-task-tree-task-root-org-file is nil"))
-  occ-task-tree-tasks)
+                       occ-tree-tasks)
+            (setq occ-tree-tasks
+                  (occ-tree-get-tasks
+                   occ-tree-task-root-org-file)))
+        (message "file %s not exists." occ-tree-task-root-org-file))
+    (message "occ-tree-task-root-org-file is nil"))
+  occ-tree-tasks)
 
-(defun occ-task-tree-tasks-files ()
+(defun occ-tree-tasks-files ()
   (let ((tasks (occ-task-recursive-update-tasks))
         (files '()))
     (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE files %s[%d]" files (length files))
@@ -181,12 +181,12 @@
     (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER files %s[%d]" "files" (length files))
     files))
 
-(defun occ-task-tree-get-files ()
+(defun occ-tree-get-files ()
   "Build recursive org tasks from org FILE (or current buffer)"
   (let ()
     (remove nil
             (delete-dups
-             (occ-task-tree-tasks-files)))))
+             (occ-tree-tasks-files)))))
 
 
 
