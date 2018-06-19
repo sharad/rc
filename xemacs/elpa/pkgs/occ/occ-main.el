@@ -28,9 +28,9 @@
 (require 'occ-interactive)
 
 (defcustom *occ-last-buffer-select-time*            nil "*occ-last-buffer-select-time*")
-(defvar    *occ-task-current-context-time-interval* nil)
-(defvar    *occ-task-previous-context*              nil)
-(defvar    *occ-task-current-context*               nil)
+(defvar    *occ-task-current-ctx-time-interval* nil)
+(defvar    *occ-task-previous-ctx*              nil)
+(defvar    *occ-task-current-ctx*               nil)
 
 (defun occ-set-global-task-collection-spec (spec)
   (setq
@@ -38,41 +38,41 @@
    occ-global-task-collection-spec spec))
 
 (occ-set-global-task-collection-spec
- (list :tree org-context-clock-task-tree-task-root-org-file))
+ (list :tree org-ctx-clock-task-tree-task-root-org-file))
 
-(defun occ-update-current-context (&optional force)
+(defun occ-update-current-ctx (&optional force)
   (interactive "P")
   (if (>
        (float-time (time-since *occ-last-buffer-select-time*))
-       *occ-task-current-context-time-interval*)
-      (let* ((context (occ-make-context))
-             (buff    (occ-context-buffer context)))
-        (setq *occ-task-current-context*  context)
+       *occ-task-current-ctx-time-interval*)
+      (let* ((ctx (occ-make-ctx))
+             (buff    (occ-ctx-buffer ctx)))
+        (setq *occ-task-current-ctx*  ctx)
         (if (and
              (occ-changable-p)
              buff (buffer-live-p buff)
              (not (minibufferp buff))
              (not              ;BUG: Reconsider whether it is catching case after some delay.
-              (equal *occ-task-previous-context* *occ-task-current-context*)))
+              (equal *occ-task-previous-ctx* *occ-task-current-ctx*)))
 
             (progn
               (setq
-               *occ-task-previous-context* *occ-task-current-context*)
+               *occ-task-previous-ctx* *occ-task-current-ctx*)
               (if (and
                    (not (occ-clock-marker-is-unnamed-clock-p))
-                   (> (occ-current-task-associated-to-context-p context) 0))
+                   (> (occ-current-task-associated-to-ctx-p ctx) 0))
                   (progn
-                    (occ-debug :debug "occ-update-current-context: Current task already associate to %s" context))
+                    (occ-debug :debug "occ-update-current-ctx: Current task already associate to %s" ctx))
                   (progn                ;current clock is not matching
-                    (occ-debug :debug "occ-update-current-context: Now really going to clock.")
-                    (unless (occ-run-associated-task context)
+                    (occ-debug :debug "occ-update-current-ctx: Now really going to clock.")
+                    (unless (occ-run-associated-task ctx)
                       ;; not able to find associated, or intentionally not selecting a clock
                       (occ-debug :debug "trying to create unnamed task.")
-                      (occ-maybe-create-clockedin-unnamed-contextual-task context))
-                    (occ-debug :debug "occ-update-current-context: Now really clock done."))))
+                      (occ-maybe-create-clockedin-unnamed-ctxual-task ctx))
+                    (occ-debug :debug "occ-update-current-ctx: Now really clock done."))))
 
-            (occ-debug :debug "occ-update-current-context: context %s not suitable to associate" context)))
-    (occ-debug :debug "occ-update-current-context: not enough time passed.")))
+            (occ-debug :debug "occ-update-current-ctx: ctx %s not suitable to associate" ctx)))
+    (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
 
 (provide 'occ-main)
 ;;; occ-main.el ends here
