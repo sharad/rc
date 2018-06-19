@@ -130,7 +130,7 @@ pointing to it."
              ;; marker
              (cons task marker))))))))
 
-(defun org-context-clock-recursive-dyntaskpl-print (dyntaskpl heading)
+(cl-defmethod org-context-clock-recursive-dyntaskpl-print (dyntaskpl heading)
   (let ((task (plist-get dyntaskpl :task)))
     (format "[%4d] %s"
             (plist-get dyntaskpl :rank)
