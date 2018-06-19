@@ -467,7 +467,7 @@ pointing to it."
 
 ;; ISSUE? should it return rank or occ-contextual-tasks map
 (cl-defmethod occ-build-contextual-tasks ((collection occ-tree-task-collection)
-                        (context occ-context))
+                                          (context occ-context))
   (let ((tasks (occ-collection collection))
         (matched '()))
     (when tasks
@@ -489,8 +489,8 @@ pointing to it."
     matched))
 
 ;; ISSUE? should it return rank or occ-contextual-tasks list
-(cl-defmethod occ-rank ((collection occ-list-task-collection)
-                           (context occ-context))
+(cl-defmethod occ-build-contextual-tasks ((collection occ-list-task-collection)
+                                          (context occ-context))
   (lexical-let ((tasks (occ-collection collection))
                 (context context))
     (remove-if-not
