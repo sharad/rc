@@ -83,7 +83,7 @@
          (occ-maybe-create-unnamed-task))
         (unnamed-contextual-task
          (when unnamed-task
-           (occ-make-contextual-task unnamed-task context 0))))
+           (occ-build-contextual-task unnamed-task context))))
     unnamed-contextual-task))
 
 (defun occ-maybe-create-clockedin-unnamed-contextual-task ((context occ-context))
