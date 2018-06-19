@@ -216,7 +216,7 @@
   ;; here
   ;; (occ-debug :debug "sacha marker %s" (car dyntaskpls))
   (let (helm-sources
-        (context (occ-build-context)))
+        (context (occ-make-context)))
 
     (let ((dyntaskpls
            (occ-dyntaskpls-associated-to-context context)))
