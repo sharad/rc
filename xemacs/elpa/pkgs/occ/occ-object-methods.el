@@ -171,10 +171,9 @@ pointing to it."
             (occ-fontify-like-in-org-mode task))))
 
 (cl-defmethod occ-print ((task occ-task))
-  (let ((task (occ-contextual-task-task contextask)))
     (format "[%4d] %s"
-            (occ-contextual-task-rank contextask)
-            (occ-fontify-like-in-org-mode task))))
+            0
+            (occ-fontify-like-in-org-mode task)))
 
 ;; deprecated
 (cl-defmethod occ-sacha-selection-line ((contextask occ-contextual-task))
