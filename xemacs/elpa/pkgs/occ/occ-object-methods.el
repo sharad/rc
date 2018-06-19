@@ -134,7 +134,7 @@ pointing to it."
   (let ((task (occ-contextual-task-task contextask)))
     (format "[%4d] %s"
             (occ-contextual-task-rank contextask)
-            (org-context-clock-fontify-like-in-org-mode task))))
+            (occ-fontify-like-in-org-mode task))))
 
 (cl-defmethod occ-sacha-selection-line ((contextask occ-contextual-task))
   "Insert a line for the clock selection menu.
