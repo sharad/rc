@@ -465,6 +465,34 @@ pointing to it."
                         ctx
                         (occ-rank task ctx)))
 
+(cl-defmethod occ-matching-ctxual-tasks ((collection occ-list-task-collection)
+                                         (ctx occ-ctx)) ;TODO: make it after method
+  ;; TODO Here do variance based filtering.
+  (if (occ-collection-object)
+      (let* ((ctxual-tasks (occ-matching-ctxual-tasks collection ctx))
+             (rankslist  (mapcar
+                          #'(lambda (ctxual-task)
+                              (occ-ctxual-task-rank ctxual-task))
+                          ctxual-tasks))
+             (avgrank    (if (= 0 (length rankslist))
+                             0
+                           (/
+                            (reduce #'+ rankslist)
+                            (length rankslist))))
+             (varirank   (if (= 0 (length rankslist))
+                             0
+                           (sqrt
+                            (/
+                             (reduce #'+
+                                     (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
+                             (length rankslist))))))
+        (occ-debug :debug "matched ctxtasks %s" (length ctxual-tasks))
+        (remove-if-not
+         #'(lambda (ctxual-task)
+             (>= (occ-ctxual-task-rank ctxual-task) avgrank))
+         ctxual-tasks))
+    (error "(occ-collection-object) returned nil")))
+
 ;; ISSUE? should it return rank or occ-ctxual-tasks map
 (cl-defmethod occ-matching-ctxual-tasks ((collection occ-tree-task-collection)
                                          (ctx occ-ctx))
@@ -487,6 +515,8 @@ pointing to it."
        ctx))
     (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER matched %s[%d]" "matched" (length matched))
     matched))
+
+
 
 ;; ISSUE? should it return rank or occ-ctxual-tasks list
 (cl-defmethod occ-matching-ctxual-tasks :around ((collection occ-list-task-collection)
