@@ -187,7 +187,7 @@ pointing to it."
     (message "running sacha/helm-select-clock")
     (occ-sacha-helm-select contextask)))
 
-(defun sacha/helmcontextual-task-action ((contextask occ-contextual-task) clockin-fn)
+(defun occ-sacha-helm-action ((contextask occ-contextual-task) clockin-fn)
   ;; (message "sacha marker %s" (car dyntaskpls))
   ;; (setq sacha/helm-org-refile-locations tbl)
   (progn
