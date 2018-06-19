@@ -549,7 +549,7 @@ pointing to it."
                                              (context occ-context)) ;make it after method
   ;; TODO Here do variance based filtering.
   (if (occ-collection-object)
-      (let* ((contextual-tasks (occ-matching-contextual-tasks (occ-collection-object) context))
+      (let* ((contextual-tasks (occ-matching-contextual-tasks collection context))
              (rankslist  (mapcar
                           #'(lambda (contextual-task)
                               (occ-contextual-task-rank contextual-task))
