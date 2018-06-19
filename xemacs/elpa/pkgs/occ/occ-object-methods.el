@@ -155,7 +155,7 @@ pointing to it."
              (when task ;; (and cat task)
                ;; (insert (format "[%c] %-12s  %s\n" i cat task))
                ;; marker
-               (cons (occcontextual-task-print dyntaskpl task) dyntaskpl)))))))))
+               (cons (occcontextual-task-print contextask task) dyntaskpl)))))))))
 
 
 (defun occ-sacha-selection-line ((contextask occ-contextual-task))
