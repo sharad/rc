@@ -447,12 +447,6 @@ pointing to it."
       0)))
 
 ;; ISSUE? should it return rank or occ-contextual-task
-(cl-defmethod occ-build-contextual-task ((task occ-task)
-                                              (context occ-context))
-  (occ-make-contextual-task task
-                            context
-                            (occ-isassoc task context)))
-
 (cl-defmethod occ-isassoc ((task occ-task)
                            (context occ-context))
   (let ((rank
