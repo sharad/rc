@@ -135,7 +135,7 @@
     (when task (occ-isassoc task context))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(cl-defgeneric occ-sacha-selection-line (marker)
+(cl-defgeneric occ-sacha-selection-line (obj)
   )
 (cl-defmethod occ-sacha-selection-line (marker)
   "Insert a line for the clock selection menu.
