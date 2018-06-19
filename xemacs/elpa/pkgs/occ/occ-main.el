@@ -23,6 +23,8 @@
 
 ;;; Code:
 
+(require 'occ-object-method)
+
 (defcustom *occ-last-buffer-select-time*            nil "*occ-last-buffer-select-time*")
 (defvar    *occ-task-current-context-time-interval* nil)
 (defvar    *occ-task-previous-context*              nil)
