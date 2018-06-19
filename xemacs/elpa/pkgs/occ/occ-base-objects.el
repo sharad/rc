@@ -59,12 +59,12 @@
 (cl-defstruct (occ-list-task (:include occ-task))
   )
 
-(cl-defstruct (occ-context (:include occ-obj))
+(cl-defstruct (occ-ctx (:include occ-obj))
   buffer
   file)
 
-(cl-defstruct (occ-contextual-task (:include occ-obj))
-  context
+(cl-defstruct (occ-ctxual-task (:include occ-obj))
+  ctx
   task
   rank)
 
