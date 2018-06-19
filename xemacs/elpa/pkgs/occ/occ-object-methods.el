@@ -130,6 +130,12 @@ pointing to it."
              ;; marker
              (cons task marker))))))))
 
+(defun org-context-clock-recursive-dyntaskpl-print (dyntaskpl heading)
+  (let ((task (plist-get dyntaskpl :task)))
+    (format "[%4d] %s"
+            (plist-get dyntaskpl :rank)
+            (org-context-clock-fontify-like-in-org-mode task))))
+
 (cl-defmethod occ-sacha-selection-line ((contextask occ-contextual-task))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
