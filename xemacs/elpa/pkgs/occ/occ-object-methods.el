@@ -466,7 +466,7 @@ pointing to it."
                             (occ-rank task context)))
 
 ;; ISSUE? should it return rank or occ-contextual-tasks map
-(cl-defmethod occ-build-contextual-tasks ((collection occ-tree-task-collection)
+(cl-defmethod occ-matching-contextual-tasks ((collection occ-tree-task-collection)
                                           (context occ-context))
   (let ((tasks (occ-collection collection))
         (matched '()))
@@ -489,7 +489,7 @@ pointing to it."
     matched))
 
 ;; ISSUE? should it return rank or occ-contextual-tasks list
-(cl-defmethod occ-build-contextual-tasks ((collection occ-list-task-collection)
+(cl-defmethod occ-matching-contextual-tasks ((collection occ-list-task-collection)
                                           (context occ-context))
   (lexical-let ((tasks (occ-collection collection))
                 (context context))
@@ -548,28 +548,28 @@ pointing to it."
 (cl-defmethod occ-matching-contextual-tasks ((context occ-context))
   ;; TODO Here do variance based filtering.
   (if (occ-collection-object)
-      (let* ((contextual-tasks (occ-build-contextual-tasks (occ-collection-object) context))
-          (rankslist  (mapcar
-                       #'(lambda (contextual-task)
-                           (occ-contextual-task-rank contextual-task))
-                       contextual-tasks))
-          (avgrank    (if (= 0 (length rankslist))
-                          0
-                        (/
-                         (reduce #'+ rankslist)
-                         (length rankslist))))
-          (varirank   (if (= 0 (length rankslist))
-                          0
-                        (sqrt
-                         (/
-                          (reduce #'+
-                                  (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
-                          (length rankslist))))))
-     (occ-debug :debug "matched contexttasks %s" (length contextual-tasks))
-     (remove-if-not
-      #'(lambda (contextual-task)
-          (>= (occ-contextual-task-rank contextual-task) avgrank))
-      contextual-tasks))
+      (let* ((contextual-tasks (occ-matching-contextual-tasks (occ-collection-object) context))
+             (rankslist  (mapcar
+                          #'(lambda (contextual-task)
+                              (occ-contextual-task-rank contextual-task))
+                          contextual-tasks))
+             (avgrank    (if (= 0 (length rankslist))
+                             0
+                           (/
+                            (reduce #'+ rankslist)
+                            (length rankslist))))
+             (varirank   (if (= 0 (length rankslist))
+                             0
+                           (sqrt
+                            (/
+                             (reduce #'+
+                                     (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
+                             (length rankslist))))))
+        (occ-debug :debug "matched contexttasks %s" (length contextual-tasks))
+        (remove-if-not
+         #'(lambda (contextual-task)
+             (>= (occ-contextual-task-rank contextual-task) avgrank))
+         contextual-tasks))
     (error "(occ-collection-object) returned nil")))
 
 (when nil
