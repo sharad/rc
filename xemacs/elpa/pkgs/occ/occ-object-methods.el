@@ -529,7 +529,7 @@ pointing to it."
                              (reduce #'+
                                      (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
                              (length rankslist))))))
-        (message "occ-matching-ctxual-tasks :around finish")
+        ;; (message "occ-matching-ctxual-tasks :around finish")
         (occ-debug :debug "matched ctxtasks %s" (length ctxual-tasks))
         (remove-if-not
          #'(lambda (ctxual-task)
