@@ -46,7 +46,7 @@
 	#alias brw='links http://large.org'
 	alias brw='links /pacific/weblarge/var/www/html/index.html'
 	alias x='xinit'
-	alias ps='command ps f'
+	alias ps='command    ps f'
   alias pse='command   ps -o pid,tty,stat,time,stime,etime,ruser=RealUser  -o command f'
   alias psee='command  ps -o pid,tty,stat,time,lstart,etime,ruser=RealUser  -o command f'
 	alias psu='command   ps -u $USER f'
