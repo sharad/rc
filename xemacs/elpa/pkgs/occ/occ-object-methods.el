@@ -508,6 +508,7 @@ pointing to it."
 (cl-defmethod occ-matching-ctxual-tasks :around ((collection occ-task-collection)
                                                  (ctx occ-ctx)) ;TODO: make it after method
   ;; TODO Here do variance based filtering.
+  (message "occ-matching-ctxual-tasks :around start")
   (if (occ-collection-object)
       (let* ((ctxual-tasks (cl-call-next-method))
              (rankslist  (mapcar
@@ -526,6 +527,7 @@ pointing to it."
                              (reduce #'+
                                      (mapcar #'(lambda (rank) (expt (- rank avgrank) 2)) rankslist))
                              (length rankslist))))))
+        (message "occ-matching-ctxual-tasks :around finish")
         (occ-debug :debug "matched ctxtasks %s" (length ctxual-tasks))
         (remove-if-not
          #'(lambda (ctxual-task)
