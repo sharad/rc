@@ -485,7 +485,7 @@ pointing to it."
 ;; ISSUE? should it return rank or occ-ctxual-tasks map
 (cl-defmethod occ-matching-ctxual-tasks ((collection occ-tree-task-collection)
                                          (ctx occ-ctx))
-  (message "occ-matching-ctxual-tasks tree")
+  ;; (message "occ-matching-ctxual-tasks tree")
   (let ((tasks (occ-collection collection))
         (matched '()))
     (when tasks
@@ -510,7 +510,7 @@ pointing to it."
 (cl-defmethod occ-matching-ctxual-tasks :around ((collection occ-task-collection)
                                                  (ctx occ-ctx)) ;TODO: make it after method
   ;; TODO Here do variance based filtering.
-  (message "occ-matching-ctxual-tasks :around start")
+  ;; (message "occ-matching-ctxual-tasks :around start")
   (if (occ-collection-object)
       (let* ((ctxual-tasks (cl-call-next-method))
              (rankslist  (mapcar
