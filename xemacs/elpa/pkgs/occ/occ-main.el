@@ -59,8 +59,7 @@
               (if (and
                    (not (occ-clock-marker-is-unnamed-clock-p))
                    ;; (> (occ-current-task-associated-to-ctx-p ctx) 0)
-                   (> (occ-associated-p (occ-current-task) ctx) 0)
-                   )
+                   (> (occ-associated-p (occ-current-task) ctx) 0))
                   (occ-debug :debug "occ-update-current-ctx: Current task already associate to %s" ctx)
                   (progn                ;current clock is not matching
                     (occ-debug :debug "occ-update-current-ctx: Now really going to clock.")
