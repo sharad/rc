@@ -54,7 +54,7 @@
   alias psuee='command ps -o pid,tty,stat,time,start_time,etime,ruser=RealUser  -o comm=Command  -u $USER f'
 	alias ups='command ps -u $USER f'
   alias upse='command ps -o pid,tty,stat,time,stime,etime,ruser=RealUser  -o comm=Command  -u $USER f'
-  alias upse='command ps -o pid,tty,stat,time,stime,etime,ruser=RealUser  -o comm=Command  -u $USER f'
+  alias upsee='command ps -o pid,tty,stat,time,start_time,etime,ruser=RealUser  -o comm=Command  -u $USER f'
 	alias pstreeu='command pstree -u $USER'
   alias pgrep='command pgrep -l'
 	alias aumix="( unset DISPLAY && aumix )"
