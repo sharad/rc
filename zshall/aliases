@@ -48,7 +48,7 @@
 	alias x='xinit'
 	alias ps='command ps f'
   alias pse='command ps -o pid,tty,stat,time,stime,etime,ruser=RealUser  -o comm=Command f'
-  alias psee='command ps -o pid,tty,stat,start_time,stime,etime,ruser=RealUser  -o comm=Command f'
+  alias psee='command ps -o pid,tty,stat,time,start_time,etime,ruser=RealUser  -o comm=Command f'
 	alias psu='command ps -u $USER f'
   alias psue='command ps -o pid,tty,stat,time,stime,etime,ruser=RealUser  -o comm=Command  -u $USER f'
   alias psuee='command ps -o pid,tty,stat,start_time,stime,etime,ruser=RealUser  -o comm=Command  -u $USER f'
