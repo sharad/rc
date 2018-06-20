@@ -484,6 +484,7 @@ pointing to it."
 ;; ISSUE? should it return rank or occ-ctxual-tasks map
 (cl-defmethod occ-matching-ctxual-tasks ((collection occ-tree-task-collection)
                                          (ctx occ-ctx))
+  (message "occ-matching-ctxual-tasks tree")
   (let ((tasks (occ-collection collection))
         (matched '()))
     (when tasks
