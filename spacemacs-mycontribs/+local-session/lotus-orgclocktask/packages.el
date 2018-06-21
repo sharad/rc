@@ -590,6 +590,7 @@ Each entry is either:
                 ;; related to office perforce repository.
                 (office-mode 1))))
 
+          (add-hook 'prog-mode-hook 'office-activate)
           (add-hook 'prog-mode-hook 'office-activate)))))
 
 
