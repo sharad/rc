@@ -239,7 +239,9 @@ function setup_apt_packages()
         "DEB_PKG_TOOL_GUI" \
         "DEB_PKG_XWM" \
         "DEB_PKG_XML" \
-        "DEB_PKG_UTILS"
+        "DEB_PKG_UTILS" \
+        "DEB_PKG_MEDIA" \
+        "DEB_PKG_WINDOW"
     do
         if ! eval sudo apt -y install \$$pkg
         then
