@@ -42,7 +42,7 @@ DEB_EXTRA_PKG3="makepasswd libstring-mkpasswd-perl inotify-tools conky-all macch
 DEB_EXTRA_SEC_PKG1="systemd-ui " # policykit-1 policykit-1-gnome
 DEB_DEV_PKG1="python-pip silversearcher-ag silversearcher-ag-el s-el ack-grep doxygen doxymacs libjson-glib-dev cmake"
 DEB_EXTRA_PKG3_UTILS="system-config-lvm lvmeject adcli partclone gpodder parallel libpam-fprintd fprint-demo"
-DEB_PKG_DEV="valgrind"
+DEB_PKG_DEV="valgrind libxml2-dev"
 DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools redshift daemontools god circus software-properties-common at hibernate ps-watcher daemonfs daemonize daemon "
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer-accountd prayer"
 DEB_SYS_PKG1="duc baobab agedu tpb daemontools sysstat isag dos2unix powermanagement-interface grub2-splashimages grub2-themes-ubuntu-mate offlineimap libsecret-tools"
@@ -54,6 +54,7 @@ DEB_PKG_XWM="xcompmgr autocutsel sakura"
 DEB_PKG_XML="libxml2-utils xsltproc docbook5-xml docbook-xsl-ns"
 DEB_PKG_UTILS="gcalcli"
 DEB_PKG_MEDIA="pulseeffects pavucontrol pulseaudio-module-gconf pulseaudio-equalizer vokoscreen pulseaudio-utils pulsemixer kodi sox mpg123 mpg321 "
+DEB_PKG_WINDOW=""
 
 
 PY_PIP_PKG="termdown"
