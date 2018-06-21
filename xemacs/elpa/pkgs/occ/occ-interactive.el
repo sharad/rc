@@ -55,6 +55,7 @@
   (let ((prompt (or prompt "proptery: "))
         (keys (mapcar #'(lambda (k) (cons (symbol-name k) k))
                       (append
+                       ;; (cl-method-first-arg 'occ-readprop)
                        (occ-keys-with-operation :getter ctx)
                        '(edit done)))))
     (cdr (assoc (occ-completing-read prompt keys  nil t) keys))))
