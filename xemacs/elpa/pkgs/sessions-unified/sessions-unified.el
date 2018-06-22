@@ -396,8 +396,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
 
               (setq screens (cdr screens))
               (message "while screen: %s" screens)
-              (message "test5"))
-            ;; (while screens
+              (message "test5")) ;; (while screens
 
             ;; (when elscreen-session-restore-create-scratch-buffer
             ;;   (elscreen-find-and-goto-by-buffer (get-buffer-create "*scratch*") t t))
@@ -425,8 +424,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
               ;;     (testing
               ;;      (message "in when session-current-screen-buffers %s" session-current-screen-buffers)))
               )
-            )
-          ;; (let* ((desktop-buffers
+            ) ;; (let* ((desktop-buffers
           (testing
            (message "elscreen-notify-screen-modification"))
           (elscreen-notify-screen-modification 'force-immediately)
