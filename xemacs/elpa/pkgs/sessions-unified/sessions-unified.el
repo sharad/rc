@@ -426,7 +426,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
               ;;      (message "in when session-current-screen-buffers %s" session-current-screen-buffers)))
               )
             )
-          (let* ((desktop-buffers
+          ;; (let* ((desktop-buffers
           (testing
            (message "elscreen-notify-screen-modification"))
           (elscreen-notify-screen-modification 'force-immediately)
