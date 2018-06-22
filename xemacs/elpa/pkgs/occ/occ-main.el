@@ -41,7 +41,6 @@
 (occ-set-global-task-collection-spec
  (list :tree occ-tree-task-root-org-file))
 
-
 (cl-defmethod occ-clockin-associated-task-if-not ((ctx occ-ctx))
   (progn
     (if (and
