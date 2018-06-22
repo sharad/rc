@@ -411,7 +411,9 @@ return a new alist whose car is the new pair and cdr is ALIST."
                              (if (consp session-current-buffer-file)
                                  (car session-current-buffer-file)
                                  session-current-buffer-file))))
-              (when (get-buffer buff)
+              (when (and
+                     buff
+                     (get-buffer buff))
                 (elscreen-find-and-goto-by-buffer (get-buffer buff) nil nil)
                 (setq *elscreen-session-restore-data* session-current-buffer-file))
               ;; (if (get-buffer buff)
