@@ -52,7 +52,7 @@
              "empty heading"
            (org-get-heading 'notags))))
     (let ((heading (when heading-with-string-prop
-                       (substring-no-properties heading-with-string-prop)))
+                     (substring-no-properties heading-with-string-prop)))
           (heading-prop (if heading-with-string-prop
                             heading-with-string-prop))
           (marker  (move-marker
@@ -63,7 +63,7 @@
           (point   (point))
           (clock-sum (if (org-before-first-heading-p)
                          0
-                         (org-clock-sum-current-item)))
+                       (org-clock-sum-current-item)))
           (tsk-plist (cadr (org-element-at-point))))
       (when heading
         (setf tsk
@@ -86,7 +86,7 @@
       tsk)))
 
 (cl-defmethod occ-make-tsk ((n number)
-                             builder)
+                            builder)
   (occ-debug :debug "point %s" n)
   (if (<= n (point-max))
       (save-restriction
@@ -95,7 +95,7 @@
           (occ-make-tsk-at-point builder)))))
 
 (cl-defmethod occ-make-tsk ((m marker)
-                             builder)
+                            builder)
   (occ-debug :debug "point %s" m)
   (if (and
        (marker-buffer m)
@@ -117,14 +117,14 @@
          (buf (org-base-buffer buf))
          (file (buffer-file-name buff))
          (ctx (make-occ-ctx
-                   :name (buffer-name buff)
-                   :file file
-                   :buffer buff)))
+               :name (buffer-name buff)
+               :file file
+               :buffer buff)))
     ctx))
 
 (cl-defmethod occ-make-ctxual-tsk ((tsk occ-tsk)
-                                        (ctx occ-ctx)
-                                        (rank number))
+                                   (ctx occ-ctx)
+                                   (rank number))
   ;; use occ-build-ctxual-tsk
   (make-occ-ctxual-tsk
    :name    nil
@@ -150,11 +150,11 @@
       (setf occ-global-tsk-collection collection))))
 
 (cl-defmethod occ-collect-tsks (collection
-                              force)
+                                force)
   (error "first argument should be of type (or occ-tree-tsk-collection occ-list-tsk-collection)"))
 
 (cl-defmethod occ-collect-tsks ((collection occ-tree-tsk-collection)
-                              force)
+                                force)
   (unless (occ-tree-tsk-collection-tree collection)
     (setf
      (occ-tree-tsk-collection-tree collection)
@@ -166,7 +166,7 @@
       (car (occ-tree-tsk-collection-root-files collection))))))
 
 (cl-defmethod occ-collect-tsks ((collection occ-list-tsk-collection)
-                              force)
+                                force)
   (unless (occ-list-tsk-collection-list collection)
     (setf
      (occ-list-tsk-collection-list collection)

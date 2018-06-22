@@ -28,7 +28,7 @@
 ;; https://stackoverflow.com/questions/12262220/add-created-date-property-to-todos-in-org-mode
 
 ;; "org tsks accss common api"
-    ;; (defvar org-)
+;; (defvar org-)
 (defvar occ-verbose 0)
 
 (defun occ-debug (level &rest args)
@@ -58,9 +58,9 @@
     (cl--struct-get-class class))))
 (defun cl-method-first-arg (method)
   (let ((methods (cl--generic method)))
-   (mapcar
-   #'(lambda (fspec) (cadar (aref fspec 1)))
-   (when methods (aref methods 3)))))
+    (mapcar
+     #'(lambda (fspec) (cadar (aref fspec 1)))
+     (when methods (aref methods 3)))))
 
 (defun occ-chgable-p ()
   "Stay with a clock at least 2 mins."
