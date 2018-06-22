@@ -33,7 +33,7 @@
 
 ;; https://stackoverflow.com/questions/40884764/lisp-get-all-slot-names-from-an-class-instance
 
-;; "org tasks accss common api"
+;; "org tsks accss common api"
 ;; (defvar org-)
 
 (defvar occ-verbose 0)
@@ -44,7 +44,7 @@
 (defstruct (occ-prop (:include occ-obj))
   value)
 
-(cl-defstruct (occ-task (:include occ-obj))
+(cl-defstruct (occ-tsk (:include occ-obj))
   heading
   heading-prop
   marker
@@ -53,28 +53,28 @@
   clock-sum
   plist)
 
-(cl-defstruct (occ-tree-task (:include occ-task))
+(cl-defstruct (occ-tree-tsk (:include occ-tsk))
   subtree)
 
-(cl-defstruct (occ-list-task (:include occ-task))
+(cl-defstruct (occ-list-tsk (:include occ-tsk))
   )
 
 (cl-defstruct (occ-ctx (:include occ-obj))
   buffer
   file)
 
-(cl-defstruct (occ-ctxual-task (:include occ-obj))
+(cl-defstruct (occ-ctxual-tsk (:include occ-obj))
   ctx
-  task
+  tsk
   rank)
 
-(cl-defstruct (occ-task-collection (:include occ-obj))
+(cl-defstruct (occ-tsk-collection (:include occ-obj))
   root-files)
 
-(cl-defstruct (occ-tree-task-collection (:include occ-task-collection))
+(cl-defstruct (occ-tree-tsk-collection (:include occ-tsk-collection))
   tree)
 
-(cl-defstruct (occ-list-task-collection (:include occ-task-collection))
+(cl-defstruct (occ-list-tsk-collection (:include occ-tsk-collection))
   list)
 
 
