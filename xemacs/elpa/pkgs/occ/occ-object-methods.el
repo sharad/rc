@@ -311,7 +311,7 @@ pointing to it."
                 (setq buffer-read-only old-buff-read-only)))
           retval)))))
 
-(cl-defmethod occ-run-associated-task ((ctx occ-ctx))
+(cl-defmethod occ-clockin-associated ((ctx occ-ctx))
   "marker and ranked version"
   (interactive
    (list (occ-make-ctx)))
