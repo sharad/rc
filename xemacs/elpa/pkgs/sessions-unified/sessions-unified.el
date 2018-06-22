@@ -378,7 +378,8 @@ return a new alist whose car is the new pair and cdr is ALIST."
                                           (find-buffer-visiting file-path))
                                       (if (consp buff-file)
                                           (car buff-file)
-                                        buff-file))))))
+                                        buff-file)))))
+                         (minibuff-name " *Minibuf"))
                     (message "  while buff: %s file-path: %s" buff file-path)
                     (when (and
                            buff
