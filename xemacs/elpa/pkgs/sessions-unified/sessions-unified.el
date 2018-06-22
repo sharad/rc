@@ -386,7 +386,6 @@ return a new alist whose car is the new pair and cdr is ALIST."
                           (switch-to-buffer-other-window buff)
                         (switch-to-buffer buff)
                         (setq not-first-buff t)))
-
                     (message "test4"))
 
                   (setq buff-files (cdr buff-files)))
