@@ -46,44 +46,44 @@
     (when (and
            clock
            (lotus-org-unnamed-tsk-clock-marker))
-     (equal
-      (marker-buffer org-clock-marker)
-      ;; id:x11 make org-ctx-clock version
-      (marker-buffer (lotus-org-unnamed-tsk-clock-marker))))))
+      (equal
+       (marker-buffer org-clock-marker)
+       ;; id:x11 make org-ctx-clock version
+       (marker-buffer (lotus-org-unnamed-tsk-clock-marker))))))
 
 (defun occ-maybe-create-clockedin-unnamed-heading ()
   (when (occ-can-create-unnamed-tsk-p)
     (let ((org-log-note-clock-out nil))
       (if (occ-clock-marker-is-unnamed-clock-p)
           (occ-debug :debug "occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk")
-          (prog1
-              (lotus-org-create-unnamed-tsk-tsk-clock-in)
-            (occ-unassociate-ctx-start-time-reset))))))
+        (prog1
+            (lotus-org-create-unnamed-tsk-tsk-clock-in)
+          (occ-unassociate-ctx-start-time-reset))))))
 
 (defun occ-maybe-create-unnamed-heading ()
   (when (occ-can-create-unnamed-tsk-p)
     (let ((org-log-note-clock-out nil))
       (if (occ-clock-marker-is-unnamed-clock-p)
           (occ-debug :debug "occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk")
-          (cdr (lotus-org-create-unnamed-tsk))))))
+        (cdr (lotus-org-create-unnamed-tsk))))))
 
 
 (defun occ-maybe-create-unnamed-tsk ()
   ;; back
   (let* ((unnamed-heading-marker
-         (cdr (lotus-org-create-unnamed-tsk)))
-        (unnamed-tsk
-         (when unnamed-heading-marker
-           (occ-make-tsk unnamed-heading-marker (occ-tsk-builder)))))
+          (cdr (lotus-org-create-unnamed-tsk)))
+         (unnamed-tsk
+          (when unnamed-heading-marker
+            (occ-make-tsk unnamed-heading-marker (occ-tsk-builder)))))
     unnamed-tsk))
 
 (cl-defmethod occ-maybe-create-unnamed-ctxual-tsk ((ctx occ-ctx))
   ;; back
   (let* ((unnamed-tsk
-         (occ-maybe-create-unnamed-tsk))
-        (unnamed-ctxual-tsk
-         (when unnamed-tsk
-           (occ-build-ctxual-tsk unnamed-tsk ctx))))
+          (occ-maybe-create-unnamed-tsk))
+         (unnamed-ctxual-tsk
+          (when unnamed-tsk
+            (occ-build-ctxual-tsk unnamed-tsk ctx))))
     unnamed-ctxual-tsk))
 
 (cl-defmethod occ-maybe-create-clockedin-unnamed-ctxual-tsk ((ctx occ-ctx))
@@ -95,12 +95,12 @@
         (let* ((unnamed-ctxual-tsk (occ-maybe-create-unnamed-ctxual-tsk ctx))
                (unnamed-tsk            (occ-ctxual-tsk-tsk unnamed-ctxual-tsk))
                (unnamed-marker          (occ-tsk-marker unnamed-tsk)))
-            (prog1
-                (occ-clockin-ctxual-tsk unnamed-ctxual-tsk)
-              ;; id:x11 make org-ctx-clock version
-              (lotus-org-unnamed-tsk-clock-marker unnamed-marker)
-              (message "clockin to unnnamed tsk.")
-              (occ-unassociate-ctx-start-time-reset)))))))
+          (prog1
+              (occ-clockin-ctxual-tsk unnamed-ctxual-tsk)
+            ;; id:x11 make org-ctx-clock version
+            (lotus-org-unnamed-tsk-clock-marker unnamed-marker)
+            (message "clockin to unnnamed tsk.")
+            (occ-unassociate-ctx-start-time-reset)))))))
 
 (provide 'occ-unnamed)
 ;;; occ-unnamed.el ends here
