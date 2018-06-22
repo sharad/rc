@@ -388,7 +388,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
                             (substring
                              (buffer-name buff)
                              0
-                             (length " *Minibuf"))
+                             (length minibuff-name))
                             " *Minibuf")) ;check once for if buff is here or not.
                       ;; newly added here to avoid " *Minibuffer*"
                       (if not-first-buff
