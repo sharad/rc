@@ -416,12 +416,13 @@ return a new alist whose car is the new pair and cdr is ALIST."
             (let* ((file-path  (if (consp session-current-buffer-file)
                                    (cdr session-current-buffer-file)))
                    (buff
-                    (ignore-erros
-                    (or (if file-path
-                                 (find-buffer-visiting file-path))
-                             (if (consp session-current-buffer-file)
-                                 (car session-current-buffer-file)
-                                 session-current-buffer-file)))))
+                    (ignore-errors
+                      (get-buffer
+                       (or (if file-path
+                               (find-buffer-visiting file-path))
+                           (if (consp session-current-buffer-file)
+                               (car session-current-buffer-file)
+                             session-current-buffer-file))))))
               (when (and
                      buff
                      (get-buffer buff))
