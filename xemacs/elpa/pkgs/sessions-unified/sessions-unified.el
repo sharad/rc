@@ -381,9 +381,6 @@ return a new alist whose car is the new pair and cdr is ALIST."
                     (when (get-buffer buff) ;check once for if buff is here or not.
 
                       ;; newly added here to avoid " *Minibuffer*"
-                      (unless (eq screen 0)
-                        (elscreen-create))
-
                       (if not-first-buff
                           (switch-to-buffer-other-window buff)
                         (switch-to-buffer buff)
