@@ -83,7 +83,7 @@
         (let ((range (org-get-property-block (point) 'force)))
           ;; first show hreading
           (when (eq org-cycle-subtree-status 'folded)
-            (unless flag (org-show-entry)) ; changed from org-show-task to org-show-entry
+            (unless flag (org-show-entry)) ; changed from org-show-tsk to org-show-entry
             (org-unlogged-message "CHILDREN")
             (setq org-cycle-subtree-status 'children))
           ;; show expand property if flag is nil, else hide
@@ -136,7 +136,7 @@
 
           (org-with-file-loc-timed-refile
               file pos
-              timeout '((occ-task-update-files :maxlevel . 4))
+              timeout '((occ-tsk-update-files :maxlevel . 4))
 
               (lexical-let* ((marker (make-marker))
                              (local-cleanup
@@ -176,7 +176,7 @@
                                          (setq prop (occ-select-propetry ctx))
                                          '(edit done)))
                                   (when (occ-set-property prop nil ctx)
-                                    (occ-task-update-tasks t)))
+                                    (occ-tsk-update-tsks t)))
                                 (cond
                                   ((eql 'done prop)
                                    (funcall cleanup win local-cleanup)
@@ -204,7 +204,7 @@
 
 ;;;###autoload
 (cl-defmethod occ-add-to-org-heading-when-idle ((ctx occ-ctx) timeout)
-  "Return value is important to decide next action to (create unnamed task.)"
+  "Return value is important to decide next action to (create unnamed tsk.)"
   (occ-message 6 "called add-ctx-to-org-heading-when-idle")
   ;; timed-newwin of occ-add-to-org-heading pass quit
   ;; signal to caller mean here, so need to be handled, else this function can
@@ -220,7 +220,7 @@
   )
 
 ;;;###autoload
-(defun occ-helm-select-ctxual-task (selector
+(defun occ-helm-select-ctxual-tsk (selector
                                     action)
   ;; here
   ;; (occ-debug :debug "sacha marker %s" (car ctxasks))
@@ -228,9 +228,9 @@
         (ctx (occ-make-ctx)))
 
     (let ((ctxasks
-           (occ-matching-ctxual-tasks (occ-collection-object) ctx)))
+           (occ-matching-ctxual-tsks (occ-collection-object) ctx)))
      (push
-      (helm-build-sync-source "Select matching task"
+      (helm-build-sync-source "Select matching tsk"
         :candidates (mapcar
                      'occ-sacha-selection-line
                      ctxasks)
@@ -243,9 +243,9 @@
            (org-clocking-p)
            (marker-buffer org-clock-marker))
       (push
-       (helm-build-sync-source "Current Clocking Task"
+       (helm-build-sync-source "Current Clocking Tsk"
          :candidates (list (occ-sacha-selection-line
-                            (occ-build-ctxual-task ctx (occ-current-task))))
+                            (occ-build-ctxual-tsk ctx (occ-current-tsk))))
          :action (list
                   (cons "Clock in and track" selector)))
        helm-sources))
@@ -263,26 +263,26 @@
       (error "marker %s invalid." marker)))
 
 ;;;###autoload
-(defun occ-set-to-task ()
-  (occ-helm-select-ctxual-task
-   #'occ-ctxual-task-marker
+(defun occ-set-to-tsk ()
+  (occ-helm-select-ctxual-tsk
+   #'occ-ctxual-tsk-marker
    #'occ-goto-marker))
 
 ;;;###autoload
-(defun occ-create-child-task ()
+(defun occ-create-child-tsk ()
   (interactive)
   (org-capture-alt
    'entry
-   '(function occ-set-to-task)
+   '(function occ-set-to-tsk)
    "* TODO %? %^g\n %i\n [%a]\n"
    :empty-lines 1))
 
 ;;;###autoload
-(defun occ-create-child-task ()
+(defun occ-create-child-tsk ()
   (interactive)
   (org-capture-immediate                ;TODO
    'entry
-   '(function occ-set-to-task)
+   '(function occ-set-to-tsk)
    "* TODO %? %^g\n %i\n [%a]\n"
    :empty-lines 1))
 
