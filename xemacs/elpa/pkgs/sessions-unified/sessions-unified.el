@@ -365,6 +365,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
                      (not-first-buff nil))
 
                 (while buff-files
+
                   (unless (eq screen 0)
                     (elscreen-create))
 
