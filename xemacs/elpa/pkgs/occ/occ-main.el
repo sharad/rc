@@ -56,7 +56,7 @@
           (occ-maybe-create-clockedin-unnamed-ctxual-task ctx))
         (occ-debug :debug "occ-update-current-ctx: Now really clock done.")))))
 
-(cl-defmethod occ-update-current ((ctx occ-ctx))
+(cl-defmethod occ-clockin-associated-task-if-change ((ctx occ-ctx))
   (if (>
        (float-time (time-since *occ-last-buffer-select-time*))
        *occ-task-current-ctx-time-interval*)
