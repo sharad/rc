@@ -100,7 +100,7 @@
                     ;; it another time when matching its ending line with
                     ;; `org-drawer-regexp'.
                     (goto-char (org-element-property :end drawer))))
-                (message "not at drawer"))
+              (message "not at drawer"))
             (message "reached to drawer1")))))))
 
 (defun org-get-flag-proprty-drawer-at-marker (marker)
@@ -193,12 +193,12 @@
                              (funcall cleanup win local-cleanup)
                              (if timer (cancel-timer timer))
                              (signal (car err) (cdr err))))))))))
-          (progn
-            (occ-message 6 "not running add-ctx-to-org-heading 1 %s, 2 %s 3 %s"
-                                       (eq (current-buffer) buff)
-                                       (buffer-live-p buff)
-                                       (eq buff
-                                           (get-buffer "*helm-mode-occ-add-to-org-heading*"))))))))
+        (progn
+          (occ-message 6 "not running add-ctx-to-org-heading 1 %s, 2 %s 3 %s"
+                       (eq (current-buffer) buff)
+                       (buffer-live-p buff)
+                       (eq buff
+                           (get-buffer "*helm-mode-occ-add-to-org-heading*"))))))))
 
 ;;;###autoload
 (cl-defmethod occ-add-to-org-heading-when-idle ((ctx occ-ctx) timeout)
@@ -210,7 +210,7 @@
   ;; caller function.
   (condition-case nil
       (occ-add-to-org-heading ctx timeout)
-      ((quit)))
+    ((quit)))
   ;; (run-with-idle-timer-nonobtrusive-simple
   ;;  7 nil
   ;;  #'(lambda (args)
@@ -227,15 +227,15 @@
 
     (let ((ctxasks
            (occ-matching-ctxual-tsks (occ-collection-object) ctx)))
-     (push
-      (helm-build-sync-source "Select matching tsk"
-        :candidates (mapcar
-                     'occ-sacha-selection-line
-                     ctxasks)
-        :action (list
-                 (cons "Clock in and track" selector))
-        :history 'org-refile-history)
-      helm-sources))
+      (push
+       (helm-build-sync-source "Select matching tsk"
+         :candidates (mapcar
+                      'occ-sacha-selection-line
+                      ctxasks)
+         :action (list
+                  (cons "Clock in and track" selector))
+         :history 'org-refile-history)
+       helm-sources))
 
     (when (and
            (org-clocking-p)
@@ -258,7 +258,7 @@
       (progn
         (set-buffer (marker-buffer marker))
         (goto-char marker))
-      (error "marker %s invalid." marker)))
+    (error "marker %s invalid." marker)))
 
 ;;;###autoload
 (defun occ-set-to-tsk ()
