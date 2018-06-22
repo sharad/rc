@@ -62,7 +62,7 @@
       (let* ((buff    (occ-ctx-buffer ctx)))
         (setq *occ-tsk-current-ctx* ctx)
         (if (and
-             (occ-changable-p)
+             (occ-chgable-p)
              buff (buffer-live-p buff)
              (not (minibufferp buff))
              (not              ;BUG: Reconsider whether it is catching case after some delay.
