@@ -384,12 +384,12 @@ return a new alist whose car is the new pair and cdr is ALIST."
                     (when (and
                            buff
                            (bufferp buff)
-                           (string-equal
+                           ((string-equal
                             (substring
                              (buffer-name buff)
                              0
                              (length minibuff-name))
-                            minibuff-name)) ;check once for if buff is here or not.
+                            minibuff-name))) ;check once for if buff is here or not.
                       ;; newly added here to avoid " *Minibuffer*"
                       (if not-first-buff
                           (switch-to-buffer-other-window buff)
