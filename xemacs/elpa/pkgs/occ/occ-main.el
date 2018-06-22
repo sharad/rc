@@ -51,7 +51,7 @@
         (occ-debug :debug "occ-update-current-ctx: Current task already associate to %s" ctx)
       (progn                ;current clock is not matching
         (occ-debug :debug "occ-update-current-ctx: Now really going to clock.")
-        (unless (occ-run-associated-task ctx)
+        (unless (occ-clockin-associated ctx)
           ;; not able to find associated, or intentionally not selecting a clock
           (occ-debug :debug "trying to create unnamed task.")
           (occ-maybe-create-clockedin-unnamed-ctxual-task ctx))
