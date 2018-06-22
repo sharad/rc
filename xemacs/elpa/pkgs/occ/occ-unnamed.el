@@ -102,7 +102,7 @@
               (message "clockin to unnnamed tsk.")
               (occ-unassociate-ctx-start-time-reset)))))))
 
-(defun occ-changable-p ()
+(defun occ-chgable-p ()
   "Stay with a clock at least 2 mins."
   (if org-clock-start-time
       (let ((clock-duration
