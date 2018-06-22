@@ -49,7 +49,14 @@
 
 (defun occ-completing-read (prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
   (let ((helm-always-two-windows nil))
-    (completing-read prompt collection predicate require-match initial-input hist def inherit-input-method)))
+    (completing-read prompt
+                     collection
+                     predicate
+                     require-match
+                     initial-input
+                     hist
+                     def
+                     inherit-input-method)))
 
 (defun occ-select-propetry (ctx &optional prompt)
   (let ((prompt (or prompt "proptery: "))
