@@ -41,7 +41,7 @@
 (occ-set-global-task-collection-spec
  (list :tree occ-tree-task-root-org-file))
 
-(cl-defmethod occ-clockin-associated-task-if-not ((ctx occ-ctx))
+(cl-defmethod occ-clockin-assoctsk-if-not ((ctx occ-ctx))
   (progn
     (if (and
          (not (occ-clock-marker-is-unnamed-clock-p))
@@ -49,13 +49,13 @@
         (occ-debug :debug "occ-update-current-ctx: Current task already associate to %s" ctx)
       (progn                ;current clock is not matching
         (occ-debug :debug "occ-update-current-ctx: Now really going to clock.")
-        (unless (occ-clockin-associated-task ctx)
+        (unless (occ-clockin-assoctsk ctx)
           ;; not able to find associated, or intentionally not selecting a clock
           (occ-debug :debug "trying to create unnamed task.")
           (occ-maybe-create-clockedin-unnamed-ctxual-task ctx))
         (occ-debug :debug "occ-update-current-ctx: Now really clock done.")))))
 
-(cl-defmethod occ-clockin-associated-task-if-change ((ctx occ-ctx))
+(cl-defmethod occ-clockin-assoctsk-if-change ((ctx occ-ctx))
   (if (>
        (float-time (time-since *occ-last-buffer-select-time*))
        *occ-task-current-ctx-time-interval*)
@@ -69,13 +69,13 @@
               (equal *occ-task-previous-ctx* *occ-task-current-ctx*)))
             (progn
              (setq *occ-task-previous-ctx* *occ-task-current-ctx*)
-             (occ-clockin-associated-task-if-not ctx))
+             (occ-clockin-assoctsk-if-not ctx))
             (occ-debug :debug "occ-update-current-ctx: ctx %s not suitable to associate" ctx)))
     (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
 
-(defun occ-clockin-associated-task-to-curr-ctx-if-not (&optional force)
+(defun occ-clockin-assoctsk-to-curr-ctx-if-not (&optional force)
   (interactive "P")
-  (occ-clockin-associated-task-if-change (occ-make-context)))
+  (occ-clockin-assoctsk-if-change (occ-make-context)))
 
 (provide 'occ-main)
 ;;; occ-main.el ends here
