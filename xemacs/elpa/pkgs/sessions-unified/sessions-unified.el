@@ -374,10 +374,10 @@ return a new alist whose car is the new pair and cdr is ALIST."
                                          (cdr buff-file)))
                          (buff (get-buffer
                                 (or (if file-path
-                                       (find-buffer-visiting file-path))
-                                   (if (consp buff-file)
-                                       (car buff-file)
-                                       buff-file)))))
+                                        (find-buffer-visiting file-path))
+                                    (if (consp buff-file)
+                                        (car buff-file)
+                                      buff-file)))))
                     (message "  while buff: %s file-path: %s" buff file-path)
                     (when (and
                            buff
