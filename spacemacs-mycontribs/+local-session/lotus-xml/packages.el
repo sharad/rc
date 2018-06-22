@@ -83,7 +83,7 @@ Each entry is either:
                     (flyspell-mode-off)
                     (turn-off-show-smartparens-mode)
                     (turn-off-smartparens-strict-mode)
-                    (turn-off-smartparens-strict-mode)))))
+                    (turn-off-smartparens-mode)))))
       (progn
 
         (setq
