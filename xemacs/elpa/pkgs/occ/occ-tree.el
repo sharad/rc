@@ -61,7 +61,7 @@
   ;; (testing
   ;;  (setq
   ;;   testxx-remove
-  ;;   (tree-remove-if-not-tasks
+  ;;   (tree-remove-if-not-tsks
   ;;    #'(lambda (e) (eq (plist-get e :pre-blank) 4))
   ;;    testxx))
 
@@ -83,28 +83,28 @@
 
 
 (progn
-  (defun occ-tree-task-node-p (tx)
-    "Test org TX is org tasks tree non-leaf node"
+  (defun occ-tree-tsk-node-p (tx)
+    "Test org TX is org tsks tree non-leaf node"
     (occ-get-property tx 'subtree))
 
-  (defun occ-tree-task-subtree (tx)
-    "Test org TX is org tasks tree non-leaf node"
+  (defun occ-tree-tsk-subtree (tx)
+    "Test org TX is org tsks tree non-leaf node"
     (occ-get-property tx 'subtree))
 
-  (defun occ-mapcar-tree-tasks (fn tree args)
+  (defun occ-mapcar-tree-tsks (fn tree args)
     "Tree mapcar return result for FN for all TREE nodes with ARGS"
     (tree-mapcar-nodes
-     'occ-tree-task-subtree fn tree args))
+     'occ-tree-tsk-subtree fn tree args))
 
-  (defun occ-mapc-tree-tasks (fn tree args)
+  (defun occ-mapc-tree-tsks (fn tree args)
     "Tree mapc run FN for all TREE nodes with ARGS"
     (tree-mapc-nodes
-     'occ-tree-task-subtree fn tree args))
+     'occ-tree-tsk-subtree fn tree args))
 
-  (defun occ-remove-if-not-tree-tasks (fn tree args)
+  (defun occ-remove-if-not-tree-tsks (fn tree args)
     "Tree remove if return TREE with all node and its subtree removed if node return nil for PREDICATE"
     (tree-remove-if-not-nodes
-     'occ-tree-task-subtree fn tree args)))
+     'occ-tree-tsk-subtree fn tree args)))
 
 
 (defun occ-org-map-subheading (fun)
@@ -121,18 +121,18 @@
             (push (funcall fun) collection))))
     collection))
 
-(defun occ-tree-task-build (task-builder &optional file)
-  "Build recursive org tasks from org FILE (or current buffer) using TASK-BUILDER function e.g. occ-collect-task"
+(defun occ-tree-tsk-build (tsk-builder &optional file)
+  "Build recursive org tsks from org FILE (or current buffer) using TSK-BUILDER function e.g. occ-collect-tsk"
   (with-current-buffer (if file
                            (find-file-noselect file)
                          (current-buffer))
     (if file (goto-char (point-min)))
-    (let ((entry (funcall task-builder)))
+    (let ((entry (funcall tsk-builder)))
       (when entry
         (let* ((sub-tree
                 (append
                  (occ-org-map-subheading #'(lambda ()
-                                                   (occ-tree-task-build task-builder nil)))
+                                                   (occ-tree-tsk-build tsk-builder nil)))
                  (let ((subtree-file-prop (occ-get-property entry :SUBTREEFILE)))
                    (when subtree-file-prop
                      (let* ((file (if file file (buffer-file-name)))
@@ -148,66 +148,66 @@
                             subtree-file
                             (file-readable-p subtree-file))
                            (list
-                            (occ-tree-task-build task-builder subtree-file)))))))))
+                            (occ-tree-tsk-build tsk-builder subtree-file)))))))))
           (occ-set-property entry 'subtree sub-tree)
           entry)))))
 
 ;;;###autoload
-(defun occ-recursive-update-tasks (&optional force) ;; API (occ-api-set :predicate :update  'org-entry-list-update-tasks)
-  "Update recursive org tasks tree"
+(defun occ-recursive-update-tsks (&optional force) ;; API (occ-api-set :predicate :update  'org-entry-list-update-tsks)
+  "Update recursive org tsks tree"
   (interactive "P")
-  (if occ-tree-task-root-org-file
-      (if (file-exists-p occ-tree-task-root-org-file)
+  (if occ-tree-tsk-root-org-file
+      (if (file-exists-p occ-tree-tsk-root-org-file)
           (unless (and (not force)
-                       occ-tree-tasks)
-            (setq occ-tree-tasks
-                  (occ-tree-get-tasks
-                   occ-tree-task-root-org-file)))
-        (message "file %s not exists." occ-tree-task-root-org-file))
-    (message "occ-tree-task-root-org-file is nil"))
-  occ-tree-tasks)
+                       occ-tree-tsks)
+            (setq occ-tree-tsks
+                  (occ-tree-get-tsks
+                   occ-tree-tsk-root-org-file)))
+        (message "file %s not exists." occ-tree-tsk-root-org-file))
+    (message "occ-tree-tsk-root-org-file is nil"))
+  occ-tree-tsks)
 
-(defun occ-tree-tasks-files ()
-  (let ((tasks (occ-recursive-update-tasks))
+(defun occ-tree-tsks-files ()
+  (let ((tsks (occ-recursive-update-tsks))
         (files '()))
     (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE files %s[%d]" files (length files))
-    (occ-mapc-tree-tasks
-     #'(lambda (task args)
+    (occ-mapc-tree-tsks
+     #'(lambda (tsk args)
          (push
-          (occ-get-property task 'file)
+          (occ-get-property tsk 'file)
           files))
-     tasks
+     tsks
      nil)
     (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER files %s[%d]" "files" (length files))
     files))
 
 (defun occ-tree-get-files ()
-  "Build recursive org tasks from org FILE (or current buffer)"
+  "Build recursive org tsks from org FILE (or current buffer)"
   (let ()
     (remove nil
             (delete-dups
-             (occ-tree-tasks-files)))))
+             (occ-tree-tsks-files)))))
 
 
 
 
 
-;; API (occ-api-set :predicate :update  'org-task-list-update-tasks)
-(defun occ-recursive-matching-tasks (ctx)
-  (let ((tasks (occ-recursive-update-tasks))
+;; API (occ-api-set :predicate :update  'org-tsk-list-update-tsks)
+(defun occ-recursive-matching-tsks (ctx)
+  (let ((tsks (occ-recursive-update-tsks))
         (matched '()))
       (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE matched %s[%d]" matched (length matched))
-      (occ-mapc-tree-tasks
-       #'(lambda (task args)
+      (occ-mapc-tree-tsks
+       #'(lambda (tsk args)
            (let ((rank
-                  (funcall occ-api-task-associated-to-ctx-p task args)))
+                  (funcall occ-api-tsk-associated-to-ctx-p tsk args)))
              (unless rank (error "occ-entries-associated-to-ctx-by-keys[lambda]: rank is null"))
              (when (> rank 0)
-               (push task matched)
-               (occ-debug :debug "occ-entries-associated-to-ctx-by-keys[lambda]: task %s MATCHED RANK %d"
-                        (occ-get-heading task)
+               (push tsk matched)
+               (occ-debug :debug "occ-entries-associated-to-ctx-by-keys[lambda]: tsk %s MATCHED RANK %d"
+                        (occ-get-heading tsk)
                         (length matched)))))
-       tasks
+       tsks
        ctx)
 
       (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER matched %s[%d]" "matched" (length matched))
