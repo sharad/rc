@@ -55,7 +55,7 @@
           (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))
         (occ-debug :debug "occ-update-current-ctx: Now really clock done.")))))
 
-(cl-defmethod occ-clockin-assoctsk-if-change ((ctx occ-ctx))
+(cl-defmethod occ-clockin-assoctsk-if-chg ((ctx occ-ctx))
   (if (>
        (float-time (time-since *occ-last-buffer-select-time*))
        *occ-tsk-current-ctx-time-interval*)
@@ -75,7 +75,7 @@
 
 (defun occ-clockin-assoctsk-to-curr-ctx-if-not (&optional force)
   (interactive "P")
-  (occ-clockin-assoctsk-if-change (occ-make-context)))
+  (occ-clockin-assoctsk-if-chg (occ-make-context)))
 
 (provide 'occ-main)
 ;;; occ-main.el ends here
