@@ -379,6 +379,10 @@ return a new alist whose car is the new pair and cdr is ALIST."
                                        buff-file))))
                     (message "  while buff: %s file-path: %s" buff file-path)
                     (when (get-buffer buff) ;check once for if buff is here or not.
+
+                      (unless (eq screen 0)
+                        (elscreen-create))
+
                       (if not-first-buff
                           (switch-to-buffer-other-window buff)
                         (switch-to-buffer buff)
