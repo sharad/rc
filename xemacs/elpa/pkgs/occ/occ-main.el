@@ -70,7 +70,7 @@
              (not (minibufferp buff))
              (not              ;BUG: Reconsider whether it is catching case after some delay.
               (equal *occ-task-previous-ctx* *occ-task-current-ctx*)))
-            (occ-clockin-xyz ctx)
+            (occ-clockin-assoc-task ctx)
             (occ-debug :debug "occ-update-current-ctx: ctx %s not suitable to associate" ctx)))
     (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
 
