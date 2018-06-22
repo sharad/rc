@@ -74,7 +74,7 @@
             (occ-debug :debug "occ-update-current-ctx: ctx %s not suitable to associate" ctx)))
     (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
 
-(defun occ-clockin-associated-task-if-change (&optional force)
+(defun occ-clockin-associated-task-if-not (&optional force)
   (interactive "P")
   (occ-clockin-associated-task-if-change (occ-make-context)))
 
