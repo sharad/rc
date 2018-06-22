@@ -423,7 +423,8 @@ return a new alist whose car is the new pair and cdr is ALIST."
               ;;        (message "*elscreen-session-restore-data* %s" *elscreen-session-restore-data*)))
               ;;     (testing
               ;;      (message "in when session-current-screen-buffers %s" session-current-screen-buffers)))
-              ))
+              )
+            )
           (testing
            (message "elscreen-notify-screen-modification"))
           (elscreen-notify-screen-modification 'force-immediately)
