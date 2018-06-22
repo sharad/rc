@@ -114,8 +114,8 @@
         (read-only-mode)
         (org-previous-visible-heading 1)
         (let ((tsk (occ-make-tsk
-                     (or org-clock-hd-marker org-clock-marker)
-                     (occ-tsk-builder))))
+                    (or org-clock-hd-marker org-clock-marker)
+                    (occ-tsk-builder))))
           tsk)))))
 ;; Create tsk info out of current clock:1 ends here
 
@@ -165,10 +165,10 @@ pointing to it."
                           (looking-at org-outline-regexp)
                           (match-string 0)))
                 (tsk (substring
-                       (org-fontify-like-in-org-mode
-                        (concat prefix heading)
-                        org-odd-levels-only)
-                       (length prefix))))
+                      (org-fontify-like-in-org-mode
+                       (concat prefix heading)
+                       org-odd-levels-only)
+                      (length prefix))))
            (when tsk ;; (and cat tsk)
              ;; (insert (format "[%c] %-12s  %s\n" i cat tsk))
              ;; marker
@@ -193,10 +193,10 @@ pointing to it."
                             (looking-at org-outline-regexp)
                             (match-string 0)))
                   (tsk (substring
-                         (org-fontify-like-in-org-mode
-                          (concat prefix heading)
-                          org-odd-levels-only)
-                         (length prefix))))
+                        (org-fontify-like-in-org-mode
+                         (concat prefix heading)
+                         org-odd-levels-only)
+                        (length prefix))))
              (when tsk ;; (and cat tsk)
                ;; (insert (format "[%c] %-12s  %s\n" i cat tsk))
                ;; marker
@@ -463,14 +463,14 @@ pointing to it."
     rank))
 
 (cl-defmethod occ-build-ctxual-tsk ((tsk occ-tsk) ;ctor
-                                     (ctx occ-ctx))
+                                    (ctx occ-ctx))
   (occ-make-ctxual-tsk tsk
-                        ctx
-                        (occ-rank tsk ctx)))
+                       ctx
+                       (occ-rank tsk ctx)))
 
 ;; ISSUE? should it return rank or occ-ctxual-tsks list
 (cl-defmethod occ-matching-ctxual-tsks ((collection occ-list-tsk-collection)
-                                         (ctx occ-ctx))
+                                        (ctx occ-ctx))
   ;; (message "occ-matching-ctxual-tsks list")
   (lexical-let ((tsks (occ-collection collection))
                 (ctx ctx))
@@ -484,7 +484,7 @@ pointing to it."
 
 ;; ISSUE? should it return rank or occ-ctxual-tsks map
 (cl-defmethod occ-matching-ctxual-tsks ((collection occ-tree-tsk-collection)
-                                         (ctx occ-ctx))
+                                        (ctx occ-ctx))
   ;; (message "occ-matching-ctxual-tsks tree")
   (let ((tsks (occ-collection collection))
         (matched '()))
@@ -508,7 +508,7 @@ pointing to it."
 
 ;;TODO: make it after method
 (cl-defmethod occ-matching-ctxual-tsks :around ((collection occ-tsk-collection)
-                                                 (ctx occ-ctx)) ;TODO: make it after method
+                                                (ctx occ-ctx)) ;TODO: make it after method
   ;; TODO Here do variance based filtering.
   ;; (message "occ-matching-ctxual-tsks :around start")
   (if (occ-collection-object)
@@ -592,10 +592,10 @@ pointing to it."
 
   (occ-ctxual-tsk-tsk
    (car
-   (occ-matching-ctxual-tsks
-    (occ-collection-object)
-    (occ-make-ctx
-     (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp")))))
+    (occ-matching-ctxual-tsks
+     (occ-collection-object)
+     (occ-make-ctx
+      (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp")))))
 
   (length
    (occ-matching-ctxual-tsks
