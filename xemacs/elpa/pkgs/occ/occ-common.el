@@ -62,5 +62,21 @@
    #'(lambda (fspec) (cadar (aref fspec 1)))
    (when methods (aref methods 3)))))
 
+(defun occ-chgable-p ()
+  "Stay with a clock at least 2 mins."
+  (if org-clock-start-time
+      (let ((clock-duration
+             (if (and
+                  (stringp org-clock-start-time)
+                  (string-equal "" org-clock-start-time))
+                 0
+               (float-time (time-since org-clock-start-time)))))
+        (or
+         (< clock-duration 60)
+         (> clock-duration 120)))
+    t))
+
+
+
 (provide 'occ-common)
 ;;; occ-common.el ends here
