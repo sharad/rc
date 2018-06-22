@@ -79,7 +79,11 @@ Each entry is either:
         ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=16449
         (add-hook 'nxml-mode-hook
                   (function
-                   (lambda () (flyspell-mode-off)))))
+                   (lambda ()
+                    (flyspell-mode-off)
+                    (turn-off-show-smartparens-mode)
+                    (turn-off-smartparens-strict-mode)
+                    (turn-off-smartparens-strict-mode)))))
       (progn
 
         (setq
