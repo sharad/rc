@@ -76,7 +76,7 @@
 
 (defun occ-update-current-ctx (&optional force)
   (interactive "P")
-  (occ-update-current (occ-make-context)))
+  (occ-clockin-associated-task-if-change (occ-make-context)))
 
 (provide 'occ-main)
 ;;; occ-main.el ends here
