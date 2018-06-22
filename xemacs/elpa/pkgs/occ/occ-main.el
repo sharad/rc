@@ -70,21 +70,8 @@
              (not (minibufferp buff))
              (not              ;BUG: Reconsider whether it is catching case after some delay.
               (equal *occ-task-previous-ctx* *occ-task-current-ctx*)))
+            (occ-clockin-xyz ctx)
 
-            (progn
-              (setq *occ-task-previous-ctx* *occ-task-current-ctx*)
-              (if (and
-                   (not (occ-clock-marker-is-unnamed-clock-p))
-                   ;; (> (occ-current-task-associated-to-ctx-p ctx) 0)
-                   (> (occ-associated-p (occ-current-task) ctx) 0))
-                  (occ-debug :debug "occ-update-current-ctx: Current task already associate to %s" ctx)
-                  (progn                ;current clock is not matching
-                    (occ-debug :debug "occ-update-current-ctx: Now really going to clock.")
-                    (unless (occ-run-associated-task ctx)
-                      ;; not able to find associated, or intentionally not selecting a clock
-                      (occ-debug :debug "trying to create unnamed task.")
-                      (occ-maybe-create-clockedin-unnamed-ctxual-task ctx))
-                    (occ-debug :debug "occ-update-current-ctx: Now really clock done."))))
 
             (occ-debug :debug "occ-update-current-ctx: ctx %s not suitable to associate" ctx)))
     (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
