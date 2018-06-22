@@ -366,9 +366,8 @@ return a new alist whose car is the new pair and cdr is ALIST."
 
                 (while buff-files
 
-                  ;; newly commented here
-                  ;; (unless (eq screen 0)
-                  ;;   (elscreen-create))
+                  (unless (eq screen 0)
+                    (elscreen-create))
 
                   (let* ((buff-file  (car buff-files))
                          (file-path  (if (consp buff-file)
