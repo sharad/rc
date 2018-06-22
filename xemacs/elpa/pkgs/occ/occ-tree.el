@@ -31,7 +31,7 @@
      :subtree
      (mapcar
       #'(lambda (e)
-        (tree-mapcar-nodes subtreefn fn e args))
+          (tree-mapcar-nodes subtreefn fn e args))
       (funcall subtreefn tree))))
 
   (defun tree-mapc-nodes (subtreefn fn tree args)
@@ -39,7 +39,7 @@
     (funcall fn tree args)
     (mapc
      #'(lambda (e)
-       (tree-mapc-nodes subtreefn fn e args))
+         (tree-mapc-nodes subtreefn fn e args))
      (funcall subtreefn tree)))
 
   (defun tree-remove-if-not-nodes (subtreefn predicate tree args)
@@ -52,11 +52,11 @@
                 nil
                 (mapcar
                  #'(lambda (e)
-                   (tree-remove-if-not-nodes subtreefn predicate e args))
+                     (tree-remove-if-not-nodes subtreefn predicate e args))
                  (funcall subtreefn tree)))))
           (if (or rootele subtree)
               (plist-put tree :subtree subtree)))
-        (if (funcall predicate tree args) tree)))
+      (if (funcall predicate tree args) tree)))
 
   ;; (testing
   ;;  (setq
@@ -132,7 +132,7 @@
         (let* ((sub-tree
                 (append
                  (occ-org-map-subheading #'(lambda ()
-                                                   (occ-tree-tsk-build tsk-builder nil)))
+                                             (occ-tree-tsk-build tsk-builder nil)))
                  (let ((subtree-file-prop (occ-get-property entry :SUBTREEFILE)))
                    (when subtree-file-prop
                      (let* ((file (if file file (buffer-file-name)))
@@ -196,23 +196,23 @@
 (defun occ-recursive-matching-tsks (ctx)
   (let ((tsks (occ-recursive-update-tsks))
         (matched '()))
-      (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE matched %s[%d]" matched (length matched))
-      (occ-mapc-tree-tsks
-       #'(lambda (tsk args)
-           (let ((rank
-                  (funcall occ-api-tsk-associated-to-ctx-p tsk args)))
-             (unless rank (error "occ-entries-associated-to-ctx-by-keys[lambda]: rank is null"))
-             (when (> rank 0)
-               (push tsk matched)
-               (occ-debug :debug "occ-entries-associated-to-ctx-by-keys[lambda]: tsk %s MATCHED RANK %d"
+    (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE matched %s[%d]" matched (length matched))
+    (occ-mapc-tree-tsks
+     #'(lambda (tsk args)
+         (let ((rank
+                (funcall occ-api-tsk-associated-to-ctx-p tsk args)))
+           (unless rank (error "occ-entries-associated-to-ctx-by-keys[lambda]: rank is null"))
+           (when (> rank 0)
+             (push tsk matched)
+             (occ-debug :debug "occ-entries-associated-to-ctx-by-keys[lambda]: tsk %s MATCHED RANK %d"
                         (occ-get-heading tsk)
                         (length matched)))))
-       tsks
-       ctx)
+     tsks
+     ctx)
 
-      (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER matched %s[%d]" "matched" (length matched))
+    (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: AFTER matched %s[%d]" "matched" (length matched))
 
-      matched))
+    matched))
 
 (provide 'occ-tree)
 ;;; occ-tree.el ends here
