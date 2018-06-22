@@ -44,7 +44,6 @@
 
 (cl-defmethod occ-clockin-associated-task-if-not ((ctx occ-ctx))
   (progn
-    (setq *occ-task-previous-ctx* *occ-task-current-ctx*)
     (if (and
          (not (occ-clock-marker-is-unnamed-clock-p))
          (> (occ-associated-p (occ-current-task) ctx) 0))
@@ -69,7 +68,9 @@
              (not (minibufferp buff))
              (not              ;BUG: Reconsider whether it is catching case after some delay.
               (equal *occ-task-previous-ctx* *occ-task-current-ctx*)))
-            (occ-clockin-associated-task-if-not ctx)
+            (progn
+             (setq *occ-task-previous-ctx* *occ-task-current-ctx*)
+             (occ-clockin-associated-task-if-not ctx))
             (occ-debug :debug "occ-update-current-ctx: ctx %s not suitable to associate" ctx)))
     (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
 
