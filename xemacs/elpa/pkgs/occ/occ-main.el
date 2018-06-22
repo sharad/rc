@@ -42,7 +42,7 @@
  (list :tree occ-tree-task-root-org-file))
 
 
-(cl-defmethod occ-clockin-associated-task-if-ctx-change ((ctx occ-ctx))
+(cl-defmethod occ-clockin-associated-task-if-change ((ctx occ-ctx))
   (progn
     (setq *occ-task-previous-ctx* *occ-task-current-ctx*)
     (if (and
