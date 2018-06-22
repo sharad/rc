@@ -116,7 +116,7 @@
 (cl-defmethod occ-add-to-org-heading ((ctx occ-ctx) timeout)
   "add-ctx-to-org-heading"
   ;; TODO: make helm conditional when it is used than only it should be handled.
-  (interactive '(nil 7))
+  (interactive '((occ-make-ctx) 7))
 
   (lotus-with-no-active-minibuffer
       (progn
