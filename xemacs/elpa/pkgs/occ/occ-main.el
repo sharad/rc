@@ -43,7 +43,7 @@
 
 (cl-defmethod occ-clockin-assoctsk-if-not ((ctx occ-ctx))
   (if (and
-       (not (occ-clock-marker-is-unnamed-clock-p))
+       (occ-clock-marker-is-unnamed-clock-p)
        (>= 0 (occ-associated-p (occ-current-tsk) ctx)))
 
       (progn
