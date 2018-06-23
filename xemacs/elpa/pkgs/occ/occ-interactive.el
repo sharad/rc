@@ -72,13 +72,6 @@
                        '(edit done)))))
     (cdr (assoc (occ-completing-read prompt keys  nil t) keys))))
 
-(defun occ-test (ctx timeout)
-  (interactive '(nil nil))
-  (lexical-let* ((timeout (or timeout 7))
-                 (ctx (or ctx (occ-make-ctx)))
-                 (buff (occ-ctx-buffer ctx)))
-    (message "test %s" timeout)))
-
 (defun org-flag-proprty-drawer-at-marker (marker flag)
   (let ((buff (marker-buffer marker))
         (loc (marker-position marker)))
