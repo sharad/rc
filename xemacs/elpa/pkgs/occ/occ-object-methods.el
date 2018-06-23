@@ -65,9 +65,12 @@
 (cl-defmethod occ-obj-defined-slots ((obj occ-obj))
   (let* ((plist (cl-struct-slot-value (cl-classname obj) 'plist obj))
          (plist-keys (plist-get-keys plist))
-         (slots (cl-class-slots (cl-classname obj))))
+         (slots
+          (append
+           (cl-class-slots (cl-classname obj))
+           (mapcar #'key2sym plist-keys))))
     (append slots
-            (mapcar #'key2sym plist-keys))))
+            )))
 
 (cl-defmethod cl-method-matched-arg ((method symbol) (ctx occ-ctx))
   (remove-if-not
