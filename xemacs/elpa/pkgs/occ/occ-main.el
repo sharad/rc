@@ -93,7 +93,7 @@
           ;; distrubing while editing.
           ;; run-with-timer
           (run-with-idle-timer
-           (1+ *occ-task-current-context-time-interval*)
+           (1+ *occ-tsk-current-ctx-time-interval*)
            nil
            'occ-clockin-assoctsk-to-curr-ctx-if-not))))
 
