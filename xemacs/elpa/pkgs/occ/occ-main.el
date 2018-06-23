@@ -122,7 +122,7 @@
     (remove-hook 'elscreen-goto-hook 'occ-run-task-current-context-timer)
     (remove-hook 'after-save-hook             'occ-after-save-hook t))
 
-  (dolist (prop (occ-keys-with-operation :getter nil))
+  (dolist (prop (cl-method-matched-arg 'occ-readprop nil))
     (let ((propstr
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
