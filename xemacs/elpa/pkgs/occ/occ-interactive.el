@@ -23,6 +23,8 @@
 
 ;;; Code:
 
+(require 'occ-object-methods)
+
 ;; (defun org-get-property (prop-key)
 ;;   (org-entry-get nil prop-key))
 
