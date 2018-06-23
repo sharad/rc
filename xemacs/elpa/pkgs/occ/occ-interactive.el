@@ -58,7 +58,7 @@
                      def
                      inherit-input-method)))
 
-(cl-defmethod cl-method-matched-arg (()) (())
+(cl-defmethod cl-method-matched-arg ((method symbol)) (())
               )
 
 
