@@ -57,8 +57,7 @@
 
       (progn
         (occ-debug :debug "occ-update-current-ctx: Current tsk already associate to %s" ctx)
-        nil)
-    ))
+        nil)))
 
 (cl-defmethod occ-clockin-assoctsk-if-chg ((ctx occ-ctx))
   (if (>
