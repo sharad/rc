@@ -95,7 +95,7 @@
           (run-with-idle-timer
            (1+ *occ-task-current-context-time-interval*)
            nil
-           'occ-update-current-context))))
+           'occ-clockin-assoctsk-to-curr-ctx-if-not))))
 
 (defun occ-insinuate ()
   (interactive)
