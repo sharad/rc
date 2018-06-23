@@ -82,20 +82,20 @@
   (occ-clockin-assoctsk-if-chg (occ-make-context)))
 
 
-(defun org-context-clock-run-task-current-context-timer ()
+(defun occ-run-task-current-context-timer ()
   (interactive)
   (progn
-    (setq *org-context-clock-last-buffer-select-time* (current-time))
-    (when *org-context-clock-buffer-select-timer*
-      (cancel-timer *org-context-clock-buffer-select-timer*)
-      (setq *org-context-clock-buffer-select-timer* nil))
-    (setq *org-context-clock-buffer-select-timer*
+    (setq *occ-last-buffer-select-time* (current-time))
+    (when *occ-buffer-select-timer*
+      (cancel-timer *occ-buffer-select-timer*)
+      (setq *occ-buffer-select-timer* nil))
+    (setq *occ-buffer-select-timer*
           ;; distrubing while editing.
           ;; run-with-timer
           (run-with-idle-timer
-           (1+ *org-context-clock-task-current-context-time-interval*)
+           (1+ *occ-task-current-context-time-interval*)
            nil
-           'org-context-clock-update-current-context))))
+           'occ-update-current-context))))
 
 (defun occ-insinuate ()
   (interactive)
