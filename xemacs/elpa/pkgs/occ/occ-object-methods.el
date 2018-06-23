@@ -70,7 +70,9 @@
            (cl-class-slots (cl-classname obj))
            (mapcar #'key2sym plist-keys))))
     (remove-if-not
-     #(lambda ()))))
+     #(lambda (slot)
+       )
+     slots)))
 
 (cl-defmethod cl-method-matched-arg ((method symbol) (ctx occ-ctx))
   (remove-if-not
