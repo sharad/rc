@@ -56,6 +56,8 @@
    #'(lambda (slot) (aref slot 1))
    (cl--struct-class-slots
     (cl--struct-get-class class))))
+(cl-defmethod cl-method-matched-arg ((method symbol)) ((ctx occ-ctx))
+              )
 (defun cl-method-first-arg (method)
   (let ((methods (cl--generic method)))
     (mapcar
