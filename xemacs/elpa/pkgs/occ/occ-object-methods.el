@@ -73,7 +73,6 @@
      #(lambda (slot)
        (cl-struct-slot-value (cl-classname object) slot object))
      slots)))
-
 (cl-defmethod cl-method-matched-arg ((method symbol) (ctx occ-ctx))
   (let ((slots (occ-obj-defined-slots ctx)))
   (remove-if-not
