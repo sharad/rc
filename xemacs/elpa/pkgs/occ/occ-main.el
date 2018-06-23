@@ -53,7 +53,8 @@
           ;; not able to find associated, or intentionally not selecting a clock
           (occ-debug :debug "trying to create unnamed tsk.")
           (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))
-        (occ-debug :debug "occ-update-current-ctx: Now really clock done.")))))
+        (occ-debug :debug "occ-update-current-ctx: Now really clock done.")
+        t))))
 
 (cl-defmethod occ-clockin-assoctsk-if-chg ((ctx occ-ctx))
   (if (>
@@ -68,8 +69,8 @@
              (not              ;BUG: Reconsider whether it is catching case after some delay.
               (equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
             (progn
-             (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)
-             (occ-clockin-assoctsk-if-not ctx))
+              (when (occ-clockin-assoctsk-if-not ctx)
+                (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
             (occ-debug :debug "occ-update-current-ctx: ctx %s not suitable to associate" ctx)))
     (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
 

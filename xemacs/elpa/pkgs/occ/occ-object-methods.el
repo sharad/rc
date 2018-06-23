@@ -88,10 +88,6 @@
        (concat prefix heading)
        org-odd-levels-only))))
 
-
-
-
-
 (cl-defmethod occ-ctxual-tsk-marker ((ctxask occ-ctxual-tsk))
   (let* ((tsk (occ-ctxual-tsk-tsk ctxask))
          (marker (occ-tsk-marker tsk)))
