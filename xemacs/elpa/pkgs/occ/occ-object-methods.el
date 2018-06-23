@@ -75,7 +75,7 @@
      slots)))
 (cl-defmethod cl-method-matched-arg ((method symbol) &optional (ctx symbol))
   (cl-method-first-arg method))
-(cl-defmethod cl-method-matched-arg ((method symbol) (ctx occ-ctx))
+(cl-defmethod cl-method-matched-arg ((method symbol) &optional (ctx occ-ctx))
   (let ((slots (occ-obj-defined-slots ctx)))
   (remove-if-not
    (lambda (arg) (memq arg slots))
