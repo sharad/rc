@@ -42,7 +42,7 @@
  (list :tree occ-tree-tsk-root-org-file))
 
 (cl-defmethod occ-clockin-assoctsk-if-not ((ctx occ-ctx))
-  (if (and
+  (if (or
        (occ-clock-marker-is-unnamed-clock-p)
        (>= 0 (occ-associated-p (occ-current-tsk) ctx)))
 
