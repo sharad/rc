@@ -64,11 +64,8 @@
             (mapcar #'key2sym plist-keys))))
 
 (cl-defmethod cl-method-matched-arg ((method symbol) (ctx occ-ctx))
-  (cl-method-first-arg)
-  (let ((methods (cl--generic method)))
-    (mapcar
-     #'(lambda (fspec) (cadar (aref fspec 1)))
-     (when methods (aref methods 3)))))
+  (cl-method-first-arg method)
+  )
 
 
 (defun occ-tsk-builder ()
