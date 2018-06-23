@@ -75,7 +75,7 @@
      slots)))
 
 (cl-defmethod cl-method-matched-arg ((method symbol) (ctx occ-ctx))
-  (let ((slots occ-obj-defined-slots))
+  (let ((slots (occ-obj-defined-slots)))
   (remove-if-not
    (lambda (arg)
      ())
