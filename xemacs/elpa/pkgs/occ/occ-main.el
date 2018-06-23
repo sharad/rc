@@ -28,7 +28,7 @@
 (require 'occ-interactive)
 
 (defcustom *occ-last-buffer-select-time*       (current-time) "*occ-last-buffer-select-time*")
-(defvar    *occ-buffer-select-timer*           *occ-buffer-select-timer*)
+(defvar    *occ-buffer-select-timer*           nil)
 (defvar    *occ-tsk-current-ctx-time-interval* 7)
 (defvar    *occ-tsk-previous-ctx*              nil)
 (defvar    *occ-tsk-current-ctx*               nil)
