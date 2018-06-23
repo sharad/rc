@@ -75,10 +75,11 @@
      slots)))
 
 (cl-defmethod cl-method-matched-arg ((method symbol) (ctx occ-ctx))
+  (let ((slots occ-obj-defined-slots))
   (remove-if-not
    (lambda (arg)
      ())
-   (cl-method-first-arg method)))
+   (cl-method-first-arg method))))
 
 
 (defun occ-tsk-builder ()
