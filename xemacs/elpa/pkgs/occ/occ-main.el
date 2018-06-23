@@ -45,6 +45,7 @@
   (if (and
        (not (occ-clock-marker-is-unnamed-clock-p))
        (> (occ-associated-p (occ-current-tsk) ctx) 0))
+
       (progn
         (occ-debug :debug "occ-update-current-ctx: Current tsk already associate to %s" ctx)
         nil)
