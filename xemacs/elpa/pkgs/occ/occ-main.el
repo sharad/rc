@@ -52,8 +52,7 @@
         ;; not able to find associated, or intentionally not selecting a clock
         (occ-debug :debug "trying to create unnamed tsk.")
         (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))
-      (occ-debug :debug "occ-update-current-ctx: Now really clock done.")
-      t)))
+      (occ-debug :debug "occ-update-current-ctx: Now really clock done."))))
 
 (cl-defmethod occ-clockin-assoctsk-if-chg ((ctx occ-ctx))
   (if (>
