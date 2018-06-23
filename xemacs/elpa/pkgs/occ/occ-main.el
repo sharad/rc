@@ -83,34 +83,35 @@
 
 
 
-(defun org-context-clock-insinuate ()
+(defun occ-insinuate ()
   (interactive)
   (progn
-    (add-hook 'buffer-list-update-hook     'org-context-clock-run-task-current-context-timer)
-    (add-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
-    (add-hook 'elscreen-goto-hook          'org-context-clock-run-task-current-context-timer)
-    (add-hook 'after-save-hook             'org-context-clock-after-save-hook nil t))
+    (add-hook 'buffer-list-update-hook     'occ-run-task-current-context-timer)
+    (add-hook 'elscreen-screen-update-hook 'occ-run-task-current-context-timer)
+    (add-hook 'elscreen-goto-hook          'occ-run-task-current-context-timer)
+    (add-hook 'after-save-hook             'occ-after-save-hook nil t))
 
-  (dolist (prop (org-context-clock-keys-with-operation :getter nil))
+  (dolist (prop (occ-keys-with-operation :getter nil))
     (let ((propstr
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
         (push propstr org-use-property-inheritance)))))
 
 ;;;###autoload
-(defun org-context-clock-uninsinuate ()
+(defun occ-uninsinuate ()
   (interactive)
   (progn
-    (remove-hook 'buffer-list-update-hook 'org-context-clock-run-task-current-context-timer)
+    (remove-hook 'buffer-list-update-hook 'occ-run-task-current-context-timer)
     ;; (setq buffer-list-update-hook nil)
-    (remove-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
-    (remove-hook 'elscreen-goto-hook 'org-context-clock-run-task-current-context-timer)
-    (remove-hook 'after-save-hook             'org-context-clock-after-save-hook t))
+    (remove-hook 'elscreen-screen-update-hook 'occ-run-task-current-context-timer)
+    (remove-hook 'elscreen-goto-hook 'occ-run-task-current-context-timer)
+    (remove-hook 'after-save-hook             'occ-after-save-hook t))
 
-  (dolist (prop (org-context-clock-keys-with-operation :getter nil))
+  (dolist (prop (occ-keys-with-operation :getter nil))
     (let ((propstr
            (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
       (unless (member propstr org-use-property-inheritance)
         (delete propstr org-use-property-inheritance)))))
+
 (provide 'occ-main)
 ;;; occ-main.el ends here
