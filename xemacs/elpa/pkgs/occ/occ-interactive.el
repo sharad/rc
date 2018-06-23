@@ -60,9 +60,6 @@
                      def
                      inherit-input-method)))
 
-
-
-
 (defun occ-select-propetry (ctx &optional prompt)
   (let ((prompt (or prompt "proptery: "))
         (keys (mapcar #'(lambda (k) (cons (symbol-name k) k))
