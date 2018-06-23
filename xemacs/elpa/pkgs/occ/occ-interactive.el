@@ -58,6 +58,9 @@
                      def
                      inherit-input-method)))
 
+(cl-method-first-arg 'occ-readprop)
+
+
 (defun occ-select-propetry (ctx &optional prompt)
   (let ((prompt (or prompt "proptery: "))
         (keys (mapcar #'(lambda (k) (cons (symbol-name k) k))
