@@ -58,7 +58,8 @@
                      def
                      inherit-input-method)))
 
-(cl-defmethod cl-method-matched-arg 'occ-readprop)
+(cl-defmethod cl-method-matched-arg (()) (())
+              )
 
 
 (defun occ-select-propetry (ctx &optional prompt)
