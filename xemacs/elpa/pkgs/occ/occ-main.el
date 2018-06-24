@@ -106,7 +106,7 @@
              (buffer-file-name))
     (when (member*
            file
-           (org-context-clock-task-update-files)
+           (occ-included-files)
            :test #'(lambda (f1 f2)
                      (string-equal
                       (file-truename f1)
