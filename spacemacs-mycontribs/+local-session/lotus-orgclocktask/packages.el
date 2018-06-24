@@ -47,7 +47,6 @@
     org-clock-wrapper
     org-clock-daysummary
     org-clock-table-misc-lotus
-    ;; org-context-clock
     occ
     org-clock-resolve-advanced
     timesheet
