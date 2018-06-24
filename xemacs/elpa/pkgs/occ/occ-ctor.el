@@ -169,9 +169,7 @@
      (occ-tree-tsk-collection-files collection)
      (org-context-clock-tree-mapc-tasks
       #'(lambda (task args)
-          (push
-           (occ-task-file task)
-           files))
+          (push (occ-task-file task) files))
       tasks
       nil))))
 
