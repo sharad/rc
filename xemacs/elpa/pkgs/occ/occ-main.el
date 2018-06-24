@@ -85,7 +85,7 @@
   (occ-clockin-if-chg (occ-make-ctx)))
 
 ;;;###autoload
-(defun occ-run-task-current-context-timer ()
+(defun occ-run-curr-ctx-timer ()
   (interactive)
   (progn
     (setq *occ-last-buffer-select-time* (current-time))
@@ -108,9 +108,9 @@
 (defun occ-insinuate ()
   (interactive)
   (progn
-    (add-hook 'buffer-list-update-hook     'occ-run-task-current-context-timer)
-    (add-hook 'elscreen-screen-update-hook 'occ-run-task-current-context-timer)
-    (add-hook 'elscreen-goto-hook          'occ-run-task-current-context-timer)
+    (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
+    (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
+    (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
     (add-hook 'after-save-hook             'occ-after-save-hook nil t))
 
   (dolist (prop (cl-method-matched-arg 'occ-readprop nil))
@@ -123,10 +123,10 @@
 (defun occ-uninsinuate ()
   (interactive)
   (progn
-    (remove-hook 'buffer-list-update-hook 'occ-run-task-current-context-timer)
+    (remove-hook 'buffer-list-update-hook 'occ-run-curr-ctx-timer)
     ;; (setq buffer-list-update-hook nil)
-    (remove-hook 'elscreen-screen-update-hook 'occ-run-task-current-context-timer)
-    (remove-hook 'elscreen-goto-hook 'occ-run-task-current-context-timer)
+    (remove-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
+    (remove-hook 'elscreen-goto-hook 'occ-run-curr-ctx-timer)
     (remove-hook 'after-save-hook             'occ-after-save-hook t))
 
   (dolist (prop (cl-method-matched-arg 'occ-readprop nil))
