@@ -168,7 +168,9 @@
 
 (cl-defmethod occ-collect-files ((collection occ-tree-tsk-collection)
                                  force)
+
   (unless (occ-tree-tsk-collection-files collection)
+    (occ-collect-tsks)
     (setf
      (occ-tree-tsk-collection-files collection)
      (remove nil
