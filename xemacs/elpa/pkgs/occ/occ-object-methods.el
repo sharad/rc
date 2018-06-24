@@ -71,7 +71,7 @@
            (mapcar #'key2sym plist-keys))))
     (remove-if-not
      #'(lambda (slot)
-       (cl-struct-slot-value (cl-classname object) slot object))
+         (cl-struct-slot-value (cl-classname object) slot object))
      slots)))
 (cl-defmethod cl-method-matched-arg ((method symbol) &optional (ctx symbol))
   (cl-method-first-arg method))
