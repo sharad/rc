@@ -501,8 +501,8 @@ Each entry is either:
 
 (defun lotus-orgclocktask/init-occ ()
   (progn
-    (use-package org-context-clock
-        ;; :commands (org-context-clock-insinuate org-context-clock-uninsinuate)
+    (use-package occ
+        ;; :commands (occ-insinuate occ-uninsinuate)
         :defer t
         :config
         (progn
@@ -518,9 +518,9 @@ Each entry is either:
                            (file-directory-p party-base-dir)
                            (file-exists-p start-file))
                           (progn
-                            (if (functionp 'org-context-clock-setup-task-tree-task-root-org-file)
-                                (org-context-clock-setup-task-tree-task-root-org-file start-file)
-                                (warn "function org-context-clock-setup-task-tree-task-root-org-file not available.")))
+                            (if (functionp 'occ-setup-task-tree-task-root-org-file)
+                                (occ-setup-task-tree-task-root-org-file start-file)
+                                (warn "function occ-setup-task-tree-task-root-org-file not available.")))
                           (message "org party dir %s or file %s not exists."
                                    party-base-dir
                                    start-file))))
@@ -537,15 +537,15 @@ Each entry is either:
                                   (file-directory-p party-base-dir)
                                   (file-exists-p start-file))
                                  (progn
-                                   (if (functionp 'org-context-clock-setup-task-tree-task-root-org-file)
-                                       (org-context-clock-setup-task-tree-task-root-org-file start-file)
-                                       (warn "function org-context-clock-setup-task-tree-task-root-org-file not available.")))
+                                   (if (functionp 'occ-setup-task-tree-task-root-org-file)
+                                       (occ-setup-task-tree-task-root-org-file start-file)
+                                       (warn "function occ-setup-task-tree-task-root-org-file not available.")))
                                  (message "org party dir %s or file %s not exists."
                                           party-base-dir
                                           start-file))))))))))
 
           (progn
-            ;; (setq org-context-clock-task-tree-task-root-org-file
+            ;; (setq occ-task-tree-task-root-org-file
             ;;       (expand-file-name "start.org" (task-party-base-dir)))
             )
 
@@ -563,17 +563,17 @@ Each entry is either:
           (lotus-load-task-manager-delay 100)))
 
       (progn
-        (defun lotus-config-start-org-context-clock-insinuate-after-delay (delay)
+        (defun lotus-config-start-occ-insinuate-after-delay (delay)
           (run-at-time-or-now delay
                               #'(lambda ()
-                                  (if (functionp 'org-context-clock-insinuate)
-                                      (org-context-clock-insinuate)
-                                      (warn "function org-context-clock-insinuate not available.")))))
+                                  (if (functionp 'occ-insinuate)
+                                      (occ-insinuate)
+                                      (warn "function occ-insinuate not available.")))))
 
-        (defun lotus-config-start-org-context-clock-insinuate-after-delay-time ()
-          (lotus-config-start-org-context-clock-insinuate-after-delay 70)))
+        (defun lotus-config-start-occ-insinuate-after-delay-time ()
+          (lotus-config-start-occ-insinuate-after-delay 70)))
 
-      (defun lotus-config-start-org-context-clock-insinuate-with-session-unified ()
+      (defun lotus-config-start-occ-insinuate-with-session-unified ()
         (use-package sessions-unified
             :defer t
             :config
@@ -583,7 +583,7 @@ Each entry is either:
                  'lotus-load-task-manager-delay-time)
 
                 (add-to-enable-desktop-restore-interrupting-feature-hook
-                 'lotus-config-start-org-context-clock-insinuate-after-delay-time)
+                 'lotus-config-start-occ-insinuate-after-delay-time)
 
                 (add-to-enable-desktop-restore-interrupting-feature-hook
                  'spaceline-toggle-org-clock-on))))))
@@ -594,11 +594,11 @@ Each entry is either:
         (progn
           (progn
             (add-to-enable-login-session-interrupting-feature-hook
-             'lotus-config-start-org-context-clock-insinuate-with-session-unified
+             'lotus-config-start-occ-insinuate-with-session-unified
              nil)
 
             (add-to-enable-startup-interrupting-feature-hook
-             'lotus-config-start-org-context-clock-insinuate-with-session-unified
+             'lotus-config-start-occ-insinuate-with-session-unified
              nil))))))
 
 (defun lotus-orgclocktask/init-org-clock-resolve-advanced ()
