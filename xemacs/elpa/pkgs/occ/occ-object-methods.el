@@ -80,6 +80,7 @@
     (remove-if-not
      (lambda (arg) (memq arg slots))
      (cl-method-first-arg method))))
+
 (defun occ-tsk-builder ()
   (let ((classname (cl-classname occ-global-tsk-collection)))
     (cond
