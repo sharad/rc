@@ -27,8 +27,8 @@
 (require 'occ-unnamed)
 (require 'occ-interactive)
 
-(defcustom *occ-last-buffer-select-time*       (current-time) "*occ-last-buffer-select-time*")
-(defvar    *occ-buffer-select-timer*           nil)
+(defcustom *occ-last-buff-sel-time*       (current-time) "*occ-last-buff-sel-time*")
+(defvar    *occ-buff-sel-timer*           nil)
 (defvar    *occ-tsk-current-ctx-time-interval* 7)
 (defvar    *occ-tsk-previous-ctx*              nil)
 (defvar    *occ-tsk-current-ctx*               nil)
@@ -64,7 +64,7 @@
 
 (cl-defmethod occ-clockin-if-chg ((ctx occ-ctx))
   (if (>
-       (float-time (time-since *occ-last-buffer-select-time*))
+       (float-time (time-since *occ-last-buff-sel-time*))
        *occ-tsk-current-ctx-time-interval*)
       (let* ((buff    (occ-ctx-buffer ctx)))
         (setq *occ-tsk-current-ctx* ctx)
@@ -88,11 +88,11 @@
 (defun occ-run-curr-ctx-timer ()
   (interactive)
   (progn
-    (setq *occ-last-buffer-select-time* (current-time))
-    (when *occ-buffer-select-timer*
-      (cancel-timer *occ-buffer-select-timer*)
-      (setq *occ-buffer-select-timer* nil))
-    (setq *occ-buffer-select-timer*
+    (setq *occ-last-buff-sel-time* (current-time))
+    (when *occ-buff-sel-timer*
+      (cancel-timer *occ-buff-sel-timer*)
+      (setq *occ-buff-sel-timer* nil))
+    (setq *occ-buff-sel-timer*
           ;; distrubing while editing.
           ;; run-with-timer
           (run-with-idle-timer
