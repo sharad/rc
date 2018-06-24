@@ -98,6 +98,7 @@
            nil
            'occ-clockin-assoctsk-to-curr-ctx-if-not))))
 
+;;;###autoload
 (defun occ-insinuate ()
   (interactive)
   (progn
