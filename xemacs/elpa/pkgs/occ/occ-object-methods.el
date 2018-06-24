@@ -166,15 +166,15 @@
 (cl-defgeneric occ-sacha-selection-line (obj)
   )
 
-(cl-defmethod occ-sacha-selection-line ((marker marker))
+(cl-defmethod occ-sacha-selection-line ((mrk marker))
   "Insert a line for the clock selection menu.
-And return a cons cell with the selection character integer and the marker
+And return a cons cell with the selection character integer and the mrk
 pointing to it."
-  (when (marker-buffer marker)
-    (with-current-buffer (org-base-buffer (marker-buffer marker))
+  (when (mrk-buffer mrk)
+    (with-current-buffer (org-base-buffer (mrk-buffer mrk))
       (org-with-wide-buffer
        (progn ;; ignore-errors
-         (goto-char marker)
+         (goto-char mrk)
          (let* ((cat (org-get-category))
                 (heading (org-get-heading 'notags))
                 (prefix (save-excursion
@@ -188,8 +188,8 @@ pointing to it."
                       (length prefix))))
            (when tsk ;; (and cat tsk)
              ;; (insert (format "[%c] %-12s  %s\n" i cat tsk))
-             ;; marker
-             (cons tsk marker))))))))
+             ;; mrk
+             (cons tsk mrk))))))))
 
 ;; deprecated
 (cl-defmethod occ-sacha-selection-line ((ctxask occ-ctxual-tsk))
