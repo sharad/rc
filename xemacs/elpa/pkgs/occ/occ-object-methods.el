@@ -232,7 +232,7 @@ pointing to it."
   (helm
    (list
     (helm-build-sync-source "Select matching tsks"
-      :candidates (mapcar 'occ-sacha-selection-line ctxask)
+      :candidates (mapcar 'occ-sacha-selection-line ctxasks)
       :action (list ;; (cons "Select" 'identity)
                (cons "Clock in and track" #'identity))
       :history 'org-refile-history)
