@@ -44,14 +44,14 @@
  (list :tree occ-tree-tsk-root-org-file))
 
 ;;;###autoload
-(cl-defmethod occ-clockin-assoctsk-if-not ((ctx occ-ctx))
+(cl-defmethod occ-clockin-if-not ((ctx occ-ctx))
   (if (or
        (occ-clock-marker-is-unnamed-clock-p)
        (>= 0 (occ-associated-p (occ-current-tsk) ctx)))
 
       (progn                ;current clock is not matching
         (occ-debug :debug "occ-update-current-ctx: Now really going to clock.")
-        (unless (occ-clockin-assoctsk ctx)
+        (unless (occ-clockin ctx)
           ;; not able to find associated, or intentionally not selecting a clock
           (occ-debug :debug "trying to create unnamed tsk.")
           (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))
@@ -62,7 +62,7 @@
         (occ-debug :debug "occ-update-current-ctx: Current tsk already associate to %s" ctx)
         nil)))
 
-(cl-defmethod occ-clockin-assoctsk-if-chg ((ctx occ-ctx))
+(cl-defmethod occ-clockin-if-chg ((ctx occ-ctx))
   (if (>
        (float-time (time-since *occ-last-buffer-select-time*))
        *occ-tsk-current-ctx-time-interval*)
@@ -75,14 +75,14 @@
              (not              ;BUG: Reconsider whether it is catching case after some delay.
               (equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
             (progn
-              (when (occ-clockin-assoctsk-if-not ctx)
+              (when (occ-clockin-if-not ctx)
                 (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
             (occ-debug :debug "occ-update-current-ctx: ctx %s not suitable to associate" ctx)))
     (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
 
-(defun occ-clockin-assoctsk-to-curr-ctx-if-not (&optional force)
+(defun occ-clockin-to-curr-ctx-if-not (&optional force)
   (interactive "P")
-  (occ-clockin-assoctsk-if-chg (occ-make-ctx)))
+  (occ-clockin-if-chg (occ-make-ctx)))
 
 ;;;###autoload
 (defun occ-run-task-current-context-timer ()
@@ -98,7 +98,7 @@
           (run-with-idle-timer
            (1+ *occ-tsk-current-ctx-time-interval*)
            nil
-           'occ-clockin-assoctsk-to-curr-ctx-if-not))))
+           'occ-clockin-to-curr-ctx-if-not))))
 
 ;;;###autoload
 (defun occ-after-save-hook ()
