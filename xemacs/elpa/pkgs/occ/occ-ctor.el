@@ -177,7 +177,7 @@
               (let ((tsks (occ-collection collection)))
                 (occ-mapc-tree-tsks
                  #'(lambda (tsk args)
-                     (push (occ-tsk-file task) files))
+                     (push (occ-tsk-file tsk) files))
                  tsks
                  nil)))))))
 
