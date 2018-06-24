@@ -102,7 +102,9 @@
 
 ;;;###autoload
 (defun occ-after-save-hook ()
-  )
+  (when (and (eq major-mode 'org-mode)
+             (buffer-file-name))
+    (org-context-clock-build-tasks (buffer-file-name))))
 
 ;;;###autoload
 (defun occ-insinuate ()
