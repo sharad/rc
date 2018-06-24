@@ -180,7 +180,8 @@
                  #'(lambda (tsk args)
                      (push (occ-tsk-file tsk) files))
                  tsks
-                 nil)))))))
+                 nil)
+                files))))))
 
 (cl-defmethod occ-collect-tsks ((collection occ-list-tsk-collection)
                                 force)
