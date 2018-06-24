@@ -84,7 +84,7 @@
   (interactive "P")
   (occ-clockin-assoctsk-if-chg (occ-make-context)))
 
-
+;;;###autoload
 (defun occ-run-task-current-context-timer ()
   (interactive)
   (progn
