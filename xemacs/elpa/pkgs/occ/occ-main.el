@@ -42,6 +42,7 @@
 (occ-set-global-tsk-collection-spec
  (list :tree occ-tree-tsk-root-org-file))
 
+;;;###autoload
 (cl-defmethod occ-clockin-assoctsk-if-not ((ctx occ-ctx))
   (if (or
        (occ-clock-marker-is-unnamed-clock-p)
