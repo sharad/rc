@@ -167,7 +167,13 @@
   (unless (occ-tree-tsk-collection-files collection)
     (setf
      (occ-tree-tsk-collection-files collection)
-     )))
+     (org-context-clock-tree-mapc-tasks
+      #'(lambda (task args)
+          (push
+           (org-context-clock-task-get-property task :task-clock-file)
+           files))
+      tasks
+      nil))))
 
 ;; TODO ISSUE
 (defun org-context-clock-task-tree-tasks-files ()
