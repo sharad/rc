@@ -174,7 +174,8 @@
      (occ-tree-tsk-collection-included-files collection)
      (remove nil
              (delete-dups
-              (let ((tsks (occ-collection collection)))
+              (let ((tsks (occ-collection collection))
+                    (files '()))
                 (occ-mapc-tree-tsks
                  #'(lambda (tsk args)
                      (push (occ-tsk-file tsk) files))
