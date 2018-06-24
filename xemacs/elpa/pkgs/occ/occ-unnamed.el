@@ -49,7 +49,7 @@
       (equal
        (marker-buffer org-clock-marker)
        ;; id:x11 make org-ctx-clock version
-       (marker-buffer (lotus-org-unnamed-tsk-clock-marker))))))
+       (marker-buffer (lotus-org-unnamed-task-clock-marker))))))
 
 (defun occ-maybe-create-clockedin-unnamed-heading ()
   (when (occ-can-create-unnamed-tsk-p)
@@ -98,7 +98,7 @@
           (prog1
               (occ-clockin-ctxual-tsk unnamed-ctxual-tsk)
             ;; id:x11 make org-ctx-clock version
-            (lotus-org-unnamed-tsk-clock-marker unnamed-marker)
+            (lotus-org-unnamed-task-clock-marker unnamed-marker)
             (message "clockin to unnnamed tsk.")
             (occ-unassociate-ctx-start-time-reset)))))))
 
