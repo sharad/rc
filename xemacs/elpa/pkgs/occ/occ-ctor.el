@@ -165,6 +165,21 @@
            (make-occ-tree-tsk :name "empty tree tsk"))) ;; note: only using first file of root-files
       (car (occ-tree-tsk-collection-root-files collection))))))
 
+;; TODO ISSUE
+(defun org-context-clock-task-tree-tasks-files ()
+  (let ((tasks (org-context-clock-task-recursive-update-tasks))
+        (files '()))
+    (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys: BEFORE files %s[%d]" files (length files))
+    (org-context-clock-tree-mapc-tasks
+     #'(lambda (task args)
+         (push
+          (org-context-clock-task-get-property task :task-clock-file)
+          files))
+     tasks
+     nil)
+    (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys: AFTER files %s[%d]" "files" (length files))
+    files))
+
 (cl-defmethod occ-collect-tsks ((collection occ-list-tsk-collection)
                                 force)
   (unless (occ-list-tsk-collection-list collection)
