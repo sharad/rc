@@ -166,7 +166,7 @@
       (car (occ-tree-tsk-collection-root-files collection)))))
   )
 
-(cl-defmethod occ-collect-files ((collection occ-tree-tsk-collection)
+(cl-defmethod occ-collect-included-files ((collection occ-tree-tsk-collection)
                                  force)
   (unless (occ-tree-tsk-collection-files collection)
     (occ-collect-tsks)
