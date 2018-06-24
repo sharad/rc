@@ -499,7 +499,7 @@ Each entry is either:
              nil)))))))
 
 
-(defun lotus-orgclocktask/init-org-context-clock ()
+(defun lotus-orgclocktask/init-occ ()
   (progn
     (use-package org-context-clock
         ;; :commands (org-context-clock-insinuate org-context-clock-uninsinuate)
