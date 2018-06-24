@@ -25,6 +25,7 @@
 
 (require 'occ-common)
 ;; (require 'occ-object-methods)
+(require 'occ-base-objects)
 (require 'occ-tree)
 
 (defun occ-heading-content-only ()
