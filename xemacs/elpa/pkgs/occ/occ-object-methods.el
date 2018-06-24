@@ -134,11 +134,9 @@
 
 ;; Test if TSK is associate to CTX
 
-(cl-defmethod occ-associated-p ((tsk occ-tsk)
+(cl-defmethod occ-associated-p ((tsk symbol)
                                 (ctx occ-ctx))
-  (if tsk
-      (occ-rank tsk ctx)
-    0))
+  0)
 
 (cl-defmethod occ-associated-p ((tsk occ-tsk)
                                 (ctx occ-ctx))
