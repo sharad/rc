@@ -167,12 +167,13 @@
   (unless (occ-tree-tsk-collection-files collection)
     (setf
      (occ-tree-tsk-collection-files collection)
-     (
+     (remove nil
+             (delete-dups
       (occ-mapc-tree-tsks
       #'(lambda (task args)
           (push (occ-task-file task) files))
       tasks
-      nil)))))
+      nil))))))
 
 ;; TODO ISSUE
 (defun org-context-clock-task-tree-tasks-files ()
