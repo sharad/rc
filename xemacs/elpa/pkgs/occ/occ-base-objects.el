@@ -69,7 +69,8 @@
   rank)
 
 (cl-defstruct (occ-tsk-collection (:include occ-obj))
-  root-files)
+  root-files
+  files)
 
 (cl-defstruct (occ-tree-tsk-collection (:include occ-tsk-collection))
   tree)
