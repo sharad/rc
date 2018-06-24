@@ -115,7 +115,7 @@
                      (string-equal
                       (file-truename f1)
                       (file-truename f2))))
-      (org-context-clock-task-update-tasks t))))
+      (occ-reset-global-tsk-collection-spec))))
 
 (provide 'occ-main)
 ;;; occ-main.el ends here
