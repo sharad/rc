@@ -175,7 +175,8 @@
                tasks
                nil))))))
 
-(cl-defmethod occ-collect-files )
+(cl-defmethod occ-collect-files ((collection occ-tree-tsk-collection)
+                                 force))
 
 ;; TODO ISSUE
 (defun org-context-clock-task-tree-tasks-files ()
