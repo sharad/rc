@@ -245,7 +245,7 @@ pointing to it."
 (defun occ-sacha-helm-select-timed (ctxasks)
   (helm-timed 7
     (message "running sacha/helm-select-clock")
-    (occ-sacha-helm-select ctxask)))
+    (occ-sacha-helm-select ctxasks)))
 
 (cl-defgeneric occ-sacha-helm-action (ctxask clockin-fn)
   )
