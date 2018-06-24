@@ -189,7 +189,7 @@
                              (if timer (cancel-timer timer))
                              (signal (car err) (cdr err))))))))))
         (progn
-          (occ-message 6 "not running add-ctx-to-org-heading 1 %s, 2 %s 3 %s"
+          (occ-debug 6 "not running add-ctx-to-org-heading 1 %s, 2 %s 3 %s"
                        (eq (current-buffer) buff)
                        (buffer-live-p buff)
                        (eq buff
@@ -198,7 +198,7 @@
 ;;;###autoload
 (cl-defmethod occ-add-to-org-heading-when-idle ((ctx occ-ctx) timeout)
   "Return value is important to decide next action to (create unnamed tsk.)"
-  (occ-message 6 "called add-ctx-to-org-heading-when-idle")
+  (occ-debug 6 "called add-ctx-to-org-heading-when-idle")
   ;; timed-newwin of occ-add-to-org-heading pass quit
   ;; signal to caller mean here, so need to be handled, else this function can
   ;; not return any value to its caller, which result into no next-action in
