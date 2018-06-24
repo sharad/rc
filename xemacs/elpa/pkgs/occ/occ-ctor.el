@@ -194,6 +194,19 @@
               t
               (occ-list-tsk-collection-root-files collection))))))
 
+(cl-defmethod occ-collect-tsks ((collection occ-list-tsk-collection)
+                                force)
+  (unless (occ-list-tsk-collection-list collection)
+    (setf
+     (occ-list-tsk-collection-list collection)
+     (remove nil
+             (org-map-entries
+              #'(lambda ()
+                  (or
+                   (occ-make-tsk-at-point #'make-occ-list-tsk)
+                   (make-occ-list-tsk :name "empty list tsk")))
+              t
+              (occ-list-tsk-collection-root-files collection))))))
 (cl-defmethod occ-collection ((collection occ-tree-tsk-collection))
   (unless (occ-tree-tsk-collection-tree occ-global-tsk-collection)
     (occ-collect-tsks occ-global-tsk-collection nil))
