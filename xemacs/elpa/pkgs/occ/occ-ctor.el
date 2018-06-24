@@ -213,6 +213,16 @@
     (occ-collect-tsks occ-global-tsk-collection nil))
   (occ-list-tsk-collection-list occ-global-tsk-collection))
 
+(cl-defmethod occ-collection ((collection occ-tree-tsk-collection))
+  (unless (occ-tree-tsk-collection-tree occ-global-tsk-collection)
+    (occ-collect-tsks occ-global-tsk-collection nil))
+  (occ-tree-tsk-collection-tree occ-global-tsk-collection))
+
+(cl-defmethod occ-collection ((collection occ-list-tsk-collection))
+  (unless (occ-list-tsk-collection-list occ-global-tsk-collection)
+    (occ-collect-tsks occ-global-tsk-collection nil))
+  (occ-list-tsk-collection-list occ-global-tsk-collection))
+
 (defun occ-collection-object ()
   (unless occ-global-tsk-collection
     (occ-make-tsk-collection occ-global-tsk-collection-spec)
