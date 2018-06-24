@@ -485,7 +485,7 @@ pointing to it."
                        ctx
                        (occ-rank tsk ctx)))
 
-(cl-defmethod occ-collect-included-files ((collection occ-tsk-collection))
+(cl-defmethod occ-included-files ((collection occ-tsk-collection))
   (occ-collect-included-files collection))
 
 ;; ISSUE? should it return rank or occ-ctxual-tsks list
