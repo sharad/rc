@@ -34,6 +34,7 @@
 (defvar    *occ-tsk-current-ctx*               nil)
 (defvar    occ-tree-tsk-root-org-file          org-context-clock-task-tree-task-root-org-file)
 
+;;;###autoload
 (defun occ-set-global-tsk-collection-spec (spec)
   (setq
    occ-global-tsk-collection      nil
