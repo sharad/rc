@@ -86,7 +86,7 @@
       tsk)))
 
 (cl-defmethod occ-make-tsk ((n number)
-                            (builder))
+                            (builder symbol))
   (occ-debug :debug "point %s" n)
   (if (<= n (point-max))
       (save-restriction
