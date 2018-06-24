@@ -163,8 +163,7 @@
           (or
            (occ-make-tsk-at-point #'make-occ-tree-tsk)
            (make-occ-tree-tsk :name "empty tree tsk"))) ;; note: only using first file of root-files
-      (car (occ-tree-tsk-collection-root-files collection)))))
-  )
+      (car (occ-tree-tsk-collection-root-files collection))))))
 
 (cl-defmethod occ-collect-included-files ((collection occ-tree-tsk-collection)
                                           force)
