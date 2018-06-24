@@ -100,6 +100,7 @@
            nil
            'occ-clockin-assoctsk-to-curr-ctx-if-not))))
 
+;;;###autoload
 (defun occ-after-save-hook ()
   )
 
