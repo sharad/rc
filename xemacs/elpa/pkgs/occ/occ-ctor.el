@@ -199,7 +199,7 @@
   (unless (occ-list-tsk-collection-files collection)
     (setf
      (occ-list-tsk-collection-files collection)
-     )))
+     (occ-list-tsk-collection-files collection))))
 
 (cl-defmethod occ-collection ((collection occ-tree-tsk-collection))
   (unless (occ-tree-tsk-collection-tree occ-global-tsk-collection)
