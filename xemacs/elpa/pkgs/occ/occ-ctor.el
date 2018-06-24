@@ -95,7 +95,7 @@
           (occ-make-tsk-at-point builder)))))
 
 (cl-defmethod occ-make-tsk ((m marker)
-                            builder)
+                            (builder symbol))
   (occ-debug :debug "point %s" m)
   (if (and
        (marker-buffer m)
