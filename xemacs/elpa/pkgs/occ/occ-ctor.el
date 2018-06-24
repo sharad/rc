@@ -24,8 +24,8 @@
 ;;; Code:
 
 (require 'occ-common)
-(require 'occ-base-objects)
 (require 'occ-tree)
+(require 'occ-base-objects)
 
 (defun occ-heading-content-only ()
   (if (org-at-heading-p)
