@@ -227,7 +227,7 @@ pointing to it."
 ;; function to setup ctx clock timer:2 ends here
 
 ;; rank based
-(defun occ-sacha-helm-select ((ctxask occ-ctxual-tsk))
+(defun occ-sacha-helm-select (ctxasks)
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   (helm
    (list
