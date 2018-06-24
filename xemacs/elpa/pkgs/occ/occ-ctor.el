@@ -175,11 +175,11 @@
      (remove nil
              (delete-dups
               (let ((tsks (occ-collection collection)))
-              (occ-mapc-tree-tsks
-               #'(lambda (tsk args)
-                   (push (occ-task-file task) files))
-               tasks
-               nil)))))))
+                (occ-mapc-tree-tsks
+                 #'(lambda (tsk args)
+                     (push (occ-task-file task) files))
+                 tsks
+                 nil)))))))
 
 (cl-defmethod occ-collect-tsks ((collection occ-list-tsk-collection)
                                 force)
