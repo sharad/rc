@@ -227,7 +227,7 @@ pointing to it."
 ;; function to setup ctx clock timer:2 ends here
 
 ;; rank based
-(cl-defmethod occ-sacha-helm-select ((ctxask occ-ctxual-tsk))
+(defun occ-sacha-helm-select ((ctxask occ-ctxual-tsk))
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   (helm
    (list
@@ -242,7 +242,7 @@ pointing to it."
     ;;            'sacha/helm-org-create-tsk))
     )))
 
-(cl-defmethod occ-sacha-helm-select-timed ((ctxask occ-ctxual-tsk))
+(defun occ-sacha-helm-select-timed ((ctxask occ-ctxual-tsk))
   (helm-timed 7
     (message "running sacha/helm-select-clock")
     (occ-sacha-helm-select ctxask)))
