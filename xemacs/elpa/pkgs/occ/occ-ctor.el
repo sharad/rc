@@ -195,8 +195,8 @@
               (occ-list-tsk-collection-root-files collection))))))
 
 (cl-defmethod occ-collect-files ((collection occ-list-tsk-collection)
-                                force)
-  (unless (occ-list-tsk-collection-list collection)
+                                 force)
+  (unless (occ-list-tsk-collection-files collection)
     (setf
      (occ-list-tsk-collection-list collection)
      (remove nil
