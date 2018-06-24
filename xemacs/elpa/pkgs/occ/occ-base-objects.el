@@ -80,8 +80,6 @@
 
 
 
-
-
 (when nil
 
   (cl-defstruct xpoint
