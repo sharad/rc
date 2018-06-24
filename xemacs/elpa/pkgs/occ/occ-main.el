@@ -104,7 +104,14 @@
 (defun occ-after-save-hook ()
   (when (and (eq major-mode 'org-mode)
              (buffer-file-name))
-    (org-context-clock-build-tasks (buffer-file-name))))
+    (when (member*
+           file
+           (org-context-clock-task-update-files)
+           :test #'(lambda (f1 f2)
+                     (string-equal
+                      (file-truename f1)
+                      (file-truename f2))))
+      (org-context-clock-task-update-tasks t))))
 
 ;;;###autoload
 (defun occ-insinuate ()
