@@ -24,7 +24,6 @@
 ;;; Code:
 
 (require 'occ-common)
-(require 'occ-base-objects)
 (require 'occ-tree)
 (require 'occ-ctor)
 
