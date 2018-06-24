@@ -518,7 +518,7 @@ Each entry is either:
                            (file-directory-p party-base-dir)
                            (file-exists-p start-file))
                           (progn
-                            (if (functionp 'occ-setup-task-tree-task-root-org-file)
+                            (if (functionp 'occ-set-global-tsk-collection-spec)
                                 (occ-setup-task-tree-task-root-org-file start-file)
                                 (warn "function occ-setup-task-tree-task-root-org-file not available.")))
                           (message "org party dir %s or file %s not exists."
