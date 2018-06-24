@@ -27,8 +27,8 @@
 (require 'occ-unnamed)
 (require 'occ-interactive)
 
-(defcustom *occ-last-buff-sel-time*       (current-time) "*occ-last-buff-sel-time*")
-(defvar    *occ-buff-sel-timer*           nil)
+(defcustom *occ-last-buff-sel-time*            (current-time) "*occ-last-buff-sel-time*")
+(defvar    *occ-buff-sel-timer*                nil)
 (defvar    *occ-tsk-current-ctx-time-interval* 7)
 (defvar    *occ-tsk-previous-ctx*              nil)
 (defvar    *occ-tsk-current-ctx*               nil)
