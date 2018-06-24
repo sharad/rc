@@ -166,13 +166,8 @@
       (car (occ-tree-tsk-collection-root-files collection)))))
   (unless (occ-tree-tsk-collection-files collection)
     (setf
-     (occ-tree-tsk-collection-tree collection)
-     (occ-tree-tsk-build
-      #'(lambda ()
-          (or
-           (occ-make-tsk-at-point #'make-occ-tree-tsk)
-           (make-occ-tree-tsk :name "empty tree tsk"))) ;; note: only using first file of root-files
-      (car (occ-tree-tsk-collection-root-files collection))))))
+     (occ-tree-tsk-collection-files collection)
+     )))
 
 ;; TODO ISSUE
 (defun org-context-clock-task-tree-tasks-files ()
