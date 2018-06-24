@@ -82,7 +82,7 @@
 
 (defun occ-clockin-assoctsk-to-curr-ctx-if-not (&optional force)
   (interactive "P")
-  (occ-clockin-assoctsk-if-chg (occ-make-context)))
+  (occ-clockin-assoctsk-if-chg (occ-make-ctx)))
 
 ;;;###autoload
 (defun occ-run-task-current-context-timer ()
