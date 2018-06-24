@@ -139,6 +139,11 @@
   (if tsk
       (occ-rank tsk ctx)
     0))
+(cl-defmethod occ-associated-p ((tsk occ-tsk)
+                                (ctx occ-ctx))
+  (if tsk
+      (occ-rank tsk ctx)
+    0))
 ;; Test if TSK is associate to CTX:1 ends here
 
 ;; Collect and return tsk matching to CTX
