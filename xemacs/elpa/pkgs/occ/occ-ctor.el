@@ -163,6 +163,15 @@
           (or
            (occ-make-tsk-at-point #'make-occ-tree-tsk)
            (make-occ-tree-tsk :name "empty tree tsk"))) ;; note: only using first file of root-files
+      (car (occ-tree-tsk-collection-root-files collection)))))
+  (unless (occ-tree-tsk-collection-tree collection)
+    (setf
+     (occ-tree-tsk-collection-tree collection)
+     (occ-tree-tsk-build
+      #'(lambda ()
+          (or
+           (occ-make-tsk-at-point #'make-occ-tree-tsk)
+           (make-occ-tree-tsk :name "empty tree tsk"))) ;; note: only using first file of root-files
       (car (occ-tree-tsk-collection-root-files collection))))))
 
 ;; TODO ISSUE
