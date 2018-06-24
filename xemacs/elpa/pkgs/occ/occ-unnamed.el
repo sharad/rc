@@ -93,8 +93,8 @@
       (if (occ-clock-marker-is-unnamed-clock-p)
           (occ-debug :debug "occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk")
         (let* ((unnamed-ctxual-tsk (occ-maybe-create-unnamed-ctxual-tsk ctx))
-               (unnamed-tsk            (occ-ctxual-tsk-tsk unnamed-ctxual-tsk))
-               (unnamed-marker          (occ-tsk-marker unnamed-tsk)))
+               (unnamed-tsk        (occ-ctxual-tsk-tsk unnamed-ctxual-tsk))
+               (unnamed-marker     (occ-tsk-marker unnamed-tsk)))
           (prog1
               (occ-clockin-ctxual-tsk unnamed-ctxual-tsk)
             ;; id:x11 make org-ctx-clock version
