@@ -490,6 +490,8 @@ pointing to it."
 
 ;; (occ-tree-tsk-collection-included-files (occ-collection-object))
 
+(occ-tree-tsk-collection-included-files (make-occ-tree-tsk-collection))
+
 ;; ISSUE? should it return rank or occ-ctxual-tsks list
 (cl-defmethod occ-matching-ctxual-tsks ((collection occ-list-tsk-collection)
                                         (ctx occ-ctx))
