@@ -23,6 +23,7 @@
 
 ;;; Code:
 
+(require 'occ-base-objects)
 (require 'occ-object-methods)
 
 ;; (defun org-get-property (prop-key)
