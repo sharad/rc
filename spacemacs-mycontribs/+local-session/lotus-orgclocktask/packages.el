@@ -47,7 +47,8 @@
     org-clock-wrapper
     org-clock-daysummary
     org-clock-table-misc-lotus
-    org-context-clock
+    ;; org-context-clock
+    occ
     org-clock-resolve-advanced
     timesheet
     wakatime-mode
@@ -393,6 +394,110 @@ Each entry is either:
       :config
       (progn
         )))
+
+(defun lotus-orgclocktask/init-org-context-clock ()
+  (when nil
+  (progn
+    (use-package org-context-clock
+        ;; :commands (org-context-clock-insinuate org-context-clock-uninsinuate)
+        :defer t
+        :config
+        (progn
+          (progn
+            (use-package task-manager
+                :defer t
+                :config
+                (progn
+                  (progn
+                    (let* ((party-base-dir (task-party-base-dir))
+                           (start-file (expand-file-name "start.org" party-base-dir)))
+                      (if (and
+                           (file-directory-p party-base-dir)
+                           (file-exists-p start-file))
+                          (progn
+                            (if (functionp 'org-context-clock-setup-task-tree-task-root-org-file)
+                                (org-context-clock-setup-task-tree-task-root-org-file start-file)
+                                (warn "function org-context-clock-setup-task-tree-task-root-org-file not available.")))
+                          (message "org party dir %s or file %s not exists."
+                                   party-base-dir
+                                   start-file))))
+
+                  (progn
+                    (add-to-task-current-party-change-hook
+                     #'(lambda ()
+                         (unless task-current-party
+                           (task-current-party "meru"))
+                         (when (task-current-party)
+                           (let* ((party-base-dir (task-party-base-dir))
+                                  (start-file (expand-file-name "start.org" party-base-dir)))
+                             (if (and
+                                  (file-directory-p party-base-dir)
+                                  (file-exists-p start-file))
+                                 (progn
+                                   (if (functionp 'org-context-clock-setup-task-tree-task-root-org-file)
+                                       (org-context-clock-setup-task-tree-task-root-org-file start-file)
+                                       (warn "function org-context-clock-setup-task-tree-task-root-org-file not available.")))
+                                 (message "org party dir %s or file %s not exists."
+                                          party-base-dir
+                                          start-file))))))))))
+
+          (progn
+            ;; (setq org-context-clock-task-tree-task-root-org-file
+            ;;       (expand-file-name "start.org" (task-party-base-dir)))
+            )
+
+          (progn
+            (spaceline-toggle-org-clock-on))))
+
+    (progn
+      (progn
+        (defun lotus-load-task-manager-delay (delay)
+          (run-at-time-or-now delay
+                              #'(lambda ()
+                                  (task-party-base-dir))))
+
+        (defun lotus-load-task-manager-delay-time ()
+          (lotus-load-task-manager-delay 100)))
+
+      (progn
+        (defun lotus-config-start-org-context-clock-insinuate-after-delay (delay)
+          (run-at-time-or-now delay
+                              #'(lambda ()
+                                  (if (functionp 'org-context-clock-insinuate)
+                                      (org-context-clock-insinuate)
+                                      (warn "function org-context-clock-insinuate not available.")))))
+
+        (defun lotus-config-start-org-context-clock-insinuate-after-delay-time ()
+          (lotus-config-start-org-context-clock-insinuate-after-delay 70)))
+
+      (defun lotus-config-start-org-context-clock-insinuate-with-session-unified ()
+        (use-package sessions-unified
+            :defer t
+            :config
+            (progn
+              (progn
+                (add-to-enable-desktop-restore-interrupting-feature-hook
+                 'lotus-load-task-manager-delay-time)
+
+                (add-to-enable-desktop-restore-interrupting-feature-hook
+                 'lotus-config-start-org-context-clock-insinuate-after-delay-time)
+
+                (add-to-enable-desktop-restore-interrupting-feature-hook
+                 'spaceline-toggle-org-clock-on))))))
+
+    (use-package startup-hooks
+        :defer t
+        :config
+        (progn
+          (progn
+            (add-to-enable-login-session-interrupting-feature-hook
+             'lotus-config-start-org-context-clock-insinuate-with-session-unified
+             nil)
+
+            (add-to-enable-startup-interrupting-feature-hook
+             'lotus-config-start-org-context-clock-insinuate-with-session-unified
+             nil)))))))
+
 
 (defun lotus-orgclocktask/init-org-context-clock ()
   (progn
