@@ -169,7 +169,7 @@
 (cl-defmethod occ-collect-included-files ((collection occ-tree-tsk-collection)
                                           force)
   (unless (occ-tree-tsk-collection-included-files collection)
-    (occ-collect-tsks collection)
+    (occ-collect-tsks collection nil)
     (setf
      (occ-tree-tsk-collection-included-files collection)
      (remove nil
