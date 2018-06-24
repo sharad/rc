@@ -214,7 +214,7 @@
   (occ-list-tsk-collection-list occ-global-tsk-collection))
 
 (cl-defmethod occ-collection-included-files ((collection occ-tree-tsk-collection))
-  (unless (occ-tree-tsk-collection-included occ-global-tsk-collection)
+  (unless (occ-tree-tsk-collection-included-files occ-global-tsk-collection)
     (occ-collect-included-files occ-global-tsk-collection nil))
   (occ-tree-tsk-collection-included-files occ-global-tsk-collection))
 
