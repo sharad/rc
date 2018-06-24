@@ -32,7 +32,7 @@
 (defvar    *occ-tsk-current-ctx-time-interval* 7)
 (defvar    *occ-tsk-previous-ctx*              nil)
 (defvar    *occ-tsk-current-ctx*               nil)
-(defvar    occ-tree-tsk-root-org-file          org-context-clock-task-tree-task-root-org-file)
+;; (defvar    occ-tree-tsk-root-org-file          org-context-clock-task-tree-task-root-org-file)
 
 ;;;###autoload
 (cl-defmethod occ-clockin-if-not ((ctx occ-ctx))
