@@ -40,10 +40,11 @@
    occ-global-tsk-collection      nil
    occ-global-tsk-collection-spec spec))
 
-(defun occ-set-global-tsk-collection-spec (spec)
+(defun occ-reset-global-tsk-collection-spec (spec)
   (setq
    occ-global-tsk-collection      nil
    occ-global-tsk-collection-spec spec))
+
 (occ-set-global-tsk-collection-spec
  (list :tree occ-tree-tsk-root-org-file))
 
