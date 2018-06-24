@@ -113,36 +113,5 @@
                       (file-truename f2))))
       (org-context-clock-task-update-tasks t))))
 
-;;;###autoload
-(defun occ-insinuate ()
-  (interactive)
-  (progn
-    (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
-    (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
-    (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
-    (add-hook 'after-save-hook             'occ-after-save-hook nil t))
-
-  (dolist (prop (cl-method-matched-arg 'occ-readprop nil))
-    (let ((propstr
-           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
-      (unless (member propstr org-use-property-inheritance)
-        (push propstr org-use-property-inheritance)))))
-
-;;;###autoload
-(defun occ-uninsinuate ()
-  (interactive)
-  (progn
-    (remove-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
-    ;; (setq buffer-list-update-hook nil)
-    (remove-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
-    (remove-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
-    (remove-hook 'after-save-hook             'occ-after-save-hook t))
-
-  (dolist (prop (cl-method-matched-arg 'occ-readprop nil))
-    (let ((propstr
-           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
-      (unless (member propstr org-use-property-inheritance)
-        (delete propstr org-use-property-inheritance)))))
-
 (provide 'occ-main)
 ;;; occ-main.el ends here
