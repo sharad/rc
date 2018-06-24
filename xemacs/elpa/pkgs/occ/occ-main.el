@@ -102,7 +102,7 @@
                      (string-equal
                       (file-truename f1)
                       (file-truename f2))))
-      ;; TODO workaround do complete nil, later change it to optimized
+      ;; TODO workaround do complete nil, later change it to optimized.
       (occ-reset-global-tsk-collection-spec))))
 
 (provide 'occ-main)
