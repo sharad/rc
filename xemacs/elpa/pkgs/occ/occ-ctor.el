@@ -213,10 +213,10 @@
     (occ-collect-tsks occ-global-tsk-collection nil))
   (occ-list-tsk-collection-list occ-global-tsk-collection))
 
-(cl-defmethod occ-collection-included-files ((collection occ-tree-tsk-collection))
-  (unless (occ-tree-tsk-collection-tree occ-global-tsk-collection)
+(cl-defmethod occ-collection-included-files ((collection occ-included-files-tsk-collection))
+  (unless (occ-included-files-tsk-collection-included-files occ-global-tsk-collection)
     (occ-collect-tsks occ-global-tsk-collection nil))
-  (occ-tree-tsk-collection-tree occ-global-tsk-collection))
+  (occ-included-files-tsk-collection-included-files occ-global-tsk-collection))
 
 (cl-defmethod occ-collection-included-files ((collection occ-list-tsk-collection))
   (unless (occ-list-tsk-collection-list occ-global-tsk-collection)
