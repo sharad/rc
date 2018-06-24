@@ -101,7 +101,7 @@
        (marker-buffer m)
        (numberp (marker-position m)))
       (with-current-buffer (marker-buffer m)
-        (if (<= (occ-make-tsk (marker-position m)) (point-max))
+        (if (<= (marker-position m) (point-max))
             (occ-make-tsk (marker-position m) builder)))))
 
 (defun occ-make-ctx (&optional buff)
