@@ -168,7 +168,6 @@
 
 (cl-defmethod occ-collect-files ((collection occ-tree-tsk-collection)
                                  force)
-
   (unless (occ-tree-tsk-collection-files collection)
     (occ-collect-tsks)
     (setf
@@ -180,21 +179,6 @@
                    (push (occ-task-file task) files))
                tasks
                nil))))))
-
-;; TODO ISSUE
-(defun org-context-clock-task-tree-tasks-files ()
-  (let ((tasks (org-context-clock-task-recursive-update-tasks))
-        (files '()))
-    (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys: BEFORE files %s[%d]" files (length files))
-    (org-context-clock-tree-mapc-tasks
-     #'(lambda (task args)
-         (push
-          (org-context-clock-task-get-property task :task-clock-file)
-          files))
-     tasks
-     nil)
-    (org-context-clock-debug :debug "org-context-clock-entries-associated-to-context-by-keys: AFTER files %s[%d]" "files" (length files))
-    files))
 
 (cl-defmethod occ-collect-tsks ((collection occ-list-tsk-collection)
                                 force)
