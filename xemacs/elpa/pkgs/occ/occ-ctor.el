@@ -218,6 +218,12 @@
     (occ-collect-included-files occ-global-tsk-collection nil))
   (occ-tree-tsk-collection-included-files occ-global-tsk-collection))
 
+(defun occ-collection-object ()
+  (unless occ-global-tsk-collection
+    (occ-make-tsk-collection occ-global-tsk-collection-spec)
+    (occ-collect-tsks occ-global-tsk-collection t))
+  occ-global-tsk-collection)
+
 (when nil
   (progn
     (setq occ-global-tsk-collection nil)
