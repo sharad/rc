@@ -164,6 +164,10 @@
            (occ-make-tsk-at-point #'make-occ-tree-tsk)
            (make-occ-tree-tsk :name "empty tree tsk"))) ;; note: only using first file of root-files
       (car (occ-tree-tsk-collection-root-files collection)))))
+  )
+
+(cl-defmethod occ-collect-files ((collection occ-tree-tsk-collection)
+                                 force)
   (unless (occ-tree-tsk-collection-files collection)
     (setf
      (occ-tree-tsk-collection-files collection)
@@ -174,9 +178,6 @@
                    (push (occ-task-file task) files))
                tasks
                nil))))))
-
-(cl-defmethod occ-collect-files ((collection occ-tree-tsk-collection)
-                                 force))
 
 ;; TODO ISSUE
 (defun org-context-clock-task-tree-tasks-files ()
