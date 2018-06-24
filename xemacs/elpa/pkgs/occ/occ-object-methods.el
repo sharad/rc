@@ -351,12 +351,12 @@ pointing to it."
                  ;; (sel-tsk   (if sel-ctxual-tsk (plist-get sel-ctxual-tsk :tsk)))
                  ;; (sel-marker (if sel-tsk      (plist-get sel-tsk      :tsk-clock-marker)))
                  )
-            ;; (occ-message 6 "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
+            ;; (occ-debug 6 "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
             (if sel-ctxual-tsk (occ-clockin sel-ctxual-tsk)))
         (progn
           ;; here create unnamed tsk, no need
           (setq *occ-update-current-ctx-msg* "null clock")
-          (occ-message 6
+          (occ-debug 6
                        "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
                        ctx)
           (occ-add-to-org-heading-when-idle ctx 7)
