@@ -175,6 +175,8 @@
                tasks
                nil))))))
 
+(cl-defmethod occ-collect-files )
+
 ;; TODO ISSUE
 (defun org-context-clock-task-tree-tasks-files ()
   (let ((tasks (org-context-clock-task-recursive-update-tasks))
