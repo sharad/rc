@@ -195,10 +195,6 @@
     (occ-collect-tsks occ-global-tsk-collection t))
   occ-global-tsk-collection)
 
-
-(setq occ-global-tsk-collection-spec
-      (list :tree org-ctx-clock-tsk-tree-tsk-root-org-file))
-
 (when nil
   (progn
     (setq occ-global-tsk-collection nil)
