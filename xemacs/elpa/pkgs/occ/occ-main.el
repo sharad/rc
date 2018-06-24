@@ -91,7 +91,7 @@
            'occ-clockin-to-curr-ctx-if-not))))
 
 ;;;###autoload
-(defun occ-after-save-hook ()
+(defun occ-after-save-hook-fun ()
   (when (and (eq major-mode 'org-mode)
              (buffer-file-name))
     (when (member*
