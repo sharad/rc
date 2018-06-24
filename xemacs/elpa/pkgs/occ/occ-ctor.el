@@ -218,5 +218,43 @@
     (occ-collect-included-files occ-global-tsk-collection nil))
   (occ-tree-tsk-collection-included-files occ-global-tsk-collection))
 
+(when nil
+  (progn
+    (setq occ-global-tsk-collection nil)
+    (occ-make-tsk-collection (list :tree org-ctx-clock-tsk-tree-tsk-root-org-file))
+    (occ-tree-tsk-collection-tree occ-global-tsk-collection)
+    (occ-collect-tsks occ-global-tsk-collection t)
+    (occ-tree-tsk-collection-root-files occ-global-tsk-collection)
+    (setf occ-gtree
+          (occ-tree-tsk-collection-tree occ-global-tsk-collection)))
+
+  (setf
+   occ-test-gtree
+   (occ-tsk-tree-build
+    #'(lambda ()
+        (or
+         (occ-make-tsk-at-point #'make-occ-tree-tsk)
+         (make-occ-tree-tsk :name "empty tree tsk"))) ;; note: only using first file of root-files
+    "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tsks/xx.org"))
+
+  (setq occ-test-gtree
+        (occ-tsk-tree-build
+         #'(lambda ()
+             (or
+              (occ-make-tsk-at-point #'make-occ-tree-tsk)
+              (make-occ-tree-tsk :name "empty tree tsk"))) ;; note: only using first file of root-files
+         org-ctx-clock-tsk-tree-tsk-root-org-file))
+
+  (with-current-buffer (find-file-noselect "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tsks/xx.org")
+    (goto-char (point-min))
+    (setf occ-file-subtree
+          (occ-tsk-tree-map-subheading
+           #'(lambda ()
+               (occ-tsk-tree-collect-tsk
+                #'(lambda ()
+                    (or
+                     (occ-make-tsk-at-point #'make-occ-tree-tsk)
+                     (make-occ-tree-tsk :name "empty tree tsk")))))))))
+
 (provide 'occ-ctor)
 ;;; occ-ctor.el ends here
