@@ -171,7 +171,7 @@
   (unless (occ-tree-tsk-collection-files collection)
     (occ-collect-tsks)
     (setf
-     (occ-tree-tsk-collection-files collection)
+     (occ-tree-tsk-collection-included-files collection)
      (remove nil
              (delete-dups
               (occ-mapc-tree-tsks
@@ -198,7 +198,7 @@
                                  force)
   (unless (occ-list-tsk-collection-files collection)
     (setf
-     (occ-list-tsk-collection-included- collection)
+     (occ-list-tsk-collection-included-files collection)
      (occ-list-tsk-collection-root-files collection))))
 
 (cl-defmethod occ-collection ((collection occ-tree-tsk-collection))
