@@ -170,7 +170,7 @@
      (org-context-clock-tree-mapc-tasks
       #'(lambda (task args)
           (push
-           (org-context-clock-task-get-property task :task-clock-file)
+           (occ-task-file task)
            files))
       tasks
       nil))))
