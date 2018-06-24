@@ -167,7 +167,7 @@
   (unless (occ-tree-tsk-collection-files collection)
     (setf
      (occ-tree-tsk-collection-files collection)
-     (org-context-clock-tree-mapc-tasks
+     (occ-mapc-tree-tsks
       #'(lambda (task args)
           (push (occ-task-file task) files))
       tasks
