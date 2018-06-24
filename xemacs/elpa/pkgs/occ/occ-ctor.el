@@ -168,7 +168,7 @@
 
 (cl-defmethod occ-collect-included-files ((collection occ-tree-tsk-collection)
                                  force)
-  (unless (occ-tree-tsk-collection-files collection)
+  (unless (occ-tree-tsk-collection-included-files collection)
     (occ-collect-tsks)
     (setf
      (occ-tree-tsk-collection-included-files collection)
@@ -196,7 +196,7 @@
 
 (cl-defmethod occ-collect-included-files ((collection occ-list-tsk-collection)
                                  force)
-  (unless (occ-list-tsk-collection-files collection)
+  (unless (occ-list-tsk-collection-included-files collection)
     (setf
      (occ-list-tsk-collection-included-files collection)
      (occ-list-tsk-collection-root-files collection))))
