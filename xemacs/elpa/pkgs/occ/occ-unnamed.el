@@ -57,7 +57,7 @@
       (if (occ-clock-marker-is-unnamed-clock-p)
           (occ-debug :debug "occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk")
         (prog1
-            (lotus-org-create-unnamed-task-tsk-clock-in)
+            (lotus-org-create-unnamed-task-task-clock-in)
           (occ-unassociate-ctx-start-time-reset))))))
 
 (defun occ-maybe-create-unnamed-heading ()
