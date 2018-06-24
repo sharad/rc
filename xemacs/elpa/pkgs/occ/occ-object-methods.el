@@ -139,6 +139,7 @@
   (if tsk
       (occ-rank tsk ctx)
     0))
+
 (cl-defmethod occ-associated-p ((tsk occ-tsk)
                                 (ctx occ-ctx))
   (if tsk
