@@ -123,10 +123,10 @@
 (defun occ-uninsinuate ()
   (interactive)
   (progn
-    (remove-hook 'buffer-list-update-hook 'occ-run-curr-ctx-timer)
+    (remove-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
     ;; (setq buffer-list-update-hook nil)
     (remove-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
-    (remove-hook 'elscreen-goto-hook 'occ-run-curr-ctx-timer)
+    (remove-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
     (remove-hook 'after-save-hook             'occ-after-save-hook t))
 
   (dolist (prop (cl-method-matched-arg 'occ-readprop nil))
