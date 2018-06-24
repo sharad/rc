@@ -242,7 +242,7 @@ pointing to it."
     ;;            'sacha/helm-org-create-tsk))
     )))
 
-(defun occ-sacha-helm-select-timed ((ctxask occ-ctxual-tsk))
+(defun occ-sacha-helm-select-timed (ctxasks)
   (helm-timed 7
     (message "running sacha/helm-select-clock")
     (occ-sacha-helm-select ctxask)))
