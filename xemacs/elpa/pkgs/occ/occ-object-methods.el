@@ -486,7 +486,7 @@ pointing to it."
                        (occ-rank tsk ctx)))
 
 (cl-defmethod occ-included-files ()
-  (occ-collect-included-files (occ-collection-object) nil))
+  (occ-collection-included-files (occ-collection-object) nil))
 
 ;; (occ-tree-tsk-collection-included-files (occ-collection-object))
 
