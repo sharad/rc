@@ -195,7 +195,7 @@
                        (eq buff
                            (get-buffer "*helm-mode-occ-add-to-org-heading*"))))))))
 
-;;;###autoload
+;;---------------------------------------------------------------;;;###autoload
 (cl-defmethod occ-add-to-org-heading-when-idle ((ctx occ-ctx) timeout)
   "Return value is important to decide next action to (create unnamed tsk.)"
   (occ-debug 6 "called add-ctx-to-org-heading-when-idle")
