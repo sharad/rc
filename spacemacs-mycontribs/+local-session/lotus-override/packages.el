@@ -82,7 +82,6 @@ Each entry is either:
           (defun lsdb-gnus-update-record ()
             (with-current-buffer (with-current-buffer (or gnus-article-current-summary (current-buffer))
                                    gnus-original-article-buffer)
-              (lsdb-update-records-and-display)))
-          ))))
+              (lsdb-update-records-and-display)))))))
 
 ;;; packages.el ends here
