@@ -69,6 +69,7 @@
             (occ-debug :debug "occ-update-current-ctx: ctx %s not suitable to associate" ctx)))
     (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
 
+;;;###autoload
 (defun occ-clockin-to-curr-ctx-if-not (&optional force)
   (interactive "P")
   (occ-clockin-if-chg (occ-make-ctx)))
