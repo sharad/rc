@@ -273,7 +273,7 @@ pointing to it."
 
 (cl-defmethod occ-clockin ((new-ctxask occ-ctxual-tsk))
   ;;TODO add org-insert-log-not
-  (occ-debug :debug "occ-clockin-marker %s" new-ctxask)
+  (occ-debug :debug "occ-clock-in-marker %s" new-ctxask)
   (let* (retval
          (old-ctxual-tsk (car *occ-clocked-ctxual-tsk-ctx-history*))
          (old-tsk            (when old-ctxual-tsk (occ-ctxual-tsk-tsk old-ctxual-tsk)))
