@@ -33,7 +33,6 @@
 (defvar    *occ-tsk-previous-ctx*              nil)
 (defvar    *occ-tsk-current-ctx*               nil)
 
-;;;###autoload
 (cl-defmethod occ-clockin-if-not ((ctx occ-ctx))
   (if (or
        (occ-clock-marker-is-unnamed-clock-p)
