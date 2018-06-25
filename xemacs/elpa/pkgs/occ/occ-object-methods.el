@@ -145,7 +145,7 @@
 ;; Test if TSK is associate to CTX:1 ends here
 
 ;; Collect and return tsk matching to CTX
-;;;###autoload
+;;---------------------------------------------------------------;;;###autoload
 (cl-defmethod occ-current-associated-p ((ctx occ-ctx))
   (let ((tsk (occ-tsk-current-tsk)))
     (when tsk (occ-rank tsk ctx))))
