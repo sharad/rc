@@ -415,10 +415,10 @@ Each entry is either:
                           (progn
                             (if (functionp 'occ-set-global-tsk-collection-spec)
                                 (occ-set-global-tsk-collection-spec (list :tree start-file))
-                                (warn "function occ-setup-task-tree-task-root-org-file not available.")))
-                          (message "org party dir %s or file %s not exists."
-                                   party-base-dir
-                                   start-file))))
+                              (warn "function occ-setup-task-tree-task-root-org-file not available.")))
+                        (message "org party dir %s or file %s not exists."
+                                 party-base-dir
+                                 start-file))))
 
                   (progn
                     (add-to-task-current-party-change-hook
