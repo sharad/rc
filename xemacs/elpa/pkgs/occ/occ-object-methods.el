@@ -271,7 +271,7 @@ pointing to it."
 
 (defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
 
-(cl-defmethod occ-clockin ((new-ctxask occ-ctxual-tsk))
+(cl-defmethod occ-clock-in ((new-ctxask occ-ctxual-tsk))
   ;;TODO add org-insert-log-not
   (occ-debug :debug "occ-clock-in-marker %s" new-ctxask)
   (let* (retval
@@ -327,7 +327,7 @@ pointing to it."
                 (setq buffer-read-only old-buff-read-only)))
           retval)))))
 
-(cl-defmethod occ-clockin ((ctx occ-ctx))
+(cl-defmethod occ-clock-in ((ctx occ-ctx))
   "marker and ranked version"
   (interactive
    (list (occ-make-ctx)))
@@ -351,7 +351,7 @@ pointing to it."
                  ;; (sel-marker (if sel-tsk      (plist-get sel-tsk      :tsk-clock-marker)))
                  )
             ;; (occ-debug 6 "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
-            (if sel-ctxual-tsk (occ-clockin sel-ctxual-tsk)))
+            (if sel-ctxual-tsk (occ-clock-in sel-ctxual-tsk)))
         (progn
           ;; here create unnamed tsk, no need
           (setq *occ-update-current-ctx-msg* "null clock")
