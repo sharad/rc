@@ -107,6 +107,7 @@
           (let ((range (org-get-property-block (point) 'force)))
             org-cycle-subtree-status))))))
 
+;;---------------------------------------------------------------;;;###autoload
 (cl-defmethod occ-add-to-org-heading ((ctx occ-ctx) timeout)
   "add-ctx-to-org-heading"
   ;; TODO: make helm conditional when it is used than only it should be handled.
