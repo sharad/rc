@@ -111,7 +111,6 @@
   "add-ctx-to-org-heading"
   ;; TODO: make helm conditional when it is used than only it should be handled.
   (interactive '((occ-make-ctx) 7))
-
   (lotus-with-no-active-minibuffer
       (progn
         (message "add-ctx-to-org-heading: minibuffer already active quitting")
