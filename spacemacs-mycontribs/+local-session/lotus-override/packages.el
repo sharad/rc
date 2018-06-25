@@ -73,7 +73,7 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-override/post-init-lsdb ()
+(defun lotus-override/init-lsdb ()
   (use-package lsdb
       :defer t
       :config
