@@ -612,7 +612,6 @@ pointing to it."
     (occ-make-ctx
      (find-file-noselect "/home/s/paradise/git/main/src/wnc/security/authenticator/accounting.cpp"))))
 
-
   (occ-ctxual-tsk-tsk
    (car
     (occ-matching-ctxual-tsks
