@@ -33,7 +33,7 @@
 (defvar    *occ-tsk-previous-ctx*              nil)
 (defvar    *occ-tsk-current-ctx*               nil)
 
-(cl-defmethod occ-clockin-if-not ((ctx occ-ctx))
+(cl-defmethod occ-clock-in-if-not ((ctx occ-ctx))
   (if (or
        (occ-clock-marker-is-unnamed-clock-p)
        (>= 0 (occ-associated-p (occ-current-tsk) ctx)))
@@ -51,7 +51,7 @@
         (occ-debug :debug "occ-update-current-ctx: Current tsk already associate to %s" ctx)
         nil)))
 
-(cl-defmethod occ-clockin-if-chg ((ctx occ-ctx))
+(cl-defmethod occ-clock-in-if-chg ((ctx occ-ctx))
   (if (>
        (float-time (time-since *occ-last-buff-sel-time*))
        *occ-tsk-current-ctx-time-interval*)
@@ -64,15 +64,15 @@
              (not              ;BUG: Reconsider whether it is catching case after some delay.
               (equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
             (progn
-              (when (occ-clockin-if-not ctx)
+              (when (occ-clock-in-if-not ctx)
                 (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
             (occ-debug :debug "occ-update-current-ctx: ctx %s not suitable to associate" ctx)))
     (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
 
 ;;;###autoload
-(defun occ-clockin-to-curr-ctx-if-not (&optional force)
+(defun occ-clock-in-to-curr-ctx-if-not (&optional force)
   (interactive "P")
-  (occ-clockin-if-chg (occ-make-ctx)))
+  (occ-clock-in-if-chg (occ-make-ctx)))
 
 ;;;###autoload
 (defun occ-run-curr-ctx-timer ()
@@ -88,7 +88,7 @@
           (run-with-idle-timer
            (1+ *occ-tsk-current-ctx-time-interval*)
            nil
-           'occ-clockin-to-curr-ctx-if-not))))
+           'occ-clock-in-to-curr-ctx-if-not))))
 
 ;;;###autoload
 (defun occ-after-save-hook-fun ()
