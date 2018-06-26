@@ -27,6 +27,9 @@
 (require 'occ-tree)
 (require 'occ-base-objects)
 
+(defvar occ-global-tsk-collection-spec nil)
+(defvar occ-global-tsk-collection nil)
+
 (defun occ-heading-content-only ()
   (if (org-at-heading-p)
       (save-excursion
@@ -132,9 +135,6 @@
    :ctx ctx
    :rank    rank))
 
-(defvar occ-global-tsk-collection-spec nil)
-(defvar occ-global-tsk-collection nil)
-
 (cl-defmethod occ-make-tsk-collection ((file-spec (head :tree)))
   (unless occ-global-tsk-collection
     (let ((collection (make-occ-tree-tsk-collection
@@ -220,8 +220,13 @@
 
 (defun occ-collection-object ()
   (unless occ-global-tsk-collection
-    (occ-make-tsk-collection occ-global-tsk-collection-spec)
-    (occ-collect-tsks occ-global-tsk-collection t))
+    (if occ-global-tsk-collection-spec
+        (progn
+          (occ-make-tsk-collection occ-global-tsk-collection-spec)
+          (occ-collect-tsks occ-global-tsk-collection t))
+      (progn
+        (message "occ-global-tsk-collection-spec is nil, set using occ-set-global-tsk-collection-spec")
+        (error "occ-global-tsk-collection-spec is nil"))))
   occ-global-tsk-collection)
 
 (when nil
@@ -254,7 +259,7 @@
   (with-current-buffer (find-file-noselect "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tsks/xx.org")
     (goto-char (point-min))
     (setf occ-file-subtree
-          (occ-tsk-tree-map-subheading
+          (occ-org-map-subheading
            #'(lambda ()
                (occ-tsk-tree-collect-tsk
                 #'(lambda ()

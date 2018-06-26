@@ -103,7 +103,7 @@
                       (file-truename f2))))
       ;; TODO workaround do complete nil, later change it to optimized.
       ;; TODO update existing occ-collection.tree or occ-collection.list
-      (occ-reset-global-tsk-collection-spec))))
+      (occ-reset-global-tsk-collection))))
 
 (provide 'occ-main)
 ;;; occ-main.el ends here

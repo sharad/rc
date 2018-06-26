@@ -1,4 +1,4 @@
-;;; occ.el --- occ-api               -*- lexical-binding: t; -*-
+;;; occ.el --- occ               -*- lexical-binding: t; -*-
 ;; Copyright (C) 2016  sharad
 
 ;; Author: sharad <spratap@merunetworks.com>
@@ -31,7 +31,7 @@
    occ-global-tsk-collection      nil
    occ-global-tsk-collection-spec spec))
 
-(defun occ-reset-global-tsk-collection-spec ()
+(defun occ-reset-global-tsk-collection ()
   (setq
    occ-global-tsk-collection      nil))
 
@@ -67,4 +67,4 @@
         (delete propstr org-use-property-inheritance)))))
 
 (provide 'occ)
-;;; occ-main.el ends here
+;;; occ.el ends here
