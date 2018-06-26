@@ -594,7 +594,7 @@ from the dynamic block definition."
   ;; well-defined number of columns...
   (let* ((hlchars
           (list
-           (cons 1 (or (plist-get params :emphasis-level1-char) "•"))
+           (cons 1 (or (plist-get params :headline-char) "•"))
            (cons 2 (or (plist-get params :emphasis-level2-char) ">"))))
          (hlchars
           (list
