@@ -40,7 +40,7 @@
 
       (progn                ;current clock is not matching
         (occ-debug :debug "occ-update-current-ctx: Now really going to clock.")
-        (unless (occ-clockin ctx)
+        (unless (occ-clock-in ctx)
           ;; not able to find associated, or intentionally not selecting a clock
           (occ-debug :debug "trying to create unnamed tsk.")
           (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))
