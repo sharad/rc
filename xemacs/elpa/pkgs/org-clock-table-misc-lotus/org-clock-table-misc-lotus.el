@@ -58,7 +58,7 @@ from the dynamic block definition."
   ;; well-defined number of columns...
   (let* ((hlchars
           (list
-           (cons 1 (or (plist-get params :level1-char) "*"))
+           (cons 1 (or (plist-get params :level1-char) "•"))
            (cons 2 (or (plist-get params :level2-char) "/"))))
          ;; (hlchars '((1 . "*") (2 . "/")))
          (lwords (assoc (or (plist-get params :lang)
