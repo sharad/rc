@@ -769,7 +769,7 @@ from the dynamic block definition."
                           (if (and
                                headline-single-char-str
                                (stringp headline-single-char-str)
-                               (> (lenght headline-single-char-str) 0))
+                               (> (length headline-single-char-str) 0))
                               (aref headline-single-char-str 0)
                               ?*))
              " "
