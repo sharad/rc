@@ -594,11 +594,7 @@ from the dynamic block definition."
   ;; well-defined number of columns...
   (let* ((headline-single-char-str
           (or (plist-get params :headline-char) "•"))
-         (hlchars
-          (list
-           (cons 1 (or (plist-get params :emphasis-level1-char) "•"))
-           (cons 2 (or (plist-get params :emphasis-level2-char) ">"))))
-         ;; (hlchars '((1 . "*") (2 . "/")))
+         (hlchars '((1 . "*") (2 . "/")))
          (lwords (assoc (or (plist-get params :lang)
                             (org-bound-and-true-p org-export-default-language)
                             "en")
