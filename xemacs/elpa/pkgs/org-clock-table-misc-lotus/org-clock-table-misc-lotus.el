@@ -592,7 +592,7 @@ from the dynamic block definition."
   ;; someone wants to write their own special formatter, this maybe
   ;; much easier because there can be a fixed format with a
   ;; well-defined number of columns...
-  (let* ((headline-char
+  (let* ((headline-char-string
           (or (plist-get params :headline-char) "•"))
          (hlchars
           (list
