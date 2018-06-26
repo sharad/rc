@@ -778,7 +778,7 @@ from the dynamic block definition."
              ;;       properties "|") "|") "")  ;properties columns, maybe
              ;; (if indent (org-clocktable-indent-string level) "") ; indentation
              (make-string level
-                          (if headline-single-char-str
+                          (if (headline-single-char-str)
                               (aref headline-single-char-str 0)
                               ?*))
              " "
