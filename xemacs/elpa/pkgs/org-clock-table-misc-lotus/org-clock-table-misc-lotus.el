@@ -1174,5 +1174,35 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
 
       (funcall formatter ipos tbls params))))
 
+
+(defun org-clock-report (&optional arg)
+  "Update or create a table containing a report about clocked time.
+
+If point is inside an existing clocktable block, update it.
+Otherwise, insert a new one.
+
+The new table inherits its properties from the variable
+`org-clock-clocktable-default-properties'.  The scope of the
+clocktable, when not specified in the previous variable, is
+`subtree' when the function is called from within a subtree, and
+`file' elsewhere.
+
+When called with a prefix argument, move to the first clock table
+in the buffer and update it."
+  (interactive "P")
+  (org-clock-remove-overlays)
+  (when arg
+    (org-find-dblock "clocktable")
+    (org-show-entry))
+  (pcase (org-in-clocktable-p)
+    (`nil
+     (org-create-dblock
+      (org-combine-plists
+       (list :scope (if (org-before-first-heading-p) 'file 'subtree))
+       org-clock-clocktable-default-properties
+       '(:name "clocktable"))))
+    (start (goto-char start)))
+  (org-update-dblock))
+
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here
