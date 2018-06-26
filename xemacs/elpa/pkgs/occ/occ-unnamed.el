@@ -96,7 +96,7 @@
                (unnamed-tsk        (occ-ctxual-tsk-tsk unnamed-ctxual-tsk))
                (unnamed-marker     (occ-tsk-marker unnamed-tsk)))
           (prog1
-              (occ-clockin unnamed-ctxual-tsk)
+              (occ-clock-in unnamed-ctxual-tsk)
             ;; id:x11 make org-ctx-clock version
             (lotus-org-unnamed-task-clock-marker unnamed-marker)
             (message "clockin to unnnamed tsk.")
