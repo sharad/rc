@@ -562,7 +562,7 @@ from the dynamic block definition."
         (len 0))
     (custom-set-max
      max
-     (+ (length "* File: ")
+     (+ (length "• File: ")
         (length (file-relative-name (car tbl) default-directory))))
     (dolist (hl (nth 2 tbl))
       (let ((level (car hl))
