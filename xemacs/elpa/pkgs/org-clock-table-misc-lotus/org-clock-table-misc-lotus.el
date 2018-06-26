@@ -777,7 +777,7 @@ from the dynamic block definition."
              ;;       (lambda (p) (or (cdr (assoc p (nth 4 entry))) ""))
              ;;       properties "|") "|") "")  ;properties columns, maybe
              ;; (if indent (org-clocktable-indent-string level) "") ; indentation
-             (make-string level ?*)
+             (make-string level (aref headline-single-char-str 0))
              " "
              hlc headline hlc                                       ; headline
              ;; content "|" notes "|"                            ; new added sharad
