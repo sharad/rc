@@ -596,6 +596,10 @@ from the dynamic block definition."
           (list
            (cons 1 (or (plist-get params :level1-char) "•"))
            (cons 2 (or (plist-get params :level2-char) ">"))))
+         (hlchars
+          (list
+           (cons 1 (or (plist-get params :level1-char) "•"))
+           (cons 2 (or (plist-get params :level2-char) ">"))))
          ;; (hlchars '((1 . "*") (2 . "/")))
          (lwords (assoc (or (plist-get params :lang)
                             (org-bound-and-true-p org-export-default-language)
