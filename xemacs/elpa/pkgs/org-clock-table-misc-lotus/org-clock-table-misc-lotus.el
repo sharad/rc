@@ -780,7 +780,8 @@ from the dynamic block definition."
              (make-string level
                           (if (and
                                headline-single-char-str
-                               (stringp headline-single-char-str))
+                               (stringp headline-single-char-str)
+                               (lenght headline-single-char-str))
                               (aref headline-single-char-str 0)
                               ?*))
              " "
