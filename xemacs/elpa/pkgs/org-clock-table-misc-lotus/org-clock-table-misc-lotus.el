@@ -58,8 +58,8 @@ from the dynamic block definition."
   ;; well-defined number of columns...
   (let* ((hlchars
           (list
-           (cons 1 (or (plist-get params :level1-char) "•"))
-           (cons 2 (or (plist-get params :level2-char) ">"))))
+           (cons 1 (or (plist-get params :emphasis-level1-char) "•"))
+           (cons 2 (or (plist-get params :emphasis-level2-char) ">"))))
          ;; (hlchars '((1 . "*") (2 . "/")))
          (lwords (assoc (or (plist-get params :lang)
                             (org-bound-and-true-p org-export-default-language)
@@ -77,7 +77,7 @@ from the dynamic block definition."
          (link (plist-get params :link))
          (maxlevel (or (plist-get params :maxlevel) 3))
          (emph (plist-get params :emphasize))
-         (level-p (plist-get params :level))
+         (level-p (plist-get params :emphasis-level))
          (org-time-clocksum-use-effort-durations
           (plist-get params :effort-durations))
          (timestamp (plist-get params :timestamp))
@@ -308,8 +308,8 @@ from the dynamic block definition."
   ;; well-defined number of columns...
   (let* ((hlchars
           (list
-           (cons 1 (or (plist-get params :level1-char) "•"))
-           (cons 2 (or (plist-get params :level2-char) ">"))))
+           (cons 1 (or (plist-get params :emphasis-level1-char) "•"))
+           (cons 2 (or (plist-get params :emphasis-level2-char) ">"))))
          ;; (hlchars '((1 . "*") (2 . "/")))
          (lwords (assoc (or (plist-get params :lang)
                             (org-bound-and-true-p org-export-default-language)
@@ -327,7 +327,7 @@ from the dynamic block definition."
          (link (plist-get params :link))
          (maxlevel (or (plist-get params :maxlevel) 3))
          (emph (plist-get params :emphasize))
-         (level-p (plist-get params :level))
+         (level-p (plist-get params :emphasis-level))
          (org-time-clocksum-use-effort-durations
           (plist-get params :effort-durations))
          (timestamp (plist-get params :timestamp))
@@ -594,12 +594,12 @@ from the dynamic block definition."
   ;; well-defined number of columns...
   (let* ((hlchars
           (list
-           (cons 1 (or (plist-get params :level1-char) "•"))
-           (cons 2 (or (plist-get params :level2-char) ">"))))
+           (cons 1 (or (plist-get params :emphasis-level1-char) "•"))
+           (cons 2 (or (plist-get params :emphasis-level2-char) ">"))))
          (hlchars
           (list
-           (cons 1 (or (plist-get params :emph-level1-char) "•"))
-           (cons 2 (or (plist-get params :level2-char) ">"))))
+           (cons 1 (or (plist-get params :emphasis-level1-char) "•"))
+           (cons 2 (or (plist-get params :emphasis-level2-char) ">"))))
          ;; (hlchars '((1 . "*") (2 . "/")))
          (lwords (assoc (or (plist-get params :lang)
                             (org-bound-and-true-p org-export-default-language)
@@ -617,7 +617,7 @@ from the dynamic block definition."
          (link (plist-get params :link))
          (maxlevel (or (plist-get params :maxlevel) 3))
          (emph (plist-get params :emphasize))
-         (level-p (plist-get params :level))
+         (level-p (plist-get params :emphasis-level))
          (org-time-clocksum-use-effort-durations
           (plist-get params :effort-durations))
          (timestamp (plist-get params :timestamp))
