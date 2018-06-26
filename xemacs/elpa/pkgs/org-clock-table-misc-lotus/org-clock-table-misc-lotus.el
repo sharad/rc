@@ -306,7 +306,11 @@ from the dynamic block definition."
   ;; someone wants to write their own special formatter, this maybe
   ;; much easier because there can be a fixed format with a
   ;; well-defined number of columns...
-  (let* ((hlchars '((1 . "*") (2 . "/")))
+  (let* ((hlchars
+          (list
+           (cons 1 (or (plist-get params :level1-char) "•"))
+           (cons 2 (or (plist-get params :level2-char) ">"))))
+         ;; (hlchars '((1 . "*") (2 . "/")))
          (lwords (assoc (or (plist-get params :lang)
                             (org-bound-and-true-p org-export-default-language)
                             "en")
