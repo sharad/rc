@@ -57,6 +57,8 @@ from the dynamic block definition."
   ;; much easier because there can be a fixed format with a
   ;; well-defined number of columns...
   (let* ((hlchars
+          (list
+           (cons 1 (plist-get params :lang)))
           '((1 . "*") (2 . "/")))
          (lwords (assoc (or (plist-get params :lang)
                             (org-bound-and-true-p org-export-default-language)
