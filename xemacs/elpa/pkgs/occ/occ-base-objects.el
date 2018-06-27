@@ -24,7 +24,7 @@
 ;;; Code:
 
 
-(require 'occ-common)
+(require 'occ-obj-common)
 ;; (require 'eieio)
 
 ;; TODO org-base-buffer
