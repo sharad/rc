@@ -196,7 +196,7 @@ Each entry is either:
              (scala)
              (scheme)
              (screen)
-             (shell . t)
+             (shell . t) ;; https://emacs.stackexchange.com/questions/37692/how-to-fix-symbols-function-definition-is-void-org-babel-get-header?rq=1
              (shen)
              (sql)
              (sqlite))))
