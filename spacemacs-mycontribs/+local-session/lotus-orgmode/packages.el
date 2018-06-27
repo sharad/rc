@@ -196,7 +196,7 @@ Each entry is either:
              (scala)
              (scheme)
              (screen)
-             (sh . t)
+             (shell . t)
              (shen)
              (sql)
              (sqlite))))
