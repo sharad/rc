@@ -1204,5 +1204,13 @@ in the buffer and update it."
     (start (goto-char start)))
   (org-update-dblock))
 
+(org-create-dblock
+ (org-combine-plists
+ (list :scope (if (org-before-first-heading-p) 'file 'subtree))
+ ()
+ '(:name "clocktable")))
+
+
+
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here
