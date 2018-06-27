@@ -1200,7 +1200,7 @@ in the buffer and update it."
       (org-combine-plists
        (list :scope (if (org-before-first-heading-p) 'file 'subtree))
        org-clock-clocktable-default-properties
-       '(:name "clocktable"))))
+       '(:name "clocktable-alt"))))
     (start (goto-char start)))
   (org-update-dblock))
 
