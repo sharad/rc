@@ -62,6 +62,7 @@
              (occ-chgable-p)
              buff (buffer-live-p buff)
              (not (minibufferp buff))
+             (not (ignore-p buff))
              (not              ;BUG: Reconsider whether it is catching case after some delay.
               (equal *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
             (progn
