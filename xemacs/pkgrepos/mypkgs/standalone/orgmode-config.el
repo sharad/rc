@@ -1466,7 +1466,7 @@ using three `C-u' prefix arguments."
      (scala)
      (scheme)
      (screen)
-     (sh . t)
+     (shell . t)
      (shen)
      (sql)
      (sqlite))))
