@@ -23,7 +23,7 @@
 
 ;;; Code:
 
-(require 'occ-common)
+(require 'occ-obj-common)
 (require 'occ-tree)
 (require 'occ-ctor)
 
