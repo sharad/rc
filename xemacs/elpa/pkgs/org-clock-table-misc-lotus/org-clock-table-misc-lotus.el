@@ -1199,7 +1199,7 @@ in the buffer and update it."
      (org-create-dblock
       (org-combine-plists
        (list :scope (if (org-before-first-heading-p) 'file 'subtree))
-       org-clock-clocktable-default-properties
+       org-clock-clocktable-alt-default-properties
        '(:name "clocktable-alt"))))
     (start (goto-char start)))
   (org-update-dblock))
