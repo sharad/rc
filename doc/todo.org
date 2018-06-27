@@ -41,3 +41,6 @@ than come back to old behaviour.
      :LOGBOOK:
      - State "DONE"       from              [2018-06-15 Fri 12:33]
      :END:
+
+* Setup machine
+**
