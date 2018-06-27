@@ -1,4 +1,4 @@
-;;; occ-common.el --- occ-api               -*- lexical-binding: t; -*-
+;;; occ-obj-common.el --- occ-api               -*- lexical-binding: t; -*-
 ;; Copyright (C) 2016  sharad
 
 ;; Author: sharad <spratap@merunetworks.com>
