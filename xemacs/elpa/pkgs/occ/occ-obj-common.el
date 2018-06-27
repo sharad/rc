@@ -76,5 +76,5 @@
          (> clock-duration 120)))
     t))
 
-(provide 'occ-common)
-;;; occ-common.el ends here
+(provide 'occ-obj-common)
+;;; occ-obj-common.el ends here
