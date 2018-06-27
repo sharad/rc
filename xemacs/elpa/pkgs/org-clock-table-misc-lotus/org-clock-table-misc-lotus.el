@@ -1174,6 +1174,8 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
 
       (funcall formatter ipos tbls params))))
 
+(defvar org-clock-clocktable-alt-default-properties '())
+
 ;;;###autoload
 (defun org-clock-alt-report (&optional arg)
   "Update or create a table containing a report about clocked time.
