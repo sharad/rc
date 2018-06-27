@@ -24,6 +24,7 @@
 ;;; Code:
 
 (require 'occ-object-methods)
+(require 'occ-util-common)
 (require 'occ-unnamed)
 (require 'occ-interactive)
 
