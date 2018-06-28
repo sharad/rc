@@ -600,7 +600,7 @@ function setup_dirs()
     done
 
     # check local home model.d directory
-    if [ -L ~/.localdirs -a -d ~/.localdirs -a -d ~/.localdirs/deps.d/model.d/machine.d]
+    if [ -L ~/.localdirs -a -d ~/.localdirs -a -d ~/.localdirs/deps.d/model.d/machine.d ]
     then
         if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST ]
         then
