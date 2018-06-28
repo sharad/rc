@@ -1353,7 +1353,14 @@ in the buffer and update it."
   (org-update-dblock))
 
 (org-dblock-write:clocktable-alt
- )
+ (org-combine-plists
+  ;; (list :scope (if (org-before-first-heading-p) 'file 'subtree))
+  (list
+   :scope
+   (directory-files-recursive (expand-file-name "" (org-publish-get-attribute "tasks" "org" :base-directory)) "\\.org$" 7 nil t))
+  org-clock-clocktable-alt-default-properties
+  propterties
+  '(:name "clocktable-alt")))
 
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here
