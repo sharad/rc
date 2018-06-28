@@ -1171,7 +1171,6 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
       tbls)))
 
 ;;;###autoload
-
 (defun org-dblock-write:clocktable-alt (params)
   "Write the standard clocktable."
   (setq params (org-combine-plists org-clocktable-defaults params))
