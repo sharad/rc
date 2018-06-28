@@ -7,7 +7,6 @@ TMPDIR=~/setuptmp
 
 GIT_OPTION="core.sshCommand='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'"
 GIT_SSH_OPTION="core.sshCommand='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'"
-core.sshCommand="$GIT_SSH_OPTION"
 RESOURCEPATH=".repos/git/main/resource"
 USERORGMAIN="userorg/main"
 
