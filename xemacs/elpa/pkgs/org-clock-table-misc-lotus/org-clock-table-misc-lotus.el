@@ -1212,21 +1212,5 @@ in the buffer and update it."
     (start (goto-char start)))
   (org-update-dblock))
 
-
-
-(defun org-clocktable-alt-report-insert (propterties)
-  (org-clock-remove-overlays)
-  (org-create-dblock
-   (org-combine-plists
-    ;; (list :scope (if (org-before-first-heading-p) 'file 'subtree))
-    (list
-     :scope
-     '(directory-files-recursive (expand-file-name "" (org-publish-get-attribute "tasks" "org" :base-directory)) "\\.org$" 7 nil t))
-    org-clock-clocktable-alt-default-properties
-    propterties
-    '(:name "clocktable-alt"))))
-
-
-
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here
