@@ -21,7 +21,7 @@
 
 
 (defun org-copy-block (arg)
-  (interactive)
+  (interactive "P")
   (save-excursion
     (save-restriction
       (org-narrow-to-block)
