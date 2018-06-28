@@ -1233,7 +1233,7 @@ in the buffer and update it."
       (org-mode)
       (org-clocktable-alt-report-insert properties)
       (org-update-dblock))
-    (set-buffer buff)))
+    (switch-to-buffer buff)))
 
 (org-clock-alt-report-buffer)
 
