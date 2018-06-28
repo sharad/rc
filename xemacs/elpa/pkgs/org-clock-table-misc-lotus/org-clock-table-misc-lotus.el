@@ -1228,7 +1228,8 @@ in the buffer and update it."
    (list nil))
   (with-current-buffer (get-buffer-create "*org-clock-alt-report-buffer*")
     (org-mode 1)
-    (org-clocktable-alt-report-insert properties)))
+    (org-clocktable-alt-report-insert properties)
+    (org-update-dblock)))
 
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here
