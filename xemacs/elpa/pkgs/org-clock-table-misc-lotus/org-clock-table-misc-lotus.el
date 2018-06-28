@@ -1352,7 +1352,8 @@ in the buffer and update it."
     (start (goto-char start)))
   (org-update-dblock))
 
-org-dblock-write:clocktable-alt
+(org-dblock-write:clocktable-alt
+ )
 
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here
