@@ -1197,6 +1197,7 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
     org-clock-clocktable-alt-default-properties
     propterties
     '(:name "clocktable-alt"))))
+
 ;;;###autoload
 (defun org-clock-alt-report (&optional arg)
   "Update or create a table containing a report about clocked time.
