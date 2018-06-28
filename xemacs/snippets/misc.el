@@ -26,7 +26,7 @@
     (save-restriction
       (org-narrow-to-block)
       (let ((min
-             (save-excursion
+             (progn
                (goto-char (point-min))
                (next-line)
                (beginning-of-line)
