@@ -814,7 +814,7 @@ function running()
     shift
     if [ ! $noaction ]
     then
-        "$@"
+        $_cmd "$@"
     fi
 }
 
