@@ -7,6 +7,7 @@ TMPDIR=~/setuptmp
 
 GIT_OPTION="core.sshCommand='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'"
 GIT_SSH_OPTION="core.sshCommand='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'"
+core.sshCommand="$GIT_SSH_OPTION"
 RESOURCEPATH=".repos/git/main/resource"
 USERORGMAIN="userorg/main"
 
@@ -363,11 +364,11 @@ function setup_git_repos()
     mkdir -p ~/${RESOURCEPATH}/
     if [ ! -d ~/${RESOURCEPATH}/userorg ]
     then
-        git -c "$GIT_OPTION" clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
+        git -c "core.sshCommand="$GIT_SSH_OPTION"" clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
     else
-        git -c "$GIT_OPTION" -C ~/${RESOURCEPATH}/userorg pull origin master
-        git -c "$GIT_OPTION" -C ~/${RESOURCEPATH}/userorg submodule foreach git -c "$GIT_OPTION" pull origin master
-        # git -c "$GIT_OPTION" -C ~/.repos/git submodule update --remote
+        git -c "core.sshCommand="$GIT_SSH_OPTION"" -C ~/${RESOURCEPATH}/userorg pull origin master
+        git -c "core.sshCommand="$GIT_SSH_OPTION"" -C ~/${RESOURCEPATH}/userorg submodule foreach git -c "core.sshCommand="$GIT_SSH_OPTION"" pull origin master
+        # git -c "core.sshCommand="$GIT_SSH_OPTION"" -C ~/.repos/git submodule update --remote
     fi
 
     if true
@@ -717,7 +718,7 @@ function setup_clib_installer()
     sudo apt-get -y install libcurl4-gnutls-dev -qq
     if [ ! -d /usr/local/stow/clib/ ]
     then
-        if git -c "$GIT_OPTION" clone https://github.com/clibs/clib.git $TMPDIR/clib
+        if git -c "core.sshCommand="$GIT_SSH_OPTION"" clone https://github.com/clibs/clib.git $TMPDIR/clib
         then
             cd $TMPDIR/clib
             make PREFIX=/usr/local/stow/clib/
