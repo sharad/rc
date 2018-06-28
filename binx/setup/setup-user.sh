@@ -809,7 +809,7 @@ function process_arg() {
 
 function running()
 {
-    echo running $@
+    echo running "$@"
     if [ ! $noaction ]
     then
         $@
