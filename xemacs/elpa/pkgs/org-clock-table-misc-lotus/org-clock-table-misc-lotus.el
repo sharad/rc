@@ -1239,7 +1239,6 @@ clocktable, when not specified in the previous variable, is
 
 When called with a prefix argument, move to the first clock table
 in the buffer and update it."
-  (interactive "P")
   (org-clock-remove-overlays)
   (pcase (org-in-clocktable-p)
     (`nil
@@ -1253,8 +1252,7 @@ in the buffer and update it."
   (let ((buff (get-buffer-create "*org-clock-alt-report-buffer*")))
     (with-current-buffer buff
       (org-mode)
-      (org-clocktable-alt-report-insert properties)
-      (org-update-dblock))
+      (org-clock-alt-report-internal))
     (switch-to-buffer buff)))
 
 (org-clock-alt-report-buffer)
