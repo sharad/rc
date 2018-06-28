@@ -26,7 +26,7 @@
     (save-restriction
       (org-narrow-to-block)
       (kill-new
-      (let ((min
+       (let ((min
              (progn
                (goto-char (point-min))
                (next-line)
@@ -38,7 +38,7 @@
                (previous-line)
                (end-of-line)
                (point))))
-         (buffer-substring min max)))))
+         (buffer-substring min max))))))
 
 
 
