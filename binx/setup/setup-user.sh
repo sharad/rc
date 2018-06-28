@@ -6,6 +6,7 @@ SSH_KEY_DUMP=$1
 TMPDIR=~/setuptmp
 
 GIT_OPTION="core.sshCommand='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'"
+GIT_OPTION="core.sshCommand='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'"
 RESOURCEPATH=".repos/git/main/resource"
 USERORGMAIN="userorg/main"
 
