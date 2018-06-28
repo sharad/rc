@@ -1254,5 +1254,6 @@ clocktable, when not specified in the previous variable, is
 
 ;; (org-clock-alt-report-buffer)
 
+(switch-to-buffer  (get-buffer-create "*org-clock-alt-report-buffer*"))
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here
