@@ -812,7 +812,7 @@ function running()
     echo running "$@"
     if [ ! $noaction ]
     then
-        $@
+        "$@"
     fi
 }
 
