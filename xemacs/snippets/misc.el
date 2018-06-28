@@ -23,6 +23,7 @@
 (defun org-copy-block ()
   (interactive)
   (save-excursion
+    (save-restriction
   (org-narrow-to-block)
   (let ((min
          (save-excursion
@@ -37,7 +38,7 @@
            (end-of-line)
            (point))))
     (kill-new (buffer-substring min max)))
-  (widen)))
+  (widen))))
 
 
 
