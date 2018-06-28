@@ -1221,7 +1221,7 @@ in the buffer and update it."
 
 
 
-(defun org-clocktable-alt-report-insert ()
+(defun org-clocktable-alt-report-insert (propterties)
   (org-create-dblock
    (org-combine-plists
     ;; (list :scope (if (org-before-first-heading-p) 'file 'subtree))
