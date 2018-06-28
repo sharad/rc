@@ -28,19 +28,19 @@
       (kill-new
        (if arg
            (buffer-substring (point-min) (point-max))
-       (let ((min
-              (progn
-                (goto-char (point-min))
-                (next-line)
-                (beginning-of-line)
-                (point)))
-             (max
-              (progn
-                (goto-char (point-max))
-                (previous-line)
-                (end-of-line)
-                (point))))
-         (buffer-substring min max)))))))
+         (let ((min
+                (progn
+                  (goto-char (point-min))
+                  (next-line)
+                  (beginning-of-line)
+                  (point)))
+               (max
+                (progn
+                  (goto-char (point-max))
+                  (previous-line)
+                  (end-of-line)
+                  (point))))
+           (buffer-substring min max)))))))
 
 
 
