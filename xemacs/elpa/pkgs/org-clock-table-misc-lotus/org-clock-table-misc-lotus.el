@@ -1241,9 +1241,6 @@ When called with a prefix argument, move to the first clock table
 in the buffer and update it."
   (interactive "P")
   (org-clock-remove-overlays)
-  (when arg
-    (org-find-dblock "clocktable-alt")
-    (org-show-entry))
   (pcase (org-in-clocktable-p)
     (`nil
      (org-clocktable-alt-report-insert))
