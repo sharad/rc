@@ -1235,10 +1235,7 @@ The new table inherits its properties from the variable
 `org-clock-clocktable-default-properties'.  The scope of the
 clocktable, when not specified in the previous variable, is
 `subtree' when the function is called from within a subtree, and
-`file' elsewhere.
-
-When called with a prefix argument, move to the first clock table
-in the buffer and update it."
+`file' elsewhere."
   (org-clock-remove-overlays)
   (pcase (org-in-clocktable-p)
     (`nil
