@@ -1218,7 +1218,7 @@ in the buffer and update it."
 
 
 
-clocktable-alt :scope (directory-files-recursive (expand-file-name "" (org-publish-get-attribute "tasks" "org" :base-directory)) "\\.org$" 7 nil t) :block lastweek :compact nil :stepskip0  t :fileskip0 t :maxlevel 10 :indent t :level t :tcolumns 1 :formatter org-plain-alt-with-content-note-write
+
 
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here
