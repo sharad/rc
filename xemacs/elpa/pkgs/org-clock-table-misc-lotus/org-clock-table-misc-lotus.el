@@ -1223,5 +1223,8 @@ in the buffer and update it."
     (start (goto-char start)))
   (org-update-dblock))
 
+(defun org-clock-alt-report-buffer ()
+  )
+
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here
