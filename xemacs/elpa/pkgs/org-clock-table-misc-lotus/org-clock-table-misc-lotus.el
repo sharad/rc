@@ -1225,6 +1225,24 @@ in the buffer and update it."
     (start (goto-char start)))
   (org-update-dblock))
 
+(defun org-clock-alt-report-in-place (&optional properties)
+  "Update or create a table containing a report about clocked time.
+
+If point is inside an existing clocktable block, update it.
+Otherwise, insert a new one.
+
+The new table inherits its properties from the variable
+`org-clock-clocktable-default-properties'.  The scope of the
+clocktable, when not specified in the previous variable, is
+`subtree' when the function is called from within a subtree, and
+`file' elsewhere."
+  (org-clock-remove-overlays)
+  (pcase (org-in-clocktable-p)
+    (`nil
+     (org-clocktable-alt-report-insert properties))
+    (start (goto-char start)))
+  (org-update-dblock))
+
 ;;;###autoload
 (defun org-clock-alt-report-buffer (&optional properties)
   (interactive
