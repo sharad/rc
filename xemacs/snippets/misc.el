@@ -11,7 +11,7 @@
            (point)))
         (max
          (save-excursion
-           (goto-char (point-min))
+           (goto-char (point-max))
            (next-line)
            (beginning-of-line)
            (point))))
