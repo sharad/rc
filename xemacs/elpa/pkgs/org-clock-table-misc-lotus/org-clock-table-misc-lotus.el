@@ -1175,7 +1175,7 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
       (funcall formatter ipos tbls params))))
 
 (setq org-clock-clocktable-alt-default-properties
-  '(:scope '(directory-files-recursive (expand-file-name "" (org-publish-get-attribute "tasks" "org" :base-directory)) "\\.org$" 7 nil t)
+  '(:scope (directory-files-recursive (expand-file-name "" (org-publish-get-attribute "tasks" "org" :base-directory)) "\\.org$" 7 nil t)
     ;; :block 'lastweek
     :compact nil
     :stepskip0  t
