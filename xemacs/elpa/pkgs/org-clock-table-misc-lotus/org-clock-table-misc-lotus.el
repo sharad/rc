@@ -1225,7 +1225,8 @@ in the buffer and update it."
 
 (defun org-clock-alt-report-buffer ()
   (with-current-buffer (get-buffer-create "*org-clock-alt-report-buffer*")
-    ))
+    (org-mode 1)
+    (org-clocktable-alt-report-insert)))
 
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here
