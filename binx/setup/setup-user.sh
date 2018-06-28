@@ -6,7 +6,7 @@ SSH_KEY_DUMP=$1
 TMPDIR=~/setuptmp
 if [ -r ~/.ssh/authorized_keys ]
 then
-    GIT_SSH_OPTION="ssh -o UserKnownHostsFile=~/.ssh/authorized_keys -o StrictHostKeyChecking=yes"
+    # GIT_SSH_OPTION="ssh -o UserKnownHostsFile=~/.ssh/authorized_keys -o StrictHostKeyChecking=yes"
     GIT_SSH_OPTION="ssh -o UserKnownHostsFile=~/.ssh/authorized_keys"
 else
     GIT_SSH_OPTION="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
