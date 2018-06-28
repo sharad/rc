@@ -810,6 +810,7 @@ function process_arg() {
 function running()
 {
     echo running "$@"
+    local _cmd=$1
     if [ ! $noaction ]
     then
         "$@"
