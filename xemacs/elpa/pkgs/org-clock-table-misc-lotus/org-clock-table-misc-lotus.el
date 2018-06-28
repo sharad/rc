@@ -1208,14 +1208,14 @@ in the buffer and update it."
     (org-show-entry))
   (pcase (org-in-clocktable-p)
     (`nil
-     (org-clocktable-alt-report-insert)
-     )
+     (org-clocktable-alt-report-insert))
     (start (goto-char start)))
   (org-update-dblock))
 
 
 
 (defun org-clocktable-alt-report-insert (propterties)
+  (org-clock-remove-overlays)
   (org-create-dblock
    (org-combine-plists
     ;; (list :scope (if (org-before-first-heading-p) 'file 'subtree))
