@@ -20,7 +20,7 @@
 
 
 
-(defun org-copy-block ()
+(defun org-copy-block (arg)
   (interactive)
   (save-excursion
     (save-restriction
