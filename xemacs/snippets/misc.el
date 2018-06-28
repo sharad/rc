@@ -37,8 +37,7 @@
                (previous-line)
                (end-of-line)
                (point))))
-        (kill-new (buffer-substring min max)))
-      (widen))))
+        (kill-new (buffer-substring min max))))))
 
 
 
