@@ -32,7 +32,7 @@
                (beginning-of-line)
                (point)))
             (max
-             (save-excursion
+             (progn
                (goto-char (point-max))
                (previous-line)
                (end-of-line)
