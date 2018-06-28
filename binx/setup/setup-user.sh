@@ -811,6 +811,7 @@ function running()
 {
     echo running "$@"
     local _cmd=$1
+    shift
     if [ ! $noaction ]
     then
         "$@"
