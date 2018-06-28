@@ -1225,7 +1225,7 @@ in the buffer and update it."
     (start (goto-char start)))
   (org-update-dblock))
 
-(defun org-clock-alt-report (&optional arg)
+(defun org-clock-alt-report-internal (&optional arg)
   "Update or create a table containing a report about clocked time.
 
 If point is inside an existing clocktable block, update it.
