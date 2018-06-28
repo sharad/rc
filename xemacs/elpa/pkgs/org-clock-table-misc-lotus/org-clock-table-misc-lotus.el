@@ -1225,7 +1225,7 @@ in the buffer and update it."
 
 (defun org-clock-alt-report-buffer (&optional properties)
   (interactive
-   (list ))
+   (list nil))
   (with-current-buffer (get-buffer-create "*org-clock-alt-report-buffer*")
     (org-mode 1)
     (org-clocktable-alt-report-insert properties)))
