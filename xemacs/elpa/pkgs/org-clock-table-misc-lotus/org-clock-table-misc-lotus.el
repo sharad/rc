@@ -1243,7 +1243,7 @@ in the buffer and update it."
   (org-clock-remove-overlays)
   (pcase (org-in-clocktable-p)
     (`nil
-     (org-clocktable-alt-report-insert))
+     (org-clocktable-alt-report-insert properties))
     (start (goto-char start)))
   (org-update-dblock))
 
