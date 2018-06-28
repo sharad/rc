@@ -1186,7 +1186,7 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
     :tcolumns 1
     :formatter org-plain-alt-with-content-note-write))
 
-(defun org-clocktable-alt-report-insert (propterties)
+(defun org-clocktable-alt-report-insert (&optional propterties)
   (org-clock-remove-overlays)
   (org-create-dblock
    (org-combine-plists
