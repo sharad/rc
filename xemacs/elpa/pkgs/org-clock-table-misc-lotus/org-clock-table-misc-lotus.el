@@ -1227,7 +1227,7 @@ in the buffer and update it."
   (interactive
    (list nil))
   (with-current-buffer (get-buffer-create "*org-clock-alt-report-buffer*")
-    (org-mode 1)
+    (org-mode)
     (org-clocktable-alt-report-insert properties)
     (org-update-dblock)))
 
