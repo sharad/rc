@@ -1210,7 +1210,8 @@ in the buffer and update it."
     (`nil
      (org-create-dblock
       (org-combine-plists
-       (list :scope (if (org-before-first-heading-p) 'file 'subtree))
+       ;; (list :scope (if (org-before-first-heading-p) 'file 'subtree))
+       (list :scope '(directory-files-recursive (expand-file-name "" (org-publish-get-attribute "tasks" "org" :base-directory)) "\\.org$" 7 nil t))
        org-clock-clocktable-alt-default-properties
        '(:name "clocktable-alt"))))
     (start (goto-char start)))
