@@ -1229,6 +1229,7 @@ in the buffer and update it."
      :scope
      '(directory-files-recursive (expand-file-name "" (org-publish-get-attribute "tasks" "org" :base-directory)) "\\.org$" 7 nil t))
     org-clock-clocktable-alt-default-properties
+    propterties
     '(:name "clocktable-alt"))))
 
 
