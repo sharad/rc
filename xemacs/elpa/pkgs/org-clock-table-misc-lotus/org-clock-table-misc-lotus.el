@@ -1231,5 +1231,7 @@ in the buffer and update it."
     (org-clocktable-alt-report-insert properties)
     (org-update-dblock)))
 
+(org-clock-alt-report-buffer)
+
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here
