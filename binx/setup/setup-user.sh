@@ -7,6 +7,8 @@ TMPDIR=~/setuptmp
 if [ ! -r ~/.ssh/authorized_keys ]
 then
     GIT_SSH_OPTION="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+else
+    GIT_SSH_OPTION="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 fi
 
 RESOURCEPATH=".repos/git/main/resource"
