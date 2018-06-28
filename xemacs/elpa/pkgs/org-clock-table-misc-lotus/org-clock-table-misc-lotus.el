@@ -1186,6 +1186,17 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
     :tcolumns 1
     :formatter org-plain-alt-with-content-note-write))
 
+(defun org-clocktable-alt-report-insert (propterties)
+  (org-clock-remove-overlays)
+  (org-create-dblock
+   (org-combine-plists
+    ;; (list :scope (if (org-before-first-heading-p) 'file 'subtree))
+    (list
+     :scope
+     '(directory-files-recursive (expand-file-name "" (org-publish-get-attribute "tasks" "org" :base-directory)) "\\.org$" 7 nil t))
+    org-clock-clocktable-alt-default-properties
+    propterties
+    '(:name "clocktable-alt"))))
 ;;;###autoload
 (defun org-clock-alt-report (&optional arg)
   "Update or create a table containing a report about clocked time.
