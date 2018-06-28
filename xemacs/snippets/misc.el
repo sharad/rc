@@ -25,6 +25,7 @@
   (save-excursion
     (save-restriction
       (org-narrow-to-block)
+      (kill-new
       (let ((min
              (progn
                (goto-char (point-min))
