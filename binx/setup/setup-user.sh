@@ -6,7 +6,7 @@ SSH_KEY_DUMP=$1
 TMPDIR=~/setuptmp
 if [ -r ~/.ssh/authorized_keys ]
 then
-    GIT_SSH_OPTION="ssh -o UserKnownHostsFile=~/.ssh/authorized_keys -o StrictHostKeyChecking=no"
+    GIT_SSH_OPTION="ssh -o UserKnownHostsFile=~/.ssh/authorized_keys -o StrictHostKeyChecking=yes"
 else
     GIT_SSH_OPTION="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 fi
@@ -367,7 +367,7 @@ function setup_git_repos()
     mkdir -p ~/${RESOURCEPATH}/
     if [ ! -d ~/${RESOURCEPATH}/userorg ]
     then
-        git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
+        running git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
     else
         git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${RESOURCEPATH}/userorg pull origin master
         git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${RESOURCEPATH}/userorg submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull origin master
