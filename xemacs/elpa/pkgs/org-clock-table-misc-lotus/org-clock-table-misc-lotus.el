@@ -1199,32 +1199,6 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
     propterties
     '(:name "clocktable-alt"))))
 
-;;;###autoload
-(defun org-clock-alt-report (&optional arg)
-  "Update or create a table containing a report about clocked time.
-
-If point is inside an existing clocktable block, update it.
-Otherwise, insert a new one.
-
-The new table inherits its properties from the variable
-`org-clock-clocktable-default-properties'.  The scope of the
-clocktable, when not specified in the previous variable, is
-`subtree' when the function is called from within a subtree, and
-`file' elsewhere.
-
-When called with a prefix argument, move to the first clock table
-in the buffer and update it."
-  (interactive "P")
-  (org-clock-remove-overlays)
-  (when arg
-    (org-find-dblock "clocktable-alt")
-    (org-show-entry))
-  (pcase (org-in-clocktable-p)
-    (`nil
-     (org-clocktable-alt-report-insert))
-    (start (goto-char start)))
-  (org-update-dblock))
-
 (defun org-clock-alt-report-in-place (&optional properties)
   "Update or create a table containing a report about clocked time.
 
