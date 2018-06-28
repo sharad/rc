@@ -1362,5 +1362,7 @@ in the buffer and update it."
   propterties
   '(:name "clocktable-alt")))
 
+
+
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here
