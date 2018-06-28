@@ -6,7 +6,8 @@
   (let ((min
          (save-excursion
            (goto-char (point-min))
-           (next-line))))
+           (next-line)
+           (beginning-of-line))))
     (kill-new (buffer-substring (point-min) (point-max))))
   (widen))
 
