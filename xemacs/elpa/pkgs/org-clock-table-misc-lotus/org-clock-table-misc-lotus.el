@@ -1229,7 +1229,7 @@ in the buffer and update it."
   (interactive
    (list nil))
   (let ((buff (get-buffer-create "*org-clock-alt-report-buffer*")))
-  (with-current-buffer (get-buffer-create "*org-clock-alt-report-buffer*")
+  (with-current-buffer buff
     (org-mode)
     (org-clocktable-alt-report-insert properties)
     (org-update-dblock))))
