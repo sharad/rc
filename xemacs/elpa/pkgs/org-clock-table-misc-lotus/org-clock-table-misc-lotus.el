@@ -1352,7 +1352,7 @@ in the buffer and update it."
     (start (goto-char start)))
   (org-update-dblock))
 
-(defun
+(defun org-clock-alt-report-in-pace
 (org-dblock-write:clocktable-alt
  (org-combine-plists
   ;; (list :scope (if (org-before-first-heading-p) 'file 'subtree))
