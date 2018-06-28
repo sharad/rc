@@ -27,17 +27,17 @@
       (org-narrow-to-block)
       (kill-new
        (let ((min
-             (progn
-               (goto-char (point-min))
-               (next-line)
-               (beginning-of-line)
-               (point)))
-            (max
-             (progn
-               (goto-char (point-max))
-               (previous-line)
-               (end-of-line)
-               (point))))
+              (progn
+                (goto-char (point-min))
+                (next-line)
+                (beginning-of-line)
+                (point)))
+             (max
+              (progn
+                (goto-char (point-max))
+                (previous-line)
+                (end-of-line)
+                (point))))
          (buffer-substring min max))))))
 
 
