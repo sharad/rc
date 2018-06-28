@@ -13,7 +13,7 @@
          (save-excursion
            (goto-char (point-max))
            (previous-line)
-           (beginning-of-line)
+           (end-of-line)
            (point))))
     (kill-new (buffer-substring min max)))
   (widen))
