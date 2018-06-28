@@ -362,11 +362,11 @@ function setup_git_repos()
     mkdir -p ~/${RESOURCEPATH}/
     if [ ! -d ~/${RESOURCEPATH}/userorg ]
     then
-        git $GIT_OPTION clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
+        git -c "$GIT_OPTION" clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
     else
-        git $GIT_OPTION -C ~/${RESOURCEPATH}/userorg pull origin master
-        git $GIT_OPTION -C ~/${RESOURCEPATH}/userorg submodule foreach git $GIT_OPTION pull origin master
-        # git $GIT_OPTION -C ~/.repos/git submodule update --remote
+        git -c "$GIT_OPTION" -C ~/${RESOURCEPATH}/userorg pull origin master
+        git -c "$GIT_OPTION" -C ~/${RESOURCEPATH}/userorg submodule foreach git -c "$GIT_OPTION" pull origin master
+        # git -c "$GIT_OPTION" -C ~/.repos/git submodule update --remote
     fi
 
     if true
@@ -716,7 +716,7 @@ function setup_clib_installer()
     sudo apt-get -y install libcurl4-gnutls-dev -qq
     if [ ! -d /usr/local/stow/clib/ ]
     then
-        if git $GIT_OPTION clone https://github.com/clibs/clib.git $TMPDIR/clib
+        if git -c "$GIT_OPTION" clone https://github.com/clibs/clib.git $TMPDIR/clib
         then
             cd $TMPDIR/clib
             make PREFIX=/usr/local/stow/clib/
