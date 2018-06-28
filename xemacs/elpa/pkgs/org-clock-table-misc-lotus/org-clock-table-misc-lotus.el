@@ -1249,7 +1249,7 @@ clocktable, when not specified in the previous variable, is
   (let ((buff (get-buffer-create "*org-clock-alt-report-buffer*")))
     (with-current-buffer buff
       (org-mode)
-      (org-clock-alt-report-internal))
+      (org-clock-alt-report-in-place))
     (switch-to-buffer buff)))
 
 ;; (org-clock-alt-report-buffer)
