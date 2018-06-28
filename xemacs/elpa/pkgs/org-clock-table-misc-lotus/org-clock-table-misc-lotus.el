@@ -1243,6 +1243,7 @@ clocktable, when not specified in the previous variable, is
     (start (goto-char start)))
   (org-update-dblock))
 
+;;;###autoload
 (defun org-clock-alt-report-buffer (&optional properties)
   (interactive
    (list nil))
