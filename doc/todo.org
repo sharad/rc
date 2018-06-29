@@ -46,4 +46,4 @@ than come back to old behaviour.
 ** Some outgoing relay smtp server allow from a specific Network
 for this configure postfix to bind using wlan0 ip
 ** Setup dovecote to store mail attachment separately
-https://www.dovecot.org/list/dovecot/2016-February/103077.html
+follow https://www.dovecot.org/list/dovecot/2016-February/103077.html
