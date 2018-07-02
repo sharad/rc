@@ -931,6 +931,7 @@ PROPNAME lets you set a custom text property instead of :org-clock-minutes."
                         (save-excursion
                           (save-match-data (funcall headline-filter))))))
               (setq level (- (match-end 1) (match-beginning 1)))
+
               (when (>= level lmax)
                 (setq ltimes (vconcat ltimes (make-vector lmax 0)) lmax (* 2 lmax)))
               (when (or (> t1 0) (> (aref ltimes level) 0))
@@ -957,7 +958,9 @@ PROPNAME lets you set a custom text property instead of :org-clock-minutes."
                              :org-clock-force-headline-inclusion t))))))
                 (setq t1 0)
                 (loop for l from level to (1- lmax) do
-                     (aset ltimes l 0)))))))
+                     (aset ltimes l 0)))
+
+              (setq clock-notes nil)))))
        (setq org-clock-file-total-minutes (aref ltimes 0))))))
 
 
