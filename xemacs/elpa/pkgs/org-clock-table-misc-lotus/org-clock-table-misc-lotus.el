@@ -853,7 +853,7 @@ from the dynamic block definition."
     total-time))
 
 (defun org-get-clock-note ()
-  ;; improve to take all not not just one.
+  ;; improve to take all not just one.
   (when (org-at-clock-log-p)
     (save-excursion
       (forward-line)
