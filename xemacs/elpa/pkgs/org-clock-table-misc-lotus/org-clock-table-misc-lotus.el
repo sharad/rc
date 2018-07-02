@@ -48,7 +48,7 @@ For more information, see `org-clocktable-write-default'."
 (defun org-clocktable-alt-write-default (ipos tables params)
   "Write out a clock table at position IPOS in the current buffer.
 TABLES is a list of tables with clocking data as produced by
-`org-clock-get-table-data'.  PARAMS is the parameter property list obtained
+`org-clock-get-table-data-alt'.  PARAMS is the parameter property list obtained
 from the dynamic block definition."
   ;; This function looks quite complicated, mainly because there are a
   ;; lot of options which can add or remove columns.  I have massively
@@ -293,7 +293,7 @@ from the dynamic block definition."
 (defun org-clocktable-alt-with-content-note-write (ipos tables params)
   "Write out a clock table at position IPOS in the current buffer.
 TABLES is a list of tables with clocking data as produced by
-`org-clock-get-table-data'.  PARAMS is the parameter property list obtained
+`org-clock-get-table-data-alt'.  PARAMS is the parameter property list obtained
 from the dynamic block definition."
   ;; This function looks quite complicated, mainly because there are a
   ;; lot of options which can add or remove columns.  I have massively
@@ -575,7 +575,7 @@ from the dynamic block definition."
 (defun org-plain-alt-with-content-note-write (ipos tables params)
   "Write out a clock table at position IPOS in the current buffer.
 TABLES is a list of tables with clocking data as produced by
-`org-clock-get-table-data'.  PARAMS is the parameter property list obtained
+`org-clock-get-table-data-alt'.  PARAMS is the parameter property list obtained
 from the dynamic block definition."
   ;; This function looks quite complicated, mainly because there are a
   ;; lot of options which can add or remove columns.  I have massively
@@ -585,6 +585,10 @@ from the dynamic block definition."
   ;; well-defined number of columns...
   (let* ((headline-single-char-str
           (or (plist-get params :headline-char) "•"))
+         (insert-content
+          (or (plist-get params :insert-content) t))
+         (insert-notes
+          (or (plist-get params :insert-notes) t))
          (hlchars '((1 . "*") (2 . "/")))
          (lwords (assoc (or (plist-get params :lang)
                             (org-bound-and-true-p org-export-default-language)
@@ -780,8 +784,10 @@ from the dynamic block definition."
              hlc (org-minutes-to-clocksum-string (nth 3 entry)) hlc ; time
              ;; "|\n"                                             ; close line
              "\n"
-             (if content  (concat content "\n") "")
-             (if notes (mapconcat 'identity notes "\n") ""))))))
+             (when insert-content
+               (if content  (concat content "\n") ""))
+             (when insert-notes
+               (if notes (mapconcat 'identity notes "\n") "")))))))
     ;; When exporting subtrees or regions the region might be
     ;; activated, so let's disable ̀delete-active-region'
     (let ((delete-active-region nil)) (backward-delete-char 1))
@@ -938,6 +944,7 @@ PROPNAME lets you set a custom text property instead of :org-clock-minutes."
                   (put-text-property (point) (point-at-eol)
                                      :org-clock-notes
                                      (remove nil clock-notes))
+                  (setq clock-notes nil) ;;; newly add as fix
                   (if headline-filter
                       (save-excursion
                         (save-match-data
@@ -972,7 +979,7 @@ PROPNAME lets you set a custom text property instead of :org-clock-minutes."
                 (backward-char)
                 (buffer-substring start (point)))))))))
 
-(defun org-clock-get-table-data (file params)
+(defun org-clock-get-table-data-alt (file params)
   "Get the clocktable data for file FILE, with parameters PARAMS.
 FILE is only for identification - this function assumes that
 the correct buffer is current, and that the wanted restriction is
@@ -1136,7 +1143,7 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
               (with-current-buffer (find-buffer-visiting file)
                 (save-excursion
                   (save-restriction
-                    (push (org-clock-get-table-data file params) tbls))))))
+                    (push (org-clock-get-table-data-alt file params) tbls))))))
           ;; Just from the current file
           (save-restriction
             ;; get the right range into the restriction
@@ -1159,7 +1166,7 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
                        (throw 'exit nil))))
                (org-narrow-to-subtree)))
             ;; do the table, with no file name.
-            (push (org-clock-get-table-data nil params) tbls)))
+            (push (org-clock-get-table-data-alt nil params) tbls)))
 
       ;; OK, at this point we tbls as a list of tables, one per file
       (setq tbls (nreverse tbls))
@@ -1238,7 +1245,7 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
               (with-current-buffer (find-buffer-visiting file)
                 (save-excursion
                   (save-restriction
-                    (push (org-clock-get-table-data file params) tbls))))))
+                    (push (org-clock-get-table-data-alt file params) tbls))))))
           ;; Just from the current file
           (save-restriction
             ;; get the right range into the restriction
@@ -1261,7 +1268,7 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
                        (throw 'exit nil))))
                (org-narrow-to-subtree)))
             ;; do the table, with no file name.
-            (push (org-clock-get-table-data nil params) tbls)))
+            (push (org-clock-get-table-data-alt nil params) tbls)))
 
       ;; OK, at this point we tbls as a list of tables, one per file
       (setq tbls (nreverse tbls))
