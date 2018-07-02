@@ -905,7 +905,8 @@ PROPNAME lets you set a custom text property instead of :org-clock-minutes."
                   te (if tend (min te tend) te)
                   dt (- te ts)
                   t1 (if (> dt 0) (+ t1 (floor (/ dt 60))) t1))
-            (push (org-get-clock-note) clock-notes))
+            (when (> dt 0)
+              (push (org-get-clock-note) clock-notes)))
            ((match-end 4)
             ;; A naked time
             (setq t1 (+ t1 (string-to-number (match-string 5))
