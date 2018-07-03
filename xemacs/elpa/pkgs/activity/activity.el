@@ -114,9 +114,8 @@
   `(progn
      (def@ ,object ,name
        (error "define method %s for object %s"
-              ,name ,object))
-     ))
-(put 'def-dispatcher@ 'lisp-indent-function 3)
+              ,name ,object))))
+(put 'def-method-enforce@ 'lisp-indent-function 3)
 
 (defmacro undef-dispatcher@ (object name)
   `(progn
