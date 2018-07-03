@@ -173,11 +173,6 @@
 (defvar @transition-global
   (@extend @transition :name "Class Transition"))
 
-(def@ @transition :init (old new)
-      (@^:init)
-      (setf
-       @:old old
-       @:new new))
 
 ;; (setq test (@! @transition :new 1 2))
 
