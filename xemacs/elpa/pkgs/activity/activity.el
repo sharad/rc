@@ -162,7 +162,7 @@
 (defvar @transition
   (@extend @activity :name "Class Transition"))
 
-(setf (@ @transition ))
+(setf (@ @transition :old) nil)
 
 (def@ @transition :init (old new)
       (@^:init)
