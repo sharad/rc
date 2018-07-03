@@ -147,7 +147,7 @@
 
 (def@ @dispatchable-immediate :dispatch ()
       (dolist (cb @:dispatchers)
-        (message "calling ")
+        (message "calling %s" cb)
         (funcall cb @@)))
 
 (defvar @dispatchable-defferred
