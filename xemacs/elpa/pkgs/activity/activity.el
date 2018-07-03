@@ -117,7 +117,7 @@
               ,name ,object))))
 (put 'def-method-enforce@ 'lisp-indent-function 3)
 
-(defmacro undef-dispatcher@ (object name)
+(defmacro undef-method-enforce@ (object name)
   `(progn
      (@! ,object
          :remove-dispatcher
