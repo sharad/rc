@@ -238,7 +238,7 @@
       (push
        (helm-build-sync-source "Current Clocking Tsk"
          :candidates (list (occ-sacha-selection-line
-                            (occ-build-ctxual-tsk ctx (occ-current-tsk))))
+                            (occ-build-ctxual-tsk (occ-current-tsk) ctx)))
          :action (list
                   (cons "Clock in and track" selector)))
        helm-sources))
