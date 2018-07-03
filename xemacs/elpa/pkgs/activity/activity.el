@@ -146,6 +146,7 @@
   (@extend @dispatchable :name "Class Deferred Dispatchable"))
 
 (def@ @dispatchable-immediate :dispatch ()
+      (message "calling @dispatchable-immediate :dispatch")
       (dolist (cb @:dispatchers)
         (message "calling %s" cb)
         (funcall cb @@)))
