@@ -205,9 +205,10 @@
 
 (defvar buffer-transition-prev-buff nil)
 (defun buffer-transition-action ()
-  (unless (equal
-           buffer-transition-prev-buff
-           (current-buffer))
+  (if (equal
+       buffer-transition-prev-buff
+       (current-buffer))
+      (message "not dispaatching")
    (let* ((buff-trans
           (@! @buffer-transition :new
               (current-buffer)
