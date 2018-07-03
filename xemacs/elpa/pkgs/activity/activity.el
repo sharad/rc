@@ -119,10 +119,8 @@
 
 (defmacro undef-method-enforce@ (object name)
   `(progn
-     (@! ,object
-         :remove-dispatcher
-         (@ ,object ,name))))
-(put 'undef-dispatcher@ 'lisp-indent-function 1)
+     ))
+(put 'undef-method-enforce@ 'lisp-indent-function 1)
 
 (describe-@ @methods-enforce :name)
 
