@@ -113,10 +113,9 @@
 (defmacro def-method-enforce@ (object name)
   `(progn
      (def@ ,object ,name
-           )
-     (@! ,object
-         :add-dispatcher
-         (@ ,object ,name))))
+       (error "define method %s for object %s"
+              ,name ,object))
+     ))
 (put 'def-dispatcher@ 'lisp-indent-function 3)
 
 (defmacro undef-dispatcher@ (object name)
