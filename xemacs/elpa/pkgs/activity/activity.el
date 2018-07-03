@@ -110,7 +110,7 @@
       (@^:init)
       (setf @:occuredon (current-time)))
 
-(defmacro def-method-ensure@ (object name params &rest body)
+(defmacro def-method-enforce@ (object name )
   `(progn
      (def@ ,object ,name params
            ,@body)
