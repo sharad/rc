@@ -208,7 +208,7 @@
   (if (equal
        buffer-transition-prev-buff
        (current-buffer))
-      (message "not dispaatching")
+      (message "not dispatching")
    (let* ((buff-trans
           (@! @buffer-transition :new
               (current-buffer)
