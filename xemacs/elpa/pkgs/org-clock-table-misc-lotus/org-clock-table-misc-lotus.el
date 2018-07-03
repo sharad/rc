@@ -853,7 +853,7 @@ from the dynamic block definition."
     total-time))
 
 (defun org-get-clock-note ()
-  ;; improve to take all not just one.
+  ;; TODO: improve to take all not just one.
   (when (org-at-clock-log-p)
     (save-excursion
       (forward-line)
@@ -960,7 +960,7 @@ PROPNAME lets you set a custom text property instead of :org-clock-minutes."
                 (setq t1 0)
                 (loop for l from level to (1- lmax) do
                      (aset ltimes l 0)))
-
+              ;; empty collected notes, else it will be added into upper headings
               (setq clock-notes nil)))))
        (setq org-clock-file-total-minutes (aref ltimes 0))))))
 
@@ -1374,6 +1374,24 @@ in the buffer and update it."
     org-clock-clocktable-alt-default-properties
     ;; propterties
     '(:name "clocktable-alt"))))
+
+(defvar org-clock-alt-report-buffer-idle-timer nil)
+
+(defun org-clock-alt-report-buffer-when-idle (secs)
+  (interactive "nNumber: ")
+  (when org-clock-alt-report-buffer-idle-timer
+    (cancel-timer org-clock-alt-report-buffer-idle-timer)
+    (setq org-clock-alt-report-buffer-idle-timer nil))
+  (let ((secs
+         (if (and
+              secs
+              (> secs 7))
+             secs
+           30)))
+    (setq org-clock-alt-report-buffer-idle-timer
+          (run-with-idle-timer
+           secs secs
+           #'org-clock-alt-report-buffer))))
 
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here

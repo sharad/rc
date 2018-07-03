@@ -28,6 +28,11 @@
 ;; mindshare-contrib-mgr for all
 
 
+;; First start working on few projects (for e.g.
+;; orgmode[restructuring,refactoring]), and see in real time what are
+;; difficulties and pattern of problems and solutions, and use the experience in
+;; this project.
+
 (defun find-file-project ()
   )
 
