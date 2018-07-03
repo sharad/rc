@@ -113,7 +113,7 @@
 (defmacro def-method-enforce@ (object name)
   `(progn
      (def@ ,object ,name
-           ,@body)
+           )
      (@! ,object
          :add-dispatcher
          (@ ,object ,name))))
