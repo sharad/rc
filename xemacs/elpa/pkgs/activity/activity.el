@@ -103,10 +103,10 @@
 
 
 (defvar @methods-enforce
-  (@extend :name "Class Activity"
+  (@extend :name "methods enforce"
            :occuredon (current-time)))
 
-(def@ @activity :init ()
+(def@ @methods-enforce :init ()
       (@^:init)
       (setf @:occuredon (current-time)))
 
