@@ -170,6 +170,12 @@
        @:old old
        @:new new))
 
+(def@ @transition :init (old new)
+      (@^:init)
+      (setf
+       @:old old
+       @:new new))
+
 ;; (setq test (@! @transition :new 1 2))
 
 
