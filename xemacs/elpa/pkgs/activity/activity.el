@@ -204,6 +204,8 @@
         occuredon (format-time-string "%Y-%m-%d" @:occuredon))))
 
 (defvar buffer-transition-prev-buff nil)
+
+
 (defun buffer-transition-action ()
   (if (equal
        buffer-transition-prev-buff
@@ -216,7 +218,9 @@
     (setq buffer-transition-prev-buff (current-buffer))
     (@! buff-tran :dispatch))))
 
-(buffer-transition-action)
+(progn
+  (setq buffer-transition-prev-buff (get-buffer "*scratch*"))
+ (buffer-transition-action))
 
 
 (defvar @clock-transition
