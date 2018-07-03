@@ -119,7 +119,6 @@
 (def@ @methods-enforce :un-enforce (object name)
   `(progn
      ))
-(put 'undef-method-enforce@ 'lisp-indent-function 1)
 
 (describe-@ @methods-enforce :name)
 
