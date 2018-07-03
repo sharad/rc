@@ -170,6 +170,15 @@
        @:old old
        @:new new))
 
+(defvar @transition-global
+  (@extend @activity :name "Class Transition"))
+
+(def@ @transition :init (old new)
+      (@^:init)
+      (setf
+       @:old old
+       @:new new))
+
 ;; (setq test (@! @transition :new 1 2))
 
 
