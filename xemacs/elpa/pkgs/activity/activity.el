@@ -147,6 +147,7 @@
 
 (def@ @dispatchable-immediate :dispatch ()
       (dolist (cb @:dispatchers)
+        (message "calling ")
         (funcall cb @@)))
 
 (defvar @dispatchable-defferred
@@ -212,6 +213,8 @@
               (get-buffer "*scratch*"))))
     (setq buffer-transition-prev-buff (current-buffer))
     (@! buff-tran :dispatch))))
+
+(buffer-transition-action)
 
 
 (defvar @clock-transition
