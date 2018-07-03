@@ -116,7 +116,7 @@
        (error "define method %s for object %s"
               ,name ,object))))
 
-(defmacro undef-method-enforce@ (object name)
+(def@ @methods-enforce :un-enforce (object name)
   `(progn
      ))
 (put 'undef-method-enforce@ 'lisp-indent-function 1)
