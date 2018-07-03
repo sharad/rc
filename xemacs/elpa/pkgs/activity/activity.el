@@ -110,7 +110,7 @@
       (@^:init)
       (setf @:occuredon (current-time)))
 
-(defmacro def-dispatcher@ (object name params &rest body)
+(defmacro def-method-ensure@ (object name params &rest body)
   `(progn
      (def@ ,object ,name params
            ,@body)
