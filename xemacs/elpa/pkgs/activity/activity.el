@@ -110,7 +110,7 @@
       (@^:init)
       (setf @:occuredon (current-time)))
 
-(def@ (object name)
+(def@ @methods-enforce :enforce (object name)
   `(progn
      (def@ ,object ,name
        (error "define method %s for object %s"
