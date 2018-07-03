@@ -171,7 +171,7 @@
        @:new new))
 
 (defvar @transition-global
-  (@extend @activity :name "Class Transition"))
+  (@extend @transition :name "Class Transition"))
 
 (def@ @transition :init (old new)
       (@^:init)
