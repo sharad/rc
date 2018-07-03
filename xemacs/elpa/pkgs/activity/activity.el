@@ -216,7 +216,7 @@
               (current-buffer)
               (get-buffer "*scratch*"))))
     (setq buffer-transition-prev-buff (current-buffer))
-    (@! buff-tran :dispatch))))
+    (@! buff-trans :dispatch))))
 
 (progn
   (setq buffer-transition-prev-buff (get-buffer "*scratch*"))
