@@ -1288,7 +1288,8 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
 (setq org-clock-clocktable-alt-default-properties
       (list
        :scope (directory-files-recursive (expand-file-name "" (org-publish-get-attribute "tasks" "org" :base-directory)) "\\.org$" 7 nil t)
-       :block 'lastweek
+       ;; :block 'lastweek
+       :block 'week
        :compact nil
        :stepskip0  t
        :fileskip0 t
