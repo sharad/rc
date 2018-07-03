@@ -164,7 +164,7 @@
 
 (setf (@ @transition :old) nil)
 
-(def@ @transition :init (old new)
+(def@ @transition :old (old new)
       (@^:init)
       (setf
        @:old old
