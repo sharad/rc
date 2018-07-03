@@ -279,5 +279,9 @@
    "* TODO %? %^g\n %i\n [%a]\n"
    :empty-lines 1))
 
+(defun occ-goto ()
+  (interactive)
+  (occ-set-to-tsk))
+
 (provide 'occ-interactive)
 ;;; occ-interactive.el ends here
