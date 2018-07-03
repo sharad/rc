@@ -102,7 +102,7 @@
 
 
 
-(defvar @enforce
+(defvar @methods-objs
   (@extend :name "Class Activity"
            :occuredon (current-time)))
 
