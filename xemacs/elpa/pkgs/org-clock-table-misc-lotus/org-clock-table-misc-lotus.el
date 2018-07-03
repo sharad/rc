@@ -856,7 +856,7 @@ from the dynamic block definition."
   ;; TODO: improve to take all not just one.
   (when (org-at-clock-log-p)
     (save-excursion
-      (forward-line)
+      (previous-line)
       (when (org-at-item-p)
         (let ((ele (org-element-at-point)))
           (let ((begin (org-element-property :contents-begin ele))
