@@ -110,6 +110,21 @@
       (@^:init)
       (setf @:occuredon (current-time)))
 
+(defmacro def-dispatcher@ (object name params &rest body)
+  `(progn
+     (def@ ,object ,name params
+           ,@body)
+     (@! ,object
+         :add-dispatcher
+         (@ ,object ,name))))
+(put 'def-dispatcher@ 'lisp-indent-function 3)
+
+(defmacro undef-dispatcher@ (object name)
+  `(progn
+     (@! ,object
+         :remove-dispatcher
+         (@ ,object ,name))))
+(put 'undef-dispatcher@ 'lisp-indent-function 1)
 
 (describe-@ @methods-enforce :name)
 
