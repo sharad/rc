@@ -110,9 +110,9 @@
       (@^:init)
       (setf @:occuredon (current-time)))
 
-(defmacro def-method-enforce@ (object name )
+(defmacro def-method-enforce@ (object name)
   `(progn
-     (def@ ,object ,name params
+     (def@ ,object ,name
            ,@body)
      (@! ,object
          :add-dispatcher
