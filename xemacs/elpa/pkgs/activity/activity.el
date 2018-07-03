@@ -110,16 +110,8 @@
       (@^:init)
       (setf @:occuredon (current-time)))
 
-(def@ @activity :log ()
-      (message "Time %s" @:occuredon))
 
-(def@ @activity :message ()
-      (error "No :message function found."))
-
-(def@ @activity :object-sexp ()
-      (error "No :object-sexp function found."))
-
-(describe-@ @activity :name)
+(describe-@ @methods-enforce :name)
 
 
 (defvar @dispatchable
