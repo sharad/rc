@@ -182,6 +182,20 @@
                  nil)
                 files))))))
 
+(cl-defmethod occ-collect-tsk-list ((collection occ-tree-tsk-collection))
+  (let ((tsks (occ-collection collection))
+        (tsk-list '()))
+    (occ-mapc-tree-tsks
+     #'(lambda (tsk args)
+         (push tsk tsk-list))
+     tsks
+     nil)
+    tsk-list))
+
+(cl-defmethod occ-collect-tsk-list ((collection occ-list-tsk-collection))
+  (let ((tsks (occ-collection collection)))
+    tsks))
+
 (cl-defmethod occ-collect-tsks ((collection occ-list-tsk-collection)
                                 force)
   (unless (occ-list-tsk-collection-list collection)

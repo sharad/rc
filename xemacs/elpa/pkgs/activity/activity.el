@@ -188,66 +188,52 @@
 (defvar @transition
   (@extend @activity :name "Class Transition"))
 
-(def@ @transition :init (old new)
+(def@ @transition :init (new)
       (@^:init)
-      (setf
-       @:old old
-       @:new new))
+      (setf @:new new))
 
-(defvar @transition-global
+(defvar @transition-singleton
   (@extend @transition :name "Class Transition"))
 
-;; (setq test (@! @transition :new 1 2))
-
+(setf (@ @transition-singleton :old) nil)
 
-
-
-
-
-
-
+(def@ @transition-singleton :init (new)
+      (@^:init)
+      (setf @:new new))
 
 
 
-(setf @buffer-transition
-  (@extend @transition @dispatchable-immediate))
 
-(def@ @buffer-transition :init (old-buffer new-buffer)
-      (@^:init old-buffer new-buffer))
+
+(setf @buffer-transition-singleton
+      (@extend @transition-singleton @dispatchable-immediate))
 
-(def@ @buffer-transition :message ()
+(def@ @buffer-transition-singleton :init (new-buffer)
+      (@^:init new-buffer))
+
+(def@ @buffer-transition-singleton :message ()
       (format "changed from %s buffer to %s buffer on %s"
-              (buffer-name @:old)
+              (if  @:old (buffer-name @:old) "none")
               (buffer-name @:new)
               (format-time-string "%Y-%m-%d" @:occuredon)))
 
-(def@ @buffer-transition :object-sexp ()
+(def@ @buffer-transition-singleton :object-sexp ()
       (list
        'buffer-transition
-       :old (buffer-name @:old)
+       :old (if @:old (buffer-name @:old) nil)
        :new (buffer-name @:new)
        (list
         'activity
         occuredon (format-time-string "%Y-%m-%d" @:occuredon))))
 
-(defvar buffer-transition-prev-buff nil)
+(def@ @buffer-transition-singleton :execute ()
+      (setf @:new (current-buffer))
+      (if (equal @:old (current-buffer))
+          (message "not dispatching")
+        (@:dispatch))
+      (setf @:old @:new))
 
-
-(defun buffer-transition-action ()
-  (if (equal
-       buffer-transition-prev-buff
-       (current-buffer))
-      (message "not dispatching")
-   (let* ((buff-trans
-          (@! @buffer-transition :new
-              (current-buffer)
-              (get-buffer "*scratch*"))))
-    (setq buffer-transition-prev-buff (current-buffer))
-    (@! buff-trans :dispatch))))
-
-(progn
-  (setq buffer-transition-prev-buff (get-buffer "*scratch*"))
- (buffer-transition-action))
+(@! @buffer-transition-singleton :execute)
 
 
 (defvar @clock-transition

@@ -151,16 +151,18 @@
     (when tsk (occ-rank tsk ctx))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(cl-defmethod occ-print ((tsk occ-tsk))
+  ;; (format "[%4d] %s"
+  ;;         0
+  ;;         (occ-fontify-like-in-org-mode tsk))
+  (format "%s"
+          (occ-fontify-like-in-org-mode tsk)))
+
 (cl-defmethod occ-print ((ctxask occ-ctxual-tsk))
   (let ((tsk (occ-ctxual-tsk-tsk ctxask)))
     (format "[%4d] %s"
             (occ-ctxual-tsk-rank ctxask)
             (occ-fontify-like-in-org-mode tsk))))
-
-(cl-defmethod occ-print ((tsk occ-tsk))
-  (format "[%4d] %s"
-          0
-          (occ-fontify-like-in-org-mode tsk)))
 
 (cl-defgeneric occ-sacha-selection-line (obj)
   )
@@ -191,33 +193,39 @@ pointing to it."
              (cons tsk mrk))))))))
 
 ;; deprecated
-(cl-defmethod occ-sacha-selection-line ((ctxask occ-ctxual-tsk))
+;; (cl-defmethod occ-sacha-selection-line ((ctxask occ-ctxual-tsk))
+;;   "Insert a line for the clock selection menu.
+;; And return a cons cell with the selection character integer and the marker
+;; pointing to it."
+;;   (let ((marker (occ-ctxual-tsk-marker ctxask))
+;;         (rank   (occ-ctxual-tsk-rank   ctxask)))
+;;     (when (marker-buffer marker)
+;;       (with-current-buffer (org-base-buffer (marker-buffer marker))
+;;         (org-with-wide-buffer
+;;          (progn ;; ignore-errors
+;;            (goto-char marker)
+;;            (let* ((cat (org-get-category))
+;;                   (heading (org-get-heading 'notags))
+;;                   (prefix (save-excursion
+;;                             (org-back-to-heading t)
+;;                             (looking-at org-outline-regexp)
+;;                             (match-string 0)))
+;;                   (tsk (substring
+;;                         (org-fontify-like-in-org-mode
+;;                          (concat prefix heading)
+;;                          org-odd-levels-only)
+;;                         (length prefix))))
+;;              (when tsk ;; (and cat tsk)
+;;                ;; (insert (format "[%c] %-12s  %s\n" i cat tsk))
+;;                ;; marker
+;;                (cons (occ-print ctxask) ctxask))))))))) ;TODO
+
+
+(cl-defmethod occ-sacha-selection-line ((tsk occ-tsk))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
-  (let ((marker (occ-ctxual-tsk-marker ctxask))
-        (rank   (occ-ctxual-tsk-rank   ctxask)))
-    (when (marker-buffer marker)
-      (with-current-buffer (org-base-buffer (marker-buffer marker))
-        (org-with-wide-buffer
-         (progn ;; ignore-errors
-           (goto-char marker)
-           (let* ((cat (org-get-category))
-                  (heading (org-get-heading 'notags))
-                  (prefix (save-excursion
-                            (org-back-to-heading t)
-                            (looking-at org-outline-regexp)
-                            (match-string 0)))
-                  (tsk (substring
-                        (org-fontify-like-in-org-mode
-                         (concat prefix heading)
-                         org-odd-levels-only)
-                        (length prefix))))
-             (when tsk ;; (and cat tsk)
-               ;; (insert (format "[%c] %-12s  %s\n" i cat tsk))
-               ;; marker
-               (cons (occ-print ctxask) ctxask))))))))) ;TODO
-
+  (cons (occ-print tsk) tsk))
 
 (cl-defmethod occ-sacha-selection-line ((ctxask occ-ctxual-tsk))
   "Insert a line for the clock selection menu.

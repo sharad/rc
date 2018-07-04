@@ -221,7 +221,7 @@
 
     (let ((tsks
            ;; TODO: convert to list from tree
-           (occ-collection (occ-collection-object))))
+           (occ-collect-tsk-list (occ-collection-object))))
       (push
        (helm-build-sync-source "Select tsk"
          :candidates (mapcar
@@ -237,8 +237,7 @@
            (marker-buffer org-clock-marker))
       (push
        (helm-build-sync-source "Current Clocking Tsk"
-         :candidates (list (occ-sacha-selection-line
-                            (occ-build-ctxual-tsk (occ-current-tsk) ctx)))
+         :candidates (list (occ-sacha-selection-line (occ-current-tsk)))
          :action (list
                   (cons "Clock in and track" selector)))
        helm-sources))
@@ -284,6 +283,15 @@
        (markerp marker)
        (marker-buffer marker))
       (progn
+        (switch-to-buffer (marker-buffer marker))
+        (goto-char marker))
+    (error "marker %s invalid." marker)))
+
+(defun occ-set-to-marker (marker)
+  (if (and
+       (markerp marker)
+       (marker-buffer marker))
+      (progn
         (set-buffer (marker-buffer marker))
         (goto-char marker))
     (error "marker %s invalid." marker)))
@@ -292,9 +300,9 @@
 (defun occ-set-to-ctxual-tsk ()
   (occ-helm-select-ctxual-tsk
    #'occ-ctxual-tsk-marker
-   #'occ-goto-marker))
+   #'occ-set-to-marker))
 
-(defun occ-set-to-tsk ()
+(defun occ-goto-tsk ()
   (occ-helm-select-tsk
    #'occ-tsk-marker
    #'occ-goto-marker))
@@ -320,7 +328,7 @@
 
 (defun occ-goto ()
   (interactive)
-  (occ-set-to-tsk))
+  (occ-goto-tsk))
 
 (provide 'occ-interactive)
 ;;; occ-interactive.el ends here
