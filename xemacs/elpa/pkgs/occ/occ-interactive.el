@@ -303,7 +303,21 @@
     (error "marker %s invalid." marker)))
 
 (cl-defmethod occ-goto ((tsk occ-tsk))
-  )
+  (let ((marker ))
+    (if (and
+         (markerp marker)
+         (marker-buffer marker))
+        (progn
+          (switch-to-buffer (marker-buffer marker))
+          ;; TODO find about "org-overview"
+          ;; https://stackoverflow.com/questions/25161792/emacs-org-mode-how-can-i-fold-everything-but-the-current-headline
+          ;; https://emacs.stackexchange.com/questions/26827/test-whether-org-mode-heading-or-list-is-folded
+          ;; https://github.com/facetframer/orgnav
+          ;; https://stackoverflow.com/questions/6198339/show-org-mode-outline-up-to-a-certain-heading-level
+          ;; (outline-show-all)
+          (org-content 10)
+          (goto-char marker))
+      (error "marker %s invalid." marker))))
 
 ;;;###autoload
 (defun occ-set-to-ctxual-tsk ()
