@@ -222,8 +222,9 @@ Each entry is either:
            #'(lambda ()
                (add-hook
                 'delete-frame-functions
-                #'(lambda (nframe) (when (fboundp 'org-clock-out-if-active)
-                                     (org-clock-out-if-active))))) t)
+                #'(lambda (nframe)
+                    (when (fboundp 'org-clock-out-if-active)
+                      (org-clock-out-if-active))))) t)
 
           (add-to-enable-login-session-interrupting-feature-hook
            #'(lambda ()
@@ -233,7 +234,9 @@ Each entry is either:
                            t))
                (add-hook
                 'delete-frame-functions
-                #'(lambda (nframe) (org-clock-out-if-active)))) t)
+                #'(lambda (nframe)
+                    (when (fboundp 'org-clock-out-if-active)
+                      (org-clock-out-if-active))))) t)
 
           (add-to-disable-login-session-interrupting-feature-hook
            #'(lambda ()
