@@ -282,10 +282,6 @@ startup in daemon mode."
       ;; (setenv "DISPLAY" ":1")
       (with-report-error "check"
           ;; do in add-hook
-          ;; (when (fboundp 'login-to-perforce)
-          ;;   (login-to-perforce))
-          ;; (update-ssh-agent t)  ; test
-          ;; (update-ssh-agent) ;; should be called when tramp file accessed. - see how it will work in case lotus-desktop-session-restore.
           (setq debug-on-error t)           ;for planner
           (run-each-hooks 'lotus-enable-login-session-interrupting-feature-hook)))
 
