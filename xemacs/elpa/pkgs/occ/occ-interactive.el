@@ -296,6 +296,9 @@
         (occ-goto marker)
       (error "marker %s invalid." marker))))
 
+(cl-defmethod occ-goto (ctxask occ-ctxual-tsk)
+  (occ-goto (occ-ctxual-tsk-marker)))
+
 
 
 (cl-defmethod occ-set-to (ctxask occ-ctxual-tsk)
