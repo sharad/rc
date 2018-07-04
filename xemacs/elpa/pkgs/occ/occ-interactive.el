@@ -309,6 +309,13 @@
          (marker-buffer marker))
         (occ-goto marker)
       (error "marker %s invalid." marker))))
+(cl-defmethod occ-goto ((tsk occ-tsk))
+  (let ((marker (occ-tsk-marker tsk)))
+    (if (and
+         (markerp marker)
+         (marker-buffer marker))
+        (occ-goto marker)
+      (error "marker %s invalid." marker))))
 (cl-defmethod occ-goto ((mrk marker))
   (progn
     (switch-to-buffer (marker-buffer marker))
