@@ -345,7 +345,7 @@
     ;; https://github.com/facetframer/orgnav
     ;; https://stackoverflow.com/questions/6198339/show-org-mode-outline-up-to-a-certain-heading-level
     ;; (outline-show-all)
-    (org-content 10)
+    ;; (org-content 10)
     (goto-char marker)))
 
 ;;;###autoload
