@@ -213,6 +213,39 @@
   )
 
 ;;;###autoload
+(defun occ-helm-select-tsk (selector
+                            action)
+  ;; here
+  ;; (occ-debug :debug "sacha marker %s" (car tsks))
+  (let ()
+
+    (let ((tsks
+           ;; TODO: convert to list from tree
+           (occ-collection (occ-collection-object))))
+      (push
+       (helm-build-sync-source "Select tsk"
+         :candidates (mapcar
+                      'occ-sacha-selection-line
+                      tsks)
+         :action (list
+                  (cons "Clock in and track" selector))
+         :history 'org-refile-history)
+       helm-sources))
+
+    (when (and
+           (org-clocking-p)
+           (marker-buffer org-clock-marker))
+      (push
+       (helm-build-sync-source "Current Clocking Tsk"
+         :candidates (list (occ-sacha-selection-line
+                            (occ-build-ctxual-tsk (occ-current-tsk) ctx)))
+         :action (list
+                  (cons "Clock in and track" selector)))
+       helm-sources))
+
+    (funcall action (helm helm-sources))))
+
+;;;###autoload
 (defun occ-helm-select-ctxual-tsk (selector
                                    action)
   ;; here
@@ -256,17 +289,23 @@
     (error "marker %s invalid." marker)))
 
 ;;;###autoload
-(defun occ-set-to-tsk ()
+(defun occ-set-to-ctxual-tsk ()
   (occ-helm-select-ctxual-tsk
    #'occ-ctxual-tsk-marker
    #'occ-goto-marker))
+
+(defun occ-set-to-tsk ()
+  (occ-helm-select-tsk
+   #'occ-tsk-marker
+   #'occ-goto-marker))
+
 
 ;;;###autoload
 (defun occ-create-child-tsk ()
   (interactive)
   (org-capture-alt
    'entry
-   '(function occ-set-to-tsk)
+   '(function occ-set-to-ctxual-tsk)
    "* TODO %? %^g\n %i\n [%a]\n"
    :empty-lines 1))
 
@@ -275,7 +314,7 @@
   (interactive)
   (org-capture-immediate                ;TODO
    'entry
-   '(function occ-set-to-tsk)
+   '(function occ-set-to-ctxual-tsk)
    "* TODO %? %^g\n %i\n [%a]\n"
    :empty-lines 1))
 

@@ -81,8 +81,30 @@
 
 ;; (@! (@! @rectangle :new 13.2 2.1) :area)
 
+(defvar @methods-enforce
+  (@extend :name "methods enforce"
+           :occuredon (current-time)))
+
+(def@ @methods-enforce :init ()
+      (@^:init)
+      (setf @:occuredon (current-time)))
+
+(def@ @methods-enforce :enforce (object name)
+      `(progn
+         (def@ ,object ,name
+           (error "define method %s for object %s"
+                  ,name ,object))))
+
+(def@ @methods-enforce :un-enforce (object name)
+      `(progn
+         ))
+
+(describe-@ @methods-enforce :name)
+
+
 (defvar @activity
-  (@extend :name "Class Activity"
+  (@extend @methods-enforce
+           :name "Class Activity"
            :occuredon (current-time)))
 
 (def@ @activity :init ()
@@ -102,27 +124,6 @@
 
 
 
-(defvar @methods-enforce
-  (@extend :name "methods enforce"
-           :occuredon (current-time)))
-
-(def@ @methods-enforce :init ()
-      (@^:init)
-      (setf @:occuredon (current-time)))
-
-(def@ @methods-enforce :enforce (object name)
-  `(progn
-     (def@ ,object ,name
-       (error "define method %s for object %s"
-              ,name ,object))))
-
-(def@ @methods-enforce :un-enforce (object name)
-  `(progn
-     ))
-
-(describe-@ @methods-enforce :name)
-
-
 (defvar @dispatchable
   (@extend @activity :name "Class Dispatchable"
            :dispatchers nil))
