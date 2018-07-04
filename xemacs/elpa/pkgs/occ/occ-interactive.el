@@ -276,17 +276,6 @@
 
     (funcall action (helm helm-sources))))
 
-(cl-defmethod occ-goto (ctxask occ-ctxual-tsk)
-  (occ-goto (occ-ctxual-tsk-marker)))
-
-(cl-defmethod occ-goto ((tsk occ-tsk))
-  (let ((marker (occ-tsk-marker tsk)))
-    (if (and
-         (markerp marker)
-         (marker-buffer marker))
-        (occ-goto marker)
-      (error "marker %s invalid." marker))))
-
 (cl-defmethod occ-goto ((mrk marker))
   (progn
     (switch-to-buffer (marker-buffer marker))
@@ -298,6 +287,16 @@
     ;; (outline-show-all)
     (org-content 10)
     (goto-char marker)))
+
+(cl-defmethod occ-goto ((tsk occ-tsk))
+  (let ((marker (occ-tsk-marker tsk)))
+    (if (and
+         (markerp marker)
+         (marker-buffer marker))
+        (occ-goto marker)
+      (error "marker %s invalid." marker))))
+
+
 
 (cl-defmethod occ-set-to (ctxask occ-ctxual-tsk)
   (occ-set-to (occ-ctxual-tsk-marker)))
