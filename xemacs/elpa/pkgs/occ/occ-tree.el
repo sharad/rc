@@ -152,6 +152,5 @@
           (occ-set-property entry 'subtree sub-tree)
           entry)))))
 
-
 (provide 'occ-tree)
 ;;; occ-tree.el ends here
