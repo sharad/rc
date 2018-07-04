@@ -127,11 +127,7 @@ problem while emacs startup in daemon mode, non-interactively."
          ido-mode t)
         (when (featurep 'epa)
           (if (fboundp 'epa-file-enable)
-              (epa-file-enable)))
-        ;; do in add-hook
-        ;; (when (fboundp 'login-to-perforce)
-        ;;  (login-to-perforce))
-        )
+              (epa-file-enable))))
       (add-hook 'lotus-enable-startup-interrupting-feature-hook 'general-enable-startup-setting t))
 
 ;;;###autoload
