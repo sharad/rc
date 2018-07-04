@@ -318,6 +318,7 @@
           (org-content 10)
           (goto-char marker))
       (error "marker %s invalid." marker))))
+(cl-defmethod occ-goto (mrk marker))
 
 ;;;###autoload
 (defun occ-set-to-ctxual-tsk ()
