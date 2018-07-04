@@ -302,6 +302,8 @@
         (goto-char marker))
     (error "marker %s invalid." marker)))
 
+(cl-defmethod occ-goto ())
+
 ;;;###autoload
 (defun occ-set-to-ctxual-tsk ()
   (occ-helm-select-ctxual-tsk
