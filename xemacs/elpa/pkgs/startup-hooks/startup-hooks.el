@@ -92,15 +92,6 @@ problem while emacs startup in daemon mode, non-interactively."
           (when nil
             (unless debug-on-error                  ;I am running in --debug-init
               (setq debug-on-error nil)))
-          ;; (setq
-          ;;  enable-p4-login nil
-          ;;  tramp-mode nil
-          ;;  ido-mode nil)
-          ;; (deh-featurep epa
-          ;;   (if (fboundp 'epa-file-disable)
-          ;;       (epa-file-disable)))
-          ;; (global-pabbrev-mode -1)
-          ;; (run-hooks 'lotus-disable-startup-interrupting-feature-hook)
           (run-each-hooks 'lotus-disable-startup-interrupting-feature-hook)
           (message "lotus-disable-startup-interrupting-feature() completed Seen.")))
 
