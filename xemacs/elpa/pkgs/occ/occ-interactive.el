@@ -303,7 +303,7 @@
     (error "marker %s invalid." marker)))
 
 (cl-defmethod occ-goto ((tsk occ-tsk))
-  (let ((marker ))
+  (let ((marker (occ-tsk-marker tsk)))
     (if (and
          (markerp marker)
          (marker-buffer marker))
