@@ -276,55 +276,7 @@
 
     (funcall action (helm helm-sources))))
 
-(cl-defmethod occ-goto ((mrk marker))
-  (progn
-    (switch-to-buffer (marker-buffer marker))
-    ;; TODO find about "org-overview"
-    ;; https://stackoverflow.com/questions/25161792/emacs-org-mode-how-can-i-fold-everything-but-the-current-headline
-    ;; https://emacs.stackexchange.com/questions/26827/test-whether-org-mode-heading-or-list-is-folded
-    ;; https://github.com/facetframer/orgnav
-    ;; https://stackoverflow.com/questions/6198339/show-org-mode-outline-up-to-a-certain-heading-level
-    ;; (outline-show-all)
-    (org-content 10)
-    (goto-char marker)))
 
-(cl-defmethod occ-goto ((tsk occ-tsk))
-  (let ((marker (occ-tsk-marker tsk)))
-    (if (and
-         (markerp marker)
-         (marker-buffer marker))
-        (occ-goto marker)
-      (error "marker %s invalid." marker))))
-
-(cl-defmethod occ-goto (ctxask occ-ctxual-tsk)
-  (occ-goto (occ-ctxual-tsk-marker)))
-
-
-
-
-
-(cl-defmethod occ-set-to ((mrk marker))
-  (progn
-    (set-buffer (marker-buffer marker))
-    ;; TODO find about "org-overview"
-    ;; https://stackoverflow.com/questions/25161792/emacs-org-mode-how-can-i-fold-everything-but-the-current-headline
-    ;; https://emacs.stackexchange.com/questions/26827/test-whether-org-mode-heading-or-list-is-folded
-    ;; https://github.com/facetframer/orgnav
-    ;; https://stackoverflow.com/questions/6198339/show-org-mode-outline-up-to-a-certain-heading-level
-    ;; (outline-show-all)
-    ;; (org-content 10)
-    (goto-char marker)))
-
-(cl-defmethod occ-set-to ((tsk occ-tsk))
-  (let ((marker (occ-tsk-marker tsk)))
-    (if (and
-         (markerp marker)
-         (marker-buffer marker))
-        (occ-set-to marker)
-      (error "marker %s invalid." marker))))
-
-(cl-defmethod occ-set-to (ctxask occ-ctxual-tsk)
-  (occ-set-to (occ-ctxual-tsk-marker)))
 
 ;;;###autoload
 (defun occ-set-to-ctxual-tsk ()
