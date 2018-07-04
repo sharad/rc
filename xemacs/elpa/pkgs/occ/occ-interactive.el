@@ -220,7 +220,6 @@
   (let ()
 
     (let ((tsks
-           ;; TODO: convert to list from tree
            (occ-collect-tsk-list (occ-collection-object))))
       (push
        (helm-build-sync-source "Select tsk"
