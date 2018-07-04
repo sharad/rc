@@ -291,6 +291,7 @@
 
   (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)
   (lotus-necessary-functionality)
+  (lotus-necessary-functionality-once-add-to-spacemacs-later)
   (lotus-necessary-test)
   ;; limiting gnus messages
   (setq gnus-verbose 1)
@@ -523,6 +524,20 @@ variable."
     (set-face-attribute 'org-block nil :inherit 'src-block)
     )
   (message "loading lotus-necessary-functionality finished"))
+
+
+
+(defun lotus-necessary-functionality-once-add-to-spacemacs-later ()
+  (progn
+    (add-hook 'message-mode-hook 'turn-on-orgstruct)
+    (add-hook 'message-mode-hook 'turn-on-orgstruct++))
+
+  (progn
+    ;; https://www.emacswiki.org/emacs/OutlineMinorMode
+    ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
+    ;; http://www.modernemacs.com/post/outline-ivy/
+    ;; https://orgmode.org/worg/org-tutorials/org-outside-org.html
+    ))
 
 
 

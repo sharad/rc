@@ -284,6 +284,12 @@
        (marker-buffer marker))
       (progn
         (switch-to-buffer (marker-buffer marker))
+        ;; TODO find about "org-overview"
+        ;; https://stackoverflow.com/questions/25161792/emacs-org-mode-how-can-i-fold-everything-but-the-current-headline
+        ;; https://emacs.stackexchange.com/questions/26827/test-whether-org-mode-heading-or-list-is-folded
+        ;; https://github.com/facetframer/orgnav
+        ;; (outline-show-all)
+        (org-content 10)
         (goto-char marker))
     (error "marker %s invalid." marker)))
 
