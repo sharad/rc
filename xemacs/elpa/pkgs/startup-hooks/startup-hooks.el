@@ -102,9 +102,6 @@ problem while emacs startup in daemon mode, non-interactively."
 ;;;###autoload
     (defun lotus-disable-startup-interrupting-feature-in-frame-once (&optional frame)
       ;; NOTE: Can not be called in hook.
-      ;; (funcall startup-select-frame-fn frame)
-      ;; (with-report-error "check"
-      ;;                    (lotus-enable-startup-interrupting-feature))
       (lotus-disable-startup-interrupting-feature)
       (remove-hook 'after-init-hook 'lotus-disable-startup-interrupting-feature-in-frame-once))
 
