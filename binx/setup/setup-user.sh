@@ -643,6 +643,10 @@ function setup_deps_model_dirs()
                 do
                     for vld in ${vgd}/*
                     do
+                        if [ -f $vld/users/$USER ]
+                        then
+                            mkdir -p $vld/users/$USER
+                        fi
                         ln -s $vld/users/$USER ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d/"$(basename $vgd)-$(basename $vld)"
                     done
                 done
