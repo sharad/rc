@@ -643,7 +643,7 @@ function setup_deps_model_dirs()
                 do
                     for vld in ${vgd}/*
                     do
-                        if [ -f $vld/users/$USER ]
+                        if [ -f $vld/user/$USER ]
                         then
                             sudo mkdir -p $vld/user/$USER
                             sudo chown root.root $vld/user/$USER
