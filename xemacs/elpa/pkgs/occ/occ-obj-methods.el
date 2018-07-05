@@ -40,7 +40,7 @@
 
 (cl-defmethod occ-get-property ((obj occ-obj)
                                 prop)
-  ;; mainly used by occ-tsk only
+  ;; mainly used by occ-tsk only.
   (if (memq prop (cl-class-slots (cl-classname obj)))
       (cl-get-field obj prop)
     (plist-get
