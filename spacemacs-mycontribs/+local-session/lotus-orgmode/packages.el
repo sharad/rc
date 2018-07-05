@@ -742,8 +742,8 @@ Each entry is either:
         )))
 
 
-(defun lotus-orgmode/init-orgnav ()
-  (use-package orgnav
+(defun lotus-orgmode/init-poporg ()
+  (use-package poporg
       :defer t
       :config
       (progn
