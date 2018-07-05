@@ -25,7 +25,7 @@
 
 (require 'occ-obj-common)
 (require 'occ-tree)
-(require 'occ-base-objects)
+(require 'occ-obj)
 
 (defvar occ-global-tsk-collection-spec nil)
 (defvar occ-global-tsk-collection nil)
