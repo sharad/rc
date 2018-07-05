@@ -23,7 +23,7 @@
 
 ;;; Code:
 
-(require 'occ-ctor)
+(require 'occ-obj-ctor)
 
 
 (provide 'occ-obj-accessor)
