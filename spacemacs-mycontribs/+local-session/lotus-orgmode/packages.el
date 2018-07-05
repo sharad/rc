@@ -754,10 +754,6 @@ Each entry is either:
 
         (progn
           ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
-                                        ;(require 'orgstruct)
-                                        ;(require 'orgstruct++)
-                                        ;(setq orgstruct-heading-prefix-regexp "^;; ")
-
           ;; (defvar outline-minor-mode-prefix "\M-#")
           (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
           (setq outshine-use-speed-commands t)
