@@ -644,12 +644,12 @@ function setup_deps_model_dirs()
                     for vld in ${vgd}/*
                     do
                         local _location=$vld/user/$USER
-                        if [ -f $vld/user/$USER ]
+                        if [ -f $_location ]
                         then
-                            sudo mkdir -p $vld/user/$USER
-                            sudo chown root.root $vld/user/$USER
+                            sudo mkdir -p $_location
+                            sudo chown root.root $_location
                         fi
-                        ln -s $vld/user/$USER ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d/"$(basename $vgd)-$(basename $vld)"
+                        ln -s $_location ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d/"$(basename $vgd)-$(basename $vld)"
                     done
                 done
             fi
