@@ -770,6 +770,7 @@ Each entry is either:
         )))
 
 (defun lotus-orgmode/init-outline-ivy ()
+  ;; http://www.modernemacs.com/post/outline-bullets/
   (use-package outline-ivy
       :defer t
       :config
