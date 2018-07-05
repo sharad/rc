@@ -734,4 +734,19 @@ Each entry is either:
           (add-hook 'outline-minor-mode-hook 'outshine-hook-function))
         )))
 
+(defun lotus-orgmode/init-outorg ()
+  (use-package outorg
+      :defer t
+      :config
+      (progn
+        )))
+
+
+(defun lotus-orgmode/init-orgnav ()
+  (use-package orgnav
+      :defer t
+      :config
+      (progn
+        )))
+
 ;;; packages.el ends here
