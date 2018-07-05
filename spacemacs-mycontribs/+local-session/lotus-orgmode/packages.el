@@ -734,7 +734,7 @@ Each entry is either:
       :config
       (progn
         (progn
-                                        ;(setq orgstruct-heading-prefix-regexp "^;; ")
+          ;;(setq orgstruct-heading-prefix-regexp "^;; ")
           )
         )))
 
