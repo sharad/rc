@@ -643,7 +643,7 @@ function setup_deps_model_dirs()
                 do
                     for vld in ${vgd}/*
                     do
-                        local _location=$vld/user/$USER
+                        local _location=$vld/users/$USER
 
                         if [ -f $_location ]
                         then
