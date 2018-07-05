@@ -644,7 +644,7 @@ function setup_deps_model_dirs()
                 do
                     for vld in ${vgd}/*
                     do
-                        ln -s $vld/users/$USER "$(basename $vgd)-$(basename $vld)"
+                        ln -s $vld/users/$USER ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d/"$(basename $vgd)-$(basename $vld)"
                     done
                 done
                 cd -
