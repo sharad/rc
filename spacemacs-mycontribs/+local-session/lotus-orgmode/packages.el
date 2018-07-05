@@ -714,6 +714,7 @@ Each entry is either:
 (defun lotus-orgmode/init-outshine ()
   ;; TODO https://orgmode.org/worg/org-tutorials/org-outside-org.html
   ;; http://www.modernemacs.com/post/outline-ivy/
+  ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
   (use-package outshine
       :defer t
       :config
