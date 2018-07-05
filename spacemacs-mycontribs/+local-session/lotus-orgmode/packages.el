@@ -48,6 +48,8 @@
     (org-feed :location local)
     worf
     orgnav
+    orgstruct
+    orgstruct++
     outshine
     outorg
     poporg
