@@ -704,4 +704,18 @@ Each entry is either:
       (progn
         )))
 
+(defun lotus-orgmode/init-orgnav ()
+  (use-package orgnav
+      :defer t
+      :config
+      (progn
+        )))
+
+(defun lotus-orgmode/init-worf ()
+  (use-package worf
+      :defer t
+      :config
+      (progn
+        )))
+
 ;;; packages.el ends here
