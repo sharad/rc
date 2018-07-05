@@ -23,7 +23,7 @@
 
 ;;; Code:
 
-(require 'occ-obj-methods)
+(require 'occ-obj-method)
 (require 'occ-util-common)
 (require 'occ-unnamed)
 (require 'occ-interactive)
