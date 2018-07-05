@@ -48,6 +48,7 @@
     (org-feed :location local)
     worf
     orgnav
+    outshine
     )
   "The list of Lisp packages required by the lotus-orgmode layer.
 
