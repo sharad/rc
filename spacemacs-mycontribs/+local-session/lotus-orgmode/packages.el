@@ -730,6 +730,8 @@ Each entry is either:
       :defer t
       :config
       (progn
+        (progn
+          (add-hook 'outline-minor-mode-hook 'outshine-hook-function))
         )))
 
 ;;; packages.el ends here
