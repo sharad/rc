@@ -1,4 +1,4 @@
-;;; occ-ctor.el --- occ-api               -*- lexical-binding: t; -*-
+;;; occ-obj-ctor.el --- occ-api               -*- lexical-binding: t; -*-
 ;; Copyright (C) 2016  sharad
 
 ;; Author: sharad <spratap@merunetworks.com>
@@ -281,5 +281,5 @@
                      (occ-make-tsk-at-point #'make-occ-tree-tsk)
                      (make-occ-tree-tsk :name "empty tree tsk")))))))))
 
-(provide 'occ-ctor)
-;;; occ-ctor.el ends here
+(provide 'occ-obj-ctor)
+;;; occ-obj-ctor.el ends here
