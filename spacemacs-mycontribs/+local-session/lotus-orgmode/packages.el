@@ -743,8 +743,8 @@ Each entry is either:
                                         ;(require 'orgstruct)
                                         ;(require 'orgstruct++)
                                         ;(setq orgstruct-heading-prefix-regexp "^;; ")
-          (require 'outshine)
-          (defvar outline-minor-mode-prefix "\M-#")
+
+          ;; (defvar outline-minor-mode-prefix "\M-#")
           (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
           (setq outshine-use-speed-commands t)
           (add-hook 'prog-mode-hook 'outline-minor-mode)
