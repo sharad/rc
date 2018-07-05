@@ -721,6 +721,20 @@ Each entry is either:
           (setq orgnav-log 't))
         )))
 
+(defun lotus-orgmode/init-worf ()
+  (use-package worf
+      :defer t
+      :config
+      (progn
+        )))
+
+(defun lotus-orgmode/init-orgstruct++f ()
+  (use-package orgstruct++f
+      :defer t
+      :config
+      (progn
+        )))
+
 (defun lotus-orgmode/init-outshine ()
   ;; TODO https://orgmode.org/worg/org-tutorials/org-outside-org.html
   ;; http://www.modernemacs.com/post/outline-ivy/
