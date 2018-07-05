@@ -715,6 +715,12 @@ Each entry is either:
   ;; TODO https://orgmode.org/worg/org-tutorials/org-outside-org.html
   ;; http://www.modernemacs.com/post/outline-ivy/
   ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
+
+  ;; https://www.emacswiki.org/emacs/OutlineMinorMode
+  ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
+  ;; http://www.modernemacs.com/post/outline-ivy/
+  ;; https://orgmode.org/worg/org-tutorials/org-outside-org.html
+
   (use-package outshine
       :defer t
       :config
