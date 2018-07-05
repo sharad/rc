@@ -728,8 +728,8 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-orgmode/init-orgstruct++f ()
-  (use-package orgstruct++f
+(defun lotus-orgmode/init-orgstruct++ ()
+  (use-package orgstruct++
       :defer t
       :config
       (progn
