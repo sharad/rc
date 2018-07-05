@@ -697,4 +697,11 @@ Each entry is either:
       (progn
         )))
 
+(defun lotus-orgmode/init-org-notmuch ()
+  (use-package org-notmuch
+      :defer t
+      :config
+      (progn
+        )))
+
 ;;; packages.el ends here
