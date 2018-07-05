@@ -721,8 +721,8 @@ Each entry is either:
           (setq orgnav-log 't))
         )))
 
-(defun lotus-orgmode/init-worf ()
-  (use-package worf
+(defun lotus-orgmode/init-orgstruct ()
+  (use-package orgstruct
       :defer t
       :config
       (progn
