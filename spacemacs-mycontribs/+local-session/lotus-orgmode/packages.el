@@ -714,6 +714,8 @@ Each entry is either:
       :defer t
       :config
       (progn
+        (progn
+          (setq orgnav-log 't))
         )))
 
 (defun lotus-orgmode/init-outshine ()
