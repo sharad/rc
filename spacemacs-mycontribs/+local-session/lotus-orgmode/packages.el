@@ -51,6 +51,7 @@
     orgstruct
     orgstruct++
     outshine
+    outline-ivy
     outorg
     poporg
     navi-mode
