@@ -750,4 +750,11 @@ Each entry is either:
       (progn
         )))
 
+(defun lotus-orgmode/init-navi-mode ()
+  (use-package navi-mode
+      :defer t
+      :config
+      (progn
+        )))
+
 ;;; packages.el ends here
