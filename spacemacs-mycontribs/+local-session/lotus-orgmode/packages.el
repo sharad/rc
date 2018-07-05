@@ -711,8 +711,8 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-orgmode/init-worf ()
-  (use-package worf
+(defun lotus-orgmode/init-outshine ()
+  (use-package outshine
       :defer t
       :config
       (progn
