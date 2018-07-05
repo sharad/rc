@@ -733,6 +733,9 @@ Each entry is either:
       :defer t
       :config
       (progn
+        (progn
+                                        ;(setq orgstruct-heading-prefix-regexp "^;; ")
+          )
         )))
 
 (defun lotus-orgmode/init-outshine ()
