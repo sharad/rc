@@ -769,6 +769,13 @@ Each entry is either:
 
         )))
 
+(defun lotus-orgmode/init-outline-ivy ()
+  (use-package outline-ivy
+      :defer t
+      :config
+      (progn
+        )))
+
 (defun lotus-orgmode/init-outorg ()
   (use-package outorg
       :defer t
