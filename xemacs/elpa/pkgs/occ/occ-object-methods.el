@@ -1,4 +1,4 @@
-;;; occ-object-methods.el --- occ-api               -*- lexical-binding: t; -*-
+;;; occ-obj-methods.el --- occ-api               -*- lexical-binding: t; -*-
 ;; Copyright (C) 2016  sharad
 
 ;; Author: sharad <spratap@merunetworks.com>
@@ -681,5 +681,5 @@ pointing to it."
     (occ-collection-object)
     (occ-make-ctx (current-buffer)))))
 
-(provide 'occ-object-methods)
-;;; occ-object-methods.el ends here
+(provide 'occ-obj-methods)
+;;; occ-obj-methods.el ends here
