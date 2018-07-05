@@ -639,7 +639,6 @@ function setup_deps_model_dirs()
             mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d
             if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d -a -d /srv/volumes/ ]
             then
-                cd ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d
                 for vgd in /srv/volumes/*
                 do
                     for vld in ${vgd}/*
@@ -647,7 +646,6 @@ function setup_deps_model_dirs()
                         ln -s $vld/users/$USER ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d/"$(basename $vgd)-$(basename $vld)"
                     done
                 done
-                cd -
             fi
         fi
     fi
