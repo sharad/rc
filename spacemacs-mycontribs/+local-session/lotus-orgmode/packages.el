@@ -753,9 +753,6 @@ Each entry is either:
       :config
       (progn
         (progn
-          (add-hook 'outline-minor-mode-hook 'outshine-hook-function))
-
-        (progn
           ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
           ;; (defvar outline-minor-mode-prefix "\M-#")
           (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
