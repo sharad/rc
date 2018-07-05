@@ -87,6 +87,11 @@ Each entry is either:
       :defer t
       :config
       (progn
+
+        (progn
+          (add-hook 'message-mode-hook 'turn-on-orgstruct)
+          (add-hook 'message-mode-hook 'turn-on-orgstruct++))
+
         (progn
           (when (fboundp 'spaceline-toggle-org-clock-on)
             (spaceline-toggle-org-clock-on)))
