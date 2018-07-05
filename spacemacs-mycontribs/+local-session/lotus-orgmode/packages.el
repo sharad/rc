@@ -46,6 +46,8 @@
     (org-clock :location local)
     (org2rem :location local)
     (org-feed :location local)
+    worf
+    orgnav
     )
   "The list of Lisp packages required by the lotus-orgmode layer.
 
