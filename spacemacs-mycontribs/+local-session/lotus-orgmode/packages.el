@@ -49,6 +49,9 @@
     worf
     orgnav
     outshine
+    outorg
+    poporg
+    navi-mode
     )
   "The list of Lisp packages required by the lotus-orgmode layer.
 
