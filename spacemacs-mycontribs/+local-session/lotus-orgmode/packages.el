@@ -745,6 +745,7 @@ Each entry is either:
 (defun lotus-orgmode/init-poporg ()
   (use-package poporg
       :defer t
+      :commands (poporg-dwim)
       :config
       (progn
         )))
