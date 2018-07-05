@@ -644,6 +644,7 @@ function setup_deps_model_dirs()
                     for vld in ${vgd}/*
                     do
                         local _location=$vld/user/$USER
+
                         if [ -f $_location ]
                         then
                             sudo mkdir -p $_location
