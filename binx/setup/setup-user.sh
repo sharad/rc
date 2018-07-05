@@ -636,6 +636,7 @@ function setup_deps_model_dirs()
             fi
 
             ln -s ../../../../../../../../../../../../../../ ~/.localdirs/deps.d/model.d/machine.d/$HOST/home
+
             mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d
             if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d -a -d /srv/volumes/ ]
             then
