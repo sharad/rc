@@ -697,8 +697,8 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-orgmode/init-org-notmuch ()
-  (use-package org-notmuch
+(defun lotus-orgmode/init-worf ()
+  (use-package worf
       :defer t
       :config
       (progn
