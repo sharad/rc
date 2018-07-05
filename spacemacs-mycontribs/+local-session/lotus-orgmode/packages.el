@@ -758,13 +758,11 @@ Each entry is either:
           (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
           (setq outshine-use-speed-commands t)
           (add-hook 'prog-mode-hook 'outline-minor-mode)
-
           (add-hook 'ruby-mode-hook 'outline-minor-mode)
           (add-hook 'lua-mode-hook 'outline-minor-mode)
           (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
           (add-hook 'common-lisp-mode-hook 'outline-minor-mode)
-          (add-hook 'lisp-mode-hook 'outline-minor-mode)
-          )
+          (add-hook 'lisp-mode-hook 'outline-minor-mode))
 
         )))
 
