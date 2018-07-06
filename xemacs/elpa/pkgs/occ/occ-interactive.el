@@ -308,7 +308,7 @@
    "* TODO %? %^g\n %i\n [%a]\n"
    :empty-lines 1))
 
-(defun occ-goto ()
+(defun occ-goto-test ()
   (interactive)
   (occ-goto-tsk))
 

@@ -234,6 +234,9 @@ pointing to it."
   (cons (occ-print ctxask) ctxask))
 ;; function to setup ctx clock timer:2 ends here
 
+(cl-defgeneric occ-goto (obj)
+  )
+
 (cl-defmethod occ-goto ((mrk marker))
   (progn
     (switch-to-buffer (marker-buffer marker))
