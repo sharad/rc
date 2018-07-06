@@ -1,4 +1,4 @@
-;;; occ-base-objects.el --- occ-api               -*- lexical-binding: t; -*-
+;;; occ-obj.el --- occ-api               -*- lexical-binding: t; -*-
 ;; Copyright (C) 2016  sharad
 
 ;; Author: sharad <spratap@merunetworks.com>
@@ -106,5 +106,5 @@
          :baseattr "xbaseattr"
          :drivedattr "xdrivedattr")))
 
-(provide 'occ-base-objects)
-;;; occ-base-objects.el ends here
+(provide 'occ-obj)
+;;; occ-obj.el ends here

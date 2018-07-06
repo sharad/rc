@@ -636,6 +636,7 @@ function setup_deps_model_dirs()
             fi
 
             ln -s ../../../../../../../../../../../../../../ ~/.localdirs/deps.d/model.d/machine.d/$HOST/home
+
             mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d
             if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d -a -d /srv/volumes/ ]
             then
@@ -643,7 +644,14 @@ function setup_deps_model_dirs()
                 do
                     for vld in ${vgd}/*
                     do
-                        ln -s $vld/users/$USER "$(basename $vgd)-$(basename $vld)"
+                        local _location=$vld/users/$USER
+
+                        if [ -f $_location ]
+                        then
+                            sudo mkdir -p $_location
+                            sudo chown root.root $_location
+                        fi
+                        ln -s $_location ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d/"$(basename $vgd)-$(basename $vld)"
                     done
                 done
             fi

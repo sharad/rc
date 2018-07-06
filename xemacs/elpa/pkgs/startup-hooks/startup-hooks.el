@@ -92,15 +92,6 @@ problem while emacs startup in daemon mode, non-interactively."
           (when nil
             (unless debug-on-error                  ;I am running in --debug-init
               (setq debug-on-error nil)))
-          ;; (setq
-          ;;  enable-p4-login nil
-          ;;  tramp-mode nil
-          ;;  ido-mode nil)
-          ;; (deh-featurep epa
-          ;;   (if (fboundp 'epa-file-disable)
-          ;;       (epa-file-disable)))
-          ;; (global-pabbrev-mode -1)
-          ;; (run-hooks 'lotus-disable-startup-interrupting-feature-hook)
           (run-each-hooks 'lotus-disable-startup-interrupting-feature-hook)
           (message "lotus-disable-startup-interrupting-feature() completed Seen.")))
 
@@ -111,9 +102,6 @@ problem while emacs startup in daemon mode, non-interactively."
 ;;;###autoload
     (defun lotus-disable-startup-interrupting-feature-in-frame-once (&optional frame)
       ;; NOTE: Can not be called in hook.
-      ;; (funcall startup-select-frame-fn frame)
-      ;; (with-report-error "check"
-      ;;                    (lotus-enable-startup-interrupting-feature))
       (lotus-disable-startup-interrupting-feature)
       (remove-hook 'after-init-hook 'lotus-disable-startup-interrupting-feature-in-frame-once))
 
@@ -139,11 +127,7 @@ problem while emacs startup in daemon mode, non-interactively."
          ido-mode t)
         (when (featurep 'epa)
           (if (fboundp 'epa-file-enable)
-              (epa-file-enable)))
-        ;; do in add-hook
-        ;; (when (fboundp 'login-to-perforce)
-        ;;  (login-to-perforce))
-        )
+              (epa-file-enable))))
       (add-hook 'lotus-enable-startup-interrupting-feature-hook 'general-enable-startup-setting t))
 
 ;;;###autoload
@@ -282,10 +266,6 @@ startup in daemon mode."
       ;; (setenv "DISPLAY" ":1")
       (with-report-error "check"
           ;; do in add-hook
-          ;; (when (fboundp 'login-to-perforce)
-          ;;   (login-to-perforce))
-          ;; (update-ssh-agent t)  ; test
-          ;; (update-ssh-agent) ;; should be called when tramp file accessed. - see how it will work in case lotus-desktop-session-restore.
           (setq debug-on-error t)           ;for planner
           (run-each-hooks 'lotus-enable-login-session-interrupting-feature-hook)))
 

@@ -48,7 +48,7 @@ For more information, see `org-clocktable-write-default'."
 (defun org-clocktable-alt-write-default (ipos tables params)
   "Write out a clock table at position IPOS in the current buffer.
 TABLES is a list of tables with clocking data as produced by
-`org-clock-get-table-data'.  PARAMS is the parameter property list obtained
+`org-clock-get-table-data-alt'.  PARAMS is the parameter property list obtained
 from the dynamic block definition."
   ;; This function looks quite complicated, mainly because there are a
   ;; lot of options which can add or remove columns.  I have massively
@@ -293,7 +293,7 @@ from the dynamic block definition."
 (defun org-clocktable-alt-with-content-note-write (ipos tables params)
   "Write out a clock table at position IPOS in the current buffer.
 TABLES is a list of tables with clocking data as produced by
-`org-clock-get-table-data'.  PARAMS is the parameter property list obtained
+`org-clock-get-table-data-alt'.  PARAMS is the parameter property list obtained
 from the dynamic block definition."
   ;; This function looks quite complicated, mainly because there are a
   ;; lot of options which can add or remove columns.  I have massively
@@ -575,7 +575,7 @@ from the dynamic block definition."
 (defun org-plain-alt-with-content-note-write (ipos tables params)
   "Write out a clock table at position IPOS in the current buffer.
 TABLES is a list of tables with clocking data as produced by
-`org-clock-get-table-data'.  PARAMS is the parameter property list obtained
+`org-clock-get-table-data-alt'.  PARAMS is the parameter property list obtained
 from the dynamic block definition."
   ;; This function looks quite complicated, mainly because there are a
   ;; lot of options which can add or remove columns.  I have massively
@@ -585,6 +585,10 @@ from the dynamic block definition."
   ;; well-defined number of columns...
   (let* ((headline-single-char-str
           (or (plist-get params :headline-char) "•"))
+         (insert-content
+          (or (plist-get params :insert-content) t))
+         (insert-notes
+          (or (plist-get params :insert-notes) t))
          (hlchars '((1 . "*") (2 . "/")))
          (lwords (assoc (or (plist-get params :lang)
                             (org-bound-and-true-p org-export-default-language)
@@ -780,8 +784,10 @@ from the dynamic block definition."
              hlc (org-minutes-to-clocksum-string (nth 3 entry)) hlc ; time
              ;; "|\n"                                             ; close line
              "\n"
-             (if content  (concat content "\n") "")
-             (if notes (mapconcat 'identity notes "\n") ""))))))
+             (when insert-content
+               (if content  (concat content "\n") ""))
+             (when insert-notes
+               (if notes (mapconcat 'identity notes "\n") "")))))))
     ;; When exporting subtrees or regions the region might be
     ;; activated, so let's disable ̀delete-active-region'
     (let ((delete-active-region nil)) (backward-delete-char 1))
@@ -847,9 +853,10 @@ from the dynamic block definition."
     total-time))
 
 (defun org-get-clock-note ()
+  ;; TODO: improve to take all not just one.
   (when (org-at-clock-log-p)
     (save-excursion
-      (forward-line)
+      (previous-line)
       (when (org-at-item-p)
         (let ((ele (org-element-at-point)))
           (let ((begin (org-element-property :contents-begin ele))
@@ -899,7 +906,8 @@ PROPNAME lets you set a custom text property instead of :org-clock-minutes."
                   te (if tend (min te tend) te)
                   dt (- te ts)
                   t1 (if (> dt 0) (+ t1 (floor (/ dt 60))) t1))
-            (push (org-get-clock-note) clock-notes))
+            (when (> dt 0)
+              (push (org-get-clock-note) clock-notes)))
            ((match-end 4)
             ;; A naked time
             (setq t1 (+ t1 (string-to-number (match-string 5))
@@ -924,6 +932,7 @@ PROPNAME lets you set a custom text property instead of :org-clock-minutes."
                         (save-excursion
                           (save-match-data (funcall headline-filter))))))
               (setq level (- (match-end 1) (match-beginning 1)))
+
               (when (>= level lmax)
                 (setq ltimes (vconcat ltimes (make-vector lmax 0)) lmax (* 2 lmax)))
               (when (or (> t1 0) (> (aref ltimes level) 0))
@@ -938,6 +947,7 @@ PROPNAME lets you set a custom text property instead of :org-clock-minutes."
                   (put-text-property (point) (point-at-eol)
                                      :org-clock-notes
                                      (remove nil clock-notes))
+                  (setq clock-notes nil) ;;; newly add as fix
                   (if headline-filter
                       (save-excursion
                         (save-match-data
@@ -949,7 +959,9 @@ PROPNAME lets you set a custom text property instead of :org-clock-minutes."
                              :org-clock-force-headline-inclusion t))))))
                 (setq t1 0)
                 (loop for l from level to (1- lmax) do
-                     (aset ltimes l 0)))))))
+                     (aset ltimes l 0)))
+              ;; empty collected notes, else it will be added into upper headings
+              (setq clock-notes nil)))))
        (setq org-clock-file-total-minutes (aref ltimes 0))))))
 
 
@@ -972,7 +984,7 @@ PROPNAME lets you set a custom text property instead of :org-clock-minutes."
                 (backward-char)
                 (buffer-substring start (point)))))))))
 
-(defun org-clock-get-table-data (file params)
+(defun org-clock-get-table-data-alt (file params)
   "Get the clocktable data for file FILE, with parameters PARAMS.
 FILE is only for identification - this function assumes that
 the correct buffer is current, and that the wanted restriction is
@@ -1136,7 +1148,7 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
               (with-current-buffer (find-buffer-visiting file)
                 (save-excursion
                   (save-restriction
-                    (push (org-clock-get-table-data file params) tbls))))))
+                    (push (org-clock-get-table-data-alt file params) tbls))))))
           ;; Just from the current file
           (save-restriction
             ;; get the right range into the restriction
@@ -1159,7 +1171,7 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
                        (throw 'exit nil))))
                (org-narrow-to-subtree)))
             ;; do the table, with no file name.
-            (push (org-clock-get-table-data nil params) tbls)))
+            (push (org-clock-get-table-data-alt nil params) tbls)))
 
       ;; OK, at this point we tbls as a list of tables, one per file
       (setq tbls (nreverse tbls))
@@ -1238,7 +1250,7 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
               (with-current-buffer (find-buffer-visiting file)
                 (save-excursion
                   (save-restriction
-                    (push (org-clock-get-table-data file params) tbls))))))
+                    (push (org-clock-get-table-data-alt file params) tbls))))))
           ;; Just from the current file
           (save-restriction
             ;; get the right range into the restriction
@@ -1261,7 +1273,7 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
                        (throw 'exit nil))))
                (org-narrow-to-subtree)))
             ;; do the table, with no file name.
-            (push (org-clock-get-table-data nil params) tbls)))
+            (push (org-clock-get-table-data-alt nil params) tbls)))
 
       ;; OK, at this point we tbls as a list of tables, one per file
       (setq tbls (nreverse tbls))
@@ -1275,8 +1287,9 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
 
 (setq org-clock-clocktable-alt-default-properties
       (list
-       :scope (directory-files-recursive (expand-file-name "" (org-publish-get-attribute "tasks" "org" :base-directory)) "\\.org$" 7 nil t)
-       :block 'lastweek
+       :scope '(directory-files-recursive (expand-file-name "" (org-publish-get-attribute "tasks" "org" :base-directory)) "\\.org$" 7 nil t)
+       ;; :block 'lastweek
+       :block 'week
        :compact nil
        :stepskip0  t
        :fileskip0 t
@@ -1362,6 +1375,24 @@ in the buffer and update it."
     org-clock-clocktable-alt-default-properties
     ;; propterties
     '(:name "clocktable-alt"))))
+
+(defvar org-clock-alt-report-buffer-idle-timer nil)
+
+(defun org-clock-alt-report-buffer-when-idle (secs)
+  (interactive "nNumber: ")
+  (when org-clock-alt-report-buffer-idle-timer
+    (cancel-timer org-clock-alt-report-buffer-idle-timer)
+    (setq org-clock-alt-report-buffer-idle-timer nil))
+  (let ((secs
+         (if (and
+              secs
+              (> secs 7))
+             secs
+           30)))
+    (setq org-clock-alt-report-buffer-idle-timer
+          (run-with-idle-timer
+           secs secs
+           #'org-clock-alt-report-buffer))))
 
 (provide 'org-clock-table-misc-lotus)
 ;;; org-clocktable-alt.el ends here

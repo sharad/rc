@@ -1,4 +1,4 @@
-;;; occ-object-methods.el --- occ-api               -*- lexical-binding: t; -*-
+;;; occ-obj-method.el --- occ-api               -*- lexical-binding: t; -*-
 ;; Copyright (C) 2016  sharad
 
 ;; Author: sharad <spratap@merunetworks.com>
@@ -25,7 +25,7 @@
 
 (require 'occ-obj-common)
 (require 'occ-tree)
-(require 'occ-ctor)
+(require 'occ-obj-ctor)
 
 (when nil ;; https://curiousprogrammer.wordpress.com/2010/07/19/emacs-defstruct-vs-other-languages/
 
@@ -40,7 +40,7 @@
 
 (cl-defmethod occ-get-property ((obj occ-obj)
                                 prop)
-  ;; mainly used by occ-tsk only
+  ;; mainly used by occ-tsk only.
   (if (memq prop (cl-class-slots (cl-classname obj)))
       (cl-get-field obj prop)
     (plist-get
@@ -105,7 +105,7 @@
        org-odd-levels-only))))
 
 (cl-defmethod occ-ctxual-tsk-marker ((ctxask occ-ctxual-tsk))
-  (let* ((tsk (occ-ctxual-tsk-tsk ctxask))
+  (let* ((tsk    (occ-ctxual-tsk-tsk ctxask))
          (marker (occ-tsk-marker tsk)))
     marker))
 
@@ -151,16 +151,18 @@
     (when tsk (occ-rank tsk ctx))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(cl-defmethod occ-print ((tsk occ-tsk))
+  ;; (format "[%4d] %s"
+  ;;         0
+  ;;         (occ-fontify-like-in-org-mode tsk))
+  (format "%s"
+          (occ-fontify-like-in-org-mode tsk)))
+
 (cl-defmethod occ-print ((ctxask occ-ctxual-tsk))
   (let ((tsk (occ-ctxual-tsk-tsk ctxask)))
     (format "[%4d] %s"
             (occ-ctxual-tsk-rank ctxask)
             (occ-fontify-like-in-org-mode tsk))))
-
-(cl-defmethod occ-print ((tsk occ-tsk))
-  (format "[%4d] %s"
-          0
-          (occ-fontify-like-in-org-mode tsk)))
 
 (cl-defgeneric occ-sacha-selection-line (obj)
   )
@@ -191,33 +193,39 @@ pointing to it."
              (cons tsk mrk))))))))
 
 ;; deprecated
-(cl-defmethod occ-sacha-selection-line ((ctxask occ-ctxual-tsk))
+;; (cl-defmethod occ-sacha-selection-line ((ctxask occ-ctxual-tsk))
+;;   "Insert a line for the clock selection menu.
+;; And return a cons cell with the selection character integer and the marker
+;; pointing to it."
+;;   (let ((marker (occ-ctxual-tsk-marker ctxask))
+;;         (rank   (occ-ctxual-tsk-rank   ctxask)))
+;;     (when (marker-buffer marker)
+;;       (with-current-buffer (org-base-buffer (marker-buffer marker))
+;;         (org-with-wide-buffer
+;;          (progn ;; ignore-errors
+;;            (goto-char marker)
+;;            (let* ((cat (org-get-category))
+;;                   (heading (org-get-heading 'notags))
+;;                   (prefix (save-excursion
+;;                             (org-back-to-heading t)
+;;                             (looking-at org-outline-regexp)
+;;                             (match-string 0)))
+;;                   (tsk (substring
+;;                         (org-fontify-like-in-org-mode
+;;                          (concat prefix heading)
+;;                          org-odd-levels-only)
+;;                         (length prefix))))
+;;              (when tsk ;; (and cat tsk)
+;;                ;; (insert (format "[%c] %-12s  %s\n" i cat tsk))
+;;                ;; marker
+;;                (cons (occ-print ctxask) ctxask))))))))) ;TODO
+
+
+(cl-defmethod occ-sacha-selection-line ((tsk occ-tsk))
   "Insert a line for the clock selection menu.
 And return a cons cell with the selection character integer and the marker
 pointing to it."
-  (let ((marker (occ-ctxual-tsk-marker ctxask))
-        (rank   (occ-ctxual-tsk-rank   ctxask)))
-    (when (marker-buffer marker)
-      (with-current-buffer (org-base-buffer (marker-buffer marker))
-        (org-with-wide-buffer
-         (progn ;; ignore-errors
-           (goto-char marker)
-           (let* ((cat (org-get-category))
-                  (heading (org-get-heading 'notags))
-                  (prefix (save-excursion
-                            (org-back-to-heading t)
-                            (looking-at org-outline-regexp)
-                            (match-string 0)))
-                  (tsk (substring
-                        (org-fontify-like-in-org-mode
-                         (concat prefix heading)
-                         org-odd-levels-only)
-                        (length prefix))))
-             (when tsk ;; (and cat tsk)
-               ;; (insert (format "[%c] %-12s  %s\n" i cat tsk))
-               ;; marker
-               (cons (occ-print ctxask) ctxask))))))))) ;TODO
-
+  (cons (occ-print tsk) tsk))
 
 (cl-defmethod occ-sacha-selection-line ((ctxask occ-ctxual-tsk))
   "Insert a line for the clock selection menu.
@@ -225,6 +233,53 @@ And return a cons cell with the selection character integer and the marker
 pointing to it."
   (cons (occ-print ctxask) ctxask))
 ;; function to setup ctx clock timer:2 ends here
+
+(cl-defmethod occ-goto ((mrk marker))
+  (progn
+    (switch-to-buffer (marker-buffer marker))
+    ;; TODO find about "org-overview"
+    ;; https://stackoverflow.com/questions/25161792/emacs-org-mode-how-can-i-fold-everything-but-the-current-headline
+    ;; https://emacs.stackexchange.com/questions/26827/test-whether-org-mode-heading-or-list-is-folded
+    ;; https://github.com/facetframer/orgnav
+    ;; https://stackoverflow.com/questions/6198339/show-org-mode-outline-up-to-a-certain-heading-level
+    ;; (outline-show-all)
+    (org-content 10)
+    (goto-char marker)))
+
+(cl-defmethod occ-goto ((tsk occ-tsk))
+  (let ((marker (occ-tsk-marker tsk)))
+    (if (and
+         (markerp marker)
+         (marker-buffer marker))
+        (occ-goto marker)
+      (error "marker %s invalid." marker))))
+
+(cl-defmethod occ-goto (ctxask occ-ctxual-tsk)
+  (occ-goto (occ-ctxual-tsk-marker)))
+
+(cl-defmethod occ-set-to ((mrk marker))
+  (progn
+    (set-buffer (marker-buffer marker))
+    ;; TODO find about "org-overview"
+    ;; https://stackoverflow.com/questions/25161792/emacs-org-mode-how-can-i-fold-everything-but-the-current-headline
+    ;; https://emacs.stackexchange.com/questions/26827/test-whether-org-mode-heading-or-list-is-folded
+    ;; https://github.com/facetframer/orgnav
+    ;; https://stackoverflow.com/questions/6198339/show-org-mode-outline-up-to-a-certain-heading-level
+    ;; (outline-show-all)
+    ;; (org-content 10)
+    (goto-char marker)))
+
+(cl-defmethod occ-set-to ((tsk occ-tsk))
+  (let ((marker (occ-tsk-marker tsk)))
+    (if (and
+         (markerp marker)
+         (marker-buffer marker))
+        (occ-set-to marker)
+      (error "marker %s invalid." marker))))
+
+(cl-defmethod occ-set-to (ctxask occ-ctxual-tsk)
+  (occ-set-to (occ-ctxual-tsk-marker)))
+
 
 ;; rank based
 (defun occ-sacha-helm-select (ctxasks)
@@ -269,99 +324,6 @@ pointing to it."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
-
-(cl-defmethod occ-clock-in ((new-ctxask occ-ctxual-tsk))
-  ;;TODO add org-insert-log-not
-  (occ-debug :debug "occ-clock-in-marker %s" new-ctxask)
-  (let* (retval
-         (old-ctxual-tsk (car *occ-clocked-ctxual-tsk-ctx-history*))
-         (old-tsk            (when old-ctxual-tsk (occ-ctxual-tsk-tsk old-ctxual-tsk)))
-         (old-marker          (or (if old-tsk (occ-tsk-marker old-tsk)) org-clock-hd-marker))
-         (old-heading         (if old-tsk (occ-tsk-heading old-tsk)))
-         (new-tsk            (occ-ctxual-tsk-tsk new-ctxask))
-         (new-marker          (if new-tsk (occ-tsk-marker new-tsk)))
-         (new-heading         (if new-tsk (occ-tsk-heading new-tsk))))
-    (when (and
-           new-marker
-           (marker-buffer new-marker))
-
-      (let* ((org-log-note-clock-out nil)
-             (old-marker org-clock-marker)
-             (old-buff   (marker-buffer old-marker)))
-
-        (occ-debug :debug "clocking in %s" new-marker)
-
-        (let ((old-buff-read-only
-               (if old-buff
-                   (with-current-buffer (marker-buffer old-marker)
-                     buffer-read-only))))
-
-          (if old-buff
-              (with-current-buffer old-buff
-                (setq buffer-read-only nil)))
-
-          (setq *occ-update-current-ctx-msg* old-marker)
-
-          (when (and
-                 new-heading
-                 old-marker
-                 (marker-buffer old-marker))
-            (org-insert-log-note old-marker (format "clocking out to clockin to <%s>" new-heading)))
-
-          (with-current-buffer (marker-buffer new-marker)
-            (let ((buffer-read-only nil))
-              (when old-heading
-                (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
-              (condition-case err
-                  (progn
-                    (org-clock-clock-in (list new-marker))
-                    (setq retval t)
-                    (push new-ctxask *occ-clocked-ctxual-tsk-ctx-history*))
-                ((error)
-                 (progn
-                   (setq retval nil)
-                   (signal (car err) (cdr err)))))))
-          (if old-buff
-              (with-current-buffer old-buff
-                (setq buffer-read-only old-buff-read-only)))
-          retval)))))
-
-(cl-defmethod occ-clock-in ((ctx occ-ctx))
-  "marker and ranked version"
-  (interactive
-   (list (occ-make-ctx)))
-  (progn
-    (let* ((ctx (or ctx (occ-make-ctx)))
-           (matched-ctxual-tsks
-            (remove-if-not
-             #'(lambda (ctxual-tsk)
-
-                 (let* ((marker (occ-ctxual-tsk-marker ctxual-tsk)))
-                   (and
-                    marker
-                    (marker-buffer marker))))
-             (occ-matching-ctxual-tsks (occ-collection-object) ctx))))
-      (if matched-ctxual-tsks
-          (let* ((sel-ctxual-tsk
-                  (if (> (length matched-ctxual-tsks) 1)
-                      (occ-sacha-helm-select-timed matched-ctxual-tsks)
-                    (car matched-ctxual-tsks)))
-                 ;; (sel-tsk   (if sel-ctxual-tsk (plist-get sel-ctxual-tsk :tsk)))
-                 ;; (sel-marker (if sel-tsk      (plist-get sel-tsk      :tsk-clock-marker)))
-                 )
-            ;; (occ-debug 6 "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
-            (if sel-ctxual-tsk (occ-clock-in sel-ctxual-tsk)))
-        (progn
-          ;; here create unnamed tsk, no need
-          (setq *occ-update-current-ctx-msg* "null clock")
-          (occ-debug 6
-                       "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
-                       ctx)
-          (occ-add-to-org-heading-when-idle ctx 7)
-          nil)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (cl-defgeneric occ-rank (obj ctx)
   "occ-rank"
@@ -512,7 +474,7 @@ pointing to it."
   (let ((tsks (occ-collection collection))
         (matched '()))
     (when tsks
-      (occ-debug :debug "occ-entries-associated-to-ctx-by-keys: BEFORE matched %s[%d]" matched (length matched))
+      (occ-debug :debug "occ-matching-ctxual-tsks BEFORE matched %s[%d]" matched (length matched))
       (occ-mapc-tree-tsks
        #'(lambda (tsk args)
            ;; (occ-debug :debug "occ-rank heading = %s" (occ-tsk-heading tsk))
@@ -604,6 +566,101 @@ pointing to it."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defvar *occ-clocked-ctxual-tsk-ctx-history* nil)
+
+(cl-defmethod occ-clock-in ((new-ctxask occ-ctxual-tsk))
+  ;;TODO add org-insert-log-not
+  (occ-debug :debug "occ-clock-in-marker %s" new-ctxask)
+  (let* (retval
+         (old-ctxual-tsk (car *occ-clocked-ctxual-tsk-ctx-history*))
+         (old-tsk            (when old-ctxual-tsk (occ-ctxual-tsk-tsk old-ctxual-tsk)))
+         (old-marker          (or (if old-tsk (occ-tsk-marker old-tsk)) org-clock-hd-marker))
+         (old-heading         (if old-tsk (occ-tsk-heading old-tsk)))
+         (new-tsk            (occ-ctxual-tsk-tsk new-ctxask))
+         (new-marker          (if new-tsk (occ-tsk-marker new-tsk)))
+         (new-heading         (if new-tsk (occ-tsk-heading new-tsk))))
+    (when (and
+           new-marker
+           (marker-buffer new-marker))
+
+      (let* ((org-log-note-clock-out nil)
+             (old-marker org-clock-marker)
+             (old-buff   (marker-buffer old-marker)))
+
+        (occ-debug :debug "clocking in %s" new-marker)
+
+        (let ((old-buff-read-only
+               (if old-buff
+                   (with-current-buffer (marker-buffer old-marker)
+                     buffer-read-only))))
+
+          (if old-buff
+              (with-current-buffer old-buff
+                (setq buffer-read-only nil)))
+
+          (setq *occ-update-current-ctx-msg* old-marker)
+
+          (when (and
+                 new-heading
+                 old-marker
+                 (marker-buffer old-marker))
+            (org-insert-log-note old-marker (format "clocking out to clockin to <%s>" new-heading)))
+
+          (with-current-buffer (marker-buffer new-marker)
+            (let ((buffer-read-only nil))
+              (when old-heading
+                (org-insert-log-note new-marker (format "clocking in to here from last clock <%s>" old-heading)))
+              (condition-case err
+                  (progn
+                    (org-clock-clock-in (list new-marker))
+                    (setq retval t)
+                    (push new-ctxask *occ-clocked-ctxual-tsk-ctx-history*))
+                ((error)
+                 (progn
+                   (setq retval nil)
+                   (signal (car err) (cdr err)))))))
+          (if old-buff
+              (with-current-buffer old-buff
+                (setq buffer-read-only old-buff-read-only)))
+          retval)))))
+
+(cl-defmethod occ-clock-in ((ctx occ-ctx))
+  "marker and ranked version"
+  (interactive
+   (list (occ-make-ctx)))
+  (progn
+    (let* ((ctx (or ctx (occ-make-ctx)))
+           (matched-ctxual-tsks
+            (remove-if-not
+             #'(lambda (ctxual-tsk)
+
+                 (let* ((marker (occ-ctxual-tsk-marker ctxual-tsk)))
+                   (and
+                    marker
+                    (marker-buffer marker))))
+             (occ-matching-ctxual-tsks (occ-collection-object) ctx))))
+      (if matched-ctxual-tsks
+          (let* ((sel-ctxual-tsk
+                  (if (> (length matched-ctxual-tsks) 1)
+                      (occ-sacha-helm-select-timed matched-ctxual-tsks)
+                    (car matched-ctxual-tsks)))
+                 ;; (sel-tsk   (if sel-ctxual-tsk (plist-get sel-ctxual-tsk :tsk)))
+                 ;; (sel-marker (if sel-tsk      (plist-get sel-tsk      :tsk-clock-marker)))
+                 )
+            ;; (occ-debug 6 "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
+            (if sel-ctxual-tsk (occ-clock-in sel-ctxual-tsk)))
+        (progn
+          ;; here create unnamed tsk, no need
+          (setq *occ-update-current-ctx-msg* "null clock")
+          (occ-debug 6
+                       "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
+                       ctx)
+          (occ-add-to-org-heading-when-idle ctx 7)
+          nil)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 (when nil
 
   (length
@@ -624,5 +681,5 @@ pointing to it."
     (occ-collection-object)
     (occ-make-ctx (current-buffer)))))
 
-(provide 'occ-object-methods)
-;;; occ-object-methods.el ends here
+(provide 'occ-obj-method)
+;;; occ-obj-method.el ends here

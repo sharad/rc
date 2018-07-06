@@ -1,9 +1,8 @@
-;;; mindshare-contrib-mgr.el --- mindshare-contrib-mgr
+;;; occ-obj-accessor.el --- occ-api               -*- lexical-binding: t; -*-
+;; Copyright (C) 2016  sharad
 
-;; Copyright (C) 2011  Sharad Pratap
-
-;; Author: Sharad Pratap <sh4r4d>
-;; Keywords: lisp
+;; Author: sharad <spratap@merunetworks.com>
+;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,23 +23,8 @@
 
 ;;; Code:
 
+(require 'occ-obj-ctor)
 
-;; mindshare-contrib-mgr for all
 
-
-;; First start working on few projects (for e.g.
-;; orgmode[restructuring,refactoring]), and see in real time what are
-;; difficulties and pattern of problems and solutions, and use the experience in
-;; this project.
-
-(defun find-file-project ()
-  )
-
-(defun make-patch ()
-  )
-
-(defun submit-patch ()
-  )
-
-(provide 'mindshare-contrib-mgr)
-;;; mindshare-contrib-mgr.el ends here
+(provide 'occ-obj-accessor)
+;;; occ-obj-accessor.el ends here

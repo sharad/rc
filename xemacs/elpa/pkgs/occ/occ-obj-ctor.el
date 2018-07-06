@@ -1,4 +1,4 @@
-;;; occ-ctor.el --- occ-api               -*- lexical-binding: t; -*-
+;;; occ-obj-ctor.el --- occ-api               -*- lexical-binding: t; -*-
 ;; Copyright (C) 2016  sharad
 
 ;; Author: sharad <spratap@merunetworks.com>
@@ -25,7 +25,7 @@
 
 (require 'occ-obj-common)
 (require 'occ-tree)
-(require 'occ-base-objects)
+(require 'occ-obj)
 
 (defvar occ-global-tsk-collection-spec nil)
 (defvar occ-global-tsk-collection nil)
@@ -182,6 +182,20 @@
                  nil)
                 files))))))
 
+(cl-defmethod occ-collect-tsk-list ((collection occ-tree-tsk-collection))
+  (let ((tsks (occ-collection collection))
+        (tsk-list '()))
+    (occ-mapc-tree-tsks
+     #'(lambda (tsk args)
+         (push tsk tsk-list))
+     tsks
+     nil)
+    tsk-list))
+
+(cl-defmethod occ-collect-tsk-list ((collection occ-list-tsk-collection))
+  (let ((tsks (occ-collection collection)))
+    tsks))
+
 (cl-defmethod occ-collect-tsks ((collection occ-list-tsk-collection)
                                 force)
   (unless (occ-list-tsk-collection-list collection)
@@ -267,5 +281,5 @@
                      (occ-make-tsk-at-point #'make-occ-tree-tsk)
                      (make-occ-tree-tsk :name "empty tree tsk")))))))))
 
-(provide 'occ-ctor)
-;;; occ-ctor.el ends here
+(provide 'occ-obj-ctor)
+;;; occ-obj-ctor.el ends here

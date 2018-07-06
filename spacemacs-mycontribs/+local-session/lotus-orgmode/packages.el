@@ -46,6 +46,15 @@
     (org-clock :location local)
     (org2rem :location local)
     (org-feed :location local)
+    worf
+    orgnav
+    orgstruct
+    orgstruct++
+    outshine
+    outline-ivy
+    outorg
+    poporg
+    navi-mode
     )
   "The list of Lisp packages required by the lotus-orgmode layer.
 
@@ -84,6 +93,11 @@ Each entry is either:
       :defer t
       :config
       (progn
+
+        (progn
+          (add-hook 'message-mode-hook 'turn-on-orgstruct)
+          (add-hook 'message-mode-hook 'turn-on-orgstruct++))
+
         (progn
           (when (fboundp 'spaceline-toggle-org-clock-on)
             (spaceline-toggle-org-clock-on)))
@@ -689,6 +703,98 @@ Each entry is either:
   (use-package org-notmuch
       ;; http://notmuchmail.org/emacstips/
       ;; (add-to-list 'load-path "/usr/share/org-mode/lisp")
+      :defer t
+      :config
+      (progn
+        )))
+
+(defun lotus-orgmode/init-worf ()
+  (use-package worf
+      :defer t
+      :config
+      (progn
+        )))
+
+(defun lotus-orgmode/init-orgnav ()
+  (use-package orgnav
+      :defer t
+      :config
+      (progn
+        (progn
+          (setq orgnav-log 't))
+        )))
+
+(defun lotus-orgmode/init-orgstruct ()
+  (use-package orgstruct
+      :defer t
+      :config
+      (progn
+        )))
+
+(defun lotus-orgmode/init-orgstruct++ ()
+  (use-package orgstruct++
+      :defer t
+      :config
+      (progn
+        (progn
+          ;;(setq orgstruct-heading-prefix-regexp "^;; ")
+          )
+        )))
+
+(defun lotus-orgmode/init-outshine ()
+  ;; TODO https://orgmode.org/worg/org-tutorials/org-outside-org.html
+  ;; http://www.modernemacs.com/post/outline-ivy/
+  ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
+
+  ;; https://www.emacswiki.org/emacs/OutlineMinorMode
+  ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
+  ;; http://www.modernemacs.com/post/outline-ivy/
+  ;; https://orgmode.org/worg/org-tutorials/org-outside-org.html
+
+  (use-package outshine
+      :defer t
+      :config
+      (progn
+        (progn
+          ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
+          ;; (defvar outline-minor-mode-prefix "\M-#")
+          (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+          (setq outshine-use-speed-commands t)
+          (add-hook 'prog-mode-hook 'outline-minor-mode)
+          (add-hook 'ruby-mode-hook 'outline-minor-mode)
+          (add-hook 'lua-mode-hook 'outline-minor-mode)
+          (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
+          (add-hook 'common-lisp-mode-hook 'outline-minor-mode)
+          (add-hook 'lisp-mode-hook 'outline-minor-mode))
+
+        )))
+
+(defun lotus-orgmode/init-outline-ivy ()
+  ;; http://www.modernemacs.com/post/outline-bullets/
+  (use-package outline-ivy
+      :defer t
+      :config
+      (progn
+        )))
+
+(defun lotus-orgmode/init-outorg ()
+  (use-package outorg
+      :defer t
+      :config
+      (progn
+        )))
+
+
+(defun lotus-orgmode/init-poporg ()
+  (use-package poporg
+      :defer t
+      :commands (poporg-dwim)
+      :config
+      (progn
+        )))
+
+(defun lotus-orgmode/init-navi-mode ()
+  (use-package navi-mode
       :defer t
       :config
       (progn

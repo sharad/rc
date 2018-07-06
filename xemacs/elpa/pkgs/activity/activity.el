@@ -81,8 +81,30 @@
 
 ;; (@! (@! @rectangle :new 13.2 2.1) :area)
 
+(defvar @methods-enforce
+  (@extend :name "methods enforce"
+           :occuredon (current-time)))
+
+(def@ @methods-enforce :init ()
+      (@^:init)
+      (setf @:occuredon (current-time)))
+
+(def@ @methods-enforce :enforce (object name)
+      `(progn
+         (def@ ,object ,name
+           (error "define method %s for object %s"
+                  ,name ,object))))
+
+(def@ @methods-enforce :un-enforce (object name)
+      `(progn
+         ))
+
+(describe-@ @methods-enforce :name)
+
+
 (defvar @activity
-  (@extend :name "Class Activity"
+  (@extend @methods-enforce
+           :name "Class Activity"
            :occuredon (current-time)))
 
 (def@ @activity :init ()
@@ -99,7 +121,9 @@
       (error "No :object-sexp function found."))
 
 (describe-@ @activity :name)
+
 
+
 (defvar @dispatchable
   (@extend @activity :name "Class Dispatchable"
            :dispatchers nil))
@@ -146,7 +170,9 @@
   (@extend @dispatchable :name "Class Deferred Dispatchable"))
 
 (def@ @dispatchable-immediate :dispatch ()
+      (message "calling @dispatchable-immediate :dispatch")
       (dolist (cb @:dispatchers)
+        ;; (message "calling %s" cb)
         (funcall cb @@)))
 
 (defvar @dispatchable-defferred
@@ -162,56 +188,52 @@
 (defvar @transition
   (@extend @activity :name "Class Transition"))
 
-(def@ @transition :init (old new)
+(def@ @transition :init (new)
       (@^:init)
-      (setf
-       @:old old
-       @:new new))
+      (setf @:new new))
 
-;; (setq test (@! @transition :new 1 2))
-
+(defvar @transition-singleton
+  (@extend @transition :name "Class Transition"))
 
+(setf (@ @transition-singleton :old) nil)
 
-
-
-
-
-
+(def@ @transition-singleton :init (new)
+      (@^:init)
+      (setf @:new new))
 
 
 
-(setf @buffer-transition
-  (@extend @transition @dispatchable-immediate))
 
-(def@ @buffer-transition :init (old-buffer new-buffer)
-      (@^:init old-buffer new-buffer))
+
+(setf @buffer-transition-singleton
+      (@extend @transition-singleton @dispatchable-immediate))
 
-(def@ @buffer-transition :message ()
+(def@ @buffer-transition-singleton :init (new-buffer)
+      (@^:init new-buffer))
+
+(def@ @buffer-transition-singleton :message ()
       (format "changed from %s buffer to %s buffer on %s"
-              (buffer-name @:old)
+              (if  @:old (buffer-name @:old) "none")
               (buffer-name @:new)
               (format-time-string "%Y-%m-%d" @:occuredon)))
 
-(def@ @buffer-transition :object-sexp ()
+(def@ @buffer-transition-singleton :object-sexp ()
       (list
        'buffer-transition
-       :old (buffer-name @:old)
+       :old (if @:old (buffer-name @:old) nil)
        :new (buffer-name @:new)
        (list
         'activity
         occuredon (format-time-string "%Y-%m-%d" @:occuredon))))
 
-(defvar buffer-transition-prev-buff nil)
-(defun buffer-transition-action ()
-  (unless (equal
-           buffer-transition-prev-buff
-           (current-buffer))
-   (let* ((buff-trans
-          (@! @buffer-transition :new
-              (current-buffer)
-              (get-buffer "*scratch*"))))
-    (setq buffer-transition-prev-buff (current-buffer))
-    (@! buff-tran :dispatch))))
+(def@ @buffer-transition-singleton :execute ()
+      (setf @:new (current-buffer))
+      (if (equal @:old (current-buffer))
+          (message "not dispatching")
+        (@:dispatch))
+      (setf @:old @:new))
+
+(@! @buffer-transition-singleton :execute)
 
 
 (defvar @clock-transition
