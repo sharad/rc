@@ -170,9 +170,7 @@ Each entry is either:
       :defer t
       :config
       (progn
-        (progn
-          (setq orgnav-log 't))
-        )))
+        (lotus-orgmode-config/init-orgnav))))
 
 (defun lotus-orgmode/init-orgstruct ()
   (use-package orgstruct
