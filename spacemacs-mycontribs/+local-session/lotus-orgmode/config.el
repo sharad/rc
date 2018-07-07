@@ -615,6 +615,9 @@
                 (if org2rem-create-remind-file
                     (add-hook 'after-save-hook 'org2rem-this-file t t))))))
 
+(defun lotus-orgmode-config/init-orgnav ()
+  )
+
 (defun lotus-orgmode-config/init-outshine ()
   ;; TODO https://orgmode.org/worg/org-tutorials/org-outside-org.html
   ;; http://www.modernemacs.com/post/outline-ivy/
