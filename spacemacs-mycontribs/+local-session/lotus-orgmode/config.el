@@ -616,6 +616,15 @@
                     (add-hook 'after-save-hook 'org2rem-this-file t t))))))
 
 (defun lotus-orgmode-config/init-outshine ()
+  ;; TODO https://orgmode.org/worg/org-tutorials/org-outside-org.html
+  ;; http://www.modernemacs.com/post/outline-ivy/
+  ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
+
+  ;; https://www.emacswiki.org/emacs/OutlineMinorMode
+  ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
+  ;; http://www.modernemacs.com/post/outline-ivy/
+  ;; https://orgmode.org/worg/org-tutorials/org-outside-org.html
+
   (progn
     ;; https://gist.github.com/kidd/8a5209d0ca9885a6883fa4459f5420d6
     ;; (defvar outline-minor-mode-prefix "\M-#")
