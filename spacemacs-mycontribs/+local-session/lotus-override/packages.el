@@ -36,8 +36,7 @@
 
 (defconst lotus-override-packages
   '(
-    (PACKAGE :location local)
-    lsdb
+    (lsdb    :location local)
     )
   "The list of Lisp packages required by the lotus-override layer.
 
