@@ -268,11 +268,8 @@
               @:subject
               (@:occuredon)))
 
-(def@ @send-mail-event :message ()
-      (format "sending mail to %s with subject %s on %s"
-              @:to
-              @:subject
-              (@:occuredon)))
+(def@ @send-mail-event :collect ()
+      )
 
 (defvar @read-mail-event
   (@extend @mail-event :name "read mail event"))
