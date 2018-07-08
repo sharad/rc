@@ -231,7 +231,7 @@
 
 (def@ @buffer-transition-singleton :execute ()
       (setf
-       (setf @:old @:new)
+       @:old @:new
        @:new (current-buffer))
       (if (equal @:old (current-buffer))
           (message "not dispatching")
