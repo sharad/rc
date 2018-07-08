@@ -257,7 +257,7 @@
       (@^:init)
       (setf @:new new))
 
-(def@ @buffer-transition-singleton :message ()
+(def@ @send-mail-event :message ()
       (format "changed from %s buffer to %s buffer on %s"
               (if  @:old (buffer-name @:old) "none")
               (buffer-name @:new)
