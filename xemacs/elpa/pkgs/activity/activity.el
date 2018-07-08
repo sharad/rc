@@ -249,8 +249,8 @@
 (defvar mail-event
   (@extend @event :name "mail event"))
 
-(defvar mail-event
-  (@extend @event :name "mail event"))
+(defvar send-mail-event
+  (@extend @mail-event :name "mail event"))
 
 
 (defvar @clock-transition-singleton
