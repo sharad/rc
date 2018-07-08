@@ -191,6 +191,8 @@
 (defvar @transition
   (@extend @activity :name "Class Transition"))
 
+(setf (@ @transition :old) nil)
+
 (def@ @transition :init (new)
       (@^:init)
       (setf @:new new))
@@ -198,7 +200,7 @@
 (defvar @transition-singleton
   (@extend @transition :name "Class Transition"))
 
-(setf (@ @transition-singleton :old) nil)
+
 
 (def@ @transition-singleton :init (new)
       (@^:init)
