@@ -264,7 +264,7 @@
 
 (setf test (@! @clock-out-activity :new))
 
-;; (@! @clock-out-activity :message)
+(@! @clock-out-activity :message)
 
 
 ;; (call-next-method)
