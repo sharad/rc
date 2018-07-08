@@ -252,9 +252,24 @@
 (defvar send-mail-event
   (@extend @mail-event :name "mail event"))
 
+(def@ @transition-singleton :init (new)
+      (@^:init)
+      (setf @:new new))
+
+(def@ @buffer-transition-singleton :message ()
+      (format "changed from %s buffer to %s buffer on %s"
+              (if  @:old (buffer-name @:old) "none")
+              (buffer-name @:new)
+              (format-time-string "%Y-%m-%d" @:occuredon)))
+
 (defvar read-mail-event
   (@extend @mail-event :name "mail event"))
 
+(def@ @buffer-transition-singleton :message ()
+      (format "changed from %s buffer to %s buffer on %s"
+              (if  @:old (buffer-name @:old) "none")
+              (buffer-name @:new)
+              (format-time-string "%Y-%m-%d" @:occuredon)))
 
 (defvar @clock-transition-singleton
   (@extend @transition @dispatchable-immediate
