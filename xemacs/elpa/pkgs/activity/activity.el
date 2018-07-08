@@ -270,7 +270,9 @@
 
 (def@ @read-mail-event :init (new)
       (@^:init)
-      (setf @:new new))
+      (setf
+       @:to     to
+       @subject subject))
 
 (def@ @read-mail-event :message ()
       (format "reading mail from %s with subject %s on %s"
