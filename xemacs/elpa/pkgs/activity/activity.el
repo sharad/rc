@@ -266,7 +266,7 @@
               (format-time-string "%Y-%m-%d" @:occuredon)))
 
 (defvar @read-mail-event
-  (@extend @mail-event :name "mail event"))
+  (@extend @mail-event :name "read mail event"))
 
 (def@ @read-mail-event :init (to subject)
       (@^:init)
