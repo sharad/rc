@@ -124,7 +124,7 @@
       (error "No :object-sexp function found."))
 
 (def@ @activity :occuredon ()
-      (error "No :object-sexp function found."))
+      (format-time-string "%Y-%m-%d" @:occuredon))
 
 ;; (describe-@ @activity :name)
 
