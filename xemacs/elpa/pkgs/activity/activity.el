@@ -55,6 +55,7 @@
   "Make this object immutable."
   (push @immutable @:proto))
 
+;; e.g.
 (defvar @watchable (@extend :watchers nil))
 
 (def@ @watchable :watch (callback)
