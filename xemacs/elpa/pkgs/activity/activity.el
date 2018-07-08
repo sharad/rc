@@ -258,7 +258,7 @@
       (setf @:new new))
 
 (def@ @send-mail-event :message ()
-      (format "sending %s buffer to %s buffer on %s"
+      (format "sending mail to %s with subject %s on %s"
               (format-time-string "%Y-%m-%d" @:occuredon)))
 
 (defvar @read-mail-event
