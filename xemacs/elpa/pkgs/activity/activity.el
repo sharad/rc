@@ -286,6 +286,8 @@
               @:subject
               (@:occuredon)))
 
+(def@ @send-mail-event :make-event ()
+      )
 
 (defvar @clock-transition-singleton
   (@extend @transition @dispatchable-immediate
