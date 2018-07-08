@@ -310,23 +310,6 @@
 
 
 
-(progn
-  (defvar @squares (@extend))
-
-  (def@ @squares :get (property)
-        (if (numberp property)
-            (expt property 2)
-            (@^:get property)))  ; explained in a moment
-
-  (mapcar (lambda (n) (@ @squares n)) '(0 1 2 3 4))
-                                        ; => (0 1 4 9 16)
-
-
-
-  )
-
-
-
 
 
 
