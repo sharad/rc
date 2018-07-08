@@ -268,7 +268,7 @@
               @:subject
               (@:occuredon)))
 
-(def@ @send-mail-event :collect ()
+(def@ @send-mail-event :make-event ()
       )
 
 (defvar @read-mail-event
