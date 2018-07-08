@@ -256,7 +256,7 @@
 (def@ @send-mail-event :init (to subject)
       (@^:init)
       (setf
-       @:to to
+       @:to     to
        @subject subject))
 
 (def@ @send-mail-event :message ()
