@@ -266,6 +266,10 @@
 (defvar @read-mail-event
   (@extend @mail-event :name "mail event"))
 
+(def@ @read-mail-event :init (new)
+      (@^:init)
+      (setf @:new new))
+
 (def@ @read-mail-event :message ()
       (format "changed from %s buffer to %s buffer on %s"
               (if  @:old (buffer-name @:old) "none")
