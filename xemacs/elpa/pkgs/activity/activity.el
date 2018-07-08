@@ -77,6 +77,13 @@
 
 ;; (@! (@! @rectangle :new 13.2 2.1) :area)
 
+
+
+
+
+
+
+
 (defvar @methods-enforce
   (@extend :name "methods enforce"
            :occuredon (current-time)))
