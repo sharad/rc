@@ -241,7 +241,7 @@
   (@! @buffer-transition-singleton :execute))
 
 
-(defvar @clock-transition
+(defvar @clock-transition-singleton
   (@extend @transition @dispatchable-immediate
            :clock-marker nil
            :heading nil))
