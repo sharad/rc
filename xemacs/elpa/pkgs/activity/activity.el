@@ -241,10 +241,10 @@
   (@! @buffer-transition-singleton :execute))
 
 
-;; (defvar @clock-transition
-;;   (@extend @transition @dispatchable-immediate
-;;            :clock-marker nil
-;;            :heading nil))
+(defvar @clock-transition
+  (@extend @transition @dispatchable-immediate
+           :clock-marker nil
+           :heading nil))
 
 ;; (def@ @clock-transition :init (old-marker newnews-marker)
 ;;       (@^:init old-marker newnews-marker))
