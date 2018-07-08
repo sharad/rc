@@ -267,10 +267,6 @@
 
 ;; (call-next-method)
 
-(defun activity-save ()
-  "Send save notice to Activity."
-  (when (buffer-file-name (current-buffer))
-    ))
 
 (defun activity-bind-hooks ()
   "Watch for activity in buffers."
