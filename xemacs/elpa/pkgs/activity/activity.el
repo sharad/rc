@@ -258,9 +258,7 @@
       (setf @:new new))
 
 (def@ @send-mail-event :message ()
-      (format "changed from %s buffer to %s buffer on %s"
-              (if  @:old (buffer-name @:old) "none")
-              (buffer-name @:new)
+      (format "sending %s buffer to %s buffer on %s"
               (format-time-string "%Y-%m-%d" @:occuredon)))
 
 (defvar @read-mail-event
