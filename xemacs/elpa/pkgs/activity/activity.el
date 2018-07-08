@@ -284,11 +284,7 @@
 
 (defun activity-turn-on (defer)
   "Turn on Activity."
-  (if defer
-    (run-at-time "1 sec" nil 'activity-turn-on nil)
-    (let ()
-
-        (activity-bind-hooks))))
+  (activity-bind-hooks))
 
 (defun activity-turn-off ()
   "Turn off Activity."
