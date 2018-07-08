@@ -246,10 +246,11 @@
   (@extand @activity :name "Event"))
 
 
-(defvar mail-event
+(defvar @mail-event
   (@extend @event :name "mail event"))
 
-(defvar send-mail-event
+
+(defvar @send-mail-event
   (@extend @mail-event :name "mail event"))
 
 (def@ @transition-singleton :init (new)
@@ -261,7 +262,7 @@
               (if  @:old (buffer-name @:old) "none")
               (buffer-name @:new)
               (format-time-string "%Y-%m-%d" @:occuredon)))
-
+
 (defvar read-mail-event
   (@extend @mail-event :name "mail event"))
 
