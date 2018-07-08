@@ -39,12 +39,6 @@
 
 (require '@)
 
-(defconst activity-version    "1.0.2")
-(defconst activity-user-agent "emacs-activity")
-(defvar activity-noprompt      nil)
-(defvar activity-init-started  nil)
-(defvar activity-init-finished nil)
-(defvar activity-python-path   nil)
 
 (defgroup activity nil
   "Customizations for Activity"
