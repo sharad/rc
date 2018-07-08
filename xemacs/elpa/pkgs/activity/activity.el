@@ -230,12 +230,13 @@
         occuredon (format-time-string "%Y-%m-%d" @:occuredon))))
 
 (def@ @buffer-transition-singleton :execute ()
-      (setf
-       @:old @:new
-       @:new (current-buffer))
       (if (equal @:old (current-buffer))
           (message "not dispatching")
-        (@:dispatch)))
+        (progn
+          (setf
+           @:old @:new
+           @:new (current-buffer))
+         (@:dispatch))))
 
 (@! @buffer-transition-singleton :execute)
 
