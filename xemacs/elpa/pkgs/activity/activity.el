@@ -287,8 +287,8 @@
   (if defer
     (run-at-time "1 sec" nil 'activity-turn-on nil)
     (let ()
-      (when activity-init-finished
-        (activity-bind-hooks)))))
+
+        (activity-bind-hooks))))
 
 (defun activity-turn-off ()
   "Turn off Activity."
