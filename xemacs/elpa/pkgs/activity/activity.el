@@ -246,7 +246,7 @@
            :clock-marker nil
            :heading nil))
 
-(def@ @clock-transition :init (old-marker newnews-marker)
+(def@ @clock-transition-singleton :init (old-marker newnews-marker)
       (@^:init old-marker newnews-marker))
 
 (def@ @clock-out-activity :message ()
