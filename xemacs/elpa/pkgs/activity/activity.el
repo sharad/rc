@@ -123,6 +123,9 @@
 (def@ @activity :object-sexp ()
       (error "No :object-sexp function found."))
 
+(def@ @activity :object-sexp ()
+      (error "No :object-sexp function found."))
+
 ;; (describe-@ @activity :name)
 
 
