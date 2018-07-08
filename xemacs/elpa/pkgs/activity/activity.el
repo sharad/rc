@@ -205,8 +205,8 @@
 (def@ @transition-singleton :init (new)
       (@^:init)
       (setf @:new new))
-
 
+
 (setf @buffer-transition-singleton
       (@extend @transition-singleton @dispatchable-immediate))
 
