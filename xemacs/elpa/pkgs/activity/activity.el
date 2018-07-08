@@ -238,6 +238,9 @@
 
 (@! @buffer-transition-singleton :execute)
 
+(@ @buffer-transition-singleton :new)
+(@ @buffer-transition-singleton :old)
+
 
 ;; (defvar @clock-transition
 ;;   (@extend @transition @dispatchable-immediate
