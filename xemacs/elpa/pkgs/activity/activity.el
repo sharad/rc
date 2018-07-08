@@ -45,6 +45,7 @@
   :group 'convenience
   :prefix "activity-")
 
+;; e.g.
 (defvar @immutable (@extend))
 
 (def@ @immutable :set (property _value)
