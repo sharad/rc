@@ -259,10 +259,10 @@
            "clocking out from [%s]"
            @:heading)))
 
-;; (def@ @clock-out-activity :init ()
-;;       (message "test1"))
+(def@ @clock-out-activity :init ()
+      (message "test1"))
 
-;; (setf test (@! @clock-out-activity :new))
+(setf test (@! @clock-out-activity :new))
 
 ;; (@! @clock-out-activity :message)
 
