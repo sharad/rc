@@ -253,7 +253,7 @@
 (defvar @send-mail-event
   (@extend @mail-event :name "mail event"))
 
-(def@ @send-mail-event :init (new)
+(def@ @send-mail-event :init (to subject)
       (@^:init)
       (setf @:new new))
 
