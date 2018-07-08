@@ -260,7 +260,7 @@
 (def@ @send-mail-event :message ()
       (format "sending mail to %s with subject %s on %s"
               @:to
-              :subject
+              @:subject
               (format-time-string "%Y-%m-%d" @:occuredon)))
 
 (defvar @read-mail-event
@@ -271,9 +271,9 @@
       (setf @:new new))
 
 (def@ @read-mail-event :message ()
-      (format "changed from %s buffer to %s buffer on %s"
-              (if  @:old (buffer-name @:old) "none")
-              (buffer-name @:new)
+      (format "sending mail to %s with subject %s on %s"
+              @:to
+              @:subject
               (format-time-string "%Y-%m-%d" @:occuredon)))
 
 (defvar @clock-transition-singleton
