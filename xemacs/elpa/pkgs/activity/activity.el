@@ -268,7 +268,7 @@
 (defvar @read-mail-event
   (@extend @mail-event :name "mail event"))
 
-(def@ @read-mail-event :init (new)
+(def@ @read-mail-event :init (to subject)
       (@^:init)
       (setf
        @:to     to
