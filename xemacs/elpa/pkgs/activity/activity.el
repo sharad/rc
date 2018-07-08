@@ -249,15 +249,15 @@
 (def@ @clock-transition :init (old-marker newnews-marker)
       (@^:init old-marker newnews-marker))
 
-;; (def@ @clock-out-activity :message ()
-;;       (if @:next-clock
-;;           (format
-;;            "clocking out from [%s] to clocking in to [%s]"
-;;            @:heading
-;;            (@! @:next-clock :headign))
-;;           (format
-;;            "clocking out from [%s]"
-;;            @:heading)))
+(def@ @clock-out-activity :message ()
+      (if @:next-clock
+          (format
+           "clocking out from [%s] to clocking in to [%s]"
+           @:heading
+           (@! @:next-clock :headign))
+          (format
+           "clocking out from [%s]"
+           @:heading)))
 
 ;; (def@ @clock-out-activity :init ()
 ;;       (message "test1"))
