@@ -235,8 +235,7 @@
        @:new (current-buffer))
       (if (equal @:old (current-buffer))
           (message "not dispatching")
-        (@:dispatch))
-      )
+        (@:dispatch)))
 
 (@! @buffer-transition-singleton :execute)
 
