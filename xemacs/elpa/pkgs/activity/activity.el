@@ -241,6 +241,10 @@
   (@! @buffer-transition-singleton :execute))
 
 
+
+(defvar @event (@extand @activity) )
+
+
 (defvar @clock-transition-singleton
   (@extend @transition @dispatchable-immediate
            :clock-marker nil
