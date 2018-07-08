@@ -279,6 +279,7 @@
               @:to
               @:subject
               (format-time-string "%Y-%m-%d" @:occuredon)))
+
 
 (defvar @clock-transition-singleton
   (@extend @transition @dispatchable-immediate
