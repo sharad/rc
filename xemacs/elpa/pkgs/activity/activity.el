@@ -83,7 +83,7 @@
 
 
 
-
+
 (defvar @methods-enforce
   (@extend :name "methods enforce"
            :occuredon (current-time)))
@@ -239,26 +239,26 @@
 (@! @buffer-transition-singleton :execute)
 
 
-(defvar @clock-transition
-  (@extend @transition @dispatchable-immediate
-           :clock-marker nil
-           :heading nil))
+;; (defvar @clock-transition
+;;   (@extend @transition @dispatchable-immediate
+;;            :clock-marker nil
+;;            :heading nil))
 
-(def@ @clock-transition :init (old-marker newnews-marker)
-      (@^:init old-marker newnews-marker))
+;; (def@ @clock-transition :init (old-marker newnews-marker)
+;;       (@^:init old-marker newnews-marker))
 
-(def@ @clock-out-activity :message ()
-      (if @:next-clock
-          (format
-           "clocking out from [%s] to clocking in to [%s]"
-           @:heading
-           (@! @:next-clock :headign))
-          (format
-           "clocking out from [%s]"
-           @:heading)))
+;; (def@ @clock-out-activity :message ()
+;;       (if @:next-clock
+;;           (format
+;;            "clocking out from [%s] to clocking in to [%s]"
+;;            @:heading
+;;            (@! @:next-clock :headign))
+;;           (format
+;;            "clocking out from [%s]"
+;;            @:heading)))
 
-(def@ @clock-out-activity :init ()
-      (message "test1"))
+;; (def@ @clock-out-activity :init ()
+;;       (message "test1"))
 
 ;; (setf test (@! @clock-out-activity :new))
 
