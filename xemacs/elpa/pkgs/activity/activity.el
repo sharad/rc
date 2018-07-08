@@ -242,7 +242,8 @@
 
 
 
-(defvar @event (@extand @activity) )
+(defvar @event
+  (@extand @activity :name "Event"))
 
 
 (defvar @clock-transition-singleton
