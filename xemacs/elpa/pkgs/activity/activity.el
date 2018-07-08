@@ -251,7 +251,7 @@
 
 
 (defvar @send-mail-event
-  (@extend @mail-event :name "mail event"))
+  (@extend @mail-event :name "send mail event"))
 
 (def@ @send-mail-event :init (to subject)
       (@^:init)
