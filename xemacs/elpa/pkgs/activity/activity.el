@@ -259,6 +259,8 @@
 
 (def@ @send-mail-event :message ()
       (format "sending mail to %s with subject %s on %s"
+              @:to
+              :subject
               (format-time-string "%Y-%m-%d" @:occuredon)))
 
 (defvar @read-mail-event
