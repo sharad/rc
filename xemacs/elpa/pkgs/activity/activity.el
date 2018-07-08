@@ -252,6 +252,9 @@
 (defvar send-mail-event
   (@extend @mail-event :name "mail event"))
 
+(defvar read-mail-event
+  (@extend @mail-event :name "mail event"))
+
 
 (defvar @clock-transition-singleton
   (@extend @transition @dispatchable-immediate
