@@ -253,7 +253,7 @@
 (defvar @send-mail-event
   (@extend @mail-event :name "mail event"))
 
-(def@ @transition-singleton :init (new)
+(def@ @send-mail-event :init (new)
       (@^:init)
       (setf @:new new))
 
