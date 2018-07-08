@@ -220,7 +220,7 @@
       (format "changed from %s buffer to %s buffer on %s"
               (if  @:old (buffer-name @:old) "none")
               (buffer-name @:new)
-              (format-time-string "%Y-%m-%d" @:occuredon)))
+              (@:occuredon)))
 
 (def@ @buffer-transition-singleton :object-sexp ()
       (list
@@ -229,7 +229,7 @@
        :new (buffer-name @:new)
        (list
         'activity
-        occuredon (format-time-string "%Y-%m-%d" @:occuredon))))
+        occuredon (@:occuredon))))
 
 (def@ @buffer-transition-singleton :execute ()
       (if (equal @:old (current-buffer))
@@ -266,7 +266,7 @@
       (format "sending mail to %s with subject %s on %s"
               @:to
               @:subject
-              (format-time-string "%Y-%m-%d" @:occuredon)))
+              (@:occuredon)))
 
 (defvar @read-mail-event
   (@extend @mail-event :name "read mail event"))
@@ -281,7 +281,7 @@
       (format "reading mail from %s with subject %s on %s"
               @:to
               @:subject
-              (format-time-string "%Y-%m-%d" @:occuredon)))
+              (@:occuredon)))
 
 
 (defvar @clock-transition-singleton
