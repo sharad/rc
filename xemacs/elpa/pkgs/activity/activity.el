@@ -69,7 +69,7 @@
         (funcall callback @@ property new))
       (@^:set property new))
 
-;; example
+;; e.g.
 (defvar @rectangle (@extend :name "Class Rectangle"))
 (def@ @rectangle :init (width height)
       (@^:init)
