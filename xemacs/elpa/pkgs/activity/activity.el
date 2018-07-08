@@ -263,10 +263,10 @@
               (buffer-name @:new)
               (format-time-string "%Y-%m-%d" @:occuredon)))
 
-(defvar read-mail-event
+(defvar @read-mail-event
   (@extend @mail-event :name "mail event"))
 
-(def@ @buffer-transition-singleton :message ()
+(def@ @read-mail-event :message ()
       (format "changed from %s buffer to %s buffer on %s"
               (if  @:old (buffer-name @:old) "none")
               (buffer-name @:new)
