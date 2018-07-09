@@ -616,7 +616,8 @@
                     (add-hook 'after-save-hook 'org2rem-this-file t t))))))
 
 (defun lotus-orgmode-config/init-orgnav ()
-  )
+  (progn
+    (setq orgnav-log 't)))
 
 (defun lotus-orgmode-config/init-outshine ()
   ;; TODO https://orgmode.org/worg/org-tutorials/org-outside-org.html
