@@ -52,8 +52,8 @@
           :destination nil))
 
 (defvar @dual-note
-  (@exten (@exten @activity-note :name "single note"
-                  :destination nil)))
+  (@exten @activity-note :name "single note"
+          :destination nil))
 
 
 ;;; activity-note.el ends here
