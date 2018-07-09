@@ -44,10 +44,10 @@
 
 
 
-(defvar activity-note
+(defvar @activity-note
   (@extend :name "activity note"))
 
-()
+(defvar )
 
 
 ;;; activity-note.el ends here
