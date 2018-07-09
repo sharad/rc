@@ -1,3 +1,5 @@
+
+
 //{{ Bookmark Group [https://ericjmritz.name/2015/08/12/creating-bookmark-groups-in-conkeror/]
 var bookmark_groups = {
     "Krishan": [
