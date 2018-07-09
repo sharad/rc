@@ -126,7 +126,8 @@
              (if @:marker)
              (format fmt args)
              'note)
-          (error "unknown value of @:marker %s" @:marker))))
+          (unless @:ignore-error
+              (error "unknown value of @:marker %s" @:marker)))))
 
 
 ;; fixed destinations
