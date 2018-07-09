@@ -108,7 +108,9 @@
           :name "message note destination"))
 
 (def@ @org-heading-note-destination :init (marker &optional ignore-error)
-      (setf @:marker marker))
+      (setf
+       @:marker marker
+       @:ignore-error ))
 
 (def@ @org-heading-note-destination :receive (fmt &rest args)
       ;; (org-insert-log-note
