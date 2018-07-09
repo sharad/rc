@@ -59,5 +59,6 @@
 (defvar @note-destination
   (@extend :name "note destination"))
 
-(def@ @note-destination)
+(def@ @note-destination :reveive (msg)
+      )
 ;;; activity-note.el ends here
