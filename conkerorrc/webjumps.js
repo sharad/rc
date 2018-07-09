@@ -158,7 +158,7 @@ var bookmark_groups = {
     "Tech/SHall": [
         "http://xmodulo.com/",
         "https://www.ostechnix.com/"
-    ]
+    ],
 };
 
 interactive("open-bookmark-group",
