@@ -61,4 +61,5 @@
 
 (def@ @note-destination :reveive (msg)
       )
+
 ;;; activity-note.el ends here
