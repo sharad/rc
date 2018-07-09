@@ -44,4 +44,7 @@
 
 
 
+
+
+
 ;;; activity-note.el ends here
