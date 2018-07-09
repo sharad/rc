@@ -53,7 +53,8 @@
 
 (defvar @dual-note
   (@exten @activity-note :name "single note"
-          :destination nil))
+          :prev-note nil
+          :next-note nil))
 
 
 ;;; activity-note.el ends here
