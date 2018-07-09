@@ -110,7 +110,7 @@
 (def@ @org-heading-note-destination :init (marker &optional ignore-error)
       (setf
        @:marker marker
-       @:ignore-error ))
+       @:ignore-error ignore-error))
 
 (def@ @org-heading-note-destination :receive (fmt &rest args)
       ;; (org-insert-log-note
