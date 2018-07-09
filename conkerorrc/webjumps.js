@@ -89,6 +89,8 @@ var bookmark_groups = {
         "http://www.amarujala.com",
         "http://www.jagran.com",
         "http://hindi.boldsky.com",
+        "https://www.bbc.com/hindi",
+        "http://thewirehindi.com/",
     ],
     "NewsElectronics": [
         "https://www.quora.com/What-are-the-top-10-websites-electronics-communication-students-must-visit",
