@@ -56,5 +56,6 @@
           :prev-note nil
           :next-note nil))
 
+(defvar @note-destination )
 
 ;;; activity-note.el ends here
