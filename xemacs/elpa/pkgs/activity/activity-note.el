@@ -107,7 +107,7 @@
   (@exten @note-destination
           :name "message note destination"))
 
-(def@ @org-heading-note-destination :init (marker &optional ignore)
+(def@ @org-heading-note-destination :init (marker &optional ignore-error)
       (setf @:marker marker))
 
 (def@ @org-heading-note-destination :receive (fmt &rest args)
