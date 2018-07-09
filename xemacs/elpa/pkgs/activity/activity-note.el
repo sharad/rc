@@ -141,7 +141,7 @@
 
 (defun set-org-clock-note-destination ()
   (setf @org-clock-note-destination
-        (@! @org-heading-note-destination :new 'org-clock-hd-marker)))
+        (@! @org-heading-note-destination :new 'org-clock-hd-marker t)))
 
 
 
