@@ -59,7 +59,7 @@
 (defvar @note-destination
   (@extend :name "note destination"))
 
-(def@ @note-destination :reveive (msg)
-      (error "implement reveive method"))
+(def@ @note-destination :receive (msg)
+      (error "implement receive method"))
 
 ;;; activity-note.el ends here
