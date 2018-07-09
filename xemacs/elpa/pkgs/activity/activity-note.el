@@ -52,7 +52,7 @@
           :destination nil))
 
 (defvar @dual-note
-  (@exten @activity-note :name "single note"
+  (@exten @activity-note :name "dual note"
           :prev-note nil
           :next-note nil))
 
