@@ -60,6 +60,6 @@
   (@extend :name "note destination"))
 
 (def@ @note-destination :reveive (msg)
-      )
+      (error "implement reveive method"))
 
 ;;; activity-note.el ends here
