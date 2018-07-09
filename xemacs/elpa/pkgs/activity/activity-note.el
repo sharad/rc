@@ -44,24 +44,104 @@
 
 
 
-(defvar @activity-note
-  (@extend :name "activity note"))
-
-(defvar @single-note
-  (@exten @activity-note :name "single note"
-          :destination nil))
-
-(defvar @dual-note
-  (@exten @activity-note :name "dual note"
-          :prev-note nil
-          :next-note nil))
-
-
 (defvar @note-destination
   (@extend :name "note destination"))
 
 (def@ @note-destination :receive (msg)
       (error "implement receive method"))
 
+(defvar @activity-note
+  (@extend :name "activity note"
+           :destinations nil))
+
+(def@ @activity-note :init (dests)
+      (setf @:destionations dests))
+
+(def@ @activity-note :add-dest (dest)
+      (push dest @:destionations))
+
+(def@ @activity-note :send (fmt &rest args)
+      (if @:destionations
+          (dolist (dest @:destionations)
+            (@! dest :receive fmt args)
+            (message "dest %s: received msg: %s"
+                     (@ dest :name)
+                     (format fmt args)))
+        (error "No @:destionations present.")))
+
+;; message destionations
+(defvar @message-note-destination
+  (@exten @note-destination
+          :name "message note destination"))
+
+(def@ @message-note-destination :receive (fmt &rest args)
+      (message fmt args))
+
+;; debug destionations
+(defvar @debug-note-destination
+  (@exten @note-destination
+          :name "message note destination"))
+
+(def@ @debug-note-destination :receive (fmt &rest args)
+      (lwarn 'activity 'debug fmt args))
+
+;; warning destionations
+(defvar @warning-note-destination
+  (@exten @note-destination
+          :name "message note destination"))
+
+(def@ @warning-note-destination :receive (fmt &rest args)
+      (lwarn 'activity 'warning fmt args))
+
+;; error destionations
+(defvar @error-note-destination
+  (@exten @note-destination
+          :name "message note destination"))
+
+(def@ @error-note-destination :receive (fmt &rest args)
+      (lwarn 'activity 'error fmt args))
+
+;; org heading destinations
+
+(defvar @org-heading-note-destination
+  (@exten @note-destination
+          :name "message note destination"))
+
+(def@ @org-heading-note-destination :init (marker)
+      (setf @:marker marker))
+
+(def@ @org-heading-note-destination :receive (fmt &rest args)
+      ;; (org-insert-log-note
+      ;;  @:marker
+      ;;  txt &optional purpose effective-time state previous-state)
+      (let ((marker
+             (cond
+               ((markerp @:marker) @:marker)
+               ((symbolp @:marker) (symbol-value @:marker))
+               (t (error "unknown value of @:marker %s" @:marker)))))
+        (if (markerp @:marker)
+            (org-insert-log-note
+             (if @:marker)
+             (format fmt args)
+             'note)
+          (error "unknown value of @:marker %s" @:marker))))
+
+
+;; fixed destinations
+(defvar @org-sink-note-destination nil "Org sink heading")
+
+(defun @set-org-sink-note-destination (marker)
+ (setf @org-sink-note-destination
+       (@! @org-heading-note-destination :new marker)))
+
+(defvar @org-clock-note-destination nil "Org current clock heading")
+
+(defun set-org-clock-note-destination ()
+  (setf @org-clock-note-destination
+        (@! @org-heading-note-destination :new 'org-clock-hd-marker)))
+
+
+
+
 
 ;;; activity-note.el ends here

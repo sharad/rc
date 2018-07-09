@@ -39,45 +39,50 @@
 
 (require '@)
 
+(require 'activity-note)
+
+(provide 'activity)
 
 (defgroup activity nil
   "Customizations for Activity"
   :group 'convenience
   :prefix "activity-")
-
-;; e.g.
-(defvar @immutable (@extend))
 
-(def@ @immutable :set (property _value)
-      (error "Object is immutable, cannot set %s" property))
+(progn
+  
+  ;; e.g.
+  (defvar @immutable (@extend))
 
-(def@ @ :freeze ()
-  "Make this object immutable."
-  (push @immutable @:proto))
-
-;; e.g.
-(defvar @watchable (@extend :watchers nil))
+  (def@ @immutable :set (property _value)
+        (error "Object is immutable, cannot set %s" property))
 
-(def@ @watchable :watch (callback)
-      (push callback @:watchers))
+  (def@ @ :freeze ()
+    "Make this object immutable."
+    (push @immutable @:proto))
+  
+  ;; e.g.
+  (defvar @watchable (@extend :watchers nil))
 
-(def@ @watchable :unwatch (callback)
-      (setf @:watchers (remove callback @:watchers)))
+  (def@ @watchable :watch (callback)
+        (push callback @:watchers))
 
-(def@ @watchable :set (property new)
-      (dolist (callback @:watchers)
-        (funcall callback @@ property new))
-      (@^:set property new))
-
-;; e.g.
-(defvar @rectangle (@extend :name "Class Rectangle"))
-(def@ @rectangle :init (width height)
-      (@^:init)
-      (setf @:width width @:height height))
+  (def@ @watchable :unwatch (callback)
+        (setf @:watchers (remove callback @:watchers)))
 
-;; (@! (@! @rectangle :new 13.2 2.1) :area)
-
+  (def@ @watchable :set (property new)
+        (dolist (callback @:watchers)
+          (funcall callback @@ property new))
+        (@^:set property new))
+  
+  ;; e.g.
+  (defvar @rectangle (@extend :name "Class Rectangle"))
+  (def@ @rectangle :init (width height)
+        (@^:init)
+        (setf @:width width @:height height))
 
+  ;; (@! (@! @rectangle :new 13.2 2.1) :area)
+  
+  )
 
 
 
@@ -101,8 +106,6 @@
 (def@ @methods-enforce :un-enforce (object name)
       `(progn
          ))
-
-;; (describe-@ @methods-enforce :name)
 
 
 (defvar @activity
@@ -398,10 +401,4 @@
 
   )
 
-
-
-
-
-
-(provide 'activity)
 ;;; activity.el ends here
