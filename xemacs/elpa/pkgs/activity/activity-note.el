@@ -44,6 +44,9 @@
 
 
 
+(defvar activity-note
+  (@extend :name "activity note"))
+
 
 
 
