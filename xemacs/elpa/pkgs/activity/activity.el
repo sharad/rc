@@ -132,6 +132,7 @@
 ;; (describe-@ @activity :name)
 (defvar @event
   (@extend @activity :name "Event"))
+
 (defvar @transition
   (@extend @activity :name "Class Transition"))
 
