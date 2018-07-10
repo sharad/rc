@@ -407,6 +407,8 @@
   (defvar @lister
     (@extend :name "lister"))
 
+  (setf (@@ @lister :list) '(a b))
+
   (def@ @lister :init (list)
         (setf @:list list))
 
