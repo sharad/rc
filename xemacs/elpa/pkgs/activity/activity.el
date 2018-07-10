@@ -307,7 +307,7 @@
 
 
 
-(progn
+(when nil
 
   (setf @baseobj (@extend))
 
