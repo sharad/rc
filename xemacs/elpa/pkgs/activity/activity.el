@@ -418,6 +418,9 @@
   (def@ @lister :add (el)
         (push el @:list))
 
+  (def@ @lister :add (el)
+        (push el @:list))
+
   (defvar @lister1 (@! @lister :new '(c d)))
 
   (setf @lister1 (@! @lister :new))
@@ -426,7 +429,7 @@
 
   (@! @lister1 :print)
 
-  (@! @lister1 :print)
+  (@! @lister1 :add 'x)
 
  )
 
