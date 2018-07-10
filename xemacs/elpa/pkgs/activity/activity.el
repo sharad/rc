@@ -410,7 +410,7 @@
   (setf (@ @lister :list) '(a b))
 
   (def@ @lister :init ()
-        (@:^init))
+        (@^:init))
 
   (def@ @lister :print ()
         (message "list: %s" @:list))
