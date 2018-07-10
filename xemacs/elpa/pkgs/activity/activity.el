@@ -405,7 +405,7 @@
 (progn
 
   (defvar @lister
-    (@extend :name 'lister))
+    (@extend :name "lister"))
 
  )
 
