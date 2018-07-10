@@ -112,7 +112,8 @@
 
 
 (setf @buffer-transition-singleton
-      (@extend @transition-singleton @dispatchable-immediate))
+      (@extend @transition-singleton
+               @dispatchable-immediate))
 
 (def@ @buffer-transition-singleton :init (new-buffer)
       (@^:init new-buffer))
