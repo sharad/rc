@@ -111,6 +111,8 @@
       (setf @:new new))
 
 
+;; based on note type correct
+
 (setf @buffer-transition-singleton
       (@extend @transition-singleton
                @dispatchable-immediate))
