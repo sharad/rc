@@ -409,13 +409,15 @@
 
   (setf (@ @lister :list) '(a b))
 
-  (def@ @lister :init (list)
-        (setf @:list list))
+  (def@ @lister :init ()
+        )
 
   (def@ @lister :print ()
         (message "list: %s" @:list))
 
   (defvar @lister1 (@! @lister :new '(c d)))
+
+  (setf @lister1 (@! @lister :new))
 
   (@! @lister :print)
 
