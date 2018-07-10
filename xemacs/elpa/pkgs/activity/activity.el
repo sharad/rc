@@ -407,6 +407,8 @@
   (defvar @lister
     (@extend :name "lister"))
 
+  ()
+
  )
 
 ;;; activity.el ends here
