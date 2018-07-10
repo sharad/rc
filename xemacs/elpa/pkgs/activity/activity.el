@@ -116,7 +116,12 @@
                @dispatchable-immediate))
 
 (def@ @buffer-transition-singleton :init (new-buffer)
-      (@^:init new-buffer))
+      (@^:init new-buffer)
+      (setf @:note
+            (@! @activity-note :new
+                (list
+                 @message-note-destination
+                 ))))
 
 (def@ @buffer-transition-singleton :message ()
       (format "changed from %s buffer to %s buffer on %s"
