@@ -431,7 +431,7 @@
 
   (@! @lister1 :add 'x)
 
-  (@! @lister1 :add 'x)
+  (@! @lister1 :del 'x)
 
  )
 
