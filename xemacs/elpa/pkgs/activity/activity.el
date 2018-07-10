@@ -119,6 +119,7 @@
 ;;     mail read
 ;;   transition
 ;;     buffer transition
+;;     clock transition
 ;; note
 ;; note-destination
 ;;
