@@ -419,7 +419,7 @@
         (push el @:list))
 
   (def@ @lister :del (el)
-        (remove el @:list))
+        (setf @:list (remove el @:list)))
 
   (defvar @lister1 (@! @lister :new '(c d)))
 
