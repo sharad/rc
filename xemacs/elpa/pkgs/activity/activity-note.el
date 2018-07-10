@@ -71,7 +71,7 @@
 
 ;; message destionations
 (defvar @message-note-destination
-  (@exten @note-destination
+  (@extren @note-destination
           :name "message note destination"))
 
 (def@ @message-note-destination :receive (fmt &rest args)
