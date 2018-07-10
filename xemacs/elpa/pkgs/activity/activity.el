@@ -407,7 +407,8 @@
   (defvar @lister
     (@extend :name "lister"))
 
-  ()
+  (def@ @lister :print ()
+        )
 
  )
 
