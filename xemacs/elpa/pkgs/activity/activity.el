@@ -185,10 +185,6 @@
 
 
 
-(defvar @event
-  (@extend @activity :name "Event"))
-
-
 (defvar @mail-event
   (@extend @event :name "mail event"))
 
