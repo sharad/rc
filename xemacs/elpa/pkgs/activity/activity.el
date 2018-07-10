@@ -416,13 +416,15 @@
         (message "list: %s" @:list))
 
   (def@ @lister :add (el)
-        (message "list: %s" @:list))
+        (push el @:list))
 
   (defvar @lister1 (@! @lister :new '(c d)))
 
   (setf @lister1 (@! @lister :new))
 
   (@! @lister :print)
+
+  (@! @lister1 :print)
 
   (@! @lister1 :print)
 
