@@ -71,7 +71,7 @@
 
 ;; message destionations
 (defvar @message-note-destination
-  (@extren @note-destination
+  (@extend @note-destination
           :name "message note destination"))
 
 (def@ @message-note-destination :receive (fmt &rest args)
@@ -79,7 +79,7 @@
 
 ;; debug destionations
 (defvar @debug-note-destination
-  (@exten @note-destination
+  (@extend @note-destination
           :name "message note destination"))
 
 (def@ @debug-note-destination :receive (fmt &rest args)
@@ -87,7 +87,7 @@
 
 ;; warning destionations
 (defvar @warning-note-destination
-  (@exten @note-destination
+  (@extend @note-destination
           :name "message note destination"))
 
 (def@ @warning-note-destination :receive (fmt &rest args)
@@ -95,7 +95,7 @@
 
 ;; error destionations
 (defvar @error-note-destination
-  (@exten @note-destination
+  (@extend @note-destination
           :name "message note destination"))
 
 (def@ @error-note-destination :receive (fmt &rest args)
@@ -104,7 +104,7 @@
 ;; org heading destinations
 
 (defvar @org-heading-note-destination
-  (@exten @note-destination
+  (@extend @note-destination
           :name "message note destination"))
 
 (def@ @org-heading-note-destination :init (marker &optional ignore-error)
