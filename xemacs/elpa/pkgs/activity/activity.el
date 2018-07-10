@@ -112,6 +112,12 @@
 
 
 ;; based on note type correct destination should be chosen.
+;; objects
+;; 1. activity
+;;   event
+;;   transition
+;; note
+;; note-destination
 
 (setf @buffer-transition-singleton
       (@extend @transition-singleton
