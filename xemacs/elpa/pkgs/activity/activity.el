@@ -133,68 +133,6 @@
 
 
 
-(defvar @dispatchable
-  (@extend @activity :name "Class Dispatchable"
-           :dispatchers nil))
-
-(def@ @dispatchable :add-dispatcher (callback)
-      (push callback @:dispatchers))
-
-(def@ @watchable :remove-dipatcher (callback)
-      (setf @:dispatchers (remove callback @:dispatchers)))
-
-(defmacro def-dispatcher@ (object name params &rest body)
-  `(progn
-     (def@ ,object ,name params
-           ,@body)
-     (@! ,object
-         :add-dispatcher
-         (@ ,object ,name))))
-(put 'def-dispatcher@ 'lisp-indent-function 3)
-
-(defmacro undef-dispatcher@ (object name)
-  `(progn
-     (@! ,object
-         :remove-dispatcher
-         (@ ,object ,name))))
-(put 'undef-dispatcher@ 'lisp-indent-function 1)
-
-(def-dispatcher@ @dispatchable :log-in-message ()
-  (message (@:message)))
-
-(def-dispatcher@ @dispatchable :log-to-clock ()
-  (when (marker-buffer org-clock-marker)
-    (org-insert-log-note
-     org-clock-hd-marker
-     (@:message)
-     'note)))
-
-(def@ @dispatchable :init ()
-      (@^:init))
-
-;; (setf (@ @dispatchable :dispatchers) nil)
-
-
-(defvar @dispatchable-immediate
-  (@extend @dispatchable :name "Class Deferred Dispatchable"))
-
-(def@ @dispatchable-immediate :dispatch ()
-      (message "calling @dispatchable-immediate :dispatch")
-      (dolist (cb @:dispatchers)
-        ;; (message "calling %s" cb)
-        (funcall cb @@)))
-
-(defvar @dispatchable-defferred
-  (@extend @dispatchable :name "Class Deferred Dispatchable"))
-
-(def@ @dispatchable-defferred :dispatch (sec)
-      (run-with-idle-plus-timer sec nil
-                                (lambda ()
-                                  (dolist (cb @:dispatchers)
-                                    (funcall cb @@)))))
-
-
-
 (defvar @transition
   (@extend @activity :name "Class Transition"))
 
