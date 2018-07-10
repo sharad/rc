@@ -130,7 +130,6 @@
       (format-time-string "%Y-%m-%d" @:occuredon))
 
 ;; (describe-@ @activity :name)
-
 
 
 (defvar @transition
