@@ -121,7 +121,7 @@
             (@! @activity-note :new
                 (list
                  @message-note-destination
-                 ))))
+                 @org-heading-note-destination))))
 
 (def@ @buffer-transition-singleton :message ()
       (format "changed from %s buffer to %s buffer on %s"
