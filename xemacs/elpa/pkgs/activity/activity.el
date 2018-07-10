@@ -431,6 +431,8 @@
 
   (@! @lister1 :add 'x)
 
+  (@! @lister1 :add 'x)
+
  )
 
 ;;; activity.el ends here
