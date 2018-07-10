@@ -116,7 +116,7 @@
 ;; 1. activity
 ;;   event
 ;;     mail send
-;;     amil read
+;;     mail read
 ;;   transition
 ;;
 ;; note
