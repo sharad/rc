@@ -249,7 +249,7 @@
 
 
 (defvar @event
-  (@extand @activity :name "Event"))
+  (@extend @activity :name "Event"))
 
 
 (defvar @mail-event
