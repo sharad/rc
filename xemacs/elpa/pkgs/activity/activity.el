@@ -408,7 +408,7 @@
     (@extend :name "lister"))
 
   (def@ @lister :init (list)
-        (setf ))
+        (setf @:list list))
 
  )
 
