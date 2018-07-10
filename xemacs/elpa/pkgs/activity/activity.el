@@ -418,8 +418,8 @@
   (def@ @lister :add (el)
         (push el @:list))
 
-  (def@ @lister :add (el)
-        (push el @:list))
+  (def@ @lister :del (el)
+        (delete el @:list))
 
   (defvar @lister1 (@! @lister :new '(c d)))
 
