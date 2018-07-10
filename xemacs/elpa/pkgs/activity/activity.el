@@ -413,7 +413,7 @@
         (setf @:list list))
 
 
-
+  (defvar lister1 (@! @lister :new '(c d)))
 
 
  )
