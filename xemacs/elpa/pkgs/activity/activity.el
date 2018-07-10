@@ -130,6 +130,8 @@
       (format-time-string "%Y-%m-%d" @:occuredon))
 
 ;; (describe-@ @activity :name)
+(defvar @event
+  (@extend @activity :name "Event"))
 
 
 (defvar @transition
