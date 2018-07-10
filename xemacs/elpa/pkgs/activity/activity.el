@@ -111,7 +111,7 @@
       (setf @:new new))
 
 
-;; based on note type correct
+;; based on note type correct destination should be choosen
 
 (setf @buffer-transition-singleton
       (@extend @transition-singleton
