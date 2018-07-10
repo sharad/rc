@@ -118,7 +118,7 @@
 ;;     mail send
 ;;     mail read
 ;;   transition
-;;
+;;     buffer transition
 ;; note
 ;; note-destination
 ;;
