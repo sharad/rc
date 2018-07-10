@@ -115,10 +115,13 @@
 ;; objects
 ;; 1. activity
 ;;   event
+;;     mail send
+;;     amil read
 ;;   transition
+;;
 ;; note
 ;; note-destination
-
+;;
 (setf @buffer-transition-singleton
       (@extend @transition-singleton
                @dispatchable-immediate))
