@@ -415,8 +415,11 @@
   (def@ @lister :print ()
         (message "list: %s" @:list))
 
-  (defvar lister1 (@! @lister :new '(c d)))
+  (defvar @lister1 (@! @lister :new '(c d)))
 
+  (@! @lister :print)
+
+  (@! @lister1 :print)
 
  )
 
