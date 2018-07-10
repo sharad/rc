@@ -415,6 +415,8 @@
   (def@ @lister :print ()
         (message "list: %s" @:list))
 
+  (def@ @lister :print ()
+        (message "list: %s" @:list))
   (defvar @lister1 (@! @lister :new '(c d)))
 
   (setf @lister1 (@! @lister :new))
