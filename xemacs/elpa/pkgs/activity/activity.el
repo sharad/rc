@@ -123,6 +123,11 @@
 ;; note
 ;; note-destination
 ;;
+
+;; just write prototype code
+;; like sending function and their parameters etc
+;; later it could be found to manage it to implement.
+
 (setf @buffer-transition-singleton
       (@extend @transition-singleton
                @dispatchable-immediate))

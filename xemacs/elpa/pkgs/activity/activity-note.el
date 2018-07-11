@@ -55,19 +55,23 @@
            :destinations nil))
 
 (def@ @activity-note :init (dests)
-      (setf @:destionations dests))
+      (setf @:destinations dests))
 
 (def@ @activity-note :add-dest (dest)
-      (push dest @:destionations))
+      (message "add-dest: before adding %d" (length @:destinations))
+      (push dest @:destinations)
+      (message "add-dest: adding %s destination" (car @:destinations)))
 
 (def@ @activity-note :send (fmt &rest args)
-      (if @:destionations
-          (dolist (dest @:destionations)
-            (@! dest :receive fmt args)
+      (if @:destinations
+          (dolist (dest @:destinations)
+            (if dest
+                (@! dest :receive fmt args)
+              (message "dest is nil, not sending msg."))
             (message "dest %s: received msg: %s"
-                     (@ dest :name)
-                     (format fmt args)))
-        (error "No @:destionations present.")))
+                     (if dest (@ dest :name))
+                     (apply #'format fmt args)))
+        (error "No @:destinations present.")))
 
 ;; message destionations
 (defvar @message-note-destination
@@ -75,7 +79,7 @@
           :name "message note destination"))
 
 (def@ @message-note-destination :receive (fmt &rest args)
-      (message fmt args))
+      (apply #'message fmt args))
 
 ;; debug destionations
 (defvar @debug-note-destination
@@ -146,5 +150,21 @@
 
 
 
+
+(setf @plain-note
+  (@extend @activity-note
+           :name "plain-note"))
+
+(@! @plain-note :add-dest @message-note-destination)
+(@! @plain-note :add-dest @org-clock-note-destination)
+(@! @plain-note :add-dest @org-sink-note-destination)
+
+(car (@ @plain-note :destinations))
+
+(progn
+
+
+  (@! @plain-note :send "Hello %s" "test")
+  )
 
 ;;; activity-note.el ends here
