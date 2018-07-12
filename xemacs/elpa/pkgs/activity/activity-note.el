@@ -54,9 +54,6 @@
   (@extend :name "activity note"
            :destinations nil))
 
-(def@ @activity-note :init (dests)
-      (setf @:destinations dests))
-
 (def@ @activity-note :add-dest (dest)
       (message "add-dest: before adding %d" (length @:destinations))
       (push dest @:destinations)
@@ -72,6 +69,8 @@
                      (if dest (@ dest :name))
                      (apply #'format fmt args)))
         (error "No @:destinations present.")))
+
+
 
 ;; message destionations
 (defvar @message-note-destination
