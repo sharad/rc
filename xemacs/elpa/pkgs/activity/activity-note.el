@@ -96,7 +96,7 @@
                   :name "message note destination")))
     (def@ debug-note-dest :receive (fmt &rest args)
           (lwarn 'activity 'debug fmt args))
-    ))
+    debug-note-dest))
 
 
 
