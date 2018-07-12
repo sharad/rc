@@ -591,6 +591,8 @@ end
 # continue
 
 
-handle SIGUSR1 noprint nostop
+handle SIGUSR1 noprint nostop pass
+handle SIGUSR2 noprint nostop pass
+
 
 # End of the eev block.
