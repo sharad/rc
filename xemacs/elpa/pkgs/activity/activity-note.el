@@ -72,8 +72,9 @@
 
 (def@ @activity-note :init (dests)
       (let (msg-dest)
-        ((@extend @note-destination
-                  :name "message note destination"))
+        (setf msg-dest
+              (@extend @note-destination
+                       :name "message note destination"))
        (setf @:destinations dests)))
 
 
