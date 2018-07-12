@@ -101,10 +101,7 @@
 
 
 
-;; warning destionations
-(defvar @warning-note-destination
-  (@extend @note-destination
-          :name "message note destination"))
+
 
 (def@ @warning-note-destination :receive (fmt &rest args)
       (lwarn 'activity 'warning fmt args))
