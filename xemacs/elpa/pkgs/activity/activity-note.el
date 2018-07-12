@@ -97,7 +97,6 @@
           (lwarn 'activity 'debug fmt args))
     debug-note-dest))
 
-
 (defun make-warning-note-dest ()
   (let ((warning-note-dest
          (@extend @note-destination
