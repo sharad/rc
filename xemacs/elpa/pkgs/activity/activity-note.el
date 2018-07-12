@@ -78,7 +78,6 @@
         (push msg-dest
               @:destinations)))
 
-
 
 ;; message destionations
 (def@ @activity-note :make-msg-note-dest ()
