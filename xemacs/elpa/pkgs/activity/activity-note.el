@@ -85,7 +85,6 @@
   (let  ((msg-note-dest
           (@extend @note-destination
                    :name "message note destination"))))
-
   (def@ msg-note-dest :receive (fmt &rest args)
         (apply #'message fmt args)))
 
