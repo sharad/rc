@@ -91,8 +91,10 @@
 
 
 (defun make-debug-note-dest ()
-  (let ((debug-note-dest (@extend @note-destination
-                                  :name "message note destination")))))
+  (let ((debug-note-dest
+         (@extend @note-destination
+                  :name "message note destination")))
+    ))
 (defvar @debug-note-destination
   )
 
