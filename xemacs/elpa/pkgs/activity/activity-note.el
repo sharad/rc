@@ -117,10 +117,7 @@
     error-note-dest))
 
 
-;; error destionations
-(defvar @error-note-destination
-  (@extend @note-destination
-          :name "message note destination"))
+
 
 (def@ @error-note-destination :receive (fmt &rest args)
       (lwarn 'activity 'error fmt args))
