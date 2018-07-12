@@ -82,8 +82,8 @@
 
 ;; message destionations
 (defun make-msg-note-dest ()
-  (defvar (@message-note-destination
-    (@extend @note-destination
+  (defvar (message-note-destination
+           (@extend @note-destination
              :name "message note destination")))
 
   (def@ @message-note-destination :receive (fmt &rest args)
