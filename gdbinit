@@ -591,7 +591,7 @@ end
 # continue
 
 
-handle SIGUSR1 print nostop passi
+handle SIGUSR1 print nostop pass
 handle SIGUSR2 print nostop pass
 
 
