@@ -117,7 +117,7 @@
 
 ;; org heading destinations
 
-(defvar @org-heading-note-dest
+(@org-heading-note-dest
   (@extend @note-destination
           :name "message note destination"))
 
