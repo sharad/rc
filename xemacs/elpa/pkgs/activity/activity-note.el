@@ -99,13 +99,13 @@
     debug-note-dest))
 
 
-(defun make-warnning-note-dest ()
-  (let ((warnning-note-dest
+(defun make-warning-note-dest ()
+  (let ((warning-note-dest
          (@extend @note-destination
                   :name "message note destination")))
-    (def@ warnning-note-dest :receive (fmt &rest args)
-          (lwarn 'activity 'warnning fmt args))
-    warnning-note-dest))
+    (def@ warning-note-dest :receive (fmt &rest args)
+          (lwarn 'activity 'warning fmt args))
+    warning-note-dest))
 
 
 
