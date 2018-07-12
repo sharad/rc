@@ -117,31 +117,31 @@
 
 ;; org heading destinations
 (defun mak-org-heading-note-dest ()
-(let ((org-heading-note-dest
-       (@extend @note-destination
-                :name "message note destination")))
+  (let ((org-heading-note-dest
+         (@extend @note-destination
+                  :name "message note destination")))
 
-  (def@ org-heading-note-dest :init (marker &optional ignore-error)
-        (setf
-         @:marker       marker
-         @:ignore-error ignore-error))
+    (def@ org-heading-note-dest :init (marker &optional ignore-error)
+          (setf
+           @:marker       marker
+           @:ignore-error ignore-error))
 
-  (def@ org-heading-note-dest :receive (fmt &rest args)
-        ;; (org-insert-log-note
-        ;;  @:marker
-        ;;  txt &optional purpose effective-time state previous-state)
-        (let ((marker
-               (cond
-                 ((markerp @:marker) @:marker)
-                 ((symbolp @:marker) (symbol-value @:marker))
-                 (t (error "unknown value of @:marker %s" @:marker)))))
-          (if (markerp @:marker)
-              (org-insert-log-note
-               (if @:marker)
-               (format fmt args)
-               'note)
-            (unless @:ignore-error
-              (error "unknown value of @:marker %s" @:marker)))))))
+    (def@ org-heading-note-dest :receive (fmt &rest args)
+          ;; (org-insert-log-note
+          ;;  @:marker
+          ;;  txt &optional purpose effective-time state previous-state)
+          (let ((marker
+                 (cond
+                   ((markerp @:marker) @:marker)
+                   ((symbolp @:marker) (symbol-value @:marker))
+                   (t (error "unknown value of @:marker %s" @:marker)))))
+            (if (markerp @:marker)
+                (org-insert-log-note
+                 (if @:marker)
+                 (format fmt args)
+                 'note)
+              (unless @:ignore-error
+                (error "unknown value of @:marker %s" @:marker)))))))
 
 
 ;; fixed destinations
