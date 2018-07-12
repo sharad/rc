@@ -75,7 +75,8 @@
         (setf msg-dest
               (@extend @note-destination
                        :name "message note destination"))
-        (@:destinations)))
+        (push msg-dest
+              @:destinations)))
 
 
 
