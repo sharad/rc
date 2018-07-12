@@ -84,9 +84,10 @@
 (defun make-msg-note-dest ()
   (let  ((msg-note-dest
           (@extend @note-destination
-                   :name "message note destination"))))
-  (def@ msg-note-dest :receive (fmt &rest args)
-        (apply #'message fmt args)))
+                   :name "message note destination")))
+    (def@ msg-note-dest :receive (fmt &rest args)
+          (apply #'message fmt args)))
+  )
 
 
 ;; debug destionations
