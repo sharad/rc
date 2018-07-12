@@ -108,13 +108,13 @@
     warning-note-dest))
 
 
-(defun make-warning-note-dest ()
-  (let ((warning-note-dest
+(defun make-error-note-dest ()
+  (let ((error-note-dest
          (@extend @note-destination
                   :name "message note destination")))
-    (def@ warning-note-dest :receive (fmt &rest args)
-          (lwarn 'activity 'warning fmt args))
-    warning-note-dest))
+    (def@ error-note-dest :receive (fmt &rest args)
+          (lwarn 'activity 'error fmt args))
+    error-note-dest))
 
 
 ;; error destionations
