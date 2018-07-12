@@ -510,9 +510,6 @@ define ee
 end
 #
 
-
-handle SIGUSR1 noprint nostop
-
 # tracef keyboard.c:2876
 # tracef timer_stop_idle
 
