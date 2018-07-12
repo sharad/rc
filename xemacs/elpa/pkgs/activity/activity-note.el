@@ -81,7 +81,7 @@
 
 
 ;; message destionations
-(defun make-msg-note-dest ()
+(def@ @activity-note :make-msg-note-dest ()
   (let  ((msg-note-dest
           (@extend @note-destination
                    :name "message note destination")))
@@ -89,7 +89,7 @@
           (apply #'message fmt args))
     msg-note-dest))
 
-(defun make-debug-note-dest ()
+(def@ @activity-note :make-debug-note-dest ()
   (let ((debug-note-dest
          (@extend @note-destination
                   :name "message note destination")))
@@ -97,7 +97,7 @@
           (lwarn 'activity 'debug fmt args))
     debug-note-dest))
 
-(defun make-warning-note-dest ()
+(def@ @activity-note :make-warning-note-dest ()
   (let ((warning-note-dest
          (@extend @note-destination
                   :name "message note destination")))
@@ -106,7 +106,7 @@
     warning-note-dest))
 
 
-(defun make-error-note-dest ()
+(def@ @activity-note :make-error-note-dest ()
   (let ((error-note-dest
          (@extend @note-destination
                   :name "message note destination")))
@@ -116,7 +116,7 @@
 
 
 ;; org heading destinations
-(defun make-org-heading-note-dest ()
+(def@ @activity-note :make-org-heading-note-dest ()
   (let ((org-heading-note-dest
          (@extend @note-destination
                   :name "message note destination")))
