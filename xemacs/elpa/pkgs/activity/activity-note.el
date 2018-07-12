@@ -117,7 +117,7 @@
 
 ;; org heading destinations
 
-((@org-heading-note-dest
+(((@org-heading-note-dest
   (@extend @note-destination
           :name "message note destination")))
 
@@ -141,7 +141,7 @@
              (format fmt args)
              'note)
           (unless @:ignore-error
-              (error "unknown value of @:marker %s" @:marker)))))
+              (error "unknown value of @:marker %s" @:marker))))))
 
 
 ;; fixed destinations
