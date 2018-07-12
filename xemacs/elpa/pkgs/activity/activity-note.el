@@ -117,9 +117,9 @@
 
 ;; org heading destinations
 
-(@org-heading-note-dest
+((@org-heading-note-dest
   (@extend @note-destination
-          :name "message note destination"))
+          :name "message note destination")))
 
 (def@ @org-heading-note-dest :init (marker &optional ignore-error)
       (setf
