@@ -95,7 +95,8 @@
          (@extend @note-destination
                   :name "message note destination")))
     (def@ debug-note-dest :receive (fmt &rest args)
-          (lwarn 'activity 'debug fmt args))))
+          (lwarn 'activity 'debug fmt args))
+    ))
 
 
 
