@@ -89,7 +89,6 @@
           (apply #'message fmt args))
     msg-note-dest))
 
-
 (defun make-debug-note-dest ()
   (let ((debug-note-dest
          (@extend @note-destination
@@ -116,11 +115,6 @@
           (lwarn 'activity 'error fmt args))
     error-note-dest))
 
-
-
-
-(def@ @error-note-destination :receive (fmt &rest args)
-      (lwarn 'activity 'error fmt args))
 
 ;; org heading destinations
 
