@@ -121,6 +121,7 @@
              (@extend @note-destination
                       :name "message note destination")))
 
+        ;; TODO
         (def@ org-heading-note-dest :init (marker &optional ignore-error)
               (setf
                @:marker       marker
