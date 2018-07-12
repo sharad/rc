@@ -142,6 +142,7 @@
                      'note)
                   (unless @:ignore-error
                     (error "unknown value of @:marker %s" @:marker)))))
+
         org-heading-note-dest))
 
 
