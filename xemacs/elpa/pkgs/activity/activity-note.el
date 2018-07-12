@@ -117,16 +117,16 @@
 
 ;; org heading destinations
 
-(let ((@org-heading-note-dest
+(let ((org-heading-note-dest
        (@extend @note-destination
                 :name "message note destination")))
 
-  (def@ @org-heading-note-dest :init (marker &optional ignore-error)
+  (def@ org-heading-note-dest :init (marker &optional ignore-error)
         (setf
          @:marker       marker
          @:ignore-error ignore-error))
 
-  (def@ @org-heading-note-dest :receive (fmt &rest args)
+  (def@ org-heading-note-dest :receive (fmt &rest args)
         ;; (org-insert-log-note
         ;;  @:marker
         ;;  txt &optional purpose effective-time state previous-state)
