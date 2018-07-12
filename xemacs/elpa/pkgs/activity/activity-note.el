@@ -71,7 +71,8 @@
         (error "No @:destinations present.")))
 
 (def@ @activity-note :init (dests)
-      (let ()
+      (let (msg-dest)
+
        (setf @:destinations dests)))
 
 
