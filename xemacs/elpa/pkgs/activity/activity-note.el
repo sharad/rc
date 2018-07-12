@@ -70,6 +70,9 @@
                      (apply #'format fmt args)))
         (error "No @:destinations present.")))
 
+(def@ @activity-note :init (dests)
+      ((setf @:destinations dests)))
+
 
 
 ;; message destionations
