@@ -49,6 +49,7 @@
 
 (def@ @note-destination :receive (msg)
       (error "implement receive method"))
+
 
 (defvar @activity-note
   (@extend :name "activity note"
