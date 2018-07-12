@@ -590,4 +590,7 @@ end
 # end
 # continue
 
+
+handle SIGUSR1 noprint nostop
+
 # End of the eev block.
