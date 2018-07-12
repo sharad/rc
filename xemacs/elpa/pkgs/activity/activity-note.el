@@ -109,8 +109,7 @@
 
 
 
-(def@ @warning-note-destination :receive (fmt &rest args)
-      (lwarn 'activity 'warning fmt args))
+
 
 ;; error destionations
 (defvar @error-note-destination
