@@ -38,6 +38,7 @@
 ;;; Code:
 
 (require '@)
+(require 'activity-base)
 
 (provide 'activity-note)
 
