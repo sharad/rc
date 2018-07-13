@@ -44,6 +44,7 @@
 
 
 (def@ @activity :init-note ()
+      (if @:note
       (let ((note
              (@extend @@
               :name "activity note"
@@ -73,7 +74,7 @@
                 (push msg-dest
                       @:destinations)))
 
-        (setf @:note note)))
+        (setf @:note note))))
 
 
 (def@ @activity :init-destination ()
