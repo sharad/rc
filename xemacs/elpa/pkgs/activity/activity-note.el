@@ -79,7 +79,7 @@
           @:_note
         (@:init-note)))
 
-(def@ (@ @activity :_note) :init-destination ()
+(def@ (@! @activity :note) :init-destination ()
       (let ((destination
              (@extend @@
               :name "activity note destination"
@@ -173,7 +173,7 @@
         (@:init-destination)))
 
 (when nil
-  (@ (@ @activity :_note) :_destination)
+  (@! (@ @activity :_note) :destination)
   )
 
 
