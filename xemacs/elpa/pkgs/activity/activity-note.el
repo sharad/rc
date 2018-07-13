@@ -168,10 +168,10 @@
 
         (setf @:destionation destionation)))
 
-(def@ @activity :destionation ()
+(def@ @activity :destination ()
       (if (boundp '@:_destionation)
           @:_destionation
-        (@:init-destionation)))
+        (@:init-destination)))
 
 (when nil
   (@! @activity :note)
