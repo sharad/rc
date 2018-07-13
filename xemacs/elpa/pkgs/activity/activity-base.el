@@ -131,7 +131,7 @@
 
 ;; * Do not forget about pragmatism
 ;; ** First complete working model, somehow
-;; ** Things should be definable outsile of this library based on framework provided here.
+;; ** Things should be definable outside of this library based on framework provided here.
 
 
 ;;; activity-base.el ends here
