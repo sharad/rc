@@ -159,6 +159,10 @@
 
         (defvar @org-clock-note-destination nil "Org current clock heading")
 
+        (defun set-org-clock-note-destination ()
+          (setf @org-clock-note-destination
+                (@! @org-heading-note-destination :new 'org-clock-hd-marker t)))
+
         (setf @:destionation destionation)))
 
 
@@ -173,9 +177,7 @@
 ;; message destionations
 
 
-(defun set-org-clock-note-destination ()
-  (setf @org-clock-note-destination
-        (@! @org-heading-note-destination :new 'org-clock-hd-marker t)))
+
 
 
 
