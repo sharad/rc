@@ -42,7 +42,6 @@
 
 (provide 'activity-note)
 
-
 (def@ @activity :init-note ()
       (let ((note
              (@extend @@
