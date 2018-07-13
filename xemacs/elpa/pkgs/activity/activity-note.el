@@ -169,7 +169,7 @@
         (setf @:destionation destionation)))
 
 (def@ @activity :destionation ()
-      (if @:_destionation
+      (if '@:_destionation
           @:_destionation
         (@:init-destionation)))
 
