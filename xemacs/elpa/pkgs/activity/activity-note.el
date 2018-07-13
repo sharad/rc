@@ -87,7 +87,7 @@
 
         (def@ destionation :make-msg-note-dest ()
               (let  ((msg-note-dest
-                      (@extend @note-destination
+                      (@extend @@
                                :name "message note destination")))
                 (def@ msg-note-dest :receive (fmt &rest args)
                       (apply #'message fmt args))
@@ -95,7 +95,7 @@
 
         (def@ destionation :make-debug-note-dest ()
               (let ((debug-note-dest
-                     (@extend @note-destination
+                     (@extend @@
                               :name "message note destination")))
                 (def@ debug-note-dest :receive (fmt &rest args)
                       (lwarn 'activity 'debug fmt args))
@@ -103,7 +103,7 @@
 
         (def@ destionation :make-warning-note-dest ()
               (let ((warning-note-dest
-                     (@extend @note-destination
+                     (@extend @@
                               :name "message note destination")))
                 (def@ warning-note-dest :receive (fmt &rest args)
                       (lwarn 'activity 'warning fmt args))
@@ -112,7 +112,7 @@
 
         (def@ destionation :make-error-note-dest ()
               (let ((error-note-dest
-                     (@extend @note-destination
+                     (@extend @@
                               :name "message note destination")))
                 (def@ error-note-dest :receive (fmt &rest args)
                       (lwarn 'activity 'error fmt args))
@@ -122,7 +122,7 @@
         ;; org heading destinations
         (def@ destionation :make-org-heading-note-dest ()
               (let ((org-heading-note-dest
-                     (@extend @note-destination
+                     (@extend @@
                               :name "message note destination")))
 
                 ;; TODO
