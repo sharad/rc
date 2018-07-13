@@ -76,7 +76,7 @@
         (setf @:_note note)))
 
 (def@ @activity :note ()
-      (if @:_note
+      (if (@:_note)
           @:_note
         (@:init-note)))
 
