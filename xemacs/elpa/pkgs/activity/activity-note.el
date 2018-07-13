@@ -174,7 +174,7 @@
 
 (when nil
   (@! @activity :note)
-  (@! @activity :destination)
+  (@! (@! @activity :note) :destination)
   )
 
 
