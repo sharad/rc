@@ -178,6 +178,9 @@
 (setf @test
       (@extend :name "test"))
 
+(def@ @test :node ()
+      @:_node)
+
 
 (setf (@ (@! @activity :note) :destination) 'a)
 
