@@ -175,6 +175,8 @@
         (@:init-destination)))
 
 
+(setf @test
+      (@extend :name "test"))
 
 
 (setf (@ (@! @activity :note) :destination) 'a)
