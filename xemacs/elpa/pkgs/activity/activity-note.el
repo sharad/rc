@@ -185,7 +185,7 @@
 
 
 (def@ @test :def (methood fn)
-      ())
+      (setf (@ @@ method) fn))
 
 
 (@ (@! @test :node) :slot)
