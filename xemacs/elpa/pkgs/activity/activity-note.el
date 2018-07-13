@@ -175,6 +175,7 @@
         (@:init-destination)))
 
 (setf (@ (@! @activity :note) :destination) 'a)
+
 (when nil
   (@! (@! @activity :note) :destination)
   )
