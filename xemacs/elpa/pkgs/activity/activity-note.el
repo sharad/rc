@@ -168,6 +168,11 @@
 
         (setf @:destionation destionation)))
 
+(def@ @activity :destionation ()
+      (if @:_destionation
+          @:_destionation
+        (@:init-destionation)))
+
 (when nil
   (@! @activity :init-note)
   (@ @activity :note)
