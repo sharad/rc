@@ -85,7 +85,6 @@
         (def@ destination :receive (msg)
               (error "implement receive method"))
 
-
         (def@ destionation :make-msg-note-dest ()
               (let  ((msg-note-dest
                       (@extend @@
