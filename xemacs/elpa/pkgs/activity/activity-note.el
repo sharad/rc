@@ -81,7 +81,7 @@
               :name "activity note destionation"
               :destinations nil)))
 
-        (def@ @note-destination :receive (msg)
+        (def@ destination :receive (msg)
               (error "implement receive method"))
 
 
@@ -160,6 +160,9 @@
         (defvar @org-clock-note-destination nil "Org current clock heading")
 
         (setf @:destionation destionation)))
+
+
+
 
 
 
