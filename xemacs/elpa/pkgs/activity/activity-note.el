@@ -152,18 +152,18 @@
                 org-heading-note-dest))
 
 
-        ;; fixed destinations
-        (defvar @org-sink-note-destination nil "Org sink heading")
+        ;; ;; fixed destinations
+        ;; (defvar @org-sink-note-destination nil "Org sink heading")
 
-        (defun @set-org-sink-note-destination (marker)
-          (setf @org-sink-note-destination
-                (@! @org-heading-note-destination :new marker)))
+        ;; (defun @set-org-sink-note-destination (marker)
+        ;;   (setf @org-sink-note-destination
+        ;;         (@! @org-heading-note-destination :new marker)))
 
-        (defvar @org-clock-note-destination nil "Org current clock heading")
+        ;; (defvar @org-clock-note-destination nil "Org current clock heading")
 
-        (defun set-org-clock-note-destination ()
-          (setf @org-clock-note-destination
-                (@! @org-heading-note-destination :new 'org-clock-hd-marker t)))
+        ;; (defun set-org-clock-note-destination ()
+        ;;   (setf @org-clock-note-destination
+        ;;         (@! @org-heading-note-destination :new 'org-clock-hd-marker t)))
 
         (setf @:_destination destination)))
 
