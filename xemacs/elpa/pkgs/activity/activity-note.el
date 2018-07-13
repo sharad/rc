@@ -74,8 +74,8 @@
 
         (setf @:note note)))
 
-(def@ @activity :init-dest ()
-      (let ((note
+(def@ @activity :init-destination ()
+      (let ((
              (@extend :name "activity note"
                       :destinations nil)))
 
