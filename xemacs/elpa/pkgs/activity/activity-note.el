@@ -169,7 +169,8 @@
         (setf @:_destination destination)
         @:_destination))
 
-((def@ (@! @activity :note) :destination ()
+(let ((note (@! @activity :note)))
+ (def@ note :destination ()
       (if (boundp '@:_destination)
           @:_destination
         (@:init-destination))))
