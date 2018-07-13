@@ -175,7 +175,7 @@
 
 (when nil
   (@! @activity :note)
-  (@ @activity :note)
+  (@! @activity :note)
   )
 
 
