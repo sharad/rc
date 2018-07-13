@@ -180,7 +180,7 @@
     ;;           @:_destination
     ;;         (@:init-destination)))
     note)
-  (@! (@! @activity :note))
+  (@! (@! @activity :note) :destination)
   )
 
 
