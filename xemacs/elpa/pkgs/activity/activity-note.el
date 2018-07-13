@@ -71,6 +71,7 @@
                                :name "message note destination"))
                 (push msg-dest
                       @:destinations)))
+
         (def@ note :destination ()
               (if (boundp '@:_destination)
                   @:_destination
