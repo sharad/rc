@@ -44,7 +44,7 @@
 
 
 (def@ @activity :init-note ()
-      )
+      (setf @:note ))
 
 
 (defvar @note-destination
