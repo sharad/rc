@@ -179,14 +179,15 @@
       (@extend :name "test"))
 
 (setf (@ @test :_node)
-      (@extend @test :name "node"))
+      (@extend @test :name "node"
+               :slot 'a))
 
 (def@ @test :node ()
       @:_node)
 
-(setf (@! @test :node) 'b)
+(@ (@! @test :node) :slot)
 
-(setf (@ (@! @activity :note) :destination) 'a)
+(setf (@! (@! @activity :note) :destination) 'a)
 
 (when nil
   (@! (@! @activity :note) :destination)
