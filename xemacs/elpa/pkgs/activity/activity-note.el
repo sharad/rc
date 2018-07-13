@@ -48,12 +48,12 @@
              (@extend :name "activity note"
                       :destinations nil)))
 
-        (def@ @activity-note :add-dest (dest)
+        (def@ note :add-dest (dest)
               (message "add-dest: before adding %d" (length @:destinations))
               (push dest @:destinations)
               (message "add-dest: adding %s destination" (car @:destinations)))
 
-        (def@ @activity-note :send (fmt &rest args)
+        (def@ note :send (fmt &rest args)
               (if @:destinations
                   (dolist (dest @:destinations)
                     (if dest
@@ -64,7 +64,7 @@
                              (apply #'format fmt args)))
                 (error "No @:destinations present.")))
 
-        (def@ @activity-note :init (dests)
+        (def@ note :init (dests)
               (let (msg-dest)
                 (setf msg-dest
                       (@extend @note-destination
