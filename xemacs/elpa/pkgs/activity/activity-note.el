@@ -165,7 +165,8 @@
         ;;   (setf @org-clock-note-destination
         ;;         (@! @org-heading-note-destination :new 'org-clock-hd-marker t)))
 
-        (setf @:_destination destination)))
+        (setf @:_destination destination)
+        @:_destination))
 
 (def@ (@! @activity :note) :destination ()
       (if (boundp '@:_destination)
