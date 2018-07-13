@@ -183,9 +183,9 @@
       (@extend @test :name "node"
                :slot 'a))
 
-(def@ @test :def (fn params &rest body)
+(def@ @test :def ( params &rest body)
       (progn
-        (setf (@ ,object ,method)
+        (setf (@ @@ ,method)
               (function* (lambda ,(cons '@@ params)
                 ,@(if (stringp (car body)) (list (car body)) ())
                 (let ((@@@ ,object))
