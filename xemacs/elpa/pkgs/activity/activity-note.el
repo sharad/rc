@@ -184,7 +184,7 @@
                :slot 'a))
 
 
-(def@ @test :def (methood fn)
+(def@ @test :def (method fn)
       (setf (@ @@ method) fn))
 
 (@! @test :def :init-x (lambda () ))
