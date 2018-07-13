@@ -184,7 +184,8 @@
                :slot 'a))
 
 
-(def@ @test :def (methood fn))
+(def@ @test :def (methood fn)
+      ())
 
 
 (@ (@! @test :node) :slot)
