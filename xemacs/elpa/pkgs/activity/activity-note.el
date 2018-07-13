@@ -118,7 +118,6 @@
                       (lwarn 'activity 'error fmt args))
                 error-note-dest))
 
-        
         ;; org heading destinations
         (def@ destionation :make-org-heading-note-dest ()
               (let ((org-heading-note-dest
