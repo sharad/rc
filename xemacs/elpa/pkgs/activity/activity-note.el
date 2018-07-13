@@ -173,7 +173,7 @@
         (@:init-destination)))
 
 (when nil
-  (@ (@ @activity :_note) :_destination)
+  (@! (@ @activity :_note) :_destination)
   )
 
 
