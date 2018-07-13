@@ -179,9 +179,7 @@
 (setf @test
       (@extend :name "test"))
 
-(setf (@ @test :_node)
-      (@extend @test :name "node"
-               :slot 'a))
+
 
 (def@ @test :node ()
       @:_node)
