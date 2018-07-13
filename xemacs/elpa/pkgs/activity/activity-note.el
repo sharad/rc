@@ -43,7 +43,8 @@
 (provide 'activity-note)
 
 
-(def@ )
+(def@ @activity :init-note ()
+      )
 
 
 (defvar @note-destination
