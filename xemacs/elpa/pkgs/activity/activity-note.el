@@ -165,7 +165,7 @@
 
         (setf @:destionation destionation)))
 
-
+(@! @activity :init-note)
 (@ @activity :note)
 
 
