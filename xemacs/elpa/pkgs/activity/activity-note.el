@@ -189,7 +189,7 @@
 
 (@! @test :def :init-x (lambda () (message "test") ))
 
-(@ @test)
+(@! @test :init-x)
 
 (@ (@! @test :node) :slot)
 
