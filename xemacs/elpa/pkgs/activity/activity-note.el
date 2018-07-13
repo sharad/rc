@@ -183,7 +183,7 @@
       (@extend @test :name "node"
                :slot 'a))
 
-(def@ @test :node ()
+(def@ @test :def ()
       @:_node)
 
 (@ (@! @test :node) :slot)
