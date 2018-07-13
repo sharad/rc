@@ -45,8 +45,9 @@
 
 (def@ @activity :init-note ()
       (let ((note
-             (@extend :name "activity note"
-                      :destinations nil)))
+             (@extend @@
+              :name "activity note"
+              :destinations nil)))
 
         (def@ note :add-dest (dest)
               (message "add-dest: before adding %d" (length @:destinations))
@@ -87,15 +88,7 @@
         (setf @:destionation destionation)))
 
 
-(defvar @note-destination
-  (@extend :name "note destination"))
 
-
-
-
-(defvar @activity-note
-  (@extend :name "activity note"
-           :destinations nil))
 
 
 
