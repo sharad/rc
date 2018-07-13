@@ -126,4 +126,6 @@
 ;; like sending function and their parameters etc
 ;; later it could be found to manage it to implement.
 
+;; how I can pass different types of value e.g. (fmt arg1 arg2 ) sexp
+
 ;;; activity-base.el ends here
