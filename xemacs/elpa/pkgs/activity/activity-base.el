@@ -129,6 +129,7 @@
 ;; how I can pass different types of value e.g. (fmt arg1 arg2 ) and sexp
 ;; and it will be handled by corresponding handler ?
 
+;;
 ;; * Do not forget about pragmatism
 ;; ** First complete working model, somehow
 ;; ** Things should be definable outside of this library based on framework provided here.
