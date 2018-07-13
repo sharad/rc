@@ -183,7 +183,7 @@
       (@extend @test :name "node"
                :slot 'a))
 
-(def@ @test :def (fn &rest args)
+(def@ @test :def (fn params )
       (progn
         (setf (@ ,object ,method)
               (function* (lambda ,(cons '@@ params)
