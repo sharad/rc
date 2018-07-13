@@ -75,6 +75,9 @@
 
         (setf @:note note)))
 
+(def@ @activity :note ()
+      )
+
 
 (def@ @activity :init-destination ()
       (let ((destionation
