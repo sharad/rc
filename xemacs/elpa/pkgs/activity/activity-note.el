@@ -174,7 +174,7 @@
 
 (when nil
   (let ((note (@! @activity :note)))
-    (def@ (@! @activity :note) :destination ()
+    (def@ note :destination ()
           (if (boundp '@:_destination)
               @:_destination
             (@:init-destination)))
