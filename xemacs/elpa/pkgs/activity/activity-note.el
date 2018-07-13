@@ -72,11 +72,6 @@
                 (push msg-dest
                       @:destinations)))
 
-        (def@ note :destination ()
-              (if (boundp '@:_destination)
-                  @:_destination
-                (@:init-destination)))
-
         (setf @:_note note)))
 
 (def@ @activity :note ()
