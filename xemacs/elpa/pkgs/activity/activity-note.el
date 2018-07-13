@@ -76,7 +76,7 @@
 
 (def@ @activity :init-destination ()
       (let ((destionation
-             (@extend :name "activity note"
+             (@extend :name "activity note destionation"
                       :destinations nil)))
 
         (def@ note :add-dest (dest)
