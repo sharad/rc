@@ -183,8 +183,8 @@
       (@extend @test :name "node"
                :slot 'a))
 
-(def@ @test :def (fn args)
-      (def@ @@ fn ()))
+(def@ @test :def (fn &rest args)
+      (def@ @@ fn )
 
 (@ (@! @test :node) :slot)
 
