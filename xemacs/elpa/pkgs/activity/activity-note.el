@@ -47,7 +47,7 @@
       (let ((note
              (@extend :name "activity note"
                       :destinations nil)))
-        ()))
+        (setf @:note note)))
 
 
 (defvar @note-destination
