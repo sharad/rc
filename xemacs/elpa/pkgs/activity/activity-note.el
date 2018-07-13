@@ -76,7 +76,7 @@
         (setf @:note note)))
 
 (def@ @activity :note ()
-      )
+      (message "test"))
 
 
 (def@ @activity :init-destination ()
