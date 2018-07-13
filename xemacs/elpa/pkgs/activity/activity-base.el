@@ -129,4 +129,6 @@
 ;; how I can pass different types of value e.g. (fmt arg1 arg2 ) and sexp
 ;; and it will be handled by corresponding handler ?
 
+;; * Do not forget about pragmatism
+
 ;;; activity-base.el ends here
