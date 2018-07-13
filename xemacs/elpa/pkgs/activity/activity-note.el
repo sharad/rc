@@ -176,13 +176,6 @@
   (@ (@ @activity :_note) :_destination)
   )
 
-
-
-
-
-
-
-
 
 ;; message destinations
 
