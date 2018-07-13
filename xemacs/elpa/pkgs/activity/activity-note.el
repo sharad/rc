@@ -47,6 +47,29 @@
       (let ((note
              (@extend :name "activity note"
                       :destinations nil)))
+        (def@ @activity-note :add-dest (dest)
+              (message "add-dest: before adding %d" (length @:destinations))
+              (push dest @:destinations)
+              (message "add-dest: adding %s destination" (car @:destinations)))
+
+        (def@ @activity-note :send (fmt &rest args)
+              (if @:destinations
+                  (dolist (dest @:destinations)
+                    (if dest
+                        (@! dest :receive fmt args)
+                      (message "dest is nil, not sending msg."))
+                    (message "dest %s: received msg: %s"
+                             (if dest (@ dest :name))
+                             (apply #'format fmt args)))
+                (error "No @:destinations present.")))
+
+        (def@ @activity-note :init (dests)
+              (let (msg-dest)
+                (setf msg-dest
+                      (@extend @note-destination
+                               :name "message note destination"))
+                (push msg-dest
+                      @:destinations)))
         (setf @:note note)))
 
 
@@ -61,29 +84,7 @@
   (@extend :name "activity note"
            :destinations nil))
 
-(def@ @activity-note :add-dest (dest)
-      (message "add-dest: before adding %d" (length @:destinations))
-      (push dest @:destinations)
-      (message "add-dest: adding %s destination" (car @:destinations)))
 
-(def@ @activity-note :send (fmt &rest args)
-      (if @:destinations
-          (dolist (dest @:destinations)
-            (if dest
-                (@! dest :receive fmt args)
-              (message "dest is nil, not sending msg."))
-            (message "dest %s: received msg: %s"
-                     (if dest (@ dest :name))
-                     (apply #'format fmt args)))
-        (error "No @:destinations present.")))
-
-(def@ @activity-note :init (dests)
-      (let (msg-dest)
-        (setf msg-dest
-              (@extend @note-destination
-                       :name "message note destination"))
-        (push msg-dest
-              @:destinations)))
 
 
 ;; message destionations
