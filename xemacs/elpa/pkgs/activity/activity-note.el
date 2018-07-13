@@ -183,7 +183,7 @@
       (@extend @test :name "node"
                :slot 'a))
 
-(def@ @test :def (method params &rest body)
+(def@ object :def (method params &rest body)
       (progn
         (setf (@ @@ ,method)
               (function* (lambda ,(cons '@@ params)
@@ -192,6 +192,8 @@
                   (with-@@ @@
                       ,@(if (stringp (car body)) (cdr body) body))))))
         ,method))
+
+
 
 (@ (@! @test :node) :slot)
 
