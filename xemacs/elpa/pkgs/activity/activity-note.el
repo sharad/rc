@@ -73,7 +73,7 @@
                 (push msg-dest
                       @:destinations)))
 
-        (setf @:note note)))
+        (setf @:_note note)))
 
 (def@ @activity :init-destination ()
       (let ((destionation
