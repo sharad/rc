@@ -39,6 +39,7 @@
 
 (require '@)
 
+(require 'activity-base)
 (require 'activity-note)
 
 (provide 'activity)
