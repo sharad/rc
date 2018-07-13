@@ -130,5 +130,6 @@
 ;; and it will be handled by corresponding handler ?
 
 ;; * Do not forget about pragmatism
+;; ** First complete working model
 
 ;;; activity-base.el ends here
