@@ -47,6 +47,7 @@
       (let ((note
              (@extend :name "activity note"
                       :destinations nil)))
+
         (def@ @activity-note :add-dest (dest)
               (message "add-dest: before adding %d" (length @:destinations))
               (push dest @:destinations)
@@ -70,6 +71,7 @@
                                :name "message note destination"))
                 (push msg-dest
                       @:destinations)))
+
         (setf @:note note)))
 
 
