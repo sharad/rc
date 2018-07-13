@@ -86,78 +86,78 @@
 
 
         (def@ @activity-note :make-msg-note-dest ()
-      (let  ((msg-note-dest
-              (@extend @note-destination
-                       :name "message note destination")))
-        (def@ msg-note-dest :receive (fmt &rest args)
-              (apply #'message fmt args))
-        msg-note-dest))
+              (let  ((msg-note-dest
+                      (@extend @note-destination
+                               :name "message note destination")))
+                (def@ msg-note-dest :receive (fmt &rest args)
+                      (apply #'message fmt args))
+                msg-note-dest))
 
-(def@ @activity-note :make-debug-note-dest ()
-      (let ((debug-note-dest
-             (@extend @note-destination
-                      :name "message note destination")))
-        (def@ debug-note-dest :receive (fmt &rest args)
-              (lwarn 'activity 'debug fmt args))
-        debug-note-dest))
+        (def@ @activity-note :make-debug-note-dest ()
+              (let ((debug-note-dest
+                     (@extend @note-destination
+                              :name "message note destination")))
+                (def@ debug-note-dest :receive (fmt &rest args)
+                      (lwarn 'activity 'debug fmt args))
+                debug-note-dest))
 
-(def@ @activity-note :make-warning-note-dest ()
-      (let ((warning-note-dest
-             (@extend @note-destination
-                      :name "message note destination")))
-        (def@ warning-note-dest :receive (fmt &rest args)
-              (lwarn 'activity 'warning fmt args))
-        warning-note-dest))
-
-
-(def@ @activity-note :make-error-note-dest ()
-      (let ((error-note-dest
-             (@extend @note-destination
-                      :name "message note destination")))
-        (def@ error-note-dest :receive (fmt &rest args)
-              (lwarn 'activity 'error fmt args))
-        error-note-dest))
-
-
-;; org heading destinations
-(def@ @activity-note :make-org-heading-note-dest ()
-      (let ((org-heading-note-dest
-             (@extend @note-destination
-                      :name "message note destination")))
-
-        ;; TODO
-        (def@ org-heading-note-dest :init (marker &optional ignore-error)
-              (setf
-               @:marker       marker
-               @:ignore-error ignore-error))
-
-        (def@ org-heading-note-dest :receive (fmt &rest args)
-              ;; (org-insert-log-note
-              ;;  @:marker
-              ;;  txt &optional purpose effective-time state previous-state)
-              (let ((marker
-                     (cond
-                       ((markerp @:marker) @:marker)
-                       ((symbolp @:marker) (symbol-value @:marker))
-                       (t (error "unknown value of @:marker %s" @:marker)))))
-                (if (markerp @:marker)
-                    (org-insert-log-note
-                     (if @:marker)
-                     (format fmt args)
-                     'note)
-                  (unless @:ignore-error
-                    (error "unknown value of @:marker %s" @:marker)))))
-        org-heading-note-dest))
+        (def@ @activity-note :make-warning-note-dest ()
+              (let ((warning-note-dest
+                     (@extend @note-destination
+                              :name "message note destination")))
+                (def@ warning-note-dest :receive (fmt &rest args)
+                      (lwarn 'activity 'warning fmt args))
+                warning-note-dest))
 
 
-;; fixed destinations
-(defvar @org-sink-note-destination nil "Org sink heading")
+        (def@ @activity-note :make-error-note-dest ()
+              (let ((error-note-dest
+                     (@extend @note-destination
+                              :name "message note destination")))
+                (def@ error-note-dest :receive (fmt &rest args)
+                      (lwarn 'activity 'error fmt args))
+                error-note-dest))
 
-(defun @set-org-sink-note-destination (marker)
- (setf @org-sink-note-destination
-       (@! @org-heading-note-destination :new marker)))
+        
+        ;; org heading destinations
+        (def@ @activity-note :make-org-heading-note-dest ()
+              (let ((org-heading-note-dest
+                     (@extend @note-destination
+                              :name "message note destination")))
 
-(defvar @org-clock-note-destination nil "Org current clock heading")
+                ;; TODO
+                (def@ org-heading-note-dest :init (marker &optional ignore-error)
+                      (setf
+                       @:marker       marker
+                       @:ignore-error ignore-error))
+
+                (def@ org-heading-note-dest :receive (fmt &rest args)
+                      ;; (org-insert-log-note
+                      ;;  @:marker
+                      ;;  txt &optional purpose effective-time state previous-state)
+                      (let ((marker
+                             (cond
+                               ((markerp @:marker) @:marker)
+                               ((symbolp @:marker) (symbol-value @:marker))
+                               (t (error "unknown value of @:marker %s" @:marker)))))
+                        (if (markerp @:marker)
+                            (org-insert-log-note
+                             (if @:marker)
+                             (format fmt args)
+                             'note)
+                          (unless @:ignore-error
+                            (error "unknown value of @:marker %s" @:marker)))))
+                org-heading-note-dest))
+
+
+        ;; fixed destinations
+        (defvar @org-sink-note-destination nil "Org sink heading")
+
+        (defun @set-org-sink-note-destination (marker)
+          (setf @org-sink-note-destination
+                (@! @org-heading-note-destination :new marker)))
+
+        (defvar @org-clock-note-destination nil "Org current clock heading")
 
         (setf @:destionation destionation)))
 
