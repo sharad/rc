@@ -79,6 +79,8 @@
              (@extend :name "activity note destionation"
                       :destinations nil)))
 
+        (def@ @note-destination :receive (msg)
+              (error "implement receive method"))
 
 
         (setf @:destionation destionation)))
@@ -87,8 +89,7 @@
 (defvar @note-destination
   (@extend :name "note destination"))
 
-(def@ @note-destination :receive (msg)
-      (error "implement receive method"))
+
 
 
 (defvar @activity-note
