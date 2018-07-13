@@ -187,7 +187,7 @@
 (def@ @test :def (method fn)
       (setf (@ @@ method) fn))
 
-(@! @test :def :init-x (lambda (@@) (message "test") ))
+(@! @test :def :init-x (lambda (obj) (message "test") ))
 
 (@! @test :init-x)
 
