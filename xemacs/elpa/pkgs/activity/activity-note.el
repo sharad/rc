@@ -85,16 +85,7 @@
               (error "implement receive method"))
 
 
-        (setf @:destionation destionation)))
-
-
-
-
-
-
-
-;; message destionations
-(def@ @activity-note :make-msg-note-dest ()
+        (def@ @activity-note :make-msg-note-dest ()
       (let  ((msg-note-dest
               (@extend @note-destination
                        :name "message note destination")))
@@ -167,6 +158,17 @@
        (@! @org-heading-note-destination :new marker)))
 
 (defvar @org-clock-note-destination nil "Org current clock heading")
+
+        (setf @:destionation destionation)))
+
+
+
+
+
+
+
+;; message destionations
+
 
 (defun set-org-clock-note-destination ()
   (setf @org-clock-note-destination
