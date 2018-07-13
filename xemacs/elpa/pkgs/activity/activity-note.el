@@ -184,7 +184,7 @@
                :slot 'a))
 
 (def@ @test :def (fn args)
-      @:_node)
+      ())
 
 (@ (@! @test :node) :slot)
 
