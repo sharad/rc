@@ -167,6 +167,11 @@
 
         (setf @:destination destination)))
 
+(def@ (@! @activity :note) :destination ()
+      (if (boundp '@:_destination)
+          @:_destination
+        (@:init-destination)))
+
 (when nil
   (@! (@! @activity :note) :destination)
   )
