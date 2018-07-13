@@ -173,8 +173,8 @@
         (@:init-destination)))
 
 (when nil
-  (let (((@! @activity :note)))
-   (@!  :destination))
+  (let ((note (@! @activity :note)))
+    (@! note :destination))
   )
 
 
