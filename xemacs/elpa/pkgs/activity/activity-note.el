@@ -46,7 +46,8 @@
 (def@ @activity :init-note ()
       (let ((note
              (@extend :name "activity note"
-                      :destinations nil)))))
+                      :destinations nil)))
+        ()))
 
 
 (defvar @note-destination
