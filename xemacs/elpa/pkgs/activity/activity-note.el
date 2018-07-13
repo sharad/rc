@@ -174,7 +174,7 @@
         (@:init-destionation)))
 
 (when nil
-  (@! @activity :init-note)
+  (@! @activity :note)
   (@ @activity :note)
   )
 
