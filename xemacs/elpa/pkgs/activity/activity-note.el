@@ -71,6 +71,10 @@
                                :name "message note destination"))
                 (push msg-dest
                       @:destinations)))
+        (def@ note :destination ()
+              (if (boundp '@:_destination)
+                  @:_destination
+                (@:init-destination)))
 
         (setf @:_note note)))
 
@@ -174,11 +178,11 @@
 
 (when nil
   (let ((note (@! @activity :note)))
-    (def@ note :destination ()
-          (if (boundp '@:_destination)
-              @:_destination
-            (@:init-destination)))
-    (@! note :destination))
+    ;; (def@ note :destination ()
+    ;;       (if (boundp '@:_destination)
+    ;;           @:_destination
+    ;;         (@:init-destination)))
+    note)
   )
 
 
