@@ -81,15 +81,15 @@
         (@:init-note)))
 
 (def@ @activity :init-destination ()
-      (let ((destionation
+      (let ((destination
              (@extend @@
-              :name "activity note destionation"
+              :name "activity note destination"
               :destinations nil)))
 
         (def@ destination :receive (msg)
               (error "implement receive method"))
 
-        (def@ destionation :make-msg-note-dest ()
+        (def@ destination :make-msg-note-dest ()
               (let  ((msg-note-dest
                       (@extend @@
                                :name "message note destination")))
@@ -97,7 +97,7 @@
                       (apply #'message fmt args))
                 msg-note-dest))
 
-        (def@ destionation :make-debug-note-dest ()
+        (def@ destination :make-debug-note-dest ()
               (let ((debug-note-dest
                      (@extend @@
                               :name "message note destination")))
@@ -105,7 +105,7 @@
                       (lwarn 'activity 'debug fmt args))
                 debug-note-dest))
 
-        (def@ destionation :make-warning-note-dest ()
+        (def@ destination :make-warning-note-dest ()
               (let ((warning-note-dest
                      (@extend @@
                               :name "message note destination")))
@@ -114,7 +114,7 @@
                 warning-note-dest))
 
 
-        (def@ destionation :make-error-note-dest ()
+        (def@ destination :make-error-note-dest ()
               (let ((error-note-dest
                      (@extend @@
                               :name "message note destination")))
@@ -123,7 +123,7 @@
                 error-note-dest))
 
         ;; org heading destinations
-        (def@ destionation :make-org-heading-note-dest ()
+        (def@ destination :make-org-heading-note-dest ()
               (let ((org-heading-note-dest
                      (@extend @@
                               :name "message note destination")))
@@ -166,16 +166,16 @@
           (setf @org-clock-note-destination
                 (@! @org-heading-note-destination :new 'org-clock-hd-marker t)))
 
-        (setf @:destionation destionation)))
+        (setf @:destination destination)))
 
 (def@ @activity :destination ()
-      (if (boundp '@:_destionation)
-          @:_destionation
+      (if (boundp '@:_destination)
+          @:_destination
         (@:init-destination)))
 
 (when nil
   (@! @activity :note)
-  (@! @activity :destionation)
+  (@! @activity :destination)
   )
 
 
@@ -186,7 +186,7 @@
 
 
 
-;; message destionations
+;; message destinations
 
 
 
