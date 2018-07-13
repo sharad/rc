@@ -44,6 +44,8 @@
 
 (provide 'activity)
 
+
+
 (setf @buffer-transition-singleton
       (@extend @transition-singleton
                @dispatchable-immediate))
