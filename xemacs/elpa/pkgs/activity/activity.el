@@ -44,91 +44,6 @@
 
 (provide 'activity)
 
-(defgroup activity nil
-  "Customizations for Activity"
-  :group 'convenience
-  :prefix "activity-")
-
-
-(defvar @methods-enforce
-  (@extend :name "methods enforce"
-           :occuredon (current-time)))
-
-(def@ @methods-enforce :init ()
-      (@^:init)
-      (setf @:occuredon (current-time)))
-
-(def@ @methods-enforce :enforce (object name)
-      `(progn
-         (def@ ,object ,name
-           (error "define method %s for object %s"
-                  ,name ,object))))
-
-(def@ @methods-enforce :un-enforce (object name)
-      `(progn
-         ))
-
-
-(defvar @activity
-  (@extend @methods-enforce
-           :name "Class Activity"
-           :occuredon (current-time)))
-
-(def@ @activity :init ()
-      (@^:init)
-      (setf @:occuredon (current-time)))
-
-(def@ @activity :log ()
-      (message "Time %s" (@:occuredon)))
-
-(def@ @activity :message ()
-      (error "No :message function found."))
-
-(def@ @activity :object-sexp ()
-      (error "No :object-sexp function found."))
-
-(def@ @activity :occuredon ()
-      (format-time-string "%Y-%m-%d" @:occuredon))
-
-;; (describe-@ @activity :name)
-(defvar @event
-  (@extend @activity :name "Event"))
-
-(defvar @transition
-  (@extend @activity :name "Class Transition"))
-
-(setf (@ @transition :old) nil)
-
-(def@ @transition :init (new)
-      (@^:init)
-      (setf @:new new))
-
-
-(defvar @transition-singleton
-  (@extend @transition :name "Class Transition"))
-
-(def@ @transition-singleton :init (new)
-      (@^:init)
-      (setf @:new new))
-
-
-;; based on note type correct destination should be chosen.
-;; objects
-;; 1. activity
-;;   event
-;;     mail send
-;;     mail read
-;;   transition
-;;     buffer transition
-;;     clock transition
-;; note
-;; note-destination
-;;
-
-;; just write prototype code
-;; like sending function and their parameters etc
-;; later it could be found to manage it to implement.
-
 (setf @buffer-transition-singleton
       (@extend @transition-singleton
                @dispatchable-immediate))
