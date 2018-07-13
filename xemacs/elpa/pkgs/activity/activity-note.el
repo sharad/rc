@@ -43,6 +43,7 @@
 (provide 'activity-note)
 
 
+(def@ )
 
 
 (defvar @note-destination
