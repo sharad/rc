@@ -76,8 +76,9 @@
 
 (def@ @activity :init-destination ()
       (let ((destionation
-             (@extend :name "activity note destionation"
-                      :destinations nil)))
+             (@extend @@
+              :name "activity note destionation"
+              :destinations nil)))
 
         (def@ @note-destination :receive (msg)
               (error "implement receive method"))
