@@ -169,10 +169,10 @@
         (setf @:_destination destination)
         @:_destination))
 
-(def@ (@! @activity :note) :destination ()
+((def@ (@! @activity :note) :destination ()
       (if (boundp '@:_destination)
           @:_destination
-        (@:init-destination)))
+        (@:init-destination))))
 
 
 (setf @test
@@ -188,6 +188,8 @@
 (@ (@! @test :node) :slot)
 
 (setf (@! (@! @activity :note) :destination) 'a)
+
+(@! (@! @activity :note) :keys)
 
 (when nil
   (@! (@! @activity :note) :destination)
