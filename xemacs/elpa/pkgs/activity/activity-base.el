@@ -130,6 +130,8 @@
 ;; and it will be handled by corresponding handler ?
 
 ;; * Do not forget about pragmatism
-;; ** First complete working model
+;; ** First complete working model, somehow
+;; ** Things should be definable outsile of this library based on framework provided here.
+
 
 ;;; activity-base.el ends here
