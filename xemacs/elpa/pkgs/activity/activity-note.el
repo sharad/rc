@@ -81,6 +81,7 @@
 (def@ @activity :init-destination ()
       (if @:destionation
           @:destionation
+
         (let ((destionation
                (@extend @@
                 :name "activity note destionation"
