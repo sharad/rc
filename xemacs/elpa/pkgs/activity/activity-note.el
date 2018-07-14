@@ -171,9 +171,8 @@
 
 
 (def@ @test :add-def (method params &rest body)
-      (eval
        (setf (@ @@ ,method)
-              (progn
+             (progn
                 (@! @@ :add-def
                     ,method
                     (function* (lambda ,(cons '@@ params)
