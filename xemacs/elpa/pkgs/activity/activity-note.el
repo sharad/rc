@@ -189,7 +189,7 @@
 ;;      (@! ,object :add-def ,method ,params ,@body)))
 
 (@! @test :add-def :init-z ()
-    )
+    9)
 
 
 (defun@ (@ @test :_node) :init-z ()
