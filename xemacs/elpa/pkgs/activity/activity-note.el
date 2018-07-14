@@ -194,7 +194,7 @@
         (message "test %s" @:slot))
 
 (defun@ (@! @test :node) :init-alpha ()
-        )
+        (message "test %s" @:slot))
 
 
 (let ((note (@! @activity :note)))
