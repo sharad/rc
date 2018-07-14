@@ -171,7 +171,7 @@
 
 
 (def@ @test :add-def (method params &rest body)
-      (setf (@ @@ ,method)
+      (setf (@ @@ method)
             (progn
               (@! @@ :add-def
                      ,method
