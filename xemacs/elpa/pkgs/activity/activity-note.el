@@ -169,6 +169,34 @@
         (setf @:_destination destination)
         @:_destination))
 
+
+(def@ @test :add-def (method params &rest body)
+      (eval
+       `(setf (@ @@ ,method)
+              (progn
+                (@! @@ :add-def
+                    ,method
+                    (function* (lambda ,(cons '@@ params)
+                      ,@(if (stringp (car body)) (list (car body)) ())
+                      (let ((@@@ @@))
+                        (with-@@ @@
+                            ,@(if (stringp (car body)) (cdr body) body))))))
+                ,method))))
+
+(defmacro defun@ (object method params &rest body)
+  "Define METHOD body on OBJECT."
+  (declare (indent defun))
+  `(progn
+     (@! ,object :add-def ,method ,params (with-@@ ,object ,@body))))
+
+
+(defun@ (@ @test :_node) :init-z ()
+        (message "test %s" @:slot))
+
+(defun@ (@! @test :node) :init-alpha ()
+        (message "test %s" @:slot))
+
+
 (let ((note (@! @activity :note)))
  (def@ note :destination ()
       (if (boundp '@:_destination)
@@ -183,19 +211,54 @@
       (@extend @test :name "node"
                :slot 'a))
 
+(def@ @test :node ()
+      @:_node)
+
 
 (def@ @test :def (method fn)
       (setf (@ @@ method) fn))
 
-(@! @test :def :init-x (lambda (obj) (message "test") ))
+(@! (@ @test :_node) :def :init-x
+    (lambda (@@) (message "test %s" (@ @@ :slot))))
 
-(@! @test :init-x)
+(@! (@ @test :_node) :init-x)
 
-(@ (@! @test :node) :slot)
+(@ (@ @test :_node) :slot)
+
+(@! (@ @test :_node) :keys)
+
+
+(def@ (@ @test :_node) :init-y ()
+      (message  "test %s" @:slot))
+
+
+(@! (@ @test :_node) :init-y)
+
+(@ (@ @test :_node) :init-y)
+
+
+(@! @test :keys)
 
 (setf (@! (@! @activity :note) :destination) 'a)
 
 (@! (@! @activity :note) :keys)
+
+
+
+(defun@ (@ @test :_node) :init-z ()
+        (message "test %s" @:slot))
+
+(defun@ (@! @test :node) :init-alpha ()
+        (message "test %s" @:slot))
+
+(@! (@ @test :_node) :init-z)
+
+(@ (@ @test :_node) :init-z)
+
+(@! (@ @test :_node) :init-alpha)
+
+(@ (@ @test :_node) :init-alpha)
+
 
 (when nil
   (@! (@! @activity :note) :destination)
