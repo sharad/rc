@@ -180,7 +180,7 @@
                        (let ((@@@ @@))
                          (with-@@ @@
                              ,@(if (stringp (car body)) (cdr body) body))))))
-              ,method)))
+              method)))
 
 ;; (defmacro defun@ (object method params &rest body)
 ;;   "Define METHOD body on OBJECT."
