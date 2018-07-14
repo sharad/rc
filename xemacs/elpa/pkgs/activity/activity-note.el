@@ -183,11 +183,11 @@
                             ,@(if (stringp (car body)) (cdr body) body))))))
                 ,method))))
 
-(defmacro defun@ (object method params &rest body)
-  "Define METHOD body on OBJECT."
-  (declare (indent defun))
-  `(progn
-     (@! ,object :add-def ,method ,params ,@body)))
+;; (defmacro defun@ (object method params &rest body)
+;;   "Define METHOD body on OBJECT."
+;;   (declare (indent defun))
+;;   `(progn
+;;      (@! ,object :add-def ,method ,params ,@body)))
 
 
 (defun@ (@ @test :_node) :init-z ()
