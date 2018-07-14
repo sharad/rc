@@ -187,7 +187,7 @@
 (@! @test :add-def :init-z ()
     9)
 
-(@! (@ @test :_node) :init-z)
+(@! @test :init-z)
 
 (defun@ (@ @test :_node) :init-z ()
         (message "test %s" @:slot))
