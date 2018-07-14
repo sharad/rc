@@ -188,6 +188,9 @@
 ;;   `(progn
 ;;      (@! ,object :add-def ,method ,params ,@body)))
 
+(@! @test :add-def :init-z ()
+    )
+
 
 (defun@ (@ @test :_node) :init-z ()
         (message "test %s" @:slot))
