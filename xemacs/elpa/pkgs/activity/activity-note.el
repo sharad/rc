@@ -174,7 +174,7 @@
       (setf (@ @@ method)
             (progn
               (@! @@ :add-def
-                     ,method
+                     method
                      (function* (lambda ,(cons '@@ params)
                        ,@(if (stringp (car body)) (list (car body)) ())
                        (let ((@@@ @@))
