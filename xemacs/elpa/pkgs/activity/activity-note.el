@@ -172,15 +172,11 @@
 
 (def@ @test :add-def (method params &rest body)
       (setf (@ @@ method)
-            (progn
-              (@! @@ :add-def
-                     method
-                     (function* (lambda ,(cons '@@ params)
-                       (if (stringp (car body)) (list (car body)) ())
-                       (let ((@@@ @@))
-                         (with-@@ @@
-                             (if (stringp (car body)) (cdr body) body))))))
-              method)))
+            (function* (lambda ,(cons '@@ params)
+              (if (stringp (car body)) (list (car body)) ())
+              (let ((@@@ @@))
+                (with-@@ @@
+                    (if (stringp (car body)) (cdr body) body)))))))
 
 ;; (defmacro defun@ (object method params &rest body)
 ;;   "Define METHOD body on OBJECT."
@@ -191,6 +187,7 @@
 (@! @test :add-def :init-z ()
     9)
 
+(@! (@ @test :_node) :init-z)
 
 (defun@ (@ @test :_node) :init-z ()
         (message "test %s" @:slot))
