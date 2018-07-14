@@ -172,7 +172,7 @@
 
 (def@ @test :add-def (method params &rest body)
       (setf (@ @@ method)
-            (function* (lambda ,(cons '@@ params)
+            (function* (lambda (cons '@@ params)
               (if (stringp (car body)) (list (car body)) ())
               (let ((@@@ @@))
                 (with-@@ @@
@@ -187,7 +187,7 @@
 (@! @test :add-def :init-z ()
     9)
 
-(@! @test :init-z)
+(@! @test :init-z )
 
 (defun@ (@ @test :_node) :init-z ()
         (message "test %s" @:slot))
