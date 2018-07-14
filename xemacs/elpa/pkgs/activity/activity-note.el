@@ -176,10 +176,10 @@
               (@! @@ :add-def
                      method
                      (function* (lambda ,(cons '@@ params)
-                       ,@(if (stringp (car body)) (list (car body)) ())
+                       (if (stringp (car body)) (list (car body)) ())
                        (let ((@@@ @@))
                          (with-@@ @@
-                             ,@(if (stringp (car body)) (cdr body) body))))))
+                             (if (stringp (car body)) (cdr body) body))))))
               method)))
 
 ;; (defmacro defun@ (object method params &rest body)
