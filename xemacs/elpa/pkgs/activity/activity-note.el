@@ -187,14 +187,14 @@
   "Define METHOD body on OBJECT."
   (declare (indent defun))
   `(progn
-     (@! ,object :add-def ,method ,params (with-@@ ,object ,@body))))
+     (@! ,object :add-def ,method ,params ,@body)))
 
 
 (defun@ (@ @test :_node) :init-z ()
         (message "test %s" @:slot))
 
 (defun@ (@! @test :node) :init-alpha ()
-        (message "test %s" @:slot))
+        )
 
 
 (let ((note (@! @activity :note)))
