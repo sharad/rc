@@ -75,189 +75,104 @@
         (setf @:_note note)
         @:_note))
 
-(def@ @activity :note ()
-      (if (boundp '@:_note)
-          @:_note
-        (@:init-note)))
+(defun@ @activity :note ()
+      (unless (boundp '@:_note)
+        (@:init-note))
+      @:_note)
 
-(def@ (@! @activity :note) :init-destination ()
-      (let ((destination
-             (@extend @@
-              :name "activity note destination"
-              :destinations nil)))
+(defun@ (@! @activity :note) :init-destination ()
+        (let ((destination
+               (@extend @@
+                :name "activity note destination"
+                :destinations nil)))
 
-        (def@ destination :receive (msg)
-              (error "implement receive method"))
+          (def@ destination :receive (msg)
+                (error "implement receive method"))
 
-        (def@ destination :make-msg-note-dest ()
-              (let  ((msg-note-dest
-                      (@extend @@
-                               :name "message note destination")))
-                (def@ msg-note-dest :receive (fmt &rest args)
-                      (apply #'message fmt args))
-                msg-note-dest))
+          (def@ destination :make-msg-note-dest ()
+                (let ((msg-note-dest
+                       (@extend @@
+                        :name "message note destination")))
+                  (def@ msg-note-dest :receive (fmt &rest args)
+                        (apply #'message fmt args))
+                  msg-note-dest))
 
-        (def@ destination :make-debug-note-dest ()
-              (let ((debug-note-dest
-                     (@extend @@
-                              :name "message note destination")))
-                (def@ debug-note-dest :receive (fmt &rest args)
-                      (lwarn 'activity 'debug fmt args))
-                debug-note-dest))
+          (def@ destination :make-debug-note-dest ()
+                (let ((debug-note-dest
+                       (@extend @@
+                        :name "message note destination")))
+                  (def@ debug-note-dest :receive (fmt &rest args)
+                        (lwarn 'activity 'debug fmt args))
+                  debug-note-dest))
 
-        (def@ destination :make-warning-note-dest ()
-              (let ((warning-note-dest
-                     (@extend @@
-                              :name "message note destination")))
-                (def@ warning-note-dest :receive (fmt &rest args)
-                      (lwarn 'activity 'warning fmt args))
-                warning-note-dest))
+          (def@ destination :make-warning-note-dest ()
+                (let ((warning-note-dest
+                       (@extend @@
+                        :name "message note destination")))
+                  (def@ warning-note-dest :receive (fmt &rest args)
+                        (lwarn 'activity 'warning fmt args))
+                  warning-note-dest))
 
+          (def@ destination :make-error-note-dest ()
+                (let ((error-note-dest
+                       (@extend @@
+                        :name "message note destination")))
+                  (def@ error-note-dest :receive (fmt &rest args)
+                        (lwarn 'activity 'error fmt args))
+                  error-note-dest))
 
-        (def@ destination :make-error-note-dest ()
-              (let ((error-note-dest
-                     (@extend @@
-                              :name "message note destination")))
-                (def@ error-note-dest :receive (fmt &rest args)
-                      (lwarn 'activity 'error fmt args))
-                error-note-dest))
+          ;; org heading destinations
+          (def@ destination :make-org-heading-note-dest ()
+                (let ((org-heading-note-dest
+                       (@extend @@
+                        :name "message note destination")))
 
-        ;; org heading destinations
-        (def@ destination :make-org-heading-note-dest ()
-              (let ((org-heading-note-dest
-                     (@extend @@
-                              :name "message note destination")))
+                  ;; TODO
+                  (def@ org-heading-note-dest :init (marker &optional ignore-error)
+                        (setf
+                         @:marker       marker
+                         @:ignore-error ignore-error))
 
-                ;; TODO
-                (def@ org-heading-note-dest :init (marker &optional ignore-error)
-                      (setf
-                       @:marker       marker
-                       @:ignore-error ignore-error))
-
-                (def@ org-heading-note-dest :receive (fmt &rest args)
-                      ;; (org-insert-log-note
-                      ;;  @:marker
-                      ;;  txt &optional purpose effective-time state previous-state)
-                      (let ((marker
-                             (cond
-                               ((markerp @:marker) @:marker)
-                               ((symbolp @:marker) (symbol-value @:marker))
-                               (t (error "unknown value of @:marker %s" @:marker)))))
-                        (if (markerp @:marker)
-                            (org-insert-log-note
-                             (if @:marker)
-                             (format fmt args)
-                             'note)
-                          (unless @:ignore-error
-                            (error "unknown value of @:marker %s" @:marker)))))
-                org-heading-note-dest))
-
-
-        ;; ;; fixed destinations
-        ;; (defvar @org-sink-note-destination nil "Org sink heading")
-
-        ;; (defun @set-org-sink-note-destination (marker)
-        ;;   (setf @org-sink-note-destination
-        ;;         (@! @org-heading-note-destination :new marker)))
-
-        ;; (defvar @org-clock-note-destination nil "Org current clock heading")
-
-        ;; (defun set-org-clock-note-destination ()
-        ;;   (setf @org-clock-note-destination
-        ;;         (@! @org-heading-note-destination :new 'org-clock-hd-marker t)))
-
-        (setf @:_destination destination)
-        @:_destination))
+                  (def@ org-heading-note-dest :receive (fmt &rest args)
+                        ;; (org-insert-log-note
+                        ;;  @:marker
+                        ;;  txt &optional purpose effective-time state previous-state)
+                        (let ((marker
+                               (cond
+                                 ((markerp @:marker) @:marker)
+                                 ((symbolp @:marker) (symbol-value @:marker))
+                                 (t (error "unknown value of @:marker %s" @:marker)))))
+                          (if (markerp @:marker)
+                              (org-insert-log-note
+                               (if @:marker)
+                               (format fmt args)
+                               'note)
+                            (unless @:ignore-error
+                              (error "unknown value of @:marker %s" @:marker)))))
+                  org-heading-note-dest))
 
 
-(def@ @test :add-def (method params &rest body)
-      (setf (@ @@ method)
-            (function* (lambda (cons @@ params)
-              (if (stringp (car body)) (list (car body)) ())
-              (let ((@@@ @@))
-                (with-@@ @@
-                    (if (stringp (car body)) (cdr body) body)))))))
+          ;; ;; fixed destinations
+          ;; (defvar @org-sink-note-destination nil "Org sink heading")
 
-;; (defmacro defun@ (object method params &rest body)
-;;   "Define METHOD body on OBJECT."
-;;   (declare (indent defun))
-;;   `(progn
-;;      (@! ,object :add-def ,method ,params ,@body)))
+          ;; (defun @set-org-sink-note-destination (marker)
+          ;;   (setf @org-sink-note-destination
+          ;;         (@! @org-heading-note-destination :new marker)))
 
-(@! @test :add-def :init-z ()
-    9)
+          ;; (defvar @org-clock-note-destination nil "Org current clock heading")
 
-(@! @test :init-z)
+          ;; (defun set-org-clock-note-destination ()
+          ;;   (setf @org-clock-note-destination
+          ;;         (@! @org-heading-note-destination :new 'org-clock-hd-marker t)))
 
-(defun@ (@ @test :_node) :init-z ()
-        (message "test %s" @:slot))
-
-(defun@ (@! @test :node) :init-alpha ()
-        (message "test %s" @:slot))
+          (setf @:_destination destination)
+          @:_destination))
 
 
-(let ((note (@! @activity :note)))
- (def@ note :destination ()
-      (if (boundp '@:_destination)
-          @:_destination
-        (@:init-destination))))
-
-
-(setf @test
-      (@extend :name "test"))
-
-(setf (@ @test :_node)
-      (@extend @test :name "node"
-               :slot 'a))
-
-(def@ @test :node ()
-      @:_node)
-
-
-(def@ @test :def (method fn)
-      (setf (@ @@ method) fn))
-
-(@! (@ @test :_node) :def :init-x
-    (lambda (@@) (message "test %s" (@ @@ :slot))))
-
-(@! (@ @test :_node) :init-x)
-
-(@ (@ @test :_node) :slot)
-
-(@! (@ @test :_node) :keys)
-
-
-(def@ (@ @test :_node) :init-y ()
-      (message  "test %s" @:slot))
-
-
-(@! (@ @test :_node) :init-y)
-
-(@ (@ @test :_node) :init-y)
-
-
-(@! @test :keys)
-
-(setf (@! (@! @activity :note) :destination) 'a)
-
-(@! (@! @activity :note) :keys)
-
-
-
-(defun@ (@ @test :_node) :init-z ()
-        (message "test %s" @:slot))
-
-(defun@ (@! @test :node) :init-alpha ()
-        (message "test %s" @:slot))
-
-(@! (@ @test :_node) :init-z)
-
-(@ (@ @test :_node) :init-z)
-
-(@! (@ @test :_node) :init-alpha)
-
-(@ (@ @test :_node) :init-alpha)
-
+(defun@ (@! @activity :note) :destination ()
+        (unless (boundp '@:_destination)
+          (@:init-destination))
+            @:_destination)
 
 (when nil
   (@! (@! @activity :note) :destination)

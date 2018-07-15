@@ -71,6 +71,23 @@
            :name "Class Activity"
            :occuredon (current-time)))
 
+(def@ @activity :add-def (method fn-body)
+      (eval
+       `(progn
+          (setf (@ @@ ,method)
+                (function* ,fn-body)))))
+
+(defmacro defun@ (object method params &rest body)
+  "Define METHOD body on OBJECT."
+  (declare (indent defun))
+  `(progn
+     (@! ,object :add-def ',method
+         ',`(lambda ,(cons '@@ params)
+              ,@(if (stringp (car body)) (list (car body)) ())
+              (with-@@ @@
+                  ,@(if (stringp (car body)) (cdr body) body)
+                  )))))
+
 (def@ @activity :init ()
       (@^:init)
       (setf @:occuredon (current-time)))
