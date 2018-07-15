@@ -106,7 +106,10 @@
               (@:occuredon)))
 
 (def@ @send-mail-event :make-event ()
-      )
+      (@:notify))
+
+
+
 
 (defvar @read-mail-event
   (@extend @mail-event :name "read mail event"))

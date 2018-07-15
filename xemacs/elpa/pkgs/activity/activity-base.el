@@ -108,6 +108,11 @@
 (defvar @event
   (@extend @activity :name "Event"))
 
+(def@ @event :notify ()
+      (when (fboundp '@:message)
+        (@:send (@:message))
+        (@:log  (@:message))))
+
 (defvar @transition
   (@extend @activity :name "Class Transition"))
 
