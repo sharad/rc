@@ -75,13 +75,14 @@
         (setf @:_note note)
         @:_note))
 
-(defun@ @activity :note ()
+(def@ @activity :note ()
       (unless (boundp '@:_note)
         (@:init-note))
       @:_note)
 
-(defun@ (@! @activity :note) :init-destination ()
-        (let ((destination
+(def@ (@ @activity :_note) :init-destination ()
+
+      (let ((destination
                (@extend @@
                 :name "activity note destination"
                 :destinations nil)))
@@ -169,14 +170,26 @@
           @:_destination))
 
 
-(defun@ (@! @activity :note) :destination ()
-        (unless (boundp '@:_destination)
-          (@:init-destination))
-            @:_destination)
+(def@ (@ @activity :_note) :destination ()
+      (unless (boundp '@:_destination)
+        (@:init-destination))
+      @:_destination)
 
-(when nil
-  (@! (@! @activity :note) :destination)
-  )
+
+(def@ (@ @activity :_note) :set-destinations ( name &rest methods )
+      (let ((new-note (@extend (@ @activity :_note))))
+
+        (dolist (m methods)
+          (push
+           (@! (@ new-note :_destination) (intern (concat ":make-" (symbol-name m))))
+           @:destinations))
+
+        new-note))
+
+(setf @message-note-dest
+      (@! (@ @activity :_note) :set-destinations "message" 'msg-note-dest))
+
+
 
 
 ;; message destinations
@@ -185,7 +198,7 @@
 
 
 
-
+(when nil
 
 
 (setf @plain-note
@@ -203,5 +216,5 @@
 
   (@! @plain-note :send "Hello %s" "test")
   )
-
+)
 ;;; activity-note.el ends here
