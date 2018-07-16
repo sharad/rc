@@ -16,9 +16,7 @@
 
            (let ((drived-obj
                   (@extend ,object
-                           :name (concat
-                                  (@ ,object :name)
-                                  (symbol-name ,name)))))
+                           :name (concat (@ ,object :name) name))))
 
              (with-@@ drived-obj
                  ,@body)
