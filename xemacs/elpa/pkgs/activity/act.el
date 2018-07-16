@@ -76,6 +76,8 @@
   (@extend @act-base
            :name "note class"))
 
+@note-class
+
 (def@ @note-class :send (fmt args)
       (if (and (memq :dests (@:keys))
                (consp @:dests))
