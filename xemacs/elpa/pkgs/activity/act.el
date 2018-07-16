@@ -112,14 +112,7 @@
 (@ @note-class :gen-org-log-note)
 
 
-(lambda (@@ name)
-  (let ((@@@ @note-class))
-    (let ((@@ @@))
-      (let ((drived-obj (@extend @note-class :name (concat (@ @note-class :name) name))))
-        (let ((@@ drived-obj))
-          (let* ((v (@! @dest-class :gen-msg "msg")) (v @@))
-            (@--set v :dests (cons v (@ v :dests)))))
-        drived-obj))))
+
 
 ;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
 ;; (@! (@! @dest-class :gen-msg "msg") :receive "Hello")
