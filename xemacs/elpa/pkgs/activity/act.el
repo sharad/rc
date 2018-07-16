@@ -112,6 +112,13 @@
 (@ @note-class :gen-org-log-note)
 
 
+(macroexpand-1
+ (with-@@ @note-class
+    (push
+     (@! @dest-class :gen-msg "msg")
+     @:dests)))
+
+
 
 
 ;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
