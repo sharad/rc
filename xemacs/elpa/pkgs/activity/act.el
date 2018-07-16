@@ -74,6 +74,9 @@
            :name "note class"
            :dests '()))
 
+(@ @note-class :send)
+
+
 (def@ @note-class :send (fmt args)
       (if (and (memq :dests (@:keys))
                (consp @:dests))
