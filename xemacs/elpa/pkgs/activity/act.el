@@ -133,6 +133,9 @@
     (push
      (@! @dest-class :gen-msg "msg")
      @:dests)
+    (push
+     (@! @dest-class :gen-msg "msg")
+     @:dests)
     )
 
   ;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
