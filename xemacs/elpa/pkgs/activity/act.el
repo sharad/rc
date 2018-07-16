@@ -119,7 +119,7 @@
     @:dests)))
 
 
-
+(let ((@@ @note-class)) (let* ((v (@! @dest-class :gen-msg "msg")) (v @@)) (@--set v :dests (cons v (@ v :dests)))))
 
 
 (let ((@@ @note-class)) (let* ((v (@! @dest-class :gen-msg "msg")) (v @@)) (@--set v :dests (cons v (@ v :dests)))))
@@ -129,7 +129,7 @@
 (defun @--walk (sexp skip replace &optional head)
   "Replace all symbols by calling REPLACE on them."
   (macrolet ((wrap (exp)
-               (let ((xv (make-symbol "xv")))
+               (let ((xv (gensym)))
                  `(let ((,xv ,exp)) (if head (list ,xv) ,xv)))))
     (cond
       ((symbolp sexp) (funcall replace sexp head))
