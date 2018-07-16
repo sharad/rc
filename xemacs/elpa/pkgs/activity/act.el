@@ -140,7 +140,7 @@
 
   (@! (@! @note-class :gen-few-msg "message") :send "Test %d" 00)
 
-  (length (@ (@! @note-class :gen-few-msg "message") :dests))
+  (@! (car (@ (@! @note-class :gen-few-msg "message") :dests)) :receive "TEst")
 
   ;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
   ;; (@! (@! @dest-class :gen-msg "msg") :receive "Hello")
