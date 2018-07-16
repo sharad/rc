@@ -109,7 +109,9 @@
 
 (@! (@! @note-class :gen-format-msg "message") :send "Test %d" 00)
 
-(@ @note-class :gen-org-log-note)
+(@ @note-class :gen-format-msg)
+
+
 
 
 (macroexpand-all
