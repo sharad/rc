@@ -113,10 +113,11 @@
 
 
 (macroexpand-all
- '(with-@@ @note-class
+ '(defsubclass-gen@ @note-class :gen-format-msg ()
    (push
-    (@! @@ :gen-msg "msg")
-    @:dests)))
+    (@! @dest-class :gen-msg "msg")
+    @:dests)
+   ))
 
 
 
