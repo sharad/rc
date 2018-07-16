@@ -10,9 +10,9 @@
 (def@ @act-base :finalize ()
       ())
 
-(defmacro defsubclass-gen@ (object method params &rest body )
+(defmacro defsubclass-gen@ (object gen-method params &rest body )
   `(progn
-     (def@ ,object ,method (name ,@params)
+     (def@ ,object ,gen-method (name ,@params)
 
            (let ((drived-obj
                   (@extend ,object
@@ -109,4 +109,4 @@
   (def@ @@ :send (fmt &rest args)
     (apply '@:dest fmt args)))
 
-(@! @note-class :gen-format-msg)
+(@! @note-class :gen-format-msg "message")
