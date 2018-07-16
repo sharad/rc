@@ -130,9 +130,9 @@
                   (let ((@@ @@))
                     (let ((drived-obj (@extend @note-class :name (concat (@ @note-class :name) name))))
                       (let ((@@ drived-obj))
-                        (let* ((v (@! @dest-class :gen-msg "msg"))
+                        (let* ((v1 (@! @dest-class :gen-msg "msg"))
                                (v @@))
-                          (@--set v :dests (cons v (@ v :dests)))))
+                          (@--set v :dests (cons v1 (@ v :dests)))))
                       drived-obj)))))))
     :gen-format-msg))
 
