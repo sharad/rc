@@ -83,7 +83,7 @@
           (dolist (dest @:dests)
             (if dest
                 (if (@! dest :keyp :receive)
-                    )
+                    (@! dest :receive fmt args))
               (message "dest is nil"))
             (if (and
                  dest
