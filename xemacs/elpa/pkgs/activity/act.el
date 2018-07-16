@@ -134,7 +134,7 @@
      (@! @dest-class :gen-msg "msg")
      @:dests)
     (push
-     (@! @dest-class :gen-warning "warnning")
+     (@! @dest-class :gen-warning "warning")
      @:dests)
     )
 
