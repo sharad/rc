@@ -2,6 +2,8 @@
 
 (require '@)
 
+(provide 'act)
+
 (defvar @act-base
   (@extend
    :name "act base."
@@ -13,33 +15,28 @@
 (def@ @act-base :finalize ()
       ())
 
+(defmacro defsubobj@ (object name params &rest body)
+  `(let ((drived-obj
+          (@extend ,object
+                   :name (concat (@ ,object :name) " > " ,name))))
+     (with-@@ drived-obj
+         ,(if (stringp (car body))
+              `(setf @:doc ,(car body)))
+       ,@(if (stringp (car body)) (cdr body) body))
+
+     drived-obj))
+(put 'defsubobj@ 'lisp-indent-function 3)
+
 (defmacro defsubclass-gen@ (object gen-method params &rest body )
   `(progn
      (def@ ,object ,gen-method (name ,@params)
-
-           (let ((drived-obj
-                  (@extend ,object
-                           :name (concat (@ ,object :name) name))))
-
-             (with-@@ drived-obj
-                 ,@body)
-
-             drived-obj))))
+           ,@(if (stringp (car body)) (list (car body)) ())
+           (defsubobj@ ,object name params
+             ,@(if (stringp (car body)) (cdr body) body)))))
 (put 'defsubclass-gen@ 'lisp-indent-function 3)
 
-(setf @activity-class
-  (@extend @act-base
-           :name "activity class"))
-
-(setf @event-class
-  (@extend @act-base
-           :name "event class"))
-
-(setf @transition-class
-  (@extend @act-base
-           :name "transition class"))
-
 (progn
+  ;; destination
   (setf @dest-class
         (@extend @act-base
                  :name "dest class"))
@@ -68,53 +65,100 @@
              'error
              fmt args))))
 
+(progn
+  ;; note
+  (setf @note-class
+        (@extend @act-base
+                 :name "note class"))
+  (setf (@ @note-class :dests) '())
+
+  (def@ @note-class :send (fmt args)
+        (if (and (memq :dests (@:keys))
+                 (consp @:dests))
+            (dolist (dest @:dests)
+              (if dest
+                  (if (@! dest :keyp :receive)
+                      (@! dest :receive fmt args)
+                    (message
+                     "dest %s [%s] not has :receive method, not sending msg."
+                     (@ dest :name)
+                     (@! dest :keys)))
+                (message "dest is nil")))
+          (error "No @:dests %d boundp(%s) consp(%s) present."
+                 (length @:dests)
+                 (boundp '@:dests)
+                 (consp @:dests))))
+
+  (defsubclass-gen@ @note-class :gen-format-msg ()
+    "Generator for format message note"
+    (push
+     (@! @dest-class :gen-msg "msg")
+     @:dests)
+    )
+
+  (defsubclass-gen@ @note-class :gen-org-log-note ()
+    "Generator for org log note"
+    (push
+     (@! @dest-class :gen-msg "msg")
+     @:dests)
+    )
+
+  (defsubclass-gen@ @note-class :gen-org-dual-log-note ()
+    "Generator for dual org log note"
+    (push
+     (@! @dest-class :gen-msg "msg")
+     @:dests)
+    )
+
+  (defsubclass-gen@ @note-class :gen-org-intreactive-log-note ()
+    "Generator for Interactive org log note"
+    (push
+     (@! @dest-class :gen-msg "msg")
+     @:dests)
+    ))
 
 (progn
- (setf @note-class
-       (@extend @act-base
-                :name "note class"))
- (setf (@ @note-class :dests) '())
+  ;; activity
+  (setf @activity-class
+        "Activity class"
+        (defsubobj@ @act-base "activity class" ()
+          (def@ @@ :init ()
+            (@^:init)
+            (setf @:occuredon (current-time)))))
 
- (def@ @note-class :send (fmt args)
-       (if (and (memq :dests (@:keys))
-                (consp @:dests))
-           (dolist (dest @:dests)
-             (if dest
-                 (if (@! dest :keyp :receive)
-                     (@! dest :receive fmt args)
-                   (message
-                    "dest %s [%s] not has :receive method, not sending msg."
-                    (@ dest :name)
-                    (@! dest :keys)))
-               (message "dest is nil")))
-         (error "No @:dests %d boundp(%s) consp(%s) present."
-                (length @:dests)
-                (boundp '@:dests)
-                (consp @:dests))))
+  (setf @event-class
+        "Event class"
+        (defsubobj@ @activity-class "event class" ()
+          (def@ @@ :note ()
+            )))
 
- (defsubclass-gen@ @note-class :gen-format-msg ()
-   (push
-    (@! @dest-class :gen-msg "msg")
-    @:dests)
-   )
+  (setf @transition-class
+        (defsubobj@ @event-class "transition class" ()
+          "Transition class"
+          (def@ @@ :note ()
+            ))))
 
- (defsubclass-gen@ @note-class :gen-org-log-note ()
-   (push
-    (@! @dest-class :gen-msg "msg")
-    @:dests)
-   )
 
- (defsubclass-gen@ @note-class :gen-org-dual-log-note ()
-   (push
-    (@! @dest-class :gen-msg "msg")
-    @:dests)
-   )
 
- (defsubclass-gen@ @note-class :gen-org-intreactive-log-note ()
-   (push
-    (@! @dest-class :gen-msg "msg")
-    @:dests)
-   ))
+(progn
+  ;; detectors
+  (setf @activity-dectector-class
+        (defsubobj@ @act-base "activity detector class" ()
+          "Activity detector class"
+          (def@ @@ :note ()
+            )))
+
+  (setf @event-dectector-class
+        (defsubobj@ @activity-dectector-class "event detector class" ()
+          "Event detector class"
+          (def@ @@ :note ()
+            )))
+
+  (setf @transition-dectector-class
+        (defsubobj@ @event-dectector-class "transition detector class" ()
+          "Transition detector class"
+          (def@ @@ :note ()
+            ))))
 
 
 
@@ -123,6 +167,50 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(defsubclass-gen@ @transition-dectector-class :gen-buffer-trans ()
+  (setf @:prev-buffer (current-buffer))
+
+  (setf @:buff-trans
+        (defsubobj@ @transition-class "buffer transition" (prev next)
+          (setf @:note
+                (@! @note-class :gen-format-msg))
+          (def@ @@ :dispatch ()
+            (@:note :send "switched buffer %s to %s on %s"
+                    @:prev @:next @:occuredon))
+          ))
+
+  (def@ @@ :make-event ()
+    "Make buffer change event."
+    (let ((curr (current-buffer)))
+     (unless (eql
+              @:prev-buffer
+              curr)
+       (defsubobj@ @:buff-trans "buffer transition" (prev next)
+
+         (def@ @@ :dispatch (prev next)
+           )))))
+
+
+  (def@ @@ :dispatch ()
+    (@^:dispatch)
+    (@:make-event))
+
+  )
 
 
 
