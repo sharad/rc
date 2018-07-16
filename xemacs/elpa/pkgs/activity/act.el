@@ -112,11 +112,13 @@
 (@ @note-class :gen-org-log-note)
 
 
-(macroexpand-1
+(macroexpand-all
  '(with-@@ @note-class
-   (Test
+   (push
     (@! @dest-class :gen-msg "msg")
     @:dests)))
+
+
 
 (let ((@@ @note-class)) (Test (@! @dest-class :gen-msg "msg") (@ @@ :dests)))
 
