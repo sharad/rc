@@ -38,7 +38,7 @@
 (defvar @dest-class
   (@extend :name "dest class"))
 
-(defsubclass-gen@ @dest-class :gen-builder "builder" ()
+(defsubclass-gen@ @dest-class :gen-builder ()
   (def@ @@ :receive (fmt &rest args)
     (apply #'format
            fmt args)))
