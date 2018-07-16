@@ -25,13 +25,15 @@
 (put 'defsubclass-gen@ 'lisp-indent-function 3)
 
 (defvar @activity-class
-  (@extend :name "activity class"))
+  (@extend @act-base
+           :name "activity class"))
 
 (defvar @event-class
-  (@extend :name "event class"))
+  (@extend @act-base
+           :name "event class"))
 
 (defvar @transition-class
-  (@extend @activity
+  (@extend @act-base
            :name "transition class"))
 
 (defvar @dest-class
