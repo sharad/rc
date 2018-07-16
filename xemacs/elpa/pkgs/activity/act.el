@@ -124,7 +124,7 @@
 
   (@! (@! @note-class :gen-format-msg "message") :send "Test %d" 00)
 
-  (length (@ (@! @note-class :gen-format-msg "message") :dests))
+  (@ (car (@ (@! @note-class :gen-format-msg "message") :dests)) :name)
 
   (@ @note-class :gen-format-msg)
 
