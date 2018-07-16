@@ -7,6 +7,9 @@
    :name "act base."
    :finilize-args ()))
 
+(def@ keyp (key)
+  )
+
 (def@ @act-base :finalize ()
       ())
 
