@@ -129,6 +129,11 @@
   (@ @note-class :gen-format-msg)
 
 
+  (defsubclass-gen@ @note-class :gen-format-msg ()
+    (push
+     (@! @dest-class :gen-msg "msg")
+     @:dests)
+    )
 
   ;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
   ;; (@! (@! @dest-class :gen-msg "msg") :receive "Hello")
