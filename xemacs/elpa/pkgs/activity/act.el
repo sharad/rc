@@ -111,7 +111,7 @@
 
 (@ @note-class :gen-format-msg)
 
-(cadr (@ (@! @note-class :gen-format-msg "message") :dests))
+
 
 
 
