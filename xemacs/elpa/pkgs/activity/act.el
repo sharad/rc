@@ -42,7 +42,7 @@
 
 (defsubclass-gen@ @dest-class :gen-builder ()
                   (def@ @@ :receive (fmt &rest args)
-                    (apply #'message
+                    (apply #'format
                            fmt args)))
 
 (defsubclass-gen@ @dest-class :gen-msg ()
