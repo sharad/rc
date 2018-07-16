@@ -81,6 +81,10 @@
       (if (and (memq :dests (@:keys))
                (consp @:dests))
           (dolist (dest @:dests)
+            (if dest
+                (if (@! dest :keyp :receive)
+                    )
+              (message "dest is nil"))
             (if (and
                  dest
                  (@! dest :keyp :receive))
