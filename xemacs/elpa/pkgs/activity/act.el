@@ -8,7 +8,7 @@
    :finilize-args ()))
 
 (def@ @act-base :keyp (key)
-  )
+      (memq key (@:keys)))
 
 (def@ @act-base :finalize ()
       ())
