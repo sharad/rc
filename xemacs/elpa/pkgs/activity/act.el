@@ -112,4 +112,4 @@
 (@ @note-class :gen-format-msg)
 
 ;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
-;; (@! (@! @dest-class :gen-msg ) :receive "Hello")
+;; (@! (@! @dest-class :gen-msg "msg") :receive "Hello")
