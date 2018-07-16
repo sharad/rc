@@ -68,9 +68,6 @@
              'error
              fmt args))))
 
-;; (@! (@! @dest-class :gen-warning ) :receive "Hello")
-;; (@! (@! @dest-class :gen-msg ) :receive "Hello")
-
 
 (progn
  (setf @note-class
@@ -118,6 +115,31 @@
     (@! @dest-class :gen-msg "msg")
     @:dests)
    ))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 (when nil
