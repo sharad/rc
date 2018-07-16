@@ -85,7 +85,8 @@
                 (if (@! dest :keyp :receive)
                     (@! dest :receive fmt args)
                   (message
-                   "dest %s or not has :receive method, not sending msg."))
+                   "dest %s or not has :receive method, not sending msg."
+                   (@ dest :name)))
               (message "dest is nil"))
             (if (and
                  dest
