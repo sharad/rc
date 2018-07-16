@@ -71,7 +71,8 @@
 
 (setf @note-class
   (@extend @act-base
-           :name "note class"))
+           :name "note class"
+           :dests '()))
 
 (def@ @note-class :send (fmt args)
       (if (and (boundp '@:dests)
@@ -106,7 +107,7 @@
    @:dests)
   )
 
-(@! @note-class :gen-format-msg "message")
+(@! (@! @note-class :gen-format-msg "message") :send "Test %d" 00)
 
 (@ @note-class :gen-format-msg)
 
