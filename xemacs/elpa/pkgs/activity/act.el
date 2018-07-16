@@ -133,3 +133,11 @@
   ;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
   ;; (@! (@! @dest-class :gen-msg "msg") :receive "Hello")
   )
+
+
+(macroexpand-all
+ '(defsubclass-gen@ @note-class :gen-org-intreactive-log-note ()
+   (push
+    (@! @dest-class :gen-msg "msg")
+    @:dests)
+   ))
