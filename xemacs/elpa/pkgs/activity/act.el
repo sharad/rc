@@ -74,10 +74,6 @@
            :name "note class"
            :dests '()))
 
-
-
-
-
 (def@ @note-class :send (fmt args)
       (if (and (boundp '@:dests)
                (consp @:dests))
