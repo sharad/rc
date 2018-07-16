@@ -28,8 +28,7 @@
   (@extend :name "activity class"))
 
 (defvar @event-class
-  (@extend @activity
-           :name "event class"))
+  (@extend :name "event class"))
 
 (defvar @transition-class
   (@extend @activity
