@@ -41,9 +41,9 @@
   (@extend :name "dest class"))
 
 (defsubclass-gen@ @dest-class :gen-builder ()
-                  (def@ @@ :receive (fmt &rest args)
-                    (apply #'format
-                           fmt args)))
+  (def@ @@ :receive (fmt &rest args)
+    (apply #'format
+           fmt args)))
 
 (defsubclass-gen@ @dest-class :gen-msg ()
   (def@ @@ :receive (fmt &rest args)
