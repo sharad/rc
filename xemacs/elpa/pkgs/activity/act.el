@@ -87,7 +87,7 @@
                   (message
                    "dest %s [%s] not has :receive method, not sending msg."
                    (@ dest :name)
-                   (message "keys %s" (@! dest :keys))))
+                   (@! dest :keys)))
               (message "dest is nil"))
             (if (and
                  dest
