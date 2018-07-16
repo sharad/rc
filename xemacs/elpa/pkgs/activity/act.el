@@ -124,51 +124,5 @@
 
 
 
-
-
-(macroexpand-all
- '(defsubclass-gen@ @note-class :gen-format-msg ()
-   (push
-    (@! @dest-class :gen-msg "msg")
-    @:dests)
-   ))
-
-
-
-(progn
-  (progn
-    (let* ((v @note-class))
-      (@--set v :gen-format-msg
-              (function
-               (lambda (@@ name)
-                (let ((@@@ @note-class))
-                  (let ((@@ @@))
-                    (let ((drived-obj (@extend @note-class :name (concat (@ @note-class :name) name))))
-                      (let ((@@ drived-obj))
-                        (let* ((v1 (@! @dest-class :gen-msg "msg"))
-                               (v @@))
-                          (@--set v :dests (cons v1 (@ v :dests)))))
-                      drived-obj)))))))
-    :gen-format-msg))
-
-
-
-
-
-(defun @--walk (sexp skip replace &optional head)
-  "Replace all symbols by calling REPLACE on them."
-  (macrolet ((wrap (exp)
-               (let ((xv (gensym)))
-                 `(let ((,xv ,exp)) (if head (list ,xv) ,xv)))))
-    (cond
-      ((symbolp sexp) (funcall replace sexp head))
-      ((atom sexp) (wrap sexp))
-      ((member (first sexp) skip) (wrap sexp))
-      ((wrap
-        (append (@--walk (first sexp) skip replace t)
-                (loop for element in (cdr sexp)
-                   collect (@--walk element skip replace nil))))))))
-
-
 ;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
 ;; (@! (@! @dest-class :gen-msg "msg") :receive "Hello")
