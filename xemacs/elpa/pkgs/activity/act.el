@@ -129,7 +129,7 @@
   (@ @note-class :gen-format-msg)
 
 
-  (defsubclass-gen@ @note-class :gen-format-msg ()
+  (defsubclass-gen@ @note-class :gen-few-msg ()
     (push
      (@! @dest-class :gen-msg "msg")
      @:dests)
