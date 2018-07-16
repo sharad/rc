@@ -121,9 +121,6 @@
 
 
 
-(let ((@@ @note-class)) (Test (@! @dest-class :gen-msg "msg") (@ @@ :dests)))
-
-(let ((@@ @note-class)) (push (@! @dest-class :gen-msg "msg") (@ @@ :dests)))
 
 (let ((@@ @note-class)) (let* ((v (@! @dest-class :gen-msg "msg")) (v @@)) (@--set v :dests (cons v (@ v :dests)))))
 
