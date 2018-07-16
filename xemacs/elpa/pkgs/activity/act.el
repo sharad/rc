@@ -12,7 +12,7 @@
 
 (defmacro defsubclass-gen@ (object method name params &rest body )
   `(progn
-     (def@ ,object ,method ,params
+     (def@ ,object ,method ,@params
 
            (let ((drived-obj
                   (@extend ,object
