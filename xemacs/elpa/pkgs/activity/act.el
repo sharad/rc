@@ -107,7 +107,7 @@
    )
 
  (defsubclass-gen@ @note-class :gen-org-dual-log-note ()
-   (push*
+   (push
     (@! @dest-class :gen-msg "msg")
     @:dests)
    )
