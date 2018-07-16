@@ -81,7 +81,8 @@
             (if dest
                 (@! dest :receive fmt args)
               (message "dest is nil, not sending msg.")))
-        (error "No @:dests present .")))
+        (error "No @:dests %d present."
+               (length @:dests))))
 
 (defsubclass-gen@ @note-class :gen-format-msg ()
   (push
