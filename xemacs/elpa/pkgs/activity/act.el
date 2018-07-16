@@ -128,7 +128,8 @@
 
 (defun @--walk (sexp skip replace &optional head)
   "Replace all symbols by calling REPLACE on them."
-  (macrolet ((wrap (exp) `(let ((v ,exp)) (if head (list v) v))))
+  (macrolet ((wrap (exp)
+               `(let ((v ,exp)) (if head (list v) v))))
     (cond
       ((symbolp sexp) (funcall replace sexp head))
       ((atom sexp) (wrap sexp))
