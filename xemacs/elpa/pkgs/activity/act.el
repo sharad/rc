@@ -90,7 +90,7 @@
 
 (defsubclass-gen@ @note-class :gen-org-log-note ()
   (push
-   (@! @dest-class :gen-msg "msg")
+   (@! @@ :gen-msg "msg")
    @:dests)
   )
 
