@@ -83,7 +83,7 @@
 
 (defsubclass-gen@ @note-class :gen-format-msg ()
   (push
-   (@! @dest-class :gen-msg)
+   (@! @dest-class :gen-msg "msg")
    @:dests)
   (def@ @@ :send (fmt &rest args)
     (apply '@:dest fmt args)))
