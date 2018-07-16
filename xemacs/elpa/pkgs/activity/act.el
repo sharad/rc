@@ -69,8 +69,9 @@
 ;; (@! (@! @dest-class :gen-msg ) :receive "Hello")
 
 
-(defvar @note-class
-  (@extend :name "note class"))
+(setf @note-class
+  (@extend @act-base
+           :name "note class"))
 
 (def@ @note-class :send (fmt args)
       (if @:dests
