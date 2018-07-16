@@ -40,7 +40,7 @@
 (defvar @dest-class
   (@extend :name "dest class"))
 
-(defsubclass-gen@ @dest-class :gen-msg ()
+(defsubclass-gen@ @dest-class :gen-builder ()
                   (def@ @@ :receive (fmt &rest args)
                     (apply #'message
                            fmt args)))
