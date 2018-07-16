@@ -58,11 +58,11 @@
                fmt args)))
 
 (defsubclass-gen@ @dest-class :gen-error ()
-                  (def@ @@ :receive (fmt &rest args)
-                    (apply #'lwarn
-                           'activity
-                           'error
-                           fmt args)))
+  (def@ @@ :receive (fmt &rest args)
+    (apply #'lwarn
+           'activity
+           'error
+           fmt args)))
 
 
 ;; (@! (@! @dest-class :gen-warning ) :receive "Hello")
