@@ -90,7 +90,7 @@
 
 (defsubclass-gen@ @note-class :gen-org-log-note ()
   (push
-   (@! @dest-class :gen-msg)
+   (@! @dest-class :gen-msg "msg")
    @:dests)
   (def@ @@ :send (marker fmt &rest args)
     (apply '@:dest fmt args)))
