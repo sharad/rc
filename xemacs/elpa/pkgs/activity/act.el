@@ -88,15 +88,7 @@
                    "dest %s [%s] not has :receive method, not sending msg."
                    (@ dest :name)
                    (@! dest :keys)))
-              (message "dest is nil"))
-            (if (and
-                 dest
-                 (@! dest :keyp :receive))
-                (@! dest :receive fmt args)
-              (progn
-                (message
-                 "dest is nil or not has :receive method, not sending msg.")
-                )))
+              (message "dest is nil")))
         (error "No @:dests %d boundp(%s) consp(%s) present."
                (length @:dests)
                (boundp '@:dests)
