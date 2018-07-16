@@ -83,7 +83,9 @@
           (dolist (dest @:dests)
             (if dest
                 (if (@! dest :keyp :receive)
-                    (@! dest :receive fmt args))
+                    (@! dest :receive fmt args)
+                  (message
+                   "dest is nil or not has :receive method, not sending msg."))
               (message "dest is nil"))
             (if (and
                  dest
