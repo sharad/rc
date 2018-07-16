@@ -111,4 +111,7 @@
 
 (@! @note-class :gen-format-msg "message")
 
-(@! @note-class :keys)
+(@ @note-class :gen-format-msg)
+
+;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
+;; (@! (@! @dest-class :gen-msg ) :receive "Hello")
