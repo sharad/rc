@@ -83,7 +83,7 @@
           (dolist (dest @:dests)
             (if (and
                  dest
-                 (@! dest :keyp fmt args))
+                 (@! dest :keyp :receive))
                 (@! dest :receive fmt args)
               (message "dest is nil, not sending msg.")))
         (error "No @:dests %d boundp(%s) consp(%s) present."
