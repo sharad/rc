@@ -92,15 +92,13 @@
   (push
    (@! @dest-class :gen-msg "msg")
    @:dests)
-  (def@ @@ :send (marker fmt &rest args)
-    (apply '@:dest fmt args)))
+  )
 
 (defsubclass-gen@ @note-class :gen-org-dual-log-note ()
   (push
    (@! @dest-class :gen-msg "msg")
    @:dests)
-  (def@ @@ :send (fmt &rest args)
-    (apply '@:dest fmt args)))
+  )
 
 (defsubclass-gen@ @note-class :gen-org-intreactive-log-note ()
   (push
