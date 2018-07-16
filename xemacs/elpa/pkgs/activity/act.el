@@ -81,7 +81,9 @@
       (if (and (memq :dests (@:keys))
                (consp @:dests))
           (dolist (dest @:dests)
-            (if dest
+            (if (and
+                 dest
+                 (@! dest :receive fmt args))
                 (@! dest :receive fmt args)
               (message "dest is nil, not sending msg.")))
         (error "No @:dests %d boundp(%s) consp(%s) present."
