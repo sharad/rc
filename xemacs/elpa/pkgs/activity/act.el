@@ -84,13 +84,13 @@
 
 (defsubclass-gen@ @note-class :gen-format-msg ()
   (push
-   (@! @@ :gen-msg "msg")
+   (@! @dest-class :gen-msg "msg")
    @:dests)
   )
 
 (defsubclass-gen@ @note-class :gen-org-log-note ()
   (push
-   (@! @@ :gen-msg "msg")
+   (@! @dest-class :gen-msg "msg")
    @:dests)
   )
 
