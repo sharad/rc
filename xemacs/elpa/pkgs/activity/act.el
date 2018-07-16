@@ -37,7 +37,8 @@
            :name "transition class"))
 
 (defvar @dest-class
-  (@extend :name "dest class"))
+  (@extend @act-base
+           :name "dest class"))
 
 (defsubclass-gen@ @dest-class :gen-builder ()
   (def@ @@ :receive (fmt &rest args)
