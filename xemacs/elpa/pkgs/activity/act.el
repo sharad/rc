@@ -120,6 +120,24 @@
    ))
 
 
+(progn
+  (progn
+    (let* ((v @note-class))
+      (@--set v :gen-format-msg
+              (function
+               (lambda (@@ name)
+                (let ((@@@ @note-class))
+                  (let ((@@ @@))
+                    (let ((drived-obj (@extend @note-class :name (concat (@ @note-class :name) name))))
+                      (let ((@@ drived-obj))
+                        (let* ((v (@! @dest-class :gen-msg "msg"))
+                               (v @@))
+                          (@--set v :dests (cons v (@ v :dests)))))
+                      drived-obj)))))))
+    :gen-format-msg))
+
+
+
 
 
 (defun @--walk (sexp skip replace &optional head)
