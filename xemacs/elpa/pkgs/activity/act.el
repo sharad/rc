@@ -110,3 +110,5 @@
     (apply '@:dest fmt args)))
 
 (@! @note-class :gen-format-msg "message")
+
+(@! @note-class :keys)
