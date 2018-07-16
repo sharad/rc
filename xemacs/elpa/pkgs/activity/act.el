@@ -76,8 +76,7 @@
  (setf @note-class
        (@extend @act-base
                 :name "note class"))
-
- (setf (@ @note-class :dests) nil)
+ (setf (@ @note-class :dests) '())
 
  (def@ @note-class :send (fmt args)
        (if (and (memq :dests (@:keys))
