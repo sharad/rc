@@ -10,7 +10,7 @@
 (def@ @act-base :finalize ()
       ())
 
-(defmacro defsubclass-gen@ (object method params &rest body )
+(defmacro defsubclass-gen@ (object method name params &rest body )
   `(progn
      (def@ ,object ,method ,params
 
@@ -18,7 +18,7 @@
                   (@extend ,object
                            :name (concat
                                   (@ ,object :name)
-                                  (symbol-name ,method)))))
+                                  (symbol-name ,name)))))
 
              (with-@@ drived-obj
                  ,@body)
