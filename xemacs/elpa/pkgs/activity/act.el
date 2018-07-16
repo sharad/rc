@@ -24,19 +24,19 @@
              drived-obj))))
 (put 'defsubclass-gen@ 'lisp-indent-function 3)
 
-(defvar @activity-class
+(setf @activity-class
   (@extend @act-base
            :name "activity class"))
 
-(defvar @event-class
+(setf @event-class
   (@extend @act-base
            :name "event class"))
 
-(defvar @transition-class
+(setf @transition-class
   (@extend @act-base
            :name "transition class"))
 
-(defvar @dest-class
+(setf @dest-class
   (@extend @act-base
            :name "dest class"))
 
