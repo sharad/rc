@@ -114,15 +114,29 @@
 
 (macroexpand-1
  '(with-@@ @note-class
-   (push
-    1
+   (Test
+    (@! @dest-class :gen-msg "msg")
     @:dests)))
+
+(let ((@@ @note-class)) (Test (@! @dest-class :gen-msg "msg") (@ @@ :dests)))
 
 (let ((@@ @note-class)) (push (@! @dest-class :gen-msg "msg") (@ @@ :dests)))
 
 (let ((@@ @note-class)) (let* ((v (@! @dest-class :gen-msg "msg")) (v @@)) (@--set v :dests (cons v (@ v :dests)))))
 
 
+
+(defun @--walk (sexp skip replace &optional head)
+  "Replace all symbols by calling REPLACE on them."
+  (macrolet ((wrap (exp) `(let ((v ,exp)) (if head (list v) v))))
+    (cond
+      ((symbolp sexp) (funcall replace sexp head))
+      ((atom sexp) (wrap sexp))
+      ((member (first sexp) skip) (wrap sexp))
+      ((wrap
+        (append (@--walk (first sexp) skip replace t)
+                (loop for element in (cdr sexp)
+                   collect (@--walk element skip replace nil))))))))
 
 
 ;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
