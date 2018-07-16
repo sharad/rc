@@ -74,6 +74,10 @@
            :name "note class"
            :dests '()))
 
+
+
+
+
 (def@ @note-class :send (fmt args)
       (if (and (boundp '@:dests)
                (consp @:dests))
@@ -81,8 +85,9 @@
             (if dest
                 (@! dest :receive fmt args)
               (message "dest is nil, not sending msg.")))
-        (error "No @:dests %d consp(%s) present."
+        (error "No @:dests %d boundp(%s) consp(%s) present."
                (length @:dests)
+               (boundp '@:dests)
                (consp @:dests))))
 
 (defsubclass-gen@ @note-class :gen-format-msg ()
