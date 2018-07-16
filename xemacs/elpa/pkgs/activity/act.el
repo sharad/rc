@@ -120,6 +120,7 @@
 
 
 
+
 (let ((@@ @note-class)) (Test (@! @dest-class :gen-msg "msg") (@ @@ :dests)))
 
 (let ((@@ @note-class)) (push (@! @dest-class :gen-msg "msg") (@ @@ :dests)))
