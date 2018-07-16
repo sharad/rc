@@ -75,7 +75,7 @@
            :dests '()))
 
 (def@ @note-class :send (fmt args)
-      (if (and (boundp '@:dests)
+      (if (and (memq :dests (@:keys))
                (consp @:dests))
           (dolist (dest @:dests)
             (if dest
