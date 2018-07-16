@@ -119,13 +119,17 @@
     @:dests)
    ))
 
-(@! (@! @note-class :gen-format-msg "message") :send "Test %d" 00)
 
-(length (@ (@! @note-class :gen-format-msg "message") :dests))
+(when nil
 
-(@ @note-class :gen-format-msg)
+  (@! (@! @note-class :gen-format-msg "message") :send "Test %d" 00)
+
+  (length (@ (@! @note-class :gen-format-msg "message") :dests))
+
+  (@ @note-class :gen-format-msg)
 
 
 
-;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
-;; (@! (@! @dest-class :gen-msg "msg") :receive "Hello")
+  ;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
+  ;; (@! (@! @dest-class :gen-msg "msg") :receive "Hello")
+  )
