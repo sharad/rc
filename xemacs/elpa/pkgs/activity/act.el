@@ -138,6 +138,10 @@
      @:dests)
     )
 
+  (@! (@! @note-class :gen-few-msg "message") :send "Test %d" 00)
+
+  (@ (@! @note-class :gen-few-msg "message") :dests)
+
   ;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
   ;; (@! (@! @dest-class :gen-msg "msg") :receive "Hello")
   )
