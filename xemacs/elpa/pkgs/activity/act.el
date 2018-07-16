@@ -113,10 +113,14 @@
 
 
 (macroexpand-1
- (with-@@ @note-class
-    (push
-     (@! @dest-class :gen-msg "msg")
-     @:dests)))
+ '(with-@@ @note-class
+   (push
+    1
+    @:dests)))
+
+(let ((@@ @note-class)) (push (@! @dest-class :gen-msg "msg") (@ @@ :dests)))
+
+(let ((@@ @note-class)) (let* ((v (@! @dest-class :gen-msg "msg")) (v @@)) (@--set v :dests (cons v (@ v :dests)))))
 
 
 
