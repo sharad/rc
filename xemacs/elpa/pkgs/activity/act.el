@@ -108,3 +108,5 @@
    @:dests)
   (def@ @@ :send (fmt &rest args)
     (apply '@:dest fmt args)))
+
+(@! @note-class :gen-format-msg)
