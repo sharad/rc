@@ -10,7 +10,7 @@
 (def@ @act-base :finalize ()
       ())
 
-(defmacro defsubclass-gen@ (object method name params &rest body )
+(defmacro defsubclass-gen@ (object method params &rest body )
   `(progn
      (def@ ,object ,method (name ,@params)
 
