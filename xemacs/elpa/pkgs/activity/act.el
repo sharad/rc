@@ -39,34 +39,34 @@
   (@extend @act-base
            :name "transition class"))
 
-(setf @dest-class
-  (@extend @act-base
-           :name "dest class"))
+(progn
+  (setf @dest-class
+        (@extend @act-base
+                 :name "dest class"))
 
-(defsubclass-gen@ @dest-class :gen-builder ()
-  (def@ @@ :receive (fmt &rest args)
-    (apply #'format
-           fmt args)))
+  (defsubclass-gen@ @dest-class :gen-builder ()
+    (def@ @@ :receive (fmt &rest args)
+      (apply #'format
+             fmt args)))
 
-(defsubclass-gen@ @dest-class :gen-msg ()
-  (def@ @@ :receive (fmt &rest args)
-        (apply #'message
-               fmt args)))
+  (defsubclass-gen@ @dest-class :gen-msg ()
+    (def@ @@ :receive (fmt &rest args)
+      (apply #'message
+             fmt args)))
 
-(defsubclass-gen@ @dest-class :gen-warning ()
-  (def@ @@ :receive (fmt &rest args)
-        (apply #'lwarn
-               'activity
-               'warning
-               fmt args)))
+  (defsubclass-gen@ @dest-class :gen-warning ()
+    (def@ @@ :receive (fmt &rest args)
+      (apply #'lwarn
+             'activity
+             'warning
+             fmt args)))
 
-(defsubclass-gen@ @dest-class :gen-error ()
-  (def@ @@ :receive (fmt &rest args)
-    (apply #'lwarn
-           'activity
-           'error
-           fmt args)))
-
+  (defsubclass-gen@ @dest-class :gen-error ()
+    (def@ @@ :receive (fmt &rest args)
+      (apply #'lwarn
+             'activity
+             'error
+             fmt args))))
 
 ;; (@! (@! @dest-class :gen-warning ) :receive "Hello")
 ;; (@! (@! @dest-class :gen-msg ) :receive "Hello")
