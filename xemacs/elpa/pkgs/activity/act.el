@@ -136,8 +136,8 @@
             (setf @:occuredon (current-time)))))
 
   (setf @event-class
-        "Event class"
         (defsubobj@ @activity-class "event class" ()
+          "Event class"
           (def@ @@ :note ()
             )))
 
