@@ -19,10 +19,19 @@
   `(let ((drived-obj
           (@extend ,object
                    :name (concat (@ ,object :name) " > " ,name))))
+
      (with-@@ drived-obj
-         ,(if (stringp (car body))
-              `(setf @:doc ,(car body)))
-       ,@(if (stringp (car body)) (cdr body) body))
+       ,(if (stringp (car body))
+            `(setf @:doc ,(car body)))
+       ,@(if (stringp (car body)) (cdr body) body)
+
+       (if (@:keyp :dispatch)
+           (if (fboundp @:dispatch)
+               (@:dispatch ,@params)
+             (message "%s: no :dispatch function defined."
+                      @:name))
+         (message "%s: no :dispatch prop defined."
+                  @:name)))
 
      drived-obj))
 (put 'defsubobj@ 'lisp-indent-function 3)
