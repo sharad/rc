@@ -593,6 +593,7 @@ end
 
 handle SIGUSR1 print nostop pass
 handle SIGUSR2 print nostop pass
+handle SIG33   print nostop pass
 
 
 # End of the eev block.
