@@ -129,8 +129,8 @@
 (progn
   ;; activity
   (setf @activity-class
-        "Activity class"
         (defsubobj@ @act-base "activity class" ()
+        "Activity class"
           (def@ @@ :init ()
             (@^:init)
             (setf @:occuredon (current-time)))))
