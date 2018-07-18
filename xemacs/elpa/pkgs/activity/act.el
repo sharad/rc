@@ -40,7 +40,7 @@
   `(progn
      (def@ ,object ,gen-method (name ,@params)
            ,@(if (stringp (car body)) (list (car body)) ())
-           (defsubobj@ ,object name params
+           (defsubobj@ ,object name ,params
              ,@(if (stringp (car body)) (cdr body) body)))))
 (put 'defsubclass-gen@ 'lisp-indent-function 3)
 
@@ -272,3 +272,12 @@
     (@! @dest-class :gen-msg "msg")
     @:dests)
    ))
+
+(macroexpand-1
+ '(defsubclass-gen@ @note-class :gen-org-intreactive-log-note (hello)
+   (push
+    (@! @dest-class :gen-msg "msg")
+    @:dests)
+   ))
+
+(progn (def@ @note-class :gen-org-intreactive-log-note (name hello) (defsubobj@ @note-class name params (push (@! @dest-class :gen-msg "msg") @:dests))))
