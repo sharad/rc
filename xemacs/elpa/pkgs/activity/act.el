@@ -280,4 +280,4 @@
     @:dests)
    ))
 
-(progn (def@ @note-class :gen-org-intreactive-log-note (name hello) (defsubobj@ @note-class name params (push (@! @dest-class :gen-msg "msg") @:dests))))
+;; (progn (def@ @note-class :gen-org-intreactive-log-note (name hello) (defsubobj@ @note-class name (hello) (push (@! @dest-class :gen-msg "msg") @:dests))))
