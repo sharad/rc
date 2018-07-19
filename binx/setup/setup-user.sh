@@ -362,6 +362,8 @@ function setup_ssh_keys()
 
 function setup_git_repos()
 {
+    # TODO [ISSUE] add code to handle upstream remote branch changes and merging to origin branch
+
     # RESOURCEPATH=".repos/git/main/resource"
     # USERORGMAIN="userorg/main"
 
