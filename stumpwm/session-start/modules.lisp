@@ -75,7 +75,7 @@
           "passwd"
           "perwindowlayout"
           "productivity"
-          "qubes"
+          ;; "qubes"
           #+sbcl
           "sbclfix"
           "screenshot"
