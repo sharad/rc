@@ -217,6 +217,7 @@ function setup_stumwpm_contrib_packages()
 function setup_git_repos()
 {
     # TODO [ISSUE] add code to handle upstream remote branch changes and merging to origin branch
+
     sudo mkdir -p $SITEDIR/.repos
     sudo chown ${USER}.${USER} -R $SITEDIR/.repos
 
