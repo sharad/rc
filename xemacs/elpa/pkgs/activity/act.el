@@ -26,7 +26,7 @@
        ,@(if (stringp (car body)) (cdr body) body)
 
        (if (@:keyp :dispatch)
-           (if (fboundp @:dispatch)
+           (if t ;; (fboundp @:dispatch)
                (@:dispatch ,@params)
              (message "%s: no :dispatch function defined."
                       @:name))
@@ -40,7 +40,7 @@
   `(progn
      (def@ ,object ,gen-method (name ,@params)
            ,@(if (stringp (car body)) (list (car body)) ())
-           (defsubobj@ ,object name ,params
+           (defsubobj@ ,object name ,@params
              ,@(if (stringp (car body)) (cdr body) body)))))
 (put 'defsubclass-gen@ 'lisp-indent-function 3)
 
@@ -191,35 +191,59 @@
 
 
 
-(defsubclass-gen@ @transition-dectector-class :gen-buffer-trans ()
-  (setf @:prev-buffer (current-buffer))
-
-  (setf @:buff-trans
-        (defsubobj@ @transition-class "buffer transition" (prev next)
-          (setf @:note
-                (@! @note-class :gen-format-msg))
-          (def@ @@ :dispatch ()
-            (@:note :send "switched buffer %s to %s on %s"
-                    @:prev @:next @:occuredon))
-          ))
+(defsubclass-gen@ @transition-dectector-class :gen-buffer-trans (&optional note)
 
   (def@ @@ :make-event ()
     "Make buffer change event."
     (let ((curr (current-buffer)))
-     (unless (eql
-              @:prev-buffer
-              curr)
-       (defsubobj@ @:buff-trans "buffer transition" (prev next)
+      (message "running :make-event")
+      (unless (eql
+               @:prev
+               curr)
+        (@! @buff-tran :send @prev curr)
+        (setf @:prev curr))))
 
-         (def@ @@ :dispatch (prev next)
-           )))))
+  (def@ @@ :dispatch (&optional xnote)
+    ;; (@^:dispatch)
 
+    (setf @:prev (current-buffer))
 
-  (def@ @@ :dispatch ()
-    (@^:dispatch)
-    (@:make-event))
+    (setf @:buff-tran
+          (defsubobj@ @transition-class "buffer transition" xnote
 
-  )
+            (def@ @@ :send (prev next)
+              (@:note :send "switched buffer %s to %s on %s"
+                      @:prev @:next @:occuredon))
+
+            (def@ @@ :dispatch (&optional note)
+              (setf @:note
+                    (or note
+                        (@! @note-class :gen-format-msg "test"))))))
+    ;; (@:install)
+    ))
+
+(setf @buff-transition-detector
+      (@! @transition-dectector-class :gen-buffer-trans "test" nil))
+
+(defun make-event ()
+  (message "running make-event")
+  (@! @buff-transition-detector :make-event))
+
+(defun buff-transition-detector-install ()
+  (add-hook 'buffer-list-update-hook     'make-event)
+  (add-hook 'elscreen-screen-update-hook 'make-event)
+  (add-hook 'elscreen-goto-hook          'make-event))
+
+(defun buff-transition-detector-install ()
+  (remove-hook 'buffer-list-update-hook     'make-event)
+  (remove-hook 'elscreen-screen-update-hook 'make-event)
+  (remove-hook 'elscreen-goto-hook          'make-event))
+
+(buff-transition-detector-install)
+
+(buff-transition-detector-uninstall)
+
+(@! @buff-transition-detector :make-event)
 
 
 
