@@ -15,19 +15,31 @@
 (def@ @act-base :finalize ()
       ())
 
+(defmacro fun-param (&rest params)
+  `(remove-if
+    #'(lambda (p) (member p '(&optional &rest)))
+    ',params))
+
+(defmacro fun-apply-param (params)
+  `(remove-if
+    #'(lambda (p) (member p '(&optional &rest)))
+    ',params))
+
+(fun-apply-param (&rest x y))
+
 (defmacro defsubobj@ (object name params &rest body)
   `(let ((drived-obj
           (@extend ,object
                    :name (concat (@ ,object :name) " > " ,name))))
 
      (with-@@ drived-obj
-       ,(if (stringp (car body))
-            `(setf @:doc ,(car body)))
+       ,@(if (stringp (car body))
+            `((setf @:doc ,(car body))))
        ,@(if (stringp (car body)) (cdr body) body)
 
        (if (@:keyp :dispatch)
            (if t ;; (fboundp @:dispatch)
-               (@:dispatch ,@params)
+               (apply @:dispatch ,`(fun-apply-param ,params))
              (message "%s: no :dispatch function defined."
                       @:name))
          (message "%s: no :dispatch prop defined."
@@ -36,11 +48,18 @@
      drived-obj))
 (put 'defsubobj@ 'lisp-indent-function 3)
 
+(macroexpand-1
+ '(defsubobj@ @dest-class name (x &optional y)
+   (def@ @@ :receive (fmt &rest args)
+     (apply (function message) fmt args))))
+
+
+
 (defmacro defsubclass-gen@ (object gen-method params &rest body )
   `(progn
      (def@ ,object ,gen-method (name ,@params)
            ,@(if (stringp (car body)) (list (car body)) ())
-           (defsubobj@ ,object name ,@params
+           (defsubobj@ ,object name ,params
              ,@(if (stringp (car body)) (cdr body) body)))))
 (put 'defsubclass-gen@ 'lisp-indent-function 3)
 
@@ -59,6 +78,47 @@
     (def@ @@ :receive (fmt &rest args)
       (apply #'message
              fmt args)))
+
+  (when nil
+    (macroexpand-1
+     (macroexpand-1
+      '(defsubclass-gen@ @dest-class :gen-msg (x &optional y)
+        (def@ @@ :receive (fmt &rest args)
+          (apply #'message
+                 fmt args)))))
+
+
+    (progn
+      (def@ @dest-class :gen-msg (name x &optional y)
+            (let ((drived-obj (@extend @dest-class :name (concat (@ @dest-class :name) " > " name))))
+              (with-@@ drived-obj
+                  (def@ @@ :receive (fmt &rest args)
+                    (apply (function message) fmt args))
+                (if (@:keyp :dispatch)
+                    (if t
+                        (@:dispatch x &optional y)
+                      (message "%s: no :dispatch function defined." @:name))
+                  (message "%s: no :dispatch prop defined." @:name)))
+              drived-obj)))
+
+
+
+    (progn (def@ @dest-class :gen-msg (name x) (defsubobj@ @dest-class name (x) (def@ @@ :receive (fmt &rest args) (apply (function message) fmt args)))))
+    (progn (def@ @dest-class :gen-msg (name) (defsubobj@ @dest-class name () (def@ @@ :receive (fmt &rest args) (apply (function message) fmt args)))))
+
+
+
+    (macroexpand-1
+     '(defsubobj@ @dest-class name (x &optional y)
+       (def@ @@ :receive (fmt &rest args)
+         (apply (function message) fmt args))))
+
+
+
+
+
+    (@ (@! @dest-class :gen-msg "msg") :receive)
+    )
 
   (defsubclass-gen@ @dest-class :gen-warning ()
     (def@ @@ :receive (fmt &rest args)
@@ -81,7 +141,7 @@
                  :name "note class"))
   (setf (@ @note-class :dests) '())
 
-  (def@ @note-class :send (fmt args)
+  (def@ @note-class :send (fmt &rest args)
         (if (and (memq :dests (@:keys))
                  (consp @:dests))
             (dolist (dest @:dests)
@@ -191,6 +251,7 @@
 
 
 
+
 (defsubclass-gen@ @transition-dectector-class :gen-buffer-trans (&optional note)
 
   (def@ @@ :make-event ()
@@ -200,8 +261,11 @@
       (unless (eql
                @:prev
                curr)
-        (@! @buff-tran :send @prev curr)
+        (@! @:buff-tran :send @:prev curr)
         (setf @:prev curr))))
+
+
+
 
   (def@ @@ :dispatch (&optional xnote)
     ;; (@^:dispatch)
@@ -209,16 +273,20 @@
     (setf @:prev (current-buffer))
 
     (setf @:buff-tran
-          (defsubobj@ @transition-class "buffer transition" xnote
+          (defsubobj@ @transition-class "buffer transition" (&optional xnote)
 
+            (setf @:occuredon "x")
             (def@ @@ :send (prev next)
-              (@:note :send "switched buffer %s to %s on %s"
-                      @:prev @:next @:occuredon))
+              (@! @:note :send "switched buffer %s to %s on %s"
+                  prev next @:occuredon))
 
             (def@ @@ :dispatch (&optional note)
+              (@^:init)
               (setf @:note
-                    (or note
-                        (@! @note-class :gen-format-msg "test"))))))
+                    (@! @note-class :gen-format-msg "test")
+                    ;; (or note
+                    ;;     (@! @note-class :gen-format-msg "test"))
+                    ))))
     ;; (@:install)
     ))
 
@@ -234,23 +302,28 @@
   (add-hook 'elscreen-screen-update-hook 'make-event)
   (add-hook 'elscreen-goto-hook          'make-event))
 
-(defun buff-transition-detector-install ()
+(defun buff-transition-detector-uninstall ()
   (remove-hook 'buffer-list-update-hook     'make-event)
   (remove-hook 'elscreen-screen-update-hook 'make-event)
   (remove-hook 'elscreen-goto-hook          'make-event))
 
-(buff-transition-detector-install)
-
-(buff-transition-detector-uninstall)
-
-(@! @buff-transition-detector :make-event)
 
 
+(when nil
+  (buff-transition-detector-install)
+
+  (buff-transition-detector-uninstall)
+
+  (@! @buff-transition-detector :make-event)
+
+  (@ @buff-transition-detector :prev)
 
 
+  (@ (@! @dest-class :gen-msg "msg") :receive)
 
 
-
+  (@ (@! @note-class :gen-format-msg "test") :dests)
+  )
 
 
 
