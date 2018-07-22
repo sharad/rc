@@ -71,9 +71,7 @@
   "Generator for format message note"
   (setf @:dest1 (@! @dest-class :gen-org-dest "org note dest1" marker1))
   (setf @:dest2 (@! @dest-class :gen-org-dest "org note dest2" marker2))
-  (push
-   (@! @dest-class :gen-org-dest "msg" marker)
-   @:dests)
+
   )
 
 ;;; org-activity-note.el ends here
