@@ -80,7 +80,7 @@
    @:dests))
 
 
-(defsubclass-gen@ @note-class :gen-org-dual-note (marker1 marker2)
+(defsubclass-gen@ @note-class :gen-dual-org-note (marker1 marker2)
   "Generator for dual org note message"
 
   (def@ @@ :dispatch (marker1 marker2)
