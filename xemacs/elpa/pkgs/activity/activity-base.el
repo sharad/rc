@@ -124,7 +124,7 @@
 
 (setf @dest-class
       (defsubobj@ @activity-base "dest-base" ()
-          "Activity Base"
+          "Destination Base"
 
 
         (def@ @@ :dispatch ()
