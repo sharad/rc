@@ -92,35 +92,6 @@
     (@:dispatch)))
 
 
-(progn
-  ;; destination
-  (setf @dest-class
-        (@extend @activity-base
-                 :name "dest class"))
-
-  (defsubclass-gen@ @dest-class :gen-builder ()
-    (def@ @@ :receive (fmt &rest args)
-      (apply #'format
-             fmt args)))
-
-  (defsubclass-gen@ @dest-class :gen-msg ()
-    (def@ @@ :receive (fmt &rest args)
-      (apply #'message
-             fmt args)))
-
-  (defsubclass-gen@ @dest-class :gen-warning ()
-    (def@ @@ :receive (fmt &rest args)
-      (apply #'lwarn
-             'activity
-             'warning
-             fmt args)))
-
-  (defsubclass-gen@ @dest-class :gen-error ()
-    (def@ @@ :receive (fmt &rest args)
-      (apply #'lwarn
-             'activity
-             'error
-             fmt args))))
 
 (setf @dest-class
       (defsubobj@ @activity-base "dest-base" ()
@@ -150,10 +121,10 @@
                      'error
                      fmt args)))
 
-        (def@ @@ :dispatch ()
-          (@:init))
+          (def@ @@ :dispatch ()
+            (@:init))
 
-        (@:dispatch)))
+          (@:dispatch)))
 
 
 
