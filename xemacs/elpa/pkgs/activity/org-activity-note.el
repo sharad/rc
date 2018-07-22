@@ -51,11 +51,12 @@
       (error "%s Not a marker." marker)))
 
   (def@ @@ :receive (fmt &rest args)
+    (
     (org-insert-log-note
      marker
      (apply #'format
             fmt args)
-     'note))
+     'note)))
 
   (@:dispatch marker))
 
