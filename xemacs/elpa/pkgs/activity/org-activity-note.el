@@ -63,7 +63,9 @@
               (let ((m (symbol-value marker))
                     (if (markerp m)
                         m
-                      (error "no marker %s" marker))))))))
+                      (error "no marker %s" marker)))))
+             (t
+              (error "can not find marker %s" marker)))))
      (org-insert-log-note marker (apply #'format fmt args) 'note)))
 
   (@:dispatch marker))
