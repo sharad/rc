@@ -71,8 +71,7 @@
 
   (def@ @@ :dispatch ()
     (setf @:dest1 (@! @dest-class :gen-org-dest "org note dest1" marker1))
-    (setf @:dest2 (@! @dest-class :gen-org-dest "org note dest2" marker2))
-)
+    (setf @:dest2 (@! @dest-class :gen-org-dest "org note dest2" marker2)))
 
   (def@ @@ :send1 (fmt &rest args)
     (apply (@ @:dest1 :receive) fmt args))
