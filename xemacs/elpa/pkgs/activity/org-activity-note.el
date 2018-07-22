@@ -66,4 +66,12 @@
    @:dests)
   )
 
+
+(defsubclass-gen@ @note-class :gen-org-note (marker)
+  "Generator for format message note"
+  (push
+   (@! @dest-class :gen-org-dest "msg" marker)
+   @:dests)
+  )
+
 ;;; org-activity-note.el ends here
