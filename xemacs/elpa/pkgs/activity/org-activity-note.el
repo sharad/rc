@@ -52,11 +52,11 @@
 
   (def@ @@ :receive (fmt &rest args)
     (
-    (org-insert-log-note
-     marker
-     (apply #'format
-            fmt args)
-     'note)))
+     (org-insert-log-note
+      marker
+      (apply #'format
+             fmt args)
+      'note)))
 
   (@:dispatch marker))
 
