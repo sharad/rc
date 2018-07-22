@@ -60,20 +60,21 @@
       (t )))
 
   (def@ :get-marker ()
-    (cond
-      ((markerp @:marker) @:marker)
-      ((functionp @:marker)
-       (let ((m (funcall @:marker)))
-             (if (markerp m)
-                 m
-               (error "f no marker %s" @:marker))))
-      ((symbolp @:marker)
-       (let ((m (symbol-value @:marker)))
-             (if (markerp m)
-                 m
-               (error "s no marker %s" @:marker))))
-      (t
-       (error "can not find marker %s" @:marker))))
+    ;; (cond
+    ;;   ((markerp @:marker) @:marker)
+    ;;   ((functionp @:marker)
+    ;;    (let ((m (funcall @:marker)))
+    ;;          (if (markerp m)
+    ;;              m
+    ;;            (error "f no marker %s" @:marker))))
+    ;;   ((symbolp @:marker)
+    ;;    (let ((m (symbol-value @:marker)))
+    ;;          (if (markerp m)
+    ;;              m
+    ;;            (error "s no marker %s" @:marker))))
+    ;;   (t
+    ;;    (error "can not find marker %s" @:marker)))
+    )
 
   (def@ @@ :receive (fmt &rest args)
     (org-insert-log-note (@:get-marker) (apply #'format fmt args) 'note))
