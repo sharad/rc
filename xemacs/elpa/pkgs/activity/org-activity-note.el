@@ -69,7 +69,7 @@
 
 (defsubclass-gen@ @note-class :gen-org-dual-note (marker1 marker2)
   "Generator for format message note"
-  (setf @:dest1 (@! @dest-class :gen-org-dest "msg" marker))
+  (setf @:dest1 (@! @dest-class :gen-org-dest "org note dest" marker1))
   (push
    (@! @dest-class :gen-org-dest "msg" marker)
    @:dests)
