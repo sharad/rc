@@ -51,9 +51,7 @@ buff-trans.el
 mail-activity
 org-activity-log-note
 org-activity-note
-org-clock-trans.el
-test.el
-wakatime-mode.el
+org-clock-trans
 
 (provide 'activity)
 
