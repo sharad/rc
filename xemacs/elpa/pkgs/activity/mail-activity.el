@@ -46,11 +46,7 @@
     "Make mail read event."
     (let ((curr (current-buffer)))
       (message "running :make-event")
-      (unless (eql
-               @:prev
-               curr)
-        (@! (@! @:tran :new) :send )
-        )))
+      (@! (@! @:tran :new) :send )))
 
   (def@ @@ :dispatch ()
     (setf @:tran @org-clock-note))
