@@ -55,13 +55,7 @@
 (defsubclass-gen@ @event-dectector-class :gen-mail-send-event ()
   (def@ @@ :make-event ()
     "Make mail send event."
-    (let ((curr (current-buffer)))
-      (message "running :make-event")
-      (unless (eql
-               @:prev
-               curr)
-        (@! (@! @:tran :new) :send )
-        )))
+    (@! (@! @:tran :new) :send ))
 
   (def@ @@ :dispatch ()
     (setf @:tran @org-clock-note))
