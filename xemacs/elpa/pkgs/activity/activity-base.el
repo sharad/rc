@@ -80,20 +80,21 @@
 
 
 
-(defsubobj@ @ "activity-base" ()
-    "Activity Base"
-  (def@ @@ :keyp (key)
-    (memq key (@:keys)))
+(defvar @activity-base
+  (defsubobj@ @ "activity-base" ()
+      "Activity Base"
+    (def@ @@ :keyp (key)
+      (memq key (@:keys)))
 
-  (def@ @@ :finalize ()
-    ())
+    (def@ @@ :finalize ()
+      ())
 
-  (def@ @@ :init ()
-    ;; (@^:init)
-    (setf @:_occuredon (current-time)))
+    (def@ @@ :init ()
+      ;; (@^:init)
+      (setf @:_occuredon (current-time)))
 
-  (def@ @@ :occuredon ()
-    (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon)))
+    (def@ @@ :occuredon ()
+      (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))))
 
 
 
