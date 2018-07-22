@@ -128,7 +128,9 @@
 
 
 
-(progn
+(setf @dest-class
+      (defsubobj@ @activity-base "dest-base" ()
+        "Note Class"
   ;; note
   (setf @note-class
         (@extend @activity-base
