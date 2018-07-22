@@ -106,7 +106,7 @@
 
 
 (defvar @org-clock-note
-  (@! @note-class :gen-org-note 'org-clock-marker))
+  (@! @note-class :gen-org-note 'org-clock-marker-hd))
 
 
 ;;; org-activity-note.el ends here
