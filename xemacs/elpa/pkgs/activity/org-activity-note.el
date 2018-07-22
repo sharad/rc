@@ -67,8 +67,7 @@
        (error "can not find marker %s" @:marker))))
 
   (def@ @@ :receive (fmt &rest args)
-    (let ((marker (@:get-marker)))
-     (org-insert-log-note actual-marker (apply #'format fmt args) 'note)))
+    (org-insert-log-note (@:get-marker) (apply #'format fmt args) 'note))
 
   (@:dispatch marker))
 
