@@ -49,8 +49,8 @@
       (unless (eql
                @:prev
                curr)
-        (@! (@! @:tran :new) :send @:prev curr)
-        (setf @:prev curr))))
+        (@! (@! @:tran :new) :send )
+        )))
 
   (def@ @@ :dispatch (&optional note)
     (setf @:tran @org-clock-note))
