@@ -48,9 +48,6 @@
 
 
 
-;; (call-next-method)
-
-
 (defun activity-bind-hooks ()
   "Watch for activity in buffers."
   ;; (add-hook 'after-save-hook 'activity-save nil t)
