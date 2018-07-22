@@ -132,8 +132,7 @@
       (defsubobj@ @activity-base "note-base-class" ()
         "Note Base Class"
 
-
-        (setf (@ @note-class :dests) '())
+        (setf @:dests '())
 
         (def@ @note-class :send (fmt &rest args)
               (if (and (memq :dests (@:keys))
