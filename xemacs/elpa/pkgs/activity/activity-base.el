@@ -72,7 +72,7 @@
 
 
 
-(defvar @activity-base
+(setf @activity-base
   (defsubobj@ @ "activity-base" ()
     "Activity Base"
 
