@@ -41,7 +41,7 @@
 
 (provide 'mail-event)
 
-(defsubclass-gen@ @event-dectector-class :gen-mail-read-event (&optional note)
+(defsubclass-gen@ @event-dectector-class :gen-mail-read-event ()
   (def@ @@ :make-event ()
     "Make buffer change event."
     (let ((curr (current-buffer)))
