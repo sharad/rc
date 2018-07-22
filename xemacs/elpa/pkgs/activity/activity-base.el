@@ -57,7 +57,7 @@
        ,@(if (stringp (car body)) (cdr body) body))
 
      drived-obj))
-(put 'defsubobj@ 'lisp-indent-function 3)
+(put 'defsubobj@ 'lisp-indent-function 2)
 
 (defmacro defsubclass-gen@ (object gen-method params &rest body )
   `(progn
@@ -74,7 +74,7 @@
 
 (defvar @activity-base
   (defsubobj@ @ "activity-base" ()
-      "Activity Base"
+    "Activity Base"
 
     (def@ @@ :keyp (key)
       (memq key (@:keys)))
