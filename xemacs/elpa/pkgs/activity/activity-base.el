@@ -130,7 +130,7 @@
 
 (setf @note-class
       (defsubobj@ @activity-base "note-base-class" ()
-        "Note Class"
+        "Note Base Class"
         ;; note
         (setf @note-class
               (@extend @activity-base
