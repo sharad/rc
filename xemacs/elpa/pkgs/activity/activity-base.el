@@ -179,7 +179,8 @@
     (push
      (@! @dest-class :gen-msg "msg")
      @:dests)
-    ))
+    )
+  )
 
 
 (progn
