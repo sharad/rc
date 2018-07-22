@@ -40,11 +40,6 @@
 (require '@)
 
 (require 'activity-base)
-
-
-
-
-
 (require 'buff-trans)
 ;; change-activity
 ;; clock-activity
