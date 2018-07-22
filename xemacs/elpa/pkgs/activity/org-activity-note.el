@@ -50,22 +50,12 @@
         (setf @:note-marker marker)
       (error "%s Not a marker." marker)))
 
+  (def@ :get-marker ()
+    )
+
   (def@ @@ :receive (fmt &rest args)
     (let ((actual-marker
-           (cond
-             ((markerp marker) marker)
-             ((functionp marker)
-              (let ((m (funcall marker))
-                    (if (markerp m)
-                        m
-                      (error "no marker %s" marker)))))
-             ((symbolp marker)
-              (let ((m (symbol-value marker))
-                    (if (markerp m)
-                        m
-                      (error "no marker %s" marker)))))
-             (t
-              (error "can not find marker %s" marker)))))
+           ))
      (org-insert-log-note actual-marker (apply #'format fmt args) 'note)))
 
   (@:dispatch marker))
