@@ -67,7 +67,7 @@
   )
 
 
-(defsubclass-gen@ @note-class :gen-org-dual-note (marker)
+(defsubclass-gen@ @note-class :gen-org-dual-note (prevmarker )
   "Generator for format message note"
   (push
    (@! @dest-class :gen-org-dest "msg" marker)
