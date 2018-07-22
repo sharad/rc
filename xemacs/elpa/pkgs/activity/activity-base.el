@@ -83,7 +83,7 @@
       ())
 
     (def@ @@ :init ()
-      ;; (@^:init)
+      (@^:init)
       (setf @:_occuredon (current-time)))
 
     (def@ @@ :occuredon ()
