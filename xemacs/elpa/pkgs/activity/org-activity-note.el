@@ -59,6 +59,11 @@
 
 
 
-()
+(defsubclass-gen@ @note-class :gen-format-msg ()
+  "Generator for format message note"
+  (push
+   (@! @dest-class :gen-msg "msg")
+   @:dests)
+  )
 
 ;;; org-activity-note.el ends here
