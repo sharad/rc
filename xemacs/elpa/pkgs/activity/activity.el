@@ -46,8 +46,8 @@
 activity-base
 activity-note
 buff-trans.el
-change-activity
-clock-activity
+;; change-activity
+;; clock-activity
 mail-activity
 org-activity-log-note.el
 org-activity-note.el
