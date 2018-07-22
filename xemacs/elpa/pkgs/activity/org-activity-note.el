@@ -66,7 +66,7 @@
                       (error "no marker %s" marker)))))
              (t
               (error "can not find marker %s" marker)))))
-     (org-insert-log-note marker (apply #'format fmt args) 'note)))
+     (org-insert-log-note actual-marker (apply #'format fmt args) 'note)))
 
   (@:dispatch marker))
 
