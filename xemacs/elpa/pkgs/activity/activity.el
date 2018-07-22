@@ -43,8 +43,8 @@
 
 
 
-activity-base
-activity-note
+
+
 (require 'buff-trans)
 ;; change-activity
 ;; clock-activity
