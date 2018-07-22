@@ -113,4 +113,9 @@
          org-clock-marker))))
 
 
+(markerp
+ (funcall '(lambda ()
+            (or
+             org-clock-hd-marker
+             org-clock-marker))))
 ;;; org-activity-note.el ends here
