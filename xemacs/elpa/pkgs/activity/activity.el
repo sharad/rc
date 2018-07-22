@@ -51,7 +51,7 @@ buff-trans.el
 mail-activity
 org-activity-log-note
 org-activity-note
-org-clock-trans
+(require org-clock-trans)
 
 (provide 'activity)
 
