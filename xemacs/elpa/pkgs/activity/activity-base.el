@@ -187,7 +187,7 @@
         (@:dispatch)))
 
 
-(setf @note-class
+(setf @activity-class
 
       (defsubobj@ @activity-base "activity-base-class" ()
         "Activity Base Class"
