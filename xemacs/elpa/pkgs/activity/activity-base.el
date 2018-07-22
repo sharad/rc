@@ -191,30 +191,30 @@
 
       (defsubobj@ @activity-base "activity-base-class" ()
         "Activity Base Class"
-  ;; activity
-  (setf @activity-class
-        (defsubobj@ @activity-base "activity class" ()
-          "Activity class"
-          (def@ @@ :init ()
-            (@^:init)
-            (setf @:occuredon (current-time)))))
+        ;; activity
+        (setf @activity-class
+              (defsubobj@ @activity-base "activity class" ()
+                "Activity class"
+                (def@ @@ :init ()
+                  (@^:init)
+                  (setf @:occuredon (current-time)))))
 
-  (setf @event-class
-        (defsubobj@ @activity-class "event class" ()
-          "Event class"
-          (def@ @@ :note ()
-            )))
+        (setf @event-class
+              (defsubobj@ @activity-class "event class" ()
+                "Event class"
+                (def@ @@ :note ()
+                  )))
 
-  (setf @transition-class
-        (defsubobj@ @event-class "transition class" ()
-          "Transition class"
-          (def@ @@ :note ()
-            )))
+        (setf @transition-class
+              (defsubobj@ @event-class "transition class" ()
+                "Transition class"
+                (def@ @@ :note ()
+                  )))
 
-  (def@ @@ :dispatch ()
-    (@:init))
+        (def@ @@ :dispatch ()
+          (@:init))
 
-  (@:dispatch)))
+        (@:dispatch)))
 
 
 
