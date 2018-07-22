@@ -113,4 +113,7 @@
          org-clock-hd-marker
          org-clock-marker))))
 
+
+(@! @org-clock-note :send "Hello")
+
 ;;; org-activity-note.el ends here
