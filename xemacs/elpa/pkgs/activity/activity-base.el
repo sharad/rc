@@ -53,18 +53,6 @@
    :name "act base."
    :finilize-args ()))
 
-(def@ @activity-base :keyp (key)
-      (memq key (@:keys)))
-
-(def@ @activity-base :finalize ()
-      ())
-
-(def@ @@ :init ()
-  ;; (@^:init)
-  (setf @:_occuredon (current-time)))
-
-(def@ @@ :occuredon ()
-  (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
 
 (defmacro defsubobj@ (object name params &rest body)
   `(let ((drived-obj
@@ -93,7 +81,19 @@
 
 
 (defsubobj@ @ "activity-base" ()
-    )
+    (def@ @activity-base :keyp (key)
+          (memq key (@:keys)))
+
+  (def@ @activity-base :finalize ()
+        ())
+
+  (def@ @@ :init ()
+    ;; (@^:init)
+    (setf @:_occuredon (current-time)))
+
+  (def@ @@ :occuredon ()
+    (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
+)
 
 
 
