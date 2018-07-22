@@ -49,7 +49,7 @@
       (unless (eql
                @:prev
                curr)
-        (@! (@! @:buff-tran :new) :send @:prev curr)
+        (@! (@! @:tran :new) :send @:prev curr)
         (setf @:prev curr))))
 
   (def@ @@ :dispatch (&optional note)
