@@ -94,7 +94,7 @@
 
 
 (setf @dest-class
-      (defsubobj@ @activity-base "dest-base" ()
+      (defsubobj@ @activity-base "dest-class" ()
           "Destination Class"
 
           (defsubclass-gen@ @@ :gen-builder ()
@@ -131,62 +131,62 @@
 (setf @note-class
       (defsubobj@ @activity-base "note-base" ()
         "Note Class"
-  ;; note
-  (setf @note-class
-        (@extend @activity-base
-                 :name "note class"))
-  (setf (@ @note-class :dests) '())
+        ;; note
+        (setf @note-class
+              (@extend @activity-base
+                       :name "note class"))
+        (setf (@ @note-class :dests) '())
 
-  (def@ @note-class :send (fmt &rest args)
-        (if (and (memq :dests (@:keys))
-                 (consp @:dests))
-            (dolist (dest @:dests)
-              (if dest
-                  (if (@! dest :keyp :receive)
-                      ;; (@! dest :receive fmt args)
-                      (apply (@ dest :receive) dest fmt args)
-                    (message
-                     "dest %s [%s] not has :receive method, not sending msg."
-                     (@ dest :name)
-                     (@! dest :keys)))
-                (message "dest is nil")))
-          (error "No @:dests %d boundp(%s) consp(%s) present."
-                 (length @:dests)
-                 (boundp '@:dests)
-                 (consp @:dests))))
+        (def@ @note-class :send (fmt &rest args)
+              (if (and (memq :dests (@:keys))
+                       (consp @:dests))
+                  (dolist (dest @:dests)
+                    (if dest
+                        (if (@! dest :keyp :receive)
+                            ;; (@! dest :receive fmt args)
+                            (apply (@ dest :receive) dest fmt args)
+                          (message
+                           "dest %s [%s] not has :receive method, not sending msg."
+                           (@ dest :name)
+                           (@! dest :keys)))
+                      (message "dest is nil")))
+                (error "No @:dests %d boundp(%s) consp(%s) present."
+                       (length @:dests)
+                       (boundp '@:dests)
+                       (consp @:dests))))
 
-  (defsubclass-gen@ @note-class :gen-format-msg ()
-    "Generator for format message note"
-    (push
-     (@! @dest-class :gen-msg "msg")
-     @:dests)
-    )
+        (defsubclass-gen@ @note-class :gen-format-msg ()
+          "Generator for format message note"
+          (push
+           (@! @dest-class :gen-msg "msg")
+           @:dests)
+          )
 
-  (defsubclass-gen@ @note-class :gen-org-log-note ()
-    "Generator for org log note"
-    (push
-     (@! @dest-class :gen-msg "msg")
-     @:dests)
-    )
+        (defsubclass-gen@ @note-class :gen-org-log-note ()
+          "Generator for org log note"
+          (push
+           (@! @dest-class :gen-msg "msg")
+           @:dests)
+          )
 
-  (defsubclass-gen@ @note-class :gen-org-dual-log-note ()
-    "Generator for dual org log note"
-    (push
-     (@! @dest-class :gen-msg "msg")
-     @:dests)
-    )
+        (defsubclass-gen@ @note-class :gen-org-dual-log-note ()
+          "Generator for dual org log note"
+          (push
+           (@! @dest-class :gen-msg "msg")
+           @:dests)
+          )
 
-  (defsubclass-gen@ @note-class :gen-org-intreactive-log-note ()
-    "Generator for Interactive org log note"
-    (push
-     (@! @dest-class :gen-msg "msg")
-     @:dests)
-    )
+        (defsubclass-gen@ @note-class :gen-org-intreactive-log-note ()
+          "Generator for Interactive org log note"
+          (push
+           (@! @dest-class :gen-msg "msg")
+           @:dests)
+          )
 
-  (def@ @@ :dispatch ()
-    (@:init))
+        (def@ @@ :dispatch ()
+          (@:init))
 
-  (@:dispatch)))
+        (@:dispatch)))
 
 
 (progn
