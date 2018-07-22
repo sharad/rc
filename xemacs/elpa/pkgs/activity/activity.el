@@ -45,115 +45,7 @@
 (provide 'activity)
 
 
-(when nil
-  (setf @buffer-transition-singleton
-        (@extend @transition-singleton))
 
-  (def@ @buffer-transition-singleton :init (new-buffer)
-        (@^:init new-buffer)
-        (setf @:note
-              (@! @activity-note :new
-                  (list
-                   @message-note-destination
-                   @org-heading-note-destination))))
-
-  (def@ @buffer-transition-singleton :message ()
-        (format "changed from %s buffer to %s buffer on %s"
-                (if  @:old (buffer-name @:old) "none")
-                (buffer-name @:new)
-                (@:occuredon)))
-
-  (def@ @buffer-transition-singleton :object-sexp ()
-        (list
-         'buffer-transition
-         :old (if @:old (buffer-name @:old) nil)
-         :new (buffer-name @:new)
-         (list
-          'activity
-          occuredon (@:occuredon))))
-
-  (def@ @buffer-transition-singleton :execute ()
-        (if (equal @:old (current-buffer))
-            (message "not dispatching")
-          (progn
-            (setf
-             @:old @:new
-             @:new (current-buffer))
-            (@:dispatch))))
-
-  (defun buffer-transition-singleton-execute ()
-    (@! @buffer-transition-singleton :execute))
-
-  
-
-  (defvar @mail-event
-    (@extend @event :name "mail event"))
-
-  
-  (defvar @send-mail-event
-    (@extend @mail-event :name "send mail event"))
-
-  (def@ @send-mail-event :init (to subject)
-        (@^:init)
-        (setf
-         @:to     to
-         @subject subject))
-
-  (def@ @send-mail-event :message ()
-        (format "sending mail to %s with subject %s on %s"
-                @:to
-                @:subject
-                (@:occuredon)))
-
-  (def@ @send-mail-event :make-event ()
-        (@:notify))
-
-
-
-  
-  (defvar @read-mail-event
-    (@extend @mail-event :name "read mail event"))
-
-  (def@ @read-mail-event :init (to subject)
-        (@^:init)
-        (setf
-         @:to     to
-         @subject subject))
-
-  (def@ @read-mail-event :message ()
-        (format "reading mail from %s with subject %s on %s"
-                @:to
-                @:subject
-                (@:occuredon)))
-
-  (def@ @send-mail-event :make-event ()
-        )
-  
-  (defvar @clock-transition-singleton
-    (@extend @transition @dispatchable-immediate
-             :clock-marker nil
-             :heading nil))
-
-  (def@ @clock-transition-singleton :init (old-marker newnews-marker)
-        (@^:init old-marker newnews-marker))
-
-  (def@ @clock-out-activity :message ()
-        (if @:next-clock
-            (format
-             "clocking out from [%s] to clocking in to [%s]"
-             @:heading
-             (@! @:next-clock :headign))
-          (format
-           "clocking out from [%s]"
-           @:heading)))
-
-  (def@ @clock-out-activity :init ()
-        (message "test1"))
-
-  (setf test (@! @clock-out-activity :new))
-
-  (@! @clock-out-activity :message)
-  )
 
 
 ;; (call-next-method)
@@ -196,6 +88,66 @@
 ;;;###autoload
 (define-globalized-minor-mode global-activity-mode activity-mode
   (lambda () (activity-mode 1)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
