@@ -54,7 +54,7 @@
     (let ((actual-marker
            (cond
              ((markerp marker) marker)
-             ((functionp)))))
+             ((functionp marker) ))))
      (org-insert-log-note marker (apply #'format fmt args) 'note)))
 
   (@:dispatch marker))
