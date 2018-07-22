@@ -45,7 +45,7 @@
 
 activity-base
 activity-note
-buff-trans.el
+(require 'buff-trans)
 ;; change-activity
 ;; clock-activity
 (require 'mail-activity)
