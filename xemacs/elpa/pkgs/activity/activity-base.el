@@ -190,7 +190,7 @@
 (setf @note-class
 
       (defsubobj@ @activity-base "activity-base-class" ()
-        "Note Base Class"
+        "Activity Base Class"
   ;; activity
   (setf @activity-class
         (defsubobj@ @activity-base "activity class" ()
