@@ -95,7 +95,7 @@
 
 (setf @dest-class
       (defsubobj@ @activity-base "dest-base-class" ()
-          "Destination Class"
+          "Destination Base Class"
 
           (defsubclass-gen@ @@ :gen-builder ()
             (def@ @@ :receive (fmt &rest args)
@@ -129,7 +129,7 @@
 
 
 (setf @note-class
-      (defsubobj@ @activity-base "note-base" ()
+      (defsubobj@ @activity-base "note-base-class" ()
         "Note Class"
         ;; note
         (setf @note-class
