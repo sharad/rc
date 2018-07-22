@@ -81,10 +81,10 @@
 
 
 (defsubobj@ @ "activity-base" ()
-    (def@ @activity-base :keyp (key)
+    (def@ @@ :keyp (key)
           (memq key (@:keys)))
 
-  (def@ @activity-base :finalize ()
+  (def@ @@ :finalize ()
         ())
 
   (def@ @@ :init ()
