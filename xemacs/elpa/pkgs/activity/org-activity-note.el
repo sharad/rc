@@ -63,15 +63,15 @@
     (cond
       ((markerp @:marker) @:marker)
       ((functionp @:marker)
-       (let ((m (funcall @:marker))
+       (let ((m (funcall @:marker @@))
              (if (markerp m)
                  m
-               (error "no marker %s" @:marker)))))
+               (error "f no marker %s" @:marker)))))
       ((symbolp @:marker)
        (let ((m (symbol-value @:marker))
              (if (markerp m)
                  m
-               (error "no marker %s" @:marker)))))
+               (error "s no marker %s" @:marker)))))
       (t
        (error "can not find marker %s" @:marker))))
 
