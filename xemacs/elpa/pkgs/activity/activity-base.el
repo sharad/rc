@@ -46,14 +46,6 @@
   :group 'convenience
   :prefix "activity-")
 
-
-
-(defvar @activity-base
-  (@extend
-   :name "act base."
-   :finilize-args ()))
-
-
 (defmacro defsubobj@ (object name params &rest body)
   `(let ((drived-obj
           (@extend ,object
