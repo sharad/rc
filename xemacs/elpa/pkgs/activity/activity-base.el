@@ -92,7 +92,7 @@
     (def@ :dispatch ()
       (@:init))
 
-    (@:init)))
+    (@:dispatch)))
 
 
 
