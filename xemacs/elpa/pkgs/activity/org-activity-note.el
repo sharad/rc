@@ -46,9 +46,7 @@
 (defsubclass-gen@ @dest-class :gen-org-dest (marker)
   (def@ @@ :dispatch (marker)
     (@:init)
-    (if (@::valid-markerp marker)
-        (setf @:note-marker marker)
-      (error "%s Not a marker." marker)))
+    (setf @:note-marker marker))
 
   (def@ :valid-markerp ()
     (cond
