@@ -62,9 +62,9 @@
        (let ((m (symbol-value @:marker))
              (if (markerp m)
                  m
-               (error "no marker %s" marker)))))
+               (error "no marker %s" @:marker)))))
       (t
-       (error "can not find marker %s" marker))))
+       (error "can not find marker %s" @:marker))))
 
   (def@ @@ :receive (fmt &rest args)
     (let ((actual-marker
