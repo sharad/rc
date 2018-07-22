@@ -132,9 +132,7 @@
       (defsubobj@ @activity-base "note-base-class" ()
         "Note Base Class"
 
-        (setf @note-class
-              (@extend @activity-base
-                       :name "note class"))
+
         (setf (@ @note-class :dests) '())
 
         (def@ @note-class :send (fmt &rest args)
