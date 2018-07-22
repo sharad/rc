@@ -57,4 +57,8 @@
 
   (@:dispatch marker))
 
+
+
+()
+
 ;;; org-activity-note.el ends here
