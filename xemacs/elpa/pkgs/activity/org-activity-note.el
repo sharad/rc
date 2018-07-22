@@ -52,8 +52,8 @@
 
   (def@ :get-marker ()
     (cond
-      ((markerp @:marker) marker)
-      ((functionp marker)
+      ((markerp @:marker) @:marker)
+      ((functionp @:marker)
        (let ((m (funcall marker))
              (if (markerp m)
                  m
