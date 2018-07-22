@@ -96,6 +96,30 @@
 
 
 
+(macroexpand-1
+ '(defsubobj@ @ "activity-base" ()
+   "Activity Base"
+
+   (def@ @@ :keyp (key)
+     (memq key (@:keys)))
+
+   (def@ @@ :finalize ()
+     ())
+
+   (def@ @@ :init ()
+     (@^:init)
+     (setf @:_occuredon (current-time)))
+
+   (def@ @@ :occuredon ()
+     (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
+
+   (def@ :dispatch ()
+     (@:init))
+
+   (@:dispatch)))
+
+
+
 
 
 
