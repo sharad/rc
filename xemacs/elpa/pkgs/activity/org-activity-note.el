@@ -72,6 +72,9 @@
   (setf @:dest1 (@! @dest-class :gen-org-dest "org note dest1" marker1))
   (setf @:dest2 (@! @dest-class :gen-org-dest "org note dest2" marker2))
 
+  (def@ @@ :send ()
+    )
+
   )
 
 ;;; org-activity-note.el ends here
