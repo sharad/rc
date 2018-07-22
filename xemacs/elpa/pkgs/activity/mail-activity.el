@@ -54,7 +54,7 @@
 
   (def@ @@ :dispatch (&optional note)
     (setf @:prev (current-buffer))
-    (setf @:tran ))
+    (setf @:tran @org-clock-note))
   (@:dispatch note))
 
 ;;; mail-event.el ends here
