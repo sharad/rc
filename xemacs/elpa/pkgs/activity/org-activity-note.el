@@ -63,8 +63,7 @@
   "Generator for org note message"
   (push
    (@! @dest-class :gen-org-dest "msg" marker)
-   @:dests)
-  )
+   @:dests))
 
 
 (defsubclass-gen@ @note-class :gen-org-dual-note (marker1 marker2)
@@ -76,8 +75,6 @@
     (apply (@ @:dest1 :receive) fmt args))
 
   (def@ @@ :send2 (fmt &rest args)
-    (apply (@ @:dest2 :receive) fmt args))
-
-  )
+    (apply (@ @:dest2 :receive) fmt args)))
 
 ;;; org-activity-note.el ends here
