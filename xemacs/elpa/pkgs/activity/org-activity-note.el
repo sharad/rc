@@ -55,7 +55,7 @@
            (cond
              ((markerp marker) marker)
              ((functionp marker)
-              (let ((m (marker))
+              (let ((m (funcall marker))
                     (if (markerp m)
                         m
                       (error "no marker %s" marker)))))
