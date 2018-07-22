@@ -236,7 +236,12 @@
         (defsubobj@ @event-dectector-class "transition detector class" ()
           "Transition detector class"
           (def@ @@ :note ()
-            ))))
+            )))
+
+  (def@ @@ :dispatch ()
+    (@:init))
+
+  (@:dispatch))
 
 
 ;;; act.el ends here
