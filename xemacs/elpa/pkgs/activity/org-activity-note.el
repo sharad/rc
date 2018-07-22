@@ -46,7 +46,7 @@
 (defsubclass-gen@ @dest-class :gen-org-dest (marker)
   (def@ @@ :dispatch (marker)
     (@:init)
-    (setf @:note-marker marker))
+    (setf @:marker marker))
 
   (def@ :valid-markerp ()
     (cond
@@ -68,10 +68,10 @@
                  m
                (error "f no marker %s" @:marker))))
       ((symbolp @:marker)
-       (let ((m (symbol-value @:marker))
+       (let ((m (symbol-value @:marker)))
              (if (markerp m)
                  m
-               (error "s no marker %s" @:marker)))))
+               (error "s no marker %s" @:marker))))
       (t
        (error "can not find marker %s" @:marker))))
 
