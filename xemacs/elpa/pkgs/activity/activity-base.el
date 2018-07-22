@@ -209,7 +209,12 @@
         (defsubobj@ @event-class "transition class" ()
           "Transition class"
           (def@ @@ :note ()
-            )))))
+            )))
+
+  (def@ @@ :dispatch ()
+    (@:init))
+
+  (@:dispatch)))
 
 
 
