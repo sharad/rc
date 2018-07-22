@@ -54,7 +54,7 @@
 
   (def@ @@ :dispatch (&optional note)
     (setf @:prev (current-buffer))
-    (setf @:buff-tran
+    (setf @:tran
           (defsubobj@ @transition-class "buffer transition" (&optional note)
 
             (def@ @@ :send (prev next)
