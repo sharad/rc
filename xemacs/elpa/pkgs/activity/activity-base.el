@@ -59,6 +59,13 @@
 (def@ @activity-base :finalize ()
       ())
 
+(def@ @@ :init ()
+  ;; (@^:init)
+  (setf @:_occuredon (current-time)))
+
+(def@ @@ :occuredon ()
+  (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
+
 (defmacro defsubobj@ (object name params &rest body)
   `(let ((drived-obj
           (@extend ,object
