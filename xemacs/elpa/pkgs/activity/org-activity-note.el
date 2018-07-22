@@ -51,7 +51,9 @@
       (error "%s Not a marker." marker)))
 
   (def@ @@ :receive (fmt &rest args)
-    (
+    (let ((actual-marker
+           (cond
+             ((markerp marker) marker))))
      (org-insert-log-note marker (apply #'format fmt args) 'note)))
 
   (@:dispatch marker))
