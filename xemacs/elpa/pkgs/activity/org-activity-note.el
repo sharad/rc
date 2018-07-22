@@ -53,7 +53,8 @@
   (def@ @@ :receive (fmt &rest args)
     (let ((actual-marker
            (cond
-             ((markerp marker) marker))))
+             ((markerp marker) marker)
+             ((functionp)))))
      (org-insert-log-note marker (apply #'format fmt args) 'note)))
 
   (@:dispatch marker))
