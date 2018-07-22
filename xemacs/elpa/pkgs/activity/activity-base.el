@@ -218,7 +218,10 @@
 
 
 
-(progn
+(setf @activity-class
+
+      (defsubobj@ @activity-base "activity-base-class" ()
+        "Activity Base Class"
   ;; detectors
   (setf @activity-dectector-class
         (defsubobj@ @activity-base "activity detector class" ()
@@ -241,7 +244,7 @@
   (def@ @@ :dispatch ()
     (@:init))
 
-  (@:dispatch))
+  (@:dispatch)))
 
 
 ;;; act.el ends here
