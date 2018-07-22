@@ -49,8 +49,8 @@ buff-trans.el
 ;; change-activity
 ;; clock-activity
 (require 'mail-activity)
-org-activity-log-note
-org-activity-note
+;; org-activity-log-note
+;; org-activity-note
 (require 'org-clock-trans)
 
 (provide 'activity)
