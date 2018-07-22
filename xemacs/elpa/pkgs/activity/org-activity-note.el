@@ -111,7 +111,8 @@
       '(lambda ()
         (or
          org-clock-hd-marker
-         org-clock-marker))))
+         org-clock-marker)))
+  "Org clock activity node")
 
 
 ;; (@! @org-clock-note :send "Hello")
