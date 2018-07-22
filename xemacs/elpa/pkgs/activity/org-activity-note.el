@@ -109,9 +109,9 @@
   (@! @note-class :gen-org-note
       "org-clock-note"
       #'(lambda ()
-        (or
-         org-clock-hd-marker
-         org-clock-marker)))
+          (or
+           org-clock-hd-marker
+           org-clock-marker)))
   "Org clock activity node")
 
 
