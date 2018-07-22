@@ -83,7 +83,4 @@
 
   (@:dispatch marker1 marker2))
 
-
-
-
 ;;; org-activity-note.el ends here
