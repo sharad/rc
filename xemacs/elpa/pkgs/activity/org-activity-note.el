@@ -68,7 +68,7 @@
 
 
 (defsubclass-gen@ @note-class :gen-org-dual-note (marker1 marker2)
-  "Generator for org note message"
+  "Generator for dual org note message"
   (setf @:dest1 (@! @dest-class :gen-org-dest "org note dest1" marker1))
   (setf @:dest2 (@! @dest-class :gen-org-dest "org note dest2" marker2))
 
