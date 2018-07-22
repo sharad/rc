@@ -134,7 +134,7 @@
 
         (setf @:dests '())
 
-        (def@ @note-class :send (fmt &rest args)
+        (def@ @@ :send (fmt &rest args)
               (if (and (memq :dests (@:keys))
                        (consp @:dests))
                   (dolist (dest @:dests)
@@ -152,28 +152,28 @@
                        (boundp '@:dests)
                        (consp @:dests))))
 
-        (defsubclass-gen@ @note-class :gen-format-msg ()
+        (defsubclass-gen@ @@ :gen-format-msg ()
           "Generator for format message note"
           (push
            (@! @dest-class :gen-msg "msg")
            @:dests)
           )
 
-        (defsubclass-gen@ @note-class :gen-org-log-note ()
+        (defsubclass-gen@ @@ :gen-org-log-note ()
           "Generator for org log note"
           (push
            (@! @dest-class :gen-msg "msg")
            @:dests)
           )
 
-        (defsubclass-gen@ @note-class :gen-org-dual-log-note ()
+        (defsubclass-gen@ @@ :gen-org-dual-log-note ()
           "Generator for dual org log note"
           (push
            (@! @dest-class :gen-msg "msg")
            @:dests)
           )
 
-        (defsubclass-gen@ @note-class :gen-org-intreactive-log-note ()
+        (defsubclass-gen@ @@ :gen-org-intreactive-log-note ()
           "Generator for Interactive org log note"
           (push
            (@! @dest-class :gen-msg "msg")
