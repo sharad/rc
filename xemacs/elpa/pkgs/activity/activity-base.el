@@ -186,7 +186,7 @@
   (def@ @@ :dispatch ()
     (@:init))
 
-  (@:dispatch))
+  (@:dispatch)))
 
 
 (progn
