@@ -54,6 +54,7 @@
 
   (def@ @@ :dispatch ()
     (setf @:tran @org-clock-note))
-  (@:dispatch note))
+
+  (@:dispatch))
 
 ;;; mail-event.el ends here
