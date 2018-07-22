@@ -41,6 +41,7 @@
 
 (provide 'org-activity-note)
 
+
 (defsubclass-gen@ @dest-class :gen-org-dest (marker)
   (def@ @@ :dispatch (marker)
     (@:init)
@@ -59,7 +60,7 @@
 
 
 
-
+
 (defsubclass-gen@ @note-class :gen-org-note (marker)
   "Generator for org note message"
   (push
