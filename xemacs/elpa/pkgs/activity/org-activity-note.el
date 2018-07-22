@@ -59,8 +59,7 @@
       ((symbolp @:marker)
        (let ((m (symbol-value @:marker))
              (if (markerp m) m))))
-      (t
-       (error "can not find marker %s" @:marker))))
+      (t )))
 
   (def@ :get-marker ()
     (cond
