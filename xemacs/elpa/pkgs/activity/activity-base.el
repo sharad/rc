@@ -82,11 +82,11 @@
 
 (defsubobj@ @ "activity-base" ()
     "Activity Base"
-    (def@ @@ :keyp (key)
-      (memq key (@:keys)))
+  (def@ @@ :keyp (key)
+    (memq key (@:keys)))
 
   (def@ @@ :finalize ()
-        ())
+    ())
 
   (def@ @@ :init ()
     ;; (@^:init)
@@ -94,7 +94,7 @@
 
   (def@ @@ :occuredon ()
     (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
-)
+  )
 
 
 
