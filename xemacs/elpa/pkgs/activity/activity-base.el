@@ -128,8 +128,8 @@
 
 
 
-(setf @dest-class
-      (defsubobj@ @activity-base "dest-base" ()
+(setf @note-class
+      (defsubobj@ @activity-base "note-base" ()
         "Note Class"
   ;; note
   (setf @note-class
