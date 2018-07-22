@@ -123,7 +123,7 @@
              fmt args))))
 
 (setf @activity-base
-      (defsubobj@ @ "activity-base" ()
+      (defsubobj@ @activity-base "activity-base" ()
           "Activity Base"
 
         (def@ @@ :keyp (key)
