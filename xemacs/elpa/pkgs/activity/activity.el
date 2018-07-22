@@ -49,8 +49,8 @@ buff-trans.el
 ;; change-activity
 ;; clock-activity
 mail-activity
-org-activity-log-note.el
-org-activity-note.el
+org-activity-log-note
+org-activity-note
 org-clock-trans.el
 test.el
 wakatime-mode.el
