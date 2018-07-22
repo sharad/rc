@@ -52,7 +52,7 @@
         (@! (@! @:tran :new) :send )
         )))
 
-  (def@ @@ :dispatch (&optional note)
+  (def@ @@ :dispatch ()
     (setf @:tran @org-clock-note))
   (@:dispatch note))
 
