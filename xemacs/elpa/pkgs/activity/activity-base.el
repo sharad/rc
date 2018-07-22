@@ -222,29 +222,29 @@
 
       (defsubobj@ @activity-base "activity-detector-base-class" ()
         "Activity Base Class"
-  ;; detectors
-  (setf @activity-dectector-class
-        (defsubobj@ @activity-base "activity detector class" ()
-          "Activity detector class"
-          (def@ @@ :note ()
-            )))
+        ;; detectors
+        (setf @activity-dectector-class
+              (defsubobj@ @activity-base "activity detector class" ()
+                "Activity detector class"
+                (def@ @@ :note ()
+                  )))
 
-  (setf @event-dectector-class
-        (defsubobj@ @activity-dectector-class "event detector class" ()
-          "Event detector class"
-          (def@ @@ :note ()
-            )))
+        (setf @event-dectector-class
+              (defsubobj@ @activity-dectector-class "event detector class" ()
+                "Event detector class"
+                (def@ @@ :note ()
+                  )))
 
-  (setf @transition-dectector-class
-        (defsubobj@ @event-dectector-class "transition detector class" ()
-          "Transition detector class"
-          (def@ @@ :note ()
-            )))
+        (setf @transition-dectector-class
+              (defsubobj@ @event-dectector-class "transition detector class" ()
+                "Transition detector class"
+                (def@ @@ :note ()
+                  )))
 
-  (def@ @@ :dispatch ()
-    (@:init))
+        (def@ @@ :dispatch ()
+          (@:init))
 
-  (@:dispatch)))
+        (@:dispatch)))
 
 
 ;;; act.el ends here
