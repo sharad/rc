@@ -191,7 +191,7 @@
 
       (defsubobj@ @activity-base "activity-base-class" ()
         "Activity Base Class"
-        ;; activity
+
         (setf @activity-class
               (defsubobj@ @activity-base "activity class" ()
                 "Activity class"
