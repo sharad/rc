@@ -60,7 +60,10 @@
                         m
                       (error "no marker %s" marker)))))
              ((symbolp marker)
-              (symbol-value marker)))))
+              (let ((m (funcall marker))
+                    (if (markerp m)
+                        m
+                      (error "no marker %s" marker))))))))
      (org-insert-log-note marker (apply #'format fmt args) 'note)))
 
   (@:dispatch marker))
