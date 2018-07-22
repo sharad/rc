@@ -58,7 +58,6 @@
   (@:dispatch marker))
 
 
-
 (defsubclass-gen@ @note-class :gen-org-note (marker)
   "Generator for org note message"
   (push
