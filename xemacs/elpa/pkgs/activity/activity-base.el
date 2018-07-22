@@ -89,7 +89,7 @@
     (def@ @@ :occuredon ()
       (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
 
-    (def@ :dispatch ()
+    (def@ @@ :dispatch ()
       (@:init))
 
     (@:dispatch)))
