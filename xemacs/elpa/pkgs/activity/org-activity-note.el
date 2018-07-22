@@ -114,6 +114,6 @@
          org-clock-marker))))
 
 
-(@! @org-clock-note :send "Hello")
+;; (@! @org-clock-note :send "Hello")
 
 ;;; org-activity-note.el ends here
