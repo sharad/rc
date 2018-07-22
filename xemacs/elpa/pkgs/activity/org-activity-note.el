@@ -50,7 +50,7 @@
         (setf @:note-marker marker)
       (error "%s Not a marker." marker)))
 
-  (def@ :get-marker ()
+  (def@ :valid-marker ()
     (cond
       ((markerp @:marker) @:marker)
       ((functionp @:marker)
