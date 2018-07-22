@@ -51,7 +51,20 @@
       (error "%s Not a marker." marker)))
 
   (def@ :get-marker ()
-    )
+    (cond
+      ((markerp @:marker) marker)
+      ((functionp marker)
+       (let ((m (funcall marker))
+             (if (markerp m)
+                 m
+               (error "no marker %s" marker)))))
+      ((symbolp marker)
+       (let ((m (symbol-value marker))
+             (if (markerp m)
+                 m
+               (error "no marker %s" marker)))))
+      (t
+       (error "can not find marker %s" marker))))
 
   (def@ @@ :receive (fmt &rest args)
     (let ((actual-marker
