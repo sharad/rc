@@ -81,6 +81,7 @@
 
 
 (defsubobj@ @ "activity-base" ()
+    "Activity Base"
     (def@ @@ :keyp (key)
       (memq key (@:keys)))
 
