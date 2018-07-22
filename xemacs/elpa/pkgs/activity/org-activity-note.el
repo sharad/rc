@@ -77,4 +77,7 @@
   (def@ @@ :send2 (fmt &rest args)
     (apply (@ @:dest2 :receive) fmt args)))
 
+
+
+
 ;;; org-activity-note.el ends here
