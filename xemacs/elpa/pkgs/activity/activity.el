@@ -43,6 +43,17 @@
 
 
 
+activity-base
+activity-note
+buff-trans.el
+change-activity
+clock-activity.el
+mail-activity.el
+org-activity-log-note.el
+org-activity-note.el
+org-clock-trans.el
+test.el
+wakatime-mode.el
 
 (provide 'activity)
 
