@@ -60,7 +60,7 @@
 
 
 (defsubclass-gen@ @note-class :gen-org-note (marker)
-  "Generator for dual org note message"
+  "Generator for org note message"
   (push
    (@! @dest-class :gen-org-dest "msg" marker)
    @:dests)
