@@ -60,7 +60,7 @@
                         m
                       (error "no marker %s" marker)))))
              ((symbolp marker)
-              (let ((m (funcall marker))
+              (let ((m (symbol-value marker))
                     (if (markerp m)
                         m
                       (error "no marker %s" marker))))))))
