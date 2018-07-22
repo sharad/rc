@@ -53,9 +53,6 @@
 
 
 
-
-
-
 
 
 (defun activity-bind-hooks ()

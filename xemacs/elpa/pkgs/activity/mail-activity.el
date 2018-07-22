@@ -41,6 +41,33 @@
 
 (provide 'mail-event)
 
+(defsubclass-gen@ @transition-dectector-class :gen-buffer-trans (&optional note)
+  (def@ @@ :make-event ()
+    "Make buffer change event."
+    (let ((curr (current-buffer)))
+      (message "running :make-event")
+      (unless (eql
+               @:prev
+               curr)
+        (@! (@! @:tran :new) :send @:prev curr)
+        (setf @:prev curr))))
 
+  (def@ @@ :dispatch (&optional note)
+    (setf @:prev (current-buffer))
+    (setf @:tran
+          (defsubobj@ @transition-class "buffer transition" (&optional note)
+
+            (def@ @@ :send (prev next)
+              (@! @:note :send "switched from buffer %s to %s on %s"
+                  prev next (@:occuredon)))
+
+            (def@ @@ :dispatch (&optional note)
+              (@:init)
+              (setf @:note
+                    (or note
+                        (@! @note-class :gen-format-msg "test"))))
+
+            (@:dispatch note))))
+  (@:dispatch note))
 
 ;;; mail-event.el ends here
