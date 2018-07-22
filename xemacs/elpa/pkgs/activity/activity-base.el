@@ -183,7 +183,10 @@
      @:dests)
     )
 
-  )
+  (def@ @@ :dispatch ()
+    (@:init))
+
+  (@:dispatch))
 
 
 (progn
