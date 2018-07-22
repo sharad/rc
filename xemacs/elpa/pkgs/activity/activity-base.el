@@ -58,7 +58,7 @@
        ,@(if (stringp (car body)) (cdr body) body))
 
      drived-obj))
-(put 'defsubobj@ 'lisp-indent-function 2)
+(put 'defsubobj@ 'lisp-indent-function 3)
 
 (defmacro defsubclass-gen@ (object gen-method params &rest body )
   `(progn
