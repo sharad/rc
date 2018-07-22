@@ -46,6 +46,7 @@
   :group 'convenience
   :prefix "activity-")
 
+
 (defmacro defsubobj@ (object name params &rest body)
   `(let ((drived-obj
           (@extend ,object
@@ -71,7 +72,6 @@
 
 
 
-
 (setf @activity-base
   (defsubobj@ @ "activity-base" ()
     "Activity Base"
@@ -93,6 +93,7 @@
       (@:init))
 
     (@:dispatch)))
+
 
 (progn
   ;; destination
