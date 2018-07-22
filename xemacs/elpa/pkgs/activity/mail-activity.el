@@ -53,7 +53,6 @@
         (setf @:prev curr))))
 
   (def@ @@ :dispatch (&optional note)
-    (setf @:prev (current-buffer))
     (setf @:tran @org-clock-note))
   (@:dispatch note))
 
