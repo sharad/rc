@@ -105,6 +105,8 @@
   (@:dispatch marker1 marker2))
 
 
+(defvar @org-clock-note
+  (@! @note-class :gen-org-note))
 
 
 ;;; org-activity-note.el ends here
