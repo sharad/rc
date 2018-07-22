@@ -58,9 +58,7 @@
              (if (markerp m) m))))
       ((symbolp @:marker)
        (let ((m (symbol-value @:marker))
-             (if (markerp m)
-                 m
-               (error "no marker %s" @:marker)))))
+             (if (markerp m) m))))
       (t
        (error "can not find marker %s" @:marker))))
 
