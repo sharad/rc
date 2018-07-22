@@ -94,7 +94,7 @@
 
 
 (setf @dest-class
-      (defsubobj@ @activity-base "dest-class" ()
+      (defsubobj@ @activity-base "dest-base-class" ()
           "Destination Class"
 
           (defsubclass-gen@ @@ :gen-builder ()
