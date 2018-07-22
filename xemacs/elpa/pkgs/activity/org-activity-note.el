@@ -106,7 +106,7 @@
 
 
 (defvar @org-clock-note
-  (@! @note-class :gen-org-note
+  (@! @note-class :gen-org-note "org-clock-note"
       '(lambda ()
         (or
          org-clock-hd-marker
