@@ -187,64 +187,48 @@
         (@:dispatch)))
 
 
-(setf @activity-class
+(progn
+  ;; activity
+  (setf @activity-class
+        (defsubobj@ @activity-base "activity class" ()
+          "Activity class"
+          (def@ @@ :init ()
+            (@^:init)
+            (setf @:occuredon (current-time)))))
 
-      (defsubobj@ @activity-base "activity-base-class" ()
-        "Activity Base Class"
+  (setf @event-class
+        (defsubobj@ @activity-class "event class" ()
+          "Event class"
+          (def@ @@ :note ()
+            )))
 
-        (setf @activity-class
-              (defsubobj@ @activity-base "activity class" ()
-                "Activity class"
-                (def@ @@ :init ()
-                  (@^:init)
-                  (setf @:occuredon (current-time)))))
-
-        (setf @event-class
-              (defsubobj@ @activity-class "event class" ()
-                "Event class"
-                (def@ @@ :note ()
-                  )))
-
-        (setf @transition-class
-              (defsubobj@ @event-class "transition class" ()
-                "Transition class"
-                (def@ @@ :note ()
-                  )))
-
-        (def@ @@ :dispatch ()
-          (@:init))
-
-        (@:dispatch)))
+  (setf @transition-class
+        (defsubobj@ @event-class "transition class" ()
+          "Transition class"
+          (def@ @@ :note ()
+            ))))
 
 
 
-(setf @activity-dectector-class
+(progn
+  ;; detectors
+  (setf @activity-dectector-class
+        (defsubobj@ @activity-base "activity detector class" ()
+          "Activity detector class"
+          (def@ @@ :note ()
+            )))
 
-      (defsubobj@ @activity-base "activity-detector-base-class" ()
-        "Activity Base Class"
-        ;; detectors
-        (setf @activity-dectector-class
-              (defsubobj@ @activity-base "activity detector class" ()
-                "Activity detector class"
-                (def@ @@ :note ()
-                  )))
+  (setf @event-dectector-class
+        (defsubobj@ @activity-dectector-class "event detector class" ()
+          "Event detector class"
+          (def@ @@ :note ()
+            )))
 
-        (setf @event-dectector-class
-              (defsubobj@ @activity-dectector-class "event detector class" ()
-                "Event detector class"
-                (def@ @@ :note ()
-                  )))
-
-        (setf @transition-dectector-class
-              (defsubobj@ @event-dectector-class "transition detector class" ()
-                "Transition detector class"
-                (def@ @@ :note ()
-                  )))
-
-        (def@ @@ :dispatch ()
-          (@:init))
-
-        (@:dispatch)))
+  (setf @transition-dectector-class
+        (defsubobj@ @event-dectector-class "transition detector class" ()
+          "Transition detector class"
+          (def@ @@ :note ()
+            ))))
 
 
 ;;; act.el ends here
