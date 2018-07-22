@@ -46,90 +46,178 @@
   :group 'convenience
   :prefix "activity-")
 
-
-(defvar @methods-enforce
-  (@extend :name "methods enforce"
-           :occuredon (current-time)))
 
-(def@ @methods-enforce :init ()
-      (@^:init)
-      (setf @:occuredon (current-time)))
 
-(def@ @methods-enforce :enforce (object name)
-      `(progn
-         (def@ ,object ,name
-           (error "define method %s for object %s"
-                  ,name ,object))))
+(defvar @activity-base
+  (@extend
+   :name "act base."
+   :finilize-args ()))
 
-(def@ @methods-enforce :un-enforce (object name)
-      `(progn
-         ))
+(def@ @activity-base :keyp (key)
+      (memq key (@:keys)))
 
-
-(defvar @activity
-  (@extend @methods-enforce
-           :name "Class Activity"
-           :occuredon (current-time)))
+(def@ @activity-base :finalize ()
+      ())
 
-(def@ @activity :add-def (method fn-body)
-      (eval
-       `(progn
-          (setf (@ @@ ,method)
-                (function* ,fn-body)))))
+(defmacro defsubobj@ (object name params &rest body)
+  `(let ((drived-obj
+          (@extend ,object
+                   :name (concat (@ ,object :name) " > " ,name))))
 
-(defmacro defun@ (object method params &rest body)
-  "Define METHOD body on OBJECT."
-  (declare (indent defun))
+     (with-@@ drived-obj
+       ,@(if (stringp (car body))
+            `((setf @:doc ,(car body))))
+       ,@(if (stringp (car body)) (cdr body) body))
+
+     drived-obj))
+(put 'defsubobj@ 'lisp-indent-function 3)
+
+(defmacro defsubclass-gen@ (object gen-method params &rest body )
   `(progn
-     (@! ,object :add-def ',method
-         ',`(lambda ,(cons '@@ params)
-              ,@(if (stringp (car body)) (list (car body)) ())
-              (with-@@ @@
-                  ,@(if (stringp (car body)) (cdr body) body)
-                  )))))
+     (def@ ,object ,gen-method (name ,@params)
+           ,@(if (stringp (car body)) (list (car body)) ())
+           (defsubobj@ ,object name ,params
+             ,@(if (stringp (car body)) (cdr body) body)))))
+(put 'defsubclass-gen@ 'lisp-indent-function 3)
 
-(def@ @activity :init ()
-      (@^:init)
-      (setf @:occuredon (current-time)))
 
-(def@ @activity :log ()
-      (message "Time %s" (@:occuredon)))
 
-(def@ @activity :message ()
-      (error "No :message function found."))
 
-(def@ @activity :object-sexp ()
-      (error "No :object-sexp function found."))
 
-(def@ @activity :occuredon ()
-      (format-time-string "%Y-%m-%d" @:occuredon))
 
-;; (describe-@ @activity :name)
-(defvar @event
-  (@extend @activity :name "Event"))
 
-(def@ @event :notify ()
-      (when (fboundp '@:message)
-        (@:send (@:message))
-        (@:log  (@:message))))
 
-(defvar @transition
-  (@extend @activity :name "Class Transition"))
-
-(setf (@ @transition :old) nil)
-
-(def@ @transition :init (new)
-      (@^:init)
-      (setf @:new new))
 
+(progn
+  ;; destination
+  (setf @dest-class
+        (@extend @activity-base
+                 :name "dest class"))
 
-(defvar @transition-singleton
-  (@extend @transition :name "Class Transition"))
+  (defsubclass-gen@ @dest-class :gen-builder ()
+    (def@ @@ :receive (fmt &rest args)
+      (apply #'format
+             fmt args)))
 
-(def@ @transition-singleton :init (new)
-      (@^:init)
-      (setf @:new new))
+  (defsubclass-gen@ @dest-class :gen-msg ()
+    (def@ @@ :receive (fmt &rest args)
+      (apply #'message
+             fmt args)))
+
+  (defsubclass-gen@ @dest-class :gen-warning ()
+    (def@ @@ :receive (fmt &rest args)
+      (apply #'lwarn
+             'activity
+             'warning
+             fmt args)))
+
+  (defsubclass-gen@ @dest-class :gen-error ()
+    (def@ @@ :receive (fmt &rest args)
+      (apply #'lwarn
+             'activity
+             'error
+             fmt args))))
+
 
+(progn
+  ;; note
+  (setf @note-class
+        (@extend @activity-base
+                 :name "note class"))
+  (setf (@ @note-class :dests) '())
+
+  (def@ @note-class :send (fmt &rest args)
+        (if (and (memq :dests (@:keys))
+                 (consp @:dests))
+            (dolist (dest @:dests)
+              (if dest
+                  (if (@! dest :keyp :receive)
+                      ;; (@! dest :receive fmt args)
+                      (apply (@ dest :receive) dest fmt args)
+                    (message
+                     "dest %s [%s] not has :receive method, not sending msg."
+                     (@ dest :name)
+                     (@! dest :keys)))
+                (message "dest is nil")))
+          (error "No @:dests %d boundp(%s) consp(%s) present."
+                 (length @:dests)
+                 (boundp '@:dests)
+                 (consp @:dests))))
+
+  (defsubclass-gen@ @note-class :gen-format-msg ()
+    "Generator for format message note"
+    (push
+     (@! @dest-class :gen-msg "msg")
+     @:dests)
+    )
+
+  (defsubclass-gen@ @note-class :gen-org-log-note ()
+    "Generator for org log note"
+    (push
+     (@! @dest-class :gen-msg "msg")
+     @:dests)
+    )
+
+  (defsubclass-gen@ @note-class :gen-org-dual-log-note ()
+    "Generator for dual org log note"
+    (push
+     (@! @dest-class :gen-msg "msg")
+     @:dests)
+    )
+
+  (defsubclass-gen@ @note-class :gen-org-intreactive-log-note ()
+    "Generator for Interactive org log note"
+    (push
+     (@! @dest-class :gen-msg "msg")
+     @:dests)
+    ))
+
+
+(progn
+  ;; activity
+  (setf @activity-class
+        (defsubobj@ @activity-base "activity class" ()
+          "Activity class"
+          (def@ @@ :init ()
+            (@^:init)
+            (setf @:occuredon (current-time)))))
+
+  (setf @event-class
+        (defsubobj@ @activity-class "event class" ()
+          "Event class"
+          (def@ @@ :note ()
+            )))
+
+  (setf @transition-class
+        (defsubobj@ @event-class "transition class" ()
+          "Transition class"
+          (def@ @@ :note ()
+            ))))
+
+
+
+(progn
+  ;; detectors
+  (setf @activity-dectector-class
+        (defsubobj@ @activity-base "activity detector class" ()
+          "Activity detector class"
+          (def@ @@ :note ()
+            )))
+
+  (setf @event-dectector-class
+        (defsubobj@ @activity-dectector-class "event detector class" ()
+          "Event detector class"
+          (def@ @@ :note ()
+            )))
+
+  (setf @transition-dectector-class
+        (defsubobj@ @event-dectector-class "transition detector class" ()
+          "Transition detector class"
+          (def@ @@ :note ()
+            ))))
+
+
+;;; act.el ends here
 
 ;; based on note type correct destination should be chosen.
 ;; objects

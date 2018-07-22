@@ -1,3 +1,41 @@
+;;; act.el --- Emacs Activity logger, analyzer and reporter  -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2016  sharad
+
+;; Author: sharad <sh4r4d@gmail.com>
+;; Keywords: data
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; This package meant to log, analyze and report all emacs activity of
+;; user which could further utilized to visualize activity of user
+;; during period of time or editing session.
+
+;; Enable Activity for the current buffer by invokingi
+;; `activity-mode'. If you wish to activate it globally, use
+;; `global-activity-mode'.
+
+;; Set variable `activity-api-key' to your API key. Point
+;; `activity-cli-path' to the absolute path of the CLI script
+;; (activity-cli.py).
+
+;; See http://nullprogram.com/blog/2013/04/07/ for help
+;; add example code directly here for quick reference.
+
+;;; Code:
 
 
 (require '@)
@@ -15,18 +53,6 @@
 (def@ @act-base :finalize ()
       ())
 
-(defmacro fun-param (&rest params)
-  `(remove-if
-    #'(lambda (p) (member p '(&optional &rest)))
-    ',params))
-
-(defmacro fun-apply-param (params)
-  `(remove-if
-    #'(lambda (p) (member p '(&optional &rest)))
-    ',params))
-
-(fun-apply-param (&rest x y))
-
 (defmacro defsubobj@ (object name params &rest body)
   `(let ((drived-obj
           (@extend ,object
@@ -35,25 +61,10 @@
      (with-@@ drived-obj
        ,@(if (stringp (car body))
             `((setf @:doc ,(car body))))
-       ,@(if (stringp (car body)) (cdr body) body)
-
-       (if (@:keyp :dispatch)
-           (if t ;; (fboundp @:dispatch)
-               (apply @:dispatch ,`(fun-apply-param ,params))
-             (message "%s: no :dispatch function defined."
-                      @:name))
-         (message "%s: no :dispatch prop defined."
-                  @:name)))
+       ,@(if (stringp (car body)) (cdr body) body))
 
      drived-obj))
 (put 'defsubobj@ 'lisp-indent-function 3)
-
-(macroexpand-1
- '(defsubobj@ @dest-class name (x &optional y)
-   (def@ @@ :receive (fmt &rest args)
-     (apply (function message) fmt args))))
-
-
 
 (defmacro defsubclass-gen@ (object gen-method params &rest body )
   `(progn
@@ -62,6 +73,13 @@
            (defsubobj@ ,object name ,params
              ,@(if (stringp (car body)) (cdr body) body)))))
 (put 'defsubclass-gen@ 'lisp-indent-function 3)
+
+
+
+
+
+
+
 
 (progn
   ;; destination
@@ -78,47 +96,6 @@
     (def@ @@ :receive (fmt &rest args)
       (apply #'message
              fmt args)))
-
-  (when nil
-    (macroexpand-1
-     (macroexpand-1
-      '(defsubclass-gen@ @dest-class :gen-msg (x &optional y)
-        (def@ @@ :receive (fmt &rest args)
-          (apply #'message
-                 fmt args)))))
-
-
-    (progn
-      (def@ @dest-class :gen-msg (name x &optional y)
-            (let ((drived-obj (@extend @dest-class :name (concat (@ @dest-class :name) " > " name))))
-              (with-@@ drived-obj
-                  (def@ @@ :receive (fmt &rest args)
-                    (apply (function message) fmt args))
-                (if (@:keyp :dispatch)
-                    (if t
-                        (@:dispatch x &optional y)
-                      (message "%s: no :dispatch function defined." @:name))
-                  (message "%s: no :dispatch prop defined." @:name)))
-              drived-obj)))
-
-
-
-    (progn (def@ @dest-class :gen-msg (name x) (defsubobj@ @dest-class name (x) (def@ @@ :receive (fmt &rest args) (apply (function message) fmt args)))))
-    (progn (def@ @dest-class :gen-msg (name) (defsubobj@ @dest-class name () (def@ @@ :receive (fmt &rest args) (apply (function message) fmt args)))))
-
-
-
-    (macroexpand-1
-     '(defsubobj@ @dest-class name (x &optional y)
-       (def@ @@ :receive (fmt &rest args)
-         (apply (function message) fmt args))))
-
-
-
-
-
-    (@ (@! @dest-class :gen-msg "msg") :receive)
-    )
 
   (defsubclass-gen@ @dest-class :gen-warning ()
     (def@ @@ :receive (fmt &rest args)
@@ -147,7 +124,8 @@
             (dolist (dest @:dests)
               (if dest
                   (if (@! dest :keyp :receive)
-                      (@! dest :receive fmt args)
+                      ;; (@! dest :receive fmt args)
+                      (apply (@ dest :receive) dest fmt args)
                     (message
                      "dest %s [%s] not has :receive method, not sending msg."
                      (@ dest :name)
@@ -207,8 +185,6 @@
           (def@ @@ :note ()
             ))))
 
-
-
 (progn
   ;; detectors
   (setf @activity-dectector-class
@@ -230,151 +206,4 @@
             ))))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(defsubclass-gen@ @transition-dectector-class :gen-buffer-trans (&optional note)
-
-  (def@ @@ :make-event ()
-    "Make buffer change event."
-    (let ((curr (current-buffer)))
-      (message "running :make-event")
-      (unless (eql
-               @:prev
-               curr)
-        (@! @:buff-tran :send @:prev curr)
-        (setf @:prev curr))))
-
-
-
-
-  (def@ @@ :dispatch (&optional xnote)
-    ;; (@^:dispatch)
-
-    (setf @:prev (current-buffer))
-
-    (setf @:buff-tran
-          (defsubobj@ @transition-class "buffer transition" (&optional xnote)
-
-            (setf @:occuredon "x")
-            (def@ @@ :send (prev next)
-              (@! @:note :send "switched buffer %s to %s on %s"
-                  prev next @:occuredon))
-
-            (def@ @@ :dispatch (&optional note)
-              (@^:init)
-              (setf @:note
-                    (@! @note-class :gen-format-msg "test")
-                    ;; (or note
-                    ;;     (@! @note-class :gen-format-msg "test"))
-                    ))))
-    ;; (@:install)
-    ))
-
-(setf @buff-transition-detector
-      (@! @transition-dectector-class :gen-buffer-trans "test" nil))
-
-(defun make-event ()
-  (message "running make-event")
-  (@! @buff-transition-detector :make-event))
-
-(defun buff-transition-detector-install ()
-  (add-hook 'buffer-list-update-hook     'make-event)
-  (add-hook 'elscreen-screen-update-hook 'make-event)
-  (add-hook 'elscreen-goto-hook          'make-event))
-
-(defun buff-transition-detector-uninstall ()
-  (remove-hook 'buffer-list-update-hook     'make-event)
-  (remove-hook 'elscreen-screen-update-hook 'make-event)
-  (remove-hook 'elscreen-goto-hook          'make-event))
-
-
-
-(when nil
-  (buff-transition-detector-install)
-
-  (buff-transition-detector-uninstall)
-
-  (@! @buff-transition-detector :make-event)
-
-  (@ @buff-transition-detector :prev)
-
-
-  (@ (@! @dest-class :gen-msg "msg") :receive)
-
-
-  (@ (@! @note-class :gen-format-msg "test") :dests)
-  )
-
-
-
-
-
-
-
-
-
-
-
-
-(when nil
-
-  (@! (@! @note-class :gen-format-msg "message") :send "Test %d" 00)
-
-  (@ (car (@ (@! @note-class :gen-format-msg "message") :dests)) :name)
-
-  (@ @note-class :gen-format-msg)
-
-
-  (defsubclass-gen@ @note-class :gen-few-msg ()
-    (push
-     (@! @dest-class :gen-msg "msg")
-     @:dests)
-    (push
-     (@! @dest-class :gen-warning "warning")
-     @:dests)
-    )
-
-  (@! (@! @note-class :gen-few-msg "message") :send "Test %d" 00)
-
-  (@! (car (@ (@! @note-class :gen-few-msg "message") :dests)) :receive "TEst")
-
-  ;; (@! (@! @dest-class :gen-warning "warning") :receive "Hello")
-  ;; (@! (@! @dest-class :gen-msg "msg") :receive "Hello")
-  )
-
-
-(macroexpand-all
- '(defsubclass-gen@ @note-class :gen-org-intreactive-log-note ()
-   (push
-    (@! @dest-class :gen-msg "msg")
-    @:dests)
-   ))
-
-(macroexpand-1
- '(defsubclass-gen@ @note-class :gen-org-intreactive-log-note (hello)
-   (push
-    (@! @dest-class :gen-msg "msg")
-    @:dests)
-   ))
-
-;; (progn (def@ @note-class :gen-org-intreactive-log-note (name hello) (defsubobj@ @note-class name (hello) (push (@! @dest-class :gen-msg "msg") @:dests))))
+;;; act.el ends here
