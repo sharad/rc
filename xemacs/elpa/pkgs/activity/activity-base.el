@@ -49,7 +49,7 @@
 (defmacro defsubobj@ (object name params &rest body)
   `(let ((drived-obj
           (@extend ,object
-                   :name (concat (@ ,object :name) " > " ,name))))
+                   :name ,name)))
 
      (with-@@ drived-obj
        ,@(if (stringp (car body))
