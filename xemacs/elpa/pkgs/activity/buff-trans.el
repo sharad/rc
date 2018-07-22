@@ -57,7 +57,6 @@
     (setf @:buff-tran
           (defsubobj@ @transition-class "buffer transition" (&optional note)
 
-
             (def@ @@ :send (prev next)
               (@! @:note :send "switched from buffer %s to %s on %s"
                   prev next (@:occuredon)))
