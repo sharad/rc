@@ -59,7 +59,7 @@
 
 
 
-(defsubclass-gen@ @note-class :gen-format-msg ()
+(defsubclass-gen@ @note-class :gen-org-note ()
   "Generator for format message note"
   (push
    (@! @dest-class :gen-msg "msg")
