@@ -56,12 +56,7 @@
     (setf @:prev (current-buffer))
     (setf @:buff-tran
           (defsubobj@ @transition-class "buffer transition" (&optional note)
-            (def@ @@ :init ()
-              ;; (@^:init)
-              (setf @:_occuredon (current-time)))
 
-            (def@ @@ :occuredon ()
-                  (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
 
             (def@ @@ :send (prev next)
               (@! @:note :send "switched from buffer %s to %s on %s"
