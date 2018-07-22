@@ -123,7 +123,7 @@
              fmt args))))
 
 (setf @dest-class
-      (defsubobj@ @activity-base "activity-base" ()
+      (defsubobj@ @activity-base "dest-base" ()
           "Activity Base"
 
 
