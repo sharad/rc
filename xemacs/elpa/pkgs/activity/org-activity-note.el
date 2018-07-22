@@ -48,7 +48,7 @@
     (@:init)
     (setf @:marker marker))
 
-  (def@ :valid-markerp ()
+  (def@ @@ :valid-markerp ()
     (cond
       ((markerp @:marker) @:marker)
       ((functionp @:marker)
@@ -59,7 +59,7 @@
              (if (markerp m) m))))
       (t )))
 
-  (def@ :get-marker ()
+  (def@ @@ :get-marker ()
     ;; (cond
     ;;   ((markerp @:marker) @:marker)
     ;;   ((functionp @:marker)
@@ -74,7 +74,7 @@
     ;;            (error "s no marker %s" @:marker))))
     ;;   (t
     ;;    (error "can not find marker %s" @:marker)))
-    )
+    (message "hello"))
 
   (def@ @@ :receive (fmt &rest args)
     (org-insert-log-note (@:get-marker) (apply #'format fmt args) 'note))
