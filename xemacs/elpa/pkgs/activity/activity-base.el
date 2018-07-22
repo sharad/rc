@@ -87,7 +87,8 @@
       (setf @:_occuredon (current-time)))
 
     (def@ @@ :occuredon ()
-      (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))))
+      (format-time-string "%Y-%m-%d %H:%M:%S" @:_occuredon))
+    ))
 
 
 
