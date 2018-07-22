@@ -53,6 +53,9 @@
 ;; org-activity-note
 (require 'org-clock-trans)
 
+
+
+
 (provide 'activity)
 
 
