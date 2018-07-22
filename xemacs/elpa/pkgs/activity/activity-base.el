@@ -126,24 +126,24 @@
       (defsubobj@ @activity-base "dest-base" ()
           "Destination Class"
 
-          (defsubclass-gen@ @dest-class :gen-builder ()
+          (defsubclass-gen@ @@ :gen-builder ()
             (def@ @@ :receive (fmt &rest args)
               (apply #'format
                      fmt args)))
 
-          (defsubclass-gen@ @dest-class :gen-msg ()
+          (defsubclass-gen@ @@ :gen-msg ()
             (def@ @@ :receive (fmt &rest args)
               (apply #'message
                      fmt args)))
 
-          (defsubclass-gen@ @dest-class :gen-warning ()
+          (defsubclass-gen@ @@ :gen-warning ()
             (def@ @@ :receive (fmt &rest args)
               (apply #'lwarn
                      'activity
                      'warning
                      fmt args)))
 
-          (defsubclass-gen@ @dest-class :gen-error ()
+          (defsubclass-gen@ @@ :gen-error ()
             (def@ @@ :receive (fmt &rest args)
               (apply #'lwarn
                      'activity
