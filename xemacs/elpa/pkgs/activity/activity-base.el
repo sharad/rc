@@ -68,9 +68,6 @@
              ,@(if (stringp (car body)) (cdr body) body)))))
 (put 'defsubclass-gen@ 'lisp-indent-function 3)
 
-
-
-
 
 (setf @activity-base
   (defsubobj@ @ "activity-base" ()
