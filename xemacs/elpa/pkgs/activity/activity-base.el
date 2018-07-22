@@ -187,7 +187,10 @@
         (@:dispatch)))
 
 
-(progn
+(setf @note-class
+
+      (defsubobj@ @activity-base "note-base-class" ()
+        "Note Base Class"
   ;; activity
   (setf @activity-class
         (defsubobj@ @activity-base "activity class" ()
@@ -206,7 +209,7 @@
         (defsubobj@ @event-class "transition class" ()
           "Transition class"
           (def@ @@ :note ()
-            ))))
+            )))))
 
 
 
