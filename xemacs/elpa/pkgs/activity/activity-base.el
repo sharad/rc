@@ -220,7 +220,7 @@
 
 (setf @activity-dectector-class
 
-      (defsubobj@ @activity-base "detector-base-class" ()
+      (defsubobj@ @activity-base "activity-detector-base-class" ()
         "Activity Base Class"
   ;; detectors
   (setf @activity-dectector-class
