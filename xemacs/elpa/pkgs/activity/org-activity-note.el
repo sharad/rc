@@ -61,9 +61,8 @@
 
 (defsubclass-gen@ @note-class :gen-org-note (marker)
   "Generator for format message note"
-
   (push
-   (@! @dest-class :gen-org-dest "msg")
+   (@! @dest-class :gen-org-dest "msg" marker)
    @:dests)
   )
 
