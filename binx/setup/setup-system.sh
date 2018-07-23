@@ -265,8 +265,6 @@ function setup_misc()
 function setup_conkeror_package()
 {
 
-    # Download firefox from https://ftp.mozilla.org/pub/firefox/releases/46.0/ setup in
-
     if [ ! -d /opt/firefox ]
     then
         FOXURL='https://ftp.mozilla.org/pub/firefox/releases/56.0/linux-x86_64/en-US/firefox-56.0.tar.bz2'
