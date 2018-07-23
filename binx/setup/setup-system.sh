@@ -268,7 +268,7 @@ function setup_conkeror_package()
     if [ ! -d /opt/firefox ]
     then
         FOXVER=57.0
-        FOXURL='https://ftp.mozilla.org/pub/firefox/releases/56.0/linux-x86_64/en-US/firefox-56.0.tar.bz2'
+        FOXURL='https://ftp.mozilla.org/pub/firefox/releases/$FOXVER/linux-x86_64/en-US/firefox-56.0.tar.bz2'
         if [ -e /opt/firefox ]
         then
             sudo rm -rf /opt/firefox
