@@ -267,12 +267,15 @@ function setup_conkeror_package()
 
     # Download firefox from https://ftp.mozilla.org/pub/firefox/releases/46.0/ setup in
 
-    FOXURL='https://ftp.mozilla.org/pub/firefox/releases/56.0/linux-x86_64/en-US/firefox-56.0.tar.bz2'
-    if [ -e /opt/firefox ]
+    if [ ! -d /opt/firefox ]
     then
-        sudo rm -rf /opt/firefox
+        FOXURL='https://ftp.mozilla.org/pub/firefox/releases/56.0/linux-x86_64/en-US/firefox-56.0.tar.bz2'
+        if [ -e /opt/firefox ]
+        then
+            sudo rm -rf /opt/firefox
+        fi
+        wget -c $FOXURL -O - | sudo tar  xjf - -C /opt
     fi
-    wget -c $FOXURL -O - | sudo tar  xjf - -C /opt
 
 
 
