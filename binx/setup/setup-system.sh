@@ -266,6 +266,11 @@ function setup_conkeror_package()
 {
 
     # Download firefox from https://ftp.mozilla.org/pub/firefox/releases/46.0/ setup in
+
+    FOXURL='https://ftp.mozilla.org/pub/firefox/releases/56.0/linux-x86_64/en-US/firefox-56.0.tar.bz2' ; sudo rm -rf /opt/firefox ; wget -c 'https://ftp.mozilla.org/pub/firefox/releases/56.0/linux-x86_64/en-US/firefox-56.0.tar.bz2' -O - | sudo tar  xjf - -C /opt
+
+
+
     # /opt, and change /usr/local/bin/conkeror file also.
     sudo apt -y install stow
 
