@@ -44,8 +44,8 @@
 ;; change-activity
 ;; clock-activity
 (require 'mail-activity)
-;; org-activity-log-note
-;; org-activity-note
+;; {require 'org-activity-log-note}
+;; (require 'org-activity-note)
 (require 'org-clock-trans)
 
 (provide 'activity)
