@@ -78,7 +78,14 @@
   (def@ @@ :receive (fmt &rest args)
     ;; TODO
     ;; add necessary code for interactive note.
-    (org-insert-log-note (@:get-marker) (apply #'format fmt args) 'note)
+    (progn
+      (move-marker org-log-note-return-to (point))
+      (org-clock-lotus-with-current-clock ;change it to consider marker marker
+          (org-add-log-setup-with-timed-new-win win-timeout
+                                                'note nil nil nil
+                                                (concat
+                                                 "# Task: " (org-get-heading t) "\n\n"
+                                                 (apply #'format fmt args)))))
     )
 
   (@:dispatch marker))
