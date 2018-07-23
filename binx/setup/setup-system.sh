@@ -271,7 +271,7 @@ function setup_conkeror_package()
 
     sudo rm -rf /opt/firefox
 
-    wget -c 'https://ftp.mozilla.org/pub/firefox/releases/56.0/linux-x86_64/en-US/firefox-56.0.tar.bz2' -O - | sudo tar  xjf - -C /opt
+    wget -c $FOXURL -O - | sudo tar  xjf - -C /opt
 
 
 
