@@ -283,6 +283,8 @@ function setup_conkeror_package()
     then
 	      mkdir -p $SITEDIR/build
 	      git clone git://repo.or.cz/conkeror.git $SITEDIR/build/conkeror
+    else
+        git -C $SITEDIR/build/conkeror pull --rebase
     fi
 
     make PREFIX=/usr/local/stow/conkeror -C $SITEDIR/build/conkeror
