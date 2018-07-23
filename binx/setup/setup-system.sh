@@ -267,7 +267,7 @@ function setup_conkeror_package()
 
     if [ ! -d /opt/firefox ]
     then
-        FOXVER=57.0
+        FOXVER=56.0
         FOXURL="https://ftp.mozilla.org/pub/firefox/releases/$FOXVER/linux-x86_64/en-US/firefox-${FOXVER}.tar.bz2"
         if [ -e /opt/firefox ]
         then
