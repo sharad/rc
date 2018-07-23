@@ -277,8 +277,6 @@ function setup_conkeror_package()
         wget -c $FOXURL -O - | sudo tar  xjf - -C /opt
     fi
 
-
-
     # /opt, and change /usr/local/bin/conkeror file also.
     sudo apt -y install stow
 
