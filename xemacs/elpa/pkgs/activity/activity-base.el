@@ -47,7 +47,7 @@
   :prefix "activity-")
 
 
-(defmacro defsubobj@ (object name params &rest body)
+(defmacro defsubobj@ (object name &rest body)
   `(let ((drived-obj
           (@extend ,object
                    :name ,name)))
