@@ -62,13 +62,15 @@
                   prev next (@:occuredon)))
 
             (def@ @@ :dispatch (&optional note)
-              (@:init)
-              (setf @:note
-                    (or note
-                        (@! @note-class :gen-format-msg "test"))))
+              ;; (@:init)  ;; BUG what is the issue.
+              (setf @:note note
+                    ;; (or note
+                    ;;     (@! @note-class :gen-format-msg "test"))
+                    ))
 
             (@:dispatch note))))
-  (@:dispatch note))
+  (@:dispatch note)
+  )
 
 (setf @buff-transition-detector
       (@! @transition-dectector-class :gen-buffer-trans "test"))
