@@ -103,7 +103,26 @@ Each entry is either:
       :commands (startup-hooks-insuniate)
       :config
       (progn
-        ))
+        (setq
+         lotus-disable-startup-begin-debug-on-error        nil
+         lotus-disable-startup-finish-debug-on-error       nil
+         lotus-enable-startup-begin-debug-on-error         nil
+         lotus-enable-startup-finish-debug-on-error        nil
+
+         lotus-disable-login-session-begin-debug-on-error  nil
+         lotus-disable-login-session-finish-debug-on-error nil
+         lotus-enable-login-session-begin-debug-on-error   nil
+         lotus-enable-login-session-finish-debug-on-error  nil
+
+         lotus-disable-startup-begin-debug-on-quit         nil
+         lotus-disable-startup-finish-debug-on-quit        nil
+         lotus-enable-startup-begin-debug-on-quit          nil
+         lotus-enable-startup-finish-debug-on-quit         nil
+
+         lotus-disable-login-session-begin-debug-on-quit   nil
+         lotus-disable-login-session-finish-debug-on-quit  nil
+         lotus-enable-login-session-begin-debug-on-quit    nil
+         lotus-enable-login-session-finish-debug-on-quit   nil)))
   (add-hook 'after-init-hook #'startup-hooks-insinuate))
 
 (defun basic-startup/init-sessions-unified ()

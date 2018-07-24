@@ -46,6 +46,28 @@
 (defvar *minimum-disable-login-session-frames* 2 "Minimum disable login session frames")
 
 
+
+(defvar lotus-disable-startup-begin-debug-on-error        nil)
+(defvar lotus-disable-startup-finish-debug-on-error       t)
+(defvar lotus-enable-startup-begin-debug-on-error         nil)
+(defvar lotus-enable-startup-finish-debug-on-error        t)
+
+(defvar lotus-disable-login-session-begin-debug-on-error  nil)
+(defvar lotus-disable-login-session-finish-debug-on-error t)
+(defvar lotus-enable-login-session-begin-debug-on-error   t)
+(defvar lotus-enable-login-session-finish-debug-on-error  t)
+
+(defvar lotus-disable-startup-begin-debug-on-quit         nil)
+(defvar lotus-disable-startup-finish-debug-on-quit        t)
+(defvar lotus-enable-startup-begin-debug-on-quit          nil)
+(defvar lotus-enable-startup-finish-debug-on-quit         t)
+
+(defvar lotus-disable-login-session-begin-debug-on-quit   nil)
+(defvar lotus-disable-login-session-finish-debug-on-quit  t)
+(defvar lotus-enable-login-session-begin-debug-on-quit    t)
+(defvar lotus-enable-login-session-finish-debug-on-quit   t)
+
+
 (require 'basic-utils)
 (require 'basic-macros)
 (require 'perforce-test)
@@ -54,124 +76,156 @@
           #'(lambda ()
               (run-each-hooks '*lotus-after-init-hook*)))
 
-;;}}
+
 
 ;; (defvar startup-select-frame-fn #'select-frame "startup-select-frame-fn")
 (defvar startup-select-frame-fn #'select-frame-set-input-focus "startup-select-frame-fn")
+
+;;;###autoload
+(defun any-frame-opened-p ()
+  (>=
+   (length (frame-list))
+   *minimum-disable-login-session-frames*))
+
+(defvar enable-p4-login nil "test")
+;;}}
+
+
+
+
+
+
+
+
+
+
 ;;;{{{ disable startup interrupting feature till first frame created.
-(progn ;; "disable startup interrupting feature till first frame created."
-  (defvar enable-p4-login nil "test")
-
-  (progn "disable-startup-interrupting-feature"
-         (when nil
-          (defvar lotus-disable-startup-interrupting-feature-hook nil
-      "Run only when emacs start from this file only, it basically run when this ful get loaded at emacs start time"))
-         (progn ;;  "xxdis"
+;; disable startup interrupting feature till first frame created.
+;;;###autoload
+(defun lotus-general-disable-startup-setting-begin ()
+  (interactive)
+  (when nil
+    (unless debug-on-error                  ;I am running in --debug-init
+      (setq
+       debug-on-error lotus-disable-startup-begin-debug-on-error
+       debug-on-quit lotus-disable-startup-begin-debug-on-quit)))
+  (setq pabbrev-read-only-error nil)
+  (setq
+   enable-p4-login nil
+   tramp-mode nil
+   ido-mode nil)
+  (when (featurep 'epa)
+    (if (fboundp 'epa-file-disable)
+        (epa-file-disable))))
+(add-hook 'lotus-disable-startup-interrupting-feature-hook 'lotus-general-disable-startup-setting-begin t)
 
 ;;;###autoload
-      (defun general-disable-startup-setting ()
-        (interactive)
-        (setq pabbrev-read-only-error nil)
-        (setq
-         enable-p4-login nil
-         tramp-mode nil
-         ido-mode nil)
-        (when (featurep 'epa)
-          (if (fboundp 'epa-file-disable)
-              (epa-file-disable))))
-      (add-hook 'lotus-disable-startup-interrupting-feature-hook 'general-disable-startup-setting))
+(defun lotus-general-disable-startup-setting-finish ()
+  (interactive)
+  (setq
+   debug-on-error lotus-disable-startup-finish-debug-on-error
+   debug-on-quit lotus-disable-startup-finish-debug-on-quit))
+
+(add-hook 'lotus-disable-startup-interrupting-feature-hook 'lotus-general-disable-startup-setting-end)
 
 ;;;###autoload
-    (defun lotus-disable-startup-interrupting-feature ()
-      "Run only when emacs start from this file only,
+(defun lotus-disable-startup-interrupting-feature ()
+  "Run only when emacs start from this file only,
 it basically run when this ful get loaded at emacs start time,
 its purpose to disable all interrupting feature that may cause
 problem while emacs startup in daemon mode, non-interactively."
-      (interactive)
-      (with-report-error "check"
-          (when nil
-            (unless debug-on-error                  ;I am running in --debug-init
-              (setq debug-on-error nil)))
-          (run-each-hooks 'lotus-disable-startup-interrupting-feature-hook)
-          (message "lotus-disable-startup-interrupting-feature() completed Seen.")))
+  (interactive)
+  (with-report-error "check"
+      (lotus-general-disable-startup-setting-begin)
+      (run-each-hooks 'lotus-disable-startup-interrupting-feature-hook)
+    (message "lotus-disable-startup-interrupting-feature() completed Seen.")
+    (lotus-general-disable-startup-setting-finish)))
 
-    ;; run now
-    ;; (lotus-disable-startup-interrupting-feature)
+;; run now
+;; (lotus-disable-startup-interrupting-feature)
 
 
 ;;;###autoload
-    (defun lotus-disable-startup-interrupting-feature-in-frame-once (&optional frame)
-      ;; NOTE: Can not be called in hook.
-      (lotus-disable-startup-interrupting-feature)
-      (remove-hook 'after-init-hook 'lotus-disable-startup-interrupting-feature-in-frame-once))
+(defun lotus-disable-startup-interrupting-feature-in-frame-once (&optional frame)
+  ;; NOTE: Can not be called in hook.
+  (lotus-disable-startup-interrupting-feature)
+  (remove-hook 'after-init-hook 'lotus-disable-startup-interrupting-feature-in-frame-once))
 
-    ;;(add-hook 'after-init-hook 'lotus-disable-startup-interrupting-feature-in-frame-once)
-    ;; cause problems at the end of deamon strtup, consider implementing after, before lib loads.
-
-    ;; run now
-    (lotus-disable-startup-interrupting-feature-in-frame-once))
-
+;;(add-hook 'after-init-hook 'lotus-disable-startup-interrupting-feature-in-frame-once)
+;; cause problems at the end of deamon strtup, consider implementing after, before lib loads.
+;; run now
+(lotus-disable-startup-interrupting-feature-in-frame-once)
 
 
-  (progn ;; "enable-startup-interrupting-feature"
 
-   (progn ;; "xxen"
+;; "enable-startup-interrupting-feature"
 
 ;;;###autoload
-      (defun general-enable-startup-setting ()
-        (interactive)
-        (setq pabbrev-read-only-error nil)
-        (setq
-         enable-p4-login t
-         tramp-mode t
-         ido-mode t)
-        (when (featurep 'epa)
-          (if (fboundp 'epa-file-enable)
-              (epa-file-enable))))
-      (add-hook 'lotus-enable-startup-interrupting-feature-hook 'general-enable-startup-setting t))
+(defun lotus-general-enable-startup-setting-begin ()
+  (interactive)
+  (setq
+   debug-on-error lotus-enable-startup-begin-debug-on-error
+   debug-on-quit lotus-enable-startup-begin-debug-on-quit)
+  (setq pabbrev-read-only-error nil)
+  (setq
+   enable-p4-login t
+   tramp-mode t
+   ido-mode t)
+  (when (featurep 'epa)
+    (if (fboundp 'epa-file-enable)
+        (epa-file-enable)))
+  (when (and
+         (featurep 'light-symbol)
+         (featurep 'hilit-chg))
+    (add-element-to-lists '(lambda ()
+                            (light-symbol-mode 1)
+                            (highlight-changes-visible-mode t)
+                            (highlight-changes-mode t))
+                          pgm-langs)))
+(add-hook 'lotus-enable-startup-interrupting-feature-hook 'lotus-general-enable-startup-setting-begin t)
+;;;###autoload
+(defun lotus-general-enable-startup-setting-finish ()
+  (interactive)
+  (setq
+   debug-on-error lotus-enable-startup-finish-debug-on-error
+   debug-on-quit lotus-enable-startup-finish-debug-on-quit))
+(add-hook 'lotus-enable-startup-interrupting-feature-hook 'lotus-general-enable-startup-setting-end)
 
 ;;;###autoload
-    (defun lotus-enable-startup-interrupting-feature ()
-      "Run only once when when very frame got created after emacs startup.
+(defun lotus-enable-startup-interrupting-feature ()
+  "Run only once when when very frame got created after emacs startup.
 its purpose to re/enable all feature that may have cuused problem in emacs
 startup in daemon mode."
-      (interactive)
-      ;; test
-      (with-report-error "check"
-          ;; why desktop-restore not running.
-          (progn
-            (general-enable-startup-setting) ;could not run from lotus-enable-startup-interrupting-feature-hook
-            ;as needed before the function in lotus-enable-startup-interrupting-feature-hook.
-            (when (and
-                   (featurep 'light-symbol)
-                   (featurep 'hilit-chg))
-              (add-element-to-lists '(lambda ()
-                                      (light-symbol-mode 1)
-                                      (highlight-changes-visible-mode t)
-                                      (highlight-changes-mode t)) pgm-langs)))
-          (run-each-hooks 'lotus-enable-startup-interrupting-feature-hook)
-          ;; (lotus-desktop-session-restore)
-          (message "lotus-enable-startup-interrupting-feature() completed Seen.")
-        (setq debug-on-error t )))
+  (interactive)
+  ;; test
+  (with-report-error "check"
+      ;; why desktop-restore not running.
 
-    (defvar lotus-enable-startup-interrupting-feature-in-frame-once-lock nil "Lock for lotus-enable-startup-interrupting-feature-in-frame-once")
+      ;;;could not run from lotus-enable-startup-interrupting-feature-hook
+      ;;;as needed before the function in lotus-enable-startup-interrupting-feature-hook.
+      (lotus-general-enable-startup-setting-begin)
+      (run-each-hooks 'lotus-enable-startup-interrupting-feature-hook)
+      (message "lotus-enable-startup-interrupting-feature() completed Seen.")
+    (lotus-general-enable-startup-setting-finish)))
+
+(defvar lotus-enable-startup-interrupting-feature-in-frame-once-lock nil "Lock for lotus-enable-startup-interrupting-feature-in-frame-once")
 
 ;;;###autoload
-    (defun lotus-enable-startup-interrupting-feature-in-frame-once (frame)
-      (if lotus-enable-startup-interrupting-feature-in-frame-once-lock
-          (message-notify "lotus-enable-startup-interrupting-feature-in-frame-once" "locked due to lotus-enable-startup-interrupting-feature-in-frame-once-lock is t")
-          (progn
-            (setq lotus-enable-startup-interrupting-feature-in-frame-once-lock t)
-            (funcall startup-select-frame-fn frame)
-            ;; (with-report-error "check"
-            ;;                    (lotus-enable-startup-interrupting-feature))
-            (lotus-enable-startup-interrupting-feature)
-            (remove-hook 'after-make-frame-functions 'lotus-enable-startup-interrupting-feature-in-frame-once)
-            (setq lotus-enable-startup-interrupting-feature-in-frame-once-lock nil))))
+(defun lotus-enable-startup-interrupting-feature-in-frame-once (frame)
+  (if lotus-enable-startup-interrupting-feature-in-frame-once-lock
+      (message-notify "lotus-enable-startup-interrupting-feature-in-frame-once" "locked due to lotus-enable-startup-interrupting-feature-in-frame-once-lock is t")
+    (progn
+      (setq lotus-enable-startup-interrupting-feature-in-frame-once-lock t)
+      (funcall startup-select-frame-fn frame)
+      ;; (with-report-error "check"
+      ;;                    (lotus-enable-startup-interrupting-feature))
+      (lotus-enable-startup-interrupting-feature)
+      (remove-hook 'after-make-frame-functions 'lotus-enable-startup-interrupting-feature-in-frame-once)
+      (setq lotus-enable-startup-interrupting-feature-in-frame-once-lock nil))))
 
-    (add-hook 'after-make-frame-functions 'lotus-enable-startup-interrupting-feature-in-frame-once))
-  )
+(add-hook 'after-make-frame-functions 'lotus-enable-startup-interrupting-feature-in-frame-once)
 ;;;}}}
+
 
 ;;;###autoload
 (defun add-to-enable-startup-interrupting-feature-hook (fn &optional append local)
@@ -217,71 +271,112 @@ startup in daemon mode."
    local))
   ;; (lotus-enable-startup-interrupting-feature-in-frame-once (selected-frame))
 ;;}}
+
 
 
 
 
+;;{{ login-session-interrupting-feature
+;; don't mislead by login it is when no frame or 1 or more frame hook
+;; basiclly used accross login where emacs daemon outlive.
+;; can be used for other purpose.
 
-;;{{
-(progn ;; "login-session-interrupting-feature"
+;; "disable-login-session-interrupting-feature"
+;;;###autoload
+(defun lotus-general-disable-login-session-setting-begin ()
+  (interactive)
+  (setq
+   debug-on-error lotus-disable-login-session-begin-debug-on-error
+   debug-on-quit lotus-disable-login-session-begin-debug-on-quit))
+(add-hook 'lotus-disable-startup-interrupting-feature-hook 'lotus-general-disable-login-session-setting-begin t)
 
 ;;;###autoload
-  (defun any-frame-opened-p ()
-    (>= (length (frame-list)) *minimum-disable-login-session-frames*))
-
-
-  ;; don't mislead by login it is when no frame or 1 or more frame hook
-  ;; basiclly used accross login where emacs daemon outlive.
-  ;; can be used for other purpose.
-  (progn ;; "disable-login-session-interrupting-feature"
+(defun lotus-general-disable-login-session-setting-finish ()
+  (interactive)
+  (setq
+   debug-on-error lotus-disable-login-session-finish-debug-on-error
+   debug-on-quit lotus-disable-login-session-finish-debug-on-quit))
+(add-hook 'lotus-disable-login-session-interrupting-feature-hook 'lotus-general-disable-login-session-setting-end)
 
 ;;;###autoload
-   (defun lotus-disable-login-session-interrupting-feature ()
-     (interactive)
-     ;; (login-to-perforce)
-     ;; (update-ssh-agent t)
-     (setq debug-on-error nil)           ;for planner
-     (with-report-error "check"
-         (run-each-hooks 'lotus-disable-login-session-interrupting-feature)))
+(defun lotus-disable-login-session-interrupting-feature ()
+  (interactive)
+  (with-report-error "check"
+      (lotus-general-disable-login-session-setting-begin)
+      (run-each-hooks 'lotus-disable-login-session-interrupting-feature)
+      (lotus-general-disable-login-session-setting-finish)))
 
 ;;;###autoload
-   (defun lotus-disable-login-session-interrupting-feature-in-frame-once (f)
-     (if (any-frame-opened-p) ;last
-                                                                            ;frame
-                                                                            ;then
-                                                                            ;add.
-       (with-report-error "check"
-           (lotus-disable-login-session-interrupting-feature)
-           (add-hook 'after-make-frame-functions 'lotus-enable-login-session-interrupting-feature-in-frame-once t)
-           (message "added lotus-enable-login-session-interrupting-feature-in-frame-once"))
-       (message "lotus-disable-login-session-interrupting-feature-in-frame-once: not running.")))
-
-   (add-hook 'delete-frame-functions 'lotus-disable-login-session-interrupting-feature-in-frame-once))
-
-  (progn ;; "enable-login-session-interrupting-feature"
-
-;;;###autoload
-    (defun lotus-enable-login-session-interrupting-feature ()
-      (interactive)
-      ;; (setenv "DISPLAY" ":1")
+(defun lotus-disable-login-session-interrupting-feature-in-frame-once (f)
+  (if (any-frame-opened-p) ;last
+                                        ;frame
+                                        ;then
+                                        ;add.
       (with-report-error "check"
-          ;; do in add-hook
-          (setq debug-on-error t)           ;for planner
-          (run-each-hooks 'lotus-enable-login-session-interrupting-feature-hook)))
+          (lotus-disable-login-session-interrupting-feature)
+          (add-hook 'after-make-frame-functions 'lotus-enable-login-session-interrupting-feature-in-frame-once t)
+          (message "added lotus-enable-login-session-interrupting-feature-in-frame-once"))
+    (message "lotus-disable-login-session-interrupting-feature-in-frame-once: not running.")))
+
+(add-hook 'delete-frame-functions 'lotus-disable-login-session-interrupting-feature-in-frame-once)
+
+
+;; enable-login-session-interrupting-feature
 
 ;;;###autoload
-    (defun lotus-enable-login-session-interrupting-feature-in-frame-once (frame)
-      (funcall startup-select-frame-fn frame)
-      ;; run and disable.
-      (with-report-error "check"
-          (when (any-frame-opened-p)
-            (lotus-enable-login-session-interrupting-feature))
-          (remove-hook 'after-make-frame-functions 'lotus-enable-login-session-interrupting-feature-in-frame-once)
-          (when t
-            (message "removed lotus-enable-login-session-interrupting-feature-in-frame-once"))))
+(defun lotus-general-enable-login-session-setting-begin ()
+  (interactive)
+  (setq
+                                        ;for planner
+   debug-on-error lotus-enable-login-session-begin-debug-on-error))
+(add-hook 'lotus-enable-startup-interrupting-feature-hook 'lotus-general-enable-login-session-setting-begin t)
 
-    ;; (lotus-enable-login-session-interrupting-feature-in-frame-once (selected-frame))
-    (add-hook 'after-make-frame-functions 'lotus-enable-login-session-interrupting-feature-in-frame-once t)))
+;;;###autoload
+(defun lotus-general-enable-login-session-setting-finish ()
+  (interactive)
+  (setq debug-on-error lotus-enable-login-session-finish-debug-on-error))
+(add-hook 'lotus-enable-login-session-interrupting-feature-hook 'lotus-general-enable-login-session-setting-end)
+
+;;;###autoload
+(defun lotus-enable-login-session-interrupting-feature ()
+  (interactive)
+  (with-report-error "check"
+      ;; do in add-hook
+      (lotus-general-enable-login-session-setting-begin)
+      (run-each-hooks 'lotus-enable-login-session-interrupting-feature-hook)
+      (lotus-general-enable-login-session-setting-finish)))
+
+;;;###autoload
+(defun lotus-enable-login-session-interrupting-feature-in-frame-once (frame)
+  (funcall startup-select-frame-fn frame)
+  ;; run and disable.
+  (with-report-error "check"
+      (when (any-frame-opened-p)
+        (lotus-enable-login-session-interrupting-feature))
+      (remove-hook 'after-make-frame-functions 'lotus-enable-login-session-interrupting-feature-in-frame-once)
+      (when t
+        (message "removed lotus-enable-login-session-interrupting-feature-in-frame-once"))))
+
+(add-hook 'after-make-frame-functions 'lotus-enable-login-session-interrupting-feature-in-frame-once t)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ;;;###autoload
 (defun add-to-enable-login-session-interrupting-feature-hook (fn &optional append local)
@@ -326,12 +421,14 @@ startup in daemon mode."
    local))
 
 ;;}}
+
 
 ;;;###autoload
 (defun startup-hooks-insinuate ()
   (interactive)
   (add-hook 'after-make-frame-functions 'lotus-enable-startup-interrupting-feature-in-frame-once)
   (add-hook 'after-make-frame-functions 'lotus-enable-login-session-interrupting-feature-in-frame-once t))
+
 
 
 (defalias 'make-local-hook 'ignore)

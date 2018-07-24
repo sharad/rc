@@ -75,8 +75,6 @@
 (setf @buff-transition-detector
       (@! @transition-dectector-class :gen-buffer-trans "test"))
 
-(@! @buff-transition-detector :init)
-
 (defun make-event ()
   (message "running make-event")
   (@! @buff-transition-detector :make-event))
