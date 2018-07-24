@@ -209,13 +209,13 @@
             (setf @:occuredon (current-time)))))
 
   (setf @event-class
-        (defsubobj@ @activity-class "event class" ()
+        (defsubobj@ @activity-class "event class"
           "Event class"
           (def@ @@ :note ()
             )))
 
   (setf @transition-class
-        (defsubobj@ @event-class "transition class" ()
+        (defsubobj@ @event-class "transition class"
           "Transition class"
           (def@ @@ :note ()
             ))))
@@ -225,7 +225,7 @@
 (progn
   ;; detectors
   (setf @activity-dectector-class
-        (defsubobj@ @activity-base "activity detector class" ()
+        (defsubobj@ @activity-base "activity detector class"
           "Activity detector class"
           (def@ @@ :note ()
             )))
