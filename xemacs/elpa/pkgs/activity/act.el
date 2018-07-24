@@ -1,4 +1,4 @@
-;;; act.el --- Emacs Activity logger, analyzer and reporter  -*- lexical-binding: t; -*-
+;;; act.el --- Emacs Activity logger, analyzer and reporter  -*- lexical-binding: nil; -*-
 
 ;; Copyright (C) 2016  sharad
 
@@ -204,6 +204,103 @@
           "Transition detector class"
           (def@ @@ :note ()
             ))))
+
+
+(progn
+  (setf @test-base
+        (defsubobj@ @ "test-base"
+            "test Base"
+
+          (def@ @@ :init ()
+            (message "@test-base :init start")
+            (@^:init)
+            (message "@test-base :init finish"))
+
+          (def@ @@ :dispatch ()
+            (message "@test-base :dispatch start")
+            (@:init)
+            (message "@test-base :dispatch finish"))
+
+          (@:dispatch)))
+
+  (setf @test-base1
+        (defsubobj@ @test-base "test base1"
+          "test base1"
+
+          (def@ @@ :init ()
+            (message "@test-base1 :init start")
+            (@^:init)
+            (message "@test-base1 :init finish"))
+
+          (def@ @@ :dispatch ()
+            (message "@test-base1 :dispatch start")
+            (@^:init)
+            (message "@test-base1 :dispatch finish"))
+
+          (@:dispatch))))
+
+
+
+(@extend)
+
+
+
+(progn
+  (setf @test-base
+        (@extend @ :name "test-base"))
+  (def@ @test-base :init ()
+        (message "@test-base :init start")
+        (@^:init)
+        (message "@test-base :init finish"))
+  (def@ @test-base :dispatch ()
+        (message "@test-base :dispatch start")
+        (@:init)
+        (message "@test-base :dispatch finish"))
+  (@! @test-base :dispatch)
+
+  (setf @test-base1
+        (@extend @test-base :name "test-base1"))
+  (def@ @test-base1 :init ()
+        (message "@test-base1 :init start")
+        (@^:init)
+        (message "@test-base1 :init finish"))
+  (def@ @test-base1 :dispatch ()
+        (message "@test-base1 :dispatch start")
+        (@:init)
+        (message "@test-base1 :dispatch finish"))
+  (@! @test-base1 :dispatch))
+
+
+(@! @test-drived-drived :dispatch)
+
+
+
+
+
+(macroexpand-1
+ '(defsubobj@ @test-base "test base1"
+   "test base1"
+
+   (def@ @@ :init ()
+     (message "@test-base1 :init start")
+     (@^:init)
+     (message "@test-base1 :init finish"))
+
+   (def@ @@ :dispatch ()
+     (message "@test-base1 :dispatch start")
+     (@^:init)
+     (message "@test-base1 :dispatch finish"))
+
+   (@:dispatch)))
+
+
+(let ((drived-obj (@extend @test-base :name "test base1")))
+  (with-@@ drived-obj
+      (setf @:doc "test base1")
+    (def@ @@ :init nil (message "@test-base1 :init start") (@^:init) (message "@test-base1 :init finish"))
+    (def@ @@ :dispatch nil (message "@test-base1 :dispatch start") (@^:init) (message "@test-base1 :dispatch finish"))
+    (@:dispatch))
+  drived-obj)
 
 
 ;;; act.el ends here

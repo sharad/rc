@@ -62,18 +62,20 @@
                   prev next (@:occuredon)))
 
             (def@ @@ :dispatch (&optional note)
-              ;; (@:init)  ;; BUG what is the issue.
+              (@:init)  ;; BUG what is the issue.
               (setf @:note note
                     ;; (or note
                     ;;     (@! @note-class :gen-format-msg "test"))
                     ))
 
             (@:dispatch note))))
-  (@:dispatch note)
+  ;; (@:dispatch note)
   )
 
 (setf @buff-transition-detector
       (@! @transition-dectector-class :gen-buffer-trans "test"))
+
+(@! @buff-transition-detector :init)
 
 (defun make-event ()
   (message "running make-event")

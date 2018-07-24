@@ -70,7 +70,7 @@
        ,@(if (stringp (car body)) (cdr body) body))
 
      drived-obj))
-(put 'defsubobj@ 'lisp-indent-function 3)
+(put 'defsubobj@ 'lisp-indent-function 2)
 
 (defmacro defsubclass-gen@ (object gen-method params &rest body )
   `(progn
@@ -93,6 +93,7 @@
 
     (def@ @@ :init ()
       (@^:init)
+      (message "@activity-base :init")
       (setf @:_occuredon (current-time)))
 
     (def@ @@ :occuredon ()
@@ -206,6 +207,7 @@
           "Activity class"
           (def@ @@ :init ()
             (@^:init)
+            (message "@activity-class :init")
             (setf @:occuredon (current-time)))))
 
   (setf @event-class
