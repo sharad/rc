@@ -46,7 +46,7 @@
 
 
 (setf @org-clock-trans-class
-      (defsubobj@ @transition-class "org-clock-trans" ()))
+      (defsubobj@ @transition-class "org-clock-trans"))
 
 (defsubclass-gen@ @org-clock-trans-class :gen-org-clock-trans (marker1 marker2)
   "Org clock transition class"
