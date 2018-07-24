@@ -51,12 +51,12 @@
 ;;   `(let ((drived-obj
 ;;           (@extend ,object
 ;;                    :name ,name)))
-
+;;
 ;;      (with-@@ drived-obj
 ;;        ,@(if (stringp (car body))
 ;;             `((setf @:doc ,(car body))))
 ;;        ,@(if (stringp (car body)) (cdr body) body))
-
+;;
 ;;      drived-obj))
 
 (defmacro defsubobj@ (object name &rest body)
