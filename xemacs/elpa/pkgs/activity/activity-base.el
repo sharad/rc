@@ -142,7 +142,7 @@
 
 (setf @note-class
 
-      (defsubobj@ @activity-base "note-base-class" ()
+      (defsubobj@ @activity-base "note-base-class"
         "Note Base Class"
 
         (setf @:dests '())
@@ -202,7 +202,7 @@
 (progn
   ;; activity
   (setf @activity-class
-        (defsubobj@ @activity-base "activity class" ()
+        (defsubobj@ @activity-base "activity class"
           "Activity class"
           (def@ @@ :init ()
             (@^:init)
