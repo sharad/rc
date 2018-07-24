@@ -78,7 +78,12 @@ Each entry is either:
         (progn
           (epa-passphrase-cleanup-start)
           (epa-add-exception-for "~/.authinfo.gpg" 100000)
-          (setq epa-file-cache-passphrase-for-symmetric-encryption t))))
+          (setq epa-file-cache-passphrase-for-symmetric-encryption t))
+        (progn
+          (setq
+           ;; https://colinxy.github.io/software-installation/2016/09/24/emacs25-easypg-issue.html
+           epa-pinentry-mode 'loopback)
+          (setq vc-follow-symlinks nil))))
 
   (use-package startup-hooks
       :defer t
