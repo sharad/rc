@@ -531,7 +531,8 @@
 
 (let ((test1 (@extend @test)))
   (with-@@ test1
-      (def@ @@ :init () (@^:init))
+      (def@ @@ :init ()
+        (@^:init))
     (@:init))
   test1)
 
