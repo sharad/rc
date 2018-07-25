@@ -463,21 +463,10 @@
      (@^:init)
      (message "@test-base :init finish"))
 
-   (def@ @@ :dispatch ()
-     (message "@test-base :dispatch start")
-     (@:init)
-     (message "@test-base :dispatch finish"))
+
 
    (@:dispatch)))
 
-(let ((drived-obj (@extend @ :name "test-base")))
-  (let ((@@ drived-obj))
-    (let* ((v @@))
-      (@--set v :doc "test base"))
-    (progn
-      (let* ((v @@@))
-        (@--set v :init
-                (function (lambda (@@) (let ((@@@ @@@)) (let ((@@ @@)) (message "@test-base :init start") (funcall (@ @@@@ :init :super t) @@@) (message "@test-base :init finish")))))))
-      :init) (progn (let* ((v @@@)) (@--set v :dispatch (function (lambda (@@) (let ((@@@ @@@)) (let ((@@ @@)) (message "@test-base :dispatch start") (@! @@@ :init) (message "@test-base :dispatch finish"))))))) :dispatch) (@! @@ :dispatch)) drived-obj)
+
 
 ;;; act.el ends here
