@@ -242,7 +242,71 @@
 
 
 
+(progn
+  (setf @test-base
+        (let ((drived-obj
+               (@extend @ :name "test-base")))
+          (def@ drived-obj :init ()
+            (message "@test-base :init start")
+              (@^:init)
+              (message "@test-base :init finish"))
 
+          (def@ drived-obj :dispatch ()
+            (message "@test-base :dispatch start")
+            (@:init)
+            (message "@test-base :dispatch finish"))
+
+          (@! drived-obj :dispatch)))
+
+  (setf @test-base1
+        (let ((drived-obj
+               (@extend @test-base :name "test-base1")))
+
+          (def@ drived-obj :init ()
+            (message "@test-base1 :init start")
+            (@^:init)
+            (message "@test-base1 :init finish"))
+
+          (def@ drived-obj :dispatch ()
+            (message "@test-base1 :dispatch start")
+            (@^:init)
+            (message "@test-base1 :dispatch finish"))
+
+          (@! drived-obj :dispatch))))
+
+
+
+(progn
+  (setf @test-base
+        (let ((@@
+               (@extend @ :name "test-base")))
+          (def@ @@ :init ()
+                (message "@test-base :init start")
+                (@^:init)
+                (message "@test-base :init finish"))
+
+          (def@ @@ :dispatch ()
+                (message "@test-base :dispatch start")
+                (@:init)
+                (message "@test-base :dispatch finish"))
+
+          (@! @@ :dispatch)))
+
+  (setf @test-base1
+        (let ((@@
+               (@extend @test-base :name "test-base1")))
+
+          (def@ @@ :init ()
+                (message "@test-base1 :init start")
+                (@^:init)
+                (message "@test-base1 :init finish"))
+
+          (def@ @@ :dispatch ()
+                (message "@test-base1 :dispatch start")
+                (@^:init)
+                (message "@test-base1 :dispatch finish"))
+
+          (@! @@ :dispatch))))
 
 (progn
   (setf @test-base
@@ -268,5 +332,20 @@
         (@:init)
         (message "@test-base1 :dispatch finish"))
   (@! @test-base1 :dispatch))
+
+
+
+
+(macroexpand-1
+ '(with-@@ baee
+   (def@ @@ :init ()
+         (message "@test-base1 :init start")
+         (@^:init)
+         (message "@test-base1 :init finish"))))
+
+
+(let ((@@ (@extend @ :name "test")))
+  (def@ @@ :init nil (message "@test-base1 :init start") (funcall (@ @@@ :init :super t) @@) (message "@test-base1 :init finish"))
+  (@! @@ :init))
 
 ;;; act.el ends here
