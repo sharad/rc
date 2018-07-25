@@ -578,7 +578,9 @@
                "(@ @@ :name) %s"  (@ @@ :name)))
 
           (def@ @@ :init ()
-            (@^:init)))
+            (@^:init))
+
+          )
         test2))
 
 (@! test2 :init)
