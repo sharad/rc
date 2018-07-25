@@ -458,8 +458,8 @@
   "Replace @: and @^: symbols with their lookup/funcall expansions."
   (let ((name (symbol-name symbol)))
     (cond
-      ;; ((string-match "^@@+$" name)
-      ;;  (intern (concat name "xx")))
+      ((string-match "^@@+$" name)
+       (intern (concat name "xx")))
       ((string-prefix-p "@:" name)
        (let ((property (intern (substring name 1))))
          (if head
@@ -503,24 +503,5 @@
    (@:dispatch)))
 
 
-
-
-
-
-(macroexpand-1
- '(def@ xx :init ()
-   (message "@test-base :init start")
-   (@^:init)
-   (message "@test-base :init finish")))
-
-(progn (setf (@ xx :init)
-             (function*
-              (lambda (yy)
-               (let ((@@@ xx))
-                 (with-@@ yy
-                     (message "@test-base :init start")
-                   (@! @@@ :init)
-                   (message "@test-base :init finish"))))))
-       :init)
 
 ;;; act.el ends here
