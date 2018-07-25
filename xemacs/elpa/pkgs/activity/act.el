@@ -478,6 +478,18 @@
   `(let ((@@ ,object))
      ,@(cdr (@--walk (cons 'progn body) '(quote with-@@) #'@--replace))))
 
+(defmacro def@ (object method params &rest body)
+  "Define METHOD body on OBJECT."
+  (declare (indent defun))
+  `(progn
+     (setf (@ ,object ,method)
+           (function* (lambda ,(cons '@@ params)
+             ,@(if (stringp (car body)) (list (car body)) ())
+             (let ((@@@ ,object))
+               (with-@@ @@
+                   ,@(if (stringp (car body)) (cdr body) body))))))
+     ,method))
+
 
 (macroexpand-all
  '(defsubobj@ @ "test-base"
