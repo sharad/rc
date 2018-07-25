@@ -520,9 +520,10 @@
      (@^:init))
    (@:init)))
 
-(let ((drived-obj (@extend @test-base :name "test base1")))
-  (with-@@ drived-obj
+(let ((test (@extend @test-base :name "test base1")))
+  (with-@@ test
       (def@ @@ :init () (@^:init))
-    (@:init)) drived-obj)
+    (@:init))
+  test)
 
 ;;; act.el ends here
