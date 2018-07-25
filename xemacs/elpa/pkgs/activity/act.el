@@ -458,7 +458,7 @@
   "Replace @: and @^: symbols with their lookup/funcall expansions."
   (let ((name (symbol-name symbol)))
     (cond
-      ((string-match "^@@@@@+$" name)
+      ((string-match "^@@@@+$" name)
        (intern (concat name "@@")))
       ((string-prefix-p "@:" name)
        (let ((property (intern (substring name 1))))
