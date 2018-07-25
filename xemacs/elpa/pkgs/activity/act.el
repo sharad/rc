@@ -569,18 +569,18 @@
         test))
 
 (setf test2
- (let ((test2 (@extend test1 :name "extended")))
-  (with-@@ test2
+      (let ((test2 (@extend test1 :name "extended")))
+        (with-@@ test2
 
-      (def@ @@ :print ()
-        (message
-         "(@ @@@ :name) %s"  (@ @@@ :name))
-        (message
-         "(@ @@ :name) %s"  (@ @@ :name)))
+            (def@ @@ :print ()
+              (message
+               "(@ @@@ :name) %s"  (@ @@@ :name))
+              (message
+               "(@ @@ :name) %s"  (@ @@ :name)))
 
-      (def@ @@ :init ()
-        (@^:init)))
-  test2))
+          (def@ @@ :init ()
+            (@^:init)))
+        test2))
 
 
 
