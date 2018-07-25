@@ -353,21 +353,68 @@
 
 
 (macroexpand-1
- '(def@ OBJ :init ()
+ '(def@ OBJ :init (x)
    (@^:init)
    (@:fun)
    @:attr))
+
+(progn
+  (setf
+   (@ OBJ :init)
+   (function*
+    (lambda (@@ x)
+     (let ((@@@ OBJ))
+       (with-@@ @@ (@^:init) (@:fun) @:attr))))) :init)
+
 
 (progn
   (setf (@ OBJ :init)
         (function*
          (lambda (@@)
           (let ((@@@ OBJ))
-            (let ((@@ @@)) (funcall (@ @@@ :init :super t) @@) (@! @@ :fun) (@ @@ :attr)))))) :init)
+            (let ((@@ @@))
+              (funcall (@ @@@ :init :super t) @@)
+              (@! @@ :fun)
+              (@ @@ :attr)))))) :init)
+
+
+
 
 
 (macroexpand-1
- '(with-@@ @@ (@^:init) (@:fun) @:attr))
+ '(with-@@ X
+   (progn
+     (setf (@ OBJ :init)
+           (function*
+            (lambda (@@)
+             (let ((@@@ OBJ))
+               (let ((@@ @@))
+                 (funcall (@ @@@ :init :super t) @@)
+                 (@! @@ :fun)
+                 (@ @@ :attr)))))) :init)))
+
+
+
+(let ((@@ X))
+  (progn
+    (setf
+     (@ OBJ :init)
+     (function*
+      (lambda (@@)
+       (let ((@@@ OBJ))
+         (let ((@@ @@))
+           (funcall (@ @@@ :init :super t) @@)
+           (@! @@ :fun)
+           (@ @@ :attr)))))) :init))
+
+
+
+
+
+
+
+
+
 
 
 
