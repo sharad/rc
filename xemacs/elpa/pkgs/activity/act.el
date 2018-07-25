@@ -512,11 +512,6 @@
      (@^:init))
    (@:init)))
 
-(macroexpand-1
- '(with-@@ test
-   (def@ @@ :init ()
-     (@^:init))))
-
 
 
 
