@@ -571,7 +571,9 @@
 (let ((test2 (@extend test1 :name "extended")))
   (with-@@ test2
 
-      (def@ @@ :print ())
+      (def@ @@ :print ()
+        (message
+         "(@ )"))
 
       (def@ @@ :init ()
         (@^:init))))
