@@ -542,7 +542,16 @@
 (macroexpand-all
  '(with-@@ test1
    (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@) (let ((@@@ @@)) (let ((@@ @@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init)
+   (@:init)
    (@:init)))
+
+(let ((@@ (@extend test1))) (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@@@) (let ((@@@ @@)) (let ((@@ @@@@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init) @@)
+
+(let ((@@ test1))
+  (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@@@) (let ((@@@ @@)) (let ((@@ @@@@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init)
+  (@! @@ :init))
+
+
 
 (let ((@@ (@extend test1 :name :extended)))
   (progn
