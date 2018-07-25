@@ -353,7 +353,25 @@
 
 
 (macroexpand-1
- ')
+ '(def@ @@ :init ()
+   (@^:init)
+   (@:fun)
+   @:attr))
+
+(macroexpand-1
+ '(with-@@ @@ (@^:init) (@:fun) @:attr))
+
+
+(progn
+  (setf
+   (@ @@ :init)
+   (function*
+    (lambda (@@)
+     (let ((@@@ @@))
+       (let ((@@ @@))
+         (funcall (@ @@@ :init :super t) @@)
+         (@! @@ :fun)
+         (@ @@ :attr)))))) :init)
 
 
 
