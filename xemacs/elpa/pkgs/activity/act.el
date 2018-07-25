@@ -491,7 +491,6 @@
 
 (macroexpand-all
  '(defsubobj@ @test-base "test base1"
-   "test base1"
    (def@ @@ :init ()
      (@^:init))
    (@:init)))
