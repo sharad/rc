@@ -512,8 +512,6 @@
    (@^:init)
    (message "@test-base :init finish")))
 
-(progn
-  (setf (@ xx :init)
-        (function* (lambda (@@) (let ((@@@ xx)) (with-@@ @@ (message "@test-base :init start") (@^:init) (message "@test-base :init finish")))))) :init)
+(progn (setf (@ xx :init) (function* (lambda (@@) (let ((@@@ xx)) (with-@@ @@ (message "@test-base :init start") (@^:init) (message "@test-base :init finish")))))) :init)
 
 ;;; act.el ends here
