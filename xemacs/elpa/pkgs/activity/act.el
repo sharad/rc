@@ -575,7 +575,7 @@
         (message
          "(@ @@@ :name) %s"  (@ @@@ :name))
         (message
-         "(@ @@@ :name) %s"  (@ @@@ :name)))
+         "(@ @@ :name) %s"  (@ @@ :name)))
 
       (def@ @@ :init ()
         (@^:init))))
