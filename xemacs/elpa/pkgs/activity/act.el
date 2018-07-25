@@ -348,4 +348,17 @@
   (def@ @@ :init nil (message "@test-base1 :init start") (funcall (@ @@@ :init :super t) @@) (message "@test-base1 :init finish"))
   (@! @@ :init))
 
+
+
+
+
+(macroexpand-1
+ ')
+
+
+
+
+
+
+
 ;;; act.el ends here
