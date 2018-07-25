@@ -541,8 +541,7 @@
 
 (macroexpand-all
  '(with-@@ test1
-   (def@ @@ :init ()
-     (@^:init))
+   (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@) (let ((@@@ @@)) (let ((@@ @@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init)
    (@:init)))
 
 (let ((@@ (@extend test1 :name :extended)))
@@ -556,6 +555,10 @@
 (let ((@@ test1))
   (def@ @@ :init nil (funcall (@ @@@ :init :super t) @@))
   (@! @@ :init))
+
+(macroexpand-all
+ '(def@ @@ :init ()
+   (@^:init)))
 
 
 
