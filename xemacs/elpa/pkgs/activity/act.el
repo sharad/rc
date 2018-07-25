@@ -558,7 +558,7 @@
   (@! @@ :init))
 
 
-(with-@@ test1
+(with-@@ test2
     (def@ @@ :init ()
       (@^:init))
   )
