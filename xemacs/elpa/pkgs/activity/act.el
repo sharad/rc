@@ -520,7 +520,7 @@
      (@^:init))
    (@:init)))
 
-(let ((test (@extend @test-base :name "test base1")))
+(let ((test (@extend)))
   (with-@@ test
       (def@ @@ :init () (@^:init))
     (@:init))
