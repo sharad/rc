@@ -568,7 +568,8 @@
           (@:init))
         test))
 
-((let ((test2 (@extend test1 :name "extended")))
+(setf test2
+ (let ((test2 (@extend test1 :name "extended")))
   (with-@@ test2
 
       (def@ @@ :print ()
