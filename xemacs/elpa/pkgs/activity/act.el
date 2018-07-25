@@ -514,6 +514,10 @@
     (@:init))
   test)
 
+(defsubobj@ @test-base "test base1"
+  (def@ @@ :init ()
+    (@^:init))
+  (@:init))
 
 
 ;;; act.el ends here
