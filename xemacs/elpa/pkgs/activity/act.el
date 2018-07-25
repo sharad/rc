@@ -585,6 +585,6 @@
 
 (@! test2 :print)
 
-
+(@! test1 :init)
 
 ;;; act.el ends here
