@@ -549,8 +549,8 @@
              (progn
                (let* ((v @@))
                  (@--set v :init
-                         (let ((@@ @@))
-                          (lambda (@@@@@@) (let ((@@@ @@)) (let ((@@ @@@@@@)) (funcall (@ @@@ :init :super t) @@)))))))
+                         (let ((v @@))
+                          (lambda (@@@@@@) (let ((@@@ v)) (let ((@@ @@@@@@)) (funcall (@ @@@ :init :super t) @@)))))))
                :init)
              @@))
 
