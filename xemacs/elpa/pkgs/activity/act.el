@@ -472,6 +472,11 @@
            `(@ @@ ,property :super t))))
       (t (if head (list symbol) symbol)))))
 
+(defmacro with-@@ (object &rest body)
+  "Provide the @: and @^: DSL utilities for OBJECT in BODY."
+  (declare (indent defun))
+  `(let ((@@ ,object))
+     ,@(cdr (@--walk (cons 'progn body) '(quote with-@@) #'@--replace))))
 
 
 (macroexpand-all
