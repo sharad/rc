@@ -510,9 +510,7 @@
    "test base1"
 
    (def@ @@ :init ()
-     (message "@test-base1 :init start")
-     (@^:init)
-     (message "@test-base1 :init finish"))
+     (@^:init))
 
    (def@ @@ :dispatch ()
      (message "@test-base1 :dispatch start")
