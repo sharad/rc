@@ -386,26 +386,16 @@
    (progn
      (setf (@ OBJ :init)
            (function*
-            (lambda (@@)
-             (let ((@@@ OBJ))
-               (let ((@@ @@))
-                 (funcall (@ @@@ :init :super t) @@)
-                 (@! @@ :fun)
-                 (@ @@ :attr)))))) :init)))
+            (lambda (@@@)
+             (let ((@@@@ OBJ))
+               (let ((@@@ @@@))
+                 (funcall (@ @@@@ :init :super t) @@@)
+                 (@! @@@ :fun)
+                 (@ @@@ :attr)))))) :init)))
 
 
 
-(let ((@@ X))
-  (progn
-    (setf
-     (@ OBJ :init)
-     (function*
-      (lambda (@@)
-       (let ((@@@ OBJ))
-         (let ((@@ @@))
-           (funcall (@ @@@ :init :super t) @@)
-           (@! @@ :fun)
-           (@ @@ :attr)))))) :init))
+
 
 
 
