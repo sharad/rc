@@ -548,8 +548,8 @@
 (setf txst (let ((@@ (@extend test1)))
              (progn
                (let* ((v @@))
-                 (@--set v :init (lambda (@@@@@@) (let ((@@@ @@)) (let ((@@ @@@@@@)) (funcall (@ @@@ :init :super t) @@)))))
-                 ) :init) @@))
+                 (@--set v :init (lambda (@@@@@@) (let ((@@@ @@)) (let ((@@ @@@@@@)) (funcall (@ @@@ :init :super t) @@))))))
+               :init) @@))
 
 (@! txst :init)
 
