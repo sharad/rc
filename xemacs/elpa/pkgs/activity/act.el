@@ -545,7 +545,9 @@
    (@:init)
    (@:init)))
 
-(let ((@@ (@extend test1))) (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@@@) (let ((@@@ @@)) (let ((@@ @@@@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init) @@)
+(setf txst (let ((@@ (@extend test1))) (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@@@) (let ((@@@ @@)) (let ((@@ @@@@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init) @@))
+
+(@! txst :init)
 
 (let ((@@ test1))
   (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@@@) (let ((@@@ @@)) (let ((@@ @@@@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init)
