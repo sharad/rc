@@ -461,7 +461,7 @@
       ((string-match "^@@@@+$" name)
        (let (sym (intern (concat name "@@")))
         (if head
-           (intern (concat name "@@")))))
+            (list sym) sym)))
       ((string-prefix-p "@:" name)
        (let ((property (intern (substring name 1))))
          (if head
