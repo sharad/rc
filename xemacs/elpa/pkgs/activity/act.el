@@ -582,6 +582,8 @@
             (@^:init)))
         test2))
 
+(@! test2 :init)
+
 
 
 ;;; act.el ends here
