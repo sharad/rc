@@ -515,14 +515,14 @@
    (@:init)))
 
 (let ((drived-obj (@extend @test-base :name "test base1")))
-  (let ((@@ drived-obj))
-    (let* ((v @@))
+  (let ((ss drived-obj))
+    (let* ((v ss))
       (@--set v :doc "test base1"))
     (progn
-      (let* ((v @@))
-        (@--set v :init (function (lambda (@@@@) (let ((@@@ @@)) (let ((@@ @@@@)) (funcall (@ @@@ :init :super t) @@)))))))
+      (let* ((v ss))
+        (@--set v :init (function (lambda (@@@@) (let ((@@@ ss)) (let ((@@ @@@@)) (funcall (@ @@@ :init :super t) @@)))))))
       :init)
-    (@! @@ :init))
+    (@! ss :init))
   drived-obj)
 
 ;;; act.el ends here
