@@ -403,17 +403,18 @@
 (defun @--replace (symbol head)
   "Replace @: and @^: symbols with their lookup/funcall expansions."
   (let ((name (symbol-name symbol)))
-    (cond ((string-prefix-p "@:" name)
+    (cond
+      ((string-prefix-p "@:" name)
            (let ((property (intern (substring name 1))))
              (if head
                  `(@! @@ ,property)
                `(@ @@ ,property))))
-          ((string-prefix-p "@^:" name)
-           (let ((property (intern (substring name 2))))
-             (if head
-                 `(funcall (@ @@@ ,property :super t) @@)
-               `(@ @@ ,property :super t))))
-          (t (if head (list symbol) symbol)))))
+      ((string-prefix-p "@^:" name)
+       (let ((property (intern (substring name 2))))
+         (if head
+             `(funcall (@ @@@ ,property :super t) @@)
+           `(@ @@ ,property :super t))))
+      (t (if head (list symbol) symbol)))))
 
 
 
