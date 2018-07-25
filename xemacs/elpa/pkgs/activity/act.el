@@ -557,4 +557,10 @@
   (def@ @@ :init nil (funcall (@ @@@ :init :super t) @@))
   (@! @@ :init))
 
+
+(with-@@ test1
+    (def@ @@ :init ()
+      (@^:init))
+  (@:init))
+
 ;;; act.el ends here
