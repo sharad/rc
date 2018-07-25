@@ -459,7 +459,7 @@
   (let ((name (symbol-name symbol)))
     (cond
       ((string-match "^@@+$" name)
-       (intern (concat name "@")))
+       (intern (concat name "@@")))
       ((string-prefix-p "@:" name)
        (let ((property (intern (substring name 1))))
          (if head
@@ -471,6 +471,8 @@
              `(funcall (@ @@@ ,property :super t) @@)
            `(@ @@ ,property :super t))))
       (t (if head (list symbol) symbol)))))
+
+
 
 (macroexpand-all
  '(defsubobj@ @ "test-base"
