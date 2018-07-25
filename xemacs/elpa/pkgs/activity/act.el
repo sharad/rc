@@ -583,7 +583,7 @@
           )
         test2))
 
-(@! test2 :init)
+(@! test2 :print)
 
 
 
