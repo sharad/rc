@@ -353,10 +353,12 @@
 
 
 (macroexpand-1
- '(def@ @@ :init ()
+ '(def@ OBJ :init ()
    (@^:init)
    (@:fun)
    @:attr))
+
+(progn (setf (@ OBJ :init) (function* (lambda (@@) (let ((@@@ OBJ)) (with-@@ @@ (@^:init) (@:fun) @:attr))))) :init)
 
 (macroexpand-1
  '(with-@@ @@ (@^:init) (@:fun) @:attr))
@@ -373,18 +375,7 @@
          (@! @@ :fun)
          (@ @@ :attr)))))) :init)
 
-(macroexpand-1
- '(with-@@ obj
-   (progn
-     (setf
-      (@ @@ :init)
-      (function*
-       (lambda (@@)
-        (let ((@@@ @@))
-          (let ((@@ @@))
-            (funcall (@ @@@ :init :super t) @@)
-            (@! @@ :fun)
-            (@ @@ :attr)))))) :init)))
+
 
 (let ((@@ obj))
   (progn
