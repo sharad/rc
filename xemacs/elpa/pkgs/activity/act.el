@@ -459,7 +459,8 @@
   (let ((name (symbol-name symbol)))
     (cond
       ((string-match "^@@@@+$" name)
-       ((if head
+       (let (sym (intern (concat name "@@")))
+        (if head
            (intern (concat name "@@")))))
       ((string-prefix-p "@:" name)
        (let ((property (intern (substring name 1))))
