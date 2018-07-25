@@ -459,7 +459,7 @@
   (let ((name (symbol-name symbol)))
     (cond
       ((string-match "^@@@@+$" name)
-       (intern (concat name "@@")))
+       ',(intern (concat name "@@")))
       ((string-prefix-p "@:" name)
        (let ((property (intern (substring name 1))))
          (if head
@@ -512,6 +512,13 @@
      (@^:init))
    (@:init)))
 
+
+(let ((drived-obj (@extend @test-base :name "test base1")))
+  (let ((@@ drived-obj)) (let* ((v @@)) (@--set v :doc "test base1")) (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@) (let ((@@@ @@)) (let ((@@ @@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init) (@! @@ :init)) drived-obj)
+
+(macroexpand-1
+ '(with-@@ test
+   (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@) (let ((@@@ @@)) (let ((@@ @@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init)))
 
 
 
