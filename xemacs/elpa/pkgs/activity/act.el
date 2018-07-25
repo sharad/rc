@@ -523,7 +523,7 @@
 
 
 (setf test1
- (let ((test (@extend)))
+ (let ((test (@extend :name "test")))
   (with-@@ test
       (def@ @@ :init ()
         (message "test")
