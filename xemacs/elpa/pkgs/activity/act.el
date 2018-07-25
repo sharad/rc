@@ -209,7 +209,7 @@
 (progn
   (setf @test-base
         (defsubobj@ @ "test-base"
-            "test Base"
+            "test base"
 
           (def@ @@ :init ()
             (message "@test-base :init start")
