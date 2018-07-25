@@ -522,10 +522,17 @@
 
 
 
-(let ((test (@extend)))
+(setf @test
+ (let ((test (@extend)))
   (with-@@ test
       (def@ @@ :init () (@^:init))
     (@:init))
-  test)
+  test))
+
+(let ((test1 (@extend @test)))
+  (with-@@ test1
+      (def@ @@ :init () (@^:init))
+    (@:init))
+  test1)
 
 ;;; act.el ends here
