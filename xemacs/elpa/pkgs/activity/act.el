@@ -363,7 +363,11 @@
         (function*
          (lambda (@@)
           (let ((@@@ OBJ))
-            (with-@@ @@ (@^:init) (@:fun) @:attr))))) :init)
+            (let ((@@ @@)) (funcall (@ @@@ :init :super t) @@) (@! @@ :fun) (@ @@ :attr)))))) :init)
+
+
+(macroexpand-1
+ '(with-@@ @@ (@^:init) (@:fun) @:attr))
 
 
 
