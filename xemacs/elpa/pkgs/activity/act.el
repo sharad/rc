@@ -419,6 +419,56 @@
       (t (if head (list symbol) symbol)))))
 
 
+(progn
+  (setf @test-base
+        (defsubobj@ @ "test-base"
+            "test base"
+
+          (def@ @@ :init ()
+            (message "@test-base :init start")
+            (@^:init)
+            (message "@test-base :init finish"))
+
+          (def@ @@ :dispatch ()
+            (message "@test-base :dispatch start")
+            (@:init)
+            (message "@test-base :dispatch finish"))
+
+          (@:dispatch)))
+
+  (setf @test-base1
+        (defsubobj@ @test-base "test base1"
+          "test base1"
+
+          (def@ @@ :init ()
+            (message "@test-base1 :init start")
+            (@^:init)
+            (message "@test-base1 :init finish"))
+
+          (def@ @@ :dispatch ()
+            (message "@test-base1 :dispatch start")
+            (@^:init)
+            (message "@test-base1 :dispatch finish"))
+
+          (@:dispatch))))
+
+
+
+(macroexpand-1
+ '(defsubobj@ @ "test-base"
+   "test base"
+
+   (def@ @@ :init ()
+     (message "@test-base :init start")
+     (@^:init)
+     (message "@test-base :init finish"))
+
+   (def@ @@ :dispatch ()
+     (message "@test-base :dispatch start")
+     (@:init)
+     (message "@test-base :dispatch finish"))
+
+   (@:dispatch)))
 
 
 ;;; act.el ends here
