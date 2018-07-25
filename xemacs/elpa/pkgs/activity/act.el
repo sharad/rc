@@ -515,12 +515,8 @@
    (@:init)))
 
 
-(let ((drived-obj (@extend @test-base :name "test base1")))
-  (let ((@@ drived-obj)) (let* ((v @@)) (@--set v :doc "test base1")) (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@) (let ((@@@ @@)) (let ((@@ @@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init) (@! @@ :init)) drived-obj)
 
-(macroexpand-1
- '(with-@@ test
-   (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@) (let ((@@@ @@)) (let ((@@ @@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init)))
+
 
 (let ((@@ (@extend :name "test"))) (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@@@) (let ((@@@ @@)) (let ((@@ @@@@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init))
 
