@@ -572,7 +572,8 @@
   (with-@@ test2
 
 
-    (def@ @@ :init ()
-      (@^:init))))
+
+      (def@ @@ :init ()
+        (@^:init))))
 
 ;;; act.el ends here
