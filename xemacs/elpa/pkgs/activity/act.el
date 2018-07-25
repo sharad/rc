@@ -500,8 +500,6 @@
      (@^:init)
      (message "@test-base :init finish"))
 
-
-
    (@:dispatch)))
 
 
