@@ -518,7 +518,7 @@
                (let ((@@@ xx))
                  (with-@@ yy
                      (message "@test-base :init start")
-                   (@^:init)
+                   (@! @@@ :init)
                    (message "@test-base :init finish"))))))
        :init)
 
