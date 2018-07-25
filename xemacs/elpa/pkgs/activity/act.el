@@ -381,17 +381,7 @@
 
 
 
-(macroexpand-1
- '(with-@@ X
-   (progn
-     (setf (@ OBJ :init)
-           (function*
-            (lambda (@@@)
-             (let ((@@@@ OBJ))
-               (let ((@@@ @@@))
-                 (funcall (@ @@@@ :init :super t) @@@)
-                 (@! @@@ :fun)
-                 (@ @@@ :attr)))))) :init)))
+
 
 
 
