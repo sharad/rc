@@ -512,7 +512,7 @@
    (def@ @@ :init ()
      (@^:init))
 
-   (@:dispatch)))
+   (@:init)))
 
 
 
