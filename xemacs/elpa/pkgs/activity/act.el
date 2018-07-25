@@ -510,7 +510,6 @@
    "test base1"
    (def@ @@ :init ()
      (@^:init))
-
    (@:init)))
 
 
