@@ -573,7 +573,7 @@
 
       (def@ @@ :print ()
         (message
-         "(@ @@@ :name)"))
+         "(@ @@@ :name) %s") (@ @@@ :name))
 
       (def@ @@ :init ()
         (@^:init))))
