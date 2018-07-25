@@ -505,13 +505,22 @@
    (@:dispatch)))
 
 
-(let ((drived-obj (@extend @ :name "test-base")))
-  (let ((@@ drived-obj))
-    (progn
-      (let* ((v @@))
-        (@--set v :init
-                (function (lambda (@@@@) (let ((@@@ @@)) (let ((@@ @@@@)) (message "@test-base :init start") (funcall (@ @@@ :init :super t) @@) (message "@test-base :init finish")))))
-                )) :init))
-  drived-obj)
+(macroexpand-all
+ '(defsubobj@ @test-base "test base1"
+   "test base1"
+
+   (def@ @@ :init ()
+     (message "@test-base1 :init start")
+     (@^:init)
+     (message "@test-base1 :init finish"))
+
+   (def@ @@ :dispatch ()
+     (message "@test-base1 :dispatch start")
+     (@^:init)
+     (message "@test-base1 :dispatch finish"))
+
+   (@:dispatch)))
+
+
 
 ;;; act.el ends here
