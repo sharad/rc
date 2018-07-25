@@ -536,4 +536,15 @@
     (@:init))
   test1)
 
+
+(macroexpand-1
+ '(with-@@ test1
+   (def@ @@ :init ()
+     (@^:init))
+   (@:init)))
+
+(let ((@@ test1))
+  (def@ @@ :init nil (funcall (@ @@@ :init :super t) @@))
+  (@! @@ :init))
+
 ;;; act.el ends here
