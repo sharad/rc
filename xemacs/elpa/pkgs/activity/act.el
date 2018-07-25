@@ -522,6 +522,6 @@
  '(with-@@ test
    (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@) (let ((@@@ @@)) (let ((@@ @@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init)))
 
-
+(let ((@@ (@extend :name "test"))) (progn (let* ((v @@)) (@--set v :init (function (lambda (@@@@@@) (let ((@@@ @@)) (let ((@@ @@@@@@)) (funcall (@ @@@ :init :super t) @@))))))) :init))
 
 ;;; act.el ends here
