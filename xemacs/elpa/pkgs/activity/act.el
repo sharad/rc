@@ -558,8 +558,20 @@
   (@! @@ :init))
 
 
+
+(setf test1
+      (let ((test (@extend :name "test")))
+        (with-@@ test
+            (def@ @@ :init ()
+              (message "test")
+              (@^:init))
+          (@:init))
+        test))
+
 (let ((test2 (@extend test1 :name "extended")))
- (with-@@ test2
+  (with-@@ test2
+
+
     (def@ @@ :init ()
       (@^:init))))
 
