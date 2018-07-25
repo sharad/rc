@@ -507,4 +507,10 @@
     (@! ss :init))
   drived-obj)
 
+
+(let ((test (@exten )))
+  (with-@@ test
+      (def@ @@ :init ()
+        (@^:init))))
+
 ;;; act.el ends here
