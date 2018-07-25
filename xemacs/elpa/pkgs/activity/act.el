@@ -514,10 +514,15 @@
     (@:init))
   test)
 
-(defsubobj@ @test-base "test base1"
-  (def@ @@ :init ()
-    (@^:init))
-  (@:init))
+(macroexpand-1
+ '(defsubobj@ @test-base "test base1"
+   (def@ @@ :init ()
+     (@^:init))
+   (@:init)))
 
+(let ((drived-obj (@extend @test-base :name "test base1")))
+  (with-@@ drived-obj
+      (def@ @@ :init () (@^:init))
+    (@:init)) drived-obj)
 
 ;;; act.el ends here
