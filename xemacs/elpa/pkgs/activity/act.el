@@ -339,9 +339,9 @@
 (macroexpand-1
  '(with-@@ baee
    (def@ @@ :init ()
-         (message "@test-base1 :init start")
-         (@^:init)
-         (message "@test-base1 :init finish"))))
+     (@^:init)
+     (@:fun)
+     @:attr)))
 
 
 (let ((@@ (@extend @ :name "test")))
