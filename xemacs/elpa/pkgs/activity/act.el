@@ -509,6 +509,7 @@
       (let* ((v @@))
         (@--set v :init
                 (function (lambda (@@@@) (let ((@@@ @@)) (let ((@@ @@@@)) (message "@test-base :init start") (funcall (@ @@@ :init :super t) @@) (message "@test-base :init finish")))))
-                )) :init) (@! @@ :dispatch)) drived-obj)
+                )) :init))
+  drived-obj)
 
 ;;; act.el ends here
