@@ -545,7 +545,7 @@
      (@^:init))
    (@:init)))
 
-(let ((@@ (@extend test1)))
+(let ((@@ (@extend test1 :name :extended)))
   (progn
     (let* ((v @@))
       (@--set v :init
