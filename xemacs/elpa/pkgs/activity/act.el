@@ -486,7 +486,7 @@
            (function* (lambda ,(cons '@@@@@@ params)
              ,@(if (stringp (car body)) (list (car body)) ())
              (let ((@@@ ,object))
-               (with-@@ @@@@
+               (with-@@ @@@@@@
                    ,@(if (stringp (car body)) (cdr body) body))))))
      ,method))
 
