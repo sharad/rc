@@ -358,7 +358,11 @@
    (@:fun)
    @:attr))
 
-(progn (setf (@ OBJ :init) (function* (lambda (@@) (let ((@@@ OBJ)) (with-@@ @@ (@^:init) (@:fun) @:attr))))) :init)
+(progn (setf (@ OBJ :init)
+             (function*
+              (lambda (@@)
+               (let ((@@@ OBJ))
+                 (with-@@ @@ (@^:init) (@:fun) @:attr))))) :init)
 
 
 
