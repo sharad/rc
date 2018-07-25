@@ -578,6 +578,9 @@
          "(@ @@ :name) %s"  (@ @@ :name)))
 
       (def@ @@ :init ()
-        (@^:init))))
+        (@^:init)))
+  test2)
+
+
 
 ;;; act.el ends here
