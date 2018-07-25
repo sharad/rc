@@ -248,8 +248,8 @@
                (@extend @ :name "test-base")))
           (def@ drived-obj :init ()
             (message "@test-base :init start")
-              (@^:init)
-              (message "@test-base :init finish"))
+            (@^:init)
+            (message "@test-base :init finish"))
 
           (def@ drived-obj :dispatch ()
             (message "@test-base :dispatch start")
