@@ -502,6 +502,10 @@
 
    (@:dispatch)))
 
+(let ((drived-obj (@extend @ :name "test-base"))) (let ((@@ drived-obj))
+                                                    (progn (let* ((v @@xx)) (@--set v :init (function (lambda (@@) (let ((@@@ @@xx)) (let ((@@ @@)) (message "@test-base :init start") (funcall (@ @@@xx :init :super t) @@xx) (message "@test-base :init finish"))))))) :init) (@! @@ :dispatch)) drived-obj)
+
+
 
 (macroexpand-1
  '(def@ xx :init ()
