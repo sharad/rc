@@ -483,7 +483,7 @@
   (declare (indent defun))
   `(progn
      (setf (@ ,object ,method)
-           (function* (lambda ,(cons '@@@@ params)
+           (function* (lambda ,(cons '@@@@@@ params)
              ,@(if (stringp (car body)) (list (car body)) ())
              (let ((@@@ ,object))
                (with-@@ @@@@
