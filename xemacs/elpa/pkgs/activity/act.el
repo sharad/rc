@@ -561,6 +561,6 @@
 (with-@@ test1
     (def@ @@ :init ()
       (@^:init))
-  (@:init))
+  )
 
 ;;; act.el ends here
