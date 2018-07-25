@@ -558,9 +558,8 @@
   (@! @@ :init))
 
 
-(with-@@ test2
+((with-@@ test2
     (def@ @@ :init ()
-      (@^:init))
-  )
+      (@^:init))))
 
 ;;; act.el ends here
