@@ -39,7 +39,7 @@
 
 (require 'activity-base)
 
-(provide 'org-activity-note)
+(provide 'org-clock-trans)
 
 
 
