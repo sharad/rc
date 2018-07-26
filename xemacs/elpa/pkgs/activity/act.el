@@ -210,7 +210,6 @@
   (setf @test-base
         (defsubobj@ @ "test-base"
           "test base"
-
           (def@ @@ :init ()
             (message "@test-base :init start")
             (@^:init)
