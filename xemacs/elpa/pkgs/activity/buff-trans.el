@@ -69,7 +69,7 @@
                     ))
 
             (@:dispatch note))))
-  ;; (@:dispatch note)
+  (@:dispatch note)
   )
 
 (setf @buff-transition-detector
