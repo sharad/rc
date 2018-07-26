@@ -617,8 +617,16 @@
         (let ((drived-obj (@extend @ :name "test-base")))
           (with-@@ drived-obj
               (setf @:doc "test base")
-            (def@ @@ :init nil (message "@test-base :init start") (@^:init) (message "@test-base :init finish"))
-            (def@ @@ :dispatch nil (message "@test-base :dispatch start") (@:init) (message "@test-base :dispatch finish"))
+            (def@ @@ :init ()
+              (message "@test-base :init start")
+              (@^:init)
+              (message "@test-base :init finish"))
+
+            (def@ @@ :dispatch ()
+              (message "@test-base :dispatch start")
+              (@:init)
+              (message "@test-base :dispatch finish"))
+
             (@:dispatch))
           drived-obj))
 
