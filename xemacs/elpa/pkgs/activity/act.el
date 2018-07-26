@@ -614,19 +614,13 @@
 
 (progn
   (setf @test-base
-        (defsubobj@ @ "test-base"
-            "test base"
-          (def@ @@ :init ()
-            (message "@test-base :init start")
-            (@^:init)
-            (message "@test-base :init finish"))
-
-          (def@ @@ :dispatch ()
-            (message "@test-base :dispatch start")
-            (@:init)
-            (message "@test-base :dispatch finish"))
-
-          (@:dispatch)))
+        (let ((drived-obj (@extend @ :name "test-base")))
+          (with-@@ drived-obj
+              (setf @:doc "test base")
+            (def@ @@ :init nil (message "@test-base :init start") (@^:init) (message "@test-base :init finish"))
+            (def@ @@ :dispatch nil (message "@test-base :dispatch start") (@:init) (message "@test-base :dispatch finish"))
+            (@:dispatch))
+          drived-obj))
 
   (setf @test-base1
         (defsubobj@ @test-base "test base1"
@@ -642,5 +636,26 @@
             (message "@test-base1 :dispatch finish"))
 
           (@:dispatch))))
+
+
+
+
+
+(macroexpand-1
+ '(defsubobj@ @ "test-base"
+   "test base"
+   (def@ @@ :init ()
+     (message "@test-base :init start")
+     (@^:init)
+     (message "@test-base :init finish"))
+
+   (def@ @@ :dispatch ()
+     (message "@test-base :dispatch start")
+     (@:init)
+     (message "@test-base :dispatch finish"))
+
+   (@:dispatch)))
+
+
 
 ;;; act.el ends here
