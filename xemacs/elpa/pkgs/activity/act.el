@@ -234,7 +234,7 @@
 
           (def@ @@ :dispatch ()
             (message "@test-base1 :dispatch start")
-            (@^:init)
+            (@:init)
             (message "@test-base1 :dispatch finish"))
 
           (@:dispatch))))
@@ -459,7 +459,7 @@
 (defmacro with-@@ (object &rest body)
   "Provide the @: and @^: DSL utilities for OBJECT in BODY."
   (declare (indent defun))
-  `(let ((@@ ,object))
+  `(lexical-let ((@@ ,object))
      ,@(cdr (@--walk (cons 'progn body) '(quote with-@@) #'@--replace))))
 
 (defmacro def@ (object method params &rest body)
@@ -469,7 +469,7 @@
      (setf (@ ,object ,method)
            (function* (lambda ,(cons '@@@@ params)
              ,@(if (stringp (car body)) (list (car body)) ())
-             (let ((@@@ ,object))
+             (lexical-let ((@@@ ,object))
                (with-@@ @@@@
                    ,@(if (stringp (car body)) (cdr body) body))))))
      ,method))
