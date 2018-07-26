@@ -615,8 +615,11 @@
 (progn
   (setf @test-base
         (let ((drived-obj (@extend @ :name "test-base")))
+
           (with-@@ drived-obj
-              (setf @:doc "test base")
+
+            (setf @:doc "test base")
+
             (def@ @@ :init ()
               (message "@test-base :init start")
               (@^:init)
@@ -631,38 +634,44 @@
           drived-obj))
 
   (setf @test-base1
-        (defsubobj@ @test-base "test base1"
-          "test base1"
-          (def@ @@ :init ()
-            (message "@test-base1 :init start")
-            (@^:init)
-            (message "@test-base1 :init finish"))
+        (let ((drived-obj (@extend @test-base :name "test base1")))
+          (with-@@ drived-obj
 
-          (def@ @@ :dispatch ()
-            (message "@test-base1 :dispatch start")
-            (@:init)
-            (message "@test-base1 :dispatch finish"))
+            (setf @:doc "test base1")
 
-          (@:dispatch))))
+            (def@ @@ :init ()
+              (message "@test-base1 :init start")
+              (@^:init)
+              (message "@test-base1 :init finish"))
+
+            (def@ @@ :dispatch ()
+              (message "@test-base1 :dispatch start")
+              (@:init)
+              (message "@test-base1 :dispatch finish"))
+
+            (@:dispatch)) drived-obj)))
 
 
 
 
 
 (macroexpand-1
- '(defsubobj@ @ "test-base"
-   "test base"
+ '(defsubobj@ @test-base "test base1"
+   "test base1"
    (def@ @@ :init ()
-     (message "@test-base :init start")
+     (message "@test-base1 :init start")
      (@^:init)
-     (message "@test-base :init finish"))
+     (message "@test-base1 :init finish"))
 
    (def@ @@ :dispatch ()
-     (message "@test-base :dispatch start")
+     (message "@test-base1 :dispatch start")
      (@:init)
-     (message "@test-base :dispatch finish"))
+     (message "@test-base1 :dispatch finish"))
 
    (@:dispatch)))
+
+
+
 
 
 
