@@ -69,8 +69,7 @@
                     ))
 
             (@:dispatch note))))
-   (@:dispatch note)
-  )
+  (@:dispatch note))
 
 (setf @buff-transition-detector
       (@! @transition-dectector-class :gen-buffer-trans "test"))

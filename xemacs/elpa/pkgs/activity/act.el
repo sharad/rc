@@ -427,7 +427,7 @@
 
           (def@ @@ :dispatch ()
             (message "@test-base1 :dispatch start")
-            (@^:init)
+            (@:init)
             (message "@test-base1 :dispatch finish"))
 
           (@:dispatch))))
