@@ -61,7 +61,7 @@ DEB_PKG_XML="libxml2-utils xsltproc docbook5-xml docbook-xsl-ns"
 DEB_PKG_UTILS="gcalcli"
 DEB_PKG_MEDIA="libavcodec-extra pulseeffects pavucontrol pulseaudio-module-gconf pulseaudio-equalizer vokoscreen pulseaudio-utils pulsemixer kodi sox mpg123 mpg321 "
 DEB_PKG_WINDOW="smbclient python3-smbc python-smbc"
-DEB_PKG_NEW="openfortivpn"
+DEB_PKG_NET="openfortivpn"
 
 
 PY_PIP_PKG="termdown"
