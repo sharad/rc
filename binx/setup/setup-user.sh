@@ -61,6 +61,7 @@ DEB_PKG_XML="libxml2-utils xsltproc docbook5-xml docbook-xsl-ns"
 DEB_PKG_UTILS="gcalcli"
 DEB_PKG_MEDIA="libavcodec-extra pulseeffects pavucontrol pulseaudio-module-gconf pulseaudio-equalizer vokoscreen pulseaudio-utils pulsemixer kodi sox mpg123 mpg321 "
 DEB_PKG_WINDOW="smbclient python3-smbc python-smbc"
+DEB_PKG1_NET="network-manager-fortisslvpn openfortivpn"
 
 
 PY_PIP_PKG="termdown"
@@ -247,7 +248,8 @@ function setup_apt_packages()
         "DEB_PKG_XML" \
         "DEB_PKG_UTILS" \
         "DEB_PKG_MEDIA" \
-        "DEB_PKG_WINDOW"
+        "DEB_PKG_WINDOW" \
+        "DEB_PKG1_NET"
     do
         if ! eval sudo apt -y install \$$pkg
         then
