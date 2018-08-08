@@ -85,8 +85,7 @@
                                                 'note nil nil nil
                                                 (concat
                                                  "# Task: " (org-get-heading t) "\n\n"
-                                                 (apply #'format fmt args)))))
-    )
+                                                 (apply #'format fmt args))))))
 
   (@:dispatch marker))
 
@@ -97,10 +96,6 @@
   (push
    (@! @dest-class :gen-org-dest "msg" marker)
    @:dests))
-
-
-
-
 
 (defvar @org-clock-lognote
   (@! @note-class :gen-org-log-note
