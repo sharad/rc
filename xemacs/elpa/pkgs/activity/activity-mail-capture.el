@@ -62,57 +62,59 @@
 (add-hook 'message-sent-hook 'activity-org-mu4e-store-link-on-sent-message)
 
 (add-hook 'message-mode-hook (lambda ()
-			       (message-add-action 'activity-org-mu4e-capture-cancel
-						   'send 'postpone 'kill)
+                               (message-add-action
+                                'activity-org-mu4e-capture-cancel
+                                'send 'postpone 'kill)
 
-			       (message-add-action 'activity-capture-sent-message-if-needed
-						   'send)))
+                               (message-add-action
+                                'activity-capture-sent-message-if-needed
+                                'send)))
 
-(defun djr~wipe-brackets (msgid)
+(defun activity~wipe-brackets (msgid)
   (interactive)
   (remove-if (lambda (c)
-	       (or (equal c ?>)
-		   (equal c ?<)))
-	     msgid))
+               (or (equal c ?>)
+                   (equal c ?<)))
+             msgid))
 
 (defun activity-org-mu4e-store-link-on-sent-message ()
   "Store the sent message in many useful places"
   (interactive)
   (let* ((msgid (message-fetch-field "Message-ID"))
-	 (description (message-fetch-field "Subject"))
-	 (link (concat "mu4e:msgid:" (djr~wipe-brackets msgid)))
-	 (org-link-string (org-make-link-string link description))
-	 (captured-message-p
-	  `(:type mu4e
-		 :description ,description
-		 :link ,link
-		 :annotation ,org-link-string
-		 :message-id ,msgid))
-	 (stored-link (list link description)))
+         (description (message-fetch-field "Subject"))
+         (link (concat "mu4e:msgid:" (activity~wipe-brackets msgid)))
+         (org-link-string (org-make-link-string link description))
+         (captured-message-p
+          `(:type mu4e
+                  :description ,description
+                  :link ,link
+                  :annotation ,org-link-string
+                  :message-id ,msgid))
+         (stored-link (list link description)))
     (push stored-link org-stored-links)
     (setq org-store-link-plist captured-message-p
-	  activity-mu4e-captured-message-p org-store-link-plist)))
+          activity-mu4e-captured-message-p org-store-link-plist)))
 
 (defun activity-capture-sent-message-if-needed ()
   (interactive)
   (if activity-org-mu4e-must-capture-message
       (let* ((org-store-link-plist activity-mu4e-captured-message-p)
-	     (org-capture-link-is-already-stored t))
-	(org-capture nil activity-mu4e-org-mode-capture-template-for-sent-email))))
+             (org-capture-link-is-already-stored t))
+        (org-capture nil activity-mu4e-org-mode-capture-template-for-sent-email))))
 
 (defun activity-org-mu4e-capture-cancel ()
   (interactive)
   (setq activity-org-mu4e-must-capture-message nil
-	global-mode-string (delq 'activity-org-capture-mode-line-string global-mode-string)))
+        global-mode-string (delq 'activity-org-capture-mode-line-string global-mode-string)))
 (activity-org-mu4e-capture-cancel)
 
 (defun activity-org-mu4e-capture-next-message ()
   (setq activity-org-mu4e-must-capture-message t
-	activity-org-capture-mode-line-string "Org capturing current mail")
+        activity-org-capture-mode-line-string "Org capturing current mail")
   (or global-mode-string (setq global-mode-string '("")))
   (or (memq 'activity-org-capture-mode-line-string global-mode-string)
       (setq global-mode-string
-	    (append global-mode-string '(activity-org-capture-mode-line-string)))))
+            (append global-mode-string '(activity-org-capture-mode-line-string)))))
 
 (defun activity-mu4e-compose-new-with-follow-up ()
   (interactive)
