@@ -41,6 +41,18 @@
 
 (provide 'mail-event)
 
+
+;; https://emacs.stackexchange.com/questions/101/how-can-i-create-an-org-link-for-each-email-sent-by-mu4e
+;; http://kitchingroup.cheme.cmu.edu/blog/2014/06/08/Better-integration-of-org-mode-and-email/
+;; https://github.com/danieroux/emacs/blob/master/mine/djr-org-mu4e-capture-sent.el
+
+
+
+
+
+
+
+
 (defsubclass-gen@ @event-dectector-class :gen-mail-read-event ()
   (def@ @@ :make-event ()
     "Make mail read event."
