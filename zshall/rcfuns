@@ -854,10 +854,13 @@ function add2setup ()
         then
             addfile=$addfile[2,${#addfile}]
         fi
-        mv .taskrc ~/.setup/taskrc
-        ln -s .setup/taskrc ~/.taskrc
-        cp -a ~/.taskrc ~/.setup/_home
-        git -C add taskrc _home/.taskrc
+        if [ -e ~/.$addfile ]
+        then
+            mv .taskrc ~/.setup/taskrc
+            ln -s .setup/taskrc ~/.taskrc
+            cp -a ~/.taskrc ~/.setup/_home
+            git -C add taskrc _home/.taskrc
+        fi
     else
         echo only one file required. >&2
     fi
