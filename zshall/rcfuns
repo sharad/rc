@@ -852,6 +852,7 @@ function add2setup ()
         addfile=$(basename $1)
         if [ "$addfile[1]" = "." ]
         then
+            ====$addfile[2,${#addfile}]
         fi
         mv .taskrc ~/.setup/taskrc
         ln -s .setup/taskrc ~/.taskrc
