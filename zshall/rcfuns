@@ -888,7 +888,4 @@ function rmfrmsetup ()
     else
         echo only one file required. >&2
     fi
-
-
-
 }
