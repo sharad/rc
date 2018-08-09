@@ -847,9 +847,12 @@ function symlink-final ()
 
 function add2setup ()
 {
-    addfile=$1
-    mv .taskrc ~/.setup/taskrc
-    ln -s .setup/taskrc ~/.taskrc
-    cp -a ~/.taskrc ~/.setup/_home
-    git -C add taskrc _home/.taskrc
+    if [ $# -ne 1 ]
+    then
+        addfile=$1
+        mv .taskrc ~/.setup/taskrc
+        ln -s .setup/taskrc ~/.taskrc
+        cp -a ~/.taskrc ~/.setup/_home
+        git -C add taskrc _home/.taskrc
+    fi
 }
