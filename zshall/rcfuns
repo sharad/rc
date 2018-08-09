@@ -882,7 +882,7 @@ function rmfrmsetup ()
         then
             rm -f ~/.$addfile ~/.setup/_home/.$addfile
             mv ~/.setup/$addfile ~/.$addfile
-            git -C ~/.setup/ add $addfile _home/.$addfile
+            git -C ~/.setup/ rm --cached $addfile _home/.$addfile
         else
             echo No ~/.$addfile such file exists. >&2
         fi
