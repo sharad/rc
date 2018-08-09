@@ -858,6 +858,7 @@ function add2setup ()
         then
             mv .$addfile ~/.setup/$addfile
             ln -s .setup/$addfile ~/.$addfile
+            rm -f ~/.setup/_home/.$addfile
             cp -a ~/.$addfile ~/.setup/_home
             git -C ~/.setup/ add $addfile _home/.$addfile
         else
