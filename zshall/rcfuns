@@ -854,5 +854,7 @@ function add2setup ()
         ln -s .setup/taskrc ~/.taskrc
         cp -a ~/.taskrc ~/.setup/_home
         git -C add taskrc _home/.taskrc
+    else
+        only one file required.
     fi
 }
