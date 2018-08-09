@@ -860,6 +860,8 @@ function add2setup ()
             ln -s .setup/taskrc ~/.taskrc
             cp -a ~/.taskrc ~/.setup/_home
             git -C add taskrc _home/.taskrc
+        else
+            echo No ~/.$addfile such file exists. >&2
         fi
     else
         echo only one file required. >&2
