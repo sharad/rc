@@ -867,3 +867,8 @@ function add2setup ()
         echo only one file required. >&2
     fi
 }
+
+function rmfrmsetup ()
+{
+    rm -f ~/.bitlbee ~/.setup/_home/.bitlbee ;  mv ~/.setup/bitlbee ~/.bitlbee
+}
