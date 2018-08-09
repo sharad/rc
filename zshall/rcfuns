@@ -850,6 +850,9 @@ function add2setup ()
     if [ $# -ne 1 ]
     then
         addfile=$(basename $1)
+        if [ "$addfile[1]" = "." ]
+        then
+        fi
         mv .taskrc ~/.setup/taskrc
         ln -s .setup/taskrc ~/.taskrc
         cp -a ~/.taskrc ~/.setup/_home
