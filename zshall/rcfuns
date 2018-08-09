@@ -847,5 +847,8 @@ function symlink-final ()
 
 function add2setup ()
 {
-    mv .taskrc ~/.setup/taskrc ; ln -s .setup/taskrc ~/.taskrc ; cp -a ~/.taskrc ~/.setup/_home ; git -C add taskrc _home/.taskrc
+    mv .taskrc ~/.setup/taskrc
+    ln -s .setup/taskrc ~/.taskrc
+    cp -a ~/.taskrc ~/.setup/_home
+    git -C add taskrc _home/.taskrc
 }
