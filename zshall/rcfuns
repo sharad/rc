@@ -856,10 +856,10 @@ function add2setup ()
         fi
         if [ -e ~/.$addfile ]
         then
-            mv .taskrc ~/.setup/taskrc
-            ln -s .setup/taskrc ~/.taskrc
-            cp -a ~/.taskrc ~/.setup/_home
-            git -C add taskrc _home/.taskrc
+            mv .$addfile ~/.setup/$addfile
+            ln -s .setup/$addfile ~/.$addfile
+            cp -a ~/.$addfile ~/.setup/_home
+            git -C add $addfile _home/.$addfile
         else
             echo No ~/.$addfile such file exists. >&2
         fi
