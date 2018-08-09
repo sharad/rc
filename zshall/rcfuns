@@ -859,7 +859,7 @@ function add2setup ()
             mv .$addfile ~/.setup/$addfile
             ln -s .setup/$addfile ~/.$addfile
             cp -a ~/.$addfile ~/.setup/_home
-            git -C add $addfile _home/.$addfile
+            git -C ~/.setup/ add $addfile _home/.$addfile
         else
             echo No ~/.$addfile such file exists. >&2
         fi
