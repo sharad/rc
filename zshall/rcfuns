@@ -877,7 +877,7 @@ function rmfrmsetup ()
         then
             addfile=$addfile[2,${#addfile}]
         fi
-        if [ -e ~/.$addfile ]
+        if [ -L ~/.$addfile ]
         then
             rm -f ~/.$addfile ~/.setup/_home/.$addfile
             mv ~/.setup/$addfile ~/.$addfile
