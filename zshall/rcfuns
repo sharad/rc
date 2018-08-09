@@ -854,7 +854,7 @@ function add2setup ()
         then
             addfile=$addfile[2,${#addfile}]
         fi
-        if [ -e ~/.$addfile ]
+        if [ -e ~/.$addfile -a ! -e ~/.setup/$addfile ]
         then
             mv .$addfile ~/.setup/$addfile
             ln -s .setup/$addfile ~/.$addfile
