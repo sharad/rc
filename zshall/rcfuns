@@ -879,16 +879,13 @@ function rmfrmsetup ()
         fi
         if [ -e ~/.$addfile ]
         then
-            mv .$addfile ~/.setup/$addfile
-            ln -s .setup/$addfile ~/.$addfile
-            cp -a ~/.$addfile ~/.setup/_home
-            git -C ~/.setup/ add $addfile _home/.$addfile
         else
             echo No ~/.$addfile such file exists. >&2
         fi
     else
         echo only one file required. >&2
     fi
+
     rm -f ~/.bitlbee ~/.setup/_home/.bitlbee
     mv ~/.setup/bitlbee ~/.bitlbee
 }
