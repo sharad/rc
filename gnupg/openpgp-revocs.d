@@ -1,0 +1,1 @@
+../osetup/secure/gnupg.d/openpgp-revocs.d
