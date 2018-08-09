@@ -844,7 +844,7 @@ function symlink-final ()
 
 ##}}
 
-
+##{{
 function add2setup ()
 {
     if [ $# -eq 1 ]
@@ -890,3 +890,5 @@ function rmfrmsetup ()
         echo only one file required. >&2
     fi
 }
+
+##}}
