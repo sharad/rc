@@ -870,5 +870,6 @@ function add2setup ()
 
 function rmfrmsetup ()
 {
-    rm -f ~/.bitlbee ~/.setup/_home/.bitlbee ;  mv ~/.setup/bitlbee ~/.bitlbee
+    rm -f ~/.bitlbee ~/.setup/_home/.bitlbee
+    mv ~/.setup/bitlbee ~/.bitlbee
 }
