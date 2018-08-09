@@ -879,6 +879,7 @@ function rmfrmsetup ()
         fi
         if [ -e ~/.$addfile ]
         then
+            rm -f ~/.bitlbee ~/.setup/_home/.bitlbee
         else
             echo No ~/.$addfile such file exists. >&2
         fi
@@ -886,6 +887,6 @@ function rmfrmsetup ()
         echo only one file required. >&2
     fi
 
-    rm -f ~/.bitlbee ~/.setup/_home/.bitlbee
+
     mv ~/.setup/bitlbee ~/.bitlbee
 }
