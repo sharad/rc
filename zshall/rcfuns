@@ -837,9 +837,15 @@ function symlink-final ()
     then
       readsymlink="$(readlink -m $symlink)"
       rm -f $symlink
-      ln -s "$readsymlink" $symlink 
+      ln -s "$readsymlink" $symlink
     fi
   fi
 }
 
 ##}}
+
+
+function add2setup ()
+{
+    mv .taskrc ~/.setup/taskrc ; ln -s .setup/taskrc ~/.taskrc ; cp -a ~/.taskrc ~/.setup/_home ; git -C add taskrc _home/.taskrc
+}
