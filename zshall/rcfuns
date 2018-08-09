@@ -847,6 +847,7 @@ function symlink-final ()
 
 function add2setup ()
 {
+    addfile=$1
     mv .taskrc ~/.setup/taskrc
     ln -s .setup/taskrc ~/.taskrc
     cp -a ~/.taskrc ~/.setup/_home
