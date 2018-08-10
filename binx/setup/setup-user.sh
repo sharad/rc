@@ -23,15 +23,16 @@ APT_REPO_KOI="ppa:team-xbmc/ppa"
 DEB_PKG_FIRST_INTERCATIVE_QA="macchanger postfix cyrus-clients lyskom-server console-data tlp"
 DEB_PKG_FIRST_INSTALL="zsh"
 DEB_PKG_EMACS="elpa-magit elpa-magit-popup elpa-with-editor emacs-goodies-el enscript flim lm-sensors preload"
+DEB_PKG_MESSAGING="namazu2 mhc compface"
 DEB_PKG_NECESSARY_MORE1="xaos xnee xnee-doc xzgv yatex zsh zsh-doc zutils screen tmux tmuxp byobu landscape-common update-motd ccze shutdown-at-night sitesummary xterm rxvt-unicode-256color"
 # TODO BUG set zsh as login shell
 DEB_PKG_NECESSARY_MORE2="gnu-smalltalk-doc gnu-fdisk gnu-standards gnuit gnulib gnupg2 gpa gnuplot-doc gvpe gtypist hello ht id-utils indent integrit jed latex-mk ledger libaws-doc rar"
 ##  hello-traditional
-DEB_PKG_NECESSARY_MORE3="libcommoncpp2-doc libconfig-dev libsocket++-dev licenseutils lookup-el lyskom-server macchanger mboxgrep mew-beta mit-scheme-doc mmm-mode ocaml-doc oneliner-el org-mode-doc parted-doc pcb-common moreutils nmap zenmap"
+DEB_PKG_NECESSARY_MORE3="libcommoncpp2-doc libconfig-dev libsocket++-dev licenseutils lookup-el lyskom-server macchanger mboxgrep mit-scheme-doc mmm-mode ocaml-doc oneliner-el org-mode-doc parted-doc pcb-common moreutils nmap zenmap"
 DEB_PKG_NECESSARY_MORE4="pinfo psgml qingy r-doc-info r5rs-doc semi sepia sharutils slime source-highlight spell ssed stow rlwrap teseq time trueprint turnin-ng units vera wcalc gnome-calculator wdiff wizzytex wysihtml-el"
 DEB_PKG_GAME="gnugo"
 DEB_PKGS_BACKUP="bup git-annex tahoe-lafs unison unison-all inotify-tools"
-DEB_PKG_NECESSARY="git git-review legit git-extras git-flow git-sh git-extras git-crypt ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server rcs apt-src flatpak apt-file jargon cutils complexity-doc dejagnu diffutils extract festival ffe gccintro gddrescue geda-doc genparse gpodder gnutls-bin pinentry-gnome3 pinentry-tty pinentry-curses mew-bin mew-beta-bin kwalletcli pinentry-x2go"
+DEB_PKG_NECESSARY="git git-review legit git-extras git-flow git-sh git-extras git-crypt ecryptfs-utils openssl stow sbcl cl-clx-sbcl at gksu openssh-server rcs apt-src flatpak apt-file jargon cutils complexity-doc dejagnu diffutils extract festival ffe gccintro gddrescue geda-doc genparse gpodder gnutls-bin pinentry-gnome3 pinentry-tty pinentry-curses mew-beta mew-bin mew-beta-bin kwalletcli pinentry-x2go"
 DEB_PKG_WITH_ERROR="edb"
 DEB_PKG_APPEARANCE="lxappearance gnome-tweak-tool gnome-themes-standard libgtk-3-dev console-data gnome-session gnome-settings-daemon gnome-panel policykit-1-gnome dex"
 DEB_PKG_VIRTURALMACHINE="xrdp rdesktop vncviewer remmina remmina-plugin-rdp virtualbox-dkms virtualbox-guest-x11 vagrant"
@@ -62,6 +63,7 @@ DEB_PKG_UTILS="gcalcli newsbeuter"
 DEB_PKG_MEDIA="libavcodec-extra pulseeffects pavucontrol pulseaudio-module-gconf pulseaudio-equalizer vokoscreen pulseaudio-utils pulsemixer kodi sox mpg123 mpg321 "
 DEB_PKG_WINDOW="smbclient python3-smbc python-smbc"
 DEB_PKG1_NET="network-manager-fortisslvpn openfortivpn"
+DEB_PKG_DOC="wv"
 
 
 PY_PIP_PKG="termdown"
@@ -133,6 +135,37 @@ function main()
     running setup_bpkg_pkgs
 
     rm -rf $TMPDIR
+}
+
+function setup_make_link()
+{
+    local target=$1
+    local link=$2
+
+    if [ "$target" != "${target#/}" ]
+    then
+        echo target $target is absolute path. >&2
+        target="$link/$target"
+    fi
+
+    if [ ! -L $link -o "$(readlink -m $link)" != "$(readlink -m $target )" ]
+    then
+
+        if [ -e $link ]
+        then
+            echo $link is pointing to  $(readlink $link) >&2
+            echo while it should point to "$(readlink -m $target )" >&2
+            echo removing $link
+            # rm -f $link
+            echo mv $link ${link}-BACKUP
+        else
+            echo $link do not exists >&1
+        fi
+        echo ln -sf $target $link
+    else
+        echo $link is correctly pointing to "$(readlink -m $target )" is equal $target
+    fi
+
 }
 
 function set_keyboard()
@@ -233,6 +266,7 @@ function setup_apt_packages()
 				"DEB_PKG_SYSTEM" \
 				"DEB_PKG_DEV" \
 				"DEB_PKG_EMACS" \
+        "DEB_PKG_MESSAGING" \
 				"DEB_PKG_TOOL_TEST" \
 				"DEB_SYS_PKG1" \
 				"DEB_PKGS_BACKUP" \
@@ -249,7 +283,8 @@ function setup_apt_packages()
         "DEB_PKG_UTILS" \
         "DEB_PKG_MEDIA" \
         "DEB_PKG_WINDOW" \
-        "DEB_PKG1_NET"
+        "DEB_PKG1_NET" \
+        "DEB_PKG_DOC"
     do
         if ! eval sudo apt -y install \$$pkg
         then
@@ -385,20 +420,20 @@ function setup_git_repos()
         if [ ! -L ~/.localdirs -a -d ~/.localdirs ]
         then
     	      rm -rf ~/.localdirs
-	          ln -sf ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs ~/.localdirs
         fi
+        setup_make_link ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs ~/.localdirs
 
         if [ ! -L ~/.setup ]
         then
 	          rm -rf ~/.setup
-	          ln -sf .localdirs/rc.d/setup ~/.setup
         fi
+        setup_make_link .localdirs/rc.d/setup ~/.setup
 
         if [ ! -L ~/.osetup ]
         then
             rm -f ~/.osetup
-            ln -sf .localdirs/rc.d/osetup ~/.osetup
         fi
+        setup_make_link .localdirs/rc.d/osetup ~/.osetup
 
         if mount | grep $HOME/.Private
         then
@@ -411,8 +446,8 @@ function setup_git_repos()
 
         if [ ! -d ~/.pi -a -d ~/.setup/pi ]
         then
-	          ln -s .setup/pi ~/.pi
-	          ln -s ../${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/orgp ~/.pi/org
+	          setup_make_link  .setup/pi ~/.pi
+	          setup_make_link  ../${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/orgp ~/.pi/org
         fi
 
         if [ ! -d ~/.emacs.d/.git ]
@@ -421,7 +456,7 @@ function setup_git_repos()
             then
                 mv ~/.emacs.d ~/.emacs.d-old
             fi
-	          ln -s ${RESOURCEPATH}/${USERORGMAIN}/readonly/public/user/spacemacs ~/.emacs.d
+	          setup_make_link ${RESOURCEPATH}/${USERORGMAIN}/readonly/public/user/spacemacs ~/.emacs.d
         fi
 
     fi
@@ -515,7 +550,7 @@ function setup_Documentation()  # TODO
     if [  ! -L ~/Documents -a "$(readlink -m ~/Documents)" != "$HOME/.repos/git/user/doc" ]
     then
         # rm -f ~/.LocalDirs.d/home.d/Documents
-        # ln -s ../../.repos/git/user/doc ~/.LocalDirs.d/home.d/Documents
+        # setup_make_link  ../../.repos/git/user/doc ~/.LocalDirs.d/home.d/Documents
         rm -f ~/Documents
         cp -a ~/.setup/_home/Documents ~/
     fi
@@ -526,7 +561,7 @@ function setup_public_html()    # TODO
     if [  ! -L ~/public_html -o "$(readlink -m ~/public_html)" != "$HOME/.repos/git/user/doc/Public/Published/html" ]
     then
         # rm -f ~/.LocalDirs.d/home.d/public_html
-        # ln -s Documents/Public/Published/html ~/.LocalDirs.d/home.d/public_html
+        # setup_make_link  Documents/Public/Published/html ~/.LocalDirs.d/home.d/public_html
         rm -f ~/public_html
         cp -a ~/.setup/_home/public_html ~/
     fi
@@ -610,10 +645,10 @@ function setup_dirs()
     # check local home model.d directory
     if [ -L ~/.localdirs -a -d ~/.localdirs -a -d ~/.localdirs/deps.d/model.d/machine.d ]
     then
+        mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST
         if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST ]
         then
-            mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST
-            ln -s ../../../../../../../../../../../../../../ ~/.localdirs/deps.d/model.d/machine.d/$HOST/home
+            setup_make_link ../../../../../../../../../../../../../../ ~/.localdirs/deps.d/model.d/machine.d/$HOST/home
             mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d
         fi
     fi
@@ -633,13 +668,8 @@ function setup_deps_model_dirs()
         then
             mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST
 
-            if [ ! -L ~/.localdirs/deps.d/model.d/machine.d/default ]
-            then
-                rm -rf ~/.localdirs/deps.d/model.d/machine.d/default
-                ln -s $HOST ~/.localdirs/deps.d/model.d/machine.d/default
-            fi
-
-            ln -s ../../../../../../../../../../../../../../ ~/.localdirs/deps.d/model.d/machine.d/$HOST/home
+            setup_make_link $HOST ~/.localdirs/deps.d/model.d/machine.d/default
+            setup_make_link ../../../../../../../../../../../../../../ ~/.localdirs/deps.d/model.d/machine.d/$HOST/home
 
             mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d
             if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d -a -d /srv/volumes/ ]
@@ -655,7 +685,7 @@ function setup_deps_model_dirs()
                             sudo mkdir -p $_location
                             sudo chown root.root $_location
                         fi
-                        ln -s $_location ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d/"$(basename $vgd)-$(basename $vld)"
+                        setup_make_link $_location ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d/"$(basename $vgd)-$(basename $vld)"
                     done
                 done
             fi
