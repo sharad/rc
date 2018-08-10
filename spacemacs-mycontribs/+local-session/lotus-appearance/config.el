@@ -229,6 +229,7 @@
         (let* ((disp-attrib (assoc-attribs-in-matrix))
                (height
                 (or
+                 height
                  (plist-get disp-attrib :height)
                  (if (and (featurep 'x)
                           window-system
@@ -237,6 +238,7 @@
                      (face-attribute 'default :height))))
                (width
                 (or
+                 width
                  (plist-get disp-attrib :width)
                  (face-attribute 'default :width))))
           (if (x-display-mm-height)
