@@ -152,7 +152,6 @@ function setup_make_link()
 
     if [ ! -L $link -o "$(readlink -m $link)" != "$(readlink -m $target )" ]
     then
-
         if [ -e $link ]
         then
             if [ ! -L $link ]
