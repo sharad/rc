@@ -206,6 +206,11 @@
 
   (defvar *custom-xface-factor* 7)
 
+
+  (prin1-to-string (or
+                    (plist-get disp-attrib :width)
+                    (face-attribute 'default :width)))
+
   (defun set-default-face-height-by-resolution (&optional height width)
     (interactive
      (let* ((disp-attrib (assoc-attribs-in-matrix))
