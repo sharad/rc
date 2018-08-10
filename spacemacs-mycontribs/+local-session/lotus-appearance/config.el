@@ -228,10 +228,11 @@
                                (face-attribute 'default :height)))))
             (width
              (read
-              (read-minibuffer "Face width: "
-                               (prin1-to-string (or
-                                                 (plist-get disp-attrib :width)
-                                                 (face-attribute 'default :width)))))))
+              (prin1-to-string
+               (read-minibuffer "Face width: "
+                                (prin1-to-string (or
+                                                  (plist-get disp-attrib :width)
+                                                  (face-attribute 'default :width))))))))
        (list height width)))
     (if (and (featurep 'x) window-system)
         (let* ((disp-attrib (assoc-attribs-in-matrix))
