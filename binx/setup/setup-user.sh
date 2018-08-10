@@ -145,7 +145,9 @@ function setup_make_link()
     if [ "$target" != "${target#/}" ]
     then
         echo target $target is absolute path. >&2
-        target="$link/$target"
+    else
+        echo target $target is relative path. >&2
+        target="$(dirname $link)/$target"
     fi
 
     if [ ! -L $link -o "$(readlink -m $link)" != "$(readlink -m $target )" ]
@@ -153,19 +155,21 @@ function setup_make_link()
 
         if [ -e $link ]
         then
+            if [ ! -L $link ]
+            then
+                echo link $link is not a link >&2
+            fi
             echo $link is pointing to  $(readlink $link) >&2
             echo while it should point to "$(readlink -m $target )" >&2
             echo removing $link
-            # rm -f $link
-            echo mv $link ${link}-BACKUP
+            mv $link ${link}-BACKUP
         else
             echo $link do not exists >&1
         fi
-        echo ln -sf $target $link
+        ln -sf $target $link
     else
         echo $link is correctly pointing to "$(readlink -m $target )" is equal $target
     fi
-
 }
 
 function set_keyboard()
