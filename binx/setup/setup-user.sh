@@ -237,6 +237,7 @@ function setup_apt_upgrade_system()
     sudo apt -y autoremove
     sudo apt -y autoclean
 }
+
 function setup_apt_packages()
 {
     running setup_apt_repo
@@ -295,9 +296,9 @@ function setup_apt_packages()
         fi
     done
 
-    for $pkg in PY_PIP_PKG
+    for pkg in "$PY_PIP_PKG"
     do
-        eval sudo pip install $PY_PIP_PKG
+        sudo pip install $pkg
     done
 }
 
