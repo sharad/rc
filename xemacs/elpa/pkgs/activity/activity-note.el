@@ -44,38 +44,38 @@
 
 (def@ @activity :init-note ()
       (let ((note
-             (@extend @@
-              :name "activity note"
-              :destinations nil)))
+             (defsubobj@ @@ "activity note"
+                 (setf @:destination nil)
+               (def@ @@ :add-dest (dest)
+                 (message "add-dest: before adding %d" (length @:destinations))
+                 (push dest @:destinations)
+                 (message "add-dest: adding %s destination" (car @:destinations)))
 
-        (def@ note :add-dest (dest)
-              (message "add-dest: before adding %d" (length @:destinations))
-              (push dest @:destinations)
-              (message "add-dest: adding %s destination" (car @:destinations)))
+               (def@ @@ :send (fmt args)
+                 (if @:destinations
+                     (dolist (dest @:destinations)
+                       (if dest
+                           (@! dest :receive fmt args)
+                         (message "dest is nil, not sending msg."))
+                       ;; (message "dest %s: received msg: %s"
+                       ;;          (if dest (@ dest :name))
+                       ;;          (apply #'format fmt args))
+                       )
+                   (error "No @:destinations present.")))
 
-        (def@ note :send (fmt args)
-              (if @:destinations
-                  (dolist (dest @:destinations)
-                    (if dest
-                        (@! dest :receive fmt args)
-                      (message "dest is nil, not sending msg."))
-                    ;; (message "dest %s: received msg: %s"
-                    ;;          (if dest (@ dest :name))
-                    ;;          (apply #'format fmt args))
-                    )
-                (error "No @:destinations present.")))
-
-        (def@ note :init (dests)
-              (message "@activity :init-note")
-              (let (msg-dest)
-                (setf msg-dest
-                      (@extend @note-destination
-                               :name "message note destination"))
-                (push msg-dest
-                      @:destinations)))
+               (def@ @@ :init (dests)
+                 (message "@activity :init-note")
+                 (let (msg-dest)
+                   (setf msg-dest
+                         (@extend @note-destination
+                                  :name "message note destination"))
+                   (push msg-dest
+                         @:destinations))))))
 
         (setf @:_note note)
         @:_note))
+
+
 
 (def@ @activity :note ()
       (unless (boundp '@:_note)
@@ -83,7 +83,6 @@
       @:_note)
 
 (def@ (@ @activity :_note) :init-destination ()
-
       (let ((destination
                (@extend @@
                 :name "activity note destination"
@@ -243,9 +242,7 @@
                           (apply #'message fmt args))
                     msg-note-dest))
 
-            (set (@ destination :builder) builders))
-
-        ))
+            (set (@ destination :builder) builders))))
 
 
 
