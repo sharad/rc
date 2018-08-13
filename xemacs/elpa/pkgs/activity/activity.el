@@ -43,7 +43,7 @@
 (require 'buff-trans)
 ;; change-activity
 ;; clock-activity
-(require 'mail-activity)
+(require 'mail-event)
 ;; {require 'org-activity-log-note}
 ;; (require 'org-activity-note)
 (require 'org-clock-trans)
