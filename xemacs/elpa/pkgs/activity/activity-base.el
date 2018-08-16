@@ -37,7 +37,7 @@
 
 ;;; Code:
 
-(require '@)
+;; (require '@)
 
 (provide 'activity-base)
 
@@ -149,22 +149,25 @@
         (setf @:dests '())
 
         (def@ @@ :send (fmt &rest args)
-              (if (and (memq :dests (@:keys))
-                       (consp @:dests))
-                  (dolist (dest @:dests)
-                    (if dest
-                        (if (@! dest :keyp :receive)
-                            ;; (@! dest :receive fmt args)
-                            (apply (@ dest :receive) dest fmt args)
-                          (message
-                           "dest %s [%s] not has :receive method, not sending msg."
-                           (@ dest :name)
-                           (@! dest :keys)))
-                      (message "dest is nil")))
-                (error "No @:dests %d boundp(%s) consp(%s) present."
-                       (length @:dests)
-                       (boundp '@:dests)
-                       (consp @:dests))))
+          (if (and
+               (memq :dests (@:keys))
+               (consp @:dests))
+              (dolist (dest @:dests)
+                (if dest
+                    (if (@! dest :keyp :receive)
+                        ;; (@! dest :receive fmt args)
+                        (apply (@ dest :receive) dest fmt args)
+                      (message
+                       "for %s dest %s [%s] not has :receive method, not sending msg."
+                       @:name
+                       (@ dest :name)
+                       (@! dest :keys)))
+                  (message "dest is nil")))
+            (error "%s has No @:dests %d boundp(%s) consp(%s) present."
+                   @:name
+                   (length @:dests)
+                   (boundp '@:dests)
+                   (consp @:dests))))
 
         (defsubclass-gen@ @@ :gen-format-msg ()
           "Generator for format message note"

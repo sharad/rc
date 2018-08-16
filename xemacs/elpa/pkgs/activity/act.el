@@ -131,7 +131,7 @@
                      (@ dest :name)
                      (@! dest :keys)))
                 (message "dest is nil")))
-          (error "No @:dests %d boundp(%s) consp(%s) present."
+          (error "Test No @:dests %d boundp(%s) consp(%s) present."
                  (length @:dests)
                  (boundp '@:dests)
                  (consp @:dests))))

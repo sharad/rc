@@ -37,7 +37,7 @@
 
 ;;; Code:
 
-(require 'activity-base)
+;; (require 'activity-base)
 
 (provide 'org-activity-note)
 
@@ -114,7 +114,32 @@
            org-clock-marker)))
   "Org clock activity node")
 
-;; (length (@ @org-clock-note :dests))
-;; (@! @org-clock-note :send "Hello")
+(when nil
+
+  (setf @org-clock-note
+        (@! @note-class :gen-org-note
+            "org-clock-note"
+            #'(lambda ()
+                (or
+                 org-clock-hd-marker
+                 org-clock-marker))))
+
+  (length (@ @org-clock-note :dests))
+
+  (memq :dests (@! @org-clock-note :keys))
+
+  (consp (@ @org-clock-note :dests))
+
+  (@ @org-clock-note :name)
+
+  (@! @org-clock-note :send "Hello")
+
+  (@!
+   (@! @dest-class :gen-org-dest "msg"
+       #'(lambda ()
+           (or
+            org-clock-hd-marker
+            org-clock-marker)))
+   :receive "Test"))
 
 ;;; org-activity-note.el ends here
