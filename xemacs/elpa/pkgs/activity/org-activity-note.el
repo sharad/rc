@@ -114,7 +114,7 @@
            org-clock-marker)))
   "Org clock activity node")
 
-;; (@ @org-clock-note :dests)
+;; (length (@ @org-clock-note :dests))
 ;; (@! @org-clock-note :send "Hello")
 
 ;;; org-activity-note.el ends here
