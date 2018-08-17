@@ -65,6 +65,7 @@ DEB_PKG_MEDIA="libavcodec-extra pulseeffects pavucontrol pulseaudio-module-gconf
 DEB_PKG_WINDOW="smbclient python3-smbc python-smbc"
 DEB_PKG1_NET="network-manager-fortisslvpn openfortivpn"
 DEB_PKG_DOC="wv"
+DEB_EXTRA_PKG3=""
 
 
 PY_PIP_PKG="termdown"
