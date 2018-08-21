@@ -46,6 +46,13 @@
 ;; http://kitchingroup.cheme.cmu.edu/blog/2014/06/08/Better-integration-of-org-mode-and-email/
 ;; https://github.com/danieroux/emacs/blob/master/mine/djr-org-mu4e-capture-sent.el
 
+
+(defun lotus-plist-get-members (plist keys)
+  (mapcar
+   '(lambda (k)
+     (plist-get plist k))
+   keys))
+
 (defsubclass-gen@ @event-dectector-class :gen-mail-read-event ()
 
   (def@ @@ :make-message ()
@@ -67,7 +74,9 @@
              note
              "Reading mail %s from %s to %s"
              ;;TODO arrange for plist
-             (@:make-message))))
+             (lotus-plist-get-members
+              (@:make-message)
+              '(:subject :from :to)))))
 
   (def@ @@ :dispatch ()
     "setting note class"
@@ -100,7 +109,9 @@
              note
              "Reading mail %s from %s to %s"
              ;;TODO arrange for plist
-             (@:make-message))))
+             (lotus-plist-get-members
+              (@:make-message)
+              '(:subject :from :to)))))
 
   (def@ @@ :dispatch ()
     "setting note class"
