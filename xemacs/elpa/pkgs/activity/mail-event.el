@@ -70,6 +70,7 @@
   (def@ @@ :make-event ()
     "Make mail read event."
     (let ((note (@! @:note :new)))
+      (message "Helloooo")
       (apply (@ note :send)
              note
              "Reading mail %s from %s to %s"
