@@ -139,6 +139,8 @@
   (@! @org-clock-note :keys)
   (@! (@! @org-clock-note :new) :keys)
 
+  (@ (@! @org-clock-note :new) :dests)
+
   (@!
    (@! @dest-class :gen-org-dest "msg"
        #'(lambda ()
