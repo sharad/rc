@@ -126,4 +126,7 @@
 
   (@:dispatch))
 
+
+(@! @event-dectector-class :gen-mail-read-event "gnus read mail event")
+
 ;;; mail-event.el ends here
