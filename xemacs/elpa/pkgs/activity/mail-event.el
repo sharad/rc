@@ -81,13 +81,14 @@
     (let ((note (@! @:note :new)))
       (message "Helloooo")
       (message "Helloo %s" (@:make-message))
-      (apply (@ note :send)
-             note
-             "Reading mail %s from %s to %s"
-             ;;TODO arrange for plist
-             (lotus-plist-get-members
-              (@:make-message)
-              '(:subject :from :to)))))
+      (apply
+       (@ note :send)
+       note
+       "Reading mail %s from %s to %s"
+       ;;TODO arrange for plist
+       (lotus-plist-get-members
+        (@:make-message)
+        '(:subject :from :to)))))
 
   (def@ @@ :dispatch ()
     "setting note class"
