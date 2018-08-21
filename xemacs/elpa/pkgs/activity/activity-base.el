@@ -150,7 +150,8 @@
 
         (def@ @@ :send (fmt &rest args)
           (if (and
-               (memq :dests (@:keys))
+               ;; (memq :dests (@:keys))
+               @:dests
                (consp @:dests))
               (dolist (dest @:dests)
                 (if dest
