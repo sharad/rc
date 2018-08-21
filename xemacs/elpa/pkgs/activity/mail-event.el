@@ -84,7 +84,6 @@
 
     ;; gnus-Article-prepare-hook
     ;; gnus-Select-article-hook
-
     (add-hook
      'article-prepare-mode-hook
      (lambda ()
