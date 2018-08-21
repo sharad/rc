@@ -136,6 +136,7 @@
 
   (@! (@! @org-clock-note :new) :send "Test")
 
+  (@! @org-clock-note :keys)
   (@! (@! @org-clock-note :new) :keys)
 
   (@!
