@@ -134,6 +134,8 @@
 
   (@! @org-clock-note :send "Hello")
 
+  (@! (@! @org-clock-note :new) :send "Test")
+
   (@!
    (@! @dest-class :gen-org-dest "msg"
        #'(lambda ()
