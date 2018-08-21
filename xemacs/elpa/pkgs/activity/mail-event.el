@@ -64,7 +64,7 @@
 
   (def@ @@ :make-message ()
     (let* ((msgid (message-fetch-field "Message-ID"))
-           (description (message-fetch-field "Subject"))
+           (subject (message-fetch-field "Subject"))
            (link (concat "mu4e:msgid:" (activity~wipe-brackets msgid))))
       (list
        :subject
