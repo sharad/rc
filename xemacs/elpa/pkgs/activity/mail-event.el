@@ -47,6 +47,13 @@
 ;; https://github.com/danieroux/emacs/blob/master/mine/djr-org-mu4e-capture-sent.el
 
 
+(defun activity~wipe-brackets (msgid)
+  (interactive)
+  (remove-if (lambda (c)
+               (or (equal c ?>)
+                   (equal c ?<)))
+             msgid))
+
 (defun lotus-plist-get-members (plist keys)
   (mapcar
    '(lambda (k)
