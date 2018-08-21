@@ -103,7 +103,7 @@
   (@:dispatch))
 
 
-(defsubclass-gen@ @event-dectector-class :gen-mail-send-event ()
+(defsubclass-gen@ @event-dectector-class :gen-mail-send-event-detector ()
   (def@ @@ :make-message ()
     (let* ((msgid (message-fetch-field "Message-ID"))
            (subject (message-fetch-field "Subject"))
