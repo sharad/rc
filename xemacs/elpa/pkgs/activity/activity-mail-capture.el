@@ -104,31 +104,44 @@
 
 (defun activity-org-mu4e-capture-cancel ()
   (interactive)
-  (setq activity-org-mu4e-must-capture-message nil
-        global-mode-string (delq 'activity-org-capture-mode-line-string global-mode-string)))
+  (setq
+   activity-org-mu4e-must-capture-message nil
+   global-mode-string (delq 'activity-org-capture-mode-line-string global-mode-string)))
 (activity-org-mu4e-capture-cancel)
 
-(defun activity-org-mu4e-capture-next-message ()
-  (setq activity-org-mu4e-must-capture-message t
-        activity-org-capture-mode-line-string "Org capturing current mail")
-  (or global-mode-string (setq global-mode-string '("")))
-  (or (memq 'activity-org-capture-mode-line-string global-mode-string)
-      (setq global-mode-string
-            (append global-mode-string '(activity-org-capture-mode-line-string)))))
+(when nil
+ (defun activity-org-mu4e-capture-next-message ()
+   (setq activity-org-mu4e-must-capture-message t
+         activity-org-capture-mode-line-string "Org capturing current mail")
+   (or global-mode-string (setq global-mode-string '("")))
+   (or (memq 'activity-org-capture-mode-line-string global-mode-string)
+       (setq global-mode-string
+             (append global-mode-string '(activity-org-capture-mode-line-string)))))
 
-(defun activity-mu4e-compose-new-with-follow-up ()
-  (interactive)
-  (activity-org-mu4e-capture-next-message)
-  (mu4e-compose-new))
+ (defun activity-mu4e-compose-new-with-follow-up ()
+   (interactive)
+   (activity-org-mu4e-capture-next-message)
+   (mu4e-compose-new))
 
-(defun activity-mu4e-compose-reply-with-follow-up ()
-  (interactive)
-  (activity-org-mu4e-capture-next-message)
-  (mu4e-compose-reply))
+ (defun activity-mu4e-compose-reply-with-follow-up ()
+   (interactive)
+   (activity-org-mu4e-capture-next-message)
+   (mu4e-compose-reply))
 
-(defun activity-mu4e-forward-with-follow-up ()
-  (interactive)
-  (activity-org-mu4e-capture-next-message)
-  (mu4e-compose-forward))
+ (defun activity-mu4e-forward-with-follow-up ()
+   (interactive)
+   (activity-org-mu4e-capture-next-message)
+   (mu4e-compose-forward)))
 
+
+
+(when nil
+  (add-hook 'message-mode-hook (lambda ()
+                                 (message-add-action
+                                  `(read-from-minibuffer "send postpone kill: " )
+                                  'send 'postpone 'kill)
+
+                                 (message-add-action
+                                  `(read-from-minibuffer "send : " )
+                                  'send))))
 ;;; activity-mail-capture.el ends here

@@ -37,7 +37,7 @@
 
 ;;; Code:
 
-(require 'activity-base)
+(require 'org-activity-note)
 
 (provide 'mail-event)
 
@@ -46,31 +46,69 @@
 ;; http://kitchingroup.cheme.cmu.edu/blog/2014/06/08/Better-integration-of-org-mode-and-email/
 ;; https://github.com/danieroux/emacs/blob/master/mine/djr-org-mu4e-capture-sent.el
 
-
-
-
-
-
-
-
 (defsubclass-gen@ @event-dectector-class :gen-mail-read-event ()
+
+  (def@ @@ :make-message ()
+    (let* ((msgid (message-fetch-field "Message-ID"))
+           (description (message-fetch-field "Subject"))
+           (link (concat "mu4e:msgid:" (activity~wipe-brackets msgid))))
+      (list
+       :subject
+       subject
+       :from
+       from
+       :to
+       to)))
+
   (def@ @@ :make-event ()
     "Make mail read event."
-    (@! (@! @:tran :new) :send ))
+    (let ((note (@! @:note :new)))
+      (apply (@ note :send)
+             note
+             "Reading mail %s from %s to %s"
+             ;;TODO arrange for plist
+             (@:make-message))))
 
   (def@ @@ :dispatch ()
-    (setf @:tran @org-clock-note))
+    "setting note class"
+    (setf @:note @org-clock-note)
+    (add-hook
+     'article-prepare-mode-hook
+     (lambda ()
+       (@! @@ :make-event))))
 
   (@:dispatch))
 
 
 (defsubclass-gen@ @event-dectector-class :gen-mail-send-event ()
+  (def@ @@ :make-message ()
+    (let* ((msgid (message-fetch-field "Message-ID"))
+           (description (message-fetch-field "Subject"))
+           (link (concat "mu4e:msgid:" (activity~wipe-brackets msgid))))
+      (list
+       :subject
+       subject
+       :from
+       from
+       :to
+       to)))
+
   (def@ @@ :make-event ()
     "Make mail send event."
-    (@! (@! @:tran :new) :send ))
+    (let ((note (@! @:note :new)))
+      (apply (@ note :send)
+             note
+             "Reading mail %s from %s to %s"
+             ;;TODO arrange for plist
+             (@:make-message))))
 
   (def@ @@ :dispatch ()
-    (setf @:tran @org-clock-note))
+    "setting note class"
+    (setf @:note @org-clock-note)
+    (add-hook
+     'message-mode-hook
+     (lambda ()
+       (@! @@ :make-event))))
 
   (@:dispatch))
 

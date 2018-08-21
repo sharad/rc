@@ -42,10 +42,10 @@
 (provide 'buff-trans)
 
 (defsubclass-gen@ @transition-dectector-class :gen-buffer-trans (&optional note)
-  (def@ @@ :make-event ()
-    "Make buffer change event."
+  (def@ @@ :make-transition ()
+    "Make buffer change transition."
     (let ((curr (current-buffer)))
-      (message "running :make-event")
+      (message "running :make-transition")
       (unless (eql
                @:prev
                curr)
@@ -74,19 +74,19 @@
 (setf @buff-transition-detector
       (@! @transition-dectector-class :gen-buffer-trans "test"))
 
-(defun make-event ()
-  (message "running make-event")
-  (@! @buff-transition-detector :make-event))
+(defun make-transition ()
+  (message "running make-transition")
+  (@! @buff-transition-detector :make-transition))
 
 (defun buff-transition-detector-install ()
-  (add-hook 'buffer-list-update-hook     'make-event)
-  (add-hook 'elscreen-screen-update-hook 'make-event)
-  (add-hook 'elscreen-goto-hook          'make-event))
+  (add-hook 'buffer-list-update-hook     'make-transition)
+  (add-hook 'elscreen-screen-update-hook 'make-transition)
+  (add-hook 'elscreen-goto-hook          'make-transition))
 
 (defun buff-transition-detector-uninstall ()
-  (remove-hook 'buffer-list-update-hook     'make-event)
-  (remove-hook 'elscreen-screen-update-hook 'make-event)
-  (remove-hook 'elscreen-goto-hook          'make-event))
+  (remove-hook 'buffer-list-update-hook     'make-transition)
+  (remove-hook 'elscreen-screen-update-hook 'make-transition)
+  (remove-hook 'elscreen-goto-hook          'make-transition))
 
 
 ;;; buff-trans.el ends here
