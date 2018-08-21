@@ -136,7 +136,7 @@
 
   (@! (@! @org-clock-note :new) :send "Test")
 
-  (@! (@! @org-clock-note :new) :send "Test")
+  (@! (@! @org-clock-note :new) :keys)
 
   (@!
    (@! @dest-class :gen-org-dest "msg"
