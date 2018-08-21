@@ -85,7 +85,7 @@
     ;; gnus-Article-prepare-hook
     ;; gnus-Select-article-hook
     (add-hook
-     'article-prepare-mode-hook
+     'gnus-Article-prepare-hook
      (lambda ()
        (@! @@ :make-event))))
 
