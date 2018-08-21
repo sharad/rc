@@ -106,7 +106,9 @@
 (defsubclass-gen@ @event-dectector-class :gen-mail-send-event ()
   (def@ @@ :make-message ()
     (let* ((msgid (message-fetch-field "Message-ID"))
-           (description (message-fetch-field "Subject"))
+           (subject (message-fetch-field "Subject"))
+           (from (message-fetch-field "From"))
+           (to (message-fetch-field "To"))
            (link (concat "mu4e:msgid:" (activity~wipe-brackets msgid))))
       (list
        :subject
