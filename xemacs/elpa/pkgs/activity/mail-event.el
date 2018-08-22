@@ -149,7 +149,7 @@
          (with-current-buffer (get-buffer gnus-article-buffer)
            (let ((subject
                   (message-fetch-field "Subject")))
-             (message "checking: %s" subject)
+             (message "preparing mail: %s" subject)
              (@! @@ :make-event)))))))
 
   (@:dispatch))
