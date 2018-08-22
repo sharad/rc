@@ -246,6 +246,8 @@
         (defsubobj@ @activity-dectector-class "duration detector class"
           "Duration detector class"
           (def@ @@ :note ()
+            )
+          (def@ @@ :note ()
             )))
 
   (setf @transition-dectector-class
