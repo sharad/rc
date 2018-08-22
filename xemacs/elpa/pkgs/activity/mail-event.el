@@ -91,7 +91,14 @@
         '(:subject :from :to)))))
 
   (def@ @@ :make-event-gnus ()
-    (@! @@ :make-event-gnus))
+    (when (and
+           gnus-article-buffer
+           (get-buffer gnus-article-buffer))
+      (with-current-buffer (get-buffer gnus-article-buffer)
+        (let ((subject
+               (message-fetch-field "Subject")))
+          (message "checking: %s" subject)
+          ))))
 
   (def@ @@ :dispatch ()
     "setting note class"
