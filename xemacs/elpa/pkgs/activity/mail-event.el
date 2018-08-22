@@ -155,14 +155,7 @@
     (add-hook
      'message-mode-hook
      (lambda ()
-       (when (and
-              gnus-article-buffer
-              (get-buffer gnus-article-buffer))
-         (with-current-buffer (get-buffer gnus-article-buffer)
-           (let ((subject
-                  (message-fetch-field "Subject")))
-             (message "preparing mail: %s" subject)
-             (@! @@ :make-event-gnus)))))))
+       (@! @@ :make-event-gnus))))
 
   (@:dispatch))
 
