@@ -131,7 +131,7 @@
     (let ((note (@! @:note :new)))
       (apply (@ note :send)
              note
-             "mail %s from %s to %s"
+             "Sending mail %s from %s to %s"
              ;;TODO arrange for plist
              (lotus-plist-get-members
               (@:make-message)
