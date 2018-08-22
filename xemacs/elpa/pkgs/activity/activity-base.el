@@ -242,7 +242,7 @@
           (def@ @@ :note ()
             )))
 
-  (setf @event-dectector-class
+  (setf @duration-dectector-class
         (defsubobj@ @activity-dectector-class "event detector class"
           "Event detector class"
           (def@ @@ :note ()
