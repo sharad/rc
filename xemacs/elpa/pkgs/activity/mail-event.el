@@ -152,10 +152,12 @@
  gnus-Article-prepare-hook nil)
 
 (add-hook
- 'gnus-article-mode-hook
+ 'gnus-article-prepare-hook
  (lambda ()
-   (let ((subject
-          (message-fetch-field "Subject")))
-     (message "checking: %s" subject))))
+   (when gnus-article-buffer
+     (with-current-buffer (gnus-article-buffer)
+      (let ((subject
+             (message-fetch-field "Subject")))
+        (message "checking: %s" subject))))))
 
 ;;; mail-event.el ends here
