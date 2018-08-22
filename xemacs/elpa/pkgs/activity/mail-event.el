@@ -90,6 +90,16 @@
         (@:make-message)
         '(:subject :from :to)))))
 
+  (def@ @@ :make-event-gnus ()
+    (when (and
+           gnus-article-buffer
+           (get-buffer gnus-article-buffer))
+      (with-current-buffer (get-buffer gnus-article-buffer)
+        (let ((subject
+               (message-fetch-field "Subject")))
+          (message "checking: %s" subject)
+          (@! @@ :make-event)))))
+
   (def@ @@ :dispatch ()
     "setting note class"
     (setf @:note @org-clock-note)
