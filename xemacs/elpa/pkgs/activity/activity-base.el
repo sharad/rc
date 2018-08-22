@@ -243,8 +243,8 @@
             )))
 
   (setf @duration-dectector-class
-        (defsubobj@ @activity-dectector-class "event detector class"
-          "Event detector class"
+        (defsubobj@ @activity-dectector-class "duration detector class"
+          "Duration detector class"
           (def@ @@ :note ()
             )))
 
