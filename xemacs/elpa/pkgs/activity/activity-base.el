@@ -242,7 +242,7 @@
           (def@ @@ :note ()
             )))
 
-  (setf @duration-dectector-class
+  (setf @duration-dectector-class       ;TODO START
         (defsubobj@ @activity-dectector-class "duration detector class"
           "Duration detector class"
           (def@ @@ :note ()
