@@ -242,6 +242,12 @@
           (def@ @@ :note ()
             )))
 
+  (setf @event-dectector-class
+        (defsubobj@ @activity-dectector-class "event detector class"
+          "Event detector class"
+          (def@ @@ :note ()
+            )))
+
   (setf @transition-dectector-class
         (defsubobj@ @event-dectector-class "transition detector class"
           "Transition detector class"
