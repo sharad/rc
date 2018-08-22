@@ -151,6 +151,8 @@
 (add-hook
  'gnus-Article-prepare-hook
  (lambda ()
+   (let ((subject
+          (message-fetch-field "Subject"))))
    (@! @@ :make-event)))
 
 ;;; mail-event.el ends here
