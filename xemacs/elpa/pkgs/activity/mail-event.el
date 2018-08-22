@@ -158,8 +158,7 @@
       (message-add-action
        '(lambda ()
          (@! @@ :make-event-gnus))
-       'send))
-     ))
+       'send))))
 
   (@:dispatch))
 
