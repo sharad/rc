@@ -153,7 +153,6 @@
  (lambda ()
    (let ((subject
           (message-fetch-field "Subject")))
-     (message "checking: %s" subject))
-   (@! @@ :make-event)))
+     (message "checking: %s" subject))))
 
 ;;; mail-event.el ends here
