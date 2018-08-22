@@ -156,7 +156,7 @@
      'message-mode-hook
      (lambda ()
       (message-add-action
-       '(lambda ()
+       (lambda ()
          (@! @@ :make-event-gnus))
        'send))))
 
