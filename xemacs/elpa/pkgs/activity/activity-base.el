@@ -248,6 +248,11 @@
           (def@ @@ :note ()
             )
           (def@ @@ :dispatch ()
+            (setf
+             @:start-time 0
+             @:stop-time  0
+             @:active-time 0
+             @:inactive-time 0)
             )))
 
   (setf @transition-dectector-class
