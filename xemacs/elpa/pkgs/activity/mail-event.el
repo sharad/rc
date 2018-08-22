@@ -163,9 +163,9 @@
 
 
 (setq
- gnus-article-prepare-hook nil)
+ gnus-Article-prepare-hook nil)
 
-(length gnus-article-prepare-hook)
+(length gnus-Article-prepare-hook)
 
 (add-hook
  'gnus-article-prepare-hook
