@@ -143,7 +143,7 @@
     (when (and
            gnus-message-buffer
            (get-buffer gnus-message-buffer))
-      (with-current-buffer (get-buffer gnus-article-buffer)
+      (with-current-buffer (get-buffer gnus-message-buffer)
         (let ((subject
                (message-fetch-field "Subject")))
           (message "preparing mail: %s" subject)
