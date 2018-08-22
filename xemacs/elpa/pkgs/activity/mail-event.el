@@ -163,7 +163,7 @@
 
 
 (setq
- gnus-Article-prepare-hook nil)
+ gnus-article-prepare-hook nil)
 
 (add-hook
  'gnus-article-prepare-hook
