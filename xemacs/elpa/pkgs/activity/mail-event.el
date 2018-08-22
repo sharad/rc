@@ -159,10 +159,14 @@
        '(lambda ()
          (@! @@ :make-event-gnus))
        'send))))
+
   (@:dispatch))
 
 
 (when nil
+  (setf @mail-read-event-detector-instance
+        (@! @event-dectector-class :gen-mail-read-event-detector "gnus read mail event"))
+
   (setf @mail-read-event-detector-instance
         (@! @event-dectector-class :gen-mail-read-event-detector "gnus read mail event"))
 
