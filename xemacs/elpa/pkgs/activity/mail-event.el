@@ -156,10 +156,10 @@
      'message-mode-hook
      (lambda ()
       (message-add-action
-      'activity-capture-sent-message-if-needed
-      'send))
-     (lambda ()
-       (@! @@ :make-event-gnus))))
+       '(lambda ()
+         (@! @@ :make-event-gnus))
+       'send))
+     ))
 
   (@:dispatch))
 
