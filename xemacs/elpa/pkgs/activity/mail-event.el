@@ -159,7 +159,6 @@
        '(lambda ()
          (@! @@ :make-event-gnus))
        'send))))
-
   (@:dispatch))
 
 
