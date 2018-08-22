@@ -159,7 +159,7 @@
   (setf @mail-read-event-detector-instance
         (@! @event-dectector-class :gen-mail-read-event-detector "gnus read mail event"))
 
-  (@! @mail-read-event-detector-instance :make-event))
+  )
 
 
 
