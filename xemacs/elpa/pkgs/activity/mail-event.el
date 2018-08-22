@@ -161,19 +161,4 @@
 
   (@! @mail-read-event-detector-instance :make-event))
 
-
-(setq
- gnus-article-prepare-hook nil)
-
-(add-hook
- 'gnus-article-prepare-hook
- (lambda ()
-   (when (and
-          gnus-article-buffer
-          (get-buffer gnus-article-buffer))
-     (with-current-buffer (get-buffer gnus-article-buffer)
-      (let ((subject
-             (message-fetch-field "Subject")))
-        (message "checking: %s" subject))))))
-
 ;;; mail-event.el ends here
