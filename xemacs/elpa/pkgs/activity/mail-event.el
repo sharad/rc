@@ -98,7 +98,7 @@
         (let ((subject
                (message-fetch-field "Subject")))
           (message "checking: %s" subject)
-          (@! @@ :make-event)))))
+          (@! @@ :make-event-gnus)))))
 
   (def@ @@ :dispatch ()
     "setting note class"
