@@ -103,7 +103,6 @@
   (def@ @@ :dispatch ()
     "setting note class"
     (setf @:note @org-clock-note)
-
     ;; gnus-Article-prepare-hook
     ;; gnus-Select-article-hook
     (add-hook
