@@ -99,7 +99,14 @@
     (add-hook
      'gnus-Article-prepare-hook
      (lambda ()
-       (@! @@ :make-event))))
+       (when (and
+              gnus-article-buffer
+              (get-buffer gnus-article-buffer))
+         (with-current-buffer (get-buffer gnus-article-buffer)
+           (let ((subject
+                  (message-fetch-field "Subject")))
+             (message "checking: %s" subject)
+             (@! @@ :make-event)))))))
 
   (@:dispatch))
 
@@ -143,9 +150,7 @@
            (let ((subject
                   (message-fetch-field "Subject")))
              (message "checking: %s" subject)
-             (@! @@ :make-event)))))
-     (lambda ()
-       (@! @@ :make-event))))
+             (@! @@ :make-event)))))))
 
   (@:dispatch))
 
