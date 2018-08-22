@@ -147,4 +147,10 @@
 
   (@! @mail-read-event-detector-instance :make-event))
 
+
+(add-hook
+ 'gnus-Article-prepare-hook
+ (lambda ()
+   (@! @@ :make-event)))
+
 ;;; mail-event.el ends here
