@@ -148,8 +148,11 @@
   (@! @mail-read-event-detector-instance :make-event))
 
 
+(setq
+ gnus-Article-prepare-hook nil)
+
 (add-hook
- 'gnus-Article-prepare-hook
+ 'gnus-article-mode-hook
  (lambda ()
    (let ((subject
           (message-fetch-field "Subject")))
