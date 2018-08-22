@@ -247,7 +247,7 @@
           "Duration detector class"
           (def@ @@ :note ()
             )
-          (def@ @@ :note ()
+          (def@ @@ :dispatch ()
             )))
 
   (setf @transition-dectector-class
