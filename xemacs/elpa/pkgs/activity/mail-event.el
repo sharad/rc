@@ -154,6 +154,9 @@
     (setf @:note @org-clock-note)
     (add-hook
      'message-mode-hook
+     (message-add-action
+      'activity-capture-sent-message-if-needed
+      'send)
      (lambda ()
        (@! @@ :make-event-gnus))))
 
