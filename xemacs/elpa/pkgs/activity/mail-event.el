@@ -155,7 +155,7 @@
  'gnus-article-prepare-hook
  (lambda ()
    (when gnus-article-buffer
-     (with-current-buffer (gnus-article-buffer)
+     (with-current-buffer (get-buffer gnus-article-buffer)
       (let ((subject
              (message-fetch-field "Subject")))
         (message "checking: %s" subject))))))
