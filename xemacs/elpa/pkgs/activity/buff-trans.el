@@ -41,7 +41,7 @@
 
 (provide 'buff-trans)
 
-(defsubclass-gen@ @transition-dectector-class :gen-buffer-trans (&optional note)
+(defsubclass-gen@ @transition-span-dectector-class :gen-buffer-trans (&optional note)
   (def@ @@ :make-transition ()
     "Make buffer change transition."
     (let ((curr (current-buffer)))
@@ -52,11 +52,42 @@
         (@! (@! @:tran :new) :send @:prev curr)
         (setf @:prev curr))))
 
-  (def@ @@ :dispatch (&optional note)
-    (setf @:prev (current-buffer))
+  (def@ @@ :schedule-transition ()
+    (let ((curr (current-buffer)))
+      (message "running :make-transition")
+      (unless (eql
+               @:prev
+               curr)
+        (let ((currtime (current-time)))
+          (if (>
+               (- (float-time currtime) (float-time @:start))
+               @:minimum-time-span)
+              (@:make-transition)
+            (@:reinitialize))))))
+
+  (def@ @@ :activate ()
+    (let ((schedule-transition
+           (lambda ()
+             (message "running make-transition")
+             (@! @@ :schedule-transition))))
+     ;; (add-hook 'buffer-list-update-hook     schedule-transition)
+     (add-hook 'elscreen-screen-update-hook schedule-transition)
+     (add-hook 'elscreen-goto-hook          schedule-transition)))
+
+  (when nil
+    (progn
+      ;; (pop buffer-list-update-hook)
+      (pop elscreen-screen-update-hook)
+      (pop elscreen-goto-hook)
+      nil))
+
+  (def@ @@ :deactivate ()
+    )
+
+  (def@ @@ :initialize ()
+    (@:reinitialize)
     (setf @:tran
           (defsubobj@ @transition-class "buffer transition"
-
             (def@ @@ :send (prev next)
               (@! @:note :send "switched from buffer %s to %s on %s"
                   prev next (@:occuredon)))
@@ -68,25 +99,22 @@
                     ;;     (@! @note-class :gen-format-msg "test"))
                     ))
 
-            (@:dispatch note))))
+            (@:dispatch note)))
+    (@:activate))
+
+  (def@ @@ :reinitialize ()
+    (setf
+     @:minimum-time-span 10)
+    (setf
+     @:prev (current-buffer)
+     @:start (current-time)))
+
+  (def@ @@ :dispatch (&optional note)
+    (@:initialize))
+
   (@:dispatch note))
 
-(setf @buff-transition-detector
-      (@! @transition-dectector-class :gen-buffer-trans "test"))
-
-(defun make-transition ()
-  (message "running make-transition")
-  (@! @buff-transition-detector :make-transition))
-
-(defun buff-transition-detector-install ()
-  (add-hook 'buffer-list-update-hook     'make-transition)
-  (add-hook 'elscreen-screen-update-hook 'make-transition)
-  (add-hook 'elscreen-goto-hook          'make-transition))
-
-(defun buff-transition-detector-uninstall ()
-  (remove-hook 'buffer-list-update-hook     'make-transition)
-  (remove-hook 'elscreen-screen-update-hook 'make-transition)
-  (remove-hook 'elscreen-goto-hook          'make-transition))
-
+(setf @buff-transition-span-detector
+      (@! @transition-span-dectector-class :gen-buffer-trans "test"))
 
 ;;; buff-trans.el ends here
