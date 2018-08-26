@@ -117,4 +117,34 @@
 (setf @buff-transition-span-detector
       (@! @transition-span-dectector-class :gen-buffer-trans "test"))
 
+
+(defun time-tracker-test ()
+  (interactive)
+  (lexical-let* ((delay 10)
+                 (start (current-time))
+                 (active-time 0)
+                 (idle-time 0)
+                 (later
+                  (run-with-timer
+                   delay
+                   nil
+                   (lambda ()
+                     (let ((active-time
+                            (-
+                             (float-time (current-time))
+                             (float-time start))))
+                       (message
+                        "active-time %d, idle-time %d"
+                        active-time
+                        idle-time))))))
+    later))
+
+
+(read-event)
+
+
+
+(time-tracker-test)
+
+
 ;;; buff-trans.el ends here
