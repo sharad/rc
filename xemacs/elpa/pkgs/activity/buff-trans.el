@@ -118,6 +118,44 @@
       (@! @transition-span-dectector-class :gen-buffer-trans "test"))
 
 
+(progn
+  (defvar idle-start (current-time))
+  (defvar idle-detect-timer nil)
+  (defun print-last-idle ()
+    (let* ((currtime (float-time (current-time)))
+           (idle-starttime (float-time idle-start))
+           (idle-secs (- currtime idle-starttime)))
+      (message "idle for %d secs" idle-secs)))
+  (defun idle-set ()
+    (message "adding idle-set on read-char")
+    (advice-add
+     'read-event
+     :after
+     'print-last-idle-start-timer))
+  (defun print-last-idle-start-timer (&rest args)
+    (interactive)
+    (print-last-idle)
+    (setq idle-start (current-time))
+    (message "removing idle-set on read-char")
+    (advice-remove
+     'read-event
+     'print-last-idle-start-timer)
+    (when idle-detect-timer
+      (cancel-timer idle-detect-timer)
+      (setq idle-detect-timer nil))
+    (message "starting idle-set timer")
+    (setq
+     idle-detect-timer
+     (run-with-idle-timer
+      7 nil
+      'idle-set)))
+
+  (print-last-idle-start-timer))
+
+
+
+
+
 (defun time-tracker-test ()
   (interactive)
   (lexical-let* ((delay 10)
