@@ -1,0 +1,4 @@
+
+* Design duration-event duration-event-detector
+
+* Implement org-capture template-ing note
