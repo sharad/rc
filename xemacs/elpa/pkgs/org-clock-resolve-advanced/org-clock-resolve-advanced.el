@@ -538,8 +538,7 @@ so long."
 
 
 (defun frame-read (prmopt)
-  (let ((timer
-         ))
+  (let ((timer nil))
     (completing-read
      prompt
      '("a" "b" "c"))))
