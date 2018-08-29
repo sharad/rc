@@ -546,7 +546,7 @@ so long."
   (frame-read "test"))
 
 
-(defmacro run-with-active-frame ()
+(defmacro run-with-selected-frame ()
   )
 
 (provide 'org-clock-resolve-advanced)
