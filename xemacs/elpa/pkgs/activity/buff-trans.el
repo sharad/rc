@@ -151,60 +151,62 @@
 
   (print-last-idle-start-timer))
 
-(progn
-  ;; https://emacs.stackexchange.com/questions/32040/setting-and-clearing-an-is-idle-variable-when-going-in-and-out-of-idle-mode
+(when nil
+  (progn
+    ;; https://emacs.stackexchange.com/questions/32040/setting-and-clearing-an-is-idle-variable-when-going-in-and-out-of-idle-mode
 
-  ;; Even though (current-idle-time) only seems to return a meaningful value
-  ;; within the context of an idle handler, I figured out how to use it for my
-  ;; purpose ...
+    ;; Even though (current-idle-time) only seems to return a meaningful value
+    ;; within the context of an idle handler, I figured out how to use it for my
+    ;; purpose ...
 
-  ;; Initialize to idle mode upon emacs startup.
-  (defvar my-last-idle t
-    "*Last idle time value.")
+    ;; Initialize to idle mode upon emacs startup.
+    (defvar my-last-idle t
+      "*Last idle time value.")
 
-  (defun my-pre-command-hook ()
-    (setq my-last-idle nil))
+    (defun my-pre-command-hook ()
+      (setq my-last-idle nil))
 
-  (defun my-idle-timer-hook ()
-    (setq my-last-idle (current-idle-time)))
+    (defun my-idle-timer-hook ()
+      (setq my-last-idle (current-idle-time)))
 
-  (add-hook 'pre-command-hook 'my-pre-command-hook)
-  (run-with-idle-timer 1 t 'my-idle-timer-hook)
+    (add-hook 'pre-command-hook 'my-pre-command-hook)
+    (run-with-idle-timer 1 t 'my-idle-timer-hook)
 
-  Then, my sigusr1/sigusr2 handler can do this ...
+    Then, my sigusr1/sigusr2 handler can do this ...
 
-  (when my-last-idle
-    ;; Do my signal-handling stuff.
-    ;; ... etc. ...
-    ))
+    (when my-last-idle
+      ;; Do my signal-handling stuff.
+      ;; ... etc. ...
+      )))
 
-(defun time-tracker-test ()
-  (interactive)
-  (lexical-let* ((delay 10)
-                 (start (current-time))
-                 (active-time 0)
-                 (idle-time 0)
-                 (later
-                  (run-with-timer
-                   delay
-                   nil
-                   (lambda ()
-                     (let ((active-time
-                            (-
-                             (float-time (current-time))
-                             (float-time start))))
-                       (message
-                        "active-time %d, idle-time %d"
-                        active-time
-                        idle-time))))))
-    later))
-
-
-(read-event)
-
+(when nil
+  (defun time-tracker-test ()
+    (interactive)
+    (lexical-let* ((delay 10)
+                   (start (current-time))
+                   (active-time 0)
+                   (idle-time 0)
+                   (later
+                    (run-with-timer
+                     delay
+                     nil
+                     (lambda ()
+                       (let ((active-time
+                              (-
+                               (float-time (current-time))
+                               (float-time start))))
+                         (message
+                          "active-time %d, idle-time %d"
+                          active-time
+                          idle-time))))))
+      later))
 
 
-(time-tracker-test)
+  (read-event)
+
+
+
+  (time-tracker-test))
 
 
 ;;; buff-trans.el ends here
