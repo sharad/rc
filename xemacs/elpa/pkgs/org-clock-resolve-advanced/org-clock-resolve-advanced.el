@@ -536,13 +536,14 @@ so long."
   (test-org-rl-resolve-clocks-if-idle 310)
   )
 
+(progn
+  (defun frame-read (prompt)
+    (let ((timer nil))
+      (completing-read
+       prompt
+       '("a" "b" "c"))))
 
-(defun frame-read (prmopt)
-  (let ((timer nil))
-    (completing-read
-     prompt
-     '("a" "b" "c"))))
-
+  (frame-read "test"))
 
 (provide 'org-clock-resolve-advanced)
 ;;; org-clock-utils-lotus.el ends here
