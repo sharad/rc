@@ -128,7 +128,7 @@
       (message "idle for %d secs" idle-secs)))
   (defun idle-set ()
     (message "adding idle-set on read-char")
-    (remove-hook
+    (add-hook
      'pre-command-hook
      'print-last-idle-start-timer))
   (defun print-last-idle-start-timer (&rest args)
@@ -136,7 +136,7 @@
     (print-last-idle)
     (setq idle-start (current-time))
     (message "removing idle-set on read-char")
-    (add-hook
+    (remove-hook
      'pre-command-hook
      'print-last-idle-start-timer)
     (when idle-detect-timer
