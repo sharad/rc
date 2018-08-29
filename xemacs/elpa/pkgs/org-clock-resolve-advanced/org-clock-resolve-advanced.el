@@ -541,7 +541,8 @@ so long."
   (let ((timer
          ))
     (completing-read
-     )))
+     prompt
+     '("a" "b" "c"))))
 
 
 (provide 'org-clock-resolve-advanced)
