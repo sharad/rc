@@ -545,5 +545,9 @@ so long."
 
   (frame-read "test"))
 
+
+(defmacro run-with-active-frame ()
+  )
+
 (provide 'org-clock-resolve-advanced)
 ;;; org-clock-utils-lotus.el ends here
