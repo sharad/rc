@@ -152,9 +152,32 @@
 
   (print-last-idle-start-timer))
 
+(progn
+  ;; https://emacs.stackexchange.com/questions/32040/setting-and-clearing-an-is-idle-variable-when-going-in-and-out-of-idle-mode
 
+  ;; Even though (current-idle-time) only seems to return a meaningful value
+  ;; within the context of an idle handler, I figured out how to use it for my
+  ;; purpose ...
 
+  ;; Initialize to idle mode upon emacs startup.
+  (defvar my-last-idle t
+    "*Last idle time value.")
 
+  (defun my-pre-command-hook ()
+    (setq my-last-idle nil))
+
+  (defun my-idle-timer-hook ()
+    (setq my-last-idle (current-idle-time)))
+
+  (add-hook 'pre-command-hook 'my-pre-command-hook)
+  (run-with-idle-timer 1 t 'my-idle-timer-hook)
+
+  Then, my sigusr1/sigusr2 handler can do this ...
+
+  (when my-last-idle
+    ;; Do my signal-handling stuff.
+    ;; ... etc. ...
+    ))
 
 (defun time-tracker-test ()
   (interactive)

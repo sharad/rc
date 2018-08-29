@@ -228,6 +228,12 @@
   ;; BUG how to handle when prev == next
   "Resolve clock time"
   (interactive)
+  ;; last-input-event
+  ;; last-event-frame
+  ;; TODO: send some tag or signal when other frame slkection
+  ;; set pre-command-hook to know if other frame is getting focus
+  ;; than save data for this function and abort this function invocation here
+  ;; again run this function in that frame.
   (lotus-with-override-minibuffer
     (let ((debug-prompt t)
           (default (org-rl-get-time-gap prev next)))
@@ -414,6 +420,8 @@
 This is performed after `org-clock-idle-time' minutes, to check
 if the user really wants to stay clocked in after being idle for
 so long."
+  ;; last-input-event
+  ;; last-event-frame
   (when (and
          org-clock-idle-time
          (not org-clock-resolving-clocks)
@@ -451,6 +459,8 @@ so long."
 If `only-dangling-p' is non-nil, only ask to resolve dangling
 \(i.e., not currently open and valid) clocks."
   (interactive "P")
+  ;; last-input-event
+  ;; last-event-frame
   (unless org-clock-resolving-clocks
     (let ((org-clock-resolving-clocks t))
       (dolist (file (org-files-list))
