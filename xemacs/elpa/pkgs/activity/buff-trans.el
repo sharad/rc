@@ -136,8 +136,8 @@
     (print-last-idle)
     (setq idle-start (current-time))
     (message "removing idle-set on read-char")
-    (advice-remove
-     'read-event
+    (add-hook
+     'pre-command-hook
      'print-last-idle-start-timer)
     (when idle-detect-timer
       (cancel-timer idle-detect-timer)
