@@ -128,9 +128,8 @@
       (message "idle for %d secs" idle-secs)))
   (defun idle-set ()
     (message "adding idle-set on read-char")
-    (advice-add
-     'read-event
-     :after
+    (remove-hook
+     'pre-command-hook
      'print-last-idle-start-timer))
   (defun print-last-idle-start-timer (&rest args)
     (interactive)
