@@ -537,5 +537,9 @@ so long."
   )
 
 
+(defun frame-read (prmopt)
+  )
+
+
 (provide 'org-clock-resolve-advanced)
 ;;; org-clock-utils-lotus.el ends here
