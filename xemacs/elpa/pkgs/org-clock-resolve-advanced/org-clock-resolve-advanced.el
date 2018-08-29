@@ -540,7 +540,8 @@ so long."
 (defun frame-read (prmopt)
   (let ((timer
          ))
-    ))
+    (completing-read
+     )))
 
 
 (provide 'org-clock-resolve-advanced)
