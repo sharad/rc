@@ -538,7 +538,7 @@ so long."
 
 
 (defun frame-read (prmopt)
-  )
+  ())
 
 
 (provide 'org-clock-resolve-advanced)
