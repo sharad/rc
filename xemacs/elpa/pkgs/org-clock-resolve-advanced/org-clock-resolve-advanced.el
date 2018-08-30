@@ -584,11 +584,9 @@ so long."
                last-event-frame)
       (if (active-minibuffer-window)
           (abort-recursive-edit))
-      (if (and
-           ignore
-           (eql
-            simplecall-frame
-            last-event-frame))
+      (if (eql
+           simplecall-frame
+           last-event-frame)
           (message "in same frame")
         (prog1
             (setq ignore t)
