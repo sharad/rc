@@ -627,6 +627,8 @@ so long."
 
   (simple-read nil)
 
+  ;; handle-switch-frame
+
   (defun frame-read ()
     (let* ((call-frame (selected-frame))
            (ignore nil)
