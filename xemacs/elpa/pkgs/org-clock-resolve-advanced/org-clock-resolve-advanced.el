@@ -570,7 +570,7 @@ so long."
                "test"
                '("a" "b" "c"))
             (quit
-             (message "quiting"))))
+             (message "quiting")))))
 
   (defun hook-simple-read ()
     )
