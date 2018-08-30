@@ -588,13 +588,13 @@ so long."
 
   (defun hook-simple-read ()
     (let ()
-      (message "hook-simple-read: Yes")
+      (message "hook-simple-read: 1")
       (message "call-frame %s last-event-frame %s"
                simple-call-frame
                last-event-frame)
       (if (active-minibuffer-window)
           (abort-recursive-edit))
-      (message "Yes")
+      (message "hook-simple-read: 2")
       (if (eql
            simple-call-frame
            last-event-frame)
