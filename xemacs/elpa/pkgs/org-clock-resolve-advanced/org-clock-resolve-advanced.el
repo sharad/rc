@@ -572,33 +572,33 @@ so long."
     (let ((call-frame (selected-frame))
           (ignore nil))
       (labels ((fsimple-read ()
-               (message "call-frame %s last-event-frame %s"
-                        call-frame
-                        last-event-frame)
-               (if (active-minibuffer-window)
-                   (abort-recursive-edit))
-               (if (and
-                    ignore
-                    (eql
-                     call-frame
-                     last-event-frame))
-                   (message "in same frame")
-                 (prog1
-                     (setq ignore t)
-                   (condition-case nil
-                       (prog2
-                           (add-hook
+                 (message "call-frame %s last-event-frame %s"
+                          call-frame
+                          last-event-frame)
+                 (if (active-minibuffer-window)
+                     (abort-recursive-edit))
+                 (if (and
+                      ignore
+                      (eql
+                       call-frame
+                       last-event-frame))
+                     (message "in same frame")
+                   (prog1
+                       (setq ignore t)
+                     (condition-case nil
+                         (prog2
+                             (add-hook
+                              'pre-command-hook
+                              fsimple-read)
+                             (simple-read)
+                           (remove-hook
                             'pre-command-hook
-                            fsimple-read)
-                           (simple-read)
-                         (remove-hook
-                          'pre-command-hook
-                          fsimple-read))
-                     (quit
-                      (message "quiting")))
-                   (remove-hook
-                    'pre-command-hook
-                    fsimple-read))))))))
+                            fsimple-read))
+                       (quit
+                        (message "quiting")))
+                     (remove-hook
+                      'pre-command-hook
+                      fsimple-read))))))))
 
   (funcall (frame-read))
   )
