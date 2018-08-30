@@ -600,7 +600,8 @@ so long."
                     'pre-command-hook
                     #'fsimple-read))))))))
 
-  (frame-read))
+  (funcall (frame-read))
+  )
 
 
 
