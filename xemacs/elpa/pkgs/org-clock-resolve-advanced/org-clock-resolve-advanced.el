@@ -594,7 +594,7 @@ so long."
       (if (active-minibuffer-window)
           (abort-recursive-edit))
       (if (eql
-           simplecall-frame
+           simple-call-frame
            last-event-frame)
           (message "in same frame")
         (prog1
