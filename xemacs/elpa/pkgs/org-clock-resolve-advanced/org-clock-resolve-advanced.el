@@ -574,7 +574,10 @@ so long."
 (progn
   (defvar simple-call-frame nil)
   (defun simple-read (test)
-    (unless test
+    (if test
+        (remove-hook
+         'pre-command-hook
+         'hook-simple-read)
       (setq simple-call-frame (selected-frame))
       (add-hook
        'pre-command-hook
