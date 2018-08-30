@@ -589,16 +589,16 @@ so long."
                        (prog2
                            (add-hook
                             'pre-command-hook
-                            'fsimple-read)
+                            #'fsimple-read)
                            (simple-read)
                          (remove-hook
                           'pre-command-hook
-                          'fsimple-read))
+                          #'fsimple-read))
                      (quit
                       (message "quiting")))
                    (remove-hook
                     'pre-command-hook
-                    'fsimple-read))))))))
+                    #'fsimple-read))))))))
 
   (frame-read))
 
