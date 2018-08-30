@@ -575,9 +575,9 @@ so long."
                last-event-frame)
       (if (active-minibuffer-window)
           (abort-recursive-edit))
-      (if (eql
+      (if ((eql
            call-frame
-           last-event-frame)
+           last-event-frame))
           (message "in same frame")
         (prog1
             (condition-case nil
