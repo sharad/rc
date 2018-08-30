@@ -568,6 +568,8 @@ so long."
      "test"
      '("a" "b" "c")))
 
+  (defun hook-simple-read ())
+
   (defun frame-read ()
     (let ((call-frame (selected-frame))
           (ignore nil))
