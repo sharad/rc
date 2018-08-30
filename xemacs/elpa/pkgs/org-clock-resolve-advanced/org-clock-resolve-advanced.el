@@ -566,6 +566,9 @@ so long."
   (defvar simple-call-frame nil)
   (defun simple-read ()
     (setq simple-call-frame (selected-frame))
+    (add-hook
+     'pre-command-hook
+     'hook-simple-read)
     (let ((call-frame (selected-frame)))
           (condition-case nil
               (completing-read
