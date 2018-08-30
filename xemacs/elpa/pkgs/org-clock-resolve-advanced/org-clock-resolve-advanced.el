@@ -571,7 +571,7 @@ so long."
   (defun frame-read ()
     (let ((call-frame (selected-frame))
           (ignore nil))
-      (flet ((fsimple-read ()
+      (labels ((fsimple-read ()
                (message "call-frame %s last-event-frame %s"
                         call-frame
                         last-event-frame)
