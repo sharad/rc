@@ -581,9 +581,7 @@ so long."
                     (add-hook
                      'pre-command-hook
                      'frame-read)
-                    (completing-read
-                     "test"
-                     '("a" "b" "c"))
+                    (simple-read)
                   (remove-hook
                    'pre-command-hook
                    'frame-read))
