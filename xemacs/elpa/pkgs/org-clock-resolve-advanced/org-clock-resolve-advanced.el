@@ -567,6 +567,7 @@ so long."
     (completing-read
      "test"
      '("a" "b" "c")))
+
   (defun frame-read ()
     (let ((call-frame (selected-frame)))
       (message "call-frame %s last-event-frame %s"
