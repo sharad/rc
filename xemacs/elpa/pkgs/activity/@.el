@@ -118,7 +118,7 @@ If :default, don't produce an error but return the provided value."
 (defmacro with-@@ (object &rest body)
   "Provide the @: and @^: DSL utilities for OBJECT in BODY."
   (declare (indent defun))
-  `(lexical-let ((@@ ,object))
+  `(let ((@@ ,object))
      ,@(cdr (@--walk (cons 'progn body) '(quote with-@@) #'@--replace))))
 
 (defmacro def@ (object method params &rest body)
@@ -128,7 +128,7 @@ If :default, don't produce an error but return the provided value."
      (setf (@ ,object ,method)
            (function* (lambda ,(cons '@@@@ params)
              ,@(if (stringp (car body)) (list (car body)) ())
-             (lexical-let ((@@@ ,object))
+             (let ((@@@ ,object))
                (with-@@ @@@@
                    ,@(if (stringp (car body)) (cdr body) body))))))
      ,method))
