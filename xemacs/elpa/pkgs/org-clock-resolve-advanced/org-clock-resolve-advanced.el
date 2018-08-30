@@ -571,20 +571,19 @@ so long."
   (defun frame-read ()
     (let ((call-frame (selected-frame))
           (ignore nil))
-      (lambda ()
-        (message "call-frame %s last-event-frame %s"
-                 call-frame
-                 last-event-frame)
-        (if (active-minibuffer-window)
-            (abort-recursive-edit))
-        (if (and
-             ignore
-             (eql
-              call-frame
-              last-event-frame))
-            (message "in same frame")
-          (prog1
-              (setq ignore t)
+      (message "call-frame %s last-event-frame %s"
+               call-frame
+               last-event-frame)
+      (if (active-minibuffer-window)
+          (abort-recursive-edit))
+      (if (and
+           ignore
+           (eql
+           call-frame
+           last-event-frame))
+          (message "in same frame")
+        (prog1
+            (setq ignore t)
             (condition-case nil
                 (prog2
                     (add-hook
@@ -596,9 +595,9 @@ so long."
                    'frame-read))
               (quit
                (message "quiting")))
-            (remove-hook
-             'pre-command-hook
-             'frame-read))))))
+          (remove-hook
+           'pre-command-hook
+           'frame-read)))))
 
   (frame-read))
 
