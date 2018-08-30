@@ -593,6 +593,7 @@ so long."
                last-event-frame)
       (if (active-minibuffer-window)
           (abort-recursive-edit))
+      (message "Yes")
       (if (eql
            simple-call-frame
            last-event-frame)
