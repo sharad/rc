@@ -598,7 +598,6 @@ so long."
            last-event-frame)
           (message "in same frame")
         (prog1
-            (setq ignore t)
           (condition-case nil
               (prog2
                   (add-hook
