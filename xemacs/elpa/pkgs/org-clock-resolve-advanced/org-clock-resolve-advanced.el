@@ -561,6 +561,10 @@ so long."
         'pre-command-hook
         tfun))))
 
+(progn
+  (if (active-minibuffer-window)
+      (abort-recursive-edit))
+  )
 
 (progn
   (defvar simple-call-frame nil)
