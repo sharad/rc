@@ -577,14 +577,14 @@ so long."
   (defun hook-simple-read ()
     (let ()
       (message "call-frame %s last-event-frame %s"
-               call-frame
+               simple-call-frame
                last-event-frame)
       (if (active-minibuffer-window)
           (abort-recursive-edit))
       (if (and
            ignore
            (eql
-            call-frame
+            simplecall-frame
             last-event-frame))
           (message "in same frame")
         (prog1
