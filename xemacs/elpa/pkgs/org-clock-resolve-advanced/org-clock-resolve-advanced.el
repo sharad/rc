@@ -607,6 +607,7 @@ so long."
                    'pre-command-hook
                    'hook-simple-read)
                   (simple-read)
+                (setq simple-call-frame nil)
                 (remove-hook
                  'pre-command-hook
                  'hook-simple-read))
