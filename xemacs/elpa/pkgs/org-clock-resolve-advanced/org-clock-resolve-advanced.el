@@ -569,7 +569,8 @@ so long."
      '("a" "b" "c")))
 
   (defun frame-read ()
-    (let ((call-frame (selected-frame)))
+    (let ((call-frame (selected-frame))
+          (ignore nil))
       (message "call-frame %s last-event-frame %s"
                call-frame
                last-event-frame)
