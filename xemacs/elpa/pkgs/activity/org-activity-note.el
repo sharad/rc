@@ -132,7 +132,7 @@
 
   (@ @org-clock-note :name)
 
-  (@! @org-clock-note :send "Hello")
+  (@! @org-clock-note :send "Hello1")
 
   (@! (@! @org-clock-note :new) :send "Test")
 
