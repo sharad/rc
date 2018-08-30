@@ -571,7 +571,9 @@ so long."
     (let ((call-frame (selected-frame)))
       (if (active-minibuffer-window)
           (abort-recursive-edit))
-      (message "")
+      (message "call-frame %s last-event-frame %s"
+               call-frame
+               last-event-frame)
       (if (eql
            call-frame
            last-event-frame)
