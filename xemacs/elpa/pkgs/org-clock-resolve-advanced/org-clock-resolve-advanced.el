@@ -593,12 +593,12 @@ so long."
                            (simple-read)
                          (remove-hook
                           'pre-command-hook
-                          'frame-read))
+                          'fsimple-read))
                      (quit
                       (message "quiting")))
                    (remove-hook
                     'pre-command-hook
-                    'frame-read))))))))
+                    'fsimple-read))))))))
 
   (frame-read))
 
