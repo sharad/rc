@@ -580,10 +580,12 @@ so long."
           (remove-hook
            'pre-command-hook
            'hook-simple-read))
+      (progn
+        (message " hook")
       (setq simple-call-frame (selected-frame))
       (add-hook
        'pre-command-hook
-       'hook-simple-read))
+       'hook-simple-read)))
     (let ()
       (condition-case nil
           (completing-read
