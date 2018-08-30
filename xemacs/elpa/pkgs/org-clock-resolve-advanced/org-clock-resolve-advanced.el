@@ -609,12 +609,13 @@ so long."
           (message "in same frame")
         (prog1
           (condition-case nil
-              (prog2
+              (prog1
                   ;; (add-hook
                   ;;  'pre-command-hook
                   ;;  'hook-simple-read)
                   (simple-read t)
-                (setq simple-call-frame nil)
+                  (setq simple-call-frame nil)
+                (message "simple-read: adding hook")
                 (remove-hook
                  'pre-command-hook
                  'hook-simple-read))
