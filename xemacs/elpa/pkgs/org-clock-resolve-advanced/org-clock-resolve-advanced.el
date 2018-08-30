@@ -595,12 +595,12 @@ so long."
                   (simple-read)
                 (remove-hook
                  'pre-command-hook
-                 fsimple-read))
+                 'hook-simple-read))
             (quit
              (message "quiting")))
           (remove-hook
            'pre-command-hook
-           fsimple-read)))))
+           'hook-simple-read)))))
 
   (defun frame-read ()
     (let* ((call-frame (selected-frame))
