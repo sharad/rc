@@ -573,7 +573,7 @@ so long."
              (message "quiting")))))
 
   (defun hook-simple-read ()
-    (lambda ()
+    (let ()
       (message "call-frame %s last-event-frame %s"
                call-frame
                last-event-frame)
