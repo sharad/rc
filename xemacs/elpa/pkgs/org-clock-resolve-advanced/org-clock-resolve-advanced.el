@@ -571,7 +571,8 @@ so long."
   (defun frame-read ()
     (let ((call-frame (selected-frame))
           (ignore nil))
-      (message "call-frame %s last-event-frame %s"
+      (lambda ()
+       (message "call-frame %s last-event-frame %s"
                call-frame
                last-event-frame)
       (if (active-minibuffer-window)
@@ -582,9 +583,8 @@ so long."
            call-frame
            last-event-frame))
           (message "in same frame")
-        (lambda ()
-          (prog1
-              (setq ignore t)
+        (prog1
+            (setq ignore t)
             (condition-case nil
                 (prog2
                     (add-hook
@@ -596,9 +596,9 @@ so long."
                    'frame-read))
               (quit
                (message "quiting")))
-            (remove-hook
-             'pre-command-hook
-             'frame-read))))))
+          (remove-hook
+           'pre-command-hook
+           'frame-read))))))
 
   (frame-read))
 
