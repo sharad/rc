@@ -569,11 +569,11 @@ so long."
      '("a" "b" "c")))
   (defun frame-read ()
     (let ((call-frame (selected-frame)))
-      (if (active-minibuffer-window)
-          (abort-recursive-edit))
       (message "call-frame %s last-event-frame %s"
                call-frame
                last-event-frame)
+      (if (active-minibuffer-window)
+          (abort-recursive-edit))
       (if (eql
            call-frame
            last-event-frame)
