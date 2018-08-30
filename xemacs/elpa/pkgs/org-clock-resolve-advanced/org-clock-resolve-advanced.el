@@ -605,6 +605,8 @@ so long."
            'pre-command-hook
            'hook-simple-read)))))
 
+  (simple-read)
+
   (defun frame-read ()
     (let* ((call-frame (selected-frame))
            (ignore nil)
