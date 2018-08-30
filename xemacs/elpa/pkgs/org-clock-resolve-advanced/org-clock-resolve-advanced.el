@@ -575,7 +575,7 @@ so long."
   (defvar simple-call-frame nil)
   (defun simple-read ()
     (unless simple-call-frame
-     (setq simple-call-frame (selected-frame)))
+      (setq simple-call-frame (selected-frame)))
     (add-hook
      'pre-command-hook
      'hook-simple-read)
