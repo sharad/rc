@@ -564,7 +564,12 @@ so long."
 (progn
   (if (active-minibuffer-window)
       (abort-recursive-edit))
-  )
+  (condition-case nil
+      (completing-read
+       "test"
+       '("a" "b" "c"))
+    (quit
+     (message "quiting"))))
 
 (progn
   (defvar simple-call-frame nil)
@@ -574,12 +579,12 @@ so long."
      'pre-command-hook
      'hook-simple-read)
     (let ()
-          (condition-case nil
-              (completing-read
-               "test"
-               '("a" "b" "c"))
-            (quit
-             (message "quiting")))))
+      (condition-case nil
+          (completing-read
+           "test"
+           '("a" "b" "c"))
+        (quit
+         (message "quiting")))))
 
   (defun hook-simple-read ()
     (let ()
