@@ -564,7 +564,7 @@ so long."
 
 (progn
   (defun simple-read ()
-    (let ((call-frame (selected-frame))
+    (let ((call-frame (selected-frame)))
           (condition-case nil
               (completing-read
                "test"
