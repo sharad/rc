@@ -576,12 +576,12 @@ so long."
   (defun simple-read (test)
     (if test
         (progn
-          (message "removing hook")
+          (message "simple-read: removing hook")
           (remove-hook
            'pre-command-hook
            'hook-simple-read))
       (progn
-        (message "adding hook")
+        (message "simple-read: adding hook")
       (setq simple-call-frame (selected-frame))
       (add-hook
        'pre-command-hook
