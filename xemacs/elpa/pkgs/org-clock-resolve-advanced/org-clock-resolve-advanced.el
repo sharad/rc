@@ -589,7 +589,7 @@ so long."
                        (prog2
                            (add-hook
                             'pre-command-hook
-                            'frame-read)
+                            'fsimple-read)
                            (simple-read)
                          (remove-hook
                           'pre-command-hook
