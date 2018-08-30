@@ -576,7 +576,7 @@ so long."
     )
 
   (defun frame-read ()
-    (let ((call-frame (selected-frame))
+    (let* ((call-frame (selected-frame))
           (ignore nil)
           (fsimple-read
            (lambda ()
