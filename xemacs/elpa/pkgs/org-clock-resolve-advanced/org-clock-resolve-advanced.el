@@ -603,9 +603,9 @@ so long."
         (prog1
           (condition-case nil
               (prog2
-                  (add-hook
-                   'pre-command-hook
-                   'hook-simple-read)
+                  ;; (add-hook
+                  ;;  'pre-command-hook
+                  ;;  'hook-simple-read)
                   (simple-read t)
                 (setq simple-call-frame nil)
                 (remove-hook
