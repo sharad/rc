@@ -563,6 +563,10 @@ so long."
 
 
 (progn
+  (defun simple-read ()
+    (completing-read
+     "test"
+     '("a" "b" "c")))
   (defun frame-read ()
     (let ((call-frame (selected-frame)))
       (if (active-minibuffer-window)
