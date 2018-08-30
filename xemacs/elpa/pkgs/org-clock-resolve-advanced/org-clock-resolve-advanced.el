@@ -564,11 +564,12 @@ so long."
 
 (progn
   (defun simple-read ()
-    (completing-read
+    ((completing-read
      "test"
-     '("a" "b" "c")))
+     '("a" "b" "c"))))
 
-  (defun hook-simple-read ())
+  (defun hook-simple-read ()
+    )
 
   (defun frame-read ()
     (let ((call-frame (selected-frame))
