@@ -577,9 +577,9 @@ so long."
     (if test
         (progn
           (message "removing hook")
-         (remove-hook
-         'pre-command-hook
-         'hook-simple-read))
+          (remove-hook
+           'pre-command-hook
+           'hook-simple-read))
       (setq simple-call-frame (selected-frame))
       (add-hook
        'pre-command-hook
