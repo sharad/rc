@@ -668,5 +668,50 @@ so long."
 
 
 
+
+(progn
+  (defvar simple-call-frame nil)
+  (defun simple-read ()
+    (add-hook
+     'pre-command-hook
+     'hook-simple-read)
+    (let ()
+      (condition-case nil
+          (completing-read
+           "test"
+           '("a" "b" "c"))
+        (quit
+         (message "quiting")))))
+
+  (defun hook-simple-read ()
+    (let ()
+      (message "hook-simple-read: 1")
+      (message "call-frame %s last-event-frame %s"
+               simple-call-frame
+               last-event-frame)
+      (if (active-minibuffer-window)
+          (abort-recursive-edit))
+      (message "hook-simple-read: 2")
+      (condition-case nil
+          (progn
+            (message "hook-simple-read: removing hook")
+            (remove-hook
+             'pre-command-hook
+             'hook-simple-read)
+            (completing-read
+             "test"
+             '("a" "b" "c")))
+        (quit
+         (message "quiting")))))
+
+  (simple-read)
+
+  ;; handle-switch-frame
+
+
+  )
+
+
+
 (provide 'org-clock-resolve-advanced)
 ;;; org-clock-utils-lotus.el ends here
