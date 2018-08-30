@@ -582,22 +582,7 @@ so long."
            call-frame
            last-event-frame))
           (message "in same frame")
-        (prog1
-            (setq ignore t)
-            (condition-case nil
-                (prog2
-                    (add-hook
-                     'pre-command-hook
-                     'frame-read)
-                    (simple-read)
-                  (remove-hook
-                   'pre-command-hook
-                   'frame-read))
-              (quit
-               (message "quiting")))
-          (remove-hook
-           'pre-command-hook
-           'frame-read)))))
+        )))
 
   (frame-read))
 
