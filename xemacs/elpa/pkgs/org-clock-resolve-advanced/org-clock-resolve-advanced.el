@@ -564,9 +564,12 @@ so long."
 
 (progn
   (defun simple-read ()
-    ((completing-read
-     "test"
-     '("a" "b" "c"))))
+    (condition-case nil
+        (completing-read
+         "test"
+         '("a" "b" "c"))
+      (quit
+       (message "quiting"))))
 
   (defun hook-simple-read ()
     )
