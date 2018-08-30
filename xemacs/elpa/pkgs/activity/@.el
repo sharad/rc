@@ -1,4 +1,4 @@
-;;; @.el --- multiple-inheritance prototype-based objects DSL
+;;; @.el --- multiple-inheritance prototype-based objects DSL  -*- lexical-binding: t; -*-
 
 ;; This is free and unencumbered software released into the public domain.
 
