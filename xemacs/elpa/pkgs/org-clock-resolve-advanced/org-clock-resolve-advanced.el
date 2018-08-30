@@ -573,7 +573,34 @@ so long."
              (message "quiting")))))
 
   (defun hook-simple-read ()
-    )
+    (lambda ()
+      (message "call-frame %s last-event-frame %s"
+               call-frame
+               last-event-frame)
+      (if (active-minibuffer-window)
+          (abort-recursive-edit))
+      (if (and
+           ignore
+           (eql
+            call-frame
+            last-event-frame))
+          (message "in same frame")
+        (prog1
+            (setq ignore t)
+          (condition-case nil
+              (prog2
+                  (add-hook
+                   'pre-command-hook
+                   fsimple-read)
+                  (simple-read)
+                (remove-hook
+                 'pre-command-hook
+                 fsimple-read))
+            (quit
+             (message "quiting")))
+          (remove-hook
+           'pre-command-hook
+           fsimple-read)))))
 
   (defun frame-read ()
     (let* ((call-frame (selected-frame))
