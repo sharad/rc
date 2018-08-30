@@ -536,37 +536,6 @@ so long."
   (test-org-rl-resolve-clocks-if-idle 310)
   )
 
-(progn
-  (defun frame-read ()
-    (let ((call-frame (selected-frame)))
-      (if (active-minibuffer-window)
-       (abort-recursive-edit))
-      (if (eql
-           call-frame
-           last-event-frame)
-          (message "in same frame")
-          (prog1
-              (condition-case nil
-                  (prog2
-                    (add-hook
-                     'pre-command-hook
-                     'frame-read)
-                    (completing-read
-                     "test"
-                     '("a" "b" "c"))
-                    (remove-hook
-                     'pre-command-hook
-                     'frame-read))
-                (quit
-                 (message "quiting")))
-            (remove-hook
-             'pre-command-hook
-             'frame-read)))))
-
-  (frame-read))
-
-
-
 (let ((a 1))                            ; binding (1)
   (let ((f (lambda () (print a))))
     (let ((a 2))                        ; binding (2)
