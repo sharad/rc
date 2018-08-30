@@ -581,7 +581,7 @@ so long."
            'pre-command-hook
            'hook-simple-read))
       (progn
-        (message " hook")
+        (message "adding hook")
       (setq simple-call-frame (selected-frame))
       (add-hook
        'pre-command-hook
