@@ -563,6 +563,7 @@ so long."
 
 
 (progn
+  (defvar simple-call-frame nil)
   (defun simple-read ()
     (let ((call-frame (selected-frame)))
           (condition-case nil
