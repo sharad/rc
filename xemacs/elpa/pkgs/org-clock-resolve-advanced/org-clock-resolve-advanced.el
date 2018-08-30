@@ -577,8 +577,9 @@ so long."
 
   (defun frame-read ()
     (let ((call-frame (selected-frame))
-          (ignore nil))
-      (labels ((fsimple-read ()
+          (ignore nil)
+          (fsimple-read
+           (lambda ()
                  (message "call-frame %s last-event-frame %s"
                           call-frame
                           last-event-frame)
@@ -605,7 +606,8 @@ so long."
                         (message "quiting")))
                      (remove-hook
                       'pre-command-hook
-                      fsimple-read))))))))
+                      fsimple-read))))))
+      (labels ())))
 
   (funcall (frame-read))
   )
