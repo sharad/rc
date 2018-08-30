@@ -614,7 +614,7 @@ so long."
                   ;;  'pre-command-hook
                   ;;  'hook-simple-read)
                   (simple-read t)
-                  (setq simple-call-frame nil)
+                ;; (setq simple-call-frame nil)
                 (message "simple-read: adding hook")
                 (remove-hook
                  'pre-command-hook
