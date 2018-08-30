@@ -564,12 +564,13 @@ so long."
 
 (progn
   (defun simple-read ()
-    (condition-case nil
-        (completing-read
-         "test"
-         '("a" "b" "c"))
-      (quit
-       (message "quiting"))))
+    (let ((call-frame (selected-frame))
+          (condition-case nil
+              (completing-read
+               "test"
+               '("a" "b" "c"))
+            (quit
+             (message "quiting"))))
 
   (defun hook-simple-read ()
     )
