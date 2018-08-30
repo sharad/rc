@@ -569,7 +569,7 @@ so long."
     (add-hook
      'pre-command-hook
      'hook-simple-read)
-    (let ((call-frame (selected-frame)))
+    (let ()
           (condition-case nil
               (completing-read
                "test"
