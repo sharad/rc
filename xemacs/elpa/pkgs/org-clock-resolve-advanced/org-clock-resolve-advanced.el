@@ -705,9 +705,7 @@ so long."
       (message "hook-simple-read: last-input-event: %s last-event-frame: %s"
                last-input-event
                last-event-frame)
-      ;; (if (active-minibuffer-window)
-      ;;     (abort-recursive-edit))
-      (run-with-timer 1 nil
+      (run-with-timer 0 nil
                       (lambda ()
                         (message "hook-simple-read: 1.1")
                         (with-selected-frame last-event-frame
