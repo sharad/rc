@@ -172,7 +172,7 @@
     (add-hook 'pre-command-hook 'my-pre-command-hook)
     (run-with-idle-timer 1 t 'my-idle-timer-hook)
 
-    Then, my sigusr1/sigusr2 handler can do this ...
+    ;; Then, my sigusr1/sigusr2 handler can do this ...
 
     (when my-last-idle
       ;; Do my signal-handling stuff.

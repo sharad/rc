@@ -675,40 +675,61 @@ so long."
     (add-hook
      'pre-command-hook
      'hook-simple-read)
+    (message "simple-read: added hook hook-simple-read")
+    (message "simple-read: last-input-event: %s last-event-frame: %s"
+             last-input-event
+             last-event-frame)
     (let ()
+      (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
       (condition-case nil
           (completing-read
            "test"
            '("a" "b" "c"))
+        ;; (read-from-minibuffer "prmpt: ")
         (quit
-         (message "quiting")))))
+         (progn
+           (message "quiting")
+           ;; (remove-hook                      ;??
+           ;;  'pre-command-hook
+           ;;  'hook-simple-read)
+           ;; (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+           )
+         ))))
 
   (defun hook-simple-read ()
     (let ()
+      (remove-hook                      ;??
+       'pre-command-hook
+       'hook-simple-read)
       (message "hook-simple-read: 1")
-      (message "call-frame %s last-event-frame %s"
-               simple-call-frame
+      (message "hook-simple-read: last-input-event: %s last-event-frame: %s"
+               last-input-event
                last-event-frame)
+      ;; (if (active-minibuffer-window)
+      ;;     (abort-recursive-edit))
+      (run-with-timer 1 nil
+                      (lambda ()
+                        (message "hook-simple-read: 1.1")
+                        (with-selected-frame last-event-frame
+                          (message "hook-simple-read: 2")
+                          (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                          (condition-case nil
+                              (progn
+                                (message "hook-simple-read: removing hook hook-simple-read")
+                                (remove-hook
+                                 'pre-command-hook
+                                 'hook-simple-read)
+                                (completing-read
+                                 "test"
+                                 '("a" "b" "c")))
+                            (quit
+                             (message "quiting"))))))
       (if (active-minibuffer-window)
-          (abort-recursive-edit))
-      (message "hook-simple-read: 2")
-      (condition-case nil
-          (progn
-            (message "hook-simple-read: removing hook")
-            (remove-hook
-             'pre-command-hook
-             'hook-simple-read)
-            (completing-read
-             "test"
-             '("a" "b" "c")))
-        (quit
-         (message "quiting")))))
+          (abort-recursive-edit))))
 
   (simple-read)
 
   ;; handle-switch-frame
-
-
   )
 
 
