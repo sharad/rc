@@ -728,7 +728,7 @@ so long."
 
 
 
-(defun with-frame-event (&rest body)
+(defmacro with-frame-event (&rest body)
   )
 
 
