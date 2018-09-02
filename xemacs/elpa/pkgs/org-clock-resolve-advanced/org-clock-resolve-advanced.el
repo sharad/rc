@@ -734,7 +734,9 @@ so long."
      (letrec ((readfn
                (lambda ()
                  (progn
-
+                   (add-hook
+                    'pre-command-hook
+                    hookfn)
                   ,@body)))
               (hookfn
                (lambda ()
