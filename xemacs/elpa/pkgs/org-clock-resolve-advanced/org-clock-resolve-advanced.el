@@ -757,6 +757,7 @@ so long."
                        (if (active-minibuffer-window)
                            (abort-recursive-edit))))
                    ))))
+       (message "calling readfn")
        (readfn))))
 
 
