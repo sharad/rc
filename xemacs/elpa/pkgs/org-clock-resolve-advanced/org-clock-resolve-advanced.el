@@ -741,7 +741,9 @@ so long."
                                   hookfn)
                    (progn
                      (run-with-timer 1 0
-                                     readfn))
+                                     (lambda ()
+                                       (with-frame-event
+                                           (readfn)))))
                    )))))
      ))
 
