@@ -729,8 +729,8 @@ so long."
 
 
 (defmacro with-frame-event (&rest body)
-  `(let* (frame
-          (selected-frame)
+  `(let* ((frame
+           (selected-frame))
           (readfn
            (lambda ()
              ,@body))
