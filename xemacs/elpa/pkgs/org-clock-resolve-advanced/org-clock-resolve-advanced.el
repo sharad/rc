@@ -756,7 +756,7 @@ so long."
                                     (lambda ()
                                       (funcall hookfn))))
                    (progn
-                     (with-selected-frame (selected-frame)
+                     (with-selected-frame (selected-frame) ;; last-event-frame
                        (message "hookfn: with-selected-frame running timer")
                        (run-with-timer 0 nil
                                        (lambda ()
