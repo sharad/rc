@@ -728,7 +728,7 @@ so long."
 
 
 
-(defun )
+(defun with-frame-event (&ody))
 
 
 (provide 'org-clock-resolve-advanced)
