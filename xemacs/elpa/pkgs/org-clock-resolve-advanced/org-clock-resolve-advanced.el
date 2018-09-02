@@ -739,6 +739,8 @@ so long."
                  (if (eql last-event-frame frame)
                      (remove-hook 'pre-command-hook
                                   hookfn)
+                   (progn
+                     )
                    )))))
      ))
 
