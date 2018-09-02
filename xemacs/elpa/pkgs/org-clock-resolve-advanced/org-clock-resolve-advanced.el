@@ -742,15 +742,15 @@ so long."
                    (message "readfn: removed quiet-sel-frame")
                    (condition-case nil
                        (progn
-                        (message "readfn: running orginal code")
-                       ,@body)
+                         (message "readfn: running orginal code")
+                         ,@body)
                      (quit
                       (message "quit"))))))
               (hookfn
                (lambda ()
                  (if (eql last-event-frame frame)
-                     (remove-hook 'pre-command-hook
-                                  hookfn)
+                     ((remove-hook 'pre-command-hook
+                                  hookfn))
                    (progn
                      (with-selected-frame last-event-frame
                        (run-with-timer 1 0
