@@ -732,8 +732,8 @@ so long."
   `(let* ((frame
            (selected-frame)))
      (letrec ((readfn
-               (lamcbda ()
-                        ,@body))
+               (lambda ()
+                 ,@body))
               (hookfn
                (lambda ()
                  (if (eql last-event-frame frame)
