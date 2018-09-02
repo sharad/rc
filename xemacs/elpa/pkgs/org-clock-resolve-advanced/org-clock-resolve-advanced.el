@@ -756,8 +756,8 @@ so long."
                        (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
                        (if (active-minibuffer-window)
                            (abort-recursive-edit))))
-                   )))))
-     ))
+                   ))))
+       (readfn))))
 
 
 (provide 'org-clock-resolve-advanced)
