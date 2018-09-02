@@ -737,7 +737,8 @@ so long."
                    (add-hook
                     'pre-command-hook
                     hookfn)
-                  ,@body)))
+                   (condition-case nil
+                    ,@body))))
               (hookfn
                (lambda ()
                  (if (eql last-event-frame frame)
