@@ -753,11 +753,12 @@ so long."
                      (progn
                        (message "hookfn: removing hook")
                        (remove-hook 'pre-command-hook
-                                    hookfn))
+                                    (lambda ()
+                                      (funcall hookfn))))
                    (progn
                      (with-selected-frame last-event-frame
                        (message "hookfn: with-selected-frame running timer")
-                       (run-with-timer 1 0
+                       (run-with-timer 1 nil
                                        (lambda ()
                                          (with-frame-event
                                              (funcall readfn))))
