@@ -726,5 +726,10 @@ so long."
 
 
 
+
+
+(defun )
+
+
 (provide 'org-clock-resolve-advanced)
 ;;; org-clock-utils-lotus.el ends here
