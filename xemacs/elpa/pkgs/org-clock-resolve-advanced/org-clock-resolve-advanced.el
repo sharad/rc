@@ -755,7 +755,7 @@ so long."
                                     hookfn))
                    (progn
                      (with-selected-frame last-event-frame
-                       (message "hookfn: removing hook")
+                       (message "hookfn: with-selected-frame running timer")
                        (run-with-timer 1 0
                                        (lambda ()
                                          (with-frame-event
