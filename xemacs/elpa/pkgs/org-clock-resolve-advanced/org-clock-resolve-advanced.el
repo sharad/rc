@@ -743,7 +743,9 @@ so long."
                      (run-with-timer 1 0
                                      (lambda ()
                                        (with-frame-event
-                                           (readfn)))))
+                                           (readfn))))
+                     (if (active-minibuffer-window)
+                         (abort-recursive-edit)))
                    )))))
      ))
 
