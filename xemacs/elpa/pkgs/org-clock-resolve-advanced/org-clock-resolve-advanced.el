@@ -749,7 +749,8 @@ so long."
               (hookfn
                (lambda ()
                  (if (eql last-event-frame frame)
-                     ((remove-hook 'pre-command-hook
+                     ((message "hookfn: running orginal code")
+                      (remove-hook 'pre-command-hook
                                   hookfn))
                    (progn
                      (with-selected-frame last-event-frame
