@@ -794,7 +794,22 @@ so long."
                       (message "readfn: running orginal code")
                       (completing-read "prmpt: " (quote ("a" "b" "c"))))
                   (quit (message "quit"))))))
-           (hookfn (lambda nil (if (eql last-event-frame frame) (progn (message "hookfn: removing hook") (remove-hook (quote pre-command-hook) hookfn)) (progn (with-selected-frame last-event-frame (message "hookfn: with-selected-frame running timer") (run-with-timer 1 0 (lambda nil (with-frame-event (funcall readfn)))) (message "hookfn: adding quiet-sel-frame") (add-function :override (symbol-function (quote select-frame-set-input-focus)) (function quiet--select-frame)) (message "hookfn: going to run abort-recursive-edit") (when (active-minibuffer-window) (abort-recursive-edit) (message "hookfn: abort-recursive-edit"))))))))
+           (hookfn
+            (lambda nil
+              (if (eql last-event-frame frame)
+                  (progn
+                    (message "hookfn: removing hook")
+                    (remove-hook (quote pre-command-hook) hookfn))
+                (progn
+                  (with-selected-frame last-event-frame
+                    (message "hookfn: with-selected-frame running timer")
+                    (run-with-timer 1 0 (lambda nil (with-frame-event (funcall readfn))))
+                    (message "hookfn: adding quiet-sel-frame")
+                    (add-function :override (symbol-function (quote select-frame-set-input-focus)) (function quiet--select-frame))
+                    (message "hookfn: going to run abort-recursive-edit")
+                    (when (active-minibuffer-window)
+                      (abort-recursive-edit)
+                      (message "hookfn: abort-recursive-edit"))))))))
     (message "calling readfn")
     (funcall readfn)))
 
