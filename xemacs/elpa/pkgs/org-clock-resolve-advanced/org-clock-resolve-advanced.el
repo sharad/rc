@@ -760,6 +760,7 @@ so long."
                                        (lambda ()
                                          (with-frame-event
                                              (funcall readfn))))
+                       (message "hookfn: adding quiet-sel-frame")
                        (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
                        (if (active-minibuffer-window)
                            (abort-recursive-edit))))
