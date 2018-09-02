@@ -752,13 +752,13 @@ so long."
                        (run-with-timer 1 0
                                        (lambda ()
                                          (with-frame-event
-                                             (readfn))))
+                                             (funcall readfn))))
                        (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
                        (if (active-minibuffer-window)
                            (abort-recursive-edit))))
                    ))))
        (message "calling readfn")
-       (readfn))))
+       (funcall readfn))))
 
 
 (with-frame-event
