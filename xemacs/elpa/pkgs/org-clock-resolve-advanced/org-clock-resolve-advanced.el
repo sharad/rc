@@ -422,24 +422,25 @@ if the user really wants to stay clocked in after being idle for
 so long."
   ;; last-input-event
   ;; last-event-frame
-  (when (and
-         org-clock-idle-time
-         (not org-clock-resolving-clocks)
-         org-clock-marker
-         (marker-buffer org-clock-marker))
-    (let* ((org-clock-user-idle-seconds (org-user-idle-seconds))
-           (org-clock-user-idle-start
-            (time-subtract (current-time)
-                           (seconds-to-time org-clock-user-idle-seconds)))
-           (org-clock-resolving-clocks-due-to-idleness t))
-      (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
-          (org-resolve-time
-           (make-rl-clock org-clock-marker org-clock-start-time nil)
-           (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
-          (when nil
-            (message "Idle time now sec[%d] min[%d]"
-                     org-clock-user-idle-seconds
-                     (/ org-clock-user-idle-seconds 60)))))))
+  (lotus-with-frame-event
+   (when (and
+          org-clock-idle-time
+          (not org-clock-resolving-clocks)
+          org-clock-marker
+          (marker-buffer org-clock-marker))
+     (let* ((org-clock-user-idle-seconds (org-user-idle-seconds))
+            (org-clock-user-idle-start
+             (time-subtract (current-time)
+                            (seconds-to-time org-clock-user-idle-seconds)))
+            (org-clock-resolving-clocks-due-to-idleness t))
+       (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
+           (org-resolve-time
+            (make-rl-clock org-clock-marker org-clock-start-time nil)
+            (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
+         (when nil
+           (message "Idle time now sec[%d] min[%d]"
+                    org-clock-user-idle-seconds
+                    (/ org-clock-user-idle-seconds 60))))))))
 
 (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
 
