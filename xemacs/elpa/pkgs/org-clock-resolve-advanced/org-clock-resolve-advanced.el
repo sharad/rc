@@ -729,9 +729,12 @@ so long."
 
 
 (defmacro with-frame-event (&rest body)
-  `(let* ((readfn
+  `(let* (frame
+          (selected-frame)
+          (readfn
            (lambda ()
-             ,@body))) ))
+             ,@body))
+          ) ))
 
 
 (provide 'org-clock-resolve-advanced)
