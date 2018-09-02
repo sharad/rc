@@ -729,7 +729,9 @@ so long."
 
 
 (defmacro with-frame-event (&rest body)
-  (let* ))
+  `(let* ((hookfn
+           (lambda ()
+             ,@body))) ))
 
 
 (provide 'org-clock-resolve-advanced)
