@@ -774,5 +774,29 @@ so long."
     (completing-read "prmpt: "
                      '("a" "b" "c")))
 
+
+
+(macroexpand-1
+ '(with-frame-event
+   (completing-read "prmpt: "
+    '("a" "b" "c"))))
+
+(let ((frame (selected-frame)))
+  (letrec ((readfn
+            (lambda nil
+              (progn
+                (add-hook (quote pre-command-hook) hookfn)
+                (message "readfn: added hookfn")
+                (remove-function (symbol-function (quote select-frame-set-input-focus)) (function quiet--select-frame))
+                (message "readfn: removed quiet-sel-frame")
+                (condition-case nil
+                    (progn
+                      (message "readfn: running orginal code")
+                      (completing-read "prmpt: " (quote ("a" "b" "c"))))
+                  (quit (message "quit"))))))
+           (hookfn (lambda nil (if (eql last-event-frame frame) (progn (message "hookfn: removing hook") (remove-hook (quote pre-command-hook) hookfn)) (progn (with-selected-frame last-event-frame (message "hookfn: with-selected-frame running timer") (run-with-timer 1 0 (lambda nil (with-frame-event (funcall readfn)))) (message "hookfn: adding quiet-sel-frame") (add-function :override (symbol-function (quote select-frame-set-input-focus)) (function quiet--select-frame)) (message "hookfn: going to run abort-recursive-edit") (when (active-minibuffer-window) (abort-recursive-edit) (message "hookfn: abort-recursive-edit"))))))))
+    (message "calling readfn")
+    (funcall readfn)))
+
 (provide 'org-clock-resolve-advanced)
 ;;; org-clock-utils-lotus.el ends here
