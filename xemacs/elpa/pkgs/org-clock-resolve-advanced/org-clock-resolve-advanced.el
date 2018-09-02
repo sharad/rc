@@ -729,11 +729,10 @@ so long."
 
 
 (defmacro with-frame-event (&rest body)
-  `(let* ((frame
-           (selected-frame)))
+  `(let ((frame
+          (selected-frame)))
      (letrec ((readfn
-               (lambda ()
-                 ,@body))
+               (lambda () ,@body))
               (hookfn
                (lambda ()
                  (if (eql last-event-frame frame)
