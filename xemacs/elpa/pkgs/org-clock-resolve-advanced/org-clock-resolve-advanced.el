@@ -799,7 +799,7 @@ so long."
               (if (eql last-event-frame frame)
                   (progn
                     (message "hookfn: removing hook")
-                    (remove-hook 'pre-command-hook (lambda () (hookfn)funcall )))
+                    (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
                 (progn
                   (with-selected-frame last-event-frame
                     (message "hookfn: with-selected-frame running timer")
