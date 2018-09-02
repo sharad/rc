@@ -749,6 +749,10 @@ so long."
                       (message "quit"))))))
               (hookfn
                (lambda ()
+                 (message "hookfn: removing hook")
+                 (remove-hook 'pre-command-hook
+                              (lambda ()
+                                (funcall hookfn)))
                  (if (eql last-event-frame frame)
                      (progn
                        (message "hookfn: removing hook")
