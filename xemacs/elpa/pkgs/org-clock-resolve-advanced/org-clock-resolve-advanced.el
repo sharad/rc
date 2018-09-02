@@ -765,8 +765,7 @@ so long."
                        (message "hookfn: going to run abort-recursive-edit")
                        (when (active-minibuffer-window)
                          (abort-recursive-edit)
-                         (message "hookfn: abort-recursive-edit"))))
-                   ))))
+                         (message "hookfn: abort-recursive-edit"))))))))
        (message "calling readfn")
        (funcall readfn))))
 
