@@ -737,8 +737,9 @@ so long."
                    (add-hook
                     'pre-command-hook
                     hookfn)
-                   (message "readfn: added ")
+                   (message "readfn: added hookfn")
                    (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                   (message "readfn: removed quiet-sel-frame")
                    (condition-case nil
                        ,@body
                      (quit
