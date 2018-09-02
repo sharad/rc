@@ -740,7 +740,8 @@ so long."
                      (remove-hook 'pre-command-hook
                                   hookfn)
                    (progn
-                     )
+                     (run-with-timer 1 0
+                                     readfn))
                    )))))
      ))
 
