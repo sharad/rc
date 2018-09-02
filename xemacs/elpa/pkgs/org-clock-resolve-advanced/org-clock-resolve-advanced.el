@@ -544,7 +544,7 @@ so long."
       f)))
 
 
-
+(when nil
 (defmacro run-with-selected-frame ()
   `(let ((frame (selected-frame)))
      (flet ((tfun ()
@@ -570,105 +570,106 @@ so long."
        "test"
        '("a" "b" "c"))
     (quit
-     (message "quiting"))))
+     (message "quiting")))))
 
-(progn
-  (defvar simple-call-frame nil)
-  (defun simple-read (test)
-    (if test
+(when nil
+  (progn
+    (defvar simple-call-frame nil)
+    (defun simple-read (test)
+      (if test
+          (progn
+            (message "simple-read: removing hook")
+            (remove-hook
+             'pre-command-hook
+             'hook-simple-read))
         (progn
-          (message "simple-read: removing hook")
-          (remove-hook
+          (message "simple-read: adding hook")
+          (setq simple-call-frame (selected-frame))
+          (add-hook
            'pre-command-hook
-           'hook-simple-read))
-      (progn
-        (message "simple-read: adding hook")
-      (setq simple-call-frame (selected-frame))
-      (add-hook
-       'pre-command-hook
-       'hook-simple-read)))
-    (let ()
-      (condition-case nil
-          (completing-read
-           "test"
-           '("a" "b" "c"))
-        (quit
-         (message "quiting")))))
+           'hook-simple-read)))
+      (let ()
+        (condition-case nil
+            (completing-read
+             "test"
+             '("a" "b" "c"))
+          (quit
+           (message "quiting")))))
 
-  (defun hook-simple-read ()
-    (let ()
-      (message "hook-simple-read: 1")
-      (message "call-frame %s last-event-frame %s"
-               simple-call-frame
-               last-event-frame)
-      (if (active-minibuffer-window)
-          (abort-recursive-edit))
-      (message "hook-simple-read: 2")
-      (if (eql
-           simple-call-frame
-           last-event-frame)
-          (message "in same frame")
-        (prog1
-          (condition-case nil
-              (prog1
-                  ;; (add-hook
-                  ;;  'pre-command-hook
-                  ;;  'hook-simple-read)
-                  (simple-read t)
-                ;; (setq simple-call-frame nil)
-                (message "hook-simple-read: removing hook")
-                (remove-hook
-                 'pre-command-hook
-                 'hook-simple-read))
-            (quit
-             (message "quiting")))
-          (remove-hook
-           'pre-command-hook
-           'hook-simple-read)))))
+    (defun hook-simple-read ()
+      (let ()
+        (message "hook-simple-read: 1")
+        (message "call-frame %s last-event-frame %s"
+                 simple-call-frame
+                 last-event-frame)
+        (if (active-minibuffer-window)
+            (abort-recursive-edit))
+        (message "hook-simple-read: 2")
+        (if (eql
+             simple-call-frame
+             last-event-frame)
+            (message "in same frame")
+          (prog1
+              (condition-case nil
+                  (prog1
+                      ;; (add-hook
+                      ;;  'pre-command-hook
+                      ;;  'hook-simple-read)
+                      (simple-read t)
+                    ;; (setq simple-call-frame nil)
+                    (message "hook-simple-read: removing hook")
+                    (remove-hook
+                     'pre-command-hook
+                     'hook-simple-read))
+                (quit
+                 (message "quiting")))
+            (remove-hook
+             'pre-command-hook
+             'hook-simple-read)))))
 
-  (simple-read nil)
+    (simple-read nil)
 
-  ;; handle-switch-frame
+    ;; handle-switch-frame
 
-  (defun frame-read ()
-    (let* ((call-frame (selected-frame))
-           (ignore nil)
-           (fsimple-read
-            (lambda ()
-              (message "call-frame %s last-event-frame %s"
-                       call-frame
-                       last-event-frame)
-              (if (active-minibuffer-window)
-                  (abort-recursive-edit))
-              (if (and
-                   ignore
-                   (eql
-                    call-frame
-                    last-event-frame))
-                  (message "in same frame")
-                (prog1
-                    (setq ignore t)
-                  (condition-case nil
-                      (prog2
-                          (add-hook
+    (defun frame-read ()
+      (let* ((call-frame (selected-frame))
+             (ignore nil)
+             (fsimple-read
+              (lambda ()
+                (message "call-frame %s last-event-frame %s"
+                         call-frame
+                         last-event-frame)
+                (if (active-minibuffer-window)
+                    (abort-recursive-edit))
+                (if (and
+                     ignore
+                     (eql
+                      call-frame
+                      last-event-frame))
+                    (message "in same frame")
+                  (prog1
+                      (setq ignore t)
+                    (condition-case nil
+                        (prog2
+                            (add-hook
+                             'pre-command-hook
+                             fsimple-read)
+                            (simple-read)
+                          (remove-hook
                            'pre-command-hook
-                           fsimple-read)
-                          (simple-read)
-                        (remove-hook
-                         'pre-command-hook
-                         fsimple-read))
-                    (quit
-                     (message "quiting")))
-                  (remove-hook
-                   'pre-command-hook
-                   fsimple-read))))))
-      fsimple-read))
+                           fsimple-read))
+                      (quit
+                       (message "quiting")))
+                    (remove-hook
+                     'pre-command-hook
+                     fsimple-read))))))
+        fsimple-read))
 
-  (funcall (frame-read))
-  )
+    (funcall (frame-read))
+    ))
 
 
-
+(when nil
 
 (progn
   (defvar simple-call-frame nil)
@@ -723,7 +724,7 @@ so long."
   (simple-read)
 
   ;; handle-switch-frame
-  )
+  ))
 
 
 
