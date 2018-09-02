@@ -775,6 +775,8 @@ so long."
        (funcall readfn))))
 
 
+pre-command-hook
+
 (with-frame-event
     (completing-read "prmpt: "
                      '("a" "b" "c")))
