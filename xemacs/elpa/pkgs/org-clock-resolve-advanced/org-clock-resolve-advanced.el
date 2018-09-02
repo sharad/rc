@@ -733,7 +733,9 @@ so long."
           (selected-frame)))
      (letrec ((readfn
                (lambda ()
-                 ,@body))
+                 (progn
+
+                  ,@body)))
               (hookfn
                (lambda ()
                  (if (eql last-event-frame frame)
