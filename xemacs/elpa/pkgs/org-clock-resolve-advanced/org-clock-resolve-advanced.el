@@ -734,7 +734,9 @@ so long."
           (readfn
            (lambda ()
              ,@body))
-          ) ))
+          (hookfn
+           ()))
+     ))
 
 
 (provide 'org-clock-resolve-advanced)
