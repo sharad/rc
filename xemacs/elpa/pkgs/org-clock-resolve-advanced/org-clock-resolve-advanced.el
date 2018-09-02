@@ -741,8 +741,9 @@ so long."
                    (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                    (message "readfn: removed quiet-sel-frame")
                    (condition-case nil
-                       (message "readfn: running orginal code")
-                       ,@body
+                       (progn
+                        (message "readfn: running orginal code")
+                       ,@body)
                      (quit
                       (message "quit"))))))
               (hookfn
