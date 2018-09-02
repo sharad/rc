@@ -737,7 +737,8 @@ so long."
               (hookfn
                (lambda ()
                  (if (eql last-event-frame frame)
-                     ()
+                     (remove-hook 'pre-command-hook
+                                  hookfn)
                    )))))
      ))
 
