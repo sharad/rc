@@ -748,13 +748,13 @@ so long."
                                   hookfn)
                    (progn
                      (with-selected-frame last-event-frame
-                     (run-with-timer 1 0
-                                     (lambda ()
-                                       (with-frame-event
-                                           (readfn))))
-                     (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
-                     (if (active-minibuffer-window)
-                         (abort-recursive-edit))))
+                       (run-with-timer 1 0
+                                       (lambda ()
+                                         (with-frame-event
+                                             (readfn))))
+                       (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+                       (if (active-minibuffer-window)
+                           (abort-recursive-edit))))
                    )))))
      ))
 
