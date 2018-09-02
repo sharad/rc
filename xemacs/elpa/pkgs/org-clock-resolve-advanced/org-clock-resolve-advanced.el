@@ -804,7 +804,6 @@ so long."
                   (with-selected-frame last-event-frame
                     (message "hookfn: with-selected-frame running timer")
                     (run-with-timer 1 nil
-
                                     (lambda nil
                                       (funcall readfn)))
                     (message "hookfn: adding quiet-sel-frame")
