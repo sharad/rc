@@ -777,9 +777,11 @@ so long."
 
 pre-command-hook
 
-(with-frame-event
+(when nil
+ (with-frame-event
     (completing-read "prmpt: "
-                     '("a" "b" "c")))
+                     '("a" "b" "c"))))
+
 
 
 
