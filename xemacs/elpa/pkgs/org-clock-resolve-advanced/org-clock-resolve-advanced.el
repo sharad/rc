@@ -736,7 +736,8 @@ so long."
                  (progn
                    (add-hook
                     'pre-command-hook
-                    hookfn)
+                    (lambda ()
+                      (funcall hookfn)))
                    (message "readfn: added hookfn")
                    (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                    (message "readfn: removed quiet-sel-frame")
