@@ -805,8 +805,7 @@ so long."
                     (message "hookfn: with-selected-frame running timer")
                     (run-with-timer 1 0
                                     (lambda nil
-                                      (with-frame-event
-                                          (funcall readfn))))
+                                      (funcall readfn)))
                     (message "hookfn: adding quiet-sel-frame")
                     (add-function :override (symbol-function (quote select-frame-set-input-focus)) (function quiet--select-frame))
                     (message "hookfn: going to run abort-recursive-edit")
