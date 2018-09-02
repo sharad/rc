@@ -735,7 +735,10 @@ so long."
            (lambda ()
              ,@body))
           (hookfn
-           ()))
+           (lambda ()
+             (if (eql last-event-frame frame)
+                 ()
+                 ))))
      ))
 
 
