@@ -785,7 +785,7 @@ so long."
   (letrec ((readfn
             (lambda nil
               (progn
-                (add-hook 'pre-command-hook (lambda () hookfn))
+                (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
                 (message "readfn: added hookfn")
                 (remove-function (symbol-function (quote select-frame-set-input-focus)) (function quiet--select-frame))
                 (message "readfn: removed quiet-sel-frame")
