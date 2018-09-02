@@ -737,7 +737,6 @@ so long."
                    (add-hook
                     'pre-command-hook
                     hookfn)
-                   (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
                    (condition-case nil
                        ,@body
                      (quit
