@@ -728,16 +728,18 @@ so long."
 
 
 
-(defmacro with-frame-event (&rest body)
-  `(let ((frame
-          (selected-frame)))
+(defmacro lotus-with-frame-event (&rest body)
+  `(let ((frame nil))
      (letrec ((readfn
                (lambda ()
                  (progn
+                   (setq frame (selected-frame))
+                   (message "readfn: 1 pre-command-hook %s" pre-command-hook)
                    (add-hook
                     'pre-command-hook
                     (lambda ()
                       (funcall hookfn)))
+                   (message "readfn: 2 pre-command-hook %s" pre-command-hook)
                    (message "readfn: added hookfn")
                    (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                    (message "readfn: removed quiet-sel-frame")
@@ -750,17 +752,21 @@ so long."
               (hookfn
                (lambda ()
                  (message "hookfn: removing hook 1")
+                 (message "hookfn: 1 pre-command-hook %s" pre-command-hook)
                  (remove-hook 'pre-command-hook
                               (lambda ()
                                 (funcall hookfn)))
+                 (message "hookfn: 2 pre-command-hook %s" pre-command-hook)
                  (if (eql last-event-frame frame)
                      (progn
+                       (setq frame nil)
                        (message "hookfn: removing hook 2")
                        (remove-hook 'pre-command-hook
                                     (lambda ()
                                       (funcall hookfn))))
                    (progn
-                     (with-selected-frame (selected-frame) ;; last-event-frame
+                     (setq frame nil)
+                     (with-selected-frame last-event-frame
                        (message "hookfn: with-selected-frame running timer")
                        (run-with-timer 0 nil
                                        (lambda ()
@@ -775,10 +781,10 @@ so long."
        (funcall readfn))))
 
 
-pre-command-hook
+
 
 (when nil
- (with-frame-event
+  (lotus-with-frame-event
     (completing-read "prmpt: "
                      '("a" "b" "c"))))
 
@@ -790,39 +796,8 @@ pre-command-hook
    (completing-read "prmpt: "
     '("a" "b" "c"))))
 
-(let ((frame (selected-frame)))
-  (letrec ((readfn
-            (lambda nil
-              (progn
-                (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                (message "readfn: added hookfn")
-                (remove-function (symbol-function (quote select-frame-set-input-focus)) (function quiet--select-frame))
-                (message "readfn: removed quiet-sel-frame")
-                (condition-case nil
-                    (progn
-                      (message "readfn: running orginal code")
-                      (completing-read "prmpt: " (quote ("a" "b" "c"))))
-                  (quit (message "quit"))))))
-           (hookfn
-            (lambda nil
-              (if (eql last-event-frame frame)
-                  (progn
-                    (message "hookfn: removing hook")
-                    (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
-                (progn
-                  (with-selected-frame last-event-frame
-                    (message "hookfn: with-selected-frame running timer")
-                    (run-with-timer 1 nil
-                                    (lambda nil
-                                      (funcall readfn)))
-                    (message "hookfn: adding quiet-sel-frame")
-                    (add-function :override (symbol-function (quote select-frame-set-input-focus)) (function quiet--select-frame))
-                    (message "hookfn: going to run abort-recursive-edit")
-                    (when (active-minibuffer-window)
-                      (abort-recursive-edit)
-                      (message "hookfn: abort-recursive-edit"))))))))
-    (message "calling readfn")
-    (funcall readfn)))
+
+
 
 (provide 'org-clock-resolve-advanced)
 ;;; org-clock-utils-lotus.el ends here
