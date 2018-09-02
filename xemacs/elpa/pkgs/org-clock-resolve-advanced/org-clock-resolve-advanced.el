@@ -760,5 +760,9 @@ so long."
        (readfn))))
 
 
+(with-frame-event
+    (completing-read "prmpt: "
+                     '("a" "b" "c")))
+
 (provide 'org-clock-resolve-advanced)
 ;;; org-clock-utils-lotus.el ends here
