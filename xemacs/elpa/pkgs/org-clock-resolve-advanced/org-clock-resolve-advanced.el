@@ -688,13 +688,7 @@ so long."
         ;; (read-from-minibuffer "prmpt: ")
         (quit
          (progn
-           (message "quiting")
-           ;; (remove-hook                      ;??
-           ;;  'pre-command-hook
-           ;;  'hook-simple-read)
-           ;; (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
-           )
-         ))))
+           (message "quiting"))))))
 
   (defun hook-simple-read ()
     (let ()
