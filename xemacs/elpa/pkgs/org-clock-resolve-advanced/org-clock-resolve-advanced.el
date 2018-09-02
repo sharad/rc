@@ -785,7 +785,7 @@ so long."
   (letrec ((readfn
             (lambda nil
               (progn
-                (add-hook (quote pre-command-hook) hookfn)
+                (add-hook (quote pre-command-hook) (lambda () hookfn))
                 (message "readfn: added hookfn")
                 (remove-function (symbol-function (quote select-frame-set-input-focus)) (function quiet--select-frame))
                 (message "readfn: removed quiet-sel-frame")
@@ -799,7 +799,7 @@ so long."
               (if (eql last-event-frame frame)
                   (progn
                     (message "hookfn: removing hook")
-                    (remove-hook (quote pre-command-hook) hookfn))
+                    (remove-hook (quote pre-command-hook) (lambda () hookfn)))
                 (progn
                   (with-selected-frame last-event-frame
                     (message "hookfn: with-selected-frame running timer")
