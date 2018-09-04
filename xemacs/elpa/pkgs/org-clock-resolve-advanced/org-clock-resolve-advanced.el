@@ -444,7 +444,8 @@ so long."
          (when nil
            (message "Idle time now sec[%d] min[%d]"
                     org-clock-user-idle-seconds
-                    (/ org-clock-user-idle-seconds 60))))))))
+                    (/ org-clock-user-idle-seconds 60))))
+       (setq org-clock-last-user-idle-seconds nil)))))
 
 (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
 
