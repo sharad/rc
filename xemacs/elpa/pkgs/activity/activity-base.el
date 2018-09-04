@@ -274,6 +274,16 @@
              @:inactive-time 0)
             ))))
 
+(setf @idleness-dectector-class
+      ;; set pre-command-hook
+      ;; and measure time
+      ;; collect in list
+      ;; provide list return-reset functions
+      (defsubobj@ @activity-base "activity detector class"
+        "Activity detector class"
+        (def@ @@ :note ()
+          )))
+
 
 ;;; act.el ends here
 
