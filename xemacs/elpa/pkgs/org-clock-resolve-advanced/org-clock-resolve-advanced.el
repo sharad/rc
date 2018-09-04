@@ -436,6 +436,7 @@ so long."
              (time-subtract (current-time)
                             (seconds-to-time org-clock-user-idle-seconds)))
             (org-clock-resolving-clocks-due-to-idleness t))
+       (setq org-clock-last-user-idle-seconds org-clock-user-idle-seconds)
        (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
            (org-resolve-time
             (make-rl-clock org-clock-marker org-clock-start-time nil)
