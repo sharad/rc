@@ -169,8 +169,8 @@ Each entry is either:
           (setq git-link-open-in-browser nil)
 
           (add-to-list 'git-link-remote-alist
-                       '("dops-git-in\\.fortinet-us\\.com" git-link-github))
+                       '("dops-\\(git-in\\|gerrit\\)\\.fortinet-us\\.com" git-link-github))
           (add-to-list 'git-link-commit-remote-alist
-                       '("dops-git-in\\.fortinet-us\\.com" git-link-commit-github))))))
+                       '("dops-\\(git-in\\|gerrit\\)\\.fortinet-us\\.com" git-link-commit-github))))))
 
 ;;; packages.el ends here
