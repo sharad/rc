@@ -787,9 +787,6 @@ so long."
        (message "calling readfn")
        (funcall readfn))))
 
-
-
-
 (when nil
   (lotus-with-frame-event
     (completing-read "prmpt: "
