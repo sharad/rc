@@ -415,6 +415,8 @@
           (org-resolve-time prev next close-p))))))
 
 ;;;###autoload
+(defvar org-clock-user-idle-seconds )
+
 (defun org-rl-resolve-clocks-if-idle ()
   "Resolve all currently open Org clocks.
 This is performed after `org-clock-idle-time' minutes, to check
