@@ -323,6 +323,7 @@
                (lambda ()
                  (progn
                    (setq frame (selected-frame))
+                   (message "readfn: frame %s" frame)
                    (message "readfn: 1 pre-command-hook %s" pre-command-hook)
                    (add-hook
                     'pre-command-hook
