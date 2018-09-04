@@ -416,7 +416,7 @@
 
 ;;;###autoload
 
-(defvar org-clock-last-user-idle-seconds 0 )
+(defvar org-clock-last-user-idle-seconds nil )
 
 (defun org-rl-resolve-clocks-if-idle ()
   "Resolve all currently open Org clocks.
