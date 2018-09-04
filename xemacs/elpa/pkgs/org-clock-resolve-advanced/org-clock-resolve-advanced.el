@@ -431,7 +431,10 @@ so long."
           (not org-clock-resolving-clocks)
           org-clock-marker
           (marker-buffer org-clock-marker))
-     (let* ((org-clock-user-idle-seconds (org-user-idle-seconds))
+     (let* ((org-clock-user-idle-seconds
+             (or
+              org-clock-user-idle-seconds
+              (org-user-idle-seconds)))
             (org-clock-user-idle-start
              (time-subtract (current-time)
                             (seconds-to-time org-clock-user-idle-seconds)))
