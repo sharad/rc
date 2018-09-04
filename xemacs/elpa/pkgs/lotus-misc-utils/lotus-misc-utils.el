@@ -341,9 +341,10 @@
                       (message "quit"))))))
               (hookfn
                (lambda ()
-                 (message "hookfn: last-input-event: %s last-event-frame: %s"
+                 (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
                           last-input-event
-                          last-event-frame)
+                          last-event-frame
+                          frame)
                  (message "hookfn: removing hook 1")
                  (message "hookfn: 1 pre-command-hook %s" pre-command-hook)
                  (remove-hook 'pre-command-hook
