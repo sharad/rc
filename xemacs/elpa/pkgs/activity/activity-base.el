@@ -280,7 +280,7 @@
         (def@ @@ :note ()
           )))
 
-(setf @postpone-dectector-class
+(setf @store-dectector-class
       (defsubobj@ @activity-base "activity detector class"
         "Activity detector class"
         (def@ @@ :note ()
