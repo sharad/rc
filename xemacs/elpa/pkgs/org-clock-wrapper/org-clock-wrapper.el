@@ -24,6 +24,11 @@
 
 ;;; Code:
 
+(require 'lotus-misc-utils)
+(eval-when-compile
+  (require 'lotus-misc-utils))
+
+
 ;; "correction org-timer.el"
 (defun replace-org-timer-set-timer (&optional opt)
     "Prompt for a duration in minutes or hh:mm:ss and set a timer.
