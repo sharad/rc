@@ -274,7 +274,7 @@
              @:inactive-time 0)
             ))))
 
-(setf @postpone-dectector-class
+(setf @postpone-event-class
       (defsubobj@ @activity-base "activity detector class"
         "Activity detector class"
         (def@ @@ :note ()
