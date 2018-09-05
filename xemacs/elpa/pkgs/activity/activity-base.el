@@ -280,7 +280,7 @@
         (def@ @@ :note ()
           )))
 
-(setf @store-dectector-class
+(setf @save-event-class
       (defsubobj@ @activity-base "activity detector class"
         "Activity detector class"
         (def@ @@ :note ()
