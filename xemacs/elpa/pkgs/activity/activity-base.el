@@ -274,6 +274,12 @@
              @:inactive-time 0)
             ))))
 
+(setf @activity-dectector-class
+      (defsubobj@ @activity-base "activity detector class"
+        "Activity detector class"
+        (def@ @@ :note ()
+          )))
+
 (setf @idleness-dectector-class
       ;; set pre-command-hook
       ;; and measure time
@@ -282,7 +288,10 @@
       (defsubobj@ @activity-base "activity detector class"
         "Activity detector class"
         (def@ @@ :note ()
-          )))
+          )
+
+
+        ))
 
 
 ;;; act.el ends here
