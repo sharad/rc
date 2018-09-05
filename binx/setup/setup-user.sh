@@ -71,6 +71,22 @@ DEB_PKG_DOC="wv"
 
 PY_PIP_PKG="termdown"
 
+# TODO
+# setup these also
+#
+# 2 ~% ls ~/public_html -l
+# lrwxrwxrwx 1 s s 26 Mar 14 13:20 /home/s/hell/public_html -> .dirs.d/home.d/public_html/
+# 2 ~% ll  ~/Downloads/pubish_html
+# total 1.3M
+# -rw-r--r-- 1 s s 310K Sep  5 17:56 download-files.tar
+# 2 ~% ll  ~/Documents/Public/Published/html/
+# total 8.0K
+# lrwxrwxrwx 1 s s   50 Aug 31 15:46 downloads -> ../../../../localdirs/home.d/Downloads/pubish_html/
+# lrwxrwxrwx 1 s s   47 Mar 19 14:05 meru -> ../../../CreatedContent/gen/org/tasks/html/meru/
+# drwxrwxr-x 3 s s 4.0K Mar 19 14:05 misc/
+# lrwxrwxrwx 1 s s   98 May  9 17:33 xsd2gui -> ../../../../../../../../../../../../../../paradise/git/main/src/wnc/nms/Melf/xml/resources/xsd2gui/
+# 2 ~%
+
 function main()
 {
 
