@@ -119,9 +119,10 @@
 
   (lotus-with-no-active-minibuffer
       (lotus-with-other-frame-event :cancel
-          (progn
-            (message "add-ctx-to-org-heading: minibuffer already active quitting")
-            (message nil))
+        (message "Running occ-add-to-org-heading")
+        (progn
+          (message "add-ctx-to-org-heading: minibuffer already active quitting")
+          (message nil))
         (lexical-let* ((timeout (or timeout 7))
                        (ctx (or ctx (occ-make-ctx)))
                        (buff (occ-ctx-buffer ctx)))

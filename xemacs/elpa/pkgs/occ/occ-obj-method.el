@@ -293,6 +293,7 @@ pointing to it."
 (defun occ-sacha-helm-select (ctxasks)
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
   (lotus-with-other-frame-event :cancel
+    (message "Running occ-sacha-helm-select")
     (helm
      (list
       (helm-build-sync-source "Select matching tsks"
