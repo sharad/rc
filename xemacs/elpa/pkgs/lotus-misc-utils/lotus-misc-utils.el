@@ -317,7 +317,7 @@
          ,@body))))
 (put 'lotus-with-override-minibuffer 'lisp-indent-function 0)
 
-(defmacro lotus-with-frame-event (&rest body)
+(defmacro lotus-with-other-frame-event (action &rest body)
   `(let ((frame nil))
      (letrec ((readfn
                (lambda ()
@@ -328,9 +328,9 @@
                    (add-hook
                     'pre-command-hook
                     (lambda ()
-                      (funcall hookfn)))
+                      (funcall hookfn1)))
                    (message "readfn: 2 pre-command-hook %s" pre-command-hook)
-                   (message "readfn: added hookfn")
+                   (message "readfn: added hookfn1")
                    (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                    (message "readfn: removed quiet-sel-frame")
                    (condition-case nil
@@ -339,6 +339,7 @@
                          ,@body)
                      (quit
                       (message "quit"))))))
+
               (hookfn
                (lambda ()
                  (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
@@ -370,10 +371,56 @@
                        (message "hookfn: going to run abort-recursive-edit")
                        (when (active-minibuffer-window)
                          (abort-recursive-edit)
-                         (message "hookfn: abort-recursive-edit"))))))))
+                         (message "hookfn: abort-recursive-edit")))))))
+
+              (hookfn1
+               (lambda ()
+                 (message "hookfn1: last-input-event: %s last-event-frame: %s frame: %s"
+                          last-input-event
+                          last-event-frame
+                          frame)
+                 (message "hookfn1: removing hook 1")
+                 (message "hookfn1: 1 pre-command-hook %s" pre-command-hook)
+                 (remove-hook 'pre-command-hook (lambda () (funcall hookfn1)))
+                 (message "hookfn1: 2 pre-command-hook %s" pre-command-hook)
+                 (if (eql last-event-frame frame)
+                     (progn
+                       (setq frame nil)
+                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                       (message "hookfn1: removing hook 2")
+                       (remove-hook 'pre-command-hook (lambda () (funcall hookfn1))))
+                   (progn
+                     (setq frame nil)
+                     (run-with-timer 0 nil
+                                     (lambda ()
+                                       (progn
+                                         ;; (setq frame (selected-frame))
+                                         (message "hookfn1: with-selected-frame running timer")
+                                         (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                                         ,@(cond
+                                             ((eq :restart action)
+                                              `(
+                                                (with-selected-frame last-event-frame
+                                                  (funcall readfn))))
+                                             ((consp action)
+                                              `(
+                                                (progn
+                                                  ,action)))
+                                             ((or
+                                               (eq :cancel action)
+                                               (null action))
+                                              nil)))))
+                     (progn
+                       (message "hookfn1: adding quiet-sel-frame")
+                       (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+                       (message "hookfn1: going to run abort-recursive-edit")
+                       (when (active-minibuffer-window)
+                         (abort-recursive-edit)
+                         (message "hookfn1: abort-recursive-edit"))))))))
        (message "calling readfn")
        (funcall readfn))))
-(defmacro lotus-with-frame-event (&rest body)
+
+(defmacro lotus-with-other-frame-event (action &rest body)
   `(let ((frame nil))
      (letrec ((readfn
                (lambda ()
@@ -390,23 +437,160 @@
                      (quit nil)))))
               (hookfn
                (lambda ()
-                 (remove-hook 'pre-command-hook
-                              (lambda ()
-                                (funcall hookfn)))
+                 (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                  (if (eql last-event-frame frame)
-                     (setq frame nil)
+                     (progn
+                       (setq frame nil)
+                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                       (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
                    (progn
                      (setq frame nil)
-                     (with-selected-frame last-event-frame
-                       (run-with-timer 0 nil
-                                       (lambda ()
-                                         (funcall readfn)))
+                     (run-with-timer 0 nil
+                                     (lambda ()
+                                       (progn
+                                         ;; (setq frame (selected-frame))
+                                         (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                                         ,@(cond
+                                             ((eq :restart action)
+                                              `(
+                                                (with-selected-frame last-event-frame
+                                                  (funcall readfn))))
+                                             ((consp action)
+                                              `(
+                                                (progn
+                                                  ,action)))
+                                             ((or
+                                               (eq :cancel action)
+                                               (null action))
+                                              nil)))))
+                     (progn
                        (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
                        (when (active-minibuffer-window)
                          (abort-recursive-edit))))))))
        (funcall readfn))))
-(put 'lotus-with-frame-event 'lisp-indent-function 0)
+(put 'lotus-with-other-frame-event 'lisp-indent-function 1)
 
+(defmacro lotus-restart-with-other-frame-event (&rest body)
+  `(let ((frame nil))
+     (letrec ((readfn
+               (lambda ()
+                 (progn
+                   (setq frame (selected-frame))
+                   (add-hook
+                    'pre-command-hook
+                    (lambda ()
+                      (funcall hookfn)))
+                   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                   (condition-case nil
+                       (progn
+                         ,@body)
+                     (quit nil)))))
+              (hookfn
+               (lambda ()
+                 ;; (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
+                 ;;          last-input-event
+                 ;;          last-event-frame
+                 ;;          frame)
+                 (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
+                 (if (eql last-event-frame frame)
+                     (progn
+                       (setq frame nil)
+                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                       (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
+                   (progn
+                     (setq frame nil)
+                     (run-with-timer 0 nil
+                                     (lambda ()
+                                       (with-selected-frame last-event-frame
+                                         (funcall readfn))))
+                     (progn
+                       (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+                       (when (active-minibuffer-window)
+                         (abort-recursive-edit))))))))
+       (funcall readfn))))
+(put 'lotus-restart-with-other-frame-event 'lisp-indent-function 0)
+
+(defmacro lotus-cancel-with-other-frame-event (&rest body)
+  `(let ((frame nil))
+     (letrec ((readfn
+               (lambda ()
+                 (progn
+                   (setq frame (selected-frame))
+                   (add-hook
+                    'pre-command-hook
+                    (lambda ()
+                      (funcall hookfn)))
+                   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                   (condition-case nil
+                       (progn
+                         ,@body)
+                     (quit nil)))))
+              (hookfn
+               (lambda ()
+                 ;; (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
+                 ;;          last-input-event
+                 ;;          last-event-frame
+                 ;;          frame)
+                 (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
+                 (if (eql last-event-frame frame)
+                     (progn
+                       (setq frame nil)
+                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                       (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
+                   (progn
+                     (setq frame nil)
+                     (run-with-timer 0 nil
+                                     (lambda ()
+                                       ;; (setq frame (selected-frame))
+                                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))
+                     (progn
+                       (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+                       (when (active-minibuffer-window)
+                         (abort-recursive-edit))))))))
+       (funcall readfn))))
+(put 'lotus-cancel-with-other-frame-event 'lisp-indent-function 0)
+
+(defmacro lotus-run-with-other-frame-event (action &rest body)
+  `(let ((frame nil))
+     (letrec ((readfn
+               (lambda ()
+                 (progn
+                   (setq frame (selected-frame))
+                   (add-hook
+                    'pre-command-hook
+                    (lambda ()
+                      (funcall hookfn)))
+                   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                   (condition-case nil
+                       (progn
+                         ,@body)
+                     (quit nil)))))
+              (hookfn
+               (lambda ()
+                 ;; (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
+                 ;;          last-input-event
+                 ;;          last-event-frame
+                 ;;          frame)
+                 (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
+                 (if (eql last-event-frame frame)
+                     (progn
+                       (setq frame nil)
+                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                       (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
+                   (progn
+                     (setq frame nil)
+                     (run-with-timer 0 nil
+                                     (lambda ()
+                                       (progn
+                                         (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                                         ;; (setq frame (selected-frame))
+                                         ,action)))
+                     (progn
+                       (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+                       (when (active-minibuffer-window)
+                         (abort-recursive-edit))))))))
+       (funcall readfn))))
+(put 'lotus-cancel-with-other-frame-event 'lisp-indent-function 1)
 
 (provide 'lotus-misc-utils)
 ;;; lotus-misc-utils.el ends here

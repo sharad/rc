@@ -425,7 +425,7 @@ if the user really wants to stay clocked in after being idle for
 so long."
   ;; last-input-event
   ;; last-event-frame
-  (lotus-with-frame-event
+  (lotus-with-other-frame-event :restart
    (when (and
           org-clock-idle-time
           (not org-clock-resolving-clocks)
@@ -749,9 +749,9 @@ so long."
                    (add-hook
                     'pre-command-hook
                     (lambda ()
-                      (funcall hookfn)))
+                      (funcall hookfn1)))
                    (message "readfn: 2 pre-command-hook %s" pre-command-hook)
-                   (message "readfn: added hookfn")
+                   (message "readfn: added hookfn1")
                    (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                    (message "readfn: removed quiet-sel-frame")
                    (condition-case nil
@@ -760,6 +760,7 @@ so long."
                          ,@body)
                      (quit
                       (message "quit"))))))
+
               (hookfn
                (lambda ()
                  (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
@@ -791,7 +792,38 @@ so long."
                        (message "hookfn: going to run abort-recursive-edit")
                        (when (active-minibuffer-window)
                          (abort-recursive-edit)
-                         (message "hookfn: abort-recursive-edit"))))))))
+                         (message "hookfn: abort-recursive-edit")))))))
+
+              (hookfn1
+               (lambda ()
+                 (message "hookfn1: last-input-event: %s last-event-frame: %s frame: %s"
+                          last-input-event
+                          last-event-frame
+                          frame)
+                 (message "hookfn1: removing hook 1")
+                 (message "hookfn1: 1 pre-command-hook %s" pre-command-hook)
+                 (remove-hook 'pre-command-hook (lambda () (funcall hookfn1)))
+                 (message "hookfn1: 2 pre-command-hook %s" pre-command-hook)
+                 (if (eql last-event-frame frame)
+                     (progn
+                       (setq frame nil)
+                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                       (message "hookfn1: removing hook 2")
+                       (remove-hook 'pre-command-hook (lambda () (funcall hookfn1))))
+                   (progn
+                     (setq frame nil)
+                     (run-with-timer 0 nil
+                                     (lambda ()
+                                       (with-selected-frame last-event-frame
+                                         (message "hookfn1: with-selected-frame running timer")
+                                         (funcall readfn))))
+                     (progn
+                       (message "hookfn1: adding quiet-sel-frame")
+                       (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+                       (message "hookfn1: going to run abort-recursive-edit")
+                       (when (active-minibuffer-window)
+                         (abort-recursive-edit)
+                         (message "hookfn1: abort-recursive-edit"))))))))
        (message "calling readfn")
        (funcall readfn))))
 
@@ -799,16 +831,47 @@ so long."
   (lotus-with-frame-event
     (completing-read "prmpt: "
                      '("a" "b" "c"))))
+(when nil
+
+  (lotus-with-other-frame-event (message "Hi")
+    (completing-read
+     "test"
+     '("a" "b" "c")))
+
+  (lotus-with-other-frame-event :restart
+    (completing-read
+     "test"
+     '("a" "b" "c")))
+
+  (lotus-with-other-frame-event :cancel
+    (completing-read
+     "test"
+     '("a" "b" "c")))
+
+  )
 
 
+(when nil
 
+  (macroexpand-1
+   '(lotus-with-other-frame-event (message "Hi")
+     (completing-read
+      "test"
+      '("a" "b" "c"))))
 
-(macroexpand-1
- '(with-frame-event
-   (completing-read "prmpt: "
-    '("a" "b" "c"))))
+  (macroexpand-1
+   '(lotus-with-other-frame-event :restart
+     (completing-read
+      "test"
+      '("a" "b" "c"))))
 
+  (macroexpand-1
+   '(lotus-with-other-frame-event :cancel
+     (completing-read
+      "test"
+      '("a" "b" "c"))))
 
+  )
 
 
 (provide 'org-clock-resolve-advanced)

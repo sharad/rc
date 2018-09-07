@@ -139,7 +139,7 @@ using three `C-u' prefix arguments."
              (cons task marker))))))))
 
 (defun replace-org-clock-select-task (&optional prompt)
-  (lotus-with-frame-event
+  (lotus-with-other-frame-event :restart
     (let ((helm-sources nil))
       (when (marker-buffer org-clock-default-task)
         (push

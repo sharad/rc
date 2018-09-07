@@ -23,6 +23,11 @@
 
 ;;; Code:
 
+(require 'lotus-misc-utils)
+(eval-when-compile
+  (require 'lotus-misc-utils))
+
+
 (require 'occ-obj-common)
 (require 'occ-tree)
 (require 'occ-obj-accessor)
@@ -287,18 +292,19 @@ pointing to it."
 ;; rank based
 (defun occ-sacha-helm-select (ctxasks)
   ;; (occ-debug :debug "sacha marker %s" (car dyntskpls))
-  (helm
-   (list
-    (helm-build-sync-source "Select matching tsks"
-      :candidates (mapcar 'occ-sacha-selection-line ctxasks)
-      :action (list ;; (cons "Select" 'identity)
-               (cons "Clock in and track" #'identity))
-      :history 'org-refile-history)
-    ;; (helm-build-dummy-source "Create tsk"
-    ;;   :action (helm-make-actions
-    ;;            "Create tsk"
-    ;;            'sacha/helm-org-create-tsk))
-    )))
+  (lotus-with-other-frame-event :cancel
+    (helm
+     (list
+      (helm-build-sync-source "Select matching tsks"
+        :candidates (mapcar 'occ-sacha-selection-line ctxasks)
+        :action (list ;; (cons "Select" 'identity)
+                 (cons "Clock in and track" #'identity))
+        :history 'org-refile-history)
+      ;; (helm-build-dummy-source "Create tsk"
+      ;;   :action (helm-make-actions
+      ;;            "Create tsk"
+      ;;            'sacha/helm-org-create-tsk))
+      ))))
 
 (defun occ-sacha-helm-select-timed (ctxasks)
   (helm-timed 7
