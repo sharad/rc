@@ -72,9 +72,16 @@
     (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
 
 ;;;###autoload
+(defun occ-clock-in-curr-ctx (&optional force)
+  (interactive "P")
+  (occ-clock-in-if-not (occ-make-ctx)))
+
+;;;###autoload
 (defun occ-clock-in-curr-ctx-if-not (&optional force)
   (interactive "P")
-  (occ-clock-in-if-chg (occ-make-ctx)))
+  (if force
+      (occ-clock-in-curr-ctx (occ-make-ctx))
+    (occ-clock-in-if-chg (occ-make-ctx))))
 
 ;;;###autoload
 (defun occ-run-curr-ctx-timer ()
