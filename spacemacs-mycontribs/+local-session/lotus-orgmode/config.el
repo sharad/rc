@@ -291,7 +291,7 @@
     (let* ((party-base-dir (task-party-base-dir))
            (start-file (expand-file-name "start.org" party-base-dir)))
       (setq
-       org-agenda-files (org-context-clock-task-update-files)))
+       org-agenda-files (occ-included-files)))
 
     (progn
       (add-to-task-current-party-change-hook
@@ -299,7 +299,7 @@
            (let* ((party-base-dir (task-party-base-dir))
                   (start-file (expand-file-name "start.org" party-base-dir)))
              (setq
-              org-agenda-files (org-context-clock-task-update-files))))))))
+              org-agenda-files (occ-included-files))))))))
 
 (defun lotus-orgmode-config/post-init-org-agenda ()
   (progn
