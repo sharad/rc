@@ -456,7 +456,7 @@ so long."
              (make-rl-clock org-clock-marker org-clock-start-time nil)
              (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
           (when t
-            (message "Idle time now sec[%d] min[%d]"
+            (message "2. Idle time now sec[%d] min[%d]"
                      org-clock-user-idle-seconds
                      (/ org-clock-user-idle-seconds 60))))
         (setq org-clock-last-user-idle-seconds nil)))))
