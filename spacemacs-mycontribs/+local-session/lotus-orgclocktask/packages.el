@@ -109,8 +109,7 @@ Each entry is either:
           (add-hook
            'kill-emacs-hook
            #'(lambda ()
-             (if (and
-                  (org-clock-is-active))
+               (if (org-clock-is-active)
                  (org-with-clock-writeable
                   (let (org-log-note-clock-out)
                     (if (org-clock-is-active)
