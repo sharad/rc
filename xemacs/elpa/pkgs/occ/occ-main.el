@@ -79,9 +79,10 @@
 ;;;###autoload
 (defun occ-clock-in-curr-ctx-if-not (&optional force)
   (interactive "P")
-  (if force
-      (occ-clock-in-curr-ctx (occ-make-ctx))
-    (occ-clock-in-if-chg (occ-make-ctx))))
+  (lotus-with-other-frame-event :cancel
+    (if force
+        (occ-clock-in-curr-ctx (occ-make-ctx))
+      (occ-clock-in-if-chg (occ-make-ctx)))))
 
 ;;;###autoload
 (defun occ-run-curr-ctx-timer ()
