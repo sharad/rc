@@ -27,3 +27,14 @@
 
 
 (setq ag-ignore-list '("doc"))
+
+
+(progn
+  ;; Fix it
+
+(defvar elscreen-screen-update-hook nil)
+(defun elscreen-run-screen-update-hook ()
+  (when elscreen-frame-confs
+    (elscreen-notify-screen-modification-suppress
+     (run-hooks 'elscreen-screen-update-hook)))
+  (remove-hook 'post-command-hook 'elscreen-run-screen-update-hook)))
