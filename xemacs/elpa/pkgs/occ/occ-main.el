@@ -28,6 +28,8 @@
 (require 'occ-unnamed)
 (require 'occ-interactive)
 
+(provide 'occ-main)
+
 (defcustom *occ-last-buff-sel-time*            (current-time) "*occ-last-buff-sel-time*")
 (defvar    *occ-buff-sel-timer*                nil)
 (defvar    *occ-tsk-current-ctx-time-interval* 7)
@@ -115,5 +117,4 @@
       ;; TODO update existing occ-collection.tree or occ-collection.list
       (occ-reset-global-tsk-collection))))
 
-(provide 'occ-main)
 ;;; occ-main.el ends here
