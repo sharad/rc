@@ -340,36 +340,36 @@
                      (quit
                       (message "quit"))))))
 
-              ;; (hookfn1
-              ;;  (lambda ()
-              ;;    (message "hookfn1: last-input-event: %s last-event-frame: %s frame: %s"
-              ;;             last-input-event
-              ;;             last-event-frame
-              ;;             frame)
-              ;;    (message "hookfn1: removing hook 1")
-              ;;    (message "hookfn1: 1 pre-command-hook %s" pre-command-hook)
-              ;;    (remove-hook 'pre-command-hook
-              ;;                 (lambda ()
-              ;;                   (funcall hookfn1)))
-              ;;    (message "hookfn1: 2 pre-command-hook %s" pre-command-hook)
-              ;;    (if (eql last-event-frame frame)
-              ;;        (progn
-              ;;          (setq frame nil)
-              ;;          (message "hookfn1: removing hook 2")
-              ;;          (remove-hook 'pre-command-hook
-              ;;                       (lambda ()
-              ;;                         (funcall hookfn1))))
-              ;;      (progn
-              ;;        (setq frame nil)
-              ;;        (with-selected-frame last-event-frame
-              ;;          (message "hookfn1: with-selected-frame running timer")
-              ;;          (run-with-timer 0 nil (lambda () (funcall readfn)))
-              ;;          (message "hookfn1: adding quiet-sel-frame")
-              ;;          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
-              ;;          (message "hookfn1: going to run abort-recursive-edit")
-              ;;          (when (active-minibuffer-window)
-              ;;            (abort-recursive-edit)
-              ;;            (message "hookfn1: abort-recursive-edit")))))))
+              (hookfn1
+               (lambda ()
+                 (message "hookfn1: last-input-event: %s last-event-frame: %s frame: %s"
+                          last-input-event
+                          last-event-frame
+                          frame)
+                 (message "hookfn1: removing hook 1")
+                 (message "hookfn1: 1 pre-command-hook %s" pre-command-hook)
+                 (remove-hook 'pre-command-hook
+                              (lambda ()
+                                (funcall hookfn1)))
+                 (message "hookfn1: 2 pre-command-hook %s" pre-command-hook)
+                 (if (eql last-event-frame frame)
+                     (progn
+                       (setq frame nil)
+                       (message "hookfn1: removing hook 2")
+                       (remove-hook 'pre-command-hook
+                                    (lambda ()
+                                      (funcall hookfn1))))
+                   (progn
+                     (setq frame nil)
+                     (with-selected-frame last-event-frame
+                       (message "hookfn1: with-selected-frame running timer")
+                       (run-with-timer 0 nil (lambda () (funcall readfn)))
+                       (message "hookfn1: adding quiet-sel-frame")
+                       (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+                       (message "hookfn1: going to run abort-recursive-edit")
+                       (when (active-minibuffer-window)
+                         (abort-recursive-edit)
+                         (message "hookfn1: abort-recursive-edit")))))))
 
               (hookfn
                (lambda ()
@@ -394,7 +394,7 @@
                                      (lambda ()
                                        (progn
                                          ;; (setq frame (selected-frame))
-                                         (setq debug-on-quit t)
+                                         (setq debug-on-quit nil)
                                          (message "hookfn: with-selected-frame running timer")
                                          (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                                          ,@(cond
