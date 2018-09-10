@@ -328,9 +328,9 @@
                    (add-hook
                     'pre-command-hook
                     (lambda ()
-                      (funcall hookfn)))
+                      (funcall hookfn1)))
                    (message "readfn: 2 pre-command-hook %s" pre-command-hook)
-                   (message "readfn: added hookfn")
+                   (message "readfn: added hookfn1")
                    (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                    (message "readfn: removed quiet-sel-frame")
                    (condition-case nil
