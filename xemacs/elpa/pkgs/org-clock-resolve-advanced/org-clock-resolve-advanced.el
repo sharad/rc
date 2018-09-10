@@ -433,8 +433,6 @@ so long."
           (not org-clock-resolving-clocks)
           org-clock-marker
           (marker-buffer org-clock-marker))
-     (message "org-clock-last-user-idle-seconds: %s" org-clock-last-user-idle-seconds)
-     (message "(org-user-idle-seconds) %s" (org-user-idle-seconds))
      (let* ((org-clock-user-idle-seconds
              (or
               org-clock-last-user-idle-seconds
