@@ -636,5 +636,13 @@
 
   )
 
+
+(let ((a 1))                            ; binding (1)
+  (let ((f (lambda () (print a))))
+    (let ((a 2))                        ; binding (2)
+      (funcall f)
+      f)))
+
+
 (provide 'lotus-misc-utils)
 ;;; lotus-misc-utils.el ends here

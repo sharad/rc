@@ -545,11 +545,5 @@ so long."
   (test-org-rl-resolve-clocks-if-idle 310)
   )
 
-(let ((a 1))                            ; binding (1)
-  (let ((f (lambda () (print a))))
-    (let ((a 2))                        ; binding (2)
-      (funcall f)
-      f)))
-
 (provide 'org-clock-resolve-advanced)
 ;;; org-clock-utils-lotus.el ends here
