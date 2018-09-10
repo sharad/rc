@@ -453,7 +453,9 @@
                                          ;; (setq frame (selected-frame))
                                          (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                                          ,@(cond
-                                             ((eq :restart action)
+                                             ((or
+                                               (eq :restart action)
+                                               (eq t action))
                                               `(
                                                 (with-selected-frame last-event-frame
                                                   (funcall readfn))))
