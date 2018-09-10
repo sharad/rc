@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+(provide 'lotus-wrapper)
+
 (defvar replace-file-truename-link-cycle-counter 150)
 
 (defun replace-file-truename (filename &optional counter prev-dirs)
