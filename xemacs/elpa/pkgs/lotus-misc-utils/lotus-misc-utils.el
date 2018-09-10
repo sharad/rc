@@ -648,7 +648,7 @@
       (funcall f)
       f)))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; post-command-hook is a variable defined in `C source code'.
 ;; Its value is (yas--post-command-handler t)
 
@@ -667,7 +667,7 @@
 ;; It is a bad idea to use this hook for expensive processing.  If
 ;; unavoidable, wrap your code in `(while-no-input (redisplay) CODE)' to
 ;; avoid making Emacs unresponsive while the user types.
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'lotus-misc-utils)
 ;;; lotus-misc-utils.el ends here
