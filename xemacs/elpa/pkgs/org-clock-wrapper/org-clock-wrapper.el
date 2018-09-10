@@ -270,5 +270,4 @@ move point to the subject."
     (helm :sources '(some-helm-source some-other-helm-source))
     ))
 
-(provide 'org-clock-wrapper)
 ;;; org-clock-wrapper.el ends here
