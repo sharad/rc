@@ -545,5 +545,4 @@ so long."
   (test-org-rl-resolve-clocks-if-idle 310)
   )
 
-(provide 'org-clock-resolve-advanced)
 ;;; org-clock-utils-lotus.el ends here
