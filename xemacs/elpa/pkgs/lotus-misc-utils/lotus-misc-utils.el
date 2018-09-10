@@ -387,7 +387,7 @@
                        (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                        ;; (message "hookfn: removing hook 2")
                        ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                       )
+                       t)
                    (progn
                      (setq frame nil)
                      (run-with-timer 0 nil
