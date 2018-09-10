@@ -1,4 +1,4 @@
-;;; lotus-misc-utils.el --- copy config
+;;; lotus-misc-utils.el --- copy config  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -363,8 +363,7 @@
                      (setq frame nil)
                      (with-selected-frame last-event-frame
                        (message "hookfn: with-selected-frame running timer")
-                       (run-with-timer 0 nil
-                                       (lambda () (funcall readfn)))
+                       (run-with-timer 0 nil (lambda () (funcall readfn)))
                        (message "hookfn: adding quiet-sel-frame")
                        (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
                        (message "hookfn: going to run abort-recursive-edit")
