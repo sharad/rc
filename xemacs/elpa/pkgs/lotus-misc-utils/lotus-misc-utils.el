@@ -340,36 +340,36 @@
                      (quit
                       (message "quit"))))))
 
-              (hookfn
-               (lambda ()
-                 (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
-                          last-input-event
-                          last-event-frame
-                          frame)
-                 (message "hookfn: removing hook 1")
-                 (message "hookfn: 1 pre-command-hook %s" pre-command-hook)
-                 (remove-hook 'pre-command-hook
-                              (lambda ()
-                                (funcall hookfn)))
-                 (message "hookfn: 2 pre-command-hook %s" pre-command-hook)
-                 (if (eql last-event-frame frame)
-                     (progn
-                       (setq frame nil)
-                       (message "hookfn: removing hook 2")
-                       (remove-hook 'pre-command-hook
-                                    (lambda ()
-                                      (funcall hookfn))))
-                   (progn
-                     (setq frame nil)
-                     (with-selected-frame last-event-frame
-                       (message "hookfn: with-selected-frame running timer")
-                       (run-with-timer 0 nil (lambda () (funcall readfn)))
-                       (message "hookfn: adding quiet-sel-frame")
-                       (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
-                       (message "hookfn: going to run abort-recursive-edit")
-                       (when (active-minibuffer-window)
-                         (abort-recursive-edit)
-                         (message "hookfn: abort-recursive-edit")))))))
+              ;; (hookfn
+              ;;  (lambda ()
+              ;;    (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
+              ;;             last-input-event
+              ;;             last-event-frame
+              ;;             frame)
+              ;;    (message "hookfn: removing hook 1")
+              ;;    (message "hookfn: 1 pre-command-hook %s" pre-command-hook)
+              ;;    (remove-hook 'pre-command-hook
+              ;;                 (lambda ()
+              ;;                   (funcall hookfn)))
+              ;;    (message "hookfn: 2 pre-command-hook %s" pre-command-hook)
+              ;;    (if (eql last-event-frame frame)
+              ;;        (progn
+              ;;          (setq frame nil)
+              ;;          (message "hookfn: removing hook 2")
+              ;;          (remove-hook 'pre-command-hook
+              ;;                       (lambda ()
+              ;;                         (funcall hookfn))))
+              ;;      (progn
+              ;;        (setq frame nil)
+              ;;        (with-selected-frame last-event-frame
+              ;;          (message "hookfn: with-selected-frame running timer")
+              ;;          (run-with-timer 0 nil (lambda () (funcall readfn)))
+              ;;          (message "hookfn: adding quiet-sel-frame")
+              ;;          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+              ;;          (message "hookfn: going to run abort-recursive-edit")
+              ;;          (when (active-minibuffer-window)
+              ;;            (abort-recursive-edit)
+              ;;            (message "hookfn: abort-recursive-edit")))))))
 
               (hookfn1
                (lambda ()
