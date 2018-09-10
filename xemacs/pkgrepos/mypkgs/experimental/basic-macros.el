@@ -277,6 +277,9 @@
 
   (macroexpand '(with-report-error "check" (x) (y))))
 
+(macroexpand '(with-report-error "check" (x) (y)))
+
+
 
 
 ;; (defmacro with-lock (lock lock-body block-repeat-interval block-maxtime)
