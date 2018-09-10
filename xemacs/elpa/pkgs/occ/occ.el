@@ -40,7 +40,7 @@
   (interactive)
   (progn
     (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
-    (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
+    (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer t)
     (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
     (add-hook 'after-save-hook             'occ-after-save-hook-fun nil t))
 
