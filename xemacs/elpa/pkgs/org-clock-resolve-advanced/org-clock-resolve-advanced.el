@@ -444,7 +444,12 @@ so long."
               (time-subtract (current-time)
                              (seconds-to-time org-clock-user-idle-seconds)))
              (org-clock-resolving-clocks-due-to-idleness t))
+
         (setq org-clock-last-user-idle-seconds org-clock-user-idle-seconds)
+
+        (message "1. Idle time now sec[%d] min[%d]"
+                 org-clock-user-idle-seconds
+                 (/ org-clock-user-idle-seconds 60))
 
         (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
             (org-resolve-time
