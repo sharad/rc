@@ -40,16 +40,16 @@
        (>= 0 (occ-associated-p (occ-current-tsk) ctx)))
 
       (progn                ;current clock is not matching
-        (occ-debug :debug "occ-update-current-ctx: Now really going to clock.")
+        (occ-debug :debug "occ-clock-in-if-not: Now really going to clock.")
         (unless (occ-clock-in ctx)
           ;; not able to find associated, or intentionally not selecting a clock
           (occ-debug :debug "trying to create unnamed tsk.")
           (occ-maybe-create-clockedin-unnamed-ctxual-tsk ctx))
-        (occ-debug :debug "occ-update-current-ctx: Now really clock done.")
+        (occ-debug :debug "occ-clock-in-if-not: Now really clock done.")
         t)
 
       (progn
-        (occ-debug :debug "occ-update-current-ctx: Current tsk already associate to %s" ctx)
+        (occ-debug :debug "occ-clock-in-if-not: Current tsk already associate to %s" ctx)
         nil)))
 
 (cl-defmethod occ-clock-in-if-chg ((ctx occ-ctx))
