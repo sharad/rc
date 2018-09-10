@@ -39,9 +39,9 @@
 (defun occ-insinuate ()
   (interactive)
   (progn
-    (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
+    (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
     (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer t)
-    (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
+    (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer t)
     (add-hook 'after-save-hook             'occ-after-save-hook-fun nil t))
 
   (dolist (prop (cl-method-matched-arg 'occ-readprop nil))
