@@ -31,6 +31,9 @@
 
 (progn
   ;; Fix it
+  ;; it through error when frame closed
+  ;; redefine and find who is responsible.
+
 
 (defvar elscreen-screen-update-hook nil)
 (defun elscreen-run-screen-update-hook ()
