@@ -265,7 +265,8 @@
             ;; `(condition-case-no-debug ,err
             `(condition-case ,err
                  ,form
-               (error (message "Error: %s - %s in %s" ,msg ,err ',form)
+               (error
+                (message "Error: %s - %s in %s" ,msg ,err ',form)
 		      nil)))
           body))))
 
