@@ -649,5 +649,25 @@
       f)))
 
 
+;; post-command-hook is a variable defined in `C source code'.
+;; Its value is (yas--post-command-handler t)
+
+;; Permanently local in buffer *Help*; global value is
+;; (global-font-lock-mode-check-buffers mmm-check-changed-buffers global-spacemacs-leader-override-mode-check-buffers global-undo-tree-mode-check-buffers evil-mode-check-buffers global-anzu-mode-check-buffers global-evil-search-highlight-persist-check-buffers global-evil-surround-mode-check-buffers global-flycheck-mode-check-buffers elscreen-run-screen-update-hook global-page-break-lines-mode-check-buffers show-smartparens-global-mode-check-buffers magit-auto-revert-mode-check-buffers yas-global-mode-check-buffers cperl-lazy-hook winner-save-old-configurations flycheck-pos-tip-hide-messages sp--post-command-hook-handler clean-aindent--check-last-point evil-repeat-post-hook hcz-set-cursor-color-according-to-mode eldoc-schedule-timer mode-local-post-major-mode-change)
+
+
+;;   This variable is potentially risky when used as a file local variable.
+
+;; Documentation:
+;; Normal hook run after each command is executed.
+;; If an unhandled error happens in running this hook,
+;; the function in which the error occurred is unconditionally removed, since
+;; otherwise the error might happen repeatedly and make Emacs nonfunctional.
+
+;; It is a bad idea to use this hook for expensive processing.  If
+;; unavoidable, wrap your code in `(while-no-input (redisplay) CODE)' to
+;; avoid making Emacs unresponsive while the user types.
+
+
 (provide 'lotus-misc-utils)
 ;;; lotus-misc-utils.el ends here
