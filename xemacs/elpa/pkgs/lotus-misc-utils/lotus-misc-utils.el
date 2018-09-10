@@ -591,6 +591,9 @@
        (funcall readfn))))
 (put 'lotus-cancel-with-other-frame-event 'lisp-indent-function 1)
 
+;; https://stackoverflow.com/questions/3811448/can-call-with-current-continuation-be-implemented-only-with-lambdas-and-closures
+;; CALL/CC
+
 (when nil
 
   (lotus-with-other-frame-event (message "Hi")
