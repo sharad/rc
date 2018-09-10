@@ -214,7 +214,8 @@
   ;; not return any value to its caller, which result into no next-action in
   ;; caller function.
   (condition-case nil
-      (occ-add-to-org-heading ctx timeout)
+      (lotus-with-other-frame-event :cancel
+        (occ-add-to-org-heading ctx timeout))
     ((quit)))
   ;; (run-with-idle-timer-nonobtrusive-simple
   ;;  7 nil
