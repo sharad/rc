@@ -20,7 +20,6 @@
 
 ;;; Commentary:
 
-
 ;;; Code:
 
 ;; (require 'org-clock-check)
