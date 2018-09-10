@@ -20,55 +20,6 @@
 
 ;;; Commentary:
 
-;;
-;; (use-package startup-hooks
-;;     :defer t
-;;     :config
-;;     (progn
-;;       (progn
-;;         (add-to-enable-startup-interrupting-feature-hook
-;;          '(lambda ()
-;;            (when nil
-;;              (add-hook 'after-make-frame-functions
-;;                        '(lambda (nframe)
-;;                          (run-at-time-or-now 100
-;;                           '(lambda ()
-;;                             (if (any-frame-opened-p)
-;;                                 (org-clock-in-if-not)))))
-;;                        t))
-;;            (add-hook 'delete-frame-functions
-;;             '(lambda (nframe)
-;;               (if (and
-;;                    (org-clock-is-active)
-;;                    (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-;;                   (org-with-clock-writeable
-;;                    (let (org-log-note-clock-out)
-;;                      (if (org-clock-is-active)
-;;                          (org-clock-out))))))))
-;;          t))
-
-;;       (progn
-;;         (add-to-enable-desktop-restore-interrupting-feature-hook
-;;          '(lambda ()
-;;            (if (fboundp 'org-clock-persistence-insinuate)
-;;                (org-clock-persistence-insinuate)
-;;                (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
-;;            (if (fboundp 'org-clock-start-check-timer)
-;;                (org-clock-start-check-timer)))
-;;          t))))
-
-
-;; (add-hook
-;;  'kill-emacs-hook
-;;  (lambda ()
-;;    (if (and
-;;         (org-clock-is-active)
-;;         ;; (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil)
-;;         )
-;;        (org-with-clock-writeable
-;;         (let (org-log-note-clock-out)
-;;           (if (org-clock-is-active)
-;;               (org-clock-out)))))))
 
 ;;; Code:
 
