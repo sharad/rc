@@ -235,21 +235,21 @@
 
 
 ;;;###autoload
-(defmacro with-report-error (msg &rest body)
-  "run body and report error in echo area and message buffer"
-  (declare (debug t) (indent 4))
-  ;;(unwind-protect BODYFORM UNWINDFORMS...)
-  (let ((err  (make-symbol "err"))
-        (form (make-symbol "form")))
-    `(progn
-       ,@(mapcar
-          `(lambda (,,form)
-             ;; `(condition-case-no-debug ,err
-             `(condition-case ,err
-                  ,,form
-                (error (message "Error: %s - %s in %s" ,,msg ,,err ',,,form)
-                   nil)))
-          body))))
+;; (defmacro with-report-error (msg &rest body)
+;;   "run body and report error in echo area and message buffer"
+;;   (declare (debug t) (indent 4))
+;;   ;;(unwind-protect BODYFORM UNWINDFORMS...)
+;;   (let ((err  (make-symbol "err"))
+;;         (form (make-symbol "form")))
+;;     `(progn
+;;        ,@(mapcar
+;;           `(lambda (,,form)
+;;              ;; `(condition-case-no-debug ,err
+;;              `(condition-case ,err
+;;                   ,,form
+;;                 (error (message "Error: %s - %s in %s" ,,msg ,,err ',,,form)
+;;                    nil)))
+;;           body))))
 
 
 ;;;###autoload
