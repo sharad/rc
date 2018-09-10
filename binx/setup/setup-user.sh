@@ -87,6 +87,9 @@ PY_PIP_PKG="termdown"
 # lrwxrwxrwx 1 s s   98 May  9 17:33 xsd2gui -> ../../../../../../../../../../../../../../paradise/git/main/src/wnc/nms/Melf/xml/resources/xsd2gui/
 # 2 ~%
 
+# TODO
+# Setup  ~/Scratches/* automatically not manually.
+
 function main()
 {
 
