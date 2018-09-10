@@ -596,5 +596,47 @@
        (funcall readfn))))
 (put 'lotus-cancel-with-other-frame-event 'lisp-indent-function 1)
 
+(when nil
+
+  (lotus-with-other-frame-event (message "Hi")
+    (completing-read
+     "test"
+     '("a" "b" "c")))
+
+  (lotus-with-other-frame-event :restart
+    (completing-read
+     "test"
+     '("a" "b" "c")))
+
+  (lotus-with-other-frame-event :cancel
+    (completing-read
+     "test"
+     '("a" "b" "c")))
+
+  )
+
+
+(when nil
+
+  (macroexpand-1
+   '(lotus-with-other-frame-event (message "Hi")
+     (completing-read
+      "test"
+      '("a" "b" "c"))))
+
+  (macroexpand-1
+   '(lotus-with-other-frame-event :restart
+     (completing-read
+      "test"
+      '("a" "b" "c"))))
+
+  (macroexpand-1
+   '(lotus-with-other-frame-event :cancel
+     (completing-read
+      "test"
+      '("a" "b" "c"))))
+
+  )
+
 (provide 'lotus-misc-utils)
 ;;; lotus-misc-utils.el ends here
