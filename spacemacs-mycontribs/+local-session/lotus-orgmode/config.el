@@ -286,7 +286,7 @@
        org-show-notification-handler 'message
        org-clock-report-include-clocking-task t))))
 
-(defun lotus-orgmode-config/post-init-org-task-manager-occ ()
+(defun lotus-orgmode-config/post-init-org-task-manager ()
   (progn
     (let* ((party-base-dir (task-party-base-dir))
            (start-file (expand-file-name "start.org" party-base-dir)))
