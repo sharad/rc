@@ -68,8 +68,8 @@
             (progn
               (when (occ-clock-in-if-not ctx)
                 (setq *occ-tsk-previous-ctx* *occ-tsk-current-ctx*)))
-            (occ-debug :debug "occ-update-current-ctx: ctx %s not suitable to associate" ctx)))
-    (occ-debug :debug "occ-update-current-ctx: not enough time passed.")))
+            (occ-debug :debug "occ-clock-in-if-chg: ctx %s not suitable to associate" ctx)))
+    (occ-debug :debug "occ-clock-in-if-chg: not enough time passed.")))
 
 ;;;###autoload
 (defun occ-clock-in-curr-ctx (&optional force)
