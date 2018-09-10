@@ -394,6 +394,7 @@
                                      (lambda ()
                                        (progn
                                          ;; (setq frame (selected-frame))
+                                         (setq debug-on-quit t)
                                          (message "hookfn: with-selected-frame running timer")
                                          (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                                          ,@(cond
