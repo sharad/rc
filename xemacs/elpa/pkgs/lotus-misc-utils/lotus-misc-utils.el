@@ -619,12 +619,6 @@
 (when nil
 
   (macroexpand-1
-   '(lotus-with-other-frame-event (message "Hi")
-     (completing-read
-      "test"
-      '("a" "b" "c"))))
-
-  (macroexpand-1
    '(lotus-with-other-frame-event :restart
      (completing-read
       "test"
@@ -635,6 +629,14 @@
      (completing-read
       "test"
       '("a" "b" "c"))))
+
+  (macroexpand-1
+   '(lotus-with-other-frame-event (message "Hi")
+     (completing-read
+      "test"
+      '("a" "b" "c"))))
+
+
 
   )
 
