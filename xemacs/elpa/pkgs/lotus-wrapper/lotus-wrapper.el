@@ -152,6 +152,4 @@ containing it, until no links are left at any level.
 
 ;; (file-truename "~/.mailbox")
 
-
-(provide 'lotus-wrapper)
 ;;; lotus-wrapper.el ends here
