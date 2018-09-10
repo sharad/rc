@@ -596,11 +596,6 @@
 
 (when nil
 
-  (lotus-with-other-frame-event (message "Hi")
-    (completing-read
-     "test"
-     '("a" "b" "c")))
-
   (lotus-with-other-frame-event :restart
     (completing-read
      "test"
@@ -610,6 +605,13 @@
     (completing-read
      "test"
      '("a" "b" "c")))
+
+  (lotus-with-other-frame-event (message "Hi")
+    (completing-read
+     "test"
+     '("a" "b" "c")))
+
+
 
   )
 
