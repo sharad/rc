@@ -430,7 +430,7 @@ so long."
   (message "called org-rl-resolve-clocks-if-idle")
   (lotus-with-other-frame-event :restart
     (message "org-clock-last-user-idle-seconds: %s" org-clock-last-user-idle-seconds)
-    (message "(org-user-idle-seconds) %s" (org-user-idle-seconds))
+    ;; (message "(org-user-idle-seconds) %s" (org-user-idle-seconds))
     (when (and
            org-clock-idle-time
            (not org-clock-resolving-clocks)
