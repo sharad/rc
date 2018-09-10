@@ -364,8 +364,7 @@
                      (with-selected-frame last-event-frame
                        (message "hookfn: with-selected-frame running timer")
                        (run-with-timer 0 nil
-                                       (lambda ()
-                                         (funcall readfn)))
+                                       (lambda () (funcall readfn)))
                        (message "hookfn: adding quiet-sel-frame")
                        (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
                        (message "hookfn: going to run abort-recursive-edit")
