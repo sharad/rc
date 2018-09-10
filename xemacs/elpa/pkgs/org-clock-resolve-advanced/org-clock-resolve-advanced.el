@@ -37,6 +37,8 @@
   (require 'lotus-misc-utils))
 
 
+(provide 'org-clock-resolve-advanced)
+
 (defun org-clock-steel-time ()
   )
 
