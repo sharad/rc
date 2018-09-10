@@ -273,7 +273,7 @@
 '(testing
   (with-report-error "check"
       (message "tset")
-      (message "test"))
+      (message "test %d" 'aa))
 
   (macroexpand '(with-report-error "check" (x) (y))))
 
