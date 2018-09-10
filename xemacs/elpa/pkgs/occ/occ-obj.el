@@ -45,6 +45,13 @@
   value)
 
 (cl-defstruct (occ-tsk (:include occ-obj))
+  ;; [[file:~/.repos/git/main/resource/info/doc/orgs/private/doc/contents/org/tasks/personal/works/emacs/todo.org::*Each%20task%20should%20have%20different%20types%20of%20actions%20associated%20to%20it,%20default%20is%20to%20clock-in%20to%20it][Each task should have different types of actions associated to it, default is to clock-in to it]]
+  action
+  ;; *** Each task should have different types of actions associated to it, default is to clock-in to it
+  ;; - rest could be
+  ;; to ignore this task continue where already clockin or not
+  ;; which could be used to avoid non-interesting buffers
+  ;; - etc many different could be thought
   heading
   heading-prop
   marker
