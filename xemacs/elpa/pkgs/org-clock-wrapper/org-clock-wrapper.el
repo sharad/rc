@@ -28,6 +28,7 @@
 (eval-when-compile
   (require 'lotus-misc-utils))
 
+(provide 'org-clock-wrapper)
 
 ;; "correction org-timer.el"
 (defun replace-org-timer-set-timer (&optional opt)
