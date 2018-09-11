@@ -131,7 +131,8 @@
     (org-with-file-headline
         file
         (lotus-org-create-unnamed-task file parent-task)
-      (org-entry-put nil "Effort" "10")
+        (org-entry-put nil "Effort" "10")
+        ;; It is clocking to last unfinished task
       (org-clock-in)
       (setq
        *lotus-org-unnamed-task-clock-marker*
