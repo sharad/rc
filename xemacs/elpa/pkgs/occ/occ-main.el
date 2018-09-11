@@ -81,6 +81,8 @@
 ;;;###autoload
 (defun occ-clock-in-curr-ctx-if-not (&optional force)
   (interactive "P")
+  ;; TODO: Add code to which check if only focus present than only trigger
+  ;; else postpone it by calling run-with-idle-plus-timer
   (lotus-with-other-frame-event :cancel
     (if force
         (occ-clock-in-curr-ctx (occ-make-ctx))
