@@ -256,6 +256,9 @@
 
   (cl-get-field occ-gtree 'plist)
 
+
+  (cl-get-field (make-occ-tree-tsk :name "empty tree tsk" :subtree nil) 'subtree)
+
   (cl-set-field occ-gtree 'subtree 1)
 
   (cl-class-slots (cl-classname occ-gtree))
