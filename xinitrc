@@ -5,9 +5,10 @@
 
 source ~/.sasken.zshenv
 
-WM=${1:-stumpwm}
+# WM=${1:-stumpwm}
+WM=/usr/local/bin/x-session-stumpwm
 
-~/bin/xhook
+# ~/bin/xhook
 
 case $HOSTTYPE in
     sparc)   suffix=sun	;;
@@ -47,8 +48,13 @@ esac
 # evilwm -snap 10 &
 # xautolock
 
+source ~/.rsetup/sh/env
+source ~/.rsetup/x/env
+source ~/.xprofile
+
+
 if which $WM ; then
-    exec $WM clisp
+    exec $WM
     if [ $WM  -eq "gnome" ] ; then
         exec gnome-session
     fi
