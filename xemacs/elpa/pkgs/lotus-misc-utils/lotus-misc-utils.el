@@ -482,48 +482,11 @@
 (put 'lotus-with-other-frame-event 'lisp-indent-function 1)
 
 (defmacro lotus-restart-with-other-frame-event (&rest body)
-  `(lotus-with-other-frame-event :restart ,@body)
-  `(let ((frame nil))
-     (letrec ((readfn
-               (lambda ()
-                 (progn
-                   (setq frame (selected-frame))
-                   (add-hook
-                    'pre-command-hook
-                    (lambda ()
-                      (funcall hookfn)))
-                   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
-                   (condition-case nil
-                       (progn
-                         ,@body
-                         (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
-                     (quit nil)))))
-              (hookfn
-               (lambda ()
-                 ;; (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
-                 ;;          last-input-event
-                 ;;          last-event-frame
-                 ;;          frame)
-                 (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                 (if (eql last-event-frame frame)
-                     (progn
-                       (setq frame nil)
-                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
-                       (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
-                   (progn
-                     (setq frame nil)
-                     (run-with-timer 0 nil
-                                     (lambda ()
-                                       (with-selected-frame last-event-frame
-                                         (funcall readfn))))
-                     (progn
-                       (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
-                       (when (active-minibuffer-window)
-                         (abort-recursive-edit))))))))
-       (funcall readfn))))
+  `(lotus-with-other-frame-event :restart ,@body))
 (put 'lotus-restart-with-other-frame-event 'lisp-indent-function 0)
 
 (defmacro lotus-cancel-with-other-frame-event (&rest body)
+  `(lotus-with-other-frame-event :restart ,@body)
   `(let ((frame nil))
      (letrec ((readfn
                (lambda ()
