@@ -77,6 +77,7 @@
 
   (when nil
     (progn
+
       ;; (pop buffer-list-update-hook)
       (pop elscreen-screen-update-hook)
       (pop elscreen-goto-hook)
