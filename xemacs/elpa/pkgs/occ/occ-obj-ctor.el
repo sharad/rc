@@ -256,7 +256,7 @@
 
   (cl-get-field occ-gtree 'plist)
 
-  (cl-set-field occ-gtree 'subtree nil)
+  (cl-set-field occ-gtree 'subtree 1)
 
   (cl-class-slots (cl-classname occ-gtree))
   ;; (type-of occ-gtree)
