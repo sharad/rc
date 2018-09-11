@@ -438,11 +438,19 @@
                      (quit nil)))))
               (hookfn
                (lambda ()
+                 (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
+                          last-input-event
+                          last-event-frame
+                          frame)
+                 (message "hookfn: removing hook 1")
+                 (message "hookfn: 1 pre-command-hook %s" pre-command-hook)
                  (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
+                 (message "hookfn: 2 pre-command-hook %s" pre-command-hook)
                  (if (eql last-event-frame frame)
                      (progn
                        (setq frame nil)
                        ;; (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                       ;; (message "hookfn: removing hook 2")
                        ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                        t)
                    (with-selected-frame last-event-frame
@@ -452,6 +460,8 @@
                                        (lambda ()
                                          (progn
                                            ;; (setq frame (selected-frame))
+                                           (setq debug-on-quit nil)
+                                           (message "hookfn: with-selected-frame running timer")
                                            (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                                            ,@(cond
                                                ((or
@@ -469,9 +479,12 @@
                                                  (null action))
                                                 nil)))))
                        (progn
+                         (message "hookfn: adding quiet-sel-frame")
                          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+                         (message "hookfn: going to run abort-recursive-edit")
                          (when (active-minibuffer-window)
-                           (abort-recursive-edit)))))))))
+                           (abort-recursive-edit)
+                           (message "hookfn: abort-recursive-edit")))))))))
        (funcall readfn))))
 (put 'lotus-with-other-frame-event 'lisp-indent-function 1)
 
