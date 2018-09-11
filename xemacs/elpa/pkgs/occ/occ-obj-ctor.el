@@ -158,16 +158,14 @@
 (cl-defmethod occ-collect-tsks ((collection occ-tree-tsk-collection)
                                 force)
   (unless (occ-tree-tsk-collection-tree collection)
-    (prog1
-        (setf
-         (occ-tree-tsk-collection-tree collection)
-         (occ-tree-tsk-build
-          #'(lambda ()
-              (or
-               (occ-make-tsk-at-point #'make-occ-tree-tsk)
-               (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of root-files
-          (car (occ-tree-tsk-collection-root-files collection))))
-      (run-hooks occ-global-tsk-collection-change-hook))))
+    (setf
+     (occ-tree-tsk-collection-tree collection)
+     (occ-tree-tsk-build
+      #'(lambda ()
+          (or
+           (occ-make-tsk-at-point #'make-occ-tree-tsk)
+           (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of root-files
+      (car (occ-tree-tsk-collection-root-files collection))))))
 
 (cl-defmethod occ-collect-included-files ((collection occ-tree-tsk-collection)
                                           force)
