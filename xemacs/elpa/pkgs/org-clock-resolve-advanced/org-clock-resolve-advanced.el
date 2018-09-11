@@ -455,7 +455,7 @@ so long."
             (org-resolve-time
              (make-rl-clock org-clock-marker org-clock-start-time nil)
              (make-rl-clock 'imaginary 'now org-clock-user-idle-start))
-          (when t
+          (when nil
             (message "2. Idle time now sec[%d] min[%d]"
                      org-clock-user-idle-seconds
                      (/ org-clock-user-idle-seconds 60))))
