@@ -81,7 +81,7 @@
   (cl-classname (occ-make-tsk org-clock-hd-marker (occ-tsk-builder)))
   (setq unnamed-test (occ-make-tsk org-clock-hd-marker (occ-tsk-builder)))
   (occ-tsk-marker unnamed-test)
-  (type-of (lotus-org-unnamed-task-clock-marker )))
+  (type-of (lotus-org-unnamed-task-clock-marker)))
 
 (cl-defmethod occ-maybe-create-unnamed-ctxual-tsk ((ctx occ-ctx))
   ;; back
