@@ -216,7 +216,7 @@
   (condition-case nil
       ;; TODO: Add code to which check if only focus present than only trigger
       ;; else postpone it by calling run-with-idle-plus-timer
-      (lotus-with-other-frame-event :cancel
+      (lotus-with-other-frame-event-debug "occ-add-to-org-heading-when-idle" :cancel
         (occ-add-to-org-heading ctx timeout))
     ((quit)))
   ;; (run-with-idle-timer-nonobtrusive-simple
