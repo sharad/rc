@@ -525,7 +525,7 @@
                                                  (eq t action))
                                                 `(
                                                   (with-selected-frame last-event-frame
-                                                    (message "hookfn: running readfn from hookfn %s" name)
+                                                    (message "hookfn: %s running readfn from hookfn" name)
                                                     (funcall readfn))))
                                                ((consp action)
                                                 `(
