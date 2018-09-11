@@ -447,9 +447,10 @@ so long."
 
         (setq org-clock-last-user-idle-seconds org-clock-user-idle-seconds)
 
-        (message "1. Idle time now sec[%d] min[%d]"
+        (when nil
+         (message "1. Idle time now sec[%d] min[%d]"
                  org-clock-user-idle-seconds
-                 (/ org-clock-user-idle-seconds 60))
+                 (/ org-clock-user-idle-seconds 60)))
 
         (if (> org-clock-user-idle-seconds (* 60 org-clock-idle-time))
             (org-resolve-time
