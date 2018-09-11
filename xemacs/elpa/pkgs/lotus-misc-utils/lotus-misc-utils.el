@@ -490,47 +490,7 @@
 (put 'lotus-cancel-with-other-frame-event 'lisp-indent-function 0)
 
 (defmacro lotus-run-with-other-frame-event (action &rest body)
-  `(lotus-with-other-frame-event ,action ,@body)
-  `(let ((frame nil))
-     (letrec ((readfn
-               (lambda ()
-                 (progn
-                   (setq frame (selected-frame))
-                   (add-hook
-                    'pre-command-hook
-                    (lambda ()
-                      (funcall hookfn)))
-                   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
-                   (condition-case nil
-                       (progn
-                         ,@body
-                         (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
-                     (quit nil)))))
-              (hookfn
-               (lambda ()
-                 ;; (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
-                 ;;          last-input-event
-                 ;;          last-event-frame
-                 ;;          frame)
-                 (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                 (if (eql last-event-frame frame)
-                     (progn
-                       (setq frame nil)
-                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
-                       (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
-                   (progn
-                     (setq frame nil)
-                     (run-with-timer 0 nil
-                                     (lambda ()
-                                       (progn
-                                         (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
-                                         ;; (setq frame (selected-frame))
-                                         ,action)))
-                     (progn
-                       (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
-                       (when (active-minibuffer-window)
-                         (abort-recursive-edit))))))))
-       (funcall readfn))))
+  `(lotus-with-other-frame-event ,action ,@body))
 (put 'lotus-cancel-with-other-frame-event 'lisp-indent-function 1)
 
 ;; https://stackoverflow.com/questions/3811448/can-call-with-current-continuation-be-implemented-only-with-lambdas-and-closures
