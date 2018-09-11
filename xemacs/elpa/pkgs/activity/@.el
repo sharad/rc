@@ -212,10 +212,11 @@ If :default, don't produce an error but return the provided value."
       (when (functionp (@ proto prop))
         (byte-compile (@ proto prop))))))
 
-;; Local Variables:
-;; lexical-binding: t
-;; End:
 
 (provide '@)
 
 ;;; @.el ends here
+
+;; Local Variables:
+;; lexical-binding: t
+;; End:
