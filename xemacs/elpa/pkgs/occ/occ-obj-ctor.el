@@ -131,8 +131,8 @@
   ;; use occ-build-ctxual-tsk
   (make-occ-ctxual-tsk
    :name    nil
-   :tsk    tsk
-   :ctx ctx
+   :tsk     tsk
+   :ctx     ctx
    :rank    rank))
 
 (cl-defmethod occ-make-tsk-collection ((file-spec (head :tree)))
