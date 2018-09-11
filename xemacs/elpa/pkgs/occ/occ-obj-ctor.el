@@ -253,7 +253,8 @@
   (if occ-global-tsk-collection
       (funcall fn)
     (add-hook
-     'occ-global-tsk-collection-change-hook)))
+     'occ-global-tsk-collection-change-hook
+     fn)))
 
 (when nil
   (progn
