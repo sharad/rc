@@ -25,6 +25,8 @@
 
 (require 'occ-main)
 
+(defvar occ-global-tsk-collection-spec-hook)
+
 ;;;###autoload
 (defun occ-set-global-tsk-collection-spec (spec)
   (setq
