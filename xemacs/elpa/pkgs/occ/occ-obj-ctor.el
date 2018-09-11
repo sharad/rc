@@ -267,7 +267,7 @@
     #'(lambda ()
         (or
          (occ-make-tsk-at-point #'make-occ-tree-tsk)
-         (make-occ-tree-tsk :name "empty tree tsk"))) ;; note: only using first file of root-files
+         (make-occ-tree-tsk :name "empty tree tsk" :subtree nil))) ;; note: only using first file of root-files
     "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tsks/xx.org"))
 
   (setq occ-test-gtree
