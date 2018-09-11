@@ -214,6 +214,8 @@
   ;; not return any value to its caller, which result into no next-action in
   ;; caller function.
   (condition-case nil
+      ;; TODO: Add code to which check if only focus present than only trigger
+      ;; else postpone it by calling run-with-idle-plus-timer
       (lotus-with-other-frame-event :cancel
         (occ-add-to-org-heading ctx timeout))
     ((quit)))
