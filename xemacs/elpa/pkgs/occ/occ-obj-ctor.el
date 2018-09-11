@@ -249,7 +249,8 @@
   occ-global-tsk-collection)
 
 
-(defun occ-global-tsk-collection-change-hook)
+(defun occ-run-with-global-tsk-collection ()
+  )
 
 (when nil
   (progn
