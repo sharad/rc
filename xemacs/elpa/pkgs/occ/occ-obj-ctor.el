@@ -142,10 +142,7 @@
     (let ((collection (make-occ-tree-tsk-collection
                        :name "tsk collection tree"
                        :root-files (cdr file-spec))))
-      (prog1
-          (setf occ-global-tsk-collection collection)
-        (run-hooks
-         occ-global-tsk-collection-change-hook)))))
+      (setf occ-global-tsk-collection collection))))
 
 (cl-defmethod occ-make-tsk-collection ((file-spec (head :list)))
   (unless occ-global-tsk-collection
