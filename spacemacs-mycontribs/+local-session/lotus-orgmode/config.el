@@ -292,8 +292,17 @@
   (progn
     (let* ((party-base-dir (task-party-base-dir))
            (start-file (expand-file-name "start.org" party-base-dir)))
-      (setq
-       org-agenda-files (occ-included-files)))
+
+      ;; (setq
+      ;;  org-agenda-files (occ-included-files))
+      )
+
+    (occ-run-with-global-tsk-collection
+     #'(lambda ()
+         (let* ((party-base-dir (task-party-base-dir))
+                (start-file (expand-file-name "start.org" party-base-dir)))
+           (setq
+            org-agenda-files (occ-included-files)))))
 
     (progn
       (add-to-task-current-party-change-hook
