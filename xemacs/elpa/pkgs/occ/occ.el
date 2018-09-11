@@ -25,7 +25,8 @@
 
 (require 'occ-main)
 
-(defvar occ-global-tsk-collection-spec-hook)
+(defvar occ-global-tsk-collection-spec-hook nil
+  "run when occ-global-tsk-collection-spec get changed.")
 
 ;;;###autoload
 (defun occ-set-global-tsk-collection-spec (spec)
