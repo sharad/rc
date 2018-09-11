@@ -299,8 +299,7 @@
 
     (occ-run-with-global-tsk-collection
      #'(lambda ()
-         (setq
-          org-agenda-files (occ-included-files))))
+         (setq org-agenda-files (occ-included-files))))
 
     (progn
       (add-to-task-current-party-change-hook
