@@ -44,7 +44,8 @@
   (let ((clock (or clock org-clock-marker)))
     (when (and
            clock
-           (lotus-org-unnamed-task-clock-marker))
+           (lotus-org-unnamed-task-clock-marker)
+           (marker-buffer (lotus-org-unnamed-task-clock-marker)))
       (equal
        (marker-buffer org-clock-marker)
        ;; id:x11 make org-ctx-clock version
