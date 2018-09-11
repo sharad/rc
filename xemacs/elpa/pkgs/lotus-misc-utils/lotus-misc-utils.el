@@ -482,7 +482,7 @@
 (put 'lotus-with-other-frame-event 'lisp-indent-function 1)
 
 
-(defmacro lotus-with-other-frame-event-debug (action &rest body)
+(defmacro lotus-with-other-frame-event-debug (name action &rest body)
   `(let ((frame nil))
      (letrec ((readfn
                (lambda ()
