@@ -287,7 +287,7 @@
                 #'(lambda ()
                     (or
                      (occ-make-tsk-at-point #'make-occ-tree-tsk)
-                     (make-occ-tree-tsk :name "empty tree tsk")))))))))
+                     (make-occ-tree-tsk :name "empty tree tsk" :subtree nil)))))))))
 
 (provide 'occ-obj-ctor)
 ;;; occ-obj-ctor.el ends here
