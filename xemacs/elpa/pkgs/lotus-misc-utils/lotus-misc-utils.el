@@ -481,10 +481,8 @@
                        (progn
                          (message "hookfn: adding quiet-sel-frame")
                          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
-                         (message "hookfn: going to run abort-recursive-edit")
                          (when (active-minibuffer-window)
-                           (abort-recursive-edit)
-                           (message "hookfn: abort-recursive-edit")))))))))
+                           (abort-recursive-edit)))))))))
        (funcall readfn))))
 (put 'lotus-with-other-frame-event 'lisp-indent-function 1)
 
