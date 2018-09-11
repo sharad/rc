@@ -288,7 +288,7 @@
 
 (defun lotus-orgmode-config/post-init-org-task-manager-occ ()
   ;; add hook occ-global-tsk-collection-spec onchange
-  ;;
+  ;; when it gets change run code at that time.
   (progn
     (let* ((party-base-dir (task-party-base-dir))
            (start-file (expand-file-name "start.org" party-base-dir)))
