@@ -502,7 +502,7 @@
                  ;;          last-input-event
                  ;;          last-event-frame
                  ;;          frame)
-                 (remove-hook 'pre-command-hook (lambda () (message "hookfn: running %s" name) (funcall hookfn)))
+                 (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                  (if (eql last-event-frame frame)
                      (progn
                        (setq frame nil)
