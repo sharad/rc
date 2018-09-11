@@ -512,13 +512,14 @@
                        t)
                    (with-selected-frame last-event-frame
                      (progn
+                       (message "hookfn: %s running readfn from hookfn outside timer" name)
                        (setq frame nil)
                        (run-with-timer 0 nil
                                        (lambda ()
                                          (progn
                                            ;; (setq frame (selected-frame))
                                            (setq debug-on-quit nil)
-                                           (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                                           (remove-function (symbol-function 'select-frame-set-input-focus) #'quoiet--select-frame)
                                            ,@(cond
                                                ((or
                                                  (eq :restart action)
