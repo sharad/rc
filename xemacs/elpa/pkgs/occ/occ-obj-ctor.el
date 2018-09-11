@@ -195,10 +195,7 @@
          (push tsk tsk-list))
      tsks
      nil)
-    (prog1
-        (setf
-         (occ-list-tsk-collection-list collection)
-         tsk-list))))
+    tsk-list))
 
 (cl-defmethod occ-collect-tsk-list ((collection occ-list-tsk-collection))
   (let ((tsks (occ-collection collection)))
