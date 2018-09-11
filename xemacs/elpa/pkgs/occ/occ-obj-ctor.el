@@ -256,7 +256,7 @@
 
   (cl-get-field occ-gtree 'name)
 
-  (type-of occ-gtree)
+  ;; (type-of occ-gtree)
 
   (setf
    occ-test-gtree
