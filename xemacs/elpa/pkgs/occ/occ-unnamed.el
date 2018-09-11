@@ -77,6 +77,8 @@
             (occ-make-tsk unnamed-heading-marker (occ-tsk-builder)))))
     unnamed-tsk))
 
+(occ-tsk-marker (occ-make-tsk org-clock-hd-marker (occ-tsk-builder)))
+
 (cl-defmethod occ-maybe-create-unnamed-ctxual-tsk ((ctx occ-ctx))
   ;; back
   (let* ((unnamed-tsk
