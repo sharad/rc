@@ -246,7 +246,7 @@
 (when nil
   (progn
     (setq occ-global-tsk-collection nil)
-    (occ-make-tsk-collection (list :tree org-ctx-clock-tsk-tree-tsk-root-org-file))
+    (occ-make-tsk-collection occ-global-tsk-collection-spec)
     (occ-tree-tsk-collection-tree occ-global-tsk-collection)
     (occ-collect-tsks occ-global-tsk-collection t)
     (occ-tree-tsk-collection-root-files occ-global-tsk-collection)
