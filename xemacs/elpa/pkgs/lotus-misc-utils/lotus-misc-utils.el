@@ -492,7 +492,7 @@
                    (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                    (condition-case nil
                        (progn
-                         (message "readfn: %s inside readfn" name)
+                         (message "readfn: %s inside readfn" ,name)
                          ,@body
                          (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
                      (quit nil)))))
