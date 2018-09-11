@@ -197,10 +197,8 @@
      nil)
     (prog1
         (setf
-         (occ-tree-tsk-collection-list collection)
-         tsk-list)
-      (run-hooks
-       occ-global-tsk-collection-change-hook))))
+         (occ-list-tsk-collection-list collection)
+         tsk-list))))
 
 (cl-defmethod occ-collect-tsk-list ((collection occ-list-tsk-collection))
   (let ((tsks (occ-collection collection)))
