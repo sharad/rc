@@ -256,6 +256,7 @@
 
   (cl-get-field occ-gtree 'name)
 
+  (cl-class-slots (cl-classname occ-gtree))
   ;; (type-of occ-gtree)
 
   (setf
