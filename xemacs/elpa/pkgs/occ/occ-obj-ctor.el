@@ -29,6 +29,8 @@
 
 (defvar occ-global-tsk-collection-spec nil)
 (defvar occ-global-tsk-collection nil)
+(defvar occ-global-tsk-collection-spec-hook nil
+  "run when occ-global-tsk-collection-spec get changed.")
 
 (defun occ-heading-content-only ()
   (if (org-at-heading-p)
