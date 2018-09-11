@@ -77,7 +77,8 @@
             (occ-make-tsk unnamed-heading-marker (occ-tsk-builder)))))
     unnamed-tsk))
 
-(occ-tsk-marker (occ-make-tsk org-clock-hd-marker (occ-tsk-builder)))
+(cl-classname (occ-make-tsk org-clock-hd-marker (occ-tsk-builder)))
+(cl-classname (occ-tsk-marker (occ-make-tsk org-clock-hd-marker (occ-tsk-builder))))
 (type-of (lotus-org-unnamed-task-clock-marker))
 
 (cl-defmethod occ-maybe-create-unnamed-ctxual-tsk ((ctx occ-ctx))
