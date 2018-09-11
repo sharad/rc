@@ -230,8 +230,8 @@
 
 (cl-defmethod occ-collection ((collection occ-list-tsk-collection))
   (unless (occ-list-tsk-collection-list occ-global-tsk-collection)
-    (occ-collect-tsks occ-global-tsk-collection nil))
-  (run-hooks occ-global-tsk-collection-change-hook)
+    (occ-collect-tsks occ-global-tsk-collection nil)
+    (run-hooks occ-global-tsk-collection-change-hook))
   (occ-list-tsk-collection-list occ-global-tsk-collection))
 
 (cl-defmethod occ-collection-included-files ((collection occ-tree-tsk-collection))
