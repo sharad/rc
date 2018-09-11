@@ -482,6 +482,7 @@
 (put 'lotus-with-other-frame-event 'lisp-indent-function 1)
 
 (defmacro lotus-restart-with-other-frame-event (&rest body)
+  `(lotus-with-other-frame-event :restart ,body)
   `(let ((frame nil))
      (letrec ((readfn
                (lambda ()
