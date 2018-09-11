@@ -195,7 +195,9 @@
          (push tsk tsk-list))
      tsks
      nil)
-    tsk-list))
+    (setf
+     (occ-tree-tsk-collection-list collection)
+     tsk-list)))
 
 (cl-defmethod occ-collect-tsk-list ((collection occ-list-tsk-collection))
   (let ((tsks (occ-collection collection)))
