@@ -248,7 +248,7 @@
         (error "occ-global-tsk-collection-spec is nil"))))
   occ-global-tsk-collection)
 
-
+;;;###autoload
 (defun occ-run-with-global-tsk-collection (fn)
   (if occ-global-tsk-collection
       (funcall fn)
