@@ -438,10 +438,10 @@
                      (quit nil)))))
               (hookfn
                (lambda ()
-                 (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
-                          last-input-event
-                          last-event-frame
-                          frame)
+                 ;; (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
+                 ;;          last-input-event
+                 ;;          last-event-frame
+                 ;;          frame)
                  (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                  (if (eql last-event-frame frame)
                      (progn
