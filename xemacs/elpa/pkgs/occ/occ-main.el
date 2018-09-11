@@ -22,6 +22,15 @@
 ;;
 
 ;;; Code:
+(require 'timer-utils-lotus)
+(eval-when-compile
+  (require 'timer-utils-lotus))
+(require 'org-misc-utils-lotus)
+(eval-when-compile
+  (require 'org-misc-utils-lotus))
+(require 'lotus-misc-utils)
+(eval-when-compile
+  (require 'lotus-misc-utils))
 
 (require 'occ-obj-method)
 (require 'occ-util-common)
