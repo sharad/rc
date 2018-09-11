@@ -129,14 +129,14 @@
   (let ((file (or file *lotus-org-unnamed-task-file*))
         (parent-task (or parent-task *lotus-org-unnamed-parent-task-name*)))
     (org-with-file-headline
-        file
-        (lotus-org-create-unnamed-task file parent-task)
-        (org-entry-put nil "Effort" "10")
-        ;; It is clocking to last unfinished task
-      (org-clock-in)
-      (setq
-       *lotus-org-unnamed-task-clock-marker*
-       (mark-marker)))))
+     file
+     (lotus-org-create-unnamed-task file parent-task)
+     (org-entry-put nil "Effort" "10")
+     ;; BUG: It is clocking to last unfinished task
+     (org-clock-in)
+     (setq
+      *lotus-org-unnamed-task-clock-marker*
+      (mark-marker)))))
 
 (when nil
 
