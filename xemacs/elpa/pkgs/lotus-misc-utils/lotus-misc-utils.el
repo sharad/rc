@@ -512,7 +512,7 @@
                        t)
                    (with-selected-frame last-event-frame
                      (progn
-                       (message "hookfn: %s running readfn from hookfn outside timer" name)
+                       (message "hookfn: %s running readfn from hookfn outside timer" ,name)
                        (setq frame nil)
                        (run-with-timer 0 nil
                                        (lambda ()
