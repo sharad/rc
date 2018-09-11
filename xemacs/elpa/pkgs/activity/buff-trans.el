@@ -119,7 +119,7 @@
   (setf @buff-transition-span-detector
         (@! @transition-span-dectector-class :gen-buffer-trans "test")))
 
-
+(when nil
 (progn
   (defvar idle-start (current-time))
   (defvar idle-detect-timer nil)
@@ -151,7 +151,7 @@
       7 nil
       'idle-set)))
 
-  (print-last-idle-start-timer))
+  (print-last-idle-start-timer)))
 
 (when nil
   (progn
