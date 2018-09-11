@@ -39,6 +39,7 @@
 (defun occ-insinuate ()
   (interactive)
   (progn
+    (setq occ-global-tsk-collection      nil)
     (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
     (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer t)
     (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer t)
