@@ -143,6 +143,9 @@
       (prog1
           (setf occ-global-tsk-collection collection)
         (run-hook
+         occ-global-tsk-collection-change-hook
+         (defvar occ-global-tsk-collection-spec-hook nil
+           "run when occ-global-tsk-collection-spec get changed.")
          )))))
 
 (cl-defmethod occ-make-tsk-collection ((file-spec (head :list)))
