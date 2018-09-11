@@ -144,7 +144,7 @@
                        :root-files (cdr file-spec))))
       (prog1
           (setf occ-global-tsk-collection collection)
-        (run-hook
+        (run-hooks
          occ-global-tsk-collection-change-hook)))))
 
 (cl-defmethod occ-make-tsk-collection ((file-spec (head :list)))
