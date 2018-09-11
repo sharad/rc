@@ -248,6 +248,9 @@
         (error "occ-global-tsk-collection-spec is nil"))))
   occ-global-tsk-collection)
 
+
+(defun occ-global-tsk-collection-change-hook)
+
 (when nil
   (progn
     (setq occ-global-tsk-collection nil)
