@@ -473,7 +473,7 @@ so long."
       (setq org-clock-idle-timer
             (run-with-idle-timer
              idle-time idle-time
-             #'org-rl-resolve-clocks-if-idle)))))
+             'org-rl-resolve-clocks-if-idle)))))
 
 ;;;###autoload
 (defun org-rl-resolve-clocks (&optional only-dangling-p prompt-fn last-valid)
