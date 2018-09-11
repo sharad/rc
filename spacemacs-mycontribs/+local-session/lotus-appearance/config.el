@@ -169,8 +169,8 @@
   (defvar face-size-display-matrix
     '(
       ((1080 1920 285 508) (:height 90  :width normal :machine "lispm"))
-      ((900  2966 238 784) (:height 72 :width normal :machine "think530-spratap"))
-      ((900  2966 237 781) (:height 72 :width normal :machine "think530-spratap"))
+      ((900  2966 238 784) (:height 71 :width normal :machine "think530-spratap"))
+      ((900  2966 237 781) (:height 71 :width normal :machine "think530-spratap"))
       ((900  2966 238 784) (:height 72 :width normal :machine "think530-spratap"))
       ((900  2966 237 781) (:height 72 :width normal :machine "think530-spratap"))
       )
