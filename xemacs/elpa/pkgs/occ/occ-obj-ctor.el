@@ -250,7 +250,8 @@
 
 
 (defun occ-run-with-global-tsk-collection ()
-  )
+  (if occ-global-tsk-collection
+      ))
 
 (when nil
   (progn
