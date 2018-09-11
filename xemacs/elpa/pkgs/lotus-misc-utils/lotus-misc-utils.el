@@ -541,6 +541,7 @@
                          (when (active-minibuffer-window)
                            (abort-recursive-edit)))))))))
        (funcall readfn))))
+(put 'lotus-with-other-frame-event-debug 'lisp-indent-function 1)
 
 (defmacro lotus-restart-with-other-frame-event (&rest body)
   `(lotus-with-other-frame-event :restart ,@body))
