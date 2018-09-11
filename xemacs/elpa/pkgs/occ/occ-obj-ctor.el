@@ -253,6 +253,11 @@
     (setf occ-gtree
           (occ-tree-tsk-collection-tree occ-global-tsk-collection)))
 
+
+  (cl-get-field occ-gtree 'name)
+
+  (type-of occ-gtree)
+
   (setf
    occ-test-gtree
    (occ-tsk-tree-build
