@@ -55,7 +55,7 @@
 (defun occ-uninsinuate ()
   (interactive)
   (progn
-    (setq occ-global-tsk-collection      nil)
+    (setq occ-global-tsk-collection         nil)
     (remove-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
     ;; (setq buffer-list-update-hook nil)
     (remove-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
