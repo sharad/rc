@@ -517,6 +517,12 @@
 
   )
 
+(when nil
+  (lotus-restart-with-other-frame-event
+    (completing-read
+     "test"
+     '("a" "b" "c")))
+  )
 
 (when nil
 
