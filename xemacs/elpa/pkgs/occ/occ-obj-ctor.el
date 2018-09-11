@@ -195,10 +195,12 @@
          (push tsk tsk-list))
      tsks
      nil)
-    (progn
-     (setf
-     (occ-tree-tsk-collection-list collection)
-     tsk-list))))
+    (prog1
+        (setf
+         (occ-tree-tsk-collection-list collection)
+         tsk-list)
+      (run-hooks
+       occ-global-tsk-collection-change-hook))))
 
 (cl-defmethod occ-collect-tsk-list ((collection occ-list-tsk-collection))
   (let ((tsks (occ-collection collection)))
