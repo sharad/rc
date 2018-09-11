@@ -225,7 +225,8 @@
 
 (cl-defmethod occ-collection ((collection occ-tree-tsk-collection))
   (unless (occ-tree-tsk-collection-tree occ-global-tsk-collection)
-    (occ-collect-tsks occ-global-tsk-collection nil))
+    (occ-collect-tsks occ-global-tsk-collection nil)
+    (run-hooks occ-global-tsk-collection-change-hook))
   (occ-tree-tsk-collection-tree occ-global-tsk-collection))
 
 (cl-defmethod occ-collection ((collection occ-list-tsk-collection))
