@@ -204,16 +204,19 @@
 (cl-defmethod occ-collect-tsks ((collection occ-list-tsk-collection)
                                 force)
   (unless (occ-list-tsk-collection-list collection)
-    (setf
-     (occ-list-tsk-collection-list collection)
-     (remove nil
-             (org-map-entries
-              #'(lambda ()
-                  (or
-                   (occ-make-tsk-at-point #'make-occ-list-tsk)
-                   (make-occ-list-tsk :name "empty list tsk")))
-              t
-              (occ-list-tsk-collection-root-files collection))))))
+    (prog1
+        (setf
+         (occ-list-tsk-collection-list collection)
+         (remove nil
+                 (org-map-entries
+                  #'(lambda ()
+                      (or
+                       (occ-make-tsk-at-point #'make-occ-list-tsk)
+                       (make-occ-list-tsk :name "empty list tsk")))
+                  t
+                  (occ-list-tsk-collection-root-files collection))))
+      (run-hooks
+       occ-global-tsk-collection-change-hook))))
 
 (cl-defmethod occ-collect-included-files ((collection occ-list-tsk-collection)
                                           force)
