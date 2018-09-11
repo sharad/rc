@@ -442,8 +442,9 @@
                  (if (eql last-event-frame frame)
                      (progn
                        (setq frame nil)
-                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
-                       (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
+                       ;; (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                       ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
+                       )
                    (with-selected-frame last-event-frame
                     (progn
                      (setq frame nil)
