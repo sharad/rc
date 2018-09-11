@@ -254,7 +254,9 @@
           (occ-tree-tsk-collection-tree occ-global-tsk-collection)))
 
 
-  (cl-get-field occ-gtree 'name)
+  (cl-get-field occ-gtree 'plist)
+
+  (cl-set-field occ-gtree 'subtree nil)
 
   (cl-class-slots (cl-classname occ-gtree))
   ;; (type-of occ-gtree)
