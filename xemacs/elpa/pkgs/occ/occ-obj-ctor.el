@@ -251,7 +251,9 @@
 
 (defun occ-run-with-global-tsk-collection (fn)
   (if occ-global-tsk-collection
-      (funcall fn)))
+      (funcall fn)
+    (add-hook
+     'occ-global-tsk-collection-change-hook)))
 
 (when nil
   (progn
