@@ -465,6 +465,7 @@ so long."
 (defalias 'org-resolve-clocks-if-idle 'org-rl-resolve-clocks-if-idle)
 
 (defun org-rl-clock-set-correct-idle-timer ()
+  (interactive)
   (let* ((minor-offset 10)
          (idle-time (+ (* org-clock-idle-time 60) minor-offset)))
     (when org-clock-idle-timer
