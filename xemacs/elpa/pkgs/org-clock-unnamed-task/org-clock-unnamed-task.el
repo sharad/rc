@@ -133,9 +133,9 @@
      (lotus-org-create-unnamed-task file parent-task)
      (org-entry-put nil "Effort" "10")
      ;; BUG: It is clocking to last unfinished task
-     (org-clock-clock-in)
+     (org-clock-clock-in (lotus-org-unnamed-task-clock-marker (mark-marker)))
      ;; (org-clock-in)
-     (lotus-org-unnamed-task-clock-marker (mark-marker)))))
+     )))
 
 (when nil
 
