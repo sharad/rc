@@ -115,8 +115,9 @@
 
   (@:dispatch note))
 
-(setf @buff-transition-span-detector
-      (@! @transition-span-dectector-class :gen-buffer-trans "test"))
+(when nil
+  (setf @buff-transition-span-detector
+        (@! @transition-span-dectector-class :gen-buffer-trans "test")))
 
 
 (progn
@@ -204,6 +205,7 @@
 
 
   (read-event)
+
 
 
 
