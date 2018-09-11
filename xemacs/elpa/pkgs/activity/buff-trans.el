@@ -70,9 +70,10 @@
            (lambda ()
              (message "running make-transition")
              (@! @@ :schedule-transition))))
-     ;; (add-hook 'buffer-list-update-hook     schedule-transition)
-     (add-hook 'elscreen-screen-update-hook schedule-transition)
-     (add-hook 'elscreen-goto-hook          schedule-transition)))
+      (when nil
+       ;; (add-hook 'buffer-list-update-hook     schedule-transition)
+       (add-hook 'elscreen-screen-update-hook schedule-transition)
+       (add-hook 'elscreen-goto-hook          schedule-transition))))
 
   (when nil
     (progn
