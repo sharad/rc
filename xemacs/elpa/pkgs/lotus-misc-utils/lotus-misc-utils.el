@@ -442,8 +442,6 @@
                           last-input-event
                           last-event-frame
                           frame)
-                 (message "hookfn: removing hook 1")
-                 (message "hookfn: 1 pre-command-hook %s" pre-command-hook)
                  (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                  (if (eql last-event-frame frame)
                      (progn
