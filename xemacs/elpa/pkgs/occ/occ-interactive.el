@@ -228,6 +228,7 @@
       (lotus-with-other-frame-event-debug "occ-add-to-org-heading-when-idle" :cancel
         (occ-add-to-org-heading ctx timeout))
     ((quit)))
+  (message "end: occ-add-to-org-heading-when-idle")
   ;; (run-with-idle-timer-nonobtrusive-simple
   ;;  7 nil
   ;;  #'(lambda (args)
