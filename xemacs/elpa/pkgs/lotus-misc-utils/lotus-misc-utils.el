@@ -321,7 +321,15 @@
   `(let ((frame nil)
          (sel-frame-adviced-p
           (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))))
-     (letrec ((readfn
+     (letrec ((set-advice-fn
+               (lambda ()
+                 (if sel-frame-adviced-p
+                     (when (not (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus)))
+                       (message "readfn: add quiet 5 as already was present")
+                       (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+                   (when (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))
+                     (message "readfn: remove quiet 5 as already was present")
+                     (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))(readfn
                (lambda ()
                  (progn
                    (setq frame (selected-frame))
@@ -337,15 +345,12 @@
                    ;;   (message "readfn: removed quiet-sel-frame"))
                    (condition-case nil
                        (progn
+                         (funcall set-advice-fn)
                          (message "readfn: 1 running orginal code")
                          ,@body
                          (message "readfn: 1 pre-command-hook %s" pre-command-hook)
                          (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                         (when (and
-                                sel-frame-adviced-p
-                                (not (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))))
-                           (message "readfn: add quiet 4 as already was present")
-                           (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)))
+                         (funcall set-advice-fn))
                      (quit
                       (message "quit"))))))
 
@@ -434,7 +439,15 @@
   `(let ((frame nil)
          (sel-frame-adviced-p
           (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))))
-     (letrec ((readfn
+     (letrec ((set-advice-fn
+               (lambda ()
+                 (if sel-frame-adviced-p
+                     (when (not (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus)))
+                       (message "readfn: add quiet 5 as already was present")
+                       (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+                   (when (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))
+                     (message "readfn: remove quiet 5 as already was present")
+                     (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))(readfn
                (lambda ()
                  (progn
                    (setq frame (selected-frame))
@@ -443,12 +456,10 @@
                    ;;   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame))
                    (condition-case nil
                        (progn
+                         (funcall set-advice-fn)
                          ,@body
                          (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                         (when (and
-                                sel-frame-adviced-p
-                                (not (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))))
-                           (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)))
+                         (funcall set-advice-fn))
                      (quit nil)))))
               (hookfn
                (lambda ()
@@ -500,25 +511,27 @@
   `(let ((frame nil)
          (sel-frame-adviced-p
           (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))))
-     (letrec ((readfn
+     (letrec ((set-advice-fn
+               (lambda ()
+                 (if sel-frame-adviced-p
+                     (when (not (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus)))
+                       (message "readfn: add quiet 5 as already was present")
+                       (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+                   (when (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))
+                     (message "readfn: remove quiet 5 as already was present")
+                     (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))
+              (readfn
                (lambda ()
                  (progn
                    (setq frame (selected-frame))
                    (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                   (message "readfn: remove quiet 3")
-                   ;; (unless sel-frame-adviced-p
-                   ;;   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
-                   ;;   (message "readfn: removed quiet-sel-frame 5"))
                    (condition-case nil
                        (progn
                          (message "readfn: %s inside readfn" ,name)
+                         (funcall set-advice-fn)
                          ,@body
                          (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                         (when (and
-                                sel-frame-adviced-p
-                                (not (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))))
-                           (message "readfn: add quiet 4 as already was present")
-                           (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)))
+                         (funcall set-advice-fn))
                      (quit nil)))))
               (hookfn
                (lambda ()
@@ -567,7 +580,7 @@
                          (when (active-minibuffer-window)
                            (abort-recursive-edit)))))))))
        (funcall readfn))))
-(put 'lotus-with-other-frame-event-debug 'lisp-indent-function 1)
+(put 'lotus-with-other-frame-event-debug 'lisp-indent-function 2)
 
 (defmacro lotus-restart-with-other-frame-event (&rest body)
   `(lotus-with-other-frame-event :restart ,@body))
@@ -583,6 +596,29 @@
 
 ;; https://stackoverflow.com/questions/3811448/can-call-with-current-continuation-be-implemented-only-with-lambdas-and-closures
 ;; CALL/CC
+
+(defun has-focus-p ()
+  )
+
+(defmacro run-with-idle-timer-and-focus (sec repeat fn arg)
+  ;; todo: how to cancel the timer later
+  (let ((timer nil)
+        (frame (selected-frame)))
+    (letrec ((focusfn
+              (lambda ()
+                (if (and
+                     (has-focus-p)
+                     (eq frame (selected-frame))
+                     (frame-visible-p (selected-frame)))
+                    (funcall fn arg)
+                  (progn
+                    (when timer
+                      (cancel-timer timer)
+                      (setq timer nil))
+                    (setq timer
+                          (run-with-idle-timer (+ sec sec) repeat focusfn)))))))
+      (setq timer
+            (run-with-idle-timer sec repeat focusfn)))))
 
 (when nil
 

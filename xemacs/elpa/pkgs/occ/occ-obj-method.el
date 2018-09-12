@@ -672,6 +672,8 @@ pointing to it."
 
 (when nil
 
+  (occ-add-to-org-heading-when-idle (occ-make-ctx) 7)
+
   (length
    (occ-matching-ctxual-tsks
     (occ-collection-object)
