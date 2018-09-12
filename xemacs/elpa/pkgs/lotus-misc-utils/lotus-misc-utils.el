@@ -489,7 +489,7 @@
                  (progn
                    (setq frame (selected-frame))
                    (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                   (message "readfn: remove quiet 1")
+                   (message "readfn: remove quiet 3")
                    (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                    (condition-case nil
                        (progn
@@ -539,7 +539,7 @@
                                                  (null action))
                                                 nil)))))
                        (progn
-                         (message "hookfn: add quiet 1")
+                         (message "hookfn: add quiet 2")
                          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
                          (when (active-minibuffer-window)
                            (abort-recursive-edit)))))))))
