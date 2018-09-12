@@ -641,5 +641,12 @@
 ;; avoid making Emacs unresponsive while the user types.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+(when nil
+
+  (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+
+  (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+
 (provide 'lotus-misc-utils)
 ;;; lotus-misc-utils.el ends here
