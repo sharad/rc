@@ -214,6 +214,7 @@
   ;;    (defun occ-sacha-helm-select (ctxasks)
   ;; should be here.
 
+  ;; NOTE: presently it is not running on idle time, it simply runs immediately
 
   "Return value is important to decide next action to (create unnamed tsk.)"
   (occ-debug 6 "called occ-add-to-org-heading-when-idle")
