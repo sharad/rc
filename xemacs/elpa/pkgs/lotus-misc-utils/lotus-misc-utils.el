@@ -424,7 +424,9 @@
        (funcall readfn))))
 
 (defmacro lotus-with-other-frame-event (action &rest body)
-  `(let ((frame nil))
+  `(let ((frame nil)
+         (sel-frame-adviced-p
+          (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))))
      (letrec ((readfn
                (lambda ()
                  (progn
