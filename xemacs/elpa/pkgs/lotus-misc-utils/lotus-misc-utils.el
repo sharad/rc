@@ -498,7 +498,9 @@
                        (progn
                          (message "readfn: %s inside readfn" ,name)
                          ,@body
-                         (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
+                         (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
+                         (when sel-frame-adviced-p
+                           (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))
                      (quit nil)))))
               (hookfn
                (lambda ()
