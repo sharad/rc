@@ -439,7 +439,8 @@
                  (progn
                    (setq frame (selected-frame))
                    (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                   (unless sel-frame-adviced-p
+                     (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame))
                    (condition-case nil
                        (progn
                          ,@body
