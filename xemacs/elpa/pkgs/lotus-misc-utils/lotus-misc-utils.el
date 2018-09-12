@@ -499,6 +499,7 @@
                          ,@body
                          (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                          (when sel-frame-adviced-p
+                           (message "readfn: add quiet 4 as already was present")
                            (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)))
                      (quit nil)))))
               (hookfn
