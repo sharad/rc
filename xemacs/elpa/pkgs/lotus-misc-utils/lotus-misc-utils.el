@@ -499,7 +499,7 @@
                          (message "readfn: %s inside readfn" ,name)
                          ,@body
                          (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                         (unless sel-frame-adviced-p
+                         (when sel-frame-adviced-p
                            (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)))
                      (quit nil)))))
               (hookfn
