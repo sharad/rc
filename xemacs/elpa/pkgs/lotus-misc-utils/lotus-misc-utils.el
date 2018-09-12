@@ -341,7 +341,9 @@
                          ,@body
                          (message "readfn: 1 pre-command-hook %s" pre-command-hook)
                          (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                         (when sel-frame-adviced-p
+                         (when (and
+                                sel-frame-adviced-p
+                                (not (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))))
                            (message "readfn: add quiet 4 as already was present")
                            (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)))
                      (quit
@@ -445,7 +447,6 @@
                          (when (and
                                 sel-frame-adviced-p
                                 (not (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))))
-                           (message "readfn: add quiet 4 as already was present")
                            (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)))
                      (quit nil)))))
               (hookfn
