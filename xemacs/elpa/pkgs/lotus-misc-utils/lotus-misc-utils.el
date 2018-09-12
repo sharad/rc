@@ -500,7 +500,7 @@
                          ,@body
                          (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                          (unless sel-frame-adviced-p
-                           (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))
+                           (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)))
                      (quit nil)))))
               (hookfn
                (lambda ()
