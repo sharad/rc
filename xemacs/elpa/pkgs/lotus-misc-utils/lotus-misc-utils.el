@@ -489,6 +489,7 @@
                  (progn
                    (setq frame (selected-frame))
                    (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
+                   (message "readfn: remove quiet 1")
                    (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                    (condition-case nil
                        (progn
@@ -519,7 +520,7 @@
                                          (progn
                                            ;; (setq frame (selected-frame))
                                            (setq debug-on-quit nil)
-                                           (message "hookn: remove quiet 1")
+                                           (message "hookfn: remove quiet 1")
                                            (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                                            ,@(cond
                                                ((or
