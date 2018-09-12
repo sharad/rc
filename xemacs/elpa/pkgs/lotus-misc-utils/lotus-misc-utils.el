@@ -508,7 +508,7 @@
                    (message "readfn: remove quiet 3")
                    (unless sel-frame-adviced-p
                      (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
-                     (message "readfn: removed quiet-sel-frame"))
+                     (message "readfn: removed quiet-sel-frame 5"))
                    (condition-case nil
                        (progn
                          (message "readfn: %s inside readfn" ,name)
