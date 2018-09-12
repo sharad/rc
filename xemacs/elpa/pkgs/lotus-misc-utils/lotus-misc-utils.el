@@ -539,6 +539,7 @@
                                                  (null action))
                                                 nil)))))
                        (progn
+                         (message "hookfn: add quiet 1")
                          (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
                          (when (active-minibuffer-window)
                            (abort-recursive-edit)))))))))
