@@ -438,7 +438,9 @@
                    (condition-case nil
                        (progn
                          ,@body
-                         (remove-hook 'pre-command-hook (lambda () (funcall hookfn))))
+                         (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
+                         (when sel-frame-adviced-p
+                           (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)))
                      (quit nil)))))
               (hookfn
                (lambda ()
