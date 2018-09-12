@@ -333,7 +333,8 @@
                       (funcall hookfn)))
                    (message "readfn: 2 pre-command-hook %s" pre-command-hook)
                    (message "readfn: added hookfn")
-                   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                   (unless sel-frame-adviced-p
+                     (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame))
                    (message "readfn: removed quiet-sel-frame")
                    (condition-case nil
                        (progn
