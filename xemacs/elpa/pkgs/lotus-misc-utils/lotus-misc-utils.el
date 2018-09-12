@@ -332,9 +332,9 @@
                     (lambda ()
                       (funcall hookfn)))
                    (message "readfn: 2 pre-command-hook %s" pre-command-hook)
-                   (unless sel-frame-adviced-p
-                     (message "readfn: removed quiet-sel-frame")
-                     (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame))
+                   ;; (unless sel-frame-adviced-p
+                   ;;   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                   ;;   (message "readfn: removed quiet-sel-frame"))
                    (condition-case nil
                        (progn
                          (message "readfn: 1 running orginal code")
