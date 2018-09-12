@@ -520,7 +520,7 @@
                                          (progn
                                            ;; (setq frame (selected-frame))
                                            (setq debug-on-quit nil)
-                                           (message "hookfn: remove quiet 1")
+                                           (message "hookfn: timer remove quiet 1")
                                            (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
                                            ,@(cond
                                                ((or
