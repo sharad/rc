@@ -97,7 +97,8 @@
   (lotus-with-other-frame-event-debug "occ-clock-in-curr-ctx-if-not" :cancel
     (if force
         (occ-clock-in-curr-ctx (occ-make-ctx))
-      (occ-clock-in-if-chg (occ-make-ctx)))))
+      (occ-clock-in-if-chg (occ-make-ctx))))
+  (message "end occ-clock-in-curr-ctx-if-not"))
 
 ;;;###autoload
 (defun occ-run-curr-ctx-timer ()
