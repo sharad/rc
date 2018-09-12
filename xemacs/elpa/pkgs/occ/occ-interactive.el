@@ -217,7 +217,7 @@
 
   "Return value is important to decide next action to (create unnamed tsk.)"
   (occ-debug 6 "called occ-add-to-org-heading-when-idle")
-  (message "begin:" )
+  (message "begin: occ-add-to-org-heading-when-idle")
   ;; timed-newwin of occ-add-to-org-heading pass quit
   ;; signal to caller mean here, so need to be handled, else this function can
   ;; not return any value to its caller, which result into no next-action in
