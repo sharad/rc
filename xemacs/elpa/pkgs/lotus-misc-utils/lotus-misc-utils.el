@@ -501,7 +501,8 @@
                    (setq frame (selected-frame))
                    (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
                    (message "readfn: remove quiet 3")
-                   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                   (when sel-frame-adviced-p
+                    (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame))
                    (condition-case nil
                        (progn
                          (message "readfn: %s inside readfn" ,name)
