@@ -646,7 +646,11 @@
 
   (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
 
-  (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
+  (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+
+  (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))
+
+  )
 
 (provide 'lotus-misc-utils)
 ;;; lotus-misc-utils.el ends here
