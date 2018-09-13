@@ -40,7 +40,7 @@
     (balance :location local)
     ;; http://code.google.com/p/emacs-easy-budget/
     (emacs-easy-budget :location local)
-    sample
+    (sample) :location local
     (date-util :location local)
     (ledger :location local)
     )
