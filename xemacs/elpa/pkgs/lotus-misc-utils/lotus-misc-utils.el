@@ -557,7 +557,7 @@
                                            ;; (setq frame (selected-frame))
                                            (setq debug-on-quit nil)
                                            (message "hookfn: timer remove quiet 1")
-                                           (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                                           ;; (funcall set-advice-fn)
                                            ,@(cond
                                                ((or
                                                  (eq :restart action)
