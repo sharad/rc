@@ -284,7 +284,7 @@
        org-clock-in-switch-to-state "STARTED"
        org-clock-in-resume nil
        org-show-notification-handler 'message
-       org-clock-report-include-clocking-task t)))))
+       org-clock-report-include-clocking-task t))))
 
 (defun lotus-orgmode-config/post-init-org-task-manager-occ ()
   ;; add hook occ-global-tsk-collection-spec onchange
