@@ -219,7 +219,7 @@ fi
 
 
 # PATH variable
-path=( $path )
+# path=( $path )
 
 fpath=( $fpath ~/.zshall/functions ~/.zshall/completion )
 fpath=( $fpath /usr/local/etc/zsh/completion )
