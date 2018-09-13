@@ -196,8 +196,8 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-annotation/init-PKG ()
-  (use-package PKG
+(defun lotus-annotation/init-yasnippet ()
+  (use-package yasnippet
       :defer t
       :config
       (progn
