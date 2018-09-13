@@ -337,9 +337,9 @@ fi
 
 # take mailbox from ~/.mutt/muttrc
 [ -r ~/.mutt/muttrc ] &&
-mailpath=( ${(f)"$(sed -n \
-    's@^[[:space:]]*mailboxes[[:space:]]\+\(.*\)[[:space:]]*$@\1?new mail in ${fg_no_bold[cyan]}${_:t}${reset_color}@p'\
-    ~/.mutt/muttrc | sed  s@\^\~@$HOME@)"} )
+# mailp ath=( ${(f)"$(sed -n \
+#     's@^[[:space:]]*mailboxes[[:space:]]\+\(.*\)[[:space:]]*$@\1?new mail in ${fg_no_bold[cyan]}${_:t}${reset_color}@p'\
+#     ~/.mutt/muttrc | sed  s@\^\~@$HOME@)"} )
 
 
 
