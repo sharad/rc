@@ -188,8 +188,8 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-annotation/init-PKG ()
-  (use-package PKG
+(defun lotus-annotation/init-template-simple ()
+  (use-package template-simple
       :defer t
       :config
       (progn
