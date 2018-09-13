@@ -419,8 +419,6 @@ Each entry is either:
             (progn
               (add-hook 'javascript-mode-hook 'javascript-custom-setup))))))
 
-
-
 (defun lotus-javascript/init-espresso ()
   ;; from: http://www.nongnu.org/espresso/
   (use-package espresso
