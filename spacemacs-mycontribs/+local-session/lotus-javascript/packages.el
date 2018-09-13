@@ -400,8 +400,6 @@ Each entry is either:
 
           ))))
 
-
-
 (defun lotus-javascript/init-moz ()
   ;; C-c C-s: open a MozRepl interaction buffer and switch to it
   ;; C-c C-l: save the current buffer and load it in MozRepl
@@ -426,17 +424,6 @@ Each entry is either:
         ;;     `(moz-minor-mode 1))
         ;;     )
 	)))
-
-(defun lotus-javascript/init-javascript ()
-  (use-package javascript
-      :defer t
-      :config
-      (progn
-        (with-eval-after-load "flymake-js"
-          (add-hook 'javascript-mode-hook 'flymake-jslint-load))
-        (with-eval-after-load "moz"
-            (progn
-              (add-hook 'javascript-mode-hook 'javascript-custom-setup))))))
 
 (defun lotus-LAYER/init-PKG ()
   (use-package ample
