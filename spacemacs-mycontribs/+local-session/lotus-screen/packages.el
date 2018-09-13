@@ -80,7 +80,7 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-screen/init-elscreen ()
+(defun lotus-screen/post-init-elscreen ()
   (use-package elscreen
     :defer t
     :config
