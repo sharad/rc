@@ -30,7 +30,7 @@
 ;;; Code:
 
 (defconst misc-packages
-  '((elscreen :location local))
+  '((PACKAGE :location local))
   "The list of Lisp packages required by the misc layer.
 
 Each entry is either:
