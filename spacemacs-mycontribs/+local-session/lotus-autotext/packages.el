@@ -196,7 +196,7 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-autotext/init-yasnippet ()
+(defun lotus-autotext/post-init-yasnippet ()
   (use-package yasnippet
       :defer t
       :config
