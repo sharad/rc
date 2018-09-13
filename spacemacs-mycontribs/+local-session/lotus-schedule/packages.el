@@ -394,7 +394,7 @@ Each entry is either:
           ))))
 
 (defun lotus-schedule/init-calfw-cal ()
-  (use-package ample
+  (use-package calfw-cal
       :defer t
       :config
       (progn
