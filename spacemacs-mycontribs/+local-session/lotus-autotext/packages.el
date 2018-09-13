@@ -171,6 +171,15 @@ Each entry is either:
             "modify it under the same terms as Perl itself." "\n\n"
             "=cut" "\n")))))
 
+(defun lotus-autotext/init-template ()
+  (use-package template
+      :defer t
+      :config
+      (progn
+        (template-initialize)
+        ;; to ignore
+        (setq template-auto-update-disable-regexp "ido\\.last"))))
+
 (defun lotus-annotation/init-PKG ()
   (use-package PKG
       :defer t
