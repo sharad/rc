@@ -89,6 +89,27 @@ Each entry is either:
         (progn
           ))))
 
+(defun lotus-javascript/init-jade-mode ()
+  (use-package jade-mode
+      :defer t
+      :config
+      (progn
+        (with-eval-after-load "flymake"
+          (defun flymake-jade-init ()
+            (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                               'flymake-create-temp-intemp))
+                   (local-file (file-relative-name
+                                temp-file
+                                (file-name-directory buffer-file-name)))
+                   (arglist (list local-file)))
+              (list "jade" arglist)))
+          (setq flymake-err-line-patterns
+                (cons '("\\(.*\\): \\(.+\\):\\([[:digit:]]+\\)$"
+                        2 3 nil 1)
+                      flymake-err-line-patterns))
+          (add-to-list 'flymake-allowed-file-name-masks
+                       '("\\.jade\\'" flymake-jade-init))))))
+
 (defun lotus-javascript/init-js-mode ()
   (use-package js-mode
       :defer t
@@ -379,26 +400,7 @@ Each entry is either:
 
           ))))
 
-(defun lotus-javascript/init-jade-mode ()
-  (use-package jade-mode
-      :defer t
-      :config
-      (progn
-        (with-eval-after-load "flymake"
-          (defun flymake-jade-init ()
-            (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                               'flymake-create-temp-intemp))
-                   (local-file (file-relative-name
-                                temp-file
-                                (file-name-directory buffer-file-name)))
-                   (arglist (list local-file)))
-              (list "jade" arglist)))
-          (setq flymake-err-line-patterns
-                (cons '("\\(.*\\): \\(.+\\):\\([[:digit:]]+\\)$"
-                        2 3 nil 1)
-                      flymake-err-line-patterns))
-          (add-to-list 'flymake-allowed-file-name-masks
-                       '("\\.jade\\'" flymake-jade-init))))))
+
 
 (defun lotus-javascript/init-moz ()
   ;; C-c C-s: open a MozRepl interaction buffer and switch to it
