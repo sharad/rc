@@ -139,7 +139,7 @@ Each entry is either:
                     (unless (version<= "25" emacs-version)
                       (remove-hook 'git-commit-mode-hook 'fci-mode))))))))))
 
-(defun lotus-vc/init-gitconfig-mode ()
+(defun lotus-vc/post-init-gitconfig-mode ()
   (use-package gitconfig-mode
       :defer t
       ;; :commands (commit-msg-mode)
