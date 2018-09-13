@@ -1163,6 +1163,13 @@ FILE and any extensions that are in `muse-ignored-extensions'."
       (progn
         )))
 
+(defun lotus-publishing/init-oddmuse ()
+  (use-package oddmuse
+      :defer t
+      :config
+      (progn
+        )))
+
 (defun lotus-publishing/init-wikirel ()
   (use-package wikirel
       :defer t
