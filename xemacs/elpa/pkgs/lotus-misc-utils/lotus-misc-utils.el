@@ -482,7 +482,7 @@
                                        (lambda ()
                                          (progn
                                            ;; (setq frame (selected-frame))
-                                           (setq debug-on-quit nil)
+                                           ;; (setq debug-on-quit nil)
                                            ;; (funcall set-advice-fn)
                                            ,@(cond
                                                ((or
