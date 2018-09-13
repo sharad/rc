@@ -69,6 +69,14 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+(defun lotus-annotation/init-ipa ()
+  (use-package ipa
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
+
 (defun lotus-annotation/init-annot ()
   (use-package annot
       :defer t
