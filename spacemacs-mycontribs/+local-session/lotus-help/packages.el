@@ -169,7 +169,7 @@ Each entry is either:
           ))))
 
 (defun lotus-help/init-sdic-inline-pos-tip ()
-  (use-package ample
+  (use-package sdic-inline-pos-tip
       :defer t
       :config
       (progn
