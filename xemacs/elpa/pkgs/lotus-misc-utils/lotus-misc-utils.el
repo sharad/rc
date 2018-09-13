@@ -483,7 +483,7 @@
                                          (progn
                                            ;; (setq frame (selected-frame))
                                            (setq debug-on-quit nil)
-                                           (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)
+                                           ;; (funcall set-advice-fn)
                                            ,@(cond
                                                ((or
                                                  (eq :restart action)
