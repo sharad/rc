@@ -1115,7 +1115,7 @@ FILE and any extensions that are in `muse-ignored-extensions'."
       (progn
         )))
 
-(defun lotus-publishing/init-yaoddmuse ()
+(defun lotus-publishing/init-aoddmuse ()
   ;; http://www.emacswiki.org/emacs/Yaoddmuse
   ;; http://www.emacswiki.org/emacs/Yaoddmuse#toc8
   (use-package yaoddmuseo
