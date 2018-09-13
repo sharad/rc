@@ -110,6 +110,17 @@ Each entry is either:
           (add-to-list 'flymake-allowed-file-name-masks
                        '("\\.jade\\'" flymake-jade-init))))))
 
+(defun lotus-javascript/init-javascript ()
+  (use-package javascript
+      :defer t
+      :config
+      (progn
+        (with-eval-after-load "flymake-js"
+          (add-hook 'javascript-mode-hook 'flymake-jslint-load))
+        (with-eval-after-load "moz"
+          (progn
+            (add-hook 'javascript-mode-hook 'javascript-custom-setup))))))
+
 (defun lotus-javascript/init-js-mode ()
   (use-package js-mode
       :defer t
