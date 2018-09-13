@@ -77,8 +77,8 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-annotation/init-ipa ()
-  (use-package ipa
+(defun lotus-annotation/init-org-pua ()
+  (use-package org-pua
       :defer t
       :config
       (progn
