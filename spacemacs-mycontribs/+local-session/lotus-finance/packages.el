@@ -41,7 +41,7 @@
     ;; http://code.google.com/p/emacs-easy-budget/
     emacs-easy-budget
     ample
-    date-util
+    (date-util :location local)
     (ledger :location local)
     )
   "The list of Lisp packages required by the lotus-finance layer.
