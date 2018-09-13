@@ -36,7 +36,6 @@
 
 (defconst lotus-mailnews-packages
   '(
-    (PACKAGE :location local)
     lsdb
     )
   "The list of Lisp packages required by the lotus-mailnews layer.
