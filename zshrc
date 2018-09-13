@@ -285,7 +285,7 @@ WATCHFMT="%n from %M has %a tty%l at %T %W"
 #=========================================================================#
 # Warnning!: My Dear Please Note: Exporting This variable wn't allow	  #
 # Bash script files to change directories, eg in autoconfig               #
-# CDPATH=/home/s/                                                         #
+# CDP ATH=/home/s/                                                         #
 #=========================================================================#
 # export http_proxy="http://192.168.10.11:8080"
 # export ftp_proxy="http://192.168.10.11:8080"
