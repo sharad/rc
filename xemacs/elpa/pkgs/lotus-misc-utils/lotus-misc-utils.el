@@ -555,7 +555,7 @@
                                        (lambda ()
                                          (progn
                                            ;; (setq frame (selected-frame))
-                                           (setq debug-on-quit nil)
+                                           ;; (setq debug-on-quit nil)
                                            (message "hookfn: timer remove quiet 1")
                                            ;; (funcall set-advice-fn)
                                            ,@(cond
