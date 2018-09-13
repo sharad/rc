@@ -75,7 +75,7 @@
     desktop
     uncrustify-mode
     srefactor
-    srefactor-lisp)
+    (srefactor-lisp :location local))
   "The list of Lisp packages required by the lotus-dev layer.
 
 Each entry is either:
