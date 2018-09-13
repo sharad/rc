@@ -667,7 +667,7 @@ hand-set biases.")
 (defun remem-all-scopes ()
   "Return all scopes in all remem buffers"
   (apply 'append
-         (mapcar '(lambda (buf)
+         (mapcar #'(lambda (buf)
                     (cond ((buffer-live-p buf)
                            (set-buffer buf)
                            remem-scopes)      ; a buffer local variable
@@ -1098,7 +1098,7 @@ hand-set biases.")
         (remem-relevance-score 100))
     (if (stringp fields)
 	(insert fields)
-      (mapcar '(lambda (format)
+      (mapcar #'(lambda (format)
 		 (let ((string (elt fields (elt format 0)))
 		       (width (elt format 1))
                        (printfilter (elt format 3))
@@ -1166,7 +1166,7 @@ hand-set biases.")
   (erase-buffer)
   (let ((unique-lines nil) (overall 0) (scope-marker 0))
     (mapcar
-     '(lambda (scope)
+     #'(lambda (scope)
         (let ((i 0) (used 0) (allotted (remem-scope-number-lines scope))
 	      (available (length (remem-scope-processed scope)))
 	      (processed (remem-scope-processed scope)))
@@ -1189,7 +1189,7 @@ hand-set biases.")
 			   ;; this mapcar creates a list of all of the docnums of the lines in unique-lines
 			   ;; that are from the same database. Docnums from different databases are not
 			   ;; comparable
-			   (mapcar '(lambda (e)
+			   (mapcar #'(lambda (e)
 				      (cond ((stringp (car e)) nil) ; ignore "No Suggestion" lines
 					    ((not (equal (remem-scope-directory scope)
 							 (remem-scope-directory (elt e 1)))) nil) ; can't be the same if dif databases
@@ -1206,7 +1206,7 @@ hand-set biases.")
 	     (t ; a duplicate
 	      (setq i (+ i 1)))))))
      remem-scopes)
-    (mapcar '(lambda (line)
+    (mapcar #'(lambda (line)
                (let ((format-for-line (assoc (remem-scope-directory (car (cdr line)))
                                              remem-format-alist)))
                  (cond ((not format-for-line)
@@ -1259,7 +1259,7 @@ hand-set biases.")
 
 (defun remem-split-savant-output (string)
   "Splits into lines and pipe-delimited fields"
-  (delete nil (mapcar '(lambda (s) (if (or (string= s "") (string= s "\n") (string= s "."))
+  (delete nil (mapcar #'(lambda (s) (if (or (string= s "") (string= s "\n") (string= s "."))
 				       nil
 				     (remem-split-string s ?\| t)))
 		      (remem-split-string string ?\n t))))
@@ -1656,7 +1656,7 @@ hand-set biases.")
   "Change the remembrance agent database to one of the preset indexes"
   (interactive
    (list (let* ((dirlist (directory-files remem-database-dir nil "[^\.].*"))
-                (scope-name-list (mapcar '(lambda (filename)
+                (scope-name-list (mapcar #'(lambda (filename)
                                             (cons filename filename))
                                          dirlist))
                 (dirprompt (mapconcat 'eval dirlist " "))
@@ -2042,7 +2042,7 @@ hand-set biases.")
                                    (expand-file-name remem-database-dir))))
                  ((let ((notfound nil))
                     (mapcar
-                     '(lambda (scopeinfo)
+                     #'(lambda (scopeinfo)
                         (cond ((not (file-exists-p (concat (expand-file-name remem-database-dir) "/"
                                                            (car scopeinfo))))
                                (message (concat "Cannot find index-file subdirectory: "
