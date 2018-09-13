@@ -100,8 +100,8 @@ Each entry is either:
         ;; in your .emacs file.
         )))
 
-(defun lotus-annotation/init-PKG ()
-  (use-package PKG
+(defun lotus-annotation/init-emacs-easy-budget ()
+  (use-package emacs-easy-budget
       :defer t
       :config
       (progn
