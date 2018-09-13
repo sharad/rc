@@ -169,7 +169,7 @@ Each entry is either:
         (add-hook 'diary-list-entries-hook 'diary-mark-included-diary-files)
         (add-hook 'diary-list-entries-hook 'diary-sort-entries t))))
 
-(defun lotus-schedule/init-planner-interface ()
+(defun lotus-schedule/post-init-planner-interface ()
   (use-package planner-interface
       :defer t
       :config
