@@ -66,7 +66,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-unicode/init-PACKAGE ()
+(defun lotus-unicode/init-open-unicode-template ()
   (use-package PACKAGE
       :defer t
       :config
