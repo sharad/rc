@@ -82,7 +82,7 @@ Each entry is either:
         (add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode)))))
 
 (defun lotus-javascript/init-sws-mode ()
-  (use-package ample
+  (use-package sws-mode
       :defer t
       :config
       (progn
