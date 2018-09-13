@@ -407,7 +407,7 @@
                                        (lambda ()
                                          (progn
                                            ;; (setq frame (selected-frame))
-                                           (setq debug-on-quit nil)
+                                           ;; (setq debug-on-quit nil)
                                            (message "hookfn: with-selected-frame running timer")
                                            ;; (funcall set-advice-fn)
                                            ,@(cond
