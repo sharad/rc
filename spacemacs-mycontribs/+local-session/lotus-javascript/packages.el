@@ -429,5 +429,21 @@ Each entry is either:
         (add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode)))))
 
 
+(defun lotus-LAYER/init-PKG ()
+  (use-package ample
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
+
+
+(defun lotus-LAYER/init-PKG ()
+  (use-package ample
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
 
 ;;; packages.el ends here
