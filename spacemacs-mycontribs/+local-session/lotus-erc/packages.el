@@ -36,7 +36,6 @@
 
 (defconst lotus-erc-packages
   '(
-    (PACKAGE :location local)
     erc
     (erc-join :location local)
     (erc-services :location local)
