@@ -93,8 +93,8 @@ Each entry is either:
         ;; (define-key ctl-x-map "A"    'annot-convert)
         )))
 
-(defun lotus-annotation/init-annot ()
-  (use-package annot
+(defun lotus-annotation/init-ipa ()
+  (use-package ipa
       :defer t
       :config
       (progn
