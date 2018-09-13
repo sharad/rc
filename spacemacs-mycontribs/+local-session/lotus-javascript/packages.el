@@ -408,8 +408,6 @@ Each entry is either:
         ;;     )
 	)))
 
-
-
 (defun lotus-javascript/init-javascript ()
   (use-package javascript
       :defer t
