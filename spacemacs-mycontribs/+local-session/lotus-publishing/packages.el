@@ -38,9 +38,9 @@
   '(
     publishing
     muse
-    (oddmuse :location local)
+    oddmuse
     yaoddmuse
-    org-oddmuse
+    (org-oddmuse :location local)
     (wikirel :location local)
     oddmuse-curl
     (erin :location local)
