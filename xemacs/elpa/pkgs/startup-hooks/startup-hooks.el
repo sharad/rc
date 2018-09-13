@@ -189,7 +189,7 @@ problem while emacs startup in daemon mode, non-interactively."
   (setq
    debug-on-error lotus-enable-startup-finish-debug-on-error
    debug-on-quit lotus-enable-startup-finish-debug-on-quit))
-(add-hook 'lotus-enable-startup-interrupting-feature-hook 'lotus-general-enable-startup-setting-end)
+(add-hook 'lotus-enable-startup-interrupting-feature-hook 'lotus-general-enable-startup-setting-finish)
 
 ;;;###autoload
 (defun lotus-enable-startup-interrupting-feature ()
