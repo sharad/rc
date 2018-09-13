@@ -93,6 +93,14 @@ Each entry is either:
         (progn
           ))))
 
+(defun lotus-annotation/init-alert ()
+  (use-package alert
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
+
 (defun lotus-annotation/init-annot ()
   (use-package annot
       :defer t
