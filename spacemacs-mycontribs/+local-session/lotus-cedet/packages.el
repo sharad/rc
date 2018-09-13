@@ -220,7 +220,7 @@ Each entry is either:
   ;;; cedet-1.1-startup.el ends here
           ))))
 
-(defun lotus-cedet/init-semantic ()
+(defun lotus-cedet/post-init-semantic ()
   (use-package semantic
       :defer t
       :config
