@@ -126,7 +126,7 @@
    debug-on-error lotus-disable-startup-finish-debug-on-error
    debug-on-quit lotus-disable-startup-finish-debug-on-quit))
 
-(add-hook 'lotus-disable-startup-interrupting-feature-hook 'lotus-general-disable-startup-setting-end)
+(add-hook 'lotus-disable-startup-interrupting-feature-hook 'lotus-general-disable-startup-setting-finish)
 
 ;;;###autoload
 (defun lotus-disable-startup-interrupting-feature ()
