@@ -159,7 +159,7 @@ alias comic='consolechars -f /usr/share/consolefonts/t850b.psf.gz'
 
 # history setting
     # don't put duplicate lines in the history. See bash(1) for more options
-export PATH=$PATH:~/bin
+# export PATH=$PATH:~/bin
 export MANPATH=$MANPATH:/usr/local/share/man
 export HISTCONTROL=ignoredups
 export HISTFILESIZE=1000000000
