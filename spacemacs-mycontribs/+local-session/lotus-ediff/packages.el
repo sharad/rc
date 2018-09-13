@@ -36,7 +36,7 @@
 
 (defconst lotus-ediff-packages
   '(
-    (PACKAGE :location local)
+    (ediff :location local)
     )
   "The list of Lisp packages required by the lotus-ediff layer.
 
