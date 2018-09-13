@@ -159,4 +159,30 @@ Each entry is either:
       (progn
         (progn
           ))))
+
+(defun lotus-LAYER/init-PKG ()
+  (use-package ample
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
+
+(defun lotus-LAYER/init-PKG ()
+  (use-package ample
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
+
+
+
+(defun lotus-LAYER/init-PKG ()
+  (use-package ample
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
 ;;; packages.el ends here
