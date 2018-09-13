@@ -39,7 +39,7 @@
     (creditcard :location local)
     (balance :location local)
     ;; http://code.google.com/p/emacs-easy-budget/
-    emacs-easy-budget
+    (emacs-easy-budget :location local)
     ample
     (date-util :location local)
     (ledger :location local)
