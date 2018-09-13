@@ -100,7 +100,7 @@ Each entry is either:
         ;; in your .emacs file.
         )))
 
-(defun lotus-annotation/init-emacs-easy-budget ()
+(defun lotus-finance/init-emacs-easy-budget ()
   (use-package emacs-easy-budget
       :defer t
       :config
@@ -108,7 +108,7 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-annotation/init-ample ()
+(defun lotus-finance/init-ample ()
   (use-package ample
       :defer t
       :config
@@ -116,7 +116,7 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-annotation/init-date-util ()
+(defun lotus-finance/init-date-util ()
   (use-package date-util
       :defer t
       :config
