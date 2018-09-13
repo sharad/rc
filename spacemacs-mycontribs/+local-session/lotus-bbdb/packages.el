@@ -81,7 +81,7 @@ Each entry is either:
          bbdb/mail-auto-create-p t
          bbdb/news-auto-create-p t))))
 
-(defun lotus-annotation/init-bbdb-merge ()
+(defun lotus-bbdb/init-bbdb-merge ()
   (use-package bbdb-merge
       :defer t
       :config
@@ -89,7 +89,7 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-annotation/init-bbdb-vcard-import ()
+(defun lotus-bbdb/init-bbdb-vcard-import ()
   (use-package bbdb-vcard-import
       :defer t
       :config
