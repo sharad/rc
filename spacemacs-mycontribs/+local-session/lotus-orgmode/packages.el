@@ -121,7 +121,7 @@ Each entry is either:
       (progn
         (lotus-orgmode-config/post-init-ob-tangle))))
 
-(defun lotus-orgmode/init-publishing ()
+(defun lotus-orgmode/post-init-publishing ()
   (use-package ample
       :defer t
       :config
