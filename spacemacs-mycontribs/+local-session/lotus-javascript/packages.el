@@ -419,25 +419,6 @@ Each entry is either:
             (progn
               (add-hook 'javascript-mode-hook 'javascript-custom-setup))))))
 
-(defun lotus-javascript/init-espresso ()
-  ;; from: http://www.nongnu.org/espresso/
-  (use-package espresso
-      :defer t
-      :config
-      (progn
-        (add-to-list 'auto-mode-alist '("\\.js$" . espresso-mode))
-        (add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode)))))
-
-
-(defun lotus-javascript/init-sws-mode ()
-  (use-package ample
-      :defer t
-      :config
-      (progn
-        (progn
-          ))))
-
-
 (defun lotus-LAYER/init-PKG ()
   (use-package ample
       :defer t
