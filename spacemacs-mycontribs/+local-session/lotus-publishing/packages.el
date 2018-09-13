@@ -38,7 +38,7 @@
   '(
     publishing
     muse
-    oddmuse
+    (oddmuse :location local)
     yaoddmuse
     org-oddmuse
     (wikirel :location local)
