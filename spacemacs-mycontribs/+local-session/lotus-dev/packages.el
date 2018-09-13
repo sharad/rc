@@ -1006,7 +1006,7 @@ Add directory to search path for source files using the GDB command, dir."))
                     (uncrustify-mode -1))))))
 
 
-(defun lotus-dev/init-srefactor ()
+(defun lotus-dev/post-init-srefactor ()
   (use-package srefactor
       :defer t
       :config
