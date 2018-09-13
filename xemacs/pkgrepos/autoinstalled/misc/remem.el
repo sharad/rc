@@ -136,7 +136,7 @@
 ;; Useful for email-style files (narrowed), and when you want to subsequently edit
 ;; the suggested file
 (defvar remem-load-original-suggestion nil
-      "When seeing an entire suggestion, just go to the file rather than a copy")
+  "When seeing an entire suggestion, just go to the file rather than a copy")
 
 ;;;;;;;;;;;;;;;;
 ;; Turns on logging.  The default log-file is ~/.remem-log-file
@@ -198,7 +198,7 @@
 (define-prefix-command 'remem-command-map)
 (if (key-binding (kbd "C-c x"))
     (message "C-c x already binded to %s" (key-binding (kbd "C-c x")))
-    (global-set-key (kbd "C-c x") 'remem-command-map))
+  (global-set-key (kbd "C-c x") 'remem-command-map))
 
 ;; Keys We want to start with before running the RA
 (define-key 'remem-command-map (kbd "t") 'remem-toggle)
@@ -246,7 +246,7 @@
 (make-empty-face 'remem-even-scope)
 
 (cond ((and (boundp 'hilit-background-mode)
-           (equal hilit-background-mode 'dark))
+            (equal hilit-background-mode 'dark))
        (set-face-foreground 'remem-odd  "Thistle")
        (set-face-foreground 'remem-even  "MediumSeaGreen")         ;; Every even column
        (set-face-foreground 'remem-odd-scope  "Goldenrod")         ;; Every odd scope (numbers)
@@ -256,9 +256,9 @@
        ;; (set-face-font 'remem-hilite "-misc-fixed-bold-r-normal--15-140-75-75-c-90-iso8859-1")
        )
       (t
-;       (set-face-foreground 'remem-odd  "ForestGreen")
+       ;       (set-face-foreground 'remem-odd  "ForestGreen")
        (set-face-foreground 'remem-odd  "ForestGreen")
-;       (set-face-foreground 'remem-odd  "Black")
+       ;       (set-face-foreground 'remem-odd  "Black")
        (set-face-foreground 'remem-even  "MediumBlue")         ;; Every even column
        (set-face-foreground 'remem-odd-scope  "Blue")     ;; Every odd scope (numbers)
        (set-face-foreground 'remem-even-scope  "DarkSlateGray")        ;; Every even scope (numbers)
@@ -281,20 +281,20 @@
        (defun event-x-y (event)
          (cons (event-x event) (event-y event)))
        (defun run-at-time (time repeat function &rest args)
-	 (apply 'start-itimer "remem-timer" function time repeat nil t args))
+         (apply 'start-itimer "remem-timer" function time repeat nil t args))
        (defun remem-cancel-timer (timer)
-	 (cond (timer
+         (cond (timer
                 (delete-itimer timer))))
        (defun x-popup-menu (event list)
          (popup-menu list event))
        (defun frame-first-window (&rest args)
          (frame-highest-window args))
-;       (defun sit-for-nodist (seconds)
-;         (sit-for seconds t))
+       ;       (defun sit-for-nodist (seconds)
+       ;         (sit-for seconds t))
        (defun marker-position-nonil (marker)
          (let ((mark (marker-position marker)))
-         (cond (mark mark)
-               (t 0))))
+           (cond (mark mark)
+                 (t 0))))
        (require 'overlay))
       (t
        (require 'timer)
@@ -304,12 +304,12 @@
        (defun remem-cancel-timer (timer) (cancel-timer timer))
        (defun marker-position-nonil (marker)
          (let ((mark (marker-position marker)))
-         (cond (mark mark)
-               (t 0))))
+           (cond (mark mark)
+                 (t 0))))
        (defun window-displayed-height (&optional window)
          (- (window-height window) 1))
-;       (defun sit-for-nodist (seconds)
-;         (sit-for seconds 0 t))
+       ;       (defun sit-for-nodist (seconds)
+       ;         (sit-for seconds 0 t))
        (defun event-x-y (event)
          (posn-x-y (event-end event)))
        (defun event-window (event)
@@ -373,7 +373,7 @@ hand-set biases.")
     (8 30 (face remem-even field 8 mouse-face remem-hilite) nil)   ; subject
     (5 8 (face remem-odd field 5 mouse-face remem-hilite) remem-date-print-filter)    ; date
     (27 13 (face remem-even field 4 mouse-face remem-hilite) nil)   ; filename
-;   (4 10 (face remem-even field 4 mouse-face remem-hilite) nil)   ; location
+    ;   (4 10 (face remem-even field 4 mouse-face remem-hilite) nil)   ; location
     (28 50 (face remem-odd field 28 mouse-face remem-hilite) nil))); keywords
 
 (defvar remem-format-nokeys ;field-number field-width field-text-properties print-filter-function
@@ -430,8 +430,8 @@ hand-set biases.")
 ;; These are all used for doing searches on fields when they're clicked.
 (defvar remem-savant-field-names
   '(lineno num-relevance docnum "!BODY: " "!LOCATION: " "!DATE: " "!TIME: " "!DAY" "!SUBJECT: " "!PERSON: "
-           "" "" "" "" "" "" "" "" "" ""
-           "" "" "" "" "" "" "" "" "!BODY:" ))
+    "" "" "" "" "" "" "" "" "" ""
+    "" "" "" "" "" "" "" "" "!BODY:" ))
 
 ;; This is another helper list... to ensure that the interactive call asking for 1-5 returns a 1-5 in
 ;; the field choice
@@ -624,13 +624,13 @@ hand-set biases.")
                 ))
          (let ((query-text
                 (concat remem-query-oneshot-preamble-string remem-query-preamble-string
-                 "query " (format "%d" (+ 6 (* 2 (remem-scope-number-lines scope)))) "\n"
-                 (cond (use-modep
-                        (concat "EMACS REMEMBRANCE QUERY MODE: " (format "%s" major-mode) "\n")))
-                 (cond (use-preambles remem-query-oneshot-extra-text-string))
-                 (cond (use-extra-text remem-query-extra-text-string))
-                 (remem-scope-query scope) "\n"
-                 "\004")))
+                        "query " (format "%d" (+ 6 (* 2 (remem-scope-number-lines scope)))) "\n"
+                        (cond (use-modep
+                               (concat "EMACS REMEMBRANCE QUERY MODE: " (format "%s" major-mode) "\n")))
+                        (cond (use-preambles remem-query-oneshot-extra-text-string))
+                        (cond (use-extra-text remem-query-extra-text-string))
+                        (remem-scope-query scope) "\n"
+                        "\004")))
 
            (setq remem-last-query-mode (format "%s" major-mode))
            (set-text-properties 0 (length query-text) nil query-text)  ;; Get rid of emacsisms
@@ -642,7 +642,7 @@ hand-set biases.")
                   (remem-log-checkpoint-scope scope 'at-25)))
 
            (set-process-filter (remem-scope-proc scope) 'remem-process-filter)
-					; we may have set this to the display filter elsewhere
+           ; we may have set this to the display filter elsewhere
            (process-send-string (remem-scope-proc scope)
                                 query-text)
            (remem-set-scope-in-progress scope remem-waiting-for-query-return-timeout))
@@ -653,7 +653,7 @@ hand-set biases.")
   "Returns the remem-scopes for the remem buffer that is currently defaulted"
   (or remem-scopes               ; first one in the active buffer
       (and remem-buffers (buffer-live-p (car remem-buffers))
-	   (save-excursion
+           (save-excursion
              (set-buffer (car remem-buffers))
              remem-scopes))))
 
@@ -662,16 +662,16 @@ hand-set biases.")
   (let ((default-scopes (remem-default-scope-list)))
     (if default-scopes
         (car default-scopes)
-          nil)))
+      nil)))
 
 (defun remem-all-scopes ()
   "Return all scopes in all remem buffers"
   (apply 'append
          (mapcar #'(lambda (buf)
-                    (cond ((buffer-live-p buf)
-                           (set-buffer buf)
-                           remem-scopes)      ; a buffer local variable
-                          (t nil)))
+                     (cond ((buffer-live-p buf)
+                            (set-buffer buf)
+                            remem-scopes)      ; a buffer local variable
+                           (t nil)))
                  remem-buffers)))
 
 ;; run a query in the default scope
@@ -706,18 +706,18 @@ hand-set biases.")
       (cond ((and realbufname (get-buffer-window realbufname))
              (select-window (get-buffer-window realbufname))))
 
-                                        ; place start of sample count words before current position
-                                        ; or as far back as possible
+      ; place start of sample count words before current position
+      ; or as far back as possible
       (setq beg (- (point) (* 5 count)))
       (if (< beg (point-min))
           (setq beg (point-min)))
       ; and place end of sample count words ahead of beginning
       (setq end (+ beg (* 5 count)))
       (if (> end (point-max))
-	  (setq end (point-max)))
+          (setq end (point-max)))
       (setq retval (concat " " (buffer-substring beg end)))
-;      (while (string-match "\n\\.\n" retval)
-;        (setq retval (replace-match "\n .\n" t t retval)))
+      ;      (while (string-match "\n\\.\n" retval)
+      ;        (setq retval (replace-match "\n .\n" t t retval)))
       )
     (select-window orig-window)
     (setq remem-debug-retval retval)
@@ -749,28 +749,28 @@ hand-set biases.")
                                                     remem-use-major-mode-templates
                                                     t  ;; Use preambles
                                                     t  ;; Use extra text
-                   ))))
+                                                    ))))
           (remem-default-scope-list)))
 
 
 (defun remem-query-on-keywords (keywords)
   (mapcar (lambda (scope)
-	    (cond ((not (remem-scope-proc scope)))
-		  ((string-match "^Minibuf" (buffer-name (current-buffer))))
-		  ((get-buffer-window remem-buffer-name t)
-		   (let ((exheight (window-displayed-height (get-buffer-window remem-buffer-name t))))
-		     (remem-redistribute-scopes exheight)
-		     (remem-initiate-query-nonverbose scope keywords nil)
-		     (remem-cancel-timer (remem-scope-timer scope))
-		     (remem-set-scope-timer scope
-					    (run-at-time 10 (remem-scope-update-time scope) 'remem-around-point scope))
-		     ))
-		  (t
-		   (remem-initiate-query-nonverbose scope keywords nil)
-		   (remem-cancel-timer (remem-scope-timer scope))
-		   (remem-set-scope-timer scope
-					  (run-at-time 10 (remem-scope-update-time scope) 'remem-around-point scope))
-		   )))
+            (cond ((not (remem-scope-proc scope)))
+                  ((string-match "^Minibuf" (buffer-name (current-buffer))))
+                  ((get-buffer-window remem-buffer-name t)
+                   (let ((exheight (window-displayed-height (get-buffer-window remem-buffer-name t))))
+                     (remem-redistribute-scopes exheight)
+                     (remem-initiate-query-nonverbose scope keywords nil)
+                     (remem-cancel-timer (remem-scope-timer scope))
+                     (remem-set-scope-timer scope
+                                            (run-at-time 10 (remem-scope-update-time scope) 'remem-around-point scope))
+                     ))
+                  (t
+                   (remem-initiate-query-nonverbose scope keywords nil)
+                   (remem-cancel-timer (remem-scope-timer scope))
+                   (remem-set-scope-timer scope
+                                          (run-at-time 10 (remem-scope-update-time scope) 'remem-around-point scope))
+                   )))
           (remem-default-scope-list)))
 
 
@@ -806,28 +806,28 @@ hand-set biases.")
 
 (defun remem-query-on-field (field field-text query-type)
   (let ((query
-	 (concat "EMACS REMEMBRANCE FIELD QUERY:\n"
+         (concat "EMACS REMEMBRANCE FIELD QUERY:\n"
                  (elt remem-savant-field-names field)
-		 field-text)))
+                 field-text)))
     (setq remem-kind-of-query query-type)
     (remem-log-checkpoint (remem-default-scope-list) (concat (symbol-name query-type) "-query"))
     (mapcar (lambda (scope)
-	      (cond ((not (remem-scope-proc scope)))
-		    ((string-match "^Minibuf" (buffer-name (current-buffer))))
-		    ((get-buffer-window remem-buffer-name t)
-		     (let ((exheight (window-displayed-height (get-buffer-window remem-buffer-name t))))
-		       (remem-redistribute-scopes exheight)
-		       (remem-initiate-query-nonverbose scope query nil)
-		       (remem-cancel-timer (remem-scope-timer scope))
-		       (remem-set-scope-timer scope
-					      (run-at-time 10 (remem-scope-update-time scope) 'remem-around-point scope))
-		       ))
-		    (t
-		     (remem-initiate-query-nonverbose scope query nil)
-		     (remem-cancel-timer (remem-scope-timer scope))
-		     (remem-set-scope-timer scope
-					    (run-at-time 10 (remem-scope-update-time scope) 'remem-around-point scope))
-		     )))
+              (cond ((not (remem-scope-proc scope)))
+                    ((string-match "^Minibuf" (buffer-name (current-buffer))))
+                    ((get-buffer-window remem-buffer-name t)
+                     (let ((exheight (window-displayed-height (get-buffer-window remem-buffer-name t))))
+                       (remem-redistribute-scopes exheight)
+                       (remem-initiate-query-nonverbose scope query nil)
+                       (remem-cancel-timer (remem-scope-timer scope))
+                       (remem-set-scope-timer scope
+                                              (run-at-time 10 (remem-scope-update-time scope) 'remem-around-point scope))
+                       ))
+                    (t
+                     (remem-initiate-query-nonverbose scope query nil)
+                     (remem-cancel-timer (remem-scope-timer scope))
+                     (remem-set-scope-timer scope
+                                            (run-at-time 10 (remem-scope-update-time scope) 'remem-around-point scope))
+                     )))
             (remem-default-scope-list))))
 
 
@@ -835,11 +835,11 @@ hand-set biases.")
   "Run a query on a given field"
   (interactive
    (list (let (val)
-	   (setq val (completing-read "Which Field? (Body Location Date Subject Person): "
-				      remem-field-array
-				      'consp t))
-	   (cdr (assoc val remem-field-array)))
-	 (read-string "Enter Text: ")))
+           (setq val (completing-read "Which Field? (Body Location Date Subject Person): "
+                                      remem-field-array
+                                      'consp t))
+           (cdr (assoc val remem-field-array)))
+         (read-string "Enter Text: ")))
   (remem-query-on-field fieldname field-text 'manual-field)
   (pop-to-buffer remem-buffer-name))
 
@@ -868,7 +868,7 @@ hand-set biases.")
   "Create a nice form-like buffer to fill in a manual remem query"
   (interactive)
   (remem-log-checkpoint (remem-default-scope-list) 'new-query-page)
-   (cond ((get-buffer remem-query-buffer-name)
+  (cond ((get-buffer remem-query-buffer-name)
          (kill-buffer remem-query-buffer-name)))
   (pop-to-buffer (get-buffer-create remem-query-buffer-name))   ;; Make/get the query buffer
   (setq major-mode 'remem-query-mode)
@@ -903,10 +903,10 @@ hand-set biases.")
                           remem-command-prefix
                           "d:            Database change\nLeft mouse-click on lineno:         Show Suggestion\nLeft mouse-click on a field:        Search field\nMiddle or Right mouse-click:        Keywords\nResize window:                      Resize\n")))))
 
-  (pop-to-buffer (get-buffer-create remem-help-buffer-name))
-  (kill-region (point-min) (point-max))
-  (insert help-string)
-  (goto-char (point-min))))
+    (pop-to-buffer (get-buffer-create remem-help-buffer-name))
+    (kill-region (point-min) (point-max))
+    (insert help-string)
+    (goto-char (point-min))))
 
 (defun remem-switch-to-mode-specific-db ()
   "Switch database to the one specified in remem-mode-db-alist"
@@ -921,18 +921,18 @@ hand-set biases.")
   (remem-decrement-scope-in-progress scope)
   (cond ((not (remem-scope-proc scope))) ; if the process is dead, abort
         ((remem-scope-in-progress scope))
-					; if we're already running a query here, don't supercede
+        ; if we're already running a query here, don't supercede
         ((string-match "^*remem-" (buffer-name (current-buffer))))
-					; don't search results, the display area, or *remem-log*
-	((string-match "*Minibuf" (buffer-name (current-buffer))))
-					; don't search the Minibuffer
+        ; don't search results, the display area, or *remem-log*
+        ((string-match "*Minibuf" (buffer-name (current-buffer))))
+        ; don't search the Minibuffer
 
         ((and remem-mode-aware-changing (remem-switch-to-mode-specific-db)))  ;; Switch to new DB if major-mode change
 
-	((get-buffer-window remem-buffer-name t)
-	 (let ((exheight (window-displayed-height (get-buffer-window remem-buffer-name t)))
+        ((get-buffer-window remem-buffer-name t)
+         (let ((exheight (window-displayed-height (get-buffer-window remem-buffer-name t)))
                (query (remem-last-several-words (remem-scope-range scope))))
-	   (remem-redistribute-scopes exheight)                               ;; Handle resizes
+           (remem-redistribute-scopes exheight)                               ;; Handle resizes
            (cond ((or (not (string= query (remem-scope-query scope)))         ;; Only query if things have changed
                       (not (equal remem-query-oneshot-preamble-string ""))
                       (not (equal remem-query-oneshot-extra-text-string ""))
@@ -969,9 +969,9 @@ hand-set biases.")
 ;;; The total number of lines displayed by all scope scopes in a list
 (defun remem-add-scope-lines (scope-list)
   (cond ((null (car scope-list)))
-	(t
-	 (setq remem-total-scope-lines (+ (remem-scope-number-lines (car scope-list)) remem-total-scope-lines))
-	 (remem-add-scope-lines (cdr scope-list)))))
+        (t
+         (setq remem-total-scope-lines (+ (remem-scope-number-lines (car scope-list)) remem-total-scope-lines))
+         (remem-add-scope-lines (cdr scope-list)))))
 
 
 ;;; -------
@@ -1003,7 +1003,7 @@ hand-set biases.")
 (defun remem-field-column (n)
   (let ((i 0))
     (while (and (< i (length remem-format))
-		(not (= (remem-column-field i) n)))
+                (not (= (remem-column-field i) n)))
       (setq i (+ 1 i)))
     i))
 
@@ -1034,8 +1034,8 @@ hand-set biases.")
         (day nil)
         (year nil))
 
-          ;; Wed, 20 Mar 1996 19:42:37 -0500
-          ;; Wed, 16 Jul 97 10:18:20 est
+    ;; Wed, 20 Mar 1996 19:42:37 -0500
+    ;; Wed, 16 Jul 97 10:18:20 est
     (cond ((string-match "\\([0-9]+\\) +\\([A-Z][a-z][a-z]\\) +\\([0-9][0-9][0-9]?[0-9]?\\)" datestring)
            (setq day (substring datestring (match-beginning 1) (match-end 1)))
            (setq monthname (substring datestring (match-beginning 2) (match-end 2)))
@@ -1092,69 +1092,69 @@ hand-set biases.")
    format-list), and inserts them into the current buffer with the
    desired spacing. The point should be at the beginning of a line."
   ;(insert (format "%S   " fields))
-;  (print fields (get-buffer "*scratch*"))
+  ;  (print fields (get-buffer "*scratch*"))
   (let ((fields (car line))
-	(scope-marker (car (cdr (cdr line))))
+        (scope-marker (car (cdr (cdr line))))
         (remem-relevance-score 100))
     (if (stringp fields)
-	(insert fields)
+        (insert fields)
       (mapcar #'(lambda (format)
-		 (let ((string (elt fields (elt format 0)))
-		       (width (elt format 1))
-                       (printfilter (elt format 3))
-		       (props (append (list 'scope scope
-					    'docnum (string-to-int (elt fields remem-docnum-field))
-                                            'relevance (elt fields remem-relevance-field)
-					    'keywords (elt fields remem-keyword-field-start-number)
-                                            'sims-breakdown (elt fields remem-sim-breakdown-field-start-number)
-					    'orig-source (elt fields (elt format 0)))
-				      (elt format 2)))
-		       (old-point (point)))
+                  (let ((string (elt fields (elt format 0)))
+                        (width (elt format 1))
+                        (printfilter (elt format 3))
+                        (props (append (list 'scope scope
+                                             'docnum (string-to-int (elt fields remem-docnum-field))
+                                             'relevance (elt fields remem-relevance-field)
+                                             'keywords (elt fields remem-keyword-field-start-number)
+                                             'sims-breakdown (elt fields remem-sim-breakdown-field-start-number)
+                                             'orig-source (elt fields (elt format 0)))
+                                       (elt format 2)))
+                        (old-point (point)))
 
 
-		   ;;; This is specifically for the relevance field
-		   (cond ((= (elt format 0) 0)
-			  (if (= 0 scope-marker)
-			      (setq props (append (list 'face 'remem-even-scope) props))
-			    (setq props (append (list 'face 'remem-odd-scope) props))))
-			 ((= (elt format 0) 1)
-			 ;;;funny bug where the
-                         ;;;"lineno    relevance" field looked like
-		         ;;;"^Jlineno    relevance"  This takes care of the newline
-			  (if (string-match "\n" string)
-			      (setq string (substring string 1)))
-			 ;;;show only the relevance part
-			  (setq string (substring string 6))
-                          (setq remem-relevance-score (string-to-number string))
+                    ;;; This is specifically for the relevance field
+                    (cond ((= (elt format 0) 0)
+                           (if (= 0 scope-marker)
+                               (setq props (append (list 'face 'remem-even-scope) props))
+                             (setq props (append (list 'face 'remem-odd-scope) props))))
+                          ((= (elt format 0) 1)
+                           ;;;funny bug where the
+                           ;;;"lineno    relevance" field looked like
+                           ;;;"^Jlineno    relevance"  This takes care of the newline
+                           (if (string-match "\n" string)
+                               (setq string (substring string 1)))
+                           ;;;show only the relevance part
+                           (setq string (substring string 6))
+                           (setq remem-relevance-score (string-to-number string))
 
-                          (cond ((not remem-print-exact-relevance-p)
-                                 (setq string
-                                       (cond ((or (> remem-relevance-score remem-relevance-plus-plus-threshold)
-                                                  (= remem-relevance-score 0))  ; if 0, it's actually 1.00
-                                              "++")
-                                             ((> remem-relevance-score remem-relevance-plus-threshold) "+ ")
-                                             ((> remem-relevance-score remem-relevance-normal-threshold) "  ")
-                                             (t "- ")))))
-                          ))
+                           (cond ((not remem-print-exact-relevance-p)
+                                  (setq string
+                                        (cond ((or (> remem-relevance-score remem-relevance-plus-plus-threshold)
+                                                   (= remem-relevance-score 0))  ; if 0, it's actually 1.00
+                                               "++")
+                                              ((> remem-relevance-score remem-relevance-plus-threshold) "+ ")
+                                              ((> remem-relevance-score remem-relevance-normal-threshold) "  ")
+                                              (t "- ")))))
+                           ))
 
-                   ;;; Do the print filter, if there is one
-                   (cond ((or remem-print-even-bad-relevance-p
-                              (not (eq remem-kind-of-query 'auto))
-                              (= remem-relevance-score 0)         ; if 0, it's actually 1.00
-                              (> remem-relevance-score remem-relevance-normal-threshold))
-                          (cond (printfilter
-                                 (setq string (eval (list printfilter string)))))
+                    ;;; Do the print filter, if there is one
+                    (cond ((or remem-print-even-bad-relevance-p
+                               (not (eq remem-kind-of-query 'auto))
+                               (= remem-relevance-score 0)         ; if 0, it's actually 1.00
+                               (> remem-relevance-score remem-relevance-normal-threshold))
+                           (cond (printfilter
+                                  (setq string (eval (list printfilter string)))))
 
-                          (cond ((< width (length string))
-                                 (insert (substring string 0 width))) ; truncate
-                                (t
-                                 (cond (string (insert string)))
-                                 (insert-char ?\  (- width (length string))))) ; or pad
-                          (add-text-properties old-point (point) props)
-                          (insert-char ?\  1))
-                         ((= (elt format 0) 1)
-                          (insert "-  No suggestion")))
-                   ))
+                           (cond ((< width (length string))
+                                  (insert (substring string 0 width))) ; truncate
+                                 (t
+                                  (cond (string (insert string)))
+                                  (insert-char ?\  (- width (length string))))) ; or pad
+                           (add-text-properties old-point (point) props)
+                           (insert-char ?\  1))
+                          ((= (elt format 0) 1)
+                           (insert "-  No suggestion")))
+                    ))
               format-list))
     (insert-char ?\n 1 t)))
 
@@ -1167,52 +1167,52 @@ hand-set biases.")
   (let ((unique-lines nil) (overall 0) (scope-marker 0))
     (mapcar
      #'(lambda (scope)
-        (let ((i 0) (used 0) (allotted (remem-scope-number-lines scope))
-	      (available (length (remem-scope-processed scope)))
-	      (processed (remem-scope-processed scope)))
-	  (if (eq scope-marker 0)             ;use 1's and 0's to colour scopes differently
-	      (setq scope-marker 1)
-	    (setq scope-marker 0))
-	  (while (< used allotted)
-            (cond
-	     ((>= i available) ; we've exhausted the responses
-	      (setq used (+ used 1))
-	      (setq overall (+ overall 1))
-	      (setq unique-lines
-		    (cons (list (format "%d No suggestion." overall) scope scope-marker) ; this assumes lines start with the lineno...
-			  unique-lines)))
-	     ((stringp (elt processed i)) ;; "" is not a valid response
-	      (setq i (+ i 1)))
-	      ( ; check for uniqueness using the docnum
+         (let ((i 0) (used 0) (allotted (remem-scope-number-lines scope))
+               (available (length (remem-scope-processed scope)))
+               (processed (remem-scope-processed scope)))
+           (if (eq scope-marker 0)             ;use 1's and 0's to colour scopes differently
+               (setq scope-marker 1)
+             (setq scope-marker 0))
+           (while (< used allotted)
+             (cond
+               ((>= i available) ; we've exhausted the responses
+                (setq used (+ used 1))
+                (setq overall (+ overall 1))
+                (setq unique-lines
+                      (cons (list (format "%d No suggestion." overall) scope scope-marker) ; this assumes lines start with the lineno...
+                            unique-lines)))
+               ((stringp (elt processed i)) ;; "" is not a valid response
+                (setq i (+ i 1)))
+               ( ; check for uniqueness using the docnum
 
-	      (not (member (elt (elt processed i) (- remem-docnum-field 1))
-			   ;; this mapcar creates a list of all of the docnums of the lines in unique-lines
-			   ;; that are from the same database. Docnums from different databases are not
-			   ;; comparable
-			   (mapcar #'(lambda (e)
-				      (cond ((stringp (car e)) nil) ; ignore "No Suggestion" lines
-					    ((not (equal (remem-scope-directory scope)
-							 (remem-scope-directory (elt e 1)))) nil) ; can't be the same if dif databases
-					    (t (elt (car e) remem-docnum-field))))
-				   unique-lines)))
-	      ;; a new line, add it
-	      (setq used (+ used 1))
-	      (setq overall (+ overall 1))
-	      (setq unique-lines
-		    (cons (list (cons (int-to-string overall) (elt processed i)) scope scope-marker)
-		  ;; add the lineno to the beginning. see comments for remem-savant-field-names
-			  unique-lines))
-	      (setq i (+ i 1)))
-	     (t ; a duplicate
-	      (setq i (+ i 1)))))))
+                (not (member (elt (elt processed i) (- remem-docnum-field 1))
+                             ;; this mapcar creates a list of all of the docnums of the lines in unique-lines
+                             ;; that are from the same database. Docnums from different databases are not
+                             ;; comparable
+                             (mapcar #'(lambda (e)
+                                         (cond ((stringp (car e)) nil) ; ignore "No Suggestion" lines
+                                               ((not (equal (remem-scope-directory scope)
+                                                            (remem-scope-directory (elt e 1)))) nil) ; can't be the same if dif databases
+                                               (t (elt (car e) remem-docnum-field))))
+                                     unique-lines)))
+                ;; a new line, add it
+                (setq used (+ used 1))
+                (setq overall (+ overall 1))
+                (setq unique-lines
+                      (cons (list (cons (int-to-string overall) (elt processed i)) scope scope-marker)
+                            ;; add the lineno to the beginning. see comments for remem-savant-field-names
+                            unique-lines))
+                (setq i (+ i 1)))
+               (t ; a duplicate
+                (setq i (+ i 1)))))))
      remem-scopes)
     (mapcar #'(lambda (line)
-               (let ((format-for-line (assoc (remem-scope-directory (car (cdr line)))
-                                             remem-format-alist)))
-                 (cond ((not format-for-line)
-                        (setq format-for-line remem-format-default))
-                       (t (setq format-for-line (car (cdr format-for-line)))))
-                 (remem-format-line line format-for-line (elt line 1))))
+                (let ((format-for-line (assoc (remem-scope-directory (car (cdr line)))
+                                              remem-format-alist)))
+                  (cond ((not format-for-line)
+                         (setq format-for-line remem-format-default))
+                        (t (setq format-for-line (car (cdr format-for-line)))))
+                  (remem-format-line line format-for-line (elt line 1))))
             (reverse unique-lines)))
   (setq inhibit-read-only nil))
 
@@ -1225,16 +1225,16 @@ hand-set biases.")
   "looks for a double newline.  Used to be used for finding end of
    a query result but now use remem-period-on-line-by-itself."
   (let* ((dn nil)
-	 (len (- (length string) 1))
-	 (i len))
+         (len (- (length string) 1))
+         (i len))
     (while (> i 0)
       (cond ((not (= (aref string (- i 1)) 10))
-	     (setq i (- i 2)))
-	    ((= (aref string i) 10)
-	     (setq dn t)
-	     (setq i 0))
-	    (t
-	     (setq i (- i 1)))))
+             (setq i (- i 2)))
+            ((= (aref string i) 10)
+             (setq dn t)
+             (setq i 0))
+            (t
+             (setq i (- i 1)))))
     dn))
 
 (defun remem-period-on-line-by-itself (string)
@@ -1249,9 +1249,9 @@ hand-set biases.")
   (let ((i 1) (last-match 0) (fields nil))
     (while (< i (length string))
       (cond ((eq (elt string i) split-char)
-	     (setq fields (cons (substring string last-match
-					   (if eat i (+ i 1))) fields))
-	     (setq last-match (+ i 1))))
+             (setq fields (cons (substring string last-match
+                                           (if eat i (+ i 1))) fields))
+             (setq last-match (+ i 1))))
       (setq i (+ i 1)))
     ; the field after the last delimiter
     (setq fields (cons (substring string last-match) fields))
@@ -1260,9 +1260,9 @@ hand-set biases.")
 (defun remem-split-savant-output (string)
   "Splits into lines and pipe-delimited fields"
   (delete nil (mapcar #'(lambda (s) (if (or (string= s "") (string= s "\n") (string= s "."))
-				       nil
-				     (remem-split-string s ?\| t)))
-		      (remem-split-string string ?\n t))))
+                                        nil
+                                      (remem-split-string s ?\| t)))
+                      (remem-split-string string ?\n t))))
 
 ;; this should only be used in the buffer containing the scope to be sorted
 (defun remem-sort-scope (&optional field scope)
@@ -1272,8 +1272,8 @@ hand-set biases.")
   ;; sort-columns eats text properties, so it's easier to rebuild
   ;; the whole thing from the split results
   (remem-set-scope-processed scope
-   (sort (remem-scope-processed scope)
-         (lambda (a b) (string< (elt a field) (elt b field)))))
+                             (sort (remem-scope-processed scope)
+                                   (lambda (a b) (string< (elt a field) (elt b field)))))
   (remem-render-processed)
   ;; reselect the selected line if any
   (cond (remem-selection-line
@@ -1292,29 +1292,29 @@ hand-set biases.")
   ;; first figure out which scope this is for
   (save-excursion
     (let ((flag t)
-	  ;; this is a list of all scopes in all buffers
-	  (scopes (remem-all-scopes))
-	  (scope nil))
+          ;; this is a list of all scopes in all buffers
+          (scopes (remem-all-scopes))
+          (scope nil))
       (while (and flag scopes)
-	(cond ((eq process (remem-scope-proc (car scopes)))
-	       (setq scope (car scopes))
-	       (setq flag nil))
-	      (t (setq scopes (cdr scopes)))))
+        (cond ((eq process (remem-scope-proc (car scopes)))
+               (setq scope (car scopes))
+               (setq flag nil))
+              (t (setq scopes (cdr scopes)))))
       (cond ((not flag) ; if it belongs to some scope...
-	     ;; tack the new string on to the rest of the results
-	     (if string (remem-set-scope-raw scope (concat (remem-scope-raw scope)
-						string))
-	       (message "Savant returned a nil response to query %s" (remem-scope-query scope)))
-	     ;; if we've got them all, go to work
-	     (cond ((remem-period-on-line-by-itself (remem-scope-raw scope))
-		    (remem-set-scope-processed
-		     scope
-		     (remem-split-savant-output (remem-scope-raw scope)))
-		    (remem-set-scope-raw scope "")
-		    ;(remem-sort-scope scope) ; we're still in the right buffer
-		    (remem-render-processed) ; when sort works, this is unnecessary
-		    (remem-set-scope-in-progress scope nil)
-		    (force-mode-line-update))))))))
+             ;; tack the new string on to the rest of the results
+             (if string (remem-set-scope-raw scope (concat (remem-scope-raw scope)
+                                                           string))
+               (message "Savant returned a nil response to query %s" (remem-scope-query scope)))
+             ;; if we've got them all, go to work
+             (cond ((remem-period-on-line-by-itself (remem-scope-raw scope))
+                    (remem-set-scope-processed
+                     scope
+                     (remem-split-savant-output (remem-scope-raw scope)))
+                    (remem-set-scope-raw scope "")
+                    ;(remem-sort-scope scope) ; we're still in the right buffer
+                    (remem-render-processed) ; when sort works, this is unnecessary
+                    (remem-set-scope-in-progress scope nil)
+                    (force-mode-line-update))))))))
 
 ;;; --------------
 ;;; SELECTION LINE
@@ -1367,13 +1367,13 @@ hand-set biases.")
   (let ((buf (buffer-name (current-buffer))))
     ;(setq remem-debug-bufname buf)
     (cond ((equal buf remem-buffer-name)
-	   ;;;;  (print remem-buffer-name (get-buffer "*scratch*"))
+           ;;;;  (print remem-buffer-name (get-buffer "*scratch*"))
            (select-window (frame-first-window))))))
 
 (defun remem-selection-line-overlay-update (&optional n)
   (if n (setq remem-selection-line n))
   (if remem-selection-line ; something selected
-    (goto-line remem-selection-line)
+      (goto-line remem-selection-line)
     (let ((start (point)))
       (end-of-line)
       (cond ((not remem-selection-line-overlay) ; if no overlay, make one
@@ -1405,28 +1405,28 @@ hand-set biases.")
 (defun remem-selection-field-overlay-update (&optional n)
   (if n (setq remem-selection-field n))
   (cond ((and remem-selection-line remem-selection-field (> n 2)) ; queriable field selected
-	 (goto-line remem-selection-line)
-	 (let ((start (point)))
-	   (end-of-line)
-	   (let ((new-start
-		  (text-property-any start (point)
-				     'field remem-selection-field)))
-	     (if new-start
-		 (let ((new-end
-			(next-single-property-change new-start 'field)))
-		   (cond ((not new-end) nil)
-			 ((not remem-selection-field-overlay)
-			  (setq remem-selection-field-overlay
-				(make-overlay new-start new-end))
-			  (overlay-put remem-selection-field-overlay
-				       'priority 1)
-			  (overlay-put remem-selection-field-overlay
-				       'face 'remem-hilite2);)
+         (goto-line remem-selection-line)
+         (let ((start (point)))
+           (end-of-line)
+           (let ((new-start
+                  (text-property-any start (point)
+                                     'field remem-selection-field)))
+             (if new-start
+                 (let ((new-end
+                        (next-single-property-change new-start 'field)))
+                   (cond ((not new-end) nil)
+                         ((not remem-selection-field-overlay)
+                          (setq remem-selection-field-overlay
+                                (make-overlay new-start new-end))
+                          (overlay-put remem-selection-field-overlay
+                                       'priority 1)
+                          (overlay-put remem-selection-field-overlay
+                                       'face 'remem-hilite2);)
                           (remem-query-on-field (get-text-property new-start 'field)
                                                 (get-text-property new-start 'orig-source) 'mouse))
-			 (t ; already exists
-			  (move-overlay remem-selection-field-overlay
-					new-start new-end);))))))
+                         (t ; already exists
+                          (move-overlay remem-selection-field-overlay
+                                        new-start new-end);))))))
                           (remem-query-on-field (get-text-property new-start 'field)
                                                 (get-text-property new-start 'orig-source) 'mouse))))))))
         ((and remem-selection-line remem-selection-field (= n 0))  ; Selected the lineno
@@ -1436,15 +1436,15 @@ hand-set biases.")
 (defun remem-selection-next-field ()
   (interactive)
   (if remem-selection-field-overlay
-    (let ((new-start
-           (next-single-property-change
-            (overlay-start remem-selection-field-overlay)
-            'field)))
-      (cond (new-start
-             (remem-selection-line-overlay-update
-              (count-lines 1 (+ new-start 1)))
-             (remem-selection-field-overlay-update
-              (get-text-property new-start 'field)))))))
+      (let ((new-start
+             (next-single-property-change
+              (overlay-start remem-selection-field-overlay)
+              'field)))
+        (cond (new-start
+               (remem-selection-line-overlay-update
+                (count-lines 1 (+ new-start 1)))
+               (remem-selection-field-overlay-update
+                (get-text-property new-start 'field)))))))
 
 (defun remem-selection-prev-field ()
   (interactive)
@@ -1518,7 +1518,7 @@ hand-set biases.")
                     ""   ; we don't know our version number or database info yet
                     (nth 5 (file-attributes (concat (expand-file-name remem-database-dir) "/"
                                                     directory "/doclocs"))) ; Modtime for the index
-		    ))
+                    ))
         (savant (start-process "remem"
                                nil ;; No buffer for this process
                                (concat (expand-file-name remem-prog-dir)
@@ -1529,40 +1529,40 @@ hand-set biases.")
     (process-kill-without-query savant)
     (set-process-filter savant 'remem-process-filter)
     (remem-set-scope-proc new-scope savant)
-;;;    (remem-display-database-info new-scope)    ;; Set version number
+    ;;;    (remem-display-database-info new-scope)    ;; Set version number
     (if (> update-time 0)
-      (remem-set-scope-timer new-scope
-                             (run-at-time 1 update-time 'remem-around-point new-scope)))
+        (remem-set-scope-timer new-scope
+                               (run-at-time 1 update-time 'remem-around-point new-scope)))
     ; register this scope
     (setq remem-scopes (cons new-scope remem-scopes))
     (if (member (current-buffer) remem-buffers)
-      nil
+        nil
       (setq remem-buffers (cons (current-buffer) remem-buffers)))
-  new-scope))
+    new-scope))
 
 (defun map-start-scopes (scopes-list)
   "maps the add-scope-to-buffer function to the list of scopes"
   (let ((current-scope (car scopes-list)))
     (cond ((null scopes-list) nil)
-	  (t (remem-add-scope-to-buffer remem-buffer-name
-					(car current-scope)
-					(car (cdr current-scope))
-					(car (cdr (cdr current-scope)))
-					(car (cdr (cdr (cdr current-scope)))))
-	     (map-start-scopes (cdr scopes-list))))))
+          (t (remem-add-scope-to-buffer remem-buffer-name
+                                        (car current-scope)
+                                        (car (cdr current-scope))
+                                        (car (cdr (cdr current-scope)))
+                                        (car (cdr (cdr (cdr current-scope)))))
+             (map-start-scopes (cdr scopes-list))))))
 
 
 (defun map-scope-percentages (scopes-list)
   (let ((current-scope (car scopes-list)))
     (cond ((null scopes-list) nil)
-	  (t (setq remem-scope-percentages
-		   (cons
-		    (cons (remem-scope-proc current-scope)
-			       (float (/ (float (remem-scope-number-lines current-scope))
-					 (float remem-total-scope-lines))))
-		    remem-scope-percentages))
+          (t (setq remem-scope-percentages
+                   (cons
+                    (cons (remem-scope-proc current-scope)
+                          (float (/ (float (remem-scope-number-lines current-scope))
+                                    (float remem-total-scope-lines))))
+                    remem-scope-percentages))
 
-	     (map-scope-percentages (cdr scopes-list))))))
+             (map-scope-percentages (cdr scopes-list))))))
 
 (defun remem-setup-buffer (buffer-name)
   (let ((buffer (get-buffer-create buffer-name)))
@@ -1599,15 +1599,15 @@ hand-set biases.")
         (orig-window (get-buffer-window (current-buffer))))
     (save-excursion
       (let ((w (if running-xemacs
-		   (frame-lowest-window)
-		 (window-at 1 (- (frame-height) 3))))
-	    (buffer (get-buffer-create buffer-name)))
-	(setq w (split-window w))       ;; w is now the lower of the two
-	(set-window-buffer w buffer)
-	(select-window w)
-	(enlarge-window (- remem-display-buffer-height (window-displayed-height) 1))
-	(set-window-dedicated-p w t)))
-;;  (remem-leave-remem-window)
+                   (frame-lowest-window)
+                 (window-at 1 (- (frame-height) 3))))
+            (buffer (get-buffer-create buffer-name)))
+        (setq w (split-window w))       ;; w is now the lower of the two
+        (set-window-buffer w buffer)
+        (select-window w)
+        (enlarge-window (- remem-display-buffer-height (window-displayed-height) 1))
+        (set-window-dedicated-p w t)))
+    ;;  (remem-leave-remem-window)
     (select-window orig-window)))
 
 (defun remem-kill-scope (scope)
@@ -1634,8 +1634,8 @@ hand-set biases.")
 
 (defun remem-map-kill (some-list)
   (cond ((null some-list) nil)
-	(t (remem-kill-scope (car some-list))
-	   (remem-map-kill (cdr some-list)))))
+        (t (remem-kill-scope (car some-list))
+           (remem-map-kill (cdr some-list)))))
 
 
 (defun remem-kill-all-scopes ()
@@ -1657,7 +1657,7 @@ hand-set biases.")
   (interactive
    (list (let* ((dirlist (directory-files remem-database-dir nil "[^\.].*"))
                 (scope-name-list (mapcar #'(lambda (filename)
-                                            (cons filename filename))
+                                             (cons filename filename))
                                          dirlist))
                 (dirprompt (mapconcat 'eval dirlist " "))
                 (val))
@@ -1669,7 +1669,7 @@ hand-set biases.")
          (let ((rsl-len (length remem-scopes-list))
                (val))
            (cond ((> rsl-len 1)
-		  (setq val (string-to-number (read-string (concat "Enter scope number (1-" (int-to-string rsl-len) "): ")))))
+                  (setq val (string-to-number (read-string (concat "Enter scope number (1-" (int-to-string rsl-len) "): ")))))
                  (t (setq val 1)))
            val)))
   (setcar (car (nthcdr (- scopenum 1) remem-scopes-list)) scopename)
@@ -1698,9 +1698,9 @@ hand-set biases.")
            (message "Waiting for previous query to finish... (hit ^G to abort)")
            (while (remem-scope-in-progress scope)
              (sleep-for .2))))
-                                        ;	   (setq remem-document-buffer-name
-                                        ;		 (concat "*remem-document-output: "
-                                        ;			 (int-to-string lineno) "*"))
+    ;	   (setq remem-document-buffer-name
+    ;		 (concat "*remem-document-output: "
+    ;			 (int-to-string lineno) "*"))
 
     (remem-set-scope-dbinfo scope "")
     (setq remem-working-scope scope)     ;; As a message passed to remem-database-info-filter
@@ -1754,49 +1754,49 @@ hand-set biases.")
              (sleep-for .2))))
     (message "Retrieving docnum %d" docnum)
     (cond ((or (not docnum) (< docnum 1))
-	   (message "Improper docnum."))
-	  ((not scope)
-	   (message "Improper scope."))
-	  (t
-;	   (setq remem-document-buffer-name
-;		 (concat "*remem-document-output: "
-;			 (int-to-string lineno) "*"))
-	   (select-window (frame-first-window))
-;          (cond ((get-buffer remem-document-buffer-name)  ;; Just to clear it out
-;                (kill-buffer remem-document-buffer-name)))
-	   (switch-to-buffer remem-document-buffer-name)
+           (message "Improper docnum."))
+          ((not scope)
+           (message "Improper scope."))
+          (t
+           ;	   (setq remem-document-buffer-name
+           ;		 (concat "*remem-document-output: "
+           ;			 (int-to-string lineno) "*"))
+           (select-window (frame-first-window))
+           ;          (cond ((get-buffer remem-document-buffer-name)  ;; Just to clear it out
+           ;                (kill-buffer remem-document-buffer-name)))
+           (switch-to-buffer remem-document-buffer-name)
            (toggle-read-only -1)
-	   (erase-buffer)
+           (erase-buffer)
            (toggle-read-only t)
 
-	   (set-marker (process-mark proc) (point)
+           (set-marker (process-mark proc) (point)
                        (get-buffer remem-document-buffer-name))
-	   (set-process-filter proc 'remem-display-filter)
-	   (process-send-string proc
-				(concat "retrieve "
-					(int-to-string docnum)
-					"\n"))
-	   ;; loop until ready
-	   (goto-char (point-min))
-	   (while (< (marker-position-nonil (process-mark proc)) 22)
-	     (sleep-for .05))
-
-	   (end-of-line)
-	   (setq doc-pos (string-to-int (buffer-substring (point-min) (point))))
-	   (forward-char)
-           (toggle-read-only -1)
-	   (delete-region (point-min) (point))  ;; Delete the character offset
+           (set-process-filter proc 'remem-display-filter)
+           (process-send-string proc
+                                (concat "retrieve "
+                                        (int-to-string docnum)
+                                        "\n"))
+           ;; loop until ready
+           (goto-char (point-min))
+           (while (< (marker-position-nonil (process-mark proc)) 22)
+             (sleep-for .05))
 
            (end-of-line)
-	   (setq remem-last-followed-doctype (buffer-substring (point-min) (point)))
-	   (forward-char)
-	   (delete-region (point-min) (point))  ;; Delete the character offset
+           (setq doc-pos (string-to-int (buffer-substring (point-min) (point))))
+           (forward-char)
+           (toggle-read-only -1)
+           (delete-region (point-min) (point))  ;; Delete the character offset
 
-	   (while (< (marker-position-nonil (process-mark proc)) doc-pos)
-	     (sleep-for .001))
-	   (goto-char doc-pos)
-	   (beginning-of-line)
-	   (recenter 0)
+           (end-of-line)
+           (setq remem-last-followed-doctype (buffer-substring (point-min) (point)))
+           (forward-char)
+           (delete-region (point-min) (point))  ;; Delete the character offset
+
+           (while (< (marker-position-nonil (process-mark proc)) doc-pos)
+             (sleep-for .001))
+           (goto-char doc-pos)
+           (beginning-of-line)
+           (recenter 0)
            (setq remem-last-followed-docnum docnum)
            (message "Type number 1-5 to rate document: 1 = [Bad suggestion], 5 = [Great suggestion]")
            (use-local-map remem-output-mode-map)
@@ -1810,73 +1810,73 @@ hand-set biases.")
 ;; called by remem-retrieve
 (defun remem-display-line-original (scope docnum &optional lineno)
   "Load the file for the relevant document displayed in the given line"
-    (let ((proc (remem-scope-proc scope)))
-      (cond ((remem-scope-in-progress scope)
-             (message "Waiting for previous query to finish... (hit ^G to abort)")
-             (while (remem-scope-in-progress scope)
-               (sleep-for .2))))
-      (message "Retrieving docnum %d" docnum)
-      (cond ((or (not docnum) (< docnum 1))
-	     (message "Improper docnum."))
-	    ((not scope)
-	     (message "Improper scope."))
-	    (t
-;	     (setq remem-document-buffer-name
-;		   (concat "*remem-document-output: "
-;			   (int-to-string lineno) "*"))
-	     (select-window (frame-first-window))
-;            (cond ((get-buffer remem-document-buffer-name)  ;; Just to clear it out
-;                   (kill-buffer remem-document-buffer-name)))
-	     (switch-to-buffer remem-document-buffer-name)
-             (toggle-read-only -1)
-	     (erase-buffer)
-             (toggle-read-only t)
+  (let ((proc (remem-scope-proc scope)))
+    (cond ((remem-scope-in-progress scope)
+           (message "Waiting for previous query to finish... (hit ^G to abort)")
+           (while (remem-scope-in-progress scope)
+             (sleep-for .2))))
+    (message "Retrieving docnum %d" docnum)
+    (cond ((or (not docnum) (< docnum 1))
+           (message "Improper docnum."))
+          ((not scope)
+           (message "Improper scope."))
+          (t
+           ;	     (setq remem-document-buffer-name
+           ;		   (concat "*remem-document-output: "
+           ;			   (int-to-string lineno) "*"))
+           (select-window (frame-first-window))
+           ;            (cond ((get-buffer remem-document-buffer-name)  ;; Just to clear it out
+           ;                   (kill-buffer remem-document-buffer-name)))
+           (switch-to-buffer remem-document-buffer-name)
+           (toggle-read-only -1)
+           (erase-buffer)
+           (toggle-read-only t)
 
-             (set-marker (process-mark proc) (point)
-                         (get-buffer remem-document-buffer-name))
-	     (set-process-filter proc 'remem-display-filter)
-	     (process-send-string proc
-				  (concat "loc-retrieve "
-					  (int-to-string docnum)
-					  "\n"))
-	     (goto-char (point-min))
-	     (while (< (marker-position-nonil (process-mark proc)) 22)
-	       (sleep-for .05))
-					; loop until ready
-	     (end-of-line)
-	     (setq doc-pos-start (string-to-int (buffer-substring (point-min) (point))))
-	     (forward-char)
-             (toggle-read-only -1)
-	     (delete-region (point-min) (point))       ; Get rid of first line -- the doc start
+           (set-marker (process-mark proc) (point)
+                       (get-buffer remem-document-buffer-name))
+           (set-process-filter proc 'remem-display-filter)
+           (process-send-string proc
+                                (concat "loc-retrieve "
+                                        (int-to-string docnum)
+                                        "\n"))
+           (goto-char (point-min))
+           (while (< (marker-position-nonil (process-mark proc)) 22)
+             (sleep-for .05))
+           ; loop until ready
+           (end-of-line)
+           (setq doc-pos-start (string-to-int (buffer-substring (point-min) (point))))
+           (forward-char)
+           (toggle-read-only -1)
+           (delete-region (point-min) (point))       ; Get rid of first line -- the doc start
 
-	     (end-of-line)
-	     (setq doc-pos-end (string-to-int (buffer-substring (point-min) (point))))
-	     (forward-char)
-	     (delete-region (point-min) (point))       ; Get rid of second line -- the doc end
+           (end-of-line)
+           (setq doc-pos-end (string-to-int (buffer-substring (point-min) (point))))
+           (forward-char)
+           (delete-region (point-min) (point))       ; Get rid of second line -- the doc end
 
-	     (end-of-line)
-	     (setq doc-loc (buffer-substring (point-min) (point)))
-	     (forward-char)
-	     (delete-region (point-min) (point))       ; Get rid of third line -- the doc loc
+           (end-of-line)
+           (setq doc-loc (buffer-substring (point-min) (point)))
+           (forward-char)
+           (delete-region (point-min) (point))       ; Get rid of third line -- the doc loc
 
-	     (end-of-line)
-	     (setq remem-last-followed-doctype (buffer-substring (point-min) (point)))
+           (end-of-line)
+           (setq remem-last-followed-doctype (buffer-substring (point-min) (point)))
 
-	     (print (concat "doc-pos-start: " (int-to-string doc-pos-start)) (get-buffer "*remem-log*"))
-	     (print (concat "doc-pos-end: " (int-to-string doc-pos-end)) (get-buffer "*remem-log*"))
- 	     (print (concat "doc-loc: " doc-loc) (get-buffer "*remem-log*"))
-	     (bury-buffer remem-document-buffer-name)
-	     (find-file doc-loc)
-	     (if (string= major-mode "rmail-mode")
-					; in rmail mode, use the variable pointing to start of message
-		 (remem-rmail-goto-char (+ 2 doc-pos-start))     ; add two to skip the ^_^L delimiter
-	       (goto-char doc-pos-start))
-	     (beginning-of-line)
-	     (recenter 0)
-              (setq remem-last-followed-docnum docnum)
-             (message (concat "Rate document: " remem-command-prefix "r <rating>, where <rating> is from 1 [Bad suggestion] to 5 [Great suggestion]"))
-	     (run-hooks 'remem-gotdoc-hook)
-             (toggle-read-only t)))))
+           (print (concat "doc-pos-start: " (int-to-string doc-pos-start)) (get-buffer "*remem-log*"))
+           (print (concat "doc-pos-end: " (int-to-string doc-pos-end)) (get-buffer "*remem-log*"))
+           (print (concat "doc-loc: " doc-loc) (get-buffer "*remem-log*"))
+           (bury-buffer remem-document-buffer-name)
+           (find-file doc-loc)
+           (if (string= major-mode "rmail-mode")
+               ; in rmail mode, use the variable pointing to start of message
+               (remem-rmail-goto-char (+ 2 doc-pos-start))     ; add two to skip the ^_^L delimiter
+             (goto-char doc-pos-start))
+           (beginning-of-line)
+           (recenter 0)
+           (setq remem-last-followed-docnum docnum)
+           (message (concat "Rate document: " remem-command-prefix "r <rating>, where <rating> is from 1 [Bad suggestion] to 5 [Great suggestion]"))
+           (run-hooks 'remem-gotdoc-hook)
+           (toggle-read-only t)))))
 
 ;;; retrieve an original or a copy
 ;;; with no arguments, tries to retrieve what's at point
@@ -1884,15 +1884,15 @@ hand-set biases.")
   (interactive)
   (save-excursion
     (let* ((scope (or scop ; pre-specified
-		      (get-text-property (point) 'scope) ; we're in one
-		      (and remem-buffers ; go to the first one in the list (default)
+                      (get-text-property (point) 'scope) ; we're in one
+                      (and remem-buffers ; go to the first one in the list (default)
                            (buffer-live-p (car remem-buffers))
-			   (set-buffer (car remem-buffers))
-			   (get-text-property (point) 'scope))))
-	   (docnum (or docn
-		       (get-text-property (point) 'docnum))) ; note, we may be in the default buffer
+                           (set-buffer (car remem-buffers))
+                           (get-text-property (point) 'scope))))
+           (docnum (or docn
+                       (get-text-property (point) 'docnum))) ; note, we may be in the default buffer
            (relevance (get-text-property (point) 'relevance))
-	   (lineno (count-lines 1 (point))))
+           (lineno (count-lines 1 (point))))
       (cond (scope
              (if remem-load-original-suggestion
                  (remem-display-line-original scope docnum lineno)
@@ -1990,8 +1990,8 @@ hand-set biases.")
                (let ((w (get-buffer-window (get-buffer remem-buffer-name))))
                  (message "WWhello")
                  (if w (delete-window w)))
-               (message "hello")
-               (remem-display-buffer remem-buffer-name)))
+             (message "hello")
+             (remem-display-buffer remem-buffer-name)))
           (t
            (message "xhello")
            (remem-cancel-timer remem-global-timer)
@@ -2005,12 +2005,12 @@ hand-set biases.")
           (if (window-live-p (get-buffer-window remem-buffer-name (selected-frame)))
               (let ((w (get-buffer-window (get-buffer remem-buffer-name))))
                 (if w (delete-window w))))
-          (unless (window-live-p (get-buffer-window remem-buffer-name (selected-frame)))
-            (remem-display-buffer remem-buffer-name)))
-      (progn
-        ;; if (window-live-p (get-buffer-window remem-buffer-name t))
-        (remem-cancel-timer remem-global-timer)
-        (kill-remem))))
+        (unless (window-live-p (get-buffer-window remem-buffer-name (selected-frame)))
+          (remem-display-buffer remem-buffer-name)))
+    (progn
+      ;; if (window-live-p (get-buffer-window remem-buffer-name t))
+      (remem-cancel-timer remem-global-timer)
+      (kill-remem))))
 
 (defun remem-restart-on-outdated-index (scope)
   "If any of the index files we're looking at are newer than they were when we started up their processes, restart ra-retrieve."
@@ -2030,10 +2030,10 @@ hand-set biases.")
   "starts the processes.  essentially a bundling function"
   (save-excursion
     (cond (remem-display-running
-	   (message "Remembrance Agent already running"))
-	  (t
+           (message "Remembrance Agent already running"))
+          (t
            (cond ((not (file-exists-p (concat (expand-file-name remem-prog-dir)
-                                                  "/ra-retrieve")))
+                                              "/ra-retrieve")))
                   (message (concat "Cannot find program file: "
                                    (expand-file-name remem-prog-dir)
                                    "/ra-retrieve")))
@@ -2043,12 +2043,12 @@ hand-set biases.")
                  ((let ((notfound nil))
                     (mapcar
                      #'(lambda (scopeinfo)
-                        (cond ((not (file-exists-p (concat (expand-file-name remem-database-dir) "/"
-                                                           (car scopeinfo))))
-                               (message (concat "Cannot find index-file subdirectory: "
-                                                (expand-file-name remem-database-dir) "/"
-                                                (car scopeinfo)))
-                               (setq notfound t))))
+                         (cond ((not (file-exists-p (concat (expand-file-name remem-database-dir) "/"
+                                                            (car scopeinfo))))
+                                (message (concat "Cannot find index-file subdirectory: "
+                                                 (expand-file-name remem-database-dir) "/"
+                                                 (car scopeinfo)))
+                                (setq notfound t))))
                      remem-scopes-list)
                     notfound))
                  (t
@@ -2077,12 +2077,12 @@ hand-set biases.")
                   ;; will not unset it.
                   ;; (global-set-key (kbd "C-c x") 'remem-command-map)
                   ;;to make the display stick!
-;;; I don't like resetting C-xo, so I won't
-;;;                  (setq remem-old-C-xo (global-key-binding "\C-xo"))
-;;;                  (global-set-key "\C-xo" 'remem-other-window)
+                  ;;; I don't like resetting C-xo, so I won't
+                  ;;;                  (setq remem-old-C-xo (global-key-binding "\C-xo"))
+                  ;;;                  (global-set-key "\C-xo" 'remem-other-window)
                   (define-key 'remem-command-map (kbd "xo") 'remem-other-window)
 
-;;; But I'll make an exception for C-x1 'cause it's so useful
+                  ;;; But I'll make an exception for C-x1 'cause it's so useful
                   ;; (setq remem-old-C-x1 (global-key-binding "\C-x1"))
                   ;; (global-set-key "\C-x1" 'remem-delete-other-windows)
                   (define-key 'remem-command-map (kbd "x1") 'remem-delete-other-windows)
@@ -2090,11 +2090,11 @@ hand-set biases.")
 
                   (define-key 'remem-command-map (kbd "v") 'remem-query-now)
                   (define-key 'remem-command-map (kbd "n") 'remem-display-other)
-		  (define-key 'remem-command-map (kbd "f") 'remem-grab-query)
-		  (define-key 'remem-command-map (kbd "d") 'remem-change-database)
+                  (define-key 'remem-command-map (kbd "f") 'remem-grab-query)
+                  (define-key 'remem-command-map (kbd "d") 'remem-change-database)
                   (define-key 'remem-command-map (kbd "q") 'remem-create-query-page)
 
-	   ;;;set the key bindings for the retrieval
+                  ;;;set the key bindings for the retrieval
                   (define-key 'remem-command-map (kbd "1") 'remem-display-line-1)
                   (define-key 'remem-command-map (kbd "2") 'remem-display-line-2)
                   (define-key 'remem-command-map (kbd "3") 'remem-display-line-3)
@@ -2130,33 +2130,33 @@ hand-set biases.")
   "kills all the processes, closes the remem-buffer"
   (save-excursion
     (cond (remem-display-running
-	   (setq remem-display-running nil)
-	   (remem-kill-all-scopes)
+           (setq remem-display-running nil)
+           (remem-kill-all-scopes)
            (setq remem-display-buffer-height 0)
            (setq remem-total-scope-lines 0)
-	   (if (or remem-hide-display
-		   (eq nil (get-buffer-window remem-buffer-name t)))
-	       nil
-	     (remem-delete-window remem-buffer-name))
-	   (remem-kill-buffer remem-buffer-name)	   ;;to make the display stick!
+           (if (or remem-hide-display
+                   (eq nil (get-buffer-window remem-buffer-name t)))
+               nil
+             (remem-delete-window remem-buffer-name))
+           (remem-kill-buffer remem-buffer-name)	   ;;to make the display stick!
            ;; (global-unset-key (kbd "C-c x"))
-	   ;; (global-set-key "\C-x1" remem-old-C-x1)
-;;;	   (global-set-key "\C-xo" remem-old-C-xo)
+           ;; (global-set-key "\C-x1" remem-old-C-x1)
+           ;;;	   (global-set-key "\C-xo" remem-old-C-xo)
 
-	   ;;;unset the key bindings
+           ;;;unset the key bindings
 
-;;; I don't like resetting C-xo, so I won't
-;;;                  (setq remem-old-C-xo (global-key-binding "\C-xo"))
-;;;                  (global-set-key "\C-xo" 'remem-other-window)
+           ;;; I don't like resetting C-xo, so I won't
+           ;;;                  (setq remem-old-C-xo (global-key-binding "\C-xo"))
+           ;;;                  (global-set-key "\C-xo" 'remem-other-window)
            (define-key 'remem-command-map (kbd "xo") nil)
 
-;;; But I'll make an exception for C-x1 'cause it's so useful
+           ;;; But I'll make an exception for C-x1 'cause it's so useful
            ;; (setq remem-old-C-x1 (global-key-binding "\C-x1"))
            ;; (global-set-key "\C-x1" 'remem-delete-other-windows)
            (define-key 'remem-command-map (kbd "x1") nil)
            (define-key 'remem-command-map (kbd "T")  nil)
 
-	   ;;;set the key bindings for the retrieval
+           ;;;set the key bindings for the retrieval
            (define-key 'remem-command-map (kbd "v") nil)
            (define-key 'remem-command-map (kbd "n") nil)
            (define-key 'remem-command-map (kbd "f") nil)
@@ -2192,7 +2192,7 @@ hand-set biases.")
            (define-key 'remem-command-map (kbd "r5") nil)
 
            (run-hooks 'remem-start-hook)
-	   (message "Remembrance Agent stopped")))))
+           (message "Remembrance Agent stopped")))))
 
 (defun remem-hide-display ()
   (save-excursion
@@ -2200,11 +2200,11 @@ hand-set biases.")
         (if remem-hide-display
             (message "Remembrance display already hidden")
 
-            (setq remem-hide-display t)
-            ;; (message "xx %s" remem-hide-display)
-            (let ((w (get-buffer-window (get-buffer remem-buffer-name))))
-              (if w (delete-window w))))
-        (message "Remembrance Agent not running"))))
+          (setq remem-hide-display t)
+          ;; (message "xx %s" remem-hide-display)
+          (let ((w (get-buffer-window (get-buffer remem-buffer-name))))
+            (if w (delete-window w))))
+      (message "Remembrance Agent not running"))))
 
 
 (defun remem-show-display ()
@@ -2212,16 +2212,16 @@ hand-set biases.")
     (if remem-display-running
         (if (not remem-hide-display)
             (message "Remembrance display not hidden")
-            (unless (window-live-p (get-buffer-window remem-buffer-name t))
-              (remem-display-buffer remem-buffer-name))
-            (setq remem-hide-display nil))
-        (message "Remembrance Agent not running"))))
+          (unless (window-live-p (get-buffer-window remem-buffer-name t))
+            (remem-display-buffer remem-buffer-name))
+          (setq remem-hide-display nil))
+      (message "Remembrance Agent not running"))))
 
 (defun remem-display-toggle ()
   (interactive)
   (if remem-hide-display
       (remem-show-display)
-      (remem-hide-display)))
+    (remem-hide-display)))
 
 (defun remem-toggle ()
   (interactive)
@@ -2257,29 +2257,29 @@ hand-set biases.")
    remem-display window"
   (interactive)
   (let ((sw (selected-window))
-	(rw (get-buffer-window remem-buffer-name t))
-	(nw (next-window (selected-window) 1))
-	w)
+        (rw (get-buffer-window remem-buffer-name t))
+        (nw (next-window (selected-window) 1))
+        w)
     (cond ((eq nw rw)
-	   (other-window 2))
-	  (t
-	   (other-window 1)))
+           (other-window 2))
+          (t
+           (other-window 1)))
     ))
 
 (defun remem-delete-window (buffer-name)
   (let ((buffer (get-buffer buffer-name)))
     (save-excursion
-     (select-window (get-buffer-window buffer t))
-     (delete-window))))
+      (select-window (get-buffer-window buffer t))
+      (delete-window))))
 
 (defun remem-delete-other-windows (&rest args)
   "Replacement for delete-other-windows that won't delete the
 *remem-buffer* window."
   (interactive)
   (let ((sw (selected-window))
-	(rw (get-buffer-window remem-buffer-name))
-	(nw (next-window (selected-window) 1))
-	w)
+        (rw (get-buffer-window remem-buffer-name))
+        (nw (next-window (selected-window) 1))
+        w)
     (cond (rw
            (if (eq sw rw)
                (progn (other-window 1)
@@ -2300,13 +2300,13 @@ hand-set biases.")
 
 (defun remem-rmail-what-message-at-point (n)
   (let ((where n)
-	(low 1)
-	(high rmail-total-messages)
-	(mid (/ rmail-total-messages 2)))
+        (low 1)
+        (high rmail-total-messages)
+        (mid (/ rmail-total-messages 2)))
     (while (> (- high low) 1)
       (if (>= where (rmail-msgbeg mid))
-	  (setq low mid)
-	(setq high mid))
+          (setq low mid)
+        (setq high mid))
       (setq mid (+ low (/ (- high low) 2))))
     (if (>= where (rmail-msgbeg high)) high low)))
 
@@ -2354,8 +2354,8 @@ hand-set biases.")
         (scopename (remem-scope-directory scope))
         (numlines (remem-scope-number-lines scope)))
 
-;;; No cond, so it logs events even when no checkpoint is needed.
-;   (cond ((> num-queries 0)
+    ;;; No cond, so it logs events even when no checkpoint is needed.
+    ;   (cond ((> num-queries 0)
     (remem-log-string (format "Checkpoint: %d, %s, %d, %d, %s\n"
                               num-queries scopename update-period numlines why-check))
     (remem-set-scope-querycounter scope 0)))
