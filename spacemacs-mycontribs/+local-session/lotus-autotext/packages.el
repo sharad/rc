@@ -180,7 +180,7 @@ Each entry is either:
         ;; to ignore
         (setq template-auto-update-disable-regexp "ido\\.last"))))
 
-(defun lotus-autotext/init-auto-yasnippet ()
+(defun lotus-autotext/post-init-auto-yasnippet ()
   (use-package auto-yasnippet
       :defer t
       :config
