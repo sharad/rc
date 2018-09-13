@@ -748,7 +748,7 @@ instead of a string."
       (progn
         )))
 
-(defun lotus-plan/init-planner-env ()
+(defun lotus-plan/init-post-planner-env ()
   (use-package planner-env
       :defer t
       :config
