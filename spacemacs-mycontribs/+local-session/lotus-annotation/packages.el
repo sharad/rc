@@ -125,12 +125,4 @@ Each entry is either:
         ;; (define-key ctl-x-map "A"    'annot-convert)
         )))
 
-(defun lotus-annotation/init-PKG ()
-  (use-package PKG
-      :defer t
-      :config
-      (progn
-        (progn
-          ))))
-
 ;;; packages.el ends here
