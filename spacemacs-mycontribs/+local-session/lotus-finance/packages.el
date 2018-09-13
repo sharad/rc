@@ -40,7 +40,7 @@
     (balance :location local)
     ;; http://code.google.com/p/emacs-easy-budget/
     (emacs-easy-budget :location local)
-    ample
+    sample
     (date-util :location local)
     (ledger :location local)
     )
@@ -108,7 +108,7 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-finance/init-ample ()
+(defun lotus-finance/init-sample ()
   (use-package ample
       :defer t
       :config
