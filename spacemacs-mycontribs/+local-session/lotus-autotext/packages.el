@@ -68,15 +68,6 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-autotext/init-template ()
-  (use-package template
-      :defer t
-      :config
-      (progn
-        (template-initialize)
-        ;; to ignore
-        (setq template-auto-update-disable-regexp "ido\\.last"))))
-
 (defun lotus-autotext/init-autoinsert+ ()
   (use-package autoinsert+
       :defer t
