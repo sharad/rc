@@ -206,7 +206,6 @@
                          (get-buffer "*helm-mode-occ-add-to-org-heading*"))))))))
 
 ;;---------------------------------------------------------------;;;###autoload
-;;;###autoload
 (cl-defmethod occ-add-to-org-heading-when-idle ((ctx occ-ctx) timeout)
 
   ;; either this should also be in occ-obj-method
