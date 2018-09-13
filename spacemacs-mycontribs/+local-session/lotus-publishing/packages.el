@@ -41,7 +41,7 @@
     oddmuse
     yaoddmuse
     org-oddmuse
-    wikirel
+    (wikirel :location local)
     oddmuse-curl
     (erin :location local)
     (twiki :location local)
