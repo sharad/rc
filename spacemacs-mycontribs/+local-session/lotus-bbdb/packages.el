@@ -97,8 +97,8 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-annotation/init-PKG ()
-  (use-package PKG
+(defun lotus-annotation/init-bbdb-vcard-import ()
+  (use-package bbdb-vcard-import
       :defer t
       :config
       (progn
