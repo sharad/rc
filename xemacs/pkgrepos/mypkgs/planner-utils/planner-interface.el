@@ -56,7 +56,7 @@
 (defun pushnew-alist (key value list)
   (unless (assoc key list)
     (pushnew (cons key nil) list :key #'car))
-   (pushnew value (cdr (assoc key list)) :test #'string-equal))
+  (pushnew value (cdr (assoc key list)) :test #'string-equal))
 
 (defun task-status-map (sys status)
   (cdr (assoc sys (cdr (assoc status status-mappings)))))
@@ -86,13 +86,13 @@
 
 (defun task-map-from-sys-status (sys status &optional mappings)
   (let* ((mappings (or mappings status-mappings))
-        (map (find status mappings
-                   :key #'(lambda (e)
-                            (cdr (assoc sys (cdr e))))
-                   :test #'(lambda (statusa statusb)
-                             (if (consp statusb)
-                                 (member statusa statusb)
-                                 (string-equal statusa statusb))))))
+         (map (find status mappings
+                    :key #'(lambda (e)
+                             (cdr (assoc sys (cdr e))))
+                    :test #'(lambda (statusa statusb)
+                              (if (consp statusb)
+                                  (member statusa statusb)
+                                (string-equal statusa statusb))))))
     map))
 
 (defun task-status-from-sys-status (sys status &optional mappings)
@@ -108,8 +108,8 @@
          (rstatus
           (if (consp stati)
               (loop for s in stati
-                 collect (task-status-of-sys sys s mappings))
-              (task-status-of-sys sys stati mappings))))
+                   collect (task-status-of-sys sys s mappings))
+            (task-status-of-sys sys stati mappings))))
     rstatus))
 
 (defun task-maps-from-sys-stati (sys stati &optional mappings)
@@ -117,20 +117,20 @@
          (map (if (consp stati)
                   (loop for s in stati
                        collect (task-map-from-sys-status sys s mappings))
-                  (task-map-from-sys-status sys stati mappings))))
+                (task-map-from-sys-status sys stati mappings))))
     map))
 
 (defun task-stati-from-sys-stati (sys stati &optional mappings)
   (if (consp stati)
       (car (task-map-from-sys-status sys stati mappings))
-      (mapcar #'car (task-maps-from-sys-stati sys stati mappings))))
+    (mapcar #'car (task-maps-from-sys-stati sys stati mappings))))
 
 (defun task-src-stati-to-trg-stati (src stati trg &optional mappings)
   (if (consp stati)
       (mapcar #'(lambda (map)
                   (cdr (assoc trg (cdr map))))
               (task-maps-from-sys-stati src stati mappings))
-      (cdr (assoc trg (cdr (task-map-from-sys-status src stati mappings))))))
+    (cdr (assoc trg (cdr (task-map-from-sys-status src stati mappings))))))
 
 (testing
 
@@ -197,11 +197,11 @@
 
 (defun planner-today-ensure-exists ()
   (with-safe-plan-env
-   (unless (file-exists-p (concat planner-directory (planner-today) ".muse"))
-    (save-excursion
-      (save-window-excursion
-        (calendar)
-        (plan))))
+      (unless (file-exists-p (concat planner-directory (planner-today) ".muse"))
+        (save-excursion
+          (save-window-excursion
+            (calendar)
+            (plan))))
     (planner-today)))
 
 (defun planner-task-lists (plan)
@@ -221,20 +221,20 @@
     'append
     (mapcar
      #'(lambda (task)
-        (split-string (nth 6 task) ","))
+         (split-string (nth 6 task) ","))
      task-lists))
    :test 'equal))
 
 (defun planner-plans-on-task-lists (task-lists)
   (mapcar
    #'(lambda (str)
-     ;; (if (string-match "\\[\\[\\(\\S\\+\\)\\](:?\\[\\S\\])\\?\\]" str)
-     (if (string-match muse-explicit-link-regexp str)
-         (cond
-         ((match-string 2 str)
-          (replace-match "\\2" t nil str))
-         ((match-string 1 str)
-          (replace-match "\\1" t nil str)))))
+       ;; (if (string-match "\\[\\[\\(\\S\\+\\)\\](:?\\[\\S\\])\\?\\]" str)
+       (if (string-match muse-explicit-link-regexp str)
+           (cond
+             ((match-string 2 str)
+              (replace-match "\\2" t nil str))
+             ((match-string 1 str)
+              (replace-match "\\1" t nil str)))))
    (planner-plans-on-task-lists-main task-lists)))
 
 ;; (defun planner-plans-on-task-lists (task-lists)
@@ -263,7 +263,7 @@
           (replace-match "\\2" t nil str))
          ((match-string 1 str)
           (replace-match "\\1" t nil str)))
-       )))
+     )))
 
 ;;test
 (testing
@@ -295,7 +295,7 @@
     (and
      (if (consp task-pages)
          (member (concat "[[" plan "]]") task-pages)
-         (string-equal plan task-pages))
+       (string-equal plan task-pages))
      (member (nth 3 task) status))))
 
 ;; (defvar planner-task-simple-name-regex "^\\(.\+\}\}\\)\\(\s\+[[][[]\\)\?" "planner task simple name regex")
@@ -315,7 +315,7 @@
   (let* ((task-with-links-removed
           (if (string-match planner-task-simple-name-regex task)
               (match-string 1 task)
-              task))
+            task))
          (task-with-links-local-link-removed
           (replace-regexp-in-string
            (concat "[[][[]" ".\+" "[]][[]" "\\(.\+\\)" "[]][]]" "\\(:\?\s\+\\)")
@@ -345,12 +345,12 @@
 
  (kill-new
   (extract-task-name
- "[[/~s/tasks/bugs/43093][b43093]]: Build 6.1-2-18 - Station connected to wired Ethernet port of the AP not able to ping after Nplus1 fail over. [[https://bugzilla.merunetworks.com/bugzilla/show_bug.cgi?id=43093][url]] {{Tasks:95}} ([[2014.12.22]],[[MyMIS]],[[TasksByProject][p]],[[TasksByContext][c]])"))
+   "[[/~s/tasks/bugs/43093][b43093]]: Build 6.1-2-18 - Station connected to wired Ethernet port of the AP not able to ping after Nplus1 fail over. [[https://bugzilla.merunetworks.com/bugzilla/show_bug.cgi?id=43093][url]] {{Tasks:95}} ([[2014.12.22]],[[MyMIS]],[[TasksByProject][p]],[[TasksByContext][c]])"))
 
 
-  (kill-new
+ (kill-new
   (extract-task-name "[[/~s/tasks/bugs/coverity][bcoverity]]: Coverity Issues. [[http://india-coverity:8080/reports.htm#v10448/p10010/fileInstanceId=14121992&defectInstanceId=10813926&mergedDefectId=27561&eventId=10813926-14][url]] {{Tasks:102}} ([[2014.12.22]],[[MyMIS]],[[TasksByProject][p]],[[TasksByContext][c]])"
-   )))
+                     )))
 
 (defun extract-task-name-from-list (task-list)
   (extract-task-name (nth 4 task-list)))
@@ -358,20 +358,20 @@
 (defun planner-tasks-of-plan-from-page (page plan status) ;should be fault tolrent.
   (planner-task-lists-if                         ;else face lot of time waste.
    #'(lambda (task)
-     (task-lists-of-plan-with-status-p task plan status))
+       (task-lists-of-plan-with-status-p task plan status))
    (planner-task-lists page)
    :fun #'extract-task-name-from-list))
 
 (testing
 
  (planner-task-lists-if
-   #'(lambda (task) t)
-   (planner-task-lists (planner-today-ensure-exists))
-   :fun #'extract-task-name-from-list)
+  #'(lambda (task) t)
+  (planner-task-lists (planner-today-ensure-exists))
+  :fun #'extract-task-name-from-list)
 
  (remove-if-not
   #'(lambda (task)
-    (task-lists-of-plan-with-status-p task (planner-today-ensure-exists) (task-stati-of-sys 'planner '(open inprogress))))
+      (task-lists-of-plan-with-status-p task (planner-today-ensure-exists) (task-stati-of-sys 'planner '(open inprogress))))
   (planner-task-lists (planner-today-ensure-exists)))
 
  (task-lists-of-plan-with-status-p
@@ -396,8 +396,8 @@
   (planner-task-lists-if
    (if status
        #'(lambda (task)
-         (task-lists-with-status-p task plan status))
-       'identity)
+           (task-lists-with-status-p task plan status))
+     'identity)
    (planner-task-lists page)
    :fun #'(lambda (task-list) (nth 4 task-list))))
 
@@ -417,7 +417,7 @@
   (remove-if-not                        ;for ("aa"_"bb" "cc") bug
    'stringp
    (planner-tasks-of-plan-from-page
-   (planner-today-ensure-exists) plan '("_" "o"))))
+    (planner-today-ensure-exists) plan '("_" "o"))))
 
 ;;test
 (testing
@@ -459,7 +459,7 @@
         (save-excursion
           (save-restriction
             (planner-find-task-in-page-main task page buf-op))))
-      (planner-find-task-in-page-main task page buf-op)))
+    (planner-find-task-in-page-main task page buf-op)))
 
 (defun planner-task-change-status (task statusfn &optional page)
   (planner-find-task-in-page task (or page (planner-today-ensure-exists))
