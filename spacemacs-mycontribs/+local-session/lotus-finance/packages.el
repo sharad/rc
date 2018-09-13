@@ -124,14 +124,6 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-annotation/init-PKG ()
-  (use-package PKG
-      :defer t
-      :config
-      (progn
-        (progn
-          ))))
-
 (defun lotus-finance/init-ledger ()
   (use-package ledger
       :defer t
