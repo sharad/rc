@@ -39,7 +39,7 @@
     pos-tip
     popup-pos-tip
     (sdic-inline :location local)
-    sdic-inline-pos-tip
+    (sdic-inline-pos-tip :location local)
     )
   "The list of Lisp packages required by the lotus-help layer.
 
