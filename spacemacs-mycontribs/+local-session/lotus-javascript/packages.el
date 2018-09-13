@@ -436,12 +436,4 @@ Each entry is either:
         ;;     )
 	)))
 
-(defun lotus-LAYER/init-PKG ()
-  (use-package ample
-      :defer t
-      :config
-      (progn
-        (progn
-          ))))
-
 ;;; packages.el ends here
