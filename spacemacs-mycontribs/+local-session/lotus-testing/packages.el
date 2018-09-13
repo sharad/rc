@@ -66,7 +66,7 @@ Each entry is either:
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
 (defun lotus-testing/init-ert ()
-  (use-package PACKAGE
+  (use-package ert
       :defer t
       :config
       (progn
