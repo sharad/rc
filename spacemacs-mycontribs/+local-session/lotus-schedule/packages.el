@@ -385,4 +385,19 @@ Each entry is either:
         ;; (cfw:open-ical-calendar "http://www.google.com/calendar/ical/.../basic.ics")
         )))
 
+(defun lotus-LAYER/init-calfw-org ()
+  (use-package ample
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
+
+(defun lotus-LAYER/init-PKG ()
+  (use-package ample
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
 ;;; packages.el ends here
