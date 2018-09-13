@@ -414,7 +414,7 @@ instead of a string."
       (progn
         )))
 
-(defun lotus-plan/init-muse ()
+(defun lotus-plan/post-init-muse ()
   (use-package muse
       :defer t
       :config
