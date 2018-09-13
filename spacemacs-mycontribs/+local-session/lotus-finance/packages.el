@@ -116,8 +116,8 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-annotation/init-PKG ()
-  (use-package PKG
+(defun lotus-annotation/init-date-util ()
+  (use-package date-util
       :defer t
       :config
       (progn
