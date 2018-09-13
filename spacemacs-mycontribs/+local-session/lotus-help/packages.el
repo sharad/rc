@@ -168,7 +168,7 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-LAYER/init-PKG ()
+(defun lotus-LAYER/init-sdic-inline-pos-tip ()
   (use-package ample
       :defer t
       :config
