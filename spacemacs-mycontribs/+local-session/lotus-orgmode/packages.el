@@ -51,7 +51,7 @@
     (orgstruct :location local)
     (orgstruct++ :location local)
     outshine
-    outline-ivy
+    (outline-ivy :location local)
     outorg
     poporg
     navi-mode
