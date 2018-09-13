@@ -37,7 +37,7 @@
 (defconst lotus-cal-org-packages
   '(
     calendar
-    g ;; http://bc.tech.coop/blog/070306.html
+    (g :location local) ;; http://bc.tech.coop/blog/070306.html
     )
   "The list of Lisp packages required by the lotus-cal-org layer.
 
