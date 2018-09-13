@@ -8,6 +8,7 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
+export PATH=$PATH:~/bin
 
 for startup in sh login ; do
     [ -r ~/.rsetup/$startup/env ] && . ~/.rsetup/$startup/env
@@ -17,4 +18,3 @@ for startup in sh login ; do
 done
 
 export SHELL=/bin/zsh
-
