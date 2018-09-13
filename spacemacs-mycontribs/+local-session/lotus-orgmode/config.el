@@ -302,7 +302,7 @@
         #'(lambda ()
             (occ-run-with-global-tsk-collection
              #'(lambda ()
-                 (setq org-agenda-files (occ-included-files)))))))))
+                 (setq org-agenda-files (occ-included-files))))))))))
 
 (defun lotus-orgmode-config/post-init-org-agenda ()
   (progn
