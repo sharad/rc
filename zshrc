@@ -221,8 +221,8 @@ fi
 # P ATH variable
 # p ath=( $p ath )
 
-fpath=( $fpath ~/.zshall/functions ~/.zshall/completion )
-fpath=( $fpath /usr/local/etc/zsh/completion )
+# fp ath=( $fp ath ~/.zshall/functions ~/.zshall/completion )
+# fp ath=( $fp ath /usr/local/etc/zsh/completion )
 
 
 
