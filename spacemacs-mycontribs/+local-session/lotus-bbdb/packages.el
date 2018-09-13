@@ -89,8 +89,8 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-annotation/init-PKG ()
-  (use-package PKG
+(defun lotus-annotation/init-bbdb-merge ()
+  (use-package bbdb-merge
       :defer t
       :config
       (progn
