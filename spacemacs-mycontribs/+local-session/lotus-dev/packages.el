@@ -892,6 +892,14 @@ Add directory to search path for source files using the GDB command, dir."))
       (progn
         )))
 
+(defun lotus-annotation/init-cc-mode ()
+  (use-package cc-mode
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
+
 (defun lotus-dev/init-session ()
   (use-package session
       :defer t
