@@ -109,7 +109,7 @@ Each entry is either:
           ))))
 
 (defun lotus-finance/init-sample ()
-  (use-package ample
+  (use-package sample
       :defer t
       :config
       (progn
