@@ -67,7 +67,7 @@ Each entry is either:
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
 (defun lotus-unicode/init-open-unicode-template ()
-  (use-package PACKAGE
+  (use-package open-unicode-template
       :defer t
       :config
       (progn
