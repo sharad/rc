@@ -37,8 +37,8 @@
            (add-to-list 'load-path path)
            (let ((default-directory path))
              (normal-top-level-add-subdirs-to-load-path)))
-         (lambda (path)
-           (add-to-list 'load-path path)))
+       (lambda (path)
+         (add-to-list 'load-path path)))
      (remove-if-not
       'file-directory-p
       (directory-files package-dir t "[a-zA-Z]+")))))
@@ -52,7 +52,7 @@
         (when (or (not *emacs-in-init*) (not reloading-libraries))
           (message "key %s already have binded with command %s, can't bind to %s."
                    key bindedcmd cmd))
-        (global-set-key key cmd))))
+      (global-set-key key cmd))))
 
 (defun global-set-key-warn-if-bind (key cmd)
   "Set binding for key if there is no  existing binding for key."
@@ -72,7 +72,7 @@
         (when (or (not *emacs-in-init*) (not reloading-libraries))
           (message "key %s already have binded with command %s, can't bind to %s."
                    key bindedcmd cmd))
-        (define-key map key cmd))))
+      (define-key map key cmd))))
 
 
 (defun global-unset-key-if-bound (key cmd)
@@ -81,8 +81,8 @@
   (let ((bindedcmd (key-binding key t)))
     (if (equal bindedcmd cmd)
         (global-unset-key key)
-        (message "key %s is not bounded with command %s, can't unset to %s."
-                   key bindedcmd cmd))))
+      (message "key %s is not bounded with command %s, can't unset to %s."
+               key bindedcmd cmd))))
 
 (defun global-unset-key-warn-if-bound (key cmd)
   "Set binding for key if there is no  existing binding for key."
@@ -90,8 +90,8 @@
   (let ((bindedcmd (key-binding key t)))
     (if (equal bindedcmd cmd)
         (global-unset-key key)
-        (message "key %s is not bounded with command %s, can't unset to %s."
-                 key bindedcmd cmd))))
+      (message "key %s is not bounded with command %s, can't unset to %s."
+               key bindedcmd cmd))))
 
 (defun keymap-unset-key-if-bound (map key cmd)
   "Set binding for key if there is no  existing binding for key."
@@ -99,8 +99,8 @@
   (let ((bindedcmd (key-binding key t)))
     (if (equal bindedcmd cmd)
         (define-key map key cmd)
-        (message "key %s is not bounded with command %s, can't unset to %s."
-                 key bindedcmd cmd))))
+      (message "key %s is not bounded with command %s, can't unset to %s."
+               key bindedcmd cmd))))
 
 
 
@@ -109,7 +109,7 @@
   "Print the current buffer with same file name."
   (interactive "DDirqectory to put: ")
   (let* ((fname (file-name-nondirectory
-                (buffer-file-name)))
+                 (buffer-file-name)))
          (pname (concat (or dir default-directory) fname ".ps")))
     (ps-print-in-file pname)))
 
@@ -119,16 +119,16 @@
 
 (defun xrequire (feature)
   (unless (member feature exclude-lib)
-      (if (not running-xemacs)
-          (require feature nil t)
-          (require feature nil))))
+    (if (not running-xemacs)
+        (require feature nil t)
+      (require feature nil))))
 
 (defun irequire (feature)
   (ignore-errors
     (unless (member feature exclude-lib)
       (if (not running-xemacs)
           (require feature nil t)
-          (require feature nil)))))
+        (require feature nil)))))
 
 
 ;;}}}
@@ -142,7 +142,7 @@
          (funcall fun (car list))))
     (if result
         result
-        (if list (afind-if fun (cdr list))))))
+      (if list (afind-if fun (cdr list))))))
 
 (eval-when-compile
   '(when (featurep 'notify)
@@ -228,9 +228,9 @@
 (defun undefine-function-remember (fnsym)
   "Use (redefine-function-remembered fnsym) to redefine."
   (unless (eq fnsym 'ignore)
-   (push (cons fnsym (symbol-function fnsym))
-         *undefine-function-alist*)
-   (defalias fnsym 'ignore)))
+    (push (cons fnsym (symbol-function fnsym))
+          *undefine-function-alist*)
+    (defalias fnsym 'ignore)))
 
 (defun redefine-function-remembered (fnsym)
   "Use (undefine-function-remember fnsym) to undefine."
@@ -240,7 +240,7 @@
           (fset fnsym (cdr fdef))
           (setq *undefine-function-alist*
                 (del-alist (car fdef) *undefine-function-alist*)))
-        (message "def for %s function is not available." fnsym))))
+      (message "def for %s function is not available." fnsym))))
 
 
 
@@ -263,14 +263,14 @@
                  ('error nil))))
       (if ret
           ret
-          (let ((file (or
-                       filename
-                       (locate-library (symbol-name feature)))))
+        (let ((file (or
+                     filename
+                     (locate-library (symbol-name feature)))))
 
-            (load-file file)
-            (byte-compile-file file)
-            ;; (require feature filename noerror)
-            ))))
+          (load-file file)
+          (byte-compile-file file)
+          ;; (require feature filename noerror)
+          ))))
 
   (when nil
     (ad-disable-advice 'require 'around 'compile-if-fail)
@@ -280,16 +280,16 @@
 
 (defun load-dir-files (dir)
   (let (load-file-with-errors)
-   (when (file-directory-p dir)
-     (byte-recompile-directory dir 0)
-     (mapc #'(lambda (f)
-             (if (not (ignore-errors (load-file f)))
-                 (push f load-file-with-errors)))
-           (directory-files dir t "^[a-zA-Z0-9-]+\.elc$"))
-     (if load-file-with-errors
-         (mapc 'load-file
-               load-file-with-errors)
-         t))))
+    (when (file-directory-p dir)
+      (byte-recompile-directory dir 0)
+      (mapc #'(lambda (f)
+                (if (not (ignore-errors (load-file f)))
+                    (push f load-file-with-errors)))
+            (directory-files dir t "^[a-zA-Z0-9-]+\.elc$"))
+      (if load-file-with-errors
+          (mapc 'load-file
+                load-file-with-errors)
+        t))))
 
 (defun require-dir-libs (dir)
   (let (load-lib-with-errors
@@ -300,83 +300,83 @@
               (let ((feature (if (string-match "\\(.\+\\)\.el" lib)
                                  (intern (match-string 1 lib)))))
                 (if feature
-                  (unless
-                      (and
-                       (message "now loading %s.el" feature)
-                       (with-report-error "check"
-                           (require feature)))
-                    (push feature load-lib-with-errors)))))
+                    (unless
+                        (and
+                         (message "now loading %s.el" feature)
+                         (with-report-error "check"
+                             (require feature)))
+                      (push feature load-lib-with-errors)))))
             (directory-files dir nil "^[a-zA-Z0-9-]+\.el$"))
       (if load-lib-with-errors
           (progn
             (setq reloading-libraries t)
             (message "now loading files ( %s ) with errors." load-lib-with-errors)
             (mapc #'(lambda (f)
-                    (message "now loading file with error %s.el" f)
-                    (with-report-error "check"
-                        (require f)))
+                      (message "now loading file with error %s.el" f)
+                      (with-report-error "check"
+                          (require f)))
                   load-lib-with-errors))
-          (message "all library loaded in %s directory without error." dir))
+        (message "all library loaded in %s directory without error." dir))
       t)))
 
 (progn
- (defun load-lib-autoloads (feature)
-   (let* ((packagesfn (intern (format "configuration|common|%s|packages" feature)))
-          (featureinitfn (intern (format "configuration|common|%s|init" feature)))
-          (featureconfigfn (intern (format "configuration|common|%s|init" feature)))
-          (packages (when (fboundp packagesfn) (funcall packagesfn))))
+  (defun load-lib-autoloads (feature)
+    (let* ((packagesfn (intern (format "configuration|common|%s|packages" feature)))
+           (featureinitfn (intern (format "configuration|common|%s|init" feature)))
+           (featureconfigfn (intern (format "configuration|common|%s|init" feature)))
+           (packages (when (fboundp packagesfn) (funcall packagesfn))))
 
-     (dolist (package packages)
-       (let ((package-init-fn (intern (format "configuration|common|%s|%s|init" feature package)))
-             (package-config-fn (intern (format "configuration|common|%s|%s|config" feature package)))
-             (package-enable-fn (intern (format "configuration|common|%s|%s|enable" feature package)))
-             (package-disable-fn (intern (format "configuration|common|%s|%s|disable" feature package)))
-             (package-bind-fn (intern (format "configuration|common|%s|%s|bind" feature package)))
-             (package-unbind-fn (intern (format "configuration|common|%s|%s|unbind" feature package))))
-         (when (fboundp package-init-fn)
-           (message "loading %s" package-init-fn)
-           (funcall package-init-fn))))
+      (dolist (package packages)
+        (let ((package-init-fn (intern (format "configuration|common|%s|%s|init" feature package)))
+              (package-config-fn (intern (format "configuration|common|%s|%s|config" feature package)))
+              (package-enable-fn (intern (format "configuration|common|%s|%s|enable" feature package)))
+              (package-disable-fn (intern (format "configuration|common|%s|%s|disable" feature package)))
+              (package-bind-fn (intern (format "configuration|common|%s|%s|bind" feature package)))
+              (package-unbind-fn (intern (format "configuration|common|%s|%s|unbind" feature package))))
+          (when (fboundp package-init-fn)
+            (message "loading %s" package-init-fn)
+            (funcall package-init-fn))))
 
-     (when (fboundp featureinitfn)
-       (message "loading %s" featureinitfn)
-       (funcall featureinitfn))))
+      (when (fboundp featureinitfn)
+        (message "loading %s" featureinitfn)
+        (funcall featureinitfn))))
 
- (defun autoload-dir-libs (dir)
-   (let (load-lib-with-errors
-         reloading-libraries)
-     (when (file-directory-p dir)
-       (ignore-errors (byte-recompile-directory dir 0))
-       (mapc (lambda (lib)
-               (let ((feature (if (string-match "\\(.\+\\)\.el" lib)
-                                  (intern (match-string 1 lib)))))
-                 (if feature
-                     (unless
-                         (and
-                          (message "now loading %s.el" feature)
-                          (with-report-error "check"
-                              (load-lib-autoloads feature)
-                              ))
-                       (push feature load-lib-with-errors)))))
-             (directory-files dir nil "^[a-zA-Z0-9-]+\.el$"))
-       (if load-lib-with-errors
-           (progn
-             (setq reloading-libraries t)
-             (message "now loading files ( %s ) with errors." load-lib-with-errors)
-             (mapc #'(lambda (f)
-                     (message "now loading file with error %s.el" f)
-                     (with-report-error "check"
-                         (load-lib-autoloads f)))
-                   load-lib-with-errors))
-           (message "all library loaded in %s directory without error." dir))
-       t))))
+  (defun autoload-dir-libs (dir)
+    (let (load-lib-with-errors
+          reloading-libraries)
+      (when (file-directory-p dir)
+        (ignore-errors (byte-recompile-directory dir 0))
+        (mapc (lambda (lib)
+                (let ((feature (if (string-match "\\(.\+\\)\.el" lib)
+                                   (intern (match-string 1 lib)))))
+                  (if feature
+                      (unless
+                          (and
+                           (message "now loading %s.el" feature)
+                           (with-report-error "check"
+                               (load-lib-autoloads feature)
+                               ))
+                        (push feature load-lib-with-errors)))))
+              (directory-files dir nil "^[a-zA-Z0-9-]+\.el$"))
+        (if load-lib-with-errors
+            (progn
+              (setq reloading-libraries t)
+              (message "now loading files ( %s ) with errors." load-lib-with-errors)
+              (mapc #'(lambda (f)
+                        (message "now loading file with error %s.el" f)
+                        (with-report-error "check"
+                            (load-lib-autoloads f)))
+                    load-lib-with-errors))
+          (message "all library loaded in %s directory without error." dir))
+        t))))
 
 (defun add-element-to-lists (element lists)
   (dolist (list lists)
-          (add-hook (intern (concat (symbol-name list) "-mode-hook")) element)))
+    (add-hook (intern (concat (symbol-name list) "-mode-hook")) element)))
 
 (defun remove-element-from-lists (element lists)
   (dolist (list lists)
-          (remove-hook (intern (concat (symbol-name list) "-mode-hook")) element)))
+    (remove-hook (intern (concat (symbol-name list) "-mode-hook")) element)))
 
 (defvar pgm-langs
   '(java
@@ -413,7 +413,7 @@
   (defun pathname-delete-trailing-/ (path)
     (if (pathname-end-with-/ path)
         (pathname-delete-trailing-/ (subseq path 0 (- (length path) 2)))
-        path))
+      path))
 
   (defun pathname-equal (p1 p2)
     "Pathname equality"
@@ -438,7 +438,7 @@
   (lotus-message-notify "run-at-time-or-now" "will run %s after %d sec" fn time)
   (if (numberp time)
       (run-with-timer time nil fn)
-      (funcall fn)))
+    (funcall fn)))
 
 (defun run-at-time-or-now-arg (time fn arg)
   "Run FN with ARG at TIME if numeric is otherwise run now only."
@@ -446,7 +446,7 @@
       (run-with-timer time nil
                       (lambda (a) (funcall (car a) (cdr a)))
                       (cons fn arg))
-      (funcall fn arg)))
+    (funcall fn arg)))
 
 (defun my-delete-timer ()
   (interactive)
