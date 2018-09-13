@@ -180,8 +180,8 @@ Each entry is either:
         ;; to ignore
         (setq template-auto-update-disable-regexp "ido\\.last"))))
 
-(defun lotus-annotation/init-PKG ()
-  (use-package PKG
+(defun lotus-annotation/init-auto-yasnippet ()
+  (use-package auto-yasnippet
       :defer t
       :config
       (progn
