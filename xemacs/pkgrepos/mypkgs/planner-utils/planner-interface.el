@@ -220,14 +220,14 @@
    (apply
     'append
     (mapcar
-     '(lambda (task)
+     #'(lambda (task)
         (split-string (nth 6 task) ","))
      task-lists))
    :test 'equal))
 
 (defun planner-plans-on-task-lists (task-lists)
   (mapcar
-   '(lambda (str)
+   #'(lambda (str)
      ;; (if (string-match "\\[\\[\\(\\S\\+\\)\\](:?\\[\\S\\])\\?\\]" str)
      (if (string-match muse-explicit-link-regexp str)
          (cond
@@ -239,7 +239,7 @@
 
 ;; (defun planner-plans-on-task-lists (task-lists)
 ;;   (mapcar
-;;    '(lambda (str)
+;;    #'(lambda (str)
 ;;      (let ((task
 ;;             (if (string-match "\\[\\[\\(\\S\\+\\)\\]\\]" str)
 ;;                 (replace-match "\\1" t nil str))))
@@ -357,7 +357,7 @@
 
 (defun planner-tasks-of-plan-from-page (page plan status) ;should be fault tolrent.
   (planner-task-lists-if                         ;else face lot of time waste.
-   '(lambda (task)
+   #'(lambda (task)
      (task-lists-of-plan-with-status-p task plan status))
    (planner-task-lists page)
    :fun #'extract-task-name-from-list))
@@ -365,12 +365,12 @@
 (testing
 
  (planner-task-lists-if
-   '(lambda (task) t)
+   #'(lambda (task) t)
    (planner-task-lists (planner-today-ensure-exists))
    :fun #'extract-task-name-from-list)
 
  (remove-if-not
-  '(lambda (task)
+  #'(lambda (task)
     (task-lists-of-plan-with-status-p task (planner-today-ensure-exists) (task-stati-of-sys 'planner '(open inprogress))))
   (planner-task-lists (planner-today-ensure-exists)))
 
@@ -384,7 +384,7 @@
 ;;test
 (testing
  (planner-task-lists-if
-  '(lambda (task) (task-list-of-plan-with-status-p task (planner-today-ensure-exists) '("_" "o")))
+  #'(lambda (task) (task-list-of-plan-with-status-p task (planner-today-ensure-exists) '("_" "o")))
   (planner-task-lists (planner-today-ensure-exists))
   :fun #'extract-task-name-from-list))
 
@@ -395,11 +395,11 @@
 (defun planner-tasks-from-page (page &optional status)
   (planner-task-lists-if
    (if status
-       '(lambda (task)
+       #'(lambda (task)
          (task-lists-with-status-p task plan status))
        'identity)
    (planner-task-lists page)
-   :fun '(lambda (task-list) (nth 4 task-list))))
+   :fun #'(lambda (task-list) (nth 4 task-list))))
 
 (defun planner-tasks-of-pages-intersection (plan1 plan2 status)
   (intersection
