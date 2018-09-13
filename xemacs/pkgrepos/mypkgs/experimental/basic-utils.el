@@ -282,7 +282,7 @@
   (let (load-file-with-errors)
    (when (file-directory-p dir)
      (byte-recompile-directory dir 0)
-     (mapc '(lambda (f)
+     (mapc #'(lambda (f)
              (if (not (ignore-errors (load-file f)))
                  (push f load-file-with-errors)))
            (directory-files dir t "^[a-zA-Z0-9-]+\.elc$"))
@@ -311,7 +311,7 @@
           (progn
             (setq reloading-libraries t)
             (message "now loading files ( %s ) with errors." load-lib-with-errors)
-            (mapc '(lambda (f)
+            (mapc #'(lambda (f)
                     (message "now loading file with error %s.el" f)
                     (with-report-error "check"
                         (require f)))
@@ -362,7 +362,7 @@
            (progn
              (setq reloading-libraries t)
              (message "now loading files ( %s ) with errors." load-lib-with-errors)
-             (mapc '(lambda (f)
+             (mapc #'(lambda (f)
                      (message "now loading file with error %s.el" f)
                      (with-report-error "check"
                          (load-lib-autoloads f)))
