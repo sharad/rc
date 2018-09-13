@@ -85,7 +85,7 @@ Each entry is either:
 
   ;; M-SPC not available, window manager take it away
 
-                                        ; (global-set-key-if-unbind (kbd "M-'") 'just-one-space)
+  ; (global-set-key-if-unbind (kbd "M-'") 'just-one-space)
   (use-package pabbrev
       :defer t
       :config
@@ -115,34 +115,34 @@ Each entry is either:
           (add-hook 'c-mode-common-hook 'my-c-mode-cedet-hook))
 
         (progn ;; "config autocomplete"
-            ;; http://root42.blogspot.hu/2012/07/nice-c-autocomplete-configuration-for.html
-            (defcustom mycustom-system-include-paths '("./include/" "/opt/local/include" "/usr/include" )
-              "This is a list of include paths that are used by the clang auto completion."
-              :group 'mycustom
-              :type '(repeat directory))
+          ;; http://root42.blogspot.hu/2012/07/nice-c-autocomplete-configuration-for.html
+          (defcustom mycustom-system-include-paths '("./include/" "/opt/local/include" "/usr/include" )
+            "This is a list of include paths that are used by the clang auto completion."
+            :group 'mycustom
+            :type '(repeat directory))
 
-            ;; (add-to-list 'load-path "~/bin/emacs/auto-complete")
-            (use-package auto-complete-config
+          ;; (add-to-list 'load-path "~/bin/emacs/auto-complete")
+          (use-package auto-complete-config
               ;; (add-to-list 'ac-dictionary-directories "~/bin/emacs/auto-complete/ac-dict")
-                :defer t
-                :config
+              :defer t
+              :config
+              (progn
                 (progn
-                  (progn
-                    (ac-config-default)
-                    (use-package auto-complete-clang
-                        :defer t
-                        :config
+                  (ac-config-default)
+                  (use-package auto-complete-clang
+                      :defer t
+                      :config
+                      (progn
                         (progn
-                          (progn
-                            (setq
-                             clang-completion-suppress-error 't
-                             ac-clang-flags (mapcar '(lambda (item) (concat "-I" item)) (append mycustom-system-include-paths)))
+                          (setq
+                           clang-completion-suppress-error 't
+                           ac-clang-flags (mapcar #'(lambda (item) (concat "-I" item)) (append mycustom-system-include-paths)))
 
-                            (defun my-ac-clang-mode-common-hook ()
-                              (define-key c-mode-base-map (kbd "M-/") 'ac-complete-clang))
+                          (defun my-ac-clang-mode-common-hook ()
+                            (define-key c-mode-base-map (kbd "M-/") 'ac-complete-clang))
 
-                            ;; (add-hook 'c-mode-common-hook 'my-ac-clang-mode-common-hook)
-                            ))))))))))
+                          ;; (add-hook 'c-mode-common-hook 'my-ac-clang-mode-common-hook)
+                          ))))))))))
 
 (defun lotus-expand/init-pde-indent-dwim ()
   (use-package pde-indent-dwim
@@ -173,7 +173,7 @@ Each entry is either:
             (let ((binding (apply orig-fun args)))
               (if (eq binding 'pabbrev-expand-maybe)
                   'indent-for-tab-command
-                  binding)))
+                binding)))
 
           (when (fboundp 'advice-add)
             (advice-add 'yas--keybinding-beyond-yasnippet
