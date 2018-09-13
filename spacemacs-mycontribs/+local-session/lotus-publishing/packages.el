@@ -43,7 +43,7 @@
     org-oddmuse
     wikirel
     oddmuse-curl
-    (erin)
+    (erin :location local)
     twiki
     )
   "The list of Lisp packages required by the lotus-publishing layer.
