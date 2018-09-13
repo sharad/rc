@@ -93,4 +93,28 @@ Each entry is either:
         ;; (define-key ctl-x-map "A"    'annot-convert)
         )))
 
+(defun lotus-annotation/init-annot ()
+  (use-package annot
+      :defer t
+      :config
+      (progn
+        ;; TODO: After adding annotation add it to a org file with link back to place where annotation were added.
+        ;; it could help to search annotation when the original place is forgotten.
+        ;; https://code.google.com/p/annot/
+        ;; * [C-x a]    -  add a new annotation/highlight or edit an existing annotation on point.
+        ;;                 You can also use [C-x C-a]. (annot-edit/add)
+        ;; * [C-x r]    -  remove annotation at point. (annot-remove)
+        ;; * [C-x w]    -  insert an image at point. (annot-add-image)
+        (setq
+         ;; annot-image-directory
+         annot-directory (auto-config-dir "annot/" t)
+         annot-enable-symlinking t)
+
+        ;; (define-key ctl-x-map "a"    'annot-edit/add)
+        ;; (define-key ctl-x-map "\C-a" 'annot-edit/add)
+        ;; (define-key ctl-x-map "r"    'annot-remove)
+        ;; (define-key ctl-x-map "w"    'annot-add-image)
+        ;; (define-key ctl-x-map "A"    'annot-convert)
+        )))
+
 ;;; packages.el ends here
