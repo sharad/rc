@@ -68,7 +68,7 @@ Each entry is either:
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
 (defun lotus-bbdb/init-bbdb ()
-  (use-package PACKAGE
+  (use-package bbdb
       :defer t
       ;; :post
       ;; (progn
