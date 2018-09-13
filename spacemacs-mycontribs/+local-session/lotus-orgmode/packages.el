@@ -122,7 +122,7 @@ Each entry is either:
         (lotus-orgmode-config/post-init-ob-tangle))))
 
 (defun lotus-orgmode/post-init-publishing ()
-  (use-package ample
+  (use-package publishing
       :defer t
       :config
       (progn
