@@ -152,7 +152,7 @@ Each entry is either:
 
             (sdic-inline-mode 1))))))
 
-(defun lotus-LAYER/init-PKG ()
+(defun lotus-LAYER/init-popup-pos-tip ()
   (use-package ample
       :defer t
       :config
