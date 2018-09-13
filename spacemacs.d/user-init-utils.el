@@ -57,8 +57,8 @@
   (let ((layer-dir "~/.spacemacs-mycontribs/+local-session/"))
     (when (file-directory-p layer-dir)
       (mapcar
-       '(lambda (f)
-         (intern f))
+       #'(lambda (f)
+           (intern f))
        (remove-if
         'file-directory-p
         (directory-files layer-dir nil "^lotus-[a-zA-Z]+"))))))
@@ -66,12 +66,12 @@
 
 (defun cleanup-tty-process ()
   (interactive)
- (let ((tty-processes
-        (remove-if-not
-         'process-tty-name
-                       (process-list))))
-   (dolist (tp tty-processes)
-     (kill-process tp))))
+  (let ((tty-processes
+         (remove-if-not
+          'process-tty-name
+          (process-list))))
+    (dolist (tp tty-processes)
+      (kill-process tp))))
 
 (defun elscreen-keymap-setup ()
   (progn ;; "Keybinding: Elscreen"
@@ -82,10 +82,10 @@
       (global-unset-key [C-z])
       ;; (global-set-key [C-z c] 'elscreen-create)
       (funcall
-       '(lambda (symbol value)
-         (when (boundp 'elscreen-map)
-           (elscreen-set-prefix-key value))
-         (custom-set-default symbol value))
+       #'(lambda (symbol value)
+           (when (boundp 'elscreen-map)
+             (elscreen-set-prefix-key value))
+           (custom-set-default symbol value))
        'elscreen-prefix-key "\C-z")
       (global-set-key [s-right] 'elscreen-next)
       (global-set-key [s-left]  'elscreen-previous)
@@ -106,7 +106,7 @@
     (push
      (if (file-directory-p local-lib)
          local-lib
-         default-local-lib)
+       default-local-lib)
      load-path))
   (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
@@ -151,24 +151,24 @@
   ;; BUG settle these
   (require 'basic-utils)
 
-    ;; (progn
-    ;;    ;; server-auth-dir (auto-config-dir "server" t)
-    ;;    (defadvice server-create-window-system-frame
-    ;;        (around nocreate-in-init activate)
-    ;;      "remove-scratch-buffer"
-    ;;      (if *emacs-in-init*
-    ;;          (message "loading init now.")
-    ;;        ad-do-it)))
+  ;; (progn
+  ;;    ;; server-auth-dir (auto-config-dir "server" t)
+  ;;    (defadvice server-create-window-system-frame
+  ;;        (around nocreate-in-init activate)
+  ;;      "remove-scratch-buffer"
+  ;;      (if *emacs-in-init*
+  ;;          (message "loading init now.")
+  ;;        ad-do-it)))
 
   (eval-after-load "server"
     '(progn
-       ;; server-auth-dir (auto-config-dir "server" t)
-       (defadvice server-create-window-system-frame
-           (around nocreate-in-init activate)
-         "remove-scratch-buffer"
-         (if *emacs-in-init*
-             (message "loading init now.")
-           ad-do-it))))
+      ;; server-auth-dir (auto-config-dir "server" t)
+      (defadvice server-create-window-system-frame
+          (around nocreate-in-init activate)
+        "remove-scratch-buffer"
+        (if *emacs-in-init*
+            (message "loading init now.")
+          ad-do-it))))
 
 
   (when (require 'cl nil) ; a rare necessary use of REQUIRE
@@ -179,20 +179,20 @@
     (expand-file-name "paradise" "~/.."))
 
   (when t
-   (progn ;; "custom setup"
-    (defvar custom-override-file "~/.xemacs/hand-custom.el" "Hand Custom elisp")
+    (progn ;; "custom setup"
+      (defvar custom-override-file "~/.xemacs/hand-custom.el" "Hand Custom elisp")
 
-    (defvar exclude-lib
-      (if (string-equal (system-name) "spratap")
-          '(tramp)))
+      (defvar exclude-lib
+        (if (string-equal (system-name) "spratap")
+            '(tramp)))
 
-    (when nil
-      (when (file-exists-p (setq custom-file "~/.xemacs/custom.el"))
-        (load-file custom-file))
+      (when nil
+        (when (file-exists-p (setq custom-file "~/.xemacs/custom.el"))
+          (load-file custom-file))
 
-      (when (file-exists-p custom-override-file)
-        (load-file custom-override-file)))
-    ))
+        (when (file-exists-p custom-override-file)
+          (load-file custom-override-file)))
+      ))
 
   (require 'misc-utils)
 
@@ -353,56 +353,56 @@
       )
 
     (when nil                           ; FROM where this came.
-     (let (current-load-list)
+      (let (current-load-list)
 
-      (defadvice indent-region (around remove-useless-whitespace
-                                       (start end &optional column) activate)
-        "Advised by Develock.
+        (defadvice indent-region (around remove-useless-whitespace
+                                         (start end &optional column) activate)
+          "Advised by Develock.
 If Develock is on, remove useless leading and trailing whitespace in
 Lisp modes, C modes and Java mode.  You can turn off this advice
 permanently by customizing the `develock-energize-functions-plist'
 variable."
-        (if (and develock-mode font-lock-mode
-                 (plist-get develock-energize-functions-plist 'indent-region)
-                 (memq major-mode '(emacs-lisp-mode
-                                    lisp-interaction-mode
-                                    c-mode c++-mode java-mode jde-mode)))
-            (save-excursion
-              ;; Meddle with out of the region.
-              (goto-char end)
-              (while (and (zerop (forward-line 1))
-                          (looking-at "[\t ]+$")))
-              (let ((to (point))
-                    (fn (cdr (assq
-                              major-mode
-                              '((emacs-lisp-mode . develock-lisp-indent-line)
-                                (lisp-interaction-mode . develock-lisp-indent-line)
-                                (c-mode . develock-c-indent-line)
-                                (c++-mode . develock-c-indent-line)
-                                (java-mode . develock-c-indent-line)
-                                (jde-mode . develock-c-indent-line))))))
-                (goto-char start)
-                (while (and (zerop (forward-line -1))
-                            (or (looking-at "[\t ]+$")
-                                (progn
-                                  (forward-line 1)
-                                  nil))))
-                (save-restriction
-                  (if (prog1
-                          (zerop (forward-line -1))
-                        (narrow-to-region (point) to))
-                      (forward-line 1))
-                  (while (not (eobp))
-                    (or (eolp)
-                        (progn
-                          (funcall fn)
-                          (if (and (not (bolp))
-                                   (eolp))
-                              (delete-region (develock-point-at-bol) (point)))))
-                    (forward-line 1)))))
-          ad-do-it))
+          (if (and develock-mode font-lock-mode
+                   (plist-get develock-energize-functions-plist 'indent-region)
+                   (memq major-mode '(emacs-lisp-mode
+                                      lisp-interaction-mode
+                                      c-mode c++-mode java-mode jde-mode)))
+              (save-excursion
+                ;; Meddle with out of the region.
+                (goto-char end)
+                (while (and (zerop (forward-line 1))
+                            (looking-at "[\t ]+$")))
+                (let ((to (point))
+                      (fn (cdr (assq
+                                major-mode
+                                '((emacs-lisp-mode . develock-lisp-indent-line)
+                                  (lisp-interaction-mode . develock-lisp-indent-line)
+                                  (c-mode . develock-c-indent-line)
+                                  (c++-mode . develock-c-indent-line)
+                                  (java-mode . develock-c-indent-line)
+                                  (jde-mode . develock-c-indent-line))))))
+                  (goto-char start)
+                  (while (and (zerop (forward-line -1))
+                              (or (looking-at "[\t ]+$")
+                                  (progn
+                                    (forward-line 1)
+                                    nil))))
+                  (save-restriction
+                    (if (prog1
+                            (zerop (forward-line -1))
+                          (narrow-to-region (point) to))
+                        (forward-line 1))
+                    (while (not (eobp))
+                      (or (eolp)
+                          (progn
+                            (funcall fn)
+                            (if (and (not (bolp))
+                                     (eolp))
+                                (delete-region (develock-point-at-bol) (point)))))
+                      (forward-line 1)))))
+            ad-do-it))
 
-      )))
+        )))
 
 
   (deh-require-maybe folding
@@ -554,17 +554,17 @@ variable."
             (setq
              *test-idle-prints-timer*
              (run-with-timer 1 2
-                             '(lambda ()
-                               ;; (message "Test: From timer idle for org %d secs emacs %d secs" (org-emacs-idle-seconds) (float-time (current-idle-time)))
-                               (let* (display-last-input-event
-                                      (idle (current-idle-time))
-                                      (idle (if idle (float-time (current-idle-time)) 0)))
-                                 (unless (eq known-last-input-event last-input-event)
-                                   (setq display-last-input-event last-input-event
-                                         known-last-input-event last-input-event))
-                                 (message "Test: From timer idle for %f secs emacs, and last even is %s" idle display-last-input-event)))))))
-        (when *test-idle-prints-timer*
-          (cancel-timer *test-idle-prints-timer*))))
+                             #'(lambda ()
+                                 ;; (message "Test: From timer idle for org %d secs emacs %d secs" (org-emacs-idle-seconds) (float-time (current-idle-time)))
+                                 (let* (display-last-input-event
+                                        (idle (current-idle-time))
+                                        (idle (if idle (float-time (current-idle-time)) 0)))
+                                   (unless (eq known-last-input-event last-input-event)
+                                     (setq display-last-input-event last-input-event
+                                           known-last-input-event last-input-event))
+                                   (message "Test: From timer idle for %f secs emacs, and last even is %s" idle display-last-input-event)))))))
+      (when *test-idle-prints-timer*
+        (cancel-timer *test-idle-prints-timer*))))
   (defun toggle-test-idle-prints ()
     (interactive)
     (test-idle-prints (null *test-idle-prints-timer*)))
