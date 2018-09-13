@@ -296,7 +296,7 @@ startup in daemon mode."
   (setq
    debug-on-error lotus-disable-login-session-finish-debug-on-error
    debug-on-quit lotus-disable-login-session-finish-debug-on-quit))
-(add-hook 'lotus-disable-login-session-interrupting-feature-hook 'lotus-general-disable-login-session-setting-end)
+(add-hook 'lotus-disable-login-session-interrupting-feature-hook 'lotus-general-disable-login-session-setting-finish)
 
 ;;;###autoload
 (defun lotus-disable-login-session-interrupting-feature ()
@@ -335,7 +335,7 @@ startup in daemon mode."
 (defun lotus-general-enable-login-session-setting-finish ()
   (interactive)
   (setq debug-on-error lotus-enable-login-session-finish-debug-on-error))
-(add-hook 'lotus-enable-login-session-interrupting-feature-hook 'lotus-general-enable-login-session-setting-end)
+(add-hook 'lotus-enable-login-session-interrupting-feature-hook 'lotus-general-enable-login-session-setting-finish)
 
 ;;;###autoload
 (defun lotus-enable-login-session-interrupting-feature ()
