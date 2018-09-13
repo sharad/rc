@@ -1115,7 +1115,7 @@ FILE and any extensions that are in `muse-ignored-extensions'."
       (progn
         )))
 
-(defun lotus-LAYER/init-oddmuse ()
+(defun lotus-publishing/init-oddmuse ()
   (use-package ample
       :defer t
       :config
