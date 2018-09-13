@@ -175,7 +175,7 @@ export CVSROOT=$LOCALCVSROOT
 # Warnning!: My Dear Please Note: Exporting This variable wn't allow	  #
 # Bash script files to change directories.                                #
 # for instnace
-# CDPATH=/home/s/
+# CDP ATH=/home/s/
 #=========================================================================#
 
 
