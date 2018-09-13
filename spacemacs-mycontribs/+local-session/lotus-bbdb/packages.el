@@ -81,14 +81,6 @@ Each entry is either:
          bbdb/mail-auto-create-p t
          bbdb/news-auto-create-p t))))
 
-(defun lotus-annotation/init-PKG ()
-  (use-package PKG
-      :defer t
-      :config
-      (progn
-        (progn
-          ))))
-
 (defun lotus-annotation/init-bbdb-merge ()
   (use-package bbdb-merge
       :defer t
