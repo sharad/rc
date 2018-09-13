@@ -204,6 +204,14 @@ Each entry is either:
         (progn
           ))))
 
+(defun lotus-annotation/init-PKG ()
+  (use-package PKG
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
+
 ;; (defun lotus-autotext/init-PACKAGE ()
 ;;   (use-package PACKAGE
 ;;       :defer t
