@@ -72,6 +72,23 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+(defun lotus-javascript/init-espresso ()
+  ;; from: http://www.nongnu.org/espresso/
+  (use-package espresso
+      :defer t
+      :config
+      (progn
+        (add-to-list 'auto-mode-alist '("\\.js$" . espresso-mode))
+        (add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode)))))
+
+(defun lotus-javascript/init-sws-mode ()
+  (use-package ample
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
+
 (defun lotus-javascript/init-js-mode ()
   (use-package js-mode
       :defer t
