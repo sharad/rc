@@ -15,7 +15,8 @@ VISUAL=$EDITOR
 
 BROWSER=w3m
 
-# PATH=$PATH:$HOME/.local/bin
+# for instance
+# P ATH=$P ATH:$HOME/.local/bin
 
 export EDITOR
 export VISUAL
