@@ -67,8 +67,8 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-python/init-python-mode ()
-  (use-package python-mode
+(defun lotus-python/init-python ()
+  (use-package python
     :defer t
     :config
     (progn
