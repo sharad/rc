@@ -383,8 +383,6 @@ Each entry is either:
           (add-to-list 'flymake-allowed-file-name-masks
                        '("\\.jade\\'" flymake-jade-init))))))
 
-
-
 (defun lotus-javascript/init-moz ()
   ;; C-c C-s: open a MozRepl interaction buffer and switch to it
   ;; C-c C-l: save the current buffer and load it in MozRepl
