@@ -152,4 +152,5 @@ Each entry is either:
 
             (sdic-inline-mode 1))))))
 
+
 ;;; packages.el ends here
