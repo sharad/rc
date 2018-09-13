@@ -87,7 +87,7 @@ Each entry is either:
            "Format the EUDC QUERY list as a RFC1558 LDAP search filter."
            (format "(|%s)"
                    (apply 'concat
-                          (mapcar '(lambda (item)
+                          (mapcar #'(lambda (item)
                                     (format "(%s=%s)"
                                      (car item)
                                      (eudc-ldap-escape-query-special-chars (cdr item))))
@@ -328,7 +328,7 @@ see `eudc-inline-expansion-servers'"
                                              "[ \t]+"))
 
                   ;; (query-words (mapcar
-                  ;;               '(lambda (w) (concat "*" w "*"))
+                  ;;               #'(lambda (w) (concat "*" w "*"))
                   ;;               (split-string (buffer-substring-no-properties beg end)
                   ;;                             "[ \t]+")))
                   query-formats
@@ -590,7 +590,7 @@ see `eudc-inline-expansion-servers'"
                   ;; (query-words (split-string (buffer-substring beg end) "[ \t]+"))
                   ;; for partial names.
                   (query-words (mapcar
-                                '(lambda (w) (concat "*" w "*"))
+                                #'(lambda (w) (concat "*" w "*"))
                                 (split-string (buffer-substring beg end) "[ \t]+")))
                   query-formats
                   inline-expansion-formats
