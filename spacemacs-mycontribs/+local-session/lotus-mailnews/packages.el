@@ -65,14 +65,6 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-mailnews/init-PACKAGE ()
-  (use-package PACKAGE
-      :defer t
-      :config
-      (progn
-        )))
-
-
 (defun lotus-mailnews/post-init-lsdb ()
   (use-package lsdb
       :defer t
