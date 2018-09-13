@@ -429,7 +429,7 @@ Each entry is either:
         (add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode)))))
 
 
-(defun lotus-LAYER/init-PKG ()
+(defun lotus-LAYER/init-sws-mode ()
   (use-package ample
       :defer t
       :config
