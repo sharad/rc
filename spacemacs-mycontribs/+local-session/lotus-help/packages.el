@@ -161,7 +161,7 @@ Each entry is either:
           ))))
 
 (defun lotus-help/init-sdic-inline ()
-  (use-package ample
+  (use-package sdic-inline
       :defer t
       :config
       (progn
