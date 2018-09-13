@@ -121,6 +121,14 @@ Each entry is either:
       (progn
         (lotus-orgmode-config/post-init-ob-tangle))))
 
+(defun lotus-orgmode/init-PKG ()
+  (use-package ample
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
+
 (defun lotus-orgmode/init-org-timer ()
   (use-package org-timer
       :defer t
