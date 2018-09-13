@@ -36,8 +36,8 @@
 
 (defconst lotus-help-packages
   '(
-    pos-tip
-    popup-pos-tip
+    (pos-tip :location local)
+    (popup-pos-tip :location local)
     (sdic-inline :location local)
     (sdic-inline-pos-tip :location local)
     )
