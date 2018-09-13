@@ -153,7 +153,7 @@ Each entry is either:
             (sdic-inline-mode 1))))))
 
 (defun lotus-help/init-popup-pos-tip ()
-  (use-package ample
+  (use-package popup-pos-tip
       :defer t
       :config
       (progn
