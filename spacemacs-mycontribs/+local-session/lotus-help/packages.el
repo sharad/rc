@@ -152,7 +152,7 @@ Each entry is either:
 
             (sdic-inline-mode 1))))))
 
-(defun lotus-LAYER/init-popup-pos-tip ()
+(defun lotus-help/init-popup-pos-tip ()
   (use-package ample
       :defer t
       :config
@@ -160,7 +160,7 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-LAYER/init-sdic-inline ()
+(defun lotus-help/init-sdic-inline ()
   (use-package ample
       :defer t
       :config
@@ -168,7 +168,7 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-LAYER/init-sdic-inline-pos-tip ()
+(defun lotus-help/init-sdic-inline-pos-tip ()
   (use-package ample
       :defer t
       :config
