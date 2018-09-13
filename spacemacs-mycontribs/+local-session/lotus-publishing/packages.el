@@ -1163,8 +1163,8 @@ FILE and any extensions that are in `muse-ignored-extensions'."
       (progn
         )))
 
-(defun lotus-publishing/init-oddmuse ()
-  (use-package oddmuse
+(defun lotus-publishing/init-oddmuse-curl ()
+  (use-package oddmuse-curl
       :defer t
       :config
       (progn
