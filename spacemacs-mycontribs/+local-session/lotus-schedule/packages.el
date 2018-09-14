@@ -295,7 +295,13 @@ Each entry is either:
 
           ;; Week days
           (setq calendar-day-name-array
-                ["Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday"])
+                ["Sunday"
+                 "Monday"
+                 "Tuesday"
+                 "Wednesday"
+                 "Thursday"
+                 "Friday"
+                 "Saturday"])
 
           ;; First day of the week
           (setq calendar-week-start-day 0) ; 0:Sunday, 1:Monday
