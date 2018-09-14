@@ -37,8 +37,8 @@
 (defconst lotus-bbdb-packages
   '(
     (bbdb :location local)
-    bbdb-merge
-    bbdb-vcard-import
+    (bbdb-merge :location local)
+    (bbdb-vcard-import :location local)
     )
   "The list of Lisp packages required by the lotus-bbdb layer.
 
