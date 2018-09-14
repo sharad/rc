@@ -39,6 +39,6 @@
 ;; ;; variables
 
 (defun top-dir (type &optional dir)
-  )
+  ())
 
 ;;; publishing.el ends here
