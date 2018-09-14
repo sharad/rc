@@ -180,8 +180,7 @@ Each entry is either:
                      diary-file
                      (expand-file-name
                       "diary"
-                      local-diary-output-directory))
-                    )))))
+                      local-diary-output-directory)))))))
         (progn
           (setq diary-display-function 'diary-fancy-display)
           (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
