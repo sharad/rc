@@ -450,15 +450,7 @@ Each entry is either:
       :defer t
       :config
       (progn
-        (autoload 'xref-js2-minor-mode "xref-js2" "Xref-Js2illa Minor and Inferior Xref-Js2illa Modes" t)
-        (defun javascript-custom-setup ()
-          (setq xref-js2-repl-port 4747)
-          (xref-js2-minor-mode 1))
-        (add-hook 'inferior-xref-js2-hook 'javascript-custom-setup)
-        ;; (defun javascript-custom-setup ()
-        ;;   (deh-require-maybe xref-js2
-        ;;     `(xref-js2-minor-mode 1))
-        ;;     )
+
         )))
 
 ;;; packages.el ends here
