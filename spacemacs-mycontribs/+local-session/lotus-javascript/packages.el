@@ -460,4 +460,12 @@ Each entry is either:
                                     #'(lambda ()
                                         (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))))))))))))
 
+(defun lotus-javascript/init-sws-mode ()
+  (use-package sws-mode
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
+
 ;;; packages.el ends here
