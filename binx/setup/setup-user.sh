@@ -69,7 +69,8 @@ DEB_PKG_DOC="wv"
 
 
 
-PY_PIP_PKG="termdown"
+PY_PIP_PKG="termdown "
+NODE_PKG="tern "
 
 # TODO
 # setup these also
