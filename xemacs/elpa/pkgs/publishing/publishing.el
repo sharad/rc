@@ -43,7 +43,7 @@
    (expand-file-name
     "default"
     (expand-file-name
-     type
+     (symbol-name type)
      "contents/virtual"))
    *created-content-dir*))
 
