@@ -76,7 +76,6 @@ Each entry is either:
               :defer t
               :config
               (progn
-
                 (add-to-enable-startup-interrupting-feature-hook))))
         (progn
           ;; http://www.emacswiki.org/emacs/AppointmentMode
