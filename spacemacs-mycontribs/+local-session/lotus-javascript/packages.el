@@ -446,6 +446,14 @@ Each entry is either:
   ;; In the interaction buffer:
   ;;
   ;; C-c c: insert the current name of the REPL plus the dot operator (usually repl.)
+
+  (use-package xref
+      :defer t
+      :config
+      (progn
+        (progn
+          )))
+
   (use-package xref-js2
       :defer t
       :config
