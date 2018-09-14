@@ -456,7 +456,9 @@ Each entry is either:
               :config
               (progn
                 (progn
+                  ;; If you use js2-mode, M-. will be bound by js2, you might want to unbind it:
                   (define-key js2-mode-map (kbd "M-.") nil)
+                  ;; Then you need to add the xref backend:
                   (add-hook 'js2-mode-hook
                             #'(lambda ()
                                 (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
