@@ -176,6 +176,7 @@ Each entry is either:
                           (content-misc-dir local-diary-relative-path))
                          (local-diary-output-directory
                           (content-misc-publishing-dir local-diary-relative-path)))
+
                     )))))
         (progn
           (setq diary-display-function 'diary-fancy-display)
