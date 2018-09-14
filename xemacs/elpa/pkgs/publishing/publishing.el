@@ -55,6 +55,8 @@
      (symbol-name type)
      "contents/virtual"))
    (expand-file-name
+    (expand-file-name
+     "gen")
     *created-content-dir*)))
 
 ;;; publishing.el ends here
