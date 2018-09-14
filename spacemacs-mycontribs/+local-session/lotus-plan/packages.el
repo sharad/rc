@@ -148,7 +148,8 @@ Each entry is either:
 
               (let* ((local-planner-relative-path "web/site/wiki/Organize/plan/Plans")
                      (local-planner-directory
-                      (expand-file-name local-planner-relative-path *muse-top-dir*))
+                      ;; (expand-file-name local-planner-relative-path *muse-top-dir*)
+                       (content-misc-dir local-planner-relative-path))
                      (local-planner-output-directory
                       (expand-file-name "planner-xhtml" (expand-file-name local-planner-relative-path *muse-generated-top-dir*))))
                 (if (file-directory-p local-planner-directory)
