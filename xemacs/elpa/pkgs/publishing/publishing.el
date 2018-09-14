@@ -38,7 +38,7 @@
 ;; (defvar *misc-website-address*   (concat *website-address* "misc/"))
 ;; ;; variables
 
-(defun top-dir (type)
+(defun publishing-top-dir (type)
   (expand-file-name
    (expand-file-name
     "default"
