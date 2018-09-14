@@ -47,7 +47,7 @@
      "contents/virtual"))
    *created-content-dir*))
 
-(defun publishing-top-dir (type)
+(defun publishing-generated-top-dir (type)
   (expand-file-name
    (expand-file-name
     "default"
