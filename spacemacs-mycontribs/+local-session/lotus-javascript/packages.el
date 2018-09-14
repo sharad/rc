@@ -480,8 +480,7 @@ Each entry is either:
           ;; errors. To tell js2-mode to treat hashbangs as comments, which
           ;; prevents them from causing parse errors, add this:
 
-          (setq js2-skip-preprocessor-directives t)
-          )
+          (setq js2-skip-preprocessor-directives t))
 
         (progn
           ;; Setup keybindings
