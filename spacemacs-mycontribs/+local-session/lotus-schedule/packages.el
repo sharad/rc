@@ -175,7 +175,8 @@ Each entry is either:
                          (local-planner-directory
                           (content-misc-dir local-diary-relative-path))
                          (local-planner-output-directory
-                          (content-misc-publishing-dir local-diary-relative-path))))
+                          (content-misc-publishing-dir local-diary-relative-path)))
+                    )
                   ))
               )
 
