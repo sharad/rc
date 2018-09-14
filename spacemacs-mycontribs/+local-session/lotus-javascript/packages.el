@@ -35,6 +35,7 @@
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
 (defconst lotus-javascript-packages
+  ;; https://emacs.cafe/emacs/javascript/setup/2017/04/23/emacs-setup-javascript.html
   '(
     (espresso :location local)
     sws-mode
