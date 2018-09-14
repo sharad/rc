@@ -240,6 +240,7 @@ Each entry is either:
       :defer t
       :config
       (progn
-        )))
+        (progn
+          (global-set-key (kbd "C-=") 'er/expand-region)))))
 
 ;;; packages.el ends here
