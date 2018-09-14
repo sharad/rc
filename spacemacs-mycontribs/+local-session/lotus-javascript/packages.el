@@ -464,6 +464,7 @@ Each entry is either:
 
 (defun lotus-javascript/init-js2-refactor ()
   (use-package js2-refactor
+      ;; https://github.com/magnars/js2-refactor.el
       :defer t
       :config
       (progn
