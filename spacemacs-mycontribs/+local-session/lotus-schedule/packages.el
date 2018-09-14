@@ -175,8 +175,7 @@ Each entry is either:
                    (local-planner-directory
                     (expand-file-name local-planner-relative-path *muse-top-dir*))
                    (local-planner-output-directory
-                    (content-misc-publishing-dir "planner-xhtml" local-planner-relative-path)
-                    ))
+                    (content-misc-publishing-dir "planner-xhtml" local-planner-relative-path)))
                   ))
               )
 
