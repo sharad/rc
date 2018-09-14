@@ -502,8 +502,6 @@ Each entry is either:
           ;; aesthetics, feel free to pick and choose your own keybindings with
           ;; a smattering of:
 
-          (define-key js2-refactor-mode-map (kbd "C-c C-e C-f") 'js2r-extract-function)
-
-          ))))
+          (define-key js2-refactor-mode-map (kbd "C-c C-e C-f") 'js2r-extract-function)))))
 
 ;;; packages.el ends here
