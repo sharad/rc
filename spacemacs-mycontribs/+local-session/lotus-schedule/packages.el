@@ -171,11 +171,11 @@ Each entry is either:
               :config
               (progn
                 (progn
-                  (let* ((local-planner-relative-path "emacs/schedule/diary")
+                  (let* ((local-diary-relative-path "emacs/schedule/diary")
                          (local-planner-directory
-                          (content-misc-dir local-planner-relative-path))
+                          (content-misc-dir local-diary-relative-path))
                          (local-planner-output-directory
-                          (content-misc-publishing-dir local-planner-relative-path))))
+                          (content-misc-publishing-dir local-diary-relative-path))))
                   ))
               )
 
