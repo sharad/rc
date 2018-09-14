@@ -450,7 +450,7 @@ Each entry is either:
       :defer t
       :config
       (progn
-
-        )))
+        (progn
+          ))))
 
 ;;; packages.el ends here
