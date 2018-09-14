@@ -166,11 +166,11 @@ Each entry is either:
       (progn
         (progn
           )
-       (progn
-        (setq diary-display-function 'diary-fancy-display)
-        (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
-        (add-hook 'diary-list-entries-hook 'diary-mark-included-diary-files)
-        (add-hook 'diary-list-entries-hook 'diary-sort-entries t)))))
+        (progn
+          (setq diary-display-function 'diary-fancy-display)
+          (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+          (add-hook 'diary-list-entries-hook 'diary-mark-included-diary-files)
+          (add-hook 'diary-list-entries-hook 'diary-sort-entries t)))))
 
 (defun lotus-schedule/post-init-planner-interface ()
   (use-package planner-interface
