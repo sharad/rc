@@ -763,8 +763,6 @@ between the two tags."
              `(muse-completing-read-function (quote ido-completing-read))
              `(muse-html-charset-default "utf-8")
              `(muse-html-encoding-default (quote utf-8))
-             ;; `(muse-html-footer ,(concat *muse-top-dir* "/web/site/meta/generic/footer.html"))
-             ;; `(muse-html-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
              `(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
              `(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
 
