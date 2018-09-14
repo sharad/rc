@@ -160,7 +160,15 @@ Each entry is either:
 
           ;; FlymakeJavaScript
 
-          ;; There are multiple options for checking Javascript syntax that can be used within flymake. The javascript engines SpiderMonkey and Rhino can both check Javascript syntax. Alternatively, you can use Douglas Crockford’s rather handy JSLint, which is much less forgiving of bad syntax, and can enforce a sensible coding style. Another option is JSHint, which is a fork of JSLint, modified to be not as strict and more configurable in its requirements than the original. The following describe some of these options.
+          ;; There are multiple options for checking Javascript syntax that can
+          ;; be used within flymake. The javascript engines SpiderMonkey and
+          ;; Rhino can both check Javascript syntax. Alternatively, you can use
+          ;; Douglas Crockford’s rather handy JSLint, which is much less
+          ;; forgiving of bad syntax, and can enforce a sensible coding style.
+          ;; Another option is JSHint, which is a fork of JSLint, modified to be
+          ;; not as strict and more configurable in its requirements than the
+          ;; original. The following describe some of these options.
+
           ;; Contents
 
           ;;    1. With JSLint on Rhino
@@ -172,7 +180,10 @@ Each entry is either:
 
           ;; With JSLint on Rhino
 
-          ;; First, you will need to install Rhino (**not necessary on Windows, see below), and download jslint.js for Rhino [1]. I’ve got it located in ~/soft/jslint, and you will want to update the code below to match where you’ve put it.
+          ;; First, you will need to install Rhino (**not necessary on Windows,
+          ;; see below), and download jslint.js for Rhino [1]. I’ve got it
+          ;; located in ~/soft/jslint, and you will want to update the code
+          ;; below to match where you’ve put it.
 
           ;; Next you will want to create a file called flymake-jslint.el on your LoadPath like the following
 
