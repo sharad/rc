@@ -481,7 +481,6 @@ Each entry is either:
           ;; prevents them from causing parse errors, add this:
 
           (setq js2-skip-preprocessor-directives t)
-
           ))))
 
 ;;; packages.el ends here
