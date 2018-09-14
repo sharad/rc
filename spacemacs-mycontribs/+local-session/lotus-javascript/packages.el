@@ -460,8 +460,8 @@ Each entry is either:
                                     #'(lambda ()
                                         (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))))))))))))
 
-(defun lotus-javascript/init-sws-mode ()
-  (use-package sws-mode
+(defun lotus-javascript/init-js2-refactor ()
+  (use-package js2-refactor
       :defer t
       :config
       (progn
