@@ -84,15 +84,15 @@ Each entry is either:
            *created-content-dir* (expand-file-name "CreatedContent" *doc-root*)
            *website-address*     "http://sharad.ddns.net/~s/gen/"))
 
-        (progn ;; org
+        (progn ;; misc
           (progn
             ;; (debug)
             (progn
               (setq
-               *org-top-dir*           (expand-file-name "contents/virtual/org/default" *created-content-dir*)
-               *org-top-style-dir*     (expand-file-name "generic/org/style" *org-top-dir*)
-               *org-generated-top-dir* (expand-file-name "gen/org" *created-content-dir*)
-               *org-website-address*   (concat *website-address* "org/")))))
+               *misc-top-dir*           (expand-file-name "contents/virtual/misc/default" *created-content-dir*)
+               *misc-top-style-dir*     (expand-file-name "generic/misc/style" *misc-top-dir*)
+               *misc-generated-top-dir* (expand-file-name "gen/misc" *created-content-dir*)
+               *misc-website-address*   (concat *website-address* "misc/")))))
 
         (progn ;; muse
           (progn
