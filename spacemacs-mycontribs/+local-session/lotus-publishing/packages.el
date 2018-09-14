@@ -765,7 +765,6 @@ between the two tags."
              `(muse-html-encoding-default (quote utf-8))
              `(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
              `(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
-
              `(muse-html-meta-content-encoding (quote utf-8))
              `(muse-html-style-sheet
                "<lisp>
