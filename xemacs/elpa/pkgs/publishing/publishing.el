@@ -38,4 +38,6 @@
 ;; (defvar *misc-website-address*   (concat *website-address* "misc/"))
 ;; ;; variables
 
+(defun top-dir ())
+
 ;;; publishing.el ends here
