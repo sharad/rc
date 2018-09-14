@@ -173,7 +173,7 @@ Each entry is either:
                 (progn
                   ((local-planner-relative-path "web/site/wiki/Organize/plan/Plans")
                    (local-planner-directory
-                    (expand-file-name local-planner-relative-path *muse-top-dir*))
+                    (content-misc-dir local-planner-relative-path *muse-top-dir*))
                    (local-planner-output-directory
                     (content-misc-publishing-dir "planner-xhtml" local-planner-relative-path)))
                   ))
