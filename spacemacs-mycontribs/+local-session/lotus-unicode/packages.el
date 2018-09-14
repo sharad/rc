@@ -37,7 +37,7 @@
 (defconst lotus-unicode-packages
   '(
     ;; (PACKAGE :location local)
-    open-unicode-template
+    (open-unicode-template :location local)
     )
   "The list of Lisp packages required by the lotus-unicode layer.
 
