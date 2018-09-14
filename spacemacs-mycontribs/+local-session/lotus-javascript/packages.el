@@ -452,13 +452,6 @@ Each entry is either:
       :config
       (progn
         (progn
-          )))
-
-  (use-package xref-js2
-      :defer t
-      :config
-      (progn
-        (progn
           (use-package js2-mode
               :defer t
               :config
@@ -471,7 +464,14 @@ Each entry is either:
                             #'(lambda ()
                                 (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
 
-                  )))
+                  ))))))
+
+  (use-package xref-js2
+      :defer t
+      :config
+      (progn
+        (progn
+
           ))))
 
 ;;; packages.el ends here
