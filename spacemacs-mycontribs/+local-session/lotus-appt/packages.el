@@ -81,9 +81,10 @@ Each entry is either:
                    #'(lambda ()
                        ;; http://www.emacswiki.org/emacs/AppointmentMode
                        (if (not running-xemacs)
-                           (appt-activate 1); use (appt-activate 1) for GNU Emacs
-                         (appt-initialize)) ; XEmacs
-                       ))))))
+                                        ; use (appt-activate 1) for GNU Emacs
+                           (appt-activate 1)
+                                        ; XEmacs
+                         (appt-initialize))))))))
         (progn
 
           (setq appt-msg-countdown-list '(10 5 1) ; XEmacs
