@@ -474,7 +474,7 @@ Each entry is either:
                                     #'(lambda ()
                                         (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))))))))))))
 
-(defun lotus-javascript/init-js2-refactor ()
+(defun lotus-javascript/post-init-js2-refactor ()
   (use-package js2-refactor
       ;; https://github.com/magnars/js2-refactor.el
       :defer t
