@@ -152,7 +152,7 @@ Each entry is either:
                        (content-muse-dir local-planner-relative-path))
                      (local-planner-output-directory
                       ;; (expand-file-name "planner-xhtml" (expand-file-name local-planner-relative-path *muse-generated-top-dir*))
-                      (content-misc-publishing-dir
+                      (content-muse-publishing-dir
                        (expand-file-name "planner-xhtml" local-planner-relative-path))))
                 (if (file-directory-p local-planner-directory)
                     (progn
