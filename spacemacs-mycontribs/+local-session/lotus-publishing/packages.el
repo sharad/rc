@@ -42,7 +42,7 @@
     yaoddmuse
     (org-oddmuse :location local)
     (wikirel :location local)
-    oddmuse-curl
+    (oddmuse-curl :location local)
     (erin :location local)
     (twiki :location local)
     )
