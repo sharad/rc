@@ -171,7 +171,7 @@ Each entry is either:
               :config
               (progn
                 (progn
-                  ((local-planner-relative-path "web/site/wiki/Organize/plan/Plans")
+                  ((local-planner-relative-path "emacs/diary")
                    (local-planner-directory
                     (content-misc-dir local-planner-relative-path))
                    (local-planner-output-directory
