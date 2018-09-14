@@ -237,6 +237,7 @@ Each entry is either:
 
 (defun lotus-expand/init-expand-region ()
   (use-package expand-region
+      ;; https://github.com/magnars/expand-region.el
       :defer t
       :config
       (progn
