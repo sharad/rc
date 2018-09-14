@@ -185,7 +185,8 @@ Each entry is either:
           ;; located in ~/soft/jslint, and you will want to update the code
           ;; below to match where you’ve put it.
 
-          ;; Next you will want to create a file called flymake-jslint.el on your LoadPath like the following
+          ;; Next you will want to create a file called flymake-jslint.el on
+          ;; your LoadPath like the following
 
           ;; http://lapin-bleu.net/riviera/?p=191
 
