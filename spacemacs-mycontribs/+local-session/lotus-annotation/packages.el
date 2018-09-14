@@ -36,10 +36,10 @@
 
 (defconst lotus-annotation-packages
   '(
-    ipa
-    org-pua
+    (ipa :location local)
+    (org-pua :location local)
     alert
-    org-annotate-file
+    (org-annotate-file :location local)
     (annot :location local)
     )
   "The list of Lisp packages required by the lotus-annotation layer.
