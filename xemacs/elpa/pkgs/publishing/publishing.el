@@ -44,7 +44,7 @@
     "default"
     (expand-file-name
      type
-     "contents/virtual")")
+     "contents/virtual"))
    ( type "/default")
    *created-content-dir*))
 
