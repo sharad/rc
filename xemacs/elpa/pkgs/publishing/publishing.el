@@ -47,4 +47,13 @@
      "contents/virtual"))
    *created-content-dir*))
 
+(defun publishing-top-dir (type)
+  (expand-file-name
+   (expand-file-name
+    "default"
+    (expand-file-name
+     (symbol-name type)
+     "contents/virtual"))
+   *created-content-dir*))
+
 ;;; publishing.el ends here
