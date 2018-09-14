@@ -171,7 +171,11 @@ Each entry is either:
               :config
               (progn
                 (progn
-
+                  ((local-planner-relative-path "web/site/wiki/Organize/plan/Plans")
+                   (local-planner-directory
+                    (expand-file-name local-planner-relative-path *muse-top-dir*))
+                   (local-planner-output-directory
+                    (expand-file-name "planner-xhtml" (expand-file-name local-planner-relative-path *muse-generated-top-dir*))))
                   ))
               )
 
