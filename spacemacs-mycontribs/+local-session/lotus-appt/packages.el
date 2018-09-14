@@ -72,8 +72,12 @@ Each entry is either:
       :config
       (progn
         (progn
+          (use-package startup-hooks
+              :defer t
+              :config
+              (progn
 
-          )
+                (add-to-enable-startup-interrupting-feature-hook))))
         (progn
           ;; http://www.emacswiki.org/emacs/AppointmentMode
           (if (not running-xemacs)
