@@ -81,9 +81,9 @@ Each entry is either:
                    #'(lambda ()
                        ;; http://www.emacswiki.org/emacs/AppointmentMode
                        (if (not running-xemacs)
-                                        ; use (appt-activate 1) for GNU Emacs
+                           ;; use (appt-activate 1) for GNU Emacs
                            (appt-activate 1)
-                                        ; XEmacs
+                         ;; XEmacs
                          (appt-initialize))))))))
         (progn
 
