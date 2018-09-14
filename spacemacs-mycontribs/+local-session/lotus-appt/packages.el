@@ -84,7 +84,7 @@ Each entry is either:
                            ;; use (appt-activate 1) for GNU Emacs
                            (appt-activate 1)
                          ;; XEmacs
-                         (appt-initialize))))))))
+                         (appt-initialize))) t)))))
         (progn
 
           (setq appt-msg-countdown-list '(10 5 1) ; XEmacs
