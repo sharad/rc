@@ -235,4 +235,11 @@ Each entry is either:
       (progn
         )))
 
+(defun lotus-expand/init-expand-region ()
+  (use-package expand-region
+      :defer t
+      :config
+      (progn
+        )))
+
 ;;; packages.el ends here
