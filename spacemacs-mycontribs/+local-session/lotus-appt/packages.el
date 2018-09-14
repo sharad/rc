@@ -72,6 +72,9 @@ Each entry is either:
       :config
       (progn
         (progn
+
+          )
+        (progn
           ;; http://www.emacswiki.org/emacs/AppointmentMode
           (if (not running-xemacs)
               (appt-activate 1); use (appt-activate 1) for GNU Emacs
