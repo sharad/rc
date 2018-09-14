@@ -32,7 +32,7 @@
 
 
 ;; ;; Add function to set all four
-;; (defvar *misc-top-dir*           (expand-file-name "contents/misc" *created-content-dir*))
+;; (defvar *misc-top-dir*           (expand-file-name "contents/virtual/misc/default" *created-content-dir*))
 ;; (defvar *misc-top-style-dir*     (expand-file-name "generic/misc/style" *misc-top-dir*))
 ;; (defvar *misc-generated-top-dir* (expand-file-name "gen/misc" *created-content-dir*))
 ;; (defvar *misc-website-address*   (concat *website-address* "misc/"))
