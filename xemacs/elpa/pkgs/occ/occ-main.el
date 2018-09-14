@@ -93,12 +93,12 @@
   (interactive "P")
   ;; TODO: Add code to which check if only focus present than only trigger
   ;; else postpone it by calling run-with-idle-plus-timer
-  (message "begin occ-clock-in-curr-ctx-if-not")
+  (occ-debug :debug "begin occ-clock-in-curr-ctx-if-not")
   (lotus-with-other-frame-event-debug "occ-clock-in-curr-ctx-if-not" :cancel
     (if force
         (occ-clock-in-curr-ctx (occ-make-ctx))
       (occ-clock-in-if-chg (occ-make-ctx))))
-  (message "end occ-clock-in-curr-ctx-if-not"))
+  (occ-debug :debug "end occ-clock-in-curr-ctx-if-not"))
 
 ;;;###autoload
 (defun occ-run-curr-ctx-timer ()
