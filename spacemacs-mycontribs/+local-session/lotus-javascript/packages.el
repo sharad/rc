@@ -44,7 +44,7 @@
     js2-mode
     (flymake-js :location local)
     moz
-    )
+    xref-js2)
   "The list of Lisp packages required by the lotus-javascript layer.
 
 Each entry is either:
