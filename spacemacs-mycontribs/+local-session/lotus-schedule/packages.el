@@ -166,7 +166,7 @@ Each entry is either:
       (progn
         (progn
 
-          (use-package muse-publishing
+          (use-package misc-publishing
               :defer t
               :config
               (progn
