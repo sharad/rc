@@ -41,8 +41,10 @@
 (defun top-dir (type &optional dir)
   (expand-file-name
    (expand-file-name
-    type
-    "contents/virtual")
+    "default"
+    (expand-file-name
+     type
+     "contents/virtual")")
    ( type "/default")
    *created-content-dir*))
 
