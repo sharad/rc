@@ -68,14 +68,14 @@ Each entry is either:
 (defun lotus-appt/init-appt ()
   (use-package appt
       ;; :defer t
-    :defer nil
+      :defer t
       :config
       (progn
         (progn
           ;; http://www.emacswiki.org/emacs/AppointmentMode
           (if (not running-xemacs)
               (appt-activate 1); use (appt-activate 1) for GNU Emacs
-              (appt-initialize)) ; XEmacs))
+            (appt-initialize)) ; XEmacs))
 
           (setq appt-msg-countdown-list '(10 5 1) ; XEmacs
                 appt-audible (cons 3 .5)          ;
@@ -90,7 +90,7 @@ Each entry is either:
             "Stuff to do when saving the diary files."
             (if (not running-xemacs)
                 (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
-                (appt-initialize))
+              (appt-initialize))
             (unless diary-display-function-old
               (message "Could disable it with disable-diary-appt-display-for function.")))
 
@@ -139,7 +139,7 @@ Each entry is either:
             (if (consp appt-notifier)
                 (dolist (cmd appt-notifier)
                   (shell-command (format cmd string)))
-                (shell-command (format appt-notifier string))))
+              (shell-command (format appt-notifier string))))
 
 
           (defun appt-display-message (string mins)
@@ -153,7 +153,7 @@ The variable `appt-audible' controls the audible reminder."
                    (if (eq appt-display-format 'ignore)
                        (cond (appt-msg-window 'window)
                              (appt-visible 'echo))
-                       appt-display-format)))
+                     appt-display-format)))
               (cond ((eq appt-display-format 'window)
                      (funcall appt-disp-window-function
                               (number-to-string mins)
