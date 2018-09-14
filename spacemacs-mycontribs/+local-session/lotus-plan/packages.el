@@ -159,7 +159,7 @@ Each entry is either:
                       (setq
                        ;; Setting up Planner
                        ;; Add the files to your load-path. Change these paths as needed.
-                       planner-directory (expand-file-name local-planner-relative-path *muse-top-dir*)
+                       planner-directory ;; (expand-file-name local-planner-relative-path *muse-top-dir*)
                        planner-project "WikiPlanner")
 
                       (add-muse-project
