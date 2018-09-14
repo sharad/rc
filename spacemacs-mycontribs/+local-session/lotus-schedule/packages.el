@@ -165,7 +165,6 @@ Each entry is either:
       :config
       (progn
         (progn
-
           (use-package misc-publishing
               :defer t
               :config
