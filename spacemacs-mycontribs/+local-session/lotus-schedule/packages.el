@@ -165,6 +165,12 @@ Each entry is either:
       :config
       (progn
         (progn
+
+          (use-package muse-publishing
+              :defer t
+              :config
+              )
+
           )
         (progn
           (setq diary-display-function 'diary-fancy-display)
