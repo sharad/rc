@@ -468,6 +468,8 @@ Each entry is either:
       :config
       (progn
         (progn
-          ))))
+          (use-package js2-mode
+
+           )))))
 
 ;;; packages.el ends here
