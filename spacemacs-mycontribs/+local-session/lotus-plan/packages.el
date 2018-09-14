@@ -151,7 +151,8 @@ Each entry is either:
                       ;; (expand-file-name local-planner-relative-path *muse-top-dir*)
                        (content-muse-dir local-planner-relative-path))
                      (local-planner-output-directory
-                      (expand-file-name "planner-xhtml" (expand-file-name local-planner-relative-path *muse-generated-top-dir*))))
+                      (expand-file-name "planner-xhtml" (expand-file-name local-planner-relative-path *muse-generated-top-dir*))
+                       ))
                 (if (file-directory-p local-planner-directory)
                     (progn
                       (setq
