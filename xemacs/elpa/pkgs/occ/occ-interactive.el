@@ -94,19 +94,19 @@
           ;; show expand property if flag is nil, else hide
           (when range
             (goto-char (1- (car range)))
-            (message "reached to drawer")
+            (occ-debug :debug  "reached to drawer")
             (if (org-at-drawer-p)
                 ;; show drawer
                 (let ((drawer (org-element-at-point)))
                   (when (memq (org-element-type drawer) '(node-property drawer property-drawer))
-                    (message "trying to open drawer %s" drawer)
+                    (occ-debug :debug  "trying to open drawer %s" drawer)
                     (org-flag-drawer flag drawer)
                     ;; Make sure to skip drawer entirely or we might flag
                     ;; it another time when matching its ending line with
                     ;; `org-drawer-regexp'.
                     (goto-char (org-element-property :end drawer))))
-              (message "not at drawer"))
-            (message "reached to drawer1")))))))
+              (occ-debug :debug  "not at drawer"))
+            (occ-debug :debug  "reached to drawer1")))))))
 
 (defun org-get-flag-proprty-drawer-at-marker (marker)
   (let ((buff (marker-buffer marker))
@@ -125,8 +125,8 @@
 
   (lotus-with-no-active-minibuffer
       (progn
-        (message "add-ctx-to-org-heading: minibuffer already active quitting")
-        (message nil))
+        (occ-debug :debug  "add-ctx-to-org-heading: minibuffer already active quitting")
+        (occ-debug :debug  nil))
     (lexical-let* ((timeout (or timeout 7))
                    (ctx (or ctx (occ-make-ctx)))
                    (buff (occ-ctx-buffer ctx)))
@@ -150,7 +150,7 @@
                                     (abort-recursive-edit)))))
 
                 (set-marker marker (point))
-                ;; (message "1 marker %s" marker)
+                ;; (occ-debug :debug  "1 marker %s" marker)
 
                 (lotus-with-timed-new-win ;break it in two macro call to accommodate local-cleanup
                     timeout timer cleanup local-cleanup win
@@ -161,13 +161,13 @@
                         (switch-to-buffer target-buffer)
                         (goto-char pos)
                         (set-marker marker (point)))
-                      ;; (message "2 marker %s" marker)
+                      ;; (occ-debug :debug  "2 marker %s" marker)
 
-                      (message "called add-ctx-to-org-heading %s" (current-buffer))
+                      (occ-debug :debug  "called add-ctx-to-org-heading %s" (current-buffer))
                       (progn
                         (condition-case err
                             (let ((buffer-read-only nil))
-                              (message "timer started for win %s" win)
+                              (occ-debug :debug  "timer started for win %s" win)
 
                               ;; show proptery drawer
                               (org-flag-proprty-drawer-at-marker marker nil)
@@ -186,7 +186,7 @@
                                    (when timer (cancel-timer timer)))
                                   ((eql 'edit prop)
                                    ;; (funcall cleanup win local-cleanup)
-                                   (message "debug editing")
+                                   (occ-debug :debug  "debug editing")
                                    (when timer (cancel-timer timer))
                                    (when (and win (windowp win) (window-valid-p win))
                                      (select-window win 'norecord)))
@@ -217,7 +217,7 @@
 
   "Return value is important to decide next action to (create unnamed tsk.)"
   (occ-debug 6 "called occ-add-to-org-heading-when-idle")
-  (message "begin: occ-add-to-org-heading-when-idle")
+  (occ-debug :debug  "begin: occ-add-to-org-heading-when-idle")
   ;; timed-newwin of occ-add-to-org-heading pass quit
   ;; signal to caller mean here, so need to be handled, else this function can
   ;; not return any value to its caller, which result into no next-action in
@@ -228,7 +228,7 @@
       (lotus-with-other-frame-event-debug "occ-add-to-org-heading-when-idle" :cancel
         (occ-add-to-org-heading ctx timeout))
     ((quit)))
-  (message "end: occ-add-to-org-heading-when-idle")
+  (occ-debug :debug  "end: occ-add-to-org-heading-when-idle")
   ;; (run-with-idle-timer-nonobtrusive-simple
   ;;  7 nil
   ;;  #'(lambda (args)
