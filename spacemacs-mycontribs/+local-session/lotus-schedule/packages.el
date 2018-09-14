@@ -175,7 +175,7 @@ Each entry is either:
                    (local-planner-directory
                     (content-misc-dir local-planner-relative-path))
                    (local-planner-output-directory
-                    (content-misc-publishing-dir "planner-xhtml" local-planner-relative-path)))
+                    (content-misc-publishing-dir local-planner-relative-path)))
                   ))
               )
 
