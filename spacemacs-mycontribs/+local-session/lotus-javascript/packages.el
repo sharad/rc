@@ -481,6 +481,29 @@ Each entry is either:
           ;; prevents them from causing parse errors, add this:
 
           (setq js2-skip-preprocessor-directives t)
+          )
+
+        (progn
+          ;; Setup keybindings
+
+          ;; All functions in js2-refactor have a two-letter mnemonic shortcut.
+          ;; For instance, extract-function is ef. You get to choose how those
+          ;; are bound. Here's how:
+
+          (js2r-add-keybindings-with-prefix "C-c C-m")
+          ;; eg. extract function with `C-c C-m ef`.
+
+          If you would rather have a modifier key, instead of a prefix, do:
+
+          (js2r-add-keybindings-with-modifier "C-s-")
+          ;; eg. extract function with `C-s-e C-s-f`.
+
+          ;; If neither of these appeal to your sense of keyboard layout
+          ;; aesthetics, feel free to pick and choose your own keybindings with
+          ;; a smattering of:
+
+          (define-key js2-refactor-mode-map (kbd "C-c C-e C-f") 'js2r-extract-function)
+
           ))))
 
 ;;; packages.el ends here
