@@ -473,7 +473,15 @@ Each entry is either:
               :config
               (progn
                 (progn
-                  (add-hook 'js2-mode-hook #'js2-refactor-mode)))
-           )))))
+                  (add-hook 'js2-mode-hook #'js2-refactor-mode)))))
+
+        (progn
+          ;; js2-refactor does not work in a buffer that has Javascript parse
+          ;; errors. To tell js2-mode to treat hashbangs as comments, which
+          ;; prevents them from causing parse errors, add this:
+
+          (setq js2-skip-preprocessor-directives t)
+
+          ))))
 
 ;;; packages.el ends here
