@@ -469,7 +469,11 @@ Each entry is either:
       (progn
         (progn
           (use-package js2-mode
-
+              :defer t
+              :config
+              (progn
+                (progn
+                  (add-hook 'js2-mode-hook #'js2-refactor-mode)))
            )))))
 
 ;;; packages.el ends here
