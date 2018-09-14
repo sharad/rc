@@ -40,7 +40,7 @@
 
 (defun top-dir (type &optional dir)
   (expand-file-name
-   "contents/virtual/misc/default"
+   "contents/virtual/" type "/default"
    *created-content-dir*))
 
 ;;; publishing.el ends here
