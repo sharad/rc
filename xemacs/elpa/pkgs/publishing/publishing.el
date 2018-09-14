@@ -39,6 +39,8 @@
 ;; ;; variables
 
 (defun top-dir (type &optional dir)
-  (expand-file-name "contents/virtual/misc/default" *created-content-dir*))
+  (expand-file-name
+   "contents/virtual/misc/default"
+   *created-content-dir*))
 
 ;;; publishing.el ends here
