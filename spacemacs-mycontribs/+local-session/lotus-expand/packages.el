@@ -44,6 +44,7 @@
     yasnippet
     hippie-exp
     (yas-suggest :location local)
+    expand-region
     )
   "The list of Lisp packages required by the lotus-expand layer.
 
