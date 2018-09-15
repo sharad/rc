@@ -37,7 +37,7 @@
 (defconst lotus-things-packages
   '(
     thingatpt
-    thing-cmds
+    (thing-cmdslotus-todo/)
     (thing-edit :location local)
     (copywithoutsel :location local)
     )
