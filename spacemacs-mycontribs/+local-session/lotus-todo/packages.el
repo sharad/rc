@@ -45,7 +45,7 @@
     wcheck-mode
     org-jira
     ;; soap-client
-    rfringe
+    (rfringe :location local)
     (myfixme :location local)
     (ficme-mode :location local)
     (fixme-mode :location local)
