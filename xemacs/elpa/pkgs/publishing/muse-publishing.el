@@ -38,6 +38,10 @@
 (defvar *muse-generated-top-dir* (publishing-generated-contents-path 'muse))
 (defvar *muse-website-address*   (publishing-website-address 'muse))
 
+(defun muse-publishing-created-contents-style-path (path)
+  (publishing-created-contents-path 'muse "generic/muse/style"))
+;;
+
 ;;;###autoload
 (defun* read-muse-style-spec ()
   (let* ((muse-dir (read-directory-name "Muse Project Directory: " (publishing-created-contents-path 'muse)))
