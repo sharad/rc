@@ -201,20 +201,7 @@ Each entry is either:
                                          diary-file
                                          (publishing-created-contents-path 'misc "emacs/schedule/diary/diary")))))
                                    t)))
-                   t)))))
-
-
-
-        ;; (progn
-        ;;   (add-to-enable-desktop-restore-interrupting-feature-hook
-        ;;    #'(lambda ()
-        ;;       (if (fboundp 'org-clock-persistence-insinuate)
-        ;;           (org-clock-persistence-insinuate)
-        ;;           (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
-        ;;       (if (fboundp 'org-clock-start-check-timer-insiuate)
-        ;;           (org-clock-start-check-timer-insiuate)))
-        ;;     t))
-        )))
+                   t))))))))
 
 (defun lotus-schedule/post-init-planner-interface ()
   (use-package planner-interface
