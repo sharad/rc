@@ -103,7 +103,7 @@
 (defun default-publishing-created-contents-dir (&optional class path)
   (if class
       (publishing-document-created-contents-dir)
-    (publishing-class-created-contents-dir class)))
+    (publishing-class-created-contents-dir class path)))
 
 ;;;###autoload
 (defun default-publishing-generated-contents-dir (&optional class path)
@@ -112,7 +112,9 @@
     (publishing-class-generated-contents-dir class path)))
 
 (defun default-publishing-website-address (&optional class path)
-  )
+  (if class
+      (publishing-document-generated-contents-dir)
+    (publishing-class-generated-contents-dir class path)))
 
 (publishing-generated-top-dir 'misc)
 
