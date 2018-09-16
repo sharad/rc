@@ -37,8 +37,7 @@
 (publishing-generated-contents-dir 'muse)
 "/home/s/hell/Documents/CreatedContent/gen/virtual/muse/default"
  *muse-generated-top-dir*
-"/home/s/hell/Documents/CreatedContent/gen/muse"
-(defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
+;; (defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
 (defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
 (defvar *muse-website-address*   (concat *website-address* "muse/"))
 
