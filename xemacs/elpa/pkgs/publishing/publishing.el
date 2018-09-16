@@ -80,7 +80,10 @@
       (publishing-generated-contents-dir))))))
 
 (defun publishing-website-top-dir (type)
-  (publishing-website-address))
+  (concat
+   (publishing-website-address)
+   "/"
+   (symbol-name type)))
 
 (publishing-contents-top-dir 'misc)
 (publishing-generated-top-dir 'misc)
