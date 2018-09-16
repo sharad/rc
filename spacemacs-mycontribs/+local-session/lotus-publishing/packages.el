@@ -247,7 +247,7 @@ Each entry is either:
                 (add-org-project
                  "inherit-org-info-js"
                  ;; :base-directory "~/develop/org/Worg/code/org-info-js/"
-                 :base-directory (content-org-dir "org-info-js/")
+                 :base-directory (content-org-path "org-info-js/")
                  :recursive t
                  :base-extension "js"
                  :publishing-directory (content-org-publishing-dir "js/")
@@ -256,7 +256,7 @@ Each entry is either:
                 (add-org-project
                  "inherit-org-info-js"
                  ;; :base-directory "~/develop/org/Worg/code/org-info-js/"
-                 :base-directory (content-org-dir "org-info-js/")
+                 :base-directory (content-org-path "org-info-js/")
                  :recursive t
                  :base-extension "js"
                  :publishing-directory (content-org-publishing-dir "js/")
@@ -264,7 +264,7 @@ Each entry is either:
 
                 (add-org-project
                  "org-notes"
-                 :base-directory (content-org-dir "org/")
+                 :base-directory (content-org-path "org/")
                  :base-extension "org"
                  :publishing-directory (content-org-publishing-dir "org/html/")
                  :recursive t
@@ -274,7 +274,7 @@ Each entry is either:
 
                 (add-org-project
                  "org-static"
-                 :base-directory (content-org-dir "org/")
+                 :base-directory (content-org-path "org/")
                  :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
                  :publishing-directory (content-org-publishing-dir "org/html/")
                  :recursive t
@@ -284,7 +284,7 @@ Each entry is either:
 
                 (add-org-project
                  "generic-inherit"
-                 :base-directory (content-org-dir "generic/")
+                 :base-directory (content-org-path "generic/")
                  :recursive t
                  :base-extension "css\\|js"
                  :publishing-directory (content-org-publishing-dir "generic/html/")
@@ -292,7 +292,7 @@ Each entry is either:
 
                 (add-org-project
                  "generic-static"
-                 :base-directory (content-org-dir "generic/")
+                 :base-directory (content-org-path "generic/")
                  :recursive t
                  :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
                  :publishing-directory (content-org-publishing-dir "generic/html/")
@@ -300,7 +300,7 @@ Each entry is either:
 
                 (add-org-project
                  "generic-org"
-                 :base-directory (content-org-dir "generic/")
+                 :base-directory (content-org-path "generic/")
                  :auto-index t
                  :auto-sitemap t
                  :sitemap-title "Sitemap"
@@ -316,7 +316,7 @@ Each entry is either:
 
                 (add-org-project
                  "journal-notes"
-                 :base-directory (content-org-dir "jorunal/")
+                 :base-directory (content-org-path "jorunal/")
                  :auto-index t
                  :auto-sitemap t
                  :sitemap-title "Sitemap"
@@ -340,7 +340,7 @@ Each entry is either:
 
                 (add-org-project
                  "tasks-notes"
-                 :base-directory (content-org-dir "tasks/")
+                 :base-directory (content-org-path "tasks/")
                  :auto-index t
                  :auto-sitemap t
                  :sitemap-title "Sitemap"
@@ -364,7 +364,7 @@ Each entry is either:
 
                 (add-org-project
                  "notes-notes"
-                 :base-directory (content-org-dir "notes/")
+                 :base-directory (content-org-path "notes/")
                  :auto-index t
                  :auto-sitemap t
                  :sitemap-title "Sitemap"
