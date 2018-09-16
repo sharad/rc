@@ -178,7 +178,10 @@ Each entry is either:
                     (make-directory
                      (dirname-of-file diary-file) t)
                     (with-temp-buffer
-                      (write-file diary-file)))))))
+                      (write-file diary-file)))
+                  (if (not running-xemacs)
+                      (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
+                    (appt-initialize))))))
         (progn
           (setq diary-display-function 'diary-fancy-display)
           (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
