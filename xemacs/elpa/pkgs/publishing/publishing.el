@@ -91,7 +91,7 @@
    (publishing-document-website-address)
    "/"
    (symbol-name class)
-   ()))
+   (if path (concat "/" path))))
 
 
 
