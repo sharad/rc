@@ -172,8 +172,7 @@ Each entry is either:
                 (progn
                   (setq
                    diary-file
-                   (publishing-created-contents-path 'misc "emacs/schedule/diary/diary"))
-                  ))))
+                   (publishing-created-contents-path 'misc "emacs/schedule/diary/diary"))))))
         (progn
           (setq diary-display-function 'diary-fancy-display)
           (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
