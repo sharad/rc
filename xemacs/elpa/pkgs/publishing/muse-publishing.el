@@ -182,7 +182,7 @@
 
 ;; (muse-project-alist-styles
 ;;  (publishing-created-contents-dir 'muse"/web/site/blog" )
-;;  (concat (publishing-generated-contents-dir 'muse) "/web/site/blog/pdf")
+;;  (publishing-generated-contents-dir 'muse "/web/site/blog/pdf")
 ;;  "ikiwiki"
 ;;  :base-url (concat *website-address* "/blog/"))
 
