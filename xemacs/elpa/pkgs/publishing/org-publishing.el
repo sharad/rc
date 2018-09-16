@@ -164,7 +164,7 @@
 
 ;;;###autoload
 (defun content-org-publishing-url (localpath)
-  (publishing-website-address 'muse localpath))
+  (publishing-website-address 'org localpath))
 
 ;; (mapcar 'car org-publishing-styles)
 ;; (org-publish-project-alist-styles
