@@ -61,12 +61,14 @@
 ;;;###autoload
 (defun default-publishing-class-created-contents-dir (class &optional path)
   (expand-file-name
+   path
+   (expand-file-name
    "default"
    (expand-file-name
     (symbol-name class)
     (expand-file-name
      "virtual"
-     (publishing-document-created-contents-dir)))))
+     (publishing-document-created-contents-dir))))))
 
 ;;;###autoload
 (defun default-publishing-class-generated-contents-dir (class &optional path)
