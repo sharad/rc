@@ -74,6 +74,7 @@
       "virtual"
       (publishing-document-generated-contents-dir))))))
 
+;;;###autoload
 (defun default-publishing-class-website-address (class)
   (concat
    (publishing-document-website-address)
