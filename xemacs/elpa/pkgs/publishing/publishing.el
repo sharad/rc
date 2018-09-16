@@ -96,7 +96,7 @@
 
 
 
-(publishing-contents-top-dir 'misc)
+
 (publishing-generated-top-dir 'misc)
 
 
