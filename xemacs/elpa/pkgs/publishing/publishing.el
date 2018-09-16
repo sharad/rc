@@ -100,8 +100,8 @@
 
 
 
-(defun default-publishing-created-contents-dir ()
-  (expand-file-name "CreatedContent/contents" (publishing-root-dir)))
+(defun default-publishing-created-contents-dir (&optional class path)
+  )
 
 ;;;###autoload
 (defun default-publishing-generated-contents-dir ()
