@@ -73,14 +73,17 @@
 
 ;;;###autoload
 (defun default-publishing-class-generated-contents-dir (class &optional path)
-  (expand-file-name
-   "default"
-   (expand-file-name
+  (let ((path (or path "")))
     (expand-file-name
-     (symbol-name class)
+     path
      (expand-file-name
-      "virtual"
-      (publishing-document-generated-contents-dir))))))
+      "default"
+      (expand-file-name
+       (expand-file-name
+        (symbol-name class)
+        (expand-file-name
+         "virtual"
+         (publishing-document-generated-contents-dir))))))))
 
 ;;;###autoload
 (defun default-publishing-class-website-address (class &optional path)
