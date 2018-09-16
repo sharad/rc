@@ -336,6 +336,7 @@ Each entry is either:
                            #'(lambda ()
                                ;; (unless (task-current-party)
                                ;;   (task-current-party "meru"))
+                               (message "test1")
                                (when (task-current-party)
                                  (let ((monitor-dir (task-party-dir)))
                                    (if (file-directory-p monitor-dir)
