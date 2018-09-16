@@ -177,7 +177,30 @@ Each entry is either:
           (setq diary-display-function 'diary-fancy-display)
           (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
           (add-hook 'diary-list-entries-hook 'diary-mark-included-diary-files)
-          (add-hook 'diary-list-entries-hook 'diary-sort-entries t)))))
+          (add-hook 'diary-list-entries-hook 'diary-sort-entries t))))
+
+  (add-to-enable-startup-interrupting-feature-hook
+           #'(lambda ()
+               (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
+                 (add-hook 'after-make-frame-functions
+                           '(lambda (nframe)
+                             (run-at-time-or-now 100
+                              '(lambda ()
+                                (if (any-frame-opened-p)
+                                    (org-clock-in-if-not)))))
+                           t))
+               ;; (add-hook
+               ;;  'delete-frame-functions
+               ;;  #'(lambda (nframe)
+               ;;      (if (and
+               ;;           (org-clock-is-active)
+               ;;           (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
+               ;;          (org-with-clock-writeable
+               ;;           (let (org-log-note-clock-out)
+               ;;             (if (org-clock-is-active)
+               ;;                 (org-clock-out)))))))
+               )
+           t))
 
 (defun lotus-schedule/post-init-planner-interface ()
   (use-package planner-interface
