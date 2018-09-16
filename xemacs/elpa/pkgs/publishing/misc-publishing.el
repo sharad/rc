@@ -170,7 +170,6 @@
 
 ;;;###autoload
 (defun content-misc-publishing-url (localpath)
-  (publishing-website-address 'misc path)
-  (concat *misc-website-address* "/" localpath))
+  (publishing-website-address 'misc localpath))
 
 ;;; misc-publishing.el ends here
