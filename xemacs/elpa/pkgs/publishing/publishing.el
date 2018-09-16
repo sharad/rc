@@ -39,21 +39,21 @@
 ;; ;; variables
 
 ;;;###autoload
-(defun default-publishing-document-root-dir ()
+(defun default-publishing-document-root-dir< ()
   *doc-root*)
 
 ;;;###autoload
 (defun default-publishing-document-created-contents-dir ()
-  (expand-file-name "CreatedContent/contents" (publishing-document-root-dir)))
+  (expand-file-name "CreatedContent/contents" (publishing-document-root-path)))
 
 ;;;###autoload
 (defun default-publishing-document-generated-contents-dir ()
-  (expand-file-name "CreatedContent/gen" (publishing-document-root-dir)))
+  (expand-file-name "CreatedContent/gen" (publishing-document-root-path)))
 
 (defun default-publishing-document-website-address ()
   *website-address*)
 
-(defalias 'publishing-document-root-dir               #'default-publishing-document-root-dir)
+(defalias 'publishing-document-root-path               #'default-publishing-document-root-path)
 (defalias 'publishing-document-created-contents-dir<   #'default-publishing-document-created-contents-path)
 (defalias 'publishing-document-generated-contents-dir #'default-publishing-document-generated-contents-dir)
 (defalias 'publishing-document-website-address        #'default-publishing-document-website-address)
