@@ -365,7 +365,8 @@ Each entry is either:
                          (unless (task-current-party)
                            (task-current-party "meru"))
                          (unless (and
-                                  (boundp 'org-clock-monitor-files))
+                                  (boundp 'org-clock-monitor-files)
+                                  org-clock-monitor-files)
                            (when (task-current-party)
                              (let ((monitor-dir (task-party-dir)))
                                (if (file-directory-p monitor-dir)
