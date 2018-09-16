@@ -59,31 +59,31 @@
 (defalias 'publishing-document-website-address        #'default-publishing-website-address)
 
 ;;;###autoload
-(defun publishing-type-created-contents-dir (type)
+(defun publishing-class-created-contents-dir (class)
   (expand-file-name
    "default"
    (expand-file-name
-    (symbol-name type)
+    (symbol-name class)
     (expand-file-name
      "virtual"
      (publishing-document-created-contents-dir)))))
 
 ;;;###autoload
-(defun publishing-type-generated-contents-dir (type)
+(defun publishing-class-generated-contents-dir (class)
   (expand-file-name
    "default"
    (expand-file-name
     (expand-file-name
-     (symbol-name type)
+     (symbol-name class)
      (expand-file-name
       "virtual"
       (publishing-document-generated-contents-dir))))))
 
-(defun publishing-type-website-address (type)
+(defun publishing-class-website-address (class)
   (concat
    (publishing-document-website-address)
    "/"
-   (symbol-name type)))
+   (symbol-name class)))
 
 (publishing-contents-top-dir 'misc)
 (publishing-generated-top-dir 'misc)
