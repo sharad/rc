@@ -160,8 +160,7 @@
 ;;;###autoload
 (defun content-org-publishing-dir (path)
   "thisandthat."
-  (publishing-generated-contents-dir 'muse path)
-    (expand-file-name path *org-generated-top-dir*))
+  (publishing-generated-contents-dir 'muse path))
 
 ;;;###autoload
 (defun content-org-publishing-url (localpath)
