@@ -86,6 +86,9 @@
    "/"
    (symbol-name class)))
 
+
+
+
 (publishing-contents-top-dir 'misc)
 (publishing-generated-top-dir 'misc)
 
