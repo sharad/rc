@@ -169,12 +169,12 @@
 ;; (mapcar 'car org-publishing-styles)
 ;; (org-publish-project-alist-styles
 ;;  (publishing-created-contents-dir 'muse "doc/priv")
-;;  (concat *org-generated-top-dir* "/doc/pdf/doc/priv/pdf")
+;;  (publishing-generated-contents-dir 'muse "/doc/pdf/doc/priv/pdf")
 ;;  "pdf")
 
 ;; (org-publish-project-alist-styles
 ;;  (publishing-created-contents-dir 'muse "web/site/blog")
-;;  (concat *org-generated-top-dir* "/web/site/blog/pdf")
+;;  (publishing-generated-contents-dir 'muse "/web/site/blog/pdf")
 ;;  "ikiwiki"
 ;;  :base-url (concat *website-address* "/blog/"))
 
