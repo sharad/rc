@@ -33,10 +33,10 @@
  (require 'org-compact))
 (require 'ox-publish)
 
-(defvar *org-top-dir*           (publishing-created-contents-path 'org))
-(defvar *org-top-style-dir*     (publishing-created-contents-path 'org "generic/org/style"))
-(defvar *org-generated-top-dir* (publishing-generated-contents-path 'org))
-(defvar *org-website-address*   (publishing-website-address 'org))
+;; (defvar *org-top-dir*           (publishing-created-contents-path 'org))
+;; (defvar *org-top-style-dir*     (publishing-created-contents-path 'org "generic/org/style"))
+;; (defvar *org-generated-top-dir* (publishing-generated-contents-path 'org))
+;; (defvar *org-website-address*   (publishing-website-address 'org))
 
 
 ;;;###autoload
