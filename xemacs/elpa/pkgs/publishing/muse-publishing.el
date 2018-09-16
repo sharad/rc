@@ -44,7 +44,7 @@
          (publishing-path
           (read-directory-name
            "Muse Project Directory: "
-           (concat *muse-generated-top-dir* (replace-regexp-in-string (publishing-created-contents-dir 'muse) "" muse-dir))))
+           (concat (publishing-generated-contents-dir 'muse) (replace-regexp-in-string (publishing-created-contents-dir 'muse) "" muse-dir))))
          (publishing-style
           (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
          (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -59,7 +59,7 @@
          (publishing-path
           (read-directory-name
            "Muse Project Directory: "
-           (concat *muse-generated-top-dir*
+           (concat (publishing-generated-contents-dir 'muse)
                    (replace-regexp-in-string (publishing-created-contents-dir 'muse) ""
                                              (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
          (publishing-style
@@ -118,7 +118,7 @@
           (publishing-path
            (read-directory-name
             "Muse Project Directory: "
-            (concat *muse-generated-top-dir* (replace-regexp-in-string (publishing-created-contents-dir 'muse) "" muse-dir))))
+            (concat (publishing-generated-contents-dir 'muse) (replace-regexp-in-string (publishing-created-contents-dir 'muse) "" muse-dir))))
           (publishing-style
            (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
           (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -144,7 +144,7 @@
           (publishing-path
            (read-directory-name
             "Muse Project Directory: "
-            (concat *muse-generated-top-dir*
+            (concat (publishing-generated-contents-dir 'muse)
                     (replace-regexp-in-string (publishing-created-contents-dir 'muse) ""
                                               (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
           (publishing-style
@@ -177,12 +177,12 @@
 ;; (mapcar 'car muse-publishing-styles)
 ;; (muse-project-alist-styles
 ;;  (concat (publishing-created-contents-dir 'muse) "/doc/priv")
-;;  (concat *muse-generated-top-dir* "/doc/pdf/doc/priv/pdf")
+;;  (concat (publishing-generated-contents-dir 'muse) "/doc/pdf/doc/priv/pdf")
 ;;  "pdf")
 
 ;; (muse-project-alist-styles
 ;;  (concat (publishing-created-contents-dir 'muse) "/web/site/blog")
-;;  (concat *muse-generated-top-dir* "/web/site/blog/pdf")
+;;  (concat (publishing-generated-contents-dir 'muse) "/web/site/blog/pdf")
 ;;  "ikiwiki"
 ;;  :base-url (concat *website-address* "/blog/"))
 
