@@ -97,9 +97,6 @@
 (defalias 'publishing-class-generated-contents-dir #'default-publishing-class-generated-contents-dir)
 (defalias 'publishing-class-website-address        #'default-publishing-class-website-address)
 
-
-
-
 (defun default-publishing-created-contents-dir (&optional class path)
   (if class
       (publishing-document-created-contents-dir)
