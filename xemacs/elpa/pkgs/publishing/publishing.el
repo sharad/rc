@@ -69,7 +69,7 @@
      (publishing-created-contents-dir)))))
 
 ;;;###autoload
-(defun publishing-generated-contents-dir (type)
+(defun publishing-type-generated-contents-dir (type)
   (expand-file-name
    "default"
    (expand-file-name
