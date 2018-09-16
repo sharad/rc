@@ -60,7 +60,8 @@
 
 ;;;###autoload
 (defun default-publishing-class-created-contents-dir (class &optional path)
-  ((expand-file-name
+  (let ((path (or path "")))
+   (expand-file-name
    path
    (expand-file-name
    "default"
