@@ -122,7 +122,7 @@
 (defalias 'publishing-website-address        #'default-publishing-website-address)
 
 
-(publishing-created-contents-dir)
+(publishing-created-contents-dir 'misc "test")
 
 
 ;;; publishing.el ends here
