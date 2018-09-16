@@ -309,7 +309,7 @@
                        (if muse-publishing-current-style
                            (muse-meta-style-dirname
                             (muse-publishing-created-contents-style-path "generic/muse/style")
-                            (publishing-created-contents-path 'muse "generic/muse/style")
+                            ;; (publishing-created-contents-path 'muse "generic/muse/style")
                             (plist-get muse-publishing-current-style :base))
                            'pass))))
 
