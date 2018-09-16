@@ -203,7 +203,12 @@ Each entry is either:
                                       '(lambda ()
                                         (setq
                                          diary-file
-                                         (publishing-created-contents-path 'misc "emacs/schedule/diary/diary")))))
+                                         (publishing-created-contents-path 'misc "emacs/schedule/diary/diary"))
+                                        (unless (file-exists-p diary-file)
+                                          (make-directory
+                                           (dirname-of-file diary-file) t)
+                                          (with-temp-buffer
+                                            (write-file diary-file))))))
                                    t)))
                    t))))))))
 
