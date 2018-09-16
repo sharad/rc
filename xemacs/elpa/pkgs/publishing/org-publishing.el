@@ -78,11 +78,11 @@
 
 ;; (defun* make-org-style-spec (org-dir publishing-path publishing-style publishing-url publishing-options)
 ;;   (interactive
-;;    (let* ((org-dir (read-directory-name "Org Project Directory: " *org-top-dir*))
+;;    (let* ((org-dir (read-directory-name "Org Project Directory: " *org-top-dir*<))
 ;;           (publishing-path
 ;;            (read-directory-name
 ;;             "Org Project Directory: "
-;;             (concat *org-generated-top-dir* (replace-regexp-in-string *org-top-dir* "" org-dir))))
+;;             (concat *org-generated-top-dir* (replace-regexp-in-string (publishing-created-contents-dir 'muse ) "" org-dir))))
 ;;           (publishing-style
 ;;            (ido-completing-read "Org Publishing Style: " (mapcar 'car org-publishing-styles)))
 ;;           (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -109,7 +109,7 @@
            (read-directory-name
             "Org Project Publishing Directory: "
             (concat *org-generated-top-dir*
-                    (replace-regexp-in-string *org-top-dir* ""
+                    (replace-regexp-in-string (publishing-created-contents-dir 'muse ) ""
                                               (if (consp org-dir) (car org-dir) org-dir)))))
           (publishing-options nil))
      (list
@@ -122,11 +122,11 @@
     ,@publishing-options))
 
 ;; (defun* read-org-style-spec ()
-;;   (let* ((org-dir (read-directory-name "Org Project Directory: " *org-top-dir*))
+;;   (let* ((org-dir (read-directory-name "Org Project Directory: " (publishing-created-contents-dir 'muse )))
 ;;          (publishing-path
 ;;           (read-directory-name
 ;;            "Org Project Directory: "
-;;            (concat *org-generated-top-dir* (replace-regexp-in-string *org-top-dir* "" org-dir))))
+;;            (concat *org-generated-top-dir* (replace-regexp-in-string (publishing-created-contents-dir 'muse ) "" org-dir))))
 ;;          (publishing-style
 ;;           (ido-completing-read "Org Publishing Style: " (mapcar 'car org-publishing-styles)))
 ;;          (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -142,7 +142,7 @@
           (read-directory-name
            "Org Project Publishing Directory: "
            (concat *org-generated-top-dir*
-                   (replace-regexp-in-string *org-top-dir* ""
+                   (replace-regexp-in-string (publishing-created-contents-dir 'muse ) ""
                                              (if (consp org-dir) (car org-dir) org-dir)))))
          (publishing-options nil))
     `(
@@ -155,7 +155,7 @@
 ;;;###autoload
 (defun content-org-dir (path)
     "thisandthat."
-    (expand-file-name path *org-top-dir*))
+    (publishing-created-contents-dir 'muse path))
 
 ;;;###autoload
 (defun content-org-publishing-dir (path)
