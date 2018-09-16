@@ -205,6 +205,7 @@ Each entry is either:
                                         (setq
                                          diary-file
                                          (publishing-created-contents-path 'misc "emacs/schedule/diary/diary"))
+                                        ;; https://stackoverflow.com/questions/2592095/how-do-i-create-an-empty-file-in-emacs/2592558#2592558
                                         (unless (file-exists-p diary-file)
                                           (make-directory
                                            (dirname-of-file diary-file) t)
