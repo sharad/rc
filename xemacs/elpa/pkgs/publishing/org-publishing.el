@@ -82,7 +82,7 @@
 ;;           (publishing-path
 ;;            (read-directory-name
 ;;             "Org Project Directory: "
-;;             (publishing-generated-contents-dir 'muse (replace-regexp-in-string (publishing-created-contents-dir 'muse) "" org-dir))
+;;             (publishing-generated-contents-dir 'org (replace-regexp-in-string (publishing-created-contents-dir 'org) "" org-dir))
 ;;           (publishing-style
 ;;            (ido-completing-read "Org Publishing Style: " (mapcar 'car org-publishing-styles)))
 ;;           (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -104,12 +104,12 @@
   (interactive
    (let* ((name (read-from-minibuffer "Org Project Name: "))
           (org-dir
-           (read-directory-name "Org Project Directory: " (publishing-created-contents-dir 'muse name)))
+           (read-directory-name "Org Project Directory: " (publishing-created-contents-dir 'org name)))
           (publishing-path
            (read-directory-name
             "Org Project Publishing Directory: "
-            (publishing-generated-contents-dir 'muse
-                    (replace-regexp-in-string (publishing-created-contents-dir 'muse ) ""
+            (publishing-generated-contents-dir 'org
+                    (replace-regexp-in-string (publishing-created-contents-dir 'org ) ""
                                               (if (consp org-dir) (car org-dir) org-dir)))))
           (publishing-options nil))
      (list
@@ -122,11 +122,11 @@
     ,@publishing-options))
 
 ;; (defun* read-org-style-spec ()
-;;   (let* ((org-dir (read-directory-name "Org Project Directory: " (publishing-created-contents-dir 'muse )))
+;;   (let* ((org-dir (read-directory-name "Org Project Directory: " (publishing-created-contents-dir 'org )))
 ;;          (publishing-path
 ;;           (read-directory-name
 ;;            "Org Project Directory: "
-;;            (publishing-generated-contents-dir 'muse  (replace-regexp-in-string (publishing-created-contents-dir 'muse ) "" org-dir))))
+;;            (publishing-generated-contents-dir 'org  (replace-regexp-in-string (publishing-created-contents-dir 'org ) "" org-dir))))
 ;;          (publishing-style
 ;;           (ido-completing-read "Org Publishing Style: " (mapcar 'car org-publishing-styles)))
 ;;          (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -137,12 +137,12 @@
 (defun* read-org-project-spec ()
   (let* ((name (read-from-minibuffer "Org Project Name: "))
          (org-dir
-          (read-directory-name "Org Project Directory: " (publishing-created-contents-dir 'muse name)))
+          (read-directory-name "Org Project Directory: " (publishing-created-contents-dir 'org name)))
          (publishing-path
           (read-directory-name
            "Org Project Publishing Directory: "
-           (publishing-generated-contents-dir 'muse
-                   (replace-regexp-in-string (publishing-created-contents-dir 'muse ) ""
+           (publishing-generated-contents-dir 'org
+                   (replace-regexp-in-string (publishing-created-contents-dir 'org ) ""
                                              (if (consp org-dir) (car org-dir) org-dir)))))
          (publishing-options nil))
     `(
@@ -155,12 +155,12 @@
 ;;;###autoload
 (defun content-org-dir (path)
     "thisandthat."
-    (publishing-created-contents-dir 'muse path))
+    (publishing-created-contents-dir 'org path))
 
 ;;;###autoload
 (defun content-org-publishing-dir (path)
   "thisandthat."
-  (publishing-generated-contents-dir 'muse path))
+  (publishing-generated-contents-dir 'org path))
 
 ;;;###autoload
 (defun content-org-publishing-url (localpath)
@@ -168,13 +168,13 @@
 
 ;; (mapcar 'car org-publishing-styles)
 ;; (org-publish-project-alist-styles
-;;  (publishing-created-contents-dir 'muse "doc/priv")
-;;  (publishing-generated-contents-dir 'muse "/doc/pdf/doc/priv/pdf")
+;;  (publishing-created-contents-dir 'org "doc/priv")
+;;  (publishing-generated-contents-dir 'org "/doc/pdf/doc/priv/pdf")
 ;;  "pdf")
 
 ;; (org-publish-project-alist-styles
-;;  (publishing-created-contents-dir 'muse "web/site/blog")
-;;  (publishing-generated-contents-dir 'muse "/web/site/blog/pdf")
+;;  (publishing-created-contents-dir 'org "web/site/blog")
+;;  (publishing-generated-contents-dir 'org "/web/site/blog/pdf")
 ;;  "ikiwiki"
 ;;  :base-url (concat *website-address* "/blog/"))
 
