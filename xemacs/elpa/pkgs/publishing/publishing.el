@@ -54,7 +54,7 @@
   *website-address*)
 
 (defalias 'publishing-document-root-path               #'default-publishing-document-root-path)
-(defalias 'publishing-document-created-contents-dir<   #'default-publishing-document-created-contents-path)
+(defalias 'publishing-document-created-contents-dir   #'default-publishing-document-created-contents-path)
 (defalias 'publishing-document-generated-contents-dir #'default-publishing-document-generated-contents-dir)
 (defalias 'publishing-document-website-address        #'default-publishing-document-website-address)
 
