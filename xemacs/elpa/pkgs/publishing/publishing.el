@@ -54,12 +54,12 @@
   *website-address*)
 
 (defalias 'publishing-document-root-dir               #'default-publishing-document-root-dir)
-(defalias 'publishing-document-created-contents-dir   #'default-publishing-document-created-contents-dir)
+(defalias 'publishing-document-created-contents-dir<   #'default-publishing-document-created-contents-path)
 (defalias 'publishing-document-generated-contents-dir #'default-publishing-document-generated-contents-dir)
 (defalias 'publishing-document-website-address        #'default-publishing-document-website-address)
 
 ;;;###autoload
-(defun default-publishing-class-created-contents-dir (class &optional path)
+(defun default-publishing-class-created-contents-path (class &optional path)
   (let ((path (or path "")))
     (expand-file-name
      path
@@ -69,7 +69,7 @@
        (symbol-name class)
        (expand-file-name
         "virtual"
-        (publishing-document-created-contents-dir)))))))
+        (publishing-document-created-contents-path)))))))
 
 ;;;###autoload
 (defun default-publishing-class-generated-contents-dir (class &optional path)
@@ -94,15 +94,15 @@
    (if path (concat "/" path))))
 
 
-(defalias 'publishing-class-created-contents-dir   #'default-publishing-class-created-contents-dir)
+(defalias 'publishing-class-created-contents-path   #'default-publishing-class-created-contents-path)
 (defalias 'publishing-class-generated-contents-dir #'default-publishing-class-generated-contents-dir)
 (defalias 'publishing-class-website-address        #'default-publishing-class-website-address)
 
 ;;;###autoload
-(defun default-publishing-created-contents-dir (&optional class path)
+(defun default-publishing-created-contents-path (&optional class path)
   (if class
-      (publishing-class-created-contents-dir class path)
-    (publishing-document-created-contents-dir)))
+      (publishing-class-created-contents-path class path)
+    (publishing-document-created-contents-path)))
 
 ;;;###autoload
 (defun default-publishing-generated-contents-dir (&optional class path)
@@ -117,7 +117,7 @@
     (publishing-document-website-address)))
 
 
-(defalias 'publishing-created-contents-dir   #'default-publishing-created-contents-dir)
+(defalias 'publishing-created-contents-path   #'default-publishing-created-contents-path)
 (defalias 'publishing-generated-contents-dir #'default-publishing-generated-contents-dir)
 (defalias 'publishing-website-address        #'default-publishing-website-address)
 
