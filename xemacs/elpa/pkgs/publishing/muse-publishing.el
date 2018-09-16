@@ -35,7 +35,7 @@
 (defvar *muse-top-dir*           (publishing-created-contents-dir 'muse))
 (defvar *muse-top-style-dir*     (publishing-created-contents-dir 'muse "generic/muse/style"))
 
-(defvar *muse-generated-top-dir* (publishing-generated-contents-dir 'muse))
+(defvar *muse-generated-top-dir* (publishing-generated-contents-dir 'muse "generic/muse/style"))
 (defvar *muse-website-address*   (concat *website-address* "muse/"))
 
 ;;;###autoload
