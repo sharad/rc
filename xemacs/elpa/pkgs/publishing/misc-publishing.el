@@ -30,10 +30,10 @@
 (require 'publishing)
 
 
-(defvar *misc-top-dir*           (expand-file-name "contents/misc" *created-content-dir*))
-(defvar *misc-top-style-dir*     (expand-file-name "generic/misc/style" *misc-top-dir*))
+(defvar *misc-top-dir*           (publishing-contents-top-dir 'misc))
+(defvar *misc-top-style-dir*     (expand-file-name "generic/misc/style" (publishing-contents-top-dir 'misc)))
 
-(defvar *misc-generated-top-dir* (expand-file-name "gen/misc" *created-content-dir*))
+(defvar *misc-generated-top-dir* (publishing-generated-top-dir 'misc))
 (defvar *misc-website-address*   (concat *website-address* "misc/"))
 
 ;;;###autoload
@@ -161,7 +161,8 @@
 ;;;###autoload
 (defun content-misc-dir (path)
   "thisandthat."
-  (expand-file-name path *misc-top-dir*))
+  (expand-file-name path
+                    *misc-top-dir*))
 
 ;;;###autoload
 (defun content-misc-publishing-dir (path)

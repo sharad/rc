@@ -38,25 +38,51 @@
 ;; (defvar *misc-website-address*   (concat *website-address* "misc/"))
 ;; ;; variables
 
-(defun publishing-top-dir (type)
-  (expand-file-name
-   (expand-file-name
-    "default"
-    (expand-file-name
-     (symbol-name type)
-     "contents/virtual"))
-   *created-content-dir*))
+;;;###autoload
+(defun default-publishing-document-root-dir ()
+  *doc-root*)
 
+;;;###autoload
+(defun default-publishing-created-contents-dir ()
+  (expand-file-name "CreatedContent/contents" (publishing-document-root-dir)))
+
+;;;###autoload
+(defun default-publishing-generated-contents-dir ()
+  (expand-file-name "CreatedContent/gen" (publishing-document-root-dir)))
+
+(defun default-publishing-website-address ()
+  *website-address*)
+
+(defalias 'publishing-document-root-dir      #'default-publishing-document-root-dir)
+(defalias 'publishing-created-contents-dir   #'default-publishing-created-contents-dir)
+(defalias 'publishing-generated-contents-dir #'default-publishing-generated-contents-dir)
+(defalias 'publishing-website-address        #'default-publishing-website-address)
+
+;;;###autoload
+(defun publishing-contents-top-dir (type)
+  (expand-file-name
+   "default"
+   (expand-file-name
+    (symbol-name type)
+    (expand-file-name
+     "virtual"
+     (publishing-created-contents-dir)))))
+
+;;;###autoload
 (defun publishing-generated-top-dir (type)
   (expand-file-name
+   "default"
    (expand-file-name
-    "default"
     (expand-file-name
      (symbol-name type)
-     "contents/virtual"))
-   (expand-file-name
-    (expand-file-name
-     "gen")
-    *created-content-dir*)))
+     (expand-file-name
+      "virtual"
+      (publishing-generated-contents-dir))))))
+
+(defun publishing-website-top-dir (type)
+  (publishing-website-address))
+
+(publishing-contents-top-dir 'misc)
+(publishing-generated-top-dir 'misc)
 
 ;;; publishing.el ends here
