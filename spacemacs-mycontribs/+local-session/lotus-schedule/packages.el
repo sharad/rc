@@ -170,9 +170,9 @@ Each entry is either:
               :config
               (progn
                 (progn
-                  ;; (setq
-                  ;;  diary-file
-                  ;;  (publishing-created-contents-path 'misc "emacs/schedule/diary/diary"))
+                  (setq
+                   diary-file
+                   (publishing-created-contents-path 'misc "emacs/schedule/diary/diary"))
                   ))))
         (progn
           (setq diary-display-function 'diary-fancy-display)
