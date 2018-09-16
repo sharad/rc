@@ -109,7 +109,7 @@
 (defun default-publishing-generated-contents-dir (&optional class path)
   (if class
       (publishing-document-generated-contents-dir)
-    (publishing-class-generated-contents-dir class)))
+    (publishing-class-generated-contents-dir class path)))
 
 (defun default-publishing-website-address (&optional class path)
   )
