@@ -183,6 +183,14 @@ Each entry is either:
       :defer t
       :config
       (progn
+
+        (use-package diary-lib
+            :defer t
+            :config
+            (progn
+              (progn
+                )))
+
         (progn ;code will not get run as when
                ;`enable-startup-interrupting-feature-hook' run at early start,
                ;that time package `org-misc-utils-lotus' did not get loaded.
