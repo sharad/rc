@@ -33,7 +33,14 @@
  (require 'org-compact))
 (require 'ox-publish)
 
-(defvar *org-top-dir*           (expand-file-name "contents/org" *created-content-dir*))
+(defvar *org-top-dir*           (publishing-created-contents-dir 'org))
+
+*org-top-dir*
+"/home/s/hell/Documents/CreatedContent/contents/virtual/org/default"
+
+
+
+
 (defvar *org-top-style-dir*     (expand-file-name "generic/org/style" *org-top-dir*))
 (defvar *org-generated-top-dir* (expand-file-name "gen/org" *created-content-dir*))
 (defvar *org-website-address*   (concat *website-address* "org/"))
