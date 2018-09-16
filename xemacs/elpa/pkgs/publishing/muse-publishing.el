@@ -33,7 +33,7 @@
 
 
 (defvar *muse-top-dir*           (expand-file-name "contents/muse" *created-content-dir*))
-(defvar *muse-top-style-dir*     (expand-file-name "generic/muse/style" (publishing-created-contents-dir 'muse)))
+(defvar *muse-top-style-dir*     (publishing-created-contents-dir 'muse "generic/muse/style"))
 
 (defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
 (defvar *muse-website-address*   (concat *website-address* "muse/"))
