@@ -43,14 +43,14 @@
   *doc-root*)
 
 ;;;###autoload
-(defun default-publishing-created-contents-dir ()
+(defun default-publishing-document-created-contents-dir ()
   (expand-file-name "CreatedContent/contents" (publishing-document-root-dir)))
 
 ;;;###autoload
-(defun default-publishing-generated-contents-dir ()
+(defun default-publishing-document-generated-contents-dir ()
   (expand-file-name "CreatedContent/gen" (publishing-document-root-dir)))
 
-(defun default-publishing-website-address ()
+(defun default-publishing-document-website-address ()
   *website-address*)
 
 (defalias 'publishing-document-root-dir               #'default-publishing-document-root-dir)
