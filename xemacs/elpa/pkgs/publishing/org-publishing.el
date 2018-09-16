@@ -82,7 +82,7 @@
 ;;           (publishing-path
 ;;            (read-directory-name
 ;;             "Org Project Directory: "
-;;             (publishing-generated-contents-dir 'muse (replace-regexp-in-string (publishing-created-contents-dir 'muse ) "" org-dir))
+;;             (publishing-generated-contents-dir 'muse (replace-regexp-in-string (publishing-created-contents-dir 'muse) "" org-dir))
 ;;           (publishing-style
 ;;            (ido-completing-read "Org Publishing Style: " (mapcar 'car org-publishing-styles)))
 ;;           (publishing-url (read-from-minibuffer "Publishing Base URL: "))
