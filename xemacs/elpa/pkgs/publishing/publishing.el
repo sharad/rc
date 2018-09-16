@@ -113,8 +113,8 @@
 ;;;###autoload
 (defun default-publishing-website-address (&optional class path)
   (if class
-      (publishing-class-website-dir class path)
-    (publishing-document-website-dir)))
+      (publishing-class-website-address class path)
+    (publishing-document-website-address)))
 
 
 (defalias 'publishing-created-contents-dir   #'default-publishing-created-contents-dir)
@@ -122,7 +122,7 @@
 (defalias 'publishing-website-address        #'default-publishing-website-address)
 
 
-(publishing-created-contents-dir 'misc "test")
+
 
 
 ;;; publishing.el ends here
