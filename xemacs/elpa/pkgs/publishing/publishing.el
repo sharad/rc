@@ -77,11 +77,11 @@
      (symbol-name type)
      (expand-file-name
       "virtual"
-      (publishing-generated-contents-dir))))))
+      (publishing-document-generated-contents-dir))))))
 
 (defun publishing-type-website-address (type)
   (concat
-   (publishing-website-address)
+   (publishing-document-website-address)
    "/"
    (symbol-name type)))
 
