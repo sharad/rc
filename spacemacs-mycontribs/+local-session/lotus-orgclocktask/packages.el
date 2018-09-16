@@ -353,6 +353,7 @@ Each entry is either:
           (progn
             (add-to-enable-login-session-interrupting-feature-hook
              #'(lambda ()
+                 (message "test3")
                  (org-clock-work-day-mode-line-add t)) t)
 
             (add-to-enable-startup-interrupting-feature-hook
