@@ -60,6 +60,7 @@
 
 ;;;###autoload
 (defun default-publishing-class-created-contents-dir (class &optional path)
+  (if class
   (let ((path (or path "")))
     (expand-file-name
      path
@@ -69,7 +70,7 @@
        (symbol-name class)
        (expand-file-name
         "virtual"
-        (publishing-document-created-contents-dir)))))))
+        (publishing-document-created-contents-dir))))))))
 
 ;;;###autoload
 (defun default-publishing-class-generated-contents-dir (class &optional path)
