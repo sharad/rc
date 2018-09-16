@@ -97,6 +97,18 @@
 
 
 
+
+
+(defun default-publishing-document-created-contents-dir ()
+  (expand-file-name "CreatedContent/contents" (publishing-document-root-dir)))
+
+;;;###autoload
+(defun default-publishing-document-generated-contents-dir ()
+  (expand-file-name "CreatedContent/gen" (publishing-document-root-dir)))
+
+(defun default-publishing-document-website-address ()
+  *website-address*)
+
 (publishing-generated-top-dir 'misc)
 
 
