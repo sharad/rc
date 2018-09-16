@@ -44,7 +44,7 @@
          (publishing-path
           (read-directory-name
            "Muse Project Directory: "
-           (concat (publishing-generated-contents-dir 'muse) (replace-regexp-in-string (publishing-created-contents-dir 'muse) "" muse-dir))))
+           (publishing-generated-contents-dir 'muse (replace-regexp-in-string (publishing-created-contents-dir 'muse) "" muse-dir))))
          (publishing-style
           (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
          (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -59,7 +59,7 @@
          (publishing-path
           (read-directory-name
            "Muse Project Directory: "
-           (concat (publishing-generated-contents-dir 'muse)
+           (publishing-generated-contents-dir 'muse
                    (replace-regexp-in-string (publishing-created-contents-dir 'muse) ""
                                              (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
          (publishing-style
@@ -118,7 +118,7 @@
           (publishing-path
            (read-directory-name
             "Muse Project Directory: "
-            (concat (publishing-generated-contents-dir 'muse)
+            (publishing-generated-contents-dir 'muse
                     (replace-regexp-in-string (publishing-created-contents-dir 'muse) "" muse-dir))))
           (publishing-style
            (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
@@ -145,7 +145,7 @@
           (publishing-path
            (read-directory-name
             "Muse Project Directory: "
-            (concat (publishing-generated-contents-dir 'muse)
+            (publishing-generated-contents-dir 'muse
                     (replace-regexp-in-string (publishing-created-contents-dir 'muse) ""
                                               (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
           (publishing-style
