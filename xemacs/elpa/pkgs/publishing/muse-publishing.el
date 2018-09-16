@@ -36,7 +36,7 @@
 (defvar *muse-top-style-dir*     (expand-file-name "generic/muse/style" (publishing-created-contents-dir 'muse)))
 ;; (defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
 (defvar *muse-generated-top-dir* (publishing-generated-contents-dir 'muse))
-(defvar *muse-website-address*   (concat *website-address* "muse/"))
+(defvar *muse-website-address*   (publishing-website-address 'muse))
 
 ;;;###autoload
 (defun* read-muse-style-spec ()
