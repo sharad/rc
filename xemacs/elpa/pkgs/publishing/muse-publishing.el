@@ -118,7 +118,8 @@
           (publishing-path
            (read-directory-name
             "Muse Project Directory: "
-            (concat (publishing-generated-contents-dir 'muse) (replace-regexp-in-string (publishing-created-contents-dir 'muse) "" muse-dir))))
+            (concat (publishing-generated-contents-dir 'muse)
+                    (replace-regexp-in-string (publishing-created-contents-dir 'muse) "" muse-dir))))
           (publishing-style
            (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
           (publishing-url (read-from-minibuffer "Publishing Base URL: "))
