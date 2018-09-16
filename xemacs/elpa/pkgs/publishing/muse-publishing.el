@@ -1,4 +1,4 @@
-;;; muse publishing.el --- muse publishing
+<;;; muse publishing.el --- muse publishing
 
 ;; Copyright (C) 2015  sharad
 
@@ -185,7 +185,7 @@
 ;;  (publishing-created-contents-path 'muse"/web/site/blog" )
 ;;  (publishing-generated-contents-path 'muse "/web/site/blog/pdf")
 ;;  "ikiwiki"
-;;  :base-url (concat *website-address* "/blog/"))
+;;  :base-url ((publishing-website-address 'muse "blog/"))
 
 
 
@@ -739,7 +739,7 @@ between the two tags."
 
   ;; ("MyNotes"
   ;;  ("~/Documents/CreatedContent/contents/muse/web/site/wiki/notes" :force-publish ("index") :default "index")
-  ;;  (:base "xhtml" :base-url (concat *website-address* "/notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/html")
+  ;;  (:base "xhtml" :base-url ((publishing-website-address 'muse "notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/html")
   ;;  (:base "my-pdf" :base-url "http://hello.org//notes/" :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/pdf"))
 
   (progn ;; "muse-publishing"
