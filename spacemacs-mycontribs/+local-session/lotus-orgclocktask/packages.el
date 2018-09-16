@@ -360,17 +360,18 @@ Each entry is either:
               (add-to-enable-startup-interrupting-feature-hook
                #'(lambda ()
                    (message "test4")
-                   (when (fboundp 'task-current-party)
-                     (unless (task-current-party)
-                       (task-current-party "meru"))
-                     (unless org-clock-monitor-files
-                       (when (task-current-party)
-                         (let ((monitor-dir (task-party-dir)))
-                           (if (file-directory-p monitor-dir)
-                               (progn
-                                 (org-clock-monitor-files-set-from-dir monitor-dir)
-                                 (org-clock-work-day-mode-line-add t))
-                             (message "[4]org monitor dir %s not exists." monitor-dir))))))
+                   (condition-case err
+                       (when (fboundp 'task-current-party)
+                         (unless (task-current-party)
+                           (task-current-party "meru"))
+                         (unless org-clock-monitor-files
+                           (when (task-current-party)
+                             (let ((monitor-dir (task-party-dir)))
+                               (if (file-directory-p monitor-dir)
+                                   (progn
+                                     (org-clock-monitor-files-set-from-dir monitor-dir)
+                                     (org-clock-work-day-mode-line-add t))
+                                 (message "[4]org monitor dir %s not exists." monitor-dir)))))))
                    (org-clock-work-day-mode-line-add t)) t)))))))
 
 
