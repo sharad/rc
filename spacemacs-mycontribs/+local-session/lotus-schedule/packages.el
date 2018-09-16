@@ -174,7 +174,9 @@ Each entry is either:
                    diary-file
                    (publishing-created-contents-path 'misc "emacs/schedule/diary/diary"))
                   (make-directory
-                   (dirname-of-file diary-file) t)))))
+                   (dirname-of-file diary-file) t)
+                  (with-temp-buffer
+                    (write-file "path/to/empty/file/"))))))
         (progn
           (setq diary-display-function 'diary-fancy-display)
           (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
