@@ -200,8 +200,7 @@ Each entry is either:
                                          diary-file
                                          (publishing-created-contents-path 'misc "emacs/schedule/diary/diary")))))
                                    t)))
-                   t)))))))
-  )
+                   t))))))))
 
 (defun lotus-schedule/post-init-planner-interface ()
   (use-package planner-interface
