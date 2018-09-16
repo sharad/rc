@@ -108,7 +108,7 @@
           (publishing-path
            (read-directory-name
             "Org Project Publishing Directory: "
-            (concat *org-generated-top-dir*
+            (publishing-generated-contents-dir 'muse
                     (replace-regexp-in-string (publishing-created-contents-dir 'muse ) ""
                                               (if (consp org-dir) (car org-dir) org-dir)))))
           (publishing-options nil))
@@ -126,7 +126,7 @@
 ;;          (publishing-path
 ;;           (read-directory-name
 ;;            "Org Project Directory: "
-;;            (concat *org-generated-top-dir* (replace-regexp-in-string (publishing-created-contents-dir 'muse ) "" org-dir))))
+;;            (publishing-generated-contents-dir 'muse  (replace-regexp-in-string (publishing-created-contents-dir 'muse ) "" org-dir))))
 ;;          (publishing-style
 ;;           (ido-completing-read "Org Publishing Style: " (mapcar 'car org-publishing-styles)))
 ;;          (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -141,7 +141,7 @@
          (publishing-path
           (read-directory-name
            "Org Project Publishing Directory: "
-           (concat *org-generated-top-dir*
+           (publishing-generated-contents-dir 'muse
                    (replace-regexp-in-string (publishing-created-contents-dir 'muse ) ""
                                              (if (consp org-dir) (car org-dir) org-dir)))))
          (publishing-options nil))
