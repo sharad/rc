@@ -356,7 +356,7 @@ Each entry is either:
                  (message "test3")
                  (org-clock-work-day-mode-line-add t)) t)
 
-            (when t
+            (when nil
               (add-to-enable-startup-interrupting-feature-hook
                #'(lambda ()
                    (message "test4")
