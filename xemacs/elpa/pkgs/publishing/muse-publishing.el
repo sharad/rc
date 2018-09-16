@@ -32,19 +32,19 @@
 (require 'muse-project)
 
 
-(defvar *muse-top-dir*           (publishing-created-contents-dir 'muse))
-(defvar *muse-top-style-dir*     (publishing-created-contents-dir 'muse "generic/muse/style"))
+(defvar *muse-top-dir*           (publishing-created-contents-path 'muse))
+(defvar *muse-top-style-dir*     (publishing-created-contents-path 'muse "generic/muse/style"))
 ;; (defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
 (defvar *muse-generated-top-dir* (publishing-generated-contents-dir 'muse))
 (defvar *muse-website-address*   (publishing-website-address 'muse))
 
 ;;;###autoload
 (defun* read-muse-style-spec ()
-  (let* ((muse-dir (read-directory-name "Muse Project Directory: " (publishing-created-contents-dir 'muse)))
+  (let* ((muse-dir (read-directory-name "Muse Project Directory: " (publishing-created-contents-path 'muse)))
          (publishing-path
           (read-directory-name
            "Muse Project Directory: "
-           (publishing-generated-contents-dir 'muse (replace-regexp-in-string (publishing-created-contents-dir 'muse) "" muse-dir))))
+           (publishing-generated-contents-dir 'muse (replace-regexp-in-string (publishing-created-contents-path 'muse) "" muse-dir))))
          (publishing-style
           (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
          (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -55,12 +55,12 @@
 (defun* read-muse-project-spec ()
   (let* ((name (read-from-minibuffer "Project Name: "))
          (muse-dirs
-          (read-directory-name "Muse Project Directory: " (concat (publishing-created-contents-dir 'muse) "/" name)))
+          (read-directory-name "Muse Project Directory: " (concat (publishing-created-contents-path 'muse) "/" name)))
          (publishing-path
           (read-directory-name
            "Muse Project Directory: "
            (publishing-generated-contents-dir 'muse
-                   (replace-regexp-in-string (publishing-created-contents-dir 'muse) ""
+                   (replace-regexp-in-string (publishing-created-contents-path 'muse) ""
                                              (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
          (publishing-style
           (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
@@ -114,12 +114,12 @@
 ;;;###autoload
 (defun* make-muse-style-spec (muse-dir publishing-path publishing-style publishing-url &rest publishing-options)
   (interactive
-   (let* ((muse-dir (read-directory-name "Muse Project Directory: " (publishing-created-contents-dir 'muse)))
+   (let* ((muse-dir (read-directory-name "Muse Project Directory: " (publishing-created-contents-path 'muse)))
           (publishing-path
            (read-directory-name
             "Muse Project Directory: "
             (publishing-generated-contents-dir 'muse
-                    (replace-regexp-in-string (publishing-created-contents-dir 'muse) "" muse-dir))))
+                    (replace-regexp-in-string (publishing-created-contents-path 'muse) "" muse-dir))))
           (publishing-style
            (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
           (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -141,12 +141,12 @@
   (interactive
    (let* ((name (read-from-minibuffer "Project Name: "))
           (muse-dirs
-           (read-directory-name "Muse Project Directory: " (concat (publishing-created-contents-dir 'muse) "/" name)))
+           (read-directory-name "Muse Project Directory: " (concat (publishing-created-contents-path 'muse) "/" name)))
           (publishing-path
            (read-directory-name
             "Muse Project Directory: "
             (publishing-generated-contents-dir 'muse
-                    (replace-regexp-in-string (publishing-created-contents-dir 'muse) ""
+                    (replace-regexp-in-string (publishing-created-contents-path 'muse) ""
                                               (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
           (publishing-style
            (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
@@ -164,7 +164,7 @@
 ;;;###autoload
 (defun content-muse-dir (path)
   "thisandthat."
-  (publishing-created-contents-dir 'muse path))
+  (publishing-created-contents-path 'muse path))
 
 ;;;###autoload
 (defun content-muse-publishing-dir (path)
@@ -177,12 +177,12 @@
 
 ;; (mapcar 'car muse-publishing-styles)
 ;; (muse-project-alist-styles
-;;  (publishing-created-contents-dir 'muse "/doc/priv")
+;;  (publishing-created-contents-path 'muse "/doc/priv")
 ;;  (publishing-generated-contents-dir 'muse "/doc/pdf/doc/priv/pdf")
 ;;  "pdf")
 
 ;; (muse-project-alist-styles
-;;  (publishing-created-contents-dir 'muse"/web/site/blog" )
+;;  (publishing-created-contents-path 'muse"/web/site/blog" )
 ;;  (publishing-generated-contents-dir 'muse "/web/site/blog/pdf")
 ;;  "ikiwiki"
 ;;  :base-url (concat *website-address* "/blog/"))
@@ -523,8 +523,8 @@
 
   ;; This uses a different header and footer than normal
   ;; (muse-derive-style "my-xhtml" "xhtml"
-  ;;                    :header (publishing-created-contents-dir 'muse "/web/site/meta/generic/header.html")
-  ;;                    :footer (publishing-created-contents-dir 'muse "/web/site/meta/generic/footer.html"))
+  ;;                    :header (publishing-created-contents-path 'muse "/web/site/meta/generic/header.html")
+  ;;                    :footer (publishing-created-contents-path 'muse "/web/site/meta/generic/footer.html"))
 
   ;; This uses a different header and footer than normal
   (muse-derive-style "my-xhtml" "xhtml"
@@ -758,8 +758,8 @@ between the two tags."
      `(muse-completing-read-function (quote ido-completing-read))
      `(muse-html-charset-default "utf-8")
      `(muse-html-encoding-default (quote utf-8))
-     ;; `(muse-html-footer ,(publishing-created-contents-dir 'muse "/web/site/meta/generic/footer.html"))
-     ;; `(muse-html-header ,(publishing-created-contents-dir 'muse "/web/site/meta/generic/header.html"))
+     ;; `(muse-html-footer ,(publishing-created-contents-path 'muse "/web/site/meta/generic/footer.html"))
+     ;; `(muse-html-header ,(publishing-created-contents-path 'muse "/web/site/meta/generic/header.html"))
      `(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
      `(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
 
