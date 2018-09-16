@@ -321,7 +321,7 @@ Each entry is either:
                       :config
                       (progn
                         (progn
-                          (unless task-current-party
+                          (unless (task-current-party)
                             (task-current-party "meru"))
                           (when (task-current-party)
                             (let ((monitor-dir (task-party-dir)))
@@ -355,7 +355,7 @@ Each entry is either:
 
             (add-to-enable-startup-interrupting-feature-hook
              #'(lambda ()
-                 (unless task-current-party
+                 (unless (task-current-party)
                    (task-current-party "meru"))
                  (unless org-clock-monitor-files
                    (when (task-current-party)
