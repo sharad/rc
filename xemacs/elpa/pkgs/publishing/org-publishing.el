@@ -104,7 +104,7 @@
   (interactive
    (let* ((name (read-from-minibuffer "Org Project Name: "))
           (org-dir
-           (read-directory-name "Org Project Directory: " (concat *org-top-dir* "/" name)))
+           (read-directory-name "Org Project Directory: " (publishing-created-contents-dir 'muse name)))
           (publishing-path
            (read-directory-name
             "Org Project Publishing Directory: "
@@ -137,7 +137,7 @@
 (defun* read-org-project-spec ()
   (let* ((name (read-from-minibuffer "Org Project Name: "))
          (org-dir
-          (read-directory-name "Org Project Directory: " (concat *org-top-dir* "/" name)))
+          (read-directory-name "Org Project Directory: " (publishing-created-contents-dir 'muse name)))
          (publishing-path
           (read-directory-name
            "Org Project Publishing Directory: "
