@@ -104,7 +104,7 @@
   )
 
 ;;;###autoload
-(defun default-publishing-generated-contents-dir ()
+(defun default-publishing-generated-contents-dir (&optional class path)
   (expand-file-name "CreatedContent/gen" (publishing-root-dir)))
 
 (defun default-publishing-website-address ()
