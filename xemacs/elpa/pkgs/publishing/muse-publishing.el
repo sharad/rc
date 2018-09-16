@@ -307,7 +307,9 @@
     ("style"
      (:path-function (lambda ()
                        (if muse-publishing-current-style
-                           (muse-meta-style-dirname (publishing-created-contents-path 'muse "generic/muse/style") (plist-get muse-publishing-current-style :base))
+                           (muse-meta-style-dirname
+                            (publishing-created-contents-path 'muse "generic/muse/style")
+                            (plist-get muse-publishing-current-style :base))
                            'pass))))
 
     ("base"
