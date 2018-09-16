@@ -93,9 +93,9 @@
    (symbol-name class)
    (if path (concat "/" path))))
 
-(defalias 'publishing-document-created-contents-dir   #'default-publishing-document-created-contents-dir)
-(defalias 'publishing-document-generated-contents-dir #'default-publishing-document-generated-contents-dir)
-(defalias 'publishing-document-website-address        #'default-publishing-document-website-address)
+(defalias 'publishing-class-created-contents-dir   #'default-publishing-class-created-contents-dir)
+(defalias 'publishing-class-generated-contents-dir #'default-publishing-class-generated-contents-dir)
+(defalias 'publishing-class-website-address        #'default-publishing-class-website-address)
 
 (defun default-publishing-document-created-contents-dir ()
   (expand-file-name "CreatedContent/contents" (publishing-document-root-dir)))
