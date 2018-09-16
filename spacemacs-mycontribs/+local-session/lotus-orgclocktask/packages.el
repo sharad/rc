@@ -371,7 +371,9 @@ Each entry is either:
                                    (progn
                                      (org-clock-monitor-files-set-from-dir monitor-dir)
                                      (org-clock-work-day-mode-line-add t))
-                                 (message "[4]org monitor dir %s not exists." monitor-dir)))))))
+                                 (message "[4]org monitor dir %s not exists." monitor-dir))))))
+                     ((error
+                       (message "Error: %s" e))))
                    (org-clock-work-day-mode-line-add t)) t)))))))
 
 
