@@ -200,8 +200,9 @@ Each entry is either:
                                    '(lambda (nframe)
                                      (run-at-time-or-now 100
                                       '(lambda ()
-                                        (if (any-frame-opened-p)
-                                            (org-clock-in-if-not)))))
+                                        (setq
+                                         diary-file
+                                         (publishing-created-contents-path 'misc "emacs/schedule/diary/diary")))))
                                    t))
                        ;; (add-hook
                        ;;  'delete-frame-functions
