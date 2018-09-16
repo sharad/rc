@@ -172,6 +172,7 @@
 
 ;;;###autoload
 (defun content-muse-publishing-url (localpath)
+  (publishing-website-address)
   (concat *muse-website-address* "/" localpath))
 
 ;; (mapcar 'car muse-publishing-styles)
