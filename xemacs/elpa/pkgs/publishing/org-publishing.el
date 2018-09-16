@@ -78,7 +78,7 @@
 
 ;; (defun* make-org-style-spec (org-dir publishing-path publishing-style publishing-url publishing-options)
 ;;   (interactive
-;;    (let* ((org-dir (read-directory-name "Org Project Directory: " *org-top-dir*<))
+;;    (let* ((org-dir (read-directory-name "Org Project Directory: " (publishing-created-contents-path 'org)))
 ;;           (publishing-path
 ;;            (read-directory-name
 ;;             "Org Project Directory: "
