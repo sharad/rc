@@ -39,7 +39,7 @@
 ;; ;; variables
 
 ;;;###autoload
-(defun default-publishing-document-root-dir< ()
+(defun default-publishing-document-root-dir ()
   *doc-root*)
 
 ;;;###autoload
@@ -118,7 +118,7 @@
 
 
 (defalias 'publishing-created-contents-path   #'default-publishing-created-contents-path)
-(defalias 'publishing-generated-contents-dir< #'default-publishing-generated-contents-path)
+(defalias 'publishing-generated-contents-dir #'default-publishing-generated-contents-path)
 (defalias 'publishing-website-address        #'default-publishing-website-address)
 
 
