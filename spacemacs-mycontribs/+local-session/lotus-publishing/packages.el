@@ -107,7 +107,7 @@ Each entry is either:
               ;; Here is my master project listing.
               ;; (make-muse-style-spec
               ;;  (content-muse-dir "web/site/wiki/projects")
-              ;;  (content-muse-publishing-dir "web/site/wiki/projects/my-xhtml")
+              ;;  (content-muse-publishing-path "web/site/wiki/projects/my-xhtml")
               ;;  "my-xhtml"
               ;;  (content-muse-publishing-url "projects/"))
 
@@ -123,14 +123,14 @@ Each entry is either:
                  (:base "my-xhtml"
                         :base-url ,(content-muse-publishing-url "web/")
                         :include "/web/[^/]+"
-                        :path ,(content-muse-publishing-dir "web/site/wiki/web/my-xhtml"))
+                        :path ,(content-muse-publishing-path "web/site/wiki/web/my-xhtml"))
                  (:base "my-xhtml"
                         :base-url ,(content-muse-publishing-url "web/")
                         :include "/testdir/[^/]+"
-                        :path ,(content-muse-publishing-dir "web/site/wiki/web/testdir/my-xhtml"))
+                        :path ,(content-muse-publishing-path "web/site/wiki/web/testdir/my-xhtml"))
                  (:base "my-pdf"
                         :base-url ,(content-muse-publishing-url "web/")
-                        :path ,(content-muse-publishing-dir "doc/pdf/site/wiki/web/my-pdf")
+                        :path ,(content-muse-publishing-path "doc/pdf/site/wiki/web/my-pdf")
                         :include "/\\(CurriculumVitae\\|BriefResume\\)[^/]*$")))
 
               (if t
@@ -140,7 +140,7 @@ Each entry is either:
                                    :default "WelcomePage")
                                 (:base "my-xhtml"
                                        :base-url ,(content-muse-publishing-url "web/site/wiki/projects/my-xhtml/")
-                                       :path ,(content-muse-publishing-dir "web/site/wiki/projects/my-xhtml"))))
+                                       :path ,(content-muse-publishing-path "web/site/wiki/projects/my-xhtml"))))
 
                   (add-muse-project
                    `("Projects"
@@ -150,7 +150,7 @@ Each entry is either:
 
                      ,(make-muse-style-spec
                        (content-muse-dir "web/site/wiki/projects")
-                       (content-muse-publishing-dir "web/site/wiki/projects/my-xhtml/")
+                       (content-muse-publishing-path "web/site/wiki/projects/my-xhtml/")
                        "my-xhtml"
                        (content-muse-publishing-url "web/site/wiki/projects/my-xhtml/"))))
                   )
@@ -163,7 +163,7 @@ Each entry is either:
                    :default "index")
                  (:base "my-xhtml"
                         :base-url ,(content-muse-publishing-url "projects/")
-                        :path ,(content-muse-publishing-dir "web/site/wiki/writing/my-xhtml"))))
+                        :path ,(content-muse-publishing-path "web/site/wiki/writing/my-xhtml"))))
 
 
               (add-muse-project
@@ -179,7 +179,7 @@ Each entry is either:
                         ;;   remainder: Other things to put in every generated style
                         ,@(muse-project-alist-styles
                            (content-muse-dir "web/site/blog")
-                           (content-muse-publishing-dir "web/site/blog/ikiwiki")
+                           (content-muse-publishing-path "web/site/blog/ikiwiki")
                            "ikiwiki"
                            :base-url (content-muse-publishing-url "blog/"))))
 
@@ -190,33 +190,33 @@ Each entry is either:
                              :default "index")
                            (:base "xhtml"
                                   :base-url ,(content-muse-publishing-url "notes/")
-                                  :path ,(content-muse-publishing-dir "web/site/wiki/notes/xhtml"))
+                                  :path ,(content-muse-publishing-path "web/site/wiki/notes/xhtml"))
                            (:base "my-pdf"
                                   :base-url ,(content-muse-publishing-url "notes/")
-                                  :path ,(content-muse-publishing-dir "web/site/wiki/notes/my-pdf"))))
+                                  :path ,(content-muse-publishing-path "web/site/wiki/notes/my-pdf"))))
 
               (add-muse-project
                `("_Private" (,(content-muse-dir "doc/priv"))
                             ,@(muse-project-alist-styles (content-muse-dir "doc/priv")
-                                                         (content-muse-publishing-dir "doc/pdf/doc/priv/pdf")
+                                                         (content-muse-publishing-path "doc/pdf/doc/priv/pdf")
                                                          "pdf")))
 
               (add-muse-project
                `("_Classes" (,@(muse-project-alist-dirs (content-muse-dir "web/site/wiki/classes"))
                                :default "index")
                             ,@(muse-project-alist-styles (content-muse-dir "web/site/wiki/classes")
-                                                         (content-muse-publishing-dir "web/site/wiki/classes/xhtml")
+                                                         (content-muse-publishing-path "web/site/wiki/classes/xhtml")
                                                          "xhtml")))
 
               (add-muse-project
                `("MA366" (,(content-muse-dir "doc/pdf/classes/ma366"))
                          (:base "pdf-uh"
-                                :path ,(content-muse-publishing-dir "doc/pdf/classes/ma366/pdf-uh"))))
+                                :path ,(content-muse-publishing-path "doc/pdf/classes/ma366/pdf-uh"))))
 
               (add-muse-project
                `("ENGL238" (,(content-muse-dir "doc/pdf/classes/eng238"))
                            (:base "pdf-uh"
-                                  :path ,(content-muse-publishing-dir "doc/pdf/classes/eng238/pdf-uh"))))
+                                  :path ,(content-muse-publishing-path "doc/pdf/classes/eng238/pdf-uh"))))
 
               (add-muse-project
                `("CS426" (,(content-muse-dir "web/site/wiki/classes/cs426"))
@@ -229,7 +229,7 @@ Each entry is either:
                             :major-mode planner-mode
                             :visit-link planner-visit-link)
                           (:base "planner-xhtml"
-                                 :path ,(content-muse-publishing-dir "web/site/wiki/plans/html")))))))
+                                 :path ,(content-muse-publishing-path "web/site/wiki/plans/html")))))))
 
         (progn ;; org
           (progn
