@@ -177,6 +177,7 @@ Each entry is either:
                           (publishing-generated-contents-dir 'misc local-diary-relative-path)))
                     (setq
                      diary-file
+                     (publishing-created-contents-dir 'misc "emacs/schedule/diary")
                      (expand-file-name
                       "diary"
                       local-diary-output-directory)))))))
