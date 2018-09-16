@@ -161,7 +161,7 @@
 ;;;###autoload
 (defun content-misc-dir (path)
   "thisandthat."
-  (publishing-created-contents-dir path))
+  (publishing-created-contents-dir 'misc path))
 
 ;;;###autoload
 (defun content-misc-publishing-dir (path)
