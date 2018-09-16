@@ -375,12 +375,6 @@ Each entry is either:
                      ((error) (message "Error: %s" err)))
                    (org-clock-work-day-mode-line-add t)) t)))))))
 
-(condition-case err
-    (test)
-  ((error)
-   (message "Error: %s" err)))
-
-
 (defun lotus-orgclocktask/init-org-clock-table-misc-lotus ()
   (use-package org-clock-table-misc-lotus
       :defer t
