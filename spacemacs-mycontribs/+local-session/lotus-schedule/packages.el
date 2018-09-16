@@ -172,12 +172,12 @@ Each entry is either:
                 (progn
                   (let* ((local-diary-relative-path "emacs/schedule/diary")
                          (local-diary-directory
-                          (publishing-created-contents-dir 'misc local-diary-relative-path))
+                          (publishing-created-contents-path 'misc local-diary-relative-path))
                          (local-diary-output-directory
                           (publishing-generated-contents-dir 'misc local-diary-relative-path)))
                     (setq
                      diary-file
-                     (publishing-created-contents-dir 'misc "emacs/schedule/diary/diary")))))))
+                     (publishing-created-contents-path 'misc "emacs/schedule/diary/diary")))))))
         (progn
           (setq diary-display-function 'diary-fancy-display)
           (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
