@@ -117,9 +117,9 @@
     (publishing-class-website-dir class path)))
 
 
-(defalias 'publishing-class-created-contents-dir   #'default-publishing-class-created-contents-dir)
-(defalias 'publishing-class-generated-contents-dir #'default-publishing-class-generated-contents-dir)
-(defalias 'publishing-class-website-address        #'default-publishing-class-website-address)
+(defalias 'publishing-created-contents-dir   #'default-publishing-created-contents-dir)
+(defalias 'publishing-generated-contents-dir #'default-publishing-generated-contents-dir)
+(defalias 'publishing-website-address        #'default-publishing-website-address)
 
 (publishing-generated-top-dir 'misc)
 
