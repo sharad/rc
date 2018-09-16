@@ -53,6 +53,11 @@
 (defun default-publishing-document-website-address ()
   *website-address*)
 
+(defalias 'publishing-document-root-dir               #'default-publishing-document-root-dir)
+(defalias 'publishing-document-created-contents-dir   #'default-publishing-document-created-contents-dir)
+(defalias 'publishing-document-generated-contents-dir #'default-publishing-document-generated-contents-dir)
+(defalias 'publishing-document-website-address        #'default-publishing-document-website-address)
+
 ;;;###autoload
 (defun default-publishing-class-created-contents-dir (class)
   (expand-file-name
