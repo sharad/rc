@@ -167,7 +167,7 @@
   (publishing-created-contents-path 'muse path))
 
 ;;;###autoload
-(defun content-muse-publishing-dir (path)
+(defun content-muse-publishing-path (path)
   "thisandthat."
   (publishing-generated-contents-path 'muse path))
 
