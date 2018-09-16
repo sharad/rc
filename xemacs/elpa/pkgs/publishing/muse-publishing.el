@@ -32,11 +32,11 @@
 (require 'muse-project)
 
 
-(defvar *muse-top-dir*           (publishing-created-contents-path 'muse))
-(defvar *muse-top-style-dir*     (publishing-created-contents-path 'muse "generic/muse/style"))
-;; (defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
-(defvar *muse-generated-top-dir* (publishing-generated-contents-path 'muse))
-(defvar *muse-website-address*   (publishing-website-address 'muse))
+;; (defvar *muse-top-dir*           (publishing-created-contents-path 'muse))
+;; (defvar *muse-top-style-dir*     (publishing-created-contents-path 'muse "generic/muse/style"))
+;; ;; (defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
+;; (defvar *muse-generated-top-dir* (publishing-generated-contents-path 'muse))
+;; (defvar *muse-website-address*   (publishing-website-address 'muse))
 
 (defun muse-publishing-created-contents-style-path (path)
   (publishing-created-contents-path 'muse path))
