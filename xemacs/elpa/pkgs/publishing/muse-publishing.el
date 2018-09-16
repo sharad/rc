@@ -32,10 +32,10 @@
 (require 'muse-project)
 
 
-(defvar *muse-top-dir*           (publishing-created-contents-dir 'muse))
-(defvar *muse-top-style-dir*     (publishing-created-contents-dir 'muse "generic/muse/style"))
+(defvar *muse-top-dir*           (expand-file-name "contents/muse" *created-content-dir*))
+(defvar *muse-top-style-dir*     (expand-file-name "generic/muse/style" (publishing-created-contents-dir 'muse)))
 
-(defvar *muse-generated-top-dir* (publishing-generated-contents-dir 'muse "generic/muse/style"))
+(defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
 (defvar *muse-website-address*   (concat *website-address* "muse/"))
 
 ;;;###autoload
@@ -757,8 +757,8 @@ between the two tags."
      `(muse-completing-read-function (quote ido-completing-read))
      `(muse-html-charset-default "utf-8")
      `(muse-html-encoding-default (quote utf-8))
-     ;; `(muse-html-footer ,(concat (publishing-created-contents-dir 'muse) "/web/site/meta/generic/footer.html"))
-     ;; `(muse-html-header ,(concat (publishing-created-contents-dir 'muse) "/web/site/meta/generic/header.html"))
+     ;; `(muse-html-footer ,(publishing-created-contents-dir 'muse "/web/site/meta/generic/footer.html"))
+     ;; `(muse-html-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
      `(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
      `(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
 
