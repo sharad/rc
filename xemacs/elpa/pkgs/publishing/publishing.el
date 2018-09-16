@@ -116,6 +116,11 @@
       (publishing-document-website-dir)
     (publishing-class-website-dir class path)))
 
+
+(defalias 'publishing-class-created-contents-dir   #'default-publishing-class-created-contents-dir)
+(defalias 'publishing-class-generated-contents-dir #'default-publishing-class-generated-contents-dir)
+(defalias 'publishing-class-website-address        #'default-publishing-class-website-address)
+
 (publishing-generated-top-dir 'misc)
 
 
