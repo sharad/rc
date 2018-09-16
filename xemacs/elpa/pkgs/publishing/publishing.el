@@ -39,23 +39,23 @@
 ;; ;; variables
 
 ;;;###autoload
-(defun default-publishing-document-root-dir ()
+(defun default-publishing-document-root-path ()
   *doc-root*)
 
 ;;;###autoload
-(defun default-publishing-document-created-contents-dir ()
+(defun default-publishing-document-created-contents-path ()
   (expand-file-name "CreatedContent/contents" (publishing-document-root-path)))
 
 ;;;###autoload
-(defun default-publishing-document-generated-contents-dir ()
+(defun default-publishing-document-generated-contents-path ()
   (expand-file-name "CreatedContent/gen" (publishing-document-root-path)))
 
 (defun default-publishing-document-website-address ()
   *website-address*)
 
 (defalias 'publishing-document-root-path               #'default-publishing-document-root-path)
-(defalias 'publishing-document-created-contents-dir   #'default-publishing-document-created-contents-path)
-(defalias 'publishing-document-generated-contents-dir #'default-publishing-document-generated-contents-dir)
+(defalias 'publishing-document-created-contents-path   #'default-publishing-document-created-contents-path)
+(defalias 'publishing-document-generated-contents-path #'default-publishing-document-generated-contents-path)
 (defalias 'publishing-document-website-address        #'default-publishing-document-website-address)
 
 ;;;###autoload
@@ -72,7 +72,7 @@
         (publishing-document-created-contents-path)))))))
 
 ;;;###autoload
-(defun default-publishing-class-generated-contents-dir (class &optional path)
+(defun default-publishing-class-generated-contents-path (class &optional path)
   (let ((path (or path "")))
     (expand-file-name
      path
@@ -83,7 +83,7 @@
         (symbol-name class)
         (expand-file-name
          "virtual"
-         (publishing-document-generated-contents-dir))))))))
+         (publishing-document-generated-contents-path))))))))
 
 ;;;###autoload
 (defun default-publishing-class-website-address (class &optional path)
@@ -95,7 +95,7 @@
 
 
 (defalias 'publishing-class-created-contents-path   #'default-publishing-class-created-contents-path)
-(defalias 'publishing-class-generated-contents-dir #'default-publishing-class-generated-contents-dir)
+(defalias 'publishing-class-generated-contents-path #'default-publishing-class-generated-contents-path)
 (defalias 'publishing-class-website-address        #'default-publishing-class-website-address)
 
 ;;;###autoload
@@ -105,10 +105,10 @@
     (publishing-document-created-contents-path)))
 
 ;;;###autoload
-(defun default-publishing-generated-contents-dir (&optional class path)
+(defun default-publishing-generated-contents-path (&optional class path)
   (if class
-      (publishing-class-generated-contents-dir class path)
-    (publishing-document-generated-contents-dir)))
+      (publishing-class-generated-contents-path class path)
+    (publishing-document-generated-contents-path)))
 
 ;;;###autoload
 (defun default-publishing-website-address (&optional class path)
@@ -118,7 +118,7 @@
 
 
 (defalias 'publishing-created-contents-path   #'default-publishing-created-contents-path)
-(defalias 'publishing-generated-contents-dir #'default-publishing-generated-contents-path)
+(defalias 'publishing-generated-contents-path #'default-publishing-generated-contents-path)
 (defalias 'publishing-website-address        #'default-publishing-website-address)
 
 
