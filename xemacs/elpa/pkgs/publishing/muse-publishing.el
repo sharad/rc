@@ -758,7 +758,7 @@ between the two tags."
      `(muse-html-charset-default "utf-8")
      `(muse-html-encoding-default (quote utf-8))
      ;; `(muse-html-footer ,(publishing-created-contents-dir 'muse "/web/site/meta/generic/footer.html"))
-     ;; `(muse-html-header ,(concat *muse-top-dir* "/web/site/meta/generic/header.html"))
+     ;; `(muse-html-header ,(publishing-created-contents-dir 'muse "/web/site/meta/generic/header.html"))
      `(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
      `(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
 
