@@ -79,7 +79,7 @@
       "virtual"
       (publishing-document-generated-contents-dir))))))
 
-(defun publishing-class-website-address (class)
+(defun default-publishing-class-website-address (class)
   (concat
    (publishing-document-website-address)
    "/"
