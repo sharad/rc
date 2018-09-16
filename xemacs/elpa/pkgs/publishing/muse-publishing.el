@@ -522,8 +522,8 @@
 
   ;; This uses a different header and footer than normal
   ;; (muse-derive-style "my-xhtml" "xhtml"
-  ;;                    :header (concat (publishing-created-contents-dir 'muse) "/web/site/meta/generic/header.html")
-  ;;                    :footer (concat (publishing-created-contents-dir 'muse) "/web/site/meta/generic/footer.html"))
+  ;;                    :header (publishing-created-contents-dir 'muse "/web/site/meta/generic/header.html")
+  ;;                    :footer (publishing-created-contents-dir 'muse "/web/site/meta/generic/footer.html"))
 
   ;; This uses a different header and footer than normal
   (muse-derive-style "my-xhtml" "xhtml"
