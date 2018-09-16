@@ -35,7 +35,12 @@
 
 (defvar *org-top-dir*           (publishing-created-contents-dir 'org))
 (defvar *org-top-style-dir*     (publishing-created-contents-dir 'org "generic/org/style"))
-(defvar *org-generated-top-dir* (expand-file-name "gen/org" *created-content-dir*))
+(defvar *org-generated-top-dir* (publishing-generated-contents-dir 'org))
+*org-generated-top-dir*
+"/home/s/hell/Documents/CreatedContent/gen/org"
+
+"/home/s/hell/Documents/CreatedContent/gen/virtual/org/default"
+
 (defvar *org-website-address*   (concat *website-address* "org/"))
 
 
