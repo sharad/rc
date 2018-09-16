@@ -35,7 +35,7 @@
 
 (defvar *org-top-dir*           (publishing-created-contents-dir 'org))
 (defvar *org-top-style-dir*     (publishing-created-contents-dir 'org "generic/org/style"))
-(defvar *org-generated-top-dir* (publishing-generated-contents-dir 'org))
+(defvar *org-generated-top-dir* (publishing-generated-contents-path 'org))
 (defvar *org-website-address*   (publishing-website-address 'org))
 
 
@@ -82,7 +82,7 @@
 ;;           (publishing-path
 ;;            (read-directory-name
 ;;             "Org Project Directory: "
-;;             (publishing-generated-contents-dir 'org (replace-regexp-in-string (publishing-created-contents-dir 'org) "" org-dir))
+;;             (publishing-generated-contents-path 'org (replace-regexp-in-string (publishing-created-contents-dir 'org) "" org-dir))
 ;;           (publishing-style
 ;;            (ido-completing-read "Org Publishing Style: " (mapcar 'car org-publishing-styles)))
 ;;           (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -108,7 +108,7 @@
           (publishing-path
            (read-directory-name
             "Org Project Publishing Directory: "
-            (publishing-generated-contents-dir 'org
+            (publishing-generated-contents-path 'org
                     (replace-regexp-in-string (publishing-created-contents-dir 'org ) ""
                                               (if (consp org-dir) (car org-dir) org-dir)))))
           (publishing-options nil))
@@ -126,7 +126,7 @@
 ;;          (publishing-path
 ;;           (read-directory-name
 ;;            "Org Project Directory: "
-;;            (publishing-generated-contents-dir 'org  (replace-regexp-in-string (publishing-created-contents-dir 'org ) "" org-dir))))
+;;            (publishing-generated-contents-path 'org  (replace-regexp-in-string (publishing-created-contents-dir 'org ) "" org-dir))))
 ;;          (publishing-style
 ;;           (ido-completing-read "Org Publishing Style: " (mapcar 'car org-publishing-styles)))
 ;;          (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -141,7 +141,7 @@
          (publishing-path
           (read-directory-name
            "Org Project Publishing Directory: "
-           (publishing-generated-contents-dir 'org
+           (publishing-generated-contents-path 'org
                    (replace-regexp-in-string (publishing-created-contents-dir 'org ) ""
                                              (if (consp org-dir) (car org-dir) org-dir)))))
          (publishing-options nil))
@@ -160,7 +160,7 @@
 ;;;###autoload
 (defun content-org-publishing-dir (path)
   "thisandthat."
-  (publishing-generated-contents-dir 'org path))
+  (publishing-generated-contents-path 'org path))
 
 ;;;###autoload
 (defun content-org-publishing-url (localpath)
@@ -169,12 +169,12 @@
 ;; (mapcar 'car org-publishing-styles)
 ;; (org-publish-project-alist-styles
 ;;  (publishing-created-contents-dir 'org "doc/priv")
-;;  (publishing-generated-contents-dir 'org "/doc/pdf/doc/priv/pdf")
+;;  (publishing-generated-contents-path 'org "/doc/pdf/doc/priv/pdf")
 ;;  "pdf")
 
 ;; (org-publish-project-alist-styles
 ;;  (publishing-created-contents-dir 'org "web/site/blog")
-;;  (publishing-generated-contents-dir 'org "/web/site/blog/pdf")
+;;  (publishing-generated-contents-path 'org "/web/site/blog/pdf")
 ;;  "ikiwiki"
 ;;  :base-url (concat *website-address* "/blog/"))
 
