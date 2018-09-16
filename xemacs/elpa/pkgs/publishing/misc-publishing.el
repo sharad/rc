@@ -31,8 +31,7 @@
 
 
 (defvar *misc-top-dir*           (publishing-contents-top-dir 'misc))
-(defvar *misc-top-style-dir*     (expand-file-name "generic/misc/style" (publishing-contents-top-dir 'misc)))
-
+(defvar *misc-top-style-dir*     (publishing-contents-top-dir 'misc "generic/misc/style"))
 (defvar *misc-generated-top-dir* (publishing-generated-top-dir 'misc))
 (defvar *misc-website-address*   (concat *website-address* "misc/"))
 
