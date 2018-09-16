@@ -87,11 +87,11 @@
 
 ;;;###autoload
 (defun default-publishing-class-website-address (class &optional path)
-  (let ((path (or path "")))
-    (concat
-     (publishing-document-website-address)
-     "/"
-     (symbol-name class))))
+  (concat
+   (publishing-document-website-address)
+   "/"
+   (symbol-name class)
+   ()))
 
 
 
