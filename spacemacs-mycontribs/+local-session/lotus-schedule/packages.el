@@ -179,7 +179,15 @@ Each entry is either:
           (add-hook 'diary-list-entries-hook 'diary-mark-included-diary-files)
           (add-hook 'diary-list-entries-hook 'diary-sort-entries t))))
 
-  (add-to-enable-startup-interrupting-feature-hook
+  (use-package startup-hooks
+      :defer t
+      :config
+      (progn
+        (progn ;code will not get run as when
+               ;`enable-startup-interrupting-feature-hook' run at early start,
+               ;that time package `org-misc-utils-lotus' did not get loaded.
+          ;; BUG: not getting included
+          (add-to-enable-startup-interrupting-feature-hook
            #'(lambda ()
                (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
                  (add-hook 'after-make-frame-functions
@@ -201,6 +209,17 @@ Each entry is either:
                ;;                 (org-clock-out)))))))
                )
            t))
+
+        ;; (progn
+        ;;   (add-to-enable-desktop-restore-interrupting-feature-hook
+        ;;    #'(lambda ()
+        ;;       (if (fboundp 'org-clock-persistence-insinuate)
+        ;;           (org-clock-persistence-insinuate)
+        ;;           (message "Error: Org Clock function org-clock-persistence-insinuate not available."))
+        ;;       (if (fboundp 'org-clock-start-check-timer-insiuate)
+        ;;           (org-clock-start-check-timer-insiuate)))
+        ;;     t))
+        )))
 
 (defun lotus-schedule/post-init-planner-interface ()
   (use-package planner-interface
