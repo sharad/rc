@@ -79,7 +79,7 @@
       "virtual"
       (publishing-generated-contents-dir))))))
 
-(defun publishing-website-top-dir (type)
+(defun publishing-type-website-address (type)
   (concat
    (publishing-website-address)
    "/"
