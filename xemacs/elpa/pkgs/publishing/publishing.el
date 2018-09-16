@@ -53,7 +53,7 @@
 (defun default-publishing-website-address ()
   *website-address*)
 
-(defalias 'publishing-document-root-dir      #'default-publishing-document-root-dir)
+(defalias 'publishing-document-root-dir               #'default-publishing-document-root-dir)
 (defalias 'publishing-document-created-contents-dir   #'default-publishing-created-contents-dir)
 (defalias 'publishing-document-generated-contents-dir #'default-publishing-generated-contents-dir)
 (defalias 'publishing-document-website-address        #'default-publishing-website-address)
