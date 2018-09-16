@@ -551,7 +551,7 @@ Each entry is either:
           ;; BUG: TODO: will load publishing which agian trigger task-manager configs
           (task-party-base-dir (org-publish-get-attribute "tasks" "org" :base-directory))
           (task-scratch-dir "~/Scratches/main")
-          (task-projbuffs-base-dir (publishing-created-contents-path 'misc "projbuffs") (expand-file-name "contents/virtual/misc/projbuffs" *created-content-dir*))
+          (task-projbuffs-base-dir (publishing-created-contents-path 'misc "projbuffs"))
 
           (task-add-task-party
            "personal"
