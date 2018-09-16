@@ -97,6 +97,9 @@
 (defalias 'publishing-class-generated-contents-dir #'default-publishing-class-generated-contents-dir)
 (defalias 'publishing-class-website-address        #'default-publishing-class-website-address)
 
+
+
+
 (defun default-publishing-document-created-contents-dir ()
   (expand-file-name "CreatedContent/contents" (publishing-document-root-dir)))
 
