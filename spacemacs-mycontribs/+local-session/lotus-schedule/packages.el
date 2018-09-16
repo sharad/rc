@@ -174,7 +174,7 @@ Each entry is either:
                          (local-diary-directory
                           (publishing-created-contents-dir 'misc local-diary-relative-path))
                          (local-diary-output-directory
-                          (content-misc-publishing-dir local-diary-relative-path)))
+                          (publishing-created-contents-dir 'misc local-diary-relative-path)))
                     (setq
                      diary-file
                      (expand-file-name
