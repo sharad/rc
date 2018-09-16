@@ -32,7 +32,7 @@
 (require 'muse-project)
 
 
-(defvar *muse-top-dir*           (expand-file-name "contents/muse" *created-content-dir*))
+(defvar *muse-top-dir*           (publishing-created-contents-dir 'muse))
 (defvar *muse-top-style-dir*     (expand-file-name "generic/muse/style" (publishing-created-contents-dir 'muse)))
 ;; (defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
 (defvar *muse-generated-top-dir* (publishing-generated-contents-dir 'muse))
