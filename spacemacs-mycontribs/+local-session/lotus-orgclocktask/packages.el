@@ -358,6 +358,7 @@ Each entry is either:
 
             (add-to-enable-startup-interrupting-feature-hook
              #'(lambda ()
+                 (message "test4")
                  (unless (task-current-party)
                    (task-current-party "meru"))
                  (unless org-clock-monitor-files
