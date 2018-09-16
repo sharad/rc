@@ -80,7 +80,7 @@
       (publishing-document-generated-contents-dir))))))
 
 ;;;###autoload
-(defun default-publishing-class-website-address (class)
+(defun default-publishing-class-website-address (class &optional path)
   (concat
    (publishing-document-website-address)
    "/"
