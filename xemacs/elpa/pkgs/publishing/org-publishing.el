@@ -34,7 +34,7 @@
 (require 'ox-publish)
 
 (defvar *org-top-dir*           (publishing-created-contents-dir 'org))
-(defvar *org-top-style-dir*     (expand-file-name "generic/org/style" *org-top-dir*))
+(defvar *org-top-style-dir*     (publishing-created-contents-dir 'org "generic/org/style"))
 (defvar *org-generated-top-dir* (expand-file-name "gen/org" *created-content-dir*))
 (defvar *org-website-address*   (concat *website-address* "org/"))
 
