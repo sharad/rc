@@ -101,8 +101,8 @@
 ;;;###autoload
 (defun default-publishing-created-contents-dir (&optional class path)
   (if class
-      (publishing-document-created-contents-dir)
-    (publishing-class-created-contents-dir class path)))
+      (publishing-class-created-contents-dir class path)
+    (publishing-document-created-contents-dir)))
 
 ;;;###autoload
 (defun default-publishing-generated-contents-dir (&optional class path)
