@@ -113,8 +113,8 @@
 
 (defun default-publishing-website-address (&optional class path)
   (if class
-      (publishing-document-generated-contents-dir)
-    (publishing-class-generated-contents-dir class path)))
+      (publishing-document-website-dir)
+    (publishing-class-website-dir class path)))
 
 (publishing-generated-top-dir 'misc)
 
