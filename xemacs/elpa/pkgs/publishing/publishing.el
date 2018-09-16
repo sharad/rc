@@ -100,14 +100,14 @@
 
 
 
-(defun default-publishing-document-created-contents-dir ()
-  (expand-file-name "CreatedContent/contents" (publishing-document-root-dir)))
+(defun default-publishingcreated-contents-dir ()
+  (expand-file-name "CreatedContent/contents" (publishingroot-dir)))
 
 ;;;###autoload
-(defun default-publishing-document-generated-contents-dir ()
-  (expand-file-name "CreatedContent/gen" (publishing-document-root-dir)))
+(defun default-publishinggenerated-contents-dir ()
+  (expand-file-name "CreatedContent/gen" (publishingroot-dir)))
 
-(defun default-publishing-document-website-address ()
+(defun default-publishingwebsite-address ()
   *website-address*)
 
 (publishing-generated-top-dir 'misc)
