@@ -189,34 +189,34 @@ Each entry is either:
             :config
             (progn
               (progn
-                )))
+                (progn ;code will not get run as when
+                                        ;`enable-startup-interrupting-feature-hook' run at early start,
+                                        ;that time package `org-misc-utils-lotus' did not get loaded.
+                  ;; BUG: not getting included
+                  (add-to-enable-startup-interrupting-feature-hook
+                   #'(lambda ()
+                       (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
+                         (add-hook 'after-make-frame-functions
+                                   '(lambda (nframe)
+                                     (run-at-time-or-now 100
+                                      '(lambda ()
+                                        (if (any-frame-opened-p)
+                                            (org-clock-in-if-not)))))
+                                   t))
+                       ;; (add-hook
+                       ;;  'delete-frame-functions
+                       ;;  #'(lambda (nframe)
+                       ;;      (if (and
+                       ;;           (org-clock-is-active)
+                       ;;           (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
+                       ;;          (org-with-clock-writeable
+                       ;;           (let (org-log-note-clock-out)
+                       ;;             (if (org-clock-is-active)
+                       ;;                 (org-clock-out)))))))
+                       )
+                   t)))))
 
-        (progn ;code will not get run as when
-               ;`enable-startup-interrupting-feature-hook' run at early start,
-               ;that time package `org-misc-utils-lotus' did not get loaded.
-          ;; BUG: not getting included
-          (add-to-enable-startup-interrupting-feature-hook
-           #'(lambda ()
-               (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
-                 (add-hook 'after-make-frame-functions
-                           '(lambda (nframe)
-                             (run-at-time-or-now 100
-                              '(lambda ()
-                                (if (any-frame-opened-p)
-                                    (org-clock-in-if-not)))))
-                           t))
-               ;; (add-hook
-               ;;  'delete-frame-functions
-               ;;  #'(lambda (nframe)
-               ;;      (if (and
-               ;;           (org-clock-is-active)
-               ;;           (y-or-n-p-with-timeout (format "Do you want to clock out current task %s: " org-clock-heading) 7 nil))
-               ;;          (org-with-clock-writeable
-               ;;           (let (org-log-note-clock-out)
-               ;;             (if (org-clock-is-active)
-               ;;                 (org-clock-out)))))))
-               )
-           t))
+
 
         ;; (progn
         ;;   (add-to-enable-desktop-restore-interrupting-feature-hook
