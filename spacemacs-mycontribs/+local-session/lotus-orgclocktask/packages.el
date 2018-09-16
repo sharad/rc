@@ -357,20 +357,20 @@ Each entry is either:
                  (org-clock-work-day-mode-line-add t)) t)
 
             (when nil
-             (add-to-enable-startup-interrupting-feature-hook
-             #'(lambda ()
-                 (message "test4")
-                 (unless (task-current-party)
-                   (task-current-party "meru"))
-                 (unless org-clock-monitor-files
-                   (when (task-current-party)
-                     (let ((monitor-dir (task-party-dir)))
-                       (if (file-directory-p monitor-dir)
-                           (progn
-                             (org-clock-monitor-files-set-from-dir monitor-dir)
-                             (org-clock-work-day-mode-line-add t))
+              (add-to-enable-startup-interrupting-feature-hook
+               #'(lambda ()
+                   (message "test4")
+                   (unless (task-current-party)
+                     (task-current-party "meru"))
+                   (unless org-clock-monitor-files
+                     (when (task-current-party)
+                       (let ((monitor-dir (task-party-dir)))
+                         (if (file-directory-p monitor-dir)
+                             (progn
+                               (org-clock-monitor-files-set-from-dir monitor-dir)
+                               (org-clock-work-day-mode-line-add t))
                            (message "[4]org monitor dir %s not exists." monitor-dir)))))
-                 (org-clock-work-day-mode-line-add t)) t)))))))
+                   (org-clock-work-day-mode-line-add t)) t)))))))
 
 
 (defun lotus-orgclocktask/init-org-clock-table-misc-lotus ()
