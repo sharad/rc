@@ -179,28 +179,29 @@ Each entry is either:
           (add-hook 'diary-list-entries-hook 'diary-mark-included-diary-files)
           (add-hook 'diary-list-entries-hook 'diary-sort-entries t))))
 
-  (use-package startup-hooks
-      :defer t
-      :config
-      (progn
-        (use-package diary-lib
-            :defer t
-            :config
-            (progn
-              (progn
-                (progn
-                  (add-to-enable-startup-interrupting-feature-hook
-                   #'(lambda ()
-                       (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
-                         (add-hook 'after-make-frame-functions
-                                   '(lambda (nframe)
-                                     (run-at-time-or-now 100
-                                      '(lambda ()
-                                        (setq
-                                         diary-file
-                                         (publishing-created-contents-path 'misc "emacs/schedule/diary/diary")))))
-                                   t)))
-                   t))))))))
+  ;; (use-package startup-hooks
+  ;;     :defer t
+  ;;     :config
+  ;;     (progn
+  ;;       (use-package diary-lib
+  ;;           :defer t
+  ;;           :config
+  ;;           (progn
+  ;;             (progn
+  ;;               (progn
+  ;;                 (add-to-enable-startup-interrupting-feature-hook
+  ;;                  #'(lambda ()
+  ;;                      (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
+  ;;                        (add-hook 'after-make-frame-functions
+  ;;                                  '(lambda (nframe)
+  ;;                                    (run-at-time-or-now 100
+  ;;                                     '(lambda ()
+  ;;                                       (setq
+  ;;                                        diary-file
+  ;;                                        (publishing-created-contents-path 'misc "emacs/schedule/diary/diary")))))
+  ;;                                  t)))
+  ;;                  t)))))))
+  )
 
 (defun lotus-schedule/post-init-planner-interface ()
   (use-package planner-interface
