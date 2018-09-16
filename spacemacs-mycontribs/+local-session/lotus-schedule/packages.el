@@ -172,7 +172,7 @@ Each entry is either:
                 (progn
                   (let* ((local-diary-relative-path "emacs/schedule/diary")
                          (local-diary-directory
-                          (content-misc-dir local-diary-relative-path))
+                          (publishing-created-contents-dir 'misc local-diary-relative-path))
                          (local-diary-output-directory
                           (content-misc-publishing-dir local-diary-relative-path)))
                     (setq
