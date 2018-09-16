@@ -166,7 +166,7 @@
 ;;;###autoload
 (defun content-misc-publishing-dir (path)
   "thisandthat."
-  (expand-file-name path *misc-generated-top-dir*))
+  (publishing-generated-contents-dir 'misc path))
 
 ;;;###autoload
 (defun content-misc-publishing-url (localpath)
