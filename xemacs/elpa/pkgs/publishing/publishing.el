@@ -59,7 +59,7 @@
 (defalias 'publishing-website-address        #'default-publishing-website-address)
 
 ;;;###autoload
-(defun publishing-contents-top-dir (&optional type path)
+(defun publishing-contents-root-dir (type)
   (expand-file-name
    "default"
    (expand-file-name
