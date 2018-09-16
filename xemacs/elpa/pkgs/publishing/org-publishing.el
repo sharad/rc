@@ -36,7 +36,7 @@
 (defvar *org-top-dir*           (publishing-created-contents-dir 'org))
 (defvar *org-top-style-dir*     (publishing-created-contents-dir 'org "generic/org/style"))
 (defvar *org-generated-top-dir* (publishing-generated-contents-dir 'org))
-(defvar *org-website-address*   (concat *website-address* "org/"))
+(defvar *org-website-address*   (publishing-website-address 'org))
 
 
 ;;;###autoload
