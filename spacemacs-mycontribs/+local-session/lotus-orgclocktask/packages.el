@@ -321,6 +321,7 @@ Each entry is either:
                       :config
                       (progn
                         (progn
+                          (message "test1")
                           (unless (task-current-party)
                             (task-current-party "meru"))
                           (when (task-current-party)
@@ -336,7 +337,7 @@ Each entry is either:
                            #'(lambda ()
                                ;; (unless (task-current-party)
                                ;;   (task-current-party "meru"))
-                               (message "test1")
+                               (message "test2")
                                (when (task-current-party)
                                  (let ((monitor-dir (task-party-dir)))
                                    (if (file-directory-p monitor-dir)
