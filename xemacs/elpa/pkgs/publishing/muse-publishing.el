@@ -176,8 +176,8 @@
 
 ;; (mapcar 'car muse-publishing-styles)
 ;; (muse-project-alist-styles
-;;  (concat (publishing-created-contents-dir 'muse) "/doc/priv")
-;;  (concat (publishing-generated-contents-dir 'muse) "/doc/pdf/doc/priv/pdf")
+;;  (publishing-created-contents-dir 'muse "/doc/priv")
+;;  (publishing-generated-contents-dir 'muse "/doc/pdf/doc/priv/pdf")
 ;;  "pdf")
 
 ;; (muse-project-alist-styles
