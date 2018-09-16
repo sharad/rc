@@ -371,9 +371,9 @@ Each entry is either:
                              (let ((monitor-dir (task-party-dir)))
                                (if (file-directory-p monitor-dir)
                                    (if (fboundp 'org-clock-monitor-files-set-from-dir)
-                                    (progn
-                                      (org-clock-monitor-files-set-from-dir monitor-dir)
-                                      (org-clock-work-day-mode-line-add t)))
+                                       (progn
+                                         (org-clock-monitor-files-set-from-dir monitor-dir)
+                                         (org-clock-work-day-mode-line-add t)))
                                  (message "[4]org monitor dir %s not exists." monitor-dir)))))
                          (org-clock-work-day-mode-line-add t))
                      ((error) (message "Error: %s" err)))
