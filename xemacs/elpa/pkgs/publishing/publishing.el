@@ -66,7 +66,7 @@
     (symbol-name type)
     (expand-file-name
      "virtual"
-     (publishing-created-contents-dir)))))
+     (publishing-document-created-contents-dir)))))
 
 ;;;###autoload
 (defun publishing-type-generated-contents-dir (type)
