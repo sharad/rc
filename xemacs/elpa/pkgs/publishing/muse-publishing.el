@@ -39,8 +39,7 @@
 (defvar *muse-website-address*   (publishing-website-address 'muse))
 
 (defun muse-publishing-created-contents-style-path (path)
-  (publishing-created-contents-path 'muse "generic/muse/style"))
-;;
+  (publishing-created-contents-path 'muse path))
 
 ;;;###autoload
 (defun* read-muse-style-spec ()
