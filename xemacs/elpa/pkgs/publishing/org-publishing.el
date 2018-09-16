@@ -153,12 +153,12 @@
 
 
 ;;;###autoload
-(defun content-org-dir (path)
+(defun content-org-path (path)
     "thisandthat."
     (publishing-created-contents-path 'org path))
 
 ;;;###autoload
-(defun content-org-publishing-dir (path)
+(defun content-org-publishing-path (path)
   "thisandthat."
   (publishing-generated-contents-path 'org path))
 
