@@ -35,7 +35,7 @@
 (defvar *muse-top-dir*           (publishing-created-contents-path 'muse))
 (defvar *muse-top-style-dir*     (publishing-created-contents-path 'muse "generic/muse/style"))
 ;; (defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
-(defvar *muse-generated-top-dir* (publishing-generated-contents-dir 'muse))
+(defvar *muse-generated-top-dir* (publishing-generated-contents-path 'muse))
 (defvar *muse-website-address*   (publishing-website-address 'muse))
 
 ;;;###autoload
@@ -44,7 +44,7 @@
          (publishing-path
           (read-directory-name
            "Muse Project Directory: "
-           (publishing-generated-contents-dir 'muse (replace-regexp-in-string (publishing-created-contents-path 'muse) "" muse-dir))))
+           (publishing-generated-contents-path 'muse (replace-regexp-in-string (publishing-created-contents-path 'muse) "" muse-dir))))
          (publishing-style
           (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
          (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -59,7 +59,7 @@
          (publishing-path
           (read-directory-name
            "Muse Project Directory: "
-           (publishing-generated-contents-dir 'muse
+           (publishing-generated-contents-path 'muse
                    (replace-regexp-in-string (publishing-created-contents-path 'muse) ""
                                              (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
          (publishing-style
@@ -118,7 +118,7 @@
           (publishing-path
            (read-directory-name
             "Muse Project Directory: "
-            (publishing-generated-contents-dir 'muse
+            (publishing-generated-contents-path 'muse
                     (replace-regexp-in-string (publishing-created-contents-path 'muse) "" muse-dir))))
           (publishing-style
            (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
@@ -145,7 +145,7 @@
           (publishing-path
            (read-directory-name
             "Muse Project Directory: "
-            (publishing-generated-contents-dir 'muse
+            (publishing-generated-contents-path 'muse
                     (replace-regexp-in-string (publishing-created-contents-path 'muse) ""
                                               (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
           (publishing-style
@@ -169,7 +169,7 @@
 ;;;###autoload
 (defun content-muse-publishing-dir (path)
   "thisandthat."
-  (publishing-generated-contents-dir 'muse path))
+  (publishing-generated-contents-path 'muse path))
 
 ;;;###autoload
 (defun content-muse-publishing-url (localpath)
@@ -178,12 +178,12 @@
 ;; (mapcar 'car muse-publishing-styles)
 ;; (muse-project-alist-styles
 ;;  (publishing-created-contents-path 'muse "/doc/priv")
-;;  (publishing-generated-contents-dir 'muse "/doc/pdf/doc/priv/pdf")
+;;  (publishing-generated-contents-path 'muse "/doc/pdf/doc/priv/pdf")
 ;;  "pdf")
 
 ;; (muse-project-alist-styles
 ;;  (publishing-created-contents-path 'muse"/web/site/blog" )
-;;  (publishing-generated-contents-dir 'muse "/web/site/blog/pdf")
+;;  (publishing-generated-contents-path 'muse "/web/site/blog/pdf")
 ;;  "ikiwiki"
 ;;  :base-url (concat *website-address* "/blog/"))
 
