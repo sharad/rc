@@ -183,7 +183,6 @@ Each entry is either:
       :defer t
       :config
       (progn
-
         (use-package diary-lib
             :defer t
             :config
