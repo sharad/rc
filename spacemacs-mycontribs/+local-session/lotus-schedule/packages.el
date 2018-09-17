@@ -172,7 +172,7 @@ Each entry is either:
                 (progn
                   (setq
                    diary-file
-                   (publishing-created-contents-path 'misc "emacs/schedule/diary/diary"))
+                   (misc-publishing-created-contents-path "emacs/schedule/diary/diary"))
                   (unless (file-exists-p diary-file)
                     ;; https://stackoverflow.com/questions/2592095/how-do-i-create-an-empty-file-in-emacs/2592558#2592558
                     (make-directory
