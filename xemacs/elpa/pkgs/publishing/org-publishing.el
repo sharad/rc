@@ -200,10 +200,10 @@
      (plist-get (cdr proj-alist) attrib)
      (let ((projects
             (remove-if-not
-             (lambda (p)
-               (string-match
-                (plist-get (cdr p) :base-extension)
-                extention))
+             #'(lambda (p)
+                 (string-match
+                  (plist-get (cdr p) :base-extension)
+                  extention))
              (org-publish-expand-projects
               (list proj-alist)))))
        (find-if
