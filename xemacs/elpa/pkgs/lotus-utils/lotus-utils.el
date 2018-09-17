@@ -25,6 +25,8 @@
 ;;; Code:
 
 ;; will not require any library, only will provide utils
+;; assume file from here are always available.
+
 (provide 'lotus-utils)
 
 
