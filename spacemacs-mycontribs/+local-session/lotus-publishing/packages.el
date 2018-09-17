@@ -112,7 +112,7 @@ Each entry is either:
               ;;  (muse-publishing-created-contents-path "web/site/wiki/projects")
               ;;  (muse-publishing-generated-contents-path "web/site/wiki/projects/my-xhtml")
               ;;  "my-xhtml"
-              ;;  (content-muse-publishing-url "projects/"))
+              ;;  (muse-publishing-website-address "projects/"))
 
               (setq muse-project-alist nil)
 
@@ -124,15 +124,15 @@ Each entry is either:
                    :force-publish ("WikiIndex")
                    :default "WelcomePage")
                  (:base "my-xhtml"
-                        :base-url ,(content-muse-publishing-url "web/")
+                        :base-url ,(muse-publishing-website-address "web/")
                         :include "/web/[^/]+"
                         :path ,(muse-publishing-generated-contents-path "web/site/wiki/web/my-xhtml"))
                  (:base "my-xhtml"
-                        :base-url ,(content-muse-publishing-url "web/")
+                        :base-url ,(muse-publishing-website-address "web/")
                         :include "/testdir/[^/]+"
                         :path ,(muse-publishing-generated-contents-path "web/site/wiki/web/testdir/my-xhtml"))
                  (:base "my-pdf"
-                        :base-url ,(content-muse-publishing-url "web/")
+                        :base-url ,(muse-publishing-website-address "web/")
                         :path ,(muse-publishing-generated-contents-path "doc/pdf/site/wiki/web/my-pdf")
                         :include "/\\(CurriculumVitae\\|BriefResume\\)[^/]*$")))
 
@@ -142,7 +142,7 @@ Each entry is either:
                                    :force-publish ("WikiIndex" "MuseQuickStart")
                                    :default "WelcomePage")
                                 (:base "my-xhtml"
-                                       :base-url ,(content-muse-publishing-url "web/site/wiki/projects/my-xhtml/")
+                                       :base-url ,(muse-publishing-website-address "web/site/wiki/projects/my-xhtml/")
                                        :path ,(muse-publishing-generated-contents-path "web/site/wiki/projects/my-xhtml"))))
 
                   (add-muse-project
@@ -155,7 +155,7 @@ Each entry is either:
                        (muse-publishing-created-contents-path "web/site/wiki/projects")
                        (muse-publishing-generated-contents-path "web/site/wiki/projects/my-xhtml/")
                        "my-xhtml"
-                       (content-muse-publishing-url "web/site/wiki/projects/my-xhtml/"))))
+                       (muse-publishing-website-address "web/site/wiki/projects/my-xhtml/"))))
                   )
 
               (add-muse-project
@@ -165,7 +165,7 @@ Each entry is either:
                    :major-mode muse-mode
                    :default "index")
                  (:base "my-xhtml"
-                        :base-url ,(content-muse-publishing-url "projects/")
+                        :base-url ,(muse-publishing-website-address "projects/")
                         :path ,(muse-publishing-generated-contents-path "web/site/wiki/writing/my-xhtml"))))
 
 
@@ -184,7 +184,7 @@ Each entry is either:
                            (muse-publishing-created-contents-path "web/site/blog")
                            (muse-publishing-generated-contents-path "web/site/blog/ikiwiki")
                            "ikiwiki"
-                           :base-url (content-muse-publishing-url "blog/"))))
+                           :base-url (muse-publishing-website-address "blog/"))))
 
               ;; "http://grepfind.hello.org/blog/"
               (add-muse-project
@@ -192,10 +192,10 @@ Each entry is either:
                              :force-publish ("index")
                              :default "index")
                            (:base "xhtml"
-                                  :base-url ,(content-muse-publishing-url "notes/")
+                                  :base-url ,(muse-publishing-website-address "notes/")
                                   :path ,(muse-publishing-generated-contents-path "web/site/wiki/notes/xhtml"))
                            (:base "my-pdf"
-                                  :base-url ,(content-muse-publishing-url "notes/")
+                                  :base-url ,(muse-publishing-website-address "notes/")
                                   :path ,(muse-publishing-generated-contents-path "web/site/wiki/notes/my-pdf"))))
 
               (add-muse-project
