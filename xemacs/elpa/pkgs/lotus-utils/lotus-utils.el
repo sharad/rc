@@ -37,7 +37,6 @@
      (dirname-of-file file) t)
     (with-temp-buffer
       (write-file file)))
-  (message "test %s" file)
   file)
 
 
