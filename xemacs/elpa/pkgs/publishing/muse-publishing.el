@@ -32,12 +32,6 @@
 (require 'muse-project)
 
 
-;; (defvar *muse-top-dir*           (muse-publishing-created-contents-path))
-;; (defvar *muse-top-style-dir*     (muse-publishing-created-contents-path "generic/muse/style"))
-;; ;; (defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
-;; (defvar *muse-generated-top-dir* (muse-publishing-generated-contents-path))
-;; (defvar *muse-website-address*   (muse-publishing-website-address))
-
 ;;;###autoload
 (defun muse-publishing-created-contents-path (&optional path)
   "thisandthat."
