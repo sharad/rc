@@ -195,6 +195,7 @@
 
 ;;;###autoload
 (defun org-publish-get-attribute (project extention attrib)
+  ;; TODO: IMPROVE further
   (let ((proj-alist (assoc project org-publish-project-alist)))
     (or
      (plist-get (cdr proj-alist) attrib)
