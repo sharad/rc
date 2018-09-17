@@ -185,8 +185,8 @@ Each entry is either:
                             (appt-initialize)))))))))
         (progn
           (setq diary-display-function 'diary-fancy-display)
-          (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
-          (add-hook 'diary-list-entries-hook 'diary-mark-included-diary-files)
+          (remove-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+          (remove-hook 'diary-list-entries-hook 'diary-mark-included-diary-files)
           (add-hook 'diary-list-entries-hook 'diary-sort-entries t))))
 
   (use-package startup-hooks
