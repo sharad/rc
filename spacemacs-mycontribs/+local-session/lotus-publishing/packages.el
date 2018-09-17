@@ -251,7 +251,7 @@ Each entry is either:
                  :base-directory (org-publishing-created-contents-path "org-info-js/")
                  :recursive t
                  :base-extension "js"
-                 :publishing-directory (content-org-publishing-path "js/")
+                 :publishing-directory (org-publishing-generated-contents-path "js/")
                  :publishing-function 'org-publish-attachment)
 
                 (add-org-project
@@ -260,14 +260,14 @@ Each entry is either:
                  :base-directory (org-publishing-created-contents-path "org-info-js/")
                  :recursive t
                  :base-extension "js"
-                 :publishing-directory (content-org-publishing-path "js/")
+                 :publishing-directory (org-publishing-generated-contents-path "js/")
                  :publishing-function 'org-publish-attachment)
 
                 (add-org-project
                  "org-notes"
                  :base-directory (org-publishing-created-contents-path "org/")
                  :base-extension "org"
-                 :publishing-directory (content-org-publishing-path "org/html/")
+                 :publishing-directory (org-publishing-generated-contents-path "org/html/")
                  :recursive t
                  :publishing-function 'org-html-publish-to-html
                  :headline-levels 4             ; Just the default for this project.
@@ -277,7 +277,7 @@ Each entry is either:
                  "org-static"
                  :base-directory (org-publishing-created-contents-path "org/")
                  :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-                 :publishing-directory (content-org-publishing-path "org/html/")
+                 :publishing-directory (org-publishing-generated-contents-path "org/html/")
                  :recursive t
                  :publishing-function 'org-publish-attachment)
 
@@ -288,7 +288,7 @@ Each entry is either:
                  :base-directory (org-publishing-created-contents-path "generic/")
                  :recursive t
                  :base-extension "css\\|js"
-                 :publishing-directory (content-org-publishing-path "generic/html/")
+                 :publishing-directory (org-publishing-generated-contents-path "generic/html/")
                  :publishing-function 'org-publish-attachment)
 
                 (add-org-project
@@ -296,7 +296,7 @@ Each entry is either:
                  :base-directory (org-publishing-created-contents-path "generic/")
                  :recursive t
                  :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-                 :publishing-directory (content-org-publishing-path "generic/html/")
+                 :publishing-directory (org-publishing-generated-contents-path "generic/html/")
                  :publishing-function 'org-publish-attachment)
 
                 (add-org-project
@@ -309,7 +309,7 @@ Each entry is either:
                  :index-title "Sitemap"
                  :recursive t
                  :base-extension "org"
-                 :publishing-directory (content-org-publishing-path "generic/html/")
+                 :publishing-directory (org-publishing-generated-contents-path "generic/html/")
                  ;; :publishing-function org-publish-org-to-html
                  :publishing-function 'org-html-publish-to-html
                  :headline-levels 3
@@ -325,7 +325,7 @@ Each entry is either:
                  :index-title "Sitemap"
                  :recursive t
                  :base-extension "org"
-                 :publishing-directory (content-org-publishing-path "journal/html/")
+                 :publishing-directory (org-publishing-generated-contents-path "journal/html/")
                  ;; :publishing-function org-publish-org-to-html
                  :publishing-function 'org-html-publish-to-html
                  :headline-levels 3
@@ -349,7 +349,7 @@ Each entry is either:
                  :index-title "Sitemap"
                  :recursive t
                  :base-extension "org"
-                 :publishing-directory (content-org-publishing-path "tasks/html/")
+                 :publishing-directory (org-publishing-generated-contents-path "tasks/html/")
                  ;; :publishing-function org-publish-org-to-html
                  :publishing-function 'org-html-publish-to-html
                  :headline-levels 3
@@ -373,7 +373,7 @@ Each entry is either:
                  :index-title "Sitemap"
                  :recursive t
                  :base-extension "org"
-                 :publishing-directory (content-org-publishing-path "notes/html/")
+                 :publishing-directory (org-publishing-generated-contents-path "notes/html/")
                  ;; :publishing-function org-publish-org-to-html
                  :publishing-function 'org-html-publish-to-html
                  :headline-levels 3
