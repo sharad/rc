@@ -33,13 +33,15 @@
 (defun touch-file (file)
   ;; https://stackoverflow.com/questions/2592095/how-do-i-create-an-empty-file-in-emacs/2592558#2592558
   (unless (file-exists-p file)
+
     (make-directory
      (dirname-of-file file) t)
     (with-temp-buffer
       (write-file file)))
   file)
 
-(touch-file "/home/s/hell/Documents/CreatedContent/contents/virtual/misc/default/emacs/schedule/diary/diary")
+(unless (file-exists-p "/home/s/hell/Documents/CreatedContent/contents/virtual/misc/default/emacs/schedule/diary/diary")
+  t)
 
 (defun cleanup-tty-process ()
   (interactive)
