@@ -175,7 +175,7 @@
   (publishing-generated-contents-path 'muse path))
 
 ;;;###autoload
-(defun content-muse-publishing-url (localpath)
+(defun muse-publishing-website-address (localpath)
   (publishing-website-address 'muse localpath))
 
 ;; (mapcar 'car muse-publishing-styles)
@@ -274,7 +274,7 @@
 ;;          (cddr (muse-read-project "Publish project: " t t)))
 
 ;; (ido-completing-read "sdfads: "
-;; '(("xhtml" :base "xhtml" :base-url (content-muse-publishing-url "notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/xhtml")
+;; '(("xhtml" :base "xhtml" :base-url (muse-publishing-website-address "notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/xhtml")
 ;;  ("my-pdf" :base "my-pdf" :base-url "http://hello.org//notes/" :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/my-pdf"))
 ;; )
 
