@@ -25,6 +25,12 @@
 ;;; Code:
 
 
-
+(defun touch-file (file)
+  (unless (file-exists-p diary-file)
+    ;; https://stackoverflow.com/questions/2592095/how-do-i-create-an-empty-file-in-emacs/2592558#2592558
+    (make-directory
+     (dirname-of-file diary-file) t)
+    (with-temp-buffer
+      (write-file diary-file))))
 ;; (provide 'config)
 ;;; config.el ends here
