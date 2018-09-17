@@ -100,11 +100,12 @@ Each entry is either:
           (progn
             ;; (require 'publishing)
             (progn
-              (setq
-               *muse-top-dir*           (expand-file-name "contents/virtual/muse/default" *created-content-dir*)
-               *muse-top-style-dir*     (expand-file-name "generic/muse/style" *muse-top-dir*)
-               *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*)
-               *muse-website-address*   (concat *website-address* "muse/")))
+              ;; (setq
+              ;;  *muse-top-dir*           (expand-file-name "contents/virtual/muse/default" *created-content-dir*)
+              ;;  *muse-top-style-dir*     (expand-file-name "generic/muse/style" *muse-top-dir*)
+              ;;  *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*)
+              ;;  *muse-website-address*   (concat *website-address* "muse/"))
+              )
             (progn
               ;; Here is my master project listing.
               ;; (make-muse-style-spec
