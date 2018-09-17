@@ -206,11 +206,13 @@
                          (plist-get (cdr p) :base-extension)
                          extention))
                       (org-publish-expand-projects
-                       (list proj-alist))))))
-       (find-if
-        (lambda (p)
-          (org-publish-get-attribute p extention attrib))
-        projects)))))
+                       (list proj-alist)))))
+            (project
+             (find-if
+              (lambda (p)
+                (org-publish-get-attribute p extention attrib))
+              projects)))
+       ))))
 
 (org-publish-get-attribute "tasks" "org" :base-directory)
 
