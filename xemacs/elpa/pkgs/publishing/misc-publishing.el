@@ -52,7 +52,7 @@
 (defun* read-misc-project-spec ()
   (let* ((name (read-from-minibuffer "Project Name: "))
          (misc-dirs
-          (read-directory-name "Misc Project Directory: " (publishing-created-contents-path 'misc "/" name)))
+          (read-directory-name "Misc Project Directory: " (publishing-created-contents-path 'misc name)))
          (publishing-path
           (read-directory-name
            "Misc Project Directory: "
@@ -137,7 +137,7 @@
   (interactive
    (let* ((name (read-from-minibuffer "Project Name: "))
           (misc-dirs
-           (read-directory-name "Misc Project Directory: " (publishing-created-contents-path 'misc "/" name)))
+           (read-directory-name "Misc Project Directory: " (publishing-created-contents-path 'misc name)))
           (publishing-path
            (read-directory-name
             "Misc Project Directory: "
