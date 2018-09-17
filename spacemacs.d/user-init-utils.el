@@ -63,7 +63,6 @@
         'file-directory-p
         (directory-files layer-dir nil "^lotus-[a-zA-Z]+"))))))
 
-
 (defun cleanup-tty-process ()
   (interactive)
   (let ((tty-processes
