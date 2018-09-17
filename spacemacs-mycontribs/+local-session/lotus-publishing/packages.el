@@ -96,6 +96,16 @@ Each entry is either:
                     (progn
                       (setq
                        diary-file (touch-file (misc-publishing-created-contents-path "emacs/schedule/diary/diary")))
+
+                      (use-package appt
+                          ;; :defer t
+                          :defer t
+                          :config
+                          (progn
+                            (progn
+                              )))
+
+
                       (if (not running-xemacs)
                           (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
                         (appt-initialize)))))))
