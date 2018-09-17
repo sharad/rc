@@ -79,10 +79,11 @@ Each entry is either:
       :config
       (progn
         (progn ;; publishing
-          (setq
-           *doc-root*            (expand-file-name "Documents" "~")
-           *created-content-dir* (expand-file-name "CreatedContent" *doc-root*)
-           *website-address*     "http://sharad.ddns.net/~s/gen/"))
+          ;; (setq
+          ;;  *doc-root*            (expand-file-name "Documents" "~")
+          ;;  *created-content-dir* (expand-file-name "CreatedContent" *doc-root*)
+          ;;  *website-address*     "http://sharad.ddns.net/~s/gen/")
+          )
 
         (progn ;; misc
           (progn
