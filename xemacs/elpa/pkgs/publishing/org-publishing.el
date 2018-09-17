@@ -210,13 +210,16 @@
         #org-publish-get-attribute
         projects)))))
 
-(mapcar #'car
+(find-if
+ '(lambda ()
+   )
+ (mapcar #'car
  (remove-if-not
   (lambda (p)
     (string-match
      (plist-get (cdr p) :base-extension)
      "org"))
-  (org-publish-expand-projects (list (assoc "tasks" org-publish-project-alist)))))
+  (org-publish-expand-projects (list (assoc "tasks" org-publish-project-alist))))))
 
 (("inherit-org-info-js" :base-directory "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/org-info-js/" :recursive t :base-extension "js" :publishing-directory "/home/s/hell/Documents/CreatedContent/gen/virtual/org/default/js/" :publishing-function org-publish-attachment)
  ("generic-inherit" :base-directory "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/generic/" :recursive t :base-extension "css\\|js" :publishing-directory "/home/s/hell/Documents/CreatedContent/gen/virtual/org/default/generic/html/" :publishing-function org-publish-attachment)
