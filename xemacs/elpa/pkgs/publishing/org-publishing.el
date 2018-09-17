@@ -210,7 +210,7 @@
         #org-publish-get-attribute
         projects)))))
 
-(cdar
+(mapcar #'car
  (remove-if-not
   (lambda (p)
     (string-match
