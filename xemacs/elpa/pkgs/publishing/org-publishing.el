@@ -212,7 +212,7 @@
 
 (find-if
  '(lambda (p)
-   (plist-get (cdr proj-alist) attrib))
+   (plist-get (cdr (assoc p org-publish-project-alist)) :base-directory))
  (mapcar #'car
  (remove-if-not
   (lambda (p)
