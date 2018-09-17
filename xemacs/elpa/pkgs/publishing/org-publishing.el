@@ -215,8 +215,6 @@
        (when project
          (org-publish-get-attribute project extention attrib))))))
 
-(org-publish-get-attribute "tasks" "org" :base-directory)
-
-
+;; (org-publish-get-attribute "tasks" "org" :base-directory)
 
 ;;; org-publishing.el ends here
