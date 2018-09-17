@@ -112,7 +112,7 @@ Each entry is either:
                 :config
                 (progn
                   (setq
-                   icalendar-outlook-file
+                   icalendar-outlook-file (misc-publishing-created-contents-path "emacs/schedule/diary/outlook")
                    )))))
 
         (progn ;; muse
