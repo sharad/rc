@@ -211,8 +211,8 @@
         projects)))))
 
 (find-if
- '(lambda ()
-   )
+ '(lambda (p)
+   (plist-get (cdr proj-alist) attrib))
  (mapcar #'car
  (remove-if-not
   (lambda (p)
