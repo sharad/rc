@@ -207,8 +207,11 @@
              (org-publish-expand-projects
               (list proj-alist)))))
        (find-if
-        #'org-publish-get-attribute
+        #'(lambda (p)
+            (org-publish-get-attribute))
         projects)))))
+
+(org-publish-get-attribute "tasks" "org" :base-directory)
 
 (find-if
  '(lambda (p)
