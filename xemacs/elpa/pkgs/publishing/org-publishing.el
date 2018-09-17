@@ -206,15 +206,7 @@
                 extention))
              (org-publish-expand-projects
               (list proj-alist)))))
-      (plist-get
-      (cdar (remove-if-not
-             (lambda (p)
-               (string-match
-                (plist-get (cdr p) :base-extension)
-                extention))
-             (org-publish-expand-projects
-              (list proj-alist))))
-      attrib)))))
+      ))))
 
 (cdar
  (remove-if-not
