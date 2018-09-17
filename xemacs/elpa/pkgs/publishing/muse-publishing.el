@@ -49,7 +49,7 @@
   (publishing-generated-contents-path 'muse path))
 
 ;;;###autoload
-(defun muse-publishing-website-address (localpath)
+(defun muse-publishing-website-address (&optional localpath)
   (publishing-website-address 'muse localpath))
 
 (defun muse-publishing-created-contents-style-path (&optional path)
