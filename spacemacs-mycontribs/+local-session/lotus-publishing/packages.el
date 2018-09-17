@@ -111,7 +111,9 @@ Each entry is either:
                 :defer t
                 :config
                 (progn
-                  ))))
+                  (setq
+                   icalendar-outlook-file
+                   )))))
 
         (progn ;; muse
           (progn
