@@ -193,4 +193,12 @@
               (list proj-alist))))
       attrib))))
 
+(setq test-x
+      (org-publish-expand-projects (list (assoc "tasks" org-publish-project-alist))))
+
+(("inherit-org-info-js" :base-directory "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/org-info-js/" :recursive t :base-extension "js" :publishing-directory "/home/s/hell/Documents/CreatedContent/gen/virtual/org/default/js/" :publishing-function org-publish-attachment)
+ ("generic-inherit" :base-directory "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/generic/" :recursive t :base-extension "css\\|js" :publishing-directory "/home/s/hell/Documents/CreatedContent/gen/virtual/org/default/generic/html/" :publishing-function org-publish-attachment)
+ ("tasks-notes" :base-directory "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/tasks/" :auto-index t :auto-sitemap t :sitemap-title "Sitemap" :index-filename "sitemap.org" :index-title "Sitemap" :recursive t :base-extension "org" :publishing-directory "/home/s/hell/Documents/CreatedContent/gen/virtual/org/default/tasks/html/" :publishing-function org-html-publish-to-html :headline-levels 3 :with-section-numbers nil :table-of-contents nil :auto-preamble t :auto-postamble nil)
+ ("generic-static" :base-directory "/home/s/hell/Documents/CreatedContent/contents/virtual/org/default/generic/" :recursive t :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf" :publishing-directory "/home/s/hell/Documents/CreatedContent/gen/virtual/org/default/generic/html/" :publishing-function org-publish-attachment))
+
 ;;; org-publishing.el ends here
