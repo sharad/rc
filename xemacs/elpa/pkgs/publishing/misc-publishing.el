@@ -158,7 +158,7 @@
        publishing-options)))
 
 ;;;###autoload
-(defun content-misc-dir (path)
+(defun misc-publishing-created-contents-path (path)
   "thisandthat."
   (publishing-created-contents-path 'misc path))
 
