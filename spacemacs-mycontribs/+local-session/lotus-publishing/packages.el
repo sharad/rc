@@ -105,10 +105,7 @@ Each entry is either:
                             (progn
                               (if (not running-xemacs)
                                   (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
-                                (appt-initialize)))))
-
-
-                      )))))
+                                (appt-initialize))))))))))
           (progn
             (use-package mm-decode
                 :defer t
