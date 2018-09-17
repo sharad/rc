@@ -68,4 +68,12 @@
       ;; (global-set-key-if-unbind [H-down]  'elscreen-previous)
       ;;}}
       )))
+
+    (defun resolveip (host)
+      (= 0 (call-process "~/bin/resolveip" nil nil nil host)))
+
+    (defun host-accessable-p (&optional host)
+      (= 0 (call-process "ping" nil nil nil "-c" "1" "-W" "1"
+                         (if host host "www.google.com"))))
+
 ;;; lotus-utils.el ends here
