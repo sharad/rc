@@ -198,7 +198,15 @@
   (let ((proj-alist (assoc project org-publish-project-alist)))
     (or
      (plist-get (cdr proj-alist) attrib)
-     (plist-get
+     (let ((projects
+            (remove-if-not
+             (lambda (p)
+               (string-match
+                (plist-get (cdr p) :base-extension)
+                extention))
+             (org-publish-expand-projects
+              (list proj-alist)))))
+      (plist-get
       (cdar (remove-if-not
              (lambda (p)
                (string-match
@@ -206,7 +214,7 @@
                 extention))
              (org-publish-expand-projects
               (list proj-alist))))
-      attrib))))
+      attrib)))))
 
 (cdar
  (remove-if-not
