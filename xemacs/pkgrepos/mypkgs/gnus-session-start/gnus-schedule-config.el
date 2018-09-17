@@ -54,6 +54,7 @@
   ;; using icalendar.el wotrking
 
   (deh-require-maybe mm-decode
+    (defvar icalendar-outlook-file ())
     (defun my-save-icalendar (handle)
       (let ((diary "~/.Organize/emacs/diary/outlook"))
         (when (and (equal (car (mm-handle-type handle)) "text/calendar")
