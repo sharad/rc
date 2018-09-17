@@ -36,7 +36,7 @@
 ;; (defvar *muse-top-style-dir*     (muse-publishing-created-contents-path "generic/muse/style"))
 ;; ;; (defvar *muse-generated-top-dir* (expand-file-name "gen/muse" *created-content-dir*))
 ;; (defvar *muse-generated-top-dir* (muse-publishing-generated-contents-path))
-;; (defvar *muse-website-address*   (publishing-website-address 'muse))
+;; (defvar *muse-website-address*   (muse-publishing-website-address))
 
 ;;;###autoload
 (defun muse-publishing-created-contents-path (&optional path)
@@ -188,7 +188,7 @@
 ;;  (muse-publishing-created-contents-path"/web/site/blog" )
 ;;  (muse-publishing-generated-contents-path "/web/site/blog/pdf")
 ;;  "ikiwiki"
-;;  :base-url ((publishing-website-address 'muse "blog/"))
+;;  :base-url ((muse-publishing-website-address "blog/"))
 
 
 
@@ -745,7 +745,7 @@ between the two tags."
 
   ;; ("MyNotes"
   ;;  ("~/Documents/CreatedContent/contents/muse/web/site/wiki/notes" :force-publish ("index") :default "index")
-  ;;  (:base "xhtml" :base-url ((publishing-website-address 'muse "notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/html")
+  ;;  (:base "xhtml" :base-url ((muse-publishing-website-address "notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/html")
   ;;  (:base "my-pdf" :base-url "http://hello.org//notes/" :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/pdf"))
 
   (progn ;; "muse-publishing"
