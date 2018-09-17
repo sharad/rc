@@ -107,7 +107,7 @@ Each entry is either:
                           (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
                         (appt-initialize)))))))
           (progn
-            (use-package diary-lib
+            (use-package mm-decode
                 :defer t
                 :config
                 (progn
