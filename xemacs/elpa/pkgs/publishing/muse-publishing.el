@@ -38,7 +38,21 @@
 ;; (defvar *muse-generated-top-dir* (publishing-generated-contents-path 'muse))
 ;; (defvar *muse-website-address*   (publishing-website-address 'muse))
 
-(defun muse-publishing-created-contents-style-path (path)
+;;;###autoload
+(defun muse-publishing-created-contents-path (&optional path)
+  "thisandthat."
+  (publishing-created-contents-path 'muse path))
+
+;;;###autoload
+(defun muse-publishing-generated-contents-path (&optional path)
+  "thisandthat."
+  (publishing-generated-contents-path 'muse path))
+
+;;;###autoload
+(defun muse-publishing-website-address (localpath)
+  (publishing-website-address 'muse localpath))
+
+(defun muse-publishing-created-contents-style-path (&optional path)
   (publishing-created-contents-path 'muse path))
 
 ;;;###autoload
@@ -163,20 +177,6 @@
        publishing-style
        publishing-url
        publishing-options)))
-
-;;;###autoload
-(defun muse-publishing-created-contents-path (path)
-  "thisandthat."
-  (publishing-created-contents-path 'muse path))
-
-;;;###autoload
-(defun muse-publishing-generated-contents-path (path)
-  "thisandthat."
-  (publishing-generated-contents-path 'muse path))
-
-;;;###autoload
-(defun muse-publishing-website-address (localpath)
-  (publishing-website-address 'muse localpath))
 
 ;; (mapcar 'car muse-publishing-styles)
 ;; (muse-project-alist-styles
