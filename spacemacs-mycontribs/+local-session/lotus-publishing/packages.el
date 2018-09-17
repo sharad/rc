@@ -757,7 +757,7 @@ between the two tags."
 
           ;; ("MyNotes"
           ;;  ("~/Documents/CreatedContent/contents/muse/web/site/wiki/notes" :force-publish ("index") :default "index")
-          ;;  (:base "xhtml" :base-url (concat *website-address* "/notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/html")
+          ;;  (:base "xhtml" :base-url (org-publishing-website-address "/notes/") :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/html")
           ;;  (:base "my-pdf" :base-url "http://hello.org//notes/" :path "~/Documents/CreatedContent/gen/web/site/wiki/notes/pdf"))
 
           (progn ;; "muse-publishing"
