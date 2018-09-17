@@ -72,7 +72,7 @@
 (defun* read-muse-project-spec ()
   (let* ((name (read-from-minibuffer "Project Name: "))
          (muse-dirs
-          (read-directory-name "Muse Project Directory: " (concat (muse-publishing-created-contents-path) "/" name)))
+          (read-directory-name "Muse Project Directory: " (muse-publishing-created-contents-path name)))
          (publishing-path
           (read-directory-name
            "Muse Project Directory: "
