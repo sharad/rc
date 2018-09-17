@@ -248,7 +248,7 @@ Each entry is either:
                 (add-org-project
                  "inherit-org-info-js"
                  ;; :base-directory "~/develop/org/Worg/code/org-info-js/"
-                 :base-directory (content-org-path "org-info-js/")
+                 :base-directory (org-publishing-created-contents-path "org-info-js/")
                  :recursive t
                  :base-extension "js"
                  :publishing-directory (content-org-publishing-path "js/")
@@ -257,7 +257,7 @@ Each entry is either:
                 (add-org-project
                  "inherit-org-info-js"
                  ;; :base-directory "~/develop/org/Worg/code/org-info-js/"
-                 :base-directory (content-org-path "org-info-js/")
+                 :base-directory (org-publishing-created-contents-path "org-info-js/")
                  :recursive t
                  :base-extension "js"
                  :publishing-directory (content-org-publishing-path "js/")
@@ -265,7 +265,7 @@ Each entry is either:
 
                 (add-org-project
                  "org-notes"
-                 :base-directory (content-org-path "org/")
+                 :base-directory (org-publishing-created-contents-path "org/")
                  :base-extension "org"
                  :publishing-directory (content-org-publishing-path "org/html/")
                  :recursive t
@@ -275,7 +275,7 @@ Each entry is either:
 
                 (add-org-project
                  "org-static"
-                 :base-directory (content-org-path "org/")
+                 :base-directory (org-publishing-created-contents-path "org/")
                  :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
                  :publishing-directory (content-org-publishing-path "org/html/")
                  :recursive t
@@ -285,7 +285,7 @@ Each entry is either:
 
                 (add-org-project
                  "generic-inherit"
-                 :base-directory (content-org-path "generic/")
+                 :base-directory (org-publishing-created-contents-path "generic/")
                  :recursive t
                  :base-extension "css\\|js"
                  :publishing-directory (content-org-publishing-path "generic/html/")
@@ -293,7 +293,7 @@ Each entry is either:
 
                 (add-org-project
                  "generic-static"
-                 :base-directory (content-org-path "generic/")
+                 :base-directory (org-publishing-created-contents-path "generic/")
                  :recursive t
                  :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
                  :publishing-directory (content-org-publishing-path "generic/html/")
@@ -301,7 +301,7 @@ Each entry is either:
 
                 (add-org-project
                  "generic-org"
-                 :base-directory (content-org-path "generic/")
+                 :base-directory (org-publishing-created-contents-path "generic/")
                  :auto-index t
                  :auto-sitemap t
                  :sitemap-title "Sitemap"
@@ -317,7 +317,7 @@ Each entry is either:
 
                 (add-org-project
                  "journal-notes"
-                 :base-directory (content-org-path "jorunal/")
+                 :base-directory (org-publishing-created-contents-path "jorunal/")
                  :auto-index t
                  :auto-sitemap t
                  :sitemap-title "Sitemap"
@@ -341,7 +341,7 @@ Each entry is either:
 
                 (add-org-project
                  "tasks-notes"
-                 :base-directory (content-org-path "tasks/")
+                 :base-directory (org-publishing-created-contents-path "tasks/")
                  :auto-index t
                  :auto-sitemap t
                  :sitemap-title "Sitemap"
@@ -365,7 +365,7 @@ Each entry is either:
 
                 (add-org-project
                  "notes-notes"
-                 :base-directory (content-org-path "notes/")
+                 :base-directory (org-publishing-created-contents-path "notes/")
                  :auto-index t
                  :auto-sitemap t
                  :sitemap-title "Sitemap"
