@@ -193,7 +193,7 @@
               (list proj-alist))))
       attrib))))
 
-
+;;;###autoload
 (defun org-publish-get-attribute (project extention attrib)
   (let ((proj-alist (assoc project org-publish-project-alist)))
     (or
