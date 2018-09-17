@@ -199,16 +199,17 @@
     (or
      (plist-get (cdr proj-alist) attrib)
      (let ((projects
-            (remove-if-not
-             #'(lambda (p)
-                 (string-match
-                  (plist-get (cdr p) :base-extension)
-                  extention))
+            (mapcar #'car
+                    (remove-if-not
+             (lambda (p)
+               (string-match
+                (plist-get (cdr p) :base-extension)
+                extention))
              (org-publish-expand-projects
-              (list proj-alist)))))
+              (list proj-alist))))))
        (find-if
-        #'(lambda (p)
-            (org-publish-get-attribute))
+        (lambda (p)
+          (org-publish-get-attribute p extention attrib))
         projects)))))
 
 (org-publish-get-attribute "tasks" "org" :base-directory)
