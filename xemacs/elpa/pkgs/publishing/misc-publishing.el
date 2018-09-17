@@ -45,11 +45,11 @@
 
 ;;;###autoload
 (defun* read-misc-style-spec ()
-  (let* ((misc-dir (read-directory-name "Misc Project Directory: " (publishing-created-contents-path 'misc)))
+  (let* ((misc-dir (read-directory-name "Misc Project Directory: " (misc-publishing-created-contents-path)))
          (publishing-path
           (read-directory-name
            "Misc Project Directory: "
-           (muse-publishing-generated-contents-path (replace-regexp-in-string (publishing-created-contents-path 'misc) "" misc-dir))))
+           (muse-publishing-generated-contents-path (replace-regexp-in-string (misc-publishing-created-contents-path) "" misc-dir))))
          (publishing-style
           (ido-completing-read "Misc Publishing Style: " (mapcar 'car misc-publishing-styles)))
          (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -60,12 +60,12 @@
 (defun* read-misc-project-spec ()
   (let* ((name (read-from-minibuffer "Project Name: "))
          (misc-dirs
-          (read-directory-name "Misc Project Directory: " (publishing-created-contents-path 'misc name)))
+          (read-directory-name "Misc Project Directory: " (misc-publishing-created-contents-path name)))
          (publishing-path
           (read-directory-name
            "Misc Project Directory: "
            (muse-publishing-generated-contents-path
-                   (replace-regexp-in-string (publishing-created-contents-path 'misc) ""
+                   (replace-regexp-in-string (misc-publishing-created-contents-path) ""
                                              (if (consp misc-dirs) (car misc-dirs) misc-dirs)))))
          (publishing-style
           (ido-completing-read "Misc Publishing Style: " (mapcar 'car misc-publishing-styles)))
@@ -119,11 +119,11 @@
 ;;;###autoload
 (defun* make-misc-style-spec (misc-dir publishing-path publishing-style publishing-url &rest publishing-options)
   (interactive
-   (let* ((misc-dir (read-directory-name "Misc Project Directory: " (publishing-created-contents-path 'misc)))
+   (let* ((misc-dir (read-directory-name "Misc Project Directory: " (misc-publishing-created-contents-path)))
           (publishing-path
            (read-directory-name
             "Misc Project Directory: "
-            (muse-publishing-generated-contents-path (replace-regexp-in-string (publishing-created-contents-path 'misc) "" misc-dir))))
+            (muse-publishing-generated-contents-path (replace-regexp-in-string (misc-publishing-created-contents-path) "" misc-dir))))
           (publishing-style
            (ido-completing-read "Misc Publishing Style: " (mapcar 'car misc-publishing-styles)))
           (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -145,12 +145,12 @@
   (interactive
    (let* ((name (read-from-minibuffer "Project Name: "))
           (misc-dirs
-           (read-directory-name "Misc Project Directory: " (publishing-created-contents-path 'misc name)))
+           (read-directory-name "Misc Project Directory: " (misc-publishing-created-contents-path name)))
           (publishing-path
            (read-directory-name
             "Misc Project Directory: "
             (muse-publishing-generated-contents-path
-                    (replace-regexp-in-string (publishing-created-contents-path 'misc) ""
+                    (replace-regexp-in-string (misc-publishing-created-contents-path) ""
                                               (if (consp misc-dirs) (car misc-dirs) misc-dirs)))))
           (publishing-style
            (ido-completing-read "Misc Publishing Style: " (mapcar 'car misc-publishing-styles)))
