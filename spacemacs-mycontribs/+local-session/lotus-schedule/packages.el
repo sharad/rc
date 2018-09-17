@@ -75,6 +75,7 @@ Each entry is either:
 
 (defun lotus-schedule/init-weekly-view ()
   (use-package weekly-view
+      :commands (disable-diary-appt-display-for)
       :defer t
       :config
       (progn
