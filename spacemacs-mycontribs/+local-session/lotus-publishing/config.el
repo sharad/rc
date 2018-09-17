@@ -26,6 +26,7 @@
 
 
 (defun touch-file (file)
+  ;; https://stackoverflow.com/questions/2592095/how-do-i-create-an-empty-file-in-emacs/2592558#2592558
   (unless (file-exists-p file)
     ;; https://stackoverflow.com/questions/2592095/how-do-i-create-an-empty-file-in-emacs/2592558#2592558
     (make-directory
