@@ -73,6 +73,66 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+(defun lotus-schedule/init-diary-lib ()
+  (use-package diary-lib
+      :defer t
+      :config
+      (progn
+        (progn
+          (use-package misc-publishing
+              :defer t
+              :config
+              (progn
+                (progn
+                  (setq
+                   diary-file (touch-file (misc-publishing-created-contents-path "emacs/schedule/diary/diary")))
+
+                  (use-package appt
+                      ;; :defer t
+                      :defer t
+                      :config
+                      (progn
+                        (progn
+                          (if (not running-xemacs)
+                              (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
+                            (appt-initialize)))))))))
+        (progn
+          (setq diary-display-function 'diary-fancy-display)
+          (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+          (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
+          (add-hook 'diary-list-entries-hook 'diary-sort-entries t))))
+
+  (use-package startup-hooks
+      :defer t
+      :config
+      (progn
+        (use-package diary-lib
+            :defer t
+            :config
+            (progn
+              (progn
+                (progn
+                  (add-to-enable-startup-interrupting-feature-hook
+                   #'(lambda ()
+                       (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
+                         (add-hook 'after-make-frame-functions
+                                   '(lambda (nframe)
+                                     (run-at-time-or-now 100
+                                      '(lambda ()
+                                        (setq
+                                         diary-file (misc-publishing-created-contents-path "emacs/schedule/diary/diary"))
+                                        ;; https://stackoverflow.com/questions/2592095/how-do-i-create-an-empty-file-in-emacs/2592558#2592558
+                                        (unless (file-exists-p diary-file)
+                                          (make-directory
+                                           (dirname-of-file diary-file) t)
+                                          (with-temp-buffer
+                                            (write-file diary-file)))
+                                        (if (not running-xemacs)
+                                            (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
+                                          (appt-initialize)))))
+                                   t)))
+                   t))))))))
+
 (defun lotus-schedule/init-weekly-view ()
   (use-package weekly-view
       :commands (disable-diary-appt-display-for)
@@ -159,66 +219,6 @@ Each entry is either:
                                             diary-display-function diary-display-function-old
                                             diary-display-function-old nil))))))
                 (message "Diary already disabled, not doing anything.")))))))
-
-(defun lotus-schedule/init-diary-lib ()
-  (use-package diary-lib
-      :defer t
-      :config
-      (progn
-        (progn
-          (use-package misc-publishing
-              :defer t
-              :config
-              (progn
-                (progn
-                  (setq
-                   diary-file (touch-file (misc-publishing-created-contents-path "emacs/schedule/diary/diary")))
-
-                  (use-package appt
-                      ;; :defer t
-                      :defer t
-                      :config
-                      (progn
-                        (progn
-                          (if (not running-xemacs)
-                              (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
-                            (appt-initialize)))))))))
-        (progn
-          (setq diary-display-function 'diary-fancy-display)
-          (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
-          (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
-          (add-hook 'diary-list-entries-hook 'diary-sort-entries t))))
-
-  (use-package startup-hooks
-      :defer t
-      :config
-      (progn
-        (use-package diary-lib
-            :defer t
-            :config
-            (progn
-              (progn
-                (progn
-                  (add-to-enable-startup-interrupting-feature-hook
-                   #'(lambda ()
-                       (when t ; was nil           ;BUG: may be causing emacs to crash when no frame is open.
-                         (add-hook 'after-make-frame-functions
-                                   '(lambda (nframe)
-                                     (run-at-time-or-now 100
-                                      '(lambda ()
-                                        (setq
-                                         diary-file (misc-publishing-created-contents-path "emacs/schedule/diary/diary"))
-                                        ;; https://stackoverflow.com/questions/2592095/how-do-i-create-an-empty-file-in-emacs/2592558#2592558
-                                        (unless (file-exists-p diary-file)
-                                          (make-directory
-                                           (dirname-of-file diary-file) t)
-                                          (with-temp-buffer
-                                            (write-file diary-file)))
-                                        (if (not running-xemacs)
-                                            (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
-                                          (appt-initialize)))))
-                                   t)))
-                   t))))))))
 
 (defun lotus-schedule/post-init-planner-interface ()
   (use-package planner-interface
