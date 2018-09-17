@@ -758,7 +758,7 @@ between the two tags."
 
 ;;; Custom variables
     (custom-set-variables
-     `(muse-blosxom-base-directory ,(concat *created-content-dir* "/gen/web/site/blog"))
+     `(muse-blosxom-base-directory ,(muse-publishing-generated-contents-path "web/site/blog"))
      `(muse-colors-autogen-headings (quote outline))
      `(muse-colors-inline-image-method (quote muse-colors-use-publishing-directory))
      `(muse-completing-read-function (quote ido-completing-read))
