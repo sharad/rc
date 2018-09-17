@@ -207,7 +207,7 @@ Each entry is either:
                                       '(lambda ()
                                         (setq
                                          diary-file
-                                         (publishing-created-contents-path 'misc "emacs/schedule/diary/diary"))
+                                         (misc-publishing-created-contents-path "emacs/schedule/diary/diary"))
                                         ;; https://stackoverflow.com/questions/2592095/how-do-i-create-an-empty-file-in-emacs/2592558#2592558
                                         (unless (file-exists-p diary-file)
                                           (make-directory
