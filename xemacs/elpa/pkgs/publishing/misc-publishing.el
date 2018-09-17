@@ -163,12 +163,12 @@
   (publishing-created-contents-path 'misc path))
 
 ;;;###autoload
-(defun content-misc-publishing-dir (path)
+(defun misc-publishing-generated-contents-path (path)
   "thisandthat."
   (publishing-generated-contents-path 'misc path))
 
 ;;;###autoload
-(defun content-misc-publishing-url (localpath)
+(defun misc-publishing-website-address (localpath)
   (publishing-website-address 'misc localpath))
 
 ;;; misc-publishing.el ends here
