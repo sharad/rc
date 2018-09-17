@@ -153,17 +153,17 @@
 
 
 ;;;###autoload
-(defun content-org-path (path)
-    "thisandthat."
-    (publishing-created-contents-path 'org path))
+(defun org-publishing-created-contents-path (&optional path)
+  "thisandthat."
+  (publishing-created-contents-path 'org path))
 
 ;;;###autoload
-(defun content-org-publishing-path (path)
+(defun org-publishing-generated-contents-path (&optional path)
   "thisandthat."
   (publishing-generated-contents-path 'org path))
 
 ;;;###autoload
-(defun content-org-publishing-url (localpath)
+(defun org-publishing-website-address (&optional localpath)
   (publishing-website-address 'org localpath))
 
 ;; (mapcar 'car org-publishing-styles)
