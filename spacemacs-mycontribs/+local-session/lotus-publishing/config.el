@@ -31,7 +31,8 @@
     (make-directory
      (dirname-of-file file) t)
     (with-temp-buffer
-      (write-file file))))
+      (write-file file)))
+  file)
 
 ;; (provide 'config)
 ;;; config.el ends here
