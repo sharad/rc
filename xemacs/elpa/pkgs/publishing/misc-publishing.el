@@ -37,17 +37,17 @@
 
 
 ;;;###autoload
-(defun misc-publishing-created-contents-path (path)
+(defun misc-publishing-created-contents-path (&optional path)
   "thisandthat."
   (publishing-created-contents-path 'misc path))
 
 ;;;###autoload
-(defun misc-publishing-generated-contents-path (path)
+(defun misc-publishing-generated-contents-path (&optional path)
   "thisandthat."
   (publishing-generated-contents-path 'misc path))
 
 ;;;###autoload
-(defun misc-publishing-website-address (localpath)
+(defun misc-publishing-website-address (&optional localpath)
   (publishing-website-address 'misc localpath))
 
 ;;;###autoload
