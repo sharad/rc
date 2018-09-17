@@ -33,7 +33,6 @@
 (defun touch-file (file)
   ;; https://stackoverflow.com/questions/2592095/how-do-i-create-an-empty-file-in-emacs/2592558#2592558
   (unless (file-exists-p file)
-    (message "test1 %s" file)
     (make-directory
      (dirname-of-file file) t)
     (message "test2 %s" file)
@@ -43,9 +42,7 @@
   (message "test %s" file)
   file)
 
-(unless (file-exists-p "/home/s/hell/Documents/CreatedContent/contents/virtual/misc/default/emacs/schedule/diary/diaryA")
-  nil
-  t)
+
 
 (defun cleanup-tty-process ()
   (interactive)
