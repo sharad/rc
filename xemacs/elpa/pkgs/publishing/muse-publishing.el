@@ -1,4 +1,4 @@
-<;;; muse publishing.el --- muse publishing
+;;; muse publishing.el --- muse publishing
 
 ;; Copyright (C) 2015  sharad
 
