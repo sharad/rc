@@ -33,8 +33,8 @@
  (require 'org-compact))
 (require 'ox-publish)
 
-;; (defvar *org-top-dir*           (publishing-created-contents-path 'org))
-;; (defvar *org-top-style-dir*     (publishing-created-contents-path 'org "generic/org/style"))
+;; (defvar *org-top-dir*           (org-publishing-created-contents-path))
+;; (defvar *org-top-style-dir*     (org-publishing-created-contents-path "generic/org/style"))
 ;; (defvar *org-generated-top-dir* (org-publishing-generated-contents-path))
 ;; (defvar *org-website-address*   (publishing-website-address 'org))
 
@@ -92,11 +92,11 @@
 
 ;; (defun* make-org-style-spec (org-dir publishing-path publishing-style publishing-url publishing-options)
 ;;   (interactive
-;;    (let* ((org-dir (read-directory-name "Org Project Directory: " (publishing-created-contents-path 'org)))
+;;    (let* ((org-dir (read-directory-name "Org Project Directory: " (org-publishing-created-contents-path)))
 ;;           (publishing-path
 ;;            (read-directory-name
 ;;             "Org Project Directory: "
-;;             (org-publishing-generated-contents-path (replace-regexp-in-string (publishing-created-contents-path 'org) "" org-dir))
+;;             (org-publishing-generated-contents-path (replace-regexp-in-string (org-publishing-created-contents-path) "" org-dir))
 ;;           (publishing-style
 ;;            (ido-completing-read "Org Publishing Style: " (mapcar 'car org-publishing-styles)))
 ;;           (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -118,12 +118,12 @@
   (interactive
    (let* ((name (read-from-minibuffer "Org Project Name: "))
           (org-dir
-           (read-directory-name "Org Project Directory: " (publishing-created-contents-path 'org name)))
+           (read-directory-name "Org Project Directory: " (org-publishing-created-contents-path name)))
           (publishing-path
            (read-directory-name
             "Org Project Publishing Directory: "
             (org-publishing-generated-contents-path
-                    (replace-regexp-in-string (publishing-created-contents-path 'org ) ""
+                    (replace-regexp-in-string (org-publishing-created-contents-path ) ""
                                               (if (consp org-dir) (car org-dir) org-dir)))))
           (publishing-options nil))
      (list
@@ -136,11 +136,11 @@
     ,@publishing-options))
 
 ;; (defun* read-org-style-spec ()
-;;   (let* ((org-dir (read-directory-name "Org Project Directory: " (publishing-created-contents-path 'org )))
+;;   (let* ((org-dir (read-directory-name "Org Project Directory: " (org-publishing-created-contents-path )))
 ;;          (publishing-path
 ;;           (read-directory-name
 ;;            "Org Project Directory: "
-;;            (org-publishing-generated-contents-path  (replace-regexp-in-string (publishing-created-contents-path 'org ) "" org-dir))))
+;;            (org-publishing-generated-contents-path  (replace-regexp-in-string (org-publishing-created-contents-path ) "" org-dir))))
 ;;          (publishing-style
 ;;           (ido-completing-read "Org Publishing Style: " (mapcar 'car org-publishing-styles)))
 ;;          (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -151,12 +151,12 @@
 (defun* read-org-project-spec ()
   (let* ((name (read-from-minibuffer "Org Project Name: "))
          (org-dir
-          (read-directory-name "Org Project Directory: " (publishing-created-contents-path 'org name)))
+          (read-directory-name "Org Project Directory: " (org-publishing-created-contents-path name)))
          (publishing-path
           (read-directory-name
            "Org Project Publishing Directory: "
            (org-publishing-generated-contents-path
-                   (replace-regexp-in-string (publishing-created-contents-path 'org ) ""
+                   (replace-regexp-in-string (org-publishing-created-contents-path ) ""
                                              (if (consp org-dir) (car org-dir) org-dir)))))
          (publishing-options nil))
     `(
@@ -168,12 +168,12 @@
 
 ;; (mapcar 'car org-publishing-styles)
 ;; (org-publish-project-alist-styles
-;;  (publishing-created-contents-path 'org "doc/priv")
+;;  (org-publishing-created-contents-path "doc/priv")
 ;;  (org-publishing-generated-contents-path "/doc/pdf/doc/priv/pdf")
 ;;  "pdf")
 
 ;; (org-publish-project-alist-styles
-;;  (publishing-created-contents-path 'org "web/site/blog")
+;;  (org-publishing-created-contents-path "web/site/blog")
 ;;  (org-publishing-generated-contents-path "/web/site/blog/pdf")
 ;;  "ikiwiki"
 ;;  :base-url (concat *website-address* "/blog/"))
