@@ -30,10 +30,10 @@
 (require 'publishing)
 
 
-(defvar *misc-top-dir*           (publishing-contents-top-dir 'misc))
-(defvar *misc-top-style-dir*     (publishing-contents-top-dir 'misc "generic/misc/style"))
-(defvar *misc-generated-top-dir* (publishing-generated-top-dir 'misc))
-(defvar *misc-website-address*   (concat *website-address* "misc/"))
+;; (defvar *misc-top-dir*           (publishing-contents-top-dir 'misc))
+;; (defvar *misc-top-style-dir*     (publishing-contents-top-dir 'misc "generic/misc/style"))
+;; (defvar *misc-generated-top-dir* (publishing-generated-top-dir 'misc))
+;; (defvar *misc-website-address*   (concat *website-address* "misc/"))
 
 ;;;###autoload
 (defun* read-misc-style-spec ()
