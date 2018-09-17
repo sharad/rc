@@ -212,7 +212,7 @@
               (lambda (p)
                 (org-publish-get-attribute p extention attrib))
               projects)))
-       ))))
+       (org-publish-get-attribute project extention attrib)))))
 
 (org-publish-get-attribute "tasks" "org" :base-directory)
 
