@@ -193,7 +193,22 @@
               (list proj-alist))))
       attrib))))
 
-(car
+
+(defun org-publish-get-attribute (project extention attrib)
+  (let ((proj-alist (assoc project org-publish-project-alist)))
+    (or
+     (plist-get (cdr proj-alist) attrib)
+     (plist-get
+      (cdar (remove-if-not
+             (lambda (p)
+               (string-match
+                (plist-get (cdr p) :base-extension)
+                extention))
+             (org-publish-expand-projects
+              (list proj-alist))))
+      attrib))))
+
+(cdar
  (remove-if-not
   (lambda (p)
     (string-match
