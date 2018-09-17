@@ -41,7 +41,7 @@
          (publishing-path
           (read-directory-name
            "Misc Project Directory: "
-           (concat *misc-generated-top-dir* (replace-regexp-in-string (publishing-created-contents-path 'misc) "" misc-dir))))
+           (muse-publishing-generated-contents-path (replace-regexp-in-string (publishing-created-contents-path 'misc) "" misc-dir))))
          (publishing-style
           (ido-completing-read "Misc Publishing Style: " (mapcar 'car misc-publishing-styles)))
          (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -56,7 +56,7 @@
          (publishing-path
           (read-directory-name
            "Misc Project Directory: "
-           (concat *misc-generated-top-dir*
+           (muse-publishing-generated-contents-path
                    (replace-regexp-in-string (publishing-created-contents-path 'misc) ""
                                              (if (consp misc-dirs) (car misc-dirs) misc-dirs)))))
          (publishing-style
@@ -115,7 +115,7 @@
           (publishing-path
            (read-directory-name
             "Misc Project Directory: "
-            (concat *misc-generated-top-dir* (replace-regexp-in-string (publishing-created-contents-path 'misc) "" misc-dir))))
+            (muse-publishing-generated-contents-path (replace-regexp-in-string (publishing-created-contents-path 'misc) "" misc-dir))))
           (publishing-style
            (ido-completing-read "Misc Publishing Style: " (mapcar 'car misc-publishing-styles)))
           (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -141,7 +141,7 @@
           (publishing-path
            (read-directory-name
             "Misc Project Directory: "
-            (concat *misc-generated-top-dir*
+            (muse-publishing-generated-contents-path
                     (replace-regexp-in-string (publishing-created-contents-path 'misc) ""
                                               (if (consp misc-dirs) (car misc-dirs) misc-dirs)))))
           (publishing-style
