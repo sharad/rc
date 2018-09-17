@@ -39,6 +39,8 @@
   ;;     (write-file file)))
   file)
 
+(touch-file "")
+
 (defun cleanup-tty-process ()
   (interactive)
   (let ((tty-processes
