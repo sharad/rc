@@ -206,7 +206,9 @@
                 extention))
              (org-publish-expand-projects
               (list proj-alist)))))
-      ))))
+       (
+        #org-publish-get-attribute
+        )))))
 
 (cdar
  (remove-if-not
