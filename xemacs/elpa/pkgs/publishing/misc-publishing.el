@@ -35,6 +35,21 @@
 ;; (defvar *misc-generated-top-dir* (publishing-generated-top-dir 'misc))
 ;; (defvar *misc-website-address*   (concat *website-address* "misc/"))
 
+
+;;;###autoload
+(defun misc-publishing-created-contents-path (path)
+  "thisandthat."
+  (publishing-created-contents-path 'misc path))
+
+;;;###autoload
+(defun misc-publishing-generated-contents-path (path)
+  "thisandthat."
+  (publishing-generated-contents-path 'misc path))
+
+;;;###autoload
+(defun misc-publishing-website-address (localpath)
+  (publishing-website-address 'misc localpath))
+
 ;;;###autoload
 (defun* read-misc-style-spec ()
   (let* ((misc-dir (read-directory-name "Misc Project Directory: " (publishing-created-contents-path 'misc)))
