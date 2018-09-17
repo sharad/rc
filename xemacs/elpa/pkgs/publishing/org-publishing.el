@@ -38,6 +38,20 @@
 ;; (defvar *org-generated-top-dir* (publishing-generated-contents-path 'org))
 ;; (defvar *org-website-address*   (publishing-website-address 'org))
 
+;;;###autoload
+(defun org-publishing-created-contents-path (&optional path)
+  "thisandthat."
+  (publishing-created-contents-path 'org path))
+
+;;;###autoload
+(defun org-publishing-generated-contents-path (&optional path)
+  "thisandthat."
+  (publishing-generated-contents-path 'org path))
+
+;;;###autoload
+(defun org-publishing-website-address (&optional localpath)
+  (publishing-website-address 'org localpath))
+
 
 ;;;###autoload
 (defun* add-org-project (&rest project-spec)
@@ -151,20 +165,6 @@
       :publishing-directory ,publishing-path
       ,@publishing-options)))
 
-
-;;;###autoload
-(defun org-publishing-created-contents-path (&optional path)
-  "thisandthat."
-  (publishing-created-contents-path 'org path))
-
-;;;###autoload
-(defun org-publishing-generated-contents-path (&optional path)
-  "thisandthat."
-  (publishing-generated-contents-path 'org path))
-
-;;;###autoload
-(defun org-publishing-website-address (&optional localpath)
-  (publishing-website-address 'org localpath))
 
 ;; (mapcar 'car org-publishing-styles)
 ;; (org-publish-project-alist-styles
