@@ -165,7 +165,7 @@
        publishing-options)))
 
 ;;;###autoload
-(defun content-muse-path (path)
+(defun muse-publishing-created-contents-path (path)
   "thisandthat."
   (publishing-created-contents-path 'muse path))
 
