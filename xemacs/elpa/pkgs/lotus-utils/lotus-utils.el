@@ -35,10 +35,8 @@
   (unless (file-exists-p file)
     (make-directory
      (dirname-of-file file) t)
-    (message "test2 %s" file)
     (with-temp-buffer
-      (write-file file))
-    (message "test3 %s" file))
+      (write-file file)))
   (message "test %s" file)
   file)
 
