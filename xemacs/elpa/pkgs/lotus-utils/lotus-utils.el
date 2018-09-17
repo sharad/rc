@@ -32,11 +32,11 @@
 
 (defun touch-file (file)
   ;; https://stackoverflow.com/questions/2592095/how-do-i-create-an-empty-file-in-emacs/2592558#2592558
-  (unless (file-exists-p file)
-    (make-directory
-     (dirname-of-file file) t)
-    (with-temp-buffer
-      (write-file file)))
+  ;; (unless (file-exists-p file)
+  ;;   (make-directory
+  ;;    (dirname-of-file file) t)
+  ;;   (with-temp-buffer
+  ;;     (write-file file)))
   file)
 
 (defun cleanup-tty-process ()
