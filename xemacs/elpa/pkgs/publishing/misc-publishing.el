@@ -37,11 +37,11 @@
 
 ;;;###autoload
 (defun* read-misc-style-spec ()
-  (let* ((misc-dir (read-directory-name "Misc Project Directory: " *misc-top-dir*))
+  (let* ((misc-dir (read-directory-name "Misc Project Directory: " (publishing-created-contents-path 'misc)))
          (publishing-path
           (read-directory-name
            "Misc Project Directory: "
-           (concat *misc-generated-top-dir* (replace-regexp-in-string *misc-top-dir* "" misc-dir))))
+           (concat *misc-generated-top-dir* (replace-regexp-in-string (publishing-created-contents-path 'misc) "" misc-dir))))
          (publishing-style
           (ido-completing-read "Misc Publishing Style: " (mapcar 'car misc-publishing-styles)))
          (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -52,12 +52,12 @@
 (defun* read-misc-project-spec ()
   (let* ((name (read-from-minibuffer "Project Name: "))
          (misc-dirs
-          (read-directory-name "Misc Project Directory: " (concat *misc-top-dir* "/" name)))
+          (read-directory-name "Misc Project Directory: " (concat (publishing-created-contents-path 'misc) "/" name)))
          (publishing-path
           (read-directory-name
            "Misc Project Directory: "
            (concat *misc-generated-top-dir*
-                   (replace-regexp-in-string *misc-top-dir* ""
+                   (replace-regexp-in-string (publishing-created-contents-path 'misc) ""
                                              (if (consp misc-dirs) (car misc-dirs) misc-dirs)))))
          (publishing-style
           (ido-completing-read "Misc Publishing Style: " (mapcar 'car misc-publishing-styles)))
@@ -111,11 +111,11 @@
 ;;;###autoload
 (defun* make-misc-style-spec (misc-dir publishing-path publishing-style publishing-url &rest publishing-options)
   (interactive
-   (let* ((misc-dir (read-directory-name "Misc Project Directory: " *misc-top-dir*))
+   (let* ((misc-dir (read-directory-name "Misc Project Directory: " (publishing-created-contents-path 'misc)))
           (publishing-path
            (read-directory-name
             "Misc Project Directory: "
-            (concat *misc-generated-top-dir* (replace-regexp-in-string *misc-top-dir* "" misc-dir))))
+            (concat *misc-generated-top-dir* (replace-regexp-in-string (publishing-created-contents-path 'misc) "" misc-dir))))
           (publishing-style
            (ido-completing-read "Misc Publishing Style: " (mapcar 'car misc-publishing-styles)))
           (publishing-url (read-from-minibuffer "Publishing Base URL: "))
@@ -137,12 +137,12 @@
   (interactive
    (let* ((name (read-from-minibuffer "Project Name: "))
           (misc-dirs
-           (read-directory-name "Misc Project Directory: " (concat *misc-top-dir* "/" name)))
+           (read-directory-name "Misc Project Directory: " (concat (publishing-created-contents-path 'misc) "/" name)))
           (publishing-path
            (read-directory-name
             "Misc Project Directory: "
             (concat *misc-generated-top-dir*
-                    (replace-regexp-in-string *misc-top-dir* ""
+                    (replace-regexp-in-string (publishing-created-contents-path 'misc) ""
                                               (if (consp misc-dirs) (car misc-dirs) misc-dirs)))))
           (publishing-style
            (ido-completing-read "Misc Publishing Style: " (mapcar 'car misc-publishing-styles)))
