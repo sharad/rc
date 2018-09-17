@@ -33,11 +33,6 @@
  (require 'org-compact))
 (require 'ox-publish)
 
-;; (defvar *org-top-dir*           (org-publishing-created-contents-path))
-;; (defvar *org-top-style-dir*     (org-publishing-created-contents-path "generic/org/style"))
-;; (defvar *org-generated-top-dir* (org-publishing-generated-contents-path))
-;; (defvar *org-website-address*   (publishing-website-address 'org))
-
 ;;;###autoload
 (defun org-publishing-created-contents-path (&optional path)
   "thisandthat."
