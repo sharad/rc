@@ -36,8 +36,8 @@
 
 (defconst lotus-schedule-packages
   '(
-    (weekly-view :location local)
     diary-lib
+    (weekly-view :location local)
     (planner-interface :location local)
     midnight
     calfw
