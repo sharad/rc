@@ -173,9 +173,16 @@ Each entry is either:
                 (progn
                   (setq
                    diary-file (touch-file (misc-publishing-created-contents-path "emacs/schedule/diary/diary")))
-                  (if (not running-xemacs)
-                      (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
-                    (appt-initialize))))))
+
+                  (use-package appt
+                      ;; :defer t
+                      :defer t
+                      :config
+                      (progn
+                        (progn
+                          (if (not running-xemacs)
+                              (appt-activate 1) ; use (appt-activate 1) for GNU Emacs
+                            (appt-initialize)))))))))
         (progn
           (setq diary-display-function 'diary-fancy-display)
           (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
