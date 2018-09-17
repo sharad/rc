@@ -207,7 +207,7 @@
              (org-publish-expand-projects
               (list proj-alist)))))
        (find-if
-        #org-publish-get-attribute
+        #'org-publish-get-attribute
         projects)))))
 
 (find-if
