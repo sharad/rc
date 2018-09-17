@@ -109,7 +109,7 @@ Each entry is either:
             (progn
               ;; Here is my master project listing.
               ;; (make-muse-style-spec
-              ;;  (content-muse-path "web/site/wiki/projects")
+              ;;  (muse-publishing-created-contents-path "web/site/wiki/projects")
               ;;  (content-muse-publishing-path "web/site/wiki/projects/my-xhtml")
               ;;  "my-xhtml"
               ;;  (content-muse-publishing-url "projects/"))
@@ -119,8 +119,8 @@ Each entry is either:
               (add-muse-project
                `("Website"
                  (
-                  ,(content-muse-path "web/site/wiki/web")
-                   ,(content-muse-path "web/site/wiki/web/testdir")
+                  ,(muse-publishing-created-contents-path "web/site/wiki/web")
+                   ,(muse-publishing-created-contents-path "web/site/wiki/web/testdir")
                    :force-publish ("WikiIndex")
                    :default "WelcomePage")
                  (:base "my-xhtml"
@@ -138,7 +138,7 @@ Each entry is either:
 
               (if t
                   (add-muse-project
-                   `("Projects" ( ,(content-muse-path "web/site/wiki/projects")
+                   `("Projects" ( ,(muse-publishing-created-contents-path "web/site/wiki/projects")
                                    :force-publish ("WikiIndex" "MuseQuickStart")
                                    :default "WelcomePage")
                                 (:base "my-xhtml"
@@ -147,12 +147,12 @@ Each entry is either:
 
                   (add-muse-project
                    `("Projects"
-                     ( ,(content-muse-path "web/site/wiki/projects")
+                     ( ,(muse-publishing-created-contents-path "web/site/wiki/projects")
                         :force-publish ("WikiIndex" "MuseQuickStart")
                         :default "WelcomePage")
 
                      ,(make-muse-style-spec
-                       (content-muse-path "web/site/wiki/projects")
+                       (muse-publishing-created-contents-path "web/site/wiki/projects")
                        (content-muse-publishing-path "web/site/wiki/projects/my-xhtml/")
                        "my-xhtml"
                        (content-muse-publishing-url "web/site/wiki/projects/my-xhtml/"))))
@@ -160,7 +160,7 @@ Each entry is either:
 
               (add-muse-project
                `("WikiWriting"
-                 (,(content-muse-path "web/site/wiki/writing")
+                 (,(muse-publishing-created-contents-path "web/site/wiki/writing")
                    ;; :force-publish ("WikiIndex" "MuseQuickStart")
                    :major-mode muse-mode
                    :default "index")
@@ -170,7 +170,7 @@ Each entry is either:
 
 
               (add-muse-project
-               `("Blog" (,@(muse-project-alist-dirs (content-muse-path "web/site/blog"))
+               `("Blog" (,@(muse-project-alist-dirs (muse-publishing-created-contents-path "web/site/blog"))
                            :default "index"
                            :publish-project #'ignore)
                         ;; Publish this directory and its subdirectories.  Arguments
@@ -181,14 +181,14 @@ Each entry is either:
                         ;;   3. Publishing style
                         ;;   remainder: Other things to put in every generated style
                         ,@(muse-project-alist-styles
-                           (content-muse-path "web/site/blog")
+                           (muse-publishing-created-contents-path "web/site/blog")
                            (content-muse-publishing-path "web/site/blog/ikiwiki")
                            "ikiwiki"
                            :base-url (content-muse-publishing-url "blog/"))))
 
               ;; "http://grepfind.hello.org/blog/"
               (add-muse-project
-               `("MyNotes" (,(content-muse-path "web/site/wiki/notes")
+               `("MyNotes" (,(muse-publishing-created-contents-path "web/site/wiki/notes")
                              :force-publish ("index")
                              :default "index")
                            (:base "xhtml"
@@ -199,35 +199,35 @@ Each entry is either:
                                   :path ,(content-muse-publishing-path "web/site/wiki/notes/my-pdf"))))
 
               (add-muse-project
-               `("_Private" (,(content-muse-path "doc/priv"))
-                            ,@(muse-project-alist-styles (content-muse-path "doc/priv")
+               `("_Private" (,(muse-publishing-created-contents-path "doc/priv"))
+                            ,@(muse-project-alist-styles (muse-publishing-created-contents-path "doc/priv")
                                                          (content-muse-publishing-path "doc/pdf/doc/priv/pdf")
                                                          "pdf")))
 
               (add-muse-project
-               `("_Classes" (,@(muse-project-alist-dirs (content-muse-path "web/site/wiki/classes"))
+               `("_Classes" (,@(muse-project-alist-dirs (muse-publishing-created-contents-path "web/site/wiki/classes"))
                                :default "index")
-                            ,@(muse-project-alist-styles (content-muse-path "web/site/wiki/classes")
+                            ,@(muse-project-alist-styles (muse-publishing-created-contents-path "web/site/wiki/classes")
                                                          (content-muse-publishing-path "web/site/wiki/classes/xhtml")
                                                          "xhtml")))
 
               (add-muse-project
-               `("MA366" (,(content-muse-path "doc/pdf/classes/ma366"))
+               `("MA366" (,(muse-publishing-created-contents-path "doc/pdf/classes/ma366"))
                          (:base "pdf-uh"
                                 :path ,(content-muse-publishing-path "doc/pdf/classes/ma366/pdf-uh"))))
 
               (add-muse-project
-               `("ENGL238" (,(content-muse-path "doc/pdf/classes/eng238"))
+               `("ENGL238" (,(muse-publishing-created-contents-path "doc/pdf/classes/eng238"))
                            (:base "pdf-uh"
                                   :path ,(content-muse-publishing-path "doc/pdf/classes/eng238/pdf-uh"))))
 
               (add-muse-project
-               `("CS426" (,(content-muse-path "web/site/wiki/classes/cs426"))
+               `("CS426" (,(muse-publishing-created-contents-path "web/site/wiki/classes/cs426"))
                          (:base "pdf-uh"
                                 :path "~/proj/classes/cs426/pdf-uh")))
 
               (add-muse-project
-               `("_Plans" (,(content-muse-path "web/site/wiki/plans")
+               `("_Plans" (,(muse-publishing-created-contents-path "web/site/wiki/plans")
                             :default "TaskPool"
                             :major-mode planner-mode
                             :visit-link planner-visit-link)
