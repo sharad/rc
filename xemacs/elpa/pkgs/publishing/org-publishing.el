@@ -176,7 +176,7 @@
 ;;  (org-publishing-created-contents-path "web/site/blog")
 ;;  (org-publishing-generated-contents-path "/web/site/blog/pdf")
 ;;  "ikiwiki"
-;;  :base-url (concat *website-address* "/blog/"))
+;;  :base-url (org-publishing-website-address "/blog/"))
 
 ;;;###autoload
 (defun org-publish-get-attribute (project extention attrib)
