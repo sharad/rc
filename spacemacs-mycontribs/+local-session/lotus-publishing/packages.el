@@ -89,11 +89,12 @@ Each entry is either:
           (progn
             ;; (debug)
             (progn
-              (setq
-               *misc-top-dir*           (expand-file-name "contents/virtual/misc/default" *created-content-dir*)
-               *misc-top-style-dir*     (expand-file-name "generic/misc/style" *misc-top-dir*)
-               *misc-generated-top-dir* (expand-file-name "gen/misc" *created-content-dir*)
-               *misc-website-address*   (concat *website-address* "misc/")))))
+              ;; (setq
+              ;;  *misc-top-dir*           (expand-file-name "contents/virtual/misc/default" *created-content-dir*)
+              ;;  *misc-top-style-dir*     (expand-file-name "generic/misc/style" *misc-top-dir*)
+              ;;  *misc-generated-top-dir* (expand-file-name "gen/misc" *created-content-dir*)
+              ;;  *misc-website-address*   (concat *website-address* "misc/"))
+              )))
 
         (progn ;; muse
           (progn
