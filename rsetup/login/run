@@ -88,6 +88,8 @@ then
         echo starting new gitwatch $(date) >> ~/.logs/gitwatch.log
         gitwatch -r origin ~/.setup/ >>& ~/.logs/gitwatch.log &!
     fi
+else
+    echo SSH_AGENT_PID not set
 fi
 
 __comp=login
