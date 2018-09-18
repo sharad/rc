@@ -49,6 +49,7 @@
     (dolist (tp tty-processes)
       (kill-process tp))))
 
+;;;###autoload
 (defun elscreen-keymap-setup ()
   (progn ;; "Keybinding: Elscreen"
     (when (featurep 'elscreen)
