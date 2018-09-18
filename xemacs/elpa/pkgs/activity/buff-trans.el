@@ -75,13 +75,6 @@
        (add-hook 'elscreen-screen-update-hook schedule-transition)
        (add-hook 'elscreen-goto-hook          schedule-transition))))
 
-  (when nil
-    (progn
-      ;; (pop buffer-list-update-hook)
-      (pop elscreen-screen-update-hook)
-      (pop elscreen-goto-hook)
-      nil))
-
   (def@ @@ :deactivate ()
     )
 
