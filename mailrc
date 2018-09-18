@@ -24,15 +24,15 @@ set hold
 ##      the variable `keepsave' is set.
 set keepsave
 
+# https://www.raspberrypi.org/forums/viewtopic.php?t=118616
 # set sendmail=sendmail://usr/sbin/sendmail
-set sendmail=sendmail://usr/sbin/sendmail
+# set from="Name <email>"
 
-
-# folder "imap://spratap@localhost"
-folder "imap://s@localhost"
-
-
-# folder "imap://spratap@localhost/"
+# folder "imap://s@localhost:/INBOX"
+# set imap-auth=login
+set imap-auth-user=s
+set imap-auth-password=s
+set imap-use-starttls
 
 ## {{ from: http://jaya.homelinux.org/linux/mail.php
 # set folder="Maildir/"
