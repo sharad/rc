@@ -1306,3 +1306,14 @@ define_webjump("company/usgov", "https://www.sec.gov/cgi-bin/browse-edgar?compan
 define_webjump("company/in/nw-tofler", "https://www.tofler.in/search?cin=&q=%s");
 define_webjump("company/in/tofler", "https://www.google.com/search?hl=en&&q=tofler+%s&btnI=2");
 //}}
+
+
+function yubnub(args) {
+    var prefix = args[0];
+    readFromMiniBuffer(open_url_in_prompt(prefix, "yubnub command"), // prompt
+                       null,                                         // initval
+                       get_bm_strings(),                             // history
+                       function(url) { getBrowser().newBrowser("http://yubnub.org/parser/parse?command=" + url); }); // callback
+}
+
+add_command("y", yubnub, [["p"]]);
