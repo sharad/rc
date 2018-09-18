@@ -118,9 +118,10 @@
     (test-idle-prints nil)))
 
 
-(defun reset-input ()
- (get-buffer-create "*helm*")
- (setq helm-alive-p nil)
- (abort-recursive-edit))
+(defun reset-helm0input ()
+  (interactive)
+  (get-buffer-create "*helm*")
+  (setq helm-alive-p nil)
+  (abort-recursive-edit))
 
 ;;; lotus-utils.el ends here
