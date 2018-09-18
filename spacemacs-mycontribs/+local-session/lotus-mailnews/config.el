@@ -24,8 +24,6 @@
 
 ;;; Code:
 
-
-;;; config.el ends here
 ;; from  article-config.el
 
 
