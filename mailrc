@@ -31,7 +31,7 @@ set keepsave
 # folder "imap://s@localhost:/INBOX"
 # set imap-auth=login
 set imap-auth-user=s
-set imap-auth-password=s
+set imap-auth-password=password
 set imap-use-starttls
 
 ## {{ from: http://jaya.homelinux.org/linux/mail.php
