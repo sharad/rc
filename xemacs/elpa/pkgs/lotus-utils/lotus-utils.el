@@ -112,7 +112,7 @@
     (interactive)
     (test-idle-prints (null *test-idle-prints-timer*)))
 
-  ;;;###autoload
+;;;###autoload
   (defun lotus-necessary-test ()
     (interactive)
     (test-idle-prints nil)))
