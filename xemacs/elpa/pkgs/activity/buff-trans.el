@@ -61,12 +61,11 @@
       (unless (eql
                @:prev
                curr)
-        (let ((currtime (current-time)))
-          (if (>
-               (- (float-time currtime) (float-time @:start))
-               @:minimum-time-span)
-              (@:make-transition)
-            (@:reinitialize))))))
+        (cancel @:timer)
+        (setf @:timer
+              (run-with-timer @:minimum-time-span
+                              (lambda ()
+                                (funcall @:make-transition @@)))))))
 
   (def@ @@ :activate ()
     (let ((schedule-transition
