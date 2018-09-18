@@ -120,6 +120,7 @@
 
 (defun reset-helm-input ()
   (interactive)
+  ;; https://github.com/emacs-helm/helm/issues/208#issuecomment-14447049
   (get-buffer-create "*helm*")
   (setq helm-alive-p nil)
   (when (active-minibuffer-window)
