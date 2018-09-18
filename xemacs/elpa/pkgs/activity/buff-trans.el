@@ -42,9 +42,7 @@
 (provide 'buff-trans)
 
 (defsubclass-gen@ @transition-span-dectector-class :gen-buffer-trans (&optional note)
-
   (setf @:timer nil)
-
   (def@ @@ :make-transition ()
     "Make buffer change transition."
     (let ((curr (current-buffer)))
