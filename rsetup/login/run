@@ -81,7 +81,7 @@ if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connecti
 fi                              # if [ ! "$SSH_CONNECTION" -a $(id -u) -ne 0 ] ; then # don't open on ssh connection, and when user is root.
 
 ## improve: git if no current change present.
-if [ "$SSH_AGENT_PID" ] && command ps $SSH_AGENT_PID
+if [ "$SSH_AGENT_PID" ] && command ps h $SSH_AGENT_PID
 then
     if ! command ps f -u $USER | grep -v grep | grep gitwatch
     then
