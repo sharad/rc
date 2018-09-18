@@ -2305,3 +2305,5 @@ You need to add `Content-Type' to `nnmail-extra-headers' and
 
 (provide 'winconfig-config)
 ;;; winconfig.el ends here
+
+;;; config.el ends here
