@@ -73,15 +73,19 @@
       ;;}}
       )))
 
+;;;###autoload
 (defun resolveip (host)
   (= 0 (call-process "~/bin/resolveip" nil nil nil host)))
 
+;;;###autoload
 (defun host-accessable-p (&optional host)
   (= 0 (call-process "ping" nil nil nil "-c" "1" "-W" "1"
                      (if host host "www.google.com"))))
 
 (progn                                  ;debug testing code
   (defvar *test-idle-prints-timer* nil)
+
+  ;;;###autoload
   (defun test-idle-prints (print)
     (if print
         (progn
@@ -102,10 +106,13 @@
                                    (message "Test: From timer idle for %f secs emacs, and last even is %s" idle display-last-input-event)))))))
       (when *test-idle-prints-timer*
         (cancel-timer *test-idle-prints-timer*))))
+
+  ;;;###autoload
   (defun toggle-test-idle-prints ()
     (interactive)
     (test-idle-prints (null *test-idle-prints-timer*)))
 
+  ;;;###autoload
   (defun lotus-necessary-test ()
     (interactive)
     (test-idle-prints nil)))
