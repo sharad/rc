@@ -123,7 +123,8 @@
   (get-buffer-create "*helm*")
   (setq helm-alive-p nil)
   (when (active-minibuffer-window)
-   (abort-recursive-edit)))
+    (abort-recursive-edit))
+  (abort-recursive-edit))
 
 (global-set-key-warn-if-bind (kbd "C-H-k") 'reset-helm-input)
 
