@@ -124,6 +124,6 @@
   (setq helm-alive-p nil)
   (abort-recursive-edit))
 
-(global-set-key-warn-if-bind (kbd "C-M-n"))
+(global-set-key-warn-if-bind (kbd "C-H-k") 'reset-helm-input)
 
 ;;; lotus-utils.el ends here
