@@ -20,7 +20,7 @@
 ;; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ;;
 
-;; Code
+;; Code:
 
 ;;{{ http://www.inference.phy.cam.ac.uk/cjb/dotfiles/dotgnus
 ;; Avoid "Here's an attachment oops I forget to attach it augh" embarrassment.
