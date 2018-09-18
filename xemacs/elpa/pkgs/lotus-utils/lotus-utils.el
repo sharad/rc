@@ -85,7 +85,7 @@
 (progn                                  ;debug testing code
   (defvar *test-idle-prints-timer* nil)
 
-  ;;;###autoload
+;;;###autoload
   (defun test-idle-prints (print)
     (if print
         (progn
@@ -107,7 +107,7 @@
       (when *test-idle-prints-timer*
         (cancel-timer *test-idle-prints-timer*))))
 
-  ;;;###autoload
+;;;###autoload
   (defun toggle-test-idle-prints ()
     (interactive)
     (test-idle-prints (null *test-idle-prints-timer*)))
@@ -116,4 +116,5 @@
   (defun lotus-necessary-test ()
     (interactive)
     (test-idle-prints nil)))
+
 ;;; lotus-utils.el ends here
