@@ -118,7 +118,7 @@
     (test-idle-prints nil)))
 
 
-(defun reset-helm0input ()
+(defun reset-helm-input ()
   (interactive)
   (get-buffer-create "*helm*")
   (setq helm-alive-p nil)
