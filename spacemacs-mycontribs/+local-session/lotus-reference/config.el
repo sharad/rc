@@ -202,14 +202,17 @@
        (lotus-create-tags ',tag-sys default-directory))))
 
 (when nil
-  (dolist (fun '(find-tag
+  (let ((adname 'lotus-create-tags))
+   (dolist (fun '(find-tag
                  find-tag-interactive
                  tags-apropos
                  gtags-find-tag
                  gtags-find-rtag
                  cscope-find-this-symbol
                  cscope-find-functions-calling-this-function))
-    (ad-remove-advice fun 'before 'create-tags)))
+     (when (memq adname (mapcar #'car (ad-get-advice-info-field 'gtags-find-tag 'before)))
+       (ad-remove-advice fun 'before adname)))))
+
 
 
 ;;; visit-tags-table-buffer implement here
@@ -390,6 +393,20 @@
 (defvar tag-dir-config-file ".tag-dir-local.el" "extra lib dirs")
 (defvar tag-dir-config nil "tags dir config")
 (make-local-variable 'tag-dir-config)
+
+
+(defun gtags-root-dir ()
+  "Returns GTAGS root directory or nil if doesn't exist."
+  ;; ido-is-tramp-root
+  ;; "\\`/[^/]+[@:][^:/]+:"
+  (let* ((tramp-prefix "\\`/[^/]+[@:][^:/]+:")
+         (prefix (if (string-match tramp-prefix default-directory)
+                     (match-string 0 default-directory)))
+         (dir (with-temp-buffer
+                (if (zerop (process-file "global" nil t nil "-pr"))
+                    (buffer-substring (point-min) (1- (point-max)))
+                  nil))))
+    (concat  prefix dir)))
 
 (defun tags-dir-store-config ()
   (let* ((readfile (expand-file-name tag-dir-config-file (gtags-root-dir))))
