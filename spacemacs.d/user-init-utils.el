@@ -89,10 +89,10 @@
    gnus
    mu4e
 
-   /home/s/hell/.emacs.d/layers/+frameworks:
+   ;; /home/s/hell/.emacs.d/layers/+frameworks:
    django
    react
-   ruby-on-rails
+   ;; ruby-on-rails
 
    /home/s/hell/.emacs.d/layers/+fun:
    emoji
