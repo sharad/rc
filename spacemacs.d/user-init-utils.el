@@ -100,8 +100,8 @@
    ;; selectric
    xkcd
 
-   /home/s/hell/.emacs.d/layers/+intl:
-   chinese
+   ;; /home/s/hell/.emacs.d/layers/+intl:
+   ;; chinese
    keyboard-layout
 
    /home/s/hell/.emacs.d/layers/+lang:
