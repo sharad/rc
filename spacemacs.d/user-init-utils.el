@@ -70,7 +70,7 @@
    ;; /home/s/hell/.emacs.d/layers/+completion:
    auto-completion
    helm
-   ivy
+   ;; ivy
 
    ;; /home/s/hell/.emacs.d/layers/+distributions:
    spacemacs
