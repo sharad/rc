@@ -514,7 +514,7 @@ Each entry is either:
 
           ))))
 
-(defun lotus-interactivity/init-smex ()
+(defun lotus-interactivity/post-init-smex ()
   (use-package smex
       :defer t
       :config
