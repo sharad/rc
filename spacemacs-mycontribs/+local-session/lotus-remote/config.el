@@ -26,5 +26,22 @@
 
 
 
-;; (provide 'config)
+;; (let ((str "/scp:spratap@susengg-01:/home/spratap/releases/5.1/src/wnc/coord/")
+;;       (regexs (list
+;;                tramp-file-name-regexp
+;;                tramp-file-name-regexp-unified
+;;                tramp-file-name-regexp-url
+;;                tramp-root-regexp
+;;                tramp-domain-regexp
+;;                tramp-user-regexp
+;;                tramp-prefix-domain-regexp
+;;                "\\`/[^:/][^:/]+:\\'"
+;;                "\\`/[^/]+[@:][^:/]+:/")))
+;;   (message "start")
+;;   (dolist (r regexs)
+;;     (string-match r str)
+;;     (message "aa: %s %s" r (match-string 0 str))))
+;; (ido-is-tramp-root "/scp:spratap@susengg-01:")
+;; (ido-is-root-directory "/")
+
 ;;; config.el ends here

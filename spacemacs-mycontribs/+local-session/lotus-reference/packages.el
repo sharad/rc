@@ -82,6 +82,14 @@ Each entry is either:
         (progn
           ))))
 
+(defun lotus-reference/init-ivy-xref ()
+  (use-package ivy-xref
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
+
 (defun lotus-reference/init-gxref ()
   (use-package gxref
       ;; https://github.com/dedi/gxref
@@ -97,7 +105,15 @@ Each entry is either:
                   (add-to-list
                    'c-mode-common-hook
                    #'(lambda ()
-                       (add-to-list 'xref-backend-functions 'gxref-xref-backend))))))))))
+                       (add-to-list 'xref-backend-functions 'gxref-xref-backend t))))))))))
+
+(defun lotus-reference/init-ag ()
+  (use-package ag
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
 
 (defun lotus-reference/init-tags ()
   (use-package tags
@@ -128,21 +144,74 @@ Each entry is either:
               :config
               (progn
                 (progn
-                  (add-to-list 'xref-backend-functions 'etags--xref-backend)))))
+                  (add-to-list
+                   'c-mode-common-hook
+                   #'(lambda ()
+                       (add-to-list 'xref-backend-functions 'etags--xref-backend)))))))
 
         (progn
-          (lotus-create-tags-before etags find-tag)
-          (lotus-create-tags-before etags find-tag-interactive)
-          (lotus-create-tags-before etags tags-apropos)))))
+          (lotus-create-tags-before etags visit-tags-table-buffer)))))
 
 (defun lotus-reference/init-gtags ()
   (use-package gtags
       :defer t
       :config
       (progn
+
+        (progn
+          (use-package gxref
+              :defer t
+              :config
+              (progn
+                (progn
+                  (add-to-list
+                   'c-mode-common-hook
+                   #'(lambda ()
+                       (add-to-list 'xref-backend-functions 'gxref-xref-backend t)))))))
+
         (progn
           (lotus-create-tags-before gtags gtags-find-tag)
-          (lotus-create-tags-before gtags gtags-find-rtag)))))
+          (lotus-create-tags-before gtags gtags-find-rtag))
+
+        (progn
+          (add-hook 'gtags-mode-hook
+                    '(lambda ()
+                      ; Local customization (overwrite key mapping)
+                      (define-key gtags-mode-map "\C-f" 'scroll-up)
+                      (define-key gtags-mode-map "\C-b" 'scroll-down)
+                      ))
+          (add-hook 'gtags-select-mode-hook
+                    '(lambda ()
+                      (setq hl-line-face 'underline)
+                      (hl-line-mode 1)
+                      ))
+          (add-hook 'c-mode-common-hook
+                    '(lambda ()
+                      (gtags-mode 1)))
+          ; Customization
+          (setq gtags-suggested-key-mapping t)
+          (setq gtags-auto-update t))))
+
+  ;; (add-hook 'c-mode-common-hook
+  ;;           '(lambda ()
+  ;;             (gtags-mode 1)))
+  )
+
+(defun lotus-reference/init-counsel-etags ()
+  (use-packcounsel-etagse counsel-etags
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
+
+(defun lotus-reference/init-counsel-gtags ()
+  (use-package counsel-gtags
+      :defer t
+      :config
+      (progn
+        (progn
+          ))))
 
 (defun lotus-reference/init-xcscope ()
   (use-package xcscope
@@ -587,25 +656,6 @@ Each entry is either:
                 ;;        The face most likely to cause problems (e.g., black-on-black
                 ;;        color) is `cscope-line-face'.
                 ))))
-
-;; (let ((str "/scp:spratap@susengg-01:/home/spratap/releases/5.1/src/wnc/coord/")
-;;       (regexs (list
-;;                tramp-file-name-regexp
-;;                tramp-file-name-regexp-unified
-;;                tramp-file-name-regexp-url
-;;                tramp-root-regexp
-;;                tramp-domain-regexp
-;;                tramp-user-regexp
-;;                tramp-prefix-domain-regexp
-;;                "\\`/[^:/][^:/]+:\\'"
-;;                "\\`/[^/]+[@:][^:/]+:/")))
-;;   (message "start")
-;;   (dolist (r regexs)
-;;     (string-match r str)
-;;     (message "aa: %s %s" r (match-string 0 str))))
-;; (ido-is-tramp-root "/scp:spratap@susengg-01:")
-;; (ido-is-root-directory "/")
-
 
 (defun lotus-reference/post-init-elisp-slime-nav () ;; optional if installed via package.el
   (use-package elisp-slime-nav

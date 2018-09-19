@@ -214,8 +214,6 @@
 
 ;;; visit-tags-table-buffer implement here
 
-(lotus-create-tags-before etags visit-tags-table-buffer)
-
 ;;}}
 
 
@@ -259,7 +257,7 @@
 
 ;; http://www.emacswiki.org/emacs/GnuGlobal
 ;; (setq global-supported-pgm-langs '(c))
-
+(when nil
 (defun gtags-root-dir ()
   "Returns GTAGS root directory or nil if doesn't exist."
   ;; ido-is-tramp-root
@@ -367,7 +365,7 @@
   "If current directory is part of a GLOBAL database update it."
   (interactive)
   (gtags-update-asynchronously))
-
+)
 ;; (when (gtags-global-dir)
 ;;   (if (equal (call-process "global" nil nil nil "-vu") 0)
 ;;       (setq gtags-global-complete-list-obsolete-flag t)
@@ -375,6 +373,11 @@
 
 
 ;; (when (executable-find "global") ...)
+
+;;}}
+
+
+;;{{ gtags other directories inclusion
 
 ;; Use gtags in all modes for now.
 ;; (gtags-mode 1)
@@ -445,6 +448,32 @@
 ;; defadvice set GTAGSLIBPATH before global query
 
 ;;}}
+
+
+
+
+
+
+
+
+;; (let ((str "/scp:spratap@susengg-01:/home/spratap/releases/5.1/src/wnc/coord/")
+;;       (regexs (list
+;;                tramp-file-name-regexp
+;;                tramp-file-name-regexp-unified
+;;                tramp-file-name-regexp-url
+;;                tramp-root-regexp
+;;                tramp-domain-regexp
+;;                tramp-user-regexp
+;;                tramp-prefix-domain-regexp
+;;                "\\`/[^:/][^:/]+:\\'"
+;;                "\\`/[^/]+[@:][^:/]+:/")))
+;;   (message "start")
+;;   (dolist (r regexs)
+;;     (string-match r str)
+;;     (message "aa: %s %s" r (match-string 0 str))))
+;; (ido-is-tramp-root "/scp:spratap@susengg-01:")
+;; (ido-is-root-directory "/")
+
 
 
 ;;; config.el ends here
