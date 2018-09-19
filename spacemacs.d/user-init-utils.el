@@ -56,189 +56,189 @@
     ))
 
 (defun spacemacs-dist-layers-select ()
-(
-/home/s/hell/.emacs.d/layers/+chat:
-erc
-jabber
-rcirc
-slack
+  (
+   /home/s/hell/.emacs.d/layers/+chat:
+   erc
+   jabber
+   rcirc
+   slack
 
-/home/s/hell/.emacs.d/layers/+checkers:
-spell-checking
-syntax-checking
+   /home/s/hell/.emacs.d/layers/+checkers:
+   spell-checking
+   syntax-checking
 
-/home/s/hell/.emacs.d/layers/+completion:
-auto-completion
-helm
-ivy
+   /home/s/hell/.emacs.d/layers/+completion:
+   auto-completion
+   helm
+   ivy
 
-/home/s/hell/.emacs.d/layers/+distributions:
-spacemacs
-spacemacs-base
-spacemacs-bootstrap
+   /home/s/hell/.emacs.d/layers/+distributions:
+   spacemacs
+   spacemacs-base
+   spacemacs-bootstrap
 
-/home/s/hell/.emacs.d/layers/+emacs:
-better-defaults
-ibuffer
-org
-semantic
-smex
-typography
+   /home/s/hell/.emacs.d/layers/+emacs:
+   better-defaults
+   ibuffer
+   org
+   semantic
+   smex
+   typography
 
-/home/s/hell/.emacs.d/layers/+email:
-gnus
-mu4e
+   /home/s/hell/.emacs.d/layers/+email:
+   gnus
+   mu4e
 
-/home/s/hell/.emacs.d/layers/+frameworks:
-django
-react
-ruby-on-rails
+   /home/s/hell/.emacs.d/layers/+frameworks:
+   django
+   react
+   ruby-on-rails
 
-/home/s/hell/.emacs.d/layers/+fun:
-emoji
-games
-selectric
-xkcd
+   /home/s/hell/.emacs.d/layers/+fun:
+   emoji
+   games
+   selectric
+   xkcd
 
-/home/s/hell/.emacs.d/layers/+intl:
-chinese
-keyboard-layout
+   /home/s/hell/.emacs.d/layers/+intl:
+   chinese
+   keyboard-layout
 
-/home/s/hell/.emacs.d/layers/+lang:
-agda
-asciidoc
-asm
-autohotkey
-bibtex
-c-c++
-clojure
-common-lisp
-csharp
-csv
-d
-elixir
-elm
-emacs-lisp
-erlang
-ess
-extra-langs
-faust
-fsharp
-go
-graphviz
-haskell
-html
-idris
-ipython-notebook
-java
-javascript
-latex
-lua
-markdown
-nim
-ocaml
-octave
-php
-plantuml
-purescript
-python
-racket
-ruby
-rust
-scala
-scheme
-shaders
-shell-scripts
-sml
-sql
-swift
-typescript
-vimscript
-windows-scripts
-yaml
+   /home/s/hell/.emacs.d/layers/+lang:
+   agda
+   asciidoc
+   asm
+   autohotkey
+   bibtex
+   c-c++
+   clojure
+   common-lisp
+   csharp
+   csv
+   d
+   elixir
+   elm
+   emacs-lisp
+   erlang
+   ess
+   extra-langs
+   faust
+   fsharp
+   go
+   graphviz
+   haskell
+   html
+   idris
+   ipython-notebook
+   java
+   javascript
+   latex
+   lua
+   markdown
+   nim
+   ocaml
+   octave
+   php
+   plantuml
+   purescript
+   python
+   racket
+   ruby
+   rust
+   scala
+   scheme
+   shaders
+   shell-scripts
+   sml
+   sql
+   swift
+   typescript
+   vimscript
+   windows-scripts
+   yaml
 
-/home/s/hell/.emacs.d/layers/+misc:
-nlinum
+   /home/s/hell/.emacs.d/layers/+misc:
+   nlinum
 
-/home/s/hell/.emacs.d/layers/+os:
-nixos
-osx
+   /home/s/hell/.emacs.d/layers/+os:
+   nixos
+   osx
 
-/home/s/hell/.emacs.d/layers/+pair-programming:
-floobits
+   /home/s/hell/.emacs.d/layers/+pair-programming:
+   floobits
 
-/home/s/hell/.emacs.d/layers/+source-control:
-git
-github
-perforce
-version-control
+   /home/s/hell/.emacs.d/layers/+source-control:
+   git
+   github
+   perforce
+   version-control
 
-/home/s/hell/.emacs.d/layers/+spacemacs:
-spacemacs-completion
-spacemacs-editing
-spacemacs-editing-visual
-spacemacs-evil
-spacemacs-language
-spacemacs-layouts
-spacemacs-misc
-spacemacs-org
-spacemacs-ui
-spacemacs-ui-visual
+   /home/s/hell/.emacs.d/layers/+spacemacs:
+   spacemacs-completion
+   spacemacs-editing
+   spacemacs-editing-visual
+   spacemacs-evil
+   spacemacs-language
+   spacemacs-layouts
+   spacemacs-misc
+   spacemacs-org
+   spacemacs-ui
+   spacemacs-ui-visual
 
-/home/s/hell/.emacs.d/layers/+tags:
-cscope
-gtags
+   /home/s/hell/.emacs.d/layers/+tags:
+   cscope
+   gtags
 
-/home/s/hell/.emacs.d/layers/+themes:
-colors
-themes-megapack
-theming
+   /home/s/hell/.emacs.d/layers/+themes:
+   colors
+   themes-megapack
+   theming
 
-/home/s/hell/.emacs.d/layers/+tools:
-ansible
-cfengine
-chrome
-command-log
-dash
-deft
-docker
-fasd
-finance
-geolocation
-imenu-list
-nginx
-pandoc
-pdf-tools
-prodigy
-puppet
-ranger
-rebox
-restclient
-salt
-shell
-speed-reading
-systemd
-terraform
-tmux
-vagrant
-ycmd
+   /home/s/hell/.emacs.d/layers/+tools:
+   ansible
+   cfengine
+   chrome
+   command-log
+   dash
+   deft
+   docker
+   fasd
+   finance
+   geolocation
+   imenu-list
+   nginx
+   pandoc
+   pdf-tools
+   prodigy
+   puppet
+   ranger
+   rebox
+   restclient
+   salt
+   shell
+   speed-reading
+   systemd
+   terraform
+   tmux
+   vagrant
+   ycmd
 
-/home/s/hell/.emacs.d/layers/+vim:
-evil-cleverparens
-evil-commentary
-evil-snipe
-vim-empty-lines
-vim-powerline
-vinegar
+   /home/s/hell/.emacs.d/layers/+vim:
+   evil-cleverparens
+   evil-commentary
+   evil-snipe
+   vim-empty-lines
+   vim-powerline
+   vinegar
 
-/home/s/hell/.emacs.d/layers/+web-services:
-elfeed
-evernote
-search-engine
-spotify
-twitter
-wakatime
- ))
+   /home/s/hell/.emacs.d/layers/+web-services:
+   elfeed
+   evernote
+   search-engine
+   spotify
+   twitter
+   wakatime
+   ))
 
 (defun lotus-dist-layers-select (&optional layer-dir)
   (let ((layer-dir "~/.spacemacs-mycontribs/+local-session/"))
