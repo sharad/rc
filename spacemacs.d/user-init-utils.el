@@ -173,7 +173,7 @@
    ;; perforce
    version-control
 
-   /home/s/hell/.emacs.d/layers/+spacemacs:
+   ;; /home/s/hell/.emacs.d/layers/+spacemacs:
    spacemacs-completion
    spacemacs-editing
    spacemacs-editing-visual
@@ -185,7 +185,7 @@
    spacemacs-ui
    spacemacs-ui-visual
 
-   /home/s/hell/.emacs.d/layers/+tags:
+   ;; /home/s/hell/.emacs.d/layers/+tags:
    cscope
    gtags
 
