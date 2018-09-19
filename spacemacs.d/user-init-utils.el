@@ -22,6 +22,7 @@
     emacs-lisp
     helm
     git
+    gtags
     gnus
     markdown
     org
