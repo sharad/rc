@@ -69,7 +69,7 @@
 
     ;; /home/s/hell/.emacs.d/layers/+completion:
     auto-completion
-    helm
+    ;; helm
     ivy
 
     ;; /home/s/hell/.emacs.d/layers/+distributions:
