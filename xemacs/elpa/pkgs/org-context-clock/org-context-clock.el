@@ -680,3 +680,159 @@ pointing to it."
       (unless (member propstr org-use-property-inheritance)
         (delete propstr org-use-property-inheritance)))))
 ;; function to setup context clock timer:4 ends here
+
+;; Test functions
+
+
+;; [[file:~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Test%20functions][Test functions:1]]
+(progn ;; "Org task clock reporting"
+  ;; #+BEGIN: task-clock-report-with-comment :parameter1 value1 :parameter2 value2 ...
+  ;; #+END:
+  (defun org-dblock-write:task-clock-report-with-comment (params)
+    (let ((fmt (or (plist-get params :format) "%d. %m. %Y")))
+      (insert "Last block update at: "
+              (format-time-string fmt))))
+
+  (progn ;; "time sheet"
+    ))
+;; Test functions:1 ends here
+
+;; [[file:~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Test%20functions][Test functions:2]]
+(when nil                               ;testing
+
+  (org-context-clock-dyntaskpl-run-associated-dyntaskpl (org-context-clock-build-context))
+
+  (org-context-clock-dyntaskpls-associated-to-context (org-context-clock-build-context))
+
+   (remove-if-not
+                #'(lambda (dyntaskpl)
+                    (and
+                     (plist-get dyntaskpl :marker)
+                     (marker-buffer (plist-get dyntaskpl :marker))))
+                (org-context-clock-dyntaskpls-associated-to-context (org-context-clock-build-context)))
+
+  (org-context-clock-dyntaskpl-run-associated-dyntaskpl
+   (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
+
+  (org-context-clock-markers-associated-to-context
+   (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
+
+  (org-context-clock-current-task-associated-to-context-p
+   (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
+
+  (org-context-clock-markers-associated-to-context (org-context-clock-build-context))
+
+  (org-context-clock-current-task-associated-to-context-p (org-context-clock-build-context))
+
+  ;; sharad
+  (setq test-info-task
+        (let ((xcontext
+               (list
+                :file (buffer-file-name)
+                :buffer (current-buffer))))
+          (org-with-clock-position (list org-clock-marker)
+            (org-previous-visible-heading 1)
+            (let ((info (org-context-clock-collect-task)))
+              (if (funcall org-context-clock-api-task-associated-to-context-p info xcontext)
+                  info)))))
+
+  (funcall org-context-clock-api-task-associated-to-context-p
+           (org-context-clock-task-current-task)
+           (org-context-clock-build-context))
+
+
+
+
+  ;; (test-info-task)
+
+  (funcall org-context-clock-api-task-associated-to-context-p
+           test-info-task
+           (org-context-clock-build-context))
+
+  ;; org-clock-marker
+  (org-tasks-associated-key-fn-value
+   :current-clock test-info-task
+   (org-context-clock-build-context) )
+
+  (org-context-clock-current-task-associated-to-context-p
+   (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org")))
+
+  (org-context-clock-current-task-associated-to-context-p
+   (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/features/patch-mgm/todo.org")))
+
+
+  (length
+   (funcall org-context-clock-matching-tasks
+            (org-context-clock-build-context)))
+
+  (length
+   (funcall org-context-clock-matching-tasks
+            (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile"))))
+
+  (org-context-clock-markers-associated-to-context (org-context-clock-build-context))
+
+  ;; test it
+  (length
+   (funcall org-context-clock-matching-tasks (org-context-clock-build-context)))
+
+  (org-context-clock-task-get-property
+   (car (funcall org-context-clock-matching-tasks (org-context-clock-build-context)))
+   :task-clock-marker)
+
+  (org-context-clock-clockin-marker
+   (org-context-clock-task-get-property
+    (car (funcall org-context-clock-matching-tasks (org-context-clock-build-context)))
+    :task-clock-marker))
+
+  (org-context-clock-task-associated-to-context-by-keys-p
+   (car (funcall org-context-clock-matching-tasks (org-context-clock-build-context)))
+   (org-context-clock-build-context))
+
+  (length
+   (funcall org-context-clock-matching-tasks
+            (org-context-clock-build-context (find-file-noselect "~/Documents/CreatedContent/contents/org/tasks/meru/report.org"))))
+
+  (length
+   (org-context-clock-tasks-associated-to-context-by-keys
+    (org-context-clock-build-context)))
+
+  (length
+   (org-context-clock-tasks-associated-to-context-by-keys
+    (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile"))))
+
+  (org-context-clock-current-task-associated-to-context-p
+   (org-context-clock-build-context (find-file-noselect "/home/s/paradise/releases/global/patch-upgrade/Makefile")))
+
+  ;; (org-context-clock-task-associated-to-context-by-keys "/home/s/paradise/releases/global/patch-upgrade/Makefile")
+
+  (if (org-context-clock-current-task-associated-to-context-p (org-context-clock-build-context))
+      (message
+      "current clock is with current context or file"))
+
+  (progn
+      (sacha-org-context-clock-selection-line
+      (car
+   (remove-if-not
+    #'(lambda (marker) (marker-buffer marker))
+    (org-context-clock-markers-associated-to-context (org-context-clock-build-context))))))
+
+  (org-base-buffer (marker-buffer (car
+  (remove-if-not
+  #'(lambda (marker) (marker-buffer marker))
+  (org-context-clock-markers-associated-to-context (org-context-clock-build-context))))))
+
+
+
+  (sacha/helm-clock-action
+  (remove-if-not
+  #'(lambda (marker) (marker-buffer marker))
+  (org-context-clock-markers-associated-to-context (org-context-clock-build-context)))
+  #'org-context-clock-clockin-marker))
+;; Test functions:2 ends here
+
+;; Provide this file
+
+;; [[file:~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Provide%20this%20file][Provide this file:1]]
+(provide 'org-context-clock)
+;;; org-context-clock.el ends here
+;; Provide this file:1 ends here
