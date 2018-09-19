@@ -515,7 +515,7 @@ Add directory to search path for source files using the GDB command, dir."))
       (progn
         )))
 
-(defun lotus-dev/init-gdb-mi ()
+(defun lotus-dev/post-init-gdb-mi ()
   (use-package gdb-mi
       :defer t
       :config
