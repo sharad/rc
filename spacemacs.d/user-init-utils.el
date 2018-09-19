@@ -56,7 +56,7 @@
     ))
 
 (defun spacemacs-dist-layers-select ()
-  (
+  '(
    ;; /home/s/hell/.emacs.d/layers/+chat:
    erc
    ;; jabber
