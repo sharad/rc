@@ -339,7 +339,7 @@ instead of a string."
                  diary-file (auto-config-file "diary/diary"))
                 (require 'file-utils)
                 (unless (file-exists-p diary-file)
-                  (auto-config-dir (dirname-of-file diary-file) t)
+                  (auto-config-dir (file-name-directory diary-file) t)
                   (with-temp-buffer
                     (insert "")
                     (write-file diary-file)))))
