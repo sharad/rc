@@ -470,3 +470,213 @@
               (setq buffer-read-only old-buff-read-only)))
         retval)))))
 ;; add org-insert-log-not:1 ends here
+
+;; Clock-into one of associated tasks
+
+;; [[file:~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Clock-into%20one%20of%20associated%20tasks][Clock-into one of associated tasks:1]]
+;;;###autoload
+(defun org-context-clock-dyntaskpl-run-associated-dyntaskpl (context)
+  "marker and ranked version"
+  (interactive
+   (list (org-context-clock-build-context)))
+  (progn
+    (let* ((context (or context (org-context-clock-build-context)))
+           (matched-dyntaskpls
+            (remove-if-not
+             #'(lambda (dyntaskpl)
+                 (and
+                  (plist-get dyntaskpl :marker)
+                  (marker-buffer (plist-get dyntaskpl :marker))))
+             (org-context-clock-dyntaskpls-associated-to-context-filtered context))))
+      (if matched-dyntaskpls
+          (let* ((sel-dyntaskpl
+                  (if (> (length matched-dyntaskpls) 1)
+                      (sacha/helm-select-dyntaskpl-timed matched-dyntaskpls)
+                      (car matched-dyntaskpls)))
+                 ;; (sel-task   (if sel-dyntaskpl (plist-get sel-dyntaskpl :task)))
+                 ;; (sel-marker (if sel-task      (plist-get sel-task      :task-clock-marker)))
+                 )
+            ;; (org-context-clock-message 6 "sel-dyntaskpl %s sel-task %s sel-marker %s" sel-dyntaskpl sel-task sel-marker)
+            (if sel-dyntaskpl (org-context-clock-clockin-dyntaskpl sel-dyntaskpl)))
+          (progn
+            ;; here create unnamed task, no need
+            (setq *org-context-clock-update-current-context-msg* "null clock")
+            (org-context-clock-message 6
+                                       "No clock found please set a match for this context %s, add it using M-x org-context-clock-add-context-to-org-heading."
+                                       context)
+            (org-context-clock-add-context-to-org-heading-when-idle context 7)
+            nil)))))
+
+(when nil                               ;testing
+  (sacha/helm-select-dyntaskpl-timed
+   (remove-if-not
+    #'(lambda (dyntaskpl)
+        (and
+         (plist-get dyntaskpl :marker)
+         (marker-buffer (plist-get dyntaskpl :marker))))
+    (org-context-clock-dyntaskpls-associated-to-context-filtered (org-context-clock-build-context))))
+  )
+;; Clock-into one of associated tasks:1 ends here
+
+;; function to setup context clock timer
+
+
+;; [[file:~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:1]]
+;;;###autoload
+(defun org-context-clock-run-task-current-context-timer ()
+  (interactive)
+  (progn
+  (setq *org-context-clock-last-buffer-select-time* (current-time))
+    (when *org-context-clock-buffer-select-timer*
+      (cancel-timer *org-context-clock-buffer-select-timer*)
+      (setq *org-context-clock-buffer-select-timer* nil))
+    (setq *org-context-clock-buffer-select-timer*
+          ;; distrubing while editing.
+          ;; run-with-timer
+          (run-with-idle-timer
+          (1+ *org-context-clock-task-current-context-time-interval*)
+          nil
+          'org-context-clock-update-current-context))))
+;; function to setup context clock timer:1 ends here
+
+;; [[file:~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:2]]
+(defun sacha-org-context-clock-selection-line (marker)
+    "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the marker
+pointing to it."
+    (when (marker-buffer marker)
+      (with-current-buffer (org-base-buffer (marker-buffer marker))
+        (org-with-wide-buffer
+         (progn ;; ignore-errors
+           (goto-char marker)
+           (let* ((cat (org-get-category))
+                  (heading (org-get-heading 'notags))
+                  (prefix (save-excursion
+                            (org-back-to-heading t)
+                            (looking-at org-outline-regexp)
+                            (match-string 0)))
+                  (task (substring
+                         (org-fontify-like-in-org-mode
+                          (concat prefix heading)
+                          org-odd-levels-only)
+                         (length prefix))))
+             (when task ;; (and cat task)
+               ;; (insert (format "[%c] %-12s  %s\n" i cat task))
+               ;; marker
+               (cons task marker))))))))
+
+   (defun sacha-org-context-clock-dyntaskpl-selection-line (dyntaskpl)
+    "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the marker
+pointing to it."
+    (let ((marker (plist-get dyntaskpl :marker))
+          (rank   (plist-get dyntaskpl :rank)))
+      (when (marker-buffer marker)
+        (with-current-buffer (org-base-buffer (marker-buffer marker))
+          (org-with-wide-buffer
+           (progn ;; ignore-errors
+             (goto-char marker)
+             (let* ((cat (org-get-category))
+                    (heading (org-get-heading 'notags))
+                    (prefix (save-excursion
+                              (org-back-to-heading t)
+                              (looking-at org-outline-regexp)
+                              (match-string 0)))
+                    (task (substring
+                           (org-fontify-like-in-org-mode
+                            (concat prefix heading)
+                            org-odd-levels-only)
+                           (length prefix))))
+               (when task ;; (and cat task)
+                 ;; (insert (format "[%c] %-12s  %s\n" i cat task))
+                 ;; marker
+                 (cons (org-context-clock-dyntaskpl-print dyntaskpl task) dyntaskpl)))))))))
+
+
+(defun sacha-org-context-clock-dyntaskpl-selection-line (dyntaskpl)
+    "Insert a line for the clock selection menu.
+And return a cons cell with the selection character integer and the marker
+pointing to it."
+    (cons (org-context-clock-dyntaskpl-print dyntaskpl nil) dyntaskpl))
+;; function to setup context clock timer:2 ends here
+
+;; [[file:~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:3]]
+;; rank based
+  (defun sacha/helm-select-dyntaskpl (dyntaskpls)
+    ;; (org-context-clock-debug :debug "sacha marker %s" (car dyntaskpls))
+    (helm
+     (list
+      (helm-build-sync-source "Select matching tasks"
+        :candidates (mapcar 'sacha-org-context-clock-dyntaskpl-selection-line dyntaskpls)
+        :action (list ;; (cons "Select" 'identity)
+                 (cons "Clock in and track" #'identity))
+        :history 'org-refile-history)
+      ;; (helm-build-dummy-source "Create task"
+      ;;   :action (helm-make-actions
+      ;;            "Create task"
+      ;;            'sacha/helm-org-create-task))
+      )))
+
+  (defun sacha/helm-select-dyntaskpl-timed (dyntaskpls)
+    (helm-timed 7
+      (message "running sacha/helm-select-clock")
+      (sacha/helm-select-dyntaskpl dyntaskpls)))
+
+  (defun sacha/helm-dyntaskpl-action (dyntaskpls clockin-fn)
+    ;; (message "sacha marker %s" (car dyntaskpls))
+    ;; (setq sacha/helm-org-refile-locations tbl)
+    (progn
+      (helm
+       (list
+        (helm-build-sync-source "Select matching tasks"
+          :candidates (mapcar 'sacha-org-context-clock-dyntaskpl-selection-line dyntaskpls)
+          :action (list ;; (cons "Select" 'identity)
+                        (cons "Clock in and track" #'(lambda (c) (funcall clockin-fn c))))
+          :history 'org-refile-history)
+        ;; (helm-build-dummy-source "Create task"
+        ;;   :action (helm-make-actions
+        ;;            "Create task"
+        ;;            'sacha/helm-org-create-task))
+        ))))
+
+
+
+;; org-context-clock-dyntaskpl-run-associated-dyntaskpl
+
+;; (sacha/helm-clock-action (org-context-clock-markers-associated-to-context (org-context-clock-build-context)) #'org-context-clock-clockin-marker)
+;; (sacha/helm-select-clock (org-context-clock-markers-associated-to-context (org-context-clock-build-context)))
+;; (sacha/helm-clock-action (org-context-clock-markers-associated-to-context (org-context-clock-build-context (find-file-noselect "~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.el"))))
+;; function to setup context clock timer:3 ends here
+
+;; [[file:~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*function%20to%20setup%20context%20clock%20timer][function to setup context clock timer:4]]
+;;;###autoload
+(defun org-context-clock-insinuate ()
+  (interactive)
+  (progn
+    (add-hook 'buffer-list-update-hook     'org-context-clock-run-task-current-context-timer)
+    (add-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
+    (add-hook 'elscreen-goto-hook          'org-context-clock-run-task-current-context-timer)
+    (add-hook 'after-save-hook             'org-context-clock-after-save-hook nil t))
+
+  (dolist (prop (org-context-clock-keys-with-operation :getter nil))
+    (let ((propstr
+           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
+      (unless (member propstr org-use-property-inheritance)
+        (push propstr org-use-property-inheritance)))))
+
+;;;###autoload
+(defun org-context-clock-uninsinuate ()
+  (interactive)
+  (progn
+    (remove-hook 'buffer-list-update-hook 'org-context-clock-run-task-current-context-timer)
+    ;; (setq buffer-list-update-hook nil)
+    (remove-hook 'elscreen-screen-update-hook 'org-context-clock-run-task-current-context-timer)
+    (remove-hook 'elscreen-goto-hook 'org-context-clock-run-task-current-context-timer)
+    (remove-hook 'after-save-hook             'org-context-clock-after-save-hook t))
+
+  (dolist (prop (org-context-clock-keys-with-operation :getter nil))
+    (let ((propstr
+           (upcase (if (keywordp prop) (substring (symbol-name prop) 1) (symbol-name prop)))))
+      (unless (member propstr org-use-property-inheritance)
+        (delete propstr org-use-property-inheritance)))))
+;; function to setup context clock timer:4 ends here
