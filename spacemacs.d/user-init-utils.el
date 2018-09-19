@@ -23,6 +23,7 @@
     helm
     git
     gtags
+    cscope
     gnus
     markdown
     org
