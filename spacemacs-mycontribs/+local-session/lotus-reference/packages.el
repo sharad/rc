@@ -275,7 +275,7 @@ Each entry is either:
 
         )))
 
-(defun lotus-reference/init-imenu ()
+(defun lotus-reference/post-init-imenu ()
   (use-package imenu
       :defer t
       :config
