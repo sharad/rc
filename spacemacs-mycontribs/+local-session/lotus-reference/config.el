@@ -53,7 +53,9 @@
    (setupfn
     (gtags)
     (etags)
-    (cscope))))
+    (cscope))
+   (tag-resetfun
+    (etags tags-reset-tags-tables))))
 
 ;; (setq *lotus-tags-warn-level* :warning)
 
@@ -71,6 +73,9 @@
 (defmacro lotus-tags-config-dirs-cache (tag-sys)
   `(cdr (assoc ,tag-sys (cdr (assoc 'dirs-cache *lotus-tags-config*)))))
 
+(defun lotus-tags-config-tag-resetfun (tag-sys)
+  (cadr (assoc tag-sys (cdr (assoc 'tag-resetfun *lotus-tags-config*)))))
+
 (defun lotus-search-upwards (files starting-path)
   ;; from: https://lists.ubuntu.com/archives/bazaar/2009q2/057669.html
   "Search for `filename' in every directory from `starting-path' up."
@@ -78,8 +83,8 @@
     (lwarn 'tag *lotus-tags-warn-level* "path %s files %s" path files)
     ;; (if (file-exists-p (concat path filename))
 
-    (if (every (lambda (f)
-                 (file-exists-p (expand-file-name f path)))
+    (if (every #'(lambda (f)
+                   (file-exists-p (expand-file-name f path)))
                files)
         path
       (let ((parent (file-name-directory (directory-file-name path))))
@@ -101,11 +106,11 @@
 (defun lotus-tag-file-existp (tag-sys dir)
   (lwarn 'tag *lotus-tags-warn-level* "lotus-tag-file-existp %s %s" tag-sys dir)
   (let* ((dirs (lotus-tags-config-dirs-cache tag-sys))
-         (cached-valid-dirs (remove-if-not (lambda (d)
-                                             (if (lotus-issubdirp d dir)
-                                                 (every (lambda (f)
-                                                          (file-exists-p (expand-file-name f d)))
-                                                        (lotus-tags-config-files tag-sys))))
+         (cached-valid-dirs (remove-if-not #'(lambda (d)
+                                               (if (lotus-issubdirp d dir)
+                                                   (every #'(lambda (f)
+                                                              (file-exists-p (expand-file-name f d)))
+                                                          (lotus-tags-config-files tag-sys))))
                                            dirs)))
     (lwarn 'tag *lotus-tags-warn-level* "lotus-tag-file-existp dirs %s" dirs)
     ;; (if (some '(lambda (d)
@@ -140,7 +145,8 @@
                            "")))))
       (let ((default-directory d))
         ;; (async-shell-command cmd)
-        (shell-command-no-output cmd)))))
+        (shell-command-no-output cmd)
+        (funcall (lotus-tags-config-tag-resetfun tag-sys))))))
 
 (defun lotus-create-tags (tag-sys dir &optional force)
   (interactive)
@@ -154,7 +160,8 @@
             (funcall fun dirs)
           (funcall 'lotus-create-tags-default tag-sys dirs force))
       ;; (push-dir-in-tag-sys-alist tag-sys dir)
-      (pushnew dir (lotus-tags-config-dirs-cache tag-sys)))))
+      (pushnew dir (lotus-tags-config-dirs-cache tag-sys))
+      (funcall (lotus-tags-config-tag-resetfun tag-sys)))))
 
 
 ;; (defun create-c-tags (dir-name)
@@ -203,6 +210,11 @@
                  cscope-find-this-symbol
                  cscope-find-functions-calling-this-function))
     (ad-remove-advice fun 'before 'create-tags)))
+
+
+;;; visit-tags-table-buffer implement here
+
+(lotus-create-tags-before etags visit-tags-table-buffer)
 
 ;;}}
 
@@ -312,7 +324,7 @@
   "Find next matching tag, for GTAGS."
   (interactive)
   (let ((latest-gtags-buffer
-         (car (delq nil  (mapcar (lambda (x) (and (string-match "GTAGS SELECT" (buffer-name x)) (buffer-name x)) )
+         (car (delq nil  (mapcar #'(lambda (x) (and (string-match "GTAGS SELECT" (buffer-name x)) (buffer-name x)) )
                                  (buffer-list)) ))))
     (cond (latest-gtags-buffer
            (switch-to-buffer latest-gtags-buffer)
@@ -326,6 +338,7 @@
 
 ;; when (executable-find "global")
 
+;; TODO: check if required
 (defadvice gtags-visit-rootdir (after make-complete-list activate)
   "Rebuilds completion list when changing GLOBAL database rootdir."
   (gtags-make-complete-list))
@@ -333,8 +346,8 @@
 
 (defun gtags-global-dir-p (dir)
   "Return non-nil if directory DIR contains a GLOBAL database."
-  (every (lambda (file)
-           (file-exists-p (expand-file-name file dir)))
+  (every #'(lambda (file)
+             (file-exists-p (expand-file-name file dir)))
          (lotus-tags-config-files 'gtags)))
 
 (defun gtags-global-dir (&optional dir)

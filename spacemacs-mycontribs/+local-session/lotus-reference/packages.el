@@ -94,13 +94,28 @@ Each entry is either:
               :config
               (progn
                 (progn
-                  (add-to-list 'xref-backend-functions 'gxref-xref-backend))))))))
+                  (add-to-list
+                   'c-mode-common-hook
+                   #'(lambda ()
+                       (add-to-list 'xref-backend-functions 'gxref-xref-backend))))))))))
 
 (defun lotus-reference/init-tags ()
   (use-package tags
       :defer t
       :config
       (progn
+
+        (progn
+          ;; https://stackoverflow.com/a/13783907
+          ;; etags
+          ;; M-x tags-reset-tags-table
+          )
+
+        (progn
+          (setq
+           tags-revert-without-query t  ;https://stackoverflow.com/questions/4096580/how-to-make-emacs-reload-the-tags-file-automatically
+           ))
+
         (progn
           (setq
            tags-table-list
