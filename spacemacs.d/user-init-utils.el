@@ -160,9 +160,9 @@
    ;; /home/s/hell/.emacs.d/layers/+misc:
    nlinum
 
-   /home/s/hell/.emacs.d/layers/+os:
-   nixos
-   osx
+   ;; /home/s/hell/.emacs.d/layers/+os:
+   ;; nixos
+   ;; osx
 
    /home/s/hell/.emacs.d/layers/+pair-programming:
    floobits
