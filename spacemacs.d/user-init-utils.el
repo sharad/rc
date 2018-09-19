@@ -231,9 +231,9 @@
    ;; vim-powerline
    ;; vinegar
 
-   /home/s/hell/.emacs.d/layers/+web-services:
+   ;; /home/s/hell/.emacs.d/layers/+web-services:
    elfeed
-   evernote
+   ;; evernote
    search-engine
    spotify
    twitter
