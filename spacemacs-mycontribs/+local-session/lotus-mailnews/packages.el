@@ -75,7 +75,8 @@ Each entry is either:
            lsdb-file
            (auto-config-file "lsdb/lsdb"))
           (unless (file-exists-p lsdb-file)
-            (auto-config-dir (dirname-of-file lsdb-file) t))))))
+            (auto-config-dir
+             (dirname-of-file lsdb-file) t))))))
 
 
 ;;; packages.el ends here
