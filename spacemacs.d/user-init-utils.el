@@ -77,7 +77,7 @@
    spacemacs-base
    spacemacs-bootstrap
 
-   /home/s/hell/.emacs.d/layers/+emacs:
+   ;; /home/s/hell/.emacs.d/layers/+emacs:
    better-defaults
    ibuffer
    org
@@ -85,7 +85,7 @@
    smex
    typography
 
-   /home/s/hell/.emacs.d/layers/+email:
+   ;; /home/s/hell/.emacs.d/layers/+email:
    gnus
    mu4e
 
