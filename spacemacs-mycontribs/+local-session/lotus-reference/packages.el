@@ -314,7 +314,7 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-reference/init-xcscope ()
+(defun lotus-reference/post-init-xcscope ()
   (use-package xcscope
       :defer t
       :config
