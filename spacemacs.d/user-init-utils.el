@@ -125,7 +125,7 @@
    '("local" . "~/.xemacs/elpa/upload")
    package-archives)
 
-  (require 'lotus-utils)
+  ;; (require 'lotus-utils)
 
   (progn
 
