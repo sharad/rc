@@ -239,7 +239,7 @@
     search-engine
     spotify
     twitter
-    wakatime
+    ;; wakatime
     ))
 
 (defun lotus-dist-layers-select (&optional layer-dir)
