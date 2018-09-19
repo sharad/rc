@@ -66,7 +66,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-ruby/init-ruby-mode ()
+(defun lotus-ruby/post-init-ruby-mode ()
   (use-package ruby-mode
     :defer t
     :config
