@@ -102,7 +102,7 @@
 
     ;; /home/s/hell/.emacs.d/layers/+intl:
     ;; chinese
-    keyboard-layout
+    ;; keyboard-layout ;; issue in compiling
 
     ;; /home/s/hell/.emacs.d/layers/+lang:
     ;; agda
