@@ -66,7 +66,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-slime/init-slime ()
+(defun lotus-slime/post-init-slime ()
   (use-package slime
       :defer t
       :config
