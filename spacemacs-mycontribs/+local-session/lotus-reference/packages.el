@@ -49,6 +49,7 @@
     (tags  :location local)
     (gtags :location local)
     ggtags
+    helm-gtags
     imenu
     function-args
     counsel-etags
