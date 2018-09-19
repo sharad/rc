@@ -525,7 +525,7 @@ Each entry is either:
       (progn
         )))
 
-(defun lotus-orgclocktask/init-wakatime-mode ()
+(defun lotus-orgclocktask/post-init-wakatime-mode ()
   ;; https://github.com/tmarble/timesheet.el
   (use-package wakatime-mode
       :defer t
