@@ -164,13 +164,13 @@
    ;; nixos
    ;; osx
 
-   /home/s/hell/.emacs.d/layers/+pair-programming:
+   ;; /home/s/hell/.emacs.d/layers/+pair-programming:
    floobits
 
-   /home/s/hell/.emacs.d/layers/+source-control:
+   ;; /home/s/hell/.emacs.d/layers/+source-control:
    git
    github
-   perforce
+   ;; perforce
    version-control
 
    /home/s/hell/.emacs.d/layers/+spacemacs:
