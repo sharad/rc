@@ -27,8 +27,6 @@
 ;; will not require any library, only will provide utils
 ;; assume file from here are always available.
 
-(provide 'lotus-utils)
-
 ;;;###autoload
 (defun touch-file (file)
   ;; https://stackoverflow.com/questions/2592095/how-do-i-create-an-empty-file-in-emacs/2592558#2592558
@@ -128,5 +126,8 @@
   (abort-recursive-edit))
 
 (global-set-key-warn-if-bind (kbd "C-H-k") 'reset-helm-input)
+
+(provide 'lotus-utils)
+
 
 ;;; lotus-utils.el ends here
