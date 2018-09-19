@@ -33,6 +33,7 @@
 ;; The following will automatically create a TAGS file from within Emacs
 ;; itself if none exists. Just hit `M-. and youre off.
 
+(defvar *lotus-tags-warn-level* :debug)
 (defvar *lotus-tags-config* nil "Tags system configurations")
 
 (setq
@@ -54,6 +55,9 @@
     (etags)
     (cscope))))
 
+;; (setq *lotus-tags-warn-level* :warning)
+
+
 
 (defun lotus-tags-config-files (tag-sys)
   (cdr (assoc tag-sys (cdr (assoc 'files *lotus-tags-config*)))))
@@ -71,10 +75,10 @@
   ;; from: https://lists.ubuntu.com/archives/bazaar/2009q2/057669.html
   "Search for `filename' in every directory from `starting-path' up."
   (let ((path (file-name-as-directory starting-path)))
-    (lwarn 'tag 'warning "path %s files %s" path files)
+    (lwarn 'tag *lotus-tags-warn-level* "path %s files %s" path files)
     ;; (if (file-exists-p (concat path filename))
 
-    (if (every '(lambda (f)
+    (if (every (lambda (f)
                  (file-exists-p (expand-file-name f path)))
                files)
         path
@@ -85,25 +89,25 @@
 
 (defun lotus-issubdirp (superdir subdir)
   ;; check if this is working proplerly.
-  (lwarn 'tag 'warning "lotus-issubdirp %s %s" superdir subdir)
+  (lwarn 'tag *lotus-tags-warn-level* "lotus-issubdirp %s %s" superdir subdir)
   (let ((superdir (file-truename superdir))
         (subdir (file-truename subdir)))
     (string-prefix-p superdir subdir)))
 
 (defun lotus-lotus-tag-file-existp-main (tag-sys dir)
   (if (lotus-search-upwards (lotus-tags-config-files tag-sys) dir)
-      (pushnew dir (tree-node* *lotus-tags-config* 'dirs-cache tag-sys))))
+      (pushnew dir (lotus-tags-config-dirs-cache tag-sys))))
 
 (defun lotus-tag-file-existp (tag-sys dir)
-  (lwarn 'tag 'warning "lotus-tag-file-existp %s %s" tag-sys dir)
+  (lwarn 'tag *lotus-tags-warn-level* "lotus-tag-file-existp %s %s" tag-sys dir)
   (let* ((dirs (lotus-tags-config-dirs-cache tag-sys))
-         (cached-valid-dirs (remove-if-not '(lambda (d)
+         (cached-valid-dirs (remove-if-not (lambda (d)
                                              (if (lotus-issubdirp d dir)
-                                                 (every '(lambda (f)
+                                                 (every (lambda (f)
                                                           (file-exists-p (expand-file-name f d)))
                                                         (lotus-tags-config-files tag-sys))))
                                            dirs)))
-    (lwarn 'tag 'warning "lotus-tag-file-existp dirs %s" dirs)
+    (lwarn 'tag *lotus-tags-warn-level* "lotus-tag-file-existp dirs %s" dirs)
     ;; (if (some '(lambda (d)
     ;;              (lotus-issubdirp d dir))
     ;;           dirs)
@@ -140,6 +144,7 @@
 
 (defun lotus-create-tags (tag-sys dir &optional force)
   (interactive)
+  (message "(lotus-create-tags %s %s %s)" tag-sys dir force)
   (let* ((tag-dir (ido-read-directory-name (format "Directory to create %s files: " tag-sys) dir dir t))
          (dirs (list tag-dir ;; get other libdirs also like gtags libdir
                      ))
@@ -189,9 +194,15 @@
      (unless (lotus-tag-file-existp ',tag-sys default-directory)
        (lotus-create-tags ',tag-sys default-directory))))
 
-(dolist (fun '(find-tag find-tag-interactive tags-apropos gtags-find-tag gtags-find-rtag cscope-find-this-symbol cscope-find-functions-calling-this-function))
- ;; (ad-remove-advice fun 'before 'create-tags)
-)
+(when nil
+  (dolist (fun '(find-tag
+                 find-tag-interactive
+                 tags-apropos
+                 gtags-find-tag
+                 gtags-find-rtag
+                 cscope-find-this-symbol
+                 cscope-find-functions-calling-this-function))
+    (ad-remove-advice fun 'before 'create-tags)))
 
 ;;}}
 
@@ -235,7 +246,7 @@
         (gtags-mode 1)))))
 
 ;; http://www.emacswiki.org/emacs/GnuGlobal
-(setq global-supported-pgm-langs '(c))
+;; (setq global-supported-pgm-langs '(c))
 
 (defun gtags-root-dir ()
   "Returns GTAGS root directory or nil if doesn't exist."
@@ -287,12 +298,12 @@
     (gtags-update-asynchronously)))
 
 (setq gtags-mode-hook
-      '(lambda ()
-        (setq gtags-path-style 'relative)))
+      #'(lambda ()
+          (setq gtags-path-style 'relative)))
 
-(add-element-to-lists '(lambda ()
-                        (gtags-mode 1)
-                        ) global-supported-pgm-langs)
+;; (add-element-to-lists '(lambda ()
+;;                         (gtags-mode 1))
+;;                       global-supported-pgm-langs)
 
 (add-hook 'after-save-hook #'gtags-update)
 
@@ -322,9 +333,9 @@
 
 (defun gtags-global-dir-p (dir)
   "Return non-nil if directory DIR contains a GLOBAL database."
-  (every '(lambda (file)
+  (every (lambda (file)
            (file-exists-p (expand-file-name file dir)))
-         (tree-node *tags-config* 'files 'gtags)))
+         (lotus-tags-config-files 'gtags)))
 
 (defun gtags-global-dir (&optional dir)
   "Return the nearest super directory that contains a GLOBAL database."
