@@ -34,6 +34,8 @@
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-reference.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
+;; TODO: https://tuhdo.github.io/c-ide.html
+
 (defconst lotus-reference-packages
   '(
     xref
@@ -41,9 +43,12 @@
     gxref
     (ag    :location local)
     (tags  :location local)
+    (gtags :location local)
+    ggtags
+    imenu
+    function-args
     counsel-etags
     counsel-gtags
-    (gtags :location local)
     xcscope
     elisp-slime-nav
     )
@@ -196,6 +201,98 @@ Each entry is either:
   ;;           '(lambda ()
   ;;             (gtags-mode 1)))
   )
+
+(defun lotus-reference/init-ggtags ()
+  (use-package ggtags
+      :defer t
+      :config
+      (progn
+        (progn
+          )
+        (progn
+          ;; https://tuhdo.github.io/c-ide.html#orgheadline2
+          (add-hook 'c-mode-common-hook
+                    (lambda ()
+                      (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+                        (ggtags-mode 1))))
+
+          (define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
+          (define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
+          (define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
+          (define-key ggtags-mode-map (kbd "C-c g f") 'ggtags-find-file)
+          (define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
+          (define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
+
+          (define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark)
+          ))))
+
+(defun lotus-reference/init-helm-gtags ()
+  (use-package helm-gtags
+      :defer t
+      :config
+      (progn
+        (progn
+
+          )
+
+        (progn
+
+          ;; for helm global
+
+          ;; (setq
+          ;;  helm-gtags-ignore-case t
+          ;;  helm-gtags-auto-update t
+          ;;  helm-gtags-use-input-at-cursor t
+          ;;  helm-gtags-pulse-at-cursor t
+          ;;  helm-gtags-prefix-key "\C-cg"
+          ;;  helm-gtags-suggested-key-mapping t
+          ;;  )
+          )
+
+        (progn
+
+          ;; https://tuhdo.github.io/c-ide.html#orgheadline2
+
+          ;; (require 'helm-gtags)
+          ;; Enable helm-gtags-mode
+          (add-hook 'dired-mode-hook 'helm-gtags-mode)
+          (add-hook 'eshell-mode-hook 'helm-gtags-mode)
+          (add-hook 'c-mode-hook 'helm-gtags-mode)
+          (add-hook 'c++-mode-hook 'helm-gtags-mode)
+          (add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+          (define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+          (define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
+          (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+          (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+          (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+          (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)          )
+
+        )))
+
+(defun lotus-reference/init-imenu ()
+  (use-package imenu
+      :defer t
+      :config
+      (progn
+        (progn
+          )
+        (progn
+          ;; https://tuhdo.github.io/c-ide.html#orgheadline5
+          (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
+          ))))
+
+(defun lotus-reference/init-function-args ()
+  https://tuhdo.github.io/c-ide.html#orgheadline5
+  (use-package function-args
+      :defer t
+      :config
+      (progn
+        (progn
+          )
+        (progn
+
+          ))))
 
 (defun lotus-reference/init-counsel-etags ()
   (use-packcounsel-etagse counsel-etags

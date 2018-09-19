@@ -1308,12 +1308,11 @@ define_webjump("company/in/tofler", "https://www.google.com/search?hl=en&&q=tofl
 //}}
 
 
-function yubnub(args) {
-    var prefix = args[0];
-    readFromMiniBuffer(open_url_in_prompt(prefix, "yubnub command"), // prompt
-                       null,                                         // initval
-                       get_bm_strings(),                             // history
-                       function(url) { getBrowser().newBrowser("http://yubnub.org/parser/parse?command=" + url); }); // callback
-}
-
-add_command("y", yubnub, [["p"]]);
+// function yubnub(args) {
+//     var prefix = args[0];
+//     readFromMiniBuffer(open_url_in_prompt(prefix, "yubnub command"), // prompt
+//                        null,                                         // initval
+//                        get_bm_strings(),                             // history
+//                        function(url) { getBrowser().newBrowser("http://yubnub.org/parser/parse?command=" + url); }); // callback
+// }
+// add_command("y", yubnub, [["p"]]);
