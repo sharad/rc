@@ -337,9 +337,7 @@ instead of a string."
                  calendar-mark-diary-entries-flag t
                  ;;   mark-diary-entries-in-calendar t
                  diary-file (auto-config-file "diary/diary"))
-                (require 'file-utils)
-                (touch-file diary-file)
-                ))
+                (touch-file diary-file)))
 
           (use-package muse-wiki ;; Allow wiki-links
               :defer t
