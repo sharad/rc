@@ -230,7 +230,7 @@ Each entry is either:
           (define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark)
           ))))
 
-(defun lotus-reference/init-helm-gtags ()
+(defun lotus-reference/post-init-helm-gtags ()
   (use-package helm-gtags
       :defer t
       :config
