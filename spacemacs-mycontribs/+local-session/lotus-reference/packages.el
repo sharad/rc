@@ -299,7 +299,7 @@ Each entry is either:
           ))))
 
 (defun lotus-reference/init-counsel-etags ()
-  (use-packcounsel-etagse counsel-etags
+  (use-package counsel-etags
       :defer t
       :config
       (progn
