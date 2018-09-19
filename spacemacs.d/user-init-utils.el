@@ -125,6 +125,8 @@
    '("local" . "~/.xemacs/elpa/upload")
    package-archives)
 
+  (require 'lotus-utils)
+
   (progn
 
     (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
