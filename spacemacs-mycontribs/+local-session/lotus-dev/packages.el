@@ -869,7 +869,7 @@ Add directory to search path for source files using the GDB command, dir."))
             (add-to-list 'desktop-locals-to-save
                          'c-indentation-style))))))
 
-(defun lotus-dev/init-disaster ()
+(defun lotus-dev/post-init-disaster ()
   ;; ![Screenshot](http://i.imgur.com/kMoN1m6.png)
   ;;
   ;; Disaster lets you press `C-c C-d` to see the compiled assembly code for the
