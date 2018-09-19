@@ -338,11 +338,8 @@ instead of a string."
                  ;;   mark-diary-entries-in-calendar t
                  diary-file (auto-config-file "diary/diary"))
                 (require 'file-utils)
-                (unless (file-exists-p diary-file)
-                  (auto-config-dir (file-name-directory diary-file) t)
-                  (with-temp-buffer
-                    (insert "")
-                    (write-file diary-file)))))
+                (touch-file diary-file)
+                ))
 
           (use-package muse-wiki ;; Allow wiki-links
               :defer t
