@@ -71,7 +71,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-erc/init-erc ()
+(defun lotus-erc/post-init-erc ()
   (use-package erc
       :defer t
       :config
