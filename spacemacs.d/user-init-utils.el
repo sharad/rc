@@ -189,12 +189,12 @@
    cscope
    gtags
 
-   /home/s/hell/.emacs.d/layers/+themes:
+   ;; /home/s/hell/.emacs.d/layers/+themes:
    colors
    themes-megapack
    theming
 
-   /home/s/hell/.emacs.d/layers/+tools:
+   ;; /home/s/hell/.emacs.d/layers/+tools:
    ansible
    cfengine
    chrome
