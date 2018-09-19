@@ -63,16 +63,16 @@
    rcirc
    slack
 
-   /home/s/hell/.emacs.d/layers/+checkers:
+   ;; /home/s/hell/.emacs.d/layers/+checkers:
    spell-checking
    syntax-checking
 
-   /home/s/hell/.emacs.d/layers/+completion:
+   ;; /home/s/hell/.emacs.d/layers/+completion:
    auto-completion
    helm
    ivy
 
-   /home/s/hell/.emacs.d/layers/+distributions:
+   ;; /home/s/hell/.emacs.d/layers/+distributions:
    spacemacs
    spacemacs-base
    spacemacs-bootstrap
