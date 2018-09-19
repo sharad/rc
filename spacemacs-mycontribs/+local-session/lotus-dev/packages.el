@@ -892,7 +892,7 @@ Add directory to search path for source files using the GDB command, dir."))
       (progn
         )))
 
-(defun lotus-dev/init-cc-mode ()
+(defun lotus-dev/post-init-cc-mode ()
   (use-package cc-mode
       :defer t
       :config
