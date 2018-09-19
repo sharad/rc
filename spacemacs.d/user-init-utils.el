@@ -94,10 +94,10 @@
    react
    ;; ruby-on-rails
 
-   /home/s/hell/.emacs.d/layers/+fun:
+   ;; /home/s/hell/.emacs.d/layers/+fun:
    emoji
-   games
-   selectric
+   ;; games
+   ;; selectric
    xkcd
 
    /home/s/hell/.emacs.d/layers/+intl:
