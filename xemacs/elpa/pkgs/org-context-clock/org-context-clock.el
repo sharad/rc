@@ -112,3 +112,204 @@
   ;; Implement
   )
 ;; Disable for some time:1 ends here
+
+;; Context clock API
+
+
+;; [[file:~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Context%20clock%20API][Context clock API:1]]
+;;;###autoload
+(defun org-context-clock-api ()
+  "org task clocking select api to use."
+  (interactive)
+  (let* ((assoc-api-keys (custom-plist-keys org-context-clock-task-clocking-assoc-api))
+         (assoc-api-name (ido-completing-read
+                          "org task clocking api name: "
+                          (mapcar 'symbol-name assoc-api-keys)
+                          nil
+                          t
+                          (symbol-name org-context-clock-assoc-api-name)))
+         (assoc-api-key (intern assoc-api-name))
+
+         (access-api-keys (custom-plist-keys org-context-clock-task-clocking-access-api))
+         (access-api-name (ido-completing-read
+                          "org task clocking api name: "
+                          (mapcar 'symbol-name access-api-keys)
+                          nil
+                          t
+                          (symbol-name org-context-clock-access-api-name)))
+         (access-api-key (intern access-api-name)))
+    (setq
+     org-context-clock-assoc-api-name assoc-api-key
+     org-context-clock-access-api-name access-api-key)
+    (if (and
+         (org-context-clock-access-api-get org-context-clock-access-api-name :dyntaskplprint)
+         (org-context-clock-access-api-get org-context-clock-access-api-name :dyntaskpl)
+         (org-context-clock-access-api-get org-context-clock-access-api-name :dyntaskpls)
+         (org-context-clock-access-api-get org-context-clock-access-api-name :tasks)
+         (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp)
+         (org-context-clock-access-api-get org-context-clock-access-api-name :update))
+        (setq
+         org-context-clock-api-dyntaskpl-print                  (org-context-clock-access-api-get org-context-clock-access-api-name :dyntaskplprint)
+
+         ;; deprecated
+         org-context-clock-api-dyntaskpls-associated-to-context (org-context-clock-access-api-get org-context-clock-access-api-name :dyntaskpls)
+         org-context-clock-api-tasks-associated-to-context      (org-context-clock-access-api-get org-context-clock-access-api-name :tasks)
+         org-context-clock-build-dyntaskpl                      (org-context-clock-access-api-get org-context-clock-access-api-name :dyntaskpl)
+         org-context-clock-matching-dyntaskpls                  (org-context-clock-access-api-get org-context-clock-access-api-name :dyntaskpls)
+         org-context-clock-matching-tasks                       (org-context-clock-access-api-get org-context-clock-access-api-name :tasks)
+         org-context-clock-api-task-associated-to-context-p     (org-context-clock-assoc-api-get org-context-clock-assoc-api-name :taskp)
+         org-context-clock-api-task-update-tasks                (org-context-clock-access-api-get org-context-clock-access-api-name :update)))))
+;; Context clock API:1 ends here
+
+;; Update tasks
+
+
+;; [[file:~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Update%20tasks][Update tasks:1]]
+;;;###autoload
+(defun org-context-clock-task-update-tasks (&optional force)
+  "Update task infos"
+  (interactive "P")
+  (message "calling org-context-clock-task-update-tasks")
+  (funcall org-context-clock-api-task-update-tasks force))
+
+;;;###autoload
+(defun org-context-clock-task-update-files (&optional force)
+  "Update task infos"
+  (interactive "P")
+  (funcall org-context-clock-api-task-update-files force))
+
+(defun org-context-clock-build-tasks (file)
+  (when (member*
+              file
+              (org-context-clock-task-update-files)
+              :test #'(lambda (f1 f2)
+                        (string-equal
+                         (file-truename f1)
+                         (file-truename f2))))
+    (org-context-clock-task-update-tasks t)))
+
+(defun org-context-clock-after-save-hook ()
+  (when (and (eq major-mode 'org-mode)
+             (buffer-file-name))
+    (org-context-clock-build-tasks (buffer-file-name))))
+;; Update tasks:1 ends here
+
+;; Build context
+
+
+;; [[file:~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Build%20context][Build context:1]]
+(defun org-context-clock-build-context (&optional buff)
+  (let* ((buff (if buff
+                   (if (bufferp buff)
+                       buff
+                       (if (stringp buff)
+                           (or
+                            (get-buffer buff)
+                            (if (file-exists-p buff)
+                                (get-file-buffer buff)))))
+                   (window-buffer)))
+         (buf (org-base-buffer buf))
+         (file (buffer-file-name buff))
+         (context (list :file file :buffer buff)))
+    context))
+;; Build context:1 ends here
+
+;; Unnamed task related global variable
+
+;; [[file:~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Unnamed%20task%20related%20global%20variable][Unnamed task related global variable:1]]
+(defvar *org-context-clock-unassociate-context-start-time* nil)
+(defvar *org-context-clock-swapen-unnamed-threashold-interval* (* 60 2)) ;2 mins
+;; Unnamed task related global variable:1 ends here
+
+;; Unnamed task functions
+
+;; [[file:~/.xemacs/elpa/pkgs/org-context-clock/org-context-clock.org::*Unnamed%20task%20functions][Unnamed task functions:1]]
+(defun org-context-clock-unassociate-context-start-time-reset ()
+  (setq *org-context-clock-unassociate-context-start-time* nil))
+
+(defun org-context-clock-can-create-unnamed-task-p ()
+  (unless *org-context-clock-unassociate-context-start-time*
+    (setq *org-context-clock-unassociate-context-start-time* (current-time)))
+  (let ((unassociate-context-start-time *org-context-clock-unassociate-context-start-time*))
+    (prog1
+        (>
+         (float-time (time-since unassociate-context-start-time))
+         *org-context-clock-swapen-unnamed-threashold-interval*))))
+
+(defun org-clock-marker-is-unnamed-clock-p (&optional clock)
+  (let ((clock (or clock org-clock-marker)))
+    (when (and
+           clock
+           (lotus-org-unnamed-task-clock-marker))
+     (equal
+      (marker-buffer org-clock-marker)
+      ;; id:x11 make org-context-clock version
+      (marker-buffer (lotus-org-unnamed-task-clock-marker))))))
+
+(defun org-context-clock-maybe-create-clockedin-unnamed-heading ()
+  (when (org-context-clock-can-create-unnamed-task-p)
+    (let ((org-log-note-clock-out nil))
+      (if (org-clock-marker-is-unnamed-clock-p)
+          (org-context-clock-debug :debug "org-context-clock-maybe-create-unnamed-task: Already clockin unnamed task")
+          (prog1
+              (lotus-org-create-unnamed-task-task-clock-in)
+            (org-context-clock-unassociate-context-start-time-reset))))))
+
+(defun org-context-clock-maybe-create-unnamed-heading ()
+  (when (org-context-clock-can-create-unnamed-task-p)
+    (let ((org-log-note-clock-out nil))
+      (if (org-clock-marker-is-unnamed-clock-p)
+          (org-context-clock-debug :debug "org-context-clock-maybe-create-unnamed-task: Already clockin unnamed task")
+          (cdr (lotus-org-create-unnamed-task))))))
+
+
+(defun org-context-clock-maybe-create-unnamed-task ()
+  ;; back
+  (let* ((unnamed-heading-marker
+         (cdr (lotus-org-create-unnamed-task)))
+        (unnamed-task
+         (when unnamed-heading-marker
+           (with-current-buffer (marker-buffer unnamed-heading-marker)
+             (goto-char unnamed-heading-marker)
+             (org-context-clock-collect-task)))))
+    unnamed-task))
+
+(defun org-context-clock-maybe-create-unnamed-dyntaskpl (context)
+  ;; back
+  (let* ((unnamed-task
+         (org-context-clock-maybe-create-unnamed-task))
+        (unnamed-dyntaskpl
+         (if unnamed-task
+           (org-context-clock-build-dyntaskpl unnamed-task context))))
+    unnamed-dyntaskpl))
+
+(defun org-context-clock-maybe-create-clockedin-unnamed-dyntaskpl (context)
+  ;; back
+  (when (org-context-clock-can-create-unnamed-task-p)
+    (let ((org-log-note-clock-out nil))
+      (if (org-clock-marker-is-unnamed-clock-p)
+          (org-context-clock-debug :debug "org-context-clock-maybe-create-unnamed-task: Already clockin unnamed task")
+          (let* ((unnamed-dyntaskpl (org-context-clock-maybe-create-unnamed-dyntaskpl context))
+                 (unnamed-task (plist-get unnamed-dyntaskpl :task))
+                 (unnamed-marker (plist-get unnamed-task :task-clock-marker)))
+            (prog1
+                (org-context-clock-clockin-dyntaskpl unnamed-dyntaskpl)
+              ;; id:x11 make org-context-clock version
+              (lotus-org-unnamed-task-clock-marker unnamed-marker)
+              (message "clockin to unnnamed task.")
+              (org-context-clock-unassociate-context-start-time-reset)))))))
+
+(defun org-context-clock-changable-p ()
+  "Stay with a clock at least 2 mins."
+  (if org-clock-start-time
+      (let ((clock-duration
+             (if (and
+                  (stringp org-clock-start-time)
+                  (string-equal "" org-clock-start-time))
+                 0
+                 (float-time (time-since org-clock-start-time)))))
+        (or
+         (< clock-duration 60)
+         (> clock-duration 120)))
+      t))
+;; Unnamed task functions:1 ends here
