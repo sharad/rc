@@ -104,16 +104,16 @@
    ;; chinese
    keyboard-layout
 
-   /home/s/hell/.emacs.d/layers/+lang:
-   agda
+   ;; /home/s/hell/.emacs.d/layers/+lang:
+   ;; agda
    asciidoc
    asm
-   autohotkey
+   ;; autohotkey
    bibtex
    c-c++
    clojure
    common-lisp
-   csharp
+   ;; csharp
    csv
    d
    elixir
@@ -123,7 +123,7 @@
    ess
    extra-langs
    faust
-   fsharp
+   ;; fsharp
    go
    graphviz
    haskell
@@ -157,7 +157,7 @@
    windows-scripts
    yaml
 
-   /home/s/hell/.emacs.d/layers/+misc:
+   ;; /home/s/hell/.emacs.d/layers/+misc:
    nlinum
 
    /home/s/hell/.emacs.d/layers/+os:
