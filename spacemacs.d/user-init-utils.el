@@ -223,13 +223,13 @@
    vagrant
    ycmd
 
-   /home/s/hell/.emacs.d/layers/+vim:
-   evil-cleverparens
-   evil-commentary
-   evil-snipe
-   vim-empty-lines
-   vim-powerline
-   vinegar
+   ;; /home/s/hell/.emacs.d/layers/+vim:
+   ;; evil-cleverparens
+   ;; evil-commentary
+   ;; evil-snipe
+   ;; vim-empty-lines
+   ;; vim-powerline
+   ;; vinegar
 
    /home/s/hell/.emacs.d/layers/+web-services:
    elfeed
