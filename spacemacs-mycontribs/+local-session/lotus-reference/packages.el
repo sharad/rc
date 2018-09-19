@@ -36,6 +36,10 @@
 
 ;; TODO: https://tuhdo.github.io/c-ide.html
 
+;; TODO: write automation to know which all package are not getting loaded as
+;;       their initialization function not getting called have to know it handy
+;;       way.
+
 (defconst lotus-reference-packages
   '(
     xref
