@@ -117,7 +117,7 @@
     (interactive)
     (test-idle-prints nil)))
 
-
+;;;###autoload
 (defun reset-helm-input ()
   (interactive)
   ;; https://github.com/emacs-helm/helm/issues/208#issuecomment-14447049

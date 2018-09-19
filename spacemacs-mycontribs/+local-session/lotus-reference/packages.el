@@ -1,4 +1,4 @@
-;;; packages.el --- lotus-tag layer packages file for Spacemacs.
+;;; packages.el --- lotus-reference layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
@@ -18,32 +18,36 @@
 ;;
 ;;
 ;; Briefly, each package to be installed or configured by this layer should be
-;; added to `lotus-tag-packages'. Then, for each package PACKAGE:
+;; added to `lotus-reference-packages'. Then, for each package PACKAGE:
 ;;
 ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
-;;   function `lotus-tag/init-PACKAGE' to load and initialize the package.
+;;   function `lotus-reference/init-PACKAGE' to load and initialize the package.
 
 ;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
-;;   define the functions `lotus-tag/pre-init-PACKAGE' and/or
-;;   `lotus-tag/post-init-PACKAGE' to customize the package as it is loaded.
+;;   define the functions `lotus-reference/pre-init-PACKAGE' and/or
+;;   `lotus-reference/post-init-PACKAGE' to customize the package as it is loaded.
 
 ;;; Code:
 
 
 ;;; Documentation
-;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-tagS.org
+;; https://github.com/syl20bnr/spacemacs/blob/master/doc/lotus-reference.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
-(defconst lotus-tag-packages
+(defconst lotus-reference-packages
   '(
-    ;; (PACKAGE :location local)
-    (tree :location local)
-    (tags :location local)
+    xref
+    ivy-xref
+    gxref
+    (ag    :location local)
+    (tags  :location local)
+    counsel-etags
+    counsel-gtags
     (gtags :location local)
     xcscope
     elisp-slime-nav
     )
-  "The list of Lisp packages required by the lotus-tag layer.
+  "The list of Lisp packages required by the lotus-reference layer.
 
 Each entry is either:
 
@@ -70,488 +74,73 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-tag/init-tree ()
-  ;; ref: http://www.emacswiki.org/cgi-bin/wiki/TagFile
-  ;; The following will automatically create a TAGS file from within Emacs
-  ;; itself if none exists. Just hit `M-. and youre off.
-  (use-package tree
+(defun lotus-reference/init-xref ()
+  (use-package xref
       :defer t
       :config
       (progn
-        ))
+        (progn
+          ))))
 
-  (when nil                             ;load post tree BUG TODO
-    (progn
-          (require 'debug-config)
-          ;; debug
-          (add-to-list 'debug-tags-level-list '(tag 4))
+(defun lotus-reference/init-gxref ()
+  (use-package gxref
+      ;; https://github.com/dedi/gxref
+      :defer t
+      :config
+      (progn
+        (progn
+          (use-package xref
+              :defer t
+              :config
+              (progn
+                (progn
+                  (add-to-list 'xref-backend-functions 'gxref-xref-backend))))))))
 
-          (defvar *tags-config* nil "Tags system configurations")
-
-          ;; (setf (tree-node *tags-config* 'setupfn 'cscope) 'create-cscope)
-          ;; (setf (tree-node *tags-config* 'setupfn 'etags)  'create-etags)
-          ;; (setf (tree-node *tags-config* 'setupfn 'gtags)  'create-gtags)
-
-          ;; (setq *tags-config* nil)
-
-          ;; (let ((tg 'gtags))
-          ;;   (tree-node *tags-config* 'files tg))
-
-          (setf (tree-node* *tags-config* 'files 'cscope) '("cscope.out"))
-
-          (setf (tree-node* *tags-config* 'files 'etags)  '("TAGS"))
-
-          ;; (let* ((v *tags-config*)) (\(setf\ tree-node*\) (quote ("TAGS")) v (quote files) (quote etags)))
-
-          (setf (tree-node* *tags-config* 'files 'gtags)  '("GTAGS" "GRTAGS" "GPATH"
-                                                            ;; "GSYMS"
-                                                            ))
-
-          (setf (tree-node* *tags-config* 'cmd 'cscope) "cscope -Rb 2>/dev/null")
-          (setf (tree-node* *tags-config* 'cmd 'etags)  "find %s  -path '*.svn*'  -prune -o -type f | etags --output=TAGS - 2>/dev/null")
-          (setf (tree-node* *tags-config* 'cmd 'gtags)  "gtags -v 2>/dev/null")
-
-          ;; (defun pushnew-alist (key value list)
-          ;;   (unless (assoc key list)
-          ;;     (pushnew (cons key nil) list :key #'car))
-          ;;   (pushnew value (cdr (assoc key list)) :test #'string-equal))
-
-          ;; (defun push-dir-in-tag-sys-alist (tag-sys dir)
-          ;;   (pushnew-alist tag-sys dir *dirs-having-tag-files-alist*))
-
-
-          (setq
-           tags-table-list
-           ;; '("../../TAGS" "../TAGS" "./TAGS")
-           '("../TAGS" "./TAGS"))
-
-          (defun search-upwards (files starting-path)
-            ;; from: https://lists.ubuntu.com/archives/bazaar/2009q2/057669.html
-            "Search for `filename' in every directory from `starting-path' up."
-            (let ((path (file-name-as-directory starting-path)))
-              (dmessage 'tag 7 "path %s files %s" path files)
-              ;; (if (file-exists-p (concat path filename))
-
-              (if (every '(lambda (f)
-                           (file-exists-p (expand-file-name f path)))
-                         files)
-                  path
-                  (let ((parent (file-name-directory (directory-file-name path))))
-                    (if (string= parent path)
-                        nil
-                        (search-upwards files parent))))))
-
-          (defun issubdirp (superdir subdir)
-            ;; check if this is working proplerly.
-            (dmessage 'tag 7 "issubdirp %s %s" superdir subdir)
-            (let ((superdir (file-truename superdir))
-                  (subdir (file-truename subdir)))
-              (string-prefix-p superdir subdir)))
-
-          (defun tag-file-existp-main (tag-sys dir)
-            (if (search-upwards (tree-node *tags-config* 'files tag-sys) dir)
-                (pushnew dir (tree-node* *tags-config* 'dirs-cache tag-sys))))
-
-          (defun tag-file-existp (tag-sys dir)
-            (dmessage 'tag 7 "tag-file-existp %s %s" tag-sys dir)
-            (let* ((dirs (tree-node *tags-config* 'dirs-cache tag-sys))
-                   (cached-valid-dirs (remove-if-not '(lambda (d)
-                                                       (if (issubdirp d dir)
-                                                           (every '(lambda (f)
-                                                                    (file-exists-p (expand-file-name f d)))
-                                                                  (tree-node *tags-config* 'files tag-sys))))
-                                                     dirs)))
-              (dmessage 'tag 7 "tag-file-existp dirs %s" dirs)
-              ;; (if (some '(lambda (d)
-              ;;              (issubdirp d dir))
-              ;;           dirs)
-              (if cached-valid-dirs
-                  t
-                  (tag-file-existp-main tag-sys dir))))
-
-          ;;;;;;;;;;;;;;;;;;
-          ;; ref: http://www.emacswiki.org/cgi-bin/wiki/BuildTags
-          ;; Or to build a tags file for a source tree (e.g. the linux kernel) you can use something like:
-          ;;
-          ;;     find . -type f -iname "*.[ch]" | etags -
-          ;;
-          ;; Avoid using xargs with etags (e.g. find . -type f -iname *.[ch] |
-          ;; xargs etags). For source trees with many files, xargs will execute
-          ;; etags multiple times, overwriting the previous TAGS file on each
-          ;; execution.
-          ;;
-          ;; Or to build the tags file within emacs, put this in your .emacs file:
-
-          (defun create-tags-default (tag-sys dirs &optional force)
-            (interactive)
-            (dolist (d dirs)
-              (let* ((fmt (tree-node *tags-config* 'cmd tag-sys))
-                     (cmd (read-from-minibuffer
-                           (format "%s cmd: " tag-sys)
-                           (format fmt
-                                   (if (stringp d)
-                                       (file-name-localname d)
-                                       "")))))
-                (let ((default-directory d))
-                  ;; (async-shell-command cmd)
-                  (shell-command-no-output cmd)))))
-
-          (defun create-tags (tag-sys dir &optional force)
-            (interactive)
-            (let* ((tag-dir (ido-read-directory-name (format "Directory to create %s files: " tag-sys) dir dir t))
-                   (dirs (list tag-dir ;; get other libdirs also like gtags libdir
-                               ))
-                   (fun (tree-node *tags-config* 'setupfn 'cscope)))
-              (when
-                  (if fun
-                      (funcall fun dirs)
-                      (funcall 'create-tags-default tag-sys dirs force))
-                ;; (push-dir-in-tag-sys-alist tag-sys dir)
-                (pushnew dir (tree-node *tags-config* 'dirs-cache 'tag-sys)))))
-
-
-          ;; (defun create-c-tags (dir-name)
-          ;;   "Create tags file."
-          ;;   (interactive "DDirectory: ")
-          ;;   (eshell-command
-          ;;    (format "find %s -type f -name \"*.[ch]\" | etags -" dir-name)))
-
-          ;; (defun create-perl-tags (dir-name)
-          ;;   "Create tags file."
-          ;;   (interactive "DDirectory: ")
-          ;;   (eshell-command
-          ;;    (format "find %s -type f -regex '.*\\.p\\(\\(l\\|m\\)\\|cgi\\)' | etags -l perl -" dir-name)))
-
-          ;; This package provides a function which rebuilds the TagFile being used
-          ;; by the current buffer. You can pre-configure the shell command based
-          ;; on the tag file being built.
-          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-          ;; (defadvice find-tag (before c-tag-file () preactivate)
-          ;; (defadvice find-tag (before c-tag-file () preactivate)
-          ;; (defadvice find-tag (before c-tag-file () activate)
-          ;; (defadvice find-tag (before c-tag-file () disable)
-          ;; (defadvice find-tag (before c-tag-file () preactivate)
-
-          ;; (defadvice find-tag (before c-tag-file last () disable)
-          ;;   "Automatically create tags file."
-          ;;   (let ((tag-file (concat default-directory "TAGS")))
-          ;;     (unless (tag-file-existp 'etags default-directory)
-          ;;       (create-tags 'etags default-directory))
-          ;;     (visit-tags-table tag-file)))
-
-          (defmacro create-tags-before (tag-sys find-fun)
-            `(defadvice ,find-fun (before create-tags last () activate)
-               "Automatically create tags file."
-               (unless (tag-file-existp ',tag-sys default-directory)
-                 (create-tags ',tag-sys default-directory))))
-          ))
-
-  )
-
-(defun lotus-tag/init-tags ()
+(defun lotus-reference/init-tags ()
   (use-package tags
       :defer t
       :config
       (progn
-        (use-package tree
-            :defer t
-            :config
-            (progn
-              (create-tags-before etags find-tag)
-              (create-tags-before etags find-tag-interactive)
-              (create-tags-before etags tags-apropos))))))
+        (progn
+          (setq
+           tags-table-list
+           ;; '("../../TAGS" "../TAGS" "./TAGS")
+           '("../TAGS" "./TAGS")))
 
-(defun lotus-tag/init-gtags ()
+        (progn
+          (use-package xref
+              :defer t
+              :config
+              (progn
+                (progn
+                  (add-to-list 'xref-backend-functions 'etags--xref-backend)))))
+
+        (progn
+          (lotus-create-tags-before etags find-tag)
+          (lotus-create-tags-before etags find-tag-interactive)
+          (lotus-create-tags-before etags tags-apropos)))))
+
+(defun lotus-reference/init-gtags ()
   (use-package gtags
       :defer t
       :config
       (progn
         (progn
-          (use-package tree
-              :defer t
-              :config
-              (progn
-                (create-tags-before gtags gtags-find-tag)
-                (create-tags-before gtags gtags-find-rtag))))
-        (progn
-          ;; select a tag line from lines
-          (defun gtags-select-it (delete &optional other-win)
-            (let (line file)
-              ;; get context from current tag line
-              (beginning-of-line)
-              (if (not (looking-at "[^ \t]+[ \t]+\\([0-9]+\\)[ \t]\\([^ \t]+\\)[ \t]"))
-                  (gtags-pop-context)
-                  (setq line (string-to-number (gtags-match-string 1)))
-                  (setq file (gtags-decode-pathname (gtags-match-string 2)))
-                  (message "File before: %s" file)
-                  (if (and (not (file-exists-p file)) (string-match "^../" file))
-                      (setq file (concat "../" file)))
-                  (message "File after: %s" file)
-                  ;;
-                  ;; Why should we load new file before killing current-buffer?
-                  ;;
-                  ;; If you kill current-buffer before loading new file, current directory
-                  ;; will be changed. This might cause loading error, if you use relative
-                  ;; path in [GTAGS SELECT MODE], because emacs's buffer has its own
-                  ;; current directory.
-                  ;;
-                  (let ((prev-buffer (current-buffer)))
-                    ;; move to the context
-                    (if gtags-read-only
-                        (if (null other-win) (find-file-read-only file)
-                            (find-file-read-only-other-window file))
-                        (if (null other-win) (find-file file)
-                            (find-file-other-window file)))
-                    (if delete (kill-buffer prev-buffer)))
-                  (setq gtags-current-buffer (current-buffer))
-                  (goto-line line)
-                  (gtags-mode 1)))))
-        (progn
-          ;; http://www.emacswiki.org/emacs/GnuGlobal
-          (setq global-supported-pgm-langs
-                '(c))
+          (lotus-create-tags-before gtags gtags-find-tag)
+          (lotus-create-tags-before gtags gtags-find-rtag)))))
 
-          (defun gtags-root-dir ()
-            "Returns GTAGS root directory or nil if doesn't exist."
-            ;; ido-is-tramp-root
-            ;; "\\`/[^/]+[@:][^:/]+:"
-            (let* ((tramp-prefix "\\`/[^/]+[@:][^:/]+:")
-                   (prefix (if (string-match tramp-prefix default-directory)
-                               (match-string 0 default-directory)))
-                   (dir (with-temp-buffer
-                          (if (zerop (process-file "global" nil t nil "-pr"))
-                              (buffer-substring (point-min) (1- (point-max)))
-                              nil))))
-              (concat  prefix dir)))
-
-          (defun gtags-root-dir ()
-            "Returns GTAGS root directory or nil if doesn't exist."
-            ;; ido-is-tramp-root
-            (let* ((prefix (tramp-file-prefix default-directory))
-                   (dir (with-temp-buffer
-                          (if (zerop (process-file "global" nil t nil "-pr"))
-                              (buffer-substring (point-min) (1- (point-max)))
-                              nil))))
-              (concat  prefix dir)))
-
-
-          (defun gtags-update-synchronously ()
-            "Make GTAGS incremental update, synchronously."
-            (call-process "global" nil nil nil "-u"))
-
-          (defun gtags-update-asynchronously ()
-            "Make GTAGS incremental update, asynchronously."
-            (if (eq (process-status "global") 'nil)
-                (start-process "global" "global-update" "global" "-u")))
-
-          ;; test (start-process "global" "global-update" "sleep" "10")
-          ;; default-directory
-
-          ;; (defun gtags-global-update ()
-          ;;   "If current directory is part of a GLOBAL database update it."
-          ;;   (interactive)
-          ;;   (when (gtags-global-dir)
-          ;;     (if (equal (call-process "global" nil nil nil "-vu") 0)
-          ;;         (setq gtags-global-complete-list-obsolete-flag t)
-          ;;       (error "global database update failed"))))
-
-
-
-          (defun gtags-update ()
-            (when (gtags-root-dir)
-              (gtags-update-asynchronously)))
-
-          (setq gtags-mode-hook
-                '(lambda ()
-                  (setq gtags-path-style 'relative)))
-
-          (add-element-to-lists '(lambda ()
-                                  (gtags-mode 1)
-                                  ) global-supported-pgm-langs)
-
-          (add-hook 'after-save-hook #'gtags-update)
-
-          ;; http://www.emacswiki.org/emacs/CyclingGTagsResult
-          (defun ww-next-gtag ()
-            "Find next matching tag, for GTAGS."
-            (interactive)
-            (let ((latest-gtags-buffer
-                   (car (delq nil  (mapcar (lambda (x) (and (string-match "GTAGS SELECT" (buffer-name x)) (buffer-name x)) )
-                                           (buffer-list)) ))))
-              (cond (latest-gtags-buffer
-                     (switch-to-buffer latest-gtags-buffer)
-                     (forward-line)
-                     (gtags-select-it nil)))))
-
-          ;; Here’s my key binding for using GNU Global.
-
-
-;;; http://lists.gnu.org/archive/html/help-gnu-emacs/2005-09/msg00157.html
-
-
-          (autoload 'gtags-mode "gtags" nil t)
-
-          (when (executable-find "global")
-
-            (defadvice gtags-visit-rootdir (after make-complete-list activate)
-              "Rebuilds completion list when changing GLOBAL database rootdir."
-              (gtags-make-complete-list))
-
-
-            (defun gtags-global-dir-p (dir)
-              "Return non-nil if directory DIR contains a GLOBAL database."
-              (every '(lambda (file)
-                       (file-exists-p (expand-file-name file dir)))
-                     (tree-node *tags-config* 'files 'gtags)))
-
-            (defun gtags-global-dir (&optional dir)
-              "Return the nearest super directory that contains a GLOBAL database."
-              (interactive)
-              (when (null dir)
-                (setq dir default-directory))
-              (cond ((gtags-global-dir-p dir) dir)
-                    ((equal (file-truename dir) (file-truename "/")) nil)
-                    (t (gtags-global-dir (file-name-as-directory
-                                          (expand-file-name ".." dir))))))
-
-            (defvar gtags-global-complete-list-obsolete-flag nil
-              "When non-nil, the GLOBAL complete list should be rebuilt.")
-
-            (defun gtags-global-update ()
-              "If current directory is part of a GLOBAL database update it."
-              (interactive)
-              (gtags-update-asynchronously))
-
-            ;; (when (gtags-global-dir)
-            ;;   (if (equal (call-process "global" nil nil nil "-vu") 0)
-            ;;       (setq gtags-global-complete-list-obsolete-flag t)
-            ;;     (error "global database update failed"))))
-
-
-            )                            ; (when (executable-find "global") ...)
-
-          ;; Use gtags in all modes for now.
-          ;; (gtags-mode 1)
-                                        ; (when (locate-library "gtags") ...)
-
-
-          (deh-section "GTAGSLIBDIR"
-            ;; (defvar gtags-libdirs 'empty "extra lib dirs")
-            ;; (make-local-variable 'gtags-libdirs)
-            (defvar tag-dir-config-file ".tag-dir-local.el" "extra lib dirs")
-            (defvar tag-dir-config nil "tags dir config")
-            (make-local-variable 'tag-dir-config)
-
-            (defun tags-dir-store-config ()
-              (let* ((readfile (expand-file-name tag-dir-config-file (gtags-root-dir))))
-                (lotus-write-file readfile (prin1-to-string tag-dir-config))
-                tag-dir-config))
-
-            (defun tags-dir-restore-config ()
-              (let* ((readfile (expand-file-name tag-dir-config-file (gtags-root-dir))))
-                (setq tag-dir-config (lotus-read-sexp readfile))))
-
-            (defun tags-dir-get-config (variable)
-              (interactive
-               (let ((variable (intern
-                                (ido-completing-read "variable: " '("gtags-libdirs") nil t))))
-                 (list variable)))
-              (if (or tag-dir-config (tags-dir-restore-config))
-                  (or (cdr (assoc variable tag-dir-config))
-                      (tags-dir-set-config variable))
-                  (tags-dir-set-config variable)))
-
-            (defun tags-dir-set-config (variable)
-              (interactive
-               (let ((variable (intern
-                                (ido-completing-read "variable: " '("gtags-libdirs") nil t))))
-                 (list variable)))
-              (pushnew (list variable) tag-dir-config :key 'car)
-              (push (ido-read-directory-name "gtags dir: ")
-                    (cdr (assoc variable tag-dir-config)))
-              (tags-dir-store-config)
-              (cdr (assoc variable tag-dir-config)))
-
-            (defun gtags-set-env (envar)
-              (let* ((dirs (tags-dir-get-config envar)))
-                (when dirs
-                  (let ((gtagslibpath-env (mapconcat 'identity dirs ":")))
-                    (push (concat "GTAGSLIBPATH=" gtagslibpath-env) process-environment)
-                    ;; (setenv "GTAGSLIBPATH" gtagslibpath-env)
-                    (message "gtags-libdirs %s" dirs)))))
-
-            (defun gtags-reset-env ()
-              (pop process-environment))
-
-            ;; (when nil
-            ;;   (defadvice gtags-find-tag (before set-gtags-libdirs last () activate)
-            ;;     (gtags-set-env 'gtags-libdirs))
-
-            ;;   (defadvice gtags-find-tag (after reset-gtags-libdirs last () activate)
-            ;;     (gtags-reset-env)
-            ;;     ad-return-value))
-
-            (defadvice gtags-find-tag (around set-gtags-libdirs last () activate)
-              (gtags-set-env 'gtags-libdirs)
-              ad-do-it
-              (gtags-reset-env))
-
-            ;; (ad-disable-advice 'gtags-find-tag 'before 'set-gtags-libdirs)
-            ;; (ad-enable-advice 'gtags-find-tag 'before 'set-gtags-libdirs)
-            ;; (ad-update 'gtags-find-tag)
-            ;; (ad-activate 'gtags-find-tag)
-
-            ;; make dir-local variable. -- will not work
-            ;; keep a seperate file .el in same dir where GTAGS files are present.
-
-            ;; defadvice set GTAGSLIBPATH before global query
-            )
-
-          (progn ;; "Combnining all tag search"
-
-            ;; (defun combine-find-tag ()
-            ;;   (o
-            ;;    (gtags-find-tag)
-            ;;    (find-tag)
-            ;;    (cscope-find-this-symbol)))
-            ))
-
-        (progn
-          ;; (defadvice find-tag (before create-tags last () activate)
-          ;;   "Automatically create tags file."
-          ;;   (unless (tag-file-existp 'etags default-directory)
-          ;;     (create-tags 'etags default-directory)))
-
-
-          ;; ref: http://www.emacswiki.org/cgi-bin/wiki/EmacsTags
-          ;; Completion
-          ;; You can use M-x complete-tag to get simple (ie context
-          ;; free) symbol name Completion. This works like other types of
-          ;; completion in emacs, if there are multiple possibilities a window will
-          ;; be opened showing them all. This used to be bound to M-TAB by default
-          ;; but as many window managers use this to switch between windows, I tend
-          ;; to use M-RET instead.
-          ;; (global-set-key (kbd "M-<return>") 'complete-tag)
-          ))))
-
-(defun lotus-tag/init-xcscope ()
+(defun lotus-reference/init-xcscope ()
   (use-package xcscope
       :defer t
       :config
       (progn
-        (use-package tree
-            :defer t
-            :config
-            (progn
+        (progn
+          (lotus-create-tags-before cscope cscope-find-this-symbol)
+          (lotus-create-tags-before cscope cscope-find-functions-calling-this-function))
+        (progn
+          ;; http://emacswiki.org/emacs/CScopeAndEmacs
+          (setq cscope-do-not-update-database t))
               (progn
-                (create-tags-before cscope cscope-find-this-symbol)
-                (create-tags-before cscope cscope-find-functions-calling-this-function))
-              (progn
-                ;; http://emacswiki.org/emacs/CScopeAndEmacs
-                (setq cscope-do-not-update-database t)
-
                 ;; 5. If you intend to use xcscope.el often you can optionally edit your
                 ;;    ~/.emacs file to add keybindings that reduce the number of keystrokes
                 ;;    required.  For example, the following will add "C-f#" keybindings, which
@@ -982,7 +571,7 @@ Each entry is either:
                 ;;
                 ;;        The face most likely to cause problems (e.g., black-on-black
                 ;;        color) is `cscope-line-face'.
-                ))))))
+                ))))
 
 ;; (let ((str "/scp:spratap@susengg-01:/home/spratap/releases/5.1/src/wnc/coord/")
 ;;       (regexs (list
@@ -1003,8 +592,8 @@ Each entry is either:
 ;; (ido-is-root-directory "/")
 
 
-(defun lotus-tag/post-init-elisp-slime-nav () ;; optional if installed via package.el
-  (use-package PACKAGE
+(defun lotus-reference/post-init-elisp-slime-nav () ;; optional if installed via package.el
+  (use-package elisp-slime-nav
       :defer t
       :config
       (progn

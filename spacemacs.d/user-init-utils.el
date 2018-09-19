@@ -108,10 +108,13 @@
        default-local-lib)
      load-path))
   (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
+  ;; remove this
   (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
   (push "~/.spacemacs-mycontribs/local" load-path)
   (push "~/.xemacs/pkgrepos/mypkgs/testing" load-path)
+  ;; remove this
   (push "~/.xemacs/pkgrepos/mypkgs/session-start" load-path)
+  ;; remove this
   (push "~/.xemacs/pkgrepos/mypkgs/gnus-session-start" load-path)
   (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
   (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path)
