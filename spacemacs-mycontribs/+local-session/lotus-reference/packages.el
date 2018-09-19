@@ -206,7 +206,7 @@ Each entry is either:
   ;;             (gtags-mode 1)))
   )
 
-(defun lotus-reference/init-ggtags ()
+(defun lotus-reference/post-init-ggtags ()
   (use-package ggtags
       :defer t
       :config
