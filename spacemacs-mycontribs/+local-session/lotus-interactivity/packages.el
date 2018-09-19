@@ -579,7 +579,7 @@ Each entry is either:
         ;; (completing-read my-prompt my-table nil "match")
         )))
 
-(defun lotus-interactivity/init-swiper ()
+(defun lotus-interactivity/post-init-swiper ()
   ;; https://www.emacswiki.org/emacs/UsePackage
   ;; http://oremacs.com/2015/04/16/ivy-mode/
   ;; http://irreal.org/blog/
