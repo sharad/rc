@@ -797,7 +797,7 @@
 
 
   (when (require 'cl nil) ; a rare necessary use of REQUIRE
-    ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
+                                        ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
     (defvar *emacs-load-start* (current-time)))
 
   (defconst *work-dir*
@@ -873,7 +873,7 @@
   (progn
     (set-variable 'ycmd-server-command '("python" "/usr/bin/ycmd"))
     (set-variable 'ycmd-global-config "~/.ycmd_global_conf.py")
-    (set-variable 'ycmd-extra-conf-whitelist '("/home/s/paradise/git/main/"))
+    (set-variable 'ycmd-extra-conf-whitelist (list "/home/s/paradise/git/main/" (file-truename "/home/s/paradise/git/main/")))
     )
 
   (message "loading lotus-emacs-user-init-begin finished"))
