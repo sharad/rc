@@ -88,31 +88,31 @@
 
 
 
-(when nil
+;; (when nil
 
-  (cl-defstruct xpoint
-    x y)
+;;   (cl-defstruct xpoint
+;;     x y)
 
-  (setf zpoint (make-xpoint :x 5 :y 3))
+;;   (setf zpoint (make-xpoint :x 5 :y 3))
 
-  (setf (cl-struct-slot-value 'xpoint 'x point) 3)
+;;   (setf (cl-struct-slot-value 'xpoint 'x point) 3)
 
-  (cl--find-class 'xpoint)
+;;   (cl--find-class 'xpoint)
 
-  (cl-defstruct base
-    baseattr)
+;;   (cl-defstruct base
+;;     baseattr)
 
-  (cl-defstruct (drived (:include base))
-    drivedattr)
+;;   (cl-defstruct (drived (:include base))
+;;     drivedattr)
 
-  (setf baseobj1 (make-base :baseattr "xbaseattr"))
+;;   (setf baseobj1 (make-base :baseattr "xbaseattr"))
 
 
 
-  (setf drivedobj1
-        (make-drived
-         :baseattr "xbaseattr"
-         :drivedattr "xdrivedattr")))
+;;   (setf drivedobj1
+;;         (make-drived
+;;          :baseattr "xbaseattr"
+;;          :drivedattr "xdrivedattr")))
 
 (provide 'occ-obj)
 ;;; occ-obj.el ends here

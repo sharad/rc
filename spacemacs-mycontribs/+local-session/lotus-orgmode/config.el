@@ -82,22 +82,22 @@
         "Return content in <title> tag."
         (let (x1 x2 (download-buffer (url-retrieve-synchronously url)))
           (save-excursion
-            (set-buffer download-buffer)
-            (beginning-of-buffer)
-            (setq x1 (search-forward "<title>"))
-            (search-forward "</title>")
-            (setq x2 (search-backward "<"))
-            (mm-url-decode-entities-string (buffer-substring-no-properties x1 x2))))))
+           (set-buffer download-buffer)
+           (beginning-of-buffer)
+           (setq x1 (search-forward "<title>"))
+           (search-forward "</title>")
+           (setq x2 (search-backward "<"))
+           (mm-url-decode-entities-string (buffer-substring-no-properties x1 x2))))))
 
     (progn ;; "beautification"
       (deh-require-maybe (and
                           org-bullets
                           ;; org-beautify-theme
                           )
-        )
+                         )
 
       (ignore-errors
-        (require 'org-beautify-theme nil)))
+       (require 'org-beautify-theme nil)))
 
     (progn ;; "babel"
       ;; http://draketo.de/book/export/html/41
@@ -189,19 +189,19 @@
                 (lambda ()
                   ;;(dolist (f org-template-files-revert)
                   (while org-template-files-revert
-                    (let ((f (pop org-template-files-revert)))
-                      (if (find-buffer-visiting f)
-                          (with-current-buffer (find-buffer-visiting f)
-                            (setq buffer-read-only t
-                                  view-read-only t
-                                  view-mode t)))))))
+                         (let ((f (pop org-template-files-revert)))
+                           (if (find-buffer-visiting f)
+                               (with-current-buffer (find-buffer-visiting f)
+                                 (setq buffer-read-only t
+                                       view-read-only t
+                                       view-mode t)))))))
 
       (defun org-template-set-file-writable (xfile)
         (if (consp xfile)
             (error "xfile %s not file" xfile))
         (let* ((buf
-                (or (find-buffer-visiting xfile)
-                    (find-file-noselect xfile))))
+                 (or (find-buffer-visiting xfile)
+                     (find-file-noselect xfile))))
           (with-current-buffer buf
             (when buffer-read-only
               (setq
@@ -239,7 +239,7 @@
         (deh-require-maybe (and
                             ob-exp
                             ox-html5presentation)
-          )
+                           )
 
         (deh-require-maybe (and remember
                                 org
@@ -277,7 +277,7 @@
       ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org0c5d380
       (setq
        org-expiry-inactive-timestamps t
-       org-clock-idle-time nil
+       org-clock-idle-time 5
        org-log-done 'time
        org-clock-continuously nil
        org-clock-persist t

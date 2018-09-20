@@ -627,7 +627,13 @@ pointing to it."
                               ((error)
                                (progn
                                  (setq retval nil)
-                                 (signal (car err) (cdr err)))))))
+                                 (signal (car err) (cdr err)))))
+              ;; (progn
+              ;;   (assert new-marker)
+              ;;   (org-clock-clock-in (list new-marker))
+              ;;   (setq retval t)
+              ;;   (push new-ctxask *occ-clocked-ctxual-tsk-ctx-history*))
+              ))
           (if old-buff
               (with-current-buffer old-buff
                 (setq buffer-read-only old-buff-read-only)))

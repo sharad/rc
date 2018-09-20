@@ -296,12 +296,8 @@
     twitter))
     ;; wakatime
 
-
-
-
-
 (defun lotus-dist-layers-select (&optional layer-dir)
-  (let ((layer-dir "~/.spacemacs-mycontribs/+local-session/"))
+  (let ((layer-dir (or layer-dir "~/.spacemacs-mycontribs/+local-session/")))
     (when (file-directory-p layer-dir)
       (mapcar
        #'(lambda (f)

@@ -36,7 +36,6 @@
 
 (defconst lotus-expand-packages
   '(
-    ;; (PACKAGE :location local)
     pabbrev
     auto-complete
     (pde-indent-dwim :location local)
@@ -92,7 +91,9 @@ Each entry is either:
       :config
       (progn
         (progn
-          (setq pabbrev-read-only-error t))
+          (setq
+           pabbrev-idle-timer-verbose nil
+           pabbrev-read-only-error t))
         (progn
           (with-eval-after-load "sessions-mgr"
             (add-to-list 'desktop-minor-mode-handlers
