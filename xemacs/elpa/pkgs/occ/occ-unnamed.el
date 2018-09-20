@@ -51,6 +51,8 @@
        ;; id:x11 make org-ctx-clock version
        (marker-buffer (lotus-org-unnamed-task-clock-marker))))))
 
+;; (lotus-org-unnamed-task-clock-marker org-clock-marker)
+
 (defun occ-maybe-create-clockedin-unnamed-heading ()
   (when (occ-can-create-unnamed-tsk-p)
     (let ((org-log-note-clock-out nil))
@@ -85,11 +87,10 @@
 
 (cl-defmethod occ-maybe-create-unnamed-ctxual-tsk ((ctx occ-ctx))
   ;; back
-  (let* ((unnamed-tsk
-          (occ-maybe-create-unnamed-tsk))
-         (unnamed-ctxual-tsk
-          (when unnamed-tsk
-            (occ-build-ctxual-tsk unnamed-tsk ctx))))
+  (let* ((unnamed-tsk        (occ-maybe-create-unnamed-tsk))
+         (unnamed-ctxual-tsk (when unnamed-tsk) (occ-build-ctxual-tsk unnamed-tsk ctx)))
+    (assert unnamed-tsk)
+    (assert unnamed-ctxual-tsk)
     unnamed-ctxual-tsk))
 
 (cl-defmethod occ-maybe-create-clockedin-unnamed-ctxual-tsk ((ctx occ-ctx))
@@ -101,6 +102,8 @@
         (let* ((unnamed-ctxual-tsk (occ-maybe-create-unnamed-ctxual-tsk ctx))
                (unnamed-tsk        (occ-ctxual-tsk-tsk unnamed-ctxual-tsk))
                (unnamed-marker     (occ-tsk-marker unnamed-tsk)))
+          (assert unnamed-tsk)
+          (assert unnamed-ctxual-tsk)
           (prog1
               (occ-clock-in unnamed-ctxual-tsk)
             ;; id:x11 make org-ctx-clock version

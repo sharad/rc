@@ -168,16 +168,16 @@
 ;;;###autoload
 (defun lotus-org-unnamed-task-at-point-p ()
   (save-restriction
-    (save-excursion
-      (org-back-to-heading t)
-      (let ((element (org-element-at-point)))
-        (if (and
-             element
-             (eq (car element) 'headline))
-            (let (;; (begin (plist-get (cadr element) :begin))
-                  ;; (level (plist-get (cadr element) :level))
-                  (title (plist-get (cadr element) :title)))
-              (string-match-p "Unnamed task [0-9]+" title)))))))
+   (save-excursion
+    (org-back-to-heading t)
+    (let ((element (org-element-at-point)))
+      (if (and
+           element
+           (eq (car element) 'headline))
+          (let (;; (begin (plist-get (cadr element) :begin))
+                ;; (level (plist-get (cadr element) :level))
+                (title (plist-get (cadr element) :title)))
+            (string-match-p "Unnamed task [0-9]+" title)))))))
 
 ;; (lotus-org-create-unnamed-task "~/Unnamed.org" "Unnamed tasks")
 ;;;###autoload
