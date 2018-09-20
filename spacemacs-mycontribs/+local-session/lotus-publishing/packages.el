@@ -506,8 +506,7 @@ Each entry is either:
                                     (org-read-date-prefer-future nil)
                                     (org-agenda-overriding-header "Month in Review"))
                                   )
-                                ("~/org/review/month.html"))))))
-                      )))))))))
+                                ("~/org/review/month.html")))))))))))))))
 
 (defun lotus-publishing/init-muse ()
   (use-package muse
