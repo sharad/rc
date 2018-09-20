@@ -720,13 +720,13 @@
   (message "loading lotus-emacs-user-init-begin begin")
   (push "~/.osetup/info.d/common/elisp" load-path)
   (let ((default-local-lib
-         (concat "~/.osetup/info.d/hosts/default/elisp"))
+          (concat "~/.osetup/info.d/hosts/default/elisp"))
         (local-lib
-         (concat "~/.osetup/info.d/hosts/" (system-name) "/elisp")))
+          (concat "~/.osetup/info.d/hosts/" (system-name) "/elisp")))
     (push
      (if (file-directory-p local-lib)
          local-lib
-       default-local-lib)
+         default-local-lib)
      load-path))
   (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
   ;; remove this
@@ -786,14 +786,14 @@
   ;;        ad-do-it)))
 
   (eval-after-load "server"
-    '(progn
-      ;; server-auth-dir (auto-config-dir "server" t)
-      (defadvice server-create-window-system-frame
-          (around nocreate-in-init activate)
-        "remove-scratch-buffer"
-        (if *emacs-in-init*
-            (message "loading init now.")
-          ad-do-it))))
+                   '(progn
+                     ;; server-auth-dir (auto-config-dir "server" t)
+                     (defadvice server-create-window-system-frame
+                      (around nocreate-in-init activate)
+                      "remove-scratch-buffer"
+                      (if *emacs-in-init*
+                          (message "loading init now.")
+                          ad-do-it))))
 
 
   (when (require 'cl nil) ; a rare necessary use of REQUIRE
@@ -845,14 +845,14 @@
       (if (functionp 'server-running-p)
           (when (not (server-running-p))
             (condition-case e
-                (server-start)
-              ('error
-               (progn
-                 (message "Error: %s, now trying to run with tcp." e)
-                 (let ((server-use-tcp nil))
-                   (setq server-use-tcp nil)
-                   (server-start))))))
-        (message "server %s already running" server-name))
+                            (server-start)
+                            ('error
+                             (progn
+                               (message "Error: %s, now trying to run with tcp." e)
+                               (let ((server-use-tcp nil))
+                                 (setq server-use-tcp nil)
+                                 (server-start))))))
+          (message "server %s already running" server-name))
       (message (concat "SERVER: " server-name))
       (when (server-running-p (getenv "EMACS_SERVER_NAME"))
         (message (concat "YES SERVER: " server-name))))
@@ -864,11 +864,17 @@
   (lotus-necessary-test)
 
   (spacemacs|use-package-add-hook org
-    ;; https://github.com/syl20bnr/spacemacs/issues/8334#issuecomment-326200914
-    :pre-init
-    (package-initialize))
+                                  ;; https://github.com/syl20bnr/spacemacs/issues/8334#issuecomment-326200914
+                                  :pre-init
+                                  (package-initialize))
 
   (global-set-key (kbd "s-d") 'debug)
+
+  (progn
+    (set-variable 'ycmd-server-command '("python" "/usr/bin/ycmd"))
+    (set-variable 'ycmd-global-config "~/.ycmd_global_conf.py")
+    (set-variable 'ycmd-extra-conf-whitelist '("/home/s/paradise/git/main/"))
+    )
 
   (message "loading lotus-emacs-user-init-begin finished"))
 

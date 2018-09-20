@@ -95,12 +95,12 @@ Each entry is either:
         (autoload 'bc-list              "breadcrumb" "List all bookmarks in menu mode." t)
         (autoload 'bc-clear             "breadcrumb" "Clear all bookmarks."             t))))
 
-(defun lotus-bookmark/init-bm ()
+(defun lotus-bookmark/post-init-bm ()   ;core-mod
   (use-package bm
-      :defer t
-      :config
-      (progn
-        (setq bm-repository-file (auto-config-file "bm/bm-repository")))))
+               :defer t
+               :config
+               (progn
+                 (setq bm-repository-file (auto-config-file "bm/bm-repository")))))
 
 
 (defun lotus-bookmark/init-bookmark ()

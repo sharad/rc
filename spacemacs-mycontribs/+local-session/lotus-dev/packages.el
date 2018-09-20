@@ -747,15 +747,15 @@ Add directory to search path for source files using the GDB command, dir."))
           (remove-hook 'find-file-hooks 'tramp-minor-mode)
           (remove-hook 'dired-mode-hook 'tramp-minor-mode)))))
 
-(defun lotus-dev/init-compile ()
+(defun lotus-dev/post-init-compile () ;core-mod
   (use-package compile
-      :defer t
-      :config
-      (progn
-        (setq
-         compilation-auto-jump-to-first-error t
-         compilation-skip-threshold 2  ;; 2 - errors, 1 - warnings
-         ))))
+               :defer t
+               :config
+               (progn
+                 (setq
+                  compilation-auto-jump-to-first-error t
+                  compilation-skip-threshold 2  ;; 2 - errors, 1 - warnings
+                  ))))
 
 (defun lotus-dev/init-cc-vars ()
   (use-package cc-vars

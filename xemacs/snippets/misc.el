@@ -41,3 +41,8 @@
       (elscreen-notify-screen-modification-suppress
        (run-hooks 'elscreen-screen-update-hook)))
     (remove-hook 'post-command-hook 'elscreen-run-screen-update-hook)))
+
+
+(set-variable 'ycmd-server-command '("python" "/usr/bin/ycmd"))
+
+ycmd-server-command

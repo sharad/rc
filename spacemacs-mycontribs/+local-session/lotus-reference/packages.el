@@ -92,13 +92,13 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-reference/init-ivy-xref ()
+(defun lotus-reference/post-init-ivy-xref () ;core-mod
   (use-package ivy-xref
-      :defer t
-      :config
-      (progn
-        (progn
-          ))))
+               :defer t
+               :config
+               (progn
+                 (progn
+                   ))))
 
 (defun lotus-reference/init-gxref ()
   (use-package gxref
@@ -307,13 +307,13 @@ Each entry is either:
         (progn
           ))))
 
-(defun lotus-reference/init-counsel-gtags ()
+(defun lotus-reference/post-init-counsel-gtags () ;core-mod
   (use-package counsel-gtags
-      :defer t
-      :config
-      (progn
-        (progn
-          ))))
+               :defer t
+               :config
+               (progn
+                 (progn
+                   ))))
 
 (defun lotus-reference/post-init-xcscope ()
   (use-package xcscope
