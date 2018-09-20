@@ -193,7 +193,7 @@ Each entry is either:
           ad-return-value)
 
         (add-to-enable-startup-interrupting-feature-hook
-                  '(lambda ()
+         #'(lambda ()
                      (ad-enable-advice 'tramp-open-connection-setup-interactive-shell 'after 'start-oneliner)
                      (ad-update 'tramp-open-connection-setup-interactive-shell)
                      (ad-activate 'tramp-open-connection-setup-interactive-shell))
