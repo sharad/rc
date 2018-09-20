@@ -455,6 +455,11 @@ Each entry is either:
                                                      "\\|ARCHIVE"))
                                                    )))))))))))
 
+                      (use-package org-agenda
+                        :defer t
+                        :config
+                        (progn
+                          (lotus-orgmode-config/post-init-org-agenda)))
                       (progn ;; "org-publishing"
 
                         (defvar efs/org-agenda-review-settings nil)

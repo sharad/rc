@@ -304,6 +304,12 @@
              #'(lambda ()
                  (setq org-agenda-files (occ-included-files))))))))))
 
+(defun add-to-org-agenda-custom-commands (&rest specs)
+  (dolist (spec specs)
+    (add-to-list
+     'org-agenda-custom-commands
+     spec)))
+
 (defun lotus-orgmode-config/post-init-org-agenda ()
   (progn
 
