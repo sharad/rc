@@ -266,7 +266,7 @@
     prodigy
     puppet
     ranger
-    rebox
+    ;; rebox ;; --- startup errors , (error "Style 371 defined more than once") signal(error ("Style 371 defined more than once"))
     restclient
     salt
     (shell :variables
@@ -542,6 +542,12 @@
    'lotus-enable-startup-interrupting-feature-hook
    'lotus-necessary-functionality
    t)
+
+  (add-hook
+   'lotus-enable-startup-interrupting-feature-hook
+   'spacemacs/startup-hook
+   ;; 'spacemacs-buffer/goto-buffer
+   )
 
   (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)
   (lotus-necessary-functionality)

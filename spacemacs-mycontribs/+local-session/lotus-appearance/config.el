@@ -154,15 +154,15 @@
               opt))))
 
 
-    ;; set attributes
+  ;; set attributes
 
 
 
-    ;; (mycustom-face-set)
-    ;;:font FONT)
-    ;; get attributes
-    ;; (face-attribute 'default :font)
-    ;; (face-attribute 'default :height)
+  ;; (mycustom-face-set)
+  ;;:font FONT)
+  ;; get attributes
+  ;; (face-attribute 'default :font)
+  ;; (face-attribute 'default :height)
 
 
 
@@ -180,7 +180,7 @@
 
   (defun assoc-attribs-in-matrix ()
     (let ((phy-attribs
-           (list
+            (list
             (x-display-pixel-height)
             (x-display-pixel-width)
             (x-display-mm-height)
@@ -213,8 +213,8 @@
     (interactive
      (let* ((disp-attrib (assoc-attribs-in-matrix))
             (height
-             (read-number "Face height: "
-                          (or
+              (read-number "Face height: "
+                           (or
                            (plist-get disp-attrib :height)
                            (if (and (featurep 'x)
                                     window-system
@@ -222,7 +222,7 @@
                                (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
                                (face-attribute 'default :height)))))
             (width
-             (read
+              (read
               (prin1-to-string
                (read-minibuffer "Face width: "
                                 (prin1-to-string (or
@@ -232,7 +232,7 @@
     (if (and (featurep 'x) window-system)
         (let* ((disp-attrib (assoc-attribs-in-matrix))
                (height
-                (or
+                 (or
                  height
                  (plist-get disp-attrib :height)
                  (if (and (featurep 'x)
@@ -241,7 +241,7 @@
                      (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
                      (face-attribute 'default :height))))
                (width
-                (or
+                 (or
                  width
                  (plist-get disp-attrib :width)
                  (face-attribute 'default :width))))
@@ -253,17 +253,18 @@
                     (when width (set-face-attribute 'default nil :width width)))
                   (message "no frame is open now."))
               (message "(x-display-pixel-height) return nil")))
-        (message "set-default-face-height-by-resolution: Not in Graphical Window system.")))
+        (message
+         "set-default-face-height-by-resolution: Not in Graphical Window system, window-system %s" window-system)))
 
-    (when (fboundp 'set-default-face-height-by-resolution)
-      (defalias 'mycustom-face-set #'set-default-face-height-by-resolution))
-    ;; (use-package startup-hooks
-    ;;              :defer t
-    ;;              :config
-    ;;              (add-to-enable-startup-interrupting-feature-hook
-    ;;               '(lambda ()
-    ;;                  (run-at-time-or-now 3 '(lambda () (set-default-face-height-by-resolution))))))
-    )
+  (when (fboundp 'set-default-face-height-by-resolution)
+    (defalias 'mycustom-face-set #'set-default-face-height-by-resolution))
+  ;; (use-package startup-hooks
+  ;;              :defer t
+  ;;              :config
+  ;;              (add-to-enable-startup-interrupting-feature-hook
+  ;;               '(lambda ()
+  ;;                  (run-at-time-or-now 3 '(lambda () (set-default-face-height-by-resolution))))))
+  )
 
 (progn ;; "face help"
   ;; http://stackoverflow.com/questions/1242352/get-font-face-under-cursor-in-emacs
