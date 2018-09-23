@@ -499,6 +499,7 @@
     (set-variable 'ycmd-extra-conf-whitelist (list "/home/s/paradise/git/main/" (file-truename "/home/s/paradise/git/main/")))
     )
 
+  (delete-selection-mode 1)
   (message "loading lotus-emacs-user-init-begin finished"))
 
 (defun lotus-emacs-user-init-finish ()
