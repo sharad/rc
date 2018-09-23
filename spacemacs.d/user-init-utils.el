@@ -4,59 +4,20 @@
    dotspacemacs-which-key-delay 3.0)    ;BUG not working
   )
 
+;; bibtex -- org-ref is not available
+;; ;; .spacemacs-mycontribution
+;; basic-startup
+;; messaging
+
 
 (defun spacemacs-dist-layers-select ()
   '(
-    go
-    python
-    d
-    javascript
-    markdown
     ;; ----------------------------------------------------------------
     ;; Example of useful layers you may want to use right away.
     ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
     ;; <M-m f e R> (Emacs style) to install them.
     ;; ----------------------------------------------------------------
-    auto-completion
-    better-defaults
-    emacs-lisp
-    helm
-    git
-    gtags
-    cscope
-    gnus
-    markdown
-    org
-    (shell :variables
-     shell-default-height 30
-     shell-default-position 'bottom)
-    spell-checking
-    syntax-checking
-    version-control
-    company-mode
-    company
-    erlang
-    elixir
-    ;; osx
-    html
-    org
-    colors
-    editorconfig
-    themes-megapack
-    perspectives
-    misc
-    python
-    yaml
-    bibtex
-    semantic))
-    ;; bibtex -- org-ref is not available
-    ;; ;; .spacemacs-mycontribution
-    ;; basic-startup
-    ;; messaging
 
-
-(defun spacemacs-dist-layers-select ()
-  '(
     ;; /home/s/hell/.emacs.d/layers/auto-layer.el
     ;; /home/s/hell/.emacs.d/layers/LAYERS.org
 
