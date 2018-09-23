@@ -23,7 +23,11 @@
 
 ;;; Code:
 
+(provide 'occ-unnamed)
+
+
 (require 'occ-obj-method)
+
 
 (defvar *occ-unassociate-ctx-start-time*          nil)
 (defvar *occ-swapen-unnamed-threashold-interval* (* 60 2)) ;2 mins
@@ -88,7 +92,7 @@
 (cl-defmethod occ-maybe-create-unnamed-ctxual-tsk ((ctx occ-ctx))
   ;; back
   (let* ((unnamed-tsk        (occ-maybe-create-unnamed-tsk))
-         (unnamed-ctxual-tsk (when unnamed-tsk) (occ-build-ctxual-tsk unnamed-tsk ctx)))
+         (unnamed-ctxual-tsk (when unnamed-tsk (occ-build-ctxual-tsk unnamed-tsk ctx))))
     (assert unnamed-tsk)
     (assert unnamed-ctxual-tsk)
     unnamed-ctxual-tsk))
@@ -100,16 +104,17 @@
       (if (occ-clock-marker-is-unnamed-clock-p)
           (occ-debug :debug "occ-maybe-create-unnamed-tsk: Already clockin unnamed tsk")
         (let* ((unnamed-ctxual-tsk (occ-maybe-create-unnamed-ctxual-tsk ctx))
-               (unnamed-tsk        (occ-ctxual-tsk-tsk unnamed-ctxual-tsk))
-               (unnamed-marker     (occ-tsk-marker unnamed-tsk)))
-          (assert unnamed-tsk)
+               (unnamed-tsk        (when unnamed-ctxual-tsk (occ-ctxual-tsk-tsk unnamed-ctxual-tsk)))
+               (unnamed-marker     (when unnamed-tsk (occ-tsk-marker unnamed-tsk))))
           (assert unnamed-ctxual-tsk)
-          (prog1
-              (occ-clock-in unnamed-ctxual-tsk)
-            ;; id:x11 make org-ctx-clock version
-            (lotus-org-unnamed-task-clock-marker unnamed-marker)
-            (message "clockin to unnnamed tsk.")
-            (occ-unassociate-ctx-start-time-reset)))))))
+          (assert unnamed-tsk)
+          (if unnamed-marker
+              (prog1
+                  (occ-clock-in unnamed-ctxual-tsk)
+                ;; id:x11 make org-ctx-clock version
+                (lotus-org-unnamed-task-clock-marker unnamed-marker)
+                (message "clockin to unnnamed tsk.")
+                (occ-unassociate-ctx-start-time-reset))
+              (error "unnamed-marker is nil")))))))
 
-(provide 'occ-unnamed)
 ;;; occ-unnamed.el ends here
