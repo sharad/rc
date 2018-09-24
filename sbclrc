@@ -1,8 +1,9 @@
 ;; -*- mode: Lisp; fill-column: 75; comment-column: 50; -*-
 
 (in-package #:cl-user)
+
 #+(or sbcl ecl) (require :asdf)
-#-(or sbcl ecl) (load #p"/usr/share/common-lisp/source/asdf/asdf.lisp")
+;; #-(or sbcl ecl) (load #p"/usr/share/common-lisp/source/asdf/asdf.lisp")
 
 ;;;; QuickLisp :start --
 ;;; The following lines added by ql:add-to-init-file:
@@ -13,14 +14,15 @@
             (member-if
              #'directory
              '(
-               #p"/usr/local/share/common-lisp/source/"
-               #p"/atlantic/opt/share/common-lisp/"
-               #p"/all/res/share/common-lisp/"
-               #p"/all/res/share/common-lisp/"
-               #p"/atlantic/opt/share/common-lisp/"
-               ))))
-         (quicklisp-init (when qlisp-parent-dir
-                           (merge-pathnames "quicklisp/setup.lisp" qlisp-parent-dir))))
+               #p"/usr/local/share/common-lisp/source/"))))
+               ;; #p"/atlantic/opt/share/common-lisp/"
+               ;; #p"/all/res/share/common-lisp/"
+               ;; #p"/all/res/share/common-lisp/"
+               ;; #p"/atlantic/opt/share/common-lisp/"
+
+         (quicklisp-init
+           (when qlisp-parent-dir
+             (merge-pathnames "quicklisp/setup.lisp" qlisp-parent-dir))))
     (when (and
            quicklisp-init
            (probe-file quicklisp-init))
@@ -59,6 +61,7 @@
 
 ;;;;;; ASDF2 ;;;;;;
 
+;; (ql-http:fetch "http://beta.quicklisp.org/client/2014-01-30/client-info.sexp" (ql-setup:qmerge "client-info.sexp"))
 
 ;; Creates problem when imbedded in image.
 ;; (ql:quickload "quicklisp-slime-helper")
@@ -82,49 +85,42 @@
       (ql:quickload :uiop))))
 
 ;; load my utils
-(if (member "IN.NET.SHARAD.UTILS" (mapcar #'package-name (list-all-packages)) :test #'string=)
-    (require :in.net.sharad.utils))
+(when (member
+       "IN.NET.SHARAD.UTILS"
+       (mapcar
+        #'package-name
+        (list-all-packages))
+       :test #'string=)
+  (require :in.net.sharad.utils))
 
-;;; LineEdit
-;;; http://www.reddit.com/r/lisp/comments/gzip8/linedit_adds_history_completion_and_editing_to/
-;;; Check for --no-linedit command-line option.
-;; #+quicklisp
-;; (when nil
-;;   (when nil
-;;     (if (member "--no-linedit" sb-ext:*posix-argv* :test 'equal)
-;;         (setf sb-ext:*posix-argv*
-;;               (remove "--no-linedit" sb-ext:*posix-argv* :test 'equal))
-;;         (when (interactive-stream-p *terminal-io*)
-;;           (require :sb-aclrepl)
-;;           (ql:quickload "linedit")
-;;           (funcall (intern "INSTALL-REPL" :linedit)
-;;                    :wrap-current t)))))
-;;; LineEdit
 
 ;;; LineEdit
 ;;; http://www.reddit.com/r/lisp/comments/gzip8/linedit_adds_history_completion_and_editing_to/
 ;;; Check for --no-linedit command-line option.
 #+quicklisp
-(if t
-    (if (member "--no-linedit" sb-ext:*posix-argv* :test 'equal)
-        (setf sb-ext:*posix-argv*
-              (remove "--no-linedit" sb-ext:*posix-argv* :test 'equal))
-        (when (interactive-stream-p *terminal-io*)
-          (require :sb-aclrepl)
+(progn
+  (if (member "--no-linedit" sb-ext:*posix-argv* :test 'equal)
+      (setf sb-ext:*posix-argv*
+            (remove "--no-linedit" sb-ext:*posix-argv* :test 'equal))
+      (when (interactive-stream-p *terminal-io*)
+        (require :sb-aclrepl)
+        ;; https://www.common-lisp.net/project/linedit/
+        ;; https://github.com/sharplispers/linedit
 
-          ;; https://www.common-lisp.net/project/linedit/
-          ;; https://github.com/sharplispers/linedit
-
-          (when t
-            ;; (ql:quickload :cffi)
-            ;; (ql:quickload :cffi-grovel)
-            ;; (require :cffi)
-            (ql:quickload :osicat)
-            ;; (ql:quickload :linedit)
-            ;; (require :linedit)
-            ;; (funcall (intern "INSTALL-REPL" :linedit)
-            ;;          :wrap-current t)
-            ;; (linedit:linedit :prompt "-> ")
-            ;; (linedit:formedit :prompt1 "=> " :prompt2 "|   ")
-            ))))
+        (progn
+          (ql:quickload :cffi)
+          (ql:quickload :cffi-grovel)
+          ;; (require :cffi)
+          (require :cffi)
+          (ql:quickload :osicat)
+          ;; (ql:quickload :madeira-port)
+          (ql:quickload :linedit)
+          (require :linedit)
+          (funcall (intern "INSTALL-REPL" :linedit)
+                   :wrap-current t
+                   :eof-quits t)
+          ))))
+;; (progn
+;;   (linedit:linedit :prompt "-> ")
+;;   (linedit:formedit :prompt1 "=> " :prompt2 "|   "))
 ;;; LineEdit
