@@ -1,45 +1,24 @@
 ;; -*- mode: Lisp; fill-column: 75; comment-column: 50; -*-
 
-
-
-
 (in-package #:cl-user)
 #+(or sbcl ecl) (require :asdf)
 #-(or sbcl ecl) (load #p"/usr/share/common-lisp/source/asdf/asdf.lisp")
-
-;; (push
-;;  #p"/usr/local/share/common-lisp/systems/"
-;;  asdf:*central-registry*)
-
-;; (push
-;;   #p"/etc/"
-;;  asdf:*central-registry*)
-
-
-;; (asdf:oos 'asdf:load-op :asdf-binary-locations)
-
-;; (setf asdf:*centralize-lisp-binaries* t)
-;; (setf asdf:*centralize-lisp-binaries* nil)
-;; (setf asdf:*source-to-target-mappings*
-;;       '((#p"/usr/lib/sbcl/" nil)
-;;         (#p"/usr/lib64/sbcl/" nil)))
-
 
 ;;;; QuickLisp :start --
 ;;; The following lines added by ql:add-to-init-file:
 #-quicklisp
 (progn
   (let* ((qlisp-parent-dir
-          (car
-           (member-if
-            #'directory
-            '(
-              #p"/usr/local/share/common-lisp/source/"
-              #p"/atlantic/opt/share/common-lisp/"
-              #p"/all/res/share/common-lisp/"
-              #p"/all/res/share/common-lisp/"
-              #p"/atlantic/opt/share/common-lisp/"
-              ))))
+           (car
+            (member-if
+             #'directory
+             '(
+               #p"/usr/local/share/common-lisp/source/"
+               #p"/atlantic/opt/share/common-lisp/"
+               #p"/all/res/share/common-lisp/"
+               #p"/all/res/share/common-lisp/"
+               #p"/atlantic/opt/share/common-lisp/"
+               ))))
          (quicklisp-init (when qlisp-parent-dir
                            (merge-pathnames "quicklisp/setup.lisp" qlisp-parent-dir))))
     (when (and
@@ -83,39 +62,28 @@
 
 ;; Creates problem when imbedded in image.
 ;; (ql:quickload "quicklisp-slime-helper")
-
 #+quicklisp
 (progn
-  (defparameter *quicklisp-local-home-dir* (merge-pathnames "../paradise/opt/lisp/common-lisp/quicklisp/" (user-homedir-pathname)))
-  (when (probe-file (merge-pathnames "local-projects" *quicklisp-local-home-dir*))
-    (nconc ql:*local-project-directories* (list (merge-pathnames "local-projects" *quicklisp-local-home-dir*)))))
+  (progn
+    (defparameter *quicklisp-local-home-dir* (merge-pathnames "../paradise/opt/lisp/common-lisp/quicklisp/" (user-homedir-pathname)))
+    (when (probe-file (merge-pathnames "local-projects" *quicklisp-local-home-dir*))
+      (nconc ql:*local-project-directories* (list (merge-pathnames "local-projects" *quicklisp-local-home-dir*)))))
 
+  (progn
+    (progn
+      (ql:update-dist "quicklisp") ; To get updated software
+      (ql:update-client))           ; To update the Quicklisp client
 
-#+quicklisp
-(progn
-  (ql:update-dist "quicklisp") ; To get updated software
-  (ql:update-client)           ; To update the Quicklisp client
-  )
-
-#+quicklisp
-(progn
-  (ql:quickload "quickproject")
-  (ql:quickload "vecto")
-  (ql:quickload "sheeple")
-  (ql:quickload "cl-cont"))
+    (progn
+      (ql:quickload :quickproject)
+      (ql:quickload :vecto)
+      (ql:quickload :sheeple)
+      (ql:quickload :cl-cont)
+      (ql:quickload :uiop))))
 
 ;; load my utils
 (if (member "IN.NET.SHARAD.UTILS" (mapcar #'package-name (list-all-packages)) :test #'string=)
     (require :in.net.sharad.utils))
-
-
-
-
-
-
-
-
-
 
 ;;; LineEdit
 ;;; http://www.reddit.com/r/lisp/comments/gzip8/linedit_adds_history_completion_and_editing_to/
@@ -159,11 +127,4 @@
             ;; (linedit:linedit :prompt "-> ")
             ;; (linedit:formedit :prompt1 "=> " :prompt2 "|   ")
             ))))
-
-
-
-
-
-
-
 ;;; LineEdit
