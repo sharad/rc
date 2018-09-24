@@ -116,9 +116,9 @@
           ;; https://github.com/sharplispers/linedit
 
           (when t
-            (ql:quickload :cffi)
-            (ql:quickload :cffi-grovel)
-            (require :cffi)
+            ;; (ql:quickload :cffi)
+            ;; (ql:quickload :cffi-grovel)
+            ;; (require :cffi)
             (ql:quickload :osicat)
             ;; (ql:quickload :linedit)
             ;; (require :linedit)
