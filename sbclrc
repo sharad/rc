@@ -10,16 +10,7 @@
 #-quicklisp
 (progn
   (let* ((qlisp-parent-dir
-           (car
-            (member-if
-             #'directory
-             '(
-               #p"/usr/local/share/common-lisp/source/"))))
-               ;; #p"/atlantic/opt/share/common-lisp/"
-               ;; #p"/all/res/share/common-lisp/"
-               ;; #p"/all/res/share/common-lisp/"
-               ;; #p"/atlantic/opt/share/common-lisp/"
-
+           (car (member-if #'directory '(#p"/usr/local/share/common-lisp/source/"))))
          (quicklisp-init
            (when qlisp-parent-dir
              (merge-pathnames "quicklisp/setup.lisp" qlisp-parent-dir))))
