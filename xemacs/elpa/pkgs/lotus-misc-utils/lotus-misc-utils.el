@@ -510,29 +510,29 @@
 (defmacro lotus-with-other-frame-event-debug (name action &rest body)
   `(let ((frame nil)
          (sel-frame-adviced-p
-          (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))))
+           (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))))
      (letrec ((set-advice-fn
                (lambda ()
                  (if sel-frame-adviced-p
                      (when (not (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus)))
                        (message "readfn: add quiet 5 as already was present")
                        (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
-                   (when (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))
-                     (message "readfn: remove quiet 5 as already was present")
-                     (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))
+                     (when (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))
+                       (message "readfn: remove quiet 5 as already was present")
+                       (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))
               (readfn
                (lambda ()
                  (progn
                    (setq frame (selected-frame))
                    (add-hook 'pre-command-hook (lambda () (funcall hookfn)))
                    (condition-case nil
-                       (progn
-                         (message "readfn: %s inside readfn" ,name)
-                         (funcall set-advice-fn)
-                         ,@body
-                         (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
-                         (funcall set-advice-fn))
-                     (quit nil)))))
+                                   (progn
+                                     (message "readfn: %s inside readfn" ,name)
+                                     (funcall set-advice-fn)
+                                     ,@body
+                                     (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
+                                     (funcall set-advice-fn))
+                                   (quit nil)))))
               (hookfn
                (lambda ()
                  ;; (message "hookfn: last-input-event: %s last-event-frame: %s frame: %s"
@@ -547,39 +547,41 @@
                        ;; (message "hookfn: removing hook 2")
                        ;; (remove-hook 'pre-command-hook (lambda () (funcall hookfn)))
                        t)
-                   (with-selected-frame last-event-frame
-                     (progn
-                       (message "hookfn: %s running readfn from hookfn outside timer" ,name)
-                       (setq frame nil)
-                       (run-with-timer 0 nil
-                                       (lambda ()
-                                         (progn
-                                           ;; (setq frame (selected-frame))
-                                           ;; (setq debug-on-quit nil)
-                                           (message "hookfn: timer remove quiet 1")
-                                           ;; (funcall set-advice-fn)
-                                           ,@(cond
-                                               ((or
-                                                 (eq :restart action)
-                                                 (eq t action))
-                                                `(
-                                                  (with-selected-frame last-event-frame
-                                                    (message "hookfn: %s running readfn from hookfn inside timer" ,name)
-                                                    (funcall readfn))))
-                                               ((consp action)
-                                                `(
-                                                  (progn
-                                                    ,action)))
-                                               ((or
-                                                 (eq :cancel action)
-                                                 (null action))
-                                                nil)))))
+                     (with-selected-frame last-event-frame
                        (progn
-                         (message "hookfn: add quiet 2")
-                         (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
-                         (when (active-minibuffer-window)
-                           (abort-recursive-edit)))))))))
-       (funcall readfn))))
+                         (message "hookfn: %s running readfn from hookfn outside timer" ,name)
+                         (setq frame nil)
+                         (run-with-timer 0 nil
+                                         (lambda ()
+                                           (progn
+                                             ;; (setq frame (selected-frame))
+                                             ;; (setq debug-on-quit nil)
+                                             (message "hookfn: timer remove quiet 1")
+                                             ;; (funcall set-advice-fn)
+                                             (prog1
+                                                 ,@(cond
+                                                     ((or
+                                                       (eq :restart action)
+                                                       (eq t action))
+                                                      `(
+                                                        (with-selected-frame last-event-frame
+                                                          (message "hookfn: %s running readfn from hookfn inside timer" ,name)
+                                                          (funcall readfn))))
+                                                     ((consp action)
+                                                      `(
+                                                        (progn
+                                                          ,action)))
+                                                     ((or
+                                                       (eq :cancel action)
+                                                       (null action))
+                                                      nil))
+                                               (message "hookfn: finished running %s" action)))))
+                         (progn
+                           (message "hookfn: add quiet 2")
+                           (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
+                           (when (active-minibuffer-window)
+                             (abort-recursive-edit)))))))))
+             (funcall readfn))))
 (put 'lotus-with-other-frame-event-debug 'lisp-indent-function 2)
 
 (defmacro lotus-restart-with-other-frame-event (&rest body)

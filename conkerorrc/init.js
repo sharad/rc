@@ -28,8 +28,9 @@ var al_load_dir = make_file(__rcfile.target).parent;
 function al_load (relpath) {
     var file = al_load_dir.clone();
     file.appendRelativePath( relpath );
-    if (file.exists())
+    if (file.exists()) {
         load(file);
+    }
     else
         dumpln("WARNING: file '" + file.path + "' does not exist");
 }
@@ -57,7 +58,9 @@ function load_rc_files() {
 
         for (var f in rc_files) {
             // load(conkerorhome + rc_files[f]);
+            dumpln("loading " + rc_files[f]);
             al_load(rc_files[f]);
+            dumpln("loaded " + rc_files[f])
         }
     }
 }
