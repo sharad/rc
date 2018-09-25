@@ -37,6 +37,7 @@
 (defconst lotus-clisp-packages
   '(
     (clisp :location local)
+    slime
     )
   "The list of Lisp packages required by the lotus-clisp layer.
 
@@ -67,13 +68,24 @@ Each entry is either:
 
 (defun lotus-clisp/init-clisp ()
   (use-package clisp
-      ;; lot of things from
+    ;; lot of things from
+    ;; see http://cl-cookbook.sourceforge.net/.emacs for common lisp
+    ;;     http://sugarshark.com/elisp/init/lisp.el.html
+    :defer t
+    :config
+    (progn)))
 
-      ;; see http://cl-cookbook.sourceforge.net/.emacs for common lisp
-      ;;     http://sugarshark.com/elisp/init/lisp.el.html
-      :defer t
-      :config
+
+
+(defun common-lisp/post-init-slime ()
+  (use-package slime
+    :commands slime-mode
+    :defer t
+    :config
+    (progn
       (progn
-        )))
+        ;; https://cliki.net/linedit
+        (setq
+         inferior-lisp-program "sbcl --noinform --no-linedit")))))
 
 ;;; packages.el ends here
