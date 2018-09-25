@@ -52,28 +52,54 @@
 
 ;;;;;; ASDF2 ;;;;;;
 
-;; (ql-http:fetch "http://beta.quicklisp.org/client/2014-01-30/client-info.sexp" (ql-setup:qmerge "client-info.sexp"))
-
-;; Creates problem when imbedded in image.
-;; (ql:quickload "quicklisp-slime-helper")
 #+quicklisp
 (progn
+
+  (progn
+    ;; (ql-http:fetch "http://beta.quicklisp.org/client/2014-01-30/client-info.sexp" (ql-setup:qmerge "client-info.sexp"))
+
+    ;; Creates problem when imbedded in image.
+    ;; (ql:quickload "quicklisp-slime-helper")
+    )
+
   (progn
     (defparameter *quicklisp-local-home-dir* (merge-pathnames "../paradise/opt/lisp/common-lisp/quicklisp/" (user-homedir-pathname)))
     (when (probe-file (merge-pathnames "local-projects" *quicklisp-local-home-dir*))
       (nconc ql:*local-project-directories* (list (merge-pathnames "local-projects" *quicklisp-local-home-dir*)))))
 
   (progn
-    (progn
-      (ql:update-dist "quicklisp") ; To get updated software
-      (ql:update-client))           ; To update the Quicklisp client
+    (ql:update-dist "quicklisp") ; To get updated software
+    (ql:update-client))           ; To update the Quicklisp client
 
-    (progn
-      (ql:quickload :quickproject)
-      (ql:quickload :vecto)
-      (ql:quickload :sheeple)
-      (ql:quickload :cl-cont)
-      (ql:quickload :uiop))))
+  (progn
+    (ql:quickload :quickproject)
+    (ql:quickload :vecto)
+    (ql:quickload :sheeple)
+    (ql:quickload :cl-cont)
+    (ql:quickload :uiop))
+
+  (progn
+    ;; LineEdit
+    ;; http://www.reddit.com/r/lisp/comments/gzip8/linedit_adds_history_completion_and_editing_to/
+    ;; Check for --no-linedit command-line option.
+    (if (member "--no-linedit" sb-ext:*posix-argv* :test 'equal)
+        (setf sb-ext:*posix-argv*
+              (remove "--no-linedit" sb-ext:*posix-argv* :test 'equal))
+        (when (interactive-stream-p *terminal-io*)
+          (require :sb-aclrepl)
+          ;; https://www.common-lisp.net/project/linedit/
+          ;; https://github.com/sharplispers/linedit
+          (ql:quickload :linedit)
+          (require :linedit)
+          (funcall (intern "INSTALL-REPL" :linedit)
+                   :wrap-current t
+                   :eof-quits t))))
+  ;; (progn
+  ;;   (linedit:linedit :prompt "-> ")
+  ;;   (linedit:formedit :prompt1 "=> " :prompt2 "|   "))
+
+  )
+
 
 ;; load my utils
 (when (member
@@ -82,36 +108,5 @@
         #'package-name
         (list-all-packages))
        :test #'string=)
+  (format t "TEst")
   (require :in.net.sharad.utils))
-
-
-;;; LineEdit
-;;; http://www.reddit.com/r/lisp/comments/gzip8/linedit_adds_history_completion_and_editing_to/
-;;; Check for --no-linedit command-line option.
-#+quicklisp
-(progn
-  (if (member "--no-linedit" sb-ext:*posix-argv* :test 'equal)
-      (setf sb-ext:*posix-argv*
-            (remove "--no-linedit" sb-ext:*posix-argv* :test 'equal))
-      (when (interactive-stream-p *terminal-io*)
-        (require :sb-aclrepl)
-        ;; https://www.common-lisp.net/project/linedit/
-        ;; https://github.com/sharplispers/linedit
-
-        (progn
-          (ql:quickload :cffi)
-          (ql:quickload :cffi-grovel)
-          ;; (require :cffi)
-          (require :cffi)
-          (ql:quickload :osicat)
-          ;; (ql:quickload :madeira-port)
-          (ql:quickload :linedit)
-          (require :linedit)
-          (funcall (intern "INSTALL-REPL" :linedit)
-                   :wrap-current t
-                   :eof-quits t)
-          ))))
-;; (progn
-;;   (linedit:linedit :prompt "-> ")
-;;   (linedit:formedit :prompt1 "=> " :prompt2 "|   "))
-;;; LineEdit
