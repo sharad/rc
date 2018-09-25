@@ -24,7 +24,11 @@ fi
 
 
 
-if [ ! -d ~/tmp ]
+if [ -L ~/tmp -a ! -d ~/tmp ]
 then
     mkdir -p $(readlink -m ~/tmp)
+fi
+if [ -d ~/tmp ]
+then
+    mkdir -p ~/tmp/Public/Publish/html
 fi
