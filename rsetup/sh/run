@@ -26,5 +26,5 @@ fi
 
 if [ -L ~/tmp -a ! -d ~/tmp ]
 then
-    mkdir -p $(readlink -m ~/tmp/Private)
+    mkdir -p $(readlink -m ~/tmp)
 fi
