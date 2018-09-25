@@ -614,7 +614,12 @@ function gitssync () {
 
     if [ $# -eq 0 ]
     then
-        superepos=(~/.repos/git /usr/local/.repos/git)
+        superepos=(
+            ~/.repos/git/main/resource/userorg/
+            ~/.repos/git/main/resource/info/doc/orgs/private/doc
+            ~/.repos/git/main/resource/data/multimedia/orgs/private/media/
+            ~/.localrepo/git/
+        )
     else
         superepos="$@"
     fi
