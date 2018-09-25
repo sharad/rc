@@ -892,3 +892,55 @@ function rmfrmsetup ()
 }
 
 ##}}
+
+
+##{{
+# https://serverfault.com/questions/115856/how-to-list-symbolic-link-chains
+function chain()
+{
+    export chain
+    local link target
+    if [[ -z $chain ]]
+    then
+        chain="$1"
+    fi
+    link=$(command stat --printf=%N "$1")
+    while [[ $link =~ \-\> ]]
+    do
+        target="${link##*\`}"
+        target="${target%\'}"
+        chain+=" -> $target"
+        if [[ ! $target =~ / && $1 =~ / ]]
+        then
+            target="${1%/*}/$target"
+        fi
+        chain "$target"
+        return
+    done
+    echo "$chain"
+    unset chain
+}
+
+
+function chain ()
+{
+    export chain;
+    local target;
+    if [[ -z $chain ]]; then
+        chain="$1";
+    fi;
+    target=$(readlink "$1");
+    while [[ $target ]]; do
+        chain+=" -> $target";
+        if [[ ! $target =~ / && $1 =~ / ]]
+        then
+            target="${1%/*}/$target"
+        fi
+        chain "$target";
+        return;
+    done;
+    echo "$chain";
+    unset chain
+}
+
+##}}
