@@ -544,20 +544,20 @@ function setup_user_config_setup()
         echo "${RCHOME}" not exists >&2
     fi # if [ -d "${RCHOME}" ]
 
-    if false
-    then
-        if [ -d ~/.setup/_home/acyclicsymlinkfix ]
-        then
-            for symlnk in      ~/.setup/_home/acyclicsymlinkfix/.Volumes \
-                                   ~/.setup/_home/acyclicsymlinkfix/Desktop \
-                                   ~/.setup/_home/acyclicsymlinkfix/Downloads \
-                                   ~/.setup/_home/acyclicsymlinkfix/Music \
-                                   ~/.setup/_home/acyclicsymlinkfix/Pictures
-            do
-                cp -a $symlnk ~/
-            done
-        fi
-    fi
+    # if false
+    # then
+    #     if [ -d ~/.setup/_home/acyclicsymlinkfix ]
+    #     then
+    #         for symlnk in      ~/.setup/_home/acyclicsymlinkfix/.Volumes \
+    #                                ~/.setup/_home/acyclicsymlinkfix/Desktop \
+    #                                ~/.setup/_home/acyclicsymlinkfix/Downloads \
+    #                                ~/.setup/_home/acyclicsymlinkfix/Music \
+    #                                ~/.setup/_home/acyclicsymlinkfix/Pictures
+    #         do
+    #             cp -a $symlnk ~/
+    #         done
+    #     fi
+    # fi
 }
 
 function setup_download_misc()
