@@ -576,8 +576,6 @@ function setup_Documentation()  # TODO
 {
     if [  ! -L ~/Documents -a "$(readlink -m ~/Documents)" != "$HOME/.repos/git/user/doc" ]
     then
-        # rm -f ~/.LocalDirs.d/home.d/Documents
-        # setup_make_link  ../../.repos/git/user/doc ~/.LocalDirs.d/home.d/Documents
         rm -f ~/Documents
         cp -a ~/.setup/_home/Documents ~/
     fi
@@ -587,8 +585,6 @@ function setup_public_html()    # TODO
 {
     if [  ! -L ~/public_html -o "$(readlink -m ~/public_html)" != "$HOME/.repos/git/user/doc/Public/Published/html" ]
     then
-        # rm -f ~/.LocalDirs.d/home.d/public_html
-        # setup_make_link  Documents/Public/Published/html ~/.LocalDirs.d/home.d/public_html
         rm -f ~/public_html
         cp -a ~/.setup/_home/public_html ~/
     fi
