@@ -62,7 +62,7 @@ DEB_PKG_TOOL_GUI="lightdm osdsh osd-cat xosd-bin notify-osd notify-osd-icons xos
 DEB_PKG_XWM="xcompmgr autocutsel sakura"
 DEB_PKG_XML="libxml2-utils xsltproc docbook5-xml docbook-xsl-ns"
 DEB_PKG_UTILS="gcalcli newsbeuter"
-DEB_PKG_MEDIA="libavcodec-extra pulseeffects pavucontrol pulseaudio-module-gconf pulseaudio-equalizer vokoscreen pulseaudio-utils pulsemixer kodi sox mpg123 mpg321 "
+DEB_PKG_MEDIA="libavcodec-extra pulseeffects pavucontrol pulseaudio-module-gconf pulseaudio-equalizer vokoscreen pulseaudio-utils pulsemixer kodi sox mpg123 mpg321 vlc"
 DEB_PKG_WINDOW="smbclient python3-smbc python-smbc"
 DEB_PKG1_NET="network-manager-fortisslvpn openfortivpn"
 DEB_PKG_DOC="wv"
@@ -430,6 +430,11 @@ function setup_git_repos()
 
     # RESOURCEPATH=".repos/git/main/resource"
     # USERORGMAIN="userorg/main"
+    # ~/.Private/secure.d
+    # ~/.repos/git/main/resource/userorg/
+    # ~/.repos/git/main/resource/info/doc/orgs/private/doc
+    # ~/.repos/git/main/resource/data/multimedia/orgs/private/media/
+    # ~/.localrepo/git/
 
     mkdir -p ~/${RESOURCEPATH}/
     if [ ! -d ~/${RESOURCEPATH}/userorg ]
