@@ -22,13 +22,10 @@
 
 #+quicklisp
 (progn
-
-  (progn)
-  ;; (ql-http:fetch "http://beta.quicklisp.org/client/2014-01-30/client-info.sexp" (ql-setup:qmerge "client-info.sexp"))
-
-  ;; Creates problem when imbedded in image.
-  ;; (ql:quickload "quicklisp-slime-helper")
-
+  ;; (progn
+  ;;   (ql-http:fetch "http://beta.quicklisp.org/client/2014-01-30/client-info.sexp" (ql-setup:qmerge "client-info.sexp"))
+  ;;   ;; Creates problem when imbedded in image.
+  ;;   (ql:quickload "quicklisp-slime-helper"))
 
   (progn
     (defparameter *quicklisp-local-home-dir* (merge-pathnames "../paradise/opt/lisp/common-lisp/quicklisp/" (user-homedir-pathname)))
@@ -67,9 +64,6 @@
 ;; (progn
 ;;   (linedit:linedit :prompt "-> ")
 ;;   (linedit:formedit :prompt1 "=> " :prompt2 "|   "))
-
-
-
 
 ;; load my utils
 (when (member
