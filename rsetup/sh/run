@@ -19,3 +19,12 @@ if [ "x${HOST}" != "x" ] ; then
 else
     print env var HOST is not set $HOST
 fi
+
+
+
+
+
+if [ ! -d ~/tmp ]
+then
+    mkdir -p $(readlink -m ~/tmp)
+fi
