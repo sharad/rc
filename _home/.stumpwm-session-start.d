@@ -1,1 +1,0 @@
-.setup/stumpwm-session-start.d

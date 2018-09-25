@@ -615,6 +615,7 @@ function gitssync () {
     if [ $# -eq 0 ]
     then
         superepos=(
+            ~/.Private/secure.d
             ~/.repos/git/main/resource/userorg/
             ~/.repos/git/main/resource/info/doc/orgs/private/doc
             ~/.repos/git/main/resource/data/multimedia/orgs/private/media/
@@ -687,6 +688,7 @@ function gitsstatus () {
     then
         # ~/.repos/git /usr/local/.repos/git
         superepos=(
+            ~/.Private/secure.d
             ~/.repos/git/main/resource/userorg/
             ~/.repos/git/main/resource/info/doc/orgs/private/doc
             ~/.repos/git/main/resource/data/multimedia/orgs/private/media/
