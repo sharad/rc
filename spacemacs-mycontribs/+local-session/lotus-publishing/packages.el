@@ -374,293 +374,296 @@ Each entry is either:
                            (dolist (proj
                                     (remove-if-not
                                      #'(lambda (file)
-                                         (and
-                                          (not
-                                           (string-match "^\\.\*$" file))
-                                          (file-directory-p
-                                           (expand-file-name
-                                            file
-                                            (org-publishing-created-contents-path)))))
+                                         (let ((path (expand-file-name
+                                                      file
+                                                      (org-publishing-created-contents-path))))
+                                           (and
+                                            (not
+                                             (string-match "^\\.\*$" file))
+                                            (file-directory-p path)
+                                            (file-exists-p
+                                             (expand-file-name ".publish"
+                                                               path)))))
                                      (directory-files
                                       (org-publishing-created-contents-path))))
                              (add-org-main-project proj)))
 
-                     (when nil
+                         (when nil
+                           (progn
+                             (progn         ;journal
+                               (add-org-project
+                                "journal-notes"
+                                :base-directory (org-publishing-created-contents-path "jorunal/")
+                                :auto-index t
+                                :auto-sitemap t
+                                :sitemap-title "Sitemap"
+                                :index-filename "sitemap.org"
+                                :index-title "Sitemap"
+                                :recursive t
+                                :base-extension "org"
+                                :publishing-directory (org-publishing-generated-contents-path "journal/html/")
+                                ;; :publishing-function org-publish-org-to-html
+                                :publishing-function 'org-html-publish-to-html
+                                :headline-levels 3
+                                :with-section-numbers nil
+                                :table-of-contents nil
+                                :auto-preamble t
+                                :auto-postamble nil)
+
+                               (add-org-project
+                                "journal"
+                                :base-extension "org"
+                                :components '("inherit-org-info-js" "generic-inherit" "journal-notes" "generic-static")))
+
+                             (progn         ;tasks
+                               (add-org-project
+                                "tasks-notes"
+                                :base-directory (org-publishing-created-contents-path "tasks/")
+                                :auto-index t
+                                :auto-sitemap t
+                                :sitemap-title "Sitemap"
+                                :index-filename "sitemap.org"
+                                :index-title "Sitemap"
+                                :recursive t
+                                :base-extension "org"
+                                :publishing-directory (org-publishing-generated-contents-path "tasks/html/")
+                                ;; :publishing-function org-publish-org-to-html
+                                :publishing-function 'org-html-publish-to-html
+                                :headline-levels 3
+                                :with-section-numbers nil
+                                :table-of-contents nil
+                                :auto-preamble t
+                                :auto-postamble nil)
+
+                               (add-org-project
+                                "tasks"
+                                :base-extension "org"
+                                :components '("inherit-org-info-js" "generic-inherit" "tasks-notes" "generic-static")))
+
+                             (progn         ;notes
+                               (add-org-project
+                                "notes-notes"
+                                :base-directory (org-publishing-created-contents-path "notes/")
+                                :auto-index t
+                                :auto-sitemap t
+                                :sitemap-title "Sitemap"
+                                :index-filename "sitemap.org"
+                                :index-title "Sitemap"
+                                :recursive t
+                                :base-extension "org"
+                                :publishing-directory (org-publishing-generated-contents-path "notes/html/")
+                                ;; :publishing-function org-publish-org-to-html
+                                :publishing-function 'org-html-publish-to-html
+                                :headline-levels 3
+                                :with-section-numbers nil
+                                :table-of-contents nil
+                                :auto-preamble t
+                                :auto-postamble nil)
+
+                               (add-org-project
+                                "notes"
+                                :base-extension "org"
+                                :components '("inherit-org-info-js" "generic-inherit" "notes-notes" "generic-static")))
+
+                             (progn         ;blog
+                               (add-org-project
+                                "blog-notes"
+                                :base-directory (org-publishing-created-contents-path "blog/")
+                                :auto-index t
+                                :auto-sitemap t
+                                :sitemap-title "Sitemap"
+                                :index-filename "sitemap.org"
+                                :index-title "Sitemap"
+                                :recursive t
+                                :base-extension "org"
+                                :publishing-directory (org-publishing-generated-contents-path "blog/html/")
+                                ;; :publishing-function org-publish-org-to-html
+                                :publishing-function 'org-html-publish-to-html
+                                :headline-levels 3
+                                :with-section-numbers nil
+                                :table-of-contents nil
+                                :auto-preamble t
+                                :auto-postamble nil)
+
+                               (add-org-project
+                                "blog"
+                                :base-extension "org"
+                                :components '("inherit-org-info-js" "generic-inherit" "blog-notes" "generic-static")))
+
+                             (progn         ;Important
+                               (add-org-project
+                                "Important-notes"
+                                :base-directory (org-publishing-created-contents-path "Important/")
+                                :auto-index t
+                                :auto-sitemap t
+                                :sitemap-title "Sitemap"
+                                :index-filename "sitemap.org"
+                                :index-title "Sitemap"
+                                :recursive t
+                                :base-extension "org"
+                                :publishing-directory (org-publishing-generated-contents-path "Important/html/")
+                                ;; :publishing-function org-publish-org-to-html
+                                :publishing-function 'org-html-publish-to-html
+                                :headline-levels 3
+                                :with-section-numbers nil
+                                :table-of-contents nil
+                                :auto-preamble t
+                                :auto-postamble nil)
+
+                               (add-org-project
+                                "Important"
+                                :base-extension "org"
+                                :components '("inherit-org-info-js" "generic-inherit" "Important-notes" "generic-static")))
+
+                             (progn         ;misc
+                               (add-org-project
+                                "misc-notes"
+                                :base-directory (org-publishing-created-contents-path "misc/")
+                                :auto-index t
+                                :auto-sitemap t
+                                :sitemap-title "Sitemap"
+                                :index-filename "sitemap.org"
+                                :index-title "Sitemap"
+                                :recursive t
+                                :base-extension "org"
+                                :publishing-directory (org-publishing-generated-contents-path "misc/html/")
+                                ;; :publishing-function org-publish-org-to-html
+                                :publishing-function 'org-html-publish-to-html
+                                :headline-levels 3
+                                :with-section-numbers nil
+                                :table-of-contents nil
+                                :auto-preamble t
+                                :auto-postamble nil)
+
+                               (add-org-project
+                                "misc"
+                                :base-extension "org"
+                                :components '("inherit-org-info-js" "generic-inherit" "misc-notes" "generic-static")))
+
+                             (progn         ;reminders
+                               (add-org-project
+                                "reminders-notes"
+                                :base-directory (org-publishing-created-contents-path "reminders/")
+                                :auto-index t
+                                :auto-sitemap t
+                                :sitemap-title "Sitemap"
+                                :index-filename "sitemap.org"
+                                :index-title "Sitemap"
+                                :recursive t
+                                :base-extension "org"
+                                :publishing-directory (org-publishing-generated-contents-path "reminders/html/")
+                                ;; :publishing-function org-publish-org-to-html
+                                :publishing-function 'org-html-publish-to-html
+                                :headline-levels 3
+                                :with-section-numbers nil
+                                :table-of-contents nil
+                                :auto-preamble t
+                                :auto-postamble nil)
+
+                               (add-org-project
+                                "reminders"
+                                :base-extension "org"
+                                :components '("inherit-org-info-js" "generic-inherit" "reminders-notes" "generic-static"))))))
+
                        (progn
-                         (progn         ;journal
-                           (add-org-project
-                            "journal-notes"
-                            :base-directory (org-publishing-created-contents-path "jorunal/")
-                            :auto-index t
-                            :auto-sitemap t
-                            :sitemap-title "Sitemap"
-                            :index-filename "sitemap.org"
-                            :index-title "Sitemap"
-                            :recursive t
-                            :base-extension "org"
-                            :publishing-directory (org-publishing-generated-contents-path "journal/html/")
-                            ;; :publishing-function org-publish-org-to-html
-                            :publishing-function 'org-html-publish-to-html
-                            :headline-levels 3
-                            :with-section-numbers nil
-                            :table-of-contents nil
-                            :auto-preamble t
-                            :auto-postamble nil)
+                         (use-package org-agenda
+                                      :defer t
+                                      :config
+                                      (progn
 
-                           (add-org-project
-                            "journal"
-                            :base-extension "org"
-                            :components '("inherit-org-info-js" "generic-inherit" "journal-notes" "generic-static")))
+                                        (progn
+                                          (use-package task-manager
+                                                       :defer t
+                                                       :commands (office-mode task-party-dir task-select-party-dir find-task-dir)
+                                                       :config
+                                                       (progn
+                                                         (progn
+                                                           (add-hook
+                                                            'task-current-party-change-hook
+                                                            #'(lambda ()
+                                                                (progn
+                                                                  (unless task-current-party
+                                                                    (task-current-party "meru"))
+                                                                  (let ((task-dir (task-party-dir)))
+                                                                    (when (file-directory-p task-dir)
 
-                         (progn         ;tasks
-                           (add-org-project
-                            "tasks-notes"
-                            :base-directory (org-publishing-created-contents-path "tasks/")
-                            :auto-index t
-                            :auto-sitemap t
-                            :sitemap-title "Sitemap"
-                            :index-filename "sitemap.org"
-                            :index-title "Sitemap"
-                            :recursive t
-                            :base-extension "org"
-                            :publishing-directory (org-publishing-generated-contents-path "tasks/html/")
-                            ;; :publishing-function org-publish-org-to-html
-                            :publishing-function 'org-html-publish-to-html
-                            :headline-levels 3
-                            :with-section-numbers nil
-                            :table-of-contents nil
-                            :auto-preamble t
-                            :auto-postamble nil)
+                                                                      (add-to-org-agenda-custom-commands
+                                                                       `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
+                                                                         ,(task-party-org-heading) ;;  search ""
+                                                                         ((agenda ""
+                                                                                  ((org-agenda-span 'day)
+                                                                                   (org-agenda-prefix-format  "%e")))
+                                                                          (org-agenda-files #'task-party-dir-files-recursive)
+                                                                          ;; (org-agenda-sorting-strategy '(priority-up effort-down))
+                                                                          )
+                                                                         ;; ("~/computer.html")
+                                                                         ))
 
-                           (add-org-project
-                            "tasks"
-                            :base-extension "org"
-                            :components '("inherit-org-info-js" "generic-inherit" "tasks-notes" "generic-static")))
+                                                                      ;; COMMON settings for all reviews
+                                                                      (setq efs/org-agenda-review-settings
+                                                                            '((org-agenda-files #'task-party-dir-files-recursive)
+                                                                              (org-agenda-show-all-dates t)
+                                                                              (org-agenda-start-with-log-mode t)
+                                                                              (org-agenda-start-with-clockreport-mode t)
+                                                                              (org-agenda-archives-mode t)
+                                                                              ;; I don't care if an entry was archived
+                                                                              (org-agenda-hide-tags-regexp
+                                                                               (concat org-agenda-hide-tags-regexp
+                                                                                "\\|ARCHIVE"))
+                                                                              )))))))))))
 
-                         (progn         ;notes
-                           (add-org-project
-                            "notes-notes"
-                            :base-directory (org-publishing-created-contents-path "notes/")
-                            :auto-index t
-                            :auto-sitemap t
-                            :sitemap-title "Sitemap"
-                            :index-filename "sitemap.org"
-                            :index-title "Sitemap"
-                            :recursive t
-                            :base-extension "org"
-                            :publishing-directory (org-publishing-generated-contents-path "notes/html/")
-                            ;; :publishing-function org-publish-org-to-html
-                            :publishing-function 'org-html-publish-to-html
-                            :headline-levels 3
-                            :with-section-numbers nil
-                            :table-of-contents nil
-                            :auto-preamble t
-                            :auto-postamble nil)
-
-                           (add-org-project
-                            "notes"
-                            :base-extension "org"
-                            :components '("inherit-org-info-js" "generic-inherit" "notes-notes" "generic-static")))
-
-                         (progn         ;blog
-                           (add-org-project
-                            "blog-notes"
-                            :base-directory (org-publishing-created-contents-path "blog/")
-                            :auto-index t
-                            :auto-sitemap t
-                            :sitemap-title "Sitemap"
-                            :index-filename "sitemap.org"
-                            :index-title "Sitemap"
-                            :recursive t
-                            :base-extension "org"
-                            :publishing-directory (org-publishing-generated-contents-path "blog/html/")
-                            ;; :publishing-function org-publish-org-to-html
-                            :publishing-function 'org-html-publish-to-html
-                            :headline-levels 3
-                            :with-section-numbers nil
-                            :table-of-contents nil
-                            :auto-preamble t
-                            :auto-postamble nil)
-
-                           (add-org-project
-                            "blog"
-                            :base-extension "org"
-                            :components '("inherit-org-info-js" "generic-inherit" "blog-notes" "generic-static")))
-
-                         (progn         ;Important
-                           (add-org-project
-                            "Important-notes"
-                            :base-directory (org-publishing-created-contents-path "Important/")
-                            :auto-index t
-                            :auto-sitemap t
-                            :sitemap-title "Sitemap"
-                            :index-filename "sitemap.org"
-                            :index-title "Sitemap"
-                            :recursive t
-                            :base-extension "org"
-                            :publishing-directory (org-publishing-generated-contents-path "Important/html/")
-                            ;; :publishing-function org-publish-org-to-html
-                            :publishing-function 'org-html-publish-to-html
-                            :headline-levels 3
-                            :with-section-numbers nil
-                            :table-of-contents nil
-                            :auto-preamble t
-                            :auto-postamble nil)
-
-                           (add-org-project
-                            "Important"
-                            :base-extension "org"
-                            :components '("inherit-org-info-js" "generic-inherit" "Important-notes" "generic-static")))
-
-                         (progn         ;misc
-                           (add-org-project
-                            "misc-notes"
-                            :base-directory (org-publishing-created-contents-path "misc/")
-                            :auto-index t
-                            :auto-sitemap t
-                            :sitemap-title "Sitemap"
-                            :index-filename "sitemap.org"
-                            :index-title "Sitemap"
-                            :recursive t
-                            :base-extension "org"
-                            :publishing-directory (org-publishing-generated-contents-path "misc/html/")
-                            ;; :publishing-function org-publish-org-to-html
-                            :publishing-function 'org-html-publish-to-html
-                            :headline-levels 3
-                            :with-section-numbers nil
-                            :table-of-contents nil
-                            :auto-preamble t
-                            :auto-postamble nil)
-
-                           (add-org-project
-                            "misc"
-                            :base-extension "org"
-                            :components '("inherit-org-info-js" "generic-inherit" "misc-notes" "generic-static")))
-
-                         (progn         ;reminders
-                           (add-org-project
-                            "reminders-notes"
-                            :base-directory (org-publishing-created-contents-path "reminders/")
-                            :auto-index t
-                            :auto-sitemap t
-                            :sitemap-title "Sitemap"
-                            :index-filename "sitemap.org"
-                            :index-title "Sitemap"
-                            :recursive t
-                            :base-extension "org"
-                            :publishing-directory (org-publishing-generated-contents-path "reminders/html/")
-                            ;; :publishing-function org-publish-org-to-html
-                            :publishing-function 'org-html-publish-to-html
-                            :headline-levels 3
-                            :with-section-numbers nil
-                            :table-of-contents nil
-                            :auto-preamble t
-                            :auto-postamble nil)
-
-                           (add-org-project
-                            "reminders"
-                            :base-extension "org"
-                            :components '("inherit-org-info-js" "generic-inherit" "reminders-notes" "generic-static"))))))
-
-                   (progn
-                     (use-package org-agenda
-                                  :defer t
-                                  :config
-                                  (progn
-
-                                    (progn
-                                      (use-package task-manager
-                                                   :defer t
-                                                   :commands (office-mode task-party-dir task-select-party-dir find-task-dir)
-                                                   :config
-                                                   (progn
+                                        (use-package org-agenda
+                                                     :defer t
+                                                     :config
                                                      (progn
-                                                       (add-hook
-                                                        'task-current-party-change-hook
-                                                        #'(lambda ()
-                                                            (progn
-                                                              (unless task-current-party
-                                                                (task-current-party "meru"))
-                                                              (let ((task-dir (task-party-dir)))
-                                                                (when (file-directory-p task-dir)
+                                                       (progn ;; "org-publishing"
 
-                                                                  (add-to-org-agenda-custom-commands
-                                                                   `("Z" ;; "Meru Today" ;; tags-todo "computer" ;; (1) (2) (3) (4)
-                                                                     ,(task-party-org-heading) ;;  search ""
-                                                                     ((agenda ""
-                                                                              ((org-agenda-span 'day)
-                                                                               (org-agenda-prefix-format  "%e")))
-                                                                      (org-agenda-files #'task-party-dir-files-recursive)
-                                                                      ;; (org-agenda-sorting-strategy '(priority-up effort-down))
-                                                                      )
-                                                                     ;; ("~/computer.html")
-                                                                     ))
+                                                         (defvar efs/org-agenda-review-settings nil)
 
-                                                                  ;; COMMON settings for all reviews
-                                                                  (setq efs/org-agenda-review-settings
-                                                                        '((org-agenda-files #'task-party-dir-files-recursive)
-                                                                          (org-agenda-show-all-dates t)
-                                                                          (org-agenda-start-with-log-mode t)
-                                                                          (org-agenda-start-with-clockreport-mode t)
-                                                                          (org-agenda-archives-mode t)
-                                                                          ;; I don't care if an entry was archived
-                                                                          (org-agenda-hide-tags-regexp
-                                                                           (concat org-agenda-hide-tags-regexp
-                                                                            "\\|ARCHIVE"))
-                                                                          )))))))))))
+                                                         ;; "Review Aganda" ;;http://stackoverflow.com/a/22440571
+                                                         ;; define "R" as the prefix key for reviewing what happened in various
+                                                         ;; time periods
+                                                         (add-to-org-agenda-custom-commands
+                                                          '("R" . "Review" ))
 
-                                    (use-package org-agenda
-                                                 :defer t
-                                                 :config
-                                                 (progn
-                                                   (progn ;; "org-publishing"
+                                                         ;; Show the agenda with the log turn on, the clock table show and
+                                                         ;; archived entries shown.  These commands are all the same exept for
+                                                         ;; the time period.
+                                                         (add-to-org-agenda-custom-commands
+                                                          `("Rw" "Week in review"
+                                                                 agenda ""
+                                                                 ;; agenda settings
+                                                                 ,(append
+                                                                   efs/org-agenda-review-settings
+                                                                   '((org-agenda-span 'week)
+                                                                     (org-agenda-start-on-weekday 0)
+                                                                     (org-agenda-overriding-header "Week in Review"))
+                                                                   )
+                                                                 ("~/org/review/week.html")))
 
-                                                     (defvar efs/org-agenda-review-settings nil)
+                                                         (add-to-org-agenda-custom-commands
+                                                          `("Rd" "Day in review"
+                                                                 agenda ""
+                                                                 ;; agenda settings
+                                                                 ,(append
+                                                                   efs/org-agenda-review-settings
+                                                                   '((org-agenda-span 'day)
+                                                                     (org-agenda-overriding-header "Week in Review"))
+                                                                   )
+                                                                 ("~/org/review/day.html")))
 
-                                                     ;; "Review Aganda" ;;http://stackoverflow.com/a/22440571
-                                                     ;; define "R" as the prefix key for reviewing what happened in various
-                                                     ;; time periods
-                                                     (add-to-org-agenda-custom-commands
-                                                      '("R" . "Review" ))
-
-                                                     ;; Show the agenda with the log turn on, the clock table show and
-                                                     ;; archived entries shown.  These commands are all the same exept for
-                                                     ;; the time period.
-                                                     (add-to-org-agenda-custom-commands
-                                                      `("Rw" "Week in review"
-                                                             agenda ""
-                                                             ;; agenda settings
-                                                             ,(append
-                                                               efs/org-agenda-review-settings
-                                                               '((org-agenda-span 'week)
-                                                                 (org-agenda-start-on-weekday 0)
-                                                                 (org-agenda-overriding-header "Week in Review"))
-                                                               )
-                                                             ("~/org/review/week.html")))
-
-                                                     (add-to-org-agenda-custom-commands
-                                                      `("Rd" "Day in review"
-                                                             agenda ""
-                                                             ;; agenda settings
-                                                             ,(append
-                                                               efs/org-agenda-review-settings
-                                                               '((org-agenda-span 'day)
-                                                                 (org-agenda-overriding-header "Week in Review"))
-                                                               )
-                                                             ("~/org/review/day.html")))
-
-                                                     (add-to-org-agenda-custom-commands
-                                                      `("Rm" "Month in review"
-                                                             agenda ""
-                                                             ;; agenda settings
-                                                             ,(append
-                                                               efs/org-agenda-review-settings
-                                                               '((org-agenda-span 'month)
-                                                                 (org-agenda-start-day "01")
-                                                                 (org-read-date-prefer-future nil)
-                                                                 (org-agenda-overriding-header "Month in Review"))
-                                                               )
-                                                             ("~/org/review/month.html")))))))))))))))
+                                                         (add-to-org-agenda-custom-commands
+                                                          `("Rm" "Month in review"
+                                                                 agenda ""
+                                                                 ;; agenda settings
+                                                                 ,(append
+                                                                   efs/org-agenda-review-settings
+                                                                   '((org-agenda-span 'month)
+                                                                     (org-agenda-start-day "01")
+                                                                     (org-read-date-prefer-future nil)
+                                                                     (org-agenda-overriding-header "Month in Review"))
+                                                                   )
+                                                                 ("~/org/review/month.html")))))))))))))))
 
 (defun lotus-publishing/init-muse ()
   (use-package muse
