@@ -372,13 +372,13 @@ Each entry is either:
                                               "generic-static"))))
 
                            (dolist (proj
-                                    '(journal
-                                      tasks
-                                      notes
-                                      blog
-                                      Important
-                                      misc
-                                      reminders))
+                                    (remove-if
+                                     #'(lambda (file)
+                                         (string-match
+                                          "^\\.\*$"
+                                          file))
+                                     (directory-files
+                                      (org-publishing-created-contents-path))))
                              (add-org-main-project proj)))
 
                          (when nil
