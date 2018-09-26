@@ -28,3 +28,8 @@ if [ -L ~/tmp -a ! -d ~/tmp ]
 then
     mkdir -p $(readlink -m ~/tmp)
 fi
+
+if [ -d ~/tmp -a ! -L ~/tmp/public ]
+then
+    ln -sf ~/.tmppublic ~/tmp/public
+fi
