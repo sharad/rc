@@ -29,6 +29,20 @@ then
     mkdir -p $(readlink -m ~/tmp)
 fi
 
+if [ -L ~/.tmppublic -a ! -d ~/.tmppublic ]
+then
+    mkdir -p $(readlink -m ~/.tmppublic)
+fi
+
+if [ -d ~/.tmppublic ]
+then
+    mkdir -p ~/.tmppublic/Publish/html
+    if [ ! -f ~/.tmppublic/Publish/html/.htaccess ]
+    then
+        echo "Options +Indexes" > ~/.tmppublic/Publish/html/.htaccess
+    fi
+fi
+
 if [ -d ~/tmp -a ! -L ~/tmp/public ]
 then
     ln -sf ~/.tmppublic ~/tmp/public
