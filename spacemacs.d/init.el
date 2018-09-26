@@ -193,7 +193,6 @@ It should only modify the values of Spacemacs settings."
    ;; dotspacemacs-themes '(spacemacs-dark
    ;;                       spacemacs-light)
    dotspacemacs-themes '(
-                         arjen-grey
                          ujelly
                          reverse
                          twilight
