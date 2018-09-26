@@ -66,6 +66,7 @@ DEB_PKG_MEDIA="libavcodec-extra pulseeffects pavucontrol pulseaudio-module-gconf
 DEB_PKG_WINDOW="smbclient python3-smbc python-smbc"
 DEB_PKG1_NET="network-manager-fortisslvpn openfortivpn"
 DEB_PKG_DOC="wv"
+DEB_PKG_DOC_PUB="hugo jekyll"
 
 
 
@@ -311,7 +312,8 @@ function setup_apt_packages()
         "DEB_PKG_MEDIA" \
         "DEB_PKG_WINDOW" \
         "DEB_PKG1_NET" \
-        "DEB_PKG_DOC"
+        "DEB_PKG_DOC"  \
+        "DEB_PKG_DOC_PUB"
     do
         if ! eval sudo apt -y install \$$pkg
         then
