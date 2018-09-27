@@ -343,7 +343,7 @@ function setup_ecrypt_private()
 
         # TODO BUG check for changes in homedir
         # sed -i 's@/Private@/.Private@' ~/.ecryptfs/Private.mnt
-        echo $HOME/.repos/git/main/resource/userorg/main/readwrite/private/user/noenc/Private > ~/.ecryptfs/Private.mnt
+        echo $HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/noenc/Private > ~/.ecryptfs/Private.mnt
         ecryptfs-mount-private
     fi
 }
@@ -592,7 +592,7 @@ function setup_Documentation()  # TODO
 
 function setup_public_html()    # TODO
 {
-    if [  ! -L ~/public_html -o "$(readlink -m ~/public_html)" != "$HOME/.repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/home.d/portable.d/Public/Publish/html" ]
+    if [  ! -L ~/public_html -o "$(readlink -m ~/public_html)" != "$HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/home.d/portable.d/Public/Publish/html" ]
     then
         rm -f ~/public_html
         cp -a ~/.setup/_home/public_html ~/
