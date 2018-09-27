@@ -130,6 +130,10 @@ zstyle ':completion:*' verbose true
 zstyle ':completion:*' word true
 # get colour name complition for xsetroot -solid
 zstyle ':completion:*:colors' path   /usr/share/X11/rgb.txt
+
+# BUG: TODO: NOT WORKING
+# https://github.com/robbyrussell/oh-my-zsh/issues/1563
+# https://www.google.com/search?q=zsh%20completion%20with%20colour
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
 # formatting and messages
