@@ -722,6 +722,9 @@ function setup_deps_model_dirs()
                     done
                 done
             fi
+        else
+            echo Please prepare ~/.localdirs/deps.d/model.d/machine.d/$HOST for your machine >&2
+            exit -1
         fi
     fi
 }
