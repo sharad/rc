@@ -530,70 +530,76 @@ Each entry is either:
   (use-package wakatime-mode
       :defer t
       :config
-      (progn                            ;do not need it now. will see later.
+      (progn)))                            ;do not need it now. will see later.
         ;; (global-wakatime-mode)
-        )))
+
 
 (defun lotus-orgclocktask/init-task-manager ()
   (use-package task-manager
-      :defer t
-      :commands (office-mode
-                 task-current-party-select-set
-                 task-current-party task-party-dir
-                 task-select-party-dir
-                 find-task-dir)
-      :config
-      (progn
-        (progn
-          (task-current-party "meru")
-          ;; BUG: TODO: will load publishing which agian trigger task-manager configs
-          (task-party-base-dir (org-publish-get-attribute "tasks" "org" :base-directory))
-          (task-scratch-dir "~/Scratches/main")
-          (task-projbuffs-base-dir (publishing-created-contents-path 'misc "projbuffs"))
+               :defer t
+               :commands (office-mode
+                          task-current-party-select-set
+                          task-current-party task-party-dir
+                          task-select-party-dir
+                          find-task-dir)
+               :config
+               (progn
+                 (progn
+                   ;; BUG: TODO: will load publishing which agian trigger task-manager configs
+                   (let ((org-task-base-dir
+                           (org-publish-get-attribute "tasks" "org" :base-directory)))
 
-          (task-add-task-party
-           "personal"
-           "report.org"
-           "Personal work"
-           "https://bugzilla.merunetworks.com")
+                     ;; (task-current-party "meru")
+                     (unless org-task-base-dir
+                       (errro "Not able to get org-task-base-dir"))
 
-          (task-add-task-party
-           "meru"
-           "report.org"
-           "Office related work"
-           "https://bugzilla.merunetworks.com")
+                     (when (and
+                            org-task-base-dir
+                            (file-directory-p org-task-base-dir))
+                       (task-party-base-dir (org-publish-get-attribute "tasks" "org" :base-directory))
+                       (task-scratch-dir "~/Scratches/main")
+                       (task-projbuffs-base-dir (publishing-created-contents-path 'misc "projbuffs"))
 
-          (task-current-party "meru"))
+                       (task-add-task-party
+                        "personal"
+                        "report.org"
+                        "Personal work"
+                        "https://bugzilla.merunetworks.com")
 
-        (progn
+                       (task-add-task-party
+                        "meru"
+                        "report.org"
+                        "Office related work"
+                        "https://bugzilla.merunetworks.com")
 
-          (defvar office-git-remote-regex "")
+                       (task-current-party "meru"))))
 
-          (setq office-git-remote-regex "fortinet")
+                 (progn
+                   (defvar office-git-remote-regex "")
+                   (setq office-git-remote-regex "fortinet")
+                   (defun office-file-p (file)
+                     (let ((remote-repo
+                             (car
+                              (remove-if-not
+                               #'(lambda (s) (if s (string-match-p "^origin" s)))
+                               (magit-git-lines "remote" "-v")))))
+                       (if (and
+                            (functionp 'magit-git-lines)
+                            remote-repo)
+                           (string-match-p
+                            office-git-remote-regex
+                            remote-repo))))
 
-          (defun office-file-p (file)
-            (let ((remote-repo
-                   (car
-                    (remove-if-not
-                     #'(lambda (s) (if s (string-match-p "^origin" s)))
-                     (magit-git-lines "remote" "-v")))))
-              (if (and
-                   (functionp 'magit-git-lines)
-                   remote-repo)
-                  (string-match-p
-                   office-git-remote-regex
-                   remote-repo))))
+                   (defun office-activate ()
+                     (interactive)
+                     (let ((file (buffer-file-name)))
+                       (when (and file (office-file-p file))
+                         ;; if file is handled by perforce than assume it is
+                         ;; related to office perforce repository.
+                         (office-mode 1))))
 
-          (defun office-activate ()
-            (interactive)
-            (let ((file (buffer-file-name)))
-              (when (and file (office-file-p file))
-                ;; if file is handled by perforce than assume it is
-                ;; related to office perforce repository.
-                (office-mode 1))))
-
-          (add-hook 'prog-mode-hook 'office-activate)
-          (add-hook 'nxml-mode-hook 'office-activate)))))
+                   (add-hook 'prog-mode-hook 'office-activate)
+                   (add-hook 'nxml-mode-hook 'office-activate)))))
 
 
 (defun lotus-orgclocktask/post-init-startup-hooks () ;getting run when run-each-hooks called at last

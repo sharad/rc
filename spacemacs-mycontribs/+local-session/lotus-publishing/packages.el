@@ -365,11 +365,12 @@ Each entry is either:
                                 :auto-postamble nil)
 
                                (add-org-project
-                                "jorunal"
+                                project
                                 :base-extension "org"
-                                :components '("inherit-org-info-js" "generic-inherit"
-                                              (string-join (list project "notes") "-")
-                                              "generic-static"))))
+                                :components (list
+                                             "inherit-org-info-js" "generic-inherit"
+                                             (string-join (list project "notes") "-")
+                                             "generic-static"))))
 
                            (dolist (proj
                                     (remove-if-not
