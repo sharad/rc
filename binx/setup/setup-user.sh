@@ -128,6 +128,7 @@ function main()
 	      exit -1
     fi
 
+    # will set the ~/.setup also
     running setup_git_repos
 
     running setup_user_config_setup
@@ -183,17 +184,55 @@ function setup_make_link()
             if [ ! -L $link ]
             then
                 echo link $link is not a link >&2
+            else
+                echo $link is pointing to  $(readlink $link) >&2
+                echo while it should point to "$(readlink -m $target )" >&2
             fi
-            echo $link is pointing to  $(readlink $link) >&2
-            echo while it should point to "$(readlink -m $target )" >&2
             echo removing $link
-            mv $link ${link}-BACKUP
+            running mv $link ${link}-BACKUP
         else
             echo $link do not exists >&1
         fi
-        ln -sf $target $link
+        running ln -sf $target $link
     else
         echo $link is correctly pointing to "$(readlink -m $target )" is equal $target
+    fi
+}
+
+function setup_copy_link()
+{
+    local link=$1
+    local target=$2
+
+    if [ -d $target -a ! -L $target ]
+    then
+        echo target $traget can not be a directory >&2
+        exit -1
+    fi
+    if [ -L "$link" ]
+    then
+        if [ ! -L $target -o "$(readlink -m $link)" != "$(readlink -m $target)" ]
+        then
+            if [ -e $target ]
+            then
+                if [ ! -L $target ]
+                then
+                    echo link $target is not a link >&2
+                else
+                    echo $target is pointing to  "$(readlink $target)" >&2
+                    echo while it should point to "$(readlink -m $link )" >&2
+                fi
+                echo removing $link
+                running mv $target ${target}-BACKUP
+            else
+                echo $target do not exists >&1
+            fi
+            running cp -a $link $target
+        else
+            echo $target is correctly pointing to "$(readlink -m $target )" is equal what $link is pointing to "$(readlink -m $link )"
+        fi
+    else
+        echo $link is not a link, not doing anything >&2
     fi
 }
 
@@ -334,19 +373,32 @@ function setup_apt_packages()
 
 function setup_ecrypt_private()
 {
+    sudo apt -y install ecryptfs-utils
+
     if ! mount | grep $HOME/.Private
     then
-        sudo apt -y install ecryptfs-utils
-
         if [ ! -f ~/.ecryptfs/wrapped-passphrase ]
         then
 	          ecryptfs-setup-private
         fi
 
-        # TODO BUG check for changes in homedir
-        # sed -i 's@/Private@/.Private@' ~/.ecryptfs/Private.mnt
-        echo $HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/noenc/Private > ~/.ecryptfs/Private.mnt
-        ecryptfs-mount-private
+        # # TODO BUG check for changes in homedir
+        # # sed -i 's@/Private@/.Private@' ~/.ecryptfs/Private.mnt
+        # echo $HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/noenc/Private > ~/.ecryptfs/Private.mnt
+        # ecryptfs-mount-private
+    fi
+    if [ ! -e ~/.ecryptfs -o -d ~/.ecryptfs ]
+    then
+        if [ ! -L ~/.ecryptfs ]
+        then
+            cp ~/.ecryptfs ~/.ecryptfs-BAK
+            setup_copy_link ~/.setup/.config/_home/.ecryptfs ~/.ecryptfs
+            cp -f ~/.ecryptfs-BAK/Private.sig        ~/.ecryptfs/Private.sig
+            cp -f ~/.ecryptfs-BAK/wrapped-passphrase ~/.ecryptfs/wrapped-passphrase
+            cp -f ~/.ecryptfs-BAK/sedDxBKNi          ~/.ecryptfs/sedDxBKNi
+        else
+            setup_copy_link ~/.setup/.config/_home/.ecryptfs ~/.ecryptfs
+        fi
     fi
 }
 
@@ -506,6 +558,7 @@ function setup_user_config_setup()
                 clink=$(readlink $c)
 	              if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
 	              then
+                    # setup_copy_link $c ~/$c
 		                if [ -e ~/$c ]
 		                then
                         if [ ! -L ~/$c -o "$(readlink ~/$c)" != "$(readlink $c)" ]
@@ -579,20 +632,12 @@ function setup_sshkeys()
 
 function setup_Documentation()  # TODO
 {
-    if [  ! -L ~/Documents -a "$(readlink -m ~/Documents)" != "$HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/doc" ]
-    then
-        rm -f ~/Documents
-        cp -a ~/.setup/.config/_home/Documents ~/
-    fi
+    setup_copy_link ~/.setup/.config/_home/Documents ~/Documents
 }
 
 function setup_public_html()    # TODO
 {
-    if [  ! -L ~/public_html -o "$(readlink -m ~/public_html)" != "$HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/home.d/portable.d/Public/Publish/html" ]
-    then
-        rm -f ~/public_html
-        cp -a ~/.setup/.config/_home/public_html ~/
-    fi
+    setup_copy_link ~/.setup/.config/_home/public_html ~/public_html
 }
 
 function setup_mail()
@@ -623,7 +668,7 @@ function setup_mail()
 
 function setup_crontab()
 {
-    m4 ~/.setup/crontab.m4 2>/dev/null | crontab
+    m4 ~/.setup/crontab.m4 2>/dev/null | tee ~/.setup/crontab | crontab
 }
 
 function setup_login_shell()
@@ -662,8 +707,8 @@ function setup_dirs()
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
 
-    # cp -a  .setup/.config/_home/.dirs.d ~/
-    # cp -a  .setup/.config/_home/.fa ~/
+    setup_copy_link ~/.setup/.config/_home/.dirs.d ~/.dirs.d
+    setup_copy_link ~/.setup/.config/_home/.fa     ~/.fa
 
     # ~/.osetup ~/.localdirs going to be removed.
     # can not use ~/.fa as it is for interactive usage and management.
