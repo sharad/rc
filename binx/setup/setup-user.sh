@@ -593,7 +593,7 @@ function setup_Documentation()  # TODO
 
 function setup_public_html()    # TODO
 {
-    if [  ! -L ~/public_html -o "$(readlink -m ~/public_html)" != "$HOME/.repos/git/user/doc/Public/Published/html" ]
+    if [  ! -L ~/public_html -o "$(readlink -m ~/public_html)" != "$HOME/Public/Published/html" ]
     then
         rm -f ~/public_html
         cp -a ~/.setup/_home/public_html ~/
