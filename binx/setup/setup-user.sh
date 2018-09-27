@@ -111,16 +111,18 @@ function main()
     running setup_ecrypt_private
 
 
-    if ! ssh-add -l
-    then
-	      if [ "x$SSH_KEY_DUMP" = "x" ]
-	      then
-	          echo ssh key encrypted dump no provided >&2
-	          exit -1
-        else
-	          setup_tmp_ssh_keys "$SSH_KEY_DUMP" "$TMPDIR/ssh"
-	      fi
-    fi
+    # if ! ssh-add -l
+    # then
+	  #     if [ "x$SSH_KEY_DUMP" = "x" ]
+	  #     then
+	  #         echo ssh key encrypted dump no provided >&2
+	  #         exit -1
+    #     else
+	  #         setup_tmp_ssh_keys "$TMPDIR/ssh" "$SSH_KEY_DUMP"
+	  #     fi
+    # fi
+
+    setup_tmp_ssh_keys "$TMPDIR/ssh" "$SSH_KEY_DUMP"
 
     if ! ssh-add -l
     then
@@ -408,25 +410,36 @@ function setup_ecrypt_private()
 
 function setup_tmp_ssh_keys()
 {
-    sudo apt -y install openssl
-    SSH_KEY_ENC_DUMP=$1
-    SSH_DIR=$2
-    if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
+    SSH_KEY_ENC_DUMP=$2
+    SSH_DIR=$1
+    if ! ssh-add -l
     then
-        ## bring the ssh keys
-        if [ ! -r $TMPDIR/ssh/nosecure.d/ssh/keys.d/github ]
+        if [ -f ~/.ssh/login-keys.d/github -a -f ~/.ssh/login-keys.d/github.pub ]
         then
-	          mkdir -p $SSH_DIR
-            # TODO BUG not working
-	          openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C $SSH_DIR
+            ssh-add ~/.ssh/login-keys.d/github
         fi
+    fi
+    if ! ssh-add -l
+    then
+        sudo apt -y install openssl
+        if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
+        then
+            ## bring the ssh keys
+            if [ ! -r $SSH_DIR/nosecure.d/ssh/keys.d/github ]
+            then
+	              mkdir -p $SSH_DIR
+                # TODO BUG not working
+	              openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C $SSH_DIR
+            fi
 
-        if ! ssh-add -l
-        then
-	          ssh-add $SSH_DIR/nosecure.d/ssh/keys.d/github
+            if ! ssh-add -l
+            then
+	              ssh-add $SSH_DIR/nosecure.d/ssh/keys.d/github
+            fi
+        else
+            echo setup_tmp_ssh_keys: key file not provided or not exists.
+            exit -1
         fi
-    else
-        echo setup_tmp_ssh_keys: key file not provided or not exists.
     fi
 }
 
