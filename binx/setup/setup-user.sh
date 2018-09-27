@@ -468,6 +468,7 @@ function setup_git_repos()
         fi
         setup_make_link .localdirs/rc.d/osetup ~/.osetup
 
+        ## TODO now only do setting up ~/.Private mounting on new system
         # if false
         # then
         #     if mount | grep $HOME/.Private
