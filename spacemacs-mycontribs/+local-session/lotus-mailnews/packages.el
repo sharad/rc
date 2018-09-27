@@ -36,6 +36,7 @@
 
 (defconst lotus-mailnews-packages
   '(
+    (gnus :location local)
     lsdb
     )
   "The list of Lisp packages required by the lotus-mailnews layer.
@@ -65,18 +66,27 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
+(defun lotus-mailnews/post-init-gnus ()
+  (use-package gnus
+               :defer t
+               :config
+               (progn
+                 (progn
+                   (add-hook
+                    'gnus-article-prepare-hook
+                    'gnus-treat-mail-gravatar)))))
+
 (defun lotus-mailnews/post-init-lsdb ()
   (use-package lsdb
-      :defer t
-      :config
-      (progn
-        (progn
-          (setq
-           lsdb-file
-           (auto-config-file "lsdb/lsdb"))
-          (unless (file-exists-p lsdb-file)
-            (auto-config-dir
-             (file-name-directory lsdb-file) t))))))
-
+               :defer t
+               :config
+               (progn
+                 (progn
+                   (setq
+                    lsdb-file
+                    (auto-config-file "lsdb/lsdb"))
+                   (unless (file-exists-p lsdb-file)
+                     (auto-config-dir
+                      (file-name-directory lsdb-file) t))))))
 
 ;;; packages.el ends here

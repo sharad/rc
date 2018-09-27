@@ -65,22 +65,15 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-override/init-PACKAGE ()
-  (use-package PACKAGE
-      :defer t
-      :config
-      (progn
-        )))
-
 (defun lotus-override/init-lsdb ()
   (use-package lsdb
-      :defer t
-      :config
-      (progn
-        (progn
-          (defun lsdb-gnus-update-record ()
-            (with-current-buffer (with-current-buffer (or gnus-article-current-summary (current-buffer))
-                                   gnus-original-article-buffer)
-              (lsdb-update-records-and-display)))))))
+               :defer t
+               :config
+               (progn
+                 (progn
+                   (defun lsdb-gnus-update-record ()
+                     (with-current-buffer (with-current-buffer (or gnus-article-current-summary (current-buffer))
+                                            gnus-original-article-buffer)
+                       (lsdb-update-records-and-display)))))))
 
 ;;; packages.el ends here
