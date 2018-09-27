@@ -87,18 +87,25 @@ Each entry is either:
 
   ; (global-set-key-if-unbind (kbd "M-'") 'just-one-space)
   (use-package pabbrev
-      :defer t
-      :config
-      (progn
-        (progn
-          (setq
-           pabbrev-idle-timer-verbose nil
-           pabbrev-read-only-error t))
-        (progn
-          (with-eval-after-load "sessions-mgr"
-            (add-to-list 'desktop-minor-mode-handlers
-                         (cons 'pabbrev-mode
-                               (desktop-get-readonly-proof-mode pabbrev-mode))))))))
+               :defer t
+               :config
+               (progn
+                 (progn
+                   (setq
+                    pabbrev-idle-timer-verbose nil
+                    pabbrev-read-only-error t))
+                 (progn
+                   (with-eval-after-load "sessions-mgr"
+                     (add-to-list 'desktop-minor-mode-handlers
+                                  (cons 'pabbrev-mode
+                                        (desktop-get-readonly-proof-mode pabbrev-mode)))))
+                 (progn
+                   (add-hook
+                    'read-only-mode-hook
+                    #'(lambda ()
+                        (when buffer-read-only
+                          (message "disabling pabbrev-mode"))
+                        (pabbrev-mode -1)))))))
 
 (defun lotus-expand/post-init-auto-complete ()
   (use-package auto-complete
