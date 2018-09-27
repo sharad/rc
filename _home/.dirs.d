@@ -1,1 +1,1 @@
-.setup/dirs.d
+.setup/.config/dirs.d
