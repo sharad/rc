@@ -661,6 +661,10 @@ function setup_dirs()
     local OSETUP_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
+
+    # cp -a  .setup/.config/_home/.dirs.d ~/
+    # cp -a  .setup/.config/_home/.fa ~/
+
     # ~/.osetup ~/.localdirs going to be removed.
     # can not use ~/.fa as it is for interactive usage and management.
     for l in ${OSETUP_DIR}/dirs.d/model.d/*/*
