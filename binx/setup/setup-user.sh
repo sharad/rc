@@ -375,8 +375,10 @@ function setup_tmp_ssh_keys()
 function setup_ssh_keys()
 {
     SSH_KEY_ENC_DUMP=$1
-        ## bring the ssh keys
-    if [ ! -r ~/.osetup/nosecure.d/ssh/keys.d/github ]
+
+    local OSETUP_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup
+    ## bring the ssh keys
+    if [ ! -r ${OSETUP_DIR}/nosecure.d/ssh/keys.d/github ]
     then
         if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
         then
@@ -390,26 +392,26 @@ function setup_ssh_keys()
 
             if ! mount | grep "$USER/.Private"
             then
-                if [ -d ~/.osetup ]
+                if [ -d ${OSETUP_DIR} ]
                 then
-                    if [ -d ~/.osetup/nosecure.d -a -L ~/.osetup/secure -a -d ~/.osetup/secure ]
+                    if [ -d ${OSETUP_DIR}/nosecure.d -a -L ${OSETUP_DIR}/secure -a -d ${OSETUP_DIR}/secure ]
                     then
-                        if [ ! -e ~/.osetup/nosecure.d/ssh/authorized_keys ]
+                        if [ ! -e ${OSETUP_DIR}/nosecure.d/ssh/authorized_keys ]
                         then
-                            touch ~/.osetup/nosecure.d/ssh/authorized_keys
+                            touch ${OSETUP_DIR}/nosecure.d/ssh/authorized_keys
                         fi
 
-                        if [ ! -e ~/.osetup/secure/ssh/known_hosts ]
+                        if [ ! -e ${OSETUP_DIR}/secure/ssh/known_hosts ]
                         then
-                            touch ~/.osetup/secure/ssh/known_hosts
+                            touch ${OSETUP_DIR}/secure/ssh/known_hosts
                         fi
 
-                        openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C ~/.osetup/
+                        openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C ${OSETUP_DIR}/
                     else
-                        echo setup_ssh_keys: directories ~/.osetup~/.osetup/nosecure.d or ~/.osetup/secure not exists.
+                        echo setup_ssh_keys: directories ${OSETUP_DIR}${OSETUP_DIR}/nosecure.d or ${OSETUP_DIR}/secure not exists.
                     fi
                 else
-                    echo setup_ssh_keys: directory ~/.osetup not exists.
+                    echo setup_ssh_keys: directory ${OSETUP_DIR} not exists.
                 fi
             else
                 echo setup_ssh_keys: "$USER/.Private" not mounted. >&2
@@ -421,7 +423,7 @@ function setup_ssh_keys()
 
     if ! ssh-add -l
     then
-	      ssh-add ~/.osetup/nosecure.d/ssh/keys.d/github
+	      ssh-add ${OSETUP_DIR}/nosecure.d/ssh/keys.d/github
     fi
 }
 
@@ -450,23 +452,11 @@ function setup_git_repos()
     if true
     then
 
-        if [ ! -L ~/.localdirs -a -d ~/.localdirs ]
-        then
-    	      rm -rf ~/.localdirs
-        fi
-        setup_make_link ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs ~/.localdirs
-
         if [ ! -L ~/.setup ]
         then
 	          rm -rf ~/.setup
         fi
-        setup_make_link .localdirs/rc.d/setup ~/.setup
-
-        if [ ! -L ~/.osetup ]
-        then
-            rm -f ~/.osetup
-        fi
-        setup_make_link .localdirs/rc.d/osetup ~/.osetup
+        setup_make_link ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc ~/.setup
 
         ## TODO now only do setting up ~/.Private mounting on new system
         # if false
@@ -665,8 +655,12 @@ function setup_dirs()
 {
     # running setup_paradise
 
+    local OSETUP_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+
     # ~/.osetup ~/.localdirs going to be removed.
-    for l in ~/.osetup/dirs.d/model.d/*/*
+    # can not use ~/.fa as it is for interactive usage and management.
+    for l in ${OSETUP_DIR}/dirs.d/model.d/*/*
     do
         if [ -L "$l" ]
         then
@@ -680,36 +674,36 @@ function setup_dirs()
     done
 
     # check local home model.d directory
-    if [ -L ~/.localdirs -a -d ~/.localdirs -a -d ~/.localdirs/deps.d/model.d/machine.d ]
+    if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
     then
-        mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST
-        if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST ]
+        mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
+        if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
         then
-            setup_make_link ../../../../../../../../../../../../../../ ~/.localdirs/deps.d/model.d/machine.d/$HOST/home
-            mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d
+            setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volume.d
         fi
     fi
 
     # setup_Documentation
     # setup_public_html
 
-    # sudo chown root.root -R ~/.LocalDirs.d/
 }
 
 function setup_deps_model_dirs()
 {
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     # check local home model.d directory
-    if [ -L ~/.localdirs -a -d ~/.localdirs -a -d ~/.localdirs/deps.d/model.d/machine.d ]
+    if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
     then
-        if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST ]
+        if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
         then
-            mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
 
-            setup_make_link $HOST ~/.localdirs/deps.d/model.d/machine.d/default
-            setup_make_link ../../../../../../../../../../../../../../ ~/.localdirs/deps.d/model.d/machine.d/$HOST/home
+            setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
+            setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
 
-            mkdir -p ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d
-            if [ -d ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d -a -d /srv/volumes/ ]
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volume.d
+            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volume.d -a -d /srv/volumes/ ]
             then
                 for vgd in /srv/volumes/*
                 do
@@ -722,12 +716,12 @@ function setup_deps_model_dirs()
                             sudo mkdir -p $_location
                             sudo chown root.root $_location
                         fi
-                        setup_make_link $_location ~/.localdirs/deps.d/model.d/machine.d/$HOST/volume.d/"$(basename $vgd)-$(basename $vld)"
+                        setup_make_link $_location ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volume.d/"$(basename $vgd)-$(basename $vld)"
                     done
                 done
             fi
         else
-            echo Please prepare ~/.localdirs/deps.d/model.d/machine.d/$HOST for your machine >&2
+            echo Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
             exit -1
         fi
     fi
