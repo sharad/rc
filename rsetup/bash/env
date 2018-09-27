@@ -20,3 +20,6 @@ if [ "x${HOST}" != "x" ] ; then
 else
     echo env var HOST is not set $HOST
 fi
+
+GIT_DISCOVERY_ACROSS_FILESYSTEM=1
+export GIT_DISCOVERY_ACROSS_FILESYSTEM

@@ -21,6 +21,11 @@ BROWSER=w3m
 export EDITOR
 export VISUAL
 export BROWSER
+
+GIT_DISCOVERY_ACROSS_FILESYSTEM=1
+export GIT_DISCOVERY_ACROSS_FILESYSTEM
+
+
 SSH_KEYS_DIR=$HOME/.ssh/login-keys.d
 export SCREEN4KEYCHAIN=keychain
 # export KEYCHAINDIR=$HOME/.keychain-screen

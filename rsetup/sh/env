@@ -25,6 +25,9 @@ export EDITOR
 export VISUAL
 export BROWSER
 
+GIT_DISCOVERY_ACROSS_FILESYSTEM=1
+export GIT_DISCOVERY_ACROSS_FILESYSTEM
+
 MACHINE_ID=/var/lib/dbus/machine-id
 if [ -r "$MACHINE_ID" ]
 then
