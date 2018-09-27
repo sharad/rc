@@ -400,6 +400,10 @@ function setup_ecrypt_private()
             setup_copy_link ~/.setup/.config/_home/.ecryptfs ~/.ecryptfs
         fi
     fi
+
+
+    # TODO resolve migration of ~/.ecryptfs/Private.mnt
+    # from $HOME/.Private to $HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/noenc/Private
 }
 
 function setup_tmp_ssh_keys()
@@ -439,9 +443,10 @@ function setup_ssh_keys()
             sudo apt -y install openssl
             SSH_KEY_ENC_DUMP=$1
             SSH_DIR=$2
-            if ! mount | grep "$USER/.Private"
+
+            if ! mount | grep "$HOME/.Private"
             then
-                ecryptfs-mount-private
+                /usr/bin/ecryptfs-mount-private
             fi
 
             if ! mount | grep "$USER/.Private"
@@ -458,6 +463,11 @@ function setup_ssh_keys()
                         if [ ! -e ${OSETUP_DIR}/secure/ssh/known_hosts ]
                         then
                             touch ${OSETUP_DIR}/secure/ssh/known_hosts
+                        fi
+
+                        if [ ! -e ${OSETUP_DIR}/secure/ssh/authorized_keys ]
+                        then
+                            touch ${OSETUP_DIR}/secure/ssh/authorized_keys
                         fi
 
                         openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C ${OSETUP_DIR}/
