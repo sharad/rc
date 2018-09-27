@@ -436,7 +436,7 @@ function setup_git_repos()
     # ~/.repos/git/main/resource/userorg/
     # ~/.repos/git/main/resource/info/doc/orgs/private/doc
     # ~/.repos/git/main/resource/data/multimedia/orgs/private/media/
-    # ~/.localrepo/git/
+    # /usr/local/.repos/git/
 
     mkdir -p ~/${RESOURCEPATH}/
     if [ ! -d ~/${RESOURCEPATH}/userorg ]
@@ -537,7 +537,7 @@ function setup_user_config_setup()
                     echo not setting up $c
 	              fi
 	          done
-	          # mv $TMPDIR/Xsetup ~/.setup/_home/.setup
+	          # mv $TMPDIR/Xsetup ~/.setup/.config/_home/.setup
 	          cd -
         fi
     else
@@ -546,13 +546,13 @@ function setup_user_config_setup()
 
     # if false
     # then
-    #     if [ -d ~/.setup/_home/acyclicsymlinkfix ]
+    #     if [ -d ~/.setup/.config/_home/acyclicsymlinkfix ]
     #     then
-    #         for symlnk in      ~/.setup/_home/acyclicsymlinkfix/.Volumes \
-    #                                ~/.setup/_home/acyclicsymlinkfix/Desktop \
-    #                                ~/.setup/_home/acyclicsymlinkfix/Downloads \
-    #                                ~/.setup/_home/acyclicsymlinkfix/Music \
-    #                                ~/.setup/_home/acyclicsymlinkfix/Pictures
+    #         for symlnk in      ~/.setup/.config/_home/acyclicsymlinkfix/.Volumes \
+    #                                ~/.setup/.config/_home/acyclicsymlinkfix/Desktop \
+    #                                ~/.setup/.config/_home/acyclicsymlinkfix/Downloads \
+    #                                ~/.setup/.config/_home/acyclicsymlinkfix/Music \
+    #                                ~/.setup/.config/_home/acyclicsymlinkfix/Pictures
     #         do
     #             cp -a $symlnk ~/
     #         done
@@ -580,7 +580,7 @@ function setup_Documentation()  # TODO
     if [  ! -L ~/Documents -a "$(readlink -m ~/Documents)" != "$HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/doc" ]
     then
         rm -f ~/Documents
-        cp -a ~/.setup/_home/Documents ~/
+        cp -a ~/.setup/.config/_home/Documents ~/
     fi
 }
 
@@ -589,19 +589,20 @@ function setup_public_html()    # TODO
     if [  ! -L ~/public_html -o "$(readlink -m ~/public_html)" != "$HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/home.d/portable.d/Public/Publish/html" ]
     then
         rm -f ~/public_html
-        cp -a ~/.setup/_home/public_html ~/
+        cp -a ~/.setup/.config/_home/public_html ~/
     fi
 }
 
 function setup_mail()
 {
+    local SYSTEM_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/system/system
     sudo apt -y install dovecot-core dovecot-imapd ntpdate postfix
-    if [ -d ~/.system/ubuntu/etc/postfix ]
+    if [ -d ${SYSTEM_DIR}/ubuntu/etc/postfix ]
     then
         if [ ! -d /etc/postfix-ORG ]
         then
             sudo cp -ar /etc/postfix /etc/postfix-ORG
-            for f in ~/.system/ubuntu/etc/postfix/*
+            for f in ${SYSTEM_DIR}/ubuntu/etc/postfix/*
             do
                 b=$(basename $f)
                 cp $f /etc/postfix/
@@ -611,10 +612,10 @@ function setup_mail()
         if [ ! -d /etc/dovecot-ORG ]
         then
             sudo cp -ar /etc/dovecot /etc/dovecot-ORG
-            sudo cp ~/.system/ubuntu/etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
+            sudo cp ${SYSTEM_DIR}/ubuntu/etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
         fi
     else
-        echo ~/.system/ubuntu/etc/postfix not exists >&2
+        echo ${SYSTEM_DIR}/ubuntu/etc/postfix not exists >&2
     fi
 }
 
@@ -768,12 +769,13 @@ function setup_sourcecode_pro_font()
 
 function setup_apache_usermod()
 {
+    local SYSTEM_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/system/system
     if [ -r /etc/apache2/apache2.conf ]
     then
         if [ ! -d /usr/local/etc/apache ]
         then
             mkdir -p /usr/local/etc/
-            cp -r ~/.system/ubuntu/usr/local/etc/apache /usr/local/etc/apache
+            cp -r ${SYSTEM_DIR}/ubuntu/usr/local/etc/apache /usr/local/etc/apache
         fi
 
         if ! grep /usr/local/etc/apache /etc/apache2/apache2.conf
