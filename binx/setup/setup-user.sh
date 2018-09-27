@@ -454,12 +454,14 @@ function setup_ssh_keys()
         if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
         then
             sudo apt -y install openssl
+
             SSH_KEY_ENC_DUMP=$1
             SSH_DIR=$2
 
             if ! mount | grep "$HOME/.Private"
             then
-                /usr/bin/ecryptfs-mount-private
+                running setup_ecrypt_private
+                running /usr/bin/ecryptfs-mount-private
             fi
 
             if ! mount | grep "$USER/.Private"
@@ -618,6 +620,7 @@ function setup_user_config_setup()
 	          # mv $TMPDIR/Xsetup ~/.setup/.config/_home/.setup
 	          cd -
         fi
+        rmdir ~/_old_dot_filedirs
     else
         echo "${RCHOME}" not exists >&2
     fi # if [ -d "${RCHOME}" ]
