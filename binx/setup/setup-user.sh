@@ -502,7 +502,7 @@ function setup_user_config_setup()
 	          do
                 echo considering $c
                 clink=$(readlink $c)
-	              if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ]
+	              if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
 	              then
 		                if [ -e ~/$c ]
 		                then
