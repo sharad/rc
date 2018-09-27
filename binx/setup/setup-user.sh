@@ -431,7 +431,6 @@ function setup_git_repos()
 
     # RESOURCEPATH=".repos/git/main/resource"
     # USERORGMAIN="userorg/main"
-    # ~/.Private/secure.d
     # ~/.repos/git/main/resource/userorg/
     # ~/.repos/git/main/resource/info/doc/orgs/private/doc
     # ~/.repos/git/main/resource/data/multimedia/orgs/private/media/
