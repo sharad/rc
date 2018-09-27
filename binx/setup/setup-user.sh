@@ -468,14 +468,17 @@ function setup_git_repos()
         fi
         setup_make_link .localdirs/rc.d/osetup ~/.osetup
 
-        # if mount | grep $HOME/.Private
-        # then
-        #     if [ ! -d ~/.Private/secure.d -a -d ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/secure.d ]
-        #     then
-	      #         rm -rf ~/.Private/secure.d
-	      #         cp -ra ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/secure.d ~/.Private/secure.d
-        #     fi
-        # fi
+        if false
+        then
+            if mount | grep $HOME/.Private
+            then
+                if [ ! -d ~/.Private/secure.d -a -d ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/secure.d ]
+                then
+	                  rm -rf ~/.Private/secure.d
+	                  cp -ra ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/secure.d ~/.Private/secure.d
+                fi
+            fi
+        fi
 
         if [ ! -d ~/.pi -a -d ~/.setup/pi ]
         then
