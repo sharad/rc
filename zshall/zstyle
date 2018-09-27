@@ -94,7 +94,7 @@ zstyle ':completion:*' menu select=10
 zmodload -i zsh/complist &&
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 # zstyle ':completion:*' list-colors ''
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
 
 zmodload -a zsh/stat stat
 zmodload -a zsh/zpty zpty
@@ -130,6 +130,7 @@ zstyle ':completion:*' verbose true
 zstyle ':completion:*' word true
 # get colour name complition for xsetroot -solid
 zstyle ':completion:*:colors' path   /usr/share/X11/rgb.txt
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 
 # formatting and messages
 # You can use this style if you want to find out where the completions
