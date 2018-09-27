@@ -501,12 +501,12 @@ function setup_git_repos()
 
 function setup_user_config_setup()
 {
-    RCHOME="$HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc/_home/"
+    RCHOME="$HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc/.config/_home/"
     if [ -d "${RCHOME}" ]
     then
 	      if mkdir -p ~/_old_dot_filedirs
         then
-	          # mv ~/.setup/_home/.setup $TMPDIR/Xsetup
+	          # mv ~/.setup/.config/_home/.setup $TMPDIR/Xsetup
 	          cd "${RCHOME}"
 	          for c in .[a-zA-Z^.^..]* *
 	          do
@@ -665,6 +665,7 @@ function setup_dirs()
 {
     # running setup_paradise
 
+    # ~/.osetup ~/.localdirs going to be removed.
     for l in ~/.osetup/dirs.d/model.d/*/*
     do
         if [ -L "$l" ]
