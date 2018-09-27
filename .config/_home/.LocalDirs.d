@@ -1,1 +1,0 @@
-.dirs.d/rc.d/localdirs
