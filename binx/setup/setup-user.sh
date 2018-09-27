@@ -342,9 +342,8 @@ function setup_ecrypt_private()
         fi
 
         # TODO BUG check for changes in homedir
-        sed -i 's@/Private@/.Private@' ~/.ecryptfs/Private.mnt
-        echo $HOME/.Private > ~/.ecryptfs/Private.mnt
-
+        # sed -i 's@/Private@/.Private@' ~/.ecryptfs/Private.mnt
+        echo $HOME/.repos/git/main/resource/userorg/main/readwrite/private/user/noenc/Private > ~/.ecryptfs/Private.mnt
         ecryptfs-mount-private
     fi
 }
