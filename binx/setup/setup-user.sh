@@ -583,7 +583,7 @@ function setup_sshkeys()
 
 function setup_Documentation()  # TODO
 {
-    if [  ! -L ~/Documents -a "$(readlink -m ~/Documents)" != "$HOME/.repos/git/user/doc" ]
+    if [  ! -L ~/Documents -a "$(readlink -m ~/Documents)" != "$HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/doc" ]
     then
         rm -f ~/Documents
         cp -a ~/.setup/_home/Documents ~/
