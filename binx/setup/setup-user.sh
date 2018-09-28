@@ -758,7 +758,7 @@ function setup_dirs()
         if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
         then
             setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volume.d
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d
         fi
     fi
 
@@ -780,8 +780,8 @@ function setup_deps_model_dirs()
             setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
             setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
 
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volume.d
-            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volume.d -a -d /srv/volumes/ ]
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d
+            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d -a -d /srv/volumes/ ]
             then
                 for vgd in /srv/volumes/*
                 do
@@ -794,7 +794,7 @@ function setup_deps_model_dirs()
                             sudo mkdir -p $_location
                             sudo chown root.root $_location
                         fi
-                        setup_make_link $_location ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volume.d/"$(basename $vgd)-$(basename $vld)"
+                        setup_make_link $_location ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/"$(basename $vgd)-$(basename $vld)"
                     done
                 done
             fi
