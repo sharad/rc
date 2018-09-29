@@ -76,9 +76,6 @@ PY_PIP_PKG="termdown "
 NODE_PKG="tern "
 
 
-# TODO
-# Setup  ~/Scratches/* automatically not manually.
-
 function main()
 {
 
@@ -153,7 +150,7 @@ function setup_make_link()
         echo target $target is absolute path. >&2
     else
         echo target $target is relative path. >&2
-        target="$(dirname $link)/$target"
+        # target="$(dirname $link)/$target"
     fi
 
     if [ ! -L $link -o "$(readlink -m $link)" != "$(readlink -m $target )" ]
@@ -760,8 +757,8 @@ function setup_deps_model_volumes_dirs()
             setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
             setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
 
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d
-            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d -a -d /srv/volumes/local ]
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
+            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d -a -d /srv/volumes/local ]
             then
                 modelsymlink_present=0
                 for vgd in /srv/volumes/local/*
@@ -775,7 +772,7 @@ function setup_deps_model_volumes_dirs()
                             sudo mkdir -p $_location
                             sudo chown root.root $_location
                         fi
-                        setup_make_link $_location ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/"$(basename $vgd)-$(basename $vld)"
+                        setup_make_link $_location ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/"$(basename $vgd)-$(basename $vld)"
                     done
                 done
 
@@ -821,13 +818,13 @@ function setup_deps_control_volumes_dirs()
             mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/control.d
             for cdir in config deletable longterm preserved shortterm
             do
-                if [ ! -L "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$cdir" ]
+                if [ ! -L "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/control.d/$cdir" ]
                 then
-                    echo No symlink exists for "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$cdir", prepare it. >&2
+                    echo No symlink exists for "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/control.d/$cdir", prepare it. >&2
                 else
-                    if [ ! -d "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$cdir" ]
+                    if [ ! -d "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/control.d/$cdir" ]
                     then
-                        echo No target directory $(readlink -m) exist for symlink "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$cdir", create it. >&2
+                        echo No target directory $(readlink -m $cdir) exist for symlink "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/control.d/$cdir", create it. >&2
                     fi
                 fi
             done
