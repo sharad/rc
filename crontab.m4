@@ -70,7 +70,7 @@ ifelse(hostname,lispm,
 
 
 
-0 */1  * * *  DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION  notify-send -i ~/.osetup/images/icons/glass_empty.png "@"
+0 */1  * * *  DISPLAY=:0 dbus-launch --autolaunch=$MY_DBUS_SESSION  notify-send -i ~/.setup/.config/dirs.d/rc.d/osetup/images/icons/glass_empty.png "@"
 
 
 @reboot    /usr/sbin/anacron -s -S $HOME/.anacron/spool/ -t $HOME/.anacron/etc/anacrontab

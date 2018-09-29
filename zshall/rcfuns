@@ -259,7 +259,7 @@ function cdt () {
 function backupsshkeys() {
     #from: http://codeblogging.net/blogs/1/16/creating-password-protected-targz-file-command-line
     if (( ${+1} )) ; then
-        tar czf - --xform s@${HOME##/}/.osetup/@@g ~/.osetup/{secure/ssh/pubkeys.d,nosecure.d/ssh/keys.d} | openssl enc -aes-256-cbc -e > $1
+        tar czf - --xform s@${HOME##/}/.setup/osetup/@@g ~/.setup/osetup/{secure/ssh/pubkeys.d,nosecure.d/ssh/keys.d} | openssl enc -aes-256-cbc -e > $1
     else
         echo no file name
     fi

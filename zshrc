@@ -493,14 +493,6 @@ if [ ! $SUDO_USER ] && [[ "$TERM" != "dumb" ]] ; then # Not emacs tramp, let ema
         : bugz  search -a spratap # -s new,open,reopen
     fi
 
-    # foreach gdir (~/.setup ~/.system ~/.sysinfo ~/.osetup ~/.opt ~/Documents ~/.pi/org) {
-    #     if [ -d $gdir ] &&
-    #         ! git -C $gdir diff --exit-code -s --ignore-submodules=all ; then
-    #         print showing $gdir
-    #         git -C $gdir   status -s -uno --ignore-submodules=all
-    #     fi
-    # }
-
     autoload ztodo
     if whence -f ztodo >&/dev/null ; then
         print ztodo:

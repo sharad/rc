@@ -28,11 +28,11 @@
 (require 'basic-utils-config  "~/.spacemacs-mycontribs/local/basic-utils-config.el")
 
 ;;;    (deh-section "General"
-;;;    
+;;;
 ;;;      (deh-section "loadpath"                                ;add to loadpath
-;;;    
+;;;
 ;;;        (add-to-list 'load-path "/usr/local/share/emacs/23.3/site-lisp") ;; need it for gtags.el gtags over tramp
-;;;    
+;;;
 ;;;        (defun package-dir-add-to-loadpath (package-dir &optional recursive)
 ;;;          (when (file-directory-p package-dir)
 ;;;            (mapc
@@ -46,17 +46,17 @@
 ;;;             (remove-if-not
 ;;;    	  'file-directory-p
 ;;;    	  (directory-files package-dir t "[a-zA-Z]+")))))
-;;;    
-;;;    
-;;;    
-;;;    
+;;;
+;;;
+;;;
+;;;
 ;;;        (mapc
 ;;;         '(lambda (dir)
 ;;;           (add-to-list 'load-path dir t))  ;auto-install at end as they are generally outdated.
 ;;;         `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
-;;;           "~/.osetup/info.d/common/elisp"
-;;;           ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp"))))
-;;;    
+;;;           "~/.setup/osetup/info/common/elisp"
+;;;           ,(concat "~/.setup/osetup/info/hosts/" (system-name) "/elisp"))))
+;;;
 ;;;        ;; (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/world")
 ;;;        (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/mypkgs")
 ;;;        (package-dir-add-to-loadpath "~/.xemacs/pkgrepos/elpa")
@@ -64,30 +64,30 @@
 ;;;                    'file-directory-p
 ;;;                    (directory-files "~/.xemacs/pkgrepos/world/" t "[a-zA-Z]+")))
 ;;;          (package-dir-add-to-loadpath d t))
-;;;    
-;;;    
+;;;
+;;;
 ;;;        (setq load-path (remove-if-not 'file-directory-p load-path))
-;;;    
+;;;
 ;;;      (deh-section "byte-compile"                                ;byte compile
 ;;;        (defun package-dir-byte-compile (package-dir)
 ;;;          (when (file-directory-p package-dir)
 ;;;            (mapc #'(lambda (dir)
 ;;;                      (ignore-errors (byte-recompile-directory dir 0)))
 ;;;                  (directory-files package-dir t "[a-zA-Z]+"))))
-;;;    
+;;;
 ;;;        ;; (package-dir-byte-compile "~/.xemacs/pkgrepos/world")
 ;;;        (package-dir-byte-compile "~/.xemacs/pkgrepos/mypkgs")
 ;;;        (package-dir-byte-compile "~/.xemacs/pkgrepos/elpa")
 ;;;        (package-dir-byte-compile "~/.xemacs/pkgrepos/world/misc")
 ;;;        (package-dir-byte-compile "~/.xemacs/pkgrepos/world/gits")
 ;;;        (package-dir-add-to-loadpath "/usr/local/share/emacs/site-lisp")
-;;;    
+;;;
 ;;;        (mapc
 ;;;         '(lambda (dir)
 ;;;           (byte-recompile-directory dir 0))
 ;;;         `("~/.xemacs/pkgrepos/autoinstalled/auto-install"
-;;;           "~/.osetup/info.d/common/elisp"
-;;;           ,(concat "~/.osetup/info.d/hosts/" (system-name) "/elisp")))))
+;;;           "~/.setup/osetup/info/common/elisp"
+;;;           ,(concat "~/.setup/osetup/info/hosts/" (system-name) "/elisp")))))
 
 
 (require 'dot-emacs-helper nil nil)

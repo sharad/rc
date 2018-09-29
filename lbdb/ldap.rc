@@ -1,7 +1,7 @@
 # Mode: -*- cperl -*-
 
 
-use lib $ENV{'HOME'} . "/.osetup/info/common/perl";
+use lib $ENV{'HOME'} . "/.setup/osetup/info/common/perl";
 
 use Setup;
 
@@ -30,5 +30,3 @@ $ldap_result_comment   = '(LDAP)  ${telephonenumber} ${mobile}';
 $ignorant              = 0;
 
 $prefix                = '/usr/lib/lbdb';
-
-

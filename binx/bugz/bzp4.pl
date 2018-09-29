@@ -38,7 +38,7 @@ use HTTP::Cookies;
 use XMLRPC::Lite;
 use Spreadsheet::WriteExcel;
 use Date::Format;
-use lib $ENV{'HOME'} . ".osetup/info/common/perl"
+use lib $ENV{'HOME'} . ".setup/osetup/info/common/perl"
 use Setup;
 
 

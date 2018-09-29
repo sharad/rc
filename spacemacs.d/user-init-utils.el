@@ -301,16 +301,20 @@
 
 (defun lotus-emacs-user-init-begin ()
   (message "loading lotus-emacs-user-init-begin begin")
-  (push "~/.osetup/info.d/common/elisp" load-path)
-  (let ((default-local-lib
-          (concat "~/.osetup/info.d/hosts/default/elisp"))
-        (local-lib
-          (concat "~/.osetup/info.d/hosts/" (system-name) "/elisp")))
-    (push
-     (if (file-directory-p local-lib)
-         local-lib
-         default-local-lib)
-     load-path))
+  (let ((osetup
+          (expand-file-name
+           ".repos/git/main/resource/userorg/main/readwrite/public/user/osetup" "~")))
+    (push (expand-file-name "info.d/common/elisp" osetup) load-path)
+    (let ((default-local-lib
+            (expand-file-name "info.d/hosts/default/elisp" osetup))
+          (local-lib
+            (expand-file-name (concat "info.d/hosts/" (system-name) "/elisp") osetup)))
+      (push
+       (if (file-directory-p local-lib)
+           local-lib
+           default-local-lib)
+       load-path)))
+
   (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
   ;; remove this
   (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
@@ -409,7 +413,7 @@
     (defun resolveip (host)
       (= 0 (call-process "~/bin/resolveip" nil nil nil host)))
 
-    (defun host-accessable-p (&optional host)
+    (defun host-caccessable-p (&optional host)
       (= 0 (call-process "ping" nil nil nil "-c" "1" "-W" "1"
                          (if host host "www.google.com"))))
 
