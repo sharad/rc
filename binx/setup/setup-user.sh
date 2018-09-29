@@ -863,10 +863,10 @@ function setup_deps_control_scratches_dirs()
                         modelsymlink=1
                     fi
                     mdirbase=$(basename "$mdir")
-                    mkdir -p ../../volumes.d/model.d/${mdirbase}/scratch
+                    mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${mdirbase}/scratch
                     setup_make_link ../../volumes.d/model.d/${mdirbase}/scratch ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d/${mdirbase}
                 done
-                if [ "$modelsymlink" = 1 ]
+                if [ "$modelsymlink" -eq 0 ]
                 then
                     echo No symlink for model volume dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d create it. >&2
                 fi
@@ -885,7 +885,7 @@ function setup_deps_control_scratches_dirs()
                     sdirbase=$(basename "$sdir")
                     setup_make_link ../model.d/${sdirbase} ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d/${sdirbase}
                 done
-                if [ "$modelsymlink" = 1 ]
+                if [ "$modelsymlink" -eq 0 ]
                 then
                     echo No symlink for model dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d create it. >&2
                 fi
@@ -904,7 +904,7 @@ function setup_deps_control_scratches_dirs()
                     sdirbase=$(basename "$sdir")
                     setup_make_link ../control.d/${sdirbase} ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/view.d/${sdirbase}
                 done
-                if [ "$modelsymlink" = 1 ]
+                if [ "$modelsymlink" -eq 0 ]
                 then
                     echo No symlink for control dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d create it. >&2
                 fi
