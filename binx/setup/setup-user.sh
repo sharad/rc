@@ -802,7 +802,6 @@ function setup_deps_control_volumes_dirs()
             mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
 
             setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
-            setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
 
             if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d ]
             then
@@ -850,7 +849,6 @@ function setup_deps_control_scratches_dirs()
             mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
 
             setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
-            setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
 
             mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d
             mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d
