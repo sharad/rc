@@ -145,15 +145,16 @@ function setup_make_link()
     local target=$1
     local link=$2
 
-    if [ "$target" != "${target#/}" ]
+    local rtarget="$target"
+    if [ "$rtarget" != "${rtarget#/}" ]
     then
         echo target $target is absolute path. >&2
     else
         echo target $target is relative path. >&2
-        # target="$(dirname $link)/$target"
+        rtarget="$(dirname $link)/$rtarget"
     fi
 
-    if [ ! -L $link -o "$(readlink -m $link)" != "$(readlink -m $target )" ]
+    if [ ! -L $link -o "$(readlink -m $link)" != "$(readlink -m $rtarget )" ]
     then
         if [ -e $link ]
         then
@@ -162,16 +163,17 @@ function setup_make_link()
                 echo link $link is not a link >&2
             else
                 echo $link is pointing to  $(readlink $link) >&2
-                echo while it should point to "$(readlink -m $target )" >&2
+                echo while it should point to "$(readlink -m $rtarget )" >&2
             fi
             echo removing $link
             running mv $link ${link}-BACKUP
         else
             echo $link do not exists >&1
         fi
+        running rm -f  $link
         running ln -sf $target $link
     else
-        echo $link is correctly pointing to "$(readlink -m $target )" is equal $target
+        echo $link is correctly pointing to "$(readlink -m $rtarget )" is equal to $target
     fi
 }
 
@@ -772,7 +774,7 @@ function setup_deps_model_volumes_dirs()
                             sudo mkdir -p $_location
                             sudo chown root.root $_location
                         fi
-                        setup_make_link $_location ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/"$(basename $vgd)-$(basename $vld)"
+                        setup_make_link $_location "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$(basename $vgd)-$(basename $vld)"
                     done
                 done
 
