@@ -26,7 +26,7 @@ DEB_PKG_FIRST_INTERCATIVE_QA="macchanger postfix cyrus-clients lyskom-server con
 DEB_PKG_FIRST_INSTALL="zsh"
 DEB_PKG_EMACS="elpa-magit elpa-magit-popup elpa-with-editor emacs-goodies-el enscript flim lm-sensors preload pandoc automake g++ gcc libpng-dev libpoppler-dev libpoppler-glib-dev libpoppler-private-dev libz-dev make pkg-config"
 DEB_PKG_MESSAGING="namazu2 mhc x-face-el compface"
-DEB_PKG_NECESSARY_MORE1="xaos xnee xnee-doc xzgv yatex zsh zsh-doc zutils screen tmux tmuxp byobu landscape-common update-motd ccze shutdown-at-night sitesummary xterm rxvt-unicode-256color"
+DEB_PKG_NECESSARY_MORE1="xaos xnee xnee-doc xzgv yatex zsh zsh-doc zutils screen tmux tmuxp byobu landscape-common update-motd ccze shutdown-at-night sitesummary xterm rxvt-unicode-256color cifs-utils"
 # TODO BUG set zsh as login shell
 DEB_PKG_NECESSARY_MORE2="gnu-smalltalk-doc gnu-fdisk gnu-standards gnuit gnulib gnupg2 gpa gnuplot-doc gvpe gtypist hello ht id-utils indent integrit jed latex-mk ledger libaws-doc rar"
 ##  hello-traditional
@@ -754,11 +754,14 @@ function setup_dirs()
     # check local home model.d directory
     if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
     then
-        mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
-        if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+        if [ ! -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
         then
-            setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
+            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+            then
+                running  cp -ar ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/sample ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
+                echo add ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST into git
+            fi
         fi
     fi
 
@@ -933,6 +936,12 @@ function install_bpkg_pkg()
 function setup_bpkg_pkgs()
 {
     install_bpkg_pkg sharad/gitwatch
+}
+
+function set_window_share()
+{
+    # //WIN7-SPRATAP/Users/spratap/Desktop/Desktop/Docs  /media/winshare cifs credentials=/media/.credentials,uid=nobody,iocharset=utf8,noperm 0 0
+    echo
 }
 
 function process_arg() {

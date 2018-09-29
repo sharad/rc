@@ -67,13 +67,13 @@
 
   (def@ @@ :activate ()
     (let ((schedule-transition
-           (lambda ()
-             (message "running make-transition")
-             (@! @@ :schedule-transition))))
+            (lambda ()
+              (message "running make-transition")
+              (@! @@ :schedule-transition))))
       (when nil
-       ;; (add-hook 'buffer-list-update-hook     schedule-transition)
-       (add-hook 'elscreen-screen-update-hook schedule-transition)
-       (add-hook 'elscreen-goto-hook          schedule-transition))))
+        ;; (add-hook 'buffer-list-update-hook     schedule-transition)
+        (add-hook 'elscreen-screen-update-hook schedule-transition)
+        (add-hook 'elscreen-goto-hook          schedule-transition))))
 
   (def@ @@ :deactivate ()
     )
@@ -108,101 +108,10 @@
 
   (@:dispatch note))
 
-(when nil
-  (setf @buff-transition-span-detector
-        (@! @transition-span-dectector-class :gen-buffer-trans "test")))
 
-(when nil
-  (progn
-    (defvar idle-start (current-time))
-    (defvar idle-detect-timer nil)
-    (defun print-last-idle ()
-      (let* ((currtime (float-time (current-time)))
-             (idle-starttime (float-time idle-start))
-             (idle-secs (- currtime idle-starttime)))
-        (message "idle for %d secs" idle-secs)))
-    (defun idle-set ()
-      (message "adding idle-set on read-char")
-      (setq idle-start (current-time))
-      (add-hook
-       'pre-command-hook
-       'print-last-idle-start-timer))
-    (defun print-last-idle-start-timer (&rest args)
-      (interactive)
-      (print-last-idle)
-      (message "removing idle-set on read-char")
-      (remove-hook
-       'pre-command-hook
-       'print-last-idle-start-timer)
-      (when idle-detect-timer
-        (cancel-timer idle-detect-timer)
-        (setq idle-detect-timer nil))
-      (message "starting idle-set timer")
-      (setq
-       idle-detect-timer
-       (run-with-idle-timer
-        7 nil
-        'idle-set)))
-
-    (print-last-idle-start-timer)))
-
-(when nil
-  (progn
-    ;; https://emacs.stackexchange.com/questions/32040/setting-and-clearing-an-is-idle-variable-when-going-in-and-out-of-idle-mode
-
-    ;; Even though (current-idle-time) only seems to return a meaningful value
-    ;; within the context of an idle handler, I figured out how to use it for my
-    ;; purpose ...
-
-    ;; Initialize to idle mode upon emacs startup.
-    (defvar my-last-idle t
-      "*Last idle time value.")
-
-    (defun my-pre-command-hook ()
-      (setq my-last-idle nil))
-
-    (defun my-idle-timer-hook ()
-      (setq my-last-idle (current-idle-time)))
-
-    (add-hook 'pre-command-hook 'my-pre-command-hook)
-    (run-with-idle-timer 1 t 'my-idle-timer-hook)
-
-    ;; Then, my sigusr1/sigusr2 handler can do this ...
-
-    (when my-last-idle
-      ;; Do my signal-handling stuff.
-      ;; ... etc. ...
-      )))
-
-(when nil
-  (defun time-tracker-test ()
-    (interactive)
-    (lexical-let* ((delay 10)
-                   (start (current-time))
-                   (active-time 0)
-                   (idle-time 0)
-                   (later
-                    (run-with-timer
-                     delay
-                     nil
-                     (lambda ()
-                       (let ((active-time
-                              (-
-                               (float-time (current-time))
-                               (float-time start))))
-                         (message
-                          "active-time %d, idle-time %d"
-                          active-time
-                          idle-time))))))
-      later))
-
-
-  (read-event)
-
-
-
-
-  (time-tracker-test))
+(let ((time nil))
+  (defun detect-buffer-chg-use ()
+    ))
 
 
 ;;; buff-trans.el ends here
