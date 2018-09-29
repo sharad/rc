@@ -75,21 +75,6 @@ DEB_PKG_DOC_PUB="hugo jekyll"
 PY_PIP_PKG="termdown "
 NODE_PKG="tern "
 
-# TODO
-# setup these also
-#
-# 2 ~% ls ~/public_html -l
-# lrwxrwxrwx 1 s s 26 Mar 14 13:20 /home/s/hell/public_html -> .dirs.d/home.d/public_html/
-# 2 ~% ll  ~/Downloads/pubish_html
-# total 1.3M
-# -rw-r--r-- 1 s s 310K Sep  5 17:56 download-files.tar
-# 2 ~% ll  ~/Documents/Public/Published/html/
-# total 8.0K
-# lrwxrwxrwx 1 s s   50 Aug 31 15:46 downloads -> ../../../../localdirs/home.d/Downloads/pubish_html/
-# lrwxrwxrwx 1 s s   47 Mar 19 14:05 meru -> ../../../CreatedContent/gen/org/tasks/html/meru/
-# drwxrwxr-x 3 s s 4.0K Mar 19 14:05 misc/
-# lrwxrwxrwx 1 s s   98 May  9 17:33 xsd2gui -> ../../../../../../../../../../../../../../paradise/git/main/src/wnc/nms/Melf/xml/resources/xsd2gui/
-# 2 ~%
 
 # TODO
 # Setup  ~/Scratches/* automatically not manually.
@@ -109,18 +94,6 @@ function main()
     running setup_apt_packages
 
     running setup_ecrypt_private
-
-
-    # if ! ssh-add -l
-    # then
-	  #     if [ "x$SSH_KEY_DUMP" = "x" ]
-	  #     then
-	  #         echo ssh key encrypted dump no provided >&2
-	  #         exit -1
-    #     else
-	  #         setup_tmp_ssh_keys "$TMPDIR/ssh" "$SSH_KEY_DUMP"
-	  #     fi
-    # fi
 
     setup_tmp_ssh_keys "$TMPDIR/ssh" "$SSH_KEY_DUMP"
 
@@ -143,7 +116,11 @@ function main()
 
     running setup_dirs
 
-    running setup_deps_model_dirs
+    running setup_deps_model_volumes_dirs
+
+    running setup_deps_control_volumes_dirs
+
+    running setup_deps_control_scratches_dirs
 
     running setup_sourcecode_pro_font
 
@@ -770,7 +747,7 @@ function setup_dirs()
 
 }
 
-function setup_deps_model_dirs()
+function setup_deps_model_volumes_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     # check local home model.d directory
@@ -784,14 +761,15 @@ function setup_deps_model_dirs()
             setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
 
             mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d
-            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d -a -d /srv/volumes/ ]
+            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d -a -d /srv/volumes/local ]
             then
-                for vgd in /srv/volumes/*
+                modelsymlink_present=0
+                for vgd in /srv/volumes/local/*
                 do
+                    modelsymlink_present=1
                     for vld in ${vgd}/*
                     do
                         local _location=$vld/users/$USER
-
                         if [ -f $_location ]
                         then
                             sudo mkdir -p $_location
@@ -800,7 +778,141 @@ function setup_deps_model_dirs()
                         setup_make_link $_location ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/"$(basename $vgd)-$(basename $vld)"
                     done
                 done
+
+                if [ "$modelsymlink_present" -eq 0 ]
+                then
+                    echo No disk partition mount are present in /srv/volumes/local/ create them. >&2
+                fi
             fi
+        else
+            echo Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
+            exit -1
+        fi
+    fi
+}
+
+function setup_deps_control_volumes_dirs()
+{
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    # check local home model.d directory
+    if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
+    then
+        if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+        then
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
+
+            setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
+            setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
+
+            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d ]
+            then
+                modelsymlink=0
+                for mdir in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/*
+                do
+                    if [ -L "$mdir" ]
+                    then
+                        modelsymlink=1
+                    fi
+                done
+                if [ "$modelsymlink" -eq 0 ]
+                then
+                    echo No symlink for model dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d create it. >&2
+                fi
+            fi
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/control.d
+            for cdir in config deletable longterm preserved shortterm
+            do
+                if [ ! -L "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$cdir" ]
+                then
+                    echo No symlink exists for "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$cdir", prepare it. >&2
+                else
+                    if [ ! -d "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$cdir" ]
+                    then
+                        echo No target directory $(readlink -m) exist for symlink "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$cdir", create it. >&2
+                    fi
+                fi
+            done
+        else
+            echo Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
+            exit -1
+        fi
+    fi
+}
+
+function setup_deps_control_scratches_dirs()
+{
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    # check local home model.d directory
+    if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
+    then
+        if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+        then
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
+
+            setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
+            setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
+
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/view.d
+
+            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d ]
+            then
+                modelsymlink=0
+                for mdir in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/*
+                do
+                    if [ -L "$mdir" ]
+                    then
+                        modelsymlink=1
+                    fi
+                    mdirbase=$(basename "$mdir")
+                    mkdir -p ../../volumes.d/model.d/${mdirbase}/scratch
+                    setup_make_link ../../volumes.d/model.d/${mdirbase}/scratch ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d/${mdirbase}
+                done
+                if [ "$modelsymlink" = 1 ]
+                then
+                    echo No symlink for model volume dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d create it. >&2
+                fi
+            fi
+
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d
+            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d ]
+            then
+                modelsymlink=0
+                for sdir in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d/*
+                do
+                    if [ -L "$sdir" ]
+                    then
+                        modelsymlink=1
+                    fi
+                    sdirbase=$(basename "$sdir")
+                    setup_make_link ../model.d/${sdirbase} ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d/${sdirbase}
+                done
+                if [ "$modelsymlink" = 1 ]
+                then
+                    echo No symlink for model dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d create it. >&2
+                fi
+            fi
+
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d
+            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d ]
+            then
+                modelsymlink=0
+                for sdir in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d/*
+                do
+                    if [ -L "$sdir" ]
+                    then
+                        modelsymlink=1
+                    fi
+                    sdirbase=$(basename "$sdir")
+                    setup_make_link ../control.d/${sdirbase} ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/view.d/${sdirbase}
+                done
+                if [ "$modelsymlink" = 1 ]
+                then
+                    echo No symlink for control dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d create it. >&2
+                fi
+            fi
+
         else
             echo Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
             exit -1
