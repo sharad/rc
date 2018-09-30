@@ -109,9 +109,103 @@
   (@:dispatch note))
 
 
-(let ((time nil))
-  (defun detect-buffer-chg-use ()
-    ))
+(let* ((timer-gap 10)
+       (time-threshold-gap timer-gap)
+       (time-start (current-time))
+       (timer nil)
+       (idle-thresh-hold 5)
+       (idle-times nil)
+       (currbuf (current-buffer))
+       (display-time-passed nil))
 
+  (defun buffer-chg-action ()
+    (message
+     "Detected buffer change buffer %s time spend "
+     (current-buffer)
+     display-time-passed))
+
+  (defun add-idle-timer-hook ()
+    (let ((idle-time (or (current-idle-time) 0)))
+      (when (> idle-time idle-thresh-hold)
+        (push idle-time idle-times))))
+
+  (defun detect-buffer-chg-use ()
+    (let* ((cumulatibe-idle-time
+             (reduce #'+
+                     idle-times))
+           (time-passed
+             (-
+              (float-time (current-time))
+              (float-time time-start)))
+           (time-passed
+             (- time-passed cumulatibe-idle-time)))
+
+      (if (- time-passed time-threshold-gap)
+          (progn
+            (setq idle-times nil)
+            (setq time-start (current-time))
+            (when timer
+              (cancel-timer timer)
+              (setq timer nil))
+            (setq display-time-passed time-passed)
+            (buffer-chg-action))
+          (progn
+            (when timer
+              (cancel-timer timer)
+              (setq timer
+                    (run-with-timer timer-gap
+                                    nil
+                                    #'detect-buffer-chg-use)))))))
+
+  (defun run-detect-buffer-chg-use ()
+    (unless (eq currbuf (current-buffer))
+      (setq currbuf (current-buffer))
+      (when timer
+        (cancel-timer timer))
+      (setq timer
+            (run-with-timer timer-gap
+                            nil
+                            #'detect-buffer-chg-use))))
+
+
+  (defun get-timer ()
+    (interactive)
+    (message "Timer %s" timer))
+
+  (defun get-idle-times ()
+    (interactive)
+    (message "Idle Times %s" timeridle-times))
+
+  (defun enable-detect-buffer-chg-use ()
+    (interactive)
+    (when timer
+      (cancel-timer timer)
+      (setq timer nil))
+    (add-hook 'post-command-hook           #'add-idle-timer-hook)
+    (add-hook 'buffer-list-update-hook     #'run-detect-buffer-chg-use)
+    (add-hook 'elscreen-screen-update-hook #'run-detect-buffer-chg-use)
+    (add-hook 'elscreen-goto-hook          #'run-detect-buffer-chg-use))
+
+
+  (defun disable-detect-buffer-chg-use ()
+    (interactive)
+    (when timer
+      (cancel-timer timer)
+      (setq timer nil))
+    (remove-hook 'post-command-hook           #'add-idle-timer-hook)
+    (remove-hook 'buffer-list-update-hook     #'run-detect-buffer-chg-use)
+    (remove-hook 'elscreen-screen-update-hook #'run-detect-buffer-chg-use)
+    (remove-hook 'elscreen-goto-hook          #'run-detect-buffer-chg-use))
+
+
+  (enable-detect-buffer-chg-use))
+
+
+(disable-detect-buffer-chg-use)
+
+
+;; post-command-hook
+
+;; ()
 
 ;;; buff-trans.el ends here
