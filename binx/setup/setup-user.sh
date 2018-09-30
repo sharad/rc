@@ -70,17 +70,15 @@ DEB_PKG1_NET="network-manager-fortisslvpn openfortivpn"
 DEB_PKG_DOC="wv"
 DEB_PKG_DOC_PUB="hugo jekyll"
 
-
-
 PY_PIP_PKG="termdown "
 NODE_PKG="tern "
-
 
 function main()
 {
 
-    process_arg $@
+    trap setup_finish EXIT SIGINT SIGTERM
 
+    process_arg $@
 
     mkdir -p $TMPDIR
 
@@ -139,6 +137,11 @@ function main()
 
     running setup_bpkg_pkgs
 
+    rm -rf $TMPDIR
+}
+
+function setup_finish()
+{
     rm -rf $TMPDIR
 }
 
