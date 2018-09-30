@@ -171,23 +171,32 @@
                                     #'detect-buffer-chg-use)))
             (notify-buf-chg "detect-buffer-chg-use reschd timer %s" timer)))))
 
+
+  (defun is-run-detect-buffer-chg-use ()
+    (and
+     (not
+      (or
+      (string-match "^*helm" (buffer-name))
+      (minibufferp)))
+     (eq
+      (current-buffer)
+      (window-buffer))))
+
   (defun run-detect-buffer-chg-use ()
-
-    (notify-buf-chg
-     "calling run-detect-buffer-chg-use")
-
-    (unless (eq currbuf (current-buffer))
+    (when (is-run-detect-buffer-chg-use)
       (notify-buf-chg
-       "run-detect-buffer-chg-use: schd timer prev %s curr %s"
-       currbuf (current-buffer))
-      (setq currbuf (current-buffer))
-      (when timer
-        (cancel-timer timer))
-      (setq timer
-            (run-with-timer timer-gap
-                            nil
-                            #'detect-buffer-chg-use))))
-
+       "calling run-detect-buffer-chg-use")
+      (unless (eq currbuf (current-buffer))
+        (notify-buf-chg
+         "run-detect-buffer-chg-use: schd timer prev %s curr %s"
+         currbuf (current-buffer))
+        (setq currbuf (current-buffer))
+        (when timer
+          (cancel-timer timer))
+        (setq timer
+              (run-with-timer timer-gap
+                              nil
+                              #'detect-buffer-chg-use)))))
 
   (defun get-timer ()
     (interactive)

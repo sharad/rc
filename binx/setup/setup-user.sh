@@ -559,7 +559,7 @@ function setup_user_config_setup()
 	          do
                 echo considering $c
                 clink=$(readlink $c)
-	              if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
+	              if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
 	              then
                     # setup_copy_link $c ~/$c
 		                if [ -e ~/$c ]
@@ -607,11 +607,11 @@ function setup_user_config_setup()
     # then
     #     if [ -d ~/.setup/.config/_home/acyclicsymlinkfix ]
     #     then
-    #         for symlnk in      ~/.setup/.config/_home/acyclicsymlinkfix/.Volumes \
-    #                                ~/.setup/.config/_home/acyclicsymlinkfix/Desktop \
-    #                                ~/.setup/.config/_home/acyclicsymlinkfix/Downloads \
-    #                                ~/.setup/.config/_home/acyclicsymlinkfix/Music \
-    #                                ~/.setup/.config/_home/acyclicsymlinkfix/Pictures
+    #         for symlnk in ~/.setup/.config/_home/acyclicsymlinkfix/.Volumes \
+    #                       ~/.setup/.config/_home/acyclicsymlinkfix/Desktop \
+    #                       ~/.setup/.config/_home/acyclicsymlinkfix/Downloads \
+    #                       ~/.setup/.config/_home/acyclicsymlinkfix/Music \
+    #                       ~/.setup/.config/_home/acyclicsymlinkfix/Pictures
     #         do
     #             cp -a $symlnk ~/
     #         done
