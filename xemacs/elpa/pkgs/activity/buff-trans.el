@@ -118,7 +118,16 @@
        (currbuf (current-buffer))
        (display-time-spent nil))
 
+  (defun notify-buf-chg (fmt &rest args)
+    (let ((msg (apply #'format fmt args)))
+      (message msg)
+      (notify "buffer-chg" msg)))
+
   (defun buffer-chg-action ()
+    (notify-buf-chg
+     "Detected buffer change buffer %s time spend %d"
+     (current-buffer)
+     display-time-spent)
     (message
      "Detected buffer change buffer %s time spend %d"
      (current-buffer)
@@ -151,17 +160,26 @@
               (cancel-timer timer)
               (setq timer nil))
             (setq display-time-spent time-spent)
-            (buffer-chg-action))
+            (buffer-chg-action)
+            (notify-buf-chg "detect-buffer-chg-use total stop timer %s" timer))
           (progn
             (when timer
               (cancel-timer timer)
               (setq timer
                     (run-with-timer timer-gap
                                     nil
-                                    #'detect-buffer-chg-use)))))))
+                                    #'detect-buffer-chg-use)))
+            (notify-buf-chg "detect-buffer-chg-use reschd timer %s" timer)))))
 
   (defun run-detect-buffer-chg-use ()
+
+    (notify-buf-chg
+     "calling run-detect-buffer-chg-use")
+
     (unless (eq currbuf (current-buffer))
+      (notify-buf-chg
+       "run-detect-buffer-chg-use: schd timer prev %s curr %s"
+       currbuf (current-buffer))
       (setq currbuf (current-buffer))
       (when timer
         (cancel-timer timer))
