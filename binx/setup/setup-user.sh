@@ -101,6 +101,8 @@ function main()
     # will set the ~/.setup also
     running setup_git_repos
 
+    running setup_config_dirs
+
     running setup_user_config_setup
 
     running setup_ssh_keys "$SSH_KEY_DUMP"
@@ -487,66 +489,107 @@ function setup_ssh_keys()
     fi
 }
 
+function setup_setup_dir()
+{
+    if [ ! -L ~/.setup ]
+    then
+	      rm -rf ~/.setup
+    fi
+    setup_make_link ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc ~/.setup
+}
+
+function setup_pi_dir()
+{
+    if [ ! -d ~/.pi -a -d ~/.setup/pi ]
+    then
+	      setup_make_link  .setup/pi ~/.pi
+	      setup_make_link  ../${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/orgp ~/.pi/org
+    fi
+}
+
+function setup_emacs_dir()
+{
+    if [ ! -d ~/.emacs.d/.git ]
+    then
+	      if [ -d ~/.emacs.d ]
+        then
+            mv ~/.emacs.d ~/.emacs.d-old
+        fi
+	      setup_make_link ${RESOURCEPATH}/${USERORGMAIN}/readonly/public/user/spacemacs ~/.emacs.d
+    fi
+}
+
+function setup_git_tree_repo()
+{
+    if [ $# -eq 2 ]
+    then
+        local GITURL=$1
+        local GITDIR_BASE=$2
+
+        mkdir -p "$(dirname ${GITDIR_BASE} )"
+        if [ ! -d ~/${GITDIR_BASE}/ ]
+        then
+            running git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ~/${GITDIR_BASE}
+        else
+            running git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${GITDIR_BASE} pull --rebase
+            running git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
+        fi
+    else
+        echo setup_git_tree_repo: Not two args giturl gittreedir_base not provided. >&2
+    fi
+}
+
 function setup_git_repos()
 {
     # TODO [ISSUE] add code to handle upstream remote branch changes and merging to origin branch
 
     # RESOURCEPATH=".repos/git/main/resource"
     # USERORGMAIN="userorg/main"
-    # ~/.repos/git/main/resource/userorg/
-    # ~/.repos/git/main/resource/info/doc/orgs/private/doc
-    # ~/.repos/git/main/resource/data/multimedia/orgs/private/media/
-    # /usr/local/.repos/git/
 
-    mkdir -p ~/${RESOURCEPATH}/
-    if [ ! -d ~/${RESOURCEPATH}/userorg ]
+    running setup_git_tree_repo git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
+
+    # running setup_git_tree_repo git@github.com:sharad/userorg.git /usr/local/.repos/git/
+
+    if false                    # decide through command line arguments
     then
-        running git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
-    else
-        running git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${RESOURCEPATH}/userorg pull --rebase
-        # running git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${RESOURCEPATH}/userorg submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
-        running git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${RESOURCEPATH}/userorg submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
-        # git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/.repos/git submodule update --remote
+        running setup_git_tree_repo git@bitbucket.org:sh4r4d/docorg.git ~/${RESOURCEPATH}/info/doc/orgs/private/doc
+
+        running setup_git_tree_repo git@bitbucket.org:sh4r4d/mediaorg.git ~/${RESOURCEPATH}/data/multimedia/orgs/private/media/
     fi
 
-    if true
-    then
+    # mkdir -p ~/${RESOURCEPATH}/
+    # if [ ! -d ~/${RESOURCEPATH}/userorg ]
+    # then
+    #     running git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
+    # else
+    #     running git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${RESOURCEPATH}/userorg pull --rebase
+    #     # running git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${RESOURCEPATH}/userorg submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
+    #     running git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${RESOURCEPATH}/userorg submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
+    #     # git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/.repos/git submodule update --remote
+    # fi
+}
 
-        if [ ! -L ~/.setup ]
-        then
-	          rm -rf ~/.setup
-        fi
-        setup_make_link ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc ~/.setup
+function setup_config_dirs()
+{
+    ## TODO now only do setting up ~/.Private mounting on new system
+    # if false
+    # then
+    #     if mount | grep $HOME/.Private
+    #     then
+    #         if [ ! -d ~/.Private/secure.d -a -d ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/secure.d ]
+    #         then
+	  #             rm -rf ~/.Private/secure.d
+	  #             cp -ra ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/secure.d ~/.Private/secure.d
+    #         fi
+    #     fi
+    # fi
 
-        ## TODO now only do setting up ~/.Private mounting on new system
-        # if false
-        # then
-        #     if mount | grep $HOME/.Private
-        #     then
-        #         if [ ! -d ~/.Private/secure.d -a -d ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/secure.d ]
-        #         then
-	      #             rm -rf ~/.Private/secure.d
-	      #             cp -ra ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/secure.d ~/.Private/secure.d
-        #         fi
-        #     fi
-        # fi
 
-        if [ ! -d ~/.pi -a -d ~/.setup/pi ]
-        then
-	          setup_make_link  .setup/pi ~/.pi
-	          setup_make_link  ../${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/orgp ~/.pi/org
-        fi
+    running setup_setup_dir
 
-        if [ ! -d ~/.emacs.d/.git ]
-        then
-	          if [ -d ~/.emacs.d ]
-            then
-                mv ~/.emacs.d ~/.emacs.d-old
-            fi
-	          setup_make_link ${RESOURCEPATH}/${USERORGMAIN}/readonly/public/user/spacemacs ~/.emacs.d
-        fi
+    running setup_pi_dir
 
-    fi
+    running setup_emacs_dir
 }
 
 function setup_user_config_setup()
@@ -746,9 +789,9 @@ function setup_dirs()
         fi
     fi
 
-    # setup_Documentation
-    # setup_public_html
+    running setup_Documentation
 
+    running setup_public_html
 }
 
 function setup_deps_model_volumes_dirs()
