@@ -116,16 +116,19 @@
        (idle-thresh-hold 5)
        (idle-times nil)
        (currbuf (current-buffer))
-       (display-time-passed nil))
+       (display-time-spent nil))
 
   (defun buffer-chg-action ()
     (message
-     "Detected buffer change buffer %s time spend "
+     "Detected buffer change buffer %s time spend %d"
      (current-buffer)
-     display-time-passed))
+     display-time-spent))
 
   (defun add-idle-timer-hook ()
-    (let ((idle-time (or (current-idle-time) 0)))
+    (let* ((idle-time-internal (current-idle-time))
+           (idle-time (if idle-time-internal
+                          (float-time idle-time-internal)
+                          0)))
       (when (> idle-time idle-thresh-hold)
         (push idle-time idle-times))))
 
@@ -137,17 +140,17 @@
              (-
               (float-time (current-time))
               (float-time time-start)))
-           (time-passed
+           (time-spent
              (- time-passed cumulatibe-idle-time)))
 
-      (if (- time-passed time-threshold-gap)
+      (if (- time-spent time-threshold-gap)
           (progn
             (setq idle-times nil)
             (setq time-start (current-time))
             (when timer
               (cancel-timer timer)
               (setq timer nil))
-            (setq display-time-passed time-passed)
+            (setq display-time-spent time-spent)
             (buffer-chg-action))
           (progn
             (when timer
@@ -174,7 +177,7 @@
 
   (defun get-idle-times ()
     (interactive)
-    (message "Idle Times %s" timeridle-times))
+    (message "Idle Times %s" idle-times))
 
   (defun enable-detect-buffer-chg-use ()
     (interactive)
@@ -202,10 +205,5 @@
 
 
 (disable-detect-buffer-chg-use)
-
-
-;; post-command-hook
-
-;; ()
 
 ;;; buff-trans.el ends here
