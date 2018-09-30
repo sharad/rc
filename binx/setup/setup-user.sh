@@ -584,7 +584,6 @@ function setup_config_dirs()
     #     fi
     # fi
 
-
     running setup_setup_dir
 
     running setup_pi_dir
