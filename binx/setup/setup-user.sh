@@ -119,6 +119,8 @@ function main()
 
     running setup_deps_control_scratches_dirs
 
+    running setup_deps_control_main_dirs
+
     running setup_sourcecode_pro_font
 
     running setup_apache_usermod
@@ -837,84 +839,102 @@ function setup_deps_control_volumes_dirs()
     fi
 }
 
+function setup_deps_control_class_dirs()
+{
+    local class=$1
+    local classdir=$2
+
+    if [ $# -eq 2 ]
+    then
+        local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+        # check local home model.d directory
+        if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
+        then
+            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+            then
+                mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
+
+                setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
+
+                mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/model.d
+                mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/control.d
+                mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/view.d
+
+                if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d ]
+                then
+                    modelsymlink=0
+                    for mdir in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/*
+                    do
+                        if [ -L "$mdir" ]
+                        then
+                            modelsymlink=1
+                        fi
+                        mdirbase=$(basename "$mdir")
+                        mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${mdirbase}/${classdir}
+                        setup_make_link ../../volumes.d/model.d/${mdirbase}/${classdir} ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/model.d/${mdirbase}
+                    done
+                    if [ "$modelsymlink" -eq 0 ]
+                    then
+                        echo No symlink for model volume dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d create it. >&2
+                    fi
+                fi
+
+                mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/model.d
+                if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/model.d ]
+                then
+                    modelsymlink=0
+                    for sdir in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/model.d/*
+                    do
+                        if [ -L "$sdir" ]
+                        then
+                            modelsymlink=1
+                        fi
+                        sdirbase=$(basename "$sdir")
+                        setup_make_link ../model.d/${sdirbase} ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/control.d/${sdirbase}
+                    done
+                    if [ "$modelsymlink" -eq 0 ]
+                    then
+                        echo No symlink for model dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/model.d create it. >&2
+                    fi
+                fi
+
+                mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/control.d
+                if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/control.d ]
+                then
+                    modelsymlink=0
+                    for sdir in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/control.d/*
+                    do
+                        if [ -L "$sdir" ]
+                        then
+                            modelsymlink=1
+                        fi
+                        sdirbase=$(basename "$sdir")
+                        setup_make_link ../control.d/${sdirbase} ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/view.d/${sdirbase}
+                    done
+                    if [ "$modelsymlink" -eq 0 ]
+                    then
+                        echo No symlink for control dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/control.d create it. >&2
+                    fi
+                fi
+
+            else
+                echo Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
+                exit -1
+            fi
+        fi
+    else
+        echo setup_deps_control_class_dirs: Not correct arguments. >&2
+    fi
+}
+
 function setup_deps_control_scratches_dirs()
 {
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    # check local home model.d directory
-    if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
-    then
-        if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
-        then
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
+    setup_deps_control_class_dirs scratches scratch
+}
 
-            setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
-
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/view.d
-
-            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d ]
-            then
-                modelsymlink=0
-                for mdir in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/*
-                do
-                    if [ -L "$mdir" ]
-                    then
-                        modelsymlink=1
-                    fi
-                    mdirbase=$(basename "$mdir")
-                    mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${mdirbase}/scratch
-                    setup_make_link ../../volumes.d/model.d/${mdirbase}/scratch ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d/${mdirbase}
-                done
-                if [ "$modelsymlink" -eq 0 ]
-                then
-                    echo No symlink for model volume dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d create it. >&2
-                fi
-            fi
-
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d
-            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d ]
-            then
-                modelsymlink=0
-                for sdir in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d/*
-                do
-                    if [ -L "$sdir" ]
-                    then
-                        modelsymlink=1
-                    fi
-                    sdirbase=$(basename "$sdir")
-                    setup_make_link ../model.d/${sdirbase} ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d/${sdirbase}
-                done
-                if [ "$modelsymlink" -eq 0 ]
-                then
-                    echo No symlink for model dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/model.d create it. >&2
-                fi
-            fi
-
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d
-            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d ]
-            then
-                modelsymlink=0
-                for sdir in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d/*
-                do
-                    if [ -L "$sdir" ]
-                    then
-                        modelsymlink=1
-                    fi
-                    sdirbase=$(basename "$sdir")
-                    setup_make_link ../control.d/${sdirbase} ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/view.d/${sdirbase}
-                done
-                if [ "$modelsymlink" -eq 0 ]
-                then
-                    echo No symlink for control dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/scratches.d/control.d create it. >&2
-                fi
-            fi
-
-        else
-            echo Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
-            exit -1
-        fi
-    fi
+function setup_deps_control_main_dirs()
+{
+    setup_deps_control_class_dirs main main
 }
 
 function setup_spacemacs()
