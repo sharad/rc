@@ -571,18 +571,7 @@ function setup_git_repos()
 
 function setup_config_dirs()
 {
-    ## TODO now only do setting up ~/.Private mounting on new system
-    # if false
-    # then
-    #     if mount | grep $HOME/.Private
-    #     then
-    #         if [ ! -d ~/.Private/secure.d -a -d ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/secure.d ]
-    #         then
-	  #             rm -rf ~/.Private/secure.d
-	  #             cp -ra ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/secure.d ~/.Private/secure.d
-    #         fi
-    #     fi
-    # fi
+    running setup_ecrypt_private
 
     running setup_setup_dir
 
