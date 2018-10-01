@@ -376,7 +376,7 @@ function setup_ecrypt_private()
     then
         if [ ! -L ~/.ecryptfs ]
         then
-            cp ~/.ecryptfs ~/.ecryptfs-BAK
+            cp -ar ~/.ecryptfs ~/.ecryptfs-BAK
             setup_copy_link ~/.setup/.config/_home/.ecryptfs ~/.ecryptfs
             cp -f ~/.ecryptfs-BAK/Private.sig        ~/.ecryptfs/Private.sig
             cp -f ~/.ecryptfs-BAK/wrapped-passphrase ~/.ecryptfs/wrapped-passphrase
