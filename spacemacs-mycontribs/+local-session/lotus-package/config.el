@@ -68,14 +68,42 @@ Usage: (package-require 'package)"
   (interactive)
   (require 'cl)
   (let* ((packages-from-installed-archive
-          (mapcar 'car (lotus-read-sexp lotus-package-installed-archive)))
+           (mapcar 'car (lotus-read-sexp lotus-package-installed-archive)))
          (packages-from-package-alist (mapcar 'car package-alist))
-             (packages-missing (set-difference packages-from-installed-archive packages-from-package-alist)))
+         (packages-missing (set-difference packages-from-installed-archive packages-from-package-alist)))
     (if packages-missing
         (progn
           (package-refresh-contents)
           (dolist (p packages-missing)
             (package-install p)))
         (message "No missing package found."))))
+
+
+
+(defun package-autoremove ()            ;adapt it
+  "Remove packages that are no more needed.
+
+Packages that are no more needed by other packages in
+`package-selected-packages' and their dependencies
+will be deleted."
+  (interactive)
+  ;; If `package-selected-packages' is nil, it would make no sense to
+  ;; try to populate it here, because then `package-autoremove' will
+  ;; do absolutely nothing.
+  (when (or package-selected-packages
+            (yes-or-no-p
+             (format-message
+              "`package-selected-packages' is empty! Really remove ALL packages? ")))
+    (let ((removable (package--removable-packages)))
+      (if removable
+          (when (y-or-n-p
+                 (format "%s packages will be deleted:\n%s, proceed? "
+                         (length removable)
+                         (mapconcat #'symbol-name removable ", ")))
+            (mapc (lambda (p)
+                    (package-delete (cadr (assq p package-alist)) t))
+                  removable))
+          (message "Nothing to autoremove")))))
+
 )
 ;;; config.el ends here
