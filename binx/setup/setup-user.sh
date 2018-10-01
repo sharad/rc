@@ -527,12 +527,12 @@ function setup_git_tree_repo()
         local GITDIR_BASE=$2
 
         mkdir -p "$(dirname ${GITDIR_BASE} )"
-        if [ ! -d ~/${GITDIR_BASE}/ ]
+        if [ ! -d ${GITDIR_BASE}/ ]
         then
-            running git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ~/${GITDIR_BASE}
+            running git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ${GITDIR_BASE}
         else
-            running git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${GITDIR_BASE} pull --rebase
-            running git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
+            running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} pull --rebase
+            running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
         fi
     else
         echo setup_git_tree_repo: Not two args giturl gittreedir_base not provided. >&2
@@ -570,7 +570,7 @@ function setup_git_repos()
 }
 
 function setup_config_dirs()
-{
+o{
     running setup_ecrypt_private
 
     running setup_setup_dir
