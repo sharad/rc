@@ -570,7 +570,7 @@ function setup_git_repos()
 }
 
 function setup_config_dirs()
-o{
+{
     running setup_ecrypt_private
 
     running setup_setup_dir
