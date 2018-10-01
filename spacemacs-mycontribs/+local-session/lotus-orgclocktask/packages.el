@@ -551,7 +551,7 @@ Each entry is either:
 
                      ;; (task-current-party "meru")
                      (unless org-task-base-dir
-                       (errro "Not able to get org-task-base-dir"))
+                       (error "Not able to get org-task-base-dir"))
 
                      (when (and
                             org-task-base-dir
