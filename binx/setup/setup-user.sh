@@ -550,25 +550,12 @@ function setup_git_repos()
 
     running setup_git_tree_repo git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
 
-    # running setup_git_tree_repo git@github.com:sharad/userorg.git /usr/local/.repos/git/
-
     if false                    # decide through command line arguments
     then
         running setup_git_tree_repo git@bitbucket.org:sh4r4d/docorg.git ~/${RESOURCEPATH}/info/doc/orgs/private/doc
 
         running setup_git_tree_repo git@bitbucket.org:sh4r4d/mediaorg.git ~/${RESOURCEPATH}/data/multimedia/orgs/private/media/
     fi
-
-    # mkdir -p ~/${RESOURCEPATH}/
-    # if [ ! -d ~/${RESOURCEPATH}/userorg ]
-    # then
-    #     running git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  git@github.com:sharad/userorg.git ~/${RESOURCEPATH}/userorg
-    # else
-    #     running git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${RESOURCEPATH}/userorg pull --rebase
-    #     # running git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${RESOURCEPATH}/userorg submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
-    #     running git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/${RESOURCEPATH}/userorg submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
-    #     # git -c core.sshCommand="$GIT_SSH_OPTION" -C ~/.repos/git submodule update --remote
-    # fi
 }
 
 function setup_config_dirs()
