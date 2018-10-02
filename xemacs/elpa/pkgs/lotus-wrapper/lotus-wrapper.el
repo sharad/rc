@@ -26,7 +26,7 @@
 
 (provide 'lotus-wrapper)
 
-(defvar replace-file-truename-link-cycle-counter 150)
+(defvar replace-file-truename-link-cycle-counter 201)
 
 (defun replace-file-truename (filename &optional counter prev-dirs)
   "Return the truename of FILENAME.
