@@ -66,15 +66,15 @@
 (defun* read-muse-project-spec ()
   (let* ((name (read-from-minibuffer "Project Name: "))
          (muse-dirs
-          (read-directory-name "Muse Project Directory: " (muse-publishing-created-contents-path name)))
+           (read-directory-name "Muse Project Directory: " (muse-publishing-created-contents-path name)))
          (publishing-path
-          (read-directory-name
+           (read-directory-name
            "Muse Project Directory: "
            (muse-publishing-generated-contents-path
                    (replace-regexp-in-string (muse-publishing-created-contents-path) ""
                                              (if (consp muse-dirs) (car muse-dirs) muse-dirs)))))
          (publishing-style
-          (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
+           (ido-completing-read "Muse Publishing Style: " (mapcar 'car muse-publishing-styles)))
          (publishing-url (read-from-minibuffer "Publishing Base URL: "))
          (publishing-options nil))
     `(,name
@@ -90,15 +90,15 @@
   "Add muse project."
   (interactive
    (let ((project-spec
-          (read-muse-project-spec)))))
-  (if (member (car project-spec)
-              (mapcar 'car muse-project-alist))
-      (if (or (not (called-interactively-p 'interactive))
-              (y-or-n-p (format "project %s already present, do you want to overwrite it?: " (car project-spec))))
-          (progn
-            (remove-muse-project project-spec)
-            (add-muse-project project-spec)))
-      (add-to-list 'muse-project-alist project-spec)))
+           (read-muse-project-spec)))))
+
+  (when (and
+         (member (car project-spec)
+                 (mapcar 'car muse-project-alist))
+         (or (not (called-interactively-p 'interactive))
+             (y-or-n-p (format "project %s already present, do you want to overwrite it?: " (car project-spec)))))
+    (remove-muse-project project-spec))
+  (add-to-list 'muse-project-alist project-spec))
 
 ;;;###autoload
 (defun remove-muse-project (project-spec)
@@ -109,13 +109,13 @@
          (list project)
          (error "No project %s present" project))))
   (let ((project
-         (cond
-           ((and (consp project-spec)
-                 (stringp (car project-spec)))
-            (car project-spec))
-           ((stringp project-spec)
-            project-spec)
-           (t nil))))
+          (cond
+            ((and (consp project-spec)
+                  (stringp (car project-spec)))
+             (car project-spec))
+            ((stringp project-spec)
+             project-spec)
+            (t nil))))
     (if project
         (setq muse-project-alist
               (delete* project muse-project-alist

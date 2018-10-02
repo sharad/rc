@@ -47,21 +47,20 @@
 (defun org-publishing-website-address (&optional localpath)
   (publishing-website-address 'org localpath))
 
-
 ;;;###autoload
 (defun* add-org-project (&rest project-spec)
   "Add org project."
   (interactive
    (let ((project-spec
-          (read-org-project-spec)))))
-  (if (member (car project-spec)
-              (mapcar 'car org-publish-project-alist))
-      (if (or (not (called-interactively-p 'interactive))
-              (y-or-n-p (format "project %s already present, do you want to overwrite it?: " (car project-spec))))
-          (progn
-            (remove-org-project project-spec)
-            (add-to-list 'org-publish-project-alist project-spec t)))
-      (add-to-list 'org-publish-project-alist project-spec t)))
+           (read-org-project-spec)))))
+
+  (when (and
+         (member (car project-spec)
+                 (mapcar 'car org-publish-project-alist))
+         (or (not (called-interactively-p 'interactive))
+             (y-or-n-p (format "project %s already present, do you want to overwrite it?: " (car project-spec))))
+         (remove-org-project project-spec)))
+  (add-to-list 'org-publish-project-alist project-spec t))
 
 ;;;###autoload
 (defun remove-org-project (&rest project-spec)

@@ -142,17 +142,17 @@ Each entry is either:
                            :force-publish ("WikiIndex")
                            :default "WelcomePage")
                           (:base "my-xhtml"
-                           :base-url ,(muse-publishing-website-address "web/")
-                           :include "/web/[^/]+"
-                           :path ,(muse-publishing-generated-contents-path "web/site/wiki/web/my-xhtml"))
+                                 :base-url ,(muse-publishing-website-address "web/")
+                                 :include "/web/[^/]+"
+                                 :path ,(muse-publishing-generated-contents-path "web/site/wiki/web/my-xhtml"))
                           (:base "my-xhtml"
-                           :base-url ,(muse-publishing-website-address "web/")
-                           :include "/testdir/[^/]+"
-                           :path ,(muse-publishing-generated-contents-path "web/site/wiki/web/testdir/my-xhtml"))
+                                 :base-url ,(muse-publishing-website-address "web/")
+                                 :include "/testdir/[^/]+"
+                                 :path ,(muse-publishing-generated-contents-path "web/site/wiki/web/testdir/my-xhtml"))
                           (:base "my-pdf"
-                           :base-url ,(muse-publishing-website-address "web/")
-                           :path ,(muse-publishing-generated-contents-path "doc/pdf/site/wiki/web/my-pdf")
-                           :include "/\\(CurriculumVitae\\|BriefResume\\)[^/]*$")))
+                                 :base-url ,(muse-publishing-website-address "web/")
+                                 :path ,(muse-publishing-generated-contents-path "doc/pdf/site/wiki/web/my-pdf")
+                                 :include "/\\(CurriculumVitae\\|BriefResume\\)[^/]*$")))
 
                        (if t
                            (add-muse-project
@@ -160,8 +160,8 @@ Each entry is either:
                                             :force-publish ("WikiIndex" "MuseQuickStart")
                                             :default "WelcomePage")
                                          (:base "my-xhtml"
-                                          :base-url ,(muse-publishing-website-address "web/site/wiki/projects/my-xhtml/")
-                                          :path ,(muse-publishing-generated-contents-path "web/site/wiki/projects/my-xhtml"))))
+                                                :base-url ,(muse-publishing-website-address "web/site/wiki/projects/my-xhtml/")
+                                                :path ,(muse-publishing-generated-contents-path "web/site/wiki/projects/my-xhtml"))))
 
                            (add-muse-project
                             `("Projects"
@@ -183,8 +183,8 @@ Each entry is either:
                             :major-mode muse-mode
                             :default "index")
                           (:base "my-xhtml"
-                           :base-url ,(muse-publishing-website-address "projects/")
-                           :path ,(muse-publishing-generated-contents-path "web/site/wiki/writing/my-xhtml"))))
+                                 :base-url ,(muse-publishing-website-address "projects/")
+                                 :path ,(muse-publishing-generated-contents-path "web/site/wiki/writing/my-xhtml"))))
 
 
                        (add-muse-project
@@ -210,11 +210,11 @@ Each entry is either:
                                       :force-publish ("index")
                                       :default "index")
                                     (:base "xhtml"
-                                     :base-url ,(muse-publishing-website-address "notes/")
-                                     :path ,(muse-publishing-generated-contents-path "web/site/wiki/notes/xhtml"))
+                                           :base-url ,(muse-publishing-website-address "notes/")
+                                           :path ,(muse-publishing-generated-contents-path "web/site/wiki/notes/xhtml"))
                                     (:base "my-pdf"
-                                     :base-url ,(muse-publishing-website-address "notes/")
-                                     :path ,(muse-publishing-generated-contents-path "web/site/wiki/notes/my-pdf"))))
+                                           :base-url ,(muse-publishing-website-address "notes/")
+                                           :path ,(muse-publishing-generated-contents-path "web/site/wiki/notes/my-pdf"))))
 
                        (add-muse-project
                         `("_Private" (,(muse-publishing-created-contents-path "doc/priv"))
@@ -232,17 +232,17 @@ Each entry is either:
                        (add-muse-project
                         `("MA366" (,(muse-publishing-created-contents-path "doc/pdf/classes/ma366"))
                                   (:base "pdf-uh"
-                                   :path ,(muse-publishing-generated-contents-path "doc/pdf/classes/ma366/pdf-uh"))))
+                                         :path ,(muse-publishing-generated-contents-path "doc/pdf/classes/ma366/pdf-uh"))))
 
                        (add-muse-project
                         `("ENGL238" (,(muse-publishing-created-contents-path "doc/pdf/classes/eng238"))
                                     (:base "pdf-uh"
-                                     :path ,(muse-publishing-generated-contents-path "doc/pdf/classes/eng238/pdf-uh"))))
+                                           :path ,(muse-publishing-generated-contents-path "doc/pdf/classes/eng238/pdf-uh"))))
 
                        (add-muse-project
                         `("CS426" (,(muse-publishing-created-contents-path "web/site/wiki/classes/cs426"))
                                   (:base "pdf-uh"
-                                   :path "~/proj/classes/cs426/pdf-uh")))
+                                         :path "~/proj/classes/cs426/pdf-uh")))
 
                        (add-muse-project
                         `("_Plans" (,(muse-publishing-created-contents-path "web/site/wiki/plans")
@@ -250,7 +250,7 @@ Each entry is either:
                                      :major-mode planner-mode
                                      :visit-link planner-visit-link)
                                    (:base "planner-xhtml"
-                                    :path ,(muse-publishing-generated-contents-path "web/site/wiki/plans/html")))))))
+                                          :path ,(muse-publishing-generated-contents-path "web/site/wiki/plans/html")))))))
 
                  (progn ;; org
                    (progn
@@ -339,6 +339,7 @@ Each entry is either:
                            (add-org-project "org" :components '("org-notes" "org-static")))
 
                          (progn
+
                            (defun add-org-main-project (project)
                              (let ((project
                                      (cond
@@ -371,6 +372,8 @@ Each entry is either:
                                              "inherit-org-info-js" "generic-inherit"
                                              (string-join (list project "notes") "-")
                                              "generic-static"))))
+
+                           (add-org-main-project 'tasks)
 
                            (dolist (proj
                                     (remove-if-not

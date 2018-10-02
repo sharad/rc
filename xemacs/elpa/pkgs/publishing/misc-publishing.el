@@ -84,15 +84,15 @@
   "Add misc project."
   (interactive
    (let ((project-spec
-          (read-misc-project-spec)))))
-  (if (member (car project-spec)
-              (mapcar 'car misc-project-alist))
-      (if (or (not (called-interactively-p 'interactive))
-              (y-or-n-p (format "project %s already present, do you want to overwrite it?: " (car project-spec))))
-          (progn
-            (remove-misc-project project-spec)
-            (add-misc-project project-spec)))
-      (add-to-list 'misc-project-alist project-spec)))
+           (read-misc-project-spec)))))
+
+  (when (and
+         (member (car project-spec)
+                (mapcar 'car misc-project-alist))
+         (or (not (called-interactively-p 'interactive))
+             (y-or-n-p (format "project %s already present, do you want to overwrite it?: " (car project-spec)))))
+    (remove-misc-project project-spec))
+  (add-to-list 'misc-project-alist project-spec))
 
 ;;;###autoload
 (defun remove-misc-project (project-spec)

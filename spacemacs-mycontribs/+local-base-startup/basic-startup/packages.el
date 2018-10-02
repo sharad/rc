@@ -128,68 +128,71 @@ Each entry is either:
 (defun basic-startup/init-sessions-unified ()
   (use-package startup-hooks)
   (use-package sessions-unified
-      ;; :ensure t
-      :demand t
-      :commands 'lotus-desktop-session-restore
-      :config
-      (progn
+               ;; :ensure t
+               :demand t
+               :commands 'lotus-desktop-session-restore
+               :config
+               (progn
 
-        (progn
-          (setq
-           *session-unified-desktop-enabled* t
-           *frame-session-restore-screen-display-function* #'spacemacs-buffer/goto-buffer))
+                 (progn
+                   (setq
+                    *session-unified-desktop-enabled* t
+                    *frame-session-restore-screen-display-function*
+                    #'(lambda ()
+                        (with-temp-buffer
+                            (spacemacs-buffer/goto-buffer)))))
 
-        (progn
-          (add-to-disable-desktop-restore-interrupting-feature-hook
-           '(lambda ()
-             (setq
-              tags-add-tables nil)
-             (setq vc-handled-backends (remove 'P4 vc-handled-backends))
-             (when (fboundp 'spacemacs/check-large-file)
-               (remove-hook
-                'find-file-hook
-                'spacemacs/check-large-file))))
-          (add-to-enable-desktop-restore-interrupting-feature-hook
-           '(lambda ()
-             (setq
-              tags-add-tables (default-value 'tags-add-tables))
-             (add-to-list 'vc-handled-backends 'P4)
-             (when (fboundp 'spacemacs/check-large-file)
-               (add-hook
-                'find-file-hook
-                'spacemacs/check-large-file)))))
+                 (progn
+                   (add-to-disable-desktop-restore-interrupting-feature-hook
+                    '(lambda ()
+                      (setq
+                       tags-add-tables nil)
+                      (setq vc-handled-backends (remove 'P4 vc-handled-backends))
+                      (when (fboundp 'spacemacs/check-large-file)
+                        (remove-hook
+                         'find-file-hook
+                         'spacemacs/check-large-file))))
+                   (add-to-enable-desktop-restore-interrupting-feature-hook
+                    '(lambda ()
+                      (setq
+                       tags-add-tables (default-value 'tags-add-tables))
+                      (add-to-list 'vc-handled-backends 'P4)
+                      (when (fboundp 'spacemacs/check-large-file)
+                        (add-hook
+                         'find-file-hook
+                         'spacemacs/check-large-file)))))
 
-        (progn
-          (with-eval-after-load "utils-custom"
-            (setq sessions-unified-utils-notify 'message-notify)))
-        (progn
-          (with-eval-after-load "startup-hooks"
-            (add-to-enable-startup-interrupting-feature-hook
-             'frame-session-restore-hook-func
-             t)
-            (add-to-enable-startup-interrupting-feature-hook
-             '(lambda ()
-               (run-at-time-or-now 7 'lotus-desktop-session-restore))))))
+                 (progn
+                   (with-eval-after-load "utils-custom"
+                     (setq sessions-unified-utils-notify 'message-notify)))
+                 (progn
+                   (with-eval-after-load "startup-hooks"
+                     (add-to-enable-startup-interrupting-feature-hook
+                      'frame-session-restore-hook-func
+                      t)
+                     (add-to-enable-startup-interrupting-feature-hook
+                      '(lambda ()
+                        (run-at-time-or-now 7 'lotus-desktop-session-restore))))))
 
-  (use-package init-setup
-      ;; :ensure t
-      :config
-    (progn
-      (progn
-        (use-package startup-hooks
-            :defer t
-            :config
-            (progn
-              (progn
-                (add-to-enable-login-session-interrupting-feature-hook
-                 #'set-dbus-session)
-                (add-to-enable-startup-interrupting-feature-hook
-                 #'set-dbus-session)
-                (with-eval-after-load "utils-custom"
-                  (add-hook 'emacs-startup-hook
-                            '(lambda ()
-                              (message-notify "Emacs" "Loaded Completely :)")
-                              (message "\n\n\n\n"))))))))))))
+               (use-package init-setup
+                            ;; :ensure t
+                            :config
+                            (progn
+                              (progn
+                                (use-package startup-hooks
+                                             :defer t
+                                             :config
+                                             (progn
+                                               (progn
+                                                 (add-to-enable-login-session-interrupting-feature-hook
+                                                  #'set-dbus-session)
+                                                 (add-to-enable-startup-interrupting-feature-hook
+                                                  #'set-dbus-session)
+                                                 (with-eval-after-load "utils-custom"
+                                                   (add-hook 'emacs-startup-hook
+                                                             '(lambda ()
+                                                               (message-notify "Emacs" "Loaded Completely :)")
+                                                               (message "\n\n\n\n"))))))))))))
 
 (defun basic-startup/init-elscreen ()
   (use-package elscreen

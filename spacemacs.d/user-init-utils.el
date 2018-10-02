@@ -511,7 +511,9 @@
 
   (add-hook
    'lotus-enable-startup-interrupting-feature-hook
-   'spacemacs/startup-hook
+   #'(lambda ()
+       (with-temp-buffer
+           (spacemacs/startup-hook)))
    ;; 'spacemacs-buffer/goto-buffer
    )
 
