@@ -109,6 +109,38 @@
   (@:dispatch note))
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (let* ((timer-gap 10)
        (time-threshold-gap timer-gap)
        (time-start (current-time))
@@ -162,9 +194,9 @@
     (progn
       (when timer
         (cancel-timer timer)
-        (setq timer nil)
-        (setq idle-times nil)
-        (setq time-start (current-time)))))
+        (setq timer nil))
+      (setq idle-times nil)
+      (setq time-start (current-time))))
 
   (defun detect-buffer-chg-use ()
     (let* ((cumulatibe-idle-time
