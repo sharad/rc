@@ -123,6 +123,26 @@
       (message msg)
       (notify "buffer-chg" msg)))
 
+  (defun get-timer ()
+    (interactive)
+    (message "Timer %s" timer))
+
+  (defun get-idle-times ()
+    (interactive)
+    (message "Idle Times %s" idle-times))
+
+  (defun buffer-chg-print-info ()
+    (interactive)
+    (let ((time-passed
+            (-
+             (float-time (current-time))
+             (float-time time-start))))
+      (notify-buf-chg
+       "Idle timer %s, idle times %s, time passed %d"
+       timer
+       idle-times
+       time-passed)))
+
   (defun buffer-chg-action ()
     (buffer-chg-print-info)
     (notify-buf-chg
@@ -184,8 +204,6 @@
 
   (defun run-detect-buffer-chg-use ()
     (when (is-run-detect-buffer-chg-use)
-      ;; (notify-buf-chg
-      ;;  "calling run-detect-buffer-chg-use")
       (unless (eq currbuf (current-buffer))
         (notify-buf-chg
          "run-detect-buffer-chg-use: schd timer prev %s curr %s"
@@ -197,26 +215,6 @@
               (run-with-timer timer-gap
                               nil
                               #'detect-buffer-chg-use)))))
-
-  (defun get-timer ()
-    (interactive)
-    (message "Timer %s" timer))
-
-  (defun get-idle-times ()
-    (interactive)
-    (message "Idle Times %s" idle-times))
-
-  (defun buffer-chg-print-info ()
-    (interactive)
-    (let ((time-passed
-            (-
-             (float-time (current-time))
-             (float-time time-start))))
-      (notify-buf-chg
-       "Idle timer %s, idle times %s, time passed %d"
-       timer
-       idle-times
-       time-passed)))
 
   (defun enable-detect-buffer-chg-use ()
     (interactive)
