@@ -575,7 +575,7 @@
                                                        (eq :cancel action)
                                                        (null action))
                                                       nil))
-                                               (message "hookfn: finished running %s" action)))))
+                                               (message "hookfn: finished running %s" ,action)))))
                          (progn
                            (message "hookfn: add quiet 2")
                            (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
