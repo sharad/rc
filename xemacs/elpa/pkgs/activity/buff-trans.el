@@ -258,7 +258,6 @@
     (add-hook 'elscreen-screen-update-hook #'run-detect-buffer-chg-use)
     (add-hook 'elscreen-goto-hook          #'run-detect-buffer-chg-use))
 
-
   (defun disable-detect-buffer-chg-use ()
     (interactive)
     (when timer
@@ -269,10 +268,42 @@
     (remove-hook 'elscreen-screen-update-hook #'run-detect-buffer-chg-use)
     (remove-hook 'elscreen-goto-hook          #'run-detect-buffer-chg-use))
 
-
   (enable-detect-buffer-chg-use))
 
-
 (disable-detect-buffer-chg-use)
+
+
+
+
+
+
+
+
+(progn
+
+  (defun run-test-buffer-chg ()
+    )
+
+  (defun enable-test-buffer-chg ()
+    (interactive)
+    ;; (add-hook 'post-command-hook           #'add-idle-timer-hook)
+    (add-hook 'buffer-list-update-hook     #'run-test-buffer-chg)
+    (add-hook 'elscreen-screen-update-hook #'run-test-buffer-chg)
+    (add-hook 'elscreen-goto-hook          #'run-test-buffer-chg))
+
+  (defun disable-test-buffer-chg ()
+    (interactive)
+    ;; (remove-hook 'post-command-hook           #'add-idle-timer-hook)
+    (remove-hook 'buffer-list-update-hook     #'run-test-buffer-chg)
+    (remove-hook 'elscreen-screen-update-hook #'run-test-buffer-chg)
+    (remove-hook 'elscreen-goto-hook          #'run-test-buffer-chg))
+
+  (enable-test-buffer-chg))
+
+(disable-test-buffer-chg)
+
+
+
+(window-buffer)
 
 ;;; buff-trans.el ends here
