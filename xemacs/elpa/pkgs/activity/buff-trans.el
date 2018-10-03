@@ -141,7 +141,8 @@
 
 
 
-(let* ((timer-gap 10)
+(let* ((buff-chg-timer nil)
+       (timer-gap 10)
        (time-threshold-gap timer-gap)
        (time-start (current-time))
        (timer nil)
@@ -234,11 +235,11 @@
       (current-buffer)
       (window-buffer))))
 
-  (defun run-detect-buffer-chg-use ()
+  (defun run-detect-buffer-chg ()
     (when (is-run-detect-buffer-chg-use)
       (unless (eq currbuf (current-buffer))
         (notify-buf-chg
-         "run-detect-buffer-chg-use: schd timer prev %s curr %s"
+         "run-detect-buffer-chg: schd timer prev %s curr %s"
          currbuf (current-buffer))
         (setq currbuf (current-buffer))
         (when timer
@@ -248,11 +249,18 @@
                               nil
                               #'detect-buffer-chg-use)))))
 
+  (defun run-detect-buffer-chg-use ()
+    (when (is-run-detect-buffer-chg-use)
+      (when buff-chg-timer
+        (cancel-timer buff-chg-timer))
+      (run-with-idle-timer 1 nil #'run-detect-buffer-chg)))
+
   (defun enable-detect-buffer-chg-use ()
     (interactive)
-    (when timer
-      (cancel-timer timer)
-      (setq timer nil))
+    (cancel-detect-buffer-chg-use)
+    (when buff-chg-timer
+      (cancel-timer buff-chg-timer)
+      (setq buff-chg-timer nil))
     (add-hook 'post-command-hook           #'add-idle-timer-hook)
     (add-hook 'buffer-list-update-hook     #'run-detect-buffer-chg-use)
     (add-hook 'elscreen-screen-update-hook #'run-detect-buffer-chg-use)
@@ -260,9 +268,10 @@
 
   (defun disable-detect-buffer-chg-use ()
     (interactive)
-    (when timer
-      (cancel-timer timer)
-      (setq timer nil))
+    (cancel-detect-buffer-chg-use)
+    (when buff-chg-timer
+      (cancel-timer buff-chg-timer)
+      (setq buff-chg-timer nil))
     (remove-hook 'post-command-hook           #'add-idle-timer-hook)
     (remove-hook 'buffer-list-update-hook     #'run-detect-buffer-chg-use)
     (remove-hook 'elscreen-screen-update-hook #'run-detect-buffer-chg-use)
@@ -301,9 +310,5 @@
   (enable-test-buffer-chg))
 
 (disable-test-buffer-chg)
-
-
-
-(window-buffer)
 
 ;;; buff-trans.el ends here
