@@ -294,10 +294,10 @@
       (global-set-key [s-left]  'elscreen-previous)
       (global-set-key [H-right] 'elscreen-move-right)
       (global-set-key [H-left]  'elscreen-move-left)
-      (global-set-key [M-H-right]    'elscreen-swap)
+      (global-set-key [M-H-right]    'elscreen-swap))))
       ;; (global-set-key-if-unbind [H-down]  'elscreen-previous)
       ;;}}
-      )))
+
 
 (defun lotus-emacs-user-init-begin ()
   (message "loading lotus-emacs-user-init-begin begin")
@@ -315,19 +315,35 @@
            default-local-lib)
        load-path)))
 
-  (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
-  ;; remove this
-  (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
-  (push "~/.spacemacs-mycontribs/local" load-path)
-  (push "~/.xemacs/pkgrepos/mypkgs/testing" load-path)
-  ;; remove this
-  (push "~/.xemacs/pkgrepos/mypkgs/session-start" load-path)
-  ;; remove this
-  (push "~/.xemacs/pkgrepos/mypkgs/gnus-session-start" load-path)
-  (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
-  (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path)
-  (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
-  (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path)
+  (when nil
+    (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
+    ;; remove this
+    (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
+    (push "~/.spacemacs-mycontribs/local" load-path)
+    (push "~/.xemacs/pkgrepos/mypkgs/testing" load-path)
+    ;; remove this
+    (push "~/.xemacs/pkgrepos/mypkgs/session-start" load-path)
+    ;; remove this
+    (push "~/.xemacs/pkgrepos/mypkgs/gnus-session-start" load-path)
+    (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
+    (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path)
+    (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
+    (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path))
+
+  (progn
+    ;; (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
+    ;; remove this
+    ;; (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
+    ;; (push "~/.spacemacs-mycontribs/local" load-path)
+    ;; (push "~/.xemacs/pkgrepos/mypkgs/testing" load-path)
+    ;; remove this
+    ;; (push "~/.xemacs/pkgrepos/mypkgs/session-start" load-path)
+    ;; remove this
+    (push "~/.xemacs/pkgrepos/mypkgs/gnus-session-start" load-path)
+    (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
+    (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path)
+    (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
+    (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path))
 
   (push
    '("local" . "~/.xemacs/elpa/upload")
@@ -403,8 +419,8 @@
           (load-file custom-file))
 
         (when (file-exists-p custom-override-file)
-          (load-file custom-override-file)))
-      ))
+          (load-file custom-override-file)))))
+
 
   (require 'misc-utils)
 
@@ -425,8 +441,8 @@
      ;; server-auth-dir (auto-config-dir "server" t)
      server-use-tcp t
      server-name (or (getenv "EMACS_SERVER_NAME") server-name)
-     server-host "0.0.0.0";; (if (host-resolvable-accessible-p (system-name)) (system-name) "localhost")
-     )
+     server-host "0.0.0.0");; (if (host-resolvable-accessible-p (system-name)) (system-name) "localhost")
+
 
     (when nil
       (if (functionp 'server-running-p)
@@ -442,8 +458,8 @@
           (message "server %s already running" server-name))
       (message (concat "SERVER: " server-name))
       (when (server-running-p (getenv "EMACS_SERVER_NAME"))
-        (message (concat "YES SERVER: " server-name))))
-    )
+        (message (concat "YES SERVER: " server-name)))))
+
 
   (setq
    dotspacemacs-excluded-packages '(vi-tilde-fringe))
@@ -461,8 +477,8 @@
     (set-variable 'ycmd-server-command '("python" "/usr/bin/ycmd"))
     (set-variable 'ycmd-global-config  "~/.ycmd_global_conf.py")
     (set-variable 'ycmd-extra-conf-handler 'load)
-    (set-variable 'ycmd-extra-conf-whitelist (list "/home/s/paradise/git/main/" (file-truename "/home/s/paradise/git/main/")))
-    )
+    (set-variable 'ycmd-extra-conf-whitelist (list "/home/s/paradise/git/main/" (file-truename "/home/s/paradise/git/main/"))))
+
 
   (delete-selection-mode 1)
   (message "loading lotus-emacs-user-init-begin finished"))
