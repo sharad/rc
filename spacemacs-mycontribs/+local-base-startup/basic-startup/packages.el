@@ -172,7 +172,10 @@ Each entry is either:
                       t)
                      (add-to-enable-startup-interrupting-feature-hook
                       '(lambda ()
-                        (run-at-time-or-now 7 'lotus-desktop-session-restore))))))
+                        (run-at-time-or-now 7 'lotus-desktop-session-restore)))))
+
+                 (progn
+                   (add-hook 'session-unified-save-all-sessions-before-hook' clean-buffer-list)))
 
                (use-package init-setup
                             ;; :ensure t
