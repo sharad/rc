@@ -24,8 +24,8 @@
 
 ;;; Code:
 
-(require 'basic-macros-config "~/.spacemacs-mycontribs/local/basic-macros-config.el")
-(require 'basic-utils-config  "~/.spacemacs-mycontribs/local/basic-utils-config.el")
+;; (require 'basic-macros-config "~/.spacemacs-mycontribs/local/basic-macros-config.el")
+;; (require 'basic-utils-config  "~/.spacemacs-mycontribs/local/basic-utils-config.el")
 
 ;;;    (deh-section "General"
 ;;;
@@ -90,17 +90,17 @@
 ;;;           ,(concat "~/.setup/osetup/info/hosts/" (system-name) "/elisp")))))
 
 
-(require 'dot-emacs-helper nil nil)
-(require 'basic-macros-config)
-(require 'basic-utils-config)
-;; (require 'basic-config)
-(require 'general-testing)
-;; (require 'common-info nil t)
-;; (require 'auto-load-config)
-(require 'basic-macros-config)
-(require 'basic-utils-config)
-(eval-when-compile
- (require 'use-package))
+;; (require 'dot-emacs-helper nil nil)
+;; (require 'basic-macros-config)
+;; (require 'basic-utils-config)
+;; ;; (require 'basic-config)
+;; (require 'general-testing)
+;; ;; (require 'common-info nil t)
+;; ;; (require 'auto-load-config)
+;; (require 'basic-macros-config)
+;; (require 'basic-utils-config)
+;; (eval-when-compile
+;;  (require 'use-package))
 
 
 
