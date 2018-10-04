@@ -515,10 +515,10 @@
                (lambda ()
                  (if sel-frame-adviced-p
                      (when (not (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus)))
-                       (message "readfn: add quiet 5 as already was present")
+                       (message "readfn: %s add quiet 5 as already was present" ,name)
                        (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame))
                      (when (advice-function-member-p #'quiet--select-frame (symbol-function  'select-frame-set-input-focus))
-                       (message "readfn: remove quiet 5 as already was present")
+                       (message "readfn: %s remove quiet 5 as already was present" ,name)
                        (remove-function (symbol-function 'select-frame-set-input-focus) #'quiet--select-frame)))))
               (readfn
                (lambda ()
@@ -556,7 +556,7 @@
                                            (progn
                                              ;; (setq frame (selected-frame))
                                              ;; (setq debug-on-quit nil)
-                                             (message "hookfn: timer remove quiet 1")
+                                             (message "hookfn: %s timer remove quiet 1" ,name)
                                              ;; (funcall set-advice-fn)
                                              (prog1
                                                  ,@(cond
@@ -575,9 +575,9 @@
                                                        (eq :cancel action)
                                                        (null action))
                                                       nil))
-                                               (message "hookfn: finished running %s" ,action)))))
+                                               (message "hookfn: %s finished running %s" ,name ,action)))))
                          (progn
-                           (message "hookfn: add quiet 2")
+                           (message "hookfn: %s add quiet 2" ,name)
                            (add-function :override (symbol-function  'select-frame-set-input-focus) #'quiet--select-frame)
                            (when (active-minibuffer-window)
                              (abort-recursive-edit)))))))))

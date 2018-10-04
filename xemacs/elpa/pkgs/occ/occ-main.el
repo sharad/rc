@@ -118,17 +118,19 @@
 
 ;;;###autoload
 (defun occ-after-save-hook-fun ()
-  (when (and (eq major-mode 'org-mode)
-             (buffer-file-name))
-    (when (member*
+  (let ((file (buffer-file-name)))
+    (when (and
            file
-           (occ-included-files)
-           :test #'(lambda (f1 f2)
-                     (string-equal
-                      (file-truename f1)
-                      (file-truename f2))))
-      ;; TODO workaround do complete nil, later change it to optimized.
-      ;; TODO update existing occ-collection.tree or occ-collection.list
-      (occ-reset-global-tsk-collection))))
+           (eq major-mode 'org-mode))
+      (when (member*
+             file
+             (occ-included-files)
+             :test #'(lambda (f1 f2)
+                       (string-equal
+                        (file-truename f1)
+                        (file-truename f2))))
+        ;; TODO workaround do complete nil, later change it to optimized.
+        ;; TODO update existing occ-collection.tree or occ-collection.list
+        (occ-reset-global-tsk-collection)))))
 
 ;;; occ-main.el ends here

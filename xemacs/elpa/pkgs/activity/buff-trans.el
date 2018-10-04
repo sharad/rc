@@ -253,7 +253,8 @@
     (when (is-run-detect-buffer-chg-use)
       (when buff-chg-timer
         (cancel-timer buff-chg-timer))
-      (run-with-idle-timer 1 nil #'run-detect-buffer-chg)))
+      (setq
+       buff-chg-timer (run-with-idle-timer 1 nil #'run-detect-buffer-chg))))
 
   (defun enable-detect-buffer-chg-use ()
     (interactive)
@@ -282,32 +283,6 @@
 (disable-detect-buffer-chg-use)
 
 
-
-
-
-
-
-
-(progn
-
-  (defun run-test-buffer-chg ()
-    )
-
-  (defun enable-test-buffer-chg ()
-    (interactive)
-    ;; (add-hook 'post-command-hook           #'add-idle-timer-hook)
-    (add-hook 'buffer-list-update-hook     #'run-test-buffer-chg)
-    (add-hook 'elscreen-screen-update-hook #'run-test-buffer-chg)
-    (add-hook 'elscreen-goto-hook          #'run-test-buffer-chg))
-
-  (defun disable-test-buffer-chg ()
-    (interactive)
-    ;; (remove-hook 'post-command-hook           #'add-idle-timer-hook)
-    (remove-hook 'buffer-list-update-hook     #'run-test-buffer-chg)
-    (remove-hook 'elscreen-screen-update-hook #'run-test-buffer-chg)
-    (remove-hook 'elscreen-goto-hook          #'run-test-buffer-chg))
-
-  (enable-test-buffer-chg))
 
 (disable-test-buffer-chg)
 
