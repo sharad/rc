@@ -75,8 +75,8 @@
         (add-hook 'elscreen-screen-update-hook schedule-transition)
         (add-hook 'elscreen-goto-hook          schedule-transition))))
 
-  (def@ @@ :deactivate ()
-    )
+  (def@ @@ :deactivate ())
+
 
   (def@ @@ :initialize ()
     (@:reinitialize)
@@ -88,10 +88,10 @@
 
             (def@ @@ :dispatch (&optional note)
               (@:init)  ;; BUG what is the issue.
-              (setf @:note note
+              (setf @:note note))
                     ;; (or note
                     ;;     (@! @note-class :gen-format-msg "test"))
-                    ))
+
 
             (@:dispatch note)))
     (@:activate))
@@ -152,7 +152,11 @@
        (display-time-spent nil))
 
   (defun notify-buf-chg (fmt &rest args)
-    (let ((msg (apply #'format fmt args)))
+    (let ((msg
+            (concat
+              (current-time-string)
+              ": "
+              (apply #'format fmt args))))
       (message msg)
       (notify "buffer-chg" msg)))
 
@@ -197,6 +201,7 @@
         (cancel-timer timer)
         (setq timer nil))
       (setq idle-times nil)
+      ;; (setq currbuf (current-buffer))
       (setq time-start (current-time))))
 
   (defun detect-buffer-chg-use ()
@@ -210,11 +215,19 @@
            (time-spent
              (- time-passed cumulatibe-idle-time)))
 
-      (if (- time-spent time-threshold-gap)
+      (if (and
+           (- time-spent time-threshold-gap)
+           (is-run-detect-buffer-chg-use)
+           (not (eq currbuf (current-buffer))))
           (progn
-            (cancel-detect-buffer-chg-use)
+            (when timer
+              (cancel-timer timer)
+              (setq timer nil))
             (setq display-time-spent time-spent)
             (buffer-chg-action)
+            (cancel-detect-buffer-chg-use)
+            (setq currbuf (current-buffer))
+            ;; (buffer-chg-action)
             (notify-buf-chg "detect-buffer-chg-use total stop timer %s" timer))
           (progn
             (when timer
@@ -241,7 +254,7 @@
         (notify-buf-chg
          "run-detect-buffer-chg: schd timer prev %s curr %s"
          currbuf (current-buffer))
-        (setq currbuf (current-buffer))
+        ;; (setq currbuf (current-buffer))
         (when timer
           (cancel-detect-buffer-chg-use))
         (setq timer
@@ -282,8 +295,31 @@
 
 (disable-detect-buffer-chg-use)
 
+(when nil
+
+  (defun is-run-detect-buffer-chg-use ()
+    (and
+     (not
+      (or
+     (string-match "^*helm" (buffer-name))
+     (minibufferp)))
+     (eq
+      (current-buffer)
+      (window-buffer))))
 
 
-(disable-test-buffer-chg)
+  (disable-test-buffer-chg)
+
+  (time-stamp)
+
+  (selected-window)
+
+  (lambda ()
+    (with-current-buffer "*scratch*"
+      (message "buff %s window-buffer %s"
+               (current-buffer)
+               (window-buffer)))
+    ))
+
 
 ;;; buff-trans.el ends here

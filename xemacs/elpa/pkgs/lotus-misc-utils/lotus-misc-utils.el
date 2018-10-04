@@ -596,6 +596,26 @@
   `(lotus-with-other-frame-event ,action ,@body))
 (put 'lotus-cancel-with-other-frame-event 'lisp-indent-function 1)
 
+
+
+(defmacro run-when-idle (secs &rest body)
+  `(letrec ((timer nil)
+            (fn
+            (lambda ()
+              (let ((retval
+                      (while-no-input (redisplay)
+                                      ,@body
+                                      :complete)))
+                ))))
+           (setq
+            timer
+            (run-with-idle-timer secs nil
+                                 ))
+           `(while-no-input (redisplay)
+                            )))
+
+
+
 ;; https://stackoverflow.com/questions/3811448/can-call-with-current-continuation-be-implemented-only-with-lambdas-and-closures
 ;; CALL/CC
 
