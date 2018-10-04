@@ -91,21 +91,21 @@
 
     (progn ;; "beautification"
       (deh-require-maybe (and
-                          org-bullets
-                          ;; org-beautify-theme
-                          )
-                         )
+                          org-bullets))
+      ;; org-beautify-theme
+
+
 
       (ignore-errors
        (require 'org-beautify-theme nil)))
 
     (progn ;; "babel"
       ;; http://draketo.de/book/export/html/41
-      ; And add babel inline code execution
-      ; babel, for executing code in org-mode.
+                                        ; And add babel inline code execution
+                                        ; babel, for executing code in org-mode.
       (org-babel-do-load-languages
        'org-babel-load-languages
-       ; load all language marked with (lang . t).
+                                        ; load all language marked with (lang . t).
        '((C . t)
          ;; (R . t)
          (asymptote)
@@ -163,9 +163,9 @@
           (find-file
            (expand-file-name
             "office"
-            (org-publish-get-attribute "notes" "org" :base-directory)))
-          ;;(org-show-todo-tree 4)
-          )))
+            (org-publish-get-attribute "notes" "org" :base-directory))))))
+    ;;(org-show-todo-tree 4)
+
 
     (progn
       (with-eval-after-load "appt"
@@ -238,8 +238,8 @@
       (progn
         (deh-require-maybe (and
                             ob-exp
-                            ox-html5presentation)
-                           )
+                            ox-html5presentation))
+
 
         (deh-require-maybe (and remember
                                 org
@@ -257,11 +257,11 @@
                                 remember-diary
                                 remember-planner
                                 remember-bbdb
-                                remember
-                                ;; remember-bibl
-                                ;; macs-wiki-journal
-                                ))
-        ))
+                                remember))))
+    ;; remember-bibl
+    ;; macs-wiki-journal
+
+
 
 
     (progn
@@ -269,9 +269,9 @@
       (setq
        org-refile-use-outline-path 'file ;; default nil
        org-outline-path-complete-in-steps nil ;; default t
-       org-refile-allow-creating-parent-nodes 'confirm ;; default nil
-       )
-      )
+       org-refile-allow-creating-parent-nodes 'confirm)) ;; default nil
+
+
 
     (progn
       ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org0c5d380
@@ -284,7 +284,33 @@
        org-clock-in-switch-to-state "STARTED"
        org-clock-in-resume nil
        org-show-notification-handler 'message
-       org-clock-report-include-clocking-task t))))
+       org-clock-report-include-clocking-task t))
+
+    (progn
+
+      ;; TODO: create framework to postpone heavy lifting task when emacs idle
+      ;; and not doing any work and used this for org-publish-current-file;; and
+      ;; also make sure it should be interrupt tolerant when C-g is received it
+      ;; will schedule himself to later point of idle time.
+      ;;
+      ;; use this for org-publish-current-file
+
+      ;; https://www.reddit.com/r/emacs/comments/42sle2/how_to_autopublish_orgmode_publish_projects/
+
+      (defun auto-publish-blog-hook ()
+        "Auto publish blog on save"
+        ;; check if saved file is part of blog
+        (if (org-publish-get-project-from-filename
+             (buffer-file-name (buffer-base-buffer)) 'up)
+            (save-excursion (org-publish-current-file)
+                            (message "auto published blog") nil)))
+
+      ;; Enable auto-publish when a org file in blog is saved
+      (add-hook 'org-mode-hook
+                #'(lambda ()
+                    (add-hook 'after-save-hook 'auto-publish-blog-hook t t))))))
+
+
 
 (defun lotus-orgmode-config/post-init-org-task-manager-occ ()
   ;; add hook occ-global-tsk-collection-spec onchange
@@ -293,16 +319,16 @@
     (let* ((party-base-dir (task-party-base-dir))
            (start-file (expand-file-name "start.org" party-base-dir)))
 
-    (occ-run-with-global-tsk-collection
-     #'(lambda ()
-         (setq org-agenda-files (occ-included-files))))
+      (occ-run-with-global-tsk-collection
+       #'(lambda ()
+           (setq org-agenda-files (occ-included-files))))
 
-    (progn
-      (add-to-task-current-party-change-hook
-        #'(lambda ()
-            (occ-run-with-global-tsk-collection
-             #'(lambda ()
-                 (setq org-agenda-files (occ-included-files))))))))))
+      (progn
+        (add-to-task-current-party-change-hook
+         #'(lambda ()
+             (occ-run-with-global-tsk-collection
+              #'(lambda ()
+                  (setq org-agenda-files (occ-included-files))))))))))
 
 (defun add-to-org-agenda-custom-commands (&rest specs)
   (dolist (spec specs)
