@@ -331,11 +331,11 @@
     (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path))
 
   (progn
-    ;; (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
+    (push "~/.xemacs/pkgrepos/mypkgs/utils/" load-path)
     ;; remove this
-    ;; (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
+    (push "~/.xemacs/pkgrepos/mypkgs/experimental" load-path)
     ;; (push "~/.spacemacs-mycontribs/local" load-path)
-    ;; (push "~/.xemacs/pkgrepos/mypkgs/testing" load-path)
+    (push "~/.xemacs/pkgrepos/mypkgs/testing" load-path)
     ;; remove this
     ;; (push "~/.xemacs/pkgrepos/mypkgs/session-start" load-path)
     ;; remove this
