@@ -25,7 +25,7 @@
 ;;; Code:
 
 (require 'planner-interface)
-(require 'general-testing)
+;; (require 'general-testing)
 
 ;; (defun pa/find-task-in-page-main (task page &optional buf-op)
 ;;   "return t if able to find task in page and leave in that page."

@@ -1,4 +1,4 @@
-;;; emacs-db-mode.el --- Emacs Database Mode
+;;; planner-utils.el --- Planner interface
 
 ;; Copyright (C) 2012  Sharad Pratap
 
@@ -25,5 +25,5 @@
 ;;; Code:
 
 
-(provide 'emacs-db-mode)
-;;; emacs-db-mode.el ends here
+(provide 'planner-utils)
+;;; planner-utils.el ends here
