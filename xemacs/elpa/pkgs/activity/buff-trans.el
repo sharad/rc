@@ -295,14 +295,19 @@
 
 (disable-detect-buffer-chg-use)
 
+
+
+
+
+
 (when nil
 
   (defun is-run-detect-buffer-chg-use ()
     (and
      (not
       (or
-     (string-match "^*helm" (buffer-name))
-     (minibufferp)))
+       (string-match "^*helm" (buffer-name))
+       (minibufferp)))
      (eq
       (current-buffer)
       (window-buffer))))
