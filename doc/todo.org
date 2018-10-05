@@ -47,3 +47,29 @@ than come back to old behaviour.
 for this configure postfix to bind using wlan0 ip
 ** Setup dovecote to store mail attachment separately
 follow https://www.dovecot.org/list/dovecot/2016-February/103077.html
+* Setup Emacs
+** Helm shortcut for long paths and many things
+ #+BEGIN_SRC elisp
+ ;; https://stackoverflow.com/questions/19283368/how-can-i-open-quickly-a-file-in-emacs
+ (defun my-helm-omni (&rest arg)
+   ;; just in case someone decides to pass an argument, helm-omni won't fail.
+   (interactive)
+   (helm-other-buffer
+    (append '(helm-c-source-buffers-list ;; list of all open buffers
+              helm-c-source-recentf)    ;; all recent files
+
+            ;; projectile errors out if you're not in a project
+            (if (projectile-project-p) ;; so look before you leap
+                '(helm-source-projectile-files-list
+                  helm-source-projectile-recentf-list
+                  helm-source-projectile-buffers-list)
+                '())
+
+            '(
+              helm-c-source-files-in-current-dir ;; files in current directory
+              helm-c-source-locate               ;; file anywhere
+              helm-c-source-bookmarks            ;; bookmarks too
+              helm-c-source-buffer-not-found))     ;; ask to create a buffer otherwise
+
+    "*helm-omni*"))
+ #+END_SRC
