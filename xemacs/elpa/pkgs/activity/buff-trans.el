@@ -65,8 +65,8 @@
      @:idle-thresh-hold   5
      @:idle-times         nil
      @:currbuf            (current-buffer)
-     @:display-time-spent nil
-     )
+     @:display-time-spent nil)
+     
 
     (defun notify-buf-chg (fmt &rest args)
       (let ((msg
@@ -212,14 +212,14 @@
       (remove-hook 'elscreen-screen-update-hook startfn)
       (remove-hook 'elscreen-goto-hook          startfn))
 
-    (enable-detect-buffer-chg-use))
+    (enable-detect-buffer-chg-use)))
 
 
   ;; (def@ @@ :dispatch (&optional note)
   ;;   (@:initialize))
 
   ;; (@:dispatch note)
-  )
+  
 
 
 
@@ -260,7 +260,15 @@
        (idle-thresh-hold 5)
        (idle-times nil)
        (currbuf (current-buffer))
+       (ini-currbuf (current-buffer))
        (display-time-spent nil))
+
+  (defun ptrace (&optional msg)
+    (let ((msg (or msg "ptrace"))
+          (trace (with-temp-buffer
+                     (backtrace)
+                   (buffer-string))))
+      (message "%s: %s" msg trace)))
 
   (defun notify-buf-chg (fmt &rest args)
     (let ((msg
@@ -287,14 +295,16 @@
              (float-time (current-time))
              (float-time time-start))))
       (notify-buf-chg
-       "%s: prev currbuf %s, current-buff %s, Idle timer %s, idle times %s, time passed %d, timer %s"
+       "%s: prev currbuf %s, ini-prev currbuf %s, current-buff %s, windbuff %s, idle times %s, time passed %d, Idle timer %s, buff-chg-timer %s"
        msg
        currbuf
+       ini-currbuf
        (current-buffer)
-       timer
+       (window-buffer)
        idle-times
        time-passed
-       timer)))
+       (if timer t)
+       (if buff-chg-timer t))))
 
   (defun buffer-chg-action ()
     (buffer-chg-print-info "inaction")
@@ -343,9 +353,9 @@
             (buffer-chg-action)
             (cancel-detect-buffer-chg-use)
             (setq currbuf (current-buffer))
-            (buffer-chg-print-info "detect-buffer-chg-use total stop timer")
-            ;; (notify-buf-chg "detect-buffer-chg-use total stop timer %s" timer)
-            )
+            (buffer-chg-print-info "detect-buffer-chg-use total stop timer"))
+          ;; (notify-buf-chg "detect-buffer-chg-use total stop timer %s" timer)
+          
           (progn
             (buffer-chg-print-info "detect-buffer-chg-use: else ")
             (when timer
@@ -354,9 +364,9 @@
                     (run-with-timer timer-gap
                                     nil
                                     #'detect-buffer-chg-use)))
-            (buffer-chg-print-info "detect-buffer-chg-use reschd timer")
-            ;; (notify-buf-chg "detect-buffer-chg-use reschd timer %s" timer)
-            ))))
+            (buffer-chg-print-info "detect-buffer-chg-use reschd timer")))))
+  ;; (notify-buf-chg "detect-buffer-chg-use reschd timer %s" timer)
+  
 
   (defun is-run-detect-buffer-chg-use ()
     (and
@@ -367,21 +377,22 @@
      (eq
       (current-buffer)
       (window-buffer))))
+  ;; (current-idle-time)
+  
 
   (defun run-detect-buffer-chg ()
-    (when (is-run-detect-buffer-chg-use)
-      (unless (eq currbuf (current-buffer))
-        ;; (notify-buf-chg
-        ;;  "run-detect-buffer-chg: schd timer prev %s curr %s"
-        ;;  currbuf (current-buffer))
-
-        (buffer-chg-print-info "run-detect-buffer-chg")
-        ;; (setq currbuf (current-buffer))
-        (cancel-detect-buffer-chg-use)
-        (setq timer
-              (run-with-timer timer-gap
-                              nil
-                              #'detect-buffer-chg-use)))))
+    (when (and
+           (is-run-detect-buffer-chg-use)
+           (not (eq ini-currbuf (current-buffer))))
+      ;; (ptrace)
+      (buffer-chg-print-info "run-detect-buffer-chg")
+      (setq ini-currbuf (current-buffer))
+      ;; (setq currbuf (current-buffer))
+      (cancel-detect-buffer-chg-use)
+      (setq timer
+            (run-with-timer timer-gap
+                            nil
+                            #'detect-buffer-chg-use))))
 
   (defun run-detect-buffer-chg-use ()
     (when (is-run-detect-buffer-chg-use)
@@ -405,6 +416,7 @@
     (add-hook 'buffer-list-update-hook     startfn)
     (add-hook 'elscreen-screen-update-hook startfn)
     (add-hook 'elscreen-goto-hook          startfn))
+  
 
   (defun disable-detect-buffer-chg-use ()
     (interactive)
@@ -420,7 +432,6 @@
   (enable-detect-buffer-chg-use))
 
 
-
 (disable-detect-buffer-chg-use)
 
 
@@ -429,6 +440,11 @@
 
 
 (when nil
+
+
+  (with-output-to-temp-buffer "backtrace-output"
+    (backtrace)
+    (buffer-string))
 
   (defun is-run-detect-buffer-chg-use ()
     (and
