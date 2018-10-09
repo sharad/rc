@@ -276,8 +276,9 @@
              (current-time-string)
              ": "
              (apply #'format fmt args))))
-      (message msg)
-      (notify "buffer-chg" msg)))
+      (message msg)))
+  ;; (notify "buffer-chg" msg)
+  
 
   (defun get-timer ()
     (interactive)
@@ -306,11 +307,13 @@
        (if timer t)
        (if buff-chg-timer t))))
 
-  (defun buffer-chg-action ()
+  (defun buffer-chg-action (prevbuf currbuf)
     (buffer-chg-print-info "inaction")
     (notify-buf-chg
-     "Detected buffer change buffer %s time spend %d"
+     "Detected buffer change buffer %s prevbuf %s currbuf %s time spend %d"
      (current-buffer)
+     prevbuf
+     currbuf
      display-time-spent))
 
   (defun add-idle-timer-hook ()
@@ -330,8 +333,11 @@
       ;; (setq currbuf (current-buffer))
       (setq time-start (current-time))))
 
-  (defun detect-buffer-chg-use ()
-    (let* ((cumulatibe-idle-time
+  (defun detect-buffer-chg-use (buffs)
+    (message "detect-buffer-chg-use: %s" buffs)
+    (let* ((prev (car buffs))
+           (curr (cadr buffs))
+           (cumulatibe-idle-time
              (reduce #'+
                      idle-times))
            (time-passed
@@ -350,12 +356,12 @@
               (cancel-timer timer)
               (setq timer nil))
             (setq display-time-spent time-spent)
-            (buffer-chg-action)
+            (buffer-chg-action prev curr)
             (cancel-detect-buffer-chg-use)
             (setq currbuf (current-buffer))
             (buffer-chg-print-info "detect-buffer-chg-use total stop timer"))
           ;; (notify-buf-chg "detect-buffer-chg-use total stop timer %s" timer)
-          
+
           (progn
             (buffer-chg-print-info "detect-buffer-chg-use: else ")
             (when timer
@@ -363,48 +369,34 @@
               (setq timer
                     (run-with-timer timer-gap
                                     nil
-                                    #'detect-buffer-chg-use)))
+                                    #'detect-buffer-chg-use buffs)))
             (buffer-chg-print-info "detect-buffer-chg-use reschd timer")))))
-  ;; (notify-buf-chg "detect-buffer-chg-use reschd timer %s" timer)
-  
 
   (defun is-run-detect-buffer-chg-use ()
     (and
      (not
       (or
+       (current-idle-time)
        (string-match "^*helm" (buffer-name))
        (minibufferp)))
      (eq
       (current-buffer)
       (window-buffer))))
   ;; (current-idle-time)
-  
 
-  (defun run-detect-buffer-chg ()
-    (when (and
-           (is-run-detect-buffer-chg-use)
-           (not (eq ini-currbuf (current-buffer))))
-      ;; (ptrace)
-      (buffer-chg-print-info "run-detect-buffer-chg")
-      (setq ini-currbuf (current-buffer))
-      ;; (setq currbuf (current-buffer))
-      (cancel-detect-buffer-chg-use)
-      (setq timer
-            (run-with-timer timer-gap
-                            nil
-                            #'detect-buffer-chg-use))))
-
-  (defun run-detect-buffer-chg-use ()
-    (when (is-run-detect-buffer-chg-use)
-      (when buff-chg-timer (cancel-timer buff-chg-timer))
-      (setq
-       buff-chg-timer (run-with-idle-timer 1 nil #'run-detect-buffer-chg))))
-
-  (setq
-   startfn #'run-detect-buffer-chg-use)
-
-  (setq
-   startfn #'run-detect-buffer-chg)
+  (defun run-detect-buffer-chg (prev curr)
+    (buffer-chg-print-info "run-detect-buffer-chg1")
+    (let ((buffs (list prev curr)))
+      (when (and
+             (is-run-detect-buffer-chg-use)
+             (not (eq ini-currbuf (current-buffer))))
+        (buffer-chg-print-info "run-detect-buffer-chg")
+        (setq ini-currbuf (current-buffer))
+        (cancel-detect-buffer-chg-use)
+        (setq timer
+              (run-with-timer timer-gap
+                              nil
+                              #'detect-buffer-chg-use buffs)))))
 
   (defun enable-detect-buffer-chg-use ()
     (interactive)
@@ -412,11 +404,10 @@
     (when buff-chg-timer
       (cancel-timer buff-chg-timer)
       (setq buff-chg-timer nil))
-    (add-hook 'post-command-hook           #'add-idle-timer-hook)
-    (add-hook 'buffer-list-update-hook     startfn)
-    (add-hook 'elscreen-screen-update-hook startfn)
-    (add-hook 'elscreen-goto-hook          startfn))
-  
+
+    (add-hook 'post-command-hook #'add-idle-timer-hook)
+    (add-hook 'switch-buffer-functions #'run-detect-buffer-chg))
+
 
   (defun disable-detect-buffer-chg-use ()
     (interactive)
@@ -424,51 +415,12 @@
     (when buff-chg-timer
       (cancel-timer buff-chg-timer)
       (setq buff-chg-timer nil))
-    (remove-hook 'post-command-hook           #'add-idle-timer-hook)
-    (remove-hook 'buffer-list-update-hook     startfn)
-    (remove-hook 'elscreen-screen-update-hook startfn)
-    (remove-hook 'elscreen-goto-hook          startfn))
+    (remove-hook 'post-command-hook #'add-idle-timer-hook)
+    (remove-hook 'switch-buffer-functions #'run-detect-buffer-chg))
 
   (enable-detect-buffer-chg-use))
 
 
 (disable-detect-buffer-chg-use)
-
-
-
-
-
-
-(when nil
-
-
-  (with-output-to-temp-buffer "backtrace-output"
-    (backtrace)
-    (buffer-string))
-
-  (defun is-run-detect-buffer-chg-use ()
-    (and
-     (not
-      (or
-       (string-match "^*helm" (buffer-name))
-       (minibufferp)))
-     (eq
-      (current-buffer)
-      (window-buffer))))
-
-
-  (disable-test-buffer-chg)
-
-  (time-stamp)
-
-  (selected-window)
-
-  (lambda ()
-    (with-current-buffer "*scratch*"
-      (message "buff %s window-buffer %s"
-               (current-buffer)
-               (window-buffer)))
-    ))
-
 
 ;;; buff-trans.el ends here
