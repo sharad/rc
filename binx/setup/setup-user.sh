@@ -66,7 +66,7 @@ DEB_PKG_XML="libxml2-utils xsltproc docbook5-xml docbook-xsl-ns"
 DEB_PKG_UTILS="gcalcli newsbeuter"
 DEB_PKG_MEDIA="libavcodec-extra pulseeffects pavucontrol pulseaudio-module-gconf pulseaudio-equalizer vokoscreen pulseaudio-utils pulsemixer kodi sox mpg123 mpg321 vlc"
 DEB_PKG_WINDOW="smbclient python3-smbc python-smbc"
-DEB_PKG1_NET="network-manager-fortisslvpn openfortivpn"
+DEB_PKG1_NET="network-manager-fortisslvpn openfortivpn python-pyftpdlib python3-pyftpdlib "
 DEB_PKG_DOC="wv"
 DEB_PKG_DOC_PUB="hugo jekyll"
 
