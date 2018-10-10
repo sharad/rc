@@ -1,0 +1,57 @@
+2018-10-10 17:48:57,051 ERROR [Errno 13] Permission denied
+Traceback (most recent call last):
+  File "/tmp/user/1000/tmp/tftpgui/tftp_package/tftp_engine.py", line 467, in __init__
+    self.bind((server.listenipaddress, server.listenport))
+  File "/usr/lib/python3.6/asyncore.py", line 329, in bind
+    return self.socket.bind(addr)
+PermissionError: [Errno 13] Permission denied
+2018-10-10 17:48:57,068 ERROR Unable to bind to given address and port
+Traceback (most recent call last):
+  File "/tmp/user/1000/tmp/tftpgui/tftp_package/tftp_engine.py", line 467, in __init__
+    self.bind((server.listenipaddress, server.listenport))
+  File "/usr/lib/python3.6/asyncore.py", line 329, in bind
+    return self.socket.bind(addr)
+PermissionError: [Errno 13] Permission denied
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/user/1000/tmp/tftpgui/tftp_package/tftp_engine.py", line 1137, in loop
+    server.poll()
+  File "/tmp/user/1000/tmp/tftpgui/tftp_package/tftp_engine.py", line 341, in poll
+    self.start_serving()
+  File "/tmp/user/1000/tmp/tftpgui/tftp_package/tftp_engine.py", line 290, in start_serving
+    self.tftp_server = _TFTPserver(self)
+  File "/tmp/user/1000/tmp/tftpgui/tftp_package/tftp_engine.py", line 488, in __init__
+    raise NoService("Unable to bind to given address and port")
+tftp_package.tftp_engine.NoService: Unable to bind to given address and port
+2018-10-10 17:48:59,321 ERROR [Errno 13] Permission denied
+Traceback (most recent call last):
+  File "/tmp/user/1000/tmp/tftpgui/tftp_package/tftp_engine.py", line 467, in __init__
+    self.bind((server.listenipaddress, server.listenport))
+  File "/usr/lib/python3.6/asyncore.py", line 329, in bind
+    return self.socket.bind(addr)
+PermissionError: [Errno 13] Permission denied
+2018-10-10 17:48:59,322 ERROR Unable to bind to given address and port
+Traceback (most recent call last):
+  File "/tmp/user/1000/tmp/tftpgui/tftp_package/tftp_engine.py", line 467, in __init__
+    self.bind((server.listenipaddress, server.listenport))
+  File "/usr/lib/python3.6/asyncore.py", line 329, in bind
+    return self.socket.bind(addr)
+PermissionError: [Errno 13] Permission denied
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/user/1000/tmp/tftpgui/tftp_package/tftp_engine.py", line 1137, in loop
+    server.poll()
+  File "/tmp/user/1000/tmp/tftpgui/tftp_package/tftp_engine.py", line 341, in poll
+    self.start_serving()
+  File "/tmp/user/1000/tmp/tftpgui/tftp_package/tftp_engine.py", line 290, in start_serving
+    self.tftp_server = _TFTPserver(self)
+  File "/tmp/user/1000/tmp/tftpgui/tftp_package/tftp_engine.py", line 488, in __init__
+    raise NoService("Unable to bind to given address and port")
+tftp_package.tftp_engine.NoService: Unable to bind to given address and port
+2018-10-10 17:49:19,347 INFO Listenning on port 1069
+2018-10-10 17:49:22,855 INFO Server stopped
+2018-10-10 17:49:24,106 INFO TFTPgui application stopped
