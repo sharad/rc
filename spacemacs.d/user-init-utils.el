@@ -533,14 +533,14 @@
 
   (global-set-key (kbd "s-d") 'debug)
 
-  (add-hook
+  (add-hook                             ;Cyclic symlink error solution
    'lotus-enable-startup-interrupting-feature-hook
    #'(lambda ()
        (progn
-	 (set-variable 'ycmd-server-command '("python" "/usr/bin/ycmd"))
-	 (set-variable 'ycmd-global-config  "~/.ycmd_global_conf.py")
-	 (set-variable 'ycmd-extra-conf-handler 'load)
-	 (set-variable 'ycmd-extra-conf-whitelist (list "/home/s/paradise/git/main/" (file-truename "/home/s/paradise/git/main/")))))
+         (set-variable 'ycmd-server-command '("python" "/usr/bin/ycmd"))
+         (set-variable 'ycmd-global-config  "~/.ycmd_global_conf.py")
+         (set-variable 'ycmd-extra-conf-handler 'load)
+         (set-variable 'ycmd-extra-conf-whitelist (list "/home/s/paradise/git/main/" (file-truename "/home/s/paradise/git/main/")))))
    t)
 
 
