@@ -255,24 +255,84 @@
     ;; evernote
     search-engine
     twitter))
-    ;; wakatime
+;; wakatime
 
-(defun lotus-dist-layers-select (&optional layer-dir)
-  (let ((layer-dir (or layer-dir "~/.spacemacs-mycontribs/+local-session/")))
-    (when (file-directory-p layer-dir)
-      (mapcar
-       #'(lambda (f)
-           (intern f))
-       (remove-if
-        'file-directory-p
-        (directory-files layer-dir nil "^lotus-[a-zA-Z]+"))))))
+(defun spacemacs-dist-layers-exclude ()
+  '(
+    jabber
+    ivy
+    games
+    selectric
+    chinese
+    japanese
+    keyboard-layout
+    osx
+    perforce
+    rebox ;; --- startup errors , (error "Style 371 defined more than once") signal(error ("Style 371 defined more than once"))
+    shell
+    evil-commentary
+    evil-snipe
+    vim-empty-lines
+    vinegar
+    wakatime
+    ))
+
+(defun spacemacs-dist-layers-include ()
+  '(
+    (shell :variables
+     shell-default-height 30
+     shell-default-position 'bottom)
+    ))
+
+
+(defun lotus-dist-layers-group-dirs (&optional layers-group-top-dir)
+  (let ((layers-group-top-dir (or layers-group-top-dir "~/.emacs.d/layers")))
+    (directory-files layers-group-top-dir t "^+.*")))
+
+(defun lotus-dist-layers-select (layer-dir &optional match)
+  (when (file-directory-p layer-dir)
+    (mapcar
+     #'(lambda (f)
+         (intern f))
+     (remove-if
+      'file-directory-p
+      (directory-files layer-dir nil match)))))
+
+(defun lotus-dist-layers-group-dirs-layers-select (&optional layers-group-top-dir match)
+  (let ((layers-group-top-dir (or layers-group-top-dir "~/.emacs.d/layers")))
+    (apply #'append
+           (mapcar
+            #'(lambda (path)
+                (lotus-dist-layers-select path match))
+            (lotus-dist-layers-group-dirs layers-group-top-dir)))))
+
+;; (lotus-dist-layers-group-dirs-layers-select "~/.spacemacs-mycontribs/"
+;; "^lotus-[a-zA-Z]+")
+
+
+;; (require 'cl-seq)
+
+(defun lotus-layers-list ()
+  (let* ((all-layers
+           (append
+            ;; (spacemacs-dist-layers-select)
+            (lotus-dist-layers-group-dirs-layers-select "~/.emacs.d/layers/")
+            (lotus-dist-layers-group-dirs-layers-select "~/.spacemacs-mycontribs/" "^lotus-[a-zA-Z]+")
+            ;; (lotus-dist-layers-select)
+            '(basic-startup)))
+         (all-without-excluded-layers
+           (set-difference
+            all-layers (spacemacs-dist-layers-exclude)))
+         (all-with-included-layers
+           (append all-without-excluded-layers (spacemacs-dist-layers-include))))
+    all-with-included-layers))
 
 (defun cleanup-tty-process ()
   (interactive)
   (let ((tty-processes
-         (remove-if-not
-          'process-tty-name
-          (process-list))))
+          (remove-if-not
+           'process-tty-name
+           (process-list))))
     (dolist (tp tty-processes)
       (kill-process tp))))
 
@@ -473,11 +533,16 @@
 
   (global-set-key (kbd "s-d") 'debug)
 
-  (progn
-    (set-variable 'ycmd-server-command '("python" "/usr/bin/ycmd"))
-    (set-variable 'ycmd-global-config  "~/.ycmd_global_conf.py")
-    (set-variable 'ycmd-extra-conf-handler 'load)
-    (set-variable 'ycmd-extra-conf-whitelist (list "/home/s/paradise/git/main/" (file-truename "/home/s/paradise/git/main/"))))
+  (add-hook
+   'lotus-enable-startup-interrupting-feature-hook
+   #'(lambda ()
+       (progn
+	 (set-variable 'ycmd-server-command '("python" "/usr/bin/ycmd"))
+	 (set-variable 'ycmd-global-config  "~/.ycmd_global_conf.py")
+	 (set-variable 'ycmd-extra-conf-handler 'load)
+	 (set-variable 'ycmd-extra-conf-whitelist (list "/home/s/paradise/git/main/" (file-truename "/home/s/paradise/git/main/")))))
+   t)
+
 
 
   (delete-selection-mode 1)

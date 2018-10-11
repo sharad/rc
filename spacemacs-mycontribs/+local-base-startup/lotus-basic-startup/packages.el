@@ -34,7 +34,7 @@
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org
 ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org
 
-(defconst basic-startup-packages
+(defconst lotus-basic-startup-packages
   '(
     (basic-utils :location local)
     (init-setup :location local)
@@ -71,7 +71,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun basic-startup/init-basic-utils ()
+(defun lotus-basic-startup/init-basic-utils ()
   (use-package basic-utils
       ;; :ensure t
       ;; :defer t
@@ -81,21 +81,21 @@ Each entry is either:
     (progn
       )))
 
-(defun basic-startup/init-init-setup ()
+(defun lotus-basic-startup/init-init-setup ()
   (use-package init-setup
       ;; :ensure t
       :config
       (progn
         )))
 
-(defun basic-startup/init-utils-custom ()
+(defun lotus-basic-startup/init-utils-custom ()
   (use-package utils-custom
       ;; :ensure t
       :config
       (progn
         )))
 
-(defun basic-startup/init-startup-hooks ()
+(defun lotus-basic-startup/init-startup-hooks ()
   (use-package startup-hooks
       ;; :ensure t
       ;; :demand t
@@ -125,7 +125,7 @@ Each entry is either:
          lotus-enable-login-session-finish-debug-on-quit   nil)))
   (add-hook 'after-init-hook #'startup-hooks-insinuate))
 
-(defun basic-startup/init-sessions-unified ()
+(defun lotus-basic-startup/init-sessions-unified ()
   (use-package startup-hooks)
   (use-package sessions-unified
                ;; :ensure t
@@ -197,7 +197,7 @@ Each entry is either:
                                                                (message-notify "Emacs" "Loaded Completely :)")
                                                                (message "\n\n\n\n"))))))))))))
 
-(defun basic-startup/init-elscreen ()
+(defun lotus-basic-startup/init-elscreen ()
   (use-package elscreen
       :defer t
       :config
@@ -215,7 +215,7 @@ Each entry is either:
           ;; (elscreen-next)
           (elscreen-notify-screen-modification)))))
 
-(defun basic-startup/init-lotus-wrapper ()
+(defun lotus-basic-startup/init-lotus-wrapper ()
   (progn
     (progn
       (use-package lotus-wrapper
