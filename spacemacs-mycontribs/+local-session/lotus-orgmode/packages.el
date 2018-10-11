@@ -55,6 +55,8 @@
     outorg
     poporg
     navi-mode
+    org-password-manager
+    org-parser
     )
   "The list of Lisp packages required by the lotus-orgmode layer.
 
@@ -234,5 +236,17 @@ Each entry is either:
       :config
       (progn
         )))
+
+(defun lotus-orgmode/init-org-password-manager ()
+  (use-package org-password-manager
+               :defer t
+               :config
+               (progn)))
+
+(defun lotus-orgmode/init-org-parser ()
+  (use-package org-parser
+               :defer t
+               :config
+               (progn)))
 
 ;;; packages.el ends here

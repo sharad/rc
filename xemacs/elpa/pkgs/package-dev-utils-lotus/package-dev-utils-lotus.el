@@ -509,5 +509,102 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
 ;;      ))
 ;;   )
 
+;; check about
+;; package-compute-transaction
+
+(defun lotus-package-delete (pkg)
+  (interactive
+   (progn
+     ;; Initialize the package system to get the list of package
+     ;; symbols for completion.
+     (unless package--initialized
+       (package-initialize t))
+     (unless package-archive-contents
+       (package-refresh-contents))
+     (list (intern (completing-read
+                    "Install package: "
+                    (delq nil
+                          (mapcar (lambda (elt)
+                                    (when (package-installed-p (car elt))
+                                      (symbol-name (car elt))))
+                                  ;; package-archive-contents
+                                  package-alist))
+                    nil t)))))
+  (add-hook 'post-command-hook #'package-menu--post-refresh)
+  (let ((pkg-desc (if (package-desc-p pkg)
+                      pkg
+                      (cadr (assq pkg package-alist)))))
+    (if pkg-desc
+        (if (package-installed-p (package-desc-name pkg-desc))
+            (package-delete pkg-desc t)
+            (message "package %s is not installed" pkg))
+        (message "No such package %s" pkg))))
+
+
+;;;###autoload
+(defun lotus-package-autoremove ()
+  "Remove packages that are no more needed.
+
+Packages that are no more needed by other packages in
+`package-selected-packages' and their dependencies
+will be deleted."
+  (interactive)
+  ;; If `package-selected-packages' is nil, it would make no sense to
+  ;; try to populate it here, because then `package-autoremove' will
+  ;; do absolutely nothing.
+  (when (or package-selected-packages
+            (yes-or-no-p
+             (format-message
+              "`package-selected-packages' is empty! Really remove ALL packages? ")))
+    (let* ((removable
+             (package--removable-packages))
+
+           (removable
+             (remove-if-not
+               #'(lambda (p)
+                   (let* ((pdesc
+                            (cadr (assq p package-alist)))
+                          (dir (if pdesc
+                                   (package-desc-dir pdesc))))
+                     (string-prefix-p (file-name-as-directory
+                                       (expand-file-name package-user-dir))
+                                      (expand-file-name dir))))
+               removable)))
+
+      (if removable
+          (when (y-or-n-p
+                 (format "%s packages will be deleted:\n%s, proceed? "
+                         (length removable)
+                         (mapconcat #'symbol-name removable ", ")))
+            (mapc (lambda (p)
+                    (package-delete (cadr (assq p package-alist)) t))
+                  removable))
+          (message "Nothing to autoremove")))))
+
+
+
+;; check about
+;; package-compute-transaction
+
+(when nil
+  (package-desc-p (cdar package-archive-contents))
+  (caar package-archive-contents)
+  (assoc
+   'yasnippet-classic-snippets
+   package-archive-contents))
+
+(when nil
+  (dolist (p '(ox-pandoc
+               orgit
+               org-present
+               org-category-capture
+               org-projectile
+               org-brain
+               ob-elixir
+               ob-async
+               elfeed-org
+               ))
+    (lotus-package-delete p)))
+
 (provide 'package-dev-utils-lotus)
 ;;; package-dev-utils-lotus.el ends here
