@@ -694,12 +694,12 @@
 
   )
 
-
-(let ((a 1))                            ; binding (1)
-  (let ((f (lambda () (print a))))
-    (let ((a 2))                        ; binding (2)
-      (funcall f)
-      f)))
+(when nil
+  (let ((a 1))                            ; binding (1)
+    (let ((f (lambda () (print a))))
+      (let ((a 2))                        ; binding (2)
+        (funcall f)
+        f))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; post-command-hook is a variable defined in `C source code'.
