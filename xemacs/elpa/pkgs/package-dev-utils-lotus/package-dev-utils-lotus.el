@@ -604,7 +604,19 @@ will be deleted."
                ob-async
                elfeed-org
                ))
-    (lotus-package-delete p)))
+    (lotus-package-delete p))
+
+  (dolist (p '(ox-pandoc
+               orgit
+               org-present
+               org-category-capture
+               org-projectile
+               org-brain
+               ob-elixir
+               ob-async
+               elfeed-org))
+    (package-install p))
+  )
 
 (provide 'package-dev-utils-lotus)
 ;;; package-dev-utils-lotus.el ends here
