@@ -124,6 +124,14 @@
                  org-clock-hd-marker
                  org-clock-marker))))
 
+  (setf @org-clock-note
+        (@! @note-class :gen-org-note
+            "org-clock-note"
+            #'(lambda ()
+                (or
+                 org-clock-hd-marker
+                 org-clock-marker))))
+
   (length (@ @org-clock-note :dests))
 
   (memq :dests (@! @org-clock-note :keys))

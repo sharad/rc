@@ -37,7 +37,7 @@
 
 ;;; Code:
 
-(require '@)
+;; (require '@)
 
 (provide 'activity-base)
 
