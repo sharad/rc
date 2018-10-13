@@ -206,6 +206,12 @@
  (setf @buff-trans (@! @transition-span-dectector-class :gen-buffer-trans "test"))
  (@! @buff-trans :initialize))
 
+
+
+(length switch-buffer-functions)
+
+
+
 (@ @buff-trans :timer-gap)
 (functionp (@ @buff-trans :detect-buffer-chg-use))
 
