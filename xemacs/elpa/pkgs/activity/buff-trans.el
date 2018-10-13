@@ -59,7 +59,7 @@
       (message msg)))
 
   (def@ @@ :get-timer ()
-     (message "Timer %s" timer))
+     (message "Timer %s" @:timer))
 
   (def@ @@ :get-idle-times ()
     (message "Idle Times %s" idle-times))
@@ -69,18 +69,18 @@
           (time-passed
             (-
              (float-time (current-time))
-             (float-time time-start))))
+             (float-time @:time-start))))
       (when @:debug-switch-buf
          (@:notify-buf-chg
           "%s: prev currbuf-detect-buffer-chg-use %s, currbuf-run-detect-buffer-chg currbuf %s, (current-buffer) %s, (window-buffer) %s, idle-times %s, time-passed %d, Idle timer %s"
           msg
-          currbuf-detect-buffer-chg-use
-          currbuf-run-detect-buffer-chg
+          @:currbuf-detect-buffer-chg-use
+          @:currbuf-run-detect-buffer-chg
           (current-buffer)
           (window-buffer)
-          idle-times
+          @:idle-times
           time-passed
-          (if timer t)))))
+          (if @:timer t)))))
 
   (def@ @@ :buffer-chg-action (prevbuf currbuf time-spent)
      (@:buffer-chg-print-info "inaction")
@@ -193,7 +193,8 @@
     (setf @:idle-times nil)
     (setf @:currbuf-detect-buffer-chg-use (current-buffer))
     (setf @:currbuf-run-detect-buffer-chg (current-buffer))
-    (@:enable-detect-buffer-chg-use))
+    (@:enable-detect-buffer-chg-use)
+    (@:buffer-chg-print-info "run-detect-buffer-chg1"))
 
   (def@ @@ :uninitialize ()
     (@:disable-detect-buffer-chg-use)))
@@ -202,18 +203,20 @@
 
 ;; (@:enable-detect-buffer-chg-use)
 
-(progn
- (setf @buff-trans (@! @transition-span-dectector-class :gen-buffer-trans "test"))
- (@! @buff-trans :initialize))
+(when nil
+  (progn
+   (setf @buff-trans (@! @transition-span-dectector-class :gen-buffer-trans "test"))
+   (@! @buff-trans :initialize))
+
+  (length switch-buffer-functions)
+  (setq switch-buffer-functions nil)
 
 
-
-(length switch-buffer-functions)
-
+ ;; switch-buffer-functions
 
 
-(@ @buff-trans :timer-gap)
-(functionp (@ @buff-trans :detect-buffer-chg-use))
+ (@ @buff-trans :timer-gap)
+ (functionp (@ @buff-trans :detect-buffer-chg-use)))
 
 (defun enable-detect-buffer-chg-use ()
   (@:cancel-detect-buffer-chg-use)
