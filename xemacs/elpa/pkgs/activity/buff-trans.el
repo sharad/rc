@@ -166,7 +166,7 @@
           (setf @:timer
                 (run-with-timer @:timer-gap
                                 nil
-                                @:detect-buffer-chg-use @:currbuf-run-detect-buffer-chg curr))
+                                @:detect-buffer-chg-use @@ @:currbuf-run-detect-buffer-chg curr))
           (setf @:currbuf-run-detect-buffer-chg curr))
         (when (eq @:currbuf-detect-buffer-chg-use (current-buffer))
           (when @:debug-switch-buf (message "cancel timer"))
@@ -174,13 +174,13 @@
 
   (def@ @@ :enable-detect-buffer-chg-use ()
     (@:cancel-detect-buffer-chg-use)
-    (add-hook 'post-command-hook #'(lambda () (@! @:add-idle-timer-hook @@)))
-    (add-hook 'switch-buffer-functions #'(lambda () (@! @:run-detect-buffer-chg @@))))
+    (add-hook 'post-command-hook #'(lambda () (@:add-idle-timer-hook)))
+    (add-hook 'switch-buffer-functions #'(lambda () (@:run-detect-buffer-chg))))
 
   (def@ @@ :disable-detect-buffer-chg-use ()
     (@:cancel-detect-buffer-chg-use)
-    (remove-hook 'post-command-hook #'(lambda () (@! @:add-idle-timer-hook @@)))
-    (remove-hook 'switch-buffer-functions #'(lambda () (@! @:run-detect-buffer-chg @@))))
+    (remove-hook 'post-command-hook #'(lambda () (@:add-idle-timer-hook)))
+    (remove-hook 'switch-buffer-functions #'(lambda () (@:run-detect-buffer-chg))))
 
   (def@ @@ :initialize ()
     (setf @:debug-switch-buf t)
@@ -205,6 +205,9 @@
 (progn
  (setf @buff-trans (@! @transition-span-dectector-class :gen-buffer-trans "test"))
  (@! @buff-trans :initialize))
+
+(@ @buff-trans :timer-gap)
+(functionp (@ @buff-trans :detect-buffer-chg-use))
 
 (defun enable-detect-buffer-chg-use ()
   (@:cancel-detect-buffer-chg-use)
