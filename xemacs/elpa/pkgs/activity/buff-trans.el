@@ -175,12 +175,12 @@
   (def@ @@ :enable-detect-buffer-chg-use ()
     (@:cancel-detect-buffer-chg-use)
     (add-hook 'post-command-hook #'(lambda () (@:add-idle-timer-hook)))
-    (add-hook 'switch-buffer-functions #'(lambda () (@:run-detect-buffer-chg))))
+    (add-hook 'switch-buffer-functions #'(lambda (prev curr) (@:run-detect-buffer-chg prev curr))))
 
   (def@ @@ :disable-detect-buffer-chg-use ()
     (@:cancel-detect-buffer-chg-use)
     (remove-hook 'post-command-hook #'(lambda () (@:add-idle-timer-hook)))
-    (remove-hook 'switch-buffer-functions #'(lambda () (@:run-detect-buffer-chg))))
+    (remove-hook 'switch-buffer-functions #'(lambda (prev curr) (@:run-detect-buffer-chg prev curr))))
 
   (def@ @@ :initialize ()
     (setf @:debug-switch-buf t)
@@ -194,10 +194,12 @@
     (setf @:currbuf-detect-buffer-chg-use (current-buffer))
     (setf @:currbuf-run-detect-buffer-chg (current-buffer))
     (@:enable-detect-buffer-chg-use)
-    (@:buffer-chg-print-info "run-detect-buffer-chg1"))
+    (@:buffer-chg-print-info "run-detect-buffer-chg1")
+    t)
 
   (def@ @@ :uninitialize ()
-    (@:disable-detect-buffer-chg-use)))
+    (@:disable-detect-buffer-chg-use)
+    t))
 
 
 
@@ -208,6 +210,8 @@
    (setf @buff-trans (@! @transition-span-dectector-class :gen-buffer-trans "test"))
    (@! @buff-trans :initialize))
 
+  (@! @buff-trans :uninitialize)
+
   (length switch-buffer-functions)
   (setq switch-buffer-functions nil)
 
@@ -217,6 +221,12 @@
 
  (@ @buff-trans :timer-gap)
  (functionp (@ @buff-trans :detect-buffer-chg-use)))
+
+(car switch-buffer-functions)
+
+(add-hook 'switch-buffer-functions
+          #'(lambda (prev curr)
+              (message "prev %s, curr %s" prev curr)))
 
 (defun enable-detect-buffer-chg-use ()
   (@:cancel-detect-buffer-chg-use)
