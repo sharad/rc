@@ -317,13 +317,13 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
    (let ((dir (read-directory-name "package directory: ")))
      (list dir)))
   (let* ((pkg-desc (package-upload-package-from-dir dir))
-         (pkg-sym (package-desc-name pkg-desc))
+         (pkg-sym  (package-desc-name pkg-desc))
          (pkg-name (symbol-name pkg-sym)))
     (when (package-installed-p pkg-sym)
       ;; (package-delete pkg-desc)
       (when pkg-desc
         (ignore-errors
-          (package-delete pkg-desc))))
+         (package-delete pkg-desc))))
 
     (let ((old-installed-pkgs (directory-files
                                package-user-dir
