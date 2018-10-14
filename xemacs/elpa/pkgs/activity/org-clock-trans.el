@@ -38,10 +38,9 @@
 ;;; Code:
 
 (require 'activity-base)
+(require 'org-activity-note)
 
 (provide 'org-clock-trans)
-
-
 
 
 
@@ -81,6 +80,9 @@
 
   (def@ @@ :dispatch (prev next)
     (@:make-event prev next)))
+
+;; call where clock transition happening
+;; (@! @transition-dectector-class m1 m2)
 
 
 ;;; org-clock-trans.el ends here

@@ -47,22 +47,11 @@
   :prefix "activity-")
 
 
-;; (defmacro defsubobj@ (object name params &rest body)
-;;   `(let ((drived-obj
-;;           (@extend ,object
-;;                    :name ,name)))
-;;
-;;      (with-@@ drived-obj
-;;        ,@(if (stringp (car body))
-;;             `((setf @:doc ,(car body))))
-;;        ,@(if (stringp (car body)) (cdr body) body))
-;;
-;;      drived-obj))
 
 (defmacro defsubobj@ (object name &rest body)
   `(let ((drived-obj
-          (@extend ,object
-                   :name ,name)))
+           (@extend ,object
+                    :name ,name)))
 
      (with-@@ drived-obj
        ,@(if (stringp (car body))
@@ -75,9 +64,11 @@
 (defmacro defsubclass-gen@ (object gen-method params &rest body )
   `(progn
      (def@ ,object ,gen-method (name ,@params)
-           ,@(if (stringp (car body)) (list (car body)) ())
-           (defsubobj@ ,object name
-             ,@(if (stringp (car body)) (cdr body) body)))))
+       ,@(if (stringp (car body))
+             (list (car body)) ())
+
+       (defsubobj@ ,object name
+         ,@(if (stringp (car body)) (cdr body) body)))))
 (put 'defsubclass-gen@ 'lisp-indent-function 3)
 
 
@@ -158,45 +149,41 @@
                     (if (@! dest :keyp :receive)
                         ;; (@! dest :receive fmt args)
                         (apply (@ dest :receive) dest fmt args)
-                      (message
-                       "for %s dest %s [%s] not has :receive method, not sending msg."
-                       @:name
-                       (@ dest :name)
-                       (@! dest :keys)))
-                  (message "dest is nil")))
-            (error "%s has No @:dests %d boundp(%s) consp(%s) present."
-                   @:name
-                   (length @:dests)
-                   (boundp '@:dests)
-                   (consp @:dests))))
+                        (message
+                         "for %s dest %s [%s] not has :receive method, not sending msg."
+                         @:name
+                         (@ dest :name)
+                         (@! dest :keys)))
+                    (message "dest is nil")))
+              (error "%s has No @:dests %d boundp(%s) consp(%s) present."
+                     @:name
+                     (length @:dests)
+                     (boundp '@:dests)
+                     (consp @:dests))))
 
         (defsubclass-gen@ @@ :gen-format-msg ()
           "Generator for format message note"
           (push
            (@! @dest-class :gen-msg "msg")
-           @:dests)
-          )
+           @:dests))
 
         (defsubclass-gen@ @@ :gen-org-log-note ()
           "Generator for org log note"
           (push
            (@! @dest-class :gen-msg "msg")
-           @:dests)
-          )
+           @:dests))
 
         (defsubclass-gen@ @@ :gen-org-dual-log-note ()
           "Generator for dual org log note"
           (push
            (@! @dest-class :gen-msg "msg")
-           @:dests)
-          )
+           @:dests))
 
         (defsubclass-gen@ @@ :gen-org-intreactive-log-note ()
           "Generator for Interactive org log note"
           (push
            (@! @dest-class :gen-msg "msg")
-           @:dests)
-          )
+           @:dests))
 
         (def@ @@ :dispatch ()
           (@:init))
@@ -294,10 +281,7 @@
       (defsubobj@ @activity-base "activity detector class"
         "Activity detector class"
         (def@ @@ :note ()
-          )
-
-
-        ))
+          )))
 
 
 ;;; act.el ends here
