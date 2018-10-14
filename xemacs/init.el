@@ -17,7 +17,8 @@
 (add-hook 'after-init-hook
           (lambda ()
             (setq *emacs-in-init* nil)
-            (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)))
+            (when (advice--p (advice--symbol-function 'server-create-window-system-frame))
+              (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init))))
 (when (or t (require 'subr nil t))
   (defvar old-messages-buffer-max-lines 100 "To keep all startup detail.")
   (setq
@@ -128,7 +129,8 @@
 
 ;; (redefine-function-remembered 'server-create-window-system-frame)
 (setq *emacs-in-init* nil)              ;how to ensure it will run.
-(ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)
+(when (advice--p (advice--symbol-function 'server-create-window-system-frame))
+  (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init))
 ;;end
 
 

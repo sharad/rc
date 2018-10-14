@@ -6,6 +6,15 @@
 ;; You may delete these explanatory comments.
 (package-initialize)
 
+(when nil
+  (progn
+    (message "package-archives: %s" package-archives)
+    (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+    (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+    (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
+    (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+    (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))))
+
 (let* ((dist-dir (getenv "EMACS_DIST_DIR"))
        (dist-dir
         (if dist-dir

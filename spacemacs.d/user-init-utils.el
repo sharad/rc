@@ -412,13 +412,10 @@
   ;; (require 'lotus-utils)
 
   (progn
-
+    (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
     (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-
     (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
-
     (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-
     (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/")))
 
   (defvar *emacs-in-init* t "Emacs is in init.")
@@ -429,7 +426,8 @@
   (add-hook 'after-init-hook
             (lambda ()
               (setq *emacs-in-init* nil)
-              (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)))
+              (when (advice--p (advice--symbol-function 'server-create-window-system-frame))
+                (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init))))
   (when (or t (require 'subr nil t))
     (defvar old-messages-buffer-max-lines 100 "To keep all startup detail.")
     (setq
@@ -598,7 +596,8 @@
    ;; 'spacemacs-buffer/goto-buffer
    )
 
-  (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init)
+  (when (advice--p (advice--symbol-function 'server-create-window-system-frame))
+    (ad-disable-advice 'server-create-window-system-frame 'around 'nocreate-in-init))
   (lotus-necessary-functionality)
   (lotus-necessary-functionality-once-add-to-spacemacs-later)
   (lotus-necessary-test)
