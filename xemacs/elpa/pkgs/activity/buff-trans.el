@@ -208,7 +208,7 @@
   (def@ @@ :initialize ()
     ;; (let ((trans-event (or trans-event))))
     (setf @:transition transition)
-    (setf @:debug-switch-buf t)
+    (setf @:debug-switch-buf nil)
     (setf @:timer-gap 10)
     (setf @:time-threshold-gap @:timer-gap)
     (setf @:idle-thresh-hold 5)
@@ -229,7 +229,7 @@
 (setf @defautl-buffer-transition-with-log-note-in-org-current-clock
   (defsubobj@ @transition-class "default buffer transition"
     (def@ @@ :dispatch (prev curr time-spent)
-      (@! @org-clock-note :send "Changed to buffer %s from %s" prev curr))))
+      (@! @org-clock-note :send "Changed to buffer %s from %s" curr prev))))
 
 (setf @buffer-transition (@! @transition-class
                                :gen-buffer-trans
