@@ -71,13 +71,14 @@ Each entry is either:
 
 (defun lotus-vc/post-init-magit ()
   (use-package magit
-    :defer t
-    :config
-    (progn
-      ;; TODO: try to find instance when magit ask for key and recognize
-      ;; it to set advice.
-      (defadvice magit-push (before ad-update-ssh-agent-env activate)
-        (update-ssh-agent)))))
+               :defer t
+               :commands (magit-process-file)
+               :config
+               (progn
+                 ;; TODO: try to find instance when magit ask for key and recognize
+                 ;; it to set advice.
+                 (defadvice magit-push (before ad-update-ssh-agent-env activate)
+                   (update-ssh-agent)))))
 
 (defun lotus-vc/post-init-git-commit ()
   (use-package git-commit
