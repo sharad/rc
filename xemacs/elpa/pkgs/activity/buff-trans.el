@@ -46,18 +46,20 @@
 (defsubclass-gen@ @transition-class :gen-buffer-trans (default)
 
   (def@ @@ :initialize ()
+    (setf @:mode-transition nil)
     (setf @:transition default))
 
   (def@ @@ :register (mode transition)
     (push @:mode-transition (cons mode transition)))
 
   (def@ @@ :dispatch (prev curr time-spent)
+    (@:initialize)
     (let* ((mjmode (with-current-buffer curr
                     major-mode))
-           (transtion (or
-                       (cdr (assq mjmode @:mode-transition))
-                       @:transition)))
-      (@! transition :dispatch prev curr))))
+           (transition (or
+                        (cdr (assq mjmode @:mode-transition))
+                        @:transition)))
+      (@! transition :dispatch prev curr time-spent))))
 
 (defsubclass-gen@ @transition-span-dectector-class :gen-buffer-trans-span-detector (transition)
   "Deted"
@@ -102,14 +104,15 @@
 
   (def@ @@ :buffer-chg-action (prevbuf currbuf time-spent)
     (@:buffer-chg-print-info "inaction")
-    (@! transition :dispatch prevbuf currbuf time-spent))
+    (@! @:transition :dispatch prevbuf currbuf time-spent)
+    (@:buffer-chg-print-info "done inaction"))
     ;; (@:notify-buf-chg
     ;;  "Detected buffer change buffer %s prevbuf %s currbuf %s time spend %d"
     ;;  (current-buffer)
     ;;  prevbuf
     ;;  currbuf
     ;;  time-spent)
-    
+
 
   (def@ @@ :add-idle-timer-hook ()
     (let* ((idle-time-internal (current-idle-time))
@@ -203,8 +206,9 @@
     (remove-hook 'switch-buffer-functions #'(lambda (prev curr) (@:run-detect-buffer-chg prev curr))))
 
   (def@ @@ :initialize ()
-    (let ((trans-event (or trans-event))))
-    (setf @:debug-switch-buf nil)
+    ;; (let ((trans-event (or trans-event))))
+    (setf @:transition transition)
+    (setf @:debug-switch-buf t)
     (setf @:timer-gap 10)
     (setf @:time-threshold-gap @:timer-gap)
     (setf @:idle-thresh-hold 5)
@@ -222,17 +226,31 @@
     (@:disable-detect-buffer-chg-use)
     t))
 
-(defvar @defautl-buffer-transition-with-log-note-in-org-current-clock
+(setf @defautl-buffer-transition-with-log-note-in-org-current-clock
   (defsubobj@ @transition-class "default buffer transition"
     (def@ @@ :dispatch (prev curr time-spent)
-      (@! @org-clock-note :dispatch  :send "Changed to buffer %s from %s" prev curr))))
+      (@! @org-clock-note :send "Changed to buffer %s from %s" prev curr))))
 
-(defvar @buffer-transition (@! @transition-class :gen-buffer-trans "buffer transition" @defautl-buffer-transition-with-log-note-in-org-current-clock))
+(setf @buffer-transition (@! @transition-class
+                               :gen-buffer-trans
+                               "buffer transition"
+                               @defautl-buffer-transition-with-log-note-in-org-current-clock))
 
-(defvar @buffer-transition-span-detector (@! @transition-span-dectector-class :gen-buffer-trans-span-detector "buffer transition span detector" @buffer-transition))
+(setf @buffer-transition-span-detector (@! @transition-span-dectector-class
+                                             :gen-buffer-trans-span-detector
+                                             "buffer transition span detector"
+                                             @buffer-transition))
+
+(activity-register
+ #'(lambda ()
+     (@! @buffer-transition-span-detector :initialize)))
+
+(@! @buffer-transition-span-detector :uninitialize)
+
 
 ;; (@! @buffer-transition-span-detector :initialize)
-
+;; (@! @org-clock-note :send "Changed to buffer %s from %s" 1 1)
+;; (@! @buffer-transition :dispatch  "Changed to buffer %s from %s" (get-buffer "*scratch*") (current-buffer))
 
 (when nil
   (progn
@@ -251,7 +269,7 @@
 
   ;; switch-buffer-functions
 
-  (setf (@ @buff-trans :debug-switch-buf) nil)
+  (setf (@ @buffer-transition-span-detector :debug-switch-buf) nil)
 
   (@ @buff-trans :timer-gap)
   (functionp (@ @buff-trans :detect-buffer-chg-use))

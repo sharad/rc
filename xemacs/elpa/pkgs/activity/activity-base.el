@@ -284,6 +284,29 @@
           )))
 
 
+
+
+(setf @activity
+      (defsubobj@ @activity-base "activity"
+        "Activity class"
+        (def@ @@ :init ()
+          (@^:init)
+          (message "@activity-class :init")
+          (setf @:occuredon (current-time)))
+
+        (def@ @@ :start ()
+          )
+
+        (def@ @@ :stop ()
+          )
+
+        (def@ @@ :hook-register ()
+          )
+        ))
+
+
+
+
 ;;; act.el ends here
 
 ;; based on note type correct destination should be chosen.
