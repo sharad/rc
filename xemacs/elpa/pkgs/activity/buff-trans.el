@@ -231,7 +231,8 @@
 
 (defvar @buffer-transition-span-detector (@! @transition-span-dectector-class :gen-buffer-trans-span-detector "buffer transition span detector" @buffer-transition))
 
-;; (@:enable-detect-buffer-chg-use)
+;; (@! @buffer-transition-span-detector :initialize)
+
 
 (when nil
   (progn
