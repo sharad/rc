@@ -77,15 +77,15 @@ Each entry is either:
 
 
 
-(defun common-lisp/post-init-slime ()
+(defun lotus-clisp/post-init-slime ()
   (use-package slime
-    :commands slime-mode
-    :defer t
-    :config
-    (progn
-      (progn
-        ;; https://cliki.net/linedit
-        (setq
-         inferior-lisp-program "sbcl --noinform --no-linedit")))))
+               :commands slime-mode
+               :defer t
+               :config
+               (progn
+                 (progn
+                   ;; https://cliki.net/linedit
+                   (setq
+                    inferior-lisp-program "sbcl --noinform --no-linedit")))))
 
 ;;; packages.el ends here

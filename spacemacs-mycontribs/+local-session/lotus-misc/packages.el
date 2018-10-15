@@ -38,7 +38,6 @@
   '(
     ace-popup-menu
     achievements
-    midnight
     )
   "The list of Lisp packages required by the lotus-misc layer.
 
@@ -80,44 +79,5 @@ Each entry is either:
                :defer t
                :config
                (progn)))
-
-(defun lotus-misc/init-midnight ()
-  (use-package midnight
-               :defer t
-               :config
-               (progn
-                 (progn
-                   ;;https://www.emacswiki.org/emacs/CleanBufferList
-                   (setq
-                    clean-buffer-list-delay-general 1       ;day
-                    clean-buffer-list-delay-special (* 3 60 60)) ;hour min sec
-
-                   (dolist (el
-                            '("*buffer-selection*"
-                              "*Finder*"
-                              "*Finder Category*"
-                              "*Finder-package*"
-                              "*RE-Builder*"
-                              "*vc-change-log*"))
-                     (add-to-list 'clean-buffer-list-kill-buffer-names el))
-
-                   (dolist (el
-                            '("\\`\\*Customize .*\\*\\'"
-                              "\\`\\*\\(Wo\\)?Man .*\\*\\'"))
-                     (add-to-list 'clean-buffer-list-kill-regexps el))
-
-                   (dolist (el
-                            '("*eshell*"
-                              "*ielm*"
-                              "*mail*"
-                              "*w3m*"
-                              "*w3m-cache*"))
-                     (add-to-list 'clean-buffer-list-kill-never-buffer-names el))
-
-                   (when nil
-                     (dolist (el
-                              '("\\`\\*tramp/.*\\*\\`"
-                                "\\`\\*ftp .*\\*\\`"))
-                       (add-to-list 'clean-buffer-list-kill-never-regexps el)))))))
 
 ;;; packages.el ends here

@@ -306,20 +306,13 @@
                 (lotus-dist-layers-select path match))
             (lotus-dist-layers-group-dirs layers-group-top-dir)))))
 
-;; (lotus-dist-layers-group-dirs-layers-select "~/.spacemacs-mycontribs/"
-;; "^lotus-[a-zA-Z]+")
-
-
 ;; (require 'cl-seq)
 
 (defun lotus-layers-list ()
   (let* ((all-layers
            (append
-            ;; (spacemacs-dist-layers-select)
             (lotus-dist-layers-group-dirs-layers-select "~/.emacs.d/layers/")
-            (lotus-dist-layers-group-dirs-layers-select "~/.spacemacs-mycontribs/" "^lotus-[a-zA-Z]+")
-            ;; (lotus-dist-layers-select)
-            '(basic-startup)))
+            (lotus-dist-layers-group-dirs-layers-select "~/.spacemacs-mycontribs/" "^lotus-[a-zA-Z]+")))
          (all-without-excluded-layers
            (set-difference
             all-layers (spacemacs-dist-layers-exclude)))
