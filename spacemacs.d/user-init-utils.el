@@ -398,18 +398,19 @@
     (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
     (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path))
 
-  (push
-   '("local" . "~/.xemacs/elpa/upload")
-   package-archives)
+  ;; (push
+  ;;  '("local" . "~/.xemacs/elpa/upload")
+  ;;  package-archives)
 
   ;; (require 'lotus-utils)
 
   (progn
-    (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
-    (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-    (add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/"))
-    (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-    (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/")))
+    (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
+    (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
+    (add-to-list 'package-archives '("ELPA" . "https://tromey.com/elpa/"))
+    (add-to-list 'package-archives '("melpa" . "https://melpa.milkbox.net/packages/"))
+    (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
+    (add-to-list 'package-archives '("local" . "~/.xemacs/elpa/upload")))
 
   (defvar *emacs-in-init* t "Emacs is in init.")
   (defvar user-emacs-directory "~/.emacs.d")
@@ -451,7 +452,7 @@
 
 
   (when (require 'cl nil) ; a rare necessary use of REQUIRE
-    ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
+                                        ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
     (defvar *emacs-load-start* (current-time)))
 
   (defconst *work-dir*
