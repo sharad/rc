@@ -69,26 +69,23 @@ Each entry is either:
 
 (defun lotus-pa/init-planner-env ()
   (use-package planner-env
-      ;; :defer t
-      :demand t
-      :config
-      (progn
-        )))
+               :defer t
+               :config
+               (progn
+                 )))
 
 (defun lotus-pa/init-planner-interface ()
   (use-package planner-interface
-      ;; :defer t
-      :demand t
-      :config
-      (progn
-        )))
+               :defer t
+               :config
+               (progn
+                 )))
 
 (defun lotus-pa/init-pa-planner ()
   (use-package pa-planner
-      ;; :defer t
-      :demand t
-      :config
-      (progn
-        )))
+               :defer t
+               :config
+               (progn
+                 )))
 
 ;;; packages.el ends here

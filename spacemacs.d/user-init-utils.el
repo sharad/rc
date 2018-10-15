@@ -395,8 +395,9 @@
     (push "~/.xemacs/pkgrepos/mypkgs/gnus-session-start" load-path)
     (push "~/.xemacs/pkgrepos/world/misc/misc" load-path)
     (push "~/.xemacs/pkgrepos/autoinstalled/auto-install" load-path)
-    (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
-    (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path))
+    ;; (push "~/.xemacs/pkgrepos/mypkgs/pa-planner" load-path)
+    ;; (push "~/.xemacs/pkgrepos/mypkgs/planner-utils" load-path)
+    )
 
   ;; (push
   ;;  '("local" . "~/.xemacs/elpa/upload")
