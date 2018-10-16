@@ -1,8 +1,7 @@
 ;;; occ-obj-method.el --- occ-api               -*- lexical-binding: t; -*-
-;; Copyright (C) 2016  sharad
+;; Copyright (C) 2016  Sharad Pratap
 
-;; Author: sharad <sh4r4d _at_ _G-mail_>
-;; Author: sharad <sh4r4d _at_ _G-mail_>
+;; Author: Sharad Pratap <sh4r4d _at_ _G-mail_>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
