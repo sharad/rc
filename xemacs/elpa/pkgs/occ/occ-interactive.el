@@ -139,7 +139,7 @@
 
           (org-with-file-loc-timed-refile
               file pos
-              timeout '((occ-included-files :maxlevel . 4))
+              timeout '((occ-included-files :maxlevel . 4)) ;heavy task, but present in macro !
 
               (lexical-let* ((marker (make-marker))
                              (local-cleanup

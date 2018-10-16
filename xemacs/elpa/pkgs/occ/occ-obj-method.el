@@ -644,34 +644,35 @@ pointing to it."
   (interactive
    (list (occ-make-ctx)))
   (run-unobtrusively
-    (let* ((ctx (or ctx (occ-make-ctx)))
-           (matched-ctxual-tsks
+   (let* ((ctx (or ctx (occ-make-ctx)))
+          (matched-ctxual-tsks
+           (run-unobtrusively           ;heavy task
             (remove-if-not
              #'(lambda (ctxual-tsk)
-
                  (let* ((marker (occ-ctxual-tsk-marker ctxual-tsk)))
                    (and
                     marker
                     (marker-buffer marker))))
-             (occ-matching-ctxual-tsks (occ-collection-object) ctx))))
-      (if matched-ctxual-tsks
-          (let* ((sel-ctxual-tsk
-                  (if (> (length matched-ctxual-tsks) 1)
-                      (occ-sacha-helm-select-timed matched-ctxual-tsks)
-                    (car matched-ctxual-tsks)))
-                 ;; (sel-tsk   (if sel-ctxual-tsk (plist-get sel-ctxual-tsk :tsk)))
-                 ;; (sel-marker (if sel-tsk      (plist-get sel-tsk      :tsk-clock-marker)))
-                 )
-            ;; (occ-debug 6 "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
-            (if sel-ctxual-tsk (occ-clock-in sel-ctxual-tsk)))
-        (progn
-          ;; here create unnamed tsk, no need
-          (setq *occ-update-current-ctx-msg* "null clock")
-          (occ-debug 6
-                       "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
-                       ctx)
-          (occ-add-to-org-heading-when-idle ctx 7)
-          nil)))))
+             (occ-matching-ctxual-tsks (occ-collection-object) ctx)))))
+     (unless (eq matched-ctxual-tsks t)
+       (if matched-ctxual-tsks
+           (let* ((sel-ctxual-tsk
+                   (if (> (length matched-ctxual-tsks) 1)
+                       (occ-sacha-helm-select-timed matched-ctxual-tsks)
+                     (car matched-ctxual-tsks)))
+                  ;; (sel-tsk   (if sel-ctxual-tsk (plist-get sel-ctxual-tsk :tsk)))
+                  ;; (sel-marker (if sel-tsk      (plist-get sel-tsk      :tsk-clock-marker)))
+                  )
+             ;; (occ-debug 6 "sel-ctxual-tsk %s sel-tsk %s sel-marker %s" sel-ctxual-tsk sel-tsk sel-marker)
+             (if sel-ctxual-tsk (occ-clock-in sel-ctxual-tsk)))
+         (progn
+           ;; here create unnamed tsk, no need
+           (setq *occ-update-current-ctx-msg* "null clock")
+           (occ-debug 6
+                      "No clock found please set a match for this ctx %s, add it using M-x occ-add-to-org-heading."
+                      ctx)
+           (occ-add-to-org-heading-when-idle ctx 7)
+           nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
