@@ -326,13 +326,15 @@
                        (widen)
                        (goto-char org-clock-hd-marker))
                 (error "No running clock that could be used as capture target")))
-          (`(marker ,hd-mark)
-            (if (and (markerp hd-marker)
-                     (marker-buffer hd-marker))
-                (progn (set-buffer (marker-buffer hd-marker))
-                       (org-capture-put-target-region-and-position)
-                       (widen)
-                       (goto-char hd-marker))
+          (`(marker ,hd-marker)
+            (if (and
+                  (markerp hd-marker)
+                  (marker-buffer hd-marker))
+                (progn
+                  (set-buffer (marker-buffer hd-marker))
+                  (org-capture-put-target-region-and-position)
+                  (widen)
+                  (goto-char hd-marker))
                 (error "No running clock that could be used as capture target")))
           (target (error "Invalid capture target specification: %S" target)))
 
@@ -505,6 +507,29 @@
        '(function org-goto-refile)
        "* TODO %? %^g\n %i\n [%a]\n"
        :empty-lines 1))
+
+
+  (when nil
+
+    (org-capture+
+     'log-note
+     '(clock)
+     "* TODO %? %^g\n %i\n [%a]\n"
+     :empty-lines 1)
+
+    (org-capture+
+     'log-note
+     `(marker ,org-clock-marker)
+     "* TODO %? %^g\n %i\n [%a]\n"
+     :empty-lines 1)
+
+    (org-capture+
+     'entry
+     '(function org-goto-refile)
+     "* TODO %? %^g\n %i\n [%a]\n"
+     :empty-lines 1)
+
+   )
 
   (when nil
   (let (helm-sources)
