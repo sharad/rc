@@ -63,6 +63,7 @@
 
 (defsubclass-gen@ @transition-span-dectector-class :gen-buffer-trans-span-detector (transition)
   "Deted"
+
   (def@ @@ :ptrace (&optional msg)
     (let ((msg (or msg "ptrace"))
           (trace (with-temp-buffer
