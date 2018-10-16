@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2012  Sharad Pratap
 
-;; Author: Sharad Pratap <>
+;; Author: Sharad Pratap <sh4r4d _at_ _G-mail_>
 ;; Keywords:
 
 ;; This program is free software; you can redistribute it and/or modify
