@@ -482,6 +482,8 @@
                  "Could not start the clock in this capture buffer")))
           (if (org-capture-get :immediate-finish)
               (org-capture-finalize)))))
+
+(defalias 'org-capture+ 'org-capture-alt)
 #+END_SRC
 *** Application
 #+BEGIN_SRC elisp

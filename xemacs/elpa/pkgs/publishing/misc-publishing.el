@@ -2,7 +2,8 @@
 
 ;; Copyright (C) 2015  sharad
 
-;; Author: sharad <spratap@merunetworks.com>
+;; Author: sharad <sh4r4d _at_ _G-mail_>
+;; Author: sharad <sh4r4d _at_ _G-mail_>
 ;; Keywords:convenience, data, hypermedia, wp
 
 ;; This program is free software; you can redistribute it and/or modify

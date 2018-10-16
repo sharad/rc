@@ -2,7 +2,8 @@
 
 ;; Copyright (C) 2015  sharad
 
-;; Author: sharad <spratap@merunetworks.com>
+;; Author: sharad <sh4r4d _at_ _G-mail_>
+;; Author: sharad <sh4r4d _at_ _G-mail_>
 ;; Started on  Thu Mar  3 16:12:21 2011 Sharad Pratap
 ;; $Id$
 ;; Keywords:convenience
