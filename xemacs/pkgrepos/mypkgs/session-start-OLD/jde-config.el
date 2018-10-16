@@ -1,6 +1,7 @@
 ;;
 ;; jde.el
-;; Login : <spratap@spratap>
+;; Login : <sh4r4d _at_ _G-mail_>
+;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Tue Mar 29 11:32:09 2011 Sharad Pratap
 ;; $Id$
 ;;

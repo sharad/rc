@@ -1,6 +1,7 @@
 ;;
 ;; exsubr.el
-;; Login : <spratap@spratap>
+;; Login : <sh4r4d _at_ _G-mail_>
+;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Wed Apr 20 19:17:33 2011 Sharad Pratap
 ;; $Id$
 ;;

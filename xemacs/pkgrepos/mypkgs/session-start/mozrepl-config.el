@@ -1,6 +1,7 @@
 ;;
 ;; mozrepl.el
-;; Login : <spratap@spratap>
+;; Login : <sh4r4d _at_ _G-mail_>
+;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Tue Sep 14 17:38:02 2010 Sharad Pratap
 ;; $Id$
 ;;

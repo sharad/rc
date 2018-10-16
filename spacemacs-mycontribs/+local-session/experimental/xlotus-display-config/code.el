@@ -1,6 +1,7 @@
 ;;
 ;; display.el
-;; Login : <spratap@spratap>
+;; Login : <sh4r4d _at_ _G-mail_>
+;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Wed Sep 15 11:59:42 2010 Sharad Pratap
 ;; $Id$
 ;;

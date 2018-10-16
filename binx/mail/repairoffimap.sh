@@ -1,7 +1,8 @@
 #!/bin/zsh
 ##
 ## repairoffimap.sh
-## Login : <spratap@spratap>
+## Login : <sh4r4d _at_ _G-mail_>
+## Login : <sh4r4d _at_ _G-mail_>
 ## Started on  Fri Jun  3 12:16:33 2011 Sharad Pratap
 ## $Id$
 ##

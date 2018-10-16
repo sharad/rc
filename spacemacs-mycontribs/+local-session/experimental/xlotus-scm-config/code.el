@@ -1,6 +1,7 @@
 ;;
 ;; scm.el
-;; Login : <spratap@spratap>
+;; Login : <sh4r4d _at_ _G-mail_>
+;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Tue Jan 25 10:49:28 2011 Sharad Pratap
 ;; $Id$
 ;;

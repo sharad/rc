@@ -1,6 +1,7 @@
 ;;
 ;; mailto.el
-;; Login : <spratap@spratap>
+;; Login : <sh4r4d _at_ _G-mail_>
+;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Thu Nov 25 16:56:09 2010 Sharad Pratap
 ;; $Id$
 ;;

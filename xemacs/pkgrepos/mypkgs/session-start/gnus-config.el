@@ -1,6 +1,7 @@
 ;;
 ;; gnus-config.el
-;; Login : <spratap@spratap>
+;; Login : <sh4r4d _at_ _G-mail_>
+;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Wed Jun 30 12:02:07 2010 Sharad Pratap
 ;; $Id$
 ;;

@@ -1,7 +1,8 @@
 #!/bin/zsh
 ##
 ## getinfo.sh
-## Login : <spratap@spratap>
+## Login : <sh4r4d _at_ _G-mail_>
+## Login : <sh4r4d _at_ _G-mail_>
 ## Started on  Fri Feb 18 18:38:14 2011 Sharad Pratap
 ## $Id$
 
