@@ -42,6 +42,8 @@
 
 (provide 'org-activity-capture-note)
 
+;; (declare-function paredit-raise-sexp "paredit")
+
 
 
 (defsubclass-gen@ @dest-class :gen-org-log-dest (marker)
