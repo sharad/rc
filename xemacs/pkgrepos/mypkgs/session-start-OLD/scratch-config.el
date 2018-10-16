@@ -1,7 +1,6 @@
 ;;
 ;; scratch.el
 ;; Login : <sh4r4d _at_ _G-mail_>
-;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Fri Jun 11 17:18:56 2010 Sharad Pratap
 ;; $Id$
 ;;

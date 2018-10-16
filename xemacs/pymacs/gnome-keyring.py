@@ -2,7 +2,6 @@
 ##
 ## gnome-keyring.py
 ## Login : <sh4r4d _at_ _G-mail_>
-## Login : <sh4r4d _at_ _G-mail_>
 ## Started on  Thu Jun 24 14:50:48 2010 Sharad Pratap
 ## $Id$
 ##

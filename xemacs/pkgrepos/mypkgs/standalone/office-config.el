@@ -1,7 +1,6 @@
 ;;
 ;; office.el
 ;; Login : <sh4r4d _at_ _G-mail_>
-;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Wed Dec  1 17:11:05 2010 Sharad Pratap
 ;; $Id: office-config-backup.el.backup,v 1.1 2016/06/15 14:45:02 s Exp s $
 ;;

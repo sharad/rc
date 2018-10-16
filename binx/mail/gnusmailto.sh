@@ -2,7 +2,6 @@
 ##
 ## gnusmailto.sh
 ## Login : <sh4r4d _at_ _G-mail_>
-## Login : <sh4r4d _at_ _G-mail_>
 ## Started on  Thu Nov 25 17:18:24 2010 Sharad Pratap
 ## $Id$
 ##

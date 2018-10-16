@@ -3,7 +3,6 @@
 ;; Copyright (C) 2013  Sharad Pratap
 
 ;; Author: Sharad Pratap <sh4r4d _at_ _G-mail_>
-;; Author: Sharad Pratap <sh4r4d _at_ _G-mail_>
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify

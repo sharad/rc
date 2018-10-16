@@ -1,7 +1,6 @@
 ;;
 ;; ruby.el
 ;; Login : <sh4r4d _at_ _G-mail_>
-;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Mon Jul 26 18:58:12 2010 Sharad Pratap
 ;; $Id$
 ;;

@@ -1,7 +1,6 @@
 ;;
 ;; incoming.el
 ;; Login : <sh4r4d _at_ _G-mail_>
-;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Tue Jun 14 18:51:09 2011 Sharad Pratap
 ;; $Id$
 ;;

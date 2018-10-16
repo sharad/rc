@@ -2,7 +2,6 @@
 ;;
 ;; misc.el
 ;; Login : <sh4r4d _at_ _G-mail_>
-;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Fri Dec 10 14:44:47 2010 Sharad Pratap
 ;; $Id$
 ;;

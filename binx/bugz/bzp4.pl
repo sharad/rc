@@ -4,7 +4,6 @@
 # Copyright 2011 Sharad Pratap
 #
 # Author: sh4r4d _at_ _G-mail_
-# Author: sh4r4d _at_ _G-mail_
 # Version: $Id: bu.pl,v 0.0 2011/03/30 09:31:36 spratap Exp $
 # Keywords:
 # X-URL: not distributed yet

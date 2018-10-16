@@ -1,7 +1,6 @@
 ;;
 ;; ercrc.el
 ;; Login : <sh4r4d _at_ _G-mail_>
-;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Thu Mar  3 16:13:21 2011 Sharad Pratap
 ;; $Id$
 ;;

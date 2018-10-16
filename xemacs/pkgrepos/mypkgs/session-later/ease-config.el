@@ -2,7 +2,6 @@
 ;;
 ;; ease.el
 ;; Login : <sh4r4d _at_ _G-mail_>
-;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Fri Feb  4 15:30:34 2011 Sharad Pratap
 ;; $Id$
 ;;

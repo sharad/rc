@@ -3,7 +3,6 @@
 ;; Copyright (C) 2012  Sharad Pratap
 
 ;; Author: Sharad Pratap <sh4r4d _at_ _G-mail_>
-;; Author: Sharad Pratap <sh4r4d _at_ _G-mail_>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify

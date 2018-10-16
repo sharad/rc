@@ -3,7 +3,6 @@
 ;; Copyright (C) 2015  sharad
 
 ;; Author: sharad;;; timer-config.el --- <sh4r4d _at_ _G-mail_>
-;; Author: sharad;;; timer-config.el --- <sh4r4d _at_ _G-mail_>
 ;; Keywords:convenience
 
 ;; This program is free software; you can redistribute it and/or modify

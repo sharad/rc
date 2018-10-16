@@ -3,7 +3,6 @@
 ;; Copyright (C) 2016  sharad
 
 ;; Author: sharad <sh4r4d _at_ _G-mail_>
-;; Author: sharad <sh4r4d _at_ _G-mail_>
 ;; Keywords: data
 
 ;; This program is free software; you can redistribute it and/or modify

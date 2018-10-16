@@ -50,7 +50,6 @@
  '(diary-entry-marker "+")
  ;; '(diary-file "~/.Organize/emacs/diary/diary")
  '(diary-mail-addr "sh4r4d _at_ _G-mail_")
- '(diary-mail-addr "sh4r4d _at_ _G-mail_")
  '(display-time-24hr-format nil)
  '(display-time-day-and-date t)
  '(display-time-mail-face (quote default))

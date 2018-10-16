@@ -1,7 +1,6 @@
 ;;
 ;; cedet.el
 ;; Login : <sh4r4d _at_ _G-mail_>
-;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Mon Jul 26 15:53:21 2010 Sharad Pratap
 ;; $Id$
 ;;

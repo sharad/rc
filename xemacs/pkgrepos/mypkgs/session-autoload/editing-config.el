@@ -1,7 +1,6 @@
 ;;
 ;; editing.el
 ;; Login : <sh4r4d _at_ _G-mail_>
-;; Login : <sh4r4d _at_ _G-mail_>
 ;; Started on  Fri Apr  8 14:12:07 2011 Sharad Pratap
 ;; $Id$
 ;;
