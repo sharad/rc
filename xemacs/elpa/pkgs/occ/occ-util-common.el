@@ -26,5 +26,27 @@
 (cl-defmethod ignore-p ((buff buffer))
   nil)
 
+
+
+(defmacro run-unobtrusively (&rest body)
+  `(while-no-input
+    (redisplay)
+    ,@body))
+
+
+
+(when nil
+ (defun time-consuming ()
+  (cl-loop for i below (* 1000 1000 1) sum i))
+
+ (defun test-no-input ()
+  (let ((retval))
+    (message "last-input-event %s retval %s" last-input-event retval)))
+
+ (progn
+   (run-with-idle-timer 3 nil #'test-no-input)
+   (run-with-idle-timer 6 nil #'test-no-input)
+   (run-with-idle-timer 18 nil #'test-no-input)))
+
 (provide 'occ-util-common)
 ;;; occ-util-common.el ends here

@@ -34,6 +34,7 @@
   (require 'lotus-misc-utils))
 
 (require 'occ-obj-method)
+(require 'occ-util-common)
 
 ;; (defun org-get-property (prop-key)
 ;;   (org-entry-get nil prop-key))
@@ -226,7 +227,7 @@
       ;; TODO: Add code to which check if only focus present than only trigger
       ;; else postpone it by calling run-with-idle-plus-timer
       (lotus-with-other-frame-event-debug "occ-add-to-org-heading-when-idle" :cancel
-        (occ-add-to-org-heading ctx timeout))
+        (run-unobtrusively (occ-add-to-org-heading ctx timeout)))
     ((quit)))
   (occ-debug :debug "end: occ-add-to-org-heading-when-idle")
   ;; (run-with-idle-timer-nonobtrusive-simple

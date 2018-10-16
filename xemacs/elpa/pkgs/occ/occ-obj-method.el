@@ -31,6 +31,7 @@
 (require 'occ-obj-common)
 (require 'occ-tree)
 (require 'occ-obj-accessor)
+(require 'occ-util-common)
 
 (when nil ;; https://curiousprogrammer.wordpress.com/2010/07/19/emacs-defstruct-vs-other-languages/
 
@@ -642,7 +643,7 @@ pointing to it."
   "marker and ranked version"
   (interactive
    (list (occ-make-ctx)))
-  (progn
+  (run-unobtrusively
     (let* ((ctx (or ctx (occ-make-ctx)))
            (matched-ctxual-tsks
             (remove-if-not
