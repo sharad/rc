@@ -601,19 +601,34 @@
 (defmacro run-when-idle (secs &rest body)
   `(letrec ((timer nil)
             (fn
-            (lambda ()
-              (let ((retval
+             (lambda ()
+               (let ((retval
                       (while-no-input (redisplay)
                                       ,@body
                                       :complete)))
-                ))))
-           (setq
-            timer
-            (run-with-idle-timer secs nil
-                                 ))
-           `(while-no-input (redisplay)
-                            )))
+                 ))))
+     (setq
+      timer
+      (run-with-idle-timer secs nil
+                           ))
+     `(while-no-input (redisplay)
+                      )))
 
+
+(defmacro run-unobtrusively-throw-on-input (&rest body) ;throw 
+  `(while-no-input
+     (redisplay)
+     ,@body))
+(put 'run-unobtrusively-throw-on-input 'lisp-indent-function 0)
+
+;; TODO complete it using letrec
+(defmacro run-unobtrusively-complete-when-idle (idletime &rest body) ;throw 
+  `(let ((retval
+          (while-no-input
+            (redisplay)
+            ,@body)))
+     retval))
+(put 'run-unobtrusively-complete-when-idle 'lisp-indent-function 0)
 
 
 ;; https://stackoverflow.com/questions/3811448/can-call-with-current-continuation-be-implemented-only-with-lambdas-and-closures
