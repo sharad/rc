@@ -1895,7 +1895,8 @@ You can provide a list of argument to pass to CB in CBARGS."
 ;; ;; ;;  gnus-select-method '(nntp "us.usenet-news.net")
 ;; ;; ;;  message-send-mail-function 'smtpmail-send-it
 ;; ;; ;;  smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-;; ;; ;;  smtpmail-auth-credentials '(("smtp.gmail.com" 587 "sh4r4d@gmail.com" nil))
+;; ;; ;;  smtpmail-auth-credentials '(("smtp.gmail.com" 587 "sh4r4d _at_ _G-mail_" nil))
+;; ;; ;;  smtpmail-auth-credentials '(("smtp.gmail.com" 587 "sh4r4d _at_ _G-mail_" nil))
 ;; ;; ;;  smtpmail-default-smtp-server "smtp.gmail.com"
 ;; ;; ;;  smtpmail-smtp-server "smtp.gmail.com"
 ;; ;; ;;  smtpmail-smtp-service 587

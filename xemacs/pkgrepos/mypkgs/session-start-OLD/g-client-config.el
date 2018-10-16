@@ -1,6 +1,7 @@
 ;; http://bc.tech.coop/blog/070306.html
 (deh-require-maybe g
-  (setq g-user-email "sh4r4d@gmail.com")
+  (setq g-user-email "sh4r4d _at_ _G-mail_")
+  (setq g-user-email "sh4r4d _at_ _G-mail_")
   (setq g-html-handler 'w3m-buffer)
 
   ;; Write to Diary any entry added to Google Calendar

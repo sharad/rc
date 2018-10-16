@@ -8,7 +8,8 @@
 
 ;; (defvar *gmail-cookies* (make-instance 'drakma:cookie-jar)
 ;;   "Contains cookies for talking to gmail server")
-;; (defvar *gmail-username* "sh4r4d@gmail.com"
+;; (defvar *gmail-username* "sh4r4d _at_ _G-mail_"
+;; (defvar *gmail-username* "sh4r4d _at_ _G-mail_"
 ;;   "Username for gmail")
 ;; (defvar *gmail-password* "<my gmail password>"
 ;;   "Password for gmail")

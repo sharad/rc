@@ -12,7 +12,8 @@
 # password: get_password("imap.gmail.com")
 # The following are optional, defaults are shown
 
-email:    sh4r4d@gmail.com
+email:    sh4r4d _at_ _G-mail_
+email:    sh4r4d _at_ _G-mail_
 
 # http://pypi.python.org/pypi/goobook/1.4alpha3
 # $ python

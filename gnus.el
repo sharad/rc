@@ -204,8 +204,10 @@
 ;;       ;; Available SMTP accounts.
 ;;       (defvar smtp-accounts
 ;;         '(
-;;           ;; (ssl "sh4r4d@gmail.com" "smtp.gmail.com" 465 "key" nil)
-;;           (ssl "sh4r4d@gmail.com" "smtp.gmail.com" 587 "key" nil)
+;;           ;; (ssl "sh4r4d _at_ _G-mail_" "smtp.gmail.com" 465 "key" nil)
+;;           ;; (ssl "sh4r4d _at_ _G-mail_" "smtp.gmail.com" 465 "key" nil)
+;;           (ssl "sh4r4d _at_ _G-mail_" "smtp.gmail.com" 587 "key" nil)
+;;           (ssl "sh4r4d _at_ _G-mail_" "smtp.gmail.com" 587 "key" nil)
 ;;           ;; (ssl "mymail@otherserver.com" "smtp.otherserver.com" 25 "key" nil)
 ;;           ))
 ;;
