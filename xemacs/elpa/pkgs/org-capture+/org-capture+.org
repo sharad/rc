@@ -71,6 +71,12 @@
 
 #+BEGIN_SRC emacs-lisp
 
+;; check org-store-log-note
+;; check org-add-log-note
+;; check org-add-log-setup
+;;
+;; effective-time
+
   (defun org-capture-place-log-note ()
     "Place the template plainly.
   If the target locator points at an Org node, place the template into
@@ -79,7 +85,12 @@
   Of course, if exact position has been required, just put it there."
     (let* ((txt (org-capture-get :template))
            beg end
-           (note-purpose (or (org-capture-get :note-purpose) 'note)))
+           (note-purpose (or (org-capture-get :note-purpose) 'note))
+           (effective-time (org-current-effective-time))
+           (note-state "")
+           (note-previous-state "")
+           (note-how "")
+           (note-extra ""))
       ;; (cond
       ;;   ((org-capture-get :exact-position)
       ;;    (goto-char (org-capture-get :exact-position)))
@@ -528,12 +539,20 @@
      "* TODO %? %^g\n %i\n [%a]\n"
      :empty-lines 1)
 
+    (org-capture+
+     'log-note
+     '(clock)
+     "Test\n"
+     :unnarrowed nil
+     :empty-lines 1)
+
     ;; https://orgmode.org/manual/Template-elements.html#Template-elements
     ;; template expansion properties
     (org-capture+
      'log-note
      '(marker org-clock-marker)
      "Hello"
+     :unnarrowed nil
      :empty-lines 1)
 
     (org-capture+
