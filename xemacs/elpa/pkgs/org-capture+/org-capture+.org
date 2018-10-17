@@ -79,7 +79,7 @@
   Of course, if exact position has been required, just put it there."
     (let* ((txt (org-capture-get :template))
            beg end
-           (note-purpose (or note-purpose 'note))
+           (note-purpose (or (org-capture-get :note-purpose) 'note))
       ;; (cond
       ;;   ((org-capture-get :exact-position)
       ;;    (goto-char (org-capture-get :exact-position)))
@@ -531,7 +531,7 @@
     (org-capture+
      'log-note
      '(marker org-clock-marker)
-     "* TODO %? %^g\n %i\n [%a]\n"
+     "Hello"
      :empty-lines 1)
 
     (org-capture+
