@@ -79,7 +79,7 @@
   Of course, if exact position has been required, just put it there."
     (let* ((txt (org-capture-get :template))
            beg end
-           (note-purpose (or (org-capture-get :note-purpose) 'note))
+           (note-purpose (or (org-capture-get :note-purpose) 'note)))
       ;; (cond
       ;;   ((org-capture-get :exact-position)
       ;;    (goto-char (org-capture-get :exact-position)))
@@ -180,7 +180,7 @@
                     (re-search-forward "%\\?" end t))
                 (replace-match ""))
             (org-back-to-heading t)
-            (org-cycle-hide-drawers 'children))))))
+            (org-cycle-hide-drawers 'children)))))
 #+END_SRC
 
 *** set target improved
@@ -531,6 +531,12 @@
     (org-capture+
      'log-note
      '(marker org-clock-marker)
+     "Hello"
+     :empty-lines 1)
+
+    (org-capture+
+     'log-note
+     '(marker testmrkr)
      "Hello"
      :empty-lines 1)
 

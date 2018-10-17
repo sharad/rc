@@ -1,6 +1,6 @@
 ;; Preamble
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Preamble][Preamble:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Preamble][Preamble:1]]
 ;;; org-capture+.el --- org capture plus
 
 ;; Copyright (C) 2012  Sharad Pratap
@@ -28,14 +28,14 @@
 
 ;; Required libraries
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Required%20libraries][Required libraries:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Required%20libraries][Required libraries:1]]
 (require 'org-capture)
 ;; Required libraries:1 ends here
 
 ;; Overriding org-capture-place-template function
 
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Overriding%20org-capture-place-template%20function][Overriding org-capture-place-template function:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Overriding%20org-capture-place-template%20function][Overriding org-capture-place-template function:1]]
 (defun org-capture-place-template (&optional inhibit-wconf-store)
   "Insert the template at the target location, and display the buffer.
 When `inhibit-wconf-store', don't store the window configuration, as it
@@ -63,7 +63,7 @@ may have been stored before."
 ;; Providing log note function for capture
 
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Providing%20log%20note%20function%20for%20capture][Providing log note function for capture:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Providing%20log%20note%20function%20for%20capture][Providing log note function for capture:1]]
 (defun org-capture-place-log-note ()
   "Place the template plainly.
 If the target locator points at an Org node, place the template into
@@ -72,7 +72,7 @@ template at the beginning or end of the file.
 Of course, if exact position has been required, just put it there."
   (let* ((txt (org-capture-get :template))
          beg end
-         (note-purpose (or (org-capture-get :note-purpose) 'note))
+         (note-purpose (or (org-capture-get :note-purpose) 'note)))
     ;; (cond
     ;;   ((org-capture-get :exact-position)
     ;;    (goto-char (org-capture-get :exact-position)))
@@ -173,12 +173,12 @@ Of course, if exact position has been required, just put it there."
                   (re-search-forward "%\\?" end t))
               (replace-match ""))
           (org-back-to-heading t)
-          (org-cycle-hide-drawers 'children))))))
+          (org-cycle-hide-drawers 'children)))))
 ;; Providing log note function for capture:1 ends here
 
 ;; set target improved
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*set%20target%20improved][set target improved:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*set%20target%20improved][set target improved:1]]
 (defun org-capture-set-target-location-improved (&optional target)
   "Find TARGET buffer and position.
 Store them in the capture property list."
@@ -356,7 +356,7 @@ Store them in the capture property list."
 
 ;; new capture
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*new%20capture][new capture:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*new%20capture][new capture:1]]
 (defun org-capture-alt (type target template &rest plist)
     "Capture something.
   \\<org-capture-mode-map>
@@ -497,7 +497,7 @@ Store them in the capture property list."
 
 ;; Application
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Application][Application:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Application][Application:1]]
 (defun org-goto-refile (&optional refile-targets)
   "Refile goto."
   ;; mark paragraph if no region is set
@@ -528,7 +528,13 @@ Store them in the capture property list."
   (org-capture+
    'log-note
    '(marker org-clock-marker)
-   "* TODO %? %^g\n %i\n [%a]\n"
+   "Hello"
+   :empty-lines 1)
+
+  (org-capture+
+   'log-note
+   '(marker testmrkr)
+   "Hello"
    :empty-lines 1)
 
   (org-capture+
@@ -581,7 +587,7 @@ Store them in the capture property list."
 
 ;; Provide this file
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Provide%20this%20file][Provide this file:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Provide%20this%20file][Provide this file:1]]
 (provide 'org-capture+)
 ;;; org-capture+.el ends here
 ;; Provide this file:1 ends here
