@@ -528,6 +528,8 @@
      "* TODO %? %^g\n %i\n [%a]\n"
      :empty-lines 1)
 
+    ;; https://orgmode.org/manual/Template-elements.html#Template-elements
+    ;; template expansion properties
     (org-capture+
      'log-note
      '(marker org-clock-marker)
@@ -538,6 +540,7 @@
      'log-note
      '(marker testmrkr)
      "Hello"
+     ;; :immediate-finish t
      :empty-lines 1)
 
     (org-capture+
