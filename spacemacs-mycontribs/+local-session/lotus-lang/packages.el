@@ -71,7 +71,9 @@ Each entry is either:
     :config
     (progn
       (progn
-        (setq lisp-indent-function #'lisp-indent-function))
-      )))
+        (add-hook 'emacs-lisp-mode-hook
+                  #'(lambda ()
+                      (make-local-variable 'lisp-indent-function)
+                      (setq lisp-indent-function #'lisp-indent-function)))))))
 
 ;;; packages.el ends here
