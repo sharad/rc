@@ -23,6 +23,13 @@
 
 ;;; Code:
 
+
+
+
+
+(provide 'occ-obj-common)
+
+
 ;; TODO org-base-buffer
 
 ;; https://stackoverflow.com/questions/12262220/add-created-date-property-to-todos-in-org-mode
@@ -76,5 +83,4 @@
          (> clock-duration 120)))
     t))
 
-(provide 'occ-obj-common)
 ;;; occ-obj-common.el ends here

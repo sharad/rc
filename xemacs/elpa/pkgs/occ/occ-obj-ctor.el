@@ -23,9 +23,15 @@
 
 ;;; Code:
 
+
+
 (require 'occ-obj-common)
 (require 'occ-tree)
 (require 'occ-obj)
+
+
+(provide 'occ-obj-ctor)
+
 
 (defvar occ-global-tsk-collection-spec nil)
 (defvar occ-global-tsk-collection nil)
@@ -306,5 +312,4 @@
                      (occ-make-tsk-at-point #'make-occ-tree-tsk)
                      (make-occ-tree-tsk :name "empty tree tsk" :subtree nil)))))))))
 
-(provide 'occ-obj-ctor)
 ;;; occ-obj-ctor.el ends here

@@ -32,8 +32,13 @@
 (require 'lotus-misc-utils)
 (eval-when-compile
   (require 'lotus-misc-utils))
+
 
 (require 'occ-obj-method)
+
+
+(provide 'occ-interactive)
+
 
 ;; (defun org-get-property (prop-key)
 ;;   (org-entry-get nil prop-key))
@@ -333,5 +338,4 @@
   (interactive)
   (occ-goto-tsk))
 
-(provide 'occ-interactive)
 ;;; occ-interactive.el ends here

@@ -23,6 +23,13 @@
 
 ;;; Code:
 
+
+
+
+
+(provide 'occ-tree)
+
+
 (progn ;; "tree api"
   (defun tree-mapcar-nodes (subtreefn fn tree args)
     "Tree mapcar return result for FN for all TREE nodes with ARGS, function SUBTREEFN require to find nonleaf node"
@@ -152,5 +159,4 @@
           (occ-set-property entry 'subtree sub-tree)
           entry)))))
 
-(provide 'occ-tree)
 ;;; occ-tree.el ends here

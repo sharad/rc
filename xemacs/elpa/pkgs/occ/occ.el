@@ -23,7 +23,14 @@
 
 ;;; Code:
 
+(require 'switch-buffer-functions)
+
+
 (require 'occ-main)
+
+
+(provide 'occ)
+
 
 ;;;###autoload
 (defun occ-set-global-tsk-collection-spec (spec)
@@ -40,9 +47,10 @@
   (interactive)
   (progn
     (setq occ-global-tsk-collection        nil)
-    (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
-    (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer t)
-    (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer t)
+    ;; (add-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer t)
+    ;; (add-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer t)
+    ;; (add-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer t)
+    (add-hook 'switch-buffer-functions     #'(lambda (prev curr) (occ-run-curr-ctx-timer)))
     (add-hook 'org-mode-hook
               #'(lambda ()
                   (add-hook 'after-save-hook 'occ-after-save-hook-fun t t))))
@@ -57,10 +65,13 @@
   (interactive)
   (progn
     (setq occ-global-tsk-collection            nil)
-    (remove-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
     ;; (setq buffer-list-update-hook nil)
-    (remove-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
-    (remove-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
+
+    ;; (remove-hook 'buffer-list-update-hook     'occ-run-curr-ctx-timer)
+    ;; (remove-hook 'elscreen-screen-update-hook 'occ-run-curr-ctx-timer)
+    ;; (remove-hook 'elscreen-goto-hook          'occ-run-curr-ctx-timer)
+    (remove-hook 'switch-buffer-functions     #'(lambda (prev curr) (occ-run-curr-ctx-timer)))
+
     ;; (remove-hook 'after-save-hook             'occ-after-save-hook-fun t)
     (remove-hook 'org-mode-hook
               #'(lambda ()
@@ -71,5 +82,4 @@
       (unless (member propstr org-use-property-inheritance)
         (delete propstr org-use-property-inheritance)))))
 
-(provide 'occ)
 ;;; occ.el ends here

@@ -23,9 +23,14 @@
 
 ;;; Code:
 
+;; (require 'eieio)
+
 
 (require 'occ-obj-common)
-;; (require 'eieio)
+
+
+(provide 'occ-obj)
+
 
 ;; TODO org-base-buffer
 
@@ -114,5 +119,4 @@
 ;;          :baseattr "xbaseattr"
 ;;          :drivedattr "xdrivedattr")))
 
-(provide 'occ-obj)
 ;;; occ-obj.el ends here

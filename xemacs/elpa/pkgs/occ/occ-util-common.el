@@ -23,6 +23,13 @@
 
 ;;; Code:
 
+
+
+
+
+(provide 'occ-util-common)
+
+
 (cl-defmethod ignore-p ((buff buffer))
   nil)
 
@@ -34,6 +41,13 @@
     ,@body))
 
 
+(defmacro run-unobtrusively (&rest body)
+  `(let ((retval (while-no-input
+                   (redisplay)
+                   ,@body)))
+     (when (eq retval t)
+       (message "user input %s retval %s" last-input-event retval))
+     retval))
 
 (when nil
  (defun time-consuming ()
@@ -48,5 +62,4 @@
    (run-with-idle-timer 6 nil #'test-no-input)
    (run-with-idle-timer 18 nil #'test-no-input)))
 
-(provide 'occ-util-common)
 ;;; occ-util-common.el ends here
