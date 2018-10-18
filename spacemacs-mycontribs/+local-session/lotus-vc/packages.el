@@ -142,22 +142,30 @@ Each entry is either:
 
 (defun lotus-vc/post-init-gitconfig-mode ()
   (use-package gitconfig-mode
-      :defer t
-      ;; :commands (commit-msg-mode)
-      :config
-      (progn
-        ))
+    :mode ("/\\gitconfig\\'"
+           "/\\.gitconfig\\'"
+           "/\\.git/config\\'"
+           "/modules/.*/config\\'"
+           "/git/config\\'"
+           "/\\.gitmodules\\'"
+           "/etc/gitconfig\\'")
+    :defer t
+    ;; :commands (commit-msg-mode)
+    :config
+    (progn
+      ))
 
-  (progn
-    (dolist (pattern
-              '("/\\gitconfig\\'"
-                "/\\.gitconfig\\'"
-                "/\\.git/config\\'"
-                "/modules/.*/config\\'"
-                "/git/config\\'"
-                "/\\.gitmodules\\'"
-                "/etc/gitconfig\\'"))
-      (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode)))))
+  ;; (progn
+  ;;   (dolist (pattern
+  ;;            '("/\\gitconfig\\'"
+  ;;              "/\\.gitconfig\\'"
+  ;;              "/\\.git/config\\'"
+  ;;              "/modules/.*/config\\'"
+  ;;              "/git/config\\'"
+  ;;              "/\\.gitmodules\\'"
+  ;;              "/etc/gitconfig\\'"))
+  ;;     (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode))))
+  )
 
 
 (defun lotus-vc/post-init-git-link ()
