@@ -195,8 +195,9 @@
                    ;; (org-capture-empty-lines-after)
                    (org-capture-position-for-last-stored beg)
                    (setq end (point))
-                   (org-capture-mark-kill-region beg (1- end))
-                   (org-capture-narrow beg (1- end))
+                   (let ((end end)) ;; (1- end)
+                     (org-capture-mark-kill-region beg end)
+                     (org-capture-narrow beg end))
                    (if (or (re-search-backward "%\\?" beg t)
                            (re-search-forward "%\\?" end t))
                        (replace-match ""))
@@ -390,7 +391,7 @@
 #+END_SRC
 *** new capture
 #+BEGIN_SRC emacs-lisp
-  (defun org-capture-alt (type target template &rest plist)
+  (defun org-capture-plus (type target template &rest plist)
     "Capture something.
   \\<org-capture-mode-map>
   This will let you select a template from `org-capture-templates', and
@@ -530,7 +531,7 @@
           (if (org-capture-get :immediate-finish)
               (org-capture-finalize)))))
 
-(defalias 'org-capture+ 'org-capture-alt)
+(defalias 'org-capture+ 'org-capture-plus)
 #+END_SRC
 *** Application
 #+BEGIN_SRC emacs-lisp
@@ -547,7 +548,7 @@
 
   (defun org-create-new-task ()
     (interactive)
-    (org-capture-alt
+    (org-capture-plus
      'entry
      '(function org-goto-refile)
      "* TODO %? %^g\n %i\n [%a]\n"

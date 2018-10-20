@@ -188,8 +188,8 @@ may have been stored before."
                  ;; (org-capture-empty-lines-after)
                  (org-capture-position-for-last-stored beg)
                  (setq end (point))
-                 (org-capture-mark-kill-region beg (1- end))
-                 (org-capture-narrow beg (1- end))
+                 (org-capture-mark-kill-region beg end)
+                 (org-capture-narrow beg end)
                  (if (or (re-search-backward "%\\?" beg t)
                          (re-search-forward "%\\?" end t))
                      (replace-match ""))
@@ -386,7 +386,7 @@ Store them in the capture property list."
 ;; new capture
 
 ;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*new%20capture][new capture:1]]
-(defun org-capture-alt (type target template &rest plist)
+(defun org-capture-plus (type target template &rest plist)
     "Capture something.
   \\<org-capture-mode-map>
   This will let you select a template from `org-capture-templates', and
@@ -526,7 +526,7 @@ Store them in the capture property list."
           (if (org-capture-get :immediate-finish)
               (org-capture-finalize)))))
 
-(defalias 'org-capture+ 'org-capture-alt)
+(defalias 'org-capture+ 'org-capture-plus)
 ;; new capture:1 ends here
 
 ;; Application
@@ -544,7 +544,7 @@ Store them in the capture property list."
 
 (defun org-create-new-task ()
   (interactive)
-  (org-capture-alt
+  (org-capture-plus
    'entry
    '(function org-goto-refile)
    "* TODO %? %^g\n %i\n [%a]\n"
