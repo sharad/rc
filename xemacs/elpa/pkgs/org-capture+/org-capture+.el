@@ -1,6 +1,6 @@
 ;; Preamble
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Preamble][Preamble:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Preamble][Preamble:1]]
 ;;; org-capture+.el --- org capture plus
 
 ;; Copyright (C) 2012  Sharad Pratap
@@ -28,14 +28,14 @@
 
 ;; Required libraries
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Required%20libraries][Required libraries:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Required%20libraries][Required libraries:1]]
 (require 'org-capture)
 ;; Required libraries:1 ends here
 
 ;; Overriding org-capture-place-template function
 
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Overriding%20org-capture-place-template%20function][Overriding org-capture-place-template function:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Overriding%20org-capture-place-template%20function][Overriding org-capture-place-template function:1]]
 (defun org-capture-place-template (&optional inhibit-wconf-store)
   "Insert the template at the target location, and display the buffer.
 When `inhibit-wconf-store', don't store the window configuration, as it
@@ -63,7 +63,7 @@ may have been stored before."
 ;; Providing log note function for capture
 
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Providing%20log%20note%20function%20for%20capture][Providing log note function for capture:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Providing%20log%20note%20function%20for%20capture][Providing log note function for capture:1]]
 ;; check org-store-log-note
 ;; check org-add-log-note
 ;; check org-add-log-setup
@@ -76,6 +76,7 @@ may have been stored before."
   the text of the entry, before the first child.  If not, place the
   template at the beginning or end of the file.
   Of course, if exact position has been required, just put it there."
+    ;; (debug)
     (let* ((txt (org-capture-get :template))
            beg end
            (note-purpose (or (org-capture-get :note-purpose) 'note))
@@ -100,9 +101,11 @@ may have been stored before."
       ;;    ;; beginning or end of file
       ;;    (goto-char (if (org-capture-get :prepend) (point-min) (point-max)))))
 
-      (if (and (org-capture-get :target-entry-p)
-               (bolp)
-               (looking-at org-outline-regexp))
+      (if (or
+           t
+           (and (org-capture-get :target-entry-p)
+                (bolp)
+                (looking-at org-outline-regexp)))
           (let ((note (cdr (assq note-purpose org-log-note-headings)))
                 lines)
             (progn
@@ -130,66 +133,80 @@ may have been stored before."
                                          (org-time-stamp-format nil nil)
                                          effective-time))
                              (cons "%s" (cond
-                                          ((not note-state) "")
-                                          ((string-match-p org-ts-regexp note-state)
-                                           (format "\"[%s]\""
-                                                   (substring note-state 1 -1)))
-                                          (t (format "\"%s\"" note-state))))
+                                         ((not note-state) "")
+                                         ((string-match-p org-ts-regexp note-state)
+                                          (format "\"[%s]\""
+                                                  (substring note-state 1 -1)))
+                                         (t (format "\"%s\"" note-state))))
                              (cons "%S"
                                    (cond
-                                     ((not note-previous-state) "")
-                                     ((string-match-p org-ts-regexp
-                                                      note-previous-state)
-                                      (format "\"[%s]\""
-                                              (substring
-                                               note-previous-state 1 -1)))
-                                     (t (format "\"%s\""
-                                                note-previous-state)))))))
+                                    ((not note-previous-state) "")
+                                    ((string-match-p org-ts-regexp
+                                                     note-previous-state)
+                                     (format "\"[%s]\""
+                                             (substring
+                                              note-previous-state 1 -1)))
+                                    (t (format "\"%s\""
+                                               note-previous-state)))))))
                 (when lines (setq note (concat note " \\\\")))
                 (push note lines)))
 
-            ;; Note associated to a clock is to be located right after
-            ;; the clock.  Do not move point.
-            (unless (eq note-purpose 'clock-out)
-              (goto-char (org-log-beginning t)))
-            ;; Make sure point is at the beginning of an empty line.
-            (cond ((not (bolp)) (let ((inhibit-read-only t)) (insert "\n")))
-                  ((looking-at "[ \t]*\\S-") (save-excursion (insert "\n"))))
-            ;; In an existing list, add a new item at the top level.
-            ;; Otherwise, indent line like a regular one.
-            (let ((itemp (org-in-item-p)))
-              (if itemp
-                  (indent-line-to
-                   (let ((struct (save-excursion
-                                   (goto-char itemp) (org-list-struct))))
-                     (org-list-get-ind (org-list-get-top-point struct) struct)))
-                  (org-indent-line)))
+            (when lines ;; (and lines (not (or current-prefix-arg org-note-abort)))
+              (progn ;; with-current-buffer (marker-buffer note-marker)
+                (progn ;; org-with-wide-buffer
+                 ;; Find location for the new note.
+                 ;; (goto-char note-marker)
+                 ;; (set-marker note-marker nil)
 
-            ;; (or (bolp) (newline))
-            ;; (org-capture-empty-lines-before)
-            (setq beg (point))
-            (insert (org-list-bullet-string "-") (pop lines))
-            (let ((ind (org-list-item-body-column (line-beginning-position))))
-              (dolist (line lines)
-                (insert "\n")
-                (indent-line-to ind)
-                (insert line)))
-            ;; (message "Note stored")
-            ;; (org-capture-empty-lines-after)
-            (org-capture-position-for-last-stored beg)
-            (setq end (point))
-            (org-capture-mark-kill-region beg (1- end))
-            (org-capture-narrow beg (1- end))
-            (if (or (re-search-backward "%\\?" beg t)
-                    (re-search-forward "%\\?" end t))
-                (replace-match ""))
-            (org-back-to-heading t)
-            (org-cycle-hide-drawers 'children)))))
+                 ;; Note associated to a clock is to be located right after
+                 ;; the clock.  Do not move point.
+                 (unless (eq note-purpose 'clock-out)
+                   (goto-char (org-log-beginning t)))
+                 ;; Make sure point is at the beginning of an empty line.
+                 (cond ((not (bolp)) (let ((inhibit-read-only t)) (insert "\n")))
+                       ((looking-at "[ \t]*\\S-") (save-excursion (insert "\n"))))
+                 ;; In an existing list, add a new item at the top level.
+                 ;; Otherwise, indent line like a regular one.
+                 (let ((itemp (org-in-item-p)))
+                   (if itemp
+                       (indent-line-to
+                        (let ((struct (save-excursion
+                                        (goto-char itemp) (org-list-struct))))
+                          (org-list-get-ind (org-list-get-top-point struct) struct)))
+                     (org-indent-line)))
+
+                 ;; (or (bolp) (newline))
+                 ;; (org-capture-empty-lines-before)
+                 (setq beg (point))
+                 (insert (org-list-bullet-string "-") (pop lines))
+                 (let ((ind (org-list-item-body-column (line-beginning-position))))
+                   (dolist (line lines)
+                     (insert "\n")
+                     (indent-line-to ind)
+                     (insert line)))
+                 ;; (message "Note stored")
+                 ;; (org-capture-empty-lines-after)
+                 (org-capture-position-for-last-stored beg)
+                 (setq end (point))
+                 (org-capture-mark-kill-region beg (1- end))
+                 (org-capture-narrow beg (1- end))
+                 (if (or (re-search-backward "%\\?" beg t)
+                         (re-search-forward "%\\?" end t))
+                     (replace-match ""))
+                 (when nil
+                   (org-back-to-heading t)
+                   (org-cycle-hide-drawers 'children))
+                 ;; Fix `buffer-undo-list' when `org-store-log-note' is called
+                 ;; from within `org-add-log-note' because `buffer-undo-list'
+                 ;; is then modified outside of `org-with-remote-undo'.
+                 (when (eq this-command 'org-agenda-todo)
+                   (setcdr buffer-undo-list (cddr buffer-undo-list)))))))
+        (error "marker %s buffer is nil" 'marker))))
 ;; Providing log note function for capture:1 ends here
 
 ;; set target improved
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*set%20target%20improved][set target improved:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*set%20target%20improved][set target improved:1]]
 (defun org-capture-set-target-location-improved (&optional target)
   "Find TARGET buffer and position.
 Store them in the capture property list."
@@ -341,6 +358,7 @@ Store them in the capture property list."
                  ((markerp hd-marker) hd-marker)
                  ((symbolp hd-marker) (symbol-value hd-marker))
                  (t (error "value %s is not marker" hd-marker)))))
+           (message "hd-marker %s" hd-marker)
            (if (and
                 (markerp hd-marker)
                 (marker-buffer hd-marker))
@@ -367,7 +385,7 @@ Store them in the capture property list."
 
 ;; new capture
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*new%20capture][new capture:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*new%20capture][new capture:1]]
 (defun org-capture-alt (type target template &rest plist)
     "Capture something.
   \\<org-capture-mode-map>
@@ -479,7 +497,7 @@ Store them in the capture property list."
           ;;insert at point
           (org-capture-insert-template-here)
           (if t
-          (progn
+          (prog1
               (org-capture-place-template
                (eq (car (org-capture-get :target)) 'function)))
           (condition-case error
@@ -493,6 +511,7 @@ Store them in the capture property list."
              (error "Capture template `%s': %s"
                     (org-capture-get :key)
                     (nth 1 error)))))
+          ;; (debug)
           (if (and (derived-mode-p 'org-mode)
                    (org-capture-get :clock-in))
               (condition-case nil
@@ -512,7 +531,7 @@ Store them in the capture property list."
 
 ;; Application
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Application][Application:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Application][Application:1]]
 (defun org-goto-refile (&optional refile-targets)
   "Refile goto."
   ;; mark paragraph if no region is set
@@ -559,7 +578,7 @@ Store them in the capture property list."
   (org-capture+
    'log-note
    '(marker testmrkr)
-   "Hello"
+   "Test Hello 1"
    ;; :immediate-finish t
    :empty-lines 1)
 
@@ -572,9 +591,29 @@ Store them in the capture property list."
 
   (org-capture+
    'entry
+   '(clock)
+   "* Hello"
+   ;; :immediate-finish t
+   :empty-lines 1)
+
+
+  (org-capture+
+   'entry
    '(function org-goto-refile)
    "* TODO %? %^g\n %i\n [%a]\n"
    :empty-lines 1)
+
+
+
+
+
+  (org-capture+
+   'log-note
+   '(marker testmrkr)
+   "Test Hello 1"
+   ;; :immediate-finish t
+   :empty-lines 1)
+
 
  )
 
@@ -620,7 +659,7 @@ Store them in the capture property list."
 
 ;; Provide this file
 
-;; [[file:~/.xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Provide%20this%20file][Provide this file:1]]
+;; [[file:~/.repos/git/main/resource/userorg/main/readwrite/public/user/rc/xemacs/elpa/pkgs/org-capture+/org-capture+.org::*Provide%20this%20file][Provide this file:1]]
 (provide 'org-capture+)
 ;;; org-capture+.el ends here
 ;; Provide this file:1 ends here
