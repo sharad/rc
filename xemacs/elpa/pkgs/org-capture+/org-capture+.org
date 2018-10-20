@@ -207,8 +207,7 @@
                    ;; from within `org-add-log-note' because `buffer-undo-list'
                    ;; is then modified outside of `org-with-remote-undo'.
                    (when (eq this-command 'org-agenda-todo)
-                     (setcdr buffer-undo-list (cddr buffer-undo-list)))
-                   (debug)))))
+                     (setcdr buffer-undo-list (cddr buffer-undo-list)))))))
           (error "marker %s buffer is nil" 'marker))))
 #+END_SRC
 
