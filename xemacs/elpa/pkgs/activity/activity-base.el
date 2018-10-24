@@ -133,7 +133,6 @@
 
 
 (setf @note-class
-
       (defsubobj@ @activity-base "note-base-class"
         "Note Base Class"
 
@@ -149,38 +148,38 @@
                     (if (@! dest :keyp :receive)
                         ;; (@! dest :receive fmt args)
                         (apply (@ dest :receive) dest fmt args)
-                        (message
-                         "for %s dest %s [%s] not has :receive method, not sending msg."
-                         @:name
-                         (@ dest :name)
-                         (@! dest :keys)))
-                    (message "dest is nil")))
-              (error "%s has No @:dests %d boundp(%s) consp(%s) present."
-                     @:name
-                     (length @:dests)
-                     (boundp '@:dests)
-                     (consp @:dests))))
+                      (message
+                       "for %s dest %s [%s] not has :receive method, not sending msg."
+                       @:name
+                       (@ dest :name)
+                       (@! dest :keys)))
+                  (message "dest is nil")))
+            (error "%s has No @:dests %d boundp(%s) consp(%s) present."
+                   @:name
+                   (length @:dests)
+                   (boundp '@:dests)
+                   (consp @:dests))))
 
         (defsubclass-gen@ @@ :gen-format-msg ()
-          "Generator for format message note"
+                             "Generator for format message note"
           (push
            (@! @dest-class :gen-msg "msg")
            @:dests))
 
         (defsubclass-gen@ @@ :gen-org-log-note ()
-          "Generator for org log note"
+                             "Generator for org log note"
           (push
            (@! @dest-class :gen-msg "msg")
            @:dests))
 
         (defsubclass-gen@ @@ :gen-org-dual-log-note ()
-          "Generator for dual org log note"
+                             "Generator for dual org log note"
           (push
            (@! @dest-class :gen-msg "msg")
            @:dests))
 
         (defsubclass-gen@ @@ :gen-org-intreactive-log-note ()
-          "Generator for Interactive org log note"
+                             "Generator for Interactive org log note"
           (push
            (@! @dest-class :gen-msg "msg")
            @:dests))
@@ -261,6 +260,9 @@
              @:inactive-time 0)
             ))))
 
+
+
+
 (setf @postpone-event-class
       (defsubobj@ @activity-base "activity detector class"
         "Activity detector class"
@@ -283,9 +285,6 @@
         (def@ @@ :note ()
           )))
 
-
-
-
 (setf @activity
       (defsubobj@ @activity-base "activity"
         "Activity class"
@@ -301,8 +300,7 @@
           )
 
         (def@ @@ :hook-register ()
-          )
-        ))
+          )))
 
 
 

@@ -50,42 +50,35 @@
 
   (def@ @@ :valid-markerp ()
     (cond
-      ((markerp @:marker) @:marker)
-      ((functionp @:marker)
-       (let ((m (funcall @:marker))
-             (if (markerp m) m))))
-      ((symbolp @:marker)
-       (let ((m (symbol-value @:marker))
-             (if (markerp m) m))))
-      (t )))
+     ((markerp @:marker) @:marker)
+     ((functionp @:marker)
+      (let ((m (funcall @:marker))
+            (if (markerp m) m))))
+     ((symbolp @:marker)
+      (let ((m (symbol-value @:marker))
+            (if (markerp m) m))))
+     (t )))
 
   (def@ @@ :get-marker ()
     (cond
-      ((markerp @:marker) @:marker)
-      ((functionp @:marker)
-       (let ((m (funcall @:marker)))
-             (if (markerp m)
-                 m
-               (error "f no marker %s" @:marker))))
-      ((symbolp @:marker)
-       (let ((m (symbol-value @:marker)))
-             (if (markerp m)
-                 m
-               (error "s no marker %s" @:marker))))
-      (t
-       (error "can not find marker %s" @:marker))))
+     ((markerp @:marker) @:marker)
+     ((functionp @:marker)
+      (let ((m (funcall @:marker)))
+        (if (markerp m)
+            m
+          (error "f no marker %s" @:marker))))
+     ((symbolp @:marker)
+      (let ((m (symbol-value @:marker)))
+        (if (markerp m)
+            m
+          (error "s no marker %s" @:marker))))
+     (t
+      (error "can not find marker %s" @:marker))))
 
   (def@ @@ :receive (fmt &rest args)
     ;; TODO
     ;; add necessary code for interactive note.
-    (progn
-      (move-marker org-capture-note-return-to (point))
-      (org-clock-lotus-with-current-clock ;change it to consider marker marker
-          (org-add-log-setup-with-timed-new-win win-timeout
-                                                'note nil nil nil
-                                                (concat
-                                                 "# Task: " (org-get-heading t) "\n\n"
-                                                 (apply #'format fmt args))))))
+    (org-capture+ @:type @:target @:template @:capture-plist))
 
   (@:dispatch marker))
 

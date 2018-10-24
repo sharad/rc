@@ -31,7 +31,6 @@
 
 (require 'elscreen)
 
-
 (eval-when-compile
   (defvar frame-utils-notify nil)
   (when (null frame-utils-notify)
@@ -48,6 +47,13 @@
 
 (defun get-alist (key alist)
   (cdr (assoc key alist)))
+
+(defun get-frame-name (&optional frame)
+  "Return the string that names FRAME (a frame).  Default is selected frame."
+  (unless frame (setq frame  (selected-frame)))
+  (if (framep frame)
+      (cdr (assq 'name (frame-parameters frame)))
+      (error "Function `get-frame-name': Argument not a frame: `%s'" frame)))
 
 (defun elscreen--del-alist (key alist)
   "Delete an element whose car equals KEY from ALIST.
