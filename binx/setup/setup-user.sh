@@ -531,6 +531,7 @@ function setup_git_tree_repo()
         then
             running git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ${GITDIR_BASE}
         else
+            running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" status
             running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} submodule foreach git -c core.sshCommand="$GIT_SSH_OPTION" pull --rebase
             # running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} pull --rebase
             running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} fetch
