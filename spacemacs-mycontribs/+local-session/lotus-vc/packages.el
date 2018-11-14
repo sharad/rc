@@ -152,8 +152,8 @@ Each entry is either:
     :defer t
     ;; :commands (commit-msg-mode)
     :config
-    (progn
-      ))
+    (progn)))
+
 
   ;; (progn
   ;;   (dolist (pattern
@@ -165,21 +165,21 @@ Each entry is either:
   ;;              "/\\.gitmodules\\'"
   ;;              "/etc/gitconfig\\'"))
   ;;     (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode))))
-  )
 
 
-(defun lotus-vc/post-init-git-link ()
+;; (defun lotus-vc/post-init-git-link ())
+(defun lotus-vc/init-git-link ()
   (use-package git-link
-      :defer t
-      :config
-      (progn
-        (progn
+               :defer t
+               :config
+               (progn
+                 (progn
 
-          (setq git-link-open-in-browser nil)
+                   (setq git-link-open-in-browser nil)
 
-          (add-to-list 'git-link-remote-alist
-                       '("dops-\\(git-in\\|gerrit\\)\\.fortinet-us\\.com" git-link-github))
-          (add-to-list 'git-link-commit-remote-alist
-                       '("dops-\\(git-in\\|gerrit\\)\\.fortinet-us\\.com" git-link-commit-github))))))
+                   (add-to-list 'git-link-remote-alist
+                                '("dops-\\(git-in\\|gerrit\\)\\.fortinet-us\\.com" git-link-github))
+                   (add-to-list 'git-link-commit-remote-alist
+                                '("dops-\\(git-in\\|gerrit\\)\\.fortinet-us\\.com" git-link-commit-github))))))
 
 ;;; packages.el ends here
