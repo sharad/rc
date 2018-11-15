@@ -338,6 +338,7 @@
   (interactive)
   (occ-goto-tsk))
 
+;; testing verification
 (defun occ-files-with-null-regex ()
   (interactive)
   (let ((files
@@ -348,6 +349,7 @@
             (occ-included-files))))
     (message "files with null regex %s" files)))
 
+;; testing verification;; testing verification
 (defun occ-files-not-in-org-mode ()
   (interactive)
   (let ((files
