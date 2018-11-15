@@ -338,4 +338,24 @@
   (interactive)
   (occ-goto-tsk))
 
+(defun occ-files-with-null-regex ()
+  (interactive)
+  (let ((files
+          (remove-if
+            #'(lambda (f)
+                (with-current-buffer (find-file-noselect f)
+                  org-complex-heading-regexp))
+            (occ-included-files))))
+    (message "files with null regex %s" files)))
+
+(defun occ-files-not-in-org-mode ()
+  (interactive)
+  (let ((files
+          (remove-if
+           #'(lambda (f)
+               (with-current-buffer (find-file-noselect f)
+                 (eq major-mode 'org-mode)))
+           (occ-included-files))))
+    (message "files not in org-mode %s" files)))
+
 ;;; occ-interactive.el ends here
