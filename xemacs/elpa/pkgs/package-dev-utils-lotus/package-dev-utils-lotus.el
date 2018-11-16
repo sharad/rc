@@ -594,6 +594,7 @@ will be deleted."
    package-archive-contents))
 
 (when nil
+
   (dolist (p '(ox-pandoc
                orgit
                org-present
@@ -603,6 +604,7 @@ will be deleted."
                ob-elixir
                ob-async
                elfeed-org
+               org-password-manager
                ))
     (lotus-package-delete p))
 
@@ -614,7 +616,8 @@ will be deleted."
                org-brain
                ob-elixir
                ob-async
-               elfeed-org))
+               elfeed-org
+               org-password-manager))
     (package-install p))
   )
 
