@@ -225,114 +225,116 @@ Each entry is either:
 
 (defun lotus-schedule/init-midnight ()
   (use-package midnight
-               :defer t
-               :config
-               (progn
-                 (progn
-                   ;; (midnight-delay-set 'midnight-delay 16200) ;; (eq (* 4.5 60 60) "4:30am")
-                   (midnight-delay-set 'midnight-delay "4:30am"))
+    :defer t
+    :config
+    (progn
+      (progn
+        ;; (midnight-delay-set 'midnight-delay 16200) ;; (eq (* 4.5 60 60) "4:30am")
+        (midnight-delay-set 'midnight-delay "4:30am"))
 
-                 (progn
-                   ;;https://www.emacswiki.org/emacs/CleanBufferList
-                   (setq
-                    clean-buffer-list-delay-general 1       ;day
-                    clean-buffer-list-delay-special (* 3 60 60)) ;hour min sec
+      (progn
+        ;;https://www.emacswiki.org/emacs/CleanBufferList
+        (setq
+         clean-buffer-list-delay-general 1       ;day
+         clean-buffer-list-delay-special (* 3 60 60)) ;hour min sec
 
-                   (dolist (el
-                            '("*buffer-selection*"
-                              "*Finder*"
-                              "*Finder Category*"
-                              "*Finder-package*"
-                              "*RE-Builder*"
-                              "*vc-change-log*"))
-                     (add-to-list 'clean-buffer-list-kill-buffer-names el))
+        (dolist (el
+                 '("*buffer-selection*"
+                   "*Finder*"
+                   "*Finder Category*"
+                   "*Finder-package*"
+                   "*RE-Builder*"
+                   "*vc-change-log*"))
+          (add-to-list 'clean-buffer-list-kill-buffer-names el))
 
-                   (dolist (el
-                            '("\\`\\*Customize .*\\*\\'"
-                              "\\`\\*\\(Wo\\)?Man .*\\*\\'"))
-                     (add-to-list 'clean-buffer-list-kill-regexps el))
+        (dolist (el
+                 '("\\`\\*Customize .*\\*\\'"
+                   "\\`\\*\\(Wo\\)?Man .*\\*\\'"
+                   """\\`*.org\\'"      ;all org files
+                   ))
+          (add-to-list 'clean-buffer-list-kill-regexps el))
 
-                   (dolist (el
-                            '("*eshell*"
-                              "*ielm*"
-                              "*mail*"
-                              "*w3m*"
-                              "*w3m-cache*"))
-                     (add-to-list 'clean-buffer-list-kill-never-buffer-names el))
+        (dolist (el
+                 '("*eshell*"
+                   "*ielm*"
+                   "*mail*"
+                   "*w3m*"
+                   "*w3m-cache*"))
+          (add-to-list 'clean-buffer-list-kill-never-buffer-names el))
 
-                   (when nil
-                     (dolist (el
-                              '("\\`\\*tramp/.*\\*\\`"
-                                "\\`\\*ftp .*\\*\\`"))
-                       (add-to-list 'clean-buffer-list-kill-never-regexps el))))
+        (when nil
+          (dolist (el
+                   '("\\`\\*tramp/.*\\*\\`"
+                     "\\`\\*ftp .*\\*\\`"))
+            (add-to-list 'clean-buffer-list-kill-never-regexps el))))
 
-                 (progn
-                   (use-package "planner"
-                                :defer t
-                                :config
-                                (progn
-                                  (add-hook 'midnight-hook
-                                            '(lambda ()
-                                              (with-safe-plan-env ;so it will not call update-ssh-agent in night.
-                                                  (save-excursion
-                                                   (save-window-excursion
-                                  (message "Midnight: running calendar and planner")
-                                  (calendar)
-                                  ;; check planner-carry-tasks-forward
-                                  (plan 7)
-                                  (muse-project-publish "WikiPlanner"))))))))
-
-                   (when nil
-                     (run-with-timer
-                      10
-                      nil
+      (progn
+        (use-package "planner"
+          :defer t
+          :config
+          (progn
+            (add-hook 'midnight-hook
                       '(lambda ()
-                        (with-safe-plan-env
-                            (condition-case perr
-                             (save-excursion
-                       (save-window-excursion
-                         (progn
-                           (calendar)
-                           ;; check planner-carry-tasks-forward
-                           (defadvice error (before dumptrace activate)
-                             (backtrace-to-buffer "*errbuf*")
-                             t)
-                           (setq find-file-hook nil)
-                           (message "sharad11-Midnight: running calendar and planner planner-use-other-window %s" planner-use-other-window)
-                           ;; (find-file "/home/s/hell/.Organize/emacs/plan/Plans/AAA.muse")
-                           ;; (muse-project-find-file (planner-link-base (planner-today))
-                           ;;                         planner-project
-                           ;;                         'find-file)
+                         (with-safe-plan-env ;so it will not call update-ssh-agent in night.
+                          (save-excursion
+                            (save-window-excursion
+                              (message "Midnight: running calendar and planner")
+                              (calendar)
+                              ;; check planner-carry-tasks-forward
+                              (plan 7)
+                              (muse-project-publish "WikiPlanner"))))))))
 
-                           ;; (find-file "~/test123.txt")
-                           (plan 7)
-                           (ad-disable-advice 'error 'before 'dumptrace)
-                           (ad-update 'error)
-                           (message "sharad22-Midnight: running calendar and planner"))))
-                             (error
-                    (progn
-                      (message "XXXPl Error: %s" perr)
-                      (ad-disable-advice 'error 'before 'dumptrace)
-                      (ad-update 'error)))))))
+        (when nil
+          (run-with-timer
+           10
+           nil
+           '(lambda ()
+              (with-safe-plan-env
+               (condition-case perr
+                   (save-excursion
+                     (save-window-excursion
+                       (progn
+                         (calendar)
+                         ;; check planner-carry-tasks-forward
+                         (defadvice error (before dumptrace activate)
+                           (backtrace-to-buffer "*errbuf*")
+                           t)
+                         (setq find-file-hook nil)
+                         (message "sharad11-Midnight: running calendar and planner planner-use-other-window %s" planner-use-other-window)
+                         ;; (find-file "/home/s/hell/.Organize/emacs/plan/Plans/AAA.muse")
+                         ;; (muse-project-find-file (planner-link-base (planner-today))
+                         ;;                         planner-project
+                         ;;                         'find-file)
+
+                         ;; (find-file "~/test123.txt")
+                         (plan 7)
+                         (ad-disable-advice 'error 'before 'dumptrace)
+                         (ad-update 'error)
+                         (message "sharad22-Midnight: running calendar and planner"))))
+                 (error
+                  (progn
+                    (message "XXXPl Error: %s" perr)
+                    (ad-disable-advice 'error 'before 'dumptrace)
+                    (ad-update 'error)))))))
 
 
-                     (run-with-timer
-                      10
-                      nil
-                      '(lambda ()
-                        (with-safe-plan-env
-                            (condition-case perr
-                             (save-excursion
-                       (save-window-excursion
-                         (progn
-                           (calendar)
-                           (message "sharad22-Midnight: running calendar and planner")
-                           (plan 7)
-                           (message "sharad22-Midnight: running calendar and planner"))))
-                             (error
-                    (progn
-                      (message "XXXPl Error: %s" perr)
-                      )))))))))))
+          (run-with-timer
+           10
+           nil
+           '(lambda ()
+              (with-safe-plan-env
+               (condition-case perr
+                   (save-excursion
+                     (save-window-excursion
+                       (progn
+                         (calendar)
+                         (message "sharad22-Midnight: running calendar and planner")
+                         (plan 7)
+                         (message "sharad22-Midnight: running calendar and planner"))))
+                 (error
+                  (progn
+                    (message "XXXPl Error: %s" perr)
+                    )))))))))))
 
 (defun lotus-schedule/init-calfw ()
   ;; https://github.com/kiwanami/emacs-calfw
