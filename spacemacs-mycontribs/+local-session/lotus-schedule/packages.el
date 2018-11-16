@@ -250,7 +250,7 @@ Each entry is either:
         (dolist (el
                  '("\\`\\*Customize .*\\*\\'"
                    "\\`\\*\\(Wo\\)?Man .*\\*\\'"
-                   """\\`*.org\\'"      ;all org files
+                   """\\`*.org\\'"      ;all org files TODO only required.
                    ))
           (add-to-list 'clean-buffer-list-kill-regexps el))
 
