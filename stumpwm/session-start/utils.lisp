@@ -322,18 +322,19 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
 ;;{{ move to previous window when current window destroyed
 (defun jump-to-previous-window (&optional window (current-window))
   ;; BUG TODO Need lots of improvements.
-  (let ((f     (window-frame window))
-        (group (window-group window)))
-    ;; (message "fm win == win fw ~a cw ~a w ~a" (frame-window f) (current-window) window)
-    (message "if (group-current-window group) ~a   (focus-pre-w) ~a  ow ~a"
-             (group-current-window group)
-             (focus-prev-window group)
-             (other-window group))
-    (if (eq (tile-group-current-frame group) f)
+  (when (eq (type-of (current-group)) 'tile-group)
+    (let ((frame (window-frame window))
+          (group (window-group window)))
+      ;; (message "fm win == win fw ~a cw ~a w ~a" (frame-window frame) (current-window) window)
+      ;; (message "if (group-current-window group) ~a   (focus-pre-w) ~a  ow ~a"
+      ;;          (group-current-window group)
+      ;;          (focus-prev-window group)
+      ;;          (other-window group))
+      (when (eq (tile-group-current-frame group) frame) ;only for current frame window
         (let ((group (current-group)))
-          (unless (group-current-window group)
+          (unless (group-current-window group) ;unless prev window present
             ;; (focus-prev-window group)
-            (other-window group))))))
+            (other-window group)))))))
 
 (add-hook *destroy-window-hook* #'jump-to-previous-window)
 ;; (nconc *destroy-window-hook* (list #'jump-to-previous-window))
