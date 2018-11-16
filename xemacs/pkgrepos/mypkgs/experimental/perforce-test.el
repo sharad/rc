@@ -59,22 +59,22 @@
             (when (and file
                        (with-timeout (4 (progn (incf run-office-activate-failed) nil)) (login-to-perforce)))
               ad-do-it)
-            (progn
-              (message-notify
-               "office-activate"
-               "perforce is not reachable, so disabling office-activate and removing P4 from vc-handled-backends.")
-              (setq vc-handled-backends (remove 'P4 vc-handled-backends))
-              (add-hook 'lotus-enable-desktop-restore-interrupting-feature
-                        '(lambda ()
-                          (add-to-list 'vc-handled-backends 'P4)))
-              (setq run-office-activate nil)))))
+          (progn
+            (message-notify
+             "office-activate"
+             "perforce is not reachable, so disabling office-activate and removing P4 from vc-handled-backends.")
+            (setq vc-handled-backends (remove 'P4 vc-handled-backends))
+            (add-hook 'lotus-enable-desktop-restore-interrupting-feature
+                      '(lambda ()
+                         (add-to-list 'vc-handled-backends 'P4)))
+            (setq run-office-activate nil)))))
 
     (defun is-perforce-is-alive ()
       (if (shell-command-no-output "timeout -k 3 2 p4 depots")
           t
-          (progn
-            (incf run-office-activate-failed)
-            nil)))
+        (progn
+          (incf run-office-activate-failed)
+          nil)))
 
     (defun login-to-perforce ()
       (if (and
@@ -84,7 +84,9 @@
           ;; fix p4 timeout problem, detect it than disable it for next run.
           (if (shell-command-no-output "timeout -k 3 2 p4 user -o")
               t
-              (shell-command-no-output "zenity --password | timeout -k 7 6 p4 login"))))
+            (shell-command-no-output "zenity --password | timeout -k 7 6 p4 login"))))
+
+    (autoload 'magit-git-files "magit-git")
 
     (defvar office-git-remote-regex "")
 
@@ -119,15 +121,15 @@
                 ;; if file is handled by perforce than assume it is
                 ;; related to office perforce repository.
                 (office-mode 1)))
-            (progn
-              (message-notify
-               "office-activate"
-               "perforce is not reachable, so disabling office-activate and removing P4 from vc-handled-backends.")
-              (setq vc-handled-backends (remove 'P4 vc-handled-backends))
-              (add-hook 'lotus-enable-desktop-restore-interrupting-feature
-                        '(lambda ()
-                          (add-to-list 'vc-handled-backends 'P4)))
-              (setq run-office-activate nil)))))
+          (progn
+            (message-notify
+             "office-activate"
+             "perforce is not reachable, so disabling office-activate and removing P4 from vc-handled-backends.")
+            (setq vc-handled-backends (remove 'P4 vc-handled-backends))
+            (add-hook 'lotus-enable-desktop-restore-interrupting-feature
+                      '(lambda ()
+                         (add-to-list 'vc-handled-backends 'P4)))
+            (setq run-office-activate nil)))))
 
     (if sharad-in-office-with-perforce
         (add-element-to-lists 'office-activate pgm-langs))))

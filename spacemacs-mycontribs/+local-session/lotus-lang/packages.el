@@ -65,7 +65,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lotus-lang/post-init-elisp-mode ()
+(defun lotus-lang/init-elisp-mode ()
   (use-package elisp-mode
     :defer t
     :config

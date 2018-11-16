@@ -72,7 +72,7 @@ Each entry is either:
 (defun lotus-vc/post-init-magit ()
   (use-package magit
                :defer t
-               :commands (magit-process-file)
+               :commands (magit-process-file magit-git-lines)
                :config
                (progn
                  ;; TODO: try to find instance when magit ask for key and recognize
