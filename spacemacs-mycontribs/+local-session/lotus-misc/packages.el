@@ -38,6 +38,7 @@
   '(
     ace-popup-menu
     achievements
+    academic-phrases
     )
   "The list of Lisp packages required by the lotus-misc layer.
 
@@ -76,6 +77,12 @@ Each entry is either:
 
 (defun lotus-misc/init-achievements ()
   (use-package achievements
+               :defer t
+               :config
+               (progn)))
+
+(defun lotus-misc/init-academic-phrases()
+  (use-package academic-phrases
                :defer t
                :config
                (progn)))
