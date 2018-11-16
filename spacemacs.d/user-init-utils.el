@@ -355,17 +355,17 @@
 (defun lotus-emacs-user-init-begin ()
   (message "loading lotus-emacs-user-init-begin begin")
   (let ((osetup
-          (expand-file-name
-           ".repos/git/main/resource/userorg/main/readwrite/public/user/osetup" "~")))
+         (expand-file-name
+          ".repos/git/main/resource/userorg/main/readwrite/public/user/osetup" "~")))
     (push (expand-file-name "info.d/common/elisp" osetup) load-path)
     (let ((default-local-lib
             (expand-file-name "info.d/hosts/default/elisp" osetup))
           (local-lib
-            (expand-file-name (concat "info.d/hosts/" (system-name) "/elisp") osetup)))
+           (expand-file-name (concat "info.d/hosts/" (system-name) "/elisp") osetup)))
       (push
        (if (file-directory-p local-lib)
            local-lib
-           default-local-lib)
+         default-local-lib)
        load-path)))
 
   (when nil
@@ -405,13 +405,20 @@
 
   ;; (require 'lotus-utils)
 
+
   (progn
-    (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
-    (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
-    (add-to-list 'package-archives '("ELPA" . "https://tromey.com/elpa/"))
-    (add-to-list 'package-archives '("melpa" . "https://melpa.milkbox.net/packages/"))
-    (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
-    (add-to-list 'package-archives '("local" . "~/.xemacs/elpa/upload")))
+    (unless(assoc "gnu" package-archives)
+      (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
+    (unless(assoc "marmalade" package-archives)
+      (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/")))
+    (unless(assoc "ELPA" package-archives)
+      (add-to-list 'package-archives '("ELPA" . "https://tromey.com/elpa/")))
+    (unless(assoc "melpa" package-archives)
+      (add-to-list 'package-archives '("melpa" . "https://melpa.milkbox.net/packages/")))
+    (unless(assoc "org" package-archives)
+      (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/")))
+    (unless(assoc "local" package-archives)
+      (add-to-list 'package-archives '("local" . "~/.xemacs/elpa/upload"))))
 
   (defvar *emacs-in-init* t "Emacs is in init.")
   (defvar user-emacs-directory "~/.emacs.d")
@@ -442,18 +449,18 @@
   ;;        ad-do-it)))
 
   (eval-after-load "server"
-                   '(progn
-                     ;; server-auth-dir (auto-config-dir "server" t)
-                     (defadvice server-create-window-system-frame
-                      (around nocreate-in-init activate)
-                      "remove-scratch-buffer"
-                      (if *emacs-in-init*
-                          (message "loading init now.")
-                          ad-do-it))))
+    '(progn
+       ;; server-auth-dir (auto-config-dir "server" t)
+       (defadvice server-create-window-system-frame
+           (around nocreate-in-init activate)
+         "remove-scratch-buffer"
+         (if *emacs-in-init*
+             (message "loading init now.")
+           ad-do-it))))
 
 
   (when (require 'cl nil) ; a rare necessary use of REQUIRE
-                                        ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
+    ; http://a-nickels-worth.blogspot.in/2007/11/effective-emacs.html
     (defvar *emacs-load-start* (current-time)))
 
   (defconst *work-dir*
@@ -501,14 +508,14 @@
       (if (functionp 'server-running-p)
           (when (not (server-running-p))
             (condition-case e
-                            (server-start)
-                            ('error
-                             (progn
-                               (message "Error: %s, now trying to run with tcp." e)
-                               (let ((server-use-tcp nil))
-                                 (setq server-use-tcp nil)
-                                 (server-start))))))
-          (message "server %s already running" server-name))
+                (server-start)
+              ('error
+               (progn
+                 (message "Error: %s, now trying to run with tcp." e)
+                 (let ((server-use-tcp nil))
+                   (setq server-use-tcp nil)
+                   (server-start))))))
+        (message "server %s already running" server-name))
       (message (concat "SERVER: " server-name))
       (when (server-running-p (getenv "EMACS_SERVER_NAME"))
         (message (concat "YES SERVER: " server-name)))))
@@ -520,9 +527,9 @@
   (lotus-necessary-test)
 
   (spacemacs|use-package-add-hook org
-                                  ;; https://github.com/syl20bnr/spacemacs/issues/8334#issuecomment-326200914
-                                  :pre-init
-                                  (package-initialize))
+    ;; https://github.com/syl20bnr/spacemacs/issues/8334#issuecomment-326200914
+    :pre-init
+    (package-initialize))
 
   (global-set-key (kbd "s-d") 'debug)
 
