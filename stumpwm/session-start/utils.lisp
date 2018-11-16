@@ -320,32 +320,56 @@ candidates. Candidate is a list of a drive letter(or nil) and a directory"
     (gkill)))
 
 ;;{{ move to previous window when current window destroyed
+
+(defvar *jump-to-previous-window* t "jump-to-previous-window")
+
 (defun jump-to-previous-window (&optional window (current-window))
   ;; BUG TODO Need lots of improvements.
-  (when (eq (type-of (current-group)) 'tile-group)
-    (let ((frame (window-frame window))
-          (group (window-group window)))
-      ;; (message "fm win == win fw ~a cw ~a w ~a" (frame-window frame) (current-window) window)
-      ;; (message "if (group-current-window group) ~a   (focus-pre-w) ~a  ow ~a"
-      ;;          (group-current-window group)
-      ;;          (focus-prev-window group)
-      ;;          (other-window group))
-      (when (eq (tile-group-current-frame group) frame) ;only for current frame window
-        (let ((group (current-group)))
-          (unless (group-current-window group) ;unless prev window present
-            ;; (focus-prev-window group)
-            (other-window group)))))))
+  (when *jump-to-previous-window*
+    (when (eq (type-of (current-group)) 'tile-group)
+      (let ((frame (window-frame window))
+            (group (window-group window)))
+        ;; (message "fm win == win fw ~a cw ~a w ~a" (frame-window frame) (current-window) window)
+        ;; (message "if (group-current-window group) ~a   (focus-pre-w) ~a  ow ~a"
+        ;;          (group-current-window group)
+        ;;          (focus-prev-window group)
+        ;;          (other-window group))
+        (when (eq (tile-group-current-frame group) frame) ;only for current frame window
+          (let ((group (current-group)))
+            (unless (group-current-window group) ;unless prev window present
+              ;; (focus-prev-window group)
+              (other-window group))))))))
 
 (add-hook *destroy-window-hook* #'jump-to-previous-window)
+
+(defcommand enable-jump-to-previous-window () ()
+  (unless (find *destroy-window-hook* #'jump-to-previous-window)
+    (setf *jump-to-previous-window* t)
+    (add-hook *destroy-window-hook* #'jump-to-previous-window)))
+
+(defcommand enable-jump-to-previous-window () ()
+  (if (find *destroy-window-hook* #'jump-to-previous-window)
+      (setf *jump-to-previous-window* nil)
+      (remove-hook *destroy-window-hook* #'jump-to-previous-window)))
+
+(defcommand toggle-jump-to-previous-window () ()
+  (if (find *destroy-window-hook* #'jump-to-previous-window)
+      (progn
+        (setf *jump-to-previous-window* nil)
+        (remove-hook *destroy-window-hook* #'jump-to-previous-window))
+      (progn
+        (setf *jump-to-previous-window* t)
+        (add-hook *destroy-window-hook* #'jump-to-previous-window))))
+
 ;; (nconc *destroy-window-hook* (list #'jump-to-previous-window))
 ;;}}
 
 
 (defun get-dbus-conf ()
   (let ((dbus-parms
-         (mapcar
-          #'(lambda (envstr) (format nil "~a=~a" envstr (getenv envstr)))
-          '("DBUS_SESSION_BUS_ADDRESS" "DBUS_SESSION_BUS_PID" "DBUS_SESSION_BUS_WINDOWID"))))
+          (mapcar
+           #'(lambda (envstr) (format nil "~a=~a" envstr (getenv envstr)))
+           '("DBUS_SESSION_BUS_ADDRESS" "DBUS_SESSION_BUS_PID" "DBUS_SESSION_BUS_WINDOWID"))))
     (format nil "~{~a~%~}" dbus-parms)))
 
 (defcommand get-dbus-config () ()
