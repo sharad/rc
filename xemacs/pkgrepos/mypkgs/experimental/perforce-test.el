@@ -86,7 +86,8 @@
               t
             (shell-command-no-output "zenity --password | timeout -k 7 6 p4 login"))))
 
-    (autoload 'magit-git-files "magit-git")
+    (autoload 'magit-git-lines "magit")
+    (autoload 'magit-process-file "magit")
 
     (defvar office-git-remote-regex "")
 

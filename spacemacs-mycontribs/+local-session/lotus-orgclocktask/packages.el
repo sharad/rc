@@ -282,8 +282,8 @@ Each entry is either:
           :defer t
           :config
           (progn
-            (progn
-              ))))
+            (progn))))
+
 
     (progn ;; Need it.
       (progn
@@ -321,7 +321,7 @@ Each entry is either:
                       :config
                       (progn
                         (progn
-                          (message "test1")
+                          ;; (message "test1")
                           (unless (task-current-party)
                             (task-current-party "meru"))
                           (when (task-current-party)
@@ -376,8 +376,8 @@ Each entry is either:
                                          (org-clock-work-day-mode-line-add t)))
                                  (message "[4]org monitor dir %s not exists." monitor-dir)))))
                          (org-clock-work-day-mode-line-add t))
-                     ((error) (message "Error: %s" err)))
-                   ) t)))))))
+                     ((error) (message "Error: %s" err))
+                    t)))))))))
 
 (defun lotus-orgclocktask/init-org-clock-table-misc-lotus ()
   (use-package org-clock-table-misc-lotus
@@ -575,8 +575,8 @@ Each entry is either:
             (task-current-party "meru"))))
 
       (progn
-        ;; (require 'magit-git)
-        (autoload 'magit-git-files "magit-git")
+        (autoload 'magit-git-lines "magit")
+        (autoload 'magit-process-file "magit")
 
         (defvar office-git-remote-regex "")
 
