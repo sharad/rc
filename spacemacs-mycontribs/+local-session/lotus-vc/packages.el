@@ -168,7 +168,7 @@ Each entry is either:
 
 
 ;; (defun lotus-vc/post-init-git-link ())
-(defun lotus-vc/init-git-link ()
+(defun lotus-vc/post-init-git-link ()
   (use-package git-link
                :defer t
                :config
