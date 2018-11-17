@@ -590,102 +590,102 @@ before packages are loaded."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(evil-want-Y-yank-to-eol nil)
-   '(muse-blosxom-base-directory
-     "/home/s/hell/Documents/CreatedContent/gen/virtual/muse/default/web/site/blog")
-   '(muse-colors-autogen-headings (quote outline))
-   '(muse-colors-inline-image-method (quote muse-colors-use-publishing-directory))
-   '(muse-completing-read-function (quote ido-completing-read))
-   '(muse-html-charset-default "utf-8")
-   '(muse-html-encoding-default (quote utf-8))
-   '(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
-   '(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
-   '(muse-html-meta-content-encoding (quote utf-8))
-   '(muse-html-style-sheet
-     "<lisp>
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(evil-want-Y-yank-to-eol nil)
+ '(muse-blosxom-base-directory
+   "/home/s/hell/Documents/CreatedContent/gen/virtual/muse/default/web/site/blog")
+ '(muse-colors-autogen-headings (quote outline))
+ '(muse-colors-inline-image-method (quote muse-colors-use-publishing-directory))
+ '(muse-completing-read-function (quote ido-completing-read))
+ '(muse-html-charset-default "utf-8")
+ '(muse-html-encoding-default (quote utf-8))
+ '(muse-html-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+ '(muse-html-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+ '(muse-html-meta-content-encoding (quote utf-8))
+ '(muse-html-style-sheet
+   "<lisp>
        (concat
         (muse-insert-css-link \"all\" \"common.css\")
         (muse-insert-css-link \"screen\" \"screen.css\")
         (muse-insert-css-link \"print\" \"print.css\"))
        </lisp>")
-   '(muse-latex-header "<lisp>(muse-insert-meta-file \"header.tex\")</lisp>")
-   '(muse-latex-pdf-browser "evince %s &")
-   '(muse-mode-hook (quote (flyspell-mode footnote-mode)))
-   '(muse-project-alist nil)
-   '(muse-publish-comments-p t)
-   '(muse-publish-date-format "%b. %e, %Y")
-   '(muse-publish-desc-transforms
-     (quote
-      (muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL)))
-   '(muse-wiki-publish-small-title-words
-     (quote
-      ("the" "and" "at" "on" "of" "for" "in" "an" "a" "page")))
-   '(muse-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
-   '(muse-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
-   '(muse-xhtml-style-sheet
-     "<lisp>
+ '(muse-latex-header "<lisp>(muse-insert-meta-file \"header.tex\")</lisp>")
+ '(muse-latex-pdf-browser "evince %s &")
+ '(muse-mode-hook (quote (flyspell-mode footnote-mode)))
+ '(muse-project-alist nil)
+ '(muse-publish-comments-p t)
+ '(muse-publish-date-format "%b. %e, %Y")
+ '(muse-publish-desc-transforms
+   (quote
+    (muse-wiki-publish-pretty-title muse-wiki-publish-pretty-interwiki muse-publish-strip-URL)))
+ '(muse-wiki-publish-small-title-words
+   (quote
+    ("the" "and" "at" "on" "of" "for" "in" "an" "a" "page")))
+ '(muse-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+ '(muse-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+ '(muse-xhtml-style-sheet
+   "<lisp>
        (concat
         (muse-insert-css-link \"all\" \"common.css\")
         (muse-insert-css-link \"screen\" \"screen.css\")
         (muse-insert-css-link \"print\" \"print.css\"))
        </lisp>")
-   '(org-agenda-files nil)
-   '(package-selected-packages
-     (quote
-      (academic-phrases counsel-etags counsel ggtags reader-mode timer-utils-lotus org-onchange publishing project-buffer-file org-misc-utils-lotus org-clock-wrapper rcs-backup zenburn-theme winum w3m use-package toc-org test-session tao-theme startup-hooks sessions-unified pip-requirements paradox package-dev-utils-lotus org-scahachua org-mime org-context-clock org-clock-utils-lotus neotree mwim live-py-mode inkpot-theme highlight-numbers helm-make gruvbox-theme go-guru git-timemachine git-link ghub find-file-in-project evil-surround evil-matchit espresso-theme dumb-jump deft darkokai-theme counsel-projectile company-anaconda color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized outshine ox-pandoc org-category-capture org-password-manager org-brain elfeed-org projectile-rails geeknote feature-mode ahk-mode helm-gtags helm-cscope ivy-xref counsel-gtags function-args gxref lotus-utils xref-js2 sws-mode calfw-org calfw-cal mindshare-contrib-mgr clipmon occ counsel-org-clock timesheet task-manager orgit org-present ob-elixir org-projectile org-plus-contrib stickyfunc-enhance yaoddmuse uncrustify-mode srefactor oddmuse lotus-wrapper org-onchnage org-clock-unnamed-task org-clock-in-if-not org-clock-hooks org-clock-experimental org-clock-check org-capture+ lotus-misc-utils org-doing htmlize zen-and-art-theme yapfify yaml-mode xterm-color xquery-mode xcscope ws-butler white-sand-theme wgrep web-beautify wcheck-mode wakatime-mode volatile-highlights vi-tilde-fringe uuidgen unfill underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme thinks tangotango-theme tango-plus-theme tango-2-theme tagedit sunny-day-theme sublime-themes subatomic256-theme subatomic-theme spacegray-theme soothe-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smex smeargle slim-mode shell-pop seti-theme scss-mode sass-mode reverse-theme restart-emacs remember-unified remember-idle recentf-ext rebecca-theme rainbow-identifiers rainbow-delimiters railscasts-theme pytest pyenv-mode py-isort purple-haze-theme pug-mode project-root professional-theme popup-kill-ring pointback planet-theme phoenix-dark-pink-theme phoenix-dark-mono-theme persp-mode pcre2el pastebin pabbrev outline-magic origami organic-green-theme org-pomodoro org-download org-clock-table-misc-lotus org-clock-resolve-advanced org-clock-daysummary org-bullets org-agenda-refiletarget-files-filters open-junk-file omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme next-package naquadah-theme mustang-theme muse multibackup multi-term moz move-text monokai-theme monochrome-theme molokai-theme moe-theme mmm-mode minimap minimal-theme material-theme markdown-toc majapahit-theme magit-gitflow madhat2r-theme macrostep lusty-explorer lush-theme lotus-crypt-utils lorem-ipsum livid-mode linum-relative light-soap-theme less-css-mode json-mode js2-refactor js-doc jbeans-theme jazz-theme jade-mode ivy-hydra ir-black-theme indent-guide idomenu hy-mode hungry-delete highlight-parentheses highlight-indentation heroku-theme hemisu-theme helm-themes helm-swoop helm-pydoc helm-mode-manager helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hc-zenburn-theme gruber-darker-theme grandshell-theme gotham-theme google-translate golden-ratio go-eldoc gnuplot gitconfig-mode gitattributes-mode git-messenger git-gutter-fringe git-gutter-fringe+ gh-md gandalf-theme fuzzy frame-utils folding fm flyspell-correct-helm flymake-cursor flycheck-pos-tip flycheck-mix flycheck-credo flx-ido flatui-theme flatland-theme fill-column-indicator farmhouse-theme fancy-battery eyebrowse expand-region exotica-theme exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erlang eproject emmet-mode elisp-slime-nav ecb dracula-theme dpaste django-theme disaster diminish diff-hl define-word darktooth-theme darkmine-theme darkburn-theme dakrone-theme d-mode cython-mode cyberpunk-theme corral company-web company-tern company-statistics company-go company-dcd column-enforce-mode color-identifiers-mode coffee-mode clues-theme clean-aindent-mode cherry-blossom-theme calfw c-eldoc busybee-theme buffer-utils bubbleberry-theme bm bitlbee birds-of-paradise-plus-theme badwolf-theme autoinsert+ auto-highlight-symbol auto-dictionary auto-compile apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes alchemist aggressive-indent afternoon-theme adaptive-wrap activity ace-window ace-link ace-jump-helm-line ac-ispell zoutline outorg navi-mode persp-mode-projectile-bridge poporg orgnav worf @)))
-   '(planner-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
-   '(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
-   '(safe-local-variable-values
-     (quote
-      ((major-mode . sh)
-       (ee-comment-prefix . ";;")
-       (ee-anchor-format . "defun %s ")
-       (eval font-lock-add-keywords nil
-             (\`
-              (((\,
-                 (concat "("
-                         (regexp-opt
-                          (quote
-                           ("sp-do-move-op" "sp-do-move-cl" "sp-do-put-op" "sp-do-put-cl" "sp-do-del-op" "sp-do-del-cl"))
-                          t)
-                         "\\_>"))
-                1
-                (quote font-lock-variable-name-face)))))
-       (modes emacs-lisp-mode fundamental-mode)
-       (modes fundamental-mode emacs-lisp-mode escript-mode)
-       (folded-file . t)
-       (elixir-enable-compilation-checking . t)
-       (elixir-enable-compilation-checking))))
-   '(send-mail-function (quote sendmail-send-it))
-   '(session-use-package t nil (session)))
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(default ((t (:background nil))))
-   '(cfw:face-annotation ((t :foreground "RosyBrown" :inherit cfw:face-day-title)))
-   '(cfw:face-day-title ((t :background "grey10")))
-   '(cfw:face-default-content ((t :foreground "#bfebbf")))
-   '(cfw:face-default-day ((t :weight bold :inherit cfw:face-day-title)))
-   '(cfw:face-disable ((t :foreground "DarkGray" :inherit cfw:face-day-title)))
-   '(cfw:face-grid ((t :foreground "DarkGrey")))
-   '(cfw:face-header ((t (:foreground "#d0bf8f" :weight bold))))
-   '(cfw:face-holiday ((t :background "grey10" :foreground "#8c5353" :weight bold)))
-   '(cfw:face-periods ((t :foreground "cyan")))
-   '(cfw:face-saturday ((t :foreground "#8cd0d3" :background "grey10" :weight bold)))
-   '(cfw:face-select ((t :background "#2f2f2f")))
-   '(cfw:face-sunday ((t :foreground "#cc9393" :background "grey10" :weight bold)))
-   '(cfw:face-title ((t (:foreground "#f0dfaf" :weight bold :height 2.0 :inherit variable-pitch))))
-   '(cfw:face-today ((t :background: "grey10" :weight bold)))
-   '(cfw:face-today-title ((t :background "#7f9f7f" :weight bold)))
-   '(cfw:face-toolbar ((t :foreground "Steelblue4" :background "Steelblue4")))
-   '(cfw:face-toolbar-button-off ((t :foreground "Gray10" :weight bold)))
-   '(cfw:face-toolbar-button-on ((t :foreground "Gray50" :weight bold)))
-   '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold)))))
-  )
+ '(org-agenda-files nil)
+ '(package-selected-packages
+   (quote
+    (academic-phrases org-projectile projectile-rails geeknote feature-mode ahk-mode helm-gtags helm-cscope ivy-xref counsel-gtags counsel-etags counsel function-args ggtags gxref lotus-utils xref-js2 sws-mode calfw-org calfw-cal reader-mode mindshare-contrib-mgr clipmon occ counsel-org-clock timesheet task-manager orgit org-present ob-elixir org-projectile org-plus-contrib stickyfunc-enhance yaoddmuse uncrustify-mode srefactor oddmuse lotus-wrapper timer-utils-lotus org-onchange publishing project-buffer-file org-onchnage org-misc-utils-lotus org-clock-wrapper org-clock-unnamed-task org-clock-in-if-not org-clock-hooks org-clock-experimental org-clock-check org-capture+ lotus-misc-utils rcs-backup org-doing htmlize zenburn-theme zen-and-art-theme yapfify yaml-mode xterm-color xquery-mode xcscope ws-butler winum white-sand-theme wgrep web-beautify wcheck-mode wakatime-mode w3m volatile-highlights vi-tilde-fringe uuidgen use-package unfill underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme toc-org thinks test-session tao-theme tangotango-theme tango-plus-theme tango-2-theme tagedit sunny-day-theme sublime-themes subatomic256-theme subatomic-theme startup-hooks spacegray-theme soothe-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smex smeargle slim-mode shell-pop seti-theme sessions-unified scss-mode sass-mode reverse-theme restart-emacs remember-unified remember-idle recentf-ext rebecca-theme rainbow-identifiers rainbow-delimiters railscasts-theme pytest pyenv-mode py-isort purple-haze-theme pug-mode project-root professional-theme popup-kill-ring pointback planet-theme pip-requirements phoenix-dark-pink-theme phoenix-dark-mono-theme persp-mode pcre2el pastebin paradox package-dev-utils-lotus pabbrev outline-magic origami organic-green-theme org-scahachua org-pomodoro org-mime org-download org-context-clock org-clock-utils-lotus org-clock-table-misc-lotus org-clock-resolve-advanced org-clock-daysummary org-bullets org-agenda-refiletarget-files-filters open-junk-file omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme next-package neotree naquadah-theme mwim mustang-theme muse multibackup multi-term moz move-text monokai-theme monochrome-theme molokai-theme moe-theme mmm-mode minimap minimal-theme material-theme markdown-toc majapahit-theme magit-gitflow madhat2r-theme macrostep lusty-explorer lush-theme lotus-crypt-utils lorem-ipsum livid-mode live-py-mode linum-relative light-soap-theme less-css-mode json-mode js2-refactor js-doc jbeans-theme jazz-theme jade-mode ivy-hydra ir-black-theme inkpot-theme indent-guide idomenu hy-mode hungry-delete highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-themes helm-swoop helm-pydoc helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme google-translate golden-ratio go-guru go-eldoc gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ ghub gh-md gandalf-theme fuzzy frame-utils folding fm flyspell-correct-helm flymake-cursor flycheck-pos-tip flycheck-mix flycheck-credo flx-ido flatui-theme flatland-theme find-file-in-project fill-column-indicator farmhouse-theme fancy-battery eyebrowse expand-region exotica-theme exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu espresso-theme eshell-z eshell-prompt-extras esh-help erlang eproject emmet-mode elisp-slime-nav ecb dumb-jump dracula-theme dpaste django-theme disaster diminish diff-hl deft define-word darktooth-theme darkokai-theme darkmine-theme darkburn-theme dakrone-theme d-mode cython-mode cyberpunk-theme counsel-projectile corral company-web company-tern company-statistics company-go company-dcd company-anaconda column-enforce-mode color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized color-identifiers-mode coffee-mode clues-theme clean-aindent-mode cherry-blossom-theme calfw c-eldoc busybee-theme buffer-utils bubbleberry-theme bm bitlbee birds-of-paradise-plus-theme badwolf-theme autoinsert+ auto-highlight-symbol auto-dictionary auto-compile apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes alchemist aggressive-indent afternoon-theme adaptive-wrap activity ace-window ace-link ace-jump-helm-line ac-ispell zoutline outorg navi-mode persp-mode-projectile-bridge poporg orgnav outshine worf @)))
+ '(planner-xhtml-footer "<lisp>(muse-insert-meta-file \"footer.html\")</lisp>")
+ '(planner-xhtml-header "<lisp>(muse-insert-meta-file \"header.html\")</lisp>")
+ '(safe-local-variable-values
+   (quote
+    ((major-mode . sh)
+     (ee-comment-prefix . ";;")
+     (ee-anchor-format . "defun %s ")
+     (eval font-lock-add-keywords nil
+           (\`
+            (((\,
+               (concat "("
+                       (regexp-opt
+                        (quote
+                         ("sp-do-move-op" "sp-do-move-cl" "sp-do-put-op" "sp-do-put-cl" "sp-do-del-op" "sp-do-del-cl"))
+                        t)
+                       "\\_>"))
+              1
+              (quote font-lock-variable-name-face)))))
+     (modes emacs-lisp-mode fundamental-mode)
+     (modes fundamental-mode emacs-lisp-mode escript-mode)
+     (folded-file . t)
+     (elixir-enable-compilation-checking . t)
+     (elixir-enable-compilation-checking))))
+ '(send-mail-function (quote sendmail-send-it))
+ '(session-use-package t nil (session)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:background nil))))
+ '(cfw:face-annotation ((t :foreground "RosyBrown" :inherit cfw:face-day-title)))
+ '(cfw:face-day-title ((t :background "grey10")))
+ '(cfw:face-default-content ((t :foreground "#bfebbf")))
+ '(cfw:face-default-day ((t :weight bold :inherit cfw:face-day-title)))
+ '(cfw:face-disable ((t :foreground "DarkGray" :inherit cfw:face-day-title)))
+ '(cfw:face-grid ((t :foreground "DarkGrey")))
+ '(cfw:face-header ((t (:foreground "#d0bf8f" :weight bold))))
+ '(cfw:face-holiday ((t :background "grey10" :foreground "#8c5353" :weight bold)))
+ '(cfw:face-periods ((t :foreground "cyan")))
+ '(cfw:face-saturday ((t :foreground "#8cd0d3" :background "grey10" :weight bold)))
+ '(cfw:face-select ((t :background "#2f2f2f")))
+ '(cfw:face-sunday ((t :foreground "#cc9393" :background "grey10" :weight bold)))
+ '(cfw:face-title ((t (:foreground "#f0dfaf" :weight bold :height 2.0 :inherit variable-pitch))))
+ '(cfw:face-today ((t :background: "grey10" :weight bold)))
+ '(cfw:face-today-title ((t :background "#7f9f7f" :weight bold)))
+ '(cfw:face-toolbar ((t :foreground "Steelblue4" :background "Steelblue4")))
+ '(cfw:face-toolbar-button-off ((t :foreground "Gray10" :weight bold)))
+ '(cfw:face-toolbar-button-on ((t :foreground "Gray50" :weight bold)))
+ '(muse-bad-link ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold)))))
+)
