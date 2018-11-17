@@ -95,6 +95,9 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 " Unmanaged plugin (manually installed and updated)
 Plug '~/my-prototype-plugin'
 
+" vim-orgmode
+Plug 'jceb/vim-orgmode'
+
 " Initialize plugin system
 call plug#end()
 "}}} Vim Plug
