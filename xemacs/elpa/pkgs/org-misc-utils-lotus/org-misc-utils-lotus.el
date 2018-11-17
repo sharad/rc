@@ -421,6 +421,42 @@ With prefix arg C-u, copy region instad of killing it."
       (org-entry-put-multivalued-property nil property values))))
     ;; )
 
+(defun org-refile-target-files (org-refile-targets &optional default-buffer)
+  (let ( ;; (case-fold-search nil)
+         ;; otherwise org confuses "TODO" as a kw and "Todo" as a word
+        (entries (or org-refile-targets '((nil . (:level . 1)))))
+        files
+        desc)
+    (with-current-buffer (or default-buffer (current-buffer))
+      (dolist (entry entries)
+        (setq files (car entry) desc (cdr entry))
+        (cond
+         ((null files) (setq files (list (current-buffer))))
+         ((eq files 'org-agenda-files)
+          (setq files (org-agenda-files 'unrestricted)))
+         ((and (symbolp files) (fboundp files))
+          (setq files (funcall files)))
+         ((and (symbolp files) (boundp files))
+          (setq files (symbol-value files))))))
+    files))
+
+;; (org-refile-target-files '((occ-included-files :maxlevel . 4)))
+
+(defun org-refile-target-check (org-refile-targets &optional default-buffer)
+  (let* ((files
+          (org-refile-target-files org-refile-targets default-buffer))
+         (files
+          (remove-if
+           #'(lambda (f)
+               (with-current-buffer (find-file-noselect f)
+                 (eq 'org-mode major-mode)))
+           files)))
+    (when files
+      (error "org-refile-target: files %s not in org-mode for org-refile-targets %s"
+             files
+             org-refile-targets))))
+
+;; (org-refile-target-check '((occ-included-files :maxlevel . 4)))
 
 ;; Refile macros Starts
 (defun safe-org-refile-get-location-p ()
@@ -430,7 +466,8 @@ With prefix arg C-u, copy region instad of killing it."
   (let ((org-refile-targets
          (if (safe-org-refile-get-location-p)
              org-refile-targets
-             (remove-if '(lambda (e) (null (car e))) org-refile-targets))))
+           (remove-if '(lambda (e) (null (car e))) org-refile-targets))))
+    (org-refile-target-check org-refile-targets)
     (org-refile-get-location)))
 
 ;; TODO (replace-buffer-in-windows)
