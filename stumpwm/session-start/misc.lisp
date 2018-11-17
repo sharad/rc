@@ -74,17 +74,17 @@
 ;; Default layout
 ;;{{{ mode-line
 (defvar *mode-line-fmts* '(
-                           ((:eval (format-expand *time-format-string-alist* "^[^B^7*%h^] %a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %T %W - %m - %D - %I ")
-                           ((:eval (format-expand *time-format-string-alist* "^[^B^7*%h^] %a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^01%N^** [^B%n^01%u^**^b] %T %W - %m - %D - %I ")
-                           ((:eval (format-expand *time-format-string-alist* "^[^B^7*%h^] %a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^1*%N^** [^B%n^b ^B^1*%u^**^b ] %T %W - %m - %D - %I")
-                           ((:eval (format-expand *time-format-string-alist* "^[^B^7*%h^] %a %b %e %Y - %k:%M:%S"))
+                           ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^71%N^** [^B%n^71%u^**^b] %T %W - %m - %D - %I ")
+                           ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^01%N^** [^B%n^01%u^**^b] %T %W - %m - %D - %I ")
+                           ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - ^1*%N^** [^B%n^b ^B^1*%u^**^b ] %T %W - %m - %D - %I")
+                           ("^[^B^7*%h^] " (:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S"))
                             (:eval (format "Name"))
                             " %p - %c (%f) - %B - ^1*%N^** [^B%n^b ^B^1*%u^**^b ] %T %W - %m - %D - %I")
                            ;; ((:eval (format-expand *time-format-string-alist* "%a %b %e %Y - %k:%M:%S")) " %p - %c (%f) - %B - %N [^B%n^b ^71^B%u^b^70^* ] %W - %m - %D - %I")
                            ;; (:eval (format "Name"))
-                            " - %c (%f) - %b %B - %N [^B%n^b ^B^1%u^*^b ] %T %W - %m - %D - %I"
+                           " - %c (%f) - %b %B - %N [^B%n^b ^B^1%u^*^b ] %T %W - %m - %D - %I"
 
-                            "%N [^B%n^b ^B^1%u^*^b ] %T %W - %I"))
+                           "%N [^B%n^b ^B^1%u^*^b ] %T %W - %I"))
 
 ;; (setf *mode-line-fmts* '(
 ;;                            ((:eval
