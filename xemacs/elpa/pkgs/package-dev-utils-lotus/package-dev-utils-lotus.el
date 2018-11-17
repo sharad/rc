@@ -446,68 +446,6 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
   (let ((pkg-desc (if (package-desc-p pkg) pkg (package-make-package-desc pkg))))
     (mapcar 'car '(package-desc-reqs pkg-desc))))
 
-;; (package-installed-p (car (assoc 'rinari package-archive-contents)))
-;; (package-install (cadr (assoc 'rinari package-archive-contents)))
-
-;; (package-install (intern (completing-read
-;;                "Install package: "
-;;                (delq nil
-;;                      (mapcar (lambda (elt)
-;;                                (unless (package-installed-p (car elt))
-;;                                  (symbol-name (car elt))))
-;;                              package-archive-contents))
-;;                nil t)))
-
-;; (package-install "package-dev-utils-lotus")
-
-;; (package-requirements-package-from-dir "~/.xemacs/elpa/pkgs/org-context-clock")
-
-;; (package-install-packages-from-source-path-fast)
-
-
-;; (package-compute-transaction (list pkg-desc)
-;;                              (package-desc-reqs pkg-desc))
-
-;; (package-compute-transaction (package-make-package-desc "package-dev-utils-lotus")
-;;                              (package-desc-reqs  (package-make-package-desc "org-context-clock")))
-
-;; (when nil
-;;   '(
-;;     (package-desc-name (package-make-package-desc "sessions-unified" "local"))
-
-;;     (package-install 'sessions-unified)
-
-;;     (package-delete (package-make-package-desc "org-context-clocking" "local"))
-
-;;     (package-install (package-make-package-desc "sessions-unified" "local"))
-
-;;     (package-delete (package-make-package-desc "sessions-unified" "local"))
-
-;;     (package-delete 'sessions-unified)
-
-;;     (package-read-archive-contents "local")
-
-;;     package-archives
-
-;;     (package-read-all-archive-contents)
-
-;;     (intern "xxx")
-
-;;     (package- 'semi)
-
-;;     (package-installed-p )
-
-;;     (package-install "semi")
-
-;;     (symbol-name (package-desc-name (package-make-package-desc "sessions-unified")))
-
-;;     (assoc 'sessions-unified (package--read-archive-file
-;;                               (expand-file-name "archive-contents" package-archive-upload-base)))
-
-;;     (pp-to-string '(define-package "task-manager" "20170717.0116" "task manager." '((publishing "201707.2029")))
-
-;;      ))
-;;   )
 
 ;; check about
 ;; package-compute-transaction
@@ -533,12 +471,12 @@ argument INCLUDE-DIRECTORIES is non-nil, they are included"
   (add-hook 'post-command-hook #'package-menu--post-refresh)
   (let ((pkg-desc (if (package-desc-p pkg)
                       pkg
-                      (cadr (assq pkg package-alist)))))
+                    (cadr (assq pkg package-alist)))))
     (if pkg-desc
         (if (package-installed-p (package-desc-name pkg-desc))
             (package-delete pkg-desc t)
-            (message "package %s is not installed" pkg))
-        (message "No such package %s" pkg))))
+          (message "package %s is not installed" pkg))
+      (message "No such package %s" pkg))))
 
 
 ;;;###autoload
