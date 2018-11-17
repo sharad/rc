@@ -95,8 +95,37 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 " Unmanaged plugin (manually installed and updated)
 Plug '~/my-prototype-plugin'
 
+
+
+
+
+
+
+
+
+
+
+
+
 " vim-orgmode
 Plug 'jceb/vim-orgmode'
+
+Plug 'vim-scripts/utl.vim'
+
+Plug 'vim-scripts/repeat.vim'
+
+Plug 'vim-scripts/taglist.vim'
+
+Plug 'vim-scripts/speeddating.vim'
+
+Plug 'vim-scripts/NrrwRgn'
+
+Plug 'vim-scripts/pathogen.vim'
+
+Plug 'vim-scripts/SyntaxRange'
+
+Plug 'mattn/calendar-vim'
+
 
 " Initialize plugin system
 call plug#end()
