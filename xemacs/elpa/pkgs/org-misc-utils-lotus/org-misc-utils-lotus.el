@@ -410,7 +410,6 @@ With prefix arg C-u, copy region instad of killing it."
     (let ((buffer-read-only nil))
       (org-entry-put nil property value))))
 
-
 (defun org-refile-entry-put-multivalued-property (property &rest values)
   (interactive
    (let ((property (read-from-minibuffer "property: "))
