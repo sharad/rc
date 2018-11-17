@@ -1,4 +1,4 @@
-;;; config.el --- config                             -*- lexical-binding: t; -*-
+;;; config.el --- config                             -*- lexical-binding: t; truncate-lines: t; -*-
 
 ;; Copyright (C) 2016  sharad
 
@@ -23,12 +23,6 @@
 ;;
 
 ;;; Code:
-
-
-
-;; -*- truncate-lines: t; -*-
-
-
 
 (defun increase-font-size (size)
   (custom-set-faces
