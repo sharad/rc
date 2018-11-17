@@ -147,11 +147,11 @@
                (> max 0)
                (> opt max))
           max
-          (if (and min
-                   (> min 0)
-                   (< opt min))
-              min
-              opt))))
+        (if (and min
+                 (> min 0)
+                 (< opt min))
+            min
+          opt))))
 
 
   ;; set attributes
@@ -173,6 +173,7 @@
       ((900  2966 237 781) (:height 71 :width normal :machine "think530-spratap"))
       ((900  2966 238 784) (:height 72 :width normal :machine "think530-spratap"))
       ((900  2966 237 781) (:height 72 :width normal :machine "think530-spratap"))
+      ((1080 3286 285 869) (:height 72 :width normal :machine "latitude5480-spratap"))
       )
     "Enter here all machine details of
 
@@ -180,7 +181,7 @@
 
   (defun assoc-attribs-in-matrix ()
     (let ((phy-attribs
-            (list
+           (list
             (x-display-pixel-height)
             (x-display-pixel-width)
             (x-display-mm-height)
@@ -213,16 +214,16 @@
     (interactive
      (let* ((disp-attrib (assoc-attribs-in-matrix))
             (height
-              (read-number "Face height: "
-                           (or
+             (read-number "Face height: "
+                          (or
                            (plist-get disp-attrib :height)
                            (if (and (featurep 'x)
                                     window-system
                                     (x-display-mm-height))
                                (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
-                               (face-attribute 'default :height)))))
+                             (face-attribute 'default :height)))))
             (width
-              (read
+             (read
               (prin1-to-string
                (read-minibuffer "Face width: "
                                 (prin1-to-string (or
@@ -232,16 +233,16 @@
     (if (and (featurep 'x) window-system)
         (let* ((disp-attrib (assoc-attribs-in-matrix))
                (height
-                 (or
+                (or
                  height
                  (plist-get disp-attrib :height)
                  (if (and (featurep 'x)
                           window-system
                           (x-display-mm-height))
                      (apply 'maxmin-optimized-value (x-display-mm-height) face-scale-div-max-min)
-                     (face-attribute 'default :height))))
+                   (face-attribute 'default :height))))
                (width
-                 (or
+                (or
                  width
                  (plist-get disp-attrib :width)
                  (face-attribute 'default :width))))
@@ -251,10 +252,10 @@
                     (spacemacs/set-default-font dotspacemacs-default-font)
                     (when height (set-face-attribute 'default nil :height height))
                     (when width (set-face-attribute 'default nil :width width)))
-                  (message "no frame is open now."))
-              (message "(x-display-pixel-height) return nil")))
-        (message
-         "set-default-face-height-by-resolution: Not in Graphical Window system, window-system %s" window-system)))
+                (message "no frame is open now."))
+            (message "(x-display-pixel-height) return nil")))
+      (message
+       "set-default-face-height-by-resolution: Not in Graphical Window system, window-system %s" window-system)))
 
   (when (fboundp 'set-default-face-height-by-resolution)
     (defalias 'mycustom-face-set #'set-default-face-height-by-resolution))
