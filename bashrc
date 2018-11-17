@@ -207,3 +207,5 @@ export CVSROOT=/home/c_sharad/rpstry
 [  -r ~/.rsetup/eev/run ] &&
     ~/.rsetup/eev/run
 # }}}
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

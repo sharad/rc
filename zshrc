@@ -532,3 +532,5 @@ fi
 
 # Workplace
 workoffice
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
