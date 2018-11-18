@@ -83,6 +83,7 @@ function setup_packages()
     running setup_stumwpm_contrib_packages
     running setup_conkeror_package
 
+    running setup_dovecot
     running setup_postfix
     running setup_offlineimap
     running setup_apache_usermod
@@ -322,6 +323,11 @@ function setup_zsh()
     then
         chsh -s /bin/zsh
     fi
+}
+
+function setup_dovecot()
+{
+    :
 }
 
 function setup_postfix()
