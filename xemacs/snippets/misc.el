@@ -48,6 +48,15 @@
     (remove-hook 'post-command-hook 'elscreen-run-screen-update-hook)))
 
 
+(defun region-length (posBegin posEnd)
+  "Print number of words and chars in region."
+  (interactive "r")
+  (let ((len (- posEnd posBegin)))
+   (kill-new (format "%d" len))
+   (message "length %d" len)))
+
+
+
 (set-variable 'ycmd-server-command '("python" "/usr/bin/ycmd"))
 
 ycmd-server-command
