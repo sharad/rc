@@ -113,3 +113,8 @@ command exit status.
 In case of wm hanging
 Arrange a handy terminal or console where we can atleast kill wm.
 ** stumpwm music per window
+** Musical (instrumental) desktop
+Whenever a window is selected music associated with that window
+starts playing.
+
+use xprop
