@@ -73,3 +73,43 @@ follow https://www.dovecot.org/list/dovecot/2016-February/103077.html
 
     "*helm-omni*"))
  #+END_SRC
+*** Emacs ideas (long term)
+** Emacs create a package aka plugin to directly contribute to GitHub project of any el file
+Here can be public rating to manage patch
+A abstract system which follow project guidelines for patch submission directly to project.
+It will be really interesting.
+
+It can also server as a Great POC how to expand participation from big number of peoples.
+
+When this is completed we will mindshare contribution manager
+Will be responsible to find related project' repository and guidelines for code be worked.
+** mindshare contribution manager
+** Support for adding D-O-N-E task
+** Support for task to have information about who requested, when request, where requested
+
+
+* Occasionally remind
+
+** When not able to start or concentrate on work start doing regular work
+e.g. migrating old Emacs configuration to new Spacemacs.
+
+** Post shall script to notify long running command especially when terminal window do not have focus and visibility should notify
+command exit status.
+
+** Create framework to run necessary whole build a when system is idle or build dir is not actively getting used
+(could be known using fuser or lsfs commands.)
+
+** Make optimized script in place of git apply patch which takes lots of time.
+** Specialized less or more program in line of silversearcher ag for grep, to view bigger log files
+1. support for timestamp
+2. support for multiple log files with timestamps.
+
+
+
+* Misc
+** stumpwm Change per group current directory in stumpwm
+** stumpwm or anywm
+
+In case of wm hanging
+Arrange a handy terminal or console where we can atleast kill wm.
+** stumpwm music per window
