@@ -57,7 +57,7 @@ DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools redshift daemontools god cir
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer-accountd prayer"
 DEB_SYS_PKG1="duc baobab agedu tpb daemontools sysstat isag dos2unix powermanagement-interface grub2-splashimages grub2-themes-ubuntu-mate offlineimap libsecret-tools"
 # https://linuxconfig.org/fetch-stock-quotes-with-perl-finance-quote-module
-DEB_SYS_MAIL="dovecot-core dovecot-imapd ntpdate postfix augeas-tools augeas-lenses notmuch afew ldap-utils bbdb3 elpa-lbdb lsdb mu-cite libfinance-quote-perl mail-notification"
+DEB_SYS_MAIL="dovecot-core dovecot-imapd mail-stack-delivery ntpdate postfix augeas-tools augeas-lenses notmuch afew ldap-utils bbdb3 elpa-lbdb lsdb mu-cite libfinance-quote-perl mail-notification"
 DEB_DEV_GTD="tomboy zim anki mnemosyne mnemosyne-blog sqlitebrowser"
 DEB_PKG_LEARNING="gpodder"
 DEB_PKG_TOOL_GUI="lightdm osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin gpointing-device-settings touchfreeze bash-completion libinput-tools keynav feh geeqie" # xserver-xorg-input-synaptics
@@ -401,7 +401,7 @@ function setup_tmp_ssh_keys()
         then
             ssh-add ~/.ssh/login-keys.d/github
         fi
-    fi
+    fi                          # if ! ssh-add -l
     if ! ssh-add -l
     then
         sudo apt -y install openssl
@@ -419,11 +419,11 @@ function setup_tmp_ssh_keys()
             then
 	              ssh-add $SSH_DIR/nosecure.d/ssh/keys.d/github
             fi
-        else
+        else                    # if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
             echo setup_tmp_ssh_keys: key file not provided or not exists.
             exit -1
         fi
-    fi
+    fi                          # if ! ssh-add -l
 }
 
 function setup_ssh_keys()
@@ -469,19 +469,19 @@ function setup_ssh_keys()
                         fi
 
                         openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C ${OSETUP_DIR}/
-                    else
+                    else        # if [ -d ${OSETUP_DIR}/nosecure.d -a -L ${OSETUP_DIR}/secure -a -d ${OSETUP_DIR}/secure ]
                         echo setup_ssh_keys: directories ${OSETUP_DIR}${OSETUP_DIR}/nosecure.d or ${OSETUP_DIR}/secure not exists.
                     fi
-                else
+                else            # if [ -d ${OSETUP_DIR} ]
                     echo setup_ssh_keys: directory ${OSETUP_DIR} not exists.
                 fi
-            else
+            else                # if ! mount | grep "$USER/.Private"
                 echo setup_ssh_keys: "$USER/.Private" not mounted. >&2
-            fi
-        else
+            fi                  # if ! mount | grep "$USER/.Private"
+        else                    # if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
             echo setup_ssh_keys: key file not provided or not exists.
         fi
-    fi
+    fi                          # if [ ! -r ${OSETUP_DIR}/nosecure.d/ssh/keys.d/github ]
 
     if ! ssh-add -l
     then
@@ -527,7 +527,7 @@ function setup_git_tree_repo()
         local GITDIR_BASE=$2
 
         mkdir -p "$(dirname ${GITDIR_BASE} )"
-        if [ ! -d ${GITDIR_BASE}/ ]
+        if [ ! -d "${GITDIR_BASE}/" ]
         then
             running git -c core.sshCommand="$GIT_SSH_OPTION" clone --recursive  ${GITURL} ${GITDIR_BASE}
         else
@@ -608,24 +608,25 @@ function setup_user_config_setup()
                                 # continue
                             fi
                             echo done setting up $c
-                        else
+
+                        else    # if [ ! -L ~/$c -o "$(readlink ~/$c)" != "$(readlink $c)" ]
                             echo not doing anything $c ~/$c
-                        fi
-                    else
+                        fi      # if [ ! -L ~/$c -o "$(readlink ~/$c)" != "$(readlink $c)" ]
+                    else        # if [ -e ~/$c ]
                         running cp -af $c ~/$c
                         echo done setting up $c
-		                fi
-                else
+		                fi          # if [ -e ~/$c ]
+                else            # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
                     echo not setting up $c
-	              fi
+	              fi              # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
 	          done
 	          # mv $TMPDIR/Xsetup ~/.setup/.config/_home/.setup
 	          cd -
-        fi
+        fi                      # if mkdir -p ~/_old_dot_filedirs
         rmdir ~/_old_dot_filedirs
-    else
+    else                        # if [ -d "${RCHOME}" ]
         echo "${RCHOME}" not exists >&2
-    fi # if [ -d "${RCHOME}" ]
+    fi                          # if [ -d "${RCHOME}" ]
 
     # if false
     # then
@@ -729,6 +730,7 @@ function setup_paradise()
 
 function setup_dirs()
 {
+    # use namei to track
     # running setup_paradise
 
     local OSETUP_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup
@@ -764,8 +766,8 @@ function setup_dirs()
                 running  cp -ar ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/sample ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
                 echo add ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST into git
             fi
-        fi
-    fi
+        fi                      # if [ ! -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+    fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
 
     running setup_Documentation
 
@@ -774,6 +776,7 @@ function setup_dirs()
 
 function setup_deps_model_volumes_dirs()
 {
+    # use namei to track
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     # check local home model.d directory
     if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
@@ -808,16 +811,19 @@ function setup_deps_model_volumes_dirs()
                 then
                     echo No disk partition mount are present in /srv/volumes/local/ create them. >&2
                 fi
-            fi
-        else
+            fi       # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d -a -d /srv/volumes/local ]
+        else                    # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
             echo Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
             exit -1
-        fi
-    fi
+        fi                      # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+    fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
 }
 
 function setup_deps_control_volumes_dirs()
 {
+    # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/control.d/
+
+    # use namei to track
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     # check local home model.d directory
     if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
@@ -842,9 +848,9 @@ function setup_deps_control_volumes_dirs()
                 then
                     echo No symlink for model dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d create it. >&2
                 fi
-            fi
+            fi                  # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d ]
             mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/control.d
-            for cdir in config deletable longterm preserved shortterm
+            for cdir in config deletable longterm preserved shortterm maildata
             do
                 if [ ! -L "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/control.d/$cdir" ]
                 then
@@ -856,15 +862,19 @@ function setup_deps_control_volumes_dirs()
                     fi
                 fi
             done
-        else
+        else                    # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
             echo Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
             exit -1
-        fi
-    fi
-}
+        fi                      # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+    fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
+}                               # function setup_deps_control_volumes_dirs()
 
 function setup_deps_control_class_dirs()
 {
+    # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
+    # ls ~/fa/localdirs/deps.d/model.d/machine.d/$HOST/${class}.d/
+
+    # use namei to track
     local class=$1
     local classdir=$2
 
@@ -897,11 +907,12 @@ function setup_deps_control_class_dirs()
                         mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${mdirbase}/${classdir}
                         setup_make_link ../../volumes.d/model.d/${mdirbase}/${classdir} ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/model.d/${mdirbase}
                     done
+
                     if [ "$modelsymlink" -eq 0 ]
                     then
                         echo No symlink for model volume dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d create it. >&2
                     fi
-                fi
+                fi              # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d ]
 
                 mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/model.d
                 if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/model.d ]
@@ -920,7 +931,7 @@ function setup_deps_control_class_dirs()
                     then
                         echo No symlink for model dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/model.d create it. >&2
                     fi
-                fi
+                fi              # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/model.d ]
 
                 mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/control.d
                 if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/control.d ]
@@ -939,16 +950,16 @@ function setup_deps_control_class_dirs()
                     then
                         echo No symlink for control dirs exists in ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/control.d create it. >&2
                     fi
-                fi
+                fi              # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/${class}.d/control.d ]
 
-            else
+            else                # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
                 echo Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
                 exit -1
-            fi
-        fi
+            fi                  # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+        fi                      # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
     else
         echo setup_deps_control_class_dirs: Not correct arguments. >&2
-    fi
+    fi                          # if [ $# -eq 2 ]
 }
 
 function setup_deps_control_scratches_dirs()
@@ -1024,8 +1035,8 @@ Include /usr/local/etc/apache/conf-enabled/*.conf
 
 EOF
             sudo cp $TMP/apache2.conf /etc/apache2/apache2.conf
-        fi
-    fi
+        fi                      # if ! grep /usr/local/etc/apache /etc/apache2/apache2.conf
+    fi                          # if [ -r /etc/apache2/apache2.conf ]
 }
 
 function setup_clib_installer()

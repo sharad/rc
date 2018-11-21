@@ -24,6 +24,8 @@ function main()
 
     running setup_git_repos
 
+    running setup_mail_server_client
+
     running setup_packages
     running setup_misc
 }
@@ -83,9 +85,7 @@ function setup_packages()
     running setup_stumwpm_contrib_packages
     running setup_conkeror_package
 
-    running setup_dovecot
-    running setup_postfix
-    running setup_offlineimap
+
     running setup_apache_usermod
     running setup_res_dir
 }
@@ -327,7 +327,19 @@ function setup_zsh()
 
 function setup_dovecot()
 {
-    :
+    sudo apt -y install dovecot-core dovecot-imapd mail-stack-delivery
+    if [ -d $SITEDIR/.repos/git/system/system/ubuntu/etc/dovcot ]
+    then
+        if [ -d /etc/dovcot-ORG ]
+        then
+            echo /etc/dovcot-ORG already present
+        else
+            sudo cp -ar /etc/docvot /etc/dovcot-ORG
+        fi
+        sudo sh -c "cp $SITEDIR/.repos/git/system/system/ubuntu/etc/dovcot/* /etc/postfix/"
+    else
+        echo $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix donot exists. >&2
+    fi
 }
 
 function setup_postfix()
@@ -343,15 +355,60 @@ function setup_postfix()
         fi
         sudo sh -c "cp $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix/* /etc/postfix/"
     else
-        echo $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix donot exists >&2
+        echo $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix donot exists. >&2
     fi
 }
 
 function setup_offlineimap()
 {
     sudo apt -y install offlineimap
+
+    local class=preserved       # later change it to mail data
+    local maildatadir=~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/control.d/$class
+    local reqfstype=reiserfs
+
+    if [ -d $maildatadir ]
+    then
+        fstype="$(df --output=fstype ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/control.d/$class/ | sed -n 2p)"
+        if [ $reqfstype = "$fstype" ]
+        then
+           if [ -d ~/.maildir -a ~/.offlineimap ]
+           then
+               echo  make sure to copy correct ~/.offlineimaprc
+           else
+               echo ~/.maildir ~/.offlineimap are not created. >&2
+               echo chek them by >&2
+               echo ls -l ~/.maildir ~/.offlineimap
+               echo readlink -m ~/.maildir ~/.offlineimap
+               echo create them by >&2
+               echo mkdir -p "$(readlink -m ~/.maildir)" >&2
+               echo mkdir -p "$(readlink -m  ~/.offlineimap)" >&2
+           fi
+        else
+            echo $maildatadir/ is not mounted on $reqfstype, correct it. >&2
+            return 1
+        fi
+    else
+        echo maildatadir $maildatadir is broken correct, setup link in ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/model.d >&2
+        return 1
+    fi
 }
 
+function setup_mail_server_client()
+{
+    local MOUNTPOINT=/srv/volumes/local/res01/reiser01
+    local VOL_RESIER=vgres01
+    local LVOL_RESIER=lvreiser01
+
+    if [ "/dev/mapper/${VOL_RESIER}-${LVOL_RESIER}" = "$(df --output=source $MOUNTPOINT | sed -n 2p)" ]
+    then
+        running setup_dovecot
+        running setup_postfix
+        running setup_offlineimap
+    else
+        echo $MOUNTPOINT is not mounted on "/dev/mapper/${VOL_RESIER}-${LVOL_RESIER}"
+    fi
+}
 
 function setup_apache_usermod()
 {
@@ -383,16 +440,17 @@ EOF
 function setup_res_dir()
 {
 
-    local MOUNTPOINT=/srv/volumes/res01/reiser01
+    local MOUNTPOINT=/srv/volumes/local/res01/reiser01
     local VOL_RESIER=vgres01
     local LVOL_RESIER=lvreiser01
 
     sudo mkdir -p /srv
-    if sudo vgs --noheadings $VOL_RESIER
+    if sudo vgs --noheadings -o vg_name $VOL_RESIER
     then
        sudo apt -y install reiserfsprogs
-       if ! sudo lvs --noheadings $VOL_RESIER/$LVOL_RESIER
+       if ! sudo lvs --noheadings -o vg_name,lv_name $VOL_RESIER/$LVOL_RESIER
        then
+           echo going to create 1G lv $LVOL_RESIER in vg $VOL_RESIER
            if sudo lvcreate $VOL_RESIER -n $LVOL_RESIER -L 1G
            then
                if sudo mkreiserfs /dev/mapper/$VOL_RESIER-$LVOL_RESIER
@@ -410,10 +468,13 @@ function setup_res_dir()
                    fi
                fi
            fi
-       fi
+       else
+           return 1
+       fi                       # if ! sudo lvs --noheadings -o vg_name,lv_name $VOL_RESIER/$LVOL_RESIER
     else
         echo Warning: $VOL_RESIER volume group do not exists. >&2
-    fi
+        return 1
+    fi                          # if sudo vgs --noheadings -o vg_name $VOL_RESIER
 }
 
 function process_arg() {
