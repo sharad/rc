@@ -363,13 +363,13 @@ function setup_offlineimap()
 {
     sudo apt -y install offlineimap
 
-    local class=preserved       # later change it to mail data
-    local maildatadir=~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/control.d/$class
+    local class=maildata       # later change it to mail data
+    local maildatadir=~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/view.d/$class
     local reqfstype=reiserfs
 
     if [ -d $maildatadir ]
     then
-        fstype="$(df --output=fstype ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/control.d/$class/ | sed -n 2p)"
+        fstype="$(df --output=fstype ${maildatadir}/ | sed -n 2p)"
         if [ $reqfstype = "$fstype" ]
         then
            if [ -d ~/.maildir -a ~/.offlineimap ]
@@ -389,25 +389,30 @@ function setup_offlineimap()
             return 1
         fi
     else
-        echo maildatadir $maildatadir is broken correct, setup link in ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/model.d >&2
+        echo maildatadir $maildatadir is broken correct, setup link in ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/view.d >&2
         return 1
     fi
 }
 
 function setup_mail_server_client()
 {
-    local MOUNTPOINT=/srv/volumes/local/res01/reiser01
-    local VOL_RESIER=vgres01
-    local LVOL_RESIER=lvreiser01
+    # local MOUNTPOINT=/srv/volumes/local/res01/reiser01
+    # local VOL_RESIER=vgres01
+    # local LVOL_RESIER=lvreiser01
 
-    if [ "/dev/mapper/${VOL_RESIER}-${LVOL_RESIER}" = "$(df --output=source $MOUNTPOINT | sed -n 2p)" ]
-    then
-        running setup_dovecot
-        running setup_postfix
-        running setup_offlineimap
-    else
-        echo $MOUNTPOINT is not mounted on "/dev/mapper/${VOL_RESIER}-${LVOL_RESIER}"
-    fi
+    # if [ "/dev/mapper/${VOL_RESIER}-${LVOL_RESIER}" = "$(df --output=source $MOUNTPOINT | sed -n 2p)" ]
+    # then
+    #     running setup_dovecot
+    #     running setup_postfix
+    #     running setup_offlineimap
+    # else
+    #     echo $MOUNTPOINT is not mounted on "/dev/mapper/${VOL_RESIER}-${LVOL_RESIER}"
+    # fi
+
+    running setup_dovecot
+    running setup_postfix
+    running setup_offlineimap
+
 }
 
 function setup_apache_usermod()
