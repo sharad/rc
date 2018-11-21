@@ -3,6 +3,8 @@
 
   ;; https://gist.github.com/martialboniou/1665090
 
+  ;; also check stumpwm tips tricks wikihttps://github.com/stumpwm/stumpwm/wiki/TipsAndTricks
+
   ;; MY STUMPWM
 
   (in-package :stumpwm)
