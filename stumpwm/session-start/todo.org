@@ -1,0 +1,4 @@
+
+* Stumpwm mode
+
+with C-baqckquote go into command-mode till enter pressed.

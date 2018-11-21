@@ -118,3 +118,5 @@ Whenever a window is selected music associated with that window
 starts playing.
 
 use xprop
+** stumpwm command mode improvement
+with C-baqckquote go into command till enter pressed.
