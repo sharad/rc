@@ -292,6 +292,8 @@
 (define-key *groups-map* (kbd "8"  ) "gselect 8")
 (define-key *groups-map* (kbd "9"  ) "gselect 9")
 (define-key *groups-map* (kbd "0"  ) "gselect 10")
+(define-key *groups-map* (kbd ";"  ) "jump-to-new-window")
+(define-key *root-map*   (kbd "|"  ) "jump-to-new-window")
 
 ;;                m))
 ;;gcal map------------------------------------------------
