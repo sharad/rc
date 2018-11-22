@@ -8,6 +8,8 @@ TMPDIR=~/setuptmp
 
 logicaldirs=(config deletable longterm preserved shortterm maildata)
 
+dataclassname=data
+
 if [ -r ~/.ssh/authorized_keys ]
 then
     # GIT_SSH_OPTION="ssh -o UserKnownHostsFile=~/.ssh/authorized_keys -o StrictHostKeyChecking=yes"
@@ -914,20 +916,20 @@ function setup_deps_control_class_dirs()
 
 function setup_deps_control_sysdata_dirs()
 {
-
-    running setup_deps_control_class_dirs sysdatas sysdata
-
-    # running setup_deps_control_class_dirs data/sysdatas sysdata
+    # running setup_deps_control_class_dirs sysdatas sysdata
+    running setup_deps_control_class_dirs ${dataclassname}/sysdatas sysdata
 }
 
 function setup_deps_control_scratches_dirs()
 {
-    setup_deps_control_class_dirs scratches scratch
+    running setup_deps_model_volumes_dirs
+    running setup_deps_control_class_dirs ${dataclassname}/scratches scratch
 }
 
 function setup_deps_control_main_dirs()
 {
-    setup_deps_control_class_dirs main main
+    running setup_deps_model_volumes_dirs
+    running setup_deps_control_class_dirs ${dataclassname}/main main
 }
 ###}}}
 
@@ -981,7 +983,7 @@ function setup_deps_model_volumes_dirs()
 function setup_deps_control_volumes_dirs()
 {
     local sysdataname=sysdata
-    local sysdatascontinername=${sysdataname}s
+    local sysdatascontinername=${dataclassname}/${sysdataname}s
     local sysdatasdirname=${sysdatascontinername}.d
     # logicaldirs=(config deletable longterm preserved shortterm maildata)
 
@@ -1030,7 +1032,7 @@ function setup_deps_view_volumes_dirs()
     local volumedir=${hostdir}/volumes.d
 
     local sysdataname=sysdata
-    local sysdatascontinername=data/${sysdataname}s
+    local sysdatascontinername=${dataclassname}/${sysdataname}s
     local sysdatasdirname=${sysdatascontinername}.d
     local viewdirname=view.d
 
@@ -1107,7 +1109,11 @@ function setup_deps_view_volumes_dirs()
 function setup_deps_dirs()
 {
     running setup_deps_model_volumes_dirs
+
     running setup_deps_control_main_dirs
+    running setup_deps_control_scratches_dirs
+
+    running setup_deps_control_volumes_dirs
     running setup_deps_view_volumes_dirs
 }
 
