@@ -913,7 +913,10 @@ function setup_deps_control_class_dirs()
 
 function setup_deps_control_sysdata_dirs()
 {
-    setup_deps_control_class_dirs sysdatas sysdata
+
+    running setup_deps_control_class_dirs sysdatas sysdata
+
+    running setup_deps_control_class_dirs resources/sysdatas sysdata
 }
 
 function setup_deps_control_scratches_dirs()
@@ -1107,44 +1110,44 @@ function setup_deps_dirs()
     running setup_deps_view_volumes_dirs
 }
 
-function setup_resourse_view_dirs()
+function setup_resource_view_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local resoursedir=${LOCALDIRS_DIR}
-    local resourse_viewdir=${resoursedir}/view.d
-    local resourse_controldir=${resoursedir}/control.d
+    local resourcedir=${LOCALDIRS_DIR}
+    local resource_viewdir=${resourcedir}/view.d
+    local resource_controldir=${resourcedir}/control.d
 }
 
-function setup_resourse_control_dirs()
+function setup_resource_control_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local resoursedir=${LOCALDIRS_DIR}
-    local resourse_viewdir=${resoursedir}/view.d
-    local resourse_controldir=${resoursedir}/control.d
+    local resourcedir=${LOCALDIRS_DIR}
+    local resource_viewdir=${resourcedir}/view.d
+    local resource_controldir=${resourcedir}/control.d
 }
 
-function setup_resourse_model_dirs()
+function setup_resource_model_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local resoursedir=${LOCALDIRS_DIR}
-    local resourse_viewdir=${resoursedir}/view.d
-    local resourse_controldir=${resoursedir}/control.d
+    local resourcedir=${LOCALDIRS_DIR}
+    local resource_viewdir=${resourcedir}/view.d
+    local resource_controldir=${resourcedir}/control.d
 }
 
-function setup_resourse_view_volumes_logical_dirs()
+function setup_resource_view_volumes_logical_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local resoursedir=${LOCALDIRS_DIR}
-    local resourse_viewdir=${resoursedir}/view.d
-    local resourse_controldir=${resoursedir}/control.d
+    local resourcedir=${LOCALDIRS_DIR}
+    local resource_viewdir=${resourcedir}/view.d
+    local resource_controldir=${resourcedir}/control.d
 }
 
 function setup_resource_dirs()
 {
-    running setup_resourse_model_dirs
-    running setup_resourse_control_dirs
-    running setup_resourse_view_dirs
-    running setup_resourse_view_volumes_logical_dirs
+    running setup_resource_model_dirs
+    running setup_resource_control_dirs
+    running setup_resource_view_dirs
+    running setup_resource_view_volumes_logical_dirs
 }
 
 function setup_dirs()
@@ -1156,6 +1159,11 @@ function setup_dirs()
     running setup_public_html
 }
 
+setup_osetup_cache_dirs()
+{
+    # ls -l /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/dirs.d/control.d/cache.d/
+    # mkdir -p /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/dirs.d/model.d/volume.d/*/cache.d
+}
 
 function setup_spacemacs()
 {
