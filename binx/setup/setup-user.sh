@@ -91,7 +91,7 @@ function main()
 
     cd ~/
 
-    # running setup_apt_packages
+    running setup_apt_packages
 
     running setup_ecrypt_private
 
@@ -104,7 +104,7 @@ function main()
     fi
 
     # will set the ~/.setup also
-    # running setup_git_repos
+    running setup_git_repos
 
     running setup_config_dirs
 
@@ -383,7 +383,6 @@ function setup_ecrypt_private()
         fi
     fi
 
-
     # TODO resolve migration of ~/.ecryptfs/Private.mnt
     # from $HOME/.Private to $HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/noenc/Private
 }
@@ -559,11 +558,8 @@ function setup_git_repos()
 function setup_config_dirs()
 {
     running setup_ecrypt_private
-
     running setup_setup_dir
-
     running setup_pi_dir
-
     running setup_emacs_dir
 }
 
@@ -747,7 +743,7 @@ function setup_mvc_dirs()
             done
             if [ "$modelsymlink" -eq 0 ]
             then
-                echo No symlink for model dirs exists in ${containerdir}/model.d create it. >&2
+                error No symlink for model dirs exists in ${containerdir}/model.d create it.
             fi
         fi              # if [ -d ${containerdir}/model.d ]
 
@@ -766,7 +762,7 @@ function setup_mvc_dirs()
             done
             if [ "$modelsymlink" -eq 0 ]
             then
-                echo No symlink for control dirs exists in ${containerdir}/control.d create it. >&2
+                error No symlink for control dirs exists in ${containerdir}/control.d create it.
             fi
         fi              # if [ -d ${containerdir}/control.d ]
     else
@@ -815,10 +811,86 @@ function setup_machine_dir()
             fi
         fi                      # if [ ! -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
     fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
+
+    if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+    then
+       running setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
+    fi
 }
 
 ###{{{ libs
 # worker
+function setup_dep_control_storage_class_dirs()
+{
+    if [ $# -eq 4 ]
+    then
+        local storageclass="$1"
+        local class="$2"
+        local classinstdir="$3"
+
+        local position=${4}
+
+
+        local classcontainer=$(basename $class)
+        local classpath=$(dirname $class)
+        if [ ${classpath} = "." ]
+        then
+            classpath=
+        fi
+
+
+
+
+        local classpatharray=( ${classpath//\// } )
+        local classlen=${#classpatharray[@]}
+        local updirslenspace=$(printf "%${classlen}s")
+
+        local updirs=${updirslenspace// /"../"}
+
+
+
+        local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+        local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
+        local hostdir=${machinedir}/$HOST
+
+        local classmodeldir=${hostdir}/volumes.d/control.d/${classpath}${classpath:+/}${storageclass}/${classcontainer}.d
+
+        local fullupdirs=${updirs}../../../..
+
+        mkdir -p $classmodeldir/model.d
+        mkdir -p $classmodeldir/control.d
+        mkdir -p $classmodeldir/view.d
+
+        if [ -d ${hostdir}/volumes.d/model.d ] && ls ${hostdir}/volumes.d/model.d/*
+        then
+            modelsymlink=0
+            for mdir in ${hostdir}/volumes.d/model.d/*
+            do
+                if [ -L "$mdir" ]
+                then
+                    modelsymlink=1
+                fi
+
+                mdirbase=$(basename "$mdir")
+                volclasspathinstdir="model.d/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
+
+                running mkdir -p ${hostdir}/volumes.d/${volclasspathinstdir}
+
+                info updirs=$updirs
+                running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classmodeldir/model.d/${mdirbase}
+            done
+
+            if [ "$modelsymlink" -eq 0 ]
+            then
+                error No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d create it.
+            fi
+        fi              # if [ -d ${hostdir}/volumes.d/model.d ]
+        running setup_mvc_dirs ${classmodeldir}/
+    else
+        error setup_dep_control_storage_class_dirs Not correct number of arguments.
+    fi
+}
+
 function setup_deps_control_class_dirs()
 {
     # use namei to track
@@ -826,31 +898,34 @@ function setup_deps_control_class_dirs()
     # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
     # ls ~/fa/localdirs/deps.d/model.d/machine.d/$HOST/${class}.d/
 
-    # local baseclass=$1
-
-    local class=$1
-    local classpath=$(dirname $class)
-
-    if [ ${classpath} = "." ]
+    if [ $# -eq 3 ]
     then
-        classpath=
-    fi
+        local storageclass="$1"
+        local class="$2"
+        local classinstdir="$3"
 
-    local classcontainer=$(basename $class)
-    local classinstdir=$2
+        local classcontainer=$(basename $class)
+        local classpath=$(dirname $class)
+        if [ ${classpath} = "." ]
+        then
+            classpath=
+        fi
 
-    local classpatharray=( ${classpath//\// } )
-    local classlen=${#classpatharray[@]}
-    local updirslenspace=$(printf "%${classlen}s")
 
-    local updirs=${updirslenspace// /"../"}
 
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
-    local hostdir=${machinedir}/$HOST
 
-    if [ $# -eq 2 ]
-    then
+        local classpatharray=( ${classpath//\// } )
+        local classlen=${#classpatharray[@]}
+        local updirslenspace=$(printf "%${classlen}s")
+
+        local updirs=${updirslenspace// /"../"}
+
+
+
+        local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+        local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
+        local hostdir=${machinedir}/$HOST
+
 
         # check local home model.d directory
         if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
@@ -861,40 +936,40 @@ function setup_deps_control_class_dirs()
 
                 running setup_make_link $HOST ${machinedir}/default
 
-                # classmodeldir=${hostdir}/${class}.d
-                local classmodeldir=${hostdir}/volumes.d/control.d/${classpath}${classpath:+/}${classcontainer}.d
+                # local classmodeldir=${hostdir}/volumes.d/control.d/${classpath}${classpath:+/}${storageclass}/${classcontainer}.d
+                # local fullupdirs=${updirs}../../../..
 
-                mkdir -p $classmodeldir/model.d
-                mkdir -p $classmodeldir/control.d
-                mkdir -p $classmodeldir/view.d
+                # mkdir -p $classmodeldir/model.d
+                # mkdir -p $classmodeldir/control.d
+                # mkdir -p $classmodeldir/view.d
 
-                if [ -d ${hostdir}/volumes.d/model.d ] && ls ${hostdir}/volumes.d/model.d/*
-                then
-                    modelsymlink=0
-                    for mdir in ${hostdir}/volumes.d/model.d/*
-                    do
-                        if [ -L "$mdir" ]
-                        then
-                            modelsymlink=1
-                        fi
-                        mdirbase=$(basename "$mdir")
-                        volclasspathinstdir="model.d/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
+                # if [ -d ${hostdir}/volumes.d/model.d ] && ls ${hostdir}/volumes.d/model.d/*
+                # then
+                #     modelsymlink=0
+                #     for mdir in ${hostdir}/volumes.d/model.d/*
+                #     do
+                #         if [ -L "$mdir" ]
+                #         then
+                #             modelsymlink=1
+                #         fi
 
-                        running mkdir -p ${hostdir}/volumes.d/${volclasspathinstdir}
-                        # running setup_make_link ../../../model.d/${mdirbase}/${classinstdir} $classmodeldir/model.d/${mdirbase}
-                        info updirs=$updirs
-                        running setup_make_link ${updirs}../../../${volclasspathinstdir} $classmodeldir/model.d/${mdirbase}
-                    done
+                #         mdirbase=$(basename "$mdir")
+                #         volclasspathinstdir="model.d/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
 
-                    if [ "$modelsymlink" -eq 0 ]
-                    then
-                        error No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d create it.
-                    fi
-                fi              # if [ -d ${hostdir}/volumes.d/model.d ]
+                #         running mkdir -p ${hostdir}/volumes.d/${volclasspathinstdir}
 
+                #         info updirs=$updirs
+                #         running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classmodeldir/model.d/${mdirbase}
+                #     done
 
-                running setup_mvc_dirs ${classmodeldir}/
+                #     if [ "$modelsymlink" -eq 0 ]
+                #     then
+                #         error No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d create it.
+                #     fi
+                # fi              # if [ -d ${hostdir}/volumes.d/model.d ]
+                # running setup_mvc_dirs ${classmodeldir}/
 
+                running setup_dep_control_storage_class_dirs "$storageclass" "$class" "$classinstdir" 1
 
             else                # if [ -d ${hostdir} ]
                 echo Please prepare ${hostdir} for your machine >&2
@@ -905,30 +980,39 @@ function setup_deps_control_class_dirs()
             echo ${LOCALDIRS_DIR} or ${machinedir} not exists. >&2
         fi                      # if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
     else
-        echo setup_deps_control_class_dirs: Not correct arguments. >&2
+        error setup_deps_control_class_dirs: Not correct number of arguments.
     fi                          # if [ $# -eq 2 ]
 }
 
 function setup_deps_control_data_sysdata_dirs()
 {
+    storageclassname="${1-local}"
+
     running setup_deps_model_volumes_dirs
-    running setup_deps_control_class_dirs ${dataclassname}/sysdatas sysdata
+
+    running setup_deps_control_class_dirs "$storageclassname" ${dataclassname}/sysdatas sysdata
 }
 function setup_deps_control_data_scratches_dirs()
 {
+    storageclassname="${1-local}"
+
     running setup_deps_model_volumes_dirs
-    running setup_deps_control_class_dirs ${dataclassname}/scratches scratch
+    running setup_deps_control_class_dirs "$storageclassname" ${dataclassname}/scratches scratch
 }
 function setup_deps_control_data_main_dirs()
 {
+    storageclassname="${1-local}"
+
     running setup_deps_model_volumes_dirs
-    running setup_deps_control_class_dirs ${dataclassname}/main main
+    running setup_deps_control_class_dirs "$storageclassname" ${dataclassname}/main main
 }
 function setup_deps_control_data_dirs()
 {
-    running setup_deps_control_data_sysdata_dirs
-    running setup_deps_control_data_scratches_dirs
-    running setup_deps_control_data_main_dirs
+    local storageclassname="${1-local}"
+
+    running setup_deps_control_data_sysdata_dirs   "$storageclassname"
+    running setup_deps_control_data_scratches_dirs "$storageclassname"
+    running setup_deps_control_data_main_dirs      "$storageclassname"
 }
 
 
@@ -936,17 +1020,55 @@ function setup_deps_control_data_dirs()
 
 function setup_deps_control_home_Downloads_dirs()
 {
+    local storageclassname="${1-local}"
+
     running setup_deps_model_volumes_dirs
-    running setup_deps_control_class_dirs ${homeclassname}/Downloads Downloads
+    running setup_deps_control_class_dirs "$storageclassname" ${homeclassname}/Downloads Downloads
 }
 function setup_deps_control_home_dirs()
 {
-    setup_deps_control_home_Downloads_dirs
+    local storageclassname="${1-local}"
+
+    setup_deps_control_home_Downloads_dirs "$storageclassname"
 }
 ###}}}
 
+function setup_deps_model_storage_volumes_dir()
+{
+    local storageclassname=${1-local}
+    local storageclassdirpath=/srv/volumes/$storageclassname/
+
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+
+    if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d -a -d $storageclassdirpath ]
+    then
+        modelsymlink_present=0
+        for vgd in ${storageclassdirpath}/*
+        do
+            modelsymlink_present=1
+            for vld in ${vgd}/*
+            do
+                local _location=$vld/users/$USER
+                if [ -f $_location ]
+                then
+                    sudo mkdir -p $_location
+                    sudo chown root.root $_location
+                fi
+                setup_make_link $_location "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$storageclassname/$(basename $vgd)-$(basename $vld)"
+            done
+        done
+
+        if [ "$modelsymlink_present" -eq 0 ]
+        then
+            error No disk partition mount are present in $storageclassdirpath create them. >&2
+        fi
+    fi       # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d -a -d /srv/volumes/local ]
+}
+
 function setup_deps_model_volumes_dirs()
 {
+    local storageclassname="${1-local}"
+
     running setup_machine_dir
 
     # use namei to track
@@ -954,39 +1076,23 @@ function setup_deps_model_volumes_dirs()
     # check local home model.d directory
     if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
     then
+
+        # running setup_machine_dir
+
         if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
         then
             mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
 
             setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
+
             setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
 
             mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
-            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d -a -d /srv/volumes/local ]
-            then
-                modelsymlink_present=0
-                for vgd in /srv/volumes/local/*
-                do
-                    modelsymlink_present=1
-                    for vld in ${vgd}/*
-                    do
-                        local _location=$vld/users/$USER
-                        if [ -f $_location ]
-                        then
-                            sudo mkdir -p $_location
-                            sudo chown root.root $_location
-                        fi
-                        setup_make_link $_location "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$(basename $vgd)-$(basename $vld)"
-                    done
-                done
 
-                if [ "$modelsymlink_present" -eq 0 ]
-                then
-                    echo No disk partition mount are present in /srv/volumes/local/ create them. >&2
-                fi
-            fi       # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d -a -d /srv/volumes/local ]
+            setup_deps_model_storage_volumes_dir "$storageclassname"
+
         else                    # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
-            echo Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
+            error Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
             exit -1
         fi                      # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
     fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
@@ -994,8 +1100,15 @@ function setup_deps_model_volumes_dirs()
 
 function setup_deps_control_volumes_dirs()
 {
+    # TODO?
+    local storageclassname="${1-local}"
+    position=${2-2}
+
     local sysdataname=sysdata
-    local sysdatascontinername=${dataclassname}/${sysdataname}s
+
+    # local sysdatascontinername=${dataclassname}/${sysdataname}s
+    local sysdatascontinername=${dataclassname}/$storageclassname/${sysdataname}s
+
     local sysdatasdirname=${sysdatascontinername}.d
     # logicaldirs=(config deletable longterm preserved shortterm maildata)
 
@@ -1004,8 +1117,8 @@ function setup_deps_control_volumes_dirs()
     local hostdir=${machinedir}/$HOST
     local volumedir=${hostdir}/volumes.d
 
-    running setup_deps_control_data_sysdata_dirs
-    running setup_deps_control_class_dirs $sysdatascontinername $sysdataname
+    running setup_deps_control_data_sysdata_dirs "$storageclassname"
+    running setup_deps_control_class_dirs "$storageclassname" $sysdatascontinername $sysdataname
 
     for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
     do
@@ -1016,24 +1129,23 @@ function setup_deps_control_volumes_dirs()
 
             for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/view.d/*
             do
+                # TODO?
                 volsysdatadirbase=$(basename ${sysdatadir})
                 mkdir -p  ${volumedir}/control.d/${sysdatasdirname}/view.d/${volsysdatadirbase}/$cdir
             done
         fi
     done
 
-
-    # running setup_deps_control_data_scratches_dirs
-    # # running setup_deps_control_class_dirs ${dataclassname}/scratches scratch
-    #
-    # running setup_deps_control_data_main_dirs
-    # # running setup_deps_control_class_dirs ${dataclassname}/main main
-
-    running running setup_deps_control_data_dirs
+    running running setup_deps_control_data_dirs "$storageclassname"
+    running running setup_deps_control_home_dirs "$storageclassname"
 }
 
 function setup_deps_view_volumes_dirs()
 {
+    local storageclassname="${1-local}"
+    local position=${2-2}
+
+    # TODO?
     # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/control.d/
 
     # logicaldirs=(config deletable longterm preserved shortterm maildata)
@@ -1048,7 +1160,7 @@ function setup_deps_view_volumes_dirs()
     local volumedir=${hostdir}/volumes.d
 
     local sysdataname=sysdata
-    local sysdatascontinername=${dataclassname}/${sysdataname}s
+    local sysdatascontinername=${dataclassname}/$storageclassname/${sysdataname}s
     local sysdatasdirname=${sysdatascontinername}.d
     local viewdirname=view.d
 
@@ -1083,9 +1195,9 @@ function setup_deps_view_volumes_dirs()
 
 
             # running setup_deps_control_data_sysdata_dirs
-            # running setup_deps_control_class_dirs $sysdatascontinername $sysdataname
-            running setup_deps_control_volumes_dirs
-            running setup_deps_control_class_dirs $sysdatascontinername $sysdataname
+            # running setup_deps_control_class_dirs "$storageclassname" $sysdatascontinername $sysdataname
+            running setup_deps_control_volumes_dirs "$storageclassname"
+            running setup_deps_control_class_dirs "$storageclassname" $sysdatascontinername $sysdataname
 
             mkdir -p ${volumedir}/${viewdirname}
             for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
@@ -1124,13 +1236,15 @@ function setup_deps_view_volumes_dirs()
 
 function setup_deps_dirs()
 {
-    running setup_deps_model_volumes_dirs
+    local storageclassname="${1-local}"
 
-    running setup_deps_control_data_dirs
-    running setup_deps_control_home_dirs
+    running setup_deps_model_volumes_dirs "$storageclassname"
 
-    running setup_deps_control_volumes_dirs
-    running setup_deps_view_volumes_dirs
+    running setup_deps_control_data_dirs "$storageclassname"
+    running setup_deps_control_home_dirs "$storageclassname"
+
+    running setup_deps_control_volumes_dirs "$storageclassname"
+    running setup_deps_view_volumes_dirs "$storageclassname"
 }
 
 function setup_resource_view_dirs()
