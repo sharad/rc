@@ -32,7 +32,7 @@ DEB_PKG_NECESSARY_MORE1="xaos xnee xnee-doc xzgv yatex zsh zsh-doc zutils screen
 # TODO BUG set zsh as login shell
 DEB_PKG_NECESSARY_MORE2="gnu-smalltalk-doc gnu-fdisk gnu-standards gnuit gnulib gnupg2 gpa gnuplot-doc gvpe gtypist hello ht id-utils indent integrit jed latex-mk ledger libaws-doc rar"
 ##  hello-traditional
-DEB_PKG_NECESSARY_MORE3="libcommoncpp2-doc libconfig-dev libsocket++-dev licenseutils lookup-el lyskom-server macchanger mboxgrep mit-scheme-doc mmm-mode ocaml-doc oneliner-el org-mode-doc parted-doc pcb-common moreutils nmap zenmap"
+hDEB_PKG_NECESSARY_MORE3="libcommoncpp2-doc libconfig-dev libsocket++-dev licenseutils lookup-el lyskom-server macchanger mboxgrep mit-scheme-doc mmm-mode ocaml-doc oneliner-el org-mode-doc parted-doc pcb-common moreutils nmap zenmap"
 DEB_PKG_NECESSARY_MORE4="pinfo psgml qingy r-doc-info r5rs-doc semi sepia sharutils slime source-highlight spell ssed stow rlwrap teseq time trueprint turnin-ng units vera wcalc gnome-calculator wdiff wizzytex wysihtml-el"
 DEB_PKG_GAME="gnugo"
 DEB_PKGS_BACKUP="bup git-annex tahoe-lafs unison unison-all inotify-tools"
@@ -734,7 +734,7 @@ function setup_paradise()
     fi
 }
 
-function setup_dirs()
+function setup_machine_dir()
 {
     # use namei to track
     # running setup_paradise
@@ -774,18 +774,16 @@ function setup_dirs()
             fi
         fi                      # if [ ! -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
     fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
-
-    running setup_Documentation
-
-    running setup_public_html
 }
 
+###{{{ libs
 function setup_deps_control_class_dirs()
 {
     # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
     # ls ~/fa/localdirs/deps.d/model.d/machine.d/$HOST/${class}.d/
 
     # use namei to track
+    # local baseclass=$1
     local class=$1
     local classdir=$2
 
@@ -894,7 +892,7 @@ function setup_deps_control_class_dirs()
 function setup_deps_control_sysdata_dirs()
 {
     setup_deps_control_class_dirs sysdatas sysdata
- }
+}
 
 function setup_deps_control_scratches_dirs()
 {
@@ -905,9 +903,12 @@ function setup_deps_control_main_dirs()
 {
     setup_deps_control_class_dirs main main
 }
+###}}}
 
 function setup_deps_model_volumes_dirs()
 {
+    running setup_machine_dir
+
     # use namei to track
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     # check local home model.d directory
@@ -1075,6 +1076,67 @@ function setup_deps_view_volumes_dirs()
         exit -1
     fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
 }                               # function setup_deps_view_volumes_dirs()
+
+function setup_deps_dirs()
+{
+    running setup_deps_model_volumes_dirs
+    running setup_deps_control_main_dirs
+    running setup_deps_view_volumes_dirs
+}
+
+function setup_resourse_view_dirs()
+{
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local resoursedir=${LOCALDIRS_DIR}
+    local resourse_viewdir=${resoursedir}/view.d
+    local resourse_controldir=${resoursedir}/control.d
+}
+
+function setup_resourse_control_dirs()
+{
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local resoursedir=${LOCALDIRS_DIR}
+    local resourse_viewdir=${resoursedir}/view.d
+    local resourse_controldir=${resoursedir}/control.d
+}
+
+function setup_resourse_model_dirs()
+{
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local resoursedir=${LOCALDIRS_DIR}
+    local resourse_viewdir=${resoursedir}/view.d
+    local resourse_controldir=${resoursedir}/control.d
+}
+
+function setup_resourse_view_volumes_logical_dirs()
+{
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local resoursedir=${LOCALDIRS_DIR}
+    local resourse_viewdir=${resoursedir}/view.d
+    local resourse_controldir=${resoursedir}/control.d
+}
+
+function setup_resource_dirs()
+{
+    setup_resourse_model_dirs
+    setup_resourse_control_dirs
+    setup_resourse_view_dirs
+    setup_resourse_view_volumes_logical_dirs
+}
+
+function setup_dirs()
+{
+    running setup_machine_dir
+
+    running setup_deps_dirs
+
+    running setup_resource_dirs
+
+    running setup_Documentation
+
+    running setup_public_html
+}
+
 
 function setup_spacemacs()
 {
