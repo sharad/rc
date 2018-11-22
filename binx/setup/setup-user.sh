@@ -911,7 +911,7 @@ function setup_deps_control_class_dirs()
 
 function setup_deps_control_data_sysdata_dirs()
 {
-    # running setup_deps_control_class_dirs sysdatas sysdata
+    running setup_deps_model_volumes_dirs
     running setup_deps_control_class_dirs ${dataclassname}/sysdatas sysdata
 }
 function setup_deps_control_data_scratches_dirs()
@@ -1023,9 +1023,13 @@ function setup_deps_control_volumes_dirs()
     done
 
 
-    running setup_deps_control_class_dirs scratches scratch
+    # running setup_deps_control_data_scratches_dirs
+    # # running setup_deps_control_class_dirs ${dataclassname}/scratches scratch
+    #
+    # running setup_deps_control_data_main_dirs
+    # # running setup_deps_control_class_dirs ${dataclassname}/main main
 
-    running setup_deps_control_class_dirs main main
+    running running setup_deps_control_data_dirs
 }
 
 function setup_deps_view_volumes_dirs()
