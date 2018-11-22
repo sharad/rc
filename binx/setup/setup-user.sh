@@ -9,6 +9,7 @@ TMPDIR=~/setuptmp
 logicaldirs=(config deletable longterm preserved shortterm maildata)
 
 dataclassname=data
+homeclassname=home
 
 if [ -r ~/.ssh/authorized_keys ]
 then
@@ -116,13 +117,6 @@ function main()
     running setup_login_shell
 
     running setup_dirs
-
-    # running setup_deps_model_volumes_dirs
-    # running setup_deps_control_volumes_dirs
-    # running setup_deps_view_volumes_dirs
-    # running setup_deps_control_sysdata_dirs
-    # running setup_deps_control_scratches_dirs
-    # running setup_deps_control_main_dirs
 
     running setup_sourcecode_pro_font
 
@@ -824,6 +818,7 @@ function setup_machine_dir()
 }
 
 ###{{{ libs
+# worker
 function setup_deps_control_class_dirs()
 {
     # use namei to track
@@ -914,22 +909,39 @@ function setup_deps_control_class_dirs()
     fi                          # if [ $# -eq 2 ]
 }
 
-function setup_deps_control_sysdata_dirs()
+function setup_deps_control_data_sysdata_dirs()
 {
     # running setup_deps_control_class_dirs sysdatas sysdata
     running setup_deps_control_class_dirs ${dataclassname}/sysdatas sysdata
 }
-
-function setup_deps_control_scratches_dirs()
+function setup_deps_control_data_scratches_dirs()
 {
     running setup_deps_model_volumes_dirs
     running setup_deps_control_class_dirs ${dataclassname}/scratches scratch
 }
-
-function setup_deps_control_main_dirs()
+function setup_deps_control_data_main_dirs()
 {
     running setup_deps_model_volumes_dirs
     running setup_deps_control_class_dirs ${dataclassname}/main main
+}
+function setup_deps_control_data_dirs()
+{
+    running setup_deps_control_data_sysdata_dirs
+    running setup_deps_control_data_scratches_dirs
+    running setup_deps_control_data_main_dirs
+}
+
+
+
+
+function setup_deps_control_home_Downloads_dirs()
+{
+    running setup_deps_model_volumes_dirs
+    running setup_deps_control_class_dirs ${homeclassname}/Downloads Downloads
+}
+function setup_deps_control_home_dirs()
+{
+    setup_deps_control_home_Downloads_dirs
 }
 ###}}}
 
@@ -992,7 +1004,7 @@ function setup_deps_control_volumes_dirs()
     local hostdir=${machinedir}/$HOST
     local volumedir=${hostdir}/volumes.d
 
-    running setup_deps_control_sysdata_dirs
+    running setup_deps_control_data_sysdata_dirs
     running setup_deps_control_class_dirs $sysdatascontinername $sysdataname
 
     for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
@@ -1066,7 +1078,7 @@ function setup_deps_view_volumes_dirs()
             fi                  # if [ -d ${volumedir}/model.d ]
 
 
-            # running setup_deps_control_sysdata_dirs
+            # running setup_deps_control_data_sysdata_dirs
             # running setup_deps_control_class_dirs $sysdatascontinername $sysdataname
             running setup_deps_control_volumes_dirs
             running setup_deps_control_class_dirs $sysdatascontinername $sysdataname
@@ -1110,8 +1122,8 @@ function setup_deps_dirs()
 {
     running setup_deps_model_volumes_dirs
 
-    running setup_deps_control_main_dirs
-    running setup_deps_control_scratches_dirs
+    running setup_deps_control_data_dirs
+    running setup_deps_control_home_dirs
 
     running setup_deps_control_volumes_dirs
     running setup_deps_view_volumes_dirs
