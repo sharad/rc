@@ -6,6 +6,8 @@ export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 SSH_KEY_DUMP=$1
 TMPDIR=~/setuptmp
 
+logicaldirs=(config deletable longterm preserved shortterm maildata)
+
 if [ -r ~/.ssh/authorized_keys ]
 then
     # GIT_SSH_OPTION="ssh -o UserKnownHostsFile=~/.ssh/authorized_keys -o StrictHostKeyChecking=yes"
@@ -86,7 +88,7 @@ function main()
 
     cd ~/
 
-    running setup_apt_packages
+    # running setup_apt_packages
 
     running setup_ecrypt_private
 
@@ -99,7 +101,7 @@ function main()
     fi
 
     # will set the ~/.setup also
-    running setup_git_repos
+    # running setup_git_repos
 
     running setup_config_dirs
 
@@ -116,6 +118,8 @@ function main()
     running setup_deps_model_volumes_dirs
 
     running setup_deps_control_volumes_dirs
+
+    running setup_deps_view_volumes_dirs
 
     running setup_deps_control_sysdata_dirs
 
@@ -157,9 +161,9 @@ function setup_make_link()
     local rtarget="$target"
     if [ "$rtarget" != "${rtarget#/}" ]
     then
-        echo target $target is absolute path. >&2
+        verbose target $target is absolute path. >&2
     else
-        echo target $target is relative path. >&2
+        verbose target $target is relative path. >&2
         rtarget="$(dirname $link)/$rtarget"
     fi
 
@@ -169,20 +173,20 @@ function setup_make_link()
         then
             if [ ! -L $link ]
             then
-                echo link $link is not a link >&2
+                warn link $link is not a link >&2
             else
-                echo $link is pointing to  $(readlink $link) >&2
-                echo while it should point to "$(readlink -m $rtarget )" >&2
+                warn $link is pointing to  $(readlink $link) >&2
+                warn while it should point to "$(readlink -m $rtarget )" >&2
             fi
-            echo removing $link
+            warn removing $link
             running mv $link ${link}-BACKUP
         else
-            echo $link do not exists >&1
+            verbose $link do not exists >&1
         fi
         running rm -f  $link
         running ln -sf $target $link
     else
-        echo $link is correctly pointing to "$(readlink -m $rtarget )" is equal to $target
+        verbose $link is correctly pointing to "$(readlink -m $rtarget )" is equal to $target
     fi
 }
 
@@ -204,19 +208,19 @@ function setup_copy_link()
             then
                 if [ ! -L $target ]
                 then
-                    echo link $target is not a link >&2
+                    warn link $target is not a link >&2
                 else
-                    echo $target is pointing to  "$(readlink $target)" >&2
-                    echo while it should point to "$(readlink -m $link )" >&2
+                    warn $target is pointing to  "$(readlink $target)" >&2
+                    warn while it should point to "$(readlink -m $link )" >&2
                 fi
-                echo removing $link
+                warn removing $link
                 running mv $target ${target}-BACKUP
             else
-                echo $target do not exists >&1
+                verbose $target do not exists >&1
             fi
             running cp -a $link $target
         else
-            echo $target is correctly pointing to "$(readlink -m $target )" is equal what $link is pointing to "$(readlink -m $link )"
+            verbose $target is correctly pointing to "$(readlink -m $target )" is equal what $link is pointing to "$(readlink -m $link )"
         fi
     else
         echo $link is not a link, not doing anything >&2
@@ -240,7 +244,7 @@ function setup_apt_repo()
         . /etc/os-release
         if [ ubuntu = $ID ]
         then
-            read _ UBUNTU_VERSION_NAME <<< "$VERSION"
+            read _ UBUNTU_VERSIO``N_NAME <<< "$VERSION"
             echo "Running Ubuntu $UBUNTU_VERSION_NAME"
         else
             echo "Not running an Ubuntu distribution. ID=$ID, VERSION=$VERSION" >&2
@@ -776,136 +780,6 @@ function setup_dirs()
     running setup_public_html
 }
 
-function setup_deps_model_volumes_dirs()
-{
-    # use namei to track
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    # check local home model.d directory
-    if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
-    then
-        if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
-        then
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
-
-            setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
-            setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
-
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
-            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d -a -d /srv/volumes/local ]
-            then
-                modelsymlink_present=0
-                for vgd in /srv/volumes/local/*
-                do
-                    modelsymlink_present=1
-                    for vld in ${vgd}/*
-                    do
-                        local _location=$vld/users/$USER
-                        if [ -f $_location ]
-                        then
-                            sudo mkdir -p $_location
-                            sudo chown root.root $_location
-                        fi
-                        setup_make_link $_location "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$(basename $vgd)-$(basename $vld)"
-                    done
-                done
-
-                if [ "$modelsymlink_present" -eq 0 ]
-                then
-                    echo No disk partition mount are present in /srv/volumes/local/ create them. >&2
-                fi
-            fi       # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d -a -d /srv/volumes/local ]
-        else                    # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
-            echo Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
-            exit -1
-        fi                      # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
-    fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
-}
-
-function setup_deps_view_volumes_dirs()
-{
-    # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/control.d/
-
-    logicaldirs=(config deletable longterm preserved shortterm maildata)
-
-    # use namei to track
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-
-    local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
-
-    local hostdir=${machinedir}/$HOST
-
-    local volumedir=${hostdir}/volumes.d
-
-    local sysdataname=sysdata
-    local sysdatascontinername=${sysdataname}s
-    local sysdatasdirname=${sysdatascontinername}.d
-    local viewdirname=view.d
-
-    # check local home model.d directory
-    if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
-    then
-        if [ -d ${hostdir} ]
-        then
-            mkdir -p ${hostdir}
-
-            setup_make_link $HOST ${machinedir}/default
-
-            if [ -d ${volumedir}/model.d ]
-            then
-                modelsymlink=0
-                for mdir in ${volumedir}/model.d/*
-                do
-                    if [ -L "$mdir" ]
-                    then
-                        modelsymlink=1
-                    fi
-                done
-
-                if [ "$modelsymlink" -eq 0 ]
-                then
-                    echo No symlink for model dirs exists in ${volumedir}/model.d create it. >&2
-                fi
-            fi                  # if [ -d ${volumedir}/model.d ]
-
-            # local sysdataname=sysdata
-            # local sysdatascontinername=${sysdataname}s
-            # local sysdatasdirname=${sysdatascontinername}.d
-
-            # # local viewdirname=control.d
-            # local viewdirname=view.d
-
-            # running setup_deps_control_sysdata_dirs
-            running setup_deps_control_class_dirs $sysdatascontinername $sysdataname
-
-            mkdir -p ${volumedir}/${viewdirname}
-            for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
-            do
-                if [ ! -L "${volumedir}/${viewdirname}/$cdir" ]
-                then
-                    echo No symlink exists for "${volumedir}/${viewdirname}/$cdir", prepare it. >&2
-                else
-                    if [ ! -d "${volumedir}/${viewdirname}/$cdir" ]
-                    then
-                        echo No target directory $(readlink -m $cdir) exist for symlink "${volumedir}/${viewdirname}/$cdir", create it. >&2
-                        # echo ln -s ../control.d/sysdata/view.d/data01-data02/$cdir "${volumedir}/${viewdirname}/$cdir"
-
-                        for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/view.d/*
-                        do
-                            volsysdatadirbase=(basename ${sysdatadir})
-                            echo ln -s ../control.d/${sysdatasdirname}/view.d/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir"
-                        done
-                    fi
-                fi
-            done
-
-
-        else                    # if [ -d ${hostdir} ]
-            echo Please prepare ${hostdir} for your machine >&2
-            exit -1
-        fi                      # if [ -d ${hostdir} ]
-    fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
-}                               # function setup_deps_view_volumes_dirs()
-
 function setup_deps_control_class_dirs()
 {
     # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
@@ -1020,7 +894,7 @@ function setup_deps_control_class_dirs()
 function setup_deps_control_sysdata_dirs()
 {
     setup_deps_control_class_dirs sysdatas sysdata
-}
+ }
 
 function setup_deps_control_scratches_dirs()
 {
@@ -1031,6 +905,176 @@ function setup_deps_control_main_dirs()
 {
     setup_deps_control_class_dirs main main
 }
+
+function setup_deps_model_volumes_dirs()
+{
+    # use namei to track
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    # check local home model.d directory
+    if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
+    then
+        if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+        then
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
+
+            setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
+            setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
+
+            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
+            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d -a -d /srv/volumes/local ]
+            then
+                modelsymlink_present=0
+                for vgd in /srv/volumes/local/*
+                do
+                    modelsymlink_present=1
+                    for vld in ${vgd}/*
+                    do
+                        local _location=$vld/users/$USER
+                        if [ -f $_location ]
+                        then
+                            sudo mkdir -p $_location
+                            sudo chown root.root $_location
+                        fi
+                        setup_make_link $_location "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$(basename $vgd)-$(basename $vld)"
+                    done
+                done
+
+                if [ "$modelsymlink_present" -eq 0 ]
+                then
+                    echo No disk partition mount are present in /srv/volumes/local/ create them. >&2
+                fi
+            fi       # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d -a -d /srv/volumes/local ]
+        else                    # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+            echo Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
+            exit -1
+        fi                      # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+    fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
+}
+
+function setup_deps_control_volumes_dirs()
+{
+    local sysdataname=sysdata
+    local sysdatascontinername=${sysdataname}s
+    local sysdatasdirname=${sysdatascontinername}.d
+    # logicaldirs=(config deletable longterm preserved shortterm maildata)
+
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
+    local hostdir=${machinedir}/$HOST
+    local volumedir=${hostdir}/volumes.d
+
+    # running setup_deps_control_sysdata_dirs
+    running setup_deps_control_class_dirs $sysdatascontinername $sysdataname
+
+    for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
+    do
+        # echo "${volumedir}/${viewdirname}/$cdir"
+
+        if [ ! -L "${volumedir}/${viewdirname}/$cdir" -o ! -d "${volumedir}/${viewdirname}/$cdir" ]
+        then
+
+            for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/view.d/*
+            do
+                volsysdatadirbase=$(basename ${sysdatadir})
+                mkdir -p  ${volumedir}/control.d/${sysdatasdirname}/view.d/${volsysdatadirbase}/$cdir
+            done
+        fi
+    done
+
+
+    running setup_deps_control_class_dirs scratches scratch
+
+    running setup_deps_control_class_dirs main main
+}
+
+function setup_deps_view_volumes_dirs()
+{
+    # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/control.d/
+
+    # logicaldirs=(config deletable longterm preserved shortterm maildata)
+
+    # use namei to track
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+
+    local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
+
+    local hostdir=${machinedir}/$HOST
+
+    local volumedir=${hostdir}/volumes.d
+
+    local sysdataname=sysdata
+    local sysdatascontinername=${sysdataname}s
+    local sysdatasdirname=${sysdatascontinername}.d
+    local viewdirname=view.d
+
+    # check local home model.d directory
+    if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
+    then
+        if [ -d ${hostdir} ]
+        then
+
+            mkdir -p ${hostdir}
+
+            setup_make_link $HOST ${machinedir}/default
+
+            if [ -d ${volumedir}/model.d ]
+            then
+                modelsymlink=0
+                for mdir in ${volumedir}/model.d/*
+                do
+                    if [ -L "$mdir" ]
+                    then
+                        modelsymlink=1
+                    fi
+                done
+
+                if [ "$modelsymlink" -eq 0 ]
+                then
+                    error No symlink for model dirs exists in ${volumedir}/model.d create it. >&2
+                fi
+            else
+                error ${volumedir}/model.d not exists.
+            fi                  # if [ -d ${volumedir}/model.d ]
+
+
+            # running setup_deps_control_sysdata_dirs
+            # running setup_deps_control_class_dirs $sysdatascontinername $sysdataname
+            running setup_deps_control_volumes_dirs
+
+            mkdir -p ${volumedir}/${viewdirname}
+            for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
+            do
+                # echo "${volumedir}/${viewdirname}/$cdir"
+
+                if [ ! -L "${volumedir}/${viewdirname}/$cdir" -o ! -d "${volumedir}/${viewdirname}/$cdir" ]
+                then
+                    if [ ! -L "${volumedir}/${viewdirname}/$cdir" ]
+                    then
+                        error No symlink exists for "${volumedir}/${viewdirname}/$cdir", prepare it.
+                    fi
+                    if [ ! -d "${volumedir}/${viewdirname}/$cdir" ]
+                    then
+                        error No target directory $(readlink -m $cdir) exist for symlink "${volumedir}/${viewdirname}/$cdir", create it.
+                    fi
+
+                    for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/view.d/*
+                    do
+                        volsysdatadirbase=$(basename ${sysdatadir})
+                        info ln -s ../control.d/${sysdatasdirname}/view.d/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir"
+                    done
+                fi
+            done
+
+
+        else                    # if [ -d ${hostdir} ]
+            error Please prepare ${hostdir} for your machine >&2
+            exit -1
+        fi                      # if [ -d ${hostdir} ]
+    else
+        error ${LOCALDIRS_DIR} or ${machinedir} not exists
+        exit -1
+    fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
+}                               # function setup_deps_view_volumes_dirs()
 
 function setup_spacemacs()
 {
@@ -1206,6 +1250,49 @@ function running()
         $_cmd "$@"
     fi
 }
+
+function error() {
+    notify "$*"  >&2
+    logger "$*"
+}
+
+function warn() {
+    if [ $warn ] ; then
+        notify "$*" >&2
+    fi
+    logger "$*"
+}
+
+function verbose() {
+    if [ $verbose ] ; then
+        notify "$*" >&2
+    fi
+    logger "$*"
+}
+
+function info() {
+    notify "$*" >&2
+    logger "$*"
+}
+
+function notify() {
+    echo "${pgm}:" "$*"
+
+    if [ -t 1 ]
+    then
+        echo "${pgm}:" "$*"
+    else
+        echo "${pgm}:" "$*"
+        notify-send "${pgm}:" "$*"
+    fi
+}
+
+function logger() {
+    #creating prolem
+    command logger -p local1.notice -t ${pgm} -i - $USER : "$*"
+}
+
+pgm=$(basename $0)
 
 main
 
