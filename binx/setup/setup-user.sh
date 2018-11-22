@@ -115,17 +115,12 @@ function main()
 
     running setup_dirs
 
-    running setup_deps_model_volumes_dirs
-
-    running setup_deps_control_volumes_dirs
-
-    running setup_deps_view_volumes_dirs
-
-    running setup_deps_control_sysdata_dirs
-
-    running setup_deps_control_scratches_dirs
-
-    running setup_deps_control_main_dirs
+    # running setup_deps_model_volumes_dirs
+    # running setup_deps_control_volumes_dirs
+    # running setup_deps_view_volumes_dirs
+    # running setup_deps_control_sysdata_dirs
+    # running setup_deps_control_scratches_dirs
+    # running setup_deps_control_main_dirs
 
     running setup_sourcecode_pro_font
 
@@ -734,6 +729,56 @@ function setup_paradise()
     fi
 }
 
+###{{{ libs
+function setup_mvc_dirs()
+{
+    if [ $# -eq 1 ]
+    then
+        containerdir="$1"
+
+        mkdir -p ${containerdir}/model.d
+        if [ -d ${containerdir}/model.d ] && ls ${containerdir}/model.d/*
+        then
+            modelsymlink=0
+            for sdir in ${containerdir}/model.d/*
+            do
+                if [ -L "$sdir" ]
+                then
+                    modelsymlink=1
+                fi
+                sdirbase=$(basename "$sdir")
+                setup_make_link ../model.d/${sdirbase} ${containerdir}/control.d/${sdirbase}
+            done
+            if [ "$modelsymlink" -eq 0 ]
+            then
+                echo No symlink for model dirs exists in ${containerdir}/model.d create it. >&2
+            fi
+        fi              # if [ -d ${containerdir}/model.d ]
+
+        mkdir -p ${containerdir}/control.d
+        if [ -d ${containerdir}/control.d ] && ls ${containerdir}/control.d/*
+        then
+            modelsymlink=0
+            for sdir in ${containerdir}/control.d/*
+            do
+                if [ -L "$sdir" ]
+                then
+                    modelsymlink=1
+                fi
+                sdirbase=$(basename "$sdir")
+                setup_make_link ../control.d/${sdirbase} ${containerdir}/view.d/${sdirbase}
+            done
+            if [ "$modelsymlink" -eq 0 ]
+            then
+                echo No symlink for control dirs exists in ${containerdir}/control.d create it. >&2
+            fi
+        fi              # if [ -d ${containerdir}/control.d ]
+    else
+        error one dir argument is require, but provided $# "$@"
+    fi
+}
+###{{{ libs
+
 function setup_machine_dir()
 {
     # use namei to track
@@ -779,13 +824,29 @@ function setup_machine_dir()
 ###{{{ libs
 function setup_deps_control_class_dirs()
 {
+    # use namei to track
+
     # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
     # ls ~/fa/localdirs/deps.d/model.d/machine.d/$HOST/${class}.d/
 
-    # use namei to track
     # local baseclass=$1
+
     local class=$1
-    local classdir=$2
+    local classpath=$(dirname $class)
+
+    if [ ${classpath} = "." ]
+    then
+        classpath=
+    fi
+
+    local classcontainer=$(basename $class)
+    local classinstdir=$2
+
+    local classpatharray=( ${classpath//\// } )
+    local classlen=${#classpatharray[@]}
+    local updirslenspace=$(printf "%${classlen}s")
+
+    local updirs=${updirslenspace// /"../../"}
 
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
@@ -801,10 +862,10 @@ function setup_deps_control_class_dirs()
             then
                 mkdir -p ${hostdir}
 
-                setup_make_link $HOST ${machinedir}/default
+                running setup_make_link $HOST ${machinedir}/default
 
                 # classmodeldir=${hostdir}/${class}.d
-                local classmodeldir=${hostdir}/volumes.d/control.d/${class}.d
+                local classmodeldir=${hostdir}/volumes.d/control.d/${classpath}${classpath:+/}${classcontainer}.d
 
                 mkdir -p $classmodeldir/model.d
                 mkdir -p $classmodeldir/control.d
@@ -820,9 +881,11 @@ function setup_deps_control_class_dirs()
                             modelsymlink=1
                         fi
                         mdirbase=$(basename "$mdir")
-                        mkdir -p ${hostdir}/volumes.d/model.d/${mdirbase}/${classdir}
-                        # setup_make_link ../../volumes.d/model.d/${mdirbase}/${classdir} $classmodeldir/model.d/${mdirbase}
-                        running setup_make_link ../../../model.d/${mdirbase}/${classdir} $classmodeldir/model.d/${mdirbase}
+                        volclasspathinstdir="model.d/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
+                        mkdir -p ${hostdir}/volumes.d/${volclasspathinstdir}
+                        # running setup_make_link ../../../model.d/${mdirbase}/${classinstdir} $classmodeldir/model.d/${mdirbase}
+                        echo updirs=$updirs
+                        running setup_make_link ${updirs}../../../${volclasspathinstdir} $classmodeldir/model.d/${mdirbase}
                     done
 
                     if [ "$modelsymlink" -eq 0 ]
@@ -832,48 +895,7 @@ function setup_deps_control_class_dirs()
                 fi              # if [ -d ${hostdir}/volumes.d/model.d ]
 
 
-
-
-
-
-
-                mkdir -p $classmodeldir/model.d
-                if [ -d $classmodeldir/model.d ]
-                then
-                    modelsymlink=0
-                    for sdir in $classmodeldir/model.d/*
-                    do
-                        if [ -L "$sdir" ]
-                        then
-                            modelsymlink=1
-                        fi
-                        sdirbase=$(basename "$sdir")
-                        setup_make_link ../model.d/${sdirbase} $classmodeldir/control.d/${sdirbase}
-                    done
-                    if [ "$modelsymlink" -eq 0 ]
-                    then
-                        echo No symlink for model dirs exists in $classmodeldir/model.d create it. >&2
-                    fi
-                fi              # if [ -d $classmodeldir/model.d ]
-
-                mkdir -p $classmodeldir/control.d
-                if [ -d $classmodeldir/control.d ]
-                then
-                    modelsymlink=0
-                    for sdir in $classmodeldir/control.d/*
-                    do
-                        if [ -L "$sdir" ]
-                        then
-                            modelsymlink=1
-                        fi
-                        sdirbase=$(basename "$sdir")
-                        setup_make_link ../control.d/${sdirbase} $classmodeldir/view.d/${sdirbase}
-                    done
-                    if [ "$modelsymlink" -eq 0 ]
-                    then
-                        echo No symlink for control dirs exists in $classmodeldir/control.d create it. >&2
-                    fi
-                fi              # if [ -d $classmodeldir/control.d ]
+                running setup_mvc_dirs ${classmodeldir}/
 
 
             else                # if [ -d ${hostdir} ]
@@ -1041,6 +1063,7 @@ function setup_deps_view_volumes_dirs()
             # running setup_deps_control_sysdata_dirs
             # running setup_deps_control_class_dirs $sysdatascontinername $sysdataname
             running setup_deps_control_volumes_dirs
+            running setup_deps_control_class_dirs $sysdatascontinername $sysdataname
 
             mkdir -p ${volumedir}/${viewdirname}
             for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
@@ -1118,22 +1141,18 @@ function setup_resourse_view_volumes_logical_dirs()
 
 function setup_resource_dirs()
 {
-    setup_resourse_model_dirs
-    setup_resourse_control_dirs
-    setup_resourse_view_dirs
-    setup_resourse_view_volumes_logical_dirs
+    running setup_resourse_model_dirs
+    running setup_resourse_control_dirs
+    running setup_resourse_view_dirs
+    running setup_resourse_view_volumes_logical_dirs
 }
 
 function setup_dirs()
 {
     running setup_machine_dir
-
     running setup_deps_dirs
-
     running setup_resource_dirs
-
     running setup_Documentation
-
     running setup_public_html
 }
 
