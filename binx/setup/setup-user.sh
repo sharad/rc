@@ -846,7 +846,7 @@ function setup_deps_control_class_dirs()
     local classlen=${#classpatharray[@]}
     local updirslenspace=$(printf "%${classlen}s")
 
-    local updirs=${updirslenspace// /"../../"}
+    local updirs=${updirslenspace// /"../"}
 
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
@@ -871,7 +871,7 @@ function setup_deps_control_class_dirs()
                 mkdir -p $classmodeldir/control.d
                 mkdir -p $classmodeldir/view.d
 
-                if [ -d ${hostdir}/volumes.d/model.d ]
+                if [ -d ${hostdir}/volumes.d/model.d ] && ls ${hostdir}/volumes.d/model.d/*
                 then
                     modelsymlink=0
                     for mdir in ${hostdir}/volumes.d/model.d/*
@@ -882,15 +882,16 @@ function setup_deps_control_class_dirs()
                         fi
                         mdirbase=$(basename "$mdir")
                         volclasspathinstdir="model.d/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
-                        mkdir -p ${hostdir}/volumes.d/${volclasspathinstdir}
+
+                        running mkdir -p ${hostdir}/volumes.d/${volclasspathinstdir}
                         # running setup_make_link ../../../model.d/${mdirbase}/${classinstdir} $classmodeldir/model.d/${mdirbase}
-                        echo updirs=$updirs
+                        info updirs=$updirs
                         running setup_make_link ${updirs}../../../${volclasspathinstdir} $classmodeldir/model.d/${mdirbase}
                     done
 
                     if [ "$modelsymlink" -eq 0 ]
                     then
-                        echo No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d create it. >&2
+                        error No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d create it.
                     fi
                 fi              # if [ -d ${hostdir}/volumes.d/model.d ]
 
@@ -916,7 +917,7 @@ function setup_deps_control_sysdata_dirs()
 
     running setup_deps_control_class_dirs sysdatas sysdata
 
-    running setup_deps_control_class_dirs resources/sysdatas sysdata
+    # running setup_deps_control_class_dirs data/sysdatas sysdata
 }
 
 function setup_deps_control_scratches_dirs()
@@ -989,7 +990,7 @@ function setup_deps_control_volumes_dirs()
     local hostdir=${machinedir}/$HOST
     local volumedir=${hostdir}/volumes.d
 
-    # running setup_deps_control_sysdata_dirs
+    running setup_deps_control_sysdata_dirs
     running setup_deps_control_class_dirs $sysdatascontinername $sysdataname
 
     for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
@@ -1029,7 +1030,7 @@ function setup_deps_view_volumes_dirs()
     local volumedir=${hostdir}/volumes.d
 
     local sysdataname=sysdata
-    local sysdatascontinername=${sysdataname}s
+    local sysdatascontinername=data/${sysdataname}s
     local sysdatasdirname=${sysdatascontinername}.d
     local viewdirname=view.d
 
@@ -1150,19 +1151,26 @@ function setup_resource_dirs()
     running setup_resource_view_volumes_logical_dirs
 }
 
+function setup_osetup_cache_dirs()
+{
+    # ls -l /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/dirs.d/control.d/cache.d/
+    # mkdir -p /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/dirs.d/model.d/volume.d/*/cache.d
+    :
+}
+
+function setup_osetup_dirs()
+{
+    running setup_osetup_cache_dirs
+}
+
 function setup_dirs()
 {
     running setup_machine_dir
     running setup_deps_dirs
     running setup_resource_dirs
+    running setup_osetup_dirs
     running setup_Documentation
     running setup_public_html
-}
-
-setup_osetup_cache_dirs()
-{
-    # ls -l /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/dirs.d/control.d/cache.d/
-    # mkdir -p /home/s/hell/.repos/git/main/resource/userorg/main/readwrite/public/user/osetup/dirs.d/model.d/volume.d/*/cache.d
 }
 
 function setup_spacemacs()
