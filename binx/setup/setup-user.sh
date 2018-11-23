@@ -866,18 +866,19 @@ function setup_dep_control_storage_class_dirs()
         local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
         local hostdir=${machinedir}/$HOST
 
+        # TODO?
         local classmodeldir=${hostdir}/volumes.d/control.d/${classpath}${classpath:+/}${storageclass}/${classcontainer}.d
 
-        local fullupdirs=${updirs}../../../..
+        local fullupdirs=${updirs}../../../../..
 
         mkdir -p $classmodeldir/model.d
         mkdir -p $classmodeldir/control.d
         mkdir -p $classmodeldir/view.d
 
-        if [ -d ${hostdir}/volumes.d/model.d ] && ls ${hostdir}/volumes.d/model.d/*
+        if [ -d ${hostdir}/volumes.d/model.d/${storageclass}/ ] && ls ${hostdir}/volumes.d/model.d/${storageclass}/*
         then
             modelsymlink=0
-            for mdir in ${hostdir}/volumes.d/model.d/*
+            for mdir in ${hostdir}/volumes.d/model.d/${storageclass}/*
             do
                 if [ -L "$mdir" ]
                 then
@@ -885,7 +886,7 @@ function setup_dep_control_storage_class_dirs()
                 fi
 
                 mdirbase=$(basename "$mdir")
-                volclasspathinstdir="model.d/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
+                volclasspathinstdir="model.d/${storageclass}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
 
                 running mkdir -p ${hostdir}/volumes.d/${volclasspathinstdir}
 
@@ -895,7 +896,7 @@ function setup_dep_control_storage_class_dirs()
 
             if [ "$modelsymlink" -eq 0 ]
             then
-                error No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d create it.
+                error No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d/${storageclass}/ create it.
             fi
         fi              # if [ -d ${hostdir}/volumes.d/model.d ]
         running setup_mvc_dirs ${classmodeldir}/
@@ -1053,7 +1054,11 @@ function setup_deps_model_storage_volumes_dir()
 
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
-    if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d -a -d $storageclassdirpath ]
+    deps_model_storageclass_path="${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${storageclassname}"
+
+    mkdir -p "${deps_model_storageclass_path}"
+
+    if [ -d ${deps_model_storageclass_path} -a -d $storageclassdirpath ]
     then
         modelsymlink_present=0
         for vgd in ${storageclassdirpath}/*
@@ -1062,20 +1067,22 @@ function setup_deps_model_storage_volumes_dir()
             for vld in ${vgd}/*
             do
                 local _location=$vld/users/$USER
-                if [ -f $_location ]
+                if [ -f ${_location} ]
                 then
-                    sudo mkdir -p $_location
-                    sudo chown root.root $_location
+                    sudo mkdir -p ${_location}
+                    sudo chown root.root ${_location}
                 fi
-                setup_make_link $_location "${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/$storageclassname/$(basename $vgd)-$(basename $vld)"
+                setup_make_link ${_location} "${deps_model_storageclass_path}/$(basename $vgd)-$(basename $vld)"
             done
         done
 
         if [ "$modelsymlink_present" -eq 0 ]
         then
-            error No disk partition mount are present in $storageclassdirpath create them. >&2
+            error No disk partition mount are present in ${storageclassdirpath} create them. >&2
         fi
-    fi       # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d -a -d /srv/volumes/local ]
+    else
+        error No dir exists ${deps_model_storageclass_path}
+    fi       # if [ -d ${deps_model_storageclass_path} -a -d /srv/volumes/local ]
 }
 
 function setup_deps_model_volumes_dirs()
