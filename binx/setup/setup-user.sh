@@ -875,6 +875,12 @@ function setup_dep_control_storage_class_dirs()
         # local fullupdirs=${updirsstorageclassname}${updirsclass}../../../..
         local fullupdirs="${updirsclass}../../../.."
 
+
+
+
+        running setup_deps_model_volumes_dirs "${storageclassname}"
+
+
         mkdir -p $classmodeldir/model.d
         mkdir -p $classmodeldir/control.d
         mkdir -p $classmodeldir/view.d
@@ -965,22 +971,21 @@ function setup_deps_control_data_sysdata_dirs()
 {
     storageclassname="${1-local}"
 
-    running setup_deps_model_volumes_dirs
-
+    # running setup_deps_model_volumes_dirs "${storageclassname}"
     running setup_deps_control_class_dirs "$storageclassname" ${dataclassname}/sysdatas sysdata
 }
 function setup_deps_control_data_scratches_dirs()
 {
     storageclassname="${1-local}"
 
-    running setup_deps_model_volumes_dirs
+    # running setup_deps_model_volumes_dirs "${storageclassname}"
     running setup_deps_control_class_dirs "$storageclassname" ${dataclassname}/scratches scratch
 }
 function setup_deps_control_data_main_dirs()
 {
     storageclassname="${1-local}"
 
-    running setup_deps_model_volumes_dirs
+    # running setup_deps_model_volumes_dirs "${storageclassname}"
     running setup_deps_control_class_dirs "$storageclassname" ${dataclassname}/main main
 }
 function setup_deps_control_data_dirs()
@@ -999,7 +1004,7 @@ function setup_deps_control_home_Downloads_dirs()
 {
     local storageclassname="${1-local}"
 
-    running setup_deps_model_volumes_dirs
+    # running setup_deps_model_volumes_dirs "${storageclassname}"
     running setup_deps_control_class_dirs "$storageclassname" ${homeclassname}/Downloads Downloads
 }
 function setup_deps_control_home_dirs()
@@ -1294,7 +1299,14 @@ function setup_osetup_dirs()
 function setup_dirs()
 {
     running setup_machine_dir
-    running setup_deps_dirs
+
+
+    # TODO
+    # do it for all basename /srv/volumes/*
+    # below /srv/volumes/ for all mounted patchs
+    running setup_deps_dirs "local"
+
+
     running setup_resource_dirs
     running setup_osetup_dirs
     running setup_Documentation
