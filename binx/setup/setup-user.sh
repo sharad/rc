@@ -1107,9 +1107,9 @@ function setup_deps_control_volumes_dirs()
     local sysdataname=sysdata
 
     # local sysdatascontinername=${dataclassname}/${sysdataname}s
-    local sysdatascontinername=${dataclassname}/$storageclassname/${sysdataname}s
+    local sysdatascontinername=${dataclassname}/${sysdataname}s
 
-    local sysdatasdirname=${sysdatascontinername}.d
+    local sysdatasdirname=${dataclassname}/${storageclassname}/${sysdataname}s.d
     # logicaldirs=(config deletable longterm preserved shortterm maildata)
 
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
@@ -1160,8 +1160,14 @@ function setup_deps_view_volumes_dirs()
     local volumedir=${hostdir}/volumes.d
 
     local sysdataname=sysdata
-    local sysdatascontinername=${dataclassname}/$storageclassname/${sysdataname}s
-    local sysdatasdirname=${sysdatascontinername}.d
+    # TODO?
+    # local sysdatascontinername=${dataclassname}/$storageclassname/${sysdataname}s
+    # local sysdatasdirname=${sysdatascontinername}.d
+    local sysdatascontinername=${dataclassname}/${sysdataname}s
+
+    # TODO?
+    local sysdatasdirname=${dataclassname}/${storageclassname}/${sysdataname}s.d
+
     local viewdirname=view.d
 
     # check local home model.d directory
