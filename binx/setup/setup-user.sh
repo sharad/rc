@@ -782,7 +782,7 @@ function setup_mvc_dirs()
         error one dir argument is require, but provided $# "$@"
     fi
 }
-###{{{ libs
+
 
 function setup_machine_dir()
 {
@@ -856,11 +856,14 @@ function setup_dep_control_storage_class_dirs()
 
         local classpatharray=( ${classpath//\// } )
         local classlen=${#classpatharray[@]}
-        local updirslenspace=$(printf "%${classlen}s")
+        local updirsclasslenspace=$(printf "%${classlen}s")
+        local updirsclass=${updirsclasslenspace// /"../"}
 
-        local updirs=${updirslenspace// /"../"}
 
-
+        local storageclassarray=( ${storageclass//\// } )
+        local storageclasslen=${#storageclassarray}
+        local updirsstorageclasslenspace=$(printf "%${storageclasslen}s")
+        local updirsstorageclass=${updirsstorageclasslenspace// /"../"}
 
         local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
         local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
@@ -869,7 +872,8 @@ function setup_dep_control_storage_class_dirs()
         # TODO?
         local classmodeldir=${hostdir}/volumes.d/control.d/${classpath}${classpath:+/}${storageclass}/${classcontainer}.d
 
-        local fullupdirs=${updirs}../../../../..
+        # local fullupdirs=${updirsstorageclass}${updirsclass}../../../..
+        local fullupdirs="${updirsclass}../../../.."
 
         mkdir -p $classmodeldir/model.d
         mkdir -p $classmodeldir/control.d
@@ -888,7 +892,9 @@ function setup_dep_control_storage_class_dirs()
                 mdirbase=$(basename "$mdir")
                 volclasspathinstdir="model.d/${storageclass}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
 
-                running mkdir -p ${hostdir}/volumes.d/${volclasspathinstdir}
+                running sudo mkdir -p ${hostdir}/volumes.d/${volclasspathinstdir}
+                running sudo chown "$USER.$(id -gn)" ${hostdir}/volumes.d/${volclasspathinstdir}
+
 
                 info updirs=$updirs
                 running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classmodeldir/model.d/${mdirbase}
@@ -928,11 +934,10 @@ function setup_deps_control_class_dirs()
 
 
 
-        local classpatharray=( ${classpath//\// } )
-        local classlen=${#classpatharray[@]}
-        local updirslenspace=$(printf "%${classlen}s")
-
-        local updirs=${updirslenspace// /"../"}
+        # local classpatharray=( ${classpath//\// } )
+        # local classlen=${#classpatharray[@]}
+        # local updirslenspace=$(printf "%${classlen}s")
+        # local updirs=${updirslenspace// /"../"}
 
 
 
@@ -950,38 +955,6 @@ function setup_deps_control_class_dirs()
 
                 running setup_make_link $HOST ${machinedir}/default
 
-                # local classmodeldir=${hostdir}/volumes.d/control.d/${classpath}${classpath:+/}${storageclass}/${classcontainer}.d
-                # local fullupdirs=${updirs}../../../..
-
-                # mkdir -p $classmodeldir/model.d
-                # mkdir -p $classmodeldir/control.d
-                # mkdir -p $classmodeldir/view.d
-
-                # if [ -d ${hostdir}/volumes.d/model.d ] && ls ${hostdir}/volumes.d/model.d/*
-                # then
-                #     modelsymlink=0
-                #     for mdir in ${hostdir}/volumes.d/model.d/*
-                #     do
-                #         if [ -L "$mdir" ]
-                #         then
-                #             modelsymlink=1
-                #         fi
-
-                #         mdirbase=$(basename "$mdir")
-                #         volclasspathinstdir="model.d/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
-
-                #         running mkdir -p ${hostdir}/volumes.d/${volclasspathinstdir}
-
-                #         info updirs=$updirs
-                #         running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classmodeldir/model.d/${mdirbase}
-                #     done
-
-                #     if [ "$modelsymlink" -eq 0 ]
-                #     then
-                #         error No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d create it.
-                #     fi
-                # fi              # if [ -d ${hostdir}/volumes.d/model.d ]
-                # running setup_mvc_dirs ${classmodeldir}/
 
                 running setup_dep_control_storage_class_dirs "$storageclass" "$class" "$classinstdir" 1
 
@@ -1067,9 +1040,12 @@ function setup_deps_model_storage_volumes_dir()
             for vld in ${vgd}/*
             do
                 local _location=$vld/users/$USER
-                if [ -f ${_location} ]
+                if [ ! -d ${_location} ]
                 then
                     sudo mkdir -p ${_location}
+                fi
+                if [ -d ${_location} ]
+                then
                     sudo chown root.root ${_location}
                 fi
                 setup_make_link ${_location} "${deps_model_storageclass_path}/$(basename $vgd)-$(basename $vld)"
