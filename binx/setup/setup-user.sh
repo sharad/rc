@@ -1,5 +1,18 @@
 #!/bin/bash
 
+## create a setup-disk.sh
+## for creating lvm disk layout for different sizes of harddisk of 500GB 1T
+## which can have option
+## - for full clean where no window is present
+## - or window or other OSes, other linuxes could come in future
+## - where window already present not going to be there only
+##  here also further two
+##  + only one ubuntu and window will be there
+##  + ubuntu and window and other OSes or other linuxes could come in future.
+## tools will be
+## parted
+
+
 DEBUG=1
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
