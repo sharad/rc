@@ -837,7 +837,7 @@ function setup_dep_control_storage_class_dirs()
 {
     if [ $# -eq 4 ]
     then
-        local storageclass="$1"
+        local storageclassname="$1"
         local class="$2"
         local classinstdir="$3"
 
@@ -860,29 +860,29 @@ function setup_dep_control_storage_class_dirs()
         local updirsclass=${updirsclasslenspace// /"../"}
 
 
-        local storageclassarray=( ${storageclass//\// } )
-        local storageclasslen=${#storageclassarray}
-        local updirsstorageclasslenspace=$(printf "%${storageclasslen}s")
-        local updirsstorageclass=${updirsstorageclasslenspace// /"../"}
+        local storageclassnamearray=( ${storageclassname//\// } )
+        local storageclassnamelen=${#storageclassnamearray}
+        local updirsstorageclassnamelenspace=$(printf "%${storageclassnamelen}s")
+        local updirsstorageclassname=${updirsstorageclassnamelenspace// /"../"}
 
         local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
         local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
         local hostdir=${machinedir}/$HOST
 
         # TODO?
-        local classmodeldir=${hostdir}/volumes.d/control.d/${classpath}${classpath:+/}${storageclass}/${classcontainer}.d
+        local classmodeldir=${hostdir}/volumes.d/control.d/${classpath}${classpath:+/}${storageclassname}/${classcontainer}.d
 
-        # local fullupdirs=${updirsstorageclass}${updirsclass}../../../..
+        # local fullupdirs=${updirsstorageclassname}${updirsclass}../../../..
         local fullupdirs="${updirsclass}../../../.."
 
         mkdir -p $classmodeldir/model.d
         mkdir -p $classmodeldir/control.d
         mkdir -p $classmodeldir/view.d
 
-        if [ -d ${hostdir}/volumes.d/model.d/${storageclass}/ ] && ls ${hostdir}/volumes.d/model.d/${storageclass}/*
+        if [ -d ${hostdir}/volumes.d/model.d/${storageclassname}/ ] && ls ${hostdir}/volumes.d/model.d/${storageclassname}/*
         then
             modelsymlink=0
-            for mdir in ${hostdir}/volumes.d/model.d/${storageclass}/*
+            for mdir in ${hostdir}/volumes.d/model.d/${storageclassname}/*
             do
                 if [ -L "$mdir" ]
                 then
@@ -890,7 +890,7 @@ function setup_dep_control_storage_class_dirs()
                 fi
 
                 mdirbase=$(basename "$mdir")
-                volclasspathinstdir="model.d/${storageclass}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
+                volclasspathinstdir="model.d/${storageclassname}/${mdirbase}/${classpath}${classpath:+/}${classinstdir}"
 
                 running sudo mkdir -p ${hostdir}/volumes.d/${volclasspathinstdir}
                 running sudo chown "$USER.$(id -gn)" ${hostdir}/volumes.d/${volclasspathinstdir}
@@ -902,7 +902,7 @@ function setup_dep_control_storage_class_dirs()
 
             if [ "$modelsymlink" -eq 0 ]
             then
-                error No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d/${storageclass}/ create it.
+                error No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d/${storageclassname}/ create it.
             fi
         fi              # if [ -d ${hostdir}/volumes.d/model.d ]
         running setup_mvc_dirs ${classmodeldir}/
@@ -920,7 +920,7 @@ function setup_deps_control_class_dirs()
 
     if [ $# -eq 3 ]
     then
-        local storageclass="$1"
+        local storageclassname="$1"
         local class="$2"
         local classinstdir="$3"
 
@@ -930,16 +930,6 @@ function setup_deps_control_class_dirs()
         then
             classpath=
         fi
-
-
-
-
-        # local classpatharray=( ${classpath//\// } )
-        # local classlen=${#classpatharray[@]}
-        # local updirslenspace=$(printf "%${classlen}s")
-        # local updirs=${updirslenspace// /"../"}
-
-
 
         local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
         local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
@@ -956,7 +946,7 @@ function setup_deps_control_class_dirs()
                 running setup_make_link $HOST ${machinedir}/default
 
 
-                running setup_dep_control_storage_class_dirs "$storageclass" "$class" "$classinstdir" 1
+                running setup_dep_control_storage_class_dirs "$storageclassname" "$class" "$classinstdir" 1
 
             else                # if [ -d ${hostdir} ]
                 echo Please prepare ${hostdir} for your machine >&2
