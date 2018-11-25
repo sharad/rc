@@ -833,7 +833,7 @@ function setup_machine_dir()
 
 ###{{{ libs
 # worker
-function setup_mkae_path_by_position<()
+function setup_mkae_path_by_position()
 {
     classpath=$1
     storage_path=$2
@@ -1152,10 +1152,10 @@ function setup_deps_control_volumes_dirs()
     local sysdataname=sysdata
 
     # local sysdatascontinername=${dataclassname}/${sysdataname}s
-    local sysdatascontinername=${dataclassname}/${sysdataname}s
+    local sysdatascontinername="${dataclassname}/${sysdataname}s"
 
     # local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
-    local classcontroldir_rel_path=$(setup_make_path_by_position "${dataclassname" "${storage_path}" "${sysdataname}s.d" "$position")
+    local classcontroldir_rel_path=$(setup_make_path_by_position "${dataclassname}" "${storage_path}" "${sysdataname}s.d" "$position" )
     local sysdatasdirname="${classcontroldir_rel_path}"
     # logicaldirs=(config deletable longterm preserved shortterm maildata)
 
@@ -1249,7 +1249,7 @@ function setup_deps_view_volumes_dirs()
             # running setup_deps_control_class_dirs "$storage_path" $sysdatascontinername $sysdataname
             running setup_deps_control_volumes_dirs "$storage_path"
             # TODO?
-            running setup_deps_control_class_dirs "$storage_path" $sysdatascontinername $sysdataname $position
+            running setup_deps_control_class_dirs "$storage_path" "$sysdatascontinername" "$sysdataname" "$position"
 
             mkdir -p ${volumedir}/${viewdirname}
             for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
