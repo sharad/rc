@@ -104,7 +104,7 @@ function main()
 
     cd ~/
 
-    running setup_apt_packages
+    # running setup_apt_packages
 
     running setup_ecrypt_private
 
@@ -117,7 +117,7 @@ function main()
     fi
 
     # will set the ~/.setup also
-    running setup_git_repos
+    # running setup_git_repos
 
     running setup_config_dirs
 
@@ -833,16 +833,16 @@ function setup_machine_dir()
 
 ###{{{ libs
 # worker
-function setup_mkae_path_by_position()
+function setup_make_path_by_position()
 {
-    classpath=$1
-    storage_path=$2
-    classcontainer=$3
+    classpath=class/$1
+    storage_path=storage/$2
+    classcontainer=container/$3
     position=${4-2}
 
     if [ $# -eq 4 ]
     then
-        if [ "x" != "x${classpath}" ]
+        if [ "class/" != "x${classpath}" ]
         then
             case $position in
                 1) echo ${classpath}/${storage_path}/${classcontainer};;
@@ -859,6 +859,8 @@ function setup_mkae_path_by_position()
 
 function setup_dep_control_storage_class_dirs()
 {
+    echo setup_dep_control_storage_class_dirs \#=$#
+
     if [ $# -eq 4 ]
     then
         local storage_path="$1"
@@ -874,19 +876,16 @@ function setup_dep_control_storage_class_dirs()
             classpath=
         fi
 
-
-
-
         local classpatharray=( ${classpath//\// } )
         local classlen=${#classpatharray[@]}
         local updirsclasslenspace=$(printf "%${classlen}s")
         local updirsclass=${updirsclasslenspace// /"../"}
 
 
-        local storage_patharray=( ${storage_path//\// } )
-        local storage_pathlen=${#storage_patharray}
-        local updirsstorage_pathlenspace=$(printf "%${storage_pathlen}s")
-        local updirsstorage_path=${updirsstorage_pathlenspace// /"../"}
+        # local storage_patharray=( ${storage_path//\// } )
+        # local storage_pathlen=${#storage_patharray}
+        # local updirsstorage_pathlenspace=$(printf "%${storage_pathlen}s")
+        # local updirsstorage_path=${updirsstorage_pathlenspace// /"../"}
 
         local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
         local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
@@ -900,8 +899,14 @@ function setup_dep_control_storage_class_dirs()
         # local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
 
 
-        # local fullupdirs=${updirsstorage_path}${updirsclass}../../../..
-        local fullupdirs="${updirsclass}../../../.."
+
+        local classcontroldir_rel_path_array=( ${classcontroldir_rel_path//\// } )
+        local classcontroldir_rel_path_len=${#classcontroldir_rel_path_array[@]}
+        local updirsclasscontroldir_rel_path_len_space=$(printf "%${classcontroldir_rel_path_len}s")
+        local updirsclasscontroldir_rel_path=${updirsclasscontroldir_rel_path_len_space// /"../"}
+
+
+        local fullupdirs="${updirsclasscontroldir_rel_path}../../"
 
 
 
@@ -930,7 +935,7 @@ function setup_dep_control_storage_class_dirs()
                 running sudo chown "$USER.$(id -gn)" ${hostdir}/volumes.d/${volclasspathinstdir}
 
 
-                info updirs=$updirs
+                info fullupdirs=$fullupdirs
                 running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/model.d/${mdirbase}
             done
 
@@ -951,6 +956,8 @@ function setup_deps_control_class_dirs()
 
     # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
     # ls ~/fa/localdirs/deps.d/model.d/machine.d/$HOST/${class}.d/
+
+    echo setup_deps_control_class_dirs \#=$#
 
     if [ $# -eq 4 ]
     then
@@ -980,8 +987,9 @@ function setup_deps_control_class_dirs()
 
                 running setup_make_link $HOST ${machinedir}/default
 
-
-                running setup_dep_control_storage_class_dirs "$storage_path" "$class" "$classinstdir" ${position}
+                # BACK
+                running echo setup_dep_control_storage_class_dirs "$storage_path" "$class" "$classinstdir" "${position}"
+                running setup_dep_control_storage_class_dirs "$storage_path" "$class" "$classinstdir" "${position}"
 
             else                # if [ -d ${hostdir} ]
                 echo Please prepare ${hostdir} for your machine >&2
@@ -1002,18 +1010,20 @@ function setup_deps_control_class_all_positions_dirs()
 
     # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
     # ls ~/fa/localdirs/deps.d/model.d/machine.d/$HOST/${class}.d/
+    echo setup_deps_control_class_all_positions_dirs  \#=$#
 
-    if [ $# -eq 4 ]
+    if [ $# -eq 3 ]
     then
         local storage_path="$1"
         local class="$2"
         local classinstdir="$3"
         for pos in  1 2 3
         do
-            setup_deps_control_class_dirs "${storage_path}" "${class}" "${classinstdir}" "${pos}"
+            running echo setup_deps_control_class_dirs "${storage_path}" "${class}" "${classinstdir}" "${pos}"
+            running setup_deps_control_class_dirs "${storage_path}" "${class}" "${classinstdir}" "${pos}"
         done
     else
-        error setup_dep_control_storage_class_dirs Not correct number of arguments.
+        error setup_deps_control_class_all_positions_dirs: Not correct number of arguments.
     fi
 }
 
