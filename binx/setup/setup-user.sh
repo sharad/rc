@@ -227,6 +227,8 @@ function setup_make_link()
         running ln -sf $target $link
     else
         verbose $link is correctly pointing to "$(readlink -m $rtarget )" is equal to $target
+        rm -f  $link
+        ln -sf $target $link
     fi
 }
 
@@ -1351,12 +1353,34 @@ function setup_deps_dirs()
     running setup_deps_view_volumes_dirs "$storage_path"
 }
 
-function setup_resource_view_dirs()
+function setup_resource_model_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local resourcedir=${LOCALDIRS_DIR}
-    local resource_viewdir=${resourcedir}/view.d
+    local machinedir=${LOCALDIRS_DIR}/deps.d/control.d/machine.d/default
+    local resourcedir=${LOCALDIRS_DIR}/resource.d
+    local resource_modeldir=${resourcedir}/model.d
     local resource_controldir=${resourcedir}/control.d
+
+    cd ${machinedir}/volumes.d/control.d
+    local dirs=( $(find -type d -name view.d | cut -c3- ) )
+    cd -
+
+    local dirs=($(dirname ${dirs[*]}))
+
+    for d in ${dirs[*]}
+    do
+        local ld="${resource_modeldir}/$(dirname $d)"
+        local lb="$(basename $d)"
+        mkdir -p ${ld}
+        local scount=$(setup_count_slash_in_path ${d})
+        local relparenstpath=$(setup_make_parent_path $scount)
+
+        echo slashs in ${d} = $scount parent_path = $relparenstpath
+
+        running setup_make_link ${relparenstpath}/../../deps.d/control.d/machine.d/default/volumes.d/control.d/${d}/view.d   ${ld}/${lb}
+    done
+
+    running setup_make_link ../../deps.d/control.d/machine.d/default/volumes.d/model.d   ${resource_modeldir}/volumes.d
 }
 
 function setup_resource_control_dirs()
@@ -1367,31 +1391,12 @@ function setup_resource_control_dirs()
     local resource_controldir=${resourcedir}/control.d
 }
 
-function setup_resource_model_dirs()
+function setup_resource_view_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local machinedir=${LOCALDIRS_DIR}/deps.d/control.d/machine.d/default
-    local resourcedir=${LOCALDIRS_DIR}/resource.d
-    local resource_modeldir=${resourcedir}/model.d
+    local resourcedir=${LOCALDIRS_DIR}
+    local resource_viewdir=${resourcedir}/view.d
     local resource_controldir=${resourcedir}/control.d
-
-    cd ${machinedir}/volumes.d/control.d
-    local dirs=( $(find -type d -name view.d) )
-    cd -
-    local dirs=($(dirname ${dirs[*]}))
-
-    for d in ${dirs[*]}
-    do
-        local ld="${resource_modeldir}/$(dirname $d)"
-        local lb="$(basename $d)"
-        mkdir -p ${ld}
-        local scount=$(setup_count_slash_in_path ${d})
-        local relparenstpath=$(setup_make_parent_path $scount)
-        echo slashs in ${d} = $scount parent_path = $relparenstpath
-        running setup_make_link ${relparenstpath}/deps.d/control.d/machine.d/default/volumes.d/control.d/${d}/view.d   ${ld}/${lb}
-    done
-
-    running setup_make_link ../../deps.d/control.d/machine.d/default/volumes.d/model.d   ${resource_modeldir}/volumes.d
 }
 
 function setup_resource_view_volumes_logical_dirs()
