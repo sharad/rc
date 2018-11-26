@@ -157,6 +157,42 @@ function setup_finish()
     rm -rf $TMPDIR
 }
 
+function setup_count_slash_in_path()
+{
+    local rel_path="$1"
+
+    rel_path="$(echo ${rel_path} | tr -s /)"
+    rel_path="${rel_path%/}"
+
+    # echo rel_path=$rel_path
+
+    # TODO?
+    # remove last / target=${1%/}
+    # remove duplicate /
+    # 
+
+
+    local rel_path_array=( ${rel_path//\// } )
+    local rel_path_len=$(expr ${#rel_path_array[@]} - 1)
+
+    echo $rel_path_len
+}
+
+function setup_make_parent_path()
+{
+    count="$1"
+    # echo count=$count >&2
+    local updirsrel_path_len_space=$(printf "%${count}s")
+    local updirsrel_path=${updirsrel_path_len_space// /"../"}
+    updirsrel_path=${updirsrel_path%/}
+
+    echo $updirsrel_path
+
+    # TODO?
+    # at last no / should be present
+    # simply join number of .. by /
+}
+
 function setup_make_link()
 {
     local target=$1
@@ -229,6 +265,24 @@ function setup_copy_link()
     else
         echo $link is not a link, not doing anything >&2
     fi
+}
+
+function setup_make_relative_link()
+{
+    local path=$1
+    local target=$2
+    local link=$3
+
+    local linkcount=$(setup_count_slash_in_path "$link")
+    local parents_link=$(setup_make_parent_path "$linkcount")
+
+    echo link=$link
+    echo linkcountlink=$linkcount
+    echo parents_link=$parents_link
+    echo target=$target
+
+    echo running setup_make_link ${parents_link}${target:+/}${target} $link
+    running setup_make_link ${parents_link}${target:+/}${target} $link
 }
 
 function set_keyboard()
@@ -833,22 +887,6 @@ function setup_machine_dir()
 
 ###{{{ libs
 # worker
-function setup_count_slash_in_path()
-{
-    local rel_path="$1"
-    local rel_path_array=( ${rel_path//\// } )
-    local rel_path_len=${#rel_path_array[@]}
-    echo $rel_path_len
-}
-
-function setup_make_parent_path()
-{
-    count="$1"
-    local updirsrel_path_len_space=$(printf "%${count}s")
-    local updirsrel_path=${updirsrel_path_len_space// /"../"}
-    echo $updirsrel_path
-}
-
 function setup_make_path_by_position()
 {
     classpath=class/$1
@@ -902,16 +940,14 @@ function setup_dep_control_storage_class_dirs()
 
         # # TODO?
         # local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
+        local pcount=$(setup_count_slash_in_path ${classcontroldir_rel_path})
+        local ppath=$(setup_make_parent_path $pcount)
 
 
+        local fullupdirs="${ppath}/../../.."
 
-        local classcontroldir_rel_path_array=( ${classcontroldir_rel_path//\// } )
-        local classcontroldir_rel_path_len=${#classcontroldir_rel_path_array[@]}
-        local updirsclasscontroldir_rel_path_len_space=$(printf "%${classcontroldir_rel_path_len}s")
-        local updirsclasscontroldir_rel_path=${updirsclasscontroldir_rel_path_len_space// /"../"}
-
-        local fullupdirs="${updirsclasscontroldir_rel_path}../../"
-
+        # info pcount=$pcount ppath=$ppath for ${classcontroldir_rel_path}
+        # info updirsclasscontroldir_rel_path=$updirsclasscontroldir_rel_path fullupdirs-$fullupdirs
 
 
 
@@ -1144,7 +1180,9 @@ function setup_deps_model_volumes_dirs()
 
             setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
 
-            setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
+            running setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
+
+            running setup_make_relative_link ~/ "" ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/deps.d/model.d/machine.d/$HOST/home
 
             mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
 
@@ -1341,6 +1379,7 @@ function setup_resource_model_dirs()
     local dirs=( $(find -type d -name view.d) )
     cd -
     local dirs=($(dirname ${dirs[*]}))
+
     for d in ${dirs[*]}
     do
         local ld="${resource_modeldir}/$(dirname $d)"
@@ -1361,6 +1400,8 @@ function setup_resource_view_volumes_logical_dirs()
     local resourcedir=${LOCALDIRS_DIR}
     local resource_viewdir=${resourcedir}/view.d
     local resource_controldir=${resourcedir}/control.d
+
+    
 }
 
 function setup_resource_dirs()
