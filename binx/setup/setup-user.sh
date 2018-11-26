@@ -833,6 +833,22 @@ function setup_machine_dir()
 
 ###{{{ libs
 # worker
+function setup_count_slash_in_path()
+{
+    local rel_path="$1"
+    local rel_path_array=( ${rel_path//\// } )
+    local rel_path_len=${#rel_path_array[@]}
+    echo $rel_path_len
+}
+
+function setup_make_parent_path()
+{
+    count="$1"
+    local updirsrel_path_len_space=$(printf "%${count}s")
+    local updirsrel_path=${updirsrel_path_len_space// /"../"}
+    echo $updirsrel_path
+}
+
 function setup_make_path_by_position()
 {
     classpath=class/$1
@@ -876,17 +892,6 @@ function setup_dep_control_storage_class_dirs()
             classpath=
         fi
 
-        local classpatharray=( ${classpath//\// } )
-        local classlen=${#classpatharray[@]}
-        local updirsclasslenspace=$(printf "%${classlen}s")
-        local updirsclass=${updirsclasslenspace// /"../"}
-
-
-        # local storage_patharray=( ${storage_path//\// } )
-        # local storage_pathlen=${#storage_patharray}
-        # local updirsstorage_pathlenspace=$(printf "%${storage_pathlen}s")
-        # local updirsstorage_path=${updirsstorage_pathlenspace// /"../"}
-
         local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
         local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
         local hostdir=${machinedir}/$HOST
@@ -904,7 +909,6 @@ function setup_dep_control_storage_class_dirs()
         local classcontroldir_rel_path_len=${#classcontroldir_rel_path_array[@]}
         local updirsclasscontroldir_rel_path_len_space=$(printf "%${classcontroldir_rel_path_len}s")
         local updirsclasscontroldir_rel_path=${updirsclasscontroldir_rel_path_len_space// /"../"}
-
 
         local fullupdirs="${updirsclasscontroldir_rel_path}../../"
 
@@ -992,12 +996,12 @@ function setup_deps_control_class_dirs()
                 running setup_dep_control_storage_class_dirs "$storage_path" "$class" "$classinstdir" "${position}"
 
             else                # if [ -d ${hostdir} ]
-                echo Please prepare ${hostdir} for your machine >&2
+                info Please prepare ${hostdir} for your machine >&2
                 exit -1
             fi                  # if [ -d ${hostdir} ]
 
         else                    # if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
-            echo ${LOCALDIRS_DIR} or ${machinedir} not exists. >&2
+            warn ${LOCALDIRS_DIR} or ${machinedir} not exists. >&2
         fi                      # if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
     else
         error setup_deps_control_class_dirs: Not correct number of arguments.
@@ -1328,9 +1332,27 @@ function setup_resource_control_dirs()
 function setup_resource_model_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local resourcedir=${LOCALDIRS_DIR}
-    local resource_viewdir=${resourcedir}/view.d
+    local machinedir=${LOCALDIRS_DIR}/deps.d/control.d/machine.d/default
+    local resourcedir=${LOCALDIRS_DIR}/resource.d
+    local resource_modeldir=${resourcedir}/model.d
     local resource_controldir=${resourcedir}/control.d
+
+    cd ${machinedir}/volumes.d/control.d
+    local dirs=( $(find -type d -name view.d) )
+    cd -
+    local dirs=($(dirname ${dirs[*]}))
+    for d in ${dirs[*]}
+    do
+        local ld="${resource_modeldir}/$(dirname $d)"
+        local lb="$(basename $d)"
+        mkdir -p ${ld}
+        local scount=$(setup_count_slash_in_path ${d})
+        local relparenstpath=$(setup_make_parent_path $scount)
+        echo slashs in ${d} = $scount parent_path = $relparenstpath
+        running setup_make_link ${relparenstpath}/deps.d/control.d/machine.d/default/volumes.d/control.d/${d}/view.d   ${ld}/${lb}
+    done
+
+    running setup_make_link ../../deps.d/control.d/machine.d/default/volumes.d/model.d   ${resource_modeldir}/volumes.d
 }
 
 function setup_resource_view_volumes_logical_dirs()
