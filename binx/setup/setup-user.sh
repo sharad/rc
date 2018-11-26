@@ -169,7 +169,7 @@ function setup_count_slash_in_path()
     # TODO?
     # remove last / target=${1%/}
     # remove duplicate /
-    # 
+    #
 
 
     local rel_path_array=( ${rel_path//\// } )
@@ -1358,7 +1358,7 @@ function setup_resource_model_dirs()
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     local machinedir=${LOCALDIRS_DIR}/deps.d/control.d/machine.d/default
     local resourcedir=${LOCALDIRS_DIR}/resource.d
-    local resource_modeldir=${resourcedir}/model.d/dep_control
+    local resource_model_control_dir=${resourcedir}/model.d/control
 
     cd ${machinedir}/volumes.d/control.d
     local dirs=( $(find -type d -name view.d | cut -c3- ) )
@@ -1368,7 +1368,7 @@ function setup_resource_model_dirs()
 
     for d in ${dirs[*]}
     do
-        local ld="${resource_modeldir}/$(dirname $d)"
+        local ld="${resource_model_control_dir}/$(dirname $d)"
         local lb="$(basename $d)"
         mkdir -p ${ld}
         local scount=$(setup_count_slash_in_path ${d})
