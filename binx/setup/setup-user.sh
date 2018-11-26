@@ -1358,8 +1358,7 @@ function setup_resource_model_dirs()
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     local machinedir=${LOCALDIRS_DIR}/deps.d/control.d/machine.d/default
     local resourcedir=${LOCALDIRS_DIR}/resource.d
-    local resource_modeldir=${resourcedir}/model.d
-    local resource_controldir=${resourcedir}/control.d
+    local resource_modeldir=${resourcedir}/model.d/dep_control
 
     cd ${machinedir}/volumes.d/control.d
     local dirs=( $(find -type d -name view.d | cut -c3- ) )
@@ -1377,7 +1376,7 @@ function setup_resource_model_dirs()
 
         echo slashs in ${d} = $scount parent_path = $relparenstpath
 
-        running setup_make_link ${relparenstpath}/../../deps.d/control.d/machine.d/default/volumes.d/control.d/${d}/view.d   ${ld}/${lb}
+        running setup_make_link ${relparenstpath}/../../../deps.d/control.d/machine.d/default/volumes.d/control.d/${d}/view.d   ${ld}/${lb}
     done
 
     running setup_make_link ../../deps.d/control.d/machine.d/default/volumes.d/model.d   ${resource_modeldir}/volumes.d
@@ -1386,8 +1385,8 @@ function setup_resource_model_dirs()
 function setup_resource_control_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local resourcedir=${LOCALDIRS_DIR}
-    local resource_viewdir=${resourcedir}/view.d
+    local resourcedir=${LOCALDIRS_DIR}/resource.d
+    local resource_modeldir=${resourcedir}/model.d
     local resource_controldir=${resourcedir}/control.d
 }
 
@@ -1405,8 +1404,6 @@ function setup_resource_view_volumes_logical_dirs()
     local resourcedir=${LOCALDIRS_DIR}
     local resource_viewdir=${resourcedir}/view.d
     local resource_controldir=${resourcedir}/control.d
-
-    
 }
 
 function setup_resource_dirs()
