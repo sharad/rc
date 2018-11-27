@@ -540,7 +540,7 @@
          (set-variable 'ycmd-server-command '("python" "/usr/bin/ycmd"))
          (set-variable 'ycmd-global-config  "~/.ycmd_global_conf.py")
          (set-variable 'ycmd-extra-conf-handler 'load)
-         (set-variable 'ycmd-extra-conf-whitelist (list "/home/s/paradise/git/main/" (file-truename "/home/s/paradise/git/main/")))))
+         (set-variable 'ycmd-conf-whitelist (list "/home/s/paradise/releases/main/" (file-truename "/home/s/paradise/releases/main/")))))
    t)
 
 
