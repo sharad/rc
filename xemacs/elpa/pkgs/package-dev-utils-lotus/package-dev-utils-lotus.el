@@ -38,10 +38,9 @@
 (require 'package-build "~/.emacs.d/core/libs/package-build.el")
 
 (defvar package-source-path "~/.xemacs/elpa/pkgs" "Source code path for packages.")
+(defvar package-archive-upload-base "~/.xemacs/elpa/upload")
 (defvar package-local-dev-archive "local" "Local archive specified in package-archives")
 (defvar *package-install-packages-wait-secs-in-install* 7)
-
-(setq package-archive-upload-base "~/.xemacs/elpa/upload")
 
 (unless (assoc package-local-dev-archive package-archives)
   (push
