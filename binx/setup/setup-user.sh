@@ -104,7 +104,7 @@ function main()
 
     cd ~/
 
-    # running setup_apt_packages
+    running setup_apt_packages
 
     running setup_ecrypt_private
 
@@ -117,7 +117,7 @@ function main()
     fi
 
     # will set the ~/.setup also
-    # running setup_git_repos
+    running setup_git_repos
 
     running setup_config_dirs
 
