@@ -1073,24 +1073,18 @@ function setup_deps_control_data_sysdata_dirs()
 {
     storage_path="${1-local}"
 
-    # running setup_deps_model_volumes_dirs "${storage_path}"
-    # running setup_deps_control_class_dirs "$storage_path" ${dataclassname}/sysdatas sysdata
     running setup_deps_control_class_all_positions_dirs "$storage_path" ${dataclassname}/sysdatas sysdata
 }
 function setup_deps_control_data_scratches_dirs()
 {
     storage_path="${1-local}"
 
-    # running setup_deps_model_volumes_dirs "${storage_path}"
-    # running setup_deps_control_class_dirs "$storage_path" ${dataclassname}/scratches scratch
     running setup_deps_control_class_all_positions_dirs "$storage_path" ${dataclassname}/scratches scratch
 }
 function setup_deps_control_data_main_dirs()
 {
     storage_path="${1-local}"
 
-    # running setup_deps_model_volumes_dirs "${storage_path}"
-    # running setup_deps_control_class_dirs "$storage_path" ${dataclassname}/main main
     running setup_deps_control_class_all_positions_dirs "$storage_path" ${dataclassname}/main main
 }
 function setup_deps_control_data_dirs()
@@ -1182,7 +1176,7 @@ function setup_deps_model_volumes_dirs()
 
             setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
 
-            running setup_make_link "../../../../../../../../../../../../../../"  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
+            # running setup_make_link "../../../../../../../../../../../../../.."  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
 
             running setup_make_relative_link ~/ "" ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/deps.d/model.d/machine.d/$HOST/home
 
