@@ -104,7 +104,7 @@ function main()
 
     cd ~/
 
-    running setup_apt_packages
+    # running setup_apt_packages
 
     running setup_ecrypt_private
 
@@ -117,7 +117,7 @@ function main()
     fi
 
     # will set the ~/.setup also
-    running setup_git_repos
+    # running setup_git_repos
 
     running setup_config_dirs
 
@@ -867,6 +867,11 @@ function setup_machine_dir()
         fi
     done
 
+    if [ -d ${LOCALDIRS_DIR} ]
+    then
+        mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
+    fi
+
     # check local home model.d directory
     if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d ]
     then
@@ -946,7 +951,8 @@ function setup_dep_control_storage_class_dirs()
         local ppath=$(setup_make_parent_path $pcount)
 
 
-        local fullupdirs="${ppath}/../../.."
+        # local fullupdirs="${ppath}/../../.."
+        local fullupdirs="${ppath}/../.."
 
         # info pcount=$pcount ppath=$ppath for ${classcontroldir_rel_path}
         # info updirsclasscontroldir_rel_path=$updirsclasscontroldir_rel_path fullupdirs-$fullupdirs
@@ -956,9 +962,9 @@ function setup_dep_control_storage_class_dirs()
         running setup_deps_model_volumes_dirs "${storage_path}"
 
 
-        mkdir -p $classcontrol_dir_path/model.d
-        mkdir -p $classcontrol_dir_path/control.d
-        mkdir -p $classcontrol_dir_path/view.d
+        # mkdir -p $classcontrol_dir_path/model.d
+        mkdir -p $classcontrol_dir_path
+        # mkdir -p $classcontrol_dir_path/view.d
 
         if [ -d ${hostdir}/volumes.d/model.d/${storage_path}/ ] && ls ${hostdir}/volumes.d/model.d/${storage_path}/*
         then
@@ -978,7 +984,10 @@ function setup_dep_control_storage_class_dirs()
 
 
                 info fullupdirs=$fullupdirs
-                running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/model.d/${mdirbase}
+                # running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/model.d/${mdirbase}
+                echo SHARAD running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
+                running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
+
             done
 
             if [ "$modelsymlink" -eq 0 ]
@@ -986,7 +995,8 @@ function setup_dep_control_storage_class_dirs()
                 error No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d/${storage_path}/ create it.
             fi
         fi              # if [ -d ${hostdir}/volumes.d/model.d ]
-        running setup_mvc_dirs ${classcontrol_dir_path}/
+
+        # running setup_mvc_dirs ${classcontrol_dir_path}/
     else
         error setup_dep_control_storage_class_dirs Not correct number of arguments.
     fi
@@ -1198,8 +1208,7 @@ function setup_deps_control_volumes_dirs()
     local position=${2-2}
 
     local sysdataname=sysdata
-
-    # local sysdatascontinername=${dataclassname}/${sysdataname}s
+    local viewdirname=view.d
     local sysdatascontinername="${dataclassname}/${sysdataname}s"
 
     # local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
@@ -1221,13 +1230,19 @@ function setup_deps_control_volumes_dirs()
 
         if [ ! -L "${volumedir}/${viewdirname}/$cdir" -o ! -d "${volumedir}/${viewdirname}/$cdir" ]
         then
-
-            for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/view.d/*
+            # for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/view.d/*
+            echo SHARAD
+            ls ${volumedir}/control.d/${sysdatasdirname}/
+            if ls ${volumedir}/control.d/${sysdatasdirname}/*
+            then
+            for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
             do
-                # TODO?
+                # TODO? -sharad
                 volsysdatadirbase=$(basename ${sysdatadir})
-                mkdir -p  ${volumedir}/control.d/${sysdatasdirname}/view.d/${volsysdatadirbase}/$cdir
+                # mkdir -p  ${volumedir}/control.d/${sysdatasdirname}/view.d/${volsysdatadirbase}/$cdir
+                mkdir -p ${volumedir}/control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir
             done
+            fi
         fi
     done
 
@@ -1427,16 +1442,19 @@ function setup_dirs()
     running setup_machine_dir
 
 
-    # TODO
-    # do it for all basename /srv/volumes/*
-    # below /srv/volumes/ for all mounted patchs
-    running setup_deps_dirs "local"
+    if true
+    then
+        # TODO
+        # do it for all basename /srv/volumes/*
+        # below /srv/volumes/ for all mounted patchs
+        running setup_deps_dirs "local"
 
 
-    running setup_resource_dirs
-    running setup_osetup_dirs
-    running setup_Documentation
-    running setup_public_html
+        running setup_resource_dirs
+        running setup_osetup_dirs
+        running setup_Documentation
+        running setup_public_html
+    fi
 }
 
 function setup_spacemacs()
