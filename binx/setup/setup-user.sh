@@ -1256,6 +1256,9 @@ function setup_deps_control_volumes_dirs()
 
 function setup_deps_view_volumes_dirs()
 {
+
+    # TODO? not working ! correct it.
+
     local storage_path="${1-local}"
     local position=${2-2}
 
@@ -1281,6 +1284,8 @@ function setup_deps_view_volumes_dirs()
     local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
 
     local viewdirname=view.d
+
+    echo SHARAD TEST
 
     # check local home model.d directory
     if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
@@ -1371,63 +1376,75 @@ function setup_resource_model_dirs()
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     local machinedir=${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d/default
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
-    # local resource_model_control_dir=${resourcedir}/
 
     cd ${machinedir}/volumes.d
-
     echo SHARAD TEST
-    find -type l | cut -c3-
-
     local links=( $(find -type l | cut -c3- ) )
     cd -
 
-    # local links=($(dirname ${links[*]}))
-
-
-    # TODO? do somthing here
+    # TODO? do something here
     for lnk in ${links[*]}
     do
-        # local ld="${resourcedir}/$(dirname $lnk)"
-        local ld="$(dirname $lnk)"
-        local lb="$(basename $lnk)"
-        mkdir -p ${ld}
-        local scount=$(setup_count_slash_in_path ${lnk})
-        local relparenstpath=$(setup_make_parent_path $scount)
-
-        echo slashs in ${lnk} = $scount parent_path = $relparenstpath
-
-        # running setup_make_link ${relparenstpath}/../deps.d/control.d/machine.d/default/volumes.d/${lnk}   ${ld}/${lb}
-
-        # running setup_make_link ${relparenstpath}/../deps.d/control.d/machine.d/default/volumes.d/${lnk}   ${ld}/${lb}
-
-        running setup_make_relative_link ${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/${lnk} $lnk
+        running setup_make_relative_link ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d/${lnk} resource.d/$lnk
     done
 
     # running setup_make_link ../../org/deps.d/control.d/machine.d/default/volumes.d/model.d   ${resource_modeldir}/volumes.d
 }
 
-function setup_resource_control_dirs()
+function setup_org_home_portable_dirs()
 {
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local resourcedir=${LOCALDIRS_DIR}/resource.d
-    local resource_modeldir=${resourcedir}/model.d
-    local resource_controldir=${resourcedir}/control.d
+    # TODO?
+    # home.d/portable.d% ls -1l
+    # total 56K
+    # drwxrwxr-x 2 s s 4.0K Dec  4 03:25 Desktop/
+    # lrwxrwxrwx 1 s s   15 Dec  4 03:26 Documents -> ../../../../doc/
+    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Downloads/
+    # lrwxrwxrwx 1 s s   17 Dec  4 03:25 Library -> Documents/Library/
+    # lrwxrwxrwx 1 s s   71 Dec  4 03:27 Maildir -> ../../../resource.d/view.d/volumes.d/maildata/mail-and-metadata/maildir
+    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Music/
+    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Pictures/
+    # lrwxrwxrwx 1 s s   44 Dec  4 03:28 Private -> ../../../../../../private/user/noenc/Private/
+    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Public/
+    # lrwxrwxrwx 1 s s   19 Dec  4 03:25 public_html -> Public/Publish/html/
+    # -rw-rw-r-- 1 s s   96 Dec  4 03:25 README
+    # lrwxrwxrwx 1 s s   74 Dec  4 03:33 Scratches -> ../../resource.d/control.d/class/data/storage/local/container/scratches.d//
+    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Scratches-OLD/
+    # drwxrwxr-x 2 s s 4.0K Dec  4 03:25 Sink/
+    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Templates/
+    # drwxrwxr-x 2 s s 4.0K Dec  4 03:25 tmp/
+    # -rw-rw-r-- 1 s s   14 Dec  4 03:25 TODO
+    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Videos/
+    # lrwxrwxrwx 1 s s   24 Dec  4 03:28 Volumes -> ../../resource.d/model.d/
+}
+
+function setup_org_misc_dirs()
+{
+    # TODO?
+    # org/misc.d% ls -1l
+    # total 4.0K
+    # lrwxrwxrwx 1 s s 72 Dec  4 03:37 offlineimap -> ../../resource.d/view.d/volumes.d/maildata/mail-and-metadata/offlineimap
+}
+
+function setup_org_misc_dirs()
+{
+    # TODO?
+    # org/rc.d% ls -1l
+    # total 20K
+    # lrwxrwxrwx 1 s s  21 Dec  4 03:25 HOME -> ../deps.d/view.d/home
+    # lrwxrwxrwx 1 s s  68 Dec  4 03:25 localdirs -> repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/
+    # lrwxrwxrwx 1 s s  62 Dec  4 03:25 opt -> repos/git/main/resource/userorg/main/readwrite/public/user/opt/
+    # lrwxrwxrwx 1 s s  65 Dec  4 03:25 osetup -> repos/git/main/resource/userorg/main/readwrite/public/user/osetup/
+    # -rw-rw-r-- 1 s s 109 Dec  4 03:25 README
+    # lrwxrwxrwx 1 s s  32 Dec  4 03:40 repos -> ../../../../../../../../../../../
+    # lrwxrwxrwx 1 s s  61 Dec  4 03:25 setup -> repos/git/main/resource/userorg/main/readwrite/public/user/rc/
 }
 
 function setup_resource_view_dirs()
 {
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local resourcedir=${LOCALDIRS_DIR}
-    local resource_viewdir=${resourcedir}/view.d
-    local resource_controldir=${resourcedir}/control.d
 }
 
 function setup_resource_view_volumes_logical_dirs()
 {
-    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local resourcedir=${LOCALDIRS_DIR}
-    local resource_viewdir=${resourcedir}/view.d
-    local resource_controldir=${resourcedir}/control.d
 }
 
 function setup_resource_dirs()
