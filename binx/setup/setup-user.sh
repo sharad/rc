@@ -1387,7 +1387,8 @@ function setup_resource_model_dirs()
     # TODO? do somthing here
     for lnk in ${links[*]}
     do
-        local ld="${resourcedir}/$(dirname $lnk)"
+        # local ld="${resourcedir}/$(dirname $lnk)"
+        local ld="$(dirname $lnk)"
         local lb="$(basename $lnk)"
         mkdir -p ${ld}
         local scount=$(setup_count_slash_in_path ${lnk})
@@ -1395,7 +1396,11 @@ function setup_resource_model_dirs()
 
         echo slashs in ${lnk} = $scount parent_path = $relparenstpath
 
-        running setup_make_link ${relparenstpath}/../../deps.d/control.d/machine.d/default/volumes.d/${lnk}   ${ld}/${lb}
+        # running setup_make_link ${relparenstpath}/../deps.d/control.d/machine.d/default/volumes.d/${lnk}   ${ld}/${lb}
+
+        # running setup_make_link ${relparenstpath}/../deps.d/control.d/machine.d/default/volumes.d/${lnk}   ${ld}/${lb}
+
+        running setup_make_relative_link ${LOCALDIRS_DIR}/org deps.d/control.d/machine.d/default/volumes.d/${lnk} $lnk
     done
 
     # running setup_make_link ../../org/deps.d/control.d/machine.d/default/volumes.d/model.d   ${resource_modeldir}/volumes.d
