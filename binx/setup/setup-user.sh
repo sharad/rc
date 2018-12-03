@@ -868,22 +868,22 @@ function setup_machine_dir()
     done
 
     # check local home model.d directory
-    if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
+    if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d ]
     then
-        if [ ! -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+        if [ ! -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
         then
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
-            if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+            mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
+            if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
             then
-                running  cp -ar ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/sample ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
-                echo add ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST into git
+                running  cp -ar ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/sample ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
+                echo add ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST into git
             fi
-        fi                      # if [ ! -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
-    fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
+        fi                      # if [ ! -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
+    fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d ]
 
-    if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+    if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
     then
-       running setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
+       running setup_make_link $HOST ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default
     fi
 }
 
@@ -933,7 +933,7 @@ function setup_dep_control_storage_class_dirs()
         fi
 
         local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-        local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
+        local machinedir=${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
         local hostdir=${machinedir}/$HOST
 
         # TODO?
@@ -996,8 +996,8 @@ function setup_deps_control_class_dirs()
 {
     # use namei to track
 
-    # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
-    # ls ~/fa/localdirs/deps.d/model.d/machine.d/$HOST/${class}.d/
+    # ls ~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
+    # ls ~/fa/localdirs/org/deps.d/model.d/machine.d/$HOST/${class}.d/
 
     echo setup_deps_control_class_dirs \#=$#
 
@@ -1016,7 +1016,7 @@ function setup_deps_control_class_dirs()
         fi
 
         local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-        local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
+        local machinedir=${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
         local hostdir=${machinedir}/$HOST
 
 
@@ -1050,8 +1050,8 @@ function setup_deps_control_class_all_positions_dirs()
 {
     # use namei to track
 
-    # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
-    # ls ~/fa/localdirs/deps.d/model.d/machine.d/$HOST/${class}.d/
+    # ls ~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
+    # ls ~/fa/localdirs/org/deps.d/model.d/machine.d/$HOST/${class}.d/
     echo setup_deps_control_class_all_positions_dirs  \#=$#
 
     if [ $# -eq 3 ]
@@ -1122,7 +1122,7 @@ function setup_deps_model_storage_volumes_dir()
 
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
-    deps_model_storageclass_path="${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${storage_path}"
+    deps_model_storageclass_path="${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d/${storage_path}"
 
     mkdir -p "${deps_model_storageclass_path}"
 
@@ -1165,30 +1165,30 @@ function setup_deps_model_volumes_dirs()
     # use namei to track
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     # check local home model.d directory
-    if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
+    if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d ]
     then
 
         # running setup_machine_dir
 
-        if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
+        if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
         then
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST
+            mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
 
-            setup_make_link $HOST ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/default
+            setup_make_link $HOST ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default
 
-            # running setup_make_link "../../../../../../../../../../../../../.."  ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/home
+            # running setup_make_link "../../../../../../../../../../../../../.."  ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/home
 
-            running setup_make_relative_link ~/ "" ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/deps.d/model.d/machine.d/$HOST/home
+            running setup_make_relative_link ~/ "" ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/deps.d/model.d/machine.d/$HOST/home
 
-            mkdir -p ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
+            mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST/volumes.d/model.d
 
             setup_deps_model_storage_volumes_dir "$storage_path"
 
-        else                    # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
-            error Please prepare ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST for your machine >&2
+        else                    # if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
+            error Please prepare ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST for your machine >&2
             exit -1
-        fi                      # if [ -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d/$HOST ]
-    fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/deps.d/model.d/machine.d ]
+        fi                      # if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
+    fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d ]
 }
 
 function setup_deps_control_volumes_dirs()
@@ -1208,7 +1208,7 @@ function setup_deps_control_volumes_dirs()
     # logicaldirs=(config deletable longterm preserved shortterm maildata)
 
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
+    local machinedir=${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
     local hostdir=${machinedir}/$HOST
     local volumedir=${hostdir}/volumes.d
 
@@ -1241,14 +1241,14 @@ function setup_deps_view_volumes_dirs()
     local position=${2-2}
 
     # TODO?
-    # ls ~/.fa/localdirs/deps.d/model.d/machine.d/default/volumes.d/control.d/
+    # ls ~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/control.d/
 
     # logicaldirs=(config deletable longterm preserved shortterm maildata)
 
     # use namei to track
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
 
-    local machinedir=${LOCALDIRS_DIR}/deps.d/model.d/machine.d
+    local machinedir=${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
 
     local hostdir=${machinedir}/$HOST
 
@@ -1350,7 +1350,7 @@ function setup_deps_dirs()
 function setup_resource_model_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-    local machinedir=${LOCALDIRS_DIR}/deps.d/control.d/machine.d/default
+    local machinedir=${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d/default
     local resourcedir=${LOCALDIRS_DIR}/resource.d
     local resource_model_control_dir=${resourcedir}/model.d/control
 
@@ -1370,10 +1370,10 @@ function setup_resource_model_dirs()
 
         echo slashs in ${d} = $scount parent_path = $relparenstpath
 
-        running setup_make_link ${relparenstpath}/../../../deps.d/control.d/machine.d/default/volumes.d/control.d/${d}/view.d   ${ld}/${lb}
+        running setup_make_link ${relparenstpath}/../../../org/deps.d/control.d/machine.d/default/volumes.d/control.d/${d}/view.d   ${ld}/${lb}
     done
 
-    running setup_make_link ../../deps.d/control.d/machine.d/default/volumes.d/model.d   ${resource_modeldir}/volumes.d
+    running setup_make_link ../../org/deps.d/control.d/machine.d/default/volumes.d/model.d   ${resource_modeldir}/volumes.d
 }
 
 function setup_resource_control_dirs()
