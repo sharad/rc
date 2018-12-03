@@ -283,8 +283,8 @@ function setup_make_relative_link()
     echo parents_link=$parents_link
     echo target=$target
 
-    echo running setup_make_link ${parents_link}${target:+/}${target} $link
-    running setup_make_link ${parents_link}${target:+/}${target} $link
+    echo running setup_make_link ${parents_link}${target:+/}${target} $path/$link
+    running setup_make_link ${parents_link}${target:+/}${target} $path/$link
 }
 
 function set_keyboard()
@@ -870,6 +870,7 @@ function setup_machine_dir()
     if [ -d ${LOCALDIRS_DIR} ]
     then
         mkdir -p ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
+        mkdir -p ${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d
     fi
 
     # check local home model.d directory
@@ -888,7 +889,10 @@ function setup_machine_dir()
 
     if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
     then
-       running setup_make_link $HOST ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default
+        running setup_make_link $HOST ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default
+        # echo SHARAD TEST
+        echo running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d  model.d/machine.d/default  control.d/machine.d/default
+        running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d  model.d/machine.d/default  control.d/machine.d/default
     fi
 }
 
@@ -985,7 +989,7 @@ function setup_dep_control_storage_class_dirs()
 
                 info fullupdirs=$fullupdirs
                 # running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/model.d/${mdirbase}
-                echo SHARAD running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
+                # echo SHARAD running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
                 running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
 
             done
@@ -1231,8 +1235,8 @@ function setup_deps_control_volumes_dirs()
         if [ ! -L "${volumedir}/${viewdirname}/$cdir" -o ! -d "${volumedir}/${viewdirname}/$cdir" ]
         then
             # for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/view.d/*
-            echo SHARAD
-            ls ${volumedir}/control.d/${sysdatasdirname}/
+            # echo SHARAD
+            # ls ${volumedir}/control.d/${sysdatasdirname}/
             if ls ${volumedir}/control.d/${sysdatasdirname}/*
             then
             for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
@@ -1366,31 +1370,35 @@ function setup_resource_model_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     local machinedir=${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d/default
-    local resourcedir=${LOCALDIRS_DIR}/resource.d
-    local resource_model_control_dir=${resourcedir}/model.d/control
+    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
+    # local resource_model_control_dir=${resourcedir}/
 
-    cd ${machinedir}/volumes.d/control.d
-    local dirs=( $(find -type d -name view.d | cut -c3- ) )
+    cd ${machinedir}/volumes.d
+
+    echo SHARAD TEST
+    find -type l | cut -c3-
+
+    local links=( $(find -type l | cut -c3- ) )
     cd -
 
-    local dirs=($(dirname ${dirs[*]}))
+    # local links=($(dirname ${links[*]}))
 
 
     # TODO? do somthing here
-    for d in ${dirs[*]}
+    for lnk in ${links[*]}
     do
-        local ld="${resource_model_control_dir}/$(dirname $d)"
-        local lb="$(basename $d)"
+        local ld="${resourcedir}/$(dirname $lnk)"
+        local lb="$(basename $lnk)"
         mkdir -p ${ld}
-        local scount=$(setup_count_slash_in_path ${d})
+        local scount=$(setup_count_slash_in_path ${lnk})
         local relparenstpath=$(setup_make_parent_path $scount)
 
-        echo slashs in ${d} = $scount parent_path = $relparenstpath
+        echo slashs in ${lnk} = $scount parent_path = $relparenstpath
 
-        running setup_make_link ${relparenstpath}/../../../org/deps.d/control.d/machine.d/default/volumes.d/control.d/${d}/view.d   ${ld}/${lb}
+        running setup_make_link ${relparenstpath}/../../deps.d/control.d/machine.d/default/volumes.d/${lnk}   ${ld}/${lb}
     done
 
-    running setup_make_link ../../org/deps.d/control.d/machine.d/default/volumes.d/model.d   ${resource_modeldir}/volumes.d
+    # running setup_make_link ../../org/deps.d/control.d/machine.d/default/volumes.d/model.d   ${resource_modeldir}/volumes.d
 }
 
 function setup_resource_control_dirs()
