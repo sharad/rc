@@ -1360,6 +1360,8 @@ function setup_resource_model_dirs()
 
     local dirs=($(dirname ${dirs[*]}))
 
+
+    # TODO? do somthing here
     for d in ${dirs[*]}
     do
         local ld="${resource_model_control_dir}/$(dirname $d)"
