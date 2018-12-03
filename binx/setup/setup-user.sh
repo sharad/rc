@@ -1287,9 +1287,11 @@ function setup_deps_view_volumes_dirs()
 
     echo SHARAD TEST
 
+    # need to create ${LOCALDIRS_DIR}/org/deps.d/view.d/
+
     # check local home model.d directory
     if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
-    then
+    then                        # doing for path/volume.d mainly
         if [ -d ${hostdir} ]
         then
 
