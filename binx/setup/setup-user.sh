@@ -1414,34 +1414,42 @@ function setup_deps_view_volumes_dirs()
                         error No target directory $(readlink -m $cdir) exist for symlink "${volumedir}/${viewdirname}/$cdir", create it.
                     fi
 
-                    echo  >> $todopath
-                    echo ls ${volumedir}/control.d/${sysdatasdirname}/ >> $todopath
-                    ls ${volumedir}/control.d/${sysdatasdirname}/      >> $todopath
-                    echo  >> $todopath
-
                     for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
                     do
                         volsysdatadirbase=$(basename ${sysdatadir})
-
                         info ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir"
 
-                        echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> $todopath
-                        echo  >> $todopath
-                        echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "$cdir" >> $todopath
-                        echo  >> $todopath
-
-                        if [ ! -e "${volumedir}/${viewdirname}/$cdir" -o ! -L "${volumedir}/${viewdirname}/$cdir" ]
-                        then
-                            echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> $missingpath
-                            echo  >> $missingpath
-                            echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "$cdir" >> $missingpath
-                            echo  >> $missingpath
-                        fi
-
                     done
-                    echo  >> $todopath
-                    echo  >> $todopath
                 fi
+
+
+
+
+                echo  >> $todopath
+                echo ls ${volumedir}/control.d/${sysdatasdirname}/ >> $todopath
+                ls ${volumedir}/control.d/${sysdatasdirname}/      >> $todopath
+                echo  >> $todopath
+                for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
+                do
+                    volsysdatadirbase=$(basename ${sysdatadir})
+                    echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> $todopath
+                    echo  >> $todopath
+                    echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "$cdir" >> $todopath
+                    echo  >> $todopath
+
+                    if [ ! -e "${volumedir}/${viewdirname}/$cdir" -o ! -L "${volumedir}/${viewdirname}/$cdir" ]
+                    then
+                        echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> $missingpath
+                        echo  >> $missingpath
+                        echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "$cdir" >> $missingpath
+                        echo  >> $missingpath
+                    fi
+                done
+                echo  >> $todopath
+                echo  >> $todopath
+
+
+
             done
 
 
