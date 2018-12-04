@@ -739,6 +739,24 @@ function setup_public_html()    # TODO
     setup_copy_link ~/.setup/.config/_home/public_html ~/public_html
 }
 
+function setup_mail_and_metadata()
+{
+    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local LOCALDIRS_DIR=${USERDIR}/localdirs
+    local maildata_path="${LOCALDIRS_DIR}/org/resource.d/view.d/maildata"
+
+
+    if [ -e "${maildata_path}" -a -L "${maildata_path}" -a -d "${maildata_path}" ]
+    then
+        running readlink -m "${maildata_path}"
+        running mkdir -p  "${maildata_path}/mail-and-metadata/offlineimap"
+        running mkdir -p  "${maildata_path}/mail-and-metadata/maildir"
+    else
+        warn  mail data path "${maildata_path}" not present.
+    fi
+
+}
+
 function setup_mail()
 {
     local SYSTEM_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/system/system
@@ -1606,7 +1624,7 @@ function setup_org_home_portable_dirs()
     running setup_make_relative_link ${LOCALDIRS_DIR} Public/Publish/html public_html
     running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/control.d/class/data/storage/local/container/scratches.d home.d/portable.d/Scratches
     running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/model.d home.d/portable.d/Volumes
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/volumes.d/maildata/mail-and-metadata/maildir home.d/portable.d/Maildir
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/maildata/mail-and-metadata/maildir home.d/portable.d/Maildir
 
     # links
     info do   git -C ~/.fa/localdirs add org/home.d/portable.d
@@ -1629,7 +1647,7 @@ function setup_org_home_portable_dirs()
     # lrwxrwxrwx 1 s s   15 Dec  4 03:26 Documents -> ../../../../doc/
     # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Downloads/
     # lrwxrwxrwx 1 s s   17 Dec  4 03:25 Library -> Documents/Library/
-    # lrwxrwxrwx 1 s s   71 Dec  4 03:27 Maildir -> ../../../resource.d/view.d/volumes.d/maildata/mail-and-metadata/maildir
+    # lrwxrwxrwx 1 s s   71 Dec  4 03:27 Maildir -> ../../../resource.d/view.d/maildata/mail-and-metadata/maildir
     # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Music/
     # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Pictures/
     # lrwxrwxrwx 1 s s   44 Dec  4 03:28 Private -> ../../../../../../private/user/noenc/Private/
@@ -1648,16 +1666,18 @@ function setup_org_home_portable_dirs()
 
 function setup_org_misc_dirs()
 {
+    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local LOCALDIRS_DIR=${USERDIR}/localdirs
     # TODO?
     # org/misc.d% ls -1l
     # total 4.0K
-    # lrwxrwxrwx 1 s s 72 Dec  4 03:37 offlineimap -> ../../resource.d/view.d/volumes.d/maildata/mail-and-metadata/offlineimap
+    # lrwxrwxrwx 1 s s 72 Dec  4 03:37 offlineimap -> ../../resource.d/view.d/maildata/mail-and-metadata/offlineimap
     :
 
     running mkdir -p ${LOCALDIRS_DIR}/org/misc.d
 
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/volumes.d/maildata/mail-and-metadata/offlineimap misc.d/offlineimap
-
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/maildata/mail-and-metadata/offlineimap misc.d/offlineimap
+a
     # links
     info do   git -C ~/.fa/localdirs add org/misc.d/offlineimap
 
@@ -1824,6 +1844,7 @@ function setup_dirs()
 
         running setup_Documentation
         running setup_public_html
+        running setup_mail_and_metadata
     fi
 }
 
