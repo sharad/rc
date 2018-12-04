@@ -1393,8 +1393,10 @@ function setup_deps_view_volumes_dirs()
             local sysdatasdirname=$(setup_make_path_by_position "${dataclassname}" "$storage_path" "${sysdataname}s.d" "$position")
 
             local todopath="${volumedir}/${viewdirname}/TODO-${sysdatasdirname//\//_}"
+            local missingpath="${volumedir}/${viewdirname}/MISSING_TODO-${sysdatasdirname//\//_}"
 
             rm -f $todopath
+            rm -f $missingpath
 
             mkdir -p ${volumedir}/${viewdirname}
             for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
@@ -1427,6 +1429,14 @@ function setup_deps_view_volumes_dirs()
                         echo  >> $todopath
                         echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "$cdir" >> $todopath
                         echo  >> $todopath
+
+                        if [ ! -e "${volumedir}/${viewdirname}/$cdir" -o ! -L "${volumedir}/${viewdirname}/$cdir" ]
+                        then
+                            echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> $missingpath
+                            echo  >> $missingpath
+                            echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "$cdir" >> $missingpath
+                            echo  >> $missingpath
+                        fi
 
                     done
                     echo  >> $todopath
