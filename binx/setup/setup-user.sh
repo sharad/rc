@@ -1559,7 +1559,7 @@ function setup_org_home_portable_local_dirs()
 
     running mkdir -p ${LOCALDIRS_DIR}/org/home.d/${folder}.d
 
-    for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
+    for folder in Desktop Documents Downloads Library Music Pictures Scratches Templates tmp Videos
     do
         running mkdir -p ${LOCALDIRS_DIR}/org/home.d/local.d/${folder}
         running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d local.d/${folder} portable.d/${folder}/local
