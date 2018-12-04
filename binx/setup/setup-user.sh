@@ -1595,6 +1595,22 @@ function setup_org_dirs()
 }                               # function setup_org_dirs()
 
 
+
+function setup_manual_dirs()
+{
+    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local LOCALDIRS_DIR=${USERDIR}/localdirs
+    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
+    local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
+
+    running setup_make_relative_link $(LOCALDIRS_DIR) org/deps.d/control.d/machine.d/default/volumes.d/model.d   manual.d/model.d
+    running setup_make_relative_link $(LOCALDIRS_DIR) org/deps.d/control.d/machine.d/default/volumes.d/control.d manual.d/control.d
+    running setup_make_relative_link $(LOCALDIRS_DIR) org/deps.d/control.d/machine.d/default/volumes.d/view.d    manual.d/view.d
+
+}
+
+
+
 function setup_osetup_org_resource_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
@@ -1691,6 +1707,7 @@ function setup_dirs()
 
 
         running setup_org_dirs
+        running setup_manual_dirs
         running setup_osetup_dirs
         running setup_rc_org_dirs
         running setup_Documentation
