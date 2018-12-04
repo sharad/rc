@@ -930,9 +930,9 @@ function setup_make_path_by_position()
     fi
 }
 
-function setup_dep_control_storage_class_dirs()
+function setup_dep_control_storage_class_dir()
 {
-    echo setup_dep_control_storage_class_dirs \#=$#
+    echo setup_dep_control_storage_class_dir \#=$#
 
     if [ $# -eq 4 ]
     then
@@ -1010,18 +1010,18 @@ function setup_dep_control_storage_class_dirs()
 
         # running setup_mvc_dirs ${classcontrol_dir_path}/
     else
-        error setup_dep_control_storage_class_dirs Not correct number of arguments.
+        error setup_dep_control_storage_class_dir Not correct number of arguments.
     fi
 }
 
-function setup_deps_control_class_dirs()
+function setup_deps_control_class_dir()
 {
     # use namei to track
 
     # ls ~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
     # ls ~/fa/localdirs/org/deps.d/model.d/machine.d/$HOST/${class}.d/
 
-    echo setup_deps_control_class_dirs \#=$#
+    echo setup_deps_control_class_dir \#=$#
 
     if [ $# -eq 4 ]
     then
@@ -1052,8 +1052,8 @@ function setup_deps_control_class_dirs()
                 running setup_make_link $HOST ${machinedir}/default
 
                 # BACK
-                running echo setup_dep_control_storage_class_dirs "$storage_path" "$class" "$classinstdir" "${position}"
-                running setup_dep_control_storage_class_dirs "$storage_path" "$class" "$classinstdir" "${position}"
+                running echo setup_dep_control_storage_class_dir "$storage_path" "$class" "$classinstdir" "${position}"
+                running setup_dep_control_storage_class_dir "$storage_path" "$class" "$classinstdir" "${position}"
 
             else                # if [ -d ${hostdir} ]
                 info Please prepare ${hostdir} for your machine >&2
@@ -1064,7 +1064,7 @@ function setup_deps_control_class_dirs()
             warn ${LOCALDIRS_DIR} or ${machinedir} not exists. >&2
         fi                      # if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
     else
-        error setup_deps_control_class_dirs: Not correct number of arguments.
+        error setup_deps_control_class_dir: Not correct number of arguments.
     fi                          # if [ $# -eq 2 ]
 }
 
@@ -1083,8 +1083,8 @@ function setup_deps_control_class_all_positions_dirs()
         local classinstdir="$3"
         for pos in  1 2 3
         do
-            running echo setup_deps_control_class_dirs "${storage_path}" "${class}" "${classinstdir}" "${pos}"
-            running setup_deps_control_class_dirs "${storage_path}" "${class}" "${classinstdir}" "${pos}"
+            running echo setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
+            running setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
         done
     else
         error setup_deps_control_class_all_positions_dirs: Not correct number of arguments.
@@ -1117,16 +1117,12 @@ function setup_deps_control_data_dirs()
     running setup_deps_control_data_scratches_dirs "$storage_path"
     running setup_deps_control_data_main_dirs      "$storage_path"
 }
-
-
-
-
 function setup_deps_control_home_Downloads_dirs()
 {
     local storage_path="${1-local}"
 
     # running setup_deps_model_volumes_dirs "${storage_path}"
-    # running setup_deps_control_class_dirs "$storage_path" ${homeclassname}/Downloads Downloads
+    # running setup_deps_control_class_dir "$storage_path" ${homeclassname}/Downloads Downloads
     running setup_deps_control_class_all_positions_dirs "$storage_path" ${homeclassname}/Downloads Downloads
 }
 function setup_deps_control_home_dirs()
@@ -1135,6 +1131,58 @@ function setup_deps_control_home_dirs()
 
     setup_deps_control_home_Downloads_dirs "$storage_path"
 }
+
+
+function setup_deps_control_data_sysdata_dir()
+{
+    local storage_path="${1-local}"
+    local position=${1-2}
+
+    running setup_deps_control_class_dir "$storage_path" ${dataclassname}/sysdatas sysdata "$position"
+}
+function setup_deps_control_data_scratches_dir()
+{
+    local storage_path="${1-local}"
+    local position=${1-2}
+
+    running setup_deps_control_class_dir "$storage_path" ${dataclassname}/scratches scratch "$position"
+}
+function setup_deps_control_data_main_dir()
+{
+    local storage_path="${1-local}"
+    local position=${1-2}
+
+    running setup_deps_control_class_dir "$storage_path" ${dataclassname}/main main "$position"
+}
+function setup_deps_control_data_dir()
+{
+    local storage_path="${1-local}"
+    local position=${1-2}
+
+    running setup_deps_control_data_sysdata_dir   "$storage_path" "$position"
+    running setup_deps_control_data_scratches_dir "$storage_path" "$position"
+    running setup_deps_control_data_main_dir      "$storage_path" "$position"
+}
+function setup_deps_control_home_Downloads_dir()
+{
+    local storage_path="${1-local}"
+    local position=${1-2}
+
+    # running setup_deps_model_volumes_dir "${storage_path}"
+    # running setup_deps_control_class_dir "$storage_path" ${homeclassname}/Downloads Downloads
+    running setup_deps_control_class_dir "$storage_path" ${homeclassname}/Downloads Downloads "$position"
+}
+function setup_deps_control_home_dir()
+{
+    local storage_path="${1-local}"
+    local position=${1-2}
+
+    setup_deps_control_home_Downloads_dir "$storage_path" "$position"
+}
+
+
+
+
 ###}}}
 
 function setup_deps_model_storage_volumes_dir()
@@ -1233,8 +1281,10 @@ function setup_deps_control_volumes_dirs()
     local hostdir=${machinedir}/$HOST
     local volumedir=${hostdir}/volumes.d
 
-    running setup_deps_control_data_sysdata_dirs "$storage_path"
-    # running setup_deps_control_class_dirs "$storage_path" $sysdatascontinername $sysdataname $position
+    # running setup_deps_control_data_sysdata_dirs "$storage_path"
+
+    # running setup_deps_control_data_sysdata_dir "$storage_path" $position
+    running setup_deps_control_class_dir "$storage_path" $sysdatascontinername $sysdataname $position
 
     for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
     do
@@ -1258,8 +1308,8 @@ function setup_deps_control_volumes_dirs()
         fi
     done
 
-    running running setup_deps_control_data_dirs "$storage_path"
-    running running setup_deps_control_home_dirs "$storage_path"
+    # running running setup_deps_control_data_dir "$storage_path" $position
+    # running running setup_deps_control_home_dir "$storage_path" $position
 }
 
 function setup_deps_view_volumes_dirs()
@@ -1282,9 +1332,9 @@ function setup_deps_view_volumes_dirs()
     local volumedir=${hostdir}/volumes.d
     local sysdataname=sysdata
     # TODO?
-    local sysdatascontinername=${dataclassname}/${sysdataname}s
+    local sysdatascontinername=${dataclassname}/${sysdataname}s.d
     # TODO?
-    local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
+    # local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
     local viewdirname=view.d
 
     # echo SHARAD TEST
@@ -1329,10 +1379,18 @@ function setup_deps_view_volumes_dirs()
 
 
             # running setup_deps_control_data_sysdata_dirs
-            # running setup_deps_control_class_dirs "$storage_path" $sysdatascontinername $sysdataname
-            running setup_deps_control_volumes_dirs "$storage_path"
+            # running setup_deps_control_class_dir "$storage_path" $sysdatascontinername $sysdataname
+            running setup_deps_control_volumes_dirs "$storage_path" $position
             # TODO?
-            running setup_deps_control_class_dirs "$storage_path" "$sysdatascontinername" "$sysdataname" "$position"
+            running setup_deps_control_class_dir "$storage_path" "$sysdatascontinername" "$sysdataname" "$position"
+
+
+
+
+
+            # TODO? NOW
+
+            local sysdatasdirname=$(setup_make_path_by_position "${dataclassname}" "$storage_path" "${sysdataname}s.d" "$position")
 
             mkdir -p ${volumedir}/${viewdirname}
             for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
@@ -1350,16 +1408,17 @@ function setup_deps_view_volumes_dirs()
                         error No target directory $(readlink -m $cdir) exist for symlink "${volumedir}/${viewdirname}/$cdir", create it.
                     fi
 
-                    rm -f "${volumedir}/${viewdirname}"/TODO
+                    echo ls ${volumedir}/control.d/${sysdatasdirname}/ >> "${volumedir}/${viewdirname}"/TODO
+                    ls ${volumedir}/control.d/${sysdatasdirname}/      >> "${volumedir}/${viewdirname}"/TODO
 
                     for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
                     do
-                        # volsysdatadirbase=$(basename ${sysdatadir})
+                        volsysdatadirbase=$(basename ${sysdatadir})
                         # info ln -s ../control.d/${sysdatasdirname}/view.d/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir"
 
-                        info ln -s ../control.d/${sysdatasdirname}/$cdir "${volumedir}/${viewdirname}/$cdir"
+                        info ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir"
 
-                        echo ln -s ../control.d/${sysdatasdirname}/$cdir "${volumedir}/${viewdirname}/$cdir" >> TODO
+                        echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> "${volumedir}/${viewdirname}"/TODO
 
                     done
                 fi
@@ -1385,8 +1444,24 @@ function setup_deps_dirs()
     running setup_deps_control_data_dirs "$storage_path"
     running setup_deps_control_home_dirs "$storage_path"
 
-    running setup_deps_control_volumes_dirs "$storage_path"
-    running setup_deps_view_volumes_dirs "$storage_path"
+    for pos in 1 2 3
+    do
+        running setup_deps_control_volumes_dirs "$storage_path" "$pos"
+    done
+
+
+
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local machinedir=${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
+    local hostdir=${machinedir}/$HOST
+    local volumedir=${hostdir}/volumes.d
+    local viewdirname=view.d
+
+    rm -f "${volumedir}/${viewdirname}"/TODO
+    for pos in 1 2 3
+    do
+        running setup_deps_view_volumes_dirs "$storage_path" "$pos"
+    done
 }
 
 function setup_links_dirs()
@@ -1586,7 +1661,7 @@ function setup_org_rc_dirs()
     running setup_make_relative_link ~/ "" ${LOCALDIRS_DIR}/org/rc.d/repos
     running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d/repos repos/git/main/resource/userorg/main/readwrite/public/user/opt       opt
     running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d/repos repos/git/main/resource/userorg/main/readwrite/public/user/localdirs localdirs
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d/repos repos/git/main/resource/userorg/main/readwrite/public/user/osetup    osetup 
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d/repos repos/git/main/resource/userorg/main/readwrite/public/user/osetup    osetup
     running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d/repos repos/git/main/resource/userorg/main/readwrite/public/user/rc        setup
 
     info do   git -C ~/.fa/localdirs add org/rc.d/repos org/rc.d/opt org/rc.d/localdirs org/rc.d/osetup org/rc.d/setup org/rc.d/HOME
