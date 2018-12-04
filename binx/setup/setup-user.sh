@@ -1350,10 +1350,17 @@ function setup_deps_view_volumes_dirs()
                         error No target directory $(readlink -m $cdir) exist for symlink "${volumedir}/${viewdirname}/$cdir", create it.
                     fi
 
-                    for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/view.d/*
+                    rm -f "${volumedir}/${viewdirname}"/TODO
+
+                    for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
                     do
-                        volsysdatadirbase=$(basename ${sysdatadir})
-                        info ln -s ../control.d/${sysdatasdirname}/view.d/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir"
+                        # volsysdatadirbase=$(basename ${sysdatadir})
+                        # info ln -s ../control.d/${sysdatasdirname}/view.d/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir"
+
+                        info ln -s ../control.d/${sysdatasdirname}/$cdir "${volumedir}/${viewdirname}/$cdir"
+
+                        echo ln -s ../control.d/${sysdatasdirname}/$cdir "${volumedir}/${viewdirname}/$cdir" >> TODO
+
                     done
                 fi
             done
@@ -1600,12 +1607,11 @@ function setup_manual_dirs()
 {
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR=${USERDIR}/localdirs
-    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
-    local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
 
-    running setup_make_relative_link $(LOCALDIRS_DIR) org/deps.d/control.d/machine.d/default/volumes.d/model.d   manual.d/model.d
-    running setup_make_relative_link $(LOCALDIRS_DIR) org/deps.d/control.d/machine.d/default/volumes.d/control.d manual.d/control.d
-    running setup_make_relative_link $(LOCALDIRS_DIR) org/deps.d/control.d/machine.d/default/volumes.d/view.d    manual.d/view.d
+    echo SHARAD TEST
+    running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/model.d   manual.d/model
+    running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/control.d manual.d/control
+    running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/view.d    manual.d/view
 
 }
 
