@@ -1392,6 +1392,10 @@ function setup_deps_view_volumes_dirs()
 
             local sysdatasdirname=$(setup_make_path_by_position "${dataclassname}" "$storage_path" "${sysdataname}s.d" "$position")
 
+            local todopath="${volumedir}/${viewdirname}/TODO-${sysdatasdirname//\//_}"
+
+            rm -f $todopath
+
             mkdir -p ${volumedir}/${viewdirname}
             for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
             do
@@ -1408,17 +1412,16 @@ function setup_deps_view_volumes_dirs()
                         error No target directory $(readlink -m $cdir) exist for symlink "${volumedir}/${viewdirname}/$cdir", create it.
                     fi
 
-                    echo ls ${volumedir}/control.d/${sysdatasdirname}/ >> "${volumedir}/${viewdirname}"/TODO
-                    ls ${volumedir}/control.d/${sysdatasdirname}/      >> "${volumedir}/${viewdirname}"/TODO
+                    echo ls ${volumedir}/control.d/${sysdatasdirname}/ >> $todopath
+                    ls ${volumedir}/control.d/${sysdatasdirname}/      >> $todopath
 
                     for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
                     do
                         volsysdatadirbase=$(basename ${sysdatadir})
-                        # info ln -s ../control.d/${sysdatasdirname}/view.d/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir"
 
                         info ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir"
 
-                        echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> "${volumedir}/${viewdirname}"/TODO
+                        echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> $todopath
 
                     done
                 fi
@@ -1457,7 +1460,7 @@ function setup_deps_dirs()
     local volumedir=${hostdir}/volumes.d
     local viewdirname=view.d
 
-    rm -f "${volumedir}/${viewdirname}"/TODO
+    # rm -f "${volumedir}/${viewdirname}"/TODO
     for pos in 1 2 3
     do
         running setup_deps_view_volumes_dirs "$storage_path" "$pos"
