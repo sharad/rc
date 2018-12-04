@@ -1639,29 +1639,6 @@ function setup_org_home_portable_dirs()
 
     running setup_org_home_portable_public_dirs
     running setup_org_home_portable_local_dirs
-
-    # TODO?
-    # home.d/portable.d% ls -1l
-    # total 56K
-    # drwxrwxr-x 2 s s 4.0K Dec  4 03:25 Desktop/
-    # lrwxrwxrwx 1 s s   15 Dec  4 03:26 Documents -> ../../../../doc/
-    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Downloads/
-    # lrwxrwxrwx 1 s s   17 Dec  4 03:25 Library -> Documents/Library/
-    # lrwxrwxrwx 1 s s   71 Dec  4 03:27 Maildir -> ../../../resource.d/view.d/maildata/mail-and-metadata/maildir
-    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Music/
-    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Pictures/
-    # lrwxrwxrwx 1 s s   44 Dec  4 03:28 Private -> ../../../../../../private/user/noenc/Private/
-    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Public/
-    # lrwxrwxrwx 1 s s   19 Dec  4 03:25 public_html -> Public/Publish/html/
-    # -rw-rw-r-- 1 s s   96 Dec  4 03:25 README
-    # lrwxrwxrwx 1 s s   74 Dec  4 03:33 Scratches -> ../../resource.d/control.d/class/data/storage/local/container/scratches.d//
-    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Scratches-OLD/
-    # drwxrwxr-x 2 s s 4.0K Dec  4 03:25 Sink/
-    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Templates/
-    # drwxrwxr-x 2 s s 4.0K Dec  4 03:25 tmp/
-    # -rw-rw-r-- 1 s s   14 Dec  4 03:25 TODO
-    # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Videos/
-    # lrwxrwxrwx 1 s s   24 Dec  4 03:28 Volumes -> ../../resource.d/model.d/
 } # function setup_org_home_portable_dirs()
 
 function setup_org_misc_dirs()
@@ -1689,18 +1666,6 @@ function setup_org_rc_dirs()
     local LOCALDIRS_DIR=${USERDIR}/localdirs
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
     local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
-
-    # TODO?
-    # org/rc.d% ls -1l
-    # total 20K
-    # lrwxrwxrwx 1 s s  21 Dec  4 03:25 HOME -> ../deps.d/view.d/home
-    # lrwxrwxrwx 1 s s  68 Dec  4 03:25 localdirs -> repos/git/main/resource/userorg/main/readwrite/public/user/localdirs/
-    # lrwxrwxrwx 1 s s  62 Dec  4 03:25 opt -> repos/git/main/resource/userorg/main/readwrite/public/user/opt/
-    # lrwxrwxrwx 1 s s  65 Dec  4 03:25 osetup -> repos/git/main/resource/userorg/main/readwrite/public/user/osetup/
-    # -rw-rw-r-- 1 s s 109 Dec  4 03:25 README
-    # lrwxrwxrwx 1 s s  32 Dec  4 03:40 repos -> ../../../../../../../../../../../
-    # lrwxrwxrwx 1 s s  61 Dec  4 03:25 setup -> repos/git/main/resource/userorg/main/readwrite/public/user/rc/
-    :
 
     running mkdir -p ${LOCALDIRS_DIR}/org/rc.d
 
@@ -1844,8 +1809,13 @@ function setup_dirs()
     then
         # TODO
         # do it for all basename /srv/volumes/*
-        # below /srv/volumes/ for all mounted patchs
+        # below /srv/volumes/ for all mounted paths
         running setup_deps_dirs "local"
+        # running setup_deps_dirs "externdisk/mywd5hgb"
+        # running setup_deps_dirs "network/office"
+        # running setup_deps_dirs "network/cloud/droplet"
+        # running setup_deps_dirs "network/cloud/s3"
+
 
 
         running setup_org_dirs
