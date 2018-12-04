@@ -1811,6 +1811,17 @@ function setup_osetup_dirs()
     running setup_osetup_cache_dirs
 }
 
+function setup_rc_org_home_dirs()
+{
+    local public_path=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public
+    local rcdir_rel_path=user/rc
+    local rcdirpath=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/rc
+    local rcorghomedir_rel_path=.config/dirs.d/org/home.d
+
+    running setup_make_relative_link ${public_path}/${rcdir_rel_path} _bin ${rcorghomedir_rel_path}/bin
+    running setup_make_relative_link ${public_path} system/system/config/bin user/rc/${rcorghomedir_rel_path}/sbin
+}
+
 function setup_rc_org_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
@@ -1820,6 +1831,8 @@ function setup_rc_org_dirs()
     running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user osetup/dirs.d/org rc/.config/dirs.d/org
 
     info do   git -C ~/.fa/rc add .config/dirs.d/org
+
+    running setup_rc_org_home_dirs
 }
 
 function setup_dirs()
