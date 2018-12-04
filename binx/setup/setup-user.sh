@@ -223,6 +223,14 @@ function setup_make_link()
         else
             verbose $link do not exists >&1
         fi
+
+
+        local linkdir=$(dirname $link)
+        if [ "$linkdir" != . ]
+        then
+            mkdir -p "$(dirname $link)"
+        fi
+
         running rm -f  $link
         running ln -sf $target $link
     else
@@ -1269,25 +1277,26 @@ function setup_deps_view_volumes_dirs()
 
     # use namei to track
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
-
     local machinedir=${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d
-
     local hostdir=${machinedir}/$HOST
-
     local volumedir=${hostdir}/volumes.d
-
     local sysdataname=sysdata
     # TODO?
     local sysdatascontinername=${dataclassname}/${sysdataname}s
-
     # TODO?
     local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
-
     local viewdirname=view.d
 
-    echo SHARAD TEST
+    # echo SHARAD TEST
 
     # need to create ${LOCALDIRS_DIR}/org/deps.d/view.d/
+
+
+
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/home       view.d/home
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d control.d/machine.d/default/volumes.d  view.d/volumes.d
+
+
 
     # check local home model.d directory
     if [ -d ${LOCALDIRS_DIR} -a -d ${machinedir} ]
@@ -1373,28 +1382,136 @@ function setup_deps_dirs()
     running setup_deps_view_volumes_dirs "$storage_path"
 }
 
-function setup_resource_model_dirs()
+function setup_links_dirs()
+{
+    basepath=$1
+    linkdir=$2
+    targetdir=$3
+
+    info basepath=$basepath
+    info linkdir=$linkdir
+    info targetdir=$targetdir
+
+    if [ -d ${basepath}/${linkdir} ]
+    then
+        cd ${basepath}/${linkdir}
+        # echo SHARAD TEST
+        local links=( $(find -type l | cut -c3- ) )
+        cd -
+
+        info links=${links[*]}
+
+        # TODO? do something here
+        for lnk in ${links[*]}
+        do
+            echo running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
+            running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
+        done
+    else
+        error dir ${basepath}/${linkdir} not exists
+    fi
+
+}
+
+function setup_org_resource_dirs()
 {
     local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
     local machinedir=${LOCALDIRS_DIR}/org/deps.d/control.d/machine.d/default
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
-    cd ${machinedir}/volumes.d
-    echo SHARAD TEST
-    local links=( $(find -type l | cut -c3- ) )
-    cd -
+    running setup_links_dirs ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d resource.d
+}
 
-    # TODO? do something here
-    for lnk in ${links[*]}
+function setup_org_home_portable_local_dirs()
+{
+    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local LOCALDIRS_DIR=${USERDIR}/localdirs
+    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
+    local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
+
+    running mkdir -p ${LOCALDIRS_DIR}/org/home.d/${folder}.d
+
+    for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
     do
-        running setup_make_relative_link ${LOCALDIRS_DIR}/org  deps.d/control.d/machine.d/default/volumes.d/${lnk} resource.d/$lnk
+        running mkdir -p ${LOCALDIRS_DIR}/org/home.d/local.d/${folder}
+        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d local.d/${folder} portable.d/${folder}/local
+    done
+}
+
+function setup_org_home_portable_public_dirs()
+{
+    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local LOCALDIRS_DIR=${USERDIR}/localdirs
+    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
+    local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
+
+
+    running mkdir -p ${homeprotabledir}/Public/Publish/html
+
+    for folder in local
+    do
+        running mkdir -p ${LOCALDIRS_DIR}/org/home.d/${folder}.d/Public/Publish/html
+        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d ${folder}.d/Public              Public/$folder
+        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d ${folder}.d/Public/Publish      Public/Publish/$folder
+        running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d ${folder}.d/Public/Publish/html Public/Publish/html/$folder
     done
 
-    # running setup_make_link ../../org/deps.d/control.d/machine.d/default/volumes.d/model.d   ${resource_modeldir}/volumes.d
+    for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
+    do
+        running mkdir -p ${homeprotabledir}/${folder}/Public/Publish/html
+
+        if [ ! -e ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore ]
+        then
+            echo '*' >> ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
+        fi
+
+        info do   git -C ~/.fa/localdirs add org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
+
+        running setup_make_relative_link ${homeprotabledir} ${folder}/Public              Public/$folder
+        running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish      Public/Publish/$folder
+        running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish/html Public/Publish/html/$folder
+    done
 }
 
 function setup_org_home_portable_dirs()
 {
+    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local LOCALDIRS_DIR=${USERDIR}/localdirs
+    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
+    local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
+
+    running mkdir -p ${homeprotabledir}
+    running mkdir -p ${homeprotabledir}/Desktop/Public/Publish/html
+    running mkdir -p ${homeprotabledir}/Downloads/Public/Publish/html
+    running mkdir -p ${homeprotabledir}/Music/Public/Publish/html
+    running mkdir -p ${homeprotabledir}/Pictures/Public/Publish/html
+    running mkdir -p ${homeprotabledir}/Sink/Public/Publish/html
+    running mkdir -p ${homeprotabledir}/Templates/Public/Publish/html
+    running mkdir -p ${homeprotabledir}/Videos/Public/Publish/html
+    running mkdir -p ${homeprotabledir}/tmp/Public/Publish/html
+
+    running setup_make_relative_link ${USERDIR} doc localdirs/org/home.d/portable.d/Documents
+    running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/ private/user/noenc/Private localdirs/org/home.d/portable.d/Private
+    running setup_make_relative_link ${LOCALDIRS_DIR} Documents/Library  Library
+    running setup_make_relative_link ${LOCALDIRS_DIR} Public/Publish/html public_html
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/control.d/class/data/storage/local/container/scratches.d home.d/portable.d/Scratches
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/model.d home.d/portable.d/Volumes
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/volumes.d/maildata/mail-and-metadata/maildir home.d/portable.d/Maildir
+
+    # links
+    info do   git -C ~/.fa/localdirs add org/home.d/portable.d
+    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/Documents
+    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/Private
+    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/Library
+    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/public_html
+    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/Scratches
+    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/Maildir
+    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/Volumes
+
+
+    running setup_org_home_portable_public_dirs
+    running setup_org_home_portable_local_dirs
+
     # TODO?
     # home.d/portable.d% ls -1l
     # total 56K
@@ -1417,7 +1534,7 @@ function setup_org_home_portable_dirs()
     # -rw-rw-r-- 1 s s   14 Dec  4 03:25 TODO
     # drwxrwxr-x 3 s s 4.0K Dec  4 03:25 Videos/
     # lrwxrwxrwx 1 s s   24 Dec  4 03:28 Volumes -> ../../resource.d/model.d/
-}
+} # function setup_org_home_portable_dirs()
 
 function setup_org_misc_dirs()
 {
@@ -1425,10 +1542,24 @@ function setup_org_misc_dirs()
     # org/misc.d% ls -1l
     # total 4.0K
     # lrwxrwxrwx 1 s s 72 Dec  4 03:37 offlineimap -> ../../resource.d/view.d/volumes.d/maildata/mail-and-metadata/offlineimap
-}
+    :
 
-function setup_org_misc_dirs()
+    running mkdir -p ${LOCALDIRS_DIR}/org/misc.d
+
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/volumes.d/maildata/mail-and-metadata/offlineimap misc.d/offlineimap
+
+    # links
+    info do   git -C ~/.fa/localdirs add org/misc.d/offlineimap
+
+} # function setup_org_misc_dirs()
+
+function setup_org_rc_dirs()
 {
+    local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
+    local LOCALDIRS_DIR=${USERDIR}/localdirs
+    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
+    local homeprotabledir=${LOCALDIRS_DIR}/org/home.d/portable.d
+
     # TODO?
     # org/rc.d% ls -1l
     # total 20K
@@ -1439,22 +1570,87 @@ function setup_org_misc_dirs()
     # -rw-rw-r-- 1 s s 109 Dec  4 03:25 README
     # lrwxrwxrwx 1 s s  32 Dec  4 03:40 repos -> ../../../../../../../../../../../
     # lrwxrwxrwx 1 s s  61 Dec  4 03:25 setup -> repos/git/main/resource/userorg/main/readwrite/public/user/rc/
+    :
+
+    running mkdir -p ${LOCALDIRS_DIR}/org/rc.d
+
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org deps.d/view.d/home rc.d/HOME
+
+    running setup_make_relative_link ~/ "" ${LOCALDIRS_DIR}/org/rc.d/repos
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d/repos repos/git/main/resource/userorg/main/readwrite/public/user/opt       opt
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d/repos repos/git/main/resource/userorg/main/readwrite/public/user/localdirs localdirs
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d/repos repos/git/main/resource/userorg/main/readwrite/public/user/osetup    osetup 
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d/repos repos/git/main/resource/userorg/main/readwrite/public/user/rc        setup
+
+    info do   git -C ~/.fa/localdirs add org/rc.d/repos org/rc.d/opt org/rc.d/localdirs org/rc.d/osetup org/rc.d/setup org/rc.d/HOME
+} # function setup_org_rc_dirs()
+
+function setup_org_dirs()
+{
+    running setup_org_resource_dirs
+    running setup_org_home_portable_local_dirs
+    running setup_org_home_portable_dirs
+    running setup_org_misc_dirs
+    running setup_org_rc_dirs
+}                               # function setup_org_dirs()
+
+
+function setup_osetup_org_resource_dirs()
+{
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
+    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
+
+    running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
+
+    info do   git -C ~/.fa/osetup add dirs.d/org/resource.d
 }
 
-function setup_resource_view_dirs()
+function setup_osetup_org_home_dirs()
 {
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
+    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
+
+    for folder in Desktop Documents Downloads Library Maildir Music Pictures Private Public public_html Scratches Sink Templates tmp Videos Volumes
+    do
+        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/home.d/portable.d/${folder} osetup/dirs.d/org/home.d/${folder}
+        info do   git -C ~/.fa/osetup add dirs.d/org/home.d/${folder}
+    done
 }
 
-function setup_resource_view_volumes_logical_dirs()
+function setup_osetup_org_misc_dirs()
 {
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
+    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
+
+    for folder in offlineimap
+    do
+        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/misc.d/${folder} osetup/dirs.d/org/misc.d/${folder}
+        info do   git -C ~/.fa/osetup add dirs.d/org/misc.d/${folder}
+    done
 }
 
-function setup_resource_dirs()
+function setup_osetup_org_rc_dirs()
 {
-    running setup_resource_model_dirs
-    running setup_resource_control_dirs
-    running setup_resource_view_dirs
-    running setup_resource_view_volumes_logical_dirs
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
+    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
+
+    for folder in HOME localdirs opt osetup repos setup
+    do
+        running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/rc.d/${folder} osetup/dirs.d/org/rc.d/${folder}
+        info do   git -C ~/.fa/osetup add dirs.d/org/rc.d/${folder}
+    done
+}
+
+function setup_osetup_org_dirs()
+{
+    running setup_osetup_org_resource_dirs
+    running setup_osetup_org_home_dirs
+    running setup_osetup_org_misc_dirs
+    running setup_osetup_org_rc_dirs
 }
 
 function setup_osetup_cache_dirs()
@@ -1466,7 +1662,19 @@ function setup_osetup_cache_dirs()
 
 function setup_osetup_dirs()
 {
+    running setup_osetup_org_dirs
     running setup_osetup_cache_dirs
+}
+
+function setup_rc_org_dirs()
+{
+    local LOCALDIRS_DIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs
+    local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
+    local resourcedir=${LOCALDIRS_DIR}/org/resource.d
+
+    running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user osetup/dirs.d/org rc/.config/dirs.d/org
+
+    info do   git -C ~/.fa/rc add .config/dirs.d/org
 }
 
 function setup_dirs()
@@ -1482,8 +1690,9 @@ function setup_dirs()
         running setup_deps_dirs "local"
 
 
-        running setup_resource_dirs
+        running setup_org_dirs
         running setup_osetup_dirs
+        running setup_rc_org_dirs
         running setup_Documentation
         running setup_public_html
     fi
@@ -1667,24 +1876,24 @@ function running()
 
 function error()
 {
-    notify "$*"  >&2
-    logger "$*"
+    notify "Error $*"  >&2
+    logger "Error $*"
 }
 
 function warn()
 {
     if [ $warn ] ; then
-        notify "$*" >&2
+        notify "Warning: $*" >&2
     fi
-    logger "$*"
+    logger "Warning: $*"
 }
 
 function verbose()
 {
     if [ $verbose ] ; then
-        notify "$*" >&2
+        notify "Info: $*" >&2
     fi
-    logger "$*"
+    logger "Info: $*"
 }
 
 function info()
