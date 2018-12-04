@@ -1830,9 +1830,9 @@ function setup_rc_org_dirs()
 
     running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user osetup/dirs.d/org rc/.config/dirs.d/org
 
-    info do   git -C ~/.fa/rc add .config/dirs.d/org
-
     running setup_rc_org_home_dirs
+
+    info do   git -C ~/.fa/rc add .config/dirs.d/org
 }
 
 function setup_dirs()
