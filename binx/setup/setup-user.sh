@@ -1708,8 +1708,11 @@ function setup_dirs()
 
         running setup_org_dirs
         running setup_manual_dirs
+
         running setup_osetup_dirs
+
         running setup_rc_org_dirs
+
         running setup_Documentation
         running setup_public_html
     fi
