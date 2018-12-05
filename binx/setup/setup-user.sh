@@ -292,8 +292,19 @@ function setup_make_relative_link()
     debug parents_link=$parents_link
     debug target=$target
 
-    debug running setup_make_link ${parents_link}${target:+/}${target} $path/$link
-    running setup_make_link ${parents_link}${target:+/}${target} $path/$link
+    # debug running setup_make_link ${parents_link}${target:+/}${target} $path/$link
+    # running setup_make_link ${parents_link}${target:+/}${target} $path/$link
+
+    local separator=
+    if [ "x" != "x$target" -a "x" != "x$parents_link" ]
+    then
+            separator="/"
+    fi
+
+    # debug separator=$separator
+
+    debug running setup_make_link ${parents_link}${separator:+/}${target} $path/$link
+    running setup_make_link ${parents_link}${separator:+/}${target} $path/$link
 }
 
 function set_keyboard()
@@ -1567,7 +1578,8 @@ function setup_org_home_portable_local_dirs()
 
     running mkdir -p ${LOCALDIRS_DIR}/org/home.d/${folder}.d
 
-    for folder in Desktop Documents Downloads Library Music Pictures Scratches Templates tmp Videos
+    # for folder in Desktop Documents Downloads Library Music Pictures Scratches Templates tmp Videos
+    for folder in Desktop Documents Downloads Library Music Pictures Templates tmp Videos
     do
         running mkdir -p ${LOCALDIRS_DIR}/org/home.d/local.d/${folder}
         running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d local.d/${folder} portable.d/${folder}/local
@@ -1592,6 +1604,7 @@ function setup_org_home_portable_public_dirs()
         running setup_make_relative_link ${LOCALDIRS_DIR}/org/home.d ${folder}.d/Public/Publish/html Public/Publish/html/$folder
     done
 
+    # for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
     for folder in Documents Downloads Library Music Pictures Scratches Templates tmp Videos
     do
         running mkdir -p ${homeprotabledir}/${folder}/Public/Publish/html
@@ -1684,7 +1697,7 @@ function setup_org_rc_dirs()
     running setup_make_relative_link ${LOCALDIRS_DIR}/org deps.d/view.d/home rc.d/HOME
 
     # sharad ?? fixed
-    running setup_make_relative_link ~/ "" ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/rc.d/repos
+    running setup_make_relative_link ~/.repos "" git/main/resource/${USERORGMAIN}/readwrite/public/user/localdirs/org/rc.d/repos
 
 
     running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d repos/git/main/resource/userorg/main/readwrite/public/user/opt       opt
