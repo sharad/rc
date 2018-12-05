@@ -367,6 +367,8 @@ function setup_postfix()
         echo $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix donot exists. >&2
     fi
 
+    # M4 TODO?
+
     for var in \
         OFFICE1_DOMAIN \
             OFFICE1_SUPERDOMAIN \
@@ -417,6 +419,8 @@ function setup_offlineimap()
         then
            if [ -d ~/.maildir -a ~/.offlineimap ]
            then
+               # M4 TODO?
+
                echo  make sure to copy correct ~/.offlineimaprc
            else
                echo ~/.maildir ~/.offlineimap are not created. >&2

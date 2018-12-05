@@ -137,6 +137,8 @@ function main()
 
     running setup_mail
 
+    running setup_ldapserch
+
     running setup_crontab
 
     running setup_spacemacs
@@ -790,6 +792,12 @@ function setup_mail()
     else
         error ${SYSTEM_DIR}/ubuntu/etc/postfix not exists >&2
     fi
+}
+
+function setup_ldapserch()
+{
+    # TODO?
+    :
 }
 
 function setup_crontab()
@@ -1861,7 +1869,7 @@ function setup_dirs()
         # below /srv/volumes/ for all mounted paths
 
 
-        # ~% df --output=target | grep  '^/srv/volumes'  
+        # ~% df --output=target | grep  '^/srv/volumes'
         # /srv/volumes/local/vg01/lv01
         # /srv/volumes/local/vgres01/lvres01
 
