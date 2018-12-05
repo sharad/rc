@@ -112,7 +112,7 @@ function main()
 
     if ! ssh-add -l
     then
-	      echo ssh key no available >&2
+	      error ssh key no available >&2
 	      exit -1
     fi
 
@@ -161,10 +161,8 @@ function setup_count_slash_in_path()
 {
     local rel_path="$1"
 
-    rel_path="$(echo ${rel_path} | tr -s /)"
+    rel_path="$(print ${rel_path} | tr -s /)"
     rel_path="${rel_path%/}"
-
-    # echo rel_path=$rel_path
 
     # TODO?
     # remove last / target=${1%/}
@@ -175,18 +173,18 @@ function setup_count_slash_in_path()
     local rel_path_array=( ${rel_path//\// } )
     local rel_path_len=$(expr ${#rel_path_array[@]} - 1)
 
-    echo $rel_path_len
+    print $rel_path_len
 }
 
 function setup_make_parent_path()
 {
     count="$1"
-    # echo count=$count >&2
+
     local updirsrel_path_len_space=$(printf "%${count}s")
     local updirsrel_path=${updirsrel_path_len_space// /"../"}
     updirsrel_path=${updirsrel_path%/}
 
-    echo $updirsrel_path
+    print $updirsrel_path
 
     # TODO?
     # at last no / should be present
@@ -247,7 +245,7 @@ function setup_copy_link()
 
     if [ -d $target -a ! -L $target ]
     then
-        echo target $traget can not be a directory >&2
+        warn target $traget can not be a directory >&2
         exit -1
     fi
     if [ -L "$link" ]
@@ -273,7 +271,7 @@ function setup_copy_link()
             verbose $target is correctly pointing to "$(readlink -m $target )" is equal what $link is pointing to "$(readlink -m $link )"
         fi
     else
-        echo $link is not a link, not doing anything >&2
+        warn $link is not a link, not doing anything >&2
     fi
 }
 
@@ -286,12 +284,12 @@ function setup_make_relative_link()
     local linkcount=$(setup_count_slash_in_path "$link")
     local parents_link=$(setup_make_parent_path "$linkcount")
 
-    echo link=$link
-    echo linkcountlink=$linkcount
-    echo parents_link=$parents_link
-    echo target=$target
+    debug link=$link
+    debug linkcountlink=$linkcount
+    debug parents_link=$parents_link
+    debug target=$target
 
-    echo running setup_make_link ${parents_link}${target:+/}${target} $path/$link
+    debug running setup_make_link ${parents_link}${target:+/}${target} $path/$link
     running setup_make_link ${parents_link}${target:+/}${target} $path/$link
 }
 
@@ -313,34 +311,31 @@ function setup_apt_repo()
         if [ ubuntu = $ID ]
         then
             read _ UBUNTU_VERSIO``N_NAME <<< "$VERSION"
-            echo "Running Ubuntu $UBUNTU_VERSION_NAME"
+            info "Running Ubuntu $UBUNTU_VERSION_NAME"
         else
-            echo "Not running an Ubuntu distribution. ID=$ID, VERSION=$VERSION" >&2
+            warn "Not running an Ubuntu distribution. ID=$ID, VERSION=$VERSION" >&2
             exit -1
         fi
     else
-        echo "Not running a distribution with /etc/os-release available" >&2
+        error "Not running a distribution with /etc/os-release available" >&2
     fi
 
     for repo in "$APT_REPO_COMMPUNICATION" "$APT_REPO_UTILS"
     do
         # /etc/apt/sources.list.d/nilarimogard-ubuntu-webupd8-xenial.list
-        # echo repo=$repo
-        REPO_NAME1="$(echo $repo | cut -d: -f2 | cut -d/ -f1)"
-        REPO_NAME2="$(echo $repo | cut -d: -f2 | cut -d/ -f2)"
+        # debug repo=$repo
+        REPO_NAME1="$(print $repo | cut -d: -f2 | cut -d/ -f1)"
+        REPO_NAME2="$(print $repo | cut -d: -f2 | cut -d/ -f2)"
 
         REPO_FILE_PATH=/etc/apt/sources.list.d/${REPO_NAME1}-${ID}-${REPO_NAME2}-${VERSION_CODENAME}.list
 
-        if [ "$DEBUG" ]
-        then
-            echo REPO_FILE_PATH=$REPO_FILE_PATH
-        fi
+        debug REPO_FILE_PATH=$REPO_FILE_PATH
 
         if [ ! -f "$REPO_FILE_PATH" ]
         then
             sudo add-apt-repository "$repo"
         else
-            echo "$REPO_FILE_PATH" already added.
+            verbose "$REPO_FILE_PATH" already added.
         fi
     done
 
@@ -417,7 +412,7 @@ function setup_apt_packages()
     do
         if ! eval sudo apt -y install \$$pkg
         then
-            for p in $(eval echo \$$pkg)
+            for p in $(eval print \$$pkg)
             do
                 running sudo apt -y install ${p}
             done
@@ -443,7 +438,7 @@ function setup_ecrypt_private()
 
         # # TODO BUG check for changes in homedir
         # # sed -i 's@/Private@/.Private@' ~/.ecryptfs/Private.mnt
-        # echo $HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/noenc/Private > ~/.ecryptfs/Private.mnt
+        # debug $HOME/${RESOURCEPATH}/${USERORGMAIN}/readwrite/private/user/noenc/Private > ~/.ecryptfs/Private.mnt
         # ecryptfs-mount-private
     fi
     if [ ! -e ~/.ecryptfs -o -d ~/.ecryptfs ]
@@ -493,7 +488,7 @@ function setup_tmp_ssh_keys()
 	              ssh-add $SSH_DIR/nosecure.d/ssh/keys.d/github
             fi
         else                    # if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
-            echo setup_tmp_ssh_keys: key file not provided or not exists.
+            error setup_tmp_ssh_keys: key file not provided or not exists.
             exit -1
         fi
     fi                          # if ! ssh-add -l
@@ -543,16 +538,16 @@ function setup_ssh_keys()
 
                         openssl enc -in "$SSH_KEY_ENC_DUMP" -aes-256-cbc -d | tar -zxvf - -C ${OSETUP_DIR}/
                     else        # if [ -d ${OSETUP_DIR}/nosecure.d -a -L ${OSETUP_DIR}/secure -a -d ${OSETUP_DIR}/secure ]
-                        echo setup_ssh_keys: directories ${OSETUP_DIR}${OSETUP_DIR}/nosecure.d or ${OSETUP_DIR}/secure not exists.
+                        error setup_ssh_keys: directories ${OSETUP_DIR}${OSETUP_DIR}/nosecure.d or ${OSETUP_DIR}/secure not exists.
                     fi
                 else            # if [ -d ${OSETUP_DIR} ]
-                    echo setup_ssh_keys: directory ${OSETUP_DIR} not exists.
+                    error setup_ssh_keys: directory ${OSETUP_DIR} not exists.
                 fi
             else                # if ! mount | grep "$USER/.Private"
-                echo setup_ssh_keys: "$USER/.Private" not mounted. >&2
+                error setup_ssh_keys: "$USER/.Private" not mounted. >&2
             fi                  # if ! mount | grep "$USER/.Private"
         else                    # if [ "x$SSH_KEY_ENC_DUMP" != "x" -a -f "$SSH_KEY_ENC_DUMP" ]
-            echo setup_ssh_keys: key file not provided or not exists.
+            error setup_ssh_keys: key file not provided or not exists.
         fi
     fi                          # if [ ! -r ${OSETUP_DIR}/nosecure.d/ssh/keys.d/github ]
 
@@ -611,7 +606,7 @@ function setup_git_tree_repo()
             running git -c core.sshCommand="$GIT_SSH_OPTION" -C ${GITDIR_BASE} status
         fi
     else
-        echo setup_git_tree_repo: Not two args giturl gittreedir_base not provided. >&2
+        error setup_git_tree_repo: Not two args giturl gittreedir_base not provided. >&2
     fi
 }
 
@@ -651,7 +646,7 @@ function setup_user_config_setup()
 	          cd "${RCHOME}"
 	          for c in .[a-zA-Z^.^..]* *
 	          do
-                echo considering $c
+                debug considering $c
                 clink=$(readlink $c)
 	              if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
 	              then
@@ -677,17 +672,17 @@ function setup_user_config_setup()
                                 # exit -1
                                 # continue
                             fi
-                            echo done setting up $c
+                            verbose done setting up $c
 
                         else    # if [ ! -L ~/$c -o "$(readlink ~/$c)" != "$(readlink $c)" ]
-                            echo not doing anything $c ~/$c
+                            verbose not doing anything $c ~/$c
                         fi      # if [ ! -L ~/$c -o "$(readlink ~/$c)" != "$(readlink $c)" ]
                     else        # if [ -e ~/$c ]
                         running cp -af $c ~/$c
-                        echo done setting up $c
+                        verbose done setting up $c
 		                fi          # if [ -e ~/$c ]
                 else            # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
-                    echo not setting up $c
+                    verbose not setting up $c
 	              fi              # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
 	          done
 	          # mv $TMPDIR/Xsetup ~/.setup/.config/_home/.setup
@@ -695,7 +690,7 @@ function setup_user_config_setup()
         fi                      # if mkdir -p ~/_old_dot_filedirs
         rmdir ~/_old_dot_filedirs
     else                        # if [ -d "${RCHOME}" ]
-        echo "${RCHOME}" not exists >&2
+        error "${RCHOME}" not exists >&2
     fi                          # if [ -d "${RCHOME}" ]
 
     # if false
@@ -779,7 +774,7 @@ function setup_mail()
             sudo cp ${SYSTEM_DIR}/ubuntu/etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf
         fi
     else
-        echo ${SYSTEM_DIR}/ubuntu/etc/postfix not exists >&2
+        error ${SYSTEM_DIR}/ubuntu/etc/postfix not exists >&2
     fi
 }
 
@@ -810,7 +805,7 @@ function setup_paradise()
         sudo mv ${curhomedir}_tmp "$newhomedir"
         # sudo mkdir -p "$newhomedir"
         sudo usermod -d "$newhomedir" $USER
-        echo first change home dir to $newhomedir
+        warn first change home dir to $newhomedir
         exit -1
         export HOME="$newhomedir"
     fi
@@ -908,7 +903,7 @@ function setup_machine_dir()
             if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
             then
                 running  cp -ar ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/sample ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST
-                echo add ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST into git
+                info add ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST into git
             fi
         fi                      # if [ ! -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
     fi                          # if [ -d ${LOCALDIRS_DIR} -a -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d ]
@@ -916,8 +911,8 @@ function setup_machine_dir()
     if [ -d ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/$HOST ]
     then
         running setup_make_link $HOST ${LOCALDIRS_DIR}/org/deps.d/model.d/machine.d/default
-        # echo SHARAD TEST
-        echo running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d  model.d/machine.d/default  control.d/machine.d/default
+        # debug SHARAD TEST
+        debug running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d  model.d/machine.d/default  control.d/machine.d/default
         running setup_make_relative_link ${LOCALDIRS_DIR}/org/deps.d  model.d/machine.d/default  control.d/machine.d/default
     fi
 }
@@ -936,12 +931,12 @@ function setup_make_path_by_position()
         if [ "class/" != "x${classpath}" ]
         then
             case $position in
-                1) echo ${classpath}/${storage_path}/${classcontainer};;
-                2) echo ${storage_path}/${classpath}/${classcontainer};;
-                3) echo ${storage_path}/${classcontainer}/${classpath};;
+                1) print ${classpath}/${storage_path}/${classcontainer};;
+                2) print ${storage_path}/${classpath}/${classcontainer};;
+                3) print ${storage_path}/${classcontainer}/${classpath};;
             esac
         else
-            echo ${storage_path}/${classcontainer}
+            print ${storage_path}/${classcontainer}
         fi
     else
         error Need 4 arguments.
@@ -950,7 +945,7 @@ function setup_make_path_by_position()
 
 function setup_dep_control_storage_class_dir()
 {
-    echo setup_dep_control_storage_class_dir \#=$#
+    debug setup_dep_control_storage_class_dir \#=$#
 
     if [ $# -eq 4 ]
     then
@@ -984,8 +979,8 @@ function setup_dep_control_storage_class_dir()
         # local fullupdirs="${ppath}/../../.."
         local fullupdirs="${ppath}/../.."
 
-        # info pcount=$pcount ppath=$ppath for ${classcontroldir_rel_path}
-        # info updirsclasscontroldir_rel_path=$updirsclasscontroldir_rel_path fullupdirs-$fullupdirs
+        debug pcount=$pcount ppath=$ppath for ${classcontroldir_rel_path}
+        debug updirsclasscontroldir_rel_path=$updirsclasscontroldir_rel_path fullupdirs-$fullupdirs
 
 
 
@@ -1013,9 +1008,9 @@ function setup_dep_control_storage_class_dir()
                 running sudo chown "$USER.$(id -gn)" ${hostdir}/volumes.d/${volclasspathinstdir}
 
 
-                info fullupdirs=$fullupdirs
+                debug fullupdirs=$fullupdirs
                 # running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/model.d/${mdirbase}
-                # echo SHARAD running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
+                # debug SHARAD running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
                 running setup_make_link ${fullupdirs}/${volclasspathinstdir} $classcontrol_dir_path/${mdirbase}
 
             done
@@ -1039,7 +1034,7 @@ function setup_deps_control_class_dir()
     # ls ~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
     # ls ~/fa/localdirs/org/deps.d/model.d/machine.d/$HOST/${class}.d/
 
-    echo setup_deps_control_class_dir \#=$#
+    debug setup_deps_control_class_dir \#=$#
 
     if [ $# -eq 4 ]
     then
@@ -1070,7 +1065,7 @@ function setup_deps_control_class_dir()
                 running setup_make_link $HOST ${machinedir}/default
 
                 # BACK
-                running echo setup_dep_control_storage_class_dir "$storage_path" "$class" "$classinstdir" "${position}"
+                debug running setup_dep_control_storage_class_dir "$storage_path" "$class" "$classinstdir" "${position}"
                 running setup_dep_control_storage_class_dir "$storage_path" "$class" "$classinstdir" "${position}"
 
             else                # if [ -d ${hostdir} ]
@@ -1092,7 +1087,7 @@ function setup_deps_control_class_all_positions_dirs()
 
     # ls ~/.fa/localdirs/org/deps.d/model.d/machine.d/default/volumes.d/model.d/*/
     # ls ~/fa/localdirs/org/deps.d/model.d/machine.d/$HOST/${class}.d/
-    echo setup_deps_control_class_all_positions_dirs  \#=$#
+    debug setup_deps_control_class_all_positions_dirs  \#=$#
 
     if [ $# -eq 3 ]
     then
@@ -1101,7 +1096,7 @@ function setup_deps_control_class_all_positions_dirs()
         local classinstdir="$3"
         for pos in  1 2 3
         do
-            running echo setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
+            debug running setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
             running setup_deps_control_class_dir "${storage_path}" "${class}" "${classinstdir}" "${pos}"
         done
     else
@@ -1306,12 +1301,12 @@ function setup_deps_control_volumes_dirs()
 
     for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
     do
-        # echo "${volumedir}/${viewdirname}/$cdir"
+        debug "${volumedir}/${viewdirname}/$cdir"
 
         if [ ! -L "${volumedir}/${viewdirname}/$cdir" -o ! -d "${volumedir}/${viewdirname}/$cdir" ]
         then
             # for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/view.d/*
-            # echo SHARAD
+            # debug SHARAD
             # ls ${volumedir}/control.d/${sysdatasdirname}/
             if ls ${volumedir}/control.d/${sysdatasdirname}/*
             then
@@ -1355,7 +1350,7 @@ function setup_deps_view_volumes_dirs()
     # local sysdatasdirname=${dataclassname}/${storage_path}/${sysdataname}s.d
     local viewdirname=view.d
 
-    # echo SHARAD TEST
+    # debug SHARAD TEST
 
     # need to create ${LOCALDIRS_DIR}/org/deps.d/view.d/
 
@@ -1419,7 +1414,7 @@ function setup_deps_view_volumes_dirs()
             mkdir -p ${volumedir}/${viewdirname}
             for cdir in ${logicaldirs[*]} # config deletable longterm preserved shortterm maildata
             do
-                # echo "${volumedir}/${viewdirname}/$cdir"
+                debug "${volumedir}/${viewdirname}/$cdir"
 
                 if [ ! -L "${volumedir}/${viewdirname}/$cdir" -o ! -d "${volumedir}/${viewdirname}/$cdir" ]
                 then
@@ -1443,28 +1438,28 @@ function setup_deps_view_volumes_dirs()
 
 
 
-                echo  >> $todopath
-                echo ls ${volumedir}/control.d/${sysdatasdirname}/ >> $todopath
+                print  >> $todopath
+                print ls ${volumedir}/control.d/${sysdatasdirname}/ >> $todopath
                 ls ${volumedir}/control.d/${sysdatasdirname}/      >> $todopath
-                echo  >> $todopath
+                print  >> $todopath
                 for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
                 do
                     volsysdatadirbase=$(basename ${sysdatadir})
-                    echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> $todopath
-                    echo  >> $todopath
-                    echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "$cdir" >> $todopath
-                    echo  >> $todopath
+                    print ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> $todopath
+                    print  >> $todopath
+                    print ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "$cdir" >> $todopath
+                    print  >> $todopath
 
                     if [ ! -e "${volumedir}/${viewdirname}/$cdir" -o ! -L "${volumedir}/${viewdirname}/$cdir" ]
                     then
-                        echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> $missingpath
-                        echo  >> $missingpath
-                        echo ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "$cdir" >> $missingpath
-                        echo  >> $missingpath
+                        print ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "${volumedir}/${viewdirname}/$cdir" >> $missingpath
+                        print  >> $missingpath
+                        print ln -s ../control.d/${sysdatasdirname}/${volsysdatadirbase}/$cdir "$cdir" >> $missingpath
+                        print  >> $missingpath
                     fi
                 done
-                echo  >> $todopath
-                echo  >> $todopath
+                print  >> $todopath
+                print  >> $todopath
 
 
 
@@ -1516,23 +1511,23 @@ function setup_links_dirs()
     linkdir=$2
     targetdir=$3
 
-    info basepath=$basepath
-    info linkdir=$linkdir
-    info targetdir=$targetdir
+    debug basepath=$basepath
+    debug linkdir=$linkdir
+    debug targetdir=$targetdir
 
     if [ -d ${basepath}/${linkdir} ]
     then
         cd ${basepath}/${linkdir}
-        # echo SHARAD TEST
+        # debug SHARAD TEST
         local links=( $(find -type l | cut -c3- ) )
         cd -
 
-        info links=${links[*]}
+        debug links=${links[*]}
 
         # TODO? do something here
         for lnk in ${links[*]}
         do
-            echo running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
+            # debug running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
             running setup_make_relative_link ${basepath} ${linkdir}/${lnk} ${targetdir}/${lnk}
         done
     else
@@ -1590,7 +1585,7 @@ function setup_org_home_portable_public_dirs()
 
         if [ ! -e ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore ]
         then
-            echo '*' >> ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
+            print '*' >> ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
         fi
 
         info do   git -C ~/.fa/localdirs add org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
@@ -1654,7 +1649,7 @@ function setup_org_misc_dirs()
     running mkdir -p ${LOCALDIRS_DIR}/org/misc.d
 
     running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/maildata/mail-and-metadata/offlineimap misc.d/offlineimap
-a
+
     # links
     info do   git -C ~/.fa/localdirs add org/misc.d/offlineimap
 
@@ -1696,7 +1691,7 @@ function setup_manual_dirs()
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR=${USERDIR}/localdirs
 
-    echo SHARAD TEST
+    # debug SHARAD TEST
     running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/model.d   manual.d/model
     running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/control.d manual.d/control
     running setup_make_relative_link ${LOCALDIRS_DIR} org/deps.d/control.d/machine.d/default/volumes.d/view.d    manual.d/view
@@ -1862,7 +1857,7 @@ function setup_sourcecode_pro_font()
     then
         mkdir /tmp/$FONT_NAME
         cd /tmp/$FONT_NAME
-        wget $URL -O "`echo $FONT_NAME`.tar.gz"
+        wget $URL -O "`print $FONT_NAME`.tar.gz"
         tar --extract --gzip --file ${FONT_NAME}.tar.gz
         sudo mkdir /usr/share/fonts/truetype/$FONT_NAME
         sudo cp -rf /tmp/$FONT_NAME/. /usr/share/fonts/truetype/$FONT_NAME/.
@@ -1913,7 +1908,7 @@ function setup_clib_installer()
             rm -rf $TMPDIR/clib
         fi
     else
-        echo clib is already present. >&2
+        verbose clib is already present. >&2
     fi
 }
 
@@ -1927,7 +1922,7 @@ function install_clib_pkg()
         cd /usr/local/stow && sudo stow $pkg
         cd -
     else
-        echo $pkgfull is already present. >&2
+        verbose $pkgfull is already present. >&2
     fi
 }
 
@@ -1952,7 +1947,7 @@ function install_bpkg_pkg()
         cd /usr/local/stow/ && sudo stow $pkg
         cd -
     else
-        echo $pkgfull is already present. >&2
+        verbose $pkgfull is already present. >&2
     fi
 }
 
@@ -1964,7 +1959,7 @@ function setup_bpkg_pkgs()
 function set_window_share()
 {
     # //WIN7-SPRATAP/Users/spratap/Desktop/Desktop/Docs  /media/winshare cifs credentials=/media/.credentials,uid=nobody,iocharset=utf8,noperm 0 0
-    echo
+    :
 }
 
 function process_arg()
@@ -1983,13 +1978,14 @@ function process_arg()
             (-r) recursive=1;;
             (-s) stash=1;;
             (-n) noaction="";;
+            (-d) debug=1;;
             (-v) verbose=1;;
             (-w) warn="";;
             (-e) error="";;
             (-h) help;
                  exit;;
             (--) shift; break;;
-            (-*) echo "$0: error - unrecognized option $1" 1>&2; help; exit 1;;
+            (-*) error "$0: error - unrecognized option $1" 1>&2; help; exit 1;;
             (*)  break;;
         esac
         shift
@@ -1998,13 +1994,18 @@ function process_arg()
 
 function running()
 {
-    echo running "$@"
+    verbose running "$@"
     local _cmd=$1
     shift
     if [ ! $noaction ]
     then
         $_cmd "$@"
     fi
+}
+
+function print()
+{
+    echo "$*"
 }
 
 function error()
@@ -2019,6 +2020,14 @@ function warn()
         notify "Warning: $*" >&2
     fi
     logger "Warning: $*"
+}
+
+function debug()
+{
+    if [ $debug ] ; then
+        notify "Debug: $*" >&2
+    fi
+    logger "Debug: $*"
 }
 
 function verbose()
@@ -2037,13 +2046,13 @@ function info()
 
 function notify()
 {
-    echo "${pgm}:" "$*"
+    print "${pgm}:" "$*"
 
     if [ -t 1 ]
     then
-        echo "${pgm}:" "$*"
+        print "${pgm}:" "$*"
     else
-        echo "${pgm}:" "$*"
+        print "${pgm}:" "$*"
         notify-send "${pgm}:" "$*"
     fi
 }
