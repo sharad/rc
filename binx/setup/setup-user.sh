@@ -755,6 +755,7 @@ function setup_mail_and_metadata()
     local USERDIR=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user
     local LOCALDIRS_DIR=${USERDIR}/localdirs
     local maildata_path="${LOCALDIRS_DIR}/org/resource.d/view.d/maildata"
+    local preserved_path="${LOCALDIRS_DIR}/org/resource.d/view.d/preserved"
 
 
     if [ -e "${maildata_path}" -a -L "${maildata_path}" -a -d "${maildata_path}" ]
@@ -762,6 +763,7 @@ function setup_mail_and_metadata()
         running readlink -m "${maildata_path}"
         running mkdir -p  "${maildata_path}/mail-and-metadata/offlineimap"
         running mkdir -p  "${maildata_path}/mail-and-metadata/maildir"
+        running mkdir -p  "${preserved_path}/mailattachments"
     else
         warn  mail data path "${maildata_path}" not present.
     fi
@@ -1684,12 +1686,16 @@ function setup_org_misc_dirs()
     running mkdir -p ${LOCALDIRS_DIR}/org/misc.d
 
     running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/maildata/mail-and-metadata/offlineimap misc.d/offlineimap
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/preserved/mailattachments              misc.d/mailattachments
 
     # links
-    if ! git -C ~/.fa/localdirs ls-files --error-unmatch org/misc.d/offlineimap >/dev/null 2>&1
-    then
-        info do   git -C ~/.fa/localdirs add org/misc.d/offlineimap
-    fi
+    for lnk in org/misc.d/offlineimap org/misc.d/mailattachments
+    do
+        if ! git -C ~/.fa/localdirs ls-files --error-unmatch $lnk >/dev/null 2>&1
+        then
+            info do   git -C ~/.fa/localdirs add $lnk
+        fi
+    done
 
 } # function setup_org_misc_dirs()
 
@@ -1783,7 +1789,7 @@ function setup_osetup_org_misc_dirs()
     local osetupdir=~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/osetup/dirs.d/
     local resourcedir=${LOCALDIRS_DIR}/org/resource.d
 
-    for folder in offlineimap
+    for folder in offlineimap mailattachments
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/misc.d/${folder} osetup/dirs.d/org/misc.d/${folder}
         if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/misc.d/${folder} >/dev/null 2>&1

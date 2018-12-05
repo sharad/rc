@@ -300,7 +300,7 @@ function setup_conkeror_package()
         sudo stow conkeror
         if [ -r /usr/local/bin/conkeror ]
         then
-            sed -i 's@exec firefox@exec /opt/firefox/firefox@' $(readlink -m /usr/local/bin/conkeror)
+            sudo sed -i 's@exec firefox@exec /opt/firefox/firefox@' $(readlink -m /usr/local/bin/conkeror)
         fi
         cd -
     else
@@ -345,7 +345,11 @@ function setup_dovecot()
         else
             sudo cp -ar /etc/docvot /etc/dovecot-ORG
         fi
+        sudo systemctl stop dovecot.service
         sudo sh -c "cp -ar $SITEDIR/.repos/git/system/system/ubuntu/etc/dovecot/* /etc/dovecot/"
+        running sleep 2s
+        sudo systemctl start dovecot.service
+
     else
         echo $SITEDIR/.repos/git/system/system/ubuntu/etc/dovecot donot exists. >&2
     fi
@@ -362,7 +366,10 @@ function setup_postfix()
         else
             sudo cp -ar /etc/postfix /etc/postfix-ORG
         fi
+        sudo systemctl stop postfix.service
         sudo sh -c "cp $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix/* /etc/postfix/"
+        running sleep 2s
+        sudo systemctl start postfix.service
     else
         echo $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix donot exists. >&2
     fi
@@ -402,6 +409,11 @@ function setup_postfix()
             echo varialbe $var not set >&2
         fi
     done
+
+    sudo cp $SITEDIR/.repos/git/system/system/ubuntu/etc/aliases /etc/aliases
+    cd /etc/
+    sudo postmap aliases
+    cd -
 }
 
 function setup_offlineimap()
