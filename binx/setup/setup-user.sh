@@ -75,7 +75,7 @@ DEB_PKG_SYSTEM="cpuid inxi arandr bluez bluez-tools redshift daemontools god cir
 DEB_PKG_TOOL_TEST="cyrus-clients swaks im namazu2-index-tools prayer-accountd prayer"
 DEB_SYS_PKG1="duc baobab agedu tpb daemontools sysstat isag dos2unix powermanagement-interface grub2-splashimages grub2-themes-ubuntu-mate offlineimap libsecret-tools"
 # https://linuxconfig.org/fetch-stock-quotes-with-perl-finance-quote-module
-DEB_SYS_MAIL="dovecot-core dovecot-imapd mail-stack-delivery ntpdate postfix augeas-tools augeas-lenses notmuch afew ldap-utils bbdb3 elpa-lbdb lsdb mu-cite libfinance-quote-perl mail-notification"
+DEB_SYS_MAIL="dovecot-core dovecot-imapd mail-stack-delivery ntpdate postfix augeas-tools augeas-lenses notmuch muchsync notmuch-addrlookup notmuch-emacs afew ldap-utils bbdb3 elpa-lbdb lsdb mu-cite libfinance-quote-perl mail-notification"
 DEB_DEV_GTD="tomboy zim anki mnemosyne mnemosyne-blog sqlitebrowser"
 DEB_PKG_LEARNING="gpodder"
 DEB_PKG_TOOL_GUI="lightdm osdsh osd-cat xosd-bin notify-osd notify-osd-icons xosd-bin gpointing-device-settings touchfreeze bash-completion libinput-tools keynav feh geeqie" # xserver-xorg-input-synaptics
@@ -414,6 +414,7 @@ function setup_apt_packages()
 				"DEB_PKG_NECESSARY_MORE2" \
 				"DEB_PKG_NECESSARY_MORE3" \
 				"DEB_PKG_NECESSARY_MORE4" \
+        "DEB_SYS_MAIL" \
         "DEB_DEV_GTD" \
         "DEB_PKG_LEARNING" \
         "DEB_PKG_TOOL_GUI" \
