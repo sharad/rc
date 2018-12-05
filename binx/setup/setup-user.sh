@@ -1601,7 +1601,7 @@ function setup_org_home_portable_public_dirs()
             print '*' >> ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
         fi
 
-        if ! git -C ~/.fa/localdirs ls-files --error-unmatch org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
+        if ! git -C ~/.fa/localdirs ls-files --error-unmatch org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore >/dev/null 2>&1
         then
             info do   git -C ~/.fa/localdirs add org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
         fi
@@ -1640,7 +1640,7 @@ function setup_org_home_portable_dirs()
     # links
     for lnk in org/home.d/portable.d org/home.d/portable.d/Documents org/home.d/portable.d/Private org/home.d/portable.d/Library org/home.d/portable.d/public_html org/home.d/portable.d/Scratches org/home.d/portable.d/Maildir org/home.d/portable.d/Volumes
     do
-        if ! git -C ~/.fa/localdirs ls-files --error-unmatch $lnk
+        if ! git -C ~/.fa/localdirs ls-files --error-unmatch $lnk >/dev/null 2>&1
         then
             info do   git -C ~/.fa/localdirs add $lnk
         fi
@@ -1665,7 +1665,7 @@ function setup_org_misc_dirs()
     running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/maildata/mail-and-metadata/offlineimap misc.d/offlineimap
 
     # links
-    if ! git -C ~/.fa/localdirs ls-files --error-unmatch org/misc.d/offlineimap
+    if ! git -C ~/.fa/localdirs ls-files --error-unmatch org/misc.d/offlineimap >/dev/null 2>&1
     then
         info do   git -C ~/.fa/localdirs add org/misc.d/offlineimap
     fi
@@ -1686,7 +1686,7 @@ function setup_org_rc_dirs()
     # sharad ?? fixed
     running setup_make_relative_link ~/ "" ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/rc.d/repos
 
-    
+
     running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d repos/git/main/resource/userorg/main/readwrite/public/user/opt       opt
     running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d repos/git/main/resource/userorg/main/readwrite/public/user/localdirs localdirs
     running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d repos/git/main/resource/userorg/main/readwrite/public/user/osetup    osetup
@@ -1694,7 +1694,7 @@ function setup_org_rc_dirs()
 
     for lnk in org/rc.d/repos org/rc.d/opt org/rc.d/localdirs org/rc.d/osetup org/rc.d/setup org/rc.d/HOME
     do
-        if ! git -C ~/.fa/localdirs ls-files --error-unmatch $lnk
+        if ! git -C ~/.fa/localdirs ls-files --error-unmatch $lnk >/dev/null 2>&1
         then
            info do   git -C ~/.fa/localdirs add $lnk
         fi
@@ -1734,7 +1734,7 @@ function setup_osetup_org_resource_dirs()
 
     running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
 
-    if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/resource.d
+    if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/resource.d >/dev/null 2>&1
     then
         info do   git -C ~/.fa/osetup add dirs.d/org/resource.d
     fi
@@ -1749,7 +1749,7 @@ function setup_osetup_org_home_dirs()
     for folder in Desktop Documents Downloads Library Maildir Music Pictures Private Public public_html Scratches Sink Templates tmp Videos Volumes
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/home.d/portable.d/${folder} osetup/dirs.d/org/home.d/${folder}
-        if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/home.d/${folder}
+        if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/home.d/${folder} >/dev/null 2>&1
         then
             info do   git -C ~/.fa/osetup add dirs.d/org/home.d/${folder}
         fi
@@ -1765,7 +1765,7 @@ function setup_osetup_org_misc_dirs()
     for folder in offlineimap
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/misc.d/${folder} osetup/dirs.d/org/misc.d/${folder}
-        if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/misc.d/${folder}
+        if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/misc.d/${folder} >/dev/null 2>&1
         then
             info do   git -C ~/.fa/osetup add dirs.d/org/misc.d/${folder}
         fi
@@ -1781,7 +1781,7 @@ function setup_osetup_org_rc_dirs()
     for folder in HOME localdirs opt osetup repos setup
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/rc.d/${folder} osetup/dirs.d/org/rc.d/${folder}
-        if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/rc.d/${folder}
+        if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/rc.d/${folder} >/dev/null 2>&1
         then
             info do   git -C ~/.fa/osetup add dirs.d/org/rc.d/${folder}
         fi
@@ -1830,7 +1830,7 @@ function setup_rc_org_dirs()
 
     running setup_rc_org_home_dirs
 
-    if ! git -C ~/.fa/rc ls-files --error-unmatch .config/dirs.d/org
+    if ! git -C ~/.fa/rc ls-files --error-unmatch .config/dirs.d/org >/dev/null 2>&1
     then
         info do   git -C ~/.fa/rc add .config/dirs.d/org
     fi
