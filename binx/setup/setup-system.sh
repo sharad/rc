@@ -422,6 +422,8 @@ function setup_offlineimap()
                # M4 TODO?
 
                echo  make sure to copy correct ~/.offlineimaprc
+
+               echo and copy ~/.emacs.d/autoconfig/gnus/newsrc.eld from some other machine.
            else
                echo ~/.maildir ~/.offlineimap are not created. >&2
                echo chek them by >&2
