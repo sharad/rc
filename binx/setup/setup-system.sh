@@ -22,7 +22,7 @@ function main()
 
     running setup_ssh_keys "$SSH_KEY_DUMP"
 
-    running setup_git_repos
+    # running setup_git_repos
 
     running setup_mail_server_client
 
