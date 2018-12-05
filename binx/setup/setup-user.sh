@@ -2082,18 +2082,15 @@ function verbose()
 function info()
 {
     notify "$*" >&2
-    # logger "$*"
+    : logger "$*"
 }
 
 function notify()
 {
     print "${pgm}:" "$*"
 
-    if [ -t 1 ]
+    if [ ! -t 1 ]
     then
-        print "${pgm}:" "$*"
-    else
-        print "${pgm}:" "$*"
         notify-send "${pgm}:" "$*"
     fi
 }
