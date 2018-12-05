@@ -226,6 +226,9 @@ function setup_make_link()
         local linkdir=$(dirname $link)
         if [ "$linkdir" != . ]
         then
+            debug pwd $(pwd)
+            debug link=$link
+            debug dir "$(dirname $link)"
             mkdir -p "$(dirname $link)"
         fi
 
@@ -686,7 +689,7 @@ function setup_user_config_setup()
 	              fi              # if [ "$c" != ".repos" -a "$c" != ".setup" -a "$c" != ".gitignore" -a "$c" != "acyclicsymlinkfix" -a "$c" != "." -a "$c" != ".." -a "$clink" != ".." ] # very important
 	          done
 	          # mv $TMPDIR/Xsetup ~/.setup/.config/_home/.setup
-	          cd -
+	          cd - > /dev/null 2>&1
         fi                      # if mkdir -p ~/_old_dot_filedirs
         rmdir ~/_old_dot_filedirs
     else                        # if [ -d "${RCHOME}" ]
@@ -833,7 +836,7 @@ function setup_mvc_dirs()
             done
             if [ "$modelsymlink" -eq 0 ]
             then
-                error No symlink for model dirs exists in ${containerdir}/model.d create it.
+                error setup_mvc_dirs: No symlink for model dirs exists in ${containerdir}/model.d create it.
             fi
         fi              # if [ -d ${containerdir}/model.d ]
 
@@ -852,7 +855,7 @@ function setup_mvc_dirs()
             done
             if [ "$modelsymlink" -eq 0 ]
             then
-                error No symlink for control dirs exists in ${containerdir}/control.d create it.
+                error setup_mvc_dirs: No symlink for control dirs exists in ${containerdir}/control.d create it.
             fi
         fi              # if [ -d ${containerdir}/control.d ]
     else
@@ -990,8 +993,8 @@ function setup_dep_control_storage_class_dir()
         # mkdir -p $classcontrol_dir_path/model.d
         mkdir -p $classcontrol_dir_path
         # mkdir -p $classcontrol_dir_path/view.d
-
-        if [ -d ${hostdir}/volumes.d/model.d/${storage_path}/ ] && ls ${hostdir}/volumes.d/model.d/${storage_path}/*
+        # TODO?STATS
+        if [ -d ${hostdir}/volumes.d/model.d/${storage_path}/ ] && ls ${hostdir}/volumes.d/model.d/${storage_path}/* > /dev/null 2>&1
         then
             modelsymlink=0
             for mdir in ${hostdir}/volumes.d/model.d/${storage_path}/*
@@ -1017,7 +1020,7 @@ function setup_dep_control_storage_class_dir()
 
             if [ "$modelsymlink" -eq 0 ]
             then
-                error No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d/${storage_path}/ create it.
+                error setup_dep_control_storage_class_dir: No symlink for model volume dirs exists in ${hostdir}/volumes.d/model.d/${storage_path}/ create it.
             fi
         fi              # if [ -d ${hostdir}/volumes.d/model.d ]
 
@@ -1308,7 +1311,9 @@ function setup_deps_control_volumes_dirs()
             # for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/view.d/*
             # debug SHARAD
             # ls ${volumedir}/control.d/${sysdatasdirname}/
-            if ls ${volumedir}/control.d/${sysdatasdirname}/*
+
+            # TODO? STATS
+            if ls ${volumedir}/control.d/${sysdatasdirname}/* > /dev/null 2>&1
             then
             for sysdatadir in ${volumedir}/control.d/${sysdatasdirname}/*
             do
@@ -1371,12 +1376,20 @@ function setup_deps_view_volumes_dirs()
 
             setup_make_link $HOST ${machinedir}/default
 
+
+
             if [ -d ${volumedir}/model.d ]
             then
+
+                cd ${volumedir}/model.d/
+                local links=( $(find -type l | cut -c3- ) )
+                cd - > /dev/null 2>&1
+
                 modelsymlink=0
-                for mdir in ${volumedir}/model.d/*
+                for mdir in ${links[*]}
                 do
-                    if [ -L "$mdir" ]
+                    # debug $mdir
+                    if [ -L "${volumedir}/model.d/$mdir" ]
                     then
                         modelsymlink=1
                     fi
@@ -1384,7 +1397,7 @@ function setup_deps_view_volumes_dirs()
 
                 if [ "$modelsymlink" -eq 0 ]
                 then
-                    error No symlink for model dirs exists in ${volumedir}/model.d create it. >&2
+                    error setup_deps_view_volumes_dirs: No symlink for model dirs exists in ${volumedir}/model.d create it. >&2
                 fi
             else
                 error ${volumedir}/model.d not exists.
@@ -1520,7 +1533,7 @@ function setup_links_dirs()
         cd ${basepath}/${linkdir}
         # debug SHARAD TEST
         local links=( $(find -type l | cut -c3- ) )
-        cd -
+        cd - > /dev/null 2>&1
 
         debug links=${links[*]}
 
@@ -1588,7 +1601,10 @@ function setup_org_home_portable_public_dirs()
             print '*' >> ${homeprotabledir}/${folder}/Public/Publish/html/.gitignore
         fi
 
-        info do   git -C ~/.fa/localdirs add org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
+        if ! git -C ~/.fa/localdirs ls-files --error-unmatch org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
+        then
+            info do   git -C ~/.fa/localdirs add org/home.d/portable.d/${folder}/Public/Publish/html/.gitignore
+        fi
 
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public              Public/$folder
         running setup_make_relative_link ${homeprotabledir} ${folder}/Public/Publish      Public/Publish/$folder
@@ -1622,15 +1638,13 @@ function setup_org_home_portable_dirs()
     running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/maildata/mail-and-metadata/maildir home.d/portable.d/Maildir
 
     # links
-    info do   git -C ~/.fa/localdirs add org/home.d/portable.d
-    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/Documents
-    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/Private
-    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/Library
-    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/public_html
-    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/Scratches
-    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/Maildir
-    info do   git -C ~/.fa/localdirs add org/home.d/portable.d/Volumes
-
+    for lnk in org/home.d/portable.d org/home.d/portable.d/Documents org/home.d/portable.d/Private org/home.d/portable.d/Library org/home.d/portable.d/public_html org/home.d/portable.d/Scratches org/home.d/portable.d/Maildir org/home.d/portable.d/Volumes
+    do
+        if ! git -C ~/.fa/localdirs ls-files --error-unmatch $lnk
+        then
+            info do   git -C ~/.fa/localdirs add $lnk
+        fi
+    done
 
     running setup_org_home_portable_public_dirs
     running setup_org_home_portable_local_dirs
@@ -1651,7 +1665,10 @@ function setup_org_misc_dirs()
     running setup_make_relative_link ${LOCALDIRS_DIR}/org resource.d/view.d/maildata/mail-and-metadata/offlineimap misc.d/offlineimap
 
     # links
-    info do   git -C ~/.fa/localdirs add org/misc.d/offlineimap
+    if ! git -C ~/.fa/localdirs ls-files --error-unmatch org/misc.d/offlineimap
+    then
+        info do   git -C ~/.fa/localdirs add org/misc.d/offlineimap
+    fi
 
 } # function setup_org_misc_dirs()
 
@@ -1666,13 +1683,22 @@ function setup_org_rc_dirs()
 
     running setup_make_relative_link ${LOCALDIRS_DIR}/org deps.d/view.d/home rc.d/HOME
 
-    running setup_make_relative_link ~/ "" ${LOCALDIRS_DIR}/org/rc.d/repos
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d/repos repos/git/main/resource/userorg/main/readwrite/public/user/opt       opt
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d/repos repos/git/main/resource/userorg/main/readwrite/public/user/localdirs localdirs
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d/repos repos/git/main/resource/userorg/main/readwrite/public/user/osetup    osetup
-    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d/repos repos/git/main/resource/userorg/main/readwrite/public/user/rc        setup
+    # sharad ?? fixed
+    running setup_make_relative_link ~/ "" ${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user/localdirs/org/rc.d/repos
 
-    info do   git -C ~/.fa/localdirs add org/rc.d/repos org/rc.d/opt org/rc.d/localdirs org/rc.d/osetup org/rc.d/setup org/rc.d/HOME
+    
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d repos/git/main/resource/userorg/main/readwrite/public/user/opt       opt
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d repos/git/main/resource/userorg/main/readwrite/public/user/localdirs localdirs
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d repos/git/main/resource/userorg/main/readwrite/public/user/osetup    osetup
+    running setup_make_relative_link ${LOCALDIRS_DIR}/org/rc.d repos/git/main/resource/userorg/main/readwrite/public/user/rc        setup
+
+    for lnk in org/rc.d/repos org/rc.d/opt org/rc.d/localdirs org/rc.d/osetup org/rc.d/setup org/rc.d/HOME
+    do
+        if ! git -C ~/.fa/localdirs ls-files --error-unmatch $lnk
+        then
+           info do   git -C ~/.fa/localdirs add $lnk
+        fi
+    done
 } # function setup_org_rc_dirs()
 
 function setup_org_dirs()
@@ -1708,7 +1734,10 @@ function setup_osetup_org_resource_dirs()
 
     running setup_links_dirs ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/resource.d osetup/dirs.d/org/resource.d
 
-    info do   git -C ~/.fa/osetup add dirs.d/org/resource.d
+    if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/resource.d
+    then
+        info do   git -C ~/.fa/osetup add dirs.d/org/resource.d
+    fi
 }
 
 function setup_osetup_org_home_dirs()
@@ -1720,7 +1749,10 @@ function setup_osetup_org_home_dirs()
     for folder in Desktop Documents Downloads Library Maildir Music Pictures Private Public public_html Scratches Sink Templates tmp Videos Volumes
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/home.d/portable.d/${folder} osetup/dirs.d/org/home.d/${folder}
-        info do   git -C ~/.fa/osetup add dirs.d/org/home.d/${folder}
+        if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/home.d/${folder}
+        then
+            info do   git -C ~/.fa/osetup add dirs.d/org/home.d/${folder}
+        fi
     done
 }
 
@@ -1733,7 +1765,10 @@ function setup_osetup_org_misc_dirs()
     for folder in offlineimap
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/misc.d/${folder} osetup/dirs.d/org/misc.d/${folder}
-        info do   git -C ~/.fa/osetup add dirs.d/org/misc.d/${folder}
+        if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/misc.d/${folder}
+        then
+            info do   git -C ~/.fa/osetup add dirs.d/org/misc.d/${folder}
+        fi
     done
 }
 
@@ -1746,7 +1781,10 @@ function setup_osetup_org_rc_dirs()
     for folder in HOME localdirs opt osetup repos setup
     do
         running setup_make_relative_link ~/${RESOURCEPATH}/${USERORGMAIN}/readwrite/public/user localdirs/org/rc.d/${folder} osetup/dirs.d/org/rc.d/${folder}
-        info do   git -C ~/.fa/osetup add dirs.d/org/rc.d/${folder}
+        if ! git -C ~/.fa/osetup ls-files --error-unmatch dirs.d/org/rc.d/${folder}
+        then
+            info do   git -C ~/.fa/osetup add dirs.d/org/rc.d/${folder}
+        fi
     done
 }
 
@@ -1792,7 +1830,10 @@ function setup_rc_org_dirs()
 
     running setup_rc_org_home_dirs
 
-    info do   git -C ~/.fa/rc add .config/dirs.d/org
+    if ! git -C ~/.fa/rc ls-files --error-unmatch .config/dirs.d/org
+    then
+        info do   git -C ~/.fa/rc add .config/dirs.d/org
+    fi
 }
 
 function setup_dirs()
@@ -1904,7 +1945,7 @@ function setup_clib_installer()
             make PREFIX=/usr/local/stow/clib/
             sudo make PREFIX=/usr/local/stow/clib/ install
             cd /usr/local/stow && sudo stow clib
-            cd -
+            cd - > /dev/null 2>&1
             rm -rf $TMPDIR/clib
         fi
     else
@@ -1920,7 +1961,7 @@ function install_clib_pkg()
     then
         sudo sh -c "PREFIX=/usr/local/stow/$pkg clib install $pkgfull -o /usr/local/stow/$pkg"
         cd /usr/local/stow && sudo stow $pkg
-        cd -
+        cd - > /dev/null 2>&1
     else
         verbose $pkgfull is already present. >&2
     fi
@@ -1945,7 +1986,7 @@ function install_bpkg_pkg()
         sudo mkdir -p "/usr/local/stow/$pkg/bin"
         sudo sh -c "PREFIX=/usr/local/stow/$pkg bpkg install -g $pkgfull"
         cd /usr/local/stow/ && sudo stow $pkg
-        cd -
+        cd - > /dev/null 2>&1
     else
         verbose $pkgfull is already present. >&2
     fi
@@ -2041,7 +2082,7 @@ function verbose()
 function info()
 {
     notify "$*" >&2
-    logger "$*"
+    # logger "$*"
 }
 
 function notify()
