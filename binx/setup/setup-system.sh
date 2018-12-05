@@ -337,17 +337,17 @@ function setup_zsh()
 function setup_dovecot()
 {
     sudo apt -y install dovecot-core dovecot-imapd mail-stack-delivery
-    if [ -d $SITEDIR/.repos/git/system/system/ubuntu/etc/dovcot ]
+    if [ -d $SITEDIR/.repos/git/system/system/ubuntu/etc/dovecot ]
     then
-        if [ -d /etc/dovcot-ORG ]
+        if [ -d /etc/dovecot-ORG ]
         then
-            echo /etc/dovcot-ORG already present
+            echo /etc/dovecot-ORG already present
         else
-            sudo cp -ar /etc/docvot /etc/dovcot-ORG
+            sudo cp -ar /etc/docvot /etc/dovecot-ORG
         fi
-        sudo sh -c "cp $SITEDIR/.repos/git/system/system/ubuntu/etc/dovcot/* /etc/postfix/"
+        sudo sh -c "cp -ar $SITEDIR/.repos/git/system/system/ubuntu/etc/dovecot/* /etc/dovecot/"
     else
-        echo $SITEDIR/.repos/git/system/system/ubuntu/etc/dovcot donot exists. >&2
+        echo $SITEDIR/.repos/git/system/system/ubuntu/etc/dovecot donot exists. >&2
     fi
 }
 
