@@ -366,6 +366,40 @@ function setup_postfix()
     else
         echo $SITEDIR/.repos/git/system/system/ubuntu/etc/postfix donot exists. >&2
     fi
+
+    for var in \
+        OFFICE1_DOMAIN \
+            OFFICE1_SUPERDOMAIN \
+            OFFICE1_USER \
+            OFFICE1_PASSWORD \
+            \
+            OFFICE2_DOMAIN \
+            OFFICE2_SUPERDOMAIN \
+            OFFICE2_USER \
+            OFFICE2_PASSWORD \
+            \
+            EXTERNAL1_DOMAIN \
+            EXTERNAL1_SUPERDOMAIN \
+            EXTERNAL1_USER \
+            EXTERNAL1_PASSWORD \
+            \
+            EXTERNAL2_DOMAIN \
+            EXTERNAL2_SUPERDOMAIN \
+            EXTERNAL2_USER \
+            EXTERNAL2_PASSWORD \
+            \
+            MYHOSTNAME \
+            MYHOSTFDN \
+            \
+            MYUSERNAME
+    do
+        if eval [ "x" != "x\$$var" ] && eval echo sed -e 's/\\\$'$var/\$$var/g /etc/postfix/tls_per_site /etc/postfix/transport /etc/postfix/sender_dependent_relayhost /etc/postfix/sasl_passwd
+        then
+            eval sudo sed -i -e 's/\\\$'$var/\$$var/g /etc/postfix/main.cf /etc/postfix/generic /etc/postfix/tls_per_site /etc/postfix/transport /etc/postfix/sender_dependent_relayhost /etc/postfix/sasl_passwd
+        else
+            echo varialbe $var not set >&2
+        fi
+    done
 }
 
 function setup_offlineimap()
